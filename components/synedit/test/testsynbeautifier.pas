@@ -11,13 +11,36 @@ uses
 
 type
 
-  { TTestSynSelection }
+  TCallBackData = record
+     LinePos: Integer;
+     Indent: Integer;                   // Indent in spaces (Logical = Physical)
+     RelativeToLinePos: Integer;        // Intend specifies +/- offset from intend on RTLine
+                                            // 0: for absolute indent
+     IndentChars: String ;              // use the following string to indent; maybe empty, single char, or string
+     IndentCharsFromLinePos: Integer;   // Line for tab/space mix; set to -1 if unknown
+  end;
 
   { TTestSynBeautifier }
 
   TTestSynBeautifier = class(TTestBase)
   protected
-    procedure TestRedoUndo(Name: String; Text: Array of String; X, Y: Integer; Data: Array of const);
+    procedure TestRedoUndo(Name: String; Text: Array of String; X, Y: Integer;
+                           Data: Array of const;
+                           SelX: Integer = -1; SelY: Integer = -1);
+  protected
+    FGetIndentCallBackResult: Boolean;
+    FCallBackData: Array of TCallBackData;
+    FGotLogCaret: TPoint;
+    FGotFirstLinePos, FGotLastLinePos: Integer;
+    FGotReason: TSynEditorCommand;
+    function GetIndentCallBack( Sender: TObject;                       // the beautifier
+                                Editor: TObject;                       // the synedit
+                                LogCaret, OldLogCaret: TPoint;
+                                FirstLinePos, LastLinePos: Integer;
+                                Reason: TSynEditorCommand;             // what caused the evnt
+                                SetIndentProc: TSynBeautifierSetIndentProc
+                              ): boolean;
+
   published
     (* Test includes:
        - no indent if switched off
@@ -33,11 +56,19 @@ type
     *)
     procedure DefaultIndent;
     (*
-       - no unindent, if selection (none persistent)   (TODO)
+       - no un-indent if switched off
+       - un-indent after VK_BACK (if at end of leading whitespace)
+       - no un-indent after VK_BACK (if not at end of leading whitespace)
+       - act on empty line (only leading whitespace; no chars follow)  (with/without trim space)
+       - unindent after empty line (find indent from lines above)
+       - handle tabs, in leading whitespace  (TODO)
+       - no unindent, if selection (none persistent)
+         Todo: decide on none-overwritable block
+       - TODO: fix group undo
     *)
-    //procedure DefaultUnIndent;
+    procedure DefaultUnIndent;
 
-
+    procedure IndentCallBack;
   end;
 
 
@@ -45,8 +76,9 @@ implementation
 
 { TTestSynBeautifier }
 
+var SkipGroupUndo: Boolean;
 procedure TTestSynBeautifier.TestRedoUndo(Name: String; Text: Array of String;
-  X, Y: Integer; Data: array of const);
+  X, Y: Integer; Data: array of const; SelX: Integer = -1; SelY: Integer = -1);
 
   function data2txt(n: Integer): String;
   begin
@@ -65,7 +97,10 @@ var
 begin
   PushBaseName(Name + '(no group-undo)');
   SetLines(Text);
-  SetCaret(X, Y);
+  if (SelX >= 0) then
+    SetCaretAndSel(SelX, SelY, X, Y)
+  else
+    SetCaret(X, Y);
   SynEdit.Options  := SynEdit.Options  - [eoGroupUndo];
   for i := 0 to length(data) div 4 - 1 do begin
     st := [];
@@ -95,6 +130,11 @@ begin
     then TestIsCaret('2nd Undo Key #'+IntToStr(i+1), data[i*4+1].vinteger, data[i*4+2].vinteger)
     else TestIsCaret('2nd Undo Key #'+IntToStr(i+1), x, y);
     TestIsFullText('2nd Undo #'+IntToStr(i+1), data2txt(i*4+3));
+  end;
+
+  if SkipGroupUndo then begin
+    PopBaseName;
+    exit;
   end;
 
   PopPushBaseName(Name + '(group-undo)');
@@ -161,6 +201,7 @@ procedure TTestSynBeautifier.DefaultIndent;
   end;
 
 begin
+  SkipGroupUndo := False;
   ReCreateEdit;
   SynEdit.TabWidth := 4;
   SynEdit.TrimSpaceType := settMoveCaret;
@@ -308,10 +349,10 @@ begin
   ]);
 
   TestRedoUndo('CTRL-N empty line',   TestText, 1,3, [ VK_N, 1, 3, ExpText([ -4, '    ']) ]  ); // TODO: should it? 
-  //TestRedoUndo('CTRL-N pos1 unindeted',TestText2, 1,2, [ VK_N, 1, 2, ExpText2([ -2, '']) ]  ); // TODO: must not
+  TestRedoUndo('CTRL-N pos1 unindeted',TestText2, 1,2, [ VK_N, 1, 2, ExpText2([ -2, '']) ]  ); // TODO: must not
 
   TestRedoUndo('CTRL-N after space',  TestText, 5,2, [ VK_N, 5, 2, ExpText([ -2, '    ']) ]  ); // NOT trimmed
-  //TestRedoUndo('CTRL-N before space', TestText, 1,2, [ VK_N, 1, 2, ExpText([ -2, '']) ]  ); // TODO: indents too much
+  TestRedoUndo('CTRL-N before space', TestText, 1,2, [ VK_N, 1, 2, ExpText([ -2, '']) ]  ); // TODO: indents too much
   TestRedoUndo('CTRL-N mid space',    TestText, 4,2, [ VK_N, 4, 2, ExpText([ -2, '   ']) ]  ); // NOT trimmed
 
 
@@ -434,8 +475,245 @@ begin
   ]);
     {%endregion}
 
+    {%region CTRL-N}
+  PopPushBaseName('SpaceOnly');
+  // VK_N will be ctrl-n (special detection in TestRedoUndo
+  TSynBeautifier(SynEdit.Beautifier).IndentType := sbitSpace;
+  TestRedoUndo('CTRL-N EOL',          TestText, 5,1, [ VK_N, 5, 1, ExpText([ -2, '']) ]  ); // trimmed
+
+  TestRedoUndo('CTRL-N pos1 unindeted',TestText2, 1,2, [ VK_N, 1, 2, ExpText2([ -2, '']) ]  ); // TODO: must not
+
+  TestRedoUndo('CTRL-N after space',  TestText, 5,2, [ VK_N, 5, 2, ExpText([ -2, '    ']) ]  );
+  TestRedoUndo('CTRL-N before space', TestText, 1,2, [ VK_N, 1, 2, ExpText([ -2, '']) ]  ); // TODO: indents too much
+  TestRedoUndo('CTRL-N mid space',    TestText, 4,2, [ VK_N, 4, 2, ExpText([ -2, '   ']) ]  );
+
+
+    {%endregion}
+
   {%endregion}
 
+end;
+
+procedure TTestSynBeautifier.DefaultUnIndent; 
+  function TestText: TStringArray;
+  begin
+    SetLength(Result, 11);
+    Result[0] := '  a;';
+    Result[1] := '    b';
+    Result[2] := '      c';
+    Result[3] := '';
+    Result[4] := '      d';
+    Result[5] := '';
+    Result[6] := '  x';
+    Result[7] := '';
+    Result[8] := '    y';
+    Result[9] := '     z';
+    Result[10]:= '';
+  end;
+  function ExpText(rpl: array of const): String;
+  begin
+    Result := LinesToText(LinesReplace(TestText, rpl))
+  end;
+begin
+  SkipGroupUndo := True; // Todo
+  ReCreateEdit;
+  SynEdit.TabWidth := 4;
+  SynEdit.TrimSpaceType := settMoveCaret;
+
+  BaseTestName := 'UnIndent pff';
+  SynEdit.Options  := SynEdit.Options - [eoTrimTrailingSpaces, eoScrollPastEol, eoAutoIndent];
+  SynEdit.Options2  := SynEdit.Options2 - [eoPersistentBlock];
+  TestRedoUndo('simple',             TestText,  5,2, [ VK_BACK, 4,2, ExpText([ 2, '   b']) ]  );
+  TestRedoUndo('not at indent-end',  TestText,  4,2, [ VK_BACK, 3,2, ExpText([ 2, '   b']) ]  );
+
+  BaseTestName := 'UnIndent';
+  SynEdit.Options  := SynEdit.Options + [eoAutoIndent] - [eoTrimTrailingSpaces, eoScrollPastEol];
+
+  TestRedoUndo('simple',             TestText,  5,2, [ VK_BACK, 3,2, ExpText([ 2, '  b']) ]  );
+  TestRedoUndo('simple twice',       TestText,  5,2, [
+                                     VK_BACK, 3,2, ExpText([ 2, '  b']),
+                                     VK_BACK, 1,2, ExpText([ 2, 'b'])
+  ]);
+  TestRedoUndo('not at indent-end',  TestText,  4,2, [ VK_BACK, 3,2, ExpText([ 2, '   b']) ]  );
+
+  TestRedoUndo('2 level',            TestText,  7,3, [
+                                     VK_BACK, 5,3, ExpText([ 3, '    c']),
+                                     VK_BACK, 3,3, ExpText([ 3, '  c']),
+                                     VK_BACK, 1,3, ExpText([ 3, 'c'])
+  ]);
+  TestRedoUndo('2 lvl, not indent-end',   TestText,  6,3, [ VK_BACK, 5,3, ExpText([ 3, '     c']) ]  );
+  TestRedoUndo('2 lvl, not indent-end 2', TestText,  5,3, [ VK_BACK, 4,3, ExpText([ 3, '     c']) ]  );
+
+  TestRedoUndo('below empty line',        TestText,  7,5, [ VK_BACK, 5,5, ExpText([ 5, '    d']) ]  );
+  TestRedoUndo('below empty, not I-End',  TestText,  6,5, [ VK_BACK, 5,5, ExpText([ 5, '     d']) ]  );
+  TestRedoUndo('below empty, not I-End 2',TestText,  5,5, [ VK_BACK, 4,5, ExpText([ 5, '     d']) ]  );
+  TestRedoUndo('below empty line, many',  TestText,  7,5, [
+                                          VK_BACK, 5,5, ExpText([ 5, '    d']),
+                                          VK_BACK, 3,5, ExpText([ 5, '  d']),
+                                          VK_BACK, 1,5, ExpText([ 5, 'd'])
+  ]);
+
+  TestRedoUndo('unindent single space',   TestText,  6,10, [ VK_BACK, 5,10, ExpText([ 10, '    z']) ]  );
+  TestRedoUndo('empty line in many',      TestText,  6,10, [
+                                          VK_BACK, 5,10, ExpText([ 10, '    z']),
+                                          VK_BACK, 3,10, ExpText([ 10, '  z']),
+                                          VK_BACK, 1,10, ExpText([ 10, 'z'])
+  ]);
+
+  SynEdit.Options  := SynEdit.Options - [eoTrimTrailingSpaces];
+  TestRedoUndo('only indent, no text',  TestText,  8,3, [
+                                     VK_BACK, 7,3, ExpText([ 3, '      ']),
+                                     VK_BACK, 5,3, ExpText([ 3, '    ']),
+                                     VK_BACK, 3,3, ExpText([ 3, '  ']),
+                                     VK_BACK, 1,3, ExpText([ 3, ''])
+  ]);
+
+  SynEdit.Options  := SynEdit.Options + [eoTrimTrailingSpaces];
+  TestRedoUndo('only indent, no text (trim)',  TestText,  8,3, [
+                                     VK_BACK, 7,3, ExpText([ 3, '      ']),
+                                     VK_BACK, 5,3, ExpText([ 3, '    ']),
+                                     VK_BACK, 3,3, ExpText([ 3, '  ']),
+                                     VK_BACK, 1,3, ExpText([ 3, ''])
+  ]);
+  SynEdit.Options  := SynEdit.Options - [eoTrimTrailingSpaces];
+
+  TestRedoUndo('no unindent (selection)', TestText,  5,2, [ VK_BACK, 4,2, ExpText([ 2, '   b']) ],  4,2);
+  TestRedoUndo('no unindent (selection)', TestText,  5,2, [ VK_BACK, 1,2, ExpText([ 2, 'b']) ],  1,2);
+  SynEdit.Options2  := SynEdit.Options2 + [eoPersistentBlock];
+  TestRedoUndo('unindent (persist selection)', TestText,  5,2, [ VK_BACK, 3,2, ExpText([ 2, '  b']) ],  4,2);
+  TestRedoUndo('unindent (persist selection)', TestText,  5,2, [ VK_BACK, 3,2, ExpText([ 2, '  b']) ],  1,2);
+  SynEdit.Options2  := SynEdit.Options2 - [eoPersistentBlock];
+
+
+end;
+
+function TTestSynBeautifier.GetIndentCallBack(Sender: TObject; Editor: TObject;
+  LogCaret, OldLogCaret: TPoint; FirstLinePos, LastLinePos: Integer; Reason: TSynEditorCommand;
+  SetIndentProc: TSynBeautifierSetIndentProc): boolean;
+var
+  i: integer;
+begin
+  FGotLogCaret := LogCaret;
+  FGotFirstLinePos := FirstLinePos;
+  FGotLastLinePos := LastLinePos;
+  FGotReason := LastLinePos;
+
+  for i := 0 to high(FCallBackData) do
+    SetIndentProc( FCallBackData[i].LinePos,
+                   FCallBackData[i].Indent,
+                   FCallBackData[i].RelativeToLinePos,
+                   FCallBackData[i].IndentChars,
+                   FCallBackData[i].IndentCharsFromLinePos
+    );
+
+  Result := FGetIndentCallBackResult;
+end;
+
+procedure TTestSynBeautifier.IndentCallBack;
+  function TestText: TStringArray;
+  begin
+    SetLength(Result, 11);
+    Result[0] := '  a;';
+    Result[1] := #9+'b';
+    Result[2] := '      c';
+    Result[3] := '';
+    Result[4] := #32#9+'  d';
+    Result[5] := '';
+    Result[6] := '  x';
+    Result[7] := '';
+    Result[8] := '    y';
+    Result[9] := '     z';
+    Result[10]:= '';
+  end;
+  function ExpText(rpl: array of const): String;
+  begin
+    Result := LinesToText(LinesReplace(TestText, rpl))
+  end;
+
+  procedure SetCB(Res: Boolean; Action: array of const);
+  var i: integer;
+  begin
+    FGetIndentCallBackResult := Res;
+    FGotLogCaret := Point(-3, -33);
+    FGotFirstLinePos := -99;
+    FGotLastLinePos := -99;
+    FGotReason := 27997;
+
+    SetLength(FCallBackData, length(Action) div 5);
+    for i := 0 to length(Action) div 5 - 1 do begin
+      FCallBackData[i].LinePos                := Action[i*5 + 0].VInteger;
+      FCallBackData[i].Indent                 := Action[i*5 + 1].VInteger;
+      FCallBackData[i].RelativeToLinePos      := Action[i*5 + 2].VInteger;
+      case Action[i*5 + 3].VType of
+        vtString:     FCallBackData[i].IndentChars := AnsiString(Action[i*5 + 3].VString);
+        vtAnsiString: FCallBackData[i].IndentChars := AnsiString(Action[i*5 + 3].VAnsiString);
+        vtChar:       FCallBackData[i].IndentChars := Action[i*5 + 3].VChar;
+      end;
+      FCallBackData[i].IndentCharsFromLinePos := Action[i*5 + 4].VInteger;
+    end;
+  end;
+
+begin
+  ReCreateEdit;
+  try
+    SynEdit.Beautifier.OnGetDesiredIndent := @GetIndentCallBack;
+    SynEdit.TabWidth := 4;
+    SynEdit.TrimSpaceType := settMoveCaret;
+
+    BaseTestName := 'Callback';
+    SynEdit.Options  := SynEdit.Options + [eoAutoIndent] - [eoTrimTrailingSpaces, eoScrollPastEol];
+    TSynBeautifier(SynEdit.Beautifier).IndentType := sbitSpace; // sbitCopySpaceTab;
+
+
+    SetCB(False, []);
+    TestRedoUndo('cb result = false',   TestText,  3,2, [ VK_RETURN, 5,3, ExpText([ -3, '    ']) ]  );
+
+    SetCB(True, []);
+    TestRedoUndo('cb result = true ',   TestText,  3,2, [ VK_RETURN, 1,3, ExpText([ -3, '']) ]  );
+
+    // LinPos, Indend, RelativeLinePos=0, Char(s), indentFromLine=-1,
+    SetCB(True, [2, 2, 0, '', -1,
+                 3, 3, 0, '', -1
+    ]);
+    TestRedoUndo('cb absolute',   TestText,  3,2, [ VK_RETURN, 1,3, ExpText([ 2, '  b', '   ']) ]  ); // caret is NOT adjusted
+
+    SetCB(True, [2, 3, 0, '', -1,
+                 3, 3, 0, '',  2,
+                 4, 2, 0, '', -1
+    ]);
+    TestRedoUndo('cb absolute 2', TestText,  3,2, [ VK_RETURN, 1,3, ExpText([ 2, 2, '   b', '   ', '  c']) ]  );
+
+    SetCB(True, [2, 7, 0, '',  2,
+                 3, 6, 0, '',  2
+    ]);
+    TestRedoUndo('cb absolute, keep-cur',   TestText,  3,2, [ VK_RETURN, 1,3, ExpText([ 2, #9+'   b', #9+'  ']) ]  );
+
+    SetCB(True, [2, -2, 2, '', -1,
+                 3,  3, 2, '', -1
+    ]);
+    TestRedoUndo('cb relative ',   TestText,  3,2, [ VK_RETURN, 1,3, ExpText([ 2, '  b', '     ']) ]  );
+
+    SetCB(True, [2,  3, 2, '', -1,
+                 3, -1, 2, '', -1
+    ]);
+    TestRedoUndo('cb relative 2',  TestText,  3,2, [ VK_RETURN, 1,3, ExpText([ 2, '       b', '      ']) ]  );
+
+    SetCB(True, [2,  3, 2, '', -1,
+                 3,  1, 3, '', -1
+    ]);
+    TestRedoUndo('cb relative 3',  TestText,  3,2, [ VK_RETURN, 1,3, ExpText([ 2, '       b', ' ']) ]  );
+
+    SetCB(True, [2,  3, 2, '',  2,
+                 3,  0, 2, '',  2
+    ]);
+    TestRedoUndo('cb relative, keep',  TestText,  3,2, [ VK_RETURN, 1,3, ExpText([ 2, #9+'   b', #9+'   ']) ]  );
+
+    SetCB(True, [1, 9, 0, #9, -1]);
+    TestRedoUndo('cb abs; char=tab',   TestText,  5,1, [ VK_RETURN, 1,2, ExpText([ 1, #9#9+' a;', '']) ]  ); // caret is NOT adjusted
+
+    finally
+    SynEdit.Beautifier.OnGetDesiredIndent := nil;
+  end;
 end;
 
 initialization

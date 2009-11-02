@@ -29,6 +29,7 @@ type
   private
     FBaseTestName: String;
     FBaseTestNames: Array of String;
+    FFixedBaseTestNames: Integer;
     FForm : TForm;
     FSynEdit : TTestSynEdit;
     procedure SetBaseTestName(const AValue: String);
@@ -63,6 +64,8 @@ type
     procedure PopPushBaseName(Add: String);
     procedure PopBaseName;
     property  BaseTestName: String read FBaseTestName write SetBaseTestName;
+    procedure IncFixedBaseTestNames;
+    procedure DecFixedBaseTestNames;
     property  SynEdit: TTestSynEdit read FSynEdit;
     property  Form: TForm read FForm;
   protected
@@ -138,6 +141,7 @@ begin
   FForm := TForm.Create(nil);
   ReCreateEdit;
   FForm.Show;
+  FFixedBaseTestNames := 0;
 end;
 
 procedure TTestBase.TearDown;
@@ -167,6 +171,15 @@ procedure TTestBase.TestIsText(Name, Text: String; FullText: Boolean = False);
 var
   i, j, x, y: Integer;
   s: String;
+  function MyDbg(t: String): String;
+  begin
+    Result := '';
+    while(pos(LineEnding, t) > 0) do begin
+      Result := Result +  '"' + copy(t, 1, pos(LineEnding, t)-1) + '"   Len='+IntTostr(pos(LineEnding, t)-1) + DbgStr(copy(t, 1, pos(LineEnding, t)-1)) + LineEnding;
+      system.Delete(t, 1, pos(LineEnding, t)-1+length(LineEnding));
+    end;
+    Result := Result + '"' + t + '"   Len='+IntTostr(length(t)) + DbgStr(t);
+  end;
 begin
   if FullText then
     s := SynEdit.TestFullText
@@ -186,6 +199,8 @@ begin
         inc(i);
     end;
 
+    Debugln(['IsText - Failed at x/y=(',x,', ',y,') Expected: ',LineEnding, MyDbg(Text), LineEnding,
+             'Got: ',LineEnding, MyDbg(s), LineEnding ]);
     TestFail(Name, Format('IsText - Failed at x/y=(%d, %d)%sExpected: "%s"...%sGot: "%s"%s%s ',
                           [x, y, LineEnding,
                            DbgStr(copy(Text,j, i-j+5)), LineEnding,
@@ -231,7 +246,7 @@ end;
 
 procedure TTestBase.SetBaseTestName(const AValue: String);
 begin
-  FBaseTestNames := nil;
+  SetLength(FBaseTestNames, FFixedBaseTestNames);
   PushBaseName(AValue);
 end;
 
@@ -439,6 +454,16 @@ procedure TTestBase.PopBaseName;
 begin
   SetLength(FBaseTestNames, length(FBaseTestNames) - 1);
   FBaseTestName := LinesToText(FBaseTestNames, ' ');
+end;
+
+procedure TTestBase.IncFixedBaseTestNames;
+begin
+  Inc(FFixedBaseTestNames);
+end;
+
+procedure TTestBase.DecFixedBaseTestNames;
+begin
+  Dec(FFixedBaseTestNames);
 end;
 
 end.
