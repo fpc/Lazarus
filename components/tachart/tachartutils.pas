@@ -189,11 +189,12 @@ procedure Unused(const A1, A2);
 procedure UpdateMinMax(AValue: Double; var AMin, AMax: Double);
 
 operator +(const A: TPoint; B: TSize): TPoint;
+operator =(const A, B: TMethod): Boolean;
 
 implementation
 
 uses
-  LCLIntf, LCLProc;
+  LCLIntf;
 
 procedure CalculateIntervals(
   AMin, AMax: Double; AxisScale: TAxisScale; out AStart, AStep: Double);
@@ -486,6 +487,11 @@ begin
   Result.Y := A.Y + B.cy;
 end;
 
+operator = (const A, B: TMethod): Boolean;
+begin
+  Result := (A.Code = B.Code) and (A.Data = B.Data);
+end;
+
 { TPenBrushFontRecall }
 
 constructor TPenBrushFontRecall.Create(ACanvas: TCanvas; AParams: TPenBrushFont);
@@ -635,7 +641,7 @@ end;
 
 procedure TIntervalList.SetOnChange(AValue: TNotifyEvent);
 begin
-  if CompareMethods(TMethod(FOnChange), TMethod(AValue)) then exit;
+  if TMethod(FOnChange) = TMethod(AValue) then exit;
   FOnChange := AValue;
 end;
 

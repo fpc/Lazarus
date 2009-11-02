@@ -22,7 +22,7 @@ unit TASources;
 interface
 
 uses
-  Classes, LCLProc, Graphics, SysUtils, TAChartUtils;
+  Classes, Graphics, SysUtils, TAChartUtils;
 
 type
   EEditableSourceRequired = class(EChartError);
@@ -783,7 +783,7 @@ end;
 procedure TUserDefinedChartSource.SetOnGetChartDataItem(
   const AValue: TGetChartDataItemEvent);
 begin
-  if CompareMethods(TMethod(FOnGetChartDataItem),TMethod(AValue)) then exit;
+  if TMethod(FOnGetChartDataItem) = TMethod(AValue) then exit;
   FOnGetChartDataItem := AValue;
   Reset;
 end;
