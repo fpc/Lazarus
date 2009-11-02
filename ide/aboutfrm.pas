@@ -73,13 +73,11 @@ type
     DocumentationURLLabel: TLabel;
     FPCVersionLabel: TLabel;
     LogoImage: TImage;
-    LogoPage: TPage;
     miVerToClipboard: TMenuItem;
     OfficialLabel: TLabel;
     OfficialURLLabel: TLabel;
-    PaintBox1: TPaintBox;
     VersionPage: TPage;
-    Panel1: TPanel;
+    ButtonPanel: TPanel;
     PlatformLabel: TLabel;
     PopupMenu1: TPopupMenu;
     VersionLabel: TLABEL;
@@ -92,7 +90,6 @@ type
     procedure FormClose(Sender: TObject; var CloseAction: TCloseAction);
     procedure miVerToClipboardClick(Sender: TObject);
     procedure NotebookPageChanged(Sender: TObject);
-    procedure PaintBox1Paint(Sender: TObject);
     procedure URLLabelMouseDown(Sender: TObject; Button: TMouseButton;
       Shift: TShiftState; X, Y: Integer);
     procedure URLLabelMouseEnter(Sender: TObject);
@@ -172,11 +169,14 @@ begin
   ContributorsPage.DoubleBuffered := True;
   AcknowledgementsPage.Caption:=lisAcknowledgements;
   AcknowledgementsPage.DoubleBuffered := True;
-  LogoPage.Caption:=lisLogo;
   miVerToClipboard.Caption := lisVerToClipboard;
-  
-  Constraints.MinWidth:= 455;
+
+  VersionLabel.Font.Color:= clWhite;
+
+  Constraints.MinWidth:= 460;
   Constraints.MinHeight:= 380;
+  Width:= 460;
+  Height:= 380;
 
   AboutMemo.Lines.Text:=
     Format(lisAboutLazarusMsg,[DoubleLineEnding,DoubleLineEnding,DoubleLineEnding]);
@@ -209,25 +209,6 @@ begin
     Contributors.Active:=NoteBook.ActivePage = lisContributors;
   if Assigned(Acknowledgements) then
     Acknowledgements.Active:=NoteBook.ActivePage = lisAcknowledgements;
-end;
-
-procedure TAboutForm.PaintBox1Paint(Sender: TObject);
-begin
-  with PaintBox1.Canvas do
-  begin
-    Font.Color:= RGBToColor(63,97,197);
-    Font.Size:= 16;
-    TextOut(55,0, 'Free Pascal');
-    Font.Size:= 36;
-    Font.Style:= [fsBold];
-    TextOut(5,10, 'Lazarus');
-    Brush.Color:= clRed;
-    Pen.Color:= clRed;
-    Rectangle(60,63,170,81);
-    Font.Color:= clWhite;
-    Font.Size:= 10;
-    TextOut(90,63, 'Project');
-  end;
 end;
 
 procedure TAboutForm.URLLabelMouseDown(Sender: TObject;

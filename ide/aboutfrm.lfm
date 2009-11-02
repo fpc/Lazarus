@@ -1,12 +1,12 @@
 object AboutForm: TAboutForm
-  Left = 420
-  Height = 381
-  Top = 336
-  Width = 454
+  Left = 496
+  Height = 376
+  Top = 282
+  Width = 460
   ActiveControl = Notebook
   Caption = 'About Lazarus'
-  ClientHeight = 381
-  ClientWidth = 454
+  ClientHeight = 376
+  ClientWidth = 460
   OnClose = FormClose
   OnCreate = AboutFormCreate
   PopupMenu = PopupMenu1
@@ -14,109 +14,118 @@ object AboutForm: TAboutForm
   LCLVersion = '0.9.29'
   object Notebook: TNotebook
     Left = 0
-    Height = 331
+    Height = 326
     Top = 0
-    Width = 454
+    Width = 460
     Align = alClient
     OnPageChanged = NotebookPageChanged
     PageIndex = 0
     TabOrder = 0
     object VersionPage: TPage
       Caption = 'Version'
-      ClientWidth = 450
-      ClientHeight = 300
-      object VersionLabel: TLabel
+      ClientWidth = 458
+      ClientHeight = 299
+      object LogoImage: TImage
         AnchorSideLeft.Control = VersionPage
         AnchorSideLeft.Side = asrCenter
-        AnchorSideTop.Side = asrBottom
-        Left = 187
+        AnchorSideTop.Control = VersionPage
+        AnchorSideTop.Side = asrCenter
+        Left = 4
+        Height = 300
+        Top = -1
+        Width = 450
+        AutoSize = True
+      end
+      object VersionLabel: TLabel
+        AnchorSideLeft.Control = LogoImage
+        AnchorSideLeft.Side = asrCenter
+        AnchorSideTop.Control = LogoImage
+        Left = 191
         Height = 18
-        Top = 121
+        Top = 120
         Width = 76
         Alignment = taCenter
-        BorderSpacing.Top = 10
+        BorderSpacing.Top = 115
         BorderSpacing.Around = 6
         Caption = 'Version #:'
+        Font.Color = clSilver
         Font.Style = [fsBold]
         ParentColor = False
         ParentFont = False
       end
       object BuildDateLabel: TLabel
-        AnchorSideLeft.Control = VersionPage
+        AnchorSideLeft.Control = LogoImage
         AnchorSideLeft.Side = asrCenter
         AnchorSideTop.Control = VersionLabel
         AnchorSideTop.Side = asrBottom
-        Left = 207
+        Left = 211
         Height = 18
-        Top = 145
+        Top = 144
         Width = 36
         Alignment = taCenter
         BorderSpacing.Around = 6
         Caption = 'Date:'
+        Font.Color = clSilver
         ParentColor = False
+        ParentFont = False
       end
       object RevisionLabel: TLabel
-        AnchorSideLeft.Control = VersionPage
+        AnchorSideLeft.Control = LogoImage
         AnchorSideLeft.Side = asrCenter
         AnchorSideTop.Control = FPCVersionLabel
         AnchorSideTop.Side = asrBottom
-        Left = 182
+        Left = 186
         Height = 18
-        Top = 193
+        Top = 192
         Width = 86
         BorderSpacing.Around = 6
         Caption = 'RevisionLabel'
+        Font.Color = clSilver
         ParentColor = False
+        ParentFont = False
       end
       object PlatformLabel: TLabel
-        AnchorSideLeft.Control = VersionPage
+        AnchorSideLeft.Control = LogoImage
         AnchorSideLeft.Side = asrCenter
         AnchorSideTop.Control = RevisionLabel
         AnchorSideTop.Side = asrBottom
-        Left = 181
+        Left = 185
         Height = 18
-        Top = 217
+        Top = 216
         Width = 89
         BorderSpacing.Around = 6
         Caption = 'PlatformLabel'
+        Font.Color = clSilver
         ParentColor = False
+        ParentFont = False
       end
       object FPCVersionLabel: TLabel
-        AnchorSideLeft.Control = VersionPage
+        AnchorSideLeft.Control = LogoImage
         AnchorSideLeft.Side = asrCenter
         AnchorSideTop.Control = BuildDateLabel
         AnchorSideTop.Side = asrBottom
-        Left = 172
+        Left = 176
         Height = 18
-        Top = 169
+        Top = 168
         Width = 106
         BorderSpacing.Around = 6
         Caption = 'FPCVersionLabel'
+        Font.Color = clSilver
         ParentColor = False
-      end
-      object PaintBox1: TPaintBox
-        AnchorSideLeft.Control = VersionPage
-        AnchorSideLeft.Side = asrCenter
-        AnchorSideTop.Control = VersionPage
-        Left = 110
-        Height = 81
-        Top = 10
-        Width = 231
-        BorderSpacing.Around = 10
-        OnPaint = PaintBox1Paint
+        ParentFont = False
       end
     end
     object AboutPage: TPage
       Caption = 'About'
-      ClientWidth = 450
-      ClientHeight = 300
+      ClientWidth = 458
+      ClientHeight = 299
       object OfficialLabel: TLabel
         AnchorSideLeft.Control = AboutPage
         AnchorSideBottom.Control = DocumentationLabel
         Left = 6
-        Height = 18
-        Top = 252
-        Width = 77
+        Height = 14
+        Top = 259
+        Width = 59
         Anchors = [akLeft, akBottom]
         BorderSpacing.Around = 6
         Caption = 'OfficialLabel'
@@ -126,10 +135,10 @@ object AboutForm: TAboutForm
         AnchorSideLeft.Control = OfficialLabel
         AnchorSideLeft.Side = asrBottom
         AnchorSideBottom.Control = DocumentationLabel
-        Left = 89
-        Height = 18
-        Top = 252
-        Width = 102
+        Left = 71
+        Height = 14
+        Top = 259
+        Width = 78
         Anchors = [akLeft, akBottom]
         BorderSpacing.Around = 6
         Caption = 'OfficialURLLabel'
@@ -145,9 +154,9 @@ object AboutForm: TAboutForm
         AnchorSideBottom.Control = AboutPage
         AnchorSideBottom.Side = asrBottom
         Left = 6
-        Height = 18
-        Top = 276
-        Width = 134
+        Height = 14
+        Top = 279
+        Width = 98
         Anchors = [akLeft, akBottom]
         BorderSpacing.Around = 6
         Caption = 'DocumentationLabel'
@@ -158,10 +167,10 @@ object AboutForm: TAboutForm
         AnchorSideLeft.Side = asrBottom
         AnchorSideBottom.Control = AboutPage
         AnchorSideBottom.Side = asrBottom
-        Left = 146
-        Height = 18
-        Top = 276
-        Width = 159
+        Left = 110
+        Height = 14
+        Top = 279
+        Width = 117
         Anchors = [akLeft, akBottom]
         BorderSpacing.Around = 6
         Caption = 'DocumentationURLLabel'
@@ -179,9 +188,9 @@ object AboutForm: TAboutForm
         AnchorSideRight.Side = asrBottom
         AnchorSideBottom.Control = OfficialLabel
         Left = 0
-        Height = 246
+        Height = 253
         Top = 0
-        Width = 450
+        Width = 458
         Anchors = [akTop, akLeft, akRight, akBottom]
         ReadOnly = True
         ScrollBars = ssAutoBoth
@@ -194,37 +203,24 @@ object AboutForm: TAboutForm
     object AcknowledgementsPage: TPage
       Caption = 'Acknowledgements'
     end
-    object LogoPage: TPage
-      Caption = 'LogoPage'
-      ClientWidth = 450
-      ClientHeight = 300
-      object LogoImage: TImage
-        Left = 0
-        Height = 300
-        Top = 0
-        Width = 450
-        Align = alClient
-      end
-    end
   end
-  object Panel1: TPanel
+  object ButtonPanel: TPanel
     Left = 0
     Height = 50
-    Top = 331
-    Width = 454
+    Top = 326
+    Width = 460
     Align = alBottom
-    Caption = 'Panel1'
     ClientHeight = 50
-    ClientWidth = 454
+    ClientWidth = 460
     TabOrder = 1
     object CloseButton: TBitBtn
-      AnchorSideLeft.Control = Panel1
+      AnchorSideLeft.Control = ButtonPanel
       AnchorSideLeft.Side = asrCenter
-      AnchorSideTop.Control = Panel1
+      AnchorSideTop.Control = ButtonPanel
       AnchorSideTop.Side = asrCenter
       AnchorSideBottom.Control = Owner
       AnchorSideBottom.Side = asrBottom
-      Left = 192
+      Left = 195
       Height = 32
       Top = 9
       Width = 70
