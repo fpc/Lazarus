@@ -6,11 +6,11 @@ object DockingSite: TDockingSite
   Caption = 'Dock Site'
   ClientHeight = 163
   ClientWidth = 255
-  LCLVersion = '0.9.27'
+  LCLVersion = '0.9.29'
   Visible = True
   object pnlLeft: TPanel
     Left = 0
-    Height = 139
+    Height = 138
     Top = 0
     Width = 0
     Align = alLeft
@@ -19,7 +19,6 @@ object DockingSite: TDockingSite
     DockSite = True
     ParentColor = False
     TabOrder = 0
-    UseDockManager = False
     OnDockDrop = pnlLeftDockDrop
     OnDockOver = pnlLeftDockOver
     OnGetSiteInfo = pnlLeftGetSiteInfo
@@ -27,22 +26,13 @@ object DockingSite: TDockingSite
   end
   object splitLeft: TSplitter
     Left = 0
-    Height = 139
+    Height = 138
     Top = 0
     Width = 4
   end
-  object buNewForm: TButton
-    Left = 96
-    Height = 20
-    Top = 16
-    Width = 62
-    Caption = 'New Form'
-    OnClick = buNewFormClick
-    TabOrder = 2
-  end
   object pnlRight: TPanel
     Left = 255
-    Height = 139
+    Height = 138
     Top = 0
     Width = 0
     Align = alRight
@@ -50,22 +40,22 @@ object DockingSite: TDockingSite
     Color = clAqua
     DockSite = True
     ParentColor = False
-    TabOrder = 3
-    UseDockManager = False
+    TabOrder = 2
     OnDockDrop = pnlLeftDockDrop
     OnDockOver = pnlLeftDockOver
     OnGetSiteInfo = pnlLeftGetSiteInfo
+    OnUnDock = pnlLeftUnDock
   end
   object pnlBottom: TPanel
     Left = 0
-    Height = 0
-    Top = 143
+    Height = 1
+    Top = 142
     Width = 255
     Align = alBottom
+    AutoSize = True
     Caption = 'pnlBottom'
     DockSite = True
-    TabOrder = 4
-    UseDockManager = False
+    TabOrder = 3
     OnDockDrop = pnlLeftDockDrop
     OnDockOver = pnlLeftDockOver
     OnGetSiteInfo = pnlLeftGetSiteInfo
@@ -75,14 +65,14 @@ object DockingSite: TDockingSite
     Cursor = crVSplit
     Left = 0
     Height = 4
-    Top = 139
+    Top = 138
     Width = 255
     Align = alBottom
     ResizeAnchor = akBottom
   end
   object splitRight: TSplitter
     Left = 251
-    Height = 139
+    Height = 138
     Top = 0
     Width = 4
     Align = alRight
@@ -94,5 +84,25 @@ object DockingSite: TDockingSite
     Top = 143
     Width = 255
     Panels = <>
+  end
+  object Panel1: TPanel
+    Left = 4
+    Height = 138
+    Top = 0
+    Width = 247
+    Align = alClient
+    Caption = 'Client'
+    ClientHeight = 138
+    ClientWidth = 247
+    TabOrder = 7
+    object buNewForm: TButton
+      Left = 96
+      Height = 20
+      Top = 16
+      Width = 62
+      Caption = 'New Form'
+      OnClick = buNewFormClick
+      TabOrder = 0
+    end
   end
 end

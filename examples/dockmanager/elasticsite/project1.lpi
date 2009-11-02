@@ -6,7 +6,6 @@
     <General>
       <MainUnit Value="0"/>
       <TargetFileExt Value=".exe"/>
-      <Icon Value="0"/>
       <UseXPManifest Value="True"/>
       <ActiveEditorIndexAtStart Value="0"/>
     </General>
@@ -35,15 +34,15 @@
         <PackageName Value="LCL"/>
       </Item2>
     </RequiredPackages>
-    <Units Count="6">
+    <Units Count="15">
       <Unit0>
         <Filename Value="project1.lpr"/>
         <IsPartOfProject Value="True"/>
         <UnitName Value="project1"/>
-        <CursorPos X="56" Y="10"/>
+        <CursorPos X="69" Y="10"/>
         <TopLine Value="1"/>
-        <EditorIndex Value="4"/>
-        <UsageCount Value="25"/>
+        <EditorIndex Value="13"/>
+        <UsageCount Value="36"/>
         <Loaded Value="True"/>
       </Unit0>
       <Unit1>
@@ -52,10 +51,10 @@
         <ComponentName Value="DockingSite"/>
         <ResourceBaseClass Value="Form"/>
         <UnitName Value="fElastic"/>
-        <CursorPos X="1" Y="121"/>
-        <TopLine Value="105"/>
+        <CursorPos X="64" Y="218"/>
+        <TopLine Value="127"/>
         <EditorIndex Value="0"/>
-        <UsageCount Value="25"/>
+        <UsageCount Value="36"/>
         <Loaded Value="True"/>
       </Unit1>
       <Unit2>
@@ -66,155 +65,236 @@
         <UnitName Value="fDockClient"/>
         <CursorPos X="22" Y="24"/>
         <TopLine Value="1"/>
-        <EditorIndex Value="5"/>
-        <UsageCount Value="25"/>
+        <EditorIndex Value="14"/>
+        <UsageCount Value="36"/>
         <Loaded Value="True"/>
       </Unit2>
       <Unit3>
         <Filename Value="..\..\..\lcl\include\wincontrol.inc"/>
-        <CursorPos X="1" Y="4956"/>
-        <TopLine Value="4932"/>
-        <EditorIndex Value="1"/>
-        <UsageCount Value="12"/>
+        <CursorPos X="30" Y="5223"/>
+        <TopLine Value="5199"/>
+        <EditorIndex Value="9"/>
+        <UsageCount Value="18"/>
         <Loaded Value="True"/>
       </Unit3>
       <Unit4>
         <Filename Value="..\..\..\lcl\include\dragmanager.inc"/>
-        <CursorPos X="1" Y="439"/>
-        <TopLine Value="415"/>
-        <EditorIndex Value="3"/>
-        <UsageCount Value="12"/>
+        <CursorPos X="1" Y="606"/>
+        <TopLine Value="582"/>
+        <EditorIndex Value="12"/>
+        <UsageCount Value="18"/>
         <Loaded Value="True"/>
       </Unit4>
       <Unit5>
         <Filename Value="..\..\..\lcl\include\control.inc"/>
         <CursorPos X="1" Y="1125"/>
         <TopLine Value="1101"/>
-        <EditorIndex Value="2"/>
-        <UsageCount Value="12"/>
+        <EditorIndex Value="11"/>
+        <UsageCount Value="18"/>
         <Loaded Value="True"/>
       </Unit5>
+      <Unit6>
+        <Filename Value="ftestpanels.pas"/>
+        <IsPartOfProject Value="True"/>
+        <ComponentName Value="Form1"/>
+        <ResourceBaseClass Value="Form"/>
+        <UnitName Value="fTestPanels"/>
+        <CursorPos X="1" Y="85"/>
+        <TopLine Value="43"/>
+        <EditorIndex Value="4"/>
+        <UsageCount Value="31"/>
+        <Loaded Value="True"/>
+      </Unit6>
+      <Unit7>
+        <Filename Value="..\..\..\lcl\extctrls.pp"/>
+        <UnitName Value="ExtCtrls"/>
+        <CursorPos X="23" Y="1094"/>
+        <TopLine Value="1070"/>
+        <EditorIndex Value="8"/>
+        <UsageCount Value="16"/>
+        <Loaded Value="True"/>
+      </Unit7>
+      <Unit8>
+        <Filename Value="..\..\..\lcl\controls.pp"/>
+        <UnitName Value="Controls"/>
+        <CursorPos X="14" Y="365"/>
+        <TopLine Value="404"/>
+        <EditorIndex Value="5"/>
+        <UsageCount Value="15"/>
+        <Loaded Value="True"/>
+      </Unit8>
+      <Unit9>
+        <Filename Value="..\package\easydocksite.pas"/>
+        <UnitName Value="EasyDockSite"/>
+        <CursorPos X="1" Y="641"/>
+        <TopLine Value="618"/>
+        <EditorIndex Value="1"/>
+        <UsageCount Value="11"/>
+        <Loaded Value="True"/>
+      </Unit9>
+      <Unit10>
+        <Filename Value="..\..\..\..\..\lazarus\fpc\2.2.4\source\rtl\inc\objpash.inc"/>
+        <CursorPos X="23" Y="151"/>
+        <TopLine Value="127"/>
+        <EditorIndex Value="10"/>
+        <UsageCount Value="11"/>
+        <Loaded Value="True"/>
+      </Unit10>
+      <Unit11>
+        <Filename Value="..\..\..\..\..\lazarus\fpc\2.2.4\source\rtl\objpas\classes\classesh.inc"/>
+        <CursorPos X="3" Y="355"/>
+        <TopLine Value="331"/>
+        <EditorIndex Value="7"/>
+        <UsageCount Value="11"/>
+        <Loaded Value="True"/>
+      </Unit11>
+      <Unit12>
+        <Filename Value="..\..\..\lcl\interfacebase.pp"/>
+        <UnitName Value="InterfaceBase"/>
+        <CursorPos X="3" Y="37"/>
+        <TopLine Value="13"/>
+        <EditorIndex Value="2"/>
+        <UsageCount Value="11"/>
+        <Loaded Value="True"/>
+      </Unit12>
+      <Unit13>
+        <Filename Value="..\..\..\lcl\include\docktree.inc"/>
+        <CursorPos X="3" Y="204"/>
+        <TopLine Value="178"/>
+        <EditorIndex Value="3"/>
+        <UsageCount Value="11"/>
+        <Loaded Value="True"/>
+      </Unit13>
+      <Unit14>
+        <Filename Value="..\..\..\lcl\ldocktree.pas"/>
+        <UnitName Value="LDockTree"/>
+        <CursorPos X="1" Y="2043"/>
+        <TopLine Value="2042"/>
+        <EditorIndex Value="6"/>
+        <UsageCount Value="11"/>
+        <Loaded Value="True"/>
+      </Unit14>
     </Units>
     <JumpHistory Count="30" HistoryIndex="29">
       <Position1>
-        <Filename Value="felastic.pas"/>
-        <Caret Line="24" Column="19" TopLine="1"/>
+        <Filename Value="..\..\..\lcl\controls.pp"/>
+        <Caret Line="493" Column="28" TopLine="469"/>
       </Position1>
       <Position2>
-        <Filename Value="felastic.pas"/>
-        <Caret Line="13" Column="12" TopLine="1"/>
+        <Filename Value="..\..\..\lcl\interfacebase.pp"/>
+        <Caret Line="1" Column="1" TopLine="1"/>
       </Position2>
       <Position3>
-        <Filename Value="felastic.pas"/>
-        <Caret Line="17" Column="73" TopLine="1"/>
+        <Filename Value="..\..\..\lcl\include\docktree.inc"/>
+        <Caret Line="1" Column="1" TopLine="1"/>
       </Position3>
       <Position4>
-        <Filename Value="felastic.pas"/>
-        <Caret Line="35" Column="1" TopLine="1"/>
+        <Filename Value="..\..\..\lcl\interfacebase.pp"/>
+        <Caret Line="37" Column="3" TopLine="13"/>
       </Position4>
       <Position5>
-        <Filename Value="felastic.pas"/>
-        <Caret Line="36" Column="1" TopLine="1"/>
+        <Filename Value="..\..\..\lcl\controls.pp"/>
+        <Caret Line="495" Column="1" TopLine="469"/>
       </Position5>
       <Position6>
-        <Filename Value="..\..\..\lcl\include\wincontrol.inc"/>
-        <Caret Line="5033" Column="1" TopLine="5009"/>
+        <Filename Value="..\..\..\lcl\controls.pp"/>
+        <Caret Line="3663" Column="6" TopLine="3643"/>
       </Position6>
       <Position7>
-        <Filename Value="felastic.pas"/>
-        <Caret Line="18" Column="5" TopLine="1"/>
+        <Filename Value="..\..\..\lcl\controls.pp"/>
+        <Caret Line="488" Column="1" TopLine="488"/>
       </Position7>
       <Position8>
-        <Filename Value="felastic.pas"/>
-        <Caret Line="37" Column="18" TopLine="3"/>
+        <Filename Value="..\..\..\lcl\controls.pp"/>
+        <Caret Line="3665" Column="1" TopLine="3640"/>
       </Position8>
       <Position9>
-        <Filename Value="felastic.pas"/>
-        <Caret Line="44" Column="1" TopLine="3"/>
+        <Filename Value="..\..\..\lcl\ldocktree.pas"/>
+        <Caret Line="1" Column="1" TopLine="1"/>
       </Position9>
       <Position10>
-        <Filename Value="felastic.pas"/>
-        <Caret Line="37" Column="1" TopLine="3"/>
+        <Filename Value="..\package\easydocksite.pas"/>
+        <Caret Line="217" Column="58" TopLine="189"/>
       </Position10>
       <Position11>
-        <Filename Value="..\..\..\lcl\include\wincontrol.inc"/>
-        <Caret Line="3586" Column="1" TopLine="3553"/>
+        <Filename Value="..\package\easydocksite.pas"/>
+        <Caret Line="330" Column="17" TopLine="306"/>
       </Position11>
       <Position12>
-        <Filename Value="..\..\..\lcl\include\dragmanager.inc"/>
-        <Caret Line="120" Column="1" TopLine="96"/>
+        <Filename Value="..\..\..\lcl\ldocktree.pas"/>
+        <Caret Line="2044" Column="3" TopLine="2042"/>
       </Position12>
       <Position13>
-        <Filename Value="..\..\..\lcl\include\dragmanager.inc"/>
-        <Caret Line="128" Column="1" TopLine="104"/>
+        <Filename Value="..\..\..\lcl\ldocktree.pas"/>
+        <Caret Line="236" Column="1" TopLine="212"/>
       </Position13>
       <Position14>
-        <Filename Value="..\..\..\lcl\include\dragmanager.inc"/>
-        <Caret Line="439" Column="1" TopLine="415"/>
+        <Filename Value="..\..\..\lcl\ldocktree.pas"/>
+        <Caret Line="2043" Column="1" TopLine="2042"/>
       </Position14>
       <Position15>
-        <Filename Value="..\..\..\lcl\include\wincontrol.inc"/>
-        <Caret Line="3586" Column="1" TopLine="3562"/>
+        <Filename Value="..\..\..\lcl\ldocktree.pas"/>
+        <Caret Line="2042" Column="40" TopLine="2018"/>
       </Position15>
       <Position16>
-        <Filename Value="..\..\..\lcl\include\control.inc"/>
-        <Caret Line="1125" Column="1" TopLine="1101"/>
+        <Filename Value="..\..\..\lcl\ldocktree.pas"/>
+        <Caret Line="236" Column="49" TopLine="235"/>
       </Position16>
       <Position17>
-        <Filename Value="..\..\..\lcl\include\wincontrol.inc"/>
-        <Caret Line="4945" Column="1" TopLine="4921"/>
+        <Filename Value="..\..\..\lcl\ldocktree.pas"/>
+        <Caret Line="2043" Column="1" TopLine="2042"/>
       </Position17>
       <Position18>
-        <Filename Value="..\..\..\lcl\include\wincontrol.inc"/>
-        <Caret Line="4956" Column="1" TopLine="4932"/>
+        <Filename Value="felastic.pas"/>
+        <Caret Line="140" Column="15" TopLine="117"/>
       </Position18>
       <Position19>
         <Filename Value="felastic.pas"/>
-        <Caret Line="46" Column="1" TopLine="3"/>
+        <Caret Line="141" Column="1" TopLine="117"/>
       </Position19>
       <Position20>
-        <Filename Value="felastic.pas"/>
-        <Caret Line="18" Column="5" TopLine="12"/>
+        <Filename Value="..\package\easydocksite.pas"/>
+        <Caret Line="659" Column="1" TopLine="612"/>
       </Position20>
       <Position21>
-        <Filename Value="felastic.pas"/>
-        <Caret Line="46" Column="34" TopLine="26"/>
+        <Filename Value="..\package\easydocksite.pas"/>
+        <Caret Line="641" Column="1" TopLine="618"/>
       </Position21>
       <Position22>
         <Filename Value="felastic.pas"/>
-        <Caret Line="15" Column="22" TopLine="15"/>
+        <Caret Line="141" Column="1" TopLine="117"/>
       </Position22>
       <Position23>
-        <Filename Value="felastic.pas"/>
-        <Caret Line="25" Column="53" TopLine="1"/>
+        <Filename Value="..\..\..\lcl\include\control.inc"/>
+        <Caret Line="1125" Column="1" TopLine="1101"/>
       </Position23>
       <Position24>
         <Filename Value="felastic.pas"/>
-        <Caret Line="90" Column="1" TopLine="90"/>
+        <Caret Line="133" Column="5" TopLine="117"/>
       </Position24>
       <Position25>
         <Filename Value="felastic.pas"/>
-        <Caret Line="14" Column="14" TopLine="14"/>
+        <Caret Line="143" Column="1" TopLine="119"/>
       </Position25>
       <Position26>
         <Filename Value="felastic.pas"/>
-        <Caret Line="22" Column="5" TopLine="14"/>
+        <Caret Line="146" Column="1" TopLine="122"/>
       </Position26>
       <Position27>
         <Filename Value="felastic.pas"/>
-        <Caret Line="10" Column="48" TopLine="1"/>
+        <Caret Line="147" Column="1" TopLine="123"/>
       </Position27>
       <Position28>
         <Filename Value="felastic.pas"/>
-        <Caret Line="27" Column="26" TopLine="1"/>
+        <Caret Line="148" Column="1" TopLine="124"/>
       </Position28>
       <Position29>
         <Filename Value="felastic.pas"/>
-        <Caret Line="18" Column="20" TopLine="1"/>
+        <Caret Line="150" Column="1" TopLine="126"/>
       </Position29>
       <Position30>
         <Filename Value="felastic.pas"/>
-        <Caret Line="48" Column="5" TopLine="1"/>
+        <Caret Line="136" Column="19" TopLine="117"/>
       </Position30>
     </JumpHistory>
   </ProjectOptions>

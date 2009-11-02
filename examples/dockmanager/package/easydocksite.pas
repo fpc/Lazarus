@@ -214,7 +214,7 @@ type
   {$IFDEF singleTab}
     SingleTab: boolean; //always create notebook for alCustom?
   {$ENDIF}
-    constructor Create(ADockSite: TWinControl);
+    constructor Create(ADockSite: TWinControl); override;
     destructor Destroy; override;
   {$IFDEF old}
     procedure AdjustDockRect(Control: TControl; var ARect: TRect);
@@ -327,7 +327,7 @@ begin
   //FreeAndNil(DockSite.DockManager); - seems to be fixed
   DockSite.DockManager := self;
 //init node class - impossible due to visibility restrictions!
-  inherited Create; //(DockSite);
+  inherited Create(DockSite);
 {$IFDEF singleTab}
 //test: notebook with 1 tab in root zone
   SingleTab := True;
@@ -616,25 +616,28 @@ var
     cy := (ZoneRect.Top + ZoneRect.Bottom) div 2;
     w := ZoneRect.Right - ZoneRect.Left;
     h := ZoneRect.Bottom - ZoneRect.Top;
-  //mouse position within k*k rectangles (squares)
-    dx := trunc((MousePos.x - cx) / w * k);
-    dy := trunc((MousePos.y - cy) / h * k);
-    izone := max(abs(dx), abs(dy)); //0..k
-  //map into 0=innermost (custom), 1=inner, 2=outer
-    if izone = 0 then begin
-      //zone := zInnermost;
-      dir := alCustom; //pages
-    end else begin
-    { not yet: outer zones, meaning docking into parent zone
-      if izone >= k-1 then
-        zone := zOuter
-      else //if izone > 0 then
-        zone := zInner;
-    }
-      phi := arctan2(dy, dx);
-      zphi := trunc(radtodeg(phi)) div 45;
-      dir := cDir[zphi];
-    end;
+    if (w > 0) and (h > 0) then begin
+    //mouse position within k*k rectangles (squares)
+      dx := trunc((MousePos.x - cx) / w * k);
+      dy := trunc((MousePos.y - cy) / h * k);
+      izone := max(abs(dx), abs(dy)); //0..k
+    //map into 0=innermost (custom), 1=inner, 2=outer
+      if izone = 0 then begin
+        //zone := zInnermost;
+        dir := alCustom; //pages
+      end else begin
+      { not yet: outer zones, meaning docking into parent zone
+        if izone >= k-1 then
+          zone := zOuter
+        else //if izone > 0 then
+          zone := zInner;
+      }
+        phi := arctan2(dy, dx);
+        zphi := trunc(radtodeg(phi)) div 45;
+        dir := cDir[zphi];
+      end;
+    end else
+      dir := alClient;
     Result := dir;
   end;
 
