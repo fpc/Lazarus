@@ -250,6 +250,7 @@ type
 
   TFuncSeries = class(TCustomChartSeries)
   private
+    FDomainExclusions: TIntervalList;
     FExtent: TChartExtent;
     FOnCalculate: TFuncCalculateEvent;
     FPen: TChartPen;
@@ -269,7 +270,8 @@ type
 
     procedure Draw(ACanvas: TCanvas); override;
     function IsEmpty: Boolean; override;
-
+  public
+    property DomainExclusions: TIntervalList read FDomainExclusions;
   published
     property Active default true;
     property Extent: TChartExtent read FExtent write SetExtent;
@@ -1024,6 +1026,8 @@ constructor TFuncSeries.Create(AOwner: TComponent);
 begin
   inherited Create(AOwner);
   FExtent := TChartExtent.Create(FChart);
+  FDomainExclusions := TIntervalList.Create;
+  FDomainExclusions.OnChange := @StyleChanged;
   FPen := TChartPen.Create;
   FPen.OnChange := @StyleChanged;
   FStep := 2;
@@ -1032,26 +1036,26 @@ end;
 destructor TFuncSeries.Destroy;
 begin
   FExtent.Free;
+  FDomainExclusions.Free;
   FPen.Free;
   inherited Destroy;
 end;
 
 procedure TFuncSeries.Draw(ACanvas: TCanvas);
+var
+  ygMin, ygMax: Double;
 
-  function CalcY(AX: Integer): Integer;
+  function CalcY(AXg: Double): Integer;
   var
     yg: Double;
   begin
-    OnCalculate(FChart.XImageToGraph(AX), yg);
-    if Extent.UseYMin and (yg < Extent.YMin) then
-      yg := Extent.YMin;
-    if Extent.UseYMax and (yg > Extent.YMax) then
-      yg := Extent.YMax;
-    Result := FChart.YGraphToImage(yg);
+    OnCalculate(AXg, yg);
+    Result := FChart.YGraphToImage(EnsureRange(yg, ygMin, ygMax));
   end;
 
 var
-  x, xmax: Integer;
+  x, xmax, hint: Integer;
+  xg, xg1: Double;
 begin
   if not Assigned(OnCalculate) then exit;
 
@@ -1062,12 +1066,32 @@ begin
   if Extent.UseXMax then
     xmax := Min(FChart.XGraphToImage(Extent.XMax), xmax);
 
-  ACanvas.Pen.Assign(Pen);
+  ygMin := FChart.CurrentExtent.a.Y;
+  if Extent.UseYMin and (ygMin < Extent.YMin) then
+    ygMin := Extent.YMin;
+  ygMax := FChart.CurrentExtent.b.Y;
+  if Extent.UseYMax and (ygMax < Extent.YMax) then
+    ygMax := Extent.YMax;
+  ExpandRange(ygMin, ygMax, 1);
 
-  ACanvas.MoveTo(x, CalcY(x));
+  hint := 0;
+  xg := FChart.XImageToGraph(x);
+  if DomainExclusions.Intersect(xg, xg, hint) then
+    x := FChart.XGraphToImage(xg);
+  ACanvas.MoveTo(x, CalcY(xg));
+
+  ACanvas.Pen.Assign(Pen);
   while x < xmax do begin
     Inc(x, FStep);
-    ACanvas.LineTo(x, CalcY(x));
+    xg1 := FChart.XImageToGraph(x);
+    if DomainExclusions.Intersect(xg, xg1, hint) then begin
+      ACanvas.LineTo(FChart.XGraphToImage(xg), CalcY(xg));
+      x := FChart.XGraphToImage(xg1);
+      ACanvas.MoveTo(x, CalcY(xg1));
+    end
+    else
+      ACanvas.LineTo(x, CalcY(xg1));
+    xg := xg1;
   end;
 end;
 
