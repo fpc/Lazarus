@@ -6471,7 +6471,7 @@ end;
 procedure TSourceNotebook.NotebookMouseUp(Sender: TObject;
   Button: TMouseButton; Shift: TShiftState; X, Y: Integer);
 var
-  TabIndex,i: Integer;
+  TabIndex: Integer;
 begin
   TabIndex:=Notebook.TabIndexAtClientPos(Point(X,Y));
   if
