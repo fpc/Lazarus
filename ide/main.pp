@@ -14463,62 +14463,8 @@ function TMainIDE.OnSrcNoteBookGetIndent(Sender: TObject;
   SrcEditor: TSourceEditor; LogCaret, OldLogCaret: TPoint;
   FirstLinePos, LastLinePos: Integer; Reason: TSynEditorCommand;
   SetIndentProc: TSynBeautifierSetIndentProc): Boolean;
-var
-  CodeBuf: TCodeBuffer;
-  p: integer;
-  NestedComments: Boolean;
-  NewIndent: TFABIndentationPolicy;
-  EditorIndex: LongInt;
-  Indent: Integer;
 begin
   Result := False;
-  {$IFNDEF EnableIndenter}
-  exit;
-  {$ENDIF}
-  if not (SrcEditor.SyntaxHighlighterType in [lshFreePascal, lshDelphi]) then
-    exit;
-  case Reason of
-  ecLineBreak,ecInsertLine: ;
-  ecPaste: if LastLinePos<=FirstLinePos then exit; // not a whole line
-  else
-    exit;
-  end;
-  debugln(['TMainIDE.OnSrcNoteBookGetIndent LogCaret=',dbgs(LogCaret),' FirstLinePos=',FirstLinePos,' LastLinePos=',LastLinePos]);
-  Result := True;
-  EditorIndex:=SrcEditor.PageIndex;
-  SaveSourceEditorChangesToCodeCache(EditorIndex);
-  CodeBuf:=SrcEditor.CodeBuffer;
-  case Reason of
-  ecLineBreak,ecInsertLine:
-    CodeBuf.LineColToPosition(LogCaret.Y,LogCaret.X,p);
-  ecPaste:
-    CodeBuf.LineColToPosition(FirstLinePos-1,1,p);
-  end;
-  if p<1 then exit;
-  if FirstLinePos>0 then
-    DebugLn(['TMainIDE.OnSrcNoteBookGetIndent Firstline-1=',SrcEditor.Lines[FirstLinePos-1]]);
-  DebugLn(['TMainIDE.OnSrcNoteBookGetIndent Firstline+0=',SrcEditor.Lines[FirstLinePos]]);
-  if FirstLinePos<SrcEditor.LineCount then
-    DebugLn(['TMainIDE.OnSrcNoteBookGetIndent Firstline+1=',SrcEditor.Lines[FirstLinePos+1]]);
-  NestedComments:=CodeToolBoss.GetNestedCommentsFlagForFile(CodeBuf.Filename);
-  if not CodeToolBoss.Indenter.GetIndent(CodeBuf.Source,p,NestedComments,
-    true,NewIndent)
-  then exit;
-  if not NewIndent.IndentValid then exit;
-  Indent:=NewIndent.Indent;
-  DebugLn(['TMainIDE.OnSrcNoteBookGetIndent Indent=',Indent]);
-  case Reason of
-  ecLineBreak,ecInsertLine:
-    begin
-      DebugLn(['TMainIDE.OnSrcNoteBookGetIndent Apply to FirstLinePos+1']);
-      SetIndentProc(FirstLinePos+1, Indent, 0,' ');
-      SrcEditor.CursorScreenXY:=Point(Indent+1,SrcEditor.CursorScreenXY.Y);
-    end;
-  ecPaste:
-    begin
-      //DebugLn(['TMainIDE.OnSrcNoteBookGetIndent Apply to FirstLinePos-1 .. LastLinePos']);
-    end;
-  end;
 end;
 
 procedure TMainIDE.OnSrcNotebookMovingPage(Sender: TObject; OldPageIndex,

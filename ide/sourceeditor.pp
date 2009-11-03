@@ -46,7 +46,7 @@ uses
   Translations, ClipBrd, TypInfo, types, Extctrls, Menus, HelpIntfs,
   LazHelpIntf, LConvEncoding, LDockCtrl,
   // codetools
-  CodeToolManager, CodeCache, SourceLog,
+  BasicCodeTools, CodeBeautifier, CodeToolManager, CodeCache, SourceLog,
   // synedit
   SynEditLines, SynEditStrConst, SynEditTypes, SynEdit, SynRegExpr,
   SynEditHighlighter, SynEditAutoComplete, SynEditKeyCmds, SynCompletion,
@@ -6776,11 +6776,95 @@ end;
 function TSourceNotebook.EditorGetIndent(Sender: TObject; Editor: TObject;
   LogCaret, OldLogCaret: TPoint; FirstLinePos, LastLinePos: Integer;
   Reason: TSynEditorCommand; SetIndentProc: TSynBeautifierSetIndentProc): Boolean;
+var
+  SrcEdit: TSourceEditor;
+  p: LongInt;
+  NestedComments: Boolean;
+  NewIndent: TFABIndentationPolicy;
+  Indent: LongInt;
+  CodeBuf: TCodeBuffer;
+  Line: string;
+  OldIndent: LongInt;
+  CurIndent: LongInt;
+  i: LongInt;
 begin
   Result:=false;
-  if Assigned(OnGetIndent) then
-    Result := OnGetIndent(Sender, GetActiveSE, LogCaret, OldLogCaret, FirstLinePos, LastLinePos,
+  SrcEdit:=GetActiveSE;
+  if Assigned(OnGetIndent) then begin
+    Result := OnGetIndent(Sender, SrcEdit, LogCaret, OldLogCaret, FirstLinePos, LastLinePos,
                           Reason, SetIndentProc);
+    if Result then exit;
+  end;
+  {$IFNDEF EnableIndenter}
+  exit;
+  {$ENDIF}
+  if not (SrcEdit.SyntaxHighlighterType in [lshFreePascal, lshDelphi]) then
+    exit;
+  case Reason of
+  ecLineBreak,ecInsertLine: ;
+  ecPaste:
+    begin
+      if SrcEdit.EditorComponent.SelectionMode<>smNormal then exit;
+      if LogCaret.X>1 then
+        inc(FirstLinePos);
+      if LogCaret.Y=LastLinePos then
+        dec(LastLinePos);
+      if LastLinePos<FirstLinePos then exit; // not a whole line
+    end
+  else
+    exit;
+  end;
+  debugln(['TSourceNotebook.EditorGetIndent LogCaret=',dbgs(LogCaret),' FirstLinePos=',FirstLinePos,' LastLinePos=',LastLinePos]);
+  Result := True;
+  SrcEdit.UpdateCodeBuffer;
+  CodeBuf:=SrcEdit.CodeBuffer;
+  case Reason of
+  ecLineBreak,ecInsertLine:
+    CodeBuf.LineColToPosition(LogCaret.Y,LogCaret.X,p);
+  ecPaste:
+    CodeBuf.LineColToPosition(FirstLinePos-1,1,p);
+  end;
+  if p<1 then exit;
+  if FirstLinePos>0 then
+    DebugLn(['TSourceNotebook.EditorGetIndent Firstline-1=',SrcEdit.Lines[FirstLinePos-1]]);
+  DebugLn(['TSourceNotebook.EditorGetIndent Firstline+0=',SrcEdit.Lines[FirstLinePos]]);
+  if FirstLinePos<SrcEdit.LineCount then
+    DebugLn(['TSourceNotebook.EditorGetIndent Firstline+1=',SrcEdit.Lines[FirstLinePos+1]]);
+  NestedComments:=CodeToolBoss.GetNestedCommentsFlagForFile(CodeBuf.Filename);
+  if not CodeToolBoss.Indenter.GetIndent(CodeBuf.Source,p,NestedComments,
+    true,NewIndent)
+  then exit;
+  if not NewIndent.IndentValid then exit;
+  Indent:=NewIndent.Indent;
+  DebugLn(['TSourceNotebook.EditorGetIndent Indent=',Indent]);
+  case Reason of
+  ecLineBreak,ecInsertLine:
+    begin
+      DebugLn(['TSourceNotebook.EditorGetIndent Apply to FirstLinePos+1']);
+      SetIndentProc(FirstLinePos+1, Indent, 0,' ');
+      SrcEdit.CursorScreenXY:=Point(Indent+1,SrcEdit.CursorScreenXY.Y);
+    end;
+  ecPaste:
+    begin
+      DebugLn(['TSourceNotebook.EditorGetIndent Apply to lines ',FirstLinePos,' .. ',LastLinePos]);
+      Line:=SrcEdit.EditorComponent.Lines[FirstLinePos-1];
+      OldIndent:=GetLineIndentWithTabs(Line,1,SrcEdit.EditorComponent.TabWidth);
+      DebugLn(['TSourceNotebook.EditorGetIndent OldIndent=',OldIndent,' Line=',dbgstr(Line)]);
+      for i:=FirstLinePos to LastLinePos do begin
+        if i>=SrcEdit.EditorComponent.Lines.Count then break;
+        Line:=SrcEdit.EditorComponent.Lines[i-1];
+        CurIndent:=GetLineIndentWithTabs(Line,1,SrcEdit.EditorComponent.TabWidth);
+        DebugLn(['TSourceNotebook.EditorGetIndent CurIndent=',CurIndent,' OldIndent=',OldIndent,' Indent=',Indent,' Line="',Line,'"']);
+        CurIndent:=CurIndent-OldIndent+Indent;
+        if CurIndent<0 then begin
+          dec(Indent,CurIndent);
+          CurIndent:=0;
+        end;
+        DebugLn(['TSourceNotebook.EditorGetIndent ']);
+        SetIndentProc(i, CurIndent, 0,' ');
+      end;
+    end;
+  end;
 end;
 
 Procedure TSourceNotebook.HintTimer(sender: TObject);
