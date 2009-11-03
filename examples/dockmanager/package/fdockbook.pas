@@ -42,8 +42,8 @@ type
     procedure MouseMove(Shift: TShiftState; X, Y: Integer); override;
 
   public
-    constructor Create(TheOwner: TComponent); override;
     Control: TControl;
+    constructor Create(TheOwner: TComponent); override;
   end;
 
   TTabs = class(TToolBar)
@@ -113,15 +113,18 @@ end;
 
 procedure TEasyDockBook.FormDockOver(Sender: TObject; Source: TDragDockObject;
   X, Y: Integer; State: TDragState; var Accept: Boolean);
+var
+  ARect: TRect;
 begin
 //unmanaged dock site requires an OnDockOver handler.
   Accept := True; //this is the default, can be omitted
 //make DockRect reflect the docking area
   with Source do begin
-    DockRect := pnlDock.ClientRect;
-    DockRect.TopLeft := pnlDock.ClientToScreen(DockRect.TopLeft);
-    inc(DockRect.Bottom, DockRect.Top);
-    inc(DockRect.Right, DockRect.Left);
+    ARect := pnlDock.ClientRect;
+    ARect.TopLeft := pnlDock.ClientToScreen(ARect.TopLeft);
+    inc(ARect.Bottom, ARect.Top);
+    inc(ARect.Right, ARect.Left);
+    DockRect := ARect;
   end;
 end;
 

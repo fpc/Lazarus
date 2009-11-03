@@ -115,8 +115,8 @@ begin
             inc(r.Right, w);
             BoundsRect := r;
           end else begin
-            dec(DragTarget.Left, w);
-            dec(splitRight.Left, w);
+            DragTarget.Left := DragTarget.Left - w;
+            splitRight.Left := splitRight.Left - w;
           end;
         end else if AutoExpand then begin
         //enlarge left
@@ -138,10 +138,10 @@ begin
             r := self.BoundsRect;
             inc(r.Bottom, w);
             BoundsRect := r;
-            inc(StatusBar1.Top, w);
+            StatusBar1.Top := StatusBar1.Top + w;
           end else begin
-            dec(splitBottom.Top, w);
-            dec(DragTarget.Top, w);
+            splitBottom.Top := splitBottom.Top - w;
+            DragTarget.Top := DragTarget.Top - w;
           end;
         end;
         EnableAlign;
@@ -264,8 +264,8 @@ begin
           dec(r.Right, wh);
           BoundsRect := r; //does not resize :-(
         end else begin
-          inc(Site.Left, wh);
-          inc(splitRight.Left, wh); //doesn't help :-(
+          Site.Left := Site.Left + wh;
+          splitRight.Left := splitRight.Left + wh; //doesn't help :-(
         end;
       end;
     alBottom:
@@ -276,10 +276,10 @@ begin
           r := BoundsRect;
           dec(r.Bottom, wh);
           BoundsRect := r;
-          dec(splitBottom.Top, wh);
-          dec(StatusBar1.Top, wh);
+          splitBottom.Top := splitBottom.Top - wh;
+          StatusBar1.Top := StatusBar1.Top - wh;
         end else begin
-          inc(Site.Top, wh);
+          Site.Top := Site.Top + wh;
           splitBottom.Top := Site.Top - splitBottom.Height - 10;
         end;
       end;

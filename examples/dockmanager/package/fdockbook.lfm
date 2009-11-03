@@ -13,7 +13,7 @@ object EasyDockBook: TEasyDockBook
   OnDockOver = FormDockOver
   OnGetSiteInfo = FormGetSiteInfo
   OnUnDock = FormUnDock
-  LCLVersion = '0.9.27'
+  LCLVersion = '0.9.29'
   Visible = True
   object pnlDock: TPanel
     Left = 0
