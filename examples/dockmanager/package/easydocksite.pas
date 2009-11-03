@@ -216,6 +216,7 @@ type
   {$ENDIF}
     constructor Create(ADockSite: TWinControl); override;
     destructor Destroy; override;
+    function DetectAlign(ZoneRect: TRect; MousePos: TPoint): TAlign;
   {$IFDEF old}
     procedure AdjustDockRect(Control: TControl; var ARect: TRect);
   {$ELSE}
@@ -590,11 +591,60 @@ begin
   ResetBounds(True); //splitters may have to be inserted
 end;
 
+function TEasyTree.DetectAlign(ZoneRect: TRect; MousePos: TPoint): TAlign;
+var
+  w, h, zphi: integer;
+  cx, cy: integer;
+  dx, dy: integer;
+  phi: double;
+  izone: integer;
+  dir: TAlign;
+const
+  k = 5; //matrix dimension
+//mapping octants into aligns, assuming k=5
+  cDir: array[-4..4] of TAlign = (
+    alLeft, alLeft, alTop, alTop, alRight, alBottom, alBottom, alLeft, alLeft
+  );
+begin
+(* Determine alignment from the location of the mouse within ZoneRect.
+  ZoneRect in screen TLBR coordinates, MousePos in screen coordinates.
+*)
+//center and extent of dock zone
+  cx := (ZoneRect.Right + ZoneRect.Left) div 2;
+  cy := (ZoneRect.Top + ZoneRect.Bottom) div 2;
+  w := ZoneRect.Right - ZoneRect.Left;
+  h := ZoneRect.Bottom - ZoneRect.Top;
+  if (w > 0) and (h > 0) then begin
+  //mouse position within k*k rectangles (squares)
+    dx := trunc((MousePos.x - cx) / w * k);
+    dy := trunc((MousePos.y - cy) / h * k);
+    izone := max(abs(dx), abs(dy)); //0..k
+  //map into 0=innermost (custom), 1=inner, 2=outer
+    if izone = 0 then begin
+      //zone := zInnermost;
+      dir := alCustom; //pages
+    end else begin
+    { not yet: outer zones, meaning docking into parent zone
+      if izone >= k-1 then
+        zone := zOuter
+      else //if izone > 0 then
+        zone := zInner;
+    }
+      phi := arctan2(dy, dx);
+      zphi := trunc(radtodeg(phi)) div 45;
+      dir := cDir[zphi];
+    end;
+  end else
+    dir := alClient;
+  Result := dir;
+end;
+
 procedure TEasyTree.PositionDockRect(ADockObject: TDragDockObject);
 var
   i: integer;
   zone: TEasyZone;
 
+{$IFDEF old}
   function DetectAlign(ZoneRect: TRect; MousePos: TPoint): TAlign;
   var
     w, h, zphi: integer;
@@ -640,6 +690,9 @@ var
       dir := alClient;
     Result := dir;
   end;
+{$ELSE}
+  //made method
+{$ENDIF}
 
 var
   ZoneExtent: TPoint;

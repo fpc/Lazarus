@@ -1,7 +1,7 @@
 object DockingSite: TDockingSite
-  Left = 384
+  Left = 444
   Height = 163
-  Top = 157
+  Top = 156
   Width = 255
   Caption = 'Dock Site'
   ClientHeight = 163
@@ -52,7 +52,6 @@ object DockingSite: TDockingSite
     Top = 142
     Width = 255
     Align = alBottom
-    AutoSize = True
     Caption = 'pnlBottom'
     DockSite = True
     TabOrder = 3
@@ -60,15 +59,6 @@ object DockingSite: TDockingSite
     OnDockOver = pnlLeftDockOver
     OnGetSiteInfo = pnlLeftGetSiteInfo
     OnUnDock = pnlLeftUnDock
-  end
-  object splitBottom: TSplitter
-    Cursor = crVSplit
-    Left = 0
-    Height = 4
-    Top = 138
-    Width = 255
-    Align = alBottom
-    ResizeAnchor = akBottom
   end
   object splitRight: TSplitter
     Left = 251
@@ -94,7 +84,7 @@ object DockingSite: TDockingSite
     Caption = 'Client'
     ClientHeight = 138
     ClientWidth = 247
-    TabOrder = 7
+    TabOrder = 6
     object buNewForm: TButton
       Left = 96
       Height = 20
@@ -104,5 +94,14 @@ object DockingSite: TDockingSite
       OnClick = buNewFormClick
       TabOrder = 0
     end
+  end
+  object splitBottom: TSplitter
+    Cursor = crVSplit
+    Left = 0
+    Height = 4
+    Top = 138
+    Width = 255
+    Align = alBottom
+    ResizeAnchor = akBottom
   end
 end
