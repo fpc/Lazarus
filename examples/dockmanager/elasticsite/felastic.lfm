@@ -3,6 +3,7 @@ object DockingSite: TDockingSite
   Height = 163
   Top = 156
   Width = 255
+  AutoSize = True
   Caption = 'Dock Site'
   ClientHeight = 163
   ClientWidth = 255

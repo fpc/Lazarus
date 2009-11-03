@@ -56,9 +56,10 @@ type
       NewTarget: TWinControl; var Allow: Boolean);
   private
     FAutoExpand: boolean;
+    procedure SetAutoExpand(NewValue: boolean);
   public
   published
-    property AutoExpand: boolean read FAutoExpand write FAutoExpand;
+    property AutoExpand: boolean read FAutoExpand write SetAutoExpand default True;
   end;
 
 var
@@ -288,9 +289,14 @@ begin
   end;
 end;
 
+procedure TDockingSite.SetAutoExpand(NewValue: boolean);
+begin
+  FAutoExpand:=NewValue;
+end;
+
 initialization
   {$I felastic.lrs}
-  DefaultDockTreeClass := TEasyTree;
+  DefaultDockManagerClass := TEasyTree;
 
 end.
 
