@@ -714,6 +714,9 @@ begin
           BeginBlock(bbtCaseBegin);
         bbtIfThen,bbtIfElse:
           BeginBlock(bbtIfBegin);
+        else
+          if Stack.TopType in bbtAllStatements then
+            BeginBlock(bbtFreeBegin);
         end;
       end;
     'C':
