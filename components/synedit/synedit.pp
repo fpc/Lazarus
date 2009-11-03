@@ -4570,12 +4570,15 @@ begin
   IncreaseChangeStamp;
   if (AIndex < FBeautifyStartLineIdx) or (FBeautifyStartLineIdx < 0) then
     FBeautifyStartLineIdx := AIndex;
-  if (AIndex + ACount - 1 >= FBeautifyEndLineIdx) then
-    FBeautifyEndLineIdx := AIndex + ACount - 1
-  else begin
+  if ACount > 0 then begin
+    if (AIndex > FBeautifyEndLineIdx) then
+      FBeautifyEndLineIdx := AIndex + ACount - 1
+    else
+      FBeautifyEndLineIdx := FBeautifyEndLineIdx + ACount;
+  end else begin
     FBeautifyEndLineIdx := FBeautifyEndLineIdx + ACount;
-    if (AIndex + ACount - 1 < FBeautifyStartLineIdx) then
-      FBeautifyStartLineIdx := FBeautifyStartLineIdx + ACount;
+    if (FBeautifyEndLineIdx < AIndex) then
+      FBeautifyEndLineIdx := AIndex;
   end;
   if PaintLock>0 then begin
     if (fHighlighterNeedsUpdateStartLine<1)
