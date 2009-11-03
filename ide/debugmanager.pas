@@ -1564,16 +1564,6 @@ begin
 
   if SrcLine < 1
   then begin
-(*
-    if FDialogs[ddtAssembler] = nil
-    then begin
-      // TODO: change into assemblerview failure
-      MessageDlg(lisExecutionPaused,
-        Format(lisExecutionPausedAdress, [#13#13,
-          HexStr(ALocation.Address, FDebugger.TargetWidth div 4), #13,
-          ALocation.FuncName, #13, ALocation.SrcFile, #13#13#13, #13]),
-        mtInformation, [mbOK],0);
-    end; *)
     // jump to the deepest stack frame with debugging info
     i:=0;
     while (i < FDebugger.CallStack.Count) do
@@ -1588,7 +1578,8 @@ begin
       end;
       Inc(i);
     end;
-    if SrcLine < 1 then begin
+    if SrcLine < 1
+    then begin
       ViewDebugDialog(ddtAssembler);
       Exit;
     end;
