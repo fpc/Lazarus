@@ -1,9 +1,9 @@
 object FInfoCompile: TFInfoCompile
-  Left = 270
-  Height = 202
-  Top = 251
-  Width = 430
-  ActiveControl = BClose
+  Left = 628
+  Height = 200
+  Top = 372
+  Width = 386
+  ActiveControl = PnlTitle
   BorderIcons = []
   BorderStyle = bsDialog
   Caption = 'Compile project'
@@ -11,198 +11,322 @@ object FInfoCompile: TFInfoCompile
   ChildSizing.TopBottomSpacing = 6
   ChildSizing.HorizontalSpacing = 6
   ChildSizing.VerticalSpacing = 6
-  ClientHeight = 202
-  ClientWidth = 430
+  ClientHeight = 200
+  ClientWidth = 386
   FormStyle = fsStayOnTop
   OnCreate = FormCreate
-  ParentFont = False
   Position = poScreenCenter
-  LCLVersion = '0.9.25'
-  object PInfo: TPanel
+  LCLVersion = '0.9.29'
+  object PnlTitle: TPanel
     Left = 6
     Height = 24
     Top = 6
-    Width = 418
+    Width = 374
     Align = alTop
-    BevelInner = bvLowered
+    BevelInner = bvRaised
     BevelOuter = bvLowered
-    BorderStyle = bsSingle
-    Caption = 'PInfo'
+    ClientHeight = 24
+    ClientWidth = 374
     Font.Style = [fsBold]
     ParentFont = False
     TabOrder = 0
-  end
-  object BClose: TBitBtn
-    AnchorSideBottom.Control = Owner
-    AnchorSideBottom.Side = asrBottom
-    Left = 154
-    Height = 34
-    Top = 162
-    Width = 107
-    Anchors = [akBottom]
-    Caption = '&OK'
-    Default = True
-    Kind = bkOK
-    ModalResult = 1
-    NumGlyphs = 0
-    OnClick = BCloseClick
-    TabOrder = 1
+    object lbInfo: TLabel
+      Left = 7
+      Height = 20
+      Top = 2
+      Width = 360
+      Align = alClient
+      Alignment = taCenter
+      BorderSpacing.Left = 5
+      BorderSpacing.Right = 5
+      Layout = tlCenter
+      ParentColor = False
+    end
   end
   object Panel1: TPanel
     Left = 6
-    Height = 50
+    Height = 62
     Top = 36
-    Width = 418
-    Align = alTop
-    BevelInner = bvLowered
+    Width = 374
+    Align = alClient
+    BevelInner = bvRaised
     BevelOuter = bvLowered
-    BorderWidth = 1
-    ClientHeight = 50
-    ClientWidth = 418
-    TabOrder = 2
+    ClientHeight = 62
+    ClientWidth = 374
+    ParentColor = False
+    TabOrder = 1
     object PCurrentStatus: TLabel
-      Left = 3
-      Height = 44
-      Top = 3
-      Width = 412
+      Left = 4
+      Height = 54
+      Top = 4
+      Width = 366
       Align = alClient
       Alignment = taCenter
       AutoSize = False
-      Caption = 'PCurrentStatus'
+      BorderSpacing.Left = 2
+      BorderSpacing.Top = 2
+      BorderSpacing.Right = 2
+      BorderSpacing.Bottom = 2
+      Color = clBtnFace
+      Layout = tlCenter
       ParentColor = False
+      Transparent = False
       WordWrap = True
     end
   end
-  object Panel4: TPanel
-    AnchorSideLeft.Control = Panel2
-    AnchorSideLeft.Side = asrBottom
-    AnchorSideTop.Control = Panel1
-    AnchorSideTop.Side = asrBottom
-    AnchorSideRight.Control = Owner
-    AnchorSideRight.Side = asrBottom
-    Left = 156
-    Height = 48
-    Top = 92
-    Width = 268
-    Anchors = [akTop, akLeft, akRight]
-    BevelInner = bvLowered
-    BevelOuter = bvLowered
-    BorderStyle = bsSingle
-    ClientHeight = 48
-    ClientWidth = 268
-    TabOrder = 3
-    object LNHint: TLabel
-      Left = 68
-      Height = 14
-      Top = 5
-      Width = 31
-      Alignment = taRightJustify
-      AutoSize = False
-      Caption = '0'
-      Font.Color = clBlue
-      ParentColor = False
-      ParentFont = False
-    end
-    object LInfoHint: TLabel
-      Left = 6
-      Height = 20
-      Top = 5
-      Width = 38
-      Caption = 'Hints:'
-      ParentColor = False
-    end
-    object LInfoWarning: TLabel
-      Left = 6
-      Height = 20
-      Top = 26
-      Width = 62
-      Caption = 'Warnings:'
-      ParentColor = False
-    end
-    object LNWarning: TLabel
-      Left = 68
-      Height = 14
-      Top = 26
-      Width = 31
-      Alignment = taRightJustify
-      AutoSize = False
-      Caption = '0'
-      Font.Color = clGreen
-      ParentColor = False
-      ParentFont = False
-    end
-    object LInfoError: TLabel
-      Left = 112
-      Height = 20
-      Top = 26
-      Width = 43
-      Caption = 'Errors:'
-      ParentColor = False
-    end
-    object LNError: TLabel
-      Left = 172
-      Height = 14
-      Top = 26
-      Width = 31
-      Alignment = taRightJustify
-      AutoSize = False
-      Caption = '0'
-      Font.Color = clRed
-      ParentColor = False
-      ParentFont = False
-    end
-    object LInfoNote: TLabel
-      Left = 112
-      Height = 20
-      Top = 5
-      Width = 43
-      Caption = 'Notes:'
-      ParentColor = False
-    end
-    object LNNote: TLabel
-      Left = 172
-      Height = 14
-      Top = 5
-      Width = 31
-      Alignment = taRightJustify
-      AutoSize = False
-      Caption = '0'
-      Font.Color = clBlack
-      ParentColor = False
-      ParentFont = False
+  object pnlButton: TPanel
+    Left = 6
+    Height = 34
+    Top = 160
+    Width = 374
+    Align = alBottom
+    BevelOuter = bvNone
+    ClientHeight = 34
+    ClientWidth = 374
+    TabOrder = 2
+    object BClose: TBitBtn
+      AnchorSideBottom.Control = Owner
+      AnchorSideBottom.Side = asrBottom
+      Left = 134
+      Height = 34
+      Top = 0
+      Width = 107
+      Anchors = [akTop]
+      Caption = '&OK'
+      Default = True
+      Kind = bkOK
+      ModalResult = 1
+      NumGlyphs = 0
+      OnClick = BCloseClick
+      TabOrder = 0
     end
   end
-  object Panel2: TPanel
-    AnchorSideLeft.Control = Owner
-    AnchorSideTop.Control = Panel4
-    AnchorSideTop.Side = asrCenter
+  object pnlInfo: TPanel
     Left = 6
-    Height = 28
-    Top = 102
-    Width = 144
-    BevelInner = bvLowered
-    BevelOuter = bvLowered
-    BorderStyle = bsSingle
-    ClientHeight = 28
-    ClientWidth = 144
-    TabOrder = 4
-    object LNLines: TLabel
-      Left = 88
-      Height = 14
-      Top = 6
-      Width = 49
-      Alignment = taRightJustify
-      AutoSize = False
-      Caption = '0'
-      ParentColor = False
+    Height = 50
+    Top = 104
+    Width = 374
+    Align = alBottom
+    BevelOuter = bvNone
+    ClientHeight = 50
+    ClientWidth = 374
+    TabOrder = 3
+    object pnlLines: TPanel
+      AnchorSideLeft.Control = Owner
+      AnchorSideTop.Side = asrCenter
+      Left = 0
+      Height = 50
+      Top = 0
+      Width = 122
+      Align = alLeft
+      BevelInner = bvRaised
+      BevelOuter = bvLowered
+      ClientHeight = 50
+      ClientWidth = 122
+      TabOrder = 0
+      object LNLines: TLabel
+        Left = 49
+        Height = 46
+        Top = 2
+        Width = 66
+        Align = alClient
+        Alignment = taRightJustify
+        AutoSize = False
+        BorderSpacing.Right = 5
+        Caption = '0'
+        Layout = tlCenter
+        ParentColor = False
+      end
+      object LInfoLines: TLabel
+        Left = 6
+        Height = 46
+        Top = 2
+        Width = 43
+        Align = alLeft
+        BorderSpacing.Left = 4
+        Caption = 'Lines:'
+        Layout = tlCenter
+        ParentColor = False
+      end
     end
-    object LInfoLines: TLabel
-      Left = 6
-      Height = 14
-      Top = 6
-      Width = 29
-      Caption = 'Lines:'
-      ParentColor = False
+    object Panel3: TPanel
+      AnchorSideLeft.Control = Owner
+      AnchorSideTop.Side = asrCenter
+      Left = 126
+      Height = 50
+      Top = 0
+      Width = 122
+      Align = alClient
+      BorderSpacing.Left = 4
+      BorderSpacing.Right = 4
+      BevelInner = bvRaised
+      BevelOuter = bvLowered
+      ClientHeight = 50
+      ClientWidth = 122
+      TabOrder = 1
+      object pnlHintsWarnings: TPanel
+        Left = 4
+        Height = 18
+        Top = 6
+        Width = 114
+        Align = alTop
+        BorderSpacing.Left = 2
+        BorderSpacing.Top = 4
+        BorderSpacing.Right = 2
+        BevelOuter = bvNone
+        ClientHeight = 18
+        ClientWidth = 114
+        TabOrder = 0
+        object LNHint: TLabel
+          Left = 45
+          Height = 18
+          Top = 0
+          Width = 67
+          Align = alClient
+          Alignment = taRightJustify
+          AutoSize = False
+          BorderSpacing.Left = 2
+          BorderSpacing.Right = 2
+          Caption = '0'
+          ParentColor = False
+          ParentFont = False
+        end
+        object LInfoHint: TLabel
+          Left = 0
+          Height = 18
+          Top = 0
+          Width = 43
+          Align = alLeft
+          Caption = 'Hints:'
+          ParentColor = False
+        end
+      end
+      object pnlHintsWarnings1: TPanel
+        Left = 4
+        Height = 18
+        Top = 26
+        Width = 114
+        Align = alTop
+        BorderSpacing.Left = 2
+        BorderSpacing.Top = 2
+        BorderSpacing.Right = 2
+        BevelOuter = bvNone
+        ClientHeight = 18
+        ClientWidth = 114
+        TabOrder = 1
+        object LInfoWarning: TLabel
+          Left = 0
+          Height = 18
+          Top = 0
+          Width = 71
+          Align = alLeft
+          Caption = 'Warnings:'
+          ParentColor = False
+        end
+        object LNWarning: TLabel
+          Left = 73
+          Height = 18
+          Top = 0
+          Width = 39
+          Align = alClient
+          Alignment = taRightJustify
+          AutoSize = False
+          BorderSpacing.Left = 2
+          BorderSpacing.Right = 2
+          Caption = '0'
+          ParentColor = False
+          ParentFont = False
+        end
+      end
+    end
+    object pnlNotesErrors: TPanel
+      AnchorSideLeft.Control = Owner
+      AnchorSideTop.Side = asrCenter
+      Left = 252
+      Height = 50
+      Top = 0
+      Width = 122
+      Align = alRight
+      BorderSpacing.Left = 4
+      BevelInner = bvRaised
+      BevelOuter = bvLowered
+      ClientHeight = 50
+      ClientWidth = 122
+      TabOrder = 2
+      object pnlHintsWarnings2: TPanel
+        Left = 4
+        Height = 18
+        Top = 6
+        Width = 114
+        Align = alTop
+        BorderSpacing.Left = 2
+        BorderSpacing.Top = 4
+        BorderSpacing.Right = 2
+        BevelOuter = bvNone
+        ClientHeight = 18
+        ClientWidth = 114
+        TabOrder = 0
+        object LInfoNote: TLabel
+          Left = 0
+          Height = 18
+          Top = 0
+          Width = 48
+          Align = alLeft
+          Caption = 'Notes:'
+          ParentColor = False
+        end
+        object LNNote: TLabel
+          Left = 50
+          Height = 18
+          Top = 0
+          Width = 62
+          Align = alClient
+          Alignment = taRightJustify
+          AutoSize = False
+          BorderSpacing.Left = 2
+          BorderSpacing.Right = 2
+          Caption = '0'
+          ParentColor = False
+          ParentFont = False
+        end
+      end
+      object pnlErrors: TPanel
+        Left = 4
+        Height = 18
+        Top = 26
+        Width = 114
+        Align = alTop
+        BorderSpacing.Left = 2
+        BorderSpacing.Top = 2
+        BorderSpacing.Right = 2
+        BevelOuter = bvNone
+        ClientHeight = 18
+        ClientWidth = 114
+        TabOrder = 1
+        object LInfoError: TLabel
+          Left = 0
+          Height = 18
+          Top = 0
+          Width = 49
+          Align = alLeft
+          Caption = 'Errors:'
+          ParentColor = False
+        end
+        object LNError: TLabel
+          Left = 51
+          Height = 18
+          Top = 0
+          Width = 61
+          Align = alClient
+          Alignment = taRightJustify
+          AutoSize = False
+          BorderSpacing.Left = 2
+          BorderSpacing.Right = 2
+          Caption = '0'
+          ParentColor = False
+          ParentFont = False
+        end
+      end
     end
   end
 end

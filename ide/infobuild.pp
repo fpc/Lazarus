@@ -40,22 +40,30 @@ type
   { TFInfoCompile }
 
   TFInfoCompile = class ( TForm )
-    BClose : TBitBtn;
-    LInfoError : TLabel;
-    LInfoNote : TLabel;
-    LInfoHint : TLabel;
-    LInfoWarning : TLabel;
-    LInfoLines : TLabel;
-    LNError : TLabel;
-    LNNote : TLabel;
-    LNLines : TLabel;
-    LNHint : TLabel;
-    LNWarning : TLabel;
-    Panel2 : TPanel;
-    Panel4 : TPanel;
+    BClose: TBitBtn;
+    lbInfo: TLabel;
+    LInfoError: TLabel;
+    LInfoHint: TLabel;
+    LInfoLines: TLabel;
+    LInfoNote: TLabel;
+    LInfoWarning: TLabel;
+    LNError: TLabel;
+    LNHint: TLabel;
+    LNLines: TLabel;
+    LNNote: TLabel;
+    LNWarning: TLabel;
+    pnlLines: TPanel;
+    Panel3: TPanel;
+    pnlNotesErrors: TPanel;
+    pnlHintsWarnings: TPanel;
+    pnlHintsWarnings1: TPanel;
+    pnlHintsWarnings2: TPanel;
+    pnlErrors: TPanel;
+    pnlInfo: TPanel;
+    pnlButton: TPanel;
     PCurrentStatus : TLabel;
     Panel1 : TPanel;
-    PInfo : TPanel;
+    PnlTitle : TPanel;
     procedure BCloseClick ( Sender : TObject ) ;
     procedure FormCreate ( Sender : TObject ) ;
   private
@@ -95,9 +103,8 @@ begin
     SetStatus('Aborted...!');
     MakeBold;
     SetCanClose;
-  end
-    else
-      Close;
+  end else
+    Close;
 end;
 
 procedure TFInfoCompile.FormCreate ( Sender : TObject ) ;
@@ -107,7 +114,8 @@ begin
   NErrors   := 0;
   NNotes    := 0;
   NLines    := 0;
-  
+
+
   LInfoLines.Caption   := lisInfoBuildLines;
   LInfoError.Caption   := lisInfoBuildErrors;
   LInfoHint.Caption    := lisInfoBuildHint;
@@ -127,7 +135,7 @@ end;
 
 Procedure TFInfoCompile.SetProjectName(Const Sname : String);
 begin
-  PInfo.Caption := lisInfoBuildBuild + ' '+Sname;
+  lbInfo.Caption := lisInfoBuildBuild + ' '+ ExtractFileName(Sname);
 end;
 
 Procedure TFInfoCompile.SetStatus(Const SStatus : String);
@@ -135,7 +143,9 @@ Var
   S  : String;
   Ok : Boolean;
   NL : Integer;
+  iLoc:Integer;
 begin
+
   S  := LowerCase(SStatus);
 
   if (pos('warning(s)', s) > 0) or
@@ -171,25 +181,19 @@ begin
     LNNote.Caption := IntToStr(NNotes);
     Ok             := False;
   end;
-
-  If (Pos('lines compiled', s) > 0) then
-  begin
-    s := copy(s, 1, pos('lines compiled', s)-1);
+  iLoc:=Pos('lines compiled', s);
+  If (iLoc> 0) then begin
+    s := copy(s, 1, iLoc-1);
     while copy(s, 1, 1) = ' ' do delete(s, 1, 1);
     while copy(s, length(s), 1) = ' ' do delete(s, length(s), 1);
     
-    try
-      NL := strtoint(s)
-    except
-      NL := 0;
-    end;
-    
+    NL := StrTointDef(S,0);
     NLines := NLines + NL;
-    LNLines.Caption := IntToStr(NLines);
+    LNLines.Caption := FormatFloat('#,##0',NLines);
     Ok              := false;
   end;
-
   If Ok then PCurrentStatus.Caption := SStatus;
+  pnlInfo.Refresh;
 end;
 
 Procedure TFInfoCompile.SetCanClose;
