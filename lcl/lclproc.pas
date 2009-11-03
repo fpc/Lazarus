@@ -171,7 +171,7 @@ function CompareHandles(h1, h2: THandle): integer;
 function CompareLCLHandles(h1, h2: TLCLHandle): integer;
 function CompareRect(R1, R2: PRect): Boolean;
 function ComparePoints(const p1, p2: TPoint): integer;
-
+function CompareMethods(const m1, m2: TMethod): boolean;
 
 function RoundToInt(const e: Extended): integer;
 function RoundToCardinal(const e: Extended): cardinal;
@@ -1814,6 +1814,11 @@ begin
     Result:=-1
   else
     Result:=0;
+end;
+
+function CompareMethods(const m1, m2: TMethod): boolean;
+begin
+  Result:=(m1.Code=m2.Code) and (m1.Data=m2.Data);
 end;
 
 function RoundToInt(const e: Extended): integer;
