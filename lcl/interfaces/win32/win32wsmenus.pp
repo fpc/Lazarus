@@ -532,6 +532,7 @@ var
   AFont, OldFont: HFONT;
   IsRightToLeft: Boolean;
   Info: tagMENUBARINFO;
+  AWnd: HWND;
 begin
   if (ItemState and ODS_SELECTED) <> 0 then
     MenuState := tmBarItemPushed
@@ -549,67 +550,31 @@ begin
 
   // draw backgound
   // This is a hackish way to draw. Seems windows itself draws this in WM_PAINT or another paint handler?
+  AWnd := TCustomForm(AMenuItem.GetParentMenu.Parent).Handle;
+  if Windows.GetProp(AWnd, 'LCLMenuBarRedraw') = 0 then
+  begin
+    // repainting menu bar bg
+    FillChar(Info, SizeOf(Info), 0);
+    Info.cbSize := SizeOf(Info);
+    GetMenuBarInfo(AWnd, OBJID_MENU, 0, @Info);
+    GetWindowRect(AWnd, @WndRect);
+    OffsetRect(Info.rcBar, -WndRect.Left, -WndRect.Top);
+    Tmp := ThemeServices.GetElementDetails(BarState[(ItemState and ODS_INACTIVE) = 0]);
+    ThemeDrawElement(AHDC, Tmp, Info.rcBar, nil);
+    Windows.SetProp(AWnd, 'LCLMenuBarRedraw', 1);
+  end;
+
   BGRect := ARect;
   BGClip := ARect;
-  FillChar(Info, SizeOf(Info), 0);
-  Info.cbSize := SizeOf(Info);
-  if IsLast then
+  if IsRightToLeft <> AMenuItem.RightJustify then
   begin
-    GetMenuBarInfo(TCustomForm(AMenuItem.GetParentMenu.Parent).Handle, OBJID_MENU, 0, @Info);
-    GetWindowRect(TCustomForm(AMenuItem.GetParentMenu.Parent).Handle, @WndRect);
-    if IsRightToLeft then
-    begin
-      BGRect.Left := (Info.rcBar.Left - WndRect.Left);
-      BGClip.Left := BGRect.Left;
-      if AMenuItem.MenuVisibleIndex = 0 then
-      begin
-        BGRect.Right := (Info.rcBar.Right - WndRect.Left);
-        BGClip.Right := BGRect.Right;
-      end
-      else
-        inc(BGRect.Right, 2);
-    end
-    else
-    begin
-      BGRect.Right := (Info.rcBar.Right - WndRect.Left);
-      BGClip.Right := BGRect.Right;
-      if AMenuItem.MenuVisibleIndex = 0 then
-      begin
-        BGRect.Left := (Info.rcBar.Left - WndRect.Left);
-        BGClip.Left := BGRect.Left;
-      end
-      else
-        dec(BGRect.Left, 2);
-    end;
+    inc(BGRect.Right, 2);
+    dec(BGRect.Left, 2);
   end
   else
   begin
-    if AMenuItem.MenuVisibleIndex > 0 then
-    begin
-      if IsRightToLeft then
-        inc(BGRect.Right, 2)
-      else
-        dec(BGRect.Left, 2);
-    end
-    else
-    begin
-      GetMenuBarInfo(TCustomForm(AMenuItem.GetParentMenu.Parent).Handle, OBJID_MENU, 0, @Info);
-      GetWindowRect(TCustomForm(AMenuItem.GetParentMenu.Parent).Handle, @WndRect);
-      if IsRightToLeft then
-      begin
-        BGRect.Right := (Info.rcBar.Right - WndRect.Left);
-        BGClip.Right := BGRect.Right;
-      end
-      else
-      begin
-        BGRect.Left := (Info.rcBar.Left - WndRect.Left);
-        BGClip.Left := BGRect.Left;
-      end;
-    end;
-    if IsRightToLeft then
-      dec(BGRect.Left, 2)
-    else
-      inc(BGRect.Right, 2);
+    inc(BGRect.Right, 2);
+    dec(BGRect.Left, 2);
   end;
   Tmp := ThemeServices.GetElementDetails(BarState[(ItemState and ODS_INACTIVE) = 0]);
   ThemeDrawElement(AHDC, Tmp, BGRect, @BGClip);

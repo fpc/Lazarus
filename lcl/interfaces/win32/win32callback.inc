@@ -2384,6 +2384,16 @@ begin
         ThemeServices.IntfDoOnThemeChange;
       end;
     end;
+    WM_NCPAINT:
+    begin
+      if (lWinControl is TCustomForm) and
+         (TCustomForm(lWinControl).Menu <> nil) and
+         (GetMenu(TCustomForm(lWinControl).Handle) <> 0) then
+      begin
+        // request menu bar repaint
+        Windows.SetProp(TCustomForm(lWinControl).Handle, 'LCLMenuBarRedraw', 0);
+      end;
+    end;
 
     { >= WM_USER }
 
