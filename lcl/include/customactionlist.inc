@@ -161,6 +161,11 @@ begin
   if Assigned(FOnExecute) then FOnExecute(Action, Result);
 end;
 
+function TCustomActionList.GetEnumerator: TActionListEnumerator;
+begin
+  Result := TActionListEnumerator.Create(Self);
+end;
+
 function TCustomActionList.UpdateAction(Action: TBasicAction): Boolean;
 begin
   Result := False;

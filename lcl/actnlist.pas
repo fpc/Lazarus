@@ -61,6 +61,19 @@ type
 
   TContainedActionClass = class of TContainedAction;
 
+  { TActionListEnumerator }
+
+  TActionListEnumerator = class
+  private
+    FList: TCustomActionList;
+    FPosition: Integer;
+    function GetCurrent: TContainedAction;
+  public
+    constructor Create(AList: TCustomActionList);
+    function MoveNext: Boolean;
+    property Current: TContainedAction read GetCurrent;
+  end;
+
 
   { TCustomActionList }
 
@@ -96,13 +109,15 @@ type
   public
     constructor Create(AOwner: TComponent); override;
     destructor Destroy; override;
+
+    function ActionByName(const ActionName: string): TContainedAction;
     function ExecuteAction(Action: TBasicAction): Boolean; override;
+    function GetEnumerator: TActionListEnumerator;
+    function IndexOfName(const ActionName: string): integer;
     function IsShortCut(var Message: TLMKey): Boolean;
     function UpdateAction(Action: TBasicAction): Boolean; override;
-    function IndexOfName(const ActionName: string): integer;
-    function ActionByName(const ActionName: string): TContainedAction;
-    property Actions[Index: Integer]: TContainedAction
-      read GetAction write SetAction; default;
+
+    property Actions[Index: Integer]: TContainedAction read GetAction write SetAction; default;
     property ActionCount: Integer read GetActionCount;
     property Images: TCustomImageList read FImages write SetImages;
     property State: TActionListState read FState write SetState default asNormal;
@@ -333,18 +348,38 @@ begin
     raise Exception.Create(SInvalidActionCreation);
 end;
 
-procedure Register;
-begin
-  RegisterComponents('Standard',[TActionList]);
-  RegisterNoIcon([TAction]);
-end;
-
 {$I containedaction.inc}
 {$I customactionlist.inc}
 {$I actionlink.inc}
 {$I shortcutlist.inc}
 {$I customaction.inc}
 {$I lclaction.inc}
+
+{ TActionListEnumerator }
+
+function TActionListEnumerator.GetCurrent: TContainedAction;
+begin
+  Result := FList.Actions[FPosition];
+end;
+
+constructor TActionListEnumerator.Create(AList: TCustomActionList);
+begin
+  inherited Create;
+  FList := AList;
+  FPosition := -1;
+end;
+
+function TActionListEnumerator.MoveNext: Boolean;
+begin
+  inc(FPosition);
+  Result := FPosition < FList.ActionCount;
+end;
+
+procedure Register;
+begin
+  RegisterComponents('Standard',[TActionList]);
+  RegisterNoIcon([TAction]);
+end;
 
 initialization
   ApplicationActionComponent:=nil;
