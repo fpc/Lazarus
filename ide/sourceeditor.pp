@@ -6796,9 +6796,6 @@ begin
                           Reason, SetIndentProc);
     if Result then exit;
   end;
-  {$IFNDEF EnableIndenter}
-  exit;
-  {$ENDIF}
   if not CodeToolsOpts.IndentationEnabled then exit;
   if not (SrcEdit.SyntaxHighlighterType in [lshFreePascal, lshDelphi]) then
     exit;
@@ -6816,7 +6813,9 @@ begin
   else
     exit;
   end;
+  {$IFDEF VerboseIndenter}
   debugln(['TSourceNotebook.EditorGetIndent LogCaret=',dbgs(LogCaret),' FirstLinePos=',FirstLinePos,' LastLinePos=',LastLinePos]);
+  {$ENDIF}
   Result := True;
   SrcEdit.UpdateCodeBuffer;
   CodeBuf:=SrcEdit.CodeBuffer;
@@ -6827,42 +6826,56 @@ begin
     CodeBuf.LineColToPosition(FirstLinePos,1,p);
   end;
   if p<1 then exit;
+  {$IFDEF VerboseIndenter}
   if FirstLinePos>0 then
     DebugLn(['TSourceNotebook.EditorGetIndent Firstline-1=',SrcEdit.Lines[FirstLinePos-1]]);
   DebugLn(['TSourceNotebook.EditorGetIndent Firstline+0=',SrcEdit.Lines[FirstLinePos]]);
   if FirstLinePos<SrcEdit.LineCount then
     DebugLn(['TSourceNotebook.EditorGetIndent Firstline+1=',SrcEdit.Lines[FirstLinePos+1]]);
+  {$ENDIF}
   NestedComments:=CodeToolBoss.GetNestedCommentsFlagForFile(CodeBuf.Filename);
   if not CodeToolBoss.Indenter.GetIndent(CodeBuf.Source,p,NestedComments,
     true,NewIndent,CodeToolsOpts.IndentContextSensitive)
   then exit;
   if not NewIndent.IndentValid then exit;
   Indent:=NewIndent.Indent;
+  {$IFDEF VerboseIndenter}
   DebugLn(['TSourceNotebook.EditorGetIndent Indent=',Indent]);
+  {$ENDIF}
   case Reason of
   ecLineBreak,ecInsertLine:
     begin
+      {$IFDEF VerboseIndenter}
       DebugLn(['TSourceNotebook.EditorGetIndent Apply to FirstLinePos+1']);
+      {$ENDIF}
       SetIndentProc(FirstLinePos+1, Indent, 0,' ');
       SrcEdit.CursorScreenXY:=Point(Indent+1,SrcEdit.CursorScreenXY.Y);
     end;
   ecPaste:
     begin
+      {$IFDEF VerboseIndenter}
       DebugLn(['TSourceNotebook.EditorGetIndent Apply to lines ',FirstLinePos,' .. ',LastLinePos]);
+      {$ENDIF}
       Line:=SrcEdit.EditorComponent.Lines[FirstLinePos-1];
       OldIndent:=GetLineIndentWithTabs(Line,1,SrcEdit.EditorComponent.TabWidth);
+      {$IFDEF VerboseIndenter}
       DebugLn(['TSourceNotebook.EditorGetIndent OldIndent=',OldIndent,' Line=',dbgstr(Line)]);
+      {$ENDIF}
       for i:=FirstLinePos to LastLinePos do begin
         if i>=SrcEdit.EditorComponent.Lines.Count then break;
         Line:=SrcEdit.EditorComponent.Lines[i-1];
         CurIndent:=GetLineIndentWithTabs(Line,1,SrcEdit.EditorComponent.TabWidth);
+        {$IFDEF VerboseIndenter}
         DebugLn(['TSourceNotebook.EditorGetIndent CurIndent=',CurIndent,' OldIndent=',OldIndent,' Indent=',Indent,' Line="',Line,'"']);
+        {$ENDIF}
         CurIndent:=CurIndent-OldIndent+Indent;
         if CurIndent<0 then begin
           dec(Indent,CurIndent);
           CurIndent:=0;
         end;
+        {$IFDEF VerboseIndenter}
         DebugLn(['TSourceNotebook.EditorGetIndent ']);
+        {$ENDIF}
         SetIndentProc(i, CurIndent, 0,' ');
       end;
     end;

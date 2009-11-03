@@ -1067,7 +1067,9 @@ function TFullyAutomaticBeautifier.FindPolicyInExamples(StartCode: TCodeBuffer;
   begin
     Policies:=nil;
     if Code=nil then exit(true);
+    {$IFDEF VerboseIndenter}
     DebugLn(['TFullyAutomaticBeautifier.FindPolicyInExamples ',Code.Filename]);
+    {$ENDIF}
     // search Policies for code
     AVLNode:=FCodePolicies.FindKey(Code,@CompareCodeWithFABPolicy);
     if AVLNode=nil then begin
@@ -1211,7 +1213,9 @@ var
   r: PChar;
   p: LongInt;
 begin
+  {$IFDEF VerboseIndenter}
   DebugLn(['TFullyAutomaticBeautifier.FindStackPosForBlockCloseAtPos START']);
+  {$ENDIF}
   Result:=Stack.Top;
   if Result<0 then exit;
   if (CleanPos<1) or (CleanPos>length(Source))
@@ -1219,9 +1223,13 @@ begin
     exit;
   p:=CleanPos;
   ReadRawNextPascalAtom(Source,p,AtomStart,NestedComments);
+  {$IFDEF VerboseIndenter}
   DebugLn(['TFullyAutomaticBeautifier.FindStackPosForBlockCloseAtPos ',AtomStart<>CleanPos,' CleanPos=',dbgstr(copy(Source,CleanPos,10)),' AtomStart=',dbgstr(copy(Source,AtomStart,10))]);
+  {$ENDIF}
   if AtomStart<>CleanPos then exit;
+  {$IFDEF VerboseIndenter}
   DebugLn(['TFullyAutomaticBeautifier.FindStackPosForBlockCloseAtPos Atom=',copy(Source,AtomStart,p-AtomStart)]);
+  {$ENDIF}
   r:=@Source[AtomStart];
   case UpChars[r^] of
   'B':
@@ -1355,8 +1363,10 @@ begin
     if CompareIdentifiers('VAR',r)=0 then
       EndIdentifierSectionAndProc;
   end;
+  {$IFDEF VerboseIndenter}
   if Stack.Top<>Result then
     DebugLn(['TFullyAutomaticBeautifier.FindStackPosForBlockCloseAtPos block close: Stack.Top=',Stack.Top,' Result=',Result]);
+  {$ENDIF}
 end;
 
 procedure TFullyAutomaticBeautifier.WriteDebugReport(Msg: string;
@@ -1410,7 +1420,9 @@ var
     BlockIndent:=Policies.GetSmallestIndent(Block.Typ);
     if (BlockIndent<0) then exit;
     // policy found
+    {$IFDEF VerboseIndenter}
     DebugLn(['TFullyAutomaticBeautifier.GetIndent policy found: Block.Typ=',FABBlockTypeNames[Block.Typ],' BlockIndent=',BlockIndent]);
+    {$ENDIF}
     Indent.Indent:=GetLineIndentWithTabs(Source,Block.StartPos,DefaultTabWidth)
                    +BlockIndent;
     Indent.IndentValid:=true;
@@ -1448,13 +1460,19 @@ begin
     Policies.Code.Source:=Source;
     {$ENDIF}
     // parse source in front
+    {$IFDEF VerboseIndenter}
     DebugLn(['TFullyAutomaticBeautifier.GetIndent "',dbgstr(copy(Source,CleanPos-10,10)),'|',dbgstr(copy(Source,CleanPos,10)),'"']);
+    {$ENDIF}
     ParseSource(Source,1,CleanPos,NewNestedComments,Stack,Policies,
                 LastAtomStart,LastAtomEnd);
+    {$IFDEF VerboseIndenter}
     WriteDebugReport('After parsing code in front:',Stack);
+    {$ENDIF}
     if (LastAtomStart>0) and (CleanPos>LastAtomStart) then begin
       // in comment or atom
+      {$IFDEF VerboseIndenter}
       DebugLn(['TFullyAutomaticBeautifier.GetIndent parsed code in front: position in middle of atom, e.g. comment']);
+      {$ENDIF}
       GetDefaultSrcIndent(Source,CleanPos,NewNestedComments,Indent);
       exit(Indent.IndentValid);
     end;
@@ -1467,7 +1485,9 @@ begin
 
     if (StackIndex<0) then begin
       // no context
+      {$IFDEF VerboseIndenter}
       DebugLn(['TFullyAutomaticBeautifier.GetIndent parsed code in front: no context']);
+      {$ENDIF}
       GetDefaultSrcIndent(Source,CleanPos,NewNestedComments,Indent);
       exit(Indent.IndentValid);
     end;
@@ -1476,13 +1496,17 @@ begin
 
     if StackIndex>0 then
       ParentBlock:=Stack.Stack[StackIndex-1];
+    {$IFDEF VerboseIndenter}
     DebugLn(['TFullyAutomaticBeautifier.GetIndent parsed code in front: context=',FABBlockTypeNames[ParentBlock.Typ],'/',FABBlockTypeNames[Block.Typ],' indent=',GetLineIndentWithTabs(Source,Block.StartPos,DefaultTabWidth)]);
+    {$ENDIF}
     if CheckPolicies(Policies,Result) then exit;
 
     if ContextLearn then begin
       // parse source behind
       ParseSource(Source,CleanPos,length(Source)+1,NewNestedComments,Stack,Policies);
+      {$IFDEF VerboseIndenter}
       DebugLn(['TFullyAutomaticBeautifier.GetIndent parsed source behind']);
+      {$ENDIF}
       if CheckPolicies(Policies,Result) then exit;
     end;
   finally
@@ -1494,7 +1518,9 @@ begin
 
   // parse examples
   Policies:=FindPolicyInExamples(nil,ParentBlock.Typ,Block.Typ);
+  {$IFDEF VerboseIndenter}
   DebugLn(['TFullyAutomaticBeautifier.GetIndent parsed examples']);
+  {$ENDIF}
   if CheckPolicies(Policies,Result) then exit;
 
   //GetDefaultIndentPolicy(ParentBlock.Typ,Block.Typ);
@@ -1517,7 +1543,9 @@ var
     BlockIndent:=Policies.GetSmallestIndent(Item^.Block.Typ);
     if (BlockIndent<0) then exit;
     // policy found
+    {$IFDEF VerboseIndenter}
     DebugLn(['TFullyAutomaticBeautifier.GetIndent policy found: Block.Typ=',FABBlockTypeNames[Item^.Block.Typ],' BlockIndent=',BlockIndent]);
+    {$ENDIF}
     Item^.Indent.Indent:=GetLineIndentWithTabs(Source,Item^.Block.StartPos,DefaultTabWidth)
                    +BlockIndent;
     Item^.Indent.IndentValid:=true;
@@ -1566,7 +1594,9 @@ begin
       Item:=@Positions.Items[ItemIndex];
       if ItemIndex=0 then begin
         // parse source in front
+        {$IFDEF VerboseIndenter}
         DebugLn(['TFullyAutomaticBeautifier.GetIndent Index=',ItemIndex,' "',dbgstr(copy(Source,Item^.CleanPos-10,10)),'|',dbgstr(copy(Source,Item^.CleanPos,10)),'"']);
+        {$ENDIF}
         ParseSource(Source,1,Item^.CleanPos,NewNestedComments,Stack,Policies,
                     LastAtomStart,LastAtomEnd);
       end else begin
@@ -1575,10 +1605,14 @@ begin
                     Item^.CleanPos,NewNestedComments,Stack,nil,
                     LastAtomStart,LastAtomEnd);
       end;
+      {$IFDEF VerboseIndenter}
       WriteDebugReport('After parsing code: ',Stack);
+      {$ENDIF}
       if (LastAtomStart>0) and (Item^.CleanPos>LastAtomStart) then begin
         // in comment or atom
+        {$IFDEF VerboseIndenter}
         DebugLn(['TFullyAutomaticBeautifier.GetIndent Index=',ItemIndex,' parsed code in front: position in middle of atom, e.g. comment']);
+        {$ENDIF}
         GetDefaultSrcIndent(Source,Item^.CleanPos,NewNestedComments,Item^.Indent);
         if Item^.Indent.IndentValid then begin
           dec(Needed);
@@ -1593,7 +1627,9 @@ begin
                                                      NewNestedComments,Stack);
         if (StackIndex<0) then begin
           // no context
+          {$IFDEF VerboseIndenter}
           DebugLn(['TFullyAutomaticBeautifier.GetIndent Index=',ItemIndex,' parsed code in front: no context']);
+          {$ENDIF}
           GetDefaultSrcIndent(Source,Item^.CleanPos,NewNestedComments,Item^.Indent);
           if Item^.Indent.IndentValid then begin
             dec(Needed);
@@ -1611,7 +1647,9 @@ begin
 
           if StackIndex>0 then
             Item^.ParentBlock:=Stack.Stack[StackIndex-1];
+          {$IFDEF VerboseIndenter}
           DebugLn(['TFullyAutomaticBeautifier.GetIndent parsed code in front: context=',FABBlockTypeNames[Item^.ParentBlock.Typ],'/',FABBlockTypeNames[Item^.Block.Typ],' indent=',GetLineIndentWithTabs(Source,Item^.Block.StartPos,DefaultTabWidth)]);
+          {$ENDIF}
           if CheckPolicies(Policies,Item) then exit(true);
         end;
       end;
@@ -1619,7 +1657,9 @@ begin
 
     // parse source behind
     ParseSource(Source,Item^.CleanPos,length(Source)+1,NewNestedComments,Stack,Policies);
+    {$IFDEF VerboseIndenter}
     DebugLn(['TFullyAutomaticBeautifier.GetIndent parsed source behind']);
+    {$ENDIF}
     for ItemIndex:=0 to Positions.Count-1 do begin
       Item:=@Positions.Items[ItemIndex];
       if (not Item^.Indent.IndentValid) and (Item^.Block.Typ<>bbtNone) then
@@ -1636,7 +1676,9 @@ begin
     Item:=@Positions.Items[ItemIndex];
     if (not Item^.Indent.IndentValid) and (Item^.Block.Typ<>bbtNone) then begin
       Policies:=FindPolicyInExamples(nil,Item^.ParentBlock.Typ,Item^.Block.Typ);
+      {$IFDEF VerboseIndenter}
       DebugLn(['TFullyAutomaticBeautifier.GetIndent parsed examples']);
+      {$ENDIF}
       if (Policies<>nil) and CheckPolicies(Policies,Item) then
         exit(true);
     end;

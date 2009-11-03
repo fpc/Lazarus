@@ -430,7 +430,7 @@ begin
     end;
   end;
 
-  {$IFDEF EnableIndenter}
+  {$IFDEF VerboseIndenter}
   DebugLn(['TSynBeautifier.ApplyIndent IndentChars="',dbgstr(IndentChars),' Indent=',Indent]);
   {$ENDIF}
 
@@ -439,7 +439,7 @@ begin
   if (CharMix <> '') and not((FIndentType = sbitPositionCaret) and (FCurrentLines[LinePos-1] = '')) then
     FCurrentLines.EditInsert(1, LinePos, CharMix);
 
-  {$IFDEF EnableIndenter}
+  {$IFDEF VerboseIndenter}
   DebugLn(['TSynBeautifier.ApplyIndent Line="',dbgstr(FCurrentLines.ExpandedStrings[LinePos-1]),'"']);
   {$ENDIF}
 end;
