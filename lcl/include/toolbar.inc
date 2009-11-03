@@ -370,6 +370,11 @@ begin
   end;
 end;
 
+function TToolBar.GetEnumerator: TToolBarEnumerator;
+begin
+  Result := TToolBarEnumerator.Create(Self);
+end;
+
 procedure TToolBar.Paint;
 begin
   if csDesigning in ComponentState then

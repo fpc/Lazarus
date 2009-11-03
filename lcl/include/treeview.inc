@@ -2236,6 +2236,11 @@ begin
   if FUpdateCount = 0 then SetUpdateState(False);
 end;
 
+function TTreeNodes.GetEnumerator: TTreeNodesEnumerator;
+begin
+  Result := TTreeNodesEnumerator.Create(Self);
+end;
+
 procedure TTreeNodes.GrowTopLvlItems;
 begin
   if FTopLvlItems<>nil then begin

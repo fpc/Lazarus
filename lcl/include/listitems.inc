@@ -387,6 +387,11 @@ begin
   Result := nil;
 end;
 
+function TListItems.GetEnumerator: TListItemsEnumerator;
+begin
+  Result := TListItemsEnumerator.Create(Self);
+end;
+
 {------------------------------------------------------------------------------}
 {   TListItems DefineProperties                                                }
 {------------------------------------------------------------------------------}

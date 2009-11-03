@@ -782,6 +782,19 @@ type
   public
     procedure SetDataIndex(ADataIndex: Integer);
   end;
+
+  { TListItemsEnumerator }
+
+  TListItemsEnumerator = class
+  private
+    FItems: TListItems;
+    FPosition: Integer;
+    function GetCurrent: TListItem;
+  public
+    constructor Create(AItems: TListItems);
+    function MoveNext: Boolean;
+    property Current: TListItem read GetCurrent;
+  end;
   
   { TListItems }
   {
@@ -825,6 +838,7 @@ type
                      Partial, Inclusive, Wrap: Boolean;
                      PartStart: Boolean = True): TListItem;
     function FindData(const AData: Pointer): TListItem;
+    function GetEnumerator: TListItemsEnumerator;
     function IndexOf(const AItem: TListItem): Integer;
     function Insert(const AIndex: Integer) : TListItem;
     procedure InsertItem(AItem: TListItem; const AIndex: Integer);
@@ -1589,6 +1603,18 @@ type
     property OnStartDrag;
   end;
 
+  { TToolBarEnumerator }
+
+  TToolBarEnumerator = class
+  private
+    FToolBar: TToolBar;
+    FPosition: Integer;
+    function GetCurrent: TToolButton;
+  public
+    constructor Create(AToolBar: TToolBar);
+    function MoveNext: Boolean;
+    property Current: TToolButton read GetCurrent;
+  end;
 
   { TToolBar }
   
@@ -1679,6 +1705,7 @@ type
     procedure FlipChildren(AllLevels: Boolean); override;
     procedure BeginUpdate; virtual;
     procedure EndUpdate; virtual;
+    function GetEnumerator: TToolBarEnumerator;
     procedure Paint; override;
     procedure SetButtonSize(NewButtonWidth, NewButtonHeight: integer);
     function CanFocus: Boolean; override;
@@ -2118,6 +2145,18 @@ type
     property Top: integer read GetTop;
   end;
 
+  { TTreeNodesEnumerator }
+
+  TTreeNodesEnumerator = class
+  private
+    FNodes: TTreeNodes;
+    FPosition: Integer;
+    function GetCurrent: TTreeNode;
+  public
+    constructor Create(ANodes: TTreeNodes);
+    function MoveNext: Boolean;
+    property Current: TTreeNode read GetCurrent;
+  end;
 
   { TTreeNodes }
 
@@ -2187,6 +2226,7 @@ type
     function IsMultiSelection: boolean;
     procedure Delete(Node: TTreeNode);
     procedure EndUpdate;
+    function GetEnumerator: TTreeNodesEnumerator;
     function GetFirstNode: TTreeNode;
     function GetLastNode: TTreeNode; // last top level node
     function GetLastSubNode: TTreeNode; // absolute last node
@@ -2904,15 +2944,6 @@ const
   ScrollBarWidth = 0;
   AllPanelsParts = [Low(TPanelPart)..High(TPanelPart)];
 
-{ Toolbar menu support }
-
-procedure Register;
-begin
-  RegisterComponents('Common Controls',[TTrackbar,TProgressBar,TTreeView,
-    TListView,TStatusBar,TToolBar,TUpDown,TPageControl,TTabControl, THeaderControl]);
-  RegisterNoIcon([TToolButton,TTabSheet]);
-end;
-
 {$I statusbar.inc}
 {$I statuspanel.inc}
 {$I statuspanels.inc}
@@ -2931,5 +2962,72 @@ end;
 {$I trackbar.inc}
 {$I treeview.inc}
 {$I headercontrol.inc}
+
+{ TTreeNodesEnumerator }
+
+function TTreeNodesEnumerator.GetCurrent: TTreeNode;
+begin
+  Result := FNodes[FPosition];
+end;
+
+constructor TTreeNodesEnumerator.Create(ANodes: TTreeNodes);
+begin
+  inherited Create;
+  FNodes := ANodes;
+  FPosition := -1;
+end;
+
+function TTreeNodesEnumerator.MoveNext: Boolean;
+begin
+  inc(FPosition);
+  Result := FPosition < FNodes.Count;
+end;
+
+{ TListItemsEnumerator }
+
+function TListItemsEnumerator.GetCurrent: TListItem;
+begin
+  Result := FItems[FPosition];
+end;
+
+constructor TListItemsEnumerator.Create(AItems: TListItems);
+begin
+  inherited Create;
+  FItems := AItems;
+  FPosition := -1;
+end;
+
+function TListItemsEnumerator.MoveNext: Boolean;
+begin
+  inc(FPosition);
+  Result := FPosition < FItems.Count;
+end;
+
+{ TToolBarEnumerator }
+
+function TToolBarEnumerator.GetCurrent: TToolButton;
+begin
+  Result := FToolBar.Buttons[FPosition];
+end;
+
+constructor TToolBarEnumerator.Create(AToolBar: TToolBar);
+begin
+  inherited Create;
+  FToolBar := AToolBar;
+  FPosition := -1;
+end;
+
+function TToolBarEnumerator.MoveNext: Boolean;
+begin
+  inc(FPosition);
+  Result := FPosition < FToolBar.ButtonCount;
+end;
+
+procedure Register;
+begin
+  RegisterComponents('Common Controls',[TTrackbar,TProgressBar,TTreeView,
+    TListView,TStatusBar,TToolBar,TUpDown,TPageControl,TTabControl, THeaderControl]);
+  RegisterNoIcon([TToolButton,TTabSheet]);
+end;
 
 end.
