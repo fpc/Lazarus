@@ -6823,7 +6823,7 @@ begin
   ecLineBreak,ecInsertLine:
     CodeBuf.LineColToPosition(LogCaret.Y,LogCaret.X,p);
   ecPaste:
-    CodeBuf.LineColToPosition(FirstLinePos-1,1,p);
+    CodeBuf.LineColToPosition(FirstLinePos,1,p);
   end;
   if p<1 then exit;
   if FirstLinePos>0 then
