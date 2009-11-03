@@ -104,7 +104,7 @@ begin
   SynEdit.Options  := SynEdit.Options  - [eoGroupUndo];
   for i := 0 to length(data) div 4 - 1 do begin
     st := [];
-    if data[i*4+0].vinteger = VK_N then st := [ssCtrl];
+    if data[i*4+0].vinteger in [VK_A..VK_Z] then st := [ssCtrl];
     DoKeyPress(data[i*4+0].vinteger, st);
     TestIsCaret('Key #'+IntToStr(i), data[i*4+1].vinteger, data[i*4+2].vinteger);
     TestIsFullText('Key #'+IntToStr(i), data2txt(i*4+3));
@@ -143,7 +143,7 @@ begin
   SynEdit.Options  := SynEdit.Options  + [eoGroupUndo];
   for i := 0 to length(data) div 4 - 1 do begin
     st := [];
-    if data[i*4+0].vinteger = VK_N then st := [ssCtrl];
+    if data[i*4+0].vinteger in [VK_A..VK_Z] then st := [ssCtrl];
     DoKeyPress(data[i*4+0].vinteger, st);
     TestIsCaret('Key #'+IntToStr(i), data[i*4+1].vinteger, data[i*4+2].vinteger);
     TestIsFullText('Key #'+IntToStr(i), data2txt(i*4+3));
@@ -597,7 +597,7 @@ begin
   FGotOldLogCaret := OldLogCaret;
   FGotFirstLinePos := FirstLinePos;
   FGotLastLinePos := LastLinePos;
-  FGotReason := LastLinePos;
+  FGotReason := Reason;
 
   for i := 0 to high(FCallBackData) do
     SetIndentProc( FCallBackData[i].LinePos,
@@ -613,7 +613,7 @@ end;
 procedure TTestSynBeautifier.IndentCallBack;
   function TestText: TStringArray;
   begin
-    SetLength(Result, 11);
+    SetLength(Result, 13);
     Result[0] := '  a;';
     Result[1] := #9+'b';
     Result[2] := '      c';
@@ -624,7 +624,9 @@ procedure TTestSynBeautifier.IndentCallBack;
     Result[7] := '';
     Result[8] := '    y';
     Result[9] := '     z';
-    Result[10]:= '';
+    Result[10]:= '  mn';
+    Result[11]:= '  op';
+    Result[12]:= '';
   end;
   function ExpText(rpl: array of const): String;
   begin
@@ -653,6 +655,17 @@ procedure TTestSynBeautifier.IndentCallBack;
       end;
       FCallBackData[i].IndentCharsFromLinePos := Action[i*5 + 4].VInteger;
     end;
+end;
+
+  procedure TestCbArgs(Name: String; OldX, OldY, NewX, NewY, FirstLine, LastLine, Reason: integer);
+  begin
+    AssertEquals('CB-Args: Got Caret.x Before', OldX, FGotOldLogCaret.x);
+    AssertEquals('CB-Args: Got Caret.y Before', OldY, FGotOldLogCaret.y);
+    AssertEquals('CB-Args: Got Caret.x After', NewX, FGotLogCaret.x); // x=1 => before auto indent
+    AssertEquals('CB-Args: Got Caret.y After', NewY, FGotLogCaret.y);
+    AssertEquals('CB-Args: FirstLine', FirstLine, FGotFirstLinePos);
+    AssertEquals('CB-Args: LastLine', LastLine, FGotLastLinePos);
+    AssertEquals('CB-Args: Reason', Reason, FGotReason);
   end;
 
 begin
@@ -662,62 +675,165 @@ begin
     SynEdit.TabWidth := 4;
     SynEdit.TrimSpaceType := settMoveCaret;
 
-    BaseTestName := 'Callback';
+    BaseTestName := 'Callback (no trim)';
     SynEdit.Options  := SynEdit.Options + [eoAutoIndent] - [eoTrimTrailingSpaces, eoScrollPastEol];
     TSynBeautifier(SynEdit.Beautifier).IndentType := sbitSpace; // sbitCopySpaceTab;
 
 
     SetCB(False, []);
     TestRedoUndo('cb result = false',   TestText,  3,2, [ VK_RETURN, 5,3, ExpText([ -3, '    ']) ]  );
-    AssertEquals('Got Caret.x Before', 3, FGotOldLogCaret.x);
-    AssertEquals('Got Caret.y Before', 2, FGotOldLogCaret.y);
-    AssertEquals('Got Caret.x After', 1, FGotLogCaret.x); // x=1 => before auto indent
-    AssertEquals('Got Caret.y After', 3, FGotLogCaret.y);
+    TestCbArgs('cb result = false', 3,2, 1,3, 3,3, ecLineBreak);
 
     SetCB(True, []);
     TestRedoUndo('cb result = true ',   TestText,  3,2, [ VK_RETURN, 1,3, ExpText([ -3, '']) ]  );
+    TestCbArgs('cb result = true', 3,2, 1,3, 3,3, ecLineBreak);
 
     // LinPos, Indend, RelativeLinePos=0, Char(s), indentFromLine=-1,
     SetCB(True, [2, 2, 0, '', -1,
                  3, 3, 0, '', -1
     ]);
     TestRedoUndo('cb absolute',   TestText,  3,2, [ VK_RETURN, 1,3, ExpText([ 2, '  b', '   ']) ]  ); // caret is NOT adjusted
+    TestCbArgs('cb absolute', 3,2, 1,3, 3,3, ecLineBreak);
 
     SetCB(True, [2, 3, 0, '', -1,
                  3, 3, 0, '',  2,
                  4, 2, 0, '', -1
     ]);
     TestRedoUndo('cb absolute 2', TestText,  3,2, [ VK_RETURN, 1,3, ExpText([ 2, 2, '   b', '   ', '  c']) ]  );
+    TestCbArgs('cb absolute 2', 3,2, 1,3, 3,3, ecLineBreak);
 
     SetCB(True, [2, 7, 0, '',  2,
                  3, 6, 0, '',  2
     ]);
     TestRedoUndo('cb absolute, keep-cur',   TestText,  3,2, [ VK_RETURN, 1,3, ExpText([ 2, #9+'   b', #9+'  ']) ]  );
+    TestCbArgs('cb absolute, keep-cur', 3,2, 1,3, 3,3, ecLineBreak);
 
     SetCB(True, [2, -2, 2, '', -1,
                  3,  3, 2, '', -1
     ]);
     TestRedoUndo('cb relative ',   TestText,  3,2, [ VK_RETURN, 1,3, ExpText([ 2, '  b', '     ']) ]  );
+    TestCbArgs('cb relative ', 3,2, 1,3, 3,3, ecLineBreak);
 
     SetCB(True, [2,  3, 2, '', -1,
                  3, -1, 2, '', -1
     ]);
     TestRedoUndo('cb relative 2',  TestText,  3,2, [ VK_RETURN, 1,3, ExpText([ 2, '       b', '      ']) ]  );
+    TestCbArgs('cb relative 2', 3,2, 1,3, 3,3, ecLineBreak);
 
     SetCB(True, [2,  3, 2, '', -1,
                  3,  1, 3, '', -1
     ]);
     TestRedoUndo('cb relative 3',  TestText,  3,2, [ VK_RETURN, 1,3, ExpText([ 2, '       b', ' ']) ]  );
+    TestCbArgs('cb relative 3', 3,2, 1,3, 3,3, ecLineBreak);
 
     SetCB(True, [2,  3, 2, '',  2,
                  3,  0, 2, '',  2
     ]);
     TestRedoUndo('cb relative, keep',  TestText,  3,2, [ VK_RETURN, 1,3, ExpText([ 2, #9+'   b', #9+'   ']) ]  );
+    TestCbArgs('cb relative, keep', 3,2, 1,3, 3,3, ecLineBreak);
 
     SetCB(True, [1, 9, 0, #9, -1]);
-    TestRedoUndo('cb abs; char=tab',   TestText,  5,1, [ VK_RETURN, 1,2, ExpText([ 1, #9#9+' a;', '']) ]  ); // caret is NOT adjusted
+    TestRedoUndo('cb abs; char=tab',   TestText,  5,1, [ VK_RETURN, 1,2, ExpText([ 1, #9#9+' a;', '']) ]  );
+    TestCbArgs('cb abs; char=tab', 5,1, 1,2, 2,2, ecLineBreak);
 
-    finally
+    (* Paste *)
+    ClipBoardText := '1';
+    SetCB(True, []);
+    TestRedoUndo('paste 1 lines, noaction',  TestText,  5,11, [ VK_V, 6,11, ExpText([ 11, '  mn1']) ]  );
+    TestCbArgs('paste 1 lines, noaction', 5,11, 6,11, 11,11, ecPaste);
+
+    ClipBoardText := '1'+LineEnding+'2';
+    SetCB(True, []);
+    TestRedoUndo('paste 2 lines, noaction',  TestText,  5,11, [ VK_V, 2,12, ExpText([ 11, '  mn1', '2']) ]  );
+    TestCbArgs('paste 2 lines, noaction', 5,11, 2,12, 11,12, ecPaste);
+
+    ClipBoardText := '1'+LineEnding+'2'+LineEnding+'3';
+    SetCB(True, []);
+    TestRedoUndo('paste 3 lines, noaction',  TestText,  5,11, [ VK_V, 2,13, ExpText([ 11, '  mn1', '2', '3']) ]  );
+    TestCbArgs('paste 3 lines, noaction', 5,11, 2,13, 11,13, ecPaste);
+
+    ClipBoardText := '1'+LineEnding+'2'+LineEnding+'3'+LineEnding+'4';
+    SetCB(True, []);
+    TestRedoUndo('paste 4 lines, noaction',  TestText,  5,11, [ VK_V, 2,14, ExpText([ 11, '  mn1', '2', '3', '4']) ]  );
+    TestCbArgs('paste 4 lines, noaction', 5,11, 2,14, 11,14, ecPaste);
+
+    //ClipBoardText := '1'+LineEnding+'2'+LineEnding+'3'+LineEnding+'4'+LineEnding;
+    //SetCB(True, []);
+    //TestRedoUndo('paste 4+ lines, noaction',  TestText,  5,11, [ VK_V, 1,15, ExpText([ 11, '  mn1', '2', '3', '4', '']) ]  );
+    //TestCbArgs('paste 4+ lines, noaction', 5,11, 1,15, 11,15, ecPaste);
+
+    ClipBoardText := '1'+LineEnding+'2'+LineEnding+'3'+LineEnding+'4';
+    SetCB(True, []);
+    TestRedoUndo('paste 4 lines on empty, noaction',  TestText,  1,8, [ VK_V, 2,11, ExpText([ 8, '1', '2', '3', '4']) ]  );
+    TestCbArgs('paste 4 lines on empty, noaction', 1,8, 2,11, 8,11, ecPaste);
+
+    ClipBoardText := '1'+LineEnding+'2'+LineEnding+'3'+LineEnding+'4'+LineEnding +'5';
+    SetCB(True, []);
+    TestRedoUndo('paste 5 lines, noaction',  TestText,  5,11, [ VK_V, 2,15, ExpText([ 11, '  mn1', '2', '3', '4', '5']) ]  );
+    TestCbArgs('paste 5 lines, noaction', 5,11, 2,15, 11,15, ecPaste);
+
+    ClipBoardText := '1'+LineEnding+'2';
+    SetCB(True, []);
+    TestRedoUndo('paste 2 lines middle, noaction',  TestText,  4,11, [ VK_V, 2,12, ExpText([ 11, '  m1', '2n']) ]  );
+    TestCbArgs('paste 2 lines middle, noaction', 4,11, 2,12, 11,12, ecPaste);
+
+    ClipBoardText := '1'+LineEnding+'2'+LineEnding+'3';
+    SetCB(True, []);
+    TestRedoUndo('paste 3 lines middle, noaction',  TestText,  4,11, [ VK_V, 2,13, ExpText([ 11, '  m1', '2', '3n']) ]  );
+    TestCbArgs('paste 3 lines middle, noaction', 4,11, 2,13, 11,13, ecPaste);
+
+
+    BaseTestName := 'Callback (trim)';
+    SynEdit.Options  := SynEdit.Options + [eoTrimTrailingSpaces, eoAutoIndent] - [eoScrollPastEol];
+
+    (* Paste *)
+    ClipBoardText := '1';
+    SetCB(True, []);
+    TestRedoUndo('paste 1 lines, noaction',  TestText,  5,11, [ VK_V, 6,11, ExpText([ 11, '  mn1']) ]  );
+    TestCbArgs('paste 1 lines, noaction', 5,11, 6,11, 11,11, ecPaste);
+
+    ClipBoardText := '1'+LineEnding+'2';
+    SetCB(True, []);
+    TestRedoUndo('paste 2 lines, noaction',  TestText,  5,11, [ VK_V, 2,12, ExpText([ 11, '  mn1', '2']) ]  );
+    TestCbArgs('paste 2 lines, noaction', 5,11, 2,12, 11,12, ecPaste);
+
+    ClipBoardText := '1'+LineEnding+'2'+LineEnding+'3';
+    SetCB(True, []);
+    TestRedoUndo('paste 3 lines, noaction',  TestText,  5,11, [ VK_V, 2,13, ExpText([ 11, '  mn1', '2', '3']) ]  );
+    TestCbArgs('paste 3 lines, noaction', 5,11, 2,13, 11,13, ecPaste);
+
+    ClipBoardText := '1'+LineEnding+'2'+LineEnding+'3'+LineEnding+'4';
+    SetCB(True, []);
+    TestRedoUndo('paste 4 lines, noaction',  TestText,  5,11, [ VK_V, 2,14, ExpText([ 11, '  mn1', '2', '3', '4']) ]  );
+    TestCbArgs('paste 4 lines, noaction', 5,11, 2,14, 11,14, ecPaste);
+
+    ClipBoardText := '1'+LineEnding+'2'+LineEnding+'3'+LineEnding+'4'+LineEnding;
+    SetCB(True, []);
+    TestRedoUndo('paste 4+ lines, noaction',  TestText,  5,11, [ VK_V, 1,15, ExpText([ 11, '  mn1', '2', '3', '4', '']) ]  );
+    TestCbArgs('paste 4+ lines, noaction', 5,11, 1,15, 11,15, ecPaste);
+
+    ClipBoardText := '1'+LineEnding+'2'+LineEnding+'3'+LineEnding+'4';
+    SetCB(True, []);
+    TestRedoUndo('paste 4 lines on empty, noaction',  TestText,  1,8, [ VK_V, 2,11, ExpText([ 8, '1', '2', '3', '4']) ]  );
+    TestCbArgs('paste 4 lines on empty, noaction', 1,8, 2,11, 8,11, ecPaste);
+
+    ClipBoardText := '1'+LineEnding+'2'+LineEnding+'3'+LineEnding+'4'+LineEnding +'5';
+    SetCB(True, []);
+    TestRedoUndo('paste 5 lines, noaction',  TestText,  5,11, [ VK_V, 2,15, ExpText([ 11, '  mn1', '2', '3', '4', '5']) ]  );
+    TestCbArgs('paste 5 lines, noaction', 5,11, 2,15, 11,15, ecPaste);
+
+    ClipBoardText := '1'+LineEnding+'2';
+    SetCB(True, []);
+    TestRedoUndo('paste 2 lines middle, noaction',  TestText,  4,11, [ VK_V, 2,12, ExpText([ 11, '  m1', '2n']) ]  );
+    TestCbArgs('paste 2 lines middle, noaction', 4,11, 2,12, 11,12, ecPaste);
+
+    ClipBoardText := '1'+LineEnding+'2'+LineEnding+'3';
+    SetCB(True, []);
+    TestRedoUndo('paste 3 lines middle, noaction',  TestText,  4,11, [ VK_V, 2,13, ExpText([ 11, '  m1', '2', '3n']) ]  );
+    TestCbArgs('paste 3 lines middle, noaction', 4,11, 2,13, 11,13, ecPaste);
+
+
+  finally
     SynEdit.Beautifier.OnGetDesiredIndent := nil;
   end;
 end;

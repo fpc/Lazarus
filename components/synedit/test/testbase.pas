@@ -7,7 +7,7 @@ interface
 
 uses
   Classes, SysUtils, Forms, fpcunit, SynEdit, LCLType, LCLProc, math,
-  SynEditTypes;
+  SynEditTypes, Clipbrd;
 
 type
 
@@ -32,6 +32,7 @@ type
     FFixedBaseTestNames: Integer;
     FForm : TForm;
     FSynEdit : TTestSynEdit;
+    FClipBoardText: String;
     procedure SetBaseTestName(const AValue: String);
   protected
     function  LinesToText(Lines: Array of String; Separator: String = LineEnding;
@@ -44,6 +45,9 @@ type
     *)
     function  LinesReplace(Lines: Array of String; Repl: Array of const): TStringArray;
     function  LinesReplaceText(Lines: Array of String; Repl: Array of const): String;
+  protected
+    procedure ClipBoardRequest(const RequestedFormatID: TClipboardFormat;
+      Data: TStream);
   protected
     procedure ReCreateEdit;
     procedure SetLines(Lines: Array of String);
@@ -68,6 +72,7 @@ type
     procedure DecFixedBaseTestNames;
     property  SynEdit: TTestSynEdit read FSynEdit;
     property  Form: TForm read FForm;
+    property  ClipBoardText: String read FClipBoardText write FClipBoardText;
   protected
     procedure SetUp; override;
     procedure TearDown; override;
@@ -136,8 +141,16 @@ end;
 { TTestBase }
 
 procedure TTestBase.SetUp;
+var
+  FormatList: Array [0..1] of TClipboardFormat;
 begin
   inherited SetUp;
+  Clipboard.OnRequest := @ClipBoardRequest;
+  Clipboard.Open;
+  FormatList[0] := CF_TEXT;
+  //FormatList[1] := TSynClipboardStream.ClipboardFormatId;
+  Clipboard.SetSupportedFormats(1 {2}, @FormatList[0]);
+
   FForm := TForm.Create(nil);
   ReCreateEdit;
   FForm.Show;
@@ -147,6 +160,8 @@ end;
 procedure TTestBase.TearDown;
 begin
   inherited TearDown;
+  Clipboard.Close;
+  Clipboard.OnRequest := nil;
   FreeAndNil(FSynEdit);
   FreeAndNil(FForm);
 end;
@@ -311,6 +326,15 @@ begin
   Result := LinesToText(LinesReplace(Lines, Repl));
 end;
 
+procedure TTestBase.ClipBoardRequest(const RequestedFormatID: TClipboardFormat;
+  Data: TStream);
+begin
+  if (RequestedFormatID = CF_TEXT) and (FClipBoardText <> '') then
+    Data.Write(FClipBoardText[1], length(FClipBoardText));
+//  if RequestedFormatID = TSynClipboardStream.ClipboardFormatId then begin
+
+end;
+
 procedure TTestBase.ReCreateEdit;
 begin
   FreeAndNil(FSynEdit);
@@ -319,7 +343,7 @@ begin
   FSynEdit.Top := 0;
   FSynEdit.Left := 0;
   FSynEdit.Width:= 500;
-  FSynEdit.Height := 200; // FSynEdit.Font.Height * 20 + 2;
+  FSynEdit.Height := 250; // FSynEdit.Font.Height * 20 + 2;
 end;
 
 procedure TTestBase.SetLines(Lines: array of String);
