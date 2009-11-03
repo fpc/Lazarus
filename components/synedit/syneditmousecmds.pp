@@ -170,7 +170,7 @@ type
     function Add: TSynEditMouseAction;
     procedure Assign(Source: TPersistent); override;
     procedure AssertNoConflict(MAction: TSynEditMouseAction);
-    function Equals(Other: TSynEditMouseActions): Boolean;
+    function Equals(Other: TSynEditMouseActions): Boolean; reintroduce;
     function FindCommand(AnInfo: TSynEditMouseActionInfo;
                          APrevious: TSynEditMouseAction = nil): TSynEditMouseAction;
     procedure ResetDefaults; virtual;

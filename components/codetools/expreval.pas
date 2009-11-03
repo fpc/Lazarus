@@ -70,7 +70,7 @@ type
     property Count: integer read FCount;
     procedure Undefine(const Name: string);
     function IsDefined(const Name: string): boolean;
-    function Equals(AnExpressionEvaluator: TExpressionEvaluator): boolean;
+    function Equals(AnExpressionEvaluator: TExpressionEvaluator): boolean; reintroduce;
     procedure Assign(SourceExpressionEvaluator: TExpressionEvaluator);
     procedure AssignTo(SL: TStringList);
     function Eval(const Expression: string):string;
