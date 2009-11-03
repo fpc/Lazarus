@@ -5929,7 +5929,8 @@ begin
   StartPos:=FindStartOfAtom(Src,EndPos);
   MoveCursorToCleanPos(StartPos);
   NextAtom:=CurPos;
-  ReadNextAtom;
+  if not IsSpaceChar[Src[StartPos]] then
+    ReadNextAtom;
   NextAtomType:=GetCurrentAtomType;
   repeat
     ReadPriorAtom;
@@ -6048,9 +6049,10 @@ var
   begin
     Result:=false;
     if StartPos<1 then
-      StartPos:=FindStartOfTerm(EndPos-1,NodeTermInType(Params.ContextNode))
+      StartPos:=FindStartOfTerm(EndPos,NodeTermInType(Params.ContextNode))
     else if EndPos<1 then
       EndPos:=FindEndOfTerm(StartPos,true,WithAsOperator);
+    //DebugLn(['InitAtomQueue StartPos=',StartPos,'=',dbgstr(copy(Src,StartPos,10)),' EndPos=',dbgstr(copy(Src,EndPos,10))]);
     if (StartPos<1) then
       RaiseInternalError;
     if StartPos>SrcLen then exit;
