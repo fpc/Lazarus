@@ -94,7 +94,7 @@ type
     bbtClassInterface,
     bbtClassSection, // public, private, protected, published
     bbtTypeRoundBracket,
-    bbtTypeEdgeBracket,
+    bbtTypeEdgedBracket,
     // statement blocks
     bbtProcedure, // procedure, constructor, destructor
     bbtFunction,  // function, operator
@@ -118,7 +118,7 @@ type
     bbtIfElse,    // child of bbtIf
     bbtIfBegin,   // child of bbtIfThen or bbtIfElse
     bbtStatementRoundBracket,
-    bbtStatementEdgeBracket
+    bbtStatementEdgedBracket
     );
   TFABBlockTypes = set of TFABBlockType;
 
@@ -132,9 +132,9 @@ const
                       bbtCaseColon,bbtCaseBegin,bbtCaseElse,
                       bbtTry,bbtFinally,bbtExcept,
                       bbtIfThen,bbtIfElse,bbtIfBegin,
-                      bbtStatementRoundBracket,bbtStatementEdgeBracket];
-  bbtAllBrackets = [bbtTypeRoundBracket,bbtTypeEdgeBracket,
-                    bbtStatementRoundBracket,bbtStatementEdgeBracket];
+                      bbtStatementRoundBracket,bbtStatementEdgedBracket];
+  bbtAllBrackets = [bbtTypeRoundBracket,bbtTypeEdgedBracket,
+                    bbtStatementRoundBracket,bbtStatementEdgedBracket];
 const
   FABBlockTypeNames: array[TFABBlockType] of string = (
     'bbtNone',
@@ -157,7 +157,7 @@ const
     'bbtClassInterface',
     'bbtClassSection',
     'bbtTypeRoundBracket',
-    'bbtTypeEdgeBracket',
+    'bbtTypeEdgedBracket',
     // statement blocks
     'bbtProcedure',
     'bbtFunction',
@@ -181,7 +181,7 @@ const
     'bbtIfElse',
     'bbtIfBegin',
     'bbtStatementRoundBracket',
-    'bbtStatementEdgeBracket'
+    'bbtStatementEdgedBracket'
     );
 
 type
@@ -987,16 +987,17 @@ begin
         bbtProcedureHead:
           BeginBlock(bbtProcedureParamList);
         else
-          if Stack.TopType in bbtAllStatements then
-            BeginBlock(bbtStatementRoundBracket)
-          else
+          if Stack.TopType in bbtAllStatements then begin
+            // ignore brackets in statements, there are no consistent rules
+            // to indent them
+          end else
             BeginBlock(bbtTypeRoundBracket);
         end;
       end;
     ')':
       if p-AtomStart=1 then begin
         // round bracket close
-        EndTopMostBlock(bbtStatementEdgeBracket);
+        EndTopMostBlock(bbtStatementEdgedBracket);
         case Stack.TopType of
         bbtProcedureParamList,bbtTypeRoundBracket,bbtStatementRoundBracket:
           EndBlock;
@@ -1006,16 +1007,16 @@ begin
       if p-AtomStart=1 then begin
         // edge bracket open
         if Stack.TopType in bbtAllStatements then
-          BeginBlock(bbtStatementEdgeBracket)
+          BeginBlock(bbtStatementEdgedBracket)
         else
-          BeginBlock(bbtTypeEdgeBracket);
+          BeginBlock(bbtTypeEdgedBracket);
       end;
     ']':
       if p-AtomStart=1 then begin
         // edge bracket close
         EndTopMostBlock(bbtStatementRoundBracket);
         case Stack.TopType of
-        bbtTypeEdgeBracket,bbtStatementEdgeBracket:
+        bbtTypeEdgedBracket,bbtStatementEdgedBracket:
           EndBlock;
         end;
       end;
