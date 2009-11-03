@@ -215,6 +215,11 @@ begin
     Result := Items[Idx];
 end;
 
+function TMenuItem.GetEnumerator: TMenuItemEnumerator;
+begin
+  Result := TMenuItemEnumerator.Create(Self);
+end;
+
 {------------------------------------------------------------------------------
   function TMenuItem.GetImageList: TCustomImageList;
 

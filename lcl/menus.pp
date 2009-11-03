@@ -96,6 +96,18 @@ type
 
   TMenuActionLinkClass = class of TMenuActionLink;
 
+  { TMenuItemEnumerator }
+
+  TMenuItemEnumerator = class
+  private
+    FMenuItem: TMenuItem;
+    FPosition: Integer;
+    function GetCurrent: TMenuItem;
+  public
+    constructor Create(AMenuItem: TMenuItem);
+    function MoveNext: Boolean;
+    property Current: TMenuItem read GetCurrent;
+  end;
 
   { TMenuItem }
   
@@ -203,6 +215,7 @@ type
     constructor Create(TheOwner: TComponent); override;
     destructor Destroy; override;
     function Find(const ACaption: string): TMenuItem;
+    function GetEnumerator: TMenuItemEnumerator;
     function GetImageList: TCustomImageList; virtual;
     function GetParentComponent: TComponent; override;
     function GetParentMenu: TMenu; virtual;
@@ -552,6 +565,25 @@ begin
   if ShortCut and scAlt <> 0 then Include(Shift,ssAlt);
   if ShortCut and scCtrl <> 0 then Include(Shift,ssCtrl);
   if ShortCut and scMeta <> 0 then Include(Shift,ssMeta);
+end;
+
+{ TMenuItemEnumerator }
+
+function TMenuItemEnumerator.GetCurrent: TMenuItem;
+begin
+  Result := FMenuItem.Items[FPosition];
+end;
+
+constructor TMenuItemEnumerator.Create(AMenuItem: TMenuItem);
+begin
+  FMenuItem := AMenuItem;
+  FPosition := -1;
+end;
+
+function TMenuItemEnumerator.MoveNext: Boolean;
+begin
+  inc(FPosition);
+  Result := FPosition < FMenuItem.Count;
 end;
 
 finalization
