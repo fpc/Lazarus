@@ -130,7 +130,7 @@ procedure TFormEditorOptionsFrame.Setup(ADialog: TAbstractOptionsEditorDialog);
   begin
     RubberbandSelectColorLabel.Caption:=dlgRuberbandSelectionColor;
     RubberbandCreateColorLabel.Caption:=dlgRuberbandCreationColor;
-    RubberbandSelectsGrandChildsCheckBox.Caption:=dlgRubberbandSelectsGrandChilds;
+    RubberbandSelectsGrandChildsCheckBox.Caption:=dlgRubberbandSelectsGrandChildren;
   end;
 begin
   GridGroupBox.Caption := dlgEnvGrid;

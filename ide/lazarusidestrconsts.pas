@@ -1040,7 +1040,7 @@ resourcestring
   dlgEnvMisc = 'Miscellaneous';
   dlgRuberbandSelectionColor = 'Selection';
   dlgRuberbandCreationColor = 'Creation';
-  dlgRubberbandSelectsGrandChilds = 'Select grand childs';
+  dlgRubberbandSelectsGrandChildren = 'Select grandchildren';
   dlgRubberBandGroup='Rubber band';
   dlgPasExt = 'Default pascal extension';
   dlgCharCaseFileAct = 'Save As - auto rename pascal files lower case';
