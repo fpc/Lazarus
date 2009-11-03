@@ -6048,7 +6048,7 @@ var
   begin
     Result:=false;
     if StartPos<1 then
-      StartPos:=FindStartOfTerm(EndPos,NodeTermInType(Params.ContextNode))
+      StartPos:=FindStartOfTerm(EndPos-1,NodeTermInType(Params.ContextNode))
     else if EndPos<1 then
       EndPos:=FindEndOfTerm(StartPos,true,WithAsOperator);
     if (StartPos<1) then
