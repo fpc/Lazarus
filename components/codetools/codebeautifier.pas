@@ -39,17 +39,13 @@
 
   ToDo:
     * ecLineBreak:
-      - indent depends on next atom:
-          if true then |
-            |exit;
-          if true then |
-          |begin
       - fix last line after pressing return key:
           if true then
           exit;|
           |
     * long lines
-    * ecPaste
+       DoSomething(Param1,
+                   Param2);
 }
 unit CodeBeautifier;
 
