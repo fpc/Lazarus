@@ -6799,6 +6799,7 @@ begin
   {$IFNDEF EnableIndenter}
   exit;
   {$ENDIF}
+  if not CodeToolsOpts.IndentationEnabled then exit;
   if not (SrcEdit.SyntaxHighlighterType in [lshFreePascal, lshDelphi]) then
     exit;
   case Reason of

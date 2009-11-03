@@ -93,6 +93,7 @@ type
     FIdentComplAutoStartAfterPoint: boolean;
 
     // auto indentation
+    FIndentationEnabled: boolean;
     fIndentationFilename: String;
     FIndentContextSensitive: boolean;
 
@@ -186,6 +187,8 @@ type
                                            write FIdentComplAutoStartAfterPoint;
 
     // indentation
+    property IndentationEnabled: boolean read FIndentationEnabled
+                                         write FIndentationEnabled;
     property IndentationFileName: String
       read fIndentationFileName write fIndentationFileName;
     property IndentContextSensitive: boolean read FIndentContextSensitive
@@ -410,12 +413,13 @@ begin
       'CodeToolsOptions/IdentifierCompletion/AutoStartAfterPoint',true);
 
     // indentation
+    FIndentationEnabled :=
+      XMLConfig.GetValue('CodeToolsOptions/Indentation/Enabled',true);
     fIndentationFilename :=
       XMLConfig.GetValue('CodeToolsOptions/Indentation/FileName'
       , TrimFilename(GetPrimaryConfigPath + PathDelim +DefaultIndentationFilename));
     FIndentContextSensitive :=
-      XMLConfig.GetValue('CodeToolsOptions/Indentation/ContextSensitive'
-      , true);
+      XMLConfig.GetValue('CodeToolsOptions/Indentation/ContextSensitive',true);
 
     XMLConfig.Free;
   except
@@ -524,6 +528,8 @@ begin
       FIdentComplAutoStartAfterPoint,true);
 
     // indentation
+    XMLConfig.SetDeleteValue('CodeToolsOptions/Indentation/Enabled'
+      , FIndentationEnabled, true);
     XMLConfig.SetDeleteValue('CodeToolsOptions/Indentation/FileName'
       , fIndentationFilename, '');
     XMLConfig.SetDeleteValue('CodeToolsOptions/Indentation/ContextSensitive'
@@ -661,6 +667,7 @@ begin
   FIdentComplAutoStartAfterPoint:=true;
 
   // indentation
+  FIndentationEnabled:=true;
   fIndentationFilename:=
     TrimFilename(GetPrimaryConfigPath+PathDelim+DefaultIndentationFilename);
   FIndentContextSensitive:=true;

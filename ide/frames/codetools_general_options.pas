@@ -35,6 +35,7 @@ type
 
   TCodetoolsGeneralOptionsFrame = class(TAbstractIDEOptionsEditor)
     AdjustTopLineDueToCommentCheckBox: TCheckBox;
+    IndentEnabledCheckBox: TCheckBox;
     IndentContextSensitiveCheckBox: TCheckBox;
     IndentFileButton: TButton;
     CursorBeyondEOLCheckBox: TCheckBox;
@@ -46,8 +47,10 @@ type
     SkipForwardDeclarationsCheckBox: TCheckBox;
     SrcPathEdit: TEdit;
     SrcPathGroupBox: TGroupBox;
+    procedure IndentEnabledCheckBoxChange(Sender: TObject);
     procedure IndentFileButtonClick(Sender: TObject);
   private
+    procedure VisualizeIndentEnabled;
   public
     function GetTitle: String; override;
     procedure Setup(ADialog: TAbstractOptionsEditorDialog); override;
@@ -76,6 +79,23 @@ begin
   end;
 end;
 
+procedure TCodetoolsGeneralOptionsFrame.VisualizeIndentEnabled;
+var
+  e: Boolean;
+begin
+  e:=IndentEnabledCheckBox.Checked;
+  IndentFileLabel.Enabled:=e;
+  IndentFileEdit.Enabled:=e;
+  IndentFileButton.Enabled:=e;
+  IndentContextSensitiveCheckBox.Enabled:=e;
+end;
+
+procedure TCodetoolsGeneralOptionsFrame.IndentEnabledCheckBoxChange(
+  Sender: TObject);
+begin
+  VisualizeIndentEnabled;
+end;
+
 function TCodetoolsGeneralOptionsFrame.GetTitle: String;
 begin
   Result := lisMenuInsertGeneral;
@@ -101,6 +121,7 @@ begin
   SkipForwardDeclarationsCheckBox.Caption:=dlgSkipForwardDeclarations;
 
   IndentationGroupBox.Caption:=lisIndentation;
+  IndentEnabledCheckBox.Caption:=dlgMouseFoldEnabled;
   IndentFileLabel.Caption:=lisExampleFile;
   IndentFileButton.Caption:=lisPathEditBrowse;
   IndentContextSensitiveCheckBox.Caption:=lisContextSensitive;
@@ -119,9 +140,11 @@ begin
     JumpCenteredCheckBox.Checked := JumpCentered;
     CursorBeyondEOLCheckBox.Checked := CursorBeyondEOL;
     SkipForwardDeclarationsCheckBox.Checked := SkipForwardDeclarations;
+    IndentEnabledCheckBox.Checked:=IndentationEnabled;
     IndentFileEdit.Text:=IndentationFileName;
     IndentContextSensitiveCheckBox.Checked:=IndentContextSensitive;
   end;
+  VisualizeIndentEnabled;
 end;
 
 procedure TCodetoolsGeneralOptionsFrame.WriteSettings(
@@ -134,6 +157,7 @@ begin
     JumpCentered := JumpCenteredCheckBox.Checked;
     CursorBeyondEOL := CursorBeyondEOLCheckBox.Checked;
     SkipForwardDeclarations := SkipForwardDeclarationsCheckBox.Checked;
+    IndentationEnabled:=IndentEnabledCheckBox.Checked;
     IndentationFileName:=IndentFileEdit.Text;
     IndentContextSensitive:=IndentContextSensitiveCheckBox.Checked;
   end;

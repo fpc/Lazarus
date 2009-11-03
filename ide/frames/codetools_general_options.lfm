@@ -5,8 +5,8 @@ inherited CodetoolsGeneralOptionsFrame: TCodetoolsGeneralOptionsFrame
   ClientWidth = 552
   TabOrder = 0
   Visible = False
-  DesignLeft = 293
-  DesignTop = 278
+  DesignLeft = 303
+  DesignTop = 326
   object SrcPathGroupBox: TGroupBox[0]
     AnchorSideLeft.Control = Owner
     AnchorSideTop.Control = Owner
@@ -106,13 +106,13 @@ inherited CodetoolsGeneralOptionsFrame: TCodetoolsGeneralOptionsFrame
   end
   object IndentationGroupBox: TGroupBox[2]
     Left = 0
-    Height = 87
+    Height = 115
     Top = 204
     Width = 552
     Align = alTop
     AutoSize = True
     Caption = 'IndentationGroupBox'
-    ClientHeight = 68
+    ClientHeight = 96
     ClientWidth = 548
     TabOrder = 2
     object IndentFileLabel: TLabel
@@ -121,7 +121,7 @@ inherited CodetoolsGeneralOptionsFrame: TCodetoolsGeneralOptionsFrame
       AnchorSideTop.Side = asrCenter
       Left = 6
       Height = 18
-      Top = 11
+      Top = 39
       Width = 95
       BorderSpacing.Left = 6
       Caption = 'IndentFileLabel'
@@ -135,7 +135,7 @@ inherited CodetoolsGeneralOptionsFrame: TCodetoolsGeneralOptionsFrame
       AnchorSideRight.Control = IndentFileButton
       Left = 107
       Height = 27
-      Top = 7
+      Top = 35
       Width = 320
       Anchors = [akTop, akLeft, akRight]
       BorderSpacing.Left = 6
@@ -145,12 +145,13 @@ inherited CodetoolsGeneralOptionsFrame: TCodetoolsGeneralOptionsFrame
       Text = 'IndentFileEdit'
     end
     object IndentFileButton: TButton
-      AnchorSideTop.Control = IndentationGroupBox
+      AnchorSideTop.Control = IndentEnabledCheckBox
+      AnchorSideTop.Side = asrBottom
       AnchorSideRight.Control = IndentationGroupBox
       AnchorSideRight.Side = asrBottom
       Left = 427
       Height = 29
-      Top = 6
+      Top = 34
       Width = 115
       Anchors = [akTop, akRight]
       AutoSize = True
@@ -167,11 +168,23 @@ inherited CodetoolsGeneralOptionsFrame: TCodetoolsGeneralOptionsFrame
       AnchorSideTop.Side = asrBottom
       Left = 6
       Height = 22
-      Top = 40
+      Top = 68
       Width = 235
       BorderSpacing.Around = 6
       Caption = 'IndentContextSensitiveCheckBox'
       TabOrder = 2
+    end
+    object IndentEnabledCheckBox: TCheckBox
+      AnchorSideLeft.Control = IndentationGroupBox
+      AnchorSideTop.Control = IndentationGroupBox
+      Left = 6
+      Height = 22
+      Top = 6
+      Width = 178
+      BorderSpacing.Around = 6
+      Caption = 'IndentEnabledCheckBox'
+      OnChange = IndentEnabledCheckBoxChange
+      TabOrder = 3
     end
   end
 end
