@@ -66,18 +66,6 @@ uses
   BasicCodeTools;
   
 type
-  TBeautifySplit =(
-    bsNone,
-    bsInsertSpace, // insert space before
-    bsNewLine,     // break line, no indent
-    bsEmptyLine,   // insert empty line, no indent
-    bsNewLineAndIndent, // break line, indent
-    bsEmptyLineAndIndent, // insert empty line, indent
-    bsNewLineUnindent,
-    bsEmptyLineUnindent,
-    bsNoSplit   // do not break line here when line too long
-    );
-    
   TWordPolicy = (
     wpNone,
     wpLowerCase,
