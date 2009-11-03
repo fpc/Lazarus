@@ -315,7 +315,9 @@ type
     procedure Clear;
     function GetIndent(const Source: string; CleanPos: integer;
                        NewNestedComments: boolean; UseLineStart: boolean;
-                       out Indent: TFABIndentationPolicy): boolean;
+                       out Indent: TFABIndentationPolicy;
+                       ContextLearn: boolean = true // true = learn policies from Source
+                       ): boolean;
     function GetIndents(const Source: string; Positions: TFABPositionIndents;
                         NewNestedComments: boolean; UseLineStart: boolean
                         ): boolean;
@@ -1392,7 +1394,8 @@ end;
 
 function TFullyAutomaticBeautifier.GetIndent(const Source: string;
   CleanPos: integer; NewNestedComments: boolean;
-  UseLineStart: boolean; out Indent: TFABIndentationPolicy): boolean;
+  UseLineStart: boolean; out Indent: TFABIndentationPolicy;
+  ContextLearn: boolean): boolean;
 var
   Block: TBlock;
 
@@ -1435,9 +1438,11 @@ begin
 
   Block:=CleanBlock;
   ParentBlock:=CleanBlock;
-  Policies:=TFABPolicies.Create;
+  Policies:=nil;
   Stack:=TFABBlockStack.Create;
   try
+    if ContextLearn then
+      Policies:=TFABPolicies.Create;
     {$IFDEF ShowCodeBeautifierLearn}
     Policies.Code:=TCodeBuffer.Create;
     Policies.Code.Source:=Source;
@@ -1474,14 +1479,16 @@ begin
     DebugLn(['TFullyAutomaticBeautifier.GetIndent parsed code in front: context=',FABBlockTypeNames[ParentBlock.Typ],'/',FABBlockTypeNames[Block.Typ],' indent=',GetLineIndentWithTabs(Source,Block.StartPos,DefaultTabWidth)]);
     if CheckPolicies(Policies,Result) then exit;
 
-    // parse source behind
-    ParseSource(Source,CleanPos,length(Source)+1,NewNestedComments,Stack,Policies);
-    DebugLn(['TFullyAutomaticBeautifier.GetIndent parsed source behind']);
-    if CheckPolicies(Policies,Result) then exit;
-
+    if ContextLearn then begin
+      // parse source behind
+      ParseSource(Source,CleanPos,length(Source)+1,NewNestedComments,Stack,Policies);
+      DebugLn(['TFullyAutomaticBeautifier.GetIndent parsed source behind']);
+      if CheckPolicies(Policies,Result) then exit;
+    end;
   finally
     Stack.Free;
-    FreeAndNil(Policies.Code);
+    if Policies<>nil then
+      FreeAndNil(Policies.Code);
     Policies.Free;
   end;
 

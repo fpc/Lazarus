@@ -615,9 +615,9 @@ type
     procedure EditorMouseLink(
       Sender: TObject; X,Y: Integer; var AllowMouseLink: Boolean);
     function EditorGetIndent(Sender: TObject; Editor: TObject;
-                             LogCaret, OldLogCaret: TPoint; FirstLinePos, LastLinePos: Integer;
-                             Reason: TSynEditorCommand;
-                             SetIndentProc: TSynBeautifierSetIndentProc): Boolean;
+             LogCaret, OldLogCaret: TPoint; FirstLinePos, LastLinePos: Integer;
+             Reason: TSynEditorCommand;
+             SetIndentProc: TSynBeautifierSetIndentProc): Boolean;
     procedure EditorKeyDown(Sender: TObject; var Key: Word; Shift: TShiftState);
     procedure EditorMouseWheel(Sender: TObject; Shift: TShiftState;
          WheelDelta: Integer; MousePos: TPoint; var Handled: Boolean);
@@ -6775,7 +6775,8 @@ end;
 
 function TSourceNotebook.EditorGetIndent(Sender: TObject; Editor: TObject;
   LogCaret, OldLogCaret: TPoint; FirstLinePos, LastLinePos: Integer;
-  Reason: TSynEditorCommand; SetIndentProc: TSynBeautifierSetIndentProc): Boolean;
+  Reason: TSynEditorCommand; SetIndentProc: TSynBeautifierSetIndentProc
+  ): Boolean;
 var
   SrcEdit: TSourceEditor;
   p: LongInt;
@@ -6832,7 +6833,7 @@ begin
     DebugLn(['TSourceNotebook.EditorGetIndent Firstline+1=',SrcEdit.Lines[FirstLinePos+1]]);
   NestedComments:=CodeToolBoss.GetNestedCommentsFlagForFile(CodeBuf.Filename);
   if not CodeToolBoss.Indenter.GetIndent(CodeBuf.Source,p,NestedComments,
-    true,NewIndent)
+    true,NewIndent,CodeToolsOpts.IndentContextSensitive)
   then exit;
   if not NewIndent.IndentValid then exit;
   Indent:=NewIndent.Indent;
