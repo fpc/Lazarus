@@ -170,6 +170,8 @@ type
            SourceChangeCache: TSourceChangeCache);
     function CheckLocalVarAssignmentSyntax(CleanCursorPos: integer;
            out VarNameAtom,AssignmentOperator,TermAtom: TAtomPosition): boolean;
+    function CheckLocalVarForInSyntax(CleanCursorPos: integer;
+           out VarNameAtom,TermAtom: TAtomPosition): boolean;
     function AddLocalVariable(CleanCursorPos: integer; OldTopLine: integer;
                        VariableName, VariableType, VariableTypeUnitName: string;
                        out NewPos: TCodeXYPosition; out NewTopLine: integer;
@@ -183,6 +185,10 @@ type
                       SourceChangeCache: TSourceChangeCache): boolean;
     procedure AddNeededUnitToMainUsesSection(AnUnitName: PChar);
     function CompleteLocalVariableAssignment(CleanCursorPos,
+                       OldTopLine: integer; CursorNode: TCodeTreeNode;
+                       var NewPos: TCodeXYPosition; var NewTopLine: integer;
+                       SourceChangeCache: TSourceChangeCache): boolean;
+    function CompleteLocalVariableForIn(CleanCursorPos,
                        OldTopLine: integer; CursorNode: TCodeTreeNode;
                        var NewPos: TCodeXYPosition; var NewTopLine: integer;
                        SourceChangeCache: TSourceChangeCache): boolean;
@@ -869,6 +875,42 @@ begin
   Result:=TermAtom.EndPos>TermAtom.StartPos;
 end;
 
+function TCodeCompletionCodeTool.CheckLocalVarForInSyntax(
+  CleanCursorPos: integer; out VarNameAtom, TermAtom: TAtomPosition): boolean;
+// check for: for VarName in Term do
+var
+  InAtomEndPos: LongInt;
+begin
+  Result:=false;
+  MoveCursorToCleanPos(CleanCursorPos);
+
+  // find variable name
+  GetIdentStartEndAtPosition(Src,CleanCursorPos,
+    VarNameAtom.StartPos,VarNameAtom.EndPos);
+  //debugln('TCodeCompletionCodeTool.CheckLocalVarAssignmentSyntax A ',GetAtom(VarNameAtom),' "',copy(Src,CleanCursorPos,10),'"');
+  if VarNameAtom.StartPos=VarNameAtom.EndPos then exit;
+  MoveCursorToAtomPos(VarNameAtom);
+  if AtomIsKeyWord then exit;
+
+  // find 'in' operator
+  ReadNextAtom;
+  if not UpAtomIs('IN') then exit;
+  InAtomEndPos:=CurPos.EndPos;
+
+  // find 'for' keyword
+  MoveCursorToCleanPos(VarNameAtom.StartPos);
+  ReadPriorAtom;
+  if not UpAtomIs('FOR') then exit;
+
+  // find term
+  MoveCursorToCleanPos(InAtomEndPos);
+  ReadNextAtom;
+  TermAtom.StartPos:=CurPos.StartPos;
+  TermAtom.EndPos:=FindEndOfExpression(TermAtom.StartPos);
+
+  Result:=TermAtom.EndPos>TermAtom.StartPos;
+end;
+
 function TCodeCompletionCodeTool.AddLocalVariable(
   CleanCursorPos: integer; OldTopLine: integer;
   VariableName, VariableType, VariableTypeUnitName: string;
@@ -1136,6 +1178,76 @@ begin
     NewType:=FindTermTypeAsString(TermAtom,CursorNode,Params,ExprType);
     if NewType='' then
       RaiseException('CompleteLocalVariableAssignment Internal error: NewType=""');
+
+  finally
+    Params.Free;
+    DeactivateGlobalWriteLock;
+  end;
+
+  MissingUnit:='';
+  if (ExprType.Desc=xtContext)
+  and (ExprType.Context.Tool<>nil) then
+    MissingUnit:=GetUnitForUsesSection(ExprType.Context.Tool);
+
+  Result:=AddVariable(CursorNode,CleanCursorPos,OldTopLine,GetAtom(VarNameAtom),
+                      NewType,MissingUnit,NewPos,NewTopLine,SourceChangeCache);
+end;
+
+function TCodeCompletionCodeTool.CompleteLocalVariableForIn(CleanCursorPos,
+  OldTopLine: integer; CursorNode: TCodeTreeNode; var NewPos: TCodeXYPosition;
+  var NewTopLine: integer; SourceChangeCache: TSourceChangeCache): boolean;
+var
+  VarNameAtom: TAtomPosition;
+  TermAtom: TAtomPosition;
+  Params: TFindDeclarationParams;
+  NewType: String;
+  ExprType: TExpressionType;
+  MissingUnit: String;
+begin
+  Result:=false;
+
+  {$IFDEF CTDEBUG}
+  DebugLn('  CompleteLocalVariableForIn: A');
+  {$ENDIF}
+  if not ((CursorNode.Desc=ctnBeginBlock)
+          or CursorNode.HasParentOfType(ctnBeginBlock)) then exit;
+  if CursorNode.Desc=ctnBeginBlock then
+    BuildSubTreeForBeginBlock(CursorNode);
+  CursorNode:=FindDeepestNodeAtPos(CleanCursorPos,true);
+
+  {$IFDEF CTDEBUG}
+  DebugLn('  CompleteLocalVariableForIn: B CheckLocalVarForInSyntax ...');
+  {$ENDIF}
+  // check assignment syntax
+  if not CheckLocalVarForInSyntax(CleanCursorPos,
+    VarNameAtom,TermAtom)
+  then
+    exit;
+  DebugLn(['TCodeCompletionCodeTool.CompleteLocalVariableForIn Var=',GetAtom(VarNameAtom),' Term=',GetAtom(TermAtom)]);
+
+  // search variable
+  ActivateGlobalWriteLock;
+  Params:=TFindDeclarationParams.Create;
+  try
+    {$IFDEF CTDEBUG}
+    DebugLn('  CompleteLocalVariableForIn: check if variable is already defined ...');
+    {$ENDIF}
+    // check if identifier exists
+    Result:=IdentifierIsDefined(VarNameAtom,CursorNode,Params);
+    if Result then begin
+      MoveCursorToCleanPos(VarNameAtom.StartPos);
+      ReadNextAtom;
+      RaiseExceptionFmt(ctsIdentifierAlreadyDefined,[GetAtom]);
+    end;
+
+    {$IFDEF CTDEBUG}
+    DebugLn('  CompleteLocalVariableForIn: Find type of term ...',
+    ' Term="',copy(Src,TermAtom.StartPos,TermAtom.EndPos-TermAtom.StartPos),'"');
+    {$ENDIF}
+    // find type of term
+    NewType:=FindForInTypeAsString(TermAtom,CursorNode,Params,ExprType);
+    if NewType='' then
+      RaiseException('CompleteLocalVariableForIn Internal error: NewType=""');
 
   finally
     Params.Free;
@@ -6786,6 +6898,11 @@ begin
   
   // test if Local variable assignment (i:=3)
   Result:=CompleteLocalVariableAssignment(CleanCursorPos,OldTopLine,
+                                CursorNode,NewPos,NewTopLine,SourceChangeCache);
+  if Result then exit;
+
+  // test if Local variable iterator (for i in j)
+  Result:=CompleteLocalVariableForIn(CleanCursorPos,OldTopLine,
                                 CursorNode,NewPos,NewTopLine,SourceChangeCache);
   if Result then exit;
 

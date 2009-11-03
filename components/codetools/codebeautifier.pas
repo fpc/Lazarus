@@ -319,7 +319,8 @@ type
                        ContextLearn: boolean = true // true = learn policies from Source
                        ): boolean;
     function GetIndents(const Source: string; Positions: TFABPositionIndents;
-                        NewNestedComments: boolean; UseLineStart: boolean
+                        NewNestedComments: boolean; UseLineStart: boolean;
+                        ContextLearn: boolean = true // true = learn policies from Source
                         ): boolean;
     procedure GetDefaultSrcIndent(const Source: string; CleanPos: integer;
                                NewNestedComments: boolean;
@@ -1528,7 +1529,7 @@ end;
 
 function TFullyAutomaticBeautifier.GetIndents(const Source: string;
   Positions: TFABPositionIndents; NewNestedComments: boolean;
-  UseLineStart: boolean): boolean;
+  UseLineStart: boolean; ContextLearn: boolean): boolean;
 var
   Needed: LongInt;
 
@@ -1583,9 +1584,11 @@ begin
       inc(Item^.CleanPos);
   end;
 
-  Policies:=TFABPolicies.Create;
+  Policies:=nil;
   Stack:=TFABBlockStack.Create;
   try
+    if ContextLearn then
+      Policies:=TFABPolicies.Create;
     {$IFDEF ShowCodeBeautifierLearn}
     Policies.Code:=TCodeBuffer.Create;
     Policies.Code.Source:=Source;
@@ -1655,19 +1658,22 @@ begin
       end;
     end;
 
-    // parse source behind
-    ParseSource(Source,Item^.CleanPos,length(Source)+1,NewNestedComments,Stack,Policies);
-    {$IFDEF VerboseIndenter}
-    DebugLn(['TFullyAutomaticBeautifier.GetIndent parsed source behind']);
-    {$ENDIF}
-    for ItemIndex:=0 to Positions.Count-1 do begin
-      Item:=@Positions.Items[ItemIndex];
-      if (not Item^.Indent.IndentValid) and (Item^.Block.Typ<>bbtNone) then
-        if CheckPolicies(Policies,Item) then exit(true);
+    if Policies<>nil then begin
+      // parse source behind
+      ParseSource(Source,Item^.CleanPos,length(Source)+1,NewNestedComments,Stack,Policies);
+      {$IFDEF VerboseIndenter}
+      DebugLn(['TFullyAutomaticBeautifier.GetIndent parsed source behind']);
+      {$ENDIF}
+      for ItemIndex:=0 to Positions.Count-1 do begin
+        Item:=@Positions.Items[ItemIndex];
+        if (not Item^.Indent.IndentValid) and (Item^.Block.Typ<>bbtNone) then
+          if CheckPolicies(Policies,Item) then exit(true);
+      end;
     end;
   finally
     Stack.Free;
-    FreeAndNil(Policies.Code);
+    if Policies<>nil then
+      FreeAndNil(Policies.Code);
     Policies.Free;
   end;
 

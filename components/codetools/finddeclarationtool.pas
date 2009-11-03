@@ -643,6 +643,9 @@ type
     function FindTermTypeAsString(TermPos: TAtomPosition;
       CursorNode: TCodeTreeNode; Params: TFindDeclarationParams;
       out ExprType: TExpressionType): string;
+    function FindForInTypeAsString(TermPos: TAtomPosition;
+      CursorNode: TCodeTreeNode; Params: TFindDeclarationParams;
+      out ExprType: TExpressionType): string;
     function IsTermEdgedBracket(TermPos: TAtomPosition;
       out EdgedBracketsStartPos: integer): boolean;
     function IsTermNamedPointer(TermPos: TAtomPosition;
@@ -8827,6 +8830,93 @@ begin
   Result:=FindExprTypeAsString(ExprType,TermPos.StartPos,Params);
 end;
 
+function TFindDeclarationTool.FindForInTypeAsString(TermPos: TAtomPosition;
+  CursorNode: TCodeTreeNode; Params: TFindDeclarationParams; out
+  ExprType: TExpressionType): string;
+
+  procedure RaiseTermHasNoIterator;
+  begin
+    if TermPos.StartPos<1 then
+      TermPos.StartPos:=1;
+    MoveCursorToCleanPos(TermPos.StartPos);
+    RaiseException('Can not find an enumerator for '''+TrimCodeSpace(GetAtom(TermPos))+'''');
+  end;
+
+begin
+  ExprType:=CleanExpressionType;
+  Params.ContextNode:=CursorNode;
+  Params.Flags:=[fdfSearchInParentNodes,fdfSearchInAncestors,
+                 fdfTopLvlResolving,fdfFunctionResult];
+  ExprType:=FindExpressionResultType(Params,TermPos.StartPos,TermPos.EndPos);
+
+  {$IFDEF ShowExprEval}
+  DebugLn('TFindDeclarationTool.FindForInTypeAsString TermType=',
+    ExprTypeToString(ExprType));
+  {$ENDIF}
+  case ExprType.Desc of
+    xtContext:
+      begin
+        // ToDo
+        RaiseTermHasNoIterator;
+      end;
+    xtNone,
+    xtChar,
+    xtWideChar,
+    xtReal,
+    xtSingle,
+    xtDouble,
+    xtExtended,
+    xtCurrency,
+    xtComp,
+    xtInt64,
+    xtCardinal,
+    xtQWord,
+    xtBoolean,
+    xtByteBool,
+    xtLongBool,
+    xtPointer,
+    xtFile,
+    xtText,
+    xtConstOrdInteger,
+    xtConstReal,
+    xtConstBoolean,
+    xtLongint,
+    xtLongWord,
+    xtWord,
+    xtSmallInt,
+    xtShortInt,
+    xtByte,
+    xtCompilerFunc,
+    xtVariant,
+    xtNil:
+      RaiseTermHasNoIterator;
+    xtString,
+    xtAnsiString,
+    xtShortString,
+    xtPChar,
+    xtConstString:
+      begin
+        ExprType.Desc:=xtChar;
+        Result:=ExpressionTypeDescNames[ExprType.Desc];
+      end;
+    xtWideString,
+    xtUnicodeString:
+      begin
+        ExprType.Desc:=xtWideChar;
+        Result:=ExpressionTypeDescNames[ExprType.Desc];
+      end;
+    xtConstSet:
+      RaiseTermHasNoIterator; // ToDo
+  else
+    DebugLn('TFindDeclarationTool.FindForInTypeAsString ExprType=',
+      ExprTypeToString(ExprType));
+    RaiseTermHasNoIterator;
+  end;
+  {$IFDEF ShowExprEval}
+  DebugLn('TFindDeclarationTool.FindForInTypeAsString Result=',Result);
+  {$ENDIF}
+end;
+
 function TFindDeclarationTool.IsTermEdgedBracket(TermPos: TAtomPosition; out
   EdgedBracketsStartPos: integer): boolean;
 { allowed:
@@ -8890,6 +8980,7 @@ end;
 
 function TFindDeclarationTool.IsTermNamedPointer(TermPos: TAtomPosition; out
   ExprType: TExpressionType): boolean;
+// check if TermPos is @Name and a pointer (= ^Name) can be found
 var
   SubExprType: TExpressionType;
   Node: TCodeTreeNode;
