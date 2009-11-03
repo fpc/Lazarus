@@ -939,7 +939,8 @@ var
   s: string;
 begin
   s := Strings[LogY - 1];
-  Strings[LogY - 1] := copy(s, 1, LogX - 1);
+  if LogX - 1 < length(s) then
+    Strings[LogY - 1] := copy(s, 1, LogX - 1);
   Insert(LogY, copy(s, LogX, length(s)));
   UndoList.AddChange(TSynEditUndoTxtLineBreak.Create(LogY));
   MarkModified(LogY, LogY + 1);
