@@ -761,7 +761,7 @@ type
     FPaletteModified: Boolean;
   protected
     procedure Changed(Sender: TObject); virtual;
-    function Equals(Graphic: TGraphic): Boolean; virtual; reintroduce;
+    function Equals(Graphic: TGraphic): Boolean; virtual; {$IF declared(vmtEquals)}overload;{$IFEND}
     procedure DefineProperties(Filer: TFiler); override;
     procedure Draw(ACanvas: TCanvas; const Rect: TRect); virtual; abstract;
     function GetEmpty: Boolean; virtual; abstract;
@@ -787,6 +787,9 @@ type
     procedure Assign(ASource: TPersistent); override;
     constructor Create; virtual;
     procedure Clear; virtual;
+    {$IF declared(vmtEquals)}
+    function Equals(Obj: TObject): Boolean; override; overload;
+    {$IFEND}
     function LazarusResourceTypeValid(const AResourceType: string): boolean; virtual;
     procedure LoadFromFile(const Filename: string); virtual;
     procedure LoadFromStream(Stream: TStream); virtual; abstract;

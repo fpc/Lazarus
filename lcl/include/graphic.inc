@@ -85,6 +85,16 @@ begin
   Progress(Sender,Stage,PercentDone,RedrawNow,R,Msg,DoContinue);
 end;
 
+{$IF declared(vmtEquals)}
+function TGraphic.Equals(Obj: TObject): Boolean;
+begin
+  if Obj is TGraphic then
+    Result := Equals(TGraphic(Obj))
+  else
+    Result := inherited Equals(Obj);
+end;
+{$IFEND}
+
 function TGraphic.Equals(Graphic: TGraphic): Boolean;
 var
   SelfImage, GraphicsImage: TMemoryStream;
