@@ -5220,7 +5220,7 @@ function TWinControl.CreateDockManager: TDockManager;
 begin
   if (DockManager = nil) and DockSite and UseDockManager then
     // this control can dock other controls, so it needs a TDockManager
-    Result := DefaultDockTreeClass.Create(Self)
+    Result := DefaultDockManagerClass.Create(Self)
   else
     Result := DockManager;
 end;

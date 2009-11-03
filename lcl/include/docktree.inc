@@ -201,7 +201,7 @@ begin
   if FDockZoneClass = nil then
     FDockZoneClass := TDockZone;
   DockSite := TheDockSite;
-  inherited Create;
+  inherited Create(TheDockSite);
   FBorderWidth := 4;
   FRootZone := FDockZoneClass.Create(Self, TheDockSite);
 end;

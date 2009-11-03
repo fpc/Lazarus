@@ -2342,7 +2342,7 @@ constructor TCustomLazDockingManager.Create(TheOwner: TComponent);
 begin
   inherited Create(TheOwner);
   FDockers:=TFPList.Create;
-  FManager:=TAnchoredDockManager.Create;
+  FManager:=TAnchoredDockManager.Create(nil);
   FManager.FConfigs:=Self;
 end;
 

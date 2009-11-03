@@ -233,7 +233,7 @@ type
     function GetAnchorDepth(AControl: TControl; Side: TAnchorKind): Integer;
     function GetPreferredTitlePosition(AWidth, AHeight: integer): TAnchorKind;
   public
-    constructor Create;
+    constructor Create(ADockSite: TWinControl); override;
     destructor Destroy; override;
     procedure BeginUpdate; override;
     procedure EndUpdate; override;
@@ -2039,8 +2039,9 @@ begin
   end;
 end;
 
-constructor TCustomAnchoredDockManager.Create;
+constructor TCustomAnchoredDockManager.Create(ADockSite: TWinControl);
 begin
+  inherited Create(ADockSite);
   FOwnerComponent:=TLazDockOwnerComponent.Create(nil);
   FSplitterSize:=5;
   FTitleWidth:=20;
@@ -3336,7 +3337,7 @@ begin
 end;
 
 initialization
-  DefaultDockTreeClass := TLazDockTree;
+  DefaultDockManagerClass := TLazDockTree;
 {$I lcl_dock_images.lrs}
 
 end.

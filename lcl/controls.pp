@@ -492,6 +492,7 @@ type
  }
   TDockManager = class(TPersistent)
   public
+    constructor Create(ADockSite: TWinControl); virtual;
     procedure BeginUpdate; virtual; abstract;
     procedure EndUpdate; virtual; abstract;
     procedure GetControlBounds(Control: TControl;
@@ -512,6 +513,7 @@ type
     function AutoFreeByControl: Boolean; virtual;
   end;
 
+  TDockManagerClass = class of TDockManager;
 
   { TSizeConstraints }
 
@@ -2178,8 +2180,6 @@ type
 
   TForEachZoneProc = procedure(Zone: TDockZone) of object;
 
-  TDockTreeClass = class of TDockTree;
-
   TDockTreeFlag = (
     dtfUpdateAllNeeded
     );
@@ -2204,7 +2204,7 @@ type
     procedure UpdateAll;
     procedure SetDockZoneClass(const AValue: TDockZoneClass);
   public
-    constructor Create(TheDockSite: TWinControl); virtual;
+    constructor Create(TheDockSite: TWinControl); override;
     destructor Destroy; override;
     procedure BeginUpdate; override;
     procedure EndUpdate; override;
@@ -2337,7 +2337,7 @@ procedure RecreateWnd(const AWinControl:TWinControl);
 
 // drag and drop
 var
-  DefaultDockTreeClass: TDockTreeClass;
+  DefaultDockManagerClass: TDockManagerClass;
 
 procedure CancelDrag;
 procedure SetCaptureControl(AWinControl: TWinControl; const Position: TPoint);
@@ -3658,6 +3658,11 @@ begin
   Result := True;
 end;
 
+constructor TDockManager.Create(ADockSite: TWinControl);
+begin
+  inherited Create;
+end;
+
 function TDockManager.GetDockEdge(ADockObject: TDragDockObject): boolean;
 begin
 (* Determine the DropAlign.
@@ -3673,7 +3678,7 @@ initialization
   RegisterPropertyToSkip(TControl, 'Ctl3D', 'VCL compatibility property', '');
   RegisterPropertyToSkip(TControl, 'ParentCtl3D', 'VCL compatibility property', '');
   Mouse := TMouse.Create;
-  DefaultDockTreeClass := TDockTree;
+  DefaultDockManagerClass := TDockTree;
   DragManager := TDragManagerDefault.Create(nil);
   RegisterIntegerConsts(TypeInfo(TCursor), @IdentToCursor, @CursorToIdent);
 

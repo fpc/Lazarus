@@ -1090,6 +1090,7 @@ begin
       if TCustomEdit(AWinControl).BorderStyle=bsSingle then
         FlagsEx := FlagsEx or WS_EX_CLIENTEDGE;
       Flags := Flags or AlignmentToEditFlags[TCustomEdit(AWinControl).Alignment];
+      Flags := Flags or WS_CLIPCHILDREN;
     end;
     pClassName := @EditClsName[0];
     WindowTitle := StrCaption;
