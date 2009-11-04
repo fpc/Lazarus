@@ -6851,7 +6851,7 @@ begin
       {$IFDEF VerboseIndenter}
       DebugLn(['TSourceNotebook.EditorGetIndent Apply to FirstLinePos+1']);
       {$ENDIF}
-      SetIndentProc(FirstLinePos, Indent, 0,' ');
+      SetIndentProc(LogCaret.Y, Indent, 0,' ');
       SrcEdit.CursorScreenXY:=Point(Indent+1,SrcEdit.CursorScreenXY.Y);
     end;
   ecPaste:
