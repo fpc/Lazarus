@@ -119,6 +119,7 @@ type
     FEditPlugin: TSynEditPlugin1;  // used to get the LinesInserted and
                                    //   LinesDeleted messages
     FSyncroEdit: TSynPluginSyncroEdit;
+    FTemplateEdit: TSynPluginTemplateEdit;
     FCodeTemplates: TSynEditAutoComplete;
     FHasExecutionMarks: Boolean;
     FMarksRequested: Boolean;
@@ -399,6 +400,7 @@ type
     property SyncroEdit: TSynPluginSyncroEdit read FSyncroEdit;
     property SyntaxHighlighterType: TLazSyntaxHighlighter
        read fSyntaxHighlighterType write SetSyntaxHighlighterType;
+    property TemplateEdit: TSynPluginTemplateEdit read FTemplateEdit;
   end;
 
   //============================================================================
@@ -2569,7 +2571,7 @@ Begin
       FCodeTemplates.AddEditor(FEditor);
     if aCompletion<>nil then
       aCompletion.AddEditor(FEditor);
-    TSynPluginTemplateEdit.Create(FEditor);
+    FTemplateEdit:=TSynPluginTemplateEdit.Create(FEditor);
     FSyncroEdit := TSynPluginSyncroEdit.Create(FEditor);
     bmp := CreateBitmapFromLazarusResource('tsynsyncroedit');
     FSyncroEdit.GutterGlyph.Assign(bmp);
@@ -6841,6 +6843,7 @@ begin
     if Result then exit;
   end;
   if (SrcEdit.SyncroEdit<>nil) and SrcEdit.SyncroEdit.Active then exit;
+  if (SrcEdit.TemplateEdit<>nil) and SrcEdit.TemplateEdit.Active then exit;
   if not (SrcEdit.SyntaxHighlighterType in [lshFreePascal, lshDelphi]) then
     exit;
   case Reason of
