@@ -118,6 +118,7 @@ type
     FEditor: TSynEdit;
     FEditPlugin: TSynEditPlugin1;  // used to get the LinesInserted and
                                    //   LinesDeleted messages
+    FSyncroEdit: TSynPluginSyncroEdit;
     FCodeTemplates: TSynEditAutoComplete;
     FHasExecutionMarks: Boolean;
     FMarksRequested: Boolean;
@@ -395,6 +396,7 @@ type
     property ReadOnly: Boolean read GetReadOnly write SetReadOnly;
     property Source: TStrings read GetSource write SetSource;
     property SourceNotebook: TSourceNotebook read FSourceNoteBook;
+    property SyncroEdit: TSynPluginSyncroEdit read FSyncroEdit;
     property SyntaxHighlighterType: TLazSyntaxHighlighter
        read fSyntaxHighlighterType write SetSyntaxHighlighterType;
   end;
@@ -2518,7 +2520,6 @@ Procedure TSourceEditor.CreateEditor(AOwner: TComponent; AParent: TWinControl);
 var
   NewName: string;
   i: integer;
-  sync: TSynPluginSyncroEdit;
   bmp: TCustomBitmap;
 Begin
   {$IFDEF IDE_DEBUG}
@@ -2562,9 +2563,9 @@ Begin
     if aCompletion<>nil then
       aCompletion.AddEditor(FEditor);
     TSynPluginTemplateEdit.Create(FEditor);
-    sync := TSynPluginSyncroEdit.Create(FEditor);
+    FSyncroEdit := TSynPluginSyncroEdit.Create(FEditor);
     bmp := CreateBitmapFromLazarusResource('tsynsyncroedit');
-    sync.GutterGlyph.Assign(bmp);
+    FSyncroEdit.GutterGlyph.Assign(bmp);
     bmp.Free;
     RefreshEditorSettings;
     FEditor.EndUpdate;
@@ -6797,6 +6798,7 @@ begin
     if Result then exit;
   end;
   if not CodeToolsOpts.IndentationEnabled then exit;
+  if (SrcEdit.SyncroEdit<>nil) and SrcEdit.SyncroEdit.Active then exit;
   if not (SrcEdit.SyntaxHighlighterType in [lshFreePascal, lshDelphi]) then
     exit;
   case Reason of
