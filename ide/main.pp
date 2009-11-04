@@ -12659,10 +12659,13 @@ end;
 procedure TMainIDE.OnCodeToolBossGetIndenterExamples(Sender: TObject;
   Code: TCodeBuffer; Step: integer; var CodeBuffers: TFPList;
   var ExpandedFilenames: TStrings);
+var
+  ActiveFilename: string;
 
   procedure AddCode(Code: TCodeBuffer);
   begin
     if Code=nil then exit;
+    if CompareFilenames(ActiveFilename,Code.Filename)=0 then exit;
     if CodeBuffers=nil then CodeBuffers:=TFPList.Create;
     CodeBuffers.Add(Code);
   end;
@@ -12670,6 +12673,7 @@ procedure TMainIDE.OnCodeToolBossGetIndenterExamples(Sender: TObject;
   procedure AddFile(const Filename: string);
   begin
     if Filename='' then exit;
+    if CompareFilenames(ActiveFilename,Filename)=0 then exit;
     if ExpandedFilenames=nil then ExpandedFilenames:=TStringList.Create;
     ExpandedFilenames.Add(Filename);
   end;
@@ -12689,8 +12693,13 @@ var
   AProject: TProject;
   APackage: TLazPackage;
   j: Integer;
+  SrcEdit: TSourceEditor;
 begin
   if Step>0 then exit;
+  ActiveFilename:='';
+  SrcEdit:=SourceNotebook.GetActiveSE;
+  if SrcEdit<>nil then
+    ActiveFilename:=SrcEdit.FileName;
   if CodeToolsOpts.IndentContextSensitive and (Code<>Nil) then begin
     Owners:=PkgBoss.GetPossibleOwnersOfUnit(Code.Filename,[piosfIncludeSourceDirectories]);
     try
