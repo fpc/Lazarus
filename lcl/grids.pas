@@ -6300,7 +6300,7 @@ var
   C: TGridColumn;
 begin
   Result:=(goEditing in options);
-  if Result and (ACol>=0) and (ACol<FColumns.Count) then begin
+  if Result and (ACol>=0) and (ACol<ColCount) then begin
     C:=ColumnFromGridColumn(ACol);
     Result:=(C<>nil) and (not C.ReadOnly);
   end;
