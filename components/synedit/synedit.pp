@@ -175,6 +175,11 @@ type
   TReplaceTextEvent = procedure(Sender: TObject; const ASearch, AReplace:
     string; Line, Column: integer; var ReplaceAction: TSynReplaceAction) of object;
 
+  TSynCopyPasteAction = (scaContinue, scaPlainText, scaAbort);
+  TSynCopyPasteEvent = procedure(Sender: TObject; var AText: String;
+    var AMode: TSynSelectionMode; ALogStartPos: TPoint;
+    var AnAction: TSynCopyPasteAction) of object;
+
   TSynEditCaretType = (ctVerticalLine, ctHorizontalLine, ctHalfBlock, ctBlock);
   TSynCaretAdjustMode = ( // used in TextBetweenPointsEx
     scamIgnore, // Caret stays at the same numeric values, if text is inserted before caret, the text moves, but the caret stays
@@ -382,6 +387,8 @@ type
     fExtraCharSpacing: integer;
     {$ENDIF}
     FFoldedLinesView:  TSynEditFoldedView;
+    FOnCutCopy: TSynCopyPasteEvent;
+    FOnPaste: TSynCopyPasteEvent;
     FTrimmedLinesView: TSynEditStringTrimmingList;
     FDoubleWidthChrLinesView: SynEditStringDoubleWidthChars;
     FTabbedLinesView:  TSynEditStringTabExpander;
@@ -759,7 +766,7 @@ type
     constructor Create(AOwner: TComponent); override;
     procedure CutToClipboard;
     destructor Destroy; override;
-    procedure DoCopyToClipboard(const SText: string; FoldInfo: String = '');
+    procedure DoCopyToClipboard(SText: string; FoldInfo: String = '');
     procedure DragDrop(Source: TObject; X, Y: Integer); override;
     procedure EndUndoBlock(aList: TSynEditUndoList = nil);
     procedure EndUpdate;
@@ -984,6 +991,8 @@ type
     property TabWidth: integer read fTabWidth write SetTabWidth default 8;
     property WantTabs: boolean read fWantTabs write SetWantTabs default FALSE;
     property OnChange: TNotifyEvent read FOnChange write FOnChange;
+    property OnCutCopy: TSynCopyPasteEvent read FOnCutCopy write FOnCutCopy;
+    property OnPaste: TSynCopyPasteEvent read FOnPaste write FOnPaste;
     property OnClearBookmark: TPlaceMarkEvent read fOnClearMark
       write fOnClearMark;
     property OnCommandProcessed: TProcessCommandEvent
@@ -1464,19 +1473,34 @@ begin
   FCaret.LineCharPos := PixelsToRowColumn(Point(X,Y));
 end;
 
-procedure TCustomSynEdit.DoCopyToClipboard(const SText: string; FoldInfo: String = '');
+procedure TCustomSynEdit.DoCopyToClipboard(SText: string; FoldInfo: String = '');
 var
   ClipHelper: TSynClipboardStream;
+  PasteAction: TSynCopyPasteAction;
+  PMode: TSynSelectionMode;
 begin
+  PasteAction := scaContinue;
+  if length(FoldInfo) = 0 then PasteAction := scaPlainText;
+  PMode :=  SelectionMode;
+  if assigned(FOnCutCopy) then begin
+    FOnCutCopy(self, SText, PMode, FBlockSelection.FirstLineBytePos, PasteAction);
+    if PasteAction = scaAbort then
+      exit;;
+  end;
+
   if SText = '' then exit;
   Clipboard.Clear;
   ClipHelper := TSynClipboardStream.Create;
   try
     ClipHelper.Text := SText;
-    ClipHelper.SelectionMode := SelectionMode;
-    // Fold
-    if length(FoldInfo) > 0 then
-      ClipHelper.AddTag(synClipTagFold, @FoldInfo[1], length(FoldInfo));
+    ClipHelper.SelectionMode := PMode; // TODO if scaPlainText and smNormal, then avoid synedits own clipboard format
+
+    if PasteAction = scaContinue then begin
+      // Fold
+      if length(FoldInfo) > 0 then
+        ClipHelper.AddTag(synClipTagFold, @FoldInfo[1], length(FoldInfo));
+    end;
+
     if not ClipHelper.WriteToClipboard(Clipboard) then begin
       {$IFDEF SynClipboardExceptions}raise ESynEditError.Create('Clipboard copy operation failed');{$ENDIF}
     end;
@@ -3788,11 +3812,29 @@ end;
 function TCustomSynEdit.PasteFromClipboardEx(ClipHelper: TSynClipboardStream) : Boolean;
 var
   PTxt: PChar;
+  PStr: String;
+  PMode: TSynSelectionMode;
   InsStart: TPoint;
+  PasteAction: TSynCopyPasteAction;
 begin
   Result := False;
   BeginUndoBlock;
   try
+    PTxt := ClipHelper.TextP;
+    PMode := ClipHelper.SelectionMode;
+    PasteAction := scaContinue;
+    if assigned(FOnPaste) then begin
+      if ClipHelper.IsPlainText then PasteAction := scaPlainText;
+      InsStart := FCaret.LineBytePos;
+      if SelAvail and (not FBlockSelection.Persistent) and (eoOverwriteBlock in fOptions2) then
+        InsStart := FBlockSelection.FirstLineBytePos;
+      PStr := PTxt;
+      FOnPaste(self, PStr, PMode, InsStart, PasteAction);
+      PTxt := PChar(PStr);
+      if (PStr = '') or (PasteAction = scaAbort) then
+        exit;
+    end;
+
     if ClipHelper.TextP = nil then
       exit;
 
@@ -3801,8 +3843,11 @@ begin
       FBlockSelection.SelText := '';
     InsStart := FCaret.LineBytePos;
     FInternalBlockSelection.StartLineBytePos := InsStart;
-    FInternalBlockSelection.SetSelTextPrimitive(ClipHelper.SelectionMode, ClipHelper.TextP);
+    FInternalBlockSelection.SetSelTextPrimitive(PMode, PTxt);
     FCaret.LineBytePos := FInternalBlockSelection.StartLineBytePos;
+
+    if PasteAction = scaPlainText then
+      exit;
 
     if eoFoldedCopyPaste in fOptions2 then begin
       PTxt := ClipHelper.GetTagPointer(synClipTagFold);

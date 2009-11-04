@@ -363,6 +363,7 @@ type
     function GetTagLen(ATag: TSynClipboardStreamTag): Integer;
     // No check for duplicates
     Procedure AddTag(ATag: TSynClipboardStreamTag; Location: Pointer; Len: Integer);
+    property IsPlainText: Boolean read FIsPlainText;
 
     // Currently Each method (or each method of a pair) must be assigned only ONCE
     property TextP: PChar read FTextP;
