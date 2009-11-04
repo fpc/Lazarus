@@ -646,6 +646,8 @@ type
     function FindForInTypeAsString(TermPos: TAtomPosition;
       CursorNode: TCodeTreeNode; Params: TFindDeclarationParams;
       out ExprType: TExpressionType): string;
+    function FindEnumeratorOfClass(ClassNode: TCodeTreeNode;
+      ExceptionOnNotFound: boolean; out ExprType: TExpressionType): boolean;
     function IsTermEdgedBracket(TermPos: TAtomPosition;
       out EdgedBracketsStartPos: integer): boolean;
     function IsTermNamedPointer(TermPos: TAtomPosition;
@@ -8842,22 +8844,35 @@ function TFindDeclarationTool.FindForInTypeAsString(TermPos: TAtomPosition;
     RaiseException('Can not find an enumerator for '''+TrimCodeSpace(GetAtom(TermPos))+'''');
   end;
 
+var
+  TermExprType: TExpressionType;
 begin
   ExprType:=CleanExpressionType;
+  TermExprType:=CleanExpressionType;
   Params.ContextNode:=CursorNode;
   Params.Flags:=[fdfSearchInParentNodes,fdfSearchInAncestors,
                  fdfTopLvlResolving,fdfFunctionResult];
-  ExprType:=FindExpressionResultType(Params,TermPos.StartPos,TermPos.EndPos);
+  TermExprType:=FindExpressionResultType(Params,TermPos.StartPos,TermPos.EndPos);
 
   {$IFDEF ShowExprEval}
-  DebugLn('TFindDeclarationTool.FindForInTypeAsString TermType=',
-    ExprTypeToString(ExprType));
+  DebugLn('TFindDeclarationTool.FindForInTypeAsString TermExprType=',
+    ExprTypeToString(TermExprType));
   {$ENDIF}
-  case ExprType.Desc of
+  case TermExprType.Desc of
     xtContext:
       begin
-        // ToDo
-        RaiseTermHasNoIterator;
+        case TermExprType.Context.Node.Desc of
+        ctnClass:
+          begin
+            if not TermExprType.Context.Tool.FindEnumeratorOfClass(
+              TermExprType.Context.Node,true,ExprType)
+            then
+              RaiseTermHasNoIterator;
+            Result:=FindExprTypeAsString(ExprType,TermPos.StartPos,Params);
+          end
+        else
+          RaiseTermHasNoIterator;
+        end;
       end;
     xtNone,
     xtChar,
@@ -8908,13 +8923,93 @@ begin
     xtConstSet:
       RaiseTermHasNoIterator; // ToDo
   else
-    DebugLn('TFindDeclarationTool.FindForInTypeAsString ExprType=',
-      ExprTypeToString(ExprType));
+    DebugLn('TFindDeclarationTool.FindForInTypeAsString TermExprType=',
+      ExprTypeToString(TermExprType));
     RaiseTermHasNoIterator;
   end;
   {$IFDEF ShowExprEval}
   DebugLn('TFindDeclarationTool.FindForInTypeAsString Result=',Result);
   {$ENDIF}
+end;
+
+function TFindDeclarationTool.FindEnumeratorOfClass(ClassNode: TCodeTreeNode;
+  ExceptionOnNotFound: boolean; out ExprType: TExpressionType): boolean;
+var
+  Params: TFindDeclarationParams;
+  ProcTool: TFindDeclarationTool;
+  ProcNode: TCodeTreeNode;
+  EnumeratorContext: TFindContext;
+  PropTool: TFindDeclarationTool;
+  PropNode: TCodeTreeNode;
+  CurrentContext: TFindContext;
+begin
+  Result:=false;
+  ExprType:=CleanExpressionType;
+  Params:=TFindDeclarationParams.Create;
+  try
+    // search function 'GetEnumerator'
+    Params.ContextNode:=ClassNode;
+    Params.Flags:=[fdfSearchInAncestors];
+    if ExceptionOnNotFound then
+      Include(Params.Flags,fdfExceptionOnNotFound);
+    Params.SetIdentifier(Self,'GetEnumerator',nil);
+    //DebugLn(['TFindDeclarationTool.FindEnumeratorOfClass searching GetEnumerator ...']);
+    if not FindIdentifierInContext(Params) then exit;
+    ProcTool:=Params.NewCodeTool;
+    ProcNode:=Params.NewNode;
+    //DebugLn(['TFindDeclarationTool.FindEnumeratorOfClass Proc']);
+    if (ProcNode=nil) or (ProcNode.Desc<>ctnProcedure) then begin
+      if ExceptionOnNotFound then begin
+        MoveCursorToCleanPos(ClassNode.StartPos);
+        RaiseException('function GetEnumerator not found');
+      end else
+        exit;
+    end;
+    // search function type
+    Params.Clear;
+    Include(Params.Flags,fdfFunctionResult);
+    EnumeratorContext:=ProcTool.FindBaseTypeOfNode(Params,ProcNode);
+    //DebugLn(['TFindDeclarationTool.FindEnumeratorOfClass EnumeratorContext=',FindContextToString(EnumeratorContext)]);
+    if (EnumeratorContext.Node=nil) or (EnumeratorContext.Node.Desc<>ctnClass)
+    then begin
+      if ExceptionOnNotFound then begin
+        ProcTool.MoveCursorToCleanPos(ProcNode.StartPos);
+        ProcTool.RaiseException('function GetEnumerator not found');
+      end else
+        exit;
+    end;
+    // search 'Current' in enumerator class
+    Params.Clear;
+    Params.ContextNode:=EnumeratorContext.Node;
+    Params.Flags:=[fdfSearchInAncestors];
+    if ExceptionOnNotFound then
+      Include(Params.Flags,fdfExceptionOnNotFound);
+    Params.SetIdentifier(Self,'Current',nil);
+    //DebugLn(['TFindDeclarationTool.FindEnumeratorOfClass search current ...']);
+    if not FindIdentifierInContext(Params) then exit;
+    PropTool:=Params.NewCodeTool;
+    PropNode:=Params.NewNode;
+    //DebugLn(['TFindDeclarationTool.FindEnumeratorOfClass PropNode=',PropNode.DescAsString]);
+    if (PropNode=nil) or (PropNode.Desc<>ctnProperty) then begin
+      if ExceptionOnNotFound then begin
+        EnumeratorContext.Tool.MoveCursorToCleanPos(EnumeratorContext.Node.StartPos);
+        RaiseException('property Current not found');
+      end else
+        exit;
+    end;
+    // search type of Current
+    Params.Clear;
+    if ExceptionOnNotFound then
+      Include(Params.Flags,fdfExceptionOnNotFound);
+    //DebugLn(['TFindDeclarationTool.FindEnumeratorOfClass searching property type ...']);
+    CurrentContext:=PropTool.FindBaseTypeOfNode(Params,PropNode);
+    ExprType:=CurrentContext.Tool.ConvertNodeToExpressionType(
+                                                    CurrentContext.Node,Params);
+    //DebugLn(['TFindDeclarationTool.FindEnumeratorOfClass ExprType=',ExprTypeToString(ExprType)]);
+    Result:=ExprType.Desc<>xtNone;
+  finally
+    Params.Free;
+  end;
 end;
 
 function TFindDeclarationTool.IsTermEdgedBracket(TermPos: TAtomPosition; out

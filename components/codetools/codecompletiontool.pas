@@ -1223,7 +1223,7 @@ begin
     VarNameAtom,TermAtom)
   then
     exit;
-  DebugLn(['TCodeCompletionCodeTool.CompleteLocalVariableForIn Var=',GetAtom(VarNameAtom),' Term=',GetAtom(TermAtom)]);
+  //DebugLn(['TCodeCompletionCodeTool.CompleteLocalVariableForIn Var=',GetAtom(VarNameAtom),' Term=',GetAtom(TermAtom)]);
 
   // search variable
   ActivateGlobalWriteLock;
