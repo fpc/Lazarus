@@ -1903,12 +1903,16 @@ begin
     end;
     ReadNextAtom;
   end;
-  // read default
+  // read modifiers
   while CurPos.Flag=cafSemicolon do begin
     ReadNextAtom;
     if UpAtomIs('DEFAULT') or UpAtomIs('NODEFAULT') or UpAtomIs('DEPRECATED')
     then begin
-      if AtomIs(s) then exit(true);
+      if CompareIdentifierPtrs(@Src[CurPos.StartPos],Pointer(s))=0 then exit(true);
+    end else if UpAtomIs('ENUMERATOR') then begin
+      if CompareIdentifierPtrs(@Src[CurPos.StartPos],Pointer(s))=0 then exit(true);
+      ReadNextAtom;
+      if not AtomIsIdentifier(false) then exit;
     end else
       exit;
     ReadNextAtom;

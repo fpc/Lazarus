@@ -257,6 +257,13 @@ ResourceString
   ctsFileIsNotExecutable = '%s is not executable';
   ctsSrcPathForCompiledUnits = 'src path for compiled units';
   ctsTCodeToolManagerConsistencyCheck = 'TCodeToolManager.ConsistencyCheck=%d';
+  ctsFunctionGetEnumeratorNotFoundInThisClass = 'function GetEnumerator not '
+    +'found in this class';
+  ctsFunctionGetEnumeratorNotFoundInThisClass2 = 'function GetEnumerator not '
+    +'found in this class';
+  ctsResultTypeOfFunctionGetEnumeratorNotFound = 'result type of function '
+    +'GetEnumerator not found';
+  ctsPropertyCurrentNotFound = 'property Current not found';
 
 implementation
 
