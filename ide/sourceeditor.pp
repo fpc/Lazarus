@@ -6802,7 +6802,7 @@ begin
   if not (SrcEdit.SyntaxHighlighterType in [lshFreePascal, lshDelphi]) then
     exit;
   case Reason of
-  ecLineBreak,ecInsertLine: ;
+  ecLineBreak: ;
   ecPaste:
     begin
       if SrcEdit.EditorComponent.SelectionMode<>smNormal then exit;
