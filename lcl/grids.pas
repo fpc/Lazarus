@@ -1669,6 +1669,19 @@ begin
   result := '['+result+']';
 end;
 
+{$ifdef DbgScroll}
+function SbToStr(Which: Integer): string;
+begin
+  case Which of
+    SB_VERT: result := 'vert';
+    SB_HORZ: result := 'horz';
+    SB_BOTH: result := 'both';
+    else
+      result := '????';
+  end;
+end;
+{$endif}
+
 procedure DrawRubberRect(Canvas: TCanvas; aRect: TRect; Color: TColor);
   procedure DrawVertLine(X1,Y1,Y2: integer);
   begin
@@ -2629,14 +2642,11 @@ begin
   end;
   CacheVisibleGrid;
   {$Ifdef DbgVisualChange}
-  DebugLn('TCustomGrid.ResetSizes ',DbgSName(Self));
-   DbgOut('Width=',dbgs(Width));
-   DbgOut(' Height=',dbgs(height));
-   DbgOut(' GWidth=',dbgs(FGCache.GridWidth));
-  DebugLn(' GHeight=',dbgs(FGCache.GridWidth));
-   DbgOut('ClientWidth=',dbgs(FGCAche.ClientWidth));
-  DebugLn(' ClientHeight=',dbgs(FGCache.ClientHeight));
-  DebugLn('MaxTopLeft',dbgs(FGCache.MaxTopLeft));
+  DebugLn('TCustomGrid.ResetSizes %s Width=%d Height=%d',[DbgSName(Self),Width,Height]);
+  DebugLn('  Cache: ClientWidth=%d ClientHeight=%d GWidth=%d GHeight=%d',
+    [FGCAche.ClientWidth, FGCache.ClientHeight,FGCache.GridWidth, FGCache.GridHeight]);
+  DebugLn('  Reald: ClientWidth=%d ClientHeight=%d',[ClientWidth, ClientHeight]);
+  DebugLn('  MaxTopLeft',dbgs(FGCache.MaxTopLeft));
   {$Endif}
   CalcScrollBarsRange;
 end;
@@ -2665,7 +2675,7 @@ var
 begin
   if HandleAllocated then begin
     {$Ifdef DbgScroll}
-    DebugLn('ScrollbarRange: Which=',IntToStr(Which),' Range=',IntToStr(aRange));
+    DebugLn('ScrollbarRange: Which=',SbToStr(Which),' Range=',IntToStr(aRange));
     {$endif}
     FillChar(ScrollInfo, SizeOf(ScrollInfo), 0);
     ScrollInfo.cbSize := SizeOf(ScrollInfo);
@@ -2693,7 +2703,7 @@ var
 begin
   if HandleAllocated then begin
     {$Ifdef DbgScroll}
-    DebugLn('ScrollbarPosition: Which=',IntToStr(Which), ' Value= ',IntToStr(Value));
+    DebugLn('ScrollbarPosition: Which=',SbToStr(Which), ' Value= ',IntToStr(Value));
     {$endif}
     if Which = SB_VERT then Vis := FVSbVisible else
     if Which = SB_HORZ then Vis := FHSbVisible
@@ -2728,6 +2738,9 @@ var
   ScrollInfo: TScrollInfo;
 begin
   if HandleAllocated then begin
+    {$Ifdef DbgScroll}
+    DebugLn('ScrollbarPage: Which=',SbToStr(Which), ' Avalue=',dbgs(aPage));
+    {$endif}
     ScrollInfo.cbSize := SizeOf(ScrollInfo);
     ScrollInfo.fMask := SIF_PAGE;
     ScrollInfo.nPage:= aPage;
@@ -2739,7 +2752,7 @@ procedure TCustomGrid.ScrollBarShow(Which: Integer; aValue: boolean);
 begin
   if HandleAllocated then begin
     {$Ifdef DbgScroll}
-    DebugLn('ScrollbarShow: Which=',IntToStr(Which), ' Avalue=',dbgs(AValue));
+    DebugLn('ScrollbarShow: Which=',SbToStr(Which), ' Avalue=',dbgs(AValue));
     {$endif}
     ShowScrollBar(Handle,Which,aValue);
     if Which in [SB_BOTH, SB_VERT] then FVSbVisible := AValue else
@@ -3951,23 +3964,55 @@ begin
   {$ifdef dbgVisualChange}
   DebugLn('TCustomGrid.updateCachedSizes: ');
   with FGCache do
-  DebugLn('  GWidth=%d GHeight=%d FWidth=%d FHeight=%d CWidth=%d CHeight=%d',
+  DebugLn('  GWidth=%d GHeight=%d FixWidth=%d FixHeight=%d CWidth=%d CHeight=%d',
     [GridWidth,GridHeight,FixedWidth,FixedHeight,ClientWidth,ClientHeight]);
   {$endif}
 end;
 
 procedure TCustomGrid.GetSBVisibility(out HsbVisible,VsbVisible:boolean);
+var
+  autoVert,autoHorz: boolean;
+  ClientW,ClientH: Integer;
+  BarW,BarH: Integer;
 begin
+  AutoVert := ScrollBarAutomatic(ssVertical);
+  AutoHorz := ScrollBarAutomatic(ssHorizontal);
+
+  // get client bounds free of bars
+  ClientW  := ClientWidth;
+  ClientH  := ClientHeight;
+  BarW := GetSystemMetrics(SM_CXVSCROLL);
+  if ScrollBarIsVisible(SB_VERT) then
+    ClientW := ClientW + BarW;
+  BarH := GetSystemMetrics(SM_CYHSCROLL);
+  if ScrollBarIsVisible(SB_HORZ) then
+    ClientH := ClientH + BarH;
+
+  // first find out if scrollbars need to be visible by
+  // comparing against client bounds free of bars
   HsbVisible := (FScrollBars in [ssHorizontal, ssBoth]) or
-    (ScrollBarAutomatic(ssHorizontal) and (FGCache.GridWidth > ClientWidth));
+                (AutoHorz and (FGCache.GridWidth>ClientW));
 
   VsbVisible := (FScrollBars in [ssVertical, ssBoth]) or
-    (ScrollBarAutomatic(ssVertical) and (FGCache.GridHeight > ClientHeight));
+                (AutoVert and (FGCache.GridHeight>ClientH));
 
-  if ScrollBarAutomatic(ssHorizontal) then
+  // then for automatic scrollbars check if grid bounds are
+  // in some part of area occupied by scrollbars
+  if not HsbVisible and AutoHorz and VsbVisible then
+    HsbVisible := FGCache.GridWidth  > (ClientW-BarW);
+
+  if not VsbVisible and AutoVert and HsbVisible then
+    VsbVisible := FGCache.GridHeight > (ClientH-BarH);
+
+  if AutoHorz then
     HsbVisible := HsbVisible and not AutoFillColumns;
+
   {$ifdef dbgscroll}
-  DebugLn('TCustomGrid.GetSBVisibility H=',dbgs(HsbVisible),' V=',dbgs(VsbVisible));
+  DebugLn('TCustomGrid.GetSBVisibility:');
+  DebugLn(['  Horz=',HsbVisible,' GW=',FGCache.GridWidth,
+    ' CW=',ClientWidth,' CCW=',FGCache.ClientWidth,' BarW=',BarW]);
+  DebugLn(['  Vert=',VsbVisible,' GH=',FGCache.GridHeight,
+    ' CH=',ClientHeight,' CCH=',FGCache.ClientHeight,' BarH=',BarH]);
   {$endif}
 end;
 
