@@ -778,6 +778,7 @@ begin
     Add('EXPERIMENTAL' ,{$ifdef FPC}@{$endif}AllwaysTrue);
     Add('LIBRARY'      ,{$ifdef FPC}@{$endif}AllwaysTrue);
     Add('FINAL'        ,{$ifdef FPC}@{$endif}AllwaysTrue);
+    Add('ENUMERATOR'   ,{$ifdef FPC}@{$endif}AllwaysTrue);
   end;
   
   IsKeyWordProcedureSpecifier:=TKeyWordFunctionList.Create;

@@ -1113,7 +1113,8 @@ function TPascalParserTool.KeyWordFuncClassMethod: boolean;
  proc specifiers with parameters:
    message <id or number>
    dispid <id>
-}
+   enumerator <id>
+   }
 var IsFunction, HasForwardModifier: boolean;
   ParseAttr: TParseProcHeadAttributes;
 begin
@@ -1493,6 +1494,7 @@ function TPascalParserTool.ReadTilProcedureHeadEnd(
    [external name <string constant>]
    [internconst:in_const_round, external name 'FPC_ROUND'];
    dispid <id>;
+   enumerator <id>
 }
 
   procedure RaiseKeyWordExampleExpected;
@@ -1590,7 +1592,8 @@ begin
         CurPos.StartPos,CurPos.EndPos-CurPos.StartPos);
     if IsSpecifier then begin
       // read specifier
-      if UpAtomIs('MESSAGE') or UpAtomIs('DISPID') then begin
+      if UpAtomIs('MESSAGE') or UpAtomIs('DISPID') or UpAtomIs('ENUMERATOR')
+      then begin
         ReadNextAtom;
         ReadConstant(true,false,[]);
       end else if UpAtomIs('EXTERNAL') or UpAtomIs('PUBLIC') then begin
@@ -1960,13 +1963,13 @@ function TPascalParserTool.KeyWordFuncClassProperty: boolean;
    property Items[Index1, Index2: integer]: integer read GetItems; default;
    property X: integer index 1 read GetCoords write SetCoords stored IsStored; deprecated;
    property Col8: ICol8 read FCol8 write FCol8 implements ICol8, IColor;
+   property Value: Integer read FCurrent; enumerator Current;
 
- property specifiers without parameters:
-   default, nodefault
-
- property specifiers with parameters:
-   index <id or number>, read <id>, write <id>, stored <id>, default <constant>,
-   implements <id>[,<id>...]
+   property specifiers before semicolon:
+     index <id or number>, read <id>, write <id>, stored <id>, default <constant>,
+     implements <id>[,<id>...], nodefault
+   property modifiers after semicolon:
+     default, deprecated, enumerator <id>
 }
 
   procedure RaiseSemicolonAfterPropSpecMissing(const s: string);
@@ -1998,6 +2001,7 @@ begin
     ReadNextAtom;
   end;
   if CurPos.Flag=cafSemicolon then begin
+    // read modifiers
     ReadNextAtom;
     if UpAtomIs('DEFAULT') then begin
       ReadNextAtom;
@@ -2011,6 +2015,12 @@ begin
       ReadNextAtom;
       if CurPos.Flag<>cafSemicolon then
         RaiseSemicolonAfterPropSpecMissing('deprecated');
+    end else if UpAtomIs('ENUMERATOR') then begin
+      ReadNextAtom;
+      AtomIsIdentifier(true);
+      ReadNextAtom;
+      if CurPos.Flag<>cafSemicolon then
+        RaiseSemicolonAfterPropSpecMissing('enumerator');
     end else
       UndoReadNextAtom;
   end else
