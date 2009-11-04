@@ -5,21 +5,21 @@ inherited CodetoolsGeneralOptionsFrame: TCodetoolsGeneralOptionsFrame
   ClientWidth = 552
   TabOrder = 0
   Visible = False
-  DesignLeft = 303
-  DesignTop = 326
+  DesignLeft = 308
+  DesignTop = 350
   object SrcPathGroupBox: TGroupBox[0]
     AnchorSideLeft.Control = Owner
     AnchorSideTop.Control = Owner
     AnchorSideRight.Control = Owner
     AnchorSideRight.Side = asrBottom
     Left = 0
-    Height = 43
+    Height = 58
     Top = 0
     Width = 552
     Align = alTop
     AutoSize = True
     Caption = 'SrcPathGroupBox'
-    ClientHeight = 24
+    ClientHeight = 39
     ClientWidth = 548
     TabOrder = 0
     object SrcPathEdit: TEdit
@@ -44,7 +44,7 @@ inherited CodetoolsGeneralOptionsFrame: TCodetoolsGeneralOptionsFrame
     AnchorSideRight.Side = asrBottom
     Left = 0
     Height = 155
-    Top = 49
+    Top = 64
     Width = 552
     Align = alTop
     AutoSize = True
@@ -106,13 +106,13 @@ inherited CodetoolsGeneralOptionsFrame: TCodetoolsGeneralOptionsFrame
   end
   object IndentationGroupBox: TGroupBox[2]
     Left = 0
-    Height = 115
-    Top = 204
+    Height = 144
+    Top = 219
     Width = 552
     Align = alTop
     AutoSize = True
     Caption = 'IndentationGroupBox'
-    ClientHeight = 96
+    ClientHeight = 125
     ClientWidth = 548
     TabOrder = 2
     object IndentFileLabel: TLabel
@@ -121,7 +121,7 @@ inherited CodetoolsGeneralOptionsFrame: TCodetoolsGeneralOptionsFrame
       AnchorSideTop.Side = asrCenter
       Left = 6
       Height = 18
-      Top = 39
+      Top = 95
       Width = 95
       BorderSpacing.Left = 6
       Caption = 'IndentFileLabel'
@@ -135,7 +135,7 @@ inherited CodetoolsGeneralOptionsFrame: TCodetoolsGeneralOptionsFrame
       AnchorSideRight.Control = IndentFileButton
       Left = 107
       Height = 27
-      Top = 35
+      Top = 91
       Width = 320
       Anchors = [akTop, akLeft, akRight]
       BorderSpacing.Left = 6
@@ -145,13 +145,13 @@ inherited CodetoolsGeneralOptionsFrame: TCodetoolsGeneralOptionsFrame
       Text = 'IndentFileEdit'
     end
     object IndentFileButton: TButton
-      AnchorSideTop.Control = IndentEnabledCheckBox
+      AnchorSideTop.Control = IndentContextSensitiveCheckBox
       AnchorSideTop.Side = asrBottom
       AnchorSideRight.Control = IndentationGroupBox
       AnchorSideRight.Side = asrBottom
       Left = 427
       Height = 29
-      Top = 34
+      Top = 90
       Width = 115
       Anchors = [akTop, akRight]
       AutoSize = True
@@ -164,27 +164,39 @@ inherited CodetoolsGeneralOptionsFrame: TCodetoolsGeneralOptionsFrame
     end
     object IndentContextSensitiveCheckBox: TCheckBox
       AnchorSideLeft.Control = IndentationGroupBox
-      AnchorSideTop.Control = IndentFileEdit
+      AnchorSideTop.Control = IndentOnPasteCheckBox
       AnchorSideTop.Side = asrBottom
       Left = 6
       Height = 22
-      Top = 68
+      Top = 62
       Width = 235
       BorderSpacing.Around = 6
       Caption = 'IndentContextSensitiveCheckBox'
       TabOrder = 2
     end
-    object IndentEnabledCheckBox: TCheckBox
+    object IndentOnLineBreakCheckBox: TCheckBox
       AnchorSideLeft.Control = IndentationGroupBox
       AnchorSideTop.Control = IndentationGroupBox
       Left = 6
       Height = 22
       Top = 6
-      Width = 178
+      Width = 208
       BorderSpacing.Around = 6
-      Caption = 'IndentEnabledCheckBox'
-      OnChange = IndentEnabledCheckBoxChange
+      Caption = 'IndentOnLineBreakCheckBox'
+      OnChange = IndentOnLineBreakCheckBoxChange
       TabOrder = 3
+    end
+    object IndentOnPasteCheckBox: TCheckBox
+      AnchorSideLeft.Control = IndentationGroupBox
+      AnchorSideTop.Control = IndentOnLineBreakCheckBox
+      AnchorSideTop.Side = asrBottom
+      Left = 6
+      Height = 22
+      Top = 34
+      Width = 180
+      BorderSpacing.Around = 6
+      Caption = 'IndentOnPasteCheckBox'
+      TabOrder = 4
     end
   end
 end

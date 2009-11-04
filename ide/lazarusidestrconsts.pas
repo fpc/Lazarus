@@ -4512,6 +4512,8 @@ resourcestring
     +'of current unit, project or package';
   lisAddPackageRequirement = 'Add package requirement?';
   lisAddPackageToProject = 'Add package %s to project?';
+  lisOnBreakLineIEReturnOrEnterKey = 'On break line (i.e. return or enter key)';
+  lisOnPasteFromClipboard = 'On paste from clipboard';
 
 implementation
 

@@ -93,7 +93,8 @@ type
     FIdentComplAutoStartAfterPoint: boolean;
 
     // auto indentation
-    FIndentationEnabled: boolean;
+    FIndentOnLineBreak: boolean;
+    FIndentOnPaste: boolean;
     fIndentationFilename: String;
     FIndentContextSensitive: boolean;
 
@@ -187,8 +188,9 @@ type
                                            write FIdentComplAutoStartAfterPoint;
 
     // indentation
-    property IndentationEnabled: boolean read FIndentationEnabled
-                                         write FIndentationEnabled;
+    property IndentOnLineBreak: boolean read FIndentOnLineBreak
+                                         write FIndentOnLineBreak;
+    property IndentOnPaste: boolean read FIndentOnPaste write FIndentOnPaste;
     property IndentationFileName: String
       read fIndentationFileName write fIndentationFileName;
     property IndentContextSensitive: boolean read FIndentContextSensitive
@@ -413,8 +415,10 @@ begin
       'CodeToolsOptions/IdentifierCompletion/AutoStartAfterPoint',true);
 
     // indentation
-    FIndentationEnabled :=
-      XMLConfig.GetValue('CodeToolsOptions/Indentation/Enabled',true);
+    FIndentOnLineBreak :=
+      XMLConfig.GetValue('CodeToolsOptions/Indentation/OnLineBreak/Enabled',true);
+    FIndentOnPaste :=
+      XMLConfig.GetValue('CodeToolsOptions/Indentation/OnPaste/Enabled',true);
     fIndentationFilename :=
       XMLConfig.GetValue('CodeToolsOptions/Indentation/FileName'
       , TrimFilename(GetPrimaryConfigPath + PathDelim +DefaultIndentationFilename));
@@ -528,8 +532,10 @@ begin
       FIdentComplAutoStartAfterPoint,true);
 
     // indentation
-    XMLConfig.SetDeleteValue('CodeToolsOptions/Indentation/Enabled'
-      , FIndentationEnabled, true);
+    XMLConfig.SetDeleteValue('CodeToolsOptions/Indentation/OnLineBreak/Enabled'
+      , FIndentOnLineBreak, true);
+    XMLConfig.SetDeleteValue('CodeToolsOptions/Indentation/OnPaste/Enabled'
+      , FIndentOnPaste, true);
     XMLConfig.SetDeleteValue('CodeToolsOptions/Indentation/FileName'
       , fIndentationFilename, '');
     XMLConfig.SetDeleteValue('CodeToolsOptions/Indentation/ContextSensitive'
@@ -667,7 +673,8 @@ begin
   FIdentComplAutoStartAfterPoint:=true;
 
   // indentation
-  FIndentationEnabled:=true;
+  FIndentOnLineBreak:=true;
+  FIndentOnPaste:=true;
   fIndentationFilename:=
     TrimFilename(GetPrimaryConfigPath+PathDelim+DefaultIndentationFilename);
   FIndentContextSensitive:=true;

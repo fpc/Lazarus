@@ -35,7 +35,8 @@ type
 
   TCodetoolsGeneralOptionsFrame = class(TAbstractIDEOptionsEditor)
     AdjustTopLineDueToCommentCheckBox: TCheckBox;
-    IndentEnabledCheckBox: TCheckBox;
+    IndentOnPasteCheckBox: TCheckBox;
+    IndentOnLineBreakCheckBox: TCheckBox;
     IndentContextSensitiveCheckBox: TCheckBox;
     IndentFileButton: TButton;
     CursorBeyondEOLCheckBox: TCheckBox;
@@ -47,7 +48,7 @@ type
     SkipForwardDeclarationsCheckBox: TCheckBox;
     SrcPathEdit: TEdit;
     SrcPathGroupBox: TGroupBox;
-    procedure IndentEnabledCheckBoxChange(Sender: TObject);
+    procedure IndentOnLineBreakCheckBoxChange(Sender: TObject);
     procedure IndentFileButtonClick(Sender: TObject);
   private
     procedure VisualizeIndentEnabled;
@@ -83,14 +84,14 @@ procedure TCodetoolsGeneralOptionsFrame.VisualizeIndentEnabled;
 var
   e: Boolean;
 begin
-  e:=IndentEnabledCheckBox.Checked;
+  e:=IndentOnLineBreakCheckBox.Checked;
   IndentFileLabel.Enabled:=e;
   IndentFileEdit.Enabled:=e;
   IndentFileButton.Enabled:=e;
   IndentContextSensitiveCheckBox.Enabled:=e;
 end;
 
-procedure TCodetoolsGeneralOptionsFrame.IndentEnabledCheckBoxChange(
+procedure TCodetoolsGeneralOptionsFrame.IndentOnLineBreakCheckBoxChange(
   Sender: TObject);
 begin
   VisualizeIndentEnabled;
@@ -121,7 +122,8 @@ begin
   SkipForwardDeclarationsCheckBox.Caption:=dlgSkipForwardDeclarations;
 
   IndentationGroupBox.Caption:=lisIndentation;
-  IndentEnabledCheckBox.Caption:=dlgMouseFoldEnabled;
+  IndentOnLineBreakCheckBox.Caption:=lisOnBreakLineIEReturnOrEnterKey;
+  IndentOnPasteCheckBox.Caption:=lisOnPasteFromClipboard;
   IndentFileLabel.Caption:=lisExampleFile;
   IndentFileButton.Caption:=lisPathEditBrowse;
   IndentContextSensitiveCheckBox.Caption:=lisContextSensitive;
@@ -140,7 +142,8 @@ begin
     JumpCenteredCheckBox.Checked := JumpCentered;
     CursorBeyondEOLCheckBox.Checked := CursorBeyondEOL;
     SkipForwardDeclarationsCheckBox.Checked := SkipForwardDeclarations;
-    IndentEnabledCheckBox.Checked:=IndentationEnabled;
+    IndentOnLineBreakCheckBox.Checked:=IndentOnLineBreak;
+    IndentOnPasteCheckBox.Checked:=IndentOnPaste;
     IndentFileEdit.Text:=IndentationFileName;
     IndentContextSensitiveCheckBox.Checked:=IndentContextSensitive;
   end;
@@ -157,7 +160,8 @@ begin
     JumpCentered := JumpCenteredCheckBox.Checked;
     CursorBeyondEOL := CursorBeyondEOLCheckBox.Checked;
     SkipForwardDeclarations := SkipForwardDeclarationsCheckBox.Checked;
-    IndentationEnabled:=IndentEnabledCheckBox.Checked;
+    IndentOnLineBreak:=IndentOnLineBreakCheckBox.Checked;
+    IndentOnPaste:=IndentOnPasteCheckBox.Checked;
     IndentationFileName:=IndentFileEdit.Text;
     IndentContextSensitive:=IndentContextSensitiveCheckBox.Checked;
   end;

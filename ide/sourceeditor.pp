@@ -6797,14 +6797,15 @@ begin
                           Reason, SetIndentProc);
     if Result then exit;
   end;
-  if not CodeToolsOpts.IndentationEnabled then exit;
   if (SrcEdit.SyncroEdit<>nil) and SrcEdit.SyncroEdit.Active then exit;
   if not (SrcEdit.SyntaxHighlighterType in [lshFreePascal, lshDelphi]) then
     exit;
   case Reason of
-  ecLineBreak: ;
+  ecLineBreak:
+    if not CodeToolsOpts.IndentOnLineBreak then exit;
   ecPaste:
     begin
+      if not CodeToolsOpts.IndentOnPaste then exit;
       if SrcEdit.EditorComponent.SelectionMode<>smNormal then exit;
       if LogCaret.X>1 then
         inc(FirstLinePos);
