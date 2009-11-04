@@ -32,6 +32,9 @@ uses
   Classes, Graphics,
   TAChartUtils, TACustomSeries, TAGraph, TALegend, TATypes;
 
+const
+  DEF_BAR_WIDTH_PERCENT = 70;
+
 type
   EBarError = class(EChartError);
 
@@ -84,7 +87,7 @@ type
     property BarBrush: TBrush read FBarBrush write SetBarBrush;
     property BarPen: TPen read FBarPen write SetBarPen;
     property BarWidthPercent: Integer
-      read FBarWidthPercent write SetBarWidthPercent default 70;
+      read FBarWidthPercent write SetBarWidthPercent default DEF_BAR_WIDTH_PERCENT;
     property Depth;
     property SeriesColor: TColor
       read GetSeriesColor write SetSeriesColor default clTAColor;
@@ -619,11 +622,13 @@ begin
 end;
 
 procedure TBasicPointSeries.UpdateMargins(ACanvas: TCanvas; var AMargins: TRect);
+const
+  SOME_DIGIT = '0';
 var
   h: Integer;
 begin
   if not Marks.IsMarkLabelsVisible then exit;
-  h := ACanvas.TextHeight('0') + Marks.Distance + 2 * MARKS_MARGIN_Y + 4;
+  h := ACanvas.TextHeight(SOME_DIGIT) + Marks.Distance + 2 * MARKS_MARGIN_Y + 4;
   AMargins.Top := Max(AMargins.Top, h);
   AMargins.Bottom := Max(AMargins.Bottom, h);
   FPrevLabelRect := Rect(0, 0, 0, 0);
@@ -647,7 +652,7 @@ end;
 constructor TBarSeries.Create(AOwner: TComponent);
 begin
   inherited Create(AOwner);
-  FBarWidthPercent := 70; //70%
+  FBarWidthPercent := DEF_BAR_WIDTH_PERCENT;
 
   FBarBrush := TBrush.Create;
   FBarBrush.OnChange := @StyleChanged;

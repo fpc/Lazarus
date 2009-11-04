@@ -115,8 +115,8 @@ type
   public
     constructor Create;
   public
-    procedure AddRange(AStart, AEnd: Double);
     procedure AddPoint(APoint: Double); inline;
+    procedure AddRange(AStart, AEnd: Double);
     procedure Clear;
     function Intersect(
       var ALeft, ARight: Double; var AHint: Integer): Boolean;
@@ -203,6 +203,7 @@ var
   i: Integer;
 const
   GOOD_STEPS: array [1..3] of Double = (0.2, 0.5, 1.0);
+  BASE = 10;
 begin
   extent := AMax - AMin;
   AStep := 1;
@@ -213,11 +214,11 @@ begin
   scale := 1.0;
   for i := Low(GOOD_STEPS) to High(GOOD_STEPS) do begin
     extentTmp := extent / GOOD_STEPS[i];
-    m := power(10, Round(log10(extentTmp)));
-    while extentTmp * m > 10 do
-      m *= 0.1;
+    m := power(BASE, Round(logn(BASE, extentTmp)));
+    while extentTmp * m > BASE do
+      m /= BASE;
     while extentTmp * m <= 1 do
-      m *= 10;
+      m *= BASE;
     stepCount := extentTmp * m;
     if stepCount > maxStepCount then begin
       maxStepCount := stepCount;

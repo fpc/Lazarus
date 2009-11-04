@@ -243,17 +243,21 @@ begin
 end;
 
 constructor TChartSeries.Create(AOwner: TComponent);
+const
+  BUILTIN_SOURCE_NAME = 'Builtin';
 begin
   inherited Create(AOwner);
 
   FListener := TChartSeriesListener.Create(Self);
   FBuiltinSource := TListChartSource.Create(Self);
-  FBuiltinSource.Name := 'Builtin';
+  FBuiltinSource.Name := BUILTIN_SOURCE_NAME;
   FBuiltinSource.Subscribe(FListener);
   FMarks := TChartMarks.Create(FChart);
 end;
 
 function TChartSeries.DefaultFormattedMark(AIndex: integer): String;
+const
+  TO_PERCENT = 100;
 var
   total, percent: Double;
 begin
@@ -262,7 +266,7 @@ begin
     if total = 0 then
       percent := 0
     else
-      percent := Y / total * 100;
+      percent := Y / total * TO_PERCENT;
     Result := Format(FMarks.Format, [y, percent, Text, total, X]);
   end;
 end;
