@@ -911,7 +911,7 @@ begin
   begin
     if Chr(Key) = 'O' then LoadBtnClick(nil)
     else if Chr(Key) = 'S' then SaveBtnClick(nil)
-    else if (Chr(Key) = 'P') and PrintBtn.Enabled then PrintBtnClick(nil)
+    else if (Chr(Key) = 'P') and PrintBtn.Visible then PrintBtnClick(nil)
     else if Chr(Key) = 'F' then FindBtnClick(nil)
     else if (Chr(Key) = 'E') and N5.Visible then EditBtnClick(nil)
   end
