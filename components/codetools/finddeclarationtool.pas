@@ -661,6 +661,8 @@ type
       out ResultExprType: TExpressionType): boolean;
     function FindEnumerationTypeOfSetType(SetTypeNode: TCodeTreeNode;
       out Context: TFindContext): boolean;
+    function FindElementTypeOfArrayType(ArrayNode: TCodeTreeNode;
+      out ExprType: TExpressionType): boolean;
     function CheckOperatorEnumerator(Params: TFindDeclarationParams;
       const FoundContext: TFindContext): TIdentifierFoundResult;
     function CheckModifierEnumeratorCurrent(Params: TFindDeclarationParams;
@@ -8902,13 +8904,17 @@ begin
             Result:=FindExprTypeAsString(ExprType,TermPos.StartPos,Params);
           end;
         ctnSetType:
-          begin
-            if TermExprType.Context.Tool.FindEnumerationTypeOfSetType(
-                                    TermExprType.Context.Node,ExprType.Context)
-            then begin
-              ExprType.Desc:=xtContext;
-              Result:=FindExprTypeAsString(ExprType,TermPos.StartPos,Params);
-            end;
+          if TermExprType.Context.Tool.FindEnumerationTypeOfSetType(
+                                  TermExprType.Context.Node,ExprType.Context)
+          then begin
+            ExprType.Desc:=xtContext;
+            Result:=FindExprTypeAsString(ExprType,TermPos.StartPos,Params);
+          end;
+        ctnRangedArrayType,ctnOpenArrayType:
+          if TermExprType.Context.Tool.FindElementTypeOfArrayType(
+                                  TermExprType.Context.Node,ExprType)
+          then begin
+            Result:=FindExprTypeAsString(ExprType,TermPos.StartPos,Params);
           end;
         else
           RaiseTermHasNoIterator;
@@ -9169,7 +9175,9 @@ begin
   if (SetTypeNode=nil) or (SetTypeNode.Desc<>ctnSetType) then exit;
   MoveCursorToNodeStart(SetTypeNode);
   ReadNextAtom; // set
+  if not UpAtomIs('SET') then exit;
   ReadNextAtom; // of
+  if not UpAtomIs('OF') then exit;
   ReadNextAtom;
   if not IsIdentStartChar[Src[CurPos.StartPos]] then
     // set of ()
@@ -9187,10 +9195,45 @@ begin
     or (Params.NewNode.FirstChild.Desc<>ctnEnumerationType) then begin
       MoveCursorToCleanPos(p);
       ReadNextAtom;
-      RaiseStringExpectedButAtomFound('enumeration type');
+      RaiseStringExpectedButAtomFound(ctsEnumerationType);
     end;
     Context.Tool:=Params.NewCodeTool;
     Context.Node:=Params.NewNode;
+    Result:=true;
+  finally
+    Params.Free;
+  end;
+end;
+
+function TFindDeclarationTool.FindElementTypeOfArrayType(
+  ArrayNode: TCodeTreeNode; out ExprType: TExpressionType): boolean;
+var
+  Params: TFindDeclarationParams;
+  p: LongInt;
+begin
+  Result:=false;
+  ExprType:=CleanExpressionType;
+  if (ArrayNode=nil) then exit;
+  if (ArrayNode.Desc<>ctnOpenArrayType) and (ArrayNode.Desc<>ctnRangedArrayType)
+  then exit;
+  MoveCursorToNodeStart(ArrayNode);
+  ReadNextAtom; // array
+  if not UpAtomIs('ARRAY') then exit;
+  ReadNextAtom; // of
+  if CurPos.Flag=cafEdgedBracketOpen then begin
+    ReadTilBracketClose(true);
+    ReadNextAtom;
+  end;
+  if not UpAtomIs('OF') then exit;
+  ReadNextAtom;
+  if not AtomIsIdentifier(false) then exit;
+  Params:=TFindDeclarationParams.Create;
+  try
+    Params.Flags:=fdfDefaultForExpressions;
+    Params.ContextNode:=ArrayNode;
+    p:=CurPos.StartPos;
+    Params.SetIdentifier(Self,@Src[p],nil);
+    ExprType:=FindExpressionResultType(Params,p,-1);
     Result:=true;
   finally
     Params.Free;

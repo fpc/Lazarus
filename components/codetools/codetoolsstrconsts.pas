@@ -264,6 +264,8 @@ ResourceString
   ctsResultTypeOfFunctionGetEnumeratorNotFound = 'result type of function '
     +'GetEnumerator not found';
   ctsPropertyCurrentNotFound = 'property Current not found';
+  ctsEnumerationType = 'enumeration type';
+  ctsType = 'type';
 
 implementation
 
