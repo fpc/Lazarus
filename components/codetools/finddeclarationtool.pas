@@ -9099,7 +9099,7 @@ begin
     DebugLn(['TFindDeclarationTool.FindOperatorEnumerator ClassContext=',FindContextToString(ClassContext)]);
     {$ENDIF}
     case ClassContext.Node.Desc of
-    ctnClass,ctnObject: ;
+    ctnClass,ctnObject,ctnClassInterface: ;
     else
       OperatorTool.MoveCursorToNodeStart(OperatorNode);
       OperatorTool.RaiseException('operator enumerator result type is not object');
