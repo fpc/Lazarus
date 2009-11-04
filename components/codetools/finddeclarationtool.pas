@@ -58,7 +58,7 @@ interface
 { $DEFINE ShowTriedParentContexts}
 { $DEFINE ShowTriedIdentifiers}
 { $DEFINE ShowTriedUnits}
-{ $DEFINE ShowExprEval}
+{$DEFINE ShowExprEval}
 { $DEFINE ShowFoundIdentifier}
 { $DEFINE ShowInterfaceCache}
 { $DEFINE ShowNodeCache}
@@ -659,6 +659,8 @@ type
     function FindOperatorEnumerator(Node: TCodeTreeNode;
       ExprType: TExpressionType; Need: TFindOperatorEnumerator;
       out ResultExprType: TExpressionType): boolean;
+    function FindEnumerationTypeOfSetType(SetTypeNode: TCodeTreeNode;
+      out Context: TFindContext): boolean;
     function CheckOperatorEnumerator(Params: TFindDeclarationParams;
       const FoundContext: TFindContext): TIdentifierFoundResult;
     function CheckModifierEnumeratorCurrent(Params: TFindDeclarationParams;
@@ -8898,7 +8900,16 @@ begin
             then
               RaiseTermHasNoIterator;
             Result:=FindExprTypeAsString(ExprType,TermPos.StartPos,Params);
-          end
+          end;
+        ctnSetType:
+          begin
+            if TermExprType.Context.Tool.FindEnumerationTypeOfSetType(
+                                    TermExprType.Context.Node,ExprType.Context)
+            then begin
+              ExprType.Desc:=xtContext;
+              Result:=FindExprTypeAsString(ExprType,TermPos.StartPos,Params);
+            end;
+          end;
         else
           RaiseTermHasNoIterator;
         end;
@@ -9142,6 +9153,44 @@ begin
     {$IFDEF ShowExprEval}
     DebugLn(['TFindDeclarationTool.FindOperatorEnumerator enumerator current result=',ExprTypeToString(ResultExprType)]);
     {$ENDIF}
+    Result:=true;
+  finally
+    Params.Free;
+  end;
+end;
+
+function TFindDeclarationTool.FindEnumerationTypeOfSetType(
+  SetTypeNode: TCodeTreeNode; out Context: TFindContext): boolean;
+var
+  Params: TFindDeclarationParams;
+  p: LongInt;
+begin
+  Result:=false;
+  if (SetTypeNode=nil) or (SetTypeNode.Desc<>ctnSetType) then exit;
+  MoveCursorToNodeStart(SetTypeNode);
+  ReadNextAtom; // set
+  ReadNextAtom; // of
+  ReadNextAtom;
+  if not IsIdentStartChar[Src[CurPos.StartPos]] then
+    // set of ()
+    exit;
+  Params:=TFindDeclarationParams.Create;
+  try
+    Params.Flags:=fdfDefaultForExpressions;
+    Params.ContextNode:=SetTypeNode;
+    p:=CurPos.StartPos;
+    Params.SetIdentifier(Self,@Src[p],nil);
+    if not FindIdentifierInContext(Params) then exit;
+    if (Params.NewNode=nil)
+    or (Params.NewNode.Desc<>ctnTypeDefinition)
+    or (Params.NewNode.FirstChild=nil)
+    or (Params.NewNode.FirstChild.Desc<>ctnEnumerationType) then begin
+      MoveCursorToCleanPos(p);
+      ReadNextAtom;
+      RaiseStringExpectedButAtomFound('enumeration type');
+    end;
+    Context.Tool:=Params.NewCodeTool;
+    Context.Node:=Params.NewNode;
     Result:=true;
   finally
     Params.Free;
