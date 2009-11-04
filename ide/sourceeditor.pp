@@ -537,6 +537,9 @@ type
     FSourceEditorList: TList; // list of TSourceEditor
     FOnPopupMenu: TSrcEditPopupMenuEvent;
     FMouseDownTabIndex: Integer;
+    FMouseWaitForDrag: Boolean;
+    FMouseDownX: integer;
+    FMouseDownY: integer;
   private
     // colors for the completion form (popup form, e.g. word completion)
     FActiveEditDefaultFGColor: TColor;
@@ -626,8 +629,12 @@ type
 
     procedure NotebookMouseDown(Sender: TObject; Button: TMouseButton;
           Shift: TShiftState; X,Y: Integer);
+    procedure NotebookMouseMove(Sender: TObject; Shift: TShiftState; X,Y: Integer);
     procedure NotebookMouseUp(Sender: TObject; Button: TMouseButton;
           Shift: TShiftState; X,Y: Integer);
+    procedure NotebookDragOver(Sender: TObject; Source: TObject; X, Y: Integer;
+      State: TDragState; var Accept: Boolean);
+    procedure NotebookDragDrop(Sender: TObject; Source: TObject; X, Y: Integer);
 
     // hintwindow stuff
     procedure HintTimer(Sender: TObject);
@@ -3378,6 +3385,8 @@ begin
   Caption := locWndSrcEditor;
   KeyPreview:=true;
   FProcessingCommand := false;
+  FMouseDownTabIndex := -1;
+  FMouseWaitForDrag := False;
 
   SourceEditorWindow:=Self;
 
@@ -4237,7 +4246,10 @@ Begin
           OnPageChanged := @NotebookPageChanged;
           OnCloseTabClicked:=@CloseTabClicked;
           OnMouseDown:=@NotebookMouseDown;
+          OnMouseMove := @NotebookMouseMove;
           OnMouseUp:=@NotebookMouseUp;
+          OnDragOver := @NotebookDragOver;
+          OnDragDrop := @NotebookDragDrop;
           ShowHint:=true;
           OnShowHint:=@NotebookShowTabHint;
           {$IFDEF IDE_DEBUG}
@@ -6450,17 +6462,20 @@ begin
   Result:=nil;
 end;
 
-procedure TSourceNotebook.NotebookMouseDown(Sender: TObject;
-  Button: TMouseButton;  Shift: TShiftState; X,Y: Integer);
+procedure TSourceNotebook.NotebookMouseDown(Sender: TObject; Button: TMouseButton;
+  Shift: TShiftState; X, Y: Integer);
 var
   TabIndex: Integer;
 begin
   TabIndex:=Notebook.TabIndexAtClientPos(Point(X,Y));
   FMouseDownTabIndex:=-1;
+  FMouseWaitForDrag := False;
+  FMouseDownX := X;
+  FMouseDownY := Y;
   case Button of
     mbLeft: begin
       FMouseDownTabIndex:=TabIndex;
-      Cursor:=crDrag;
+      FMouseWaitForDrag := True;
     end;
     mbMiddle: begin
       if TabIndex>=0 then
@@ -6469,19 +6484,47 @@ begin
   end;
 end;
 
-procedure TSourceNotebook.NotebookMouseUp(Sender: TObject;
-  Button: TMouseButton; Shift: TShiftState; X, Y: Integer);
+procedure TSourceNotebook.NotebookMouseMove(Sender: TObject; Shift: TShiftState;
+  X, Y: Integer);
+begin
+  if (FMouseWaitForDrag) and
+     ( (Abs(fMouseDownX - X) >= GetSystemMetrics(SM_CXDRAG)) or
+       (Abs(fMouseDownY - Y) >= GetSystemMetrics(SM_CYDRAG)) )
+  then begin
+    FMouseWaitForDrag := False;
+    BeginDrag(true);
+  end;
+end;
+
+procedure TSourceNotebook.NotebookMouseUp(Sender: TObject; Button: TMouseButton;
+  Shift: TShiftState; X, Y: Integer);
+begin
+  FMouseWaitForDrag := False;
+  FMouseDownTabIndex:=-1;
+end;
+
+procedure TSourceNotebook.NotebookDragOver(Sender: TObject; Source: TObject;
+  X, Y: Integer; State: TDragState; var Accept: Boolean);
 var
   TabIndex: Integer;
 begin
   TabIndex:=Notebook.TabIndexAtClientPos(Point(X,Y));
-  if
-    (Button=mbLeft) and (FMouseDownTabIndex>=0) and (TabIndex>=0) and
-    (TabIndex<>FMouseDownTabIndex)
-  then
-    MoveEditor(FMouseDownTabIndex,TabIndex);
+  if (Source = self) then
+    Accept := (TabIndex >= 0) and (TabIndex <> FMouseDownTabIndex);
+end;
+
+procedure TSourceNotebook.NotebookDragDrop(Sender: TObject; Source: TObject;
+  X, Y: Integer);
+var
+  TabIndex: Integer;
+begin
+  if (Source = self) then begin
+    TabIndex := Notebook.TabIndexAtClientPos(Point(X,Y));
+    if (FMouseDownTabIndex>=0) and (TabIndex>=0) and (TabIndex<>FMouseDownTabIndex)
+    then
+      MoveEditor(FMouseDownTabIndex,TabIndex);
+  end;
   FMouseDownTabIndex:=-1;
-  Cursor:=crDefault;
 end;
 
 Procedure TSourceNotebook.NotebookPageChanged(Sender: TObject);
