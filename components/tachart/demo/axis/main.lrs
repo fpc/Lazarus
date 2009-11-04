@@ -1,0 +1,28 @@
+{ This is an automatically generated lazarus resource file }
+
+LazarusResources.Add('TForm1','FORMDATA',[
+  'TPF0'#6'TForm1'#5'Form1'#4'Left'#3'X'#1#6'Height'#3'0'#1#3'Top'#3#182#0#5'Wi'
+  +'dth'#3#21#2#7'Caption'#6#5'Form1'#12'ClientHeight'#3'0'#1#11'ClientWidth'#3
+  +#21#2#8'Position'#7#14'poScreenCenter'#10'LCLVersion'#6#6'0.9.29'#0#6'TChart'
+  +#6'Chart1'#4'Left'#2#0#6'Height'#3'0'#1#3'Top'#2#0#5'Width'#3#21#2#8'AxisLis'
+  +'t'#14#1#9'Alignment'#7#7'calLeft'#6'Offset'#5#0#0#0#0#0#0#0#0#0#0#5'Scale'#5
+  +#0#0#0#0#0#0#0#128#255'?'#9'TickColor'#7#5'clRed'#13'Title.Caption'#6#4'Left'
+  +#22'Title.Font.Orientation'#3#132#3#13'Title.Visible'#9#0#1#9'Alignment'#7#8
+  +'calRight'#6'Offset'#5#0#0#0#0#0#0#0#128#255'?'#5'Scale'#5#0#0#0#0#0#0#0#128
+  +#0'@'#13'Title.Caption'#6#7'Right 1'#22'Title.Font.Orientation'#3#132#3#13'T'
+  +'itle.Visible'#9#0#1#9'Alignment'#7#9'calBottom'#6'Offset'#5#0#0#0#0#0#0#0#0
+  +#0#0#5'Scale'#5#0#0#0#0#0#0#0#128#255'?'#13'Title.Caption'#6#6'Bottom'#14'Ti'
+  +'tle.Distance'#2#0#13'Title.Visible'#9#0#1#9'Alignment'#7#8'calRight'#12'Gri'
+  +'d.Visible'#8#6'Offset'#5#0#0#0#0#0#0#0#0#0#0#5'Scale'#5#0#0#0#0#0#0#0#128
+  +#255#191#9'TickColor'#7#6'clAqua'#13'Title.Caption'#6#7'Right 2'#13'Title.Vi'
+  +'sible'#9#0#1#9'Alignment'#7#6'calTop'#8'Inverted'#9#6'Offset'#5#0#0#0#0#0#0
+  +#0#0#0#0#5'Scale'#5#0#0#0#0#0#0#0#128#255'?'#13'Title.Caption'#6#3'Top'#0#0
+  +#16'Foot.Brush.Color'#7#9'clBtnFace'#15'Foot.Font.Color'#7#6'clBlue'#17'Titl'
+  +'e.Brush.Color'#7#9'clBtnFace'#16'Title.Font.Color'#7#6'clBlue'#18'Title.Tex'
+  +'t.Strings'#1#6#7'TAChart'#0#5'Align'#7#8'alClient'#11'ParentColor'#8#0#11'T'
+  +'LineSeries'#17'Chart1LineSeries1'#11'SeriesColor'#7#7'clBlack'#6'Source'#7
+  +#18'RandomChartSource1'#0#0#0#18'TRandomChartSource'#18'RandomChartSource1'
+  +#12'PointsNumber'#2#30#8'RandSeed'#4#1'D'#239#5#4'XMax'#5#0#0#0#0#0#0#0#160#3
+  +'@'#4'XMin'#5#0#0#0#0#0#0#0#160#2'@'#4'YMax'#5#0#0#0#0#0#0#0#128#0'@'#4'YMin'
+  +#5#0#0#0#0#0#0#0#128#255'?'#4'left'#3#216#0#3'top'#2'l'#0#0#0
+]);
