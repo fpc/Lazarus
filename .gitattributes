@@ -2018,6 +2018,7 @@ components/synedit/test/testbase.pas svneol=native#text/pascal
 components/synedit/test/testsynbeautifier.pas svneol=native#text/pascal
 components/synedit/test/testsyncroedit.pas svneol=native#text/pascal
 components/synedit/test/testsynselection.pas svneol=native#text/pascal
+components/synedit/test/testtrimspace.pas svneol=native#text/pascal
 components/synunihighlighter/CHANGES.txt svneol=native#text/plain
 components/synunihighlighter/CREDITS.txt svneol=native#text/plain
 components/synunihighlighter/README.txt svneol=native#text/plain

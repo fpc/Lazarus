@@ -5,7 +5,7 @@ program SynTest;
 uses
   Interfaces, Forms, GuiTestRunner, LResources,
   TestBase,
-  TestSynSelection, TestSynBeautifier, TestSyncroEdit;
+  TestSynSelection, TestSynBeautifier, TestSyncroEdit, TestTrimSpace;
 
 {$IFDEF WINDOWS}{$R SynTest.rc}{$ENDIF}
 
