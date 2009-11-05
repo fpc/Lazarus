@@ -287,9 +287,7 @@ type
     function Func25: TtkTokenKind;
     function Func27: TtkTokenKind;
     function Func28: TtkTokenKind;
-    {$ifdef SYN_LAZARUS}
     function Func29: TtkTokenKind;  // "on"
-    {$endif}
     function Func32: TtkTokenKind;
     function Func33: TtkTokenKind;
     function Func35: TtkTokenKind;
@@ -343,14 +341,10 @@ type
     function Func103: TtkTokenKind;
     function Func105: TtkTokenKind;
     function Func106: TtkTokenKind;
-    {$ifdef SYN_LAZARUS}
     function Func108: TtkTokenKind;  // "operator"
     function Func112: TtkTokenKind;  // "requires"
-    {$endif}
     function Func117: TtkTokenKind;
-    {$ifdef SYN_LAZARUS}
     function Func122: TtkTokenKind; // "otherwise"
-    {$endif}
     function Func126: TtkTokenKind;
     function Func128: TtkTokenKind;
     function Func129: TtkTokenKind;
@@ -624,9 +618,7 @@ begin
   fIdentFuncTable[25] := @Func25;
   fIdentFuncTable[27] := @Func27;
   fIdentFuncTable[28] := @Func28;
-  {$ifdef SYN_LAZARUS}
   fIdentFuncTable[29] := @Func29; // "on"
-  {$endif}
   fIdentFuncTable[32] := @Func32;
   fIdentFuncTable[33] := @Func33;
   fIdentFuncTable[35] := @Func35;
@@ -680,22 +672,14 @@ begin
   fIdentFuncTable[103] := @Func103;
   fIdentFuncTable[105] := @Func105;
   fIdentFuncTable[106] := @Func106;
-  {$ifdef SYN_LAZARUS}
   fIdentFuncTable[108] := @Func108; // "operator"
   fIdentFuncTable[112] := @Func112; // "requires"
-  {$endif}
   fIdentFuncTable[117] := @Func117;
-  {$ifdef SYN_LAZARUS}
   fIdentFuncTable[122] := @Func122;
-  {$ENDIF}
   fIdentFuncTable[126] := @Func126;
-  {$ifdef SYN_LAZARUS}
   fIdentFuncTable[128] := @Func128;
-  {$endif}
   fIdentFuncTable[129] := @Func129;
-  {$ifdef SYN_LAZARUS}
   fIdentFuncTable[130] := @Func130;
-  {$endif}
   fIdentFuncTable[132] := @Func132;
   fIdentFuncTable[133] := @Func133;
   fIdentFuncTable[136] := @Func136;
@@ -704,9 +688,7 @@ begin
   fIdentFuncTable[143] := @Func143;
   fIdentFuncTable[151] := @Func151;
   fIdentFuncTable[166] := @Func166;
-  {$ifdef SYN_LAZARUS}
   fIdentFuncTable[167] := @Func167;
-  {$endif}
   fIdentFuncTable[168] := @Func168;
   fIdentFuncTable[191] := @Func191;
   {$ELSE}
@@ -1363,7 +1345,10 @@ end;
 
 function TSynPasSyn.Func84: TtkTokenKind;
 begin
-  if KeyComp('Abstract') then Result := tkKey else Result := tkIdentifier;
+  if KeyComp('Abstract') then
+    Result := tkKey
+  else
+    Result := tkIdentifier;
 end;
 
 function TSynPasSyn.Func85: TtkTokenKind;
@@ -1636,7 +1621,6 @@ begin
   else Result := tkIdentifier;
 end;
 
-{$ifdef SYN_LAZARUS}
 function TSynPasSyn.Func108: TtkTokenKind;
 begin
   if KeyComp('Operator') then Result := tkKey else Result := tkIdentifier;
@@ -1646,19 +1630,16 @@ function TSynPasSyn.Func112: TtkTokenKind;
 begin
   if KeyComp('Requires') then Result := tkKey else Result := tkIdentifier;
 end;
-{$endif}
 
 function TSynPasSyn.Func117: TtkTokenKind;
 begin
   if KeyComp('Exports') then Result := tkKey else Result := tkIdentifier;
 end;
 
-{$ifdef SYN_LAZARUS}
 function TSynPasSyn.Func122: TtkTokenKind;
 begin
   if KeyComp('Otherwise') then Result := tkKey else Result := tkIdentifier;
 end;
-{$endif}
 
 function TSynPasSyn.Func126: TtkTokenKind;
 begin
@@ -1683,7 +1664,13 @@ end;
 
 function TSynPasSyn.Func130: TtkTokenKind;
 begin
-  if KeyComp('Ansistring') then Result := tkKey else Result := tkIdentifier;
+  if KeyComp('Ansistring') then
+    Result := tkKey
+  else
+  if KeyComp('Enumerator') then
+    Result := tkKey
+  else
+    Result := tkIdentifier;
 end;
 
 function TSynPasSyn.Func132: TtkTokenKind;
