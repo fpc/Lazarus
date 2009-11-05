@@ -84,7 +84,7 @@
         <CursorPos X="10" Y="3994"/>
         <TopLine Value="3958"/>
         <EditorIndex Value="2"/>
-        <UsageCount Value="24"/>
+        <UsageCount Value="25"/>
         <Loaded Value="True"/>
       </Unit5>
       <Unit6>
@@ -109,7 +109,7 @@
         <CursorPos X="14" Y="1243"/>
         <TopLine Value="1219"/>
         <EditorIndex Value="1"/>
-        <UsageCount Value="22"/>
+        <UsageCount Value="23"/>
         <Loaded Value="True"/>
       </Unit8>
       <Unit9>
@@ -165,8 +165,8 @@
         <ComponentName Value="EditorSite"/>
         <ResourceBaseClass Value="Form"/>
         <UnitName Value="fEditorSite"/>
-        <CursorPos X="5" Y="122"/>
-        <TopLine Value="81"/>
+        <CursorPos X="1" Y="23"/>
+        <TopLine Value="1"/>
         <EditorIndex Value="0"/>
         <UsageCount Value="40"/>
         <Loaded Value="True"/>
@@ -277,7 +277,7 @@
         <Loaded Value="True"/>
       </Unit27>
     </Units>
-    <JumpHistory Count="29" HistoryIndex="28">
+    <JumpHistory Count="30" HistoryIndex="29">
       <Position1>
         <Filename Value="fbookframe.pas"/>
         <Caret Line="155" Column="1" TopLine="131"/>
@@ -394,6 +394,10 @@
         <Filename Value="feditorsite.pas"/>
         <Caret Line="118" Column="39" TopLine="81"/>
       </Position29>
+      <Position30>
+        <Filename Value="feditorsite.pas"/>
+        <Caret Line="115" Column="8" TopLine="69"/>
+      </Position30>
     </JumpHistory>
   </ProjectOptions>
   <CompilerOptions>

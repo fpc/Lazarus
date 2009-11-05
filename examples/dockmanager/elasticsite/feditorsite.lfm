@@ -1,0 +1,109 @@
+inherited EditorSite: TEditorSite
+  Left = 354
+  Height = 300
+  Width = 400
+  Caption = 'EditorSite'
+  ClientHeight = 281
+  ClientWidth = 400
+  Menu = MainMenu1
+  OnCreate = FormCreate
+  inherited pnlLeft: TPanel
+    Height = 256
+  end
+  inherited splitLeft: TSplitter
+    Height = 256
+  end
+  inherited pnlRight: TPanel
+    Left = 400
+    Height = 256
+  end
+  inherited pnlBottom: TPanel
+    Top = 260
+    Width = 400
+  end
+  inherited splitRight: TSplitter
+    Left = 396
+    Height = 256
+  end
+  inherited StatusBar1: TStatusBar
+    Top = 261
+    Width = 400
+  end
+  inherited splitBottom: TSplitter
+    Top = 256
+    Width = 400
+  end
+  object MainMenu1: TMainMenu[7]
+    left = 240
+    top = 48
+    object mnFile: TMenuItem
+      Caption = '&File'
+      object mnOpen: TMenuItem
+        Caption = '&Open'
+        OnClick = mnOpenClick
+      end
+      object MenuItem1: TMenuItem
+        Caption = '-'
+      end
+      object mnExit: TMenuItem
+        Caption = 'E&xit'
+        OnClick = mnExitClick
+      end
+    end
+    object mnView: TMenuItem
+      Caption = '&View'
+      object MenuItem2: TMenuItem
+        Caption = 'Object Inspector'
+        OnClick = ViewMenuClick
+      end
+      object MenuItem3: TMenuItem
+        Caption = 'Messages'
+        OnClick = ViewMenuClick
+      end
+      object MenuItem4: TMenuItem
+        Caption = 'Code Explorer'
+        OnClick = ViewMenuClick
+      end
+      object MenuItem5: TMenuItem
+        Caption = 'ToDo List'
+        OnClick = ViewMenuClick
+      end
+      object MenuItem6: TMenuItem
+        Caption = 'Debug windows'
+        object MenuItem7: TMenuItem
+          Caption = 'Watches'
+          OnClick = ViewMenuClick
+        end
+        object MenuItem8: TMenuItem
+          Caption = 'BreakPoints'
+          OnClick = ViewMenuClick
+        end
+        object MenuItem9: TMenuItem
+          Caption = 'Local Variables'
+          OnClick = ViewMenuClick
+        end
+        object MenuItem10: TMenuItem
+          Caption = 'Registers'
+          OnClick = ViewMenuClick
+        end
+        object MenuItem11: TMenuItem
+          Caption = 'Call Stack'
+          OnClick = ViewMenuClick
+        end
+        object MenuItem12: TMenuItem
+          Caption = 'Assembler'
+          OnClick = ViewMenuClick
+        end
+        object MenuItem13: TMenuItem
+          Caption = 'Debug Output'
+          OnClick = ViewMenuClick
+        end
+      end
+    end
+  end
+  object OpenDialog1: TOpenDialog[8]
+    Filter = '*.pas|*.pas|All Files|*.*'
+    left = 309
+    top = 48
+  end
+end
