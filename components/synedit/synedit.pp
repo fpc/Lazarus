@@ -61,34 +61,28 @@ interface
 { $DEFINE VerboseSynEditInvalidate}
 
 uses
-{$IFDEF SYN_LAZARUS}
   {$IFDEF USE_UTF8BIDI_LCL}
   FreeBIDI, utf8bidi,
   {$ENDIF}
   Types, LCLIntf, LCLType, LMessages, LCLProc,
-{$ELSE}
-  Windows,
-{$ENDIF}
   SysUtils, Classes, Messages, Controls, Graphics, Forms, StdCtrls, ExtCtrls, Menus,
-{$IFDEF SYN_MBCSSUPPORT}
+  {$IFDEF SYN_MBCSSUPPORT}
   Imm,
-{$ENDIF}
+  {$ENDIF}
   SynEditTypes, SynEditSearch, SynEditKeyCmds, SynEditMouseCmds, SynEditMiscProcs,
   SynEditPointClasses, SynBeautifier, SynEditMarks,
-{$ifdef SYN_LAZARUS}
   SynEditMarkup, SynEditMarkupHighAll, SynEditMarkupBracket, SynEditMarkupWordGroup,
   SynEditMarkupCtrlMouseLink, SynEditMarkupSpecialLine, SynEditMarkupSelection,
   SynEditTextBase, SynEditTextTrimmer, SynEditFoldedView, SynEditTextTabExpander,
   SynEditTextDoubleWidthChars,
   SynGutterBase, SynGutter, SynGutterCodeFolding, SynGutterChanges,
   SynGutterLineNumber, SynGutterMarks,
-{$ENDIF}
   SynEditMiscClasses, SynEditTextBuffer, SynEditHighlighter, SynTextDrawer,
   SynEditLines,
   LResources, Clipbrd
-{$IFDEF SYN_COMPILER_4_UP}
+  {$IFDEF SYN_COMPILER_4_UP}
   , StdActns
-{$ENDIF}
+  {$ENDIF}
   ;
 
 const
@@ -98,7 +92,6 @@ const
   ALPHA_UC = ['A'..'Z'];
   ALPHA_LC = ['a'..'z'];
 
-{$IFDEF SYN_LAZARUS}
   ScrollBarWidth=0;
   {$UNDEF SynDefaultFont}
   {$IFDEF LCLgtk}
@@ -118,14 +111,12 @@ const
   SynDefaultFontPitch = fpFixed;
   SynDefaultFontQuality = fqNonAntialiased;
 
-{$ENDIF}
-
-{$IFNDEF SYN_COMPILER_3_UP}
+  {$IFNDEF SYN_COMPILER_3_UP}
    // not defined in all Delphi versions
   WM_MOUSEWHEEL = $020A;
-{$ENDIF}
+  {$ENDIF}
 
-   // maximum scroll range
+  // maximum scroll range
   MAX_SCROLL = 32767;
 
 {$IFDEF SYN_MBCSSUPPORT}
@@ -157,7 +148,7 @@ type
 
   THookedCommandEvent = procedure(Sender: TObject; AfterProcessing: boolean;
     var Handled: boolean; var Command: TSynEditorCommand;
-    var AChar: {$IFDEF SYN_LAZARUS}TUTF8Char{$ELSE}Char{$ENDIF};
+    var AChar: TUTF8Char;
     Data: pointer; HandlerData: pointer) of object;
 
   THookedKeyTranslationEvent = procedure(Sender: TObject;
@@ -169,7 +160,7 @@ type
 
   TProcessCommandEvent = procedure(Sender: TObject;
     var Command: TSynEditorCommand;
-    var AChar: {$IFDEF SYN_LAZARUS}TUTF8Char{$ELSE}Char{$ENDIF};
+    var AChar: TUTF8Char;
     Data: pointer) of object;
 
   TReplaceTextEvent = procedure(Sender: TObject; const ASearch, AReplace:
@@ -334,29 +325,24 @@ type
     procedure WMEraseBkgnd(var Msg: TMessage); message WM_ERASEBKGND;
     procedure WMGetDlgCode(var Msg: TWMGetDlgCode); message WM_GETDLGCODE;
     procedure WMHScroll(var Msg: {$IFDEF SYN_LAZARUS}TLMScroll{$ELSE}TWMScroll{$ENDIF}); message WM_HSCROLL;
-{$IFDEF SYN_MBCSSUPPORT}
+    {$IFDEF SYN_MBCSSUPPORT}
     procedure WMImeComposition(var Msg: TMessage); message WM_IME_COMPOSITION;
     procedure WMImeNotify(var Msg: TMessage); message WM_IME_NOTIFY;
-{$ENDIF}
+    {$ENDIF}
     procedure WMKillFocus(var Msg: TWMKillFocus); message WM_KILLFOCUS;
-    {$IFDEF SYN_LAZARUS}
     procedure WMExit(var Message: TLMExit); message LM_EXIT;
-    {$ELSE}
+    {$IFNDEF SYN_LAZARUS}
     procedure WMMouseWheel(var Msg: TMessage); message WM_MOUSEWHEEL;
-    procedure WMSetCursor(var Msg: TWMSetCursor); message WM_SETCURSOR;
-    procedure WMSize(var Msg: TWMSize); message WM_SIZE;
     {$ENDIF}
     procedure WMSetFocus(var Msg: TWMSetFocus); message WM_SETFOCUS;
     procedure WMVScroll(var Msg: {$IFDEF SYN_LAZARUS}TLMScroll{$ELSE}TWMScroll{$ENDIF}); message WM_VSCROLL;
   private
-    fFirstLine: integer;
     fBlockIndent: integer;
-    {$IFDEF SYN_LAZARUS}
     FCaret: TSynEditCaret;
     FInternalCaret: TSynEditCaret;
     FInternalBlockSelection: TSynEditSelection;
     FMouseSelectionMode: TSynSelectionMode;
-    fCtrlMouseActive: boolean;
+    fCtrlMouseActive: boolean;                                                  // deprecated since 0.9.29
     fMarkupManager : TSynEditMarkupManager;
     fMarkupHighAll : TSynEditMarkupHighlightAll;
     fMarkupHighCaret : TSynEditMarkupHighlightAllCaret;
@@ -365,39 +351,34 @@ type
     fMarkupCtrlMouse : TSynEditMarkupCtrlMouseLink;
     fMarkupSpecialLine : TSynEditMarkupSpecialLine;
     fMarkupSelection : TSynEditMarkupSelection;
-    {$ELSE}
-    fCaretX: Integer;      // position in Expanded Line = physical position (screen) when LeftChar=1
-    fCaretY: Integer;
-    {$ENDIF}
     fCharsInWindow: Integer;
     fCharWidth: Integer;
     fFontDummy: TFont;
-{$IFDEF SYN_MBCSSUPPORT}
+    {$IFDEF SYN_MBCSSUPPORT}
     fImeCount: Integer;
     fMBCSStepAside: Boolean;
-{$ENDIF}
+    {$ENDIF}
     fInserting: Boolean;
-    {$IFDEF SYN_LAZARUS}
     fLastMouseCaret: TPoint;  // Char; physical (screen)
     FLastMousePoint: TPoint;  // Pixel
     fHighlighterNeedsUpdateStartLine: integer; // 1 based, 0 means invalid
     fHighlighterNeedsUpdateEndLine: integer; // 1 based, 0 means invalid
     FBeautifier: TSynCustomBeautifier;
     FBeautifyStartLineIdx, FBeautifyEndLineIdx: Integer;
-    fExtraCharSpacing: integer;
-    {$ENDIF}
+
     FFoldedLinesView:  TSynEditFoldedView;
-    FOnCutCopy: TSynCopyPasteEvent;
-    FOnPaste: TSynCopyPasteEvent;
     FTrimmedLinesView: TSynEditStringTrimmingList;
     FDoubleWidthChrLinesView: SynEditStringDoubleWidthChars;
     FTabbedLinesView:  TSynEditStringTabExpander;
     FTheLinesView: TSynEditStrings;
     FLines: TSynEditStrings;          // The real (un-mapped) line-buffer
     FStrings: TStrings;               // External TStrings based interface to the Textbuffer
+
+    fExtraCharSpacing: integer;
     fLinesInWindow: Integer;// MG: fully visible lines in window
     fLeftChar: Integer;    // first visible screen column
     fMaxLeftChar: Integer; // 1024
+
     fPaintLock: Integer;
     fReadOnly: Boolean;
     fRightEdge: Integer;
@@ -408,19 +389,15 @@ type
     fTopLine: Integer;
     FOldTopLine, FOldTopView: Integer;
     fHighlighter: TSynCustomHighlighter;
-    {$IFNDEF SYN_LAZARUS}
-    fSelectedColor: TSynSelectedColor;
-    {$ENDIF}
     fUndoList: TSynEditUndoList;
     fRedoList: TSynEditUndoList;
     fBookMarks: array[0..9] of TSynEditMark;
     fMouseDownX: integer;
     fMouseDownY: integer;
     fBookMarkOpt: TSynBookMarkOpt;
-{$ifndef SYN_LAZARUS}
-    fBorderStyle: TBorderStyle;
+    {$ifndef SYN_LAZARUS}
     fMouseWheelAccumulator: integer;
-{$endif}
+    {$endif}
     fHideSelection: boolean;
     fOverwriteCaret: TSynEditCaretType;
     fInsertCaret: TSynEditCaretType;
@@ -441,9 +418,7 @@ type
     fInvalidateRect: TRect;
     fStateFlags: TSynStateFlags;
     fOptions: TSynEditorOptions;
-    {$IFDEF SYN_LAZARUS}
     fOptions2: TSynEditorOptions2;
-    {$ENDIF}
     fStatusChanges: TSynStatusChanges;
     fTSearch: TSynEditSearch;
     fHookedCommandHandlers: TList;
@@ -453,6 +428,8 @@ type
     fScrollDeltaX, fScrollDeltaY: Integer;
     FInMouseClickEvent: Boolean;
     // event handlers
+    FOnCutCopy: TSynCopyPasteEvent;
+    FOnPaste: TSynCopyPasteEvent;
     fOnChange: TNotifyEvent;
     fOnClearMark: TPlaceMarkEvent;                                              // djlp 2000-08-29
     fOnCommandProcessed: TProcessCommandEvent;
@@ -524,12 +501,10 @@ type
     procedure SetSpecialLineMarkup(const AValue : TSpecialLineMarkupEvent);
     function GetHookedCommandHandlersCount: integer;
     function GetLineText: string;
-    {$IFDEF SYN_LAZARUS}
     function GetCharLen(const Line: string; CharStartPos: integer): integer;
     function GetLogicalCaretXY: TPoint;
     procedure SetLogicalCaretXY(const NewLogCaretXY: TPoint);
     procedure SetBeautifier(NewBeautifier: TSynCustomBeautifier);
-    {$ENDIF}
     function GetMaxUndo: Integer;
     function GetSelAvail: Boolean;
     function GetSelText: string;
@@ -540,20 +515,13 @@ type
     procedure LockUndo;
     procedure MoveCaretHorz(DX: integer);
     procedure MoveCaretVert(DY: integer);
-    {$IFDEF SYN_LAZARUS}
     procedure PrimarySelectionRequest(const RequestedFormatID: TClipboardFormat;
       Data: TStream);
-    {$ENDIF}
     function ScanFrom(var Index: integer; AtLeastTilIndex: integer = -1): integer;
-    procedure SelectedColorsChanged(Sender: TObject);
     procedure DoBlockSelectionChanged(Sender: TObject);
     procedure SetBlockBegin(Value: TPoint);
     procedure SetBlockEnd(Value: TPoint);
-    {$IFDEF SYN_LAZARUS}
     procedure SetBlockIndent(const AValue: integer);
-    {$ELSE}
-    procedure SetBorderStyle(Value: TBorderStyle);
-    {$ENDIF}
     procedure SetCaretAndSelection(const ptCaret, ptBefore, ptAfter: TPoint;
                                    Mode: TSynSelectionMode = smCurrent);
     procedure SetCaretX(const Value: Integer);
@@ -566,10 +534,8 @@ type
     procedure SetInsertCaret(const Value: TSynEditCaretType);
     procedure SetInsertMode(const Value: boolean);
     procedure SetKeystrokes(const Value: TSynEditKeyStrokes);
-    {$ifdef SYN_LAZARUS}
     procedure SetExtraCharSpacing(const Value: integer);
     procedure SetLastMouseCaret(const AValue: TPoint);
-    {$ENDIF}
     function  CurrentMaxLeftChar: Integer;
     procedure SetLeftChar(Value: Integer);
     procedure SetLineText(Value: string);
@@ -577,9 +543,7 @@ type
     procedure SetMaxUndo(const Value: Integer);
     procedure SetModified(Value: boolean);
     procedure SetOptions(Value: TSynEditorOptions);
-    {$IFDEF SYN_LAZARUS}
     procedure SetOptions2(const Value: TSynEditorOptions2);
-    {$ENDIF}
     procedure SetOverwriteCaret(const Value: TSynEditCaretType);
     procedure SetRightEdge(Value: Integer);
     procedure SetRightEdgeColor(Value: TColor);
@@ -594,15 +558,10 @@ type
     procedure ScrollAfterTopLineChanged;
     procedure SetWantTabs(const Value: boolean);
     procedure SetWordBlock(Value: TPoint);
-    {$IFDEF SYN_LAZARUS}
     procedure SetLineBlock(Value: TPoint; WithLeadSpaces: Boolean = True);
     procedure SetParagraphBlock(Value: TPoint);
-    {$ENDIF}
     procedure SizeOrFontChanged(bFont: boolean);
     procedure StatusChanged(AChanges: TSynStatusChanges);
-    {$IFNDEF SYN_LAZARUS}
-    procedure TrimmedSetLine(ALine: integer; ALineText: string);
-    {$ENDIF}
     procedure UpdateModified;
     procedure UndoRedoAdded(Sender: TObject);
     procedure UnlockUndo;
@@ -627,12 +586,10 @@ type
     function DoHandleMouseAction(AnActionList: TSynEditMouseActions;
                                  AnInfo: TSynEditMouseActionInfo): Boolean;
 
-    {$IFDEF SYN_LAZARUS}
     procedure Resize; override;
     function  RealGetText: TCaption; override;
     procedure RealSetText(const Value: TCaption); override;
     procedure IncreaseChangeStamp;
-    {$ENDIF}
     function GetLines: TStrings; override;
     function GetViewedTextBuffer: TSynEditStrings; override;
     function GetTextBuffer: TSynEditStrings; override;
@@ -677,7 +634,7 @@ type
 {$ENDIF}
     procedure NotifyHookedCommandHandlers(AfterProcessing: boolean;
       var Command: TSynEditorCommand;
-      var AChar: {$IFDEF SYN_LAZARUS}TUTF8Char{$ELSE}Char{$ENDIF};
+      var AChar: TUTF8Char;
       Data: pointer); virtual;
     procedure Paint; override;
     procedure PaintTextLines(AClip: TRect; FirstLine, LastLine,
@@ -708,13 +665,13 @@ type
     procedure GetChildren(Proc: TGetChildProc; Root: TComponent); override;
     procedure DoOnClearBookmark(var Mark: TSynEditMark); virtual;               // djlp - 2000-08-29
     procedure DoOnCommandProcessed(Command: TSynEditorCommand;
-      AChar: {$IFDEF SYN_LAZARUS}TUTF8Char{$ELSE}Char{$ENDIF};
+      AChar: TUTF8Char;
       Data: pointer); virtual;
     // no method DoOnDropFiles, intercept the WM_DROPFILES instead
     procedure DoOnPaint; virtual;
     procedure DoOnPlaceMark(var Mark: TSynEditMark); virtual;
     procedure DoOnProcessCommand(var Command: TSynEditorCommand;
-      var AChar: {$IFDEF SYN_LAZARUS}TUTF8Char{$ELSE}Char{$ENDIF};
+      var AChar: TUTF8Char;
       Data: pointer); virtual;
     function DoOnReplaceText(const ASearch, AReplace: string;
       Line, Column: integer): TSynReplaceAction; virtual;
@@ -723,8 +680,8 @@ type
       var Foreground, Background: TColor): boolean; virtual;
     {$ENDIF}
     procedure DoOnStatusChange(Changes: TSynStatusChanges); virtual;
-    {$IFDEF SYN_LAZARUS}
     property LastMouseCaret: TPoint read FLastMouseCaret write SetLastMouseCaret;
+    {$IFDEF SYN_LAZARUS}
     function GetSelEnd: integer;                                                 //L505
     function GetSelStart: integer;
     procedure SetSelEnd(const Value: integer);
@@ -759,7 +716,7 @@ type
     procedure ClearBookMark(BookMark: Integer);
     procedure ClearSelection;
     procedure CommandProcessor(Command:TSynEditorCommand;
-      AChar: {$IFDEF SYN_LAZARUS}TUTF8Char{$ELSE}Char{$ENDIF};
+      AChar: TUTF8Char;
       Data:pointer); virtual;
     procedure ClearUndo;
     procedure CopyToClipboard;
@@ -775,8 +732,7 @@ type
     function ExecuteAction(ExeAction: TBasicAction): boolean; override;
 {$ENDIF}
     procedure ExecuteCommand(Command: TSynEditorCommand;
-      {$IFDEF SYN_LAZARUS}const AChar: TUTF8Char{$ELSE}AChar: Char{$ENDIF};
-      Data: pointer); virtual;
+      const AChar: TUTF8Char; Data: pointer); virtual;
     function GetBookMark(BookMark: integer; var X, Y: integer): boolean;
     function GetHighlighterAttriAtRowCol(XY: TPoint; var Token: string;
       var Attri: TSynHighlighterAttributes): boolean;
@@ -878,10 +834,12 @@ type
     property CharsInWindow: Integer read fCharsInWindow;
     property CharWidth: integer read fCharWidth;
     property Color default clWhite;
-    {$IFDEF SYN_LAZARUS}
     property Beautifier: TSynCustomBeautifier read fBeautifier write SetBeautifier;
-    property CtrlMouseActive: boolean read fCtrlMouseActive;
+    {$IFDEF SYN_LAZARUS}
+    property CtrlMouseActive: boolean read fCtrlMouseActive; deprecated;        // deprecated in 0.9.29
+    {$ENDIF}
     property LogicalCaretXY: TPoint read GetLogicalCaretXY write SetLogicalCaretXY;
+    {$IFDEF SYN_LAZARUS}
     property SelStart: Integer read GetSelStart write SetSelStart;
     property SelEnd: Integer read GetSelEnd write SetSelEnd;
     property UseIncrementalColor : Boolean write SetUseIncrementalColor;
@@ -930,13 +888,9 @@ type
   protected
     property BookMarkOptions: TSynBookMarkOpt
       read fBookMarkOpt write fBookMarkOpt;
-    property BorderStyle {$ifndef SYN_LAZARUS}: TBorderStyle read FBorderStyle write SetBorderStyle{$endif}
-      default bsSingle;
-    {$IFDEF SYN_LAZARUS}
     property BlockIndent: integer read fBlockIndent write SetBlockIndent default 2;
     property ExtraCharSpacing: integer
       read fExtraCharSpacing write SetExtraCharSpacing default 0;
-    {$ENDIF}
     property ExtraLineSpacing: integer
       read fExtraLineSpacing write SetExtraLineSpacing default 0;
     property Gutter: TSynGutter read fGutter write SetGutter;
@@ -955,10 +909,8 @@ type
     property MaxUndo: Integer read GetMaxUndo write SetMaxUndo default 1024;
     property Options: TSynEditorOptions read fOptions write SetOptions          // See SYNEDIT_UNIMPLEMENTED_OPTIONS for deprecated Values
       default SYNEDIT_DEFAULT_OPTIONS;
-    {$IFDEF SYN_LAZARUS}
     property Options2: TSynEditorOptions2 read fOptions2 write SetOptions2
       default SYNEDIT_DEFAULT_OPTIONS2;
-    {$ENDIF}
     property OverwriteCaret: TSynEditCaretType read FOverwriteCaret
       write SetOverwriteCaret default ctBlock;
     property RightEdge: Integer read fRightEdge write SetRightEdge default 80;
@@ -966,7 +918,6 @@ type
       read fRightEdgeColor write SetRightEdgeColor default clSilver;
     property ScrollBars: TScrollStyle
       read FScrollBars write SetScrollBars default ssBoth;
-    {$IFDEF SYN_LAZARUS}
     property SelectedColor: TSynSelectedColor
     read GetSelectedColor write SetSelectedColor;  // Setter for compatibility
     property IncrementColor: TSynSelectedColor read GetIncrementColor;
@@ -977,10 +928,6 @@ type
     property FoldedCodeColor: TSynSelectedColor read GetFoldedCodeColor;
     property BracketHighlightStyle: TSynEditBracketHighlightStyle
       read GetBracketHighlightStyle write SetBracketHighlightStyle;
-    {$ELSE}
-    property SelectedColor: TSynSelectedColor
-      read FSelectedColor write FSelectedColor;
-    {$ENDIF}
     property DefaultSelectionMode: TSynSelectionMode
       read GetDefSelectionMode write SetDefSelectionMode default smNormal;
     property SelectionMode: TSynSelectionMode
@@ -1092,10 +1039,8 @@ type
     property OnStartDrag;
     // TCustomSynEdit properties
     property BookMarkOptions;
-    property BorderStyle;
-    {$IFDEF SYN_LAZARUS}
+    property BorderStyle default bsSingle;
     property ExtraCharSpacing;
-    {$ENDIF}
     property ExtraLineSpacing;
     property Gutter;
     property HideSelection;
@@ -1109,9 +1054,7 @@ type
     property MaxLeftChar;
     property MaxUndo;
     property Options;
-    {$IFDEF SYN_LAZARUS}
     property Options2;
-    {$ENDIF}
     property OverwriteCaret;
     property ReadOnly;
     property RightEdge;
@@ -1615,10 +1558,6 @@ begin
   DoubleBuffered := True;
   {$ENDIF}
 
-  {$IFNDEF SYN_LAZARUS}
-  fSelectedColor := TSynSelectedColor.Create;
-  fSelectedColor.OnChange := {$IFDEF FPC}@{$ENDIF}SelectedColorsChanged;
-  {$ENDIF}
   fTextDrawer := TheTextDrawer.Create([fsBold], fFontDummy);
   fBookMarkOpt := TSynBookMarkOpt.Create(Self);
   fBookMarkOpt.OnChange := {$IFDEF FPC}@{$ENDIF}BookMarkOptionsChanged;
@@ -1685,11 +1624,7 @@ begin
   fInserting := True;
   fMaxLeftChar := 1024;
   ScrollBars := ssBoth;
-  {$IFDEF SYN_LAZARUS}
   BorderStyle := bsSingle;
-  {$ELSE}
-  fBorderStyle := bsSingle;
-  {$ENDIF}
   fInsertCaret := ctVerticalLine;
   fOverwriteCaret := ctBlock;
   FKeystrokes := TSynEditKeyStrokes.Create(Self);
@@ -1717,12 +1652,7 @@ begin
   fTopLine := 1;
   FOldTopLine := 1;
   FOldTopView := 1;
-  {$IFDEF SYN_LAZARUS}
   FFoldedLinesView.TopLine := 1;
-  {$ELSE}
-  fCaretX := 1;
-  fCaretY := 1;
-  {$ENDIF}
   // find / replace
   fTSearch := TSynEditSearch.Create;
   fOptions := SYNEDIT_DEFAULT_OPTIONS;
@@ -1735,7 +1665,6 @@ begin
   fScrollTimer.Enabled := False;
   fScrollTimer.Interval := 100;
   fScrollTimer.OnTimer := {$IFDEF FPC}@{$ENDIF}ScrollTimerHandler;
-  fFirstLine := 1;
 end;
 
 function TCustomSynEdit.GetChildOwner: TComponent;
@@ -2010,6 +1939,7 @@ procedure TCustomSynEdit.SetUseIncrementalColor(const AValue : Boolean);
 begin
   fMarkupSelection.UseIncrementalColor:=AValue;
 end;
+{$ENDIF}
 
 function TCustomSynEdit.GetCharLen(const Line: string; CharStartPos: integer
   ): integer;
@@ -2039,8 +1969,6 @@ begin
     fBeautifier := NewBeautifier;
 end;
 
-{$ENDIF}
-
 function TCustomSynEdit.GetSelAvail: Boolean;
 begin
   Result := FBlockSelection.SelAvail;
@@ -2061,7 +1989,6 @@ begin
   Result := fLines.Text;
 end;
 
-{$IFDEF SYN_LAZARUS}
 function TCustomSynEdit.RealGetText: TCaption;
 begin
   if FLines<>nil then
@@ -2069,7 +1996,6 @@ begin
   else
     Result := '';
 end;
-{$ENDIF}
 
 procedure TCustomSynEdit.HideCaret;
 begin
@@ -3926,7 +3852,6 @@ begin
   fBlockSelection.EndLineBytePos := Value;
 end;
 
-{$IFDEF SYN_LAZARUS}
 procedure TCustomSynEdit.SetBlockIndent(const AValue: integer);
 begin
   if fBlockIndent=AValue then exit;
@@ -3952,8 +3877,6 @@ begin
   else
     Result := TSynEditUndoCaret.Create(FCaret.LineCharPos);
 end;
-
-{$ENDIF}
 
 function TCustomSynEdit.GetMarkup(Index: integer): TSynEditMarkup;
 begin
@@ -4110,7 +4033,6 @@ begin
   FLines.Text := Value;
 end;
 
-{$IFDEF SYN_LAZARUS}
 procedure TCustomSynEdit.RealSetText(const Value: TCaption);
 begin
   FLines.Text := Value; // Do not trim
@@ -4123,7 +4045,6 @@ begin
   else
     inc(fChangeStamp);
 end;
-{$ENDIF}
 
 function TCustomSynEdit.CurrentMaxTopLine: Integer;
 begin
@@ -4391,12 +4312,10 @@ begin
   {$ENDIF}
 end;
 
-{$IFDEF SYN_LAZARUS}
 procedure TCustomSynEdit.WMExit(var Message: TLMExit);
 begin
   LastMouseCaret:=Point(-1,-1);
 end;
-{$ENDIF}
 
 procedure TCustomSynEdit.WMEraseBkgnd(var Msg: TMessage);
 begin
@@ -4468,11 +4387,7 @@ begin
   //DebugLn('[TCustomSynEdit.WMSetFocus] END');
 end;
 
-{$IFDEF SYN_LAZARUS}
 procedure TCustomSynEdit.Resize;
-{$ELSE}
-procedure TCustomSynEdit.WMSize(var Msg: TWMSize);
-{$ENDIF}
 begin
   inherited;
   SizeOrFontChanged(FALSE);
@@ -4743,7 +4658,6 @@ begin
   DecPaintLock;
 end;
 
-{$IFDEF SYN_LAZARUS}
 procedure TCustomSynEdit.SetLineBlock(Value: TPoint; WithLeadSpaces: Boolean = True);
 var
   ALine: string;
@@ -4800,7 +4714,6 @@ begin
   //DebugLn(' FFF3 ',Value.X,',',Value.Y,' BlockBegin=',BlockBegin.X,',',BlockBegin.Y,' BlockEnd=',BlockEnd.X,',',BlockEnd.Y);
   DecPaintLock;
 end;
-{$ENDIF}
 
 function TCustomSynEdit.GetCanUndo: Boolean;
 begin
@@ -5411,16 +5324,6 @@ begin
   end;
 end;
 
-{$ifndef SYN_LAZARUS}
-procedure TCustomSynEdit.SetBorderStyle(Value: TBorderStyle);
-begin
-  if fBorderStyle <> Value then begin
-    fBorderStyle := Value;
-    RecreateWnd;
-  end;
-end;
-{$endif}
-
 procedure TCustomSynEdit.SetHideSelection(const Value: boolean);
 begin
   if fHideSelection <> Value then begin
@@ -5589,7 +5492,6 @@ begin
     FKeystrokes.Assign(Value);
 end;
 
-{$IFDEF SYN_LAZARUS}
 procedure TCustomSynEdit.SetExtraCharSpacing(const Value: integer);
 begin
   if fExtraCharSpacing=Value then exit;
@@ -5606,15 +5508,13 @@ begin
   UpdateCursor;
 end;
 
-{$ENDIF}
-
 procedure TCustomSynEdit.SetDefaultKeystrokes;
 begin
   FKeystrokes.ResetDefaults;
 end;
 
 procedure TCustomSynEdit.CommandProcessor(Command: TSynEditorCommand;
-  AChar: {$IFDEF SYN_LAZARUS}TUTF8Char{$ELSE}Char{$ENDIF};
+  AChar: TUTF8Char;
   Data: pointer);
 var
   InitialCmd: TSynEditorCommand;
@@ -5661,8 +5561,7 @@ begin
 end;
 
 procedure TCustomSynEdit.ExecuteCommand(Command: TSynEditorCommand;
-  {$IFDEF SYN_LAZARUS}const AChar: TUTF8Char{$ELSE}AChar: Char{$ENDIF};
-  Data: pointer);
+  const AChar: TUTF8Char; Data: pointer);
 const
   ALPHANUMERIC = DIGIT + ALPHA_UC + ALPHA_LC;
   SEL_MODE: array[ecNormalSelect..ecLineSelect] of TSynSelectionMode = (
@@ -6203,7 +6102,7 @@ begin
               end;
               Insert(s, Temp, CaretX);
               CaretX := (CaretX + Len);
-              TrimmedSetLine(CaretY - 1, Temp);                                 //JGF 2000-09-23
+              FTheLinesView[CaretY - 1] := Temp;
               if fInserting then
                 Helper := '';
               fUndoList.AddChange(crInsert, StartOfBlock,
@@ -6242,7 +6141,7 @@ begin
 end;
 
 procedure TCustomSynEdit.DoOnCommandProcessed(Command: TSynEditorCommand;
-  AChar: {$IFDEF SYN_LAZARUS}TUTF8Char{$ELSE}Char{$ENDIF};
+  AChar: TUTF8Char;
   Data: pointer);
 begin
   if Assigned(fOnCommandProcessed) then
@@ -6250,7 +6149,7 @@ begin
 end;
 
 procedure TCustomSynEdit.DoOnProcessCommand(var Command: TSynEditorCommand;
-  var AChar: {$IFDEF SYN_LAZARUS}TUTF8Char{$ELSE}Char{$ENDIF}; Data: pointer);
+  var AChar: TUTF8Char; Data: pointer);
 begin
   //DebugLn(['TCustomSynEdit.DoOnProcessCommand Command=',Command]);
   if Command < ecUserFirst then begin
@@ -6614,11 +6513,6 @@ begin
   end;
 end;
 
-procedure TCustomSynEdit.SelectedColorsChanged(Sender: TObject);
-begin
-  Invalidate;
-end;
-
 // find / replace
 function TCustomSynEdit.SearchReplace(const ASearch, AReplace: string;
   AOptions: TSynSearchOptions): integer;
@@ -6893,33 +6787,6 @@ begin
     Result := FALSE;
 end;
 
-{$IFNDEF SYN_LAZARUS}
-{ LCL never sends WM_SETCURSOR messages, use OnMouseMove and then set cursor }
-
-procedure TCustomSynEdit.WMSetCursor(var Msg: TWMSetCursor);
-var
-  ptCursor, ptLineCol: TPoint;
-begin
-  GetCursorPos(ptCursor);
-  ptCursor := ScreenToClient(ptCursor);
-  if (ptCursor.X < fGutterWidth) then
-    // ToDo TStreenCursors
-    SetCursor(Screen.Cursors[fGutter.Cursor])
-  else begin
-    ptLineCol.X := (LeftChar * fCharWidth + ptCursor.X - fGutterWidth - 2)
-      div fCharWidth;
-    ptLineCol.Y := TopLine + ptCursor.Y div fTextHeight;
-    if (eoDragDropEditing in fOptions) and IsPointInSelection(ptLineCol) then
-      // ToDo TStreenCursors
-      SetCursor(Screen.Cursors[crDefault])
-    else
-      // ToDo WMSetCursor
-      inherited WMSetCursor(Msg);
-  end;
-end;
-
-{$endif}
-
 procedure TCustomSynEdit.BookMarkOptionsChanged(Sender: TObject);
 begin
   InvalidateGutter;
@@ -7027,7 +6894,6 @@ begin
   end;
 end;
 
-{$IFDEF SYN_LAZARUS}
 procedure TCustomSynEdit.SetOptions2(const Value: TSynEditorOptions2);
 var
   ChangedOptions: TSynEditorOptions2;
@@ -7044,7 +6910,6 @@ begin
       UpdateCursor;
   end;
 end;
-{$ENDIF}
 
 procedure TCustomSynEdit.SetOptionFlag(Flag: TSynEditorOption; Value: boolean);
 begin
@@ -8299,7 +8164,7 @@ end;
 
 procedure TCustomSynEdit.NotifyHookedCommandHandlers(AfterProcessing: boolean;
   var Command: TSynEditorCommand;
-  var AChar: {$IFDEF SYN_LAZARUS}TUTF8Char{$ELSE}Char{$ENDIF}; Data: pointer);
+  var AChar: TUTF8Char; Data: pointer);
 var
   Handled: boolean;
   i: integer;
@@ -8415,7 +8280,6 @@ begin
   Result := fTextOffset + Pred(Col) * fCharWidth;
 end;
 
-{$IFDEF SYN_LAZARUS}
 procedure TCustomSynEdit.PrimarySelectionRequest(
   const RequestedFormatID: TClipboardFormat;  Data: TStream);
 var
@@ -8449,17 +8313,6 @@ begin
     end;
   end;
 end;
-{$ENDIF}
-
-{$IFNDEF SYN_LAZARUS}
-procedure TCustomSynEdit.TrimmedSetLine(ALine: integer; ALineText: string);
-begin
-  if eoTrimTrailingSpaces in Options then
-    Lines[ALine] := TrimRight(ALineText)
-  else
-    Lines[ALine] := ALineText;
-end;
-{$ENDIF}
 
 { TSynEditPlugin }
 
