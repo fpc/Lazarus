@@ -1133,6 +1133,8 @@ type
     property WantTabs;
     // TCustomSynEdit events
     property OnChange;
+    property OnCutCopy;
+    property OnPaste;
     property OnClearBookmark;                                                   // djlp 2000-08-29
     property OnCommandProcessed;
     property OnDropFiles;
