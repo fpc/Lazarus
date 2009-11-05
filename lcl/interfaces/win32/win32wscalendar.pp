@@ -35,7 +35,8 @@ uses
 ////////////////////////////////////////////////////
   CommCtrl, SysUtils, Controls, LCLType, Calendar,
 ////////////////////////////////////////////////////
-  WSCalendar, WSLCLClasses, WSProc, Windows, Win32WSControls;
+  WSCalendar, WSLCLClasses, WSProc, Windows, Win32WSControls,
+  win32proc;
 
 type
 
@@ -127,7 +128,10 @@ begin
   if not WSCheckHandleAllocated(ACalendar, 'TWin32WSCustomCalendar.HitTest') then
     Exit;
   FillChar(HitTestInfo, SizeOf(HitTestInfo), 0);
-  HitTestInfo.cbSize := SizeOf(HitTestInfo);
+  if WindowsVersion >= wvVista then
+    HitTestInfo.cbSize := SizeOf(HitTestInfo)
+  else
+    HitTestInfo.cbSize := 32;
   HitTestInfo.pt := APoint;
   HitPart := SendMessage(ACalendar.Handle, MCM_HITTEST, 0, LPARAM(@HitTestInfo));
   case HitPart of
