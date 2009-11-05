@@ -32,8 +32,9 @@ type
     FFixedBaseTestNames: Integer;
     FForm : TForm;
     FSynEdit : TTestSynEdit;
-    FClipBoardText: String;
+    function GetClipBoardText: String;
     procedure SetBaseTestName(const AValue: String);
+    procedure SetClipBoardText(const AValue: String);
   protected
     function  LinesToText(Lines: Array of String; Separator: String = LineEnding;
                           SeparatorAtEnd: Boolean = False): String;
@@ -54,12 +55,16 @@ type
     (* Setting selection, with one X/Y pair having negative values, will set caret to other X/Y pair and clear selection *)
     // Locical Caret
     procedure SetCaret(X, Y: Integer);
-    procedure SetCaretAndSel(X1, Y1, X2, Y2: Integer; DoLock: Boolean = False);
-    procedure SetCaretAndSelBackward(X1, Y1, X2, Y2: Integer; DoLock: Boolean = False);
+    procedure SetCaretAndSel(X1, Y1, X2, Y2: Integer; DoLock: Boolean = False;
+      AMode: TSynSelectionMode = smCurrent);
+    procedure SetCaretAndSelBackward(X1, Y1, X2, Y2: Integer; DoLock: Boolean = False;
+      AMode: TSynSelectionMode = smCurrent);
     // Physical Caret
     procedure SetCaretPhys(X, Y: Integer);
-    procedure SetCaretAndSelPhys(X1, Y1, X2, Y2: Integer; DoLock: Boolean = False);
-    procedure SetCaretAndSelPhysBackward(X1, Y1, X2, Y2: Integer; DoLock: Boolean = False);
+    procedure SetCaretAndSelPhys(X1, Y1, X2, Y2: Integer; DoLock: Boolean = False;
+      AMode: TSynSelectionMode = smCurrent);
+    procedure SetCaretAndSelPhysBackward(X1, Y1, X2, Y2: Integer;
+      DoLock: Boolean = False; AMode: TSynSelectionMode = smCurrent);
     procedure DoKeyPress(Key: Word; Shift: TShiftState = []);
     procedure DoKeyPressAtPos(X, Y: Integer; Key: Word; Shift: TShiftState = []);
 
@@ -72,7 +77,8 @@ type
     procedure DecFixedBaseTestNames;
     property  SynEdit: TTestSynEdit read FSynEdit;
     property  Form: TForm read FForm;
-    property  ClipBoardText: String read FClipBoardText write FClipBoardText;
+    procedure ClearClipBoard;
+    property  ClipBoardText: String read GetClipBoardText write SetClipBoardText;
   protected
     procedure SetUp; override;
     procedure TearDown; override;
@@ -145,11 +151,7 @@ var
   FormatList: Array [0..1] of TClipboardFormat;
 begin
   inherited SetUp;
-  Clipboard.OnRequest := @ClipBoardRequest;
   Clipboard.Open;
-  FormatList[0] := CF_TEXT;
-  //FormatList[1] := TSynClipboardStream.ClipboardFormatId;
-  Clipboard.SetSupportedFormats(1 {2}, @FormatList[0]);
 
   FForm := TForm.Create(nil);
   ReCreateEdit;
@@ -161,7 +163,6 @@ procedure TTestBase.TearDown;
 begin
   inherited TearDown;
   Clipboard.Close;
-  Clipboard.OnRequest := nil;
   FreeAndNil(FSynEdit);
   FreeAndNil(FForm);
 end;
@@ -265,6 +266,16 @@ begin
   PushBaseName(AValue);
 end;
 
+function TTestBase.GetClipBoardText: String;
+begin
+  Result := Clipboard.AsText;
+end;
+
+procedure TTestBase.SetClipBoardText(const AValue: String);
+begin
+  Clipboard.AsText := AValue;
+end;
+
 function TTestBase.LinesToText(Lines: array of String; Separator: String = LineEnding;
   SeparatorAtEnd: Boolean = False): String;
 var
@@ -329,9 +340,6 @@ end;
 procedure TTestBase.ClipBoardRequest(const RequestedFormatID: TClipboardFormat;
   Data: TStream);
 begin
-  if (RequestedFormatID = CF_TEXT) and (FClipBoardText <> '') then
-    Data.Write(FClipBoardText[1], length(FClipBoardText));
-//  if RequestedFormatID = TSynClipboardStream.ClipboardFormatId then begin
 
 end;
 
@@ -359,7 +367,8 @@ begin
   {$IFDEF WITH_APPMSG}Application.ProcessMessages;{$ENDIF}
 end;
 
-procedure TTestBase.SetCaretAndSel(X1, Y1, X2, Y2: Integer; DoLock: Boolean = False);
+procedure TTestBase.SetCaretAndSel(X1, Y1, X2, Y2: Integer;
+  DoLock: Boolean = False; AMode: TSynSelectionMode = smCurrent);
 begin
   if (Y1<0) or (X1 < 0) then begin
     SetCaret(X2, Y2);  // clears selection
@@ -374,12 +383,15 @@ begin
   SynEdit.LogicalCaretXY := Point(X2, Y2);
   SynEdit.BlockBegin := Point(X1, Y1);
   SynEdit.BlockEnd   := Point(X2, Y2);
+  if AMode <> smCurrent then
+    SynEdit.SelectionMode := AMode;
   if DoLock then
     SynEdit.EndUpdate;
   {$IFDEF WITH_APPMSG}Application.ProcessMessages;{$ENDIF}
 end;
 
-procedure TTestBase.SetCaretAndSelBackward(X1, Y1, X2, Y2: Integer; DoLock: Boolean = False);
+procedure TTestBase.SetCaretAndSelBackward(X1, Y1, X2, Y2: Integer;
+  DoLock: Boolean = False; AMode: TSynSelectionMode = smCurrent);
 begin
   if (Y1<0) or (X1 < 0) then begin
     SetCaret(X2, Y2);  // clears selection
@@ -394,6 +406,8 @@ begin
   SynEdit.LogicalCaretXY := Point(X1, Y1);
   SynEdit.BlockBegin := Point(X1, Y1);
   SynEdit.BlockEnd   := Point(X2, Y2);
+  if AMode <> smCurrent then
+    SynEdit.SelectionMode := AMode;
   if DoLock then
     SynEdit.EndUpdate;
   {$IFDEF WITH_APPMSG}Application.ProcessMessages;{$ENDIF}
@@ -406,7 +420,8 @@ begin
   {$IFDEF WITH_APPMSG}Application.ProcessMessages;{$ENDIF}
 end;
 
-procedure TTestBase.SetCaretAndSelPhys(X1, Y1, X2, Y2: Integer; DoLock: Boolean);
+procedure TTestBase.SetCaretAndSelPhys(X1, Y1, X2, Y2: Integer; DoLock: Boolean;
+  AMode: TSynSelectionMode = smCurrent);
 begin
   if (Y1<0) or (X1 < 0) then begin
     SetCaretPhys(X2, Y2);  // clears selection
@@ -421,12 +436,15 @@ begin
   SynEdit.CaretXY := Point(X2, Y2);
   SynEdit.BlockBegin := SynEdit.PhysicalToLogicalPos(Point(X1, Y1));
   SynEdit.BlockEnd   := SynEdit.PhysicalToLogicalPos(Point(X2, Y2));
+  if AMode <> smCurrent then
+    SynEdit.SelectionMode := AMode;
   if DoLock then
     SynEdit.EndUpdate;
   {$IFDEF WITH_APPMSG}Application.ProcessMessages;{$ENDIF}
 end;
 
-procedure TTestBase.SetCaretAndSelPhysBackward(X1, Y1, X2, Y2: Integer; DoLock: Boolean);
+procedure TTestBase.SetCaretAndSelPhysBackward(X1, Y1, X2, Y2: Integer;
+  DoLock: Boolean; AMode: TSynSelectionMode = smCurrent);
 begin
   if (Y1<0) or (X1 < 0) then begin
     SetCaretPhys(X2, Y2);  // clears selection
@@ -441,6 +459,8 @@ begin
   SynEdit.LogicalCaretXY := Point(X1, Y1);
   SynEdit.BlockBegin := SynEdit.PhysicalToLogicalPos(Point(X1, Y1));
   SynEdit.BlockEnd   := SynEdit.PhysicalToLogicalPos(Point(X2, Y2));
+  if AMode <> smCurrent then
+    SynEdit.SelectionMode := AMode;
   if DoLock then
     SynEdit.EndUpdate;
   {$IFDEF WITH_APPMSG}Application.ProcessMessages;{$ENDIF}
@@ -488,6 +508,11 @@ end;
 procedure TTestBase.DecFixedBaseTestNames;
 begin
   Dec(FFixedBaseTestNames);
+end;
+
+procedure TTestBase.ClearClipBoard;
+begin
+  Clipboard.Clear;
 end;
 
 end.

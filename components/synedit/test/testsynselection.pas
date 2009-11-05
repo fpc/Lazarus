@@ -32,6 +32,14 @@ type
     procedure TestIsBlock(Name: String; X1, Y1, X2, Y2: Integer; Text: String);
     procedure TestIsBlock(Name: String; X1, Y1, X2, Y2: Integer; Text: Array of String);
     procedure TestIsNoBlock(Name: String);
+  protected
+    FGotMode, FNewMode: TSynSelectionMode;
+    FGotText, FNewText: String;
+    FGotPos: TPoint;
+    FGotAction, FNewAction: TSynCopyPasteAction;
+    procedure OnCutCopy(Sender: TObject; var AText: String;
+                        var AMode: TSynSelectionMode; ALogStartPos: TPoint;
+                        var AnAction: TSynCopyPasteAction);
   published
     procedure SelectByKey;
 
@@ -42,6 +50,8 @@ type
     procedure SelectByMethod;
 
     procedure ReplaceSelText;
+
+    procedure CopyPaste;
 
     //Temporarily here, till we have more units
     procedure TextDelCmd;
@@ -94,6 +104,19 @@ begin
                      SynEdit.BlockEnd.X, SynEdit.BlockEnd.Y,
                      '"'+DbgStr(SynEdit.SelText)+'"'])
             );
+end;
+
+procedure TTestSynSelection.OnCutCopy(Sender: TObject; var AText: String;
+  var AMode: TSynSelectionMode; ALogStartPos: TPoint; var AnAction: TSynCopyPasteAction);
+begin
+  FGotText := AText;
+  FGotMode := AMode;
+  FGotPos := ALogStartPos;
+  FGotAction := AnAction;
+
+  AText := FNewText;
+  AMode := FNewMode;
+  AnAction := FNewAction;
 end;
 
 procedure TTestSynSelection.SelectByKey;
@@ -1296,6 +1319,134 @@ begin
   DoTests;
 
 
+end;
+
+procedure TTestSynSelection.CopyPaste;
+  function TheText: TStringArray;
+  begin
+    SetLength(Result, 7);
+    Result[0] := ' ABC';
+    Result[1] := ' D';
+    Result[2] := '';
+    Result[3] := 'XYZ 123';
+    Result[4] := 'FOO BAR';
+    Result[5] := ' M';
+    Result[6] := '';
+  end;
+  function TheText2: TStringArray;
+  begin
+    SetLength(Result, 7);
+    Result[0] := '-+';
+    Result[1] := '-+';
+    Result[2] := '-+';
+    Result[3] := '-+';
+    Result[4] := '-+';
+    Result[5] := '-+';
+    Result[6] := '';
+  end;
+
+  procedure DoTest(Name: String; X,Y, X2,Y2: Integer; AMode: TSynSelectionMode;
+    ACmd: TSynEditorCommand; ClipBefore, ClipAfter: Array of String; TextRepl: Array of const);
+  begin
+    ClearClipBoard;
+    ClipBoardText := LinesToText(ClipBefore);
+    SetLines(TheText);
+    if X2 < 1
+    then SetCaret(X, Y)
+    else SetCaretAndSel(X,Y, X2,Y2, False, AMode);
+
+    SynEdit.CommandProcessor(ACmd, '', nil);
+
+    TestIsFullText(Name + ' - Text', TheText, TextRepl);
+    AssertEquals  (Name + ' - Clip', LinesToText(ClipAfter), ClipBoardText);
+  end;
+
+  procedure DoTestPaste(Name: String; TextRepl: Array of const); // Paste SynEdits ClipFormat, if avail
+  begin
+    SetLines(TheText2);
+    SetCaret(2,1);
+    SynEdit.CommandProcessor(ecPaste, '', nil);
+    TestIsFullText(Name + ' - Clip-pasted', TheText2, TextRepl);
+  end;
+
+  procedure SetEvent(AText: String; AMode: TSynSelectionMode; AnAction: TSynCopyPasteAction);
+  begin
+    FNewText := AText;
+    FNewMode := AMode;
+    FNewAction := AnAction;
+  end;
+  procedure TestEvent(name, AText: String; AMode: TSynSelectionMode;
+    AnAction: TSynCopyPasteAction; ALogStartPos: TPoint);
+  begin
+    AssertEquals  (Name + ' - Event text', AText,           FGotText);
+    AssertEquals  (Name + ' - Event mode', ord(AMode),      ord(FGotMode));
+    AssertEquals  (Name + ' - Event posx', ALogStartPos.x,  FGotPos.x);
+    AssertEquals  (Name + ' - Event posy', ALogStartPos.y,  FGotPos.y);
+    AssertEquals  (Name + ' - Event action', ord(AnAction), ord(FGotAction));
+  end;
+
+begin
+  ReCreateEdit;
+  BaseTestName := 'Selftest';
+  ClearClipBoard;
+  AssertEquals('clip empty', ClipBoardText, '');
+  ClipBoardText := 'abc';
+  AssertEquals('clip abc', ClipBoardText, 'abc');
+  ClearClipBoard;
+  AssertEquals('clip empty 2', ClipBoardText, '');
+
+
+  {%region ***** Copy *****}
+  BaseTestName := 'Copy';
+
+  DoTest     ('simple copy',  2,4, 5,4, smNormal, ecCopy,  [''], ['YZ '],  []);
+  DoTestPaste('simple copy',  [1,'-YZ +']);
+  DoTest     ('empty copy',   2,4, 0,0, smNormal, ecCopy,  [''], [''],     []);
+  DoTestPaste('empty copy',   []);
+
+  DoTest     ('simple copy (old clip)',  2,4, 5,4, smNormal, ecCopy,  ['ab'], ['YZ '],  []);
+  DoTestPaste('simple copy (old clip)',  [1,'-YZ +']);
+  DoTest     ('empty copy (old clip)',   2,4, 0,0, smNormal, ecCopy,  ['ab'], ['ab'],  []); // TODO: decide, should clipboard be emptied?
+
+  DoTest     ('2 line copy',  2,4, 3,5, smNormal, ecCopy,  [''], ['YZ 123', 'FO'],  []);
+  DoTestPaste('2 line copy',  [1,'-YZ 123', 'FO+']);
+
+  DoTest     ('column copy',  2,4, 5,5, smColumn, ecCopy,  [''], ['YZ ', 'OO '],  []);
+  DoTestPaste('column copy',  [1,'-YZ +', 2,'-OO +']);
+
+  BaseTestName := 'Copy (event)';
+  SynEdit.OnCutCopy := @OnCutCopy;
+
+  SetEvent   ('kl'+LineEnding+'nm', smColumn, scaContinue);
+  DoTest     ('copy, replace',  2,4, 5,4, smNormal, ecCopy,  [''], ['kl', 'nm'],  []);
+  DoTestPaste('copy, replace',   [1, '-kl+', 2,'-nm+']);
+  TestEvent  ('copy, replace', 'YZ ', smNormal, scaPlainText, Point(2,4));
+
+  SetEvent   ('kl'+LineEnding+'nm', smColumn, scaAbort);
+  DoTest     ('copy, abort (old clip)',  2,4, 5,4, smNormal, ecCopy,  ['ab'], ['ab'],  []);
+
+  SynEdit.OnCutCopy := nil;
+  {%endregion}
+
+  {%region ***** Paste *****}
+  BaseTestName := 'Paste';
+
+  DoTest('simple paste', 2,4, 0,0, smCurrent, ecPaste,  ['op '], ['op '],  [4, 'Xop YZ 123']);
+  DoTest('empty paste',  2,4, 0,0, smCurrent, ecPaste,  [''],    [''],     []);
+  DoTest('paste over sel', 2,4, 4,4, smCurrent, ecPaste,  ['op '], ['op '],  [4, 'Xop  123']);
+
+  BaseTestName := 'Paste (event)';
+  SynEdit.OnPaste := @OnCutCopy;
+
+  SetEvent('kl'+LineEnding+'nm', smColumn, scaContinue);
+  DoTest('paste, replace', 2,4, 0,0, smCurrent, ecPaste,  ['op '], ['op '],  [4, 'XklYZ 123', 5, 'FnmOO BAR']);
+  TestEvent('paste, replace', 'op ', smNormal, scaPlainText, Point(2,4));
+
+  SetEvent('kl'+LineEnding+'nm', smColumn, scaAbort);
+  DoTest('paste, abort', 2,4, 0,0, smCurrent, ecPaste,  ['op '], ['op '],  []);
+
+  SynEdit.OnPaste := nil;
+  {%endregion}
 end;
 
 procedure TTestSynSelection.TextDelCmd;
