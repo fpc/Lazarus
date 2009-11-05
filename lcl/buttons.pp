@@ -194,6 +194,7 @@ type
     property Align;
     property Anchors;
     property AutoSize;
+    property BidiMode;
     property BorderSpacing;
     property Cancel;
     property Caption;
@@ -228,6 +229,7 @@ type
     property OnResize;
     property OnStartDrag;
     property OnUTF8KeyPress;
+    property ParentBidiMode;
     property ParentFont;
     property ParentShowHint;
     property PopupMenu;
@@ -352,6 +354,7 @@ type
     property AllowAllUp;
     property Anchors;
     property AutoSize;
+    property BidiMode;
     property BorderSpacing;
     property Constraints;
     property Caption;
@@ -380,6 +383,7 @@ type
     property OnChangeBounds;
     property ShowCaption;
     property ShowHint;
+    property ParentBidiMode;
     property ParentFont;
     property ParentShowHint;
     property PopupMenu;
@@ -413,6 +417,7 @@ procedure LoadGlyphFromStock(AGlyph: TButtonGlyph; idButton: Integer);
 function GetButtonCaption(idButton: Integer): String;
 function GetDefaultButtonIcon(idButton: Integer): TCustomBitmap;
 function GetButtonIcon(idButton: Integer): TCustomBitmap;
+function BidiAdjustButtonLayout(IsRightToLeft: Boolean; Layout: TButtonLayout): TButtonLayout;
 
 procedure Register;
 
@@ -540,6 +545,28 @@ begin
   end
   else
     Result := GetDefaultButtonIcon(idButton);
+end;
+
+const
+  BtnBidiLayout: array[Boolean, TButtonLayout] of TButtonLayout =
+  (
+    (
+      blGlyphLeft,
+      blGlyphRight,
+      blGlyphTop,
+      blGlyphBottom
+    ),
+    (
+      blGlyphRight,
+      blGlyphLeft,
+      blGlyphTop,
+      blGlyphBottom
+    )
+  );
+
+function BidiAdjustButtonLayout(IsRightToLeft: Boolean; Layout: TButtonLayout): TButtonLayout;
+begin
+  Result := BtnBidiLayout[IsRightToLeft, Layout];
 end;
 
 procedure Register;

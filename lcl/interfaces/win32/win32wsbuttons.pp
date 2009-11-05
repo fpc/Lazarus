@@ -53,6 +53,7 @@ type
           WithThemeSpace: Boolean); override;
     class procedure SetBounds(const AWinControl: TWinControl;
           const ALeft, ATop, AWidth, AHeight: integer); override;
+    class procedure SetBiDiMode(const AWinControl: TWinControl; UseRightToLeftAlign, UseRightToLeftReading, UseRightToLeftScrollBar : Boolean); override;
     class procedure SetColor(const AWinControl: TWinControl); override;
     class procedure SetFont(const AWinControl: TWinControl; const AFont: TFont); override;
     class procedure SetGlyph(const ABitBtn: TCustomBitBtn; const AValue: TButtonGlyph); override;
@@ -178,6 +179,7 @@ var
     TextFlags: DWord; // flags for caption (enabled or disabled)
     glyphWidth, glyphHeight: integer;
     OldBitmapHandle: HBITMAP; // Handle of the provious bitmap in hdcNewBitmap
+    OldTextAlign: Integer;
     AIndex: Integer;
     AEffect: TGraphicsDrawEffect;
     TmpDC: HDC;
@@ -203,6 +205,7 @@ var
       PaintBuffer := 0;
     end;
     OldFontHandle := SelectObject(TmpDC, BitBtn.Font.Reference.Handle);
+    OldTextAlign := GetTextAlign(TmpDC);
 
     // clear background:
     // for alpha bitmap clear it with $00000000 else make it solid color for
@@ -266,6 +269,8 @@ var
         TextFlags := TextFlags or DSS_HIDEPREFIX;
 
       SetBkMode(TmpDC, TRANSPARENT);
+      if BitBtn.UseRightToLeftReading then
+        SetTextAlign(TmpDC, OldTextAlign or TA_RTLREADING);
       {$IFDEF WindowsUnicodeSupport}
       if UnicodeEnabledOS then
       begin
@@ -300,7 +305,7 @@ var
         Rect(XDestText, YDestText, XDestText + TextSize.cx, YDestText + TextSize.cy),
         TextFlags, @Options);
     end;
-
+    SetTextAlign(TmpDC, OldTextAlign);
     SelectObject(TmpDC, OldFontHandle);
     if PaintBuffer <> 0 then
       EndBufferedPaint(PaintBuffer, True);
@@ -323,7 +328,7 @@ begin
     srcWidth := 0;
     srcHeight := 0;
   end;
-  BitBtnLayout := BitBtn.Layout;
+  BitBtnLayout := BidiAdjustButtonLayout(BitBtn.UseRightToLeftReading, BitBtn.Layout);
   BitBtnDC := GetDC(BitBtnHandle);
   hdcNewBitmap := CreateCompatibleDC(BitBtnDC);
   MeasureText(BitBtn, ButtonCaption, TextSize.cx, TextSize.cy);
@@ -594,6 +599,12 @@ begin
   TWin32WSWinControl.SetBounds(AWinControl, ALeft, ATop, AWidth, AHeight);
   if TCustomBitBtn(AWinControl).Spacing = -1 then
     DrawBitBtnImage(TCustomBitBtn(AWinControl), AWinControl.Caption);
+end;
+
+class procedure TWin32WSBitBtn.SetBiDiMode(const AWinControl: TWinControl;
+  UseRightToLeftAlign, UseRightToLeftReading, UseRightToLeftScrollBar: Boolean);
+begin
+  DrawBitBtnImage(TCustomBitBtn(AWinControl), AWinControl.Caption);
 end;
 
 class procedure TWin32WSBitBtn.SetColor(const AWinControl: TWinControl);

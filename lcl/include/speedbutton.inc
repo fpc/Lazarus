@@ -499,6 +499,7 @@ var
   M, S : integer;
   SIndex : Longint;
   TMP : String;
+  TextFlags: Integer;
 begin
   UpdateState(false);
   if FGlyph = nil then exit;
@@ -567,7 +568,7 @@ begin
     M:= Margin;
   end;
 
-  case Layout of
+  case BidiAdjustButtonLayout(UseRightToLeftReading, Layout) of
     blGlyphLeft : begin
       Offset.X:= M;
       Offset.Y:= (ClientSize.cy - GlyphHeight) div 2;
@@ -603,8 +604,12 @@ begin
       Top := Top + Y;
     end;
 
+    TextFlags := DT_LEFT or DT_TOP;
+    if UseRightToLeftReading then
+      TextFlags := TextFlags or DT_RTLREADING;
+
     ThemeServices.DrawText(Canvas, FLastDrawDetails, Caption, PaintRect,
-      DT_LEFT or DT_TOP, 0);
+      TextFlags, 0);
   end;
 
   inherited Paint;
@@ -892,6 +897,7 @@ begin
     TXTStyle.ShowPrefix := ShowAccelChar;
     TXTStyle.Alignment := taLeftJustify;
     TXTStyle.Layout := tlTop;
+    TXTStyle.RightToLeft := UseRightToLeftReading;
     TXTStyle.SystemFont := Canvas.Font.IsDefault;//Match System Default Style
     DeleteAmpersands(TMP);
 

@@ -792,6 +792,7 @@ type
     property Anchors;
     property AutoFill;
     property AutoSize;
+    property BidiMode;
     property BorderSpacing;
     property Caption;
     property ChildSizing;
@@ -826,6 +827,7 @@ type
     property OnResize;
     property OnStartDrag;
     property OnUTF8KeyPress;
+    property ParentBidiMode;
     property ParentFont;
     property ParentColor;
     property ParentShowHint;
@@ -1101,6 +1103,7 @@ type
     property BevelInner;
     property BevelOuter;
     property BevelWidth;
+    property BidiMode;
     property BorderWidth;
     property BorderStyle;
     property Caption;
@@ -1116,6 +1119,7 @@ type
     property Enabled;
     property Font;
     property FullRepaint;
+    property ParentBidiMode;
     property ParentColor;
     property ParentFont;
     property ParentShowHint;
