@@ -555,7 +555,7 @@ begin
     Brush.Color := NewColor;
     Pen.Color := clBlack;
 
-    Rectangle(r);
+    Rectangle(BidiFlipRect(r, Rect, UseRightToLeftAlignment));
 
     Brush.Color := BrushColor;
     Pen.Color := PenColor;
@@ -563,7 +563,7 @@ begin
   r := Rect;
   r.left := r.left + 20;
 
-  inherited DrawItem(Index, r, State);
+  inherited DrawItem(Index, BidiFlipRect(r, Rect, UseRightToLeftAlignment), State);
 end;
 {------------------------------------------------------------------------------
   Method:   TCustomColorBox.SetColorList
@@ -846,7 +846,7 @@ begin
     Brush.Color := NewColor;
     Pen.Color := clBlack;
 
-    Rectangle(r);
+    Rectangle(BidiFlipRect(r, Rect, UseRightToLeftAlignment));
 
     Brush.Color := BrushColor;
     Pen.Color := PenColor;
@@ -854,7 +854,7 @@ begin
   r := Rect;
   r.left := r.left + 20;
 
-  inherited DrawItem(Index, r, State);
+  inherited DrawItem(Index, BidiFlipRect(r, Rect, UseRightToLeftAlignment), State);
 end;
 {------------------------------------------------------------------------------
   Method:   TCustomColorListBox.SetColorList
