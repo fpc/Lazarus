@@ -1,0 +1,28 @@
+{ This is an automatically generated lazarus resource file }
+
+LazarusResources.Add('TDockingSite','FORMDATA',[
+  'TPF0'#12'TDockingSite'#11'DockingSite'#4'Left'#3#188#1#6'Height'#3#163#0#3'T'
+  +'op'#3#156#0#5'Width'#3#255#0#8'AutoSize'#9#7'Caption'#6#9'Dock Site'#12'Cli'
+  +'entHeight'#3#163#0#11'ClientWidth'#3#255#0#10'LCLVersion'#6#6'0.9.29'#7'Vis'
+  +'ible'#9#0#6'TPanel'#7'pnlLeft'#4'Left'#2#0#6'Height'#3#138#0#3'Top'#2#0#5'W'
+  +'idth'#2#0#5'Align'#7#6'alLeft'#7'Caption'#6#7'pnlLeft'#5'Color'#7#7'clWhite'
+  +#8'DockSite'#9#11'ParentColor'#8#8'TabOrder'#2#0#10'OnDockDrop'#7#15'pnlLeft'
+  +'DockDrop'#10'OnDockOver'#7#15'pnlLeftDockOver'#13'OnGetSiteInfo'#7#18'pnlLe'
+  +'ftGetSiteInfo'#8'OnUnDock'#7#13'pnlLeftUnDock'#0#0#9'TSplitter'#9'splitLeft'
+  +#4'Left'#2#0#6'Height'#3#138#0#3'Top'#2#0#5'Width'#2#4#0#0#6'TPanel'#8'pnlRi'
+  +'ght'#4'Left'#3#255#0#6'Height'#3#138#0#3'Top'#2#0#5'Width'#2#0#5'Align'#7#7
+  +'alRight'#7'Caption'#6#8'pnlRight'#5'Color'#7#6'clAqua'#8'DockSite'#9#11'Par'
+  +'entColor'#8#8'TabOrder'#2#2#10'OnDockDrop'#7#15'pnlLeftDockDrop'#10'OnDockO'
+  +'ver'#7#15'pnlLeftDockOver'#13'OnGetSiteInfo'#7#18'pnlLeftGetSiteInfo'#8'OnU'
+  +'nDock'#7#13'pnlLeftUnDock'#0#0#6'TPanel'#9'pnlBottom'#4'Left'#2#0#6'Height'
+  +#2#1#3'Top'#3#142#0#5'Width'#3#255#0#5'Align'#7#8'alBottom'#7'Caption'#6#9'p'
+  +'nlBottom'#8'DockSite'#9#8'TabOrder'#2#3#10'OnDockDrop'#7#15'pnlLeftDockDrop'
+  +#10'OnDockOver'#7#15'pnlLeftDockOver'#13'OnGetSiteInfo'#7#18'pnlLeftGetSiteI'
+  +'nfo'#8'OnUnDock'#7#13'pnlLeftUnDock'#0#0#9'TSplitter'#10'splitRight'#4'Left'
+  +#3#251#0#6'Height'#3#138#0#3'Top'#2#0#5'Width'#2#4#5'Align'#7#7'alRight'#12
+  +'ResizeAnchor'#7#7'akRight'#0#0#10'TStatusBar'#10'StatusBar1'#4'Left'#2#0#6
+  +'Height'#2#20#3'Top'#3#143#0#5'Width'#3#255#0#6'Panels'#14#0#0#0#9'TSplitter'
+  +#11'splitBottom'#6'Cursor'#7#8'crVSplit'#4'Left'#2#0#6'Height'#2#4#3'Top'#3
+  +#138#0#5'Width'#3#255#0#5'Align'#7#8'alBottom'#12'ResizeAnchor'#7#8'akBottom'
+  +#0#0#0
+]);
