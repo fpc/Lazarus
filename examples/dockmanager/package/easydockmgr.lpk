@@ -17,7 +17,7 @@
     <Description Value="EasyDocking Manager and Notebook"/>
     <License Value="LGPL"/>
     <Version Major="1"/>
-    <Files Count="5">
+    <Files Count="8">
       <Item1>
         <Filename Value="easydocksite.pas"/>
         <UnitName Value="EasyDockSite"/>
@@ -38,6 +38,19 @@
         <Filename Value="ffloatingsite.pas"/>
         <UnitName Value="ffloatingsite"/>
       </Item5>
+      <Item6>
+        <Filename Value="felasticsite.lfm"/>
+        <Type Value="LFM"/>
+      </Item6>
+      <Item7>
+        <Filename Value="felasticsite.lrs"/>
+        <Type Value="LRS"/>
+      </Item7>
+      <Item8>
+        <Filename Value="felasticsite.pas"/>
+        <HasRegisterProc Value="True"/>
+        <UnitName Value="fElasticSite"/>
+      </Item8>
     </Files>
     <Type Value="RunAndDesignTime"/>
     <RequiredPkgs Count="2">
