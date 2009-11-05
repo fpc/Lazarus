@@ -1,0 +1,8 @@
+{ This is an automatically generated lazarus resource file }
+
+LazarusResources.Add('TFloatingSite','FORMDATA',[
+  'TPF0'#13'TFloatingSite'#12'FloatingSite'#4'Left'#3#212#1#6'Height'#3','#1#3
+  +'Top'#3'#'#1#5'Width'#3#144#1#7'Caption'#6#12'FloatingSite'#8'DockSite'#9#8
+  +'OnUnDock'#7#10'FormUnDock'#14'UseDockManager'#9#10'LCLVersion'#6#6'0.9.29'#7
+  +'Visible'#9#0#0
+]);

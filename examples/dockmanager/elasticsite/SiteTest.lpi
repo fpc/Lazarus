@@ -1,0 +1,436 @@
+<?xml version="1.0"?>
+<CONFIG>
+  <ProjectOptions>
+    <PathDelim Value="\"/>
+    <Version Value="7"/>
+    <General>
+      <MainUnit Value="0"/>
+      <TargetFileExt Value=".exe"/>
+      <Title Value="SiteTest"/>
+      <UseXPManifest Value="True"/>
+      <ActiveEditorIndexAtStart Value="0"/>
+    </General>
+    <VersionInfo>
+      <ProjectVersion Value=""/>
+      <Language Value=""/>
+      <CharSet Value=""/>
+    </VersionInfo>
+    <PublishOptions>
+      <Version Value="2"/>
+      <IgnoreBinaries Value="False"/>
+      <IncludeFileFilter Value="*.(pas|pp|inc|lfm|lpr|lrs|lpi|lpk|sh|xml)"/>
+      <ExcludeFileFilter Value="*.(bak|ppu|ppw|o|so);*~;backup"/>
+    </PublishOptions>
+    <RunParams>
+      <local>
+        <FormatVersion Value="1"/>
+        <LaunchingApplication PathPlusParams="/usr/X11R6/bin/xterm -T 'Lazarus Run Output' -e $(LazarusDir)/tools/runwait.sh $(TargetCmdLine)"/>
+      </local>
+    </RunParams>
+    <RequiredPackages Count="2">
+      <Item1>
+        <PackageName Value="EasyDockMgr"/>
+      </Item1>
+      <Item2>
+        <PackageName Value="LCL"/>
+      </Item2>
+    </RequiredPackages>
+    <Units Count="28">
+      <Unit0>
+        <Filename Value="SiteTest.lpr"/>
+        <IsPartOfProject Value="True"/>
+        <UnitName Value="SiteTest"/>
+        <CursorPos X="4" Y="15"/>
+        <TopLine Value="1"/>
+        <UsageCount Value="63"/>
+      </Unit0>
+      <Unit1>
+        <Filename Value="..\package\felasticsite.pas"/>
+        <ComponentName Value="DockingSite"/>
+        <ResourceBaseClass Value="Form"/>
+        <UnitName Value="fElasticSite"/>
+        <CursorPos X="1" Y="212"/>
+        <TopLine Value="189"/>
+        <EditorIndex Value="7"/>
+        <UsageCount Value="54"/>
+        <Bookmarks Count="1">
+          <Item0 X="1" Y="212" ID="1"/>
+        </Bookmarks>
+        <Loaded Value="True"/>
+      </Unit1>
+      <Unit2>
+        <Filename Value="fdockclient.pas"/>
+        <ComponentName Value="DockingClient"/>
+        <ResourceBaseClass Value="Form"/>
+        <UnitName Value="fDockClient"/>
+        <CursorPos X="22" Y="24"/>
+        <TopLine Value="1"/>
+        <UsageCount Value="36"/>
+      </Unit2>
+      <Unit3>
+        <Filename Value="..\..\..\lcl\include\wincontrol.inc"/>
+        <CursorPos X="1" Y="5151"/>
+        <TopLine Value="5142"/>
+        <UsageCount Value="24"/>
+      </Unit3>
+      <Unit4>
+        <Filename Value="..\..\..\lcl\include\dragmanager.inc"/>
+        <CursorPos X="1" Y="606"/>
+        <TopLine Value="582"/>
+        <UsageCount Value="18"/>
+      </Unit4>
+      <Unit5>
+        <Filename Value="..\..\..\lcl\include\control.inc"/>
+        <CursorPos X="10" Y="3994"/>
+        <TopLine Value="3958"/>
+        <EditorIndex Value="2"/>
+        <UsageCount Value="24"/>
+        <Loaded Value="True"/>
+      </Unit5>
+      <Unit6>
+        <Filename Value="ftestpanels.pas"/>
+        <ComponentName Value="Form1"/>
+        <ResourceBaseClass Value="Form"/>
+        <UnitName Value="fTestPanels"/>
+        <CursorPos X="1" Y="85"/>
+        <TopLine Value="43"/>
+        <UsageCount Value="35"/>
+      </Unit6>
+      <Unit7>
+        <Filename Value="..\..\..\lcl\extctrls.pp"/>
+        <UnitName Value="ExtCtrls"/>
+        <CursorPos X="23" Y="1094"/>
+        <TopLine Value="1070"/>
+        <UsageCount Value="15"/>
+      </Unit7>
+      <Unit8>
+        <Filename Value="..\..\..\lcl\controls.pp"/>
+        <UnitName Value="Controls"/>
+        <CursorPos X="14" Y="1243"/>
+        <TopLine Value="1219"/>
+        <EditorIndex Value="1"/>
+        <UsageCount Value="22"/>
+        <Loaded Value="True"/>
+      </Unit8>
+      <Unit9>
+        <Filename Value="..\package\easydocksite.pas"/>
+        <UnitName Value="EasyDockSite"/>
+        <CursorPos X="7" Y="1047"/>
+        <TopLine Value="1000"/>
+        <EditorIndex Value="8"/>
+        <UsageCount Value="24"/>
+        <Loaded Value="True"/>
+      </Unit9>
+      <Unit10>
+        <Filename Value="..\..\..\..\..\lazarus\fpc\2.2.4\source\rtl\inc\objpash.inc"/>
+        <CursorPos X="23" Y="151"/>
+        <TopLine Value="127"/>
+        <UsageCount Value="10"/>
+      </Unit10>
+      <Unit11>
+        <Filename Value="..\..\..\..\..\lazarus\fpc\2.2.4\source\rtl\objpas\classes\classesh.inc"/>
+        <CursorPos X="3" Y="355"/>
+        <TopLine Value="331"/>
+        <UsageCount Value="10"/>
+      </Unit11>
+      <Unit12>
+        <Filename Value="..\..\..\lcl\interfacebase.pp"/>
+        <UnitName Value="InterfaceBase"/>
+        <CursorPos X="3" Y="37"/>
+        <TopLine Value="13"/>
+        <UsageCount Value="18"/>
+      </Unit12>
+      <Unit13>
+        <Filename Value="..\..\..\lcl\include\docktree.inc"/>
+        <CursorPos X="3" Y="204"/>
+        <TopLine Value="178"/>
+        <UsageCount Value="10"/>
+      </Unit13>
+      <Unit14>
+        <Filename Value="..\..\..\lcl\ldocktree.pas"/>
+        <UnitName Value="LDockTree"/>
+        <CursorPos X="3" Y="1354"/>
+        <TopLine Value="1350"/>
+        <UsageCount Value="11"/>
+      </Unit14>
+      <Unit15>
+        <Filename Value="..\..\..\lcl\include\winapih.inc"/>
+        <CursorPos X="10" Y="150"/>
+        <TopLine Value="126"/>
+        <UsageCount Value="15"/>
+      </Unit15>
+      <Unit16>
+        <Filename Value="feditorsite.pas"/>
+        <IsPartOfProject Value="True"/>
+        <ComponentName Value="EditorSite"/>
+        <ResourceBaseClass Value="Form"/>
+        <UnitName Value="fEditorSite"/>
+        <CursorPos X="5" Y="122"/>
+        <TopLine Value="81"/>
+        <EditorIndex Value="0"/>
+        <UsageCount Value="40"/>
+        <Loaded Value="True"/>
+      </Unit16>
+      <Unit17>
+        <Filename Value="felastic.pas"/>
+        <ComponentName Value="DockingSite"/>
+        <HasResources Value="True"/>
+        <ResourceBaseClass Value="Form"/>
+        <UnitName Value="fElastic"/>
+        <CursorPos X="12" Y="88"/>
+        <TopLine Value="79"/>
+        <UsageCount Value="8"/>
+      </Unit17>
+      <Unit18>
+        <Filename Value="..\package\fdockbook.pas"/>
+        <ComponentName Value="EasyDockBook"/>
+        <HasResources Value="True"/>
+        <ResourceBaseClass Value="Form"/>
+        <UnitName Value="fDockBook"/>
+        <CursorPos X="3" Y="56"/>
+        <TopLine Value="32"/>
+        <EditorIndex Value="4"/>
+        <UsageCount Value="20"/>
+        <Loaded Value="True"/>
+      </Unit18>
+      <Unit19>
+        <Filename Value="..\package\fdockbook.lfm"/>
+        <CursorPos X="1" Y="1"/>
+        <TopLine Value="1"/>
+        <UsageCount Value="14"/>
+        <SyntaxHighlighter Value="LFM"/>
+      </Unit19>
+      <Unit20>
+        <Filename Value="fbookframe.pas"/>
+        <ComponentName Value="DockBook"/>
+        <ResourceBaseClass Value="Frame"/>
+        <UnitName Value="fBookFrame"/>
+        <CursorPos X="1" Y="147"/>
+        <TopLine Value="131"/>
+        <EditorIndex Value="6"/>
+        <UsageCount Value="27"/>
+        <Loaded Value="True"/>
+      </Unit20>
+      <Unit21>
+        <Filename Value="..\..\..\lcl\comctrls.pp"/>
+        <UnitName Value="ComCtrls"/>
+        <CursorPos X="3" Y="1478"/>
+        <TopLine Value="1454"/>
+        <UsageCount Value="18"/>
+      </Unit21>
+      <Unit22>
+        <Filename Value="..\..\..\lcl\lresources.pp"/>
+        <UnitName Value="LResources"/>
+        <CursorPos X="10" Y="748"/>
+        <TopLine Value="732"/>
+        <UsageCount Value="10"/>
+      </Unit22>
+      <Unit23>
+        <Filename Value="..\easyedit\feditbook.pas"/>
+        <IsPartOfProject Value="True"/>
+        <ComponentName Value="EditBook"/>
+        <HasResources Value="True"/>
+        <ResourceBaseClass Value="Form"/>
+        <UnitName Value="fEditBook"/>
+        <CursorPos X="27" Y="18"/>
+        <TopLine Value="5"/>
+        <EditorIndex Value="5"/>
+        <UsageCount Value="29"/>
+        <Loaded Value="True"/>
+      </Unit23>
+      <Unit24>
+        <Filename Value="..\easyedit\feditform.pas"/>
+        <ComponentName Value="EditPage"/>
+        <HasResources Value="True"/>
+        <ResourceBaseClass Value="Form"/>
+        <UnitName Value="fEditForm"/>
+        <CursorPos X="15" Y="34"/>
+        <TopLine Value="14"/>
+        <EditorIndex Value="3"/>
+        <UsageCount Value="13"/>
+        <Loaded Value="True"/>
+      </Unit24>
+      <Unit25>
+        <Filename Value="..\..\..\..\..\lazarus\fpc\2.2.4\source\rtl\objpas\sysutils\sysstrh.inc"/>
+        <CursorPos X="10" Y="199"/>
+        <TopLine Value="175"/>
+        <UsageCount Value="11"/>
+      </Unit25>
+      <Unit26>
+        <Filename Value="..\package\ffloatingsite.pas"/>
+        <ComponentName Value="FloatingSite"/>
+        <ResourceBaseClass Value="Form"/>
+        <UnitName Value="fFloatingSite"/>
+        <CursorPos X="1" Y="33"/>
+        <TopLine Value="1"/>
+        <EditorIndex Value="9"/>
+        <UsageCount Value="12"/>
+        <Loaded Value="True"/>
+      </Unit26>
+      <Unit27>
+        <Filename Value="..\..\..\lcl\forms.pp"/>
+        <UnitName Value="Forms"/>
+        <CursorPos X="15" Y="1221"/>
+        <TopLine Value="1197"/>
+        <EditorIndex Value="10"/>
+        <UsageCount Value="11"/>
+        <Loaded Value="True"/>
+      </Unit27>
+    </Units>
+    <JumpHistory Count="29" HistoryIndex="28">
+      <Position1>
+        <Filename Value="fbookframe.pas"/>
+        <Caret Line="155" Column="1" TopLine="131"/>
+      </Position1>
+      <Position2>
+        <Filename Value="..\easyedit\feditbook.pas"/>
+        <Caret Line="18" Column="28" TopLine="1"/>
+      </Position2>
+      <Position3>
+        <Filename Value="..\easyedit\feditbook.pas"/>
+        <Caret Line="18" Column="27" TopLine="5"/>
+      </Position3>
+      <Position4>
+        <Filename Value="..\easyedit\feditform.pas"/>
+        <Caret Line="1" Column="1" TopLine="1"/>
+      </Position4>
+      <Position5>
+        <Filename Value="feditorsite.pas"/>
+        <Caret Line="6" Column="40" TopLine="1"/>
+      </Position5>
+      <Position6>
+        <Filename Value="feditorsite.pas"/>
+        <Caret Line="87" Column="1" TopLine="56"/>
+      </Position6>
+      <Position7>
+        <Filename Value="feditorsite.pas"/>
+        <Caret Line="59" Column="28" TopLine="28"/>
+      </Position7>
+      <Position8>
+        <Filename Value="feditorsite.pas"/>
+        <Caret Line="84" Column="26" TopLine="62"/>
+      </Position8>
+      <Position9>
+        <Filename Value="feditorsite.pas"/>
+        <Caret Line="96" Column="1" TopLine="60"/>
+      </Position9>
+      <Position10>
+        <Filename Value="feditorsite.pas"/>
+        <Caret Line="93" Column="1" TopLine="69"/>
+      </Position10>
+      <Position11>
+        <Filename Value="feditorsite.pas"/>
+        <Caret Line="71" Column="57" TopLine="70"/>
+      </Position11>
+      <Position12>
+        <Filename Value="feditorsite.pas"/>
+        <Caret Line="72" Column="4" TopLine="52"/>
+      </Position12>
+      <Position13>
+        <Filename Value="feditorsite.pas"/>
+        <Caret Line="94" Column="32" TopLine="59"/>
+      </Position13>
+      <Position14>
+        <Filename Value="feditorsite.pas"/>
+        <Caret Line="100" Column="1" TopLine="66"/>
+      </Position14>
+      <Position15>
+        <Filename Value="feditorsite.pas"/>
+        <Caret Line="110" Column="22" TopLine="86"/>
+      </Position15>
+      <Position16>
+        <Filename Value="feditorsite.pas"/>
+        <Caret Line="41" Column="1" TopLine="16"/>
+      </Position16>
+      <Position17>
+        <Filename Value="feditorsite.pas"/>
+        <Caret Line="117" Column="19" TopLine="81"/>
+      </Position17>
+      <Position18>
+        <Filename Value="feditorsite.pas"/>
+        <Caret Line="69" Column="1" TopLine="22"/>
+      </Position18>
+      <Position19>
+        <Filename Value="feditorsite.pas"/>
+        <Caret Line="29" Column="1" TopLine="1"/>
+      </Position19>
+      <Position20>
+        <Filename Value="feditorsite.pas"/>
+        <Caret Line="106" Column="13" TopLine="71"/>
+      </Position20>
+      <Position21>
+        <Filename Value="..\package\ffloatingsite.pas"/>
+        <Caret Line="21" Column="11" TopLine="1"/>
+      </Position21>
+      <Position22>
+        <Filename Value="..\package\ffloatingsite.pas"/>
+        <Caret Line="31" Column="22" TopLine="1"/>
+      </Position22>
+      <Position23>
+        <Filename Value="feditorsite.pas"/>
+        <Caret Line="110" Column="13" TopLine="71"/>
+      </Position23>
+      <Position24>
+        <Filename Value="feditorsite.pas"/>
+        <Caret Line="120" Column="13" TopLine="80"/>
+      </Position24>
+      <Position25>
+        <Filename Value="..\..\..\lcl\include\control.inc"/>
+        <Caret Line="3994" Column="10" TopLine="3958"/>
+      </Position25>
+      <Position26>
+        <Filename Value="feditorsite.pas"/>
+        <Caret Line="120" Column="13" TopLine="80"/>
+      </Position26>
+      <Position27>
+        <Filename Value="feditorsite.pas"/>
+        <Caret Line="103" Column="1" TopLine="79"/>
+      </Position27>
+      <Position28>
+        <Filename Value="feditorsite.pas"/>
+        <Caret Line="120" Column="15" TopLine="81"/>
+      </Position28>
+      <Position29>
+        <Filename Value="feditorsite.pas"/>
+        <Caret Line="118" Column="39" TopLine="81"/>
+      </Position29>
+    </JumpHistory>
+  </ProjectOptions>
+  <CompilerOptions>
+    <Version Value="8"/>
+    <PathDelim Value="\"/>
+    <SearchPaths>
+      <IncludeFiles Value="$(ProjOutDir)\"/>
+      <OtherUnitFiles Value="D:\SourceForge\lazarus\examples\dockmanager\package\;..\..\..\components\synedit\;D:\SourceForge\lazarus\examples\dockmanager\easyedit\"/>
+    </SearchPaths>
+    <Linking>
+      <Options>
+        <Win32>
+          <GraphicApplication Value="True"/>
+        </Win32>
+      </Options>
+    </Linking>
+    <Other>
+      <CompilerPath Value="$(CompPath)"/>
+    </Other>
+  </CompilerOptions>
+  <Debugging>
+    <BreakPoints Count="1">
+      <Item1>
+        <Source Value="felastic.pas"/>
+        <Line Value="298"/>
+      </Item1>
+    </BreakPoints>
+    <Exceptions Count="3">
+      <Item1>
+        <Name Value="EAbort"/>
+      </Item1>
+      <Item2>
+        <Name Value="ECodetoolError"/>
+      </Item2>
+      <Item3>
+        <Name Value="EFOpenError"/>
+      </Item3>
+    </Exceptions>
+  </Debugging>
+</CONFIG>

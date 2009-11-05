@@ -1,0 +1,12 @@
+object FloatingSite: TFloatingSite
+  Left = 468
+  Height = 300
+  Top = 291
+  Width = 400
+  Caption = 'FloatingSite'
+  DockSite = True
+  OnUnDock = FormUnDock
+  UseDockManager = True
+  LCLVersion = '0.9.29'
+  Visible = True
+end

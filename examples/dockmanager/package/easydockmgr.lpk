@@ -17,7 +17,7 @@
     <Description Value="EasyDocking Manager and Notebook"/>
     <License Value="LGPL"/>
     <Version Major="1"/>
-    <Files Count="4">
+    <Files Count="5">
       <Item1>
         <Filename Value="easydocksite.pas"/>
         <UnitName Value="EasyDockSite"/>
@@ -34,6 +34,10 @@
         <Filename Value="fdockbook.pas"/>
         <UnitName Value="fDockBook"/>
       </Item4>
+      <Item5>
+        <Filename Value="ffloatingsite.pas"/>
+        <UnitName Value="ffloatingsite"/>
+      </Item5>
     </Files>
     <Type Value="RunAndDesignTime"/>
     <RequiredPkgs Count="2">
