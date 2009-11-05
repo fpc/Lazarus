@@ -5,8 +5,8 @@ unit TestSynBeautifier;
 interface
 
 uses
-  Classes, SysUtils, fpcunit, testutils, testregistry, TestBase,
-  SynEdit, SynEditTypes, SynEditTextTrimmer, SynEditKeyCmds, SynBeautifier,
+  Classes, SysUtils, testregistry, TestBase,
+  SynEdit, SynEditTextTrimmer, SynEditKeyCmds, SynBeautifier,
   LCLType, LCLProc;
 
 type
@@ -659,13 +659,13 @@ end;
 
   procedure TestCbArgs(Name: String; OldX, OldY, NewX, NewY, FirstLine, LastLine, Reason: integer);
   begin
-    AssertEquals('CB-Args: Got Caret.x Before', OldX, FGotOldLogCaret.x);
-    AssertEquals('CB-Args: Got Caret.y Before', OldY, FGotOldLogCaret.y);
-    AssertEquals('CB-Args: Got Caret.x After', NewX, FGotLogCaret.x); // x=1 => before auto indent
-    AssertEquals('CB-Args: Got Caret.y After', NewY, FGotLogCaret.y);
-    AssertEquals('CB-Args: FirstLine', FirstLine, FGotFirstLinePos);
-    AssertEquals('CB-Args: LastLine', LastLine, FGotLastLinePos);
-    AssertEquals('CB-Args: Reason', Reason, FGotReason);
+    AssertEquals(Name + 'CB-Args: Got Caret.x Before', OldX, FGotOldLogCaret.x);
+    AssertEquals(Name + 'CB-Args: Got Caret.y Before', OldY, FGotOldLogCaret.y);
+    AssertEquals(Name + 'CB-Args: Got Caret.x After', NewX, FGotLogCaret.x); // x=1 => before auto indent
+    AssertEquals(Name + 'CB-Args: Got Caret.y After', NewY, FGotLogCaret.y);
+    AssertEquals(Name + 'CB-Args: FirstLine', FirstLine, FGotFirstLinePos);
+    AssertEquals(Name + 'CB-Args: LastLine', LastLine, FGotLastLinePos);
+    AssertEquals(Name + 'CB-Args: Reason', Reason, FGotReason);
   end;
 
 begin
@@ -757,10 +757,10 @@ begin
     TestRedoUndo('paste 4 lines, noaction',  TestText,  5,11, [ VK_V, 2,14, ExpText([ 11, '  mn1', '2', '3', '4']) ]  );
     TestCbArgs('paste 4 lines, noaction', 5,11, 2,14, 11,14, ecPaste);
 
-    //ClipBoardText := '1'+LineEnding+'2'+LineEnding+'3'+LineEnding+'4'+LineEnding;
-    //SetCB(True, []);
-    //TestRedoUndo('paste 4+ lines, noaction',  TestText,  5,11, [ VK_V, 1,15, ExpText([ 11, '  mn1', '2', '3', '4', '']) ]  );
-    //TestCbArgs('paste 4+ lines, noaction', 5,11, 1,15, 11,15, ecPaste);
+    ClipBoardText := '1'+LineEnding+'2'+LineEnding+'3'+LineEnding+'4'+LineEnding;
+    SetCB(True, []);
+    TestRedoUndo('paste 4+ lines, noaction',  TestText,  5,11, [ VK_V, 1,15, ExpText([ 11, '  mn1', '2', '3', '4', '']) ]  );
+    TestCbArgs('paste 4+ lines, noaction', 5,11, 1,15, 11,15, ecPaste);
 
     ClipBoardText := '1'+LineEnding+'2'+LineEnding+'3'+LineEnding+'4';
     SetCB(True, []);

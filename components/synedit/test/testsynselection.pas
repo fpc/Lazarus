@@ -17,7 +17,7 @@ interface
       - persistent block moves on edit
 *)
 uses
-  Classes, SysUtils, fpcunit, testutils, testregistry, TestBase,
+  Classes, SysUtils, testregistry, TestBase,
   SynEdit, SynEditTypes, SynEditTextTrimmer, SynEditKeyCmds,
   LCLType, LCLProc;
 

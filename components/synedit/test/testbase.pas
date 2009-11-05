@@ -47,9 +47,6 @@ type
     function  LinesReplace(Lines: Array of String; Repl: Array of const): TStringArray;
     function  LinesReplaceText(Lines: Array of String; Repl: Array of const): String;
   protected
-    procedure ClipBoardRequest(const RequestedFormatID: TClipboardFormat;
-      Data: TStream);
-  protected
     procedure ReCreateEdit;
     procedure SetLines(Lines: Array of String);
     (* Setting selection, with one X/Y pair having negative values, will set caret to other X/Y pair and clear selection *)
@@ -147,8 +144,6 @@ end;
 { TTestBase }
 
 procedure TTestBase.SetUp;
-var
-  FormatList: Array [0..1] of TClipboardFormat;
 begin
   inherited SetUp;
   Clipboard.Open;
@@ -335,12 +330,6 @@ function TTestBase.LinesReplaceText(Lines: array of String;
   Repl: array of const): String;
 begin
   Result := LinesToText(LinesReplace(Lines, Repl));
-end;
-
-procedure TTestBase.ClipBoardRequest(const RequestedFormatID: TClipboardFormat;
-  Data: TStream);
-begin
-
 end;
 
 procedure TTestBase.ReCreateEdit;

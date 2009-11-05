@@ -5,12 +5,12 @@ program SynTest;
 uses
   Interfaces, Forms, GuiTestRunner, LResources,
   TestBase,
-  TestSynSelection, TestSynBeautifier;
+  TestSynSelection, TestSynBeautifier, TestSyncroEdit;
 
 {$IFDEF WINDOWS}{$R SynTest.rc}{$ENDIF}
 
 begin
-  {$I SynTest.lrs}
+  { $I SynTest.lrs}
   Application.Initialize;
   Application.CreateForm(TGuiTestRunner, TestRunner);
   Application.Run;
