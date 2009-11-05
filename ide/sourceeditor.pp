@@ -166,6 +166,9 @@ type
          WheelDelta: Integer; MousePos: TPoint; var Handled: Boolean);
     procedure EditorKeyDown(Sender: TObject; var Key: Word; Shift: TShiftState);
     procedure EditorStatusChanged(Sender: TObject; Changes: TSynStatusChanges);
+    procedure EditorPaste(Sender: TObject; var AText: String;
+         var AMode: TSynSelectionMode; ALogStartPos: TPoint;
+         var AnAction: TSynCopyPasteAction);
     procedure SetCodeBuffer(NewCodeBuffer: TCodeBuffer);
     function GetSource: TStrings;
     procedure SetPageName(const AValue: string);
@@ -2565,6 +2568,7 @@ Begin
       OnClickLink := @EditorClickLink;
       OnMouseLink := @EditorMouseLink;
       OnKeyDown := @EditorKeyDown;
+      OnPaste:=@EditorPaste;
       // IMPORTANT: when you change above, don't forget updating UnbindEditor
     end;
     if FCodeTemplates<>nil then
@@ -2954,6 +2958,52 @@ end;
 function TSourceEditor.GetCodeToolsBuffer: TObject;
 begin
   Result:=CodeBuffer;
+end;
+
+procedure TSourceEditor.EditorPaste(Sender: TObject; var AText: String;
+  var AMode: TSynSelectionMode; ALogStartPos: TPoint;
+  var AnAction: TSynCopyPasteAction);
+var
+  p: integer;
+  NestedComments: Boolean;
+  NewIndent: TFABIndentationPolicy;
+  Indent: LongInt;
+  NewSrc: string;
+begin
+  if AMode<>smNormal then exit;
+  if SyncroEdit.Active then exit;
+  if TemplateEdit.Active then exit;
+  if not CodeToolsOpts.IndentOnPaste then exit;
+  {$IFDEF VerboseIndenter}
+  debugln(['TSourceEditor.EditorPaste LogCaret=',dbgs(ALogStartPos)]);
+  {$ENDIF}
+  if ALogStartPos.X>1 then exit;
+  UpdateCodeBuffer;
+  CodeBuffer.LineColToPosition(ALogStartPos.Y,ALogStartPos.X,p);
+  if p<1 then exit;
+  {$IFDEF VerboseIndenter}
+  if ALogStartPos.Y>0 then
+    DebugLn(['TSourceEditor.EditorPaste Y-1=',Lines[ALogStartPos.Y-2]]);
+  DebugLn(['TSourceEditor.EditorPaste Y+0=',Lines[ALogStartPos.Y-1]]);
+  if ALogStartPos.Y<LineCount then
+    DebugLn(['TSourceEditor.EditorPaste Y+1=',Lines[ALogStartPos.Y+0]]);
+  {$ENDIF}
+  NestedComments:=CodeToolBoss.GetNestedCommentsFlagForFile(CodeBuffer.Filename);
+  if not CodeToolBoss.Indenter.GetIndent(CodeBuffer.Source,p,NestedComments,
+    true,NewIndent,CodeToolsOpts.IndentContextSensitive,AText)
+  then exit;
+  if not NewIndent.IndentValid then exit;
+  Indent:=NewIndent.Indent-GetLineIndentWithTabs(AText,1,EditorComponent.TabWidth);
+  {$IFDEF VerboseIndenter}
+  debugln(AText);
+  DebugLn(['TSourceEditor.EditorPaste Indent=',Indent]);
+  {$ENDIF}
+  IndentText(AText,Indent,EditorComponent.TabWidth,NewSrc);
+  AText:=NewSrc;
+  {$IFDEF VerboseIndenter}
+  debugln(AText);
+  DebugLn(['TSourceEditor.EditorPaste END']);
+  {$ENDIF}
 end;
 
 Procedure TSourceEditor.EditorMouseMoved(Sender: TObject;
@@ -6830,10 +6880,6 @@ var
   NewIndent: TFABIndentationPolicy;
   Indent: LongInt;
   CodeBuf: TCodeBuffer;
-  Line: string;
-  OldIndent: LongInt;
-  CurIndent: LongInt;
-  i: LongInt;
 begin
   Result:=false;
   SrcEdit:=GetActiveSE;
@@ -6846,34 +6892,15 @@ begin
   if (SrcEdit.TemplateEdit<>nil) and SrcEdit.TemplateEdit.Active then exit;
   if not (SrcEdit.SyntaxHighlighterType in [lshFreePascal, lshDelphi]) then
     exit;
-  case Reason of
-  ecLineBreak:
-    if not CodeToolsOpts.IndentOnLineBreak then exit;
-  ecPaste:
-    begin
-      if not CodeToolsOpts.IndentOnPaste then exit;
-      if SrcEdit.EditorComponent.SelectionMode<>smNormal then exit;
-      if LogCaret.X>1 then
-        inc(FirstLinePos);
-      if LogCaret.Y=LastLinePos then
-        dec(LastLinePos);
-      if LastLinePos<FirstLinePos then exit; // not a whole line
-    end
-  else
-    exit;
-  end;
+  if Reason<>ecLineBreak then exit;
+  if not CodeToolsOpts.IndentOnLineBreak then exit;
   {$IFDEF VerboseIndenter}
   debugln(['TSourceNotebook.EditorGetIndent LogCaret=',dbgs(LogCaret),' FirstLinePos=',FirstLinePos,' LastLinePos=',LastLinePos]);
   {$ENDIF}
   Result := True;
   SrcEdit.UpdateCodeBuffer;
   CodeBuf:=SrcEdit.CodeBuffer;
-  case Reason of
-  ecLineBreak,ecInsertLine:
-    CodeBuf.LineColToPosition(LogCaret.Y,LogCaret.X,p);
-  ecPaste:
-    CodeBuf.LineColToPosition(FirstLinePos,1,p);
-  end;
+  CodeBuf.LineColToPosition(LogCaret.Y,LogCaret.X,p);
   if p<1 then exit;
   {$IFDEF VerboseIndenter}
   if FirstLinePos>0 then
@@ -6884,51 +6911,18 @@ begin
   {$ENDIF}
   NestedComments:=CodeToolBoss.GetNestedCommentsFlagForFile(CodeBuf.Filename);
   if not CodeToolBoss.Indenter.GetIndent(CodeBuf.Source,p,NestedComments,
-    true,NewIndent,CodeToolsOpts.IndentContextSensitive)
+    True,NewIndent,CodeToolsOpts.IndentContextSensitive)
   then exit;
   if not NewIndent.IndentValid then exit;
   Indent:=NewIndent.Indent;
   {$IFDEF VerboseIndenter}
   DebugLn(['TSourceNotebook.EditorGetIndent Indent=',Indent]);
   {$ENDIF}
-  case Reason of
-  ecLineBreak,ecInsertLine:
-    begin
-      {$IFDEF VerboseIndenter}
-      DebugLn(['TSourceNotebook.EditorGetIndent Apply to FirstLinePos+1']);
-      {$ENDIF}
-      SetIndentProc(LogCaret.Y, Indent, 0,' ');
-      SrcEdit.CursorScreenXY:=Point(Indent+1,SrcEdit.CursorScreenXY.Y);
-    end;
-  ecPaste:
-    begin
-      {$IFDEF VerboseIndenter}
-      DebugLn(['TSourceNotebook.EditorGetIndent Apply to lines ',FirstLinePos,' .. ',LastLinePos]);
-      {$ENDIF}
-      Line:=SrcEdit.EditorComponent.Lines[FirstLinePos-1];
-      OldIndent:=GetLineIndentWithTabs(Line,1,SrcEdit.EditorComponent.TabWidth);
-      {$IFDEF VerboseIndenter}
-      DebugLn(['TSourceNotebook.EditorGetIndent OldIndent=',OldIndent,' Line=',dbgstr(Line)]);
-      {$ENDIF}
-      for i:=FirstLinePos to LastLinePos do begin
-        if i>=SrcEdit.EditorComponent.Lines.Count then break;
-        Line:=SrcEdit.EditorComponent.Lines[i-1];
-        CurIndent:=GetLineIndentWithTabs(Line,1,SrcEdit.EditorComponent.TabWidth);
-        {$IFDEF VerboseIndenter}
-        DebugLn(['TSourceNotebook.EditorGetIndent CurIndent=',CurIndent,' OldIndent=',OldIndent,' Indent=',Indent,' Line="',Line,'"']);
-        {$ENDIF}
-        CurIndent:=CurIndent-OldIndent+Indent;
-        if CurIndent<0 then begin
-          dec(Indent,CurIndent);
-          CurIndent:=0;
-        end;
-        {$IFDEF VerboseIndenter}
-        DebugLn(['TSourceNotebook.EditorGetIndent ']);
-        {$ENDIF}
-        SetIndentProc(i, CurIndent, 0,' ');
-      end;
-    end;
-  end;
+  {$IFDEF VerboseIndenter}
+  DebugLn(['TSourceNotebook.EditorGetIndent Apply to FirstLinePos+1']);
+  {$ENDIF}
+  SetIndentProc(LogCaret.Y, Indent, 0,' ');
+  SrcEdit.CursorScreenXY:=Point(Indent+1,SrcEdit.CursorScreenXY.Y);
 end;
 
 Procedure TSourceNotebook.HintTimer(sender: TObject);

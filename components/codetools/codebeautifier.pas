@@ -296,11 +296,13 @@ type
     procedure ParseSource(const Src: string; StartPos, EndPos: integer;
       NestedComments: boolean;
       Stack: TFABBlockStack; Policies: TFABPolicies;
-      out LastAtomStart, LastAtomEnd: integer // set if LastAtomStart<EndPos<LastAtomEnd
+      out LastAtomStart, LastAtomEnd: integer; // set if LastAtomStart<EndPos<LastAtomEnd
+      LearnFromFirstLine: boolean = true
       );
     procedure ParseSource(const Src: string; StartPos, EndPos: integer;
                           NestedComments: boolean;
-                          Stack: TFABBlockStack; Policies: TFABPolicies);
+                          Stack: TFABBlockStack; Policies: TFABPolicies;
+                          LearnFromFirstLine: boolean = true);
     function FindPolicyInExamples(StartCode: TCodeBuffer;
                                   ParentTyp, Typ: TFABBlockType): TFABPolicies;
     function GetNestedCommentsForCode(Code: TCodeBuffer): boolean;
@@ -316,7 +318,8 @@ type
     function GetIndent(const Source: string; CleanPos: integer;
                        NewNestedComments: boolean; UseLineStart: boolean;
                        out Indent: TFABIndentationPolicy;
-                       ContextLearn: boolean = true // true = learn policies from Source
+                       ContextLearn: boolean = true; // true = learn policies from Source
+                       const InsertText: string = ''
                        ): boolean;
     function GetIndents(const Source: string; Positions: TFABPositionIndents;
                         NewNestedComments: boolean; UseLineStart: boolean;
@@ -438,11 +441,13 @@ end;
 
 procedure TFullyAutomaticBeautifier.ParseSource(const Src: string;
   StartPos, EndPos: integer; NestedComments: boolean; Stack: TFABBlockStack;
-  Policies: TFABPolicies; out LastAtomStart, LastAtomEnd: integer);
+  Policies: TFABPolicies; out LastAtomStart, LastAtomEnd: integer;
+  LearnFromFirstLine: boolean);
 var
   p: Integer;
   AtomStart: integer;
   FirstAtomOnNewLine: Boolean;
+  InFirstLine: boolean;
 
   {$IFDEF ShowCodeBeautifierLearn}
   function PosToStr(p: integer): string;
@@ -484,7 +489,8 @@ var
       and (Policies<>nil) then begin
         if Block^.InnerIdent<0 then UpdateBlockInnerIndent;
         if Block^.InnerIdent>=0 then begin
-          Policies.AddIndent(Block^.Typ,Typ,p,Block^.InnerIdent);
+          if LearnFromFirstLine or (not InFirstLine) then
+            Policies.AddIndent(Block^.Typ,Typ,p,Block^.InnerIdent);
           {$IFDEF ShowCodeBeautifierLearn}
           DebugLn([GetIndentStr(Stack.Top*2),'nested indentation learned ',FABBlockTypeNames[Block^.Typ],'/',FABBlockTypeNames[Typ],': ',GetAtomString(@Src[AtomStart],NestedComments),' at ',PosToStr(p),' Indent=',Block^.InnerIdent]);
           {$ENDIF}
@@ -642,10 +648,13 @@ begin
   p:=StartPos;
   if EndPos>length(Src) then EndPos:=length(Src)+1;
   AtomStart:=p;
+  InFirstLine:=true;
   repeat
     LastAtomStart:=AtomStart;
     LastAtomEnd:=p;
     ReadRawNextPascalAtom(Src,p,AtomStart,NestedComments);
+    if InFirstLine and (not PositionsInSameLine(Src,LastAtomEnd,AtomStart)) then
+      InFirstLine:=false;
     //DebugLn(['TFullyAutomaticBeautifier.ParseSource Atom=',copy(Src,AtomStart,p-AtomStart)]);
     if p>EndPos then begin
       if (AtomStart<EndPos) then begin
@@ -1037,7 +1046,8 @@ begin
 
     if FirstAtomOnNewLine then begin
       UpdateBlockInnerIndent;
-      if Block^.InnerIdent>=0 then begin
+      if (Block^.InnerIdent>=0)
+      and (LearnFromFirstLine or (not InFirstLine)) then begin
         Policies.AddIndent(Block^.Typ,bbtNone,p,Block^.InnerIdent);
         {$IFDEF ShowCodeBeautifierLearn}
         DebugLn([GetIndentStr(Stack.Top*2),'Indentation learned for statements: ',FABBlockTypeNames[Block^.Typ],' Indent=',Block^.InnerIdent,' at ',PosToStr(p)]);
@@ -1049,12 +1059,12 @@ end;
 
 procedure TFullyAutomaticBeautifier.ParseSource(const Src: string; StartPos,
   EndPos: integer; NestedComments: boolean; Stack: TFABBlockStack;
-  Policies: TFABPolicies);
+  Policies: TFABPolicies; LearnFromFirstLine: boolean);
 var
   LastAtomStart, LastAtomEnd: integer;
 begin
   ParseSource(Src,StartPos,EndPos,NestedComments,Stack,Policies,
-              LastAtomStart,LastAtomEnd);
+              LastAtomStart,LastAtomEnd,LearnFromFirstLine);
 end;
 
 function TFullyAutomaticBeautifier.FindPolicyInExamples(StartCode: TCodeBuffer;
@@ -1406,7 +1416,7 @@ end;
 function TFullyAutomaticBeautifier.GetIndent(const Source: string;
   CleanPos: integer; NewNestedComments: boolean;
   UseLineStart: boolean; out Indent: TFABIndentationPolicy;
-  ContextLearn: boolean): boolean;
+  ContextLearn: boolean; const InsertText: string): boolean;
 var
   Block: TBlock;
 
@@ -1444,7 +1454,7 @@ begin
   CleanPos:=FindStartOfAtom(Source,CleanPos);
   if CleanPos<1 then exit;
 
-  if UseLineStart then begin
+  if UseLineStart and (InsertText='') then begin
     while (CleanPos<=length(Source)) and (Source[CleanPos] in [' ',#9]) do
       inc(CleanPos);
   end;
@@ -1480,10 +1490,15 @@ begin
     if LastAtomStart>0 then CleanPos:=LastAtomStart;
 
     StackIndex:=Stack.Top;
-    if UseLineStart then
-      StackIndex:=FindStackPosForBlockCloseAtPos(Source,CleanPos,
-                                                 NewNestedComments,Stack);
-
+    if UseLineStart then begin
+      if InsertText='' then begin
+        StackIndex:=FindStackPosForBlockCloseAtPos(Source,CleanPos,
+                                                   NewNestedComments,Stack);
+      end else begin
+        StackIndex:=FindStackPosForBlockCloseAtPos(InsertText,1,
+                                                   NewNestedComments,Stack);
+      end;
+    end;
     if (StackIndex<0) then begin
       // no context
       {$IFDEF VerboseIndenter}
@@ -1504,7 +1519,8 @@ begin
 
     if ContextLearn then begin
       // parse source behind
-      ParseSource(Source,CleanPos,length(Source)+1,NewNestedComments,Stack,Policies);
+      ParseSource(Source,CleanPos,length(Source)+1,NewNestedComments,Stack,
+                  Policies,false);
       {$IFDEF VerboseIndenter}
       DebugLn(['TFullyAutomaticBeautifier.GetIndent parsed source behind']);
       {$ENDIF}
@@ -1660,7 +1676,8 @@ begin
 
     if Policies<>nil then begin
       // parse source behind
-      ParseSource(Source,Item^.CleanPos,length(Source)+1,NewNestedComments,Stack,Policies);
+      ParseSource(Source,Item^.CleanPos,length(Source)+1,NewNestedComments,
+                  Stack,Policies,false);
       {$IFDEF VerboseIndenter}
       DebugLn(['TFullyAutomaticBeautifier.GetIndent parsed source behind']);
       {$ENDIF}
