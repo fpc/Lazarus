@@ -8,7 +8,7 @@
       <TargetFileExt Value=".exe"/>
       <Title Value="SiteTest"/>
       <UseXPManifest Value="True"/>
-      <ActiveEditorIndexAtStart Value="0"/>
+      <ActiveEditorIndexAtStart Value="1"/>
     </General>
     <VersionInfo>
       <ProjectVersion Value=""/>
@@ -405,7 +405,7 @@
     <PathDelim Value="\"/>
     <SearchPaths>
       <IncludeFiles Value="$(ProjOutDir)\"/>
-      <OtherUnitFiles Value="D:\SourceForge\lazarus\examples\dockmanager\package\;..\..\..\components\synedit\;D:\SourceForge\lazarus\examples\dockmanager\easyedit\"/>
+      <OtherUnitFiles Value="..\package\;..\..\..\components\synedit\;..\easyedit\"/>
     </SearchPaths>
     <Linking>
       <Options>
