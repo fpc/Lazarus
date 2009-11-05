@@ -753,7 +753,6 @@ type
       OnProgress - Generic progress indicator event. Propagates out to TPicture
         and TImage OnProgress events.}
 
-  {$IFDEF VER2_5}{$DEFINE HAS_TOBJECT_EQUALS}{$ENDIF}
   TGraphic = class(TPersistent)
   private
     FModified: Boolean;
@@ -762,7 +761,7 @@ type
     FPaletteModified: Boolean;
   protected
     procedure Changed(Sender: TObject); virtual;
-    function Equals(Graphic: TGraphic): Boolean; virtual; {$IFDEF HAS_TOBJECT_EQUALS}overload;{$ENDIF}
+    function Equals(Graphic: TGraphic): Boolean; virtual; {$IF declared(vmtEquals)}overload;{$IFEND}
     procedure DefineProperties(Filer: TFiler); override;
     procedure Draw(ACanvas: TCanvas; const Rect: TRect); virtual; abstract;
     function GetEmpty: Boolean; virtual; abstract;
@@ -788,9 +787,9 @@ type
     procedure Assign(ASource: TPersistent); override;
     constructor Create; virtual;
     procedure Clear; virtual;
-    {$IFDEF HAS_TOBJECT_EQUALS}
+    {$IF declared(vmtEquals)}
     function Equals(Obj: TObject): Boolean; override; overload;
-    {$ENDIF}
+    {$IFEND}
     function LazarusResourceTypeValid(const AResourceType: string): boolean; virtual;
     procedure LoadFromFile(const Filename: string); virtual;
     procedure LoadFromStream(Stream: TStream); virtual; abstract;
