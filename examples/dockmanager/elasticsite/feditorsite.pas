@@ -100,7 +100,9 @@ end;
 
 function TEditorSite.CreateDockable(const cap: string): TPanel;
 var
+  {$IFDEF old}
   Site: TFloatingSite;
+  {$ENDIF}
   Client: TPanel;
 begin
   //TDockingClient.Create(self);

@@ -48,7 +48,6 @@ type
     procedure mnOpenClick(Sender: TObject);
   private
     //MyEdit: TEasyPages;
-    Editors: TList;
     CurForm: TEditForm;
     CurEdit: TEasyEdit;
   public
