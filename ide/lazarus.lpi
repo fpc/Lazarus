@@ -405,7 +405,7 @@
       <Filename Value="../lazarus"/>
     </Target>
     <SearchPaths>
-      <OtherUnitFiles Value="frames/;../debugger/;../debugger/frames/;../packager/frames/;../designer/"/>
+      <OtherUnitFiles Value="frames/;../converter/;../debugger/;../debugger/frames/;../packager/frames/;../designer/"/>
       <UnitOutputDirectory Value="$(LazarusDir)/units/$(TargetCPU)-$(TargetOS)"/>
     </SearchPaths>
     <Parsing>
