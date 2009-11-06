@@ -7,12 +7,11 @@ uses
   cthreads,
   {$ENDIF}{$ENDIF}
   Interfaces, // this includes the LCL widgetset
-  Forms, EasyDockMgr, LResources, fEditorSite, fEditBook;
+  Forms, EasyDockMgr, fEditorSite, fEditBook;
 
 {$IFDEF WINDOWS}{$R SiteTest.rc}{$ENDIF}
 
 begin
-  {$I SiteTest.lrs}
   Application.Initialize;
   Application.CreateForm(TEditorSite, EditorSite);
   Application.Run;
