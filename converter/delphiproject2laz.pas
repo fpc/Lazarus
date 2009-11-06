@@ -834,17 +834,12 @@ begin
 
   // read .dof file
   DOFFilename:=FindDelphiDOF(MainSourceFilename);
-  if FileExistsUTF8(DOFFilename) then begin
-    Result:=ExtractOptionsFromDOF(DOFFilename,Project1);
-    if Result<>mrOk then exit;
-  end;
+  Result:=ExtractOptionsFromDOF(DOFFilename,Project1);
+  if Result<>mrOk then exit;
 
   // read .cfg file
   CFGFilename:=FindDelphiCFG(MainSourceFilename);
-  if FileExistsUTF8(CFGFilename) then begin
-    Result:=ExtractOptionsFromCFG(CFGFilename,Project1);
-    if Result<>mrOk then exit;
-  end;
+  Result:=ExtractOptionsFromCFG(CFGFilename,Project1);
 end;
 
 procedure SetCompilerModeForDefineTempl(DefTempl: TDefineTemplate);
