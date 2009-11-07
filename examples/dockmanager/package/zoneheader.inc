@@ -27,8 +27,7 @@ begin
 end;
 
 procedure DestroyDockHeaderImages;
-var
-  ImageKind: TDockHeaderImageKind;
+//var ImageKind: TDockHeaderImageKind;
 begin
 //called from unit finalization only!
 { this code can result in crashes, due to missing handles
@@ -351,8 +350,6 @@ begin
   InflateRect(DrawRect, -1, -1); //outer bevel?
   ACanvas.Brush.Color := clBtnShadow;
   ACanvas.FrameRect(DrawRect); //1 pixel border
-  //InflateRect(DrawRect, -1, -1); //inner bevel?
-    //the value is not used any more!
   ACanvas.Brush.Color := clBtnFace;
 
 // draw caption

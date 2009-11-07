@@ -36,7 +36,7 @@
       </Item4>
       <Item5>
         <Filename Value="ffloatingsite.pas"/>
-        <UnitName Value="ffloatingsite"/>
+        <UnitName Value="fFloatingSite"/>
       </Item5>
       <Item6>
         <Filename Value="felasticsite.lfm"/>
@@ -63,7 +63,7 @@
       </Item2>
     </RequiredPkgs>
     <UsageOptions>
-      <UnitPath Value="$(PkgOutDir)\"/>
+      <UnitPath Value="$(PkgOutDir)\;..\package\"/>
     </UsageOptions>
     <PublishOptions>
       <Version Value="2"/>

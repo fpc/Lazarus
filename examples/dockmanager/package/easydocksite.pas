@@ -129,10 +129,6 @@ type
     procedure SetBounds(TLBR: TRect);
 
     function  GetHandle: HWND;
-  {$IFDEF old}
-    function  GetHeaderSize: integer;
-  {$ELSE}
-  {$ENDIF}
     function  GetVisible: boolean;
     function  GetVisibleControl: TControl;
     function  GetPartRect(APart: TEasyZonePart): TRect;
@@ -181,7 +177,7 @@ type
     procedure EndUpdate; override;
   //extended interface
     //procedure ControlVisibilityChanged(Control: TControl; Visible: Boolean);  override;
-    function ZoneFromPoint(SitePos: TPoint): TEasyZone;
+    function  ZoneFromPoint(SitePos: TPoint): TEasyZone;
     procedure GetControlBounds(Control: TControl; out CtlBounds: TRect);  override;
     procedure InsertControl(Control: TControl; InsertAt: TAlign;
       DropCtl: TControl);  override;
@@ -195,10 +191,6 @@ type
   protected //added
     procedure PositionDockRect(ADockObject: TDragDockObject); override;
     property  DockSite: TWinControl read FDockSite;
-  {$IFDEF old}
-    function  DockHeaderSize: integer; virtual;
-  {$ELSE}
-  {$ENDIF}
     function  FindControlZone(zone: TEasyZone; Control: TControl): TEasyZone;
     procedure RemoveZone(Zone: TEasyZone);
   //Lazarus extension
@@ -217,10 +209,6 @@ type
     constructor Create(ADockSite: TWinControl); override;
     destructor Destroy; override;
     function DetectAlign(ZoneRect: TRect; MousePos: TPoint): TAlign;
-  {$IFDEF old}
-    procedure AdjustDockRect(Control: TControl; var ARect: TRect);
-  {$ELSE}
-  {$ENDIF}
     procedure PaintSite(DC: HDC); override;
     procedure SetStyle(NewStyle: TEasyHeaderStyle);
   end;
@@ -382,7 +370,7 @@ var
 begin
 (* Return zone from site client coordinates.
 *)
-  zone := FTopZone;
+  zone := FTopZone; //bad coordinates???
   while zone <> nil do begin
     if (SitePos.X > zone.Right) or (SitePos.Y > zone.Bottom) then
       zone := zone.NextSibling
@@ -396,23 +384,6 @@ begin
   end;
   Result := zone;
 end;
-
-{$IFDEF old}
-function TEasyTree.DockHeaderSize: integer;
-begin
-  Result := FHeader.HeaderSize;
-end;
-{$ELSE}
-{$ENDIF}
-
-{$IFDEF old}
-procedure TEasyTree.AdjustDockRect(Control: TControl; var ARect: TRect);
-begin
-//get the client area within the given zone rectangle
-  ARect := FHeader.GetRectOfPart(ARect, Control.DockOrientation, zpClient, true);
-end;
-{$ELSE}
-{$ENDIF}
 
 function TEasyTree.FindControlZone(zone: TEasyZone; Control: TControl): TEasyZone;
 begin
@@ -641,61 +612,8 @@ end;
 
 procedure TEasyTree.PositionDockRect(ADockObject: TDragDockObject);
 var
-  i: integer;
   zone: TEasyZone;
-
-{$IFDEF old}
-  function DetectAlign(ZoneRect: TRect; MousePos: TPoint): TAlign;
-  var
-    w, h, zphi: integer;
-    cx, cy: integer;
-    dx, dy: integer;
-    phi: double;
-    izone: integer;
-    //zone: eZone;
-    dir: TAlign;
-  const
-    k = 5; //matrix dimension
-  //mapping octants into aligns, assuming k=5
-    cDir: array[-4..4] of TAlign = (
-      alLeft, alLeft, alTop, alTop, alRight, alBottom, alBottom, alLeft, alLeft
-    );
-  begin
-  //center and extent of dock zone
-    cx := (ZoneRect.Right + ZoneRect.Left) div 2;
-    cy := (ZoneRect.Top + ZoneRect.Bottom) div 2;
-    w := ZoneRect.Right - ZoneRect.Left;
-    h := ZoneRect.Bottom - ZoneRect.Top;
-    if (w > 0) and (h > 0) then begin
-    //mouse position within k*k rectangles (squares)
-      dx := trunc((MousePos.x - cx) / w * k);
-      dy := trunc((MousePos.y - cy) / h * k);
-      izone := max(abs(dx), abs(dy)); //0..k
-    //map into 0=innermost (custom), 1=inner, 2=outer
-      if izone = 0 then begin
-        //zone := zInnermost;
-        dir := alCustom; //pages
-      end else begin
-      { not yet: outer zones, meaning docking into parent zone
-        if izone >= k-1 then
-          zone := zOuter
-        else //if izone > 0 then
-          zone := zInner;
-      }
-        phi := arctan2(dy, dx);
-        zphi := trunc(radtodeg(phi)) div 45;
-        dir := cDir[zphi];
-      end;
-    end else
-      dir := alClient;
-    Result := dir;
-  end;
-{$ELSE}
-  //made method
-{$ENDIF}
-
-var
-  ZoneExtent: TPoint;
+  //ZoneExtent: TPoint;
   ADockRect: TRect;
 begin
 (* New DockManager interface, called instead of the old version.
@@ -977,8 +895,7 @@ begin
 //drop site resized - never called in Lazarus???
   if (csLoading in FDockSite.ComponentState) then
     exit; //not the right time to do anything
-  if FTopZone.FirstChild = nil then
-    exit; //zone is empty, nothing to do
+  //if FTopZone.FirstChild = nil then exit; //zone is empty, nothing to do
 //how to determine old bounds?
   rNew := FDockSite.ClientRect;
   if not CompareMem(@rNew, @FSiteRect, sizeof(rNew)) then
@@ -1111,7 +1028,6 @@ procedure TEasyTree.RemoveZone(Zone: TEasyZone);
 
 var
   p, ch: TEasyZone;
-  r: TRect;
   affected: TEasyZone; //the zone whose children have changed
 begin
 //propagate changes into parents!
@@ -1152,24 +1068,13 @@ begin
     end;
     zone := p;
   end;
-//update parent(?) zone, to close the gap
-  //Zone := p.FirstChild;
+//update affected zone, to close the gap
   if affected <> nil then begin
     Zone := affected.FirstChild;
     while Zone <> nil do begin
       if Zone.NextSibling = nil then
-        //Zone.BR := p.BR; //resize last zone
         Zone.BR := affected.BR; //resize last zone
-    {$IFDEF old}
-      if Zone.ChildControl <> nil then begin
-        r := Zone.GetBounds;
-        AdjustDockRect(Zone.ChildControl, r);
-        Zone.ChildControl.BoundsRect := r;
-      end;
-    {$ELSE}
-      //r := zone.GetPartRect(zpClient);
       zone.PositionControl;
-    {$ENDIF}
       zone := Zone.NextSibling;
     end;
   end;
@@ -1203,14 +1108,6 @@ function TEasyZone.DockSite: TWinControl;
 begin
   Result := FTree.FDockSite;
 end;
-
-{$IFDEF old}
-function TEasyZone.GetHeaderSize: integer;
-begin
-  Result := FTree.DockHeaderSize;
-end;
-{$ELSE}
-{$ENDIF}
 
 function TEasyZone.GetVisible: boolean;
 begin
@@ -1397,7 +1294,6 @@ end;
 //procedure TEasyZone.ScaleTo(const ptOld, ptNew, ptOuter: TPoint);
 procedure TEasyZone.ScaleTo(ptOld, ptNew, ptOuter: TPoint);
 var
-  r: TRect;
   ch: TEasyZone;
 begin
 (* change all coordinates from old to new extent.
@@ -1428,13 +1324,7 @@ begin
   end;
 
   if ChildControl <> nil then begin
-  {$IFDEF old}
-    r := GetBounds;
-    FTree.AdjustDockRect(ChildControl, r);
-    ChildControl.BoundsRect := r;
-  {$ELSE}
     PositionControl;
-  {$ENDIF}
   end else begin
     ch := FirstChild;
     while ch <> nil do begin

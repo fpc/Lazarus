@@ -24,6 +24,8 @@ When the form is resized, the dock sites report their old (designed) extent.
 
 {$mode objfpc}{$H+}
 
+{$DEFINE ExpandFlag} //using AutoExpand property?
+
 interface
 
 uses
@@ -48,12 +50,14 @@ type
       var InfluenceRect: TRect; MousePos: TPoint; var CanDock: Boolean);
     procedure pnlLeftUnDock(Sender: TObject; Client: TControl;
       NewTarget: TWinControl; var Allow: Boolean);
-  private
+  protected
     FAutoExpand: boolean;
-    procedure SetAutoExpand(NewValue: boolean);
-  public
+{$IFDEF ExpandFlag}
   published
-    property AutoExpand: boolean read FAutoExpand write SetAutoExpand default True;
+    property AutoExpand: boolean read FAutoExpand write FAutoExpand default True;
+{$ELSE}
+  //become property of the docksite (panel)
+{$ENDIF}
   end;
 
 //var DockingSite: TDockingSite;
@@ -63,7 +67,7 @@ procedure Register;
 implementation
 
 uses
-  LCLIntf;
+  LCLIntf, LCLProc;
 
 //uses  fDockClient;  //test only
 
@@ -90,6 +94,7 @@ begin
   or ((Site.Width > 1) and (Site.Height > 1)) //NoteBook!
   then
     exit; //no adjustments of the dock site required
+//this is the first drop - handle AutoExpand
   with Source do begin
     if DragTarget.Align in [alLeft, alRight] then begin
       w := self.Width div 3;
@@ -114,7 +119,7 @@ begin
         end;
         EnableAlign;
       end;
-    end else begin
+    end else begin //alBottom
       w := self.Height div 3;
       if DragTarget.Height < w then begin
       //enlarge docksite
@@ -135,7 +140,6 @@ begin
         EnableAlign;
       end;
     end;
-    //Control.Align := alClient;
   end;
 end;
 
@@ -170,7 +174,8 @@ var
 var
   Site: TWinControl;  // absolute Sender;
   dw, dh: integer;
-  //dummy: boolean;
+const
+  d = 10; //shift mousepos with InfluenceRect
 begin
 (* This handler has to determine the intended DockRect,
   and the alignment within this rectangle.
@@ -180,34 +185,59 @@ begin
 
   For a shrinked site we only can display the intended DockRect,
   and signal alClient.
+
+  On the first drop, AutoExpand can be determined from the mouse position,
+  inside or outside the form.
 *)
-  if Source.DragTarget = nil then
+  if Source.DragTarget = nil then begin
+  (* Bug: DragTarget has not yet been initialized.
+    Fix in TWinControl.DoDockOver, or earlier in the dragmanager?
+  *)
+    DebugLn('---------- Please fix bad DockOver call with DragTarget=nil ---------');
     exit; //shit happens :-(
+  end;
   if State = dsDragMove then begin
     TObject(Site) := Source.DragTarget;
     if Site.DockClientCount > 0 then
       exit; //everything should be okay
   //make DockRect reflect the docking area
-    //with Source do begin
-      //StatusBar1.SimpleText := AlignNames[Source.DropAlign];
-    {$IFnDEF old}
-      r := Site.BoundsRect; //XYWH
-      r.TopLeft := Site.Parent.ClientToScreen(r.TopLeft);
-    {$ELSE}
-      GetWindowRect(TWinControl(Source.DragTarget).handle, r);
-      //Site.GetSiteInfo(Site, r, Point(0,0), dummy);
-    {$ENDIF}
-      dw := Width div 3;  //r.Right := r.Left + dw;
-      dh := Height div 3; //r.Bottom := r.Top + dh;
-    //determine inside/outside
-      case Site.Align of
-      alLeft:   if AutoExpand then Adjust(-dw, 0) else Adjust(dw, 0);
-      alRight:  if AutoExpand then Adjust(dw, 0) else Adjust(-dw, 0);
-      alBottom: if AutoExpand then Adjust(0, dh) else Adjust(0, -dh);
-      else      exit;
+    r := Site.BoundsRect; //XYWH
+    r.TopLeft := Site.Parent.ClientToScreen(r.TopLeft);
+    dw := Width div 3;  //r.Right := r.Left + dw;
+    dh := Height div 3; //r.Bottom := r.Top + dh;
+  //determine inside/outside
+  {$IFDEF ExpandFlag}
+  //using AutoExpand flag
+    case Site.Align of
+    alLeft:   if AutoExpand then Adjust(-dw, 0) else Adjust(dw, 0);
+    alRight:  if AutoExpand then Adjust(dw, 0) else Adjust(-dw, 0);
+    alBottom: if AutoExpand then Adjust(0, dh) else Adjust(0, -dh);
+    else      exit;
+    end;
+  {$ELSE}
+  //dock inside/outside depending on mouse position
+  //set temporary FAutoExpand
+    case Site.Align of
+    alLeft:
+      begin
+        FAutoExpand := Source.DragPos.x + d < r.Left;
+        if FAutoExpand then Adjust(-dw, 0) else Adjust(dw, 0);
       end;
-      Source.DockRect := r;
-    //end;
+    alRight:
+      begin
+        FAutoExpand := Source.DragPos.x + d >= r.Left;
+        if FAutoExpand then Adjust(dw, 0) else Adjust(-dw, 0);
+      end;
+    alBottom:
+      begin
+        FAutoExpand := Source.DragPos.y + d > r.Top;
+        if FAutoExpand then Adjust(0, dh) else Adjust(0, -dh);
+      end
+    else
+      exit;
+    end;
+  {$ENDIF}
+    Source.DockRect := r;
     Accept := True;
   end;
 end;
@@ -215,23 +245,13 @@ end;
 procedure TDockingSite.pnlLeftGetSiteInfo(Sender: TObject;
   DockClient: TControl; var InfluenceRect: TRect; MousePos: TPoint;
   var CanDock: Boolean);
-const
-  delta = 10;
 begin
-(* Is an old copy of InfluenceRect around here?
+(* Signal acceptance.
+  Inflate InfluenceRect, for easier docking into a shrinked site.
 *)
-{ TODO : try getting the current influence rect }
   CanDock := True;
-{$IFDEF old}
-//this doesn't help, reports the designed extent.
-  InfluenceRect := (Sender as TWinControl).BoundsRect;
-  InfluenceRect.TopLeft := ClientToScreen(InfluenceRect.TopLeft);
-  inc(InfluenceRect.Right, InfluenceRect.Left + delta);
-  inc(InfluenceRect.Bottom, InfluenceRect.Top + delta);
-  dec(InfluenceRect.Top, delta);
-  dec(InfluenceRect.Left, delta);
-{$ELSE}
-{$ENDIF}
+  InflateRect(InfluenceRect, 10, 10);
+  //OffsetRect(InfluenceRect, 10, 10); //collides with other sites?
 end;
 
 procedure TDockingSite.pnlLeftUnDock(Sender: TObject; Client: TControl;
@@ -291,10 +311,6 @@ begin
   end;
 end;
 
-procedure TDockingSite.SetAutoExpand(NewValue: boolean);
-begin
-  FAutoExpand:=NewValue;
-end;
 
 initialization
   {$I felasticsite.lrs}

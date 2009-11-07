@@ -95,14 +95,14 @@ begin
   FEdit.BorderStyle := bsNone;
   FEdit.Parent := self;
   FEdit.Visible := True;
-  AutoExpand := True;
+  FAutoExpand := True;
 end;
 
 function TEditorSite.CreateDockable(const cap: string): TPanel;
 var
-  {$IFDEF old}
+{$IFDEF old}
   Site: TFloatingSite;
-  {$ENDIF}
+{$ENDIF}
   Client: TPanel;
 begin
   //TDockingClient.Create(self);
@@ -117,6 +117,7 @@ begin
   except
     //here: simply ignore duplicate name
   end;
+{ TODO : proper first dock }
 {$IFnDEF old}
   Client.FloatingDockSiteClass := TFloatingSite;
   Client.ManualFloat(Rect(200,200, 400,400));
