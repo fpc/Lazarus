@@ -1431,9 +1431,10 @@ begin
       Result:=(fsfIncludeDirective in SearchSmartFlags);
       exit;
     end;
-    if CursorNode=nil then
+    if CursorNode=nil then begin
       // raise exception
-      FindDeepestNodeAtPos(CleanCursorPos,true);
+      CursorNode:=FindDeepestNodeAtPos(CleanCursorPos,true);
+    end;
     {$IFDEF CTDEBUG}
     DebugLn('TFindDeclarationTool.FindDeclaration D CursorNode=',NodeDescriptionAsString(CursorNode.Desc),' HasChilds=',dbgs(CursorNode.FirstChild<>nil));
     {$ENDIF}
