@@ -3407,6 +3407,7 @@ var
         {$IFDEF VerboseFPCSrcScan}
         DebugLn(['BrowseDirectory skip ',ADirPath]);
         {$ENDIF}
+        exit;
       end;
 
       inc(ProgressID);
