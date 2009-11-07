@@ -1593,6 +1593,7 @@ begin
     if IsSpecifier then begin
       // read specifier
       if UpAtomIs('MESSAGE') or UpAtomIs('DISPID') or UpAtomIs('ENUMERATOR')
+      or UpAtomIs('DEPRECATED')
       then begin
         ReadNextAtom;
         ReadConstant(true,false,[]);
