@@ -416,7 +416,7 @@
     <Other>
       <CompilerPath Value="$(CompPath)"/>
       <ExecuteBefore>
-        <Command Value="$(make) idepkg"/>
+        <Command Value="$(Make) idepkg"/>
         <ScanForFPCMsgs Value="True"/>
         <ScanForMakeMsgs Value="True"/>
       </ExecuteBefore>

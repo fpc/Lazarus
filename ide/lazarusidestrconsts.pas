@@ -121,6 +121,7 @@ resourcestring
     +'parameter';
   lisUserSHomeDirectory = 'User''s home directory';
   lisMakeExe = 'Make Executable';
+  lisPathOfTheMakeUtility = 'Path of the make utility';
   lisProjectMacroProperties = 'Project macro properties';
   lisOpenProject2 = 'Open project';
   lisKMSaveProject = 'Save project';

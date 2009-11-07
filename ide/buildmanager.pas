@@ -95,6 +95,8 @@ type
                                  var Abort: boolean): string;
     function MacroFuncEnv(const Param: string; const Data: PtrInt;
                           var Abort: boolean): string;
+    function MacroFuncMake(const Param: string; const Data: PtrInt;
+                           var Abort: boolean): string;// make utility
     function CTMacroFuncProjectUnitPath(Data: Pointer): boolean;
     function CTMacroFuncProjectIncPath(Data: Pointer): boolean;
     function CTMacroFuncProjectSrcPath(Data: Pointer): boolean;
@@ -233,8 +235,6 @@ begin
   EnvironmentOptions.InitMacros(GlobalMacroList);
 
   // project
-  GlobalMacroList.Add(TTransferMacro.Create('MakeExe','',
-                      lisMakeExe,@MacroFuncMakeExe,[]));
   GlobalMacroList.Add(TTransferMacro.Create('Project','',
                       lisProjectMacroProperties,@MacroFuncProject,[]));
   GlobalMacroList.Add(TTransferMacro.Create('LCLWidgetType','',
@@ -271,6 +271,10 @@ begin
                     lisProjectOutDir,@MacroFuncProjOutDir,[]));
   GlobalMacroList.Add(TTransferMacro.Create('Env','',
                     lisEnvironmentVariableNameAsParameter, @MacroFuncEnv, []));
+  GlobalMacroList.Add(TTransferMacro.Create('MakeExe','',
+                      lisMakeExe,@MacroFuncMakeExe,[]));
+  GlobalMacroList.Add(TTransferMacro.Create('Make','',
+                      lisPathOfTheMakeUtility, @MacroFuncMake, []));
 
   // codetools macro functions
   CodeToolBoss.DefineTree.MacroFunctions.AddExtended(
@@ -1294,6 +1298,16 @@ function TBuildManager.MacroFuncEnv(const Param: string; const Data: PtrInt;
   var Abort: boolean): string;
 begin
   Result:=GetEnvironmentVariableUTF8(Param);
+end;
+
+function TBuildManager.MacroFuncMake(const Param: string; const Data: PtrInt;
+  var Abort: boolean): string;
+begin
+  Result:=EnvironmentOptions.MakeFilename;
+  if (Result<>'') and (not FilenameIsAbsolute(Result)) then
+    Result:=FindDefaultExecutablePath(Result);
+  if Result='' then
+    Result:=FindDefaultMakePath;
 end;
 
 function TBuildManager.CTMacroFuncProjectUnitPath(Data: Pointer): boolean;
