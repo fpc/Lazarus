@@ -1596,7 +1596,7 @@ begin
       or UpAtomIs('DEPRECATED')
       then begin
         ReadNextAtom;
-        if AtomIsStringConstant then
+        if not (CurPos.Flag in [cafSemicolon,cafEND]) then
           ReadConstant(true,false,[]);
       end else if UpAtomIs('EXTERNAL') or UpAtomIs('PUBLIC') then begin
         HasForwardModifier:=UpAtomIs('EXTERNAL');
