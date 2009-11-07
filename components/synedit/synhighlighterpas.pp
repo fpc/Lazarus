@@ -913,7 +913,7 @@ begin
           EndPascalCodeFoldBlock;
       end else if TopPascalCodeFoldBlockType in [cfbtTopBeginEnd, cfbtAsm] then begin
         EndPascalCodeFoldBlock;
-        if TopPascalCodeFoldBlockType = cfbtProcedure then
+        if TopPascalCodeFoldBlockType in [cfbtProcedure] then
           EndPascalCodeFoldBlock;
         if TopPascalCodeFoldBlockType = cfbtProgram then
           EndPascalCodeFoldBlock;
@@ -1624,7 +1624,22 @@ end;
 
 function TSynPasSyn.Func108: TtkTokenKind;
 begin
-  if KeyComp('Operator') then Result := tkKey else Result := tkIdentifier;
+  if KeyComp('Operator') then
+  begin
+    if not(rsAfterEqual in fRange) then
+    begin
+      PasCodeFoldRange.BracketNestLevel := 0; // Reset in case of partial code
+      CloseBeginEndBlocksBeforeProc;
+      if TopPascalCodeFoldBlockType in [cfbtVarType, cfbtLocalVarType] then
+        EndPascalCodeFoldBlockLastLine;
+      if ((rsImplementation in fRange) and
+        not(TopPascalCodeFoldBlockType in [cfbtClass, cfbtClassSection])) then
+        StartPascalCodeFoldBlock(cfbtProcedure);
+    end;
+    Result := tkKey;
+  end
+  else
+    Result := tkIdentifier;
 end;
 
 function TSynPasSyn.Func112: TtkTokenKind;
@@ -1668,7 +1683,7 @@ begin
   if KeyComp('Ansistring') then
     Result := tkKey
   else
-  if KeyComp('Enumerator') then
+  if KeyComp('Enumerator') and (TopPascalCodeFoldBlockType in [cfbtClassSection]) then
     Result := tkKey
   else
     Result := tkIdentifier;
