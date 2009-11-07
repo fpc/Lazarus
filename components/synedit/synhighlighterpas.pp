@@ -128,7 +128,7 @@ const
   // restrict cdecl etc to places where they can be.
   // this needs a better parser
   ProcModifierAllowed: TPascalCodeFoldBlockTypes =
-    [cfbtNone, cfbtProcedure, cfbtProgram, cfbtUnitSection]; // unitsection, actually interface only
+    [cfbtNone, cfbtProcedure, cfbtProgram, cfbtClassSection, cfbtUnitSection]; // unitsection, actually interface only
 
 type
 
