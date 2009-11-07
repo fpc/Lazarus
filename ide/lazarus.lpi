@@ -405,7 +405,7 @@
       <Filename Value="../lazarus"/>
     </Target>
     <SearchPaths>
-      <OtherUnitFiles Value="frames/;../converter/;../debugger/;../debugger/frames/;../packager/frames/;../designer/"/>
+      <OtherUnitFiles Value="frames/;../converter/;../debugger/;../debugger/frames/;../packager/;../packager/frames/;../designer/"/>
       <UnitOutputDirectory Value="$(LazarusDir)/units/$(TargetCPU)-$(TargetOS)"/>
     </SearchPaths>
     <Parsing>
@@ -415,6 +415,11 @@
     </Parsing>
     <Other>
       <CompilerPath Value="$(CompPath)"/>
+      <ExecuteBefore>
+        <Command Value="$(make) idepkg"/>
+        <ScanForFPCMsgs Value="True"/>
+        <ScanForMakeMsgs Value="True"/>
+      </ExecuteBefore>
     </Other>
     <CompileReasons Compile="False" Build="False" Run="False"/>
   </CompilerOptions>

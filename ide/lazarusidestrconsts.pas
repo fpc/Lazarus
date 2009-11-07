@@ -646,6 +646,8 @@ resourcestring
     +'ResourceString section in this or any of the used units.';
   lisComponentNameIsNotAValidIdentifier = 'Component name %s%s%s is not a '
     +'valid identifier';
+  lisOwnerIsAlreadyUsedByTReaderTWriterPleaseChooseAnot = '''Owner'' is '
+    +'already used by TReader/TWriter. Please choose another name.';
   lisDuplicateNameAComponentNamedAlreadyExistsInTheInhe = 'Duplicate name: A '
     +'component named %s%s%s already exists in the inherited component %s';
   lisComponentNameIsKeyword = 'Component name %s%s%s is keyword';
@@ -664,6 +666,9 @@ resourcestring
   lisSaveFileBeforeClosingForm =
     'Save file %s%s%s%sbefore closing form %s%s%s?';
   lisUnableToRenameFormInSource = 'Unable to rename form in source.';
+  lisTheComponentIsInheritedFromToRenameAnInheritedComp = 'The component %s '
+    +'is inherited from %s.%sTo rename an inherited component open the '
+    +'ancestor and rename it there.';
   lisSorryNotImplementedYet = 'Sorry, not implemented yet';
   lisUnableToFindMethodPleaseFixTheErrorShownInTheMessage = 'Unable to find '
     +'method. Please fix the error shown in the message window.';

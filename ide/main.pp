@@ -14154,6 +14154,13 @@ begin
     exit;
   end;
 
+  if SysUtils.CompareText(AComponent.Name,'Owner')=0 then begin
+    // 'Owner' is used by TReader/TWriter
+    raise EComponentError.Create(
+      lisOwnerIsAlreadyUsedByTReaderTWriterPleaseChooseAnot);
+    exit;
+  end;
+
   BeginCodeTool(ADesigner,ActiveSrcEdit,ActiveUnitInfo,[ctfSwitchToFormSource]);
   ActiveUnitInfo:=Project1.UnitWithComponent(ADesigner.LookupRoot);
 
@@ -14174,9 +14181,8 @@ begin
     // check ancestor component
     AncestorRoot:=FormEditor1.GetAncestorLookupRoot(AComponent);
     if AncestorRoot<>nil then begin
-      s:='The component '+dbgsName(AComponent)
-         +' is inherited from '+dbgsName(AncestorRoot)+'.'#13
-         +'To rename an inherited component open the ancestor and rename it there.';
+      s:=Format(lisTheComponentIsInheritedFromToRenameAnInheritedComp, [dbgsName
+        (AComponent), dbgsName(AncestorRoot), #13]);
       raise EComponentError.Create(s);
     end;
 
