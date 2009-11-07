@@ -1596,7 +1596,8 @@ begin
       or UpAtomIs('DEPRECATED')
       then begin
         ReadNextAtom;
-        ReadConstant(true,false,[]);
+        if AtomIsStringConstant then
+          ReadConstant(true,false,[]);
       end else if UpAtomIs('EXTERNAL') or UpAtomIs('PUBLIC') then begin
         HasForwardModifier:=UpAtomIs('EXTERNAL');
         ReadNextAtom;
@@ -2748,6 +2749,11 @@ begin
     ReadNextAtom;
     ReadConstant(true,false,[]);
   end;
+  if UpAtomIs('DEPRECATED') then begin
+    ReadNextAtom;
+    if AtomIsStringConstant then
+      ReadConstant(true,false,[]);
+  end;
   if CurPos.Flag=cafEqual then begin
     // read constant
     repeat
@@ -2809,14 +2815,8 @@ begin
     if CurPos.Flag<>cafSemicolon then
       RaiseCharExpectedButAtomFound(';');
     ReadNextAtom;
-  end;
-  if UpAtomIs('DEPRECATED') then begin
-    ReadNextAtom;
-    if AtomIsStringConstant then
-      ReadConstant(true,false,[]);
-    ReadNextAtom;
-  end;
-  UndoReadNextAtom;
+  end else
+    UndoReadNextAtom;
   CurNode.EndPos:=CurPos.EndPos;
   EndChildNode;
 end;
@@ -3139,8 +3139,10 @@ begin
       if not AtomIsStringConstant then
         RaiseStringExpectedButAtomFound(ctsStringConstant);
       ReadConstant(true,false,[]);
-      if UpAtomIs('DEPRECATED') then
+      if UpAtomIs('DEPRECATED') then begin
         ReadNextAtom;
+        if AtomIsStringConstant then ReadConstant(true,false,[]);
+      end;
       // read ;
       if CurPos.Flag<>cafSemicolon then
         RaiseCharExpectedButAtomFound(';');
