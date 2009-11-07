@@ -1059,7 +1059,8 @@ function TSynPasSyn.Func42: TtkTokenKind;
 begin
   if KeyComp('Alias') then
     Result := tkKey
-  else if KeyComp('Final') then
+  else
+  if KeyComp('Final') and (TopPascalCodeFoldBlockType in [cfbtClassSection]) then
     Result := tkKey
   else
     Result := tkIdentifier;
@@ -1082,7 +1083,7 @@ end;
 
 function TSynPasSyn.Func46: TtkTokenKind;
 begin
-  if KeyComp('Sealed') then
+  if KeyComp('Sealed') and (TopPascalCodeFoldBlockType in [cfbtClass]) then
     Result := tkKey
   else
     Result := tkIdentifier;
@@ -1345,7 +1346,7 @@ end;
 
 function TSynPasSyn.Func84: TtkTokenKind;
 begin
-  if KeyComp('Abstract') then
+  if KeyComp('Abstract') and (TopPascalCodeFoldBlockType in [cfbtClass, cfbtClassSection]) then
     Result := tkKey
   else
     Result := tkIdentifier;
