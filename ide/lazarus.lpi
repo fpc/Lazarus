@@ -7,6 +7,7 @@
         <MainUnitHasUsesSectionForAllUnits Value="False"/>
         <MainUnitHasCreateFormStatements Value="False"/>
         <MainUnitHasTitleStatement Value="False"/>
+        <AlwaysBuild Value="False"/>
         <LRSInOutputDirectory Value="False"/>
       </Flags>
       <SessionStorage Value="InIDEConfig"/>
@@ -417,7 +418,6 @@
     <Other>
       <CompilerPath Value="$(CompPath)"/>
       <ExecuteBefore>
-        <Command Value="$(Make) idepkg"/>
         <ScanForFPCMsgs Value="True"/>
         <ScanForMakeMsgs Value="True"/>
       </ExecuteBefore>
