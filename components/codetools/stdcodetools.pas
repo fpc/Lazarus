@@ -915,22 +915,44 @@ begin
     // create a new uses section
     if Tree.Root=nil then exit;
     SectionNode:=Tree.Root;
-    MoveCursorToNodeStart(SectionNode);
-    ReadNextAtom;
-    if UpAtomIs('UNIT') then begin
-      // search interface
-      SectionNode:=SectionNode.NextBrother;
-      if (SectionNode=nil) or (SectionNode.Desc<>ctnInterface) then exit;
-      MoveCursorToNodeStart(SectionNode);
-      ReadNextAtom;
+    InsertPos:=0;
+    NewUsesTerm:='';
+    if SectionNode.Desc=ctnUnit then begin
+      // unit
+      SectionNode:=FindInterfaceNode;
+      if SectionNode=nil then begin
+        // unit without interface section
+        NewUsesTerm:=SourceChangeCache.BeautifyCodeOptions.BeautifyKeyWord('interface')
+          +SourceChangeCache.BeautifyCodeOptions.LineEnd;
+      end else begin
+        // insert behind interface keyword
+        MoveCursorToNodeStart(SectionNode);
+        ReadNextAtom;
+        InsertPos:=FindLineEndOrCodeAfterPosition(CurPos.EndPos,false);
+      end;
     end;
-    NewUsesTerm:=SourceChangeCache.BeautifyCodeOptions.BeautifyKeyWord('uses')
+    if InsertPos<1 then begin
+      // insert after title and directives
+      if SectionNode.Next<>nil then begin
+        InsertPos:=FindLineEndOrCodeInFrontOfPosition(SectionNode.Next.StartPos,
+          true);
+      end else begin
+        MoveCursorToNodeStart(SectionNode);
+        ReadNextAtom; // read keyword
+        ReadNextAtom; // read name
+        ReadNextAtom; // read semicolon
+        if CurPos.Flag<>cafSemicolon then
+          RaiseCharExpectedButAtomFound(';');
+        InsertPos:=FindLineEndOrCodeAfterPosition(CurPos.EndPos,true);
+      end;
+    end;
+    NewUsesTerm:=NewUsesTerm
+         +SourceChangeCache.BeautifyCodeOptions.BeautifyKeyWord('uses')
          +' '+NewUnitName;
     if NewUnitInFile<>'' then
       NewUsesTerm:=NewUsesTerm+' in '''+NewUnitInFile+''';'
     else
       NewUsesTerm:=NewUsesTerm+';';
-    InsertPos:=CurPos.EndPos;
     if not SourceChangeCache.Replace(gtEmptyLine,gtEmptyLine,InsertPos,InsertPos,
       NewUsesTerm) then exit;
     if not SourceChangeCache.Apply then exit;
