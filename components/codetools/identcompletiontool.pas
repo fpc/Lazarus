@@ -1536,6 +1536,7 @@ begin
   Result:=CursorPos;
   if IdentStartPos>0 then
     dec(Result.X,p-IdentStartPos);
+  //DebugLn(['TIdentCompletionTool.FindIdentifierStartPos ',dbgstr(copy(CursorPos.Code.Source,IdentStartPos,20))]);
 end;
 
 procedure TIdentCompletionTool.FindCollectionContext(

@@ -2808,8 +2808,15 @@ begin
     end;
     if CurPos.Flag<>cafSemicolon then
       RaiseCharExpectedButAtomFound(';');
-  end else
-    UndoReadNextAtom;
+    ReadNextAtom;
+  end;
+  if UpAtomIs('DEPRECATED') then begin
+    ReadNextAtom;
+    if AtomIsStringConstant then
+      ReadConstant(true,false,[]);
+    ReadNextAtom;
+  end;
+  UndoReadNextAtom;
   CurNode.EndPos:=CurPos.EndPos;
   EndChildNode;
 end;
