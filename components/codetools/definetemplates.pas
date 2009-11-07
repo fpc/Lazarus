@@ -3360,6 +3360,23 @@ var
       end;
       Result:=Dir+Result;
     end;
+
+    function IsSpecialDirectory(Dir, SpecialDir: string): boolean;
+    var
+      p1: Integer;
+      p2: Integer;
+    begin
+      p1:=length(Dir);
+      p2:=length(SpecialDir);
+      if (p1>=1) and (Dir[p1]=PathDelim) then dec(p1);
+      if (p2>=1) and (SpecialDir[p2]=PathDelim) then dec(p2);
+      while (p1>=1) and (p2>=1)
+      and (UpChars[Dir[p1]]=UpChars[SpecialDir[p2]]) do begin
+        dec(p1);
+        dec(p2);
+      end;
+      Result:=(p2=0) and ((p1=0) or (Dir[p1]=PathDelim));
+    end;
     
     function BrowseDirectory(ADirPath: string; Priority: integer): boolean;
     const
@@ -3384,6 +3401,13 @@ var
       {$ENDIF}
       if ADirPath='' then exit;
       ADirPath:=AppendPathDelim(ADirPath);
+
+      // check for special directories
+      if IsSpecialDirectory(ADirPath,'packages'+PathDelim+'amunits') then begin
+        {$IFDEF VerboseFPCSrcScan}
+        DebugLn(['BrowseDirectory skip ',ADirPath]);
+        {$ENDIF}
+      end;
 
       inc(ProgressID);
       if CheckAbort(ProgressID,-1) then exit(false);
