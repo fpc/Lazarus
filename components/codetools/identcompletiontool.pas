@@ -1514,6 +1514,8 @@ begin
   
   // get identifier position
   GetIdentStartEndAtPosition(Src,CleanCursorPos,IdentStartPos,IdentEndPos);
+  if CleanCursorPos=IdentEndPos then
+    IdentStartPos:=IdentEndPos;
 end;
 
 function TIdentCompletionTool.FindIdentifierStartPos(
@@ -1525,7 +1527,12 @@ begin
   CursorPos.Code.LineColToPosition(CursorPos.Y,CursorPos.X,p);
   if p<1 then
     RaiseException(ctsCursorPosOutsideOfCode);
-  GetIdentStartEndAtPosition(CursorPos.Code.Source,p,IdentStartPos,IdentEndPos);
+  if CursorPos.X<=CursorPos.Code.GetLineLength(CursorPos.Y-1)+1 then begin
+    GetIdentStartEndAtPosition(CursorPos.Code.Source,p,IdentStartPos,IdentEndPos);
+  end else begin
+    IdentStartPos:=p;
+    IdentEndPos:=p;
+  end;
   Result:=CursorPos;
   if IdentStartPos>0 then
     dec(Result.X,p-IdentStartPos);

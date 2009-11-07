@@ -129,6 +129,7 @@ type
     Data: Pointer;
     function LineCount: integer;
     function GetLine(Index: integer): string;
+    function GetLineLength(Index: integer): integer;
     procedure GetLineRange(Index: integer; out LineRange: TLineRange);
     property Items[Index: integer]: TSourceLogEntry
        read GetItems write SetItems; default;
@@ -315,6 +316,18 @@ begin
       System.Move(fSource[fLineRanges[Index].StartPos],Result[1],LineLen);
   end else
     Result:='';
+end;
+
+function TSourceLog.GetLineLength(Index: integer): integer;
+begin
+  BuildLineRanges;
+  if (Index>=0) and (Index<fLineCount) then begin
+    if Index<fLineCount-1 then
+      Result:=fLineRanges[Index+1].EndPos-fLineRanges[Index+1].StartPos
+    else
+      Result:=fSrcLen-fLineRanges[Index].StartPos;
+  end else
+    Result:=0;
 end;
 
 procedure TSourceLog.GetLineRange(Index: integer; out LineRange: TLineRange);
