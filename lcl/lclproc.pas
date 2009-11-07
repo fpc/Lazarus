@@ -3637,7 +3637,7 @@ function FindInvalidUTF8Character(p: PChar; Count: PtrInt;
 var
   CharLen: Integer;
 begin
-  if p<>nil then begin
+  if (p<>nil) then begin
     Result:=0;
     while Result<Count do begin
       if ord(p^)<128 then begin
@@ -3652,14 +3652,14 @@ begin
       end
       else if ((ord(p^) and %11100000) = %11000000) then begin
         // could be 2 byte character
-        if (ord(p[1]) and %11000000) = %10000000 then
+        if (Result<Count-1) and ((ord(p[1]) and %11000000) = %10000000) then
           CharLen:=2
         else
           exit; // missing following bytes
       end
       else if ((ord(p^) and %11110000) = %11100000) then begin
         // could be 3 byte character
-        if ((ord(p[1]) and %11000000) = %10000000)
+        if (Result<Count-2) and ((ord(p[1]) and %11000000) = %10000000)
         and ((ord(p[2]) and %11000000) = %10000000) then
           CharLen:=3
         else
@@ -3667,7 +3667,7 @@ begin
       end
       else if ((ord(p^) and %11111000) = %11110000) then begin
         // could be 4 byte character
-        if ((ord(p[1]) and %11000000) = %10000000)
+        if (Result<Count-3) and ((ord(p[1]) and %11000000) = %10000000)
         and ((ord(p[2]) and %11000000) = %10000000)
         and ((ord(p[3]) and %11000000) = %10000000) then
           CharLen:=4
