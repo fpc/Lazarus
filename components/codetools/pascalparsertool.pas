@@ -2749,11 +2749,6 @@ begin
     ReadNextAtom;
     ReadConstant(true,false,[]);
   end;
-  if UpAtomIs('DEPRECATED') then begin
-    ReadNextAtom;
-    if AtomIsStringConstant then
-      ReadConstant(true,false,[]);
-  end;
   if CurPos.Flag=cafEqual then begin
     // read constant
     repeat
@@ -2814,7 +2809,6 @@ begin
     end;
     if CurPos.Flag<>cafSemicolon then
       RaiseCharExpectedButAtomFound(';');
-    ReadNextAtom;
   end else
     UndoReadNextAtom;
   CurNode.EndPos:=CurPos.EndPos;
@@ -3868,10 +3862,15 @@ begin
         SaveRaiseException(ctsInvalidSubrange);
       CurNode.EndPos:=CurPos.StartPos;
     end;
-    if UpAtomIs('PLATFORM') or UpAtomIs('DEPRECATED') or UpAtomIs('UNIMPLEMENTED') or
+    if UpAtomIs('PLATFORM') or UpAtomIs('UNIMPLEMENTED') or
        UpAtomIs('EXPERIMENTAL') or UpAtomIs('LIBRARY')
     then
       ReadNextAtom;
+    if UpAtomIs('DEPRECATED') then begin
+      ReadNextAtom;
+      if AtomIsStringConstant then
+        ReadConstant(true,false,[]);
+    end;
   end else begin
     // enum or subrange
     ReadTillTypeEnd;
