@@ -4434,7 +4434,8 @@ begin
   //DebugLn(['TLRSObjectWriter.BeginComponent ',FStackPointer]);
   // an inherited child component can be omitted if empty
   CanBeOmitted:=(not WriteEmptyInheritedChilds)
-            and (FStackPointer>0) and (ffInherited in Flags);
+            and (FStackPointer>0) and (ffInherited in Flags)
+            and (not (ffChildPos in Flags));
   // a component has two lists: properties and childs
   Push(Component.Name,Component,2,CanBeOmitted);
 
