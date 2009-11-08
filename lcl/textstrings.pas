@@ -70,6 +70,7 @@ type
     function HasObjects: boolean;
     function CountLineEndings(const s: string): integer;
   public
+    constructor Create;
     destructor Destroy; override;
     procedure Clear; override;
     procedure SetText(TheText: PChar); override;
@@ -304,6 +305,12 @@ begin
       inc(p);
     end;
   end;
+end;
+
+constructor TTextStrings.Create;
+begin
+  inherited Create;
+  CheckSpecialChars;
 end;
 
 destructor TTextStrings.Destroy;
