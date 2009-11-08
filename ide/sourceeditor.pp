@@ -439,10 +439,34 @@ type
     );
   TSourceNotebookStates = set of TSourceNotebookState;
 
+  TDragMoveTabEvent = procedure(Sender, Source: TObject; OldIndex, NewIndex: Integer) of object;
+
+  { TDragableNotebook }
+
+  TDragableNotebook = class(TNoteBook)
+  private
+    FMouseDownTabIndex: Integer;
+    FMouseWaitForDrag: Boolean;
+    FMouseDownX: integer;
+    FMouseDownY: integer;
+    FOnDragMoveTab: TDragMoveTabEvent;
+  protected
+    procedure MouseDown(Button: TMouseButton; Shift: TShiftState; X, Y: Integer); override;
+    procedure MouseMove(Shift: TShiftState; X, Y: Integer); override;
+    procedure MouseUp(Button: TMouseButton; Shift: TShiftState; X, Y: Integer); override;
+    procedure DragOver(Source: TObject; X, Y: Integer; State: TDragState;
+      var Accept: Boolean); override;
+    property MouseDownTabIndex: Integer read FMouseDownTabIndex;
+  public
+    constructor Create(TheOwner: TComponent); override;
+    procedure DragDrop(Source: TObject; X, Y: Integer); override;
+    property  OnDragMoveTab: TDragMoveTabEvent read FOnDragMoveTab write FOnDragMoveTab;
+end;
+
   { TSourceNotebook }
 
   TSourceNotebook = class(TSourceEditorWindowInterface)
-    Notebook: TNoteBook;
+    Notebook: TDragableNotebook;
     SrcPopUpMenu: TPopupMenu;
     StatusBar: TStatusBar;
     procedure AddBreakpointClicked(Sender: TObject);
@@ -541,10 +565,6 @@ type
     FProcessingCommand: boolean;
     FSourceEditorList: TList; // list of TSourceEditor
     FOnPopupMenu: TSrcEditPopupMenuEvent;
-    FMouseDownTabIndex: Integer;
-    FMouseWaitForDrag: Boolean;
-    FMouseDownX: integer;
-    FMouseDownY: integer;
   private
     // colors for the completion form (popup form, e.g. word completion)
     FActiveEditDefaultFGColor: TColor;
@@ -634,12 +654,7 @@ type
 
     procedure NotebookMouseDown(Sender: TObject; Button: TMouseButton;
           Shift: TShiftState; X,Y: Integer);
-    procedure NotebookMouseMove(Sender: TObject; Shift: TShiftState; X,Y: Integer);
-    procedure NotebookMouseUp(Sender: TObject; Button: TMouseButton;
-          Shift: TShiftState; X,Y: Integer);
-    procedure NotebookDragOver(Sender: TObject; Source: TObject; X, Y: Integer;
-      State: TDragState; var Accept: Boolean);
-    procedure NotebookDragDrop(Sender: TObject; Source: TObject; X, Y: Integer);
+    procedure NotebookDragTabMove(Sender, Source: TObject; OldIndex, NewIndex: Integer);
 
     // hintwindow stuff
     procedure HintTimer(Sender: TObject);
@@ -3437,8 +3452,6 @@ begin
   Caption := locWndSrcEditor;
   KeyPreview:=true;
   FProcessingCommand := false;
-  FMouseDownTabIndex := -1;
-  FMouseWaitForDrag := False;
 
   SourceEditorWindow:=Self;
 
@@ -4269,7 +4282,7 @@ Begin
       {$IFDEF IDE_DEBUG}
       writeln('[TSourceNotebook.CreateNotebook] B');
       {$ENDIF}
-      Notebook := TNotebook.Create(self);
+      Notebook := TDragableNotebook.Create(self);
       {$IFDEF IDE_DEBUG}
       writeln('[TSourceNotebook.CreateNotebook] C');
       {$ENDIF}
@@ -4298,10 +4311,7 @@ Begin
           OnPageChanged := @NotebookPageChanged;
           OnCloseTabClicked:=@CloseTabClicked;
           OnMouseDown:=@NotebookMouseDown;
-          OnMouseMove := @NotebookMouseMove;
-          OnMouseUp:=@NotebookMouseUp;
-          OnDragOver := @NotebookDragOver;
-          OnDragDrop := @NotebookDragDrop;
+          OnDragMoveTab := @NotebookDragTabMove;
           ShowHint:=true;
           OnShowHint:=@NotebookShowTabHint;
           {$IFDEF IDE_DEBUG}
@@ -6519,64 +6529,18 @@ procedure TSourceNotebook.NotebookMouseDown(Sender: TObject; Button: TMouseButto
 var
   TabIndex: Integer;
 begin
-  TabIndex:=Notebook.TabIndexAtClientPos(Point(X,Y));
-  FMouseDownTabIndex:=-1;
-  FMouseWaitForDrag := False;
-  FMouseDownX := X;
-  FMouseDownY := Y;
-  case Button of
-    mbLeft: begin
-      FMouseDownTabIndex:=TabIndex;
-      FMouseWaitForDrag := True;
-    end;
-    mbMiddle: begin
-      if TabIndex>=0 then
-        CloseClicked(Notebook.Page[TabIndex])
-    end;
+  if (Button = mbMiddle) then begin
+    TabIndex:=Notebook.TabIndexAtClientPos(Point(X,Y));
+    if TabIndex>=0 then
+      CloseClicked(Notebook.Page[TabIndex])
   end;
 end;
 
-procedure TSourceNotebook.NotebookMouseMove(Sender: TObject; Shift: TShiftState;
-  X, Y: Integer);
+procedure TSourceNotebook.NotebookDragTabMove(Sender, Source: TObject; OldIndex,
+  NewIndex: Integer);
 begin
-  if (FMouseWaitForDrag) and
-     ( (Abs(fMouseDownX - X) >= GetSystemMetrics(SM_CXDRAG)) or
-       (Abs(fMouseDownY - Y) >= GetSystemMetrics(SM_CYDRAG)) )
-  then begin
-    FMouseWaitForDrag := False;
-    BeginDrag(true);
-  end;
-end;
-
-procedure TSourceNotebook.NotebookMouseUp(Sender: TObject; Button: TMouseButton;
-  Shift: TShiftState; X, Y: Integer);
-begin
-  FMouseWaitForDrag := False;
-  FMouseDownTabIndex:=-1;
-end;
-
-procedure TSourceNotebook.NotebookDragOver(Sender: TObject; Source: TObject;
-  X, Y: Integer; State: TDragState; var Accept: Boolean);
-var
-  TabIndex: Integer;
-begin
-  TabIndex:=Notebook.TabIndexAtClientPos(Point(X,Y));
-  if (Source = self) then
-    Accept := (TabIndex >= 0) and (TabIndex <> FMouseDownTabIndex);
-end;
-
-procedure TSourceNotebook.NotebookDragDrop(Sender: TObject; Source: TObject;
-  X, Y: Integer);
-var
-  TabIndex: Integer;
-begin
-  if (Source = self) then begin
-    TabIndex := Notebook.TabIndexAtClientPos(Point(X,Y));
-    if (FMouseDownTabIndex>=0) and (TabIndex>=0) and (TabIndex<>FMouseDownTabIndex)
-    then
-      MoveEditor(FMouseDownTabIndex,TabIndex);
-  end;
-  FMouseDownTabIndex:=-1;
+  if (Source = Sender) then
+    MoveEditor(OldIndex, NewIndex);
 end;
 
 Procedure TSourceNotebook.NotebookPageChanged(Sender: TObject);
@@ -7291,6 +7255,77 @@ begin
   FreeThenNil(aWordCompletion);
 end;
 
+
+{ TDragableNotebook }
+
+procedure TDragableNotebook.MouseDown(Button: TMouseButton; Shift: TShiftState; X,
+  Y: Integer);
+begin
+  inherited MouseDown(Button, Shift, X, Y);
+  FMouseDownTabIndex := TabIndexAtClientPos(Point(X,Y));
+  FMouseWaitForDrag := False;
+  FMouseDownX := X;
+  FMouseDownY := Y;
+  if (Button = mbLeft) and (FMouseDownTabIndex >= 0) then begin
+    FMouseWaitForDrag := True;
+    MouseCapture := True;
+  end;
+end;
+
+procedure TDragableNotebook.MouseMove(Shift: TShiftState; X, Y: Integer);
+begin
+  inherited MouseMove(Shift, X, Y);
+  if (FMouseWaitForDrag) and
+     ( (Abs(fMouseDownX - X) >= GetSystemMetrics(SM_CXDRAG)) or
+       (Abs(fMouseDownY - Y) >= GetSystemMetrics(SM_CYDRAG)) )
+  then begin
+    FMouseWaitForDrag := False;
+    BeginDrag(true);
+  end;
+end;
+
+procedure TDragableNotebook.MouseUp(Button: TMouseButton; Shift: TShiftState; X, Y: Integer);
+begin
+  MouseCapture := False;
+  FMouseWaitForDrag := False;
+  inherited MouseUp(Button, Shift, X, Y);
+end;
+
+procedure TDragableNotebook.DragOver(Source: TObject; X, Y: Integer; State: TDragState;
+  var Accept: Boolean);
+var
+  TabIndex: Integer;
+begin
+  inherited DragOver(Source, X, Y, State, Accept);
+  // currently limited to source=self => extendable to allow dragging tabs from other notebooks
+  if (Source = self) and (FMouseDownTabIndex >= 0) then begin
+    TabIndex := TabIndexAtClientPos(Point(X,Y));
+    Accept := (TabIndex >= 0) and (TabIndex <> FMouseDownTabIndex);
+  end;
+end;
+
+constructor TDragableNotebook.Create(TheOwner: TComponent);
+begin
+  inherited Create(TheOwner);
+  FMouseWaitForDrag := False;
+end;
+
+procedure TDragableNotebook.DragDrop(Source: TObject; X, Y: Integer);
+var
+  TabIndex: Integer;
+begin
+  inherited DragDrop(Source, X, Y);
+
+  if assigned(FOnDragMoveTab) and (Source is TDragableNotebook) and
+     (TDragableNotebook(Source).MouseDownTabIndex >= 0)
+  then begin
+    TabIndex := TabIndexAtClientPos(Point(X,Y));
+    if (TabIndex >= 0) and ( (Source <> self) or (TabIndex <> MouseDownTabIndex) )
+    then
+      FOnDragMoveTab(Self, Source, TDragableNotebook(Source).MouseDownTabIndex,
+        TabIndex);
+  end;
+end;
 
 initialization
   InternalInit;
