@@ -316,6 +316,7 @@ type
     function Func66: TtkTokenKind;
     function Func69: TtkTokenKind;
     function Func71: TtkTokenKind;
+    function Func72: TtkTokenKind;
     function Func73: TtkTokenKind;
     function Func75: TtkTokenKind;
     function Func76: TtkTokenKind;
@@ -647,6 +648,7 @@ begin
   fIdentFuncTable[66] := @Func66;
   fIdentFuncTable[69] := @Func69;
   fIdentFuncTable[71] := @Func71;
+  fIdentFuncTable[72] := @Func72;
   fIdentFuncTable[73] := @Func73;
   fIdentFuncTable[75] := @Func75;
   fIdentFuncTable[76] := @Func76;
@@ -726,6 +728,7 @@ begin
   fIdentFuncTable[66] := Func66;
   fIdentFuncTable[69] := Func69;
   fIdentFuncTable[71] := Func71;
+  fIdentFuncTable[72] := Func72;
   fIdentFuncTable[73] := Func73;
   fIdentFuncTable[75] := Func75;
   fIdentFuncTable[76] := Func76;
@@ -1269,6 +1272,14 @@ begin
   else if KeyComp('Bitpacked') then
     Result := tkKey
   {$ENDIF}
+  else
+    Result := tkIdentifier;
+end;
+
+function TSynPasSyn.Func72: TtkTokenKind;
+begin
+  if KeyComp('Static') and (TopPascalCodeFoldBlockType in [cfbtClassSection]) then
+    Result := tkKey
   else
     Result := tkIdentifier;
 end;
