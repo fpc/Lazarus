@@ -17,14 +17,25 @@ unit fElasticSite;
 Object Inspector says: the bottom panel's OnGetSiteInfo method is incompatible
   with other OnGetSiteInfo methods.
 
-When the form is resized, the dock sites report their old (designed) extent.
-  This makes initial docking problematic, only the upper-/leftmost parts of the sites
-  work as dock targets.
+ManualFloat does not properly align the client - should become alClient.
+
+Undocked controls do not restore to their undocked size!
+  Hack: use ManualDock into created floating host.
+
+Undocking controls from a FloatingDockHostSite will undock the control,
+  but it will become a child of the same site,
+  and the entire site is moved.
+*)
+
+(* AutoExpand by mouse position
+Requires a flag in the DockSite, set on first dock.
+Hack: use Site.Tag for AutoExpanded.
 *)
 
 {$mode objfpc}{$H+}
 
-{$DEFINE ExpandFlag} //using AutoExpand property?
+{.$DEFINE ExpandFlag} //using AutoExpand property?
+{.$DEFINE sb} //have StatusBar?
 
 interface
 
@@ -52,6 +63,7 @@ type
       NewTarget: TWinControl; var Allow: Boolean);
   protected
     FAutoExpand: boolean;
+    function AutoExpanded(Site: TWinControl): boolean;
 {$IFDEF ExpandFlag}
   published
     property AutoExpand: boolean read FAutoExpand write FAutoExpand default True;
@@ -78,6 +90,11 @@ end;
 
 { TDockingSite }
 
+function TDockingSite.AutoExpanded(Site: TWinControl): boolean;
+begin
+  Result := Site.Tag <> 0;
+end;
+
 procedure TDockingSite.pnlLeftDockDrop(Sender: TObject;
   Source: TDragDockObject; X, Y: Integer);
 var
@@ -94,7 +111,13 @@ begin
   or ((Site.Width > 1) and (Site.Height > 1)) //NoteBook!
   then
     exit; //no adjustments of the dock site required
+
 //this is the first drop - handle AutoExpand
+(* Hack AutoExpand by mouse position:
+  Set Site.Tag to the FAutoExpand state determined in DockOver.
+*)
+  Site.Tag := ord(FAutoExpand);
+
   with Source do begin
     if DragTarget.Align in [alLeft, alRight] then begin
       w := self.Width div 3;
@@ -103,7 +126,7 @@ begin
         DisableAlign; //form(?)
         DragTarget.Width := w;
         if DragTarget.Align = alRight then begin
-          if AutoExpand then begin
+          if FAutoExpand then begin
             r := self.BoundsRect;
             inc(r.Right, w);
             BoundsRect := r;
@@ -111,7 +134,7 @@ begin
             DragTarget.Left:=DragTarget.Left-w;
             splitRight.Left:=splitRight.Left-w;
           end;
-        end else if AutoExpand then begin
+        end else if FAutoExpand then begin
         //enlarge left
           r := BoundsRect;
           dec(r.Left, w);
@@ -126,7 +149,7 @@ begin
         DisableAlign; //form(?)
         DragTarget.Height := w;
         if DragTarget.Align = alBottom then begin
-          if AutoExpand then begin
+          if FAutoExpand then begin
             //dec(self.Left, w);
             r := self.BoundsRect;
             inc(r.Bottom, w);
@@ -190,11 +213,8 @@ begin
   inside or outside the form.
 *)
   if Source.DragTarget = nil then begin
-  (* Bug: DragTarget has not yet been initialized.
-    Fix in TWinControl.DoDockOver, or earlier in the dragmanager?
-  *)
-    DebugLn('---------- Please fix bad DockOver call with DragTarget=nil ---------');
-    exit; //shit happens :-(
+  //DragManager signals deny!
+    exit;
   end;
   if State = dsDragMove then begin
     TObject(Site) := Source.DragTarget;
@@ -272,7 +292,7 @@ begin
       begin
         wh := Site.Width;
         Site.Width := 0; //behaves as expected
-        if AutoExpand then begin
+        if AutoExpanded(Site) then begin
           r := BoundsRect;
           inc(r.Left, wh);
           BoundsRect := r;
@@ -282,7 +302,7 @@ begin
       begin
         wh := Site.Width;
         Site.Width := 0;
-        if AutoExpand then begin
+        if AutoExpanded(Site) then begin
           r := BoundsRect;
           dec(r.Right, wh);
           BoundsRect := r;
@@ -295,12 +315,15 @@ begin
       begin
         wh := Site.Height;
         Site.Height := 0;
-        if AutoExpand then begin
+        if AutoExpanded(Site) then begin
           r := BoundsRect;
           dec(r.Bottom, wh);
           BoundsRect := r;
           splitBottom.Top:=splitBottom.Top-wh;
+        {$IFDEF sb}
           StatusBar1.Top:=StatusBar1.Top-wh;
+        {$ELSE}
+        {$ENDIF}
         end else begin
           Site.Top:=Site.Top+wh;
           splitBottom.Top := Site.Top - splitBottom.Height - 10;

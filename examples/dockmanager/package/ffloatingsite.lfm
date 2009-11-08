@@ -1,10 +1,12 @@
 object FloatingSite: TFloatingSite
-  Left = 468
+  Left = 431
   Height = 300
-  Top = 291
+  Top = 498
   Width = 400
   Caption = 'FloatingSite'
   DockSite = True
+  OnDockDrop = FormDockDrop
+  OnDockOver = FormDockOver
   OnUnDock = FormUnDock
   UseDockManager = True
   LCLVersion = '0.9.29'

@@ -25,13 +25,14 @@ The View menu windows should be dockable to each other.
 Known bugs:
 - The IDE suspects dangling references - KEEP these references!
   Please report if you know how to fix this issue.
+*)
 
-- Initial docking is allowed only near the top/left edges of the window.
-  This is a widgetset bug, that doesn't reflect the current extent of the window.
-  This bug becomes more obvious when you enlarge the initially invisible docking
-  panels at the sides of the EditorSite, using the splitters. These panels accept
-  an first drop only in the original (designed) area. Later drops are accepted
-  into the full extent of the panel.
+(* Elastic mode
+This mode currently works with a common flag in the form.
+
+A more intuitive GUI would allow the user to determine the docking mode,
+on the first drop into an elastic panel. Then the panel (or dockmanager) must
+remember the mode, for undocking.
 *)
 
 {$mode objfpc}{$H+}
@@ -100,16 +101,14 @@ end;
 
 function TEditorSite.CreateDockable(const cap: string): TPanel;
 var
-{$IFDEF old}
   Site: TFloatingSite;
-{$ENDIF}
   Client: TPanel;
 begin
-  //TDockingClient.Create(self);
   Client := TPanel.Create(self);
   Client.DragMode := dmAutomatic;
   Client.DragKind := dkDock;
   Client.Visible := True;
+  Client.FloatingDockSiteClass := TFloatingSite;
 //name it
   Client.Caption := cap;
   try
@@ -117,13 +116,13 @@ begin
   except
     //here: simply ignore duplicate name
   end;
-{ TODO : proper first dock }
-{$IFnDEF old}
-  Client.FloatingDockSiteClass := TFloatingSite;
+{$IFDEF old}
+  Client.Align := alClient; //required for proper docking
   Client.ManualFloat(Rect(200,200, 400,400));
 {$ELSE}
   Site := TFloatingSite.Create(Application);
   //Site.Visible := True;
+  Client.FloatingDockSiteClass := TFloatingSite;
   Client.ManualDock(Site, nil, alClient);
 {$ENDIF}
   Result := Client;

@@ -895,13 +895,17 @@ begin
 //drop site resized - never called in Lazarus???
   if (csLoading in FDockSite.ComponentState) then
     exit; //not the right time to do anything
-  //if FTopZone.FirstChild = nil then exit; //zone is empty, nothing to do
 //how to determine old bounds?
   rNew := FDockSite.ClientRect;
   if not CompareMem(@rNew, @FSiteRect, sizeof(rNew)) then
     Force := True;  //something has changed
   if not Force then
     exit;
+  if FTopZone.FirstChild = nil then begin
+    FSiteRect := rNew;
+    FTopZone.BR := rNew.BottomRight;
+    exit; //zone is empty, all done
+  end;
   FTopZone.ScaleTo(FSiteRect.BottomRight, rNew.BottomRight, rNew.BottomRight);
   FSiteRect := rNew;
   FSplitter.Hide;
