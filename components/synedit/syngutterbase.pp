@@ -143,9 +143,12 @@ uses SynEdit;
 { TSynGutterBase }
 
 constructor TSynGutterBase.Create(AOwner: TSynEditBase; AFoldedLinesView: TSynEditFoldedView; ATextDrawer: TheTextDrawer);
+var
+  plist: TSynGutterPartList;
 begin
   inherited Create;
-  TSynGutterPartList.Create(AOwner, self);
+  plist := TSynGutterPartList.Create(AOwner, self);
+  plist.Name := 'SynGutterPartList1'; // Todo: currently there is just one gutter, so only one name needed
 
   FTextDrawer := ATextDrawer;
   FFoldView := AFoldedLinesView;
@@ -283,6 +286,7 @@ end;
 constructor TSynGutterPartBase.Create(AOwner: TComponent);
 begin
   Inherited Create(AOwner);
+
   FGutter := GutterParts.Gutter;
   FSynEdit := GutterParts.SynEdit;
 
@@ -362,6 +366,7 @@ end;
 constructor TSynGutterPartList.Create(AOwner: TComponent);
 begin
   Inherited Create(AOwner);
+  include(FComponentStyle, csTransient);
   if assigned(TSynEdit(SynEdit).Gutter) then
     FGutter := TSynEdit(SynEdit).Gutter;
   Gutter.RegisterNewGutterPartList(self);

@@ -121,11 +121,17 @@ begin
   AutoSize := True;
 
   if not(csLoading in AOwner.ComponentState) then begin
-    TSynGutterMarks.Create(Parts);
-    TSynGutterLineNumber.Create(Parts);
-    TSynGutterChanges.Create(Parts);
-    TSynGutterSeparator.Create(Parts);
-    TSynGutterCodeFolding.Create(Parts);
+    // Todo: currently there is only one Gutter so names can be fixed
+    with TSynGutterMarks.Create(Parts) do
+      Name := 'SynGutterMarks1';
+    with TSynGutterLineNumber.Create(Parts) do
+      Name := 'SynGutterLineNumber1';
+    with TSynGutterChanges.Create(Parts) do
+      Name := 'SynGutterChanges1';
+    with TSynGutterSeparator.Create(Parts) do
+      Name := 'SynGutterSeparator1';
+    with TSynGutterCodeFolding.Create(Parts) do
+      Name := 'SynGutterCodeFolding1';
   end;
 end;
 

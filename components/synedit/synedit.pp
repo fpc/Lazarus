@@ -1484,6 +1484,8 @@ end;
 constructor TCustomSynEdit.Create(AOwner: TComponent);
 begin
   inherited Create(AOwner);
+  SetAncestor(True); // temp until tframe does this
+  SetInline(True);
 
   fBeautifier := SynDefaultBeautifier;
 
@@ -1674,7 +1676,8 @@ end;
 
 procedure TCustomSynEdit.GetChildren(Proc: TGetChildProc; Root: TComponent);
 begin
-  Proc(FGutter.Parts);
+  if root = self then
+    Proc(FGutter.Parts);
 end;
 
 procedure TCustomSynEdit.CreateParams(var Params: TCreateParams);
@@ -1783,7 +1786,6 @@ begin
   fPlugins:=nil;
   FCaret.Lines := nil;
   FInternalCaret.Lines := nil;
-  FreeAndNil(fScrollTimer);
   FreeAndNil(fTSearch);
   FreeAndNil(fMarkupManager);
   FreeAndNil(fMarkList);

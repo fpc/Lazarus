@@ -184,6 +184,7 @@ type
     destructor  Destroy; override;
     property Index: Integer read GetIndex write SetIndex;
     property DisplayName: String read GetDisplayName;
+    function GetParentComponent: TComponent; override; // for child order in stream reading
   end;
 
   TSynObjectListItemClass = class of TSynObjectListItem;
@@ -781,6 +782,8 @@ end;
 constructor TSynObjectList.Create(AOwner: TComponent);
 begin
   Inherited Create(AOwner);
+  SetAncestor(True);
+  SetInline(True);
   FList := TList.Create;
   FOwner := AOwner;
 end;
@@ -795,7 +798,7 @@ end;
 procedure TSynObjectList.Assign(Source: TPersistent);
 begin
   FList.Assign(TSynObjectList(Source).FList);
-  DoChange(self);;
+  DoChange(self);
 end;
 
 function TSynObjectList.GetChildOwner: TComponent;
@@ -807,8 +810,9 @@ procedure TSynObjectList.GetChildren(Proc: TGetChildProc; Root: TComponent);
 var
   i: Integer;
 begin
-  for i:= 0 to Count -1 do
-    Proc(BaseItems[i]);
+  if Root = self then
+    for i:= 0 to Count -1 do
+      Proc(BaseItems[i]);
 end;
 
 procedure TSynObjectList.SetChildOrder(Child: TComponent; Order: Integer);
@@ -895,6 +899,7 @@ end;
 constructor TSynObjectListItem.Create(AOwner: TComponent);
 begin
   inherited Create(AOwner);
+  SetAncestor(True);
   FOwner := AOwner as TSynObjectList;
   FOwner.RegisterItem(self);
 end;
@@ -903,6 +908,11 @@ destructor TSynObjectListItem.Destroy;
 begin
   inherited Destroy;
   FOwner.Delete(FOwner.IndexOf(self));
+end;
+
+function TSynObjectListItem.GetParentComponent: TComponent;
+begin
+  Result := FOwner;
 end;
 
 { TSynClipboardStream }
