@@ -162,7 +162,7 @@ chmod 644 $LazBuildDir/etc/lazarus/*.xml
 
 # fixing permissions
 echo "fixing permissions ..."
-find $LazBuildDir -type d | xargs chmod 755  # this is needed, don't ask me why
+find $LazBuildDir -type d | xargs -d '\n' chmod 755  # this is needed, don't ask me why
 
 # postinst + postrm:
 # ToDo: update-mime-database /usr/share/mime
