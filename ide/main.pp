@@ -4346,7 +4346,8 @@ begin
 end;
 
 function TMainIDE.CreateNewForm(NewUnitInfo: TUnitInfo;
-  AncestorType: TPersistentClass; ResourceCode: TCodeBuffer; UseCreateFormStatements: Boolean): TModalResult;
+  AncestorType: TPersistentClass; ResourceCode: TCodeBuffer;
+  UseCreateFormStatements: Boolean): TModalResult;
 var
   CInterface: TComponentInterface;
   NewComponent: TComponent;

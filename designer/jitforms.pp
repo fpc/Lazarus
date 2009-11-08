@@ -295,6 +295,7 @@ const
 procedure SetComponentDesignMode(AComponent: TComponent; Value: Boolean);
 procedure SetComponentDesignInstanceMode(AComponent: TComponent; Value: Boolean);
 procedure SetComponentInlineMode(AComponent: TComponent; Value: Boolean);
+procedure SetComponentAncestorMode(AComponent: TComponent; Value: Boolean);
 
 implementation
 
@@ -323,6 +324,11 @@ end;
 procedure SetComponentInlineMode(AComponent: TComponent; Value: Boolean);
 begin
   TSetDesigningComponent.SetInlineOfComponent(AComponent, True);
+end;
+
+procedure SetComponentAncestorMode(AComponent: TComponent; Value: Boolean);
+begin
+  TSetDesigningComponent(AComponent).SetAncestor(Value);
 end;
 
 class procedure TSetDesigningComponent.SetDesigningOfComponent(
@@ -862,11 +868,12 @@ function TJITComponentList.AddJITComponentFromStream(BinStream: TStream;
       Abort:=false;
       OnFindAncestors(Self,AncestorClass,Ancestors,AncestorStreams,Abort);
       if Abort then exit(false);
-      if Ancestors<>nil then begin
+      if (Ancestors<>nil) and (Ancestors.Count>0) then begin
         for i:=Ancestors.Count-1 downto 0 do begin
           ReadStream(TExtMemoryStream(AncestorStreams[i]),
                      TComponent(Ancestors[i]).ClassType);
         end;
+        SetComponentAncestorMode(FCurReadJITComponent,true);
       end;
     finally
       Ancestors.Free;
