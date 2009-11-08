@@ -446,19 +446,13 @@ type
   TDragableNotebook = class(TNoteBook)
   private
     FMouseDownTabIndex: Integer;
-    FMouseWaitForDrag: Boolean;
-    FMouseDownX: integer;
-    FMouseDownY: integer;
     FOnDragMoveTab: TDragMoveTabEvent;
   protected
     procedure MouseDown(Button: TMouseButton; Shift: TShiftState; X, Y: Integer); override;
-    procedure MouseMove(Shift: TShiftState; X, Y: Integer); override;
-    procedure MouseUp(Button: TMouseButton; Shift: TShiftState; X, Y: Integer); override;
     procedure DragOver(Source: TObject; X, Y: Integer; State: TDragState;
       var Accept: Boolean); override;
     property MouseDownTabIndex: Integer read FMouseDownTabIndex;
   public
-    constructor Create(TheOwner: TComponent); override;
     procedure DragDrop(Source: TObject; X, Y: Integer); override;
     property  OnDragMoveTab: TDragMoveTabEvent read FOnDragMoveTab write FOnDragMoveTab;
 end;
@@ -7263,32 +7257,8 @@ procedure TDragableNotebook.MouseDown(Button: TMouseButton; Shift: TShiftState; 
 begin
   inherited MouseDown(Button, Shift, X, Y);
   FMouseDownTabIndex := TabIndexAtClientPos(Point(X,Y));
-  FMouseWaitForDrag := False;
-  FMouseDownX := X;
-  FMouseDownY := Y;
-  if (Button = mbLeft) and (FMouseDownTabIndex >= 0) then begin
-    FMouseWaitForDrag := True;
-    MouseCapture := True;
-  end;
-end;
-
-procedure TDragableNotebook.MouseMove(Shift: TShiftState; X, Y: Integer);
-begin
-  inherited MouseMove(Shift, X, Y);
-  if (FMouseWaitForDrag) and
-     ( (Abs(fMouseDownX - X) >= GetSystemMetrics(SM_CXDRAG)) or
-       (Abs(fMouseDownY - Y) >= GetSystemMetrics(SM_CYDRAG)) )
-  then begin
-    FMouseWaitForDrag := False;
-    BeginDrag(true);
-  end;
-end;
-
-procedure TDragableNotebook.MouseUp(Button: TMouseButton; Shift: TShiftState; X, Y: Integer);
-begin
-  MouseCapture := False;
-  FMouseWaitForDrag := False;
-  inherited MouseUp(Button, Shift, X, Y);
+  if (Button = mbLeft) and (FMouseDownTabIndex >= 0) then
+    BeginDrag(False);
 end;
 
 procedure TDragableNotebook.DragOver(Source: TObject; X, Y: Integer; State: TDragState;
@@ -7302,12 +7272,6 @@ begin
     TabIndex := TabIndexAtClientPos(Point(X,Y));
     Accept := (TabIndex >= 0) and (TabIndex <> FMouseDownTabIndex);
   end;
-end;
-
-constructor TDragableNotebook.Create(TheOwner: TComponent);
-begin
-  inherited Create(TheOwner);
-  FMouseWaitForDrag := False;
 end;
 
 procedure TDragableNotebook.DragDrop(Source: TObject; X, Y: Integer);
