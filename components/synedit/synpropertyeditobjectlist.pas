@@ -26,7 +26,7 @@ uses
   Classes, SysUtils, LCLProc,
   SynGutterBase, SynEditMiscClasses,
   LResources, PropEdits, Forms, StdCtrls, ComCtrls, Dialogs,
-  ObjInspStrConsts, Controls, IDEImagesIntf, typinfo;
+  ObjInspStrConsts, Controls, IDEImagesIntf, typinfo, FormEditingIntf;
 
 type
 
@@ -63,7 +63,6 @@ type
     MoveUpButton: TToolButton;
     MoveDownButton: TToolButton;
     procedure AddButtonClick(Sender: TObject);
-    function CreateUniqueComponentName(const AClassName: string; OwnerComponent: TComponent): string;
     procedure SynObjectPartsListBoxClick(Sender: TObject);
     procedure DeleteButtonClick(Sender: TObject);
     procedure FormCreate(Sender: TObject);
@@ -121,7 +120,7 @@ begin
   if (i < 0) or (i >= FClassesList.Count) then
     exit;
   NewPart := TSynObjectListItemClass(Pointer(FClassesList.Objects[i])).Create(SynObjectPartList);
-  NewPart.Name := CreateUniqueComponentName(NewPart.ClassName, SynObjectPartList);
+  NewPart.Name := FormEditingHook.CreateUniqueComponentName(NewPart.ClassName, SynObjectPartList);
 
   FillSynObjectPartsListBox;
   if SynObjectPartsListBox.Items.Count > 0 then
@@ -130,30 +129,6 @@ begin
   UpdateButtons;
   UpdateCaption;
   Modified;
-end;
-
-function TSynObjectPartListPropertyEditorForm.CreateUniqueComponentName(const AClassName: string;
-  OwnerComponent: TComponent): string;
-var
-  i, j: integer;
-begin
-  Result:=AClassName;
-  if (OwnerComponent=nil) or (Result='') then exit;
-  i:=1;
-  while true do begin
-    j:=OwnerComponent.ComponentCount-1;
-    Result:=AClassName;
-    if (length(Result)>1) and (Result[1]='T') then
-      Result:=RightStr(Result,length(Result)-1);
-    if Result[length(Result)] in ['0'..'9'] then
-      Result:=Result+'_';
-    Result:=Result+IntToStr(i);
-    while (j>=0)
-    and (CompareText(Result,OwnerComponent.Components[j].Name)<>0) do
-      dec(j);
-    if j<0 then exit;
-    inc(i);
-  end;
 end;
 
 procedure TSynObjectPartListPropertyEditorForm.SynObjectPartsListBoxClick(Sender: TObject);
