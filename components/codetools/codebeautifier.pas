@@ -304,12 +304,13 @@ type
     Top: integer;
     TopType: TFABBlockType;
     LastBlockClosed: TBlock;
+    LastBlockClosedAt: integer;
     constructor Create;
     destructor Destroy; override;
     procedure BeginBlock(Typ: TFABBlockType; StartPos: integer);
-    procedure EndBlock;
+    procedure EndBlock(EndPos: integer);
     function TopMostIndexOf(Typ: TFABBlockType): integer;
-    function EndTopMostBlock(Typ: TFABBlockType): boolean;
+    function EndTopMostBlock(Typ: TFABBlockType; EndPos: integer): boolean;
     {$IFDEF ShowCodeBeautifier}
     Src: string;
     function PosToStr(p: integer): string;
@@ -428,9 +429,10 @@ begin
   TopType:=Typ;
   LastBlockClosed.Typ:=bbtNone;
   LastBlockClosed.StartPos:=0;
+  LastBlockClosedAt:=0;
 end;
 
-procedure TFABBlockStack.EndBlock;
+procedure TFABBlockStack.EndBlock(EndPos: integer);
 begin
   {$IFDEF ShowCodeBeautifier}
   DebugLn([GetIndentStr(Top*2),'TFABBlockStack.EndBlock ',FABBlockTypeNames[TopType]]);
@@ -440,6 +442,7 @@ begin
   dec(Top);
   if Top>=0 then begin
     LastBlockClosed:=Stack[Top+1];
+    LastBlockClosedAt:=EndPos;
     TopType:=Stack[Top].Typ;
   end else
     TopType:=bbtNone;
@@ -451,7 +454,8 @@ begin
   while (Result>=0) and (Stack[Result].Typ<>Typ) do dec(Result);
 end;
 
-function TFABBlockStack.EndTopMostBlock(Typ: TFABBlockType): boolean;
+function TFABBlockStack.EndTopMostBlock(Typ: TFABBlockType;
+  EndPos: integer): boolean;
 // check if there is this type on the stack and if yes, end it
 var
   i: LongInt;
@@ -459,7 +463,7 @@ begin
   i:=TopMostIndexOf(Typ);
   if i<0 then exit(false);
   Result:=true;
-  while Top>=i do EndBlock;
+  while Top>=i do EndBlock(EndPos);
 end;
 
 {$IFDEF ShowCodeBeautifier}
@@ -547,7 +551,7 @@ var
     DebugLn([GetIndentStr(Stack.Top*2),'EndBlock ',FABBlockTypeNames[Stack.TopType],' ',GetAtomString(@Src[AtomStart],NestedComments),' at ',PosToStr(p)]);
     {$ENDIF}
     FirstAtomOnNewLine:=false;
-    Stack.EndBlock;
+    Stack.EndBlock(p);
   end;
 
   procedure EndTopMostBlock(Typ: TFABBlockType);
@@ -1511,6 +1515,7 @@ var
   Policies: TFABPolicies;
   LastAtomStart, LastAtomEnd: integer;
   StackIndex: LongInt;
+  PrevLineAtomEndPos: LongInt;
 begin
   Result:=false;
   FillByte(Indent,SizeOf(Indent),0);
@@ -1582,11 +1587,28 @@ begin
       exit(true);
     end;
 
+    // search last non empty line start
+    PrevLineAtomEndPos:=CleanPos;
+    while (PrevLineAtomEndPos>0) and (Source[PrevLineAtomEndPos] in [#10,#13]) do
+      dec(PrevLineAtomEndPos);
+    if (PrevLineAtomEndPos>0) then
+        PrevLineAtomEndPos:=FindPrevNonSpace(Source,PrevLineAtomEndPos);
+
     if Stack.LastBlockClosed.StartPos>0 then begin
       // a child block was closed
-      // => indent like the last child block one
-      Indent.Indent:=GetLineIndentWithTabs(Source,
+      if (Stack.LastBlockClosedAt>0)
+      and PositionsInSameLine(Source,Stack.LastBlockClosedAt,PrevLineAtomEndPos)
+      then begin
+        // between block end and CleanPos are only empty lines
+        // => indent like the last child block one
+        Indent.Indent:=GetLineIndentWithTabs(Source,
                                 Stack.LastBlockClosed.StartPos,DefaultTabWidth);
+      end else begin
+        // between block end and CleanPos are non empty lines
+        // => indent like the last non empty line
+        Indent.Indent:=GetLineIndentWithTabs(Source,
+                                            PrevLineAtomEndPos,DefaultTabWidth);
+      end;
       Indent.IndentValid:=true;
       exit(true);
     end;
