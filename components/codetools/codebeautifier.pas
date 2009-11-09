@@ -439,7 +439,7 @@ begin
     exit;
   dec(Top);
   if Top>=0 then begin
-    LastBlockClosed:=Stack[Top];
+    LastBlockClosed:=Stack[Top+1];
     TopType:=Stack[Top].Typ;
   end else
     TopType:=bbtNone;
@@ -1590,6 +1590,7 @@ begin
       Indent.IndentValid:=true;
       exit(true);
     end;
+
 
     {$IFDEF VerboseIndenter}
     DebugLn(['TFullyAutomaticBeautifier.GetIndent parsed code in front: context=',FABBlockTypeNames[Block.Typ],'/',FABBlockTypeNames[SubType],' indent=',GetLineIndentWithTabs(Source,Block.StartPos,DefaultTabWidth)]);
