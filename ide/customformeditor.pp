@@ -240,9 +240,9 @@ each control that's dropped onto the form
     function GetComponentEditor(AComponent: TComponent): TBaseComponentEditor;
     
     // component creation
-    function CreateUniqueComponentName(AComponent: TComponent): string;
+    function CreateUniqueComponentName(AComponent: TComponent): string; override;
     function CreateUniqueComponentName(const AClassName: string;
-                                       OwnerComponent: TComponent): string;
+                                       OwnerComponent: TComponent): string; override;
     function CreateComponentInterface(AComponent: TComponent;
                                 WithOwnedChilds: Boolean): TIComponentInterface;
     procedure CreateChildComponentInterfaces(AComponent: TComponent);

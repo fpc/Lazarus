@@ -158,6 +158,9 @@ type
                                  ): TIComponentInterface; virtual; abstract;
     function FindComponent(AComponent: TComponent): TIComponentInterface; virtual; abstract;
 
+    function CreateUniqueComponentName(AComponent: TComponent): string; virtual; abstract;
+    function CreateUniqueComponentName(const AClassName: string;
+                                       OwnerComponent: TComponent): string; virtual; abstract;
     function GetDefaultComponentParent(TypeClass: TComponentClass
                                        ): TIComponentInterface; virtual; abstract;
     function GetDefaultComponentPosition(TypeClass: TComponentClass;
