@@ -35,11 +35,37 @@
       - Does not ignore comments and directives
       - Contexts: statements, declarations
 
+  Line break:
+    1. indent to the smallest indent
+       For example, when there is always an indent after 'try':
+         try|
+           |
+       For example when sometimes no indent is after 'then':
+         if expr then|
+         |
+   2.  unindent when block was closed
+       For example after closing blocks with a semicolon:
+         if expr then
+           if expr then
+             doit;|
+         |
+   3.  optional 'UseLineStart': when next token in line closes block:
+         repeat|
+         |until
+       When 'until' is not current line, ignore it:
+         repeat|
+           |
+         until
+       Closing the corresponding block, not all blocks:
+         if expr then
+           begin|
+           |end
+
   Examples for beautification styles: see scanexamples/indentation.pas
 
   ToDo:
     * ecLineBreak:
-      - fix last line after pressing return key:
+      - indent last line after pressing return key:
           if true then
           exit;|
           |
