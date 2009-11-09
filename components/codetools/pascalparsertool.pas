@@ -1194,7 +1194,7 @@ function TPascalParserTool.ReadParamList(ExceptionOnError, Extract: boolean;
    message <id or number>;
    external;
    external <id>;
-   external name <id>;
+   external name <id> delayed;
    external <id or number> name <id>;
    external <id or number> index <id>;
    [alias: <string constant>]
@@ -1487,7 +1487,7 @@ function TPascalParserTool.ReadTilProcedureHeadEnd(
    message <id or number>;
    external;
    external <id>;
-   external name <id>;
+   external name <id> delayed;
    external <id or number> name <id>;
    external <id or number> index <id>;
    [alias: <string constant>]
@@ -1608,6 +1608,8 @@ begin
             ReadNextAtom;
             ReadConstant(true,false,[]);
           end;
+          if UpAtomIs('DELAYED') then
+            ReadNextAtom;
         end;
       end else if UpAtomIs('ALIAS') then begin
         if not ReadNextAtomIsChar(':') then
