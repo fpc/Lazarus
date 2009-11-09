@@ -1591,7 +1591,6 @@ begin
       exit(true);
     end;
 
-
     {$IFDEF VerboseIndenter}
     DebugLn(['TFullyAutomaticBeautifier.GetIndent parsed code in front: context=',FABBlockTypeNames[Block.Typ],'/',FABBlockTypeNames[SubType],' indent=',GetLineIndentWithTabs(Source,Block.StartPos,DefaultTabWidth)]);
     {$ENDIF}

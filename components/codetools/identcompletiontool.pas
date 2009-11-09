@@ -1514,7 +1514,7 @@ begin
   
   // get identifier position
   GetIdentStartEndAtPosition(Src,CleanCursorPos,IdentStartPos,IdentEndPos);
-  if CleanCursorPos=IdentEndPos then
+  if CursorPos.X>CursorPos.Code.GetLineLength(CursorPos.Y)+1 then
     IdentStartPos:=IdentEndPos;
 end;
 
