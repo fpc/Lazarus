@@ -249,6 +249,7 @@ type
     procedure AddIndent(Typ, SubType: TFABBlockType; SrcPos, Indent: integer);
     function GetSmallestIndent(Typ: TFABBlockType): integer;// -1 if none found
     function GetIndent(Typ, SubType: TFABBlockType;
+                       UseNoneIfNotFound: boolean;
                        UseSmallestIfNotFound: boolean): integer;// -1 if none found
     function CodePosToStr(p: integer): string;
   end;
@@ -1133,7 +1134,7 @@ function TFullyAutomaticBeautifier.FindPolicyInExamples(StartCode: TCodeBuffer;
       end;
     end;
     // search policy
-    if Policies.GetIndent(Typ,SubTyp,false)>=0 then begin
+    if Policies.GetIndent(Typ,SubTyp,true,false)>=0 then begin
       exit;
     end;
     Policies:=nil;
@@ -1356,6 +1357,10 @@ begin
     end;
   'I':
     case UpChars[r[1]] of
+    'F': // IF
+      if p-AtomStart=2 then begin
+        TopType:=bbtIf;
+      end;
     'N': // IN
       case UpChars[r[2]] of
       'I': // INI
@@ -1480,7 +1485,7 @@ var
     Found:=false;
     if (Policies=nil) then exit;
     if SubTypeValid then
-      BlockIndent:=Policies.GetIndent(Block.Typ,SubType,true)
+      BlockIndent:=Policies.GetIndent(Block.Typ,SubType,true,true)
     else
       BlockIndent:=Policies.GetSmallestIndent(Block.Typ);
     if (BlockIndent<0) then exit;
@@ -1618,7 +1623,7 @@ var
     Result:=false;
     if (Policies=nil) then exit;
     if Item^.SubTypeValid then
-      BlockIndent:=Policies.GetIndent(Item^.Block.Typ,Item^.SubType,true)
+      BlockIndent:=Policies.GetIndent(Item^.Block.Typ,Item^.SubType,true,true)
     else
       BlockIndent:=Policies.GetSmallestIndent(Item^.Block.Typ);
     if (BlockIndent<0) then exit;
@@ -1967,11 +1972,13 @@ begin
 end;
 
 function TFABPolicies.GetIndent(Typ, SubType: TFABBlockType;
-  UseSmallestIfNotFound: boolean): integer;
+  UseNoneIfNotFound: boolean; UseSmallestIfNotFound: boolean): integer;
 var
   i: integer;
 begin
   if FindIndentation(Typ,SubType,i) then
+    Result:=Indentations[i].Indent
+  else if UseNoneIfNotFound and FindIndentation(Typ,bbtNone,i) then
     Result:=Indentations[i].Indent
   else
     Result:=GetSmallestIndent(Typ);
