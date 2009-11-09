@@ -25,6 +25,7 @@ type
   protected
     function  DoUnDock(NewTarget: TWinControl; Client: TControl;
                        KeepDockSiteSize: Boolean = true): Boolean; override;
+    procedure Loaded; override;
   public
     { public declarations }
   end; 
@@ -35,6 +36,7 @@ var
 implementation
 
 uses
+  EasyDockSite,
   LCLproc;
 
 { TFloatingSite }
@@ -58,6 +60,8 @@ end;
 function TFloatingSite.DoUnDock(NewTarget: TWinControl; Client: TControl;
   KeepDockSiteSize: Boolean): Boolean;
 begin
+ (* Copied from TWinControl.DoUnDock - try fix flaws.
+ *)
   //Result:=inherited DoUnDock(NewTarget, Client, KeepDockSiteSize);
   Result := True;
   if Assigned(OnUnDock) then begin
@@ -98,6 +102,7 @@ existing) target.
   Result := Result and DoUndockClientMsg(NewTarget, Client);
   if Result and (NewTarget = nil) then begin
     //ManualFloat(???)
+    { TODO : Create floating dock site - but not here, the DockObject must be updated accordingly! }
   end;
 end;
 
@@ -126,16 +131,28 @@ begin
       Allow := False;
       //move form?
     end else
-      Application.ReleaseComponent(Self); //Close;
+      Release;
   end else begin
   //allow float - action required?
   (* strange behaviour: client is undocked, but stays in the site.
       The site is moved to the drop location.
   *)
-    Allow := True;
+    Allow := NewTarget <> nil;  //simply disallow undock to floating state (for now)
   end;
-  if Allow then
+  if Allow then begin
     AdjustCaption(Client);
+  end;
+end;
+
+procedure TFloatingSite.Loaded;
+begin
+  inherited Loaded;
+  if DockManager = nil then
+    DockManager := TEasyTree.Create(self);
+  if DockManager is TEasyTree then begin
+    TEasyTree(DockManager).HideSingleCaption := True;
+    TEasyTree(DockManager).SetStyle(hsForm);
+  end;
 end;
 
 initialization

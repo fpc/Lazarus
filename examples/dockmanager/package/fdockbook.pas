@@ -26,6 +26,10 @@ into a form, before it can be dragged and docked by dragging the form.
 
 Apply ToolButtonAutoSizeAlign.patch to improve the appearance and behaviour
 of the toolbar buttons.
+
+Problem:
+
+Disallow undocking/floating of a NOT docked dockbook.
 *)
 
 {$mode objfpc}{$H+}
@@ -169,10 +173,13 @@ begin
       CurTab.Click;
     end;
   end else begin
-  //last tab removed
-    if HostDockSite <> nil then
-      ManualDock(nil);  //undock before closing
-    Close;
+  //last tab removed - close ONLY if we are docked
+    //if (HostDockSite <> nil) or Floating then begin - Floating doesn't work
+    if Parent = nil then begin //seems to be a good indicator for floating state
+      if (HostDockSite <> nil) then //may be cleared already???
+        ManualDock(nil);  //undock before closing
+      Release;  //Close;
+    end;
   end;
 end;
 
@@ -279,9 +286,11 @@ procedure TTabs.MouseMove(Shift: TShiftState; X, Y: Integer);
 begin
 (* Implement dragging of the entire notebook.
   Parent is assumed to be the notebook form.
+  Try prevent undocking of NOT docked form.
 *)
   inherited MouseMove(Shift, X, Y);
-  if ssLeft in Shift then
+  //if ssLeft in Shift then
+  if (ssLeft in Shift) and (Parent.HostDockSite <> nil) then
     Parent.BeginDrag(False); //delayed docking of the container form
 end;
 

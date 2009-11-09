@@ -97,6 +97,18 @@ HeaderPartMap: array[TEasyHeaderStyle, TEasyZonePart] of TZonePartMap = (
     (dTop:dBorder; dBottom:-dButton; dLeft:-dButton; dRight:dButton+2*dBorder)    //zpRestoreButton,  // header restore button
     {$ENDIF}
     (dTop:dBorder; dBottom:-dButton; dLeft:-dButton; dRight:dBorder)    //zpCloseButton     // header close button
+  ),
+ //hsNone deserves special handling, the map is ignored
+  (
+    {zpNowhere} (),
+    {zpClient}  (dTop:0; dBottom:0),
+    {zpAll}     (dTop:0; dBottom:-dDHeader),
+    {zpCaption} (dTop:dDBorder; dBottom:-dDButton; dLeft:dDBorder; dRight:2*dDBorder+dDButton),
+    {zpSizer}   (dTop:0; dBottom:-dSizer),
+  {$IFDEF restore}
+    {zpRestoreButton} (),
+  {$ENDIF}
+    {zpCloseButton} (dTop:dDBorder; dBottom:-dDButton; dLeft:-dDButton; dRight:dDBorder)
   )
 );
 
@@ -134,13 +146,21 @@ begin
 (* ARect is (must be) TLBR zone rectangle, on input.
   HasSplitter determines whether to exclude the splitter from ARect,
   and also the splitter area itself.
+
+  hsNone (no header) must be handled separately.
 *)
-  if (APart = zpNowhere) or ((APart = zpSizer) and not HasSplitter) then begin
+  if (APart = zpNowhere)
+  or ((APart = zpSizer) and not HasSplitter)
+  or ((AStyle = hsNone) and (APart <> zpClient))
+  then begin
     Result := Rect(0,0,0,0);
     exit;
   end;
 
   Result := ARect;
+  if AStyle = hsNone then
+    exit; //client fills entire area
+
   with HeaderPartMap[AStyle, APart] do begin
     if AOrientation = doVertical then begin //portrait
     //handle client w/o splitter
@@ -324,6 +344,9 @@ var
 begin
 (* Some colors inavailable on some widgetsets!
 *)
+  if AZone.Style = hsNone then
+    exit; //no header at all
+
   IsMouseDown := (GetKeyState(VK_LBUTTON) and $80) <> 0;
 //debug
   AControl := AZone.FChildControl;

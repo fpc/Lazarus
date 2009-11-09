@@ -18,24 +18,15 @@ you can have multiple edit views within the editor window.
 
 Secondary editor windows should have the same docking capabilities.
 
-The View menu windows should be dockable to each other.
-(Done, but the first dock clobbers the dock site - please redock)
-
 
 Known bugs:
 - The IDE suspects dangling references - KEEP these references!
   Please report if you know how to fix this issue.
 *)
 
-(* Elastic mode
-This mode currently works with a common flag in the form.
-
-A more intuitive GUI would allow the user to determine the docking mode,
-on the first drop into an elastic panel. Then the panel (or dockmanager) must
-remember the mode, for undocking.
-*)
-
 {$mode objfpc}{$H+}
+
+{.$DEFINE stdfloat} //using standard floating host?
 
 interface
 
@@ -96,6 +87,8 @@ begin
   FEdit.BorderStyle := bsNone;
   FEdit.Parent := self;
   FEdit.Visible := True;
+  FEdit.DragMode := dmManual; //disallow undocking
+  //FEdit.pnlDock.DragMode := dmManual;
   FAutoExpand := True;
 end;
 
@@ -108,7 +101,6 @@ begin
   Client.DragMode := dmAutomatic;
   Client.DragKind := dkDock;
   Client.Visible := True;
-  Client.FloatingDockSiteClass := TFloatingSite;
 //name it
   Client.Caption := cap;
   try
@@ -116,14 +108,18 @@ begin
   except
     //here: simply ignore duplicate name
   end;
-{$IFDEF old}
-  Client.Align := alClient; //required for proper docking
-  Client.ManualFloat(Rect(200,200, 400,400));
+{$IFDEF stdfloat}
+  Client.ManualDock(nil);
 {$ELSE}
-  Site := TFloatingSite.Create(Application);
-  //Site.Visible := True;
   Client.FloatingDockSiteClass := TFloatingSite;
-  Client.ManualDock(Site, nil, alClient);
+  {$IFDEF old}
+  //ManualFloat doesn't work as expected :-(
+    //Client.Align := alClient; //required for proper docking
+    Client.ManualFloat(Rect(200,200, 400,400));
+  {$ELSE}
+    Site := TFloatingSite.Create(Application);
+    Client.ManualDock(Site, nil, alClient);
+  {$ENDIF}
 {$ENDIF}
   Result := Client;
 end;
@@ -144,7 +140,6 @@ end;
 
 procedure TEditorSite.mnOpenClick(Sender: TObject);
 begin
-  //OpenFile('fMain.pas');
   if OpenDialog1.Execute then begin
     OpenFile(OpenDialog1.FileName);
   end;

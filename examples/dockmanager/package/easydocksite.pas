@@ -8,7 +8,7 @@ To be added or ported:
 
 Possible extensions:
   - separate docking management and dock site layout
-  - various dock headers
+  + various dock headers
   - multiple splitters (on zones without controls)
   - persistence (requires application wide management of dock sources!)
   - purpose of Restore button?
@@ -39,6 +39,10 @@ LCL TODO:
   occur (perform LB_DOWN and LB_UP).
   Otherwise dragging starts, and the control has to be reset into "no button down"
   state.
+
+  The default floating site doesn't work properly.
+  When multiple clients are docked, and one of them should become floating,
+  the client is undocked BUT stays in the site.
 *)
 
 {$H+}
@@ -88,7 +92,8 @@ type
 
   TEasyHeaderStyle = (
     hsMinimal,  //Delphi style
-    hsForm      //form style
+    hsForm,     //form style
+    hsNone      //no header (special notebook etc. style)
   );
 
   TEasyDockHeader = class
@@ -196,10 +201,12 @@ type
   //Lazarus extension
   private
     FHeader: TEasyDockHeader;
+    FHideSingleCaption: boolean;
     FStyle: TEasyHeaderStyle;
     FSplitter: TEasySplitter;
     FSizeZone: TEasyZone; //zone to be resized, also PrevSibling
     procedure SplitterMoved(Sender: TObject); //hide and reposition zone
+    procedure SetSingleCaption(Value: boolean);
   public
     procedure MessageHandler(Sender: TControl; var Message: TLMessage); override;
   public
@@ -208,9 +215,11 @@ type
   {$ENDIF}
     constructor Create(ADockSite: TWinControl); override;
     destructor Destroy; override;
-    function DetectAlign(ZoneRect: TRect; MousePos: TPoint): TAlign;
+    function  DetectAlign(ZoneRect: TRect; MousePos: TPoint): TAlign;
     procedure PaintSite(DC: HDC); override;
     procedure SetStyle(NewStyle: TEasyHeaderStyle);
+    function  GetEffectiveStyle: TEasyHeaderStyle;
+    property HideSingleCaption: boolean read FHideSingleCaption write SetSingleCaption;
   end;
 
 const
@@ -412,6 +421,26 @@ begin
     CtlBounds := Rect(0,0,0,0)
   else begin
     CtlBounds := zone.GetPartRect(zpClient);
+  end;
+end;
+
+function TEasyTree.GetEffectiveStyle: TEasyHeaderStyle;
+begin
+(* Handle suppression of single-client header.
+  DockSite.DockClientCount is not reliable at the time a control is being un/docked.
+  We could count our client controls, or take some more direct approach.
+*)
+  //if FHideSingleCaption and (DockSite.DockClientCount <= 1) then begin
+  if FHideSingleCaption //and (ChildControlCount <= 1)
+  and ((FTopZone.FFirstChild = nil)
+      or ((FTopZone.FFirstChild.ChildControl <> nil)
+        and (FTopZone.FFirstChild.FNextSibling = nil)))
+  then begin
+    Result := hsNone; //single client should have no header
+    //DebugLn('client style: hsNone');
+  end else begin
+    Result := FStyle;
+    //DebugLn('zones style: %d', [FStyle]);
   end;
 end;
 
@@ -984,6 +1013,16 @@ begin
   //FReplacingControl := Control;
 end;
 
+procedure TEasyTree.SetSingleCaption(Value: boolean);
+begin
+(* Hide header if no more than one client is docked.
+*)
+  if FHideSingleCaption = Value then
+    exit;
+  FHideSingleCaption := Value;
+  ResetBounds(True);
+end;
+
 procedure TEasyTree.SetStyle(NewStyle: TEasyHeaderStyle);
 begin
   if NewStyle = FStyle then
@@ -1159,10 +1198,18 @@ end;
 
 function TEasyZone.GetStyle: TEasyHeaderStyle;
 begin
+(* Get the effective header style.
+  A single notebook client deserves no header at all.
+  Other single clients can have no header (optional)
+*)
+{$IFDEF old}
   if ChildControl is TEasyBook then
     Result := hsMinimal //or none at all?
   else
     Result := FTree.FStyle;
+{$ELSE}
+  Result := FTree.GetEffectiveStyle;
+{$ENDIF}
 end;
 
 function TEasyZone.HasSizer: boolean;

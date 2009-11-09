@@ -3,10 +3,15 @@ unit fEditBook;
   Move form to front whenever activated.
   Dequeue form when destroyed.
 
-  The queue head is stored in the global variable MRUEdit;
+  The queue head is stored in the global variable MRUEdit.
+
+  The EditBook should become a frame, embeddable without docking.
 *)
 
 {$mode objfpc}{$H+}
+
+{ TODO : figure out what's wrong with the mru list - with multiple windows }
+{.$DEFINE mru} //problems with MRU list???
 
 interface
 
@@ -27,7 +32,7 @@ type
   end; 
 
 var
-  MRUEdit: TEditBook; //Most Rectently Used EditBook
+  MRUEdit: TEditBook; //Most Recently Used EditBook
 
 implementation
 
@@ -41,12 +46,15 @@ begin
   if MRUEdit = Self then
     exit; //is alread head
   prev := MRUEdit;
+{$IFDEF mru}
   while (prev <> nil) and (prev.NRUEdit <> self) do
     prev := prev.NRUEdit;
   if prev <> nil then
     prev.NRUEdit := self.NRUEdit; //was already in Q
   NRUEdit := MRUEdit; //old head
   MRUEdit := self;  //become head
+{$ELSE}
+{$ENDIF}
 end;
 
 procedure TEditBook.FormClose(Sender: TObject; var CloseAction: TCloseAction);
@@ -55,6 +63,7 @@ var
 begin
 //deQ self
   prev := MRUEdit;
+{$IFDEF mru}
   if prev = self then
     MRUEdit := NRUEdit
   else begin
@@ -64,6 +73,9 @@ begin
       prev.NRUEdit := NRUEdit;
     //else not in chain?
   end;
+  NRUEdit := nil;
+{$ELSE}
+{$ENDIF}
 end;
 
 initialization
