@@ -4319,7 +4319,7 @@ begin
     ExternalMacroStart+'IncPath',
     d('../ide/include;../ide/include/'+TargetOS),
     da_Define));
-  // <LazarusSrcDir>/packager/registration
+  // <LazarusSrcDir>/packager/frames
   SubDirTempl:=TDefineTemplate.Create('Frames',
     'Frames','','frames',da_Directory);
   DirTempl.AddChild(SubDirTempl);
@@ -4587,9 +4587,16 @@ begin
     +';'+SrcPath
     ,da_DefineRecurse));
 
-  // <LazarusSrcDir>/components/synedit/units
+  // <LazarusSrcDir>/components/synedit
   SynEditDirTempl:=TDefineTemplate.Create('synedit',
     'SynEdit','','synedit',da_Directory);
+  SynEditDirTempl.AddChild(TDefineTemplate.Create('IDEIntf Path',
+    Format(ctsAddsDirToSourcePath,['ideintf']),
+    ExternalMacroStart+'SrcPath',
+    d(LazarusSrcDir+'/ideintf')
+    +';'+SrcPath
+    ,da_Define));
+  // <LazarusSrcDir>/components/synedit/units
   SynEditUnitsDirTempl:=TDefineTemplate.Create('synedit output directory',
     'units','','units',da_Directory);
   SynEditDirTempl.AddChild(SynEditUnitsDirTempl);
