@@ -288,15 +288,16 @@ end;
 procedure TSynObjectPartListPropertyEditorForm.PersistentDeleting(APersistent: TPersistent);
 var
   OldSynObjectPartList: TSynObjectList;
+  I: Integer;
 begin
   debugln(['TSynObjectPartListPropertyEditorForm.PersistentDeleting ']);
   if APersistent = OwnerPersistent then
   begin
-    debugln('xxxxxxx');
     OldSynObjectPartList := SynObjectPartList;
     SetSynObjectPartList(nil, nil, nil, '');
-    SelectInObjectInspector(True);
-    GlobalDesignHook.Unselect(OldSynObjectPartList); // XXX unselect all the individual parts
+    GlobalDesignHook.Unselect(OldSynObjectPartList);
+    for I := 0 to OldSynObjectPartList.Count - 1 do
+      GlobalDesignHook.Unselect(OldSynObjectPartList.BaseItems[I]);
     if GlobalDesignHook.LookupRoot = OldSynObjectPartList then
       GlobalDesignHook.LookupRoot := nil;
     Hide;
@@ -426,11 +427,11 @@ end;
 
 function TSynPropertyEditObjectList.ReadElementCount: integer;
 var
-  SynObjectList: TSynObjectList;
+  SynObjectList: TObject;
 begin
-  SynObjectList := TSynObjectList(GetObjectValue);
+  SynObjectList := GetObjectValue;
   if (SynObjectList <> nil) and (SynObjectList is TSynObjectList) then
-    Result:=SynObjectList.Count
+    Result := TSynObjectList(SynObjectList).Count
   else
     Result:=0;
 end;
