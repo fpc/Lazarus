@@ -303,6 +303,7 @@ type
     Capacity: integer;
     Top: integer;
     TopType: TFABBlockType;
+    LastBlockClosed: TBlock;
     constructor Create;
     destructor Destroy; override;
     procedure BeginBlock(Typ: TFABBlockType; StartPos: integer);
@@ -425,6 +426,8 @@ begin
   Block^.InnerIdent:=-1;
   Block^.InnerStartPos:=-1;
   TopType:=Typ;
+  LastBlockClosed.Typ:=bbtNone;
+  LastBlockClosed.StartPos:=0;
 end;
 
 procedure TFABBlockStack.EndBlock;
@@ -432,10 +435,13 @@ begin
   {$IFDEF ShowCodeBeautifier}
   DebugLn([GetIndentStr(Top*2),'TFABBlockStack.EndBlock ',FABBlockTypeNames[TopType]]);
   {$ENDIF}
+  if Top<0 then
+    exit;
   dec(Top);
-  if Top>=0 then
-    TopType:=Stack[Top].Typ
-  else
+  if Top>=0 then begin
+    LastBlockClosed:=Stack[Top];
+    TopType:=Stack[Top].Typ;
+  end else
     TopType:=bbtNone;
 end;
 
@@ -1572,6 +1578,15 @@ begin
       // block(s) closed by next token
       // use indent of block start
       Indent.Indent:=GetLineIndentWithTabs(Source,Block.StartPos,DefaultTabWidth);
+      Indent.IndentValid:=true;
+      exit(true);
+    end;
+
+    if Stack.LastBlockClosed.StartPos>0 then begin
+      // a child block was closed
+      // => indent like the last child block one
+      Indent.Indent:=GetLineIndentWithTabs(Source,
+                                Stack.LastBlockClosed.StartPos,DefaultTabWidth);
       Indent.IndentValid:=true;
       exit(true);
     end;
