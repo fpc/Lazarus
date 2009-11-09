@@ -32,7 +32,7 @@ unit KeyMapping;
 interface
 
 uses
-  LCLIntf, LCLType, LCLProc,
+  LCLIntf, LCLType, LCLProc, AvgLvlTree,
   Forms, Classes, SysUtils, Buttons, LResources, StdCtrls, Controls,
   Dialogs, StringHashList, ExtCtrls,
   SynEditKeyCmds, SynPluginTemplateEdit, SynPluginSyncroEdit, Laz_XMLCfg,
@@ -80,6 +80,21 @@ type
     function GetLocalizedName: string; override;
   end;
 
+  { TLoadedKeyCommand
+    used for  }
+
+  TLoadedKeyCommand = class
+  public
+    Name: string;
+    ShortcutA: TIDEShortCut;
+    DefaultShortcutA: TIDEShortCut;
+    ShortcutB: TIDEShortCut;
+    DefaultShortcutB: TIDEShortCut;
+    function IsShortcutADefault: boolean;
+    function IsShortcutBDefault: boolean;
+    function AsString: string;
+  end;
+
   //---------------------------------------------------------------------------
   // class for a list of key - command relations
 
@@ -91,6 +106,7 @@ type
     fRelations: TList; // list of TKeyCommandRelation, sorted with Command
     fCategories: TList;// list of TKeyCommandCategory
     fExtToolCount: integer;
+    fLoadedKeyCommands: TAvgLvlTree;// tree of TLoadedKeyCommand sorted for name
     function GetRelation(Index: integer): TKeyCommandRelation;
     function GetRelationCount: integer;
     function AddCategory(const Name, Description: string;
@@ -98,7 +114,7 @@ type
     function Add(Category: TIDECommandCategory; Command: TIDECommand):integer;
     function Add(Category: TIDECommandCategory;
                  const Name, LocalizedName: string;
-                 Command: word; const TheKeyA, TheKeyB: TIDEShortCut;
+                 Command: word; TheKeyA, TheKeyB: TIDEShortCut;
                  const OnExecuteMethod: TNotifyEvent = nil;
                  const OnExecuteProc: TNotifyProcedure = nil):integer;
     function AddDefault(Category: TIDECommandCategory;
@@ -124,7 +140,7 @@ type
       IDEWindowClass: TCustomFormClass; UseLastKey: boolean = true): word;
     function IndexOf(ARelation: TKeyCommandRelation): integer;
     function CommandToShortCut(ACommand: word): TShortCut;
-    function LoadFromXMLConfig(XMLConfig:TXMLConfig; const Prefix: String):boolean;
+    function LoadFromXMLConfig(XMLConfig:TXMLConfig; const Path: String):boolean;
     function SaveToXMLConfig(XMLConfig:TXMLConfig; const Path: String):boolean;
     procedure AssignTo(ASynEditKeyStrokes:TSynEditKeyStrokes;
                        IDEWindowClass: TCustomFormClass);
@@ -167,14 +183,19 @@ procedure GetDefaultKeyForMacOSXLazScheme(Command: word;
                                        var TheKeyA, TheKeyB: TIDEShortCut);
 function KeySchemeNameToSchemeType(const SchemeName: string): TKeyMapScheme;
 
-function ShiftStateToStr(Shift: TShiftState): string;
-function KeyValuesToStr(const ShortcutA, ShortcutB: TIDEShortCut): string;
+function ShiftStateToCfgStr(Shift: TShiftState): string;
+function KeyValuesToCfgStr(const ShortcutA, ShortcutB: TIDEShortCut): string;
+function CfgStrToShiftState(const s: string): TShiftState;
+
+function CompareLoadedKeyCommands(Data1, Data2: Pointer): integer;
+function CompareNameWithLoadedKeyCommand(NameAsAnsiString, Key: Pointer): integer;
+
 
 implementation
 
 
 const
-  KeyMappingFormatVersion = 5;
+  KeyMappingFormatVersion = 6;
 
 function EditorCommandLocalizedName(cmd: word;
   const DefaultName: string): string;
@@ -1722,7 +1743,7 @@ begin
   Result:=kmsCustom;
 end;
 
-function ShiftStateToStr(Shift:TShiftState):string;
+function ShiftStateToCfgStr(Shift:TShiftState):string;
 var i:integer;
 begin
   i:=0;
@@ -1734,12 +1755,44 @@ begin
   Result:=IntToStr(i);
 end;
 
-function KeyValuesToStr(const ShortcutA, ShortcutB: TIDEShortCut): string;
+function KeyValuesToCfgStr(const ShortcutA, ShortcutB: TIDEShortCut): string;
 begin
-  Result:=IntToStr(ShortcutA.Key1) + ',' + ShiftStateToStr(ShortcutA.Shift1) + ',' +
-          IntToStr(ShortcutA.Key2) + ',' + ShiftStateToStr(ShortcutA.Shift2) + ',' +
-          IntToStr(ShortcutB.Key1) + ',' + ShiftStateToStr(ShortcutB.Shift1) + ',' +
-          IntToStr(ShortcutB.Key2) + ',' + ShiftStateToStr(ShortcutB.Shift2);
+  Result:=IntToStr(ShortcutA.Key1) + ',' + ShiftStateToCfgStr(ShortcutA.Shift1) + ',' +
+          IntToStr(ShortcutA.Key2) + ',' + ShiftStateToCfgStr(ShortcutA.Shift2) + ',' +
+          IntToStr(ShortcutB.Key1) + ',' + ShiftStateToCfgStr(ShortcutB.Shift1) + ',' +
+          IntToStr(ShortcutB.Key2) + ',' + ShiftStateToCfgStr(ShortcutB.Shift2);
+end;
+
+function CfgStrToShiftState(const s: string): TShiftState;
+var
+  i: LongInt;
+begin
+  Result:=[];
+  i:=StrToIntDef(s,0);
+  if (i and 1)<>0 then include(Result,ssCtrl);
+  if (i and 2)<>0 then include(Result,ssShift);
+  if (i and 4)<>0 then include(Result,ssAlt);
+  if (i and 8)<>0 then include(Result,ssMeta);
+  if (i and 16)<>0 then include(Result,ssSuper);
+end;
+
+function CompareLoadedKeyCommands(Data1, Data2: Pointer): integer;
+var
+  Key1: TLoadedKeyCommand absolute Data1;
+  Key2: TLoadedKeyCommand absolute Data2;
+begin
+  Result:=SysUtils.CompareText(Key1.Name,Key2.Name);
+end;
+
+function CompareNameWithLoadedKeyCommand(NameAsAnsiString, Key: Pointer
+  ): integer;
+var
+  Name: string;
+  LoadedKey: TLoadedKeyCommand absolute Key;
+begin
+  Pointer(Name):=NameAsAnsiString;
+  Result:=SysUtils.CompareText(Name,LoadedKey.Name);
+  Pointer(Name):=nil;
 end;
 
 function EditorCommandToDescriptionString(cmd: word): String;
@@ -2245,6 +2298,7 @@ begin
   FRelations:=TList.Create;
   fCategories:=TList.Create;
   fExtToolCount:=0;
+  fLoadedKeyCommands:=TAvgLvlTree.Create(@CompareLoadedKeyCommands);
 end;
 
 destructor TKeyCommandRelationList.Destroy;
@@ -2252,6 +2306,7 @@ begin
   Clear;
   FRelations.Free;
   fCategories.Free;
+  fLoadedKeyCommands.Free;
   inherited Destroy;
 end;
 
@@ -2801,6 +2856,7 @@ end;
 procedure TKeyCommandRelationList.Clear;
 var a:integer;
 begin
+  fLoadedKeyCommands.FreeAndClear;
   for a:=0 to FRelations.Count-1 do
     Relations[a].Free;
   FRelations.Clear;
@@ -2834,10 +2890,32 @@ end;
 
 function TKeyCommandRelationList.Add(Category: TIDECommandCategory;
   const Name, LocalizedName: string;
-  Command:word; const TheKeyA, TheKeyB: TIDEShortCut;
+  Command:word; TheKeyA, TheKeyB: TIDEShortCut;
   const OnExecuteMethod: TNotifyEvent;
   const OnExecuteProc: TNotifyProcedure):integer;
+var
+  LoadedKey: TLoadedKeyCommand;
+  AVLNode: TAvgLvlTreeNode;
 begin
+  AVLNode:=fLoadedKeyCommands.FindKey(Pointer(Name),@CompareNameWithLoadedKeyCommand);
+  if AVLNode=nil then begin
+    // new key
+    LoadedKey:=TLoadedKeyCommand.Create;
+    LoadedKey.Name:=Name;
+    LoadedKey.ShortcutA:=TheKeyA;
+    LoadedKey.ShortcutB:=TheKeyB;
+    LoadedKey.DefaultShortcutA:=TheKeyA;
+    LoadedKey.DefaultShortcutB:=TheKeyB;
+    fLoadedKeyCommands.Add(LoadedKey);
+  end else begin
+    LoadedKey:=TLoadedKeyCommand(AVLNode.Data);
+    LoadedKey.DefaultShortcutA:=TheKeyA;
+    LoadedKey.DefaultShortcutB:=TheKeyB;
+    // old key, values were loaded
+    // (key is registered after loading keymapping)
+    TheKeyA:=LoadedKey.ShortcutA;
+    TheKeyB:=LoadedKey.ShortcutB;
+  end;
   Result:=FRelations.Add(TKeyCommandRelation.Create(Category,Name,LocalizedName,
                         Command,TheKeyA,TheKeyB,OnExecuteMethod,OnExecuteProc));
 end;
@@ -2890,11 +2968,11 @@ begin
 end;
 
 function TKeyCommandRelationList.LoadFromXMLConfig(
-  XMLConfig:TXMLConfig; const Prefix: String):boolean;
+  XMLConfig:TXMLConfig; const Path: String):boolean;
 var
   a,b,p:integer;
   FileVersion: integer;
-  Name:ShortString;
+  Name: String;
   NewValue: String;
 
   function ReadNextInt:integer;
@@ -2921,8 +2999,8 @@ var
 
   function OldKeyValuesToStr(const ShortcutA, ShortcutB: TIDEShortCut): string;
   begin
-    Result:=IntToStr(ShortcutA.Key1) + ',' + ShiftStateToStr(ShortcutA.Shift1) + ',' +
-            IntToStr(ShortcutB.Key1) + ',' + ShiftStateToStr(ShortcutB.Shift1);
+    Result:=IntToStr(ShortcutA.Key1) + ',' + ShiftStateToCfgStr(ShortcutA.Shift1) + ',' +
+            IntToStr(ShortcutB.Key1) + ',' + ShiftStateToCfgStr(ShortcutB.Shift1);
   end;
 
   function FixShift(Shift: TShiftState): TShiftState;
@@ -2934,50 +3012,116 @@ var
     {$ENDIF}
   end;
 
+  procedure Load(SubPath: string; out Key, DefaultKey: TIDEShortCut);
+  begin
+    if XMLConfig.GetValue(SubPath+'Default',True) then begin
+      Key:=CleanIDEShortCut;
+    end else begin
+      key.Key1:=XMLConfig.GetValue(SubPath+'Key1',VK_UNKNOWN);
+      key.Shift1:=CfgStrToShiftState(XMLConfig.GetValue(SubPath+'Shift1',''));
+      key.Key2:=XMLConfig.GetValue(SubPath+'Key2',VK_UNKNOWN);
+      key.Shift2:=CfgStrToShiftState(XMLConfig.GetValue(SubPath+'Shift2',''));
+    end;
+    DefaultKey:=CleanIDEShortCut;
+  end;
+
 // LoadFromXMLConfig
 var
   Key1, Key2: word;
   Shift1, Shift2: TShiftState;
+  Cnt: LongInt;
+  SubPath: String;
+  AVLNode: TAvgLvlTreeNode;
+  LoadedKey: TLoadedKeyCommand;
+  TheKeyA, TheKeyB: TIDEShortCut;
 begin
   //debugln('TKeyCommandRelationList.LoadFromXMLConfig A ');
-  FileVersion:=XMLConfig.GetValue(Prefix+'Version/Value',0);
-  ExtToolCount:=XMLConfig.GetValue(Prefix+'ExternalToolCount/Value',0);
-  for a:=0 to FRelations.Count-1 do begin
-    Name:=lowercase(Relations[a].Name);
-    for b:=1 to length(Name) do
-      if not (Name[b] in ['a'..'z','A'..'Z','0'..'9']) then Name[b]:='_';
+  FileVersion:=XMLConfig.GetValue(Path+'Version/Value',0);
+  ExtToolCount:=XMLConfig.GetValue(Path+'ExternalToolCount/Value',0);
 
-    if FileVersion<2 then
-      NewValue:=XMLConfig.GetValue(Prefix+Name,'')
-    else
-      NewValue:=XMLConfig.GetValue(Prefix+Name+'/Value','');
-    //if Relations[a].Command=ecBlockIndent then debugln('  NewValue=',NewValue);
-    if NewValue='' then begin
-      Relations[a].ShortcutA:=Relations[a].DefaultShortcutA;
-      Relations[a].ShortcutB:=Relations[a].DefaultShortcutB;
-    end else begin
-      p:=1;
-      Key1:=word(ReadNextInt);
-      Shift1:=FixShift(IntToShiftState(ReadNextInt));
-      if FileVersion>2 then begin
-        Key2:=word(ReadNextInt);
-        Shift2:=FixShift(IntToShiftState(ReadNextInt));
+  if FileVersion>5 then begin
+    Cnt:=XMLConfig.GetValue(Path+'Count',0);
+    for a:=1 to Cnt do begin
+      SubPath:=Path+'Item'+IntToStr(a)+'/';
+      Name:=XMLConfig.GetValue(SubPath+'Name','');
+      if Name='' then continue;
+      AVLNode:=fLoadedKeyCommands.FindKey(Pointer(Name),
+                                          @CompareNameWithLoadedKeyCommand);
+      if AVLNode<>nil then begin
+        LoadedKey:=TLoadedKeyCommand(AVLNode.Data);
       end else begin
-        Key2:=VK_UNKNOWN;
-        Shift2:=[];
+        LoadedKey:=TLoadedKeyCommand.Create;
+        LoadedKey.Name:=Name;
+        fLoadedKeyCommands.Add(LoadedKey);
+        GetDefaultKeyForCommand(Relations[a].Command,TheKeyA,TheKeyB);
+        LoadedKey.DefaultShortcutA:=TheKeyA;
+        LoadedKey.DefaultShortcutB:=TheKeyB;
       end;
-      Relations[a].ShortcutA:=IDEShortCut(Key1, Shift1, Key2, Shift2);
+      Load(SubPath+'KeyA/',LoadedKey.ShortcutA,LoadedKey.DefaultShortcutA);
+      Load(SubPath+'KeyB/',LoadedKey.ShortcutB,LoadedKey.DefaultShortcutB);
+    end;
+    // apply
+    for a:=0 to FRelations.Count-1 do begin
+      Name:=Relations[a].Name;
+      if Name='' then continue;
+      AVLNode:=fLoadedKeyCommands.FindKey(Pointer(Name),
+                                          @CompareNameWithLoadedKeyCommand);
+      if AVLNode<>nil then begin
+        // there is a value in the config
+        LoadedKey:=TLoadedKeyCommand(AVLNode.Data);
+        if LoadedKey.IsShortcutADefault then
+          Relations[a].ShortcutA:=Relations[a].DefaultShortcutA
+        else
+          Relations[a].ShortcutA:=LoadedKey.ShortcutA;
+        if LoadedKey.IsShortcutBDefault then
+          Relations[a].ShortcutB:=Relations[a].DefaultShortcutB
+        else
+          Relations[a].ShortcutB:=LoadedKey.ShortcutB;
+      end else begin
+        // no value in config => restore default
+        Relations[a].ShortcutA:=Relations[a].DefaultShortcutA;
+        Relations[a].ShortcutB:=Relations[a].DefaultShortcutB;
+      end;
+    end;
+  end else begin
+    // FileVersion<=5
+    for a:=0 to FRelations.Count-1 do begin
+      Name:=lowercase(Relations[a].Name);
+      for b:=1 to length(Name) do
+        if not (Name[b] in ['a'..'z','A'..'Z','0'..'9']) then Name[b]:='_';
 
-      Key1:=word(ReadNextInt);
-      Shift1:=FixShift(IntToShiftState(ReadNextInt));
-      if FileVersion>2 then begin
-        Key2:=word(ReadNextInt);
-        Shift2:=FixShift(IntToShiftState(ReadNextInt));
+      if FileVersion<2 then
+        NewValue:=XMLConfig.GetValue(Path+Name,'')
+      else
+        NewValue:=XMLConfig.GetValue(Path+Name+'/Value','');
+      //if Relations[a].Command=ecBlockIndent then debugln('  NewValue=',NewValue);
+      if NewValue='' then begin
+        Relations[a].ShortcutA:=Relations[a].DefaultShortcutA;
+        Relations[a].ShortcutB:=Relations[a].DefaultShortcutB;
       end else begin
-        Key2:=VK_UNKNOWN;
-        Shift2:=[];
+        p:=1;
+        Key1:=word(ReadNextInt);
+        Shift1:=FixShift(IntToShiftState(ReadNextInt));
+        if FileVersion>2 then begin
+          Key2:=word(ReadNextInt);
+          Shift2:=FixShift(IntToShiftState(ReadNextInt));
+        end else begin
+          Key2:=VK_UNKNOWN;
+          Shift2:=[];
+        end;
+        Relations[a].ShortcutA:=IDEShortCut(Key1, Shift1, Key2, Shift2);
+
+        Key1:=word(ReadNextInt);
+        Shift1:=FixShift(IntToShiftState(ReadNextInt));
+        if FileVersion>2 then begin
+          Key2:=word(ReadNextInt);
+          Shift2:=FixShift(IntToShiftState(ReadNextInt));
+        end else begin
+          Key2:=VK_UNKNOWN;
+          Shift2:=[];
+        end;
+        Relations[a].ShortcutB:=IDEShortCut(Key1, Shift1, Key2, Shift2);
       end;
-      Relations[a].ShortcutB:=IDEShortCut(Key1, Shift1, Key2, Shift2);
     end;
   end;
   Result:=true;
@@ -2985,36 +3129,72 @@ end;
 
 function TKeyCommandRelationList.SaveToXMLConfig(
   XMLConfig:TXMLConfig; const Path: String):boolean;
-var a,b: integer;
+
+  procedure Store(const SubPath: string; Key, DefaultKey: TIDEShortCut);
+  var
+    IsDefault: boolean;
+  begin
+    IsDefault:=CompareIDEShortCuts(@Key,@DefaultKey)=0;
+    XMLConfig.SetDeleteValue(SubPath+'Default',IsDefault,True);
+    if IsDefault then begin
+      XMLConfig.SetDeleteValue(SubPath+'Key1',0,0);
+      XMLConfig.SetDeleteValue(SubPath+'Shift1','','');
+      XMLConfig.SetDeleteValue(SubPath+'Key2',0,0);
+      XMLConfig.SetDeleteValue(SubPath+'Shift2','','');
+    end else begin
+      XMLConfig.SetDeleteValue(SubPath+'Key1',key.Key1,VK_UNKNOWN);
+      XMLConfig.SetDeleteValue(SubPath+'Shift1',ShiftStateToCfgStr(key.Shift1),ShiftStateToCfgStr([]));
+      XMLConfig.SetDeleteValue(SubPath+'Key2',key.Key2,VK_UNKNOWN);
+      XMLConfig.SetDeleteValue(SubPath+'Shift2',ShiftStateToCfgStr(key.Shift2),ShiftStateToCfgStr([]));
+    end;
+  end;
+
+var a: integer;
   Name: String;
-  CurKeyStr: String;
-  DefaultKeyStr: string;
   TheKeyA, TheKeyB: TIDEShortCut;
-  //SavedCount: Integer;
-  //SubPath: String;
+  AVLNode: TAvgLvlTreeNode;
+  LoadedKey: TLoadedKeyCommand;
+  Cnt: Integer;
+  SubPath: String;
 begin
   XMLConfig.SetValue(Path+'Version/Value',KeyMappingFormatVersion);
   XMLConfig.SetDeleteValue(Path+'ExternalToolCount/Value',ExtToolCount,0);
-  //SavedCount:=0;
+  // save shortcuts to fLoadedKeyCommands
   for a:=0 to FRelations.Count-1 do begin
-    Name:=lowercase(Relations[a].Name);
-    for b:=1 to length(Name) do
-      if not (Name[b] in ['a'..'z','A'..'Z','0'..'9']) then Name[b]:='_';
-    with Relations[a] do begin
-      CurKeyStr:=KeyValuesToStr(ShortcutA,ShortcutB);
-      GetDefaultKeyForCommand(Command,TheKeyA,TheKeyB);
-      DefaultKeyStr:=KeyValuesToStr(TheKeyA, TheKeyB);
+    Name:=Relations[a].Name;
+    if Name='' then continue;
+    AVLNode:=fLoadedKeyCommands.FindKey(Pointer(Name),
+                                        @CompareNameWithLoadedKeyCommand);
+    if AVLNode<>nil then begin
+      LoadedKey:=TLoadedKeyCommand(AVLNode.Data);
+    end else begin
+      LoadedKey:=TLoadedKeyCommand.Create;
+      LoadedKey.Name:=Name;
+      fLoadedKeyCommands.Add(LoadedKey);
+      GetDefaultKeyForCommand(Relations[a].Command,TheKeyA,TheKeyB);
+      LoadedKey.DefaultShortcutA:=TheKeyA;
+      LoadedKey.DefaultShortcutB:=TheKeyB;
     end;
-    XMLConfig.SetDeleteValue(Path+Name+'/Value',CurKeyStr,DefaultKeyStr);
-    //debugln(['TKeyCommandRelationList.SaveToXMLConfig A ',Path+Name,' ',CurKeyStr=DefaultKeyStr]);
-    {if CurKeyStr<>DefaultKeyStr then begin
-      inc(SavedCount);
-      SubPath:=Path+'Item'+IntToStr(SavedCount);
-      XMLConfig.SetDeleteValue(SubPath+'/Name',Name,'');
-      XMLConfig.SetValue(SubPath+'/Value',CurKeyStr);
-    end;}
+    LoadedKey.ShortcutA:=Relations[a].ShortcutA;
+    LoadedKey.ShortcutB:=Relations[a].ShortcutB;
   end;
-  //XMLConfig.SetDeleteValue(Path+'KeyMap/Count',SavedCount,0);
+  // save keys to config
+  Cnt:=0;
+  AVLNode:=fLoadedKeyCommands.FindLowest;
+  while AVLNode<>nil do begin
+    LoadedKey:=TLoadedKeyCommand(AVLNode.Data);
+    if (not LoadedKey.IsShortcutADefault) or (not LoadedKey.IsShortcutBDefault)
+    then begin
+      inc(Cnt);
+      //DebugLn(['TKeyCommandRelationList.SaveToXMLConfig CUSTOM ',LoadedKey.AsString]);
+      SubPath:=Path+'Item'+IntToStr(Cnt)+'/';
+      XMLConfig.SetValue(SubPath+'Name',LoadedKey.Name);
+      Store(SubPath+'KeyA/',LoadedKey.ShortcutA,LoadedKey.DefaultShortcutA);
+      Store(SubPath+'KeyB/',LoadedKey.ShortcutB,LoadedKey.DefaultShortcutB);
+    end;
+    AVLNode:=fLoadedKeyCommands.FindSuccessor(AVLNode);
+  end;
+  XMLConfig.SetDeleteValue(Path+'Count',Cnt,0);
   Result:=true;
 end;
 
@@ -3311,10 +3491,10 @@ end;
 function TKeyCommandRelationList.Add(Category: TIDECommandCategory;
   Command: TIDECommand): integer;
 begin
-  Result:=FRelations.Add(TKeyCommandRelation.Create(Category,
-                         Command.Name,Command.LocalizedName,
-                         Command.Command,Command.ShortcutA,Command.ShortcutB,
-                         Command.OnExecute,Command.OnExecuteProc));
+  Result:=Add(Category,
+              Command.Name,Command.LocalizedName,
+              Command.Command,Command.ShortcutA,Command.ShortcutB,
+              Command.OnExecute,Command.OnExecuteProc);
   //if Command.Command=12000 then
   //  debugln('TKeyCommandRelationList.Add A ',Command.Name,' ',KeyAndShiftStateToEditorKeyString(Command.ShortcutA),' ',KeyAndShiftStateToEditorKeyString(Relations[Result].ShortcutA),' ',dbgs(Command));
 end;
@@ -3336,7 +3516,7 @@ function TKeyCommandRelationList.FindCommandByName(const CommandName: string
 var i: integer;
 begin
   for i:=0 to RelationCount-1 do
-    if CommandName=Relations[i].Name then begin
+    if CompareText(CommandName,Relations[i].Name)=0 then begin
       Result:=Relations[i];
       exit;
     end;
@@ -3436,6 +3616,28 @@ begin
   FName:=AName;
   FDescription:=ADescription;
   FScope:=TheScope;
+end;
+
+{ TLoadedKeyCommand }
+
+function TLoadedKeyCommand.IsShortcutADefault: boolean;
+begin
+  Result:=CompareIDEShortCuts(@ShortcutA,@DefaultShortcutA)=0;
+end;
+
+function TLoadedKeyCommand.IsShortcutBDefault: boolean;
+begin
+  Result:=CompareIDEShortCuts(@ShortcutB,@DefaultShortcutB)=0;
+end;
+
+function TLoadedKeyCommand.AsString: string;
+begin
+  Result:='Name="'+Name+'"'
+    +' A='+KeyAndShiftStateToEditorKeyString(ShortcutA)
+    +' DefA='+KeyAndShiftStateToEditorKeyString(DefaultShortcutA)
+    +' B='+KeyAndShiftStateToEditorKeyString(ShortcutB)
+    +' DefB='+KeyAndShiftStateToEditorKeyString(DefaultShortcutB)
+    ;
 end;
 
 initialization

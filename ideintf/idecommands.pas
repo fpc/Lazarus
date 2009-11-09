@@ -605,11 +605,9 @@ type
 
 function CompareIDEShortCuts(Data1, Data2: Pointer): integer;
 var
-  ShortCut1: PIDEShortCut;
-  ShortCut2: PIDEShortCut;
+  ShortCut1: PIDEShortCut absolute Data1;
+  ShortCut2: PIDEShortCut absolute Data2;
 begin
-  ShortCut1:=PIDEShortCut(Data1);
-  ShortCut2:=PIDEShortCut(Data2);
   if ShortCut1^.Key1>ShortCut2^.Key1 then
     Result:=1
   else if ShortCut1^.Key1<ShortCut2^.Key1 then
