@@ -250,11 +250,6 @@ Sources:
 ftp://ftp.gnome.org/pub/gnome/unstable/sources/gdk-pixbuf/
 
 
-How to disable the use in lazarus: In Tools->Configure "Build Lazarus" add the option
-'-dNoGdkPixBufLib'
-or at command line:
-"make clean all OPT=-dNoGdkPixBufLib".
-
 
 --------------------------------------------------------------------------------
 ================================================================================
