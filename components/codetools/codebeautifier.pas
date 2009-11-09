@@ -58,13 +58,13 @@
          until
        Closing the corresponding block, not all blocks:
          if expr then
-           begin|
+           if expr then begin|
            |end
 
   Examples for beautification styles: see scanexamples/indentation.pas
 
   ToDo:
-    * ecLineBreak:
+    * LineBreak:
       - indent last line after pressing return key:
           if true then
           exit;|
@@ -275,7 +275,8 @@ type
     CleanPos: integer;
     Indent: TFABIndentationPolicy;
     Block: TBlock;
-    ParentBlock: TBlock;
+    SubType: TFABBlockType;
+    SubTypeValid: boolean;
   end;
   PFABPositionIndent = ^TFABPositionIndent;
 
@@ -332,7 +333,7 @@ type
                           Stack: TFABBlockStack; Policies: TFABPolicies;
                           LearnFromFirstLine: boolean = true);
     function FindPolicyInExamples(StartCode: TCodeBuffer;
-                                  ParentTyp, Typ: TFABBlockType): TFABPolicies;
+                                  Typ, SubTyp: TFABBlockType): TFABPolicies;
     function GetNestedCommentsForCode(Code: TCodeBuffer): boolean;
     function FindStackPosForBlockCloseAtPos(const Source: string;
                              CleanPos: integer; NestedComments: boolean;
@@ -1098,7 +1099,7 @@ begin
 end;
 
 function TFullyAutomaticBeautifier.FindPolicyInExamples(StartCode: TCodeBuffer;
-  ParentTyp, Typ: TFABBlockType): TFABPolicies;
+  Typ, SubTyp: TFABBlockType): TFABPolicies;
 
   function CheckCode(Code: TCodeBuffer; out Policies: TFABPolicies): boolean;
   // result=false : abort
@@ -1132,7 +1133,7 @@ function TFullyAutomaticBeautifier.FindPolicyInExamples(StartCode: TCodeBuffer;
       end;
     end;
     // search policy
-    if Policies.GetSmallestIndent(Typ)>=0 then begin
+    if Policies.GetIndent(Typ,SubTyp,false)>=0 then begin
       exit;
     end;
     Policies:=nil;
@@ -1467,8 +1468,8 @@ function TFullyAutomaticBeautifier.GetIndent(const Source: string;
   ContextLearn: boolean; const InsertText: string): boolean;
 var
   Block: TBlock;
-  TopType: TFABBlockType;
-  TopTypeValid: Boolean;
+  SubType: TFABBlockType;
+  SubTypeValid: Boolean;
 
   function CheckPolicies(Policies: TFABPolicies; var Found: boolean): boolean;
   // returns true to stop searching
@@ -1478,8 +1479,8 @@ var
     Result:=false;
     Found:=false;
     if (Policies=nil) then exit;
-    if TopTypeValid then
-      BlockIndent:=Policies.GetIndent(Block.Typ,TopType,true)
+    if SubTypeValid then
+      BlockIndent:=Policies.GetIndent(Block.Typ,SubType,true)
     else
       BlockIndent:=Policies.GetSmallestIndent(Block.Typ);
     if (BlockIndent<0) then exit;
@@ -1498,7 +1499,6 @@ var
   Stack: TFABBlockStack;
   Policies: TFABPolicies;
   LastAtomStart, LastAtomEnd: integer;
-  ParentBlock: TBlock;
   StackIndex: LongInt;
 begin
   Result:=false;
@@ -1513,7 +1513,6 @@ begin
   end;
 
   Block:=CleanBlock;
-  ParentBlock:=CleanBlock;
   Policies:=nil;
   Stack:=TFABBlockStack.Create;
   try
@@ -1543,15 +1542,15 @@ begin
     if LastAtomStart>0 then CleanPos:=LastAtomStart;
 
     StackIndex:=Stack.Top;
-    TopType:=bbtNone;
-    TopTypeValid:=false;
+    SubType:=bbtNone;
+    SubTypeValid:=false;
     if UseLineStart then begin
       if InsertText='' then begin
         StackIndex:=FindStackPosForBlockCloseAtPos(Source,CleanPos,
-                                  NewNestedComments,Stack,TopType,TopTypeValid);
+                                  NewNestedComments,Stack,SubType,SubTypeValid);
       end else begin
         StackIndex:=FindStackPosForBlockCloseAtPos(InsertText,1,
-                                  NewNestedComments,Stack,TopType,TopTypeValid);
+                                  NewNestedComments,Stack,SubType,SubTypeValid);
       end;
     end;
     if (StackIndex<0) then begin
@@ -1564,14 +1563,19 @@ begin
     end;
 
     Block:=Stack.Stack[StackIndex];
+    if (StackIndex<Stack.Top) then begin
+      // block(s) closed by next token
+      // use indent of block start
+      Indent.Indent:=GetLineIndentWithTabs(Source,Block.StartPos,DefaultTabWidth);
+      Indent.IndentValid:=true;
+      exit(true);
+    end;
 
-    if StackIndex>0 then
-      ParentBlock:=Stack.Stack[StackIndex-1];
     {$IFDEF VerboseIndenter}
-    DebugLn(['TFullyAutomaticBeautifier.GetIndent parsed code in front: context=',FABBlockTypeNames[ParentBlock.Typ],'/',FABBlockTypeNames[Block.Typ],' indent=',GetLineIndentWithTabs(Source,Block.StartPos,DefaultTabWidth)]);
+    DebugLn(['TFullyAutomaticBeautifier.GetIndent parsed code in front: context=',FABBlockTypeNames[Block.Typ],'/',FABBlockTypeNames[SubType],' indent=',GetLineIndentWithTabs(Source,Block.StartPos,DefaultTabWidth)]);
     {$ENDIF}
     if CheckPolicies(Policies,Result) then exit;
-    TopTypeValid:=false;
+    SubTypeValid:=false;
 
     if ContextLearn then begin
       // parse source behind
@@ -1590,7 +1594,7 @@ begin
   end;
 
   // parse examples
-  Policies:=FindPolicyInExamples(nil,ParentBlock.Typ,Block.Typ);
+  Policies:=FindPolicyInExamples(nil,Block.Typ,SubType);
   {$IFDEF VerboseIndenter}
   DebugLn(['TFullyAutomaticBeautifier.GetIndent parsed examples']);
   {$ENDIF}
@@ -1613,7 +1617,10 @@ var
   begin
     Result:=false;
     if (Policies=nil) then exit;
-    BlockIndent:=Policies.GetSmallestIndent(Item^.Block.Typ);
+    if Item^.SubTypeValid then
+      BlockIndent:=Policies.GetIndent(Item^.Block.Typ,Item^.SubType,true)
+    else
+      BlockIndent:=Policies.GetSmallestIndent(Item^.Block.Typ);
     if (BlockIndent<0) then exit;
     // policy found
     {$IFDEF VerboseIndenter}
@@ -1633,8 +1640,6 @@ var
   Stack: TFABBlockStack;
   StackIndex: LongInt;
   Policies: TFABPolicies;
-  TopType: TFABBlockType;
-  TopTypeValid: Boolean;
 begin
   Result:=false;
   if (Positions=nil) or (Positions.Count=0) then exit;
@@ -1648,7 +1653,8 @@ begin
     and (Item^.CleanPos<=Positions.Items[ItemIndex-1].CleanPos) then
       exit;
     Item^.Block:=CleanBlock;
-    Item^.ParentBlock:=CleanBlock;
+    Item^.SubType:=bbtNone;
+    Item^.SubTypeValid:=false;
   end;
 
   if UseLineStart then begin
@@ -1699,11 +1705,11 @@ begin
       if not Item^.Indent.IndentValid then begin
         if LastAtomStart>0 then Item^.CleanPos:=LastAtomStart;
 
-        TopType:=bbtNone;
-        TopTypeValid:=false;
+        Item^.SubType:=bbtNone;
+        Item^.SubTypeValid:=false;
         if UseLineStart then
           StackIndex:=FindStackPosForBlockCloseAtPos(Source,Item^.CleanPos,
-                                  NewNestedComments,Stack,TopType,TopTypeValid);
+                      NewNestedComments,Stack,Item^.SubType,Item^.SubTypeValid);
         if (StackIndex<0) then begin
           // no context
           {$IFDEF VerboseIndenter}
@@ -1723,11 +1729,8 @@ begin
           if Needed=0 then exit(true);
         end else begin
           Item^.Block:=Stack.Stack[StackIndex];
-
-          if StackIndex>0 then
-            Item^.ParentBlock:=Stack.Stack[StackIndex-1];
           {$IFDEF VerboseIndenter}
-          DebugLn(['TFullyAutomaticBeautifier.GetIndent parsed code in front: context=',FABBlockTypeNames[Item^.ParentBlock.Typ],'/',FABBlockTypeNames[Item^.Block.Typ],' indent=',GetLineIndentWithTabs(Source,Item^.Block.StartPos,DefaultTabWidth)]);
+          DebugLn(['TFullyAutomaticBeautifier.GetIndent parsed code in front: context=',FABBlockTypeNames[Item^.Block.Typ],'/',FABBlockTypeNames[Item^.SubType],' indent=',GetLineIndentWithTabs(Source,Item^.Block.StartPos,DefaultTabWidth)]);
           {$ENDIF}
           if CheckPolicies(Policies,Item) then exit(true);
         end;
@@ -1758,7 +1761,7 @@ begin
   for ItemIndex:=0 to Positions.Count-1 do begin
     Item:=@Positions.Items[ItemIndex];
     if (not Item^.Indent.IndentValid) and (Item^.Block.Typ<>bbtNone) then begin
-      Policies:=FindPolicyInExamples(nil,Item^.ParentBlock.Typ,Item^.Block.Typ);
+      Policies:=FindPolicyInExamples(nil,Item^.Block.Typ,Item^.SubType);
       {$IFDEF VerboseIndenter}
       DebugLn(['TFullyAutomaticBeautifier.GetIndent parsed examples']);
       {$ENDIF}
