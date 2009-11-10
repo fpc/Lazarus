@@ -1455,7 +1455,7 @@ begin
     EndPos:=Pos1;
   end;
   if EndPos>length(Source) then EndPos:=length(Source);
-  while StartPos<=EndPos do begin
+  while StartPos<EndPos do begin
     if Source[StartPos] in [#10,#13] then begin
       Result:=false;
       exit;

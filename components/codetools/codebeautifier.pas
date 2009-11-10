@@ -143,6 +143,7 @@ type
     bbtIfThen,    // child of bbtIf
     bbtIfElse,    // child of bbtIf
     bbtIfBegin,   // child of bbtIfThen or bbtIfElse
+    bbtStatement,
     bbtStatementRoundBracket,
     bbtStatementEdgedBracket
     );
@@ -154,10 +155,12 @@ const
   bbtAllProcedures = [bbtProcedure,bbtFunction];
   bbtAllCodeSections = [bbtInterface,bbtImplementation,bbtInitialization,
                         bbtFinalization];
-  bbtAllStatements = [bbtMainBegin,bbtFreeBegin,bbtRepeat,bbtProcedureBegin,
-                      bbtCaseColon,bbtCaseBegin,bbtCaseElse,
-                      bbtTry,bbtFinally,bbtExcept,
-                      bbtIfThen,bbtIfElse,bbtIfBegin,
+  bbtAllStatementParents = [bbtMainBegin,bbtFreeBegin,bbtProcedureBegin,
+                        bbtRepeat,
+                        bbtCaseColon,bbtCaseBegin,bbtCaseElse,
+                        bbtTry,bbtFinally,bbtExcept,
+                        bbtIfThen,bbtIfElse,bbtIfBegin];
+  bbtAllStatements = bbtAllStatementParents+[
                       bbtStatementRoundBracket,bbtStatementEdgedBracket];
   bbtAllBrackets = [bbtTypeRoundBracket,bbtTypeEdgedBracket,
                     bbtStatementRoundBracket,bbtStatementEdgedBracket];
@@ -206,6 +209,7 @@ const
     'bbtIfThen',
     'bbtIfElse',
     'bbtIfBegin',
+    'bbtStatement',
     'bbtStatementRoundBracket',
     'bbtStatementEdgedBracket'
     );
@@ -488,6 +492,7 @@ procedure TFullyAutomaticBeautifier.ParseSource(const Src: string;
 var
   p: Integer;
   AtomStart: integer;
+  AtomStartedBlock, AtomEndedBlock: boolean;
   FirstAtomOnNewLine: Boolean;
   InFirstLine: boolean;
 
@@ -524,6 +529,7 @@ var
   var
     Block: PBlock;
   begin
+    AtomStartedBlock:=true;
     FirstAtomOnNewLine:=false;
     if (Stack.Top>=0) then begin
       Block:=@Stack.Stack[Stack.Top];
@@ -550,6 +556,7 @@ var
     {$IFDEF ShowCodeBeautifierParser}
     DebugLn([GetIndentStr(Stack.Top*2),'EndBlock ',FABBlockTypeNames[Stack.TopType],' ',GetAtomString(@Src[AtomStart],NestedComments),' at ',PosToStr(p)]);
     {$ENDIF}
+    AtomEndedBlock:=true;
     FirstAtomOnNewLine:=false;
     Stack.EndBlock(p);
   end;
@@ -694,6 +701,8 @@ begin
   repeat
     LastAtomStart:=AtomStart;
     LastAtomEnd:=p;
+    AtomStartedBlock:=false;
+    AtomEndedBlock:=false;
     ReadRawNextPascalAtom(Src,p,AtomStart,NestedComments);
     if InFirstLine and (not PositionsInSameLine(Src,LastAtomEnd,AtomStart)) then
       InFirstLine:=false;
@@ -798,6 +807,8 @@ begin
       'N': // EN
         if CompareIdentifiers('END',r)=0 then begin
           // if statements can be closed by end without semicolon
+          if Stack.TopType=bbtStatement then
+            EndBlock;
           while Stack.TopType in [bbtIf,bbtIfThen,bbtIfElse] do EndBlock;
           if Stack.TopType=bbtProcedureModifiers then
             EndBlock;
@@ -994,9 +1005,7 @@ begin
       end;
     ';':
       case Stack.TopType of
-      bbtUsesSection:
-        EndBlock;
-      bbtDefinition:
+      bbtUsesSection,bbtDefinition,bbtStatement:
         EndBlock;
       bbtCaseColon:
         begin
@@ -1075,15 +1084,17 @@ begin
         end;
       end;
     end;
+    // check blocks that start without keyword/symbol
     if (Stack.TopType in bbtAllIdentifierSections)
-    and (IsIdentStartChar[Src[AtomStart]]) then begin
-      if (CompareIdentifiers('VAR',r)<>0)
-      and (CompareIdentifiers('TYPE',r)<>0)
-      and (CompareIdentifiers('CONST',r)<>0)
-      and (CompareIdentifiers('RESOURCESTRING',r)<>0)
-      and (CompareIdentifiers('LABEL',r)<>0)
-      then
-        BeginBlock(bbtDefinition);
+    and (IsIdentStartChar[Src[AtomStart]])
+    and (not AtomStartedBlock) and (not AtomEndedBlock) then begin
+      // new definition
+      BeginBlock(bbtDefinition);
+    end;
+    if (Stack.TopType in bbtAllStatementParents)
+    and (not AtomStartedBlock) and (not AtomEndedBlock) then begin
+      // new statement
+      BeginBlock(bbtStatement);
     end;
 
     if FirstAtomOnNewLine then begin
@@ -1592,10 +1603,11 @@ begin
 
     // search last non empty line start
     PrevLineAtomEndPos:=CleanPos;
-    while (PrevLineAtomEndPos>0) and (Source[PrevLineAtomEndPos] in [#10,#13]) do
+    while (PrevLineAtomEndPos>0)
+    and (not (Source[PrevLineAtomEndPos] in [#10,#13])) do
       dec(PrevLineAtomEndPos);
     if (PrevLineAtomEndPos>0) then
-        PrevLineAtomEndPos:=FindPrevNonSpace(Source,PrevLineAtomEndPos);
+      PrevLineAtomEndPos:=FindPrevNonSpace(Source,PrevLineAtomEndPos);
 
     if Stack.LastBlockClosed.StartPos>0 then begin
       // a child block was closed
@@ -1613,7 +1625,7 @@ begin
         // between block end and CleanPos are non empty lines
         // => indent like the last non empty line
         {$IFDEF VerboseIndenter}
-        DebugLn(['TFullyAutomaticBeautifier.GetIndent unstructural code found, indent as last line']);
+        DebugLn(['TFullyAutomaticBeautifier.GetIndent unstructural code found, indent as last line: LastBlockClosedAt=',dbgstr(copy(Source,Stack.LastBlockClosedAt,10)),' PrevAtom=',dbgstr(copy(Source,PrevLineAtomEndPos,10))]);
         {$ENDIF}
         Indent.Indent:=GetLineIndentWithTabs(Source,
                                             PrevLineAtomEndPos,DefaultTabWidth);
