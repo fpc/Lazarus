@@ -41,6 +41,10 @@ type
     MenuItem11: TMenuItem;
     MenuItem12: TMenuItem;
     MenuItem13: TMenuItem;
+    MenuItem14: TMenuItem;
+    mnRestore: TMenuItem;
+    mnMinimize: TMenuItem;
+    mnWindowDump: TMenuItem;
     MenuItem2: TMenuItem;
     MenuItem3: TMenuItem;
     MenuItem4: TMenuItem;
@@ -57,6 +61,9 @@ type
     mnOpen: TMenuItem;
     mnFile: TMenuItem;
     procedure FormCreate(Sender: TObject);
+    procedure mnMinimizeClick(Sender: TObject);
+    procedure mnRestoreClick(Sender: TObject);
+    procedure mnWindowDumpClick(Sender: TObject);
     procedure ViewMenuClick(Sender: TObject);
     procedure mnExitClick(Sender: TObject);
     procedure mnOpenClick(Sender: TObject);
@@ -74,6 +81,7 @@ var
 implementation
 
 uses
+  LCLProc,
   fFloatingSite;
 
 { TEditorSite }
@@ -138,11 +146,53 @@ begin
   Close;
 end;
 
+procedure TEditorSite.mnMinimizeClick(Sender: TObject);
+begin
+  self.WindowState := wsMinimized;
+end;
+
+procedure TEditorSite.mnRestoreClick(Sender: TObject);
+begin
+  WindowState := wsNormal;
+end;
+
 procedure TEditorSite.mnOpenClick(Sender: TObject);
 begin
   if OpenDialog1.Execute then begin
     OpenFile(OpenDialog1.FileName);
   end;
+end;
+
+procedure TEditorSite.mnWindowDumpClick(Sender: TObject);
+var
+  i: integer;
+  f: TWinControl;
+  s: string;
+begin
+  DebugLn('--- CustomForms ---');
+  for i := 0 to Screen.CustomFormCount - 1 do begin
+    f := Screen.CustomForms[i];
+    s := f.Name;
+    while f.HostDockSite <> nil do begin
+      f := f.HostDockSite;
+      s := s + ' in ' + f.Name;
+    end;
+    DebugLn(s);
+  end;
+{ Seems to be the same list
+}
+  DebugLn('--- Forms ---');
+  for i := 0 to Screen.FormCount - 1 do begin
+    f := Screen.Forms[i];
+    s := f.Name;
+    while f.Parent <> nil do begin
+      f := f.Parent;
+      s := s + ' in ' + f.Name;
+    end;
+    DebugLn(s);
+  end;
+{}
+  DebugLn('---');
 end;
 
 function TEditorSite.OpenFile(const FileName: string): TObject;

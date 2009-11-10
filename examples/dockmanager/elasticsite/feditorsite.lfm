@@ -7,6 +7,7 @@ inherited EditorSite: TEditorSite
   ClientWidth = 400
   Menu = MainMenu1
   OnCreate = FormCreate
+  ShowInTaskBar = stAlways
   inherited pnlLeft: TPanel
     Height = 256
   end
@@ -98,6 +99,21 @@ inherited EditorSite: TEditorSite
           Caption = 'Debug Output'
           OnClick = ViewMenuClick
         end
+      end
+    end
+    object MenuItem14: TMenuItem
+      Caption = '&Windows'
+      object mnWindowDump: TMenuItem
+        Caption = '&Dump'
+        OnClick = mnWindowDumpClick
+      end
+      object mnMinimize: TMenuItem
+        Caption = 'Minimize all'
+        OnClick = mnMinimizeClick
+      end
+      object mnRestore: TMenuItem
+        Caption = 'Restore all'
+        OnClick = mnRestoreClick
       end
     end
   end
