@@ -957,8 +957,8 @@ begin
 
   if (SelectedOwner is TProject) and (TargetOwner<>SelectedOwner) then begin
     // unit of project can not be used by other packages/projects
-    MessageDlg('Impossible',
-      'unit of project can not be used by other packages/projects',
+    MessageDlg(lisImpossible,
+      lisAProjectUnitCanNotBeUsedByOtherPackagesProjects,
       mtError, [mbCancel], 0);
     exit;
   end;
@@ -1020,6 +1020,7 @@ begin
         exit;
       end;
       Code.AbsoluteToLineCol(CodeMarker.NewPosition,InsertPos.Y,InsertPos.X);
+      //GetIdentStartEndAtPosition(Code.Source,);
       SrcEdit.ReplaceText(InsertPos,InsertPos,Identifier);
     end;
   finally

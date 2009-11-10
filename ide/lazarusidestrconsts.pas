@@ -4520,6 +4520,9 @@ resourcestring
   lisAddPackageToProject = 'Add package %s to project?';
   lisOnBreakLineIEReturnOrEnterKey = 'On break line (i.e. return or enter key)';
   lisOnPasteFromClipboard = 'On paste from clipboard';
+  lisImpossible = 'Impossible';
+  lisAProjectUnitCanNotBeUsedByOtherPackagesProjects = 'A project unit can '
+    +'not be used by other packages/projects';
 
 implementation
 
