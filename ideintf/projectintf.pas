@@ -1473,6 +1473,7 @@ procedure TLazProject.SetSessionStorage(const AValue: TProjectSessionStorage);
 begin
   if FSessionStorage=AValue then exit;
   FSessionStorage:=AValue;
+  Modified:=true;
 end;
 
 procedure TLazProject.SetModified(const AValue: boolean);
