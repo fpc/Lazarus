@@ -69,6 +69,7 @@ type
     class function GetNotebookMinTabWidth(const AWinControl: TWinControl): integer; virtual;
     class function GetPageRealIndex(const ANotebook: TCustomNotebook; AIndex: Integer): Integer; virtual;
     class function GetTabIndexAtPos(const ANotebook: TCustomNotebook; const AClientPos: TPoint): integer; virtual;
+    class function GetTabRect(const ANotebook: TCustomNotebook; const AIndex: Integer): TRect; virtual;
     class function GetCapabilities: TNoteBookCapabilities; virtual;
     class procedure SetImageList(const ANotebook: TCustomNotebook; const AImageList: TCustomImageList); virtual;
     class procedure SetPageIndex(const ANotebook: TCustomNotebook; const AIndex: integer); virtual;
@@ -293,6 +294,12 @@ class function TWSCustomNotebook.GetTabIndexAtPos(const ANotebook: TCustomNotebo
   const AClientPos: TPoint): integer;
 begin
   Result := -1;
+end;
+
+class function TWSCustomNotebook.GetTabRect(const ANotebook: TCustomNotebook;
+  const AIndex: Integer): TRect;
+begin
+  Result := Rect(-1,-1,-1,-1);
 end;
 
 class function TWSCustomNotebook.GetCapabilities: TNoteBookCapabilities;

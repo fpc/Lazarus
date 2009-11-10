@@ -74,6 +74,7 @@ type
 
     class function GetPageRealIndex(const ANotebook: TCustomNotebook; AIndex: Integer): Integer; override;
     class function GetTabIndexAtPos(const ANotebook: TCustomNotebook; const AClientPos: TPoint): integer; override;
+    class function GetTabRect(const ANotebook: TCustomNotebook; const AIndex: Integer): TRect; override;
     class function GetCapabilities: TNoteBookCapabilities;override;
     class function GetDesignInteractive(const AWinControl: TWinControl; AClientPos: TPoint): Boolean; override;
     class procedure SetImageList(const ANotebook: TCustomNotebook; const AImageList: TCustomImageList); override;
@@ -614,6 +615,23 @@ begin
   hittestInfo.pt.x := AClientPos.x + ORect.Left;
   hittestInfo.pt.y := AClientPos.y + ORect.Top;
   Result := Windows.SendMessage(ANotebook.Handle, TCM_HITTEST, 0, LPARAM(@hittestInfo));
+end;
+
+class function TWin32WSCustomNotebook.GetTabRect(const ANotebook: TCustomNotebook;
+  const AIndex: Integer): TRect;
+var
+  Orect: TRect;
+begin
+  GetLCLClientBoundsOffset(ANotebook, ORect);
+  if Windows.SendMessage(ANotebook.Handle, TCM_GETITEMRECT, WPARAM(AIndex), LPARAM(@Result)) <> 0
+  then begin
+    Result.Top := Result.Top - Orect.Top;
+    Result.Bottom := Result.Bottom - Orect.Top;
+    Result.Left := Result.Left - Orect.Left;
+    Result.Right := Result.Right - Orect.Right;
+  end
+  else
+    Result := inherited GetTabRect(ANotebook, AIndex);
 end;
 
 class function TWin32WSCustomNotebook.GetCapabilities: TNoteBookCapabilities;

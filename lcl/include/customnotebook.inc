@@ -309,6 +309,14 @@ begin
     Result:=-1;
 end;
 
+function TCustomNotebook.TabRect(AIndex: Integer): TRect;
+begin
+  if HandleAllocated then
+    Result := TWSCustomNotebookClass(WidgetSetClass).GetTabRect(Self, AIndex)
+  else
+    Result := Rect(-1, -1, -1, -1);
+end;
+
 function TCustomNotebook.GetImageIndex(ThePageIndex: Integer): Integer;
 var
   APage: TCustomPage;

@@ -72,6 +72,7 @@ type
     class function GetNotebookMinTabHeight(const AWinControl: TWinControl): integer; override;
     class function GetNotebookMinTabWidth(const AWinControl: TWinControl): integer; override;
     class function GetTabIndexAtPos(const ANotebook: TCustomNotebook; const AClientPos: TPoint): integer; override;
+    class function GetTabRect(const ANotebook: TCustomNotebook; const AIndex: Integer): TRect; override;
     class procedure SetPageIndex(const ANotebook: TCustomNotebook; const AIndex: integer); override;
     class procedure SetTabPosition(const ANotebook: TCustomNotebook; const ATabPosition: TTabPosition); override;
     class procedure ShowTabs(const ANotebook: TCustomNotebook; AShowTabs: boolean); override;
@@ -586,6 +587,48 @@ begin
           exit;
         end;
       end;
+    end;
+  end;
+end;
+
+class function TGtkWSCustomNotebook.GetTabRect(const ANotebook: TCustomNotebook;
+  const AIndex: Integer): TRect;
+var
+  NoteBookWidget: PGtkNotebook;
+  TabWidget: PGtkWidget;
+  PageWidget: PGtkWidget;
+  {$IFDEF GTK2}
+  Window: PGdkWindow;
+  WindowOrg,ClientOrg: TPoint;
+  {$ENDIF}
+  XOffset, YOffset: Integer;
+  Count: guint;
+begin
+  Result := inherited;
+  NoteBookWidget:=PGtkNotebook(ANotebook.Handle);
+  if (NotebookWidget=nil) then exit;
+  //DebugLn(['TGtkWSCustomNotebook.GetTabIndexAtPos ',GetWidgetDebugReport(PGtkWidget(NotebookWidget))]);
+  {$IFDEF GTK2}
+  Window := GetControlWindow(NoteBookWidget);
+  gdk_window_get_origin(Window,@WindowOrg.X,@WindowOrg.Y);
+  ClientOrg:=GetWidgetClientOrigin(PGtkWidget(NotebookWidget));
+  XOffset := (ClientOrg.X-WindowOrg.X);
+  YOffset := (ClientOrg.Y-WindowOrg.Y);
+  {$ELSE}
+  XOffset := 0;
+  YOffset := 0;
+  {$ENDIF}
+  // go through all tabs
+  Count:=g_list_length(NoteBookWidget^.Children);
+  PageWidget:=gtk_notebook_get_nth_page(NoteBookWidget, AIndex);
+  if (PageWidget<>nil) and (AIndex < Count) then begin
+    TabWidget:=gtk_notebook_get_tab_label(NoteBookWidget, PageWidget);
+    if TabWidget<>nil then begin
+      Result.Top := TabWidget^.Allocation.Y - YOffset;
+      Result.Bottom := TabWidget^.Allocation.Y - YOffset + TabWidget^.Allocation.Height;
+      Result.Left := TabWidget^.Allocation.X - XOffset;
+      Result.right := TabWidget^.Allocation.X - XOffset + TabWidget^.Allocation.Width;
+      exit;
     end;
   end;
 end;

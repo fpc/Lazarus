@@ -205,6 +205,7 @@ type
     constructor Create(TheOwner: TComponent); override;
     destructor Destroy; override;
     function TabIndexAtClientPos(ClientPos: TPoint): integer;
+    function TabRect(AIndex: Integer): TRect;
     function GetImageIndex(ThePageIndex: Integer): Integer; virtual;
     function IndexOf(APage: TCustomPage): integer;
     function CustomPage(Index: integer): TCustomPage;
