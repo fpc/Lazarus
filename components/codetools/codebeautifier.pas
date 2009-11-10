@@ -1583,7 +1583,7 @@ begin
       // block(s) closed by next token
       // use indent of block start
       {$IFDEF VerboseIndenter}
-      //DebugLn(['TFullyAutomaticBeautifier.GetIndent next token close block: ',FABBlockTypeNames[Stack.TOperation]]);
+      DebugLn(['TFullyAutomaticBeautifier.GetIndent next token close block: ',FABBlockTypeNames[Stack.TopType]]);
       {$ENDIF}
       Indent.Indent:=GetLineIndentWithTabs(Source,Block.StartPos,DefaultTabWidth);
       Indent.IndentValid:=true;
@@ -1604,11 +1604,17 @@ begin
       then begin
         // between block end and CleanPos are only empty lines
         // => indent like the last child block one
+        {$IFDEF VerboseIndenter}
+        DebugLn(['TFullyAutomaticBeautifier.GetIndent line after end of last sibling block, copy indent']);
+        {$ENDIF}
         Indent.Indent:=GetLineIndentWithTabs(Source,
                                 Stack.LastBlockClosed.StartPos,DefaultTabWidth);
       end else begin
         // between block end and CleanPos are non empty lines
         // => indent like the last non empty line
+        {$IFDEF VerboseIndenter}
+        DebugLn(['TFullyAutomaticBeautifier.GetIndent unstructural code found, indent as last line']);
+        {$ENDIF}
         Indent.Indent:=GetLineIndentWithTabs(Source,
                                             PrevLineAtomEndPos,DefaultTabWidth);
       end;
