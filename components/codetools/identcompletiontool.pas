@@ -1514,7 +1514,8 @@ begin
   
   // get identifier position
   GetIdentStartEndAtPosition(Src,CleanCursorPos,IdentStartPos,IdentEndPos);
-  if CursorPos.X>CursorPos.Code.GetLineLength(CursorPos.Y)+1 then
+  //DebugLn(['TIdentCompletionTool.ParseSourceTillCollectionStart ',dbgstr(copy(Src,IdentStartPos,10)),' CursorPos.X=',CursorPos.X,' LineLen=',CursorPos.Code.GetLineLength(CursorPos.Y-1),' ',CursorPos.Code.getline(CursorPos.Y-1)]);
+  if CursorPos.X>CursorPos.Code.GetLineLength(CursorPos.Y-1)+1 then
     IdentStartPos:=IdentEndPos;
 end;
 
@@ -1552,7 +1553,7 @@ procedure TIdentCompletionTool.FindCollectionContext(
     MoveCursorToCleanPos(IdentStartPos);
     ReadPriorAtom;
     if (CurPos.Flag=cafPoint)
-    or (UpAtomIs('INHERITED')) then begin
+    or UpAtomIs('INHERITED') then begin
       Result:=FindStartOfTerm(IdentStartPos,NodeTermInType(ContextNode));
       if Result<ContextNode.StartPos then
         Result:=ContextNode.StartPos;
