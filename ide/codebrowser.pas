@@ -883,11 +883,14 @@ var
   TargetCode: TCodeBuffer;
   TargetOwner: TObject;
   SrcEdit: TSourceEditorInterface;
-  InsertPos: TPoint;
   Code: TCodeBuffer;
   CodeMarker: TSourceLogMarker;
   Identifier: String;
   SelectedUnitFilename: String;
+  IdentStart: integer;
+  IdentEnd: integer;
+  InsertStartPos: TPoint;
+  InsertEndPos: TPoint;
 begin
   TVNode:=BrowseTreeView.Selected;
   if TVNode=nil then exit;
@@ -975,9 +978,9 @@ begin
   try
     SrcEdit:=SourceEditorWindow.ActiveEditor;
     if SrcEdit=nil then exit;
-    InsertPos:=SrcEdit.CursorTextXY;
+    InsertStartPos:=SrcEdit.CursorTextXY;
     Code:=TCodeBuffer(SrcEdit.CodeToolsBuffer);
-    CodeMarker:=Code.AddMarkerXY(InsertPos.Y,InsertPos.X,Self);
+    CodeMarker:=Code.AddMarkerXY(InsertStartPos.Y,InsertStartPos.X,Self);
 
     List.Add(TargetOwner);
     if (SelectedOwner is TLazPackage) then begin
@@ -1019,9 +1022,12 @@ begin
         DebugLn(['TCodeBrowserView.UseUnitInSrcEditor insert place was deleted']);
         exit;
       end;
-      Code.AbsoluteToLineCol(CodeMarker.NewPosition,InsertPos.Y,InsertPos.X);
-      //GetIdentStartEndAtPosition(Code.Source,);
-      SrcEdit.ReplaceText(InsertPos,InsertPos,Identifier);
+      GetIdentStartEndAtPosition(Code.Source,CodeMarker.NewPosition,
+                                 IdentStart,IdentEnd);
+      Code.AbsoluteToLineCol(IdentStart,InsertStartPos.Y,InsertStartPos.X);
+      InsertEndPos:=InsertStartPos;
+      inc(InsertEndPos.X,IdentEnd-IdentStart);
+      SrcEdit.ReplaceText(InsertStartPos,InsertEndPos,Identifier);
     end;
   finally
     List.Free;
