@@ -23,8 +23,6 @@ type
   private
     procedure AdjustCaption(without: TControl);
   protected
-    function  DoUnDock(NewTarget: TWinControl; Client: TControl;
-                       KeepDockSiteSize: Boolean = true): Boolean; override;
     procedure Loaded; override;
   public
     { public declarations }
@@ -57,55 +55,6 @@ begin
   Caption := s; //GetDockCaption(self);
 end;
 
-function TFloatingSite.DoUnDock(NewTarget: TWinControl; Client: TControl;
-  KeepDockSiteSize: Boolean): Boolean;
-begin
- (* Copied from TWinControl.DoUnDock - try fix flaws.
- *)
-  //Result:=inherited DoUnDock(NewTarget, Client, KeepDockSiteSize);
-  Result := True;
-  if Assigned(OnUnDock) then begin
-    OnUnDock(Self, Client, NewTarget, Result);
-    if not Result then
-      Exit;
-  end;
-{ TODO -cdocking : Also ask docking manager!
-In case of a drop into the old location the undock operation should be aborted,
-because then the docking manager (DragDockObject) would refer to an invalid (no more
-existing) target.
- }
-{$IFDEF old}
-  if not KeepDockSiteSize then
-  begin
-    NewBounds := BoundsRect;
-    case Client.Align of
-      alLeft:
-        inc(NewBounds.Left, Client.Width);
-      alTop:
-        inc(NewBounds.Top, Client.Height);
-      alRight:
-        dec(NewBounds.Right, Client.Width);
-      alBottom:
-        dec(NewBounds.Bottom, Client.Height);
-    end;
-    SetBoundsKeepBase(NewBounds.Left, NewBounds.Top,
-                      NewBounds.Right - NewBounds.Left,
-                      NewBounds.Bottom - NewBounds.Top);
-  end;
-{$ELSE}
-(* There exists a bug in the floating logic :-(
-  When we are the FloatingDockSiteClass, the control isundocked,
-  BUT then becomes a normal child control,
-  and the docksite (we!) is moved to the new location.
-*)
-{$ENDIF}
-  Result := Result and DoUndockClientMsg(NewTarget, Client);
-  if Result and (NewTarget = nil) then begin
-    //ManualFloat(???)
-    { TODO : Create floating dock site - but not here, the DockObject must be updated accordingly! }
-  end;
-end;
-
 procedure TFloatingSite.FormDockDrop(Sender: TObject; Source: TDragDockObject;
   X, Y: Integer);
 begin
@@ -125,11 +74,16 @@ begin
     - disallow to Nil (move window?)
     - if allowed, kill empty docksite.
   Refresh caption after undock.
+
+Shit: in both cases the docking management does the opposite of what it should do :-(
+
+When the last control is dragged away, it's hosted in a *new* site.
+When a second control is dragged away, the entire site is moved.
 *)
   if DockClientCount <= 1 then begin
     if NewTarget = nil then begin
-      Allow := False;
-      //move form?
+      Allow := False; //deny
+      //Allow := True;    //move form?
     end else
       Release;
   end else begin
@@ -138,6 +92,8 @@ begin
       The site is moved to the drop location.
   *)
     Allow := NewTarget <> nil;  //simply disallow undock to floating state (for now)
+    //Allow := True; //bug!!!
+    //DragManager. - not helpful - where is the DockObject???
   end;
   if Allow then begin
     AdjustCaption(Client);

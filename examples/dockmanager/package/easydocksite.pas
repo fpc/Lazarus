@@ -45,7 +45,7 @@ LCL TODO:
   the client is undocked BUT stays in the site.
 *)
 
-{$H+}
+{$mode objfpc}{$H+}
 
 //{$DEFINE newSplitter} //exclude splitter from remaining zone
 {.$DEFINE handle_existing} //dock controls existing in the dock site?
