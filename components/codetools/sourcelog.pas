@@ -321,12 +321,9 @@ end;
 function TSourceLog.GetLineLength(Index: integer): integer;
 begin
   BuildLineRanges;
-  if (Index>=0) and (Index<fLineCount) then begin
-    if Index<fLineCount-1 then
-      Result:=fLineRanges[Index+1].EndPos-fLineRanges[Index+1].StartPos
-    else
-      Result:=fSrcLen-fLineRanges[Index].StartPos;
-  end else
+  if (Index>=0) and (Index<fLineCount) then
+    Result:=fLineRanges[Index].EndPos-fLineRanges[Index].StartPos
+  else
     Result:=0;
 end;
 

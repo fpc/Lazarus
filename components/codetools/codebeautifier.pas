@@ -1582,6 +1582,9 @@ begin
     if (StackIndex<Stack.Top) then begin
       // block(s) closed by next token
       // use indent of block start
+      {$IFDEF VerboseIndenter}
+      //DebugLn(['TFullyAutomaticBeautifier.GetIndent next token close block: ',FABBlockTypeNames[Stack.TOperation]]);
+      {$ENDIF}
       Indent.Indent:=GetLineIndentWithTabs(Source,Block.StartPos,DefaultTabWidth);
       Indent.IndentValid:=true;
       exit(true);

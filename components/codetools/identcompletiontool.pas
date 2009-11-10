@@ -1579,6 +1579,7 @@ begin
   GatherContext:=CreateFindContext(Self,CursorNode);
 
   IgnoreCurContext:=false;
+  //DebugLn(['TIdentCompletionTool.FindCollectionContext IdentStartPos=',dbgstr(copy(Src,IdentStartPos,20))]);
   ContextExprStartPos:=GetContextExprStartPos(IdentStartPos,CursorNode);
   if GatherContext.Node.Desc=ctnWithVariable then begin
     if GatherContext.Node.PriorBrother<>nil then
