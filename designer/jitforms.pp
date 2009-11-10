@@ -1115,8 +1115,11 @@ begin
             SetComponentDesignMode(Component,true);
             // this is a streamed sub component => set csInline
             SetComponentInlineMode(Component,true);
-            // this is an ancestor => set csAncestor
-            SetComponentAncestorMode(Component,true);
+            if csInline in NewOwner.ComponentState then
+            begin
+              // this is an ancestor => set csAncestor
+              SetComponentAncestorMode(Component,true);
+            end;
             // now run the constructor
             Component.Create(NewOwner);
           end;
