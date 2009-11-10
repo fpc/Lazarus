@@ -67,6 +67,7 @@ type
     class function GetCapabilities: TNoteBookCapabilities; override;
     class function GetDesignInteractive(const AWinControl: TWinControl; AClientPos: TPoint): Boolean; override;
     class function GetTabIndexAtPos(const ANotebook: TCustomNotebook; const AClientPos: TPoint): integer; override;
+    class function GetTabRect(const ANotebook: TCustomNotebook; const AIndex: Integer): TRect; override;
     class procedure SetPageIndex(const ANotebook: TCustomNotebook; const AIndex: integer); override;
     class procedure SetTabCaption(const ANotebook: TCustomNotebook; const AChild: TCustomPage; const AText: string); override;
     class procedure SetTabPosition(const ANotebook: TCustomNotebook; const ATabPosition: TTabPosition); override;
@@ -378,6 +379,19 @@ var
 begin
   TabWidget := TQtTabWidget(ANotebook.Handle);
   Result := TabWidget.tabAt(AClientPos);
+end;
+
+class function TQtWSCustomNotebook.GetTabRect(const ANotebook: TCustomNotebook;
+  const AIndex: Integer): TRect;
+var
+  TabWidget: TQtTabWidget;
+  R: TRect;
+begin
+  Result := Rect(-1, -1, -1, -1);
+  if not WSCheckHandleAllocated(ANotebook, 'GetTabRect') then
+    Exit;
+  TabWidget := TQtTabWidget(ANotebook.Handle);
+  Result := TabWidget.TabBar.GetTabRect(AIndex);
 end;
 
 class procedure TQtWSCustomNotebook.SetPageIndex(

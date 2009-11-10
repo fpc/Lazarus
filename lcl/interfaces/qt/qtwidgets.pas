@@ -648,6 +648,7 @@ type
   public
     procedure AttachEvents; override;
     procedure DetachEvents; override;
+    function GetTabRect(const AIndex: integer): TRect;
     procedure SignalTabBarCurrentChanged(Index: Integer); cdecl;
     function SlotTabBarMouse(Sender: QObjectH; Event: QEventH): Boolean; cdecl;
     function EventFilter(Sender: QObjectH; Event: QEventH): Boolean; cdecl; override;
@@ -5626,6 +5627,11 @@ procedure TQtTabBar.DetachEvents;
 begin
   QTabBar_hook_destroy(FTabBarChangedHook);
   inherited DetachEvents;
+end;
+
+function TQtTabBar.GetTabRect(const AIndex: integer): TRect;
+begin
+  QTabBar_tabRect(QTabBarH(Widget), @Result, AIndex);
 end;
 
 procedure TQtTabBar.SignalTabBarCurrentChanged(Index: Integer); cdecl;
