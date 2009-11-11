@@ -1929,6 +1929,7 @@ begin
   if TControl(Data) is TCustomForm then
     DebugLn('VFP gtksize_allocateCB: ',TControl(Data).ClassName,' ',dbgs(Size^.X),',',dbgs(Size^.Y));
   {$ENDIF}
+  {$IFDEF Gtk1}
   if GTK_WIDGET_REALIZED(Widget) then begin
     { The gtk sends the size messages after the resizing. Therefore the parent
       widget is already resized, but the parent resize message will be emitted
@@ -1936,15 +1937,26 @@ begin
       LCL. But it sends size messages in bottom-top order, which can result in
       many resizes in the LCL.
     }
-    {$IFDEF Gtk1}
     // All resize messages between lcl and gtk1 are cached.
     SaveSizeNotification(Widget);
-    {$ELSE}
-    // The resize messages of the inner widget of a Control is cached.
-    // This is the resize of a outer widget and sent to the LCL immediately.
-    SendSizeNotificationToLCL(Widget);
-    {$ENDIF}
   end;
+  {$ELSE}
+    {$IFDEF NewAutoSize}
+    SendSizeNotificationToLCL(Widget);
+    {$ELSE}
+    if GTK_WIDGET_REALIZED(Widget) then begin
+      { The gtk sends the size messages after the resizing. Therefore the parent
+        widget is already resized, but the parent resize message will be emitted
+        after all its childs. So, the gtk resizes in top-bottom order, just like the
+        LCL. But it sends size messages in bottom-top order, which can result in
+        many resizes in the LCL.
+      }
+      // The resize messages of the inner widget of a Control is cached.
+      // This is the resize of an outer widget and sent to the LCL immediately.
+      SendSizeNotificationToLCL(Widget);
+    end;
+    {$ENDIF}
+  {$ENDIF}
 end;
 
 function gtksize_allocate_client(widget: PGtkWidget; size: pGtkAllocation;

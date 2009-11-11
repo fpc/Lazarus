@@ -6549,6 +6549,7 @@ begin
   FWidgetsResized.Remove(MainWidget);
   FFixWidgetsResized.Remove(FixedWidget);
 
+  {$IF defined(Gtk1) or not defined(NewAutoSize)}
   if not GTK_WIDGET_REALIZED(aWidget) then begin
     // the widget is not yet realized, so this GTK resize was not a user change.
     // => ignore
@@ -6558,6 +6559,7 @@ begin
     {$ENDIF}
     exit;
   end;
+  {$ENDIF}
 
   GetWidgetRelativePosition(MainWidget,GtkLeft,GtkTop);
 
