@@ -34,19 +34,24 @@
   Constructor for the class.
  ------------------------------------------------------------------------------}
 constructor TWinCEWidgetSet.Create;
+var
+  Font: THandle;
 begin
   inherited Create;
   FTimerData  := TList.Create;
+
+  // Metrics always fail because SPI_GETNONCLIENTMETRICS doesn't exist under WinCE
+  // So we need to get the fonts by other means
   FMetrics.cbSize := SizeOf(FMetrics);
-  //roozbeh:new stuff seems to be always true as we dont have that flag under ce??!!
   FMetricsFailed := True;
-  //FMetricsFailed := not Windows.SystemParametersInfo(SPI_GETNONCLIENTMETRICS,
-  //  SizeOf(FMetrics), @FMetrics, 0);
-  if FMetricsFailed then
-  begin
-    FMetrics.iMenuHeight := GetSystemMetrics(SM_CYMENU);
-  end;
-//roozbeh what does it mean?!
+
+  FMetrics.iMenuHeight := GetSystemMetrics(SM_CYMENU);
+  Font := GetStockObject(SYSTEM_FONT); // MSDN Docs say its not necessary to destroy results from GetStockObject
+  GetObject(Font, SizeOf(FMetrics.lfMessageFont), @FMetrics.lfMessageFont);
+  GetObject(Font, SizeOf(FMetrics.lfCaptionFont), @FMetrics.lfCaptionFont);
+  GetObject(Font, SizeOf(FMetrics.lfStatusFont), @FMetrics.lfStatusFont);
+  GetObject(Font, SizeOf(FMetrics.lfMenuFont), @FMetrics.lfMenuFont);
+
   WinCEWidgetSet := Self;
 end;
 {------------------------------------------------------------------------------
@@ -137,14 +142,12 @@ begin
   FStockDkGrayBrush := Windows.CreateSolidBrush($404040);
   FStockWhiteBrush := Windows.CreateSolidBrush($FFFFFF);
 
-  if FMetricsFailed then
-  begin
-    FStatusFont := Windows.GetStockObject(DEFAULT_GUI_FONT);
-    FMessageFont := Windows.GetStockObject(DEFAULT_GUI_FONT);
-  end else begin
-    FStatusFont := Windows.CreateFontIndirect(@FMetrics.lfStatusFont);
-    FMessageFont := Windows.CreateFontIndirect(@FMetrics.lfMessageFont);
-  end;
+  // From bug 15058: DEFAULT_GUI_FONT fails in some devices and in the emulator too
+  // It isn't even in the WinCE GetStockObject MSDN Docs and is strongly recommended
+  // against in Win32 Docs. SYSTEM_FONT is also recommended against in Win32 Docs,
+  // but it seams to work in Windows CE
+  FStatusFont := Windows.GetStockObject(SYSTEM_FONT);
+  FMessageFont := Windows.GetStockObject(SYSTEM_FONT);
 
   // Create parent of all windows, 'button on taskbar'
   // The AppHandle window is necessary for popupmenus and
@@ -160,6 +163,9 @@ begin
   // set nice main icon
   SendMessage(FAppHandle, WM_SETICON, ICON_BIG,
     Windows.LoadIcon(MainInstance, 'MAINICON'));
+
+  // Felipe: This commented code looks unnecessary to me
+
   // remove useless menuitems from sysmenu
 //  SysMenu := Windows.GetSystemMenu(FAppHandle, False);
 //  Windows.DeleteMenu(SysMenu, SC_MAXIMIZE, MF_BYCOMMAND);
