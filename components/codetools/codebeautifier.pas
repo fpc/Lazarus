@@ -750,7 +750,7 @@ begin
       if CompareIdentifiers('BEGIN',r)=0 then begin
         while Stack.TopType
         in (bbtAllIdentifierSections+bbtAllCodeSections+bbtAllBrackets
-          +[bbtDefinition,bbtProcedureModifiers,bbtProcedureHead])
+          +[bbtDefinition,bbtProcedureModifiers,bbtProcedureHead,bbtStatement])
         do
           EndBlock;
         case Stack.TopType of
@@ -758,7 +758,7 @@ begin
           BeginBlock(bbtMainBegin);
         bbtProcedure,bbtFunction:
           BeginBlock(bbtProcedureBegin);
-        bbtMainBegin,bbtProcedureBegin:
+        bbtMainBegin,bbtProcedureBegin,bbtStatement:
           BeginBlock(bbtFreeBegin);
         bbtCaseElse,bbtCaseColon:
           BeginBlock(bbtCaseBegin);
