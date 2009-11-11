@@ -3981,10 +3981,12 @@ begin
   // get client bounds free of bars
   ClientW  := ClientWidth;
   ClientH  := ClientHeight;
-  BarW := GetSystemMetrics(SM_CXVSCROLL);
+  BarW := GetSystemMetrics(SM_CXVSCROLL) +
+          GetSystemMetrics(SM_SWSCROLLBARSPACING);
   if ScrollBarIsVisible(SB_VERT) then
     ClientW := ClientW + BarW;
-  BarH := GetSystemMetrics(SM_CYHSCROLL);
+  BarH := GetSystemMetrics(SM_CYHSCROLL) +
+          GetSystemMetrics(SM_SWSCROLLBARSPACING);
   if ScrollBarIsVisible(SB_HORZ) then
     ClientH := ClientH + BarH;
 

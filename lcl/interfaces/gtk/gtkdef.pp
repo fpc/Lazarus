@@ -78,6 +78,7 @@ type
     lgsToolBar,       // toolbar
     lgsToolButton,    // button placed on toolbar
     lgsCalendar,      // button placed on toolbar
+    lgsScrolledWindow,
     // user defined
     lgsUserDefined
     );
@@ -109,6 +110,7 @@ const
     'toolbar',
     'toolbutton',
     'calendar',
+    'scrolled window',
     ''
     );
 

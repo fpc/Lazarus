@@ -1704,6 +1704,8 @@ const
   SM_CMONITORS          = 80;
   SM_SAMEDISPLAYFORMAT  = 81;
 
+  SM_SWSCROLLBARSPACING = 120;
+
 //==============================================
 // SystemParametersInfo constants
 //==============================================

@@ -8039,6 +8039,11 @@ begin
         StyleObject^.Widget := gtk_toolbar_append_item(PGtkToolBar(GetStyleWidget(lgsToolBar)), 'B', nil, nil, nil, nil, nil);
       end
     else
+      if CompareText(WName,LazGtkStyleNames[lgsScrolledWindow])=0 then begin
+        lgs:=lgsScrolledWindow;
+        StyleObject^.Widget := gtk_scrolled_window_new(nil, nil);
+      end
+    else
       If CompareText(WName,LazGtkStyleNames[lgsGTK_Default])=0 then begin
         lgs:=lgsGTK_Default;
         AddToStyleWindow:=false;

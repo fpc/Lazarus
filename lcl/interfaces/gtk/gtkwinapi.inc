@@ -6165,6 +6165,21 @@ begin
       begin
         Assert(False, 'Trace:TODO: [TGtkWidgetSet.GetSystemMetrics] --> SM_SWAPBUTTON       ');
       end;
+    SM_SWSCROLLBARSPACING:
+      begin
+        P := GetStyleWidget(lgsScrolledWindow);
+        if P <> nil then begin
+          {$IFDEF GTK2}
+          result := GTK_SCROLLED_WINDOW_CLASS(gtk_widget_get_class(P))^.scrollbar_spacing;
+          if result<0 then
+            gtk_widget_style_get(P, 'scrollbar-spacing', @result, nil);
+          {$ELSE}
+          result := PGtkScrolledWindowClass(PGtkTypeObject(P)^.klass)^.scrollbar_spacing;
+          if result<0 then
+            result := 3;
+          {$ENDIF}
+        end;
+      end;
   end;
   Assert(False, Format('Trace:< [TGtkWidgetSet.GetSystemMetrics] %d --> 0x%x (%d)', [nIndex, Result, Result]));
 end;
