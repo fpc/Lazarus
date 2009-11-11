@@ -677,12 +677,12 @@ procedure TIDEHelpManager.RegisterIDEHelpDatabases;
     FMainHelpDB:=HelpDatabases.CreateHelpDatabase(lihcStartPage,
                                                   THTMLHelpDatabase,true);
     HTMLHelp:=FMainHelpDB as THTMLHelpDatabase;
-    FMainHelpDBPath:=THelpBasePathObject.Create('$(LazarusDir)');
+    FMainHelpDBPath:=THelpBasePathObject.Create('$(LazarusDir)/docs');
     HTMLHelp.BasePathObject:=FMainHelpDBPath;
 
     // HTML nodes for the IDE
     StartNode:=THelpNode.CreateURLID(HTMLHelp,'Lazarus',
-                                     'file://docs/index.html',lihcStartPage);
+                                     'file://index.html',lihcStartPage);
     HTMLHelp.TOCNode:=THelpNode.Create(HTMLHelp,StartNode);// once as TOC
     HTMLHelp.RegisterItemWithNode(StartNode);// and once as normal page
   end;
