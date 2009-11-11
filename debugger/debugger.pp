@@ -1321,7 +1321,7 @@ type
     procedure RunTo(const ASource: String; const ALine: Integer);                // Executes til a certain point
     procedure JumpTo(const ASource: String; const ALine: Integer);               // No execute, only set exec point
     function  Evaluate(const AExpression: String; var AResult: String;
-                          var ATypeInfo: TDBGType): Boolean; // Evaluates the given expression, returns true if valid
+                          var ATypeInfo: TDBGType): Boolean;                     // Evaluates the given expression, returns true if valid
     function  Modify(const AExpression, AValue: String): Boolean;                // Modifies the given expression, returns true if valid
     function  Disassemble(AAddr: TDbgPtr; ABackward: Boolean;
                           out ANextAddr: TDbgPtr; out ADump, AStatement: String): Boolean;
@@ -1338,7 +1338,7 @@ type
     property ExternalDebugger: String read FExternalDebugger;                    // The name of the debugger executable
     property FileName: String read FFileName write SetFileName;                  // The name of the exe to be debugged
     property Locals: TDBGLocals read FLocals;                                    // list of all localvars etc
-    property LineInfo: TDBGLineInfo read FLineInfo;                           // list of all source LineInfo
+    property LineInfo: TDBGLineInfo read FLineInfo;                              // list of all source LineInfo
     property Registers: TDBGRegisters read FRegisters;                           // list of all registers
     property Signals: TDBGSignals read FSignals;                                 // A list of actions for signals we know
     property ShowConsole: Boolean read FShowConsole write FShowConsole;          // Indicates if the debugger should create a console for the debuggee

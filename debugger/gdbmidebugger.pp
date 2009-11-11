@@ -311,7 +311,7 @@ type
   private
     FSources: TStringList;
     procedure ClearSources;
-    procedure SimbolListCallback(const AResult: TGDBMIExecResult; const ATag: PtrInt);
+    procedure SymbolListCallback(const AResult: TGDBMIExecResult; const ATag: PtrInt);
     procedure AddInfo(const ASource: String; const AResult: TGDBMIExecResult);
   protected
     function GetSource(const AnIndex: integer): String; override;
@@ -569,7 +569,7 @@ begin
   FSources.Clear;
 end;
 
-procedure TGDBMILineInfo.SimbolListCallback(const AResult: TGDBMIExecResult; const ATag: PtrInt);
+procedure TGDBMILineInfo.SymbolListCallback(const AResult: TGDBMIExecResult; const ATag: PtrInt);
 var
   Info: PGDBMIAddressReqInfo absolute ATag;
   ASource: String;
@@ -584,7 +584,7 @@ begin
       if Debugger.State = dsRun
       then TGDBMIDebugger(Debugger).GDBPause(True);
       inc(Info^.Trial);
-      TGDBMIDebugger(Debugger).ExecuteCommand('-symbol-list-lines %s', [ASource], [cfIgnoreError], @SimbolListCallback, ATag);
+      TGDBMIDebugger(Debugger).ExecuteCommand('-symbol-list-lines %s', [ASource], [cfIgnoreError], @SymbolListCallback, ATag);
       Exit;
     end;
   end;
@@ -695,7 +695,7 @@ begin
   New(Info);
   Info^.Source := ASource;
   Info^.Trial := 1;
-  TGDBMIDebugger(Debugger).ExecuteCommand('-symbol-list-lines %s', [ASource], [cfIgnoreError], @SimbolListCallback, PtrInt(Info));
+  TGDBMIDebugger(Debugger).ExecuteCommand('-symbol-list-lines %s', [ASource], [cfIgnoreError], @SymbolListCallback, PtrInt(Info));
 end;
 
 { TGDBMINameValueList }
