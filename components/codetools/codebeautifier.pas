@@ -329,6 +329,7 @@ type
     FCodePolicies: TAVLTree;// tree of TFABPolicies sorted for Code
     FOnGetNestedComments: TOnGetFABNestedComments;
     FOnLoadFile: TOnGetFABFile;
+    FUseDefaultIndentForTypes: TFABBlockTypes;
     procedure ParseSource(const Src: string; StartPos, EndPos: integer;
       NestedComments: boolean;
       Stack: TFABBlockStack; Policies: TFABPolicies;
@@ -373,6 +374,8 @@ type
     property OnGetNestedComments: TOnGetFABNestedComments
                            read FOnGetNestedComments write FOnGetNestedComments;
     property OnLoadFile: TOnGetFABFile read FOnLoadFile write FOnLoadFile;
+    property UseDefaultIndentForTypes: TFABBlockTypes
+                 read FUseDefaultIndentForTypes write FUseDefaultIndentForTypes;
   end;
 
 function CompareFABPoliciesWithCode(Data1, Data2: Pointer): integer;
@@ -1474,6 +1477,8 @@ constructor TFullyAutomaticBeautifier.Create;
 begin
   FCodePolicies:=TAVLTree.Create(@CompareFABPoliciesWithCode);
   DefaultTabWidth:=4;
+  UseDefaultIndentForTypes:=[bbtStatement,bbtStatementRoundBracket,
+    bbtStatementEdgedBracket,bbtTypeRoundBracket,bbtTypeEdgedBracket];
 end;
 
 destructor TFullyAutomaticBeautifier.Destroy;
@@ -1584,6 +1589,15 @@ begin
       // no context
       {$IFDEF VerboseIndenter}
       DebugLn(['TFullyAutomaticBeautifier.GetIndent parsed code in front: no context']);
+      {$ENDIF}
+      GetDefaultSrcIndent(Source,CleanPos,NewNestedComments,Indent);
+      exit(Indent.IndentValid);
+    end;
+
+    if (Stack.Stack[StackIndex].Typ in UseDefaultIndentForTypes) then begin
+      // use default indent
+      {$IFDEF VerboseIndenter}
+      DebugLn(['TFullyAutomaticBeautifier.GetIndent use default for this type: ',FABBlockTypeNames[Stack.Stack[StackIndex].Typ]]);
       {$ENDIF}
       GetDefaultSrcIndent(Source,CleanPos,NewNestedComments,Indent);
       exit(Indent.IndentValid);
