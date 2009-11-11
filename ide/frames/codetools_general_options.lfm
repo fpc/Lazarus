@@ -13,13 +13,13 @@ inherited CodetoolsGeneralOptionsFrame: TCodetoolsGeneralOptionsFrame
     AnchorSideRight.Control = Owner
     AnchorSideRight.Side = asrBottom
     Left = 0
-    Height = 58
+    Height = 43
     Top = 0
     Width = 552
     Align = alTop
     AutoSize = True
     Caption = 'SrcPathGroupBox'
-    ClientHeight = 39
+    ClientHeight = 24
     ClientWidth = 548
     TabOrder = 0
     object SrcPathEdit: TEdit
@@ -44,7 +44,7 @@ inherited CodetoolsGeneralOptionsFrame: TCodetoolsGeneralOptionsFrame
     AnchorSideRight.Side = asrBottom
     Left = 0
     Height = 155
-    Top = 64
+    Top = 49
     Width = 552
     Align = alTop
     AutoSize = True
@@ -107,7 +107,7 @@ inherited CodetoolsGeneralOptionsFrame: TCodetoolsGeneralOptionsFrame
   object IndentationGroupBox: TGroupBox[2]
     Left = 0
     Height = 144
-    Top = 219
+    Top = 204
     Width = 552
     Align = alTop
     AutoSize = True
@@ -196,6 +196,7 @@ inherited CodetoolsGeneralOptionsFrame: TCodetoolsGeneralOptionsFrame
       Width = 180
       BorderSpacing.Around = 6
       Caption = 'IndentOnPasteCheckBox'
+      OnChange = IndentOnPasteCheckBoxChange
       TabOrder = 4
     end
   end

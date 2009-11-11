@@ -50,6 +50,7 @@ type
     SrcPathGroupBox: TGroupBox;
     procedure IndentOnLineBreakCheckBoxChange(Sender: TObject);
     procedure IndentFileButtonClick(Sender: TObject);
+    procedure IndentOnPasteCheckBoxChange(Sender: TObject);
   private
     procedure VisualizeIndentEnabled;
   public
@@ -80,11 +81,17 @@ begin
   end;
 end;
 
+procedure TCodetoolsGeneralOptionsFrame.IndentOnPasteCheckBoxChange(
+  Sender: TObject);
+begin
+  VisualizeIndentEnabled;
+end;
+
 procedure TCodetoolsGeneralOptionsFrame.VisualizeIndentEnabled;
 var
   e: Boolean;
 begin
-  e:=IndentOnLineBreakCheckBox.Checked;
+  e:=IndentOnLineBreakCheckBox.Checked or IndentOnPasteCheckBox.Checked;
   IndentFileLabel.Enabled:=e;
   IndentFileEdit.Enabled:=e;
   IndentFileButton.Enabled:=e;
