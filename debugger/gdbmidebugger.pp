@@ -3368,10 +3368,27 @@ function TGDBMIDebugger.StartDebugging(const AContinueCommand: String): Boolean;
   function InsertBreakPoint(const AName: String): Integer;
   var
     R: TGDBMIExecResult;
+    S: String;
     ResultList: TGDBMINameValueList;
   begin
+    // Try to retrieve the address of the procedure
+    if ExecuteCommand('info address ' + AName, [cfNoMICommand, cfIgnoreError], R)
+    and (R.State <> dsError)
+    then begin
+      S := GetPart(['at address ', ' at '], ['.', ' '], R.Values);
+      if S <> ''
+      then begin
+        ExecuteCommand('-break-insert *%u', [StrToIntDef(S, 0)],  [cfIgnoreError], R);
+        if R.State = dsError then Exit(-1);
+        ResultList := TGDBMINameValueList.Create(R, ['bkpt']);
+        Result := StrToIntDef(ResultList.Values['number'], -1);
+        ResultList.Free;
+        Exit;
+      end;
+    end;
+
     ExecuteCommand('-break-insert %s', [AName], [cfIgnoreError], R);
-    if R.State = dsError then Exit;
+    if R.State = dsError then Exit(-1);
 
     ResultList := TGDBMINameValueList.Create(R, ['bkpt']);
     Result := StrToIntDef(ResultList.Values['number'], -1);
