@@ -29,8 +29,11 @@ unit TASeries;
 interface
 
 uses
-  Classes, Graphics, LCLProc,
+  Classes, Graphics,
   TAChartUtils, TACustomSeries, TAGraph, TALegend, TATypes;
+
+const
+  DEF_BAR_WIDTH_PERCENT = 70;
 
 type
   EBarError = class(EChartError);
@@ -84,7 +87,7 @@ type
     property BarBrush: TBrush read FBarBrush write SetBarBrush;
     property BarPen: TPen read FBarPen write SetBarPen;
     property BarWidthPercent: Integer
-      read FBarWidthPercent write SetBarWidthPercent default 70;
+      read FBarWidthPercent write SetBarWidthPercent default DEF_BAR_WIDTH_PERCENT;
     property Depth;
     property SeriesColor: TColor
       read GetSeriesColor write SetSeriesColor default clTAColor;
@@ -250,6 +253,7 @@ type
 
   TFuncSeries = class(TCustomChartSeries)
   private
+    FDomainExclusions: TIntervalList;
     FExtent: TChartExtent;
     FOnCalculate: TFuncCalculateEvent;
     FPen: TChartPen;
@@ -269,7 +273,8 @@ type
 
     procedure Draw(ACanvas: TCanvas); override;
     function IsEmpty: Boolean; override;
-
+  public
+    property DomainExclusions: TIntervalList read FDomainExclusions;
   published
     property Active default true;
     property Extent: TChartExtent read FExtent write SetExtent;
@@ -617,11 +622,13 @@ begin
 end;
 
 procedure TBasicPointSeries.UpdateMargins(ACanvas: TCanvas; var AMargins: TRect);
+const
+  SOME_DIGIT = '0';
 var
   h: Integer;
 begin
   if not Marks.IsMarkLabelsVisible then exit;
-  h := ACanvas.TextHeight('0') + Marks.Distance + 2 * MARKS_MARGIN_Y + 4;
+  h := ACanvas.TextHeight(SOME_DIGIT) + Marks.Distance + 2 * MARKS_MARGIN_Y + 4;
   AMargins.Top := Max(AMargins.Top, h);
   AMargins.Bottom := Max(AMargins.Bottom, h);
   FPrevLabelRect := Rect(0, 0, 0, 0);
@@ -645,7 +652,7 @@ end;
 constructor TBarSeries.Create(AOwner: TComponent);
 begin
   inherited Create(AOwner);
-  FBarWidthPercent := 70; //70%
+  FBarWidthPercent := DEF_BAR_WIDTH_PERCENT;
 
   FBarBrush := TBrush.Create;
   FBarBrush.OnChange := @StyleChanged;
@@ -1024,6 +1031,8 @@ constructor TFuncSeries.Create(AOwner: TComponent);
 begin
   inherited Create(AOwner);
   FExtent := TChartExtent.Create(FChart);
+  FDomainExclusions := TIntervalList.Create;
+  FDomainExclusions.OnChange := @StyleChanged;
   FPen := TChartPen.Create;
   FPen.OnChange := @StyleChanged;
   FStep := 2;
@@ -1032,26 +1041,26 @@ end;
 destructor TFuncSeries.Destroy;
 begin
   FExtent.Free;
+  FDomainExclusions.Free;
   FPen.Free;
   inherited Destroy;
 end;
 
 procedure TFuncSeries.Draw(ACanvas: TCanvas);
+var
+  ygMin, ygMax: Double;
 
-  function CalcY(AX: Integer): Integer;
+  function CalcY(AXg: Double): Integer;
   var
     yg: Double;
   begin
-    OnCalculate(FChart.XImageToGraph(AX), yg);
-    if Extent.UseYMin and (yg < Extent.YMin) then
-      yg := Extent.YMin;
-    if Extent.UseYMax and (yg > Extent.YMax) then
-      yg := Extent.YMax;
-    Result := FChart.YGraphToImage(yg);
+    OnCalculate(AXg, yg);
+    Result := FChart.YGraphToImage(EnsureRange(yg, ygMin, ygMax));
   end;
 
 var
-  x, xmax: Integer;
+  x, xmax, hint: Integer;
+  xg, xg1: Double;
 begin
   if not Assigned(OnCalculate) then exit;
 
@@ -1062,12 +1071,32 @@ begin
   if Extent.UseXMax then
     xmax := Min(FChart.XGraphToImage(Extent.XMax), xmax);
 
-  ACanvas.Pen.Assign(Pen);
+  ygMin := FChart.CurrentExtent.a.Y;
+  if Extent.UseYMin and (ygMin < Extent.YMin) then
+    ygMin := Extent.YMin;
+  ygMax := FChart.CurrentExtent.b.Y;
+  if Extent.UseYMax and (ygMax < Extent.YMax) then
+    ygMax := Extent.YMax;
+  ExpandRange(ygMin, ygMax, 1);
 
-  ACanvas.MoveTo(x, CalcY(x));
+  hint := 0;
+  xg := FChart.XImageToGraph(x);
+  if DomainExclusions.Intersect(xg, xg, hint) then
+    x := FChart.XGraphToImage(xg);
+  ACanvas.MoveTo(x, CalcY(xg));
+
+  ACanvas.Pen.Assign(Pen);
   while x < xmax do begin
     Inc(x, FStep);
-    ACanvas.LineTo(x, CalcY(x));
+    xg1 := FChart.XImageToGraph(x);
+    if DomainExclusions.Intersect(xg, xg1, hint) then begin
+      ACanvas.LineTo(FChart.XGraphToImage(xg), CalcY(xg));
+      x := FChart.XGraphToImage(xg1);
+      ACanvas.MoveTo(x, CalcY(xg1));
+    end
+    else
+      ACanvas.LineTo(x, CalcY(xg1));
+    xg := xg1;
   end;
 end;
 
@@ -1090,7 +1119,7 @@ end;
 
 procedure TFuncSeries.SetOnCalculate(const AValue: TFuncCalculateEvent);
 begin
-  if CompareMethods(TMethod(FOnCalculate),TMethod(AValue)) then exit;
+  if TMethod(FOnCalculate) = TMethod(AValue) then exit;
   FOnCalculate := AValue;
   UpdateParentChart;
 end;
@@ -1139,7 +1168,7 @@ end;
 
 procedure TUserDrawnSeries.SetOnDraw(AValue: TSeriesDrawEvent);
 begin
-  if CompareMethods(TMethod(FOnDraw),TMethod(AValue)) then exit;
+  if TMethod(FOnDraw) = TMethod(AValue) then exit;
   FOnDraw := AValue;
   UpdateParentChart;
 end;

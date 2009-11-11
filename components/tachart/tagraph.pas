@@ -322,14 +322,19 @@ end;
 { TChart }
 
 constructor TChart.Create(AOwner: TComponent);
+const
+  DEFAULT_CHART_WIDTH = 300;
+  DEFAULT_CHART_HEIGHT = 200;
+  DEFAULT_CHART_TITLE = 'TAChart';
+  FONT_VERTICAL = 900;
 begin
   inherited Create(AOwner);
 
   FAllowZoom := true;
   FAxisVisible := true; 
 
-  Width := 300;
-  Height := 200;
+  Width := DEFAULT_CHART_WIDTH;
+  Height := DEFAULT_CHART_HEIGHT;
 
   FReticulePos := Point(-1, -1);
   FReticuleMode := rmNone;
@@ -349,13 +354,13 @@ begin
   FLegend := TChartLegend.Create(Self);
   FTitle := TChartTitle.Create(Self);
   FTitle.Alignment := taCenter;
-  FTitle.Text.Add('TAChart');
+  FTitle.Text.Add(DEFAULT_CHART_TITLE);
   FFoot := TChartTitle.Create(Self);
 
   FAxisList := TChartAxisList.Create(Self);
   with TChartAxis.Create(FAxisList) do begin
     Alignment := calLeft;
-    Title.Font.Orientation := 900;
+    Title.Font.Orientation := FONT_VERTICAL;
   end;
   with TChartAxis.Create(FAxisList) do
     Alignment := calBottom;

@@ -1,7 +1,7 @@
 object Form1: TForm1
-  Left = 290
+  Left = 653
   Height = 362
-  Top = 152
+  Top = 209
   Width = 461
   Caption = 'Form1'
   ClientHeight = 362
@@ -26,6 +26,10 @@ object Form1: TForm1
         Scale = 1
       end>
     ExpandPercentage = 10
+    Extent.YMin = -6
+    Extent.YMax = 6
+    Extent.UseYMin = True
+    Extent.UseYMax = True
     Foot.Brush.Color = clBtnFace
     Foot.Font.Color = clBlue
     Legend.Visible = True
@@ -38,29 +42,25 @@ object Form1: TForm1
     ParentColor = False
     object Chart1FuncSeries1: TFuncSeries
       Extent.XMin = -6.28
-      Extent.YMin = -1
       Extent.XMax = 6.28
-      Extent.YMax = 1
       Extent.UseXMin = True
-      Extent.UseYMin = True
       Extent.UseXMax = True
-      Extent.UseYMax = True
       OnCalculate = Chart1FuncSeries1Calculate
       Pen.Color = clOlive
       Pen.Width = 2
       Step = 4
-      Title = 'Sin(x)'
+      Title = '1 / Sin(x)'
     end
     object Chart1XAxis: TLine
-      ShowInLegend = False
       Position = 0
       SeriesColor = clBlack
+      ShowInLegend = False
     end
     object Chart1YAxis: TLine
-      ShowInLegend = False
       LineStyle = lsVertical
       Position = 0
       SeriesColor = clBlack
+      ShowInLegend = False
     end
     object Chart1BarSeries1: TBarSeries
       Title = 'Cos(x)'
@@ -71,6 +71,16 @@ object Form1: TForm1
     object Chart1UserDrawnSeries1: TUserDrawnSeries
       OnDraw = Chart1UserDrawnSeries1Draw
     end
+  end
+  object cbDomain: TCheckBox
+    Left = 392
+    Height = 17
+    Top = 316
+    Width = 55
+    Anchors = [akRight, akBottom]
+    Caption = 'Domain'
+    OnChange = cbDomainChange
+    TabOrder = 1
   end
   object UserDefinedChartSource1: TUserDefinedChartSource
     OnGetChartDataItem = UserDefinedChartSource1GetChartDataItem

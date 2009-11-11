@@ -1,0 +1,64 @@
+<?xml version="1.0"?>
+<fpdoc-descriptions>
+  <package name="TAChartLazarusPkg">
+    <module name="TALegend">
+      <element name="TLegendAlignment">
+        <short>The legend may be aligned to one of the four corners of the chart.</short>
+      </element>
+      <element name="TChartLegend">
+        <short>Chart legend.</short>
+        <descr>
+          <p>The legend is a list of lines, called <i>legend items</i>.
+Each item contains a symbol and a text. Symbol is a graphical representation of series or series part.
+For example, <link id="TASeries.TLineSeries">line series</link> use line segment as a symbol,
+while <link id="TASeries.TAreaSeries">area series</link> use filled rectangle.</p>
+        </descr>
+      </element>
+      <element name="TChartLegend.Alignment">
+        <short>Controls location of the legend on the chart.</short>
+      </element>
+      <element name="TChartLegend.BackgroundBrush">
+        <short>Used to draw background rectangle of the legend.</short>
+        <descr>Set <var>Style</var> to <var>bsClear</var> to get transparent legend.</descr>
+      </element>
+      <element name="TChartLegend.Font">
+        <short>The font for the legend items text.</short>
+      </element>
+      <element name="TChartLegend.Frame">
+        <short>Used to draw a frame around the legend.</short>
+        <descr>Set <var>Visible</var> to <var>false</var> to disable frame drawing.</descr>
+      </element>
+      <element name="TChartLegend.Margin">
+        <short>Distance between the legend's border and the border of chart or sidebar, in pixels.</short>
+      </element>
+      <element name="TChartLegend.Spacing">
+        <short>Distance between the legend's border and the items inside, in pixels.</short>
+        <descr>Also controls the distance between the consecutive items.</descr>
+      </element>
+      <element name="TChartLegend.SymbolWidth">
+        <short>Width of the legend's symbols, in pixels.</short>
+      </element>
+      <element name="TChartLegend.UseSidebar">
+        <short>If <var>true</var>, the legend is drawn on a separate panel. Otherwise it is drawn over the chart.</short>
+      </element>
+      <element name="TChartLegend.Visible">
+        <short>If <var>true</var>, the legend is drawn.</short>
+      </element>
+      <element name="TLegendItem">
+        <short>Basic class for legend items.</short>
+        <descr>If you create a new series type, you may specify one of the existing symbol types by overriding <link id="TAGraph.TBasicChartSeries.GetLegendItems">GetLegendItems</link>, or create a new symbol by inheriting
+<var>TLegendItem</var> class.</descr>
+        <seealso>
+          <link id="TAGraph.TBasicChartSeries.GetLegendItems">TBasicChartSeries.GetLegendItems</link>
+        </seealso>
+      </element>
+      <element name="TChartLegendItems">
+        <short>List of legend items.</short>
+      </element>
+      <element name="DEF_LEGEND_SPACING" skip="1"/>
+      <element name="DEF_LEGEND_MARGIN" skip="1"/>
+      <element name="DEF_LEGEND_SYMBOL_WIDTH" skip="1"/>
+      <element name="TChartLegendBrush" skip="1"/>
+    </module>
+  </package>
+</fpdoc-descriptions>

@@ -728,11 +728,12 @@ const
     ('Left', 'Top', 'Right', 'Bottom');
   VISIBLE_NAME: array [Boolean] of String = (' Hidden', '');
   INVERTED_NAME: array [Boolean] of String = ('', ' Inverted');
+  CAPTION_FMT = ' (%s)';
 begin
   Result :=
     SIDE_NAME[Alignment] + VISIBLE_NAME[Visible] + INVERTED_NAME[Inverted];
   if Title.Caption <> '' then
-    Result += ' (' + Title.Caption + ')';
+    Result += Format(CAPTION_FMT, [Title.Caption]);
 end;
 
 function TChartAxis.GetMarks(AMin, AMax: Double): TDoubleDynArray;
@@ -757,14 +758,19 @@ begin
 end;
 
 function TChartAxis.MarkToTextDefault(AMark: Double): String;
+const
+  EPSILON = 1e-16;
 begin
-  if Abs(AMark) <= 1e-16 then AMark := 0;
+  if Abs(AMark) <= EPSILON then AMark := 0;
   Result := Trim(FloatToStr(AMark));
 end;
 
 procedure TChartAxis.Measure(
   ACanvas: TCanvas; const AExtent: TDoubleRect;
   var AMargins: TChartAxisMargins);
+
+var
+  digitSize: TSize;
 
   procedure CalcVertSize;
   var
@@ -781,13 +787,13 @@ procedure TChartAxis.Measure(
     // That will change marks width and reduce view area,
     // requiring another call to CalculateTransformationCoeffs...
     // So punt for now and just reserve space for extra digit unconditionally.
-    FSize := maxWidth + ACanvas.TextWidth('0') + TickLength;
+    FSize := maxWidth + digitSize.cx + TickLength;
   end;
 
   procedure CalcHorSize;
   begin
     if AExtent.a.X = AExtent.b.X then exit;
-    FSize := ACanvas.TextHeight('0') + TickLength;
+    FSize := digitSize.cy + TickLength;
   end;
 
   procedure CalcTitleSize;
@@ -811,10 +817,13 @@ procedure TChartAxis.Measure(
     FTitleSize := d + Title.Distance;
   end;
 
+const
+  SOME_DIGIT = '0';
 begin
   FSize := 0;
   FTitleSize := 0;
   if not Visible then exit;
+  digitSize := ACanvas.TextExtent(SOME_DIGIT);
   if IsVertical then
     CalcVertSize
   else

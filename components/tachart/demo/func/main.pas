@@ -5,8 +5,8 @@ unit main;
 interface
 
 uses
-  Classes, SysUtils, FileUtil, LResources, Forms, Controls, Graphics, Dialogs,
-  TAGraph, TASeries, TASources;
+  Classes, StdCtrls, SysUtils, FileUtil, LResources, Forms, Controls, Graphics,
+  Dialogs, TAGraph, TASeries, TASources;
 
 type
 
@@ -19,7 +19,9 @@ type
     Chart1UserDrawnSeries1: TUserDrawnSeries;
     Chart1YAxis: TLine;
     Chart1XAxis: TLine;
+    cbDomain: TCheckBox;
     UserDefinedChartSource1: TUserDefinedChartSource;
+    procedure cbDomainChange(Sender: TObject);
     procedure Chart1FuncSeries1Calculate(const AX: Double; out AY: Double);
     procedure Chart1UserDrawnSeries1Draw(ACanvas: TCanvas; const ARect: TRect);
     procedure UserDefinedChartSource1GetChartDataItem(
@@ -37,9 +39,22 @@ uses
 
 { TForm1 }
 
+procedure TForm1.cbDomainChange(Sender: TObject);
+var
+  i: Integer;
+begin
+  with Chart1FuncSeries1.DomainExclusions do begin
+    Clear;
+    Epsilon := 1e-7;
+    if cbDomain.Checked then
+      for i := -10 to 10 do
+        AddPoint(i * Pi);
+  end;
+end;
+
 procedure TForm1.Chart1FuncSeries1Calculate(const AX: Double; out AY: Double);
 begin
-  AY := Sin(AX);
+  AY := 1 / Sin(AX);
 end;
 
 procedure TForm1.Chart1UserDrawnSeries1Draw(

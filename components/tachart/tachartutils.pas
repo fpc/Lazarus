@@ -29,7 +29,7 @@ unit TAChartUtils;
 interface
 
 uses
-  Graphics, Math, Types, SysUtils;
+  Classes, Graphics, Math, Types, SysUtils;
 
 const
   Colors: array [1..15] of TColor = (
@@ -41,6 +41,7 @@ const
 
 type
   EChartError = class(Exception);
+  EChartIntervalError = class(EChartError);
 
   TDoublePoint = record
     X, Y: Double;
@@ -93,6 +94,37 @@ type
     constructor Create(ACanvas: TCanvas; AParams: TPenBrushFont);
     destructor Destroy; override;
     procedure Recall;
+  end;
+
+  TDoubleInterval = record
+    FStart, FEnd: Double;
+  end;
+
+  { TIntervalList }
+
+  TIntervalList = class
+  private
+    FEpsilon: Double;
+    FIntervals: array of TDoubleInterval;
+    FOnChange: TNotifyEvent;
+    procedure Changed;
+    function GetInterval(AIndex: Integer): TDoubleInterval;
+    function GetIntervalCount: Integer;
+    procedure SetEpsilon(AValue: Double);
+    procedure SetOnChange(AValue: TNotifyEvent);
+  public
+    constructor Create;
+  public
+    procedure AddPoint(APoint: Double); inline;
+    procedure AddRange(AStart, AEnd: Double);
+    procedure Clear;
+    function Intersect(
+      var ALeft, ARight: Double; var AHint: Integer): Boolean;
+  public
+    property Epsilon: Double read FEpsilon write SetEpsilon;
+    property Interval[AIndex: Integer]: TDoubleInterval read GetInterval;
+    property IntervalCount: Integer read GetIntervalCount;
+    property OnChange: TNotifyEvent read FOnChange write SetOnChange;
   end;
 
   TCaseOfTwo = (cotNone, cotFirst, cotSecond, cotBoth);
@@ -157,6 +189,7 @@ procedure Unused(const A1, A2);
 procedure UpdateMinMax(AValue: Double; var AMin, AMax: Double);
 
 operator +(const A: TPoint; B: TSize): TPoint;
+operator =(const A, B: TMethod): Boolean;
 
 implementation
 
@@ -170,6 +203,7 @@ var
   i: Integer;
 const
   GOOD_STEPS: array [1..3] of Double = (0.2, 0.5, 1.0);
+  BASE = 10;
 begin
   extent := AMax - AMin;
   AStep := 1;
@@ -180,11 +214,11 @@ begin
   scale := 1.0;
   for i := Low(GOOD_STEPS) to High(GOOD_STEPS) do begin
     extentTmp := extent / GOOD_STEPS[i];
-    m := power(10, Round(log10(extentTmp)));
-    while extentTmp * m > 10 do
-      m *= 0.1;
+    m := power(BASE, Round(logn(BASE, extentTmp)));
+    while extentTmp * m > BASE do
+      m /= BASE;
     while extentTmp * m <= 1 do
-      m *= 10;
+      m *= BASE;
     stepCount := extentTmp * m;
     if stepCount > maxStepCount then begin
       maxStepCount := stepCount;
@@ -454,6 +488,11 @@ begin
   Result.Y := A.Y + B.cy;
 end;
 
+operator = (const A, B: TMethod): Boolean;
+begin
+  Result := (A.Code = B.Code) and (A.Data = B.Data);
+end;
+
 { TPenBrushFontRecall }
 
 constructor TPenBrushFontRecall.Create(ACanvas: TCanvas; AParams: TPenBrushFont);
@@ -494,6 +533,117 @@ begin
     FCanvas.Font.Assign(FFont);
     FreeAndNil(FFont);
   end;
+end;
+
+{ TIntervalList }
+
+procedure TIntervalList.AddPoint(APoint: Double); inline;
+begin
+  AddRange(APoint, APoint);
+end;
+
+procedure TIntervalList.AddRange(AStart, AEnd: Double);
+var
+  i: Integer;
+  j: Integer;
+  k: Integer;
+begin
+  i := 0;
+  while (i <= High(FIntervals)) and (FIntervals[i].FEnd < AStart) do
+    Inc(i);
+  if i <= High(FIntervals) then
+    AStart := Min(AStart, FIntervals[i].FStart);
+  j := High(FIntervals);
+  while (j >= 0) and (FIntervals[j].FStart > FIntervals[j].FEnd) do
+    Dec(j);
+  if j >= 0 then
+    AEnd := Max(AEnd, FIntervals[j].FEnd);
+  if i < j then begin
+    for k := j + 1 to High(FIntervals) do
+      FIntervals[i + k - j] := FIntervals[j];
+    SetLength(FIntervals, Length(FIntervals) - j + i);
+  end
+  else if i > j then begin
+    SetLength(FIntervals, Length(FIntervals) + 1);
+    for k := High(FIntervals) downto i do
+      FIntervals[k] := FIntervals[k - 1];
+  end;
+  FIntervals[i].FStart := AStart;
+  FIntervals[i].FEnd := AEnd;
+  Changed;
+end;
+
+procedure TIntervalList.Changed;
+begin
+  if Assigned(FOnChange) then
+    FOnChange(Self);
+end;
+
+procedure TIntervalList.Clear;
+begin
+  FIntervals := nil;
+  Changed;
+end;
+
+constructor TIntervalList.Create;
+const
+  DEFAULT_EPSILON = 1e-6;
+begin
+  FEpsilon := DEFAULT_EPSILON;
+end;
+
+function TIntervalList.GetInterval(AIndex: Integer): TDoubleInterval;
+begin
+  Result := FIntervals[AIndex];
+end;
+
+function TIntervalList.GetIntervalCount: Integer;
+begin
+  Result := Length(FIntervals);
+end;
+
+function TIntervalList.Intersect(
+  var ALeft, ARight: Double; var AHint: Integer): Boolean;
+var
+  fi, li: Integer;
+begin
+  Result := false;
+  if Length(FIntervals) = 0 then exit;
+
+  AHint := Min(High(FIntervals), AHint);
+  while (AHint > 0) and (FIntervals[AHint].FStart > ARight) do
+    Dec(AHint);
+
+  while
+    (AHint <= High(FIntervals)) and (FIntervals[AHint].FStart <= ARight)
+  do begin
+    if FIntervals[AHint].FEnd >= ALeft then begin
+      if not Result then fi := AHint;
+      li := AHint;
+      Result := true;
+    end;
+    Inc(AHint);
+  end;
+
+  if Result then begin
+    ALeft := FIntervals[fi].FStart - Epsilon;
+    ARight := FIntervals[li].FEnd + Epsilon;
+  end;
+end;
+
+procedure TIntervalList.SetEpsilon(AValue: Double);
+begin
+  if FEpsilon = AValue then exit;
+  if AValue <= 0 then
+    raise EChartIntervalError.Create('Epsilon <= 0');
+  FEpsilon := AValue;
+  Changed;
+end;
+
+procedure TIntervalList.SetOnChange(AValue: TNotifyEvent);
+begin
+  if TMethod(FOnChange) = TMethod(AValue) then exit;
+  FOnChange := AValue;
 end;
 
 end.
