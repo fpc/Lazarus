@@ -1151,10 +1151,10 @@ begin
       c2:=Src[CurPos.EndPos];
       // test for double char operators :=, +=, -=, /=, *=, <>, <=, >=, **, ><
       if ((c2='=') and  (IsEqualOperatorStartChar[c1]))
-        or ((c1='<') and (c2='>')) // not equal
-        or ((c1='>') and (c2='<'))
-        or ((c1='.') and (c2='.'))
-        or ((c1='*') and (c2='*'))
+        or ((c1='<') and (c2='>')) // <> not equal
+        or ((c1='>') and (c2='<')) // >< symmetric diff for sets
+        or ((c1='.') and (c2='.')) // .. subrange
+        or ((c1='*') and (c2='*')) // ** power
         then begin
           // 2 character operator/symbol
           inc(CurPos.EndPos);

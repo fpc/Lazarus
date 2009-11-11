@@ -3852,16 +3852,41 @@ begin
       ReadTilBracketClose(true);
       ReadNextAtom;
     end;
-    if not AtomIs('..') then begin
-      // an identifier
-      CurNode.Desc:=ctnIdentifier;
-      CurNode.EndPos:=CurPos.StartPos;
-    end else begin
+    if AtomIs('..') then begin
       // a subrange
       CurNode.Desc:=ctnRangeType;
       ReadTillTypeEnd;
       if not SubRangeOperatorFound then
         SaveRaiseException(ctsInvalidSubrange);
+      CurNode.EndPos:=CurPos.StartPos;
+    end else if AtomIsChar('<') and (Scanner.CompilerMode in [cmOBJFPC,cmFPC])
+    and (LastUpAtomIs(0,'STRING')) then begin
+      // string<
+      CurNode.Desc:=ctnIdentifier;
+      repeat
+        ReadNextAtom;
+        if AtomIsChar('>') then break;
+        case CurPos.Flag of
+        cafRoundBracketOpen,cafEdgedBracketOpen: ReadTilBracketClose(true);
+        cafNone:
+          if (CurPos.StartPos>SrcLen) then
+            RaiseCharExpectedButAtomFound('>')
+          else if (((CurPos.EndPos-CurPos.StartPos=1)
+                and (Src[CurPos.StartPos] in ['+','-','*','&','$'])))
+              or AtomIsNumber
+          then begin
+          end else begin
+            RaiseCharExpectedButAtomFound('>')
+          end;
+        else
+          RaiseCharExpectedButAtomFound('>');
+        end;
+      until false;
+      CurNode.EndPos:=CurPos.EndPos;
+      ReadNextAtom;
+    end else begin
+      // an identifier
+      CurNode.Desc:=ctnIdentifier;
       CurNode.EndPos:=CurPos.StartPos;
     end;
     if UpAtomIs('PLATFORM') or UpAtomIs('UNIMPLEMENTED') or
