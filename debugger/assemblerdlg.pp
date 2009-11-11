@@ -6,7 +6,7 @@ interface
 
 uses
   Classes, SysUtils, FileUtil, LResources, Forms, Controls, Graphics, Dialogs,
-  ComCtrls, StdCtrls, Grids, ExtCtrls, LclType, DebuggerDlg, Debugger,
+  ComCtrls, StdCtrls, Grids, ExtCtrls, LclType, LCLIntf, DebuggerDlg, Debugger,
   EditorOptions, Maps, Math;
 
 type
@@ -87,14 +87,13 @@ end;
 
 constructor TAssemblerDlg.Create(AOwner: TComponent);
 begin
-  FLineHeight := Abs(EditorOpts.EditorFontHeight) + EditorOpts.ExtraLineSpacing;
   FGutterWidth := 32;
 
   inherited Create(AOwner);
 //  DoubleBuffered := True;
 
-  pbAsm.Font.Name := EditorOpts.EditorFont;
   pbAsm.Font.Height := EditorOpts.EditorFontHeight;
+  pbAsm.Font.Name := EditorOpts.EditorFont;
   Caption := lisMenuViewAssembler;
 end;
 
@@ -145,18 +144,28 @@ begin
   sbHorizontal.PageSize := R.Right;
   sbHorizontal.LargeChange := R.Right div 3;
 
-  FLineCount := R.Bottom div FLineHeight;
-  UpdateLineData(FTopLine + FLineCount);
+  if FLineHeight <> 0
+  then begin
+    FLineCount := R.Bottom div FLineHeight;
+    UpdateLineData(FTopLine + FLineCount);
+  end;
 
   pbAsm.SetBounds(0, 0, R.Right, R.Bottom);
 end;
 
 procedure TAssemblerDlg.InitializeWnd;
+var
+  TM: TTextMetric;
 begin
   inherited InitializeWnd;
 
-  FCharWidth := EditorOpts.ExtraCharSpacing + pbAsm.Canvas.TextExtent('X').cx;
+  GetTextMetrics(pbAsm.Canvas.Handle, TM);
+  FCharWidth := EditorOpts.ExtraCharSpacing + TM.tmMaxCharWidth;
   sbHorizontal.SmallChange := FCHarWidth;
+
+  FLineHeight := EditorOpts.ExtraLineSpacing + TM.tmHeight;
+  FLineCount := pbAsm.Height div FLineHeight;
+  UpdateLineData(FTopLine + FLineCount);
 end;
 
 procedure TAssemblerDlg.pbAsmMouseDown(Sender: TObject; Button: TMouseButton; Shift: TShiftState; X, Y: Integer);
