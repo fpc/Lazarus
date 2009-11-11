@@ -193,7 +193,7 @@ begin
     //mbi.dwFlags := SHCMBF_HMENU;// This options ruins smartphone menu setting
     mbi.hInstRes := HINSTANCE;
 
-//    if (Application.ApplicationType = atSmartphone)
+//    if (Application.ApplicationType = atKeyPadDevice)
 //      and (LCLMenu <> nil) then
 
     FillChar(mi, SizeOf(mi), 0);
@@ -247,7 +247,7 @@ begin
   mi.fMask:=MIIM_SUBMENU or MIIM_TYPE or MIIM_ID or MIIM_STATE;
   mi.dwTypeData:=@buf;
 
-  if (Application.ApplicationType = atSmartphone) then
+  if (Application.ApplicationType = atKeyPadDevice) then
   begin
     if (Menu <> 0) and (LCLMenu <> nil) then
     begin
@@ -262,7 +262,7 @@ begin
           if LCLMenu.Items.Items[j].Checked then
             tbbi.fsState:=tbbi.fsState or TBSTATE_CHECKED;
 
-          if (Application.ApplicationType = atSmartphone) then
+          if (Application.ApplicationType = atKeyPadDevice) then
           begin
             // Adds a top-level item (We cant really add it, so we find
             // and modify the existing top-level item)
@@ -302,7 +302,7 @@ begin
           Inc(i);
         end;
 
-      if (Application.ApplicationType = atSmartphone) and (i = 1) then
+      if (Application.ApplicationType = atKeyPadDevice) and (i = 1) then
       begin
         tbbi.dwMask := TBIF_STATE;
         tbbi.fsState:=0;
@@ -342,8 +342,7 @@ begin
         SendMessage(mbi.hwndMB, TB_INSERTBUTTON, i, LPARAM(@tb));
         //MsgBox('i = ' + int2str(i),0);
 
-  //      if (IsSmartphone) and (i < 2) then{Smartphones can have only 2 buttons!}
-        if (Application.ApplicationType = atSmartphone) and (i < 2) then{Smartphones can have only 2 buttons!}
+        if (Application.ApplicationType = atKeyPadDevice) and (i < 2) then{KeyPadDevices can have only 2 buttons!}
         begin
           case i of
             0: MenuBarRLID := MenuBarID_L;

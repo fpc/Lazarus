@@ -289,7 +289,7 @@ begin
     // Gets the work area
     Windows.SystemParametersInfo(SPI_GETWORKAREA, 0, @WR, 0);
 
-    if Application.ApplicationType in [atPDA, atSmartphone, atDefault] then
+    if Application.ApplicationType in [atPDA, atKeyPadDevice, atDefault] then
     begin
       { The position and size of common windows is ignored on PDA mode,
         and a position and size that covers the whole workarea excluding
@@ -383,7 +383,7 @@ begin
   BorderStyle := TCustomForm(AWinControl).BorderStyle;
 
   { Verifies if the size should be overriden, acording to the ApplicationType }
-  if (Application.ApplicationType in [atPDA, atSmartphone, atDefault]) then
+  if (Application.ApplicationType in [atPDA, atKeyPadDevice, atDefault]) then
   begin
     { We should never move forms which are in full-screen mode }
     if (BorderStyle <> bsDialog) and (BorderStyle <> bsNone) then Exit;

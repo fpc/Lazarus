@@ -1078,7 +1078,7 @@ begin
   case Application.ApplicationType of
   { Under Desktop or Handheld mode we get an application which
     looks similar to a desktop one, with sizable windows }
-    atDesktop, atHandheld:
+    atDesktop:
       begin
         case Style of
         bsSizeable, bsSizeToolWin:
@@ -1093,7 +1093,7 @@ begin
       end;
     { Under PDA or Smartphone modes most windows are enlarged to fit the screen
       Dialogs and borderless windows are exceptions }
-    atPDA, atSmartphone, atDefault:
+    atPDA, atKeyPadDevice, atDefault:
       begin
         case Style of
         bsDialog:
@@ -1113,7 +1113,7 @@ begin
 
   case Application.ApplicationType of
 
-    atDesktop, atHandheld:
+    atDesktop:
     begin
       case Style of
       bsDialog:
@@ -1123,7 +1123,7 @@ begin
       end;
     end;
 
-    atPDA, atSmartphone, atDefault:
+    atPDA, atKeyPadDevice, atDefault:
     begin
       {$ifdef WinCE}
       // Adds an "OK" close button to the title bar instead of the standard
@@ -1348,12 +1348,12 @@ begin
     if WideStrCmp(@buf, 'PocketPC') = 0 then
       Result := atPDA
     else if WideStrCmp(@buf, 'SmartPhone') = 0 then
-      Result := atSmartphone
+      Result := atKeyPadDevice
     else
       Result := atPDA;
   end
   else if GetLastError = ERROR_ACCESS_DENIED then
-    Result := atSmartphone
+    Result := atKeyPadDevice
   else
     Result := atPDA;
 end;

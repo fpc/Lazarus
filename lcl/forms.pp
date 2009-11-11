@@ -1080,9 +1080,8 @@ type
   TApplicationType = (
     atDefault,
     atDesktop,
-    atHandheld,
     atPDA,
-    atSmartphone
+    atKeyPadDevice
   );
 
   TApplicationShowGlyphs = (
@@ -1536,7 +1535,6 @@ const
      [biSystemMenu],                            // bsDialog
      [biSystemMenu, biMinimize],                // bsToolWindow
      [biSystemMenu, biMinimize, biMaximize]);   // bsSizeToolWin
-     
 
 procedure CreateWidgetset(AWidgetsetClass: TWidgetsetClass);
 procedure FreeWidgetSet;
