@@ -447,15 +447,18 @@ type
   private
     FMouseDownTabIndex: Integer;
     FOnDragMoveTab: TDragMoveTabEvent;
+    FTabDragged: boolean;
   protected
     procedure MouseDown(Button: TMouseButton; Shift: TShiftState; X, Y: Integer); override;
+    procedure MouseUp(Button: TMouseButton; Shift: TShiftState; X,
+             Y: Integer); override;
     procedure DragOver(Source: TObject; X, Y: Integer; State: TDragState;
       var Accept: Boolean); override;
     property MouseDownTabIndex: Integer read FMouseDownTabIndex;
   public
     procedure DragDrop(Source: TObject; X, Y: Integer); override;
     property  OnDragMoveTab: TDragMoveTabEvent read FOnDragMoveTab write FOnDragMoveTab;
-end;
+  end;
 
   { TSourceNotebook }
 
@@ -7255,10 +7258,25 @@ end;
 procedure TDragableNotebook.MouseDown(Button: TMouseButton; Shift: TShiftState; X,
   Y: Integer);
 begin
+  FTabDragged:=false;
   inherited MouseDown(Button, Shift, X, Y);
   FMouseDownTabIndex := TabIndexAtClientPos(Point(X,Y));
   if (Button = mbLeft) and (FMouseDownTabIndex >= 0) then
     BeginDrag(False);
+end;
+
+procedure TDragableNotebook.MouseUp(Button: TMouseButton; Shift: TShiftState;
+  X, Y: Integer);
+var
+  MouseUpTabIndex: LongInt;
+begin
+  inherited MouseUp(Button, Shift, X, Y);
+  if not FTabDragged then begin
+    // no drag => check for normal click and activate page
+    MouseUpTabIndex := TabIndexAtClientPos(Point(X,Y));
+    if (Button = mbLeft) and (FMouseDownTabIndex = MouseUpTabIndex) then
+      PageIndex:=MouseUpTabIndex;
+  end;
 end;
 
 procedure TDragableNotebook.DragOver(Source: TObject; X, Y: Integer; State: TDragState;
@@ -7285,9 +7303,11 @@ begin
   then begin
     TabIndex := TabIndexAtClientPos(Point(X,Y));
     if (TabIndex >= 0) and ( (Source <> self) or (TabIndex <> MouseDownTabIndex) )
-    then
+    then begin
+      FTabDragged:=true;
       FOnDragMoveTab(Self, Source, TDragableNotebook(Source).MouseDownTabIndex,
         TabIndex);
+    end;
   end;
 end;
 
