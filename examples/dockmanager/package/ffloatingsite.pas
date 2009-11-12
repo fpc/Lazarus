@@ -82,8 +82,9 @@ When a second control is dragged away, the entire site is moved.
 *)
   if DockClientCount <= 1 then begin
     if NewTarget = nil then begin
-      Allow := False; //deny
-      //Allow := True;    //move form - where???
+      //Allow := False; //deny
+      Allow := True;    //move form - where???
+      Release;
     end else
       Release;
   end else begin
