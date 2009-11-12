@@ -41,6 +41,7 @@
 
  TCSSProps = class
  private
+   FBorder: Integer;
    FClassIDs: TStringList;
    FBGColor: TColor;
    FBorderBottom: TCSSBorderStyle;
@@ -55,6 +56,7 @@
    property Font: TCSSFont read  FFont write FFont;
    property Color: TColor read FColor write FColor;
    property BGColor: TColor read FBGColor write FBGColor;
+   property Border: Integer read FBorder write FBorder;
    property BorderTop: TCSSBorderStyle read FBorderTop write FBorderTop;
    property BorderLeft: TCSSBorderStyle read FBorderLeft write FBorderLeft;
    property BorderBottom: TCSSBorderStyle read FBorderBottom write FBorderBottom;
@@ -748,6 +750,7 @@ begin
   FFont := TCSSFont.Create;
   FBGColor := -1;
   FColor := -1;
+  FBorder := -1;
 end;
 
 destructor TCSSProps.Destroy;
@@ -791,6 +794,13 @@ begin
       if Args.Count > 2 then ; // background image repeat
       if Args.Count > 3 then ; // background attachment
       if Args.Count > 4 then ; // background position
+    end
+    else if Command = 'border' then
+    begin
+      if Args.Count > 0 then
+        Border := StrToIntDef(Args[0], 1)
+      else
+        Border := 1;
     end
     else if (Command = 'font-family') and (Args.Count > 0) then
       Font.Name := Args[0]

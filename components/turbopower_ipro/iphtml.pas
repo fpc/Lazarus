@@ -843,6 +843,8 @@ type
     destructor Destroy; override;
   end;
 
+  { TIpHtmlNodeBlock }
+
   TIpHtmlNodeBlock = class(TIpHtmlNodeCore)
   protected
     FPageRect : TRect;
@@ -850,6 +852,9 @@ type
     FMin, FMax : Integer;
     Props : TIpHtmlProps;
     LastW, LastH : Integer;
+    FBackground : string;
+    FBgColor : TColor;
+    FTextColor : TColor;
     procedure RenderQueue;
     procedure CalcMinMaxQueueWidth(const RenderProps: TIpHtmlProps;
       var Min, Max: Integer);
@@ -859,6 +864,7 @@ type
     procedure Layout(const RenderProps: TIpHtmlProps;
       const TargetRect : TRect); virtual;
     procedure RelocateQueue(const dx, dy: Integer);
+    procedure SetProps(const RenderProps: TIpHtmlProps); override;
     procedure LayoutQueue(const RenderProps: TIpHtmlProps;
       const TargetRect : TRect);
     procedure CalcMinMaxWidth(const RenderProps: TIpHtmlProps;
@@ -873,9 +879,17 @@ type
     property PageRect : TRect read FPageRect;
     procedure AppendSelection(var S : string); override;
     procedure UpdateCurrent(Start: Integer; CurProps : TIpHtmlProps);
+    procedure LoadCSSProps(Owner: TIpHtml; var Element: TCSSProps;
+       const Props: TIpHtmlProps); override;
+    procedure SetBackground(const AValue: string);
+    procedure SetBgColor(const AValue: TColor);
+    procedure SetTextColor(const AValue: TColor);
   public
     constructor Create(ParentNode : TIpHtmlNode);
     destructor Destroy; override;
+    property Background : string read FBackground write SetBackground;
+    property BgColor : TColor read FBgColor write SetBgColor;
+    property TextColor : TColor read FTextColor write SetTextColor;
   end;
 
   TIpHtmlDirection = (hdLTR, hdRTL);
@@ -1113,17 +1127,11 @@ type
 
   TIpHtmlNodeBODY = class(TIpHtmlNodeBlock)
   private
-    FBgColor : TColor;
-    FText : TColor;
     FLink : TColor;
     FVLink : TColor;
     FALink : TColor;
-    FBackground : string;
-    procedure SetBackground(const Value: string);
     procedure SetAlink(const Value: TColor);
-    procedure SetBgColor(const Value: TColor);
     procedure SetLink(const Value: TColor);
-    procedure SetText(const Value: TColor);
     procedure SetVlink(const Value: TColor);
   protected
     BGPicture : TPicture;
@@ -1135,11 +1143,8 @@ type
     constructor Create(ParentNode : TIpHtmlNode);
     destructor Destroy; override;
     procedure ImageChange(NewPicture : TPicture); override;
-    property Background : string read FBackground write SetBackground;
     property ALink : TColor read Falink write SetAlink;
-    property BgColor : TColor read FBgColor write SetBgColor;
     property Link : TColor read FLink write SetLink;
-    property Text : TColor read FText write SetText;
     property VLink : TColor read FVLink write SetVlink;
   end;
 
@@ -1859,10 +1864,11 @@ type
 
   TIpHtmlCellScope = (hcsUnspec, hcsRow, hcsCol, hcsRowGroup, hcsColGroup);
 
+  { TIpHtmlNodeTableHeaderOrCell }
+
   TIpHtmlNodeTableHeaderOrCell = class(TIpHtmlNodeBlock)
   private
     FAlign: TIpHtmlAlign;
-    FBgColor : TColor;
     FCalcWidthMin: Integer;                                            {!!.10}
     FCalcWidthMax: Integer;                                            {!!.10}
     FColspan: Integer;
@@ -1883,7 +1889,6 @@ type
     constructor Create(ParentNode : TIpHtmlNode);
     destructor Destroy; override;
     property Align : TIpHtmlAlign read FAlign write FAlign;
-    property BgColor : TColor read FBgColor write FBgColor;
     property CalcWidthMin: Integer read FCalcWidthMin;                 {!!.10}
     property CalcWidthMax: Integer read FCalcWidthMax;                 {!!.10}
     property Colspan : Integer read FColspan write FColspan;
@@ -1894,9 +1899,19 @@ type
     property Width : TIpHtmlLength read FWidth write FWidth;
   end;
 
-  TIpHtmlNodeTH = class(TIpHtmlNodeTableHeaderOrCell);
+  { TIpHtmlNodeTH }
 
-  TIpHtmlNodeTD = class(TIpHtmlNodeTableHeaderOrCell);
+  TIpHtmlNodeTH = class(TIpHtmlNodeTableHeaderOrCell)
+  public
+    constructor Create(ParentNode: TIpHtmlNode);
+  end;
+
+  { TIpHtmlNodeTD }
+
+  TIpHtmlNodeTD = class(TIpHtmlNodeTableHeaderOrCell)
+  public
+    constructor Create(ParentNode: TIpHtmlNode);
+  end;
 
   TIpHtmlInputType = (hitText, hitPassword, hitCheckbox, hitRadio,
     hitSubmit, hitReset, hitFile, hitHidden, hitImage, hitButton);
@@ -4571,8 +4586,6 @@ begin
   {$IFDEF IP_LAZARUS}
   FElementName := 'body';
   {$ENDIF}
-  FBgColor := -1;
-  FText := -1;
   FLink := -1;
   FVLink := -1;
   FALink := -1;
@@ -4658,15 +4671,6 @@ begin
   LinkElement := Owner.CSS.GetElement('a:active', '');
   if (LinkElement <> nil) and (LinkElement.Color <> -1) then
     ALink := LinkElement.Color;
-    
-  if Element = nil then
-    exit;
-    
-  if Element.Color <> -1 then
-    Text := Element.Color;
-
-  if Element.BGColor <> -1 then
-    BgColor := Element.BGColor;
 end;
 {$ENDIF}
 
@@ -4694,34 +4698,10 @@ begin
   end;
 end;
 
-procedure TIpHtmlNodeBODY.SetBackground(const Value: string);
-begin
-  if Value <> FBackground then begin
-    FBackground := Value;
-    InvalidateSize;
-  end;
-end;
-
-procedure TIpHtmlNodeBODY.SetBgColor(const Value: TColor);
-begin
-  if Value <> FBgColor then begin
-    FBgColor := Value;
-    InvalidateSize;
-  end;
-end;
-
 procedure TIpHtmlNodeBODY.SetLink(const Value: TColor);
 begin
   if Value <> FLink then begin
     FLink := Value;
-    InvalidateSize;
-  end;
-end;
-
-procedure TIpHtmlNodeBODY.SetText(const Value: TColor);
-begin
-  if Value <> FText then begin
-    FText := Value;
     InvalidateSize;
   end;
 end;
@@ -6595,9 +6575,6 @@ begin
       begin
         CurTableCell := TIpHtmlNodeTD.Create(Parent);
         with CurTableCell do begin
-          {$IFDEF IP_LAZARUS}
-          FElementName := 'td';
-          {$ENDIF}
           Nowrap := ParseBoolean('NOWRAP');
           Rowspan := ParseInteger('ROWSPAN', 1);
           Colspan := ParseInteger('COLSPAN', 1);
@@ -7803,7 +7780,7 @@ begin
     TIpHtmlNodeBODY.Create(Parent);
     with Body do begin
       BgColor := ColorFromString(FindAttribute('BGCOLOR'));
-      Text := ColorFromString(FindAttribute('TEXT'));
+      TextColor := ColorFromString(FindAttribute('TEXT'));
       Link := ColorFromString(FindAttribute('LINK'));
       VLink := ColorFromString(FindAttribute('VLINK'));
       ALink := ColorFromString(FindAttribute('ALINK'));
@@ -8241,8 +8218,8 @@ begin
   DefaultProps.Preformatted := False;
   DefaultProps.NoBreak := False;
   if Body <> nil then begin
-    if Body.Text <> -1 then
-      DefaultProps.FontColor := Body.Text;
+    if Body.TextColor <> -1 then
+      DefaultProps.FontColor := Body.TextColor;
     if Body.Link <> -1 then
       DefaultProps.LinkColor := Body.Link;
     if Body.VLink <> -1 then
@@ -9522,6 +9499,9 @@ begin
   ElementQueue := TList.Create;
   FMin := -1;
   FMax := -1;
+  FBgColor := -1;
+  FTextColor := -1;
+  FBackground := '';
   Props := TIpHtmlProps.Create(Owner);
 end;
 
@@ -9533,6 +9513,30 @@ begin
   Props.Free;
   Props := nil;
   inherited;
+end;
+
+procedure TIpHtmlNodeBlock.SetBackground(const AValue: string);
+begin
+  if AValue <> FBackground then begin
+    FBackground := AValue;
+    InvalidateSize;
+  end;
+end;
+
+procedure TIpHtmlNodeBlock.SetBgColor(const AValue: TColor);
+begin
+  if AValue <> FBgColor then begin
+    FBgColor := AValue;
+    InvalidateSize;
+  end;
+end;
+
+procedure TIpHtmlNodeBlock.SetTextColor(const AValue: TColor);
+begin
+  if AValue <> FTextColor then begin
+    FTextColor := AValue;
+    InvalidateSize;
+  end;
 end;
 
 procedure TIpHtmlNodeBlock.RenderQueue;
@@ -9687,6 +9691,20 @@ begin
       end;
     {end;}
   end;
+end;
+
+procedure TIpHtmlNodeBlock.LoadCSSProps(Owner: TIpHtml; var Element: TCSSProps;
+  const Props: TIpHtmlProps);
+begin
+  inherited LoadCSSProps(Owner, Element, Props);
+  if Element = nil then
+    exit;
+
+  if Element.Color <> -1 then
+    TextColor := Element.Color;
+
+  if Element.BGColor <> -1 then
+    BgColor := Element.BGColor;
 end;
 
 procedure TIpHtmlNodeBlock.CalcMinMaxQueueWidth(
@@ -9997,6 +10015,12 @@ begin
       SetWordRect(CurElement, R);
     end;
   end;
+end;
+
+procedure TIpHtmlNodeBlock.SetProps(const RenderProps: TIpHtmlProps);
+begin
+  Props.Assign(RenderProps);
+  inherited SetProps(Props);
 end;
 
 procedure TIpHtmlNodeBlock.LayoutQueue(
@@ -13290,6 +13314,8 @@ begin
     exit;
   if Element.BGColor <> -1 then
     BgColor := Element.BGColor;
+  if Element.Border <> -1 then
+    Border := Element.Border;
 end;
 {$ENDIF}
 
@@ -15842,6 +15868,8 @@ procedure TIpHtmlNodeTableHeaderOrCell.Render(
 var
   R : TRect;
 begin
+  if Self is TIpHtmlNodeTH then
+    NoWrap := NoWrap;
   Props.Assign(RenderProps);
   if Align <> haDefault then
     Props.Alignment := Align
@@ -15855,6 +15883,8 @@ begin
   Props.VAlignment := VAlign;
   if NoWrap then
     Props.NoBreak := True;
+  if TextColor <> -1 then
+    Props.FontColor := TextColor;
   {$IFDEF IP_LAZARUS}
   //DebugBox(Owner.Target, PadRect, clYellow, True);
   {$ENDIF}
@@ -15876,7 +15906,7 @@ begin
   FAlign := haDefault;
   FVAlign := hva3Middle;
   {FHeight := -1;}                                                     {!!.10}
-  BgColor := -1;
+  FBgColor := -1;
 end;
 
 procedure TIpHtmlNodeTableHeaderOrCell.Layout(
@@ -18968,6 +18998,26 @@ end;
 destructor TIpHtmlPrintSettings.Destroy;
 begin
   inherited;
+end;
+
+{ TIpHtmlNodeTH }
+
+constructor TIpHtmlNodeTH.Create(ParentNode: TIpHtmlNode);
+begin
+  inherited Create(ParentNode);
+  {$IFDEF IP_LAZARUS}
+  FElementName := 'th';
+  {$ENDIF}
+end;
+
+{ TIpHtmlNodeTD }
+
+constructor TIpHtmlNodeTD.Create(ParentNode: TIpHtmlNode);
+begin
+  inherited Create(ParentNode);
+  {$IFDEF IP_LAZARUS}
+  FElementName := 'td';
+  {$ENDIF}
 end;
 
 initialization
