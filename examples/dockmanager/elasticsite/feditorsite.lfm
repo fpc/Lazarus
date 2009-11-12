@@ -12,7 +12,6 @@ inherited EditorSite: TEditorSite
   OnHide = FormHide
   OnResize = FormResize
   OnWindowStateChange = FormWindowStateChange
-  ShowInTaskBar = stAlways
   inherited pnlLeft: TPanel
     Height = 256
   end

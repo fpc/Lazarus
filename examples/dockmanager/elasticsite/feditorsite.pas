@@ -191,7 +191,11 @@ end;
 
 procedure TEditorSite.FormWindowStateChange(Sender: TObject);
 begin
+{$IFDEF minimize}
+  //test manual Hide/Show
+{$ELSE}
   DoMiniRestore;
+{$ENDIF}
 end;
 
 procedure TEditorSite.mnMinimizeClick(Sender: TObject);
@@ -203,9 +207,10 @@ begin
   for i := 0 to Screen.FormCount - 1 do begin
     f := Screen.Forms[i];
     //if f = self then f.WindowState := wsMinimized else
-    if f.Visible and (f.WindowState = wsNormal) then begin
+    if (f <> self) and f.Visible and (f.WindowState = wsNormal) then begin
+    //both changes together crash on Linux/gtk2 :-(
       f.Hide;
-      f.WindowState := wsMinimized;
+      //f.WindowState := wsMinimized;
     end;
   end;
 {$ELSE}
@@ -213,9 +218,20 @@ begin
 end;
 
 procedure TEditorSite.mnRestoreClick(Sender: TObject);
+var
+  i: integer;
+  f: TForm;
 begin
 {$IFDEF minimize}
-  WindowState := wsNormal;
+  for i := 0 to Screen.FormCount - 1 do begin
+    f := Screen.Forms[i];
+    //if f = self then f.WindowState := wsMinimized else
+    if not f.Visible and (f.WindowState = wsNormal) then begin
+    //both changes together crash on Linux/gtk2 :-(
+      f.Show;
+      //f.WindowState := wsNormal;
+    end;
+  end;
 {$ELSE}
 {$ENDIF}
 end;
