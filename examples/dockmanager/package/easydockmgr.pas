@@ -7,7 +7,8 @@ unit EasyDockMgr;
 interface
 
 uses
-    EasyDockSite, fDockBook, fFloatingSite, fElasticSite, LazarusPackageIntf;
+    EasyDockSite, fDockBook, fFloatingSite, fElasticSite, uMiniRestore, 
+  LazarusPackageIntf;
 
 implementation
 

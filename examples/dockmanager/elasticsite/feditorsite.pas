@@ -1,7 +1,7 @@
 unit fEditorSite;
 (* EditorSite by DoDi <DrDiettrich1@aol.com>
-mimics an Delphi editor window, that allows to
-- dock other windows to it
+Mimics an Delphi editor window, that allows to dock other windows to it,
+with several extensions:
 - optionally enlarging the window
 - detach a page into a new editor window
 - move a page into a different editor window
@@ -10,24 +10,26 @@ mimics an Delphi editor window, that allows to
 Some quirks should be handled properly in a true IDE implementation:
 
 For simplicity an IDE main menu has been added to the main window,
-that allows to create several project window dummies,
-which can be docked to the editor window.
+that allows to create several project (View) window dummies,
+which can be docked to each other, or to the editor window.
 
-Mixed docking of editor pages and View windows is not blocked, so that
-you can have multiple edit views within the editor window.
+Mixed docking of editor pages and View windows (currently) is not blocked,
+so that you can have multiple edit views within the editor window.
 
 Secondary editor windows should have the same docking capabilities.
-
+(not yet)
 
 Known bugs:
 - The IDE suspects dangling references - KEEP these references!
   Please report if you know how to fix this issue.
+
++ Problems with non-form project windows.
+  Since the IDE windows are all forms, we only handle this case now.
 *)
 
 {$mode objfpc}{$H+}
 
-{$DEFINE clientform} //clients are forms?
-{.$DEFINE stdfloat} //using standard floating host?
+{$DEFINE minimize} //test application minimize/restore
 
 interface
 
@@ -66,6 +68,7 @@ type
     procedure FormDeactivate(Sender: TObject);
     procedure FormHide(Sender: TObject);
     procedure FormResize(Sender: TObject);
+    procedure FormWindowStateChange(Sender: TObject);
     procedure mnMinimizeClick(Sender: TObject);
     procedure mnRestoreClick(Sender: TObject);
     procedure mnWindowDumpClick(Sender: TObject);
@@ -87,6 +90,7 @@ implementation
 
 uses
   LCLProc,
+  uMiniRestore,
   fClientForm,
   fFloatingSite;
 
@@ -102,30 +106,21 @@ begin
   FEdit.Parent := self;
   FEdit.Visible := True;
   FEdit.DragMode := dmManual; //disallow undocking
-  //FEdit.pnlDock.DragMode := dmManual;
-  FAutoExpand := True;
 end;
 
 function TEditorSite.CreateDockable(const cap: string): TWinControl;
 var
   Site: TFloatingSite;
-{$IFDEF clientform}
   Client: TViewWindow;
-{$ELSE}
-  Client: TWinControl;
-{$ENDIF}
 begin
-{$IFDEF clientform}
+(* Create a client form, and dock it into a floating dock host site.
+  We must force docking here, later the client will dock itself into
+  a float host site, when it becomes floating.
+*)
+//create the form
   Client := TViewWindow.Create(Application);
   Client.Label1.Caption := cap;
   Client.Visible := True;
-  //Client.FloatingDockSiteClass := TFloatingSite;
-{$ELSE}
-  Client := TPanel.Create(self);
-  Client.DragMode := dmAutomatic;
-  Client.DragKind := dkDock;
-  Client.Visible := True;
-{$ENDIF}
 //name it
   Client.Caption := cap;
   try
@@ -133,19 +128,9 @@ begin
   except
     //here: simply ignore duplicate name
   end;
-{$IFDEF stdfloat}
-  Client.ManualDock(nil);
-{$ELSE}
   //Client.FloatingDockSiteClass := TFloatingSite;
-  {$IFDEF old}
-  //ManualFloat doesn't work as expected :-(
-    //Client.Align := alClient; //required for proper docking
-    Client.ManualFloat(Rect(200,200, 400,400));
-  {$ELSE}
-    Site := TFloatingSite.Create(Application);
-    Client.ManualDock(Site, nil, alClient);
-  {$ENDIF}
-{$ENDIF}
+  Site := TFloatingSite.Create(Application);
+  Client.ManualDock(Site, nil, alClient);
   Result := Client;
 end;
 
@@ -158,10 +143,30 @@ begin
   CreateDockable(item.Caption);
 end;
 
+function TEditorSite.OpenFile(const FileName: string): TObject;
+begin
+//todo: load the file
+  CurEdit := TEditPage.Create(self);
+  CurEdit.LoadFile(FileName);
+  CurEdit.ManualDock(FEdit);
+//make it visible
+  Result := CurEdit; //or what?
+end;
+
+procedure TEditorSite.mnOpenClick(Sender: TObject);
+begin
+  if OpenDialog1.Execute then begin
+    OpenFile(OpenDialog1.FileName);
+  end;
+end;
+
 procedure TEditorSite.mnExitClick(Sender: TObject);
 begin
   Close;
 end;
+
+
+// ----------- application window handling -------------
 
 procedure TEditorSite.FormActivate(Sender: TObject);
 begin
@@ -175,13 +180,18 @@ end;
 
 procedure TEditorSite.FormHide(Sender: TObject);
 begin
-  DebugLn('--- FormHide'); //not when minimized manually (win32)
+  //DebugLn('--- FormHide'); //not when minimized manually (win32)
   //mnMinimizeClick(Sender);
 end;
 
 procedure TEditorSite.FormResize(Sender: TObject);
 begin
-  DebugLn('--- Resize');
+  //DebugLn('--- Resize');
+end;
+
+procedure TEditorSite.FormWindowStateChange(Sender: TObject);
+begin
+  DoMiniRestore;
 end;
 
 procedure TEditorSite.mnMinimizeClick(Sender: TObject);
@@ -189,6 +199,7 @@ var
   i: integer;
   f: TForm;
 begin
+{$IFDEF minimize}
   for i := 0 to Screen.FormCount - 1 do begin
     f := Screen.Forms[i];
     //if f = self then f.WindowState := wsMinimized else
@@ -197,18 +208,16 @@ begin
       f.WindowState := wsMinimized;
     end;
   end;
+{$ELSE}
+{$ENDIF}
 end;
 
 procedure TEditorSite.mnRestoreClick(Sender: TObject);
 begin
+{$IFDEF minimize}
   WindowState := wsNormal;
-end;
-
-procedure TEditorSite.mnOpenClick(Sender: TObject);
-begin
-  if OpenDialog1.Execute then begin
-    OpenFile(OpenDialog1.FileName);
-  end;
+{$ELSE}
+{$ENDIF}
 end;
 
 procedure TEditorSite.mnWindowDumpClick(Sender: TObject);
@@ -241,16 +250,6 @@ begin
   end;
 {}
   DebugLn('---');
-end;
-
-function TEditorSite.OpenFile(const FileName: string): TObject;
-begin
-//todo: load the file
-  CurEdit := TEditPage.Create(self);
-  CurEdit.LoadFile(FileName);
-  CurEdit.ManualDock(FEdit);
-//make it visible
-  Result := CurEdit; //or what?
 end;
 
 initialization

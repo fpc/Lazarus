@@ -17,7 +17,7 @@
     <Description Value="EasyDocking Manager and Notebook"/>
     <License Value="LGPL"/>
     <Version Major="1"/>
-    <Files Count="8">
+    <Files Count="9">
       <Item1>
         <Filename Value="easydocksite.pas"/>
         <UnitName Value="EasyDockSite"/>
@@ -51,6 +51,10 @@
         <HasRegisterProc Value="True"/>
         <UnitName Value="fElasticSite"/>
       </Item8>
+      <Item9>
+        <Filename Value="uminirestore.pas"/>
+        <UnitName Value="uMiniRestore"/>
+      </Item9>
     </Files>
     <Type Value="RunAndDesignTime"/>
     <RequiredPkgs Count="2">

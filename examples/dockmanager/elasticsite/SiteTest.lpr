@@ -14,7 +14,6 @@ uses
 begin
   Application.Initialize;
   Application.CreateForm(TEditorSite, EditorSite);
-  Application.CreateForm(TViewWindow, ViewWindow);
   Application.Run;
 end.
 

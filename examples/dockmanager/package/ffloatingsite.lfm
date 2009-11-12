@@ -6,9 +6,7 @@ object FloatingSite: TFloatingSite
   Caption = 'FloatingSite'
   DockSite = True
   OnDockDrop = FormDockDrop
-  OnDockOver = FormDockOver
   OnUnDock = FormUnDock
-  ShowInTaskBar = stNever
   UseDockManager = True
   LCLVersion = '0.9.29'
   Visible = True

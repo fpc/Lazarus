@@ -1,40 +1,39 @@
-{ This is an automatically generated lazarus resource file }
-
 LazarusResources.Add('TEditorSite','FORMDATA',[
   'TPF0'#241#11'TEditorSite'#10'EditorSite'#4'Left'#3'b'#1#6'Height'#3','#1#5'W'
   +'idth'#3#144#1#7'Caption'#6#10'EditorSite'#12'ClientHeight'#3#25#1#11'Client'
   +'Width'#3#144#1#4'Menu'#7#9'MainMenu1'#10'OnActivate'#7#12'FormActivate'#8'O'
   +'nCreate'#7#10'FormCreate'#12'OnDeactivate'#7#14'FormDeactivate'#6'OnHide'#7
-  +#8'FormHide'#8'OnResize'#7#10'FormResize'#13'ShowInTaskBar'#7#8'stAlways'#0
-  +#241#6'TPanel'#7'pnlLeft'#6'Height'#3#0#1#0#0#241#9'TSplitter'#9'splitLeft'#6
-  +'Height'#3#0#1#0#0#241#6'TPanel'#8'pnlRight'#4'Left'#3#144#1#6'Height'#3#0#1
-  +#0#0#241#6'TPanel'#9'pnlBottom'#3'Top'#3#4#1#5'Width'#3#144#1#0#0#241#9'TSpl'
-  +'itter'#10'splitRight'#4'Left'#3#140#1#6'Height'#3#0#1#0#0#241#10'TStatusBar'
-  +#10'StatusBar1'#3'Top'#3#5#1#5'Width'#3#144#1#0#0#241#9'TSplitter'#11'splitB'
-  +'ottom'#3'Top'#3#0#1#5'Width'#3#144#1#0#0#242#2#7#9'TMainMenu'#9'MainMenu1'#4
-  +'left'#3#240#0#3'top'#2'0'#0#9'TMenuItem'#6'mnFile'#7'Caption'#6#5'&File'#0#9
-  +'TMenuItem'#6'mnOpen'#7'Caption'#6#5'&Open'#7'OnClick'#7#11'mnOpenClick'#0#0
-  +#9'TMenuItem'#9'MenuItem1'#7'Caption'#6#1'-'#0#0#9'TMenuItem'#6'mnExit'#7'Ca'
-  +'ption'#6#5'E&xit'#7'OnClick'#7#11'mnExitClick'#0#0#0#9'TMenuItem'#6'mnView'
-  +#7'Caption'#6#5'&View'#0#9'TMenuItem'#9'MenuItem2'#7'Caption'#6#16'Object In'
-  +'spector'#7'OnClick'#7#13'ViewMenuClick'#0#0#9'TMenuItem'#9'MenuItem3'#7'Cap'
-  +'tion'#6#8'Messages'#7'OnClick'#7#13'ViewMenuClick'#0#0#9'TMenuItem'#9'MenuI'
-  +'tem4'#7'Caption'#6#13'Code Explorer'#7'OnClick'#7#13'ViewMenuClick'#0#0#9'T'
-  +'MenuItem'#9'MenuItem5'#7'Caption'#6#9'ToDo List'#7'OnClick'#7#13'ViewMenuCl'
-  +'ick'#0#0#9'TMenuItem'#9'MenuItem6'#7'Caption'#6#13'Debug windows'#0#9'TMenu'
-  +'Item'#9'MenuItem7'#7'Caption'#6#7'Watches'#7'OnClick'#7#13'ViewMenuClick'#0
-  +#0#9'TMenuItem'#9'MenuItem8'#7'Caption'#6#11'BreakPoints'#7'OnClick'#7#13'Vi'
-  +'ewMenuClick'#0#0#9'TMenuItem'#9'MenuItem9'#7'Caption'#6#15'Local Variables'
-  +#7'OnClick'#7#13'ViewMenuClick'#0#0#9'TMenuItem'#10'MenuItem10'#7'Caption'#6
-  +#9'Registers'#7'OnClick'#7#13'ViewMenuClick'#0#0#9'TMenuItem'#10'MenuItem11'
-  +#7'Caption'#6#10'Call Stack'#7'OnClick'#7#13'ViewMenuClick'#0#0#9'TMenuItem'
-  +#10'MenuItem12'#7'Caption'#6#9'Assembler'#7'OnClick'#7#13'ViewMenuClick'#0#0
-  +#9'TMenuItem'#10'MenuItem13'#7'Caption'#6#12'Debug Output'#7'OnClick'#7#13'V'
-  +'iewMenuClick'#0#0#0#0#9'TMenuItem'#10'MenuItem14'#7'Caption'#6#8'&Windows'#0
-  +#9'TMenuItem'#12'mnWindowDump'#7'Caption'#6#5'&Dump'#7'OnClick'#7#17'mnWindo'
-  +'wDumpClick'#0#0#9'TMenuItem'#10'mnMinimize'#7'Caption'#6#12'Minimize all'#7
-  +'OnClick'#7#15'mnMinimizeClick'#0#0#9'TMenuItem'#9'mnRestore'#7'Caption'#6#11
-  +'Restore all'#7'OnClick'#7#14'mnRestoreClick'#0#0#0#0#242#2#8#11'TOpenDialog'
-  +#11'OpenDialog1'#6'Filter'#6#25'*.pas|*.pas|All Files|*.*'#4'left'#3'5'#1#3
-  +'top'#2'0'#0#0#0
+  +#8'FormHide'#8'OnResize'#7#10'FormResize'#19'OnWindowStateChange'#7#21'FormW'
+  +'indowStateChange'#13'ShowInTaskBar'#7#8'stAlways'#0#241#6'TPanel'#7'pnlLeft'
+  +#6'Height'#3#0#1#0#0#241#9'TSplitter'#9'splitLeft'#6'Height'#3#0#1#0#0#241#6
+  +'TPanel'#8'pnlRight'#4'Left'#3#144#1#6'Height'#3#0#1#0#0#241#6'TPanel'#9'pnl'
+  +'Bottom'#3'Top'#3#4#1#5'Width'#3#144#1#0#0#241#9'TSplitter'#10'splitRight'#4
+  +'Left'#3#140#1#6'Height'#3#0#1#0#0#241#10'TStatusBar'#10'StatusBar1'#3'Top'#3
+  +#5#1#5'Width'#3#144#1#0#0#241#9'TSplitter'#11'splitBottom'#3'Top'#3#0#1#5'Wi'
+  +'dth'#3#144#1#0#0#242#2#7#9'TMainMenu'#9'MainMenu1'#4'left'#3#240#0#3'top'#2
+  +'0'#0#9'TMenuItem'#6'mnFile'#7'Caption'#6#5'&File'#0#9'TMenuItem'#6'mnOpen'#7
+  +'Caption'#6#5'&Open'#7'OnClick'#7#11'mnOpenClick'#0#0#9'TMenuItem'#9'MenuIte'
+  +'m1'#7'Caption'#6#1'-'#0#0#9'TMenuItem'#6'mnExit'#7'Caption'#6#5'E&xit'#7'On'
+  +'Click'#7#11'mnExitClick'#0#0#0#9'TMenuItem'#6'mnView'#7'Caption'#6#5'&View'
+  +#0#9'TMenuItem'#9'MenuItem2'#7'Caption'#6#16'Object Inspector'#7'OnClick'#7
+  +#13'ViewMenuClick'#0#0#9'TMenuItem'#9'MenuItem3'#7'Caption'#6#8'Messages'#7
+  +'OnClick'#7#13'ViewMenuClick'#0#0#9'TMenuItem'#9'MenuItem4'#7'Caption'#6#13
+  +'Code Explorer'#7'OnClick'#7#13'ViewMenuClick'#0#0#9'TMenuItem'#9'MenuItem5'
+  +#7'Caption'#6#9'ToDo List'#7'OnClick'#7#13'ViewMenuClick'#0#0#9'TMenuItem'#9
+  +'MenuItem6'#7'Caption'#6#13'Debug windows'#0#9'TMenuItem'#9'MenuItem7'#7'Cap'
+  +'tion'#6#7'Watches'#7'OnClick'#7#13'ViewMenuClick'#0#0#9'TMenuItem'#9'MenuIt'
+  +'em8'#7'Caption'#6#11'BreakPoints'#7'OnClick'#7#13'ViewMenuClick'#0#0#9'TMen'
+  +'uItem'#9'MenuItem9'#7'Caption'#6#15'Local Variables'#7'OnClick'#7#13'ViewMe'
+  +'nuClick'#0#0#9'TMenuItem'#10'MenuItem10'#7'Caption'#6#9'Registers'#7'OnClic'
+  +'k'#7#13'ViewMenuClick'#0#0#9'TMenuItem'#10'MenuItem11'#7'Caption'#6#10'Call'
+  +' Stack'#7'OnClick'#7#13'ViewMenuClick'#0#0#9'TMenuItem'#10'MenuItem12'#7'Ca'
+  +'ption'#6#9'Assembler'#7'OnClick'#7#13'ViewMenuClick'#0#0#9'TMenuItem'#10'Me'
+  +'nuItem13'#7'Caption'#6#12'Debug Output'#7'OnClick'#7#13'ViewMenuClick'#0#0#0
+  +#0#9'TMenuItem'#10'MenuItem14'#7'Caption'#6#8'&Windows'#0#9'TMenuItem'#12'mn'
+  +'WindowDump'#7'Caption'#6#5'&Dump'#7'OnClick'#7#17'mnWindowDumpClick'#0#0#9
+  +'TMenuItem'#10'mnMinimize'#7'Caption'#6#12'Minimize all'#7'OnClick'#7#15'mnM'
+  +'inimizeClick'#0#0#9'TMenuItem'#9'mnRestore'#7'Caption'#6#11'Restore all'#7
+  +'OnClick'#7#14'mnRestoreClick'#0#0#0#0#242#2#8#11'TOpenDialog'#11'OpenDialog'
+  +'1'#6'Filter'#6#25'*.pas|*.pas|All Files|*.*'#4'left'#3'5'#1#3'top'#2'0'#0#0
+  +#0
 ]);

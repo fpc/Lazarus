@@ -1,8 +1,13 @@
 unit fFloatingSite;
 (* Floating dock host.
+  Host one or more docked clients.
+  To distinguish multiple clients, use the form header style (named caption).
+  Destroy the site on the last undock.
 
-ToDo:
-- show summary caption
+  Handle flaws of the Delphi docking model (improper undock).
+  - Disallow TControls to float (else nothing but trouble).
+  - For the IDE, floating client forms must wrap themselves into a new
+    host site, to allow for continued docking of other clients.
 *)
 
 {$mode objfpc}{$H+}
@@ -16,8 +21,6 @@ type
   TFloatingSite = class(TForm)
     procedure FormDockDrop(Sender: TObject; Source: TDragDockObject;
       X, Y: Integer);
-    procedure FormDockOver(Sender: TObject; Source: TDragDockObject;
-      X, Y: Integer; State: TDragState; var Accept: Boolean);
     procedure FormUnDock(Sender: TObject; Client: TControl;
       NewTarget: TWinControl; var Allow: Boolean);
   private
@@ -34,8 +37,8 @@ var
 implementation
 
 uses
-  EasyDockSite,
-  LCLproc;
+  LCLproc,  //debugging only
+  EasyDockSite; //our DockManager
 
 { TFloatingSite }
 
@@ -45,6 +48,9 @@ var
   s: string;
   ctl: TControl;
 begin
+(* Show the combined captions of all clients.
+  Exclude client to be undocked.
+*)
   s := '';
   for i := 0 to DockClientCount - 1 do begin
     ctl := DockClients[i];
@@ -52,63 +58,54 @@ begin
       s := s + GetDockCaption(ctl) + ', ';
   end;
   SetLength(s, Length(s) - 2); //strip trailing ", "
-  Caption := s; //GetDockCaption(self);
+  Caption := s;
 end;
 
 procedure TFloatingSite.FormDockDrop(Sender: TObject; Source: TDragDockObject;
   X, Y: Integer);
 begin
+(* Update the caption.
+*)
   AdjustCaption(nil);
-end;
-
-procedure TFloatingSite.FormDockOver(Sender: TObject; Source: TDragDockObject;
-  X, Y: Integer; State: TDragState; var Accept: Boolean);
-begin
-  //DebugLn('DockOver');
 end;
 
 procedure TFloatingSite.FormUnDock(Sender: TObject; Client: TControl;
   NewTarget: TWinControl; var Allow: Boolean);
 begin
-(* Check for undock last client:
-    - disallow to Nil (move window?)
-    - if allowed, kill empty docksite.
+(* Check for undock last client, if allowed kill empty docksite.
   Refresh caption after undock.
 
 Shit: in both cases the docking management does the opposite of what it should do :-(
 
 When the last control is dragged away, it's hosted in a *new* site.
 When a second control is dragged away, the entire site is moved.
+
+Fix: disallow TControls to become floating.
 *)
+//try to distinguish between TControl and TWinControl (TCustomForm?)
+  Allow := (NewTarget <> nil) or (Client is TWinControl); //seems to be safe
+  if not Allow then
+    exit; //all done
+
   if DockClientCount <= 1 then begin
-    if NewTarget = nil then begin
-      //Allow := False; //deny
-      Allow := True;    //move form - where???
-      Release;
-    end else
-      Release;
+      Release; //destroy empty site
   end else begin
-  //allow float - action required?
-  (* strange behaviour: client is undocked, but stays in the site.
-      The site is moved to the drop location.
-  *)
-    //Allow := NewTarget <> nil;  //simply disallow undock to floating state (for now)
-    Allow := True; //bug!!!
-    //DragManager. - not helpful - where is the DockObject???
-  end;
-  if Allow then begin
-    AdjustCaption(Client);
+    AdjustCaption(Client); //update caption, excluding removed client
+    DockManager.ResetBounds(True); //required with gtk2!?
   end;
 end;
 
 procedure TFloatingSite.Loaded;
 begin
+(* select and configure the docking manager.
+*)
   inherited Loaded;
   if DockManager = nil then
     DockManager := TEasyTree.Create(self);
   if DockManager is TEasyTree then begin
-    TEasyTree(DockManager).HideSingleCaption := True;
-    TEasyTree(DockManager).SetStyle(hsForm);
+  //adjust as desired (order required!?)
+    TEasyTree(DockManager).HideSingleCaption := True; //only show headers for multiple clients
+    TEasyTree(DockManager).SetStyle(hsForm);  //show client name in the header
   end;
 end;
 
