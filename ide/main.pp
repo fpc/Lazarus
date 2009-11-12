@@ -7204,6 +7204,7 @@ var NewSrcEdit: TSourceEditor;
   NewErrorLine: LongInt;
   NewExecutionLine: LongInt;
   FoldState: String;
+  NewEditorIndex: LongInt;
 begin
   AFilename:=AnUnitInfo.Filename;
 
@@ -7250,16 +7251,17 @@ begin
   end;
 
   // update editor indices in project
+  NewEditorIndex := SourceNotebook.FindPageWithEditor(NewSrcEdit);
   if (not (ofProjectLoading in Flags)) and NewSrcEditorCreated then
-    Project1.InsertEditorIndex(SourceNotebook.Notebook.PageIndex);
-  AnUnitInfo.EditorIndex:=SourceNotebook.FindPageWithEditor(NewSrcEdit);
+    Project1.InsertEditorIndex(NewEditorIndex);
+  AnUnitInfo.EditorIndex := NewEditorIndex;
   //debugln(['TMainIDE.DoOpenFileInSourceEditor ',AnUnitInfo.Filename,' ',AnUnitInfo.EditorIndex]);
 
   // restore source editor settings
   DoRestoreBookMarks(AnUnitInfo,NewSrcEdit);
   DebugBoss.DoRestoreDebuggerMarks(AnUnitInfo);
   NewSrcEdit.SyntaxHighlighterType:=AnUnitInfo.SyntaxHighlighter;
-    NewSrcEdit.EditorComponent.AfterLoadFromFile;
+  NewSrcEdit.EditorComponent.AfterLoadFromFile;
   try
     NewSrcEdit.EditorComponent.FoldState := FoldState;
   except
@@ -7278,6 +7280,8 @@ begin
   AnUnitInfo.Loaded:=true;
 
   // update statusbar and focus editor
+  if NewSrcEditorCreated then
+    SourceNotebook.Notebook.PageIndex := AnUnitInfo.EditorIndex;
   if (not (ofProjectLoading in Flags)) then
     SourceNotebook.FocusEditor;
   SourceNoteBook.UpdateStatusBar;

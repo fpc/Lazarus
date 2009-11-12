@@ -611,7 +611,7 @@ type
 
 
     function CreateNotebook: Boolean;
-    function NewSE(Pagenum: Integer): TSourceEditor;
+    function NewSE(Pagenum: Integer; SwitchToTab: Boolean = True): TSourceEditor;
     procedure EditorChanged(Sender: TObject);
 
     procedure ccExecute(Sender: TObject);
@@ -4875,7 +4875,7 @@ Begin
     OnEditorChanged(Sender);
 End;
 
-function TSourceNotebook.NewSE(PageNum: Integer): TSourceEditor;
+function TSourceNotebook.NewSE(PageNum: Integer; SwitchToTab: Boolean = True): TSourceEditor;
 begin
   {$IFDEF IDE_DEBUG}
   writeln('TSourceNotebook.NewSE A ');
@@ -4896,7 +4896,8 @@ begin
   Result.EditorComponent.BeginUpdate;
   FSourceEditorList.Add(Result);
   Result.CodeTemplates:=CodeTemplateModul;
-  Notebook.PageIndex := Pagenum;
+  if SwitchToTab then
+    Notebook.PageIndex := Pagenum;
   //debugln(['TSourceNotebook.NewSE C GetActiveSE=Result=',GetActiveSE=Result]);
   Result.FPageName:=NoteBook.Pages[Pagenum];
   Result.EditorComponent.BookMarkOptions.BookmarkImages := SourceEditorMarks.ImgList;
@@ -6224,7 +6225,7 @@ Begin
   writeln('[TSourceNotebook.NewFile] A ');
   {$ENDIF}
   Visible:=true;
-  Result := NewSE(-1);
+  Result := NewSE(-1, FocusIt);
   {$IFDEF IDE_DEBUG}
   writeln('[TSourceNotebook.NewFile] B ');
   {$ENDIF}
@@ -6232,7 +6233,7 @@ Begin
   {$IFDEF IDE_DEBUG}
   writeln('[TSourceNotebook.NewFile] D ');
   {$ENDIF}
-  Result.PageName:=FindUniquePageName(NewShortName,Notebook.PageIndex);
+  Result.PageName:=FindUniquePageName(NewShortName, FindPageWithEditor(Result));
   if FocusIt then FocusEditor;
   {$IFDEF IDE_DEBUG}
   writeln('[TSourceNotebook.NewFile] end');
