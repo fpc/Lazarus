@@ -918,17 +918,12 @@ var
 begin
   // read .dof file
   DOFFilename:=FindDelphiDOF(APackage.Filename);
-  if FileExistsUTF8(DOFFilename) then begin
-    Result:=ExtractOptionsFromDOF(DOFFilename,APackage);
-    if Result<>mrOk then exit;
-  end;
+  Result:=ExtractOptionsFromDOF(DOFFilename,APackage);
+  if Result<>mrOk then exit;
 
   // read .cfg file
   CFGFilename:=FindDelphiCFG(APackage.Filename);
-  if FileExistsUTF8(CFGFilename) then begin
-    Result:=ExtractOptionsFromCFG(CFGFilename,APackage);
-    if Result<>mrOk then exit;
-  end;
+  Result:=ExtractOptionsFromCFG(CFGFilename,APackage);
 end;
 
 procedure CleanUpCompilerOptionsSearchPaths(Options: TBaseCompilerOptions);
