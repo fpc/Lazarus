@@ -36,7 +36,7 @@
         <PackageName Value="LCL"/>
       </Item3>
     </RequiredPackages>
-    <Units Count="3">
+    <Units Count="4">
       <Unit0>
         <Filename Value="SiteTest.lpr"/>
         <IsPartOfProject Value="True"/>
@@ -57,6 +57,13 @@
         <ResourceBaseClass Value="Form"/>
         <UnitName Value="fEditBook"/>
       </Unit2>
+      <Unit3>
+        <Filename Value="fclientform.pas"/>
+        <IsPartOfProject Value="True"/>
+        <ComponentName Value="ViewWindow"/>
+        <ResourceBaseClass Value="Form"/>
+        <UnitName Value="fClientForm"/>
+      </Unit3>
     </Units>
   </ProjectOptions>
   <CompilerOptions>

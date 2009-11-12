@@ -6,7 +6,11 @@ inherited EditorSite: TEditorSite
   ClientHeight = 281
   ClientWidth = 400
   Menu = MainMenu1
+  OnActivate = FormActivate
   OnCreate = FormCreate
+  OnDeactivate = FormDeactivate
+  OnHide = FormHide
+  OnResize = FormResize
   ShowInTaskBar = stAlways
   inherited pnlLeft: TPanel
     Height = 256

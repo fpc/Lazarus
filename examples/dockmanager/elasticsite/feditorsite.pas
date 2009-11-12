@@ -26,6 +26,7 @@ Known bugs:
 
 {$mode objfpc}{$H+}
 
+{$DEFINE clientform} //clients are forms?
 {.$DEFINE stdfloat} //using standard floating host?
 
 interface
@@ -60,7 +61,11 @@ type
     mnExit: TMenuItem;
     mnOpen: TMenuItem;
     mnFile: TMenuItem;
+    procedure FormActivate(Sender: TObject);
     procedure FormCreate(Sender: TObject);
+    procedure FormDeactivate(Sender: TObject);
+    procedure FormHide(Sender: TObject);
+    procedure FormResize(Sender: TObject);
     procedure mnMinimizeClick(Sender: TObject);
     procedure mnRestoreClick(Sender: TObject);
     procedure mnWindowDumpClick(Sender: TObject);
@@ -71,7 +76,7 @@ type
     FEdit: TEditBook; //to become a frame!
     CurEdit: TEditPage;
   public
-    function CreateDockable(const cap: string): TPanel;
+    function CreateDockable(const cap: string): TWinControl;
     function OpenFile(const FileName: string): TObject;
   end;
 
@@ -82,6 +87,7 @@ implementation
 
 uses
   LCLProc,
+  fClientForm,
   fFloatingSite;
 
 { TEditorSite }
@@ -100,15 +106,26 @@ begin
   FAutoExpand := True;
 end;
 
-function TEditorSite.CreateDockable(const cap: string): TPanel;
+function TEditorSite.CreateDockable(const cap: string): TWinControl;
 var
   Site: TFloatingSite;
-  Client: TPanel;
+{$IFDEF clientform}
+  Client: TViewWindow;
+{$ELSE}
+  Client: TWinControl;
+{$ENDIF}
 begin
+{$IFDEF clientform}
+  Client := TViewWindow.Create(Application);
+  Client.Label1.Caption := cap;
+  Client.Visible := True;
+  //Client.FloatingDockSiteClass := TFloatingSite;
+{$ELSE}
   Client := TPanel.Create(self);
   Client.DragMode := dmAutomatic;
   Client.DragKind := dkDock;
   Client.Visible := True;
+{$ENDIF}
 //name it
   Client.Caption := cap;
   try
@@ -119,7 +136,7 @@ begin
 {$IFDEF stdfloat}
   Client.ManualDock(nil);
 {$ELSE}
-  Client.FloatingDockSiteClass := TFloatingSite;
+  //Client.FloatingDockSiteClass := TFloatingSite;
   {$IFDEF old}
   //ManualFloat doesn't work as expected :-(
     //Client.Align := alClient; //required for proper docking
@@ -146,9 +163,40 @@ begin
   Close;
 end;
 
-procedure TEditorSite.mnMinimizeClick(Sender: TObject);
+procedure TEditorSite.FormActivate(Sender: TObject);
 begin
-  self.WindowState := wsMinimized;
+  //DebugLn('--- Activate');
+end;
+
+procedure TEditorSite.FormDeactivate(Sender: TObject);
+begin
+  //DebugLn('--- Deactivate');
+end;
+
+procedure TEditorSite.FormHide(Sender: TObject);
+begin
+  DebugLn('--- FormHide'); //not when minimized manually (win32)
+  //mnMinimizeClick(Sender);
+end;
+
+procedure TEditorSite.FormResize(Sender: TObject);
+begin
+  DebugLn('--- Resize');
+end;
+
+procedure TEditorSite.mnMinimizeClick(Sender: TObject);
+var
+  i: integer;
+  f: TForm;
+begin
+  for i := 0 to Screen.FormCount - 1 do begin
+    f := Screen.Forms[i];
+    //if f = self then f.WindowState := wsMinimized else
+    if f.Visible and (f.WindowState = wsNormal) then begin
+      f.Hide;
+      f.WindowState := wsMinimized;
+    end;
+  end;
 end;
 
 procedure TEditorSite.mnRestoreClick(Sender: TObject);

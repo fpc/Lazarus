@@ -1,8 +1,8 @@
 object FloatingSite: TFloatingSite
   Left = 431
-  Height = 300
+  Height = 265
   Top = 498
-  Width = 400
+  Width = 377
   Caption = 'FloatingSite'
   DockSite = True
   OnDockDrop = FormDockDrop

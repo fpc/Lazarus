@@ -2773,6 +2773,9 @@ examples/dockmanager/easytree/ftree.pas svneol=native#text/plain
 examples/dockmanager/elasticsite/SiteTest.lpi svneol=native#text/plain
 examples/dockmanager/elasticsite/SiteTest.lpr svneol=native#text/plain
 examples/dockmanager/elasticsite/SiteTest.lrs svneol=native#text/plain
+examples/dockmanager/elasticsite/fclientform.lfm svneol=native#text/plain
+examples/dockmanager/elasticsite/fclientform.lrs svneol=native#text/plain
+examples/dockmanager/elasticsite/fclientform.pas svneol=native#text/pascal
 examples/dockmanager/elasticsite/fdockclient.lfm svneol=native#text/plain
 examples/dockmanager/elasticsite/fdockclient.lrs svneol=native#text/plain
 examples/dockmanager/elasticsite/fdockclient.pas svneol=native#text/pascal
@@ -2793,6 +2796,7 @@ examples/dockmanager/package/felasticsite.pas svneol=native#text/pascal
 examples/dockmanager/package/ffloatingsite.lfm svneol=native#text/plain
 examples/dockmanager/package/ffloatingsite.lrs svneol=native#text/plain
 examples/dockmanager/package/ffloatingsite.pas svneol=native#text/pascal
+examples/dockmanager/package/pen.ico -text
 examples/dockmanager/package/zoneheader.inc svneol=native#text/pascal
 examples/dockmanager/patches/FloatHostDockable.patch svneol=native#text/pascal
 examples/dockmanager/patches/NewClients.patch svneol=native#text/pascal

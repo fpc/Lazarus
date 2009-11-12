@@ -11,7 +11,7 @@ object EasyDockMain: TEasyDockMain
   Font.Name = 'MS Sans Serif'
   OnCreate = FormCreate
   ShowHint = True
-  LCLVersion = '0.9.27'
+  LCLVersion = '0.9.29'
   object sb: TStatusBar
     Left = 0
     Height = 20
@@ -85,7 +85,7 @@ object EasyDockMain: TEasyDockMain
     end
     object edDock: TEdit
       Left = 327
-      Height = 23
+      Height = 21
       Top = 2
       Width = 56
       DragKind = dkDock

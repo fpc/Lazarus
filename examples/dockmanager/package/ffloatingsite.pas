@@ -83,7 +83,7 @@ When a second control is dragged away, the entire site is moved.
   if DockClientCount <= 1 then begin
     if NewTarget = nil then begin
       Allow := False; //deny
-      //Allow := True;    //move form?
+      //Allow := True;    //move form - where???
     end else
       Release;
   end else begin
@@ -91,8 +91,8 @@ When a second control is dragged away, the entire site is moved.
   (* strange behaviour: client is undocked, but stays in the site.
       The site is moved to the drop location.
   *)
-    Allow := NewTarget <> nil;  //simply disallow undock to floating state (for now)
-    //Allow := True; //bug!!!
+    //Allow := NewTarget <> nil;  //simply disallow undock to floating state (for now)
+    Allow := True; //bug!!!
     //DragManager. - not helpful - where is the DockObject???
   end;
   if Allow then begin
