@@ -797,13 +797,16 @@ end;
 function TCarbonRegion.CombineWith(ARegion: TCarbonRegion; CombineMode: Integer): Integer;
 var
   sh1, sh2: HIShapeRef;
+const
+  MinCoord=-35000;
+  MaxSize=65000;
 begin
   if not Assigned(ARegion) then
     Result := LCLType.Error
   else
   begin
     Result := LCLType.ComplexRegion;
-    if (CombineMode in [RGN_AND, RGN_OR, RGN_XOR]) and HIShapeIsEmpty(FShape) then 
+    if (CombineMode in [RGN_AND, RGN_OR, RGN_XOR]) and HIShapeIsEmpty(FShape) then
       CombineMode := RGN_COPY;
       
     case CombineMode of
@@ -816,7 +819,15 @@ begin
         CFRelease(sh1); CFRelease(sh2);
       end;
       RGN_OR:   Shape:=HIShapeCreateUnion(FShape, ARegion.Shape);
-      RGN_DIFF: Shape:=HIShapeCreateDifference(FShape, ARegion.Shape);
+      RGN_DIFF:
+      begin
+        if HIShapeIsEmpty(FShape) then
+          {HIShapeCreateDifference doesn't work properly if original shape is empty}
+          {to simulate "emptieness" very big shape is created }
+          Shape:=HIShapeCreateWithRect(GetCGRect(MinCoord,MinCoord,MaxSize,MaxSize)); // create clip nothing.
+
+        Shape:=HIShapeCreateDifference(FShape, ARegion.Shape);
+      end;
       RGN_COPY: Shape:=HIShapeCreateCopy(ARegion.Shape);
     else
       Result := LCLType.Error;
