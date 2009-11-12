@@ -730,7 +730,7 @@ end;
 
 function TCSSReader.EOF: Boolean;
 begin
-  Result := FStream.Position >= FStream.Size-1;
+  Result := FStream.Position >= FStream.Size;
 end;
 
 constructor TCSSReader.Create(AStream: TStream; AGlobalProps: TCSSGlobalProps);

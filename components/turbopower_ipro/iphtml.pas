@@ -4665,6 +4665,8 @@ begin
   if Element.Color <> -1 then
     Text := Element.Color;
 
+  if Element.BGColor <> -1 then
+    BgColor := Element.BGColor;
 end;
 {$ENDIF}
 
@@ -14898,7 +14900,7 @@ begin
     end;
 
     if Element.BGColor <> -1 then begin
-      Props.BgColor := Element.Color;
+      Props.BgColor := Element.BGColor;
     end;
 
     if Element.Font.Name <> '' then begin
