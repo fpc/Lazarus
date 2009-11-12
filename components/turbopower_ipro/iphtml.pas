@@ -2123,7 +2123,6 @@ type
     FMarginHeight: Integer;
     FMarginWidth: Integer;
     {$IFDEF IP_LAZARUS}
-    FDataProvider: TIpAbstractHtmlDataProvider;
     FCSS: TCSSGlobalProps;
     {$ENDIF}
   protected
@@ -2148,6 +2147,7 @@ type
     Body : TIpHtmlNodeBODY;
     FTitleNode : TIpHtmlNodeTITLE;
    {$IFDEF IP_LAZARUS}
+      FDataProvider: TIpAbstractHtmlDataProvider;
       {$IFDEF UseGifImageUnit}
       GifImages : TList;
       {$ELSE}
