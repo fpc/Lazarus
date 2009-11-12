@@ -51,30 +51,8 @@ Bugs:
 
 
 Different behaviour than Delphi, but by design (October 2009, BB)
-- In Delphi (at least up to D2007) when setting the text property while EditMask and the text to be
-  set contain the same literals, confusing things can happen.
-  Delphi fills in text until it finds a matching maskliteral, then skips the remaining text
-  in the control and proceeds filling text after that mask literal.
-  This however leeds to the following problem: if you do Text := Text it might actually change the text
-  in the control (when MaskNoSave is _NOT_ specified)! That seems to be a bug to me.
-  Example in Delphi:
-    Set EditMask := "ccc-ccc-ccc;1;_"
-    You type in the control so it becomes: "1-2-3__-___"
-    If you read the Text property, it is "1-2-3  -   " (as expected)
-    Now (later on, perhaps after storing the text) you set Text property to "1-2-3  -   ".
-    You expect the text in the control to become "1-2-3__-___", but actually it becomes "1__-2__-3__"
-    (if EditMask = "!ccc-ccc-ccc;1;_", the same text becomes "__1-__2-___" which is even more wrong!
-    An entire character ('3') has disappeared.
-    If "!" has no influence on reading Text, it should have no influence on setting Text)
-
-   There is a related problem with setting Text if MaskNoSave is part of the EditMask _and_ "!" is in the EditMask,
-   however it does not affect the Text := Text issue, so storing and retrieving Text is allright.
-   (Actualy in this case in Delphi it is possible to set a text longer than the actual mask!)
-
-   I decided to implement TCustomEdit.SetText in such a way that at least storing and retrieving the
-   Text property results in the same text in the control.
-   So SetText breaks Delphi compatibility (a little), but data integrity is preserved as the result of this.
-
+ - In SetText in Delphi, when MasNoSave is in EditMask, it is possible to set text longer then the mask
+   allowes for. I disallowed that, because it corrupts internal cursor placement etc.
  - SetEditText is not Delphi compatible. Delphi allows setting any text in the control, leaving the control
    in an unrecoverable state, where it is impossible to leave the control because the text can never be validated
    (too short, too long, overwritten maskliterals). The app wil crash as a result of this.
@@ -653,6 +631,7 @@ begin
         end;
       end;
     end;
+    if (Length(FMask) > 0) then SetCharCase(ecNormal);
     //SetMaxLegth must be before Clear, otherwise Clear uses old MaxLength value!
     SetMaxLength(Length(FMask));
     Clear;
@@ -1158,16 +1137,61 @@ End;
 // Set the actual Text
 Procedure TCustomMaskEdit.SetText(Value : String);
 { This tries to mimic Delphi behaviour (D3):
-  - if mask contains no literals text is set, if necessary padded with blanks
-  - if mask contains literals then text is set as long as matching literals in the
-    text to set are avaiable
-  - Text can not be longer than Length(FMask)
-  - The text that is set, does not need to match the mask
-  - There are some differences to (irratic?) Delphi behaviour: see notes above.
+  - if mask contains no literals text is set, if necessary padded with blanks,
+    LTR or RTL depending on FTrimType
+  - if mask contains literals then we search for matching literals in text and
+    process each "segment" between matching maskliterals, trimming or padding
+    LTR or RTL depending on FTrimType, until there is no more matching maskliteral
+    Some examples to clarify:
+    EditMask        Text to be set    Result
+    99              1                 1_
+    !99             1                 _1
+    cc-cc           1-2               1_-2_
+    !cc-cc          1-2               _1-_2
+    cc-cc@cc        1-2@3             1_-2_@3_
+                    12@3              12-__@__
+    cc-cc@cc        123-456@789       12-45@78
+    !cc-cc@cc       123-456@789       23-56@89
+    This feauture seems to be invented for easy use of dates:
+
+    99/99/00        23/1/2009         23/1_/20  <- if your locale DateSeparator = '/'
+    !99/99/00       23/1/2009         23/_1/09  <- if your locale DateSeparator = '/'
+
+  - The resulting text will always have length = length(FMask)
+  - The text that is set, does not need to validate
 }
+//Helper functions
+  Function FindNextMaskLiteral(const StartAt: Integer; out FoundAt: Integer; out ALiteral: Char): Boolean;
+  var i: Integer;
+  begin
+    Result := False;
+    for i := StartAt to Length(FMask) do
+    begin
+      if IsLiteral(FMask[i]) then
+      begin
+        FoundAt := i;
+        ALiteral := ClearChar(i);
+        Result := True;
+        Exit;
+      end;
+    end;
+  end;
+  Function FindMatchingLiteral(const Value: String; const ALiteral: Char; out FoundAt: Integer): Boolean;
+  begin
+    FoundAt := Pos(ALiteral, Value);
+    Result := (FoundAt > 0);
+  end;
+
 Var
-  S              : ShortString;
-  I, J           : Integer;
+  S                   : ShortString;
+  I, J                : Integer;
+  mPrevLit, mNextLit  : Integer; //Position of Previous and Next lietral in FMask
+  vNextLit            : Integer; //Position of next matching literal in Value
+  HasNextLiteral,
+  HasMatchingLiteral,
+  Stop                : Boolean;
+  Literal             : Char;
+  Sub                 : String;
 Begin
   //Setting Text while loading has unwanted side-effects
   if (csLoading in ComponentState) then
@@ -1191,25 +1215,99 @@ Begin
 
     if FMaskSave then
     begin
-      //fill in text, stop if there is no matching MaskLiteral left in Value
-      I := 1;
-      J := 1;
-      While (I <= Length(FMask)) and (j <= Length(Value)) do
+      mPrevLit := 0;
+      Stop := False;
+      HasNextLiteral := FindNextMaskLiteral(mPrevLit+1, mNextLit, Literal);
+      //if FMask starts with a literal, then Value[1] must be that literal
+      if HasNextLiteral and (mNextLit = 1) and (Value[1] <> Literal) then Stop := True;
+      //debugln('HasNextLiteral = ',dbgs(hasnextliteral),', Stop = ',dbgs(stop));
+      While not Stop do
       begin
-        if not IsLiteral(FMask[I]) then
+        if HasNextLiteral then
         begin
-          if (Value[i] = #32) then S[i] := FSpaceChar else S[i] := Value[j];
+          HasMatchingLiteral := FindMatchingLiteral(Value, Literal, vNextLit);
+          //debugln('mPrevLit = ',dbgs(mprevlit),' mNextLit = ',dbgs(mnextlit));
+          //debugln('HasMatchingLiteral = ',dbgs(hasmatchingliteral));
+          if HasMatchingLiteral then
+          begin
+            //debugln('vNextLit = ',dbgs(vnextlit));
+            Sub := Copy(Value, 1, vNextLit - 1); //Copy up to, but not including matching literal
+            System.Delete(Value, 1, vNextLit); //Remove this bit from Value (including matching literal)
+            if (Length(Value) = 0) then Stop := True;
+            //debugln('Sub = "',Sub,'", Value = "',Value,'"');
+          end
+          else
+          begin//HasMatchingLiteral = False
+            Stop := True;
+            Sub := Value;
+            Value := '';
+            //debugln('Sub = "',Sub,'", Value = "',Value,'"');
+          end;
+          //fill S between vPrevLit + 1 and vNextLit - 1, LTR or RTL depending on FTrimType
+          if (FTrimType = metTrimRight) then
+          begin
+            j := 1;
+            for i := (mPrevLit + 1) to (mNextLit - 1) do
+            begin
+              if (J > Length(Sub)) then Break;
+              if (Sub[j] = #32) then S[i] := FSpaceChar else S[i] := Sub[j];
+              Inc(j);
+            end;
+          end
+          else
+          begin//FTrimType = metTrimLeft
+            j := Length(Sub);
+            for i := (mNextLit - 1) downto (mPrevLit + 1) do
+            begin
+              if (j < 1) then Break;
+              if (Sub[j] = #32) then S[i] := FSpaceChar else S[i] := Sub[j];
+              Dec(j);
+            end;
+          end;
+          //debugln('S = ',S);
         end
         else
-        begin
-          //search for S[i] in Value
-          While (S[i] <> Value[j]) and (j < Length(Value)) do Inc(j);
-          //if not found, make sure we leave the loop
-          if (S[i] <> Value[j]) then J := Length(Value) + 1;
+        begin//HasNextLiteral = False
+          //debugln('No more MaskLiterals at this point');
+          //debugln('mPrevLit = ',dbgs(mprevlit));
+          Stop := True;
+          Sub := Value;
+          Value := '';
+          //debugln('Sub = "',Sub,'", Value = "',Value,'"');
+          //fill S from vPrevLit + 1 until end of FMask, LTR or RTL depending on FTrimType
+          if (FTrimType = metTrimRight) then
+          begin
+            j := 1;
+            for i := (mPrevLit + 1) to Length(FMask) do
+            begin
+              //debugln('  i = ',dbgs(i),'  j = ',dbgs(j));
+              if (j > Length(Sub)) then Break;
+              if (Sub[j] = #32) then S[i] := FSpaceChar else S[i] := Sub[j];
+              //debugln('  Sub[j] = "',Sub[j],'" -> S = ',S);
+              Inc(j);
+            end;
+          end
+          else
+          begin//FTrimType = metTrimLeft
+            j := Length(Sub);
+            for i := Length(FMask) downto (mPrevLit + 1) do
+            begin
+              //debugln('  i = ',dbgs(i),'  j = ',dbgs(j));
+              if (j < 1) then Break;
+              if (Sub[j] = #32) then S[i] := FSpaceChar else S[i] := Sub[j];
+              //debugln('  Sub[j] = "',Sub[j],'" -> S = ',S);
+              Dec(j);
+            end;
+          end;
+          //debugln('S = ',S);
         end;
-        Inc(i);
-        Inc(j);
-      end;
+        //debugln('Stop = ',dbgs(stop));
+        if not Stop then
+        begin
+          mPrevLit := mNextLit;
+          HasNextLiteral := FindNextMaskLiteral(mPrevLit + 1, mNextLit, Literal);
+        end;
+      end;//while not Stop
     end//FMaskSave = True
     else
     begin//FMaskSave = False
@@ -1295,12 +1393,7 @@ procedure TCustomMaskEdit.TextChanged;
   So, we simply restore the text from our backup: FCurrenText
 }
 begin
-  if not IsMasked then
-  begin
-    Inherited TextChanged;
-    Exit;
-  end;
-  if FChangeAllowed then
+  if (not IsMasked) or FChangeAllowed then
   begin
     Inherited TextChanged;
   end
