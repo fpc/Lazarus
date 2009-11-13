@@ -592,7 +592,7 @@ begin
       Result:=Result+'F';
     if GTK_WIDGET_RC_STYLE(Widget) then
       Result:=Result+'St';
-    if  GTK_WIDGET_PARENT_SENSITIVE(Widget) then
+    if GTK_WIDGET_PARENT_SENSITIVE(Widget) then
       Result:=Result+'Pr';
     {$IFDEF Gtk2}
     if GTK_WIDGET_NO_WINDOW(Widget) then

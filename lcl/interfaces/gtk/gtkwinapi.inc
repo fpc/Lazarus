@@ -4606,7 +4606,9 @@ var
       // get the size of the current page
       ARect.Right:=PageWidget^.Allocation.Width;
       ARect.Bottom:=PageWidget^.Allocation.Height;
-      //DebugLn(['GetNoteBookClientRect using pagewidget: ',GetWidgetDebugReport(Widget),' ARect=',dbgs(aRect)]);
+      {$IFDEF NewAutoSize}
+      DebugLn(['GetNoteBookClientRect using pagewidget: ',GetWidgetDebugReport(Widget),' ARect=',dbgs(aRect)]);
+      {$ENDIF}
     end else begin
       // use defaults
       FrameBorders:=GetStyleNotebookFrameBorders;
@@ -4615,7 +4617,9 @@ var
       ARect:=Rect(0,0,
          Max(0,AWidth-FrameBorders.Left-FrameBorders.Right),
          Max(0,aHeight-FrameBorders.Top-FrameBorders.Bottom));
-      //DebugLn(['GetNoteBookClientRect using defaults: ',GetWidgetDebugReport(Widget),' ARect=',dbgs(aRect)]);
+      {$IFDEF NewAutoSize}
+      DebugLn(['GetNoteBookClientRect using defaults: ',GetWidgetDebugReport(Widget),' ARect=',dbgs(aRect)]);
+      {$ENDIF}
     end;
   end;
 
@@ -4631,22 +4635,22 @@ begin
   if (Widget <> nil) then begin
     ARect.Right:=Widget^.Allocation.Width;
     ARect.Bottom:=Widget^.Allocation.Height;
+    if GtkWidgetIsA(Widget,gtk_notebook_get_type) then
+      GetNoteBookClientRect(PGtkNoteBook(Widget));
   end else begin
     ARect.Right:=0;
     ARect.Bottom:=0;
   end;
-  if GtkWidgetIsA(Widget,gtk_notebook_get_type) then
-    GetNoteBookClientRect(PGtkNoteBook(Widget));
   {$IfDef VerboseGetClientRect}
   if ClientWidget<>nil then begin
-    DebugLn('GetClientRect  Widget=',DbgS(handle),
-       ' Client=',DbgS(ClientWidget),
+    DebugLn('GetClientRect  Widget=',GetWidgetDebugReport(PgtkWidget(Handle)),
+       ' Client=',DbgS(ClientWidget),WidgetFlagsToString(ClientWidget),
        ' WindowSize=',dbgs(ARect.Right),',',dbgs(ARect.Bottom),
        ' Allocation=',dbgs(ClientWidget^.Allocation.Width),',',dbgs(ClientWidget^.Allocation.Height)
        );
   end else begin
-    DebugLn('GetClientRect  Widget=',DbgS(handle),
-       ' Client=',DbgS(ClientWidget),
+    DebugLn('GetClientRect  Widget=',GetWidgetDebugReport(PgtkWidget(Handle)),
+       ' Client=',DbgS(ClientWidget),WidgetFlagsToString(ClientWidget),
        ' WindowSize=',dbgs(ARect.Right),',',dbgs(ARect.Bottom),
        ' Allocation=',dbgs(Widget^.Allocation.Width),',',dbgs(Widget^.Allocation.Height)
        );
