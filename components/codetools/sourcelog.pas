@@ -704,6 +704,7 @@ begin
 end;
 
 function TSourceLog.LineColIsSpace(Line, Column: integer): boolean;
+// check if there is a non space character in front of or at Line,Column
 var
   p: PChar;
   rg: PLineRange;

@@ -3577,6 +3577,7 @@ var
 begin
   Result:=false;
   Operand:='';
+  if CursorPos.Code.LineColIsSpace(CursorPos.Y,CursorPos.X) then exit;
   BuildTreeAndGetCleanPos(trAll,CursorPos,CleanPos,[]);
   Node:=FindDeepestNodeAtPos(CleanPos,true);
   StartPos:=FindStartOfTerm(CleanPos,NodeTermInType(Node));
