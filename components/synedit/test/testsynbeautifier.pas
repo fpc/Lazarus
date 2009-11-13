@@ -139,7 +139,10 @@ begin
 
   PopPushBaseName(Name + '(group-undo)');
   SetLines(Text);
-  SetCaret(X, Y);
+  if (SelX >= 0) then
+    SetCaretAndSel(SelX, SelY, X, Y)
+  else
+    SetCaret(X, Y);
   SynEdit.Options  := SynEdit.Options  + [eoGroupUndo];
   for i := 0 to length(data) div 4 - 1 do begin
     st := [];
@@ -515,7 +518,7 @@ procedure TTestSynBeautifier.DefaultUnIndent;
     Result := LinesToText(LinesReplace(TestText, rpl))
   end;
 begin
-  SkipGroupUndo := True; // Todo
+  SkipGroupUndo := False;
   ReCreateEdit;
   SynEdit.TabWidth := 4;
   SynEdit.TrimSpaceType := settMoveCaret;
@@ -560,6 +563,7 @@ begin
                                           VK_BACK, 1,10, ExpText([ 10, 'z'])
   ]);
 
+  SkipGroupUndo := True; // The first VK_BACK is deletet, not  unindent, therefore it's 2 different undo
   SynEdit.Options  := SynEdit.Options - [eoTrimTrailingSpaces];
   TestRedoUndo('only indent, no text',  TestText,  8,3, [
                                      VK_BACK, 7,3, ExpText([ 3, '      ']),
@@ -576,6 +580,7 @@ begin
                                      VK_BACK, 1,3, ExpText([ 3, ''])
   ]);
   SynEdit.Options  := SynEdit.Options - [eoTrimTrailingSpaces];
+  SkipGroupUndo := False;
 
   TestRedoUndo('no unindent (selection)', TestText,  5,2, [ VK_BACK, 4,2, ExpText([ 2, '   b']) ],  4,2);
   TestRedoUndo('no unindent (selection)', TestText,  5,2, [ VK_BACK, 1,2, ExpText([ 2, 'b']) ],  1,2);
