@@ -27,7 +27,6 @@
 { This unit builds the TSourceNotebook that the editors are held on.
   It also has a class that controls the editors (TSourceEditor)
 }
-
 unit SourceEditor;
 
 {$mode objfpc}
