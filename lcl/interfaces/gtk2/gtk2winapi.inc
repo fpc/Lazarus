@@ -615,7 +615,9 @@ begin
 
   Widget := pgtkwidget(hWnd);
   Widget := GetFixedWidget(Widget);
+  if Widget = nil then exit;
   Window:=GetControlWindow(Widget);
+  if Window = nil then exit;
   {$ifdef GTK_2_8}
   Rect1.X := 0;//Widget^.Allocation.X;
   Rect1.Y := 0; //Widget^.Allocation.Y;
