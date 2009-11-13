@@ -33,6 +33,8 @@
    FColor: TColor;
    FStyle: TCSSBorderStyle;
    FWidth: Integer;
+ public
+   constructor Create;
  published
    property Color: TColor read FColor write FColor;
    property Style: TCSSBorderStyle read FStyle write FStyle;
@@ -803,6 +805,16 @@ begin
     Result := TCSSProps.Create;
     FElements.AddObject(ElementName, Result);
   end;
+end;
+
+{ TCSSBorder }
+
+constructor TCSSBorder.Create;
+begin
+  inherited Create;
+  FWidth := -1;
+  FColor := clBlack;
+  FStyle := cbsNone;
 end;
 
 {$IFDEF IP_LAZARUS_DBG}

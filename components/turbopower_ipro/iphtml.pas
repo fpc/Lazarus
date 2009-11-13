@@ -86,6 +86,7 @@ uses
   GIFImage,
   JPeg, 
   {$ENDIF}
+  GraphUtil,
   Controls,
   StdCtrls,
   ExtCtrls,
@@ -2200,6 +2201,8 @@ type
   private
     FBgColor: TColor;
     FBorder: Integer;
+    FBorderColor: TColor;
+    FBorderStyle: TCSSBorderStyle;
     FCellSpacing: Integer;
     FCellPadding: Integer;
     FFrame: TIpHtmlFrameProp;
@@ -2253,6 +2256,8 @@ type
     destructor Destroy; override;
     property BgColor : TColor read FBgColor write FBgColor;
     property Border : Integer read FBorder write SetBorder;            {!!.10}
+    property BorderStyle: TCSSBorderStyle read FBorderStyle write FBorderStyle;
+    property BorderColor: TColor read FBorderColor write FBorderColor;
     property CalcMinWidth: Integer read FMin;                          {!!.10}
     property CalcMaxWidth: Integer read FMax;                          {!!.10}
     property CalcTableWidth: Integer read FTableWidth;                 {!!.10}
@@ -3700,6 +3705,26 @@ begin
   Canvas.Pen.Color := OldPenColor;
 end;
 {$ENDIF}
+
+function CalcBorderColor(AColor: TColor; AStyle: TCSSBorderStyle; ASide: TIpHtmlFrameProp): TColor;
+begin
+  case AStyle of
+    cbsRidge,
+    cbsInset:
+      if ASide in [hfAbove, hfLhs] then
+        Result := ColorAdjustLuma(AColor, -60, False)
+      else
+        Result := ColorAdjustLuma(AColor, 60, False);
+    cbsGroove,
+    cbsOutset:
+    if ASide in [hfAbove, hfLhs] then
+      Result := ColorAdjustLuma(AColor, 60, False)
+    else
+      Result := ColorAdjustLuma(AColor, -60, False);
+  else
+    Result := AColor;
+  end;
+end;
 
 procedure Register;
 begin
@@ -7321,13 +7346,6 @@ begin
     Width := ParseHyperLength(htmlAttrWIDTH, '');
     Width.OnChange := WidthChanged;                                    {!!.10}
     Border := ParseInteger(htmlAttrBORDER, 0);
-    if Border = 0 then begin
-      Frame := hfVoid;
-      Rules := hrNone;
-    end else begin
-      Frame := hfBorder;
-      Rules := hrAll;
-    end;
     CellSpacing := ParseInteger(htmlAttrCELLSPACING, 2);
     CellPadding := ParseInteger(htmlAttrCELLPADDING, 2);
     ParseBaseProps(Self);
@@ -13441,6 +13459,8 @@ begin
   FColCount := -1;
   FMin := -1;
   FMax := -1;
+  FBorderColor := $808080;
+  FBorderStyle := cbsInset;
   ColTextWidth := TIntArr.Create;
   ColStart := TIntArr.Create;
   ColTextWidthMin := TIntArr.Create;
@@ -13448,7 +13468,7 @@ begin
   RowSp := TIntArr.Create;
 end;
 
-procedure TIpHtmlNodeTABLE.Draw;
+procedure TIpHtmlNodeTABLE.Draw(Block: TIpHtmlNodeBlock);
 var
   z, i, j : Integer;
   R : TRect;
@@ -13533,27 +13553,29 @@ begin
         end;
 
   {render frames}
+  // to frame
   if Frame in [hfAbove, hfHSides, hfBox, hfBorder] then
     if Border = 1 then
       ScreenLine(
         BorderRect.TopLeft,
         Point(BorderRect.Right-1, BorderRect.Top),
         1,
-        RGB(220,220,220))
+        CalcBorderColor(BorderColor, BorderStyle, hfAbove))
     else
       ScreenPolygon(
         [BorderRect.TopLeft,
         Point(BorderRect.Right, BorderRect.Top),
         Point(BorderRect.Right - (Border - 1), BorderRect.Top + Border - 1),
         Point(BorderRect.Left + Border - 1, BorderRect.Top + Border - 1)],
-        RGB(220,220,220));
+        CalcBorderColor(BorderColor, BorderStyle, hfAbove));
+  // bottom frame
   if Frame in [hfBelow, hfHSides, hfBox, hfBorder] then
     if Border = 1 then
       ScreenLine(
         Point(BorderRect.Right - 1, BorderRect.Bottom - 1),
         Point(BorderRect.Left, BorderRect.Bottom - 1),
         1,
-        RGB(64,64,64))
+        CalcBorderColor(BorderColor, BorderStyle, hfBelow))
     else
     ScreenPolygon(
       [
@@ -13561,28 +13583,30 @@ begin
       Point(BorderRect.Right - (Border - 1), BorderRect.Bottom - (Border - 1) - 1),
       Point(BorderRect.Left + Border, BorderRect.Bottom - (Border - 1) - 1),
       Point(BorderRect.Left, BorderRect.Bottom - 1)],
-        RGB(64,64,64));
+        CalcBorderColor(BorderColor, BorderStyle, hfBelow));
+  // left frame
   if Frame in [hfLhs, hfvSides, hfBox, hfBorder] then
     if Border = 1 then
       ScreenLine(
         BorderRect.TopLeft,
         Point(BorderRect.Left, BorderRect.Bottom - 1),
         1,
-        RGB(192,192,192))
+        CalcBorderColor(BorderColor, BorderStyle, hfLhs))
     else
       ScreenPolygon(
         [BorderRect.TopLeft,
         Point(BorderRect.Left, BorderRect.Bottom - 1),
         Point(BorderRect.Left + (Border - 1), BorderRect.Bottom - Border),
         Point(BorderRect.Left + (Border - 1), BorderRect.Top + (Border - 1))],
-        RGB(192,192,192));
+        CalcBorderColor(BorderColor, BorderStyle, hfLhs));
+  // right frame
   if Frame in [hfRhs, hfvSides, hfBox, hfBorder] then
     if Border = 1 then
       ScreenLine(
         Point(BorderRect.Right - 1, BorderRect.Bottom - 1),
         Point(BorderRect.Right - 1, BorderRect.Top),
         1,
-        RGB(128,128,128))
+        CalcBorderColor(BorderColor, BorderStyle, hfRhs))
     else
       ScreenPolygon(
         [
@@ -13590,7 +13614,7 @@ begin
         Point(BorderRect.Right - 1, BorderRect.Top),
         Point(BorderRect.Right - (Border - 1) - 1, BorderRect.Top + (Border - 1)),
         Point(BorderRect.Right - (Border - 1) - 1, BorderRect.Bottom - Border)],
-        RGB(128,128,128));
+        CalcBorderColor(BorderColor, BorderStyle, hfRhs));
 
   {render caption}
   if assigned(FCaption) then
@@ -13814,10 +13838,16 @@ begin
     exit;
 //  if Element.BGColor <> -1 then
 //    BgColor := Element.BGColor;
-  if Element.Border.Width <> -1 then
+  if Element.Border.Style <> cbsNone then
   begin
-    Border := Element.Border.Width;
-
+    FBorder := Element.Border.Width;
+    BorderColor := Element.Border.Color;
+    BorderStyle := Element.Border.Style;
+    if Frame = hfVoid then
+    begin
+      Frame := hfBorder;
+      Rules := hrGroups;
+    end;
   end;
 end;
 {$ENDIF}
