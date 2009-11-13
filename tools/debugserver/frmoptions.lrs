@@ -1,0 +1,20 @@
+{ This is an automatically generated lazarus resource file }
+
+LazarusResources.Add('TOptionsForm','FORMDATA',[
+  'TPF0'#12'TOptionsForm'#11'OptionsForm'#4'Left'#3#156#1#6'Height'#3#223#0#3'T'
+  +'op'#3#217#0#5'Width'#3#134#1#7'Caption'#6#7'Options'#12'ClientHeight'#3#223
+  +#0#11'ClientWidth'#3#134#1#8'Position'#7#16'poMainFormCenter'#10'LCLVersion'
+  +#6#6'0.9.27'#0#12'TButtonPanel'#12'ButtonPanel1'#4'Left'#2#6#6'Height'#2'&'#3
+  +'Top'#3#179#0#5'Width'#3'z'#1#8'TabOrder'#2#0#11'ShowButtons'#11#4'pbOK'#8'p'
+  +'bCancel'#0#0#0#9'TGroupBox'#8'GBWindow'#4'Left'#2#16#6'Height'#2'Q'#3'Top'#2
+  +#16#5'Width'#3','#1#7'Caption'#6#19'Show message window'#12'ClientHeight'#2
+  +'A'#11'ClientWidth'#3'('#1#8'TabOrder'#2#1#0#9'TCheckBox'#15'CBShowOnStartUp'
+  +#4'Left'#2#14#6'Height'#2#21#3'Top'#2#9#5'Width'#2'u'#7'Caption'#6#15'Show o'
+  +'n startup'#8'TabOrder'#2#0#0#0#9'TCheckBox'#15'CBShowOnMessage'#4'Left'#2#13
+  +#6'Height'#2#21#3'Top'#2'%'#5'Width'#3#156#0#7'Caption'#6#19'Show on new mes'
+  +'sage'#8'TabOrder'#2#1#0#0#0#9'TGroupBox'#10'GBMessages'#4'Left'#2#16#6'Heig'
+  +'ht'#2';'#3'Top'#2'm'#5'Width'#3','#1#7'Caption'#6#8'Messages'#12'ClientHeig'
+  +'ht'#2'+'#11'ClientWidth'#3'('#1#8'TabOrder'#2#2#0#9'TCheckBox'#13'CBNewAtBo'
+  +'ttom'#4'Left'#2#13#6'Height'#2#21#3'Top'#2#10#5'Width'#3#204#0#7'Caption'#6
+  +#27'Show new messages at bottom'#8'TabOrder'#2#0#0#0#0#0
+]);

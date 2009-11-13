@@ -30,7 +30,7 @@ if [ "x$Download" = "xyes" ]; then
   cd -
 else
   echo "extracting lazarus from local svn ..."
-  SourceDir=$(pwd | sed -e 's#lazarus[_0-9]*/tools.*$#lazarus#')
+  SourceDir=$(pwd | sed -e 's#/tools/install.*$##')
   Revision=$(svnversion $SourceDir)
   cd $TmpDir
   svn export $SourceDir $TmpLazDir
