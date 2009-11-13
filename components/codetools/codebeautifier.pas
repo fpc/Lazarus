@@ -1008,15 +1008,15 @@ begin
       end;
     ';':
       case Stack.TopType of
-      bbtUsesSection,bbtDefinition,bbtStatement:
+      bbtUsesSection,bbtDefinition:
         EndBlock;
       bbtCaseColon:
         begin
           EndBlock;
           BeginBlock(bbtCaseOf);
         end;
-      bbtIfThen,bbtIfElse:
-        while Stack.TopType in [bbtIf,bbtIfThen,bbtIfElse] do
+      bbtIfThen,bbtIfElse,bbtStatement:
+        while Stack.TopType in [bbtIf,bbtIfThen,bbtIfElse,bbtStatement] do
           EndBlock;
       bbtProcedureHead:
         if CheckProcedureModifiers then
