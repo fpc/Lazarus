@@ -7267,6 +7267,19 @@ begin
   except
     MessageDlg(lisError, lisFailedToLoadFoldStat, mtError, [mbOK], 0);
   end;
+
+  // Setting the PageIndex causes painting:
+  // It must be done after setting the highlighter
+  // It must be done before setting the Caret or Leftchar may be wrongly adjusted, becaues the PageControl only resizes on show
+  if NewSrcEditorCreated then begin
+    // avoid flicker, by painting the correct text already
+    NewSrcEdit.EditorComponent.TopLine:=NewTopLine;
+    NewSrcEdit.EditorComponent.LeftChar:=NewLeftChar;
+    NewSrcEdit.EditorComponent.EndUpdate;
+    SourceNotebook.Notebook.PageIndex := AnUnitInfo.EditorIndex;
+    NewSrcEdit.EditorComponent.BeginUpdate;
+  end;
+
   NewSrcEdit.EditorComponent.CaretXY:=NewCaretXY;
   NewSrcEdit.EditorComponent.TopLine:=NewTopLine;
   NewSrcEdit.EditorComponent.LeftChar:=NewLeftChar;
@@ -7274,12 +7287,6 @@ begin
   NewSrcEdit.ExecutionLine:=NewExecutionLine;
   NewSrcEdit.ReadOnly:=AnUnitInfo.ReadOnly;
   NewSrcEdit.Modified:=false;
-
-  // Setting the PageIndex causes painting:
-  // It must be done after setting the highlighter
-  // it must be done before SynEdit.EndUpdate, otherwise Leftchar may be wrongly adjusted
-  if NewSrcEditorCreated then
-    SourceNotebook.Notebook.PageIndex := AnUnitInfo.EditorIndex;
 
   // mark unit as loaded
   NewSrcEdit.EditorComponent.EndUpdate;
