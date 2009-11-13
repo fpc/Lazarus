@@ -237,6 +237,8 @@ begin
        (eoPersistentBlock in TSynEdit(FCurrentEditor).Options2) ) and
      (GetIndentForLine(FCurrentEditor, ACaret.LineText, True) = ACaret.CharPos - 1)
   then begin
+    FCurrentLines.UndoList.CurrentReason := ecSmartUnindent;
+
     UnIndentLine(ACaret, x);
     ACaret.CharPos := x;
     Command := ecNone;

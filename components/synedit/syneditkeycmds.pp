@@ -236,6 +236,7 @@ const
   ecLineBreak       = 509;  // Break line at current position, move caret to new line
   ecInsertLine      = 510;  // Break line at current position, leave caret
   ecChar            = 511;  // Insert a character at current position
+  ecSmartUnindent   = 512;  // NOT regocniced as command, used for group-undo, set by beautifier
 
   ecImeStr          = 550;  // Insert character(s) from IME
 
