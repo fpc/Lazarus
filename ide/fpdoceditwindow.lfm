@@ -14,10 +14,10 @@ object FPDocEditor: TFPDocEditor
   OnResize = FormResize
   LCLVersion = '0.9.29'
   object PageControl: TPageControl
-    Left = 60
+    Left = 63
     Height = 126
     Top = 0
-    Width = 693
+    Width = 690
     ActivePage = ShortTabSheet
     Align = alClient
     TabIndex = 0
@@ -27,8 +27,8 @@ object FPDocEditor: TFPDocEditor
     OnPageChanged = PageControlChange
     object ShortTabSheet: TTabSheet
       Caption = 'ShortTabSheet'
-      ClientHeight = 95
-      ClientWidth = 689
+      ClientHeight = 99
+      ClientWidth = 688
       object LinkLabel: TLabel
         AnchorSideTop.Control = LinkEdit
         AnchorSideTop.Side = asrCenter
@@ -60,7 +60,7 @@ object FPDocEditor: TFPDocEditor
         Left = 82
         Height = 27
         Top = 0
-        Width = 605
+        Width = 604
         Anchors = [akTop, akLeft, akRight]
         BorderSpacing.Left = 6
         BorderSpacing.Right = 2
@@ -92,7 +92,7 @@ object FPDocEditor: TFPDocEditor
         Left = 72
         Height = 27
         Top = 29
-        Width = 615
+        Width = 614
         Anchors = [akTop, akLeft, akRight]
         BorderSpacing.Left = 6
         BorderSpacing.Top = 2
@@ -105,13 +105,13 @@ object FPDocEditor: TFPDocEditor
     end
     object InheritedTabSheet: TTabSheet
       Caption = 'InheritedTabSheet'
-      ClientHeight = 181
-      ClientWidth = 656
+      ClientHeight = 99
+      ClientWidth = 688
       object InheritedShortLabel: TLabel
         Left = 0
         Height = 14
         Top = 2
-        Width = 656
+        Width = 688
         Align = alTop
         BorderSpacing.Top = 2
         Caption = 'InheritedShortLabel'
@@ -126,7 +126,7 @@ object FPDocEditor: TFPDocEditor
         Left = 0
         Height = 27
         Top = 18
-        Width = 656
+        Width = 688
         Anchors = [akTop, akLeft, akRight]
         BorderSpacing.Top = 2
         ReadOnly = True
@@ -178,13 +178,13 @@ object FPDocEditor: TFPDocEditor
     end
     object DescrTabSheet: TTabSheet
       Caption = 'DescrTabSheet'
-      ClientHeight = 181
-      ClientWidth = 656
+      ClientHeight = 99
+      ClientWidth = 688
       object DescrMemo: TMemo
         Left = 0
-        Height = 177
+        Height = 95
         Top = 0
-        Width = 654
+        Width = 686
         Align = alClient
         BorderSpacing.Right = 2
         BorderSpacing.Bottom = 4
@@ -197,13 +197,13 @@ object FPDocEditor: TFPDocEditor
     end
     object ErrorsTabSheet: TTabSheet
       Caption = 'ErrorsTabSheet'
-      ClientHeight = 181
-      ClientWidth = 656
+      ClientHeight = 99
+      ClientWidth = 688
       object ErrorsMemo: TMemo
         Left = 0
-        Height = 177
+        Height = 95
         Top = 0
-        Width = 654
+        Width = 686
         Align = alClient
         BorderSpacing.Right = 2
         BorderSpacing.Bottom = 4
@@ -216,13 +216,13 @@ object FPDocEditor: TFPDocEditor
     end
     object SeeAlsoTabSheet: TTabSheet
       Caption = 'SeeAlsoTabSheet'
-      ClientHeight = 181
-      ClientWidth = 656
+      ClientHeight = 99
+      ClientWidth = 688
       object SeeAlsoMemo: TMemo
         Left = 0
-        Height = 181
+        Height = 99
         Top = 0
-        Width = 656
+        Width = 688
         Align = alClient
         Lines.Strings = (
           'SeeAlsoMemo'
@@ -233,13 +233,13 @@ object FPDocEditor: TFPDocEditor
     end
     object ExampleTabSheet: TTabSheet
       Caption = 'ExampleTabSheet'
-      ClientHeight = 181
-      ClientWidth = 656
+      ClientHeight = 99
+      ClientWidth = 688
       object ExampleEdit: TEdit
         Left = 0
         Height = 27
         Top = 0
-        Width = 654
+        Width = 686
         Align = alTop
         BorderSpacing.Right = 2
         OnChange = ExampleEditChange
@@ -251,7 +251,7 @@ object FPDocEditor: TFPDocEditor
         AnchorSideTop.Side = asrBottom
         AnchorSideRight.Control = ExampleTabSheet
         AnchorSideRight.Side = asrBottom
-        Left = 517
+        Left = 549
         Height = 23
         Top = 33
         Width = 133
@@ -268,14 +268,14 @@ object FPDocEditor: TFPDocEditor
     Left = 0
     Height = 126
     Top = 0
-    Width = 60
+    Width = 63
     Align = alLeft
     AutoSize = True
     BevelOuter = bvNone
     ChildSizing.Layout = cclLeftToRightThenTopToBottom
     ChildSizing.ControlsPerLine = 3
     ClientHeight = 126
-    ClientWidth = 60
+    ClientWidth = 63
     FullRepaint = False
     ParentShowHint = False
     ShowHint = True
@@ -398,12 +398,26 @@ object FPDocEditor: TFPDocEditor
       ShowHint = True
       ParentShowHint = False
     end
+    object InsertURLTagSpeedButton: TSpeedButton
+      Tag = 8
+      Left = 0
+      Height = 23
+      Top = 69
+      Width = 20
+      Constraints.MaxHeight = 23
+      Constraints.MaxWidth = 20
+      Color = clBtnFace
+      NumGlyphs = 0
+      OnClick = FormatButtonClick
+      ShowHint = True
+      ParentShowHint = False
+    end
     object SaveButton: TSpeedButton
       AnchorSideLeft.Side = asrBottom
       Left = 0
       Height = 29
       Top = 97
-      Width = 60
+      Width = 63
       Align = alBottom
       Caption = 'Save'
       Color = clBtnFace

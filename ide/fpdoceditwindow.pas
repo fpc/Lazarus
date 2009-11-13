@@ -94,6 +94,7 @@ type
     ShortLabel: TLabel;
     ShortTabSheet: TTabSheet;
     InsertPrintShortSpeedButton: TSpeedButton;
+    InsertURLTagSpeedButton: TSpeedButton;
     UnderlineFormatButton: TSpeedButton;
     procedure AddLinkToInheritedButtonClick(Sender: TObject);
     procedure ApplicationIdle(Sender: TObject; var Done: Boolean);
@@ -220,6 +221,7 @@ begin
   InsertParagraphSpeedButton.Hint := lisCodeHelpInsertParagraphFormattingTag;
   InsertLinkSpeedButton.Hint := lisCodeHelpInsertALink;
   InsertPrintShortSpeedButton.Hint:=lisInsertPrintshortTag2;
+  InsertURLTagSpeedButton.Hint:=lisInsertUrlTag;
 
   ShortLabel.Caption:=lisShort;
   LinkLabel.Caption:=lisLink;
@@ -256,6 +258,7 @@ begin
   InsertVarTagButton.LoadGlyphFromLazarusResource('insertvartag');
   InsertCodeTagButton.LoadGlyphFromLazarusResource('insertcodetag');
   InsertRemarkButton.LoadGlyphFromLazarusResource('insertremark');
+  InsertURLTagSpeedButton.LoadGlyphFromLazarusResource('formatunderline');
   SaveButton.LoadGlyphFromLazarusResource('laz_save');
 end;
 
@@ -324,6 +327,9 @@ begin
     7:
       if (fChain<>nil) and (fChain.Count>0) then
         InsertTag('<printshort id="'+fChain[0].ElementName+'"/>','');
+    //url tag
+    8:
+      InsertTag('<url href="">', '</url>');
   end;
 end;
 

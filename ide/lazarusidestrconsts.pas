@@ -4275,6 +4275,7 @@ resourcestring
   lisEveryNThLineNumber = 'Every n-th line number:';
   lisLink = 'Link:';
   lisShort = 'Short:';
+  lisInsertUrlTag = 'Insert url tag';
   lisInsertPrintshortTag2 = 'Insert printshort tag';
   lisDeleteOldFile2 = 'Delete old file?';
   lisTheUnitSearchPathOfContainsTheSourceDirectoryOfPac = 'The unit search '
