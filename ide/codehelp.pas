@@ -347,22 +347,26 @@ var
 begin
   Result:=s;
   p:=1;
-  while (p<=length(s)) do begin
-    if not (s[p] in [#10,#13]) then begin
+  while (p<=length(Result)) do begin
+    if not (Result[p] in [#10,#13]) then begin
       inc(p);
     end else begin
       // line ending
-      if (p<length(s)) and (s[p+1] in [#10,#13]) and (s[p]<>s[p+1]) then begin
+      if (p<length(Result)) and (Result[p+1] in [#10,#13]) and (Result[p]<>Result[p+1]) then begin
         // double character line ending
         if (length(le)<>2)
-        or (le[1]<>s[p]) or (le[2]<>s[p+1]) then begin
+        or (le[1]<>Result[p]) or (le[2]<>Result[p+1]) then begin
           Result:=copy(Result,1,p-1)+le+copy(Result,p+2,length(Result));
-        end;
+          inc(p, length(le)-1);
+        end
+        else
+          inc(p);
       end else begin
         // single char line ending #13 or #10
         if (length(le)<>1)
-        or (le[1]<>s[p]) then begin
+        or (le[1]<>Result[p]) then begin
           Result:=copy(Result,1,p-1)+le+copy(Result,p+1,length(Result));
+          inc(p, length(le)-1);
         end;
       end;
       inc(p);
