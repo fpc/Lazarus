@@ -565,7 +565,7 @@ end;
 function TCSSReader.FindStatement(out AStatement: String): Boolean;
 var
  Buf: char;
- Buf1: array[0..255] of char;
+ Buf1: array[0..1023] of char;
  RCount: Integer;
  FStart, FEnd: Integer;
 begin
