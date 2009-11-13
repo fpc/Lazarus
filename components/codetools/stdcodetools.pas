@@ -4347,7 +4347,11 @@ function TStandardCodeTool.GetPasDocComments(const StartPos: TCodeXYPosition;
     p:=FindLineEndOrCodeInFrontOfPosition(StartPos,true);
     while p<EndPos do begin
       p:=FindNextComment(Src,p,EndPos);
-      if p>=EndPos then break;
+      if (p>=EndPos)
+      or ((Src[p]='{') and (Src[p+1]='$'))
+      or ((Src[p]='(') and (Src[p+1]='*') and (Src[p+2]='$'))
+      then
+        break;
       //debugln(['TStandardCodeTool.GetPasDocComments Comment="',copy(Src,p,FindCommentEnd(Src,p,Scanner.NestedComments)-p),'"']);
       if (p<StartPos) then begin
         // comment in front of node
