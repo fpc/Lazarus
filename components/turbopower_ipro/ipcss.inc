@@ -41,7 +41,6 @@
 
  TCSSProps = class
  private
-   FBorder: Integer;
    FClassIDs: TStringList;
    FBGColor: TColor;
    FBorderBottom: TCSSBorderStyle;
@@ -50,17 +49,18 @@
    FBorderTop: TCSSBorderStyle;
    FColor: TColor;
    FFont: TCSSFont;
+   FAlignment: TIpHtmlAlign;
    function GetCommandArgs(ACommand: String): TStringList;
    function GetCommandName(ACommand: String): String;
  published
    property Font: TCSSFont read  FFont write FFont;
    property Color: TColor read FColor write FColor;
    property BGColor: TColor read FBGColor write FBGColor;
-   property Border: Integer read FBorder write FBorder;
    property BorderTop: TCSSBorderStyle read FBorderTop write FBorderTop;
    property BorderLeft: TCSSBorderStyle read FBorderLeft write FBorderLeft;
    property BorderBottom: TCSSBorderStyle read FBorderBottom write FBorderBottom;
    property BorderRight: TCSSBorderStyle read FBorderRight write FBorderRight;
+   property Alignment: TIpHtmlAlign read FAlignment write FAlignment;
  public
    constructor Create;
    destructor Destroy; override;
@@ -74,6 +74,7 @@
  public
    constructor Create;
    destructor Destroy; override;
+   //procedure DumpProps;
    function GetElement(AElementID: String; ClassID: String = ''; CreateIfNotExist: Boolean = False): TCSSProps;
  end;
 
@@ -136,33 +137,202 @@ function FontWeightFromString(S: String): TCSSFontWeight;
 begin
   Result := cfwNormal;
   S := trim(LowerCase(S));
-  if S = 'bold' then
-    Result := cfwBold
-  else if S = 'bolder' then
-    Result := cfwBolder
-  else if S = 'lighter' then
-    Result := cfwLighter
-  else if S = '100' then
-    Result := cfw100
-  else if S = '200' then
-    Result := cfw200
-  else if S = '300' then
-    Result := cfw300
-  else if S = '400' then
-    Result := cfw400
-  else if S = '500' then
-    Result := cfw500
-  else if S = '600' then
-    Result := cfw600
-  else if S = '700' then
-    Result := cfw700
-  else if S = '800' then
-    Result := cfw800
-  else if S = '900' then
-    Result := cfw900
-
+  case S[1] of
+    '1': if S = '100' then Result := cfw100;
+    '2': if S = '200' then Result := cfw200;
+    '3': if S = '300' then Result := cfw300;
+    '4': if S = '400' then Result := cfw400;
+    '5': if S = '500' then Result := cfw500;
+    '6': if S = '600' then Result := cfw600;
+    '7': if S = '700' then Result := cfw700;
+    '8': if S = '800' then Result := cfw800;
+    '9': if S = '900' then Result := cfw900;
+    'b': if S = 'bold' then Result := cfwBold
+         else if S = 'bolder' then Result := cfwBolder;
+    'l': if S = 'lighter' then Result := cfwLighter;
+  end;
 end;
 
+const
+  htmlNamedColors : array[0..140] of record
+    s: string;
+    c: TColor;
+  end = ( // alphabetically ordered
+(s:'ALICEBLUE'; c:$FFF8F0),
+(s:'ANTIQUEWHITE'; c:$D7EBFA),
+(s:'AQUA'; c: $FFFF00),
+(s:'AQUAMARINE'; c:$D4FF7F),
+(s:'AZURE'; c:$FFFFF0),
+(s:'BEIGE'; c:$DCF5F5),
+(s:'BISQUE'; c:$C4E4FF),
+(s:'BLACK'; c:clBlack),
+(s:'BLANCHEDALMOND'; c:$CDEBFF),
+(s:'BLUE'; c:$FF0000),
+(s:'BLUEVIOLET'; c:$E22B8A),
+(s:'BROWN'; c:$2A2AA5),
+(s:'BURLYWOOD'; c:$87B8DE),
+(s:'CADETBLUE'; c:$A09E5F),
+(s:'CHARTREUSE'; c:$00FF7F),
+(s:'CHOCOLATE'; c:$1E69D2),
+(s:'CORAL'; c:$507FFF),
+(s:'CORNFLOWERBLUE'; c:$ED9564),
+(s:'CORNSILK'; c:$DCF8FF),
+(s:'CRIMSON'; c:$3C14DC),
+(s:'CYAN'; c: $FFFF00),
+(s:'DARKBLUE'; c:$8B0000),
+(s:'DARKCYAN'; c:$8B8B00),
+(s:'DARKGOLDENROD'; c:$0B86B8),
+(s:'DARKGRAY'; c:$A9A9A9),
+(s:'DARKGREEN'; c:$006400),
+(s:'DARKKHAKI'; c:$6BB7BD),
+(s:'DARKMAGENTA'; c:$8B008B),
+(s:'DARKOLIVEGREEN'; c:$2F6B55),
+(s:'DARKORANGE'; c:$008CFF),
+(s:'DARKORCHID'; c:$CC3299),
+(s:'DARKRED'; c:$00008B),
+(s:'DARKSALMON'; c:$7A96E9),
+(s:'DARKSEAGREEN'; c:$8FBC8F),
+(s:'DARKSLATEBLUE' ; c:$8B3D48),
+(s:'DARKSLATEGRAY'; c:$4F4F2F),
+(s:'DARKTURQUOISE'; c:$D1CE00),
+(s:'DARKVIOLET'; c:$D30094),
+(s:'DARKYELLOW'; c:$008080),
+(s:'DEEPPINK'; c:$9314FF),
+(s:'DEEPSKYBLUE'; c:$FFBF00),
+(s:'DIMGRAY'; c:$696969),
+(s:'DODGERBLUE'; c:$FF901E),
+(s:'FIREBRICK'; c:$2222B2),
+(s:'FLORALWHITE'; c:$F0FAFF),
+(s:'FORESTGREEN'; c:$228B22),
+(s:'FUCHSIA'; c:$FF00FF),
+(s:'GAINSBORO'; c:$DCDCDC),
+(s:'GHOSTWHITE'; c:$FFF8F8),
+(s:'GOLD'; c:$00D7FF),
+(s:'GOLDENROD'; c:$20A5DA),
+(s:'GRAY'; c:$808080),
+(s:'GREEN'; c:$008000),
+(s:'GREENYELLOW'; c:$2FFFAD),
+(s:'HONEYDEW'; c:$F0FFF0),
+(s:'HOTPINK'; c:$B469FF),
+(s:'INDIANRED'; c:$5C5CCD),
+(s:'INDIGO'; c:$82004B),
+(s:'IVORY'; c:$F0FFFF),
+(s:'KHAKI'; c:$8CE6F0),
+(s:'LAVENDER'; c:$FAE6E6),
+(s:'LAVENDERBLUSH'; c:$F5F0FF),
+(s:'LAWNGREEN'; c:$00FC7C),
+(s:'LEMONCHIFFON'; c:$CDFAFF),
+(s:'LIGHTBLUE'; c:$E6D8AD),
+(s:'LIGHTCORAL'; c:$8080F0),
+(s:'LIGHTCYAN'; c:$FFFFE0),
+(s:'LIGHTGOLDENRODYELLOW'; c:$D2FAFA),
+(s:'LIGHTGREEN'; c:$90EE90),
+(s:'LIGHTGREY'; c:$D3D3D3),
+(s:'LIGHTPINK'; c:$C1B6FF),
+(s:'LIGHTSALMON'; c:$7AA0FF),
+(s:'LIGHTSEAGREEN'; c:$AAB220),
+(s:'LIGHTSKYBLUE'; c:$FACE87),
+(s:'LIGHTSLATEGRAY'; c:$998877),
+(s:'LIGHTSTEELBLUE'; c:$DEC4B0),
+(s:'LIGHTYELLOW'; c:$E0FFFF),
+(s:'LIME'; c:$00FF00),
+(s:'LIMEGREEN'; c:$32CD32),
+(s:'LINEN'; c:$E6F0FA),
+(s:'MAGENTA'; c:$FF00FF),
+(s:'MAROON'; c:$000080),
+(s:'MEDIUMAQUAMARINE'; c:$AACD66),
+(s:'MEDIUMBLUE'; c:$CD0000),
+(s:'MEDIUMORCHID'; c:$D355BA),
+(s:'MEDIUMPURPLE'; c:$DB7093),
+(s:'MEDIUMSEAGREEN'; c:$71B33C),
+(s:'MEDIUMSLATEBLUE'; c:$EE687B),
+(s:'MEDIUMSPRINGGREEN'; c:$9AFA00),
+(s:'MEDIUMTURQUOISE'; c:$CCD148),
+(s:'MEDIUMVIOLETRED'; c:$8515C7),
+(s:'MIDNIGHTBLUE'; c:$701919),
+(s:'MINTCREAM'; c:$FAFFF5),
+(s:'MISTYROSE'; c:$E1E4FF),
+(s:'MOCCASIN'; c:$B5E4FF),
+(s:'NAVAJOWHITE'; c:$ADDEFF),
+(s:'NAVY'; c:$800000),
+(s:'OLDLACE'; c:$E6F5FD),
+(s:'OLIVE'; c:$008080),
+(s:'OLIVEDRAB'; c:$238E6B),
+(s:'ORANGE'; c:$00A5FF),
+(s:'ORANGERED'; c:$0045FF),
+(s:'ORCHID'; c:$D670DA),
+(s:'PALEGOLDENROD'; c:$AAE8EE),
+(s:'PALEGREEN'; c:$98FB98),
+(s:'PALETURQUOISE'; c:$EEEEAF),
+(s:'PALEVIOLETRED'; c:$9370DB),
+(s:'PAPAYAWHIP'; c:$D5EFFF),
+(s:'PEACHPUFF'; c:$B9DAFF),
+(s:'PERU'; c:$3F85CD),
+(s:'PINK'; c:$CBC0FF),
+(s:'PLUM'; c:$DDA0DD),
+(s:'POWDERBLUE'; c:$E6E0B0),
+(s:'PURPLE'; c:$800080),
+(s:'RED'; c:$0000FF),
+(s:'ROSYBROWN'; c:$8F8FBC),
+(s:'ROYALBLUE'; c:$901604),
+(s:'SADDLEBROWN'; c:$13458B),
+(s:'SALMON'; c:$7280FA),
+(s:'SANDYBROWN'; c:$60A4F4),
+(s:'SEAGREEN'; c:$578B2E),
+(s:'SEASHELL'; c:$EEF5FF),
+(s:'SIENNA'; c:$2D52A0),
+(s:'SILVER'; c:$C0C0C0),
+(s:'SKYBLUE'; c:$EBCE87),
+(s:'SLATEBLUE'; c:$CD5A6A),
+(s:'SLATEGRAY'; c:$908070),
+(s:'SNOW'; c:$FAFAFF),
+(s:'SPRINGGREEN'; c:$7FFF00),
+(s:'STEELBLUE'; c:$B48246),
+(s:'TAN'; c:$8CB4D2),
+(s:'TEAL'; c:$808000),
+(s:'THISTLE'; c:$D8BFD8),
+(s:'TOMATO'; c:$4763FF),
+(s:'TURQUOISE'; c:$D0E040),
+(s:'VIOLET'; c:$EE82EE),
+(s:'WHEAT'; c:$B3DEF5),
+(s:'WHITE'; c:$FFFFFF),
+(s:'WHITESMOKE'; c:$F5F5F5),
+(s:'YELLOW'; c:$00FFFF),
+(s:'YELLOWGREEN'; c:$32CD9A)
+);
+
+function BinSearchNamedColor(const sColor: string; var color: TColor): boolean;
+var
+  First: Integer;
+  Last: Integer;
+  Pivot: Integer;
+begin
+  First  := Low(htmlNamedColors); //Sets the first item of the range
+  Last   := High(htmlNamedColors); //Sets the last item of the range
+  Result  := False; //Initializes the Found flag (Not found yet)
+
+  //If First > Last then the searched item doesn't exist
+  //If the item is found the loop will stop
+  while (First <= Last) {and (not Result)} do
+  begin
+    //Gets the middle of the selected range
+    Pivot := (First + Last) div 2;
+    //Compares the String in the middle with the searched one
+    if htmlNamedColors[Pivot].s = sColor then
+    begin
+      Result  := True;
+      color := htmlNamedColors[Pivot].c;
+      exit;
+    end
+    //If the Item in the middle has a bigger value than
+    //the searched item, then select the first half
+    else if htmlNamedColors[Pivot].s > sColor then
+      Last := Pivot - 1
+        //else select the second half
+    else
+      First := Pivot + 1;
+  end;
+end;
 
 function ColorFromString(S: String): TColor;
 var
@@ -171,7 +341,7 @@ begin
   Result := -1;
   if S = '' then
     Exit;
-  S := UpperCase(Trim(S));
+  S := UpperCase(S);
   if S[1] = '#' then
     if length(S) <> 7 then
       exit
@@ -188,288 +358,7 @@ begin
       Exit(RGB(R, G, B));
     end
   else
-  if S = 'BLACK' then
-    Result := clBlack
-  else if S = 'STEELBLUE' then
-    Result := $B48246
-  else if S = 'ROYALBLUE' then
-    Result := $901604
-  else if S = 'CORNFLOWERBLUE' then
-    Result := $ED9564
-  else if S = 'LIGHTSTEELBLUE' then
-    Result := $DEC4B0
-  else if S = 'MEDIUMSLATEBLUE' then
-    Result := $EE687B
-  else if S = 'SLATEBLUE' then
-    Result := $CD5A6A
-  else if S = 'DARKSLATEBLUE'  then
-    Result := $8B3D48
-  else if S = 'MIDNIGHTBLUE' then
-    Result := $701919
-  else if S = 'NAVY' then
-    Result := $800000
-  else if S = 'DARKBLUE' then
-    Result := $8B0000
-  else if S = 'MEDIUMBLUE' then
-    Result := $CD0000
-  else if S = 'BLUE' then
-    Result := $FF0000
-  else if S = 'DODGERBLUE' then
-    Result := $FF901E
-  else if S = 'DEEPSKYBLUE' then
-    Result := $FFBF00
-  else if S = 'LIGHTSKYBLUE' then
-    Result := $FACE87
-  else if S = 'SKYBLUE' then
-    Result := $EBCE87
-  else if S = 'LIGHTBLUE' then
-    Result := $E6D8AD
-  else if S = 'POWDERBLUE' then
-    Result := $E6E0B0
-  else if S = 'AZURE' then
-    Result := $FFFFF0
-  else if S = 'LIGHTCYAN' then
-    Result := $FFFFE0
-  else if S = 'PALETURQUOISE' then
-    Result := $EEEEAF
-  else if S = 'MEDIUMTURQUOISE' then
-    Result := $CCD148
-  else if S = 'LIGHTSEAGREEN' then
-    Result := $AAB220
-  else if S = 'DARKCYAN' then
-    Result := $8B8B00
-  else if S = 'TEAL' then
-    Result := $808000
-  else if S = 'CADETBLUE' then
-    Result := $A09E5F
-  else if S = 'DARKTURQUOISE' then
-    Result := $D1CE00
-  else if S = 'AQUA' then
-    Result :=  $FFFF00
-  else if S = 'CYAN' then
-    Result :=  $FFFF00
-  else if S = 'TURQUOISE' then
-    Result := $D0E040
-  else if S = 'AQUAMARINE' then
-    Result := $D4FF7F
-  else if S = 'MEDIUMAQUAMARINE' then
-    Result := $AACD66
-  else if S = 'DARKSEAGREEN' then
-    Result := $8FBC8F
-  else if S = 'MEDIUMSEAGREEN' then
-    Result := $71B33C
-  else if S = 'SEAGREEN' then
-    Result := $578B2E
-  else if S = 'DARKGREEN' then
-    Result := $006400
-  else if S = 'GREEN' then
-    Result := $008000
-  else if S = 'FORESTGREEN' then
-    Result := $228B22
-  else if S = 'LIMEGREEN' then
-    Result := $32CD32
-  else if S = 'LIME' then
-    Result := $00FF00
-  else if S = 'CHARTREUSE' then
-    Result := $00FF7F
-  else if S = 'LAWNGREEN' then
-    Result := $00FC7C
-  else if S = 'GREENYELLOW' then
-    Result := $2FFFAD
-  else if S = 'YELLOWGREEN' then
-    Result := $32CD9A
-  else if S = 'PALEGREEN' then
-    Result := $98FB98
-  else if S = 'LIGHTGREEN' then
-    Result := $90EE90
-  else if S = 'SPRINGGREEN' then
-    Result := $7FFF00
-  else if S = 'MEDIUMSPRINGGREEN' then
-    Result := $9AFA00
-  else if S = 'DARKOLIVEGREEN' then
-    Result := $2F6B55
-  else if S = 'OLIVEDRAB' then
-    Result := $238E6B
-  else if S = 'OLIVE' then
-    Result := $008080
-  else if S = 'DARKYELLOW' then
-    Result := $008080
-  else if S = 'DARKKHAKI' then
-    Result := $6BB7BD
-  else if S = 'DARKGOLDENROD' then
-    Result := $0B86B8
-  else if S = 'GOLDENROD' then
-    Result := $20A5DA
-  else if S = 'GOLD' then
-    Result := $00D7FF
-  else if S = 'YELLOW' then
-    Result := $00FFFF
-  else if S = 'KHAKI' then
-    Result := $8CE6F0
-  else if S = 'PALEGOLDENROD' then
-    Result := $AAE8EE
-  else if S = 'BLANCHEDALMOND' then
-    Result := $CDEBFF
-  else if S = 'MOCCASIN' then
-    Result := $B5E4FF
-  else if S = 'WHEAT' then
-    Result := $B3DEF5
-  else if S = 'NAVAJOWHITE' then
-    Result := $ADDEFF
-  else if S = 'BURLYWOOD' then
-    Result := $87B8DE
-  else if S = 'TAN' then
-    Result := $8CB4D2
-  else if S = 'ROSYBROWN' then
-    Result := $8F8FBC
-  else if S = 'SIENNA' then
-    Result := $2D52A0
-  else if S = 'SADDLEBROWN' then
-    Result := $13458B
-  else if S = 'CHOCOLATE' then
-    Result := $1E69D2
-  else if S = 'PERU' then
-    Result := $3F85CD
-  else if S = 'SANDYBROWN' then
-    Result := $60A4F4
-  else if S = 'DARKRED' then
-    Result := $00008B
-  else if S = 'MAROON' then
-    Result := $000080
-  else if S = 'BROWN' then
-    Result := $2A2AA5
-  else if S = 'FIREBRICK' then
-    Result := $2222B2
-  else if S = 'INDIANRED' then
-    Result := $5C5CCD
-  else if S = 'LIGHTCORAL' then
-    Result := $8080F0
-  else if S = 'SALMON' then
-    Result := $7280FA
-  else if S = 'DARKSALMON' then
-    Result := $7A96E9
-  else if S = 'LIGHTSALMON' then
-    Result := $7AA0FF
-  else if S = 'CORAL' then
-    Result := $507FFF
-  else if S = 'TOMATO' then
-    Result := $4763FF
-  else if S = 'DARKORANGE' then
-    Result := $008CFF
-  else if S = 'ORANGE' then
-    Result := $00A5FF
-  else if S = 'ORANGERED' then
-    Result := $0045FF
-  else if S = 'CRIMSON' then
-    Result := $3C14DC
-  else if S = 'RED' then
-    Result := $0000FF
-  else if S = 'DEEPPINK' then
-    Result := $9314FF
-  else if S = 'FUCHSIA' then
-    Result := $FF00FF
-  else if S = 'MAGENTA' then
-    Result := $FF00FF
-  else if S = 'HOTPINK' then
-    Result := $B469FF
-  else if S = 'LIGHTPINK' then
-    Result := $C1B6FF
-  else if S = 'PINK' then
-    Result := $CBC0FF
-  else if S = 'PALEVIOLETRED' then
-    Result := $9370DB
-  else if S = 'MEDIUMVIOLETRED' then
-    Result := $8515C7
-  else if S = 'PURPLE' then
-    Result := $800080
-  else if S = 'DARKMAGENTA' then
-    Result := $8B008B
-  else if S = 'MEDIUMPURPLE' then
-    Result := $DB7093
-  else if S = 'BLUEVIOLET' then
-    Result := $E22B8A
-  else if S = 'INDIGO' then
-    Result := $82004B
-  else if S = 'DARKVIOLET' then
-    Result := $D30094
-  else if S = 'DARKORCHID' then
-    Result := $CC3299
-  else if S = 'MEDIUMORCHID' then
-    Result := $D355BA
-  else if S = 'ORCHID' then
-    Result := $D670DA
-  else if S = 'VIOLET' then
-    Result :=$EE82EE
-  else if S = 'PLUM' then
-    Result := $DDA0DD
-  else if S = 'THISTLE' then
-    Result := $D8BFD8
-  else if S = 'LAVENDER' then
-    Result := $FAE6E6
-  else if S = 'GHOSTWHITE' then
-    Result := $FFF8F8
-  else if S = 'ALICEBLUE' then
-    Result := $FFF8F0
-  else if S = 'MINTCREAM' then
-    Result := $FAFFF5
-  else if S = 'HONEYDEW' then
-    Result := $F0FFF0
-  else if S = 'LIGHTGOLDENRODYELLOW' then
-    Result := $D2FAFA
-  else if S = 'LEMONCHIFFON' then
-    Result := $CDFAFF
-  else if S = 'CORNSILK' then
-    Result := $DCF8FF
-  else if S = 'LIGHTYELLOW' then
-    Result := $E0FFFF
-  else if S = 'IVORY' then
-    Result := $F0FFFF
-  else if S = 'FLORALWHITE' then
-    Result := $F0FAFF
-  else if S = 'LINEN' then
-    Result := $E6F0FA
-  else if S = 'OLDLACE' then
-    Result := $E6F5FD
-  else if S = 'ANTIQUEWHITE' then
-    Result := $D7EBFA
-  else if S = 'BISQUE' then
-    Result := $C4E4FF
-  else if S = 'PEACHPUFF' then
-    Result := $B9DAFF
-  else if S = 'PAPAYAWHIP' then
-    Result := $D5EFFF
-  else if S = 'BEIGE' then
-    Result := $DCF5F5
-  else if S = 'SEASHELL' then
-    Result := $EEF5FF
-  else if S = 'LAVENDERBLUSH' then
-    Result := $F5F0FF
-  else if S = 'MISTYROSE' then
-    Result := $E1E4FF
-  else if S = 'SNOW' then
-    Result := $FAFAFF
-  else if S = 'WHITE' then
-    Result := $FFFFFF
-  else if S = 'WHITESMOKE' then
-    Result := $F5F5F5
-  else if S = 'GAINSBORO' then
-    Result := $DCDCDC
-  else if S = 'LIGHTGREY' then
-    Result := $D3D3D3
-  else if S = 'SILVER' then
-    Result := $C0C0C0
-  else if S = 'DARKGRAY' then
-    Result := $A9A9A9
-  else if S = 'GRAY' then
-    Result := $808080
-  else if S = 'LIGHTSLATEGRAY' then
-    Result := $998877
-  else if S = 'SLATEGRAY' then
-    Result := $908070
-  else if S = 'DIMGRAY' then
-    Result := $696969
-  else if S = 'DARKSLATEGRAY' then
-    Result := $4F4F2F
+  if BinSearchNamedColor(S, result) then exit
   else
   if length(S) = 6 then
     try
@@ -493,12 +382,11 @@ end;
 function CSSFontStyleFromName(S: String): TCSSFontStyle;
 begin
   Result := cfsNormal;
-  if S = 'italic' then
-    Result := cfsItalic
-  else if S = 'oblique' then
-    Result := cfsOblique
-  else if S = 'inherit' then
-    Result := cfsInherit;
+  case S[2] of
+    'b': if S = 'oblique' then Result := cfsOblique;
+    'n': if S = 'inherit' then Result := cfsInherit;
+    't': if S = 'italic' then Result := cfsItalic;
+  end;
 end;
 
 { TCSSReader }
@@ -515,7 +403,7 @@ begin
   if fpos > 0 then
   begin
     Elements := Copy(AStatement,1,fpos-1);
-    for i := Length(Elements) downto 0 do
+    for i := Length(Elements) downto 1 do
       if IsWhiteSpace(Elements[i]) then
         Delete(Elements, i, 1);
      Result.Delimiter := ',';
@@ -560,7 +448,6 @@ var
 begin
   Result := TStringList.Create;
   Start := Pos(':', ACommand)+1;
-  ACommand := ACommand + ' ';
 
 
   WantArg := True;
@@ -676,14 +563,11 @@ begin
 end;
 
 function TCSSReader.FindStatement(out AStatement: String): Boolean;
-const
-  BufSize = 1024;
 var
  Buf: char;
- Buf1: array[0..BufSize-1] of char;
+ Buf1: array[0..255] of char;
  RCount: Integer;
- FStart, FEnd: PtrInt;
- cnt: PtrInt;
+ FStart, FEnd: Integer;
 begin
   Result := False;
   EatWhiteSpace;
@@ -699,12 +583,8 @@ begin
     if (Buf = '/') and CheckIsComment then
     begin
       FStream.Position := FStart;
-      cnt:=FEnd-FStart-1;
-      if cnt>0 then
-      begin
-        RCount := FStream.Read(Buf1[0], cnt);
-        AStatement := AStatement + Copy(Buf1,0,RCount);
-      end;
+      RCount := FStream.Read(Buf1[0], FEnd-FStart-1);
+      AStatement := AStatement + Copy(Buf1,0,RCount);
       FStream.Position := FEnd+1;
       EatComment;
       FStart := FStream.Position;
@@ -713,19 +593,9 @@ begin
     begin
       Result := True;
       FStream.Position := FStart;
-      cnt:=FEnd-FStart;
-      if cnt>0 then begin
-        RCount := FStream.Read(Buf1[0], cnt);
-        AStatement := AStatement + Copy(Buf1,0,RCount);
-      end;
+      RCount := FStream.Read(Buf1[0], FEnd-FStart);
+      AStatement := AStatement + Copy(Buf1,0,RCount);
       break;
-    end else begin
-      cnt:=FEnd-FStart;
-      if cnt=BufSize then begin
-        RCount := FStream.Read(Buf1[0], cnt);
-        AStatement := AStatement + Copy(Buf1,0,RCount);
-        FStart := FEnd;
-      end;
     end;
   end;
 end;
@@ -746,20 +616,22 @@ end;
 
 constructor TCSSProps.Create;
 begin
-  FClassIDs := TStringList.Create;
   FFont := TCSSFont.Create;
   FBGColor := -1;
   FColor := -1;
-  FBorder := -1;
+  FAlignment := haUnknown;
 end;
 
 destructor TCSSProps.Destroy;
 var
   i: Integer;
 begin
-  for i := 0 to FClassIDs.Count-1 do
-    FClassIDs.Objects[i].Free;
-  FClassIDs.Free;
+  if Assigned(FClassIDs) then
+  begin
+    for i := 0 to FClassIDs.Count-1 do
+      FClassIDs.Objects[i].Free;
+    FClassIDs.Free;
+  end;
   FFont.Free;
   inherited Destroy;
 end;
@@ -777,40 +649,51 @@ begin
     Args := GetCommandArgs(ACommand);
     Command := LowerCase(GetCommandName(ACommand));
 
-    if Command = 'color' then
-      if Args.Count > 0 then
-        Color := ColorFromString(Args[0])
-      else
-        Color := clDefault
-    else if Command = 'background-color' then
-      if Args.Count > 0 then
-        BGColor := ColorFromString(Args[0])
-      else
-        BGColor := clDefault
-    else if Command = 'background' then
-    begin
-      if Args.Count > 0 then BGColor := ColorFromString(Args[0]);
-      if Args.Count > 1 then ; // background image
-      if Args.Count > 2 then ; // background image repeat
-      if Args.Count > 3 then ; // background attachment
-      if Args.Count > 4 then ; // background position
-    end
-    else if Command = 'border' then
-    begin
-      if Args.Count > 0 then
-        Border := StrToIntDef(Args[0], 1)
-      else
-        Border := 1;
-    end
-    else if (Command = 'font-family') and (Args.Count > 0) then
-      Font.Name := Args[0]
-    else if (Command = 'font-size') and (Args.Count > 0) then
-      Font.Size := Args[0]
-    else if (Command = 'font-style') and (Args.Count > 0) then
-      Font.Style := CSSFontStyleFromName(Args[0])
-    else if (Command = 'font-weight') and (Args.Count > 0) then
-      Font.Weight := FontWeightFromString(Args[0]);
+    case Command[1] of
+      'c': if Command = 'color' then
+             if Args.Count > 0 then
+               Color := ColorFromString(Args[0])
+             else
+               Color := clDefault;
 
+      'b': if Command = 'background-color' then
+           begin
+             if Args.Count > 0 then
+               BGColor := ColorFromString(Args[0])
+             else
+               BGColor := clDefault
+           end
+           else if Command = 'background' then
+           begin
+             if Args.Count > 0 then BGColor := ColorFromString(Args[0]);
+             if Args.Count > 1 then ; // background image
+             if Args.Count > 2 then ; // background image repeat
+             if Args.Count > 3 then ; // background attachment
+             if Args.Count > 4 then ; // background position
+           end;
+
+      't': if (Command = 'text-align') and (Args.Count = 1) then
+             if Args.Count > 0 then
+               Alignment := GetAlignmentForStr(Args[0])
+             else
+               Alignment := GetAlignmentForStr('');
+
+
+      'f':
+          if length(Command) > 7 then
+          begin
+            case Command[7] of
+              'a': if (Command = 'font-family')and (Args.Count > 0) then
+                     Font.Name := Args[0];
+              'i': if (Command = 'font-size') and (Args.Count > 0) then
+                     Font.Size := Args[0];
+              't': if (Command = 'font-style') and (Args.Count > 0) then
+                     Font.Style := CSSFontStyleFromName(Args[0]);
+              'e': if (Command = 'font-weight') and (Args.Count > 0) then
+                     Font.Weight := FontWeightFromString(Args[0]);
+            end;
+          end;
+    end;
     Args.Free;
   end;
 end;
@@ -841,7 +724,7 @@ var
   var
     ElementIndex: Integer;
   begin
-    if ClassID <> '' then
+    if length(ClassID) > 0 then
       ElementName := Lowercase(aElement+'.'+ClassId)
     else
       ElementName := lowercase(aElement);
@@ -855,7 +738,7 @@ var
   end;
 begin
   Result := nil;
-  if (ClassID = '') and (AElementID = '') then
+  if (length(ClassID) = 0) and (length(AElementID) = 0) then
     exit;
 
   LookForElement(aElementID);
@@ -869,4 +752,36 @@ begin
   end;
 end;
 
+{$IFDEF IP_LAZARUS_DBG}
+procedure DumpTCSSProps(aProp: TCSSProps);
+var
+  str: string;
+begin
+    WriteLn('Color : ', aProp.Color);
+    WriteLn('BgColor : ', aProp.BGColor);
+    WriteLn('Font : ', aProp.Font.Name, ':', aProp.Font.FFamily, ':', aProp.Font.Size);
+    case aProp.Alignment of
+       haDefault: str:= 'haDefault';
+       haLeft: str:= 'haLeft';
+       haCenter: str:= 'haCenter';
+       haRight: str:= 'haRight';
+       haJustify: str:= 'haJustify';
+       haChar: str:= 'haChar';
+       else str:= 'haUnknow';
+    end;
+    WriteLn('Align : ', str);
+end;
+
+procedure TCSSGlobalProps.DumpProps;
+var
+   n: integer;
+   props: TCSSProps;
+begin
+   for n:=0 to FElements.Count-1 do
+   begin
+        WriteLn('CSS for >>>: ', FElements[n]);
+        DumpTCSSProps(TCSSProps(FElements.Objects[n]));
+   end;
+end;
+{$endif}
 {$ENDIF}
