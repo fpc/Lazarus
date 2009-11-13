@@ -64,12 +64,14 @@ type
     class procedure RemovePage(const ANotebook: TCustomNotebook;
       const AIndex: integer); override;
 
+    class function GetCapabilities: TNoteBookCapabilities; override;
     class function GetDesignInteractive(const AWinControl: TWinControl; AClientPos: TPoint): Boolean; override;
     class function GetTabIndexAtPos(const ANotebook: TCustomNotebook; const AClientPos: TPoint): integer; override;
     class procedure SetPageIndex(const ANotebook: TCustomNotebook; const AIndex: integer); override;
     class procedure SetTabCaption(const ANotebook: TCustomNotebook; const AChild: TCustomPage; const AText: string); override;
     class procedure SetTabPosition(const ANotebook: TCustomNotebook; const ATabPosition: TTabPosition); override;
     class procedure ShowTabs(const ANotebook: TCustomNotebook; AShowTabs: boolean); override;
+    class procedure UpdateProperties(const ANotebook: TCustomNotebook); override;
   end;
 
   { TQtWSPage }
@@ -276,9 +278,6 @@ begin
       end;
     end;
   end;
-
-  with TCustomNoteBook(ACustomPage.Parent) do
-    TQtTabWidget(Handle).setTabsClosable(nboShowCloseButtons in Options);
 end;
 
 { TQtWSCustomNotebook }
@@ -299,6 +298,7 @@ begin
   {$endif}
   QtTabWidget := TQtTabWidget.Create(AWinControl, AParams);
   QtTabWidget.setTabPosition(QTabWidgetTabPositionMap[TCustomNoteBook(AWinControl).TabPosition]);
+  QtTabWidget.setTabsClosable(nboShowCloseButtons in TCustomNotebook(AWinControl).Options);
   QtTabWidget.AttachEvents;
 
   // Returns the Handle
@@ -345,6 +345,11 @@ begin
   TabWidget.setUpdatesEnabled(false);
   TabWidget.removeTab(AIndex);
   TabWidget.setUpdatesEnabled(true);
+end;
+
+class function TQtWSCustomNotebook.GetCapabilities: TNoteBookCapabilities;
+begin
+  Result := [nbcShowCloseButtons];
 end;
 
 class function TQtWSCustomNotebook.GetDesignInteractive(
@@ -406,6 +411,11 @@ begin
   TabWidget := TQtTabWidget(ANotebook.Handle);
   if TabWidget.TabBar <> nil then
     TabWidget.ShowTabs := AShowTabs;
+end;
+
+class procedure TQtWSCustomNotebook.UpdateProperties(const ANotebook: TCustomNotebook);
+begin
+  TQtTabWidget(ANotebook.Handle).setTabsClosable(nboShowCloseButtons in ANotebook.Options);
 end;
 
 { TQtWSCustomRadioGroup }

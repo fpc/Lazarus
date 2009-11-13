@@ -113,6 +113,7 @@ Pawel Trochimczuk
 Peter Dyson
 Philip J. Hess
 Pierre Gillmann
+Przemyslaw Nagay
 Radek Cervinka
 Raul Moratalla
 Razvan Adrian Bogdan

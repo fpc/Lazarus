@@ -33,7 +33,8 @@ uses
   qt4,
   qtwidgets, qtprivate, qtobjects, qtproc, qtwscontrols,
   // LCL
-  SysUtils, Classes, Types, ComCtrls, Controls, LCLType, Graphics, LCLProc, LCLIntf, Forms,
+  SysUtils, Classes, Types, ComCtrls, Controls, LCLType, Graphics, StdCtrls,
+  LCLProc, LCLIntf, Forms,
   // Widgetset
   WSProc, WSComCtrls, WSLCLClasses;
 
@@ -110,6 +111,9 @@ type
 
     class procedure SetProperty(const ALV: TCustomListView; const AProp: TListViewProperty; const AIsSet: Boolean); override;
     class procedure SetProperties(const ALV: TCustomListView; const AProps: TListViewProperties); override;
+
+    class procedure SetScrollBars(const ALV: TCustomListView; const AValue: TScrollStyle); override;
+    class procedure SetViewStyle(const ALV: TCustomListView; const Avalue: TViewStyle); override;
 
     (*
     // Column
@@ -1279,9 +1283,12 @@ const
 begin
   if not WSCheckHandleAllocated(ALV, 'SetProperty')
   then Exit;
-
   case AProp of
-    lvpMultiSelect: TQtTreeWidget(ALV.Handle).setSelectionMode(BoolToSelectionMode[AIsSet]);
+    lvpMultiSelect:
+      begin
+        if (TQtTreeWidget(ALV.Handle).getSelectionMode <> QAbstractItemViewNoSelection) then
+          TQtTreeWidget(ALV.Handle).setSelectionMode(BoolToSelectionMode[AIsSet]);
+      end;
     lvpShowColumnHeaders: TQtTreeWidget(ALV.Handle).setHeaderVisible(AIsSet);
     lvpReadOnly: TQtTreeWidget(ALV.Handle).setEditTriggers(BoolToEditTriggers[AIsSet]);
     lvpRowSelect:
@@ -1290,6 +1297,15 @@ begin
         TQtTreeWidget(ALV.Handle).setSelectionBehavior(BoolToSelectionBehavior[AIsSet]);
       end;
     lvpWrapText: TQtTreeWidget(ALV.Handle).setWordWrap(AIsSet);
+    lvpHideSelection:
+      begin
+        if AIsSet then
+        begin
+          TQtTreeWidget(ALV.Handle).clearSelection;
+          TQtTreeWidget(ALV.Handle).setSelectionMode(QAbstractItemViewNoSelection);
+        end else
+          TQtTreeWidget(ALV.Handle).setSelectionMode(BoolToSelectionMode[ALV.MultiSelect]);
+      end;
   end;
 end;
 
@@ -1300,9 +1316,88 @@ var
 begin
   if not WSCheckHandleAllocated(ALV, 'SetProperties')
   then Exit;
-
   for i := Low(TListViewProperty) to High(TListViewProperty) do
     SetProperty(ALV, i, i in AProps);
+end;
+
+class procedure TQtWSCustomListView.SetScrollBars(const ALV: TCustomListView;
+  const AValue: TScrollStyle);
+var
+  QtTreeWidget: TQtTreeWidget;
+begin
+  if not WSCheckHandleAllocated(ALV, 'SetScrollBars') then
+    Exit;
+  QtTreeWidget := TQtTreeWidget(ALV.Handle);
+  {always reset before applying new TScrollStyle}
+  QtTreeWidget.setScrollStyle(ssNone);
+  if AValue <> ssNone then
+    QtTreeWidget.setScrollStyle(AValue);
+end;
+
+class procedure TQtWSCustomListView.SetViewStyle(const ALV: TCustomListView;
+  const Avalue: TViewStyle);
+var
+  QtTreeWidget: TQtTreeWidget;
+  TreeWidget: QTreeWidgetH;
+  Item: QTreeWidgetItemH;
+  Size: TSize;
+  x: Integer;
+  j: Integer;
+begin
+  if not WSCheckHandleAllocated(ALV, 'SetViewStyle') then
+    Exit;
+  QtTreeWidget := TQtTreeWidget(ALV.Handle);
+  TreeWidget := QTreeWidgetH(QtTreeWidget.Widget);
+  case AValue of
+    vsIcon:
+      begin
+        x := QStyle_pixelMetric(QApplication_style(), QStylePM_IconViewIconSize,
+          nil, TreeWidget);
+        Size.cx := x;
+        Size.cy := x;
+        if Assigned(TListView(ALV).LargeImages) then
+        begin
+          Size.cy := TListView(ALV).LargeImages.Height;
+          Size.cx := TListView(ALV).LargeImages.Width;
+        end;
+      end;
+    vsSmallIcon:
+      begin
+        x := QStyle_pixelMetric(QApplication_style(), QStylePM_ListViewIconSize,
+          nil, TreeWidget);
+        Size.cx := x;
+        Size.cy := x;
+        if Assigned(TListView(ALV).SmallImages) then
+        begin
+          Size.cy := TListView(ALV).SmallImages.Height;
+          Size.cx := TListView(ALV).SmallImages.Width;
+        end;
+      end;
+    vsList, vsReport:
+      begin
+        x := QStyle_pixelMetric(QApplication_style(), QStylePM_ListViewIconSize,
+          nil, TreeWidget);
+        Size.cx := x;
+        Size.cy := x;
+      end;
+  end;
+
+  QAbstractItemView_setIconSize(TreeWidget, @Size);
+  Item := QTreeWidget_topLevelItem(TreeWidget, 0);
+  if Item <> nil then
+  begin
+    X := Size.CY;
+    QTreeWidgetItem_sizeHint(Item, @Size, 0);
+    Size.Cy := X;
+    QTreeWidgetItem_setSizeHint(Item, 0, @Size);
+    for j := 0 to QTreeWidget_columnCount(TreeWidget) - 1 do
+    begin
+      Item := QTreeWidget_itemAt(TreeWidget, j, 0);
+      QTreeWidgetItem_setSizeHint(Item, j, @Size);
+    end;
+    QTreeView_setUniformRowHeights(TreeWidget, True);
+  end;
+
 end;
 
 end.
