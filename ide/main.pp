@@ -7206,84 +7206,77 @@ begin
     AnUnitInfo.SyntaxHighlighter:=FilenameToLazSyntaxHighlighter(AFilename);
 
   NewSrcEditorCreated:=false;
-  //DebugLn(['TMainIDE.DoOpenFileInSourceEditor Revert=',ofRevert in Flags,' ',AnUnitInfo.Filename,' PageIndex=',PageIndex]);
-  if (not (ofRevert in Flags)) or (PageIndex<0) then begin
-    // create a new source editor
-
-    // update marks and cursor positions in Project1, so that merging the old
-    // settings during restoration will work
-    SaveSourceEditorProjectSpecificSettings;
-    NewSrcEdit:=SourceNotebook.NewFile(CreateSrcEditPageName(AnUnitInfo.Unit_Name,
-      AFilename,-1),AnUnitInfo.Source,false);
-    NewSrcEdit.EditorComponent.BeginUpdate;
-    NewSrcEditorCreated:=true;
-    MainIDEBar.itmFileClose.Enabled:=True;
-    MainIDEBar.itmFileCloseAll.Enabled:=True;
-    NewCaretXY:=AnUnitInfo.CursorPos;
-    NewTopLine:=AnUnitInfo.TopLine;
-    FoldState := AnUnitInfo.FoldState;
-    NewLeftChar:=1;
-    NewErrorLine:=-1;
-    NewExecutionLine:=-1;
-  end else begin
-    // revert code in existing source editor
-    NewSrcEdit:=SourceNotebook.FindSourceEditorWithPageIndex(PageIndex);
-    NewCaretXY:=NewSrcEdit.EditorComponent.CaretXY;
-    NewTopLine:=NewSrcEdit.EditorComponent.TopLine;
-    FoldState := NewSrcEdit.EditorComponent.FoldState;
-    NewLeftChar:=NewSrcEdit.EditorComponent.LeftChar;
-    NewErrorLine:=NewSrcEdit.ErrorLine;
-    NewExecutionLine:=NewSrcEdit.ExecutionLine;
-    NewSrcEdit.EditorComponent.BeginUpdate;
-    if NewSrcEdit.CodeBuffer=AnUnitInfo.Source then begin
-      AnUnitInfo.Source.AssignTo(NewSrcEdit.EditorComponent.Lines,true);
-    end else
-      NewSrcEdit.CodeBuffer:=AnUnitInfo.Source;
-    AnUnitInfo.ClearModifieds;
-    //DebugLn(['TMainIDE.DoOpenFileInSourceEditor NewCaretXY=',dbgs(NewCaretXY),' NewTopLine=',NewTopLine]);
-  end;
-
-  // update editor indices in project
-  NewEditorIndex := SourceNotebook.FindPageWithEditor(NewSrcEdit);
-  if (not (ofProjectLoading in Flags)) and NewSrcEditorCreated then
-    Project1.InsertEditorIndex(NewEditorIndex);
-  AnUnitInfo.EditorIndex := NewEditorIndex;
-  //debugln(['TMainIDE.DoOpenFileInSourceEditor ',AnUnitInfo.Filename,' ',AnUnitInfo.EditorIndex]);
-
-  // restore source editor settings
-  DoRestoreBookMarks(AnUnitInfo,NewSrcEdit);
-  DebugBoss.DoRestoreDebuggerMarks(AnUnitInfo);
-  NewSrcEdit.SyntaxHighlighterType:=AnUnitInfo.SyntaxHighlighter;
-  NewSrcEdit.EditorComponent.AfterLoadFromFile;
+  SourceNotebook.IncUpdateLock;
   try
-    NewSrcEdit.EditorComponent.FoldState := FoldState;
-  except
-    MessageDlg(lisError, lisFailedToLoadFoldStat, mtError, [mbOK], 0);
-  end;
+    //DebugLn(['TMainIDE.DoOpenFileInSourceEditor Revert=',ofRevert in Flags,' ',AnUnitInfo.Filename,' PageIndex=',PageIndex]);
+    if (not (ofRevert in Flags)) or (PageIndex<0) then begin
+      // create a new source editor
 
-  // Setting the PageIndex causes painting:
-  // It must be done after setting the highlighter
-  // It must be done before setting the Caret or Leftchar may be wrongly adjusted, becaues the PageControl only resizes on show
-  if NewSrcEditorCreated then begin
-    // avoid flicker, by painting the correct text already
+      // update marks and cursor positions in Project1, so that merging the old
+      // settings during restoration will work
+      SaveSourceEditorProjectSpecificSettings;
+      NewSrcEdit:=SourceNotebook.NewFile(CreateSrcEditPageName(AnUnitInfo.Unit_Name,
+        AFilename,-1),AnUnitInfo.Source,false);
+      NewSrcEdit.EditorComponent.BeginUpdate;
+      NewSrcEditorCreated:=true;
+      MainIDEBar.itmFileClose.Enabled:=True;
+      MainIDEBar.itmFileCloseAll.Enabled:=True;
+      NewCaretXY:=AnUnitInfo.CursorPos;
+      NewTopLine:=AnUnitInfo.TopLine;
+      FoldState := AnUnitInfo.FoldState;
+      NewLeftChar:=1;
+      NewErrorLine:=-1;
+      NewExecutionLine:=-1;
+    end else begin
+      // revert code in existing source editor
+      NewSrcEdit:=SourceNotebook.FindSourceEditorWithPageIndex(PageIndex);
+      NewCaretXY:=NewSrcEdit.EditorComponent.CaretXY;
+      NewTopLine:=NewSrcEdit.EditorComponent.TopLine;
+      FoldState := NewSrcEdit.EditorComponent.FoldState;
+      NewLeftChar:=NewSrcEdit.EditorComponent.LeftChar;
+      NewErrorLine:=NewSrcEdit.ErrorLine;
+      NewExecutionLine:=NewSrcEdit.ExecutionLine;
+      NewSrcEdit.EditorComponent.BeginUpdate;
+      if NewSrcEdit.CodeBuffer=AnUnitInfo.Source then begin
+        AnUnitInfo.Source.AssignTo(NewSrcEdit.EditorComponent.Lines,true);
+      end else
+        NewSrcEdit.CodeBuffer:=AnUnitInfo.Source;
+      AnUnitInfo.ClearModifieds;
+      //DebugLn(['TMainIDE.DoOpenFileInSourceEditor NewCaretXY=',dbgs(NewCaretXY),' NewTopLine=',NewTopLine]);
+    end;
+
+    // update editor indices in project
+    NewEditorIndex := SourceNotebook.FindPageWithEditor(NewSrcEdit);
+    if (not (ofProjectLoading in Flags)) and NewSrcEditorCreated then
+      Project1.InsertEditorIndex(NewEditorIndex);
+    AnUnitInfo.EditorIndex := NewEditorIndex;
+    //debugln(['TMainIDE.DoOpenFileInSourceEditor ',AnUnitInfo.Filename,' ',AnUnitInfo.EditorIndex]);
+
+    // restore source editor settings
+    DoRestoreBookMarks(AnUnitInfo,NewSrcEdit);
+    DebugBoss.DoRestoreDebuggerMarks(AnUnitInfo);
+    NewSrcEdit.SyntaxHighlighterType:=AnUnitInfo.SyntaxHighlighter;
+    NewSrcEdit.EditorComponent.AfterLoadFromFile;
+    try
+      NewSrcEdit.EditorComponent.FoldState := FoldState;
+    except
+      MessageDlg(lisError, lisFailedToLoadFoldStat, mtError, [mbOK], 0);
+    end;
+
+    NewSrcEdit.EditorComponent.CaretXY:=NewCaretXY;
     NewSrcEdit.EditorComponent.TopLine:=NewTopLine;
     NewSrcEdit.EditorComponent.LeftChar:=NewLeftChar;
+    NewSrcEdit.ErrorLine:=NewErrorLine;
+    NewSrcEdit.ExecutionLine:=NewExecutionLine;
+    NewSrcEdit.ReadOnly:=AnUnitInfo.ReadOnly;
+    NewSrcEdit.Modified:=false;
+
+    // mark unit as loaded
     NewSrcEdit.EditorComponent.EndUpdate;
-    SourceNotebook.PageIndex := AnUnitInfo.EditorIndex;
-    NewSrcEdit.EditorComponent.BeginUpdate;
+    AnUnitInfo.Loaded:=true;
+  finally
+    SourceNotebook.DecUpdateLock;
   end;
-
-  NewSrcEdit.EditorComponent.CaretXY:=NewCaretXY;
-  NewSrcEdit.EditorComponent.TopLine:=NewTopLine;
-  NewSrcEdit.EditorComponent.LeftChar:=NewLeftChar;
-  NewSrcEdit.ErrorLine:=NewErrorLine;
-  NewSrcEdit.ExecutionLine:=NewExecutionLine;
-  NewSrcEdit.ReadOnly:=AnUnitInfo.ReadOnly;
-  NewSrcEdit.Modified:=false;
-
-  // mark unit as loaded
-  NewSrcEdit.EditorComponent.EndUpdate;
-  AnUnitInfo.Loaded:=true;
 
   // update statusbar and focus editor
   if (not (ofProjectLoading in Flags)) then
@@ -9054,6 +9047,7 @@ begin
   Project1:=CreateProjectObject(ProjectDescriptorProgram,
                                 ProjectDescriptorProgram);
   LastEditorIndex:=-1;
+  SourceNoteBook.IncUpdateLock;
   try
     Project1.BeginUpdate(true);
     try
@@ -9159,6 +9153,7 @@ begin
     IDEProtocolOpts.LastProjectLoadingCrashed := False;
     Result:=mrOk;
   finally
+    SourceNoteBook.DecUpdateLock;
     if (Result<>mrOk) and (Project1<>nil) then begin
       // mark all files, that are left to open as unloaded:
       for i:=0 to Project1.UnitCount-1 do begin

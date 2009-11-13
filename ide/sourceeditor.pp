@@ -527,6 +527,8 @@ type
     procedure DeleteBreakpointClicked(Sender: TObject);
     procedure ToggleBreakpointClicked(Sender: TObject);
   private
+    FUpdateLock: Integer;
+    FPageIndex: Integer;
     fAutoFocusLock: integer;
     FCodeTemplateModul: TSynEditAutoComplete;
     fIdentCompletionJumpToError: boolean;
@@ -618,7 +620,7 @@ type
 
 
     function CreateNotebook: Boolean;
-    function NewSE(Pagenum: Integer; SwitchToTab: Boolean = True): TSourceEditor;
+    function NewSE(Pagenum: Integer): TSourceEditor;
     procedure EditorChanged(Sender: TObject);
 
     procedure ccExecute(Sender: TObject);
@@ -832,6 +834,8 @@ type
     procedure SetupShortCuts;
 
     function GetCapabilities: TNoteBookCapabilities;
+    procedure IncUpdateLock;
+    procedure DecUpdateLock;
     property PageIndex: Integer read GetPageIndex write SetPageIndex;
     property PageCount: Integer read GetPageCount;
     property NotebookPages: TStrings read GetNotebookPages;
@@ -3455,6 +3459,7 @@ end;
 constructor TSourceNotebook.Create(AOwner: TComponent);
 begin
   inherited Create(AOwner);
+  FUpdateLock := 0;
   IDESearchInText:=@SearchInText;
   Visible:=false;
   Name:=NonModalIDEWindowNames[nmiwSourceNoteBookName];
@@ -4768,6 +4773,9 @@ end;
 
 function TSourceNotebook.GetPageIndex: Integer;
 begin
+  if FUpdateLock > 0 then
+    Result := FPageIndex
+  else
   if assigned(Notebook) then
     Result := Notebook.PageIndex
   else
@@ -4776,7 +4784,8 @@ end;
 
 procedure TSourceNotebook.SetPageIndex(const AValue: Integer);
 begin
-  if assigned(Notebook) then
+  FPageIndex := AValue;
+  if assigned(Notebook) and (FUpdateLock = 0) then
     Notebook.PageIndex := AValue;
 end;
 
@@ -4917,7 +4926,7 @@ Begin
     OnEditorChanged(Sender);
 End;
 
-function TSourceNotebook.NewSE(PageNum: Integer; SwitchToTab: Boolean = True): TSourceEditor;
+function TSourceNotebook.NewSE(PageNum: Integer): TSourceEditor;
 begin
   {$IFDEF IDE_DEBUG}
   writeln('TSourceNotebook.NewSE A ');
@@ -4930,6 +4939,7 @@ begin
     // add a new page right to the current
     Pagenum := PageIndex+1;
     Notebook.Pages.Insert(PageNum,FindUniquePageName('',-1));
+    Notebook.Page[PageNum].ReAlign;
   end;
   {$IFDEF IDE_DEBUG}
   writeln('TSourceNotebook.NewSE B  ', PageIndex,',',NoteBook.Pages.Count);
@@ -4938,8 +4948,7 @@ begin
   Result.EditorComponent.BeginUpdate;
   FSourceEditorList.Add(Result);
   Result.CodeTemplates:=CodeTemplateModul;
-  if SwitchToTab then
-    PageIndex := Pagenum;
+  PageIndex := Pagenum;
   //debugln(['TSourceNotebook.NewSE C GetActiveSE=Result=',GetActiveSE=Result]);
   Result.FPageName:=NoteBook.Pages[Pagenum];
   Result.EditorComponent.BookMarkOptions.BookmarkImages := SourceEditorMarks.ImgList;
@@ -5180,6 +5189,18 @@ begin
     Result := Notebook.GetCapabilities
   else
     Result := [];
+end;
+
+procedure TSourceNotebook.IncUpdateLock;
+begin
+  inc(FUpdateLock);
+end;
+
+procedure TSourceNotebook.DecUpdateLock;
+begin
+  dec(FUpdateLock);
+  if FUpdateLock = 0 then
+    PageIndex := FPageIndex;
 end;
 
 procedure TSourceNotebook.BeginIncrementalFind;
@@ -6274,7 +6295,7 @@ Begin
   writeln('[TSourceNotebook.NewFile] A ');
   {$ENDIF}
   Visible:=true;
-  Result := NewSE(-1, FocusIt);
+  Result := NewSE(-1);
   {$IFDEF IDE_DEBUG}
   writeln('[TSourceNotebook.NewFile] B ');
   {$ENDIF}

@@ -3989,6 +3989,8 @@ procedure TCustomSynEdit.CreateHandle;
 begin
   inherited CreateHandle;
   UpdateScrollBars;
+  //if fStateFlags * [sfEnsureCursorPos, sfEnsureCursorPosAtResize] <> [] then
+  //  EnsureCursorPosVisible;
 end;
 
 procedure TCustomSynEdit.SetScrollBars(const Value: TScrollStyle);
@@ -5432,7 +5434,9 @@ var
   PhysBlockBeginXY: TPoint;
   PhysBlockEndXY: TPoint;
 begin
-  if fPaintLock > 0 then begin
+  if (fPaintLock > 0) or (not HandleAllocated) or
+     (FWinControlFlags * [wcfInitializing, wcfCreatingHandle] <> [])
+  then begin
     include(fStateFlags, sfEnsureCursorPos);
     exit;
   end;
