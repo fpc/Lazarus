@@ -32,15 +32,18 @@
  private
    FColor: TColor;
    FStyle: TCSSBorderStyle;
+   FWidth: Integer;
  published
    property Color: TColor read FColor write FColor;
    property Style: TCSSBorderStyle read FStyle write FStyle;
+   property Width: Integer read FWidth write FWidth;
  end;
 
  { TCSSProps }
 
  TCSSProps = class
  private
+   FBorder: TCSSBorder;
    FClassIDs: TStringList;
    FBGColor: TColor;
    FBorderBottom: TCSSBorderStyle;
@@ -56,6 +59,7 @@
    property Font: TCSSFont read  FFont write FFont;
    property Color: TColor read FColor write FColor;
    property BGColor: TColor read FBGColor write FBGColor;
+   property Border: TCSSBorder read FBorder write FBorder;
    property BorderTop: TCSSBorderStyle read FBorderTop write FBorderTop;
    property BorderLeft: TCSSBorderStyle read FBorderLeft write FBorderLeft;
    property BorderBottom: TCSSBorderStyle read FBorderBottom write FBorderBottom;
@@ -379,6 +383,12 @@ begin
 
 end;
 
+function SizePxFromString(S: String): Integer;
+begin
+  S := Copy(S, 1, Pos('PX', UpperCase(S)) - 1);
+  Result := StrToIntDef(S, 0);
+end;
+
 function CSSFontStyleFromName(S: String): TCSSFontStyle;
 begin
   Result := cfsNormal;
@@ -386,6 +396,29 @@ begin
     'b': if S = 'oblique' then Result := cfsOblique;
     'n': if S = 'inherit' then Result := cfsInherit;
     't': if S = 'italic' then Result := cfsItalic;
+  end;
+end;
+
+function BorderStyleFromString(S: String): TCSSBorderStyle;
+begin
+  Result := cbsNone;
+  S := LowerCase(S);
+  case S[1] of
+    'd':
+      if S = 'dotted' then
+        Result := cbsDotted
+      else
+      if S = 'dashed' then
+        Result := cbsDashed
+      else
+      if S = 'double' then
+        Result := cbsDouble;
+    'g': if S = 'groove' then Result := cbsGroove;
+    'h': if S = 'hidden' then Result := cbsHidden;
+    'i': if S = 'inset' then Result := cbsInset;
+    'o': if S = 'outset' then Result := cbsOutset;
+    'r': if S = 'ridge' then Result := cbsRidge;
+    's': if S = 'solid' then Result := cbsSolid;
   end;
 end;
 
@@ -620,6 +653,7 @@ begin
   FBGColor := -1;
   FColor := -1;
   FAlignment := haUnknown;
+  FBorder := TCSSBorder.Create;
 end;
 
 destructor TCSSProps.Destroy;
@@ -633,6 +667,7 @@ begin
     FClassIDs.Free;
   end;
   FFont.Free;
+  FBorder.Free;
   inherited Destroy;
 end;
 
@@ -670,6 +705,24 @@ begin
              if Args.Count > 2 then ; // background image repeat
              if Args.Count > 3 then ; // background attachment
              if Args.Count > 4 then ; // background position
+           end
+           else if Command = 'border' then
+           begin
+             if Args.Count > 0 then Border.Width := SizePxFromString(Args[0]);
+             if Args.Count > 1 then Border.Style := BorderStyleFromString(Args[1]);
+             if Args.Count > 2 then Border.Color := ColorFromString(Args[2]);
+           end
+           else if Command = 'border-width' then
+           begin
+             Border.Width := SizePxFromString(Args[0]);
+           end
+           else if Command = 'border-color' then
+           begin
+             Border.Color := ColorFromString(Args[0]);
+           end
+           else if Command = 'border-style' then
+           begin
+             Border.Style := BorderStyleFromString(Args[0]);
            end;
 
       't': if (Command = 'text-align') and (Args.Count = 1) then

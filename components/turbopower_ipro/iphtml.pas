@@ -13810,10 +13810,15 @@ procedure TIpHtmlNodeTABLE.LoadCSSProps(Owner: TIpHtml; var Element: TCSSProps;
   const Props: TIpHtmlProps);
 begin
   inherited LoadCSSProps(Owner, Element, Props);
-//  if Element = nil then
-//    exit;
+  if Element = nil then
+    exit;
 //  if Element.BGColor <> -1 then
 //    BgColor := Element.BGColor;
+  if Element.Border.Width <> -1 then
+  begin
+    Border := Element.Border.Width;
+
+  end;
 end;
 {$ENDIF}
 
