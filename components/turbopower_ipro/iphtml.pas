@@ -2360,7 +2360,6 @@ type
     FPadRect : TRect;
     procedure Render(const RenderProps: TIpHtmlProps); override;
     procedure Layout(const RenderProps: TIpHtmlProps; const TargetRect : TRect); override;
-    procedure SetProps(const RenderProps: TIpHtmlProps); override;
     procedure CalcMinMaxWidth(const RenderProps: TIpHtmlProps;
       var Min, Max: Integer); override;
     property PadRect : TRect read FPadRect;
