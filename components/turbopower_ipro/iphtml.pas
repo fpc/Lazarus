@@ -2139,10 +2139,13 @@ type
 
   TIpHtmlVAlignment2 = (hva2Top, hva2Bottom, hva2Left, hva2Right);
 
+  { TIpHtmlNodeCAPTION }
+
   TIpHtmlNodeCAPTION = class(TIpHtmlNodeBlock)
   private
     FAlign: TIpHtmlVAlignment2;
   public                                                   {!!.10}
+    constructor Create(ParentNode: TIpHtmlNode);
     property Align : TIpHtmlVAlignment2 read FAlign write FAlign;
   end;
 
@@ -2324,10 +2327,14 @@ type
     property Width : TIpHtmlMultiLength read FWidth write FWidth;
   end;
 
-  TIpHtmlNodeTR = class(TIpHtmlNodeCore)
+  { TIpHtmlNodeTR }
+
+  TIpHtmlNodeTR = class(TIpHtmlNodeBlock)
   private
     FAlign: TIpHtmlAlign;
     FVAlign: TIpHtmlVAlign;
+  protected
+    procedure SetProps(const RenderProps: TIpHtmlProps); override;
   public
     constructor Create(ParentNode : TIpHtmlNode);
     property Align : TIpHtmlAlign read FAlign write FAlign;
@@ -2351,8 +2358,9 @@ type
     FVAlign: TIpHtmlVAlign3;
   protected
     FPadRect : TRect;
-    procedure Render( const RenderProps: TIpHtmlProps); override;
+    procedure Render(const RenderProps: TIpHtmlProps); override;
     procedure Layout(const RenderProps: TIpHtmlProps; const TargetRect : TRect); override;
+    procedure SetProps(const RenderProps: TIpHtmlProps); override;
     procedure CalcMinMaxWidth(const RenderProps: TIpHtmlProps;
       var Min, Max: Integer); override;
     property PadRect : TRect read FPadRect;
@@ -7176,6 +7184,9 @@ procedure TIpHtml.ParseTableRows(Parent: TIpHtmlNode;
 
 var
   CurRow : TIpHtmlNodeTR;
+  {$IFDEF IP_LAZARUS}
+  Element: TCSSProps = nil;
+  {$ENDIF}
 begin
   CurRow := nil;                                                       {!!.12}
   while not (CurToken in EndTokens) do
@@ -7188,6 +7199,7 @@ begin
           CurRow.ParseBaseProps(Self);
           CurRow.Align := ParseAlignment;
           CurRow.VAlign := ParseVAlignment;
+          CurRow.LoadCSSProps(CurRow.Owner, Element, CurRow.Props);
           NextRealToken;
           ParseTableRow(CurRow,
                         EndTokens + [IpHtmlTagTRend, IpHtmlTagTR] -
@@ -7351,6 +7363,7 @@ begin
         if CurToken = IpHtmlTagCAPTIONend then
           NextToken;
       end;
+    CurTable.FCaption := CurCaption;
   end;
   ParseColgroup(CurTable);
   SkipTextTokens;                                                      {!!.10}
@@ -10068,12 +10081,17 @@ begin
   end;
 end;
 
-procedure TIpHtmlNodeBlock.Render(
-  const RenderProps: TIpHtmlProps);
+procedure TIpHtmlNodeBlock.Render(const RenderProps: TIpHtmlProps);
+{$IFDEF IP_LAZARUS}
+var
+  Elem: TCSSProps = nil;
+{$ENDIF}
 begin
-  if not RenderProps.IsEqualTo(Props) then begin
-    SetProps(RenderProps);
+  if not RenderProps.IsEqualTo(Props) then
+  begin
     Props.Assign(RenderProps);
+    LoadCSSProps(Owner, Elem, Props);
+    SetProps(Props);
   end;
   if ElementQueue.Count = 0 then
     Enqueue;
@@ -10364,14 +10382,19 @@ end;
 
 procedure TIpHtmlNodeBlock.CalcMinMaxWidth(const RenderProps: TIpHtmlProps;
       var Min, Max: Integer);
+{$IFDEF IP_LAZARUS}
+var
+  Elem: TCSSProps = nil;
+{$ENDIF}
 begin
   if RenderProps.IsEqualTo(Props) and (FMin <> -1) and (FMax <> -1) then begin
     Min := FMin;
     Max := FMax;
     Exit;
   end;
-  SetProps(RenderProps);
   Props.Assign(RenderProps);
+  LoadCSSProps(Owner, Elem, Props);
+  SetProps(Props);
   if ElementQueue.Count = 0 then
     Enqueue;
   CalcMinMaxQueueWidth(Props, Min, Max);
@@ -10415,11 +10438,17 @@ end;
 
 procedure TIpHtmlNodeBlock.Layout(const RenderProps: TIpHtmlProps;
   const TargetRect: TRect);
+{$IFDEF IP_LAZARUS}
+var
+  Elem: TCSSProps = nil;
+{$ENDIF}
 begin
   if EqualRect(TargetRect, PageRect) then Exit;
-  if not RenderProps.IsEqualTo(Props) then begin
-    SetProps(RenderProps);
+  if not RenderProps.IsEqualTo(Props) then
+  begin
     Props.Assign(RenderProps);
+    LoadCSSProps(Owner, Elem, Props);
+    SetProps(Props);
   end;
   if ElementQueue.Count = 0 then
     Enqueue;
@@ -12858,7 +12887,7 @@ var
 
                         AL := AL0;
 
-                        Props.Assign(Self.Props);
+                        Props.Assign(Self.Props); // assign table props
 
                         CellRect1 := TargetRect;
 
@@ -13425,6 +13454,7 @@ var
   z, i, j : Integer;
   R : TRect;
   Al : TIpHtmlVAlign3;
+  TRBgColor, TrTextColor: TColor;
   aCanvas : TCanvas;
 begin
   aCanvas := Owner.Target;
@@ -13455,6 +13485,9 @@ begin
                 Al := hva3Bottom;
               end;
 
+              TrBgColor := BgColor;
+              TrTextColor := TextColor;
+
               for j := 0 to Pred(FChildren.Count) do
                 if TIpHtmlNode(FChildren[j]) is TIpHtmlNodeTableHeaderOrCell then
                   with TIpHtmlNodeTableHeaderOrCell(FChildren[j]) do begin
@@ -13465,6 +13498,14 @@ begin
                     else
                       Al := VAlign;
                     end;
+
+                    // set TR color, Render override them anyway if TD/TH have own settings
+                    if TrBgColor <> -1 then
+                      Props.BGColor := TrBgColor;
+
+                    if TrTextColor <> -1 then
+                      Props.FontColor := TrTextColor;
+
                     Props.VAlignment := Al;
                     Render(Props);
                     {paint left rule if selected}
@@ -13553,8 +13594,8 @@ begin
         RGB(128,128,128));
 
   {render caption}
-  //if assigned(FCaption) then
-  //  FCaption.Render(Props);
+  if assigned(FCaption) then
+    FCaption.Render(Props);
 end;
 
 procedure TIpHtmlNodeTABLE.SetProps(const RenderProps: TIpHtmlProps);
@@ -13777,7 +13818,13 @@ begin
 end;
 {$ENDIF}
 
-{ TIpHtmlNodeTR }
+procedure TIpHtmlNodeTR.SetProps(const RenderProps: TIpHtmlProps);
+begin
+  Props.Assign(RenderProps);
+  Props.FontColor := TextColor;
+  Props.BgColor := BgColor;
+  inherited SetProps(Props);
+end;
 
 constructor TIpHtmlNodeTR.Create(ParentNode: TIpHtmlNode);
 begin
@@ -15433,8 +15480,7 @@ var
 begin
   for i := 0 to FChildren.Count - 1 do
     if TIpHtmlNode(FChildren[i]) is TIpHtmlNodeBody then
-      TIpHtmlNodeBody(FChildren[i]).Layout(
-        RenderProps, TargetRect);
+      TIpHtmlNodeBody(FChildren[i]).Layout(RenderProps, TargetRect);
 end;
 
 procedure TIpHtmlNodeHtml.Render(const RenderProps: TIpHtmlProps);
@@ -15443,8 +15489,7 @@ var
 begin
   for i := 0 to FChildren.Count - 1 do
     if TIpHtmlNode(FChildren[i]) is TIpHtmlNodeBody then
-      TIpHtmlNodeBody(FChildren[i]).
-        Render(RenderProps);
+      TIpHtmlNodeBody(FChildren[i]).Render(RenderProps);
 end;
 
 { TIpHtmlNodeCore }
@@ -16517,14 +16562,18 @@ end;
 
 procedure TIpHtmlNodeTableHeaderOrCell.CalcMinMaxWidth(
   const RenderProps: TIpHtmlProps; var Min, Max: Integer);
+var
+  TmpBGColor, TmpFontColor: TColor;
 begin
+  TmpBGColor := Props.BgColor;
+  TmpFontColor := Props.FontColor;
   Props.Assign(RenderProps);
+  Props.BgColor := TmpBGColor;
+  Props.FontColor := TmpFontColor;
   Props.Alignment := Align;
   if Self is TIpHtmlNodeTH then
     Props.FontStyle := Props.FontStyle + [fsBold];
   Props.VAlignment := VAlign;
-  if BgColor <> -1 then
-    Props.BgColor := BgColor;
   if NoWrap then
     Props.NoBreak := True;
   inherited CalcMinMaxWidth(Props, Min, Max);
@@ -16544,14 +16593,6 @@ begin
   Props.DelayCache:=True;
   {$IFDEF IP_LAZARUS}
   LoadCSSProps(Owner, Elem, Props);
-{
-  if (Elem <> nil) then
-  begin
-       if Elem.BGColor <> -1 then BgColor := Elem.BGColor;
-  end
-  else if (Props.BgColor <> -1) then
-     BgColor := Props.BgColor;
-}
   {$ENDIF}
 //DebugLn('td :', IntToStr(Integer(Props.Alignment)));
   if BgColor <> -1 then
@@ -16573,13 +16614,11 @@ begin
   {$IFDEF IP_LAZARUS_DBG}
   DebugBox(Owner.Target, PadRect, clYellow, True);
   {$ENDIF}
-  if PageRectToScreen(PadRect, R) then begin
-    if (Props.BgColor <> -1) then begin
-      //Props.BgColor := BgColor;
-      //if PtInRect(R, Owner.MousePoint) then
-      //  Owner.Target.Brush.Color := clYellow
-      //else
-        Owner.Target.Brush.Color := Props.BGColor;
+  if PageRectToScreen(PadRect, R) then
+  begin
+    if (Props.BgColor <> -1) then
+    begin
+      Owner.Target.Brush.Color := Props.BGColor;
       Owner.Target.FillRect(R);
     end;
   end;
@@ -19700,6 +19739,16 @@ begin
   inherited Create(ParentNode);
   {$IFDEF IP_LAZARUS}
   FElementName := 'td';
+  {$ENDIF}
+end;
+
+{ TIpHtmlNodeCAPTION }
+
+constructor TIpHtmlNodeCAPTION.Create(ParentNode: TIpHtmlNode);
+begin
+  inherited Create(ParentNode);
+  {$IFDEF IP_LAZARUS}
+  FElementName := 'caption';
   {$ENDIF}
 end;
 
