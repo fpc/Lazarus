@@ -300,13 +300,8 @@ type
     procedure SetEditor(const Value: TCustomSynEdit);
     procedure backspace(Sender: TObject);
     procedure Cancel(Sender: TObject);
-    {$IFDEF SYN_LAZARUS}
     procedure Validate(Sender: TObject; KeyChar: TUTF8Char; Shift: TShiftState);
     procedure UTF8KeyPress(Sender: TObject; var Key: TUTF8Char);
-    {$ELSE}
-    procedure Validate(Sender: TObject; Shift: TShiftState);
-    procedure KeyPress(Sender: TObject; var Key: char);
-    {$ENDIF}
     procedure EditorKeyDown(Sender: TObject; var Key: Word; Shift: TShiftState);
     procedure EditorKeyPress(Sender: TObject; var Key: char);
     procedure EditorUTF8KeyPress(Sender: TObject; var UTF8Key: TUTF8Char);
@@ -1362,11 +1357,7 @@ begin
     end;
 end;
 
-{$IFDEF SYN_LAZARUS}
 procedure TSynCompletion.UTF8KeyPress(Sender: TObject; var Key: TUTF8Char);
-{$ELSE}
-procedure TSynCompletion.KeyPress(Sender: TObject; var Key: char);
-{$ENDIF}
 var
   F: TSynBaseCompletionForm;
 begin
@@ -1426,7 +1417,6 @@ var
   ShortCutShift: TShiftState;
 begin
   if Key=VK_UNKNOWN then exit;
-  {$IFDEF SYN_LAZARUS}
   //debugln('TSynCompletion.EditorKeyDown A ',dbgs(Key));
   if (Form<>nil) and (Form.Visible) then begin
     // completion form is visible, but the synedit got a key
@@ -1448,30 +1438,11 @@ begin
         Execute(GetPreviousToken(Sender as TCustomSynEdit), p.x, p.y);
         // eat it
         Key := VK_UNKNOWN;
-        TRecordUsedToStoreEachEditorVars(fEditstuffs[i]^).NoNextKey := true;
       end;
     end;
     if Assigned(TRecordUsedToStoreEachEditorVars(fEditstuffs[i]^).kd) then
       TRecordUsedToStoreEachEditorVars(fEditstuffs[i]^).kd(sender, key, shift);
   end;
-  {$ELSE}
-  ShortCutToKey(FShortCut, ShortCutKey, ShortCutShift);
-  if (Shift <> ShortCutShift) or (Key <> ShortCutKey) then exit;
-
-  i := fEditors.IndexOf(Sender);
-  if i <> -1 then
-    with sender as TCustomSynEdit do begin
-      if not ReadOnly and (Shift = ShortCutShift) and (Key = ShortCutKey) then begin
-        p := ClientToScreen(Point(CaretXPix, CaretYPix + LineHeight));
-        Form.CurrentEditor := Sender as TCustomSynEdit;
-        Execute(GetPreviousToken(Sender as TCustomSynEdit), p.x, p.y);
-        Key := VK_UNKNOWN;
-        TRecordUsedToStoreEachEditorVars(fEditstuffs[i]^).NoNextKey := true;
-      end;
-      if assigned(TRecordUsedToStoreEachEditorVars(fEditstuffs[i]^).kd) then
-        TRecordUsedToStoreEachEditorVars(fEditstuffs[i]^).kd(sender, key, shift);
-    end;
-  {$ENDIF}
 end;
 
 function TSynCompletion.GetPreviousToken(FEditor: TCustomSynEdit): string;
@@ -1502,10 +1473,6 @@ var
 begin
   i := fEditors.IndexOf(Sender);
   if i <> -1 then begin
-    if TRecordUsedToStoreEachEditorVars(fEditstuffs[i]^).NoNextKey then begin
-      key := #0;
-      TRecordUsedToStoreEachEditorVars(fEditstuffs[i]^).NoNextKey := false;
-    end;
     if assigned(TRecordUsedToStoreEachEditorVars(fEditstuffs[i]^).kp) then
       TRecordUsedToStoreEachEditorVars(fEditstuffs[i]^).kp(sender, key);
   end;
@@ -1518,10 +1485,6 @@ var
 begin
   i := fEditors.IndexOf(Sender);
   if i <> -1 then begin
-    if TRecordUsedToStoreEachEditorVars(fEditstuffs[i]^).NoNextKey then begin
-      UTF8Key := #0;
-      TRecordUsedToStoreEachEditorVars(fEditstuffs[i]^).NoNextKey := false;
-    end;
     if assigned(TRecordUsedToStoreEachEditorVars(fEditstuffs[i]^).UTF8KeyPress) then
       TRecordUsedToStoreEachEditorVars(fEditstuffs[i]^).UTF8KeyPress(sender,UTF8Key);
   end;
@@ -1561,7 +1524,6 @@ begin
     p^.kp := aEditor.OnKeyPress;
     p^.UTF8KeyPress := aEditor.OnUTF8KeyPress;
     p^.kd := aEditor.OnKeyDown;
-    p^.NoNextKey := false;
     fEditstuffs.add(p);
     aEditor.FreeNotification(self);
     if not (csDesigning in ComponentState) then begin
