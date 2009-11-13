@@ -7275,13 +7275,17 @@ begin
   NewSrcEdit.ReadOnly:=AnUnitInfo.ReadOnly;
   NewSrcEdit.Modified:=false;
 
+  // Setting the PageIndex causes painting:
+  // It must be done after setting the highlighter
+  // it must be done before SynEdit.EndUpdate, otherwise Leftchar may be wrongly adjusted
+  if NewSrcEditorCreated then
+    SourceNotebook.Notebook.PageIndex := AnUnitInfo.EditorIndex;
+
   // mark unit as loaded
   NewSrcEdit.EditorComponent.EndUpdate;
   AnUnitInfo.Loaded:=true;
 
   // update statusbar and focus editor
-  if NewSrcEditorCreated then
-    SourceNotebook.Notebook.PageIndex := AnUnitInfo.EditorIndex;
   if (not (ofProjectLoading in Flags)) then
     SourceNotebook.FocusEditor;
   SourceNoteBook.UpdateStatusBar;
