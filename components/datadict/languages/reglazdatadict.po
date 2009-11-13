@@ -1,0 +1,63 @@
+msgid ""
+msgstr "Content-Type: text/plain; charset=UTF-8"
+
+#: reglazdatadict.sapplicationfilter
+msgid "Applications|*"
+msgstr ""
+
+#: reglazdatadict.sapplyingddtodataset
+msgid "Applying data dictionary to dataset %s"
+msgstr ""
+
+#: reglazdatadict.sapplyingddtofield
+msgid "Applying data dictionary to field %s"
+msgstr ""
+
+#: reglazdatadict.serrnodatadesktopdoselect
+msgid ""
+"Could not locate the database desktop application.\n"
+"Would you like to select it ?\n"
+msgstr ""
+
+#: reglazdatadict.serrnodatadictactive
+msgid ""
+"No datadictionary active.\n"
+"Please set a data dictionary for the project\n"
+msgstr ""
+
+#: reglazdatadict.smenuconfdatadict
+msgid "Configuration"
+msgstr ""
+
+#: reglazdatadict.smenuconfprojdatadict
+msgid "Set..."
+msgstr ""
+
+#: reglazdatadict.smenudatadesktop
+msgid "Database Desktop"
+msgstr ""
+
+#: reglazdatadict.smenudatadict
+msgid "Data dictionary"
+msgstr ""
+
+#: reglazdatadict.smenudatadictapply
+msgid "Apply"
+msgstr ""
+
+#: reglazdatadict.smenudatadictcreatecode
+msgid "Create code from dataset"
+msgstr ""
+
+#: reglazdatadict.smenudatadictdesignsql
+msgid "Design SQL"
+msgstr ""
+
+#: reglazdatadict.smenuopendatadict
+msgid "Open"
+msgstr ""
+
+#: reglazdatadict.swarningnoddforfield
+msgid "Warning: No definition in data dictionary for field %s"
+msgstr ""
+

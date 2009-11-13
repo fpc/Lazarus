@@ -6,7 +6,7 @@ interface
 
 uses
   Classes, SysUtils, FileUtil, LResources, Forms, Controls, Graphics, Dialogs,
-  SynHighlighterPas, SynMemo, ExtCtrls, StdCtrls;
+  SynHighlighterPas, SynMemo, ExtCtrls, StdCtrls, ldd_consts;
 
 type
 
@@ -20,6 +20,7 @@ type
     SynFreePascalSyn1: TSynFreePascalSyn;
     MCode: TSynMemo;
     procedure BSaveClick(Sender: TObject);
+    procedure FormCreate(Sender: TObject);
     function GetCode: TStrings;
     procedure SetCode(const AValue: TStrings);
   private
@@ -52,6 +53,17 @@ begin
     If Execute then
       MCode.Lines.SaveToFile(UTF8ToSys(FileName));
     end;
+end;
+
+procedure TCodeForm.FormCreate(Sender: TObject);
+begin
+  //
+  Caption:= ldd_Generatedcode;
+  BClose.Caption:= ldd_Close;
+  BSave.Caption:= ldd_Save;
+  SDCode.Title:= ldd_SDCodetitle;
+  SDCode.Filter:= ldd_SDCodefilter;
+  //
 end;
 
 procedure TCodeForm.SetCode(const AValue: TStrings);

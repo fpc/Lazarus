@@ -1,9 +1,5 @@
 {%MainUnit ../osprinters.pas}
 uses
-  {$IF NOT DEFINED(USE_QT_44) or NOT DEFINED(USE_QT_45)}
-  {$IFDEF WINDOWS}Windows,{$ENDIF}
-  {$IFDEF UNIX}CUPSDyn,{$ENDIF}
-  {$ENDIF}
   Classes, SysUtils, Printers, qt4, qtobjects,
   LCLType, LCLProc;
 

@@ -8,8 +8,9 @@ object SelectCodeGeneratorForm: TSelectCodeGeneratorForm
   ClientHeight = 300
   ClientWidth = 400
   OnClose = FormClose
+  OnCreate = FormCreate
   OnShow = FormShow
-  LCLVersion = '0.9.25'
+  LCLVersion = '0.9.27'
   object RGGenerators: TRadioGroup
     Left = 8
     Height = 240
@@ -30,11 +31,9 @@ object SelectCodeGeneratorForm: TSelectCodeGeneratorForm
   end
   object BPButtons: TButtonPanel
     Left = 6
-    Height = 42
-    Top = 258
+    Height = 35
+    Top = 259
     Width = 388
-    Align = alBottom
-    AutoSize = True
     TabOrder = 1
     ShowButtons = [pbOK, pbCancel]
   end

@@ -276,8 +276,15 @@ components/datadict/frmselectcodegenerator.lfm svneol=native#text/plain
 components/datadict/frmselectcodegenerator.lrs svneol=native#text/pascal
 components/datadict/frmselectcodegenerator.pp svneol=native#text/plain
 components/datadict/idedatadict.pp svneol=native#text/plain
+components/datadict/languages/frmconfdatadict.po svneol=native#text/plain
+components/datadict/languages/frmconfprojdatadict.po svneol=native#text/plain
+components/datadict/languages/idedatadict.po svneol=native#text/plain
+components/datadict/languages/ldd_consts.pb.po svneol=native#text/plain
+components/datadict/languages/ldd_consts.po svneol=native#text/plain
+components/datadict/languages/reglazdatadict.po svneol=native#text/plain
 components/datadict/lazdatadict.lpk svneol=native#text/plain
 components/datadict/lazdatadict.pas svneol=native#text/plain
+components/datadict/ldd_consts.pas svneol=native#text/plain
 components/datadict/reglazdatadict.lrs svneol=native#text/pascal
 components/datadict/reglazdatadict.pp svneol=native#text/plain
 components/datadict/testdatadict.lpi svneol=native#text/plain
@@ -316,9 +323,12 @@ components/dbexport/frmexportprogress.pp svneol=native#text/plain
 components/dbexport/frmselectexportformat.lfm svneol=native#text/plain
 components/dbexport/frmselectexportformat.lrs svneol=native#text/pascal
 components/dbexport/frmselectexportformat.pp svneol=native#text/plain
+components/dbexport/languages/sdb_consts.pb.po svneol=native#text/plain
+components/dbexport/languages/sdb_consts.po svneol=native#text/plain
 components/dbexport/lazdbexport.lpk svneol=native#text/plain
 components/dbexport/lazdbexport.pas svneol=native#text/plain
 components/dbexport/regdbexport.pp svneol=native#text/plain
+components/dbexport/sdb_consts.pas svneol=native#text/plain
 components/dbexport/tcsvexporter.xpm svneol=native#text/plain
 components/dbexport/tfixedlengthexporter.xpm svneol=native#text/plain
 components/dbexport/tfpdataexporter.xpm svneol=native#text/plain
@@ -837,6 +847,7 @@ components/lazreport/images/bitmaps/tfrhtmexport.png -text svneol=unset#image/pn
 components/lazreport/images/bitmaps/tfroleobject.bmp -text
 components/lazreport/images/bitmaps/tfropendbdialog.bmp -text
 components/lazreport/images/bitmaps/tfrpreview.bmp -text
+components/lazreport/images/bitmaps/tfrpreview.png -text svneol=unset#image/png
 components/lazreport/images/bitmaps/tfrprintgrid.png -text svneol=unset#image/png
 components/lazreport/images/bitmaps/tfrreport.png -text svneol=unset#image/png
 components/lazreport/images/bitmaps/tfrrichobject.bmp -text

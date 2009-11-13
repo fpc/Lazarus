@@ -11,3 +11,4 @@ bitmaps/tfrshapeobject.png
 bitmaps/tfrtextexport.png
 bitmaps/tfruserdataset.png
 bitmaps/tfrdesigner.png
+bitmaps/tfrpreview.png

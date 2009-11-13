@@ -4,13 +4,10 @@
     <Name Value="lazdbexport"/>
     <Author Value="Michael Van Canneyt"/>
     <CompilerOptions>
-      <Version Value="5"/>
+      <Version Value="8"/>
       <SearchPaths>
-        <UnitOutputDirectory Value="lib/$(TargetCPU)-$(TargetOS)/$(LCLWidgetType)"/>
+        <UnitOutputDirectory Value="lib/$(TargetCPU)-$(TargetOS)"/>
       </SearchPaths>
-      <CodeGeneration>
-        <Generate Value="Faster"/>
-      </CodeGeneration>
       <Other>
         <CompilerPath Value="$(CompPath)"/>
       </Other>
@@ -18,7 +15,7 @@
     <Description Value="Standard TDataset Export objects from FCL"/>
     <License Value="Modified LGPL"/>
     <Version Major="1"/>
-    <Files Count="11">
+    <Files Count="12">
       <Item1>
         <Filename Value="regdbexport.pp"/>
         <HasRegisterProc Value="True"/>
@@ -64,7 +61,15 @@
         <Filename Value="frmbaseconfigexport.pp"/>
         <UnitName Value="frmBaseConfigExport"/>
       </Item11>
+      <Item12>
+        <Filename Value="sdb_consts.pas"/>
+        <UnitName Value="sdb_consts"/>
+      </Item12>
     </Files>
+    <i18n>
+      <EnableI18N Value="True"/>
+      <OutDir Value="languages"/>
+    </i18n>
     <Type Value="RunAndDesignTime"/>
     <RequiredPkgs Count="4">
       <Item1>

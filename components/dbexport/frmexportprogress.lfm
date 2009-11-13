@@ -3,15 +3,16 @@ object ExportProgressForm: TExportProgressForm
   Height = 36
   Top = 365
   Width = 471
-  HorzScrollBar.Page = 470
-  VertScrollBar.Page = 35
   BorderIcons = [biSystemMenu, biMaximize]
   BorderStyle = bsToolWindow
   Caption = 'Export progress'
   ClientHeight = 36
   ClientWidth = 471
+  OnCreate = FormCreate
   Position = poScreenCenter
+  LCLVersion = '0.9.27'
   object LProgress: TLabel
+    Left = 0
     Height = 13
     Top = 7
     Width = 152
@@ -40,5 +41,6 @@ object ExportProgressForm: TExportProgressForm
     Max = 1000
     Smooth = True
     Step = 1
+    TabOrder = 1
   end
 end

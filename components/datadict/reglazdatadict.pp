@@ -69,29 +69,9 @@ Const
   ApplicationExt = '';
 {$endif}
 
-
-resourcestring
-  SMenuDataDict          = 'Data dictionary';
-  SMenuConfProjDataDict  = 'Set...';
-  SMenuOpenDataDict      = 'Open';
-  SMenuConfDataDict      = 'Configuration';
-  SMenuDatadesktop       = 'Database Desktop';
-  SErrNoDataDesktopDoSelect
-                         = 'Could not locate the database desktop application.'+LineEnding
-                           +'Would you like to select it ?';
-  SApplicationFilter     = 'Applications|*';
-  SMenuDatadictApply     = 'Apply';
-  SMenuDatadictDesignSQL = 'Design SQL';
-  SMenuDatadictCreateCode = 'Create code from dataset';
-  SErrNoDataDictActive   = 'No datadictionary active.'+LineEnding+
-                           'Please set a data dictionary for the project';
-  SApplyingDDToDataset   = 'Applying data dictionary to dataset %s';
-  SApplyingDDToField     = 'Applying data dictionary to field %s';
-  SWarningNoDDForField   = 'Warning: No definition in data dictionary for field %s';
-
 implementation
 
-uses forms, dialogs, controls, idemsgintf;
+uses forms, dialogs, controls, idemsgintf, ldd_consts;
 
 
 
@@ -320,7 +300,7 @@ end;
 Procedure TIDEDataDictCommandHandler.DesignSQL(Sender : TObject);
 
 begin
-  ShowMessage('Not yet implemented');
+  ShowMessage(SNotYetImplemted);
 end;
 
 procedure TIDEDataDictCommandHandler.CreateDDCode(Sender: TObject);
@@ -353,7 +333,7 @@ begin
         end;
       end
     else
-      ShowMessage(Format('Wrong selection count : %d',[ASelection.Count]));
+      ShowMessage(Format(SWrongSelection, [ASelection.Count]));
   finally
     ASelection.Free;
   end;

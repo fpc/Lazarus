@@ -41,6 +41,49 @@
 //                typeof(*(ptr)) __v;
 //        } *__p = (void *) (ptr);
 
+//ToDo:
+
+// void * __strong _reserved0;
+
+//struct {
+//       NSUInteger _isEmpty:1;
+//       NSUInteger _hasSingleRange:1;
+//       NSUInteger _cacheValid:1;
+//       NSUInteger _reservedArrayBinderController:29;
+//   } _indexSetFlags;
+//
+//_indexSetFlags: bitpacked record
+//  _isEmty: 0..1;
+//  _hasSingleRange: 0..1;
+//  _cacheValid: 0..1;
+//  _reservedArrayBinderController: 0..((1 shl 29)-1);
+//end;
+
+//union {
+//       struct {
+//           NSRange _range;
+//       } _singleRange;
+//       struct {
+//           void *__strong _data;
+//           void *_reserved;
+//       } _multipleRanges;
+//   } _internal;
+//
+//_internal: record
+//  case byte of
+//    0: (_singleRange:
+//          record
+//            _range: NSRange;
+//          end;
+//       );
+//    1: (_multipleRanges:
+//          record
+//            _data: pointer;
+//            _reserved: pointer;
+//          end;
+//       );
+//end;
+
 unit CCodeParserTool;
 
 {$mode objfpc}{$H+}

@@ -7,7 +7,7 @@ interface
 uses
   Classes, SysUtils, LResources, Forms, Controls, Graphics, Dialogs, ExtCtrls,
   StdCtrls, EditBtn, ComCtrls, RTTIGrids, CheckLst, fpddcodegen, Buttons,
-  ActnList, ButtonPanel;
+  ActnList, ButtonPanel, ldd_consts;
 
 type
 
@@ -227,6 +227,15 @@ end;
 
 procedure TBaseConfigGeneratorForm.FormCreate(Sender: TObject);
 begin
+  //
+  Caption := ldd_Configuregeneratedcode;
+  LSave.Caption:= ldd_Saveto;
+  CBShowDialog.Caption:= ldd_Showgeneratedcode;
+  TSFields.Caption:= ldd_Fields;
+  LFields.Caption:= ldd_Fieldstogeneratecodefor;
+  LProperties.Caption:= ldd_Propertiesforselected;
+  TSOptions.Caption:= ldd_Options;
+  //
   PDlgButtons.OKButton.OnClick:=@OnOKClick;
 end;
 

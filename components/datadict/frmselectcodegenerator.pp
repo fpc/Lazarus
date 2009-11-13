@@ -7,7 +7,7 @@ interface
 uses
   Classes, SysUtils, LResources, Forms, Controls, Graphics, Dialogs, ExtCtrls,
   fpddcodegen,
-  ButtonPanel;
+  ButtonPanel, ldd_consts;
 
 type
 
@@ -17,6 +17,7 @@ type
     BPButtons: TButtonPanel;
     RGGenerators: TRadioGroup;
     procedure FormClose(Sender: TObject; var CloseAction: TCloseAction);
+    procedure FormCreate(Sender: TObject);
     procedure FormShow(Sender: TObject);
   private
     FHaveFields: Boolean;
@@ -49,6 +50,12 @@ begin
   If (ModalResult=mrOK) then
     With RGGenerators do
       FSelF:=Items.Objects[ItemIndex] as TCodeGeneratorItem;
+end;
+
+procedure TSelectCodeGeneratorForm.FormCreate(Sender: TObject);
+begin
+  Caption := ldd_Selectcodetobegenerated;
+  RGGenerators.Caption:= ldd_Availablecodegenerators;
 end;
 
 procedure TSelectCodeGeneratorForm.ShowAvailableGenerators;
