@@ -87,6 +87,7 @@ type
   TLineRange = record
     StartPos, EndPos: integer;
   end;
+  PLineRange = ^TLineRange;
 
   { TSourceLog }
 
@@ -94,7 +95,7 @@ type
   private
     FDiskEncoding: string;
     FLineCount: integer;
-    FLineRanges: {$ifdef fpc}^{$else}array of {$endif}TLineRange;
+    FLineRanges: PLineRange;
     FMemEncoding: string;
     FOnDecodeLoaded: TOnSourceLogDecodeLoaded;
     FOnEncodeSaving: TOnSourceLogEncodeSaving;
@@ -128,8 +129,8 @@ type
   public
     Data: Pointer;
     function LineCount: integer;
-    function GetLine(Index: integer): string;
-    function GetLineLength(Index: integer): integer;
+    function GetLine(Index: integer): string; // 0-based
+    function GetLineLength(Index: integer): integer; // 0-based
     procedure GetLineRange(Index: integer; out LineRange: TLineRange);
     property Items[Index: integer]: TSourceLogEntry
        read GetItems write SetItems; default;
@@ -150,6 +151,8 @@ type
     // Line and Column begin at 1
     procedure LineColToPosition(Line, Column: integer; out Position: integer);
     procedure AbsoluteToLineCol(Position: integer; out Line, Column: integer);
+    function LineColIsOutside(Line, Column: integer): boolean;
+    function LineColIsSpace(Line, Column: integer): boolean;
     procedure Insert(Pos: integer; const Txt: string);
     procedure Delete(Pos, Len: integer);
     procedure Replace(Pos, Len: integer; const Txt: string);
@@ -682,6 +685,38 @@ begin
       exit;
     end;
   until false;
+end;
+
+function TSourceLog.LineColIsOutside(Line, Column: integer): boolean;
+begin
+  BuildLineRanges;
+  Result:=true;
+  if (Line<1) or (Column<1) then exit;
+  if (Line>LineCount+1) then exit;
+  if (Line<=fLineCount)
+  and (Column>fLineRanges[Line-1].EndPos-fLineRanges[Line-1].StartPos+1) then
+    exit;
+  // check if on empty last line
+  if (Line=FLineCount+1)
+  and ((Column>1) or (FSource='') or (not (FSource[FSrcLen] in [#10,#13]))) then
+    exit;
+  Result:=true;
+end;
+
+function TSourceLog.LineColIsSpace(Line, Column: integer): boolean;
+var
+  p: PChar;
+  rg: PLineRange;
+begin
+  BuildLineRanges;
+  Result:=true;
+  if (Line<1) or (Column<1) or (Line>LineCount) then exit;
+  rg:=@fLineRanges[Line-1];
+  if (Column>rg^.EndPos-rg^.StartPos+1) then
+    exit;
+  p:=@fSource[rg^.StartPos];
+  if (p[Column-1]>' ') then exit(false);
+  if (Column>1) and (p[Column-2]>' ') then exit(false);
 end;
 
 function TSourceLog.LoadFromFile(const Filename: string): boolean;
