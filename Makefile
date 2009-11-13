@@ -3576,6 +3576,10 @@ DEBSRC=lazarus-${DEBVERSION}
 DEBSRCDIR=$(BUILDDIR)/${DEBSRC}
 DEBSRC_ORIG=lazarus_${DEBVERSION}.orig
 BUILDDATE=$(shell /bin/date --utc +%Y%m%d)
+DEB_BUILDPKG_OPT=-sa
+ifndef SIGN
+DEB_BUILDPKG_OPT+= -us -uc
+endif
 debcheck:
 ifneq ($(DEBVERSION),$(PACKAGE_VERSION))
 	@$(ECHO) "Debian version ($(DEBVERSION)) is not correct, expect $(PACKAGE_VERSION)"
@@ -3614,7 +3618,7 @@ endif
 	chmod 755 $(DEBSRCDIR)/debian/rules
 	find $(DEBSRCDIR) -name '.svn' | xargs -n1 rm -rf
 debbuild:
-	cd ${DEBSRCDIR} ; dpkg-buildpackage -us -uc
+	cd ${DEBSRCDIR} ; dpkg-buildpackage ${DEB_BUILDPKG_OPT}
 debcheckpolicy:
 ifdef LINTIAN
 	cd ${DEBSRCDIR} ; lintian -i ../*.changes

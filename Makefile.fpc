@@ -179,6 +179,10 @@ DEBSRC=lazarus-${DEBVERSION}
 DEBSRCDIR=$(BUILDDIR)/${DEBSRC}
 DEBSRC_ORIG=lazarus_${DEBVERSION}.orig
 BUILDDATE=$(shell /bin/date --utc +%Y%m%d)
+DEB_BUILDPKG_OPT=-sa
+ifndef SIGN
+DEB_BUILDPKG_OPT+= -us -uc
+endif
 
 debcheck:
 ifneq ($(DEBVERSION),$(PACKAGE_VERSION))
@@ -222,7 +226,7 @@ endif
 	find $(DEBSRCDIR) -name '.svn' | xargs -n1 rm -rf
 
 debbuild:
-	cd ${DEBSRCDIR} ; dpkg-buildpackage -us -uc
+	cd ${DEBSRCDIR} ; dpkg-buildpackage ${DEB_BUILDPKG_OPT}
 
 debcheckpolicy:
 ifdef LINTIAN
