@@ -7,7 +7,7 @@
   ====================================================================
 -->
     <module name="LCLIntf">
-      <short>Contains constanta and type definitions for Delphi compatibility</short>
+      <short>Contains constants and type definitions for Delphi compatibility</short>
       <descr>
         <p>This unit is being created specifically for compatibility with Delphi. It should only be used for constants and type definitions that are included in the Delphi Windows unit. This is only done for compatibility</p>
       </descr>
