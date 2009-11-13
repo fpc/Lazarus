@@ -1310,8 +1310,7 @@ begin
   BaseURL:='';
   HTMLHint:='';
   Code:=CodeToolBoss.LoadFile(ExpandedFilename,true,false);
-  if (Code=nil) or (CodePos.Y<1) or (CodePos.Y>Code.LineCount)
-  or (CodePos.X<1) then
+  if (Code=nil) or Code.LineColIsSpace(CodePos.Y,CodePos.X) then
     exit(shrHelpNotFound);
   if CodeHelpBoss.GetHTMLHint(Code,CodePos.X,CodePos.Y,
     [chhoSmartHint, chhoComplete, chhoComments],
