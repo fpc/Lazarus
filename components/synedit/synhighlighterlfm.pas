@@ -49,7 +49,7 @@ unit SynHighlighterLFM;
 interface
 
 uses
-  SysUtils, Classes,
+  SysUtils, Classes, math,
   {$IFDEF SYN_CLX}
   Qt, QControls, QGraphics,
   {$ELSE}
@@ -60,7 +60,7 @@ uses
   {$ENDIF}
   Controls, Graphics,
   {$ENDIF}
-  SynEditTypes, SynEditHighlighter;
+  SynEditTextBuffer, SynEditTypes, SynEditHighlighter, SynEditHighlighterFoldBase;
 
 type
   TtkTokenKind = (tkComment, tkIdentifier, tkKey, tkNull, tkNumber, tkSpace,
@@ -68,10 +68,20 @@ type
 
   TRangeState = (rsANil, rsComment, rsUnKnown);
 
+  TLfmCodeFoldBlockType = (
+    cfbtLfmNone,
+    cfbtLfmObject,      // object, inherited, inline
+    cfbtLfmList,        // <>
+    cfbtLfmItem         // Item
+    );
+
   TProcTableProc = procedure of object;
 
 type
-  TSynLFMSyn = class(TSynCustomHighlighter)
+
+  { TSynLFMSyn }
+
+  TSynLFMSyn = class(TSynCustomFoldHighlighter)
   private
     fRange: TRangeState;
     fLine: PChar;
@@ -108,6 +118,14 @@ type
   protected
     function GetIdentChars: TSynIdentChars; override;
     function GetSampleSource: string; override;
+  protected
+    // folding
+    procedure CreateRootCodeFoldBlock; override;
+
+    function StartLfmCodeFoldBlock
+             (ABlockType: TLfmCodeFoldBlockType): TSynCustomCodeFoldBlock;
+    procedure EndLfmCodeFoldBlock;
+    function TopLfmCodeFoldBlockType(DownIndex: Integer = 0): TLfmCodeFoldBlockType;
   public
     {$IFNDEF SYN_CPPB_1} class {$ENDIF}                                         //mh 2000-07-14
     function GetLanguageName: string; override;
@@ -131,6 +149,15 @@ type
     procedure SetRange(Value: Pointer); override;
     procedure ResetRange; override;
     property IdentChars;
+  public
+    // folding
+    function FoldOpenCount(ALineIndex: Integer; AType: Integer = 0): integer; override;
+    function FoldCloseCount(ALineIndex: Integer; AType: Integer = 0): integer; override;
+    function FoldNestCount(ALineIndex: Integer; AType: Integer = 0): integer; override;
+    function FoldLineLength(ALineIndex, FoldIndex: Integer): integer; override;
+    // TODO: make private
+    function MinimumFoldLevel(ALineIndex: Integer): integer; override;
+    function EndFoldLevel(ALineIndex: Integer): integer; override;
   published
     property CommentAttri: TSynHighlighterAttributes read fCommentAttri
       write fCommentAttri;
@@ -279,6 +306,7 @@ end;
 procedure TSynLFMSyn.SetLine({$IFDEF FPC}const {$ENDIF}NewValue: String;
   LineNumber: Integer);
 begin
+  inherited;
   fLine := PChar(NewValue);
   Run := 0;
   fLineNumber := LineNumber;
@@ -340,6 +368,8 @@ begin
      (fLine[Run + 2] in ['d', 'D']) and
      not (fLine[Run + 3] in ['_', '0'..'9', 'a'..'z', 'A'..'Z'])
   then begin
+    if (TopLfmCodeFoldBlockType in [cfbtLfmObject, cfbtLfmItem]) then
+      EndLfmCodeFoldBlock;
     fTokenID := tkKey;
     Inc(Run, 3);
   end else
@@ -387,6 +417,7 @@ begin
      not (fLine[Run + 6] in ['_', '0'..'9', 'a'..'z', 'A'..'Z'])
   then
   begin
+    StartLfmCodeFoldBlock(cfbtLfmObject);
     fTokenID := tkKey;
     Inc(Run, 6);
   end
@@ -407,6 +438,7 @@ begin
      not (fLine[Run + 9] in ['_', '0'..'9', 'a'..'z', 'A'..'Z']))
   then
   begin
+    StartLfmCodeFoldBlock(cfbtLfmObject);
     fTokenID := tkKey;
     Inc(Run, 9);
   end
@@ -418,8 +450,19 @@ begin
            not (fLine[Run + 6] in ['_', '0'..'9', 'a'..'z', 'A'..'Z']))
   then
   begin
+    StartLfmCodeFoldBlock(cfbtLfmObject);
     fTokenID := tkKey;
     Inc(Run, 6);
+  end
+  else if ((fLine[Run + 1] in ['t', 'T']) and
+           (fLine[Run + 2] in ['e', 'E']) and
+           (fLine[Run + 3] in ['m', 'M']) and
+           not (fLine[Run + 4] in ['_', '0'..'9', 'a'..'z', 'A'..'Z']))
+  then
+  begin
+    StartLfmCodeFoldBlock(cfbtLfmItem);
+    fTokenID := tkIdentifier;
+    Inc(Run, 4);
   end
   else
     AltProc;
@@ -447,6 +490,11 @@ end;
 
 procedure TSynLFMSyn.SymbolProc;
 begin
+  if fLine[Run] = '<' then
+    StartLfmCodeFoldBlock(cfbtLfmList);
+  if (fLine[Run] = '>') and (TopLfmCodeFoldBlockType = cfbtLfmList) then
+    EndLfmCodeFoldBlock;
+
   inc(Run);
   fTokenID := tkSymbol;
 end;
@@ -497,7 +545,8 @@ end;
 
 function TSynLFMSyn.GetRange: Pointer;
 begin
-  Result := Pointer(PtrInt(fRange));
+  CodeFoldRange.RangeType:=Pointer(PtrUInt(Integer(fRange)));
+  Result := inherited;
 end;
 
 function TSynLFMSyn.GetTokenID: TtkTokenKind;
@@ -553,9 +602,73 @@ begin
   fRange := rsUnknown;
 end;
 
+function TSynLFMSyn.FoldOpenCount(ALineIndex: Integer; AType: Integer): integer;
+begin
+  Result := EndFoldLevel(ALineIndex) - MinimumFoldLevel(ALineIndex);
+end;
+
+function TSynLFMSyn.FoldCloseCount(ALineIndex: Integer; AType: Integer): integer;
+begin
+  Result := MinimumFoldLevel(ALineIndex) - EndFoldLevel(ALineIndex - 1);
+end;
+
+function TSynLFMSyn.FoldNestCount(ALineIndex: Integer; AType: Integer): integer;
+var
+  r: TSynCustomHighlighterRange;
+begin
+  Result := EndFoldLevel(ALineIndex);
+end;
+
+function TSynLFMSyn.FoldLineLength(ALineIndex, FoldIndex: Integer): integer;
+var
+  i, lvl, cnt: Integer;
+  e, m: Integer;
+begin
+  //atype := FoldTypeAtNodeIndex(ALineIndex, FoldIndex);
+  cnt := CurrentLines.Count;
+  e := EndFoldLevel(ALineIndex);
+  m := MinimumFoldLevel(ALineIndex);
+  lvl := Min(m+1+FoldIndex, e);
+  i := ALineIndex + 1;
+  while (i < cnt) and (MinimumFoldLevel(i) >= lvl) do inc(i);
+  // check if fold last line of block (not mixed "end begin")
+  // and not lastlinefix
+  if (i = cnt) or (EndFoldLevel(i) > MinimumFoldLevel(i)) then
+    dec(i);
+  // Amount of lines, that will become invisible (excludes the cfCollapsed line)
+  Result := i - ALineIndex;
+end;
+
+function TSynLFMSyn.MinimumFoldLevel(ALineIndex: Integer): integer;
+var
+  r: TSynCustomHighlighterRange;
+begin
+  if (ALineIndex < 0) or (ALineIndex >= CurrentLines.Count) then
+    exit(0);
+  r := TSynCustomHighlighterRange(CurrentRanges[ALineIndex]);
+  if (r <> nil) and (Pointer(r) <> NullRange) then
+    Result := r.MinimumCodeFoldBlockLevel
+  else
+    Result := 0;
+end;
+
+function TSynLFMSyn.EndFoldLevel(ALineIndex: Integer): integer;
+var
+  r: TSynCustomHighlighterRange;
+begin
+  if (ALineIndex < 0) or (ALineIndex >= CurrentLines.Count) then
+    exit(0);
+  r := TSynCustomHighlighterRange(CurrentRanges[ALineIndex]);
+  if (r <> nil) and (Pointer(r) <> NullRange) then
+    Result := r.CodeFoldStackSize
+  else
+    Result := 0;
+end;
+
 procedure TSynLFMSyn.SetRange(Value: Pointer);
 begin
-  fRange := TRangeState(PtrUInt(Value));
+  inherited;
+  fRange := TRangeState(Integer(PtrUInt(CodeFoldRange.RangeType)));
 end;
 
 function TSynLFMSyn.GetIdentChars: TSynIdentChars;
@@ -578,6 +691,27 @@ begin
             '  Caption = ''SynEdit sample source'''#13#10 +
             'end';
 end; { GetSampleSource }
+
+procedure TSynLFMSyn.CreateRootCodeFoldBlock;
+begin
+  inherited CreateRootCodeFoldBlock;
+  RootCodeFoldBlock.InitRootBlockType(Pointer(PtrInt(cfbtLfmNone)));
+end;
+
+function TSynLFMSyn.StartLfmCodeFoldBlock(ABlockType: TLfmCodeFoldBlockType): TSynCustomCodeFoldBlock;
+begin
+  StartCodeFoldBlock(Pointer(PtrInt(ABlockType)));
+end;
+
+procedure TSynLFMSyn.EndLfmCodeFoldBlock;
+begin
+  EndCodeFoldBlock();
+end;
+
+function TSynLFMSyn.TopLfmCodeFoldBlockType(DownIndex: Integer): TLfmCodeFoldBlockType;
+begin
+  Result := TLfmCodeFoldBlockType(PtrUInt(TopCodeFoldBlockType(DownIndex)));
+end;
 
 {$IFNDEF SYN_CPPB_1}                                                            //mh 2000-07-14
 initialization

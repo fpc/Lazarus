@@ -6,7 +6,7 @@ interface
 
 uses
   SysUtils, Classes, Controls, Graphics, Menus, LCLIntf, SynGutterBase, SynEditMiscProcs,
-  SynEditFoldedView, SynEditMouseCmds, LCLProc;
+  SynEditFoldedView, SynEditMouseCmds, SynEditHighlighterFoldBase, LCLProc;
 
 type
 
@@ -226,6 +226,8 @@ begin
           SetLength(FMenuInf,c);
           for i := c-1 downto 0 do begin
             inf := FFoldView.OpenFoldInfo(line-1, i);
+            if sfaInvalid in inf.HNode.FoldAction then
+              continue;
             FMenuInf[i] := inf;
             if (i < c-1) and (FMenuInf[i+1].LineNum = line) and (inf.LineNum <> line)
             then begin
