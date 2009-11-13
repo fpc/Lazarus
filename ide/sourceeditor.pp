@@ -463,16 +463,16 @@ type
   { TSourceNotebook }
 
   TSourceNotebook = class(TSourceEditorWindowInterface)
-    Notebook: TDragableNotebook;
-    SrcPopUpMenu: TPopupMenu;
     StatusBar: TStatusBar;
-    procedure AddBreakpointClicked(Sender: TObject);
     procedure FormMouseUp(Sender: TObject; Button: TMouseButton;
       Shift: TShiftState; X, Y: Integer);
     procedure StatusBarDblClick(Sender: TObject);
-    procedure ToggleBreakpointClicked(Sender: TObject);
+  private
+    Notebook: TDragableNotebook;
+    SrcPopUpMenu: TPopupMenu;
+  protected
+    procedure AddBreakpointClicked(Sender: TObject);
     procedure CompleteCodeMenuItemClick(Sender: TObject);
-    procedure DeleteBreakpointClicked(Sender: TObject);
     procedure EncloseSelectionMenuItemClick(Sender: TObject);
     procedure ExtractProcMenuItemClick(Sender: TObject);
     procedure InvertAssignmentMenuItemClick(Sender: TObject);
@@ -487,8 +487,6 @@ type
     procedure AddWatchAtCursor(Sender: TObject);
     procedure BookmarkGoTo(Index: Integer);
     procedure BookmarkGotoNext(GoForward: boolean);
-    procedure BookMarkNextClicked(Sender: TObject);
-    procedure BookMarkPrevClicked(Sender: TObject);
     procedure BookMarkGotoClicked(Sender: TObject);
     procedure BookMarkSet(Value: Integer; Toggle: boolean = false);
     procedure BookMarkSetFree;// set a free bookmark
@@ -523,6 +521,11 @@ type
     procedure SrcPopUpMenuPopup(Sender: TObject);
     procedure ToggleLineNumbersClicked(Sender: TObject);
     procedure InsertCharacter(const C: TUTF8Char);
+  public
+    procedure BookMarkNextClicked(Sender: TObject);
+    procedure BookMarkPrevClicked(Sender: TObject);
+    procedure DeleteBreakpointClicked(Sender: TObject);
+    procedure ToggleBreakpointClicked(Sender: TObject);
   private
     fAutoFocusLock: integer;
     FCodeTemplateModul: TSynEditAutoComplete;
@@ -576,6 +579,10 @@ type
 
     // PopupMenu
     procedure BuildPopupMenu;
+    function GetNotebookPages: TStrings;
+    function GetPageCount: Integer;
+    function GetPageIndex: Integer;
+    procedure SetPageIndex(const AValue: Integer);
     procedure UpdateHighlightMenuItems;
     procedure UpdateEncodingMenuItems;
     procedure RemoveUserDefinedMenuItems;
@@ -823,6 +830,11 @@ type
     procedure FindReplaceDlgKey(Sender: TObject; var Key: Word;
                        Shift: TShiftState; FindDlgComponent: TFindDlgComponent);
     procedure SetupShortCuts;
+
+    function GetCapabilities: TNoteBookCapabilities;
+    property PageIndex: Integer read GetPageIndex write SetPageIndex;
+    property PageCount: Integer read GetPageCount;
+    property NotebookPages: TStrings read GetNotebookPages;
   public
     property OnAddJumpPoint: TOnAddJumpPoint
                                      read FOnAddJumpPoint write FOnAddJumpPoint;
@@ -4738,6 +4750,36 @@ begin
   SrcEditMenuEditorProperties.OnClick:=@EditorPropertiesClicked;
 end;
 
+function TSourceNotebook.GetNotebookPages: TStrings;
+begin
+  if assigned(Notebook) then
+    Result := Notebook.Pages
+  else
+    Result := nil;
+end;
+
+function TSourceNotebook.GetPageCount: Integer;
+begin
+  If assigned(Notebook) then
+    Result := Notebook.PageCount
+  else
+    Result := 0;
+end;
+
+function TSourceNotebook.GetPageIndex: Integer;
+begin
+  if assigned(Notebook) then
+    Result := Notebook.PageIndex
+  else
+    Result := -1
+end;
+
+procedure TSourceNotebook.SetPageIndex(const AValue: Integer);
+begin
+  if assigned(Notebook) then
+    Notebook.PageIndex := AValue;
+end;
+
 function TSourceNotebook.GetCompletionBoxPosition: integer;
 begin
   Result:=-1;
@@ -5131,6 +5173,14 @@ begin
   SrcEditMenuFindOverloads.Command:=GetCommand(ecFindOverloads);
 
   DebugBoss.SetupSourceMenuShortCuts;
+end;
+
+function TSourceNotebook.GetCapabilities: TNoteBookCapabilities;
+begin
+  if assigned(Notebook) then
+    Result := Notebook.GetCapabilities
+  else
+    Result := [];
 end;
 
 procedure TSourceNotebook.BeginIncrementalFind;

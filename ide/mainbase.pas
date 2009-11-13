@@ -1063,7 +1063,7 @@ begin
 
   //create source page menuitems
 
-  if (SourceNotebook<>nil) and (SourceNotebook.Notebook<>nil) and not (nbcPageListPopup in SourceNotebook.Notebook.GetCapabilities) then
+  if (SourceNotebook<>nil) and not (nbcPageListPopup in SourceNotebook.GetCapabilities) then
   begin
     CurMenuItem := GetMenuItem(ItemCount);
     CurMenuItem.OnClick:=nil;
