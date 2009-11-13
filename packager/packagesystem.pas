@@ -1485,6 +1485,7 @@ begin
     Installed:=pitStatic;
     CompilerOptions.UnitOutputDirectory:='';
     POOutputDirectory:='languages';
+    LazDocPaths:='docs';
     Translated:=SystemLanguageID1;
 
     // add requirements

@@ -1,0 +1,11 @@
+<?xml version="1.0"?>
+<fpdoc-descriptions>
+  <package name="CodeTools">
+    <module name="CodeToolManager">
+      <element name="TCodeToolManager.GetUnitPathForDirectory">
+        <short>Returns the unit search path of the given directory separated by semicolon</short>
+        <descr>The unit path is created from the define templates variable #UnitPath.</descr>
+      </element>
+    </module>
+  </package>
+</fpdoc-descriptions>
