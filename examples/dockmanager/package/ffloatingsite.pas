@@ -15,10 +15,12 @@ unit fFloatingSite;
 interface
 
 uses
-  Classes, SysUtils, FileUtil, LResources, Forms, Controls, Graphics, Dialogs; 
+  Classes, SysUtils, FileUtil, LResources, Forms, Controls, Graphics, Dialogs,
+  ExtCtrls;
 
 type
   TFloatingSite = class(TForm)
+    Image1: TImage;
     procedure FormDockDrop(Sender: TObject; Source: TDragDockObject;
       X, Y: Integer);
     procedure FormUnDock(Sender: TObject; Client: TControl;

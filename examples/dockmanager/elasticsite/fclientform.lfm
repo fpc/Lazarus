@@ -1,7 +1,7 @@
 object ViewWindow: TViewWindow
-  Left = 321
+  Left = 369
   Height = 300
-  Top = 332
+  Top = 369
   Width = 400
   Caption = 'ViewWindow'
   ClientHeight = 300
@@ -10,6 +10,7 @@ object ViewWindow: TViewWindow
   DragMode = dmAutomatic
   OnEndDock = FormEndDock
   LCLVersion = '0.9.29'
+  Visible = True
   object Label1: TLabel
     Left = 16
     Height = 14
