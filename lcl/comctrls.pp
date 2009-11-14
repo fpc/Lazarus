@@ -655,6 +655,29 @@ type
 
   TDisplayCode = (drBounds, drIcon, drLabel, drSelectBounds);
   
+{ TIconOptions }
+
+  TIconArrangement = (iaTop, iaLeft);
+
+  TIconOptions = class(TPersistent)
+  private
+    FListView: TCustomListView;
+    FArrangement: TIconArrangement;
+    function GetAutoArrange: Boolean;
+    function GetWrapText: Boolean;
+    procedure SetArrangement(Value: TIconArrangement);
+    procedure SetAutoArrange(Value: Boolean);
+    procedure SetWrapText(Value: Boolean);
+  protected
+    procedure AssignTo(Dest: TPersistent); override;
+  public
+    constructor Create(AOwner: TCustomListView);
+  published
+    property Arrangement: TIconArrangement read FArrangement write SetArrangement default iaTop;
+    property AutoArrange: Boolean read GetAutoArrange write SetAutoArrange default False;
+    property WrapText: Boolean read GetWrapText write SetWrapText default True;
+  end;
+
   { TListItem }
 
   TListItem = class(TPersistent)
@@ -667,15 +690,14 @@ type
     FImageIndex: Integer;
     FStates: TListItemStates;
     FChecked: Boolean;
+    function GetCaption: String; virtual;
     function GetChecked: Boolean;
     function GetLeft: Integer;
     function GetListView: TCustomListView;
     function GetPosition: TPoint;
     function GetState(const ALisOrd: Integer): Boolean;
-    function GetIndex: Integer;
-    function GetSubItemImages(const AIndex: Integer): Integer;
-    function GetSubItems: TStrings;
-    function GetTop: Integer;
+    function GetImageIndex: Integer; virtual;    function GetIndex: Integer; virtual;    function GetSubItemImages(const AIndex: Integer): Integer;
+    function GetSubItems: TStrings; virtual;    function GetTop: Integer;
     function WSUpdateAllowed: Boolean;
     procedure WSUpdateText;
     procedure WSUpdateImages;
@@ -685,11 +707,8 @@ type
     procedure SetChecked(AValue: Boolean);
     procedure SetState(const ALisOrd: Integer; const AIsSet: Boolean);
     procedure SetData(const AValue: Pointer);
-    procedure SetImageIndex(const AValue: Integer);
-    procedure SetLeft(Value: Integer);
-    procedure SetCaption(const AValue : String);
-    procedure SetPosition(const AValue: TPoint);
-    procedure SetSubItemImages(const AIndex, AValue: Integer);
+    procedure SetImageIndex(const AValue: Integer); virtual;    procedure SetLeft(Value: Integer);
+    procedure SetCaption(const AValue : String); virtual;    procedure SetPosition(const AValue: TPoint);    procedure SetSubItemImages(const AIndex, AValue: Integer);
     procedure SetSubItems(const AValue: TStrings);
     procedure SetTop(Value: Integer);
   protected
@@ -705,14 +724,14 @@ type
     function DisplayRect(Code: TDisplayCode): TRect;
     function DisplayRectSubItem(subItem: integer;Code: TDisplayCode): TRect;
 
-    property Caption : String read FCaption write SetCaption;
+    property Caption : String read GetCaption write SetCaption;
     property Checked : Boolean read GetChecked write SetChecked;
     property Cut: Boolean index Ord(lisCut) read GetState write SetState;
     property Data: Pointer read FData write SetData;
     property DropTarget: Boolean index Ord(lisDropTarget) read GetState write SetState;
     property Focused: Boolean index Ord(lisFocused) read GetState write SetState;
     property Index: Integer read GetIndex;
-    property ImageIndex: Integer read FImageIndex write SetImageIndex default -1;
+    property ImageIndex: Integer read GetImageIndex write SetImageIndex default -1;
     property Left: Integer read GetLeft write SetLeft;
     property ListView: TCustomListView read GetListView;
     property Owner: TListItems read FOwner;
@@ -724,6 +743,24 @@ type
   end;
 
 
+  { TOwnerDataListItem }
+
+  TOwnerDataListItem = class(TListItem)
+  private
+    FDataIndex: Integer;    
+    FCached: Boolean;
+    function GetCaption: String; override;
+    function GetIndex: Integer; override;
+    function GetImageIndex: Integer; override;
+
+    procedure SetCaption(const AValue : String); override;
+    procedure SetImageIndex(const AValue: Integer); override;
+    function GetSubItems: TStrings; override;
+    procedure DoCacheItem;
+  public
+    procedure SetDataIndex(ADataIndex: Integer);
+  end;
+  
   { TListItems }
   {
     Listitems have a build in cache of the last accessed item.
@@ -741,6 +778,7 @@ type
     procedure WSCreateCacheItem;
     function WSUpdateAllowed: Boolean;
     procedure WSUpdateItem(const AIndex:Integer; const AValue: TListItem);
+    procedure WSSetItemsCount(const ACount: Integer);
     procedure ItemDestroying(const AItem: TListItem); //called by TListItem when freed
     procedure ReadData(Stream: TStream); // read data in a Delphi compatible way
     procedure ReadLazData(Stream: TStream); // read data in a 64 bits safe way
@@ -748,6 +786,7 @@ type
   protected
     procedure DefineProperties(Filer: TFiler); override;
     function GetCount : Integer;
+    procedure SetCount(const ACount: Integer);
     function GetItem(const AIndex: Integer): TListItem;
     procedure WSCreateItems;
     procedure SetItem(const AIndex: Integer; const AValue: TListItem);
@@ -767,7 +806,7 @@ type
     function IndexOf(const AItem: TListItem): Integer;
     function Insert(const AIndex: Integer) : TListItem;
     procedure InsertItem(AItem: TListItem; const AIndex: Integer);
-    property Count: Integer read GetCount;
+    property Count: Integer read GetCount write SetCount;
     property Item[const AIndex: Integer]: TListItem read GetItem write SetItem; default;
     property Owner : TCustomListView read FOwner;
   end;
@@ -857,6 +896,7 @@ type
                                Data: Integer; var Compare: Integer) of object;
   TLVDeletedEvent = procedure(Sender: TObject; Item: TListItem) of object;
   TLVInsertEvent = TLVDeletedEvent;
+  TLVDataEvent = TLVDeletedEvent;
   TLVSelectItemEvent = procedure(Sender: TObject; Item: TListItem;
                                  Selected: Boolean) of object;
   TLVCustomDrawEvent = procedure(Sender: TCustomListView; const ARect: TRect;
@@ -913,7 +953,9 @@ type
     FCanvas: TCanvas;
     FDefaultItemHeight: integer;
     FHotTrackStyles: TListHotTrackStyles;
+    FIconOptions: TIconOptions;
     FOwnerData: Boolean;
+    FOwnerDataItem: TOwnerDataListItem;
     FListItems: TListItems;
     FColumns: TListColumns;
     FImages: array[TListViewImageList] of TCustomImageList;
@@ -935,6 +977,7 @@ type
     FOnChange: TLVChangeEvent;
     FOnColumnClick: TLVColumnClickEvent;
     FOnCompare: TLVCompareEvent;
+    FOnData: TLVDataEvent;
     FOnDeletion: TLVDeletedEvent;
     FOnInsert: TLVInsertEvent;
     FOnSelectItem: TLVSelectItemEvent;
@@ -965,6 +1008,7 @@ type
     procedure SetFocused(const AValue: TListItem);
     procedure SetHotTrackStyles(const AValue: TListHotTrackStyles);
     procedure SetHoverTime(const AValue: Integer);
+    procedure SetIconOptions(const AValue: TIconOptions);
     procedure SetImageList(const ALvilOrd: Integer; const AValue: TCustomImageList);
     procedure SetItems(const AValue : TListItems);
     procedure SetItemVisible(const AValue: TListItem; const APartialOK: Boolean);
@@ -1008,6 +1052,8 @@ type
     function CustomDrawItem(AItem: TListItem; AState: TCustomDrawState; AStage: TCustomDrawStage): Boolean; virtual;                       //
     function CustomDrawSubItem(AItem: TListItem; ASubItem: Integer; AState: TCustomDrawState; AStage: TCustomDrawStage): Boolean; virtual; //
     function IntfCustomDraw(ATarget: TCustomDrawTarget; AStage: TCustomDrawStage; AItem, ASubItem: Integer; AState: TCustomDrawState; const ARect: PRect): TCustomDrawResult;
+    
+    procedure DoGetOwnerData(Item: TListItem); virtual;
   protected
     property AllocBy: Integer read FAllocBy write SetAllocBy default 0;
     property ColumnClick: Boolean index Ord(lvpColumnClick) read GetProperty write SetProperty default True;
@@ -1016,7 +1062,6 @@ type
     property HideSelection: Boolean index Ord(lvpHideSelection) read GetProperty write SetProperty default True;
     property HoverTime: Integer read GetHoverTime write SetHoverTime default -1;
     property LargeImages: TCustomImageList index Ord(lvilLarge) read GetImageList write SetImageList;
-    property OwnerData: Boolean read FOwnerData write SetOwnerData default False;
     property OwnerDraw: Boolean index Ord(lvpOwnerDraw) read GetProperty write SetProperty default False;
     property ScrollBars: TScrollStyle read FScrollBars write SetScrollBars default ssBoth;
     property ShowColumnHeaders: Boolean index Ord(lvpShowColumnHeaders) read GetProperty write SetProperty default True;
@@ -1030,6 +1075,7 @@ type
     property OnChange: TLVChangeEvent read FOnChange write FOnChange;
     property OnColumnClick: TLVColumnClickEvent read FOnColumnClick write FOnColumnClick;
     property OnCompare: TLVCompareEvent read FOnCompare write FOnCompare;
+    property OnData: TLVDataEvent read FOnData write FOnData;
     property OnDeletion: TLVDeletedEvent read FOnDeletion write FOnDeletion;
     property OnInsert: TLVInsertEvent read FOnInsert write FOnInsert;
     property OnSelectItem: TLVSelectItemEvent read FOnSelectItem write FOnSelectItem;
@@ -1058,12 +1104,14 @@ type
     property GridLines: Boolean index Ord(lvpGridLines) read GetProperty write SetProperty default False;
     property HotTrack: Boolean index Ord(lvpHotTrack) read GetProperty write SetProperty default False;
     property HotTrackStyles: TListHotTrackStyles read FHotTrackStyles write SetHotTrackStyles default [];
+    property IconOptions: TIconOptions read FIconOptions write SetIconOptions;
     property ItemFocused: TListItem read GetFocused write SetFocused;
     property Items: TListItems read FListItems write SetItems;
     // MultiSelect and ReadOnly should be protected, but can't because Carbon Interface
     // needs to access this property and it cannot cast to TListItem, because we have
     // other classes descending from TCustomListItem which need to work too
     property MultiSelect: Boolean index Ord(lvpMultiselect) read GetProperty write SetProperty default False;
+    property OwnerData: Boolean read FOwnerData write SetOwnerData default False;
     property ReadOnly: Boolean index Ord(lvpReadOnly) read GetProperty write SetProperty default False;
     property RowSelect: Boolean index Ord(lvpRowSelect) read GetProperty write SetProperty default False;
     property SelCount: Integer read GetSelCount;
@@ -1102,10 +1150,11 @@ type
 //    property HotTrack;
 //    property HotTrackStyles;
 //    property HoverTime;
+    property IconOptions;
     property Items;
     property LargeImages;
     property MultiSelect;
-//    property OwnerData;
+    property OwnerData;
 //    property OwnerDraw;
     property ParentColor default False;
     property ParentFont;
@@ -1137,6 +1186,7 @@ type
     property OnCustomDraw;
     property OnCustomDrawItem;
     property OnCustomDrawSubItem;
+    property OnData;
     property OnDblClick;
     property OnDeletion;
     property OnDragDrop;

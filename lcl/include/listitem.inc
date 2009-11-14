@@ -603,6 +603,14 @@ begin
 end;
 
 {------------------------------------------------------------------------------}
+{   TListItem GetCaption                                                       }
+{------------------------------------------------------------------------------}
+function TListItem.GetCaption: String; 
+begin
+  Result := FCaption;
+end;
+
+{------------------------------------------------------------------------------}
 {   TListItem SetChecked                                                       }
 {------------------------------------------------------------------------------}
 procedure TListItem.SetChecked(AValue: Boolean);
@@ -635,6 +643,14 @@ begin
 
   if WSUpdateAllowed
   then TWSCustomListViewClass(FOwner.FOwner.WidgetSetClass).ItemSetImage(FOwner.FOwner, GetIndex, Self, 0, FImageIndex);
+end;
+
+{------------------------------------------------------------------------------}
+{   TListItem GetImageIndex                                                    }
+{------------------------------------------------------------------------------}
+function TListItem.GetImageIndex: Integer; 
+begin
+  Result := FImageIndex;
 end;
 
 procedure TListItem.SetLeft(Value: Integer);
@@ -685,4 +701,67 @@ begin
   Position := Point(Left, Value);
 end;
 
+{ TOwnerDataListItem }
+
+{------------------------------------------------------------------------------}
+{   TOwnerDataListItem GetIndex                                                }
+{------------------------------------------------------------------------------}
+
+function TOwnerDataListItem.GetIndex: Integer;  
+begin
+  Result:=FDataIndex;
+end;
+
+{------------------------------------------------------------------------------}
+{   TOwnerDataListItem GetIndex                                                }
+{------------------------------------------------------------------------------}
+
+procedure TOwnerDataListItem.SetCaption(const AValue: String);  
+begin
+  FCaption:=AValue;       
+end;
+
+function TOwnerDataListItem.GetCaption: String; 
+begin
+  if not FCached then DoCacheItem;
+  Result := inherited GetCaption;
+end;
+
+function TOwnerDataListItem.GetImageIndex: Integer; 
+begin
+  if not FCached then DoCacheItem;
+  Result := inherited GetImageIndex;
+end;
+
+procedure TOwnerDataListItem.SetImageIndex(const AValue: Integer); 
+begin
+  FImageIndex := AValue;
+end;
+
+
+{------------------------------------------------------------------------------}
+{   TOwnerDataListItem SetDataIndex                                            }
+{------------------------------------------------------------------------------}
+
+procedure TOwnerDataListItem.SetDataIndex(ADataIndex: Integer);
+begin
+  if FDataIndex <> ADataIndex then 
+  begin
+    FDataIndex := ADataIndex;
+    FCached := False;
+    if Assigned(FSubItems) then FSubItems.Clear;   
+  end;
+end;
+
+function TOwnerDataListItem.GetSubItems: TStrings; 
+begin
+  if not FCached then DoCacheItem;
+  Result := inherited GetSubItems;
+end;
+
+procedure TOwnerDataListItem.DoCacheItem;
+begin
+  FCached := True;
+  FOwner.FOwner.DoGetOwnerData(Self);
+end;
 

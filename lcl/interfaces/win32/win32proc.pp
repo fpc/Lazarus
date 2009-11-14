@@ -31,6 +31,9 @@ uses
   Windows, Win32Extra, Classes, SysUtils,
   LMessages, LCLType, LCLProc, LCLMessageGlue,Controls, Forms, Menus, GraphType, IntfGraphics;
 
+const
+  LV_DISP_INFO_COUNT = 2;  
+  
 Type
   TEventType = (etNotify, etKey, etKeyPress, etMouseWheel, etMouseUpDown);
 
@@ -57,6 +60,9 @@ Type
     DrawItemIndex: integer;   // in case of listbox, when handling WM_DRAWITEM
     DrawItemSelected: boolean;// whether this item is selected LB_GETSEL not uptodate yet
     MouseX, MouseY: smallint; // noticing spurious WM_MOUSEMOVE messages
+    DispInfoTextA: array [0..LV_DISP_INFO_COUNT-1] of AnsiString; // buffer for ListView LVN_GETDISPINFO notification
+    DispInfoTextW: array [0..LV_DISP_INFO_COUNT-1] of WideString; // it's recommended to keep buffer unchanged
+    DispInfoIndex: Integer;                    // between 2 calls of LVN_GETDISPINFO  
     case integer of
       0: (spinValue: Double);
       1: (
