@@ -36,6 +36,7 @@ interface
 {$I codetools.inc}
 
 {off $DEFINE CTDEBUG}
+{off $DEFINE VerboseTypeData}
 {off $DEFINE ShowAllProcs}
 
 uses
@@ -123,7 +124,14 @@ const
         'class procedure', 'class function'
       );
 
+function ReverseRTTIParamList: boolean;
+
 implementation
+
+function ReverseRTTIParamList: boolean;
+begin
+  Result:=false;
+end;
 
 { TEventsCodeTool }
 
@@ -139,6 +147,7 @@ type
 var i, ParamCount, Len, Offset: integer;
   ParamType: TParamType;
   s, ParamString, ResultType: string;
+  Reverse: Boolean;
 begin
   Result:='';
   if TypeData=nil then exit;
@@ -154,6 +163,7 @@ begin
   end;
   // transform TypeData into a ProcHead String
   ParamCount:=TypeData^.ParamCount;
+  Reverse:=ReverseRTTIParamList;
   //DebugLn(['TEventsCodeTool.MethodTypeDataToStr A ParamCount=',ParamCount]);
   Offset:=0;
   if ParamCount>0 then begin
@@ -202,8 +212,13 @@ begin
       if phpWithParameterNames in Attr then
         s:=s+ParamType.ParamName;
       s:=s+':'+ParamType.TypeName;
-      if i>0 then s:=';'+s;
-      ParamString:=ParamString+s;
+      if Reverse then begin
+        if i>0 then s:=s+';';
+        ParamString:=s+ParamString;
+      end else begin
+        if i>0 then s:=';'+s;
+        ParamString:=ParamString+s;
+      end;
     end;
     Result:=Result+ParamString+')';
   end;
@@ -284,6 +299,9 @@ begin
     Params.ContextNode:=ClassNode.Parent;
     if not CreateExprListFromMethodTypeData(TypeData,Params,SearchedExprList) then
       exit(false);
+    {$IFDEF ShowAllProcs}
+    DebugLn(['TEventsCodeTool.GetCompatiblePublishedMethods SearchedExprList=',SearchedExprList.AsString]);
+    {$ENDIF}
     // create compatibility list
     CompListSize:=SizeOf(TTypeCompatibility)*SearchedExprList.Count;
     if CompListSize>0 then begin
@@ -869,17 +887,22 @@ var i, ParamCount, Len, Offset: integer;
   CurTypeIdentifier: string;
   OldInput: TFindDeclarationInput;
   CurExprType: TExpressionType;
-  {$IFDEF CTDEBUG}
+  Reverse: Boolean;
+  {$IFDEF VerboseTypeData}
   CurParamName: string;
   {$ENDIF}
 begin
-  {$IFDEF CTDEBUG}
+  {$IFDEF VerboseTypeData}
   DebugLn('[TEventsCodeTool.CreateExprListFromMethodTypeData] START');
   {$ENDIF}
   Result:=false;
   List:=TExprTypeList.Create;
   if TypeData=nil then exit(true);
   ParamCount:=TypeData^.ParamCount;
+  {$IFDEF VerboseTypeData}
+  DebugLn(['[TEventsCodeTool.CreateExprListFromMethodTypeData] ParamCount=',ParamCount]);
+  {$ENDIF}
+  Reverse:=ReverseRTTIParamList;
   if ParamCount>0 then begin
     Offset:=0;
     
@@ -892,7 +915,7 @@ begin
 
       // skip ParamName
       Len:=ord(TypeData^.ParamList[Offset]);
-      {$IFDEF CTDEBUG}
+      {$IFDEF VerboseTypeData}
       SetLength(CurParamName,Len);
       if Len>0 then
         Move(TypeData^.ParamList[Offset+1],CurParamName[1],Len);
@@ -907,7 +930,7 @@ begin
         Move(TypeData^.ParamList[Offset],CurTypeIdentifier[1],Len);
       inc(Offset,Len);
       
-      {$IFDEF CTDEBUG}
+      {$IFDEF VerboseTypeData}
       DebugLn('[TEventsCodeTool.CreateExprListFromMethodTypeData] A ',
       ' i=',dbgs(i),'/',dbgs(ParamCount),
       ' ParamName=',CurParamName,
@@ -923,19 +946,21 @@ begin
                      +(fdfGlobals*Params.Flags)
                      -[fdfSearchInAncestors];
       CurExprType:=GetExpressionTypeOfTypeIdentifier(Params);
-      {$IFDEF CTDEBUG}
+      {$IFDEF VerboseTypeData}
       DebugLn('[TEventsCodeTool.CreateExprListFromMethodTypeData] B ',
       ' i=',dbgs(i),'/',dbgs(ParamCount),
       ' Ident=',CurTypeIdentifier,
       ' CurExprType=',ExprTypeToString(CurExprType)
       );
       {$ENDIF}
-
-      List.Add(CurExprType);
+      if Reverse then
+        List.AddFirst(CurExprType)
+      else
+        List.Add(CurExprType);
       Params.Load(OldInput,true);
     end;
   end;
-  {$IFDEF CTDEBUG}
+  {$IFDEF VerboseTypeData}
   DebugLn('[TEventsCodeTool.CreateExprListFromMethodTypeData] END');
   {$ENDIF}
   Result:=true;
