@@ -1566,8 +1566,11 @@ var
     NewComponent:=NewCI.Component;
 
     // set initial properties
-    if NewComponent is TControl then
+    if NewComponent is TControl then begin
       TControl(NewComponent).Visible:=true;
+      if csSetCaption in TControl(NewComponent).ControlStyle then
+        TControl(NewComponent).Caption:=NewComponent.Name;
+    end;
     if Assigned(FOnSetDesigning) then
       FOnSetDesigning(Self,NewComponent,True);
 

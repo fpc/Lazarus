@@ -2517,12 +2517,13 @@ begin
     InputHistories.ApplyFileDialogSettings(OpenDialog);
     OpenDialog.Title:=lisOpenFile;
     OpenDialog.Options:=OpenDialog.Options+[ofAllowMultiSelect];
-    OpenDialog.Filter:=dlgAllFiles+' ('+GetAllFilesMask+')|'+GetAllFilesMask
-                 +'|'+lisLazarusUnit+' (*.pas;*.pp)|*.pas;*.pp'
-                 +'|'+lisLazarusProject+' (*.lpi)|*.lpi'
-                 +'|'+lisLazarusForm+' (*.lfm)|*.lfm'
-                 +'|'+lisLazarusPackage+' (*.lpk)|*.lpk'
-                 +'|'+lisLazarusProjectSource+' (*.lpr)|*.lpr';
+    OpenDialog.Filter := lisLazarusFile + ' (*.lpi;*.lpr;*.lpk;*.pas;*.pp;*.inc;*.lfm)|*.lpi;*.lpr;*.lpk;*.pas;*.pp;*.inc;*.lfm'
+                 + '|' + lisLazarusUnit + ' (*.pas;*.pp)|*.pas;*.pp'
+                 + '|' + lisLazarusProject + ' (*.lpi)|*.lpi'
+                 + '|' + lisLazarusForm + ' (*.lfm)|*.lfm'
+                 + '|' + lisLazarusPackage + ' (*.lpk)|*.lpk'
+                 + '|' + lisLazarusProjectSource + ' (*.lpr)|*.lpr'
+                 + '|' + dlgAllFiles + ' (' + GetAllFilesMask + ')|' + GetAllFilesMask;
     if OpenDialog.Execute and (OpenDialog.Files.Count>0) then begin
       OpenFlags:=[ofAddToRecent];
       //debugln('TMainIDE.mnuOpenClicked OpenDialog.Files.Count=',dbgs(OpenDialog.Files.Count));
@@ -4325,8 +4326,8 @@ begin
 
   // Figure out where we want to put the new form
   // if there is more place left of the OI put it left, otherwise right
-  new_x:=ObjectInspector1.Left+ObjectInspector1.Width; //+60;
-  new_y:=MainIDEBar.Top+MainIDEBar.Height; //+80;
+  new_x:=ObjectInspector1.Left+ObjectInspector1.Width;
+  new_y:=MainIDEBar.Top+MainIDEBar.Height;
   if screen.width-new_x>=ObjectInspector1.left then inc(new_x, 60) else new_x:=16;
   if screen.height-new_y>=MainIDEBar.top then inc(new_y, 80) else new_y:=24;
 
@@ -4343,6 +4344,9 @@ begin
   NewComponent:=CInterface.Component;
   if NewComponent is TCustomForm then
     TControl(NewComponent).Visible := False;
+  if (NewComponent is TControl)
+  and (csSetCaption in TControl(NewComponent).ControlStyle) then
+    TControl(NewComponent).Caption:=NewComponent.Name;
   NewUnitInfo.Component := NewComponent;
   CreateDesignerForComponent(NewComponent);
 
