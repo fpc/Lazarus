@@ -2,12 +2,18 @@ unit chmcontentprovider;
 
 {$mode objfpc}{$H+}
 
-{$if (fpc_version=2) and (fpc_release>2) ((fpc_version=2) and (fpc_release=2) and (fpc_patch>2))}
+//{$if (fpc_version=2) and (fpc_release>2) ((fpc_version=2) and (fpc_release=2) and (fpc_patch>2))}
 {$Note Compiling lhelp with search support}
 {$DEFINE CHM_SEARCH}
-{$else}
-{$Note Compiling lhelp *without* search support since your fpc version is not new enough}
+
+//{$else}
+//{$Note Compiling lhelp *without* search support since your fpc version is not new enough}
+//{$endif}
+{$if (fpc_version=2) and (fpc_release>4)}
+{$Note Compiling lhelp *with* binary index and toc support}
+{$DEFINE CHM_BINARY_INDEX_TOC}
 {$endif}
+
 
 {off $DEFINE CHM_DEBUG_TIME}
 {off $DEFINE CHM_SEARCH}
@@ -68,13 +74,15 @@ type
     procedure ContentsTreeSelectionChanged(Sender: TObject);
     procedure IndexViewDblClick(Sender: TObject);
     procedure ViewMenuContentsClick(Sender: TObject);
-    procedure SetTitle(const ATitle: String);
+    procedure SetTitle(const AValue: String); override;
     procedure SearchEditChange(Sender: TObject);
     procedure TOCExpand(Sender: TObject; Node: TTreeNode);
     procedure TOCCollapse(Sender: TObject; Node: TTreeNode);
+    procedure SelectTreeItemFromURL(AUrl: String);
     {$IFDEF CHM_SEARCH}
     procedure SearchButtonClick(Sender: TObject);
     procedure SearchResultsDblClick(Sender: TObject);
+    procedure SearchComboKeyDown(Sender: TObject; var Key: Word; Shift: TShiftState);
     {$ENDIF}
   public
     function CanGoBack: Boolean; override;
@@ -94,7 +102,7 @@ type
 
 implementation
 
-uses ChmSpecialParser{$IFDEF CHM_SEARCH}, chmFIftiMain{$ENDIF};
+uses ChmSpecialParser{$IFDEF CHM_SEARCH}, chmFIftiMain{$ENDIF}, chmsitemap, LCLType;
 
 function GetURIFileName(AURI: String): String;
 var
@@ -246,6 +254,7 @@ begin
   fIsUsingHistory := True;
   fHtml.OpenURL(Uri);
   TIpChmDataProvider(fHtml.DataProvider).CurrentPath := ExtractFileDir(URI)+'/';
+
   AddHistory(Uri);
   {WriteLn(iphtml.Aspect);
   iphtml.ScaleFonts := True;
@@ -286,6 +295,7 @@ var
  fChm: TChmReader;
  ParentNode: TTreeNode;
  i: Integer;
+ SM: TChmSiteMap;
  HasSearchIndex: Boolean = False;
 begin
   if fFillingToc = True then begin
@@ -294,6 +304,7 @@ begin
   end;
   fFillingToc := True;
   fContentsTree.Visible := False;
+  fContentsPanel.Caption := 'Table of Contents Loading. Please Wait...';
   Application.ProcessMessages;
   fChm := TChmReader(Data);
   {$IFDEF CHM_DEBUG_TIME}
@@ -303,31 +314,52 @@ begin
     ParentNode := fContentsTree.Items.AddChildObject(nil, fChm.Title, fChm);
     ParentNode.ImageIndex := 0;
     ParentNode.SelectedIndex := 0;
+    {$IFDEF CHM_BINARY_INDEX_TOC}
+    SM := fChm.GetTOCSitemap;
+    {$ELSE}
+    SM := nil;
     Stream := TMemoryStream(fchm.GetObject(fChm.TOCFile));
     if Stream <> nil then begin
-      Stream.position := 0;
+      SM := TChmSiteMap.Create(stTOC);
+      SM.LoadFromStream(Stream);
+      Stream.Free;
+    end;
+    {$ENDIF}
+    if SM <> nil then begin
       {$IFDEF CHM_DEBUG_TIME}
       writeln('Stream read: ',FormatDateTime('hh:nn:ss.zzz', Now));
       {$ENDIF}
-      with TContentsFiller.Create(fContentsTree, Stream, @fStopTimer, fChm) do begin
+
+      with TContentsFiller.Create(fContentsTree, SM, @fStopTimer, fChm) do begin
         DoFill(ParentNode);
         Free;
       end;
-      Stream.Free;
+      SM.Free;
+      if (fContentsTree.Selected = nil) and (fHistory.Count > 0) then
+        SelectTreeItemFromURL(fHistory.Strings[fHistoryIndex]);
     end;
     fContentsTab.TabVisible := fContentsTree.Items.Count > 1;
 
     // we fill the index here too but only for the main file
     if fChms.IndexOfObject(fChm) < 1 then
     begin
-      Stream := fchms.GetObject(fChm.IndexFile);
+      {$IFDEF CHM_BINARY_INDEX_TOC}
+      SM := fChm.GetIndexSitemap;
+      {$ELSE}
+      SM := nil;
+      Stream := TMemoryStream(fchm.GetObject(fChm.IndexFile));
       if Stream <> nil then begin
-        Stream.position := 0;
-        with TIndexFiller.Create(fIndexView, Stream, fChm) do begin;
+        SM := TChmSiteMap.Create(stTOC);
+        SM.LoadFromStream(Stream);
+        Stream.Free;
+      end;
+      {$ENDIF}
+      if SM <> nil then begin
+        with TIndexFiller.Create(fIndexView, SM, fChm) do begin
           DoFill;
           Free;
         end;
-        Stream.Free;
+        SM.Free;
       end;
     end;
   end;
@@ -335,6 +367,7 @@ begin
   if ParentNode.Index = 0 then ParentNode.Expanded := True;
 
   fContentsTree.Visible := True;
+  fContentsPanel.Caption := '';
   {$IFDEF CHM_DEBUG_TIME}
   writeln('Eind: ',FormatDateTime('hh:nn:ss.zzz', Now));
   {$ENDIF}
@@ -359,6 +392,7 @@ begin
  if fIsUsingHistory = False then
    AddHistory(TIpChmDataProvider(fHtml.DataProvider).CurrentPage)
  else fIsUsingHistory := False;
+ SelectTreeItemFromURL(TIpChmDataProvider(fHtml.DataProvider).CurrentPage);
 end;
 
 procedure TChmContentProvider.IpHtmlPanelHotChange(Sender: TObject);
@@ -381,10 +415,12 @@ begin
   if not(fContentsTree.Selected is TContentTreeNode) then
   begin
     fChm := TChmReader(fContentsTree.Selected.Data);
+    SetTitle(fChm.Title);
     if fChm.DefaultPage <> '' then
       DoLoadUri(MakeURI(fChm.DefaultPage, fChm));
     Exit;
   end;
+
   ATreeNode := TContentTreeNode(fContentsTree.Selected);
 
   //find the chm associated with this branch
@@ -393,8 +429,13 @@ begin
     ARootNode := ARootNode.Parent;
 
   fChm := TChmReader(ARootNode.Data);
-  if ATreeNode.Url <> '' then begin
-    DoLoadUri(MakeURI(ATreeNode.Url, fChm));
+  try
+    fContentsTree.OnSelectionChanged := nil;
+    if ATreeNode.Url <> '' then begin
+      DoLoadUri(MakeURI(ATreeNode.Url, fChm));
+    end;
+  finally
+    fContentsTree.OnSelectionChanged := @ContentsTreeSelectionChanged;
   end;
 end;
 
@@ -421,10 +462,11 @@ begin
   //TabPanel.Visible := Splitter1.Visible;
 end;
 
-procedure TChmContentProvider.SetTitle(const ATitle: String);
+procedure TChmContentProvider.SetTitle(const AValue: String);
 begin
   if fHtml.Parent = nil then exit;
-  TTabSheet(fHtml.Parent).Caption := ATitle;
+  TTabSheet(fHtml.Parent).Caption := AValue;
+  inherited SetTitle(AValue);
 end;
 
 procedure TChmContentProvider.SearchEditChange(Sender: TObject);
@@ -465,7 +507,79 @@ begin
   end;
 end;
 
+procedure TChmContentProvider.SelectTreeItemFromURL(AUrl: String);
+var
+  FileName: String;
+  URL: String;
+  RootNode,
+  FoundNode,
+  Node: TTreeNode;
+  TmpHolder: TNotifyEvent;
+  i: integer;
+begin
+  if fContentsTree.OnSelectionChanged = nil then
+    Exit; // the change was a response to a click and should be ignored
+  FileName := GetURIFileName(AUrl);
+  URL      := GetURIURL(AUrl);
+  FoundNode := nil;
+  Node := nil;
+  for i := 0 to fChms.Count-1 do
+  begin
+    if FileName = ExtractFileName(fChms.FileName[i]) then
+    begin
+      SetTitle(fChms.Chm[i].Title);
+
+      RootNode := fContentsTree.Items.FindNodeWithData(fChms.Chm[i]);
+      if URL = fChms.Chm[i].DefaultPage then
+      begin
+        FoundNode := RootNode;
+        Break;
+      end;
+
+      if RootNode <> nil then
+        Node := RootNode.GetFirstChild;
+
+      Break;
+    end;
+
+  end;
+
+  if RootNode = nil then
+    Exit;
+
+  TmpHolder := fContentsTree.OnSelectionChanged;
+  fContentsTree.OnSelectionChanged := nil;
+
+  while (Node<>nil) and (TContentTreeNode(Node).Url<>Url) do
+    Node:=Node.GetNext;
+
+  if (Node <> nil) and (TContentTreeNode(Node).Url = Url) then
+    FoundNode := Node;
+
+  if FoundNode <> nil then
+  begin
+    fContentsTree.Selected := FoundNode;
+    if not FoundNode.IsVisible then
+      FoundNode.MakeVisible;
+  end
+  else
+    fContentsTree.Selected := nil;
+
+  fContentsTree.OnSelectionChanged := TmpHolder;
+
+
+end;
+
 {$IFDEF CHM_SEARCH}
+
+procedure TChmContentProvider.SearchComboKeyDown(Sender: TObject; var Key: Word; Shift: TShiftState);
+begin
+  case key of
+    VK_RETURN: SearchButtonClick(nil);
+
+  end;
+end;
+
 procedure TChmContentProvider.SearchButtonClick ( Sender: TObject ) ;
 type
   TTopicEntry = record
@@ -540,6 +654,8 @@ begin
   SearchWords := TStringList.Create;
   SearchWords.Delimiter := ' ';
   Searchwords.DelimitedText := fKeywordCombo.Text;
+  if fKeywordCombo.Items.IndexOf(fKeywordCombo.Text) = -1 then
+    fKeywordCombo.Items.Add(fKeywordCombo.Text);
   fSearchResults.BeginUpdate;
   fSearchResults.Clear;
   //WriteLn('Search words: ', SearchWords.Text);
@@ -667,7 +783,11 @@ begin
   //writeln(fURL);
   LoadTOC := (fChms = nil) or (fChms.IndexOf(fFile) < 0);
   DoOpenChm(fFile, False);
-  FileIndex := fChms.IndexOf(fFile);
+  // in case of exception fChms can be still = nil
+  if fChms <> nil then
+    FileIndex := fChms.IndexOf(fFile)
+  else
+    Exit;
   if fURL <> '' then
     DoLoadUri(MakeURI(fURL, fChms.Chm[FileIndex]))
   else
@@ -744,7 +864,8 @@ begin
     Parent := fContentsTab;
     Align := alClient;
     BevelOuter := bvNone;
-    Caption := 'Table of Contents Loading. Please Wait...';
+    Caption := '';
+
     Visible := True;
   end;
   fContentsTree := TTreeView.Create(fContentsPanel);
@@ -752,6 +873,7 @@ begin
     Parent := fContentsPanel;
     Align := alClient;
     BorderSpacing.Around := 6;
+    ReadOnly := True;
     Visible := True;
     OnSelectionChanged := @ContentsTreeSelectionChanged;
     OnExpanded := @TOCExpand;
@@ -785,6 +907,16 @@ begin
   fIndexView := TListView.Create(fIndexTab);
   with fIndexView do begin
     Parent := fIndexTab;
+    ShowColumnHeaders := False;
+    ViewStyle := vsReport;
+    with Columns.Add do
+    begin
+      Width := 400; {$NOTE TListView.Column.AutoSize does not seem to work}
+      AutoSize := True;
+    end;
+
+
+
     Anchors := [akLeft, akTop, akRight, akBottom];
     BorderSpacing.Around := 6;
     AnchorSide[akLeft].Control := fIndexTab;
@@ -799,7 +931,7 @@ begin
     ReadOnly := True;
   end;
 
-  {$IFDEF CHM_SEARCH}
+ // {$IFDEF CHM_SEARCH}
   fSearchTab := TTabSheet.Create(fTabsControl);
   with fSearchTab do begin
     Caption := 'Search';
@@ -824,6 +956,7 @@ begin
     AnchorSide[akRight].Side := asrBottom;
     AnchorSide[akTop].Control := fKeywordLabel;
     AnchorSide[akTop].Side := asrBottom;
+    OnKeyDown  := @SearchComboKeyDown;
   end;
 
   fSearchBtn := TButton.Create(fSearchTab);
@@ -880,7 +1013,7 @@ begin
     {$ENDIF}
     OnDblClick := @SearchResultsDblClick;
   end;
-  {$ENDIF}
+ // {$ENDIF}
 
   fSplitter := TSplitter.Create(Parent);
   with fSplitter do begin

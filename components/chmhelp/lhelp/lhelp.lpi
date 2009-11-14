@@ -55,15 +55,15 @@
       </Unit2>
       <Unit3>
         <Filename Value="chmpopup.pas"/>
-        <ComponentName Value="HelpPopupForm"/>
         <IsPartOfProject Value="True"/>
+        <ComponentName Value="HelpPopupForm"/>
         <UnitName Value="ChmPopup"/>
       </Unit3>
       <Unit4>
         <Filename Value="lhelpcore.pas"/>
+        <IsPartOfProject Value="True"/>
         <ComponentName Value="HelpForm"/>
         <HasResources Value="True"/>
-        <IsPartOfProject Value="True"/>
         <ResourceBaseClass Value="Form"/>
         <UnitName Value="lhelpcore"/>
       </Unit4>

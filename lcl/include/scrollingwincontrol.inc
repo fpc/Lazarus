@@ -134,26 +134,6 @@ function TScrollingWinControl.ComputeScrollbars: Boolean;
       Result := True;
   end;
   
-  procedure UpdateVisible(p_Bar: TControlScrollBar);
-  var
-    CurMax: Integer;
-    OldVisible: Boolean;
-  begin
-    OldVisible := p_Bar.FVisible;
-    if p_Bar.Kind = sbVertical then
-      CurMax := ClientHeight
-    else
-      CurMax := ClientWidth;
-    if (p_Bar.FVisible and not FAutoScroll) or
-       (FAutoScroll and (p_Bar.FRange > 0) and (p_Bar.FRange > CurMax)) then
-      p_Bar.FVisible := True
-    else
-      p_Bar.FVisible := False;
-    //if p_Bar.Kind = sbVertical then DebugLn(['UpdateVisible ',dbgsName(Self),' p_Bar.FVisible=',p_Bar.FVisible,' FAutoScroll=',FAutoScroll,' p_Bar.FRange=',p_Bar.FRange,' CurMax=',CurMax]);
-    if OldVisible <> p_Bar.FVisible then
-      Result := True;
-  end;
-  
 var
   NewPage: Integer;
 begin
@@ -174,9 +154,6 @@ begin
   // range
   UpdateRange(HorzScrollbar);
   UpdateRange(VertScrollbar);
-  // visible
-  UpdateVisible(HorzScrollbar);
-  UpdateVisible(VertScrollbar);
 end;
 
 procedure TScrollingWinControl.UpdateScrollbars;

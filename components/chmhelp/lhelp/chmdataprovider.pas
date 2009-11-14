@@ -69,7 +69,7 @@ type
     destructor Destroy; override;
     property Chm: TChmFileList read fChm write fChm;
     property OnHelpPopup: THelpPopupEvent read fOnHelpPopup write fOnHelpPopup;
-    property CurrentPAge: String read fCurrentPage;
+    property CurrentPage: String read fCurrentPage;
     property CurrentPath: String read fCurrentPath write fCurrentPath;
 
   end;
