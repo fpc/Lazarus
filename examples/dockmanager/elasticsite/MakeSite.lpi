@@ -1,0 +1,350 @@
+<?xml version="1.0"?>
+<CONFIG>
+  <ProjectOptions>
+    <PathDelim Value="\"/>
+    <Version Value="7"/>
+    <General>
+      <MainUnit Value="0"/>
+      <TargetFileExt Value=".exe"/>
+      <Icon Value="0"/>
+      <UseXPManifest Value="True"/>
+      <ActiveEditorIndexAtStart Value="2"/>
+    </General>
+    <VersionInfo>
+      <ProjectVersion Value=""/>
+    </VersionInfo>
+    <PublishOptions>
+      <Version Value="2"/>
+      <IgnoreBinaries Value="False"/>
+      <IncludeFileFilter Value="*.(pas|pp|inc|lfm|lpr|lrs|lpi|lpk|sh|xml)"/>
+      <ExcludeFileFilter Value="*.(bak|ppu|ppw|o|so);*~;backup"/>
+    </PublishOptions>
+    <RunParams>
+      <local>
+        <FormatVersion Value="1"/>
+        <LaunchingApplication PathPlusParams="/usr/X11R6/bin/xterm -T 'Lazarus Run Output' -e $(LazarusDir)/tools/runwait.sh $(TargetCmdLine)"/>
+      </local>
+    </RunParams>
+    <RequiredPackages Count="2">
+      <Item1>
+        <PackageName Value="EasyDockMgr"/>
+      </Item1>
+      <Item2>
+        <PackageName Value="LCL"/>
+      </Item2>
+    </RequiredPackages>
+    <Units Count="19">
+      <Unit0>
+        <Filename Value="MakeSite.lpr"/>
+        <IsPartOfProject Value="True"/>
+        <UnitName Value="MakeSite"/>
+        <CursorPos X="51" Y="18"/>
+        <TopLine Value="1"/>
+        <EditorIndex Value="5"/>
+        <UsageCount Value="28"/>
+        <Loaded Value="True"/>
+      </Unit0>
+      <Unit1>
+        <Filename Value="fmastersite.pas"/>
+        <IsPartOfProject Value="True"/>
+        <ComponentName Value="MasterSite"/>
+        <ResourceBaseClass Value="Form"/>
+        <UnitName Value="fMasterSite"/>
+        <CursorPos X="24" Y="35"/>
+        <TopLine Value="9"/>
+        <EditorIndex Value="0"/>
+        <UsageCount Value="28"/>
+        <Loaded Value="True"/>
+      </Unit1>
+      <Unit2>
+        <Filename Value="..\package\umakesite.pas"/>
+        <IsPartOfProject Value="True"/>
+        <UnitName Value="uMakeSite"/>
+        <CursorPos X="34" Y="212"/>
+        <TopLine Value="196"/>
+        <EditorIndex Value="2"/>
+        <UsageCount Value="28"/>
+        <Loaded Value="True"/>
+      </Unit2>
+      <Unit3>
+        <Filename Value="..\..\..\lcl\controls.pp"/>
+        <UnitName Value="Controls"/>
+        <CursorPos X="27" Y="1221"/>
+        <TopLine Value="1198"/>
+        <EditorIndex Value="12"/>
+        <UsageCount Value="14"/>
+        <Loaded Value="True"/>
+      </Unit3>
+      <Unit4>
+        <Filename Value="..\..\..\lcl\extctrls.pp"/>
+        <UnitName Value="ExtCtrls"/>
+        <CursorPos X="24" Y="1109"/>
+        <TopLine Value="1086"/>
+        <UsageCount Value="13"/>
+      </Unit4>
+      <Unit5>
+        <Filename Value="..\package\felasticsite.pas"/>
+        <ComponentName Value="DockingSite"/>
+        <HasResources Value="True"/>
+        <ResourceBaseClass Value="Form"/>
+        <UnitName Value="fElasticSite"/>
+        <CursorPos X="1" Y="82"/>
+        <TopLine Value="63"/>
+        <EditorIndex Value="8"/>
+        <UsageCount Value="14"/>
+        <Loaded Value="True"/>
+      </Unit5>
+      <Unit6>
+        <Filename Value="..\..\..\..\..\lazarus\fpc\2.2.4\source\rtl\objpas\classes\classesh.inc"/>
+        <CursorPos X="10" Y="1775"/>
+        <TopLine Value="1752"/>
+        <UsageCount Value="10"/>
+      </Unit6>
+      <Unit7>
+        <Filename Value="fclientform.pas"/>
+        <IsPartOfProject Value="True"/>
+        <ComponentName Value="ViewWindow"/>
+        <HasResources Value="True"/>
+        <ResourceBaseClass Value="Form"/>
+        <UnitName Value="fClientForm"/>
+        <CursorPos X="1" Y="57"/>
+        <TopLine Value="27"/>
+        <EditorIndex Value="6"/>
+        <UsageCount Value="28"/>
+        <Loaded Value="True"/>
+      </Unit7>
+      <Unit8>
+        <Filename Value="..\..\..\lcl\include\winapih.inc"/>
+        <CursorPos X="10" Y="287"/>
+        <TopLine Value="263"/>
+        <EditorIndex Value="9"/>
+        <UsageCount Value="14"/>
+        <Loaded Value="True"/>
+      </Unit8>
+      <Unit9>
+        <Filename Value="..\..\..\lcl\include\intfbaselcl.inc"/>
+        <CursorPos X="3" Y="32"/>
+        <TopLine Value="29"/>
+        <EditorIndex Value="10"/>
+        <UsageCount Value="14"/>
+        <Loaded Value="True"/>
+      </Unit9>
+      <Unit10>
+        <Filename Value="..\..\..\lcl\include\lclintfh.inc"/>
+        <CursorPos X="10" Y="40"/>
+        <TopLine Value="16"/>
+        <EditorIndex Value="11"/>
+        <UsageCount Value="14"/>
+        <Loaded Value="True"/>
+      </Unit10>
+      <Unit11>
+        <Filename Value="..\package\easydocksite.pas"/>
+        <UnitName Value="EasyDockSite"/>
+        <CursorPos X="1" Y="924"/>
+        <TopLine Value="920"/>
+        <EditorIndex Value="4"/>
+        <UsageCount Value="13"/>
+        <Loaded Value="True"/>
+      </Unit11>
+      <Unit12>
+        <Filename Value="..\..\..\lcl\forms.pp"/>
+        <UnitName Value="Forms"/>
+        <CursorPos X="19" Y="692"/>
+        <TopLine Value="669"/>
+        <EditorIndex Value="3"/>
+        <UsageCount Value="11"/>
+        <Loaded Value="True"/>
+      </Unit12>
+      <Unit13>
+        <Filename Value="..\..\..\lcl\include\customform.inc"/>
+        <CursorPos X="16" Y="1574"/>
+        <TopLine Value="1559"/>
+        <UsageCount Value="11"/>
+      </Unit13>
+      <Unit14>
+        <Filename Value="..\..\..\..\..\lazarus\fpc\2.2.4\source\rtl\inc\objpash.inc"/>
+        <CursorPos X="23" Y="151"/>
+        <TopLine Value="128"/>
+        <UsageCount Value="10"/>
+      </Unit14>
+      <Unit15>
+        <Filename Value="..\..\..\..\..\lazarus\fpc\2.2.4\source\rtl\objpas\classes\cregist.inc"/>
+        <CursorPos X="3" Y="92"/>
+        <TopLine Value="88"/>
+        <UsageCount Value="10"/>
+      </Unit15>
+      <Unit16>
+        <Filename Value="..\package\dockhandle.pas"/>
+        <UnitName Value="DockHandle"/>
+        <CursorPos X="20" Y="22"/>
+        <TopLine Value="1"/>
+        <EditorIndex Value="7"/>
+        <UsageCount Value="12"/>
+        <Loaded Value="True"/>
+      </Unit16>
+      <Unit17>
+        <Filename Value="..\..\..\lcl\include\customimage.inc"/>
+        <CursorPos X="1" Y="1"/>
+        <TopLine Value="213"/>
+        <UsageCount Value="11"/>
+      </Unit17>
+      <Unit18>
+        <Filename Value="..\package\ffloatingsite.pas"/>
+        <ComponentName Value="FloatingSite"/>
+        <HasResources Value="True"/>
+        <ResourceBaseClass Value="Form"/>
+        <UnitName Value="fFloatingSite"/>
+        <CursorPos X="1" Y="1"/>
+        <TopLine Value="1"/>
+        <EditorIndex Value="1"/>
+        <UsageCount Value="11"/>
+        <Loaded Value="True"/>
+      </Unit18>
+    </Units>
+    <JumpHistory Count="29" HistoryIndex="28">
+      <Position1>
+        <Filename Value="..\package\umakesite.pas"/>
+        <Caret Line="135" Column="1" TopLine="112"/>
+      </Position1>
+      <Position2>
+        <Filename Value="..\package\umakesite.pas"/>
+        <Caret Line="136" Column="1" TopLine="113"/>
+      </Position2>
+      <Position3>
+        <Filename Value="fmastersite.pas"/>
+        <Caret Line="36" Column="5" TopLine="1"/>
+      </Position3>
+      <Position4>
+        <Filename Value="fmastersite.pas"/>
+        <Caret Line="37" Column="1" TopLine="1"/>
+      </Position4>
+      <Position5>
+        <Filename Value="..\package\umakesite.pas"/>
+        <Caret Line="129" Column="1" TopLine="106"/>
+      </Position5>
+      <Position6>
+        <Filename Value="..\package\umakesite.pas"/>
+        <Caret Line="131" Column="1" TopLine="108"/>
+      </Position6>
+      <Position7>
+        <Filename Value="..\package\umakesite.pas"/>
+        <Caret Line="132" Column="1" TopLine="109"/>
+      </Position7>
+      <Position8>
+        <Filename Value="..\package\umakesite.pas"/>
+        <Caret Line="133" Column="1" TopLine="110"/>
+      </Position8>
+      <Position9>
+        <Filename Value="fmastersite.pas"/>
+        <Caret Line="36" Column="43" TopLine="1"/>
+      </Position9>
+      <Position10>
+        <Filename Value="fmastersite.pas"/>
+        <Caret Line="14" Column="16" TopLine="1"/>
+      </Position10>
+      <Position11>
+        <Filename Value="..\package\umakesite.pas"/>
+        <Caret Line="148" Column="11" TopLine="127"/>
+      </Position11>
+      <Position12>
+        <Filename Value="..\package\umakesite.pas"/>
+        <Caret Line="155" Column="25" TopLine="117"/>
+      </Position12>
+      <Position13>
+        <Filename Value="..\package\umakesite.pas"/>
+        <Caret Line="140" Column="21" TopLine="117"/>
+      </Position13>
+      <Position14>
+        <Filename Value="fclientform.pas"/>
+        <Caret Line="20" Column="3" TopLine="1"/>
+      </Position14>
+      <Position15>
+        <Filename Value="fmastersite.pas"/>
+        <Caret Line="14" Column="16" TopLine="1"/>
+      </Position15>
+      <Position16>
+        <Filename Value="..\package\umakesite.pas"/>
+        <Caret Line="31" Column="1" TopLine="9"/>
+      </Position16>
+      <Position17>
+        <Filename Value="..\package\umakesite.pas"/>
+        <Caret Line="33" Column="1" TopLine="12"/>
+      </Position17>
+      <Position18>
+        <Filename Value="..\package\umakesite.pas"/>
+        <Caret Line="134" Column="1" TopLine="134"/>
+      </Position18>
+      <Position19>
+        <Filename Value="fmastersite.pas"/>
+        <Caret Line="32" Column="1" TopLine="1"/>
+      </Position19>
+      <Position20>
+        <Filename Value="..\package\ffloatingsite.pas"/>
+        <Caret Line="1" Column="1" TopLine="1"/>
+      </Position20>
+      <Position21>
+        <Filename Value="..\package\umakesite.pas"/>
+        <Caret Line="44" Column="3" TopLine="17"/>
+      </Position21>
+      <Position22>
+        <Filename Value="..\package\umakesite.pas"/>
+        <Caret Line="48" Column="71" TopLine="46"/>
+      </Position22>
+      <Position23>
+        <Filename Value="..\package\umakesite.pas"/>
+        <Caret Line="66" Column="24" TopLine="43"/>
+      </Position23>
+      <Position24>
+        <Filename Value="..\package\umakesite.pas"/>
+        <Caret Line="156" Column="26" TopLine="131"/>
+      </Position24>
+      <Position25>
+        <Filename Value="..\package\umakesite.pas"/>
+        <Caret Line="157" Column="17" TopLine="134"/>
+      </Position25>
+      <Position26>
+        <Filename Value="..\package\umakesite.pas"/>
+        <Caret Line="178" Column="15" TopLine="134"/>
+      </Position26>
+      <Position27>
+        <Filename Value="..\package\umakesite.pas"/>
+        <Caret Line="37" Column="25" TopLine="13"/>
+      </Position27>
+      <Position28>
+        <Filename Value="fmastersite.pas"/>
+        <Caret Line="36" Column="1" TopLine="1"/>
+      </Position28>
+      <Position29>
+        <Filename Value="fmastersite.pas"/>
+        <Caret Line="43" Column="1" TopLine="1"/>
+      </Position29>
+    </JumpHistory>
+  </ProjectOptions>
+  <CompilerOptions>
+    <Version Value="8"/>
+    <PathDelim Value="\"/>
+    <Target>
+      <Filename Value="MakeSite"/>
+    </Target>
+    <SearchPaths>
+      <IncludeFiles Value="$(ProjOutDir)\"/>
+      <UnitOutputDirectory Value="lib\$(TargetCPU)-$(TargetOS)"/>
+    </SearchPaths>
+    <Other>
+      <CompilerPath Value="$(CompPath)"/>
+    </Other>
+  </CompilerOptions>
+  <Debugging>
+    <Exceptions Count="3">
+      <Item1>
+        <Name Value="EAbort"/>
+      </Item1>
+      <Item2>
+        <Name Value="ECodetoolError"/>
+      </Item2>
+      <Item3>
+        <Name Value="EFOpenError"/>
+      </Item3>
+    </Exceptions>
+  </Debugging>
+</CONFIG>
