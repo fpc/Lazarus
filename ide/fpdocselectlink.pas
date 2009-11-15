@@ -113,6 +113,7 @@ type
     fItems: TFPDocLinkCompletionList;
     FSourceFilename: string;
     FStartModuleOwner: TObject;
+    fUpdatingItems: boolean;
     function GetLink: string;
     function GetLinkTitle: string;
     procedure SetStartFPDocFile(const AValue: TLazFPDocFile);
@@ -327,12 +328,17 @@ var
   l: String;
 begin
   if FItems=nil then exit;
-  fItems.Clear;
-  l:=LinkEdit.Text;
-  FItems.Prefix:=l;
-  //DebugLn(['TFPDocLinkEditorDlg.UpdateCompletionBox Prefix="',l,'"']);
-  AddSubIdentifiers(l);
-  CompletionBox.Invalidate;
+  if fUpdatingItems then exit;
+  fUpdatingItems:=true;
+  try
+    fItems.Clear;
+    l:=FItems.Prefix;
+    //DebugLn(['TFPDocLinkEditorDlg.UpdateCompletionBox Prefix="',l,'"']);
+    AddSubIdentifiers(l);
+    CompletionBox.Invalidate;
+  finally
+    fUpdatingItems:=false;
+  end;
 end;
 
 procedure TFPDocLinkEditorDlg.AddPackagesToCompletion(Prefix: string);
@@ -428,6 +434,7 @@ begin
   DOMNode:=FPDocFile.GetFirstElement;
   while DOMNode<>nil do begin
     if (DOMNode is TDomElement) then begin
+      //DebugLn(['TFPDocLinkEditorDlg.AddIdentifiers ',DbgSName(DOMNode)]);
       ElementName:=TDomElement(DOMNode).GetAttribute('name');
       if (SysUtils.CompareText(Prefix,copy(ElementName,1,length(Prefix)))=0)
       then begin
@@ -541,6 +548,7 @@ procedure TFPDocLinkEditorDlg.SetLink(const AValue: string);
 begin
   if FItems=nil then exit;
   if AValue=fItems.Prefix then exit;
+  fItems.Prefix:=AValue;
   LinkEdit.Text:=AValue;
   UpdateCompletionBox;
 end;
