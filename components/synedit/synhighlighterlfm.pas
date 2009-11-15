@@ -609,7 +609,7 @@ end;
 
 function TSynLFMSyn.FoldCloseCount(ALineIndex: Integer; AType: Integer): integer;
 begin
-  Result := MinimumFoldLevel(ALineIndex) - EndFoldLevel(ALineIndex - 1);
+  Result := EndFoldLevel(ALineIndex - 1) - MinimumFoldLevel(ALineIndex);
 end;
 
 function TSynLFMSyn.FoldNestCount(ALineIndex: Integer; AType: Integer): integer;
