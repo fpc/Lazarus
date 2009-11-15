@@ -613,8 +613,6 @@ begin
 end;
 
 function TSynLFMSyn.FoldNestCount(ALineIndex: Integer; AType: Integer): integer;
-var
-  r: TSynCustomHighlighterRange;
 begin
   Result := EndFoldLevel(ALineIndex);
 end;
@@ -700,7 +698,7 @@ end;
 
 function TSynLFMSyn.StartLfmCodeFoldBlock(ABlockType: TLfmCodeFoldBlockType): TSynCustomCodeFoldBlock;
 begin
-  StartCodeFoldBlock(Pointer(PtrInt(ABlockType)));
+  Result := StartCodeFoldBlock(Pointer(PtrInt(ABlockType)));
 end;
 
 procedure TSynLFMSyn.EndLfmCodeFoldBlock;
