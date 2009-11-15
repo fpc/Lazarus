@@ -1385,6 +1385,7 @@ begin
     CompilerOptions.UnitOutputDirectory:='';
     POOutputDirectory:='languages';
     Translated:=SystemLanguageID1;
+    LazDocPaths:=SetDirSeparators('$(LazarusDir)/components/synedit/docs/xml');
 
     // add requirements
     AddRequiredDependency(LCLPackage.CreateDependencyWithOwner(Result));
