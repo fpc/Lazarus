@@ -4504,7 +4504,7 @@ begin
   OldPhase:=CurrentPhase;
   CurrentPhase:=CodeToolPhaseParse;
   try
-    IsMethod:=ProcNode.Desc in (AllClasses+AllClassSections);
+    IsMethod:=ProcNode.Parent.Desc in (AllClasses+AllClassSections);
     MoveCursorToNodeStart(ProcNode);
     ReadNextAtom;
     if UpAtomIs('CLASS') then
