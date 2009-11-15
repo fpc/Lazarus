@@ -360,6 +360,7 @@ var
   AProject: TLazProject;
   APackage: TLazPackage;
 begin
+  DebugLn(['TFPDocLinkEditorDlg.AddModuleUnits ',DbgSName(ModuleOwner)]);
   if ModuleOwner=nil then exit;
   if ModuleOwner is TLazProject then begin
     AProject:=TLazProject(ModuleOwner);
@@ -378,12 +379,14 @@ var
   ProjFile: TLazProjectFile;
   Identifier: String;
 begin
+  DebugLn(['TFPDocLinkEditorDlg.AddProjectUnits ']);
   for i:=0 to AProject.FileCount-1 do begin
     ProjFile:=AProject.Files[i];
     if ProjFile.IsPartOfProject then begin
       Filename:=ProjFile.Filename;
       if FilenameIsPascalUnit(Filename) then begin
         Filename:=ExtractFileNameOnly(Filename);
+        DebugLn(['TFPDocLinkEditorDlg.AddProjectUnits ',Prefix,' ',Filename]);
         if (CompareFilenames(Prefix,copy(Filename,1,length(Prefix)))=0) then
         begin
           Identifier:=ExtractFileNameOnly(ProjFile.Filename);

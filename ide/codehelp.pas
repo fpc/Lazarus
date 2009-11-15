@@ -1559,9 +1559,13 @@ begin
   end;
 
   // check if in the doc path of the project
-  if (AProject<>nil) and (AProject.LazDocPaths<>'') then begin
+  if (AProject<>nil) and (AProject.LazDocPaths<>'')
+  and FilenameIsAbsolute(AProject.ProjectInfoFile) then begin
     Path:=ExtractFilePath(FPDocFile.Filename);
     SearchPath:=AProject.LazDocPaths;
+    IDEMacros.CreateAbsoluteSearchPath(SearchPath,
+                                     ExtractFilePath(AProject.ProjectInfoFile));
+    SearchPath:=TrimSearchPath(SearchPath,'');
     p:=FindPathInSearchPath(PChar(Path),length(Path),
                             PChar(SearchPath),length(SearchPath));
     if p<>nil then begin
