@@ -3321,7 +3321,8 @@ begin
         else inc(ColIndex);
         continue;
       end;
-      r2 := fFoldTree.RemoveFoldForLine(AStartIndex+1, False, ColIndex) - 1;
+      r2 := fFoldTree.RemoveFoldForLine(AStartIndex+1, False, ColIndex);
+      if r2 > 0 then dec(r2);
       if (r < 0) or (r2 < r) then r := r2;
       if down
       then dec(ColIndex)
