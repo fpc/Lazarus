@@ -1645,10 +1645,7 @@ begin
             if not IsTypeLess then break;
             //DebugLn(['TFindDeclarationTool.FindDeclarationOfPropertyPath has not type, searching next ...']);
             Params.SetIdentifier(Self,PChar(Pointer(Identifier)),nil);
-            Params.ContextNode:=
-                        Context.Node.GetNodeOfTypes(
-                           [ctnClass,ctnClassInterface,ctnObject,
-                            ctnObjCClass,ctnObjCProtocol]);
+            Params.ContextNode:=Context.Tool.FindClassOrInterfaceNode(Context.Node);
             if Params.ContextNode=nil then
               Params.ContextNode:=Context.Node;
             Params.Flags:=[fdfExceptionOnNotFound,fdfSearchInAncestors,
@@ -2110,7 +2107,7 @@ begin
           if TypeNode<>nil then begin
             case TypeNode.Desc of
             ctnIdentifier, ctnClass, ctnClassInterface, ctnObject,
-            ctnObjCClass, ctnObjCProtocol:
+            ctnObjCClass, ctnObjCProtocol, ctnCPPClass:
               begin
                 NewTool.MoveCursorToNodeStart(TypeNode);
                 NewTool.ReadNextAtom;
@@ -2869,7 +2866,7 @@ var
           ;
 
         ctnClass, ctnClassInterface, ctnObject,
-        ctnObjCClass, ctnObjCProtocol,
+        ctnObjCClass, ctnObjCProtocol, ctnCPPClass,
         ctnRecordType, ctnRecordCase:
           // do not search again in this node, go on ...
           ;
@@ -2979,7 +2976,7 @@ begin
         ctnClassTypePublished,ctnClassTypePublic,ctnClassTypeProtected,ctnClassTypePrivate,
         ctnClassVarPublished,ctnClassVarPublic,ctnClassVarProtected,ctnClassVarPrivate,
         ctnClass, ctnClassInterface, ctnObject,
-        ctnObjCClass, ctnObjCProtocol,
+        ctnObjCClass, ctnObjCProtocol, ctnCPPClass,
         ctnRecordType, ctnRecordVariant,
         ctnParameterList:
           // these nodes build a parent-child relationship. But in pascal
@@ -4353,7 +4350,7 @@ begin
       Result:=InNodeIdentifier(CurPos.StartPos);
     end;
 
-  ctnBeginBlock,ctnClass,ctnObject,ctnObjCClass:
+  ctnBeginBlock,ctnClass,ctnObject,ctnObjCClass,ctnCPPClass:
     if (Node.SubDesc and ctnsForwardDeclaration)>0 then
       RaiseException('TFindDeclarationTool.CleanPosIsDeclarationIdentifier Node not expanded');
     
@@ -6500,7 +6497,7 @@ var
                                               ExprType.Context.Node.FirstChild);
 
     ctnClass, ctnClassInterface, ctnObject,
-    ctnObjCClass, ctnObjCProtocol,
+    ctnObjCClass, ctnObjCProtocol, ctnCPPClass,
     ctnProperty, ctnGlobalProperty:
       begin
         if ExprType.Context.Node.Desc in AllClasses then begin
@@ -7994,7 +7991,7 @@ begin
           case ExprNode.Desc of
           
           ctnClass,ctnClassInterface, ctnObject,
-          ctnObjCClass, ctnObjCProtocol:
+          ctnObjCClass, ctnObjCProtocol, ctnCPPClass:
             // check, if ExpressionType.Context is descend of TargetContext
             if ContextIsDescendOf(ExpressionType.Context,
                                   TargetType.Context,Params)
@@ -9528,7 +9525,7 @@ begin
           end;
 
         ctnClass, ctnClassInterface, ctnObject,
-        ctnObjCClass, ctnObjCProtocol:
+        ctnObjCClass, ctnObjCProtocol, ctnCPPClass:
           if (FindContext.Node.Parent<>nil)
           and (FindContext.Node.Parent.Desc in [ctnTypeDefinition,ctnGenericType])
           then

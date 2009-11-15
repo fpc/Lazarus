@@ -1260,7 +1260,7 @@ begin
       CurrentIdentifierList.Add(NewItem);
     end;
     if (UpAtomIs('READ') or UpAtomIs('WRITE'))
-    and (Context.Node.GetNodeOfTypes([ctnClass,ctnObject,ctnObjCClass])<>nil)
+    and (Context.Node.GetNodeOfTypes([ctnClass,ctnObject,ctnObjCClass,ctnCPPClass])<>nil)
     then begin
       // add the default class completion 'read'/'write' specifier variable
       NewItem:=TIdentifierListItem.Create(
@@ -1435,7 +1435,7 @@ begin
       Add('destructor');
     end;
 
-  ctnClassInterface,ctnObjCProtocol:
+  ctnClassInterface,ctnObjCProtocol,ctnCPPClass:
     begin
       Add('procedure');
       Add('function');
@@ -2193,10 +2193,9 @@ begin
     else if CursorNode.Desc=ctnGenericType then
       CursorNode:=CursorNode.LastChild
     else
-      CursorNode:=CursorNode.GetNodeOfTypes(
-           [ctnClass,ctnClassInterface,ctnObject,ctnObjCClass,ctnObjCProtocol]);
+      CursorNode:=FindClassOrInterfaceNode(CursorNode);
     if (CursorNode=nil)
-    or (not (CursorNode.Desc in [ctnClass,ctnObject,ctnObjCClass]))
+    or (not (CursorNode.Desc in AllClassObjects))
     or ((CursorNode.SubDesc and ctnsForwardDeclaration)>0) then begin
       MoveCursorToCleanPos(CleanCursorPos);
       RaiseException('TIdentCompletionTool.FindAbstractMethods cursor is not in a class');

@@ -130,6 +130,8 @@ type
     function FindClassNode(CursorNode: TCodeTreeNode): TCodeTreeNode;
     function FindClassNodeForMethodBody(ProcNode: TCodeTreeNode;
         IgnoreForwards, IgnoreNonForwards: boolean): TCodeTreeNode;
+    function FindClassOrInterfaceNode(CursorNode: TCodeTreeNode;
+        FindClassOfMethod: boolean = false): TCodeTreeNode;
     function FindClassSection(ClassNode: TCodeTreeNode;
         NodeDesc: TCodeTreeNodeDesc): TCodeTreeNode;
     function FindLastClassSection(ClassNode: TCodeTreeNode;
@@ -374,8 +376,7 @@ begin
   IsProcType:=(ProcNode.Desc=ctnProcedureType);
   if (phpAddClassname in Attr) then begin
     TheClassName:='';
-    TypeDefNode:=ProcNode.GetNodeOfTypes(
-           [ctnClass,ctnClassInterface,ctnObject,ctnObjCClass,ctnObjCProtocol]);
+    TypeDefNode:=FindClassOrInterfaceNode(ProcNode);
     if TypeDefNode<>nil then begin
       TheClassName:=ExtractClassName(TypeDefNode,phpInUpperCase in Attr);
     end;
@@ -497,7 +498,7 @@ var
   DefNode: TCodeTreeNode;
 begin
   if ClassNode<>nil then begin
-    ClassNode:=ClassNode.GetNodeOfTypes([ctnClass,ctnObject,ctnObjCClass]);
+    ClassNode:=FindClassOrInterfaceNode(ClassNode);
     if (ClassNode = nil) then begin
       Result := '';
       Exit;
@@ -616,7 +617,7 @@ begin
   
   // check proc kind
   //debugln('TPascalReaderTool.FindCorrespondingProcNode Check kind');
-  ClassNode:=ProcNode.GetNodeOfTypes([ctnClass,ctnObject,ctnObjCClass]);
+  ClassNode:=FindClassOrInterfaceNode(ProcNode);
   if ClassNode<>nil then begin
     //debugln('TPascalReaderTool.FindCorrespondingProcNode Class');
     // in a class definition -> search method body
@@ -1269,7 +1270,7 @@ begin
     if ANode.Desc in [ctnTypeDefinition,ctnGenericType] then begin
       CurClassNode:=FindTypeNodeOfDefinition(ANode);
       if (CurClassNode<>nil)
-      and (CurClassNode.Desc in [ctnClass,ctnObject,ctnObjCClass]) then begin
+      and (CurClassNode.Desc in AllClassObjects) then begin
         if (not (IgnoreForwards
                  and ((CurClassNode.SubDesc and ctnsForwardDeclaration)>0)))
         and (not (IgnoreNonForwards
@@ -1320,7 +1321,7 @@ begin
     if ANode.Desc=ctnTypeDefinition then begin
       CurClassNode:=ANode.FirstChild;
       if (CurClassNode<>nil)
-      and (CurClassNode.Desc in [ctnClass,ctnObject,ctnObjCClass]) then begin
+      and (CurClassNode.Desc in AllClassObjects) then begin
         if (not (IgnoreForwards
                  and ((CurClassNode.SubDesc and ctnsForwardDeclaration)>0)))
         and (not (IgnoreNonForwards
@@ -1352,7 +1353,7 @@ function TPascalReaderTool.FindClassNode(CursorNode: TCodeTreeNode
   ): TCodeTreeNode;
 begin
   while CursorNode<>nil do begin
-    if CursorNode.Desc in [ctnClass,ctnObject,ctnObjCClass] then begin
+    if CursorNode.Desc in AllClassObjects then begin
       Result:=CursorNode;
       exit;
     end else if NodeIsMethodBody(CursorNode) then begin
@@ -1374,6 +1375,22 @@ begin
   if ProcClassName='' then exit;
   Result:=FindClassNodeBackwards(ProcNode,ProcClassName,IgnoreForwards,
                                  IgnoreNonForwards);
+end;
+
+function TPascalReaderTool.FindClassOrInterfaceNode(CursorNode: TCodeTreeNode;
+  FindClassOfMethod: boolean): TCodeTreeNode;
+begin
+  while CursorNode<>nil do begin
+    if CursorNode.Desc in AllClasses then begin
+      Result:=CursorNode;
+      exit;
+    end else if FindClassOfMethod and NodeIsMethodBody(CursorNode) then begin
+      Result:=FindClassNodeForMethodBody(CursorNode,true,false);
+      exit;
+    end;
+    CursorNode:=CursorNode.Parent;
+  end;
+  Result:=nil;
 end;
 
 function TPascalReaderTool.FindClassSection(ClassNode: TCodeTreeNode;

@@ -551,8 +551,7 @@ begin
         then
           Exclude(ProcHeadFlags,phpWithStart);
         Result:=IdentItem.Tool.ExtractProcHead(IdentItem.Node,ProcHeadFlags);
-        ClassNode:=IdentItem.Node.GetNodeOfTypes(
-           [ctnClass,ctnClassInterface,ctnObject,ctnObjCClass,ctnObjCProtocol]);
+        ClassNode:=IdentItem.Tool.FindClassOrInterfaceNode(IdentItem.Node);
         if (ClassNode<>nil)
         and (ClassNode.Desc in [ctnClass,ctnObjCClass]) then begin
           // replace virtual and dynamic with override

@@ -328,8 +328,7 @@ begin
   else if ClassNode.Desc=ctnGenericType then
     ClassNode:=ClassNode.LastChild
   else
-    ClassNode:=ClassNode.GetNodeOfTypes(
-           [ctnClass,ctnClassInterface,ctnObject,ctnObjCClass,ctnObjCProtocol]);
+    ClassNode:=Tool.FindClassOrInterfaceNode(ClassNode);
   if (ClassNode=nil) then begin
     DebugLn(['TAbstractMethodsDialog.Init no class node at cursor ',CodePos.Code.Filename,' ',CodePos.X,',',CodePos.Y]);
     exit;

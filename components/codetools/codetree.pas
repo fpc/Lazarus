@@ -85,24 +85,26 @@ const
   ctnObject             = 32;
   ctnObjCClass          = 33;
   ctnObjCProtocol       = 34;
-  ctnClassAbstract      = 35;
-  ctnClassSealed        = 36;
-  ctnClassInheritance   = 37;
-  ctnClassGUID          = 38;
-  ctnClassTypePrivate   = 39;
-  ctnClassTypeProtected = 40;
-  ctnClassTypePublic    = 41;
-  ctnClassTypePublished = 42;
-  ctnClassVarPrivate    = 43;
-  ctnClassVarProtected  = 44;
-  ctnClassVarPublic     = 45;
-  ctnClassVarPublished  = 46;
-  ctnClassPrivate       = 47;
-  ctnClassProtected     = 48;
-  ctnClassPublic        = 49;
-  ctnClassPublished     = 50;
-  ctnProperty           = 51;
-  ctnMethodMap          = 52;
+  ctnCPPClass           = 35;
+
+  ctnClassAbstract      = 40;
+  ctnClassSealed        = 41;
+  ctnClassInheritance   = 42;
+  ctnClassGUID          = 43;
+  ctnClassTypePrivate   = 44;
+  ctnClassTypeProtected = 45;
+  ctnClassTypePublic    = 46;
+  ctnClassTypePublished = 47;
+  ctnClassVarPrivate    = 48;
+  ctnClassVarProtected  = 49;
+  ctnClassVarPublic     = 50;
+  ctnClassVarPublished  = 51;
+  ctnClassPrivate       = 52;
+  ctnClassProtected     = 53;
+  ctnClassPublic        = 54;
+  ctnClassPublished     = 55;
+  ctnProperty           = 56;
+  ctnMethodMap          = 57;
   
   ctnProcedure          = 60;  // childs: ctnProcedureHead, sections, ctnBeginBlock/ctnAsmBlock
   ctnProcedureHead      = 61;  // childs: ctnParameterList, operator: ctnVarDefinition, operator/function: ctnResultType
@@ -162,9 +164,10 @@ const
   AllClassSections =
     AllClassBaseSections+AllClassTypeSections+AllClassVarSections;
   AllClasses =
-     [ctnClass,ctnClassInterface,ctnObject,ctnObjCClass,ctnObjCProtocol];
+     [ctnClass,ctnClassInterface,ctnObject,ctnObjCClass,ctnObjCProtocol,
+      ctnCPPClass];
   AllClassInterfaces = [ctnClassInterface,ctnObjCProtocol];
-  AllClassObjects = [ctnClass,ctnObject,ctnObjCClass];
+  AllClassObjects = [ctnClass,ctnObject,ctnObjCClass,ctnCPPClass];
   AllClassModifiers = [ctnClassAbstract, ctnClassSealed];
   AllDefinitionSections =
      [ctnTypeSection,ctnVarSection,ctnConstSection,ctnResStrSection,
@@ -365,6 +368,8 @@ begin
   ctnObject: Result:='Object';
   ctnObjCClass: Result:='ObjCClass';
   ctnObjCProtocol: Result:='ObjCProtocol';
+  ctnCPPClass: Result:='CPPClass';
+
   ctnClassInheritance: Result:='Class inheritance';
   ctnClassGUID: Result:='GUID';
   ctnClassPublished: Result:='Published';

@@ -4102,7 +4102,7 @@ function TCodeCompletionCodeTool.BuildUnitDefinitionGraph(out
       end;
 
     ctnRecordType, ctnClassInterface, ctnClass, ctnObject,
-    ctnObjCClass, ctnObjCProtocol:
+    ctnObjCClass, ctnObjCProtocol, ctnCPPClass:
       begin
         ChildNode:=SubNode.FirstChild;
         while (ChildNode<>nil) and (ChildNode.HasAsParent(SubNode)) do begin
@@ -5168,7 +5168,7 @@ begin
           ClassSectionNode:=ClassSectionNode.NextBrother;
       end else if ANodeExt.Node<>nil then begin
         // search a section of the same Visibility in front of the node
-        if FCodeCompleteClassNode.Desc in [ctnClass,ctnObject,ctnObjCClass] then
+        if FCodeCompleteClassNode.Desc in AllClassObjects then
         begin
           ClassSectionNode:=ANodeExt.Node.Parent.PriorBrother;
           while (ClassSectionNode<>nil)
@@ -6364,7 +6364,7 @@ var CleanCursorPos, Indent, insertPos: integer;
       {$IFDEF CTDEBUG}
       DebugLn('TCodeCompletionCodeTool.CompleteCode Complete Properties ... ');
       {$ENDIF}
-      if FCodeCompleteClassNode.Desc in [ctnClass,ctnObject,ctnObjCClass] then
+      if FCodeCompleteClassNode.Desc in AllClassObjects then
         SectionNode:=FCodeCompleteClassNode.FirstChild
       else
         SectionNode:=FCodeCompleteClassNode;
@@ -6870,8 +6870,7 @@ begin
   if ImplementationNode=nil then ImplementationNode:=Tree.Root;
 
   // test if in a class
-  AClassNode:=CursorNode.GetNodeOfTypes(
-           [ctnClass,ctnClassInterface,ctnObject,ctnObjCClass,ctnObjCProtocol]);
+  AClassNode:=FindClassOrInterfaceNode(CursorNode);
   if AClassNode<>nil then begin
     CompleteClass(AClassNode);
     exit;
@@ -7071,8 +7070,7 @@ begin
     else if CursorNode.Desc=ctnGenericType then
       CursorNode:=CursorNode.LastChild
     else
-      CursorNode:=CursorNode.GetNodeOfTypes(
-           [ctnClass,ctnClassInterface,ctnObject,ctnObjCClass,ctnObjCProtocol]);
+      CursorNode:=FindClassOrInterfaceNode(CursorNode);
     if (CursorNode=nil) or (not (CursorNode.Desc in AllClasses)) then begin
       DebugLn(['TIdentCompletionTool.AddMethods cursor not in a class']);
       exit;

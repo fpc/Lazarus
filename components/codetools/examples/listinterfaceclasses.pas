@@ -48,7 +48,7 @@ begin
   end;
   Node:=Tool.Tree.Root;
   while (Node<>nil) do begin
-    if (Node.Desc in [ctnClass,ctnObject,ctnObjCClass])
+    if (Node.Desc in AllClassObjects)
     and ((Node.SubDesc and ctnsForwardDeclaration)=0) then begin
       CurClassName:=Tool.ExtractClassName(Node,false);
       writeln(CurClassName);

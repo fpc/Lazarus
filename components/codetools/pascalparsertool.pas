@@ -372,7 +372,10 @@ begin
   'B':
     if CompareSrcIdentifiers('BITPACKED',p) then exit(KeyWordFuncTypeBitPacked);
   'C':
-    if CompareSrcIdentifiers('CLASS',p) then exit(KeyWordFuncClass);
+    case UpChars[p[1]] of
+    'L': if CompareSrcIdentifiers('CLASS',p) then exit(KeyWordFuncClass);
+    'P': if CompareSrcIdentifiers('CPPCLASS',p) then exit(KeyWordFuncClass);
+    end;
   'D':
     if CompareSrcIdentifiers('DISPINTERFACE',p) then exit(KeyWordFuncClassInterface);
   'F':
@@ -684,7 +687,7 @@ begin
   try
     if ClassNode=nil then
       RaiseClassNodeNil;
-    if not (ClassNode.Desc in [ctnClass,ctnObject,ctnObjCClass]) then
+    if not (ClassNode.Desc in AllClassObjects) then
       RaiseClassDescInvalid;
     // set CursorPos after class head
     MoveCursorToNodeStart(ClassNode);
@@ -698,7 +701,7 @@ begin
     ReadNextAtom;
     if UpAtomIs('PACKED') or (UpAtomIs('BITPACKED')) then ReadNextAtom;
     if not (UpAtomIs('CLASS') or UpAtomIs('OBJECT') or UpAtomIs('OBJCCLASS')
-           or UpAtomIs('INTERFACE'))
+           or UpAtomIs('CPPCLASS') or UpAtomIs('INTERFACE'))
     then
       RaiseClassKeyWordExpected;
     ReadNextAtom;
@@ -3396,6 +3399,8 @@ begin
     ClassDesc:=ctnObject
   else if UpAtomIs('OBJCCLASS') then
     ClassDesc:=ctnObjCClass
+  else if UpAtomIs('CPPCLASS') then
+    ClassDesc:=ctnCPPClass
   else
     ClassDesc:=ctnNone;
   ChildCreated:=ClassDesc<>ctnNone;
@@ -3441,7 +3446,7 @@ begin
     end;
   end;
   if CurPos.Flag=cafSemicolon then begin
-    if ChildCreated and (ClassDesc in [ctnClass,ctnObject,ctnObjCClass]) then
+    if ChildCreated and (ClassDesc in AllClassObjects) then
     begin
       if IsForward then begin
         // forward class definition found
@@ -3452,7 +3457,7 @@ begin
       end;
     end;
   end else begin
-    if ChildCreated and (ClassDesc in [ctnClass,ctnObject,ctnObjCClass]) then
+    if ChildCreated and (ClassDesc in AllClassObjects) then
       CurNode.SubDesc:=CurNode.SubDesc+ctnsNeedJITParsing; // will not create sub nodes now
     // read til end or any suspicious keyword
     Level:=1;
@@ -4499,8 +4504,7 @@ begin
   OldPhase:=CurrentPhase;
   CurrentPhase:=CodeToolPhaseParse;
   try
-    IsMethod:=ProcNode.GetNodeOfTypes(
-      [ctnClass,ctnClassInterface,ctnObject,ctnObjCClass,ctnObjCProtocol])<>nil;
+    IsMethod:=ProcNode.Desc in (AllClasses+AllClassSections);
     MoveCursorToNodeStart(ProcNode);
     ReadNextAtom;
     if UpAtomIs('CLASS') then
@@ -4568,7 +4572,7 @@ procedure TPascalParserTool.BuildSubTree(ANode: TCodeTreeNode);
 begin
   if ANode=nil then exit;
   case ANode.Desc of
-  ctnClass,ctnClassInterface,ctnObject,ctnObjCClass,ctnObjCProtocol:
+  ctnClass,ctnClassInterface,ctnObject,ctnObjCClass,ctnObjCProtocol,ctnCPPClass:
     BuildSubTreeForClass(ANode);
   ctnProcedure,ctnProcedureHead:
     BuildSubTreeForProcHead(ANode);

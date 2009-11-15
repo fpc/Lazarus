@@ -529,7 +529,7 @@ begin
     ctnTypeDefinition,ctnVarDefinition,ctnConstDefinition,ctnUseUnit:
       Result:=ACodeTool.ExtractIdentifier(CodeNode.StartPos);
 
-    ctnClass,ctnObject,ctnObjCClass,ctnInterface:
+    ctnClass,ctnObject,ctnObjCClass,ctnObjCProtocol,ctnInterface,ctnCPPClass:
       Result:='('+ACodeTool.ExtractClassInheritance(CodeNode,[])+')';
 
     ctnEnumIdentifier:
@@ -604,7 +604,7 @@ begin
     ctnVarDefinition:                 Result:=ImgIDVariable;
     ctnConstSection,ctnResStrSection: Result:=ImgIDSection;
     ctnConstDefinition:               Result:=ImgIDConst;
-    ctnClass,ctnClassInterface,ctnObject,ctnObjCClass,ctnObjCProtocol:
+    ctnClass,ctnClassInterface,ctnObject,ctnObjCClass,ctnObjCProtocol,ctnCPPClass:
                                       Result:=ImgIDClass;
     ctnProcedure:                     if Tool.NodeIsFunction(CodeNode) then
                                         Result:=ImgIDFunction
