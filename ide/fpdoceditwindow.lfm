@@ -3,7 +3,7 @@ object FPDocEditor: TFPDocEditor
   Height = 126
   Top = 761
   Width = 753
-  ActiveControl = ShortEdit
+  ActiveControl = ExampleEdit
   Caption = 'FPDoc editor'
   ClientHeight = 126
   ClientWidth = 753
@@ -18,9 +18,9 @@ object FPDocEditor: TFPDocEditor
     Height = 126
     Top = 0
     Width = 690
-    ActivePage = ShortTabSheet
+    ActivePage = ExampleTabSheet
     Align = alClient
-    TabIndex = 0
+    TabIndex = 5
     TabOrder = 0
     TabPosition = tpBottom
     OnChange = PageControlChange
@@ -62,6 +62,7 @@ object FPDocEditor: TFPDocEditor
         Top = 0
         Width = 604
         Anchors = [akTop, akLeft, akRight]
+        AutoSelect = False
         BorderSpacing.Left = 6
         BorderSpacing.Right = 2
         OnChange = ShortEditChange
@@ -94,6 +95,7 @@ object FPDocEditor: TFPDocEditor
         Top = 29
         Width = 614
         Anchors = [akTop, akLeft, akRight]
+        AutoSelect = False
         BorderSpacing.Left = 6
         BorderSpacing.Top = 2
         BorderSpacing.Right = 2
@@ -244,6 +246,7 @@ object FPDocEditor: TFPDocEditor
         Top = 0
         Width = 686
         Align = alTop
+        AutoSelect = False
         BorderSpacing.Right = 2
         OnChange = ExampleEditChange
         OnEditingDone = ExampleEditEditingDone
