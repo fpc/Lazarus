@@ -140,7 +140,7 @@ type
     function GetContextTitle(Element: TCodeHelpElement): string;
 
     function FindInheritedIndex: integer;
-    procedure Save;
+    procedure Save(CheckGUI: boolean = false);
     function GetGUIValues: TFPDocElementValues;
     procedure SetModified(const AValue: boolean);
     function WriteNode(Element: TCodeHelpElement; Values: TFPDocElementValues;
@@ -160,6 +160,7 @@ type
     function GetCurrentUnitName: string;
     function GetCurrentModuleName: string;
     procedure JumpToError(Item : TFPDocItem; LineCol: TPoint);
+    function GUIModified: boolean;
   public
     procedure Reset;
     procedure InvalidateChain;
@@ -281,7 +282,7 @@ procedure TFPDocEditor.FormKeyDown(Sender: TObject; var Key: Word;
   Shift: TShiftState);
 begin
   if (Key=VK_S) and (Shift=[ssCtrl]) then begin
-    Save;
+    Save(true);
     Key:=VK_UNKNOWN;
   end;
 end;
@@ -841,6 +842,16 @@ begin
   end;
 end;
 
+function TFPDocEditor.GUIModified: boolean;
+begin
+  Result:=(ShortEdit.Text<>FOldVisualValues[fpdiShort])
+    or (LinkEdit.Text<>FOldVisualValues[fpdiElementLink])
+    or (DescrMemo.Text<>FOldVisualValues[fpdiDescription])
+    or (SeeAlsoMemo.Text<>FOldVisualValues[fpdiSeeAlso])
+    or (ErrorsMemo.Text<>FOldVisualValues[fpdiErrors])
+    or (ExampleEdit.Text<>FOldVisualValues[fpdiExample]);
+end;
+
 procedure TFPDocEditor.Reset;
 begin
   FreeAndNil(fChain);
@@ -913,12 +924,13 @@ begin
   if DoSave then Save;
 end;
 
-procedure TFPDocEditor.Save;
+procedure TFPDocEditor.Save(CheckGUI: boolean);
 var
   Values: TFPDocElementValues;
 begin
   //DebugLn(['TFPDocEditor.Save FModified=',FModified]);
-  if not FModified then begin
+  if (not FModified)
+  and ((not CheckGUI) or (not GUIModified)) then begin
     SaveButton.Enabled:=false;
     Exit; // nothing changed => exit
   end;
