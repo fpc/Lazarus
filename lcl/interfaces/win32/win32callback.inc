@@ -1607,6 +1607,7 @@ begin
         begin
           DrawMenuItem(TMenuItem(menuItem), PDrawItemStruct(LParam)^._hDC,
              PDrawItemStruct(LParam)^.rcItem,
+             PDrawItemStruct(LParam)^.itemAction,
              PDrawItemStruct(LParam)^.itemState);
         end
       end;
@@ -2382,16 +2383,6 @@ begin
         ThemeServices.UpdateThemes;
         Graphics.UpdateHandleObjects;
         ThemeServices.IntfDoOnThemeChange;
-      end;
-    end;
-    WM_NCPAINT:
-    begin
-      if (lWinControl is TCustomForm) and
-         (TCustomForm(lWinControl).Menu <> nil) and
-         (GetMenu(TCustomForm(lWinControl).Handle) <> 0) then
-      begin
-        // request menu bar repaint
-        Windows.SetProp(TCustomForm(lWinControl).Handle, 'LCLMenuBarRedraw', 0);
       end;
     end;
 

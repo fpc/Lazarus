@@ -81,7 +81,7 @@ type
   end;
 
   function MenuItemSize(AMenuItem: TMenuItem; AHDC: HDC): TSize;
-  procedure DrawMenuItem(const AMenuItem: TMenuItem; const AHDC: HDC; const ARect: Windows.RECT; const ItemState: UINT);
+  procedure DrawMenuItem(const AMenuItem: TMenuItem; const AHDC: HDC; const ARect: Windows.RECT; const ItemAction, ItemState: UINT);
   function FindMenuItemAccelerator(const ACharCode: char; const AMenuHandle: HMENU): integer;
   procedure DrawMenuItemIcon(const AMenuItem: TMenuItem; const AHDC: HDC;
     const ImageRect: TRect; const ASelected: Boolean);
@@ -503,7 +503,7 @@ begin
 end;
 
 
-procedure DrawVistaMenuBar(const AMenuItem: TMenuItem; const AHDC: HDC; const ARect: TRect; const ASelected, ANoAccel: Boolean; const ItemState: UINT);
+procedure DrawVistaMenuBar(const AMenuItem: TMenuItem; const AHDC: HDC; const ARect: TRect; const ASelected, ANoAccel: Boolean; const ItemAction, ItemState: UINT);
 const
   BarState: array[Boolean] of TThemedMenu =
   (
@@ -551,8 +551,17 @@ begin
   // draw backgound
   // This is a hackish way to draw. Seems windows itself draws this in WM_PAINT or another paint handler?
   AWnd := TCustomForm(AMenuItem.GetParentMenu.Parent).Handle;
-  if Windows.GetProp(AWnd, 'LCLMenuBarRedraw') = 0 then
+  if (AMenuItem.Parent.VisibleIndexOf(AMenuItem) = 0) then
   begin
+    /// if we are painting the first item then request full repaint to draw the bg correctly
+    if (GetProp(AWnd, 'LCL_MENUREDRAW') = 0) then
+    begin
+      SetProp(AWnd, 'LCL_MENUREDRAW', 1);
+      DrawMenuBar(AWnd);
+      Exit;
+    end
+    else
+      SetProp(AWnd, 'LCL_MENUREDRAW', 0);
     // repainting menu bar bg
     FillChar(Info, SizeOf(Info), 0);
     Info.cbSize := SizeOf(Info);
@@ -561,7 +570,6 @@ begin
     OffsetRect(Info.rcBar, -WndRect.Left, -WndRect.Top);
     Tmp := ThemeServices.GetElementDetails(BarState[(ItemState and ODS_INACTIVE) = 0]);
     ThemeDrawElement(AHDC, Tmp, Info.rcBar, nil);
-    Windows.SetProp(AWnd, 'LCLMenuBarRedraw', 1);
   end;
 
   BGRect := ARect;
@@ -1069,7 +1077,7 @@ begin
   DrawMenuItemIcon(AMenuItem, AHDC, ImageRect, ASelected);
 end;
 
-procedure DrawMenuItem(const AMenuItem: TMenuItem; const AHDC: HDC; const ARect: Windows.RECT; const ItemState: UINT);
+procedure DrawMenuItem(const AMenuItem: TMenuItem; const AHDC: HDC; const ARect: Windows.RECT; const ItemAction, ItemState: UINT);
 var
   ASelected, ANoAccel: Boolean;
   B: Bool;
@@ -1085,7 +1093,7 @@ begin
   if IsVistaMenu then
   begin
     if AMenuItem.IsInMenuBar then
-      DrawVistaMenuBar(AMenuItem, AHDC, ARect, ASelected, ANoAccel, ItemState)
+      DrawVistaMenuBar(AMenuItem, AHDC, ARect, ASelected, ANoAccel, ItemAction, ItemState)
     else
       DrawVistaPopupMenu(AMenuItem, AHDC, ARect, ASelected, ANoAccel);
     Exit;
