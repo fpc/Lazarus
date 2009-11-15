@@ -103,19 +103,25 @@ type
     procedure CopyShortToDescrMenuItemClick(Sender: TObject);
     procedure CreateButtonClick(Sender: TObject);
     procedure DescrMemoChange(Sender: TObject);
+    procedure DescrMemoEditingDone(Sender: TObject);
     procedure ErrorsMemoChange(Sender: TObject);
+    procedure ErrorsMemoEditingDone(Sender: TObject);
     procedure ExampleEditChange(Sender: TObject);
+    procedure ExampleEditEditingDone(Sender: TObject);
     procedure FormatButtonClick(Sender: TObject);
     procedure FormCreate(Sender: TObject);
     procedure FormDestroy(Sender: TObject);
     procedure FormKeyDown(Sender: TObject; var Key: Word; Shift: TShiftState);
     procedure FormResize(Sender: TObject);
     procedure InsertLinkSpeedButtonClick(Sender: TObject);
+    procedure LinkEditChange(Sender: TObject);
     procedure LinkEditEditingDone(Sender: TObject);
     procedure MoveToInheritedButtonClick(Sender: TObject);
     procedure PageControlChange(Sender: TObject);
     procedure SaveButtonClick(Sender: TObject);
+    procedure SeeAlsoMemoChange(Sender: TObject);
     procedure SeeAlsoMemoEditingDone(Sender: TObject);
+    procedure ShortEditChange(Sender: TObject);
     procedure ShortEditEditingDone(Sender: TObject);
   private
     FCaretXY: TPoint;
@@ -358,6 +364,11 @@ begin
   Modified:=true;
 end;
 
+procedure TFPDocEditor.LinkEditChange(Sender: TObject);
+begin
+  SaveButton.Enabled:=LinkEdit.Text<>FOldVisualValues[fpdiElementLink];
+end;
+
 procedure TFPDocEditor.ApplicationIdle(Sender: TObject; var Done: Boolean);
 begin
   if fUpdateLock>0 then
@@ -454,10 +465,20 @@ begin
   Save;
 end;
 
+procedure TFPDocEditor.SeeAlsoMemoChange(Sender: TObject);
+begin
+  SaveButton.Enabled:=SeeAlsoMemo.Text<>FOldVisualValues[fpdiSeeAlso];
+end;
+
 procedure TFPDocEditor.SeeAlsoMemoEditingDone(Sender: TObject);
 begin
   if SeeAlsoMemo.Text<>FOldVisualValues[fpdiSeeAlso] then
     Modified:=true;
+end;
+
+procedure TFPDocEditor.ShortEditChange(Sender: TObject);
+begin
+  SaveButton.Enabled:=ShortEdit.Text<>FOldVisualValues[fpdiShort];
 end;
 
 procedure TFPDocEditor.ShortEditEditingDone(Sender: TObject);
@@ -1043,11 +1064,21 @@ end;
 
 procedure TFPDocEditor.ErrorsMemoChange(Sender: TObject);
 begin
+  SaveButton.Enabled:=ErrorsMemo.Text<>FOldVisualValues[fpdiErrors];
+end;
+
+procedure TFPDocEditor.ErrorsMemoEditingDone(Sender: TObject);
+begin
   if ErrorsMemo.Text<>FOldVisualValues[fpdiErrors] then
     Modified:=true;
 end;
 
 procedure TFPDocEditor.ExampleEditChange(Sender: TObject);
+begin
+  SaveButton.Enabled:=ExampleEdit.Text<>FOldVisualValues[fpdiExample];
+end;
+
+procedure TFPDocEditor.ExampleEditEditingDone(Sender: TObject);
 begin
   if ExampleEdit.Text<>FOldVisualValues[fpdiExample] then
     Modified:=true;
@@ -1139,6 +1170,11 @@ begin
 end;
 
 procedure TFPDocEditor.DescrMemoChange(Sender: TObject);
+begin
+  SaveButton.Enabled:=DescrMemo.Text<>FOldVisualValues[fpdiDescription];
+end;
+
+procedure TFPDocEditor.DescrMemoEditingDone(Sender: TObject);
 begin
   if DescrMemo.Text<>FOldVisualValues[fpdiDescription] then
     Modified:=true;

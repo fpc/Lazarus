@@ -1,9 +1,9 @@
 object FPDocEditor: TFPDocEditor
-  Left = 515
+  Left = 514
   Height = 126
   Top = 761
   Width = 753
-  ActiveControl = LeftBtnPanel
+  ActiveControl = ShortEdit
   Caption = 'FPDoc editor'
   ClientHeight = 126
   ClientWidth = 753
@@ -64,7 +64,7 @@ object FPDocEditor: TFPDocEditor
         Anchors = [akTop, akLeft, akRight]
         BorderSpacing.Left = 6
         BorderSpacing.Right = 2
-        OnChange = ShortEditEditingDone
+        OnChange = ShortEditChange
         OnEditingDone = ShortEditEditingDone
         TabOrder = 0
         Text = 'ShortEdit'
@@ -97,7 +97,7 @@ object FPDocEditor: TFPDocEditor
         BorderSpacing.Left = 6
         BorderSpacing.Top = 2
         BorderSpacing.Right = 2
-        OnChange = LinkEditEditingDone
+        OnChange = LinkEditChange
         OnEditingDone = LinkEditEditingDone
         TabOrder = 2
         Text = 'LinkEdit'
@@ -109,7 +109,7 @@ object FPDocEditor: TFPDocEditor
       ClientWidth = 688
       object InheritedShortLabel: TLabel
         Left = 0
-        Height = 14
+        Height = 18
         Top = 2
         Width = 688
         Align = alTop
@@ -125,7 +125,7 @@ object FPDocEditor: TFPDocEditor
         AnchorSideRight.Side = asrBottom
         Left = 0
         Height = 27
-        Top = 18
+        Top = 22
         Width = 688
         Anchors = [akTop, akLeft, akRight]
         BorderSpacing.Top = 2
@@ -137,9 +137,9 @@ object FPDocEditor: TFPDocEditor
         AnchorSideTop.Control = InheritedShortEdit
         AnchorSideTop.Side = asrBottom
         Left = 0
-        Height = 23
-        Top = 51
-        Width = 140
+        Height = 29
+        Top = 55
+        Width = 158
         AutoSize = True
         BorderSpacing.Around = 6
         Caption = 'MoveToInheritedButton'
@@ -151,10 +151,10 @@ object FPDocEditor: TFPDocEditor
         AnchorSideLeft.Side = asrBottom
         AnchorSideTop.Control = MoveToInheritedButton
         AnchorSideTop.Side = asrCenter
-        Left = 150
-        Height = 23
-        Top = 51
-        Width = 151
+        Left = 168
+        Height = 29
+        Top = 55
+        Width = 175
         AutoSize = True
         BorderSpacing.Left = 10
         Caption = 'CopyFromInheritedButton'
@@ -165,10 +165,10 @@ object FPDocEditor: TFPDocEditor
         AnchorSideLeft.Control = CopyFromInheritedButton
         AnchorSideLeft.Side = asrBottom
         AnchorSideTop.Control = CopyFromInheritedButton
-        Left = 311
-        Height = 23
-        Top = 51
-        Width = 151
+        Left = 353
+        Height = 29
+        Top = 55
+        Width = 174
         AutoSize = True
         BorderSpacing.Left = 10
         Caption = 'AddLinkToInheritedButton'
@@ -192,6 +192,7 @@ object FPDocEditor: TFPDocEditor
           'DescrMemo'
         )
         OnChange = DescrMemoChange
+        OnEditingDone = DescrMemoEditingDone
         TabOrder = 0
       end
     end
@@ -211,6 +212,7 @@ object FPDocEditor: TFPDocEditor
           'ErrorsMemo'
         )
         OnChange = ErrorsMemoChange
+        OnEditingDone = ErrorsMemoEditingDone
         TabOrder = 0
       end
     end
@@ -227,6 +229,7 @@ object FPDocEditor: TFPDocEditor
         Lines.Strings = (
           'SeeAlsoMemo'
         )
+        OnChange = SeeAlsoMemoChange
         OnEditingDone = SeeAlsoMemoEditingDone
         TabOrder = 0
       end
@@ -243,6 +246,7 @@ object FPDocEditor: TFPDocEditor
         Align = alTop
         BorderSpacing.Right = 2
         OnChange = ExampleEditChange
+        OnEditingDone = ExampleEditEditingDone
         TabOrder = 0
         Text = 'ExampleEdit'
       end
@@ -251,10 +255,10 @@ object FPDocEditor: TFPDocEditor
         AnchorSideTop.Side = asrBottom
         AnchorSideRight.Control = ExampleTabSheet
         AnchorSideRight.Side = asrBottom
-        Left = 549
-        Height = 23
+        Left = 526
+        Height = 29
         Top = 33
-        Width = 133
+        Width = 156
         Anchors = [akTop, akRight]
         AutoSize = True
         BorderSpacing.Around = 6
