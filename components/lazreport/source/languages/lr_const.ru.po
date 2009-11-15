@@ -5,7 +5,7 @@ msgstr ""
 "Content-Transfer-Encoding: 8bit\n"
 "Project-Id-Version: \n"
 "POT-Creation-Date: \n"
-"PO-Revision-Date: 2009-10-14 01:27+0300\n"
+"PO-Revision-Date: 2009-11-16 00:10+0300\n"
 "Last-Translator: Maxim Ganetsky <maxkill@mail.ru>\n"
 "Language-Team: \n"
 
@@ -238,11 +238,11 @@ msgstr "Файл CSV"
 
 #: lr_const.sdateformat1
 msgid "mm.dd.yy"
-msgstr "mm.dd.yy"
+msgstr "мм.дд.гг"
 
 #: lr_const.sdateformat2
 msgid "mm.dd.yyyy"
-msgstr "mm.dd.yyyy"
+msgstr "мм.дд.гггг"
 
 #: lr_const.sdateformat3
 msgid "d mmm yyyy"

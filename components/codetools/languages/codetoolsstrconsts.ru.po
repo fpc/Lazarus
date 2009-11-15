@@ -5,7 +5,7 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "POT-Creation-Date: \n"
-"PO-Revision-Date: 2009-10-14 00:56+0300\n"
+"PO-Revision-Date: 2009-11-15 20:38+0300\n"
 "Language-Team: \n"
 "MIME-Version: 1.0\n"
 
@@ -253,6 +253,10 @@ msgstr "ожидается end., а найдено %s"
 msgid "End of source not found"
 msgstr "Не найдено конца исходного кода"
 
+#: codetoolsstrconsts.ctsenumerationtype
+msgid "enumeration type"
+msgstr "тип перечисления"
+
 #: codetoolsstrconsts.ctserrorduringcreationofnewprocbodies
 msgid "error during creation of new proc bodies"
 msgstr "ошибка при создании новых тел процедур"
@@ -329,6 +333,16 @@ msgstr "Каталог исходного кода FreePascal"
 msgid "Free Pascal Sources, %s"
 msgstr "Исходный код FreePascal, %s"
 
+#: codetoolsstrconsts.ctsfunctiongetenumeratornotfoundinthisclass
+msgctxt "codetoolsstrconsts.ctsfunctiongetenumeratornotfoundinthisclass"
+msgid "function GetEnumerator not found in this class"
+msgstr "функция GetEnumerator не найдена в данном классе"
+
+#: codetoolsstrconsts.ctsfunctiongetenumeratornotfoundinthisclass2
+msgctxt "codetoolsstrconsts.ctsfunctiongetenumeratornotfoundinthisclass2"
+msgid "function GetEnumerator not found in this class"
+msgstr "функция GetEnumerator не найдена в данном классе"
+
 #: codetoolsstrconsts.ctsgenericidentifier
 msgid "generic identifier"
 msgstr "generic-идентификатор"
@@ -347,7 +361,7 @@ msgstr "Каталог интерфейса IDE"
 
 #: codetoolsstrconsts.ctsidentexpectedbutatomfound
 msgid "identifier expected, but %s found"
-msgstr "ожидается идентификатор, найдено %s"
+msgstr "ожидается идентификатор, но найдено %s"
 
 #: codetoolsstrconsts.ctsidentexpectedbuteoffound
 msgid "unexpected end of file (identifier expected)"
@@ -355,7 +369,7 @@ msgstr "неожиданный конец файла (идентификатор
 
 #: codetoolsstrconsts.ctsidentexpectedbutkeywordfound
 msgid "identifier expected, but keyword %s found"
-msgstr "ожидается идентификатор, найдено ключевое слово %s"
+msgstr "ожидается идентификатор, но найдено ключевое слово %s"
 
 #: codetoolsstrconsts.ctsidentifier
 msgid "identifier"
@@ -379,7 +393,7 @@ msgstr "IfDef Windows"
 
 #: codetoolsstrconsts.ctsiflclwidgettypeequalsgtk2
 msgid "If LCLWidgetType=gtk2 then"
-msgstr "Если LCLWidgetType=gtk2 то"
+msgstr "Если LCLWidgetType=gtk2, то"
 
 #: codetoolsstrconsts.ctsiftargetosisnotsrcos
 msgid "If TargetOS<>SrcOS"
@@ -391,7 +405,7 @@ msgstr "Если TargetOS<>SrcOS2"
 
 #: codetoolsstrconsts.ctsiftargetosisnotwin32
 msgid "If TargetOS<>win32 then"
-msgstr "Если TargetOS<>win32 то"
+msgstr "Если TargetOS<>win32, то"
 
 #: codetoolsstrconsts.ctsillegalcircleinusedunits
 msgid "illegal circle using unit: %s"
@@ -625,6 +639,10 @@ msgstr "специфичный для процессора"
 msgid "property type expected, but %s found"
 msgstr "ожидается тип свойства, найдено %s"
 
+#: codetoolsstrconsts.ctspropertycurrentnotfound
+msgid "property Current not found"
+msgstr "свойство Current не найдено"
+
 #: codetoolsstrconsts.ctspropertyspecifieralreadydefined
 msgid "property specifier already defined: %s"
 msgstr "спецификатор свойства уже задан: %s"
@@ -636,6 +654,10 @@ msgstr "ожидалась ссылка, но найдено %s"
 #: codetoolsstrconsts.ctsresetalldefines
 msgid "Reset all defines"
 msgstr "Сбросить все определения"
+
+#: codetoolsstrconsts.ctsresulttypeoffunctiongetenumeratornotfound
+msgid "result type of function GetEnumerator not found"
+msgstr "тип результата функции GetEnumerator не найден"
 
 #: codetoolsstrconsts.ctsruntimelibrary
 msgid "Runtime library"
@@ -691,7 +713,7 @@ msgstr "строковая константа"
 
 #: codetoolsstrconsts.ctssyntaxerrorinexpr
 msgid "Syntax Error in expression \"%s\""
-msgstr "Ошибка синтаксиса в выражении \"%s\""
+msgstr "Синтаксическая ошибка в выражении \"%s\""
 
 #: codetoolsstrconsts.ctstcodetoolmanagerconsistencycheck
 msgid "TCodeToolManager.ConsistencyCheck=%d"
@@ -704,6 +726,10 @@ msgstr "Определение не имеет простого типа"
 #: codetoolsstrconsts.ctstoolsdirectory
 msgid "Tools Directory"
 msgstr "Каталог средств пользователя"
+
+#: codetoolsstrconsts.ctstype
+msgid "type"
+msgstr "тип"
 
 #: codetoolsstrconsts.ctstypeidentifier
 msgid "type identifier"
@@ -739,7 +765,7 @@ msgstr "обнаружено неожиданное ключевое слово 
 
 #: codetoolsstrconsts.ctsunexpectedkeywordinbeginendblock
 msgid "unexpected keyword \"%s\" in begin..end found"
-msgstr "обнаружено неожиданное ключевое слово \"%s\" в операторных скобках (begin...end)"
+msgstr "обнаружено неожиданное ключевое слово \"%s\" в операторных скобках (begin..end)"
 
 #: codetoolsstrconsts.ctsunexpectedkeywordwhilereadingbackwards
 msgid "unexpected keyword \"%s\" found while reading blocks backwards"
@@ -751,7 +777,7 @@ msgstr "обнаружен неожиданный оператор поддиа�
 
 #: codetoolsstrconsts.ctsunitnotfound
 msgid "unit not found: %s"
-msgstr "не найден модуль: %s"
+msgstr "модуль не найден: %s"
 
 #: codetoolsstrconsts.ctsunitpathinitialization
 msgid "UnitPath Initialization"
@@ -763,7 +789,7 @@ msgstr "Неизвестная функция %s"
 
 #: codetoolsstrconsts.ctsunknownmainfilename
 msgid "(unknown mainfilename)"
-msgstr "(неизвестно имя главного файла)"
+msgstr "(неизвестное имя главного файла)"
 
 #: codetoolsstrconsts.ctsunknownsectionkeyword
 msgid "unknown section keyword %s found"
@@ -779,7 +805,7 @@ msgstr "Не обработано"
 
 #: codetoolsstrconsts.ctsusedunitisnotapascalunit
 msgid "used unit is not a pascal unit"
-msgstr "используемый модуль - не паскалевский"
+msgstr "используемый модуль не является модулем Паскаля"
 
 #: codetoolsstrconsts.ctsutilsdirectories
 msgid "Utils directories"

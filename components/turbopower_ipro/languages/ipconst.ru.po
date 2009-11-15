@@ -5,7 +5,7 @@ msgstr ""
 "Content-Transfer-Encoding: 8bit\n"
 "Project-Id-Version: \n"
 "POT-Creation-Date: \n"
-"PO-Revision-Date: 2008-11-27 02:22+0300\n"
+"PO-Revision-Date: 2009-11-15 20:43+0300\n"
 "Last-Translator: Maxim Ganetsky <maxkill@mail.ru>\n"
 "Language-Team: \n"
 
@@ -2497,7 +2497,7 @@ msgstr "Сетевая подсистема недоступна"
 
 #: ipconst.swsatry_again
 msgid "Nonauthoritative host not found"
-msgstr "Неаутентичный хост не найден"
+msgstr "Неавторитетный хост не найден"
 
 #: ipconst.swsatype_not_found
 msgid "Type not found"
