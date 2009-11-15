@@ -4152,7 +4152,7 @@ begin
     crVSplit:   CursorValue := GDK_SB_V_DOUBLE_ARROW;
     crAppStart: CursorValue := GDK_LEFT_PTR;
     crHelp:     CursorValue := GDK_QUESTION_ARROW;
-    crHandPoint:CursorValue := GDK_Hand1;
+    crHandPoint:CursorValue := GDK_Hand2;
     crSizeAll:  CursorValue := GDK_FLEUR;
   else
     CursorValue := -1;
