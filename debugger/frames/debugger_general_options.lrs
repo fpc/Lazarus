@@ -1,69 +1,70 @@
+{ This is an automatically generated lazarus resource file }
+
 LazarusResources.Add('TDebuggerGeneralOptionsFrame','FORMDATA',[
   'TPF0'#241#28'TDebuggerGeneralOptionsFrame'#27'DebuggerGeneralOptionsFrame'#6
   +'Height'#3#171#1#5'Width'#3#7#2#12'ClientHeight'#3#171#1#11'ClientWidth'#3#7
-  +#2#7'Visible'#8#10'DesignLeft'#3','#3#9'DesignTop'#3#182#1#0#242#2#0#9'TGrou'
-  +'pBox'#14'gbDebuggerType'#22'AnchorSideLeft.Control'#7#5'Owner'#21'AnchorSid'
-  +'eTop.Control'#7#5'Owner'#23'AnchorSideRight.Control'#7#5'Owner'#20'AnchorSi'
-  +'deRight.Side'#7#9'asrBottom'#4'Left'#2#0#6'Height'#2'N'#3'Top'#2#0#5'Width'
-  +#3#7#2#7'Anchors'#11#5'akTop'#6'akLeft'#7'akRight'#0#8'AutoSize'#9#7'Caption'
-  +#6#22'Debugger type and path'#12'ClientHeight'#2'<'#11'ClientWidth'#3#3#2#8
-  +'TabOrder'#2#0#0#12'TSpeedButton'#19'cmdOpenDebuggerPath'#21'AnchorSideTop.C'
-  +'ontrol'#7#15'cmbDebuggerPath'#23'AnchorSideRight.Control'#7#14'gbDebuggerTy'
-  +'pe'#20'AnchorSideRight.Side'#7#9'asrBottom'#24'AnchorSideBottom.Control'#7
-  +#15'cmbDebuggerPath'#21'AnchorSideBottom.Side'#7#9'asrBottom'#4'Left'#3#230#1
-  +#6'Height'#2#21#3'Top'#2'!'#5'Width'#2#23#7'Anchors'#11#5'akTop'#7'akRight'#8
-  +'akBottom'#0#19'BorderSpacing.Right'#2#6#7'Caption'#6#3'...'#5'Color'#7#9'cl'
-  +'BtnFace'#9'NumGlyphs'#2#0#7'OnClick'#7#24'cmdOpenDebuggerPathClick'#0#0#9'T'
-  +'ComboBox'#15'cmbDebuggerType'#22'AnchorSideLeft.Control'#7#14'gbDebuggerTyp'
-  +'e'#21'AnchorSideTop.Control'#7#14'gbDebuggerType'#23'AnchorSideRight.Contro'
-  +'l'#7#14'gbDebuggerType'#20'AnchorSideRight.Side'#7#9'asrBottom'#4'Left'#2#6
-  +#6'Height'#2#21#3'Top'#2#6#5'Width'#3#247#1#7'Anchors'#11#5'akTop'#6'akLeft'
-  +#7'akRight'#0#12'AutoComplete'#8#20'BorderSpacing.Around'#2#6#10'ItemHeight'
-  +#2#13#9'ItemWidth'#2#0#13'OnEditingDone'#7#26'cmbDebuggerTypeEditingDone'#8
-  +'OnSelect'#7#26'cmbDebuggerTypeEditingDone'#8'TabOrder'#2#0#0#0#9'TComboBox'
-  +#15'cmbDebuggerPath'#22'AnchorSideLeft.Control'#7#14'gbDebuggerType'#21'Anch'
-  +'orSideTop.Control'#7#15'cmbDebuggerType'#18'AnchorSideTop.Side'#7#9'asrBott'
-  +'om'#23'AnchorSideRight.Control'#7#19'cmdOpenDebuggerPath'#4'Left'#2#6#6'Hei'
-  +'ght'#2#21#3'Top'#2'!'#5'Width'#3#224#1#7'Anchors'#11#5'akTop'#6'akLeft'#7'a'
-  +'kRight'#0#12'AutoComplete'#8#18'BorderSpacing.Left'#2#6#17'BorderSpacing.To'
-  +'p'#2#6#20'BorderSpacing.Bottom'#2#6#10'ItemHeight'#2#13#9'ItemWidth'#2#0#8
-  +'TabOrder'#2#1#0#0#0#242#2#1#9'TGroupBox'#22'gbAdditionalSearchPath'#22'Anch'
-  +'orSideLeft.Control'#7#5'Owner'#21'AnchorSideTop.Control'#7#14'gbDebuggerTyp'
-  +'e'#18'AnchorSideTop.Side'#7#9'asrBottom'#23'AnchorSideRight.Control'#7#5'Ow'
-  +'ner'#20'AnchorSideRight.Side'#7#9'asrBottom'#4'Left'#2#0#6'Height'#2'5'#3'T'
-  +'op'#2'T'#5'Width'#3#7#2#7'Anchors'#11#5'akTop'#6'akLeft'#7'akRight'#0#8'Aut'
-  +'oSize'#9#17'BorderSpacing.Top'#2#6#7'Caption'#6#22'Additional search path'
-  +#12'ClientHeight'#2'#'#11'ClientWidth'#3#3#2#8'TabOrder'#2#1#0#12'TSpeedButt'
-  +'on'#21'cmdOpenAdditionalPath'#21'AnchorSideTop.Control'#7#17'txtAdditionalP'
-  +'ath'#23'AnchorSideRight.Control'#7#22'gbAdditionalSearchPath'#20'AnchorSide'
-  +'Right.Side'#7#9'asrBottom'#24'AnchorSideBottom.Control'#7#17'txtAdditionalP'
-  +'ath'#21'AnchorSideBottom.Side'#7#9'asrBottom'#4'Left'#3#230#1#6'Height'#2#23
-  +#3'Top'#2#6#5'Width'#2#23#7'Anchors'#11#5'akTop'#7'akRight'#8'akBottom'#0#19
-  +'BorderSpacing.Right'#2#6#7'Caption'#6#3'...'#5'Color'#7#9'clBtnFace'#9'NumG'
-  +'lyphs'#2#0#7'OnClick'#7#26'cmdOpenAdditionalPathClick'#0#0#5'TEdit'#17'txtA'
-  +'dditionalPath'#22'AnchorSideLeft.Control'#7#22'gbAdditionalSearchPath'#21'A'
-  +'nchorSideTop.Control'#7#22'gbAdditionalSearchPath'#23'AnchorSideRight.Contr'
-  +'ol'#7#21'cmdOpenAdditionalPath'#4'Left'#2#6#6'Height'#2#23#3'Top'#2#6#5'Wid'
-  +'th'#3#224#1#7'Anchors'#11#5'akTop'#6'akLeft'#7'akRight'#0#18'BorderSpacing.'
-  +'Left'#2#6#17'BorderSpacing.Top'#2#6#20'BorderSpacing.Bottom'#2#6#8'TabOrder'
-  +#2#0#0#0#0#242#2#2#11'TCheckGroup'#25'gcbDebuggerGeneralOptions'#22'AnchorSi'
-  +'deLeft.Control'#7#5'Owner'#21'AnchorSideTop.Control'#7#22'gbAdditionalSearc'
-  +'hPath'#18'AnchorSideTop.Side'#7#9'asrBottom'#23'AnchorSideRight.Control'#7#5
-  +'Owner'#20'AnchorSideRight.Side'#7#9'asrBottom'#4'Left'#2#0#6'Height'#2'8'#3
-  +'Top'#3#143#0#5'Width'#3#7#2#7'Anchors'#11#5'akTop'#6'akLeft'#7'akRight'#0#8
-  +'AutoFill'#9#17'BorderSpacing.Top'#2#6#7'Caption'#6#24'Debugger general opti'
-  +'ons'#28'ChildSizing.LeftRightSpacing'#2#6#28'ChildSizing.TopBottomSpacing'#2
-  +#6#29'ChildSizing.EnlargeHorizontal'#7#24'crsHomogenousChildResize'#27'Child'
-  +'Sizing.EnlargeVertical'#7#24'crsHomogenousChildResize'#28'ChildSizing.Shrin'
-  +'kHorizontal'#7#14'crsScaleChilds'#26'ChildSizing.ShrinkVertical'#7#14'crsSc'
-  +'aleChilds'#18'ChildSizing.Layout'#7#29'cclLeftToRightThenTopToBottom'#27'Ch'
-  +'ildSizing.ControlsPerLine'#2#1#8'TabOrder'#2#2#0#0#242#2#3#9'TGroupBox'#18
-  +'gbDebuggerSpecific'#22'AnchorSideLeft.Control'#7#5'Owner'#21'AnchorSideTop.'
-  +'Control'#7#25'gcbDebuggerGeneralOptions'#18'AnchorSideTop.Side'#7#9'asrBott'
-  +'om'#23'AnchorSideRight.Control'#7#5'Owner'#20'AnchorSideRight.Side'#7#9'asr'
-  +'Bottom'#24'AnchorSideBottom.Control'#7#5'Owner'#21'AnchorSideBottom.Side'#7
-  +#9'asrBottom'#4'Left'#2#0#6'Height'#3#222#0#3'Top'#3#205#0#5'Width'#3#7#2#7
-  ,'Anchors'#11#5'akTop'#6'akLeft'#7'akRight'#8'akBottom'#0#17'BorderSpacing.To'
-  +'p'#2#6#7'Caption'#6'7Debugger specific options (depends on type of debugger'
-  +')'#8'TabOrder'#2#3#0#0#0
+  +#2#8'TabOrder'#2#0#7'Visible'#8#10'DesignLeft'#3','#3#9'DesignTop'#3#182#1#0
+  +#242#2#0#9'TGroupBox'#14'gbDebuggerType'#22'AnchorSideLeft.Control'#7#5'Owne'
+  +'r'#21'AnchorSideTop.Control'#7#5'Owner'#23'AnchorSideRight.Control'#7#5'Own'
+  +'er'#20'AnchorSideRight.Side'#7#9'asrBottom'#4'Left'#2#0#6'Height'#2'N'#3'To'
+  +'p'#2#0#5'Width'#3#7#2#7'Anchors'#11#5'akTop'#6'akLeft'#7'akRight'#0#8'AutoS'
+  +'ize'#9#7'Caption'#6#22'Debugger type and path'#12'ClientHeight'#2'<'#11'Cli'
+  +'entWidth'#3#3#2#8'TabOrder'#2#0#0#12'TSpeedButton'#19'cmdOpenDebuggerPath'
+  +#21'AnchorSideTop.Control'#7#15'cmbDebuggerPath'#23'AnchorSideRight.Control'
+  +#7#14'gbDebuggerType'#20'AnchorSideRight.Side'#7#9'asrBottom'#24'AnchorSideB'
+  +'ottom.Control'#7#15'cmbDebuggerPath'#21'AnchorSideBottom.Side'#7#9'asrBotto'
+  +'m'#4'Left'#3#230#1#6'Height'#2#21#3'Top'#2'!'#5'Width'#2#23#7'Anchors'#11#5
+  +'akTop'#7'akRight'#8'akBottom'#0#19'BorderSpacing.Right'#2#6#7'Caption'#6#3
+  +'...'#5'Color'#7#9'clBtnFace'#9'NumGlyphs'#2#0#7'OnClick'#7#24'cmdOpenDebugg'
+  +'erPathClick'#0#0#9'TComboBox'#15'cmbDebuggerType'#22'AnchorSideLeft.Control'
+  +#7#14'gbDebuggerType'#21'AnchorSideTop.Control'#7#14'gbDebuggerType'#23'Anch'
+  +'orSideRight.Control'#7#14'gbDebuggerType'#20'AnchorSideRight.Side'#7#9'asrB'
+  +'ottom'#4'Left'#2#6#6'Height'#2#21#3'Top'#2#6#5'Width'#3#247#1#7'Anchors'#11
+  +#5'akTop'#6'akLeft'#7'akRight'#0#20'BorderSpacing.Around'#2#6#10'ItemHeight'
+  +#2#13#13'OnEditingDone'#7#26'cmbDebuggerTypeEditingDone'#8'OnSelect'#7#26'cm'
+  +'bDebuggerTypeEditingDone'#5'Style'#7#14'csDropDownList'#8'TabOrder'#2#0#0#0
+  +#9'TComboBox'#15'cmbDebuggerPath'#22'AnchorSideLeft.Control'#7#14'gbDebugger'
+  +'Type'#21'AnchorSideTop.Control'#7#15'cmbDebuggerType'#18'AnchorSideTop.Side'
+  +#7#9'asrBottom'#23'AnchorSideRight.Control'#7#19'cmdOpenDebuggerPath'#4'Left'
+  +#2#6#6'Height'#2#21#3'Top'#2'!'#5'Width'#3#224#1#7'Anchors'#11#5'akTop'#6'ak'
+  +'Left'#7'akRight'#0#18'BorderSpacing.Left'#2#6#17'BorderSpacing.Top'#2#6#20
+  +'BorderSpacing.Bottom'#2#6#10'ItemHeight'#2#13#8'TabOrder'#2#1#0#0#0#242#2#1
+  +#9'TGroupBox'#22'gbAdditionalSearchPath'#22'AnchorSideLeft.Control'#7#5'Owne'
+  +'r'#21'AnchorSideTop.Control'#7#14'gbDebuggerType'#18'AnchorSideTop.Side'#7#9
+  +'asrBottom'#23'AnchorSideRight.Control'#7#5'Owner'#20'AnchorSideRight.Side'#7
+  +#9'asrBottom'#4'Left'#2#0#6'Height'#2'5'#3'Top'#2'T'#5'Width'#3#7#2#7'Anchor'
+  +'s'#11#5'akTop'#6'akLeft'#7'akRight'#0#8'AutoSize'#9#17'BorderSpacing.Top'#2
+  +#6#7'Caption'#6#22'Additional search path'#12'ClientHeight'#2'#'#11'ClientWi'
+  +'dth'#3#3#2#8'TabOrder'#2#1#0#12'TSpeedButton'#21'cmdOpenAdditionalPath'#21
+  +'AnchorSideTop.Control'#7#17'txtAdditionalPath'#23'AnchorSideRight.Control'#7
+  +#22'gbAdditionalSearchPath'#20'AnchorSideRight.Side'#7#9'asrBottom'#24'Ancho'
+  +'rSideBottom.Control'#7#17'txtAdditionalPath'#21'AnchorSideBottom.Side'#7#9
+  +'asrBottom'#4'Left'#3#230#1#6'Height'#2#21#3'Top'#2#6#5'Width'#2#23#7'Anchor'
+  +'s'#11#5'akTop'#7'akRight'#8'akBottom'#0#19'BorderSpacing.Right'#2#6#7'Capti'
+  +'on'#6#3'...'#5'Color'#7#9'clBtnFace'#9'NumGlyphs'#2#0#7'OnClick'#7#26'cmdOp'
+  +'enAdditionalPathClick'#0#0#5'TEdit'#17'txtAdditionalPath'#22'AnchorSideLeft'
+  +'.Control'#7#22'gbAdditionalSearchPath'#21'AnchorSideTop.Control'#7#22'gbAdd'
+  +'itionalSearchPath'#23'AnchorSideRight.Control'#7#21'cmdOpenAdditionalPath'#4
+  +'Left'#2#6#6'Height'#2#21#3'Top'#2#6#5'Width'#3#224#1#7'Anchors'#11#5'akTop'
+  +#6'akLeft'#7'akRight'#0#18'BorderSpacing.Left'#2#6#17'BorderSpacing.Top'#2#6
+  +#20'BorderSpacing.Bottom'#2#6#8'TabOrder'#2#0#0#0#0#242#2#2#11'TCheckGroup'
+  +#25'gcbDebuggerGeneralOptions'#22'AnchorSideLeft.Control'#7#5'Owner'#21'Anch'
+  +'orSideTop.Control'#7#22'gbAdditionalSearchPath'#18'AnchorSideTop.Side'#7#9
+  +'asrBottom'#23'AnchorSideRight.Control'#7#5'Owner'#20'AnchorSideRight.Side'#7
+  +#9'asrBottom'#4'Left'#2#0#6'Height'#2'8'#3'Top'#3#143#0#5'Width'#3#7#2#7'Anc'
+  +'hors'#11#5'akTop'#6'akLeft'#7'akRight'#0#8'AutoFill'#9#17'BorderSpacing.Top'
+  +#2#6#7'Caption'#6#24'Debugger general options'#28'ChildSizing.LeftRightSpaci'
+  +'ng'#2#6#28'ChildSizing.TopBottomSpacing'#2#6#29'ChildSizing.EnlargeHorizont'
+  +'al'#7#24'crsHomogenousChildResize'#27'ChildSizing.EnlargeVertical'#7#24'crs'
+  +'HomogenousChildResize'#28'ChildSizing.ShrinkHorizontal'#7#14'crsScaleChilds'
+  +#26'ChildSizing.ShrinkVertical'#7#14'crsScaleChilds'#18'ChildSizing.Layout'#7
+  +#29'cclLeftToRightThenTopToBottom'#27'ChildSizing.ControlsPerLine'#2#1#8'Tab'
+  +'Order'#2#2#0#0#242#2#3#9'TGroupBox'#18'gbDebuggerSpecific'#22'AnchorSideLef'
+  +'t.Control'#7#5'Owner'#21'AnchorSideTop.Control'#7#25'gcbDebuggerGeneralOpti'
+  +'ons'#18'AnchorSideTop.Side'#7#9'asrBottom'#23'AnchorSideRight.Control'#7#5
+  +'Owner'#20'AnchorSideRight.Side'#7#9'asrBottom'#24'AnchorSideBottom.Control'
+  +#7#5'Owner'#21'AnchorSideBottom.Side'#7#9'asrBottom'#4'Left'#2#0#6'Height'#3
+  +#222#0#3'Top'#3#205#0#5'Width'#3#7#2#7'Anchors'#11#5'akTop'#6'akLeft'#7'akRi'
+  ,'ght'#8'akBottom'#0#17'BorderSpacing.Top'#2#6#7'Caption'#6'7Debugger specifi'
+  +'c options (depends on type of debugger)'#8'TabOrder'#2#3#0#0#0
 ]);

@@ -3,6 +3,7 @@ inherited DebuggerGeneralOptionsFrame: TDebuggerGeneralOptionsFrame
   Width = 519
   ClientHeight = 427
   ClientWidth = 519
+  TabOrder = 0
   Visible = False
   DesignLeft = 812
   DesignTop = 438
@@ -48,12 +49,11 @@ inherited DebuggerGeneralOptionsFrame: TDebuggerGeneralOptionsFrame
       Top = 6
       Width = 503
       Anchors = [akTop, akLeft, akRight]
-      AutoComplete = False
       BorderSpacing.Around = 6
       ItemHeight = 13
-      ItemWidth = 0
       OnEditingDone = cmbDebuggerTypeEditingDone
       OnSelect = cmbDebuggerTypeEditingDone
+      Style = csDropDownList
       TabOrder = 0
     end
     object cmbDebuggerPath: TComboBox
@@ -66,12 +66,10 @@ inherited DebuggerGeneralOptionsFrame: TDebuggerGeneralOptionsFrame
       Top = 33
       Width = 480
       Anchors = [akTop, akLeft, akRight]
-      AutoComplete = False
       BorderSpacing.Left = 6
       BorderSpacing.Top = 6
       BorderSpacing.Bottom = 6
       ItemHeight = 13
-      ItemWidth = 0
       TabOrder = 1
     end
   end
@@ -99,7 +97,7 @@ inherited DebuggerGeneralOptionsFrame: TDebuggerGeneralOptionsFrame
       AnchorSideBottom.Control = txtAdditionalPath
       AnchorSideBottom.Side = asrBottom
       Left = 486
-      Height = 23
+      Height = 21
       Top = 6
       Width = 23
       Anchors = [akTop, akRight, akBottom]
@@ -114,7 +112,7 @@ inherited DebuggerGeneralOptionsFrame: TDebuggerGeneralOptionsFrame
       AnchorSideTop.Control = gbAdditionalSearchPath
       AnchorSideRight.Control = cmdOpenAdditionalPath
       Left = 6
-      Height = 23
+      Height = 21
       Top = 6
       Width = 480
       Anchors = [akTop, akLeft, akRight]
