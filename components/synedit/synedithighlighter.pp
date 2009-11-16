@@ -209,6 +209,7 @@ type
     fUpdateCount: integer;                                                      //mh 2001-09-13
     fEnabled: Boolean;
     fWordBreakChars: TSynIdentChars;
+    FIsScanning: Boolean;
     procedure SetCurrentLines(const AValue: TSynEditStrings);
     procedure SetDrawDividerLevel(const AValue: Integer);
     procedure SetEnabled(const Value: boolean);                                 //DDH 2001-10-23
@@ -239,6 +240,7 @@ type
     function GetDrawDivider(Index: integer): TSynDividerDrawConfigSetting; virtual;
     function GetDividerDrawConfig(Index: Integer): TSynDividerDrawConfig; virtual;
     function GetDividerDrawConfigCount: Integer; virtual;
+    property IsScanning: Boolean read FIsScanning;
   public
     procedure DefHighlightChange(Sender: TObject);
     property  AttributeChangeNeedScan: Boolean read FAttributeChangeNeedScan;
@@ -324,7 +326,7 @@ type
     property DividerDrawConfigCount: Integer read GetDividerDrawConfigCount;
   published
     property DefaultFilter: string read GetDefaultFilter write SetDefaultFilter
-      stored IsFilterStored;
+      stored IsFilterStored; deprecated;
     property Enabled: boolean read fEnabled write SetEnabled default TRUE;      //DDH 2001-10-23
   end;
 
@@ -945,7 +947,7 @@ begin
     if Src is ClassType then
       SampleSource := Src.SampleSource;
     fWordBreakChars := Src.WordBreakChars;
-    DefaultFilter := Src.DefaultFilter;
+    //DefaultFilter := Src.DefaultFilter;
     Enabled := Src.Enabled;
   end else
     inherited Assign(Source);
@@ -1221,18 +1223,23 @@ function TSynCustomHighlighter.ScanFrom(Index: integer; AtLeastTilIndex: integer
 var
   c: LongInt;
 begin
-  Result := Index;
-  c := CurrentLines.Count;
-  StartAtLineIndex(Result);
-  NextToEol;
-  while UpdateRangeInfoAtLine(Result) or
-        (Result <= AtLeastTilIndex+1)
-  do begin
-    inc(Result);
-    if Result = c then
-      break;
-    ContinueNextLine;
+  FIsScanning := True;
+  try
+    Result := Index;
+    c := CurrentLines.Count;
+    StartAtLineIndex(Result);
     NextToEol;
+    while UpdateRangeInfoAtLine(Result) or
+          (Result <= AtLeastTilIndex+1)
+    do begin
+      inc(Result);
+      if Result = c then
+        break;
+      ContinueNextLine;
+      NextToEol;
+    end;
+  finally
+    FIsScanning := False;
   end;
 end;
 

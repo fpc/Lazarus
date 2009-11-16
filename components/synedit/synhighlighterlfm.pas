@@ -599,6 +599,7 @@ end;
 
 procedure TSynLFMSyn.ResetRange;
 begin
+  inherited;
   fRange := rsUnknown;
 end;
 
