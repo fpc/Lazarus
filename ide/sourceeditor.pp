@@ -7269,6 +7269,7 @@ end;
 
 procedure TSourceNotebook.CloseTabClicked(Sender: TObject);
 begin
+  FPageIndex := Notebook.PageIndex;
   if Assigned(FOnCloseClicked) then
     FOnCloseClicked(Sender, GetKeyState(VK_CONTROL) < 0);
 end;
