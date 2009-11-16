@@ -982,9 +982,14 @@ begin
 
   case AState of
     lisFocused: AIsSet := TWI = QtTreeWidget.currentItem;
-    lisSelected: AIsSet := QTreeWidgetItem_isSelected(TWI);
+    lisSelected:
+      begin
+        AIsSet := QTreeWidgetItem_isSelected(TWI);
+        if not AIsSet and TListView(ALV).HideSelection then
+          AIsSet := TWI = QtTreeWidget.currentItem;
+      end;
     else
-    AIsSet := False;
+      AIsSet := False;
   end;
 
   Result := True;
@@ -1276,6 +1281,8 @@ begin
     Result := FPInts[0]
   else
     Result := -1;
+  if (Result = -1) and TListView(ALV).HideSelection then
+    Result := QtTreeWidget.currentRow;
 end;
 
 {------------------------------------------------------------------------------
