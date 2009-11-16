@@ -90,7 +90,6 @@ class procedure TCarbonWSBitBtn.SetGlyph(const ABitBtn: TCustomBitBtn;
   const AValue: TButtonGlyph);
 var
   Img     : CGImageRef;
-  BitBtn  : TCustomBitBtn;
   R       : TRect;
 begin
   if not CheckHandle(ABitBtn, Self, 'SetGlyph') then Exit;
@@ -105,7 +104,7 @@ begin
       else
       begin
         // TODO: consider button style (down, disabled)
-        R := Classes.Rect(0, 0, AValue.Glyph.Width div BitBtn.NumGlyphs, AValue.Glyph.Height);
+        R := Classes.Rect(0, 0, AValue.Glyph.Width div ABitBtn.NumGlyphs, AValue.Glyph.Height);
         Img := TCarbonBitmap(AValue.Glyph.Handle).CreateMaskedImage(TCarbonBitmap(AValue.Glyph.MaskHandle), R);
       end;
     end;
