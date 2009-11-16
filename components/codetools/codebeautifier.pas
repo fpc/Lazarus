@@ -1334,6 +1334,12 @@ begin
           EndBlock;
         bbtIfThen:
           EndBlock;
+        bbtStatement:
+          begin
+            EndBlock;
+            if Stack.TopType in [bbtIfThen] then
+              EndBlock;
+          end;
         end;
       end;
     'N': // EN
