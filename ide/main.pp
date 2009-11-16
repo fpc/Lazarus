@@ -1539,7 +1539,7 @@ begin
     if PropOwner is TComponent then begin
       LookupRoot:=GetLookupRootForComponent(TComponent(PropOwner));
       if LookupRoot is TComponent then begin
-        //DebugLn(['TMainIDE.OnPropHookGetMethodName ',Result,' ',dbgsName(GlobalDesignHook.LookupRoot),' ',dbgsName(JITMethod.TheClass)]);
+        //DebugLn(['TMainIDE.OnPropHookGetMethodName ',Result,' GlobalDesignHook.LookupRoot=',dbgsName(GlobalDesignHook.LookupRoot),' JITMethod.TheClass=',dbgsName(JITMethod.TheClass),' PropOwner=',DbgSName(PropOwner),' PropOwner-LookupRoot=',DbgSName(LookupRoot)]);
         if (LookupRoot.ClassType<>JITMethod.TheClass) then begin
           Result:=JITMethod.TheClass.ClassName+'.'+Result;
         end;

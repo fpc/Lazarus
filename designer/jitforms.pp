@@ -660,11 +660,9 @@ end;
 
 function CompareJITMethod(Data1, Data2: Pointer): integer;
 var
-  JITMethod1: TJITMethod;
-  JITMethod2: TJITMethod;
+  JITMethod1: TJITMethod absolute Data1;
+  JITMethod2: TJITMethod absolute Data2;
 begin
-  JITMethod1:=TJITMethod(Data1);
-  JITMethod2:=TJITMethod(Data2);
   Result:=ComparePointers(JITMethod1.TheClass,JITMethod2.TheClass);
   if Result<>0 then exit;
   Result:=CompareText(JITMethod1.TheMethodName,JITMethod2.TheMethodName);
@@ -1741,6 +1739,7 @@ procedure TJITComponentList.ReaderSetMethodProperty(Reader: TReader;
 var
   Method: TMethod;
   JITMethod: TJITMethod;
+  CurLookupRoot: TPersistent;
 {$ENDIF}
 begin
   {$IFNDEF DisableFakeMethods}
@@ -1755,10 +1754,13 @@ begin
       // search in JIT method of stream class (e.g. ancestor)
       JITMethod:=JITMethods.Find(FCurReadStreamClass,TheMethodName);
     end;
-    if (JITMethod=nil) and (Reader.LookupRoot<>nil) then begin
-      // create a fake TJITMethod
-      //DebugLn(['TJITComponentList.ReaderSetMethodProperty ',DbgSName(reader.LookupRoot),' TheMethodName=',TheMethodName]);
-      JITMethod:=JITMethods.Add(Reader.LookupRoot.ClassType,TheMethodName);
+    if (JITMethod=nil) then begin
+      CurLookupRoot:=GetLookupRootForComponent(Reader.LookupRoot);
+      if CurLookupRoot<>nil then begin
+        // create a fake TJITMethod
+        //DebugLn(['TJITComponentList.ReaderSetMethodProperty ',DbgSName(reader.LookupRoot),' TheMethodName=',TheMethodName]);
+        JITMethod:=JITMethods.Add(CurLookupRoot.ClassType,TheMethodName);
+      end;
     end;
     if JITMethod<>nil then
       Method:=JITMethod.Method

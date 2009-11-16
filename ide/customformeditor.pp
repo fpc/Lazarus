@@ -198,7 +198,7 @@ each control that's dropped onto the form
                                          const NewUnitName: shortstring);
     procedure UpdateDesignerFormName(AComponent: TComponent);
     procedure UpdateComponentName(AComponent: TComponent);
-    function CreateNewJITMethod(AComponent: TComponent;
+    function CreateNewJITMethod(ALookupRoot: TComponent;
                                 const AMethodName: shortstring): TMethod;
     procedure RenameJITMethod(AComponent: TComponent;
                            const OldMethodName, NewMethodName: shortstring);
@@ -1306,15 +1306,15 @@ begin
   end;
 end;
 
-function TCustomFormEditor.CreateNewJITMethod(AComponent: TComponent;
+function TCustomFormEditor.CreateNewJITMethod(ALookupRoot: TComponent;
   const AMethodName: shortstring): TMethod;
 var
   JITComponentList: TJITComponentList;
 begin
-  JITComponentList:=FindJITList(AComponent);
+  JITComponentList:=FindJITList(ALookupRoot);
   if JITComponentList=nil then
     RaiseException('TCustomFormEditor.CreateNewJITMethod');
-  Result:=JITComponentList.CreateNewMethod(AComponent,AMethodName);
+  Result:=JITComponentList.CreateNewMethod(ALookupRoot,AMethodName);
 end;
 
 procedure TCustomFormEditor.RenameJITMethod(AComponent: TComponent;
