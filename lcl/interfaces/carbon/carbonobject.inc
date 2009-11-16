@@ -948,7 +948,7 @@ var
 const
   SName = 'RegisterEvents';
 begin
-  DebugLn('TCarbonWidgetSet.RegisterEvents');
+  //DebugLn('TCarbonWidgetSet.RegisterEvents');
   TmpSpec := MakeEventSpec(kEventClassCommand, kEventCommandProcess);
   InstallApplicationEventHandler(RegisterEventHandler(@CarbonApp_CommandProcess),
     1, @TmpSpec, nil, nil);
