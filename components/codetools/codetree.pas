@@ -84,8 +84,9 @@ const
   ctnClassInterface     = 31;
   ctnObject             = 32;
   ctnObjCClass          = 33;
-  ctnObjCProtocol       = 34;
-  ctnCPPClass           = 35;
+  ctnObjCCategory       = 34;
+  ctnObjCProtocol       = 35;
+  ctnCPPClass           = 36;
 
   ctnClassAbstract      = 40;
   ctnClassSealed        = 41;
@@ -164,10 +165,11 @@ const
   AllClassSections =
     AllClassBaseSections+AllClassTypeSections+AllClassVarSections;
   AllClasses =
-     [ctnClass,ctnClassInterface,ctnObject,ctnObjCClass,ctnObjCProtocol,
+     [ctnClass,ctnClassInterface,ctnObject,
+      ctnObjCClass,ctnObjCCategory,ctnObjCProtocol,
       ctnCPPClass];
   AllClassInterfaces = [ctnClassInterface,ctnObjCProtocol];
-  AllClassObjects = [ctnClass,ctnObject,ctnObjCClass,ctnCPPClass];
+  AllClassObjects = [ctnClass,ctnObject,ctnObjCClass,ctnObjCCategory,ctnCPPClass];
   AllClassModifiers = [ctnClassAbstract, ctnClassSealed];
   AllDefinitionSections =
      [ctnTypeSection,ctnVarSection,ctnConstSection,ctnResStrSection,
@@ -367,6 +369,7 @@ begin
   ctnClassInterface: Result:='Class Interface';
   ctnObject: Result:='Object';
   ctnObjCClass: Result:='ObjCClass';
+  ctnObjCCategory: Result:='ObjCCategory';
   ctnObjCProtocol: Result:='ObjCProtocol';
   ctnCPPClass: Result:='CPPClass';
 

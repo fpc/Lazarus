@@ -1260,7 +1260,7 @@ begin
       CurrentIdentifierList.Add(NewItem);
     end;
     if (UpAtomIs('READ') or UpAtomIs('WRITE'))
-    and (Context.Node.GetNodeOfTypes([ctnClass,ctnObject,ctnObjCClass,ctnCPPClass])<>nil)
+    and (Context.Tool.FindClassOrInterfaceNode(Context.Node)<>nil)
     then begin
       // add the default class completion 'read'/'write' specifier variable
       NewItem:=TIdentifierListItem.Create(
@@ -1421,7 +1421,7 @@ var
 begin
   Node:=Context.Node;
   case Node.Desc of
-  ctnClass,ctnObject,ctnObjCClass,
+  ctnClass,ctnObject,ctnObjCCategory,ctnObjCClass,
   ctnClassPrivate,ctnClassProtected,ctnClassPublic,ctnClassPublished:
     begin
       Add('public');

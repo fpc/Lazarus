@@ -1901,7 +1901,8 @@ var
           Description:='type '+Identifier;
           if CTNode.FirstChild<>nil then begin
             case CTNode.FirstChild.Desc of
-            ctnClass,ctnClassInterface,ctnObject,ctnObjCClass,ctnObjCProtocol,
+            ctnClass,ctnClassInterface,ctnObject,
+            ctnObjCClass,ctnObjCCategory,ctnObjCProtocol,
             ctnCPPClass:
               begin
                 case CTNode.FirstChild.Desc of
@@ -1911,6 +1912,8 @@ var
                   Description:=Description+' = object';
                 ctnObjCClass:
                   Description:=Description+' = objcclass';
+                ctnObjCCategory:
+                  Description:=Description+' = objccategory';
                 ctnObjCProtocol:
                   Description:=Description+' = objcprotocol';
                 ctnCPPClass:
@@ -2403,7 +2406,7 @@ begin
       Result:=ImgIDProgramCode;
     ctnUnit:
       Result:=ImgIDUnitCode;
-    ctnInterface,ctnObjCProtocol:
+    ctnInterface:
       Result:=ImgIDInterfaceSection;
     ctnImplementation:
       Result:=ImgIDImplementation;
@@ -2423,7 +2426,7 @@ begin
       Result:=ImgIDConstSection;
     ctnConstDefinition:
       Result:=ImgIDConst;
-    ctnClass,ctnObject,ctnObjCClass,ctnCPPClass:
+    ctnClass,ctnObject,ctnObjCClass,ctnObjCCategory,ctnObjCProtocol,ctnCPPClass:
       Result:=ImgIDClass;
     ctnProcedure:
       Result:=ImgIDProc;

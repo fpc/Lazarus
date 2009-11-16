@@ -4102,7 +4102,7 @@ function TCodeCompletionCodeTool.BuildUnitDefinitionGraph(out
       end;
 
     ctnRecordType, ctnClassInterface, ctnClass, ctnObject,
-    ctnObjCClass, ctnObjCProtocol, ctnCPPClass:
+    ctnObjCClass, ctnObjCCategory, ctnObjCProtocol, ctnCPPClass:
       begin
         ChildNode:=SubNode.FirstChild;
         while (ChildNode<>nil) and (ChildNode.HasAsParent(SubNode)) do begin

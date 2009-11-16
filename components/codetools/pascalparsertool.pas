@@ -389,7 +389,8 @@ begin
     if CompareSrcIdentifiers('LABEL',p) then exit(KeyWordFuncTypeLabel);
   'O':
     if CompareSrcIdentifiers('OBJECT',p)
-    or CompareSrcIdentifiers('OBJCCLASS',p) then exit(KeyWordFuncClass);
+    or CompareSrcIdentifiers('OBJCCLASS',p)
+    or CompareSrcIdentifiers('OBJCCATEGORY',p) then exit(KeyWordFuncClass);
   'P':
     case UpChars[p[1]] of
     'A': if CompareSrcIdentifiers('PACKED',p) then exit(KeyWordFuncTypePacked);
@@ -701,7 +702,8 @@ begin
     ReadNextAtom;
     if UpAtomIs('PACKED') or (UpAtomIs('BITPACKED')) then ReadNextAtom;
     if not (UpAtomIs('CLASS') or UpAtomIs('OBJECT') or UpAtomIs('OBJCCLASS')
-           or UpAtomIs('CPPCLASS') or UpAtomIs('INTERFACE'))
+           or UpAtomIs('OBJCCATEGORY') or UpAtomIs('CPPCLASS')
+           or UpAtomIs('INTERFACE') or UpAtomIs('OBJCPROTOCOL'))
     then
       RaiseClassKeyWordExpected;
     ReadNextAtom;
@@ -3399,6 +3401,8 @@ begin
     ClassDesc:=ctnObject
   else if UpAtomIs('OBJCCLASS') then
     ClassDesc:=ctnObjCClass
+  else if UpAtomIs('OBJCCATEGORY') then
+    ClassDesc:=ctnObjCCategory
   else if UpAtomIs('CPPCLASS') then
     ClassDesc:=ctnCPPClass
   else
@@ -4572,7 +4576,8 @@ procedure TPascalParserTool.BuildSubTree(ANode: TCodeTreeNode);
 begin
   if ANode=nil then exit;
   case ANode.Desc of
-  ctnClass,ctnClassInterface,ctnObject,ctnObjCClass,ctnObjCProtocol,ctnCPPClass:
+  ctnClass,ctnClassInterface,ctnObject,
+  ctnObjCClass,ctnObjCCategory,ctnObjCProtocol,ctnCPPClass:
     BuildSubTreeForClass(ANode);
   ctnProcedure,ctnProcedureHead:
     BuildSubTreeForProcHead(ANode);
