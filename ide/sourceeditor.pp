@@ -2580,6 +2580,7 @@ Begin
       BookMarkOptions.EnableKeys := false;
       BookMarkOptions.LeftMargin:=1;
       WantTabs := true;
+      ScrollBars := ssAutoBoth;
 
       // IMPORTANT: when you change below, don't forget updating UnbindEditor
       OnStatusChange := @EditorStatusChanged;
