@@ -63,6 +63,12 @@ type
     AddLinkToInheritedButton: TButton;
     BoldFormatButton: TSpeedButton;
     BrowseExampleButton: TButton;
+    TopicShort: TEdit;
+    TopicDescr: TMemo;
+    Panel3: TPanel;
+    TopicListBox: TListBox;
+    NewTopicNameEdit: TEdit;
+    NewTopicButton: TButton;
     ControlDocker: TLazControlDocker;
     CopyFromInheritedButton: TButton;
     CreateButton: TButton;
@@ -84,6 +90,8 @@ type
     LeftBtnPanel: TPanel;
     LinkEdit: TEdit;
     LinkLabel: TLabel;
+    Panel1: TPanel;
+    Panel2: TPanel;
     SaveButton: TSpeedButton;
     SeeAlsoMemo: TMemo;
     MoveToInheritedButton: TButton;
@@ -95,6 +103,7 @@ type
     ShortTabSheet: TTabSheet;
     InsertPrintShortSpeedButton: TSpeedButton;
     InsertURLTagSpeedButton: TSpeedButton;
+    TopicSheet: TTabSheet;
     UnderlineFormatButton: TSpeedButton;
     procedure AddLinkToInheritedButtonClick(Sender: TObject);
     procedure ApplicationIdle(Sender: TObject; var Done: Boolean);
@@ -116,12 +125,16 @@ type
     procedure LinkEditChange(Sender: TObject);
     procedure LinkEditEditingDone(Sender: TObject);
     procedure MoveToInheritedButtonClick(Sender: TObject);
+    procedure NewTopicButtonClick(Sender: TObject);
     procedure PageControlChange(Sender: TObject);
     procedure SaveButtonClick(Sender: TObject);
     procedure SeeAlsoMemoChange(Sender: TObject);
     procedure SeeAlsoMemoEditingDone(Sender: TObject);
     procedure ShortEditChange(Sender: TObject);
     procedure ShortEditEditingDone(Sender: TObject);
+    procedure TopicControlEnter(Sender: TObject);
+    procedure TopicDescrChange(Sender: TObject);
+    procedure TopicListBoxClick(Sender: TObject);
   private
     FCaretXY: TPoint;
     FModified: Boolean;
@@ -160,6 +173,12 @@ type
     function GetCurrentModuleName: string;
     procedure JumpToError(Item : TFPDocItem; LineCol: TPoint);
     function GUIModified: boolean;
+  private
+    FLastTopicControl: TControl;
+    FInTopicSetup: Boolean;
+    FCurrentTopic: String;
+    procedure FillTopicCombo;
+    function TopicDocFile(CreateIfNoExists: Boolean = False): TLazFPDocFile;
   public
     procedure Reset;
     procedure InvalidateChain;
@@ -266,6 +285,8 @@ begin
   InsertRemarkButton.LoadGlyphFromLazarusResource('insertremark');
   InsertURLTagSpeedButton.LoadGlyphFromLazarusResource('formatunderline');
   SaveButton.LoadGlyphFromLazarusResource('laz_save');
+
+  FInTopicSetup := false;
 end;
 
 procedure TFPDocEditor.FormDestroy(Sender: TObject);
@@ -296,6 +317,12 @@ procedure TFPDocEditor.FormatButtonClick(Sender: TObject);
       DescrMemo.SelText := StartTag + DescrMemo.SelText + EndTag
     else if PageControl.ActivePage = ErrorsTabSheet then
       ErrorsMemo.SelText := StartTag + ErrorsMemo.SelText + EndTag
+    else if PageControl.ActivePage = TopicSheet then begin
+      if (FLastTopicControl = TopicShort) then
+        TopicShort.SelText := StartTag + TopicShort.SelText + EndTag;
+      if (FLastTopicControl = TopicDescr) then
+        TopicDescr.SelText := StartTag + TopicDescr.SelText + EndTag;
+    end
     else
       exit;
     Modified:=true;
@@ -356,6 +383,13 @@ begin
     SeeAlsoMemo.SelText := LinkSrc;
   if PageControl.ActivePage = ErrorsTabSheet then
     ErrorsMemo.SelText := LinkSrc;
+  if PageControl.ActivePage = TopicSheet then begin
+    if (FLastTopicControl = TopicShort) then
+      TopicShort.SelText := LinkSrc;
+    if (FLastTopicControl = TopicDescr) then
+      TopicDescr.SelText := LinkSrc;
+  end;
+
   Modified:=true;
 end;
 
@@ -450,6 +484,23 @@ begin
   end;
 end;
 
+procedure TFPDocEditor.NewTopicButtonClick(Sender: TObject);
+var
+  Dfile: TLazFPDocFile;
+begin
+  if NewTopicNameEdit.Text = '' then exit;
+  Dfile := TopicDocFile(True);
+  if not assigned(DFile) then exit;
+  if DFile.GetModuleTopic(NewTopicNameEdit.Text) = nil then begin
+    DFile.CreateModuleTopic(NewTopicNameEdit.Text);
+    CodeHelpBoss.SaveFPDocFile(DFile);
+  end;
+  FillTopicCombo;
+  TopicListBox.ItemIndex := TopicListBox.Items.IndexOf(NewTopicNameEdit.Text);
+  TopicShort.SetFocus;
+  TopicListBoxClick(Sender);
+end;
+
 procedure TFPDocEditor.PageControlChange(Sender: TObject);
 begin
   UpdateButtons;
@@ -480,6 +531,51 @@ procedure TFPDocEditor.ShortEditEditingDone(Sender: TObject);
 begin
   if ShortEdit.Text<>FOldVisualValues[fpdiShort] then
     Modified:=true;
+end;
+
+procedure TFPDocEditor.TopicControlEnter(Sender: TObject);
+begin
+  FLastTopicControl := TControl(Sender);
+end;
+
+procedure TFPDocEditor.TopicDescrChange(Sender: TObject);
+begin
+  if FInTopicSetup then exit;
+  Modified := True;
+  SaveButton.Enabled := True;
+end;
+
+procedure TFPDocEditor.TopicListBoxClick(Sender: TObject);
+var
+  DFile: TLazFPDocFile;
+  Node: TDOMNode;
+  Child: TDOMNode;
+begin
+  if (FCurrentTopic <> '') and Modified then
+    Save;
+
+  FInTopicSetup := True;
+  TopicShort.Clear;
+  TopicDescr.Clear;
+  FInTopicSetup := false;
+
+  FCurrentTopic := '';
+  if TopicListBox.ItemIndex < 0 then exit;
+  Dfile := TopicDocFile(True);
+  if DFile = nil then exit;
+
+  Node := DFile.GetModuleTopic(TopicListBox.Items[TopicListBox.ItemIndex]);
+  if Node = nil then exit;
+  FCurrentTopic := TopicListBox.Items[TopicListBox.ItemIndex];
+
+  FInTopicSetup := True;
+  Child := Node.FindNode('short');
+  if Child <> nil then
+    TopicShort.Text := DFile.GetChildValuesAsString(Child);
+  Child := Node.FindNode('descr');
+  if Child <> nil then
+    TopicDescr.Text := DFile.GetChildValuesAsString(Child);
+  FInTopicSetup := false;
 end;
 
 function TFPDocEditor.GetContextTitle(Element: TCodeHelpElement): string;
@@ -793,7 +889,8 @@ begin
   HasEdit:=(PageControl.ActivePage = ShortTabSheet)
         or (PageControl.ActivePage = DescrTabSheet)
         or (PageControl.ActivePage = SeeAlsoTabSheet)
-        or (PageControl.ActivePage = ErrorsTabSheet);
+        or (PageControl.ActivePage = ErrorsTabSheet)
+        or (PageControl.ActivePage = TopicSheet);
   BoldFormatButton.Enabled:=HasEdit;
   ItalicFormatButton.Enabled:=HasEdit;
   UnderlineFormatButton.Enabled:=HasEdit;
@@ -846,6 +943,40 @@ begin
     or (ExampleEdit.Text<>FOldVisualValues[fpdiExample]);
 end;
 
+procedure TFPDocEditor.FillTopicCombo;
+var
+  c, i: LongInt;
+  DFile: TLazFPDocFile;
+begin
+  FCurrentTopic := '';
+  FInTopicSetup := True;
+  TopicListBox.Clear;
+  TopicShort.Clear;
+  TopicDescr.Clear;
+  FInTopicSetup := false;
+  Dfile := TopicDocFile;
+  if not assigned(DFile) then exit;
+  c := DFile.GetModuleTopicCount;
+  for i := 0 to c - 1 do begin
+    TopicListBox.Items.Add(DFile.GetModuleTopicName(i));
+  end;
+end;
+
+function TFPDocEditor.TopicDocFile(CreateIfNoExists: Boolean): TLazFPDocFile;
+var
+  CacheWasUsed : Boolean;
+  AnOwner: TObject;
+  DFileName: String;
+begin
+  if assigned(DocFile) then
+    Result := DocFile
+  else begin
+    DFileName := CodeHelpBoss.GetFPDocFilenameForSource(SourceFilename, true, CacheWasUsed, AnOwner, CreateIfNoExists);
+    if CodeHelpBoss.LoadFPDocFile(DFileName, [chofUpdateFromDisk], Result, CacheWasUsed) <> chprSuccess then
+      Result := nil;
+  end;
+end;
+
 procedure TFPDocEditor.Reset;
 begin
   FreeAndNil(fChain);
@@ -890,6 +1021,7 @@ begin
   fSourceFilename:=NewSrcFilename;
   
   Reset;
+  FillTopicCombo;
   InvalidateChain;
 end;
 
@@ -921,6 +1053,8 @@ end;
 procedure TFPDocEditor.Save(CheckGUI: boolean);
 var
   Values: TFPDocElementValues;
+  DFile: TLazFPDocFile;
+  Node: TDOMNode;
 begin
   //DebugLn(['TFPDocEditor.Save FModified=',FModified]);
   if (not FModified)
@@ -930,17 +1064,34 @@ begin
   end;
   FModified:=false;
   SaveButton.Enabled:=false;
+
+  DFile := nil;
+  if FCurrentTopic <> '' then begin
+    Dfile := TopicDocFile(True);
+    if DFile <> nil then begin
+      Node := DFile.GetModuleTopic(FCurrentTopic);
+      if Node <> nil then begin
+        DFile.SetChildValue(Node, 'short', TopicShort.Text);
+        DFile.SetChildValue(Node, 'descr', TopicDescr.Text);
+      end;
+    end;
+  end;
   if (fChain=nil) or (fChain.Count=0) then begin
-    DebugLn(['TFPDocEditor.Save failed: no chain']);
+    if (FCurrentTopic <> '') and (DFile <> nil) then CodeHelpBoss.SaveFPDocFile(DFile)
+    else DebugLn(['TFPDocEditor.Save failed: no chain']);
     exit;
   end;
   if not fChain.IsValid then begin
-    DebugLn(['TFPDocEditor.Save failed: chain not valid']);
+    if (FCurrentTopic <> '') and (DFile <> nil) then CodeHelpBoss.SaveFPDocFile(DFile)
+    else DebugLn(['TFPDocEditor.Save failed: chain not valid']);
     exit;
   end;
-  Values:=GetGUIValues;
-  if not WriteNode(fChain[0],Values,true) then begin
-    DebugLn(['TLazDocForm.Save WriteNode FAILED']);
+  if (fChain[0].FPDocFile = nil) and (DFile <> nil) then CodeHelpBoss.SaveFPDocFile(DFile)
+  else begin
+    Values:=GetGUIValues;
+    if not WriteNode(fChain[0],Values,true) then begin
+      DebugLn(['TLazDocForm.Save WriteNode FAILED']);
+    end;
   end;
 end;
 

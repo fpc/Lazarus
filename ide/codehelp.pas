@@ -100,6 +100,10 @@ type
     function GetPackageName: string;
     function GetModuleNode: TDOMNode; // the unit
     function GetModuleName: string;
+    function GetModuleTopicCount: Integer;
+    function GetModuleTopicName(Index: Integer): String;
+    function GetModuleTopic(Name: String): TDOMNode;
+    function CreateModuleTopic(Name: String): TDOMNode;
     function GetFirstElement: TDOMNode;
     function GetElementWithName(const ElementName: string;
                                 CreateIfNotExists: boolean = false): TDOMNode;
@@ -473,6 +477,68 @@ begin
     Result:=TDomElement(Node).GetAttribute('name')
   else
     Result:='';
+end;
+
+function TLazFPDocFile.GetModuleTopicCount: Integer;
+var
+  n: TDOMNode;
+begin
+  Result := 0;
+  n := GetModuleNode;
+  if n = nil then exit;
+  n := n.FirstChild;
+  while (n <> nil) do begin
+    if (n.NodeName = 'topic') then inc(result);
+    n := n.NextSibling;
+  end;
+end;
+
+function TLazFPDocFile.GetModuleTopicName(Index: Integer): String;
+var
+  n: TDOMNode;
+begin
+  Result := '';
+  n := GetModuleNode;
+  if n = nil then exit;
+  n := n.FirstChild;
+  while (n <> nil) and (Index >= 0) do begin
+    if (n.NodeName = 'topic') and (n is TDomElement) then begin
+      if Index = 0 then begin
+        Result := TDomElement(n).GetAttribute('name');
+        exit;
+      end;
+      dec(Index);
+    end;
+    n := n.NextSibling;
+  end;
+end;
+
+function TLazFPDocFile.GetModuleTopic(Name: String): TDOMNode;
+begin
+  Result := GetModuleNode;
+  if Result = nil then exit;
+  Result := Result.FirstChild;
+  while (Result <> nil) do begin
+    if (Result.NodeName = 'topic') and (Result is TDomElement) and
+        (SysUtils.CompareText(TDomElement(Result).GetAttribute('name'), Name) = 0)
+    then
+      exit;
+    Result := Result.NextSibling;
+  end;
+end;
+
+function TLazFPDocFile.CreateModuleTopic(Name: String): TDOMNode;
+var
+  ModuleNode: TDOMNode;
+begin
+  ModuleNode := GetModuleNode;
+  if ModuleNode = nil then exit;
+
+  Result:=Doc.CreateElement('topic');
+  DocChanging;
+  TDOMElement(Result).SetAttribute('name', Name);
+  ModuleNode.AppendChild(Result);
+  DocChanged;
 end;
 
 function TLazFPDocFile.GetFirstElement: TDOMNode;
