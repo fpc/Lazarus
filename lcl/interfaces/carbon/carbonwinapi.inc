@@ -1953,6 +1953,8 @@ begin
       Result := GetCarbonThemeMetric(kThemeMetricScrollBarMinThumbWidth);
     SM_CYVTHUMB:
       Result := GetCarbonThemeMetric(kThemeMetricScrollBarMinThumbHeight);
+    SM_SWSCROLLBARSPACING:
+      Result:=0;
   else
     DebugLn('TCarbonWidgetSet.GetSystemMetrics TODO ', DbgS(NIndex));;
   end;
