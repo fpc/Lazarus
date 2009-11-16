@@ -213,6 +213,12 @@ begin
   Result := True;
 end;
 
+procedure ButtonImagesChange(ASettings: PGtkSettings; pspec: PGParamSpec; Services: TGtk2ThemeServices); cdecl;
+begin
+  Application.IntfThemeOptionChange(Services, toShowButtonImages);
+  Services.IntfDoOnThemeChange;
+end;
+
 procedure MenuImagesChange(ASettings: PGtkSettings; pspec: PGParamSpec; Services: TGtk2ThemeServices); cdecl;
 begin
   Application.IntfThemeOptionChange(Services, toShowMenuImages);
@@ -226,7 +232,20 @@ var
   Widget: PGtkWidget;
   Signal: guint;
 begin
-  case AOPtion of
+  case AOption of
+    toShowButtonImages:
+      begin
+        Widget := GetStyleWidget(lgsButton);
+        ASettings := gtk_widget_get_settings(Widget);
+        BoolSetting := True; // default
+        g_object_get(ASettings, 'gtk-button-images', @BoolSetting, nil);
+        Result := Ord(BoolSetting = True);
+        if g_object_get_data(PGObject(Widget), 'lcl-images-change-callback') = nil then
+        begin
+          Signal := g_signal_connect(ASettings, 'notify::gtk-button-images', TGCallback(@ButtonImagesChange), Self);
+          g_object_set_data(PGObject(Widget), 'lcl-images-change-callback', Pointer(Signal))
+        end;
+      end;
     toShowMenuImages:
       begin
         Widget := GetStyleWidget(lgsMenuitem);
