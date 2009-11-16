@@ -326,7 +326,7 @@ type
     property DividerDrawConfigCount: Integer read GetDividerDrawConfigCount;
   published
     property DefaultFilter: string read GetDefaultFilter write SetDefaultFilter
-      stored IsFilterStored; deprecated;
+      stored IsFilterStored;
     property Enabled: boolean read fEnabled write SetEnabled default TRUE;      //DDH 2001-10-23
   end;
 
@@ -947,7 +947,7 @@ begin
     if Src is ClassType then
       SampleSource := Src.SampleSource;
     fWordBreakChars := Src.WordBreakChars;
-    //DefaultFilter := Src.DefaultFilter;
+    DefaultFilter := Src.DefaultFilter;
     Enabled := Src.Enabled;
   end else
     inherited Assign(Source);
