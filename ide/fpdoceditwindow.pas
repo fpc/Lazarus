@@ -497,7 +497,6 @@ begin
   end;
   FillTopicCombo;
   TopicListBox.ItemIndex := TopicListBox.Items.IndexOf(NewTopicNameEdit.Text);
-  TopicShort.SetFocus;
   TopicListBoxClick(Sender);
 end;
 
@@ -557,6 +556,8 @@ begin
   FInTopicSetup := True;
   TopicShort.Clear;
   TopicDescr.Clear;
+  TopicShort.Enabled := False;
+  TopicDescr.Enabled := False;
   FInTopicSetup := false;
 
   FCurrentTopic := '';
@@ -575,6 +576,9 @@ begin
   Child := Node.FindNode('descr');
   if Child <> nil then
     TopicDescr.Text := DFile.GetChildValuesAsString(Child);
+  TopicShort.Enabled := True;
+  TopicDescr.Enabled := True;
+  TopicShort.SetFocus;
   FInTopicSetup := false;
 end;
 
@@ -953,6 +957,8 @@ begin
   TopicListBox.Clear;
   TopicShort.Clear;
   TopicDescr.Clear;
+  TopicShort.Enabled := False;
+  TopicDescr.Enabled := False;
   FInTopicSetup := false;
   Dfile := TopicDocFile;
   if not assigned(DFile) then exit;
