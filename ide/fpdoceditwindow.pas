@@ -112,7 +112,6 @@ type
     procedure FormCreate(Sender: TObject);
     procedure FormDestroy(Sender: TObject);
     procedure FormKeyDown(Sender: TObject; var Key: Word; Shift: TShiftState);
-    procedure FormResize(Sender: TObject);
     procedure InsertLinkSpeedButtonClick(Sender: TObject);
     procedure LinkEditChange(Sender: TObject);
     procedure LinkEditEditingDone(Sender: TObject);
@@ -285,11 +284,6 @@ begin
     Save(true);
     Key:=VK_UNKNOWN;
   end;
-end;
-
-procedure TFPDocEditor.FormResize(Sender: TObject);
-begin
-
 end;
 
 procedure TFPDocEditor.FormatButtonClick(Sender: TObject);
