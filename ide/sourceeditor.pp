@@ -4785,8 +4785,10 @@ end;
 procedure TSourceNotebook.SetPageIndex(const AValue: Integer);
 begin
   FPageIndex := AValue;
-  if assigned(Notebook) and (FUpdateLock = 0) then
-    Notebook.PageIndex := AValue;
+  if assigned(Notebook) and (FUpdateLock = 0) then begin
+    FPageIndex:=Max(0,Min(FPageIndex,Notebook.PageCount-1));
+    Notebook.PageIndex := FPageIndex;
+  end;
 end;
 
 function TSourceNotebook.GetCompletionBoxPosition: integer;
@@ -4938,6 +4940,7 @@ begin
   if Pagenum < 0 then begin
     // add a new page right to the current
     Pagenum := PageIndex+1;
+    Pagenum := Max(0,Min(PageNum,Notebook.PageCount));
     Notebook.Pages.Insert(PageNum,FindUniquePageName('',-1));
     Notebook.Page[PageNum].ReAlign;
   end;
@@ -5194,6 +5197,7 @@ end;
 procedure TSourceNotebook.IncUpdateLock;
 begin
   inc(FUpdateLock);
+  DebugLn(['TSourceNotebook.IncUpdateLock ',FUpdateLock]);
 end;
 
 procedure TSourceNotebook.DecUpdateLock;
@@ -5201,6 +5205,7 @@ begin
   dec(FUpdateLock);
   if FUpdateLock = 0 then
     PageIndex := FPageIndex;
+  DebugLn(['TSourceNotebook.DecUpdateLock ',FUpdateLock]);
 end;
 
 procedure TSourceNotebook.BeginIncrementalFind;
@@ -6331,6 +6336,12 @@ begin
     // if this is the current page, switch to right APageIndex (if possible)
     if (PageIndex = APageIndex) then
       PageIndex := APageIndex + IfThen(APageIndex + 1 < PageCount, 1, -1);
+    if Notebook.PageIndex=APageIndex then begin
+      // make sure to select another page in the NoteBook, otherwise the
+      // widgetset will choose one and will send a message
+      Notebook.PageIndex:=Notebook.PageIndex
+        +IfThen(Notebook.PageIndex + 1 < Notebook.PageCount, 1, -1);
+    end;
     // delete the page
     //writeln('TSourceNotebook.CloseFile C  APageIndex=',APageIndex,' PageCount=',PageCount,' NoteBook.APageIndex=',Notebook.APageIndex);
     Notebook.Pages.Delete(APageIndex);
