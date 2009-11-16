@@ -2764,7 +2764,7 @@ var PathStart, PathEnd: integer;
     NewCode:=LoadSourceCaseLoUp(ExpFilename);
     if (NewCode=nil) and DynamicExtension then begin
       if CompareFileExt(ExpFilename,'.pp',true)=0 then
-        ChangeFileExt(ExpFilename,'.pas');
+        ExpFilename:=ChangeFileExt(ExpFilename,'.pas');
       NewCode:=LoadSourceCaseLoUp(ExpFilename);
     end;
     Result:=NewCode<>nil;
@@ -2812,8 +2812,8 @@ begin
     NewCode:=LoadSourceCaseLoUp(ExpFilename);
     Result:=(NewCode<>nil);
     if Result then exit;
-  end else if (not HasPathDelims) then begin
-    // main source has relative filename (= virtual)
+  end else begin
+    // main source is virtual
     NewCode:=FOnLoadSource(Self,TrimFilename(AFilename),true);
     if NewCode=nil then begin
       SecondaryFilename:=lowercase(AFilename);
