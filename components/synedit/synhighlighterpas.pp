@@ -269,7 +269,7 @@ type
     FNodeInfoLine, FNodeInfoCount: Integer;
     FNodeInfoList: Array of TSynFoldNodeInfo;
     FDividerDrawConfig: Array [TSynPasDividerDrawLocation] of TSynDividerDrawConfig;
-    FFoldConfig: Array [TPascalCodeFoldBlockType] of Boolean;
+    FFoldConfig: Array [TPascalCodeFoldBlockType] of TSynCustomFoldConfig;
     procedure GrowNodeInfoList;
     function GetPasCodeFoldRange: TSynPasSynRange;
     procedure SetCompilerMode(const AValue: TPascalCompilerMode);
@@ -405,6 +405,7 @@ type
     procedure CreateDividerDrawConfig;
     procedure DestroyDividerDrawConfig;
     procedure InitFoldConfig;
+    procedure DestroyFoldConfig;
   protected
     function GetIdentChars: TSynIdentChars; override;
     function IsFilterStored: boolean; override;                                 //mh 2000-10-08
@@ -439,9 +440,9 @@ type
     function GetDividerDrawConfig(Index: Integer): TSynDividerDrawConfig; override;
     function GetDividerDrawConfigCount: Integer; override;
 
-    function GetFoldConfig(Index: Integer): Boolean; override;
+    function GetFoldConfig(Index: Integer): TSynCustomFoldConfig; override;
     function GetFoldConfigCount: Integer; override;
-    procedure SetFoldConfig(Index: Integer; const AValue: Boolean); override;
+    procedure SetFoldConfig(Index: Integer; const AValue: TSynCustomFoldConfig); override;
   public
     {$IFNDEF SYN_CPPB_1} class {$ENDIF}
     function GetCapabilities: TSynHighlighterCapabilities; override;
@@ -1986,6 +1987,7 @@ end; { Create }
 destructor TSynPasSyn.Destroy;
 begin
   DestroyDividerDrawConfig;
+  DestroyFoldConfig;
   inherited Destroy;
 end;
 
@@ -2986,7 +2988,7 @@ end;
 
 procedure TSynPasSyn.StartCustomCodeFoldBlock(ABlockType: TPascalCodeFoldBlockType);
 begin
-  if not FFoldConfig[ABlockType] then exit;
+  if not FFoldConfig[ABlockType].Enabled then exit;
   if FCatchNodeInfo then begin // exclude subblocks, because they do not increase the foldlevel yet
     GrowNodeInfoList;
     InitNode(FNodeInfoList[FNodeInfoCount], +1, ABlockType, [sfaOpen, sfaFold]);
@@ -3002,7 +3004,7 @@ end;
 
 procedure TSynPasSyn.EndCustomCodeFoldBlock(ABlockType: TPascalCodeFoldBlockType);
 begin
-  if not FFoldConfig[ABlockType] then exit;
+  if not FFoldConfig[ABlockType].Enabled then exit;
   if FCatchNodeInfo then begin // exclude subblocks, because they do not increase the foldlevel yet
     GrowNodeInfoList;
     InitNode(FNodeInfoList[FNodeInfoCount], -1, ABlockType, [sfaClose, sfaFold]);
@@ -3034,7 +3036,7 @@ var
   FoldBlock: Boolean;
   act: TSynFoldActions;
 begin
-  FoldBlock := FFoldConfig[ABlockType];
+  FoldBlock := FFoldConfig[ABlockType].Enabled;
   p := 0;
   if FCatchNodeInfo then begin // exclude subblocks, because they do not increase the foldlevel yet
     GrowNodeInfoList;
@@ -3290,11 +3292,22 @@ procedure TSynPasSyn.InitFoldConfig;
 var
   i: TPascalCodeFoldBlockType;
 begin
-  for i := low(TPascalCodeFoldBlockType) to high(TPascalCodeFoldBlockType) do
-    FFoldConfig[i] := i in [cfbtBeginEnd, cfbtTopBeginEnd, cfbtNestedComment,
+  for i := low(TPascalCodeFoldBlockType) to high(TPascalCodeFoldBlockType) do begin
+    FFoldConfig[i] := TSynCustomFoldConfig.Create;
+    FFoldConfig[i].OnChange := @DoFoldConfigChanged;
+    FFoldConfig[i].Enabled := i in [cfbtBeginEnd, cfbtTopBeginEnd, cfbtNestedComment,
                             cfbtProcedure, cfbtUses, cfbtLocalVarType, cfbtClass,
                             cfbtClassSection, cfbtRecord, cfbtRepeat, cfbtCase,
                             cfbtAsm, cfbtRegion];
+  end;
+end;
+
+procedure TSynPasSyn.DestroyFoldConfig;
+var
+  i: TPascalCodeFoldBlockType;
+begin
+  for i := low(TPascalCodeFoldBlockType) to high(TPascalCodeFoldBlockType) do
+    FFoldConfig[i].Free;
 end;
 
 function TSynPasSyn.CreateRangeList: TSynHighlighterRangeList;
@@ -3316,7 +3329,7 @@ begin
   TSynHighlighterPasRangeList(CurrentRanges).PasRangeInfo[Index] := FSynPasRangeInfo;
 end;
 
-function TSynPasSyn.GetFoldConfig(Index: Integer): Boolean;
+function TSynPasSyn.GetFoldConfig(Index: Integer): TSynCustomFoldConfig;
 begin
   // + 1 as we skip cfbtNone;
   Result := FFoldConfig[TPascalCodeFoldBlockType(Index + 1)];
@@ -3329,13 +3342,11 @@ begin
             ord(low(TPascalCodeFoldBlockType));
 end;
 
-procedure TSynPasSyn.SetFoldConfig(Index: Integer; const AValue: Boolean);
+procedure TSynPasSyn.SetFoldConfig(Index: Integer; const AValue: TSynCustomFoldConfig);
 begin
-   if FFoldConfig[TPascalCodeFoldBlockType(Index + 1)] = AValue then
-     exit;
-  FFoldConfig[TPascalCodeFoldBlockType(Index + 1)] := AValue;
-  FAttributeChangeNeedScan := True;
-  DefHighlightChange(self);
+  BeginUpdate;
+  FFoldConfig[TPascalCodeFoldBlockType(Index + 1)].Assign(AValue);
+  EndUpdate;
   // Todo: Since all synedits will rescan => delete all foldranges
 end;
 

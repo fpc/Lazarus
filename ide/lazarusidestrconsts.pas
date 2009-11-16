@@ -1389,6 +1389,16 @@ resourcestring
   dlgFoldPasIfDef           = '{$IfDef}';
   dlgFoldPasUserRegion      = '{%Region}';
 
+  dlgFoldLfmObject      = 'Object (inherited, inline)';
+  dlgFoldLfmList        = 'List <>';
+  dlgFoldLfmItem        = 'Item';
+
+  dlgFoldXmlNode        = 'Node';
+  dlgFoldXmlComment     = 'Comment';
+  dlgFoldXmlCData       = 'CData';
+  dlgFoldXmlDocType     = 'DocType';
+  dlgFoldXmlProcess     = 'Processing Instruction';
+
   dlgMouseFoldExpFoldOne    = 'Fold One (All Expanded)';
   dlgMouseFoldExpFoldAll    = 'Fold All (All Expanded)';
   dlgMouseFoldColFoldOne    = 'Fold One (Some Colapsed)';

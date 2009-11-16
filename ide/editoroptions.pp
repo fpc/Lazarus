@@ -617,14 +617,62 @@ const
        Index: ord(cfbtRegion)-1;       Enabled: True)
     );
 
+  EditorOptionsFoldInfoLFM: Array [0..2] of TEditorOptionsFoldInfo
+  = (
+      ( Name:    dlgFoldLfmObject;
+        Xml:    'Object';
+        Index:   ord(cfbtLfmObject)-1;
+        Enabled: True
+      ),
+      ( Name:    dlgFoldLfmList;
+        Xml:     'List';
+        Index:   ord(cfbtLfmList)-1;
+        Enabled: True
+      ),
+      ( Name:    dlgFoldLfmItem;
+        Xml:     'Item';
+        Index:   ord(cfbtLfmItem)-1;
+        Enabled: True
+      )
+    );
+
+  EditorOptionsFoldInfoXML: Array [0..4] of TEditorOptionsFoldInfo
+  = (
+      ( Name:    dlgFoldXmlNode;
+        Xml:    'Node';
+        Index:   ord(cfbtXmlNode)-1;
+        Enabled: True
+      ),
+      ( Name:    dlgFoldXmlComment;
+        Xml:    'Comment';
+        Index:   ord(cfbtXmlComment)-1;
+        Enabled: True
+      ),
+      ( Name:    dlgFoldXmlCData;
+        Xml:    'CData';
+        Index:   ord(cfbtXmlCData)-1;
+        Enabled: True
+      ),
+      ( Name:    dlgFoldXmlDocType;
+        Xml:    'DocType';
+        Index:   ord(cfbtXmlDocType)-1;
+        Enabled: True
+      ),
+      ( Name:    dlgFoldXmlProcess;
+        Xml:    'ProcessInstr';
+        Index:   ord(cfbtXmlProcess)-1;
+        Enabled: True
+      )
+    );
+
   EditorOptionsFoldDefaults: array[TLazSyntaxHighlighter] of
     TEditorOptionsFoldRecord =
     ( (Count:  0; Info: nil), // none
       (Count:  0; Info: nil), // text
       (Count: 20; Info: {$IFDEF FPC}@{$ENDIF}EditorOptionsFoldInfoPas[0]), // Freepas
       (Count: 20; Info: {$IFDEF FPC}@{$ENDIF}EditorOptionsFoldInfoPas[0]), // pas
-      (Count:  0; Info: nil), // lfm
-      (Count:  0; Info: nil), // xml
+      (Count:  3; Info: {$IFDEF FPC}@{$ENDIF}EditorOptionsFoldInfoLFM[0]), // lfm
+      (Count:  5; Info: {$IFDEF FPC}@{$ENDIF}EditorOptionsFoldInfoXML[0]), // xml
       (Count:  0; Info: nil), // html
       (Count:  0; Info: nil), // cpp
       (Count:  0; Info: nil), // perl
@@ -2411,6 +2459,16 @@ begin
   EditorOptionsFoldInfoPas[18].Name := dlgFoldPasIfDef;
   EditorOptionsFoldInfoPas[19].Name := dlgFoldPasUserRegion;
 
+  EditorOptionsFoldInfoLFM[ 0].Name := dlgFoldLfmObject;
+  EditorOptionsFoldInfoLFM[ 1].Name := dlgFoldLfmList;
+  EditorOptionsFoldInfoLFM[ 2].Name := dlgFoldLfmItem;
+
+  EditorOptionsFoldInfoXML[ 0].Name := dlgFoldXmlNode;
+  EditorOptionsFoldInfoXML[ 1].Name := dlgFoldXmlComment;
+  EditorOptionsFoldInfoXML[ 2].Name := dlgFoldXmlCData;
+  EditorOptionsFoldInfoXML[ 3].Name := dlgFoldXmlDocType;
+  EditorOptionsFoldInfoXML[ 4].Name := dlgFoldXmlProcess;
+
   EditorOptionsDividerInfoPas[0].Name:=dlgDivPasUnitSectionName;
   EditorOptionsDividerInfoPas[1].Name:=dlgDivPasUsesName;
   EditorOptionsDividerInfoPas[2].Name:=dlgDivPasVarGlobalName;
@@ -3428,8 +3486,12 @@ begin
       ConfName := TheFoldInfo.Info^[i].Xml;
       Path := 'EditorOptions/FoldConfig/Lang' +
         StrToValidXMLName(Syn.LanguageName) + '/Type' + ConfName + '/' ;
-    TSynCustomFoldHighlighter(Syn).FoldConfig[TheFoldInfo.Info^[i].Index] :=
+    // try reading the old config first
+    TSynCustomFoldHighlighter(Syn).FoldConfig[TheFoldInfo.Info^[i].Index].Enabled :=
       XMLConfig.GetValue(Path + 'Enabled/Value',
+        TSynCustomFoldHighlighter(Syn).FoldConfig[TheFoldInfo.Info^[i].Index].Enabled);
+      XMLConfig.ReadObject(Path + 'Settings/',
+        TSynCustomFoldHighlighter(Syn).FoldConfig[TheFoldInfo.Info^[i].Index],
         TSynCustomFoldHighlighter(Syn).FoldConfig[TheFoldInfo.Info^[i].Index]);
     end;
   end;
@@ -3446,10 +3508,10 @@ begin
   if h < 0 then exit;
   if (syn is TSynCustomFoldHighlighter) then begin
     TheFoldInfo := EditorOptionsFoldDefaults[HighlighterList[h].TheType];
-    for i := 0 to TheFoldInfo.Count - 1 do begin
-      TSynCustomFoldHighlighter(Syn).FoldConfig[TheFoldInfo.Info^[i].Index]
-        := TheFoldInfo.Info^[i].Enabled;
-    end;
+    for i := 0 to TheFoldInfo.Count - 1 do
+      with TSynCustomFoldHighlighter(Syn).FoldConfig[TheFoldInfo.Info^[i].Index] do begin
+        Enabled := TheFoldInfo.Info^[i].Enabled;
+      end;
   end;
 end;
 
@@ -3476,7 +3538,8 @@ begin
         ConfName := TheFoldInfo.Info^[i].Xml;
         Path := 'EditorOptions/FoldConfig/Lang' +
           StrToValidXMLName(Syn.LanguageName) + '/Type' + ConfName + '/' ;
-        XMLConfig.SetDeleteValue(Path + 'Enabled/Value',
+        XMLConfig.DeletePath(Path + 'Enabled/');
+        XMLConfig.WriteObject(Path + 'Settings/',
           TSynCustomFoldHighlighter(Syn).FoldConfig[TheFoldInfo.Info^[i].Index],
           TSynCustomFoldHighlighter(DefSyn).FoldConfig[TheFoldInfo.Info^[i].Index]);
       end;

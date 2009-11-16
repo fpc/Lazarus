@@ -43,6 +43,22 @@ uses
 
 type
 
+  { TSynCustomFoldConfig }
+
+  TSynCustomFoldConfig = class(TPersistent)
+  private
+    FEnabled: Boolean;
+    FOnChange: TNotifyEvent;
+    procedure SetFEnabled(const AValue: Boolean);
+  protected
+    procedure DoOnChange;
+  public
+    procedure Assign(Src: TSynCustomFoldConfig); reintroduce; virtual;
+    property OnChange: TNotifyEvent read FOnChange write FOnChange;
+  published
+    property Enabled: Boolean read FEnabled write SetFEnabled;
+  end;
+
   { TSynCustomCodeFoldBlock }
 
   TSynCustomCodeFoldBlock = class
@@ -127,9 +143,10 @@ type
     fRanges: TSynCustomHighlighterRanges;
     FRootCodeFoldBlock: TSynCustomCodeFoldBlock;
   protected
-    function GetFoldConfig(Index: Integer): Boolean; virtual;
+    function GetFoldConfig(Index: Integer): TSynCustomFoldConfig; virtual;
     function GetFoldConfigCount: Integer; virtual;
-    procedure SetFoldConfig(Index: Integer; const AValue: Boolean); virtual;
+    procedure SetFoldConfig(Index: Integer; const AValue: TSynCustomFoldConfig); virtual;
+    procedure DoFoldConfigChanged(Sender: TObject); virtual;
 
     function GetFoldNodeInfo(Line, Index: Integer; Filter: TSynFoldActions): TSynFoldNodeInfo; virtual;
     function GetFoldNodeInfoCount(Line: Integer; Filter: TSynFoldActions): Integer; virtual;
@@ -174,7 +191,7 @@ type
                       LineNumber:Integer // 0 based
                       ); override;
   public
-    property FoldConfig[Index: Integer]: Boolean
+    property FoldConfig[Index: Integer]: TSynCustomFoldConfig
       read GetFoldConfig write SetFoldConfig;
     property FoldConfigCount: Integer read GetFoldConfigCount;
 
@@ -347,9 +364,9 @@ begin
   Result := 0;
 end;
 
-function TSynCustomFoldHighlighter.GetFoldConfig(Index: Integer): Boolean;
+function TSynCustomFoldHighlighter.GetFoldConfig(Index: Integer): TSynCustomFoldConfig;
 begin
-  Result := False;
+  Result := nil;
 end;
 
 function TSynCustomFoldHighlighter.GetFoldConfigCount: Integer;
@@ -357,8 +374,14 @@ begin
   Result := 0;
 end;
 
-procedure TSynCustomFoldHighlighter.SetFoldConfig(Index: Integer; const AValue: Boolean);
+procedure TSynCustomFoldHighlighter.SetFoldConfig(Index: Integer; const AValue: TSynCustomFoldConfig);
 begin
+end;
+
+procedure TSynCustomFoldHighlighter.DoFoldConfigChanged(Sender: TObject);
+begin
+  FAttributeChangeNeedScan := True;
+  DefHighlightChange(self);
 end;
 
 function TSynCustomFoldHighlighter.GetFoldNodeInfo(Line, Index: Integer;
@@ -748,6 +771,26 @@ procedure TSynCustomHighlighterRanges.Release;
 begin
   dec(FAllocatedCount);
   if FAllocatedCount=0 then Free;
+end;
+
+{ TSynCustomFoldConfig }
+
+procedure TSynCustomFoldConfig.SetFEnabled(const AValue: Boolean);
+begin
+  if FEnabled = AValue then exit;
+  FEnabled := AValue;
+  DoOnChange;
+end;
+
+procedure TSynCustomFoldConfig.DoOnChange;
+begin
+  if assigned(FOnChange) then
+    FOnChange(self);
+end;
+
+procedure TSynCustomFoldConfig.Assign(Src: TSynCustomFoldConfig);
+begin
+  Enabled := Src.Enabled;
 end;
 
 end.

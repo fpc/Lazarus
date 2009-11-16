@@ -99,7 +99,7 @@ begin
   for i := 0 to FCurFoldInfo.Count - 1 do begin
     FoldConfigCheckListBox.Items.add(FCurFoldInfo.Info^[i].Name);
     FoldConfigCheckListBox.Checked[i] :=
-      TSynCustomFoldHighlighter(FCurHighlighter).FoldConfig[FCurFoldInfo.Info^[i].Index];
+      TSynCustomFoldHighlighter(FCurHighlighter).FoldConfig[FCurFoldInfo.Info^[i].Index].Enabled;
   end;
 end;
 
@@ -110,7 +110,7 @@ begin
   if not (assigned(FCurHighlighter) and
          (FCurHighlighter is TSynCustomFoldHighlighter)) then exit;
   for i := 0 to FCurFoldInfo.Count - 1 do
-    TSynCustomFoldHighlighter(FCurHighlighter).FoldConfig[FCurFoldInfo.Info^[i].Index]
+    TSynCustomFoldHighlighter(FCurHighlighter).FoldConfig[FCurFoldInfo.Info^[i].Index].Enabled
       := FoldConfigCheckListBox.Checked[i];
 end;
 
@@ -130,7 +130,9 @@ begin
   SynClass := LazSyntaxHighlighterClasses[SynType];
   Result := SynClass.Create(nil);
   FHighlighters[SynType] := Result;
+  Result.BeginUpdate;
   EditorOpts.ReadHighlighterFoldSettings(Result);
+  result.EndUpdate;
 end;
 
 procedure TEditorCodefoldingOptionsFrame.ClearHighlighters;
