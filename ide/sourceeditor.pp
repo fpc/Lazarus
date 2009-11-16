@@ -5197,7 +5197,6 @@ end;
 procedure TSourceNotebook.IncUpdateLock;
 begin
   inc(FUpdateLock);
-  DebugLn(['TSourceNotebook.IncUpdateLock ',FUpdateLock]);
 end;
 
 procedure TSourceNotebook.DecUpdateLock;
@@ -5205,7 +5204,6 @@ begin
   dec(FUpdateLock);
   if FUpdateLock = 0 then
     PageIndex := FPageIndex;
-  DebugLn(['TSourceNotebook.DecUpdateLock ',FUpdateLock]);
 end;
 
 procedure TSourceNotebook.BeginIncrementalFind;
