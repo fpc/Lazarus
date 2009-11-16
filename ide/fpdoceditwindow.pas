@@ -978,7 +978,9 @@ begin
     Result := DocFile
   else begin
     DFileName := CodeHelpBoss.GetFPDocFilenameForSource(SourceFilename, true, CacheWasUsed, AnOwner, CreateIfNoExists);
-    if CodeHelpBoss.LoadFPDocFile(DFileName, [chofUpdateFromDisk], Result, CacheWasUsed) <> chprSuccess then
+    if (DFileName = '') or
+       (CodeHelpBoss.LoadFPDocFile(DFileName, [chofUpdateFromDisk], Result, CacheWasUsed) <> chprSuccess)
+    then
       Result := nil;
   end;
 end;
