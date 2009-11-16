@@ -263,7 +263,7 @@ type
 
   { TControlSelection }
 
-  TControlSelection = class(TObject)
+  TControlSelection = class(TComponent)
   private
     FControls: TList;  // list of TSelectedControl
     FMediator: TDesignerMediator;
@@ -348,6 +348,8 @@ type
     procedure UpdateRealBounds;
     procedure UpdateParentChildFlags;
     procedure DoDrawMarker(Index: integer; DC: TDesignerDeviceContext);
+    procedure Notification(AComponent: TComponent; Operation: TOperation);
+           override;
 
     // snapping
     function CleanGridSizeX: integer;
@@ -371,7 +373,7 @@ type
     procedure FindNearestTopGuideLine(var NearestInt: TNearestInt);
     procedure ImproveNearestInt(var NearestInt: TNearestInt; Candidate: integer);
   public
-    constructor Create;
+    constructor Create; reintroduce;
     destructor Destroy; override;
     procedure OnIdle(Sender: TObject; var Done: Boolean);
 
@@ -393,7 +395,7 @@ type
     procedure Clear;
     function Equals(const ASelection: TPersistentSelectionList): boolean; reintroduce;
     function AssignPersistent(APersistent: TPersistent): boolean;
-    procedure Assign(AControlSelection: TControlSelection);
+    procedure Assign(AControlSelection: TControlSelection); reintroduce;
     procedure AssignSelection(const ASelection: TPersistentSelectionList);
     function IsSelected(APersistent: TPersistent): Boolean;
     function IsOnlySelected(APersistent: TPersistent): Boolean;
@@ -904,7 +906,7 @@ end;
 constructor TControlSelection.Create;
 var g:TGrabIndex;
 begin
-  inherited Create;
+  inherited Create(nil);
   FControls:=TList.Create;
   FGrabberSize:=5;
   FMarkerSize:=5;
@@ -1326,6 +1328,15 @@ begin
   DrawMarkerAt(DC,CompLeft,CompTop,CompWidth,CompHeight);
   CurItem.Flags:=CurItem.Flags+[scfMarkersPainted];
   CurItem.MarkerPaintedBounds:=Bounds(CompLeft,CompTop,CompWidth,CompHeight);
+end;
+
+procedure TControlSelection.Notification(AComponent: TComponent;
+  Operation: TOperation);
+begin
+  inherited Notification(AComponent, Operation);
+  if Operation=opRemove then begin
+    Remove(AComponent);
+  end;
 end;
 
 function TControlSelection.CleanGridSizeX: integer;
@@ -2011,6 +2022,8 @@ begin
   FStates:=FStates+cssSelectionChangeFlags;
   if Count=1 then SetCustomForm;
   if APersistent=FLookupRoot then Include(FStates,cssLookupRootSelected);
+  if APersistent is TComponent then
+    TComponent(APersistent).FreeNotification(Self);
   DoChange;
   UpdateBounds;
   SaveBounds;
