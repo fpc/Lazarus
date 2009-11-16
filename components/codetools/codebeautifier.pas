@@ -1538,6 +1538,7 @@ var
   LastAtomStart, LastAtomEnd: integer;
   StackIndex: LongInt;
   PrevLineAtomEndPos: LongInt;
+  InsertTextStartPos: Integer;
 begin
   Result:=false;
   FillByte(Indent,SizeOf(Indent),0);
@@ -1587,7 +1588,11 @@ begin
         StackIndex:=FindStackPosForBlockCloseAtPos(Source,CleanPos,
                                   NewNestedComments,Stack,SubType,SubTypeValid);
       end else begin
-        StackIndex:=FindStackPosForBlockCloseAtPos(InsertText,1,
+        InsertTextStartPos:=1;
+        while (InsertTextStartPos<=length(InsertText))
+        and (InsertText[InsertTextStartPos] in [' ',#9]) do
+          inc(InsertTextStartPos);
+        StackIndex:=FindStackPosForBlockCloseAtPos(InsertText,InsertTextStartPos,
                                   NewNestedComments,Stack,SubType,SubTypeValid);
       end;
     end;
