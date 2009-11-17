@@ -10,7 +10,9 @@ object SysVarUserOverrideDialog: TSysVarUserOverrideDialog
   Caption = 'SysVarUserOverrideDialog'
   ClientHeight = 147
   ClientWidth = 400
+  OnCreate = FormCreate
   Position = poScreenCenter
+  LCLVersion = '0.9.29'
   object VariableLabel: TLabel
     Left = 6
     Height = 14
@@ -24,7 +26,7 @@ object SysVarUserOverrideDialog: TSysVarUserOverrideDialog
   object ValueLabel: TLabel
     Left = 6
     Height = 14
-    Top = 55
+    Top = 53
     Width = 388
     Align = alTop
     BorderSpacing.Around = 6
@@ -33,8 +35,8 @@ object SysVarUserOverrideDialog: TSysVarUserOverrideDialog
   end
   object ValueEdit: TEdit
     Left = 6
-    Height = 23
-    Top = 75
+    Height = 21
+    Top = 73
     Width = 388
     Align = alTop
     BorderSpacing.Around = 6
@@ -43,7 +45,7 @@ object SysVarUserOverrideDialog: TSysVarUserOverrideDialog
   end
   object VariableEdit: TEdit
     Left = 6
-    Height = 23
+    Height = 21
     Top = 26
     Width = 388
     Align = alTop
@@ -51,37 +53,13 @@ object SysVarUserOverrideDialog: TSysVarUserOverrideDialog
     TabOrder = 0
     Text = 'VariableEdit'
   end
-  object OKButton: TBitBtn
-    AnchorSideRight.Control = Owner
-    AnchorSideRight.Side = asrBottom
-    Left = 334
+  object ButtonPanel: TButtonPanel
+    Left = 6
     Height = 26
-    Top = 114
-    Width = 60
-    Anchors = [akRight, akBottom]
-    AutoSize = True
-    BorderSpacing.Right = 6
-    Caption = '&OK'
-    Default = True
-    Kind = bkOK
-    ModalResult = 1
-    NumGlyphs = 0
-    OnClick = OkButtonClick
-    TabOrder = 3
-  end
-  object CancelButton: TBitBtn
-    AnchorSideRight.Control = OKButton
-    Left = 250
-    Height = 26
-    Top = 114
-    Width = 78
-    Anchors = [akRight, akBottom]
-    AutoSize = True
-    BorderSpacing.Right = 6
-    Caption = 'Cancel'
-    Kind = bkCancel
-    ModalResult = 2
-    NumGlyphs = 0
+    Top = 115
+    Width = 388
     TabOrder = 2
+    ShowButtons = [pbOK, pbCancel]
+    ShowBevel = False
   end
 end

@@ -314,6 +314,8 @@ resourcestring
   lisMenuProjectOptions = 'Project Options ...';
   
   lisMenuBuild = 'Build';
+  lisBFBuild = 'Build';
+  lisBFRun = 'Run';
   lisBFWorkingDirectoryLeaveEmptyForFilePath = 'Working directory (Leave '
     +'empty for file path)';
   lisBFBuildCommand = 'Build Command';
@@ -2862,7 +2864,6 @@ resourcestring
   lisSVUOisNotAValidIdentifier = '%s%s%s is not a valid identifier.';
   lisFRIIdentifier = 'Identifier: %s';
   lisSVUOOverrideSystemVariable = 'Override system variable';
-  lisSVUOOk = 'Ok';
   
   // sort selection dialog
   lisSortSelSortSelection = 'Sort selection';
@@ -4086,6 +4087,7 @@ resourcestring
   VersionInfoTitle = 'Version Info';
   
   // Procedure List dialog
+  lisPListProcedureList         = 'Procedure List';
   lisPListObjects               = '&Objects';
   lisPListJumpToSelection       = 'Jump To Selection';
   lisPListFilterAny             = 'Filter by matching any part of method';
@@ -4499,10 +4501,9 @@ resourcestring
   lisUsePackageInPackage2 = 'Use package in package';
   lisCenterForm = 'Center form';
   lisFindMissingUnit = 'Find missing unit';
-  lisFocusNameOnCreate = 'Focus name on create';
-  lisAfterPuttingANewComponentOnADesignerFormFocusTheNa = 'After putting a '
-    +'new component on a designer form, focus the name property in the Object '
-    +'Inspector';
+  lisAskNameOnCreate = 'Ask name on create';
+  lisAskForComponentNameAfterPuttingItOnForm = 'Ask for component '
+    +'name after putting it on a designer form';
   lisEmpty = 'Empty';
   lisNotAValidPascalIdentifier = 'Not a valid pascal identifier';
   lisThereIsAlreadyAComponentWithThisName = 'There is already a component '

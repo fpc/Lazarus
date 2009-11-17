@@ -164,6 +164,7 @@ begin
   PlatformLabel.Caption:=GetDefaultTargetCPU+'-'+GetDefaultTargetOS
                          +'-'+LCLPlatformDisplayNames[GetDefaultLCLWidgetType];
 
+  VersionPage.Caption:=lisVersion;
   AboutPage.Caption:=lisMenuTemplateAbout;
   ContributorsPage.Caption:=lisContributors;
   ContributorsPage.DoubleBuffered := True;

@@ -121,8 +121,8 @@ procedure TFormEditorOptionsFrame.Setup(ADialog: TAbstractOptionsEditorDialog);
       Hint:=lisFEPaintDesignerItemsOnIdleReduceOverheadForSlowCompu;
     end;
     with CreateCompFocusNameCheckBox do begin
-      Caption:=lisFocusNameOnCreate;
-      Hint:=lisAfterPuttingANewComponentOnADesignerFormFocusTheNa;
+      Caption:=lisAskNameOnCreate;
+      Hint:=lisAskForComponentNameAfterPuttingItOnForm;
     end;
   end;
 

@@ -37,17 +37,17 @@ uses
   MemCheck,
   {$ENDIF}
   Classes, SysUtils, Controls, Forms, Buttons, StdCtrls, ComCtrls, Dialogs,
-  LazarusIDEStrConsts, LResources;
+  LazarusIDEStrConsts, LResources, ButtonPanel;
 
 type
   { TSysVarUserOverrideDialog }
   TSysVarUserOverrideDialog = class(TForm)
-    OKButton: TBitBtn;
-    CancelButton: TBitBtn;
+    ButtonPanel: TButtonPanel;
     VariableLabel: TLabel;
     VariableEdit: TEdit;
     ValueLabel: TLabel;
     ValueEdit: TEdit;
+    procedure FormCreate(Sender: TObject);
     procedure OkButtonClick(Sender: TObject);
   private
   public
@@ -90,6 +90,12 @@ begin
   end;
 end;
 
+procedure TSysVarUserOverrideDialog.FormCreate(Sender: TObject);
+begin
+  //XXX: ButtonPanel's button event can't be assigned from OI
+  ButtonPanel.OKButton.OnClick:=@OKButtonClick;
+end;
+
 constructor TSysVarUserOverrideDialog.Create(TheOwner: TComponent);
 begin
   inherited Create(TheOwner);
@@ -97,9 +103,7 @@ begin
   Caption:=lisSVUOOverrideSystemVariable;
 
   VariableLabel.Caption:=lisCodeToolsDefsVariable;
-  ValueLabel.Caption:='Value:';
-
-  OkButton.Caption:=lisSVUOOk;
+  ValueLabel.Caption:=lisValue;
 end;
 
 initialization

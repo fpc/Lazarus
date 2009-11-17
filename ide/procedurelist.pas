@@ -252,7 +252,7 @@ begin
   self.Position       := poScreenCenter;
 
   // assign resource strings to Captions and Hints
-  self.Caption          := srkmecProcedureList;
+  self.Caption          := lisPListProcedureList;
   lblObjects.Caption    := lisPListObjects;
   lblSearch.Caption     := lisMenuSearch;
   tbAbout.Hint          := lisMenuTemplateAbout;
