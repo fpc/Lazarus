@@ -22,8 +22,8 @@ unit CarbonMenus;
 
 interface
 
-// debugging defines
-{$I carbondebug.inc}
+// defines
+{$I carbondefines.inc}
 
 uses
  // rtl+ftl
