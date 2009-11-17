@@ -1597,8 +1597,10 @@ var
   DesignForm: TCustomForm;
   NewUnitName: String;
   s: String;
-  Mediator: TDesignerMediator;
   MonitorBounds: TRect;
+  Mediator: TDesignerMediator;
+  FreeMediator: Boolean;
+  MediatorClass: TDesignerMediatorClass;
 
   function ActiveMonitor: TMonitor;
   begin
@@ -1618,6 +1620,7 @@ begin
   AParent:=nil;
   NewComponent:=nil;
   Mediator:=nil;
+  FreeMediator:=false;
   try
     //DebugLn(['[TCustomFormEditor.CreateComponent] Class="'+TypeClass.ClassName+'" ',X,',',Y,',',W,'x',H]);
     {$IFDEF IDE_MEM_CHECK}CheckHeapWrtMemCnt('TCustomFormEditor.CreateComponent A');{$ENDIF}
@@ -1796,6 +1799,14 @@ begin
           DesignForm := GetDesignerForm(ParentComponent);
           if DesignForm <> nil then DesignForm.Invalidate;
         end;
+        if Mediator=nil then begin
+          MediatorClass:=GetDesignerMediatorClass(TComponentClass(NewComponent.ClassType));
+          if MediatorClass<>nil then begin
+            Mediator:=MediatorClass.CreateMediator(nil,NewComponent);
+            FreeMediator:=Mediator<>nil;
+          end;
+        end;
+        //DebugLn(['TCustomFormEditor.CreateComponent ',DbgSName(NewComponent),' ',dbgs(Bounds(CompLeft,CompTop,CompWidth,CompHeight)),' ',Mediator<>nil]);
         if Mediator<>nil then begin
           Mediator.InitComponent(NewComponent,ParentComponent,
             Bounds(CompLeft,CompTop,CompWidth,CompHeight));
@@ -1826,6 +1837,20 @@ begin
     Result := Temp;
   finally
     // clean up carefully
+    if FreeMediator and (Mediator<>nil) then begin
+      try
+        FreeAndNil(Mediator);
+      except
+        on E: Exception do begin
+          s:='Error destroying mediator '+Mediator.ClassName
+            +' of unit '+AUnitName+':'#13
+            +E.Message;
+          DebugLn(['TCustomFormEditor.CreateComponent ',s]);
+          DumpExceptionBackTrace;
+          MessageDlg('Error destroying mediator',s,mtError,[mbCancel],0);
+        end;
+      end;
+    end;
     if Result=nil then begin
       if Temp=nil then begin
         if NewComponent<>nil then begin

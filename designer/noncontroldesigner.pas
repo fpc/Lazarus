@@ -77,6 +77,7 @@ begin
   if FMediator<>nil then begin
     FMediator.LCLForm:=Self;
     FMediator.FreeNotification(Self);
+    DoLoadBounds;
   end;
 end;
 

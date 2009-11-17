@@ -98,6 +98,8 @@ end;
 
 destructor TMyWidgetMediator.Destroy;
 begin
+  if FMyForm<>nil then FMyForm.Designer:=nil;
+  FMyForm:=nil;
   inherited Destroy;
 end;
 
