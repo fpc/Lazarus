@@ -10,7 +10,7 @@ Index: components/Makefile.fpc
  
  [target]
 -dirs=synedit codetools
-+dirs=synedit codetools cgi cgi/ide printers printers/design fpcunit fpcunit/ide memds projecttemplates rtticontrols sdf sqldb tachart tdbf turbopower_ipro jcf2/IdePlugin/lazarus
++dirs=synedit codetools cgi cgi/ide printers printers/design fpcunit fpcunit/ide memds projecttemplates rtticontrols sdf sqldb tachart tdbf turbopower_ipro jcf2/IdePlugin/lazarus chmhelp/packages/help chmhelp/packages/idehelp
  
  [clean]
  files=$(wildcard ./units/*$(OEXT)) \

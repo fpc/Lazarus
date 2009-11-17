@@ -62,6 +62,7 @@ begin
   CompareComplete('procedurebeginifbegin1.inc','11 74 procedurebeginifbegin fpcunit', 'procedurebeginifbegin1_result.inc');
   CompareComplete('record1.inc','3 22 record fpcunit', 'record1_result1.inc');
   CompareComplete('repeatifelse1.inc','11 18 repeatifelse fpcunit', 'repeatifelse1_result.inc');
+  CompareComplete('tryif1.inc','4 6 tryif fpcunit', 'tryif1_result.inc');
 end;
 
 end.
