@@ -35,7 +35,7 @@ interface
 uses
   SysUtils, Types, Classes, LCLStrConsts, LCLType, LCLProc, LResources, Controls,
   Forms, StdCtrls, lMessages, GraphType, Graphics, LCLIntf, CustomTimer, Themes,
-  LCLClasses, Menus, popupnotifier;
+  LCLClasses, Menus, popupnotifier, ImgList;
 
 type
 
@@ -140,6 +140,7 @@ type
     FAccess: TStrings; // TNBPages
     FAddingPages: boolean;
     FImages: TImageList;
+    FImageListChangeLink: TChangeLink;
     FLoadedPageIndex: integer;
     FOnChanging: TTabChangingEvent;
     FOnCloseTabClicked: TNotifyEvent;
@@ -156,6 +157,7 @@ type
     procedure DoSendPageIndex;
     procedure DoSendShowTabs;
     procedure DoSendTabPosition;
+    procedure DoImageListChange(Sender: TObject);
     function GetActivePage: String;
     function GetActivePageComponent: TCustomPage;
     function GetPage(AIndex: Integer): TCustomPage;
@@ -185,6 +187,7 @@ type
     class procedure WSRegisterClass; override;
     procedure CreateWnd; override;
     procedure DoCreateWnd; virtual;
+    procedure DoChange; virtual;
     procedure Change; virtual;
     procedure Loaded; override;
     procedure ReadState(Reader: TReader); override;
@@ -193,6 +196,7 @@ type
     procedure UpdateTabProperties; virtual;
     function ChildClassAllowed(ChildClass: TClass): boolean; override;
     class function GetControlClassDefaultSize: TPoint; override;
+    procedure Notification(AComponent: TComponent; Operation: TOperation); override;
     property ActivePageComponent: TCustomPage read GetActivePageComponent
                                               write SetActivePageComponent;
     property ActivePage: String read GetActivePage write SetActivePage
@@ -1079,7 +1083,6 @@ type
     property BevelOuter: TPanelBevel read FBevelOuter write SetBevelOuter default bvRaised;
     property BevelWidth: TBevelWidth read FBevelWidth write SetBevelWidth default 1;
     property Color default clBtnFace;
-    property Caption read GetText write SetText;
     property FullRepaint: Boolean read FFullRepaint write FFullRepaint default True;
     property ParentColor default true;
     property TabStop default False;
@@ -1167,12 +1170,14 @@ type
     function  GetCanvas: TCanvas;
     procedure SetHint(const AValue: string);
     procedure SetIcon(const AValue: TIcon);
+    procedure SetPopUpMenu(const AValue: TPopupMenu);
     procedure SetVisible(Value: Boolean);
     procedure HandleNotifierClose(Sender: TObject; var CloseAction: TCloseAction);
     procedure HandleNotifierTimeout(Sender: TObject);
     procedure IconChanged(Sender: TObject);
   protected
     class procedure WSRegisterClass; override;
+    procedure Notification(AComponent: TComponent; Operation: TOperation); override;
   public
     Handle: PtrInt;
     constructor Create(TheOwner: TComponent); override;
@@ -1188,7 +1193,7 @@ type
     property BalloonTimeout: Integer read FBalloonTimeout write FBalloonTimeout default 3000;
     property BalloonTitle: string read FBalloonTitle write FBalloonTitle;
     property Canvas: TCanvas read GetCanvas;
-    property PopUpMenu: TPopupMenu read FPopUpMenu write FPopUpMenu;
+    property PopUpMenu: TPopupMenu read FPopUpMenu write SetPopUpMenu;
     property Icon: TIcon read FIcon write SetIcon;
     property Hint: string read FHint write SetHint;
     property ShowIcon: Boolean read FShowIcon write FShowIcon default True;

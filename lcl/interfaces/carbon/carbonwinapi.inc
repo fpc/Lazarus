@@ -3176,6 +3176,28 @@ begin
 end;
 
 {------------------------------------------------------------------------------
+  Method:  TCarbonWidgetSet.SetMenu
+  Params:  AMenuObject - Menu
+
+  Attaches the menu of window to menu bar
+ ------------------------------------------------------------------------------}
+function TCarbonWidgetSet.SetMenu(AWindowHandle: HWND; AMenuHandle: HMENU): Boolean;
+begin
+  Result := False;
+  {$IFDEF VerboseWinAPI}
+    DebugLn('TCarbonWidgetSet.SetMenu AWindowHAndle: ' + DbgS(HWnd) + ' AMenuHandle: ' + DbgS(AMenuHandle));
+  {$ENDIF}
+
+  if not CheckWidget(AWindowHandle, 'SetMenu') then Exit;
+  if not CheckMenu(AMenuHandle, 'SetMenu') then Exit;
+
+
+  SetRootMenu(AMenuHandle);
+  Result := True;
+end;
+
+
+{------------------------------------------------------------------------------
   Method:  SetProp
   Params:  Handle - Handle of window
            Str    - Property name

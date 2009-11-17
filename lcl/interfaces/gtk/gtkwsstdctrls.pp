@@ -1257,10 +1257,35 @@ end;
 
 class procedure TGtkWSCustomEdit.SetText(const AWinControl: TWinControl;
   const AText: string);
+var
+  Widget: PGtkWidget;
+  Mess : TLMessage;
 begin
   if not WSCheckHandleAllocated(AWinControl, 'SetText') then
     Exit;
-  gtk_entry_set_text(PGtkEntry(AWinControl.Handle), PChar(AText));
+  {$IFDEF VerboseTWinControlRealText}
+  DebugLn(['TGtkWSCustomEdit.SetText START ',DbgSName(AWinControl),' AText="',AText,'"']);
+  {$ENDIF}
+  Widget:=PGtkWidget(AWinControl.Handle);
+  // some gtk2 versions fire the change event twice
+  // lock the event and send the message afterwards
+  // see bug http://bugs.freepascal.org/view.php?id=14615
+  LockOnChange(PgtkObject(Widget), +1);
+  try
+    gtk_entry_set_text(PGtkEntry(Widget), PChar(AText));
+  finally
+    LockOnChange(PgtkObject(Widget), -1);
+  end;
+  {$IFDEF VerboseTWinControlRealText}
+  DebugLn(['TGtkWSCustomEdit.SetText SEND TEXTCHANGED message ',DbgSName(AWinControl),' New="',gtk_entry_get_text(PGtkEntry(AWinControl.Handle)),'"']);
+  {$ENDIF}
+  FillByte(Mess,SizeOf(Mess),0);
+  Mess.Msg := CM_TEXTCHANGED;
+  DeliverMessage(AWinControl, Mess);
+
+  {$IFDEF VerboseTWinControlRealText}
+  DebugLn(['TGtkWSCustomEdit.SetText END ',DbgSName(AWinControl),' New="',gtk_entry_get_text(PGtkEntry(AWinControl.Handle)),'"']);
+  {$ENDIF}
 end;
 
 class procedure TGtkWSCustomEdit.GetPreferredSize(const AWinControl: TWinControl;

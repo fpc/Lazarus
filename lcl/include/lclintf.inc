@@ -56,11 +56,6 @@ begin
   Result := WidgetSet.AllocateHWnd(Method);
 end;
 
-procedure AttachMenuToWindow(AMenuObject: TComponent);
-begin
-  WidgetSet.AttachMenuToWindow(AMenuObject);
-end;
-
 procedure CallDefaultWndHandler(Sender: TObject; var Message);
 begin
   WidgetSet.CallDefaultWndHandler(Sender,Message);

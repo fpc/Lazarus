@@ -528,7 +528,7 @@ begin
 
   FTimerMap := TMap.Create(its4, SizeOf(TFNTimerProc));
   FCurrentCursor := 0;
-  FMainMenu := nil;
+  FMainMenu := 0;
   FCaptureWidget := 0;
   
   RegisterEvents;
@@ -1076,23 +1076,6 @@ end;
 function TCarbonWidgetSet.LCLPlatform: TLCLPlatform;
 begin
   Result:= lpCarbon;
-end;
-
-{------------------------------------------------------------------------------
-  Method:  TCarbonWidgetSet.AttachMenuToWindow
-  Params:  AMenuObject - Menu
-
-  Attaches the menu of window to menu bar
- ------------------------------------------------------------------------------}
-procedure TCarbonWidgetSet.AttachMenuToWindow(AMenuObject: TComponent);
-const SName = 'TCarbonWidgetSet.AttachMenuToWindow';
-begin
-  {$IFDEF VerboseObject}
-    DebugLn('TCarbonWidgetSet.AttachMenuToWindow ' + AMenuObject.Name);
-  {$ENDIF}
-  
-  if AMenuObject is TMainMenu then
-    SetRootMenu(AMenuObject as TMainMenu);
 end;
 
 {------------------------------------------------------------------------------

@@ -2220,15 +2220,13 @@ type
     function GetCapture: HWND;
     function GetCursorPos: TPoint;
     function GetIsDragging: Boolean;
-    procedure SetCursorPos(AValue : TPoint);
+    procedure SetCursorPos(AValue: TPoint);
     function GetWheelScrollLines: Integer;
     function GetDragImmediate: Boolean;
     procedure SetDragImmediate(const AValue: Boolean);
     function GetDragThreshold: Integer;
     procedure SetDragThreshold(const AValue: Integer);
   public
-    constructor Create;
-    destructor Destroy; override;
     property Capture: HWND read GetCapture write SetCapture;
     property CursorPos: TPoint read GetCursorPos write SetCursorPos;
     property IsDragging: Boolean read GetIsDragging;

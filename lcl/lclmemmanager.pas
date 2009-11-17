@@ -97,7 +97,7 @@ type
   protected
     function Realloc(var NewCapacity: Longint): Pointer; override;
   public
-    property Capacity: Longint read FCapacity write SetCapacity;
+    property Capacity;
   end;
   
 

@@ -382,9 +382,13 @@ end;
 
 procedure TCustomTabControl.SetImages(const AValue: TCustomImageList);
 begin
-  if FImages=AValue then exit;
-  FImages:=AValue;
-  TTabControlStrings(FTabs).Images:=FImages;
+  if FImages = AValue then Exit;
+  if FImages <> nil then
+    FImages.RemoveFreeNotification(Self);
+  FImages := AValue;
+  if FImages <> nil then
+    FImages.FreeNotification(Self);
+  TTabControlStrings(FTabs).Images := FImages;
 end;
 
 procedure TCustomTabControl.SetMultiLine(const AValue: Boolean);

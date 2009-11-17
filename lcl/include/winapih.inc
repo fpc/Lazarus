@@ -219,6 +219,7 @@ function SetCursor(hCursor: HICON): HCURSOR; {$IFDEF IF_BASE_MEMBER}virtual;{$EN
 function SetCursorPos(X, Y: Integer): Boolean; {$IFDEF IF_BASE_MEMBER}virtual;{$ENDIF}
 function SetFocus(hWnd: HWND): HWND; {$IFDEF IF_BASE_MEMBER}virtual;{$ENDIF}
 function SetForegroundWindow(hWnd : HWND): Boolean; {$IFDEF IF_BASE_MEMBER}virtual;{$ENDIF}
+function SetMenu(AWindowHandle: HWND; AMenuHandle: HMENU): Boolean; {$IFDEF IF_BASE_MEMBER}virtual;{$ENDIF}
 function SetProp(Handle: hwnd; Str : PChar; Data : Pointer) : Boolean; {$IFDEF IF_BASE_MEMBER}virtual;{$ENDIF}
 //function SetRect --> independent
 //function SetRectEmpty --> independent

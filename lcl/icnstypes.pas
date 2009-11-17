@@ -175,7 +175,69 @@ const
 
 function GetIcnsIconType(const StrIconType: FourCharCode): TicnsIconType;
 
+// Returns proper TicnsIconType, or iitNone, if Width/Height is incorrect
+function GetDataTypeRGB(Width, Height: Integer; var FourChar: FourCharCode): TicnsIconType;
+function GetMaskType8bit(Width, Height: Integer; var FourChar: FourCharCode): TicnsIconType;
+
 implementation
+
+function GetDataTypeRGB(Width, Height: Integer; var FourChar: FourCharCode): TicnsIconType;
+begin
+  Result := iitNone;
+  if Width <> Height then Exit;
+  
+  case Width of
+    16: begin
+      Result := iitSmall32BitData;
+      FourChar := kSmall32BitData;
+    end;
+    32: begin
+      Result := iitLarge32BitData;
+      FourChar := kLarge32BitData;
+    end;
+    48: begin
+      Result := iitHuge32BitData;
+      FourChar := kHuge32BitData;
+    end;      
+    128: begin
+      Result := iitThumbnail32BitData;
+      FourChar := kThumbnail32BitData;
+    end;
+    256: begin
+      Result := iit256PixelDataARGB;
+      FourChar :=  kIconServices256PixelDataARGB;
+    end;
+    512: begin
+      Result := iit512PixelDataARGB;
+      FourChar := kIconServices512PixelDataARGB;
+    end;
+  end; 
+end;
+
+function GetMaskType8bit(Width, Height: Integer; var FourChar: FourCharCode): TicnsIconType;
+begin
+  Result := iitNone;
+  if Width <> Height then Exit;
+  
+  case Width of
+    16: begin
+      Result := iitSmall8BitMask;
+      FourChar := kSmall8BitMask;
+    end;
+    32: begin
+      Result := iitLarge8BitMask;
+      FourChar := kLarge8BitMask;
+    end;
+    48: begin
+      Result := iitHuge8BitMask;
+      FourChar := kHuge8BitMask;
+    end;
+    128: begin
+      Result := iitThumbnail8BitMask;
+      FourChar := kThumbnail8BitMask;
+    end;
+  end; 
+end;
 
 function GetIcnsIconType(const StrIconType: FourCharCode): TicnsIconType;
 begin

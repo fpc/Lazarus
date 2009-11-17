@@ -65,11 +65,6 @@ begin
   FDataLink.ReadOnly:=AValue;
 end;
 
-function TDBMemo.WordWrapIsStored: boolean;
-begin
-  Result:=not WordWrap;
-end;
-
 procedure TDBMemo.DataChange(Sender: TObject);
 begin
   if FDataLink.Field<>nil then begin

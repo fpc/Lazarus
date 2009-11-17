@@ -3253,6 +3253,9 @@ begin
   debugln('TWinControl.DoAutoSize ',DbgSName(Self));
   {$ENDIF}
   if (not AutoSizeCanStart) or AutoSizeDelayed then begin
+    {$IFDEF NewAutoSize}
+    DebugLn(['TWinControl.DoAutoSize DELAYED']);
+    {$ENDIF}
     Include(FControlFlags,cfAutoSizeNeeded);
     exit;
   end;
@@ -3337,7 +3340,7 @@ begin
       PreferredHeight:=Constraints.MinMaxHeight(Height);
 
     // set new size
-    {$IFDEF VerboseAutoSize}
+    {$IF defined(VerboseAutoSize) or defined(NewAutoSize)}
     debugln(['DoAutoSize A ',DbgSName(Self),' Cur=',Width,'x',Height,' Prefer=',PreferredWidth,'x',PreferredHeight,' WidgetClass=',WidgetSetClass.ClassName,' Fixed=',WidthIsFixed,'x',HeightIsFixed]);
     {$ENDIF}
     if (PreferredWidth<>Width) or (PreferredHeight<>Height) then begin
@@ -3446,7 +3449,7 @@ end;
   
   
 ------------------------------------------------------------------------------}
-function TWinControl.CanFocus : Boolean;
+function TWinControl.CanFocus: Boolean;
 var
   Control: TWinControl;
   Form: TCustomForm;
@@ -3462,7 +3465,7 @@ begin
       // test all except the Form if it is visible and enabled
       if not (Control.IsControlVisible and Control.Enabled) then Exit;
       Control := Control.Parent;
-    until false;
+    until False;
     Result := True;
   end;
 end;
@@ -4069,7 +4072,7 @@ procedure TWinControl.UpdateShowing;
   begin
     if FShowing = bShow then Exit;
     {$IFDEF NewAutoSize}
-    DumpStack;
+    //DumpStack;
     {$ENDIF}
     FShowing := bShow;
     ok := false;
@@ -5363,7 +5366,7 @@ var
   AParent: TWinControl;
 begin
   //debugln('TWinControl.DoKeyDown ',DbgSName(Self),' ShiftState=',dbgs(KeyDataToShiftState(Message.KeyData)),' CharCode=',dbgs(Message.CharCode));
-  Result:=true;
+  Result := True;
 
   with Message do
   begin
@@ -5376,14 +5379,15 @@ begin
     if CharCode = VK_UNKNOWN then Exit;
 
     // let each parent form with keypreview handle the key
-    AParent:=Parent;
-    while (AParent<>nil) do begin
-      if (AParent is TCustomForm) then begin
+    AParent := Parent;
+    while (AParent <> nil) do
+    begin
+      if (AParent is TCustomForm) then
+      begin
         F := TCustomForm(AParent);
-        if  (F.KeyPreview)
-        and (F.DoKeyDownBeforeInterface(Message)) then Exit;
+        if (F.KeyPreview) and (F.DoKeyDownBeforeInterface(Message)) then Exit;
       end;
-      AParent:=AParent.Parent;
+      AParent := AParent.Parent;
     end;
 
     if CharCode = VK_UNKNOWN then Exit;
@@ -7473,8 +7477,6 @@ begin
   ' Lock=',BoundsLockCount,
   ' Realized=',dbgs(FBoundsRealized)
   ]);
-  if CheckPosition(Self) and (AWidth=37) then
-    DumpStack;
   {$ENDIF}
   if BoundsLockCount<>0 then begin
     //DebugLn(['TWinControl.SetBounds ',DbgSName(Self),' ignoring loop Cur=',dbgs(BoundsRect),' ',dbgs(Bounds(ALeft,ATop,AWidth,AHeight))]);
@@ -7603,10 +7605,26 @@ end;
 function TWinControl.RealGetText: TCaption;
 begin
   Result := '';
+  {$IFDEF VerboseTWinControlRealText}
+  DebugLn(['TWinControl.RealGetText ',DbgSName(Self),' HandleAllocated=',HandleAllocated,' csLoading=',csLoading in ComponentState,' ']);
+  if not HandleAllocated
+  or (csLoading in ComponentState) then begin
+    DebugLn(['TWinControl.RealGetText using inherited RealGetText']);
+    Result := inherited RealGetText;
+  end else begin
+    DebugLn(['TWinControl.RealGetText using ',DbgSName(WidgetSetClass),' GetText']);
+    if (not TWSWinControlClass(WidgetSetClass).GetText(Self, Result)) then begin
+      DebugLn(['TWinControl.RealGetText FAILED, using RealGetText']);
+      Result := inherited RealGetText;
+    end;
+  end;
+  DebugLn(['TWinControl.RealGetText Result="',Result,'"']);
+  {$ELSE}
   if not HandleAllocated 
   or (csLoading in ComponentState) 
   or (not TWSWinControlClass(WidgetSetClass).GetText(Self, Result))
   then Result := inherited RealGetText;
+  {$ENDIF}
 end;
 
 {------------------------------------------------------------------------------
@@ -7634,6 +7652,9 @@ end;
  ------------------------------------------------------------------------------}
 procedure TWinControl.RealSetText(const AValue: TCaption);
 begin
+  {$IFDEF VerboseTWinControlRealText}
+  DebugLn(['TWinControl.RealSetText ',DbgSName(Self),' AValue="',AValue,'" HandleAllocated=',HandleAllocated,' csLoading=',csLoading in ComponentState]);
+  {$ENDIF}
   if HandleAllocated and (not (csLoading in ComponentState)) then
   begin
     WSSetText(AValue);
@@ -7642,6 +7663,9 @@ begin
     AdjustSize;
   end
   else inherited RealSetText(AValue);
+  {$IFDEF VerboseTWinControlRealText}
+  DebugLn(['TWinControl.RealSetText ',DbgSName(Self),' END']);
+  {$ENDIF}
 end;
 
 {------------------------------------------------------------------------------
@@ -7728,7 +7752,7 @@ begin
     ]);
   {$ENDIF}
   {$IFDEF NewAutoSize}
-  DumpStack;
+  //DumpStack;
   {$ENDIF}
   {$IFDEF CHECK_POSITION}
   if CheckPosition(Self) then

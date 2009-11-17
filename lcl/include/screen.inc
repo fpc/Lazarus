@@ -854,8 +854,17 @@ begin
 end;
 
 procedure TScreen.RestoreLastActive;
+
+  function CanFocusForm(AControl: TWinControl): Boolean; inline;
+  var
+    AForm: TCustomForm;
+  begin
+    AForm := GetParentForm(AControl);
+    Result := (AForm <> nil) and AForm.CanFocus;
+  end;
+
 begin
-  if (FLastActiveControl <> nil) and FLastActiveControl.CanFocus then
+  if (FLastActiveControl <> nil) and FLastActiveControl.CanFocus and CanFocusForm(FLastActiveControl) then
     FLastActiveControl.SetFocus
   else
   if (FLastActiveCustomForm <> nil) and FLastActiveCustomForm.CanFocus then

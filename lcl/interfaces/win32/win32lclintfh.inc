@@ -51,8 +51,10 @@ function FontCanUTF8(Font: HFont): boolean; override;
 
 function GetAcceleratorString(const AVKey: Byte; const AShiftState: TShiftState): String; override;
 function GetControlConstraints(Constraints: TObject): boolean; override;
+function GetDesignerDC(WindowHandle: HWND): HDC; override;
 
 function IntfSendsUTF8KeyPress: boolean; override;
+function IsDesignerDC(WindowHandle: HWND; DC: HDC): Boolean; override;
 
 function RawImage_CreateBitmaps(const ARawImage: TRawImage; out ABitmap, AMask: HBitmap; ASkipMask: Boolean = False): Boolean; override;
 function RawImage_DescriptionFromBitmap(ABitmap: HBITMAP; out ADesc: TRawImageDescription): Boolean; override;
@@ -61,6 +63,7 @@ function RawImage_FromBitmap(out ARawImage: TRawImage; ABitmap, AMask: HBITMAP; 
 function RawImage_FromDevice(out ARawImage: TRawImage; ADC: HDC; const ARect: TRect): Boolean; override;
 function RawImage_QueryDescription(AFlags: TRawImageQueryFlags; var ADesc: TRawImageDescription): Boolean; override;
 
+function ReleaseDesignerDC(Window: HWND; DC: HDC): Integer; override;
 procedure RemoveEventHandler(var AHandler: PEventHandler); override;
 procedure RemovePipeEventHandler(var AHandler: PPipeEventHandler); override;
 procedure RemoveProcessEventHandler(var AHandler: PProcessEventHandler); override;

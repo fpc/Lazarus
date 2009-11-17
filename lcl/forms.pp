@@ -448,7 +448,7 @@ type
     procedure SetDesigner(Value : TIDesigner);
     procedure SetFormStyle(Value : TFormStyle);
     procedure SetIcon(AValue: TIcon);
-    procedure SetMenu(Value : TMainMenu);
+    procedure SetMenu(Value: TMainMenu);
     procedure SetModalResult(const AValue: TModalResult);
     procedure SetPosition(Value : TPosition);
     procedure SetShowInTaskbar(Value: TShowInTaskbar);
@@ -461,6 +461,7 @@ type
     procedure WMShowWindow(var message: TLMShowWindow); message LM_SHOWWINDOW;
     procedure WMSize(var message: TLMSize); message LM_Size;
     procedure CMBiDiModeChanged(var Message: TLMessage); message CM_BIDIMODECHANGED;
+    procedure CMParentBiDiModeChanged(var Message: TLMessage); message CM_PARENTBIDIMODECHANGED;
     procedure CMAppShowBtnGlyphChanged(var Message: TLMessage); message CM_APPSHOWBTNGLYPHCHANGED;
     procedure CMAppShowMenuGlyphChanged(var Message: TLMessage); message CM_APPSHOWMENUGLYPHCHANGED;
     procedure CMIconChanged(var Message: TLMessage); message CM_ICONCHANGED;
@@ -470,6 +471,7 @@ type
     procedure RemoveHandler(HandlerType: TFormHandlerType;
                             const Handler: TMethod);
     function FindDefaultForActiveControl: TWinControl;
+    procedure UpdateMenu;
   protected
     FFormBorderStyle: TFormBorderStyle;
     FActionLists: TList;
@@ -550,6 +552,7 @@ type
     procedure MakeFullyVisible(AMonitor: TMonitor = nil; UseWorkarea: Boolean = False);
     function NeedParentForAutoSize: Boolean; override;
     procedure Release;
+    function CanFocus: Boolean; override;
     procedure SetFocus; override;
     function SetFocusedControl(Control: TWinControl): Boolean ; virtual;
     procedure SetRestoredBounds(ALeft, ATop, AWidth, AHeight: integer);
@@ -751,9 +754,11 @@ type
   THintWindow = class(TCustomForm)
   private
     FActivating: Boolean;
-    FAutoHide : Boolean;
-    FAutoHideTimer : TComponent;
-    FHideInterval : Integer;
+    FAlignment: TAlignment;
+    FAutoHide: Boolean;
+    FAutoHideTimer: TComponent;
+    FHideInterval: Integer;
+    function GetDrawTextFlags: Cardinal;
     procedure SetAutoHide(Value : Boolean);
     procedure AutoHideHint(Sender : TObject);
     procedure SetHideInterval(Value : Integer);
@@ -772,8 +777,10 @@ type
     procedure Paint; override;
     class function GetControlClassDefaultSize: TPoint; override;
   public
-    property AutoHide : Boolean read FAutoHide write SetAutoHide;
-    property HideInterval : Integer read FHideInterval write SetHideInterval;
+    property Alignment: TAlignment read FAlignment write FAlignment;
+    property AutoHide: Boolean read FAutoHide write SetAutoHide;
+    property BiDiMode;
+    property HideInterval: Integer read FHideInterval write SetHideInterval;
   end;
 
   THintWindowClass = class of THintWindow;
@@ -1156,7 +1163,7 @@ type
     procedure FreeIconHandles;
     procedure IconChanged(Sender: TObject);
     function GetControlAtMouse: TControl;
-    procedure SetBidiMode ( const AValue : TBiDiMode ) ;
+    procedure SetBidiMode(const AValue: TBiDiMode);
     procedure SetFlags(const AValue: TApplicationFlags);
     procedure SetNavigation(const AValue: TApplicationNavigationOptions);
     procedure SetShowButtonGlyphs(const AValue: TApplicationShowGlyphs);

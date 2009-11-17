@@ -45,7 +45,17 @@ end;
  ------------------------------------------------------------------------------}
 procedure TMenu.SetImages(const AValue: TCustomImageList);
 begin
+  if FImages <> nil then
+  begin
+    FImages.UnRegisterChanges(FImageChangeLink);
+    FImages.RemoveFreeNotification(Self);
+  end;
   FImages := AValue;
+  if FImages <> nil then
+  begin
+    FImages.FreeNotification(Self);
+    FImages.RegisterChanges(FImageChangeLink);
+  end;
   FItems.UpdateImages;
 end;
 
@@ -115,10 +125,11 @@ end;
  ------------------------------------------------------------------------------}
 procedure TMenu.SetParent(const AValue: TComponent);
 begin
-  if FParent=AValue then exit;
-  FParent:=AValue;
-  if (FParent=nil) and (Items<>nil) and Items.HandleAllocated then begin
-    // disconnect from form
+  if FParent = AValue then Exit;
+  FParent := AValue;
+  if (FParent = nil) and (Items <> nil) and Items.HandleAllocated then
+  begin
+    // disconnect from the form
     DestroyHandle;
   end
 end;
@@ -142,7 +153,7 @@ begin
   FItems.Handle := TWSMenuClass(WidgetSetClass).CreateHandle(Self);
   // initiate creation of subitems
   // Note: FItems is a TMenuItem. Using HandleNeeded will create all subitems.
-  for i:=0 to Items.Count-1 do
+  for i := 0 to Items.Count - 1 do
     if Items[i].Visible then
       Items[i].HandleNeeded;
 end;
@@ -231,7 +242,7 @@ begin
   ShiftState := KeyDataToShiftState(Message.KeyData);
   Shortcut := Menus.Shortcut(Message.CharCode, ShiftState);
   Item := FindItem(Shortcut, fkShortcut);
-  Result := Item <> nil;
+  Result := not (csDesigning in ComponentState) and (Item <> nil);
   //DebugLn(['TMenu.IsShortcut ',dbgsName(Self),' Result=',Result,' Message.CharCode=',Message.CharCode,' ShiftState=',dbgs(ShiftState)]);
   if Result then
   begin
@@ -282,12 +293,8 @@ end;
 procedure TMenu.Notification(AComponent: TComponent; Operation: TOperation);
 begin
   inherited Notification(AComponent, Operation);
-  if Operation = opRemove then
-    if AComponent = FImages then
-    begin
-      FImages := nil;
-      FItems.UpdateImages;
-    end;
+  if (Operation = opRemove) and (AComponent = FImages) then
+    Images := nil;
 end;
 
 procedure TMenu.SetChildOrder(Child: TComponent; Order: Integer);

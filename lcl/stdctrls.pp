@@ -377,7 +377,7 @@ type
                            default DefaultComboBoxAutoCompleteText;
     property AutoDropDown: Boolean
                            read FAutoDropDown write FAutoDropDown default False;
-    property AutoSelect: Boolean read FAutoSelect write FAutoSelect default False;
+    property AutoSelect: Boolean read FAutoSelect write FAutoSelect default True;
     property AutoSelected: Boolean read FAutoSelected write FAutoSelected;
     property AutoSize default True; // Overrides default value
     property ArrowKeysTraverseList: Boolean read FArrowKeysTraverseList
@@ -682,6 +682,7 @@ type
     FAutoSelect: Boolean;
     FAutoSelected: Boolean;
     FCharCase: TEditCharCase;
+    fCaretPos: TPoint;
     FEchoMode: TEchoMode;
     FMaxLength: Integer;
     FModified: Boolean;
@@ -723,7 +724,7 @@ type
     procedure KeyUp(var Key: Word; Shift: TShiftState); override;
     procedure WMChar(var Message: TLMChar); message LM_CHAR;
     procedure MouseUp(Button: TMouseButton; Shift:TShiftState; X, Y: Integer); override;
-    property AutoSelect: Boolean read FAutoSelect write FAutoSelect default False;
+    property AutoSelect: Boolean read FAutoSelect write FAutoSelect default True;
     property AutoSelected: Boolean read FAutoSelected write FAutoSelected;
     property ParentColor default False;
   public
@@ -788,7 +789,6 @@ type
     FWordWrap: Boolean;
     procedure SetHorzScrollBar(const AValue: TMemoScrollBar);
     procedure SetVertScrollBar(const AValue: TMemoScrollBar);
-    function StoreScrollBars: boolean;
   protected
     class procedure WSRegisterClass; override;
     procedure InitializeWnd; override;
@@ -805,7 +805,6 @@ type
     procedure SetWordWrap(const Value: boolean);
     procedure SetScrollBars(const Value: TScrollStyle);
     procedure Loaded; override;
-    function WordWrapIsStored: boolean; virtual;
     procedure ControlKeyDown(var Key: Word; Shift: TShiftState); override;
     procedure CNChar(var Message: TLMKeyUp); message CN_CHAR;
     class function GetControlClassDefaultSize: TPoint; override;
@@ -815,15 +814,12 @@ type
     procedure Append(const Value: String);
   public
     property Lines: TStrings read FLines write SetLines;
-    //property Font: TFont read FFont write FFont;
-    property HorzScrollBar: TMemoScrollBar
-      read FHorzScrollBar write SetHorzScrollBar stored StoreScrollBars;
-    property VertScrollBar: TMemoScrollBar
-      read FVertScrollBar write SetVertScrollBar stored StoreScrollBars;
+    property HorzScrollBar: TMemoScrollBar read FHorzScrollBar write SetHorzScrollBar;
+    property VertScrollBar: TMemoScrollBar read FVertScrollBar write SetVertScrollBar;
     property ScrollBars: TScrollStyle read FScrollBars write SetScrollBars default ssNone;
     property WantReturns: Boolean read FWantReturns write SetWantReturns default true;
     property WantTabs: Boolean read FWantTabs write SetWantTabs default false;
-    property WordWrap: Boolean read FWordWrap write SetWordWrap stored WordWrapIsStored default true;
+    property WordWrap: Boolean read FWordWrap write SetWordWrap default true;
   end;
 
 

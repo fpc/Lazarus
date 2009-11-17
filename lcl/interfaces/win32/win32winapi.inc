@@ -1777,10 +1777,8 @@ var
 begin
   Assert(False, Format('Trace:> [TWin32WidgetSet.GetDC] HWND: 0x%x', [HWnd]));
   Result := Windows.GetDC(HWnd);
-  if (Result<>0) and (HWnd<>0)
-  and GetLCLClientBoundsOffset(HWnd, ORect) then begin
+  if (Result <> 0) and (HWnd <> 0) and GetLCLClientBoundsOffset(HWnd, ORect) then
     MoveWindowOrgEx(Result, ORect.Left, ORect.Top);
-  end;
   Assert(False, Format('Trace:< [TWin32WidgetSet.GetDC] Got 0x%x', [Result]));
 end;
 
@@ -1796,33 +1794,6 @@ begin
   Result := Windows.GetDeviceCaps(DC, Index);
 end;
 
-function TWin32WidgetSet.GetDesignerDC(WindowHandle: HWND): HDC;
-var
-  OverlayWindow: HWND;
-  ARect: Windows.RECT;
-  WindowInfo, OverlayWindowInfo: PWin32WindowInfo;
-begin
-  WindowInfo := GetWin32WindowInfo(WindowHandle);
-  OverlayWindow := WindowInfo^.Overlay;
-  if OverlayWindow = HWND(nil) then
-  begin
-    // create 'overlay' window
-    Windows.GetClientRect(WindowHandle, @ARect);
-    OverlayWindow := Windows.CreateWindowEx(WS_EX_TRANSPARENT,
-        @ClsName, '', WS_CHILD or WS_VISIBLE,
-        ARect.Left, ARect.Top, ARect.Right, ARect.Bottom,
-        WindowHandle, HMENU(nil), HInstance, nil);
-    OverlayWindowInfo := AllocWindowInfo(OverlayWindow);
-    OverlayWindowInfo^.DefWndProc := Windows.WNDPROC(SetWindowLong(
-        OverlayWindow, GWL_WNDPROC, PtrInt(@OverlayWindowProc)));
-    OverlayWindowInfo^.WinControl := WindowInfo^.WinControl;
-    WindowInfo^.Overlay := OverlayWindow;
-  end;
-  // bring overlay window to front
-  Windows.SetWindowPos(OverlayWindow, HWND_TOP, 0, 0, 0, 0, SWP_NOSIZE or SWP_NOMOVE);
-  Result := Windows.GetDC(OverlayWindow);
-end;
-
 function TWin32WidgetSet.GetDCOriginRelativeToWindow(PaintDC: HDC;
   WindowHandle: HWND; var OriginDiff: TPoint): boolean;
 var
@@ -1835,7 +1806,7 @@ begin
   Result := GetObjectType(PaintDC) = OBJ_DC;
   if not Result then Exit;
   Result := Windows.GetDCOrgEx(PaintDC, DCOrg);
-  if not Result then exit;
+  if not Result then Exit;
   winOrg.X := 0;
   winOrg.Y := 0;
   Result := Windows.ClientToScreen(WindowHandle, winOrg);
@@ -2871,17 +2842,6 @@ begin
   Assert(False, Format('Trace:< [TWin32WidgetSet.ReleaseDC] DC:0x%x', [DC]));
 end;
 
-function TWin32WidgetSet.ReleaseDesignerDC(Window: HWND; DC: HDC): Integer;
-var
-  OverlayWindow: HWND;
-begin
-  Assert(False, Format('Trace:> [TWin32WidgetSet.ReleaseDC] DC:0x%x', [DC]));
-  OverlayWindow := GetWin32WindowInfo(Window)^.Overlay;
-  if OverlayWindow <> HWND(nil) then
-    Result := Windows.ReleaseDC(OverlayWindow, DC);
-  Assert(False, Format('Trace:< [TWin32WidgetSet.ReleaseDC] DC:0x%x', [DC]));
-end;
-
 {------------------------------------------------------------------------------
   Method:  RestoreDC
   Params:  DC - handle of device context
@@ -3178,6 +3138,13 @@ begin
   Result := Windows.SetForegroundWindow(HWnd);
   Assert(False, 'Trace:TWin32WidgetSet.SetForegroundWindow - Exit');
 end;
+
+function TWin32WidgetSet.SetMenu(AWindowHandle: HWND; AMenuHandle: HMENU): Boolean;
+begin
+  Result := Windows.SetMenu(AWindowHandle, AMenuHandle);
+  AddToChangedMenus(AWindowHandle);
+end;
+
 
 {------------------------------------------------------------------------------
   Method:  SetProp
@@ -3538,7 +3505,7 @@ begin
   //DbgDumpBitmap(Mask, 'StretchMaskBlt - Mask');
 
   // check if the Src has an alpha channel
-  bmp := Windows.GetCurrentObject(SrcDC, OBJ_BITMAP);
+  Bmp := Windows.GetCurrentObject(SrcDC, OBJ_BITMAP);
   // get info
   HasAlpha := (Windows.GetObject(bmp, SizeOf(WinBmp), @WinBmp) <> 0)
           and (WinBmp.bmBitsPixel = 32)

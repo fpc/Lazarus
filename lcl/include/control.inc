@@ -959,6 +959,8 @@ begin
     AdjustSize
   else
     RequestAlign;
+  if (csDesigning in ComponentState) and (Parent <> nil) then
+    Parent.Invalidate;
 end;
 
 function TControl.IsBorderSpacingInnerBorderStored: Boolean;
@@ -999,8 +1001,8 @@ end;
 {------------------------------------------------------------------------------
        TControl.DoEndDrag
 ------------------------------------------------------------------------------}
-Procedure TControl.DoEndDrag(Target: TObject; X,Y: Integer);
-Begin
+procedure TControl.DoEndDrag(Target: TObject; X,Y: Integer);
+begin
   {$IFDEF VerboseDrag}
   DebugLn('TControl.DoEndDrag ',Name,':',ClassName,' XY=',IntToStr(X),',',IntToStr(Y));
   {$ENDIF}
@@ -1034,7 +1036,7 @@ function TControl.GetClientOrigin: TPoint;
                            +Name+':'+ClassName);
   end;
 
-Begin
+begin
   //Assert(False, Format('Trace:[TControl.GetClientOrigin] %s',  [Classname]));
   if Parent = nil then
     RaiseParentNil;
@@ -1134,7 +1136,7 @@ var
   AWinTarget: TWinControl;
   Accepts: Boolean;
   P: TPoint;
-Begin
+begin
   Result := 0;
   {$IFDEF VerboseDrag}
   DebugLn('TControl.DoDragMsg ',Name,':',ClassName,' DragMsg.DragMessage=',IntToStr(ord(ADragMessage)));
@@ -1176,7 +1178,7 @@ end;
 {------------------------------------------------------------------------------
   TControl.DragOver
 ------------------------------------------------------------------------------}
-Procedure TControl.DragOver(Source: TObject; X,Y : Integer; State: TDragState;
+procedure TControl.DragOver(Source: TObject; X,Y : Integer; State: TDragState;
   var Accept:Boolean);
 begin
   {$IFDEF VerboseDrag}
@@ -1192,7 +1194,7 @@ end;
 {------------------------------------------------------------------------------
   TControl.DragDrop
 ------------------------------------------------------------------------------}
-Procedure TControl.DragDrop(Source: TObject; X,Y : Integer);
+procedure TControl.DragDrop(Source: TObject; X,Y : Integer);
 begin
   {$IFDEF VerboseDrag}
   DebugLn('TControl.DragDrop ',Name,':',ClassName,' XY=',IntToStr(X),',',IntToStr(Y));
@@ -2326,7 +2328,7 @@ end;
        TControl SetAutoSize
 ------------------------------------------------------------------------------}
 procedure TControl.SetAutoSize(value : Boolean);
-Begin
+begin
   If AutoSize <> Value then begin
     FAutoSize := Value;
     //debugln('TControl.SetAutoSize ',DbgSName(Self));
@@ -2508,7 +2510,7 @@ end;
        TControl SetBoundsRect
 ------------------------------------------------------------------------------}
 procedure TControl.SetBoundsRect(const ARect : TRect);
-Begin
+begin
   {$IFDEF CHECK_POSITION}
   if CheckPosition(Self) then
   DebugLn('[TControl.SetBoundsRect] ',Name,':',ClassName);
@@ -2591,10 +2593,11 @@ end;
 ------------------------------------------------------------------------------}
 procedure TControl.SetCursor(Value: TCursor);
 begin
-  if FCursor <> Value
-  then begin
+  if FCursor <> Value then 
+  begin
     FCursor := Value;
-    SetTempCursor(Value);
+    if not (csDesigning in ComponentState) then
+      SetTempCursor(Value);
   end;
 end;
 
@@ -2786,7 +2789,7 @@ end;
   TControl IsCaptionStored
 ------------------------------------------------------------------------------}
 function TControl.IsCaptionStored: Boolean;
-Begin
+begin
   Result := (ActionLink = nil) or not ActionLink.IsCaptionLinked;
 end;
 
@@ -3525,7 +3528,7 @@ end;
   TControl SetParentShowHint
 ------------------------------------------------------------------------------}
 procedure TControl.SetParentShowHint(Value : Boolean);
-Begin
+begin
   if FParentShowHint <> Value then
   begin
     FParentShowHint := Value;
@@ -3539,7 +3542,9 @@ end;
 ------------------------------------------------------------------------------}
 procedure TControl.SetPopupMenu(Value: TPopupMenu);
 begin
-  FPopupMenu :=  Value;
+  FPopupMenu := Value;
+  if FPopupMenu <> nil then
+    FPopupMenu.FreeNotification(Self);
 end;
 
 {------------------------------------------------------------------------------
@@ -4859,8 +4864,8 @@ end;
 
 procedure TControl.SetParentBiDiMode(AValue: Boolean);
 begin
-  if FParentBiDiMode=AValue then exit;
-  FParentBiDiMode:=AValue;
+  if FParentBiDiMode = AValue then Exit;
+  FParentBiDiMode := AValue;
   if (FParent <> nil) and not (csReading in ComponentState) then
     Perform(CM_PARENTBIDIMODECHANGED, 0, 0);
 end;
@@ -4885,11 +4890,11 @@ procedure TControl.CMParentBidiModeChanged(var Message: TLMessage);
 begin
   if csLoading in ComponentState then exit;
 
-  if FParentBidiMode then
+  if ParentBidiMode then
   begin
     if FParent <> nil then
       BidiMode := FParent.BidiMode;
-    FParentBidiMode := true;
+    ParentBidiMode := True;
   end;
 end;
 
@@ -4898,7 +4903,7 @@ end;
 ------------------------------------------------------------------------------}
 function TControl.IsBiDiModeStored: boolean;
 begin
-  Result := not FParentBidiMode;
+  Result := not ParentBidiMode;
 end;
 
 

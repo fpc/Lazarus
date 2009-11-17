@@ -693,7 +693,8 @@ begin
   if Operation = opRemove then
     if AComponent = Action then
       Action := nil
-    else if AComponent = FSubMenuImages then
+    else
+    if AComponent = FSubMenuImages then
       SubMenuImages := nil
     {else if AComponent = FMerged then
       MergeWith(nil)};
@@ -1196,7 +1197,10 @@ end;
 procedure TMenuItem.SetSubMenuImages(const AValue: TCustomImageList);
 begin
   if FSubMenuImages <> nil then
+  begin
     FSubMenuImages.UnRegisterChanges(FImageChangeLink);
+    FSubMenuImages.RemoveFreeNotification(Self);
+  end;
   FSubMenuImages := AValue;
   if FSubMenuImages <> nil then
   begin

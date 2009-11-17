@@ -17,6 +17,18 @@
  *****************************************************************************
 }
 
+procedure TMainMenu.SetWindowHandle(const AValue: HWND);
+begin
+  FWindowHandle := AValue;
+  if HandleAllocated then
+  begin
+    SetMenu(FWindowHandle, Handle);
+    BidiModeChanged;
+  end
+  else
+    SetMenu(FWindowHandle, 0);
+end;
+
 {------------------------------------------------------------------------------
   Method: TMainMenu.ItemChanged
   Params:  none
@@ -46,6 +58,7 @@ end;
 constructor TMainMenu.Create(AOwner : TComponent);
 begin
   FCompStyle := csMainMenu;
+  FWindowHandle := 0;
   inherited Create(AOwner);
 end;
 

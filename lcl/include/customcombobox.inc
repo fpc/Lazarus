@@ -767,7 +767,7 @@ begin
   TabStop := True;
   ParentColor := False;
   FAutoCompleteText := DefaultComboBoxAutoCompleteText;
-  FAutoSelect := False;
+  FAutoSelect := True;
   FAutoSelected := False;
   FCharCase := ecNormal;
   

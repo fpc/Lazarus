@@ -520,8 +520,7 @@ var
 {$endif}
         // tabpage parent and got a dc to draw in, divert paint to parent
         DCIndex := Windows.SaveDC(PaintMsg.DC);
-        MoveWindowOrgEx(PaintMsg.DC, -parLeft, -parTop);
-        Windows.SendMessage(ParentPaintWindow, WM_PAINT, Windows.WParam(PaintMsg.DC), 0);
+        TWin32ThemeServices(ThemeServices).DrawParentBackground(Window, PaintMsg.DC, nil, False);
         Windows.RestoreDC(PaintMsg.DC, DCIndex);
       end;
       if (ControlDC = 0) or not needParentPaint then
@@ -842,7 +841,7 @@ var
         if (lWinControl <> nil) and (lParam <> VK_SPACE) then
         begin
           ParentForm := GetParentForm(lWinControl);
-          if (ParentForm <> nil) and (ParentForm.Menu = nil)
+          if (ParentForm <> nil) and ((ParentForm.Menu = nil) or (csDesigning in ParentForm.ComponentState))
             and (Application <> nil) and (Application.MainForm <> nil)
             and (Application.MainForm <> ParentForm)
             and Application.MainForm.HandleAllocated then
@@ -854,7 +853,7 @@ var
               Windows.SetFocus(targetWindow);
               PLMsg^.Result := Windows.SendMessage(targetWindow, WM_SYSCOMMAND, WParam, LParam);
               Windows.SetFocus(prevFocus);
-              WinProcess := false;
+              WinProcess := False;
             end;
           end;
         end;
@@ -1339,6 +1338,7 @@ begin
         CheckSynchronize;
         TWin32Widgetset(Widgetset).CheckPipeEvents;
       end;
+    WM_ENTERIDLE: Application.Idle(False);
     WM_ACTIVATE:
     begin
       case LOWORD(WParam) Of

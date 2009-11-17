@@ -47,7 +47,7 @@ type
   TWin32WSMenuItem = class(TWSMenuItem)
   published
     class procedure AttachMenu(const AMenuItem: TMenuItem); override;
-    class function  CreateHandle(const AMenuItem: TMenuItem): HMENU; override;
+    class function CreateHandle(const AMenuItem: TMenuItem): HMENU; override;
     class procedure DestroyHandle(const AMenuItem: TMenuItem); override;
     class procedure SetCaption(const AMenuItem: TMenuItem; const ACaption: string); override;
     class function SetCheck(const AMenuItem: TMenuItem; const Checked: boolean): boolean; override;
@@ -61,7 +61,7 @@ type
 
   TWin32WSMenu = class(TWSMenu)
   published
-    class function  CreateHandle(const AMenu: TMenu): HMENU; override;
+    class function CreateHandle(const AMenu: TMenu): HMENU; override;
     class procedure SetBiDiMode(const AMenu: TMenu; UseRightToLeftAlign, UseRightToLeftReading : Boolean); override;
   end;
 
@@ -75,7 +75,7 @@ type
 
   TWin32WSPopupMenu = class(TWSPopupMenu)
   published
-    class function  CreateHandle(const AMenu: TMenu): HMENU; override;
+    class function CreateHandle(const AMenu: TMenu): HMENU; override;
     class procedure Popup(const APopupMenu: TPopupMenu; const X, Y: integer); override;
   end;
 
@@ -554,19 +554,30 @@ begin
     if IsRightToLeft then
     begin
       BGRect.Left := (Info.rcBar.Left - WndRect.Left);
-      inc(BGRect.Right, 2);
       BGClip.Left := BGRect.Left;
+      if AMenuItem.MenuVisibleIndex = 0 then
+      begin
+        BGRect.Right := (Info.rcBar.Right - WndRect.Left);
+        BGClip.Right := BGRect.Right;
+      end
+      else
+        inc(BGRect.Right, 2);
     end
     else
     begin
       BGRect.Right := (Info.rcBar.Right - WndRect.Left);
-      dec(BGRect.Left, 2);
       BGClip.Right := BGRect.Right;
+      if AMenuItem.MenuVisibleIndex = 0 then
+      begin
+        BGRect.Left := (Info.rcBar.Left - WndRect.Left);
+        BGClip.Left := BGRect.Left;
+      end
+      else
+        dec(BGRect.Left, 2);
     end;
   end
   else
   begin
-    BGRect := ARect;
     if AMenuItem.MenuVisibleIndex > 0 then
     begin
       if IsRightToLeft then
@@ -707,9 +718,18 @@ begin
       IconSize := AMenuItem.GetIconSize;
       ImageRect.Left := (ImageRect.Left + ImageRect.Right - IconSize.x) div 2;
       ImageRect.Top := (ImageRect.Top + ImageRect.Bottom - IconSize.y) div 2;
+      if IsRightToLeft then
+      begin
+        // we can't use RTL layout here since our imagelist does not support
+        // coordinates mirroring
+        SetLayout(AHDC, 0);
+        ImageRect.Left := ARect.Right - ImageRect.Left - IconSize.x;
+      end;
       ImageRect.Right := IconSize.x;
       ImageRect.Bottom := IconSize.y;
       DrawMenuItemIcon(AMenuItem, AHDC, ImageRect, ASelected);
+      if IsRightToLeft then
+        SetLayout(AHDC, LAYOUT_RTL);
     end
     else
     if AMenuItem.Checked then
@@ -720,16 +740,29 @@ begin
       ThemeDrawElement(AHDC, Tmp, CheckRect, nil);
     end;
     // draw text
-    TextRect := GutterRect;
-    TextRect.Left := TextRect.Right + Metrics.TextMargins.cxLeftWidth;
-    TextRect.Right := ARect.Right - Metrics.TextMargins.cxRightWidth;
-    TextRect.Top := (TextRect.Top + TextRect.Bottom - Metrics.TextSize.cy) div 2;
-    TextRect.Bottom := TextRect.Top + Metrics.TextSize.cy;
     TextFlags := DT_SINGLELINE or DT_EXPANDTABS;
     // todo: distinct UseRightToLeftAlignment and UseRightToLeftReading
-    TextFlags := TextFlags or DT_LEFT;
     if IsRightToLeft then
-      TextFlags := TextFlags or DT_RTLREADING;
+    begin
+      // restore layout before the text drawing since windows has bug with
+      // DT_RTLREADING support
+      SetLayout(AHDC, 0);
+      TextFlags := TextFlags or DT_RIGHT or DT_RTLREADING;
+      TextRect.Right := ARect.Right - GutterRect.Right - Metrics.TextMargins.cxLeftWidth;
+      TextRect.Left := ARect.Left + Metrics.TextMargins.cxRightWidth;
+      TextRect.Top := (GutterRect.Top + GutterRect.Bottom - Metrics.TextSize.cy) div 2;
+      TextRect.Bottom := TextRect.Top + Metrics.TextSize.cy;
+    end
+    else
+    begin
+      TextFlags := TextFlags or DT_LEFT;
+      TextRect := GutterRect;
+      TextRect.Left := TextRect.Right + Metrics.TextMargins.cxLeftWidth;
+      TextRect.Right := ARect.Right - Metrics.TextMargins.cxRightWidth;
+      TextRect.Top := (TextRect.Top + TextRect.Bottom - Metrics.TextSize.cy) div 2;
+      TextRect.Bottom := TextRect.Top + Metrics.TextSize.cy;
+    end;
+
     if ANoAccel then
       TextFlags := TextFlags or DT_HIDEPREFIX;
     if AMenuItem.Default then
@@ -737,11 +770,21 @@ begin
     else
       AFont := GetMenuItemFont([]);
     OldFont := SelectObject(AHDC, AFont);
+
     ThemeDrawText(AHDC, Details, AMenuItem.Caption, TextRect, TextFlags, 0);
     if AMenuItem.ShortCut <> scNone then
     begin
-      TextRect.Left := TextRect.Right - Metrics.ShortCustSize.cx;
-      TextFlags := TextFlags xor DT_LEFT or DT_RIGHT;
+      if IsRightToLeft then
+      begin
+        TextRect.Right := TextRect.Left + Metrics.ShortCustSize.cx;
+        TextFlags := TextFlags xor DT_RIGHT or DT_LEFT;
+      end
+      else
+      begin
+        TextRect.Left := TextRect.Right - Metrics.ShortCustSize.cx;
+        TextFlags := TextFlags xor DT_LEFT or DT_RIGHT;
+      end;
+
       ThemeDrawText(AHDC, Details, ShortCutToText(AMenuItem.ShortCut), TextRect, TextFlags, 0);
     end;
     // exlude menu item rectangle to prevent drawing by windows after us
@@ -757,7 +800,6 @@ var
   decoration: TCaptionFlagsSet;
   minimumHeight: Integer;
 begin
-  // TODO: vista menubar
   if IsVistaMenu then
   begin
     if AMenuItem.IsInMenuBar then
@@ -1110,13 +1152,13 @@ begin
   MenuInfo.cbSize := menuiteminfosize;
   MenuInfo.fMask := MIIM_TYPE;
   MenuInfo.dwTypeData := nil;  // don't retrieve caption
-  GetMenuItemInfo(AMenuItem.Parent.Handle, AMenuItem.Command, false, @MenuInfo);
+  GetMenuItemInfo(AMenuItem.Parent.Handle, AMenuItem.Command, False, @MenuInfo);
   if Value then
     MenuInfo.fType := MenuInfo.fType or Flag
   else
     MenuInfo.fType := MenuInfo.fType and (not Flag);
   MenuInfo.dwTypeData := LPSTR(AMenuItem.Caption);
-  Result := SetMenuItemInfo(AMenuItem.Parent.Handle, AMenuItem.Command, false, @MenuInfo);
+  Result := SetMenuItemInfo(AMenuItem.Parent.Handle, AMenuItem.Command, False, @MenuInfo);
   TriggerFormUpdate(AMenuItem);
 end;
 
@@ -1127,36 +1169,52 @@ var
   MenuInfo: MENUITEMINFO;
 begin
   if (AMenuItem.Parent = nil) or not AMenuItem.Parent.HandleAllocated then
-    exit;
+    Exit;
+
   FillChar(MenuInfo, SizeOf(MenuInfo), 0);
   with MenuInfo do
   begin
-    cbsize := menuiteminfosize;
+    cbSize := menuiteminfosize;
     fMask := MIIM_TYPE or MIIM_STATE;
+    dwTypeData := nil;  // don't retrieve caption
+  end;
+  GetMenuItemInfo(AMenuItem.Parent.Handle, AMenuItem.Command, False, @MenuInfo);
+  with MenuInfo do
+  begin
     // change enabled too since we can change from '-' to normal caption and vice versa
     if ACaption <> cLineCaption then
     begin
-      fType := MFT_STRING;
+      fType := (fType or MFT_STRING) and not (MFT_SEPARATOR or MFT_OWNERDRAW);
       fState := EnabledToStateFlag[AMenuItem.Enabled];
       dwTypeData := LPSTR(ACaption);
       cch := StrLen(dwTypeData);
     end
     else
     begin
-      fType := MFT_SEPARATOR;
+      fType := (fType or MFT_SEPARATOR) and not (MFT_STRING or MFT_OWNERDRAW);
       fState := MFS_DISABLED;
     end;
   end;
-  SetMenuItemInfo(AMenuItem.Parent.Handle, AMenuItem.Command, false, @MenuInfo);
+  SetMenuItemInfo(AMenuItem.Parent.Handle, AMenuItem.Command, False, @MenuInfo);
+
+  // MIIM_BITMAP is needed to request new measure item call
   with MenuInfo do
   begin
-    cbsize := menuiteminfosize;
+    fMask := MIIM_BITMAP;
+    dwTypeData := nil;
+  end;
+  SetMenuItemInfo(AMenuItem.Parent.Handle, AMenuItem.Command, False, @MenuInfo);
+
+  // set owner drawn
+  with MenuInfo do
+  begin
     fMask := MIIM_TYPE;
-    fType := MFT_OWNERDRAW;
+    fType := (fType or MFT_OWNERDRAW) and not (MFT_STRING or MFT_SEPARATOR);
     dwTypeData := LPSTR(ACaption);
     cch := StrLen(dwTypeData);
   end;
-  SetMenuItemInfo(AMenuItem.Parent.Handle, AMenuItem.Command, false, @MenuInfo);
+  SetMenuItemInfo(AMenuItem.Parent.Handle, AMenuItem.Command, False, @MenuInfo);
+
   TriggerFormUpdate(AMenuItem);
 end;
 
@@ -1291,7 +1349,7 @@ begin
 end;
 
 class procedure TWin32WSMenu.SetBiDiMode(const AMenu : TMenu;
-  UseRightToLeftAlign, UseRightToLeftReading : Boolean);
+  UseRightToLeftAlign, UseRightToLeftReading: Boolean);
 begin
   if not WSCheckHandleAllocated(AMenu, 'SetBiDiMode')
   then Exit;
@@ -1320,15 +1378,13 @@ var
   AppHandle: HWND;
 const
   lAlign: array[Boolean] of DWord = (TPM_LEFTALIGN, TPM_RIGHTALIGN);
-  lLayout: array[Boolean] of DWord = (0, TPM_LAYOUTRTL);
 begin
   MenuHandle := APopupMenu.Handle;
   AppHandle := TWin32WidgetSet(WidgetSet).AppHandle;
   GetWin32WindowInfo(AppHandle)^.PopupMenu := APopupMenu;
   TrackPopupMenuEx(MenuHandle,
     lAlign[APopupMenu.IsRightToLeft] or
-    TPM_LEFTBUTTON or TPM_RIGHTBUTTON or
-    lLayout[IsVistaMenu and APopupMenu.IsRightToLeft],
+    TPM_LEFTBUTTON or TPM_RIGHTBUTTON,
     X, Y, AppHandle, nil);
 end;
 

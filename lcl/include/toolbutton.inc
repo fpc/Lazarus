@@ -604,6 +604,8 @@ begin
     CopyPropertiesFromMenuItem(Value);
   end;
   FMenuItem := Value;
+  if FMenuItem <> nil then
+    FMenuItem.FreeNotification(Self);
 end;
 
 procedure TToolButton.SetStyle(Value: TToolButtonStyle);

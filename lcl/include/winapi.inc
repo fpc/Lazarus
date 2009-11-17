@@ -776,8 +776,13 @@ begin
   Result := WidgetSet.SetCursorPos(X, Y);
 end;
 
+function SetMenu(AWindowHandle: HWND; AMenuHandle: HMENU): Boolean;
+begin
+  Result := WidgetSet.SetMenu(AWindowHandle, AMenuHandle);
+end;
+
 function SetProp(Handle: hwnd; Str : PChar; Data : Pointer) : Boolean;
-Begin
+begin
   Result := WidgetSet.SetProp(Handle,Str,Data);
 end;
 
@@ -956,7 +961,7 @@ end;
  ------------------------------------------------------------------------------}
 function CopyRect(var DestRect: TRect; const SrcRect: TRect): Boolean;
 begin
-  Move(SrcRect, DestRect, SizeOf(TRect));
+  System.Move(SrcRect, DestRect, SizeOf(TRect));
   Result := True;
 end;
 

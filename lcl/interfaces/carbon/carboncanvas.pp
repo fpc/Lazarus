@@ -488,8 +488,11 @@ end;
   Note: must be used in pair with RestoreDC!
  ------------------------------------------------------------------------------}
 function TCarbonDeviceContext.SaveDC: Integer;
+var
+  current : HIShapeRef;
 begin
-  if isClipped then CGContextRestoreGState(CGContext); // clip rect is on top of the state stack!
+  if isClipped then
+    CGContextRestoreGState(CGContext); // clip rect is on top of the state stack!
 
   Result := 0;
   if CGContext = nil then
@@ -509,9 +512,8 @@ begin
   
   if isClipped then 
   begin
-    // should clip rect be restored?
-    isClipped:=false;
-    FClipRegion.Shape := HIShapeCreateEmpty;
+    CGContextSaveGState(CGContext);
+    FClipRegion.Apply(Self);
   end;
 end;
 
@@ -1168,23 +1170,32 @@ end;
   the current position
  ------------------------------------------------------------------------------}
 procedure TCarbonDeviceContext.LineTo(X, Y: Integer);
+var
+  deltaX, deltaY, absDeltaX, absDeltaY, clipDeltaX, clipDeltaY: Float32;
 begin
-  if CurrentPen.Width = 1 then
+  deltaX := X - PenPos.x;
+  deltaY := Y - PenPos.y;
+  absDeltaX := Abs(deltaX);
+  absDeltaY := Abs(deltaY);
+  // exclude the end-point from the rasterization
+  if (absDeltaX > 1.0) or (absDeltaY > 1.0) then
   begin
-    CGContextSaveGState(CGContext);
-    ExcludeClipRect(X, Y, X + 1, Y + 1);
-  end;
-
-  try
+    if absDeltaX > absDeltaY then
+    begin
+      if deltaX > 0 then clipDeltaX := -1.0 else clipDeltaX := 1.0;
+      clipDeltaY := clipDeltaX * deltaY / deltaX;
+    end
+    else
+    begin
+      if deltaY > 0 then clipDeltaY := -1.0 else clipDeltaY := 1.0;
+      clipDeltaX := clipDeltaY * deltaX / deltaY;
+    end;
     CGContextBeginPath(CGContext);
     // add 0.5 to both coordinates for better rasterization
     CGContextMoveToPoint(CGContext, PenPos.x + 0.5, PenPos.y + 0.5);
-    CGContextAddLineToPoint(CGContext, X + 0.5, Y + 0.5);
+    CGContextAddLineToPoint(CGContext, X + clipDeltaX + 0.5, Y + clipDeltaY + 0.5);
     CGContextStrokePath(CGContext);
-  finally
-    if CurrentPen.Width = 1 then CGContextRestoreGState(CGContext);
   end;
-  
   FPenPos.x := X;
   FPenPos.y := Y;
 end;

@@ -102,7 +102,6 @@ type
     procedure AppBringToFront; override;
     procedure AppSetIcon(const Small, Big: HICON); override;
     procedure AppSetTitle(const ATitle: string); override;
-    procedure AttachMenuToWindow(AMenuObject: TComponent); override;
   public
     constructor Create; override;
     destructor Destroy; override;

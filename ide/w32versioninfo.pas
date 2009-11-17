@@ -331,26 +331,26 @@ begin
                                IntToStr(MajorRevNr) + ',' +
                                IntToStr(MinorRevNr) + ',' +
                                IntToStr(BuildNr));
-    AList.Add('PRODUCTVERSION ' + StringReplace(ProductVersionString, '.', ',', [rfReplaceAll]));
+    AList.Add('PRODUCTVERSION ' + StringReplace(Utf8ToAnsi(ProductVersionString), '.', ',', [rfReplaceAll]));
     AList.Add('{');
     AList.Add(' BLOCK "StringFileInfo"');
     AList.Add(' {');
     AList.Add('  BLOCK "' + HexLang + HexCharSet + '"');
     AList.Add('  {');
-    AList.Add('   VALUE "Comments", "' + CommentsString + '\000"');
-    AList.Add('   VALUE "CompanyName", "' + CompanyString + '\000"');
-    AList.Add('   VALUE "FileDescription", "' + DescriptionString + '\000"');
+    AList.Add('   VALUE "Comments", "' + Utf8ToAnsi(CommentsString) + '\000"');
+    AList.Add('   VALUE "CompanyName", "' + Utf8ToAnsi(CompanyString) + '\000"');
+    AList.Add('   VALUE "FileDescription", "' + Utf8ToAnsi(DescriptionString) + '\000"');
     AList.Add('   VALUE "FileVersion", "' + IntToStr(VersionNr) + '.' +
                                             IntToStr(MajorRevNr) + '.' +
                                             IntToStr(MinorRevNr) + '.' +
                                             IntToStr(BuildNr) + '\000"');
-    AList.Add('   VALUE "InternalName", "' + InternalNameString + '\000"');
-    AList.Add('   VALUE "LegalCopyright", "' + CopyrightString + '\000"');
-    AList.Add('   VALUE "LegalTrademarks", "' + TrademarksString + '\000"');
-    AList.Add('   VALUE "OriginalFilename", "' + OriginalFilenameString + '\000"');
-    AList.Add('   VALUE "ProductName", "' + ProdNameString + '\000"');
+    AList.Add('   VALUE "InternalName", "' + Utf8ToAnsi(InternalNameString) + '\000"');
+    AList.Add('   VALUE "LegalCopyright", "' + Utf8ToAnsi(CopyrightString) + '\000"');
+    AList.Add('   VALUE "LegalTrademarks", "' + Utf8ToAnsi(TrademarksString) + '\000"');
+    AList.Add('   VALUE "OriginalFilename", "' + Utf8ToAnsi(OriginalFilenameString) + '\000"');
+    AList.Add('   VALUE "ProductName", "' + Utf8ToAnsi(ProdNameString) + '\000"');
     AList.Add('   VALUE "ProductVersion", "' +
-              StringReplace(ProductVersionString, ',', '.', [rfReplaceAll]) +
+              StringReplace(Utf8ToAnsi(ProductVersionString), ',', '.', [rfReplaceAll]) +
               '\000"');
     AList.Add('  }');
     AList.Add(' }');
