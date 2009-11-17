@@ -374,14 +374,18 @@ begin
   end;
   ClearIgnoreErrorAfter;
   BuildSubTreeForClass(FCodeCompleteClassNode);
-  if FCodeCompleteClassNode.Desc in AllClassInterfaces then
-    FCompletingStartNode:=FCodeCompleteClassNode
-  else
-    FCompletingStartNode:=FCodeCompleteClassNode.FirstChild;
-  while (FCompletingStartNode<>nil) and (FCompletingStartNode.FirstChild=nil) do
-    FCompletingStartNode:=FCompletingStartNode.NextBrother;
-  if FCompletingStartNode<>nil then
-    FCompletingStartNode:=FCompletingStartNode.FirstChild;
+  // find first variable/method/GUID
+  FCompletingStartNode:=FCodeCompleteClassNode.FirstChild;
+  while FCompletingStartNode<>nil do begin
+    if FCompletingStartNode.Desc in AllClassSections then
+      FCompletingStartNode:=FCompletingStartNode.Next
+    else if FCompletingStartNode.Desc in (AllIdentifierDefinitions
+      +[ctnProperty,ctnProcedure])
+    then
+      break
+    else
+      FCompletingStartNode:=FCompletingStartNode.NextBrother;
+  end;
 end;
 
 procedure TCodeCompletionCodeTool.SetCodeCompleteSrcChgCache(

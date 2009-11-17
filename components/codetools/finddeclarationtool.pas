@@ -1280,8 +1280,7 @@ var CleanCursorPos: integer;
         // parse class and build CodeTreeNodes for all properties/methods
         BuildSubTreeForClass(ClassNode);
         CursorNode:=FindDeepestNodeAtPos(ClassNode,CleanCursorPos,true);
-        if (CursorNode.Desc=ctnClassInheritance)
-        or (CursorNode.Parent.Desc=ctnClassInheritance) then begin
+        if CursorNode.GetNodeOfType(ctnClassInheritance)<>nil then begin
           // identifier is an ancestor/interface identifier
           CursorNode:=ClassNode.Parent;
           DirectSearch:=true;
@@ -3812,8 +3811,7 @@ begin
 
     // find class node
     ANode:=FindDeepestNodeAtPos(CleanCursorPos,true);
-    if (ANode.Desc=ctnClassInheritance)
-    or ((ANode.Parent<>nil) and (ANode.Parent.Desc=ctnClassInheritance)) then
+    if (ANode.GetNodeOfType(ctnClassInheritance)<>nil) then
       exit;
     ClassNode:=FindClassNode(ANode);
     if (ClassNode=nil) or (ClassNode.Parent=nil)
@@ -4770,7 +4768,7 @@ var
 begin
   {$IFDEF CheckNodeTool}CheckNodeTool(IdentifierNode);{$ENDIF}
   if (IdentifierNode=nil)
-  or (IdentifierNode.Desc<>ctnIdentifier)
+  or (not (IdentifierNode.Desc in [ctnIdentifier,ctnSpecialize]))
   or (IdentifierNode.Parent=nil)
   or (IdentifierNode.Parent.Desc<>ctnClassInheritance)
   then
@@ -4781,7 +4779,16 @@ begin
   ClassNode:=IdentifierNode.Parent.Parent;
   ClassIdentNode:=ClassNode.Parent;
 
-  MoveCursorToCleanPos(IdentifierNode.StartPos);
+  if IdentifierNode.Desc=ctnSpecialize then begin
+    if (IdentifierNode.FirstChild=nil) then begin
+      MoveCursorToCleanPos(IdentifierNode.StartPos);
+      ReadNextAtom;
+      ReadNextAtom;
+      RaiseStringExpectedButAtomFound('class type');
+    end;
+    MoveCursorToCleanPos(IdentifierNode.FirstChild.StartPos);
+  end else
+    MoveCursorToCleanPos(IdentifierNode.StartPos);
   AncestorStartPos:=CurPos.StartPos;
   ReadNextAtom;
   AtomIsIdentifier(true);

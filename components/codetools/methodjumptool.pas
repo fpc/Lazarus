@@ -780,7 +780,6 @@ begin
   Result:=TAVLTree.Create(@CompareCodeTreeNodeExt);
   ANode:=StartNode;
   while (ANode<>nil) do begin
-    //DebugLn('[TMethodJumpingCodeTool.GatherProcNodes] A ',NodeDescriptionAsString(ANode.Desc));
     if ANode.Desc=ctnProcedure then begin
       if (not ((phpIgnoreForwards in Attr)
            and ((ANode.SubDesc and ctnsForwardDeclaration)>0)))

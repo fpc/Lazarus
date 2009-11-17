@@ -201,6 +201,7 @@ type
     function ReadTilTypeOfProperty(PropertyNode: TCodeTreeNode): boolean;
     procedure ReadGUID;
     procedure ReadClassInheritance(CreateChildNodes: boolean);
+    procedure ReadSpecialize(CreateChildNodes: boolean);
     function WordIsPropertyEnd: boolean;
   public
     CurSection: TCodeTreeNodeDesc;
@@ -3309,61 +3310,8 @@ begin
 end;
 
 function TPascalParserTool.KeyWordFuncSpecialize: boolean;
-// specialize template
-// examples:
-//   type TListOfInteger = specialize TGenericList<integer,string>;
-//   type TListOfChar = specialize Classes.TGenericList<integer,objpas.integer>;
 begin
-  if (CurNode.Desc<>ctnTypeDefinition) then
-    SaveRaiseExceptionFmt(ctsAnonymDefinitionsAreNotAllowed,['specialize']);
-  CreateChildNode;
-  CurNode.Desc:=ctnSpecialize;
-  // read identifier (the name of the generic)
-  ReadNextAtom;
-  AtomIsIdentifier(true);
-  CreateChildNode;
-  CurNode.Desc:=ctnSpecializeType;
-  CurNode.EndPos:=CurPos.EndPos;
-  ReadNextAtom;
-  if Curpos.Flag=cafPoint then begin
-    // first identifier was unitname, now read the type
-    ReadNextAtom;
-    AtomIsIdentifier(true);
-    CurNode.EndPos:=CurPos.EndPos;
-    ReadNextAtom;
-  end;
-  EndChildNode;
-  // read type list
-  if not AtomIsChar('<') then
-    RaiseCharExpectedButAtomFound('<');
-  CreateChildNode;
-  CurNode.Desc:=ctnSpecializeParams;
-  // read list of types
-  repeat
-    // read identifier (a parameter of the generic type)
-    ReadNextAtom;
-    AtomIsIdentifier(true);
-    ReadNextAtom;
-    if Curpos.Flag=cafPoint then begin
-      // first identifier was unitname, now read the type
-      ReadNextAtom;
-      AtomIsIdentifier(true);
-      ReadNextAtom;
-    end;
-    if AtomIsChar('>') then
-      break
-    else if CurPos.Flag=cafComma then begin
-      // read next parameter
-    end else
-      RaiseCharExpectedButAtomFound('>');
-  until false;
-  // close list
-  CurNode.EndPos:=CurPos.EndPos;
-  EndChildNode;
-  // close specialize
-  CurNode.EndPos:=CurPos.EndPos;
-  EndChildNode;
-  ReadNextAtom;
+  ReadSpecialize(true);
   Result:=true;
 end;
 
@@ -4419,21 +4367,26 @@ begin
   ReadNextAtom;
   if CurPos.Flag<>cafRoundBracketClose then begin
     repeat
-      // read Identifier or Unit.Identifier
-      AtomIsIdentifier(true);
-      if CreateChildNodes then begin
-        CreateChildNode;
-        CurNode.Desc:=ctnIdentifier;
-      end;
-      ReadNextAtom;
-      if CurPos.Flag=cafPoint then begin
-        ReadNextAtom;
+      if UpAtomIs('SPECIALIZE') then begin
+        // specialize Identifier<Identifier>
+        ReadSpecialize(CreateChildNodes);
+      end else begin
+        // read Identifier or Unit.Identifier
         AtomIsIdentifier(true);
+        if CreateChildNodes then begin
+          CreateChildNode;
+          CurNode.Desc:=ctnIdentifier;
+        end;
         ReadNextAtom;
-      end;
-      if CreateChildNodes then begin
-        CurNode.EndPos:=CurPos.EndPos;
-        EndChildNode;
+        if CurPos.Flag=cafPoint then begin
+          ReadNextAtom;
+          AtomIsIdentifier(true);
+          ReadNextAtom;
+        end;
+        if CreateChildNodes then begin
+          CurNode.EndPos:=CurPos.EndPos;
+          EndChildNode;
+        end;
       end;
       // read comma or )
       if CurPos.Flag=cafRoundBracketClose then break;
@@ -4447,6 +4400,75 @@ begin
     CurNode.EndPos:=CurPos.EndPos;
     EndChildNode;
   end;
+end;
+
+procedure TPascalParserTool.ReadSpecialize(CreateChildNodes: boolean);
+// specialize template
+// after parsing the cursor is on the atom behind the >
+// examples:
+//   type TListOfInteger = specialize TGenericList<integer,string>;
+//   type TListOfChar = specialize Classes.TGenericList<integer,objpas.integer>;
+//   type l = class(specialize TFPGObjectList<TControl>)
+begin
+  if CreateChildNodes then begin
+    CreateChildNode;
+    CurNode.Desc:=ctnSpecialize;
+  end;
+  // read identifier (the name of the generic)
+  ReadNextAtom;
+  AtomIsIdentifier(true);
+  if CreateChildNodes then begin
+    CreateChildNode;
+    CurNode.Desc:=ctnSpecializeType;
+    CurNode.EndPos:=CurPos.EndPos;
+  end;
+  ReadNextAtom;
+  if Curpos.Flag=cafPoint then begin
+    // first identifier was unitname, now read the type
+    ReadNextAtom;
+    AtomIsIdentifier(true);
+    if CreateChildNodes then
+      CurNode.EndPos:=CurPos.EndPos;
+    ReadNextAtom;
+  end;
+  if CreateChildNodes then begin
+    EndChildNode; // end ctnSpecializeType
+  end;
+  // read type list
+  if not AtomIsChar('<') then
+    RaiseCharExpectedButAtomFound('<');
+  if CreateChildNodes then begin
+    CreateChildNode;
+    CurNode.Desc:=ctnSpecializeParams;
+  end;
+  // read list of types
+  repeat
+    // read identifier (a parameter of the generic type)
+    ReadNextAtom;
+    AtomIsIdentifier(true);
+    ReadNextAtom;
+    if Curpos.Flag=cafPoint then begin
+      // first identifier was unitname, now read the type
+      ReadNextAtom;
+      AtomIsIdentifier(true);
+      ReadNextAtom;
+    end;
+    if AtomIsChar('>') then
+      break
+    else if CurPos.Flag=cafComma then begin
+      // read next parameter
+    end else
+      RaiseCharExpectedButAtomFound('>');
+  until false;
+  if CreateChildNodes then begin
+    // close list
+    CurNode.EndPos:=CurPos.EndPos;
+    EndChildNode; // end ctnSpecializeParams
+    // close specialize
+    CurNode.EndPos:=CurPos.EndPos;
+    EndChildNode; // end ctnSpecialize
+  end;
+  ReadNextAtom;
 end;
 
 function TPascalParserTool.WordIsPropertyEnd: boolean;
