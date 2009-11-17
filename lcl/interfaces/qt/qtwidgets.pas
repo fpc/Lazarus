@@ -8817,6 +8817,18 @@ begin
     FFrameOnlyAroundContents := QStyle_styleHint(QApplication_style(),
       QStyleSH_ScrollView_FrameOnlyAroundContents) > 0;
   end else
+  {$IFDEF MSWINDOWS}
+  {sometimes our IDE completely freezes, after screensaver activated
+   or OS sleep state / hibernation under Win32 (if cursor stays
+   inside SourceEditor), so if application is deactivated by OS
+   we must release mouse grab. }
+  if QEvent_type(Event) = QEventApplicationDeactivate then
+  begin
+    if QWidget_mouseGrabber() = Widget then
+      releaseMouse;
+    Result := inherited EventFilter(Sender, Event);
+  end else
+  {$ENDIF}
     Result := inherited EventFilter(Sender, Event);
 end;
 

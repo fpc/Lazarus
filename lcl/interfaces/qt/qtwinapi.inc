@@ -2617,7 +2617,7 @@ begin
   {TODO: find out what to do with TCustomForm descendants }
   if w is TQtAbstractScrollArea then
   begin
-    if BarKind = SM_CYVSCROLL then
+    if BarKind in [SM_CXVSCROLL, SM_CYVSCROLL] then
       ScrollBar := TQtAbstractScrollArea(w).verticalScrollBar
     else
       ScrollBar := TQtAbstractScrollArea(w).horizontalScrollBar;
@@ -2628,7 +2628,7 @@ begin
     ScrollBar := nil;
   if ScrollBar <> nil then
   begin
-    if BarKind = SM_CYVSCROLL then
+    if BarKind in [SM_CYHSCROLL, SM_CYVSCROLL] then
       Result := ScrollBar.getWidth
     else
       Result := ScrollBar.getHeight;

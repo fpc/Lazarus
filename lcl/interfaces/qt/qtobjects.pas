@@ -430,6 +430,8 @@ type
     procedure setIcon(icon: QIconH);
     procedure setToolTip(tip: WideString);
     procedure signalActivated(AReason: QSystemTrayIconActivationReason); cdecl;
+    procedure showBaloonHint(const ATitle, AHint: String;
+      const AFlag: QSystemTrayIconMessageIcon; const ATimeOut: Integer);
     procedure show;
     procedure hide;
   end;
@@ -1943,21 +1945,46 @@ end;
 
 procedure TQtDeviceContext.qDrawShadeRect(x, y, w, h: integer; Palette: QPaletteH = nil; Sunken: Boolean = False;
   lineWidth: Integer = 1; midLineWidth: Integer = 0; FillBrush: QBrushH = nil);
+var
+  AppPalette: QPaletteH;
 begin
+  AppPalette := nil;
   if Palette = nil then
-    Palette := QWidget_palette(Parent);
+  begin
+    if Parent = nil then
+    begin
+      AppPalette := QPalette_create();
+      QApplication_palette(AppPalette);
+      Palette := AppPalette;
+    end else
+      Palette := QWidget_palette(Parent);
+  end;
   q_DrawShadeRect(Widget, x, y, w, h, Palette, Sunken, lineWidth, midLineWidth, FillBrush);
+  if AppPalette <> nil then
+  begin
+    QPalette_destroy(AppPalette);
+    Palette := nil;
+  end;
 end;
 
 procedure TQtDeviceContext.qDrawWinPanel(x, y, w, h: integer;
   Palette: QPaletteH; Sunken: Boolean; lineWidth: Integer; FillBrush: QBrushH);
 var
   i: integer;
+  AppPalette: QPaletteH;
 begin
+  AppPalette := nil;
   if Palette = nil then
-    Palette := QWidget_palette(Parent);
+  begin
+    if Parent = nil then
+    begin
+      AppPalette := QPalette_create();
+      QApplication_palette(AppPalette);
+      Palette := AppPalette;
+    end else
+      Palette := QWidget_palette(Parent);
+  end;
   // since q_DrawWinPanel doesnot supports lineWidth we should do it ourself
-
   for i := 1 to lineWidth - 2 do
   begin
     q_DrawWinPanel(Widget, x, y, w, h, Palette, Sunken);
@@ -1974,6 +2001,11 @@ begin
         q_DrawShadePanel(Widget, x, y, w, h, Palette, Sunken, 1, QPalette_background(Palette))
     else
         q_DrawShadePanel(Widget, x, y, w, h, Palette, Sunken, 1, FillBrush);
+  end;
+  if AppPalette <> nil then
+  begin
+    QPalette_destroy(AppPalette);
+    Palette := nil;
   end;
 end;
 
@@ -2074,7 +2106,7 @@ end;
 procedure TQtDeviceContext.drawText(x: Integer; y: Integer; s: PWideString);
 var
   ARect: TRect;
-  FixedY, dy: Integer;
+  dy: Integer;
 begin
   {$ifdef VerboseQt}
   Write('TQtDeviceContext.drawText TargetX: ', X, ' TargetY: ', Y);
@@ -2088,18 +2120,18 @@ begin
     Rotate(-0.1 * Font.Angle);
   end;
 
-  // what about Font.Metrics.descent and Font.Metrics.leading ?
-  FixedY := y + Font.Metrics.ascent;
-
   // manual check for clipping
   if getClipping then
   begin
     dy := Font.Metrics.height;
     ARect := getClipRegion.getBoundingRect;
-    if (FixedY + dy < ARect.Top) or (FixedY > ARect.Bottom) or
+    if (y + dy < ARect.Top) or (y > ARect.Bottom) or
        (x > ARect.Right) then
       Exit;
   end;
+
+  // what about Font.Metrics.descent and Font.Metrics.leading ?
+  y := y + Font.Metrics.ascent;
 
   RestoreTextColor;
 
@@ -2108,13 +2140,14 @@ begin
   if Font.Angle <> 0 then
     QPainter_drawText(Widget, 0, Font.Metrics.ascent, s)
   else
-    QPainter_drawText(Widget, x, FixedY, s);
+    QPainter_drawText(Widget, x, y, s);
   
   RestorePenColor;
   
   // Restore previous angle
   if Font.Angle <> 0 then
   begin
+    y := y - Font.Metrics.ascent;
     Rotate(0.1 * Font.Angle);
     Translate(-x, -y);
   end;
@@ -2868,6 +2901,17 @@ begin
   end;
 end;
 
+procedure TQtSystemTrayIcon.showBaloonHint(const ATitle, AHint: String;
+  const AFlag: QSystemTrayIconMessageIcon; const ATimeOut: Integer);
+var
+  WHint: WideString;
+  WTitle: WideString;
+begin
+  WHint := GetUTF8String(AHint);
+  WTitle := GetUTF8String(ATitle);
+  QSystemTrayIcon_showMessage(Handle, @WTitle, @WHint, AFlag, ATimeOut);
+end;
+
 procedure TQtSystemTrayIcon.show;
 begin
   QSystemTrayIcon_show(handle);
@@ -3172,7 +3216,7 @@ end;
 constructor TQtPrinter.Create;
 begin
   FPrinterActive := False;
-  FHandle := QPrinter_create();
+  FHandle := QPrinter_create(QPrinterHighResolution);
 end;
 
 destructor TQtPrinter.Destroy;
