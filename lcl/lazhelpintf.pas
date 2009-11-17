@@ -284,12 +284,17 @@ type
   THelpDatabases = class;
   THelpViewer = class;
 
+  TOnHelpDBFindViewer =
+    function(HelpDB: THelpDatabase; const MimeType: string;
+        var ErrMsg: string; out Viewer: THelpViewer): TShowHelpResult of object;
+
   THelpDatabase = class(TComponent)
   private
     FAutoRegister: boolean;
     FBasePathObject: TObject;
     FID: THelpDatabaseID;
     FDatabases: THelpDatabases;
+    FOnFindViewer: TOnHelpDBFindViewer;
     FRefCount: integer;
     FSearchItems: TFPList;
     FSupportedMimeTypes: TStrings;
@@ -353,6 +358,7 @@ type
     property BasePathObject: TObject read FBasePathObject write FBasePathObject;
     property TOCNode: THelpNode read FTOCNode write FTOCNode;
     property AutoRegister: boolean read FAutoRegister write SetAutoRegister;
+    property OnFindViewer: TOnHelpDBFindViewer read FOnFindViewer write FOnFindViewer;
   end;
 
   THelpDatabaseClass = class of THelpDatabase;
@@ -1068,6 +1074,11 @@ var
   Viewers: TList;
 begin
   Viewer:=nil;
+  if Assigned(OnFindViewer) then begin
+    Result:=OnFindViewer(Self,MimeType,ErrMsg,Viewer);
+    exit;
+  end;
+
   Viewers:=HelpViewers.GetViewersSupportingMimeType(MimeType);
   try
     if (Viewers=nil) or (Viewers.Count=0) then begin
