@@ -63,7 +63,7 @@ type
     function GetIdentifier: string;
     procedure FindIdentifier(var IdentStart, IdentEnd: integer);
     function GetPath: string;
-    function Next: TLFMTreeNode;
+    function Next(SkipChildren: Boolean = False): TLFMTreeNode;
   end;
   
   TLFMTreeNodeClass = class of TLFMTreeNode;
@@ -946,18 +946,21 @@ begin
   end;
 end;
 
-function TLFMTreeNode.Next: TLFMTreeNode;
+function TLFMTreeNode.Next(SkipChildren: Boolean = False): TLFMTreeNode;
 begin
-  if FirstChild<>nil then
-    Result:=FirstChild
-  else begin
-    Result:=Self;
-    while Result<>nil do begin
-      if Result.NextSibling<>nil then begin
-        Result:=Result.NextSibling;
-        exit;
+  if not SkipChildren and (FirstChild <> nil) then
+    Result := FirstChild
+  else
+  begin
+    Result := Self;
+    while Result <> nil do
+    begin
+      if Result.NextSibling <> nil then
+      begin
+        Result := Result.NextSibling;
+        Exit;
       end;
-      Result:=Result.Parent;
+      Result := Result.Parent;
     end;
   end;
 end;

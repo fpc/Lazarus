@@ -167,19 +167,22 @@ var
   procedure FindMissingClasses;
   var
     Node: TLFMTreeNode;
-    ObjNode: TLFMObjectNode;
+    ObjNode: TLFMObjectNode absolute Node;
   begin
-    Node:=LFMTree.Root;
-    if Node=nil then exit;
+    Node := LFMTree.Root;
+    if Node = nil then Exit;
     // skip root
-    Node:=Node.Next;
+    Node := Node.Next;
     // check all other
-    while Node<>nil do begin
-      if Node is TLFMObjectNode then begin
-        ObjNode:=TLFMObjectNode(Node);
+    while Node <> nil do
+    begin
+      if Node is TLFMObjectNode then
+      begin
         FindMissingClass(ObjNode);
-      end;
-      Node:=Node.Next;
+        Node := Node.Next(ObjNode.IsInline); // skip children if node is inline
+      end
+      else
+        Node := Node.Next;
     end;
   end;
   
