@@ -1895,7 +1895,7 @@ var
           Identifier:=Tool.ExtractDefinitionName(CTNode);
           Description:='const '+Shorten(Tool.ExtractNode(CTNode,NodeFlags));
         end;
-      ctnTypeDefinition:
+      ctnTypeDefinition,ctnGenericType:
         begin
           Identifier:=Tool.ExtractDefinitionName(CTNode);
           Description:='type '+Identifier;
@@ -1988,7 +1988,7 @@ var
       NewNode.CodePos:=NewCodePos;
       //DebugLn(['AddIdentifierNode Code=',NewNode.FCodePos.Code<>nil,' P=',NewNode.FCodePos.P]);
       
-      if (CTNode.Desc=ctnTypeDefinition)
+      if (CTNode.Desc in [ctnTypeDefinition,ctnGenericType])
       and (CTNode.FirstChild<>nil)
       and (CTNode.FirstChild.Desc in AllClasses+[ctnRecordType,ctnEnumerationType])
       then begin
@@ -2031,7 +2031,7 @@ var
       ctnProcedure:
         if not Tool.NodeIsMethodBody(CTNode) then
           AddIdentifierNode(CTNode);
-      ctnVarDefinition,ctnConstDefinition,ctnTypeDefinition:
+      ctnVarDefinition,ctnConstDefinition,ctnTypeDefinition,ctnGenericType:
         if not Tool.NodeIsForwardDeclaration(CTNode) then
           AddIdentifierNode(CTNode);
       end;
@@ -2416,7 +2416,7 @@ begin
       Result:=ImgIDFinalization;
     ctnTypeSection:
       Result:=ImgIDTypeSection;
-    ctnTypeDefinition:
+    ctnTypeDefinition,ctnGenericType:
       Result:=ImgIDType;
     ctnVarSection:
       Result:=ImgIDVarSection;
