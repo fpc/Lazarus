@@ -450,7 +450,6 @@ begin
   EventTrace('changed_editbox', data);
   {$ENDIF}
 
-  FillByte(Mess,SizeOf(Mess),0);
   Mess.Msg := CM_TEXTCHANGED;
   DeliverMessage(Data, Mess);
 end;

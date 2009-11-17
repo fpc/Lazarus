@@ -1257,25 +1257,10 @@ end;
 
 class procedure TGtkWSCustomEdit.SetText(const AWinControl: TWinControl;
   const AText: string);
-var
-  Widget: PGtkWidget;
-  Mess : TLMessage;
 begin
   if not WSCheckHandleAllocated(AWinControl, 'SetText') then
     Exit;
-  Widget:=PGtkWidget(AWinControl.Handle);
-  LockOnChange(PgtkObject(Widget), +1);
-  try
-    gtk_entry_set_text(PGtkEntry(Widget), PChar(AText));
-  finally
-    LockOnChange(PgtkObject(Widget), -1);
-  end;
-  {$IFDEF VerboseTWinControlRealText}
-  DebugLn(['TGtkWSCustomEdit.SetText SEND TEXTCHANGED message ',DbgSName(AWinControl),' New="',gtk_entry_get_text(PGtkEntry(AWinControl.Handle)),'"']);
-  {$ENDIF}
-  FillByte(Mess,SizeOf(Mess),0);
-  Mess.Msg := CM_TEXTCHANGED;
-  DeliverMessage(AWinControl, Mess);
+  gtk_entry_set_text(PGtkEntry(AWinControl.Handle), PChar(AText));
 end;
 
 class procedure TGtkWSCustomEdit.GetPreferredSize(const AWinControl: TWinControl;
