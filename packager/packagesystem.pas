@@ -1395,8 +1395,9 @@ begin
     AddFile('synedit.pp','SynEdit',pftUnit,[],cpBase);
     AddFile('synedit.inc','',pftInclude,[],cpBase);
     AddFile('syneditkeycmds.pp','SynEditKeyCmds',pftUnit,[],cpBase);
-    AddFile('syneditlazdsgn.pas','SynEditLazDsgn',pftUnit,[],cpBase);
+    AddFile('syneditmousecmds.pp','SynEditMouseCmds',pftUnit,[],cpBase);
     AddFile('syncompletion.pas','SynCompletion',pftUnit,[],cpBase);
+    AddFile('syneditautocomplete.pp','SynEditAutoComplete',pftUnit,[],cpBase);
     AddFile('synmacrorecorder.pas','SynMacroRecorder',pftUnit,[],cpBase);
     AddFile('synmemo.pas','SynMemo',pftUnit,[],cpBase);
     AddFile('syneditsearch.pp','SynEditSearch',pftUnit,[],cpBase);
@@ -1404,13 +1405,16 @@ begin
     AddFile('syneditregexsearch.pas','SynEditRegExSearch',pftUnit,[],cpBase);
     AddFile('synedittypes.pp','SynEditTypes',pftUnit,[],cpBase);
     AddFile('syneditstrconst.pp','SynEditStrConst',pftUnit,[],cpBase);
-    AddFile('syncompletion.pas','SynCompletion',pftUnit,[],cpBase);
-    AddFile('synexport.pas','SynExport',pftUnit,[],cpBase);
+    AddFile('syneditexport.pas','SynEditExport',pftUnit,[],cpBase);
     AddFile('synexporthtml.pas','SynExportHTML',pftUnit,[],cpBase);
     AddFile('syneditmiscclasses.pp','SynEditMiscClasses',pftUnit,[],cpBase);
     AddFile('syneditmiscprocs.pp','SynEditMiscProcs',pftUnit,[],cpBase);
     AddFile('synbeautifier.pas','SynBeautifier',pftUnit,[],cpBase);
     AddFile('synbeautifierpas.pas','SynBeautifierPas',pftUnit,[],cpBase);
+    AddFile('syneditmarks.pp','SynEditMarks',pftUnit,[],cpBase);
+    AddFile('synregexpr.pas','SynRegExpr',pftUnit,[],cpBase);
+    AddFile('syntextdrawer.pp','SynTextDrawer',pftUnit,[],cpBase);
+    AddFile('syneditpointclasses.pas','SynEditPointClasses',pftUnit,[],cpBase);
 
     AddFile('syneditlines.pp','SynEditLines',pftUnit,[],cpBase);
     AddFile('synedittextbase.pas','SynEditTextBase',pftUnit,[],cpBase);
@@ -1418,6 +1422,7 @@ begin
     AddFile('synedittextdoublewidthchars.pas','SynEditTextDoubleWidthChars',pftUnit,[],cpBase);
     AddFile('synedittexttabexpander.pas','SynEditTextTabExpander',pftUnit,[],cpBase);
     AddFile('synedittexttrimmer.pas','SynEditTextTrimmer',pftUnit,[],cpBase);
+    AddFile('syneditfoldedview.pp','SynEditTextTrimmer',pftUnit,[],cpBase);
 
     AddFile('syneditmarkup.pp','SynEditMarkup',pftUnit,[],cpBase);
     AddFile('syneditmarkupctrlmouselink.pp','SynEditMarkupCtrlMouseLink',pftUnit,[],cpBase);
@@ -1446,13 +1451,22 @@ begin
     AddFile('synhighlighterpython.pas','SynHighlighterPython',pftUnit,[],cpBase);
     AddFile('synhighlightervb.pas','SynHighlighterVB',pftUnit,[],cpBase);
     AddFile('synhighlighterany.pas','SynHighlighterAny',pftUnit,[],cpBase);
+    AddFile('synhighlighterhashentries.pas', 'SynHighlighterHashEntries', pftUnit,[], cpBase);
+    AddFile('synhighlighterjscript.pas', 'SynHighlighterJScript', pftUnit,[], cpBase);
+    AddFile('synhighlighterposition.pas', 'TSynPositionHighlighter', pftUnit,[], cpBase);
 
     AddFile('syngutter.pas','SynGutter',pftUnit,[],cpBase);
-    AddFile('syngutterlinenumber.pas','SynGutterLineNumber',pftUnit,[],cpBase);
-    AddFile('synguttercodefolding.pas','SynGutterCodeFolding',pftUnit,[],cpBase);
+    AddFile('syngutterbase.pp','SynGutterBase',pftUnit,[],cpBase);
     AddFile('syngutterchanges.pas','SynGutterChanges',pftUnit,[],cpBase);
+    AddFile('synguttercodefolding.pas','SynGutterCodeFolding',pftUnit,[],cpBase);
+    AddFile('syngutterlinenumber.pas','SynGutterLineNumber',pftUnit,[],cpBase);
     AddFile('synguttermarks.pas','SynGutterMarks',pftUnit,[],cpBase);
 
+    AddFile('synpluginsyncronizededitbase.pp','SynPluginSyncronizedEditBase',pftUnit,[],cpBase);
+    AddFile('synpluginsyncroedit.pp','SynPluginSyncroEdit',pftUnit,[],cpBase);
+    AddFile('synplugintemplateedit.pp','SynPluginTemplateEdit',pftUnit,[],cpBase);
+
+    AddFile('syneditlazdsgn.pas','SynEditLazDsgn',pftUnit,[],cpBase);
     AddFile('syndesignstringconstants.pas','SynDesignStringConstants',pftUnit,[],cpBase);
     AddFile('synpropertyeditobjectlist.pas','SynPropertyEditObjectList',pftUnit,[],cpBase);
 
