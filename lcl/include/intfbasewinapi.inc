@@ -1105,6 +1105,11 @@ begin
   Result := false;
 end;
 
+function TWidgetSet.IsIconic(handle: HWND): boolean;
+begin
+  Result := False;
+end;
+
 function TWidgetSet.IsWindowEnabled(handle: HWND): boolean;
 begin
   Result := false;
@@ -1113,6 +1118,11 @@ end;
 function TWidgetSet.IsWindowVisible(handle: HWND): boolean;
 begin
   Result := false;
+end;
+
+function TWidgetSet.IsZoomed(handle: HWND): boolean;
+begin
+  Result := False;
 end;
 
 procedure TWidgetSet.LeaveCriticalSection(var CritSection: TCriticalSection);

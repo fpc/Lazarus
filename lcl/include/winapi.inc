@@ -567,6 +567,11 @@ begin
   Result := WidgetSet.IsDBCSLeadByte(TestChar);
 end;
 
+function IsIconic(handle: HWND): boolean;
+begin
+  Result := WidgetSet.IsIconic(Handle);
+end;
+
 function IsWindowEnabled(handle: HWND): boolean;
 begin
   Result := WidgetSet.IsWindowEnabled(Handle);
@@ -575,6 +580,11 @@ end;
 function IsWindowVisible(handle: HWND): boolean;
 begin
   Result := WidgetSet.IsWindowVisible(Handle);
+end;
+
+function IsZoomed(handle: HWND): boolean;
+begin
+  Result := WidgetSet.IsZoomed(Handle);
 end;
 
 procedure InitializeCriticalSection(var CritSection: TCriticalSection);

@@ -191,6 +191,8 @@ type
     function getWindowState: QtWindowStates;
     procedure grabMouse; virtual;
     function hasFocus: Boolean; virtual;
+    function isMinimized: Boolean;
+    function isMaximized: Boolean;
     procedure lowerWidget; virtual;
     procedure move(ANewLeft, ANewTop: Integer);
     procedure preferredSize(var PreferredWidth, PreferredHeight: integer; WithThemeSpace: Boolean); virtual;
@@ -1857,6 +1859,23 @@ begin
   end
   else
     QEvent_ignore(Event);
+
+  {$IF DEFINED(USE_QT_44) or DEFINED(USE_QT_45)}
+  {fixes #14544 and others when we loose our LCLObject
+   after delivering message to LCL.}
+  if (LCLObject = nil) and
+     ((QEvent_type(Event) = QEventMouseButtonPress) or
+     (QEvent_type(Event) = QEventMouseButtonRelease) or
+     (QEvent_type(Event) = QEventMouseButtonDblClick) or
+     (QEvent_type(Event) = QEventMouseMove) or
+     (QEvent_type(Event) = QEventKeyPress) or
+     (QEvent_type(Event) = QEventKeyRelease)) then
+  begin
+    Result := True;
+    BeginEventProcessing;
+  end;
+  {$ENDIF}
+
   EndEventProcessing;
 end;
 
@@ -3118,6 +3137,16 @@ end;
 function TQtWidget.hasFocus: Boolean;
 begin
   Result := QWidget_hasFocus(Widget);
+end;
+
+function TQtWidget.isMinimized: Boolean;
+begin
+  Result := QWidget_isMinimized(Widget);
+end;
+
+function TQtWidget.isMaximized: Boolean;
+begin
+  Result := QWidget_isMaximized(Widget);
 end;
 
 procedure TQtWidget.lowerWidget;

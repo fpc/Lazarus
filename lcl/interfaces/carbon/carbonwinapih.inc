@@ -140,8 +140,10 @@ procedure InitializeCriticalSection(var CritSection: TCriticalSection); Override
 function IntersectClipRect(DC: HDC; Left, Top, Right, Bottom: Integer): Integer; override;
 function InvalidateRect(AHandle : HWND; Rect : pRect; bErase : Boolean) : Boolean; override;
 function InvalidateRgn(Handle: HWND; Rgn: HRGN; Erase: Boolean): Boolean; override;
+function IsIconic(Handle: HWND): boolean; override;
 function IsWindowEnabled(Handle: HWND): boolean; override;
 function IsWindowVisible(Handle: HWND): boolean; override;
+function IsZoomed(Handle: HWND): boolean; override;
 
 procedure LeaveCriticalSection(var CritSection: TCriticalSection); Override;
 function LineTo(DC: HDC; X, Y: Integer): Boolean; override;

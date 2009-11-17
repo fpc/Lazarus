@@ -242,6 +242,7 @@ var
   WindowInfo: PWin32WindowInfo;
   Flags: dword;
   WindowDC: HDC;
+  WindowPlacement: TWINDOWPLACEMENT;
 
   LMScroll: TLMScroll; // used by WM_HSCROLL
   LMKey: TLMKey; // used by WM_KEYDOWN WM_KEYUP
@@ -2474,38 +2475,48 @@ begin
         Msg := LM_MOVE;
         // MoveType := WParam;   WParam is not defined!
         MoveType := Move_SourceIsInterface;
-        if (lWinControl is TCustomForm)
-        and (TCustomForm(lWinControl).Parent=nil) then
+        if (lWinControl is TCustomForm) and (TCustomForm(lWinControl).Parent = nil) then
         begin
-          if Windows.GetWindowRect(Window,@R) then
+          if IsIconic(Window) and GetWindowPlacement(Window, @WindowPlacement) then
+          begin
+            with WindowPlacement.rcNormalPosition do
+            begin
+              XPos := Left;
+              YPos := Top;
+            end;
+          end
+          else
+          if Windows.GetWindowRect(Window, @R) then
           begin
             XPos := R.Left;
             YPos := R.Top;
-          end else begin
+          end
+          else
             Msg := LM_NULL;
-          end;
-        end else begin
-          if GetWindowRelativePosition(Window,NewLeft,NewTop) then
+        end else
+        begin
+          if GetWindowRelativePosition(Window, NewLeft, NewTop) then
           begin
             XPos := NewLeft;
             YPos := NewTop;
-          end else begin
+          end
+          else
             Msg := LM_NULL;
-          end;
         end;
-        if lWinControl <> nil then begin
+        if lWinControl <> nil then
+        begin
           {$IFDEF VerboseSizeMsg}
           DebugLn('Win32CallBack WM_MOVE ', dbgsName(lWinControl),
             ' NewPos=',dbgs(XPos),',',dbgs(YPos));
           {$ENDIF}
-          if (lWinControl.Left=XPos) and (lWinControl.Top=YPos) then
-            exit;
+          if (lWinControl.Left = XPos) and (lWinControl.Top = YPos) then
+            Exit;
         end;
       end;
     end;
     WM_SIZE:
     begin
-      with TLMSize(LMessage) Do
+      with TLMSize(LMessage) do
       begin
         Msg := LM_SIZE;
         SizeType := WParam or Size_SourceIsInterface;
@@ -2514,7 +2525,17 @@ begin
           lWinControl := Application.MainForm;
           Window := Application.MainForm.Handle;
         end;
-        GetWindowSize(Window, NewWidth, NewHeight);
+        if IsIconic(Window) then
+        begin
+          GetWindowPlacement(Window, @WindowPlacement);
+          with WindowPlacement.rcNormalPosition do
+          begin
+            NewWidth := Right - Left;
+            NewHeight := Bottom - Top;
+          end;
+        end
+        else
+          GetWindowSize(Window, NewWidth, NewHeight);
         Width := NewWidth;
         Height := NewHeight;
         if lWinControl <> nil then

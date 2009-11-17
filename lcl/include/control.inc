@@ -351,8 +351,8 @@ begin
   OldHeight:=FHeight;
 
   // check if something would change
-  SizeChanged:= (FWidth <> AWidth) or (FHeight <> AHeight);
-  PosChanged:= (FLeft <> ALeft) or (FTop <> ATop);
+  SizeChanged := (FWidth <> AWidth) or (FHeight <> AHeight);
+  PosChanged := (FLeft <> ALeft) or (FTop <> ATop);
   if (not SizeChanged) and (not PosChanged) then exit;
 
   //DebugLn('TControl.ChangeBounds A ',Name,':',ClassName);

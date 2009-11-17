@@ -135,8 +135,10 @@ function HideCaret(HWnd: HWND): Boolean; override;
 function IntersectClipRect(dc: hdc; Left, Top, Right, Bottom: Integer): Integer; override;
 function InvalidateRect(AHandle: HWND; Rect: PRect; BErase: Boolean): Boolean; override;
 function InvalidateRgn(Handle: HWND; Rgn: HRGN; Erase: Boolean): Boolean; override;
+function IsIconic(handle: HWND): boolean; override;
 function IsWindowEnabled(handle: HWND): boolean; override;
 function IsWindowVisible(handle: HWND): boolean; override;
+function IsZoomed(handle: HWND): boolean; override;
 
 function LineTo(DC: HDC; X, Y: Integer): Boolean; override;
 
