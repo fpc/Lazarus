@@ -36,7 +36,7 @@ interface
 
 uses
   Classes, SysUtils, LCLProc, LResources, Forms, Controls, Graphics, Dialogs,
-  StdCtrls, Buttons, AVGLvlTree, LFMTrees, CodeCache, CodeToolManager,
+  StdCtrls, Buttons, AVGLvlTree, LFMTrees, CodeCache, CodeToolManager, LCLType,
   // IDE
   SrcEditorIntf, PropEdits, LazarusIDEStrConsts, ComponentReg, ComponentEditors,
   FormEditingIntf, CheckLFMDlg, Project, MainIntf, ExtCtrls, ButtonPanel;
@@ -48,15 +48,15 @@ type
   TChangeClassDlg = class(TForm)
     BtnPanel: TButtonPanel;
     NewClassComboBox: TComboBox;
-    NewAncestorGroupBox: TGroupBox;
     NewAncestorsListBox: TListBox;
-    OldAncestorGroupBox: TGroupBox;
     OldAncestorsListBox: TListBox;
     OldClassLabel: TLabel;
     NewGroupBox: TGroupBox;
     OldGroupBox: TGroupBox;
     procedure ChangeClassDlgCreate(Sender: TObject);
     procedure NewClassComboBoxEditingDone(Sender: TObject);
+    procedure NewClassComboBoxKeyUp(Sender: TObject; var Key: Word;
+      Shift: TShiftState);
   private
     FClasses: TAvgLvlTree;
     FNewClass: TClass;
@@ -301,13 +301,18 @@ procedure TChangeClassDlg.ChangeClassDlgCreate(Sender: TObject);
 begin
   OldGroupBox.Caption:=lisOldClass;
   NewGroupBox.Caption:=lisNewClass;
-  OldAncestorGroupBox.Caption:=lisOldAncestors;
-  NewAncestorGroupBox.Caption:=lisNewAncestors;
 end;
 
 procedure TChangeClassDlg.NewClassComboBoxEditingDone(Sender: TObject);
 begin
   UpdateNewInfo;
+end;
+
+procedure TChangeClassDlg.NewClassComboBoxKeyUp(Sender: TObject; var Key: Word;
+  Shift: TShiftState);
+begin
+  if Key = VK_RETURN then
+    UpdateNewInfo;
 end;
 
 procedure TChangeClassDlg.SetThePersistent(const AValue: TPersistent);

@@ -3,14 +3,13 @@ object ChangeClassDlg: TChangeClassDlg
   Height = 350
   Top = 163
   Width = 470
-  ActiveControl = OldAncestorsListBox
   BorderIcons = [biSystemMenu, biMinimize]
   BorderStyle = bsToolWindow
   Caption = 'ChangeClassDlg'
   ClientHeight = 350
   ClientWidth = 470
   OnCreate = ChangeClassDlgCreate
-  LCLVersion = '0.9.27'
+  LCLVersion = '0.9.29'
   object OldGroupBox: TGroupBox
     Left = 6
     Height = 306
@@ -23,37 +22,37 @@ object ChangeClassDlg: TChangeClassDlg
     ClientWidth = 224
     TabOrder = 0
     object OldClassLabel: TLabel
+      AnchorSideLeft.Control = OldGroupBox
+      AnchorSideTop.Control = OldGroupBox
       Left = 6
       Height = 14
-      Top = 2
-      Width = 67
+      Top = 9
+      Width = 78
+      BorderSpacing.Top = 3
+      BorderSpacing.Bottom = 4
+      BorderSpacing.Around = 6
       Caption = 'OldClassLabel'
+      Font.Style = [fsBold]
       ParentColor = False
+      ParentFont = False
     end
-    object OldAncestorGroupBox: TGroupBox
+    object OldAncestorsListBox: TListBox
+      AnchorSideLeft.Control = OldGroupBox
       AnchorSideTop.Control = OldClassLabel
       AnchorSideTop.Side = asrBottom
-      Left = 0
-      Height = 266
-      Top = 22
-      Width = 224
-      Align = alBottom
+      AnchorSideRight.Control = OldGroupBox
+      AnchorSideRight.Side = asrBottom
+      AnchorSideBottom.Control = OldGroupBox
+      AnchorSideBottom.Side = asrBottom
+      Left = 6
+      Height = 249
+      Top = 33
+      Width = 212
       Anchors = [akTop, akLeft, akRight, akBottom]
-      BorderSpacing.Top = 6
-      Caption = 'OldAncestorGroupBox'
-      ClientHeight = 248
-      ClientWidth = 220
+      BorderSpacing.Around = 6
+      ClickOnSelChange = False
+      ItemHeight = 0
       TabOrder = 0
-      object OldAncestorsListBox: TListBox
-        Left = 0
-        Height = 248
-        Top = 0
-        Width = 220
-        Align = alClient
-        ClickOnSelChange = False
-        ItemHeight = 0
-        TabOrder = 0
-      end
     end
   end
   object NewGroupBox: TGroupBox
@@ -68,40 +67,41 @@ object ChangeClassDlg: TChangeClassDlg
     ClientWidth = 220
     TabOrder = 1
     object NewClassComboBox: TComboBox
+      AnchorSideLeft.Control = NewGroupBox
+      AnchorSideTop.Control = NewGroupBox
+      AnchorSideRight.Control = NewGroupBox
+      AnchorSideRight.Side = asrBottom
       Left = 6
       Height = 21
       Top = 6
       Width = 208
-      Align = alTop
+      Anchors = [akTop, akLeft, akRight]
       AutoComplete = True
       AutoCompleteText = [cbactEnabled, cbactEndOfLineComplete, cbactSearchAscending]
       BorderSpacing.Around = 6
       ItemHeight = 13
-      ItemWidth = 0
       OnEditingDone = NewClassComboBoxEditingDone
+      OnKeyUp = NewClassComboBoxKeyUp
       TabOrder = 0
       Text = 'NewClassComboBox'
     end
-    object NewAncestorGroupBox: TGroupBox
-      Left = 0
-      Height = 255
+    object NewAncestorsListBox: TListBox
+      AnchorSideLeft.Control = NewGroupBox
+      AnchorSideTop.Control = NewClassComboBox
+      AnchorSideTop.Side = asrBottom
+      AnchorSideRight.Control = NewGroupBox
+      AnchorSideRight.Side = asrBottom
+      AnchorSideBottom.Control = NewGroupBox
+      AnchorSideBottom.Side = asrBottom
+      Left = 6
+      Height = 249
       Top = 33
-      Width = 220
-      Align = alClient
-      Caption = 'NewAncestorGroupBox'
-      ClientHeight = 237
-      ClientWidth = 216
+      Width = 208
+      Anchors = [akTop, akLeft, akRight, akBottom]
+      BorderSpacing.Around = 6
+      ClickOnSelChange = False
+      ItemHeight = 0
       TabOrder = 1
-      object NewAncestorsListBox: TListBox
-        Left = 0
-        Height = 237
-        Top = 0
-        Width = 216
-        Align = alClient
-        ClickOnSelChange = False
-        ItemHeight = 0
-        TabOrder = 0
-      end
     end
   end
   object BtnPanel: TButtonPanel
