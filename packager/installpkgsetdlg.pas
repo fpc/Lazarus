@@ -330,7 +330,7 @@ begin
     or (TLazPackage(Pkg).PackageType in [lptDesignTime,lptRunAndDesignTime])
     then begin
       PkgName:=Pkg.IDAsString;
-      if (sl.IndexOf(PkgName)<0) then
+      if (sl.IndexOf(PkgName)<0) and (InstallListBox.Items.IndexOf(PkgName)<0) then
         sl.Add(PkgName);
     end;
     ANode:=fPackages.FindSuccessor(ANode);
@@ -356,6 +356,7 @@ begin
   sl.Sort;
   InstallListBox.Items.Assign(sl);  
   sl.Free;
+  UpdateAvailablePackages;
 end;
 
 procedure TInstallPkgSetDialog.OnIteratePackages(APackageID: TLazPackageID);
