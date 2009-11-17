@@ -134,15 +134,15 @@ begin
   LoadDesktopSettingsFromFileButton.Caption := dlgLoadDFile;
 
   // button glyphs
-  lblGlyphs.Caption := dlgDesktopGlyphsFor;
+  lblGlyphs.Caption := lisShowGlyphsFor;
   lblButtons.Caption := dlgDesktopButtons;
   lblMenus.Caption := dlgDesktopMenus;
-  rbBtnGlyphShowAlways.Caption := dlgGlyphShowAlways;
-  rbBtnGlyphShowNever.Caption := dlgGlyphShowNever;
-  rbBtnGlyphShowSystem.Caption := dlgGlyphShowSystem;
-  rbMenuGlyphShowAlways.Caption := dlgGlyphShowAlways;
-  rbMenuGlyphShowNever.Caption := dlgGlyphShowNever;
-  rbMenuGlyphShowSystem.Caption := dlgGlyphShowSystem;
+  rbBtnGlyphShowAlways.Caption := lisAlways;
+  rbBtnGlyphShowNever.Caption := lisNever;
+  rbBtnGlyphShowSystem.Caption := dlgAssemblerDefault;
+  rbMenuGlyphShowAlways.Caption := lisAlways;
+  rbMenuGlyphShowNever.Caption := lisNever;
+  rbMenuGlyphShowSystem.Caption := dlgAssemblerDefault;
 
   // hints
   lblHints.Caption := dlgDesktopHints;

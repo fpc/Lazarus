@@ -979,12 +979,8 @@ resourcestring
   dlgDesktopHints = 'Hints';
   dlgPalHints = 'Hints for component palette';
   dlgSpBHints = 'Hints for main speed buttons (open, save, ...)';
-  dlgDesktopGlyphsFor = 'Glyphs for:';
   dlgDesktopButtons = 'Buttons - ';
   dlgDesktopMenus = 'Menus - ';
-  dlgGlyphShowAlways = 'Show Always';
-  dlgGlyphShowNever = 'Show Never';
-  dlgGlyphShowSystem = 'Use System Defaults';
 
   dlgDesktopMisc = 'Misc Options';
 
@@ -4534,6 +4530,7 @@ resourcestring
   lisImpossible = 'Impossible';
   lisAProjectUnitCanNotBeUsedByOtherPackagesProjects = 'A project unit can '
     +'not be used by other packages/projects';
+  lisShowGlyphsFor = 'Show Glyphs for:';
 
 implementation
 
