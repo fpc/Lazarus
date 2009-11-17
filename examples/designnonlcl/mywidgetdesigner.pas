@@ -168,10 +168,7 @@ procedure TMyWidgetMediator.Paint;
   procedure PaintWidget(AWidget: TMyWidget);
   var
     i: Integer;
-    DC: HDC;
-    SavedDC: HDC;
     Child: TMyWidget;
-    SavedDC2: HDC;
   begin
     with LCLForm.Canvas do begin
       // fill background
@@ -191,25 +188,24 @@ procedure TMyWidgetMediator.Paint;
       // caption
       TextOut(5,2,AWidget.Caption);
       // childs
-      DC:=Handle;
       if AWidget.ChildCount>0 then begin
-        SavedDC:=SaveDC(DC);
+        SaveHandleState;
         // clip client area
-        MoveWindowOrgEx(DC,AWidget.BorderLeft,AWidget.BorderTop);
-        if IntersectClipRect(DC, 0, 0, AWidget.Width-AWidget.BorderLeft-AWidget.BorderRight,
+        MoveWindowOrgEx(Handle,AWidget.BorderLeft,AWidget.BorderTop);
+        if IntersectClipRect(Handle, 0, 0, AWidget.Width-AWidget.BorderLeft-AWidget.BorderRight,
                              AWidget.Height-AWidget.BorderTop-AWidget.BorderBottom)<>NullRegion
         then begin
           for i:=0 to AWidget.ChildCount-1 do begin
-            SavedDC2:=SaveDC(DC);
+            SaveHandleState;
             Child:=AWidget.Childs[i];
             // clip child area
-            MoveWindowOrgEx(DC,Child.Left,Child.Top);
-            if IntersectClipRect(DC,0,0,Child.Width,Child.Height)<>NullRegion then
+            MoveWindowOrgEx(Handle,Child.Left,Child.Top);
+            if IntersectClipRect(Handle,0,0,Child.Width,Child.Height)<>NullRegion then
               PaintWidget(Child);
-            RestoreDC(DC,SavedDC2);
+            RestoreHandleState;
           end;
         end;
-        RestoreDC(DC,SavedDC);
+        RestoreHandleState;
       end;
     end;
   end;
