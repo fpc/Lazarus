@@ -529,6 +529,9 @@ begin
     ctnTypeDefinition,ctnVarDefinition,ctnConstDefinition,ctnUseUnit:
       Result:=ACodeTool.ExtractIdentifier(CodeNode.StartPos);
 
+    ctnGenericType:
+      Result:=ACodeTool.ExtractDefinitionName(CodeNode);
+
     ctnClass,ctnObject,ctnObjCClass,ctnObjCCategory,ctnObjCProtocol,
     ctnInterface,ctnCPPClass:
       Result:='('+ACodeTool.ExtractClassInheritance(CodeNode,[])+')';
