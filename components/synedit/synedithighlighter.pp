@@ -199,7 +199,7 @@ type
   TSynCustomHighlighter = class(TComponent)
   private
     fAttributes: TStringList;
-    fAttrChangeHooks: TSynNotifyEventChain;
+    fAttrChangeHooks: TMethodList;
     FCapabilities: TSynHighlighterCapabilities;
     FCurrentLines: TSynEditStrings;
     FCurrentRanges: TSynHighlighterRangeList;
@@ -882,7 +882,7 @@ begin
   fAttributes := TStringList.Create;
   fAttributes.Duplicates := dupError;
   fAttributes.Sorted := TRUE;
-  fAttrChangeHooks := TSynNotifyEventChain.CreateEx(Self);
+  fAttrChangeHooks := TMethodList.Create;
   fDefaultFilter := '';
 end;
 
@@ -1058,7 +1058,7 @@ begin
   if fUpdateCount > 0 then
     fUpdateChange := TRUE
   else begin
-    fAttrChangeHooks.Fire;
+    fAttrChangeHooks.CallNotifyEvents(self);
     FAttributeChangeNeedScan := False;
   end;
 end;
@@ -1123,7 +1123,7 @@ end;
 
 procedure TSynCustomHighlighter.HookAttrChangeEvent(ANotifyEvent: TNotifyEvent);
 begin
-  fAttrChangeHooks.Add(ANotifyEvent);
+  fAttrChangeHooks.Add(TMethod(ANotifyEvent));
 end;
 
 function TSynCustomHighlighter.IsFilterStored: boolean;
@@ -1206,7 +1206,7 @@ end;
 
 procedure TSynCustomHighlighter.UnhookAttrChangeEvent(ANotifyEvent: TNotifyEvent);
 begin
-  fAttrChangeHooks.Remove(ANotifyEvent);
+  fAttrChangeHooks.Remove(TMethod(ANotifyEvent));
 end;
 
 function TSynCustomHighlighter.UpdateRangeInfoAtLine(Index: Integer): Boolean;
