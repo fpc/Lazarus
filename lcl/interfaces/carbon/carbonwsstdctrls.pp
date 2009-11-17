@@ -1017,13 +1017,16 @@ end;
            ADefault
 
   Sets button default indication in Carbon interface
+
+  Carbon buttons doesn't switch default-state on change focus (i.e. Windows buttons)
+  SetDefault is called if button is default or if button is focused.
+  So default is switched based on TButton.Default property
  ------------------------------------------------------------------------------}
 class procedure TCarbonWSButton.SetDefault(const AButton: TCustomButton;
   ADefault: Boolean);
 begin
   if not CheckHandle(AButton, Self, 'SetDefault') then Exit;
-
-  TCarbonCustomButton(AButton.Handle).SetDefault(ADefault);
+  TCarbonCustomButton(AButton.Handle).SetDefault(AButton.Default);
 end;
 
 { TCarbonWSCustomCheckBox }

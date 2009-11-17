@@ -328,14 +328,10 @@ end;
   Sets the default indication
  ------------------------------------------------------------------------------}
 procedure TCarbonCustomButton.SetDefault(ADefault: Boolean);
-var
-  value  : Boolean;
 begin
-  //value := TCustomButton(LCLObject).Default;
-  value:=ADefault;
   OSError(
     SetControlData(ControlRef(Widget), kControlEntireControl,
-      kControlPushButtonDefaultTag, SizeOf(Boolean), @value),
+      kControlPushButtonDefaultTag, SizeOf(Boolean), @ADefault),
     Self, 'SetDefault', SSetData);
 end;
 
