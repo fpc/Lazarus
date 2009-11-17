@@ -27,7 +27,7 @@ uses
 type
   // Flags/Options for the items
   TNewIDEItemFlag = (
-    niifCopy,
+    niifCopy,       // default
     niifInherited,
     niifUse
     );
@@ -86,11 +86,6 @@ type
                                           read GetItems write SetItems; default;
   end;
 
-
-var
-  NewIDEItems: TNewIDEItemCategories;// will be set by the IDE
-
-type
   { TNewIDEItemTemplate }
 
   TNewIDEItemTemplate = class(TPersistent)
@@ -103,8 +98,9 @@ type
     FDefaultFlag: TNewIDEItemFlag;
     FName: string;
   public
-    constructor Create(const AName: string; ADefaultFlag: TNewIDEItemFlag;
-                       TheAllowedFlags: TNewIDEItemFlags);
+    constructor Create(const AName: string;
+                       ADefaultFlag: TNewIDEItemFlag = niifCopy;
+                       TheAllowedFlags: TNewIDEItemFlags = [niifCopy]);
     function LocalizedName: string; virtual;
     function Description: string; virtual;
     function CreateCopy: TNewIDEItemTemplate; virtual;
@@ -119,6 +115,8 @@ type
   end;
   TNewIDEItemTemplateClass = class of TNewIDEItemTemplate;
   
+var
+  NewIDEItems: TNewIDEItemCategories;// will be set by the IDE
 
 procedure RegisterNewDialogItem(const Paths: string;
   NewItem: TNewIDEItemTemplate);
