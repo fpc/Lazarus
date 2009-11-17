@@ -1,0 +1,33 @@
+This patch fixes system wide default Lazarus configuration. It adds the needed
+configuration to adapt Lazarus to Debian and makes it running out of the box
+without need of any user's pre-configuration.
+Index: lazarus-0.9.28.2/tools/install/linux/helpoptions.xml
+===================================================================
+--- lazarus-0.9.28.2.orig/tools/install/linux/helpoptions.xml
++++ lazarus-0.9.28.2/tools/install/linux/helpoptions.xml
+@@ -0,0 +1,25 @@
++<?xml version="1.0"?>
++<CONFIG>
++  <HelpOptions>
++    <Version Value="1"/>
++  </HelpOptions>
++  <Viewers>
++    <THTMLBrowserHelpViewer>
++      <Browser Path="/usr/bin/epiphany"/>
++    </THTMLBrowserHelpViewer>
++  </Viewers>
++  <Databases>
++    <StartPage>
++      <BaseURL Value="file:///usr/share/doc/lazarus/%LazarusVersion%/lcl"/>
++    </StartPage>
++    <RTLUnits>
++      <BaseURL Value="file:///usr/share/doc/fp-docs/rtl"/>
++    </RTLUnits>
++    <FCLUnits>
++      <BaseURL Value="file:///usr/share/doc/fp-docs/fcl"/>
++    </FCLUnits>
++    <LCLUnits>
++      <BaseURL Value="file:///usr/share/doc/lazarus/%LazarusVersion%/lcl"/>
++    </LCLUnits>
++  </Databases>
++</CONFIG>

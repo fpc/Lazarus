@@ -2,8 +2,9 @@ Source: lazarus
 Section: devel
 Priority: optional
 Maintainer: Carlos Laviola <claviola@debian.org>
-Uploaders: Torsten Werner <twerner@debian.org>, Mazen Neifer <mazen@freepascal.org>
-Standards-Version: 3.8.0
+Uploaders: Torsten Werner <twerner@debian.org>, Abou Al Montacir <abou.almontacir@sfr.fr>
+DM-Upload-Allowed: yes
+Standards-Version: 3.8.3
 Build-Depends: debhelper (>= 7), quilt, fpc (>= 2.2.4-3), fpc-source (>= 2.2.4-3), 
  fp-utils, imagemagick
 Vcs-Svn: https://bollin.googlecode.com/svn/lazarus/trunk
@@ -13,8 +14,8 @@ Homepage: http://www.lazarus.freepascal.org
 Package: lazarus
 Architecture: all
 Pre-Depends: dpkg (>= 1.10.24)
-Depends: lazarus-ide (= ${source:Version}), lazarus-src (= ${source:Version}),
- lazarus-doc (>= ${source:Upstream-Version})
+Depends: lazarus-ide (>= ${source:Version}),
+ lazarus-src (>= ${source:Version}), lazarus-doc (>= ${source:Version})
 Recommends: fpc, fpc-source
 Suggests: fp-utils, fp-docs
 Description: IDE for Free Pascal to create (graphical and console) applications
@@ -46,6 +47,7 @@ Package: lazarus-src
 Section: devel
 Architecture: all
 Pre-Depends: dpkg (>= 1.10.24)
+Suggests: lazarus-ide
 Description: IDE for Free Pascal to create (graphical and console) applications
  Lazarus is an IDE to create (graphical and console) applications with Free
  Pascal. Free Pascal is a (L)GPL'ed Pascal and Object Pascal compiler that runs
@@ -70,7 +72,7 @@ Package: lazarus-ide
 Architecture: i386 powerpc sparc amd64 arm
 Pre-Depends: dpkg (>= 1.10.24)
 Depends: ${shlibs:Depends}, fp-compiler (>= 2.2.4-3), fp-units-base,
- fp-units-rtl, fp-units-fcl, fp-units-gtk2, fp-units-misc,
+ fp-units-rtl, fp-units-fcl, fp-units-gtk2,
  ${fpc-abi:Depends}, lazarus-src
 Recommends: fpc, gdb
 Suggests: fp-utils
@@ -96,6 +98,7 @@ Description: IDE for Free Pascal to create (graphical and console) applications
 Package: lazarus-doc
 Section: doc
 Architecture: all
+Suggests: lazarus-ide
 Description: IDE for Free Pascal to create (graphical and console) applications
  Lazarus is an IDE to create (graphical and console) applications with Free
  Pascal. Free Pascal is a (L)GPL'ed Pascal and Object Pascal compiler that runs

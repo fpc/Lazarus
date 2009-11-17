@@ -165,12 +165,20 @@ install-arch-stamp:
 	# Install configuration files
 	${MKDIR} $(INSTALL_DIR)/etc/lazarus
 	fpcsubst -d LazarusVersion=${DEB_UPSTREAM_MAIN_VERSION} -i ${CURDIR}/tools/install/linux/environmentoptions.xml -o $(INSTALL_DIR)/etc/lazarus/environmentoptions.xml
+	fpcsubst -d LazarusVersion=${DEB_UPSTREAM_MAIN_VERSION} -i ${CURDIR}/tools/install/linux/helpoptions.xml -o $(INSTALL_DIR)/etc/lazarus/helpoptions.xml
 	# Install contributer list
 	install -d $(INSTALL_DIR)/usr/lib/lazarus/${DEB_UPSTREAM_MAIN_VERSION}/docs
 	${CP} -t $(INSTALL_DIR)/usr/lib/lazarus/${DEB_UPSTREAM_MAIN_VERSION}/docs \
 		$(CURDIR)/docs/Contributors.txt \
 		$(CURDIR)/docs/contributors.utf8 \
 		$(CURDIR)/docs/acknowledgements.txt
+	set -x; cd debian/overrides ; for PACKAGE in * ; do \
+	  if [ -d ../$${PACKAGE} ] ; \
+	  then \
+	    install -m644 -D $${PACKAGE} \
+	      ../$${PACKAGE}/usr/share/lintian/overrides/$${PACKAGE} ; \
+	  fi ; \
+	done
 	touch install-arch-stamp
 
 arrange-arch: install-arch arrange-arch-stamp
@@ -202,6 +210,9 @@ install-doc-stamp:
 	dh_testroot
 	dh_prep
 	${MAKE} -C docs/html ${DOCTYPE}install INSTALL_PREFIX=${INSTALL_DIR}/usr INSTALL_DOCDIR=${DOC_DIR}
+	cd docs ; ${CP} --parents -t ${DOC_DIR} \
+	  index.html \
+	  images/laztitle.png
 	touch install-doc-stamp
 
 ###################
@@ -230,7 +241,7 @@ install-source-stamp:
 		$(CURDIR)/test \
 		$(CURDIR)/tools
 	find $(INSTALL_DIR) -name '*.bmp' -exec chmod 644 '{}' ';'
-	$(RM) $(INSTALL_DIR)/usr/lib/lazarus/${DEB_UPSTREAM_MAIN_VERSION}/components/lazreport/license*.txt
+	$(RM) ${SRC_DIR}/components/lazreport/license*.txt
 	touch install-source-stamp
 
 ###################
@@ -253,8 +264,13 @@ binary-indep: build-doc install-doc clean-patched install-source debian-files
 	dh_installdocs -i
 	dh_installchangelogs -i
 	dh_install -i --sourcedir=debian/tmp --list-missing
-	install -m644 -D debian/overrides/lazarus-src \
-	  debian/lazarus-src/usr/share/lintian/overrides/lazarus-src
+	set -x; cd debian/overrides ; for PACKAGE in * ; do \
+	  if [ -d ../$${PACKAGE} ] ; \
+	  then \
+	    install -m644 -D $${PACKAGE} \
+	      ../$${PACKAGE}/usr/share/lintian/overrides/$${PACKAGE} ; \
+	  fi ; \
+	done
 	dh_compress -i -X.pdf
 	dh_fixperms -i
 	dh_installdeb -i
@@ -273,7 +289,6 @@ binary-arch: arrange-arch
 	dh_installmenu
 	fpc-depends
 	dh_installman -s
-	dh_desktop
 	dh_strip -s
 	dh_compress -a
 	dh_fixperms -a

@@ -4,6 +4,7 @@
 /usr/lib/lazarus/%{lazarusversion}/startlazarus
 /usr/lib/lazarus/%{lazarusversion}/components/codetools
 #/usr/lib/lazarus/%{lazarusversion}/components/custom
+/usr/lib/lazarus/%{lazarusversion}/components/jcf2
 #/usr/lib/lazarus/%{lazarusversion}/components/rx
 #/usr/lib/lazarus/%{lazarusversion}/components/sqlite
 /usr/lib/lazarus/%{lazarusversion}/components/cgi

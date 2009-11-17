@@ -2,19 +2,60 @@ lazarus (0.9.29-0) unstable; urgency=low
 
   * Snapshot building.
 
- -- Mazen Neifer <mazen@freepascal.org>  Thu, 20 Aug 2009 11:50:00 +0200
+ -- Abou Al Montacir <abou.almontacir@sfr.fr>  Sat, 17 Nov 2009 20:08:00 +0100
 
-lazarus (0.9.27-0) unstable; urgency=low
+lazarus (0.9.28.2-3) unstable; urgency=low
 
-  * Snapshot building.
+  * Added missing online help default page. (Closes: Bug#537576)
 
- -- Mazen Neifer <mazen@freepascal.org>  Mon, 28 Apr 2009 22:33:00 +0200
+ -- Abou Al Montacir <abou.almontacir@sfr.fr>  Sat, 14 Nov 2009 10:08:00 +0100
 
-lazarus (0.9.26.2-3) unstable; urgency=low
+lazarus (0.9.28.2-2) unstable; urgency=low
 
-  * Fixed linitan error.
+  * Fixed default help configuration.
+  * Fixed short description. (Closes: Bug#533420)
+  * Put sources back to Lazarus directory.
+  * Fixed strict dependency issue of lazarus package on lazarus-ide package
+    making package lazarus not installable. (Closes: Bug#555649)
 
- -- Mazen Neifer <mazen@freepascal.org>  Wed, 17 Jun 2009 00:49:00 +0200
+ -- Abou Al Montacir <abou.almontacir@sfr.fr>  Mon, 09 Nov 2009 09:12:00 +0100
+
+lazarus (0.9.28.2-1) unstable; urgency=low
+
+  * Fixed compiling a test application without saving (missing project1.lrs)
+  * Fixed Lazarus directory set by deb package 
+  * Fixed conflicting key definitions related to persistent block
+  * Fixed quick paste selection
+  * Fixed endless auto sizing loop when opening project (issue 14862)
+
+ -- Abou Al Montacir <abou.almontacir@sfr.fr>  Mon, 02 Nov 2009 18:54:00 +0100
+
+lazarus (0.9.28-1) unstable; urgency=low
+
+  * Allow Debian maintainers (DM) to upload.
+  * Applied patch from BTS fixing short description. (Closes: Bug#533420)
+  * Bumped standard version, removed legacy dh_desktop, added README.source and
+    fixed dependencies.
+  * New upstream version 0.9.28. (Closes: Bug#551724)
+  * LCL now uses gtk2 as default widgetset on Linux and BSD
+  * Windows CE: Implemented TCalendar, TFloatSpinEdit, TOpenDialog and
+    TSaveDialog
+  * TFrame support. Visually nesting in the IDE.
+  * TMonitor class: multi-monitor support
+  * New components: TShellTreeView, TShellListView and TFilterComboBox
+  * Refactoring of LCL reduced minimum size of executables by about 15%
+  * New IDE options dialog combines environments, editor, codetools, code
+    explorer, debugger and help options.
+  * Application icon has been added to the Project Options
+  * Many source editor improvements like display of "double width" fonts
+    (Eastern, Japanese, Chinese, Arabic, ...), better code folding,
+    highlighting, syncro editing, persistent blocks ...
+  * Codetools: removing empty methods, block completion, update references when
+    renaming a unit
+  * Debugger: assembler windows, easier exception handling, breakpoint
+    properties
+
+ -- Abou Al Montacir <abou.almontacir@sfr.fr>  Wed, 25 Oct 2009 11:59:00 +0100
 
 lazarus (0.9.26.2-2) unstable; urgency=low
 
@@ -24,7 +65,7 @@ lazarus (0.9.26.2-2) unstable; urgency=low
   * Updated FPC version required for building and using Lazarus to fix crash
     on power PC architecture.
 
- -- Mazen Neifer <mazen@freepascal.org>  Fri, 05 Jun 2009 23:49:00 +0200
+ -- Abou Al Montacir <abou.almontacir@sfr.fr>  Fri, 05 Jun 2009 23:49:00 +0200
 
 lazarus (0.9.26.2-1) unstable; urgency=low
 
@@ -34,14 +75,14 @@ lazarus (0.9.26.2-1) unstable; urgency=low
   * Fixed bug in code tool making LFM tree search for properties not working.
   * Made mouse events propagated from controls to their parents until handled.
 
- -- Mazen Neifer <mazen@freepascal.org>  Wed, 17 Feb 2009 16:17:00 +0100
+ -- Abou Al Montacir <abou.almontacir@sfr.fr>  Wed, 17 Feb 2009 16:17:00 +0100
 
 lazarus (0.9.26-4) unstable; urgency=low
 
   * Removed .pc directory in clean target to avoid a lintian warning.
   * Fixed bugs in tray icon.
 
- -- Mazen Neifer <mazen@freepascal.org>  Sun, 14 Dec 2008 14:40:00 +0100
+ -- Abou Al Montacir <abou.almontacir@sfr.fr>  Sun, 14 Dec 2008 14:40:00 +0100
 
 lazarus (0.9.26-3) unstable; urgency=low
 
@@ -51,7 +92,7 @@ lazarus (0.9.26-3) unstable; urgency=low
   * Removed non standard entry from desktop file.
   * Used quilt as patch system instead of dpatch.
 
- -- Mazen Neifer <mazen@freepascal.org>  Tue, 09 Dec 2008 13:09:00 +0100
+ -- Abou Al Montacir <abou.almontacir@sfr.fr>  Tue, 09 Dec 2008 13:09:00 +0100
 
 lazarus (0.9.26-2) unstable; urgency=low
 
@@ -69,11 +110,11 @@ lazarus (0.9.26-2) unstable; urgency=low
   * Fixed dependencies in rules file speeding package generation by avoiding
     rebuilding binaries up to four times.
 
- -- Mazen Neifer <mazen@freepascal.org>  Sun, 04 Nov 2008 00:22:00 +0100
+ -- Abou Al Montacir <abou.almontacir@sfr.fr>  Sun, 04 Nov 2008 00:22:00 +0100
 
 lazarus (0.9.26-1) unstable; urgency=low
 
-  [ Mazen Neifer ]
+  [ Abou Al Montacir ]
   * New upstream version.
   * Fixed lintian error due to initial sources containing debian/files.
   * Fixed find expression precedence in clean target.
@@ -95,7 +136,7 @@ lazarus (0.9.24-0-12) unstable; urgency=low
   * Removed false warning on read only sources when recompiling end used local
     copy.
 
- -- Mazen Neifer <mazen@freepascal.org>  Mon, 25 Aug 2008 17:42:00 +0200
+ -- Abou Al Montacir <abou.almontacir@sfr.fr>  Mon, 25 Aug 2008 17:42:00 +0200
 
 lazarus (0.9.24-0-11) unstable; urgency=low
 
@@ -106,7 +147,7 @@ lazarus (0.9.24-0-11) unstable; urgency=low
 
 lazarus (0.9.24-0-10) unstable; urgency=low
 
-  [ Mazen Neifer ]
+  [ Abou Al Montacir ]
   * Fixed clean target.
   * Added system wide default configuration file.
   * Fixed comments in dpatch files.
@@ -120,19 +161,19 @@ lazarus (0.9.24-0-10) unstable; urgency=low
 lazarus (0.9.24-0-9) unstable; urgency=low
 
   [ Torsten Werner ]
-  * Fix email address of Mazen in debian/control.
+  * Fix email address of Abou Al Montacir in debian/control.
 
-  [ Mazen Neifer ]
+  [ Abou Al Montacir ]
   * Adapted FPCDIR default value to new fpc-source directory.
     (Closes: #484195)
   * Added support of multiple FPC installed releases.
   * Added verbose option to dpatch.
 
- -- Mazen Neifer <mazen@freepascal.org>  Thu, 29 May 2008 01:05:28 +0200
+ -- Abou Al Montacir <abou.almontacir@sfr.fr>  Thu, 29 May 2008 01:05:28 +0200
 
 lazarus (0.9.24-0-8) unstable; urgency=low
 
-  [ Mazen Neifer ]
+  [ Abou Al Montacir ]
   * Added patch from upstream fixing compilation using lazbuild by making it
   	generating LRS files from LFM files.
   * Added gdb as recommended package. (closes: #477293)
@@ -143,23 +184,23 @@ lazarus (0.9.24-0-8) unstable; urgency=low
     and fpc-source (>= 2.2.0-dfsg1-8)
   * Added fp-docs to list of package lazarus suggest packages.
 
- -- Mazen Neifer <mazen@freepascal.org>  Wed, 30 Apr 2008 14:17:06 +0200
+ -- Abou Al Montacir <abou.almontacir@sfr.fr>  Wed, 30 Apr 2008 14:17:06 +0200
 
 lazarus (0.9.24-0-7) unstable; urgency=low
 
-  [ Mazen Neifer ]
+  [ Abou Al Montacir ]
   * Added a link of lazbuild tool into /usr/bin
   * Added man pages for binaries.
   * Fixed compilation of printer support component.
 
   [ Torsten Werner ]
-  * Add Mazen to Uploaders.
+  * Add Abou Al Montacir to Uploaders.
 
  -- Torsten Werner <twerner@debian.org>  Sun, 20 Apr 2008 17:06:38 +0200
 
 lazarus (0.9.24-0-6) unstable; urgency=low
 
-  [ Mazen Neifer ]
+  [ Abou Al Montacir ]
   * Split lazarus package into sevaral packages
     + lazarus-ide : for IDE and binary files
     + lazarus-src : for source files
@@ -178,7 +219,7 @@ lazarus (0.9.24-0-5) unstable; urgency=low
 
   * Fixed 'make distclean' to ensure all generated files are deleted.
 
- -- Mazen Neifer <mazen@freepascal.org>  Sat, 16 Feb 2008 10:47:12 +0100
+ -- Abou Al Montacir <abou.almontacir@sfr.fr>  Sat, 16 Feb 2008 10:47:12 +0100
 
 lazarus (0.9.24-0-4) unstable; urgency=low
 
@@ -198,7 +239,7 @@ lazarus (0.9.24-0-3) unstable; urgency=low
   * Change Standards-Version: 3.7.3.
   * Refer to GPL-2 and LGPL-2 in debian/copyright.
 
-  [ Mazen Neifer ]
+  [ Abou Al Montacir ]
   * Include README.Debian file for docs
   * Run fpcmake before building to ensure correct target dependencies
   * Include Copyright file
