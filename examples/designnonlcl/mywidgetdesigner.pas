@@ -36,7 +36,7 @@ interface
 
 uses
   LCLProc, LCLType, Classes, SysUtils, FormEditingIntf, LCLIntf, Graphics,
-  MyWidgetSet;
+  ProjectIntf, MyWidgetSet;
 
 type
 
@@ -66,6 +66,17 @@ type
     property MyForm: TMyForm read FMyForm;
   end;
 
+  { TFileDescPascalUnitWithMyForm }
+
+  TFileDescPascalUnitWithMyForm = class(TFileDescPascalUnitWithResource)
+  public
+    constructor Create; override;
+    function GetInterfaceUsesSection: string; override;
+    function GetLocalizedName: string; override;
+    function GetLocalizedDescription: string; override;
+  end;
+
+
 procedure Register;
 
 implementation
@@ -74,6 +85,8 @@ procedure Register;
 begin
   FormEditingHook.RegisterDesignerMediator(TMyWidgetMediator);
   RegisterComponents('MyWidgets',[TMyButton,TMyGroupBox]);
+  RegisterProjectFileDescriptor(TFileDescPascalUnitWithMyForm.Create,
+                                FileDescGroupName);
 end;
 
 { TMyWidgetMediator }
@@ -214,6 +227,31 @@ function TMyWidgetMediator.ParentAcceptsChild(Parent: TComponent;
 begin
   Result:=(Parent is TMyWidget) and (Child.InheritsFrom(TMyWidget))
     and (TMyWidget(Parent).AcceptChildsAtDesignTime);
+end;
+
+{ TFileDescPascalUnitWithMyForm }
+
+constructor TFileDescPascalUnitWithMyForm.Create;
+begin
+  inherited Create;
+  Name:='MyForm';
+  ResourceClass:=TMyForm;
+  UseCreateFormStatements:=true;
+end;
+
+function TFileDescPascalUnitWithMyForm.GetInterfaceUsesSection: string;
+begin
+  Result:=Result+'Classes, SysUtils, MyWidgetSet';
+end;
+
+function TFileDescPascalUnitWithMyForm.GetLocalizedName: string;
+begin
+  Result:='MyForm';
+end;
+
+function TFileDescPascalUnitWithMyForm.GetLocalizedDescription: string;
+begin
+  Result:='Create a new MyForm from example package NotLCLDesigner';
 end;
 
 end.
