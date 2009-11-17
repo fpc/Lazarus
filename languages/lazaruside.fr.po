@@ -88,7 +88,7 @@ msgstr "Ctrl + souris copie/colle la sélection"
 #: lazarusidestrconsts.dlfmousesimpletextsectmidgoto
 msgctxt "lazarusidestrconsts.dlfmousesimpletextsectmidgoto"
 msgid "jumps to implementation"
-msgstr ""
+msgstr "va à l'implémentation"
 
 #: lazarusidestrconsts.dlfmousesimpletextsectmidlabel
 msgid "Middle Button"
@@ -825,10 +825,6 @@ msgstr "Boutons -"
 msgid "Desktop files"
 msgstr "Fichiers du bureauu"
 
-#: lazarusidestrconsts.dlgdesktopglyphsfor
-msgid "Glyphs for:"
-msgstr "Glyphes pour :"
-
 #: lazarusidestrconsts.dlgdesktophints
 msgid "Hints"
 msgstr ""
@@ -1117,6 +1113,18 @@ msgstr "Extensions de fichier"
 msgid "Find text at cursor"
 msgstr "Chercher le texte sous le curseur"
 
+#: lazarusidestrconsts.dlgfoldlfmitem
+msgid "Item"
+msgstr ""
+
+#: lazarusidestrconsts.dlgfoldlfmlist
+msgid "List <>"
+msgstr ""
+
+#: lazarusidestrconsts.dlgfoldlfmobject
+msgid "Object (inherited, inline)"
+msgstr ""
+
 #: lazarusidestrconsts.dlgfoldlocalpasvartype
 msgctxt "lazarusidestrconsts.dlgfoldlocalpasvartype"
 msgid "Var/Type (local)"
@@ -1202,6 +1210,26 @@ msgstr "Uses"
 msgid "Var/Type (global)"
 msgstr ""
 
+#: lazarusidestrconsts.dlgfoldxmlcdata
+msgid "CData"
+msgstr ""
+
+#: lazarusidestrconsts.dlgfoldxmlcomment
+msgid "Comment"
+msgstr ""
+
+#: lazarusidestrconsts.dlgfoldxmldoctype
+msgid "DocType"
+msgstr ""
+
+#: lazarusidestrconsts.dlgfoldxmlnode
+msgid "Node"
+msgstr ""
+
+#: lazarusidestrconsts.dlgfoldxmlprocess
+msgid "Processing Instruction"
+msgstr ""
+
 #: lazarusidestrconsts.dlgforecolor
 msgid "Foreground"
 msgstr "Couleur d'avant-plan"
@@ -1250,18 +1278,6 @@ msgstr "Lire la position"
 #: lazarusidestrconsts.dlgglobal
 msgid "&Global"
 msgstr "&Global"
-
-#: lazarusidestrconsts.dlgglyphshowalways
-msgid "Show Always"
-msgstr "Toujours afficher"
-
-#: lazarusidestrconsts.dlgglyphshownever
-msgid "Show Never"
-msgstr "Ne jamais afficher"
-
-#: lazarusidestrconsts.dlgglyphshowsystem
-msgid "Use System Defaults"
-msgstr "Valeurs par défaut"
 
 #: lazarusidestrconsts.dlggpccomp
 msgid "GPC (GNU Pascal Compiler) Compatible"
@@ -2219,9 +2235,9 @@ msgstr "Répertoire de travail"
 msgid "Rubber band"
 msgstr "Elastique"
 
-#: lazarusidestrconsts.dlgrubberbandselectsgrandchilds
-msgid "Select grand childs"
-msgstr "Sélectionner les petits enfants"
+#: lazarusidestrconsts.dlgrubberbandselectsgrandchildren
+msgid "Select grandchildren"
+msgstr ""
 
 #: lazarusidestrconsts.dlgruberbandcreationcolor
 msgid "Creation"
@@ -3230,10 +3246,6 @@ msgstr "Nom d'unité: "
 msgid "A file %s%s%s already exists.%sReplace it?"
 msgstr "Le fichier %s%s%s existe déjà. %Le remplacer ?"
 
-#: lazarusidestrconsts.lisafterputtinganewcomponentonadesignerformfocusthena
-msgid "After putting a new component on a designer form, focus the name property in the Object Inspector"
-msgstr ""
-
 #: lazarusidestrconsts.lisalignment
 msgid "Alignment"
 msgstr "Alignement"
@@ -3346,6 +3358,10 @@ msgstr "Nom de class &Application"
 msgid "apply build flags (-B) to dependencies too"
 msgstr ""
 
+#: lazarusidestrconsts.lisaprojectunitcannotbeusedbyotherpackagesprojects
+msgid "A project unit can not be used by other packages/projects"
+msgstr ""
+
 #: lazarusidestrconsts.lisaroundborderspacehint
 msgid "Borderspace around the control. The other four borderspaces are added to this value."
 msgstr "L'espace de bordure autour de la commande. Les quatre autres espaces de bordures sont ajoutés à cette valeur."
@@ -3358,9 +3374,17 @@ msgstr "Un simple fichier programme en pascal. %sCela peut être utilisé pour u
 msgid "Ask before replacing each found text"
 msgstr "Demander avant de remplacer chaque texte trouvé"
 
+#: lazarusidestrconsts.lisaskforcomponentnameafterputtingitonform
+msgid "Ask for component name after putting it on a designer form"
+msgstr ""
+
 #: lazarusidestrconsts.lisaskforfilenameonnewfile
 msgid "Ask for file name on new file"
 msgstr "Demander le nom de fichier pour les nouveaux fichiers"
+
+#: lazarusidestrconsts.lisasknameoncreate
+msgid "Ask name on create"
+msgstr ""
 
 #: lazarusidestrconsts.lisautocompletionoff
 msgid "Auto completion: off"
@@ -3430,6 +3454,11 @@ msgstr ""
 msgid "Always Build before Run"
 msgstr "Toujours construire avant l'exécution"
 
+#: lazarusidestrconsts.lisbfbuild
+msgctxt "lazarusidestrconsts.lisbfbuild"
+msgid "Build"
+msgstr "Construire"
+
 #: lazarusidestrconsts.lisbfbuildcommand
 msgid "Build Command"
 msgstr "Commande de construction"
@@ -3441,6 +3470,11 @@ msgstr "A la construction du projet, lancer la commande Construire Fichier à la
 #: lazarusidestrconsts.lisbfonrunprojectexecutetherunfilecommandinstead
 msgid "On run project execute the Run File command instead"
 msgstr "A l'éxécution du projet, lancer la commande Exécurer Fichier à la place"
+
+#: lazarusidestrconsts.lisbfrun
+msgctxt "lazarusidestrconsts.lisbfrun"
+msgid "Run"
+msgstr "Exécuter"
 
 #: lazarusidestrconsts.lisbfruncommand
 msgid "Run Command"
@@ -6344,10 +6378,6 @@ msgstr "Corriger fichier LFM"
 msgid "Floating Point"
 msgstr "Virgule flottante"
 
-#: lazarusidestrconsts.lisfocusnameoncreate
-msgid "Focus name on create"
-msgstr "Demander le nom à la création"
-
 #: lazarusidestrconsts.lisforcerenaming
 msgid "Force renaming"
 msgstr "Forcer le renommage"
@@ -6728,6 +6758,10 @@ msgstr ""
 msgid "Import list"
 msgstr "Liste d'import"
 
+#: lazarusidestrconsts.lisimpossible
+msgid "Impossible"
+msgstr ""
+
 #: lazarusidestrconsts.lisincludefilter
 msgid "Include Filter"
 msgstr "Inclure le filtre"
@@ -6869,6 +6903,10 @@ msgstr "Insérer l'heure"
 
 #: lazarusidestrconsts.lisinserttimeoptionalformatstring
 msgid "Insert time. Optional: format string"
+msgstr ""
+
+#: lazarusidestrconsts.lisinserturltag
+msgid "Insert url tag"
 msgstr ""
 
 #: lazarusidestrconsts.lisinspect
@@ -9354,9 +9392,17 @@ msgstr "Ancienne classe"
 msgid "? (On)"
 msgstr "? (On)"
 
+#: lazarusidestrconsts.lisonbreaklineiereturnorenterkey
+msgid "On break line (i.e. return or enter key)"
+msgstr ""
+
 #: lazarusidestrconsts.lisonlysearchforwholewords
 msgid "Only search for whole words"
 msgstr "Chercher les mots entiers seulement"
+
+#: lazarusidestrconsts.lisonpastefromclipboard
+msgid "On paste from clipboard"
+msgstr ""
 
 #: lazarusidestrconsts.lisopenasxmlfile
 msgid "Open as XML file"
@@ -9462,6 +9508,10 @@ msgstr "Ecraser le fichier ?"
 msgid "Overwrite file on disk"
 msgstr "Ecraser les fichiers sur le disque"
 
+#: lazarusidestrconsts.lisownerisalreadyusedbytreadertwriterpleasechooseanot
+msgid "'Owner' is already used by TReader/TWriter. Please choose another name."
+msgstr ""
+
 #: lazarusidestrconsts.lispackage
 msgid "Package"
 msgstr "Paquet"
@@ -9542,6 +9592,10 @@ msgstr "Chemins de recherche:"
 #: lazarusidestrconsts.lispatheditselectdirectory
 msgid "Select directory"
 msgstr "Sélectionner un répertoire"
+
+#: lazarusidestrconsts.lispathofthemakeutility
+msgid "Path of the make utility"
+msgstr ""
 
 #: lazarusidestrconsts.lispathtoinstance
 msgid "Path to failed Instance:"
@@ -10703,6 +10757,10 @@ msgstr "<Aucun>"
 msgid "&Objects"
 msgstr "&Objets"
 
+#: lazarusidestrconsts.lisplistprocedurelist
+msgid "Procedure List"
+msgstr ""
+
 #: lazarusidestrconsts.lisplisttype
 msgctxt "lazarusidestrconsts.lisplisttype"
 msgid "Type"
@@ -11459,6 +11517,10 @@ msgstr "Voir"
 msgid "Show empty units/packages"
 msgstr ""
 
+#: lazarusidestrconsts.lisshowglyphsfor
+msgid "Show Glyphs for:"
+msgstr ""
+
 #: lazarusidestrconsts.lisshowgutterinobjectinspector
 msgid "Show gutter"
 msgstr "Afficher la gouttière"
@@ -11701,11 +11763,6 @@ msgstr "Nom de variable non valide"
 msgid "%s%s%s is not a valid identifier."
 msgstr "%s%s%s n'est pas un identifiant valide."
 
-#: lazarusidestrconsts.lissvuook
-msgctxt "lazarusidestrconsts.lissvuook"
-msgid "Ok"
-msgstr "OK"
-
 #: lazarusidestrconsts.lissvuooverridesystemvariable
 msgid "Override system variable"
 msgstr "Surcharger une variable système"
@@ -11797,6 +11854,10 @@ msgstr "L'éditeur de composants de la classe %s%s%s%sappelé avec le verbe #%s 
 #: lazarusidestrconsts.listhecomponentisinheritedfromtodeleteaninheritedcomp
 msgid "The component %s is inherited from %s.%sTo delete an inherited component open the ancestor and delete it there."
 msgstr "Le composant %s est hérité de%s.%sPour supprimer un composant hérité ouvrir l'ancêtre et supprimez-le."
+
+#: lazarusidestrconsts.listhecomponentisinheritedfromtorenameaninheritedcomp
+msgid "The component %s is inherited from %s.%sTo rename an inherited component open the ancestor and rename it there."
+msgstr ""
 
 #: lazarusidestrconsts.listhecomponentnamemustbeuniqueinallcomponentsonthefo
 msgid "The component name must be unique in all components on the form/datamodule.The name is compared case insensitive like a normal pascal identifier."

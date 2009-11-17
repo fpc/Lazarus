@@ -99,6 +99,11 @@ msgstr ""
 msgid "You have unsaved changes. Using this page will undo changes made on the advanced page"
 msgstr ""
 
+#: lazarusidestrconsts.dlfreadonlycolor
+msgctxt "lazarusidestrconsts.dlfreadonlycolor"
+msgid "Read Only"
+msgstr ""
+
 #: lazarusidestrconsts.dlg1up2low
 msgid "Lowercase, first letter up"
 msgstr ""
@@ -810,10 +815,6 @@ msgstr ""
 msgid "Desktop files"
 msgstr ""
 
-#: lazarusidestrconsts.dlgdesktopglyphsfor
-msgid "Glyphs for:"
-msgstr ""
-
 #: lazarusidestrconsts.dlgdesktophints
 msgid "Hints"
 msgstr ""
@@ -893,10 +894,6 @@ msgstr ""
 #: lazarusidestrconsts.dlgdivpasvarlocalname
 msgctxt "lazarusidestrconsts.dlgdivpasvarlocalname"
 msgid "Var/Type (local)"
-msgstr ""
-
-#: lazarusidestrconsts.dlgdoesnotexist
-msgid "\" does not exist."
 msgstr ""
 
 #: lazarusidestrconsts.dlgdownword
@@ -1105,6 +1102,18 @@ msgstr ""
 msgid "Find text at cursor"
 msgstr ""
 
+#: lazarusidestrconsts.dlgfoldlfmitem
+msgid "Item"
+msgstr ""
+
+#: lazarusidestrconsts.dlgfoldlfmlist
+msgid "List <>"
+msgstr ""
+
+#: lazarusidestrconsts.dlgfoldlfmobject
+msgid "Object (inherited, inline)"
+msgstr ""
+
 #: lazarusidestrconsts.dlgfoldlocalpasvartype
 msgctxt "lazarusidestrconsts.dlgfoldlocalpasvartype"
 msgid "Var/Type (local)"
@@ -1190,6 +1199,26 @@ msgstr ""
 msgid "Var/Type (global)"
 msgstr ""
 
+#: lazarusidestrconsts.dlgfoldxmlcdata
+msgid "CData"
+msgstr ""
+
+#: lazarusidestrconsts.dlgfoldxmlcomment
+msgid "Comment"
+msgstr ""
+
+#: lazarusidestrconsts.dlgfoldxmldoctype
+msgid "DocType"
+msgstr ""
+
+#: lazarusidestrconsts.dlgfoldxmlnode
+msgid "Node"
+msgstr ""
+
+#: lazarusidestrconsts.dlgfoldxmlprocess
+msgid "Processing Instruction"
+msgstr ""
+
 #: lazarusidestrconsts.dlgforecolor
 msgid "Foreground"
 msgstr ""
@@ -1237,18 +1266,6 @@ msgstr ""
 
 #: lazarusidestrconsts.dlgglobal
 msgid "&Global"
-msgstr ""
-
-#: lazarusidestrconsts.dlgglyphshowalways
-msgid "Show Always"
-msgstr ""
-
-#: lazarusidestrconsts.dlgglyphshownever
-msgid "Show Never"
-msgstr ""
-
-#: lazarusidestrconsts.dlgglyphshowsystem
-msgid "Use System Defaults"
 msgstr ""
 
 #: lazarusidestrconsts.dlggpccomp
@@ -2202,8 +2219,8 @@ msgstr ""
 msgid "Rubber band"
 msgstr ""
 
-#: lazarusidestrconsts.dlgrubberbandselectsgrandchilds
-msgid "Select grand childs"
+#: lazarusidestrconsts.dlgrubberbandselectsgrandchildren
+msgid "Select grandchildren"
 msgstr ""
 
 #: lazarusidestrconsts.dlgruberbandcreationcolor
@@ -3119,6 +3136,14 @@ msgstr ""
 msgid "Add new set"
 msgstr ""
 
+#: lazarusidestrconsts.lisaddpackagerequirement
+msgid "Add package requirement?"
+msgstr ""
+
+#: lazarusidestrconsts.lisaddpackagetoproject
+msgid "Add package %s to project?"
+msgstr ""
+
 #: lazarusidestrconsts.lisaddtoproject
 msgid "Add %s to project?"
 msgstr ""
@@ -3304,6 +3329,10 @@ msgstr ""
 msgid "apply build flags (-B) to dependencies too"
 msgstr ""
 
+#: lazarusidestrconsts.lisaprojectunitcannotbeusedbyotherpackagesprojects
+msgid "A project unit can not be used by other packages/projects"
+msgstr ""
+
 #: lazarusidestrconsts.lisaroundborderspacehint
 msgid "Borderspace around the control. The other four borderspaces are added to this value."
 msgstr ""
@@ -3314,6 +3343,18 @@ msgstr ""
 
 #: lazarusidestrconsts.lisaskbeforereplacingeachfoundtext
 msgid "Ask before replacing each found text"
+msgstr ""
+
+#: lazarusidestrconsts.lisaskforcomponentnameafterputtingitonform
+msgid "Ask for component name after putting it on a designer form"
+msgstr ""
+
+#: lazarusidestrconsts.lisaskforfilenameonnewfile
+msgid "Ask for file name on new file"
+msgstr ""
+
+#: lazarusidestrconsts.lisasknameoncreate
+msgid "Ask name on create"
 msgstr ""
 
 #: lazarusidestrconsts.lisautocompletionoff
@@ -3384,6 +3425,11 @@ msgstr ""
 msgid "Always Build before Run"
 msgstr ""
 
+#: lazarusidestrconsts.lisbfbuild
+msgctxt "lazarusidestrconsts.lisbfbuild"
+msgid "Build"
+msgstr ""
+
 #: lazarusidestrconsts.lisbfbuildcommand
 msgid "Build Command"
 msgstr ""
@@ -3394,6 +3440,11 @@ msgstr ""
 
 #: lazarusidestrconsts.lisbfonrunprojectexecutetherunfilecommandinstead
 msgid "On run project execute the Run File command instead"
+msgstr ""
+
+#: lazarusidestrconsts.lisbfrun
+msgctxt "lazarusidestrconsts.lisbfrun"
+msgid "Run"
 msgstr ""
 
 #: lazarusidestrconsts.lisbfruncommand
@@ -3913,6 +3964,14 @@ msgstr ""
 msgid "Choose a key ..."
 msgstr ""
 
+#: lazarusidestrconsts.lischooseanameforthenewcomponent
+msgid "Choose a name for the new component"
+msgstr ""
+
+#: lazarusidestrconsts.lischooseapascalfileforindentationexamples
+msgid "Choose a pascal file for indentation examples"
+msgstr ""
+
 #: lazarusidestrconsts.lischoosecompilerpath
 msgid "Choose compiler filename (%s)"
 msgstr ""
@@ -3947,6 +4006,10 @@ msgstr ""
 
 #: lazarusidestrconsts.lischoosemakepath
 msgid "Choose make path"
+msgstr ""
+
+#: lazarusidestrconsts.lischoosename
+msgid "Choose name"
 msgstr ""
 
 #: lazarusidestrconsts.lischooseoneoftheseitemstocreateanewfile
@@ -4035,6 +4098,10 @@ msgstr ""
 
 #: lazarusidestrconsts.liscleardirectory
 msgid "Clear Directory?"
+msgstr ""
+
+#: lazarusidestrconsts.lisclearkeymapping
+msgid "Clear Key Mapping"
 msgstr ""
 
 #: lazarusidestrconsts.lisclickheretobrowsethefilehint
@@ -4906,6 +4973,10 @@ msgstr ""
 msgid "contains"
 msgstr ""
 
+#: lazarusidestrconsts.liscontextsensitive
+msgid "Context sensitive"
+msgstr ""
+
 #: lazarusidestrconsts.liscontinue
 msgctxt "lazarusidestrconsts.liscontinue"
 msgid "Continue"
@@ -5534,6 +5605,10 @@ msgstr ""
 msgid "Do not show splash screen"
 msgstr ""
 
+#: lazarusidestrconsts.lisdonotshowthismessageagain
+msgid "Do not show this message again"
+msgstr ""
+
 #: lazarusidestrconsts.lisdrawgridlinesobjectinspector
 msgid "Draw grid lines"
 msgstr ""
@@ -5747,6 +5822,10 @@ msgstr ""
 
 #: lazarusidestrconsts.lisemdsearchintheseclasssections
 msgid "Search in these class sections:"
+msgstr ""
+
+#: lazarusidestrconsts.lisempty
+msgid "Empty"
 msgstr ""
 
 #: lazarusidestrconsts.lisenableall
@@ -5967,6 +6046,10 @@ msgstr ""
 msgid "Every n-th line number:"
 msgstr ""
 
+#: lazarusidestrconsts.lisexamplefile
+msgid "Example file:"
+msgstr ""
+
 #: lazarusidestrconsts.lisexamples
 msgid "Examples"
 msgstr ""
@@ -6005,10 +6088,6 @@ msgstr ""
 
 #: lazarusidestrconsts.lisexecutionstopped
 msgid "Execution stopped"
-msgstr ""
-
-#: lazarusidestrconsts.lisexecutionstoppedon
-msgid "Execution stopped%s"
 msgstr ""
 
 #: lazarusidestrconsts.lisexeprograms
@@ -6250,6 +6329,10 @@ msgstr ""
 
 #: lazarusidestrconsts.lisfindkeycombination
 msgid "Find key combination"
+msgstr ""
+
+#: lazarusidestrconsts.lisfindmissingunit
+msgid "Find missing unit"
 msgstr ""
 
 #: lazarusidestrconsts.lisfirst
@@ -6636,8 +6719,16 @@ msgstr ""
 msgid "Ignore, use TForm as ancestor"
 msgstr ""
 
+#: lazarusidestrconsts.lisimitateindentationofcurrentunitprojectorpackage
+msgid "Imitate indentation of current unit, project or package"
+msgstr ""
+
 #: lazarusidestrconsts.lisimportlist
 msgid "Import list"
+msgstr ""
+
+#: lazarusidestrconsts.lisimpossible
+msgid "Impossible"
 msgstr ""
 
 #: lazarusidestrconsts.lisincludefilter
@@ -6650,6 +6741,10 @@ msgstr ""
 
 #: lazarusidestrconsts.lisincludepaths
 msgid "Include paths"
+msgstr ""
+
+#: lazarusidestrconsts.lisindentation
+msgid "Indentation"
 msgstr ""
 
 #: lazarusidestrconsts.lisindex
@@ -6705,6 +6800,10 @@ msgstr ""
 
 #: lazarusidestrconsts.lisinfobuildwarning
 msgid "Warnings:"
+msgstr ""
+
+#: lazarusidestrconsts.lisinformation
+msgid "Information"
 msgstr ""
 
 #: lazarusidestrconsts.lisinformationaboutunit
@@ -6773,6 +6872,10 @@ msgstr ""
 
 #: lazarusidestrconsts.lisinserttimeoptionalformatstring
 msgid "Insert time. Optional: format string"
+msgstr ""
+
+#: lazarusidestrconsts.lisinserturltag
+msgid "Insert url tag"
 msgstr ""
 
 #: lazarusidestrconsts.lisinspect
@@ -9080,6 +9183,10 @@ msgstr ""
 msgid "Not a Delphi unit"
 msgstr ""
 
+#: lazarusidestrconsts.lisnotavalidpascalidentifier
+msgid "Not a valid pascal identifier"
+msgstr ""
+
 #: lazarusidestrconsts.lisnotecouldnotcreatedefinetemplateforfreepascal
 msgid "NOTE: Could not create Define Template for Free Pascal Sources"
 msgstr ""
@@ -9221,7 +9328,7 @@ msgid "%sThis package was automatically created"
 msgstr ""
 
 #: lazarusidestrconsts.lisok
-msgid "&Ok"
+msgid "&OK"
 msgstr ""
 
 #: lazarusidestrconsts.lisold
@@ -9240,8 +9347,16 @@ msgstr ""
 msgid "? (On)"
 msgstr ""
 
+#: lazarusidestrconsts.lisonbreaklineiereturnorenterkey
+msgid "On break line (i.e. return or enter key)"
+msgstr ""
+
 #: lazarusidestrconsts.lisonlysearchforwholewords
 msgid "Only search for whole words"
+msgstr ""
+
+#: lazarusidestrconsts.lisonpastefromclipboard
+msgid "On paste from clipboard"
 msgstr ""
 
 #: lazarusidestrconsts.lisopenasxmlfile
@@ -9348,6 +9463,10 @@ msgstr ""
 msgid "Overwrite file on disk"
 msgstr ""
 
+#: lazarusidestrconsts.lisownerisalreadyusedbytreadertwriterpleasechooseanot
+msgid "'Owner' is already used by TReader/TWriter. Please choose another name."
+msgstr ""
+
 #: lazarusidestrconsts.lispackage
 msgid "Package"
 msgstr ""
@@ -9427,6 +9546,10 @@ msgstr ""
 
 #: lazarusidestrconsts.lispatheditselectdirectory
 msgid "Select directory"
+msgstr ""
+
+#: lazarusidestrconsts.lispathofthemakeutility
+msgid "Path of the make utility"
 msgstr ""
 
 #: lazarusidestrconsts.lispathtoinstance
@@ -10589,6 +10712,10 @@ msgstr ""
 msgid "&Objects"
 msgstr ""
 
+#: lazarusidestrconsts.lisplistprocedurelist
+msgid "Procedure List"
+msgstr ""
+
 #: lazarusidestrconsts.lisplisttype
 msgctxt "lazarusidestrconsts.lisplisttype"
 msgid "Type"
@@ -10984,6 +11111,10 @@ msgstr ""
 msgid "Recent Projects"
 msgstr ""
 
+#: lazarusidestrconsts.lisquickfixes
+msgid "Quick fixes"
+msgstr ""
+
 #: lazarusidestrconsts.lisquitlazarus
 msgid "Quit Lazarus"
 msgstr ""
@@ -11340,6 +11471,10 @@ msgstr ""
 msgid "Show empty units/packages"
 msgstr ""
 
+#: lazarusidestrconsts.lisshowglyphsfor
+msgid "Show Glyphs for:"
+msgstr ""
+
 #: lazarusidestrconsts.lisshowgutterinobjectinspector
 msgid "Show gutter"
 msgstr ""
@@ -11582,11 +11717,6 @@ msgstr ""
 msgid "%s%s%s is not a valid identifier."
 msgstr ""
 
-#: lazarusidestrconsts.lissvuook
-msgctxt "lazarusidestrconsts.lissvuook"
-msgid "Ok"
-msgstr ""
-
 #: lazarusidestrconsts.lissvuooverridesystemvariable
 msgid "Override system variable"
 msgstr ""
@@ -11677,6 +11807,14 @@ msgstr ""
 
 #: lazarusidestrconsts.listhecomponentisinheritedfromtodeleteaninheritedcomp
 msgid "The component %s is inherited from %s.%sTo delete an inherited component open the ancestor and delete it there."
+msgstr ""
+
+#: lazarusidestrconsts.listhecomponentisinheritedfromtorenameaninheritedcomp
+msgid "The component %s is inherited from %s.%sTo rename an inherited component open the ancestor and rename it there."
+msgstr ""
+
+#: lazarusidestrconsts.listhecomponentnamemustbeuniqueinallcomponentsonthefo
+msgid "The component name must be unique in all components on the form/datamodule.The name is compared case insensitive like a normal pascal identifier."
 msgstr ""
 
 #: lazarusidestrconsts.listhecurrentcompilerfilenameisnotavalidexecutablecho
@@ -11839,6 +11977,14 @@ msgstr ""
 msgid " The output directory should be a separate directory and not contain any source files."
 msgstr ""
 
+#: lazarusidestrconsts.listheownerclasshasthisname
+msgid "The owner class has this name"
+msgstr ""
+
+#: lazarusidestrconsts.listheownerhasthisname
+msgid "The owner has this name"
+msgstr ""
+
 #: lazarusidestrconsts.listhepackagealreadycontainsaunitwiththisname
 msgid "The package already contains a unit with this name."
 msgstr ""
@@ -11873,6 +12019,10 @@ msgstr ""
 
 #: lazarusidestrconsts.listhereisalreadyabuildvarwiththename
 msgid "There is already a build variable with the name %s%s%s."
+msgstr ""
+
+#: lazarusidestrconsts.listhereisalreadyacomponentwiththisname
+msgid "There is already a component with this name"
 msgstr ""
 
 #: lazarusidestrconsts.listhereisalreadyaformwiththename
@@ -11917,6 +12067,10 @@ msgstr ""
 
 #: lazarusidestrconsts.listheunitexiststwiceintheunitpathofthe
 msgid "The unit %s exists twice in the unit path of the %s:"
+msgstr ""
+
+#: lazarusidestrconsts.listheunithasthisname
+msgid "The unit has this name"
 msgstr ""
 
 #: lazarusidestrconsts.listheunitisnotlowercasethefreepascalcompiler
@@ -12388,6 +12542,16 @@ msgstr ""
 
 #: lazarusidestrconsts.lisunabletoreadfilename
 msgid "Unable to read file %s%s%s."
+msgstr ""
+
+#: lazarusidestrconsts.lisunabletoreadtheprojectinfofile
+msgctxt "lazarusidestrconsts.lisunabletoreadtheprojectinfofile"
+msgid "Unable to read the project info file%s%s%s%s."
+msgstr ""
+
+#: lazarusidestrconsts.lisunabletoreadtheprojectinfofile2
+msgctxt "lazarusidestrconsts.lisunabletoreadtheprojectinfofile2"
+msgid "Unable to read the project info file%s%s%s%s."
 msgstr ""
 
 #: lazarusidestrconsts.lisunabletoremoveoldbackupfile
@@ -14226,6 +14390,7 @@ msgid "Procedure Jump"
 msgstr ""
 
 #: lazarusidestrconsts.uemreadonly
+msgctxt "lazarusidestrconsts.uemreadonly"
 msgid "Read Only"
 msgstr ""
 

@@ -836,10 +836,6 @@ msgstr "Кнопок - "
 msgid "Desktop files"
 msgstr "Файлы рабочего стола"
 
-#: lazarusidestrconsts.dlgdesktopglyphsfor
-msgid "Glyphs for:"
-msgstr "Значки:"
-
 #: lazarusidestrconsts.dlgdesktophints
 msgid "Hints"
 msgstr "Подсказки"
@@ -1127,6 +1123,18 @@ msgstr "Расширения файлов"
 msgid "Find text at cursor"
 msgstr "Поиск текста под курсором"
 
+#: lazarusidestrconsts.dlgfoldlfmitem
+msgid "Item"
+msgstr ""
+
+#: lazarusidestrconsts.dlgfoldlfmlist
+msgid "List <>"
+msgstr ""
+
+#: lazarusidestrconsts.dlgfoldlfmobject
+msgid "Object (inherited, inline)"
+msgstr ""
+
 #: lazarusidestrconsts.dlgfoldlocalpasvartype
 msgctxt "lazarusidestrconsts.dlgfoldlocalpasvartype"
 msgid "Var/Type (local)"
@@ -1212,6 +1220,26 @@ msgstr "Используемые модули"
 msgid "Var/Type (global)"
 msgstr "Секции Var/Type (глобальные)"
 
+#: lazarusidestrconsts.dlgfoldxmlcdata
+msgid "CData"
+msgstr ""
+
+#: lazarusidestrconsts.dlgfoldxmlcomment
+msgid "Comment"
+msgstr ""
+
+#: lazarusidestrconsts.dlgfoldxmldoctype
+msgid "DocType"
+msgstr ""
+
+#: lazarusidestrconsts.dlgfoldxmlnode
+msgid "Node"
+msgstr ""
+
+#: lazarusidestrconsts.dlgfoldxmlprocess
+msgid "Processing Instruction"
+msgstr ""
+
 #: lazarusidestrconsts.dlgforecolor
 msgid "Foreground"
 msgstr "Цвет текста"
@@ -1260,18 +1288,6 @@ msgstr "Принять позицию"
 #: lazarusidestrconsts.dlgglobal
 msgid "&Global"
 msgstr "Во всём т&ексте"
-
-#: lazarusidestrconsts.dlgglyphshowalways
-msgid "Show Always"
-msgstr "Показывать всегда"
-
-#: lazarusidestrconsts.dlgglyphshownever
-msgid "Show Never"
-msgstr "Не показывать никогда"
-
-#: lazarusidestrconsts.dlgglyphshowsystem
-msgid "Use System Defaults"
-msgstr "По умолчанию"
 
 #: lazarusidestrconsts.dlggpccomp
 msgid "GPC (GNU Pascal Compiler) Compatible"
@@ -3234,10 +3250,6 @@ msgstr "Имя модуля: "
 msgid "A file %s%s%s already exists.%sReplace it?"
 msgstr "Файл %s%s%s уже существует.%s Заменить?"
 
-#: lazarusidestrconsts.lisafterputtinganewcomponentonadesignerformfocusthena
-msgid "After putting a new component on a designer form, focus the name property in the Object Inspector"
-msgstr "Спрашивать имя компонента после помещения его на форму"
-
 #: lazarusidestrconsts.lisalignment
 msgid "Alignment"
 msgstr "Выравнивание"
@@ -3366,9 +3378,17 @@ msgstr "Файл простой программы на Паскале.%sМож�
 msgid "Ask before replacing each found text"
 msgstr "Спросить перед заменой каждого фрагмента"
 
+#: lazarusidestrconsts.lisaskforcomponentnameafterputtingitonform
+msgid "Ask for component name after putting it on a designer form"
+msgstr ""
+
 #: lazarusidestrconsts.lisaskforfilenameonnewfile
 msgid "Ask for file name on new file"
 msgstr "Спрашивать имя нового файла при его создании"
+
+#: lazarusidestrconsts.lisasknameoncreate
+msgid "Ask name on create"
+msgstr ""
 
 #: lazarusidestrconsts.lisautocompletionoff
 msgid "Auto completion: off"
@@ -3438,6 +3458,11 @@ msgstr "После связанных"
 msgid "Always Build before Run"
 msgstr "Всегда собирать перед запуском"
 
+#: lazarusidestrconsts.lisbfbuild
+msgctxt "lazarusidestrconsts.lisbfbuild"
+msgid "Build"
+msgstr "Сборка"
+
 #: lazarusidestrconsts.lisbfbuildcommand
 msgid "Build Command"
 msgstr "Команда Собрать"
@@ -3449,6 +3474,11 @@ msgstr "При сборке проекта выполнить 'Собрать Ф
 #: lazarusidestrconsts.lisbfonrunprojectexecutetherunfilecommandinstead
 msgid "On run project execute the Run File command instead"
 msgstr "При запуске проекта выполнить 'Запустить Файл'"
+
+#: lazarusidestrconsts.lisbfrun
+msgctxt "lazarusidestrconsts.lisbfrun"
+msgid "Run"
+msgstr "Запустить"
 
 #: lazarusidestrconsts.lisbfruncommand
 msgid "Run Command"
@@ -6349,10 +6379,6 @@ msgstr "Исправить файл LFM"
 #: lazarusidestrconsts.lisfloatingpoin
 msgid "Floating Point"
 msgstr "С плавающей точкой"
-
-#: lazarusidestrconsts.lisfocusnameoncreate
-msgid "Focus name on create"
-msgstr "Спрашивать имя при создании"
 
 #: lazarusidestrconsts.lisforcerenaming
 msgid "Force renaming"
@@ -10732,6 +10758,10 @@ msgstr "<Нет>"
 msgid "&Objects"
 msgstr "&Объекты"
 
+#: lazarusidestrconsts.lisplistprocedurelist
+msgid "Procedure List"
+msgstr ""
+
 #: lazarusidestrconsts.lisplisttype
 msgctxt "lazarusidestrconsts.lisplisttype"
 msgid "Type"
@@ -11488,6 +11518,10 @@ msgstr "Показать"
 msgid "Show empty units/packages"
 msgstr "Показывать пустые модули/пакеты"
 
+#: lazarusidestrconsts.lisshowglyphsfor
+msgid "Show Glyphs for:"
+msgstr ""
+
 #: lazarusidestrconsts.lisshowgutterinobjectinspector
 msgid "Show gutter"
 msgstr "Показывать поле (лев)"
@@ -11729,11 +11763,6 @@ msgstr "Неверное имя переменной"
 #: lazarusidestrconsts.lissvuoisnotavalididentifier
 msgid "%s%s%s is not a valid identifier."
 msgstr "%s%s%s - некорректный идентификатор."
-
-#: lazarusidestrconsts.lissvuook
-msgctxt "lazarusidestrconsts.lissvuook"
-msgid "Ok"
-msgstr "ОК"
 
 #: lazarusidestrconsts.lissvuooverridesystemvariable
 msgid "Override system variable"
