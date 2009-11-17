@@ -575,7 +575,7 @@ begin
         for i := Text.Count - 1 downto 0 do begin
           sz := AlignedTextPos(Alignment, Text[i]);
           FClipRect.Bottom -= sz.cy;
-          ACanvas.TextOut(sz.cy, FClipRect.Bottom, Text[i]);
+          ACanvas.TextOut(sz.cx, FClipRect.Bottom, Text[i]);
         end;
         FClipRect.Bottom -= 4;
       end;
