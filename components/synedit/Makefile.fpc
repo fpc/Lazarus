@@ -35,14 +35,23 @@ options=-gl -dlcl$(LCL_PLATFORM)
 
 [target]
 units=allsyneditunits
-implicitunits=syntextdrawer syneditkeycmds synedittypes syneditstrconst \
-  syneditsearch syneditmiscprocs syneditmiscclasses synedittextbuffer \
-  synedit synedithighlighter synhighlightermulti synregexpr synexporthtml \
-  syneditexport synmemo synmacrorecorder syneditplugins syneditregexsearch \
-  synhighlighterposition synhighlighterjava synhighlightercss \
-  synhighlighterphp synhighlightertex synhighlighterhashentries \
-  synhighlightersql synhighlightervb \
-  synpropertyeditobjectlist syndesignstringconstants
+implicitunits=synbeautifier syncompletion syndesignstringconstants \
+  synedit syneditautocomplete syneditexport syneditfoldedview synedithighlighter \
+  synedithighlighterfoldbase syneditkeycmds syneditlazdsgn syneditlines syneditmarks \
+  syneditmarkup syneditmarkupbracket syneditmarkupctrlmouselink syneditmarkuphighall \
+  syneditmarkupselection syneditmarkupspecialline syneditmarkupwordgroup \
+  syneditmiscclasses syneditmiscprocs syneditmousecmds syneditplugins \
+  syneditpointclasses syneditregexsearch syneditsearch syneditstrconst synedittextbase \
+  synedittextbuffer synedittextdoublewidthchars synedittexttabexpander \
+  synedittexttrimmer synedittypes synexporthtml syngutter syngutterbase \
+  syngutterchanges synguttercodefolding syngutterlinenumber synguttermarks \
+  synhighlighterany synhighlightercpp synhighlightercss synhighlighterhashentries \
+  synhighlighterhtml synhighlighterjava synhighlighterjscript synhighlighterlfm \
+  synhighlightermulti synhighlighterpas synhighlighterperl synhighlighterphp \
+  synhighlighterposition synhighlighterpython synhighlightersql synhighlightertex \
+  synhighlighterunixshellscript synhighlightervb synhighlighterxml synmacrorecorder \
+  synmemo synpluginsyncroedit synpluginsyncronizededitbase synplugintemplateedit \
+  synpropertyeditobjectlist synregexpr syntextdrawer
 
 [require]
 # Adding lcl does not work, because it adds the source path.
