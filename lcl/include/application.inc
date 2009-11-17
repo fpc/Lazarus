@@ -794,7 +794,7 @@ begin
     //DebugLn(['TApplication.ShowHintWindow FHintWindow.Color=',dbgs(FHintWindow.Color),' HintInfo.HintColor=',dbgs(HintInfo.HintColor)]);
 
     //debugln('TApplication.ShowHintWindow B HintWinRect=',dbgs(HintWinRect),' HintStr="',DbgStr(HintInfo.HintStr),'"');
-    FHintWindow.ActivateHint(HintWinRect,HintInfo.HintStr);
+    FHintWindow.ActivateHintData(HintWinRect, HintInfo.HintStr, HintInfo.HintData);
     FHintRect := HintInfo.CursorRect;
     // start hide timer
     StartHintTimer(HintInfo.HideTimeout,ahttHideHint);

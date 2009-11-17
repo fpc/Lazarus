@@ -221,7 +221,11 @@ type
     csClicked,
     csPalette,
     csReadingState,
+    {$IFDEF NewAutoSize}
+    // deprecated
+    {$ELSE}
     csAlignmentNeeded,
+    {$ENDIF}
     csFocusing,
     csCreating,
     csPaintCopy,
@@ -784,7 +788,12 @@ type
                                  var Handled: Boolean) of object;
 
   TControlFlag = (
+    {$IFDEF NewAutoSize}
+    cfLoading, // set by TControl.ReadState, unset by TControl.Loaded when all on form finished loading
+    {$ELSE}
+    // obsolete
     cfRequestAlignNeeded,
+    {$ENDIF}
     cfAutoSizeNeeded,
     cfLeftLoaded,  // cfLeftLoaded is set, when 'Left' is set during loading.
     cfTopLoaded,
@@ -830,7 +839,7 @@ type
     FAnchors: TAnchors;
     FAnchorSides: array[TAnchorKind] of TAnchorSide;
     FAnchoredControls: TFPList; // list of TControl anchored to this control
-    FAutoSizingLockCount: Integer;
+    FAutoSizingLockCount: Integer; // in/decreased by DisableAutoSizing/EnableAutoSizing
     FBaseBounds: TRect;
     FBaseBoundsLock: integer;
     FBaseParentClientSize: TPoint;
@@ -908,19 +917,25 @@ type
     FUndockWidth: Integer;
     FWidth: Integer;
     FWindowProc: TWndMethod;
-    //boolean fields
+    //boolean fields, keep together to save some bytes
     FIsControl: Boolean;
     FShowHint: Boolean;
     FParentColor: Boolean;
     FParentFont: Boolean;
     FParentShowHint: Boolean;
     FAutoSize: Boolean;
-    FAutoSizing: Boolean;
+    {$IFDEF NewAutoSize}
+    fAutoSizingAll: boolean;
+    {$ENDIF}
+    FAutoSizingSelf: Boolean;
     FEnabled: Boolean;
     FMouseEntered: boolean;
     FVisible: Boolean;
     function CaptureMouseButtonsIsStored: boolean;
     procedure DoActionChange(Sender: TObject);
+    {$IFDEF NewAutoSize}
+    function GetAutoSizingAll: Boolean;
+    {$ENDIF}
     function GetAnchorSide(Kind: TAnchorKind): TAnchorSide;
     function GetAnchorSideIndex(Index: integer): TAnchorSide;
     function GetAnchoredControls(Index: integer): TControl;
@@ -985,8 +1000,11 @@ type
   protected
     // sizing/aligning
     procedure DoAutoSize; virtual;
-    procedure BeginAutoSizing;
-    procedure EndAutoSizing;
+    {$IFDEF NewAutoSize}
+    procedure DoAllAutoSize; virtual; // while autosize needed call DoAutoSize, used by AdjustSize and EnableAutoSizing
+    {$ENDIF}
+    procedure BeginAutoSizing; // set AutoSizing=true, can be used to prevent circles
+    procedure EndAutoSizing;   // set AutoSizing=false
     function AutoSizeCanStart: boolean; virtual;
     procedure AnchorSideChanged(TheAnchorSide: TAnchorSide); virtual;
     procedure ForeignAnchorSideChanged(TheAnchorSide: TAnchorSide;
@@ -1029,7 +1047,10 @@ type
     function IsClientHeightStored: boolean; virtual;
     function IsClientWidthStored: boolean; virtual;
 
-    property AutoSizing: Boolean read FAutoSizing;
+    property AutoSizing: Boolean read FAutoSizingSelf;// see Begin/EndAutoSizing
+    {$IFDEF NewAutoSize}
+    property AutoSizingAll: Boolean read GetAutoSizingAll;// set in DoAllAutoSize
+    {$ENDIF}
     property AutoSizingLockCount: Integer read FAutoSizingLockCount;
   protected
     // protected messages
@@ -1115,7 +1136,9 @@ type
     procedure Changed;
     function  GetPalette: HPalette; virtual;
     function ChildClassAllowed(ChildClass: TClass): boolean; virtual;
+    procedure ReadState(Reader: TReader); override; // called
     procedure Loaded; override;
+    procedure LoadedAll; virtual; // called when all controls were Loaded and lost their csLoading
     procedure DefineProperties(Filer: TFiler); override;
     procedure AssignTo(Dest: TPersistent); override;
     procedure FormEndUpdated; virtual;
@@ -1541,7 +1564,11 @@ type
     wcfClientRectNeedsUpdate,
     wcfColorChanged,
     wcfFontChanged,          // Set if font was changed before handle creation
+    {$IFDEF NewAutoSize}
+    wcfAllAutoSizing,
+    {$ELSE}
     wcfReAlignNeeded,
+    {$ENDIF}
     wcfAligningControls,
     wcfEraseBackground,
     wcfCreatingHandle,       // Set while constructing the handle of this control
@@ -1584,9 +1611,8 @@ type
     FBrush: TBrush;
     FAdjustClientRectRealized: TRect;
     FChildSizing: TControlChildSizing;
-    FControls: TFPList;    // the child controls (only TControl, no TWinControl)
+    FControls: TFPList;    // the child controls
     FOnGetDockCaption: TGetDockCaptionEvent;
-    FWinControls: TFPList; // the child controls (only TWinControl, no TControl)
     FDefWndProc: Pointer;
     FDockClients: TFPList;
     FClientWidth: Integer;
@@ -1609,7 +1635,10 @@ type
     FHandle: Hwnd;
     FTabOrder: integer;
     FTabList: TFPList;
+    // keep small variables together to save some bytes
+    {$IFNDEF NewAutoSize}
     FAlignLevel: Word;
+    {$ENDIF}
     FTabStop: Boolean;
     FShowing: Boolean;
     FDoubleBuffered: Boolean;
@@ -1654,20 +1683,25 @@ type
     function DoAlignChildControls(TheAlign: TAlign; AControl: TControl;
                      AControlList: TFPList; var ARect: TRect): Boolean; virtual;
     procedure DoChildSizingChange(Sender: TObject); virtual;
+    {$IFNDEF NewAutoSize}
     procedure ResizeDelayedAutoSizeChildren; virtual;
+    {$ENDIF}
     procedure InvalidatePreferredChildSizes;
     function CanTab: Boolean; override;
     function IsClientHeightStored: boolean; override;
     function IsClientWidthStored: boolean; override;
-    procedure DoSendShowHideToInterface; virtual;
+    procedure DoSendShowHideToInterface; virtual; // called by TWinControl.CMShowingChanged
     procedure ControlsAligned; virtual;// called by AlignControls after aligning controls
-    procedure DoSendBoundsToInterface; virtual;
+    procedure DoSendBoundsToInterface; virtual; // called by RealizeBounds
     procedure RealizeBounds; virtual;// checks for changes and calls DoSendBoundsToInterface
-    procedure RealizeBoundsRecursive;
-    procedure CreateSubClass(var Params: TCreateParams;ControlClassName: PChar);
+    procedure RealizeBoundsRecursive; // called by DoAllAutoSize
+    procedure CreateSubClass(var Params: TCreateParams; ControlClassName: PChar);
     procedure DoConstraintsChange(Sender: TObject); override;
     procedure DoSetBounds(ALeft, ATop, AWidth, AHeight: integer); override;
     procedure DoAutoSize; override;
+    {$IFDEF NewAutoSize}
+    procedure DoAllAutoSize; override;
+    {$ENDIF}
     procedure CalculatePreferredSize(var PreferredWidth,
                                      PreferredHeight: integer;
                                      WithThemeSpace: Boolean); override;
@@ -1682,7 +1716,7 @@ type
     procedure CMBiDiModeChanged(var Message: TLMessage); message CM_BIDIMODECHANGED;
     procedure CMBorderChanged(var Message: TLMessage); message CM_BORDERCHANGED;
     procedure CMEnabledChanged(var Message: TLMessage); message CM_ENABLEDCHANGED;
-    procedure CMShowingChanged(var Message: TLMessage); message CM_SHOWINGCHANGED;
+    procedure CMShowingChanged(var Message: TLMessage); message CM_SHOWINGCHANGED; // called by TWinControl.UpdateShowing
     procedure CMShowHintChanged(var Message: TLMessage); message CM_SHOWHINTCHANGED;
     procedure CMVisibleChanged(var TheMessage: TLMessage); message CM_VISIBLECHANGED;
     procedure WMEraseBkgnd(var Message: TLMEraseBkgnd); message LM_ERASEBKGND;
@@ -1787,7 +1821,7 @@ type
     procedure SetChildZPosition(const AChild: TControl; const APosition: Integer);
     procedure ShowControl(AControl: TControl); virtual;
     procedure UpdateControlState;
-    procedure UpdateShowing; virtual;
+    procedure UpdateShowing; virtual; // checks control's handle visibility, called by UpdateControlState and CreateWnd
     procedure WndProc(var Message: TLMessage); override;
     procedure WSSetText(const AText: String); virtual;
   protected
@@ -1826,17 +1860,17 @@ type
     property OnKeyUp: TKeyEvent read FOnKeyUp write FOnKeyUp;
     property OnUnDock: TUnDockEvent read FOnUnDock write FOnUnDock;
     property OnUTF8KeyPress: TUTF8KeyPressEvent read FOnUTF8KeyPress write FOnUTF8KeyPress;
-    property Showing: Boolean read FShowing;
+    property Showing: Boolean read FShowing; // handle visible
     property UseDockManager: Boolean read FUseDockManager
                                      write SetUseDockManager default False;
     property VisibleDockClientCount: Integer read GetVisibleDockClientCount;
   public
     // size, position, bounds
     function AutoSizeDelayed: boolean; override;
-    procedure BeginUpdateBounds;
-    procedure EndUpdateBounds;
-    procedure LockRealizeBounds;
-    procedure UnlockRealizeBounds;
+    procedure BeginUpdateBounds; // disable SetBounds
+    procedure EndUpdateBounds;   // enable SetBounds
+    procedure LockRealizeBounds; // disable sending bounds to widgetset
+    procedure UnlockRealizeBounds; // enable sending bounds to widgetset, changes will now be sent
     function ControlAtPos(const Pos: TPoint; AllowDisabled: Boolean): TControl;
     function ControlAtPos(const Pos: TPoint;
                           AllowDisabled, AllowWinControls: Boolean): TControl;
@@ -1862,7 +1896,7 @@ type
     procedure SetControlIndex(AControl: TControl; NewIndex: integer);
     function Focused: Boolean; virtual;
     function PerformTab(ForwardTab: boolean): boolean; virtual;
-    function ControlByName(const ControlName: string): TControl;
+    function FindChildControl(const ControlName: String): TControl;
     procedure SelectNext(CurControl: TWinControl;
                          GoForward, CheckTabStop: Boolean);
     procedure SetTempCursor(Value: TCursor); override;
@@ -1878,7 +1912,6 @@ type
     procedure Repaint; override;
     procedure Update; override;
     procedure SetFocus; virtual;
-    function FindChildControl(const ControlName: String): TControl;
     procedure FlipChildren(AllLevels: Boolean); virtual;
     function GetDockCaption(AControl: TControl): String; virtual;
     procedure GetTabOrderList(List: TFPList);

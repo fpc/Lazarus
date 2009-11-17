@@ -2228,9 +2228,12 @@ function TWinControl.AutoSizeDelayed: boolean;
 begin
   Result:=// no handle means not visible
           (not HandleAllocated)
-          or ((not FShowing) and (not (csDesigning in ComponentState)))
-          // during handle creation no autosize
-          or (wcfCreatingChildHandles in FWinControlFlags)
+          {$IFNDEF NewAutoSize}
+          // obsolete
+            or ((not FShowing) and (not (csDesigning in ComponentState)))
+            // during handle creation no autosize
+            or (wcfCreatingChildHandles in FWinControlFlags)
+          {$ENDIF}
           or (inherited AutoSizeDelayed);
   //if Result then debugln('TWinControl.AutoSizeDelayed A ',DbgSName(Self),' wcfCreatingChildHandles=',dbgs(wcfCreatingChildHandles in FWinControlFlags),' csLoading=',dbgs(csLoading in ComponentState));
   {$IFDEF VerboseCanAutoSize}
@@ -2968,7 +2971,9 @@ var
   
 var
   i: Integer;
+  {$IFNDEF NewAutoSize}
   ChildControl: TControl;
+  {$ENDIF}
   OldRemainingClientRect: TRect;
   OldRemainingBorderSpace: TRect;
   MaxTries: LongInt;
@@ -2976,6 +2981,9 @@ begin
   if wcfAligningControls in FWinControlFlags then exit;
   Include(FWinControlFlags,wcfAligningControls);
   try
+    {$IFNDEF NewAutoSize}
+    // obsolete
+
     // call delayed autosize
     for i:=ControlCount-1 downto 0 do begin
       ChildControl:=Controls[i];
@@ -2984,6 +2992,10 @@ begin
         ChildControl.AdjustSize;
       end;
     end;
+    {$ENDIF}
+
+    {$IFNDEF NewAutoSize}
+    // obsolete
 
     // unset all align needed flags
     Exclude(FWinControlFlags,wcfReAlignNeeded);
@@ -2991,6 +3003,7 @@ begin
       ChildControl:=Controls[i];
       Exclude(ChildControl.FControlFlags,cfRequestAlignNeeded);
     end;
+    {$ENDIF}
 
     //if csDesigning in ComponentState then begin
       //DebugLn('[TWinControl.AlignControls] ',Name,':',Classname,' ',Left,',',Top,',',Width,',',Height,' AlignWork=',NeedAlignWork,' ControlCount=',ControlCount);
@@ -3046,6 +3059,9 @@ begin
   finally
     Exclude(FWinControlFlags,wcfAligningControls);
   end;
+  {$IFNDEF NewAutoSize}
+  // obsolete
+
   // let childs autosize themselves
   for i:=0 to ControlCount-1 do begin
     ChildControl:=Controls[i];
@@ -3054,6 +3070,7 @@ begin
       ChildControl.AdjustSize;
     end;
   end;
+  {$ENDIF}
 end;
 
 function TWinControl.CustomAlignInsertBefore(AControl1, AControl2: TControl): Boolean;
@@ -3085,6 +3102,9 @@ begin
   ReAlign;
 end;
 
+{$IFDEF NewAutoSize}
+// deprecated
+{$ELSE}
 procedure TWinControl.ResizeDelayedAutoSizeChildren;
 var
   i: Integer;
@@ -3122,6 +3142,7 @@ begin
     EnableAlign;
   end;
 end;
+{$ENDIF}
 
 procedure TWinControl.InvalidatePreferredChildSizes;
 var
@@ -3237,7 +3258,10 @@ begin
   end;
 
   DisableAutoSizing;
+  {$IFNDEF NewAutoSize}
+  // obsolete
   DisableAlign;
+  {$ENDIF}
   try
     // test if resizing is possible
     HasVisibleChilds:=false;
@@ -3331,9 +3355,60 @@ begin
   finally
     Exclude(FControlFlags,cfAutoSizeNeeded);
     EnableAutoSizing;
+    {$IFNDEF NewAutoSize}
+    // obsolete
     EnableAlign;
+    {$ENDIF}
   end;
 end;
+
+{$IFDEF NewAutoSize}
+procedure TWinControl.DoAllAutoSize;
+
+  procedure UpdateShowingRecursive(AWinControl: TWinControl);
+  var
+    i: Integer;
+  begin
+    if AWinControl.HandleObjectShouldBeVisible
+    and (not AWinControl.Showing) then
+      AWinControl.UpdateShowing;
+    if AWinControl.FControls<>nil then
+      for i:=0 to AWinControl.FControls.Count-1 do
+        if TObject(AWinControl.FControls[i]) is TWinControl then
+          UpdateShowingRecursive(TWinControl(AWinControl.FControls[i]));
+  end;
+
+begin
+  if AutoSizeDelayed then exit;
+  if wcfAllAutoSizing in FWinControlFlags then exit;
+  DebugLn(['TWinControl.DoAllAutoSize START ',DbgSName(Self),' ',dbgs(BoundsRect)]);
+  Include(FWinControlFlags,wcfAllAutoSizing);
+  try
+    // create needed handles
+    if HandleObjectShouldBeVisible and (not HandleAllocated) then begin
+      HandleNeeded;
+      exit;
+    end;
+    while (cfAutoSizeNeeded in FControlFlags)
+    and (not AutoSizeDelayed) do begin
+      // compute all sizes for LCL objects without touching the widgetset
+      inherited DoAllAutoSize;
+      if cfAutoSizeNeeded in FControlFlags then RaiseGDBException('');
+      // send all new bounds to widgetset
+      DebugLn(['TWinControl.DoAllAutoSize REALIZE BOUNDS ',DbgSName(Self),' ',dbgs(BoundsRect)]);
+      RealizeBoundsRecursive;
+      // make handles visible
+      if not (cfAutoSizeNeeded in FControlFlags) then begin
+        DebugLn(['TWinControl.DoAllAutoSize UPDATESHOWING ',DbgSName(Self),' ',dbgs(BoundsRect)]);
+        UpdateShowingRecursive(Self);
+      end;
+    end;
+    DebugLn(['TWinControl.DoAllAutoSize END ',DbgSName(Self),' ',dbgs(BoundsRect)]);
+  finally
+    Exclude(FWinControlFlags,wcfAllAutoSizing);
+  end;
+end;
+{$ENDIF}
 
 {------------------------------------------------------------------------------
   TWinControl BroadCast
@@ -3406,8 +3481,12 @@ end;
 ------------------------------------------------------------------------------}
 procedure TWinControl.DisableAlign;
 begin
+  {$IFDEF NewAutoSize}
+  DisableAutoSizing;
+  {$ELSE}
   Inc(FAlignLevel);
   //DebugLn(['TWinControl.DisableAlign ',dbgsName(Self),' ',FAlignLevel]);
+  {$ENDIF}
 end;
 
 {-------------------------------------------------------------------------------
@@ -3471,10 +3550,10 @@ begin
 
   if WithChildControls then begin
     // invalidate clients too
-    if Assigned(FWinControls) then
-      for I := 0 to FWinControls.Count - 1 do
-        if Assigned(FWinControls.Items[I]) then
-          TWinControl(FWinControls.Items[I]).InvalidateClientRectCache(true);
+    if Assigned(FControls) then
+      for I := 0 to FControls.Count - 1 do
+        if TObject(FControls.Items[I]) is TWinControl then
+          TWinControl(FControls.Items[I]).InvalidateClientRectCache(true);
   end;
   InvalidatePreferredSize;
 end;
@@ -3528,6 +3607,9 @@ end;
 ------------------------------------------------------------------------------}
 procedure TWinControl.EnableAlign;
 begin
+  {$IFDEF NewAutoSize}
+  EnableAutoSizing;
+  {$ELSE}
   Dec(FAlignLevel);
   //DebugLn(['TWinControl.EnableAlign ',dbgsName(Self),' ',FAlignLevel]);
   if FAlignLevel = 0 then begin
@@ -3535,6 +3617,7 @@ begin
     or (wcfReAlignNeeded in FWinControlFlags) then
       ReAlign;
   end;
+  {$ENDIF}
 end;
 
 procedure TWinControl.WriteLayoutDebugReport(const Prefix: string);
@@ -3808,19 +3891,15 @@ end;
 {------------------------------------------------------------------------------
   TWinControl.SetChildZPosition
 
-  Set the position of the child control in the FControls (in case of a TControl)
-  or in the FWinControls (in all other cases) list.
-
-  Notes:
-  * The FControls are always below the FWinControls.
-  * FControls and FWinControls can be nil
+  Set the position of the child control in the TWinControl(s)
 ------------------------------------------------------------------------------}
 procedure TWinControl.SetChildZPosition(const AChild: TControl;
   const APosition: Integer);
 var
-  list: TFPList;
-  idx, NewPos: Integer;
+  OldPos, NewPos: Integer;
   IsWinControl: boolean;
+  i: Integer;
+  WinControls: TFPList;
 begin
   if AChild = nil
   then begin
@@ -3830,38 +3909,51 @@ begin
 
   IsWinControl :=  AChild is TWincontrol;
   
-  if IsWinControl
-  then list := FWinControls
-  else list := FControls;
-  
-  if list = nil
-  then idx := -1
-  else idx := list.IndexOf(AChild);
-
-  if idx = -1
-  then begin
+  if FControls = nil then
+  begin
     DebugLn('WARNING: TWinControl.SetChildZPosition: Unknown child');
     Exit;
   end;
+  OldPos := FControls.IndexOf(AChild);
+  if OldPos<0 then begin
+    DebugLn('WARNING: TWinControl.SetChildZPosition: Not a child');
+    Exit;
+  end;
+
+  NewPos := APosition;
   
-  if IsWinControl and (FControls <> nil)
-  then NewPos := APosition - FControls.Count
-  else NewPos := APosition;
+  if NewPos < 0 then
+    NewPos := 0;
+  if NewPos >= FControls.Count then
+    NewPos := FControls.Count - 1;
   
-  if NewPos < 0
-  then NewPos := 0
-  else if NewPos >= list.Count
-  then NewPos := list.Count - 1;
+  if NewPos = OldPos then Exit;
   
-  if NewPos = idx then Exit;
+  FControls.Move(OldPos, NewPos);
   
-  list.Move(idx, NewPos);
-  
-  if IsWinControl
-  then begin
-    if HandleAllocated and TWinControl(AChild).HandleAllocated
-    then TWSWinControlClass(WidgetSetClass).SetChildZPosition(Self,
-                            TWinControl(AChild), idx, NewPos, list);
+  if IsWinControl then
+  begin
+    if HandleAllocated and TWinControl(AChild).HandleAllocated then
+    begin
+      // ignore childs without handle
+      WinControls:=TFPList.Create;
+      try
+        for i:=FControls.Count-1 downto 0 do
+        begin
+          if (TObject(FControls[i]) is TWinControl) then
+          begin
+            WinControls.Add(FControls[i]);
+          end else begin
+            if i<OldPos then dec(OldPos);
+            if i<NewPos then dec(NewPos);
+          end;
+        end;
+        TWSWinControlClass(WidgetSetClass).SetChildZPosition(Self,
+                              TWinControl(AChild), OldPos, NewPos, WinControls);
+      finally
+        WinControls.Free;
+      end;
+    end;
   end
   else begin
     AChild.InvalidateControl(AChild.IsVisible, True, True);
@@ -3963,40 +4055,77 @@ end;
 
 {------------------------------------------------------------------------------
   TWinControl UpdateShowing
+
+  Check control's handle visibility.
+  If handle should become visible the handle and child handles are created.
+  The
 ------------------------------------------------------------------------------}
 procedure TWinControl.UpdateShowing;
-var
-  bShow: Boolean;
-  n: Integer;
-  ok: boolean;
-begin
-  bShow := HandleObjectShouldBeVisible;
 
-  if bShow then begin
-    if not HandleAllocated then CreateHandle;
-    if FWinControls <> nil
-    then begin
-      for n := 0 to FWinControls.Count - 1 do
-        TWinControl(FWinControls[n]).UpdateShowing;
+  procedure ChangeShowing(bShow: Boolean);
+  var
+    ok: Boolean;
+  begin
+    if FShowing = bShow then Exit;
+    {$IFDEF NewAutoSize}
+    DumpStack;
+    {$ENDIF}
+    FShowing := bShow;
+    ok := false;
+    try
+      Perform(CM_SHOWINGCHANGED, 0, 0); // see TWinControl.CMShowingChanged
+      ok := true;
+    finally
+      if not ok then
+        FShowing := not bShow;
     end;
   end;
 
+var
+  bShow: Boolean;
+  n: Integer;
+begin
+  bShow := HandleObjectShouldBeVisible;
+
+  {$IFDEF NewAutoSize}
+  if bShow then begin
+    if not HandleAllocated then CreateHandle;
+    if FControls <> nil
+    then begin
+      for n := 0 to FControls.Count - 1 do
+        if TObject(FControls[n]) is TWinControl then
+          TWinControl(FControls[n]).UpdateShowing;
+    end;
+  end;
   if not HandleAllocated then Exit;
 
-  //DebugLn('TWinControl.UpdateShowing A ',dbgsName(Self),' FShowing=',dbgs(FShowing),' bShow=',dbgs(bShow));
   if FShowing = bShow then Exit;
-  
-  FShowing := bShow;
-  ok := false;
-  try
-    Perform(CM_SHOWINGCHANGED, 0, 0);
-    ok := true;
-  finally
-    if not ok then
-      FShowing := not bShow;
+  //DebugLn('TWinControl.UpdateShowing A ',dbgsName(Self),' FShowing=',dbgs(FShowing),' bShow=',dbgs(bShow));
+  if bShow then
+  begin
+    // the Handle should become visible
+    // delay this until all autosizing has been processed
+    if AutoSizeDelayed or AutoSizingAll then exit;
   end;
-  
+  ChangeShowing(bShow);
+  {$ELSE}
+  if bShow then begin
+    if not HandleAllocated then CreateHandle;
+    if FControls <> nil
+    then begin
+      for n := 0 to FControls.Count - 1 do
+        if TObject(FControls[n]) is TWinControl then
+          TWinControl(FControls[n]).UpdateShowing;
+    end;
+  end;
+  if not HandleAllocated then Exit;
+
+  if FShowing = bShow then Exit;
+
+  ChangeShowing(bShow);
+
   //DebugLn(['TWinControl.UpdateShowing ',DbgSName(Self),' FShowing=',FShowing,' AutoSizeDelayed=',AutoSizeDelayed]);
+
   if FShowing then
   begin
     DisableAlign;
@@ -4007,6 +4136,7 @@ begin
       EnableAlign;
     end;
   end;
+  {$ENDIF}
 end;
 
 procedure TWinControl.Update;
@@ -4066,15 +4196,13 @@ function TWinControl.FindChildControl(const ControlName: string): TControl;
 var
   I: Integer;
 begin
-  Result := nil;
-  if FWinControls <> nil then
-    for I := 0 to FWinControls.Count - 1 do
-      if CompareText(TControl(FWinControls[I]).Name, ControlName) = 0 then
-        Exit(TControl(FWinControls[I]));
   if FControls <> nil then
-    for I := 0 to FControls.Count - 1 do
-      if CompareText(TControl(FControls[I]).Name, ControlName) = 0 then
-        Exit(TControl(FControls[I]));
+    for I := 0 to FControls.Count - 1 do begin
+      Result:=TControl(FControls[I]);
+      if CompareText(Result.Name, ControlName) = 0 then
+        exit;
+    end;
+  Result := nil;
 end;
 
 procedure TWinControl.FlipChildren(AllLevels: Boolean);
@@ -4207,16 +4335,21 @@ var
   Count, I, J: Integer;
   List: TFPList;
   Control: TWinControl;
+  WinControls: TFPList;
 begin
-  if FWinControls <> nil then
+  if FControls <> nil then
   begin
     List := TFPList.Create;
+    WinControls:=TFPList.Create;
     try
-      Count := FWinControls.Count;
+      for i:=0 to FControls.Count-1 do
+        if TObject(FControls[i]) is TWinControl then
+          WinControls.Add(TWinControl(FControls[i]));
+      Count := WinControls.Count;
       List.Count := Count;
       for I := 0 to Count - 1 do
       begin
-        Control := TWinControl(FWinControls[I]);
+        Control := TWinControl(WinControls[I]);
         J := Control.FTabOrder;
         if (J >= 0) and (J < Count) then List[J] := Control;
       end;
@@ -4227,6 +4360,7 @@ begin
       end;
     finally
       List.Free;
+      WinControls.Free;
     end;
   end;
 end;
@@ -4455,32 +4589,34 @@ begin
     while I < Count do
     begin
       TempControl := TControl(FControls.Items[I]);
-      //DebugLn('TWinControl.PaintControls B Self=',Self.Name,':',Self.ClassName,' Control=',TempControl.Name,':',TempControl.ClassName,' ',TempControl.Left,',',TempControl.Top,',',TempControl.Width,',',TempControl.Height);
-      with TempControl do
-        if IsVisible
-        and RectVisible(DC, Rect(Left, Top, Left + Width, Top + Height)) then
-        begin
-          if csPaintCopy in Self.ControlState then
-            Include(FControlState, csPaintCopy);
-          SaveIndex := SaveDC(DC);
-          MoveWindowOrg(DC, Left, Top);
-          {$IFDEF VerboseControlDCOrigin}
-          DebugLn('TWinControl.PaintControls B Self=',DbgSName(Self),' Control=',DbgSName(TempControl),' ',dbgs(Left),',',dbgs(Top),',',dbgs(Width),',',dbgs(Height));
-          {$ENDIF}
-          IntersectClipRect(DC, 0, 0, Width, Height);
-          {$IFDEF VerboseControlDCOrigin}
-          DebugLn('TWinControl.PaintControls C');
-          P:=Point(-1,-1);
-          GetWindowOrgEx(DC,@P);
-          debugln('  DCOrigin=',dbgs(P));
-          {$ENDIF}
-          Perform(LM_PAINT, WParam(DC), 0);
-          {$IFDEF VerboseControlDCOrigin}
-          DebugLn('TWinControl.PaintControls D TempControl=',DbgSName(TempControl));
-          {$ENDIF}
-          RestoreDC(DC, SaveIndex);
-          Exclude(FControlState, csPaintCopy);
-        end;
+      if not (TempControl is TWinControl) then begin
+        //DebugLn('TWinControl.PaintControls B Self=',Self.Name,':',Self.ClassName,' Control=',TempControl.Name,':',TempControl.ClassName,' ',TempControl.Left,',',TempControl.Top,',',TempControl.Width,',',TempControl.Height);
+        with TempControl do
+          if IsVisible
+          and RectVisible(DC, Rect(Left, Top, Left + Width, Top + Height)) then
+          begin
+            if csPaintCopy in Self.ControlState then
+              Include(FControlState, csPaintCopy);
+            SaveIndex := SaveDC(DC);
+            MoveWindowOrg(DC, Left, Top);
+            {$IFDEF VerboseControlDCOrigin}
+            DebugLn('TWinControl.PaintControls B Self=',DbgSName(Self),' Control=',DbgSName(TempControl),' ',dbgs(Left),',',dbgs(Top),',',dbgs(Width),',',dbgs(Height));
+            {$ENDIF}
+            IntersectClipRect(DC, 0, 0, Width, Height);
+            {$IFDEF VerboseControlDCOrigin}
+            DebugLn('TWinControl.PaintControls C');
+            P:=Point(-1,-1);
+            GetWindowOrgEx(DC,@P);
+            debugln('  DCOrigin=',dbgs(P));
+            {$ENDIF}
+            Perform(LM_PAINT, WParam(DC), 0);
+            {$IFDEF VerboseControlDCOrigin}
+            DebugLn('TWinControl.PaintControls D TempControl=',DbgSName(TempControl));
+            {$ENDIF}
+            RestoreDC(DC, SaveIndex);
+            Exclude(FControlState, csPaintCopy);
+          end;
+      end;
       Inc(I);
     end;
   end;
@@ -4713,16 +4849,21 @@ begin
   end;
 
   LControl := nil;
-  // check wincontrols
-  if (capfAllowWinControls in Flags) and (FWinControls <> nil) then
-    for I := FWinControls.Count - 1 downto 0 do
-      if GetControlAtPos(TControl(FWinControls[I])) then
-        Break;
-  // check controls
-  if (FControls <> nil) and (LControl = nil) then
-    for I := FControls.Count - 1 downto 0 do
-      if GetControlAtPos(TControl(FControls[I])) then
-        Break;
+  if FControls<>nil then
+  begin
+    // check wincontrols
+    if (capfAllowWinControls in Flags) then
+      for I := FControls.Count - 1 downto 0 do
+        if (TObject(FControls[i]) is TWinControl)
+        and GetControlAtPos(TControl(FControls[I])) then
+          Break;
+    // check controls
+    if (LControl = nil) then
+      for I := FControls.Count - 1 downto 0 do
+        if (not (TObject(FControls[i]) is TWinControl))
+        and GetControlAtPos(TControl(FControls[I])) then
+          Break;
+  end;
   Result := LControl;
   
   // check recursive sub childs
@@ -4748,23 +4889,10 @@ end;
 -------------------------------------------------------------------------------}
 function TWinControl.GetControlIndex(AControl: TControl): integer;
 begin
-  if FControls <> nil
-  then begin
-    Result := FControls.IndexOf(AControl);
-    if Result >= 0 then Exit;
-  end;
-  
-  if FWinControls = nil
-  then begin
+  if FControls<>nil then
+    Result:=FControls.IndexOf(AControl)
+  else
     Result:=-1;
-    Exit;
-  end;
-  
-  Result := FWinControls.IndexOf(AControl);
-  if Result = -1 then Exit;
-  if FControls = nil then Exit;
-
-  Inc(Result, FControls.Count);
 end;
 
 {-------------------------------------------------------------------------------
@@ -4775,23 +4903,6 @@ end;
 procedure TWinControl.SetControlIndex(AControl: TControl; NewIndex: integer);
 begin
   SetChildZPosition(AControl, NewIndex);
-end;
-
-function TWinControl.ControlByName(const ControlName: string): TControl;
-var
-  i: Integer;
-begin
-  if FControls<>nil then
-    for i:=0 to FControls.Count-1 do begin
-      Result:=TControl(FControls[i]);
-      if CompareText(Result.Name,ControlName)=0 then exit;
-    end;
-  if FWinControls<>nil then
-    for i:=0 to FWinControls.Count-1 do begin
-      Result:=TControl(FWinControls[i]);
-      if CompareText(Result.Name,ControlName)=0 then exit;
-    end;
-  Result:=nil;
 end;
 
 {------------------------------------------------------------------------------
@@ -4811,11 +4922,11 @@ begin
   // First destroy all children handles
   //DebugLn(['TWinControl.DestroyHandle DESTROY CHILDS ',DbgSName(Self)]);
   Include(FControlState, csDestroyingHandle);
-  if FWinControls <> nil then begin
-    for i:= 0 to FWinControls.Count - 1 do begin
+  if FControls <> nil then begin
+    for i:= 0 to FControls.Count - 1 do begin
       //DebugLn(['  ',i,' ',DbgSName(TObject(FWinControls[i]))]);
-      AWinControl:=TWinControl(FWinControls[i]);
-      if AWinControl.HandleAllocated then
+      AWinControl:=TWinControl(FControls[i]);
+      if (AWinControl is TWinControl) and AWinControl.HandleAllocated then
         AWinControl.DestroyHandle;
     end;
   end;
@@ -5552,7 +5663,12 @@ begin
   FillChar(Params, SizeOf(Params),0);
   Params.Caption := PChar(FCaption);
   Params.Style := WS_CHILD or WS_CLIPSIBLINGS;
-  if (Parent <> nil) then Params.WndParent := Parent.Handle;
+  if (Parent <> nil)
+  {$IFDEF NewAutoSize}
+  and Parent.HandleAllocated
+  {$ENDIF}
+  then
+    Params.WndParent := Parent.Handle;
   Params.X := FLeft;
   Params.Y := FTop;
   Params.Width := FWidth;
@@ -5611,27 +5727,24 @@ begin
   if AControl = Self then
     raise EInvalidOperation.Create(rsAControlCanNotHaveItselfAsParent);
 
+  ListAdd(FControls, AControl);
   if AControl is TWinControl then
   begin
-    if (FControls<>nil) then dec(Index,FControls.Count);
-    if (FWinControls<>nil) and (Index<FWinControls.Count) then
-      FWinControls.Insert(Index,AControl)
-    else
-      ListAdd(FWinControls, AControl);
-
     ListAdd(FTabList, AControl);
 
     if (csDesigning in ComponentState) and (not (csLoading in ComponentState))
     and AControl.CanTab then
       TWinControl(AControl).TabStop := true;
-  end else begin
-    if (FControls<>nil) and (Index<FControls.Count) then
-      FControls.Insert(Index,AControl)
-    else
-      ListAdd(FControls, AControl);
   end;
 
   AControl.FParent := Self;
+  {$IFDEF NewAutoSize}
+  if AControl.FAutoSizingLockCount>0 then
+  begin
+    // the AControl has disabled autosizing => disable it for the parent=self too
+    DisableAutoSizing;
+  end;
+  {$ENDIF}
 end;
 
 {------------------------------------------------------------------------------
@@ -5641,6 +5754,9 @@ end;
 ------------------------------------------------------------------------------}
 procedure TWinControl.ReAlign;
 begin
+  {$IFDEF NewAutoSize}
+  AdjustSize;
+  {$ELSE}
   if (csDestroying in ComponentState) then exit;
   if (csLoading in ComponentState) or (not HandleAllocated) then begin
     Include(FWinControlFlags,wcfReAlignNeeded);
@@ -5655,6 +5771,7 @@ begin
   DebugLn('TWinControl.ReAlign B',Name,':',ClassName,' ', Dbgs(BoundsRect));
   {$ENDIF}
   Exclude(FWinControlFlags,wcfReAlignNeeded);// done
+  {$ENDIF}
 end;
 
 {------------------------------------------------------------------------------
@@ -5666,12 +5783,17 @@ begin
   begin
     Assert(False, Format('trace:[TWinControl.Remove] %s(%S) --> Remove: %s(%s)', [ClassName, Name, AControl.ClassName, AControl.Name]));
     if AControl is TWinControl then
-    begin
       ListRemove(FTabList, AControl);
-      ListRemove(FWInControls, ACOntrol);
-    end else
-      ListRemove(FControls, AControl);
+    ListRemove(FControls, AControl);
     AControl.FParent := nil;
+    {$IFDEF NewAutoSize}
+    if AControl.FAutoSizingLockCount>0 then
+    begin
+      // AControl has disabled autosizing and thus for its parent=Self too
+      // end disable autosize for parent=self
+      EnableAutoSizing;
+    end;
+    {$ENDIF}
   end;
 end;
 
@@ -5773,25 +5895,38 @@ end;
 
 procedure TWinControl.InsertControl(AControl: TControl; Index: integer);
 begin
-  AControl.ValidateContainer(Self);
-  Perform(CM_CONTROLLISTCHANGE, WParam(AControl), LParam(True));
-  Insert(AControl,Index);
-  if not (csReading in AControl.ComponentState) then
-  begin
-    AControl.Perform(CM_PARENTCOLORCHANGED, 0, 0);
-    AControl.Perform(CM_PARENTSHOWHINTCHANGED, 0, 0);
-    AControl.Perform(CM_PARENTBIDIMODECHANGED, 0, 0);
-    AControl.ParentFontChanged;
-    if AControl is TWinControl then
-      TWinControl(AControl).UpdateControlState
-    else
-    if HandleAllocated then 
-      AControl.Invalidate;
-    //DebugLn('TWinControl.InsertControl ',Name,':',ClassName);
+  {$IFDEF NewAutoSize}
+  DisableAutoSizing;
+  try
+  {$ENDIF}
+    AControl.ValidateContainer(Self);
+    Perform(CM_CONTROLLISTCHANGE, WParam(AControl), LParam(True));
+    Insert(AControl,Index);
+    if not (csReading in AControl.ComponentState) then
+    begin
+      AControl.Perform(CM_PARENTCOLORCHANGED, 0, 0);
+      AControl.Perform(CM_PARENTSHOWHINTCHANGED, 0, 0);
+      AControl.Perform(CM_PARENTBIDIMODECHANGED, 0, 0);
+      AControl.ParentFontChanged;
+      if AControl is TWinControl then
+        TWinControl(AControl).UpdateControlState
+      else
+      if HandleAllocated then
+        AControl.Invalidate;
+      //DebugLn('TWinControl.InsertControl ',Name,':',ClassName);
+    end;
+    if not (csDestroying in ComponentState) then
+    begin
+      if not (csLoading in ComponentState) then
+        AControl.UpdateAnchorRules;
+      AControl.RequestAlign;
+    end;
+    Perform(CM_CONTROLCHANGE, WParam(AControl), LParam(True));
+  {$IFDEF NewAutoSize}
+  finally
+    EnableAutoSizing;
   end;
-  if not (csDestroying in ComponentState) then
-    AControl.RequestAlign;
-  Perform(CM_CONTROLCHANGE, WParam(AControl), LParam(True));
+  {$ENDIF}
   //debugln(['TWinControl.InsertControl ',DbgSName(Self),' ',csDesigning in ComponentState,' ',DbgSName(AControl),' ',csDesigning in AControl.ComponentState]);
 end;
 
@@ -5802,27 +5937,41 @@ procedure TWinControl.RemoveControl(AControl: TControl);
 var
   AWinControl: TWinControl;
 begin
-  Perform(CM_CONTROLCHANGE, WParam(AControl), LParam(False));
-  if AControl is TWinControl then
-  begin
-    AWinControl := TWinControl(AControl);
-    AWinControl.RemoveFocus(True);
-    if AWinControl.HandleAllocated then
-      AWinControl.DestroyHandle;
-  end
-  else
-    if HandleAllocated then
-      AControl.InvalidateControl(AControl.IsVisible, False, True);
-  Remove(AControl);
-  if not (csDestroying in ComponentState) then
-  begin
-    if AutoSize then
+  {$IFDEF NewAutoSize}
+  DisableAutoSizing;
+  try
+  {$ENDIF}
+    Perform(CM_CONTROLCHANGE, WParam(AControl), LParam(False));
+    if AControl is TWinControl then
     begin
+      AWinControl := TWinControl(AControl);
+      AWinControl.RemoveFocus(True);
+      if AWinControl.HandleAllocated then
+        AWinControl.DestroyHandle;
+    end
+    else
+      if HandleAllocated then
+        AControl.InvalidateControl(AControl.IsVisible, False, True);
+    Remove(AControl);
+    if not (csDestroying in ComponentState) then
+    begin
+      {$IFDEF NewAutoSize}
       InvalidatePreferredSize;
       AdjustSize;
+      {$ELSE}
+      if AutoSize then
+      begin
+        InvalidatePreferredSize;
+        AdjustSize;
+      end;
+      Realign;
+      {$ENDIF}
     end;
-    Realign;
+  {$IFDEF NewAutoSize}
+  finally
+    EnableAutoSizing;
   end;
+  {$ENDIF}
 end;
 
 {------------------------------------------------------------------------------
@@ -5831,9 +5980,11 @@ end;
 procedure TWinControl.AlignControl(AControl: TControl);
 var
   ARect: TRect;
+  NewRect: TRect;
+  {$IFNDEF NewAutoSize}
   i: Integer;
   ChildControl: TControl;
-  NewRect: TRect;
+  {$ENDIF}
 begin
   //if csDesigning in ComponentState then begin
   //  DbgOut('TWinControl.AlignControl ',Name,':',ClassName);
@@ -5841,6 +5992,12 @@ begin
   //end;
   if csDestroying in ComponentState then exit;
 
+  {$IFDEF NewAutoSize}
+  if AutoSizeDelayed then begin
+    AdjustSize;
+    exit;
+  end;
+  {$ELSE}
   if FAlignLevel <> 0 then begin
     Include(FControlState, csAlignmentNeeded);
     exit;
@@ -5857,7 +6014,18 @@ begin
       exit;
     end;
   end;
+  {$ENDIF}
 
+
+  {$IFDEF NewAutoSize}
+  ARect:= GetLogicalClientRect;
+  AlignControls(AControl, ARect);
+  // some widgetsets updates their clientrect when the first child was moved
+  // do a second pass if ClientRect changed
+  NewRect:=GetLogicalClientRect;
+  if not CompareRect(@ARect,@NewRect) then
+    AlignControls(AControl, NewRect);
+  {$ELSE}
   DisableAlign;
   try
     ARect:= GetLogicalClientRect;
@@ -5870,10 +6038,12 @@ begin
   finally
     Exclude(FControlState, csAlignmentNeeded);
     EnableAlign;
-    if (FAlignLevel=0) and (not IsAParentAligning) and (FWinControls<>nil) then
-      for i:=0 to FWinControls.Count-1 do
-        TWinControl(FWinControls[i]).RealizeBoundsRecursive;
+    if (FAlignLevel=0) and (not IsAParentAligning) and (FControls<>nil) then
+      for i:=0 to FControls.Count-1 do
+        if TObject(FControls[i]) is TWinControl then
+          TWinControl(FControls[i]).RealizeBoundsRecursive;
   end;
+  {$ENDIF}
 end;
 
 {------------------------------------------------------------------------------
@@ -5910,17 +6080,8 @@ end;
   TWinControl GetControl
 ------------------------------------------------------------------------------}
 function TWinControl.GetControl(const Index: Integer): TControl;
-var
-  N: Integer;
 begin
-  if FControls <> nil then
-    N := FControls.Count
-  else
-    N := 0;
-  if Index < N then
-    Result := TControl(FControls[Index])
-  else
-    Result := TControl(FWinControls[Index - N]);
+  Result:=TControl(FControls[Index]);
 end;
 
 {------------------------------------------------------------------------------
@@ -5928,9 +6089,10 @@ end;
 ------------------------------------------------------------------------------}
 function TWinControl.GetControlCount: Integer;
 begin
-  Result := 0;
-  if FControls <> nil then Inc(Result, FControls.Count);
-  if FWinControls <> nil then Inc(Result, FWinControls.Count);
+  if FControls <> nil then
+    Result:=FControls.Count
+  else
+    Result:=0;
 end;
 
 function TWinControl.GetDockClientCount: Integer;
@@ -6322,7 +6484,7 @@ end;
  ------------------------------------------------------------------------------}
 procedure TWinControl.WMMove(var Message: TLMMove);
 var
-  NewWidth, NewHeight: integer;
+  NewWidth, NewHeight: Integer;
 begin
   {$IFDEF VerboseSizeMsg}
   DebugLn(['TWinControl.WMMove A ',DbgSName(Self),' Message=',Message.XPos,',',Message.YPos,
@@ -6331,18 +6493,19 @@ begin
     ',',FBoundsRealized.Right-FBoundsRealized.Left,
     'x',FBoundsRealized.Bottom-FBoundsRealized.Top]);
   {$ENDIF}
-  NewWidth:=Width;
-  NewHeight:=Height;
-  if Message.MoveType=Move_SourceIsInterface then begin
+  NewWidth := Width;
+  NewHeight := Height;
+  if Message.MoveType = Move_SourceIsInterface then
+  begin
     // interface widget has moved
     // -> update size and realized bounds
-    NewWidth:=FBoundsRealized.Right-FBoundsRealized.Left;
-    NewHeight:=FBoundsRealized.Bottom-FBoundsRealized.Top;
+    NewWidth := FBoundsRealized.Right-FBoundsRealized.Left;
+    NewHeight := FBoundsRealized.Bottom-FBoundsRealized.Top;
     if HandleAllocated then
-      GetWindowSize(Handle,NewWidth,NewHeight);
-    FBoundsRealized:=Bounds(Message.XPos,Message.YPos,NewWidth,NewHeight);
+      GetWindowSize(Handle, NewWidth, NewHeight);
+    FBoundsRealized := Bounds(Message.XPos,Message.YPos,NewWidth,NewHeight);
   end;
-  SetBoundsKeepBase(Message.XPos,Message.YPos,NewWidth,NewHeight,Parent<>nil);
+  SetBoundsKeepBase(Message.XPos, Message.YPos, NewWidth, NewHeight, Parent <> nil);
 end;
 
 {------------------------------------------------------------------------------
@@ -6661,6 +6824,7 @@ procedure TWinControl.CreateWnd;
 var
   Params: TCreateParams;
   i: Integer;
+  AWinControl: TWinControl;
 
 {  procedure WriteClientRect(const Prefix: string);
   var r: TRect;
@@ -6675,34 +6839,52 @@ begin
   if (csDestroying in ComponentState)
   or (Parent<>nil) and (csDestroying in Parent.ComponentState) then begin
     DebugLn('[TWinControl.CreateWnd] NOTE: csDestroying ',DbgSName(Self));
+    {$IFDEF NewAutoSize}
+    RaiseGDBException('');
+    {$ENDIF}
     exit;
   end;
 
   if wcfInitializing in FWinControlFlags
   then begin
     DebugLn('[WARNING] Recursive call to CreateWnd for ',DbgSName(Self), ' while initializing');
+    {$IFDEF NewAutoSize}
+    RaiseGDBException('');
+    {$ENDIF}
     Exit;
   end;
 
   if wcfCreatingHandle in FWinControlFlags
   then begin
     DebugLn('[WARNING] Recursive call to CreateWnd for ',DbgSName(Self), ' while creating handle');
+    {$IFDEF NewAutoSize}
+    RaiseGDBException('');
+    {$ENDIF}
     Exit;
   end;
 
   if wcfCreatingChildHandles in FWinControlFlags
   then begin
     DebugLn('[WARNING] Recursive call to CreateWnd for ',DbgSName(Self), ' while creating children');
+    {$IFDEF NewAutoSize}
+    RaiseGDBException('');
+    {$ENDIF}
     Exit;
   end;
   
   if [csLoading,csDesigning]*ComponentState=[csLoading] then begin
     DebugLn('[HINT] TWinControl.CreateWnd creating Handle during loading ',DbgSName(Self),' csDesigning=',dbgs(csDesigning in ComponentState));
+    {$IFDEF NewAutoSize}
+    RaiseGDBException('');
+    {$ENDIF}
     //DumpStack;
     //RaiseGDBException('');
   end;
 
+  {$IFNDEF NewAutoSize}
+  // obsolete
   DisableAlign;
+  {$ENDIF}
   DisableAutoSizing;
   try
     // Control is not visible at this moment. It will be showed in UpdateShowing
@@ -6743,10 +6925,12 @@ begin
       //DebugLn('[TWinControl.CreateWnd] ',Name,':',ClassName,' ',Left,',',Top,',',Width,',',Height);
       //WriteClientRect('C');
 
-      if FWinControls <> nil then begin
-        for i := 0 to FWinControls.Count - 1 do
-          with TWinControl(FWinControls.Items[i]) do
-            if IsControlVisible then HandleNeeded;
+      if FControls <> nil then begin
+        for i := 0 to FControls.Count - 1 do begin
+          AWinControl:=TWinControl(FControls.Items[i]);
+          if (AWinControl is TWinControl) and AWinControl.IsControlVisible then
+            AWinControl.HandleNeeded;
+        end;
       end;
 
       ChildHandlesCreated;
@@ -6760,11 +6944,19 @@ begin
     if FControls<>nil then
       for i:=0 to FControls.Count-1 do
         TControl(FControls[i]).AdjustSize;
+
+    {$IFNDEF NewAutoSize}
+    // obsolete
+
     // realign childs
     ReAlign;
+    {$ENDIF}
   finally
     EnableAutoSizing;
+    {$IFNDEF NewAutoSize}
+    // obsolete
     EnableAlign;
+    {$ENDIF}
   end;
 
   //DebugLn('[TWinControl.CreateWnd] END ',Name,':',Classname);
@@ -6791,7 +6983,9 @@ begin
   //First set the WinControl property.
   //The win32 interface depends on it to determine where to send call backs.
   SetProp(Handle,'WinControl',TWinControl(Self));
+  {$IFNDEF NewAutoSize}
   DisableAlign;
+  {$ENDIF}
   DisableAutoSizing;
   try
     {$IFDEF CHECK_POSITION}
@@ -6800,8 +6994,11 @@ begin
       ' OldRelBounds=',dbgs(FBoundsRealized),
       ' -> NewBounds=',dbgs(BoundsRect));
     {$ENDIF}
+    {$IFNDEF NewAutoSize}
+    // obsolete
     if (Width>0) and (Height>0) then
       DoSendBoundsToInterface;
+    {$ENDIF}
 
     if wcfColorChanged in FWinControlFlags then
     begin
@@ -6832,7 +7029,9 @@ begin
     else TWSWinControlClass(WidgetSetClass).SetCursor(Self, Screen.Cursors[Cursor]);
   finally
     EnableAutoSizing;
+    {$IFNDEF NewAutoSize}
     EnableAlign;
+    {$ENDIF}
   end;
   // send pending OnResize
   Resize;
@@ -6864,11 +7063,6 @@ var
   i: Integer;
 begin
   inherited ParentFormHandleInitialized;
-  // tell all wincontrols about the final end of the handle creation phase
-  if FWinControls <> nil then begin
-    for i := 0 to FWinControls.Count - 1 do
-      TWinControl(FWinControls.Items[i]).ParentFormHandleInitialized;
-  end;
   // tell all controls about the final end of the handle creation phase
   if FControls<>nil then begin
     for i:=0 to FControls.Count-1 do
@@ -6920,7 +7114,12 @@ var
   LoadedClientSize: TPoint;
   CurControl: TWinControl;
 begin
+  {$IFDEF NewAutoSize}
+  DebugLn(['TWinControl.Loaded START ',DbgSName(Self),' cfWidthLoaded=',cfWidthLoaded in FControlFlags,' cfHeightLoaded=',cfHeightLoaded in FControlFlags,' ']);
+  {$ELSE}
+  // obsolete
   DisableAlign;
+  {$ENDIF}
   DisableAutoSizing;
   try
     //DebugLn(['TWinControl.Loaded ',DbgSName(Self),' cfWidthLoaded=',cfWidthLoaded in FControlFlags,' cfHeightLoaded=',cfHeightLoaded in FControlFlags,' ']);
@@ -6979,12 +7178,24 @@ begin
     inherited Loaded;
 
     FixupTabList;
+
+    {$IFNDEF NewAutoSize}
+    // obsolete
     RealizeBounds;
     if HandleAllocated and ([csDestroying]*ComponentState=[]) then
       DoSendShowHideToInterface;
+    {$ENDIF}
   finally
+    {$IFDEF NewAutoSize}
+    DebugLn(['TWinControl.Loaded enableautosizing ',DbgSName(Self),' ',dbgs(BoundsRect)]);
+    {$ENDIF}
     EnableAutoSizing;
+    {$IFDEF NewAutoSize}
+    DebugLn(['TWinControl.Loaded END ',DbgSName(Self),' ',dbgs(BoundsRect)]);
+    {$ELSE}
+    // obsolete
     EnableAlign;
+    {$ENDIF}
   end;
 end;
 
@@ -7105,7 +7316,11 @@ begin
   if FRealizeBoundsLockCount<=0 then
     RaiseGDBException('UnlockRealizeBounds');
   dec(FRealizeBoundsLockCount);
-  if FRealizeBoundsLockCount=0 then
+  if (FRealizeBoundsLockCount=0)
+  {$IFDEF NewAutoSize}
+  and (not AutoSizingAll) and (not AutoSizeDelayed)
+  {$ENDIF}
+  then
     RealizeBounds;
 end;
 
@@ -7270,7 +7485,11 @@ begin
     if [csDesigning,csDestroying,csLoading]*ComponentState=[csDesigning] then
       CheckDesignBounds;
     // LCL bounds are not up2date -> process new bounds
+    {$IFDEF NewAutoSize}
+    DisableAutoSizing;
+    {$ELSE}
     LockRealizeBounds;
+    {$ENDIF}
     try
       {$IFDEF CHECK_POSITION}
       //if csDesigning in ComponentState then
@@ -7283,7 +7502,11 @@ begin
       if FUseDockManager and (DockManager <> nil) then
         DockManager.ResetBounds(False);
     finally
+      {$IFDEF NewAutoSize}
+      EnableAutoSizing;
+      {$ELSE}
       UnlockRealizeBounds;
+      {$ENDIF}
     end;
   end;
 end;
@@ -7465,6 +7688,9 @@ begin
       Include(FWinControlFlags,wcfHandleVisible)
     else
       Exclude(FWinControlFlags,wcfHandleVisible);
+    {$IFDEF NewAutoSize}
+    DebugLn(['TWinControl.DoSendShowHideToInterface ',DbgSName(Self),' FBoundsRealized=',dbgs(FBoundsRealized),' New=',HandleObjectShouldBeVisible]);
+    {$ENDIF}
     TWSWinControlClass(WidgetSetClass).ShowHide(Self);
   end;
 end;
@@ -7477,12 +7703,12 @@ end;
 procedure TWinControl.DoSendBoundsToInterface;
 var
   NewBounds: TRect;
-  {$IFDEF VerboseResizeFlicker}
+  {$IF defined(VerboseResizeFlicker) or defined(NewAutoSize)}
   OldBounds: TRect;
   {$ENDIF}
 begin
   NewBounds:=Bounds(Left, Top, Width, Height);
-  {$IFDEF VerboseResizeFlicker}
+  {$IF defined(VerboseResizeFlicker) or defined(NewAutoSize)}
   if HandleAllocated then begin
     GetWindowRelativePosition(Handle,OldBounds.Left,OldBounds.Top);
     GetWindowSize(Handle,OldBounds.Right,OldBounds.Bottom);
@@ -7494,10 +7720,13 @@ begin
     ' Old=',dbgs(OldBounds),
     ' New=',dbgs(NewBounds),
     ' PosChanged=',(OldBounds.Left<>NewBounds.Left) or (OldBounds.Top<>NewBounds.Top),
-    ' SizeChanged=',(OldBounds.Right-OldBounds.Left<>NewBounds.Right-NewBounds.Left)
-                 , (OldBounds.Bottom-OldBounds.Top<>NewBounds.Bottom-NewBounds.Top),
+    ' SizeChanged=w',(OldBounds.Right-OldBounds.Left<>NewBounds.Right-NewBounds.Left),
+                 ',h', (OldBounds.Bottom-OldBounds.Top<>NewBounds.Bottom-NewBounds.Top),
     ' CurClient=',FClientWidth,'x',FClientHeight
     ]);
+  {$ENDIF}
+  {$IFDEF NewAutoSize}
+  DumpStack;
   {$ENDIF}
   {$IFDEF CHECK_POSITION}
   if CheckPosition(Self) then
@@ -7541,11 +7770,12 @@ procedure TWinControl.RealizeBoundsRecursive;
 var
   i: Integer;
 begin
-  RealizeBounds;
-  if FWinControls<>nil then begin
-    for i:=0 to FWinControls.Count-1 do
-      TWinControl(FWinControls[i]).RealizeBoundsRecursive;
+  if FControls<>nil then begin
+    for i:=0 to FControls.Count-1 do
+      if TObject(FControls[i]) is TWinControl then
+        TWinControl(FControls[i]).RealizeBoundsRecursive;
   end;
+  RealizeBounds;
 end;
 
 {------------------------------------------------------------------------------
@@ -7554,6 +7784,7 @@ end;
   Returns: nothing
 
   Shows or hides a control
+  Called by UpdateShowing
  ------------------------------------------------------------------------------}
 procedure TWinControl.CMShowingChanged(var Message: TLMessage);
 begin

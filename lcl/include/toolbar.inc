@@ -440,7 +440,6 @@ var
   NewHeight: Integer;
 begin
   if AutoSizing then Exit;    // we shouldn't come here in the first place
-
   BeginAutoSizing;
   try
     WrapButtons(Width, NewWidth, NewHeight, True);

@@ -127,8 +127,6 @@ type
 
   TTabPosition = (tpTop, tpBottom, tpLeft, tpRight);
 
-  TTabStyle = (tsTabs, tsButtons, tsFlatButtons);
-
   TTabGetImageEvent = procedure(Sender: TObject; TabIndex: Integer;
     var ImageIndex: Integer) of object;
 
@@ -219,15 +217,15 @@ type
                                              write FOnCloseTabClicked;
     property OnGetImageIndex: TTabGetImageEvent read FOnGetImageIndex
                                                 write FOnGetImageIndex;
-    property OnPageChanged: TNotifyEvent read fOnPageChanged write fOnPageChanged;
+    property OnPageChanged: TNotifyEvent read FOnPageChanged write FOnPageChanged;
     property Options: TNoteBookOptions read FOptions write SetOptions default [];
     property Page[Index: Integer]: TCustomPage read GetPage;
     property PageCount: integer read GetPageCount;
     property PageIndex: Integer read GetPageIndex write SetPageIndex default -1;
-    property PageList: TList read fPageList;
-    property Pages: TStrings read fAccess write SetPages;
-    property ShowTabs: Boolean read fShowTabs write SetShowTabs default True;
-    property TabPosition: TTabPosition read fTabPosition write SetTabPosition default tpTop;
+    property PageList: TList read FPageList;
+    property Pages: TStrings read FAccess write SetPages;
+    property ShowTabs: Boolean read FShowTabs write SetShowTabs default True;
+    property TabPosition: TTabPosition read FTabPosition write SetTabPosition default tpTop;
   published
     property TabStop default true;
   end;
@@ -251,6 +249,8 @@ type
     property OnEnter;
     property OnExit;
     property OnMouseDown;
+    property OnMouseEnter;
+    property OnMouseLeave;
     property OnMouseMove;
     property OnMouseUp;
     property OnResize;
@@ -298,6 +298,8 @@ type
     property OnExit;
     property OnGetImageIndex;
     property OnMouseDown;
+    property OnMouseEnter;
+    property OnMouseLeave;
     property OnMouseMove;
     property OnMouseUp;
     property OnPageChanged;
@@ -1133,6 +1135,8 @@ type
     property OnGetSiteInfo;
     property OnGetDockCaption;
     property OnMouseDown;
+    property OnMouseEnter;
+    property OnMouseLeave;
     property OnMouseMove;
     property OnMouseUp;
     property OnResize;
