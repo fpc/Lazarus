@@ -682,10 +682,12 @@ var
   APackage: TLazPackage;
   Deletions: TFPList;
 begin
-  OldPackageID:=TLazPackageID.Create;
+  OldPackageID := nil;
   Deletions:=TFPList.Create;
   try
     for i:=0 to InstallListBox.Items.Count-1 do begin
+      if OldPackageID = nil then
+        OldPackageID:=TLazPackageID.Create;
       if not InstallListBox.Selected[i] then continue;
       if not OldPackageID.StringToID(InstallListBox.Items[i]) then begin
         InstallListBox.Selected[i]:=false;
@@ -693,6 +695,8 @@ begin
                 InstallListBox.Items[i]);
         continue;
       end;
+      // ok => add to deletions
+      Deletions.Add(OldPackageID);
       // get package
       APackage:=PackageGraph.FindPackageWithID(OldPackageID);
       if APackage<>nil then begin
@@ -705,9 +709,7 @@ begin
           exit;
         end;
       end;
-      // ok => add to deletions
-      Deletions.Add(OldPackageID);
-      OldPackageID:=TLazPackageID.Create;
+      OldPackageID := nil;
     end;
 
     // ok => remove from list
@@ -715,13 +717,16 @@ begin
     for i:=0 to Deletions.Count-1 do begin
       OldPackageID:=TLazPackageID(Deletions[i]);
       FNewInstalledPackages.Delete(IndexOfNewInstalledPackageID(OldPackageID));
-      OldPackageID.Free;
     end;
 
-    Deletions.Clear;
     UpdateNewInstalledPackages;
     UpdateButtonStates;
   finally
+    for i:=0 to Deletions.Count-1 do begin
+      OldPackageID:=TLazPackageID(Deletions[i]);
+      OldPackageID.Free;
+    end;
+    Deletions.Clear;
     Deletions.Free;
   end;
 end;
