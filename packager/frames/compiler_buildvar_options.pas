@@ -17,7 +17,7 @@
  *                                                                         *
  ***************************************************************************
 }
-unit Compiler_BuildModes_Options;
+unit Compiler_BuildVar_Options;
 
 {$mode objfpc}{$H+}
 
@@ -32,80 +32,80 @@ uses
 type
   TCBMNodeType = (
     cbmntNone,
-    cbmntBuildMode,
+    cbmntBuildVar,
     cbmntValues,
     cbmntValue,
     cbmntDefaultValue,
     cbmntDefaultValueEditor
     );
 
-  { TCompOptBuildModesFrame }
+  { TCompOptBuildVarsFrame }
 
-  TCompOptBuildModesFrame = class(TFrame)
-    BuildModesGroupBox: TGroupBox;
-    BuildModesTreeView: TTreeView;
-    BuildModeTVPopupMenu: TPopupMenu;
-    procedure BuildModesTreeViewEdited(Sender: TObject; Node: TTreeNode;
+  TCompOptBuildVarsFrame = class(TFrame)
+    BuildVarsGroupBox: TGroupBox;
+    BuildVarsTreeView: TTreeView;
+    BuildVarsTVPopupMenu: TPopupMenu;
+    procedure BuildVarsTreeViewEdited(Sender: TObject; Node: TTreeNode;
       var S: string);
-    procedure BuildModesTreeViewEditing(Sender: TObject; Node: TTreeNode;
+    procedure BuildVarsTreeViewEditing(Sender: TObject; Node: TTreeNode;
       var AllowEdit: Boolean);
-    procedure BuildModesTreeViewStartDrag(Sender: TObject;
+    procedure BuildVarsTreeViewStartDrag(Sender: TObject;
       var DragObject: TDragObject);
-    procedure BuildModeTVPopupMenuPopup(Sender: TObject);
-    procedure DeleteBuildModeClick(Sender: TObject);
-    procedure NewBuildModeClick(Sender: TObject);
+    procedure BuildVarsTVPopupMenuPopup(Sender: TObject);
+    procedure DeleteBuildVarClick(Sender: TObject);
+    procedure NewBuildVarClick(Sender: TObject);
     procedure NewValueClick(Sender: TObject);
     procedure DeleteValueClick(Sender: TObject);
   private
-    FBuildProperties: TIDEBuildProperties;
+    FBuildVariables: TIDEBuildVariables;
     fModeImgID: LongInt;
     fValuesImgID: LongInt;
     fValueImgID: LongInt;
     fDefValueImgID: LongInt;
     FEditors: TFPList;// list of TCompOptsExprEditor
-    procedure SetBuildProperties(const AValue: TIDEBuildProperties);
+    procedure SetBuildProperties(const AValue: TIDEBuildVariables);
     procedure RebuildTreeView;
-    procedure TreeViewAddBuildMode(BuildProperty: TLazBuildProperty);
+    procedure TreeViewAddBuildVar(BuildProperty: TLazBuildVariable);
     procedure TreeViewAddValue(ValuesTVNode: TTreeNode; aValue: string);
-    function GetNodeInfo(Node: TTreeNode; out BuildProperty: TLazBuildProperty): TCBMNodeType;
-    function GetSelectedNode(out BuildProperty: TLazBuildProperty;
+    function GetNodeInfo(Node: TTreeNode; out BuildProperty: TLazBuildVariable): TCBMNodeType;
+    function GetSelectedNode(out BuildProperty: TLazBuildVariable;
                              out NodeType: TCBMNodeType): TTreeNode;
-    function GetBuildModeTVNode(BuildProperty: TLazBuildProperty): TTreeNode;
-    function GetValuesTVNode(BuildProperty: TLazBuildProperty): TTreeNode;
+    function GetBuildVarTVNode(BuildProperty: TLazBuildVariable): TTreeNode;
+    function GetValuesTVNode(BuildProperty: TLazBuildVariable): TTreeNode;
     procedure FreeEditors;
-    function GetEditor(BuildProperty: TLazBuildProperty): TCompOptsExprEditor;
+    function GetEditor(BuildProperty: TLazBuildVariable): TCompOptsExprEditor;
   public
     constructor Create(TheOwner: TComponent); override;
     destructor Destroy; override;
-    property BuildProperties: TIDEBuildProperties read FBuildProperties write SetBuildProperties;
+    property BuildVariables: TIDEBuildVariables read FBuildVariables write SetBuildProperties;
   end;
 
 implementation
 
-{ TCompOptBuildModesFrame }
+{ TCompOptBuildVarsFrame }
 
-procedure TCompOptBuildModesFrame.NewBuildModeClick(Sender: TObject);
+procedure TCompOptBuildVarsFrame.NewBuildVarClick(Sender: TObject);
 var
   NewIdentifier: String;
-  NewBuildProperty: TLazBuildProperty;
+  NewBuildVar: TLazBuildVariable;
   SetResultNode: TCompOptCondNode;
 begin
-  NewIdentifier:=GlobalBuildProperties.GetUniqueModeName(BuildProperties);
-  NewBuildProperty:=BuildProperties.Add(NewIdentifier);
+  NewIdentifier:=DefaultBuildModeGraph.GetUniqueVarName(BuildVariables);
+  NewBuildVar:=BuildVariables.Add(NewIdentifier);
   // add a node
-  SetResultNode:=TCompOptCondNode.Create(NewBuildProperty.DefaultValue);
+  SetResultNode:=TCompOptCondNode.Create(NewBuildVar.DefaultValue);
   SetResultNode.NodeType:=cocntSetValue;
   SetResultNode.ValueType:=cocvtResult;
-  NewBuildProperty.DefaultValue.Root.AddLast(SetResultNode);
+  NewBuildVar.DefaultValue.Root.AddLast(SetResultNode);
   // add to TreeView
-  BuildModesTreeView.BeginUpdate;
-  TreeViewAddBuildMode(NewBuildProperty);
-  BuildModesTreeView.EndUpdate;
+  BuildVarsTreeView.BeginUpdate;
+  TreeViewAddBuildVar(NewBuildVar);
+  BuildVarsTreeView.EndUpdate;
 end;
 
-procedure TCompOptBuildModesFrame.NewValueClick(Sender: TObject);
+procedure TCompOptBuildVarsFrame.NewValueClick(Sender: TObject);
 var
-  BuildProperty: TLazBuildProperty;
+  BuildProperty: TLazBuildVariable;
   NodeType: TCBMNodeType;
   i: Integer;
   NewValueStr: String;
@@ -120,16 +120,16 @@ begin
     inc(i);
   until false;
   BuildProperty.Values.Add(NewValueStr);
-  BuildModesTreeView.BeginUpdate;
+  BuildVarsTreeView.BeginUpdate;
   ValuesTVNode:=GetValuesTVNode(BuildProperty);
   TreeViewAddValue(ValuesTVNode,NewValueStr);
   ValuesTVNode.Expand(true);
-  BuildModesTreeView.EndUpdate;
+  BuildVarsTreeView.EndUpdate;
 end;
 
-procedure TCompOptBuildModesFrame.DeleteValueClick(Sender: TObject);
+procedure TCompOptBuildVarsFrame.DeleteValueClick(Sender: TObject);
 var
-  BuildProperty: TLazBuildProperty;
+  BuildProperty: TLazBuildVariable;
   NodeType: TCBMNodeType;
   SelTVNode: TTreeNode;
   aValue: String;
@@ -144,38 +144,38 @@ begin
   then exit;
   i:=BuildProperty.Values.IndexOf(aValue);
   if i>=0 then BuildProperty.Values.Delete(i);
-  BuildModesTreeView.BeginUpdate;
+  BuildVarsTreeView.BeginUpdate;
   SelTVNode.Delete;
-  BuildModesTreeView.EndUpdate;
+  BuildVarsTreeView.EndUpdate;
 end;
 
-procedure TCompOptBuildModesFrame.DeleteBuildModeClick(Sender: TObject);
+procedure TCompOptBuildVarsFrame.DeleteBuildVarClick(Sender: TObject);
 var
-  BuildProperty: TIDEBuildProperty;
+  BuildProperty: TIDEBuildVariable;
   SelTVNode: TTreeNode;
   NodeType: TCBMNodeType;
   i: LongInt;
   Editor: TCompOptsExprEditor;
 begin
-  SelTVNode:=GetSelectedNode(TLazBuildProperty(BuildProperty),NodeType);
+  SelTVNode:=GetSelectedNode(TLazBuildVariable(BuildProperty),NodeType);
   if BuildProperty=nil then exit;
   if MessageDlg(lisConfirmDelete,
-    Format(lisDeleteBuildMode, ['"', BuildProperty.Identifier, '"']),
+    Format(lisDeleteBuildVar, ['"', BuildProperty.Identifier, '"']),
     mtConfirmation,[mbYes,mbCancel],0)<>mrYes
   then exit;
-  i:=BuildProperties.IndexOfIdentifier(BuildProperty.Identifier);
+  i:=BuildVariables.IndexOfIdentifier(BuildProperty.Identifier);
   Editor:=GetEditor(BuildProperty);
   FEditors.Remove(Editor);
   Editor.Free;
-  BuildProperties.Delete(i);
-  BuildModesTreeView.BeginUpdate;
+  BuildVariables.Delete(i);
+  BuildVarsTreeView.BeginUpdate;
   SelTVNode.Delete;
-  BuildModesTreeView.EndUpdate;
+  BuildVarsTreeView.EndUpdate;
 end;
 
-procedure TCompOptBuildModesFrame.BuildModeTVPopupMenuPopup(Sender: TObject);
+procedure TCompOptBuildVarsFrame.BuildVarsTVPopupMenuPopup(Sender: TObject);
 var
-  BuildProperty: TLazBuildProperty;
+  BuildProperty: TLazBuildVariable;
   NodeType: TCBMNodeType;
   Editor: TCompOptsExprEditor;
 
@@ -184,79 +184,79 @@ var
     Result:=TMenuItem.Create(Self);
     Result.Caption:=aCaption;
     Result.OnClick:=OnClickEvent;
-    BuildModeTVPopupMenu.Items.Add(Result);
+    BuildVarsTVPopupMenu.Items.Add(Result);
   end;
 
   function AddSeparator: TMenuItem;
   begin
     Result:=nil;
-    if BuildModeTVPopupMenu.Items.Count=0 then exit;
+    if BuildVarsTVPopupMenu.Items.Count=0 then exit;
     Result:=TMenuItem.Create(Self);
     Result.Caption:='-';
-    BuildModeTVPopupMenu.Items.Add(Result);
+    BuildVarsTVPopupMenu.Items.Add(Result);
   end;
 
 begin
-  BuildModeTVPopupMenu.Items.Clear;
+  BuildVarsTVPopupMenu.Items.Clear;
   GetSelectedNode(BuildProperty,NodeType);
 
-  if NodeType in [cbmntBuildMode,cbmntValues,cbmntValue] then
+  if NodeType in [cbmntBuildVar,cbmntValues,cbmntValue] then
     Add('New value',@NewValueClick);
   if NodeType in [cbmntValue] then
     Add('Delete value ...',@DeleteValueClick);
   AddSeparator;
-  Add('New build mode',@NewBuildModeClick);
-  if NodeType in [cbmntBuildMode] then
-    Add('Delete build mode ...',@DeleteBuildModeClick);
+  Add('New build mode',@NewBuildVarClick);
+  if NodeType in [cbmntBuildVar] then
+    Add('Delete build mode ...',@DeleteBuildVarClick);
   if NodeType in [cbmntDefaultValue,cbmntDefaultValueEditor] then begin
     Editor:=GetEditor(BuildProperty);
-    Editor.FillPopupMenu(BuildModeTVPopupMenu);
+    Editor.FillPopupMenu(BuildVarsTVPopupMenu);
   end;
 end;
 
-procedure TCompOptBuildModesFrame.BuildModesTreeViewEditing(Sender: TObject;
+procedure TCompOptBuildVarsFrame.BuildVarsTreeViewEditing(Sender: TObject;
   Node: TTreeNode; var AllowEdit: Boolean);
 var
-  BuildProperty: TLazBuildProperty;
+  BuildProperty: TLazBuildVariable;
   NodeType: TCBMNodeType;
 begin
   NodeType:=GetNodeInfo(Node,BuildProperty);
-  AllowEdit:=NodeType in [cbmntBuildMode,cbmntValue];
+  AllowEdit:=NodeType in [cbmntBuildVar,cbmntValue];
 end;
 
-procedure TCompOptBuildModesFrame.BuildModesTreeViewStartDrag(Sender: TObject;
+procedure TCompOptBuildVarsFrame.BuildVarsTreeViewStartDrag(Sender: TObject;
   var DragObject: TDragObject);
 begin
 
 end;
 
-procedure TCompOptBuildModesFrame.BuildModesTreeViewEdited(Sender: TObject;
+procedure TCompOptBuildVarsFrame.BuildVarsTreeViewEdited(Sender: TObject;
   Node: TTreeNode; var S: string);
 var
-  BuildProperty: TLazBuildProperty;
+  BuildProperty: TLazBuildVariable;
   NodeType: TCBMNodeType;
-  ConflictBuildProperty: TIDEBuildProperty;
+  ConflictBuildProperty: TIDEBuildVariable;
   Index: LongInt;
 begin
   NodeType:=GetNodeInfo(Node,BuildProperty);
   case NodeType of
 
-  cbmntBuildMode:
+  cbmntBuildVar:
     if S<>BuildProperty.Identifier then begin
       // rename build mode
       if (S='') or (not IsValidIdent(S)) then begin
         MessageDlg(lisCCOErrorCaption,
-          Format(lisInvalidBuildModeTheBuildModeMustBeAPascalIdentifie, ['"',
+          Format(lisInvalidBuildVarTheBuildVarMustBeAPascalIdentifie, ['"',
             S, '"']),
           mtError,[mbCancel],0);
         S:=BuildProperty.Identifier;
         exit;
       end;
-      ConflictBuildProperty:=BuildProperties.ModeWithIdentifier(S);
+      ConflictBuildProperty:=BuildVariables.ModeWithIdentifier(S);
       if (ConflictBuildProperty<>nil) and (ConflictBuildProperty<>BuildProperty) then
       begin
         MessageDlg(lisCCOErrorCaption,
-          Format(lisThereIsAlreadyABuildModeWithTheName, ['"', S, '"']),
+          Format(lisThereIsAlreadyABuildVarWithTheName, ['"', S, '"']),
           mtError,[mbCancel],0);
         S:=BuildProperty.Identifier;
         exit;
@@ -281,31 +281,31 @@ begin
   end;
 end;
 
-procedure TCompOptBuildModesFrame.SetBuildProperties(
-  const AValue: TIDEBuildProperties);
+procedure TCompOptBuildVarsFrame.SetBuildProperties(
+  const AValue: TIDEBuildVariables);
 begin
-  if FBuildProperties=AValue then exit;
-  FBuildProperties:=AValue;
+  if FBuildVariables=AValue then exit;
+  FBuildVariables:=AValue;
   RebuildTreeView;
 end;
 
-procedure TCompOptBuildModesFrame.RebuildTreeView;
+procedure TCompOptBuildVarsFrame.RebuildTreeView;
 var
   i: Integer;
 begin
-  BuildModesTreeView.BeginUpdate;
-  BuildModesTreeView.Items.Clear;
+  BuildVarsTreeView.BeginUpdate;
+  BuildVarsTreeView.Items.Clear;
   FreeEditors;
-  if BuildProperties<>nil then begin
+  if BuildVariables<>nil then begin
     // first level: build modes
-    for i:=0 to BuildProperties.Count-1 do
-      TreeViewAddBuildMode(BuildProperties.Items[i]);
+    for i:=0 to BuildVariables.Count-1 do
+      TreeViewAddBuildVar(BuildVariables.Items[i]);
   end;
-  BuildModesTreeView.EndUpdate;
+  BuildVarsTreeView.EndUpdate;
 end;
 
-procedure TCompOptBuildModesFrame.TreeViewAddBuildMode(
-  BuildProperty: TLazBuildProperty);
+procedure TCompOptBuildVarsFrame.TreeViewAddBuildVar(
+  BuildProperty: TLazBuildVariable);
 var
   TVNode: TTreeNode;
   ValuesTVNode: TTreeNode;
@@ -315,13 +315,13 @@ var
   Editor: TCompOptsExprEditor;
 begin
   // create node for the build mode
-  TVNode:=BuildModesTreeView.Items.AddObject(nil,BuildProperty.Identifier,BuildProperty);
+  TVNode:=BuildVarsTreeView.Items.AddObject(nil,BuildProperty.Identifier,BuildProperty);
   TVNode.ImageIndex:=fModeImgID;
   TVNode.SelectedIndex:=TVNode.ImageIndex;
   // second level
   begin
     // parent node for values
-    ValuesTVNode:=BuildModesTreeView.Items.AddChild(TVNode, lisValues);
+    ValuesTVNode:=BuildVarsTreeView.Items.AddChild(TVNode, lisValues);
     ValuesTVNode.ImageIndex:=fValuesImgID;
     ValuesTVNode.SelectedIndex:=ValuesTVNode.ImageIndex;
     // a node for each value
@@ -329,7 +329,7 @@ begin
     for i:=0 to Values.Count-1 do
       TreeViewAddValue(ValuesTVNode,Values[i]);
     // a node for the default value
-    DefValueTVNode:=BuildModesTreeView.Items.AddChild(TVNode,
+    DefValueTVNode:=BuildVarsTreeView.Items.AddChild(TVNode,
       lisDefaultValue);
     DefValueTVNode.ImageIndex:=fDefValueImgID;
     DefValueTVNode.SelectedIndex:=DefValueTVNode.ImageIndex;
@@ -338,25 +338,25 @@ begin
     Editor.DefaultNodeType:=cocntSetValue;
     Editor.DefaultValueType:=cocvtResult;
     FEditors.Add(Editor);
-    Editor.Setup(BuildModesTreeView,DefValueTVNode,
+    Editor.Setup(BuildVarsTreeView,DefValueTVNode,
                  BuildProperty.DefaultValue as TCompOptConditionals,[cocvtResult]);
   end;
-  //DebugLn(['TCompOptBuildModesFrame.TreeViewAddBuildMode ',TVNode.Text]);
+  //DebugLn(['TCompOptBuildVarsFrame.TreeViewAddBuildVar ',TVNode.Text]);
   TVNode.Expand(true);
 end;
 
-procedure TCompOptBuildModesFrame.TreeViewAddValue(ValuesTVNode: TTreeNode;
+procedure TCompOptBuildVarsFrame.TreeViewAddValue(ValuesTVNode: TTreeNode;
   aValue: string);
 var
   ValueTVNode: TTreeNode;
 begin
-  ValueTVNode:=BuildModesTreeView.Items.AddChild(ValuesTVNode,aValue);
+  ValueTVNode:=BuildVarsTreeView.Items.AddChild(ValuesTVNode,aValue);
   ValueTVNode.ImageIndex:=fValueImgID;
   ValueTVNode.SelectedIndex:=ValueTVNode.ImageIndex;
 end;
 
-function TCompOptBuildModesFrame.GetNodeInfo(Node: TTreeNode; out
-  BuildProperty: TLazBuildProperty): TCBMNodeType;
+function TCompOptBuildVarsFrame.GetNodeInfo(Node: TTreeNode; out
+  BuildProperty: TLazBuildVariable): TCBMNodeType;
 
   function GetNodeType(CurNode: TTreeNode): TCBMNodeType;
   var
@@ -364,13 +364,13 @@ function TCompOptBuildModesFrame.GetNodeInfo(Node: TTreeNode; out
   begin
     if CurNode=nil then
       Result:=cbmntNone
-    else if TObject(CurNode.Data) is TLazBuildProperty then begin
-      BuildProperty:=TLazBuildProperty(CurNode.Data);
-      Result:=cbmntBuildMode;
+    else if TObject(CurNode.Data) is TLazBuildVariable then begin
+      BuildProperty:=TLazBuildVariable(CurNode.Data);
+      Result:=cbmntBuildVar;
     end else begin
       ParentType:=GetNodeType(CurNode.Parent);
       case ParentType of
-      cbmntBuildMode:
+      cbmntBuildVar:
         if CurNode.Text=lisValues then
           Result:=cbmntValues
         else if CurNode.Text=lisDefaultValue then
@@ -388,34 +388,34 @@ begin
   Result:=GetNodeType(Node);
 end;
 
-function TCompOptBuildModesFrame.GetSelectedNode(out
-  BuildProperty: TLazBuildProperty; out NodeType: TCBMNodeType): TTreeNode;
+function TCompOptBuildVarsFrame.GetSelectedNode(out
+  BuildProperty: TLazBuildVariable; out NodeType: TCBMNodeType): TTreeNode;
 begin
-  Result:=BuildModesTreeView.Selected;
+  Result:=BuildVarsTreeView.Selected;
   NodeType:=GetNodeInfo(Result,BuildProperty);
 end;
 
-function TCompOptBuildModesFrame.GetBuildModeTVNode(BuildProperty: TLazBuildProperty
+function TCompOptBuildVarsFrame.GetBuildVarTVNode(BuildProperty: TLazBuildVariable
   ): TTreeNode;
 begin
-  Result:=BuildModesTreeView.Items.GetFirstNode;
+  Result:=BuildVarsTreeView.Items.GetFirstNode;
   while (Result<>nil) and (TObject(Result.Data)<>BuildProperty) do
     Result:=Result.GetNextSibling;
 end;
 
-function TCompOptBuildModesFrame.GetValuesTVNode(BuildProperty: TLazBuildProperty
+function TCompOptBuildVarsFrame.GetValuesTVNode(BuildProperty: TLazBuildVariable
   ): TTreeNode;
 var
-  BuildModeTVNode: TTreeNode;
+  BuildVarTVNode: TTreeNode;
 begin
-  BuildModeTVNode:=GetBuildModeTVNode(BuildProperty);
-  if (BuildModeTVNode<>nil) then
-    Result:=BuildModeTVNode.GetFirstChild
+  BuildVarTVNode:=GetBuildVarTVNode(BuildProperty);
+  if (BuildVarTVNode<>nil) then
+    Result:=BuildVarTVNode.GetFirstChild
   else
     Result:=nil;
 end;
 
-procedure TCompOptBuildModesFrame.FreeEditors;
+procedure TCompOptBuildVarsFrame.FreeEditors;
 var
   i: Integer;
 begin
@@ -424,7 +424,7 @@ begin
   FEditors.Clear;
 end;
 
-function TCompOptBuildModesFrame.GetEditor(BuildProperty: TLazBuildProperty
+function TCompOptBuildVarsFrame.GetEditor(BuildProperty: TLazBuildVariable
   ): TCompOptsExprEditor;
 var
   i: Integer;
@@ -436,20 +436,20 @@ begin
   Result:=nil;
 end;
 
-constructor TCompOptBuildModesFrame.Create(TheOwner: TComponent);
+constructor TCompOptBuildVarsFrame.Create(TheOwner: TComponent);
 begin
   inherited Create(TheOwner);
 
   FEditors:=TFPList.Create;
-  BuildModesTreeView.Images := IDEImages.Images_24;
+  BuildVarsTreeView.Images := IDEImages.Images_24;
   fModeImgID:=IDEImages.LoadImage(24,'da_define');
   fValueImgID:=IDEImages.LoadImage(24,'da_define');
   fDefValueImgID:=IDEImages.LoadImage(24,'da_define');
 
-  BuildModesGroupBox.Caption:='Build modes';
+  BuildVarsGroupBox.Caption:='Build modes';
 end;
 
-destructor TCompOptBuildModesFrame.Destroy;
+destructor TCompOptBuildVarsFrame.Destroy;
 begin
   FreeEditors;
   FreeAndNil(FEditors);
@@ -457,7 +457,7 @@ begin
 end;
 
 initialization
-  {$I compiler_buildmodes_options.lrs}
+  {$I compiler_buildvar_options.lrs}
 
 end.
 

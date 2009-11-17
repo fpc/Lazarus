@@ -1,0 +1,43 @@
+object CompOptBuildVarsFrame: TCompOptBuildVarsFrame
+  Left = 0
+  Height = 233
+  Top = 0
+  Width = 492
+  ClientHeight = 233
+  ClientWidth = 492
+  TabOrder = 0
+  Visible = False
+  DesignLeft = 349
+  DesignTop = 520
+  object BuildVarsGroupBox: TGroupBox
+    Left = 0
+    Height = 233
+    Top = 0
+    Width = 492
+    Align = alClient
+    Caption = 'BuildVarsGroupBox'
+    ClientHeight = 214
+    ClientWidth = 488
+    TabOrder = 0
+    object BuildVarsTreeView: TTreeView
+      Left = 0
+      Height = 214
+      Top = 0
+      Width = 488
+      Align = alClient
+      DefaultItemHeight = 19
+      PopupMenu = BuildVarsTVPopupMenu
+      RightClickSelect = True
+      TabOrder = 0
+      OnEdited = BuildVarsTreeViewEdited
+      OnEditing = BuildVarsTreeViewEditing
+      OnStartDrag = BuildVarsTreeViewStartDrag
+      Options = [tvoAutoItemHeight, tvoHideSelection, tvoKeepCollapsedNodes, tvoRightClickSelect, tvoShowButtons, tvoShowLines, tvoShowRoot, tvoToolTips]
+    end
+  end
+  object BuildVarsTVPopupMenu: TPopupMenu
+    OnPopup = BuildVarsTVPopupMenuPopup
+    left = 99
+    top = 77
+  end
+end

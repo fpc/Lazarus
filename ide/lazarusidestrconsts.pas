@@ -4366,12 +4366,12 @@ resourcestring
   lisValues = 'Values';
   lisDefaultValue = 'Default value';
   lisConfirmDelete = 'Confirm delete';
-  lisDeleteBuildMode = 'Delete build mode %s%s%s?';
+  lisDeleteBuildVar = 'Delete build variable %s%s%s?';
   lisValue2 = 'Value%s';
   lisDeleteValue = 'Delete value %s%s%s';
-  lisInvalidBuildModeTheBuildModeMustBeAPascalIdentifie = 'Invalid build '
-    +'mode %s%s%s. The build mode must be a pascal identifier.';
-  lisThereIsAlreadyABuildModeWithTheName = 'There is already a build mode '
+  lisInvalidBuildVarTheBuildVarMustBeAPascalIdentifie = 'Invalid build '
+    +'variable %s%s%s. The build variable must be a pascal identifier.';
+  lisThereIsAlreadyABuildVarWithTheName = 'There is already a build variable '
     +'with the name %s%s%s.';  
   lisDuplicateFoundOfValue = 'Duplicate found of value %s%s%s.';
   lisSetValue = 'Set value';
