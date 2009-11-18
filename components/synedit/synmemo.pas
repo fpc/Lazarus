@@ -60,10 +60,15 @@ uses
 //SelStart and SelEnd are now in TCustomSynEdit                                 //DDH Addition
 
 type
+
+  { TCustomSynMemo }
+
   TCustomSynMemo = class(TCustomSynEdit)
   public
     function CharIndexToRowCol(Index: integer): TPoint;                         //as 2000-11-09
     function RowColToCharIndex(RowCol: TPoint): integer;                        //as 2000-11-09
+    procedure Append(const Value: String);
+    procedure Clear;
   end;
 
   TSynMemo = class(TCustomSynMemo)
@@ -151,6 +156,7 @@ type
     property MaxLeftChar;
     property MaxUndo;
     property Options;
+    property Options2;
     property OverwriteCaret;
     property ReadOnly;
     property RightEdge;
@@ -232,6 +238,16 @@ begin
   for i := 0 to RowCol.y - 1 do
     Result := Result + Length(TextBuffer[i]) + LineEndLen;
   Result := Result + RowCol.x;
+end;
+
+procedure TCustomSynMemo.Append(const Value: String);
+begin
+  Lines.Append(Value);
+end;
+
+procedure TCustomSynMemo.Clear;
+begin
+  Lines.Clear;
 end;
 
 end.
