@@ -44,10 +44,10 @@ interface
 uses
   Classes, SysUtils, SynEditTextBase,
   FileUtil, LCLProc, LCLIntf, LCLType,
-  SynEditTypes, SynEditMiscProcs;
+  SynEditTypes, SynEditMiscProcs, SynEditMiscClasses;
 
 const
-  NullRange = TSynEditRange(-1);
+  NullRange = TSynEditRange(nil);
 
 type
   TSynEditFlagsClass = class end; // For Register
@@ -69,14 +69,14 @@ type
 
   { TLineRangeNotificationList }
 
-  TLineRangeNotificationList = Class(TMethodList)
+  TLineRangeNotificationList = Class(TSynMethodList)
   public
     Procedure CallRangeNotifyEvents(Sender: TSynEditStrings; aIndex, aCount: Integer);
   end;
 
   { TLineEditNotificationList }
 
-  TLineEditNotificationList = Class(TMethodList)
+  TLineEditNotificationList = Class(TSynMethodList)
   public
     Procedure CallRangeNotifyEvents(Sender: TSynEditStrings;
                                     aLinePos, aBytePos, aCount, aLineBrkCnt: Integer; aText: String);
@@ -120,14 +120,17 @@ type
   private
     FList: TSynEditStringMemory;
     FAttributeList: Array of TSynEditStringAttribute;
+
     FLineRangeNotificationList: TLineRangeNotificationList; // LineCount
     FLineChangeNotificationList: TLineRangeNotificationList; // ContentChange (not called on add...)
     FLineEditNotificationList: TLineEditNotificationList;
+    FOnChangeList: TSynMethodList;
+    FOnChangingList: TSynMethodList;
+    FOnClearedList: TSynMethodList;
+
     FIgnoreSendNotification: array [TSynEditNotifyReason] of Integer;
     fDosFileFormat: boolean;
     fIndexOfLongestLine: integer;
-    fOnChange: TNotifyEvent;
-    fOnChanging: TNotifyEvent;
     fRedoList: TSynEditUndoList;
     fUndoList: TSynEditUndoList;
     FIsUndoing: Boolean;
@@ -141,7 +144,6 @@ type
     Procedure SetAttributeSize(NewSize: Integer);
     procedure SetFlags(Index: Integer; const AValue: TSynEditStringFlags);
   protected
-    fOnCleared: TNotifyEvent;
     function GetExpandedString(Index: integer): string; override;
     function GetLengthOfLongestLine: integer; override;
 
@@ -192,19 +194,14 @@ type
     procedure SetDebugMarks(AFirst, ALast: Integer);
     procedure ClearDebugMarks;
     {$ENDIF}
-    procedure AddChangeHandler(AReason: TSynEditNotifyReason;
-                AHandler: TStringListLineCountEvent); override;
-    procedure RemoveChangeHandler(AReason: TSynEditNotifyReason;
-                AHandler: TStringListLineCountEvent); override;
-    procedure AddEditHandler(AHandler: TStringListLineEditEvent); override;
-    procedure RemoveEditHandler(AHandler: TStringListLineEditEvent); override;
+    procedure AddGenericHandler(AReason: TSynEditNotifyReason;
+                AHandler: TMethod); override;
+    procedure RemoveGenericHandler(AReason: TSynEditNotifyReason;
+                AHandler: TMethod); override;
    function GetPhysicalCharWidths(const Line: String; Index: Integer): TPhysicalCharWidths; override;
   public
     property DosFileFormat: boolean read fDosFileFormat write fDosFileFormat;    
     property LengthOfLongestLine: integer read GetLengthOfLongestLine;
-    property OnChange: TNotifyEvent read fOnChange write fOnChange;
-    property OnChanging: TNotifyEvent read fOnChanging write fOnChanging;
-    property OnCleared: TNotifyEvent read fOnCleared write fOnCleared;
     {$IFDEF SYN_LAZARUS}
     property Flags[Index: Integer]: TSynEditStringFlags read GetFlags
       write SetFlags;
@@ -408,6 +405,10 @@ begin
   FLineRangeNotificationList := TLineRangeNotificationList.Create;
   FLineChangeNotificationList := TLineRangeNotificationList.Create;
   FLineEditNotificationList := TLineEditNotificationList.Create;
+  FOnChangeList := TSynMethodList.Create;
+  FOnChangingList := TSynMethodList.Create;
+  FOnClearedList := TSynMethodList.Create;
+
   for r := low(TSynEditNotifyReason) to high(TSynEditNotifyReason) do
     FIgnoreSendNotification[r] := 0;
   inherited Create;
@@ -421,8 +422,6 @@ end;
 
 destructor TSynEditStringList.Destroy;
 begin
-  fOnChange := nil;
-  fOnChanging := nil;
   fAttributeList := nil;
   inherited Destroy;
   SetCount(0);
@@ -430,6 +429,10 @@ begin
   FreeAndNil(FLineRangeNotificationList);
   FreeAndNil(FLineChangeNotificationList);
   FreeAndNil(FLineEditNotificationList);
+  FreeAndNil(FOnChangeList);
+  FreeAndNil(FOnChangingList);
+  FreeAndNil(FOnClearedList);
+
   FreeAndNil(fList);
 end;
 
@@ -480,8 +483,7 @@ begin
     BeginUpdate;
     SetCount(0);
     SetCapacity(0);
-    if Assigned(fOnCleared) then
-      fOnCleared(Self);
+    FOnClearedList.CallNotifyEvents(Self);
     FLineRangeNotificationList.CallRangeNotifyEvents(self, 0, -c);
     EndUpdate;
   end;
@@ -861,30 +863,28 @@ begin
     Flags[Index] := Flags[Index] - [sfDebugMark];
 end;
 
-procedure TSynEditStringList.AddChangeHandler(AReason: TSynEditNotifyReason; AHandler: TStringListLineCountEvent);
+procedure TSynEditStringList.AddGenericHandler(AReason: TSynEditNotifyReason; AHandler: TMethod);
 begin
   case AReason of
-    senrLineChange : FLineChangeNotificationList.Add(TMethod(AHandler));
-    senrLineCount : FLineRangeNotificationList.Add(TMethod(AHandler));
+    senrLineChange : FLineChangeNotificationList.Add(AHandler);
+    senrLineCount : FLineRangeNotificationList.Add(AHandler);
+    senrTextEdit: FLineEditNotificationList.Add(TMethod(AHandler));
+    senrBeginUpdate : FOnChangingList.Add(AHandler);
+    senrEndUpdate : FOnChangeList.Add(AHandler);
+    senrCleared : FOnClearedList.Add(AHandler);
   end;
 end;
 
-procedure TSynEditStringList.RemoveChangeHandler(AReason: TSynEditNotifyReason; AHandler: TStringListLineCountEvent);
+procedure TSynEditStringList.RemoveGenericHandler(AReason: TSynEditNotifyReason; AHandler: TMethod);
 begin
   case AReason of
-    senrLineChange : FLineChangeNotificationList.Remove(TMethod(AHandler));
-    senrLineCount : FLineRangeNotificationList.Remove(TMethod(AHandler));
+    senrLineChange : FLineChangeNotificationList.Remove(AHandler);
+    senrLineCount : FLineRangeNotificationList.Remove(AHandler);
+    senrTextEdit: FLineEditNotificationList.Remove(TMethod(AHandler));
+    senrBeginUpdate : FOnChangingList.Remove(AHandler);
+    senrEndUpdate : FOnChangeList.Remove(AHandler);
+    senrCleared : FOnClearedList.Remove(AHandler);
   end;
-end;
-
-procedure TSynEditStringList.AddEditHandler(AHandler: TStringListLineEditEvent);
-begin
-  FLineEditNotificationList.Add(TMethod(AHandler));
-end;
-
-procedure TSynEditStringList.RemoveEditHandler(AHandler: TStringListLineEditEvent);
-begin
-  FLineEditNotificationList.Remove(TMethod(AHandler));
 end;
 
 {$ENDIF}
@@ -897,11 +897,9 @@ end;
 procedure TSynEditStringList.SetUpdateState(Updating: Boolean);
 begin
   if Updating then begin
-    if Assigned(fOnChanging) then
-      fOnChanging(Self);
+    FOnChangingList.CallNotifyEvents(Self);
   end else begin
-    if Assigned(fOnChange) then
-      fOnChange(Self);
+    FOnChangeList.CallNotifyEvents(Self);
   end;
 end;
 

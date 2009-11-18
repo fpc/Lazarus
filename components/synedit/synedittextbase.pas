@@ -33,7 +33,9 @@ type
 
   TStringListLineCountEvent = procedure(Sender: TSynEditStrings;
                                         Index, Count: Integer) of object;
-  TSynEditNotifyReason = (senrLineCount, senrLineChange, senrEditAction);
+  TSynEditNotifyReason = (senrLineCount, senrLineChange, senrEditAction,
+                          senrTextEdit, senrBeginUpdate, senrEndUpdate,
+                          senrCleared);
 
   TStringListLineEditEvent = procedure(Sender: TSynEditStrings;
                                        LinePos, BytePos, Count, LineBrkCnt: Integer;
@@ -105,12 +107,23 @@ type
     procedure RegisterAttribute(const Index: TClass; const Size: Word); virtual; abstract;
     property Attribute[Owner: TClass; Index: Integer]: Pointer
       read GetAttribute write SetAttribute;
+
+    procedure AddGenericHandler(AReason: TSynEditNotifyReason;
+                AHandler: TMethod); virtual; abstract;
     procedure AddChangeHandler(AReason: TSynEditNotifyReason;
-                AHandler: TStringListLineCountEvent); virtual; abstract;
+                AHandler: TStringListLineCountEvent);
+    procedure AddNotifyHandler(AReason: TSynEditNotifyReason;
+                AHandler: TNotifyEvent);
+
+    procedure RemoveGenericHandler(AReason: TSynEditNotifyReason;
+                AHandler: TMethod); virtual; abstract;
     procedure RemoveChangeHandler(AReason: TSynEditNotifyReason;
-                AHandler: TStringListLineCountEvent); virtual; abstract;
-    procedure AddEditHandler(AHandler: TStringListLineEditEvent); virtual; abstract;
-    procedure RemoveEditHandler(AHandler: TStringListLineEditEvent); virtual; abstract;
+                AHandler: TStringListLineCountEvent);
+    procedure RemoveNotifyHandler(AReason: TSynEditNotifyReason;
+                AHandler: TNotifyEvent);
+
+    procedure AddEditHandler(AHandler: TStringListLineEditEvent);
+    procedure RemoveEditHandler(AHandler: TStringListLineEditEvent);
   public
     function GetPhysicalCharWidths(Index: Integer): TPhysicalCharWidths;
     function GetPhysicalCharWidths(const Line: String; Index: Integer): TPhysicalCharWidths; virtual; abstract;
@@ -196,12 +209,10 @@ type
 
     // Size: 0 = Bit (TODO); 1..8 Size In Byte "SizeOf()"
     procedure RegisterAttribute(const Index: TClass; const Size: Word); override;
-    procedure AddChangeHandler(AReason: TSynEditNotifyReason;
-                AHandler: TStringListLineCountEvent); override;
-    procedure RemoveChangeHandler(AReason: TSynEditNotifyReason;
-                AHandler: TStringListLineCountEvent); override;
-    procedure AddEditHandler(AHandler: TStringListLineEditEvent); override;
-    procedure RemoveEditHandler(AHandler: TStringListLineEditEvent); override;
+    procedure AddGenericHandler(AReason: TSynEditNotifyReason;
+                AHandler: TMethod); override;
+    procedure RemoveGenericHandler(AReason: TSynEditNotifyReason;
+                AHandler: TMethod); override;
 
     function GetPhysicalCharWidths(const Line: String; Index: Integer): TPhysicalCharWidths; override;
     property NextLines: TSynEditStrings read fSynStrings;
@@ -326,6 +337,40 @@ constructor TSynEditStrings.Create;
 begin
   inherited Create;
   IsUtf8 := True;
+end;
+
+procedure TSynEditStrings.AddChangeHandler(AReason: TSynEditNotifyReason;
+  AHandler: TStringListLineCountEvent);
+begin
+  AddGenericHandler(AReason, TMethod(AHandler));
+end;
+
+procedure TSynEditStrings.AddNotifyHandler(AReason: TSynEditNotifyReason;
+  AHandler: TNotifyEvent);
+begin
+  AddGenericHandler(AReason, TMethod(AHandler));
+end;
+
+procedure TSynEditStrings.RemoveChangeHandler(AReason: TSynEditNotifyReason;
+  AHandler: TStringListLineCountEvent);
+begin
+  RemoveGenericHandler(AReason, TMethod(AHandler));
+end;
+
+procedure TSynEditStrings.RemoveNotifyHandler(AReason: TSynEditNotifyReason;
+  AHandler: TNotifyEvent);
+begin
+  RemoveGenericHandler(AReason, TMethod(AHandler));
+end;
+
+procedure TSynEditStrings.AddEditHandler(AHandler: TStringListLineEditEvent);
+begin
+  AddGenericHandler(senrTextEdit, TMethod(AHandler));
+end;
+
+procedure TSynEditStrings.RemoveEditHandler(AHandler: TStringListLineEditEvent);
+begin
+  RemoveGenericHandler(senrTextEdit, TMethod(AHandler));
 end;
 
 function TSynEditStrings.GetPhysicalCharWidths(Index: Integer): TPhysicalCharWidths;
@@ -564,24 +609,14 @@ begin
   fSynStrings.RegisterAttribute(Index, Size);
 end;
 
-procedure TSynEditStringsLinked.AddChangeHandler(AReason: TSynEditNotifyReason; AHandler: TStringListLineCountEvent);
+procedure TSynEditStringsLinked.AddGenericHandler(AReason: TSynEditNotifyReason; AHandler: TMethod);
 begin
-  fSynStrings.AddChangeHandler(AReason, AHandler);
+  fSynStrings.AddGenericHandler(AReason, AHandler);
 end;
 
-procedure TSynEditStringsLinked.RemoveChangeHandler(AReason: TSynEditNotifyReason; AHandler: TStringListLineCountEvent);
+procedure TSynEditStringsLinked.RemoveGenericHandler(AReason: TSynEditNotifyReason; AHandler: TMethod);
 begin
-  fSynStrings.RemoveChangeHandler(AReason, AHandler);
-end;
-
-procedure TSynEditStringsLinked.AddEditHandler(AHandler: TStringListLineEditEvent);
-begin
-  fSynStrings.AddEditHandler(AHandler);
-end;
-
-procedure TSynEditStringsLinked.RemoveEditHandler(AHandler: TStringListLineEditEvent);
-begin
-  fSynStrings.RemoveEditHandler(AHandler);
+  fSynStrings.RemoveGenericHandler(AReason, AHandler);
 end;
 
 // Count

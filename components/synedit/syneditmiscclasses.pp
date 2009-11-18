@@ -339,6 +339,21 @@ type
     property Size: LongInt read GetSize;
   end;
 
+  { TSynMethodList }
+
+  TSynMethodList = Class(TMethodList)
+  private
+    function IndexToObjectIndex(const AnObject: TObject; AnIndex: Integer): integer;
+    function GetObjectItems(AnObject: TObject; Index: integer): TMethod;
+    procedure SetObjectItems(AnObject: TObject; Index: integer; const AValue: TMethod);
+  public
+    function CountByObject(const AnObject: TObject): integer;
+    procedure DeleteByObject(const AnObject: TObject; Index: integer);
+  public
+    property ItemsByObject[AnObject: TObject; Index: integer]: TMethod
+      read GetObjectItems write SetObjectItems; default;
+  end;
+
 const
   synClipTagText = TSynClipboardStreamTag(1);
   synClipTagExtText = TSynClipboardStreamTag(2);
@@ -1084,6 +1099,54 @@ begin
   else
     while (aX <= len) and (aLine[aX] in FWhiteChars) do Inc(ax);
   Result := aX;
+end;
+
+{ TSynMethodList }
+
+function TSynMethodList.IndexToObjectIndex(const AnObject: TObject; AnIndex: Integer): integer;
+var
+  i, c: Integer;
+begin
+  Result := -1;
+  if Self = nil then exit;
+  i := 0;
+  c := Count;
+  while i < c do begin
+    if TObject(Items[AnIndex].Data)=AnObject then begin
+      if AnIndex = 0 then exit(i);
+      dec(AnIndex);
+    end;
+    inc(i);
+  end;
+end;
+
+function TSynMethodList.GetObjectItems(AnObject: TObject; Index: integer): TMethod;
+begin
+  Result := Items[IndexToObjectIndex(AnObject, Index)];
+end;
+
+procedure TSynMethodList.SetObjectItems(AnObject: TObject; Index: integer;
+  const AValue: TMethod);
+begin
+  Items[IndexToObjectIndex(AnObject, Index)] := AValue;
+end;
+
+function TSynMethodList.CountByObject(const AnObject: TObject): integer;
+var
+  i: Integer;
+begin
+  Result := 0;
+  if Self=nil then exit;
+  i := Count-1;
+  while i>=0 do begin
+    if TObject(Items[i].Data)=AnObject then inc(Result);
+    dec(i);
+  end;
+end;
+
+procedure TSynMethodList.DeleteByObject(const AnObject: TObject; Index: integer);
+begin
+  Delete(IndexToObjectIndex(AnObject, Index));
 end;
 
 end.

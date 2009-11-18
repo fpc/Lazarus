@@ -59,6 +59,7 @@ interface
 
 { $DEFINE VerboseKeys}
 { $DEFINE VerboseSynEditInvalidate}
+{ $DEFINE SYNDEBUGPRINT}
 
 uses
   {$IFDEF USE_UTF8BIDI_LCL}
@@ -213,7 +214,7 @@ type
     eoScrollPastEof,           // Allows the cursor to go past the end of file marker
     eoScrollPastEol,           // Allows the cursor to go past the last character into the white space at the end of a line
     eoShowScrollHint,          // Shows a hint of the visible line numbers when scrolling vertically
-    eoShowSpecialChars,        //TODO Shows the special Characters
+    eoShowSpecialChars,        // Shows the special Characters
     eoSmartTabDelete,          //TODO similar to Smart Tabs, but when you delete characters
     eoSmartTabs,               // When tabbing, the cursor will go to the next non-white space character of the previous line
     //eoSpecialLineDefaultFg,    //TODO disables the foreground text color override when using the OnSpecialLineColor event
@@ -1516,14 +1517,12 @@ begin
   FCaret.Lines := FTheLinesView;
   FInternalCaret.Lines := FTheLinesView;
 
-  TSynEditStringList(fLines).AddChangeHandler(senrLineCount,
-                     {$IFDEF FPC}@{$ENDIF}LineCountChanged);
-  TSynEditStringList(fLines).AddChangeHandler(senrLineChange,
-                     {$IFDEF FPC}@{$ENDIF}LineTextChanged);
   with TSynEditStringList(fLines) do begin
-    OnChange := {$IFDEF FPC}@{$ENDIF}LinesChanged;
-    OnChanging := {$IFDEF FPC}@{$ENDIF}LinesChanging;
-    OnCleared := {$IFDEF FPC}@{$ENDIF}ListCleared;
+    AddChangeHandler(senrLineCount, {$IFDEF FPC}@{$ENDIF}LineCountChanged);
+    AddChangeHandler(senrLineChange, {$IFDEF FPC}@{$ENDIF}LineTextChanged);
+    AddNotifyHandler(senrBeginUpdate, {$IFDEF FPC}@{$ENDIF}LinesChanging);
+    AddNotifyHandler(senrEndUpdate, {$IFDEF FPC}@{$ENDIF}LinesChanged);
+    AddNotifyHandler(senrCleared, {$IFDEF FPC}@{$ENDIF}ListCleared);
   end;
 
   fFontDummy := TFont.Create;
@@ -2266,7 +2265,7 @@ begin
     // so we we fire the OnKeyPress here
     if (ord(key[1])< %11000000) and (key[1]<>#0) and Assigned(OnKeyPress) then
       OnKeyPress(Self, Key[1]);
-    {$IFDEF VerboseKeyboard}
+    {$IFDEF VerboseKeys}
     DebugLn('TCustomSynEdit.UTF8KeyPress ',DbgSName(Self),' Key="',DbgStr(Key),'" UseUTF8=',dbgs(UseUTF8));
     {$ENDIF}
     CommandProcessor(ecChar, Key, nil);
@@ -2287,7 +2286,7 @@ begin
   // don't fire the event if key is to be ignored
   if not (sfIgnoreNextChar in fStateFlags) then begin
     Include(FStateFlags, sfHideCursor);
-    {$IFDEF VerboseKeyboard}
+    {$IFDEF VerboseKeys}
     DebugLn('TCustomSynEdit.KeyPress ',DbgSName(Self),' Key="',DbgStr(Key),'" UseUTF8=',dbgs(UseUTF8));
     {$ENDIF}
     if Assigned(OnKeyPress) then OnKeyPress(Self, Key);
@@ -3482,6 +3481,16 @@ var
       inc(sToken, SubTokenByteLen);
     end;
   end;
+
+  {$IFDEF SYNDEBUGPRINT}
+  procedure DebugPrint(Txt: String; MinCol: Integer = 0);
+  begin
+    if CurPhysPos < MinCol then Txt := StringOfChar(' ', MinCol - CurPhysPos) + txt;
+    Setlength(CharWidths, length(CharWidths) + length(Txt));
+    FillChar(CharWidths[length(CharWidths)-length(Txt)], length(Txt), #1);
+    DrawHiLightMarkupToken(nil, PChar(Pointer(Txt)), Length(Txt));
+  end;
+  {$ENDIF}
 
   procedure PaintLines;
   var
