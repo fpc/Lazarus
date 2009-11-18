@@ -477,7 +477,7 @@ begin
   FForm := TheDesignerForm;
   if FForm is TNonControlDesignerForm then begin
     FLookupRoot := TNonControlDesignerForm(FForm).LookupRoot;
-    FMediator:=TNonControlDesignerForm(FForm).Mediator;
+    Mediator:=TNonControlDesignerForm(FForm).Mediator;
   end
   else if FForm is TFrameDesignerForm then
     FLookupRoot := TFrameDesignerForm(FForm).LookupRoot
@@ -531,8 +531,8 @@ begin
     // delete
     if Form <> nil then
       Form.Designer := nil;
-    if FMediator<>nil then
-      FMediator.Designer:=nil;
+    if Mediator<>nil then
+      Mediator.Designer:=nil;
     // free or hide the form
     TheFormEditor.DeleteComponent(FLookupRoot,FreeComponent);
     FMediator:=nil;
@@ -2829,10 +2829,10 @@ end;
 
 procedure TDesigner.SetMediator(const AValue: TDesignerMediator);
 begin
-  if FMediator=AValue then exit;
-  if FMediator<>nil then FMediator.Designer:=nil;
+  if Mediator=AValue then exit;
+  if Mediator<>nil then Mediator.Designer:=nil;
   FMediator:=AValue;
-  if FMediator<>nil then FMediator.Designer:=Self;
+  if Mediator<>nil then Mediator.Designer:=Self;
 end;
 
 procedure TDesigner.SetShowEditorHints(const AValue: boolean);
