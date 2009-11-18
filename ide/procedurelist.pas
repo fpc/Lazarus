@@ -391,8 +391,6 @@ var
   lNodeText: string;
 begin
   cbObjects.Items.Clear;
-  cbObjects.Items.Add(lisPListAll);
-  cbObjects.Items.Add(lisPListNone);
   try
     { get active source editor }
     lSrcEditor := SourceEditorWindow.ActiveEditor;
@@ -430,10 +428,14 @@ begin
         lNode := lNode.NextBrother;
       end;
     end;
+    cbObjects.Sorted := true;
+    cbObjects.Sorted := false;
+    cbObjects.Items.Insert(0, lisPListAll);
+    cbObjects.Items.Insert(1, lisPListNone);
   finally
     cbObjects.ItemIndex := 0;   // select <All> as the default
-    if cbObjects.Text = '' then
-      cbObjects.ItemIndex := 1;
+    if cbObjects.Text = '' then  // some widgetsets have issues here so we do this
+      cbObjects.Text := cbObjects.Items[0];
   end;
 end;
 
