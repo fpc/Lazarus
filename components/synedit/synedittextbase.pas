@@ -33,13 +33,18 @@ type
 
   TStringListLineCountEvent = procedure(Sender: TSynEditStrings;
                                         Index, Count: Integer) of object;
-  TSynEditNotifyReason = (senrLineCount, senrLineChange, senrEditAction,
-                          senrTextEdit, senrBeginUpdate, senrEndUpdate,
-                          senrCleared);
-
   TStringListLineEditEvent = procedure(Sender: TSynEditStrings;
                                        LinePos, BytePos, Count, LineBrkCnt: Integer;
                                        Text: String) of object;
+
+  TSynEditNotifyReason = ( // TStringListLineCountEvent
+                           senrLineCount, senrLineChange, senrEditAction,
+                           // TStringListLineEditEvent
+                           senrTextEdit,
+                           // TNotifyEvent
+                           senrBeginUpdate, senrEndUpdate, senrCleared,
+                           senrUndoRedoAdded
+                          );
 
   TPhysicalCharWidths = Array of Shortint;
 
@@ -89,9 +94,13 @@ type
     function GetLengthOfLongestLine: integer; virtual; abstract;
     procedure SetTextStr(const Value: string); override;
 
-    function GetRedoList: TSynEditUndoList; virtual; abstract;
     function GetUndoList: TSynEditUndoList; virtual; abstract;
+    function GetRedoList: TSynEditUndoList; virtual; abstract;
+    function GetCurUndoList: TSynEditUndoList; virtual; abstract;
     procedure SetIsUndoing(const AValue: Boolean); virtual; abstract;
+    function  GetIsUndoing: Boolean; virtual; abstract;
+    procedure SetIsRedoing(const AValue: Boolean); virtual; abstract;
+    function  GetIsRedoing: Boolean; virtual; abstract;
     procedure SendNotification(AReason: TSynEditNotifyReason;
                 ASender: TSynEditStrings; aIndex, aCount: Integer;
                 aBytePos: Integer = -1; aLen: Integer = 0;
@@ -146,7 +155,9 @@ type
     procedure EditRedo(Item: TSynEditUndoItem); virtual; abstract;
     property UndoList: TSynEditUndoList read GetUndoList;
     property RedoList: TSynEditUndoList read GetRedoList;
-    property IsUndoing: Boolean write SetIsUndoing;
+    property CurUndoList: TSynEditUndoList read GetCurUndoList; // Re or Undo (Redo while undoing)
+    property IsUndoing: Boolean read GetIsUndoing write SetIsUndoing;
+    property IsRedoing: Boolean read GetIsRedoing write SetIsRedoing;
     procedure IncreaseTextChangeStamp;
   public
     property ExpandedStrings[Index: integer]: string read GetExpandedString;
@@ -180,9 +191,13 @@ type
                 aTxt: String = ''); override;
     procedure IgnoreSendNotification(AReason: TSynEditNotifyReason;
                                      IncIgnore: Boolean); override;
-    function GetRedoList: TSynEditUndoList; override;
     function GetUndoList: TSynEditUndoList; override;
+    function GetRedoList: TSynEditUndoList; override;
+    function GetCurUndoList: TSynEditUndoList; override;
     procedure SetIsUndoing(const AValue: Boolean); override;
+    function  GetIsUndoing: Boolean; override;
+    procedure SetIsRedoing(const AValue: Boolean); override;
+    function  GetIsRedoing: Boolean; override;
   protected
     function GetCount: integer; override;
     function GetCapacity: integer;
@@ -552,6 +567,21 @@ begin
   fSynStrings.IsUndoing := AValue;
 end;
 
+function TSynEditStringsLinked.GetIsUndoing: Boolean;
+begin
+  Result := fSynStrings.IsUndoing;
+end;
+
+procedure TSynEditStringsLinked.SetIsRedoing(const AValue: Boolean);
+begin
+  fSynStrings.IsRedoing := AValue;
+end;
+
+function TSynEditStringsLinked.GetIsRedoing: Boolean;
+begin
+  Result := fSynStrings.IsRedoing;
+end;
+
 function TSynEditStringsLinked.GetIsUtf8: Boolean;
 begin
   Result := FSynStrings.IsUtf8;
@@ -602,6 +632,11 @@ end;
 function TSynEditStringsLinked.GetUndoList: TSynEditUndoList;
 begin
   Result := fSynStrings.GetUndoList;
+end;
+
+function TSynEditStringsLinked.GetCurUndoList: TSynEditUndoList;
+begin
+  Result := fSynStrings.GetCurUndoList;
 end;
 
 procedure TSynEditStringsLinked.RegisterAttribute(const Index: TClass; const Size: Word);

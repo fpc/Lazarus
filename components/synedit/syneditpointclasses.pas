@@ -79,7 +79,6 @@ type
     FCaret: TSynEditCaret;
     FHide: Boolean;
     FInternalCaret: TSynEditCaret;
-    fUndoList: TSynEditUndoList;
     FInvalidateLinesMethod: TInvalidateLines;
     FEnabled: Boolean;
     FHookedLines: Boolean;
@@ -156,7 +155,6 @@ type
     property  LastLineBytePos: TPoint read GetLastLineBytePos;
     property  InvalidateLinesMethod : TInvalidateLines write FInvalidateLinesMethod;
     property  Caret: TSynEditCaret read FCaret write SetCaret;
-    property  UndoList: TSynEditUndoList read fUndoList write fUndoList;
     property  Persistent: Boolean read FPersistent write SetPersistent;
     // automatically Start/Exctend selection if caret moves
     // (depends if caret was at block border or not)

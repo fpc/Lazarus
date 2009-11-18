@@ -454,7 +454,6 @@ type
     function GetFoldState: String;
     function GetPlugin(Index: Integer): TSynEditPlugin;
     function GetTextBetweenPoints(aStartPoint, aEndPoint: TPoint): String;
-    function GetUndoList: TSynEditUndoList;
     function GetDividerDrawLevel: Integer; deprecated;
     procedure SetDefSelectionMode(const AValue: TSynSelectionMode);
     procedure SetDividerDrawLevel(const AValue: Integer); deprecated;
@@ -654,7 +653,6 @@ type
       AddToUndoList: Boolean = false);
     procedure ShowCaret;
     procedure UndoItem(Item: TSynEditUndoItem);
-    property  UndoList: TSynEditUndoList read GetUndoList;
     procedure UpdateCursor;
   protected
     fGutterWidth: Integer;
@@ -1178,7 +1176,7 @@ begin
   if Result then
     with TSynEdit(Caller) do begin
       FCaret.LineCharPos := FCaretPos;
-      UndoList.AddChange(TSynEditUndoCaret.Create(FCaretPos));
+      FTheLinesView.CurUndoList.AddChange(TSynEditUndoCaret.Create(FCaretPos));
     end;
 end;
 
@@ -1215,7 +1213,7 @@ begin
   if Result then
     with TSynEdit(Caller) do begin
       SetCaretAndSelection(FCaretPos, FBeginPos, FEndPos, FBlockMode);
-      UndoList.AddChange(TSynEditUndoSelCaret.Create(FCaretPos, FBeginPos,
+      FTheLinesView.CurUndoList.AddChange(TSynEditUndoSelCaret.Create(FCaretPos, FBeginPos,
                                                      FEndPos, FBlockMode));
     end;
 end;
@@ -1516,6 +1514,7 @@ begin
 
   FCaret.Lines := FTheLinesView;
   FInternalCaret.Lines := FTheLinesView;
+  FFontDummy := TFont.Create;
 
   with TSynEditStringList(fLines) do begin
     AddChangeHandler(senrLineCount, {$IFDEF FPC}@{$ENDIF}LineCountChanged);
@@ -1523,28 +1522,19 @@ begin
     AddNotifyHandler(senrBeginUpdate, {$IFDEF FPC}@{$ENDIF}LinesChanging);
     AddNotifyHandler(senrEndUpdate, {$IFDEF FPC}@{$ENDIF}LinesChanged);
     AddNotifyHandler(senrCleared, {$IFDEF FPC}@{$ENDIF}ListCleared);
+    AddNotifyHandler(senrUndoRedoAdded, {$IFDEF FPC}@{$ENDIF}UndoRedoAdded);
   end;
 
-  fFontDummy := TFont.Create;
-  fUndoList := TSynEditUndoList.Create;
-  fUndoList.OnAddedUndo := {$IFDEF FPC}@{$ENDIF}UndoRedoAdded;
-  fUndoList.OnNeedCaretUndo := {$IFDEF FPC}@{$ENDIF}GetCaretUndo;
-  fRedoList := TSynEditUndoList.Create;
-  fRedoList.OnAddedUndo := {$IFDEF FPC}@{$ENDIF}UndoRedoAdded;
-  FIsUndoing := False;
-  FIsRedoing := False;
-
-  TSynEditStringList(FLines).UndoList := fUndoList;
-  TSynEditStringList(FLines).RedoList := fRedoList;
+  FUndoList := TSynEditStringList(fLines).UndoList;
+  FRedoList := TSynEditStringList(fLines).RedoList;
+  FUndoList.OnNeedCaretUndo := {$IFDEF FPC}@{$ENDIF}GetCaretUndo;
 
   FBlockSelection := TSynEditSelection.Create(FTheLinesView, True);
   FBlockSelection.Caret := FCaret;
-  FBlockSelection.UndoList := fUndoList;
   FBlockSelection.InvalidateLinesMethod := {$IFDEF FPC}@{$ENDIF}InvalidateLines;
   FBlockSelection.AddChangeHandler({$IFDEF FPC}@{$ENDIF}DoBlockSelectionChanged);
 
   FInternalBlockSelection := TSynEditSelection.Create(FTheLinesView, False);
-  FInternalBlockSelection.UndoList := fUndoList;
   FInternalBlockSelection.InvalidateLinesMethod := {$IFDEF FPC}@{$ENDIF}InvalidateLines;
   // No need for caret, on interanl block
 
@@ -1794,8 +1784,6 @@ begin
   FreeAndNil(FMouseActionExecHandlerList);
   FreeAndNil(FMouseActions);
   FreeAndNil(FMouseSelActions);
-  FreeAndNil(fUndoList);
-  FreeAndNil(fRedoList);
   FreeAndNil(fGutter);
   FreeAndNil(fTextDrawer);
   FreeAndNil(fFontDummy);
@@ -4752,7 +4740,7 @@ begin
   Group := fRedoList.PopItem;
   if Group <> nil then begin;
     IncPaintLock;
-    FIsRedoing := True;
+    FTheLinesView.IsRedoing := True;
     Item := Group.Pop;
     if Item <> nil then begin
       BeginUndoBlock;
@@ -4767,7 +4755,7 @@ begin
         EndUndoBlock;
       end;
     end;
-    FIsRedoing := False;
+    FTheLinesView.IsRedoing := False;
     Group.Free;
     if fRedoList.IsTopMarkedAsUnmodified then
       fUndoList.MarkTopAsUnmodified;
@@ -4860,7 +4848,7 @@ begin
   Group := fUndoList.PopItem;
   if Group <> nil then begin;
     IncPaintLock;
-    FIsUndoing := True;
+    FTheLinesView.IsUndoing := True;
     Item := Group.Pop;
     if Item <> nil then begin
       BeginUndoBlock(fRedoList);
@@ -4878,7 +4866,7 @@ begin
         EndUndoBlock(fRedoList);
       end;
     end;
-    FIsUndoing := False;
+    FTheLinesView.IsUndoing := False;
     Group.Free;
     if fUndoList.IsTopMarkedAsUnmodified then
       fRedoList.MarkTopAsUnmodified;
@@ -4919,14 +4907,6 @@ begin
     FCaret.DecForcePastEOL;
     Item.Free;
   end;
-end;
-
-function TCustomSynEdit.GetUndoList: TSynEditUndoList;
-begin
-  if FIsUndoing then
-    Result := fRedoList
-  else
-    Result := fUndoList;
 end;
 
 procedure TCustomSynEdit.SetDividerDrawLevel(const AValue: Integer);
@@ -6208,6 +6188,7 @@ end;
 procedure TCustomSynEdit.BeginUndoBlock(aList: TSynEditUndoList = nil);
 begin
   if aList = nil then aList := fUndoList;
+  aList.OnNeedCaretUndo := {$IFDEF FPC}@{$ENDIF}GetCaretUndo;
   aList.BeginBlock;
   IncPaintLock;
   FFoldedLinesView.Lock;

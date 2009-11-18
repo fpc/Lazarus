@@ -294,9 +294,9 @@ begin
   Result := Caller is TSynEditStringTrimmingList;
   if Result then
     with TSynEditStringTrimmingList(Caller) do begin
-      UndoList.Lock;
+      CurUndoList.Lock;
       EditInsertTrim(1, FPosY, FText);
-      UndoList.Unlock;
+      CurUndoList.Unlock;
       SendNotification(senrLineChange, TSynEditStringTrimmingList(Caller),
                        FPosY - 1, 1);
       SendNotification(senrEditAction, TSynEditStringTrimmingList(Caller),
@@ -366,7 +366,7 @@ begin
   if (fLineIndex <> TSynEditCaret(Sender).LinePos - 1) or
      (FTrimType = settIgnoreAll) then
   begin
-    UndoList.AppendToLastChange(TSynEditUndoTrimForget.Create(FLineIndex+1, FSpaces));
+    CurUndoList.AppendToLastChange(TSynEditUndoTrimForget.Create(FLineIndex+1, FSpaces));
     i := length(FSpaces);
     fSpaces := '';
     SendNotification(senrEditAction, self, FLineIndex+1, 0,
@@ -382,7 +382,7 @@ begin
     s := copy(FSpaces, j + 1, MaxInt);
     FSpaces := copy(FSpaces, 1, j);
     i := length(s);
-    UndoList.AppendToLastChange(TSynEditUndoTrimForget.Create(FLineIndex+1, s));
+    CurUndoList.AppendToLastChange(TSynEditUndoTrimForget.Create(FLineIndex+1, s));
     SendNotification(senrEditAction, self, FLineIndex+1, 0,
                      1+length(fSynStrings[FLineIndex]) + length(FSpaces), -i, '');
   end;
@@ -561,7 +561,7 @@ begin
     if (slen > 0) and (index >= 0) and (index < fSynStrings.Count) then begin
       ltext := fSynStrings[index];
       fSynStrings[index] := ltext;                                            // trigger OnPutted, so the line gets repainted
-      UndoList.AppendToLastChange(TSynEditUndoTrimForget.Create(Index+1, fLockList[i]));
+      CurUndoList.AppendToLastChange(TSynEditUndoTrimForget.Create(Index+1, fLockList[i]));
     end;
   end;
   FIsTrimming := False;
@@ -699,7 +699,7 @@ begin
   StoreSpacesForLine(LogY - 1,
                      copy(s,1, LogX - 1) + AText + copy(s, LogX, length(s)),
                      fSynStrings.Strings[LogY - 1]);
-  UndoList.AddChange(TSynEditUndoTrimInsert.Create(LogX, LogY, Length(AText)));
+  CurUndoList.AddChange(TSynEditUndoTrimInsert.Create(LogX, LogY, Length(AText)));
 end;
 
 function TSynEditStringTrimmingList.EditDeleteTrim(LogX, LogY, ByteLen:
@@ -715,7 +715,7 @@ begin
                      copy(s,1, LogX - 1) + copy(s, LogX +  ByteLen, length(s)),
                      fSynStrings.Strings[LogY - 1]);
   if Result <> '' then
-    UndoList.AddChange(TSynEditUndoTrimDelete.Create(LogX, LogY, Result));
+    CurUndoList.AddChange(TSynEditUndoTrimDelete.Create(LogX, LogY, Result));
 end;
 
 procedure TSynEditStringTrimmingList.EditMoveToTrim(LogY, Len: Integer);
@@ -729,7 +729,7 @@ begin
   t := copy(t, 1, length(t) - Len);
   StoreSpacesForLine(LogY - 1, s, t);
   fSynStrings[LogY - 1] := t;
-  UndoList.AddChange(TSynEditUndoTrimMoveTo.Create(LogY, Len));
+  CurUndoList.AddChange(TSynEditUndoTrimMoveTo.Create(LogY, Len));
 end;
 
 procedure TSynEditStringTrimmingList.EditMoveFromTrim(LogY, Len: Integer);
@@ -743,7 +743,7 @@ begin
   s := copy(s, 1 + Len, Len);
   StoreSpacesForLine(LogY - 1, s, t);
   fSynStrings[LogY - 1] := t;
-  UndoList.AddChange(TSynEditUndoTrimMoveFrom.Create(LogY, Len));
+  CurUndoList.AddChange(TSynEditUndoTrimMoveFrom.Create(LogY, Len));
 end;
 
 procedure TSynEditStringTrimmingList.UpdateLineText(LogY: Integer);
@@ -931,12 +931,7 @@ end;
 
 procedure TSynEditStringTrimmingList.EditUndo(Item: TSynEditUndoItem);
 begin
-  IsUndoing := True;
-  try
-    EditRedo(Item);
-  finally
-    IsUndoing := False;
-  end;
+  EditRedo(Item);
 end;
 
 procedure TSynEditStringTrimmingList.EditRedo(Item: TSynEditUndoItem);

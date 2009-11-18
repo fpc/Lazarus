@@ -95,7 +95,6 @@ type
   protected
     FWordBreaker: TSynWordBreaker;
     FBlockSelection: TSynEditSelection;
-    FIsUndoing, FIsRedoing: Boolean;
     function GetMarkupMgr: TObject; virtual; abstract;
     function GetLines: TStrings; virtual; abstract;
     function GetCaretObj: TSynEditCaret; virtual; abstract;
@@ -387,7 +386,7 @@ end;
 
 function TSynEditFriend.GetIsRedoing: Boolean;
 begin
-  Result := FFriendEdit.FIsRedoing;
+  Result := FFriendEdit.ViewedTextBuffer.IsRedoing;
 end;
 
 function TSynEditFriend.GetCaretObj: TSynEditCaret;
@@ -397,7 +396,7 @@ end;
 
 function TSynEditFriend.GetIsUndoing: Boolean;
 begin
-  Result := FFriendEdit.FIsUndoing;
+  Result := FFriendEdit.ViewedTextBuffer.IsUndoing;
 end;
 
 { TSynSelectedColor }

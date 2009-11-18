@@ -124,6 +124,7 @@ type
     FLineRangeNotificationList: TLineRangeNotificationList; // LineCount
     FLineChangeNotificationList: TLineRangeNotificationList; // ContentChange (not called on add...)
     FLineEditNotificationList: TLineEditNotificationList;
+    FUndoRedoAddedNotificationList: TSynMethodList;
     FOnChangeList: TSynMethodList;
     FOnChangingList: TSynMethodList;
     FOnClearedList: TSynMethodList;
@@ -131,9 +132,9 @@ type
     FIgnoreSendNotification: array [TSynEditNotifyReason] of Integer;
     fDosFileFormat: boolean;
     fIndexOfLongestLine: integer;
-    fRedoList: TSynEditUndoList;
-    fUndoList: TSynEditUndoList;
-    FIsUndoing: Boolean;
+    FRedoList: TSynEditUndoList;
+    FUndoList: TSynEditUndoList;
+    FIsUndoing, FIsRedoing: Boolean;
 
     {$IFDEF SYN_LAZARUS}
     function GetFlags(Index: Integer): TSynEditStringFlags;
@@ -149,7 +150,12 @@ type
 
     function GetRedoList: TSynEditUndoList; override;
     function GetUndoList: TSynEditUndoList; override;
+    function GetCurUndoList: TSynEditUndoList; override;
     procedure SetIsUndoing(const AValue: Boolean); override;
+    function  GetIsUndoing: Boolean; override;
+    procedure SetIsRedoing(const AValue: Boolean); override;
+    function  GetIsRedoing: Boolean; override;
+    procedure UndoRedoAdded(Sender: TObject);
     procedure SendNotification(AReason: TSynEditNotifyReason;
                 ASender: TSynEditStrings; aIndex, aCount: Integer;
                 aBytePos: Integer = -1; aLen: Integer = 0; aTxt: String = ''); override;
@@ -402,9 +408,18 @@ var
   r: TSynEditNotifyReason;
 begin
   fList := TSynEditStringMemory.Create;
+
+  FUndoList := TSynEditUndoList.Create;
+  fUndoList.OnAddedUndo := {$IFDEF FPC}@{$ENDIF}UndoRedoAdded;
+  FRedoList := TSynEditUndoList.Create;
+  fRedoList.OnAddedUndo := {$IFDEF FPC}@{$ENDIF}UndoRedoAdded;
+  FIsUndoing := False;
+  FIsRedoing := False;
+
   FLineRangeNotificationList := TLineRangeNotificationList.Create;
   FLineChangeNotificationList := TLineRangeNotificationList.Create;
   FLineEditNotificationList := TLineEditNotificationList.Create;
+  FUndoRedoAddedNotificationList := TLineEditNotificationList.Create;
   FOnChangeList := TSynMethodList.Create;
   FOnChangingList := TSynMethodList.Create;
   FOnClearedList := TSynMethodList.Create;
@@ -429,9 +444,12 @@ begin
   FreeAndNil(FLineRangeNotificationList);
   FreeAndNil(FLineChangeNotificationList);
   FreeAndNil(FLineEditNotificationList);
+  FreeAndNil(FUndoRedoAddedNotificationList);
   FreeAndNil(FOnChangeList);
   FreeAndNil(FOnChangingList);
   FreeAndNil(FOnClearedList);
+  FreeAndNil(FUndoList);
+  FreeAndNil(FRedoList);
 
   FreeAndNil(fList);
 end;
@@ -600,6 +618,11 @@ end;
 
 function TSynEditStringList.GetUndoList: TSynEditUndoList;
 begin
+  Result := fUndoList;
+end;
+
+function TSynEditStringList.GetCurUndoList: TSynEditUndoList;
+begin
   if FIsUndoing then
     Result := fRedoList
   else
@@ -609,6 +632,26 @@ end;
 procedure TSynEditStringList.SetIsUndoing(const AValue: Boolean);
 begin
   FIsUndoing := AValue;
+end;
+
+function TSynEditStringList.GetIsUndoing: Boolean;
+begin
+  Result := FIsUndoing;
+end;
+
+procedure TSynEditStringList.SetIsRedoing(const AValue: Boolean);
+begin
+  FIsRedoing := AValue;
+end;
+
+function TSynEditStringList.GetIsRedoing: Boolean;
+begin
+  Result := FIsRedoing;
+end;
+
+procedure TSynEditStringList.UndoRedoAdded(Sender: TObject);
+begin
+  FUndoRedoAddedNotificationList.CallNotifyEvents(Sender);
 end;
 
 // Maps the Physical Width (ScreenCells) to each character
@@ -872,6 +915,7 @@ begin
     senrBeginUpdate : FOnChangingList.Add(AHandler);
     senrEndUpdate : FOnChangeList.Add(AHandler);
     senrCleared : FOnClearedList.Add(AHandler);
+    senrUndoRedoAdded : FUndoRedoAddedNotificationList.Add(AHandler);
   end;
 end;
 
@@ -884,6 +928,7 @@ begin
     senrBeginUpdate : FOnChangingList.Remove(AHandler);
     senrEndUpdate : FOnChangeList.Remove(AHandler);
     senrCleared : FOnClearedList.Remove(AHandler);
+    senrUndoRedoAdded : FUndoRedoAddedNotificationList.Remove(AHandler);
   end;
 end;
 
@@ -913,7 +958,7 @@ begin
     LogX := Length(s) + 1;
   end;
   Strings[LogY - 1] := copy(s,1, LogX - 1) + AText + copy(s, LogX, length(s));
-  UndoList.AddChange(TSynEditUndoTxtInsert.Create(LogX, LogY, Length(AText)));
+  CurUndoList.AddChange(TSynEditUndoTxtInsert.Create(LogX, LogY, Length(AText)));
   MarkModified(LogY, LogY);
   SendNotification(senrEditAction, self, LogY, 0, LogX, length(AText), AText);
 end;
@@ -927,7 +972,7 @@ begin
     exit;
   Result := copy(s, LogX, ByteLen);
   Strings[LogY - 1] := copy(s,1, LogX - 1) + copy(s, LogX +  ByteLen, length(s));
-  UndoList.AddChange(TSynEditUndoTxtDelete.Create(LogX, LogY, Result));
+  CurUndoList.AddChange(TSynEditUndoTxtDelete.Create(LogX, LogY, Result));
   MarkModified(LogY, LogY);
   SendNotification(senrEditAction, self, LogY, 0, LogX, -ByteLen, '');
 end;
@@ -940,7 +985,7 @@ begin
   if LogX - 1 < length(s) then
     Strings[LogY - 1] := copy(s, 1, LogX - 1);
   Insert(LogY, copy(s, LogX, length(s)));
-  UndoList.AddChange(TSynEditUndoTxtLineBreak.Create(LogY));
+  CurUndoList.AddChange(TSynEditUndoTxtLineBreak.Create(LogY));
   MarkModified(LogY, LogY + 1);
   SendNotification(senrEditAction, self, LogY, 1, LogX, 0, '');
 end;
@@ -952,7 +997,7 @@ begin
   t := Strings[LogY - 1];
   if FillText <> ''  then
     EditInsert(1 + Length(t), LogY, FillText);
-  UndoList.AddChange(TSynEditUndoTxtLineJoin.Create(1 + Length(Strings[LogY-1]),
+  CurUndoList.AddChange(TSynEditUndoTxtLineJoin.Create(1 + Length(Strings[LogY-1]),
                                                     LogY));
   t := t + FillText;
   Strings[LogY - 1] := t + Strings[LogY] ;
@@ -965,7 +1010,7 @@ procedure TSynEditStringList.EditLinesInsert(LogY, ACount: Integer;
   AText: String = '');
 begin
   InsertLines(LogY - 1, ACount);
-  UndoList.AddChange(TSynEditUndoTxtLinesIns.Create(LogY, ACount));
+  CurUndoList.AddChange(TSynEditUndoTxtLinesIns.Create(LogY, ACount));
   SendNotification(senrEditAction, self, LogY, ACount, 1, 0, '');
   if AText <> '' then
     EditInsert(1, LogY, AText);
@@ -979,23 +1024,18 @@ begin
   for i := LogY to LogY + ACount - 1 do
     EditDelete(1, i, length(Strings[i-1]));
   DeleteLines(LogY - 1, ACount);
-  UndoList.AddChange(TSynEditUndoTxtLinesDel.Create(LogY, ACount));
+  CurUndoList.AddChange(TSynEditUndoTxtLinesDel.Create(LogY, ACount));
   SendNotification(senrEditAction, self, LogY, -ACount, 1, 0, '');
 end;
 
 procedure TSynEditStringList.EditUndo(Item: TSynEditUndoItem);
 begin
-  IsUndoing := True;
-  try
-    EditRedo(Item);
-  finally
-    IsUndoing := False;
-  end;
+  EditRedo(Item);
 end;
 
 procedure TSynEditStringList.UndoEditLinesDelete(LogY, ACount: Integer);
 begin
-  UndoList.AddChange(TSynEditUndoTxtLinesDel.Create(LogY, ACount));
+  CurUndoList.AddChange(TSynEditUndoTxtLinesDel.Create(LogY, ACount));
   DeleteLines(LogY - 1, ACount);
   SendNotification(senrEditAction, self, LogY, -ACount, 1, 0, '');
 end;
