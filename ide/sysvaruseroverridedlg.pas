@@ -86,7 +86,7 @@ begin
     if MessageDlg(lisSVUOInvalidVariableName,
       Format(lisSVUOisNotAValidIdentifier, ['"', v, '"']),
       mtWarning,[mbCancel,mbIgnore],0)=mrCancel
-    then exit;
+    then ModalResult := mrNone; //cancel close
   end;
 end;
 
