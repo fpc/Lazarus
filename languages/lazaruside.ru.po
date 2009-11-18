@@ -5,7 +5,7 @@ msgstr ""
 "Content-Type: text/plain; charset=utf-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "POT-Creation-Date: \n"
-"PO-Revision-Date: 2009-11-16 00:28+0300\n"
+"PO-Revision-Date: 2009-11-19 00:53+0300\n"
 "Language-Team: \n"
 "MIME-Version: 1.0\n"
 
@@ -970,7 +970,7 @@ msgstr "Отображение"
 
 #: lazarusidestrconsts.dlgededit
 msgid "Edit..."
-msgstr "Правка"
+msgstr "Редактировать..."
 
 #: lazarusidestrconsts.dlgedfiles
 msgid "Editor files"
@@ -1125,15 +1125,15 @@ msgstr "Поиск текста под курсором"
 
 #: lazarusidestrconsts.dlgfoldlfmitem
 msgid "Item"
-msgstr ""
+msgstr "Элемент"
 
 #: lazarusidestrconsts.dlgfoldlfmlist
 msgid "List <>"
-msgstr ""
+msgstr "Список <>"
 
 #: lazarusidestrconsts.dlgfoldlfmobject
 msgid "Object (inherited, inline)"
-msgstr ""
+msgstr "Объект (унаследованный, вложенный)"
 
 #: lazarusidestrconsts.dlgfoldlocalpasvartype
 msgctxt "lazarusidestrconsts.dlgfoldlocalpasvartype"
@@ -1222,23 +1222,23 @@ msgstr "Секции Var/Type (глобальные)"
 
 #: lazarusidestrconsts.dlgfoldxmlcdata
 msgid "CData"
-msgstr ""
+msgstr "Секция CDATA"
 
 #: lazarusidestrconsts.dlgfoldxmlcomment
 msgid "Comment"
-msgstr ""
+msgstr "Комментарий"
 
 #: lazarusidestrconsts.dlgfoldxmldoctype
 msgid "DocType"
-msgstr ""
+msgstr "Секция DOCTYPE"
 
 #: lazarusidestrconsts.dlgfoldxmlnode
 msgid "Node"
-msgstr ""
+msgstr "Элемент"
 
 #: lazarusidestrconsts.dlgfoldxmlprocess
 msgid "Processing Instruction"
-msgstr ""
+msgstr "Команда обработки"
 
 #: lazarusidestrconsts.dlgforecolor
 msgid "Foreground"
@@ -3380,7 +3380,7 @@ msgstr "Спросить перед заменой каждого фрагмен
 
 #: lazarusidestrconsts.lisaskforcomponentnameafterputtingitonform
 msgid "Ask for component name after putting it on a designer form"
-msgstr ""
+msgstr "Спрашивать имя компонента при помещении его на форму"
 
 #: lazarusidestrconsts.lisaskforfilenameonnewfile
 msgid "Ask for file name on new file"
@@ -3388,7 +3388,7 @@ msgstr "Спрашивать имя нового файла при его соз
 
 #: lazarusidestrconsts.lisasknameoncreate
 msgid "Ask name on create"
-msgstr ""
+msgstr "Спрашивать имя при создании"
 
 #: lazarusidestrconsts.lisautocompletionoff
 msgid "Auto completion: off"
@@ -3478,7 +3478,7 @@ msgstr "При запуске проекта выполнить 'Запусти�
 #: lazarusidestrconsts.lisbfrun
 msgctxt "lazarusidestrconsts.lisbfrun"
 msgid "Run"
-msgstr "Запустить"
+msgstr "Запуск"
 
 #: lazarusidestrconsts.lisbfruncommand
 msgid "Run Command"
@@ -5624,7 +5624,7 @@ msgstr "%s не существует: %s"
 
 #: lazarusidestrconsts.lisdonotclosetheide
 msgid "Do not close the IDE"
-msgstr "Не закрывать  IDE"
+msgstr "Не закрывать IDE"
 
 #: lazarusidestrconsts.lisdonotclosetheproject
 msgid "Do not close the project"
@@ -10760,7 +10760,7 @@ msgstr "&Объекты"
 
 #: lazarusidestrconsts.lisplistprocedurelist
 msgid "Procedure List"
-msgstr ""
+msgstr "Список процедур"
 
 #: lazarusidestrconsts.lisplisttype
 msgctxt "lazarusidestrconsts.lisplisttype"
@@ -11520,7 +11520,7 @@ msgstr "Показывать пустые модули/пакеты"
 
 #: lazarusidestrconsts.lisshowglyphsfor
 msgid "Show Glyphs for:"
-msgstr ""
+msgstr "Показывать значки для:"
 
 #: lazarusidestrconsts.lisshowgutterinobjectinspector
 msgid "Show gutter"

@@ -2,7 +2,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: \n"
 "POT-Creation-Date: \n"
-"PO-Revision-Date: 2007-01-21 20:04+0300\n"
+"PO-Revision-Date: 2009-11-19 00:10+0300\n"
 "Last-Translator: Maxim Ganetsky <maxkill@mail.ru>\n"
 "Language-Team: \n"
 "MIME-Version: 1.0\n"
@@ -15,7 +15,7 @@ msgstr "Ошибка: компонент \"%s\" не найден"
 
 #: frmselectdataset.serrselectdataset
 msgid "Please select a dataset first"
-msgstr "Пожалуйста, сначала выберите набор данных (dataset)"
+msgstr "Сначала выберите набор данных (dataset)"
 
 #: frmselectdataset.smenucopydataset
 msgid "Copy data from Dataset"
