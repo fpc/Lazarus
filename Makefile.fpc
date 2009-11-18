@@ -188,6 +188,9 @@ endif
 ifeq (${DEBBUILD},1)
 DEBUSESVN=1
 endif
+ifdef SNAPSHOT
+DEBUSESVN=1
+endif
 ifndef DEBUSESVN
 $(error Need "${DEBSRC_ORIG}.tar.gz" to build for DEBBUILD = ${DEBBUILD}> 1)
 endif
