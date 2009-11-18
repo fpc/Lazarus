@@ -618,11 +618,8 @@ begin
     if Owner = nil then RaiseGDBException(
       'TGtkListStoreStringList.Insert Unspecified owner');
 
-    if Index=Count then
-      gtk_list_store_append(FGtkListStore, @li)
-    else
-      gtk_list_store_insert(FGtkListStore, @li, Index);
-    gtk_list_store_set(FGtkListStore, @li, [FColumnIndex, PChar(S), -1]);
+    // this call is few times faster than gtk_list_store_insert, gtk_list_store_set
+    gtk_list_store_insert_with_values(FGtkListStore, @li, Index, FColumnIndex, PChar(S), -1);
     IncreaseChangeStamp;
 
     //if the item is inserted before the selected item the
