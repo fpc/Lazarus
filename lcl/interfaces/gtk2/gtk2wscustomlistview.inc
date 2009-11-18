@@ -805,6 +805,7 @@ class procedure TGtk2WSCustomListView.ItemInsert(const ALV: TCustomListView;
 var
   Widgets: PTVWidgets;
   Iter: TGtkTreeIter;
+  Index: Integer;
 //  BitImage: TBitmap;
 begin
   if not WSCheckHandleAllocated(ALV, 'ItemInsert')
@@ -817,11 +818,10 @@ begin
     if ItemCache = nil then
       ItemCache := TStringList.Create;
     if AIndex = -1 then
-      gtk_list_store_append(PGtkListStore(TreeModel), @Iter)
+      Index := gtk_tree_model_iter_n_children(TreeModel, nil)
     else
-      gtk_list_store_insert(PGtkListStore(TreeModel), @Iter, AIndex);
-
-    gtk_list_store_set(PGtkListStore(TreeModel), @Iter, [0, Pointer(AItem), -1]);
+      Index := AIndex;
+    gtk_list_store_insert_with_values(PGtkListStore(TreeModel), @Iter, Index, 0, Pointer(AItem), -1);
   end;
 end;
 
