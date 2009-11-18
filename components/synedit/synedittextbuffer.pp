@@ -136,9 +136,7 @@ type
     FUndoList: TSynEditUndoList;
     FIsUndoing, FIsRedoing: Boolean;
 
-    {$IFDEF SYN_LAZARUS}
     function GetFlags(Index: Integer): TSynEditStringFlags;
-    {$ENDIF}
     procedure Grow;
     procedure InsertItem(Index: integer; const S: string);
     function ClassIndexForAttribute(AttrIndex: TClass): Integer;
@@ -187,19 +185,14 @@ type
     procedure Clear; override;
     procedure Delete(Index: integer); override;
     procedure RegisterAttribute(const Index: TClass; const Size: Word); override;
-    procedure DeleteLines(Index, NumLines: integer);                            // DJLP 2000-11-01
-      {$IFDEF SYN_LAZARUS}override;{$ENDIF}
+    procedure DeleteLines(Index, NumLines: integer); override;
     procedure Insert(Index: integer; const S: string); override;
-    procedure InsertLines(Index, NumLines: integer);                            // DJLP 2000-11-01
-      {$IFDEF SYN_LAZARUS}override;{$ENDIF}
-    procedure InsertStrings(Index: integer; NewStrings: TStrings);              // DJLP 2000-11-01
-      {$IFDEF SYN_LAZARUS}override;{$ENDIF}
-    {$IFDEF SYN_LAZARUS}
+    procedure InsertLines(Index, NumLines: integer); override;
+    procedure InsertStrings(Index: integer; NewStrings: TStrings); override;
     procedure MarkModified(AFirst, ALast: Integer);
     procedure MarkSaved;
     procedure SetDebugMarks(AFirst, ALast: Integer);
     procedure ClearDebugMarks;
-    {$ENDIF}
     procedure AddGenericHandler(AReason: TSynEditNotifyReason;
                 AHandler: TMethod); override;
     procedure RemoveGenericHandler(AReason: TSynEditNotifyReason;
@@ -208,10 +201,8 @@ type
   public
     property DosFileFormat: boolean read fDosFileFormat write fDosFileFormat;    
     property LengthOfLongestLine: integer read GetLengthOfLongestLine;
-    {$IFDEF SYN_LAZARUS}
     property Flags[Index: Integer]: TSynEditStringFlags read GetFlags
       write SetFlags;
-    {$ENDIF}
   public
     property UndoList: TSynEditUndoList read GetUndoList write fUndoList;
     property RedoList: TSynEditUndoList read GetRedoList write fRedoList;
@@ -505,7 +496,7 @@ begin
     FLineRangeNotificationList.CallRangeNotifyEvents(self, 0, -c);
     EndUpdate;
   end;
-  fIndexOfLongestLine := -1;                                                    //mh 2000-10-19
+  fIndexOfLongestLine := -1;
 end;
 
 procedure TSynEditStringList.Delete(Index: integer);
@@ -516,12 +507,11 @@ begin
   if Index < Count-1 then
     fList.Move(Index + 1, Index, Count-Index-1);
   SetCount(Count - 1);
-  fIndexOfLongestLine := -1;                                                    //mh 2000-10-19
+  fIndexOfLongestLine := -1;
   FLineRangeNotificationList.CallRangeNotifyEvents(self, Index, -1);
   EndUpdate;
 end;
 
-{begin}                                                                         // DJLP 2000-11-01
 procedure TSynEditStringList.DeleteLines(Index, NumLines: Integer);
 var
   LinesAfter: integer;
@@ -544,9 +534,7 @@ begin
     FLineRangeNotificationList.CallRangeNotifyEvents(self, Index, -NumLines);
   end;
 end;
-{end}                                                                           // DJLP 2000-11-01
 
-{$IFDEF SYN_LAZARUS}
 function TSynEditStringList.GetFlags(Index: Integer): TSynEditStringFlags;
 begin
   if (Index >= 0) and (Index < Count) then
@@ -554,7 +542,6 @@ begin
   else
     Result := [];
 end;
-{$ENDIF}
 
 function TSynEditStringList.Get(Index: integer): string;
 begin
@@ -701,17 +688,13 @@ begin
 end;
 
 procedure TSynEditStringList.Insert(Index: integer; const S: string);
-{$IFDEF SYN_LAZARUS}
 var
   OldCnt : integer;
-{$ENDIF}
 begin
   if (Index < 0) or (Index > Count) then
     ListIndexOutOfBounds(Index);
   BeginUpdate;
-  {$IFDEF SYN_LAZARUS}
   OldCnt:=Count;
-  {$ENDIF}
   InsertItem(Index, S);
   FLineRangeNotificationList.CallRangeNotifyEvents(self, Index, Count - OldCnt);
   EndUpdate;
@@ -789,9 +772,7 @@ procedure TSynEditStringList.PutObject(Index: integer; AObject: TObject);
 begin
   if (Index < 0) or (Index >= Count) then
     ListIndexOutOfBounds(Index);
-  {$IFDEF SYN_LAZARUS}
   if fList.Objects[Index] = AObject then exit;
-  {$ENDIF}
   BeginUpdate;
   fList.Objects[Index]:= AObject;
   EndUpdate;
@@ -870,7 +851,6 @@ begin
   SetAttribute(TSynEditFlagsClass, Index, Pointer(PtrUInt(Integer(AValue))));
 end;
 
-{$IFDEF SYN_LAZARUS}
 procedure TSynEditStringList.MarkModified(AFirst, ALast: Integer);
 var
   Index: Integer;
@@ -931,8 +911,6 @@ begin
     senrUndoRedoAdded : FUndoRedoAddedNotificationList.Remove(AHandler);
   end;
 end;
-
-{$ENDIF}
 
 procedure TSynEditStringList.SetCapacity(NewCapacity: integer);
 begin
