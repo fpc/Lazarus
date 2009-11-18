@@ -26,7 +26,6 @@ set -e
 set -x
 
 HDIUTIL=/usr/bin/hdiutil
-#UPDATELIST=~/tmp/updatelist
 
 LazVersionPostfix=
 if [ "$1" = "append-revision" ]; then
@@ -96,6 +95,7 @@ DATESTAMP=$(date +%Y%m%d)
 TEMPLATEDIR=$LAZSOURCEDIR/tools/install/macosx
 PACKPROJTEMPLATE=$TEMPLATEDIR/lazarus.packproj.template
 PACKPROJ=$BUILDDIR/lazarus.packproj
+MACOSX104LINKEROPTS="-k-macosx_version_min -k10.4 -XR/Developer/SDKs/MacOSX10.4u.sdk/"
 
 # copy sources
 rm -rf $BUILDDIR
@@ -110,12 +110,11 @@ $SVN export $LAZSOURCEDIR $LAZBUILDDIR
 
 cd $LAZBUILDDIR
 if [ ! -e tools/svn2revisioninc ]; then
-  make tools PP=$COMPILER
+  make tools PP=$COMPILER OPT="$MACOSX104LINKEROPTS"
 fi
 ./tools/svn2revisioninc $LAZSOURCEDIR ide/revision.inc
 
-make bigide PP=$COMPILER USESVN2REVISIONINC=0
-make lazbuilder PP=$COMPILER
+make bigide PP=$COMPILER USESVN2REVISIONINC=0 OPT="$MACOSX104LINKEROPTS"
 
 # make non-default LCL platforms
 make LCL_PLATFORM=gtk PP=$COMPILER lcl
