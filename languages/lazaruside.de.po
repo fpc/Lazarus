@@ -2,7 +2,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: \n"
 "POT-Creation-Date: \n"
-"PO-Revision-Date: 2009-09-27 17:58+0100\n"
+"PO-Revision-Date: 2009-11-18 16:30+0100\n"
 "Last-Translator: Swen Heinig <swen.heinig@freenet.de>\n"
 "Language-Team: Deutsch <lazarus@miraclec.com>\n"
 "MIME-Version: 1.0\n"
@@ -779,7 +779,7 @@ msgstr "Cursor überspringt Auswahl"
 
 #: lazarusidestrconsts.dlgcursorskipstab
 msgid "Cursor skips tabs"
-msgstr ""
+msgstr "Cursor überspringt Tabulatoren"
 
 #: lazarusidestrconsts.dlgcustomext
 msgid "User defined extension (.pp.xxx)"
@@ -819,7 +819,7 @@ msgstr "Desktop"
 
 #: lazarusidestrconsts.dlgdesktopbuttons
 msgid "Buttons - "
-msgstr ""
+msgstr "Buttons -"
 
 #: lazarusidestrconsts.dlgdesktopfiles
 msgid "Desktop files"
@@ -831,7 +831,7 @@ msgstr "Hinweise"
 
 #: lazarusidestrconsts.dlgdesktopmenus
 msgid "Menus - "
-msgstr ""
+msgstr "Menüs - "
 
 #: lazarusidestrconsts.dlgdesktopmisc
 msgid "Misc Options"
@@ -1447,7 +1447,7 @@ msgstr "Code einrücken auf"
 #: lazarusidestrconsts.dlgindentstabsgroupoptions
 #| msgid "Indents/Tabs options:"
 msgid "Indent and Tabs:"
-msgstr "Einstell. f. Einrück./Tabs:"
+msgstr "Einstellungen für Einrück./Tabs:"
 
 #: lazarusidestrconsts.dlginfrontofmethods
 msgid "In front of methods"
@@ -3391,11 +3391,11 @@ msgstr ""
 
 #: lazarusidestrconsts.lisaskforfilenameonnewfile
 msgid "Ask for file name on new file"
-msgstr ""
+msgstr "Nach Dateinamen für neue Datei fragen"
 
 #: lazarusidestrconsts.lisasknameoncreate
 msgid "Ask name on create"
-msgstr ""
+msgstr "Namen beim Erzeugen erfragen"
 
 #: lazarusidestrconsts.lisautocompletionoff
 msgid "Auto completion: off"
@@ -4144,7 +4144,7 @@ msgstr "Verzeichnis leeren?"
 
 #: lazarusidestrconsts.lisclearkeymapping
 msgid "Clear Key Mapping"
-msgstr ""
+msgstr "Tastaturbel. löschen"
 
 #: lazarusidestrconsts.lisclickheretobrowsethefilehint
 msgid "Click here to browse the file"
@@ -5018,7 +5018,7 @@ msgstr "enthält"
 
 #: lazarusidestrconsts.liscontextsensitive
 msgid "Context sensitive"
-msgstr ""
+msgstr "Kontextabhängig"
 
 #: lazarusidestrconsts.liscontinue
 msgctxt "lazarusidestrconsts.liscontinue"
@@ -5574,7 +5574,7 @@ msgstr "Anweisungen"
 
 #: lazarusidestrconsts.lisdirectorynotfound
 msgid "Directory %s%s%s not found."
-msgstr ""
+msgstr "Verzeichnis %s%s%s nicht gefunden."
 
 #: lazarusidestrconsts.lisdisableallinsamesource
 msgid "Disable All in same source"
@@ -5650,7 +5650,7 @@ msgstr "Startbildschirm nicht anzeigen"
 
 #: lazarusidestrconsts.lisdonotshowthismessageagain
 msgid "Do not show this message again"
-msgstr ""
+msgstr "Diese Nachricht nicht mehr anzeigen"
 
 #: lazarusidestrconsts.lisdrawgridlinesobjectinspector
 msgid "Draw grid lines"
@@ -6091,7 +6091,7 @@ msgstr "Jede n-te Zeile:"
 
 #: lazarusidestrconsts.lisexamplefile
 msgid "Example file:"
-msgstr ""
+msgstr "Beispieldatei:"
 
 #: lazarusidestrconsts.lisexamples
 msgid "Examples"
@@ -6788,7 +6788,7 @@ msgstr "Include-Pfade"
 
 #: lazarusidestrconsts.lisindentation
 msgid "Indentation"
-msgstr ""
+msgstr "Einrückung"
 
 #: lazarusidestrconsts.lisindex
 msgid "Index"
@@ -9406,7 +9406,7 @@ msgstr "? (An)"
 
 #: lazarusidestrconsts.lisonbreaklineiereturnorenterkey
 msgid "On break line (i.e. return or enter key)"
-msgstr ""
+msgstr "Beim Zeilenumbruch (z.B. Return- oder Enter-Taste)"
 
 #: lazarusidestrconsts.lisonlysearchforwholewords
 msgid "Only search for whole words"
@@ -9414,7 +9414,7 @@ msgstr "Suche nur nach ganzen Worten"
 
 #: lazarusidestrconsts.lisonpastefromclipboard
 msgid "On paste from clipboard"
-msgstr ""
+msgstr "Beim Einfügen aus der Zwischenablage"
 
 #: lazarusidestrconsts.lisopenasxmlfile
 msgid "Open as XML file"
@@ -11227,7 +11227,7 @@ msgstr "Vom Projekt entfernen"
 
 #: lazarusidestrconsts.lisremovefromsearchpath
 msgid "Remove from search path"
-msgstr ""
+msgstr "Aus dem Suchpfad entfernen"
 
 #: lazarusidestrconsts.lisremoveselectedunits
 msgid "Remove selected units"
@@ -11532,7 +11532,7 @@ msgstr ""
 
 #: lazarusidestrconsts.lisshowglyphsfor
 msgid "Show Glyphs for:"
-msgstr ""
+msgstr "Zeige Bildzeichen für:"
 
 #: lazarusidestrconsts.lisshowgutterinobjectinspector
 msgid "Show gutter"
@@ -13259,7 +13259,7 @@ msgstr "Alternative Taste (oder 2-Tastenkombination)"
 
 #: lazarusidestrconsts.srkmcarhelpmenu
 msgid "Help menu commands"
-msgstr "Hilfemenübefehle"
+msgstr "Hilfemenü-Befehle"
 
 #: lazarusidestrconsts.srkmcatcmdcmd
 msgid "Command commands"
@@ -13271,7 +13271,7 @@ msgstr "CodeTools-Befehle"
 
 #: lazarusidestrconsts.srkmcatcolselection
 msgid "Text column selection commands"
-msgstr ""
+msgstr "Textspaltenauswahlbefehle"
 
 #: lazarusidestrconsts.srkmcatcursormoving
 msgid "Cursor moving commands"
@@ -13283,7 +13283,7 @@ msgstr "Texteditorbefehle"
 
 #: lazarusidestrconsts.srkmcatenvmenu
 msgid "Environment menu commands"
-msgstr "Umgebungsmenübefehle"
+msgstr "Umgebungsmenü-Befehle"
 
 #: lazarusidestrconsts.srkmcatfilemenu
 msgid "File menu commands"
@@ -13291,7 +13291,7 @@ msgstr "Dateimenü-Befehle"
 
 #: lazarusidestrconsts.srkmcatfold
 msgid "Text folding commands"
-msgstr "Textfalte-Befehle"
+msgstr "Textfaltungs-Befehle"
 
 #: lazarusidestrconsts.srkmcatmarker
 msgid "Text marker commands"
@@ -13299,11 +13299,11 @@ msgstr "Textmarkierungsbefehle"
 
 #: lazarusidestrconsts.srkmcatpackagemenu
 msgid "Package menu commands"
-msgstr "Package-Menübefehle"
+msgstr "Packagemenü-Befehle"
 
 #: lazarusidestrconsts.srkmcatprojectmenu
 msgid "Project menu commands"
-msgstr "Projektmenübefehle"
+msgstr "Projektmenü-Befehle"
 
 #: lazarusidestrconsts.srkmcatrunmenu
 msgid "Run menu commands"
@@ -13343,7 +13343,7 @@ msgstr ""
 
 #: lazarusidestrconsts.srkmcattoolmenu
 msgid "Tools menu commands"
-msgstr "Werkzeugmenübefehle"
+msgstr "Werkzeugmenü-Befehle"
 
 #: lazarusidestrconsts.srkmcatviewmenu
 msgid "View menu commands"
