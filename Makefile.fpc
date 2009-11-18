@@ -165,21 +165,33 @@ LINKTREE:=$(CPPROG) -Rfpl
 endif
 endif
 
-ifndef SVNREVISION
-SVNREVISION=$(svnversion) $(BASEDIR)
-endif
-
 ifneq ($(wildcard ${DEBDIR}/changelog),)
 
 .PHONY: debcopy deb
 
 DEBPACKAGEVERSION:=$(shell head -n 1 ${DEBDIR}/changelog | awk '{ print $$2 }' | tr -d '[()]')
-DEBVERSION:=$(shell echo $(DEBPACKAGEVERSION) | awk -F '-' '{ print $$1 }')
+DEBVERSION=$(firstword $(subst -, ,${DEBPACKAGEVERSION}))
+DEBBUILD=$(lastword $(subst -, ,${DEBPACKAGEVERSION}))
 DEBSRC=lazarus-${DEBVERSION}
-DEBSRCDIR=$(BUILDDIR)/${DEBSRC}
+DEBSRCDIR=${BUILDDIR}/${DEBSRC}
 DEBSRC_ORIG=lazarus_${DEBVERSION}.orig
 BUILDDATE=$(shell /bin/date --utc +%Y%m%d)
+ifdef MENTORS
 DEB_BUILDPKG_OPT=-sa
+else
+DEB_BUILDPKG_OPT=
+endif
+ifeq ($(wildcard ${DEBSRC_ORIG}.tar.gz),)
+ifeq (${DEBBUILD},0)
+DEBUSESVN=1
+endif
+ifeq (${DEBBUILD},1)
+DEBUSESVN=1
+endif
+ifndef DEBUSESVN
+$(error Need "${DEBSRC_ORIG}.tar.gz" to build for DEBBUILD = ${DEBBUILD}> 1)
+endif
+endif
 ifndef SIGN
 DEB_BUILDPKG_OPT+= -us -uc
 endif
@@ -191,8 +203,9 @@ ifneq ($(DEBVERSION),$(PACKAGE_VERSION))
 endif
 
 debcopy: distclean
-	rm -rf ${BUILDDIR}
-	install -d $(DEBSRCDIR)
+	${DELTREE} ${BUILDDIR}
+	${MKDIRTREE} $(DEBSRCDIR)
+ifdef DEBUSESVN
 	$(LINKTREE) Makefile.fpc $(DEBSRCDIR)
 	$(LINKTREE) COPYING.* $(DEBSRCDIR)
 	$(LINKTREE) README.txt $(DEBSRCDIR)
@@ -215,12 +228,16 @@ debcopy: distclean
 	$(LINKTREE) tools $(DEBSRCDIR)
 	# add ide/revision.inc
 	echo "const RevisionStr = '${SVNVERSION}';" > $(DEBSRCDIR)/ide/revision.inc
+else
+	tar -C ${BUILDDIR} -zxf ${DEBSRC_ORIG}.tar.gz ${DEBSRC}
+	${DELTREE} $(DEBSRCDIR)/debian
+endif
 
 debsetup:
 	$(LINKTREE) ${DEBDIR} $(DEBSRCDIR)/debian
 ifdef SNAPSHOT
 	sed s+${DEBPACKAGEVERSION}+${DEBPACKAGEVERSION}-${BUILDDATE}+ $(DEBSRCDIR)/debian/changelog > $(DEBSRCDIR)/debian/changelog.tmp
-	mv $(DEBSRCDIR)/debian/changelog.tmp $(DEBSRCDIR)/debian/changelog
+	${MOVE} $(DEBSRCDIR)/debian/changelog.tmp $(DEBSRCDIR)/debian/changelog
 endif
 	chmod 755 $(DEBSRCDIR)/debian/rules
 	find $(DEBSRCDIR) -name '.svn' | xargs -n1 rm -rf
@@ -234,19 +251,26 @@ ifdef LINTIAN
 endif
 
 debclean:
+ifndef DEBUSESVN
+	${DEL} ${BUILDDIR}/${DEBSRC_ORIG}
+endif
 	mv -v -t . \
 	$(DEBSRCDIR)/../*.changes \
 	$(DEBSRCDIR)/../*.deb \
 	$(DEBSRCDIR)/../*.dsc \
 	$(DEBSRCDIR)/../*.gz
-	rm -rf $(DEBSRCDIR)
+	${DELTREE} $(DEBSRCDIR)
 	rmdir $(BUILDDIR)
 
 deb: debcheck debcopy deborigtargz debsetup debbuild debcheckpolicy debclean
 
 deborigtargz:
+ifdef DEBUSESVN
 	#$(MAKE) fpc_zipinstall USETAR=y ZIPTARGET=debcopy PACKDIR=$(DEBSRCDIR) FULLZIPNAME=${DEBSRC_ORIG}
 	tar -C ${BUILDDIR} -zcf ${BUILDDIR}/${DEBSRC_ORIG}.tar.gz --exclude-vcs ${DEBSRC}
+else
+	${LINKTREE} ${DEBSRC_ORIG}.tar.gz ${BUILDDIR}/${DEBSRC_ORIG}.tar.gz
+endif
 
 endif   # changelog found
 
