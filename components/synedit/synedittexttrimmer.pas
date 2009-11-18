@@ -52,6 +52,7 @@ type
     fLockList : TStringList;
     FLineEdited: Boolean;
     procedure DoCaretChanged(Sender : TObject);
+    procedure ListCleared(Sender: TObject);
     Procedure LinesChanged(Sender: TSynEditStrings; AIndex, ACount : Integer);
     Procedure LineCountChanged(Sender: TSynEditStrings; AIndex, ACount : Integer);
     procedure DoLinesChanged(Index, N: integer);
@@ -328,12 +329,14 @@ begin
   Inherited Create(ASynStringSource);
   fSynStrings.AddChangeHandler(senrLineCount, {$IFDEF FPC}@{$ENDIF}LineCountChanged);
   fSynStrings.AddChangeHandler(senrLineChange, {$IFDEF FPC}@{$ENDIF}LinesChanged);
+  fSynStrings.AddNotifyHandler(senrCleared, {$IFDEF FPC}@{$ENDIF}ListCleared);
 end;
 
 destructor TSynEditStringTrimmingList.Destroy;
 begin
   fSynStrings.RemoveChangeHandler(senrLineCount, {$IFDEF FPC}@{$ENDIF}LineCountChanged);
   fSynStrings.RemoveChangeHandler(senrLineChange, {$IFDEF FPC}@{$ENDIF}LinesChanged);
+  fSynStrings.RemoveNotifyHandler(senrCleared, {$IFDEF FPC}@{$ENDIF}ListCleared);
   fCaret.RemoveChangeHandler(@DoCaretChanged);
   FreeAndNil(fLockList);
   inherited Destroy;
@@ -386,6 +389,13 @@ begin
   FIsTrimming := False;
   FLineEdited := False;
   fLineIndex := TSynEditCaret(Sender).LinePos - 1;
+end;
+
+procedure TSynEditStringTrimmingList.ListCleared(Sender: TObject);
+begin
+  fLockList.Clear;
+  fLineIndex:= -1;
+  fSpaces := '';
 end;
 
 procedure TSynEditStringTrimmingList.LinesChanged(Sender: TSynEditStrings; AIndex, ACount: Integer);
