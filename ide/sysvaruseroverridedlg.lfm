@@ -1,21 +1,22 @@
 object SysVarUserOverrideDialog: TSysVarUserOverrideDialog
-  Left = 344
-  Height = 147
-  Top = 361
+  Left = 348
+  Height = 161
+  Top = 397
   Width = 400
   HorzScrollBar.Page = 399
   VertScrollBar.Page = 146
-  ActiveControl = ValueEdit
+  ActiveControl = VariableEdit
   Align = alTop
+  AutoSize = True
   Caption = 'SysVarUserOverrideDialog'
-  ClientHeight = 147
+  ClientHeight = 161
   ClientWidth = 400
   OnCreate = FormCreate
   Position = poScreenCenter
   LCLVersion = '0.9.29'
   object VariableLabel: TLabel
     Left = 6
-    Height = 14
+    Height = 18
     Top = 6
     Width = 388
     Align = alTop
@@ -25,8 +26,8 @@ object SysVarUserOverrideDialog: TSysVarUserOverrideDialog
   end
   object ValueLabel: TLabel
     Left = 6
-    Height = 14
-    Top = 53
+    Height = 18
+    Top = 63
     Width = 388
     Align = alTop
     BorderSpacing.Around = 6
@@ -35,8 +36,8 @@ object SysVarUserOverrideDialog: TSysVarUserOverrideDialog
   end
   object ValueEdit: TEdit
     Left = 6
-    Height = 21
-    Top = 73
+    Height = 27
+    Top = 87
     Width = 388
     Align = alTop
     BorderSpacing.Around = 6
@@ -45,8 +46,8 @@ object SysVarUserOverrideDialog: TSysVarUserOverrideDialog
   end
   object VariableEdit: TEdit
     Left = 6
-    Height = 21
-    Top = 26
+    Height = 27
+    Top = 30
     Width = 388
     Align = alTop
     BorderSpacing.Around = 6
@@ -55,9 +56,10 @@ object SysVarUserOverrideDialog: TSysVarUserOverrideDialog
   end
   object ButtonPanel: TButtonPanel
     Left = 6
-    Height = 26
-    Top = 115
+    Height = 34
+    Top = 120
     Width = 388
+    Align = alTop
     TabOrder = 2
     ShowButtons = [pbOK, pbCancel]
     ShowBevel = False
