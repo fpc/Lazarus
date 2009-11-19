@@ -106,6 +106,7 @@ begin
   FEdit.Parent := self;
   FEdit.Visible := True;
   FEdit.DragMode := dmManual; //disallow undocking
+  FEdit.StayDocked := True;
 end;
 
 function TEditorSite.CreateDockable(const cap: string): TWinControl;

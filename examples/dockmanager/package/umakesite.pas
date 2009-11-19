@@ -199,18 +199,44 @@ var
   Site: TWinControl;
   ctl: TControl;
   cmp: TComponent;
+  n, s: string;
+const
+  OrientString: array[TDockOrientation] of char = (
+    'N','H','V' {$IFDEF FPC} ,'P' {$ENDIF}
+  );
+  AlignString: array[TAlign] of char = (
+    //(alNone, alTop, alBottom, alLeft, alRight, alClient, alCustom);
+    'n', 't', 'B', 'L', 'R', 'C', 'c'
+  );
 begin
 (* Dump registered docking sites.
+  Elastic panels have no name.
+  Dump of docked clients by DockManager (structural info!)
+  Notebooks are docked, i.e. HostDockSite<>nil.
+    Pages are DockSites???
+    EditPages contain Files -> include (full?) filename
+--> dump-levels
+  dock sites[] and clients[]
+    contents[]
 *)
   for i := 0 to ComponentCount - 1 do begin
     cmp := Components[i];
     if cmp is TWinControl then begin
       Site := TWinControl(cmp);
-      DebugLn('Site=%s (%d,%d)[%d,%d]', [Site.Name,
-        site.Top, site.Left, site.Width, site.Height]);
+      if Site.Parent <> nil then begin
+        s := Site.Parent.Name;
+        if s = '' then
+          s := Site.Parent.ClassName;
+        s := ' in ' + s + '@';
+        s := s + AlignString[Site.Align];
+      end else
+        s := '';
+      DebugLn('Site=%s (%d,%d)[%d,%d] %s', [Site.Name,
+        site.Top, site.Left, site.Width, site.Height, s]);
       for j := 0 to site.DockClientCount - 1 do begin
         ctl := site.DockClients[j];
-        DebugLn('  Client=%s (%d,%d)[%d,%d]', [ctl.Name,
+        s := OrientString[ctl.DockOrientation];
+        DebugLn('  Client=%s@%s (%d,%d)[%d,%d]', [ctl.Name, s,
           ctl.Top, ctl.Left, ctl.Width, ctl.Height]);
       end;
     end;

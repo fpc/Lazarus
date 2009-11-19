@@ -32,6 +32,26 @@ Problem:
 Disallow undocking/floating of a NOT docked dockbook.
 *)
 
+(* Applications
+Stand alone form (not recommended)
+Parent=Nil, HostDockSite=Nil
+
+Not-docked part of a form (Editor)
+The form should never close itself.
+Parent<>Nil, HostDockSite=Nil
+
+Part of an dock tree
+The form is automatically created and docked by the EasyTree.
+It must notify the tree (HostDockSite) when it has 1 client left,
+  for replacement by that client.
+It also should notify the HostDockSite of any un/dock, to update the caption.
+Parent=HostDockSite (<>Nil)
+
+Suggested methods:
+HostDockSite.ReplaceDockedControl (self by last client)
+HostDockSite.UpdateDockCaption (provide composed dock caption)
+*)
+
 {$mode objfpc}{$H+}
 
 interface
@@ -75,6 +95,8 @@ type
   protected
     function GetDefaultDockCaption: string; override;
     function GetControlTab(AControl: TControl): TTabButton;
+  public
+    StayDocked: boolean;
   end;
 
 //procedure Register;
@@ -82,6 +104,8 @@ type
 implementation
 
 uses
+  fFloatingSite,
+  Windows,  //PostMessage
   LCLProc; //debug only
 
 procedure Register;
@@ -108,6 +132,7 @@ begin
   btn := TTabButton.Create(Tabs);
   btn.Control := Source.Control;
   btn.Control.Align := alClient;
+  btn.Control.DockOrientation := doPages;
   btn.Caption := GetDockCaption(btn.Control);
   btn.OnClick := @ToolButton1Click;
   btn.Down := True;
@@ -172,15 +197,19 @@ begin
       CurTab.Down := True;
       CurTab.Click;
     end;
-  end else begin
-  //last tab removed - close ONLY if we are docked
-    //if (HostDockSite <> nil) or Floating then begin - Floating doesn't work
-    if Parent = nil then begin //seems to be a good indicator for floating state
-      if (HostDockSite <> nil) then //may be cleared already???
-        ManualDock(nil);  //undock before closing
-      Release;  //Close;
+    Caption := GetDefaultDockCaption;
+  end else if not StayDocked then begin
+  //last tab removed - close ONLY if we are docked or floating
+    if (HostDockSite <> nil) then begin //may be cleared already???
+      ManualDock(nil);  //undock before closing
+      //DoUnDock(nil, nil);
+      //Dock(nil);
     end;
+    //Release;  //Close;
+    PostMessage(Self.Handle, WM_CLOSE, 0, 0);
   end;
+  if (HostDockSite is TFloatingSite) then
+    TFloatingSite(HostDockSite).UpdateCaption(nil);
 end;
 
 function TEasyDockBook.GetControlTab(AControl: TControl): TTabButton;

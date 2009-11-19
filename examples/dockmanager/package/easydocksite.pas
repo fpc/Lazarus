@@ -58,6 +58,7 @@ LCL TODO:
 
 //depending on widgetset or patched LCL
 {.$DEFINE NoDrop} //applied DoDiPatch1?
+{.$DEFINE PageFrame} //problem: notebook frame cannot Release itself
 
 interface
 
@@ -166,36 +167,54 @@ type
     property Top: integer read GetTop;
   end;
 
+(* TEasyDockManager implements some of the abstract methods of TDockManager.
+*)
+  TEasyDockManager = class(TDockManager)
+  protected
+    FDockSite: TWinControl;
+    FUpdateCount: integer;
+    procedure BeginUpdate; override;
+    procedure EndUpdate; override;
+    procedure Update; virtual;
+    procedure SetReplacingControl(Control: TControl); override; //unused
+    property  DockSite: TWinControl read FDockSite;
+  public
+    constructor Create(ADockSite: TWinControl); override;
+    class function  DetectAlign(ZoneRect: TRect; MousePos: TPoint): TAlign;
+    procedure PositionDockRect(Client, DropCtl: TControl; DropAlign: TAlign;
+      var DockRect: TRect);  override;
+  end;
 
   { TEasyTree }
 
-  TEasyTree = class(TDockManager)
+  TEasyTree = class(TEasyDockManager)
   private
-    FDockSite: TWinControl;
     FReplacingControl: TControl;
     FTopZone: TEasyZone;
     FSiteRect: TRect; //to detect changed site extent
-    FUpdateCount: integer;
     procedure UpdateTree;
   protected
+  {$IFDEF old}
     procedure BeginUpdate; override;
     procedure EndUpdate; override;
+    procedure PositionDockRect(Client, DropCtl: TControl; DropAlign: TAlign;
+      var DockRect: TRect);  override;
+    procedure SetReplacingControl(Control: TControl); override; //unused
+  {$ELSE}
+    //in base class
+  {$ENDIF}
   //extended interface
     //procedure ControlVisibilityChanged(Control: TControl; Visible: Boolean);  override;
     function  ZoneFromPoint(SitePos: TPoint): TEasyZone;
     procedure GetControlBounds(Control: TControl; out CtlBounds: TRect);  override;
     procedure InsertControl(Control: TControl; InsertAt: TAlign;
       DropCtl: TControl);  override;
-    procedure PositionDockRect(Client, DropCtl: TControl; DropAlign: TAlign;
-      var DockRect: TRect);  override;
     procedure RemoveControl(Control: TControl);  override;
     procedure ResetBounds(Force: Boolean);  override; //site resized
-    procedure SetReplacingControl(Control: TControl); override; //unused
     procedure LoadFromStream(Stream: TStream);  override;
     procedure SaveToStream(Stream: TStream);  override;
   protected //added
     procedure PositionDockRect(ADockObject: TDragDockObject); override;
-    property  DockSite: TWinControl read FDockSite;
     function  FindControlZone(zone: TEasyZone; Control: TControl): TEasyZone;
     procedure RemoveZone(Zone: TEasyZone);
   //Lazarus extension
@@ -215,7 +234,6 @@ type
   {$ENDIF}
     constructor Create(ADockSite: TWinControl); override;
     destructor Destroy; override;
-    function  DetectAlign(ZoneRect: TRect; MousePos: TPoint): TAlign;
     procedure PaintSite(DC: HDC); override;
     procedure SetStyle(NewStyle: TEasyHeaderStyle);
     function  GetEffectiveStyle: TEasyHeaderStyle;
@@ -248,7 +266,11 @@ implementation
 uses
   SysUtils, Types,
   math,
+{$IFDEF PageFrame}
+  fPageFrame,
+{$ELSE}
   fDockBook,
+{$ENDIF}
   Themes, LResources,
   LCLproc; //debugging
 
@@ -260,11 +282,15 @@ const
 {$ENDIF}
 
 type
+{$IFDEF PageFrame}
+  TEasyBook = TPageFrame;
+{$ELSE}
   TEasyBook = TEasyDockBook;
+{$ENDIF}
 
 function  NoteBookCreate(AOwner: TWinControl): TEasyBook; inline;
 begin
-  Result := TEasyDockBook.Create(AOwner);
+  Result := TEasyBook.Create(AOwner);
 end;
 
 procedure NoteBookAdd(ABook: TEasyBook; AItem: TControl); inline;
@@ -318,14 +344,7 @@ constructor TEasyTree.Create(ADockSite: TWinControl);
   end;
 
 begin
-  FDockSite := ADockSite;
-//reset inappropriate docking defaults - should be fixed in Controls/DragManager!
-  DragManager.DragImmediate := False;
-//workaround: check for already assigned docking manager
-  //FreeAndNil(DockSite.DockManager); - seems to be fixed
-  DockSite.DockManager := self;
-//init node class - impossible due to visibility restrictions!
-  inherited Create(DockSite);
+  inherited Create(ADockSite);
 {$IFDEF singleTab}
 //test: notebook with 1 tab in root zone
   SingleTab := True;
@@ -359,6 +378,7 @@ begin
   inherited;
 end;
 
+{$IFDEF old}
 procedure TEasyTree.BeginUpdate;
 begin
   inc(FUpdateCount);
@@ -372,6 +392,8 @@ begin
     UpdateTree;
   end;
 end;
+{$ELSE}
+{$ENDIF}
 
 function TEasyTree.ZoneFromPoint(SitePos: TPoint): TEasyZone;
 var
@@ -591,54 +613,6 @@ begin
   ResetBounds(True); //splitters may have to be inserted
 end;
 
-function TEasyTree.DetectAlign(ZoneRect: TRect; MousePos: TPoint): TAlign;
-var
-  w, h, zphi: integer;
-  cx, cy: integer;
-  dx, dy: integer;
-  phi: double;
-  izone: integer;
-  dir: TAlign;
-const
-  k = 5; //matrix dimension
-//mapping octants into aligns, assuming k=5
-  cDir: array[-4..4] of TAlign = (
-    alLeft, alLeft, alTop, alTop, alRight, alBottom, alBottom, alLeft, alLeft
-  );
-begin
-(* Determine alignment from the location of the mouse within ZoneRect.
-  ZoneRect in screen TLBR coordinates, MousePos in screen coordinates.
-*)
-//center and extent of dock zone
-  cx := (ZoneRect.Right + ZoneRect.Left) div 2;
-  cy := (ZoneRect.Top + ZoneRect.Bottom) div 2;
-  w := ZoneRect.Right - ZoneRect.Left;
-  h := ZoneRect.Bottom - ZoneRect.Top;
-  if (w > 0) and (h > 0) then begin
-  //mouse position within k*k rectangles (squares)
-    dx := trunc((MousePos.x - cx) / w * k);
-    dy := trunc((MousePos.y - cy) / h * k);
-    izone := max(abs(dx), abs(dy)); //0..k
-  //map into 0=innermost (custom), 1=inner, 2=outer
-    if izone = 0 then begin
-      //zone := zInnermost;
-      dir := alCustom; //pages
-    end else begin
-    { not yet: outer zones, meaning docking into parent zone
-      if izone >= k-1 then
-        zone := zOuter
-      else //if izone > 0 then
-        zone := zInner;
-    }
-      phi := arctan2(dy, dx);
-      zphi := trunc(radtodeg(phi)) div 45;
-      dir := cDir[zphi];
-    end;
-  end else
-    dir := alClient;
-  Result := dir;
-end;
-
 procedure TEasyTree.PositionDockRect(ADockObject: TDragDockObject);
 var
   zone: TEasyZone;
@@ -705,6 +679,7 @@ Signal results:
   end;
 end;
 
+{$IFDEF old}
 procedure TEasyTree.PositionDockRect(Client, DropCtl: TControl;
   DropAlign: TAlign; var DockRect: TRect);
 var
@@ -736,6 +711,8 @@ begin
     end;
   end;
 end;
+{$ELSE}
+{$ENDIF}
 
 procedure TEasyTree.LoadFromStream(Stream: TStream);
 begin
@@ -1008,10 +985,13 @@ begin
   WriteZone(FTopZone, 0);
 end;
 
+{$IFDEF old}
 procedure TEasyTree.SetReplacingControl(Control: TControl);
 begin
   //FReplacingControl := Control;
 end;
+{$ELSE}
+{$ENDIF}
 
 procedure TEasyTree.SetSingleCaption(Value: boolean);
 begin
@@ -1480,6 +1460,117 @@ begin
       z := z.NextSibling;
     end;
   end; //else empty root zone?
+end;
+
+{ TEasyDockManager }
+
+procedure TEasyDockManager.BeginUpdate;
+begin
+  //inherited BeginUpdate;
+  inc(FUpdateCount);
+end;
+
+constructor TEasyDockManager.Create(ADockSite: TWinControl);
+begin
+(* Init DockSite and DragManager.
+*)
+  FDockSite := ADockSite;
+  ADockSite.DockManager := self;
+//reset inappropriate docking defaults - should be fixed in Controls/DragManager!
+  DragManager.DragImmediate := False;
+  inherited Create(ADockSite);
+end;
+
+class function TEasyDockManager.DetectAlign(ZoneRect: TRect;
+  MousePos: TPoint): TAlign;
+var
+  w, h, zphi: integer;
+  cx, cy: integer;
+  dx, dy: integer;
+  phi: double;
+  izone: integer;
+  dir: TAlign;
+const
+  k = 5; //matrix dimension
+//mapping octants into aligns, assuming k=5
+  cDir: array[-4..4] of TAlign = (
+    alLeft, alLeft, alTop, alTop, alRight, alBottom, alBottom, alLeft, alLeft
+  );
+begin
+(* Determine alignment from the location of the mouse within ZoneRect.
+  ZoneRect in screen TLBR coordinates, MousePos in screen coordinates.
+*)
+//center and extent of dock zone
+  cx := (ZoneRect.Right + ZoneRect.Left) div 2;
+  cy := (ZoneRect.Top + ZoneRect.Bottom) div 2;
+  w := ZoneRect.Right - ZoneRect.Left;
+  h := ZoneRect.Bottom - ZoneRect.Top;
+  if (w > 0) and (h > 0) then begin
+  //mouse position within k*k rectangles (squares)
+    dx := trunc((MousePos.x - cx) / w * k);
+    dy := trunc((MousePos.y - cy) / h * k);
+    izone := max(abs(dx), abs(dy)); //0..k
+  //map into 0=innermost (custom), 1=inner, 2=outer
+    if izone = 0 then begin
+      //zone := zInnermost;
+      dir := alCustom; //pages
+    end else begin
+      phi := arctan2(dy, dx);
+      zphi := trunc(radtodeg(phi)) div 45;
+      dir := cDir[zphi];
+    end;
+  end else
+    dir := alClient;
+  Result := dir;
+end;
+
+procedure TEasyDockManager.EndUpdate;
+begin
+  //inherited EndUpdate;
+  dec(FUpdateCount);
+  if FUpdateCount = 0 then
+    Update;
+end;
+
+procedure TEasyDockManager.PositionDockRect(Client, DropCtl: TControl;
+  DropAlign: TAlign; var DockRect: TRect);
+var
+  wh: integer;
+begin
+(* DockRect is initialized to the screen rect of the dock site by TControl,
+  or to the zone rect by TEasyTree.
+*)
+  if (DropCtl = nil) {$IFDEF singleTab} and not SingleTab {$ENDIF}  then
+  //if (DropCtl = nil) then
+    exit; //entire dock site
+
+  case DropAlign of
+  //alClient: as is
+  alTop:    DockRect.Bottom := (DockRect.Top + DockRect.Bottom) div 2;
+  alBottom: DockRect.Top := (DockRect.Top + DockRect.Bottom) div 2;
+  alLeft:   DockRect.Right := (DockRect.Left + DockRect.Right) div 2;
+  alRight:  DockRect.Left := (DockRect.Left + DockRect.Right) div 2;
+  alCustom: //pages
+    begin
+      wh := (DockRect.Right - DockRect.Left) div 3;
+      inc(DockRect.Left, wh);
+      dec(DockRect.Right, wh);
+      wh := (DockRect.Bottom - DockRect.Top) div 3;
+      inc(DockRect.Top, wh);
+      dec(DockRect.Bottom, wh);
+    end;
+  end;
+end;
+
+procedure TEasyDockManager.SetReplacingControl(Control: TControl);
+begin
+//nop
+  //inherited SetReplacingControl(Control);
+end;
+
+procedure TEasyDockManager.Update;
+begin
+  //nop
 end;
 
 initialization

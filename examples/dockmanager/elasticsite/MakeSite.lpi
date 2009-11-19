@@ -8,7 +8,7 @@
       <TargetFileExt Value=".exe"/>
       <Icon Value="0"/>
       <UseXPManifest Value="True"/>
-      <ActiveEditorIndexAtStart Value="2"/>
+      <ActiveEditorIndexAtStart Value="5"/>
     </General>
     <VersionInfo>
       <ProjectVersion Value=""/>
@@ -33,16 +33,14 @@
         <PackageName Value="LCL"/>
       </Item2>
     </RequiredPackages>
-    <Units Count="19">
+    <Units Count="32">
       <Unit0>
         <Filename Value="MakeSite.lpr"/>
         <IsPartOfProject Value="True"/>
         <UnitName Value="MakeSite"/>
         <CursorPos X="51" Y="18"/>
         <TopLine Value="1"/>
-        <EditorIndex Value="5"/>
-        <UsageCount Value="28"/>
-        <Loaded Value="True"/>
+        <UsageCount Value="65"/>
       </Unit0>
       <Unit1>
         <Filename Value="fmastersite.pas"/>
@@ -50,29 +48,29 @@
         <ComponentName Value="MasterSite"/>
         <ResourceBaseClass Value="Form"/>
         <UnitName Value="fMasterSite"/>
-        <CursorPos X="24" Y="35"/>
-        <TopLine Value="9"/>
+        <CursorPos X="1" Y="43"/>
+        <TopLine Value="1"/>
         <EditorIndex Value="0"/>
-        <UsageCount Value="28"/>
+        <UsageCount Value="65"/>
         <Loaded Value="True"/>
       </Unit1>
       <Unit2>
         <Filename Value="..\package\umakesite.pas"/>
         <IsPartOfProject Value="True"/>
         <UnitName Value="uMakeSite"/>
-        <CursorPos X="34" Y="212"/>
-        <TopLine Value="196"/>
+        <CursorPos X="32" Y="225"/>
+        <TopLine Value="195"/>
         <EditorIndex Value="2"/>
-        <UsageCount Value="28"/>
+        <UsageCount Value="65"/>
         <Loaded Value="True"/>
       </Unit2>
       <Unit3>
         <Filename Value="..\..\..\lcl\controls.pp"/>
         <UnitName Value="Controls"/>
-        <CursorPos X="27" Y="1221"/>
-        <TopLine Value="1198"/>
-        <EditorIndex Value="12"/>
-        <UsageCount Value="14"/>
+        <CursorPos X="15" Y="1773"/>
+        <TopLine Value="1750"/>
+        <EditorIndex Value="9"/>
+        <UsageCount Value="32"/>
         <Loaded Value="True"/>
       </Unit3>
       <Unit4>
@@ -80,7 +78,7 @@
         <UnitName Value="ExtCtrls"/>
         <CursorPos X="24" Y="1109"/>
         <TopLine Value="1086"/>
-        <UsageCount Value="13"/>
+        <UsageCount Value="10"/>
       </Unit4>
       <Unit5>
         <Filename Value="..\package\felasticsite.pas"/>
@@ -90,14 +88,12 @@
         <UnitName Value="fElasticSite"/>
         <CursorPos X="1" Y="82"/>
         <TopLine Value="63"/>
-        <EditorIndex Value="8"/>
-        <UsageCount Value="14"/>
-        <Loaded Value="True"/>
+        <UsageCount Value="24"/>
       </Unit5>
       <Unit6>
         <Filename Value="..\..\..\..\..\lazarus\fpc\2.2.4\source\rtl\objpas\classes\classesh.inc"/>
-        <CursorPos X="10" Y="1775"/>
-        <TopLine Value="1752"/>
+        <CursorPos X="15" Y="1515"/>
+        <TopLine Value="1492"/>
         <UsageCount Value="10"/>
       </Unit6>
       <Unit7>
@@ -107,86 +103,83 @@
         <HasResources Value="True"/>
         <ResourceBaseClass Value="Form"/>
         <UnitName Value="fClientForm"/>
-        <CursorPos X="1" Y="57"/>
-        <TopLine Value="27"/>
-        <EditorIndex Value="6"/>
-        <UsageCount Value="28"/>
+        <CursorPos X="10" Y="38"/>
+        <TopLine Value="12"/>
+        <EditorIndex Value="8"/>
+        <UsageCount Value="65"/>
         <Loaded Value="True"/>
       </Unit7>
       <Unit8>
         <Filename Value="..\..\..\lcl\include\winapih.inc"/>
         <CursorPos X="10" Y="287"/>
         <TopLine Value="263"/>
-        <EditorIndex Value="9"/>
-        <UsageCount Value="14"/>
-        <Loaded Value="True"/>
+        <UsageCount Value="16"/>
       </Unit8>
       <Unit9>
         <Filename Value="..\..\..\lcl\include\intfbaselcl.inc"/>
         <CursorPos X="3" Y="32"/>
         <TopLine Value="29"/>
-        <EditorIndex Value="10"/>
-        <UsageCount Value="14"/>
-        <Loaded Value="True"/>
+        <UsageCount Value="16"/>
       </Unit9>
       <Unit10>
         <Filename Value="..\..\..\lcl\include\lclintfh.inc"/>
         <CursorPos X="10" Y="40"/>
         <TopLine Value="16"/>
-        <EditorIndex Value="11"/>
-        <UsageCount Value="14"/>
-        <Loaded Value="True"/>
+        <UsageCount Value="16"/>
       </Unit10>
       <Unit11>
         <Filename Value="..\package\easydocksite.pas"/>
         <UnitName Value="EasyDockSite"/>
-        <CursorPos X="1" Y="924"/>
-        <TopLine Value="920"/>
+        <CursorPos X="21" Y="288"/>
+        <TopLine Value="265"/>
         <EditorIndex Value="4"/>
-        <UsageCount Value="13"/>
+        <UsageCount Value="31"/>
+        <Bookmarks Count="1">
+          <Item0 X="1" Y="1537" ID="2"/>
+        </Bookmarks>
         <Loaded Value="True"/>
       </Unit11>
       <Unit12>
         <Filename Value="..\..\..\lcl\forms.pp"/>
         <UnitName Value="Forms"/>
-        <CursorPos X="19" Y="692"/>
-        <TopLine Value="669"/>
+        <CursorPos X="15" Y="577"/>
+        <TopLine Value="553"/>
         <EditorIndex Value="3"/>
-        <UsageCount Value="11"/>
+        <UsageCount Value="29"/>
         <Loaded Value="True"/>
       </Unit12>
       <Unit13>
         <Filename Value="..\..\..\lcl\include\customform.inc"/>
-        <CursorPos X="16" Y="1574"/>
-        <TopLine Value="1559"/>
-        <UsageCount Value="11"/>
+        <CursorPos X="16" Y="2424"/>
+        <TopLine Value="2422"/>
+        <EditorIndex Value="13"/>
+        <UsageCount Value="12"/>
+        <Loaded Value="True"/>
       </Unit13>
       <Unit14>
         <Filename Value="..\..\..\..\..\lazarus\fpc\2.2.4\source\rtl\inc\objpash.inc"/>
         <CursorPos X="23" Y="151"/>
         <TopLine Value="128"/>
-        <UsageCount Value="10"/>
+        <UsageCount Value="7"/>
       </Unit14>
       <Unit15>
         <Filename Value="..\..\..\..\..\lazarus\fpc\2.2.4\source\rtl\objpas\classes\cregist.inc"/>
         <CursorPos X="3" Y="92"/>
         <TopLine Value="88"/>
-        <UsageCount Value="10"/>
+        <UsageCount Value="7"/>
       </Unit15>
       <Unit16>
         <Filename Value="..\package\dockhandle.pas"/>
         <UnitName Value="DockHandle"/>
         <CursorPos X="20" Y="22"/>
         <TopLine Value="1"/>
-        <EditorIndex Value="7"/>
-        <UsageCount Value="12"/>
-        <Loaded Value="True"/>
+        <UsageCount Value="20"/>
       </Unit16>
       <Unit17>
         <Filename Value="..\..\..\lcl\include\customimage.inc"/>
         <CursorPos X="1" Y="1"/>
         <TopLine Value="213"/>
-        <UsageCount Value="11"/>
+        <UsageCount Value="8"/>
       </Unit17>
       <Unit18>
         <Filename Value="..\package\ffloatingsite.pas"/>
@@ -194,130 +187,244 @@
         <HasResources Value="True"/>
         <ResourceBaseClass Value="Form"/>
         <UnitName Value="fFloatingSite"/>
-        <CursorPos X="1" Y="1"/>
-        <TopLine Value="1"/>
+        <CursorPos X="9" Y="24"/>
+        <TopLine Value="4"/>
         <EditorIndex Value="1"/>
-        <UsageCount Value="11"/>
+        <UsageCount Value="29"/>
         <Loaded Value="True"/>
       </Unit18>
+      <Unit19>
+        <Filename Value="..\package\fdockbook.pas"/>
+        <ComponentName Value="EasyDockBook"/>
+        <HasResources Value="True"/>
+        <ResourceBaseClass Value="Form"/>
+        <UnitName Value="fDockBook"/>
+        <CursorPos X="5" Y="96"/>
+        <TopLine Value="73"/>
+        <EditorIndex Value="5"/>
+        <UsageCount Value="27"/>
+        <Bookmarks Count="1">
+          <Item0 X="1" Y="203" ID="1"/>
+        </Bookmarks>
+        <Loaded Value="True"/>
+      </Unit19>
+      <Unit20>
+        <Filename Value="..\package\easydockmgr.pas"/>
+        <UnitName Value="EasyDockMgr"/>
+        <CursorPos X="7" Y="10"/>
+        <TopLine Value="1"/>
+        <EditorIndex Value="7"/>
+        <UsageCount Value="27"/>
+        <Loaded Value="True"/>
+      </Unit20>
+      <Unit21>
+        <Filename Value="..\package\fpageframe.pas"/>
+        <ComponentName Value="PageFrame"/>
+        <ResourceBaseClass Value="Frame"/>
+        <UnitName Value="fPageFrame"/>
+        <CursorPos X="1" Y="311"/>
+        <TopLine Value="271"/>
+        <UsageCount Value="16"/>
+        <Bookmarks Count="1">
+          <Item0 X="1" Y="128" ID="1"/>
+        </Bookmarks>
+      </Unit21>
+      <Unit22>
+        <Filename Value="..\..\..\lcl\include\customframe.inc"/>
+        <CursorPos X="3" Y="177"/>
+        <TopLine Value="135"/>
+        <UsageCount Value="16"/>
+      </Unit22>
+      <Unit23>
+        <Filename Value="..\..\..\lcl\lcltype.pp"/>
+        <UnitName Value="LCLType"/>
+        <CursorPos X="3" Y="118"/>
+        <TopLine Value="95"/>
+        <UsageCount Value="10"/>
+      </Unit23>
+      <Unit24>
+        <Filename Value="..\..\..\lcl\lmessages.pp"/>
+        <UnitName Value="LMessages"/>
+        <CursorPos X="3" Y="769"/>
+        <TopLine Value="746"/>
+        <UsageCount Value="10"/>
+      </Unit24>
+      <Unit25>
+        <Filename Value="..\..\..\..\..\lazarus\fpc\2.2.4\source\rtl\objpas\classes\compon.inc"/>
+        <CursorPos X="3" Y="538"/>
+        <TopLine Value="535"/>
+        <UsageCount Value="10"/>
+      </Unit25>
+      <Unit26>
+        <Filename Value="..\..\..\lcl\include\control.inc"/>
+        <CursorPos X="48" Y="3878"/>
+        <TopLine Value="3844"/>
+        <EditorIndex Value="12"/>
+        <UsageCount Value="17"/>
+        <Loaded Value="True"/>
+      </Unit26>
+      <Unit27>
+        <Filename Value="..\..\..\lcl\include\wincontrol.inc"/>
+        <CursorPos X="3" Y="5101"/>
+        <TopLine Value="5096"/>
+        <EditorIndex Value="10"/>
+        <UsageCount Value="17"/>
+        <Loaded Value="True"/>
+      </Unit27>
+      <Unit28>
+        <Filename Value="..\..\..\lcl\include\dragdock.inc"/>
+        <CursorPos X="10" Y="21"/>
+        <TopLine Value="1"/>
+        <EditorIndex Value="15"/>
+        <UsageCount Value="17"/>
+        <Loaded Value="True"/>
+      </Unit28>
+      <Unit29>
+        <Filename Value="..\..\..\lcl\include\dragmanager.inc"/>
+        <CursorPos X="1" Y="730"/>
+        <TopLine Value="687"/>
+        <EditorIndex Value="11"/>
+        <UsageCount Value="12"/>
+        <Loaded Value="True"/>
+      </Unit29>
+      <Unit30>
+        <Filename Value="..\..\..\lcl\include\application.inc"/>
+        <CursorPos X="1" Y="2074"/>
+        <TopLine Value="2051"/>
+        <EditorIndex Value="14"/>
+        <UsageCount Value="12"/>
+        <Loaded Value="True"/>
+      </Unit30>
+      <Unit31>
+        <Filename Value="..\..\..\lcl\include\toolbutton.inc"/>
+        <CursorPos X="1" Y="700"/>
+        <TopLine Value="677"/>
+        <EditorIndex Value="6"/>
+        <UsageCount Value="12"/>
+        <Loaded Value="True"/>
+      </Unit31>
     </Units>
-    <JumpHistory Count="29" HistoryIndex="28">
+    <JumpHistory Count="30" HistoryIndex="29">
       <Position1>
-        <Filename Value="..\package\umakesite.pas"/>
-        <Caret Line="135" Column="1" TopLine="112"/>
+        <Filename Value="..\..\..\lcl\include\dragmanager.inc"/>
+        <Caret Line="518" Column="1" TopLine="495"/>
       </Position1>
       <Position2>
-        <Filename Value="..\package\umakesite.pas"/>
-        <Caret Line="136" Column="1" TopLine="113"/>
+        <Filename Value="..\..\..\lcl\include\dragmanager.inc"/>
+        <Caret Line="527" Column="1" TopLine="504"/>
       </Position2>
       <Position3>
-        <Filename Value="fmastersite.pas"/>
-        <Caret Line="36" Column="5" TopLine="1"/>
+        <Filename Value="..\..\..\lcl\include\dragmanager.inc"/>
+        <Caret Line="528" Column="1" TopLine="505"/>
       </Position3>
       <Position4>
-        <Filename Value="fmastersite.pas"/>
-        <Caret Line="37" Column="1" TopLine="1"/>
+        <Filename Value="..\..\..\lcl\include\dragmanager.inc"/>
+        <Caret Line="117" Column="1" TopLine="94"/>
       </Position4>
       <Position5>
-        <Filename Value="..\package\umakesite.pas"/>
-        <Caret Line="129" Column="1" TopLine="106"/>
+        <Filename Value="..\..\..\lcl\include\dragmanager.inc"/>
+        <Caret Line="118" Column="1" TopLine="95"/>
       </Position5>
       <Position6>
-        <Filename Value="..\package\umakesite.pas"/>
-        <Caret Line="131" Column="1" TopLine="108"/>
+        <Filename Value="..\..\..\lcl\include\dragmanager.inc"/>
+        <Caret Line="119" Column="1" TopLine="96"/>
       </Position6>
       <Position7>
-        <Filename Value="..\package\umakesite.pas"/>
-        <Caret Line="132" Column="1" TopLine="109"/>
+        <Filename Value="..\..\..\lcl\include\dragmanager.inc"/>
+        <Caret Line="120" Column="1" TopLine="97"/>
       </Position7>
       <Position8>
-        <Filename Value="..\package\umakesite.pas"/>
-        <Caret Line="133" Column="1" TopLine="110"/>
+        <Filename Value="..\..\..\lcl\include\dragmanager.inc"/>
+        <Caret Line="121" Column="1" TopLine="98"/>
       </Position8>
       <Position9>
-        <Filename Value="fmastersite.pas"/>
-        <Caret Line="36" Column="43" TopLine="1"/>
+        <Filename Value="..\..\..\lcl\include\dragmanager.inc"/>
+        <Caret Line="531" Column="1" TopLine="508"/>
       </Position9>
       <Position10>
-        <Filename Value="fmastersite.pas"/>
-        <Caret Line="14" Column="16" TopLine="1"/>
+        <Filename Value="..\..\..\lcl\include\dragmanager.inc"/>
+        <Caret Line="533" Column="1" TopLine="510"/>
       </Position10>
       <Position11>
-        <Filename Value="..\package\umakesite.pas"/>
-        <Caret Line="148" Column="11" TopLine="127"/>
+        <Filename Value="..\..\..\lcl\include\dragmanager.inc"/>
+        <Caret Line="535" Column="1" TopLine="512"/>
       </Position11>
       <Position12>
-        <Filename Value="..\package\umakesite.pas"/>
-        <Caret Line="155" Column="25" TopLine="117"/>
+        <Filename Value="..\..\..\lcl\include\dragmanager.inc"/>
+        <Caret Line="536" Column="1" TopLine="513"/>
       </Position12>
       <Position13>
-        <Filename Value="..\package\umakesite.pas"/>
-        <Caret Line="140" Column="21" TopLine="117"/>
+        <Filename Value="..\..\..\lcl\include\dragmanager.inc"/>
+        <Caret Line="538" Column="1" TopLine="467"/>
       </Position13>
       <Position14>
-        <Filename Value="fclientform.pas"/>
-        <Caret Line="20" Column="3" TopLine="1"/>
+        <Filename Value="..\..\..\lcl\include\dragmanager.inc"/>
+        <Caret Line="619" Column="1" TopLine="596"/>
       </Position14>
       <Position15>
-        <Filename Value="fmastersite.pas"/>
-        <Caret Line="14" Column="16" TopLine="1"/>
+        <Filename Value="..\..\..\lcl\include\dragmanager.inc"/>
+        <Caret Line="620" Column="1" TopLine="597"/>
       </Position15>
       <Position16>
-        <Filename Value="..\package\umakesite.pas"/>
-        <Caret Line="31" Column="1" TopLine="9"/>
+        <Filename Value="..\..\..\lcl\include\dragmanager.inc"/>
+        <Caret Line="623" Column="1" TopLine="600"/>
       </Position16>
       <Position17>
-        <Filename Value="..\package\umakesite.pas"/>
-        <Caret Line="33" Column="1" TopLine="12"/>
+        <Filename Value="..\..\..\lcl\include\dragmanager.inc"/>
+        <Caret Line="730" Column="1" TopLine="687"/>
       </Position17>
       <Position18>
-        <Filename Value="..\package\umakesite.pas"/>
-        <Caret Line="134" Column="1" TopLine="134"/>
+        <Filename Value="..\..\..\lcl\include\control.inc"/>
+        <Caret Line="3652" Column="1" TopLine="3629"/>
       </Position18>
       <Position19>
-        <Filename Value="fmastersite.pas"/>
-        <Caret Line="32" Column="1" TopLine="1"/>
+        <Filename Value="..\..\..\lcl\include\control.inc"/>
+        <Caret Line="667" Column="1" TopLine="644"/>
       </Position19>
       <Position20>
-        <Filename Value="..\package\ffloatingsite.pas"/>
-        <Caret Line="1" Column="1" TopLine="1"/>
+        <Filename Value="..\..\..\lcl\include\control.inc"/>
+        <Caret Line="658" Column="1" TopLine="635"/>
       </Position20>
       <Position21>
-        <Filename Value="..\package\umakesite.pas"/>
-        <Caret Line="44" Column="3" TopLine="17"/>
+        <Filename Value="..\..\..\lcl\include\control.inc"/>
+        <Caret Line="1644" Column="1" TopLine="1621"/>
       </Position21>
       <Position22>
-        <Filename Value="..\package\umakesite.pas"/>
-        <Caret Line="48" Column="71" TopLine="46"/>
+        <Filename Value="..\..\..\lcl\include\wincontrol.inc"/>
+        <Caret Line="5086" Column="1" TopLine="5063"/>
       </Position22>
       <Position23>
-        <Filename Value="..\package\umakesite.pas"/>
-        <Caret Line="66" Column="24" TopLine="43"/>
+        <Filename Value="..\..\..\lcl\include\customform.inc"/>
+        <Caret Line="1087" Column="1" TopLine="1064"/>
       </Position23>
       <Position24>
-        <Filename Value="..\package\umakesite.pas"/>
-        <Caret Line="156" Column="26" TopLine="131"/>
+        <Filename Value="..\package\fdockbook.pas"/>
+        <Caret Line="204" Column="1" TopLine="180"/>
       </Position24>
       <Position25>
-        <Filename Value="..\package\umakesite.pas"/>
-        <Caret Line="157" Column="17" TopLine="134"/>
+        <Filename Value="..\package\fdockbook.pas"/>
+        <Caret Line="205" Column="9" TopLine="180"/>
       </Position25>
       <Position26>
-        <Filename Value="..\package\umakesite.pas"/>
-        <Caret Line="178" Column="15" TopLine="134"/>
+        <Filename Value="..\..\..\lcl\include\customform.inc"/>
+        <Caret Line="2424" Column="16" TopLine="2422"/>
       </Position26>
       <Position27>
-        <Filename Value="..\package\umakesite.pas"/>
-        <Caret Line="37" Column="25" TopLine="13"/>
+        <Filename Value="..\..\..\lcl\include\control.inc"/>
+        <Caret Line="3879" Column="57" TopLine="3844"/>
       </Position27>
       <Position28>
-        <Filename Value="fmastersite.pas"/>
-        <Caret Line="36" Column="1" TopLine="1"/>
+        <Filename Value="..\..\..\lcl\include\control.inc"/>
+        <Caret Line="3878" Column="48" TopLine="3844"/>
       </Position28>
       <Position29>
-        <Filename Value="fmastersite.pas"/>
-        <Caret Line="43" Column="1" TopLine="1"/>
+        <Filename Value="..\package\fdockbook.pas"/>
+        <Caret Line="209" Column="1" TopLine="180"/>
       </Position29>
+      <Position30>
+        <Filename Value="..\package\fdockbook.pas"/>
+        <Caret Line="208" Column="16" TopLine="184"/>
+      </Position30>
     </JumpHistory>
   </ProjectOptions>
   <CompilerOptions>

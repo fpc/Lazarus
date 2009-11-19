@@ -1,3 +1,5 @@
+{ This is an automatically generated lazarus resource file }
+
 LazarusResources.Add('TEditorSite','FORMDATA',[
   'TPF0'#241#11'TEditorSite'#10'EditorSite'#4'Left'#3'b'#1#6'Height'#3','#1#5'W'
   +'idth'#3#144#1#7'Caption'#6#10'EditorSite'#12'ClientHeight'#3#25#1#11'Client'

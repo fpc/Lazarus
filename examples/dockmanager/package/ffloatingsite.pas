@@ -25,13 +25,11 @@ type
       X, Y: Integer);
     procedure FormUnDock(Sender: TObject; Client: TControl;
       NewTarget: TWinControl; var Allow: Boolean);
-  private
-    procedure AdjustCaption(without: TControl);
   protected
     procedure Loaded; override;
   public
-    { public declarations }
-  end; 
+    procedure UpdateCaption(without: TControl);
+  end;
 
 var
   FloatingSite: TFloatingSite;
@@ -44,7 +42,7 @@ uses
 
 { TFloatingSite }
 
-procedure TFloatingSite.AdjustCaption(without: TControl);
+procedure TFloatingSite.UpdateCaption(without: TControl);
 var
   i: integer;
   s: string;
@@ -68,7 +66,7 @@ procedure TFloatingSite.FormDockDrop(Sender: TObject; Source: TDragDockObject;
 begin
 (* Update the caption.
 *)
-  AdjustCaption(nil);
+  UpdateCaption(nil);
 end;
 
 procedure TFloatingSite.FormUnDock(Sender: TObject; Client: TControl;
@@ -90,9 +88,9 @@ Fix: disallow TControls to become floating.
     exit; //all done
 
   if DockClientCount <= 1 then begin
-      Release; //destroy empty site
+    Release; //destroy empty site
   end else begin
-    AdjustCaption(Client); //update caption, excluding removed client
+    UpdateCaption(Client); //update caption, excluding removed client
     DockManager.ResetBounds(True); //required with gtk2!?
   end;
 end;
