@@ -1,29 +1,36 @@
 { This is an automatically generated lazarus resource file }
 
 LazarusResources.Add('THeapTrcViewForm','FORMDATA',[
-  'TPF0'#16'THeapTrcViewForm'#15'HeapTrcViewForm'#4'Left'#3#218#2#6'Height'#3'*'
-  +#1#3'Top'#3#134#0#5'Width'#3#131#1#13'ActiveControl'#7#9'btnBrowse'#7'Captio'
-  +'n'#6#15'HeapTrcViewForm'#12'ClientHeight'#3'*'#1#11'ClientWidth'#3#131#1#9
-  +'FormStyle'#7#11'fsStayOnTop'#8'OnCreate'#7#10'FormCreate'#9'OnDestroy'#7#11
-  +'FormDestroy'#10'LCLVersion'#6#6'0.9.27'#0#6'TLabel'#10'lblTrcFile'#4'Left'#2
-  +#16#6'Height'#2#18#3'Top'#2#16#5'Width'#2','#7'Caption'#6#9'.trc file'#11'Pa'
-  +'rentColor'#8#0#0#5'TEdit'#14'edtTrcFileName'#4'Left'#2'H'#6'Height'#2#23#3
-  +'Top'#2#16#5'Width'#3#251#0#7'Anchors'#11#5'akTop'#6'akLeft'#7'akRight'#0#8
-  +'TabOrder'#2#0#0#0#7'TButton'#9'btnUpdate'#4'Left'#2#16#6'Height'#2#29#3'Top'
-  +#2'6'#5'Width'#2';'#8'AutoSize'#9#7'Caption'#6#6'Update'#7'OnClick'#7#14'btn'
-  +'UpdateClick'#8'TabOrder'#2#1#0#0#9'TTreeView'#12'trvTraceInfo'#4'Left'#2#16
-  +#6'Height'#3#191#0#3'Top'#2'X'#5'Width'#3'c'#1#7'Anchors'#11#5'akTop'#6'akLe'
-  +'ft'#7'akRight'#8'akBottom'#0#17'DefaultItemHeight'#2#19#8'ReadOnly'#9#8'Tab'
-  +'Order'#2#2#10'OnDblClick'#7#20'trvTraceInfoDblClick'#7'Options'#11#17'tvoAu'
-  +'toItemHeight'#16'tvoHideSelection'#21'tvoKeepCollapsedNodes'#11'tvoReadOnly'
-  +#14'tvoShowButtons'#12'tvoShowLines'#11'tvoShowRoot'#11'tvoToolTips'#0#0#0#9
-  +'TCheckBox'#12'chkStayOnTop'#4'Left'#3#13#1#6'Height'#2#22#3'Top'#2'8'#5'Wid'
-  +'th'#2'b'#7'Anchors'#11#5'akTop'#7'akRight'#0#7'Caption'#6#11'Stay on top'#8
-  +'OnChange'#7#18'chkStayOnTopChange'#7'OnClick'#7#17'chkStayOnTopClick'#8'Tab'
-  +'Order'#2#3#0#0#7'TButton'#9'btnBrowse'#4'Left'#3'S'#1#6'Height'#2#20#3'Top'
-  +#2#14#5'Width'#2' '#7'Anchors'#11#5'akTop'#7'akRight'#0#7'Caption'#6#3'...'#7
-  +'OnClick'#7#14'btnBrowseClick'#8'TabOrder'#2#4#0#0#9'TCheckBox'#9'chkUseRaw'
-  +#4'Left'#2'c'#6'Height'#2#22#3'Top'#2'8'#5'Width'#2'p'#7'Caption'#6#13'Raw l'
-  +'eak data'#7'Checked'#9#8'OnChange'#7#15'chkUseRawChange'#5'State'#7#9'cbChe'
-  +'cked'#8'TabOrder'#2#5#0#0#0
+  'TPF0'#16'THeapTrcViewForm'#15'HeapTrcViewForm'#4'Left'#3#143#1#6'Height'#3
+  +#146#1#3'Top'#3#139#0#5'Width'#3#191#1#13'ActiveControl'#7#9'btnBrowse'#7'Ca'
+  +'ption'#6#15'HeapTrcViewForm'#12'ClientHeight'#3#146#1#11'ClientWidth'#3#191
+  +#1#9'FormStyle'#7#11'fsStayOnTop'#8'OnCreate'#7#10'FormCreate'#9'OnDestroy'#7
+  +#11'FormDestroy'#10'LCLVersion'#6#6'0.9.29'#0#6'TLabel'#10'lblTrcFile'#4'Lef'
+  +'t'#2#16#6'Height'#2#18#3'Top'#2#16#5'Width'#2'-'#7'Caption'#6#9'.trc file'
+  +#11'ParentColor'#8#0#0#5'TEdit'#14'edtTrcFileName'#4'Left'#2'H'#6'Height'#2
+  +#22#3'Top'#2#16#5'Width'#3'7'#1#7'Anchors'#11#5'akTop'#6'akLeft'#7'akRight'#0
+  +#8'TabOrder'#2#0#0#0#7'TButton'#9'btnUpdate'#4'Left'#2#16#6'Height'#2#20#3'T'
+  +'op'#2'6'#5'Width'#2'F'#8'AutoSize'#9#7'Caption'#6#6'Update'#7'OnClick'#7#14
+  +'btnUpdateClick'#8'TabOrder'#2#1#0#0#9'TCheckBox'#12'chkStayOnTop'#4'Left'#3
+  +'O'#1#6'Height'#2#18#3'Top'#2'8'#5'Width'#2'\'#7'Anchors'#11#5'akTop'#7'akRi'
+  +'ght'#0#7'Caption'#6#11'Stay on top'#8'OnChange'#7#18'chkStayOnTopChange'#7
+  +'OnClick'#7#17'chkStayOnTopClick'#8'TabOrder'#2#2#0#0#7'TButton'#9'btnBrowse'
+  +#4'Left'#3#143#1#6'Height'#2#20#3'Top'#2#14#5'Width'#2' '#7'Anchors'#11#5'ak'
+  +'Top'#7'akRight'#0#7'Caption'#6#3'...'#7'OnClick'#7#14'btnBrowseClick'#8'Tab'
+  +'Order'#2#3#0#0#9'TCheckBox'#9'chkUseRaw'#4'Left'#2'c'#6'Height'#2#18#3'Top'
+  +#2'8'#5'Width'#2'k'#7'Caption'#6#13'Raw leak data'#7'Checked'#9#8'OnChange'#7
+  +#15'chkUseRawChange'#5'State'#7#9'cbChecked'#8'TabOrder'#2#4#0#0#6'TPanel'#9
+  +'ctrlPanel'#4'Left'#2#16#6'Height'#3#27#1#3'Top'#2'`'#5'Width'#3#159#1#7'Anc'
+  +'hors'#11#5'akTop'#6'akLeft'#7'akRight'#8'akBottom'#0#10'BevelOuter'#7#6'bvN'
+  +'one'#12'ClientHeight'#3#27#1#11'ClientWidth'#3#159#1#8'TabOrder'#2#5#0#9'TT'
+  +'reeView'#12'trvTraceInfo'#4'Left'#2#0#6'Height'#3#197#0#3'Top'#2#0#5'Width'
+  +#3#159#1#5'Align'#7#8'alClient'#17'DefaultItemHeight'#2#19#8'ReadOnly'#9#8'T'
+  +'abOrder'#2#0#10'OnDblClick'#7#20'trvTraceInfoDblClick'#7'Options'#11#17'tvo'
+  +'AutoItemHeight'#16'tvoHideSelection'#21'tvoKeepCollapsedNodes'#11'tvoReadOn'
+  +'ly'#14'tvoShowButtons'#12'tvoShowLines'#11'tvoShowRoot'#11'tvoToolTips'#0#0
+  +#0#5'TMemo'#11'memoSummary'#4'Left'#2#0#6'Height'#2'Q'#3'Top'#3#202#0#5'Widt'
+  +'h'#3#159#1#5'Align'#7#8'alBottom'#8'ReadOnly'#9#10'ScrollBars'#7#10'ssVerti'
+  +'cal'#8'TabOrder'#2#1#0#0#9'TSplitter'#8'splitter'#6'Cursor'#7#8'crVSplit'#4
+  +'Left'#2#0#6'Height'#2#5#3'Top'#3#197#0#5'Width'#3#159#1#5'Align'#7#8'alBott'
+  +'om'#12'ResizeAnchor'#7#8'akBottom'#0#0#0#0
 ]);

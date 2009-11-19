@@ -6,7 +6,7 @@ interface
 
 uses
   Classes, SysUtils, FileUtil, LResources, Forms, Controls, Graphics, Dialogs,
-  StdCtrls, ComCtrls, LeakInfo, LazIDEIntf, MenuIntf, contnrs;
+  StdCtrls, ComCtrls, ExtCtrls, LeakInfo, LazIDEIntf, MenuIntf, contnrs;
 
 type
   TJumpProc = procedure (Sender: TObject; const SourceName: string; Line: integer) of object;
@@ -19,6 +19,9 @@ type
     chkStayOnTop: TCheckBox;
     edtTrcFileName: TEdit;
     lblTrcFile: TLabel;
+    ctrlPanel: TPanel;
+    memoSummary: TMemo;
+    splitter: TSplitter;
     trvTraceInfo: TTreeView;
     procedure btnUpdateClick(Sender: TObject);
     procedure btnBrowseClick(Sender: TObject);
@@ -66,8 +69,13 @@ implementation
 const // resorucestring ?
   StackTraceFormat         = 'Leak: %d bytes x %d times'; // number of bytes leaked, leaks count
   StackTraceFormatSingle   = 'Leak: %d bytes';            // number of bytes leaked
-  StackLineFormatWithFile  = '%s line: %d; file: %s';     // stack addr, filename (no path), line number
+  StackLineFormatWithFile  = '%s file: %s : %d; ';        // stack addr, filename (no path), line number
   StackLineFormat          = '%s';                        // stack addr
+
+  strTotalMemAlloc      = 'Total Mem alloced: %d';
+  strLeakingMemSize     = 'Leaking Mem Size: %d';
+  strLeakingBlocksCount = 'Leaking Blocks Count: %d';
+
 
 procedure ShowHeapTrcViewForm(JumpProc: TJumpProc);
 begin
@@ -229,6 +237,14 @@ begin
     try
       if info.GetLeakInfo(data, fItems) then ItemsToTree
       else trvTraceInfo.Items.Add(nil, 'Error while parsing trace file');
+
+      memoSummary.Clear;
+      with memoSummary.Lines do begin
+        Add( Format(strTotalMemAlloc, [data.TotalMem]));
+        Add( Format(strLeakingMemSize, [data.LeakedMem]));
+        Add( Format(strLeakingBlocksCount, [data.LeakCount]));
+      end;
+
     finally
       info.Free;
     end;
@@ -308,7 +324,7 @@ begin
   if not useRaw or (Result = '') then
     with Line do
       if FileName <> ''
-        then Result := Format(StackLineFormatWithFile, ['$'+IntToHex(Addr, sizeof(Pointer)*2), LineNum, ExtractFileName(FileName)])
+        then Result := Format(StackLineFormatWithFile, ['$'+IntToHex(Addr, sizeof(Pointer)*2), ExtractFileName(FileName), LineNum])
         else Result := Format(StackLineFormat, ['$'+IntToHex(Addr, sizeof(Pointer)*2)]);
 end;
 

@@ -74,6 +74,9 @@ type
     fTRCFile  : string;
     Trc       : TStringList;
     TrcIndex  : integer;
+    fSummary  : string;
+
+    fParsed   : Boolean;
 
     function PosInTrc(const SubStr: string; CaseSensetive: Boolean = false): Boolean;
     function TrcNumberAfter(var Num: Int64; const AfterSub: string): Boolean;
@@ -341,7 +344,7 @@ begin
       TrcIndex := 0;
 
       DoParseTrc(Traces);
-      LeakData.LeakCount := TraceInfo.Unfreedblocks;
+      LeakData.LeakCount := TraceInfo.UnfreedBlocks;
       LeakData.LeakedMem := TraceInfo.UnfreedSize;
       LeakData.TotalMem := TraceInfo.AllocSize;
       Result := true;
@@ -353,6 +356,7 @@ begin
     Result := false;
   end;
 end;
+
 
 { TStackTrace }
 
