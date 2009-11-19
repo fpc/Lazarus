@@ -233,6 +233,7 @@ begin
   if (Command = ecDeleteLastChar) and
      (FAutoIndent) and
      (ACaret.CharPos > 1) and
+     (not TSynEdit(FCurrentEditor).ReadOnly) and
      ( (not TSynEdit(FCurrentEditor).SelAvail) or
        (eoPersistentBlock in TSynEdit(FCurrentEditor).Options2) ) and
      (GetIndentForLine(FCurrentEditor, ACaret.LineText, True) = ACaret.CharPos - 1)
