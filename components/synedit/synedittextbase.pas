@@ -85,8 +85,8 @@ type
     FIsUtf8: Boolean;
     function  GetIsUtf8 : Boolean; virtual;
     procedure SetIsUtf8(const AValue : Boolean); virtual;
-    function GetRange: TSynEditStorageMem; virtual; abstract;
-    procedure PutRange(ARange: TSynEditStorageMem); virtual; abstract;
+    function GetRange(Index: TClass): TSynEditStorageMem; virtual; abstract;
+    procedure PutRange(Index: TClass; const ARange: TSynEditStorageMem); virtual; abstract;
     function  GetAttribute(const Owner: TClass; const Index: Integer): Pointer; virtual; abstract;
     procedure SetAttribute(const Owner: TClass; const Index: Integer; const AValue: Pointer); virtual; abstract;
 
@@ -163,7 +163,7 @@ type
     property ExpandedStrings[Index: integer]: string read GetExpandedString;
     property LengthOfLongestLine: integer read GetLengthOfLongestLine;
     property IsUtf8: Boolean read GetIsUtf8 write SetIsUtf8;
-    property Ranges: TSynEditStorageMem read GetRange write PutRange;
+    property Ranges[Index: TClass]: TSynEditStorageMem read GetRange write PutRange;
     property TextChangeStamp: int64 read FTextChangeStamp;
   end;
 
@@ -176,8 +176,8 @@ type
     function  GetIsUtf8 : Boolean;  override;
     procedure SetIsUtf8(const AValue : Boolean);  override;
 
-    function GetRange: TSynEditStorageMem;  override;
-    procedure PutRange(ARange: TSynEditStorageMem);  override;
+    function GetRange(Index: TClass): TSynEditStorageMem; override;
+    procedure PutRange(Index: TClass; const ARange: TSynEditStorageMem); override;
 
     function  GetAttribute(const Owner: TClass; const Index: Integer): Pointer; override;
     procedure SetAttribute(const Owner: TClass; const Index: Integer; const AValue: Pointer); override;
@@ -230,7 +230,7 @@ type
                 AHandler: TMethod); override;
 
     function GetPhysicalCharWidths(const Line: String; Index: Integer): TPhysicalCharWidths; override;
-    property NextLines: TSynEditStrings read fSynStrings;
+    property NextLines: TSynEditStrings read fSynStrings write fSynStrings;
   public
     // LogX, LogY are 1-based
     procedure EditInsert(LogX, LogY: Integer; AText: String); override;
@@ -593,14 +593,14 @@ begin
 end;
 
 //Ranges
-function TSynEditStringsLinked.GetRange: TSynEditStorageMem;
+function TSynEditStringsLinked.GetRange(Index: TClass): TSynEditStorageMem;
 begin
-  Result:= fSynStrings.Ranges;
+  Result:= fSynStrings.Ranges[Index];
 end;
 
-procedure TSynEditStringsLinked.PutRange(ARange: TSynEditStorageMem);
+procedure TSynEditStringsLinked.PutRange(Index: TClass; const ARange: TSynEditStorageMem);
 begin
-  fSynStrings.Ranges := ARange;
+  fSynStrings.Ranges[Index] := ARange;
 end;
 
 function TSynEditStringsLinked.GetAttribute(const Owner: TClass; const Index: Integer): Pointer;

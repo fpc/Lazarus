@@ -153,6 +153,9 @@ type
     FOnKeyDown: TKeyEvent;
 
     FSourceNoteBook: TSourceNotebook;
+    {$IFDEF SynDualView}
+    FOtherViewList: TList;
+    {$ENDIF}
 
     procedure EditorMouseMoved(Sender: TObject; Shift: TShiftState; X,Y:Integer);
     procedure EditorMouseDown(Sender: TObject; Button: TMouseButton;
@@ -229,6 +232,9 @@ type
     procedure SetReadOnly(const NewValue: boolean); override;
 
     property Visible: Boolean read FVisible write SetVisible default False;
+    {$IFDEF SynDualView}
+    property OtherViewList: Tlist read FOtherViewList;
+    {$ENDIF}
   public
     constructor Create(AOwner: TComponent; AParent: TWinControl);
     destructor Destroy; override;
@@ -520,6 +526,10 @@ type
     procedure SrcPopUpMenuPopup(Sender: TObject);
     procedure ToggleLineNumbersClicked(Sender: TObject);
     procedure InsertCharacter(const C: TUTF8Char);
+    {$IFDEF SynDualView}
+    procedure OnOtherFormClosed(Sender: TObject; var CloseAction: TCloseAction);
+    procedure SrcEditMenuAnotherViewClicked(Sender: TObject);
+    {$ENDIF}
   public
     procedure BookMarkNextClicked(Sender: TObject);
     procedure BookMarkPrevClicked(Sender: TObject);
@@ -945,6 +955,9 @@ var
   SrcEditMenuShowLineNumbers: TIDEMenuCommand;
   SrcEditMenuShowUnitInfo: TIDEMenuCommand;
   SrcEditMenuEditorProperties: TIDEMenuCommand;
+  {$IFDEF SynDualView}
+  SrcEditMenuAnotherView: TIDEMenuCommand;
+  {$ENDIF}
 
 
 procedure RegisterStandardSourceEditorMenuItems;
@@ -1137,6 +1150,11 @@ begin
   {$IFNDEF EnableIDEDocking}
   SrcEditMenuDocking.Visible:=false;
   {$ENDIF}
+
+  {$IFDEF SynDualView}
+  SrcEditMenuAnotherView := RegisterIDEMenuCommand(SrcEditMenuSectionFirstStatic,
+            'Open in another View', uemOpenAnotherView);
+  {$ENDIF}
 end;
 
 { TSourceEditor }
@@ -1153,6 +1171,9 @@ Begin
   else
     FSourceNoteBook:=nil;
 
+  {$IFDEF SynDualView}
+  FOtherViewList := TList.Create;
+  {$ENDIF}
   FSyntaxHighlighterType:=lshNone;
   FErrorLine:=-1;
   FErrorColumn:=-1;
@@ -1185,6 +1206,9 @@ begin
     // free the synedit control after processing the events
     Application.ReleaseComponent(FEditor);
   end;
+  {$IFDEF SynDualView}
+  FreeAndNil(FOtherViewList);
+  {$ENDIF}
   FEditor:=nil;
   CodeBuffer := nil;
   if (DebugBoss <> nil) and (DebugBoss.LineInfo <> nil) then
@@ -2474,11 +2498,25 @@ begin
 end;
 
 Function TSourceEditor.RefreshEditorSettings: Boolean;
+{$IFDEF SynDualView}
+var
+  s: TComponent;
+  i: Integer;
+{$ENDIF}
 Begin
   Result:=true;
   SetSyntaxHighlighterType(fSyntaxHighlighterType);
   EditorOpts.GetSynEditSettings(FEditor);
   SourceNotebook.UpdateActiveEditColors(FEditor);
+  {$IFDEF SynDualView}
+  for i := 0 to FOtherViewList.Count - 1 do begin
+    s := TForm(FOtherViewList[i]).FindComponent('s');
+    if s <> nil then begin
+      EditorOpts.GetSynEditSettings(TSynEdit(s));
+      TSynEdit(s).Highlighter := Highlighters[fSyntaxHighlighterType]
+    end;
+  end;
+  {$ENDIF}
 end;
 
 Procedure TSourceEditor.ccAddMessage(Texts: String);
@@ -3426,7 +3464,16 @@ end;
 
 procedure TSourceEditor.UnbindEditor;
 // disconnect all events
+{$IFDEF SynDualView}
+var
+  i: Integer;
+{$ENDIF}
 begin
+  {$IFDEF SynDualView}
+  for i := 0 to FOtherViewList.Count - 1 do
+    TForm(FOtherViewList[i]).Free;
+  FOtherViewList.Clear;
+  {$ENDIF}
   with EditorComponent do begin
     OnStatusChange := nil;
     OnProcessCommand := nil;
@@ -4753,6 +4800,9 @@ begin
   SrcEditMenuShowLineNumbers.OnClick:=@ToggleLineNumbersClicked;
   SrcEditMenuShowUnitInfo.OnClick:=@ShowUnitInfo;
   SrcEditMenuEditorProperties.OnClick:=@EditorPropertiesClicked;
+  {$IFDEF SynDualView}
+  SrcEditMenuAnotherView.OnClick := @SrcEditMenuAnotherViewClicked;
+  {$ENDIF}
 end;
 
 function TSourceNotebook.GetNotebookPages: TStrings;
@@ -6472,6 +6522,49 @@ begin
     FActiveEdit.EditorComponent.InsertTextAtCaret(C);
   end;
 end;
+
+{$IFDEF SynDualView}
+procedure TSourceNotebook.OnOtherFormClosed(Sender: TObject; var CloseAction: TCloseAction);
+var
+  ASrcEdit: TSourceEditor;
+  s: TSynEdit;
+begin
+  s := TSynEdit(TForm(Sender).FindComponent('s'));
+  ASrcEdit := FindSourceEditorWithEditorComponent(s.SharedViewEdit);
+  ASrcEdit.OtherViewList.Remove(Sender);
+  CloseAction := caFree;
+end;
+
+procedure TSourceNotebook.SrcEditMenuAnotherViewClicked(Sender: TObject);
+var
+  ASrcEdit: TSourceEditor;
+  f: TForm;
+  s: TSynEdit;
+  SyncroEdit: TSynPluginSyncroEdit;
+  bmp: TCustomBitmap;
+begin
+  ASrcEdit:=GetActiveSE;
+  if ASrcEdit=nil then exit;
+  f := TForm.Create(Application);
+  f.OnClose := @OnOtherFormClosed;
+  f.Caption := ASrcEdit.FileName;
+
+  s := TSynEdit.Create(f);
+  s.name := 's';
+  s.Parent := f;
+  s.Align := alClient;
+  s.SharedViewEdit := ASrcEdit.EditorComponent;
+  s.Highlighter := ASrcEdit.EditorComponent.Highlighter;
+  SyncroEdit := TSynPluginSyncroEdit.Create(s);
+  bmp := CreateBitmapFromLazarusResource('tsynsyncroedit');
+  SyncroEdit.GutterGlyph.Assign(bmp);
+  bmp.Free;
+  EditorOpts.GetSynEditSettings(s);
+
+  f.show;
+  ASrcEdit.OtherViewList.Add(f);
+end;
+{$ENDIF}
 
 procedure TSourceNotebook.InitFindDialog;
 var c: TFindDlgComponent;

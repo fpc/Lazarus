@@ -61,12 +61,17 @@ type
 
   TSynHighlighterRangeList = class(TSynEditStorageMem)
   private
+    FRefCount: Integer;
     function GetRange(Index: Integer): Pointer;
     procedure SetRange(Index: Integer; const AValue: Pointer);
   protected
     function ItemSize: Integer; override;
   public
+    constructor Create;
+    procedure IncRefCount;
+    procedure DecRefCount;
     property Range[Index: Integer]: Pointer read GetRange write SetRange; default;
+    property RefCount: Integer read FRefCount;
   end;
 
   { TSynHighlighterAttributes }
@@ -1260,20 +1265,32 @@ begin
   if AValue = FCurrentLines then
     exit;
   FCurrentLines := AValue;
-  FCurrentRanges := TSynHighlighterRangeList(AValue.Ranges);
+  FCurrentRanges := TSynHighlighterRangeList(AValue.Ranges[ClassType]);
 end;
 
 procedure TSynCustomHighlighter.AttachToLines(Lines: TSynEditStrings);
+var
+  r: TSynHighlighterRangeList;
 begin
-  Lines.Ranges := CreateRangeList;
+  r := TSynHighlighterRangeList(Lines.Ranges[ClassType]);
+  if assigned(r) then
+    r.IncRefCount
+  else
+    Lines.Ranges[ClassType] := CreateRangeList;
   FCurrentLines := nil;
 end;
 
 procedure TSynCustomHighlighter.DetachFromLines(Lines: TSynEditStrings);
+var
+  r: TSynHighlighterRangeList;
 begin
-  if assigned(Lines.Ranges) then
-    Lines.Ranges.Free;
-  Lines.Ranges := nil;
+  r := TSynHighlighterRangeList(Lines.Ranges[ClassType]);
+  if not assigned(r) then exit;
+  r.DecRefCount;
+  if r.RefCount = 0 then begin
+    r.Free;
+    Lines.Ranges[ClassType] := nil;
+  end;
 end;
 
 procedure TSynCustomHighlighter.SetDrawDividerLevel(const AValue: Integer);
@@ -1313,6 +1330,22 @@ end;
 function TSynHighlighterRangeList.ItemSize: Integer;
 begin
   Result := SizeOf(Pointer);
+end;
+
+constructor TSynHighlighterRangeList.Create;
+begin
+  Inherited;
+  FRefCount := 1;
+end;
+
+procedure TSynHighlighterRangeList.IncRefCount;
+begin
+  inc(FRefCount);
+end;
+
+procedure TSynHighlighterRangeList.DecRefCount;
+begin
+  dec(FRefCount);
 end;
 
 { TSynDividerDrawConfig }

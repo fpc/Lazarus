@@ -84,18 +84,24 @@ type
 
   { TSynEditStringMemory }
 
+  TSynEditStringRangeEntry = record
+    Index: TClass;
+    Data: TSynEditStorageMem;
+  end;
+
   TSynEditStringMemory = class(TSynEditStorageMem)
   private
     FAttributeSize: Integer;
-    FRangeList: TSynEditStorageMem;
+    FRangeList: Array of TSynEditStringRangeEntry;
     function GetAttribute(Index: Integer; Pos: Integer; Size: Word): Pointer;
     function GetAttributeSize: Integer;
     function GetObject(Index: Integer): TObject;
+    function GetRange(Index: TClass): TSynEditStorageMem;
     function GetString(Index: Integer): String;
     procedure SetAttribute(Index: Integer; Pos: Integer; Size: Word; const AValue: Pointer);
     procedure SetAttributeSize(const AValue: Integer);
     procedure SetObject(Index: Integer; const AValue: TObject);
-    procedure SetRangeList(const AValue: TSynEditStorageMem);
+    procedure SetRange(Index: TClass; const AValue: TSynEditStorageMem);
     procedure SetString(Index: Integer; const AValue: String);
   protected
     procedure SetCount(const AValue: Integer); override;
@@ -111,7 +117,7 @@ type
       read  GetAttribute write SetAttribute;
     property AttributeSize: Integer read  GetAttributeSize write SetAttributeSize;
 
-    property RangeList: TSynEditStorageMem read FRangeList write SetRangeList;
+    property RangeList[Index: TClass]: TSynEditStorageMem read GetRange write SetRange;
   end;
 
   { TSynEditStringList }
@@ -124,6 +130,7 @@ type
     FLineRangeNotificationList: TLineRangeNotificationList; // LineCount
     FLineChangeNotificationList: TLineRangeNotificationList; // ContentChange (not called on add...)
     FLineEditNotificationList: TLineEditNotificationList;
+    FRefCount: integer;
     FUndoRedoAddedNotificationList: TSynMethodList;
     FOnChangeList: TSynMethodList;
     FOnChangingList: TSynMethodList;
@@ -160,8 +167,8 @@ type
     procedure IgnoreSendNotification(AReason: TSynEditNotifyReason;
                                      IncIgnore: Boolean); override;
 
-    function GetRange: TSynEditStorageMem; override;
-    procedure PutRange(ARange: TSynEditStorageMem); override;
+    function GetRange(Index: TClass): TSynEditStorageMem; override;
+    procedure PutRange(Index: TClass; const ARange: TSynEditStorageMem); override;
     function  GetAttribute(const Owner: TClass; const Index: Integer): Pointer; override;
     procedure SetAttribute(const Owner: TClass; const Index: Integer; const AValue: Pointer); override;
     function Get(Index: integer): string; override;
@@ -197,6 +204,13 @@ type
                 AHandler: TMethod); override;
     procedure RemoveGenericHandler(AReason: TSynEditNotifyReason;
                 AHandler: TMethod); override;
+    {$IFDEF SynDualView}
+    procedure CopyHanlders(OtherLines: TSynEditStringList; AOwner: TObject = nil);
+    procedure RemoveHanlders(AOwner: TObject);
+    {$ENDIF}
+    procedure IncRefCount;
+    procedure DecRefCount;
+    property  RefCount: integer read FRefCount;
    function GetPhysicalCharWidths(const Line: String; Index: Integer): TPhysicalCharWidths; override;
   public
     property DosFileFormat: boolean read fDosFileFormat write fDosFileFormat;    
@@ -399,6 +413,7 @@ var
   r: TSynEditNotifyReason;
 begin
   fList := TSynEditStringMemory.Create;
+  FRefCount := 1;
 
   FUndoList := TSynEditUndoList.Create;
   fUndoList.OnAddedUndo := {$IFDEF FPC}@{$ENDIF}UndoRedoAdded;
@@ -671,9 +686,9 @@ begin
     Result := nil;
 end;
 
-function TSynEditStringList.GetRange: TSynEditStorageMem;
+function TSynEditStringList.GetRange(Index: TClass): TSynEditStorageMem;
 begin
-  Result := FList.RangeList;
+  Result := FList.RangeList[Index];
 end;
 
 procedure TSynEditStringList.Grow;
@@ -778,9 +793,9 @@ begin
   EndUpdate;
 end;
 
-procedure TSynEditStringList.PutRange(ARange: TSynEditStorageMem);
+procedure TSynEditStringList.PutRange(Index: TClass; const ARange: TSynEditStorageMem);
 begin
-  FList.RangeList := ARange;
+  FList.RangeList[Index] := ARange;
 end;
 
 function TSynEditStringList.GetAttribute(const Owner: TClass; const Index: Integer): Pointer;
@@ -910,6 +925,40 @@ begin
     senrCleared : FOnClearedList.Remove(AHandler);
     senrUndoRedoAdded : FUndoRedoAddedNotificationList.Remove(AHandler);
   end;
+end;
+
+{$IFDEF SynDualView}
+procedure TSynEditStringList.CopyHanlders(OtherLines: TSynEditStringList; AOwner: TObject = nil);
+begin
+  FLineRangeNotificationList.AddCopyFrom(OtherLines.FLineRangeNotificationList, AOwner);
+  FLineChangeNotificationList.AddCopyFrom(OtherLines.FLineChangeNotificationList, AOwner);
+  FLineEditNotificationList.AddCopyFrom(OtherLines.FLineEditNotificationList, AOwner);
+  FUndoRedoAddedNotificationList.AddCopyFrom(OtherLines.FUndoRedoAddedNotificationList, AOwner);
+  FOnChangeList.AddCopyFrom(OtherLines.FOnChangeList, AOwner);
+  FOnChangingList.AddCopyFrom(OtherLines.FOnChangingList, AOwner);
+  FOnClearedList.AddCopyFrom(OtherLines.FOnClearedList, AOwner);
+end;
+
+procedure TSynEditStringList.RemoveHanlders(AOwner: TObject);
+begin
+  FLineRangeNotificationList.RemoveAllMethodsOfObject(AOwner);
+  FLineChangeNotificationList.RemoveAllMethodsOfObject(AOwner);
+  FLineEditNotificationList.RemoveAllMethodsOfObject(AOwner);
+  FUndoRedoAddedNotificationList.RemoveAllMethodsOfObject(AOwner);
+  FOnChangeList.RemoveAllMethodsOfObject(AOwner);
+  FOnChangingList.RemoveAllMethodsOfObject(AOwner);
+  FOnClearedList.RemoveAllMethodsOfObject(AOwner);
+end;
+{$ENDIF}
+
+procedure TSynEditStringList.IncRefCount;
+begin
+  inc(FRefCount);
+end;
+
+procedure TSynEditStringList.DecRefCount;
+begin
+  dec(FRefCount);
 end;
 
 procedure TSynEditStringList.SetCapacity(NewCapacity: integer);
@@ -1075,8 +1124,8 @@ begin
     for i:=ATo+Alen-Len to ATo+ALen -1 do Strings[i]:='';
   end;
   inherited Move(AFrom, ATo, ALen);
-  if assigned(FRangeList) then
-    FRangeList.Move(AFrom, ATo, ALen);
+  for i := 0 to length(FRangeList) - 1 do
+    FRangeList[i].Data.Move(AFrom, ATo, ALen);
 end;
 
 procedure TSynEditStringMemory.SetCount(const AValue: Integer);
@@ -1086,8 +1135,8 @@ begin
   If Count = AValue then exit;
   for i:= AValue to Count-1 do Strings[i]:='';
   inherited SetCount(AValue);
-  if assigned(FRangeList) then
-    FRangeList.Count := AValue;
+  for i := 0 to length(FRangeList) - 1 do
+    FRangeList[i].Data.Count := AValue;
 end;
 
 function TSynEditStringMemory.GetAttributeSize: Integer;
@@ -1122,10 +1171,12 @@ begin
 end;
 
 procedure TSynEditStringMemory.SetCapacity(const AValue: Integer);
+var
+  i: Integer;
 begin
   inherited SetCapacity(AValue);
-  if assigned(FRangeList) then
-    FRangeList.Capacity := AValue;
+  for i := 0 to length(FRangeList) - 1 do
+    FRangeList[i].Data.Capacity := AValue;
 end;
 
 function TSynEditStringMemory.GetObject(Index: Integer): TObject;
@@ -1133,17 +1184,47 @@ begin
   Result := (PObject(Mem + Index * FAttributeSize + SizeOf(String)))^;
 end;
 
+function TSynEditStringMemory.GetRange(Index: TClass): TSynEditStorageMem;
+var
+  i: Integer;
+begin
+  for i := 0 to length(FRangeList) - 1 do
+    if FRangeList[i].Index = Index then
+      exit(FRangeList[i].Data);
+  Result := nil;
+end;
+
 procedure TSynEditStringMemory.SetObject(Index: Integer; const AValue: TObject);
 begin
   (PObject(Mem + Index * FAttributeSize + SizeOf(String)))^ := AValue;
 end;
 
-procedure TSynEditStringMemory.SetRangeList(const AValue: TSynEditStorageMem);
+procedure TSynEditStringMemory.SetRange(Index: TClass; const AValue: TSynEditStorageMem);
+var
+  i, j: Integer;
 begin
-  FRangeList := AValue;
-  if FRangeList <> nil then begin
-    FRangeList.Capacity := Capacity;
-    FRangeList.Count := Count;
+  i := length(FRangeList) - 1;
+  while (i >= 0) and (FRangeList[i].Index <> Index) do
+    dec(i);
+
+  if i < 0 then begin
+    i := length(FRangeList);
+    SetLength(FRangeList, i + 1);
+    FRangeList[i].Index := Index;
+  end
+  else
+    if AValue <> nil then
+      DebugLn(['TSynEditStringMemory.SetRange - Overwriting old range at index=', i, ' index=', dbgs(Index)]);
+
+  FRangeList[i].Data := AValue;
+
+  if AValue <> nil then begin
+    AValue.Capacity := Capacity;
+    AValue.Count := Count;
+  end else begin
+    for j := i to length(FRangeList) - 2 do
+      FRangeList[j] := FRangeList[j+1];
+    SetLength(FRangeList, length(FRangeList) - 1);
   end;
 end;
 

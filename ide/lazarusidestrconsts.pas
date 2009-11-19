@@ -1929,6 +1929,9 @@ resourcestring
   uemProcedureJump = 'Procedure Jump';
   uemClosePage = '&Close Page';
   uemCloseOtherPages = 'Close All &Other Pages';
+  {$IFDEF SynDualView}
+  uemOpenAnotherView = 'Open in another View';
+  {$ENDIF}
   uemCut = 'Cut';
   uemCopy = 'Copy';
   uemPaste = 'Paste';

@@ -348,6 +348,7 @@ type
   public
     function CountByObject(const AnObject: TObject): integer;
     procedure DeleteByObject(const AnObject: TObject; Index: integer);
+    procedure AddCopyFrom(AList: TSynMethodList; AOwner: TObject = nil);
   public
     property ItemsByObject[AnObject: TObject; Index: integer]: TMethod
       read GetObjectItems write SetObjectItems; default;
@@ -1111,7 +1112,7 @@ begin
   i := 0;
   c := Count;
   while i < c do begin
-    if TObject(Items[AnIndex].Data)=AnObject then begin
+    if TObject(Items[i].Data)=AnObject then begin
       if AnIndex = 0 then exit(i);
       dec(AnIndex);
     end;
@@ -1146,6 +1147,19 @@ end;
 procedure TSynMethodList.DeleteByObject(const AnObject: TObject; Index: integer);
 begin
   Delete(IndexToObjectIndex(AnObject, Index));
+end;
+
+procedure TSynMethodList.AddCopyFrom(AList: TSynMethodList; AOwner: TObject = nil);
+var
+  i: Integer;
+begin
+  if AOwner = nil then begin
+    for i := 0 to AList.Count - 1 do
+      Add(AList.Items[i], True);
+  end else begin
+    for i := 0 to AList.CountByObject(AOwner) - 1 do
+      Add(AList.ItemsByObject[AOwner, i], True);
+  end;
 end;
 
 end.

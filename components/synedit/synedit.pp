@@ -374,6 +374,11 @@ type
     FTheLinesView: TSynEditStrings;
     FLines: TSynEditStrings;          // The real (un-mapped) line-buffer
     FStrings: TStrings;               // External TStrings based interface to the Textbuffer
+    {$IFDEF SynDualView}
+    FTopLinesView: TSynEditStrings;   // The linesview that holds the real line-buffer/FLines
+
+    FSharedViewSynEdit: TCustomSynEdit;
+    {$ENDIF}
 
     fExtraCharSpacing: integer;
     fLinesInWindow: Integer;// MG: fully visible lines in window
@@ -424,7 +429,7 @@ type
     fTSearch: TSynEditSearch;
     fHookedCommandHandlers: TList;
     FHookedKeyTranslationList: TSynHookedKeyTranslationList;
-    fPlugins: TList;
+    FPlugins: TList;
     fScrollTimer: TTimer;
     fScrollDeltaX, fScrollDeltaY: Integer;
     FInMouseClickEvent: Boolean;
@@ -517,7 +522,7 @@ type
     procedure MoveCaretVert(DY: integer);
     procedure PrimarySelectionRequest(const RequestedFormatID: TClipboardFormat;
       Data: TStream);
-    function ScanFrom(var Index: integer; AtLeastTilIndex: integer = -1): integer;
+    function ScanFrom(var Index: integer; AtLeastTilIndex: integer = -1): integer; // Todo: move to line, currently scans twice or more, if SharedView is active
     procedure DoBlockSelectionChanged(Sender: TObject);
     procedure SetBlockBegin(Value: TPoint);
     procedure SetBlockEnd(Value: TPoint);
@@ -567,6 +572,11 @@ type
     procedure UnlockUndo;
     procedure UpdateCaret;
     procedure UpdateScrollBars;
+    {$IFDEF SynDualView}
+    function GetSharedViewEdit: TCustomSynEdit;
+    procedure SetSharedViewEdit(const AValue: TCustomSynEdit);
+    procedure RemoveHandlers(ALines: TSynEditStrings = nil);
+    {$ENDIF}
   protected
     procedure CreateHandle; override;
     procedure CreateParams(var Params: TCreateParams); override;
@@ -870,6 +880,9 @@ type
     procedure Update; override;
     procedure Invalidate; override;
     property ChangeStamp: int64 read fChangeStamp;
+    {$ENDIF}
+    {$IFDEF SynDualView}
+    property SharedViewEdit: TCustomSynEdit read GetSharedViewEdit write SetSharedViewEdit;
     {$ENDIF}
   public
     property OnKeyDown;
@@ -1486,9 +1499,10 @@ begin
   SetAncestor(True); // temp until tframe does this
   SetInline(True);
 
-  fBeautifier := SynDefaultBeautifier;
+  FBeautifier := SynDefaultBeautifier;
 
-  fLines := TSynEditStringList.Create;
+  FLines := TSynEditStringList.Create;
+
   FCaret := TSynEditCaret.Create;
   FCaret.MaxLeftChar := @FMaxLeftChar;
   FCaret.AddChangeHandler({$IFDEF FPC}@{$ENDIF}CaretChanged);
@@ -1509,6 +1523,9 @@ begin
   // Pointer to the First/Lowest View
   // TODO: this should be Folded...
   FTheLinesView := FTabbedLinesView;
+  {$IFDEF SynDualView}
+  FTopLinesView := FTrimmedLinesView;
+  {$ENDIF}
   // External Accessor
   FStrings := TSynEditLines.Create(FLines, {$IFDEF FPC}@{$ENDIF}MarkTextAsSaved);
 
@@ -1770,6 +1787,10 @@ begin
         TSynEditPlugin(fPlugins[i]).Editor := nil;
     FreeAndNil(fPlugins);
   end;
+  {$IFDEF SynDualView}
+  RemoveHandlers;
+  {$ENDIF}
+
   FreeAndNil(FHookedKeyTranslationList);
   fHookedCommandHandlers:=nil;
   fPlugins:=nil;
@@ -1795,7 +1816,9 @@ begin
   FreeAndNil(FTabbedLinesView);
   FreeAndNil(FTrimmedLinesView); // has reference to caret
   FreeAndNil(FDoubleWidthChrLinesView);
-  FreeAndNil(fLines);
+  TSynEditStringList(FLines).DecRefCount;
+  if TSynEditStringList(FLines).RefCount = 0 then
+    FreeAndNil(fLines);
   FreeAndNil(fCaret);
   FreeAndNil(fInternalCaret);
   inherited Destroy;
@@ -4940,6 +4963,104 @@ begin
     FMouseSelActions.Assign(AValue);
 end;
 
+{$IFDEF SynDualView}
+function TCustomSynEdit.GetSharedViewEdit: TCustomSynEdit;
+begin
+  Result := FSharedViewSynEdit;
+end;
+
+procedure TCustomSynEdit.SetSharedViewEdit(const AValue: TCustomSynEdit);
+var
+  OldLines: TSynEditStringList;
+  LView: TSynEditStrings;
+  i: Integer;
+  Plugins: TList;
+begin
+  if AValue = FSharedViewSynEdit then exit;
+  FSharedViewSynEdit := AValue;
+
+  // TODO: all plugins SetEditor = nil => release all flines
+  Plugins := TList.Create; // remmeber them
+  for i := 0 to FPlugins.Count - 1 do begin
+    Plugins.Add(FPlugins[i]);
+    TSynEditPlugin(FPlugins[i]).Editor := nil;
+  end;
+
+  OldLines := TSynEditStringList(FLines);
+  if AValue = nil then begin
+    FLines := TSynEditStringList.Create;
+  end else begin
+    FLines := AValue.FLines;
+    TSynEditStringList(FLines).IncRefCount;
+  end;
+  TSynEditStringsLinked(FTopLinesView).NextLines := FLines;
+
+  // Todo: copy events (have a list of all event owners)
+  TSynEditStringList(FLines).CopyHanlders(OldLines, self);
+  LView := FTheLinesView;
+  while (LView is TSynEditStringsLinked) and (LView <> FLines) do begin
+    TSynEditStringList(FLines).CopyHanlders(OldLines, LView);
+    LView := TSynEditStringsLinked(LView).NextLines;
+  end;
+  TSynEditStringList(FLines).CopyHanlders(OldLines, FFoldedLinesView);
+  TSynEditStringList(FLines).CopyHanlders(OldLines, FMarkList);
+  TSynEditStringList(FLines).CopyHanlders(OldLines, FCaret);
+  TSynEditStringList(FLines).CopyHanlders(OldLines, FInternalCaret);
+  TSynEditStringList(FLines).CopyHanlders(OldLines, FBlockSelection);
+  TSynEditStringList(FLines).CopyHanlders(OldLines, FInternalBlockSelection);
+  TSynEditStringList(FLines).CopyHanlders(OldLines, fMarkupManager);
+  for i := 0 to fMarkupManager.Count - 1 do
+    TSynEditStringList(FLines).CopyHanlders(OldLines, fMarkupManager.Markup[i]);
+
+  FUndoList := TSynEditStringList(fLines).UndoList;
+  FRedoList := TSynEditStringList(fLines).RedoList;
+
+  FreeAndNil(FStrings);
+  FStrings := TSynEditLines.Create(FLines, {$IFDEF FPC}@{$ENDIF}MarkTextAsSaved);
+
+  // TOdo: highlighter
+
+  for i := 0 to Plugins.Count - 1 do begin
+    FPlugins.Add(FPlugins[i]);
+  end;
+  Plugins.Free;
+
+  // Todo: rescan / redraw /re....
+
+  OldLines.DecRefCount;
+  if OldLines.RefCount = 0 then
+    OldLines.Free
+  else
+    RemoveHandlers(OldLines);
+end;
+
+procedure TCustomSynEdit.RemoveHandlers(ALines: TSynEditStrings = nil);
+var
+  LView: TSynEditStrings;
+  i: Integer;
+begin
+  if not assigned(ALines) then
+    ALines := FLines;
+
+  // Todo: aggregated objects, should be responsible themself
+  TSynEditStringList(ALines).RemoveHanlders(self);
+  LView := FTheLinesView;
+  while (LView is TSynEditStringsLinked) and (LView <> ALines) do begin
+    TSynEditStringList(ALines).RemoveHanlders(LView);
+    LView := TSynEditStringsLinked(LView).NextLines;
+  end;
+  TSynEditStringList(ALines).RemoveHanlders(FFoldedLinesView);
+  TSynEditStringList(ALines).RemoveHanlders(FMarkList);
+  TSynEditStringList(ALines).RemoveHanlders(FCaret);
+  TSynEditStringList(ALines).RemoveHanlders(FInternalCaret);
+  TSynEditStringList(ALines).RemoveHanlders(FBlockSelection);
+  TSynEditStringList(ALines).RemoveHanlders(FInternalBlockSelection);
+  TSynEditStringList(ALines).RemoveHanlders(fMarkupManager);
+  for i := 0 to fMarkupManager.Count - 1 do
+    TSynEditStringList(ALines).RemoveHanlders(fMarkupManager.Markup[i]);
+end;
+{$ENDIF}
+
 procedure TCustomSynEdit.SetTextBetweenPoints(aStartPoint, aEndPoint: TPoint;
   const AValue: String);
 begin
@@ -5249,10 +5370,8 @@ begin
   inherited Notification(AComponent, Operation);
   if Operation = opRemove then begin
     if AComponent = fHighlighter then begin
+      fHighlighter.DetachFromLines(FLines);
       fHighlighter := nil;
-      if assigned(FLines.Ranges) then
-        FLines.Ranges.Free;
-      FLines.Ranges := nil;
       fMarkupHighCaret.Highlighter := nil;
       fMarkupWordGroup.Highlighter := nil;
       FFoldedLinesView.Highlighter := nil;

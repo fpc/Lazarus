@@ -919,14 +919,17 @@ procedure TSynEditSelection.DoLinesEdited(Sender: TSynEditStrings; aLinePos, aBy
 
 begin
   if FIsSettingText then exit;
-  if FPersistent or (FPersistentLock > 0) then begin
-    if FActiveSelectionMode <> smColumn then begin
+  if FPersistent or (FPersistentLock > 0) or
+     ((FCaret <> nil) and (not FCaret.Locked))
+  then begin
+    if FActiveSelectionMode <> smColumn then begin // TODO: adjust ypos, height in smColumn mode
       AdjustStartLineBytePos(AdjustPoint(StartLineBytePos));
       EndLineBytePos := AdjustPoint(EndLineBytePos);
     end;
   end
-  else
-  if (FCaret <> nil) then
+  else // Change the Selection, if change was made by owning SynEdit (Caret.Locked)
+       // (InternalSelection has no Caret)
+  if (FCaret <> nil) and (FCaret.Locked) then
     StartLineBytePos := FCaret.LineBytePos;
 end;
 
