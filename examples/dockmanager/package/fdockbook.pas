@@ -186,6 +186,26 @@ begin
   Tabs.ButtonList.Delete(i);
   btn.Free; //seems to work
 //special handle remove of current and last tab
+{$IFDEF new}
+  //if not StayDocked and (Tabs.ButtonCount = 1) then begin
+  if False then begin
+  //push up last client
+    if HostDockSite <> nil then begin
+      CurTab := Tabs.Buttons[0] as TTabButton;
+     (* Problem: a floating HostDockSite may close itself, in between.
+     *)
+    {$IFDEF old}
+      CurTab.Control.ReplaceDockedControl(self, HostDockSite, nil, alNone);
+    {$ELSE}
+      CurTab.Control.ManualDock(HostDockSite, self, alLeft);
+    {$ENDIF}
+      PostMessage(Self.Handle, WM_CLOSE, 0, 0);
+    end else begin
+    end;
+  end else
+{$ELSE}
+  //above code doesn't work :-(
+{$ENDIF}
   if Tabs.ButtonCount > 0 then begin
   //tab moved?
     if CurTab = nil then begin //current button removed

@@ -59,6 +59,7 @@ LCL TODO:
 //depending on widgetset or patched LCL
 {.$DEFINE NoDrop} //applied DoDiPatch1?
 {.$DEFINE PageFrame} //problem: notebook frame cannot Release itself
+{$DEFINE replace} //using ReplaceDockedControl?
 
 interface
 
@@ -172,6 +173,7 @@ type
   TEasyDockManager = class(TDockManager)
   protected
     FDockSite: TWinControl;
+    FReplacingControl: TControl;
     FUpdateCount: integer;
     procedure BeginUpdate; override;
     procedure EndUpdate; override;
@@ -189,7 +191,7 @@ type
 
   TEasyTree = class(TEasyDockManager)
   private
-    FReplacingControl: TControl;
+    FReplaceZone,
     FTopZone: TEasyZone;
     FSiteRect: TRect; //to detect changed site extent
     procedure UpdateTree;
@@ -202,6 +204,7 @@ type
     procedure SetReplacingControl(Control: TControl); override; //unused
   {$ELSE}
     //in base class
+    procedure SetReplacingControl(Control: TControl); override;
   {$ENDIF}
   //extended interface
     //procedure ControlVisibilityChanged(Control: TControl; Visible: Boolean);  override;
@@ -483,6 +486,30 @@ Cases 2 and 3 can be merged, with an additional or redundant setting of the orie
 *)
 
 begin
+{$IFDEF replace}
+(* Problem: the control may be undocked prior to being replaced?
+*)
+  {$IFDEF old}
+  if FReplacingControl <> nil then begin
+    DropZone := FindControlZone(FTopZone, FReplacingControl);
+    FReplacingControl := nil; //flag done
+    if DropZone <> nil then begin
+      DropZone.ChildControl := Control;
+      //DropZone.update?
+      exit;
+    end;
+  end;
+  {$ELSE}
+  if FReplaceZone <> nil then begin
+    FReplaceZone.ChildControl := Control;
+    FReplaceZone := nil;
+    FReplacingControl := nil;
+    Control.Align := alClient;
+    ResetBounds(True);
+    exit;
+  end;
+  {$ENDIF}
+{$ELSE}
   if Control = FReplacingControl then begin
   (* hack for morphing DropCtl into notebook,
     or initial docking of undocked controls in the dock site.
@@ -491,6 +518,7 @@ begin
     FReplacingControl := nil;
     exit;
   end;
+{$ENDIF}
 
 //some checks
   if (Control = nil) or (not Control.Visible) or (DropCtl = Control) then begin
@@ -525,6 +553,9 @@ begin
       end else begin
       //create new book
         NoteBook := NoteBookCreate(FDockSite);
+      {$IFDEF replace}
+        NoteBook.ReplaceDockedControl(DropZone.ChildControl, NoteBook, nil, alCustom);
+      {$ELSE}
         NoteBook.ManualDock(nil, nil);
       //hack: manually dock the notebook
         FReplacingControl := NoteBook; //ignore insert (see above)
@@ -533,6 +564,7 @@ begin
         r := DropZone.GetPartRect(zpClient);
         NoteBookAdd(NoteBook, DropCtl); //put the original control into the notebook
         NoteBook.BoundsRect := r;
+      {$ENDIF}
       end; //else use existing control
       NoteBookAdd(NoteBook, Control);
       FDockSite.Invalidate; //update notebook caption
@@ -991,6 +1023,14 @@ begin
   //FReplacingControl := Control;
 end;
 {$ELSE}
+
+procedure TEasyTree.SetReplacingControl(Control: TControl);
+begin
+(* The Control may have been undocked, until the replace request is handled.
+*)
+  inherited SetReplacingControl(Control);
+  FReplaceZone := FindControlZone(FTopZone, Control);
+end;
 {$ENDIF}
 
 procedure TEasyTree.SetSingleCaption(Value: boolean);
@@ -1566,6 +1606,7 @@ procedure TEasyDockManager.SetReplacingControl(Control: TControl);
 begin
 //nop
   //inherited SetReplacingControl(Control);
+  FReplacingControl := Control;
 end;
 
 procedure TEasyDockManager.Update;
