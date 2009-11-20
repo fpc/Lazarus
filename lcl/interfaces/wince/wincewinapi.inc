@@ -556,6 +556,11 @@ begin
   Result:=inherited CreatePalette(LogPalette);
 end;}
 
+function TWinCEWidgetSet.CreatePatternBrush(ABitmap: HBITMAP): HBRUSH;
+begin
+  Result := Windows.CreatePatternBrush(ABitmap);
+end;
+
 {------------------------------------------------------------------------------
   Method:  CreatePenIndirect
   Params:  LogPen - record that defines the style, width, and color of a pen

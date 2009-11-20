@@ -73,6 +73,7 @@ function CreateFontIndirect(const LogFont: TLogFont): HFONT; override;
 //function CreateFontIndirectEx(const LogFont: TLogFont; const LongFontName: string): HFONT; override;
 function CreateIconIndirect(IconInfo: PIconInfo): HICON; override;
 //function CreatePalette(const LogPalette: TLogPalette): HPALETTE; override;
+function CreatePatternBrush(ABitmap: HBITMAP): HBRUSH; override;
 function CreatePenIndirect(const LogPen: TLogPen): HPEN; override;
 //function CreatePolygonRgn(Points: PPoint; NumPts: Integer; FillMode: integer): HRGN; override;
 function CreateRectRgn(X1,Y1,X2,Y2 : Integer): HRGN; override;
