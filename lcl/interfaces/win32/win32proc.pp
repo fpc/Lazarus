@@ -453,6 +453,23 @@ begin
     $03E7: Result := 'WM_DDE_POKE';
     $03E8: Result := 'WM_DDE_EXECUTE or WM_DDE_LAST';
     $0400: Result := 'WM_USER';
+    // progress bar
+    $0401: Result := 'PBM_SETRANGE';
+    $0402: Result := 'PBM_SETPOS';
+    $0403: Result := 'PBM_DELTAPOS';
+    $0404: Result := 'PBM_SETSTEP';
+    $0405: Result := 'PBM_STEPIT';
+    $0406: Result := 'PBM_SETRANGE32';
+    $0407: Result := 'PBM_GETRANGE';
+    $0408: Result := 'PBM_GETPOS';
+    $0409: Result := 'PBM_SETBARCOLOR';
+    $040A: Result := 'PBM_SETMARQUEE';
+    $040D: Result := 'PBM_GETSTEP';
+    $040E: Result := 'PBM_GETBKCOLOR';
+    $040F: Result := 'PBM_GETBARCOLOR';
+    $0410: Result := 'PBM_SETSTATE';
+    $0411: Result := 'PBM_GETSTATE';
+    // misc
     $0469: Result := 'UDM_SETBUDDY';
     $046A: Result := 'UDM_GETBUDDY';
     $102C: Result := 'LVM_GETITEMSTATE';
