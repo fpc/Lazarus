@@ -1571,7 +1571,7 @@ begin
 
   if TStaticText(AWinControl).ShowAccelChar then
   begin
-    DC := Widgetset.GetDC(HDC(PtrUInt(GetStyleWidget(lgsLabel))));
+    DC := Widgetset.GetDC(HWND(PtrUInt(LblWidget)));
     ALabel := TGtkWidgetSet(WidgetSet).ForceLineBreaks(
                           DC, PChar(AText), TStaticText(AWinControl).Width, false);
     Widgetset.DeleteDC(DC);
