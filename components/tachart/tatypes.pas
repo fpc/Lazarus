@@ -66,8 +66,7 @@ type
     procedure SetVisible(const AValue: Boolean);
   protected
     FOwner: TCustomChart;
-    procedure InitHelper(
-      var AResult: TFPCanvasHelper; AClass: TFPCanvasHelperClass);
+    procedure InitHelper(var AResult; AClass: TFPCanvasHelperClass);
     procedure StyleChanged(Sender: TObject);
   public
     constructor Create(AOwner: TCustomChart);
@@ -427,11 +426,10 @@ begin
   FOwner := AOwner;
 end;
 
-procedure TChartElement.InitHelper(
-  var AResult: TFPCanvasHelper; AClass: TFPCanvasHelperClass);
+procedure TChartElement.InitHelper(var AResult; AClass: TFPCanvasHelperClass);
 begin
-  AResult := AClass.Create;
-  AResult.OnChange := @StyleChanged;
+  TFPCanvasHelper(AResult) := AClass.Create;
+  TFPCanvasHelper(AResult).OnChange := @StyleChanged;
 end;
 
 procedure TChartElement.SetOwner(AOwner: TCustomChart);
@@ -473,11 +471,11 @@ begin
   inherited Create(AOwner);
 
   FAlignment := taCenter;
-  InitHelper(TFPCanvasHelper(FBrush), TBrush);
+  InitHelper(FBrush, TBrush);
   FBrush.Color := FOwner.Color;
-  InitHelper(TFPCanvasHelper(FFont), TFont);
+  InitHelper(FFont, TFont);
   FFont.Color := clBlue;
-  InitHelper(TFPCanvasHelper(FFrame), TChartPen);
+  InitHelper(FFrame, TChartPen);
   FText := TStringList.Create;
 end;
 
@@ -538,7 +536,7 @@ constructor TChartAxisTitle.Create(AOwner: TCustomChart);
 begin
   inherited Create(AOwner);
   FDistance := DEF_TITLE_DISTANCE;
-  InitHelper(TFPCanvasHelper(FFont), TFont);
+  InitHelper(FFont, TFont);
 end;
 
 destructor TChartAxisTitle.Destroy;
@@ -929,11 +927,11 @@ begin
   inherited Create(AOwner);
   FClipped := true;
   FDistance := DEF_MARKS_DISTANCE;
-  InitHelper(TFPCanvasHelper(FFrame), TChartPen);
-  InitHelper(TFPCanvasHelper(FLabelBrush), TChartLabelBrush);
+  InitHelper(FFrame, TChartPen);
+  InitHelper(FLabelBrush, TChartLabelBrush);
   FLabelBrush.Color := clYellow;
-  InitHelper(TFPCanvasHelper(FLabelFont), TFont);
-  InitHelper(TFPCanvasHelper(FLinkPen), TChartLinkPen);
+  InitHelper(FLabelFont, TFont);
+  InitHelper(FLinkPen, TChartLinkPen);
   FLinkPen.Color := clWhite;
   FStyle := smsNone;
   FVisible := true;
@@ -1050,8 +1048,8 @@ constructor TSeriesPointer.Create(AOwner: TCustomChart);
 begin
   inherited Create(AOwner);
 
-  InitHelper(TFPCanvasHelper(FBrush), TBrush);
-  InitHelper(TFPCanvasHelper(FPen), TChartPen);
+  InitHelper(FBrush, TBrush);
+  InitHelper(FPen, TChartPen);
 
   FHorizSize := DEF_POINTER_SIZE;
   FStyle := psRectangle;

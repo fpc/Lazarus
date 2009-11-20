@@ -113,7 +113,7 @@ type
 implementation
 
 uses
-  FPCanvas, Math, Types;
+  Math, Types;
 
 const
   SYMBOL_TEXT_SPACING = 4;
@@ -200,9 +200,9 @@ begin
   FUseSidebar := true;
   Visible := false;
 
-  InitHelper(TFPCanvasHelper(FBackgroundBrush), TChartLegendBrush);
-  InitHelper(TFPCanvasHelper(FFont), TFont);
-  InitHelper(TFPCanvasHelper(FFrame), TChartPen);
+  InitHelper(FBackgroundBrush, TChartLegendBrush);
+  InitHelper(FFont, TFont);
+  InitHelper(FFrame, TChartPen);
 end;
 
 destructor TChartLegend.Destroy;
