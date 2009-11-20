@@ -71,7 +71,6 @@ const
   LM_KILLLINE       = LM_LCL + 25;
   LM_CONFIGUREEVENT = LM_LCL + 31; // GTK internal. Should be removed later.
   LM_PAINT          = LM_LCL + 32;
-  LM_TIMER          = LM_LCL + 40;
   LM_EXIT           = LM_LCL + 60;
   LM_CLOSEQUERY     = LM_LCL + 62;
   LM_DRAGSTART      = LM_LCL + 63;
@@ -193,7 +192,7 @@ const
 
   LM_COMMAND           = $0111;
   LM_SYSCOMMAND        = $0112;
-
+  LM_TIMER             = $0113;
   LM_HSCROLL           = $0114;
   LM_VSCROLL           = $0115;
   LM_CTLCOLORMSGBOX    = $0132;
