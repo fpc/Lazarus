@@ -1111,6 +1111,7 @@ const
     '', '17931', '', '28 46', '19 73', '28 46 19 73',
     '41236', '47896', '87412', '89632', '84268');
 begin
+  Unused(AColor); // TODO
   ACanvas.Brush.Assign(FBrush);
   ACanvas.Pen.Assign(FPen);
 
