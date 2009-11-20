@@ -122,7 +122,12 @@ begin
   DragPos := APosition; //should have been done before
   Control.CalculateDockSizes;
   // mouse click offset from control TopLeft in screen coordinates
-  FDockRect.TopLeft := Control.ClientToScreen(Point(0, 0));
+  with FDockRect do
+  begin
+    TopLeft := Control.ClientToScreen(Point(0, 0));
+    Right := Left + Control.Width;
+    Bottom := Top + Control.Height;
+  end;
   if Control.Width > 0 then
     FDockOffset.x := Round((APosition.x - FDockRect.Left) / Control.Width * Control.UndockWidth)
   else
