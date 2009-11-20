@@ -909,10 +909,12 @@ var
   CurForm: TCustomForm;
   AForm: TForm;
 begin
-  for i := 0 to Screen.CustomFormCount - 1 do begin
-    CurForm:=Screen.CustomForms[I];
+  i := 0;
+  while i < Screen.CustomFormCount do begin { While loop to allow number of forms to change during loop }
+    CurForm:=Screen.CustomForms[i];
     if CurForm.HandleAllocated and CurForm.Visible and CurForm.Enabled then
       CurForm.UpdateActions;
+    Inc(i);
   end;
   if FFormList<>nil then begin
     for i:=0 to FFormList.Count-1 do begin
