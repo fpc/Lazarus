@@ -540,6 +540,17 @@ begin
   AStatusBar.Invalidate;
 end;
 
+function ProgressBarWndProc(Window: HWnd; Msg: UInt; WParam: Windows.WParam;
+    LParam: Windows.LParam): LResult; stdcall;
+begin
+  // Marquee progress bar on vista/w7 required to call default window proc to
+  // setup the timer
+  if (Msg = WM_PAINT) and ThemeServices.ThemesEnabled and
+     (GetWindowLong(Window, GWL_STYLE) and PBS_MARQUEE = PBS_MARQUEE) then
+    CallDefaultWindowProc(Window, Msg, WParam, LParam);
+  Result := WindowProc(Window, Msg, WParam, LParam);
+end;
+
 { TWin32WSProgressBar }
 
 class function TWin32WSProgressBar.CreateHandle(const AWinControl: TWinControl;
@@ -562,6 +573,7 @@ begin
         Flags := Flags or PBS_MARQUEE;
     end;
     pClassName := PROGRESS_CLASS;
+    SubClassWndProc := @ProgressBarWndProc;
   end;
   // create window
   FinishCreateWindow(AWinControl, Params, False);
