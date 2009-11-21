@@ -3889,6 +3889,7 @@ images/icons/aqua.ico -text
 images/icons/blue.ico -text svneol=unset#image/ico
 images/icons/blue_roundrect.ico -text svneol=unset#image/ico
 images/icons/brown.ico -text svneol=unset#image/ico
+images/icons/cheetah.ico -text
 images/icons/lazarus.icns -text
 images/icons/lazarus.ico -text
 images/icons/lazarus_old.ico -text svneol=unset#image/x-icon
