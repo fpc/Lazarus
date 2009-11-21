@@ -72,7 +72,7 @@ interface
 
 {$I codetools.inc}
 
-{ $DEFINE CTDEBUG}
+{off $DEFINE CTDEBUG}
 
 uses
   {$IFDEF MEM_CHECK}
@@ -139,7 +139,8 @@ type
     fNewMainUsesSectionUnits: TAVLTree; // tree of AnsiString
     procedure AddNewPropertyAccessMethodsToClassProcs(ClassProcs: TAVLTree;
         const TheClassName: string);
-    procedure CheckForOverrideAndAddInheritedCode(ClassProcs: TAVLTree);
+    procedure CheckForOverrideAndAddInheritedCode(
+       ANodeExt: TCodeTreeNodeExtension);
     function CompleteProperty(PropNode: TCodeTreeNode): boolean;
     procedure SetCodeCompleteClassNode(const AClassNode: TCodeTreeNode);
     procedure SetCodeCompleteSrcChgCache(const AValue: TSourceChangeCache);
@@ -6252,10 +6253,9 @@ begin
 end;
 
 procedure TCodeCompletionCodeTool.CheckForOverrideAndAddInheritedCode(
-  ClassProcs: TAVLTree);
+  ANodeExt: TCodeTreeNodeExtension);
 // check for 'override' directive and add 'inherited' code to body
-var AnAVLNode: TAVLTreeNode;
-  ANodeExt: TCodeTreeNodeExtension;
+var
   ProcCode, ProcCall: string;
   ProcNode: TCodeTreeNode;
   i: integer;
@@ -6266,34 +6266,29 @@ begin
   DebugLn('[TCodeCompletionCodeTool.CheckForOverrideAndAddInheritedCode]');
   {$ENDIF}
   BeautifyCodeOptions:=ASourceChangeCache.BeautifyCodeOptions;
-  AnAVLNode:=ClassProcs.FindLowest;
-  while AnAVLNode<>nil do begin
-    ANodeExt:=TCodeTreeNodeExtension(AnAVLNode.Data);
-    ProcNode:=ANodeExt.Node;
-    if (ProcNode<>nil) and (ANodeExt.ExtTxt3='')
-    and (ProcNodeHasSpecifier(ProcNode,psOVERRIDE)) then begin
-      ProcCode:=ExtractProcHead(ProcNode,[phpWithStart,
-                      phpAddClassname,phpWithVarModifiers,phpWithParameterNames,
-                      phpWithResultType,phpWithCallingSpecs]);
-      ProcCall:='inherited '+ExtractProcHead(ProcNode,[phpWithoutClassName,
-                                   phpWithParameterNames,phpWithoutParamTypes]);
-      for i:=1 to length(ProcCall)-1 do
-        if ProcCall[i]=';' then ProcCall[i]:=',';
-      if ProcCall[length(ProcCall)]<>';' then
-        ProcCall:=ProcCall+';';
-      if NodeIsFunction(ProcNode) then
-        ProcCall:=BeautifyCodeOptions.BeautifyIdentifier('Result')
-                  +':='+ProcCall;
-      ProcCode:=ProcCode+BeautifyCodeOptions.LineEnd
-                  +'begin'+BeautifyCodeOptions.LineEnd
-                  +GetIndentStr(BeautifyCodeOptions.Indent)
-                    +ProcCall+BeautifyCodeOptions.LineEnd
-                  +'end;';
-      ProcCode:=ASourceChangeCache.BeautifyCodeOptions.BeautifyProc(
-                 ProcCode,0,false);
-      ANodeExt.ExtTxt3:=ProcCode;
-    end;
-    AnAVLNode:=ClassProcs.FindSuccessor(AnAVLNode);
+  ProcNode:=ANodeExt.Node;
+  if (ProcNode<>nil) and (ANodeExt.ExtTxt3='')
+  and (ProcNodeHasSpecifier(ProcNode,psOVERRIDE)) then begin
+    ProcCode:=ExtractProcHead(ProcNode,[phpWithStart,
+                    phpAddClassname,phpWithVarModifiers,phpWithParameterNames,
+                    phpWithResultType,phpWithCallingSpecs]);
+    ProcCall:='inherited '+ExtractProcHead(ProcNode,[phpWithoutClassName,
+                                 phpWithParameterNames,phpWithoutParamTypes]);
+    for i:=1 to length(ProcCall)-1 do
+      if ProcCall[i]=';' then ProcCall[i]:=',';
+    if ProcCall[length(ProcCall)]<>';' then
+      ProcCall:=ProcCall+';';
+    if NodeIsFunction(ProcNode) then
+      ProcCall:=BeautifyCodeOptions.BeautifyIdentifier('Result')
+                +':='+ProcCall;
+    ProcCode:=ProcCode+BeautifyCodeOptions.LineEnd
+                +'begin'+BeautifyCodeOptions.LineEnd
+                +GetIndentStr(BeautifyCodeOptions.Indent)
+                  +ProcCall+BeautifyCodeOptions.LineEnd
+                +'end;';
+    ProcCode:=ASourceChangeCache.BeautifyCodeOptions.BeautifyProc(
+               ProcCode,0,false);
+    ANodeExt.ExtTxt3:=ProcCode;
   end;
 end;
 
@@ -6335,6 +6330,7 @@ var
     ANode: TCodeTreeNode;
     ProcCode: string;
   begin
+    CheckForOverrideAndAddInheritedCode(TheNodeExt);
     if (TheNodeExt.ExtTxt1='') and (TheNodeExt.ExtTxt3='') then begin
       ANode:=TheNodeExt.Node;
       if (ANode<>nil) and (ANode.Desc=ctnProcedure) then begin
@@ -6419,7 +6415,7 @@ var
     end;
   end;
 
-  function CheckForChangedProcs: boolean;
+  function CheckForChangedProcs(out ProcsCopied: boolean): boolean;
   var
     BodyAVLNode: TAVLTreeNode;
     BodyNodeExt: TCodeTreeNodeExtension;
@@ -6434,6 +6430,9 @@ var
     ProcCode: String;
   begin
     Result:=true;
+    ProcsCopied:=false;
+    if FirstInsert<>nil then exit; // new variables/definitions => skip checking for changes
+
     BodiesWithoutDefs:=nil;
     DefsWithoutBodies:=nil;
     try
@@ -6495,9 +6494,12 @@ var
              phpWithoutSemicolon]);
         ProcCode:=ASourceChangeCache.BeautifyCodeOptions.BeautifyProc(
                      ProcCode,Indent,false);
-        //debugln(['CheckForChangedProcs OLD=',copy(Src,InsertPos,InsertEndPos-InsertPos),' New=',ProcCode]);
+        {$IFDEF CTDEBUG}
+        debugln(['CheckForChangedProcs OLD=',copy(Src,InsertPos,InsertEndPos-InsertPos),' New=',ProcCode]);
+        {$ENDIF}
+        ProcsCopied:=true;
         if not ASourceChangeCache.Replace(gtNone,gtNone,InsertPos,InsertEndPos,ProcCode) then
-          exit;
+          exit(false);
         DefAVLNode:=DefsWithoutBodies.FindSuccessor(DefAVLNode);
       end;
     finally
@@ -6580,6 +6582,7 @@ var
 var
   InsertPos: integer;
   Indent: integer;
+  ProcsCopied: boolean;
 begin
   {$IFDEF CTDEBUG}
   DebugLn('TCodeCompletionCodeTool.CreateMissingProcBodies Gather existing method bodies ... ');
@@ -6611,7 +6614,8 @@ begin
     CheckForDoubleDefinedMethods;
 
     // check for changed procs (existing proc bodies without definitions in the class)
-    if not CheckForChangedProcs then exit;
+    if not CheckForChangedProcs(ProcsCopied) then exit;
+    if ProcsCopied then exit(true);
 
     // remove abstract methods
     RemoveAbstractMethods;
@@ -6625,14 +6629,6 @@ begin
     end;}
     
     AddNewPropertyAccessMethodsToClassProcs(ClassProcs,TheClassName);
-
-    {AnAVLNode:=ClassProcs.FindLowest;
-    while AnAVLNode<>nil do begin
-      DebugLn(' BBB ',TCodeTreeNodeExtension(AnAVLNode.Data).Txt);
-      AnAVLNode:=ClassProcs.FindSuccessor(AnAVLNode);
-    end;}
-
-    CheckForOverrideAndAddInheritedCode(ClassProcs);
 
     {AnAVLNode:=ClassProcs.FindLowest;
     while AnAVLNode<>nil do begin
