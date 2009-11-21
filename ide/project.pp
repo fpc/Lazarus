@@ -735,7 +735,8 @@ type
     function UnitWithComponent(AComponent: TComponent): TUnitInfo;
     function UnitWithComponentClass(AClass: TComponentClass): TUnitInfo;
     function UnitWithComponentClassName(const AClassName: string): TUnitInfo;
-    function UnitWithComponentName(AComponentName: String): TUnitInfo;
+    function UnitWithComponentName(AComponentName: String;
+                                   OnlyPartOfProject: boolean): TUnitInfo;
     function UnitComponentInheritingFrom(AClass: TComponentClass;
                                          Ignore: TUnitInfo): TUnitInfo;
     function UnitUsingComponentUnit(ComponentUnit: TUnitInfo;
@@ -4385,12 +4386,25 @@ begin
     Result := Result.fNext[uilWithComponent];
 end;
 
-function TProject.UnitWithComponentName(AComponentName: String): TUnitInfo;
+function TProject.UnitWithComponentName(AComponentName: String;
+  OnlyPartOfProject: boolean): TUnitInfo;
+var
+  i: Integer;
 begin
-  Result := fFirst[uilPartOfProject];
-  while (Result<>nil)
-  and (SysUtils.CompareText(Result.ComponentName, AComponentName) <> 0) do
-    Result := Result.fNext[uilPartOfProject];
+  if OnlyPartOfProject then begin
+    Result := fFirst[uilPartOfProject];
+    while (Result<>nil)
+    and (SysUtils.CompareText(Result.ComponentName, AComponentName) <> 0) do
+      Result := Result.fNext[uilPartOfProject];
+  end else begin
+    Result:=nil;
+    for i:=0 to UnitCount-1 do
+      if SysUtils.CompareText(Units[i].ComponentName,AComponentName)=0 then
+      begin
+        Result:=Units[i];
+        exit;
+      end;
+  end;
 end;
 
 function TProject.UnitComponentInheritingFrom(AClass: TComponentClass;

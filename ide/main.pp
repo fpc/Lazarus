@@ -556,6 +556,7 @@ type
     FRenamingComponents: TFPList; // list of TComponents currently renaming
     FOIHelpProvider: TAbstractIDEHTMLProvider;
     FWaitForClose: Boolean;
+    FFixingGlobalComponentLock: integer;
 
     procedure RenameInheritedMethods(AnUnitInfo: TUnitInfo; List: TStrings);
     function OIHelpProvider: TAbstractIDEHTMLProvider;
@@ -731,6 +732,8 @@ type
     function DoFixupComponentReferences(
                            RootComponent: TComponent;
                            OpenFlags: TOpenFlags): TModalResult; override;
+    procedure BeginFixupComponentReferences;
+    procedure EndFixupComponentReferences;
     function DoSaveAll(Flags: TSaveFlags): TModalResult;
     procedure DoRestart;
     procedure DoExecuteRemoteControl;
@@ -975,6 +978,21 @@ var
   SkipAutoLoadingLastProject: boolean = false;
   StartedByStartLazarus: boolean = false;
   EnableRemoteControl: boolean = false;
+
+function FindDesignComponent(const aName: string): TComponent;
+var
+  AnUnitInfo: TUnitInfo;
+begin
+  Result:=nil;
+  AnUnitInfo:=Project1.FirstUnitWithComponent;
+  while AnUnitInfo<>nil do begin
+    if SysUtils.CompareText(aName,AnUnitInfo.Component.Name)=0 then begin
+      Result:=AnUnitInfo.Component;
+      exit;
+    end;
+    AnUnitInfo:=AnUnitInfo.NextUnitWithComponent;
+  end;
+end;
 
 //==============================================================================
 
@@ -5877,13 +5895,22 @@ end;
 function TMainIDE.DoFixupComponentReferences(
   RootComponent: TComponent; OpenFlags: TOpenFlags): TModalResult;
 var
-  AnUnitInfo: TUnitInfo;
-  UsedUnitFilenames: TStrings;
-  ComponentNameToUnitFilename: TStringList;
+  RootUnitInfo: TUnitInfo;
+  UnitFilenames: TStrings;
+  ComponentNameToUnitFilename: TStringToStringTree;
 
-  function FindUnitFilename(const aComponentName: string): string;
+  procedure AddFile(List: TStrings; aFilename: string);
   var
-    RefUnitInfo: TUnitInfo;
+    i: Integer;
+  begin
+    for i:=0 to List.Count-1 do
+      if CompareFilenames(List[i],aFilename)=0 then exit;
+    List.Add(aFilename);
+  end;
+
+  procedure FindUsedUnits;
+  var
+    CurUnitFilenames: TStrings;
     i: Integer;
     UnitFilename: string;
     LFMFilename: String;
@@ -5894,53 +5921,96 @@ var
     ModalResult: TModalResult;
     CTResult: Boolean;
   begin
-    // search in the project
-    RefUnitInfo:=Project1.UnitWithComponentName(aComponentName);
-    if RefUnitInfo<>nil then begin
-      Result:=RefUnitInfo.Filename;
-      exit;
+    if UnitFilenames<>nil then exit;
+    UnitFilenames:=TStringList.Create;
+    ComponentNameToUnitFilename:=TStringToStringTree.Create(false);
+
+    // search in the used units of RootUnitInfo
+    CurUnitFilenames:=nil;
+    try
+      CTResult:=CodeToolBoss.FindUsedUnitFiles(RootUnitInfo.Source,
+        CurUnitFilenames);
+      if not CTResult then begin
+        DebugLn(['TMainIDE.DoFixupComponentReferences.FindUsedUnits failed parsing ',RootUnitInfo.Filename]);
+        // ignore the error. This was just a fallback search.
+      end;
+      if (CurUnitFilenames<>nil) then begin
+        for i:=0 to CurUnitFilenames.Count-1 do
+          AddFile(UnitFilenames,CurUnitFilenames[i]);
+      end;
+    finally
+      CurUnitFilenames.Free;
     end;
 
-    // search in the used units of the .lpr files
-    if (Project1.MainUnitInfo<>nil)
+    // search in the used units of the .lpr file
+    if RootUnitInfo.IsPartOfProject
+    and (Project1.MainUnitInfo<>nil)
     and (Project1.MainUnitInfo.Source<>nil)
     and (pfMainUnitIsPascalSource in Project1.Flags) then begin
-      if (UsedUnitFilenames=nil) then begin
-        // parse once all available component names in all .lfm files
-        ComponentNameToUnitFilename:=TStringList.Create;
+      CurUnitFilenames:=nil;
+      try
         CTResult:=CodeToolBoss.FindUsedUnitFiles(Project1.MainUnitInfo.Source,
-          UsedUnitFilenames);
-        if UsedUnitFilenames=nil then
-          UsedUnitFilenames:=TStringList.Create;
+          CurUnitFilenames);
         if not CTResult then begin
-          DebugLn(['TMainIDE.DoFixupComponentReferences.FindLFMFilename failed parsing ',Project1.MainUnitInfo.Filename]);
+          DebugLn(['TMainIDE.DoFixupComponentReferences.FindUsedUnits failed parsing ',Project1.MainUnitInfo.Filename]);
           // ignore the error. This was just a fallback search.
         end;
-        for i:=0 to UsedUnitFilenames.Count-1 do begin
-          UnitFilename:=UsedUnitFilenames[i];
-          LFMFilename:=ChangeFileExt(UnitFilename,'.lfm');
-          if FileExistsCached(LFMFilename) then begin
-            // load the lfm file
-            ModalResult:=LoadCodeBuffer(LFMCode,LFMFilename,[lbfCheckIfText],true);
-            if ModalResult<>mrOk then begin
-              debugln('TMainIDE.DoFixupComponentReferences Failed loading ',LFMFilename);
-              if ModalResult=mrAbort then break;
-            end else begin
-              // read the LFM component name
-              ReadLFMHeader(LFMCode.Source,LFMType,LFMComponentName,LFMClassName);
-              if LFMComponentName<>'' then
-                ComponentNameToUnitFilename.Values[LFMComponentName]:=UnitFilename;
-            end;
-          end;
+        if (CurUnitFilenames<>nil) then begin
+          for i:=0 to CurUnitFilenames.Count-1 do
+            AddFile(UnitFilenames,CurUnitFilenames[i]);
+        end;
+      finally
+        CurUnitFilenames.Free;
+      end;
+    end;
+
+    // parse once all available component names in all .lfm files
+    for i:=0 to UnitFilenames.Count-1 do begin
+      UnitFilename:=UnitFilenames[i];
+      LFMFilename:=ChangeFileExt(UnitFilename,'.lfm');
+      if FileExistsCached(LFMFilename) then begin
+        // load the lfm file
+        ModalResult:=LoadCodeBuffer(LFMCode,LFMFilename,[lbfCheckIfText],true);
+        if ModalResult<>mrOk then begin
+          debugln('TMainIDE.DoFixupComponentReferences Failed loading ',LFMFilename);
+          if ModalResult=mrAbort then break;
+        end else begin
+          // read the LFM component name
+          ReadLFMHeader(LFMCode.Source,LFMType,LFMComponentName,LFMClassName);
+          if LFMComponentName<>'' then
+            ComponentNameToUnitFilename.Add(LFMComponentName,UnitFilename);
         end;
       end;
-      UnitFilename:=ComponentNameToUnitFilename.Values[aComponentName];
+    end;
+  end;
+
+  function FindUnitFilename(const aComponentName: string): string;
+  var
+    RefUnitInfo: TUnitInfo;
+    UnitFilename: string;
+  begin
+    if RootUnitInfo.IsPartOfProject then begin
+      // search in the project component names
+      RefUnitInfo:=Project1.UnitWithComponentName(aComponentName,true);
+      if RefUnitInfo<>nil then begin
+        Result:=RefUnitInfo.Filename;
+        exit;
+      end;
+    end;
+    // ToDo: search in owner+used packages
+
+    FindUsedUnits;
+
+    // search in the used units
+    if (ComponentNameToUnitFilename<>nil) then begin
+      UnitFilename:=ComponentNameToUnitFilename[aComponentName];
       if UnitFilename<>'' then begin
         Result:=UnitFilename;
         exit;
       end;
     end;
 
+    DebugLn(['FindUnitFilename missing: ',aComponentName]);
     Result:='';
   end;
 
@@ -5993,6 +6063,7 @@ var
     // load resource hidden
     Result:=DoLoadLFM(RefUnitInfo,LFMCode,
                       OpenFlags+[ofLoadHiddenResource],[]);
+    //DebugLn(['LoadDependencyHidden ',dbgsname(RefUnitInfo.Component)]);
   end;
 
   procedure GatherRootComponents(AComponent: TComponent; List: TFPList);
@@ -6018,15 +6089,16 @@ begin
   CurRoot:=RootComponent;
   while CurRoot.Owner<>nil do
     CurRoot:=CurRoot.Owner;
-  AnUnitInfo:=Project1.UnitWithComponent(CurRoot);
-  if AnUnitInfo=nil then exit;
+  RootUnitInfo:=Project1.UnitWithComponent(CurRoot);
+  if RootUnitInfo=nil then exit;
 
-  UsedUnitFilenames:=nil;
+  UnitFilenames:=nil;
   ComponentNameToUnitFilename:=nil;
   RootComponents:=TFPList.Create;
   ReferenceRootNames:=TStringList.Create;
   ReferenceInstanceNames:=TStringList.Create;
   try
+    BeginFixupComponentReferences;
     GatherRootComponents(RootComponent,RootComponents);
     for i:=0 to RootComponents.Count-1 do begin
       CurRoot:=TComponent(RootComponents[i]);
@@ -6048,6 +6120,7 @@ begin
           // ToDo: give a nice error message and give user the choice between
           // a) ignore and loose the references
           // b) undo the opening (close the designer forms)
+          DebugLn(['TMainIDE.DoFixupComponentReferences failed loading component ',RefRootName]);
           Result:=mrCancel;
         end;
       end;
@@ -6079,12 +6152,27 @@ begin
       end;
     end;
   finally
+    EndFixupComponentReferences;
     RootComponents.Free;
-    UsedUnitFilenames.Free;
+    UnitFilenames.Free;
     ComponentNameToUnitFilename.Free;
     ReferenceRootNames.Free;
     ReferenceInstanceNames.Free;
   end;
+end;
+
+procedure TMainIDE.BeginFixupComponentReferences;
+begin
+  inc(FFixingGlobalComponentLock);
+  if FFixingGlobalComponentLock=1 then
+    RegisterFindGlobalComponentProc(@FindDesignComponent);
+end;
+
+procedure TMainIDE.EndFixupComponentReferences;
+begin
+  dec(FFixingGlobalComponentLock);
+  if FFixingGlobalComponentLock=0 then
+    UnregisterFindGlobalComponentProc(@FindDesignComponent);
 end;
 
 function TMainIDE.DoLoadAncestorDependencyHidden(AnUnitInfo: TUnitInfo;
