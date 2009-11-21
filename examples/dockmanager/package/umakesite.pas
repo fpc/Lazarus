@@ -1,11 +1,27 @@
 unit uMakeSite;
+(* Create elastic dock sites within a form, make forms dockable.
+
+Problems:
+
+Forms are not (easily) dockable on all platforms,
+  we add a grabber icon to each dockable form,
+  and wrap them in a managed floating form.
+
+Default floating sites are owned by Application,
+  we have to create the floating sites in the form.OnEndDock event.
+
+  Owning panels is dangerous, they are not destroyed with their parent form!
+*)
 
 {$mode objfpc}{$H+}
+
+{$DEFINE ownSites}  //floating sites owned by TDockMaster?
 
 interface
 
 uses
-  Classes, SysUtils, Controls, Forms, ExtCtrls, EasyDockSite;
+  Classes, SysUtils, Controls, Forms, ExtCtrls, EasyDockSite,
+  fFloatingSite;
 
 type
   sDockSides = TAlignSet;
@@ -25,13 +41,15 @@ type
   public
   end;
 
-//the owner of all docksites
+//the owner of all docksites (if ownSites is defined)
   TDockMaster = class(TComponent)
   protected //event handlers
     procedure DockHandleMouseMove(Sender: TObject; Shift: TShiftState;
       X, Y: Integer);
     procedure FormEndDock(Sender, Target: TObject; X, Y: Integer);
+    function  WrapDockable(Client: TControl): TFloatingSite;
   public
+    Factory: TComponent; //generic owner
     procedure AddElasticSites(AForm: TCustomForm; Sides: sDockSides);
     function  CreateDockable(const AName: string; fMultiInst: boolean): TForm;
     procedure DumpSites;
@@ -40,9 +58,19 @@ type
 implementation
 
 uses
-  LCLIntf, LCLProc,
+  LCLIntf, LCLProc;
   //fMasterSite,
-  fFloatingSite;
+
+type
+  TWinControlAccess = class(TWinControl)
+  end;
+
+const
+  PanelNames: array[TAlign] of string = (
+    '', '', //alNone, alTop,
+    'pnlBottom', 'pnlLeft', 'pnlRight',
+    '', ''  //alClient, alCustom
+  );
 
 { TDockMaster }
 
@@ -57,30 +85,41 @@ const
 begin
   for side := low(side) to high(side) do begin
     if (side in AllowedSides) and (side in Sides) then begin
-    //create the components
-      pnl := TDockPanel.Create(self); //owned by?
-      pnl.Parent := AForm;
-      pnl.Align := side;
-      pnl.BorderWidth := 1;
-      pnl.BorderStyle := bsSingle; // does not properly handle the size
-      dm := TEasyTree.Create(pnl);
-      dm.SetStyle(hsForm);
-      pnl.DockSite := True;
-      pnl.UseDockManager := True;
-      pnl.Visible := True;
-      spl := TSplitter.Create(AForm);
-      spl.Parent := AForm;
-      spl.Align := side;
-    //size components
-      pnl.Splitter := spl;
-      if side in [alLeft,alRight] then
-        pnl.Width := 0
-      else
-        pnl.Height := 0;
-      pnl.OnDockDrop := @pnl.pnlDockDrop;
-      pnl.OnDockOver := @pnl.pnlDockOver;
-      pnl.OnUnDock := @pnl.pnlUnDock;
-      pnl.OnGetSiteInfo := @pnl.pnlGetSiteInfo;
+      //TWinControlAccess(AForm).ReloadDockedControl(PanelNames[side], pnl);
+      TComponent(pnl) := AForm.FindComponent(PanelNames[side]);
+      if pnl = nil then begin
+      //create the components
+      {$IFDEF ownSites}
+        pnl := TDockPanel.Create(self); //owned by?
+      {$ELSE}
+        pnl := TDockPanel.Create(AForm); //owned by?
+      {$ENDIF}
+        pnl.Name := PanelNames[side];
+        pnl.Parent := AForm;
+        pnl.Align := side;
+        pnl.BorderWidth := 1;
+        pnl.BorderStyle := bsSingle; // does not properly handle the size
+        dm := TEasyTree.Create(pnl);
+        dm.SetStyle(hsForm);
+        pnl.DockSite := True;
+        pnl.UseDockManager := True;
+        pnl.Visible := True;
+        spl := TSplitter.Create(AForm);
+        spl.Parent := AForm;
+        spl.Align := side;
+        spl.BorderStyle := bsSingle;
+      //size components
+        pnl.Splitter := spl;
+        if side in [alLeft,alRight] then
+          pnl.Width := 0
+        else
+          pnl.Height := 0;
+      //handlers required for elastic sites
+        pnl.OnDockDrop := @pnl.pnlDockDrop;
+        pnl.OnDockOver := @pnl.pnlDockOver;
+        pnl.OnUnDock := @pnl.pnlUnDock;
+        pnl.OnGetSiteInfo := @pnl.pnlGetSiteInfo;
+      end;
     end;
   end;
 end;
@@ -94,6 +133,7 @@ var
   img: TImage;
   r: TRect;
   Site: TFloatingSite;
+  ctl: TControl;
 const
   digits = ['0'..'9'];
 begin
@@ -128,12 +168,20 @@ begin
       instno := 1; //default instance number for forms
   //lookup existing instance
     instname := basename + IntToStr(instno);
+  {$IFDEF old}
+    if false then
+      TWinControlAccess(Site).ReloadDockedControl(instname, ctl);
     //Result := nil;
     for i := 0 to ComponentCount - 1 do begin
       Result := TForm(Components[i]);
       if Result.Name = instname then
         exit; //found it
     end;
+  {$ELSE}
+    //Factory.ReloadDockedControl
+  {$ENDIF}
+    if FindComponent(instname) <> nil then
+      exit;
   //create new instance
     basename := 'T' + basename;
     fc := TFormClass(GetClass(basename)); //must be registered class name!
@@ -148,20 +196,7 @@ begin
     Result.DragKind := dkDock;
     Result.OnEndDock := @FormEndDock; //float into default host site
   //wrap into dock site
-    Site := TFloatingSite.Create(self);
-    Site.BoundsRect := Result.BoundsRect;
-    Result.Align := alClient;
-    Result.Visible := True; //otherwise docking may be rejected
-    Result.ManualDock(Site);
-    {
-    //Result.ManualDock(nil);
-    //Result.ManualFloat(Result.BoundsRect, False);
-    //TObject(Site) := Result.HostDockSite;
-    if Site = nil then begin
-      DebugLn('View not docked --------------');
-      exit;
-    end;
-    }
+    Site := WrapDockable(Result);
   //create a docking handle - should become a component?
     img := TImage.Create(Result);
     img.Parent := Result;
@@ -177,6 +212,41 @@ begin
   end;
   Result.Visible := True;
   //Result.OnEndDock();
+end;
+
+procedure TDockMaster.FormEndDock(Sender, Target: TObject; X, Y: Integer);
+var
+  ctl: TControl;
+  Site: TFloatingSite;
+begin
+(* Handler for Form.OnEndDock.
+  When a form becomes floating, dock immediately into a new floating host docksite.
+*)
+  if Target <> nil then
+    exit; //docked, not floating
+  ctl := Sender as TControl;
+  if ctl.HostDockSite = nil then begin
+    //DebugLn('--- floating');
+    WrapDockable(ctl);
+  end else begin
+    //DebugLn('--- in ' + HostDockSite.Name);
+  end;
+end;
+
+function TDockMaster.WrapDockable(Client: TControl): TFloatingSite;
+var
+  Site: TForm absolute Result;
+begin
+  {$IFDEF ownSites}
+    Site := TFloatingSite.Create(Self); //the new site
+  {$ELSE}
+    Site := TFloatingSite.Create(Application); //the new site
+  {$ENDIF}
+    Site.BoundsRect := Client.BoundsRect; //the new position and extension
+    Client.Align := alClient;
+    Client.Visible := True; //otherwise docking may be rejected
+    Client.ManualDock(Site);
+    //Site.DockManager.ResetBounds(True); //does not work on first attempt?
 end;
 
 procedure TDockMaster.DockHandleMouseMove(Sender: TObject; Shift: TShiftState;
@@ -200,6 +270,7 @@ var
   ctl: TControl;
   cmp: TComponent;
   n, s: string;
+  hds: boolean;
 const
   OrientString: array[TDockOrientation] of char = (
     'N','H','V' {$IFDEF FPC} ,'P' {$ENDIF}
@@ -208,6 +279,16 @@ const
     //(alNone, alTop, alBottom, alLeft, alRight, alClient, alCustom);
     'n', 't', 'B', 'L', 'R', 'C', 'c'
   );
+
+  function SiteName(ph: TControl): string;
+  begin
+    if ph = nil then
+      exit('<nil>');
+    Result := ph.Name;
+    if Result = '' then
+      Result := '<' + ph.ClassName + '>';
+  end;
+
 begin
 (* Dump registered docking sites.
   Elastic panels have no name.
@@ -219,51 +300,50 @@ begin
   dock sites[] and clients[]
     contents[]
 *)
+  DebugLn('--- dump sites ---');
   for i := 0 to ComponentCount - 1 do begin
     cmp := Components[i];
     if cmp is TWinControl then begin
+    //path
       Site := TWinControl(cmp);
-      if Site.Parent <> nil then begin
-        s := Site.Parent.Name;
-        if s = '' then
-          s := Site.Parent.ClassName;
-        s := ' in ' + s + '@';
-        s := s + AlignString[Site.Align];
-      end else
-        s := '';
-      DebugLn('Site=%s (%d,%d)[%d,%d] %s', [Site.Name,
-        site.Top, site.Left, site.Width, site.Height, s]);
-      for j := 0 to site.DockClientCount - 1 do begin
-        ctl := site.DockClients[j];
-        s := OrientString[ctl.DockOrientation];
-        DebugLn('  Client=%s@%s (%d,%d)[%d,%d]', [ctl.Name, s,
-          ctl.Top, ctl.Left, ctl.Width, ctl.Height]);
+      if Site.DockSite then begin
+      //reached only when ownSites is defined!
+        ctl := Site;
+        s := Format('Site=%s (%d,%d)[%d,%d]', [SiteName(ctl),
+          ctl.Left, ctl.Top, ctl.Width, ctl.Height]);
+        while ctl <> nil do begin
+          hds := ctl.HostDockSite <> nil;
+          if hds then begin
+            Site := ctl.HostDockSite;
+            if Site <> nil then
+              n := ' in ' + SiteName(Site) + '@' + OrientString[ctl.DockOrientation];
+          end else begin
+            Site := ctl.Parent;
+            if Site <> nil then
+              n := ' at ' + SiteName(Site) + '@' + AlignString[ctl.Align];
+          end;
+          if Site = nil then
+            break;
+          s := s + n;
+          ctl := Site;
+        end;
+        DebugLn(s);
+      //clients
+        Site := TWinControl(cmp);
+        for j := 0 to site.DockClientCount - 1 do begin
+          ctl := site.DockClients[j];
+          s := OrientString[ctl.DockOrientation];
+          DebugLn('  Client=%s@%s (%d,%d)[%d,%d]', [SiteName(ctl), s,
+            ctl.Left, ctl.Top, ctl.Width, ctl.Height]);
+        end;
+      end else begin
+        ctl := Site;
+        DebugLn('Client=%s in %s (%d,%d)[%d,%d]', [SiteName(ctl), SiteName(ctl.HostDockSite),
+          ctl.Left, ctl.Top, ctl.Width, ctl.Height]);
       end;
     end;
   end;
   DebugLn('--- end dump ---');
-end;
-
-procedure TDockMaster.FormEndDock(Sender, Target: TObject; X, Y: Integer);
-var
-  ctl: TControl;
-  Site: TFloatingSite;
-begin
-(* Handler for Form.OnEndDock.
-  When a form becomes floating, dock immediately into a new floating host docksite.
-*)
-  if Target <> nil then
-    exit; //docked, not floating
-  ctl := Sender as TControl;
-  if ctl.HostDockSite = nil then begin
-    //DebugLn('--- floating');
-    Site := TFloatingSite.Create(Application); //the new site
-    Site.BoundsRect := ctl.BoundsRect; //the new position and extension
-    ctl.ManualDock(Site);
-    //Site.DockManager.ResetBounds(True); //does not work on first attempt?
-  end else begin
-    //DebugLn('--- in ' + HostDockSite.Name);
-  end;
 end;
 
 

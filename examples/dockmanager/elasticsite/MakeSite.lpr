@@ -7,8 +7,7 @@ uses
   cthreads,
   {$ENDIF}{$ENDIF}
   Interfaces, // this includes the LCL widgetset
-  Forms, fMasterSite, fclientform, EasyDockMgr, LResources, uMakeSite
-  { you can add units after this };
+  Forms, fMasterSite, fclientform, EasyDockMgr, LResources;
 
 {$IFDEF WINDOWS}{$R MakeSite.rc}{$ENDIF}
 
