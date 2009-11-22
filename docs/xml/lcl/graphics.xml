@@ -14765,13 +14765,16 @@ be carefull with this, modify only within a begin/endupdate</descr>
       </element>
       <element name="TPen.Cosmetic">
         <short>Whether the Pen is <var>Cosmetic</var>, ie non-geometric</short>
+        <descr>Pens can be Cosmetic and Geomeric. Cosmetic pens are always 1 pixel wide, while geometric pens can have any width. But width of geometric pens are defined in world units and thus depends on transforms (scaling, rotation, shear, reflection) applied to canvas. Operations with cosmetic pens are faster.</descr>
       </element>
       <element name="TPen.EndCap">
         <short>The sort of <var>EndCap</var> used on the Pen</short>
+        <descr>The end cap can be: Round, Square and Flat. When end caps are round - last points are drawn round, when end caps are square - last points are drawn square. When end caps are flat - last points are not drawn at all.</descr>
       </element>
       <element name="TPen.JoinStyle">
         <short>
           <var>JoinStyle</var> - the style of joint where two lines meet or cross</short>
+        <descr>The join style can be: Round, Bevel and Miter. When style is Round then line joins are round. When style is Bevel then line joins are beveled. When style is Miter then line joins are mitered.</descr>
       </element>
       <element name="TPenHandleCacheDescriptor">
         <short>
