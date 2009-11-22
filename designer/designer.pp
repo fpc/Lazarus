@@ -2455,6 +2455,7 @@ procedure TDesigner.Modified;
 Begin
   ControlSelection.SaveBounds;
   DoModified;
+  inherited Modified;
 end;
 
 Procedure TDesigner.RemovePersistentAndChilds(APersistent: TPersistent);

@@ -38,13 +38,23 @@ type
     cpsfFindUniquePositions
     );
   TComponentPasteSelectionFlags = set of TComponentPasteSelectionFlag;
-
+  TComponentEditorDesignerHookType = (
+    cedhtModified
+    );
 
   TComponentEditorDesigner = class(TIDesigner)
+  private
+    FChangeStamp: int64;
   protected
     FForm: TCustomForm;
+    FHandlers: array[TComponentEditorDesignerHookType] of TMethodList;
     function GetPropertyEditorHook: TPropertyEditorHook; virtual; abstract;
+    function GetHandlerCount(HookType: TComponentEditorDesignerHookType): integer;
+    procedure AddHandler(HookType: TComponentEditorDesignerHookType; const Handler: TMethod);
+    procedure RemoveHandler(HookType: TComponentEditorDesignerHookType; const Handler: TMethod);
   public
+    destructor Destroy; override;
+    procedure Modified; override;
     function CopySelection: boolean; virtual; abstract;
     function CutSelection: boolean; virtual; abstract;
     function CanPaste: boolean; virtual; abstract;
@@ -62,6 +72,12 @@ type
                                        ): string; virtual; abstract;
     property PropertyEditorHook: TPropertyEditorHook read GetPropertyEditorHook;
     property Form: TCustomForm read FForm;
+    property ChangeStamp: int64 read FChangeStamp;// increased on calling Modified
+  public
+    // Handlers
+    procedure RemoveAllHandlersForObject(const HandlerObject: TObject);
+    procedure AddHandlerModified(const OnModified: TNotifyEvent);
+    procedure RemoveHandlerModified(const OnModified: TNotifyEvent);
   end;
 
 
@@ -1197,6 +1213,69 @@ constructor TTimerComponentEditor.Create(AComponent: TComponent;
 begin
   inherited Create(AComponent, ADesigner);
   BestEditEvent := 'ONTIMER';
+end;
+
+{ TComponentEditorDesigner }
+
+function TComponentEditorDesigner.GetHandlerCount(
+  HookType: TComponentEditorDesignerHookType): integer;
+begin
+  Result:=FHandlers[HookType].Count;
+end;
+
+procedure TComponentEditorDesigner.AddHandler(
+  HookType: TComponentEditorDesignerHookType; const Handler: TMethod);
+begin
+  if Handler.Code=nil then RaiseGDBException('TComponentEditorDesigner.AddHandler');
+  if FHandlers[HookType]=nil then
+    FHandlers[HookType]:=TMethodList.Create;
+  FHandlers[HookType].Add(Handler);
+end;
+
+procedure TComponentEditorDesigner.RemoveHandler(
+  HookType: TComponentEditorDesignerHookType; const Handler: TMethod);
+begin
+  FHandlers[HookType].Remove(Handler);
+end;
+
+destructor TComponentEditorDesigner.Destroy;
+var
+  HookType: TComponentEditorDesignerHookType;
+begin
+  for HookType:=Low(FHandlers) to High(FHandlers) do
+    FreeThenNil(FHandlers[HookType]);
+  inherited Destroy;
+end;
+
+procedure TComponentEditorDesigner.Modified;
+begin
+  if FChangeStamp<High(FChangeStamp) then
+    inc(FChangeStamp)
+  else
+    FChangeStamp:=Low(FChangeStamp);
+  FHandlers[cedhtModified].CallNotifyEvents(Self);
+end;
+
+procedure TComponentEditorDesigner.RemoveAllHandlersForObject(
+  const HandlerObject: TObject);
+var
+  HookType: TComponentEditorDesignerHookType;
+begin
+  for HookType:=Low(FHandlers) to High(FHandlers) do
+    if FHandlers[HookType]<>nil then
+      FHandlers[HookType].RemoveAllMethodsOfObject(HandlerObject);
+end;
+
+procedure TComponentEditorDesigner.AddHandlerModified(
+  const OnModified: TNotifyEvent);
+begin
+  AddHandler(cedhtModified,TMethod(OnModified));
+end;
+
+procedure TComponentEditorDesigner.RemoveHandlerModified(
+  const OnModified: TNotifyEvent);
+begin
+  RemoveHandler(cedhtModified,TMethod(OnModified));
 end;
 
 initialization

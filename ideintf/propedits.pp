@@ -5959,7 +5959,7 @@ procedure TPropertyEditorHook.RemoveAllHandlersForObject(const HandlerObject: TO
 var
   HookType: TPropHookType;
 begin
-  for HookType:=Low(TPropHookType) to High(TPropHookType) do
+  for HookType:=Low(FHandlers) to High(FHandlers) do
     if FHandlers[HookType]<>nil then
       FHandlers[HookType].RemoveAllMethodsOfObject(HandlerObject);
 end;
@@ -6344,7 +6344,7 @@ destructor TPropertyEditorHook.Destroy;
 var
   HookType: TPropHookType;
 begin
-  for HookType:=Low(TPropHookType) to high(TPropHookType) do
+  for HookType:=Low(FHandlers) to high(FHandlers) do
     FreeThenNil(FHandlers[HookType]);
   inherited Destroy;
 end;
