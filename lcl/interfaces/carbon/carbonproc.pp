@@ -71,6 +71,7 @@ function ShiftStateToModifiers(const Shift: TShiftState): Byte;
 
 function FindCarbonFontID(const FontName: String): ATSUFontID;
 function CarbonFontIDToFontName(ID: ATSUFontID): String;
+function FindQDFontFamilyID(const FontName: String; var Family: FontFamilyID): Boolean;
 
 function FontStyleToQDStyle(const AStyle: TFontStyles): MacOSAll.Style;
 function QDStyleToFontStyle(QDStyle: Integer): TFontStyles;
@@ -526,6 +527,24 @@ begin
     @FontName[1], @NameLength, nil), SName, 'ATSUFindFontName', 'Name') then Exit;
     
   Result := FontName;
+end;
+
+{------------------------------------------------------------------------------
+  Name:    CarbonFontIDToFontName
+  Params:  FontName - The font name, UTF-8 encoded
+  Returns: Returns QuickDraw font family ID
+           The function returns true, if the font family has be found, false
+           otherwise.
+  Note: FMGetFontFamilyFromName is deprecated in OSX 10.4.
+        There's no replacment for the function, in future OSX versions.
+ ------------------------------------------------------------------------------}
+function FindQDFontFamilyID(const FontName: String; var Family: FontFamilyID): Boolean;
+var
+  name : Str255;
+begin
+  name:=FontName;
+  Family:=FMGetFontFamilyFromName(name);
+  Result:=true;
 end;
 
 {------------------------------------------------------------------------------

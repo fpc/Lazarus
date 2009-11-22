@@ -822,7 +822,7 @@ end;
 procedure TCarbonControl.SetFont(const AFont: TFont);
 var
   FontStyle: ControlFontStyleRec;
-  ID: ATSUFontID;
+  ID: FontFamilyID;
 const
   SName = 'SetFont';
 begin
@@ -830,8 +830,8 @@ begin
   OSError(GetControlData(ControlRef(Widget), kControlEntireControl,
       kControlFontStyleTag, SizeOf(FontStyle), @FontStyle, nil), Self, SName,
     SGetData, SControlFont);
-    
-  ID := FindCarbonFontID(AFont.Name);
+
+  if not FindQDFontFamilyID(AFont.Name, ID) then ID:=0;
 
   FontStyle.flags := FontStyle.flags or kControlUseFontMask or kControlUseSizeMask or
     kControlUseFaceMask or kControlUseForeColorMask;
