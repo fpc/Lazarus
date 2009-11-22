@@ -1,12 +1,13 @@
 <?xml version="1.0"?>
 <CONFIG>
   <ProjectOptions>
-    <PathDelim Value="/"/>
-    <Version Value="6"/>
+    <Version Value="7"/>
     <General>
+      <Flags>
+        <LRSInOutputDirectory Value="False"/>
+      </Flags>
       <SessionStorage Value="InProjectDir"/>
       <MainUnit Value="0"/>
-      <IconPath Value="./"/>
       <TargetFileExt Value=""/>
     </General>
     <PublishOptions>
@@ -33,16 +34,14 @@
       </Unit0>
       <Unit1>
         <Filename Value="dockform1unit.pas"/>
-        <ComponentName Value="MainForm"/>
         <IsPartOfProject Value="True"/>
-        <ResourceFilename Value="dockform1unit.lrs"/>
+        <ComponentName Value="MainForm"/>
         <UnitName Value="DockForm1Unit"/>
       </Unit1>
       <Unit2>
         <Filename Value="dockform2unit.pas"/>
-        <ComponentName Value="DockFormX"/>
         <IsPartOfProject Value="True"/>
-        <ResourceFilename Value="dockform2unit.lrs"/>
+        <ComponentName Value="DockFormX"/>
         <UnitName Value="DockForm2Unit"/>
       </Unit2>
       <Unit3>

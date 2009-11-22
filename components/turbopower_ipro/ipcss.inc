@@ -683,10 +683,13 @@ begin
   for I := 0 to ACommands.Count-1 do
   begin
     ACommand := ACommands[I];
-    Args := GetCommandArgs(ACommand);
+    if ACommand='' then continue;
     Command := LowerCase(GetCommandName(ACommand));
+    if Command='' then continue;
 
-    case Command[1] of
+    Args := GetCommandArgs(ACommand);
+    try
+      case Command[1] of
       'c': if Command = 'color' then
              if Args.Count > 0 then
                Color := ColorFromString(Args[0])
@@ -748,8 +751,10 @@ begin
                      Font.Weight := FontWeightFromString(Args[0]);
             end;
           end;
+      end;
+    finally
+      Args.Free;
     end;
-    Args.Free;
   end;
 end;
 
