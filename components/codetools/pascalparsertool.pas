@@ -3560,7 +3560,7 @@ begin
       if AtomIsStringConstant then
         ReadConstant(true,false,[]);
     end else if UpAtomIs('PLATFORM') or UpAtomIs('UNIMPLEMENTED') or
-       UpAtomIs('EXPERIMENTAL') or UpAtomIs('LIBRARY')
+       UpAtomIs('EXPERIMENTAL') or UpAtomIs('LIBRARY') or UpAtomIs('EXTERNAL')
     then
       ReadNextAtom;
     if CurPos.Flag<>cafSemicolon then
