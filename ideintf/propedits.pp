@@ -1345,11 +1345,11 @@ type
                            const OnGetRootClassName: TPropHookGetRootClassName);
     procedure RemoveHandlerGetRootClassName(
                            const OnGetRootClassName: TPropHookGetRootClassName);
+    // component create, delete, rename
     procedure AddHandlerComponentRenamed(
                            const OnComponentRenamed: TPropHookComponentRenamed);
     procedure RemoveHandlerComponentRenamed(
                            const OnComponentRenamed: TPropHookComponentRenamed);
-    // persistent selection
     procedure AddHandlerBeforeAddPersistent(
                      const OnBeforeAddPersistent: TPropHookBeforeAddPersistent);
     procedure RemoveHandlerBeforeAddPersistent(
@@ -1366,6 +1366,7 @@ type
                            const OnDeletePersistent: TPropHookDeletePersistent);
     procedure RemoveHandlerDeletePersistent(
                            const OnDeletePersistent: TPropHookDeletePersistent);
+    // persistent selection
     procedure AddHandlerGetSelection(
                                    const OnGetSelection: TPropHookGetSelection);
     procedure RemoveHandlerGetSelection(

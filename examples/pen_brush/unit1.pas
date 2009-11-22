@@ -63,7 +63,7 @@ uses
 
 procedure TForm1.Button1Click(Sender: TObject);
 begin
-  Close;
+  Monitor;
 end;
 
 procedure TForm1.cbAntialiasingChange(Sender: TObject);

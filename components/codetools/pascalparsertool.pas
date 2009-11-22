@@ -391,7 +391,10 @@ begin
   'O':
     if CompareSrcIdentifiers('OBJECT',p)
     or CompareSrcIdentifiers('OBJCCLASS',p)
-    or CompareSrcIdentifiers('OBJCCATEGORY',p) then exit(KeyWordFuncClass);
+    or CompareSrcIdentifiers('OBJCCATEGORY',p) then
+      exit(KeyWordFuncClass)
+    else if CompareSrcIdentifiers('OBJCPROTOCOL',p) then
+      exit(KeyWordFuncClassInterface);
   'P':
     case UpChars[p[1]] of
     'A': if CompareSrcIdentifiers('PACKED',p) then exit(KeyWordFuncTypePacked);
