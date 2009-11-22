@@ -58,7 +58,7 @@ LCL TODO:
 
 //depending on widgetset or patched LCL
 {.$DEFINE NoDrop} //applied DoDiPatch1?
-{$DEFINE PageFrame} //problem: notebook frame cannot Release itself
+{.$DEFINE PageFrame} //problem: notebook frame cannot Release itself
 {$DEFINE replace} //using ReplaceDockedControl?
 
 interface

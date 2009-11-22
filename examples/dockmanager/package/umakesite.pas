@@ -98,7 +98,7 @@ begin
         pnl.Parent := AForm;
         pnl.Align := side;
         pnl.BorderWidth := 1;
-        pnl.BorderStyle := bsSingle; // does not properly handle the size
+        //pnl.BorderStyle := bsSingle; // does not properly handle the size
         dm := TEasyTree.Create(pnl);
         dm.SetStyle(hsForm);
         pnl.DockSite := True;
