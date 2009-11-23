@@ -97,7 +97,14 @@ type
   TCMControlChange = record
     Msg: Cardinal;
     Control: TControl;
-    Inserting: Boolean;
+    Inserting: LongBool;
+    Result: LRESULT;
+  end;
+
+  TCMControlListChange = record
+    Msg: Cardinal;
+    Control: TControl;
+    Inserting: LongBool;
     Result: LRESULT;
   end;
 

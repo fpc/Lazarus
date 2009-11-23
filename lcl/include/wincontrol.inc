@@ -6008,6 +6008,7 @@ begin
       if HandleAllocated then
         AControl.InvalidateControl(AControl.IsVisible, False, True);
     Remove(AControl);
+    Perform(CM_CONTROLLISTCHANGE, WParam(AControl), LParam(False));
     if not (csDestroying in ComponentState) then
     begin
       {$IFDEF NewAutoSize}
