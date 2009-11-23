@@ -379,6 +379,8 @@ implementation
 
 type
   TCustomFormAccess = class(TCustomForm);
+  TControlAccess = class(TControl);
+
 
 const
   mk_lbutton =   1;
@@ -1628,6 +1630,15 @@ begin
     DebugLn(', No CTRL down');
   {$ENDIF}
 
+  if (MouseDownComponent <> nil) and (MouseDownComponent is TControl) then
+  begin
+    if TControl(MouseDownComponent).Perform(CM_DESIGNHITTEST, 0, Longint(SmallPoint(MouseDownPos.X, MouseDownPos.Y))) > 0 then
+    begin
+      TControlAccess(MouseDownComponent).MouseDown(Button, Shift, MouseDownPos.X, MouseDownPos.Y);
+      Exit;
+    end;
+  end;
+
   if Mediator<>nil then begin
     Handled:=false;
     Mediator.MouseDown(Button,Shift,MouseDownPos,Handled);
@@ -1963,6 +1974,15 @@ begin
   DebugLn('');
   {$ENDIF}
 
+  if (MouseDownComponent <> nil) and (MouseDownComponent is TControl) then
+  begin
+    if TControl(MouseDownComponent).Perform(CM_DESIGNHITTEST, 0, Longint(SmallPoint(MouseUpPos.X, MouseUpPos.Y))) > 0 then
+    begin
+      TControlAccess(MouseDownComponent).MouseUp(Button, Shift, MouseUpPos.X, MouseUpPos.Y);
+      Exit;
+    end;
+  end;
+
   if Mediator<>nil then
   begin
     Handled:=false;
@@ -2060,6 +2080,15 @@ begin
   LastMouseMovePos := GetFormRelativeMousePosition(Form);
   if (OldMouseMovePos.X = LastMouseMovePos.X) and (OldMouseMovePos.Y = LastMouseMovePos.Y) then
     Exit;
+
+  if (MouseDownComponent <> nil) and (MouseDownComponent is TControl) then
+  begin
+    if TControl(MouseDownComponent).Perform(CM_DESIGNHITTEST, 0, Longint(SmallPoint(LastMouseMovePos.X, LastMouseMovePos.Y))) > 0 then
+    begin
+      TControlAccess(MouseDownComponent).MouseMove(Shift, LastMouseMovePos.X, LastMouseMovePos.Y);
+      Exit;
+    end;
+  end;
 
   if Mediator <> nil then
   begin
