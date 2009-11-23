@@ -89,10 +89,10 @@ begin
       tc1 := x + Length(p^.Text);
       p := p^.Next;
     end;
-    s := s + #13#10;
+    s := s + LineEnding;
     Stream.Write(s[1], Length(s));
   end;
-  s := #12#13#10;
+  s := #12+LineEnding;
   Stream.Write(s[1], Length(s));
 end;
 

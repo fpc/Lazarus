@@ -26,9 +26,17 @@ type
     Constructor Create(aOwner : TComponent); override;
   end;
 
+  { TfrCSVExportFilter }
+
   TfrCSVExportFilter = class(TfrTextExportFilter)
+  private
+    FIntervals: TFPList;
   public
+    constructor Create(AStream: TStream); override;
+    destructor Destroy; override;
+    procedure OnBeginPage; override;
     procedure OnEndPage; override;
+    procedure OnText(X, Y: Integer; const Text: String; View: TfrView); override;
   end;
 
 
@@ -36,13 +44,37 @@ implementation
 
 uses LR_Const;
 
+constructor TfrCSVExportFilter.Create(AStream: TStream);
+begin
+  inherited Create(AStream);
+  FIntervals := TFPList.Create;
+end;
+
+destructor TfrCSVExportFilter.Destroy;
+begin
+  FIntervals.Free;
+  inherited destroy;
+end;
+
+procedure TfrCSVExportFilter.OnBeginPage;
+begin
+  inherited OnBeginPage;
+  FIntervals.Clear;
+end;
+
+function CompareIntervals(Item1, Item2: Pointer): Integer;
+begin
+  result := PtrInt(Item1)-PtrInt(Item2);
+end;
 
 procedure TfrCSVExportFilter.OnEndPage;
 var
-  i, j, n, tc1, tc2: Integer;
-  p: PfrTextRec;
-  s: String;
+  i, j, k, n, tc1, tc2: Integer;
+  MaxCols: Integer;
+  p, q: PfrTextRec;
+  s,str: String;
 begin
+
   n := Lines.Count - 1;
   while n >= 0 do
   begin
@@ -50,23 +82,46 @@ begin
     Dec(n);
   end;
 
+  if FIntervals.Count = 0 then
+    exit;
+
+  FIntervals.Sort(@CompareIntervals);
+
   for i := 0 to n do
   begin
-    s := '';
-    tc1 := 0;
     p := PfrTextRec(Lines[i]);
-    while p <> nil do
+    if p = nil then
+      continue;
+
+    s := '';
+    for j := 0 to FIntervals.Count-1 do
     begin
-      tc2 := p^.X div 64;
-      for j := 0 to tc2 - tc1 - 1 do
-        s := s + ';';
-      s := s + p^.Text;
-      tc1 := tc2;
-      p := p^.Next;
+
+      if (P <> nil) and (P^.X = PtrInt(FIntervals[j])) then
+      begin
+        Str := p^.Text;
+        p := p^.Next;
+      end else
+        Str := '';
+
+      if j=0 then
+        s := str
+      else
+        s := s + ';' + str;
+
     end;
-    s := s + #13#10;
+
+    s := s + LineEnding;
     Stream.Write(s[1], Length(s));
   end;
+end;
+
+procedure TfrCSVExportFilter.OnText(X, Y: Integer; const Text: String;
+  View: TfrView);
+begin
+  inherited OnText(X, Y, Text, View);
+  if FIntervals.IndexOf(pointer(ptrint(x)))<0 then
+    FIntervals.Add(pointer(ptrint(x)));
 end;
 
 constructor TfrCSVExport.Create(aOwner: TComponent);
