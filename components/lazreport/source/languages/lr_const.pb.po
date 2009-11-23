@@ -508,7 +508,7 @@ msgstr "Versão"
 
 #: lr_const.sduplicatedobjectname
 msgid "An object named \"%s\" already exists"
-msgstr ""
+msgstr "Um objeto chamado \"%s\" já existe"
 
 #: lr_const.seditorformbig
 msgid "&Big font"
@@ -529,7 +529,7 @@ msgstr "&Formato"
 
 #: lr_const.seditorformfunction
 msgid "Function"
-msgstr ""
+msgstr "Função"
 
 #: lr_const.seditorformmemo
 msgctxt "lr_const.seditorformmemo"
