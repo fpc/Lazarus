@@ -11,14 +11,14 @@ object MaskEditorForm: TMaskEditorForm
   ClientWidth = 507
   OnCreate = MaskEditorFormCreate
   Position = poScreenCenter
-  LCLVersion = '0.9.27'
+  LCLVersion = '0.9.29'
   object InputMaskLabel: TLabel
     AnchorSideLeft.Control = Owner
     AnchorSideTop.Control = Owner
     Left = 6
-    Height = 18
+    Height = 14
     Top = 6
-    Width = 87
+    Width = 58
     BorderSpacing.Left = 6
     BorderSpacing.Top = 6
     Caption = '&Input Mask:'
@@ -29,9 +29,9 @@ object MaskEditorForm: TMaskEditorForm
     AnchorSideLeft.Control = SampleMasksListBox
     AnchorSideTop.Control = Owner
     Left = 201
-    Height = 18
+    Height = 14
     Top = 6
-    Width = 110
+    Width = 71
     BorderSpacing.Top = 6
     Caption = '&Sample Masks:'
     ParentColor = False
@@ -41,9 +41,9 @@ object MaskEditorForm: TMaskEditorForm
     AnchorSideTop.Control = InputMaskEdit
     AnchorSideTop.Side = asrBottom
     Left = 6
-    Height = 18
-    Top = 56
-    Width = 138
+    Height = 14
+    Top = 50
+    Width = 103
     BorderSpacing.Left = 6
     BorderSpacing.Top = 6
     Caption = 'Character for Blanks:'
@@ -55,8 +55,8 @@ object MaskEditorForm: TMaskEditorForm
     AnchorSideTop.Control = InputMaskLabel
     AnchorSideTop.Side = asrBottom
     Left = 6
-    Height = 23
-    Top = 27
+    Height = 21
+    Top = 23
     Width = 189
     BorderSpacing.Left = 6
     BorderSpacing.Top = 3
@@ -73,8 +73,8 @@ object MaskEditorForm: TMaskEditorForm
     AnchorSideBottom.Control = LoadSampleMasksButton
     AnchorSideBottom.Side = asrBottom
     Left = 201
-    Height = 204
-    Top = 27
+    Height = 191
+    Top = 23
     Width = 300
     Anchors = [akTop, akLeft, akRight, akBottom]
     BorderSpacing.Left = 6
@@ -85,7 +85,6 @@ object MaskEditorForm: TMaskEditorForm
     OnDrawItem = SampleMasksListBoxDrawItem
     Style = lbOwnerDrawFixed
     TabOrder = 4
-    TopIndex = -1
   end
   object LoadSampleMasksButton: TButton
     AnchorSideLeft.Control = Owner
@@ -93,7 +92,7 @@ object MaskEditorForm: TMaskEditorForm
     AnchorSideTop.Side = asrBottom
     Left = 6
     Height = 25
-    Top = 206
+    Top = 189
     Width = 75
     BorderSpacing.Around = 6
     Caption = '&Masks...'
@@ -107,8 +106,8 @@ object MaskEditorForm: TMaskEditorForm
     AnchorSideRight.Control = InputMaskEdit
     AnchorSideRight.Side = asrBottom
     Left = 6
-    Height = 23
-    Top = 77
+    Height = 21
+    Top = 67
     Width = 189
     Anchors = [akTop, akLeft, akRight]
     BorderSpacing.Left = 6
@@ -122,9 +121,9 @@ object MaskEditorForm: TMaskEditorForm
     AnchorSideTop.Control = CharactersForBlanksEdit
     AnchorSideTop.Side = asrBottom
     Left = 6
-    Height = 22
-    Top = 106
-    Width = 175
+    Height = 17
+    Top = 94
+    Width = 130
     BorderSpacing.Left = 6
     BorderSpacing.Top = 6
     Caption = 'Save &Literal Characters'
@@ -139,7 +138,7 @@ object MaskEditorForm: TMaskEditorForm
     AnchorSideRight.Side = asrBottom
     Left = 6
     Height = 66
-    Top = 134
+    Top = 117
     Width = 189
     Anchors = [akTop, akLeft, akRight]
     BorderSpacing.Left = 6
@@ -169,13 +168,15 @@ object MaskEditorForm: TMaskEditorForm
       AnchorSideRight.Control = TestInputPanel
       AnchorSideRight.Side = asrBottom
       Left = 6
-      Height = 23
+      Height = 21
       Top = 23
       Width = 177
       Anchors = [akTop, akLeft, akRight]
       BorderSpacing.Left = 6
       BorderSpacing.Top = 3
       BorderSpacing.Right = 6
+      CharCase = ecNormal
+      MaxLength = 0
       TabOrder = 0
       SpaceChar = '_'
     end
@@ -184,8 +185,8 @@ object MaskEditorForm: TMaskEditorForm
     AnchorSideTop.Control = LoadSampleMasksButton
     AnchorSideTop.Side = asrBottom
     Left = 6
-    Height = 44
-    Top = 237
+    Height = 61
+    Top = 220
     Width = 495
     Anchors = [akTop, akLeft, akRight, akBottom]
     TabOrder = 6

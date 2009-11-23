@@ -93,12 +93,12 @@ begin
   // mask name|mask example|mask
 
   // 1. Extract caption from Line
-  Caption := Copy(Line, 1, Pos('|', Line) - 1);
-  Delete(Line, 1, Length(Caption) + 1);
+  Caption := Copy(Line, 1, Pos(' | ', Line) - 1);
+  Delete(Line, 1, Length(Caption) + 3);
 
   // 2. Extract example from Line
-  Example := Copy(Line, 1, Pos('|', Line) - 1);
-  Delete(Line, 1, Length(Example) + 1);
+  Example := Copy(Line, 1, Pos(' | ', Line) - 1);
+  Delete(Line, 1, Length(Example) + 3);
 
   // 3. Copy what we have to Mask
   Mask := Line;
@@ -324,7 +324,7 @@ end;
 
 function TEditMaskProperty.GetAttributes: TPropertyAttributes;
 begin
-  Result:= [paDialog];
+  Result:= [paDialog, paMultiSelect, paRevertable];
 end;
 
 procedure TEditMaskProperty.Edit;

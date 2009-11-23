@@ -5,73 +5,73 @@ LazarusResources.Add('TMaskEditorForm','FORMDATA',[
   +#3'Top'#3#248#0#5'Width'#3#251#1#13'ActiveControl'#7#13'InputMaskEdit'#8'Aut'
   +'oSize'#9#11'BorderStyle'#7#8'bsDialog'#7'Caption'#6#17'Input Mask Editor'#12
   +'ClientHeight'#3#31#1#11'ClientWidth'#3#251#1#8'OnCreate'#7#20'MaskEditorFor'
-  +'mCreate'#8'Position'#7#14'poScreenCenter'#10'LCLVersion'#6#6'0.9.27'#0#6'TL'
+  +'mCreate'#8'Position'#7#14'poScreenCenter'#10'LCLVersion'#6#6'0.9.29'#0#6'TL'
   +'abel'#14'InputMaskLabel'#22'AnchorSideLeft.Control'#7#5'Owner'#21'AnchorSid'
-  +'eTop.Control'#7#5'Owner'#4'Left'#2#6#6'Height'#2#18#3'Top'#2#6#5'Width'#2'W'
+  +'eTop.Control'#7#5'Owner'#4'Left'#2#6#6'Height'#2#14#3'Top'#2#6#5'Width'#2':'
   +#18'BorderSpacing.Left'#2#6#17'BorderSpacing.Top'#2#6#7'Caption'#6#12'&Input'
   +' Mask:'#12'FocusControl'#7#13'InputMaskEdit'#11'ParentColor'#8#0#0#6'TLabel'
   +#16'SampleMasksLabel'#22'AnchorSideLeft.Control'#7#18'SampleMasksListBox'#21
-  +'AnchorSideTop.Control'#7#5'Owner'#4'Left'#3#201#0#6'Height'#2#18#3'Top'#2#6
-  +#5'Width'#2'n'#17'BorderSpacing.Top'#2#6#7'Caption'#6#14'&Sample Masks:'#11
+  +'AnchorSideTop.Control'#7#5'Owner'#4'Left'#3#201#0#6'Height'#2#14#3'Top'#2#6
+  +#5'Width'#2'G'#17'BorderSpacing.Top'#2#6#7'Caption'#6#14'&Sample Masks:'#11
   +'ParentColor'#8#0#0#6'TLabel'#24'CharactersForBlanksLabel'#22'AnchorSideLeft'
   +'.Control'#7#5'Owner'#21'AnchorSideTop.Control'#7#13'InputMaskEdit'#18'Ancho'
-  +'rSideTop.Side'#7#9'asrBottom'#4'Left'#2#6#6'Height'#2#18#3'Top'#2'8'#5'Widt'
-  +'h'#3#138#0#18'BorderSpacing.Left'#2#6#17'BorderSpacing.Top'#2#6#7'Caption'#6
-  +#21'Character for Blanks:'#12'FocusControl'#7#23'CharactersForBlanksEdit'#11
-  +'ParentColor'#8#0#0#5'TEdit'#13'InputMaskEdit'#22'AnchorSideLeft.Control'#7#5
+  +'rSideTop.Side'#7#9'asrBottom'#4'Left'#2#6#6'Height'#2#14#3'Top'#2'2'#5'Widt'
+  +'h'#2'g'#18'BorderSpacing.Left'#2#6#17'BorderSpacing.Top'#2#6#7'Caption'#6#21
+  +'Character for Blanks:'#12'FocusControl'#7#23'CharactersForBlanksEdit'#11'Pa'
+  +'rentColor'#8#0#0#5'TEdit'#13'InputMaskEdit'#22'AnchorSideLeft.Control'#7#5
   +'Owner'#21'AnchorSideTop.Control'#7#14'InputMaskLabel'#18'AnchorSideTop.Side'
-  +#7#9'asrBottom'#4'Left'#2#6#6'Height'#2#23#3'Top'#2#27#5'Width'#3#189#0#18'B'
+  +#7#9'asrBottom'#4'Left'#2#6#6'Height'#2#21#3'Top'#2#23#5'Width'#3#189#0#18'B'
   +'orderSpacing.Left'#2#6#17'BorderSpacing.Top'#2#3#8'OnChange'#7#19'InputMask'
   +'EditChange'#8'TabOrder'#2#0#0#0#8'TListBox'#18'SampleMasksListBox'#22'Ancho'
   +'rSideLeft.Control'#7#13'InputMaskEdit'#19'AnchorSideLeft.Side'#7#9'asrBotto'
   +'m'#21'AnchorSideTop.Control'#7#16'SampleMasksLabel'#18'AnchorSideTop.Side'#7
   +#9'asrBottom'#23'AnchorSideRight.Control'#7#5'Owner'#20'AnchorSideRight.Side'
   +#7#9'asrBottom'#24'AnchorSideBottom.Control'#7#21'LoadSampleMasksButton'#21
-  +'AnchorSideBottom.Side'#7#9'asrBottom'#4'Left'#3#201#0#6'Height'#3#204#0#3'T'
-  +'op'#2#27#5'Width'#3','#1#7'Anchors'#11#5'akTop'#6'akLeft'#7'akRight'#8'akBo'
+  +'AnchorSideBottom.Side'#7#9'asrBottom'#4'Left'#3#201#0#6'Height'#3#191#0#3'T'
+  +'op'#2#23#5'Width'#3','#1#7'Anchors'#11#5'akTop'#6'akLeft'#7'akRight'#8'akBo'
   +'ttom'#0#18'BorderSpacing.Left'#2#6#17'BorderSpacing.Top'#2#3#19'BorderSpaci'
   +'ng.Right'#2#6#10'ItemHeight'#2#0#7'OnClick'#7#23'SampleMasksListBoxClick'#10
   +'OnDrawItem'#7#26'SampleMasksListBoxDrawItem'#5'Style'#7#16'lbOwnerDrawFixed'
-  +#8'TabOrder'#2#4#8'TopIndex'#2#255#0#0#7'TButton'#21'LoadSampleMasksButton'
-  +#22'AnchorSideLeft.Control'#7#5'Owner'#21'AnchorSideTop.Control'#7#14'TestIn'
-  +'putPanel'#18'AnchorSideTop.Side'#7#9'asrBottom'#4'Left'#2#6#6'Height'#2#25#3
-  +'Top'#3#206#0#5'Width'#2'K'#20'BorderSpacing.Around'#2#6#7'Caption'#6#9'&Mas'
-  +'ks...'#7'OnClick'#7#26'LoadSampleMasksButtonClick'#8'TabOrder'#2#5#0#0#5'TE'
-  +'dit'#23'CharactersForBlanksEdit'#22'AnchorSideLeft.Control'#7#5'Owner'#21'A'
-  +'nchorSideTop.Control'#7#24'CharactersForBlanksLabel'#18'AnchorSideTop.Side'
-  +#7#9'asrBottom'#23'AnchorSideRight.Control'#7#13'InputMaskEdit'#20'AnchorSid'
-  +'eRight.Side'#7#9'asrBottom'#4'Left'#2#6#6'Height'#2#23#3'Top'#2'M'#5'Width'
-  +#3#189#0#7'Anchors'#11#5'akTop'#6'akLeft'#7'akRight'#0#18'BorderSpacing.Left'
-  +#2#6#17'BorderSpacing.Top'#2#3#9'MaxLength'#2#1#8'OnChange'#7#28'CharactersF'
-  +'orBlankEditChange'#8'TabOrder'#2#1#0#0#9'TCheckBox'#19'SaveLiteralCheckBox'
-  +#22'AnchorSideLeft.Control'#7#5'Owner'#21'AnchorSideTop.Control'#7#23'Charac'
-  +'tersForBlanksEdit'#18'AnchorSideTop.Side'#7#9'asrBottom'#4'Left'#2#6#6'Heig'
-  +'ht'#2#22#3'Top'#2'j'#5'Width'#3#175#0#18'BorderSpacing.Left'#2#6#17'BorderS'
-  +'pacing.Top'#2#6#7'Caption'#6#24'Save &Literal Characters'#7'OnClick'#7#24'S'
-  +'aveLiteralCheckBoxClick'#8'TabOrder'#2#2#0#0#6'TPanel'#14'TestInputPanel'#22
-  +'AnchorSideLeft.Control'#7#5'Owner'#21'AnchorSideTop.Control'#7#19'SaveLiter'
-  +'alCheckBox'#18'AnchorSideTop.Side'#7#9'asrBottom'#23'AnchorSideRight.Contro'
-  +'l'#7#13'InputMaskEdit'#20'AnchorSideRight.Side'#7#9'asrBottom'#4'Left'#2#6#6
-  +'Height'#2'B'#3'Top'#3#134#0#5'Width'#3#189#0#7'Anchors'#11#5'akTop'#6'akLef'
-  +'t'#7'akRight'#0#18'BorderSpacing.Left'#2#6#17'BorderSpacing.Top'#2#6#10'Bev'
-  +'elInner'#7#8'bvRaised'#10'BevelOuter'#7#9'bvLowered'#12'ClientHeight'#2'B'
-  +#11'ClientWidth'#3#189#0#11'FullRepaint'#8#8'TabOrder'#2#3#0#6'TLabel'#14'Te'
-  +'stInputLabel'#22'AnchorSideLeft.Control'#7#14'TestInputPanel'#21'AnchorSide'
-  +'Top.Control'#7#14'TestInputPanel'#4'Left'#2#6#6'Height'#2#14#3'Top'#2#6#5'W'
-  +'idth'#2'7'#18'BorderSpacing.Left'#2#6#17'BorderSpacing.Top'#2#6#7'Caption'#6
-  +#12'&Test Input:'#11'ParentColor'#8#0#0#9'TMaskEdit'#12'TestMaskEdit'#22'Anc'
-  +'horSideLeft.Control'#7#14'TestInputPanel'#21'AnchorSideTop.Control'#7#14'Te'
-  +'stInputLabel'#18'AnchorSideTop.Side'#7#9'asrBottom'#23'AnchorSideRight.Cont'
-  +'rol'#7#14'TestInputPanel'#20'AnchorSideRight.Side'#7#9'asrBottom'#4'Left'#2
-  +#6#6'Height'#2#23#3'Top'#2#23#5'Width'#3#177#0#7'Anchors'#11#5'akTop'#6'akLe'
-  +'ft'#7'akRight'#0#18'BorderSpacing.Left'#2#6#17'BorderSpacing.Top'#2#3#19'Bo'
-  ,'rderSpacing.Right'#2#6#8'TabOrder'#2#0#9'SpaceChar'#6#1'_'#0#0#0#12'TButton'
-  +'Panel'#12'ButtonPanel1'#21'AnchorSideTop.Control'#7#21'LoadSampleMasksButto'
-  +'n'#18'AnchorSideTop.Side'#7#9'asrBottom'#4'Left'#2#6#6'Height'#2','#3'Top'#3
-  +#237#0#5'Width'#3#239#1#7'Anchors'#11#5'akTop'#6'akLeft'#7'akRight'#8'akBott'
-  +'om'#0#8'TabOrder'#2#6#11'ShowButtons'#11#4'pbOK'#8'pbCancel'#6'pbHelp'#0#0#0
-  +#11'TOpenDialog'#11'OpenDialog1'#5'Title'#6#22'Open mask file (*.dem)'#10'De'
-  +'faultExt'#6#4'.dem'#6'Filter'#6',Edit Masks (*.dem)|*.dem|All Files (*.*)|*'
-  +'.*'#11'FilterIndex'#2#0#7'Options'#11#13'ofNoChangeDir'#14'ofEnableSizing'
-  +#12'ofViewDetail'#0#4'left'#3#152#0#3'top'#2'`'#0#0#0
+  +#8'TabOrder'#2#4#0#0#7'TButton'#21'LoadSampleMasksButton'#22'AnchorSideLeft.'
+  +'Control'#7#5'Owner'#21'AnchorSideTop.Control'#7#14'TestInputPanel'#18'Ancho'
+  +'rSideTop.Side'#7#9'asrBottom'#4'Left'#2#6#6'Height'#2#25#3'Top'#3#189#0#5'W'
+  +'idth'#2'K'#20'BorderSpacing.Around'#2#6#7'Caption'#6#9'&Masks...'#7'OnClick'
+  +#7#26'LoadSampleMasksButtonClick'#8'TabOrder'#2#5#0#0#5'TEdit'#23'Characters'
+  +'ForBlanksEdit'#22'AnchorSideLeft.Control'#7#5'Owner'#21'AnchorSideTop.Contr'
+  +'ol'#7#24'CharactersForBlanksLabel'#18'AnchorSideTop.Side'#7#9'asrBottom'#23
+  +'AnchorSideRight.Control'#7#13'InputMaskEdit'#20'AnchorSideRight.Side'#7#9'a'
+  +'srBottom'#4'Left'#2#6#6'Height'#2#21#3'Top'#2'C'#5'Width'#3#189#0#7'Anchors'
+  +#11#5'akTop'#6'akLeft'#7'akRight'#0#18'BorderSpacing.Left'#2#6#17'BorderSpac'
+  +'ing.Top'#2#3#9'MaxLength'#2#1#8'OnChange'#7#28'CharactersForBlankEditChange'
+  +#8'TabOrder'#2#1#0#0#9'TCheckBox'#19'SaveLiteralCheckBox'#22'AnchorSideLeft.'
+  +'Control'#7#5'Owner'#21'AnchorSideTop.Control'#7#23'CharactersForBlanksEdit'
+  +#18'AnchorSideTop.Side'#7#9'asrBottom'#4'Left'#2#6#6'Height'#2#17#3'Top'#2'^'
+  +#5'Width'#3#130#0#18'BorderSpacing.Left'#2#6#17'BorderSpacing.Top'#2#6#7'Cap'
+  +'tion'#6#24'Save &Literal Characters'#7'OnClick'#7#24'SaveLiteralCheckBoxCli'
+  +'ck'#8'TabOrder'#2#2#0#0#6'TPanel'#14'TestInputPanel'#22'AnchorSideLeft.Cont'
+  +'rol'#7#5'Owner'#21'AnchorSideTop.Control'#7#19'SaveLiteralCheckBox'#18'Anch'
+  +'orSideTop.Side'#7#9'asrBottom'#23'AnchorSideRight.Control'#7#13'InputMaskEd'
+  +'it'#20'AnchorSideRight.Side'#7#9'asrBottom'#4'Left'#2#6#6'Height'#2'B'#3'To'
+  +'p'#2'u'#5'Width'#3#189#0#7'Anchors'#11#5'akTop'#6'akLeft'#7'akRight'#0#18'B'
+  +'orderSpacing.Left'#2#6#17'BorderSpacing.Top'#2#6#10'BevelInner'#7#8'bvRaise'
+  +'d'#10'BevelOuter'#7#9'bvLowered'#12'ClientHeight'#2'B'#11'ClientWidth'#3#189
+  +#0#11'FullRepaint'#8#8'TabOrder'#2#3#0#6'TLabel'#14'TestInputLabel'#22'Ancho'
+  +'rSideLeft.Control'#7#14'TestInputPanel'#21'AnchorSideTop.Control'#7#14'Test'
+  +'InputPanel'#4'Left'#2#6#6'Height'#2#14#3'Top'#2#6#5'Width'#2'7'#18'BorderSp'
+  +'acing.Left'#2#6#17'BorderSpacing.Top'#2#6#7'Caption'#6#12'&Test Input:'#11
+  +'ParentColor'#8#0#0#9'TMaskEdit'#12'TestMaskEdit'#22'AnchorSideLeft.Control'
+  +#7#14'TestInputPanel'#21'AnchorSideTop.Control'#7#14'TestInputLabel'#18'Anch'
+  +'orSideTop.Side'#7#9'asrBottom'#23'AnchorSideRight.Control'#7#14'TestInputPa'
+  +'nel'#20'AnchorSideRight.Side'#7#9'asrBottom'#4'Left'#2#6#6'Height'#2#21#3'T'
+  +'op'#2#23#5'Width'#3#177#0#7'Anchors'#11#5'akTop'#6'akLeft'#7'akRight'#0#18
+  +'BorderSpacing.Left'#2#6#17'BorderSpacing.Top'#2#3#19'BorderSpacing.Right'#2
+  ,#6#8'CharCase'#7#8'ecNormal'#9'MaxLength'#2#0#8'TabOrder'#2#0#9'SpaceChar'#6
+  +#1'_'#0#0#0#12'TButtonPanel'#12'ButtonPanel1'#21'AnchorSideTop.Control'#7#21
+  +'LoadSampleMasksButton'#18'AnchorSideTop.Side'#7#9'asrBottom'#4'Left'#2#6#6
+  +'Height'#2'='#3'Top'#3#220#0#5'Width'#3#239#1#7'Anchors'#11#5'akTop'#6'akLef'
+  +'t'#7'akRight'#8'akBottom'#0#8'TabOrder'#2#6#11'ShowButtons'#11#4'pbOK'#8'pb'
+  +'Cancel'#6'pbHelp'#0#0#0#11'TOpenDialog'#11'OpenDialog1'#5'Title'#6#22'Open '
+  +'mask file (*.dem)'#10'DefaultExt'#6#4'.dem'#6'Filter'#6',Edit Masks (*.dem)'
+  +'|*.dem|All Files (*.*)|*.*'#11'FilterIndex'#2#0#7'Options'#11#13'ofNoChange'
+  +'Dir'#14'ofEnableSizing'#12'ofViewDetail'#0#4'left'#3#152#0#3'top'#2'`'#0#0#0
 ]);
