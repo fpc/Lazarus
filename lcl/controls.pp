@@ -1177,7 +1177,7 @@ type
     procedure CaptureChanged; virtual;
     procedure Notification(AComponent: TComponent; Operation: TOperation); override;
     function CanTab: Boolean; virtual;
-    function GetDeviceContext(var WindowHandle: HWnd): HDC; virtual;
+    function GetDeviceContext(var WindowHandle: HWND): HDC; virtual;
     function GetEnabled: Boolean; virtual;
     function GetPopupMenu: TPopupMenu; virtual;
     procedure DoOnShowHint(HintInfo: Pointer);
@@ -1652,9 +1652,9 @@ type
     FOnExit: TNotifyEvent;
     FOnUnDock: TUnDockEvent;
     FOnUTF8KeyPress: TUTF8KeyPressEvent;
-    FParentWindow: hwnd;
+    FParentWindow: HWND;
     FRealizeBoundsLockCount: integer;
-    FHandle: Hwnd;
+    FHandle: HWND;
     FTabOrder: integer;
     FTabList: TFPList;
     // keep small variables together to save some bytes
@@ -1818,7 +1818,7 @@ type
     function  GetClientOrigin: TPoint; override;
     function  GetClientRect: TRect; override;
     function  GetControlOrigin: TPoint; override;
-    function  GetDeviceContext(var WindowHandle: HWnd): HDC; override;
+    function  GetDeviceContext(var WindowHandle: HWND): HDC; override;
     function  IsControlMouseMsg(var TheMessage: TLMMouse): Boolean;
     procedure CreateHandle; virtual;
     procedure CreateParams(var Params: TCreateParams); virtual;
@@ -1847,6 +1847,7 @@ type
     procedure WndProc(var Message: TLMessage); override;
     procedure WSSetText(const AText: String); virtual;
   protected
+    property WindowHandle: HWND read FHandle write FHandle;
     // properties which are not supported by all descendents
     property BorderStyle: TBorderStyle read GetBorderStyle write SetBorderStyle default bsNone;
     property OnGetSiteInfo: TGetSiteInfoEvent read FOnGetSiteInfo write FOnGetSiteInfo;
@@ -1912,8 +1913,8 @@ type
     procedure WriteLayoutDebugReport(const Prefix: string); override;
   public
     constructor Create(TheOwner: TComponent);override;
-    constructor CreateParented(ParentWindow: HWnd);
-    class function CreateParentedControl(ParentWindow: HWnd): TWinControl;
+    constructor CreateParented(ParentWindow: HWND);
+    class function CreateParentedControl(ParentWindow: HWND): TWinControl;
     destructor Destroy; override;
     procedure DockDrop(DragDockObject: TDragDockObject; X, Y: Integer); virtual;
     function CanFocus: Boolean; virtual;
@@ -2324,8 +2325,8 @@ const
 function FindDragTarget(const Position: TPoint; AllowDisabled: Boolean): TControl;
 function FindControlAtPosition(const Position: TPoint; AllowDisabled: Boolean): TControl;
 function FindLCLWindow(const ScreenPos: TPoint): TWinControl;
-function FindControl(Handle: hwnd): TWinControl;
-function FindOwnerControl(Handle: hwnd): TWinControl;
+function FindControl(Handle: HWND): TWinControl;
+function FindOwnerControl(Handle: HWND): TWinControl;
 function FindLCLControl(const ScreenPos: TPoint): TControl;
 
 function SendAppMessage(Msg: Cardinal; WParam: WParam; LParam: LParam): Longint;
@@ -2605,7 +2606,7 @@ end;
   IMPORTANT: So, in most cases: Result.Handle <> Handle in the params.
 
 ------------------------------------------------------------------------------}
-function FindControl(Handle: hwnd): TWinControl;
+function FindControl(Handle: HWND): TWinControl;
 begin
   if Handle <> 0
   then Result := TWinControl(GetProp(Handle,'WinControl'))
@@ -2619,7 +2620,7 @@ end;
   and does not need to be the Handle property of the Result.
   IMPORTANT: Therefore, in most cases: parameter Handle <> Result.Handle
 ------------------------------------------------------------------------------}
-function FindOwnerControl(Handle: hwnd): TWinControl;
+function FindOwnerControl(Handle: HWND): TWinControl;
 begin
   while Handle<>0 do
   begin
@@ -2654,11 +2655,11 @@ begin
 end;
 
 {-------------------------------------------------------------------------------
-  function DoControlMsg(Handle: hwnd; var Message): Boolean;
+  function DoControlMsg(Handle: HWND; var Message): Boolean;
 
   Find the owner wincontrol and Perform the Message.
 -------------------------------------------------------------------------------}
-function DoControlMsg(Handle: hwnd; var Message): Boolean;
+function DoControlMsg(Handle: HWND; var Message): Boolean;
 var
   AWinControl: TWinControl;
 begin
