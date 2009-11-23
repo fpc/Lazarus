@@ -144,11 +144,10 @@ type
     procedure SetMask(const AValue: string);
     procedure SetShellTreeView(const Value: TCustomShellTreeView);
     procedure SetRoot(const Value: string);
-    { Other internal methods }
-    procedure HandleResize(Sender: TObject);
   protected
     { Methods specific to Lazarus }
     procedure PopulateWithRoot();
+    procedure Resize; override;
   public
     { Basic methods }
     constructor Create(AOwner: TComponent); override;
@@ -536,28 +535,6 @@ begin
   end;
 end;
 
-procedure TCustomShellListView.HandleResize(Sender: TObject);
-begin
-  {$ifdef DEBUG_SHELLCTRLS}
-    WriteLn(':>TCustomShellListView.HandleResize');
-  {$endif}
-
-  // The correct check is with count,
-  // if Column[0] <> nil then
-  // will raise an exception
-  if Self.Columns.Count < 3 then Exit;
-
-  Column[0].Width := (70 * Width) div 100;
-  Column[1].Width := (15 * Width) div 100;
-  Column[2].Width := (15 * Width) div 100;
-
-  {$ifdef DEBUG_SHELLCTRLS}
-    WriteLn(':<TCustomShellListView.HandleResize C0.Width=',
-     Column[0].Width, ' C1.Width=', Column[1].Width,
-     ' C2.Width=', Column[2].Width);
-  {$endif}
-end;
-
 constructor TCustomShellListView.Create(AOwner: TComponent);
 begin
   inherited Create(AOwner);
@@ -573,10 +550,7 @@ begin
   Self.Column[1].Caption := 'Size';
   Self.Column[2].Caption := 'Type';
   // Initial sizes, necessary under Windows CE
-  HandleResize(Self);
-
-  // Internal event handlers
-  OnResize := @HandleResize;
+  Resize;
 end;
 
 destructor TCustomShellListView.Destroy;
@@ -624,6 +598,29 @@ begin
   finally
     Files.Free;
   end;
+end;
+
+procedure TCustomShellListView.Resize;
+begin
+  inherited Resize;
+  {$ifdef DEBUG_SHELLCTRLS}
+    WriteLn(':>TCustomShellListView.HandleResize');
+  {$endif}
+
+  // The correct check is with count,
+  // if Column[0] <> nil then
+  // will raise an exception
+  if Self.Columns.Count < 3 then Exit;
+
+  Column[0].Width := (70 * Width) div 100;
+  Column[1].Width := (15 * Width) div 100;
+  Column[2].Width := (15 * Width) div 100;
+
+  {$ifdef DEBUG_SHELLCTRLS}
+    WriteLn(':<TCustomShellListView.HandleResize C0.Width=',
+     Column[0].Width, ' C1.Width=', Column[1].Width,
+     ' C2.Width=', Column[2].Width);
+  {$endif}
 end;
 
 function TCustomShellListView.GetPathFromItem(ANode: TListItem): string;
