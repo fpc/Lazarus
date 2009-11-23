@@ -1067,6 +1067,7 @@ type
 
   protected
     class procedure WSRegisterClass; override;
+    class function GetControlClassDefaultSize: TPoint; override;
     procedure InitializeWnd; override;
     procedure FinalizeWnd; override;
 
@@ -2433,6 +2434,7 @@ type
     FChangeTimer: TTimer;
     FEditor: TEdit;
     class procedure WSRegisterClass; override;
+    class function GetControlClassDefaultSize: TPoint; override;
     procedure EditorEditingDone(Sender: TObject); virtual;
     procedure EditorKeyDown(Sender: TObject; var Key : Word; Shift : TShiftState); virtual;
     procedure BeginAutoDrag; override;

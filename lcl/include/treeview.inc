@@ -5000,6 +5000,11 @@ begin
   RegisterCustomTreeView;
 end;
 
+class function TCustomTreeView.GetControlClassDefaultSize: TPoint;
+begin
+  Result := Point(121, 97);
+end;
+
 { CustomDraw support }
 
 procedure TCustomTreeView.EditorEditingDone(Sender: TObject);

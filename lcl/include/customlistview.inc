@@ -413,6 +413,11 @@ begin
   RegisterCustomListView;
 end;
 
+class function TCustomListView.GetControlClassDefaultSize: TPoint;
+begin
+  Result := Point(250, 150);
+end;
+
 {------------------------------------------------------------------------------}
 {   TCustomListView SetItems                                                   }
 {------------------------------------------------------------------------------}
