@@ -1578,8 +1578,10 @@ end;
 //------------------------------------------------------------------------------
 procedure ExceptionOccurred(Sender: TObject; Addr:Pointer; FrameCount: Longint;
   Frames: PPointer);
+{$ifdef DEBUG_ALLOW_DUMPBACKTRACE}
 var
   FrameNumber: integer;
+{$endif}
 Begin
   DebugLn('[FORMS.PP] ExceptionOccurred ');
   if HaltingProgram or HandlingException then Halt;
