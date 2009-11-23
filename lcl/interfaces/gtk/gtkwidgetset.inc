@@ -2117,7 +2117,10 @@ var
   ADesc: TRawImageDescription absolute ARawImage.Description;
   Pixbuf: PGdkPixbuf;
   pixels: pguchar;
+  Dest: PByte;
   R: TRect;
+  i: Integer;
+  SourceStride, DestStride: PtrUInt;
 begin
   Result := False;
   if APixbuf = nil then
@@ -2151,11 +2154,22 @@ begin
   Pixbuf := gdk_pixbuf_new_subpixbuf(APixbuf, R.Left, R.Top, ADesc.Width, ADesc.Height);
   try
     pixels := gdk_pixbuf_get_pixels(Pixbuf);
-
-    ARawImage.DataSize := PtrUInt(gdk_pixbuf_get_rowstride(Pixbuf)) * PtrUInt(ADesc.Height);
+    SourceStride := PtrUInt(gdk_pixbuf_get_rowstride(Pixbuf));
+    DestStride := ADesc.BytesPerLine;
+    ARawImage.DataSize :=  DestStride * PtrUInt(ADesc.Height);
     ReAllocMem(ARawImage.Data, ARawImage.DataSize);
     if ARawImage.DataSize > 0 then
-      System.Move(pixels^, ARawImage.Data^, ARawImage.DataSize);
+      if SourceStride = DestStride then
+        System.Move(pixels^, ARawImage.Data^, ARawImage.DataSize)
+      else begin
+        { Extra padding bytes - need to copy by line }
+        Dest := ARawImage.Data;
+        for i := 0 to ADesc.Height-1 do begin
+          System.Move(pixels^, Dest^, ADesc.BytesPerLine);
+          Inc(pixels, SourceStride);
+          Inc(Dest, DestStride);
+        end;
+      end;
   finally
     gdk_pixbuf_unref(Pixbuf);
   end;
