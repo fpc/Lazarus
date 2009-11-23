@@ -780,8 +780,9 @@ begin
     Add('FINAL'        ,{$ifdef FPC}@{$endif}AllwaysTrue);
     Add('ENUMERATOR'   ,{$ifdef FPC}@{$endif}AllwaysTrue);
     Add('DEPRECATED'   ,{$ifdef FPC}@{$endif}AllwaysTrue);
+    Add('VARARGS'      ,{$ifdef FPC}@{$endif}AllwaysTrue);
   end;
-  
+
   IsKeyWordProcedureSpecifier:=TKeyWordFunctionList.Create;
   KeyWordLists.Add(IsKeyWordProcedureSpecifier);
   with IsKeyWordProcedureSpecifier do begin
