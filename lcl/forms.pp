@@ -529,7 +529,7 @@ type
     procedure UpdateActions; virtual;
   public
     constructor Create(AOwner: TComponent); override;
-    constructor CreateNew(AOwner: TComponent; Num : Integer{=0}); virtual;
+    constructor CreateNew(AOwner: TComponent; Num: Integer = 0); virtual;
     destructor Destroy; override;
     procedure BeforeDestruction; override;
 

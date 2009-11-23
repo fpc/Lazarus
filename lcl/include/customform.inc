@@ -1571,7 +1571,7 @@ end;
 {------------------------------------------------------------------------------
   constructor TCustomForm.CreateNew(AOwner: TComponent; Num : Integer);
 ------------------------------------------------------------------------------}
-constructor TCustomForm.CreateNew(AOwner: TComponent; Num : Integer);
+constructor TCustomForm.CreateNew(AOwner: TComponent; Num: Integer = 0);
 begin
   Include(FFormState,fsFirstShow);
   //DebugLn('[TCustomForm.CreateNew] Class=',Classname);
