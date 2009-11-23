@@ -9,12 +9,38 @@ object MasterSite: TMasterSite
   OnCreate = FormCreate
   LCLVersion = '0.9.29'
   object buDump: TButton
-    Left = 10
+    Left = 144
     Height = 25
     Top = 10
     Width = 75
     Caption = 'buDump'
     OnClick = buDumpClick
     TabOrder = 0
+  end
+  object buCreateForm: TButton
+    Left = 10
+    Height = 25
+    Top = 10
+    Width = 75
+    Caption = 'buCreateForm'
+    OnClick = buCreateFormClick
+    TabOrder = 1
+  end
+  object buSave: TButton
+    Left = 8
+    Height = 25
+    Top = 48
+    Width = 75
+    Caption = 'buSave'
+    TabOrder = 2
+  end
+  object buRestore: TButton
+    Left = 96
+    Height = 25
+    Top = 48
+    Width = 75
+    Caption = 'buRestore'
+    OnClick = buRestoreClick
+    TabOrder = 3
   end
 end

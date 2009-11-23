@@ -59,7 +59,7 @@ LCL TODO:
 //depending on widgetset or patched LCL
 {.$DEFINE NoDrop} //applied DoDiPatch1?
 {.$DEFINE PageFrame} //problem: notebook frame cannot Release itself
-{$DEFINE replace} //using ReplaceDockedControl?
+{.$DEFINE replace} //using ReplaceDockedControl?
 
 interface
 
@@ -360,6 +360,9 @@ begin
   FHeader := TEasyDockHeader.Create;
 
   FSplitter := TEasySplitter.Create(nil);
+  FSplitter.Beveled := True;
+  //FSplitter.BorderStyle := bsSingle; //border does NOT react!
+  //FSplitter.BorderWidth := 1;
   FSplitter.Parent := ADockSite;
   FSplitter.OnMoved := @SplitterMoved;
   FSplitter.Align := alNone;
@@ -561,6 +564,7 @@ begin
         FReplacingControl := NoteBook; //ignore insert (see above)
         NoteBook.ManualDock(FDockSite); //move into DockClients[]
         DropZone.ChildControl := NoteBook; //put into the zone
+        NoteBook.DockOrientation := DropCtl.DockOrientation; //strange bug?
         r := DropZone.GetPartRect(zpClient);
         NoteBookAdd(NoteBook, DropCtl); //put the original control into the notebook
         NoteBook.BoundsRect := r;

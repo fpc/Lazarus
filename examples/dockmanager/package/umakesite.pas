@@ -1,6 +1,11 @@
 unit uMakeSite;
 (* Create elastic dock sites within a form, make forms dockable.
 
+Owners:
+The DockMaster can own all floating forms, for easy enumeration.
+The DockMaster can own all dock grips, for easy detection of the dockable forms.
+The owner of the dockable forms is responsible for creating or finding dockable forms?
+
 Problems:
 
 Forms are not (easily) dockable on all platforms,
@@ -16,6 +21,7 @@ Default floating sites are owned by Application,
 {$mode objfpc}{$H+}
 
 {$DEFINE ownSites}  //floating sites owned by TDockMaster?
+{$DEFINE ownGrips}  //docking grips owned by TDockMaster?
 
 interface
 
@@ -41,7 +47,9 @@ type
   public
   end;
 
-//the owner of all docksites (if ownSites is defined)
+(* The owner of all docksites (if ownSites is defined),
+  and of all dockable window grips (if ownGrips is defined)
+*)
   TDockMaster = class(TComponent)
   protected //event handlers
     procedure DockHandleMouseMove(Sender: TObject; Shift: TShiftState;
@@ -51,8 +59,10 @@ type
   public
     Factory: TComponent; //generic owner
     procedure AddElasticSites(AForm: TCustomForm; Sides: sDockSides);
-    function  CreateDockable(const AName: string; fMultiInst: boolean): TForm;
+    function  CreateDockable(const AName: string; fMultiInst: boolean; fWrap: boolean = True): TForm;
     procedure DumpSites;
+    procedure LoadFromStream(Stream: TStream);
+    procedure SaveToStream(Stream: TStream);
   end;
 
 implementation
@@ -125,7 +135,7 @@ begin
 end;
 
 function TDockMaster.CreateDockable(const AName: string;
-  fMultiInst: boolean): TForm;
+  fMultiInst: boolean; fWrap: boolean): TForm;
 var
   basename, instname: string;
   i, l, instno: integer;
@@ -195,10 +205,12 @@ begin
   //make it dockable
     Result.DragKind := dkDock;
     Result.OnEndDock := @FormEndDock; //float into default host site
+  end;
+  if fWrap then begin
   //wrap into dock site
     Site := WrapDockable(Result);
   //create a docking handle - should become a component?
-    img := TImage.Create(Result);
+    img := TImage.Create(Result); //we could own the img, and be notified when its parent becomes nil
     img.Parent := Result;
     img.Align := alNone;
     img.Anchors := [akTop, akRight];
@@ -231,6 +243,31 @@ begin
   end else begin
     //DebugLn('--- in ' + HostDockSite.Name);
   end;
+end;
+
+procedure TDockMaster.LoadFromStream(Stream: TStream);
+var
+  ctl, pre: TControl;
+  site: TFloatingSite;
+
+  procedure MakeForm;
+  begin
+    pre := ctl;
+    ctl := CreateDockable('', True, False);
+  end;
+
+begin
+  //Test0;
+  site := TFloatingSite.Create(self);
+  MakeForm; ctl.ManualDock(site, nil, alClient);
+  MakeForm; ctl.ManualDock(site, pre, alRight);
+  MakeForm; ctl.ManualDock(site, pre, alBottom);
+  //MakeForm; ctl.ManualDock(site, pre, alCustom);
+end;
+
+procedure TDockMaster.SaveToStream(Stream: TStream);
+begin
+
 end;
 
 function TDockMaster.WrapDockable(Client: TControl): TFloatingSite;
@@ -335,6 +372,7 @@ begin
           s := OrientString[ctl.DockOrientation];
           DebugLn('  Client=%s@%s (%d,%d)[%d,%d]', [SiteName(ctl), s,
             ctl.Left, ctl.Top, ctl.Width, ctl.Height]);
+          //if ctl is TFloatingSite then
         end;
       end else begin
         ctl := Site;

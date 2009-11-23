@@ -27,9 +27,15 @@ into a form, before it can be dragged and docked by dragging the form.
 Apply ToolButtonAutoSizeAlign.patch to improve the appearance and behaviour
 of the toolbar buttons.
 
+ToDo:
+- Check use of ToggleBox instead of TToolButton
+- Load/Store layout
++ Update parent on un/dock: Caption and DockHeaders!
+
 Problem:
 
 Disallow undocking/floating of a NOT docked dockbook.
+  Fix: flag StayDocked.
 *)
 
 (* Applications
@@ -58,7 +64,7 @@ interface
 
 uses
   Classes, SysUtils, FileUtil, LResources, Forms, Controls, Graphics, Dialogs,
-  ComCtrls, ExtCtrls;
+  ComCtrls, ExtCtrls, StdCtrls;
 
 type
   TTabButton = class(TToolButton)
@@ -126,7 +132,6 @@ procedure TEasyDockBook.FormDockDrop(Sender: TObject; Source: TDragDockObject;
 var
   btn: TTabButton;
 begin
-  //Source.DragTarget := pnlDock; ?
   Source.Control.Parent := pnlDock; //overwrite DoAddDockClient behaviour
 
   btn := TTabButton.Create(Tabs);
@@ -228,8 +233,13 @@ begin
     //Release;  //Close;
     PostMessage(Self.Handle, WM_CLOSE, 0, 0);
   end;
-  if (HostDockSite is TFloatingSite) then
-    TFloatingSite(HostDockSite).UpdateCaption(nil);
+//update the host dock site and its DockManager
+  if HostDockSite <> nil then begin
+    if (HostDockSite is TFloatingSite) then
+      TFloatingSite(HostDockSite).UpdateCaption(nil);
+    if HostDockSite.DockManager <> nil then
+      HostDockSite.Invalidate;
+  end;
 end;
 
 function TEasyDockBook.GetControlTab(AControl: TControl): TTabButton;

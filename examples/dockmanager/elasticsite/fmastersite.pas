@@ -12,10 +12,15 @@ uses
 type
   TMasterSite = class(TForm)
     buDump: TButton;
+    buCreateForm: TButton;
+    buSave: TButton;
+    buRestore: TButton;
+    procedure buCreateFormClick(Sender: TObject);
     procedure buDumpClick(Sender: TObject);
+    procedure buRestoreClick(Sender: TObject);
     procedure FormCreate(Sender: TObject);
   private
-    { private declarations }
+    ms: TMemoryStream;
   public
     DockMaster: TDockMaster;
   end; 
@@ -30,9 +35,21 @@ uses
 
 { TMasterSite }
 
+procedure TMasterSite.buCreateFormClick(Sender: TObject);
+begin
+  DockMaster.CreateDockable('', True);
+end;
+
 procedure TMasterSite.buDumpClick(Sender: TObject);
 begin
   DockMaster.DumpSites;
+end;
+
+procedure TMasterSite.buRestoreClick(Sender: TObject);
+begin
+  if ms = nil then
+    ms := TMemoryStream.Create;
+  DockMaster.LoadFromStream(ms);
 end;
 
 procedure TMasterSite.FormCreate(Sender: TObject);
