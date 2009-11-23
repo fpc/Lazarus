@@ -43,7 +43,7 @@ begin
     TToolButton(FClient).Down := Value;
 end;
 
-procedure TToolButtonActionLink.SetImageIndex(Value: TImageIndex);
+procedure TToolButtonActionLink.SetImageIndex(Value: Integer);
 begin
   {DebugLn(['TToolButtonActionLink.SetImageIndex A ',ClassName,' Client=',
     TToolButton(FClient).Name,' IsImageIndexLinked=',

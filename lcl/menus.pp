@@ -78,7 +78,7 @@ type
     procedure SetEnabled(Value: Boolean); override;
     procedure SetHelpContext(Value: THelpContext); override;
     procedure SetHint(const Value: string); override;
-    procedure SetImageIndex(Value: TImageIndex); override;
+    procedure SetImageIndex(Value: Integer); override;
     procedure SetShortCut(Value: TShortCut); override;
     procedure SetVisible(Value: Boolean); override;
     procedure SetOnExecute(Value: TNotifyEvent); override;

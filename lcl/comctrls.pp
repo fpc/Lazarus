@@ -1480,7 +1480,7 @@ type
   protected
     procedure AssignClient(AClient: TObject); override;
     procedure SetChecked(Value: Boolean); override;
-    procedure SetImageIndex(Value: TImageIndex); override;
+    procedure SetImageIndex(Value: Integer); override;
   public
     function IsCheckedLinked: Boolean; override;
     function IsImageIndexLinked: Boolean; override;
