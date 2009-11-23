@@ -404,11 +404,13 @@ begin
 {$endif ver2_0}
   Result:=true;
   except
+    {$ifdef DEBUG_ALLOW_DUMPBACKTRACE}
     on e: Exception do begin
       DebugLn('Exception while translating ', ResUnitName);
       DebugLn(e.Message);
       DumpExceptionBackTrace;
     end;
+    {$endif}
   end;
 end;
 

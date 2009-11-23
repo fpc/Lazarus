@@ -1584,6 +1584,7 @@ Begin
   DebugLn('[FORMS.PP] ExceptionOccurred ');
   if HaltingProgram or HandlingException then Halt;
   HandlingException:=true;
+  {$ifdef DEBUG_ALLOW_DUMPBACKTRACE}
   if Sender<>nil then begin
     DebugLn('  Sender=',Sender.ClassName);
     if Sender is Exception then begin
@@ -1595,6 +1596,7 @@ Begin
     end;
   end else
     DebugLn('  Sender=nil');
+  {$endif}
   if Application<>nil then
     Application.HandleException(Sender);
   HandlingException:=false;

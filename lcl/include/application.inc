@@ -1073,7 +1073,9 @@ begin
     DebugLn('TApplication.HandleException: ',
       'there was another exception during showing the first exception');
     HaltingProgram:=true;
+    {$ifdef DEBUG_ALLOW_DUMPBACKTRACE}
     DumpExceptionBackTrace;
+    {$endif}
     Halt;
   end;
   Include(FFlags,AppHandlingException);
@@ -1083,6 +1085,7 @@ begin
 
   Skip := ExceptObject is EAbort;
 
+  {$ifdef DEBUG_ALLOW_DUMPBACKTRACE}
   if not (AppNoExceptionMessages in FFlags) then
   begin
     // before we do anything, write it down
@@ -1099,6 +1102,7 @@ begin
       DumpExceptionBackTrace;
     end;
   end;
+  {$endif}
   // release capture and hide all forms with stay on top, so that
   // a message can be shown
   if GetCapture <> 0 then SendMessage(GetCapture, LM_CANCELMODE, 0, 0);

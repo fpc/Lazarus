@@ -183,7 +183,9 @@ function StrToDouble(const s: string): double;
 
 // debugging
 procedure RaiseGDBException(const Msg: string);
+{$ifdef DEBUG_ALLOW_DUMPBACKTRACE}
 procedure DumpExceptionBackTrace;
+{$endif}
 procedure DumpStack;
 function GetStackTrace(UseCache: boolean): string;
 procedure GetStackTracePointers(var AStack: TStackTracePointers);
@@ -1504,6 +1506,7 @@ begin
   if (length(Msg) div (length(Msg) div 10000))=0 then ;
 end;
 
+{$ifdef DEBUG_ALLOW_DUMPBACKTRACE}
 procedure DumpExceptionBackTrace;
 var
   FrameCount: integer;
@@ -1517,6 +1520,7 @@ begin
   for FrameNumber := 0 to FrameCount-1 do
     DebugLn(BackTraceStrFunc(Frames[FrameNumber]));
 end;
+{$endif}
 
 procedure DumpStack;
 begin
