@@ -364,10 +364,32 @@ end;
 { TGtkWSPopupMenu }
 procedure GtkWS_Popup(menu: PGtkMenu; X, Y: pgint;
   {$IFDEF GTK2} ForceInScreen: pgboolean; {$ENDIF}
-  Point: PPoint); cdecl;
+  WidgetInfo: PWidgetInfo); cdecl;
+var
+  Requisition: TGtkRequisition;
 begin
-  X^ := Point^.X;
-  Y^ := Point^.Y;
+  X^ := PPoint(WidgetInfo^.UserData)^.X;
+  Y^ := PPoint(WidgetInfo^.UserData)^.Y;
+
+  if WidgetInfo^.LCLObject is TPopupMenu then
+  begin
+    case TPopupMenu(WidgetInfo^.LCLObject).Alignment of
+      paCenter:
+        begin
+          gtk_widget_size_request(PGtkWidget(menu), @Requisition);
+          X^ := X^ - Requisition.width div 2;
+        end;
+      paRight:
+        begin
+          gtk_widget_size_request(PGtkWidget(menu), @Requisition);
+          X^ := X^ - Requisition.width;
+        end;
+    end;
+  end;
+
+  {$IFDEF GTK2}
+  ForceInScreen^ := True;
+  {$ENDIF}
 end;
 
 function gtkWSPopupDelayedClose(Data: Pointer): gboolean; cdecl;
@@ -417,27 +439,26 @@ var
   APoint: TPoint;
   AProc: Pointer;
   MenuWidget: PGtkWidget;
+  WidgetInfo: PWidgetInfo;
 begin
   ReleaseMouseCapture;
   APoint.X := X;
   APoint.Y := Y;
-  
-  if (X = Mouse.CursorPos.X) and (Y = Mouse.CursorPos.Y) then
-    AProc := nil
-  else
-    AProc := @GtkWS_Popup;
+  AProc := @GtkWS_Popup;
 
   MenuWidget := PGtkWidget(APopupMenu.Handle);
+  WidgetInfo := GetWidgetInfo(MenuWidget);
+  WidgetInfo^.UserData := @APoint;
+  WidgetInfo^.DataOwner := False;
   // MenuWidget can be either GtkMenu or GtkMenuItem submenu
   if GTK_IS_MENU_ITEM(MenuWidget) then
   {$ifdef gtk1}
-    MenuWidget := gtk_object_get_data(PGtkObject(MenuWidget),
-                                    'ContainerMenu');
+    MenuWidget := gtk_object_get_data(PGtkObject(MenuWidget), 'ContainerMenu');
   {$else}
     MenuWidget := gtk_menu_item_get_submenu(PGtkMenuItem(MenuWidget));
   {$endif}
   gtk_menu_popup(PGtkMenu(MenuWidget), nil, nil, TGtkMenuPositionFunc(AProc),
-                 @APoint, 0,
+                 WidgetInfo, 0,
                  {$ifdef gtk1}
                    gdk_event_get_time(gtk_get_current_event)
                  {$else}
