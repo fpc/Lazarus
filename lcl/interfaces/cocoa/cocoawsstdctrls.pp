@@ -23,24 +23,19 @@
 unit CocoaWSStdCtrls;
 
 {$mode objfpc}{$H+}
+{$modeswitch objectivec1}
 
 interface
 
 uses
   // Libs
-{$ifdef ver2_2_0}
-  FPCMacOSAll,
-{$else}
-  MacOSAll,
-{$endif}
-  // Cocoa
-  foundation, appkit,
+  MacOSAll, CocoaAll,
   // LCL
   Controls, StdCtrls, Graphics, LCLType, LMessages, LCLProc, Classes,
   // Widgetset
   WSStdCtrls, WSLCLClasses, WSControls, WSProc,
   // LCL Cocoa
-  CocoaPrivate;
+  CocoaWSCommon, CocoaPrivate, CocoaUtils;
 
 type
 
@@ -138,30 +133,26 @@ type
   { TCocoaWSCustomEdit }
 
   TCocoaWSCustomEdit = class(TWSCustomEdit)
-  private
-  protected
-  public
-{    class function  CreateHandle(const AWinControl: TWinControl; const AParams: TCreateParams): TLCLIntfHandle; override;
+  published
+    class function  CreateHandle(const AWinControl: TWinControl; const AParams: TCreateParams): TLCLIntfHandle; override;
 
     class function  GetSelStart(const ACustomEdit: TCustomEdit): integer; override;
     class function  GetSelLength(const ACustomEdit: TCustomEdit): integer; override;
 
-    class procedure SetCharCase(const ACustomEdit: TCustomEdit; NewCase: TEditCharCase); override;
+    {class procedure SetCharCase(const ACustomEdit: TCustomEdit; NewCase: TEditCharCase); override;
     class procedure SetEchoMode(const ACustomEdit: TCustomEdit; NewMode: TEchoMode); override;
     class procedure SetMaxLength(const ACustomEdit: TCustomEdit; NewLength: integer); override;
-    class procedure SetPasswordChar(const ACustomEdit: TCustomEdit; NewChar: char); override;
+    class procedure SetPasswordChar(const ACustomEdit: TCustomEdit; NewChar: char); override;}
     class procedure SetReadOnly(const ACustomEdit: TCustomEdit; NewReadOnly: boolean); override;
-    class procedure SetSelStart(const ACustomEdit: TCustomEdit; NewStart: integer); override;
+    {class procedure SetSelStart(const ACustomEdit: TCustomEdit; NewStart: integer); override;
     class procedure SetSelLength(const ACustomEdit: TCustomEdit; NewLength: integer); override;}
   end;
   
   { TCocoaWSCustomMemo }
 
   TCocoaWSCustomMemo = class(TWSCustomMemo)
-  private
-  protected
-  public
-{    class function  CreateHandle(const AWinControl: TWinControl; const AParams: TCreateParams): TLCLIntfHandle; override;
+  {published
+    class function  CreateHandle(const AWinControl: TWinControl; const AParams: TCreateParams): TLCLIntfHandle; override;
     class function  GetStrings(const ACustomMemo: TCustomMemo): TStrings; override;
 
     class procedure AppendText(const ACustomMemo: TCustomMemo; const AText: string); override;
@@ -205,17 +196,12 @@ type
   { TCocoaWSButtonControl }
 
   TCocoaWSButtonControl = class(TWSButtonControl)
-  private
-  protected
-  public
   end;
 
   { TCocoaWSButton }
 
   TCocoaWSButton = class(TWSButton)
-  private
-  protected
-  public
+  published
     class function  CreateHandle(const AWinControl: TWinControl; const AParams: TCreateParams): TLCLIntfHandle; override;
     class procedure SetDefault(const AButton: TCustomButton; ADefault: Boolean); override;
   end;
@@ -223,9 +209,7 @@ type
   { TCocoaWSCustomCheckBox }
 
   TCocoaWSCustomCheckBox = class(TWSCustomCheckBox)
-  private
-  protected
-  public
+  published
     class function  CreateHandle(const AWinControl: TWinControl; const AParams: TCreateParams): TLCLIntfHandle; override;
     class function  RetrieveState(const ACustomCheckBox: TCustomCheckBox): TCheckBoxState; override;
     class procedure SetState(const ACustomCheckBox: TCustomCheckBox; const NewState: TCheckBoxState); override;
@@ -251,10 +235,8 @@ type
   { TCocoaWSRadioButton }
 
   TCocoaWSRadioButton = class(TWSRadioButton)
-  private
-  protected
-  public
-//    class function  CreateHandle(const AWinControl: TWinControl; const AParams: TCreateParams): TLCLIntfHandle; override;
+  published
+    class function CreateHandle(const AWinControl: TWinControl; const AParams: TCreateParams): TLCLIntfHandle; override;
   end;
 
   { TCocoaWSCustomStaticText }
@@ -274,9 +256,41 @@ type
   protected
   public
   end;
-  
+
+function AllocTextView(ATarget: TWinControl; const AParams: TCreateParams; fieldEditor: Boolean): NSTextView;
 
 implementation
+
+procedure DefaultViewSettings(view: NSView);
+begin
+  view.setAutoresizingMask(NSViewMinYMargin or NSViewMaxXMargin);
+end;
+
+function AllocButton(ATarget: TWinControl; const AParams: TCreateParams; btnBezel: NSBezelStyle; btnType: NSButtonType): NSButton;
+begin
+  Result:=TCocoaButton.alloc;
+  if Assigned(Result) then begin
+    TCocoaButton(Result).callback:=TControlCallback.Create(Result, ATarget);
+    Result.initWithFrame(CreateParamsToNSRect(AParams));
+    Result.setTitle(NSStringUTF8(AParams.Caption));
+    if btnBezel<>0 then Result.setBezelStyle(btnBezel);
+    Result.setButtonType(btnType);
+    DefaultViewSettings(Result);
+  end;
+end;
+
+function AllocTextView(ATarget: TWinControl; const AParams: TCreateParams; fieldEditor: Boolean): NSTextView;
+begin
+  Result:=TCocoaTextView.alloc;
+  if Assigned(Result) then begin
+    TCocoaTextView(Result).callback:=TControlCallback.Create(Result, ATarget);
+    Result.initWithFrame(CreateParamsToNSRect(AParams));
+    DefaultViewSettings(Result);
+    Result.setFieldEditor(fieldEditor);
+    {Result.setTitle(NSStringUTF8(AParams.Caption));}
+  end;
+end;
+
 
 { TCocoaWSButton }
 
@@ -291,11 +305,12 @@ implementation
 class function TCocoaWSButton.CreateHandle(const AWinControl: TWinControl;
   const AParams: TCreateParams): TLCLIntfHandle;
 var
-  CocoaButton: TCocoaButton;
+  btn : NSButton;
 begin
-  CocoaButton := TCocoaButton.Create(AWinControl, AParams);
-
-  Result := TLCLIntfHandle(CocoaButton);
+  btn:=AllocButton(AWinControl, AParams, NSRoundedBezelStyle, NSMomentaryPushInButton);
+  if Assigned(btn) then
+    AddViewToNSObject(btn, NSObject(AParams.WndParent), AParams.X, AParams.Y);
+  Result:=TLCLIntfHandle(btn);
 end;
 
 {------------------------------------------------------------------------------
@@ -307,10 +322,15 @@ end;
  ------------------------------------------------------------------------------}
 class procedure TCocoaWSButton.SetDefault(const AButton: TCustomButton;
   ADefault: Boolean);
+var
+  cf :NSString;
+const
+  DefEq : array [Boolean] of String = (#0, #13);
 begin
-//  if not CheckHandle(AButton, Self, 'SetDefault') then Exit;
+  if AButton.Handle=0 then Exit;
+  cf:=NSStringUtf8(DefEq[ADefault]);
 
-//  TCocoaCustomButton(AButton.Handle).SetDefault(ADefault);
+  NSButton(AButton.Handle).setKeyEquivalent(cf);
 end;
 
 { TCocoaWSCustomCheckBox }
@@ -326,12 +346,12 @@ end;
 class function TCocoaWSCustomCheckBox.CreateHandle(const AWinControl: TWinControl;
   const AParams: TCreateParams): TLCLIntfHandle;
 var
-  CocoaButton: TCocoaButton;
+  btn : NSButton;
 begin
-  CocoaButton := TCocoaButton.Create(AWinControl, AParams);
-  CocoaButton.Button.setButtonType(NSSwitchButton);
-
-  Result := TLCLIntfHandle(CocoaButton);
+  btn:=AllocButton(AWinControl, AParams, 0, NSSwitchButton);
+  if Assigned(btn) then
+      AddViewToNSObject(btn, NSObject(AParams.WndParent), AParams.X, AParams.Y);
+  Result:=TLCLIntfHandle(btn);
 end;
 
 {------------------------------------------------------------------------------
@@ -341,14 +361,17 @@ end;
 
   Retrieves the state of check box in Cocoa interface
  ------------------------------------------------------------------------------}
-class function TCocoaWSCustomCheckBox.RetrieveState(
-  const ACustomCheckBox: TCustomCheckBox): TCheckBoxState;
+class function TCocoaWSCustomCheckBox.RetrieveState(const ACustomCheckBox: TCustomCheckBox): TCheckBoxState;
+var
+  state : NSInteger;
 begin
-//  Result := cbUnchecked;
-  
-//  if not CheckHandle(ACustomCheckBox, Self, 'RetrieveState') then Exit;
-
-//  Result := TCocoaCustomCheckBox(ACustomCheckBox.Handle).RetrieveState;
+  Result := cbUnchecked;
+  if ACustomCheckBox.Handle=0 then Exit;
+  state := NSButton(ACustomCheckBox.Handle).state;
+  case state of
+    NSOnState: Result := cbChecked;
+    NSMixedState: Result := cbGrayed;
+  end;
 end;
 
 {------------------------------------------------------------------------------
@@ -360,10 +383,53 @@ end;
  ------------------------------------------------------------------------------}
 class procedure TCocoaWSCustomCheckBox.SetState(
   const ACustomCheckBox: TCustomCheckBox; const NewState: TCheckBoxState);
+const
+  buttonState: array [TcheckBoxState] of NSInteger = (NSOffState, NSOnState, NSMixedState);
 begin
-//  if not CheckHandle(ACustomCheckBox, Self, 'SetState') then Exit;
+  if ACustomCheckBox.Handle=0 then Exit;
+  NSButton(ACustomCheckBox.Handle).setState( buttonState[NewState]);
+end;
 
-//  TCocoaCustomCheckBox(ACustomCheckBox.Handle).SetState(NewState);
+{ TCocoaWSRadioButton }
+
+class function TCocoaWSRadioButton.CreateHandle(const AWinControl: TWinControl;
+  const AParams: TCreateParams): TLCLIntfHandle;
+var
+  btn : NSButton;
+begin
+  btn:=AllocButton(AWinControl, AParams, 0, NSRadioButton);
+  if Assigned(btn) then
+     AddViewToNSObject(btn, NSObject(AParams.WndParent), AParams.X, AParams.Y);
+  Result:=TLCLIntfHandle(btn);
+end;
+
+{ TCocoaWSCustomEdit }
+
+class function  TCocoaWSCustomEdit.CreateHandle(const AWinControl: TWinControl; const AParams: TCreateParams): TLCLIntfHandle;
+var
+  txt     : NSTextView;
+begin
+  txt:=AllocTextView(AWinControl, AParams, true);
+  if Assigned(txt) then
+    AddViewToNSObject(txt, NSObject(AParams.WndParent), AParams.X, AParams.Y);
+
+  Result:=TLCLIntfHandle(txt);
+end;
+
+class function TCocoaWSCustomEdit.GetSelStart(const ACustomEdit: TCustomEdit): integer;
+begin
+  Result:=0;
+end;
+
+class function TCocoaWSCustomEdit.GetSelLength(const ACustomEdit: TCustomEdit): integer;
+begin
+  Result:=0;
+end;
+
+class procedure TCocoaWSCustomEdit.SetReadOnly(const ACustomEdit: TCustomEdit; NewReadOnly: boolean);
+begin
+  if ACustomEdit.Handle=0 then Exit;
+
 end;
 
 end.

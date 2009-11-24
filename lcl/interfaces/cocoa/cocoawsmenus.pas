@@ -45,9 +45,7 @@ type
   { TCocoaWSMenuItem }
 
   TCocoaWSMenuItem = class(TWSMenuItem)
-  private
-  protected
-  public
+  published
     class procedure AttachMenu(const AMenuItem: TMenuItem); override;
     class function  CreateHandle(const AMenuItem: TMenuItem): HMENU; override;
     class procedure DestroyHandle(const AMenuItem: TMenuItem); override;
@@ -63,9 +61,7 @@ type
   { TCocoaWSMenu }
 
   TCocoaWSMenu = class(TWSMenu)
-  private
-  protected
-  public
+  published
     class function  CreateHandle(const AMenu: TMenu): HMENU; override;
   end;
 
@@ -80,9 +76,7 @@ type
   { TCocoaWSPopupMenu }
 
   TCocoaWSPopupMenu = class(TWSPopupMenu)
-  private
-  protected
-  public
+  published
     class procedure Popup(const APopupMenu: TPopupMenu; const X, Y: Integer); override;
   end;
 
@@ -101,6 +95,7 @@ implementation
 class function TCocoaWSMenu.CreateHandle(const AMenu: TMenu): HMENU;
 begin
 //  Result := HMENU(TCocoaMenu.Create(AMenu.Items, True));
+  Result:=0;
 end;
 
 { TCocoaWSMenuItem }
@@ -126,6 +121,7 @@ end;
 class function TCocoaWSMenuItem.CreateHandle(const AMenuItem: TMenuItem): HMENU;
 begin
 //  Result := HMENU(TCocoaMenu.Create(AMenuItem));
+  Result:=0;
 end;
 
 {------------------------------------------------------------------------------
@@ -190,7 +186,7 @@ end;
 class function TCocoaWSMenuItem.SetCheck(const AMenuItem: TMenuItem;
   const Checked: boolean): boolean;
 begin
-
+  Result:=false;
 end;
 
 {------------------------------------------------------------------------------
@@ -204,7 +200,7 @@ end;
 class function TCocoaWSMenuItem.SetEnable(const AMenuItem: TMenuItem;
   const Enabled: boolean): boolean;
 begin
-
+  Result:=false;
 end;
 
 {------------------------------------------------------------------------------
@@ -218,7 +214,7 @@ end;
 class function TCocoaWSMenuItem.SetRadioItem(const AMenuItem: TMenuItem;
   const RadioItem: boolean): boolean;
 begin
-
+  Result:=false;
 end;
 
 { TCocoaWSPopupMenu }
@@ -233,7 +229,6 @@ end;
 class procedure TCocoaWSPopupMenu.Popup(const APopupMenu: TPopupMenu; const X,
   Y: integer);
 begin
-
 end;
 
 end.

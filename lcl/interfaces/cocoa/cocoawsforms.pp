@@ -23,23 +23,19 @@
 unit CocoaWSForms;
 
 {$mode objfpc}{$H+}
+{$modeswitch objectivec1}
 
 interface
 
 uses
   // Libs
-{$ifdef ver2_2_0}
-  FPCMacOSAll,
-{$else}
-  MacOSAll,
-{$endif}
-  foundation, appkit,
+  MacOSAll, CocoaAll,
   // LCL
   Controls, Forms, Graphics, LCLType, LMessages, LCLProc, Classes,
   // Widgetset
   WSForms, WSLCLClasses, WSProc,
   // LCL Cocoa
-  CocoaPrivate;
+  CocoaPrivate, CocoaUtils, CocoaWSCommon;
 
 type
 
@@ -80,12 +76,14 @@ type
   { TCocoaWSCustomForm }
   TCocoaWSCustomFormClass = class of TCocoaWSCustomForm;
   TCocoaWSCustomForm = class(TWSCustomForm)
-  private
-  protected
-  public
+  published
     class function  CreateHandle(const AWinControl: TWinControl; const AParams: TCreateParams): TLCLIntfHandle; override;
 
     class procedure ShowHide(const AWinControl: TWinControl); override; //TODO: rename to SetVisible(control, visible)
+
+    class function  GetText(const AWinControl: TWinControl; var AText: String): Boolean; override;
+    class function  GetTextLen(const AWinControl: TWinControl; var ALength: Integer): Boolean; override;
+    class procedure SetText(const AWinControl: TWinControl; const AText: String); override;
 
 //    class procedure CloseModal(const ACustomForm: TCustomForm); override;
 //    class procedure ShowModal(const ACustomForm: TCustomForm); override;
@@ -140,26 +138,69 @@ implementation
 
   Creates new window in Cocoa interface with the specified parameters
  ------------------------------------------------------------------------------}
+
 class function TCocoaWSCustomForm.CreateHandle(const AWinControl: TWinControl;
   const AParams: TCreateParams): TLCLIntfHandle;
 var
-  CocoaForm: TCocoaForm;
+  win : TCocoaWindow;
+const
+  WinMask = NSTitledWindowMask or NSClosableWindowMask or NSMiniaturizableWindowMask or NSResizableWindowMask;
 begin
-  CocoaForm := TCocoaForm.Create(AWinControl, AParams);
-  
-  Result := TLCLIntfHandle(CocoaForm);
+  win := TCocoaWindow(TCocoaWindow.alloc);
+  if not Assigned(win) then begin
+    Result:=0;
+    Exit;
+  end;
+  TCocoaWindow(win).callback:=TControlCallback.Create(win, AWinControl);
+  win.initWithContentRect_styleMask_backing_defer(CreateParamsToNSRect(AParams), WinMask, NSBackingStoreBuffered, False);
+  win.setTitle(NSStringUtf8(AWinControl.Caption));
+
+  Result := TLCLIntfHandle(win);
 end;
 
 class procedure TCocoaWSCustomForm.ShowHide(const AWinControl: TWinControl);
 var
-  ACustomForm: TCustomForm absolute AWinControl;
-  CocoaForm: TCocoaForm;
+  win : NSWindow;
 begin
-  CocoaForm := TCocoaForm(ACustomForm.Handle);
-  
+  win:=NSWindow(AWinControl.Handle);
+  if not Assigned(win) then Exit;
+
   if AWinControl.Visible then
-    CocoaForm.MainWindow.orderFrontRegardless()
-  else CocoaForm.MainWindow.orderOut(nil);
+    win.orderFrontRegardless
+  else
+    win.orderOut(nil);
+end;
+
+class function TCocoaWSCustomForm.GetText(const AWinControl: TWinControl; var AText: String): Boolean;
+var
+  win   : TCocoaWindow;
+  title : NSString;
+begin
+  win:=TCocoaWindow(AWinControl.Handle);
+  Result:=Assigned(win);
+  if not Result then Exit;
+  AText:=NSStringToString(win.title);
+  Result:=true;
+end;
+
+class function TCocoaWSCustomForm.GetTextLen(const AWinControl: TWinControl; var ALength: Integer): Boolean;
+var
+  win   : TCocoaWindow;
+begin
+  win:=TCocoaWindow(AWinControl.Handle);
+  Result:=Assigned(win);
+  if not Result then Exit;
+  ALength:=win.title.length;
+end;
+
+class procedure TCocoaWSCustomForm.SetText(const AWinControl: TWinControl; const AText: String);
+var
+  win   : TCocoaWindow;
+  ns    : NSString;
+begin
+  win:=TCocoaWindow(AWinControl.Handle);
+  if not Assigned(win) then Exit;
+  win.setTitle(NSStringUtf8(AText));
 end;
 
 end.

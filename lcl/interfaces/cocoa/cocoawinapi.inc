@@ -37,14 +37,24 @@
     SW_SHOWNORMAL, SW_MINIMIZE, SW_SHOWMAXIMIZED
 ------------------------------------------------------------------------------}
 function TCocoaWidgetSet.ShowWindow(hWnd: HWND; nCmdShow: Integer): Boolean;
-var
-  CocoaForm: TCocoaForm;
+{var
+  CocoaForm: TCocoaForm;}
 begin
   {$ifdef VerboseCocoaWinAPI}
     WriteLn('[WinAPI ShowWindow]');
   {$endif}
 
-  Result := False;
+  case nCmdShow of
+    SW_SHOW, SW_SHOWNORMAL:
+      NSWindow(hwnd).orderFront(nil);
+    SW_HIDE:
+      NSWindow(hwnd).orderOut(nil);
+    SW_MINIMIZE:
+      NSWindow(hwnd).miniaturize(nil);
+  end;
+  Result:=true;
+
+{  Result := False;
   
   CocoaForm := TCocoaForm(hWnd);
 
@@ -59,7 +69,7 @@ begin
       SW_HIDE: CocoaForm.MainWindow.orderOut(nil);
     end;
     Result := True;
-  end;
+  end;}
 end;
 
 //##apiwiz##eps##   // Do not remove, no wizard declaration after this line

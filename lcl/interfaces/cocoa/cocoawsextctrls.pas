@@ -28,13 +28,7 @@ interface
 
 uses
   // libs
-  {$ifdef ver2_2_0}
-  FPCMacOSAll,
-  {$else}
-  MacOSAll,
-  {$endif}
-  // Cocoa
-  appkit, foundation, objc,
+  MacOSAll, CocoaAll,
   // LCL
   Classes, Controls, ExtCtrls, LCLType, LCLProc, Graphics, Math, SysUtils,
   // widgetset
@@ -215,11 +209,11 @@ type
 
   TCocoaWSCustomTrayIcon = class(TWSCustomTrayIcon)
   public
-    class function Hide(const ATrayIcon: TCustomTrayIcon): Boolean; override;
+    {class function Hide(const ATrayIcon: TCustomTrayIcon): Boolean; override;
     class function Show(const ATrayIcon: TCustomTrayIcon): Boolean; override;
     class procedure InternalUpdate(const ATrayIcon: TCustomTrayIcon); override;
     class function ShowBalloonHint(const ATrayIcon: TCustomTrayIcon): Boolean; override;
-    class function GetPosition(const ATrayIcon: TCustomTrayIcon): TPoint; override;
+    class function GetPosition(const ATrayIcon: TCustomTrayIcon): TPoint; override;}
   end;
 
 implementation

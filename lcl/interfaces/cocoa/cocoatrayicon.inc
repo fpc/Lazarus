@@ -1,12 +1,12 @@
 {%mainunit cocoawsextctrls.pp}
 
 {$STATIC ON}
-
+(*
 type
 
   { TPrivateCocoaCocoaTrayIcon }
 
-  TPrivateCocoaCocoaTrayIcon = class(NSObject)
+    TPrivateCocoaCocoaTrayIcon = class(NSObject)
   public
     { Fields }
     bar: NSStatusBar;
@@ -16,9 +16,11 @@ type
     { Structural Methods }
 //    constructor Create; override;
   end;
+*)
 
 { TCocoaWSCustomTrayIcon }
 
+(*
 class function TCocoaWSCustomTrayIcon.Hide(const ATrayIcon: TCustomTrayIcon): Boolean;
 var
   APrivateTrayIcon: TPrivateCocoaCocoaTrayIcon;
@@ -101,5 +103,5 @@ class function TCocoaWSCustomTrayIcon.GetPosition(const ATrayIcon: TCustomTrayIc
 begin
   Result := Point(0, 0);
 end;
-
+*)
 

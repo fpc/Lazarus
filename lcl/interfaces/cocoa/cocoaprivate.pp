@@ -21,7 +21,8 @@
 }
 unit CocoaPrivate;
 
-{$mode delphi}
+{$mode objfpc}{$H+}
+{$modeswitch objectivec1}
 
 interface
 
@@ -29,176 +30,187 @@ uses
   // rtl+ftl
   Types, Classes, SysUtils,
   // Libs
-{$ifdef ver2_2_0}
-  FPCMacOSAll,
-{$else}
-  MacOSAll,
-{$endif}
-  objc, foundation, appkit,
-  // LCL
-  LMessages, LCLMessageGlue, LCLProc, LCLType, Graphics, Controls, Forms,
-  Dialogs, StdCtrls, Buttons, ComCtrls, ExtCtrls, Menus;
-  
-const
-  Str_Button_OnClick = 'ButtonOnClick';
-  
+  MacOSAll, CocoaAll, CocoaUtils;
+
 type
 
-  { TCocoaForm }
-  
-  TCocoaForm = class(TObject)
-  public
-    { classes }
-    MainWindow: NSWindow;
-    MainWindowView: NSView;
-    { strings and sizes }
-    CFTitle: CFStringRef;
-    MainWindowRect: NSRect;
-  public
-    constructor Create(const AWinControl: TWinControl; const AParams: TCreateParams);
-  end;
-  
-  { TCocoaControl }
+  { TCommonCallback }
 
-  TCocoaControl = class(NSObject)
+  TCommonCallback = class(TObject)
   public
-    { classes }
-    ParentView: NSView;
-    Control: NSControl;
-    LCLControl: TWinControl;
-    { strings and sizes }
-    CFTitle: CFStringRef;
-    ControlRect: NSRect;
+    Owner : NSObject;
+    constructor Create(AOwner: NSObject);
+    procedure MouseDown(x,y: Integer); virtual; abstract;
+    procedure MouseUp(x,y: Integer); virtual; abstract;
+  end;
+
+  { TCocoaWindowContentView }
+
+  TCocoaWindowContentView = objcclass(NSView)
   public
-    constructor Create(const AWinControl: TWinControl; const AParams: TCreateParams);
-    procedure InitializeFields;
-    procedure InitializeControl;
+    procedure drawRect(r: NSRect); override;
   end;
 
   { TCocoaButton }
 
-  TCocoaButton = class(TCocoaControl)
+  TCocoaButton = objcclass(NSButton)
+    callback  : TCommonCallback;
+    function acceptsFirstResponder: Boolean; override;
+    procedure mouseDown(event: NSEvent); override;
+    procedure mouseDragged(event: NSEvent); override;
+    procedure mouseEntered(event: NSEvent); override;
+    procedure mouseExited(event: NSEvent); override;
+    procedure mouseMoved(event: NSEvent); override;
+    procedure mouseUp(event: NSEvent); override;
+  end;
+
+  TCocoaTextField = objcclass(NSTextField)
+    callback  : TCommonCallback;
+    function acceptsFirstResponder: Boolean; override;
+  end;
+
+  TCocoaTextView = objcclass(NSTextView)
+    callback  : TCommonCallback;
+    function acceptsFirstResponder: Boolean; override;
+  end;
+
+  TCocoaWindow = objcclass(NSWindow)
   public
-    constructor Create(const AWinControl: TWinControl; const AParams: TCreateParams);
-    function Button: NSButton;
-    procedure AddMethods; override;
-    { Objective-c Methods }
-    class procedure ButtonOnClick(_self: objc.id; _cmd: SEL; sender: objc.id); cdecl;
+    callback  : TCommonCallback;
+    function acceptsFirstResponder: Boolean; override;
+    procedure mouseUp(event: NSEvent); override;
+    procedure mouseDown(event: NSEvent); override;
+    procedure mouseDragged(event: NSEvent); override;
+    procedure mouseEntered(event: NSEvent); override;
+    procedure mouseExited(event: NSEvent); override;
+    procedure mouseMoved(event: NSEvent); override;
   end;
 
 implementation
 
+{ TCocoaWindowContentView }
 
-{ TCocoaForm }
-
-constructor TCocoaForm.Create(const AWinControl: TWinControl; const AParams: TCreateParams);
+procedure TCocoaWindowContentView.drawRect(r: NSRect);
 begin
-  inherited Create;
-
-  MainWindowRect.origin.x := AWinControl.Left;
-  MainWindowRect.origin.y := AWinControl.Top;
-  MainWindowRect.size.width := AWinControl.Width;
-  MainWindowRect.size.height := AWinControl.Height;
-
-  MainWindow := NSWindow.initWithContentRect_styleMask_backing_defer(MainWindowRect,
-    NSTitledWindowMask or NSClosableWindowMask or NSMiniaturizableWindowMask or NSResizableWindowMask,
-    NSBackingStoreBuffered, LongBool(NO));
-  MainWindowView := NSView.CreateWithHandle(MainWindow.contentView);
-
-  CFTitle := CFStringCreateWithPascalString(nil, AWinControl.Caption, kCFStringEncodingUTF8);
-  MainWindow.setTitle(CFTitle);
-end;
-
-{ TCocoaControl }
-
-constructor TCocoaControl.Create(const AWinControl: TWinControl;
-  const AParams: TCreateParams);
-begin
-  { The class is registered on the Objective-C runtime before the NSObject constructor is called }
-  if not CreateClassDefinition(ClassName(), Str_NSObject) then Exception.Create('Failed to create objc class: ' + ClassName());
-
-  inherited Create;
-
-  // Initializes information fields
-  LCLControl := AWinControl;
-  InitializeFields();
-end;
-
-procedure TCocoaControl.InitializeFields;
-var
-  ParentHeight: Single;
-begin
-  ParentHeight := 0;
-  
-  CFTitle := CFStringCreateWithPascalString(nil, LCLControl.Caption, kCFStringEncodingUTF8);
-
-  // Get's information form the parent
-  if LCLControl.Parent <> nil then
-  begin
-     if LCLControl.Parent is TCustomForm then
-     begin
-       ParentView := TCocoaForm(LCLControl.Parent.Handle).MainWindowView;
-       ParentHeight := ParentView.frame.size.height;
-     end;
-  end;
-
-  // Calculates the position on the Screen
-  // Cocoa and LCL declare differently the coordinates system
-  // In LCL (0,0) is in the top-left corner without title,
-  // and in Cocoa it is in the bottom-left corner
-  ControlRect.origin.x := LCLControl.Left;
-  ControlRect.origin.y := ParentHeight - LCLControl.Top;
-  ControlRect.size.width := LCLControl.Width;
-  ControlRect.size.height := LCLControl.Height;
-end;
-
-procedure TCocoaControl.InitializeControl;
-begin
-  Control.setTag(PtrInt(Self));
+  //LCLSendPaintMsg();
+  inherited drawRect(r);
 end;
 
 { TCocoaButton }
 
-constructor TCocoaButton.Create(const AWinControl: TWinControl;
-  const AParams: TCreateParams);
+function TCocoaButton.acceptsFirstResponder: Boolean;
 begin
-  inherited Create(AWinControl, AParams);
-
-  Control := NSButton.initWithFrame(ControlRect);
-  
-  InitializeControl();
-  
-  Button.setTitle(CFTitle);
-  Button.setBezelStyle(NSRoundedBezelStyle);
-  Button.setAction(sel_registerName(PChar(Str_Button_OnClick)));
-  Button.setTarget(Handle);
-
-  if ParentView <> nil then ParentView.addSubview(Button.Handle);
+  Result:=true;
 end;
 
-function TCocoaButton.Button: NSButton;
-begin
-  Result := NSButton(Control);
-end;
-
-procedure TCocoaButton.AddMethods;
-begin
-  AddMethod(Str_Button_OnClick, 'v@:@', Pointer(ButtonOnClick));
-end;
-
-class procedure TCocoaButton.ButtonOnClick(_self: objc.id; _cmd: SEL; sender: objc.id); cdecl;
+procedure TCocoaButton.mouseUp(event: NSEvent);
 var
-  VSelf: TCocoaButton;
-  VNSControl: NSControl;
+  mp : NSPoint;
 begin
-  VNSControl := NSControl.CreateWithHandle(sender);
-  try
-    VSelf := TCocoaButton(VNSControl.tag);
-    VSelf.LCLControl.OnClick(VSelf.LCLControl);
-  finally
-    VNSControl.Handle := nil;
-    VNSControl.Free;
-  end;
+  writeln('TCocoaButton.mouseUp mouse up event!');
+  mp:=event.locationInWindow;
+  callback.MouseUp(round(mp.x), round(mp.y));
+  inherited mouseUp(event);
+end;
+
+procedure TCocoaButton.mouseDown(event: NSEvent);
+var
+  mp : NSPoint;
+begin
+  writeln('TCocoaButton.mouseDown mouse down event!');
+  mp:=event.locationInWindow;
+  callback.MouseDown(round(mp.x), round(mp.y));
+  inherited mouseDown(event);
+end;
+
+procedure TCocoaButton.mouseDragged(event: NSEvent);
+begin
+  inherited mouseDragged(event);
+end;
+
+procedure TCocoaButton.mouseEntered(event: NSEvent);
+begin
+  inherited mouseEntered(event);
+end;
+
+procedure TCocoaButton.mouseExited(event: NSEvent);
+begin
+  inherited mouseExited(event);
+end;
+
+procedure TCocoaButton.mouseMoved(event: NSEvent);
+begin
+  inherited mouseMoved(event);
+end;
+
+{ TCocoaTextField }
+
+function TCocoaTextField.acceptsFirstResponder: Boolean;
+begin
+  Result:=true;
+end;
+
+{ TCocoaTextView }
+
+function TCocoaTextView.acceptsFirstResponder: Boolean;
+begin
+  Result:=true;
+end;
+
+{ TCocoaWindow }
+
+function TCocoaWindow.acceptsFirstResponder: Boolean;
+begin
+  Result:=true;
+end;
+
+procedure TCocoaWindow.mouseUp(event: NSEvent);
+var
+  mp : NSPoint;
+begin
+  writeln('TCocoaWindow.mouseUp event!');
+
+  mp:=event.locationInWindow;
+  callback.MouseUp(round(mp.x), round(mp.y));
+  inherited mouseUp(event);
+end;
+
+procedure TCocoaWindow.mouseDown(event: NSEvent);
+var
+  mp : NSPoint;
+begin
+  writeln('TCocoaWindow.mouseDown event!');
+  mp:=event.locationInWindow;
+  callback.MouseDown(round(mp.x), round(mp.y));
+  inherited mouseDown(event);
+end;
+
+procedure TCocoaWindow.mouseDragged(event: NSEvent);
+begin
+  inherited mouseDragged(event);
+end;
+
+procedure TCocoaWindow.mouseEntered(event: NSEvent);
+begin
+  inherited mouseEntered(event);
+end;
+
+procedure TCocoaWindow.mouseExited(event: NSEvent);
+begin
+  inherited mouseExited(event);
+end;
+
+procedure TCocoaWindow.mouseMoved(event: NSEvent);
+begin
+  inherited mouseMoved(event);
+end;
+
+
+{ TCommonCallback }
+
+constructor TCommonCallback.Create(AOwner: NSObject);
+begin
+  Owner:=AOwner;
 end;
 
 end.

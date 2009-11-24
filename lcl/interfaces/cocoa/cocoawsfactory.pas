@@ -7,7 +7,11 @@ interface
 uses
   Classes, Controls, ComCtrls, StdCtrls, Arrow, Spin, PairSplitter,
   Dialogs, ExtCtrls, Buttons, CheckLst, Forms, Menus,
-  WSLCLClasses;
+  WSLCLClasses,
+  CocoaWSExtCtrls,
+  CocoaWSForms,
+  CocoaWSMenus,
+  CocoaWSStdCtrls;
 
 // imglist
 function RegisterCustomImageList: Boolean;
@@ -99,18 +103,6 @@ function RegisterCustomRubberBand: Boolean;
 
 implementation
 
-uses
-  CocoaWSExtCtrls,
-// CocoaWSExtDlgs,
-// CocoaWSFileCtrl,
-  CocoaWSForms,
-// CocoaWSGrids,
-// CocoaWSImgList,
-// CocoaWSMaskEdit,
-  CocoaWSMenus,
-//  CocoaWSPairSplitter,
-//  CocoaWSSpin,
-  CocoaWSStdCtrls;
 
 
 // imglist
@@ -266,7 +258,8 @@ end;
 
 function RegisterCustomEdit: Boolean; alias : 'WSRegisterCustomEdit';
 begin
-  Result := False;
+  RegisterWSComponent(TCustomEdit, TCocoaWSCustomEdit);
+  Result := True;
 end;
 
 function RegisterCustomMemo: Boolean; alias : 'WSRegisterCustomMemo';
@@ -298,6 +291,7 @@ end;
 
 function RegisterRadioButton: Boolean; alias : 'WSRegisterRadioButton';
 begin
+  RegisterWSComponent(TRadioButton, TCocoaWSRadioButton);
   Result := False;
 end;
 
