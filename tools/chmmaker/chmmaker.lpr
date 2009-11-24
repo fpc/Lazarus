@@ -1,4 +1,4 @@
-program chmwriter;
+program chmmaker;
 
 {$mode objfpc}{$H+}
 
