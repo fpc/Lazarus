@@ -20,6 +20,7 @@
     The function Eval evaluates expressions and understands the operators
       AND, OR, XOR, NOT, (, ), =, <, >, <=, >=, <>
       defined()
+      not defined V or undefined V
 }
 unit ExprEval;
 
@@ -73,6 +74,7 @@ type
     function Equals(AnExpressionEvaluator: TExpressionEvaluator): boolean; reintroduce;
     procedure Assign(SourceExpressionEvaluator: TExpressionEvaluator);
     procedure AssignTo(SL: TStringList);
+    function Eval2(const Expression: string):string;
     function Eval(const Expression: string):string;
     property ErrorPosition:integer read ErrorPos;
     property OnChange: TOnValuesChanged read FOnChange write FOnChange;
@@ -714,6 +716,54 @@ begin
   SL.Clear;
   for i:=0 to FCount-1 do
     SL.Add(FNames[i]+'='+FValues[i]);
+end;
+
+function TExpressionEvaluator.Eval2(const Expression: string): string;
+{  1 = true
+   0 = syntax error
+  -1 = false
+
+  brackets ()
+  unary operators: not, defined, undefined
+  binary operators: < <= = <> => > and or xor shl shr
+  functions: defined(), undefined(), declared()
+}
+{type
+  TOperator = (
+    opNone,
+    opNot,
+    opDefined,
+    opUndefined,
+    opDeclared,
+    opLowerThan,
+    opLowerOrEqual,
+    opEqual,
+    opNotEqual,
+    opGreaterOrEqual,
+    opGreaterThan,
+    opAnd,
+    opOr,
+    opXor,
+    opShl
+    );
+  TOperandAndOperator = record
+    Operand: string;
+    theOperator: PChar;
+    OperatorLvl: integer;
+  end;
+  TExprStack = array[0..4] of TOperandAndOperator;
+
+  function EvalExpression(p: PChar): string;
+  begin
+    Result:='';
+  end;
+
+var
+  ExprStack: TExprStack;
+  StackPtr: integer;}
+begin
+  //if Expression='' then exit('0');
+  Result:='';
 end;
 
 function TExpressionEvaluator.AsString: string;
