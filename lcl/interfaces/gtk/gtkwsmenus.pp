@@ -367,13 +367,25 @@ procedure GtkWS_Popup(menu: PGtkMenu; X, Y: pgint;
   WidgetInfo: PWidgetInfo); cdecl;
 var
   Requisition: TGtkRequisition;
+  Alignment: TPopupAlignment;
 begin
   X^ := PPoint(WidgetInfo^.UserData)^.X;
   Y^ := PPoint(WidgetInfo^.UserData)^.Y;
 
   if WidgetInfo^.LCLObject is TPopupMenu then
   begin
-    case TPopupMenu(WidgetInfo^.LCLObject).Alignment of
+    // get actual alignment
+    Alignment := TPopupMenu(WidgetInfo^.LCLObject).Alignment;
+    if TPopupMenu(WidgetInfo^.LCLObject).IsRightToLeft then
+    begin
+      if Alignment = paLeft then
+        Alignment := paRight
+      else
+      if Alignment = paRight then
+        Alignment := paLeft;
+    end;
+
+    case Alignment of
       paCenter:
         begin
           gtk_widget_size_request(PGtkWidget(menu), @Requisition);

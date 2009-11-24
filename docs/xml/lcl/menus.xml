@@ -2475,8 +2475,8 @@ customise by choosing various menu items. <var>TPopupMenu</var> is a menu window
         <short>
           <var>TPopupAlignment</var> -  enumerated type to describe the position of popup menu relative to the popup coordinate</short>
         <descr>
-          <pre>paLeft - open popup menu left of the popup corrdinate
-    paRight - open popup menu right of popup corrdinate
+          <pre>paLeft - position popup menu so it left corner is at the popup coordinate
+    paRight - position popup menu menu so it right corner is at the popup corrdinate
     paCenter - center popup menu around popup corrdinate
 </pre>
         </descr>
