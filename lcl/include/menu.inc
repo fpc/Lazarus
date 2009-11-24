@@ -233,6 +233,17 @@ begin
   Result:=Find(Items);
 end;
 
+function TMenu.GetHelpContext(AValue: PtrInt; ByCommand: Boolean): THelpContext;
+const
+  FindKind: array[Boolean] of TFindItemKind = (fkHandle, fkCommand);
+var
+  Item: TMenuItem;
+begin
+  Item := FindItem(AValue, FindKind[ByCommand]);
+  if Item <> nil then
+    Result := Item.HelpContext;
+end;
+
 function TMenu.IsShortcut(var Message: TLMKey): boolean;
 var
   Item: TMenuItem;

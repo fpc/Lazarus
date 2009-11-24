@@ -342,6 +342,7 @@ type
     destructor Destroy; override;
     procedure DestroyHandle; virtual;
     function FindItem(AValue: PtrInt; Kind: TFindItemKind) : TMenuItem;
+    function GetHelpContext(AValue: PtrInt; ByCommand: Boolean): THelpContext;
     function IsShortcut(var Message: TLMKey): boolean;
     function HandleAllocated: Boolean;
     function IsRightToLeft: Boolean; virtual;
