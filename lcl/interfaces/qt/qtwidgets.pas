@@ -1085,6 +1085,7 @@ type
     FAboutToHideHook: QMenu_hookH;
     FActionHandle: QActionH;
     FMenuItem: TMenuItem;
+    FTrackButton: QtMouseButtons;
   protected
     function CreateWidget(const APrams: TCreateParams): QWidgetH; override;
     procedure DoPopupClose;
@@ -1117,6 +1118,7 @@ type
     procedure setShortcut(AShortcut: TShortcut);
     procedure setText(const W: WideString); override;
     procedure setVisible(visible: Boolean); override;
+    property trackButton: QtMouseButton read FTrackButton write FTrackButton;
   end;
 
   { TQtMenuBar }
@@ -8011,6 +8013,7 @@ end;
 
 function TQtMenu.CreateWidget(const APrams: TCreateParams): QWidgetH;
 begin
+  FTrackButton := QtNoButton;
   FIcon := nil;
   Result := QMenu_create();
   FDeleteLater := True;
@@ -8245,6 +8248,13 @@ begin
         Result := True;
       end;
     QEventDestroy: SlotDestroy;
+    QEventMouseButtonPress,
+    QEventMouseButtonRelease:
+      begin
+        Result := (FTrackButton = QtLeftButton) and
+          (QMouseEvent_button(QMouseEventH(Event)) <> FTrackButton);
+      end;
+
   end;
   EndEventProcessing;
 end;

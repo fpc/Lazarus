@@ -414,6 +414,11 @@ begin
   Point.X := X;
   Point.Y := Y;
 
+  if APopupMenu.TrackButton = tbLeftButton then
+    TQtMenu(APopupMenu.Handle).trackButton := QtLeftButton
+  else
+    TQtMenu(APopupMenu.Handle).trackButton := QtRightButton;
+
   TQtMenu(APopupMenu.Handle).PopUp(@Point);
 end;
 
