@@ -33,7 +33,7 @@ uses
   qt4,
   qtwidgets, qtobjects, qtproc, QtWsControls,
   // LCL
-  SysUtils, Classes, LCLType, LCLProc, Graphics, Controls, Forms, Menus,
+  SysUtils, Classes, Types, LCLType, LCLProc, Graphics, Controls, Forms, Menus,
   // Widgetset
   WSMenus, WSLCLClasses;
 
@@ -403,6 +403,7 @@ end;
 class procedure TQtWSPopupMenu.Popup(const APopupMenu: TPopupMenu; const X, Y: integer);
 var
   Point: TQtPoint;
+  Size: TSize;
 begin
   {$ifdef VerboseQt}
     WriteLn('[TQtWSPopupMenu.Popup] APopupMenu.Handle ' + dbghex(APopupMenu.Handle)
@@ -413,6 +414,18 @@ begin
 
   Point.X := X;
   Point.Y := Y;
+  case APopupMenu.Alignment of
+    paCenter:
+      begin
+        QMenu_sizeHint(QMenuH(TQtMenu(APopupMenu.Handle).Widget), @Size);
+        Point.X := Point.X - (Size.cx div 2);
+      end;
+    paRight:
+      begin
+        QMenu_sizeHint(QMenuH(TQtMenu(APopupMenu.Handle).Widget), @Size);
+        Point.X := Point.X - Size.cx;
+      end;
+  end;
 
   if APopupMenu.TrackButton = tbLeftButton then
     TQtMenu(APopupMenu.Handle).trackButton := QtLeftButton
