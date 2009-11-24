@@ -395,7 +395,6 @@ type
     FCancelControl: TControl;
     FDefaultMonitor: TDefaultMonitor;
     FDesigner: TIDesigner;
-    FFormState: TFormState;
     FFormStyle: TFormStyle;
     FFormUpdateCount: integer;
     FFormHandlers: array[TFormHandlerType] of TMethodList;
@@ -473,8 +472,9 @@ type
     function FindDefaultForActiveControl: TWinControl;
     procedure UpdateMenu;
   protected
-    FFormBorderStyle: TFormBorderStyle;
     FActionLists: TList;
+    FFormBorderStyle: TFormBorderStyle;
+    FFormState: TFormState;
     class procedure WSRegisterClass; override;
     procedure CMShowingChanged(var Message: TLMessage); message CM_SHOWINGCHANGED;
     procedure DoShowWindow; virtual;
