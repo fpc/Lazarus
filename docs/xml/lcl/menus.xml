@@ -2467,6 +2467,33 @@ customise by choosing various menu items. <var>TPopupMenu</var> is a menu window
       <element name="TMenu.WSRegisterClass" link="#LCL.LCLClasses.TLCLComponent.WSRegisterClass"/>
       <element name="TMainMenu.WSRegisterClass" link="#LCL.LCLClasses.TLCLComponent.WSRegisterClass"/>
       <element name="TPopupMenu.WSRegisterClass" link="#LCL.LCLClasses.TLCLComponent.WSRegisterClass"/>
+      <element name="TPopupMenu.TrackButton">
+        <short>
+          <var>TrackButton</var> - defines which mouse button(s) are allowed to activate menu items</short>
+      </element>
+      <element name="TPopupAlignment">
+        <short>
+          <var>TPopupAlignment</var> -  enumerated type to describe the position of popup menu relative to the popup coordinate</short>
+        <descr>
+          <pre>paLeft - open popup menu left of the popup corrdinate
+    paRight - open popup menu right of popup corrdinate
+    paCenter - center popup menu around popup corrdinate
+</pre>
+        </descr>
+      </element>
+      <element name="TTrackButton">
+        <short>
+          <var>TTrackButton</var> - enumerated type described which mouse buttons can be used to activate (click) menu items</short>
+        <descr>
+          <pre>tbRightButton - both left and right buttons are used to activate a menu item
+tbLeftButton - only left button is used to activate a menu item
+</pre>
+        </descr>
+      </element>
+      <element name="TPopupMenu.Alignment">
+        <short>
+          <var>Alignment</var> - determines the position of popup menu relative to the popup coordinate</short>
+      </element>
     </module>
     <!-- Menus -->
   </package>
