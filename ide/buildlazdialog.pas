@@ -46,8 +46,9 @@ uses
   LResources,  Laz_XMLCfg, InterfaceBase, Themes, ComCtrls,
   LazarusIDEStrConsts, TransferMacros, LazConf, IDEProcs, DialogProcs,
   IDEWindowIntf, IDEMsgIntf, InputHistory, ExtToolDialog, ExtToolEditDlg,
+  EnvironmentOpts,
   {$IFDEF win32}
-  EnvironmentOpts, CodeToolManager, // added for windres workaround
+  CodeToolManager, // added for windres workaround
   {$ENDIF}
   ApplicationBundle, CompilerOptions, IDEContextHelpEdit;
 
@@ -260,7 +261,8 @@ function BuildLazarus(Options: TBuildLazarusOptions;
 function CreateBuildLazarusOptions(Options: TBuildLazarusOptions;
   ItemIndex: integer; Macros: TTransferMacroList;
   const PackageOptions: string; Flags: TBuildLazarusFlags;
-  var ExtraOptions: string; out DisableSvn2RevisionInc: boolean): TModalResult;
+  var ExtraOptions: string; out DisableSvn2RevisionInc: boolean;
+  out OutputDirRedirected: boolean): TModalResult;
 function SaveIDEMakeOptions(Options: TBuildLazarusOptions;
   Macros: TTransferMacroList;
   const PackageOptions: string; Flags: TBuildLazarusFlags): TModalResult;
@@ -323,6 +325,17 @@ function BuildLazarus(Options: TBuildLazarusOptions;
   ExternalTools: TExternalToolList; Macros: TTransferMacroList;
   const PackageOptions, CompilerPath, MakePath: string;
   Flags: TBuildLazarusFlags): TModalResult;
+
+  function CheckDirectoryWritable(Dir: string): boolean;
+  begin
+    if DirectoryIsWritableCached(Dir) then exit(true);
+    Result:=false;
+    MessageDlg(lisBuildingLazarusFailed,
+      Format(lisThisSetOfOptionsToBuildLazarusIsNotSupportedByThis, [#13, '"',
+        Dir, '"', #13]),
+      mtError,[mbCancel],0);
+  end;
+
 var
   Tool: TExternalToolOptions;
   i: Integer;
@@ -330,7 +343,8 @@ var
   ExtraOptions, LinkerAddition: String;
   DisableSvn2RevisionInc: boolean;
   CurMakeMode: TMakeMode;
-
+  WorkingDirectory: String;
+  OutputDirRedirected: boolean;
 begin
   Result:=mrCancel;
 
@@ -365,9 +379,12 @@ begin
     // clean up
     if Options.CleanAll
     and ([blfDontClean,blfOnlyIDE]*Flags=[]) then begin
+      WorkingDirectory:=EnvironmentOptions.LazarusDirectory;
+      if not CheckDirectoryWritable(WorkingDirectory) then exit(mrCancel);
+
       // clean lazarus source directories
       Tool.Title:=lisCleanLazarusSource;
-      Tool.WorkingDirectory:='$(LazarusDir)';
+      Tool.WorkingDirectory:=WorkingDirectory;
       Tool.CmdLineParams:='cleanlaz';
       // append target OS
       if Options.TargetOS<>'' then
@@ -383,6 +400,10 @@ begin
     for i:=0 to Options.Count-1 do begin
       // build item
       CurItem:=Options.Items[i];
+
+      WorkingDirectory:=TrimFilename(EnvironmentOptions.LazarusDirectory
+                                     +PathDelim+CurItem.Directory);
+
       // calculate make mode
       CurMakeMode:=CurItem.MakeMode;
       if (blfOnlyIDE in Flags) then begin
@@ -407,14 +428,19 @@ begin
       Tool.Title:=CurItem.Description;
       if (CurItem=Options.ItemIDE) and (blfWithoutLinkingIDE in Flags) then
         Tool.Title:=lisCompileIDEWithoutLinking;
-      Tool.WorkingDirectory:='$(LazarusDir)'+PathDelim+CurItem.Directory;
+      Tool.WorkingDirectory:=WorkingDirectory;
       Tool.CmdLineParams:=CurItem.Commands[CurMakeMode];
       // append extra options
       ExtraOptions:='';
       Result:=CreateBuildLazarusOptions(Options,i,Macros,PackageOptions,Flags,
-                                        ExtraOptions,DisableSvn2RevisionInc);
+                                        ExtraOptions,DisableSvn2RevisionInc,
+                                        OutputDirRedirected);
       if Result<>mrOk then exit;
-      
+
+      if (not OutputDirRedirected)
+      and (not CheckDirectoryWritable(WorkingDirectory)) then
+        exit(mrCancel);
+
       // add Linker options for wigdet set
       LinkerAddition := LCLWidgetLinkerAddition[Options.LCLPlatform];
       if LinkerAddition <> '' then
@@ -448,7 +474,8 @@ end;
 function CreateBuildLazarusOptions(Options: TBuildLazarusOptions;
   ItemIndex: integer; Macros: TTransferMacroList;
   const PackageOptions: string; Flags: TBuildLazarusFlags;
-  var ExtraOptions: string; out DisableSvn2RevisionInc: boolean): TModalResult;
+  var ExtraOptions: string; out DisableSvn2RevisionInc: boolean;
+  out OutputDirRedirected: boolean): TModalResult;
 
   function RemoveProfilerOption(const ExtraOptions: string): string;
   var
@@ -498,14 +525,15 @@ var
   BundleDir: String;
 begin
   Result:=mrOk;
-  CurItem:=Options.Items[ItemIndex];
   DisableSvn2RevisionInc:=false;
-
+  OutputDirRedirected:=false;
+  CurItem:=Options.Items[ItemIndex];
 
   // create extra options
   ExtraOptions:=Options.ExtraOptions;
 
   if CurItem=Options.ItemIDE then begin
+    DebugLn(['CreateBuildLazarusOptions AAA1']);
     // check for special IDE config file
     if (blfUseMakeIDECfg in Flags) then begin
       MakeIDECfgFilename:=GetMakeIDEConfigFilename;
@@ -523,8 +551,7 @@ begin
         // for $IFDEF.
         if pos(' ',MakeIDECfgFilename)>0 then
           MakeIDECfgFilename:=ExtractShortPathNameUTF8(MakeIDECfgFilename);
-        ExtraOptions:='@'+MakeIDECfgFilename;
-        exit;
+        AppendExtraOption('@'+MakeIDECfgFilename);
       end;
     end;
     // check if linking should be skipped
@@ -630,6 +657,8 @@ begin
         end;
       end;
     end;
+
+    OutputDirRedirected:=NewTargetDirectory<>'';
 
     // create apple bundle if needed
     //debugln(['CreateBuildLazarusOptions NewTargetDirectory=',NewTargetDirectory]);
@@ -744,11 +773,13 @@ var
   fs: TFileStream;
   OptionsAsText: String;
   DisableSvn2RevisionInc: boolean;
+  OutputDirRedirected: boolean;
 begin
   ExtraOptions:='';
   Result:=CreateBuildLazarusOptions(Options,Options.IndexOf(Options.ItemIDE),
                                     Macros,PackageOptions,Flags,
-                                    ExtraOptions,DisableSvn2RevisionInc);
+                                    ExtraOptions,DisableSvn2RevisionInc,
+                                    OutputDirRedirected);
   if Result<>mrOk then exit;
   Filename:=GetMakeIDEConfigFilename;
   try

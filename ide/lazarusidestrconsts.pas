@@ -4535,6 +4535,13 @@ resourcestring
   lisAProjectUnitCanNotBeUsedByOtherPackagesProjects = 'A project unit can '
     +'not be used by other packages/projects';
   lisShowGlyphsFor = 'Show Glyphs for:';
+  lisDirectoryNotWritable = 'Directory not writable';
+  lisTheDirectoryIsNotWritable = 'The directory %s%s%s is not writable.';
+  lisBuildingLazarusFailed = 'Building Lazarus failed';
+  lisThisSetOfOptionsToBuildLazarusIsNotSupportedByThis = 'This set of '
+    +'options to build Lazarus is not supported by this installation.%sThe '
+    +'directory %s%s%s is not writable.%sSee the Lazarus website for other '
+    +'ways to install Lazarus.';
 
 implementation
 

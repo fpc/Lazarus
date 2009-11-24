@@ -93,6 +93,8 @@ function CreateSymlinkInteractive(const LinkFilename, TargetFilename: string;
                                   ErrorButtons: TMsgDlgButtons): TModalResult;
 function ForceDirectoryInteractive(Directory: string;
                                    ErrorButtons: TMsgDlgButtons): TModalResult;
+function CheckDirectoryIsWritable(const Filename: string;
+                                  ErrorButtons: TMsgDlgButtons): TModalResult;
 function DeleteFileInteractive(const Filename: string;
                                ErrorButtons: TMsgDlgButtons): TModalResult;
 function SaveStringToFile(const Filename, Content: string;
@@ -551,6 +553,18 @@ begin
     inc(i);
   end;
   Result:=mrOk;
+end;
+
+function CheckDirectoryIsWritable(const Filename: string;
+  ErrorButtons: TMsgDlgButtons): TModalResult;
+begin
+  Result:=mrOk;
+  while not DirectoryIsWritable(Filename) do begin
+    Result:=IDEMessageDialog(lisDirectoryNotWritable,
+      Format(lisTheDirectoryIsNotWritable, ['"', Filename, '"']),
+      mtError,ErrorButtons+[mbCancel]);
+    if Result<>mrRetry then exit;
+  end;
 end;
 
 function DeleteFileInteractive(const Filename: string;
