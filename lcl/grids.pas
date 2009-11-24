@@ -8587,13 +8587,24 @@ begin
     Exit;
 
   tmpCanvas := GetWorkingCanvas(Canvas);
-  tmpCanvas.Font := Font;
 
   C := ColumnFromGridColumn(aCol);
 
   try
     W:=0;
     for i := 0 to RowCount-1 do begin
+
+      if C<>nil then begin
+        if i<FixedRows then
+          tmpCanvas.Font := C.Title.Font
+        else
+          tmpCanvas.Font := C.Font;
+      end else begin
+        if i<FixedRows then
+          tmpCanvas.Font := TitleFont
+        else
+          tmpCanvas.Font := Font;
+      end;
 
       if (i=0) and (FixedRows>0) and (C<>nil) then
         Ts := TmpCanvas.TextExtent(C.Title.Caption)
