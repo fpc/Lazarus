@@ -1389,14 +1389,22 @@ var
   MenuHandle: HMENU;
   AppHandle: HWND;
 const
-  lAlign: array[Boolean] of DWord = (TPM_LEFTALIGN, TPM_RIGHTALIGN);
+  lAlignment: array[TPopupAlignment, Boolean] of DWORD = (
+              { left-to-rght } { right-to-left }
+ { paLeft   } (TPM_LEFTALIGN,   TPM_RIGHTALIGN),
+ { paRight  } (TPM_RIGHTALIGN,  TPM_LEFTALIGN),
+ { paCenter } (TPM_CENTERALIGN, TPM_CENTERALIGN)
+  );
+  lTrackButtons: array[TTrackButton] of DWORD = (
+ { tbRightButton } TPM_RIGHTBUTTON,
+ { tbLeftButton  } TPM_LEFTBUTTON
+  );
 begin
   MenuHandle := APopupMenu.Handle;
   AppHandle := TWin32WidgetSet(WidgetSet).AppHandle;
   GetWin32WindowInfo(AppHandle)^.PopupMenu := APopupMenu;
   TrackPopupMenuEx(MenuHandle,
-    lAlign[APopupMenu.IsRightToLeft] or
-    TPM_LEFTBUTTON or TPM_RIGHTBUTTON,
+    lAlignment[APopupMenu.Alignment, APopupMenu.IsRightToLeft] or lTrackButtons[APopupMenu.TrackButton],
     X, Y, AppHandle, nil);
 end;
 

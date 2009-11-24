@@ -381,14 +381,17 @@ type
   { TPopupMenu }
 
   TPopupAlignment = (paLeft, paRight, paCenter);
+  TTrackButton = (tbRightButton, tbLeftButton);
 
   TPopupMenu = class(TMenu)
   private
+    FAlignment: TPopupAlignment;
     FAutoPopup: Boolean;
     FOnClose: TNotifyEvent;
     FOnPopup: TNotifyEvent;
     FPopupComponent: TComponent;
     FPopupPoint: TPoint;
+    FTrackButton: TTrackButton;
   protected
     class procedure WSRegisterClass; override;
     procedure DoPopup(Sender: TObject); virtual;
@@ -398,12 +401,13 @@ type
     destructor Destroy; override;
     procedure PopUp();
     procedure PopUp(X, Y: Integer); virtual;
-    property PopupComponent: TComponent read FPopupComponent
-                                        write FPopupComponent;
+    property PopupComponent: TComponent read FPopupComponent write FPopupComponent;
     property PopupPoint: TPoint read FPopupPoint;
     procedure Close;
   published
+    property Alignment: TPopupAlignment read FAlignment write FAlignment default paLeft;
     property AutoPopup: Boolean read FAutoPopup write FAutoPopup default True;
+    property TrackButton: TTrackButton read FTrackButton write FTrackButton default tbRightButton;
     property OnPopup: TNotifyEvent read FOnPopup write FOnPopup;
     property OnClose: TNotifyEvent read FOnClose write FOnClose;
   end;
@@ -497,8 +501,7 @@ begin
   Result:=TPopupMenu.Create(Owner);
   Result.Name:=AName;
   Result.AutoPopup:=AutoPopup;
-  if Alignment=paLeft then ;
-  // TODO Result.Alignment:=Alignment;
+  Result.Alignment:=Alignment;
   AddMenuItems(Result,Items);
 end;
 
