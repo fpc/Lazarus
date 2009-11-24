@@ -404,6 +404,7 @@ class procedure TQtWSPopupMenu.Popup(const APopupMenu: TPopupMenu; const X, Y: i
 var
   Point: TQtPoint;
   Size: TSize;
+  Alignment: TPopupAlignment;
 begin
   {$ifdef VerboseQt}
     WriteLn('[TQtWSPopupMenu.Popup] APopupMenu.Handle ' + dbghex(APopupMenu.Handle)
@@ -414,7 +415,18 @@ begin
 
   Point.X := X;
   Point.Y := Y;
-  case APopupMenu.Alignment of
+  Alignment := APopupMenu.Alignment;
+
+  if APopupMenu.IsRightToLeft then
+  begin
+    if Alignment = paLeft then
+      Alignment := paRight
+    else
+    if Alignment = paRight then
+      Alignment := paLeft;
+  end;
+
+  case Alignment of
     paCenter:
       begin
         QMenu_sizeHint(QMenuH(TQtMenu(APopupMenu.Handle).Widget), @Size);
