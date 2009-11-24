@@ -684,6 +684,7 @@ type
     FCharCase: TEditCharCase;
     fCaretPos: TPoint;
     FEchoMode: TEchoMode;
+    FHideSelection: Boolean;
     FMaxLength: Integer;
     FModified: Boolean;
     FPasswordChar: Char;
@@ -695,6 +696,7 @@ type
     function GetCanUndo: Boolean;
     function GetModified: Boolean;
     procedure SetCharCase(Value: TEditCharCase);
+    procedure SetHideSelection(const AValue: Boolean);
     procedure SetMaxLength(Value: Integer);
     procedure SetModified(Value: Boolean);
     procedure SetPasswordChar(const AValue: Char);
@@ -744,6 +746,7 @@ type
     property CaretPos: TPoint read GetCaretPos write SetCaretPos;
     property CharCase: TEditCharCase read FCharCase write SetCharCase default ecNormal;
     property EchoMode: TEchoMode read FEchoMode write SetEchoMode default emNormal;
+    property HideSelection: Boolean read FHideSelection write SetHideSelection default True;
     property MaxLength: Integer read FMaxLength write SetMaxLength default 0;
     property Modified: Boolean read GetModified write SetModified;
     property OnChange: TNotifyEvent read FOnChange write FOnChange;
@@ -847,6 +850,7 @@ type
     property EchoMode;
     property Enabled;
     property Font;
+    property HideSelection;
     property MaxLength;
     property ParentBidiMode;
     property OnChange;
@@ -902,6 +906,7 @@ type
     property DragMode;
     property Enabled;
     property Font;
+    property HideSelection;
     property Lines;
     property MaxLength;
     property OnChange;

@@ -10102,6 +10102,11 @@ Reads or Writes flag if control is re-sized.
       <element name="TCustomMemo.GetCaretPos.Result">
         <short>Returns the position of the cursor marker or caret</short>
       </element>
+      <element name="TCustomEdit.HideSelection">
+        <short>
+          <var>HideSelection</var>: hide the selection when control has no focus</short>
+        <descr>Allows to turn on the persistent selection. Therefore when control loses focus it still highlights the selected text.</descr>
+      </element>
     </module>
     <!-- StdCtrls -->
   </package>

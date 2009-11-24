@@ -55,6 +55,7 @@ begin
   ControlStyle := ControlStyle - [csCaptureMouse];
   FCompStyle := csEdit;
   FMaxLength := 0;
+  FHideSelection := True;
   ParentColor := False;
   TabStop := true;
   SetInitialBounds(0,0,GetControlClassDefaultSize.X,GetControlClassDefaultSize.Y);
@@ -291,6 +292,16 @@ begin
       ecUpperCase: Text := UTF8UpperCase(Text);
       ecLowerCase: Text := UTF8LowerCase(Text);
     end;
+  end;
+end;
+
+procedure TCustomEdit.SetHideSelection(const AValue: Boolean);
+begin
+  if FHideSelection <> AValue then
+  begin
+    FHideSelection := AValue;
+    if HandleAllocated then
+      TWSCustomEditClass(WidgetSetClass).SetHideSelection(Self, AValue);
   end;
 end;
 

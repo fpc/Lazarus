@@ -4748,6 +4748,7 @@ lcl/interfaces/nogui/noguiint.pp svneol=native#text/plain
 lcl/interfaces/nogui/noguiwsfactory.pas svneol=native#text/pascal
 lcl/interfaces/qt/README.txt svneol=native#text/plain
 lcl/interfaces/qt/interfaces.pp svneol=native#text/pascal
+lcl/interfaces/qt/issues.xml svneol=native#text/plain
 lcl/interfaces/qt/qt4.pas svneol=native#text/plain
 lcl/interfaces/qt/qt43.pas svneol=native#text/plain
 lcl/interfaces/qt/qt44.pas svneol=native#text/plain

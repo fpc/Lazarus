@@ -168,6 +168,7 @@ type
     class procedure SetCaretPos(const ACustomEdit: TCustomEdit; const NewPos: TPoint); override;
     class procedure SetCharCase(const ACustomEdit: TCustomEdit; NewCase: TEditCharCase); override;
     class procedure SetEchoMode(const ACustomEdit: TCustomEdit; NewMode: TEchoMode); override;
+    class procedure SetHideSelection(const ACustomEdit: TCustomEdit; NewHideSelection: Boolean); override;
     class procedure SetMaxLength(const ACustomEdit: TCustomEdit; NewLength: integer); override;
     class procedure SetPasswordChar(const ACustomEdit: TCustomEdit; NewChar: char); override;
     class procedure SetReadOnly(const ACustomEdit: TCustomEdit; NewReadOnly: boolean); override;
@@ -1091,6 +1092,8 @@ begin
         FlagsEx := FlagsEx or WS_EX_CLIENTEDGE;
       Flags := Flags or AlignmentToEditFlags[TCustomEdit(AWinControl).Alignment];
       Flags := Flags or WS_CLIPCHILDREN;
+      if not TCustomEdit(AWinControl).HideSelection then
+        Flags := Flags or ES_NOHIDESEL;
     end;
     pClassName := @EditClsName[0];
     WindowTitle := StrCaption;
@@ -1183,6 +1186,16 @@ end;
 class procedure TWin32WSCustomEdit.SetEchoMode(const ACustomEdit: TCustomEdit; NewMode: TEchoMode);
 begin
   // nothing to do, SetPasswordChar will do the work
+end;
+
+class procedure TWin32WSCustomEdit.SetHideSelection(const ACustomEdit: TCustomEdit; NewHideSelection: Boolean);
+var
+  CurrentStyle: DWord;
+begin
+  CurrentStyle := GetWindowLong(ACustomEdit.Handle, GWL_STYLE);
+  if (CurrentStyle and ES_NOHIDESEL = 0) = NewHideSelection  then
+    Exit;
+  RecreateWnd(ACustomEdit);
 end;
 
 class procedure TWin32WSCustomEdit.SetMaxLength(const ACustomEdit: TCustomEdit; NewLength: integer);
