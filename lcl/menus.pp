@@ -392,6 +392,8 @@ type
     FPopupComponent: TComponent;
     FPopupPoint: TPoint;
     FTrackButton: TTrackButton;
+    function GetHelpContext: THelpContext;
+    procedure SetHelpContext(const AValue: THelpContext);
   protected
     class procedure WSRegisterClass; override;
     procedure DoPopup(Sender: TObject); virtual;
@@ -407,6 +409,7 @@ type
   published
     property Alignment: TPopupAlignment read FAlignment write FAlignment default paLeft;
     property AutoPopup: Boolean read FAutoPopup write FAutoPopup default True;
+    property HelpContext: THelpContext read GetHelpContext write SetHelpContext default 0;
     property TrackButton: TTrackButton read FTrackButton write FTrackButton default tbRightButton;
     property OnPopup: TNotifyEvent read FOnPopup write FOnPopup;
     property OnClose: TNotifyEvent read FOnClose write FOnClose;

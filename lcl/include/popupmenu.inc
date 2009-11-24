@@ -17,6 +17,16 @@
  *****************************************************************************
 }
 
+function TPopupMenu.GetHelpContext: THelpContext;
+begin
+  Result := Items.HelpContext;
+end;
+
+procedure TPopupMenu.SetHelpContext(const AValue: THelpContext);
+begin
+  Items.HelpContext := AValue;
+end;
+
 class procedure TPopupMenu.WSRegisterClass;
 begin
   inherited WSRegisterClass;
