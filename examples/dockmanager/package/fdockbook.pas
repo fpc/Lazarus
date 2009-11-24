@@ -32,10 +32,12 @@ ToDo:
 - Load/Store layout
 + Update parent on un/dock: Caption and DockHeaders!
 
-Problem:
+Problems:
 
 Disallow undocking/floating of a NOT docked dockbook.
   Fix: flag StayDocked.
+
+Clients are not properly undocked on close!?
 *)
 
 (* Applications
@@ -85,6 +87,7 @@ type
 
   TEasyDockBook = class(TForm)
     pnlDock: TPanel;
+    procedure FormClose(Sender: TObject; var CloseAction: TCloseAction);
     procedure FormCreate(Sender: TObject);
     procedure FormDockDrop(Sender: TObject; Source: TDragDockObject;
       X, Y: Integer);
@@ -120,6 +123,37 @@ begin
 end;
 
 { TEasyDockBook }
+
+procedure TEasyDockBook.FormClose(Sender: TObject;
+  var CloseAction: TCloseAction);
+var
+  i: integer;
+  ctl: TControl;
+  //wc: TWinControl absolute ctl;
+  frm: TCustomForm absolute ctl;
+begin
+(* When an empty notebook is closed, it shall be freed.
+  Otherwise the clients must be handled (close forms)
+
+  This code is never reached???
+*)
+{$IFDEF new}
+  //BeginFormUpdate;
+  for i := DockClientCount - 1 downto 0 do begin
+    ctl := DockClients[i];
+    ctl.ManualDock(nil);
+    DebugLn('Undocked %s P=%p H=%p', [ctl.Name,
+      pointer(ctl.Parent), pointer(ctl.HostDockSite)]);
+    if ctl is TCustomForm then begin
+      //frm.Close;
+    end;
+  end;
+  //EndFormUpdate;
+{$ELSE}
+  //not required?
+{$ENDIF}
+  CloseAction := caFree;
+end;
 
 procedure TEasyDockBook.FormCreate(Sender: TObject);
 begin

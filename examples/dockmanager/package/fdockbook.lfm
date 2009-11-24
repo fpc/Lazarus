@@ -8,6 +8,7 @@ object EasyDockBook: TEasyDockBook
   ClientWidth = 400
   DockSite = True
   DragKind = dkDock
+  OnClose = FormClose
   OnCreate = FormCreate
   OnDockDrop = FormDockDrop
   OnDockOver = FormDockOver

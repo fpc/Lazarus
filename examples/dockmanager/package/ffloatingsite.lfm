@@ -7,6 +7,7 @@ object FloatingSite: TFloatingSite
   ClientHeight = 265
   ClientWidth = 377
   DockSite = True
+  OnClose = FormClose
   OnDockDrop = FormDockDrop
   OnUnDock = FormUnDock
   UseDockManager = True

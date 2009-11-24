@@ -8,6 +8,10 @@ unit fFloatingSite;
   - Disallow TControls to float (else nothing but trouble).
   - For the IDE, floating client forms must wrap themselves into a new
     host site, to allow for continued docking of other clients.
+
+Problems:
+As with DockBook, closing docked forms results in Exceptions :-(
+
 *)
 
 {$mode objfpc}{$H+}
@@ -21,6 +25,7 @@ uses
 type
   TFloatingSite = class(TForm)
     Image1: TImage;
+    procedure FormClose(Sender: TObject; var CloseAction: TCloseAction);
     procedure FormDockDrop(Sender: TObject; Source: TDragDockObject;
       X, Y: Integer);
     procedure FormUnDock(Sender: TObject; Client: TControl;
@@ -59,6 +64,44 @@ begin
   end;
   SetLength(s, Length(s) - 2); //strip trailing ", "
   Caption := s;
+end;
+
+procedure TFloatingSite.FormClose(Sender: TObject;
+  var CloseAction: TCloseAction);
+var
+  i: integer;
+  ctl: TControl;
+  frm: TCustomForm absolute ctl;
+begin
+(* When an empty site is closed, it shall be freed.
+  Otherwise the clients must be handled (close forms).
+
+  Currently closing docked forms leads to exceptions :-(
+*)
+{$IFDEF new}
+  //BeginFormUpdate;
+  for i := DockClientCount - 1 downto 0 do begin
+    ctl := DockClients[i];
+    ctl.ManualDock(nil);
+    //Application.ReleaseComponent(ctl); --- Exception!
+    if ctl <> nil then begin
+    //verify that both Parent and HostDockSite are cleared
+      DebugLn('Undocked %s P=%p H=%p', [ctl.Name,
+        pointer(ctl.Parent), pointer(ctl.HostDockSite)]);
+      //DebugLn('P=%p H=%p', [ctl.Parent, ctl.HostDockSite]);
+      //DebugLn('%x', [self]);
+    end;
+    if ctl is TCustomForm then begin
+      //frm.Close; --- Exception!
+      //frm.Release; --- also Exception!
+      //frm.Hide;
+    end;
+  end;
+  //EndFormUpdate;
+{$ELSE}
+  //not required?
+{$ENDIF}
+  CloseAction := caFree;
 end;
 
 procedure TFloatingSite.FormDockDrop(Sender: TObject; Source: TDragDockObject;

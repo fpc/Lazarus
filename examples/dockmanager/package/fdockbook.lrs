@@ -3,10 +3,10 @@
 LazarusResources.Add('TEasyDockBook','FORMDATA',[
   'TPF0'#13'TEasyDockBook'#12'EasyDockBook'#4'Left'#3#7#1#6'Height'#3','#1#3'To'
   +'p'#3#146#0#5'Width'#3#144#1#7'Caption'#6#12'EasyDockBook'#12'ClientHeight'#3
-  +','#1#11'ClientWidth'#3#144#1#8'DockSite'#9#8'DragKind'#7#6'dkDock'#8'OnCrea'
-  +'te'#7#10'FormCreate'#10'OnDockDrop'#7#12'FormDockDrop'#10'OnDockOver'#7#12
-  +'FormDockOver'#13'OnGetSiteInfo'#7#15'FormGetSiteInfo'#8'OnUnDock'#7#10'Form'
-  +'UnDock'#10'LCLVersion'#6#6'0.9.29'#7'Visible'#9#0#6'TPanel'#7'pnlDock'#4'Le'
-  +'ft'#2#0#6'Height'#3','#1#3'Top'#2#0#5'Width'#3#144#1#5'Align'#7#8'alClient'
-  +#8'TabOrder'#2#0#14'UseDockManager'#8#0#0#0
+  +','#1#11'ClientWidth'#3#144#1#8'DockSite'#9#8'DragKind'#7#6'dkDock'#7'OnClos'
+  +'e'#7#9'FormClose'#8'OnCreate'#7#10'FormCreate'#10'OnDockDrop'#7#12'FormDock'
+  +'Drop'#10'OnDockOver'#7#12'FormDockOver'#13'OnGetSiteInfo'#7#15'FormGetSiteI'
+  +'nfo'#8'OnUnDock'#7#10'FormUnDock'#10'LCLVersion'#6#6'0.9.29'#7'Visible'#9#0
+  +#6'TPanel'#7'pnlDock'#4'Left'#2#0#6'Height'#3','#1#3'Top'#2#0#5'Width'#3#144
+  +#1#5'Align'#7#8'alClient'#8'TabOrder'#2#0#14'UseDockManager'#8#0#0#0
 ]);

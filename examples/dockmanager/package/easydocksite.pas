@@ -72,12 +72,23 @@ uses
   Forms,
   ExtCtrls, //splitter
   Controls,
+{$IFDEF PageFrame}
+  fPageFrame,
+{$ELSE}
+  fDockBook,
+{$ENDIF}
   ComCtrls; //TPageControl
 
 type
   TEasyTree = class; //forward declaration
   TEasyZone = class; //forward declaration
   TEasySplitter = TCustomSplitter;
+
+{$IFDEF PageFrame}
+  TEasyBook = TPageFrame;
+{$ELSE}
+  TEasyBook = TEasyDockBook;
+{$ENDIF}
 
   TEasyZonePart =
   (
@@ -243,6 +254,9 @@ type
     property HideSingleCaption: boolean read FHideSingleCaption write SetSingleCaption;
   end;
 
+function  NoteBookCreate(AOwner: TWinControl): TEasyBook; inline;
+procedure NoteBookAdd(ABook: TEasyBook; AItem: TControl); inline;
+
 const
   AlignNames: array[TAlign] of string = (
     'alNone', 'alTop', 'alBottom', 'alLeft', 'alRight', 'alClient', 'alCustom'
@@ -269,11 +283,6 @@ implementation
 uses
   SysUtils, Types,
   math,
-{$IFDEF PageFrame}
-  fPageFrame,
-{$ELSE}
-  fDockBook,
-{$ENDIF}
   Themes, LResources,
   LCLproc; //debugging
 
@@ -284,13 +293,6 @@ const
   HeaderButtons = [zpCloseButton];
 {$ENDIF}
 
-type
-{$IFDEF PageFrame}
-  TEasyBook = TPageFrame;
-{$ELSE}
-  TEasyBook = TEasyDockBook;
-{$ENDIF}
-
 function  NoteBookCreate(AOwner: TWinControl): TEasyBook; inline;
 begin
   Result := TEasyBook.Create(AOwner);
@@ -298,7 +300,6 @@ end;
 
 procedure NoteBookAdd(ABook: TEasyBook; AItem: TControl); inline;
 begin
-  //AItem.ManualDock(ABook.pnlDock);
   AItem.ManualDock(ABook);
 end;
 
