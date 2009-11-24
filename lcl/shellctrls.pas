@@ -346,7 +346,7 @@ begin
 
   SearchStr := IncludeTrailingPathDelimiter(ABaseDir) + MaskStr;
 
-  FindResult := FindFirst(SearchStr, faAnyFile, DirInfo);
+  FindResult := FindFirstUTF8(SearchStr, faAnyFile, DirInfo);
 
   while FindResult = 0 do
   begin
@@ -375,10 +375,10 @@ begin
     // AddFile identifies if the file is valid or not
     if AddFile then AResult.AddObject(DirInfo.Name, ObjectData);
 
-    FindResult := FindNext(DirInfo);
+    FindResult := FindNextUTF8(DirInfo);
   end;
 
-  SysUtils.FindClose(DirInfo);
+  FindCloseUTF8(DirInfo);
 end;
 
 class function TCustomShellTreeView.GetBasePath: string;
