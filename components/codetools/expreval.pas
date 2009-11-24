@@ -50,6 +50,7 @@ type
   TExpressionEvaluator = class
   private
     FChangeStamp: integer;
+    FErrorMsg: string;
     FNames, FValues: ArrayOfAnsiString; // always sorted in FNames and FNames uppercase
     FCount: integer;
     FCapacity: integer;
@@ -64,6 +65,7 @@ type
     function GetVariables(const Name: string): string;
     procedure SetVariables(const Name: string; const Value: string);
     function IndexOfName(const VarName: string; InsertPos: boolean): integer;
+    function IndexOfIdentifier(Identifier: PChar; InsertPos: boolean): integer;
     procedure Expand;
   public
     property Variables[const Name: string]: string
@@ -71,12 +73,15 @@ type
     property Count: integer read FCount;
     procedure Undefine(const Name: string);
     function IsDefined(const Name: string): boolean;
+    function IsIdentifierDefined(Identifier: PChar): boolean;
     function Equals(AnExpressionEvaluator: TExpressionEvaluator): boolean; reintroduce;
     procedure Assign(SourceExpressionEvaluator: TExpressionEvaluator);
     procedure AssignTo(SL: TStringList);
     function Eval2(const Expression: string):string;
+    function EvalPChar(Expression: PChar; ExprLen: PtrInt): string;
     function Eval(const Expression: string):string;
-    property ErrorPosition:integer read ErrorPos;
+    property ErrorPosition: integer read ErrorPos write ErrorPos;
+    property ErrorMsg: string read FErrorMsg write FErrorMsg;
     property OnChange: TOnValuesChanged read FOnChange write FOnChange;
     function Items(Index: integer): string;
     function Names(Index: integer): string;
@@ -114,6 +119,33 @@ type
 
 implementation
 
+type
+  TOperator = (
+    opNone,
+    opNot,
+    opDefined,
+    opUndefined,
+    opDeclared,
+    opLowerThan,
+    opLowerOrEqual,
+    opEqual,
+    opNotEqual,
+    opGreaterOrEqual,
+    opGreaterThan,
+    opAnd,
+    opOr,
+    opXor,
+    opShl
+    );
+  TOperandValue = record
+    Value: PChar;
+    Len: PtrInt;
+    Data: array[0..3] of char;
+    Free: boolean;
+  end;
+const
+  CleanOperandValue: TOperandValue = (Value:nil; Len:0; Data:#0#0#0#0; Free:false);
+
 var
   IsWordChar, IsIdentifierChar, IsNumberBeginChar, IsNumberChar:
     array[#0..#255] of boolean;
@@ -128,6 +160,152 @@ begin
     IsIdentifierChar[c]:=(c in ['a'..'z','A'..'Z','_','0'..'9']);
   end;
 end;
+
+procedure FreeOperandValue(var V: TOperandValue);
+begin
+  if V.Free then begin
+    FreeMem(V.Value);
+    V.Value:=nil;
+    V.Free:=false;
+  end;
+end;
+
+procedure SetOperandValueChar(var V: TOperandValue; const c: Char);
+begin
+  if V.Free then FreeOperandValue(V);
+  V.Data[0]:=c;
+  V.Value:=@V.Data[0];
+  V.Len:=1;
+end;
+
+procedure SetOperandValueConst(var V: TOperandValue; const p: PChar);
+begin
+  if V.Free then FreeOperandValue(V);
+  V.Len:=strlen(p);
+  V.Value:=p;
+end;
+
+function CompareOperand(const Operand: TOperandValue; Value: PChar): integer;
+var
+  p: PChar;
+  l: PtrInt;
+begin
+  if (Operand.Value<>nil) and (Operand.Len>0) then begin
+    if Value<>nil then begin
+      p:=Operand.Value;
+      l:=Operand.Len;
+      while (p^=Value^) and (l>0) do begin
+        if Value^=#0 then begin
+          // 'aaa'#0'b' 'aaa'
+          exit(0);
+        end;
+        inc(p);
+        inc(Value);
+        dec(l);
+      end;
+      if l>0 then begin
+        if p^<Value^ then begin
+          // 'aaa' 'aab'
+          Result:=1;
+        end else begin
+          // 'aab' 'aaa' or 'aaa' 'aa'
+          Result:=-1;
+        end;
+      end else begin
+        if Value=#0 then begin
+          // 'aaa' 'aaa'
+          Result:=0;
+        end else begin
+          // 'aa' 'aaa'
+          Result:=1;
+        end;
+      end;
+    end else begin
+      // 'aaa' nil
+      Result:=-1;
+    end;
+  end else begin
+    if Value<>nil then begin
+      // nil 'aaa'
+      Result:=1;
+    end else begin
+      // nil nil
+      Result:=0;
+    end;
+  end;
+end;
+
+function GetIdentifierLen(Identifier: PChar): integer;
+var
+  p: PChar;
+begin
+  Result:=0;
+  p:=Identifier;
+  if p=nil then exit;
+  if not IsIdentStartChar[p^] then exit;
+  inc(p);
+  while IsIdentChar[p^] do inc(p);
+  Result:=p-Identifier;
+end;
+
+function CompareIdentifiers(Identifier1, Identifier2: PChar): integer;
+begin
+  while (UpChars[Identifier1[0]]=UpChars[Identifier2[0]]) do begin
+    if (IsIdentChar[Identifier1[0]]) then begin
+      inc(Identifier1);
+      inc(Identifier2);
+    end else begin
+      Result:=0; // for example  'aaA;' 'aAa;'
+      exit;
+    end;
+  end;
+  if (IsIdentChar[Identifier1[0]]) then begin
+    if (IsIdentChar[Identifier2[0]]) then begin
+      if UpChars[Identifier1[0]]>UpChars[Identifier2[0]] then
+        Result:=-1 // for example  'aab' 'aaa'
+      else
+        Result:=1; // for example  'aaa' 'aab'
+    end else begin
+      Result:=-1; // for example  'aaa' 'aa;'
+    end;
+  end else begin
+    if (IsIdentChar[Identifier2[0]]) then
+      Result:=1 // for example  'aa;' 'aaa'
+    else
+      Result:=0; // for example  'aa;' 'aa,'
+  end;
+end;
+
+function CompareNames(Name1: PChar; Name1Len: PtrInt;
+  Name2: PChar; Name2Len: PtrInt): integer;
+begin
+  while (Name1Len>0) and (Name2Len>0) do begin
+    if UpChars[Name1^]=UpChars[Name2^] then begin
+      inc(Name1);
+      dec(Name1Len);
+      inc(Name2);
+      dec(Name2Len);
+    end else begin
+      if UpChars[Name1^]<UpChars[Name2^] then
+        Result:=1
+      else
+        Result:=-1;
+      exit;
+    end;
+  end;
+  if Name1Len>Name2Len then
+    Result:=-1
+  else if Name1Len<Name2Len then
+    Result:=1
+  else
+    Result:=0;
+end;
+
+function CompareNames(const Name1, Name2: string): integer; inline;
+begin
+  Result:=CompareNames(PChar(Name1),length(Name1),PChar(Name2),length(Name2));
+end;
+
 
 { TBooleanVariables }
 
@@ -498,9 +676,10 @@ begin
   l:=0;
   r:=FCount-1;
   m:=0;
+  cmp:=0;
   while l<=r do begin
     m:=(l+r) shr 1;
-    cmp:=CompareText(VarName,FNames[m]);
+    cmp:=CompareNames(VarName,FNames[m]);
     if cmp>0 then
       l:=m+1
     else if cmp<0 then
@@ -511,7 +690,46 @@ begin
     end;
   end;
   if InsertPos then begin
-    if CompareText(VarName,FNames[m])>0 then inc(m);
+    if cmp>0 then inc(m);
+    Result:=m;
+  end else begin
+    Result:=-1;
+  end;
+end;
+
+function TExpressionEvaluator.IndexOfIdentifier(Identifier: PChar;
+  InsertPos: boolean): integer;
+var l,r,m, cmp: integer;
+  IdentLen: Integer;
+  CurName: String;
+begin
+  if FCount=0 then begin
+    if InsertPos then
+      Result:=0
+    else
+      Result:=-1;
+    exit;
+  end;
+  l:=0;
+  r:=FCount-1;
+  m:=0;
+  cmp:=0;
+  IdentLen:=GetIdentifierLen(Identifier);
+  while l<=r do begin
+    m:=(l+r) shr 1;
+    CurName:=FNames[m];
+    cmp:=CompareNames(Identifier,IdentLen,PChar(CurName),length(CurName));
+    if cmp>0 then
+      l:=m+1
+    else if cmp<0 then
+      r:=m-1
+    else begin
+      Result:=m;
+      exit;
+    end;
+  end;
+  if InsertPos then begin
+    if cmp>0 then inc(m);
     Result:=m;
   end else begin
     Result:=-1;
@@ -529,10 +747,13 @@ begin
 end;
 
 function TExpressionEvaluator.IsDefined(const Name: string): boolean;
-var i: integer;
 begin
-  i:=IndexOfName(Name,false);
-  Result:=(i>=0);
+  Result:=IndexOfName(Name,false)>=0;
+end;
+
+function TExpressionEvaluator.IsIdentifierDefined(Identifier: PChar): boolean;
+begin
+  Result:=IndexOfIdentifier(Identifier,false)>=0;
 end;
 
 function TExpressionEvaluator.ReadNextAtom: boolean;
@@ -649,7 +870,7 @@ var i: integer;
   Size: Integer;
 begin
   i:=IndexOfName(Name,true);
-  if (i>=0) and (i<FCount) and (CompareText(FNames[i],Name)=0) then begin
+  if (i>=0) and (i<FCount) and (CompareNames(FNames[i],Name)=0) then begin
     // variable already exists -> replace value
     if FValues[i]<>Value then begin
       FValues[i]:=Value;
@@ -719,6 +940,13 @@ begin
 end;
 
 function TExpressionEvaluator.Eval2(const Expression: string): string;
+begin
+  if Expression='' then exit('0');
+  Result:=EvalPChar(PChar(Expression),length(Expression));
+end;
+
+function TExpressionEvaluator.EvalPChar(Expression: PChar; ExprLen: PtrInt
+  ): string;
 {  1 = true
    0 = syntax error
   -1 = false
@@ -729,41 +957,191 @@ function TExpressionEvaluator.Eval2(const Expression: string): string;
   functions: defined(), undefined(), declared()
 }
 {type
-  TOperator = (
-    opNone,
-    opNot,
-    opDefined,
-    opUndefined,
-    opDeclared,
-    opLowerThan,
-    opLowerOrEqual,
-    opEqual,
-    opNotEqual,
-    opGreaterOrEqual,
-    opGreaterThan,
-    opAnd,
-    opOr,
-    opXor,
-    opShl
-    );
   TOperandAndOperator = record
-    Operand: string;
+    Operand: TValue;
     theOperator: PChar;
     OperatorLvl: integer;
   end;
   TExprStack = array[0..4] of TOperandAndOperator;
 
-  function EvalExpression(p: PChar): string;
-  begin
-    Result:='';
-  end;
-
 var
   ExprStack: TExprStack;
   StackPtr: integer;}
+var
+  ExprEnd: Pointer;
+
+  procedure Error(NewErrorPos: PChar; const NewErrorMsg: string);
+  begin
+    if NewErrorPos<>nil then
+      ErrorPos:=NewErrorPos-Expression
+    else
+      ErrorPos:=0;
+    ErrorMsg:=NewErrorMsg;
+  end;
+
+  procedure ExpressionMissing(NewErrorPos: PChar);
+  begin
+    Error(NewErrorPos,'expression missing');
+  end;
+
+  procedure IdentifierMissing(NewErrorPos: PChar);
+  begin
+    Error(NewErrorPos,'identifier missing');
+  end;
+
+  procedure CharMissing(NewErrorPos: PChar; c: char);
+  begin
+    Error(NewErrorPos,c+' missing');
+  end;
+
+  procedure StrExpectedAtPos(NewErrorPos, ExpectedStr: PChar);
+  var
+    s: string;
+    f: string;
+  begin
+    s:=ExpectedStr;
+    f:=NewErrorPos^;
+    Error(NewErrorPos,'expected '+s+', but found '+f);
+  end;
+
+  function ParseDefinedParams(p: PChar; out Operand: TOperandValue): boolean;
+  // p is behind defined or undefined keyword
+  // Operand: '1' or '-1'
+  var
+    NeedBracketClose: Boolean;
+    IdentStartPos: PChar;
+  begin
+    Result:=false;
+    // skip space
+    while IsSpaceChar[p^] do inc(p);
+    if p>=ExprEnd then begin
+      IdentifierMissing(p);
+      exit;
+    end;
+    NeedBracketClose:=false;
+    if p^='(' then begin
+      // defined(
+      NeedBracketClose:=true;
+      // skip space
+      while IsSpaceChar[p^] do inc(p);
+      if p>=ExprEnd then begin
+        IdentifierMissing(p);
+        exit;
+      end;
+    end;
+    if not IsIdentifierChar[p^] then begin
+      StrExpectedAtPos(p,'macro name');
+      exit;
+    end;
+    IdentStartPos:=p;
+    while IsIdentChar[p^] do inc(p);
+    if IsIdentifierDefined(IdentStartPos) then begin
+      SetOperandValueChar(Operand,'1');
+    end else begin
+      SetOperandValueConst(Operand,'-1');
+    end;
+    if NeedBracketClose then begin
+      // read bracket close
+      // skip space
+      while IsSpaceChar[p^] do inc(p);
+      if p>=ExprEnd then begin
+        CharMissing(ExprEnd,')');
+        exit;
+      end;
+      if p^<>')' then begin
+        StrExpectedAtPos(p,')');
+        exit;
+      end;
+    end;
+    Result:=true;
+  end;
+
+  function ReadOperand(var p: PChar; out Operand: TOperandValue): boolean;
+  { Examples:
+     Variable
+     not Variable
+     not not undefined Variable
+     defined(Variable)
+  }
+  var
+    IdentStartPos: PChar;
+    i: LongInt;
+  begin
+    Result:=false;
+    // skip space
+    while IsSpaceChar[p^] do inc(p);
+    if p>=ExprEnd then exit;
+    case UpChars[p^] of
+    'N':
+      if CompareIdentifiers(p,'NOT')=0 then begin
+        // not
+        inc(p,3);
+        if not ReadOperand(p,Operand) then exit;
+        if (Operand.Len=1) and (Operand.Value^='1') then begin
+          SetOperandValueConst(Operand,'-1');
+        end else begin
+          SetOperandValueChar(Operand,'1');
+        end;
+        exit(true);
+      end;
+    'D':
+      if CompareIdentifiers(p,'DEFINED')=0 then begin
+        // "defined V" or "defined(V)"
+        inc(p,length('DEFINED'));
+        if not ParseDefinedParams(p,Operand) then exit;
+        exit(true);
+      end;
+    'U':
+      if CompareIdentifiers(p,'UNDEFINED')=0 then begin
+        // "undefined V" or "undefined(V)"
+        inc(p,length('UNDEFINED'));
+        if not ParseDefinedParams(p,Operand) then exit;
+        if (Operand.Len=1) and (Operand.Value^='1') then begin
+          SetOperandValueConst(Operand,'-1');
+        end else begin
+          SetOperandValueChar(Operand,'1');
+        end;
+        exit(true);
+      end;
+    end;
+    if IsIdentStartChar[p^] then begin
+      // identifier => return current value
+      IdentStartPos:=p;
+      while IsIdentChar[p^] do inc(p);
+      i:=IndexOfIdentifier(IdentStartPos,false);
+      if i>=0 then begin
+        if Operand.Free then FreeOperandValue(Operand);
+        Operand.Value:=PChar(FValues[i]);
+        Operand.Len:=length(FValues[i]);
+      end;
+      exit(true);
+    end;
+    // invalid operand
+    IdentifierMissing(p);
+  end;
+
+var
+  p: PChar;
+  Operand: TOperandValue;
 begin
-  //if Expression='' then exit('0');
-  Result:='';
+  p:=Expression;
+  Result:='0';
+  if p=nil then begin
+    ExpressionMissing(p);
+    exit;
+  end;
+  ExprEnd:=p+ExprLen;
+  // skip space
+  while IsSpaceChar[p^] do inc(p);
+  if p>=ExprEnd then begin
+    ExpressionMissing(p);
+    exit;
+  end;
+  // read operand
+  Operand:=CleanOperandValue;
+  ReadOperand(p,Operand);
+
+  FreeOperandValue(Operand);
 end;
 
 function TExpressionEvaluator.AsString: string;
@@ -809,7 +1187,7 @@ begin
       RaiseCatchableException('');
     if (i>0) and (FNames[i-1]=FNames[i]) then
       RaiseCatchableException('');
-    if (i>0) and (CompareText(FNames[i-1],FNames[i])>0) then
+    if (i>0) and (CompareNames(FNames[i-1],FNames[i])>0) then
       RaiseCatchableException('');
   end;
 end;
