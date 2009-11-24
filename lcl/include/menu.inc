@@ -239,6 +239,7 @@ const
 var
   Item: TMenuItem;
 begin
+  Result := 0;
   Item := FindItem(AValue, FindKind[ByCommand]);
   if Item <> nil then
     Result := Item.HelpContext;
