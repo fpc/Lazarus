@@ -1060,23 +1060,27 @@ end;
 function CompareMemStreams(Stream1, Stream2: TCustomMemoryStream
   ): boolean;
 var
-  Buffer1, Buffer2: array[1..1024] of byte;
-  BufLength: Integer;
-  Count: LongInt;
+  p1: Pointer;
+  p2: Pointer;
+  Cnt: Int64;
+  CurCnt: cardinal;
 begin
   if Stream1=Stream2 then exit(true);
   Result:=false;
   if (Stream1=nil) or (Stream2=nil) then exit;
   if Stream1.Size<>Stream2.Size then exit;
-  Stream1.Position:=0;
-  Stream2.Position:=0;
-  BufLength:=High(Buffer1)-Low(Buffer1)+1;
-  repeat
-    Count:=Stream1.Read(Buffer1[1],BufLength);
-    if Count=0 then exit(true);
-    Stream2.Read(Buffer2[1],BufLength);
-    if not CompareMem(@Buffer1[1],@Buffer2[1],Count) then exit;
-  until false;
+  Cnt:=Stream1.Size;
+  p1:=Stream1.Memory;
+  p2:=Stream2.Memory;
+  while Cnt>0 do begin
+    CurCnt:=Cnt;
+    if CurCnt>=High(Cardinal) then CurCnt:=High(Cardinal);
+    if not CompareMem(p1,p2,CurCnt) then exit;
+    inc(p1,CurCnt);
+    inc(p2,CurCnt);
+    dec(Cnt,CurCnt);
+  end;
+  Result:=true;
 end;
 
 procedure BinaryToLazarusResourceCode(BinStream,ResStream:TStream;

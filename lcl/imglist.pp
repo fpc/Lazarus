@@ -157,6 +157,7 @@ type
     procedure Assign(Source: TPersistent); override;
     procedure WriteData(AStream: TStream); virtual;
     procedure ReadData(AStream: TStream); virtual;
+    function Equals(Obj: TObject): boolean; override;
     procedure BeginUpdate;
     procedure EndUpdate;
 

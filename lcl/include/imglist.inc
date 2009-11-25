@@ -386,13 +386,9 @@ procedure TCustomImageList.DefineProperties(Filer: TFiler);
 
   function DoWrite: Boolean;
   begin
-   { if Filer.Ancestor <> nil then
-    begin
-      Result := (not (Filer.Ancestor is TCustomImageList) or
-        not Equal(TCustomImageList(Filer.Ancestor)));
-    end
+    if (Filer.Ancestor <> nil) and (Filer.Ancestor is TCustomImageList) then
+      Result :=  not Equals(Filer.Ancestor)
     else
-    }
       Result := Count > 0;
   end;
 
@@ -1178,6 +1174,31 @@ begin
   finally
     EndUpdate;
   end;
+end;
+
+function TCustomImageList.Equals(Obj: TObject): boolean;
+var
+  SrcList: TCustomImageList;
+  CurStream: TMemoryStream;
+  SrcStream: TMemoryStream;
+begin
+  if Obj is TCustomImageList then begin
+    SrcList:=TCustomImageList(Obj);
+    Result:=false;
+    if SrcList.Count<>Count then exit;
+    if Count=0 then exit(true);
+    CurStream:=TMemoryStream.Create;
+    SrcStream:=TMemoryStream.Create;
+    try
+      WriteData(CurStream);
+      SrcList.WriteData(SrcStream);
+      Result:=CompareMemStreams(CurStream,SrcStream);
+    finally
+      SrcStream.Free;
+      CurStream.Free;
+    end;
+  end else
+    Result:=inherited Equals(Obj);
 end;
 
 {------------------------------------------------------------------------------
