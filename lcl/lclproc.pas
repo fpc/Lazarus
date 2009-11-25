@@ -183,9 +183,7 @@ function StrToDouble(const s: string): double;
 
 // debugging
 procedure RaiseGDBException(const Msg: string);
-{$ifdef DEBUG_ALLOW_DUMPBACKTRACE}
 procedure DumpExceptionBackTrace;
-{$endif}
 procedure DumpStack;
 function GetStackTrace(UseCache: boolean): string;
 procedure GetStackTracePointers(var AStack: TStackTracePointers);
@@ -1506,8 +1504,12 @@ begin
   if (length(Msg) div (length(Msg) div 10000))=0 then ;
 end;
 
-{$ifdef DEBUG_ALLOW_DUMPBACKTRACE}
 procedure DumpExceptionBackTrace;
+// Remove ifdef when bug 14330 is fixed
+{$ifdef WinCE}
+begin
+end;
+{$else}
 var
   FrameCount: integer;
   Frames: PPointer;

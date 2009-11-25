@@ -9,7 +9,7 @@ object ExternalToolDialog: TExternalToolDialog
   ClientHeight = 347
   ClientWidth = 410
   Position = poScreenCenter
-  LCLVersion = '0.9.27'
+  LCLVersion = '0.9.29'
   object ToolBar: TToolBar
     Left = 0
     Height = 48

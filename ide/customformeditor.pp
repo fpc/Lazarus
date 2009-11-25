@@ -424,9 +424,7 @@ Begin
     on E: Exception do begin
       DebugLn('TryFreeComponent ERROR:',
         ' "'+OldName+':'+OldClassName+'" ',E.Message);
-    {$IFDEF DEBUG_ALLOW_DUMPBACKTRACE}
       DumpExceptionBackTrace;
-    {$ENDIF}
       MessageDlg('Error',
         'An exception occured during deletion of'#13
         +'"'+OldName+':'+OldClassName+'"'#13
@@ -1465,9 +1463,7 @@ begin
     except
       on E: Exception do begin
         DebugLn(['TCustomFormEditor.SaveUnitComponentToBinStream ',E.Message]);
-      {$IFDEF DEBUG_ALLOW_DUMPBACKTRACE}
         DumpExceptionBackTrace;
-      {$ENDIF}
         Result:=MessageDlg(lisStreamingError,
             Format(lisUnableToStreamT, [AnUnitInfo.ComponentName,
                               AnUnitInfo.ComponentName])+#13
@@ -1650,9 +1646,7 @@ begin
         NewComponent.Create(OwnerComponent);
       except
         on e: Exception do begin
-        {$IFDEF DEBUG_ALLOW_DUMPBACKTRACE}
           DumpExceptionBackTrace;
-        {$ENDIF}
           MessageDlg('Error creating component',
             'Error creating component: '+TypeClass.ClassName+#13+E.Message,
             mtError,[mbCancel],0);
@@ -1822,9 +1816,7 @@ begin
     except
       on e: Exception do begin
         DebugLn(e.Message);
-      {$IFDEF DEBUG_ALLOW_DUMPBACKTRACE}
         DumpExceptionBackTrace;
-      {$ENDIF}
         MessageDlg(lisErrorMovingComponent,
           Format(lisErrorMovingComponent2, [NewComponent.Name,
             NewComponent.ClassName]),
@@ -1854,9 +1846,7 @@ begin
             +' of unit '+AUnitName+':'#13
             +E.Message;
           DebugLn(['TCustomFormEditor.CreateComponent ',s]);
-        {$IFDEF DEBUG_ALLOW_DUMPBACKTRACE}
           DumpExceptionBackTrace;
-        {$ENDIF}
           MessageDlg('Error destroying mediator',s,mtError,[mbCancel],0);
         end;
       end;
@@ -1873,9 +1863,7 @@ begin
                 +' of unit '+AUnitName+':'#13
                 +E.Message;
               DebugLn(['TCustomFormEditor.CreateComponent ',s]);
-            {$IFDEF DEBUG_ALLOW_DUMPBACKTRACE}
               DumpExceptionBackTrace;
-            {$ENDIF}
               MessageDlg('Error destroying component',s,mtError,[mbCancel],0);
             end;
           end;

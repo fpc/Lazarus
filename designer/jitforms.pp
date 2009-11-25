@@ -1171,9 +1171,7 @@ begin
   // first write error to debug
   DebugLn(Context+' Error: '+FCurReadErrorMsg);
   // then try to give a backtrace
-{$IFDEF DEBUG_ALLOW_DUMPBACKTRACE}
   DumpExceptionBackTrace;
-{$ENDIF}
   if Assigned(OnException) then
     OnException(Self,E,Action)
   else begin

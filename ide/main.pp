@@ -4849,9 +4849,7 @@ begin
             PropPath:='';
             if Writer.Driver is TLRSObjectWriter then
               PropPath:=TLRSObjectWriter(Writer.Driver).GetStackPath(AnUnitInfo.Component);
-          {$IFDEF DEBUG_ALLOW_DUMPBACKTRACE}
             DumpExceptionBackTrace;
-          {$ENDIF}
             ACaption:=lisStreamingError;
             AText:=Format(lisUnableToStreamT, [AnUnitInfo.ComponentName,
                           AnUnitInfo.ComponentName]) + LineEnding
@@ -4977,9 +4975,7 @@ begin
                 on E: Exception do begin
                   // added to get more feedback on issue 7009
                   Debugln('TMainIDE.SaveFileResources E3: ', E.Message);
-                {$IFDEF DEBUG_ALLOW_DUMPBACKTRACE}
                   DumpExceptionBackTrace;
-                {$ENDIF}
                   ACaption:=lisStreamingError;
                   AText:=Format(
                     lisUnableToTransformBinaryComponentStreamOfTIntoText, [
@@ -5756,9 +5752,7 @@ begin
             Result:=mrOk;
           except
             on E: Exception do begin
-            {$IFDEF DEBUG_ALLOW_DUMPBACKTRACE}
               DumpExceptionBackTrace;
-            {$ENDIF}
               ACaption:=lisFormatError;
               AText:=Format(lisUnableToConvertTextFormDataOfFileIntoBinaryStream,
                 [#13, '"', LFMBuf.Filename, '"', #13, E.Message]);
@@ -6138,9 +6132,7 @@ begin
     except
       on E: Exception do begin
         DebugLn(['TMainIDE.DoFixupComponentReferences GlobalFixupReferences ',E.Message]);
-      {$IFDEF DEBUG_ALLOW_DUMPBACKTRACE}
         DumpExceptionBackTrace;
-      {$ENDIF}
       end;
     end;
 

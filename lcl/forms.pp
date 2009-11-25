@@ -1578,27 +1578,22 @@ end;
 //------------------------------------------------------------------------------
 procedure ExceptionOccurred(Sender: TObject; Addr:Pointer; FrameCount: Longint;
   Frames: PPointer);
-{$ifdef DEBUG_ALLOW_DUMPBACKTRACE}
 var
   FrameNumber: integer;
-{$endif}
 Begin
   DebugLn('[FORMS.PP] ExceptionOccurred ');
   if HaltingProgram or HandlingException then Halt;
   HandlingException:=true;
-  {$ifdef DEBUG_ALLOW_DUMPBACKTRACE}
-  if Sender<>nil then begin
+  if Sender<>nil then
+  begin
     DebugLn('  Sender=',Sender.ClassName);
-    if Sender is Exception then begin
+    if Sender is Exception then
+    begin
       DebugLn('  Exception=',Exception(Sender).Message);
-      DebugLn('  Stack trace:');
-      DebugLn(BackTraceStrFunc(ExceptAddr));
-      for FrameNumber := 0 to FrameCount-1 do
-        DebugLn(BackTraceStrFunc(Frames[FrameNumber]));
+      DumpExceptionBackTrace();
     end;
   end else
     DebugLn('  Sender=nil');
-  {$endif}
   if Application<>nil then
     Application.HandleException(Sender);
   HandlingException:=false;

@@ -408,9 +408,7 @@ begin
   except
     on e: Exception do begin
       DebugLn('TExternalToolList.Run ',lisExtToolFailedToRunTool, ' ', E.Message);
-    {$IFDEF DEBUG_ALLOW_DUMPBACKTRACE}
       DumpExceptionBackTrace;
-    {$ENDIF}
       DebugLn(['TExternalToolList.Run AAA1']);
       Result:=MessageDlg(lisExtToolFailedToRunTool,
         Format(lisExtToolUnableToRunTheTool, ['"', Title, '"', #13, e.Message]
