@@ -4460,7 +4460,7 @@ begin
       if (CurWidgetSet='gtk2') then
         ExtraSrcPath:=ExtraSrcPath+';../../../interfaces/gtk';
       if (CurWidgetSet='carbon') then
-        ExtraSrcPath:=ExtraSrcPath+';../../../interfaces/carbon/pascocoa/appkit';
+        ExtraSrcPath:=ExtraSrcPath+';../../../interfaces/carbon/pascocoa/appkit;../../../interfaces/carbon/objc';
       if (CurWidgetSet='fpgui') then
         ExtraSrcPath:=ExtraSrcPath
           +';../../../interfaces/fpgui/corelib'
