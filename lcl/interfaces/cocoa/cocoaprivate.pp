@@ -3,8 +3,7 @@
                   cocoaprivate.pp  -  Cocoa internal classes
                   --------------------------------------------
 
- This unit contains the private classhierarchy for the Carbon implemetations
- This hierarchy reflects (more or less) the Carbon widget hierarchy
+ This unit contains the private classhierarchy for the Cocoa implemetations
 
  *****************************************************************************
  *                                                                           *
@@ -42,6 +41,8 @@ type
     constructor Create(AOwner: NSObject);
     procedure MouseDown(x,y: Integer); virtual; abstract;
     procedure MouseUp(x,y: Integer); virtual; abstract;
+    procedure MouseClick(ClickCount: Integer); virtual; abstract;
+    procedure MouseMove(x,y: Integer); virtual; abstract;
   end;
 
   { TCocoaWindowContentView }
@@ -54,7 +55,11 @@ type
   { TCocoaButton }
 
   TCocoaButton = objcclass(NSButton)
+  protected
+    procedure actionButtonClick(sender: NSObject); message 'actionButtonClick:';
+  public
     callback  : TCommonCallback;
+    function initWithFrame(frameRect: NSRect): id; override;
     function acceptsFirstResponder: Boolean; override;
     procedure mouseDown(event: NSEvent); override;
     procedure mouseDragged(event: NSEvent); override;
@@ -98,6 +103,21 @@ end;
 
 { TCocoaButton }
 
+procedure TCocoaButton.actionButtonClick(sender: NSObject);
+begin
+  callback.MouseClick(1);
+  //todo: simulate MouseUp
+end;
+
+function TCocoaButton.initWithFrame(frameRect: NSRect): id;
+begin
+  Result:=inherited initWithFrame(frameRect);
+  if Assigned(Result) then begin
+    setTarget(Self);
+    setAction(objcselector('actionButtonClick:'));
+  end;
+end;
+
 function TCocoaButton.acceptsFirstResponder: Boolean;
 begin
   Result:=true;
@@ -107,7 +127,6 @@ procedure TCocoaButton.mouseUp(event: NSEvent);
 var
   mp : NSPoint;
 begin
-  writeln('TCocoaButton.mouseUp mouse up event!');
   mp:=event.locationInWindow;
   callback.MouseUp(round(mp.x), round(mp.y));
   inherited mouseUp(event);
@@ -117,7 +136,6 @@ procedure TCocoaButton.mouseDown(event: NSEvent);
 var
   mp : NSPoint;
 begin
-  writeln('TCocoaButton.mouseDown mouse down event!');
   mp:=event.locationInWindow;
   callback.MouseDown(round(mp.x), round(mp.y));
   inherited mouseDown(event);
@@ -168,9 +186,8 @@ procedure TCocoaWindow.mouseUp(event: NSEvent);
 var
   mp : NSPoint;
 begin
-  writeln('TCocoaWindow.mouseUp event!');
-
   mp:=event.locationInWindow;
+  mp.y:=event.window.contentView.bounds.size.height-mp.y;
   callback.MouseUp(round(mp.x), round(mp.y));
   inherited mouseUp(event);
 end;
@@ -179,15 +196,30 @@ procedure TCocoaWindow.mouseDown(event: NSEvent);
 var
   mp : NSPoint;
 begin
-  writeln('TCocoaWindow.mouseDown event!');
   mp:=event.locationInWindow;
+  mp.y:=event.window.contentView.bounds.size.height-mp.y;
   callback.MouseDown(round(mp.x), round(mp.y));
   inherited mouseDown(event);
 end;
 
 procedure TCocoaWindow.mouseDragged(event: NSEvent);
+var
+  mp : NSPoint;
 begin
-  inherited mouseDragged(event);
+  mp:=event.locationInWindow;
+  mp.y:=event.window.contentView.bounds.size.height-mp.y;
+  callback.MouseMove(round(mp.x), round(mp.y));
+  inherited mouseMoved(event);
+end;
+
+procedure TCocoaWindow.mouseMoved(event: NSEvent);
+var
+  mp : NSPoint;
+begin
+  mp:=event.locationInWindow;
+  mp.y:=event.window.contentView.bounds.size.height-mp.y;
+  callback.MouseMove(round(mp.x), round(mp.y));
+  inherited mouseMoved(event);
 end;
 
 procedure TCocoaWindow.mouseEntered(event: NSEvent);
@@ -199,12 +231,6 @@ procedure TCocoaWindow.mouseExited(event: NSEvent);
 begin
   inherited mouseExited(event);
 end;
-
-procedure TCocoaWindow.mouseMoved(event: NSEvent);
-begin
-  inherited mouseMoved(event);
-end;
-
 
 { TCommonCallback }
 

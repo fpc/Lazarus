@@ -19,6 +19,8 @@ type
     constructor Create(AOwner: NSObject; ATarget: TControl);
     procedure MouseDown(x,y: Integer); override;
     procedure MouseUp(x,y: Integer); override;
+    procedure MouseClick(clickCount: Integer); override;
+    procedure MouseMove(x,y: Integer); override;
   end;
 
 implementation
@@ -39,6 +41,16 @@ end;
 procedure TControlCallback.MouseUp(x, y: Integer);
 begin
   LCLSendMouseUpMsg(Target,x,y,mbLeft, []);
+end;
+
+procedure TControlCallback.MouseClick(clickCount: Integer);
+begin
+  LCLSendClickedMsg(Target);
+end;
+
+procedure TControlCallback.MouseMove(x, y: Integer);
+begin
+  LCLSendMouseMoveMsg(Target, x,y, []);
 end;
 
 end.

@@ -399,7 +399,7 @@ var
 begin
   btn:=AllocButton(AWinControl, AParams, 0, NSRadioButton);
   if Assigned(btn) then
-     AddViewToNSObject(btn, NSObject(AParams.WndParent), AParams.X, AParams.Y);
+    AddViewToNSObject(btn, NSObject(AParams.WndParent), AParams.X, AParams.Y);
   Result:=TLCLIntfHandle(btn);
 end;
 
