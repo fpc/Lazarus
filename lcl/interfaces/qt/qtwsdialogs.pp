@@ -264,8 +264,11 @@ begin
       TmpFilter := TmpFilter + ' ' + strExtensions;
     end;
 
-    if (AFileDialog.FilterIndex >= 0) and (List.Count > AFileDialog.FilterIndex) then
-      ASelectedFilter := GetUTF8String(List.Strings[AFileDialog.FilterIndex]);
+    if (AFileDialog.FilterIndex > 0) and (List.Count > AFileDialog.FilterIndex) then
+      ASelectedFilter := GetUTF8String(List.Strings[AFileDialog.FilterIndex - 1])
+    else
+    if (List.Count > 0) then
+      ASelectedFilter := GetUTF8String(List.Strings[0]);
 
   finally
     List.Free;
