@@ -33,14 +33,14 @@ LazarusResources.Add('TForm1','FORMDATA',[
   +'Add with marks:'#11'ParentColor'#8#0#0#6'TLabel'#11'lblReticule'#4'Left'#3
   +'h'#1#6'Height'#2#14#3'Top'#2'P'#5'Width'#2'+'#7'Caption'#6#9'Reticule:'#11
   +'ParentColor'#8#0#0#7'TButton'#9'btnAddPie'#4'Left'#2'0'#6'Height'#2#24#3'To'
-  +'p'#2#8#5'Width'#2'4'#25'BorderSpacing.InnerBorder'#2#4#7'Caption'#6#3'Pie'#7
+  +'p'#2#8#5'Width'#2'('#25'BorderSpacing.InnerBorder'#2#4#7'Caption'#6#3'Pie'#7
   +'OnClick'#7#14'btnAddPieClick'#8'TabOrder'#2#0#0#0#7'TButton'#10'btnAddLine'
-  +#4'Left'#3#216#0#6'Height'#2#24#3'Top'#2#8#5'Width'#2'4'#25'BorderSpacing.In'
+  +#4'Left'#3#192#0#6'Height'#2#24#3'Top'#2#8#5'Width'#2'('#25'BorderSpacing.In'
   +'nerBorder'#2#4#7'Caption'#6#4'Line'#7'OnClick'#7#15'btnAddLineClick'#8'TabO'
-  +'rder'#2#1#0#0#7'TButton'#10'btnAddArea'#4'Left'#2'h'#6'Height'#2#24#3'Top'#2
-  +#8#5'Width'#2'4'#25'BorderSpacing.InnerBorder'#2#4#7'Caption'#6#4'Area'#7'On'
+  +'rder'#2#1#0#0#7'TButton'#10'btnAddArea'#4'Left'#2'`'#6'Height'#2#24#3'Top'#2
+  +#8#5'Width'#2'('#25'BorderSpacing.InnerBorder'#2#4#7'Caption'#6#4'Area'#7'On'
   +'Click'#7#15'btnAddAreaClick'#8'TabOrder'#2#2#0#0#7'TButton'#9'btnAddBar'#4
-  +'Left'#3#160#0#6'Height'#2#24#3'Top'#2#8#5'Width'#2'4'#25'BorderSpacing.Inne'
+  +'Left'#3#144#0#6'Height'#2#24#3'Top'#2#8#5'Width'#2'('#25'BorderSpacing.Inne'
   +'rBorder'#2#4#7'Caption'#6#3'Bar'#7'OnClick'#7#14'btnAddBarClick'#8'TabOrder'
   +#2#3#0#0#9'TCheckBox'#8'cbLegend'#4'Left'#3#128#1#6'Height'#2#17#3'Top'#2#8#5
   +'Width'#2'7'#7'Caption'#6#6'Legend'#8'OnChange'#7#14'cbLegendChange'#8'TabOr'
@@ -56,16 +56,16 @@ LazarusResources.Add('TForm1','FORMDATA',[
   +#24#5'Width'#2'4'#7'Caption'#6#6'Footer'#8'OnChange'#7#14'cbFooterChange'#8
   +'TabOrder'#2#8#0#0#9'TCheckBox'#10'cbInverted'#4'Left'#3#240#1#6'Height'#2#17
   +#3'Top'#2'('#5'Width'#2'>'#7'Caption'#6#8'Inverted'#8'OnChange'#7#16'cbInver'
-  +'tedChange'#8'TabOrder'#2#9#0#0#7'TButton'#11'btnClearBar'#4'Left'#3#160#0#6
-  +'Height'#2#24#3'Top'#2'&'#5'Width'#2'4'#25'BorderSpacing.InnerBorder'#2#4#7
+  +'tedChange'#8'TabOrder'#2#9#0#0#7'TButton'#11'btnClearBar'#4'Left'#3#144#0#6
+  +'Height'#2#24#3'Top'#2'&'#5'Width'#2'('#25'BorderSpacing.InnerBorder'#2#4#7
   +'Caption'#6#3'Bar'#7'OnClick'#7#16'btnClearBarClick'#8'TabOrder'#2#10#0#0#7
-  +'TButton'#12'btnClearArea'#4'Left'#2'h'#6'Height'#2#24#3'Top'#2'&'#5'Width'#2
-  +'4'#25'BorderSpacing.InnerBorder'#2#4#7'Caption'#6#4'Area'#7'OnClick'#7#17'b'
+  +'TButton'#12'btnClearArea'#4'Left'#2'`'#6'Height'#2#24#3'Top'#2'&'#5'Width'#2
+  +'('#25'BorderSpacing.InnerBorder'#2#4#7'Caption'#6#4'Area'#7'OnClick'#7#17'b'
   +'tnClearAreaClick'#8'TabOrder'#2#11#0#0#7'TButton'#12'btnClearLine'#4'Left'#3
-  +#216#0#6'Height'#2#24#3'Top'#2'&'#5'Width'#2'4'#25'BorderSpacing.InnerBorder'
+  +#192#0#6'Height'#2#24#3'Top'#2'&'#5'Width'#2'('#25'BorderSpacing.InnerBorder'
   +#2#4#7'Caption'#6#4'Line'#7'OnClick'#7#17'btnClearLineClick'#8'TabOrder'#2#12
   +#0#0#7'TButton'#11'btnClearPie'#4'Left'#2'0'#6'Height'#2#24#3'Top'#2'&'#5'Wi'
-  ,'dth'#2'4'#25'BorderSpacing.InnerBorder'#2#4#7'Caption'#6#3'Pie'#7'OnClick'#7
+  ,'dth'#2'('#25'BorderSpacing.InnerBorder'#2#4#7'Caption'#6#3'Pie'#7'OnClick'#7
   +#16'btnClearPieClick'#8'TabOrder'#2#13#0#0#9'TSpinEdit'#10'edAddCount'#4'Lef'
   +'t'#3' '#1#6'Height'#2#21#3'Top'#2#24#5'Width'#2'Z'#8'MaxValue'#4'@B'#15#0#8
   +'MinValue'#2#1#8'TabOrder'#2#14#5'Value'#2#1#0#0#9'TCheckBox'#18'cbShowGridC'
@@ -83,5 +83,8 @@ LazarusResources.Add('TForm1','FORMDATA',[
   +'Left'#3#160#1#6'Height'#2#21#3'Top'#2'L'#5'Width'#3#136#0#10'ItemHeight'#2
   +#13#9'ItemIndex'#2#0#13'Items.Strings'#1#6#6'rmNone'#6#10'rmVertical'#6#12'r'
   +'mHorizontal'#6#7'rmCross'#0#8'OnChange'#7#16'cbReticuleChange'#5'Style'#7#14
-  +'csDropDownList'#8'TabOrder'#2#18#4'Text'#6#6'rmNone'#0#0#0#0
+  +'csDropDownList'#8'TabOrder'#2#18#4'Text'#6#6'rmNone'#0#0#7'TButton'#11'btnC'
+  +'learAll'#4'Left'#3#240#0#6'Height'#2#24#3'Top'#2'&'#5'Width'#2'('#25'Border'
+  +'Spacing.InnerBorder'#2#4#7'Caption'#6#3'All'#7'OnClick'#7#16'btnClearAllCli'
+  +'ck'#8'TabOrder'#2#19#0#0#0#0
 ]);

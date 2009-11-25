@@ -117,37 +117,37 @@ object Form1: TForm1
       Left = 48
       Height = 24
       Top = 8
-      Width = 52
+      Width = 40
       BorderSpacing.InnerBorder = 4
       Caption = 'Pie'
       OnClick = btnAddPieClick
       TabOrder = 0
     end
     object btnAddLine: TButton
-      Left = 216
+      Left = 192
       Height = 24
       Top = 8
-      Width = 52
+      Width = 40
       BorderSpacing.InnerBorder = 4
       Caption = 'Line'
       OnClick = btnAddLineClick
       TabOrder = 1
     end
     object btnAddArea: TButton
-      Left = 104
+      Left = 96
       Height = 24
       Top = 8
-      Width = 52
+      Width = 40
       BorderSpacing.InnerBorder = 4
       Caption = 'Area'
       OnClick = btnAddAreaClick
       TabOrder = 2
     end
     object btnAddBar: TButton
-      Left = 160
+      Left = 144
       Height = 24
       Top = 8
-      Width = 52
+      Width = 40
       BorderSpacing.InnerBorder = 4
       Caption = 'Bar'
       OnClick = btnAddBarClick
@@ -214,30 +214,30 @@ object Form1: TForm1
       TabOrder = 9
     end
     object btnClearBar: TButton
-      Left = 160
+      Left = 144
       Height = 24
       Top = 38
-      Width = 52
+      Width = 40
       BorderSpacing.InnerBorder = 4
       Caption = 'Bar'
       OnClick = btnClearBarClick
       TabOrder = 10
     end
     object btnClearArea: TButton
-      Left = 104
+      Left = 96
       Height = 24
       Top = 38
-      Width = 52
+      Width = 40
       BorderSpacing.InnerBorder = 4
       Caption = 'Area'
       OnClick = btnClearAreaClick
       TabOrder = 11
     end
     object btnClearLine: TButton
-      Left = 216
+      Left = 192
       Height = 24
       Top = 38
-      Width = 52
+      Width = 40
       BorderSpacing.InnerBorder = 4
       Caption = 'Line'
       OnClick = btnClearLineClick
@@ -247,7 +247,7 @@ object Form1: TForm1
       Left = 48
       Height = 24
       Top = 38
-      Width = 52
+      Width = 40
       BorderSpacing.InnerBorder = 4
       Caption = 'Pie'
       OnClick = btnClearPieClick
@@ -324,6 +324,16 @@ object Form1: TForm1
       Style = csDropDownList
       TabOrder = 18
       Text = 'rmNone'
+    end
+    object btnClearAll: TButton
+      Left = 240
+      Height = 24
+      Top = 38
+      Width = 40
+      BorderSpacing.InnerBorder = 4
+      Caption = 'All'
+      OnClick = btnClearAllClick
+      TabOrder = 19
     end
   end
 end

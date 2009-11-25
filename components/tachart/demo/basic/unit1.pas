@@ -15,6 +15,7 @@ type
     btnClearArea: TButton;
     btnClearBar: TButton;
     btnClearLine: TButton;
+    btnClearAll: TButton;
     btnClearPie: TButton;
     btnAddBar: TButton;
     btnAddPie: TButton;
@@ -40,6 +41,7 @@ type
     lblReticule: TLabel;
     Panel1: TPanel;
     edAddCount: TSpinEdit;
+    procedure btnClearAllClick(Sender: TObject);
     procedure btnClearAreaClick(Sender: TObject);
     procedure btnClearBarClick(Sender: TObject);
     procedure btnClearLineClick(Sender: TObject);
@@ -149,6 +151,15 @@ begin
     FPie.AddPie(30, 'filipe romao', clTAColor);
     FPie.AddPie(40, '234eds sa', clTAColor);
   end;
+end;
+
+procedure TForm1.btnClearAllClick(Sender: TObject);
+begin
+  Chart1.ClearSeries;
+  FArea := nil;
+  FBar := nil;
+  FLine := nil;
+  FPie := nil;
 end;
 
 procedure TForm1.btnClearAreaClick(Sender: TObject);
