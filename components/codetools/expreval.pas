@@ -972,6 +972,13 @@ var
   ExprEnd: Pointer;
   p, AtomStart: PChar;
 
+  function GetAtom: string;
+  begin
+    Setlength(Result,p-AtomStart);
+    if Result<>'' then
+      System.Move(AtomStart^,Result[1],length(Result));
+  end;
+
   procedure ReadNextAtom;
   begin
     // skip space
@@ -1005,6 +1012,7 @@ var
     else
       inc(p);
     end;
+    DebugLn(['ReadNextAtom ',GetAtom]);
   end;
 
   procedure Error(NewErrorPos: PChar; const NewErrorMsg: string);
@@ -1014,6 +1022,7 @@ var
     else
       FErrorPos:=0;
     ErrorMsg:=NewErrorMsg;
+    DebugLn(['Error ',ErrorMsg,' at ',ErrorPosition]);
   end;
 
   procedure ExpressionMissing(NewErrorPos: PChar);
@@ -1048,16 +1057,19 @@ var
     NeedBracketClose: Boolean;
   begin
     Result:=false;
+    DebugLn(['ParseDefinedParams AAA1 ',GetAtom]);
     ReadNextAtom;
     if AtomStart>=ExprEnd then begin
       IdentifierMissing(AtomStart);
       exit;
     end;
     NeedBracketClose:=false;
-    if p^='(' then begin
+    DebugLn(['ParseDefinedParams AAA2 ',GetAtom]);
+    if AtomStart^='(' then begin
       // defined(
       NeedBracketClose:=true;
       ReadNextAtom;
+      DebugLn(['ParseDefinedParams AAA3 ',GetAtom]);
       // skip space
       if AtomStart>=ExprEnd then begin
         IdentifierMissing(AtomStart);
@@ -1099,8 +1111,7 @@ var
     i: LongInt;
   begin
     Result:=false;
-    ReadNextAtom;
-    if AtomStart>=ExprEnd then exit;
+    DebugLn(['ReadOperand ',GetAtom]);
     case UpChars[AtomStart^] of
     'N':
       if CompareIdentifiers(AtomStart,'NOT')=0 then begin
@@ -1165,7 +1176,10 @@ begin
   Operand:=CleanOperandValue;
   ReadOperand(Operand);
   ReadNextAtom;
-
+  // set result
+  SetLength(Result,Operand.Len);
+  if Result<>'' then
+    System.Move(Operand.Value^,Result[1],length(Result));
   FreeOperandValue(Operand);
 end;
 
