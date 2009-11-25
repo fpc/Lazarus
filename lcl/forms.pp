@@ -1578,8 +1578,6 @@ end;
 //------------------------------------------------------------------------------
 procedure ExceptionOccurred(Sender: TObject; Addr:Pointer; FrameCount: Longint;
   Frames: PPointer);
-var
-  FrameNumber: integer;
 Begin
   DebugLn('[FORMS.PP] ExceptionOccurred ');
   if HaltingProgram or HandlingException then Halt;
