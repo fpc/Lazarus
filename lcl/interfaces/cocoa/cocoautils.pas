@@ -26,6 +26,9 @@ function GetCocoaRect(parent: NSView; ChildX, ChildY, ChildWidth, ChildHeight: I
 
 procedure SetViewBoundsPos(view: NSView; X,Y: integer; invalidateView: Boolean=false);
 
+procedure SetNSText(text: NSText; const s: String); inline;
+function GetNSText(text: NSText): string; inline;
+
 implementation
 
 const
@@ -167,6 +170,21 @@ function NSStringToString(ns: NSString): String;
 begin
   Result:=CFStringToStr(CFStringRef(ns));
 end;
+
+procedure SetNSText(text: NSText; const s: String); inline;
+begin
+  if Assigned(text) then
+    text.setString(NSStringUTF8(s));
+end;
+
+function GetNSText(text: NSText): string; inline;
+begin
+  if Assigned(text) then
+    Result := NSStringToString(text.string_)
+  else
+    Result:='';
+end;
+
 
 initialization
 

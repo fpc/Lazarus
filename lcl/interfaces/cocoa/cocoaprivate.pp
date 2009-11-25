@@ -74,6 +74,14 @@ type
     function acceptsFirstResponder: Boolean; override;
   end;
 
+  { TCocoaSecureTextField }
+
+  TCocoaSecureTextField = objcclass(NSSecureTextField)
+    callback  : TCommonCallback;
+    function acceptsFirstResponder: Boolean; override;
+  end;
+
+
   TCocoaTextView = objcclass(NSTextView)
     callback  : TCommonCallback;
     function acceptsFirstResponder: Boolean; override;
@@ -237,6 +245,13 @@ end;
 constructor TCommonCallback.Create(AOwner: NSObject);
 begin
   Owner:=AOwner;
+end;
+
+{ TCocoaSecureTextField }
+
+function TCocoaSecureTextField.acceptsFirstResponder: Boolean;
+begin
+  Result:=True;
 end;
 
 end.

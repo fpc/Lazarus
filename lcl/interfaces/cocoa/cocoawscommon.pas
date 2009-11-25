@@ -6,8 +6,10 @@ unit CocoaWSCommon;
 interface
 
 uses
+  MacOSAll, CocoaAll,
   Controls,
-  CocoaPrivate, LCLMessageGlue;
+  WSControls,
+  CocoaPrivate, CocoaUtils, LCLMessageGlue;
 
 type
 
@@ -22,6 +24,17 @@ type
     procedure MouseClick(clickCount: Integer); override;
     procedure MouseMove(x,y: Integer); override;
   end;
+
+
+  { TCocoaWSWinControl }
+
+  TCocoaWSWinControl=class(TWSWinControl)
+  published
+    class procedure SetText(const AWinControl: TWinControl; const AText: String); override;
+    class function GetText(const AWinControl: TWinControl; var AText: String): Boolean; override;
+    class function GetTextLen(const AWinControl: TWinControl; var ALength: Integer): Boolean; override;
+  end;
+
 
 implementation
 
@@ -51,6 +64,51 @@ end;
 procedure TControlCallback.MouseMove(x, y: Integer);
 begin
   LCLSendMouseMoveMsg(Target, x,y, []);
+end;
+
+{ TCocoaWSWinControl }
+
+class procedure TCocoaWSWinControl.SetText(const AWinControl: TWinControl; const AText: String);
+var
+  obj   : NSObject;
+begin
+  // sanity check
+  obj:=NSObject(AWinControl.Handle);
+  if not Assigned(obj) or not obj.isKindOfClass_(NSControl) then Exit;
+
+  SetNSText( NSControl(obj).currentEditor, AText);
+end;
+
+class function TCocoaWSWinControl.GetText(const AWinControl: TWinControl; var AText: String): Boolean;
+var
+  obj   : NSObject;
+  txt   : NSText;
+begin
+  Result:=false;
+
+  // sanity check
+  obj:=NSObject(AWinControl.Handle);
+  if not Assigned(obj) or not obj.isKindOfClass_(NSControl) then Exit;
+
+  txt:=NSControl(obj).currentEditor;
+  Result := Assigned(txt);
+  if Result then AText:=GetNSText(txt);
+end;
+
+class function TCocoaWSWinControl.GetTextLen(const AWinControl: TWinControl; var ALength: Integer): Boolean;
+var
+  obj : NSObject;
+  txt : NSText;
+begin
+  Result:=false;
+
+  // sanity check
+  obj:=NSObject(AWinControl.Handle);
+  if not Assigned(obj) or not obj.isKindOfClass_(NSControl) then Exit;
+
+  txt:=NSControl(obj).currentEditor;
+  Result:=Assigned(txt);
+  if Result then ALength:=txt.string_.length;
 end;
 
 end.

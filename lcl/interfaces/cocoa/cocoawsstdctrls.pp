@@ -141,8 +141,8 @@ type
 
     {class procedure SetCharCase(const ACustomEdit: TCustomEdit; NewCase: TEditCharCase); override;
     class procedure SetEchoMode(const ACustomEdit: TCustomEdit; NewMode: TEchoMode); override;
-    class procedure SetMaxLength(const ACustomEdit: TCustomEdit; NewLength: integer); override;
-    class procedure SetPasswordChar(const ACustomEdit: TCustomEdit; NewChar: char); override;}
+    class procedure SetMaxLength(const ACustomEdit: TCustomEdit; NewLength: integer); override;}
+    class procedure SetPasswordChar(const ACustomEdit: TCustomEdit; NewChar: char); override;
     class procedure SetReadOnly(const ACustomEdit: TCustomEdit; NewReadOnly: boolean); override;
     {class procedure SetSelStart(const ACustomEdit: TCustomEdit; NewStart: integer); override;
     class procedure SetSelLength(const ACustomEdit: TCustomEdit; NewLength: integer); override;}
@@ -258,6 +258,9 @@ type
   end;
 
 function AllocTextView(ATarget: TWinControl; const AParams: TCreateParams; fieldEditor: Boolean): NSTextView;
+function AllocButton(ATarget: TWinControl; const AParams: TCreateParams; btnBezel: NSBezelStyle; btnType: NSButtonType): NSButton;
+function AllocTextField(ATarget: TWinControl; const AParams: TCreateParams): TCocoaTextField;
+function AllocSecureTextField(ATarget: TWinControl; const AParams: TCreateParams): TCocoaSecureTextField;
 
 implementation
 
@@ -288,6 +291,28 @@ begin
     DefaultViewSettings(Result);
     Result.setFieldEditor(fieldEditor);
     {Result.setTitle(NSStringUTF8(AParams.Caption));}
+  end;
+end;
+
+function AllocTextField(ATarget: TWinControl; const AParams: TCreateParams): TCocoaTextField;
+begin
+  Result:=TCocoaTextField(TCocoaTextField.alloc);
+  if Assigned(Result) then begin
+    TCocoaTextField(Result).callback:=TControlCallback.Create(Result, ATarget);
+    Result.initWithFrame(CreateParamsToNSRect(AParams));
+    SetNSText(Result.currentEditor, AParams.Caption);
+    DefaultViewSettings(Result);
+  end;
+end;
+
+function AllocSecureTextField(ATarget: TWinControl; const AParams: TCreateParams): TCocoaSecureTextField;
+begin
+  Result:=TCocoaSecureTextField(TCocoaSecureTextField.alloc);
+  if Assigned(Result) then begin
+    TCocoaSecureTextField(Result).callback:=TControlCallback.Create(Result, ATarget);
+    Result.initWithFrame(CreateParamsToNSRect(AParams));
+    SetNSText(Result.currentEditor, AParams.Caption);
+    DefaultViewSettings(Result);
   end;
 end;
 
@@ -405,31 +430,56 @@ end;
 
 { TCocoaWSCustomEdit }
 
-class function  TCocoaWSCustomEdit.CreateHandle(const AWinControl: TWinControl; const AParams: TCreateParams): TLCLIntfHandle;
+class function TCocoaWSCustomEdit.CreateHandle(const AWinControl: TWinControl; const AParams: TCreateParams): TLCLIntfHandle;
 var
-  txt     : NSTextView;
+  field : NSTextField;
 begin
-  txt:=AllocTextView(AWinControl, AParams, true);
-  if Assigned(txt) then
-    AddViewToNSObject(txt, NSObject(AParams.WndParent), AParams.X, AParams.Y);
-
-  Result:=TLCLIntfHandle(txt);
+  if TCustomEdit(AWinControl).PasswordChar=#0
+    then field:=NSTextField(AllocTextField(AWinControl, AParams))
+    else field:=NSTextField(AllocSecureTextField(AWinControl, AParams));
+  if Assigned(field) then
+    AddViewToNSObject(field, NSObject(AParams.WndParent), AParams.X, AParams.Y);
+  Result:=TLCLIntfHandle(field);
 end;
 
 class function TCocoaWSCustomEdit.GetSelStart(const ACustomEdit: TCustomEdit): integer;
+var
+  field : TCocoaTextField;
+  txt   :  NSText;
 begin
   Result:=0;
+  field:=TCocoaTextField(ACustomEdit.Handle);
+  if not Assigned(field) then Exit;
+  txt:=NSText(field.currentEditor);
+  if not Assigned(txt) then Exit;
+
+  Result:=txt.selectedRange.location;
 end;
 
 class function TCocoaWSCustomEdit.GetSelLength(const ACustomEdit: TCustomEdit): integer;
+var
+  field : TCocoaTextField;
+  txt   :  NSText;
 begin
   Result:=0;
+  field:=TCocoaTextField(ACustomEdit.Handle);
+  if not Assigned(field) then Exit;
+  txt:=NSText(field.currentEditor);
+  if not Assigned(txt) then Exit;
+
+  Result:=txt.selectedRange.length;
 end;
+
+class procedure TCocoaWSCustomEdit.SetPasswordChar(const ACustomEdit: TCustomEdit; NewChar: char);
+begin
+  if (NewChar<>#0) xor TCocoaTextField(ACustomEdit.Handle).isKindOfClass_(NSSecureTextField) then
+    RecreateWnd(ACustomEdit);
+end;
+
 
 class procedure TCocoaWSCustomEdit.SetReadOnly(const ACustomEdit: TCustomEdit; NewReadOnly: boolean);
 begin
-  if ACustomEdit.Handle=0 then Exit;
-
+//  NSTextField(ACustomEdit.Handle).setEditable(not NewReadOnly);
 end;
 
 end.

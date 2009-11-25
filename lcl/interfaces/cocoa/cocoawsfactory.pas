@@ -8,6 +8,7 @@ uses
   Classes, Controls, ComCtrls, StdCtrls, Arrow, Spin, PairSplitter,
   Dialogs, ExtCtrls, Buttons, CheckLst, Forms, Menus,
   WSLCLClasses,
+  CocoaWSCommon,
   CocoaWSExtCtrls,
   CocoaWSForms,
   CocoaWSMenus,
@@ -124,7 +125,8 @@ end;
 
 function RegisterWinControl: Boolean; alias : 'WSRegisterWinControl';
 begin
-  Result := False;
+  RegisterWSComponent(TWinControl, TCocoaWSWinControl);
+  Result := True;
 end;
 
 function RegisterGraphicControl: Boolean; alias : 'WSRegisterGraphicControl';
