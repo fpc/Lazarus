@@ -353,9 +353,11 @@ type
     function Func132: TtkTokenKind;
     function Func133: TtkTokenKind;
     function Func136: TtkTokenKind;
+    function Func139: TtkTokenKind;
     function Func141: TtkTokenKind;
     function Func142: TtkTokenKind; // "experimental"
     function Func143: TtkTokenKind;
+    function Func144: TtkTokenKind;
     function Func151: TtkTokenKind; // "unimplemented"
     function Func166: TtkTokenKind;
     function Func167: TtkTokenKind;
@@ -686,9 +688,11 @@ begin
   fIdentFuncTable[132] := @Func132;
   fIdentFuncTable[133] := @Func133;
   fIdentFuncTable[136] := @Func136;
+  fIdentFuncTable[139] := @Func139;
   fIdentFuncTable[141] := @Func141;
   fIdentFuncTable[142] := @Func142;
   fIdentFuncTable[143] := @Func143;
+  fIdentFuncTable[144] := @Func144;
   fIdentFuncTable[151] := @Func151;
   fIdentFuncTable[166] := @Func166;
   fIdentFuncTable[167] := @Func167;
@@ -1741,6 +1745,18 @@ begin
   else Result := tkIdentifier;
 end;
 
+function TSynPasSyn.Func139: TtkTokenKind;
+begin
+  if KeyComp('WeakExternal') then
+  begin
+    Result := tkKey;
+    if TopPascalCodeFoldBlockType = cfbtProcedure then
+      EndPascalCodeFoldBlock(True);
+  end
+  else
+    Result := tkIdentifier;
+end;
+
 function TSynPasSyn.Func141: TtkTokenKind;
 begin
   if KeyComp('Writeonly') then
@@ -1776,6 +1792,21 @@ begin
   end else
   if KeyComp('compilerproc') then // fpc modifier
     Result := tkKey
+  else
+    Result := tkIdentifier;
+end;
+
+function TSynPasSyn.Func144: TtkTokenKind;
+begin
+  if KeyComp('ObjcProtocol') then
+  begin
+    Result := tkKey;
+    if (rsAfterEqual in fRange) and (PasCodeFoldRange.BracketNestLevel = 0) then
+    begin
+      fRange := fRange + [rsAtClass];
+      StartPascalCodeFoldBlock(cfbtClass);
+    end;
+  end
   else
     Result := tkIdentifier;
 end;
