@@ -718,14 +718,15 @@ end;
 
 procedure TCustomDBGrid.EmptyGrid;
 var
-  OldFixedCols: Integer;
+  OldFixedCols, OldFixedRows: Integer;
 begin
   OldFixedCols := FixedCols;
+  OldFixedRows := FixedRows;
   Clear;
   ColCount := OldFixedCols + 1;
-  RowCount := 2;
+  RowCount := OldFixedRows + 1;
   FixedCols := OldFixedCols;
-  FixedRows := 1;
+  FixedRows := OldFixedRows;
   if dgIndicator in Options then
     ColWidths[0]:=12;
 end;
@@ -1001,6 +1002,13 @@ begin
         FixedCols := FixedCols + 1
       else
         FixedCols := FixedCols - 1;
+    end;
+
+    if (dgTitles in ChangedOptions) then begin
+      if dgTitles in FOptions then
+        FixedRows := FixedRows + 1
+      else
+        FixedRows := FixedRows - 1;
     end;
 
     if (dgAutoSizeColumns in ChangedOptions) then begin
