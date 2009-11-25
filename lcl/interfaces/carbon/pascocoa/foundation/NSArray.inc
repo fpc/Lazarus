@@ -23,9 +23,9 @@
 {$ifndef NSARRAY_PAS_C}
 {$define NSARRAY_PAS_C}
 
-  TProcNSArraycomparator0 = function (_param1: objc.id; _param2: objc.id; _param3: Pointer): Integer; cdecl;
-  TProcNSArraycomparator1 = function (_param1: objc.id; _param2: objc.id; _param3: Pointer): Integer; cdecl;
-  TProcNSMutableArraycompare2 = function (_param1: objc.id; _param2: objc.id; _param3: Pointer): Integer; cdecl;
+  TProcNSArraycomparator0 = function (_param1: lobjc.id; _param2: lobjc.id; _param3: Pointer): Integer; cdecl;
+  TProcNSArraycomparator1 = function (_param1: lobjc.id; _param2: lobjc.id; _param3: Pointer): Integer; cdecl;
+  TProcNSMutableArraycompare2 = function (_param1: lobjc.id; _param2: lobjc.id; _param3: Pointer): Integer; cdecl;
 
 {$include NSObject.inc}
 {$include NSRange.inc}
@@ -35,27 +35,27 @@
 
   NSArray = class(NSObject)
   public
-    class function getClass: objc.id; override;
+    class function getClass: lobjc.id; override;
     function count: LongWord;
-    function objectAtIndex(__index: LongWord): objc.id;
-    function arrayByAddingObject(_anObject: objc.id): CFArrayRef;
+    function objectAtIndex(__index: LongWord): lobjc.id;
+    function arrayByAddingObject(_anObject: lobjc.id): CFArrayRef;
     function arrayByAddingObjectsFromArray(_otherArray: CFArrayRef): CFArrayRef;
     function componentsJoinedByString(_separator: CFStringRef): CFStringRef;
-    function containsObject(_anObject: objc.id): LongBool;
+    function containsObject(_anObject: lobjc.id): LongBool;
     function description: CFStringRef;
     function descriptionWithLocale(_locale: CFDictionaryRef): CFStringRef;
     function descriptionWithLocale_indent(_locale: CFDictionaryRef; _level: LongWord): CFStringRef;
-    function firstObjectCommonWithArray(_otherArray: CFArrayRef): objc.id;
-    procedure getObjects(_objects: objc.id);
-    procedure getObjects_range(_objects: objc.id; _range: NSRange);
-    function indexOfObject(_anObject: objc.id): LongWord;
-    function indexOfObject_inRange(_anObject: objc.id; _range: NSRange): LongWord;
-    function indexOfObjectIdenticalTo(_anObject: objc.id): LongWord;
-    function indexOfObjectIdenticalTo_inRange(_anObject: objc.id; _range: NSRange): LongWord;
+    function firstObjectCommonWithArray(_otherArray: CFArrayRef): lobjc.id;
+    procedure getObjects(_objects: lobjc.id);
+    procedure getObjects_range(_objects: lobjc.id; _range: NSRange);
+    function indexOfObject(_anObject: lobjc.id): LongWord;
+    function indexOfObject_inRange(_anObject: lobjc.id; _range: NSRange): LongWord;
+    function indexOfObjectIdenticalTo(_anObject: lobjc.id): LongWord;
+    function indexOfObjectIdenticalTo_inRange(_anObject: lobjc.id; _range: NSRange): LongWord;
     function isEqualToArray(_otherArray: CFArrayRef): LongBool;
-    function lastObject: objc.id;
-    function objectEnumerator: objc.id;{NSEnumerator}
-    function reverseObjectEnumerator: objc.id;{NSEnumerator}
+    function lastObject: lobjc.id;
+    function objectEnumerator: lobjc.id;{NSEnumerator}
+    function reverseObjectEnumerator: lobjc.id;{NSEnumerator}
     function sortedArrayHint: CFDataRef;
     function sortedArrayUsingFunction_context(_comparator: TProcNSArraycomparator0; _context: Pointer): CFArrayRef;
     function sortedArrayUsingFunction_context_hint(_comparator: TProcNSArraycomparator1; _context: Pointer; _hint: CFDataRef): CFArrayRef;
@@ -64,25 +64,25 @@
     function writeToFile_atomically(_path: CFStringRef; _useAuxiliaryFile: LongBool): LongBool;
     function writeToURL_atomically(_url: CFURLRef; _atomically: LongBool): LongBool;
     procedure makeObjectsPerformSelector(_aSelector: SEL);
-    procedure makeObjectsPerformSelector_withObject(_aSelector: SEL; _argument: objc.id);
+    procedure makeObjectsPerformSelector_withObject(_aSelector: SEL; _argument: lobjc.id);
     {.$ifdef  MAC_OS_X_VERSION_MAX_ALLOWED >= MAC_OS_X_VERSION_10_4}
-    function objectsAtIndexes(_indexes: objc.id {NSIndexSet}): CFArrayRef;
+    function objectsAtIndexes(_indexes: lobjc.id {NSIndexSet}): CFArrayRef;
     {.$endif}
     constructor array_;
     constructor arrayWithContentsOfFile(_path: CFStringRef);
     constructor arrayWithContentsOfURL(_url: CFURLRef);
-    constructor arrayWithObject(_anObject: objc.id);
-    constructor arrayWithObjects(_firstObj: objc.id);
+    constructor arrayWithObject(_anObject: lobjc.id);
+    constructor arrayWithObjects(_firstObj: lobjc.id);
     constructor initWithArray(__array: CFArrayRef);
     {.$ifdef  MAC_OS_X_VERSION_10_2 <= MAC_OS_X_VERSION_MAX_ALLOWED}
     constructor initWithArray_copyItems(__array: CFArrayRef; _flag: LongBool);
     {.$endif}
     constructor initWithContentsOfFile(_path: CFStringRef);
     constructor initWithContentsOfURL(_url: CFURLRef);
-    constructor initWithObjects_count(_objects: objc.id; _count: LongWord);
-    constructor initWithObjects(_firstObj: objc.id);
+    constructor initWithObjects_count(_objects: lobjc.id; _count: LongWord);
+    constructor initWithObjects(_firstObj: lobjc.id);
     constructor arrayWithArray(__array: CFArrayRef);
-    constructor arrayWithObjects_count(_objs: objc.id; _cnt: LongWord);
+    constructor arrayWithObjects_count(_objs: lobjc.id; _cnt: LongWord);
   end;
 
     // ***************	Mutable Array		***************
@@ -91,19 +91,19 @@
 
   NSMutableArray = class(NSArray)
   public
-    class function getClass: objc.id; override;
-    procedure addObject(_anObject: objc.id);
-    procedure insertObject_atIndex(_anObject: objc.id; __index: LongWord);
+    class function getClass: lobjc.id; override;
+    procedure addObject(_anObject: lobjc.id);
+    procedure insertObject_atIndex(_anObject: lobjc.id; __index: LongWord);
     procedure removeLastObject;
     procedure removeObjectAtIndex(__index: LongWord);
-    procedure replaceObjectAtIndex_withObject(__index: LongWord; _anObject: objc.id);
+    procedure replaceObjectAtIndex_withObject(__index: LongWord; _anObject: lobjc.id);
     procedure addObjectsFromArray(_otherArray: CFArrayRef);
     procedure exchangeObjectAtIndex_withObjectAtIndex(_idx1: LongWord; _idx2: LongWord);
     procedure removeAllObjects;
-    procedure removeObject_inRange(_anObject: objc.id; _range: NSRange);
-    procedure removeObject(_anObject: objc.id);
-    procedure removeObjectIdenticalTo_inRange(_anObject: objc.id; _range: NSRange);
-    procedure removeObjectIdenticalTo(_anObject: objc.id);
+    procedure removeObject_inRange(_anObject: lobjc.id; _range: NSRange);
+    procedure removeObject(_anObject: lobjc.id);
+    procedure removeObjectIdenticalTo_inRange(_anObject: lobjc.id; _range: NSRange);
+    procedure removeObjectIdenticalTo(_anObject: lobjc.id);
     procedure removeObjectsFromIndices_numIndices(_indices: PLongWord; _count: LongWord);
     procedure removeObjectsInArray(_otherArray: CFArrayRef);
     procedure removeObjectsInRange(_range: NSRange);
@@ -113,9 +113,9 @@
     procedure sortUsingFunction_context(_compare: TProcNSMutableArraycompare2; _context: Pointer);
     procedure sortUsingSelector(_comparator: SEL);
     {.$ifdef  MAC_OS_X_VERSION_MAX_ALLOWED >= MAC_OS_X_VERSION_10_4}
-    procedure insertObjects_atIndexes(_objects: CFArrayRef; _indexes: objc.id {NSIndexSet});
-    procedure removeObjectsAtIndexes(_indexes: objc.id {NSIndexSet});
-    procedure replaceObjectsAtIndexes_withObjects(_indexes: objc.id {NSIndexSet}; _objects: CFArrayRef);
+    procedure insertObjects_atIndexes(_objects: CFArrayRef; _indexes: lobjc.id {NSIndexSet});
+    procedure removeObjectsAtIndexes(_indexes: lobjc.id {NSIndexSet});
+    procedure replaceObjectsAtIndexes_withObjects(_indexes: lobjc.id {NSIndexSet}; _objects: CFArrayRef);
     {.$endif}
     constructor arrayWithCapacity(_numItems: LongWord);
     constructor initWithCapacity(_numItems: LongWord);
@@ -204,7 +204,7 @@ const
 
 { NSArray }
 
-class function NSArray.getClass: objc.id;
+class function NSArray.getClass: lobjc.id;
 begin
   Result := objc_getClass(StrNSArray_NSArray);
 end;
@@ -214,19 +214,19 @@ begin
   Result := LongWord(objc_msgSend(Handle, sel_registerName(PChar(StrNSArray_count)), []));
 end;
 
-function NSArray.objectAtIndex(__index: LongWord): objc.id;
+function NSArray.objectAtIndex(__index: LongWord): lobjc.id;
 type
-  TmsgSendWrapper = function (param1: objc.id; param2: SEL;__index: LongWord): objc.id; cdecl;
+  TmsgSendWrapper = function (param1: lobjc.id; param2: SEL;__index: LongWord): lobjc.id; cdecl;
 var
   vmethod: TmsgSendWrapper;
 begin
   vmethod := TmsgSendWrapper(@objc_msgSend);
-  Result := objc.id(vmethod(Handle, sel_registerName(PChar(StrNSArray_objectAtIndex)), __index));
+  Result := lobjc.id(vmethod(Handle, sel_registerName(PChar(StrNSArray_objectAtIndex)), __index));
 end;
 
-function NSArray.arrayByAddingObject(_anObject: objc.id): CFArrayRef;
+function NSArray.arrayByAddingObject(_anObject: lobjc.id): CFArrayRef;
 type
-  TmsgSendWrapper = function (param1: objc.id; param2: SEL;_anObject: objc.id): CFArrayRef; cdecl;
+  TmsgSendWrapper = function (param1: lobjc.id; param2: SEL;_anObject: lobjc.id): CFArrayRef; cdecl;
 var
   vmethod: TmsgSendWrapper;
 begin
@@ -236,7 +236,7 @@ end;
 
 function NSArray.arrayByAddingObjectsFromArray(_otherArray: CFArrayRef): CFArrayRef;
 type
-  TmsgSendWrapper = function (param1: objc.id; param2: SEL;_otherArray: CFArrayRef): CFArrayRef; cdecl;
+  TmsgSendWrapper = function (param1: lobjc.id; param2: SEL;_otherArray: CFArrayRef): CFArrayRef; cdecl;
 var
   vmethod: TmsgSendWrapper;
 begin
@@ -246,7 +246,7 @@ end;
 
 function NSArray.componentsJoinedByString(_separator: CFStringRef): CFStringRef;
 type
-  TmsgSendWrapper = function (param1: objc.id; param2: SEL;_separator: CFStringRef): CFStringRef; cdecl;
+  TmsgSendWrapper = function (param1: lobjc.id; param2: SEL;_separator: CFStringRef): CFStringRef; cdecl;
 var
   vmethod: TmsgSendWrapper;
 begin
@@ -254,9 +254,9 @@ begin
   Result := CFStringRef(vmethod(Handle, sel_registerName(PChar(StrNSArray_componentsJoinedByString)), _separator));
 end;
 
-function NSArray.containsObject(_anObject: objc.id): LongBool;
+function NSArray.containsObject(_anObject: lobjc.id): LongBool;
 type
-  TmsgSendWrapper = function (param1: objc.id; param2: SEL;_anObject: objc.id): LongBool; cdecl;
+  TmsgSendWrapper = function (param1: lobjc.id; param2: SEL;_anObject: lobjc.id): LongBool; cdecl;
 var
   vmethod: TmsgSendWrapper;
 begin
@@ -271,7 +271,7 @@ end;
 
 function NSArray.descriptionWithLocale(_locale: CFDictionaryRef): CFStringRef;
 type
-  TmsgSendWrapper = function (param1: objc.id; param2: SEL;_locale: CFDictionaryRef): CFStringRef; cdecl;
+  TmsgSendWrapper = function (param1: lobjc.id; param2: SEL;_locale: CFDictionaryRef): CFStringRef; cdecl;
 var
   vmethod: TmsgSendWrapper;
 begin
@@ -281,7 +281,7 @@ end;
 
 function NSArray.descriptionWithLocale_indent(_locale: CFDictionaryRef; _level: LongWord): CFStringRef;
 type
-  TmsgSendWrapper = function (param1: objc.id; param2: SEL;_locale: CFDictionaryRef; _level: LongWord): CFStringRef; cdecl;
+  TmsgSendWrapper = function (param1: lobjc.id; param2: SEL;_locale: CFDictionaryRef; _level: LongWord): CFStringRef; cdecl;
 var
   vmethod: TmsgSendWrapper;
 begin
@@ -289,19 +289,19 @@ begin
   Result := CFStringRef(vmethod(Handle, sel_registerName(PChar(StrNSArray_descriptionWithLocale_indent)), _locale, _level));
 end;
 
-function NSArray.firstObjectCommonWithArray(_otherArray: CFArrayRef): objc.id;
+function NSArray.firstObjectCommonWithArray(_otherArray: CFArrayRef): lobjc.id;
 type
-  TmsgSendWrapper = function (param1: objc.id; param2: SEL;_otherArray: CFArrayRef): objc.id; cdecl;
+  TmsgSendWrapper = function (param1: lobjc.id; param2: SEL;_otherArray: CFArrayRef): lobjc.id; cdecl;
 var
   vmethod: TmsgSendWrapper;
 begin
   vmethod := TmsgSendWrapper(@objc_msgSend);
-  Result := objc.id(vmethod(Handle, sel_registerName(PChar(StrNSArray_firstObjectCommonWithArray)), _otherArray));
+  Result := lobjc.id(vmethod(Handle, sel_registerName(PChar(StrNSArray_firstObjectCommonWithArray)), _otherArray));
 end;
 
-procedure NSArray.getObjects(_objects: objc.id);
+procedure NSArray.getObjects(_objects: lobjc.id);
 type
-  TmsgSendWrapper = procedure (param1: objc.id; param2: SEL;_objects: objc.id); cdecl;
+  TmsgSendWrapper = procedure (param1: lobjc.id; param2: SEL;_objects: lobjc.id); cdecl;
 var
   vmethod: TmsgSendWrapper;
 begin
@@ -309,9 +309,9 @@ begin
   vmethod(Handle, sel_registerName(PChar(StrNSArray_getObjects)), _objects);
 end;
 
-procedure NSArray.getObjects_range(_objects: objc.id; _range: NSRange);
+procedure NSArray.getObjects_range(_objects: lobjc.id; _range: NSRange);
 type
-  TmsgSendWrapper = procedure (param1: objc.id; param2: SEL;_objects: objc.id; _range: NSRange); cdecl;
+  TmsgSendWrapper = procedure (param1: lobjc.id; param2: SEL;_objects: lobjc.id; _range: NSRange); cdecl;
 var
   vmethod: TmsgSendWrapper;
 begin
@@ -319,9 +319,9 @@ begin
   vmethod(Handle, sel_registerName(PChar(StrNSArray_getObjects_range)), _objects, _range);
 end;
 
-function NSArray.indexOfObject(_anObject: objc.id): LongWord;
+function NSArray.indexOfObject(_anObject: lobjc.id): LongWord;
 type
-  TmsgSendWrapper = function (param1: objc.id; param2: SEL;_anObject: objc.id): LongWord; cdecl;
+  TmsgSendWrapper = function (param1: lobjc.id; param2: SEL;_anObject: lobjc.id): LongWord; cdecl;
 var
   vmethod: TmsgSendWrapper;
 begin
@@ -329,9 +329,9 @@ begin
   Result := LongWord(vmethod(Handle, sel_registerName(PChar(StrNSArray_indexOfObject)), _anObject));
 end;
 
-function NSArray.indexOfObject_inRange(_anObject: objc.id; _range: NSRange): LongWord;
+function NSArray.indexOfObject_inRange(_anObject: lobjc.id; _range: NSRange): LongWord;
 type
-  TmsgSendWrapper = function (param1: objc.id; param2: SEL;_anObject: objc.id; _range: NSRange): LongWord; cdecl;
+  TmsgSendWrapper = function (param1: lobjc.id; param2: SEL;_anObject: lobjc.id; _range: NSRange): LongWord; cdecl;
 var
   vmethod: TmsgSendWrapper;
 begin
@@ -339,9 +339,9 @@ begin
   Result := LongWord(vmethod(Handle, sel_registerName(PChar(StrNSArray_indexOfObject_inRange)), _anObject, _range));
 end;
 
-function NSArray.indexOfObjectIdenticalTo(_anObject: objc.id): LongWord;
+function NSArray.indexOfObjectIdenticalTo(_anObject: lobjc.id): LongWord;
 type
-  TmsgSendWrapper = function (param1: objc.id; param2: SEL;_anObject: objc.id): LongWord; cdecl;
+  TmsgSendWrapper = function (param1: lobjc.id; param2: SEL;_anObject: lobjc.id): LongWord; cdecl;
 var
   vmethod: TmsgSendWrapper;
 begin
@@ -349,9 +349,9 @@ begin
   Result := LongWord(vmethod(Handle, sel_registerName(PChar(StrNSArray_indexOfObjectIdenticalTo)), _anObject));
 end;
 
-function NSArray.indexOfObjectIdenticalTo_inRange(_anObject: objc.id; _range: NSRange): LongWord;
+function NSArray.indexOfObjectIdenticalTo_inRange(_anObject: lobjc.id; _range: NSRange): LongWord;
 type
-  TmsgSendWrapper = function (param1: objc.id; param2: SEL;_anObject: objc.id; _range: NSRange): LongWord; cdecl;
+  TmsgSendWrapper = function (param1: lobjc.id; param2: SEL;_anObject: lobjc.id; _range: NSRange): LongWord; cdecl;
 var
   vmethod: TmsgSendWrapper;
 begin
@@ -361,7 +361,7 @@ end;
 
 function NSArray.isEqualToArray(_otherArray: CFArrayRef): LongBool;
 type
-  TmsgSendWrapper = function (param1: objc.id; param2: SEL;_otherArray: CFArrayRef): LongBool; cdecl;
+  TmsgSendWrapper = function (param1: lobjc.id; param2: SEL;_otherArray: CFArrayRef): LongBool; cdecl;
 var
   vmethod: TmsgSendWrapper;
 begin
@@ -369,19 +369,19 @@ begin
   Result := LongBool(vmethod(Handle, sel_registerName(PChar(StrNSArray_isEqualToArray)), _otherArray));
 end;
 
-function NSArray.lastObject: objc.id;
+function NSArray.lastObject: lobjc.id;
 begin
-  Result := objc.id(objc_msgSend(Handle, sel_registerName(PChar(StrNSArray_lastObject)), []));
+  Result := lobjc.id(objc_msgSend(Handle, sel_registerName(PChar(StrNSArray_lastObject)), []));
 end;
 
-function NSArray.objectEnumerator: objc.id;
+function NSArray.objectEnumerator: lobjc.id;
 begin
-  Result := objc.id(objc_msgSend(Handle, sel_registerName(PChar(StrNSArray_objectEnumerator)), []));
+  Result := lobjc.id(objc_msgSend(Handle, sel_registerName(PChar(StrNSArray_objectEnumerator)), []));
 end;
 
-function NSArray.reverseObjectEnumerator: objc.id;
+function NSArray.reverseObjectEnumerator: lobjc.id;
 begin
-  Result := objc.id(objc_msgSend(Handle, sel_registerName(PChar(StrNSArray_reverseObjectEnumerator)), []));
+  Result := lobjc.id(objc_msgSend(Handle, sel_registerName(PChar(StrNSArray_reverseObjectEnumerator)), []));
 end;
 
 function NSArray.sortedArrayHint: CFDataRef;
@@ -391,7 +391,7 @@ end;
 
 function NSArray.sortedArrayUsingFunction_context(_comparator: TProcNSArraycomparator0; _context: Pointer): CFArrayRef;
 type
-  TmsgSendWrapper = function (param1: objc.id; param2: SEL;_comparator: TProcNSArraycomparator0; _context: Pointer): CFArrayRef; cdecl;
+  TmsgSendWrapper = function (param1: lobjc.id; param2: SEL;_comparator: TProcNSArraycomparator0; _context: Pointer): CFArrayRef; cdecl;
 var
   vmethod: TmsgSendWrapper;
 begin
@@ -401,7 +401,7 @@ end;
 
 function NSArray.sortedArrayUsingFunction_context_hint(_comparator: TProcNSArraycomparator1; _context: Pointer; _hint: CFDataRef): CFArrayRef;
 type
-  TmsgSendWrapper = function (param1: objc.id; param2: SEL;_comparator: TProcNSArraycomparator1; _context: Pointer; _hint: CFDataRef): CFArrayRef; cdecl;
+  TmsgSendWrapper = function (param1: lobjc.id; param2: SEL;_comparator: TProcNSArraycomparator1; _context: Pointer; _hint: CFDataRef): CFArrayRef; cdecl;
 var
   vmethod: TmsgSendWrapper;
 begin
@@ -411,7 +411,7 @@ end;
 
 function NSArray.sortedArrayUsingSelector(_comparator: SEL): CFArrayRef;
 type
-  TmsgSendWrapper = function (param1: objc.id; param2: SEL;_comparator: SEL): CFArrayRef; cdecl;
+  TmsgSendWrapper = function (param1: lobjc.id; param2: SEL;_comparator: SEL): CFArrayRef; cdecl;
 var
   vmethod: TmsgSendWrapper;
 begin
@@ -421,7 +421,7 @@ end;
 
 function NSArray.subarrayWithRange(_range: NSRange): CFArrayRef;
 type
-  TmsgSendWrapper = function (param1: objc.id; param2: SEL;_range: NSRange): CFArrayRef; cdecl;
+  TmsgSendWrapper = function (param1: lobjc.id; param2: SEL;_range: NSRange): CFArrayRef; cdecl;
 var
   vmethod: TmsgSendWrapper;
 begin
@@ -431,7 +431,7 @@ end;
 
 function NSArray.writeToFile_atomically(_path: CFStringRef; _useAuxiliaryFile: LongBool): LongBool;
 type
-  TmsgSendWrapper = function (param1: objc.id; param2: SEL;_path: CFStringRef; _useAuxiliaryFile: LongBool): LongBool; cdecl;
+  TmsgSendWrapper = function (param1: lobjc.id; param2: SEL;_path: CFStringRef; _useAuxiliaryFile: LongBool): LongBool; cdecl;
 var
   vmethod: TmsgSendWrapper;
 begin
@@ -441,7 +441,7 @@ end;
 
 function NSArray.writeToURL_atomically(_url: CFURLRef; _atomically: LongBool): LongBool;
 type
-  TmsgSendWrapper = function (param1: objc.id; param2: SEL;_url: CFURLRef; _atomically: LongBool): LongBool; cdecl;
+  TmsgSendWrapper = function (param1: lobjc.id; param2: SEL;_url: CFURLRef; _atomically: LongBool): LongBool; cdecl;
 var
   vmethod: TmsgSendWrapper;
 begin
@@ -451,7 +451,7 @@ end;
 
 procedure NSArray.makeObjectsPerformSelector(_aSelector: SEL);
 type
-  TmsgSendWrapper = procedure (param1: objc.id; param2: SEL;_aSelector: SEL); cdecl;
+  TmsgSendWrapper = procedure (param1: lobjc.id; param2: SEL;_aSelector: SEL); cdecl;
 var
   vmethod: TmsgSendWrapper;
 begin
@@ -459,9 +459,9 @@ begin
   vmethod(Handle, sel_registerName(PChar(StrNSArray_makeObjectsPerformSelector)), _aSelector);
 end;
 
-procedure NSArray.makeObjectsPerformSelector_withObject(_aSelector: SEL; _argument: objc.id);
+procedure NSArray.makeObjectsPerformSelector_withObject(_aSelector: SEL; _argument: lobjc.id);
 type
-  TmsgSendWrapper = procedure (param1: objc.id; param2: SEL;_aSelector: SEL; _argument: objc.id); cdecl;
+  TmsgSendWrapper = procedure (param1: lobjc.id; param2: SEL;_aSelector: SEL; _argument: lobjc.id); cdecl;
 var
   vmethod: TmsgSendWrapper;
 begin
@@ -470,9 +470,9 @@ begin
 end;
 
 {.$ifdef  MAC_OS_X_VERSION_MAX_ALLOWED >= MAC_OS_X_VERSION_10_4}
-function NSArray.objectsAtIndexes(_indexes: objc.id {NSIndexSet}): CFArrayRef;
+function NSArray.objectsAtIndexes(_indexes: lobjc.id {NSIndexSet}): CFArrayRef;
 type
-  TmsgSendWrapper = function (param1: objc.id; param2: SEL;_indexes: objc.id {NSIndexSet}): CFArrayRef; cdecl;
+  TmsgSendWrapper = function (param1: lobjc.id; param2: SEL;_indexes: lobjc.id {NSIndexSet}): CFArrayRef; cdecl;
 var
   vmethod: TmsgSendWrapper;
 begin
@@ -483,7 +483,7 @@ end;
 {.$endif}
 constructor NSArray.array_;
 type
-  TmsgSendWrapper = function (param1: objc.id; param2: SEL): objc.id; cdecl;
+  TmsgSendWrapper = function (param1: lobjc.id; param2: SEL): lobjc.id; cdecl;
 var
   vmethod: TmsgSendWrapper;
 begin
@@ -494,7 +494,7 @@ end;
 
 constructor NSArray.arrayWithContentsOfFile(_path: CFStringRef);
 type
-  TmsgSendWrapper = function (param1: objc.id; param2: SEL;_path: CFStringRef): objc.id; cdecl;
+  TmsgSendWrapper = function (param1: lobjc.id; param2: SEL;_path: CFStringRef): lobjc.id; cdecl;
 var
   vmethod: TmsgSendWrapper;
 begin
@@ -505,7 +505,7 @@ end;
 
 constructor NSArray.arrayWithContentsOfURL(_url: CFURLRef);
 type
-  TmsgSendWrapper = function (param1: objc.id; param2: SEL;_url: CFURLRef): objc.id; cdecl;
+  TmsgSendWrapper = function (param1: lobjc.id; param2: SEL;_url: CFURLRef): lobjc.id; cdecl;
 var
   vmethod: TmsgSendWrapper;
 begin
@@ -514,9 +514,9 @@ begin
   Handle := vmethod(ClassID, sel_registerName(PChar(StrNSArray_arrayWithContentsOfURL)), _url);
 end;
 
-constructor NSArray.arrayWithObject(_anObject: objc.id);
+constructor NSArray.arrayWithObject(_anObject: lobjc.id);
 type
-  TmsgSendWrapper = function (param1: objc.id; param2: SEL;_anObject: objc.id): objc.id; cdecl;
+  TmsgSendWrapper = function (param1: lobjc.id; param2: SEL;_anObject: lobjc.id): lobjc.id; cdecl;
 var
   vmethod: TmsgSendWrapper;
 begin
@@ -525,9 +525,9 @@ begin
   Handle := vmethod(ClassID, sel_registerName(PChar(StrNSArray_arrayWithObject)), _anObject);
 end;
 
-constructor NSArray.arrayWithObjects(_firstObj: objc.id);
+constructor NSArray.arrayWithObjects(_firstObj: lobjc.id);
 type
-  TmsgSendWrapper = function (param1: objc.id; param2: SEL;_firstObj: objc.id): objc.id; cdecl;
+  TmsgSendWrapper = function (param1: lobjc.id; param2: SEL;_firstObj: lobjc.id): lobjc.id; cdecl;
 var
   vmethod: TmsgSendWrapper;
 begin
@@ -538,7 +538,7 @@ end;
 
 constructor NSArray.initWithArray(__array: CFArrayRef);
 type
-  TmsgSendWrapper = function (param1: objc.id; param2: SEL;__array: CFArrayRef): objc.id; cdecl;
+  TmsgSendWrapper = function (param1: lobjc.id; param2: SEL;__array: CFArrayRef): lobjc.id; cdecl;
 var
   vmethod: TmsgSendWrapper;
 begin
@@ -551,7 +551,7 @@ end;
 {.$ifdef  MAC_OS_X_VERSION_10_2 <= MAC_OS_X_VERSION_MAX_ALLOWED}
 constructor NSArray.initWithArray_copyItems(__array: CFArrayRef; _flag: LongBool);
 type
-  TmsgSendWrapper = function (param1: objc.id; param2: SEL;__array: CFArrayRef; _flag: LongBool): objc.id; cdecl;
+  TmsgSendWrapper = function (param1: lobjc.id; param2: SEL;__array: CFArrayRef; _flag: LongBool): lobjc.id; cdecl;
 var
   vmethod: TmsgSendWrapper;
 begin
@@ -564,7 +564,7 @@ end;
 {.$endif}
 constructor NSArray.initWithContentsOfFile(_path: CFStringRef);
 type
-  TmsgSendWrapper = function (param1: objc.id; param2: SEL;_path: CFStringRef): objc.id; cdecl;
+  TmsgSendWrapper = function (param1: lobjc.id; param2: SEL;_path: CFStringRef): lobjc.id; cdecl;
 var
   vmethod: TmsgSendWrapper;
 begin
@@ -576,7 +576,7 @@ end;
 
 constructor NSArray.initWithContentsOfURL(_url: CFURLRef);
 type
-  TmsgSendWrapper = function (param1: objc.id; param2: SEL;_url: CFURLRef): objc.id; cdecl;
+  TmsgSendWrapper = function (param1: lobjc.id; param2: SEL;_url: CFURLRef): lobjc.id; cdecl;
 var
   vmethod: TmsgSendWrapper;
 begin
@@ -586,9 +586,9 @@ begin
   Handle := vmethod(allocbuf, sel_registerName(PChar(StrNSArray_initWithContentsOfURL)), _url);
 end;
 
-constructor NSArray.initWithObjects_count(_objects: objc.id; _count: LongWord);
+constructor NSArray.initWithObjects_count(_objects: lobjc.id; _count: LongWord);
 type
-  TmsgSendWrapper = function (param1: objc.id; param2: SEL;_objects: objc.id; _count: LongWord): objc.id; cdecl;
+  TmsgSendWrapper = function (param1: lobjc.id; param2: SEL;_objects: lobjc.id; _count: LongWord): lobjc.id; cdecl;
 var
   vmethod: TmsgSendWrapper;
 begin
@@ -598,9 +598,9 @@ begin
   Handle := vmethod(allocbuf, sel_registerName(PChar(StrNSArray_initWithObjects_count)), _objects, _count);
 end;
 
-constructor NSArray.initWithObjects(_firstObj: objc.id);
+constructor NSArray.initWithObjects(_firstObj: lobjc.id);
 type
-  TmsgSendWrapper = function (param1: objc.id; param2: SEL;_firstObj: objc.id): objc.id; cdecl;
+  TmsgSendWrapper = function (param1: lobjc.id; param2: SEL;_firstObj: lobjc.id): lobjc.id; cdecl;
 var
   vmethod: TmsgSendWrapper;
 begin
@@ -612,7 +612,7 @@ end;
 
 constructor NSArray.arrayWithArray(__array: CFArrayRef);
 type
-  TmsgSendWrapper = function (param1: objc.id; param2: SEL;__array: CFArrayRef): objc.id; cdecl;
+  TmsgSendWrapper = function (param1: lobjc.id; param2: SEL;__array: CFArrayRef): lobjc.id; cdecl;
 var
   vmethod: TmsgSendWrapper;
 begin
@@ -621,9 +621,9 @@ begin
   Handle := vmethod(ClassID, sel_registerName(PChar(StrNSArray_arrayWithArray)), __array);
 end;
 
-constructor NSArray.arrayWithObjects_count(_objs: objc.id; _cnt: LongWord);
+constructor NSArray.arrayWithObjects_count(_objs: lobjc.id; _cnt: LongWord);
 type
-  TmsgSendWrapper = function (param1: objc.id; param2: SEL;_objs: objc.id; _cnt: LongWord): objc.id; cdecl;
+  TmsgSendWrapper = function (param1: lobjc.id; param2: SEL;_objs: lobjc.id; _cnt: LongWord): lobjc.id; cdecl;
 var
   vmethod: TmsgSendWrapper;
 begin
@@ -634,14 +634,14 @@ end;
 
 { NSMutableArray }
 
-class function NSMutableArray.getClass: objc.id;
+class function NSMutableArray.getClass: lobjc.id;
 begin
   Result := objc_getClass(StrNSMutableArray_NSMutableArray);
 end;
 
-procedure NSMutableArray.addObject(_anObject: objc.id);
+procedure NSMutableArray.addObject(_anObject: lobjc.id);
 type
-  TmsgSendWrapper = procedure (param1: objc.id; param2: SEL;_anObject: objc.id); cdecl;
+  TmsgSendWrapper = procedure (param1: lobjc.id; param2: SEL;_anObject: lobjc.id); cdecl;
 var
   vmethod: TmsgSendWrapper;
 begin
@@ -649,9 +649,9 @@ begin
   vmethod(Handle, sel_registerName(PChar(StrNSMutableArray_addObject)), _anObject);
 end;
 
-procedure NSMutableArray.insertObject_atIndex(_anObject: objc.id; __index: LongWord);
+procedure NSMutableArray.insertObject_atIndex(_anObject: lobjc.id; __index: LongWord);
 type
-  TmsgSendWrapper = procedure (param1: objc.id; param2: SEL;_anObject: objc.id; __index: LongWord); cdecl;
+  TmsgSendWrapper = procedure (param1: lobjc.id; param2: SEL;_anObject: lobjc.id; __index: LongWord); cdecl;
 var
   vmethod: TmsgSendWrapper;
 begin
@@ -666,7 +666,7 @@ end;
 
 procedure NSMutableArray.removeObjectAtIndex(__index: LongWord);
 type
-  TmsgSendWrapper = procedure (param1: objc.id; param2: SEL;__index: LongWord); cdecl;
+  TmsgSendWrapper = procedure (param1: lobjc.id; param2: SEL;__index: LongWord); cdecl;
 var
   vmethod: TmsgSendWrapper;
 begin
@@ -674,9 +674,9 @@ begin
   vmethod(Handle, sel_registerName(PChar(StrNSMutableArray_removeObjectAtIndex)), __index);
 end;
 
-procedure NSMutableArray.replaceObjectAtIndex_withObject(__index: LongWord; _anObject: objc.id);
+procedure NSMutableArray.replaceObjectAtIndex_withObject(__index: LongWord; _anObject: lobjc.id);
 type
-  TmsgSendWrapper = procedure (param1: objc.id; param2: SEL;__index: LongWord; _anObject: objc.id); cdecl;
+  TmsgSendWrapper = procedure (param1: lobjc.id; param2: SEL;__index: LongWord; _anObject: lobjc.id); cdecl;
 var
   vmethod: TmsgSendWrapper;
 begin
@@ -686,7 +686,7 @@ end;
 
 procedure NSMutableArray.addObjectsFromArray(_otherArray: CFArrayRef);
 type
-  TmsgSendWrapper = procedure (param1: objc.id; param2: SEL;_otherArray: CFArrayRef); cdecl;
+  TmsgSendWrapper = procedure (param1: lobjc.id; param2: SEL;_otherArray: CFArrayRef); cdecl;
 var
   vmethod: TmsgSendWrapper;
 begin
@@ -696,7 +696,7 @@ end;
 
 procedure NSMutableArray.exchangeObjectAtIndex_withObjectAtIndex(_idx1: LongWord; _idx2: LongWord);
 type
-  TmsgSendWrapper = procedure (param1: objc.id; param2: SEL;_idx1: LongWord; _idx2: LongWord); cdecl;
+  TmsgSendWrapper = procedure (param1: lobjc.id; param2: SEL;_idx1: LongWord; _idx2: LongWord); cdecl;
 var
   vmethod: TmsgSendWrapper;
 begin
@@ -709,9 +709,9 @@ begin
   objc_msgSend(Handle, sel_registerName(PChar(StrNSMutableArray_removeAllObjects)), []);
 end;
 
-procedure NSMutableArray.removeObject_inRange(_anObject: objc.id; _range: NSRange);
+procedure NSMutableArray.removeObject_inRange(_anObject: lobjc.id; _range: NSRange);
 type
-  TmsgSendWrapper = procedure (param1: objc.id; param2: SEL;_anObject: objc.id; _range: NSRange); cdecl;
+  TmsgSendWrapper = procedure (param1: lobjc.id; param2: SEL;_anObject: lobjc.id; _range: NSRange); cdecl;
 var
   vmethod: TmsgSendWrapper;
 begin
@@ -719,9 +719,9 @@ begin
   vmethod(Handle, sel_registerName(PChar(StrNSMutableArray_removeObject_inRange)), _anObject, _range);
 end;
 
-procedure NSMutableArray.removeObject(_anObject: objc.id);
+procedure NSMutableArray.removeObject(_anObject: lobjc.id);
 type
-  TmsgSendWrapper = procedure (param1: objc.id; param2: SEL;_anObject: objc.id); cdecl;
+  TmsgSendWrapper = procedure (param1: lobjc.id; param2: SEL;_anObject: lobjc.id); cdecl;
 var
   vmethod: TmsgSendWrapper;
 begin
@@ -729,9 +729,9 @@ begin
   vmethod(Handle, sel_registerName(PChar(StrNSMutableArray_removeObject)), _anObject);
 end;
 
-procedure NSMutableArray.removeObjectIdenticalTo_inRange(_anObject: objc.id; _range: NSRange);
+procedure NSMutableArray.removeObjectIdenticalTo_inRange(_anObject: lobjc.id; _range: NSRange);
 type
-  TmsgSendWrapper = procedure (param1: objc.id; param2: SEL;_anObject: objc.id; _range: NSRange); cdecl;
+  TmsgSendWrapper = procedure (param1: lobjc.id; param2: SEL;_anObject: lobjc.id; _range: NSRange); cdecl;
 var
   vmethod: TmsgSendWrapper;
 begin
@@ -739,9 +739,9 @@ begin
   vmethod(Handle, sel_registerName(PChar(StrNSMutableArray_removeObjectIdenticalTo_inRange)), _anObject, _range);
 end;
 
-procedure NSMutableArray.removeObjectIdenticalTo(_anObject: objc.id);
+procedure NSMutableArray.removeObjectIdenticalTo(_anObject: lobjc.id);
 type
-  TmsgSendWrapper = procedure (param1: objc.id; param2: SEL;_anObject: objc.id); cdecl;
+  TmsgSendWrapper = procedure (param1: lobjc.id; param2: SEL;_anObject: lobjc.id); cdecl;
 var
   vmethod: TmsgSendWrapper;
 begin
@@ -751,7 +751,7 @@ end;
 
 procedure NSMutableArray.removeObjectsFromIndices_numIndices(_indices: PLongWord; _count: LongWord);
 type
-  TmsgSendWrapper = procedure (param1: objc.id; param2: SEL;_indices: PLongWord; _count: LongWord); cdecl;
+  TmsgSendWrapper = procedure (param1: lobjc.id; param2: SEL;_indices: PLongWord; _count: LongWord); cdecl;
 var
   vmethod: TmsgSendWrapper;
 begin
@@ -761,7 +761,7 @@ end;
 
 procedure NSMutableArray.removeObjectsInArray(_otherArray: CFArrayRef);
 type
-  TmsgSendWrapper = procedure (param1: objc.id; param2: SEL;_otherArray: CFArrayRef); cdecl;
+  TmsgSendWrapper = procedure (param1: lobjc.id; param2: SEL;_otherArray: CFArrayRef); cdecl;
 var
   vmethod: TmsgSendWrapper;
 begin
@@ -771,7 +771,7 @@ end;
 
 procedure NSMutableArray.removeObjectsInRange(_range: NSRange);
 type
-  TmsgSendWrapper = procedure (param1: objc.id; param2: SEL;_range: NSRange); cdecl;
+  TmsgSendWrapper = procedure (param1: lobjc.id; param2: SEL;_range: NSRange); cdecl;
 var
   vmethod: TmsgSendWrapper;
 begin
@@ -781,7 +781,7 @@ end;
 
 procedure NSMutableArray.replaceObjectsInRange_withObjectsFromArray_range(_range: NSRange; _otherArray: CFArrayRef; _otherRange: NSRange);
 type
-  TmsgSendWrapper = procedure (param1: objc.id; param2: SEL;_range: NSRange; _otherArray: CFArrayRef; _otherRange: NSRange); cdecl;
+  TmsgSendWrapper = procedure (param1: lobjc.id; param2: SEL;_range: NSRange; _otherArray: CFArrayRef; _otherRange: NSRange); cdecl;
 var
   vmethod: TmsgSendWrapper;
 begin
@@ -791,7 +791,7 @@ end;
 
 procedure NSMutableArray.replaceObjectsInRange_withObjectsFromArray(_range: NSRange; _otherArray: CFArrayRef);
 type
-  TmsgSendWrapper = procedure (param1: objc.id; param2: SEL;_range: NSRange; _otherArray: CFArrayRef); cdecl;
+  TmsgSendWrapper = procedure (param1: lobjc.id; param2: SEL;_range: NSRange; _otherArray: CFArrayRef); cdecl;
 var
   vmethod: TmsgSendWrapper;
 begin
@@ -801,7 +801,7 @@ end;
 
 procedure NSMutableArray.setArray(_otherArray: CFArrayRef);
 type
-  TmsgSendWrapper = procedure (param1: objc.id; param2: SEL;_otherArray: CFArrayRef); cdecl;
+  TmsgSendWrapper = procedure (param1: lobjc.id; param2: SEL;_otherArray: CFArrayRef); cdecl;
 var
   vmethod: TmsgSendWrapper;
 begin
@@ -811,7 +811,7 @@ end;
 
 procedure NSMutableArray.sortUsingFunction_context(_compare: TProcNSMutableArraycompare2; _context: Pointer);
 type
-  TmsgSendWrapper = procedure (param1: objc.id; param2: SEL;_compare: TProcNSMutableArraycompare2; _context: Pointer); cdecl;
+  TmsgSendWrapper = procedure (param1: lobjc.id; param2: SEL;_compare: TProcNSMutableArraycompare2; _context: Pointer); cdecl;
 var
   vmethod: TmsgSendWrapper;
 begin
@@ -821,7 +821,7 @@ end;
 
 procedure NSMutableArray.sortUsingSelector(_comparator: SEL);
 type
-  TmsgSendWrapper = procedure (param1: objc.id; param2: SEL;_comparator: SEL); cdecl;
+  TmsgSendWrapper = procedure (param1: lobjc.id; param2: SEL;_comparator: SEL); cdecl;
 var
   vmethod: TmsgSendWrapper;
 begin
@@ -830,9 +830,9 @@ begin
 end;
 
 {.$ifdef  MAC_OS_X_VERSION_MAX_ALLOWED >= MAC_OS_X_VERSION_10_4}
-procedure NSMutableArray.insertObjects_atIndexes(_objects: CFArrayRef; _indexes: objc.id {NSIndexSet});
+procedure NSMutableArray.insertObjects_atIndexes(_objects: CFArrayRef; _indexes: lobjc.id {NSIndexSet});
 type
-  TmsgSendWrapper = procedure (param1: objc.id; param2: SEL;_objects: CFArrayRef; _indexes: objc.id {NSIndexSet}); cdecl;
+  TmsgSendWrapper = procedure (param1: lobjc.id; param2: SEL;_objects: CFArrayRef; _indexes: lobjc.id {NSIndexSet}); cdecl;
 var
   vmethod: TmsgSendWrapper;
 begin
@@ -840,9 +840,9 @@ begin
   vmethod(Handle, sel_registerName(PChar(StrNSMutableArray_insertObjects_atIndexes)), _objects, _indexes);
 end;
 
-procedure NSMutableArray.removeObjectsAtIndexes(_indexes: objc.id {NSIndexSet});
+procedure NSMutableArray.removeObjectsAtIndexes(_indexes: lobjc.id {NSIndexSet});
 type
-  TmsgSendWrapper = procedure (param1: objc.id; param2: SEL;_indexes: objc.id {NSIndexSet}); cdecl;
+  TmsgSendWrapper = procedure (param1: lobjc.id; param2: SEL;_indexes: lobjc.id {NSIndexSet}); cdecl;
 var
   vmethod: TmsgSendWrapper;
 begin
@@ -850,9 +850,9 @@ begin
   vmethod(Handle, sel_registerName(PChar(StrNSMutableArray_removeObjectsAtIndexes)), _indexes);
 end;
 
-procedure NSMutableArray.replaceObjectsAtIndexes_withObjects(_indexes: objc.id {NSIndexSet}; _objects: CFArrayRef);
+procedure NSMutableArray.replaceObjectsAtIndexes_withObjects(_indexes: lobjc.id {NSIndexSet}; _objects: CFArrayRef);
 type
-  TmsgSendWrapper = procedure (param1: objc.id; param2: SEL;_indexes: objc.id {NSIndexSet}; _objects: CFArrayRef); cdecl;
+  TmsgSendWrapper = procedure (param1: lobjc.id; param2: SEL;_indexes: lobjc.id {NSIndexSet}; _objects: CFArrayRef); cdecl;
 var
   vmethod: TmsgSendWrapper;
 begin
@@ -863,7 +863,7 @@ end;
 {.$endif}
 constructor NSMutableArray.arrayWithCapacity(_numItems: LongWord);
 type
-  TmsgSendWrapper = function (param1: objc.id; param2: SEL;_numItems: LongWord): objc.id; cdecl;
+  TmsgSendWrapper = function (param1: lobjc.id; param2: SEL;_numItems: LongWord): lobjc.id; cdecl;
 var
   vmethod: TmsgSendWrapper;
 begin
@@ -874,7 +874,7 @@ end;
 
 constructor NSMutableArray.initWithCapacity(_numItems: LongWord);
 type
-  TmsgSendWrapper = function (param1: objc.id; param2: SEL;_numItems: LongWord): objc.id; cdecl;
+  TmsgSendWrapper = function (param1: lobjc.id; param2: SEL;_numItems: LongWord): lobjc.id; cdecl;
 var
   vmethod: TmsgSendWrapper;
 begin

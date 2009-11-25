@@ -23,7 +23,7 @@ const
   NSAutoreleasePool = class(NSObject)
   public
     { Extra binding functions }
-    class function getClass: objc.id; override;
+    class function getClass: lobjc.id; override;
   public
 
 //+ (void)addObject:(id)anObject;
@@ -40,7 +40,7 @@ const
 {$endif}
 {$ifdef IMPLEMENTATION}
 
-class function NSAutoreleasePool.getClass: objc.id;
+class function NSAutoreleasePool.getClass: lobjc.id;
 begin
   Result := objc_getClass(Str_NSAutoreleasePool);
 end;

@@ -51,7 +51,7 @@ type
 
   NSBox = class(NSView)
   public
-    class function getClass: objc.id; override;
+    class function getClass: lobjc.id; override;
     // All instance variables are private
     function borderType: NSBorderType;
     function titlePosition: NSTitlePosition;
@@ -61,17 +61,17 @@ type
     procedure setTitlePosition(_aPosition: NSTitlePosition);
     function title: CFStringRef;
     procedure setTitle(_aString: CFStringRef);
-    function titleFont: objc.id;{NSFont}
-    procedure setTitleFont(_fontObj: objc.id {NSFont});
+    function titleFont: lobjc.id;{NSFont}
+    procedure setTitleFont(_fontObj: lobjc.id {NSFont});
     function borderRect: NSRect;
     function titleRect: NSRect;
-    function titleCell: objc.id;
+    function titleCell: lobjc.id;
     procedure sizeToFit;
     function contentViewMargins: NSSize;
     procedure setContentViewMargins(_offsetSize: NSSize);
     procedure setFrameFromContentFrame(_contentFrame: NSRect);
-    function contentView: objc.id;
-    procedure setContentView(_aView: objc.id {NSView});
+    function contentView: lobjc.id;
+    procedure setContentView(_aView: lobjc.id {NSView});
     procedure setTitleWithMnemonic(_stringWithAmpersand: CFStringRef);
   end;
 
@@ -105,7 +105,7 @@ const
 
 { NSBox }
 
-class function NSBox.getClass: objc.id;
+class function NSBox.getClass: lobjc.id;
 begin
   Result := objc_getClass(StrNSBox_NSBox);
 end;
@@ -122,7 +122,7 @@ end;
 
 procedure NSBox.setBorderType(_aType: NSBorderType);
 type
-  TmsgSendWrapper = procedure (param1: objc.id; param2: SEL;_aType: NSBorderType); cdecl;
+  TmsgSendWrapper = procedure (param1: lobjc.id; param2: SEL;_aType: NSBorderType); cdecl;
 var
   vmethod: TmsgSendWrapper;
 begin
@@ -132,7 +132,7 @@ end;
 
 procedure NSBox.setBoxType(_boxType: NSBoxType);
 type
-  TmsgSendWrapper = procedure (param1: objc.id; param2: SEL;_boxType: NSBoxType); cdecl;
+  TmsgSendWrapper = procedure (param1: lobjc.id; param2: SEL;_boxType: NSBoxType); cdecl;
 var
   vmethod: TmsgSendWrapper;
 begin
@@ -147,7 +147,7 @@ end;
 
 procedure NSBox.setTitlePosition(_aPosition: NSTitlePosition);
 type
-  TmsgSendWrapper = procedure (param1: objc.id; param2: SEL;_aPosition: NSTitlePosition); cdecl;
+  TmsgSendWrapper = procedure (param1: lobjc.id; param2: SEL;_aPosition: NSTitlePosition); cdecl;
 var
   vmethod: TmsgSendWrapper;
 begin
@@ -162,7 +162,7 @@ end;
 
 procedure NSBox.setTitle(_aString: CFStringRef);
 type
-  TmsgSendWrapper = procedure (param1: objc.id; param2: SEL;_aString: CFStringRef); cdecl;
+  TmsgSendWrapper = procedure (param1: lobjc.id; param2: SEL;_aString: CFStringRef); cdecl;
 var
   vmethod: TmsgSendWrapper;
 begin
@@ -170,14 +170,14 @@ begin
   vmethod(Handle, sel_registerName(PChar(StrNSBox_setTitle)), _aString);
 end;
 
-function NSBox.titleFont: objc.id;
+function NSBox.titleFont: lobjc.id;
 begin
-  Result := objc.id(objc_msgSend(Handle, sel_registerName(PChar(StrNSBox_titleFont)), []));
+  Result := lobjc.id(objc_msgSend(Handle, sel_registerName(PChar(StrNSBox_titleFont)), []));
 end;
 
-procedure NSBox.setTitleFont(_fontObj: objc.id {NSFont});
+procedure NSBox.setTitleFont(_fontObj: lobjc.id {NSFont});
 type
-  TmsgSendWrapper = procedure (param1: objc.id; param2: SEL;_fontObj: objc.id {NSFont}); cdecl;
+  TmsgSendWrapper = procedure (param1: lobjc.id; param2: SEL;_fontObj: lobjc.id {NSFont}); cdecl;
 var
   vmethod: TmsgSendWrapper;
 begin
@@ -195,9 +195,9 @@ begin
   objc_msgSend_stret(@Result, Handle, sel_registerName(PChar(StrNSBox_titleRect)), []);
 end;
 
-function NSBox.titleCell: objc.id;
+function NSBox.titleCell: lobjc.id;
 begin
-  Result := objc.id(objc_msgSend(Handle, sel_registerName(PChar(StrNSBox_titleCell)), []));
+  Result := lobjc.id(objc_msgSend(Handle, sel_registerName(PChar(StrNSBox_titleCell)), []));
 end;
 
 procedure NSBox.sizeToFit;
@@ -212,7 +212,7 @@ end;
 
 procedure NSBox.setContentViewMargins(_offsetSize: NSSize);
 type
-  TmsgSendWrapper = procedure (param1: objc.id; param2: SEL;_offsetSize: NSSize); cdecl;
+  TmsgSendWrapper = procedure (param1: lobjc.id; param2: SEL;_offsetSize: NSSize); cdecl;
 var
   vmethod: TmsgSendWrapper;
 begin
@@ -222,7 +222,7 @@ end;
 
 procedure NSBox.setFrameFromContentFrame(_contentFrame: NSRect);
 type
-  TmsgSendWrapper = procedure (param1: objc.id; param2: SEL;_contentFrame: NSRect); cdecl;
+  TmsgSendWrapper = procedure (param1: lobjc.id; param2: SEL;_contentFrame: NSRect); cdecl;
 var
   vmethod: TmsgSendWrapper;
 begin
@@ -230,14 +230,14 @@ begin
   vmethod(Handle, sel_registerName(PChar(StrNSBox_setFrameFromContentFrame)), _contentFrame);
 end;
 
-function NSBox.contentView: objc.id;
+function NSBox.contentView: lobjc.id;
 begin
-  Result := objc.id(objc_msgSend(Handle, sel_registerName(PChar(StrNSBox_contentView)), []));
+  Result := lobjc.id(objc_msgSend(Handle, sel_registerName(PChar(StrNSBox_contentView)), []));
 end;
 
-procedure NSBox.setContentView(_aView: objc.id {NSView});
+procedure NSBox.setContentView(_aView: lobjc.id {NSView});
 type
-  TmsgSendWrapper = procedure (param1: objc.id; param2: SEL;_aView: objc.id {NSView}); cdecl;
+  TmsgSendWrapper = procedure (param1: lobjc.id; param2: SEL;_aView: lobjc.id {NSView}); cdecl;
 var
   vmethod: TmsgSendWrapper;
 begin
@@ -247,7 +247,7 @@ end;
 
 procedure NSBox.setTitleWithMnemonic(_stringWithAmpersand: CFStringRef);
 type
-  TmsgSendWrapper = procedure (param1: objc.id; param2: SEL;_stringWithAmpersand: CFStringRef); cdecl;
+  TmsgSendWrapper = procedure (param1: lobjc.id; param2: SEL;_stringWithAmpersand: CFStringRef); cdecl;
 var
   vmethod: TmsgSendWrapper;
 begin

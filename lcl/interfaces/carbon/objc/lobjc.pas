@@ -1,5 +1,5 @@
 {
- objc.pas
+ lobjc.pas
 
  Copyright (C) 2007 Felipe Monteiro de Carvalho
 
@@ -7,7 +7,7 @@
  headers included with XCode 2.4.1
  The original copyright note of is kept on each include file
 }
-unit objc;
+unit lobjc;
 
 {$ifdef fpc}
   {$mode objfpc}
@@ -21,17 +21,15 @@ interface
 
 uses ctypes, unix;
 
-{$LinkLib objc}
+{$include lobjc-api.inc}
+{$include lobjc.inc}
+{$include lobjc-class.inc}
 
-{$include objc-api.inc}
-{$include objc.inc}
-{$include objc-class.inc}
-
-{$include objc-auto.inc}
-{$include objc-exception.inc}
-{.$include objc-load.inc} // This module is obsolete
-{$include objc-runtime.inc}
-{$include objc-sync.inc}
+{$include lobjc-auto.inc}
+{$include lobjc-exception.inc}
+{.$include lobjc-load.inc} // This module is obsolete
+{$include lobjc-runtime.inc}
+{$include lobjc-sync.inc}
 
 {$include error.inc}
 {.$include hashtable.inc}

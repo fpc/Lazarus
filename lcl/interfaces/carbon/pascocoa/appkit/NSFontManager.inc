@@ -73,20 +73,20 @@ type
 
   NSFontManager = class(NSObject)
   public
-    class function getClass: objc.id; override;
+    class function getClass: lobjc.id; override;
     // All instance variables are private
     class procedure setFontPanelFactory_(_factoryId: _Class);
     class procedure setFontManagerFactory_(_factoryId: _Class);
     constructor sharedFontManager;
     function isMultiple: LongBool;
-    function selectedFont: objc.id;
-    procedure setSelectedFont_isMultiple_(_fontObj: objc.id; _flag: LongBool);
-    procedure setFontMenu_(_newMenu: objc.id);
-    function fontMenu_(_create: LongBool): objc.id;
-    function fontPanel_(_create: LongBool): objc.id;
-    function fontWithFamily_traits_weight_size_(_family: CFStringRef; _traits: NSFontTraitMask; _weight: Integer; _size: Single): objc.id;
-    function traitsOfFont_(_fontObj: objc.id): NSFontTraitMask;
-    function weightOfFont_(_fontObj: objc.id): Integer;
+    function selectedFont: lobjc.id;
+    procedure setSelectedFont_isMultiple_(_fontObj: lobjc.id; _flag: LongBool);
+    procedure setFontMenu_(_newMenu: lobjc.id);
+    function fontMenu_(_create: LongBool): lobjc.id;
+    function fontPanel_(_create: LongBool): lobjc.id;
+    function fontWithFamily_traits_weight_size_(_family: CFStringRef; _traits: NSFontTraitMask; _weight: Integer; _size: Single): lobjc.id;
+    function traitsOfFont_(_fontObj: lobjc.id): NSFontTraitMask;
+    function weightOfFont_(_fontObj: lobjc.id): Integer;
     //  Three methods for supporting app font management.  The fonts and names used/returned
     // by these functions are the same as those used by the NSFontPanel.  The third method
     // below takes as input a name as returned by "availableFontFamilies" and returns an
@@ -96,42 +96,42 @@ type
     function availableFonts: CFArrayRef;
     function availableFontFamilies: CFArrayRef;
     function availableMembersOfFontFamily_(_fam: CFStringRef): CFArrayRef;
-    function convertFont_(_fontObj: objc.id): objc.id;
-    function convertFont_toSize_(_fontObj: objc.id; _size: Single): objc.id;
-    function convertFont_toFace_(_fontObj: objc.id; _typeface: CFStringRef): objc.id;
-    function convertFont_toFamily_(_fontObj: objc.id; _family: CFStringRef): objc.id;
-    function convertFont_toHaveTrait_(_fontObj: objc.id; _trait: NSFontTraitMask): objc.id;
-    function convertFont_toNotHaveTrait_(_fontObj: objc.id; _trait: NSFontTraitMask): objc.id;
-    function convertWeight_ofFont_(_upFlag: LongBool; _fontObj: objc.id): objc.id;
+    function convertFont_(_fontObj: lobjc.id): lobjc.id;
+    function convertFont_toSize_(_fontObj: lobjc.id; _size: Single): lobjc.id;
+    function convertFont_toFace_(_fontObj: lobjc.id; _typeface: CFStringRef): lobjc.id;
+    function convertFont_toFamily_(_fontObj: lobjc.id; _family: CFStringRef): lobjc.id;
+    function convertFont_toHaveTrait_(_fontObj: lobjc.id; _trait: NSFontTraitMask): lobjc.id;
+    function convertFont_toNotHaveTrait_(_fontObj: lobjc.id; _trait: NSFontTraitMask): lobjc.id;
+    function convertWeight_ofFont_(_upFlag: LongBool; _fontObj: lobjc.id): lobjc.id;
     function isEnabled: LongBool;
     procedure setEnabled_(_flag: LongBool);
     function action: SEL;
     procedure setAction_(_aSelector: SEL);
     function sendAction: LongBool;
-    procedure setDelegate_(_anObject: objc.id);
-    function delegate: objc.id;
+    procedure setDelegate_(_anObject: lobjc.id);
+    function delegate: lobjc.id;
     function localizedNameForFamily_face_(_family: CFStringRef; _faceKey: CFStringRef): CFStringRef;
     procedure setSelectedAttributes_isMultiple_(_attributes: CFDictionaryRef; _flag: LongBool);
     function convertAttributes_(_attributes: CFDictionaryRef): CFDictionaryRef;
-    function availableFontNamesMatchingFontDescriptor_(_descriptor: objc.id): CFArrayRef;
+    function availableFontNamesMatchingFontDescriptor_(_descriptor: lobjc.id): CFArrayRef;
     function collectionNames: CFArrayRef;
     function fontDescriptorsInCollection_(_collectionNames: CFStringRef): CFArrayRef;
     function addCollection_options_(_collectionName: CFStringRef; _collectionOptions: Integer): LongBool;
     function removeCollection_(_collectionName: CFStringRef): LongBool;
     procedure addFontDescriptors_toCollection_(_descriptors: CFArrayRef; _collectionName: CFStringRef);
-    procedure removeFontDescriptor_fromCollection_(_descriptor: objc.id; _collection: CFStringRef);
+    procedure removeFontDescriptor_fromCollection_(_descriptor: lobjc.id; _collection: CFStringRef);
     function fontNamed_hasTraits_(_fName: CFStringRef; _someTraits: NSFontTraitMask): LongBool;
     //  The following is like "availableFonts", but checks traits.  Returns an auto-released
     // instance.  To get fonts with "non-italic" or "non-bold" combine the flags NSUnitalicFontMask
     // and/or NSUnboldFontMask as the argument "someTraits".
     function availableFontNamesWithTraits_(_someTraits: NSFontTraitMask): CFArrayRef;
     //  These methods are action messages sent from Font Menu items:
-    procedure addFontTrait_(_sender: objc.id);
-    procedure removeFontTrait_(_sender: objc.id);
-    procedure modifyFontViaPanel_(_sender: objc.id);
-    procedure modifyFont_(_sender: objc.id);
-    procedure orderFrontFontPanel_(_sender: objc.id);
-    procedure orderFrontStylesPanel_(_sender: objc.id);
+    procedure addFontTrait_(_sender: lobjc.id);
+    procedure removeFontTrait_(_sender: lobjc.id);
+    procedure modifyFontViaPanel_(_sender: lobjc.id);
+    procedure modifyFont_(_sender: lobjc.id);
+    procedure orderFrontFontPanel_(_sender: lobjc.id);
+    procedure orderFrontStylesPanel_(_sender: lobjc.id);
   end;
 
 {$endif}
@@ -191,14 +191,14 @@ const
 
 { NSFontManager }
 
-class function NSFontManager.getClass: objc.id;
+class function NSFontManager.getClass: lobjc.id;
 begin
   Result := objc_getClass(StrNSFontManager_NSFontManager);
 end;
 
 class procedure NSFontManager.setFontPanelFactory_(_factoryId: _Class);
 type
-  TmsgSendWrapper = procedure (param1: objc.id; param2: SEL;_factoryId: _Class);cdecl;
+  TmsgSendWrapper = procedure (param1: lobjc.id; param2: SEL;_factoryId: _Class);cdecl;
 var
   vmethod: TmsgSendWrapper;
 begin
@@ -208,7 +208,7 @@ end;
 
 class procedure NSFontManager.setFontManagerFactory_(_factoryId: _Class);
 type
-  TmsgSendWrapper = procedure (param1: objc.id; param2: SEL;_factoryId: _Class);cdecl;
+  TmsgSendWrapper = procedure (param1: lobjc.id; param2: SEL;_factoryId: _Class);cdecl;
 var
   vmethod: TmsgSendWrapper;
 begin
@@ -218,7 +218,7 @@ end;
 
 constructor NSFontManager.sharedFontManager;
 type
-  TmsgSendWrapper = function (param1: objc.id; param2: SEL): objc.id;cdecl;
+  TmsgSendWrapper = function (param1: lobjc.id; param2: SEL): lobjc.id;cdecl;
 var
   vmethod: TmsgSendWrapper;
 begin
@@ -232,14 +232,14 @@ begin
   Result := LongBool(objc_msgSend(Handle, sel_registerName(PChar(StrNSFontManager_isMultiple)), []));
 end;
 
-function NSFontManager.selectedFont: objc.id;
+function NSFontManager.selectedFont: lobjc.id;
 begin
-  Result := objc.id(objc_msgSend(Handle, sel_registerName(PChar(StrNSFontManager_selectedFont)), []));
+  Result := lobjc.id(objc_msgSend(Handle, sel_registerName(PChar(StrNSFontManager_selectedFont)), []));
 end;
 
-procedure NSFontManager.setSelectedFont_isMultiple_(_fontObj: objc.id; _flag: LongBool);
+procedure NSFontManager.setSelectedFont_isMultiple_(_fontObj: lobjc.id; _flag: LongBool);
 type
-  TmsgSendWrapper = procedure (param1: objc.id; param2: SEL;_fontObj: objc.id; _flag: LongBool);cdecl;
+  TmsgSendWrapper = procedure (param1: lobjc.id; param2: SEL;_fontObj: lobjc.id; _flag: LongBool);cdecl;
 var
   vmethod: TmsgSendWrapper;
 begin
@@ -247,9 +247,9 @@ begin
   vmethod(Handle, sel_registerName(PChar(StrNSFontManager_setSelectedFont_isMultiple_)), _fontObj, _flag);
 end;
 
-procedure NSFontManager.setFontMenu_(_newMenu: objc.id);
+procedure NSFontManager.setFontMenu_(_newMenu: lobjc.id);
 type
-  TmsgSendWrapper = procedure (param1: objc.id; param2: SEL;_newMenu: objc.id);cdecl;
+  TmsgSendWrapper = procedure (param1: lobjc.id; param2: SEL;_newMenu: lobjc.id);cdecl;
 var
   vmethod: TmsgSendWrapper;
 begin
@@ -257,39 +257,39 @@ begin
   vmethod(Handle, sel_registerName(PChar(StrNSFontManager_setFontMenu_)), _newMenu);
 end;
 
-function NSFontManager.fontMenu_(_create: LongBool): objc.id;
+function NSFontManager.fontMenu_(_create: LongBool): lobjc.id;
 type
-  TmsgSendWrapper = function (param1: objc.id; param2: SEL;_create: LongBool): objc.id;cdecl;
+  TmsgSendWrapper = function (param1: lobjc.id; param2: SEL;_create: LongBool): lobjc.id;cdecl;
 var
   vmethod: TmsgSendWrapper;
 begin
   vmethod := TmsgSendWrapper(@objc_msgSend);
-  Result := objc.id(vmethod(Handle, sel_registerName(PChar(StrNSFontManager_fontMenu_)), _create));
+  Result := lobjc.id(vmethod(Handle, sel_registerName(PChar(StrNSFontManager_fontMenu_)), _create));
 end;
 
-function NSFontManager.fontPanel_(_create: LongBool): objc.id;
+function NSFontManager.fontPanel_(_create: LongBool): lobjc.id;
 type
-  TmsgSendWrapper = function (param1: objc.id; param2: SEL;_create: LongBool): objc.id;cdecl;
+  TmsgSendWrapper = function (param1: lobjc.id; param2: SEL;_create: LongBool): lobjc.id;cdecl;
 var
   vmethod: TmsgSendWrapper;
 begin
   vmethod := TmsgSendWrapper(@objc_msgSend);
-  Result := objc.id(vmethod(Handle, sel_registerName(PChar(StrNSFontManager_fontPanel_)), _create));
+  Result := lobjc.id(vmethod(Handle, sel_registerName(PChar(StrNSFontManager_fontPanel_)), _create));
 end;
 
-function NSFontManager.fontWithFamily_traits_weight_size_(_family: CFStringRef; _traits: NSFontTraitMask; _weight: Integer; _size: Single): objc.id;
+function NSFontManager.fontWithFamily_traits_weight_size_(_family: CFStringRef; _traits: NSFontTraitMask; _weight: Integer; _size: Single): lobjc.id;
 type
-  TmsgSendWrapper = function (param1: objc.id; param2: SEL;_family: CFStringRef; _traits: NSFontTraitMask; _weight: Integer; _size: Single): objc.id;cdecl;
+  TmsgSendWrapper = function (param1: lobjc.id; param2: SEL;_family: CFStringRef; _traits: NSFontTraitMask; _weight: Integer; _size: Single): lobjc.id;cdecl;
 var
   vmethod: TmsgSendWrapper;
 begin
   vmethod := TmsgSendWrapper(@objc_msgSend);
-  Result := objc.id(vmethod(Handle, sel_registerName(PChar(StrNSFontManager_fontWithFamily_traits_weight_size_)), _family, _traits, _weight, _size));
+  Result := lobjc.id(vmethod(Handle, sel_registerName(PChar(StrNSFontManager_fontWithFamily_traits_weight_size_)), _family, _traits, _weight, _size));
 end;
 
-function NSFontManager.traitsOfFont_(_fontObj: objc.id): NSFontTraitMask;
+function NSFontManager.traitsOfFont_(_fontObj: lobjc.id): NSFontTraitMask;
 type
-  TmsgSendWrapper = function (param1: objc.id; param2: SEL;_fontObj: objc.id): NSFontTraitMask;cdecl;
+  TmsgSendWrapper = function (param1: lobjc.id; param2: SEL;_fontObj: lobjc.id): NSFontTraitMask;cdecl;
 var
   vmethod: TmsgSendWrapper;
 begin
@@ -297,9 +297,9 @@ begin
   Result := NSFontTraitMask(vmethod(Handle, sel_registerName(PChar(StrNSFontManager_traitsOfFont_)), _fontObj));
 end;
 
-function NSFontManager.weightOfFont_(_fontObj: objc.id): Integer;
+function NSFontManager.weightOfFont_(_fontObj: lobjc.id): Integer;
 type
-  TmsgSendWrapper = function (param1: objc.id; param2: SEL;_fontObj: objc.id): Integer;cdecl;
+  TmsgSendWrapper = function (param1: lobjc.id; param2: SEL;_fontObj: lobjc.id): Integer;cdecl;
 var
   vmethod: TmsgSendWrapper;
 begin
@@ -319,7 +319,7 @@ end;
 
 function NSFontManager.availableMembersOfFontFamily_(_fam: CFStringRef): CFArrayRef;
 type
-  TmsgSendWrapper = function (param1: objc.id; param2: SEL;_fam: CFStringRef): CFArrayRef;cdecl;
+  TmsgSendWrapper = function (param1: lobjc.id; param2: SEL;_fam: CFStringRef): CFArrayRef;cdecl;
 var
   vmethod: TmsgSendWrapper;
 begin
@@ -327,74 +327,74 @@ begin
   Result := CFArrayRef(vmethod(Handle, sel_registerName(PChar(StrNSFontManager_availableMembersOfFontFamily_)), _fam));
 end;
 
-function NSFontManager.convertFont_(_fontObj: objc.id): objc.id;
+function NSFontManager.convertFont_(_fontObj: lobjc.id): lobjc.id;
 type
-  TmsgSendWrapper = function (param1: objc.id; param2: SEL;_fontObj: objc.id): objc.id;cdecl;
+  TmsgSendWrapper = function (param1: lobjc.id; param2: SEL;_fontObj: lobjc.id): lobjc.id;cdecl;
 var
   vmethod: TmsgSendWrapper;
 begin
   vmethod := TmsgSendWrapper(@objc_msgSend);
-  Result := objc.id(vmethod(Handle, sel_registerName(PChar(StrNSFontManager_convertFont_)), _fontObj));
+  Result := lobjc.id(vmethod(Handle, sel_registerName(PChar(StrNSFontManager_convertFont_)), _fontObj));
 end;
 
-function NSFontManager.convertFont_toSize_(_fontObj: objc.id; _size: Single): objc.id;
+function NSFontManager.convertFont_toSize_(_fontObj: lobjc.id; _size: Single): lobjc.id;
 type
-  TmsgSendWrapper = function (param1: objc.id; param2: SEL;_fontObj: objc.id; _size: Single): objc.id;cdecl;
+  TmsgSendWrapper = function (param1: lobjc.id; param2: SEL;_fontObj: lobjc.id; _size: Single): lobjc.id;cdecl;
 var
   vmethod: TmsgSendWrapper;
 begin
   vmethod := TmsgSendWrapper(@objc_msgSend);
-  Result := objc.id(vmethod(Handle, sel_registerName(PChar(StrNSFontManager_convertFont_toSize_)), _fontObj, _size));
+  Result := lobjc.id(vmethod(Handle, sel_registerName(PChar(StrNSFontManager_convertFont_toSize_)), _fontObj, _size));
 end;
 
-function NSFontManager.convertFont_toFace_(_fontObj: objc.id; _typeface: CFStringRef): objc.id;
+function NSFontManager.convertFont_toFace_(_fontObj: lobjc.id; _typeface: CFStringRef): lobjc.id;
 type
-  TmsgSendWrapper = function (param1: objc.id; param2: SEL;_fontObj: objc.id; _typeface: CFStringRef): objc.id;cdecl;
+  TmsgSendWrapper = function (param1: lobjc.id; param2: SEL;_fontObj: lobjc.id; _typeface: CFStringRef): lobjc.id;cdecl;
 var
   vmethod: TmsgSendWrapper;
 begin
   vmethod := TmsgSendWrapper(@objc_msgSend);
-  Result := objc.id(vmethod(Handle, sel_registerName(PChar(StrNSFontManager_convertFont_toFace_)), _fontObj, _typeface));
+  Result := lobjc.id(vmethod(Handle, sel_registerName(PChar(StrNSFontManager_convertFont_toFace_)), _fontObj, _typeface));
 end;
 
-function NSFontManager.convertFont_toFamily_(_fontObj: objc.id; _family: CFStringRef): objc.id;
+function NSFontManager.convertFont_toFamily_(_fontObj: lobjc.id; _family: CFStringRef): lobjc.id;
 type
-  TmsgSendWrapper = function (param1: objc.id; param2: SEL;_fontObj: objc.id; _family: CFStringRef): objc.id;cdecl;
+  TmsgSendWrapper = function (param1: lobjc.id; param2: SEL;_fontObj: lobjc.id; _family: CFStringRef): lobjc.id;cdecl;
 var
   vmethod: TmsgSendWrapper;
 begin
   vmethod := TmsgSendWrapper(@objc_msgSend);
-  Result := objc.id(vmethod(Handle, sel_registerName(PChar(StrNSFontManager_convertFont_toFamily_)), _fontObj, _family));
+  Result := lobjc.id(vmethod(Handle, sel_registerName(PChar(StrNSFontManager_convertFont_toFamily_)), _fontObj, _family));
 end;
 
-function NSFontManager.convertFont_toHaveTrait_(_fontObj: objc.id; _trait: NSFontTraitMask): objc.id;
+function NSFontManager.convertFont_toHaveTrait_(_fontObj: lobjc.id; _trait: NSFontTraitMask): lobjc.id;
 type
-  TmsgSendWrapper = function (param1: objc.id; param2: SEL;_fontObj: objc.id; _trait: NSFontTraitMask): objc.id;cdecl;
+  TmsgSendWrapper = function (param1: lobjc.id; param2: SEL;_fontObj: lobjc.id; _trait: NSFontTraitMask): lobjc.id;cdecl;
 var
   vmethod: TmsgSendWrapper;
 begin
   vmethod := TmsgSendWrapper(@objc_msgSend);
-  Result := objc.id(vmethod(Handle, sel_registerName(PChar(StrNSFontManager_convertFont_toHaveTrait_)), _fontObj, _trait));
+  Result := lobjc.id(vmethod(Handle, sel_registerName(PChar(StrNSFontManager_convertFont_toHaveTrait_)), _fontObj, _trait));
 end;
 
-function NSFontManager.convertFont_toNotHaveTrait_(_fontObj: objc.id; _trait: NSFontTraitMask): objc.id;
+function NSFontManager.convertFont_toNotHaveTrait_(_fontObj: lobjc.id; _trait: NSFontTraitMask): lobjc.id;
 type
-  TmsgSendWrapper = function (param1: objc.id; param2: SEL;_fontObj: objc.id; _trait: NSFontTraitMask): objc.id;cdecl;
+  TmsgSendWrapper = function (param1: lobjc.id; param2: SEL;_fontObj: lobjc.id; _trait: NSFontTraitMask): lobjc.id;cdecl;
 var
   vmethod: TmsgSendWrapper;
 begin
   vmethod := TmsgSendWrapper(@objc_msgSend);
-  Result := objc.id(vmethod(Handle, sel_registerName(PChar(StrNSFontManager_convertFont_toNotHaveTrait_)), _fontObj, _trait));
+  Result := lobjc.id(vmethod(Handle, sel_registerName(PChar(StrNSFontManager_convertFont_toNotHaveTrait_)), _fontObj, _trait));
 end;
 
-function NSFontManager.convertWeight_ofFont_(_upFlag: LongBool; _fontObj: objc.id): objc.id;
+function NSFontManager.convertWeight_ofFont_(_upFlag: LongBool; _fontObj: lobjc.id): lobjc.id;
 type
-  TmsgSendWrapper = function (param1: objc.id; param2: SEL;_upFlag: LongBool; _fontObj: objc.id): objc.id;cdecl;
+  TmsgSendWrapper = function (param1: lobjc.id; param2: SEL;_upFlag: LongBool; _fontObj: lobjc.id): lobjc.id;cdecl;
 var
   vmethod: TmsgSendWrapper;
 begin
   vmethod := TmsgSendWrapper(@objc_msgSend);
-  Result := objc.id(vmethod(Handle, sel_registerName(PChar(StrNSFontManager_convertWeight_ofFont_)), _upFlag, _fontObj));
+  Result := lobjc.id(vmethod(Handle, sel_registerName(PChar(StrNSFontManager_convertWeight_ofFont_)), _upFlag, _fontObj));
 end;
 
 function NSFontManager.isEnabled: LongBool;
@@ -404,7 +404,7 @@ end;
 
 procedure NSFontManager.setEnabled_(_flag: LongBool);
 type
-  TmsgSendWrapper = procedure (param1: objc.id; param2: SEL;_flag: LongBool);cdecl;
+  TmsgSendWrapper = procedure (param1: lobjc.id; param2: SEL;_flag: LongBool);cdecl;
 var
   vmethod: TmsgSendWrapper;
 begin
@@ -419,7 +419,7 @@ end;
 
 procedure NSFontManager.setAction_(_aSelector: SEL);
 type
-  TmsgSendWrapper = procedure (param1: objc.id; param2: SEL;_aSelector: SEL);cdecl;
+  TmsgSendWrapper = procedure (param1: lobjc.id; param2: SEL;_aSelector: SEL);cdecl;
 var
   vmethod: TmsgSendWrapper;
 begin
@@ -432,9 +432,9 @@ begin
   Result := LongBool(objc_msgSend(Handle, sel_registerName(PChar(StrNSFontManager_sendAction)), []));
 end;
 
-procedure NSFontManager.setDelegate_(_anObject: objc.id);
+procedure NSFontManager.setDelegate_(_anObject: lobjc.id);
 type
-  TmsgSendWrapper = procedure (param1: objc.id; param2: SEL;_anObject: objc.id);cdecl;
+  TmsgSendWrapper = procedure (param1: lobjc.id; param2: SEL;_anObject: lobjc.id);cdecl;
 var
   vmethod: TmsgSendWrapper;
 begin
@@ -442,14 +442,14 @@ begin
   vmethod(Handle, sel_registerName(PChar(StrNSFontManager_setDelegate_)), _anObject);
 end;
 
-function NSFontManager.delegate: objc.id;
+function NSFontManager.delegate: lobjc.id;
 begin
-  Result := objc.id(objc_msgSend(Handle, sel_registerName(PChar(StrNSFontManager_delegate)), []));
+  Result := lobjc.id(objc_msgSend(Handle, sel_registerName(PChar(StrNSFontManager_delegate)), []));
 end;
 
 function NSFontManager.localizedNameForFamily_face_(_family: CFStringRef; _faceKey: CFStringRef): CFStringRef;
 type
-  TmsgSendWrapper = function (param1: objc.id; param2: SEL;_family: CFStringRef; _faceKey: CFStringRef): CFStringRef;cdecl;
+  TmsgSendWrapper = function (param1: lobjc.id; param2: SEL;_family: CFStringRef; _faceKey: CFStringRef): CFStringRef;cdecl;
 var
   vmethod: TmsgSendWrapper;
 begin
@@ -459,7 +459,7 @@ end;
 
 procedure NSFontManager.setSelectedAttributes_isMultiple_(_attributes: CFDictionaryRef; _flag: LongBool);
 type
-  TmsgSendWrapper = procedure (param1: objc.id; param2: SEL;_attributes: CFDictionaryRef; _flag: LongBool);cdecl;
+  TmsgSendWrapper = procedure (param1: lobjc.id; param2: SEL;_attributes: CFDictionaryRef; _flag: LongBool);cdecl;
 var
   vmethod: TmsgSendWrapper;
 begin
@@ -469,7 +469,7 @@ end;
 
 function NSFontManager.convertAttributes_(_attributes: CFDictionaryRef): CFDictionaryRef;
 type
-  TmsgSendWrapper = function (param1: objc.id; param2: SEL;_attributes: CFDictionaryRef): CFDictionaryRef;cdecl;
+  TmsgSendWrapper = function (param1: lobjc.id; param2: SEL;_attributes: CFDictionaryRef): CFDictionaryRef;cdecl;
 var
   vmethod: TmsgSendWrapper;
 begin
@@ -477,9 +477,9 @@ begin
   Result := CFDictionaryRef(vmethod(Handle, sel_registerName(PChar(StrNSFontManager_convertAttributes_)), _attributes));
 end;
 
-function NSFontManager.availableFontNamesMatchingFontDescriptor_(_descriptor: objc.id): CFArrayRef;
+function NSFontManager.availableFontNamesMatchingFontDescriptor_(_descriptor: lobjc.id): CFArrayRef;
 type
-  TmsgSendWrapper = function (param1: objc.id; param2: SEL;_descriptor: objc.id): CFArrayRef;cdecl;
+  TmsgSendWrapper = function (param1: lobjc.id; param2: SEL;_descriptor: lobjc.id): CFArrayRef;cdecl;
 var
   vmethod: TmsgSendWrapper;
 begin
@@ -494,7 +494,7 @@ end;
 
 function NSFontManager.fontDescriptorsInCollection_(_collectionNames: CFStringRef): CFArrayRef;
 type
-  TmsgSendWrapper = function (param1: objc.id; param2: SEL;_collectionNames: CFStringRef): CFArrayRef;cdecl;
+  TmsgSendWrapper = function (param1: lobjc.id; param2: SEL;_collectionNames: CFStringRef): CFArrayRef;cdecl;
 var
   vmethod: TmsgSendWrapper;
 begin
@@ -504,7 +504,7 @@ end;
 
 function NSFontManager.addCollection_options_(_collectionName: CFStringRef; _collectionOptions: Integer): LongBool;
 type
-  TmsgSendWrapper = function (param1: objc.id; param2: SEL;_collectionName: CFStringRef; _collectionOptions: Integer): LongBool;cdecl;
+  TmsgSendWrapper = function (param1: lobjc.id; param2: SEL;_collectionName: CFStringRef; _collectionOptions: Integer): LongBool;cdecl;
 var
   vmethod: TmsgSendWrapper;
 begin
@@ -514,7 +514,7 @@ end;
 
 function NSFontManager.removeCollection_(_collectionName: CFStringRef): LongBool;
 type
-  TmsgSendWrapper = function (param1: objc.id; param2: SEL;_collectionName: CFStringRef): LongBool;cdecl;
+  TmsgSendWrapper = function (param1: lobjc.id; param2: SEL;_collectionName: CFStringRef): LongBool;cdecl;
 var
   vmethod: TmsgSendWrapper;
 begin
@@ -524,7 +524,7 @@ end;
 
 procedure NSFontManager.addFontDescriptors_toCollection_(_descriptors: CFArrayRef; _collectionName: CFStringRef);
 type
-  TmsgSendWrapper = procedure (param1: objc.id; param2: SEL;_descriptors: CFArrayRef; _collectionName: CFStringRef);cdecl;
+  TmsgSendWrapper = procedure (param1: lobjc.id; param2: SEL;_descriptors: CFArrayRef; _collectionName: CFStringRef);cdecl;
 var
   vmethod: TmsgSendWrapper;
 begin
@@ -532,9 +532,9 @@ begin
   vmethod(Handle, sel_registerName(PChar(StrNSFontManager_addFontDescriptors_toCollection_)), _descriptors, _collectionName);
 end;
 
-procedure NSFontManager.removeFontDescriptor_fromCollection_(_descriptor: objc.id; _collection: CFStringRef);
+procedure NSFontManager.removeFontDescriptor_fromCollection_(_descriptor: lobjc.id; _collection: CFStringRef);
 type
-  TmsgSendWrapper = procedure (param1: objc.id; param2: SEL;_descriptor: objc.id; _collection: CFStringRef);cdecl;
+  TmsgSendWrapper = procedure (param1: lobjc.id; param2: SEL;_descriptor: lobjc.id; _collection: CFStringRef);cdecl;
 var
   vmethod: TmsgSendWrapper;
 begin
@@ -544,7 +544,7 @@ end;
 
 function NSFontManager.fontNamed_hasTraits_(_fName: CFStringRef; _someTraits: NSFontTraitMask): LongBool;
 type
-  TmsgSendWrapper = function (param1: objc.id; param2: SEL;_fName: CFStringRef; _someTraits: NSFontTraitMask): LongBool;cdecl;
+  TmsgSendWrapper = function (param1: lobjc.id; param2: SEL;_fName: CFStringRef; _someTraits: NSFontTraitMask): LongBool;cdecl;
 var
   vmethod: TmsgSendWrapper;
 begin
@@ -554,7 +554,7 @@ end;
 
 function NSFontManager.availableFontNamesWithTraits_(_someTraits: NSFontTraitMask): CFArrayRef;
 type
-  TmsgSendWrapper = function (param1: objc.id; param2: SEL;_someTraits: NSFontTraitMask): CFArrayRef;cdecl;
+  TmsgSendWrapper = function (param1: lobjc.id; param2: SEL;_someTraits: NSFontTraitMask): CFArrayRef;cdecl;
 var
   vmethod: TmsgSendWrapper;
 begin
@@ -562,9 +562,9 @@ begin
   Result := CFArrayRef(vmethod(Handle, sel_registerName(PChar(StrNSFontManager_availableFontNamesWithTraits_)), _someTraits));
 end;
 
-procedure NSFontManager.addFontTrait_(_sender: objc.id);
+procedure NSFontManager.addFontTrait_(_sender: lobjc.id);
 type
-  TmsgSendWrapper = procedure (param1: objc.id; param2: SEL;_sender: objc.id);cdecl;
+  TmsgSendWrapper = procedure (param1: lobjc.id; param2: SEL;_sender: lobjc.id);cdecl;
 var
   vmethod: TmsgSendWrapper;
 begin
@@ -572,9 +572,9 @@ begin
   vmethod(Handle, sel_registerName(PChar(StrNSFontManager_addFontTrait_)), _sender);
 end;
 
-procedure NSFontManager.removeFontTrait_(_sender: objc.id);
+procedure NSFontManager.removeFontTrait_(_sender: lobjc.id);
 type
-  TmsgSendWrapper = procedure (param1: objc.id; param2: SEL;_sender: objc.id);cdecl;
+  TmsgSendWrapper = procedure (param1: lobjc.id; param2: SEL;_sender: lobjc.id);cdecl;
 var
   vmethod: TmsgSendWrapper;
 begin
@@ -582,9 +582,9 @@ begin
   vmethod(Handle, sel_registerName(PChar(StrNSFontManager_removeFontTrait_)), _sender);
 end;
 
-procedure NSFontManager.modifyFontViaPanel_(_sender: objc.id);
+procedure NSFontManager.modifyFontViaPanel_(_sender: lobjc.id);
 type
-  TmsgSendWrapper = procedure (param1: objc.id; param2: SEL;_sender: objc.id);cdecl;
+  TmsgSendWrapper = procedure (param1: lobjc.id; param2: SEL;_sender: lobjc.id);cdecl;
 var
   vmethod: TmsgSendWrapper;
 begin
@@ -592,9 +592,9 @@ begin
   vmethod(Handle, sel_registerName(PChar(StrNSFontManager_modifyFontViaPanel_)), _sender);
 end;
 
-procedure NSFontManager.modifyFont_(_sender: objc.id);
+procedure NSFontManager.modifyFont_(_sender: lobjc.id);
 type
-  TmsgSendWrapper = procedure (param1: objc.id; param2: SEL;_sender: objc.id);cdecl;
+  TmsgSendWrapper = procedure (param1: lobjc.id; param2: SEL;_sender: lobjc.id);cdecl;
 var
   vmethod: TmsgSendWrapper;
 begin
@@ -602,9 +602,9 @@ begin
   vmethod(Handle, sel_registerName(PChar(StrNSFontManager_modifyFont_)), _sender);
 end;
 
-procedure NSFontManager.orderFrontFontPanel_(_sender: objc.id);
+procedure NSFontManager.orderFrontFontPanel_(_sender: lobjc.id);
 type
-  TmsgSendWrapper = procedure (param1: objc.id; param2: SEL;_sender: objc.id);cdecl;
+  TmsgSendWrapper = procedure (param1: lobjc.id; param2: SEL;_sender: lobjc.id);cdecl;
 var
   vmethod: TmsgSendWrapper;
 begin
@@ -612,9 +612,9 @@ begin
   vmethod(Handle, sel_registerName(PChar(StrNSFontManager_orderFrontFontPanel_)), _sender);
 end;
 
-procedure NSFontManager.orderFrontStylesPanel_(_sender: objc.id);
+procedure NSFontManager.orderFrontStylesPanel_(_sender: lobjc.id);
 type
-  TmsgSendWrapper = procedure (param1: objc.id; param2: SEL;_sender: objc.id);cdecl;
+  TmsgSendWrapper = procedure (param1: lobjc.id; param2: SEL;_sender: lobjc.id);cdecl;
 var
   vmethod: TmsgSendWrapper;
 begin

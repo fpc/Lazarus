@@ -55,15 +55,15 @@ FOUNDATION_EXPORT unsigned NSExtraRefCount(id object);}
   NSObject = class
   public
     { class id }
-    ClassId: objc.id;
+    ClassId: lobjc.id;
     { object references }
-    allocbuf, Handle: objc.id;
+    allocbuf, Handle: lobjc.id;
     { Constructor / Destructor }
     constructor Create; virtual;
-    constructor CreateWithHandle(aHandle: objc.id);
+    constructor CreateWithHandle(aHandle: lobjc.id);
     destructor Destroy; override;
     { Extra binding functions }
-    class function getClass: objc.id; virtual;
+    class function getClass: lobjc.id; virtual;
     procedure AddMethods; virtual;
     { Class creation methods }
     procedure AddMethod(aName, aParameters: string; aPointer: Pointer);
@@ -141,9 +141,9 @@ FOUNDATION_EXPORT unsigned NSExtraRefCount(id object);}
 
 - (BOOL)respondsToSelector:(SEL)aSelector;}
 
-    function retain: objc.id;
+    function retain: lobjc.id;
     procedure release;
-    function autorelease: objc.id;
+    function autorelease: lobjc.id;
 {- (unsigned)retainCount;
 
 - (NSString *)description;
@@ -187,7 +187,7 @@ begin
   AddMethods();
 end;
 
-constructor NSObject.CreateWithHandle(aHandle: objc.id);
+constructor NSObject.CreateWithHandle(aHandle: lobjc.id);
 begin
   ClassId := getClass();
   Handle := aHandle;
@@ -198,7 +198,7 @@ begin
   if Handle <> nil then release;
 end;
 
-class function NSObject.getClass: objc.id;
+class function NSObject.getClass: lobjc.id;
 var
   Str: string;
 begin
@@ -302,7 +302,7 @@ end;
 
 procedure NSObject.setVersion(aVersion: PtrInt);
 type
-  TmsgSendWrapper = procedure (param1: objc.id; param2: SEL;_anInt: PtrInt); cdecl;
+  TmsgSendWrapper = procedure (param1: lobjc.id; param2: SEL;_anInt: PtrInt); cdecl;
 var
   vmethod: TmsgSendWrapper;
 begin
@@ -312,7 +312,7 @@ end;
 
 {***************	Basic protocols		***************}
 
-function NSObject.retain: objc.id;
+function NSObject.retain: lobjc.id;
 begin
   Result := objc_msgSend(Handle, sel_registerName(PChar(Str_retain)), []);
 end;
@@ -323,7 +323,7 @@ begin
   Handle:=nil;
 end;
 
-function NSObject.autorelease: objc.id;
+function NSObject.autorelease: lobjc.id;
 begin
   Result := objc_msgSend(Handle, sel_registerName(PChar(Str_autorelease)), []);
 end;

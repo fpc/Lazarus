@@ -39,7 +39,7 @@ const
 
   NSImageRep = class(NSObject)
   public
-    class function getClass: objc.id; override;
+    class function getClass: lobjc.id; override;
     // All instance variables are private
     //  Drawing methods. drawAtPoint: and drawInRect: go through draw after modifying the
     // CTM.
@@ -87,7 +87,7 @@ const
     // by a registered imagerep class after filtering or if the pasteboard contains a filename
     // that can be understood by a registered imagerep class after filtering. If sent to
     // a subclass, does this for just the types understood by the subclass.
-    class function canInitWithPasteboard(_pasteboard: objc.id {NSPasteboard}): LongBool;
+    class function canInitWithPasteboard(_pasteboard: lobjc.id {NSPasteboard}): LongBool;
     //  Convenience methods: Checks to see if the provided file or pasteboard types can
     // be understood by a registered imagerep class after filtering; if so, calls imageRepsWithData:
     // or imageRepWithData:. If sent to a subclass, does this just for the types understood
@@ -96,8 +96,8 @@ const
     constructor imageRepWithContentsOfFile(_filename: CFStringRef);
     class function imageRepsWithContentsOfURL(_url: CFURLRef): CFArrayRef;
     constructor imageRepWithContentsOfURL(_url: CFURLRef);
-    class function imageRepsWithPasteboard(_pasteboard: objc.id {NSPasteboard}): CFArrayRef;
-    constructor imageRepWithPasteboard(_pasteboard: objc.id {NSPasteboard});
+    class function imageRepsWithPasteboard(_pasteboard: lobjc.id {NSPasteboard}): CFArrayRef;
+    constructor imageRepWithPasteboard(_pasteboard: lobjc.id {NSPasteboard});
   end;
 
 {$endif}
@@ -144,7 +144,7 @@ const
 
 { NSImageRep }
 
-class function NSImageRep.getClass: objc.id;
+class function NSImageRep.getClass: lobjc.id;
 begin
   Result := objc_getClass(StrNSImageRep_NSImageRep);
 end;
@@ -156,7 +156,7 @@ end;
 
 function NSImageRep.drawAtPoint(_point: NSPoint): LongBool;
 type
-  TmsgSendWrapper = function (param1: objc.id; param2: SEL;_point: NSPoint): LongBool; cdecl;
+  TmsgSendWrapper = function (param1: lobjc.id; param2: SEL;_point: NSPoint): LongBool; cdecl;
 var
   vmethod: TmsgSendWrapper;
 begin
@@ -166,7 +166,7 @@ end;
 
 function NSImageRep.drawInRect(_rect: NSRect): LongBool;
 type
-  TmsgSendWrapper = function (param1: objc.id; param2: SEL;_rect: NSRect): LongBool; cdecl;
+  TmsgSendWrapper = function (param1: lobjc.id; param2: SEL;_rect: NSRect): LongBool; cdecl;
 var
   vmethod: TmsgSendWrapper;
 begin
@@ -176,7 +176,7 @@ end;
 
 procedure NSImageRep.setSize(_aSize: NSSize);
 type
-  TmsgSendWrapper = procedure (param1: objc.id; param2: SEL;_aSize: NSSize); cdecl;
+  TmsgSendWrapper = procedure (param1: lobjc.id; param2: SEL;_aSize: NSSize); cdecl;
 var
   vmethod: TmsgSendWrapper;
 begin
@@ -191,7 +191,7 @@ end;
 
 procedure NSImageRep.setAlpha(_flag: LongBool);
 type
-  TmsgSendWrapper = procedure (param1: objc.id; param2: SEL;_flag: LongBool); cdecl;
+  TmsgSendWrapper = procedure (param1: lobjc.id; param2: SEL;_flag: LongBool); cdecl;
 var
   vmethod: TmsgSendWrapper;
 begin
@@ -206,7 +206,7 @@ end;
 
 procedure NSImageRep.setOpaque(_flag: LongBool);
 type
-  TmsgSendWrapper = procedure (param1: objc.id; param2: SEL;_flag: LongBool); cdecl;
+  TmsgSendWrapper = procedure (param1: lobjc.id; param2: SEL;_flag: LongBool); cdecl;
 var
   vmethod: TmsgSendWrapper;
 begin
@@ -221,7 +221,7 @@ end;
 
 procedure NSImageRep.setColorSpaceName(__string: CFStringRef);
 type
-  TmsgSendWrapper = procedure (param1: objc.id; param2: SEL;__string: CFStringRef); cdecl;
+  TmsgSendWrapper = procedure (param1: lobjc.id; param2: SEL;__string: CFStringRef); cdecl;
 var
   vmethod: TmsgSendWrapper;
 begin
@@ -236,7 +236,7 @@ end;
 
 procedure NSImageRep.setBitsPerSample(_anInt: Integer);
 type
-  TmsgSendWrapper = procedure (param1: objc.id; param2: SEL;_anInt: Integer); cdecl;
+  TmsgSendWrapper = procedure (param1: lobjc.id; param2: SEL;_anInt: Integer); cdecl;
 var
   vmethod: TmsgSendWrapper;
 begin
@@ -251,7 +251,7 @@ end;
 
 procedure NSImageRep.setPixelsWide(_anInt: Integer);
 type
-  TmsgSendWrapper = procedure (param1: objc.id; param2: SEL;_anInt: Integer); cdecl;
+  TmsgSendWrapper = procedure (param1: lobjc.id; param2: SEL;_anInt: Integer); cdecl;
 var
   vmethod: TmsgSendWrapper;
 begin
@@ -266,7 +266,7 @@ end;
 
 procedure NSImageRep.setPixelsHigh(_anInt: Integer);
 type
-  TmsgSendWrapper = procedure (param1: objc.id; param2: SEL;_anInt: Integer); cdecl;
+  TmsgSendWrapper = procedure (param1: lobjc.id; param2: SEL;_anInt: Integer); cdecl;
 var
   vmethod: TmsgSendWrapper;
 begin
@@ -281,7 +281,7 @@ end;
 
 class procedure NSImageRep.registerImageRepClass(_imageRepClass: _Class);
 type
-  TmsgSendWrapper = procedure (param1: objc.id; param2: SEL;_imageRepClass: _Class); cdecl;
+  TmsgSendWrapper = procedure (param1: lobjc.id; param2: SEL;_imageRepClass: _Class); cdecl;
 var
   vmethod: TmsgSendWrapper;
 begin
@@ -291,7 +291,7 @@ end;
 
 class procedure NSImageRep.unregisterImageRepClass(_imageRepClass: _Class);
 type
-  TmsgSendWrapper = procedure (param1: objc.id; param2: SEL;_imageRepClass: _Class); cdecl;
+  TmsgSendWrapper = procedure (param1: lobjc.id; param2: SEL;_imageRepClass: _Class); cdecl;
 var
   vmethod: TmsgSendWrapper;
 begin
@@ -306,7 +306,7 @@ end;
 
 class function NSImageRep.imageRepClassForFileType(__type: CFStringRef): _Class;
 type
-  TmsgSendWrapper = function (param1: objc.id; param2: SEL;__type: CFStringRef): _Class; cdecl;
+  TmsgSendWrapper = function (param1: lobjc.id; param2: SEL;__type: CFStringRef): _Class; cdecl;
 var
   vmethod: TmsgSendWrapper;
 begin
@@ -316,7 +316,7 @@ end;
 
 class function NSImageRep.imageRepClassForPasteboardType(__type: CFStringRef): _Class;
 type
-  TmsgSendWrapper = function (param1: objc.id; param2: SEL;__type: CFStringRef): _Class; cdecl;
+  TmsgSendWrapper = function (param1: lobjc.id; param2: SEL;__type: CFStringRef): _Class; cdecl;
 var
   vmethod: TmsgSendWrapper;
 begin
@@ -326,7 +326,7 @@ end;
 
 class function NSImageRep.imageRepClassForData(_data: CFDataRef): _Class;
 type
-  TmsgSendWrapper = function (param1: objc.id; param2: SEL;_data: CFDataRef): _Class; cdecl;
+  TmsgSendWrapper = function (param1: lobjc.id; param2: SEL;_data: CFDataRef): _Class; cdecl;
 var
   vmethod: TmsgSendWrapper;
 begin
@@ -336,7 +336,7 @@ end;
 
 class function NSImageRep.canInitWithData(_data: CFDataRef): LongBool;
 type
-  TmsgSendWrapper = function (param1: objc.id; param2: SEL;_data: CFDataRef): LongBool; cdecl;
+  TmsgSendWrapper = function (param1: lobjc.id; param2: SEL;_data: CFDataRef): LongBool; cdecl;
 var
   vmethod: TmsgSendWrapper;
 begin
@@ -364,9 +364,9 @@ begin
   Result := CFArrayRef(objc_msgSend(getClass, sel_registerName(PChar(StrNSImageRep_imagePasteboardTypes)), []));
 end;
 
-class function NSImageRep.canInitWithPasteboard(_pasteboard: objc.id {NSPasteboard}): LongBool;
+class function NSImageRep.canInitWithPasteboard(_pasteboard: lobjc.id {NSPasteboard}): LongBool;
 type
-  TmsgSendWrapper = function (param1: objc.id; param2: SEL;_pasteboard: objc.id {NSPasteboard}): LongBool; cdecl;
+  TmsgSendWrapper = function (param1: lobjc.id; param2: SEL;_pasteboard: lobjc.id {NSPasteboard}): LongBool; cdecl;
 var
   vmethod: TmsgSendWrapper;
 begin
@@ -376,7 +376,7 @@ end;
 
 class function NSImageRep.imageRepsWithContentsOfFile(_filename: CFStringRef): CFArrayRef;
 type
-  TmsgSendWrapper = function (param1: objc.id; param2: SEL;_filename: CFStringRef): CFArrayRef; cdecl;
+  TmsgSendWrapper = function (param1: lobjc.id; param2: SEL;_filename: CFStringRef): CFArrayRef; cdecl;
 var
   vmethod: TmsgSendWrapper;
 begin
@@ -386,7 +386,7 @@ end;
 
 constructor NSImageRep.imageRepWithContentsOfFile(_filename: CFStringRef);
 type
-  TmsgSendWrapper = function (param1: objc.id; param2: SEL;_filename: CFStringRef): objc.id; cdecl;
+  TmsgSendWrapper = function (param1: lobjc.id; param2: SEL;_filename: CFStringRef): lobjc.id; cdecl;
 var
   vmethod: TmsgSendWrapper;
 begin
@@ -397,7 +397,7 @@ end;
 
 class function NSImageRep.imageRepsWithContentsOfURL(_url: CFURLRef): CFArrayRef;
 type
-  TmsgSendWrapper = function (param1: objc.id; param2: SEL;_url: CFURLRef): CFArrayRef; cdecl;
+  TmsgSendWrapper = function (param1: lobjc.id; param2: SEL;_url: CFURLRef): CFArrayRef; cdecl;
 var
   vmethod: TmsgSendWrapper;
 begin
@@ -407,7 +407,7 @@ end;
 
 constructor NSImageRep.imageRepWithContentsOfURL(_url: CFURLRef);
 type
-  TmsgSendWrapper = function (param1: objc.id; param2: SEL;_url: CFURLRef): objc.id; cdecl;
+  TmsgSendWrapper = function (param1: lobjc.id; param2: SEL;_url: CFURLRef): lobjc.id; cdecl;
 var
   vmethod: TmsgSendWrapper;
 begin
@@ -416,9 +416,9 @@ begin
   Handle := vmethod(ClassID, sel_registerName(PChar(StrNSImageRep_imageRepWithContentsOfURL)), _url);
 end;
 
-class function NSImageRep.imageRepsWithPasteboard(_pasteboard: objc.id {NSPasteboard}): CFArrayRef;
+class function NSImageRep.imageRepsWithPasteboard(_pasteboard: lobjc.id {NSPasteboard}): CFArrayRef;
 type
-  TmsgSendWrapper = function (param1: objc.id; param2: SEL;_pasteboard: objc.id {NSPasteboard}): CFArrayRef; cdecl;
+  TmsgSendWrapper = function (param1: lobjc.id; param2: SEL;_pasteboard: lobjc.id {NSPasteboard}): CFArrayRef; cdecl;
 var
   vmethod: TmsgSendWrapper;
 begin
@@ -426,9 +426,9 @@ begin
   Result := CFArrayRef(vmethod(getClass, sel_registerName(PChar(StrNSImageRep_imageRepsWithPasteboard)), _pasteboard));
 end;
 
-constructor NSImageRep.imageRepWithPasteboard(_pasteboard: objc.id {NSPasteboard});
+constructor NSImageRep.imageRepWithPasteboard(_pasteboard: lobjc.id {NSPasteboard});
 type
-  TmsgSendWrapper = function (param1: objc.id; param2: SEL;_pasteboard: objc.id {NSPasteboard}): objc.id; cdecl;
+  TmsgSendWrapper = function (param1: lobjc.id; param2: SEL;_pasteboard: lobjc.id {NSPasteboard}): lobjc.id; cdecl;
 var
   vmethod: TmsgSendWrapper;
 begin

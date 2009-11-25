@@ -7,7 +7,7 @@ unit cocoa_pkg;
 interface
 
 uses
-  appkit, foundation, objc, LazarusPackageIntf; 
+  appkit, foundation, lobjc, LazarusPackageIntf; 
 
 implementation
 

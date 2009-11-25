@@ -129,7 +129,7 @@ type
 
   NSWindow = class(NSResponder)
   public
-    class function getClass: objc.id; override;
+    class function getClass: lobjc.id; override;
     // All instance variables are private
     class function frameRectForContentRect_styleMask(_cRect: NSRect; _aStyle: LongWord): NSRect;
     class function contentRectForFrameRect_styleMask(_fRect: NSRect; _aStyle: LongWord): NSRect;
@@ -140,7 +140,7 @@ type
     function contentRectForFrameRect(_frameRect: NSRect): NSRect;
     {.$endif}
     constructor initWithContentRect_styleMask_backing_defer(_contentRect: NSRect; _aStyle: LongWord; _bufferingType: NSBackingStoreType; _flag: LongBool);
-    constructor initWithContentRect_styleMask_backing_defer_screen(_contentRect: NSRect; _aStyle: LongWord; _bufferingType: NSBackingStoreType; _flag: LongBool; _screen: objc.id {NSScreen});
+    constructor initWithContentRect_styleMask_backing_defer_screen(_contentRect: NSRect; _aStyle: LongWord; _bufferingType: NSBackingStoreType; _flag: LongBool; _screen: lobjc.id {NSScreen});
     function title: CFStringRef;
     procedure setTitle(_aString: CFStringRef);
     function representedFilename: CFStringRef;
@@ -148,15 +148,15 @@ type
     procedure setTitleWithRepresentedFilename(_filename: CFStringRef);
     procedure setExcludedFromWindowsMenu(_flag: LongBool);
     function isExcludedFromWindowsMenu: LongBool;
-    procedure setContentView(_aView: objc.id {NSView});
-    function contentView: objc.id;
-    procedure setDelegate(_anObject: objc.id);
-    function delegate: objc.id;
+    procedure setContentView(_aView: lobjc.id {NSView});
+    function contentView: lobjc.id;
+    procedure setDelegate(_anObject: lobjc.id);
+    function delegate: lobjc.id;
     function windowNumber: Integer;
     function styleMask: LongWord;
-    function fieldEditor_forObject(_createFlag: LongBool; _anObject: objc.id): objc.id;{NSText}
-    procedure endEditingFor(_anObject: objc.id);
-    function constrainFrameRect_toScreen(_frameRect: NSRect; _screen: objc.id {NSScreen}): NSRect;
+    function fieldEditor_forObject(_createFlag: LongBool; _anObject: lobjc.id): lobjc.id;{NSText}
+    procedure endEditingFor(_anObject: lobjc.id);
+    function constrainFrameRect_toScreen(_frameRect: NSRect; _screen: lobjc.id {NSScreen}): NSRect;
     procedure setFrame_display(_frameRect: NSRect; _flag: LongBool);
     procedure setContentSize(_aSize: NSSize);
     procedure setFrameOrigin(_aPoint: NSPoint);
@@ -202,22 +202,22 @@ type
     procedure setPreservesContentDuringLiveResize(_flag: LongBool);
     {.$endif}
     procedure update;
-    function makeFirstResponder(_aResponder: objc.id {NSResponder}): LongBool;
-    function firstResponder: objc.id;{NSResponder}
+    function makeFirstResponder(_aResponder: lobjc.id {NSResponder}): LongBool;
+    function firstResponder: lobjc.id;{NSResponder}
     function resizeFlags: Integer;
-    procedure keyDown(_theEvent: objc.id {NSEvent});
+    procedure keyDown(_theEvent: lobjc.id {NSEvent});
     procedure close;
     procedure setReleasedWhenClosed(_flag: LongBool);
     function isReleasedWhenClosed: LongBool;
-    procedure miniaturize(_sender: objc.id);
-    procedure deminiaturize(_sender: objc.id);
+    procedure miniaturize(_sender: lobjc.id);
+    procedure deminiaturize(_sender: lobjc.id);
     function isZoomed: LongBool;
-    procedure zoom(_sender: objc.id);
+    procedure zoom(_sender: lobjc.id);
     function isMiniaturized: LongBool;
-    function tryToPerform_with(_anAction: SEL; _anObject: objc.id): LongBool;
-    function validRequestorForSendType_returnType(_sendType: CFStringRef; _returnType: CFStringRef): objc.id;
-    procedure setBackgroundColor(_color: objc.id {NSColor});
-    function backgroundColor: objc.id;{NSColor}
+    function tryToPerform_with(_anAction: SEL; _anObject: lobjc.id): LongBool;
+    function validRequestorForSendType_returnType(_sendType: CFStringRef; _returnType: CFStringRef): lobjc.id;
+    procedure setBackgroundColor(_color: lobjc.id {NSColor});
+    function backgroundColor: lobjc.id;{NSColor}
     {.$ifdef  MAC_OS_X_VERSION_MAX_ALLOWED >= MAC_OS_X_VERSION_10_2}
     procedure setMovableByWindowBackground(_flag: LongBool);
     function isMovableByWindowBackground: LongBool;
@@ -229,15 +229,15 @@ type
     procedure setCanHide(_flag: LongBool);
     function canHide: LongBool;
     procedure center;
-    procedure makeKeyAndOrderFront(_sender: objc.id);
-    procedure orderFront(_sender: objc.id);
-    procedure orderBack(_sender: objc.id);
-    procedure orderOut(_sender: objc.id);
+    procedure makeKeyAndOrderFront(_sender: lobjc.id);
+    procedure orderFront(_sender: lobjc.id);
+    procedure orderBack(_sender: lobjc.id);
+    procedure orderOut(_sender: lobjc.id);
     procedure orderWindow_relativeTo(_place: NSWindowOrderingMode; _otherWin: Integer);
     procedure orderFrontRegardless;
-    procedure setMiniwindowImage(_image: objc.id {NSImage});
+    procedure setMiniwindowImage(_image: lobjc.id {NSImage});
     procedure setMiniwindowTitle(_title: CFStringRef);
-    function miniwindowImage: objc.id;{NSImage}
+    function miniwindowImage: lobjc.id;{NSImage}
     function miniwindowTitle: CFStringRef;
     procedure setDocumentEdited(_flag: LongBool);
     function isDocumentEdited: LongBool;
@@ -255,20 +255,20 @@ type
     function worksWhenModal: LongBool;
     function convertBaseToScreen(_aPoint: NSPoint): NSPoint;
     function convertScreenToBase(_aPoint: NSPoint): NSPoint;
-    procedure performClose(_sender: objc.id);
-    procedure performMiniaturize(_sender: objc.id);
-    procedure performZoom(_sender: objc.id);
+    procedure performClose(_sender: lobjc.id);
+    procedure performMiniaturize(_sender: lobjc.id);
+    procedure performZoom(_sender: lobjc.id);
     function gState: Integer;
     procedure setOneShot(_flag: LongBool);
     function isOneShot: LongBool;
     function dataWithEPSInsideRect(_rect: NSRect): CFDataRef;
     function dataWithPDFInsideRect(_rect: NSRect): CFDataRef;
-    procedure print(_sender: objc.id);
+    procedure print(_sender: lobjc.id);
     procedure disableCursorRects;
     procedure enableCursorRects;
     procedure discardCursorRects;
     function areCursorRectsEnabled: LongBool;
-    procedure invalidateCursorRectsForView(_aView: objc.id {NSView});
+    procedure invalidateCursorRectsForView(_aView: lobjc.id {NSView});
     procedure resetCursorRects;
     {.$ifdef  MAC_OS_X_VERSION_MAX_ALLOWED >= MAC_OS_X_VERSION_10_3}
     procedure setAllowsToolTipsWhenApplicationIsInactive(_allowWhenInactive: LongBool);
@@ -286,8 +286,8 @@ type
     function depthLimit: NSWindowDepth;
     procedure setDynamicDepthLimit(_flag: LongBool);
     function hasDynamicDepthLimit: LongBool;
-    function screen: objc.id;{NSScreen}
-    function deepestScreen: objc.id;{NSScreen}
+    function screen: lobjc.id;{NSScreen}
+    function deepestScreen: lobjc.id;{NSScreen}
     function canStoreColor: LongBool;
     procedure setHasShadow(_hasShadow: LongBool);
     function hasShadow: LongBool;
@@ -325,11 +325,11 @@ type
     procedure setContentMinSize(_size: NSSize);
     procedure setContentMaxSize(_size: NSSize);
     {.$endif}
-    function nextEventMatchingMask(_mask: LongWord): objc.id;{NSEvent}
-    function nextEventMatchingMask_untilDate_inMode_dequeue(_mask: LongWord; _expiration: CFDateRef; _mode: CFStringRef; _deqFlag: LongBool): objc.id;{NSEvent}
-    procedure discardEventsMatchingMask_beforeEvent(_mask: LongWord; _lastEvent: objc.id {NSEvent});
-    procedure postEvent_atStart(_event: objc.id {NSEvent}; _flag: LongBool);
-    function currentEvent: objc.id;{NSEvent}
+    function nextEventMatchingMask(_mask: LongWord): lobjc.id;{NSEvent}
+    function nextEventMatchingMask_untilDate_inMode_dequeue(_mask: LongWord; _expiration: CFDateRef; _mode: CFStringRef; _deqFlag: LongBool): lobjc.id;{NSEvent}
+    procedure discardEventsMatchingMask_beforeEvent(_mask: LongWord; _lastEvent: lobjc.id {NSEvent});
+    procedure postEvent_atStart(_event: lobjc.id {NSEvent}; _flag: LongBool);
+    function currentEvent: lobjc.id;{NSEvent}
     procedure setAcceptsMouseMovedEvents(_flag: LongBool);
     function acceptsMouseMovedEvents: LongBool;
     {.$ifdef  MAC_OS_X_VERSION_MAX_ALLOWED >= MAC_OS_X_VERSION_10_2}
@@ -337,41 +337,41 @@ type
     function ignoresMouseEvents: LongBool;
     {.$endif}
     function deviceDescription: CFDictionaryRef;
-    procedure sendEvent(_theEvent: objc.id {NSEvent});
+    procedure sendEvent(_theEvent: lobjc.id {NSEvent});
     function mouseLocationOutsideOfEventStream: NSPoint;
-    class procedure menuChanged(_menu: objc.id {NSMenu});
-    function windowController: objc.id;
-    procedure setWindowController(_windowController: objc.id {NSWindowController});
+    class procedure menuChanged(_menu: lobjc.id {NSMenu});
+    function windowController: lobjc.id;
+    procedure setWindowController(_windowController: lobjc.id {NSWindowController});
     function isSheet: LongBool;
-    function attachedSheet: objc.id;{NSWindow}
+    function attachedSheet: lobjc.id;{NSWindow}
     {.$ifdef  MAC_OS_X_VERSION_MAX_ALLOWED >= MAC_OS_X_VERSION_10_2}
-    class function standardWindowButton_forStyleMask(_b: NSWindowButton; _styleMask: LongWord): objc.id;{NSButton}
-    function standardWindowButton(_b: NSWindowButton): objc.id;{NSButton}
+    class function standardWindowButton_forStyleMask(_b: NSWindowButton; _styleMask: LongWord): lobjc.id;{NSButton}
+    function standardWindowButton(_b: NSWindowButton): lobjc.id;{NSButton}
     {.$endif}
     {.$ifdef  MAC_OS_X_VERSION_MAX_ALLOWED >= MAC_OS_X_VERSION_10_2}
-    procedure addChildWindow_ordered(_childWin: objc.id {NSWindow}; _place: NSWindowOrderingMode);
-    procedure removeChildWindow(_childWin: objc.id {NSWindow});
+    procedure addChildWindow_ordered(_childWin: lobjc.id {NSWindow}; _place: NSWindowOrderingMode);
+    procedure removeChildWindow(_childWin: lobjc.id {NSWindow});
     function childWindows: CFArrayRef;
-    function parentWindow: objc.id;{NSWindow}
-    procedure setParentWindow(_window: objc.id {NSWindow});
+    function parentWindow: lobjc.id;{NSWindow}
+    procedure setParentWindow(_window: lobjc.id {NSWindow});
     {.$endif}
     {.$ifdef  MAC_OS_X_VERSION_MAX_ALLOWED >= MAC_OS_X_VERSION_10_4}
     //  Returns NSGraphicsContext used to render the receiver's content on the screen for
     // the calling thread.
-    function graphicsContext: objc.id;{NSGraphicsContext}
+    function graphicsContext: lobjc.id;{NSGraphicsContext}
     //  Returns scale factor applied to view coordinate system to get to base coordinate
     // system of window
     function userSpaceScaleFactor: Single;
     {.$endif}
-    procedure setInitialFirstResponder(_view: objc.id {NSView});
-    function initialFirstResponder: objc.id;{NSView}
-    procedure selectNextKeyView(_sender: objc.id);
-    procedure selectPreviousKeyView(_sender: objc.id);
-    procedure selectKeyViewFollowingView(_aView: objc.id {NSView});
-    procedure selectKeyViewPrecedingView(_aView: objc.id {NSView});
+    procedure setInitialFirstResponder(_view: lobjc.id {NSView});
+    function initialFirstResponder: lobjc.id;{NSView}
+    procedure selectNextKeyView(_sender: lobjc.id);
+    procedure selectPreviousKeyView(_sender: lobjc.id);
+    procedure selectKeyViewFollowingView(_aView: lobjc.id {NSView});
+    procedure selectKeyViewPrecedingView(_aView: lobjc.id {NSView});
     function keyViewSelectionDirection: NSSelectionDirection;
-    procedure setDefaultButtonCell(_defButt: objc.id {NSButtonCell});
-    function defaultButtonCell: objc.id;{NSButtonCell}
+    procedure setDefaultButtonCell(_defButt: lobjc.id {NSButtonCell});
+    function defaultButtonCell: lobjc.id;{NSButtonCell}
     procedure disableKeyEquivalentForDefaultButtonCell;
     procedure enableKeyEquivalentForDefaultButtonCell;
     {.$ifdef  MAC_OS_X_VERSION_MAX_ALLOWED >= MAC_OS_X_VERSION_10_4}
@@ -379,15 +379,15 @@ type
     function autorecalculatesKeyViewLoop: LongBool;
     procedure recalculateKeyViewLoop;
     {.$endif}
-    procedure setToolbar(_toolbar: objc.id {NSToolbar});
-    function toolbar: objc.id;{NSToolbar}
-    procedure toggleToolbarShown(_sender: objc.id);
-    procedure runToolbarCustomizationPalette(_sender: objc.id);
+    procedure setToolbar(_toolbar: lobjc.id {NSToolbar});
+    function toolbar: lobjc.id;{NSToolbar}
+    procedure toggleToolbarShown(_sender: lobjc.id);
+    procedure runToolbarCustomizationPalette(_sender: lobjc.id);
     {.$ifdef  MAC_OS_X_VERSION_MAX_ALLOWED >= MAC_OS_X_VERSION_10_4}
     procedure setShowsToolbarButton(_show: LongBool);
     function showsToolbarButton: LongBool;
     {.$endif}
-    procedure dragImage_at_offset_event_pasteboard_source_slideBack(_anImage: objc.id {NSImage}; _baseLocation: NSPoint; _initialOffset: NSSize; _event: objc.id {NSEvent}; _pboard: objc.id {NSPasteboard}; _sourceObj: objc.id; _slideFlag: LongBool);
+    procedure dragImage_at_offset_event_pasteboard_source_slideBack(_anImage: lobjc.id {NSImage}; _baseLocation: NSPoint; _initialOffset: NSSize; _event: lobjc.id {NSEvent}; _pboard: lobjc.id {NSPasteboard}; _sourceObj: lobjc.id; _slideFlag: LongBool);
     procedure registerForDraggedTypes(_newTypes: CFArrayRef);
     procedure unregisterDraggedTypes;
     function windowHandle: Pointer;
@@ -629,14 +629,14 @@ const
 
 { NSWindow }
 
-class function NSWindow.getClass: objc.id;
+class function NSWindow.getClass: lobjc.id;
 begin
   Result := objc_getClass(StrNSWindow_NSWindow);
 end;
 
 class function NSWindow.frameRectForContentRect_styleMask(_cRect: NSRect; _aStyle: LongWord): NSRect;
 type
-  TmsgSendWrapper = procedure (result_param: Pointer; param1: objc.id; param2: SEL;_cRect: NSRect; _aStyle: LongWord); cdecl;
+  TmsgSendWrapper = procedure (result_param: Pointer; param1: lobjc.id; param2: SEL;_cRect: NSRect; _aStyle: LongWord); cdecl;
 var
   vmethod: TmsgSendWrapper;
 begin
@@ -646,7 +646,7 @@ end;
 
 class function NSWindow.contentRectForFrameRect_styleMask(_fRect: NSRect; _aStyle: LongWord): NSRect;
 type
-  TmsgSendWrapper = procedure (result_param: Pointer; param1: objc.id; param2: SEL;_fRect: NSRect; _aStyle: LongWord); cdecl;
+  TmsgSendWrapper = procedure (result_param: Pointer; param1: lobjc.id; param2: SEL;_fRect: NSRect; _aStyle: LongWord); cdecl;
 var
   vmethod: TmsgSendWrapper;
 begin
@@ -656,7 +656,7 @@ end;
 
 class function NSWindow.minFrameWidthWithTitle_styleMask(_aTitle: CFStringRef; _aStyle: LongWord): Single;
 type
-  TmsgSendWrapper = function (param1: objc.id; param2: SEL;_aTitle: CFStringRef; _aStyle: LongWord): Single; cdecl;
+  TmsgSendWrapper = function (param1: lobjc.id; param2: SEL;_aTitle: CFStringRef; _aStyle: LongWord): Single; cdecl;
 var
   vmethod: TmsgSendWrapper;
 begin
@@ -672,7 +672,7 @@ end;
 {.$ifdef  MAC_OS_X_VERSION_MAX_ALLOWED >= MAC_OS_X_VERSION_10_3}
 function NSWindow.frameRectForContentRect(_contentRect: NSRect): NSRect;
 type
-  TmsgSendWrapper = procedure (result_param: Pointer; param1: objc.id; param2: SEL;_contentRect: NSRect); cdecl;
+  TmsgSendWrapper = procedure (result_param: Pointer; param1: lobjc.id; param2: SEL;_contentRect: NSRect); cdecl;
 var
   vmethod: TmsgSendWrapper;
 begin
@@ -682,7 +682,7 @@ end;
 
 function NSWindow.contentRectForFrameRect(_frameRect: NSRect): NSRect;
 type
-  TmsgSendWrapper = procedure (result_param: Pointer; param1: objc.id; param2: SEL;_frameRect: NSRect); cdecl;
+  TmsgSendWrapper = procedure (result_param: Pointer; param1: lobjc.id; param2: SEL;_frameRect: NSRect); cdecl;
 var
   vmethod: TmsgSendWrapper;
 begin
@@ -693,7 +693,7 @@ end;
 {.$endif}
 constructor NSWindow.initWithContentRect_styleMask_backing_defer(_contentRect: NSRect; _aStyle: LongWord; _bufferingType: NSBackingStoreType; _flag: LongBool);
 type
-  TmsgSendWrapper = function (param1: objc.id; param2: SEL;_contentRect: NSRect; _aStyle: LongWord; _bufferingType: NSBackingStoreType; _flag: LongBool): objc.id; cdecl;
+  TmsgSendWrapper = function (param1: lobjc.id; param2: SEL;_contentRect: NSRect; _aStyle: LongWord; _bufferingType: NSBackingStoreType; _flag: LongBool): lobjc.id; cdecl;
 var
   vmethod: TmsgSendWrapper;
 begin
@@ -703,9 +703,9 @@ begin
   Handle := vmethod(allocbuf, sel_registerName(PChar(StrNSWindow_initWithContentRect_styleMask_backing_defer)), _contentRect, _aStyle, _bufferingType, _flag);
 end;
 
-constructor NSWindow.initWithContentRect_styleMask_backing_defer_screen(_contentRect: NSRect; _aStyle: LongWord; _bufferingType: NSBackingStoreType; _flag: LongBool; _screen: objc.id {NSScreen});
+constructor NSWindow.initWithContentRect_styleMask_backing_defer_screen(_contentRect: NSRect; _aStyle: LongWord; _bufferingType: NSBackingStoreType; _flag: LongBool; _screen: lobjc.id {NSScreen});
 type
-  TmsgSendWrapper = function (param1: objc.id; param2: SEL;_contentRect: NSRect; _aStyle: LongWord; _bufferingType: NSBackingStoreType; _flag: LongBool; _screen: objc.id {NSScreen}): objc.id; cdecl;
+  TmsgSendWrapper = function (param1: lobjc.id; param2: SEL;_contentRect: NSRect; _aStyle: LongWord; _bufferingType: NSBackingStoreType; _flag: LongBool; _screen: lobjc.id {NSScreen}): lobjc.id; cdecl;
 var
   vmethod: TmsgSendWrapper;
 begin
@@ -722,7 +722,7 @@ end;
 
 procedure NSWindow.setTitle(_aString: CFStringRef);
 type
-  TmsgSendWrapper = procedure (param1: objc.id; param2: SEL;_aString: CFStringRef); cdecl;
+  TmsgSendWrapper = procedure (param1: lobjc.id; param2: SEL;_aString: CFStringRef); cdecl;
 var
   vmethod: TmsgSendWrapper;
 begin
@@ -737,7 +737,7 @@ end;
 
 procedure NSWindow.setRepresentedFilename(_aString: CFStringRef);
 type
-  TmsgSendWrapper = procedure (param1: objc.id; param2: SEL;_aString: CFStringRef); cdecl;
+  TmsgSendWrapper = procedure (param1: lobjc.id; param2: SEL;_aString: CFStringRef); cdecl;
 var
   vmethod: TmsgSendWrapper;
 begin
@@ -747,7 +747,7 @@ end;
 
 procedure NSWindow.setTitleWithRepresentedFilename(_filename: CFStringRef);
 type
-  TmsgSendWrapper = procedure (param1: objc.id; param2: SEL;_filename: CFStringRef); cdecl;
+  TmsgSendWrapper = procedure (param1: lobjc.id; param2: SEL;_filename: CFStringRef); cdecl;
 var
   vmethod: TmsgSendWrapper;
 begin
@@ -757,7 +757,7 @@ end;
 
 procedure NSWindow.setExcludedFromWindowsMenu(_flag: LongBool);
 type
-  TmsgSendWrapper = procedure (param1: objc.id; param2: SEL;_flag: LongBool); cdecl;
+  TmsgSendWrapper = procedure (param1: lobjc.id; param2: SEL;_flag: LongBool); cdecl;
 var
   vmethod: TmsgSendWrapper;
 begin
@@ -770,9 +770,9 @@ begin
   Result := LongBool(objc_msgSend(Handle, sel_registerName(PChar(StrNSWindow_isExcludedFromWindowsMenu)), []));
 end;
 
-procedure NSWindow.setContentView(_aView: objc.id {NSView});
+procedure NSWindow.setContentView(_aView: lobjc.id {NSView});
 type
-  TmsgSendWrapper = procedure (param1: objc.id; param2: SEL;_aView: objc.id {NSView}); cdecl;
+  TmsgSendWrapper = procedure (param1: lobjc.id; param2: SEL;_aView: lobjc.id {NSView}); cdecl;
 var
   vmethod: TmsgSendWrapper;
 begin
@@ -780,14 +780,14 @@ begin
   vmethod(Handle, sel_registerName(PChar(StrNSWindow_setContentView)), _aView);
 end;
 
-function NSWindow.contentView: objc.id;
+function NSWindow.contentView: lobjc.id;
 begin
-  Result := objc.id(objc_msgSend(Handle, sel_registerName(PChar(StrNSWindow_contentView)), []));
+  Result := lobjc.id(objc_msgSend(Handle, sel_registerName(PChar(StrNSWindow_contentView)), []));
 end;
 
-procedure NSWindow.setDelegate(_anObject: objc.id);
+procedure NSWindow.setDelegate(_anObject: lobjc.id);
 type
-  TmsgSendWrapper = procedure (param1: objc.id; param2: SEL;_anObject: objc.id); cdecl;
+  TmsgSendWrapper = procedure (param1: lobjc.id; param2: SEL;_anObject: lobjc.id); cdecl;
 var
   vmethod: TmsgSendWrapper;
 begin
@@ -795,9 +795,9 @@ begin
   vmethod(Handle, sel_registerName(PChar(StrNSWindow_setDelegate)), _anObject);
 end;
 
-function NSWindow.delegate: objc.id;
+function NSWindow.delegate: lobjc.id;
 begin
-  Result := objc.id(objc_msgSend(Handle, sel_registerName(PChar(StrNSWindow_delegate)), []));
+  Result := lobjc.id(objc_msgSend(Handle, sel_registerName(PChar(StrNSWindow_delegate)), []));
 end;
 
 function NSWindow.windowNumber: Integer;
@@ -810,19 +810,19 @@ begin
   Result := LongWord(objc_msgSend(Handle, sel_registerName(PChar(StrNSWindow_styleMask)), []));
 end;
 
-function NSWindow.fieldEditor_forObject(_createFlag: LongBool; _anObject: objc.id): objc.id;
+function NSWindow.fieldEditor_forObject(_createFlag: LongBool; _anObject: lobjc.id): lobjc.id;
 type
-  TmsgSendWrapper = function (param1: objc.id; param2: SEL;_createFlag: LongBool; _anObject: objc.id): objc.id; cdecl;
+  TmsgSendWrapper = function (param1: lobjc.id; param2: SEL;_createFlag: LongBool; _anObject: lobjc.id): lobjc.id; cdecl;
 var
   vmethod: TmsgSendWrapper;
 begin
   vmethod := TmsgSendWrapper(@objc_msgSend);
-  Result := objc.id(vmethod(Handle, sel_registerName(PChar(StrNSWindow_fieldEditor_forObject)), _createFlag, _anObject));
+  Result := lobjc.id(vmethod(Handle, sel_registerName(PChar(StrNSWindow_fieldEditor_forObject)), _createFlag, _anObject));
 end;
 
-procedure NSWindow.endEditingFor(_anObject: objc.id);
+procedure NSWindow.endEditingFor(_anObject: lobjc.id);
 type
-  TmsgSendWrapper = procedure (param1: objc.id; param2: SEL;_anObject: objc.id); cdecl;
+  TmsgSendWrapper = procedure (param1: lobjc.id; param2: SEL;_anObject: lobjc.id); cdecl;
 var
   vmethod: TmsgSendWrapper;
 begin
@@ -830,9 +830,9 @@ begin
   vmethod(Handle, sel_registerName(PChar(StrNSWindow_endEditingFor)), _anObject);
 end;
 
-function NSWindow.constrainFrameRect_toScreen(_frameRect: NSRect; _screen: objc.id {NSScreen}): NSRect;
+function NSWindow.constrainFrameRect_toScreen(_frameRect: NSRect; _screen: lobjc.id {NSScreen}): NSRect;
 type
-  TmsgSendWrapper = procedure (result_param: Pointer; param1: objc.id; param2: SEL;_frameRect: NSRect; _screen: objc.id {NSScreen}); cdecl;
+  TmsgSendWrapper = procedure (result_param: Pointer; param1: lobjc.id; param2: SEL;_frameRect: NSRect; _screen: lobjc.id {NSScreen}); cdecl;
 var
   vmethod: TmsgSendWrapper;
 begin
@@ -842,7 +842,7 @@ end;
 
 procedure NSWindow.setFrame_display(_frameRect: NSRect; _flag: LongBool);
 type
-  TmsgSendWrapper = procedure (param1: objc.id; param2: SEL;_frameRect: NSRect; _flag: LongBool); cdecl;
+  TmsgSendWrapper = procedure (param1: lobjc.id; param2: SEL;_frameRect: NSRect; _flag: LongBool); cdecl;
 var
   vmethod: TmsgSendWrapper;
 begin
@@ -852,7 +852,7 @@ end;
 
 procedure NSWindow.setContentSize(_aSize: NSSize);
 type
-  TmsgSendWrapper = procedure (param1: objc.id; param2: SEL;_aSize: NSSize); cdecl;
+  TmsgSendWrapper = procedure (param1: lobjc.id; param2: SEL;_aSize: NSSize); cdecl;
 var
   vmethod: TmsgSendWrapper;
 begin
@@ -862,7 +862,7 @@ end;
 
 procedure NSWindow.setFrameOrigin(_aPoint: NSPoint);
 type
-  TmsgSendWrapper = procedure (param1: objc.id; param2: SEL;_aPoint: NSPoint); cdecl;
+  TmsgSendWrapper = procedure (param1: lobjc.id; param2: SEL;_aPoint: NSPoint); cdecl;
 var
   vmethod: TmsgSendWrapper;
 begin
@@ -872,7 +872,7 @@ end;
 
 procedure NSWindow.setFrameTopLeftPoint(_aPoint: NSPoint);
 type
-  TmsgSendWrapper = procedure (param1: objc.id; param2: SEL;_aPoint: NSPoint); cdecl;
+  TmsgSendWrapper = procedure (param1: lobjc.id; param2: SEL;_aPoint: NSPoint); cdecl;
 var
   vmethod: TmsgSendWrapper;
 begin
@@ -882,7 +882,7 @@ end;
 
 function NSWindow.cascadeTopLeftFromPoint(_topLeftPoint: NSPoint): NSPoint;
 type
-  TmsgSendWrapper = procedure (result_param: Pointer; param1: objc.id; param2: SEL;_topLeftPoint: NSPoint); cdecl;
+  TmsgSendWrapper = procedure (result_param: Pointer; param1: lobjc.id; param2: SEL;_topLeftPoint: NSPoint); cdecl;
 var
   vmethod: TmsgSendWrapper;
 begin
@@ -897,7 +897,7 @@ end;
 
 function NSWindow.animationResizeTime(_newFrame: NSRect): NSTimeInterval;
 type
-  TmsgSendWrapper = function (param1: objc.id; param2: SEL;_newFrame: NSRect): NSTimeInterval; cdecl;
+  TmsgSendWrapper = function (param1: lobjc.id; param2: SEL;_newFrame: NSRect): NSTimeInterval; cdecl;
 var
   vmethod: TmsgSendWrapper;
 begin
@@ -907,7 +907,7 @@ end;
 
 procedure NSWindow.setFrame_display_animate(_frameRect: NSRect; _displayFlag: LongBool; _animateFlag: LongBool);
 type
-  TmsgSendWrapper = procedure (param1: objc.id; param2: SEL;_frameRect: NSRect; _displayFlag: LongBool; _animateFlag: LongBool); cdecl;
+  TmsgSendWrapper = procedure (param1: lobjc.id; param2: SEL;_frameRect: NSRect; _displayFlag: LongBool; _animateFlag: LongBool); cdecl;
 var
   vmethod: TmsgSendWrapper;
 begin
@@ -917,7 +917,7 @@ end;
 
 procedure NSWindow.setShowsResizeIndicator(_show: LongBool);
 type
-  TmsgSendWrapper = procedure (param1: objc.id; param2: SEL;_show: LongBool); cdecl;
+  TmsgSendWrapper = procedure (param1: lobjc.id; param2: SEL;_show: LongBool); cdecl;
 var
   vmethod: TmsgSendWrapper;
 begin
@@ -932,7 +932,7 @@ end;
 
 procedure NSWindow.setResizeIncrements(_increments: NSSize);
 type
-  TmsgSendWrapper = procedure (param1: objc.id; param2: SEL;_increments: NSSize); cdecl;
+  TmsgSendWrapper = procedure (param1: lobjc.id; param2: SEL;_increments: NSSize); cdecl;
 var
   vmethod: TmsgSendWrapper;
 begin
@@ -947,7 +947,7 @@ end;
 
 procedure NSWindow.setAspectRatio(_ratio: NSSize);
 type
-  TmsgSendWrapper = procedure (param1: objc.id; param2: SEL;_ratio: NSSize); cdecl;
+  TmsgSendWrapper = procedure (param1: lobjc.id; param2: SEL;_ratio: NSSize); cdecl;
 var
   vmethod: TmsgSendWrapper;
 begin
@@ -963,7 +963,7 @@ end;
 {.$ifdef  MAC_OS_X_VERSION_MAX_ALLOWED >= MAC_OS_X_VERSION_10_3}
 procedure NSWindow.setContentResizeIncrements(_increments: NSSize);
 type
-  TmsgSendWrapper = procedure (param1: objc.id; param2: SEL;_increments: NSSize); cdecl;
+  TmsgSendWrapper = procedure (param1: lobjc.id; param2: SEL;_increments: NSSize); cdecl;
 var
   vmethod: TmsgSendWrapper;
 begin
@@ -978,7 +978,7 @@ end;
 
 procedure NSWindow.setContentAspectRatio(_ratio: NSSize);
 type
-  TmsgSendWrapper = procedure (param1: objc.id; param2: SEL;_ratio: NSSize); cdecl;
+  TmsgSendWrapper = procedure (param1: lobjc.id; param2: SEL;_ratio: NSSize); cdecl;
 var
   vmethod: TmsgSendWrapper;
 begin
@@ -994,7 +994,7 @@ end;
 {.$endif}
 procedure NSWindow.useOptimizedDrawing(_flag: LongBool);
 type
-  TmsgSendWrapper = procedure (param1: objc.id; param2: SEL;_flag: LongBool); cdecl;
+  TmsgSendWrapper = procedure (param1: lobjc.id; param2: SEL;_flag: LongBool); cdecl;
 var
   vmethod: TmsgSendWrapper;
 begin
@@ -1029,7 +1029,7 @@ end;
 
 procedure NSWindow.setViewsNeedDisplay(_flag: LongBool);
 type
-  TmsgSendWrapper = procedure (param1: objc.id; param2: SEL;_flag: LongBool); cdecl;
+  TmsgSendWrapper = procedure (param1: lobjc.id; param2: SEL;_flag: LongBool); cdecl;
 var
   vmethod: TmsgSendWrapper;
 begin
@@ -1054,7 +1054,7 @@ end;
 
 procedure NSWindow.setAutodisplay(_flag: LongBool);
 type
-  TmsgSendWrapper = procedure (param1: objc.id; param2: SEL;_flag: LongBool); cdecl;
+  TmsgSendWrapper = procedure (param1: lobjc.id; param2: SEL;_flag: LongBool); cdecl;
 var
   vmethod: TmsgSendWrapper;
 begin
@@ -1075,7 +1075,7 @@ end;
 
 procedure NSWindow.setPreservesContentDuringLiveResize(_flag: LongBool);
 type
-  TmsgSendWrapper = procedure (param1: objc.id; param2: SEL;_flag: LongBool); cdecl;
+  TmsgSendWrapper = procedure (param1: lobjc.id; param2: SEL;_flag: LongBool); cdecl;
 var
   vmethod: TmsgSendWrapper;
 begin
@@ -1089,9 +1089,9 @@ begin
   objc_msgSend(Handle, sel_registerName(PChar(StrNSWindow_update)), []);
 end;
 
-function NSWindow.makeFirstResponder(_aResponder: objc.id {NSResponder}): LongBool;
+function NSWindow.makeFirstResponder(_aResponder: lobjc.id {NSResponder}): LongBool;
 type
-  TmsgSendWrapper = function (param1: objc.id; param2: SEL;_aResponder: objc.id {NSResponder}): LongBool; cdecl;
+  TmsgSendWrapper = function (param1: lobjc.id; param2: SEL;_aResponder: lobjc.id {NSResponder}): LongBool; cdecl;
 var
   vmethod: TmsgSendWrapper;
 begin
@@ -1099,9 +1099,9 @@ begin
   Result := LongBool(vmethod(Handle, sel_registerName(PChar(StrNSWindow_makeFirstResponder)), _aResponder));
 end;
 
-function NSWindow.firstResponder: objc.id;
+function NSWindow.firstResponder: lobjc.id;
 begin
-  Result := objc.id(objc_msgSend(Handle, sel_registerName(PChar(StrNSWindow_firstResponder)), []));
+  Result := lobjc.id(objc_msgSend(Handle, sel_registerName(PChar(StrNSWindow_firstResponder)), []));
 end;
 
 function NSWindow.resizeFlags: Integer;
@@ -1109,9 +1109,9 @@ begin
   Result := Integer(objc_msgSend(Handle, sel_registerName(PChar(StrNSWindow_resizeFlags)), []));
 end;
 
-procedure NSWindow.keyDown(_theEvent: objc.id {NSEvent});
+procedure NSWindow.keyDown(_theEvent: lobjc.id {NSEvent});
 type
-  TmsgSendWrapper = procedure (param1: objc.id; param2: SEL;_theEvent: objc.id {NSEvent}); cdecl;
+  TmsgSendWrapper = procedure (param1: lobjc.id; param2: SEL;_theEvent: lobjc.id {NSEvent}); cdecl;
 var
   vmethod: TmsgSendWrapper;
 begin
@@ -1126,7 +1126,7 @@ end;
 
 procedure NSWindow.setReleasedWhenClosed(_flag: LongBool);
 type
-  TmsgSendWrapper = procedure (param1: objc.id; param2: SEL;_flag: LongBool); cdecl;
+  TmsgSendWrapper = procedure (param1: lobjc.id; param2: SEL;_flag: LongBool); cdecl;
 var
   vmethod: TmsgSendWrapper;
 begin
@@ -1139,9 +1139,9 @@ begin
   Result := LongBool(objc_msgSend(Handle, sel_registerName(PChar(StrNSWindow_isReleasedWhenClosed)), []));
 end;
 
-procedure NSWindow.miniaturize(_sender: objc.id);
+procedure NSWindow.miniaturize(_sender: lobjc.id);
 type
-  TmsgSendWrapper = procedure (param1: objc.id; param2: SEL;_sender: objc.id); cdecl;
+  TmsgSendWrapper = procedure (param1: lobjc.id; param2: SEL;_sender: lobjc.id); cdecl;
 var
   vmethod: TmsgSendWrapper;
 begin
@@ -1149,9 +1149,9 @@ begin
   vmethod(Handle, sel_registerName(PChar(StrNSWindow_miniaturize)), _sender);
 end;
 
-procedure NSWindow.deminiaturize(_sender: objc.id);
+procedure NSWindow.deminiaturize(_sender: lobjc.id);
 type
-  TmsgSendWrapper = procedure (param1: objc.id; param2: SEL;_sender: objc.id); cdecl;
+  TmsgSendWrapper = procedure (param1: lobjc.id; param2: SEL;_sender: lobjc.id); cdecl;
 var
   vmethod: TmsgSendWrapper;
 begin
@@ -1164,9 +1164,9 @@ begin
   Result := LongBool(objc_msgSend(Handle, sel_registerName(PChar(StrNSWindow_isZoomed)), []));
 end;
 
-procedure NSWindow.zoom(_sender: objc.id);
+procedure NSWindow.zoom(_sender: lobjc.id);
 type
-  TmsgSendWrapper = procedure (param1: objc.id; param2: SEL;_sender: objc.id); cdecl;
+  TmsgSendWrapper = procedure (param1: lobjc.id; param2: SEL;_sender: lobjc.id); cdecl;
 var
   vmethod: TmsgSendWrapper;
 begin
@@ -1179,9 +1179,9 @@ begin
   Result := LongBool(objc_msgSend(Handle, sel_registerName(PChar(StrNSWindow_isMiniaturized)), []));
 end;
 
-function NSWindow.tryToPerform_with(_anAction: SEL; _anObject: objc.id): LongBool;
+function NSWindow.tryToPerform_with(_anAction: SEL; _anObject: lobjc.id): LongBool;
 type
-  TmsgSendWrapper = function (param1: objc.id; param2: SEL;_anAction: SEL; _anObject: objc.id): LongBool; cdecl;
+  TmsgSendWrapper = function (param1: lobjc.id; param2: SEL;_anAction: SEL; _anObject: lobjc.id): LongBool; cdecl;
 var
   vmethod: TmsgSendWrapper;
 begin
@@ -1189,19 +1189,19 @@ begin
   Result := LongBool(vmethod(Handle, sel_registerName(PChar(StrNSWindow_tryToPerform_with)), _anAction, _anObject));
 end;
 
-function NSWindow.validRequestorForSendType_returnType(_sendType: CFStringRef; _returnType: CFStringRef): objc.id;
+function NSWindow.validRequestorForSendType_returnType(_sendType: CFStringRef; _returnType: CFStringRef): lobjc.id;
 type
-  TmsgSendWrapper = function (param1: objc.id; param2: SEL;_sendType: CFStringRef; _returnType: CFStringRef): objc.id; cdecl;
+  TmsgSendWrapper = function (param1: lobjc.id; param2: SEL;_sendType: CFStringRef; _returnType: CFStringRef): lobjc.id; cdecl;
 var
   vmethod: TmsgSendWrapper;
 begin
   vmethod := TmsgSendWrapper(@objc_msgSend);
-  Result := objc.id(vmethod(Handle, sel_registerName(PChar(StrNSWindow_validRequestorForSendType_returnType)), _sendType, _returnType));
+  Result := lobjc.id(vmethod(Handle, sel_registerName(PChar(StrNSWindow_validRequestorForSendType_returnType)), _sendType, _returnType));
 end;
 
-procedure NSWindow.setBackgroundColor(_color: objc.id {NSColor});
+procedure NSWindow.setBackgroundColor(_color: lobjc.id {NSColor});
 type
-  TmsgSendWrapper = procedure (param1: objc.id; param2: SEL;_color: objc.id {NSColor}); cdecl;
+  TmsgSendWrapper = procedure (param1: lobjc.id; param2: SEL;_color: lobjc.id {NSColor}); cdecl;
 var
   vmethod: TmsgSendWrapper;
 begin
@@ -1209,15 +1209,15 @@ begin
   vmethod(Handle, sel_registerName(PChar(StrNSWindow_setBackgroundColor)), _color);
 end;
 
-function NSWindow.backgroundColor: objc.id;
+function NSWindow.backgroundColor: lobjc.id;
 begin
-  Result := objc.id(objc_msgSend(Handle, sel_registerName(PChar(StrNSWindow_backgroundColor)), []));
+  Result := lobjc.id(objc_msgSend(Handle, sel_registerName(PChar(StrNSWindow_backgroundColor)), []));
 end;
 
 {.$ifdef  MAC_OS_X_VERSION_MAX_ALLOWED >= MAC_OS_X_VERSION_10_2}
 procedure NSWindow.setMovableByWindowBackground(_flag: LongBool);
 type
-  TmsgSendWrapper = procedure (param1: objc.id; param2: SEL;_flag: LongBool); cdecl;
+  TmsgSendWrapper = procedure (param1: lobjc.id; param2: SEL;_flag: LongBool); cdecl;
 var
   vmethod: TmsgSendWrapper;
 begin
@@ -1233,7 +1233,7 @@ end;
 {.$endif}
 procedure NSWindow.setHidesOnDeactivate(_flag: LongBool);
 type
-  TmsgSendWrapper = procedure (param1: objc.id; param2: SEL;_flag: LongBool); cdecl;
+  TmsgSendWrapper = procedure (param1: lobjc.id; param2: SEL;_flag: LongBool); cdecl;
 var
   vmethod: TmsgSendWrapper;
 begin
@@ -1248,7 +1248,7 @@ end;
 
 procedure NSWindow.setCanHide(_flag: LongBool);
 type
-  TmsgSendWrapper = procedure (param1: objc.id; param2: SEL;_flag: LongBool); cdecl;
+  TmsgSendWrapper = procedure (param1: lobjc.id; param2: SEL;_flag: LongBool); cdecl;
 var
   vmethod: TmsgSendWrapper;
 begin
@@ -1266,9 +1266,9 @@ begin
   objc_msgSend(Handle, sel_registerName(PChar(StrNSWindow_center)), []);
 end;
 
-procedure NSWindow.makeKeyAndOrderFront(_sender: objc.id);
+procedure NSWindow.makeKeyAndOrderFront(_sender: lobjc.id);
 type
-  TmsgSendWrapper = procedure (param1: objc.id; param2: SEL;_sender: objc.id); cdecl;
+  TmsgSendWrapper = procedure (param1: lobjc.id; param2: SEL;_sender: lobjc.id); cdecl;
 var
   vmethod: TmsgSendWrapper;
 begin
@@ -1276,9 +1276,9 @@ begin
   vmethod(Handle, sel_registerName(PChar(StrNSWindow_makeKeyAndOrderFront)), _sender);
 end;
 
-procedure NSWindow.orderFront(_sender: objc.id);
+procedure NSWindow.orderFront(_sender: lobjc.id);
 type
-  TmsgSendWrapper = procedure (param1: objc.id; param2: SEL;_sender: objc.id); cdecl;
+  TmsgSendWrapper = procedure (param1: lobjc.id; param2: SEL;_sender: lobjc.id); cdecl;
 var
   vmethod: TmsgSendWrapper;
 begin
@@ -1286,9 +1286,9 @@ begin
   vmethod(Handle, sel_registerName(PChar(StrNSWindow_orderFront)), _sender);
 end;
 
-procedure NSWindow.orderBack(_sender: objc.id);
+procedure NSWindow.orderBack(_sender: lobjc.id);
 type
-  TmsgSendWrapper = procedure (param1: objc.id; param2: SEL;_sender: objc.id); cdecl;
+  TmsgSendWrapper = procedure (param1: lobjc.id; param2: SEL;_sender: lobjc.id); cdecl;
 var
   vmethod: TmsgSendWrapper;
 begin
@@ -1296,9 +1296,9 @@ begin
   vmethod(Handle, sel_registerName(PChar(StrNSWindow_orderBack)), _sender);
 end;
 
-procedure NSWindow.orderOut(_sender: objc.id);
+procedure NSWindow.orderOut(_sender: lobjc.id);
 type
-  TmsgSendWrapper = procedure (param1: objc.id; param2: SEL;_sender: objc.id); cdecl;
+  TmsgSendWrapper = procedure (param1: lobjc.id; param2: SEL;_sender: lobjc.id); cdecl;
 var
   vmethod: TmsgSendWrapper;
 begin
@@ -1308,7 +1308,7 @@ end;
 
 procedure NSWindow.orderWindow_relativeTo(_place: NSWindowOrderingMode; _otherWin: Integer);
 type
-  TmsgSendWrapper = procedure (param1: objc.id; param2: SEL;_place: NSWindowOrderingMode; _otherWin: Integer); cdecl;
+  TmsgSendWrapper = procedure (param1: lobjc.id; param2: SEL;_place: NSWindowOrderingMode; _otherWin: Integer); cdecl;
 var
   vmethod: TmsgSendWrapper;
 begin
@@ -1321,9 +1321,9 @@ begin
   objc_msgSend(Handle, sel_registerName(PChar(StrNSWindow_orderFrontRegardless)), []);
 end;
 
-procedure NSWindow.setMiniwindowImage(_image: objc.id {NSImage});
+procedure NSWindow.setMiniwindowImage(_image: lobjc.id {NSImage});
 type
-  TmsgSendWrapper = procedure (param1: objc.id; param2: SEL;_image: objc.id {NSImage}); cdecl;
+  TmsgSendWrapper = procedure (param1: lobjc.id; param2: SEL;_image: lobjc.id {NSImage}); cdecl;
 var
   vmethod: TmsgSendWrapper;
 begin
@@ -1333,7 +1333,7 @@ end;
 
 procedure NSWindow.setMiniwindowTitle(_title: CFStringRef);
 type
-  TmsgSendWrapper = procedure (param1: objc.id; param2: SEL;_title: CFStringRef); cdecl;
+  TmsgSendWrapper = procedure (param1: lobjc.id; param2: SEL;_title: CFStringRef); cdecl;
 var
   vmethod: TmsgSendWrapper;
 begin
@@ -1341,9 +1341,9 @@ begin
   vmethod(Handle, sel_registerName(PChar(StrNSWindow_setMiniwindowTitle)), _title);
 end;
 
-function NSWindow.miniwindowImage: objc.id;
+function NSWindow.miniwindowImage: lobjc.id;
 begin
-  Result := objc.id(objc_msgSend(Handle, sel_registerName(PChar(StrNSWindow_miniwindowImage)), []));
+  Result := lobjc.id(objc_msgSend(Handle, sel_registerName(PChar(StrNSWindow_miniwindowImage)), []));
 end;
 
 function NSWindow.miniwindowTitle: CFStringRef;
@@ -1353,7 +1353,7 @@ end;
 
 procedure NSWindow.setDocumentEdited(_flag: LongBool);
 type
-  TmsgSendWrapper = procedure (param1: objc.id; param2: SEL;_flag: LongBool); cdecl;
+  TmsgSendWrapper = procedure (param1: lobjc.id; param2: SEL;_flag: LongBool); cdecl;
 var
   vmethod: TmsgSendWrapper;
 begin
@@ -1428,7 +1428,7 @@ end;
 
 function NSWindow.convertBaseToScreen(_aPoint: NSPoint): NSPoint;
 type
-  TmsgSendWrapper = procedure (result_param: Pointer; param1: objc.id; param2: SEL;_aPoint: NSPoint); cdecl;
+  TmsgSendWrapper = procedure (result_param: Pointer; param1: lobjc.id; param2: SEL;_aPoint: NSPoint); cdecl;
 var
   vmethod: TmsgSendWrapper;
 begin
@@ -1438,7 +1438,7 @@ end;
 
 function NSWindow.convertScreenToBase(_aPoint: NSPoint): NSPoint;
 type
-  TmsgSendWrapper = procedure (result_param: Pointer; param1: objc.id; param2: SEL;_aPoint: NSPoint); cdecl;
+  TmsgSendWrapper = procedure (result_param: Pointer; param1: lobjc.id; param2: SEL;_aPoint: NSPoint); cdecl;
 var
   vmethod: TmsgSendWrapper;
 begin
@@ -1446,9 +1446,9 @@ begin
   vmethod(@Result, Handle, sel_registerName(PChar(StrNSWindow_convertScreenToBase)), _aPoint);
 end;
 
-procedure NSWindow.performClose(_sender: objc.id);
+procedure NSWindow.performClose(_sender: lobjc.id);
 type
-  TmsgSendWrapper = procedure (param1: objc.id; param2: SEL;_sender: objc.id); cdecl;
+  TmsgSendWrapper = procedure (param1: lobjc.id; param2: SEL;_sender: lobjc.id); cdecl;
 var
   vmethod: TmsgSendWrapper;
 begin
@@ -1456,9 +1456,9 @@ begin
   vmethod(Handle, sel_registerName(PChar(StrNSWindow_performClose)), _sender);
 end;
 
-procedure NSWindow.performMiniaturize(_sender: objc.id);
+procedure NSWindow.performMiniaturize(_sender: lobjc.id);
 type
-  TmsgSendWrapper = procedure (param1: objc.id; param2: SEL;_sender: objc.id); cdecl;
+  TmsgSendWrapper = procedure (param1: lobjc.id; param2: SEL;_sender: lobjc.id); cdecl;
 var
   vmethod: TmsgSendWrapper;
 begin
@@ -1466,9 +1466,9 @@ begin
   vmethod(Handle, sel_registerName(PChar(StrNSWindow_performMiniaturize)), _sender);
 end;
 
-procedure NSWindow.performZoom(_sender: objc.id);
+procedure NSWindow.performZoom(_sender: lobjc.id);
 type
-  TmsgSendWrapper = procedure (param1: objc.id; param2: SEL;_sender: objc.id); cdecl;
+  TmsgSendWrapper = procedure (param1: lobjc.id; param2: SEL;_sender: lobjc.id); cdecl;
 var
   vmethod: TmsgSendWrapper;
 begin
@@ -1483,7 +1483,7 @@ end;
 
 procedure NSWindow.setOneShot(_flag: LongBool);
 type
-  TmsgSendWrapper = procedure (param1: objc.id; param2: SEL;_flag: LongBool); cdecl;
+  TmsgSendWrapper = procedure (param1: lobjc.id; param2: SEL;_flag: LongBool); cdecl;
 var
   vmethod: TmsgSendWrapper;
 begin
@@ -1498,7 +1498,7 @@ end;
 
 function NSWindow.dataWithEPSInsideRect(_rect: NSRect): CFDataRef;
 type
-  TmsgSendWrapper = function (param1: objc.id; param2: SEL;_rect: NSRect): CFDataRef; cdecl;
+  TmsgSendWrapper = function (param1: lobjc.id; param2: SEL;_rect: NSRect): CFDataRef; cdecl;
 var
   vmethod: TmsgSendWrapper;
 begin
@@ -1508,7 +1508,7 @@ end;
 
 function NSWindow.dataWithPDFInsideRect(_rect: NSRect): CFDataRef;
 type
-  TmsgSendWrapper = function (param1: objc.id; param2: SEL;_rect: NSRect): CFDataRef; cdecl;
+  TmsgSendWrapper = function (param1: lobjc.id; param2: SEL;_rect: NSRect): CFDataRef; cdecl;
 var
   vmethod: TmsgSendWrapper;
 begin
@@ -1516,9 +1516,9 @@ begin
   Result := CFDataRef(vmethod(Handle, sel_registerName(PChar(StrNSWindow_dataWithPDFInsideRect)), _rect));
 end;
 
-procedure NSWindow.print(_sender: objc.id);
+procedure NSWindow.print(_sender: lobjc.id);
 type
-  TmsgSendWrapper = procedure (param1: objc.id; param2: SEL;_sender: objc.id); cdecl;
+  TmsgSendWrapper = procedure (param1: lobjc.id; param2: SEL;_sender: lobjc.id); cdecl;
 var
   vmethod: TmsgSendWrapper;
 begin
@@ -1546,9 +1546,9 @@ begin
   Result := LongBool(objc_msgSend(Handle, sel_registerName(PChar(StrNSWindow_areCursorRectsEnabled)), []));
 end;
 
-procedure NSWindow.invalidateCursorRectsForView(_aView: objc.id {NSView});
+procedure NSWindow.invalidateCursorRectsForView(_aView: lobjc.id {NSView});
 type
-  TmsgSendWrapper = procedure (param1: objc.id; param2: SEL;_aView: objc.id {NSView}); cdecl;
+  TmsgSendWrapper = procedure (param1: lobjc.id; param2: SEL;_aView: lobjc.id {NSView}); cdecl;
 var
   vmethod: TmsgSendWrapper;
 begin
@@ -1564,7 +1564,7 @@ end;
 {.$ifdef  MAC_OS_X_VERSION_MAX_ALLOWED >= MAC_OS_X_VERSION_10_3}
 procedure NSWindow.setAllowsToolTipsWhenApplicationIsInactive(_allowWhenInactive: LongBool);
 type
-  TmsgSendWrapper = procedure (param1: objc.id; param2: SEL;_allowWhenInactive: LongBool); cdecl;
+  TmsgSendWrapper = procedure (param1: lobjc.id; param2: SEL;_allowWhenInactive: LongBool); cdecl;
 var
   vmethod: TmsgSendWrapper;
 begin
@@ -1580,7 +1580,7 @@ end;
 {.$endif}
 procedure NSWindow.setBackingType(_bufferingType: NSBackingStoreType);
 type
-  TmsgSendWrapper = procedure (param1: objc.id; param2: SEL;_bufferingType: NSBackingStoreType); cdecl;
+  TmsgSendWrapper = procedure (param1: lobjc.id; param2: SEL;_bufferingType: NSBackingStoreType); cdecl;
 var
   vmethod: TmsgSendWrapper;
 begin
@@ -1595,7 +1595,7 @@ end;
 
 procedure NSWindow.setLevel(_newLevel: Integer);
 type
-  TmsgSendWrapper = procedure (param1: objc.id; param2: SEL;_newLevel: Integer); cdecl;
+  TmsgSendWrapper = procedure (param1: lobjc.id; param2: SEL;_newLevel: Integer); cdecl;
 var
   vmethod: TmsgSendWrapper;
 begin
@@ -1610,7 +1610,7 @@ end;
 
 procedure NSWindow.setDepthLimit(_limit: NSWindowDepth);
 type
-  TmsgSendWrapper = procedure (param1: objc.id; param2: SEL;_limit: NSWindowDepth); cdecl;
+  TmsgSendWrapper = procedure (param1: lobjc.id; param2: SEL;_limit: NSWindowDepth); cdecl;
 var
   vmethod: TmsgSendWrapper;
 begin
@@ -1625,7 +1625,7 @@ end;
 
 procedure NSWindow.setDynamicDepthLimit(_flag: LongBool);
 type
-  TmsgSendWrapper = procedure (param1: objc.id; param2: SEL;_flag: LongBool); cdecl;
+  TmsgSendWrapper = procedure (param1: lobjc.id; param2: SEL;_flag: LongBool); cdecl;
 var
   vmethod: TmsgSendWrapper;
 begin
@@ -1638,14 +1638,14 @@ begin
   Result := LongBool(objc_msgSend(Handle, sel_registerName(PChar(StrNSWindow_hasDynamicDepthLimit)), []));
 end;
 
-function NSWindow.screen: objc.id;
+function NSWindow.screen: lobjc.id;
 begin
-  Result := objc.id(objc_msgSend(Handle, sel_registerName(PChar(StrNSWindow_screen)), []));
+  Result := lobjc.id(objc_msgSend(Handle, sel_registerName(PChar(StrNSWindow_screen)), []));
 end;
 
-function NSWindow.deepestScreen: objc.id;
+function NSWindow.deepestScreen: lobjc.id;
 begin
-  Result := objc.id(objc_msgSend(Handle, sel_registerName(PChar(StrNSWindow_deepestScreen)), []));
+  Result := lobjc.id(objc_msgSend(Handle, sel_registerName(PChar(StrNSWindow_deepestScreen)), []));
 end;
 
 function NSWindow.canStoreColor: LongBool;
@@ -1655,7 +1655,7 @@ end;
 
 procedure NSWindow.setHasShadow(_hasShadow: LongBool);
 type
-  TmsgSendWrapper = procedure (param1: objc.id; param2: SEL;_hasShadow: LongBool); cdecl;
+  TmsgSendWrapper = procedure (param1: lobjc.id; param2: SEL;_hasShadow: LongBool); cdecl;
 var
   vmethod: TmsgSendWrapper;
 begin
@@ -1677,7 +1677,7 @@ end;
 {.$endif}
 procedure NSWindow.setAlphaValue(_windowAlpha: Single);
 type
-  TmsgSendWrapper = procedure (param1: objc.id; param2: SEL;_windowAlpha: Single); cdecl;
+  TmsgSendWrapper = procedure (param1: lobjc.id; param2: SEL;_windowAlpha: Single); cdecl;
 var
   vmethod: TmsgSendWrapper;
 begin
@@ -1692,7 +1692,7 @@ end;
 
 procedure NSWindow.setOpaque(_isOpaque: LongBool);
 type
-  TmsgSendWrapper = procedure (param1: objc.id; param2: SEL;_isOpaque: LongBool); cdecl;
+  TmsgSendWrapper = procedure (param1: lobjc.id; param2: SEL;_isOpaque: LongBool); cdecl;
 var
   vmethod: TmsgSendWrapper;
 begin
@@ -1713,7 +1713,7 @@ end;
 
 procedure NSWindow.setDisplaysWhenScreenProfileChanges(_flag: LongBool);
 type
-  TmsgSendWrapper = procedure (param1: objc.id; param2: SEL;_flag: LongBool); cdecl;
+  TmsgSendWrapper = procedure (param1: lobjc.id; param2: SEL;_flag: LongBool); cdecl;
 var
   vmethod: TmsgSendWrapper;
 begin
@@ -1734,7 +1734,7 @@ end;
 
 procedure NSWindow.setFrameFromString(__string: CFStringRef);
 type
-  TmsgSendWrapper = procedure (param1: objc.id; param2: SEL;__string: CFStringRef); cdecl;
+  TmsgSendWrapper = procedure (param1: lobjc.id; param2: SEL;__string: CFStringRef); cdecl;
 var
   vmethod: TmsgSendWrapper;
 begin
@@ -1744,7 +1744,7 @@ end;
 
 procedure NSWindow.saveFrameUsingName(_name: CFStringRef);
 type
-  TmsgSendWrapper = procedure (param1: objc.id; param2: SEL;_name: CFStringRef); cdecl;
+  TmsgSendWrapper = procedure (param1: lobjc.id; param2: SEL;_name: CFStringRef); cdecl;
 var
   vmethod: TmsgSendWrapper;
 begin
@@ -1754,7 +1754,7 @@ end;
 
 function NSWindow.setFrameUsingName_force(_name: CFStringRef; _force: LongBool): LongBool;
 type
-  TmsgSendWrapper = function (param1: objc.id; param2: SEL;_name: CFStringRef; _force: LongBool): LongBool; cdecl;
+  TmsgSendWrapper = function (param1: lobjc.id; param2: SEL;_name: CFStringRef; _force: LongBool): LongBool; cdecl;
 var
   vmethod: TmsgSendWrapper;
 begin
@@ -1764,7 +1764,7 @@ end;
 
 function NSWindow.setFrameUsingName(_name: CFStringRef): LongBool;
 type
-  TmsgSendWrapper = function (param1: objc.id; param2: SEL;_name: CFStringRef): LongBool; cdecl;
+  TmsgSendWrapper = function (param1: lobjc.id; param2: SEL;_name: CFStringRef): LongBool; cdecl;
 var
   vmethod: TmsgSendWrapper;
 begin
@@ -1774,7 +1774,7 @@ end;
 
 function NSWindow.setFrameAutosaveName(_name: CFStringRef): LongBool;
 type
-  TmsgSendWrapper = function (param1: objc.id; param2: SEL;_name: CFStringRef): LongBool; cdecl;
+  TmsgSendWrapper = function (param1: lobjc.id; param2: SEL;_name: CFStringRef): LongBool; cdecl;
 var
   vmethod: TmsgSendWrapper;
 begin
@@ -1789,7 +1789,7 @@ end;
 
 class procedure NSWindow.removeFrameUsingName(_name: CFStringRef);
 type
-  TmsgSendWrapper = procedure (param1: objc.id; param2: SEL;_name: CFStringRef); cdecl;
+  TmsgSendWrapper = procedure (param1: lobjc.id; param2: SEL;_name: CFStringRef); cdecl;
 var
   vmethod: TmsgSendWrapper;
 begin
@@ -1799,7 +1799,7 @@ end;
 
 procedure NSWindow.cacheImageInRect(_aRect: NSRect);
 type
-  TmsgSendWrapper = procedure (param1: objc.id; param2: SEL;_aRect: NSRect); cdecl;
+  TmsgSendWrapper = procedure (param1: lobjc.id; param2: SEL;_aRect: NSRect); cdecl;
 var
   vmethod: TmsgSendWrapper;
 begin
@@ -1829,7 +1829,7 @@ end;
 
 procedure NSWindow.setMinSize(_size: NSSize);
 type
-  TmsgSendWrapper = procedure (param1: objc.id; param2: SEL;_size: NSSize); cdecl;
+  TmsgSendWrapper = procedure (param1: lobjc.id; param2: SEL;_size: NSSize); cdecl;
 var
   vmethod: TmsgSendWrapper;
 begin
@@ -1839,7 +1839,7 @@ end;
 
 procedure NSWindow.setMaxSize(_size: NSSize);
 type
-  TmsgSendWrapper = procedure (param1: objc.id; param2: SEL;_size: NSSize); cdecl;
+  TmsgSendWrapper = procedure (param1: lobjc.id; param2: SEL;_size: NSSize); cdecl;
 var
   vmethod: TmsgSendWrapper;
 begin
@@ -1860,7 +1860,7 @@ end;
 
 procedure NSWindow.setContentMinSize(_size: NSSize);
 type
-  TmsgSendWrapper = procedure (param1: objc.id; param2: SEL;_size: NSSize); cdecl;
+  TmsgSendWrapper = procedure (param1: lobjc.id; param2: SEL;_size: NSSize); cdecl;
 var
   vmethod: TmsgSendWrapper;
 begin
@@ -1870,7 +1870,7 @@ end;
 
 procedure NSWindow.setContentMaxSize(_size: NSSize);
 type
-  TmsgSendWrapper = procedure (param1: objc.id; param2: SEL;_size: NSSize); cdecl;
+  TmsgSendWrapper = procedure (param1: lobjc.id; param2: SEL;_size: NSSize); cdecl;
 var
   vmethod: TmsgSendWrapper;
 begin
@@ -1879,29 +1879,29 @@ begin
 end;
 
 {.$endif}
-function NSWindow.nextEventMatchingMask(_mask: LongWord): objc.id;
+function NSWindow.nextEventMatchingMask(_mask: LongWord): lobjc.id;
 type
-  TmsgSendWrapper = function (param1: objc.id; param2: SEL;_mask: LongWord): objc.id; cdecl;
+  TmsgSendWrapper = function (param1: lobjc.id; param2: SEL;_mask: LongWord): lobjc.id; cdecl;
 var
   vmethod: TmsgSendWrapper;
 begin
   vmethod := TmsgSendWrapper(@objc_msgSend);
-  Result := objc.id(vmethod(Handle, sel_registerName(PChar(StrNSWindow_nextEventMatchingMask)), _mask));
+  Result := lobjc.id(vmethod(Handle, sel_registerName(PChar(StrNSWindow_nextEventMatchingMask)), _mask));
 end;
 
-function NSWindow.nextEventMatchingMask_untilDate_inMode_dequeue(_mask: LongWord; _expiration: CFDateRef; _mode: CFStringRef; _deqFlag: LongBool): objc.id;
+function NSWindow.nextEventMatchingMask_untilDate_inMode_dequeue(_mask: LongWord; _expiration: CFDateRef; _mode: CFStringRef; _deqFlag: LongBool): lobjc.id;
 type
-  TmsgSendWrapper = function (param1: objc.id; param2: SEL;_mask: LongWord; _expiration: CFDateRef; _mode: CFStringRef; _deqFlag: LongBool): objc.id; cdecl;
+  TmsgSendWrapper = function (param1: lobjc.id; param2: SEL;_mask: LongWord; _expiration: CFDateRef; _mode: CFStringRef; _deqFlag: LongBool): lobjc.id; cdecl;
 var
   vmethod: TmsgSendWrapper;
 begin
   vmethod := TmsgSendWrapper(@objc_msgSend);
-  Result := objc.id(vmethod(Handle, sel_registerName(PChar(StrNSWindow_nextEventMatchingMask_untilDate_inMode_dequeue)), _mask, _expiration, _mode, _deqFlag));
+  Result := lobjc.id(vmethod(Handle, sel_registerName(PChar(StrNSWindow_nextEventMatchingMask_untilDate_inMode_dequeue)), _mask, _expiration, _mode, _deqFlag));
 end;
 
-procedure NSWindow.discardEventsMatchingMask_beforeEvent(_mask: LongWord; _lastEvent: objc.id {NSEvent});
+procedure NSWindow.discardEventsMatchingMask_beforeEvent(_mask: LongWord; _lastEvent: lobjc.id {NSEvent});
 type
-  TmsgSendWrapper = procedure (param1: objc.id; param2: SEL;_mask: LongWord; _lastEvent: objc.id {NSEvent}); cdecl;
+  TmsgSendWrapper = procedure (param1: lobjc.id; param2: SEL;_mask: LongWord; _lastEvent: lobjc.id {NSEvent}); cdecl;
 var
   vmethod: TmsgSendWrapper;
 begin
@@ -1909,9 +1909,9 @@ begin
   vmethod(Handle, sel_registerName(PChar(StrNSWindow_discardEventsMatchingMask_beforeEvent)), _mask, _lastEvent);
 end;
 
-procedure NSWindow.postEvent_atStart(_event: objc.id {NSEvent}; _flag: LongBool);
+procedure NSWindow.postEvent_atStart(_event: lobjc.id {NSEvent}; _flag: LongBool);
 type
-  TmsgSendWrapper = procedure (param1: objc.id; param2: SEL;_event: objc.id {NSEvent}; _flag: LongBool); cdecl;
+  TmsgSendWrapper = procedure (param1: lobjc.id; param2: SEL;_event: lobjc.id {NSEvent}; _flag: LongBool); cdecl;
 var
   vmethod: TmsgSendWrapper;
 begin
@@ -1919,14 +1919,14 @@ begin
   vmethod(Handle, sel_registerName(PChar(StrNSWindow_postEvent_atStart)), _event, _flag);
 end;
 
-function NSWindow.currentEvent: objc.id;
+function NSWindow.currentEvent: lobjc.id;
 begin
-  Result := objc.id(objc_msgSend(Handle, sel_registerName(PChar(StrNSWindow_currentEvent)), []));
+  Result := lobjc.id(objc_msgSend(Handle, sel_registerName(PChar(StrNSWindow_currentEvent)), []));
 end;
 
 procedure NSWindow.setAcceptsMouseMovedEvents(_flag: LongBool);
 type
-  TmsgSendWrapper = procedure (param1: objc.id; param2: SEL;_flag: LongBool); cdecl;
+  TmsgSendWrapper = procedure (param1: lobjc.id; param2: SEL;_flag: LongBool); cdecl;
 var
   vmethod: TmsgSendWrapper;
 begin
@@ -1942,7 +1942,7 @@ end;
 {.$ifdef  MAC_OS_X_VERSION_MAX_ALLOWED >= MAC_OS_X_VERSION_10_2}
 procedure NSWindow.setIgnoresMouseEvents(_flag: LongBool);
 type
-  TmsgSendWrapper = procedure (param1: objc.id; param2: SEL;_flag: LongBool); cdecl;
+  TmsgSendWrapper = procedure (param1: lobjc.id; param2: SEL;_flag: LongBool); cdecl;
 var
   vmethod: TmsgSendWrapper;
 begin
@@ -1961,9 +1961,9 @@ begin
   Result := CFDictionaryRef(objc_msgSend(Handle, sel_registerName(PChar(StrNSWindow_deviceDescription)), []));
 end;
 
-procedure NSWindow.sendEvent(_theEvent: objc.id {NSEvent});
+procedure NSWindow.sendEvent(_theEvent: lobjc.id {NSEvent});
 type
-  TmsgSendWrapper = procedure (param1: objc.id; param2: SEL;_theEvent: objc.id {NSEvent}); cdecl;
+  TmsgSendWrapper = procedure (param1: lobjc.id; param2: SEL;_theEvent: lobjc.id {NSEvent}); cdecl;
 var
   vmethod: TmsgSendWrapper;
 begin
@@ -1976,9 +1976,9 @@ begin
   objc_msgSend_stret(@Result, Handle, sel_registerName(PChar(StrNSWindow_mouseLocationOutsideOfEventStream)), []);
 end;
 
-class procedure NSWindow.menuChanged(_menu: objc.id {NSMenu});
+class procedure NSWindow.menuChanged(_menu: lobjc.id {NSMenu});
 type
-  TmsgSendWrapper = procedure (param1: objc.id; param2: SEL;_menu: objc.id {NSMenu}); cdecl;
+  TmsgSendWrapper = procedure (param1: lobjc.id; param2: SEL;_menu: lobjc.id {NSMenu}); cdecl;
 var
   vmethod: TmsgSendWrapper;
 begin
@@ -1986,14 +1986,14 @@ begin
   vmethod(getClass, sel_registerName(PChar(StrNSWindow_menuChanged)), _menu);
 end;
 
-function NSWindow.windowController: objc.id;
+function NSWindow.windowController: lobjc.id;
 begin
-  Result := objc.id(objc_msgSend(Handle, sel_registerName(PChar(StrNSWindow_windowController)), []));
+  Result := lobjc.id(objc_msgSend(Handle, sel_registerName(PChar(StrNSWindow_windowController)), []));
 end;
 
-procedure NSWindow.setWindowController(_windowController: objc.id {NSWindowController});
+procedure NSWindow.setWindowController(_windowController: lobjc.id {NSWindowController});
 type
-  TmsgSendWrapper = procedure (param1: objc.id; param2: SEL;_windowController: objc.id {NSWindowController}); cdecl;
+  TmsgSendWrapper = procedure (param1: lobjc.id; param2: SEL;_windowController: lobjc.id {NSWindowController}); cdecl;
 var
   vmethod: TmsgSendWrapper;
 begin
@@ -2006,37 +2006,37 @@ begin
   Result := LongBool(objc_msgSend(Handle, sel_registerName(PChar(StrNSWindow_isSheet)), []));
 end;
 
-function NSWindow.attachedSheet: objc.id;
+function NSWindow.attachedSheet: lobjc.id;
 begin
-  Result := objc.id(objc_msgSend(Handle, sel_registerName(PChar(StrNSWindow_attachedSheet)), []));
+  Result := lobjc.id(objc_msgSend(Handle, sel_registerName(PChar(StrNSWindow_attachedSheet)), []));
 end;
 
 {.$ifdef  MAC_OS_X_VERSION_MAX_ALLOWED >= MAC_OS_X_VERSION_10_2}
-class function NSWindow.standardWindowButton_forStyleMask(_b: NSWindowButton; _styleMask: LongWord): objc.id;
+class function NSWindow.standardWindowButton_forStyleMask(_b: NSWindowButton; _styleMask: LongWord): lobjc.id;
 type
-  TmsgSendWrapper = function (param1: objc.id; param2: SEL;_b: NSWindowButton; _styleMask: LongWord): objc.id; cdecl;
+  TmsgSendWrapper = function (param1: lobjc.id; param2: SEL;_b: NSWindowButton; _styleMask: LongWord): lobjc.id; cdecl;
 var
   vmethod: TmsgSendWrapper;
 begin
   vmethod := TmsgSendWrapper(@objc_msgSend);
-  Result := objc.id(vmethod(getClass, sel_registerName(PChar(StrNSWindow_standardWindowButton_forStyleMask)), _b, _styleMask));
+  Result := lobjc.id(vmethod(getClass, sel_registerName(PChar(StrNSWindow_standardWindowButton_forStyleMask)), _b, _styleMask));
 end;
 
-function NSWindow.standardWindowButton(_b: NSWindowButton): objc.id;
+function NSWindow.standardWindowButton(_b: NSWindowButton): lobjc.id;
 type
-  TmsgSendWrapper = function (param1: objc.id; param2: SEL;_b: NSWindowButton): objc.id; cdecl;
+  TmsgSendWrapper = function (param1: lobjc.id; param2: SEL;_b: NSWindowButton): lobjc.id; cdecl;
 var
   vmethod: TmsgSendWrapper;
 begin
   vmethod := TmsgSendWrapper(@objc_msgSend);
-  Result := objc.id(vmethod(Handle, sel_registerName(PChar(StrNSWindow_standardWindowButton)), _b));
+  Result := lobjc.id(vmethod(Handle, sel_registerName(PChar(StrNSWindow_standardWindowButton)), _b));
 end;
 
 {.$endif}
 {.$ifdef  MAC_OS_X_VERSION_MAX_ALLOWED >= MAC_OS_X_VERSION_10_2}
-procedure NSWindow.addChildWindow_ordered(_childWin: objc.id {NSWindow}; _place: NSWindowOrderingMode);
+procedure NSWindow.addChildWindow_ordered(_childWin: lobjc.id {NSWindow}; _place: NSWindowOrderingMode);
 type
-  TmsgSendWrapper = procedure (param1: objc.id; param2: SEL;_childWin: objc.id {NSWindow}; _place: NSWindowOrderingMode); cdecl;
+  TmsgSendWrapper = procedure (param1: lobjc.id; param2: SEL;_childWin: lobjc.id {NSWindow}; _place: NSWindowOrderingMode); cdecl;
 var
   vmethod: TmsgSendWrapper;
 begin
@@ -2044,9 +2044,9 @@ begin
   vmethod(Handle, sel_registerName(PChar(StrNSWindow_addChildWindow_ordered)), _childWin, _place);
 end;
 
-procedure NSWindow.removeChildWindow(_childWin: objc.id {NSWindow});
+procedure NSWindow.removeChildWindow(_childWin: lobjc.id {NSWindow});
 type
-  TmsgSendWrapper = procedure (param1: objc.id; param2: SEL;_childWin: objc.id {NSWindow}); cdecl;
+  TmsgSendWrapper = procedure (param1: lobjc.id; param2: SEL;_childWin: lobjc.id {NSWindow}); cdecl;
 var
   vmethod: TmsgSendWrapper;
 begin
@@ -2059,14 +2059,14 @@ begin
   Result := CFArrayRef(objc_msgSend(Handle, sel_registerName(PChar(StrNSWindow_childWindows)), []));
 end;
 
-function NSWindow.parentWindow: objc.id;
+function NSWindow.parentWindow: lobjc.id;
 begin
-  Result := objc.id(objc_msgSend(Handle, sel_registerName(PChar(StrNSWindow_parentWindow)), []));
+  Result := lobjc.id(objc_msgSend(Handle, sel_registerName(PChar(StrNSWindow_parentWindow)), []));
 end;
 
-procedure NSWindow.setParentWindow(_window: objc.id {NSWindow});
+procedure NSWindow.setParentWindow(_window: lobjc.id {NSWindow});
 type
-  TmsgSendWrapper = procedure (param1: objc.id; param2: SEL;_window: objc.id {NSWindow}); cdecl;
+  TmsgSendWrapper = procedure (param1: lobjc.id; param2: SEL;_window: lobjc.id {NSWindow}); cdecl;
 var
   vmethod: TmsgSendWrapper;
 begin
@@ -2076,9 +2076,9 @@ end;
 
 {.$endif}
 {.$ifdef  MAC_OS_X_VERSION_MAX_ALLOWED >= MAC_OS_X_VERSION_10_4}
-function NSWindow.graphicsContext: objc.id;
+function NSWindow.graphicsContext: lobjc.id;
 begin
-  Result := objc.id(objc_msgSend(Handle, sel_registerName(PChar(StrNSWindow_graphicsContext)), []));
+  Result := lobjc.id(objc_msgSend(Handle, sel_registerName(PChar(StrNSWindow_graphicsContext)), []));
 end;
 
 function NSWindow.userSpaceScaleFactor: Single;
@@ -2087,9 +2087,9 @@ begin
 end;
 
 {.$endif}
-procedure NSWindow.setInitialFirstResponder(_view: objc.id {NSView});
+procedure NSWindow.setInitialFirstResponder(_view: lobjc.id {NSView});
 type
-  TmsgSendWrapper = procedure (param1: objc.id; param2: SEL;_view: objc.id {NSView}); cdecl;
+  TmsgSendWrapper = procedure (param1: lobjc.id; param2: SEL;_view: lobjc.id {NSView}); cdecl;
 var
   vmethod: TmsgSendWrapper;
 begin
@@ -2097,14 +2097,14 @@ begin
   vmethod(Handle, sel_registerName(PChar(StrNSWindow_setInitialFirstResponder)), _view);
 end;
 
-function NSWindow.initialFirstResponder: objc.id;
+function NSWindow.initialFirstResponder: lobjc.id;
 begin
-  Result := objc.id(objc_msgSend(Handle, sel_registerName(PChar(StrNSWindow_initialFirstResponder)), []));
+  Result := lobjc.id(objc_msgSend(Handle, sel_registerName(PChar(StrNSWindow_initialFirstResponder)), []));
 end;
 
-procedure NSWindow.selectNextKeyView(_sender: objc.id);
+procedure NSWindow.selectNextKeyView(_sender: lobjc.id);
 type
-  TmsgSendWrapper = procedure (param1: objc.id; param2: SEL;_sender: objc.id); cdecl;
+  TmsgSendWrapper = procedure (param1: lobjc.id; param2: SEL;_sender: lobjc.id); cdecl;
 var
   vmethod: TmsgSendWrapper;
 begin
@@ -2112,9 +2112,9 @@ begin
   vmethod(Handle, sel_registerName(PChar(StrNSWindow_selectNextKeyView)), _sender);
 end;
 
-procedure NSWindow.selectPreviousKeyView(_sender: objc.id);
+procedure NSWindow.selectPreviousKeyView(_sender: lobjc.id);
 type
-  TmsgSendWrapper = procedure (param1: objc.id; param2: SEL;_sender: objc.id); cdecl;
+  TmsgSendWrapper = procedure (param1: lobjc.id; param2: SEL;_sender: lobjc.id); cdecl;
 var
   vmethod: TmsgSendWrapper;
 begin
@@ -2122,9 +2122,9 @@ begin
   vmethod(Handle, sel_registerName(PChar(StrNSWindow_selectPreviousKeyView)), _sender);
 end;
 
-procedure NSWindow.selectKeyViewFollowingView(_aView: objc.id {NSView});
+procedure NSWindow.selectKeyViewFollowingView(_aView: lobjc.id {NSView});
 type
-  TmsgSendWrapper = procedure (param1: objc.id; param2: SEL;_aView: objc.id {NSView}); cdecl;
+  TmsgSendWrapper = procedure (param1: lobjc.id; param2: SEL;_aView: lobjc.id {NSView}); cdecl;
 var
   vmethod: TmsgSendWrapper;
 begin
@@ -2132,9 +2132,9 @@ begin
   vmethod(Handle, sel_registerName(PChar(StrNSWindow_selectKeyViewFollowingView)), _aView);
 end;
 
-procedure NSWindow.selectKeyViewPrecedingView(_aView: objc.id {NSView});
+procedure NSWindow.selectKeyViewPrecedingView(_aView: lobjc.id {NSView});
 type
-  TmsgSendWrapper = procedure (param1: objc.id; param2: SEL;_aView: objc.id {NSView}); cdecl;
+  TmsgSendWrapper = procedure (param1: lobjc.id; param2: SEL;_aView: lobjc.id {NSView}); cdecl;
 var
   vmethod: TmsgSendWrapper;
 begin
@@ -2147,9 +2147,9 @@ begin
   Result := NSSelectionDirection(objc_msgSend(Handle, sel_registerName(PChar(StrNSWindow_keyViewSelectionDirection)), []));
 end;
 
-procedure NSWindow.setDefaultButtonCell(_defButt: objc.id {NSButtonCell});
+procedure NSWindow.setDefaultButtonCell(_defButt: lobjc.id {NSButtonCell});
 type
-  TmsgSendWrapper = procedure (param1: objc.id; param2: SEL;_defButt: objc.id {NSButtonCell}); cdecl;
+  TmsgSendWrapper = procedure (param1: lobjc.id; param2: SEL;_defButt: lobjc.id {NSButtonCell}); cdecl;
 var
   vmethod: TmsgSendWrapper;
 begin
@@ -2157,9 +2157,9 @@ begin
   vmethod(Handle, sel_registerName(PChar(StrNSWindow_setDefaultButtonCell)), _defButt);
 end;
 
-function NSWindow.defaultButtonCell: objc.id;
+function NSWindow.defaultButtonCell: lobjc.id;
 begin
-  Result := objc.id(objc_msgSend(Handle, sel_registerName(PChar(StrNSWindow_defaultButtonCell)), []));
+  Result := lobjc.id(objc_msgSend(Handle, sel_registerName(PChar(StrNSWindow_defaultButtonCell)), []));
 end;
 
 procedure NSWindow.disableKeyEquivalentForDefaultButtonCell;
@@ -2175,7 +2175,7 @@ end;
 {.$ifdef  MAC_OS_X_VERSION_MAX_ALLOWED >= MAC_OS_X_VERSION_10_4}
 procedure NSWindow.setAutorecalculatesKeyViewLoop(_flag: LongBool);
 type
-  TmsgSendWrapper = procedure (param1: objc.id; param2: SEL;_flag: LongBool); cdecl;
+  TmsgSendWrapper = procedure (param1: lobjc.id; param2: SEL;_flag: LongBool); cdecl;
 var
   vmethod: TmsgSendWrapper;
 begin
@@ -2194,9 +2194,9 @@ begin
 end;
 
 {.$endif}
-procedure NSWindow.setToolbar(_toolbar: objc.id {NSToolbar});
+procedure NSWindow.setToolbar(_toolbar: lobjc.id {NSToolbar});
 type
-  TmsgSendWrapper = procedure (param1: objc.id; param2: SEL;_toolbar: objc.id {NSToolbar}); cdecl;
+  TmsgSendWrapper = procedure (param1: lobjc.id; param2: SEL;_toolbar: lobjc.id {NSToolbar}); cdecl;
 var
   vmethod: TmsgSendWrapper;
 begin
@@ -2204,14 +2204,14 @@ begin
   vmethod(Handle, sel_registerName(PChar(StrNSWindow_setToolbar)), _toolbar);
 end;
 
-function NSWindow.toolbar: objc.id;
+function NSWindow.toolbar: lobjc.id;
 begin
-  Result := objc.id(objc_msgSend(Handle, sel_registerName(PChar(StrNSWindow_toolbar)), []));
+  Result := lobjc.id(objc_msgSend(Handle, sel_registerName(PChar(StrNSWindow_toolbar)), []));
 end;
 
-procedure NSWindow.toggleToolbarShown(_sender: objc.id);
+procedure NSWindow.toggleToolbarShown(_sender: lobjc.id);
 type
-  TmsgSendWrapper = procedure (param1: objc.id; param2: SEL;_sender: objc.id); cdecl;
+  TmsgSendWrapper = procedure (param1: lobjc.id; param2: SEL;_sender: lobjc.id); cdecl;
 var
   vmethod: TmsgSendWrapper;
 begin
@@ -2219,9 +2219,9 @@ begin
   vmethod(Handle, sel_registerName(PChar(StrNSWindow_toggleToolbarShown)), _sender);
 end;
 
-procedure NSWindow.runToolbarCustomizationPalette(_sender: objc.id);
+procedure NSWindow.runToolbarCustomizationPalette(_sender: lobjc.id);
 type
-  TmsgSendWrapper = procedure (param1: objc.id; param2: SEL;_sender: objc.id); cdecl;
+  TmsgSendWrapper = procedure (param1: lobjc.id; param2: SEL;_sender: lobjc.id); cdecl;
 var
   vmethod: TmsgSendWrapper;
 begin
@@ -2232,7 +2232,7 @@ end;
 {.$ifdef  MAC_OS_X_VERSION_MAX_ALLOWED >= MAC_OS_X_VERSION_10_4}
 procedure NSWindow.setShowsToolbarButton(_show: LongBool);
 type
-  TmsgSendWrapper = procedure (param1: objc.id; param2: SEL;_show: LongBool); cdecl;
+  TmsgSendWrapper = procedure (param1: lobjc.id; param2: SEL;_show: LongBool); cdecl;
 var
   vmethod: TmsgSendWrapper;
 begin
@@ -2246,9 +2246,9 @@ begin
 end;
 
 {.$endif}
-procedure NSWindow.dragImage_at_offset_event_pasteboard_source_slideBack(_anImage: objc.id {NSImage}; _baseLocation: NSPoint; _initialOffset: NSSize; _event: objc.id {NSEvent}; _pboard: objc.id {NSPasteboard}; _sourceObj: objc.id; _slideFlag: LongBool);
+procedure NSWindow.dragImage_at_offset_event_pasteboard_source_slideBack(_anImage: lobjc.id {NSImage}; _baseLocation: NSPoint; _initialOffset: NSSize; _event: lobjc.id {NSEvent}; _pboard: lobjc.id {NSPasteboard}; _sourceObj: lobjc.id; _slideFlag: LongBool);
 type
-  TmsgSendWrapper = procedure (param1: objc.id; param2: SEL;_anImage: objc.id {NSImage}; _baseLocation: NSPoint; _initialOffset: NSSize; _event: objc.id {NSEvent}; _pboard: objc.id {NSPasteboard}; _sourceObj: objc.id; _slideFlag: LongBool); cdecl;
+  TmsgSendWrapper = procedure (param1: lobjc.id; param2: SEL;_anImage: lobjc.id {NSImage}; _baseLocation: NSPoint; _initialOffset: NSSize; _event: lobjc.id {NSEvent}; _pboard: lobjc.id {NSPasteboard}; _sourceObj: lobjc.id; _slideFlag: LongBool); cdecl;
 var
   vmethod: TmsgSendWrapper;
 begin
@@ -2258,7 +2258,7 @@ end;
 
 procedure NSWindow.registerForDraggedTypes(_newTypes: CFArrayRef);
 type
-  TmsgSendWrapper = procedure (param1: objc.id; param2: SEL;_newTypes: CFArrayRef); cdecl;
+  TmsgSendWrapper = procedure (param1: lobjc.id; param2: SEL;_newTypes: CFArrayRef); cdecl;
 var
   vmethod: TmsgSendWrapper;
 begin
@@ -2278,7 +2278,7 @@ end;
 
 constructor NSWindow.initWithWindowRef(_windowRef: Pointer);
 type
-  TmsgSendWrapper = function (param1: objc.id; param2: SEL;_windowRef: Pointer): objc.id; cdecl;
+  TmsgSendWrapper = function (param1: lobjc.id; param2: SEL;_windowRef: Pointer): lobjc.id; cdecl;
 var
   vmethod: TmsgSendWrapper;
 begin

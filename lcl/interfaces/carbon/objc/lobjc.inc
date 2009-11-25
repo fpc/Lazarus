@@ -23,16 +23,16 @@
  * @APPLE_LICENSE_HEADER_END@
  }
 {
- *	objc.h
+ *	lobjc.h
  *	Copyright 1988-1996, NeXT Software, Inc.
  }
 
-//#import <objc/objc-api.h>		// for OBJC_EXPORT
+//#import <objc/lobjc-api.h>		// for OBJC_EXPORT
 
 type
   P_Class = ^_Class;
 
-  _Class = Pointer; // Is actually Pobjc_class, declared on objc-class.inc
+  _Class = Pointer; // Is actually Pobjc_class, declared on lobjc-class.inc
                     // But, because this type is declared on another file,
                     // which depends on this one, it would not be possible
                     // to declare it as Pobjc_class without changing the

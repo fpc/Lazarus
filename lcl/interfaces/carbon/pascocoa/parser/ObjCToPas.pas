@@ -4,7 +4,7 @@ unit ObjCToPas;
   * license version 2.0 or 2.1.  You should have received a copy of the
   * LGPL license along with at http://www.gnu.org/
 }
-// the unit contains (should contain) ObjC to Pascal convertion utility routines
+// the unit contains (should contain) lobjc to Pascal convertion utility routines
 // todo: move all ObjCParserUtils functions here.
 
 interface

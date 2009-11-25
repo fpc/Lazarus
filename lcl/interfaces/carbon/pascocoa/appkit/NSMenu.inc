@@ -42,13 +42,13 @@
 
   NSMenu = class(NSObject)
   public
-    class function getClass: objc.id; override;
+    class function getClass: lobjc.id; override;
     // All instance variables are private
     class procedure setMenuZone(_aZone: NSZone);
     class function menuZone: NSZone;
-    class procedure popUpContextMenu_withEvent_forView(_menu: objc.id {NSMenu}; _event: objc.id {NSEvent}; _view: objc.id {NSView});
+    class procedure popUpContextMenu_withEvent_forView(_menu: lobjc.id {NSMenu}; _event: lobjc.id {NSEvent}; _view: lobjc.id {NSView});
     {.$ifdef  MAC_OS_X_VERSION_MAX_ALLOWED >= MAC_OS_X_VERSION_10_3}
-    class procedure popUpContextMenu_withEvent_forView_withFont(_menu: objc.id {NSMenu}; _event: objc.id {NSEvent}; _view: objc.id {NSView}; _font: objc.id {NSFont});
+    class procedure popUpContextMenu_withEvent_forView_withFont(_menu: lobjc.id {NSMenu}; _event: lobjc.id {NSEvent}; _view: lobjc.id {NSView}; _font: lobjc.id {NSFont});
     {.$endif}
     {.$ifdef  MAC_OS_X_VERSION_MAX_ALLOWED >= MAC_OS_X_VERSION_10_2}
     class procedure setMenuBarVisible(_visible: LongBool);
@@ -57,57 +57,57 @@
     constructor initWithTitle(_aTitle: CFStringRef);
     procedure setTitle(_aString: CFStringRef);
     function title: CFStringRef;
-    procedure setSupermenu(_supermenu: objc.id {NSMenu});
-    function supermenu: objc.id;{NSMenu}
+    procedure setSupermenu(_supermenu: lobjc.id {NSMenu});
+    function supermenu: lobjc.id;{NSMenu}
     //  Never call the set method directly it is there only for subclassers.
-    procedure insertItem_atIndex(_newItem: objc.id; __index: Integer);
-    procedure addItem(_newItem: objc.id);
-    function insertItemWithTitle_action_keyEquivalent_atIndex(_aString: CFStringRef; _aSelector: SEL; _charCode: CFStringRef; __index: Integer): objc.id;
-    function addItemWithTitle_action_keyEquivalent(_aString: CFStringRef; _aSelector: SEL; _charCode: CFStringRef): objc.id;
+    procedure insertItem_atIndex(_newItem: lobjc.id; __index: Integer);
+    procedure addItem(_newItem: lobjc.id);
+    function insertItemWithTitle_action_keyEquivalent_atIndex(_aString: CFStringRef; _aSelector: SEL; _charCode: CFStringRef; __index: Integer): lobjc.id;
+    function addItemWithTitle_action_keyEquivalent(_aString: CFStringRef; _aSelector: SEL; _charCode: CFStringRef): lobjc.id;
     procedure removeItemAtIndex(__index: Integer);
-    procedure removeItem(_item: objc.id);
-    procedure setSubmenu_forItem(_aMenu: objc.id {NSMenu}; _anItem: objc.id);
+    procedure removeItem(_item: lobjc.id);
+    procedure setSubmenu_forItem(_aMenu: lobjc.id {NSMenu}; _anItem: lobjc.id);
     function itemArray: CFArrayRef;
     function numberOfItems: Integer;
-    function indexOfItem(__index: objc.id): Integer;
+    function indexOfItem(__index: lobjc.id): Integer;
     function indexOfItemWithTitle(_aTitle: CFStringRef): Integer;
     function indexOfItemWithTag(_aTag: Integer): Integer;
-    function indexOfItemWithRepresentedObject(__object: objc.id): Integer;
-    function indexOfItemWithSubmenu(_submenu: objc.id {NSMenu}): Integer;
-    function indexOfItemWithTarget_andAction(_target: objc.id; _actionSelector: SEL): Integer;
-    function itemAtIndex(__index: Integer): objc.id;
-    function itemWithTitle(_aTitle: CFStringRef): objc.id;
-    function itemWithTag(_tag: Integer): objc.id;
+    function indexOfItemWithRepresentedObject(__object: lobjc.id): Integer;
+    function indexOfItemWithSubmenu(_submenu: lobjc.id {NSMenu}): Integer;
+    function indexOfItemWithTarget_andAction(_target: lobjc.id; _actionSelector: SEL): Integer;
+    function itemAtIndex(__index: Integer): lobjc.id;
+    function itemWithTitle(_aTitle: CFStringRef): lobjc.id;
+    function itemWithTag(_tag: Integer): lobjc.id;
     procedure setAutoenablesItems(_flag: LongBool);
     function autoenablesItems: LongBool;
-    function performKeyEquivalent(_theEvent: objc.id {NSEvent}): LongBool;
+    function performKeyEquivalent(_theEvent: lobjc.id {NSEvent}): LongBool;
     procedure update;
     procedure setMenuChangedMessagesEnabled(_flag: LongBool);
     function menuChangedMessagesEnabled: LongBool;
-    procedure itemChanged(_item: objc.id);
-    procedure helpRequested(_eventPtr: objc.id {NSEvent});
-    procedure setMenuRepresentation(_menuRep: objc.id);
-    function menuRepresentation: objc.id;
-    procedure setContextMenuRepresentation(_menuRep: objc.id);
-    function contextMenuRepresentation: objc.id;
-    procedure setTearOffMenuRepresentation(_menuRep: objc.id);
-    function tearOffMenuRepresentation: objc.id;
+    procedure itemChanged(_item: lobjc.id);
+    procedure helpRequested(_eventPtr: lobjc.id {NSEvent});
+    procedure setMenuRepresentation(_menuRep: lobjc.id);
+    function menuRepresentation: lobjc.id;
+    procedure setContextMenuRepresentation(_menuRep: lobjc.id);
+    function contextMenuRepresentation: lobjc.id;
+    procedure setTearOffMenuRepresentation(_menuRep: lobjc.id);
+    function tearOffMenuRepresentation: lobjc.id;
     function isTornOff: LongBool;
     //  These methods are platform specific.  They really make little sense on Windows.
     //  Their use is discouraged.
-    function attachedMenu: objc.id;{NSMenu}
+    function attachedMenu: lobjc.id;{NSMenu}
     function isAttached: LongBool;
     procedure sizeToFit;
-    function locationForSubmenu(_aSubmenu: objc.id {NSMenu}): NSPoint;
+    function locationForSubmenu(_aSubmenu: lobjc.id {NSMenu}): NSPoint;
     procedure performActionForItemAtIndex(__index: Integer);
     {.$ifdef  MAC_OS_X_VERSION_MAX_ALLOWED >= MAC_OS_X_VERSION_10_3}
-    procedure setDelegate(_anObject: objc.id);
-    function delegate: objc.id;
+    procedure setDelegate(_anObject: lobjc.id);
+    function delegate: lobjc.id;
     {.$endif}
     {.$ifdef  MAC_OS_X_VERSION_MAX_ALLOWED >= MAC_OS_X_VERSION_10_4}
     function menuBarHeight: Single;
     {.$endif}
-    procedure submenuAction(_sender: objc.id);
+    procedure submenuAction(_sender: lobjc.id);
   end;
 
     {.$ifdef  MAC_OS_X_VERSION_MAX_ALLOWED >= MAC_OS_X_VERSION_10_3}
@@ -175,14 +175,14 @@ const
 
 { NSMenu }
 
-class function NSMenu.getClass: objc.id;
+class function NSMenu.getClass: lobjc.id;
 begin
   Result := objc_getClass(StrNSMenu_NSMenu);
 end;
 
 class procedure NSMenu.setMenuZone(_aZone: NSZone);
 type
-  TmsgSendWrapper = procedure (param1: objc.id; param2: SEL;_aZone: NSZone); cdecl;
+  TmsgSendWrapper = procedure (param1: lobjc.id; param2: SEL;_aZone: NSZone); cdecl;
 var
   vmethod: TmsgSendWrapper;
 begin
@@ -195,9 +195,9 @@ begin
   Result := NSZone(objc_msgSend(getClass, sel_registerName(PChar(StrNSMenu_menuZone)), []));
 end;
 
-class procedure NSMenu.popUpContextMenu_withEvent_forView(_menu: objc.id {NSMenu}; _event: objc.id {NSEvent}; _view: objc.id {NSView});
+class procedure NSMenu.popUpContextMenu_withEvent_forView(_menu: lobjc.id {NSMenu}; _event: lobjc.id {NSEvent}; _view: lobjc.id {NSView});
 type
-  TmsgSendWrapper = procedure (param1: objc.id; param2: SEL;_menu: objc.id {NSMenu}; _event: objc.id {NSEvent}; _view: objc.id {NSView}); cdecl;
+  TmsgSendWrapper = procedure (param1: lobjc.id; param2: SEL;_menu: lobjc.id {NSMenu}; _event: lobjc.id {NSEvent}; _view: lobjc.id {NSView}); cdecl;
 var
   vmethod: TmsgSendWrapper;
 begin
@@ -206,9 +206,9 @@ begin
 end;
 
 {.$ifdef  MAC_OS_X_VERSION_MAX_ALLOWED >= MAC_OS_X_VERSION_10_3}
-class procedure NSMenu.popUpContextMenu_withEvent_forView_withFont(_menu: objc.id {NSMenu}; _event: objc.id {NSEvent}; _view: objc.id {NSView}; _font: objc.id {NSFont});
+class procedure NSMenu.popUpContextMenu_withEvent_forView_withFont(_menu: lobjc.id {NSMenu}; _event: lobjc.id {NSEvent}; _view: lobjc.id {NSView}; _font: lobjc.id {NSFont});
 type
-  TmsgSendWrapper = procedure (param1: objc.id; param2: SEL;_menu: objc.id {NSMenu}; _event: objc.id {NSEvent}; _view: objc.id {NSView}; _font: objc.id {NSFont}); cdecl;
+  TmsgSendWrapper = procedure (param1: lobjc.id; param2: SEL;_menu: lobjc.id {NSMenu}; _event: lobjc.id {NSEvent}; _view: lobjc.id {NSView}; _font: lobjc.id {NSFont}); cdecl;
 var
   vmethod: TmsgSendWrapper;
 begin
@@ -220,7 +220,7 @@ end;
 {.$ifdef  MAC_OS_X_VERSION_MAX_ALLOWED >= MAC_OS_X_VERSION_10_2}
 class procedure NSMenu.setMenuBarVisible(_visible: LongBool);
 type
-  TmsgSendWrapper = procedure (param1: objc.id; param2: SEL;_visible: LongBool); cdecl;
+  TmsgSendWrapper = procedure (param1: lobjc.id; param2: SEL;_visible: LongBool); cdecl;
 var
   vmethod: TmsgSendWrapper;
 begin
@@ -236,7 +236,7 @@ end;
 {.$endif}
 constructor NSMenu.initWithTitle(_aTitle: CFStringRef);
 type
-  TmsgSendWrapper = function (param1: objc.id; param2: SEL;_aTitle: CFStringRef): objc.id; cdecl;
+  TmsgSendWrapper = function (param1: lobjc.id; param2: SEL;_aTitle: CFStringRef): lobjc.id; cdecl;
 var
   vmethod: TmsgSendWrapper;
 begin
@@ -248,7 +248,7 @@ end;
 
 procedure NSMenu.setTitle(_aString: CFStringRef);
 type
-  TmsgSendWrapper = procedure (param1: objc.id; param2: SEL;_aString: CFStringRef); cdecl;
+  TmsgSendWrapper = procedure (param1: lobjc.id; param2: SEL;_aString: CFStringRef); cdecl;
 var
   vmethod: TmsgSendWrapper;
 begin
@@ -261,9 +261,9 @@ begin
   Result := CFStringRef(objc_msgSend(Handle, sel_registerName(PChar(StrNSMenu_title)), []));
 end;
 
-procedure NSMenu.setSupermenu(_supermenu: objc.id {NSMenu});
+procedure NSMenu.setSupermenu(_supermenu: lobjc.id {NSMenu});
 type
-  TmsgSendWrapper = procedure (param1: objc.id; param2: SEL;_supermenu: objc.id {NSMenu}); cdecl;
+  TmsgSendWrapper = procedure (param1: lobjc.id; param2: SEL;_supermenu: lobjc.id {NSMenu}); cdecl;
 var
   vmethod: TmsgSendWrapper;
 begin
@@ -271,14 +271,14 @@ begin
   vmethod(Handle, sel_registerName(PChar(StrNSMenu_setSupermenu)), _supermenu);
 end;
 
-function NSMenu.supermenu: objc.id;
+function NSMenu.supermenu: lobjc.id;
 begin
-  Result := objc.id(objc_msgSend(Handle, sel_registerName(PChar(StrNSMenu_supermenu)), []));
+  Result := lobjc.id(objc_msgSend(Handle, sel_registerName(PChar(StrNSMenu_supermenu)), []));
 end;
 
-procedure NSMenu.insertItem_atIndex(_newItem: objc.id; __index: Integer);
+procedure NSMenu.insertItem_atIndex(_newItem: lobjc.id; __index: Integer);
 type
-  TmsgSendWrapper = procedure (param1: objc.id; param2: SEL;_newItem: objc.id; __index: Integer); cdecl;
+  TmsgSendWrapper = procedure (param1: lobjc.id; param2: SEL;_newItem: lobjc.id; __index: Integer); cdecl;
 var
   vmethod: TmsgSendWrapper;
 begin
@@ -286,9 +286,9 @@ begin
   vmethod(Handle, sel_registerName(PChar(StrNSMenu_insertItem_atIndex)), _newItem, __index);
 end;
 
-procedure NSMenu.addItem(_newItem: objc.id);
+procedure NSMenu.addItem(_newItem: lobjc.id);
 type
-  TmsgSendWrapper = procedure (param1: objc.id; param2: SEL;_newItem: objc.id); cdecl;
+  TmsgSendWrapper = procedure (param1: lobjc.id; param2: SEL;_newItem: lobjc.id); cdecl;
 var
   vmethod: TmsgSendWrapper;
 begin
@@ -296,29 +296,29 @@ begin
   vmethod(Handle, sel_registerName(PChar(StrNSMenu_addItem)), _newItem);
 end;
 
-function NSMenu.insertItemWithTitle_action_keyEquivalent_atIndex(_aString: CFStringRef; _aSelector: SEL; _charCode: CFStringRef; __index: Integer): objc.id;
+function NSMenu.insertItemWithTitle_action_keyEquivalent_atIndex(_aString: CFStringRef; _aSelector: SEL; _charCode: CFStringRef; __index: Integer): lobjc.id;
 type
-  TmsgSendWrapper = function (param1: objc.id; param2: SEL;_aString: CFStringRef; _aSelector: SEL; _charCode: CFStringRef; __index: Integer): objc.id; cdecl;
+  TmsgSendWrapper = function (param1: lobjc.id; param2: SEL;_aString: CFStringRef; _aSelector: SEL; _charCode: CFStringRef; __index: Integer): lobjc.id; cdecl;
 var
   vmethod: TmsgSendWrapper;
 begin
   vmethod := TmsgSendWrapper(@objc_msgSend);
-  Result := objc.id(vmethod(Handle, sel_registerName(PChar(StrNSMenu_insertItemWithTitle_action_keyEquivalent_atIndex)), _aString, _aSelector, _charCode, __index));
+  Result := lobjc.id(vmethod(Handle, sel_registerName(PChar(StrNSMenu_insertItemWithTitle_action_keyEquivalent_atIndex)), _aString, _aSelector, _charCode, __index));
 end;
 
-function NSMenu.addItemWithTitle_action_keyEquivalent(_aString: CFStringRef; _aSelector: SEL; _charCode: CFStringRef): objc.id;
+function NSMenu.addItemWithTitle_action_keyEquivalent(_aString: CFStringRef; _aSelector: SEL; _charCode: CFStringRef): lobjc.id;
 type
-  TmsgSendWrapper = function (param1: objc.id; param2: SEL;_aString: CFStringRef; _aSelector: SEL; _charCode: CFStringRef): objc.id; cdecl;
+  TmsgSendWrapper = function (param1: lobjc.id; param2: SEL;_aString: CFStringRef; _aSelector: SEL; _charCode: CFStringRef): lobjc.id; cdecl;
 var
   vmethod: TmsgSendWrapper;
 begin
   vmethod := TmsgSendWrapper(@objc_msgSend);
-  Result := objc.id(vmethod(Handle, sel_registerName(PChar(StrNSMenu_addItemWithTitle_action_keyEquivalent)), _aString, _aSelector, _charCode));
+  Result := lobjc.id(vmethod(Handle, sel_registerName(PChar(StrNSMenu_addItemWithTitle_action_keyEquivalent)), _aString, _aSelector, _charCode));
 end;
 
 procedure NSMenu.removeItemAtIndex(__index: Integer);
 type
-  TmsgSendWrapper = procedure (param1: objc.id; param2: SEL;__index: Integer); cdecl;
+  TmsgSendWrapper = procedure (param1: lobjc.id; param2: SEL;__index: Integer); cdecl;
 var
   vmethod: TmsgSendWrapper;
 begin
@@ -326,9 +326,9 @@ begin
   vmethod(Handle, sel_registerName(PChar(StrNSMenu_removeItemAtIndex)), __index);
 end;
 
-procedure NSMenu.removeItem(_item: objc.id);
+procedure NSMenu.removeItem(_item: lobjc.id);
 type
-  TmsgSendWrapper = procedure (param1: objc.id; param2: SEL;_item: objc.id); cdecl;
+  TmsgSendWrapper = procedure (param1: lobjc.id; param2: SEL;_item: lobjc.id); cdecl;
 var
   vmethod: TmsgSendWrapper;
 begin
@@ -336,9 +336,9 @@ begin
   vmethod(Handle, sel_registerName(PChar(StrNSMenu_removeItem)), _item);
 end;
 
-procedure NSMenu.setSubmenu_forItem(_aMenu: objc.id {NSMenu}; _anItem: objc.id);
+procedure NSMenu.setSubmenu_forItem(_aMenu: lobjc.id {NSMenu}; _anItem: lobjc.id);
 type
-  TmsgSendWrapper = procedure (param1: objc.id; param2: SEL;_aMenu: objc.id {NSMenu}; _anItem: objc.id); cdecl;
+  TmsgSendWrapper = procedure (param1: lobjc.id; param2: SEL;_aMenu: lobjc.id {NSMenu}; _anItem: lobjc.id); cdecl;
 var
   vmethod: TmsgSendWrapper;
 begin
@@ -356,9 +356,9 @@ begin
   Result := Integer(objc_msgSend(Handle, sel_registerName(PChar(StrNSMenu_numberOfItems)), []));
 end;
 
-function NSMenu.indexOfItem(__index: objc.id): Integer;
+function NSMenu.indexOfItem(__index: lobjc.id): Integer;
 type
-  TmsgSendWrapper = function (param1: objc.id; param2: SEL;__index: objc.id): Integer; cdecl;
+  TmsgSendWrapper = function (param1: lobjc.id; param2: SEL;__index: lobjc.id): Integer; cdecl;
 var
   vmethod: TmsgSendWrapper;
 begin
@@ -368,7 +368,7 @@ end;
 
 function NSMenu.indexOfItemWithTitle(_aTitle: CFStringRef): Integer;
 type
-  TmsgSendWrapper = function (param1: objc.id; param2: SEL;_aTitle: CFStringRef): Integer; cdecl;
+  TmsgSendWrapper = function (param1: lobjc.id; param2: SEL;_aTitle: CFStringRef): Integer; cdecl;
 var
   vmethod: TmsgSendWrapper;
 begin
@@ -378,7 +378,7 @@ end;
 
 function NSMenu.indexOfItemWithTag(_aTag: Integer): Integer;
 type
-  TmsgSendWrapper = function (param1: objc.id; param2: SEL;_aTag: Integer): Integer; cdecl;
+  TmsgSendWrapper = function (param1: lobjc.id; param2: SEL;_aTag: Integer): Integer; cdecl;
 var
   vmethod: TmsgSendWrapper;
 begin
@@ -386,9 +386,9 @@ begin
   Result := Integer(vmethod(Handle, sel_registerName(PChar(StrNSMenu_indexOfItemWithTag)), _aTag));
 end;
 
-function NSMenu.indexOfItemWithRepresentedObject(__object: objc.id): Integer;
+function NSMenu.indexOfItemWithRepresentedObject(__object: lobjc.id): Integer;
 type
-  TmsgSendWrapper = function (param1: objc.id; param2: SEL;__object: objc.id): Integer; cdecl;
+  TmsgSendWrapper = function (param1: lobjc.id; param2: SEL;__object: lobjc.id): Integer; cdecl;
 var
   vmethod: TmsgSendWrapper;
 begin
@@ -396,9 +396,9 @@ begin
   Result := Integer(vmethod(Handle, sel_registerName(PChar(StrNSMenu_indexOfItemWithRepresentedObject)), __object));
 end;
 
-function NSMenu.indexOfItemWithSubmenu(_submenu: objc.id {NSMenu}): Integer;
+function NSMenu.indexOfItemWithSubmenu(_submenu: lobjc.id {NSMenu}): Integer;
 type
-  TmsgSendWrapper = function (param1: objc.id; param2: SEL;_submenu: objc.id {NSMenu}): Integer; cdecl;
+  TmsgSendWrapper = function (param1: lobjc.id; param2: SEL;_submenu: lobjc.id {NSMenu}): Integer; cdecl;
 var
   vmethod: TmsgSendWrapper;
 begin
@@ -406,9 +406,9 @@ begin
   Result := Integer(vmethod(Handle, sel_registerName(PChar(StrNSMenu_indexOfItemWithSubmenu)), _submenu));
 end;
 
-function NSMenu.indexOfItemWithTarget_andAction(_target: objc.id; _actionSelector: SEL): Integer;
+function NSMenu.indexOfItemWithTarget_andAction(_target: lobjc.id; _actionSelector: SEL): Integer;
 type
-  TmsgSendWrapper = function (param1: objc.id; param2: SEL;_target: objc.id; _actionSelector: SEL): Integer; cdecl;
+  TmsgSendWrapper = function (param1: lobjc.id; param2: SEL;_target: lobjc.id; _actionSelector: SEL): Integer; cdecl;
 var
   vmethod: TmsgSendWrapper;
 begin
@@ -416,39 +416,39 @@ begin
   Result := Integer(vmethod(Handle, sel_registerName(PChar(StrNSMenu_indexOfItemWithTarget_andAction)), _target, _actionSelector));
 end;
 
-function NSMenu.itemAtIndex(__index: Integer): objc.id;
+function NSMenu.itemAtIndex(__index: Integer): lobjc.id;
 type
-  TmsgSendWrapper = function (param1: objc.id; param2: SEL;__index: Integer): objc.id; cdecl;
+  TmsgSendWrapper = function (param1: lobjc.id; param2: SEL;__index: Integer): lobjc.id; cdecl;
 var
   vmethod: TmsgSendWrapper;
 begin
   vmethod := TmsgSendWrapper(@objc_msgSend);
-  Result := objc.id(vmethod(Handle, sel_registerName(PChar(StrNSMenu_itemAtIndex)), __index));
+  Result := lobjc.id(vmethod(Handle, sel_registerName(PChar(StrNSMenu_itemAtIndex)), __index));
 end;
 
-function NSMenu.itemWithTitle(_aTitle: CFStringRef): objc.id;
+function NSMenu.itemWithTitle(_aTitle: CFStringRef): lobjc.id;
 type
-  TmsgSendWrapper = function (param1: objc.id; param2: SEL;_aTitle: CFStringRef): objc.id; cdecl;
+  TmsgSendWrapper = function (param1: lobjc.id; param2: SEL;_aTitle: CFStringRef): lobjc.id; cdecl;
 var
   vmethod: TmsgSendWrapper;
 begin
   vmethod := TmsgSendWrapper(@objc_msgSend);
-  Result := objc.id(vmethod(Handle, sel_registerName(PChar(StrNSMenu_itemWithTitle)), _aTitle));
+  Result := lobjc.id(vmethod(Handle, sel_registerName(PChar(StrNSMenu_itemWithTitle)), _aTitle));
 end;
 
-function NSMenu.itemWithTag(_tag: Integer): objc.id;
+function NSMenu.itemWithTag(_tag: Integer): lobjc.id;
 type
-  TmsgSendWrapper = function (param1: objc.id; param2: SEL;_tag: Integer): objc.id; cdecl;
+  TmsgSendWrapper = function (param1: lobjc.id; param2: SEL;_tag: Integer): lobjc.id; cdecl;
 var
   vmethod: TmsgSendWrapper;
 begin
   vmethod := TmsgSendWrapper(@objc_msgSend);
-  Result := objc.id(vmethod(Handle, sel_registerName(PChar(StrNSMenu_itemWithTag)), _tag));
+  Result := lobjc.id(vmethod(Handle, sel_registerName(PChar(StrNSMenu_itemWithTag)), _tag));
 end;
 
 procedure NSMenu.setAutoenablesItems(_flag: LongBool);
 type
-  TmsgSendWrapper = procedure (param1: objc.id; param2: SEL;_flag: LongBool); cdecl;
+  TmsgSendWrapper = procedure (param1: lobjc.id; param2: SEL;_flag: LongBool); cdecl;
 var
   vmethod: TmsgSendWrapper;
 begin
@@ -461,9 +461,9 @@ begin
   Result := LongBool(objc_msgSend(Handle, sel_registerName(PChar(StrNSMenu_autoenablesItems)), []));
 end;
 
-function NSMenu.performKeyEquivalent(_theEvent: objc.id {NSEvent}): LongBool;
+function NSMenu.performKeyEquivalent(_theEvent: lobjc.id {NSEvent}): LongBool;
 type
-  TmsgSendWrapper = function (param1: objc.id; param2: SEL;_theEvent: objc.id {NSEvent}): LongBool; cdecl;
+  TmsgSendWrapper = function (param1: lobjc.id; param2: SEL;_theEvent: lobjc.id {NSEvent}): LongBool; cdecl;
 var
   vmethod: TmsgSendWrapper;
 begin
@@ -478,7 +478,7 @@ end;
 
 procedure NSMenu.setMenuChangedMessagesEnabled(_flag: LongBool);
 type
-  TmsgSendWrapper = procedure (param1: objc.id; param2: SEL;_flag: LongBool); cdecl;
+  TmsgSendWrapper = procedure (param1: lobjc.id; param2: SEL;_flag: LongBool); cdecl;
 var
   vmethod: TmsgSendWrapper;
 begin
@@ -491,9 +491,9 @@ begin
   Result := LongBool(objc_msgSend(Handle, sel_registerName(PChar(StrNSMenu_menuChangedMessagesEnabled)), []));
 end;
 
-procedure NSMenu.itemChanged(_item: objc.id);
+procedure NSMenu.itemChanged(_item: lobjc.id);
 type
-  TmsgSendWrapper = procedure (param1: objc.id; param2: SEL;_item: objc.id); cdecl;
+  TmsgSendWrapper = procedure (param1: lobjc.id; param2: SEL;_item: lobjc.id); cdecl;
 var
   vmethod: TmsgSendWrapper;
 begin
@@ -501,9 +501,9 @@ begin
   vmethod(Handle, sel_registerName(PChar(StrNSMenu_itemChanged)), _item);
 end;
 
-procedure NSMenu.helpRequested(_eventPtr: objc.id {NSEvent});
+procedure NSMenu.helpRequested(_eventPtr: lobjc.id {NSEvent});
 type
-  TmsgSendWrapper = procedure (param1: objc.id; param2: SEL;_eventPtr: objc.id {NSEvent}); cdecl;
+  TmsgSendWrapper = procedure (param1: lobjc.id; param2: SEL;_eventPtr: lobjc.id {NSEvent}); cdecl;
 var
   vmethod: TmsgSendWrapper;
 begin
@@ -511,9 +511,9 @@ begin
   vmethod(Handle, sel_registerName(PChar(StrNSMenu_helpRequested)), _eventPtr);
 end;
 
-procedure NSMenu.setMenuRepresentation(_menuRep: objc.id);
+procedure NSMenu.setMenuRepresentation(_menuRep: lobjc.id);
 type
-  TmsgSendWrapper = procedure (param1: objc.id; param2: SEL;_menuRep: objc.id); cdecl;
+  TmsgSendWrapper = procedure (param1: lobjc.id; param2: SEL;_menuRep: lobjc.id); cdecl;
 var
   vmethod: TmsgSendWrapper;
 begin
@@ -521,14 +521,14 @@ begin
   vmethod(Handle, sel_registerName(PChar(StrNSMenu_setMenuRepresentation)), _menuRep);
 end;
 
-function NSMenu.menuRepresentation: objc.id;
+function NSMenu.menuRepresentation: lobjc.id;
 begin
-  Result := objc.id(objc_msgSend(Handle, sel_registerName(PChar(StrNSMenu_menuRepresentation)), []));
+  Result := lobjc.id(objc_msgSend(Handle, sel_registerName(PChar(StrNSMenu_menuRepresentation)), []));
 end;
 
-procedure NSMenu.setContextMenuRepresentation(_menuRep: objc.id);
+procedure NSMenu.setContextMenuRepresentation(_menuRep: lobjc.id);
 type
-  TmsgSendWrapper = procedure (param1: objc.id; param2: SEL;_menuRep: objc.id); cdecl;
+  TmsgSendWrapper = procedure (param1: lobjc.id; param2: SEL;_menuRep: lobjc.id); cdecl;
 var
   vmethod: TmsgSendWrapper;
 begin
@@ -536,14 +536,14 @@ begin
   vmethod(Handle, sel_registerName(PChar(StrNSMenu_setContextMenuRepresentation)), _menuRep);
 end;
 
-function NSMenu.contextMenuRepresentation: objc.id;
+function NSMenu.contextMenuRepresentation: lobjc.id;
 begin
-  Result := objc.id(objc_msgSend(Handle, sel_registerName(PChar(StrNSMenu_contextMenuRepresentation)), []));
+  Result := lobjc.id(objc_msgSend(Handle, sel_registerName(PChar(StrNSMenu_contextMenuRepresentation)), []));
 end;
 
-procedure NSMenu.setTearOffMenuRepresentation(_menuRep: objc.id);
+procedure NSMenu.setTearOffMenuRepresentation(_menuRep: lobjc.id);
 type
-  TmsgSendWrapper = procedure (param1: objc.id; param2: SEL;_menuRep: objc.id); cdecl;
+  TmsgSendWrapper = procedure (param1: lobjc.id; param2: SEL;_menuRep: lobjc.id); cdecl;
 var
   vmethod: TmsgSendWrapper;
 begin
@@ -551,9 +551,9 @@ begin
   vmethod(Handle, sel_registerName(PChar(StrNSMenu_setTearOffMenuRepresentation)), _menuRep);
 end;
 
-function NSMenu.tearOffMenuRepresentation: objc.id;
+function NSMenu.tearOffMenuRepresentation: lobjc.id;
 begin
-  Result := objc.id(objc_msgSend(Handle, sel_registerName(PChar(StrNSMenu_tearOffMenuRepresentation)), []));
+  Result := lobjc.id(objc_msgSend(Handle, sel_registerName(PChar(StrNSMenu_tearOffMenuRepresentation)), []));
 end;
 
 function NSMenu.isTornOff: LongBool;
@@ -561,9 +561,9 @@ begin
   Result := LongBool(objc_msgSend(Handle, sel_registerName(PChar(StrNSMenu_isTornOff)), []));
 end;
 
-function NSMenu.attachedMenu: objc.id;
+function NSMenu.attachedMenu: lobjc.id;
 begin
-  Result := objc.id(objc_msgSend(Handle, sel_registerName(PChar(StrNSMenu_attachedMenu)), []));
+  Result := lobjc.id(objc_msgSend(Handle, sel_registerName(PChar(StrNSMenu_attachedMenu)), []));
 end;
 
 function NSMenu.isAttached: LongBool;
@@ -576,9 +576,9 @@ begin
   objc_msgSend(Handle, sel_registerName(PChar(StrNSMenu_sizeToFit)), []);
 end;
 
-function NSMenu.locationForSubmenu(_aSubmenu: objc.id {NSMenu}): NSPoint;
+function NSMenu.locationForSubmenu(_aSubmenu: lobjc.id {NSMenu}): NSPoint;
 type
-  TmsgSendWrapper = procedure (result_param: Pointer; param1: objc.id; param2: SEL;_aSubmenu: objc.id {NSMenu}); cdecl;
+  TmsgSendWrapper = procedure (result_param: Pointer; param1: lobjc.id; param2: SEL;_aSubmenu: lobjc.id {NSMenu}); cdecl;
 var
   vmethod: TmsgSendWrapper;
 begin
@@ -588,7 +588,7 @@ end;
 
 procedure NSMenu.performActionForItemAtIndex(__index: Integer);
 type
-  TmsgSendWrapper = procedure (param1: objc.id; param2: SEL;__index: Integer); cdecl;
+  TmsgSendWrapper = procedure (param1: lobjc.id; param2: SEL;__index: Integer); cdecl;
 var
   vmethod: TmsgSendWrapper;
 begin
@@ -597,9 +597,9 @@ begin
 end;
 
 {.$ifdef  MAC_OS_X_VERSION_MAX_ALLOWED >= MAC_OS_X_VERSION_10_3}
-procedure NSMenu.setDelegate(_anObject: objc.id);
+procedure NSMenu.setDelegate(_anObject: lobjc.id);
 type
-  TmsgSendWrapper = procedure (param1: objc.id; param2: SEL;_anObject: objc.id); cdecl;
+  TmsgSendWrapper = procedure (param1: lobjc.id; param2: SEL;_anObject: lobjc.id); cdecl;
 var
   vmethod: TmsgSendWrapper;
 begin
@@ -607,9 +607,9 @@ begin
   vmethod(Handle, sel_registerName(PChar(StrNSMenu_setDelegate)), _anObject);
 end;
 
-function NSMenu.delegate: objc.id;
+function NSMenu.delegate: lobjc.id;
 begin
-  Result := objc.id(objc_msgSend(Handle, sel_registerName(PChar(StrNSMenu_delegate)), []));
+  Result := lobjc.id(objc_msgSend(Handle, sel_registerName(PChar(StrNSMenu_delegate)), []));
 end;
 
 {.$endif}
@@ -620,9 +620,9 @@ begin
 end;
 
 {.$endif}
-procedure NSMenu.submenuAction(_sender: objc.id);
+procedure NSMenu.submenuAction(_sender: lobjc.id);
 type
-  TmsgSendWrapper = procedure (param1: objc.id; param2: SEL;_sender: objc.id); cdecl;
+  TmsgSendWrapper = procedure (param1: lobjc.id; param2: SEL;_sender: lobjc.id); cdecl;
 var
   vmethod: TmsgSendWrapper;
 begin

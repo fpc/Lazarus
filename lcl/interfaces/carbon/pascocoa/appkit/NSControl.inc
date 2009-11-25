@@ -35,18 +35,18 @@
 
   NSControl = class(NSView)
   public
-    class function getClass: objc.id; override;
+    class function getClass: lobjc.id; override;
     // All instance variables are private
     class procedure setCellClass(_factoryId: _Class);
     class function cellClass: _Class;
     constructor initWithFrame(_frameRect: NSRect);
     procedure sizeToFit;
     procedure calcSize;
-    function cell: objc.id;
-    procedure setCell(_aCell: objc.id {NSCell});
-    function selectedCell: objc.id;
-    function target: objc.id;
-    procedure setTarget(_anObject: objc.id);
+    function cell: lobjc.id;
+    procedure setCell(_aCell: lobjc.id {NSCell});
+    function selectedCell: lobjc.id;
+    function target: lobjc.id;
+    procedure setTarget(_anObject: lobjc.id);
     function action: SEL;
     procedure setAction(_aSelector: SEL);
     function tag: Integer;
@@ -62,36 +62,36 @@
     procedure setFloatingPointFormat_left_right(_autoRange: LongBool; _leftDigits: LongWord; _rightDigits: LongWord);
     function alignment: NSTextAlignment;
     procedure setAlignment(_mode: NSTextAlignment);
-    function font: objc.id;{NSFont}
-    procedure setFont(_fontObj: objc.id {NSFont});
-    procedure setFormatter(_newFormatter: objc.id {NSFormatter});
-    function formatter: objc.id;
-    procedure setObjectValue(_obj: objc.id);
+    function font: lobjc.id;{NSFont}
+    procedure setFont(_fontObj: lobjc.id {NSFont});
+    procedure setFormatter(_newFormatter: lobjc.id {NSFormatter});
+    function formatter: lobjc.id;
+    procedure setObjectValue(_obj: lobjc.id);
     procedure setStringValue(_aString: CFStringRef);
     procedure setIntValue(_anInt: Integer);
     procedure setFloatValue(_aFloat: Single);
     procedure setDoubleValue(_aDouble: double);
-    function objectValue: objc.id;
+    function objectValue: lobjc.id;
     function stringValue: CFStringRef;
     function intValue: Integer;
     function floatValue: Single;
     function doubleValue: double;
     procedure setNeedsDisplay;
-    procedure updateCell(_aCell: objc.id {NSCell});
-    procedure updateCellInside(_aCell: objc.id {NSCell});
-    procedure drawCellInside(_aCell: objc.id {NSCell});
-    procedure drawCell(_aCell: objc.id {NSCell});
-    procedure selectCell(_aCell: objc.id {NSCell});
-    function sendAction_to(_theAction: SEL; _theTarget: objc.id): LongBool;
-    procedure takeIntValueFrom(_sender: objc.id);
-    procedure takeFloatValueFrom(_sender: objc.id);
-    procedure takeDoubleValueFrom(_sender: objc.id);
-    procedure takeStringValueFrom(_sender: objc.id);
-    procedure takeObjectValueFrom(_sender: objc.id);
-    function currentEditor: objc.id;{NSText}
+    procedure updateCell(_aCell: lobjc.id {NSCell});
+    procedure updateCellInside(_aCell: lobjc.id {NSCell});
+    procedure drawCellInside(_aCell: lobjc.id {NSCell});
+    procedure drawCell(_aCell: lobjc.id {NSCell});
+    procedure selectCell(_aCell: lobjc.id {NSCell});
+    function sendAction_to(_theAction: SEL; _theTarget: lobjc.id): LongBool;
+    procedure takeIntValueFrom(_sender: lobjc.id);
+    procedure takeFloatValueFrom(_sender: lobjc.id);
+    procedure takeDoubleValueFrom(_sender: lobjc.id);
+    procedure takeStringValueFrom(_sender: lobjc.id);
+    procedure takeObjectValueFrom(_sender: lobjc.id);
+    function currentEditor: lobjc.id;{NSText}
     function abortEditing: LongBool;
     procedure validateEditing;
-    procedure mouseDown(_theEvent: objc.id {NSEvent});
+    procedure mouseDown(_theEvent: lobjc.id {NSEvent});
     {.$ifdef  MAC_OS_X_VERSION_MAX_ALLOWED >= MAC_OS_X_VERSION_10_4}
     function baseWritingDirection: NSWritingDirection;
     procedure setBaseWritingDirection(_writingDirection: NSWritingDirection);
@@ -99,8 +99,8 @@
     procedure performClick;
     procedure setRefusesFirstResponder(_flag: LongBool);
     function refusesFirstResponder: LongBool;
-    function attributedStringValue: objc.id;{NSAttributedString}
-    procedure setAttributedStringValue(_obj: objc.id {NSAttributedString});
+    function attributedStringValue: lobjc.id;{NSAttributedString}
+    procedure setAttributedStringValue(_obj: lobjc.id {NSAttributedString});
   end;
 
 {$endif}
@@ -176,14 +176,14 @@ const
 
 { NSControl }
 
-class function NSControl.getClass: objc.id;
+class function NSControl.getClass: lobjc.id;
 begin
   Result := objc_getClass(StrNSControl_NSControl);
 end;
 
 class procedure NSControl.setCellClass(_factoryId: _Class);
 type
-  TmsgSendWrapper = procedure (param1: objc.id; param2: SEL;_factoryId: _Class); cdecl;
+  TmsgSendWrapper = procedure (param1: lobjc.id; param2: SEL;_factoryId: _Class); cdecl;
 var
   vmethod: TmsgSendWrapper;
 begin
@@ -198,7 +198,7 @@ end;
 
 constructor NSControl.initWithFrame(_frameRect: NSRect);
 type
-  TmsgSendWrapper = function (param1: objc.id; param2: SEL;_frameRect: NSRect): objc.id; cdecl;
+  TmsgSendWrapper = function (param1: lobjc.id; param2: SEL;_frameRect: NSRect): lobjc.id; cdecl;
 var
   vmethod: TmsgSendWrapper;
 begin
@@ -218,14 +218,14 @@ begin
   objc_msgSend(Handle, sel_registerName(PChar(StrNSControl_calcSize)), []);
 end;
 
-function NSControl.cell: objc.id;
+function NSControl.cell: lobjc.id;
 begin
-  Result := objc.id(objc_msgSend(Handle, sel_registerName(PChar(StrNSControl_cell)), []));
+  Result := lobjc.id(objc_msgSend(Handle, sel_registerName(PChar(StrNSControl_cell)), []));
 end;
 
-procedure NSControl.setCell(_aCell: objc.id {NSCell});
+procedure NSControl.setCell(_aCell: lobjc.id {NSCell});
 type
-  TmsgSendWrapper = procedure (param1: objc.id; param2: SEL;_aCell: objc.id {NSCell}); cdecl;
+  TmsgSendWrapper = procedure (param1: lobjc.id; param2: SEL;_aCell: lobjc.id {NSCell}); cdecl;
 var
   vmethod: TmsgSendWrapper;
 begin
@@ -233,19 +233,19 @@ begin
   vmethod(Handle, sel_registerName(PChar(StrNSControl_setCell)), _aCell);
 end;
 
-function NSControl.selectedCell: objc.id;
+function NSControl.selectedCell: lobjc.id;
 begin
-  Result := objc.id(objc_msgSend(Handle, sel_registerName(PChar(StrNSControl_selectedCell)), []));
+  Result := lobjc.id(objc_msgSend(Handle, sel_registerName(PChar(StrNSControl_selectedCell)), []));
 end;
 
-function NSControl.target: objc.id;
+function NSControl.target: lobjc.id;
 begin
-  Result := objc.id(objc_msgSend(Handle, sel_registerName(PChar(StrNSControl_target)), []));
+  Result := lobjc.id(objc_msgSend(Handle, sel_registerName(PChar(StrNSControl_target)), []));
 end;
 
-procedure NSControl.setTarget(_anObject: objc.id);
+procedure NSControl.setTarget(_anObject: lobjc.id);
 type
-  TmsgSendWrapper = procedure (param1: objc.id; param2: SEL;_anObject: objc.id); cdecl;
+  TmsgSendWrapper = procedure (param1: lobjc.id; param2: SEL;_anObject: lobjc.id); cdecl;
 var
   vmethod: TmsgSendWrapper;
 begin
@@ -260,7 +260,7 @@ end;
 
 procedure NSControl.setAction(_aSelector: SEL);
 type
-  TmsgSendWrapper = procedure (param1: objc.id; param2: SEL;_aSelector: SEL); cdecl;
+  TmsgSendWrapper = procedure (param1: lobjc.id; param2: SEL;_aSelector: SEL); cdecl;
 var
   vmethod: TmsgSendWrapper;
 begin
@@ -275,7 +275,7 @@ end;
 
 procedure NSControl.setTag(_anInt: Integer);
 type
-  TmsgSendWrapper = procedure (param1: objc.id; param2: SEL;_anInt: Integer); cdecl;
+  TmsgSendWrapper = procedure (param1: lobjc.id; param2: SEL;_anInt: Integer); cdecl;
 var
   vmethod: TmsgSendWrapper;
 begin
@@ -290,7 +290,7 @@ end;
 
 procedure NSControl.setIgnoresMultiClick(_flag: LongBool);
 type
-  TmsgSendWrapper = procedure (param1: objc.id; param2: SEL;_flag: LongBool); cdecl;
+  TmsgSendWrapper = procedure (param1: lobjc.id; param2: SEL;_flag: LongBool); cdecl;
 var
   vmethod: TmsgSendWrapper;
 begin
@@ -305,7 +305,7 @@ end;
 
 function NSControl.sendActionOn(_mask: Integer): Integer;
 type
-  TmsgSendWrapper = function (param1: objc.id; param2: SEL;_mask: Integer): Integer; cdecl;
+  TmsgSendWrapper = function (param1: lobjc.id; param2: SEL;_mask: Integer): Integer; cdecl;
 var
   vmethod: TmsgSendWrapper;
 begin
@@ -320,7 +320,7 @@ end;
 
 procedure NSControl.setContinuous(_flag: LongBool);
 type
-  TmsgSendWrapper = procedure (param1: objc.id; param2: SEL;_flag: LongBool); cdecl;
+  TmsgSendWrapper = procedure (param1: lobjc.id; param2: SEL;_flag: LongBool); cdecl;
 var
   vmethod: TmsgSendWrapper;
 begin
@@ -335,7 +335,7 @@ end;
 
 procedure NSControl.setEnabled(_flag: LongBool);
 type
-  TmsgSendWrapper = procedure (param1: objc.id; param2: SEL;_flag: LongBool); cdecl;
+  TmsgSendWrapper = procedure (param1: lobjc.id; param2: SEL;_flag: LongBool); cdecl;
 var
   vmethod: TmsgSendWrapper;
 begin
@@ -345,7 +345,7 @@ end;
 
 procedure NSControl.setFloatingPointFormat_left_right(_autoRange: LongBool; _leftDigits: LongWord; _rightDigits: LongWord);
 type
-  TmsgSendWrapper = procedure (param1: objc.id; param2: SEL;_autoRange: LongBool; _leftDigits: LongWord; _rightDigits: LongWord); cdecl;
+  TmsgSendWrapper = procedure (param1: lobjc.id; param2: SEL;_autoRange: LongBool; _leftDigits: LongWord; _rightDigits: LongWord); cdecl;
 var
   vmethod: TmsgSendWrapper;
 begin
@@ -360,7 +360,7 @@ end;
 
 procedure NSControl.setAlignment(_mode: NSTextAlignment);
 type
-  TmsgSendWrapper = procedure (param1: objc.id; param2: SEL;_mode: NSTextAlignment); cdecl;
+  TmsgSendWrapper = procedure (param1: lobjc.id; param2: SEL;_mode: NSTextAlignment); cdecl;
 var
   vmethod: TmsgSendWrapper;
 begin
@@ -368,14 +368,14 @@ begin
   vmethod(Handle, sel_registerName(PChar(StrNSControl_setAlignment)), _mode);
 end;
 
-function NSControl.font: objc.id;
+function NSControl.font: lobjc.id;
 begin
-  Result := objc.id(objc_msgSend(Handle, sel_registerName(PChar(StrNSControl_font)), []));
+  Result := lobjc.id(objc_msgSend(Handle, sel_registerName(PChar(StrNSControl_font)), []));
 end;
 
-procedure NSControl.setFont(_fontObj: objc.id {NSFont});
+procedure NSControl.setFont(_fontObj: lobjc.id {NSFont});
 type
-  TmsgSendWrapper = procedure (param1: objc.id; param2: SEL;_fontObj: objc.id {NSFont}); cdecl;
+  TmsgSendWrapper = procedure (param1: lobjc.id; param2: SEL;_fontObj: lobjc.id {NSFont}); cdecl;
 var
   vmethod: TmsgSendWrapper;
 begin
@@ -383,9 +383,9 @@ begin
   vmethod(Handle, sel_registerName(PChar(StrNSControl_setFont)), _fontObj);
 end;
 
-procedure NSControl.setFormatter(_newFormatter: objc.id {NSFormatter});
+procedure NSControl.setFormatter(_newFormatter: lobjc.id {NSFormatter});
 type
-  TmsgSendWrapper = procedure (param1: objc.id; param2: SEL;_newFormatter: objc.id {NSFormatter}); cdecl;
+  TmsgSendWrapper = procedure (param1: lobjc.id; param2: SEL;_newFormatter: lobjc.id {NSFormatter}); cdecl;
 var
   vmethod: TmsgSendWrapper;
 begin
@@ -393,14 +393,14 @@ begin
   vmethod(Handle, sel_registerName(PChar(StrNSControl_setFormatter)), _newFormatter);
 end;
 
-function NSControl.formatter: objc.id;
+function NSControl.formatter: lobjc.id;
 begin
-  Result := objc.id(objc_msgSend(Handle, sel_registerName(PChar(StrNSControl_formatter)), []));
+  Result := lobjc.id(objc_msgSend(Handle, sel_registerName(PChar(StrNSControl_formatter)), []));
 end;
 
-procedure NSControl.setObjectValue(_obj: objc.id);
+procedure NSControl.setObjectValue(_obj: lobjc.id);
 type
-  TmsgSendWrapper = procedure (param1: objc.id; param2: SEL;_obj: objc.id); cdecl;
+  TmsgSendWrapper = procedure (param1: lobjc.id; param2: SEL;_obj: lobjc.id); cdecl;
 var
   vmethod: TmsgSendWrapper;
 begin
@@ -410,7 +410,7 @@ end;
 
 procedure NSControl.setStringValue(_aString: CFStringRef);
 type
-  TmsgSendWrapper = procedure (param1: objc.id; param2: SEL;_aString: CFStringRef); cdecl;
+  TmsgSendWrapper = procedure (param1: lobjc.id; param2: SEL;_aString: CFStringRef); cdecl;
 var
   vmethod: TmsgSendWrapper;
 begin
@@ -420,7 +420,7 @@ end;
 
 procedure NSControl.setIntValue(_anInt: Integer);
 type
-  TmsgSendWrapper = procedure (param1: objc.id; param2: SEL;_anInt: Integer); cdecl;
+  TmsgSendWrapper = procedure (param1: lobjc.id; param2: SEL;_anInt: Integer); cdecl;
 var
   vmethod: TmsgSendWrapper;
 begin
@@ -430,7 +430,7 @@ end;
 
 procedure NSControl.setFloatValue(_aFloat: Single);
 type
-  TmsgSendWrapper = procedure (param1: objc.id; param2: SEL;_aFloat: Single); cdecl;
+  TmsgSendWrapper = procedure (param1: lobjc.id; param2: SEL;_aFloat: Single); cdecl;
 var
   vmethod: TmsgSendWrapper;
 begin
@@ -440,7 +440,7 @@ end;
 
 procedure NSControl.setDoubleValue(_aDouble: double);
 type
-  TmsgSendWrapper = procedure (param1: objc.id; param2: SEL;_aDouble: double); cdecl;
+  TmsgSendWrapper = procedure (param1: lobjc.id; param2: SEL;_aDouble: double); cdecl;
 var
   vmethod: TmsgSendWrapper;
 begin
@@ -448,9 +448,9 @@ begin
   vmethod(Handle, sel_registerName(PChar(StrNSControl_setDoubleValue)), _aDouble);
 end;
 
-function NSControl.objectValue: objc.id;
+function NSControl.objectValue: lobjc.id;
 begin
-  Result := objc.id(objc_msgSend(Handle, sel_registerName(PChar(StrNSControl_objectValue)), []));
+  Result := lobjc.id(objc_msgSend(Handle, sel_registerName(PChar(StrNSControl_objectValue)), []));
 end;
 
 function NSControl.stringValue: CFStringRef;
@@ -478,9 +478,9 @@ begin
   objc_msgSend(Handle, sel_registerName(PChar(StrNSControl_setNeedsDisplay)), []);
 end;
 
-procedure NSControl.updateCell(_aCell: objc.id {NSCell});
+procedure NSControl.updateCell(_aCell: lobjc.id {NSCell});
 type
-  TmsgSendWrapper = procedure (param1: objc.id; param2: SEL;_aCell: objc.id {NSCell}); cdecl;
+  TmsgSendWrapper = procedure (param1: lobjc.id; param2: SEL;_aCell: lobjc.id {NSCell}); cdecl;
 var
   vmethod: TmsgSendWrapper;
 begin
@@ -488,9 +488,9 @@ begin
   vmethod(Handle, sel_registerName(PChar(StrNSControl_updateCell)), _aCell);
 end;
 
-procedure NSControl.updateCellInside(_aCell: objc.id {NSCell});
+procedure NSControl.updateCellInside(_aCell: lobjc.id {NSCell});
 type
-  TmsgSendWrapper = procedure (param1: objc.id; param2: SEL;_aCell: objc.id {NSCell}); cdecl;
+  TmsgSendWrapper = procedure (param1: lobjc.id; param2: SEL;_aCell: lobjc.id {NSCell}); cdecl;
 var
   vmethod: TmsgSendWrapper;
 begin
@@ -498,9 +498,9 @@ begin
   vmethod(Handle, sel_registerName(PChar(StrNSControl_updateCellInside)), _aCell);
 end;
 
-procedure NSControl.drawCellInside(_aCell: objc.id {NSCell});
+procedure NSControl.drawCellInside(_aCell: lobjc.id {NSCell});
 type
-  TmsgSendWrapper = procedure (param1: objc.id; param2: SEL;_aCell: objc.id {NSCell}); cdecl;
+  TmsgSendWrapper = procedure (param1: lobjc.id; param2: SEL;_aCell: lobjc.id {NSCell}); cdecl;
 var
   vmethod: TmsgSendWrapper;
 begin
@@ -508,9 +508,9 @@ begin
   vmethod(Handle, sel_registerName(PChar(StrNSControl_drawCellInside)), _aCell);
 end;
 
-procedure NSControl.drawCell(_aCell: objc.id {NSCell});
+procedure NSControl.drawCell(_aCell: lobjc.id {NSCell});
 type
-  TmsgSendWrapper = procedure (param1: objc.id; param2: SEL;_aCell: objc.id {NSCell}); cdecl;
+  TmsgSendWrapper = procedure (param1: lobjc.id; param2: SEL;_aCell: lobjc.id {NSCell}); cdecl;
 var
   vmethod: TmsgSendWrapper;
 begin
@@ -518,9 +518,9 @@ begin
   vmethod(Handle, sel_registerName(PChar(StrNSControl_drawCell)), _aCell);
 end;
 
-procedure NSControl.selectCell(_aCell: objc.id {NSCell});
+procedure NSControl.selectCell(_aCell: lobjc.id {NSCell});
 type
-  TmsgSendWrapper = procedure (param1: objc.id; param2: SEL;_aCell: objc.id {NSCell}); cdecl;
+  TmsgSendWrapper = procedure (param1: lobjc.id; param2: SEL;_aCell: lobjc.id {NSCell}); cdecl;
 var
   vmethod: TmsgSendWrapper;
 begin
@@ -528,9 +528,9 @@ begin
   vmethod(Handle, sel_registerName(PChar(StrNSControl_selectCell)), _aCell);
 end;
 
-function NSControl.sendAction_to(_theAction: SEL; _theTarget: objc.id): LongBool;
+function NSControl.sendAction_to(_theAction: SEL; _theTarget: lobjc.id): LongBool;
 type
-  TmsgSendWrapper = function (param1: objc.id; param2: SEL;_theAction: SEL; _theTarget: objc.id): LongBool; cdecl;
+  TmsgSendWrapper = function (param1: lobjc.id; param2: SEL;_theAction: SEL; _theTarget: lobjc.id): LongBool; cdecl;
 var
   vmethod: TmsgSendWrapper;
 begin
@@ -538,9 +538,9 @@ begin
   Result := LongBool(vmethod(Handle, sel_registerName(PChar(StrNSControl_sendAction_to)), _theAction, _theTarget));
 end;
 
-procedure NSControl.takeIntValueFrom(_sender: objc.id);
+procedure NSControl.takeIntValueFrom(_sender: lobjc.id);
 type
-  TmsgSendWrapper = procedure (param1: objc.id; param2: SEL;_sender: objc.id); cdecl;
+  TmsgSendWrapper = procedure (param1: lobjc.id; param2: SEL;_sender: lobjc.id); cdecl;
 var
   vmethod: TmsgSendWrapper;
 begin
@@ -548,9 +548,9 @@ begin
   vmethod(Handle, sel_registerName(PChar(StrNSControl_takeIntValueFrom)), _sender);
 end;
 
-procedure NSControl.takeFloatValueFrom(_sender: objc.id);
+procedure NSControl.takeFloatValueFrom(_sender: lobjc.id);
 type
-  TmsgSendWrapper = procedure (param1: objc.id; param2: SEL;_sender: objc.id); cdecl;
+  TmsgSendWrapper = procedure (param1: lobjc.id; param2: SEL;_sender: lobjc.id); cdecl;
 var
   vmethod: TmsgSendWrapper;
 begin
@@ -558,9 +558,9 @@ begin
   vmethod(Handle, sel_registerName(PChar(StrNSControl_takeFloatValueFrom)), _sender);
 end;
 
-procedure NSControl.takeDoubleValueFrom(_sender: objc.id);
+procedure NSControl.takeDoubleValueFrom(_sender: lobjc.id);
 type
-  TmsgSendWrapper = procedure (param1: objc.id; param2: SEL;_sender: objc.id); cdecl;
+  TmsgSendWrapper = procedure (param1: lobjc.id; param2: SEL;_sender: lobjc.id); cdecl;
 var
   vmethod: TmsgSendWrapper;
 begin
@@ -568,9 +568,9 @@ begin
   vmethod(Handle, sel_registerName(PChar(StrNSControl_takeDoubleValueFrom)), _sender);
 end;
 
-procedure NSControl.takeStringValueFrom(_sender: objc.id);
+procedure NSControl.takeStringValueFrom(_sender: lobjc.id);
 type
-  TmsgSendWrapper = procedure (param1: objc.id; param2: SEL;_sender: objc.id); cdecl;
+  TmsgSendWrapper = procedure (param1: lobjc.id; param2: SEL;_sender: lobjc.id); cdecl;
 var
   vmethod: TmsgSendWrapper;
 begin
@@ -578,9 +578,9 @@ begin
   vmethod(Handle, sel_registerName(PChar(StrNSControl_takeStringValueFrom)), _sender);
 end;
 
-procedure NSControl.takeObjectValueFrom(_sender: objc.id);
+procedure NSControl.takeObjectValueFrom(_sender: lobjc.id);
 type
-  TmsgSendWrapper = procedure (param1: objc.id; param2: SEL;_sender: objc.id); cdecl;
+  TmsgSendWrapper = procedure (param1: lobjc.id; param2: SEL;_sender: lobjc.id); cdecl;
 var
   vmethod: TmsgSendWrapper;
 begin
@@ -588,9 +588,9 @@ begin
   vmethod(Handle, sel_registerName(PChar(StrNSControl_takeObjectValueFrom)), _sender);
 end;
 
-function NSControl.currentEditor: objc.id;
+function NSControl.currentEditor: lobjc.id;
 begin
-  Result := objc.id(objc_msgSend(Handle, sel_registerName(PChar(StrNSControl_currentEditor)), []));
+  Result := lobjc.id(objc_msgSend(Handle, sel_registerName(PChar(StrNSControl_currentEditor)), []));
 end;
 
 function NSControl.abortEditing: LongBool;
@@ -603,9 +603,9 @@ begin
   objc_msgSend(Handle, sel_registerName(PChar(StrNSControl_validateEditing)), []);
 end;
 
-procedure NSControl.mouseDown(_theEvent: objc.id {NSEvent});
+procedure NSControl.mouseDown(_theEvent: lobjc.id {NSEvent});
 type
-  TmsgSendWrapper = procedure (param1: objc.id; param2: SEL;_theEvent: objc.id {NSEvent}); cdecl;
+  TmsgSendWrapper = procedure (param1: lobjc.id; param2: SEL;_theEvent: lobjc.id {NSEvent}); cdecl;
 var
   vmethod: TmsgSendWrapper;
 begin
@@ -621,7 +621,7 @@ end;
 
 procedure NSControl.setBaseWritingDirection(_writingDirection: NSWritingDirection);
 type
-  TmsgSendWrapper = procedure (param1: objc.id; param2: SEL;_writingDirection: NSWritingDirection); cdecl;
+  TmsgSendWrapper = procedure (param1: lobjc.id; param2: SEL;_writingDirection: NSWritingDirection); cdecl;
 var
   vmethod: TmsgSendWrapper;
 begin
@@ -637,7 +637,7 @@ end;
 
 procedure NSControl.setRefusesFirstResponder(_flag: LongBool);
 type
-  TmsgSendWrapper = procedure (param1: objc.id; param2: SEL;_flag: LongBool); cdecl;
+  TmsgSendWrapper = procedure (param1: lobjc.id; param2: SEL;_flag: LongBool); cdecl;
 var
   vmethod: TmsgSendWrapper;
 begin
@@ -650,14 +650,14 @@ begin
   Result := LongBool(objc_msgSend(Handle, sel_registerName(PChar(StrNSControl_refusesFirstResponder)), []));
 end;
 
-function NSControl.attributedStringValue: objc.id;
+function NSControl.attributedStringValue: lobjc.id;
 begin
-  Result := objc.id(objc_msgSend(Handle, sel_registerName(PChar(StrNSControl_attributedStringValue)), []));
+  Result := lobjc.id(objc_msgSend(Handle, sel_registerName(PChar(StrNSControl_attributedStringValue)), []));
 end;
 
-procedure NSControl.setAttributedStringValue(_obj: objc.id {NSAttributedString});
+procedure NSControl.setAttributedStringValue(_obj: lobjc.id {NSAttributedString});
 type
-  TmsgSendWrapper = procedure (param1: objc.id; param2: SEL;_obj: objc.id {NSAttributedString}); cdecl;
+  TmsgSendWrapper = procedure (param1: lobjc.id; param2: SEL;_obj: lobjc.id {NSAttributedString}); cdecl;
 var
   vmethod: TmsgSendWrapper;
 begin

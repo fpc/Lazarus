@@ -71,7 +71,7 @@ type
 
     CustomTypes     : TStringList;
 
-    ObjcIDReplace    : AnsiString; // = 'objc.id';
+    ObjcIDReplace    : AnsiString; // = 'lobjc.id';
     fExternVarPrefix : AnsiString; // always '_'?
 
     UseRefClassType  : Boolean;
@@ -1457,9 +1457,9 @@ end;*)
 // procedure writes out constructor entity to the implementation section
 // with the followind structure
 // assignes object's ClassID usinng GetClass method
-// creates ObjC object calling objc_method Alloc
-// adds procedure type and variable of objC init??? method, to wrap obj_SendMsg
-// initialize ObjC object structure calling init??? method
+// creates lobjc object calling objc_method Alloc
+// adds procedure type and variable of lobjc init??? method, to wrap obj_SendMsg
+// initialize lobjc object structure calling init??? method
 
 {function RefixName(const mtdName: AnsiString): AnsiString;
 begin
@@ -1875,7 +1875,7 @@ begin
         if res._Type is TTypeDef then begin
           td := TTypeDef(res._Type);
           res.tagComment := td._Name;
-          td._Name := ConvertSettings.GetObjCClassReplaceName(nm); //Format('objc.id', [td._Name] );
+          td._Name := ConvertSettings.GetObjCClassReplaceName(nm); //Format('lobjc.id', [td._Name] );
         end;
     end else if (obj is TObjCParameterDef) then begin
       prm := TObjCParameterDef(obj);
@@ -1883,7 +1883,7 @@ begin
       nm := ObjCResultToDelphiType(prm._Type);
       if ConvertSettings.ObjCClassTypes.IndexOf(nm) >= 0 then begin
         if prm._Type._Type is TTypeDef then begin
-          TTypeDef(prm._Type._Type)._Name := ConvertSettings.GetObjCClassReplaceName(nm); //Format('objc.id {%s}', [TTypeDef(prm._Type._Type)._Name] );
+          TTypeDef(prm._Type._Type)._Name := ConvertSettings.GetObjCClassReplaceName(nm); //Format('lobjc.id {%s}', [TTypeDef(prm._Type._Type)._Name] );
         end;
       end;
 
@@ -2042,7 +2042,7 @@ begin
 
   CustomTypes := TStringList.Create;
 
-  ObjcIDReplace := 'objc.id';
+  ObjcIDReplace := 'lobjc.id';
   CallConv := 'cdecl';
   fExternVarPrefix := '_';
   RefClassPostfix := 'Ref';

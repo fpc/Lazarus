@@ -34,7 +34,7 @@ uses
   MacOSAll,
   // Cocoa
   {$ifdef CarbonUseCocoa}
-  appkit, foundation, objc,
+  appkit, foundation, lobjc,
   {$endif CarbonUseCocoa}
   // LCL
   Classes, Controls, ExtCtrls, LCLType, LCLProc, Graphics, Math, SysUtils,

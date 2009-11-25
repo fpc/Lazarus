@@ -49,12 +49,12 @@ const
 
   NSToolbarItem = class(NSObject)
   public
-    class function getClass: objc.id; override;
+    class function getClass: lobjc.id; override;
     constructor initWithItemIdentifier(_itemIdentifier: CFStringRef);
     //  Initialize the toolbar item with an identifier which is a development language string
     // used by the toolbar and its delegate for identification purposes. 
     function itemIdentifier: CFStringRef;
-    function toolbar: objc.id;{NSToolbar}
+    function toolbar: lobjc.id;{NSToolbar}
     //  Use this to determine the toolbar in which an item is currently displayed.
     //  ----- Setters and Getters -----
     procedure setLabel(__label: CFStringRef);
@@ -73,8 +73,8 @@ const
     function toolTip: CFStringRef;
     //  Use this to set a tooltip to be used when the item is displayed in the toolbar.
     //  (forwards to -view if it responds)
-    procedure setMenuFormRepresentation(_menuItem: objc.id {NSMenuItem});
-    function menuFormRepresentation: objc.id;{NSMenuItem}
+    procedure setMenuFormRepresentation(_menuItem: lobjc.id {NSMenuItem});
+    function menuFormRepresentation: lobjc.id;{NSMenuItem}
     //  The menu form of a toolbar item's purpose is twofold.  First, when the window is
     // too small to display an item, it will be clipped but remain accessible from a "clipped
     // items" menu containing the menu item returned here.  Second, in text only mode, the
@@ -87,8 +87,8 @@ const
     procedure setTag(_tag: Integer);
     function tag: Integer;
     //  Tag for your own custom purpose. (forwards to -view if it responds)
-    procedure setTarget(_target: objc.id);
-    function target: objc.id;
+    procedure setTarget(_target: lobjc.id);
+    function target: lobjc.id;
     //  Set and get the action of an item. (forwards to -view if it responds)
     procedure setAction(_action: SEL);
     function action: SEL;
@@ -98,12 +98,12 @@ const
     function isEnabled: LongBool;
     //  Set and get the enabled flag of an item.  For custom views, this method will call
     // setEnabled:/isEnabled on the view if it responds. (forwards to -view if it responds)
-    procedure setImage(_image: objc.id {NSImage});
-    function image: objc.id;{NSImage}
+    procedure setImage(_image: lobjc.id {NSImage});
+    function image: lobjc.id;{NSImage}
     //  Set and get the image of an item.  For custom views, this method will call setImage:/image
     // on the view if it responds. (forwards to -view if it responds)
-    procedure setView(_view: objc.id {NSView});
-    function view: objc.id;{NSView}
+    procedure setView(_view: lobjc.id {NSView});
+    function view: lobjc.id;{NSView}
     //  Use setView: if you want your toolbar item to use something other than the standard.
     //  Note that, by default, many of the set/get methods will be implemented by calls
     // forwarded to the view you set, if it responds to it.  Also, your view must be archivable
@@ -170,14 +170,14 @@ const
 
 { NSToolbarItem }
 
-class function NSToolbarItem.getClass: objc.id;
+class function NSToolbarItem.getClass: lobjc.id;
 begin
   Result := objc_getClass(StrNSToolbarItem_NSToolbarItem);
 end;
 
 constructor NSToolbarItem.initWithItemIdentifier(_itemIdentifier: CFStringRef);
 type
-  TmsgSendWrapper = function (param1: objc.id; param2: SEL;_itemIdentifier: CFStringRef): objc.id; cdecl;
+  TmsgSendWrapper = function (param1: lobjc.id; param2: SEL;_itemIdentifier: CFStringRef): lobjc.id; cdecl;
 var
   vmethod: TmsgSendWrapper;
 begin
@@ -192,14 +192,14 @@ begin
   Result := CFStringRef(objc_msgSend(Handle, sel_registerName(PChar(StrNSToolbarItem_itemIdentifier)), []));
 end;
 
-function NSToolbarItem.toolbar: objc.id;
+function NSToolbarItem.toolbar: lobjc.id;
 begin
-  Result := objc.id(objc_msgSend(Handle, sel_registerName(PChar(StrNSToolbarItem_toolbar)), []));
+  Result := lobjc.id(objc_msgSend(Handle, sel_registerName(PChar(StrNSToolbarItem_toolbar)), []));
 end;
 
 procedure NSToolbarItem.setLabel(__label: CFStringRef);
 type
-  TmsgSendWrapper = procedure (param1: objc.id; param2: SEL;__label: CFStringRef); cdecl;
+  TmsgSendWrapper = procedure (param1: lobjc.id; param2: SEL;__label: CFStringRef); cdecl;
 var
   vmethod: TmsgSendWrapper;
 begin
@@ -214,7 +214,7 @@ end;
 
 procedure NSToolbarItem.setPaletteLabel(_paletteLabel: CFStringRef);
 type
-  TmsgSendWrapper = procedure (param1: objc.id; param2: SEL;_paletteLabel: CFStringRef); cdecl;
+  TmsgSendWrapper = procedure (param1: lobjc.id; param2: SEL;_paletteLabel: CFStringRef); cdecl;
 var
   vmethod: TmsgSendWrapper;
 begin
@@ -229,7 +229,7 @@ end;
 
 procedure NSToolbarItem.setToolTip(_toolTip: CFStringRef);
 type
-  TmsgSendWrapper = procedure (param1: objc.id; param2: SEL;_toolTip: CFStringRef); cdecl;
+  TmsgSendWrapper = procedure (param1: lobjc.id; param2: SEL;_toolTip: CFStringRef); cdecl;
 var
   vmethod: TmsgSendWrapper;
 begin
@@ -242,9 +242,9 @@ begin
   Result := CFStringRef(objc_msgSend(Handle, sel_registerName(PChar(StrNSToolbarItem_toolTip)), []));
 end;
 
-procedure NSToolbarItem.setMenuFormRepresentation(_menuItem: objc.id {NSMenuItem});
+procedure NSToolbarItem.setMenuFormRepresentation(_menuItem: lobjc.id {NSMenuItem});
 type
-  TmsgSendWrapper = procedure (param1: objc.id; param2: SEL;_menuItem: objc.id {NSMenuItem}); cdecl;
+  TmsgSendWrapper = procedure (param1: lobjc.id; param2: SEL;_menuItem: lobjc.id {NSMenuItem}); cdecl;
 var
   vmethod: TmsgSendWrapper;
 begin
@@ -252,14 +252,14 @@ begin
   vmethod(Handle, sel_registerName(PChar(StrNSToolbarItem_setMenuFormRepresentation)), _menuItem);
 end;
 
-function NSToolbarItem.menuFormRepresentation: objc.id;
+function NSToolbarItem.menuFormRepresentation: lobjc.id;
 begin
-  Result := objc.id(objc_msgSend(Handle, sel_registerName(PChar(StrNSToolbarItem_menuFormRepresentation)), []));
+  Result := lobjc.id(objc_msgSend(Handle, sel_registerName(PChar(StrNSToolbarItem_menuFormRepresentation)), []));
 end;
 
 procedure NSToolbarItem.setTag(_tag: Integer);
 type
-  TmsgSendWrapper = procedure (param1: objc.id; param2: SEL;_tag: Integer); cdecl;
+  TmsgSendWrapper = procedure (param1: lobjc.id; param2: SEL;_tag: Integer); cdecl;
 var
   vmethod: TmsgSendWrapper;
 begin
@@ -272,9 +272,9 @@ begin
   Result := Integer(objc_msgSend(Handle, sel_registerName(PChar(StrNSToolbarItem_tag)), []));
 end;
 
-procedure NSToolbarItem.setTarget(_target: objc.id);
+procedure NSToolbarItem.setTarget(_target: lobjc.id);
 type
-  TmsgSendWrapper = procedure (param1: objc.id; param2: SEL;_target: objc.id); cdecl;
+  TmsgSendWrapper = procedure (param1: lobjc.id; param2: SEL;_target: lobjc.id); cdecl;
 var
   vmethod: TmsgSendWrapper;
 begin
@@ -282,14 +282,14 @@ begin
   vmethod(Handle, sel_registerName(PChar(StrNSToolbarItem_setTarget)), _target);
 end;
 
-function NSToolbarItem.target: objc.id;
+function NSToolbarItem.target: lobjc.id;
 begin
-  Result := objc.id(objc_msgSend(Handle, sel_registerName(PChar(StrNSToolbarItem_target)), []));
+  Result := lobjc.id(objc_msgSend(Handle, sel_registerName(PChar(StrNSToolbarItem_target)), []));
 end;
 
 procedure NSToolbarItem.setAction(_action: SEL);
 type
-  TmsgSendWrapper = procedure (param1: objc.id; param2: SEL;_action: SEL); cdecl;
+  TmsgSendWrapper = procedure (param1: lobjc.id; param2: SEL;_action: SEL); cdecl;
 var
   vmethod: TmsgSendWrapper;
 begin
@@ -304,7 +304,7 @@ end;
 
 procedure NSToolbarItem.setEnabled(_enabled: LongBool);
 type
-  TmsgSendWrapper = procedure (param1: objc.id; param2: SEL;_enabled: LongBool); cdecl;
+  TmsgSendWrapper = procedure (param1: lobjc.id; param2: SEL;_enabled: LongBool); cdecl;
 var
   vmethod: TmsgSendWrapper;
 begin
@@ -317,9 +317,9 @@ begin
   Result := LongBool(objc_msgSend(Handle, sel_registerName(PChar(StrNSToolbarItem_isEnabled)), []));
 end;
 
-procedure NSToolbarItem.setImage(_image: objc.id {NSImage});
+procedure NSToolbarItem.setImage(_image: lobjc.id {NSImage});
 type
-  TmsgSendWrapper = procedure (param1: objc.id; param2: SEL;_image: objc.id {NSImage}); cdecl;
+  TmsgSendWrapper = procedure (param1: lobjc.id; param2: SEL;_image: lobjc.id {NSImage}); cdecl;
 var
   vmethod: TmsgSendWrapper;
 begin
@@ -327,14 +327,14 @@ begin
   vmethod(Handle, sel_registerName(PChar(StrNSToolbarItem_setImage)), _image);
 end;
 
-function NSToolbarItem.image: objc.id;
+function NSToolbarItem.image: lobjc.id;
 begin
-  Result := objc.id(objc_msgSend(Handle, sel_registerName(PChar(StrNSToolbarItem_image)), []));
+  Result := lobjc.id(objc_msgSend(Handle, sel_registerName(PChar(StrNSToolbarItem_image)), []));
 end;
 
-procedure NSToolbarItem.setView(_view: objc.id {NSView});
+procedure NSToolbarItem.setView(_view: lobjc.id {NSView});
 type
-  TmsgSendWrapper = procedure (param1: objc.id; param2: SEL;_view: objc.id {NSView}); cdecl;
+  TmsgSendWrapper = procedure (param1: lobjc.id; param2: SEL;_view: lobjc.id {NSView}); cdecl;
 var
   vmethod: TmsgSendWrapper;
 begin
@@ -342,14 +342,14 @@ begin
   vmethod(Handle, sel_registerName(PChar(StrNSToolbarItem_setView)), _view);
 end;
 
-function NSToolbarItem.view: objc.id;
+function NSToolbarItem.view: lobjc.id;
 begin
-  Result := objc.id(objc_msgSend(Handle, sel_registerName(PChar(StrNSToolbarItem_view)), []));
+  Result := lobjc.id(objc_msgSend(Handle, sel_registerName(PChar(StrNSToolbarItem_view)), []));
 end;
 
 procedure NSToolbarItem.setMinSize(_size: NSSize);
 type
-  TmsgSendWrapper = procedure (param1: objc.id; param2: SEL;_size: NSSize); cdecl;
+  TmsgSendWrapper = procedure (param1: lobjc.id; param2: SEL;_size: NSSize); cdecl;
 var
   vmethod: TmsgSendWrapper;
 begin
@@ -364,7 +364,7 @@ end;
 
 procedure NSToolbarItem.setMaxSize(_size: NSSize);
 type
-  TmsgSendWrapper = procedure (param1: objc.id; param2: SEL;_size: NSSize); cdecl;
+  TmsgSendWrapper = procedure (param1: lobjc.id; param2: SEL;_size: NSSize); cdecl;
 var
   vmethod: TmsgSendWrapper;
 begin
@@ -380,7 +380,7 @@ end;
 {.$ifdef  MAC_OS_X_VERSION_MAX_ALLOWED >= MAC_OS_X_VERSION_10_4}
 procedure NSToolbarItem.setVisibilityPriority(_visibilityPriority: Integer);
 type
-  TmsgSendWrapper = procedure (param1: objc.id; param2: SEL;_visibilityPriority: Integer); cdecl;
+  TmsgSendWrapper = procedure (param1: lobjc.id; param2: SEL;_visibilityPriority: Integer); cdecl;
 var
   vmethod: TmsgSendWrapper;
 begin
@@ -402,7 +402,7 @@ end;
 {.$ifdef  MAC_OS_X_VERSION_MAX_ALLOWED >= MAC_OS_X_VERSION_10_4}
 procedure NSToolbarItem.setAutovalidates(_resistance: LongBool);
 type
-  TmsgSendWrapper = procedure (param1: objc.id; param2: SEL;_resistance: LongBool); cdecl;
+  TmsgSendWrapper = procedure (param1: lobjc.id; param2: SEL;_resistance: LongBool); cdecl;
 var
   vmethod: TmsgSendWrapper;
 begin

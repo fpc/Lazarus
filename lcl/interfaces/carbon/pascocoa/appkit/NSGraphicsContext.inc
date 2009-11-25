@@ -49,18 +49,18 @@ type
 
   NSGraphicsContext = class(NSObject)
   public
-    class function getClass: objc.id; override;
+    class function getClass: lobjc.id; override;
     //  Instantiates from an appropriate concrete subclass depending on NSGraphicsContextDestinationAttributeName
     // attribute
     constructor graphicsContextWithAttributes(_attributes: CFDictionaryRef);
     //  Convenience cover method for [NSGraphicsContext graphicsContextWithAttributes:[NSDictionary
     // dictionaryWithObject:<NSWindow instance> forKey:NSGraphicsContextDestinationAttributeName]]
-    constructor graphicsContextWithWindow(_window: objc.id {NSWindow});
+    constructor graphicsContextWithWindow(_window: lobjc.id {NSWindow});
     {.$ifdef  MAC_OS_X_VERSION_MAX_ALLOWED >= MAC_OS_X_VERSION_10_4}
     //  Convenience cover method for [NSGraphicsContext graphicsContextWithAttributes:[NSDictionary
     // dictionaryWithObject:<NSBitmapImageRep instance> forKey:NSGraphicsContextDestinationAttributeName]].
     // Only NSBitmapImageRep instances with isPlanar == NO are supported.
-    constructor graphicsContextWithBitmapImageRep(_bitmapRep: objc.id {NSBitmapImageRep});
+    constructor graphicsContextWithBitmapImageRep(_bitmapRep: lobjc.id {NSBitmapImageRep});
     //  Instantiates from an arbitrary graphicsPort (usually CGContextRef).  initialFlippedState
     // is used to determine the return value from -isFlipped when no view is focused in
     // the context.
@@ -68,7 +68,7 @@ type
     {.$endif}
     //  Setting and identifying the current context in the thread
     constructor currentContext;
-    class procedure setCurrentContext(_context: objc.id {NSGraphicsContext});
+    class procedure setCurrentContext(_context: lobjc.id {NSGraphicsContext});
     //  Convenience cover method for [[NSGraphicsContext currentContext] isDrawingToScreen]
     class function currentContextDrawingToScreen: LongBool;
     //  Graphics state controls
@@ -113,7 +113,7 @@ type
     procedure setCompositingOperation(_operation: NSCompositingOperation);
     function compositingOperation: NSCompositingOperation;
     {.$endif}
-    function CIContext: objc.id;{CIContext}
+    function CIContext: lobjc.id;{CIContext}
   end;
 
     {.$ifdef  MAC_OS_X_VERSION_MAX_ALLOWED >= MAC_OS_X_VERSION_10_4}
@@ -155,14 +155,14 @@ const
 
 { NSGraphicsContext }
 
-class function NSGraphicsContext.getClass: objc.id;
+class function NSGraphicsContext.getClass: lobjc.id;
 begin
   Result := objc_getClass(StrNSGraphicsContext_NSGraphicsContext);
 end;
 
 constructor NSGraphicsContext.graphicsContextWithAttributes(_attributes: CFDictionaryRef);
 type
-  TmsgSendWrapper = function (param1: objc.id; param2: SEL;_attributes: CFDictionaryRef): objc.id; cdecl;
+  TmsgSendWrapper = function (param1: lobjc.id; param2: SEL;_attributes: CFDictionaryRef): lobjc.id; cdecl;
 var
   vmethod: TmsgSendWrapper;
 begin
@@ -171,9 +171,9 @@ begin
   Handle := vmethod(ClassID, sel_registerName(PChar(StrNSGraphicsContext_graphicsContextWithAttributes)), _attributes);
 end;
 
-constructor NSGraphicsContext.graphicsContextWithWindow(_window: objc.id {NSWindow});
+constructor NSGraphicsContext.graphicsContextWithWindow(_window: lobjc.id {NSWindow});
 type
-  TmsgSendWrapper = function (param1: objc.id; param2: SEL;_window: objc.id {NSWindow}): objc.id; cdecl;
+  TmsgSendWrapper = function (param1: lobjc.id; param2: SEL;_window: lobjc.id {NSWindow}): lobjc.id; cdecl;
 var
   vmethod: TmsgSendWrapper;
 begin
@@ -183,9 +183,9 @@ begin
 end;
 
 {.$ifdef  MAC_OS_X_VERSION_MAX_ALLOWED >= MAC_OS_X_VERSION_10_4}
-constructor NSGraphicsContext.graphicsContextWithBitmapImageRep(_bitmapRep: objc.id {NSBitmapImageRep});
+constructor NSGraphicsContext.graphicsContextWithBitmapImageRep(_bitmapRep: lobjc.id {NSBitmapImageRep});
 type
-  TmsgSendWrapper = function (param1: objc.id; param2: SEL;_bitmapRep: objc.id {NSBitmapImageRep}): objc.id; cdecl;
+  TmsgSendWrapper = function (param1: lobjc.id; param2: SEL;_bitmapRep: lobjc.id {NSBitmapImageRep}): lobjc.id; cdecl;
 var
   vmethod: TmsgSendWrapper;
 begin
@@ -196,7 +196,7 @@ end;
 
 constructor NSGraphicsContext.graphicsContextWithGraphicsPort_flipped(_graphicsPort: Pointer; _initialFlippedState: LongBool);
 type
-  TmsgSendWrapper = function (param1: objc.id; param2: SEL;_graphicsPort: Pointer; _initialFlippedState: LongBool): objc.id; cdecl;
+  TmsgSendWrapper = function (param1: lobjc.id; param2: SEL;_graphicsPort: Pointer; _initialFlippedState: LongBool): lobjc.id; cdecl;
 var
   vmethod: TmsgSendWrapper;
 begin
@@ -208,7 +208,7 @@ end;
 {.$endif}
 constructor NSGraphicsContext.currentContext;
 type
-  TmsgSendWrapper = function (param1: objc.id; param2: SEL): objc.id; cdecl;
+  TmsgSendWrapper = function (param1: lobjc.id; param2: SEL): lobjc.id; cdecl;
 var
   vmethod: TmsgSendWrapper;
 begin
@@ -217,9 +217,9 @@ begin
   Handle := vmethod(ClassID, sel_registerName(PChar(StrNSGraphicsContext_currentContext)));
 end;
 
-class procedure NSGraphicsContext.setCurrentContext(_context: objc.id {NSGraphicsContext});
+class procedure NSGraphicsContext.setCurrentContext(_context: lobjc.id {NSGraphicsContext});
 type
-  TmsgSendWrapper = procedure (param1: objc.id; param2: SEL;_context: objc.id {NSGraphicsContext}); cdecl;
+  TmsgSendWrapper = procedure (param1: lobjc.id; param2: SEL;_context: lobjc.id {NSGraphicsContext}); cdecl;
 var
   vmethod: TmsgSendWrapper;
 begin
@@ -244,7 +244,7 @@ end;
 
 class procedure NSGraphicsContext.setGraphicsState(_gState: Integer);
 type
-  TmsgSendWrapper = procedure (param1: objc.id; param2: SEL;_gState: Integer); cdecl;
+  TmsgSendWrapper = procedure (param1: lobjc.id; param2: SEL;_gState: Integer); cdecl;
 var
   vmethod: TmsgSendWrapper;
 begin
@@ -284,7 +284,7 @@ end;
 
 procedure NSGraphicsContext.setFocusStack(_stack: Pointer);
 type
-  TmsgSendWrapper = procedure (param1: objc.id; param2: SEL;_stack: Pointer); cdecl;
+  TmsgSendWrapper = procedure (param1: lobjc.id; param2: SEL;_stack: Pointer); cdecl;
 var
   vmethod: TmsgSendWrapper;
 begin
@@ -306,7 +306,7 @@ end;
 {.$endif}
 procedure NSGraphicsContext.setShouldAntialias(_antialias: LongBool);
 type
-  TmsgSendWrapper = procedure (param1: objc.id; param2: SEL;_antialias: LongBool); cdecl;
+  TmsgSendWrapper = procedure (param1: lobjc.id; param2: SEL;_antialias: LongBool); cdecl;
 var
   vmethod: TmsgSendWrapper;
 begin
@@ -321,7 +321,7 @@ end;
 
 procedure NSGraphicsContext.setImageInterpolation(_interpolation: NSImageInterpolation);
 type
-  TmsgSendWrapper = procedure (param1: objc.id; param2: SEL;_interpolation: NSImageInterpolation); cdecl;
+  TmsgSendWrapper = procedure (param1: lobjc.id; param2: SEL;_interpolation: NSImageInterpolation); cdecl;
 var
   vmethod: TmsgSendWrapper;
 begin
@@ -337,7 +337,7 @@ end;
 {.$ifdef  MAC_OS_X_VERSION_MAX_ALLOWED >= MAC_OS_X_VERSION_10_2}
 procedure NSGraphicsContext.setPatternPhase(_phase: NSPoint);
 type
-  TmsgSendWrapper = procedure (param1: objc.id; param2: SEL;_phase: NSPoint); cdecl;
+  TmsgSendWrapper = procedure (param1: lobjc.id; param2: SEL;_phase: NSPoint); cdecl;
 var
   vmethod: TmsgSendWrapper;
 begin
@@ -354,7 +354,7 @@ end;
 {.$ifdef  MAC_OS_X_VERSION_MAX_ALLOWED >= MAC_OS_X_VERSION_10_4}
 procedure NSGraphicsContext.setCompositingOperation(_operation: NSCompositingOperation);
 type
-  TmsgSendWrapper = procedure (param1: objc.id; param2: SEL;_operation: NSCompositingOperation); cdecl;
+  TmsgSendWrapper = procedure (param1: lobjc.id; param2: SEL;_operation: NSCompositingOperation); cdecl;
 var
   vmethod: TmsgSendWrapper;
 begin
@@ -368,9 +368,9 @@ begin
 end;
 
 {.$endif}
-function NSGraphicsContext.CIContext: objc.id;
+function NSGraphicsContext.CIContext: lobjc.id;
 begin
-  Result := objc.id(objc_msgSend(Handle, sel_registerName(PChar(StrNSGraphicsContext_CIContext)), []));
+  Result := lobjc.id(objc_msgSend(Handle, sel_registerName(PChar(StrNSGraphicsContext_CIContext)), []));
 end;
 
 {$endif}

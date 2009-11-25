@@ -48,7 +48,7 @@
     //class function loadNibFile_externalNameTable_withZone(fileName: CFStringRef; context: NSDictionary; zone: NSZone);
     { This is the primitive that loads the contents of a .nib file.  Context holds key value pairs that can name objects that are referenced by the objects within the nib file (e.g., "NSOwner").  Objects from the nib are allocated in zone. }
 
-    class function loadNibNamed_owner(nibName: CFStringRef; owner: objc.id): objc.BOOL;
+    class function loadNibNamed_owner(nibName: CFStringRef; owner: lobjc.id): lobjc.BOOL;
     { A cover method where an external name table is created with owner as the only element with key "NSOwner".  Objects from the nib are allocated in owner's zone. If there is a bundle for owner's class, this method looks in that bundle for a nib with the given file name.  Otherwise, it looks in the mainBundle. }
 
     //- (BOOL)loadNibFile:(NSString *)fileName externalNameTable:(NSDictionary *)context withZone:(NSZone *)zone;
@@ -64,9 +64,9 @@ const
   StrNSBundle_NSBundle = 'NSBundle';
   StrNSBundle_loadNibNamed_owner = 'loadNibNamed:owner:';
 
-class function NSBundleNib.loadNibNamed_owner(nibName: CFStringRef; owner: objc.id): objc.BOOL;
+class function NSBundleNib.loadNibNamed_owner(nibName: CFStringRef; owner: lobjc.id): lobjc.BOOL;
 type
-  TmsgSendWrapper = function (param1: objc.id; param2: SEL; nibName: CFStringRef; owner: objc.id): objc.BOOL; cdecl;
+  TmsgSendWrapper = function (param1: lobjc.id; param2: SEL; nibName: CFStringRef; owner: lobjc.id): lobjc.BOOL; cdecl;
 var
   vmethod: TmsgSendWrapper;
 begin

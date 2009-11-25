@@ -40,7 +40,7 @@
 
   NSBundle = class(NSObject)
   public
-    class function getClass: objc.id; override;
+    class function getClass: lobjc.id; override;
     constructor mainBundle;
     constructor bundleWithPath(_path: CFStringRef);
     constructor initWithPath(_path: CFStringRef);
@@ -78,7 +78,7 @@
     function infoDictionary: CFDictionaryRef;
     {.$ifdef  MAC_OS_X_VERSION_10_2 <= MAC_OS_X_VERSION_MAX_ALLOWED}
     function localizedInfoDictionary: CFDictionaryRef;
-    function objectForInfoDictionaryKey(_key: CFStringRef): objc.id;
+    function objectForInfoDictionaryKey(_key: CFStringRef): lobjc.id;
     {.$endif}
     function localizations: CFArrayRef;
     function preferredLocalizations: CFArrayRef;
@@ -134,14 +134,14 @@ const
 
 { NSBundle }
 
-class function NSBundle.getClass: objc.id;
+class function NSBundle.getClass: lobjc.id;
 begin
   Result := objc_getClass(StrNSBundle_NSBundle);
 end;
 
 constructor NSBundle.mainBundle;
 type
-  TmsgSendWrapper = function (param1: objc.id; param2: SEL): objc.id; cdecl;
+  TmsgSendWrapper = function (param1: lobjc.id; param2: SEL): lobjc.id; cdecl;
 var
   vmethod: TmsgSendWrapper;
 begin
@@ -152,7 +152,7 @@ end;
 
 constructor NSBundle.bundleWithPath(_path: CFStringRef);
 type
-  TmsgSendWrapper = function (param1: objc.id; param2: SEL;_path: CFStringRef): objc.id; cdecl;
+  TmsgSendWrapper = function (param1: lobjc.id; param2: SEL;_path: CFStringRef): lobjc.id; cdecl;
 var
   vmethod: TmsgSendWrapper;
 begin
@@ -163,7 +163,7 @@ end;
 
 constructor NSBundle.initWithPath(_path: CFStringRef);
 type
-  TmsgSendWrapper = function (param1: objc.id; param2: SEL;_path: CFStringRef): objc.id; cdecl;
+  TmsgSendWrapper = function (param1: lobjc.id; param2: SEL;_path: CFStringRef): lobjc.id; cdecl;
 var
   vmethod: TmsgSendWrapper;
 begin
@@ -175,7 +175,7 @@ end;
 
 constructor NSBundle.bundleForClass(_aClass: _Class);
 type
-  TmsgSendWrapper = function (param1: objc.id; param2: SEL;_aClass: _Class): objc.id; cdecl;
+  TmsgSendWrapper = function (param1: lobjc.id; param2: SEL;_aClass: _Class): lobjc.id; cdecl;
 var
   vmethod: TmsgSendWrapper;
 begin
@@ -186,7 +186,7 @@ end;
 
 constructor NSBundle.bundleWithIdentifier(_identifier: CFStringRef);
 type
-  TmsgSendWrapper = function (param1: objc.id; param2: SEL;_identifier: CFStringRef): objc.id; cdecl;
+  TmsgSendWrapper = function (param1: lobjc.id; param2: SEL;_identifier: CFStringRef): lobjc.id; cdecl;
 var
   vmethod: TmsgSendWrapper;
 begin
@@ -234,7 +234,7 @@ end;
 
 function NSBundle.pathForAuxiliaryExecutable(_executableName: CFStringRef): CFStringRef;
 type
-  TmsgSendWrapper = function (param1: objc.id; param2: SEL;_executableName: CFStringRef): CFStringRef; cdecl;
+  TmsgSendWrapper = function (param1: lobjc.id; param2: SEL;_executableName: CFStringRef): CFStringRef; cdecl;
 var
   vmethod: TmsgSendWrapper;
 begin
@@ -269,7 +269,7 @@ end;
 
 function NSBundle.classNamed(_className: CFStringRef): _Class;
 type
-  TmsgSendWrapper = function (param1: objc.id; param2: SEL;_className: CFStringRef): _Class; cdecl;
+  TmsgSendWrapper = function (param1: lobjc.id; param2: SEL;_className: CFStringRef): _Class; cdecl;
 var
   vmethod: TmsgSendWrapper;
 begin
@@ -284,7 +284,7 @@ end;
 
 class function NSBundle.pathForResource_ofType_inDirectory_(_name: CFStringRef; _ext: CFStringRef; _bundlePath: CFStringRef): CFStringRef;
 type
-  TmsgSendWrapper = function (param1: objc.id; param2: SEL;_name: CFStringRef; _ext: CFStringRef; _bundlePath: CFStringRef): CFStringRef; cdecl;
+  TmsgSendWrapper = function (param1: lobjc.id; param2: SEL;_name: CFStringRef; _ext: CFStringRef; _bundlePath: CFStringRef): CFStringRef; cdecl;
 var
   vmethod: TmsgSendWrapper;
 begin
@@ -294,7 +294,7 @@ end;
 
 function NSBundle.pathForResource_ofType(_name: CFStringRef; _ext: CFStringRef): CFStringRef;
 type
-  TmsgSendWrapper = function (param1: objc.id; param2: SEL;_name: CFStringRef; _ext: CFStringRef): CFStringRef; cdecl;
+  TmsgSendWrapper = function (param1: lobjc.id; param2: SEL;_name: CFStringRef; _ext: CFStringRef): CFStringRef; cdecl;
 var
   vmethod: TmsgSendWrapper;
 begin
@@ -304,7 +304,7 @@ end;
 
 function NSBundle.pathForResource_ofType_inDirectory(_name: CFStringRef; _ext: CFStringRef; _subpath: CFStringRef): CFStringRef;
 type
-  TmsgSendWrapper = function (param1: objc.id; param2: SEL;_name: CFStringRef; _ext: CFStringRef; _subpath: CFStringRef): CFStringRef; cdecl;
+  TmsgSendWrapper = function (param1: lobjc.id; param2: SEL;_name: CFStringRef; _ext: CFStringRef; _subpath: CFStringRef): CFStringRef; cdecl;
 var
   vmethod: TmsgSendWrapper;
 begin
@@ -314,7 +314,7 @@ end;
 
 function NSBundle.pathForResource_ofType_inDirectory_forLocalization(_name: CFStringRef; _ext: CFStringRef; _subpath: CFStringRef; _localizationName: CFStringRef): CFStringRef;
 type
-  TmsgSendWrapper = function (param1: objc.id; param2: SEL;_name: CFStringRef; _ext: CFStringRef; _subpath: CFStringRef; _localizationName: CFStringRef): CFStringRef; cdecl;
+  TmsgSendWrapper = function (param1: lobjc.id; param2: SEL;_name: CFStringRef; _ext: CFStringRef; _subpath: CFStringRef; _localizationName: CFStringRef): CFStringRef; cdecl;
 var
   vmethod: TmsgSendWrapper;
 begin
@@ -324,7 +324,7 @@ end;
 
 class function NSBundle.pathsForResourcesOfType_inDirectory_(_ext: CFStringRef; _bundlePath: CFStringRef): CFArrayRef;
 type
-  TmsgSendWrapper = function (param1: objc.id; param2: SEL;_ext: CFStringRef; _bundlePath: CFStringRef): CFArrayRef; cdecl;
+  TmsgSendWrapper = function (param1: lobjc.id; param2: SEL;_ext: CFStringRef; _bundlePath: CFStringRef): CFArrayRef; cdecl;
 var
   vmethod: TmsgSendWrapper;
 begin
@@ -334,7 +334,7 @@ end;
 
 function NSBundle.pathsForResourcesOfType_inDirectory(_ext: CFStringRef; _subpath: CFStringRef): CFArrayRef;
 type
-  TmsgSendWrapper = function (param1: objc.id; param2: SEL;_ext: CFStringRef; _subpath: CFStringRef): CFArrayRef; cdecl;
+  TmsgSendWrapper = function (param1: lobjc.id; param2: SEL;_ext: CFStringRef; _subpath: CFStringRef): CFArrayRef; cdecl;
 var
   vmethod: TmsgSendWrapper;
 begin
@@ -344,7 +344,7 @@ end;
 
 function NSBundle.pathsForResourcesOfType_inDirectory_forLocalization(_ext: CFStringRef; _subpath: CFStringRef; _localizationName: CFStringRef): CFArrayRef;
 type
-  TmsgSendWrapper = function (param1: objc.id; param2: SEL;_ext: CFStringRef; _subpath: CFStringRef; _localizationName: CFStringRef): CFArrayRef; cdecl;
+  TmsgSendWrapper = function (param1: lobjc.id; param2: SEL;_ext: CFStringRef; _subpath: CFStringRef; _localizationName: CFStringRef): CFArrayRef; cdecl;
 var
   vmethod: TmsgSendWrapper;
 begin
@@ -354,7 +354,7 @@ end;
 
 function NSBundle.localizedStringForKey_value_table(_key: CFStringRef; _value: CFStringRef; _tableName: CFStringRef): CFStringRef;
 type
-  TmsgSendWrapper = function (param1: objc.id; param2: SEL;_key: CFStringRef; _value: CFStringRef; _tableName: CFStringRef): CFStringRef; cdecl;
+  TmsgSendWrapper = function (param1: lobjc.id; param2: SEL;_key: CFStringRef; _value: CFStringRef; _tableName: CFStringRef): CFStringRef; cdecl;
 var
   vmethod: TmsgSendWrapper;
 begin
@@ -373,14 +373,14 @@ begin
   Result := CFDictionaryRef(objc_msgSend(Handle, sel_registerName(PChar(StrNSBundle_localizedInfoDictionary)), []));
 end;
 
-function NSBundle.objectForInfoDictionaryKey(_key: CFStringRef): objc.id;
+function NSBundle.objectForInfoDictionaryKey(_key: CFStringRef): lobjc.id;
 type
-  TmsgSendWrapper = function (param1: objc.id; param2: SEL;_key: CFStringRef): objc.id; cdecl;
+  TmsgSendWrapper = function (param1: lobjc.id; param2: SEL;_key: CFStringRef): lobjc.id; cdecl;
 var
   vmethod: TmsgSendWrapper;
 begin
   vmethod := TmsgSendWrapper(@objc_msgSend);
-  Result := objc.id(vmethod(Handle, sel_registerName(PChar(StrNSBundle_objectForInfoDictionaryKey)), _key));
+  Result := lobjc.id(vmethod(Handle, sel_registerName(PChar(StrNSBundle_objectForInfoDictionaryKey)), _key));
 end;
 
 {.$endif}
@@ -403,7 +403,7 @@ end;
 {.$endif}
 class function NSBundle.preferredLocalizationsFromArray(_localizationsArray: CFArrayRef): CFArrayRef;
 type
-  TmsgSendWrapper = function (param1: objc.id; param2: SEL;_localizationsArray: CFArrayRef): CFArrayRef; cdecl;
+  TmsgSendWrapper = function (param1: lobjc.id; param2: SEL;_localizationsArray: CFArrayRef): CFArrayRef; cdecl;
 var
   vmethod: TmsgSendWrapper;
 begin
@@ -414,7 +414,7 @@ end;
 {.$ifdef  MAC_OS_X_VERSION_10_2 <= MAC_OS_X_VERSION_MAX_ALLOWED}
 class function NSBundle.preferredLocalizationsFromArray_forPreferences(_localizationsArray: CFArrayRef; _preferencesArray: CFArrayRef): CFArrayRef;
 type
-  TmsgSendWrapper = function (param1: objc.id; param2: SEL;_localizationsArray: CFArrayRef; _preferencesArray: CFArrayRef): CFArrayRef; cdecl;
+  TmsgSendWrapper = function (param1: lobjc.id; param2: SEL;_localizationsArray: CFArrayRef; _preferencesArray: CFArrayRef): CFArrayRef; cdecl;
 var
   vmethod: TmsgSendWrapper;
 begin

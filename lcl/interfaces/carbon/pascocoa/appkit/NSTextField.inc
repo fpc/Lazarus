@@ -32,14 +32,14 @@
 
   NSTextField = class(NSControl)
   public
-    class function getClass: objc.id; override;
+    class function getClass: lobjc.id; override;
     // All instance variables are private
-    procedure setBackgroundColor(_color: objc.id {NSColor});
-    function backgroundColor: objc.id;{NSColor}
+    procedure setBackgroundColor(_color: lobjc.id {NSColor});
+    function backgroundColor: lobjc.id;{NSColor}
     procedure setDrawsBackground(_flag: LongBool);
     function drawsBackground: LongBool;
-    procedure setTextColor(_color: objc.id {NSColor});
-    function textColor: objc.id;{NSColor}
+    procedure setTextColor(_color: lobjc.id {NSColor});
+    function textColor: lobjc.id;{NSColor}
     function isBordered: LongBool;
     procedure setBordered(_flag: LongBool);
     function isBezeled: LongBool;
@@ -48,14 +48,14 @@
     procedure setEditable(_flag: LongBool);
     function isSelectable: LongBool;
     procedure setSelectable(_flag: LongBool);
-    procedure selectText(_sender: objc.id);
-    function delegate: objc.id;
-    procedure setDelegate(_anObject: objc.id);
-    function textShouldBeginEditing(_textObject: objc.id {NSText}): LongBool;
-    function textShouldEndEditing(_textObject: objc.id {NSText}): LongBool;
-    procedure textDidBeginEditing(_notification: objc.id {NSNotification});
-    procedure textDidEndEditing(_notification: objc.id {NSNotification});
-    procedure textDidChange(_notification: objc.id {NSNotification});
+    procedure selectText(_sender: lobjc.id);
+    function delegate: lobjc.id;
+    procedure setDelegate(_anObject: lobjc.id);
+    function textShouldBeginEditing(_textObject: lobjc.id {NSText}): LongBool;
+    function textShouldEndEditing(_textObject: lobjc.id {NSText}): LongBool;
+    procedure textDidBeginEditing(_notification: lobjc.id {NSNotification});
+    procedure textDidEndEditing(_notification: lobjc.id {NSNotification});
+    procedure textDidChange(_notification: lobjc.id {NSNotification});
     function acceptsFirstResponder: LongBool;
     {.$ifdef  MAC_OS_X_VERSION_MAX_ALLOWED >= MAC_OS_X_VERSION_10_2}
     procedure setBezelStyle(_style: NSTextFieldBezelStyle);
@@ -109,14 +109,14 @@ const
 
 { NSTextField }
 
-class function NSTextField.getClass: objc.id;
+class function NSTextField.getClass: lobjc.id;
 begin
   Result := objc_getClass(StrNSTextField_NSTextField);
 end;
 
-procedure NSTextField.setBackgroundColor(_color: objc.id {NSColor});
+procedure NSTextField.setBackgroundColor(_color: lobjc.id {NSColor});
 type
-  TmsgSendWrapper = procedure (param1: objc.id; param2: SEL;_color: objc.id {NSColor}); cdecl;
+  TmsgSendWrapper = procedure (param1: lobjc.id; param2: SEL;_color: lobjc.id {NSColor}); cdecl;
 var
   vmethod: TmsgSendWrapper;
 begin
@@ -124,14 +124,14 @@ begin
   vmethod(Handle, sel_registerName(PChar(StrNSTextField_setBackgroundColor)), _color);
 end;
 
-function NSTextField.backgroundColor: objc.id;
+function NSTextField.backgroundColor: lobjc.id;
 begin
-  Result := objc.id(objc_msgSend(Handle, sel_registerName(PChar(StrNSTextField_backgroundColor)), []));
+  Result := lobjc.id(objc_msgSend(Handle, sel_registerName(PChar(StrNSTextField_backgroundColor)), []));
 end;
 
 procedure NSTextField.setDrawsBackground(_flag: LongBool);
 type
-  TmsgSendWrapper = procedure (param1: objc.id; param2: SEL;_flag: LongBool); cdecl;
+  TmsgSendWrapper = procedure (param1: lobjc.id; param2: SEL;_flag: LongBool); cdecl;
 var
   vmethod: TmsgSendWrapper;
 begin
@@ -144,9 +144,9 @@ begin
   Result := LongBool(objc_msgSend(Handle, sel_registerName(PChar(StrNSTextField_drawsBackground)), []));
 end;
 
-procedure NSTextField.setTextColor(_color: objc.id {NSColor});
+procedure NSTextField.setTextColor(_color: lobjc.id {NSColor});
 type
-  TmsgSendWrapper = procedure (param1: objc.id; param2: SEL;_color: objc.id {NSColor}); cdecl;
+  TmsgSendWrapper = procedure (param1: lobjc.id; param2: SEL;_color: lobjc.id {NSColor}); cdecl;
 var
   vmethod: TmsgSendWrapper;
 begin
@@ -154,9 +154,9 @@ begin
   vmethod(Handle, sel_registerName(PChar(StrNSTextField_setTextColor)), _color);
 end;
 
-function NSTextField.textColor: objc.id;
+function NSTextField.textColor: lobjc.id;
 begin
-  Result := objc.id(objc_msgSend(Handle, sel_registerName(PChar(StrNSTextField_textColor)), []));
+  Result := lobjc.id(objc_msgSend(Handle, sel_registerName(PChar(StrNSTextField_textColor)), []));
 end;
 
 function NSTextField.isBordered: LongBool;
@@ -166,7 +166,7 @@ end;
 
 procedure NSTextField.setBordered(_flag: LongBool);
 type
-  TmsgSendWrapper = procedure (param1: objc.id; param2: SEL;_flag: LongBool); cdecl;
+  TmsgSendWrapper = procedure (param1: lobjc.id; param2: SEL;_flag: LongBool); cdecl;
 var
   vmethod: TmsgSendWrapper;
 begin
@@ -181,7 +181,7 @@ end;
 
 procedure NSTextField.setBezeled(_flag: LongBool);
 type
-  TmsgSendWrapper = procedure (param1: objc.id; param2: SEL;_flag: LongBool); cdecl;
+  TmsgSendWrapper = procedure (param1: lobjc.id; param2: SEL;_flag: LongBool); cdecl;
 var
   vmethod: TmsgSendWrapper;
 begin
@@ -196,7 +196,7 @@ end;
 
 procedure NSTextField.setEditable(_flag: LongBool);
 type
-  TmsgSendWrapper = procedure (param1: objc.id; param2: SEL;_flag: LongBool); cdecl;
+  TmsgSendWrapper = procedure (param1: lobjc.id; param2: SEL;_flag: LongBool); cdecl;
 var
   vmethod: TmsgSendWrapper;
 begin
@@ -211,7 +211,7 @@ end;
 
 procedure NSTextField.setSelectable(_flag: LongBool);
 type
-  TmsgSendWrapper = procedure (param1: objc.id; param2: SEL;_flag: LongBool); cdecl;
+  TmsgSendWrapper = procedure (param1: lobjc.id; param2: SEL;_flag: LongBool); cdecl;
 var
   vmethod: TmsgSendWrapper;
 begin
@@ -219,9 +219,9 @@ begin
   vmethod(Handle, sel_registerName(PChar(StrNSTextField_setSelectable)), _flag);
 end;
 
-procedure NSTextField.selectText(_sender: objc.id);
+procedure NSTextField.selectText(_sender: lobjc.id);
 type
-  TmsgSendWrapper = procedure (param1: objc.id; param2: SEL;_sender: objc.id); cdecl;
+  TmsgSendWrapper = procedure (param1: lobjc.id; param2: SEL;_sender: lobjc.id); cdecl;
 var
   vmethod: TmsgSendWrapper;
 begin
@@ -229,14 +229,14 @@ begin
   vmethod(Handle, sel_registerName(PChar(StrNSTextField_selectText)), _sender);
 end;
 
-function NSTextField.delegate: objc.id;
+function NSTextField.delegate: lobjc.id;
 begin
-  Result := objc.id(objc_msgSend(Handle, sel_registerName(PChar(StrNSTextField_delegate)), []));
+  Result := lobjc.id(objc_msgSend(Handle, sel_registerName(PChar(StrNSTextField_delegate)), []));
 end;
 
-procedure NSTextField.setDelegate(_anObject: objc.id);
+procedure NSTextField.setDelegate(_anObject: lobjc.id);
 type
-  TmsgSendWrapper = procedure (param1: objc.id; param2: SEL;_anObject: objc.id); cdecl;
+  TmsgSendWrapper = procedure (param1: lobjc.id; param2: SEL;_anObject: lobjc.id); cdecl;
 var
   vmethod: TmsgSendWrapper;
 begin
@@ -244,9 +244,9 @@ begin
   vmethod(Handle, sel_registerName(PChar(StrNSTextField_setDelegate)), _anObject);
 end;
 
-function NSTextField.textShouldBeginEditing(_textObject: objc.id {NSText}): LongBool;
+function NSTextField.textShouldBeginEditing(_textObject: lobjc.id {NSText}): LongBool;
 type
-  TmsgSendWrapper = function (param1: objc.id; param2: SEL;_textObject: objc.id {NSText}): LongBool; cdecl;
+  TmsgSendWrapper = function (param1: lobjc.id; param2: SEL;_textObject: lobjc.id {NSText}): LongBool; cdecl;
 var
   vmethod: TmsgSendWrapper;
 begin
@@ -254,9 +254,9 @@ begin
   Result := LongBool(vmethod(Handle, sel_registerName(PChar(StrNSTextField_textShouldBeginEditing)), _textObject));
 end;
 
-function NSTextField.textShouldEndEditing(_textObject: objc.id {NSText}): LongBool;
+function NSTextField.textShouldEndEditing(_textObject: lobjc.id {NSText}): LongBool;
 type
-  TmsgSendWrapper = function (param1: objc.id; param2: SEL;_textObject: objc.id {NSText}): LongBool; cdecl;
+  TmsgSendWrapper = function (param1: lobjc.id; param2: SEL;_textObject: lobjc.id {NSText}): LongBool; cdecl;
 var
   vmethod: TmsgSendWrapper;
 begin
@@ -264,9 +264,9 @@ begin
   Result := LongBool(vmethod(Handle, sel_registerName(PChar(StrNSTextField_textShouldEndEditing)), _textObject));
 end;
 
-procedure NSTextField.textDidBeginEditing(_notification: objc.id {NSNotification});
+procedure NSTextField.textDidBeginEditing(_notification: lobjc.id {NSNotification});
 type
-  TmsgSendWrapper = procedure (param1: objc.id; param2: SEL;_notification: objc.id {NSNotification}); cdecl;
+  TmsgSendWrapper = procedure (param1: lobjc.id; param2: SEL;_notification: lobjc.id {NSNotification}); cdecl;
 var
   vmethod: TmsgSendWrapper;
 begin
@@ -274,9 +274,9 @@ begin
   vmethod(Handle, sel_registerName(PChar(StrNSTextField_textDidBeginEditing)), _notification);
 end;
 
-procedure NSTextField.textDidEndEditing(_notification: objc.id {NSNotification});
+procedure NSTextField.textDidEndEditing(_notification: lobjc.id {NSNotification});
 type
-  TmsgSendWrapper = procedure (param1: objc.id; param2: SEL;_notification: objc.id {NSNotification}); cdecl;
+  TmsgSendWrapper = procedure (param1: lobjc.id; param2: SEL;_notification: lobjc.id {NSNotification}); cdecl;
 var
   vmethod: TmsgSendWrapper;
 begin
@@ -284,9 +284,9 @@ begin
   vmethod(Handle, sel_registerName(PChar(StrNSTextField_textDidEndEditing)), _notification);
 end;
 
-procedure NSTextField.textDidChange(_notification: objc.id {NSNotification});
+procedure NSTextField.textDidChange(_notification: lobjc.id {NSNotification});
 type
-  TmsgSendWrapper = procedure (param1: objc.id; param2: SEL;_notification: objc.id {NSNotification}); cdecl;
+  TmsgSendWrapper = procedure (param1: lobjc.id; param2: SEL;_notification: lobjc.id {NSNotification}); cdecl;
 var
   vmethod: TmsgSendWrapper;
 begin
@@ -302,7 +302,7 @@ end;
 {.$ifdef  MAC_OS_X_VERSION_MAX_ALLOWED >= MAC_OS_X_VERSION_10_2}
 procedure NSTextField.setBezelStyle(_style: NSTextFieldBezelStyle);
 type
-  TmsgSendWrapper = procedure (param1: objc.id; param2: SEL;_style: NSTextFieldBezelStyle); cdecl;
+  TmsgSendWrapper = procedure (param1: lobjc.id; param2: SEL;_style: NSTextFieldBezelStyle); cdecl;
 var
   vmethod: TmsgSendWrapper;
 begin
@@ -318,7 +318,7 @@ end;
 {.$endif}
 procedure NSTextField.setTitleWithMnemonic(_stringWithAmpersand: CFStringRef);
 type
-  TmsgSendWrapper = procedure (param1: objc.id; param2: SEL;_stringWithAmpersand: CFStringRef); cdecl;
+  TmsgSendWrapper = procedure (param1: lobjc.id; param2: SEL;_stringWithAmpersand: CFStringRef); cdecl;
 var
   vmethod: TmsgSendWrapper;
 begin
@@ -333,7 +333,7 @@ end;
 
 procedure NSTextField.setAllowsEditingTextAttributes(_flag: LongBool);
 type
-  TmsgSendWrapper = procedure (param1: objc.id; param2: SEL;_flag: LongBool); cdecl;
+  TmsgSendWrapper = procedure (param1: lobjc.id; param2: SEL;_flag: LongBool); cdecl;
 var
   vmethod: TmsgSendWrapper;
 begin
@@ -348,7 +348,7 @@ end;
 
 procedure NSTextField.setImportsGraphics(_flag: LongBool);
 type
-  TmsgSendWrapper = procedure (param1: objc.id; param2: SEL;_flag: LongBool); cdecl;
+  TmsgSendWrapper = procedure (param1: lobjc.id; param2: SEL;_flag: LongBool); cdecl;
 var
   vmethod: TmsgSendWrapper;
 begin

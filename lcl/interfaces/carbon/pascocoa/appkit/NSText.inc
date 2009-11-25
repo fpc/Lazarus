@@ -83,7 +83,7 @@ const
 
   NSText = class(NSView)
   public
-    class function getClass: objc.id; override;
+    class function getClass: lobjc.id; override;
     // All instance variables are private
     function string_: CFStringRef;
     procedure setString(__string: CFStringRef);
@@ -94,8 +94,8 @@ const
     function RTFDFromRange(_range: NSRange): CFDataRef;
     function writeRTFDToFile_atomically(_path: CFStringRef; _flag: LongBool): LongBool;
     function readRTFDFromFile(_path: CFStringRef): LongBool;
-    function delegate: objc.id;
-    procedure setDelegate(_anObject: objc.id);
+    function delegate: lobjc.id;
+    procedure setDelegate(_anObject: lobjc.id);
     function isEditable: LongBool;
     procedure setEditable(_flag: LongBool);
     function isSelectable: LongBool;
@@ -106,14 +106,14 @@ const
     function importsGraphics: LongBool;
     procedure setImportsGraphics(_flag: LongBool);
     //  If YES, also sets setRichText:
-    procedure setBackgroundColor(_color: objc.id {NSColor});
-    function backgroundColor: objc.id;{NSColor}
+    procedure setBackgroundColor(_color: lobjc.id {NSColor});
+    function backgroundColor: lobjc.id;{NSColor}
     procedure setDrawsBackground(_flag: LongBool);
     function drawsBackground: LongBool;
-    procedure setFont(_obj: objc.id {NSFont});
-    function font: objc.id;{NSFont}
-    procedure setTextColor(_color: objc.id {NSColor});
-    function textColor: objc.id;{NSColor}
+    procedure setFont(_obj: lobjc.id {NSFont});
+    function font: lobjc.id;{NSFont}
+    procedure setTextColor(_color: lobjc.id {NSColor});
+    function textColor: lobjc.id;{NSColor}
     function alignment: NSTextAlignment;
     procedure setAlignment(_mode: NSTextAlignment);
     {.$ifdef  MAC_OS_X_VERSION_MAX_ALLOWED >= MAC_OS_X_VERSION_10_4}
@@ -123,8 +123,8 @@ const
     procedure setFieldEditor(_flag: LongBool);
     //  A BOOL to indicate whether to end on CR, TAB, etc
     function isFieldEditor: LongBool;
-    procedure setTextColor_range(_color: objc.id {NSColor}; _range: NSRange);
-    procedure setFont_range(_font: objc.id {NSFont}; _range: NSRange);
+    procedure setTextColor_range(_color: lobjc.id {NSColor}; _range: NSRange);
+    procedure setFont_range(_font: lobjc.id {NSFont}; _range: NSRange);
     function usesFontPanel: LongBool;
     procedure setUsesFontPanel(_flag: LongBool);
     function maxSize: NSSize;
@@ -136,26 +136,26 @@ const
     function isVerticallyResizable: LongBool;
     procedure setVerticallyResizable(_flag: LongBool);
     procedure sizeToFit;
-    procedure copy(_sender: objc.id);
-    procedure copyFont(_sender: objc.id);
-    procedure copyRuler(_sender: objc.id);
-    procedure cut(_sender: objc.id);
-    procedure delete(_sender: objc.id);
-    procedure paste(_sender: objc.id);
-    procedure pasteFont(_sender: objc.id);
-    procedure pasteRuler(_sender: objc.id);
-    procedure selectAll(_sender: objc.id);
-    procedure changeFont(_sender: objc.id);
-    procedure alignLeft(_sender: objc.id);
-    procedure alignRight(_sender: objc.id);
-    procedure alignCenter(_sender: objc.id);
-    procedure subscript(_sender: objc.id);
-    procedure superscript(_sender: objc.id);
-    procedure underline(_sender: objc.id);
-    procedure unscript(_sender: objc.id);
-    procedure showGuessPanel(_sender: objc.id);
-    procedure checkSpelling(_sender: objc.id);
-    procedure toggleRuler(_sender: objc.id);
+    procedure copy(_sender: lobjc.id);
+    procedure copyFont(_sender: lobjc.id);
+    procedure copyRuler(_sender: lobjc.id);
+    procedure cut(_sender: lobjc.id);
+    procedure delete(_sender: lobjc.id);
+    procedure paste(_sender: lobjc.id);
+    procedure pasteFont(_sender: lobjc.id);
+    procedure pasteRuler(_sender: lobjc.id);
+    procedure selectAll(_sender: lobjc.id);
+    procedure changeFont(_sender: lobjc.id);
+    procedure alignLeft(_sender: lobjc.id);
+    procedure alignRight(_sender: lobjc.id);
+    procedure alignCenter(_sender: lobjc.id);
+    procedure subscript(_sender: lobjc.id);
+    procedure superscript(_sender: lobjc.id);
+    procedure underline(_sender: lobjc.id);
+    procedure unscript(_sender: lobjc.id);
+    procedure showGuessPanel(_sender: lobjc.id);
+    procedure checkSpelling(_sender: lobjc.id);
+    procedure toggleRuler(_sender: lobjc.id);
     function isRulerVisible: LongBool;
     function selectedRange: NSRange;
     procedure setSelectedRange(_range: NSRange);
@@ -241,7 +241,7 @@ const
 
 { NSText }
 
-class function NSText.getClass: objc.id;
+class function NSText.getClass: lobjc.id;
 begin
   Result := objc_getClass(StrNSText_NSText);
 end;
@@ -253,7 +253,7 @@ end;
 
 procedure NSText.setString(__string: CFStringRef);
 type
-  TmsgSendWrapper = procedure (param1: objc.id; param2: SEL;__string: CFStringRef); cdecl;
+  TmsgSendWrapper = procedure (param1: lobjc.id; param2: SEL;__string: CFStringRef); cdecl;
 var
   vmethod: TmsgSendWrapper;
 begin
@@ -263,7 +263,7 @@ end;
 
 procedure NSText.replaceCharactersInRange_withString(_range: NSRange; _aString: CFStringRef);
 type
-  TmsgSendWrapper = procedure (param1: objc.id; param2: SEL;_range: NSRange; _aString: CFStringRef); cdecl;
+  TmsgSendWrapper = procedure (param1: lobjc.id; param2: SEL;_range: NSRange; _aString: CFStringRef); cdecl;
 var
   vmethod: TmsgSendWrapper;
 begin
@@ -273,7 +273,7 @@ end;
 
 procedure NSText.replaceCharactersInRange_withRTF(_range: NSRange; _rtfData: CFDataRef);
 type
-  TmsgSendWrapper = procedure (param1: objc.id; param2: SEL;_range: NSRange; _rtfData: CFDataRef); cdecl;
+  TmsgSendWrapper = procedure (param1: lobjc.id; param2: SEL;_range: NSRange; _rtfData: CFDataRef); cdecl;
 var
   vmethod: TmsgSendWrapper;
 begin
@@ -283,7 +283,7 @@ end;
 
 procedure NSText.replaceCharactersInRange_withRTFD(_range: NSRange; _rtfdData: CFDataRef);
 type
-  TmsgSendWrapper = procedure (param1: objc.id; param2: SEL;_range: NSRange; _rtfdData: CFDataRef); cdecl;
+  TmsgSendWrapper = procedure (param1: lobjc.id; param2: SEL;_range: NSRange; _rtfdData: CFDataRef); cdecl;
 var
   vmethod: TmsgSendWrapper;
 begin
@@ -293,7 +293,7 @@ end;
 
 function NSText.RTFFromRange(_range: NSRange): CFDataRef;
 type
-  TmsgSendWrapper = function (param1: objc.id; param2: SEL;_range: NSRange): CFDataRef; cdecl;
+  TmsgSendWrapper = function (param1: lobjc.id; param2: SEL;_range: NSRange): CFDataRef; cdecl;
 var
   vmethod: TmsgSendWrapper;
 begin
@@ -303,7 +303,7 @@ end;
 
 function NSText.RTFDFromRange(_range: NSRange): CFDataRef;
 type
-  TmsgSendWrapper = function (param1: objc.id; param2: SEL;_range: NSRange): CFDataRef; cdecl;
+  TmsgSendWrapper = function (param1: lobjc.id; param2: SEL;_range: NSRange): CFDataRef; cdecl;
 var
   vmethod: TmsgSendWrapper;
 begin
@@ -313,7 +313,7 @@ end;
 
 function NSText.writeRTFDToFile_atomically(_path: CFStringRef; _flag: LongBool): LongBool;
 type
-  TmsgSendWrapper = function (param1: objc.id; param2: SEL;_path: CFStringRef; _flag: LongBool): LongBool; cdecl;
+  TmsgSendWrapper = function (param1: lobjc.id; param2: SEL;_path: CFStringRef; _flag: LongBool): LongBool; cdecl;
 var
   vmethod: TmsgSendWrapper;
 begin
@@ -323,7 +323,7 @@ end;
 
 function NSText.readRTFDFromFile(_path: CFStringRef): LongBool;
 type
-  TmsgSendWrapper = function (param1: objc.id; param2: SEL;_path: CFStringRef): LongBool; cdecl;
+  TmsgSendWrapper = function (param1: lobjc.id; param2: SEL;_path: CFStringRef): LongBool; cdecl;
 var
   vmethod: TmsgSendWrapper;
 begin
@@ -331,14 +331,14 @@ begin
   Result := LongBool(vmethod(Handle, sel_registerName(PChar(StrNSText_readRTFDFromFile)), _path));
 end;
 
-function NSText.delegate: objc.id;
+function NSText.delegate: lobjc.id;
 begin
-  Result := objc.id(objc_msgSend(Handle, sel_registerName(PChar(StrNSText_delegate)), []));
+  Result := lobjc.id(objc_msgSend(Handle, sel_registerName(PChar(StrNSText_delegate)), []));
 end;
 
-procedure NSText.setDelegate(_anObject: objc.id);
+procedure NSText.setDelegate(_anObject: lobjc.id);
 type
-  TmsgSendWrapper = procedure (param1: objc.id; param2: SEL;_anObject: objc.id); cdecl;
+  TmsgSendWrapper = procedure (param1: lobjc.id; param2: SEL;_anObject: lobjc.id); cdecl;
 var
   vmethod: TmsgSendWrapper;
 begin
@@ -353,7 +353,7 @@ end;
 
 procedure NSText.setEditable(_flag: LongBool);
 type
-  TmsgSendWrapper = procedure (param1: objc.id; param2: SEL;_flag: LongBool); cdecl;
+  TmsgSendWrapper = procedure (param1: lobjc.id; param2: SEL;_flag: LongBool); cdecl;
 var
   vmethod: TmsgSendWrapper;
 begin
@@ -368,7 +368,7 @@ end;
 
 procedure NSText.setSelectable(_flag: LongBool);
 type
-  TmsgSendWrapper = procedure (param1: objc.id; param2: SEL;_flag: LongBool); cdecl;
+  TmsgSendWrapper = procedure (param1: lobjc.id; param2: SEL;_flag: LongBool); cdecl;
 var
   vmethod: TmsgSendWrapper;
 begin
@@ -383,7 +383,7 @@ end;
 
 procedure NSText.setRichText(_flag: LongBool);
 type
-  TmsgSendWrapper = procedure (param1: objc.id; param2: SEL;_flag: LongBool); cdecl;
+  TmsgSendWrapper = procedure (param1: lobjc.id; param2: SEL;_flag: LongBool); cdecl;
 var
   vmethod: TmsgSendWrapper;
 begin
@@ -398,7 +398,7 @@ end;
 
 procedure NSText.setImportsGraphics(_flag: LongBool);
 type
-  TmsgSendWrapper = procedure (param1: objc.id; param2: SEL;_flag: LongBool); cdecl;
+  TmsgSendWrapper = procedure (param1: lobjc.id; param2: SEL;_flag: LongBool); cdecl;
 var
   vmethod: TmsgSendWrapper;
 begin
@@ -406,9 +406,9 @@ begin
   vmethod(Handle, sel_registerName(PChar(StrNSText_setImportsGraphics)), _flag);
 end;
 
-procedure NSText.setBackgroundColor(_color: objc.id {NSColor});
+procedure NSText.setBackgroundColor(_color: lobjc.id {NSColor});
 type
-  TmsgSendWrapper = procedure (param1: objc.id; param2: SEL;_color: objc.id {NSColor}); cdecl;
+  TmsgSendWrapper = procedure (param1: lobjc.id; param2: SEL;_color: lobjc.id {NSColor}); cdecl;
 var
   vmethod: TmsgSendWrapper;
 begin
@@ -416,14 +416,14 @@ begin
   vmethod(Handle, sel_registerName(PChar(StrNSText_setBackgroundColor)), _color);
 end;
 
-function NSText.backgroundColor: objc.id;
+function NSText.backgroundColor: lobjc.id;
 begin
-  Result := objc.id(objc_msgSend(Handle, sel_registerName(PChar(StrNSText_backgroundColor)), []));
+  Result := lobjc.id(objc_msgSend(Handle, sel_registerName(PChar(StrNSText_backgroundColor)), []));
 end;
 
 procedure NSText.setDrawsBackground(_flag: LongBool);
 type
-  TmsgSendWrapper = procedure (param1: objc.id; param2: SEL;_flag: LongBool); cdecl;
+  TmsgSendWrapper = procedure (param1: lobjc.id; param2: SEL;_flag: LongBool); cdecl;
 var
   vmethod: TmsgSendWrapper;
 begin
@@ -436,9 +436,9 @@ begin
   Result := LongBool(objc_msgSend(Handle, sel_registerName(PChar(StrNSText_drawsBackground)), []));
 end;
 
-procedure NSText.setFont(_obj: objc.id {NSFont});
+procedure NSText.setFont(_obj: lobjc.id {NSFont});
 type
-  TmsgSendWrapper = procedure (param1: objc.id; param2: SEL;_obj: objc.id {NSFont}); cdecl;
+  TmsgSendWrapper = procedure (param1: lobjc.id; param2: SEL;_obj: lobjc.id {NSFont}); cdecl;
 var
   vmethod: TmsgSendWrapper;
 begin
@@ -446,14 +446,14 @@ begin
   vmethod(Handle, sel_registerName(PChar(StrNSText_setFont)), _obj);
 end;
 
-function NSText.font: objc.id;
+function NSText.font: lobjc.id;
 begin
-  Result := objc.id(objc_msgSend(Handle, sel_registerName(PChar(StrNSText_font)), []));
+  Result := lobjc.id(objc_msgSend(Handle, sel_registerName(PChar(StrNSText_font)), []));
 end;
 
-procedure NSText.setTextColor(_color: objc.id {NSColor});
+procedure NSText.setTextColor(_color: lobjc.id {NSColor});
 type
-  TmsgSendWrapper = procedure (param1: objc.id; param2: SEL;_color: objc.id {NSColor}); cdecl;
+  TmsgSendWrapper = procedure (param1: lobjc.id; param2: SEL;_color: lobjc.id {NSColor}); cdecl;
 var
   vmethod: TmsgSendWrapper;
 begin
@@ -461,9 +461,9 @@ begin
   vmethod(Handle, sel_registerName(PChar(StrNSText_setTextColor)), _color);
 end;
 
-function NSText.textColor: objc.id;
+function NSText.textColor: lobjc.id;
 begin
-  Result := objc.id(objc_msgSend(Handle, sel_registerName(PChar(StrNSText_textColor)), []));
+  Result := lobjc.id(objc_msgSend(Handle, sel_registerName(PChar(StrNSText_textColor)), []));
 end;
 
 function NSText.alignment: NSTextAlignment;
@@ -473,7 +473,7 @@ end;
 
 procedure NSText.setAlignment(_mode: NSTextAlignment);
 type
-  TmsgSendWrapper = procedure (param1: objc.id; param2: SEL;_mode: NSTextAlignment); cdecl;
+  TmsgSendWrapper = procedure (param1: lobjc.id; param2: SEL;_mode: NSTextAlignment); cdecl;
 var
   vmethod: TmsgSendWrapper;
 begin
@@ -489,7 +489,7 @@ end;
 
 procedure NSText.setBaseWritingDirection(_writingDirection: NSWritingDirection);
 type
-  TmsgSendWrapper = procedure (param1: objc.id; param2: SEL;_writingDirection: NSWritingDirection); cdecl;
+  TmsgSendWrapper = procedure (param1: lobjc.id; param2: SEL;_writingDirection: NSWritingDirection); cdecl;
 var
   vmethod: TmsgSendWrapper;
 begin
@@ -500,7 +500,7 @@ end;
 {.$endif}
 procedure NSText.setFieldEditor(_flag: LongBool);
 type
-  TmsgSendWrapper = procedure (param1: objc.id; param2: SEL;_flag: LongBool); cdecl;
+  TmsgSendWrapper = procedure (param1: lobjc.id; param2: SEL;_flag: LongBool); cdecl;
 var
   vmethod: TmsgSendWrapper;
 begin
@@ -513,9 +513,9 @@ begin
   Result := LongBool(objc_msgSend(Handle, sel_registerName(PChar(StrNSText_isFieldEditor)), []));
 end;
 
-procedure NSText.setTextColor_range(_color: objc.id {NSColor}; _range: NSRange);
+procedure NSText.setTextColor_range(_color: lobjc.id {NSColor}; _range: NSRange);
 type
-  TmsgSendWrapper = procedure (param1: objc.id; param2: SEL;_color: objc.id {NSColor}; _range: NSRange); cdecl;
+  TmsgSendWrapper = procedure (param1: lobjc.id; param2: SEL;_color: lobjc.id {NSColor}; _range: NSRange); cdecl;
 var
   vmethod: TmsgSendWrapper;
 begin
@@ -523,9 +523,9 @@ begin
   vmethod(Handle, sel_registerName(PChar(StrNSText_setTextColor_range)), _color, _range);
 end;
 
-procedure NSText.setFont_range(_font: objc.id {NSFont}; _range: NSRange);
+procedure NSText.setFont_range(_font: lobjc.id {NSFont}; _range: NSRange);
 type
-  TmsgSendWrapper = procedure (param1: objc.id; param2: SEL;_font: objc.id {NSFont}; _range: NSRange); cdecl;
+  TmsgSendWrapper = procedure (param1: lobjc.id; param2: SEL;_font: lobjc.id {NSFont}; _range: NSRange); cdecl;
 var
   vmethod: TmsgSendWrapper;
 begin
@@ -540,7 +540,7 @@ end;
 
 procedure NSText.setUsesFontPanel(_flag: LongBool);
 type
-  TmsgSendWrapper = procedure (param1: objc.id; param2: SEL;_flag: LongBool); cdecl;
+  TmsgSendWrapper = procedure (param1: lobjc.id; param2: SEL;_flag: LongBool); cdecl;
 var
   vmethod: TmsgSendWrapper;
 begin
@@ -555,7 +555,7 @@ end;
 
 procedure NSText.setMaxSize(_newMaxSize: NSSize);
 type
-  TmsgSendWrapper = procedure (param1: objc.id; param2: SEL;_newMaxSize: NSSize); cdecl;
+  TmsgSendWrapper = procedure (param1: lobjc.id; param2: SEL;_newMaxSize: NSSize); cdecl;
 var
   vmethod: TmsgSendWrapper;
 begin
@@ -570,7 +570,7 @@ end;
 
 procedure NSText.setMinSize(_newMinSize: NSSize);
 type
-  TmsgSendWrapper = procedure (param1: objc.id; param2: SEL;_newMinSize: NSSize); cdecl;
+  TmsgSendWrapper = procedure (param1: lobjc.id; param2: SEL;_newMinSize: NSSize); cdecl;
 var
   vmethod: TmsgSendWrapper;
 begin
@@ -585,7 +585,7 @@ end;
 
 procedure NSText.setHorizontallyResizable(_flag: LongBool);
 type
-  TmsgSendWrapper = procedure (param1: objc.id; param2: SEL;_flag: LongBool); cdecl;
+  TmsgSendWrapper = procedure (param1: lobjc.id; param2: SEL;_flag: LongBool); cdecl;
 var
   vmethod: TmsgSendWrapper;
 begin
@@ -600,7 +600,7 @@ end;
 
 procedure NSText.setVerticallyResizable(_flag: LongBool);
 type
-  TmsgSendWrapper = procedure (param1: objc.id; param2: SEL;_flag: LongBool); cdecl;
+  TmsgSendWrapper = procedure (param1: lobjc.id; param2: SEL;_flag: LongBool); cdecl;
 var
   vmethod: TmsgSendWrapper;
 begin
@@ -613,9 +613,9 @@ begin
   objc_msgSend(Handle, sel_registerName(PChar(StrNSText_sizeToFit)), []);
 end;
 
-procedure NSText.copy(_sender: objc.id);
+procedure NSText.copy(_sender: lobjc.id);
 type
-  TmsgSendWrapper = procedure (param1: objc.id; param2: SEL;_sender: objc.id); cdecl;
+  TmsgSendWrapper = procedure (param1: lobjc.id; param2: SEL;_sender: lobjc.id); cdecl;
 var
   vmethod: TmsgSendWrapper;
 begin
@@ -623,9 +623,9 @@ begin
   vmethod(Handle, sel_registerName(PChar(StrNSText_copy)), _sender);
 end;
 
-procedure NSText.copyFont(_sender: objc.id);
+procedure NSText.copyFont(_sender: lobjc.id);
 type
-  TmsgSendWrapper = procedure (param1: objc.id; param2: SEL;_sender: objc.id); cdecl;
+  TmsgSendWrapper = procedure (param1: lobjc.id; param2: SEL;_sender: lobjc.id); cdecl;
 var
   vmethod: TmsgSendWrapper;
 begin
@@ -633,9 +633,9 @@ begin
   vmethod(Handle, sel_registerName(PChar(StrNSText_copyFont)), _sender);
 end;
 
-procedure NSText.copyRuler(_sender: objc.id);
+procedure NSText.copyRuler(_sender: lobjc.id);
 type
-  TmsgSendWrapper = procedure (param1: objc.id; param2: SEL;_sender: objc.id); cdecl;
+  TmsgSendWrapper = procedure (param1: lobjc.id; param2: SEL;_sender: lobjc.id); cdecl;
 var
   vmethod: TmsgSendWrapper;
 begin
@@ -643,9 +643,9 @@ begin
   vmethod(Handle, sel_registerName(PChar(StrNSText_copyRuler)), _sender);
 end;
 
-procedure NSText.cut(_sender: objc.id);
+procedure NSText.cut(_sender: lobjc.id);
 type
-  TmsgSendWrapper = procedure (param1: objc.id; param2: SEL;_sender: objc.id); cdecl;
+  TmsgSendWrapper = procedure (param1: lobjc.id; param2: SEL;_sender: lobjc.id); cdecl;
 var
   vmethod: TmsgSendWrapper;
 begin
@@ -653,9 +653,9 @@ begin
   vmethod(Handle, sel_registerName(PChar(StrNSText_cut)), _sender);
 end;
 
-procedure NSText.delete(_sender: objc.id);
+procedure NSText.delete(_sender: lobjc.id);
 type
-  TmsgSendWrapper = procedure (param1: objc.id; param2: SEL;_sender: objc.id); cdecl;
+  TmsgSendWrapper = procedure (param1: lobjc.id; param2: SEL;_sender: lobjc.id); cdecl;
 var
   vmethod: TmsgSendWrapper;
 begin
@@ -663,9 +663,9 @@ begin
   vmethod(Handle, sel_registerName(PChar(StrNSText_delete)), _sender);
 end;
 
-procedure NSText.paste(_sender: objc.id);
+procedure NSText.paste(_sender: lobjc.id);
 type
-  TmsgSendWrapper = procedure (param1: objc.id; param2: SEL;_sender: objc.id); cdecl;
+  TmsgSendWrapper = procedure (param1: lobjc.id; param2: SEL;_sender: lobjc.id); cdecl;
 var
   vmethod: TmsgSendWrapper;
 begin
@@ -673,9 +673,9 @@ begin
   vmethod(Handle, sel_registerName(PChar(StrNSText_paste)), _sender);
 end;
 
-procedure NSText.pasteFont(_sender: objc.id);
+procedure NSText.pasteFont(_sender: lobjc.id);
 type
-  TmsgSendWrapper = procedure (param1: objc.id; param2: SEL;_sender: objc.id); cdecl;
+  TmsgSendWrapper = procedure (param1: lobjc.id; param2: SEL;_sender: lobjc.id); cdecl;
 var
   vmethod: TmsgSendWrapper;
 begin
@@ -683,9 +683,9 @@ begin
   vmethod(Handle, sel_registerName(PChar(StrNSText_pasteFont)), _sender);
 end;
 
-procedure NSText.pasteRuler(_sender: objc.id);
+procedure NSText.pasteRuler(_sender: lobjc.id);
 type
-  TmsgSendWrapper = procedure (param1: objc.id; param2: SEL;_sender: objc.id); cdecl;
+  TmsgSendWrapper = procedure (param1: lobjc.id; param2: SEL;_sender: lobjc.id); cdecl;
 var
   vmethod: TmsgSendWrapper;
 begin
@@ -693,9 +693,9 @@ begin
   vmethod(Handle, sel_registerName(PChar(StrNSText_pasteRuler)), _sender);
 end;
 
-procedure NSText.selectAll(_sender: objc.id);
+procedure NSText.selectAll(_sender: lobjc.id);
 type
-  TmsgSendWrapper = procedure (param1: objc.id; param2: SEL;_sender: objc.id); cdecl;
+  TmsgSendWrapper = procedure (param1: lobjc.id; param2: SEL;_sender: lobjc.id); cdecl;
 var
   vmethod: TmsgSendWrapper;
 begin
@@ -703,9 +703,9 @@ begin
   vmethod(Handle, sel_registerName(PChar(StrNSText_selectAll)), _sender);
 end;
 
-procedure NSText.changeFont(_sender: objc.id);
+procedure NSText.changeFont(_sender: lobjc.id);
 type
-  TmsgSendWrapper = procedure (param1: objc.id; param2: SEL;_sender: objc.id); cdecl;
+  TmsgSendWrapper = procedure (param1: lobjc.id; param2: SEL;_sender: lobjc.id); cdecl;
 var
   vmethod: TmsgSendWrapper;
 begin
@@ -713,9 +713,9 @@ begin
   vmethod(Handle, sel_registerName(PChar(StrNSText_changeFont)), _sender);
 end;
 
-procedure NSText.alignLeft(_sender: objc.id);
+procedure NSText.alignLeft(_sender: lobjc.id);
 type
-  TmsgSendWrapper = procedure (param1: objc.id; param2: SEL;_sender: objc.id); cdecl;
+  TmsgSendWrapper = procedure (param1: lobjc.id; param2: SEL;_sender: lobjc.id); cdecl;
 var
   vmethod: TmsgSendWrapper;
 begin
@@ -723,9 +723,9 @@ begin
   vmethod(Handle, sel_registerName(PChar(StrNSText_alignLeft)), _sender);
 end;
 
-procedure NSText.alignRight(_sender: objc.id);
+procedure NSText.alignRight(_sender: lobjc.id);
 type
-  TmsgSendWrapper = procedure (param1: objc.id; param2: SEL;_sender: objc.id); cdecl;
+  TmsgSendWrapper = procedure (param1: lobjc.id; param2: SEL;_sender: lobjc.id); cdecl;
 var
   vmethod: TmsgSendWrapper;
 begin
@@ -733,9 +733,9 @@ begin
   vmethod(Handle, sel_registerName(PChar(StrNSText_alignRight)), _sender);
 end;
 
-procedure NSText.alignCenter(_sender: objc.id);
+procedure NSText.alignCenter(_sender: lobjc.id);
 type
-  TmsgSendWrapper = procedure (param1: objc.id; param2: SEL;_sender: objc.id); cdecl;
+  TmsgSendWrapper = procedure (param1: lobjc.id; param2: SEL;_sender: lobjc.id); cdecl;
 var
   vmethod: TmsgSendWrapper;
 begin
@@ -743,9 +743,9 @@ begin
   vmethod(Handle, sel_registerName(PChar(StrNSText_alignCenter)), _sender);
 end;
 
-procedure NSText.subscript(_sender: objc.id);
+procedure NSText.subscript(_sender: lobjc.id);
 type
-  TmsgSendWrapper = procedure (param1: objc.id; param2: SEL;_sender: objc.id); cdecl;
+  TmsgSendWrapper = procedure (param1: lobjc.id; param2: SEL;_sender: lobjc.id); cdecl;
 var
   vmethod: TmsgSendWrapper;
 begin
@@ -753,9 +753,9 @@ begin
   vmethod(Handle, sel_registerName(PChar(StrNSText_subscript)), _sender);
 end;
 
-procedure NSText.superscript(_sender: objc.id);
+procedure NSText.superscript(_sender: lobjc.id);
 type
-  TmsgSendWrapper = procedure (param1: objc.id; param2: SEL;_sender: objc.id); cdecl;
+  TmsgSendWrapper = procedure (param1: lobjc.id; param2: SEL;_sender: lobjc.id); cdecl;
 var
   vmethod: TmsgSendWrapper;
 begin
@@ -763,9 +763,9 @@ begin
   vmethod(Handle, sel_registerName(PChar(StrNSText_superscript)), _sender);
 end;
 
-procedure NSText.underline(_sender: objc.id);
+procedure NSText.underline(_sender: lobjc.id);
 type
-  TmsgSendWrapper = procedure (param1: objc.id; param2: SEL;_sender: objc.id); cdecl;
+  TmsgSendWrapper = procedure (param1: lobjc.id; param2: SEL;_sender: lobjc.id); cdecl;
 var
   vmethod: TmsgSendWrapper;
 begin
@@ -773,9 +773,9 @@ begin
   vmethod(Handle, sel_registerName(PChar(StrNSText_underline)), _sender);
 end;
 
-procedure NSText.unscript(_sender: objc.id);
+procedure NSText.unscript(_sender: lobjc.id);
 type
-  TmsgSendWrapper = procedure (param1: objc.id; param2: SEL;_sender: objc.id); cdecl;
+  TmsgSendWrapper = procedure (param1: lobjc.id; param2: SEL;_sender: lobjc.id); cdecl;
 var
   vmethod: TmsgSendWrapper;
 begin
@@ -783,9 +783,9 @@ begin
   vmethod(Handle, sel_registerName(PChar(StrNSText_unscript)), _sender);
 end;
 
-procedure NSText.showGuessPanel(_sender: objc.id);
+procedure NSText.showGuessPanel(_sender: lobjc.id);
 type
-  TmsgSendWrapper = procedure (param1: objc.id; param2: SEL;_sender: objc.id); cdecl;
+  TmsgSendWrapper = procedure (param1: lobjc.id; param2: SEL;_sender: lobjc.id); cdecl;
 var
   vmethod: TmsgSendWrapper;
 begin
@@ -793,9 +793,9 @@ begin
   vmethod(Handle, sel_registerName(PChar(StrNSText_showGuessPanel)), _sender);
 end;
 
-procedure NSText.checkSpelling(_sender: objc.id);
+procedure NSText.checkSpelling(_sender: lobjc.id);
 type
-  TmsgSendWrapper = procedure (param1: objc.id; param2: SEL;_sender: objc.id); cdecl;
+  TmsgSendWrapper = procedure (param1: lobjc.id; param2: SEL;_sender: lobjc.id); cdecl;
 var
   vmethod: TmsgSendWrapper;
 begin
@@ -803,9 +803,9 @@ begin
   vmethod(Handle, sel_registerName(PChar(StrNSText_checkSpelling)), _sender);
 end;
 
-procedure NSText.toggleRuler(_sender: objc.id);
+procedure NSText.toggleRuler(_sender: lobjc.id);
 type
-  TmsgSendWrapper = procedure (param1: objc.id; param2: SEL;_sender: objc.id); cdecl;
+  TmsgSendWrapper = procedure (param1: lobjc.id; param2: SEL;_sender: lobjc.id); cdecl;
 var
   vmethod: TmsgSendWrapper;
 begin
@@ -825,7 +825,7 @@ end;
 
 procedure NSText.setSelectedRange(_range: NSRange);
 type
-  TmsgSendWrapper = procedure (param1: objc.id; param2: SEL;_range: NSRange); cdecl;
+  TmsgSendWrapper = procedure (param1: lobjc.id; param2: SEL;_range: NSRange); cdecl;
 var
   vmethod: TmsgSendWrapper;
 begin
@@ -835,7 +835,7 @@ end;
 
 procedure NSText.scrollRangeToVisible(_range: NSRange);
 type
-  TmsgSendWrapper = procedure (param1: objc.id; param2: SEL;_range: NSRange); cdecl;
+  TmsgSendWrapper = procedure (param1: lobjc.id; param2: SEL;_range: NSRange); cdecl;
 var
   vmethod: TmsgSendWrapper;
 begin

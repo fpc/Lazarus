@@ -28,20 +28,20 @@
 
   NSDictionary = class(NSObject)
   public
-    class function getClass: objc.id; override;
+    class function getClass: lobjc.id; override;
     function count: LongWord;
-    function keyEnumerator: objc.id;{NSEnumerator}
-    function objectForKey(_aKey: objc.id): objc.id;
+    function keyEnumerator: lobjc.id;{NSEnumerator}
+    function objectForKey(_aKey: lobjc.id): lobjc.id;
     function allKeys: CFArrayRef;
-    function allKeysForObject(_anObject: objc.id): CFArrayRef;
+    function allKeysForObject(_anObject: lobjc.id): CFArrayRef;
     function allValues: CFArrayRef;
     function description: CFStringRef;
     function descriptionInStringsFileFormat: CFStringRef;
     function descriptionWithLocale(_locale: CFDictionaryRef): CFStringRef;
     function descriptionWithLocale_indent(_locale: CFDictionaryRef; _level: LongWord): CFStringRef;
     function isEqualToDictionary(_otherDictionary: CFDictionaryRef): LongBool;
-    function objectEnumerator: objc.id;{NSEnumerator}
-    function objectsForKeys_notFoundMarker(_keys: CFArrayRef; _marker: objc.id): CFArrayRef;
+    function objectEnumerator: lobjc.id;{NSEnumerator}
+    function objectsForKeys_notFoundMarker(_keys: CFArrayRef; _marker: lobjc.id): CFArrayRef;
     function writeToFile_atomically(_path: CFStringRef; _useAuxiliaryFile: LongBool): LongBool;
     function writeToURL_atomically(_url: CFURLRef; _atomically: LongBool): LongBool;
     //  the atomically flag is ignored if url of a type that cannot be written atomically.
@@ -50,16 +50,16 @@
     constructor dictionaryWithContentsOfFile(_path: CFStringRef);
     constructor dictionaryWithContentsOfURL(_url: CFURLRef);
     constructor dictionaryWithObjects_forKeys(_objects: CFArrayRef; _keys: CFArrayRef);
-    constructor dictionaryWithObjects_forKeys_count(_objects: objc.id; _keys: objc.id; _count: LongWord);
-    constructor dictionaryWithObjectsAndKeys(_firstObject: objc.id);
+    constructor dictionaryWithObjects_forKeys_count(_objects: lobjc.id; _keys: lobjc.id; _count: LongWord);
+    constructor dictionaryWithObjectsAndKeys(_firstObject: lobjc.id);
     constructor initWithContentsOfFile(_path: CFStringRef);
     constructor initWithContentsOfURL(_url: CFURLRef);
     constructor initWithObjects_forKeys(_objects: CFArrayRef; _keys: CFArrayRef);
-    constructor initWithObjects_forKeys_count(_objects: objc.id; _keys: objc.id; _count: LongWord);
-    constructor initWithObjectsAndKeys(_firstObject: objc.id);
+    constructor initWithObjects_forKeys_count(_objects: lobjc.id; _keys: lobjc.id; _count: LongWord);
+    constructor initWithObjectsAndKeys(_firstObject: lobjc.id);
     constructor initWithDictionary(_otherDictionary: CFDictionaryRef);
     constructor dictionaryWithDictionary(_dict: CFDictionaryRef);
-    constructor dictionaryWithObject_forKey(__object: objc.id; _key: objc.id);
+    constructor dictionaryWithObject_forKey(__object: lobjc.id; _key: lobjc.id);
     constructor initWithDictionary_copyItems(_otherDictionary: CFDictionaryRef; _aBool: LongBool);
   end;
 
@@ -69,9 +69,9 @@
 
   NSMutableDictionary = class(NSDictionary)
   public
-    class function getClass: objc.id; override;
-    procedure removeObjectForKey(_aKey: objc.id);
-    procedure setObject_forKey(_anObject: objc.id; _aKey: objc.id);
+    class function getClass: lobjc.id; override;
+    procedure removeObjectForKey(_aKey: lobjc.id);
+    procedure setObject_forKey(_anObject: lobjc.id; _aKey: lobjc.id);
     procedure addEntriesFromDictionary(_otherDictionary: CFDictionaryRef);
     procedure removeAllObjects;
     procedure removeObjectsForKeys(_keyArray: CFArrayRef);
@@ -134,7 +134,7 @@ const
 
 { NSDictionary }
 
-class function NSDictionary.getClass: objc.id;
+class function NSDictionary.getClass: lobjc.id;
 begin
   Result := objc_getClass(StrNSDictionary_NSDictionary);
 end;
@@ -144,19 +144,19 @@ begin
   Result := LongWord(objc_msgSend(Handle, sel_registerName(PChar(StrNSDictionary_count)), []));
 end;
 
-function NSDictionary.keyEnumerator: objc.id;
+function NSDictionary.keyEnumerator: lobjc.id;
 begin
-  Result := objc.id(objc_msgSend(Handle, sel_registerName(PChar(StrNSDictionary_keyEnumerator)), []));
+  Result := lobjc.id(objc_msgSend(Handle, sel_registerName(PChar(StrNSDictionary_keyEnumerator)), []));
 end;
 
-function NSDictionary.objectForKey(_aKey: objc.id): objc.id;
+function NSDictionary.objectForKey(_aKey: lobjc.id): lobjc.id;
 type
-  TmsgSendWrapper = function (param1: objc.id; param2: SEL;_aKey: objc.id): objc.id; cdecl;
+  TmsgSendWrapper = function (param1: lobjc.id; param2: SEL;_aKey: lobjc.id): lobjc.id; cdecl;
 var
   vmethod: TmsgSendWrapper;
 begin
   vmethod := TmsgSendWrapper(@objc_msgSend);
-  Result := objc.id(vmethod(Handle, sel_registerName(PChar(StrNSDictionary_objectForKey)), _aKey));
+  Result := lobjc.id(vmethod(Handle, sel_registerName(PChar(StrNSDictionary_objectForKey)), _aKey));
 end;
 
 function NSDictionary.allKeys: CFArrayRef;
@@ -164,9 +164,9 @@ begin
   Result := CFArrayRef(objc_msgSend(Handle, sel_registerName(PChar(StrNSDictionary_allKeys)), []));
 end;
 
-function NSDictionary.allKeysForObject(_anObject: objc.id): CFArrayRef;
+function NSDictionary.allKeysForObject(_anObject: lobjc.id): CFArrayRef;
 type
-  TmsgSendWrapper = function (param1: objc.id; param2: SEL;_anObject: objc.id): CFArrayRef; cdecl;
+  TmsgSendWrapper = function (param1: lobjc.id; param2: SEL;_anObject: lobjc.id): CFArrayRef; cdecl;
 var
   vmethod: TmsgSendWrapper;
 begin
@@ -191,7 +191,7 @@ end;
 
 function NSDictionary.descriptionWithLocale(_locale: CFDictionaryRef): CFStringRef;
 type
-  TmsgSendWrapper = function (param1: objc.id; param2: SEL;_locale: CFDictionaryRef): CFStringRef; cdecl;
+  TmsgSendWrapper = function (param1: lobjc.id; param2: SEL;_locale: CFDictionaryRef): CFStringRef; cdecl;
 var
   vmethod: TmsgSendWrapper;
 begin
@@ -201,7 +201,7 @@ end;
 
 function NSDictionary.descriptionWithLocale_indent(_locale: CFDictionaryRef; _level: LongWord): CFStringRef;
 type
-  TmsgSendWrapper = function (param1: objc.id; param2: SEL;_locale: CFDictionaryRef; _level: LongWord): CFStringRef; cdecl;
+  TmsgSendWrapper = function (param1: lobjc.id; param2: SEL;_locale: CFDictionaryRef; _level: LongWord): CFStringRef; cdecl;
 var
   vmethod: TmsgSendWrapper;
 begin
@@ -211,7 +211,7 @@ end;
 
 function NSDictionary.isEqualToDictionary(_otherDictionary: CFDictionaryRef): LongBool;
 type
-  TmsgSendWrapper = function (param1: objc.id; param2: SEL;_otherDictionary: CFDictionaryRef): LongBool; cdecl;
+  TmsgSendWrapper = function (param1: lobjc.id; param2: SEL;_otherDictionary: CFDictionaryRef): LongBool; cdecl;
 var
   vmethod: TmsgSendWrapper;
 begin
@@ -219,14 +219,14 @@ begin
   Result := LongBool(vmethod(Handle, sel_registerName(PChar(StrNSDictionary_isEqualToDictionary)), _otherDictionary));
 end;
 
-function NSDictionary.objectEnumerator: objc.id;
+function NSDictionary.objectEnumerator: lobjc.id;
 begin
-  Result := objc.id(objc_msgSend(Handle, sel_registerName(PChar(StrNSDictionary_objectEnumerator)), []));
+  Result := lobjc.id(objc_msgSend(Handle, sel_registerName(PChar(StrNSDictionary_objectEnumerator)), []));
 end;
 
-function NSDictionary.objectsForKeys_notFoundMarker(_keys: CFArrayRef; _marker: objc.id): CFArrayRef;
+function NSDictionary.objectsForKeys_notFoundMarker(_keys: CFArrayRef; _marker: lobjc.id): CFArrayRef;
 type
-  TmsgSendWrapper = function (param1: objc.id; param2: SEL;_keys: CFArrayRef; _marker: objc.id): CFArrayRef; cdecl;
+  TmsgSendWrapper = function (param1: lobjc.id; param2: SEL;_keys: CFArrayRef; _marker: lobjc.id): CFArrayRef; cdecl;
 var
   vmethod: TmsgSendWrapper;
 begin
@@ -236,7 +236,7 @@ end;
 
 function NSDictionary.writeToFile_atomically(_path: CFStringRef; _useAuxiliaryFile: LongBool): LongBool;
 type
-  TmsgSendWrapper = function (param1: objc.id; param2: SEL;_path: CFStringRef; _useAuxiliaryFile: LongBool): LongBool; cdecl;
+  TmsgSendWrapper = function (param1: lobjc.id; param2: SEL;_path: CFStringRef; _useAuxiliaryFile: LongBool): LongBool; cdecl;
 var
   vmethod: TmsgSendWrapper;
 begin
@@ -246,7 +246,7 @@ end;
 
 function NSDictionary.writeToURL_atomically(_url: CFURLRef; _atomically: LongBool): LongBool;
 type
-  TmsgSendWrapper = function (param1: objc.id; param2: SEL;_url: CFURLRef; _atomically: LongBool): LongBool; cdecl;
+  TmsgSendWrapper = function (param1: lobjc.id; param2: SEL;_url: CFURLRef; _atomically: LongBool): LongBool; cdecl;
 var
   vmethod: TmsgSendWrapper;
 begin
@@ -256,7 +256,7 @@ end;
 
 function NSDictionary.keysSortedByValueUsingSelector(_comparator: SEL): CFArrayRef;
 type
-  TmsgSendWrapper = function (param1: objc.id; param2: SEL;_comparator: SEL): CFArrayRef; cdecl;
+  TmsgSendWrapper = function (param1: lobjc.id; param2: SEL;_comparator: SEL): CFArrayRef; cdecl;
 var
   vmethod: TmsgSendWrapper;
 begin
@@ -266,7 +266,7 @@ end;
 
 constructor NSDictionary.dictionary;
 type
-  TmsgSendWrapper = function (param1: objc.id; param2: SEL): objc.id; cdecl;
+  TmsgSendWrapper = function (param1: lobjc.id; param2: SEL): lobjc.id; cdecl;
 var
   vmethod: TmsgSendWrapper;
 begin
@@ -277,7 +277,7 @@ end;
 
 constructor NSDictionary.dictionaryWithContentsOfFile(_path: CFStringRef);
 type
-  TmsgSendWrapper = function (param1: objc.id; param2: SEL;_path: CFStringRef): objc.id; cdecl;
+  TmsgSendWrapper = function (param1: lobjc.id; param2: SEL;_path: CFStringRef): lobjc.id; cdecl;
 var
   vmethod: TmsgSendWrapper;
 begin
@@ -288,7 +288,7 @@ end;
 
 constructor NSDictionary.dictionaryWithContentsOfURL(_url: CFURLRef);
 type
-  TmsgSendWrapper = function (param1: objc.id; param2: SEL;_url: CFURLRef): objc.id; cdecl;
+  TmsgSendWrapper = function (param1: lobjc.id; param2: SEL;_url: CFURLRef): lobjc.id; cdecl;
 var
   vmethod: TmsgSendWrapper;
 begin
@@ -299,7 +299,7 @@ end;
 
 constructor NSDictionary.dictionaryWithObjects_forKeys(_objects: CFArrayRef; _keys: CFArrayRef);
 type
-  TmsgSendWrapper = function (param1: objc.id; param2: SEL;_objects: CFArrayRef; _keys: CFArrayRef): objc.id; cdecl;
+  TmsgSendWrapper = function (param1: lobjc.id; param2: SEL;_objects: CFArrayRef; _keys: CFArrayRef): lobjc.id; cdecl;
 var
   vmethod: TmsgSendWrapper;
 begin
@@ -308,9 +308,9 @@ begin
   Handle := vmethod(ClassID, sel_registerName(PChar(StrNSDictionary_dictionaryWithObjects_forKeys)), _objects, _keys);
 end;
 
-constructor NSDictionary.dictionaryWithObjects_forKeys_count(_objects: objc.id; _keys: objc.id; _count: LongWord);
+constructor NSDictionary.dictionaryWithObjects_forKeys_count(_objects: lobjc.id; _keys: lobjc.id; _count: LongWord);
 type
-  TmsgSendWrapper = function (param1: objc.id; param2: SEL;_objects: objc.id; _keys: objc.id; _count: LongWord): objc.id; cdecl;
+  TmsgSendWrapper = function (param1: lobjc.id; param2: SEL;_objects: lobjc.id; _keys: lobjc.id; _count: LongWord): lobjc.id; cdecl;
 var
   vmethod: TmsgSendWrapper;
 begin
@@ -319,9 +319,9 @@ begin
   Handle := vmethod(ClassID, sel_registerName(PChar(StrNSDictionary_dictionaryWithObjects_forKeys_count)), _objects, _keys, _count);
 end;
 
-constructor NSDictionary.dictionaryWithObjectsAndKeys(_firstObject: objc.id);
+constructor NSDictionary.dictionaryWithObjectsAndKeys(_firstObject: lobjc.id);
 type
-  TmsgSendWrapper = function (param1: objc.id; param2: SEL;_firstObject: objc.id): objc.id; cdecl;
+  TmsgSendWrapper = function (param1: lobjc.id; param2: SEL;_firstObject: lobjc.id): lobjc.id; cdecl;
 var
   vmethod: TmsgSendWrapper;
 begin
@@ -332,7 +332,7 @@ end;
 
 constructor NSDictionary.initWithContentsOfFile(_path: CFStringRef);
 type
-  TmsgSendWrapper = function (param1: objc.id; param2: SEL;_path: CFStringRef): objc.id; cdecl;
+  TmsgSendWrapper = function (param1: lobjc.id; param2: SEL;_path: CFStringRef): lobjc.id; cdecl;
 var
   vmethod: TmsgSendWrapper;
 begin
@@ -344,7 +344,7 @@ end;
 
 constructor NSDictionary.initWithContentsOfURL(_url: CFURLRef);
 type
-  TmsgSendWrapper = function (param1: objc.id; param2: SEL;_url: CFURLRef): objc.id; cdecl;
+  TmsgSendWrapper = function (param1: lobjc.id; param2: SEL;_url: CFURLRef): lobjc.id; cdecl;
 var
   vmethod: TmsgSendWrapper;
 begin
@@ -356,7 +356,7 @@ end;
 
 constructor NSDictionary.initWithObjects_forKeys(_objects: CFArrayRef; _keys: CFArrayRef);
 type
-  TmsgSendWrapper = function (param1: objc.id; param2: SEL;_objects: CFArrayRef; _keys: CFArrayRef): objc.id; cdecl;
+  TmsgSendWrapper = function (param1: lobjc.id; param2: SEL;_objects: CFArrayRef; _keys: CFArrayRef): lobjc.id; cdecl;
 var
   vmethod: TmsgSendWrapper;
 begin
@@ -366,9 +366,9 @@ begin
   Handle := vmethod(allocbuf, sel_registerName(PChar(StrNSDictionary_initWithObjects_forKeys)), _objects, _keys);
 end;
 
-constructor NSDictionary.initWithObjects_forKeys_count(_objects: objc.id; _keys: objc.id; _count: LongWord);
+constructor NSDictionary.initWithObjects_forKeys_count(_objects: lobjc.id; _keys: lobjc.id; _count: LongWord);
 type
-  TmsgSendWrapper = function (param1: objc.id; param2: SEL;_objects: objc.id; _keys: objc.id; _count: LongWord): objc.id; cdecl;
+  TmsgSendWrapper = function (param1: lobjc.id; param2: SEL;_objects: lobjc.id; _keys: lobjc.id; _count: LongWord): lobjc.id; cdecl;
 var
   vmethod: TmsgSendWrapper;
 begin
@@ -378,9 +378,9 @@ begin
   Handle := vmethod(allocbuf, sel_registerName(PChar(StrNSDictionary_initWithObjects_forKeys_count)), _objects, _keys, _count);
 end;
 
-constructor NSDictionary.initWithObjectsAndKeys(_firstObject: objc.id);
+constructor NSDictionary.initWithObjectsAndKeys(_firstObject: lobjc.id);
 type
-  TmsgSendWrapper = function (param1: objc.id; param2: SEL;_firstObject: objc.id): objc.id; cdecl;
+  TmsgSendWrapper = function (param1: lobjc.id; param2: SEL;_firstObject: lobjc.id): lobjc.id; cdecl;
 var
   vmethod: TmsgSendWrapper;
 begin
@@ -392,7 +392,7 @@ end;
 
 constructor NSDictionary.initWithDictionary(_otherDictionary: CFDictionaryRef);
 type
-  TmsgSendWrapper = function (param1: objc.id; param2: SEL;_otherDictionary: CFDictionaryRef): objc.id; cdecl;
+  TmsgSendWrapper = function (param1: lobjc.id; param2: SEL;_otherDictionary: CFDictionaryRef): lobjc.id; cdecl;
 var
   vmethod: TmsgSendWrapper;
 begin
@@ -404,7 +404,7 @@ end;
 
 constructor NSDictionary.dictionaryWithDictionary(_dict: CFDictionaryRef);
 type
-  TmsgSendWrapper = function (param1: objc.id; param2: SEL;_dict: CFDictionaryRef): objc.id; cdecl;
+  TmsgSendWrapper = function (param1: lobjc.id; param2: SEL;_dict: CFDictionaryRef): lobjc.id; cdecl;
 var
   vmethod: TmsgSendWrapper;
 begin
@@ -413,9 +413,9 @@ begin
   Handle := vmethod(ClassID, sel_registerName(PChar(StrNSDictionary_dictionaryWithDictionary)), _dict);
 end;
 
-constructor NSDictionary.dictionaryWithObject_forKey(__object: objc.id; _key: objc.id);
+constructor NSDictionary.dictionaryWithObject_forKey(__object: lobjc.id; _key: lobjc.id);
 type
-  TmsgSendWrapper = function (param1: objc.id; param2: SEL;__object: objc.id; _key: objc.id): objc.id; cdecl;
+  TmsgSendWrapper = function (param1: lobjc.id; param2: SEL;__object: lobjc.id; _key: lobjc.id): lobjc.id; cdecl;
 var
   vmethod: TmsgSendWrapper;
 begin
@@ -426,7 +426,7 @@ end;
 
 constructor NSDictionary.initWithDictionary_copyItems(_otherDictionary: CFDictionaryRef; _aBool: LongBool);
 type
-  TmsgSendWrapper = function (param1: objc.id; param2: SEL;_otherDictionary: CFDictionaryRef; _aBool: LongBool): objc.id; cdecl;
+  TmsgSendWrapper = function (param1: lobjc.id; param2: SEL;_otherDictionary: CFDictionaryRef; _aBool: LongBool): lobjc.id; cdecl;
 var
   vmethod: TmsgSendWrapper;
 begin
@@ -438,14 +438,14 @@ end;
 
 { NSMutableDictionary }
 
-class function NSMutableDictionary.getClass: objc.id;
+class function NSMutableDictionary.getClass: lobjc.id;
 begin
   Result := objc_getClass(StrNSMutableDictionary_NSMutableDictionary);
 end;
 
-procedure NSMutableDictionary.removeObjectForKey(_aKey: objc.id);
+procedure NSMutableDictionary.removeObjectForKey(_aKey: lobjc.id);
 type
-  TmsgSendWrapper = procedure (param1: objc.id; param2: SEL;_aKey: objc.id); cdecl;
+  TmsgSendWrapper = procedure (param1: lobjc.id; param2: SEL;_aKey: lobjc.id); cdecl;
 var
   vmethod: TmsgSendWrapper;
 begin
@@ -453,9 +453,9 @@ begin
   vmethod(Handle, sel_registerName(PChar(StrNSMutableDictionary_removeObjectForKey)), _aKey);
 end;
 
-procedure NSMutableDictionary.setObject_forKey(_anObject: objc.id; _aKey: objc.id);
+procedure NSMutableDictionary.setObject_forKey(_anObject: lobjc.id; _aKey: lobjc.id);
 type
-  TmsgSendWrapper = procedure (param1: objc.id; param2: SEL;_anObject: objc.id; _aKey: objc.id); cdecl;
+  TmsgSendWrapper = procedure (param1: lobjc.id; param2: SEL;_anObject: lobjc.id; _aKey: lobjc.id); cdecl;
 var
   vmethod: TmsgSendWrapper;
 begin
@@ -465,7 +465,7 @@ end;
 
 procedure NSMutableDictionary.addEntriesFromDictionary(_otherDictionary: CFDictionaryRef);
 type
-  TmsgSendWrapper = procedure (param1: objc.id; param2: SEL;_otherDictionary: CFDictionaryRef); cdecl;
+  TmsgSendWrapper = procedure (param1: lobjc.id; param2: SEL;_otherDictionary: CFDictionaryRef); cdecl;
 var
   vmethod: TmsgSendWrapper;
 begin
@@ -480,7 +480,7 @@ end;
 
 procedure NSMutableDictionary.removeObjectsForKeys(_keyArray: CFArrayRef);
 type
-  TmsgSendWrapper = procedure (param1: objc.id; param2: SEL;_keyArray: CFArrayRef); cdecl;
+  TmsgSendWrapper = procedure (param1: lobjc.id; param2: SEL;_keyArray: CFArrayRef); cdecl;
 var
   vmethod: TmsgSendWrapper;
 begin
@@ -490,7 +490,7 @@ end;
 
 procedure NSMutableDictionary.setDictionary(_otherDictionary: CFDictionaryRef);
 type
-  TmsgSendWrapper = procedure (param1: objc.id; param2: SEL;_otherDictionary: CFDictionaryRef); cdecl;
+  TmsgSendWrapper = procedure (param1: lobjc.id; param2: SEL;_otherDictionary: CFDictionaryRef); cdecl;
 var
   vmethod: TmsgSendWrapper;
 begin
@@ -500,7 +500,7 @@ end;
 
 constructor NSMutableDictionary.dictionaryWithCapacity(_numItems: LongWord);
 type
-  TmsgSendWrapper = function (param1: objc.id; param2: SEL;_numItems: LongWord): objc.id; cdecl;
+  TmsgSendWrapper = function (param1: lobjc.id; param2: SEL;_numItems: LongWord): lobjc.id; cdecl;
 var
   vmethod: TmsgSendWrapper;
 begin
@@ -511,7 +511,7 @@ end;
 
 constructor NSMutableDictionary.initWithCapacity(_numItems: LongWord);
 type
-  TmsgSendWrapper = function (param1: objc.id; param2: SEL;_numItems: LongWord): objc.id; cdecl;
+  TmsgSendWrapper = function (param1: lobjc.id; param2: SEL;_numItems: LongWord): lobjc.id; cdecl;
 var
   vmethod: TmsgSendWrapper;
 begin

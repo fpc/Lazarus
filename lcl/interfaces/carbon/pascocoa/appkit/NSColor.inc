@@ -33,7 +33,7 @@
 
   NSColor = class(NSObject)
   public
-    class function getClass: objc.id; override;
+    class function getClass: lobjc.id; override;
     //  Create NSCalibratedWhiteColorSpace colors.
     constructor colorWithCalibratedWhite_alpha(_white: Single; _alpha: Single);
     //  Create NSCalibratedRGBColorSpace colors.
@@ -48,7 +48,7 @@
     constructor colorWithDeviceCyan_magenta_yellow_black_alpha(_cyan: Single; _magenta: Single; _yellow: Single; _black: Single; _alpha: Single);
     //  Create named colors from standard color catalogs (such as Pantone).
     constructor colorWithCatalogName_colorName(_listName: CFStringRef; _colorName: CFStringRef);
-    constructor colorWithColorSpace_components_count(_space: objc.id {NSColorSpace}; _components: Single; _numberOfComponents: Integer);
+    constructor colorWithColorSpace_components_count(_space: lobjc.id {NSColorSpace}; _components: Single; _numberOfComponents: Integer);
     constructor blackColor;
     //  0.0 white
     constructor darkGrayColor;
@@ -143,9 +143,9 @@
     constructor alternateSelectedControlTextColor;
     {.$ifdef  MAC_OS_X_VERSION_MAX_ALLOWED >= MAC_OS_X_VERSION_10_3}
     class function controlAlternatingRowBackgroundColors: CFArrayRef;
-    function highlightWithLevel(_val: Single): objc.id;{NSColor}
+    function highlightWithLevel(_val: Single): lobjc.id;{NSColor}
     //  val = 0 => receiver, val = 1 => highlightColor
-    function shadowWithLevel(_val: Single): objc.id;{NSColor}
+    function shadowWithLevel(_val: Single): lobjc.id;{NSColor}
     //  val = 0 => receiver, val = 1 => shadowColor
     constructor colorForControlTint(_controlTint: NSControlTint);
     class function currentControlTint: NSControlTint;
@@ -165,15 +165,15 @@
     // view's window or, if printing, the current printer) is used. The method without the
     // device: argument passes nil for the device.
     // If colorSpace is nil, then the most appropriate color space is used.
-    function colorUsingColorSpaceName(_colorSpace: CFStringRef): objc.id;{NSColor}
-    function colorUsingColorSpaceName_device(_colorSpace: CFStringRef; _deviceDescription: CFDictionaryRef): objc.id;{NSColor}
-    function colorUsingColorSpace(_space: objc.id {NSColorSpace}): objc.id;{NSColor}
-    function blendedColorWithFraction_ofColor(_fraction: Single; _color: objc.id {NSColor}): objc.id;{NSColor}
+    function colorUsingColorSpaceName(_colorSpace: CFStringRef): lobjc.id;{NSColor}
+    function colorUsingColorSpaceName_device(_colorSpace: CFStringRef; _deviceDescription: CFDictionaryRef): lobjc.id;{NSColor}
+    function colorUsingColorSpace(_space: lobjc.id {NSColorSpace}): lobjc.id;{NSColor}
+    function blendedColorWithFraction_ofColor(_fraction: Single; _color: lobjc.id {NSColor}): lobjc.id;{NSColor}
     //  Returns a color in the same color space as the receiver with the specified alpha
     // component. The abstract implementation of this method returns the receiver if alpha
     // is 1.0, otherwise it returns nil; subclassers who have explicit opacity components
     // override this method to actually return a color with the specified alpha.
-    function colorWithAlphaComponent(_alpha: Single): objc.id;{NSColor}
+    function colorWithAlphaComponent(_alpha: Single): lobjc.id;{NSColor}
     // ** Methods to get various components of colors. Not all of the methods apply to all
     // colors; if called, they raise. **
     //  Get the catalog and color name of standard colors from catalogs. These colors are
@@ -203,18 +203,18 @@
     function yellowComponent: Single;
     function blackComponent: Single;
     procedure getCyan_magenta_yellow_black_alpha(_cyan: Single; _magenta: Single; _yellow: Single; _black: Single; _alpha: Single);
-    function colorSpace: objc.id;{NSColorSpace}
+    function colorSpace: lobjc.id;{NSColorSpace}
     function numberOfComponents: Integer;
     procedure getComponents(_components: Single);
     function alphaComponent: Single;
     //  Pasteboard methods
-    constructor colorFromPasteboard(_pasteBoard: objc.id {NSPasteboard});
-    procedure writeToPasteboard(_pasteBoard: objc.id {NSPasteboard});
+    constructor colorFromPasteboard(_pasteBoard: lobjc.id {NSPasteboard});
+    procedure writeToPasteboard(_pasteBoard: lobjc.id {NSPasteboard});
     //  Pattern methods. Note that colorWithPatternImage: mistakenly returns a non-autoreleased
     // color in 10.1.x and earlier. This has been fixed in (NSAppKitVersionNumber >= NSAppKitVersionNumberWithPatternColorLeakFix),
     // for apps linked post-10.1.x.
-    constructor colorWithPatternImage(_image: objc.id {NSImage});
-    function patternImage: objc.id;{NSImage}
+    constructor colorWithPatternImage(_image: lobjc.id {NSImage});
+    function patternImage: lobjc.id;{NSImage}
     //  Draws the color and adorns it to indicate the type of color. Used by colorwells,
     // swatches, and other UI objects that need to display colors. Implementation in NSColor
     // simply draws the color (with an indication of transparency if the color isn't fully
@@ -231,7 +231,7 @@
     // to NO and explicitly make colors opaque in cases where it matters to them.
     class procedure setIgnoresAlpha(_flag: LongBool);
     class function ignoresAlpha: LongBool;
-    constructor colorWithCIColor(_color: objc.id {CIColor});
+    constructor colorWithCIColor(_color: lobjc.id {CIColor});
   end;
 
 {$endif}
@@ -344,14 +344,14 @@ const
 
 { NSColor }
 
-class function NSColor.getClass: objc.id;
+class function NSColor.getClass: lobjc.id;
 begin
   Result := objc_getClass(StrNSColor_NSColor);
 end;
 
 constructor NSColor.colorWithCalibratedWhite_alpha(_white: Single; _alpha: Single);
 type
-  TmsgSendWrapper = function (param1: objc.id; param2: SEL;_white: Single; _alpha: Single): objc.id; cdecl;
+  TmsgSendWrapper = function (param1: lobjc.id; param2: SEL;_white: Single; _alpha: Single): lobjc.id; cdecl;
 var
   vmethod: TmsgSendWrapper;
 begin
@@ -362,7 +362,7 @@ end;
 
 constructor NSColor.colorWithCalibratedHue_saturation_brightness_alpha(_hue: Single; _saturation: Single; _brightness: Single; _alpha: Single);
 type
-  TmsgSendWrapper = function (param1: objc.id; param2: SEL;_hue: Single; _saturation: Single; _brightness: Single; _alpha: Single): objc.id; cdecl;
+  TmsgSendWrapper = function (param1: lobjc.id; param2: SEL;_hue: Single; _saturation: Single; _brightness: Single; _alpha: Single): lobjc.id; cdecl;
 var
   vmethod: TmsgSendWrapper;
 begin
@@ -373,7 +373,7 @@ end;
 
 constructor NSColor.colorWithCalibratedRed_green_blue_alpha(_red: Single; _green: Single; _blue: Single; _alpha: Single);
 type
-  TmsgSendWrapper = function (param1: objc.id; param2: SEL;_red: Single; _green: Single; _blue: Single; _alpha: Single): objc.id; cdecl;
+  TmsgSendWrapper = function (param1: lobjc.id; param2: SEL;_red: Single; _green: Single; _blue: Single; _alpha: Single): lobjc.id; cdecl;
 var
   vmethod: TmsgSendWrapper;
 begin
@@ -384,7 +384,7 @@ end;
 
 constructor NSColor.colorWithDeviceWhite_alpha(_white: Single; _alpha: Single);
 type
-  TmsgSendWrapper = function (param1: objc.id; param2: SEL;_white: Single; _alpha: Single): objc.id; cdecl;
+  TmsgSendWrapper = function (param1: lobjc.id; param2: SEL;_white: Single; _alpha: Single): lobjc.id; cdecl;
 var
   vmethod: TmsgSendWrapper;
 begin
@@ -395,7 +395,7 @@ end;
 
 constructor NSColor.colorWithDeviceHue_saturation_brightness_alpha(_hue: Single; _saturation: Single; _brightness: Single; _alpha: Single);
 type
-  TmsgSendWrapper = function (param1: objc.id; param2: SEL;_hue: Single; _saturation: Single; _brightness: Single; _alpha: Single): objc.id; cdecl;
+  TmsgSendWrapper = function (param1: lobjc.id; param2: SEL;_hue: Single; _saturation: Single; _brightness: Single; _alpha: Single): lobjc.id; cdecl;
 var
   vmethod: TmsgSendWrapper;
 begin
@@ -406,7 +406,7 @@ end;
 
 constructor NSColor.colorWithDeviceRed_green_blue_alpha(_red: Single; _green: Single; _blue: Single; _alpha: Single);
 type
-  TmsgSendWrapper = function (param1: objc.id; param2: SEL;_red: Single; _green: Single; _blue: Single; _alpha: Single): objc.id; cdecl;
+  TmsgSendWrapper = function (param1: lobjc.id; param2: SEL;_red: Single; _green: Single; _blue: Single; _alpha: Single): lobjc.id; cdecl;
 var
   vmethod: TmsgSendWrapper;
 begin
@@ -417,7 +417,7 @@ end;
 
 constructor NSColor.colorWithDeviceCyan_magenta_yellow_black_alpha(_cyan: Single; _magenta: Single; _yellow: Single; _black: Single; _alpha: Single);
 type
-  TmsgSendWrapper = function (param1: objc.id; param2: SEL;_cyan: Single; _magenta: Single; _yellow: Single; _black: Single; _alpha: Single): objc.id; cdecl;
+  TmsgSendWrapper = function (param1: lobjc.id; param2: SEL;_cyan: Single; _magenta: Single; _yellow: Single; _black: Single; _alpha: Single): lobjc.id; cdecl;
 var
   vmethod: TmsgSendWrapper;
 begin
@@ -428,7 +428,7 @@ end;
 
 constructor NSColor.colorWithCatalogName_colorName(_listName: CFStringRef; _colorName: CFStringRef);
 type
-  TmsgSendWrapper = function (param1: objc.id; param2: SEL;_listName: CFStringRef; _colorName: CFStringRef): objc.id; cdecl;
+  TmsgSendWrapper = function (param1: lobjc.id; param2: SEL;_listName: CFStringRef; _colorName: CFStringRef): lobjc.id; cdecl;
 var
   vmethod: TmsgSendWrapper;
 begin
@@ -437,9 +437,9 @@ begin
   Handle := vmethod(ClassID, sel_registerName(PChar(StrNSColor_colorWithCatalogName_colorName)), _listName, _colorName);
 end;
 
-constructor NSColor.colorWithColorSpace_components_count(_space: objc.id {NSColorSpace}; _components: Single; _numberOfComponents: Integer);
+constructor NSColor.colorWithColorSpace_components_count(_space: lobjc.id {NSColorSpace}; _components: Single; _numberOfComponents: Integer);
 type
-  TmsgSendWrapper = function (param1: objc.id; param2: SEL;_space: objc.id {NSColorSpace}; _components: Single; _numberOfComponents: Integer): objc.id; cdecl;
+  TmsgSendWrapper = function (param1: lobjc.id; param2: SEL;_space: lobjc.id {NSColorSpace}; _components: Single; _numberOfComponents: Integer): lobjc.id; cdecl;
 var
   vmethod: TmsgSendWrapper;
 begin
@@ -450,7 +450,7 @@ end;
 
 constructor NSColor.blackColor;
 type
-  TmsgSendWrapper = function (param1: objc.id; param2: SEL): objc.id; cdecl;
+  TmsgSendWrapper = function (param1: lobjc.id; param2: SEL): lobjc.id; cdecl;
 var
   vmethod: TmsgSendWrapper;
 begin
@@ -461,7 +461,7 @@ end;
 
 constructor NSColor.darkGrayColor;
 type
-  TmsgSendWrapper = function (param1: objc.id; param2: SEL): objc.id; cdecl;
+  TmsgSendWrapper = function (param1: lobjc.id; param2: SEL): lobjc.id; cdecl;
 var
   vmethod: TmsgSendWrapper;
 begin
@@ -472,7 +472,7 @@ end;
 
 constructor NSColor.lightGrayColor;
 type
-  TmsgSendWrapper = function (param1: objc.id; param2: SEL): objc.id; cdecl;
+  TmsgSendWrapper = function (param1: lobjc.id; param2: SEL): lobjc.id; cdecl;
 var
   vmethod: TmsgSendWrapper;
 begin
@@ -483,7 +483,7 @@ end;
 
 constructor NSColor.whiteColor;
 type
-  TmsgSendWrapper = function (param1: objc.id; param2: SEL): objc.id; cdecl;
+  TmsgSendWrapper = function (param1: lobjc.id; param2: SEL): lobjc.id; cdecl;
 var
   vmethod: TmsgSendWrapper;
 begin
@@ -494,7 +494,7 @@ end;
 
 constructor NSColor.grayColor;
 type
-  TmsgSendWrapper = function (param1: objc.id; param2: SEL): objc.id; cdecl;
+  TmsgSendWrapper = function (param1: lobjc.id; param2: SEL): lobjc.id; cdecl;
 var
   vmethod: TmsgSendWrapper;
 begin
@@ -505,7 +505,7 @@ end;
 
 constructor NSColor.redColor;
 type
-  TmsgSendWrapper = function (param1: objc.id; param2: SEL): objc.id; cdecl;
+  TmsgSendWrapper = function (param1: lobjc.id; param2: SEL): lobjc.id; cdecl;
 var
   vmethod: TmsgSendWrapper;
 begin
@@ -516,7 +516,7 @@ end;
 
 constructor NSColor.greenColor;
 type
-  TmsgSendWrapper = function (param1: objc.id; param2: SEL): objc.id; cdecl;
+  TmsgSendWrapper = function (param1: lobjc.id; param2: SEL): lobjc.id; cdecl;
 var
   vmethod: TmsgSendWrapper;
 begin
@@ -527,7 +527,7 @@ end;
 
 constructor NSColor.blueColor;
 type
-  TmsgSendWrapper = function (param1: objc.id; param2: SEL): objc.id; cdecl;
+  TmsgSendWrapper = function (param1: lobjc.id; param2: SEL): lobjc.id; cdecl;
 var
   vmethod: TmsgSendWrapper;
 begin
@@ -538,7 +538,7 @@ end;
 
 constructor NSColor.cyanColor;
 type
-  TmsgSendWrapper = function (param1: objc.id; param2: SEL): objc.id; cdecl;
+  TmsgSendWrapper = function (param1: lobjc.id; param2: SEL): lobjc.id; cdecl;
 var
   vmethod: TmsgSendWrapper;
 begin
@@ -549,7 +549,7 @@ end;
 
 constructor NSColor.yellowColor;
 type
-  TmsgSendWrapper = function (param1: objc.id; param2: SEL): objc.id; cdecl;
+  TmsgSendWrapper = function (param1: lobjc.id; param2: SEL): lobjc.id; cdecl;
 var
   vmethod: TmsgSendWrapper;
 begin
@@ -560,7 +560,7 @@ end;
 
 constructor NSColor.magentaColor;
 type
-  TmsgSendWrapper = function (param1: objc.id; param2: SEL): objc.id; cdecl;
+  TmsgSendWrapper = function (param1: lobjc.id; param2: SEL): lobjc.id; cdecl;
 var
   vmethod: TmsgSendWrapper;
 begin
@@ -571,7 +571,7 @@ end;
 
 constructor NSColor.orangeColor;
 type
-  TmsgSendWrapper = function (param1: objc.id; param2: SEL): objc.id; cdecl;
+  TmsgSendWrapper = function (param1: lobjc.id; param2: SEL): lobjc.id; cdecl;
 var
   vmethod: TmsgSendWrapper;
 begin
@@ -582,7 +582,7 @@ end;
 
 constructor NSColor.purpleColor;
 type
-  TmsgSendWrapper = function (param1: objc.id; param2: SEL): objc.id; cdecl;
+  TmsgSendWrapper = function (param1: lobjc.id; param2: SEL): lobjc.id; cdecl;
 var
   vmethod: TmsgSendWrapper;
 begin
@@ -593,7 +593,7 @@ end;
 
 constructor NSColor.brownColor;
 type
-  TmsgSendWrapper = function (param1: objc.id; param2: SEL): objc.id; cdecl;
+  TmsgSendWrapper = function (param1: lobjc.id; param2: SEL): lobjc.id; cdecl;
 var
   vmethod: TmsgSendWrapper;
 begin
@@ -604,7 +604,7 @@ end;
 
 constructor NSColor.clearColor;
 type
-  TmsgSendWrapper = function (param1: objc.id; param2: SEL): objc.id; cdecl;
+  TmsgSendWrapper = function (param1: lobjc.id; param2: SEL): lobjc.id; cdecl;
 var
   vmethod: TmsgSendWrapper;
 begin
@@ -615,7 +615,7 @@ end;
 
 constructor NSColor.controlShadowColor;
 type
-  TmsgSendWrapper = function (param1: objc.id; param2: SEL): objc.id; cdecl;
+  TmsgSendWrapper = function (param1: lobjc.id; param2: SEL): lobjc.id; cdecl;
 var
   vmethod: TmsgSendWrapper;
 begin
@@ -626,7 +626,7 @@ end;
 
 constructor NSColor.controlDarkShadowColor;
 type
-  TmsgSendWrapper = function (param1: objc.id; param2: SEL): objc.id; cdecl;
+  TmsgSendWrapper = function (param1: lobjc.id; param2: SEL): lobjc.id; cdecl;
 var
   vmethod: TmsgSendWrapper;
 begin
@@ -637,7 +637,7 @@ end;
 
 constructor NSColor.controlColor;
 type
-  TmsgSendWrapper = function (param1: objc.id; param2: SEL): objc.id; cdecl;
+  TmsgSendWrapper = function (param1: lobjc.id; param2: SEL): lobjc.id; cdecl;
 var
   vmethod: TmsgSendWrapper;
 begin
@@ -648,7 +648,7 @@ end;
 
 constructor NSColor.controlHighlightColor;
 type
-  TmsgSendWrapper = function (param1: objc.id; param2: SEL): objc.id; cdecl;
+  TmsgSendWrapper = function (param1: lobjc.id; param2: SEL): lobjc.id; cdecl;
 var
   vmethod: TmsgSendWrapper;
 begin
@@ -659,7 +659,7 @@ end;
 
 constructor NSColor.controlLightHighlightColor;
 type
-  TmsgSendWrapper = function (param1: objc.id; param2: SEL): objc.id; cdecl;
+  TmsgSendWrapper = function (param1: lobjc.id; param2: SEL): lobjc.id; cdecl;
 var
   vmethod: TmsgSendWrapper;
 begin
@@ -670,7 +670,7 @@ end;
 
 constructor NSColor.controlTextColor;
 type
-  TmsgSendWrapper = function (param1: objc.id; param2: SEL): objc.id; cdecl;
+  TmsgSendWrapper = function (param1: lobjc.id; param2: SEL): lobjc.id; cdecl;
 var
   vmethod: TmsgSendWrapper;
 begin
@@ -681,7 +681,7 @@ end;
 
 constructor NSColor.controlBackgroundColor;
 type
-  TmsgSendWrapper = function (param1: objc.id; param2: SEL): objc.id; cdecl;
+  TmsgSendWrapper = function (param1: lobjc.id; param2: SEL): lobjc.id; cdecl;
 var
   vmethod: TmsgSendWrapper;
 begin
@@ -692,7 +692,7 @@ end;
 
 constructor NSColor.selectedControlColor;
 type
-  TmsgSendWrapper = function (param1: objc.id; param2: SEL): objc.id; cdecl;
+  TmsgSendWrapper = function (param1: lobjc.id; param2: SEL): lobjc.id; cdecl;
 var
   vmethod: TmsgSendWrapper;
 begin
@@ -703,7 +703,7 @@ end;
 
 constructor NSColor.secondarySelectedControlColor;
 type
-  TmsgSendWrapper = function (param1: objc.id; param2: SEL): objc.id; cdecl;
+  TmsgSendWrapper = function (param1: lobjc.id; param2: SEL): lobjc.id; cdecl;
 var
   vmethod: TmsgSendWrapper;
 begin
@@ -714,7 +714,7 @@ end;
 
 constructor NSColor.selectedControlTextColor;
 type
-  TmsgSendWrapper = function (param1: objc.id; param2: SEL): objc.id; cdecl;
+  TmsgSendWrapper = function (param1: lobjc.id; param2: SEL): lobjc.id; cdecl;
 var
   vmethod: TmsgSendWrapper;
 begin
@@ -725,7 +725,7 @@ end;
 
 constructor NSColor.disabledControlTextColor;
 type
-  TmsgSendWrapper = function (param1: objc.id; param2: SEL): objc.id; cdecl;
+  TmsgSendWrapper = function (param1: lobjc.id; param2: SEL): lobjc.id; cdecl;
 var
   vmethod: TmsgSendWrapper;
 begin
@@ -736,7 +736,7 @@ end;
 
 constructor NSColor.textColor;
 type
-  TmsgSendWrapper = function (param1: objc.id; param2: SEL): objc.id; cdecl;
+  TmsgSendWrapper = function (param1: lobjc.id; param2: SEL): lobjc.id; cdecl;
 var
   vmethod: TmsgSendWrapper;
 begin
@@ -747,7 +747,7 @@ end;
 
 constructor NSColor.textBackgroundColor;
 type
-  TmsgSendWrapper = function (param1: objc.id; param2: SEL): objc.id; cdecl;
+  TmsgSendWrapper = function (param1: lobjc.id; param2: SEL): lobjc.id; cdecl;
 var
   vmethod: TmsgSendWrapper;
 begin
@@ -758,7 +758,7 @@ end;
 
 constructor NSColor.selectedTextColor;
 type
-  TmsgSendWrapper = function (param1: objc.id; param2: SEL): objc.id; cdecl;
+  TmsgSendWrapper = function (param1: lobjc.id; param2: SEL): lobjc.id; cdecl;
 var
   vmethod: TmsgSendWrapper;
 begin
@@ -769,7 +769,7 @@ end;
 
 constructor NSColor.selectedTextBackgroundColor;
 type
-  TmsgSendWrapper = function (param1: objc.id; param2: SEL): objc.id; cdecl;
+  TmsgSendWrapper = function (param1: lobjc.id; param2: SEL): lobjc.id; cdecl;
 var
   vmethod: TmsgSendWrapper;
 begin
@@ -780,7 +780,7 @@ end;
 
 constructor NSColor.gridColor;
 type
-  TmsgSendWrapper = function (param1: objc.id; param2: SEL): objc.id; cdecl;
+  TmsgSendWrapper = function (param1: lobjc.id; param2: SEL): lobjc.id; cdecl;
 var
   vmethod: TmsgSendWrapper;
 begin
@@ -791,7 +791,7 @@ end;
 
 constructor NSColor.keyboardFocusIndicatorColor;
 type
-  TmsgSendWrapper = function (param1: objc.id; param2: SEL): objc.id; cdecl;
+  TmsgSendWrapper = function (param1: lobjc.id; param2: SEL): lobjc.id; cdecl;
 var
   vmethod: TmsgSendWrapper;
 begin
@@ -802,7 +802,7 @@ end;
 
 constructor NSColor.windowBackgroundColor;
 type
-  TmsgSendWrapper = function (param1: objc.id; param2: SEL): objc.id; cdecl;
+  TmsgSendWrapper = function (param1: lobjc.id; param2: SEL): lobjc.id; cdecl;
 var
   vmethod: TmsgSendWrapper;
 begin
@@ -813,7 +813,7 @@ end;
 
 constructor NSColor.scrollBarColor;
 type
-  TmsgSendWrapper = function (param1: objc.id; param2: SEL): objc.id; cdecl;
+  TmsgSendWrapper = function (param1: lobjc.id; param2: SEL): lobjc.id; cdecl;
 var
   vmethod: TmsgSendWrapper;
 begin
@@ -824,7 +824,7 @@ end;
 
 constructor NSColor.knobColor;
 type
-  TmsgSendWrapper = function (param1: objc.id; param2: SEL): objc.id; cdecl;
+  TmsgSendWrapper = function (param1: lobjc.id; param2: SEL): lobjc.id; cdecl;
 var
   vmethod: TmsgSendWrapper;
 begin
@@ -835,7 +835,7 @@ end;
 
 constructor NSColor.selectedKnobColor;
 type
-  TmsgSendWrapper = function (param1: objc.id; param2: SEL): objc.id; cdecl;
+  TmsgSendWrapper = function (param1: lobjc.id; param2: SEL): lobjc.id; cdecl;
 var
   vmethod: TmsgSendWrapper;
 begin
@@ -846,7 +846,7 @@ end;
 
 constructor NSColor.windowFrameColor;
 type
-  TmsgSendWrapper = function (param1: objc.id; param2: SEL): objc.id; cdecl;
+  TmsgSendWrapper = function (param1: lobjc.id; param2: SEL): lobjc.id; cdecl;
 var
   vmethod: TmsgSendWrapper;
 begin
@@ -857,7 +857,7 @@ end;
 
 constructor NSColor.windowFrameTextColor;
 type
-  TmsgSendWrapper = function (param1: objc.id; param2: SEL): objc.id; cdecl;
+  TmsgSendWrapper = function (param1: lobjc.id; param2: SEL): lobjc.id; cdecl;
 var
   vmethod: TmsgSendWrapper;
 begin
@@ -868,7 +868,7 @@ end;
 
 constructor NSColor.selectedMenuItemColor;
 type
-  TmsgSendWrapper = function (param1: objc.id; param2: SEL): objc.id; cdecl;
+  TmsgSendWrapper = function (param1: lobjc.id; param2: SEL): lobjc.id; cdecl;
 var
   vmethod: TmsgSendWrapper;
 begin
@@ -879,7 +879,7 @@ end;
 
 constructor NSColor.selectedMenuItemTextColor;
 type
-  TmsgSendWrapper = function (param1: objc.id; param2: SEL): objc.id; cdecl;
+  TmsgSendWrapper = function (param1: lobjc.id; param2: SEL): lobjc.id; cdecl;
 var
   vmethod: TmsgSendWrapper;
 begin
@@ -890,7 +890,7 @@ end;
 
 constructor NSColor.highlightColor;
 type
-  TmsgSendWrapper = function (param1: objc.id; param2: SEL): objc.id; cdecl;
+  TmsgSendWrapper = function (param1: lobjc.id; param2: SEL): lobjc.id; cdecl;
 var
   vmethod: TmsgSendWrapper;
 begin
@@ -901,7 +901,7 @@ end;
 
 constructor NSColor.shadowColor;
 type
-  TmsgSendWrapper = function (param1: objc.id; param2: SEL): objc.id; cdecl;
+  TmsgSendWrapper = function (param1: lobjc.id; param2: SEL): lobjc.id; cdecl;
 var
   vmethod: TmsgSendWrapper;
 begin
@@ -912,7 +912,7 @@ end;
 
 constructor NSColor.headerColor;
 type
-  TmsgSendWrapper = function (param1: objc.id; param2: SEL): objc.id; cdecl;
+  TmsgSendWrapper = function (param1: lobjc.id; param2: SEL): lobjc.id; cdecl;
 var
   vmethod: TmsgSendWrapper;
 begin
@@ -923,7 +923,7 @@ end;
 
 constructor NSColor.headerTextColor;
 type
-  TmsgSendWrapper = function (param1: objc.id; param2: SEL): objc.id; cdecl;
+  TmsgSendWrapper = function (param1: lobjc.id; param2: SEL): lobjc.id; cdecl;
 var
   vmethod: TmsgSendWrapper;
 begin
@@ -934,7 +934,7 @@ end;
 
 constructor NSColor.alternateSelectedControlColor;
 type
-  TmsgSendWrapper = function (param1: objc.id; param2: SEL): objc.id; cdecl;
+  TmsgSendWrapper = function (param1: lobjc.id; param2: SEL): lobjc.id; cdecl;
 var
   vmethod: TmsgSendWrapper;
 begin
@@ -945,7 +945,7 @@ end;
 
 constructor NSColor.alternateSelectedControlTextColor;
 type
-  TmsgSendWrapper = function (param1: objc.id; param2: SEL): objc.id; cdecl;
+  TmsgSendWrapper = function (param1: lobjc.id; param2: SEL): lobjc.id; cdecl;
 var
   vmethod: TmsgSendWrapper;
 begin
@@ -960,29 +960,29 @@ begin
   Result := CFArrayRef(objc_msgSend(getClass, sel_registerName(PChar(StrNSColor_controlAlternatingRowBackgroundColors)), []));
 end;
 
-function NSColor.highlightWithLevel(_val: Single): objc.id;
+function NSColor.highlightWithLevel(_val: Single): lobjc.id;
 type
-  TmsgSendWrapper = function (param1: objc.id; param2: SEL;_val: Single): objc.id; cdecl;
+  TmsgSendWrapper = function (param1: lobjc.id; param2: SEL;_val: Single): lobjc.id; cdecl;
 var
   vmethod: TmsgSendWrapper;
 begin
   vmethod := TmsgSendWrapper(@objc_msgSend);
-  Result := objc.id(vmethod(Handle, sel_registerName(PChar(StrNSColor_highlightWithLevel)), _val));
+  Result := lobjc.id(vmethod(Handle, sel_registerName(PChar(StrNSColor_highlightWithLevel)), _val));
 end;
 
-function NSColor.shadowWithLevel(_val: Single): objc.id;
+function NSColor.shadowWithLevel(_val: Single): lobjc.id;
 type
-  TmsgSendWrapper = function (param1: objc.id; param2: SEL;_val: Single): objc.id; cdecl;
+  TmsgSendWrapper = function (param1: lobjc.id; param2: SEL;_val: Single): lobjc.id; cdecl;
 var
   vmethod: TmsgSendWrapper;
 begin
   vmethod := TmsgSendWrapper(@objc_msgSend);
-  Result := objc.id(vmethod(Handle, sel_registerName(PChar(StrNSColor_shadowWithLevel)), _val));
+  Result := lobjc.id(vmethod(Handle, sel_registerName(PChar(StrNSColor_shadowWithLevel)), _val));
 end;
 
 constructor NSColor.colorForControlTint(_controlTint: NSControlTint);
 type
-  TmsgSendWrapper = function (param1: objc.id; param2: SEL;_controlTint: NSControlTint): objc.id; cdecl;
+  TmsgSendWrapper = function (param1: lobjc.id; param2: SEL;_controlTint: NSControlTint): lobjc.id; cdecl;
 var
   vmethod: TmsgSendWrapper;
 begin
@@ -1016,54 +1016,54 @@ begin
   Result := CFStringRef(objc_msgSend(Handle, sel_registerName(PChar(StrNSColor_colorSpaceName)), []));
 end;
 
-function NSColor.colorUsingColorSpaceName(_colorSpace: CFStringRef): objc.id;
+function NSColor.colorUsingColorSpaceName(_colorSpace: CFStringRef): lobjc.id;
 type
-  TmsgSendWrapper = function (param1: objc.id; param2: SEL;_colorSpace: CFStringRef): objc.id; cdecl;
+  TmsgSendWrapper = function (param1: lobjc.id; param2: SEL;_colorSpace: CFStringRef): lobjc.id; cdecl;
 var
   vmethod: TmsgSendWrapper;
 begin
   vmethod := TmsgSendWrapper(@objc_msgSend);
-  Result := objc.id(vmethod(Handle, sel_registerName(PChar(StrNSColor_colorUsingColorSpaceName)), _colorSpace));
+  Result := lobjc.id(vmethod(Handle, sel_registerName(PChar(StrNSColor_colorUsingColorSpaceName)), _colorSpace));
 end;
 
-function NSColor.colorUsingColorSpaceName_device(_colorSpace: CFStringRef; _deviceDescription: CFDictionaryRef): objc.id;
+function NSColor.colorUsingColorSpaceName_device(_colorSpace: CFStringRef; _deviceDescription: CFDictionaryRef): lobjc.id;
 type
-  TmsgSendWrapper = function (param1: objc.id; param2: SEL;_colorSpace: CFStringRef; _deviceDescription: CFDictionaryRef): objc.id; cdecl;
+  TmsgSendWrapper = function (param1: lobjc.id; param2: SEL;_colorSpace: CFStringRef; _deviceDescription: CFDictionaryRef): lobjc.id; cdecl;
 var
   vmethod: TmsgSendWrapper;
 begin
   vmethod := TmsgSendWrapper(@objc_msgSend);
-  Result := objc.id(vmethod(Handle, sel_registerName(PChar(StrNSColor_colorUsingColorSpaceName_device)), _colorSpace, _deviceDescription));
+  Result := lobjc.id(vmethod(Handle, sel_registerName(PChar(StrNSColor_colorUsingColorSpaceName_device)), _colorSpace, _deviceDescription));
 end;
 
-function NSColor.colorUsingColorSpace(_space: objc.id {NSColorSpace}): objc.id;
+function NSColor.colorUsingColorSpace(_space: lobjc.id {NSColorSpace}): lobjc.id;
 type
-  TmsgSendWrapper = function (param1: objc.id; param2: SEL;_space: objc.id {NSColorSpace}): objc.id; cdecl;
+  TmsgSendWrapper = function (param1: lobjc.id; param2: SEL;_space: lobjc.id {NSColorSpace}): lobjc.id; cdecl;
 var
   vmethod: TmsgSendWrapper;
 begin
   vmethod := TmsgSendWrapper(@objc_msgSend);
-  Result := objc.id(vmethod(Handle, sel_registerName(PChar(StrNSColor_colorUsingColorSpace)), _space));
+  Result := lobjc.id(vmethod(Handle, sel_registerName(PChar(StrNSColor_colorUsingColorSpace)), _space));
 end;
 
-function NSColor.blendedColorWithFraction_ofColor(_fraction: Single; _color: objc.id {NSColor}): objc.id;
+function NSColor.blendedColorWithFraction_ofColor(_fraction: Single; _color: lobjc.id {NSColor}): lobjc.id;
 type
-  TmsgSendWrapper = function (param1: objc.id; param2: SEL;_fraction: Single; _color: objc.id {NSColor}): objc.id; cdecl;
+  TmsgSendWrapper = function (param1: lobjc.id; param2: SEL;_fraction: Single; _color: lobjc.id {NSColor}): lobjc.id; cdecl;
 var
   vmethod: TmsgSendWrapper;
 begin
   vmethod := TmsgSendWrapper(@objc_msgSend);
-  Result := objc.id(vmethod(Handle, sel_registerName(PChar(StrNSColor_blendedColorWithFraction_ofColor)), _fraction, _color));
+  Result := lobjc.id(vmethod(Handle, sel_registerName(PChar(StrNSColor_blendedColorWithFraction_ofColor)), _fraction, _color));
 end;
 
-function NSColor.colorWithAlphaComponent(_alpha: Single): objc.id;
+function NSColor.colorWithAlphaComponent(_alpha: Single): lobjc.id;
 type
-  TmsgSendWrapper = function (param1: objc.id; param2: SEL;_alpha: Single): objc.id; cdecl;
+  TmsgSendWrapper = function (param1: lobjc.id; param2: SEL;_alpha: Single): lobjc.id; cdecl;
 var
   vmethod: TmsgSendWrapper;
 begin
   vmethod := TmsgSendWrapper(@objc_msgSend);
-  Result := objc.id(vmethod(Handle, sel_registerName(PChar(StrNSColor_colorWithAlphaComponent)), _alpha));
+  Result := lobjc.id(vmethod(Handle, sel_registerName(PChar(StrNSColor_colorWithAlphaComponent)), _alpha));
 end;
 
 function NSColor.catalogNameComponent: CFStringRef;
@@ -1103,7 +1103,7 @@ end;
 
 procedure NSColor.getRed_green_blue_alpha(_red: Single; _green: Single; _blue: Single; _alpha: Single);
 type
-  TmsgSendWrapper = procedure (param1: objc.id; param2: SEL;_red: Single; _green: Single; _blue: Single; _alpha: Single); cdecl;
+  TmsgSendWrapper = procedure (param1: lobjc.id; param2: SEL;_red: Single; _green: Single; _blue: Single; _alpha: Single); cdecl;
 var
   vmethod: TmsgSendWrapper;
 begin
@@ -1128,7 +1128,7 @@ end;
 
 procedure NSColor.getHue_saturation_brightness_alpha(_hue: Single; _saturation: Single; _brightness: Single; _alpha: Single);
 type
-  TmsgSendWrapper = procedure (param1: objc.id; param2: SEL;_hue: Single; _saturation: Single; _brightness: Single; _alpha: Single); cdecl;
+  TmsgSendWrapper = procedure (param1: lobjc.id; param2: SEL;_hue: Single; _saturation: Single; _brightness: Single; _alpha: Single); cdecl;
 var
   vmethod: TmsgSendWrapper;
 begin
@@ -1143,7 +1143,7 @@ end;
 
 procedure NSColor.getWhite_alpha(_white: Single; _alpha: Single);
 type
-  TmsgSendWrapper = procedure (param1: objc.id; param2: SEL;_white: Single; _alpha: Single); cdecl;
+  TmsgSendWrapper = procedure (param1: lobjc.id; param2: SEL;_white: Single; _alpha: Single); cdecl;
 var
   vmethod: TmsgSendWrapper;
 begin
@@ -1173,7 +1173,7 @@ end;
 
 procedure NSColor.getCyan_magenta_yellow_black_alpha(_cyan: Single; _magenta: Single; _yellow: Single; _black: Single; _alpha: Single);
 type
-  TmsgSendWrapper = procedure (param1: objc.id; param2: SEL;_cyan: Single; _magenta: Single; _yellow: Single; _black: Single; _alpha: Single); cdecl;
+  TmsgSendWrapper = procedure (param1: lobjc.id; param2: SEL;_cyan: Single; _magenta: Single; _yellow: Single; _black: Single; _alpha: Single); cdecl;
 var
   vmethod: TmsgSendWrapper;
 begin
@@ -1181,9 +1181,9 @@ begin
   vmethod(Handle, sel_registerName(PChar(StrNSColor_getCyan_magenta_yellow_black_alpha)), _cyan, _magenta, _yellow, _black, _alpha);
 end;
 
-function NSColor.colorSpace: objc.id;
+function NSColor.colorSpace: lobjc.id;
 begin
-  Result := objc.id(objc_msgSend(Handle, sel_registerName(PChar(StrNSColor_colorSpace)), []));
+  Result := lobjc.id(objc_msgSend(Handle, sel_registerName(PChar(StrNSColor_colorSpace)), []));
 end;
 
 function NSColor.numberOfComponents: Integer;
@@ -1193,7 +1193,7 @@ end;
 
 procedure NSColor.getComponents(_components: Single);
 type
-  TmsgSendWrapper = procedure (param1: objc.id; param2: SEL;_components: Single); cdecl;
+  TmsgSendWrapper = procedure (param1: lobjc.id; param2: SEL;_components: Single); cdecl;
 var
   vmethod: TmsgSendWrapper;
 begin
@@ -1206,9 +1206,9 @@ begin
   Result := Single(objc_msgSend(Handle, sel_registerName(PChar(StrNSColor_alphaComponent)), []));
 end;
 
-constructor NSColor.colorFromPasteboard(_pasteBoard: objc.id {NSPasteboard});
+constructor NSColor.colorFromPasteboard(_pasteBoard: lobjc.id {NSPasteboard});
 type
-  TmsgSendWrapper = function (param1: objc.id; param2: SEL;_pasteBoard: objc.id {NSPasteboard}): objc.id; cdecl;
+  TmsgSendWrapper = function (param1: lobjc.id; param2: SEL;_pasteBoard: lobjc.id {NSPasteboard}): lobjc.id; cdecl;
 var
   vmethod: TmsgSendWrapper;
 begin
@@ -1217,9 +1217,9 @@ begin
   Handle := vmethod(ClassID, sel_registerName(PChar(StrNSColor_colorFromPasteboard)), _pasteBoard);
 end;
 
-procedure NSColor.writeToPasteboard(_pasteBoard: objc.id {NSPasteboard});
+procedure NSColor.writeToPasteboard(_pasteBoard: lobjc.id {NSPasteboard});
 type
-  TmsgSendWrapper = procedure (param1: objc.id; param2: SEL;_pasteBoard: objc.id {NSPasteboard}); cdecl;
+  TmsgSendWrapper = procedure (param1: lobjc.id; param2: SEL;_pasteBoard: lobjc.id {NSPasteboard}); cdecl;
 var
   vmethod: TmsgSendWrapper;
 begin
@@ -1227,9 +1227,9 @@ begin
   vmethod(Handle, sel_registerName(PChar(StrNSColor_writeToPasteboard)), _pasteBoard);
 end;
 
-constructor NSColor.colorWithPatternImage(_image: objc.id {NSImage});
+constructor NSColor.colorWithPatternImage(_image: lobjc.id {NSImage});
 type
-  TmsgSendWrapper = function (param1: objc.id; param2: SEL;_image: objc.id {NSImage}): objc.id; cdecl;
+  TmsgSendWrapper = function (param1: lobjc.id; param2: SEL;_image: lobjc.id {NSImage}): lobjc.id; cdecl;
 var
   vmethod: TmsgSendWrapper;
 begin
@@ -1238,14 +1238,14 @@ begin
   Handle := vmethod(ClassID, sel_registerName(PChar(StrNSColor_colorWithPatternImage)), _image);
 end;
 
-function NSColor.patternImage: objc.id;
+function NSColor.patternImage: lobjc.id;
 begin
-  Result := objc.id(objc_msgSend(Handle, sel_registerName(PChar(StrNSColor_patternImage)), []));
+  Result := lobjc.id(objc_msgSend(Handle, sel_registerName(PChar(StrNSColor_patternImage)), []));
 end;
 
 procedure NSColor.drawSwatchInRect(_rect: NSRect);
 type
-  TmsgSendWrapper = procedure (param1: objc.id; param2: SEL;_rect: NSRect); cdecl;
+  TmsgSendWrapper = procedure (param1: lobjc.id; param2: SEL;_rect: NSRect); cdecl;
 var
   vmethod: TmsgSendWrapper;
 begin
@@ -1255,7 +1255,7 @@ end;
 
 class procedure NSColor.setIgnoresAlpha(_flag: LongBool);
 type
-  TmsgSendWrapper = procedure (param1: objc.id; param2: SEL;_flag: LongBool); cdecl;
+  TmsgSendWrapper = procedure (param1: lobjc.id; param2: SEL;_flag: LongBool); cdecl;
 var
   vmethod: TmsgSendWrapper;
 begin
@@ -1268,9 +1268,9 @@ begin
   Result := LongBool(objc_msgSend(getClass, sel_registerName(PChar(StrNSColor_ignoresAlpha)), []));
 end;
 
-constructor NSColor.colorWithCIColor(_color: objc.id {CIColor});
+constructor NSColor.colorWithCIColor(_color: lobjc.id {CIColor});
 type
-  TmsgSendWrapper = function (param1: objc.id; param2: SEL;_color: objc.id {CIColor}): objc.id; cdecl;
+  TmsgSendWrapper = function (param1: lobjc.id; param2: SEL;_color: lobjc.id {CIColor}): lobjc.id; cdecl;
 var
   vmethod: TmsgSendWrapper;
 begin

@@ -27,11 +27,11 @@
 	Copyright 1988-1996 NeXT Software, Inc.
   
 	DEFINED AS:	A common class
-	HEADER FILES:	<objc/Object.h>
+	HEADER FILES:	<lobjc/Object.h>
 
 }
 
-//#include <objc/objc-runtime.h>
+//#include <objc/lobjc-runtime.h>
 
 {@class Protocol;
 

@@ -37,7 +37,7 @@ const
 
   NSData = class(NSObject)
   public
-    class function getClass: objc.id; override;
+    class function getClass: lobjc.id; override;
     function length: LongWord;
     function bytes: Pointer;
     function description: CFStringRef;
@@ -48,15 +48,15 @@ const
     function subdataWithRange(_range: NSRange): CFDataRef;
     function writeToFile_atomically(_path: CFStringRef; _useAuxiliaryFile: LongBool): LongBool;
     function writeToURL_atomically(_url: CFURLRef; _atomically: LongBool): LongBool;
-    function writeToFile_options_error(_path: CFStringRef; _writeOptionsMask: LongWord; _errorPtr: objc.id {NSError}): LongBool;
-    function writeToURL_options_error(_url: CFURLRef; _writeOptionsMask: LongWord; _errorPtr: objc.id {NSError}): LongBool;
+    function writeToFile_options_error(_path: CFStringRef; _writeOptionsMask: LongWord; _errorPtr: lobjc.id {NSError}): LongBool;
+    function writeToURL_options_error(_url: CFURLRef; _writeOptionsMask: LongWord; _errorPtr: lobjc.id {NSError}): LongBool;
     constructor data;
     constructor dataWithBytes_length(_bytes: Pointer; _length: LongWord);
     constructor dataWithBytesNoCopy_length(_bytes: Pointer; _length: LongWord);
     constructor dataWithBytesNoCopy_length_freeWhenDone(_bytes: Pointer; _length: LongWord; _b: LongBool);
     {.$ifdef  MAC_OS_X_VERSION_10_4 <= MAC_OS_X_VERSION_MAX_ALLOWED}
-    constructor dataWithContentsOfFile_options_error(_path: CFStringRef; _readOptionsMask: LongWord; _errorPtr: objc.id {NSError});
-    constructor dataWithContentsOfURL_options_error(_url: CFURLRef; _readOptionsMask: LongWord; _errorPtr: objc.id {NSError});
+    constructor dataWithContentsOfFile_options_error(_path: CFStringRef; _readOptionsMask: LongWord; _errorPtr: lobjc.id {NSError});
+    constructor dataWithContentsOfURL_options_error(_url: CFURLRef; _readOptionsMask: LongWord; _errorPtr: lobjc.id {NSError});
     constructor dataWithContentsOfFile(_path: CFStringRef);
     constructor dataWithContentsOfURL(_url: CFURLRef);
     constructor dataWithContentsOfMappedFile(_path: CFStringRef);
@@ -64,8 +64,8 @@ const
     constructor initWithBytesNoCopy_length(_bytes: Pointer; _length: LongWord);
     constructor initWithBytesNoCopy_length_freeWhenDone(_bytes: Pointer; _length: LongWord; _b: LongBool);
     {.$ifdef  MAC_OS_X_VERSION_10_4 <= MAC_OS_X_VERSION_MAX_ALLOWED}
-    constructor initWithContentsOfFile_options_error(_path: CFStringRef; _readOptionsMask: LongWord; _errorPtr: objc.id {NSError});
-    constructor initWithContentsOfURL_options_error(_url: CFURLRef; _readOptionsMask: LongWord; _errorPtr: objc.id {NSError});
+    constructor initWithContentsOfFile_options_error(_path: CFStringRef; _readOptionsMask: LongWord; _errorPtr: lobjc.id {NSError});
+    constructor initWithContentsOfURL_options_error(_url: CFURLRef; _readOptionsMask: LongWord; _errorPtr: lobjc.id {NSError});
     constructor initWithContentsOfFile(_path: CFStringRef);
     constructor initWithContentsOfURL(_url: CFURLRef);
     constructor initWithContentsOfMappedFile(_path: CFStringRef);
@@ -79,7 +79,7 @@ const
 
   NSMutableData = class(NSData)
   public
-    class function getClass: objc.id; override;
+    class function getClass: lobjc.id; override;
     function mutableBytes: Pointer;
     procedure setLength(_length: LongWord);
     procedure appendBytes_length(_bytes: Pointer; _length: LongWord);
@@ -154,7 +154,7 @@ const
 
 { NSData }
 
-class function NSData.getClass: objc.id;
+class function NSData.getClass: lobjc.id;
 begin
   Result := objc_getClass(StrNSData_NSData);
 end;
@@ -176,7 +176,7 @@ end;
 
 procedure NSData.getBytes(_buffer: Pointer);
 type
-  TmsgSendWrapper = procedure (param1: objc.id; param2: SEL;_buffer: Pointer); cdecl;
+  TmsgSendWrapper = procedure (param1: lobjc.id; param2: SEL;_buffer: Pointer); cdecl;
 var
   vmethod: TmsgSendWrapper;
 begin
@@ -186,7 +186,7 @@ end;
 
 procedure NSData.getBytes_length(_buffer: Pointer; _length: LongWord);
 type
-  TmsgSendWrapper = procedure (param1: objc.id; param2: SEL;_buffer: Pointer; _length: LongWord); cdecl;
+  TmsgSendWrapper = procedure (param1: lobjc.id; param2: SEL;_buffer: Pointer; _length: LongWord); cdecl;
 var
   vmethod: TmsgSendWrapper;
 begin
@@ -196,7 +196,7 @@ end;
 
 procedure NSData.getBytes_range(_buffer: Pointer; _range: NSRange);
 type
-  TmsgSendWrapper = procedure (param1: objc.id; param2: SEL;_buffer: Pointer; _range: NSRange); cdecl;
+  TmsgSendWrapper = procedure (param1: lobjc.id; param2: SEL;_buffer: Pointer; _range: NSRange); cdecl;
 var
   vmethod: TmsgSendWrapper;
 begin
@@ -206,7 +206,7 @@ end;
 
 function NSData.isEqualToData(_other: CFDataRef): LongBool;
 type
-  TmsgSendWrapper = function (param1: objc.id; param2: SEL;_other: CFDataRef): LongBool; cdecl;
+  TmsgSendWrapper = function (param1: lobjc.id; param2: SEL;_other: CFDataRef): LongBool; cdecl;
 var
   vmethod: TmsgSendWrapper;
 begin
@@ -216,7 +216,7 @@ end;
 
 function NSData.subdataWithRange(_range: NSRange): CFDataRef;
 type
-  TmsgSendWrapper = function (param1: objc.id; param2: SEL;_range: NSRange): CFDataRef; cdecl;
+  TmsgSendWrapper = function (param1: lobjc.id; param2: SEL;_range: NSRange): CFDataRef; cdecl;
 var
   vmethod: TmsgSendWrapper;
 begin
@@ -226,7 +226,7 @@ end;
 
 function NSData.writeToFile_atomically(_path: CFStringRef; _useAuxiliaryFile: LongBool): LongBool;
 type
-  TmsgSendWrapper = function (param1: objc.id; param2: SEL;_path: CFStringRef; _useAuxiliaryFile: LongBool): LongBool; cdecl;
+  TmsgSendWrapper = function (param1: lobjc.id; param2: SEL;_path: CFStringRef; _useAuxiliaryFile: LongBool): LongBool; cdecl;
 var
   vmethod: TmsgSendWrapper;
 begin
@@ -236,7 +236,7 @@ end;
 
 function NSData.writeToURL_atomically(_url: CFURLRef; _atomically: LongBool): LongBool;
 type
-  TmsgSendWrapper = function (param1: objc.id; param2: SEL;_url: CFURLRef; _atomically: LongBool): LongBool; cdecl;
+  TmsgSendWrapper = function (param1: lobjc.id; param2: SEL;_url: CFURLRef; _atomically: LongBool): LongBool; cdecl;
 var
   vmethod: TmsgSendWrapper;
 begin
@@ -244,9 +244,9 @@ begin
   Result := LongBool(vmethod(Handle, sel_registerName(PChar(StrNSData_writeToURL_atomically)), _url, _atomically));
 end;
 
-function NSData.writeToFile_options_error(_path: CFStringRef; _writeOptionsMask: LongWord; _errorPtr: objc.id {NSError}): LongBool;
+function NSData.writeToFile_options_error(_path: CFStringRef; _writeOptionsMask: LongWord; _errorPtr: lobjc.id {NSError}): LongBool;
 type
-  TmsgSendWrapper = function (param1: objc.id; param2: SEL;_path: CFStringRef; _writeOptionsMask: LongWord; _errorPtr: objc.id {NSError}): LongBool; cdecl;
+  TmsgSendWrapper = function (param1: lobjc.id; param2: SEL;_path: CFStringRef; _writeOptionsMask: LongWord; _errorPtr: lobjc.id {NSError}): LongBool; cdecl;
 var
   vmethod: TmsgSendWrapper;
 begin
@@ -254,9 +254,9 @@ begin
   Result := LongBool(vmethod(Handle, sel_registerName(PChar(StrNSData_writeToFile_options_error)), _path, _writeOptionsMask, _errorPtr));
 end;
 
-function NSData.writeToURL_options_error(_url: CFURLRef; _writeOptionsMask: LongWord; _errorPtr: objc.id {NSError}): LongBool;
+function NSData.writeToURL_options_error(_url: CFURLRef; _writeOptionsMask: LongWord; _errorPtr: lobjc.id {NSError}): LongBool;
 type
-  TmsgSendWrapper = function (param1: objc.id; param2: SEL;_url: CFURLRef; _writeOptionsMask: LongWord; _errorPtr: objc.id {NSError}): LongBool; cdecl;
+  TmsgSendWrapper = function (param1: lobjc.id; param2: SEL;_url: CFURLRef; _writeOptionsMask: LongWord; _errorPtr: lobjc.id {NSError}): LongBool; cdecl;
 var
   vmethod: TmsgSendWrapper;
 begin
@@ -266,7 +266,7 @@ end;
 
 constructor NSData.data;
 type
-  TmsgSendWrapper = function (param1: objc.id; param2: SEL): objc.id; cdecl;
+  TmsgSendWrapper = function (param1: lobjc.id; param2: SEL): lobjc.id; cdecl;
 var
   vmethod: TmsgSendWrapper;
 begin
@@ -277,7 +277,7 @@ end;
 
 constructor NSData.dataWithBytes_length(_bytes: Pointer; _length: LongWord);
 type
-  TmsgSendWrapper = function (param1: objc.id; param2: SEL;_bytes: Pointer; _length: LongWord): objc.id; cdecl;
+  TmsgSendWrapper = function (param1: lobjc.id; param2: SEL;_bytes: Pointer; _length: LongWord): lobjc.id; cdecl;
 var
   vmethod: TmsgSendWrapper;
 begin
@@ -288,7 +288,7 @@ end;
 
 constructor NSData.dataWithBytesNoCopy_length(_bytes: Pointer; _length: LongWord);
 type
-  TmsgSendWrapper = function (param1: objc.id; param2: SEL;_bytes: Pointer; _length: LongWord): objc.id; cdecl;
+  TmsgSendWrapper = function (param1: lobjc.id; param2: SEL;_bytes: Pointer; _length: LongWord): lobjc.id; cdecl;
 var
   vmethod: TmsgSendWrapper;
 begin
@@ -299,7 +299,7 @@ end;
 
 constructor NSData.dataWithBytesNoCopy_length_freeWhenDone(_bytes: Pointer; _length: LongWord; _b: LongBool);
 type
-  TmsgSendWrapper = function (param1: objc.id; param2: SEL;_bytes: Pointer; _length: LongWord; _b: LongBool): objc.id; cdecl;
+  TmsgSendWrapper = function (param1: lobjc.id; param2: SEL;_bytes: Pointer; _length: LongWord; _b: LongBool): lobjc.id; cdecl;
 var
   vmethod: TmsgSendWrapper;
 begin
@@ -309,9 +309,9 @@ begin
 end;
 
 {.$ifdef  MAC_OS_X_VERSION_10_4 <= MAC_OS_X_VERSION_MAX_ALLOWED}
-constructor NSData.dataWithContentsOfFile_options_error(_path: CFStringRef; _readOptionsMask: LongWord; _errorPtr: objc.id {NSError});
+constructor NSData.dataWithContentsOfFile_options_error(_path: CFStringRef; _readOptionsMask: LongWord; _errorPtr: lobjc.id {NSError});
 type
-  TmsgSendWrapper = function (param1: objc.id; param2: SEL;_path: CFStringRef; _readOptionsMask: LongWord; _errorPtr: objc.id {NSError}): objc.id; cdecl;
+  TmsgSendWrapper = function (param1: lobjc.id; param2: SEL;_path: CFStringRef; _readOptionsMask: LongWord; _errorPtr: lobjc.id {NSError}): lobjc.id; cdecl;
 var
   vmethod: TmsgSendWrapper;
 begin
@@ -320,9 +320,9 @@ begin
   Handle := vmethod(ClassID, sel_registerName(PChar(StrNSData_dataWithContentsOfFile_options_error)), _path, _readOptionsMask, _errorPtr);
 end;
 
-constructor NSData.dataWithContentsOfURL_options_error(_url: CFURLRef; _readOptionsMask: LongWord; _errorPtr: objc.id {NSError});
+constructor NSData.dataWithContentsOfURL_options_error(_url: CFURLRef; _readOptionsMask: LongWord; _errorPtr: lobjc.id {NSError});
 type
-  TmsgSendWrapper = function (param1: objc.id; param2: SEL;_url: CFURLRef; _readOptionsMask: LongWord; _errorPtr: objc.id {NSError}): objc.id; cdecl;
+  TmsgSendWrapper = function (param1: lobjc.id; param2: SEL;_url: CFURLRef; _readOptionsMask: LongWord; _errorPtr: lobjc.id {NSError}): lobjc.id; cdecl;
 var
   vmethod: TmsgSendWrapper;
 begin
@@ -333,7 +333,7 @@ end;
 
 constructor NSData.dataWithContentsOfFile(_path: CFStringRef);
 type
-  TmsgSendWrapper = function (param1: objc.id; param2: SEL;_path: CFStringRef): objc.id; cdecl;
+  TmsgSendWrapper = function (param1: lobjc.id; param2: SEL;_path: CFStringRef): lobjc.id; cdecl;
 var
   vmethod: TmsgSendWrapper;
 begin
@@ -344,7 +344,7 @@ end;
 
 constructor NSData.dataWithContentsOfURL(_url: CFURLRef);
 type
-  TmsgSendWrapper = function (param1: objc.id; param2: SEL;_url: CFURLRef): objc.id; cdecl;
+  TmsgSendWrapper = function (param1: lobjc.id; param2: SEL;_url: CFURLRef): lobjc.id; cdecl;
 var
   vmethod: TmsgSendWrapper;
 begin
@@ -355,7 +355,7 @@ end;
 
 constructor NSData.dataWithContentsOfMappedFile(_path: CFStringRef);
 type
-  TmsgSendWrapper = function (param1: objc.id; param2: SEL;_path: CFStringRef): objc.id; cdecl;
+  TmsgSendWrapper = function (param1: lobjc.id; param2: SEL;_path: CFStringRef): lobjc.id; cdecl;
 var
   vmethod: TmsgSendWrapper;
 begin
@@ -366,7 +366,7 @@ end;
 
 constructor NSData.initWithBytes_length(_bytes: Pointer; _length: LongWord);
 type
-  TmsgSendWrapper = function (param1: objc.id; param2: SEL;_bytes: Pointer; _length: LongWord): objc.id; cdecl;
+  TmsgSendWrapper = function (param1: lobjc.id; param2: SEL;_bytes: Pointer; _length: LongWord): lobjc.id; cdecl;
 var
   vmethod: TmsgSendWrapper;
 begin
@@ -378,7 +378,7 @@ end;
 
 constructor NSData.initWithBytesNoCopy_length(_bytes: Pointer; _length: LongWord);
 type
-  TmsgSendWrapper = function (param1: objc.id; param2: SEL;_bytes: Pointer; _length: LongWord): objc.id; cdecl;
+  TmsgSendWrapper = function (param1: lobjc.id; param2: SEL;_bytes: Pointer; _length: LongWord): lobjc.id; cdecl;
 var
   vmethod: TmsgSendWrapper;
 begin
@@ -390,7 +390,7 @@ end;
 
 constructor NSData.initWithBytesNoCopy_length_freeWhenDone(_bytes: Pointer; _length: LongWord; _b: LongBool);
 type
-  TmsgSendWrapper = function (param1: objc.id; param2: SEL;_bytes: Pointer; _length: LongWord; _b: LongBool): objc.id; cdecl;
+  TmsgSendWrapper = function (param1: lobjc.id; param2: SEL;_bytes: Pointer; _length: LongWord; _b: LongBool): lobjc.id; cdecl;
 var
   vmethod: TmsgSendWrapper;
 begin
@@ -401,9 +401,9 @@ begin
 end;
 
 {.$ifdef  MAC_OS_X_VERSION_10_4 <= MAC_OS_X_VERSION_MAX_ALLOWED}
-constructor NSData.initWithContentsOfFile_options_error(_path: CFStringRef; _readOptionsMask: LongWord; _errorPtr: objc.id {NSError});
+constructor NSData.initWithContentsOfFile_options_error(_path: CFStringRef; _readOptionsMask: LongWord; _errorPtr: lobjc.id {NSError});
 type
-  TmsgSendWrapper = function (param1: objc.id; param2: SEL;_path: CFStringRef; _readOptionsMask: LongWord; _errorPtr: objc.id {NSError}): objc.id; cdecl;
+  TmsgSendWrapper = function (param1: lobjc.id; param2: SEL;_path: CFStringRef; _readOptionsMask: LongWord; _errorPtr: lobjc.id {NSError}): lobjc.id; cdecl;
 var
   vmethod: TmsgSendWrapper;
 begin
@@ -413,9 +413,9 @@ begin
   Handle := vmethod(allocbuf, sel_registerName(PChar(StrNSData_initWithContentsOfFile_options_error)), _path, _readOptionsMask, _errorPtr);
 end;
 
-constructor NSData.initWithContentsOfURL_options_error(_url: CFURLRef; _readOptionsMask: LongWord; _errorPtr: objc.id {NSError});
+constructor NSData.initWithContentsOfURL_options_error(_url: CFURLRef; _readOptionsMask: LongWord; _errorPtr: lobjc.id {NSError});
 type
-  TmsgSendWrapper = function (param1: objc.id; param2: SEL;_url: CFURLRef; _readOptionsMask: LongWord; _errorPtr: objc.id {NSError}): objc.id; cdecl;
+  TmsgSendWrapper = function (param1: lobjc.id; param2: SEL;_url: CFURLRef; _readOptionsMask: LongWord; _errorPtr: lobjc.id {NSError}): lobjc.id; cdecl;
 var
   vmethod: TmsgSendWrapper;
 begin
@@ -427,7 +427,7 @@ end;
 
 constructor NSData.initWithContentsOfFile(_path: CFStringRef);
 type
-  TmsgSendWrapper = function (param1: objc.id; param2: SEL;_path: CFStringRef): objc.id; cdecl;
+  TmsgSendWrapper = function (param1: lobjc.id; param2: SEL;_path: CFStringRef): lobjc.id; cdecl;
 var
   vmethod: TmsgSendWrapper;
 begin
@@ -439,7 +439,7 @@ end;
 
 constructor NSData.initWithContentsOfURL(_url: CFURLRef);
 type
-  TmsgSendWrapper = function (param1: objc.id; param2: SEL;_url: CFURLRef): objc.id; cdecl;
+  TmsgSendWrapper = function (param1: lobjc.id; param2: SEL;_url: CFURLRef): lobjc.id; cdecl;
 var
   vmethod: TmsgSendWrapper;
 begin
@@ -451,7 +451,7 @@ end;
 
 constructor NSData.initWithContentsOfMappedFile(_path: CFStringRef);
 type
-  TmsgSendWrapper = function (param1: objc.id; param2: SEL;_path: CFStringRef): objc.id; cdecl;
+  TmsgSendWrapper = function (param1: lobjc.id; param2: SEL;_path: CFStringRef): lobjc.id; cdecl;
 var
   vmethod: TmsgSendWrapper;
 begin
@@ -463,7 +463,7 @@ end;
 
 constructor NSData.initWithData(_data: CFDataRef);
 type
-  TmsgSendWrapper = function (param1: objc.id; param2: SEL;_data: CFDataRef): objc.id; cdecl;
+  TmsgSendWrapper = function (param1: lobjc.id; param2: SEL;_data: CFDataRef): lobjc.id; cdecl;
 var
   vmethod: TmsgSendWrapper;
 begin
@@ -475,7 +475,7 @@ end;
 
 constructor NSData.dataWithData(_data: CFDataRef);
 type
-  TmsgSendWrapper = function (param1: objc.id; param2: SEL;_data: CFDataRef): objc.id; cdecl;
+  TmsgSendWrapper = function (param1: lobjc.id; param2: SEL;_data: CFDataRef): lobjc.id; cdecl;
 var
   vmethod: TmsgSendWrapper;
 begin
@@ -486,7 +486,7 @@ end;
 
 { NSMutableData }
 
-class function NSMutableData.getClass: objc.id;
+class function NSMutableData.getClass: lobjc.id;
 begin
   Result := objc_getClass(StrNSMutableData_NSMutableData);
 end;
@@ -498,7 +498,7 @@ end;
 
 procedure NSMutableData.setLength(_length: LongWord);
 type
-  TmsgSendWrapper = procedure (param1: objc.id; param2: SEL;_length: LongWord); cdecl;
+  TmsgSendWrapper = procedure (param1: lobjc.id; param2: SEL;_length: LongWord); cdecl;
 var
   vmethod: TmsgSendWrapper;
 begin
@@ -508,7 +508,7 @@ end;
 
 procedure NSMutableData.appendBytes_length(_bytes: Pointer; _length: LongWord);
 type
-  TmsgSendWrapper = procedure (param1: objc.id; param2: SEL;_bytes: Pointer; _length: LongWord); cdecl;
+  TmsgSendWrapper = procedure (param1: lobjc.id; param2: SEL;_bytes: Pointer; _length: LongWord); cdecl;
 var
   vmethod: TmsgSendWrapper;
 begin
@@ -518,7 +518,7 @@ end;
 
 procedure NSMutableData.appendData(_other: CFDataRef);
 type
-  TmsgSendWrapper = procedure (param1: objc.id; param2: SEL;_other: CFDataRef); cdecl;
+  TmsgSendWrapper = procedure (param1: lobjc.id; param2: SEL;_other: CFDataRef); cdecl;
 var
   vmethod: TmsgSendWrapper;
 begin
@@ -528,7 +528,7 @@ end;
 
 procedure NSMutableData.increaseLengthBy(_extraLength: LongWord);
 type
-  TmsgSendWrapper = procedure (param1: objc.id; param2: SEL;_extraLength: LongWord); cdecl;
+  TmsgSendWrapper = procedure (param1: lobjc.id; param2: SEL;_extraLength: LongWord); cdecl;
 var
   vmethod: TmsgSendWrapper;
 begin
@@ -538,7 +538,7 @@ end;
 
 procedure NSMutableData.replaceBytesInRange_withBytes(_range: NSRange; _bytes: Pointer);
 type
-  TmsgSendWrapper = procedure (param1: objc.id; param2: SEL;_range: NSRange; _bytes: Pointer); cdecl;
+  TmsgSendWrapper = procedure (param1: lobjc.id; param2: SEL;_range: NSRange; _bytes: Pointer); cdecl;
 var
   vmethod: TmsgSendWrapper;
 begin
@@ -548,7 +548,7 @@ end;
 
 procedure NSMutableData.resetBytesInRange(_range: NSRange);
 type
-  TmsgSendWrapper = procedure (param1: objc.id; param2: SEL;_range: NSRange); cdecl;
+  TmsgSendWrapper = procedure (param1: lobjc.id; param2: SEL;_range: NSRange); cdecl;
 var
   vmethod: TmsgSendWrapper;
 begin
@@ -558,7 +558,7 @@ end;
 
 procedure NSMutableData.setData(_data: CFDataRef);
 type
-  TmsgSendWrapper = procedure (param1: objc.id; param2: SEL;_data: CFDataRef); cdecl;
+  TmsgSendWrapper = procedure (param1: lobjc.id; param2: SEL;_data: CFDataRef); cdecl;
 var
   vmethod: TmsgSendWrapper;
 begin
@@ -568,7 +568,7 @@ end;
 
 procedure NSMutableData.replaceBytesInRange_withBytes_length(_range: NSRange; _replacementBytes: Pointer; _replacementLength: LongWord);
 type
-  TmsgSendWrapper = procedure (param1: objc.id; param2: SEL;_range: NSRange; _replacementBytes: Pointer; _replacementLength: LongWord); cdecl;
+  TmsgSendWrapper = procedure (param1: lobjc.id; param2: SEL;_range: NSRange; _replacementBytes: Pointer; _replacementLength: LongWord); cdecl;
 var
   vmethod: TmsgSendWrapper;
 begin
@@ -578,7 +578,7 @@ end;
 
 constructor NSMutableData.dataWithCapacity(_aNumItems: LongWord);
 type
-  TmsgSendWrapper = function (param1: objc.id; param2: SEL;_aNumItems: LongWord): objc.id; cdecl;
+  TmsgSendWrapper = function (param1: lobjc.id; param2: SEL;_aNumItems: LongWord): lobjc.id; cdecl;
 var
   vmethod: TmsgSendWrapper;
 begin
@@ -589,7 +589,7 @@ end;
 
 constructor NSMutableData.dataWithLength(_length: LongWord);
 type
-  TmsgSendWrapper = function (param1: objc.id; param2: SEL;_length: LongWord): objc.id; cdecl;
+  TmsgSendWrapper = function (param1: lobjc.id; param2: SEL;_length: LongWord): lobjc.id; cdecl;
 var
   vmethod: TmsgSendWrapper;
 begin
@@ -600,7 +600,7 @@ end;
 
 constructor NSMutableData.initWithCapacity(_capacity: LongWord);
 type
-  TmsgSendWrapper = function (param1: objc.id; param2: SEL;_capacity: LongWord): objc.id; cdecl;
+  TmsgSendWrapper = function (param1: lobjc.id; param2: SEL;_capacity: LongWord): lobjc.id; cdecl;
 var
   vmethod: TmsgSendWrapper;
 begin
@@ -612,7 +612,7 @@ end;
 
 constructor NSMutableData.initWithLength(_length: LongWord);
 type
-  TmsgSendWrapper = function (param1: objc.id; param2: SEL;_length: LongWord): objc.id; cdecl;
+  TmsgSendWrapper = function (param1: lobjc.id; param2: SEL;_length: LongWord): lobjc.id; cdecl;
 var
   vmethod: TmsgSendWrapper;
 begin

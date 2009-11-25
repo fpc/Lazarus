@@ -23,7 +23,7 @@
  * @APPLE_LICENSE_HEADER_END@
  }
 {
- *	objc-runtime.h
+ *	lobjc-runtime.h
  *	Copyright 1988-1996, NeXT Software, Inc.
  }
 

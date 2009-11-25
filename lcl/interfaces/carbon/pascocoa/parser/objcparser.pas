@@ -470,12 +470,12 @@ begin
   writeln('');
   writeln(' hidden keys (they''re temporary, and will be removed in future versions)');
   writeln(' -id=IDENTIFIER     the identifier to replace objective-c id type name');
-  writeln('                    default = objc.id');
+  writeln('                    default = lobjc.id');
   writeln(' -call=IDENTIFIER   specifies the function''s calling convention.');
   writeln('                    default is cdecl. Please note, that calling convention');
   writeln('                    also effect external functions name. Thus, using ');
   writeln('                    if calling convention is not cdecl, the external name');
-  writeln(' -useRefs           enables additional types to be created, for objc.id  ');
+  writeln(' -useRefs           enables additional types to be created, for lobjc.id  ');
   writeln('                    replacements at the parameter and result types');
   writeln(' -refPostFix        post-fix for each ref type. The default postfix is ''Ref''');
 end;

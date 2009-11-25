@@ -28,7 +28,7 @@
 //  Copyright (c) 2002 Apple Computer, Inc. All rights reserved.
 //
 
-//#include <objc/objc.h>
+//#include <objc/lobjc.h>
 
 // Begin synchronizing on 'obj'.  
 // Allocates recursive pthread_mutex associated with 'obj' if needed.

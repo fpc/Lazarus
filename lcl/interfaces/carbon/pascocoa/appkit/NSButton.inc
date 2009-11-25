@@ -32,15 +32,15 @@
 
   NSButton = class(NSControl)
   public
-    class function getClass: objc.id; override;
+    class function getClass: lobjc.id; override;
     function title: CFStringRef;
     procedure setTitle(_aString: CFStringRef);
     function alternateTitle: CFStringRef;
     procedure setAlternateTitle(_aString: CFStringRef);
-    function image: objc.id;{NSImage}
-    procedure setImage(_image: objc.id {NSImage});
-    function alternateImage: objc.id;{NSImage}
-    procedure setAlternateImage(_image: objc.id {NSImage});
+    function image: lobjc.id;{NSImage}
+    procedure setImage(_image: lobjc.id {NSImage});
+    function alternateImage: lobjc.id;{NSImage}
+    procedure setAlternateImage(_image: lobjc.id {NSImage});
     function imagePosition: NSCellImagePosition;
     procedure setImagePosition(_aPosition: NSCellImagePosition);
     procedure setButtonType(_aType: NSButtonType);
@@ -57,12 +57,12 @@
     function keyEquivalentModifierMask: LongWord;
     procedure setKeyEquivalentModifierMask(_mask: LongWord);
     procedure highlight(_flag: LongBool);
-    function performKeyEquivalent(_key: objc.id {NSEvent}): LongBool;
+    function performKeyEquivalent(_key: lobjc.id {NSEvent}): LongBool;
     procedure setTitleWithMnemonic(_stringWithAmpersand: CFStringRef);
-    function attributedTitle: objc.id;{NSAttributedString}
-    procedure setAttributedTitle(_aString: objc.id {NSAttributedString});
-    function attributedAlternateTitle: objc.id;{NSAttributedString}
-    procedure setAttributedAlternateTitle(_obj: objc.id {NSAttributedString});
+    function attributedTitle: lobjc.id;{NSAttributedString}
+    procedure setAttributedTitle(_aString: lobjc.id {NSAttributedString});
+    function attributedAlternateTitle: lobjc.id;{NSAttributedString}
+    procedure setAttributedAlternateTitle(_obj: lobjc.id {NSAttributedString});
     procedure setBezelStyle(_bezelStyle: NSBezelStyle);
     function bezelStyle: NSBezelStyle;
     procedure setAllowsMixedState(_flag: LongBool);
@@ -70,8 +70,8 @@
     procedure setNextState;
     procedure setShowsBorderOnlyWhileMouseInside(_show: LongBool);
     function showsBorderOnlyWhileMouseInside: LongBool;
-    procedure setSound(_aSound: objc.id {NSSound});
-    function sound: objc.id;{NSSound}
+    procedure setSound(_aSound: lobjc.id {NSSound});
+    function sound: lobjc.id;{NSSound}
   end;
 
 {$endif}
@@ -128,7 +128,7 @@ const
 
 { NSButton }
 
-class function NSButton.getClass: objc.id;
+class function NSButton.getClass: lobjc.id;
 begin
   Result := objc_getClass(StrNSButton_NSButton);
 end;
@@ -140,7 +140,7 @@ end;
 
 procedure NSButton.setTitle(_aString: CFStringRef);
 type
-  TmsgSendWrapper = procedure (param1: objc.id; param2: SEL;_aString: CFStringRef); cdecl;
+  TmsgSendWrapper = procedure (param1: lobjc.id; param2: SEL;_aString: CFStringRef); cdecl;
 var
   vmethod: TmsgSendWrapper;
 begin
@@ -155,7 +155,7 @@ end;
 
 procedure NSButton.setAlternateTitle(_aString: CFStringRef);
 type
-  TmsgSendWrapper = procedure (param1: objc.id; param2: SEL;_aString: CFStringRef); cdecl;
+  TmsgSendWrapper = procedure (param1: lobjc.id; param2: SEL;_aString: CFStringRef); cdecl;
 var
   vmethod: TmsgSendWrapper;
 begin
@@ -163,14 +163,14 @@ begin
   vmethod(Handle, sel_registerName(PChar(StrNSButton_setAlternateTitle)), _aString);
 end;
 
-function NSButton.image: objc.id;
+function NSButton.image: lobjc.id;
 begin
-  Result := objc.id(objc_msgSend(Handle, sel_registerName(PChar(StrNSButton_image)), []));
+  Result := lobjc.id(objc_msgSend(Handle, sel_registerName(PChar(StrNSButton_image)), []));
 end;
 
-procedure NSButton.setImage(_image: objc.id {NSImage});
+procedure NSButton.setImage(_image: lobjc.id {NSImage});
 type
-  TmsgSendWrapper = procedure (param1: objc.id; param2: SEL;_image: objc.id {NSImage}); cdecl;
+  TmsgSendWrapper = procedure (param1: lobjc.id; param2: SEL;_image: lobjc.id {NSImage}); cdecl;
 var
   vmethod: TmsgSendWrapper;
 begin
@@ -178,14 +178,14 @@ begin
   vmethod(Handle, sel_registerName(PChar(StrNSButton_setImage)), _image);
 end;
 
-function NSButton.alternateImage: objc.id;
+function NSButton.alternateImage: lobjc.id;
 begin
-  Result := objc.id(objc_msgSend(Handle, sel_registerName(PChar(StrNSButton_alternateImage)), []));
+  Result := lobjc.id(objc_msgSend(Handle, sel_registerName(PChar(StrNSButton_alternateImage)), []));
 end;
 
-procedure NSButton.setAlternateImage(_image: objc.id {NSImage});
+procedure NSButton.setAlternateImage(_image: lobjc.id {NSImage});
 type
-  TmsgSendWrapper = procedure (param1: objc.id; param2: SEL;_image: objc.id {NSImage}); cdecl;
+  TmsgSendWrapper = procedure (param1: lobjc.id; param2: SEL;_image: lobjc.id {NSImage}); cdecl;
 var
   vmethod: TmsgSendWrapper;
 begin
@@ -200,7 +200,7 @@ end;
 
 procedure NSButton.setImagePosition(_aPosition: NSCellImagePosition);
 type
-  TmsgSendWrapper = procedure (param1: objc.id; param2: SEL;_aPosition: NSCellImagePosition); cdecl;
+  TmsgSendWrapper = procedure (param1: lobjc.id; param2: SEL;_aPosition: NSCellImagePosition); cdecl;
 var
   vmethod: TmsgSendWrapper;
 begin
@@ -210,7 +210,7 @@ end;
 
 procedure NSButton.setButtonType(_aType: NSButtonType);
 type
-  TmsgSendWrapper = procedure (param1: objc.id; param2: SEL;_aType: NSButtonType); cdecl;
+  TmsgSendWrapper = procedure (param1: lobjc.id; param2: SEL;_aType: NSButtonType); cdecl;
 var
   vmethod: TmsgSendWrapper;
 begin
@@ -225,7 +225,7 @@ end;
 
 procedure NSButton.setState(_value: Integer);
 type
-  TmsgSendWrapper = procedure (param1: objc.id; param2: SEL;_value: Integer); cdecl;
+  TmsgSendWrapper = procedure (param1: lobjc.id; param2: SEL;_value: Integer); cdecl;
 var
   vmethod: TmsgSendWrapper;
 begin
@@ -240,7 +240,7 @@ end;
 
 procedure NSButton.setBordered(_flag: LongBool);
 type
-  TmsgSendWrapper = procedure (param1: objc.id; param2: SEL;_flag: LongBool); cdecl;
+  TmsgSendWrapper = procedure (param1: lobjc.id; param2: SEL;_flag: LongBool); cdecl;
 var
   vmethod: TmsgSendWrapper;
 begin
@@ -255,7 +255,7 @@ end;
 
 procedure NSButton.setTransparent(_flag: LongBool);
 type
-  TmsgSendWrapper = procedure (param1: objc.id; param2: SEL;_flag: LongBool); cdecl;
+  TmsgSendWrapper = procedure (param1: lobjc.id; param2: SEL;_flag: LongBool); cdecl;
 var
   vmethod: TmsgSendWrapper;
 begin
@@ -265,7 +265,7 @@ end;
 
 procedure NSButton.setPeriodicDelay_interval(_delay: Single; _interval: Single);
 type
-  TmsgSendWrapper = procedure (param1: objc.id; param2: SEL;_delay: Single; _interval: Single); cdecl;
+  TmsgSendWrapper = procedure (param1: lobjc.id; param2: SEL;_delay: Single; _interval: Single); cdecl;
 var
   vmethod: TmsgSendWrapper;
 begin
@@ -275,7 +275,7 @@ end;
 
 procedure NSButton.getPeriodicDelay_interval(_delay: Single; _interval: Single);
 type
-  TmsgSendWrapper = procedure (param1: objc.id; param2: SEL;_delay: Single; _interval: Single); cdecl;
+  TmsgSendWrapper = procedure (param1: lobjc.id; param2: SEL;_delay: Single; _interval: Single); cdecl;
 var
   vmethod: TmsgSendWrapper;
 begin
@@ -290,7 +290,7 @@ end;
 
 procedure NSButton.setKeyEquivalent(_charCode: CFStringRef);
 type
-  TmsgSendWrapper = procedure (param1: objc.id; param2: SEL;_charCode: CFStringRef); cdecl;
+  TmsgSendWrapper = procedure (param1: lobjc.id; param2: SEL;_charCode: CFStringRef); cdecl;
 var
   vmethod: TmsgSendWrapper;
 begin
@@ -305,7 +305,7 @@ end;
 
 procedure NSButton.setKeyEquivalentModifierMask(_mask: LongWord);
 type
-  TmsgSendWrapper = procedure (param1: objc.id; param2: SEL;_mask: LongWord); cdecl;
+  TmsgSendWrapper = procedure (param1: lobjc.id; param2: SEL;_mask: LongWord); cdecl;
 var
   vmethod: TmsgSendWrapper;
 begin
@@ -315,7 +315,7 @@ end;
 
 procedure NSButton.highlight(_flag: LongBool);
 type
-  TmsgSendWrapper = procedure (param1: objc.id; param2: SEL;_flag: LongBool); cdecl;
+  TmsgSendWrapper = procedure (param1: lobjc.id; param2: SEL;_flag: LongBool); cdecl;
 var
   vmethod: TmsgSendWrapper;
 begin
@@ -323,9 +323,9 @@ begin
   vmethod(Handle, sel_registerName(PChar(StrNSButton_highlight)), _flag);
 end;
 
-function NSButton.performKeyEquivalent(_key: objc.id {NSEvent}): LongBool;
+function NSButton.performKeyEquivalent(_key: lobjc.id {NSEvent}): LongBool;
 type
-  TmsgSendWrapper = function (param1: objc.id; param2: SEL;_key: objc.id {NSEvent}): LongBool; cdecl;
+  TmsgSendWrapper = function (param1: lobjc.id; param2: SEL;_key: lobjc.id {NSEvent}): LongBool; cdecl;
 var
   vmethod: TmsgSendWrapper;
 begin
@@ -335,7 +335,7 @@ end;
 
 procedure NSButton.setTitleWithMnemonic(_stringWithAmpersand: CFStringRef);
 type
-  TmsgSendWrapper = procedure (param1: objc.id; param2: SEL;_stringWithAmpersand: CFStringRef); cdecl;
+  TmsgSendWrapper = procedure (param1: lobjc.id; param2: SEL;_stringWithAmpersand: CFStringRef); cdecl;
 var
   vmethod: TmsgSendWrapper;
 begin
@@ -343,14 +343,14 @@ begin
   vmethod(Handle, sel_registerName(PChar(StrNSButton_setTitleWithMnemonic)), _stringWithAmpersand);
 end;
 
-function NSButton.attributedTitle: objc.id;
+function NSButton.attributedTitle: lobjc.id;
 begin
-  Result := objc.id(objc_msgSend(Handle, sel_registerName(PChar(StrNSButton_attributedTitle)), []));
+  Result := lobjc.id(objc_msgSend(Handle, sel_registerName(PChar(StrNSButton_attributedTitle)), []));
 end;
 
-procedure NSButton.setAttributedTitle(_aString: objc.id {NSAttributedString});
+procedure NSButton.setAttributedTitle(_aString: lobjc.id {NSAttributedString});
 type
-  TmsgSendWrapper = procedure (param1: objc.id; param2: SEL;_aString: objc.id {NSAttributedString}); cdecl;
+  TmsgSendWrapper = procedure (param1: lobjc.id; param2: SEL;_aString: lobjc.id {NSAttributedString}); cdecl;
 var
   vmethod: TmsgSendWrapper;
 begin
@@ -358,14 +358,14 @@ begin
   vmethod(Handle, sel_registerName(PChar(StrNSButton_setAttributedTitle)), _aString);
 end;
 
-function NSButton.attributedAlternateTitle: objc.id;
+function NSButton.attributedAlternateTitle: lobjc.id;
 begin
-  Result := objc.id(objc_msgSend(Handle, sel_registerName(PChar(StrNSButton_attributedAlternateTitle)), []));
+  Result := lobjc.id(objc_msgSend(Handle, sel_registerName(PChar(StrNSButton_attributedAlternateTitle)), []));
 end;
 
-procedure NSButton.setAttributedAlternateTitle(_obj: objc.id {NSAttributedString});
+procedure NSButton.setAttributedAlternateTitle(_obj: lobjc.id {NSAttributedString});
 type
-  TmsgSendWrapper = procedure (param1: objc.id; param2: SEL;_obj: objc.id {NSAttributedString}); cdecl;
+  TmsgSendWrapper = procedure (param1: lobjc.id; param2: SEL;_obj: lobjc.id {NSAttributedString}); cdecl;
 var
   vmethod: TmsgSendWrapper;
 begin
@@ -375,7 +375,7 @@ end;
 
 procedure NSButton.setBezelStyle(_bezelStyle: NSBezelStyle);
 type
-  TmsgSendWrapper = procedure (param1: objc.id; param2: SEL;_bezelStyle: NSBezelStyle); cdecl;
+  TmsgSendWrapper = procedure (param1: lobjc.id; param2: SEL;_bezelStyle: NSBezelStyle); cdecl;
 var
   vmethod: TmsgSendWrapper;
 begin
@@ -390,7 +390,7 @@ end;
 
 procedure NSButton.setAllowsMixedState(_flag: LongBool);
 type
-  TmsgSendWrapper = procedure (param1: objc.id; param2: SEL;_flag: LongBool); cdecl;
+  TmsgSendWrapper = procedure (param1: lobjc.id; param2: SEL;_flag: LongBool); cdecl;
 var
   vmethod: TmsgSendWrapper;
 begin
@@ -410,7 +410,7 @@ end;
 
 procedure NSButton.setShowsBorderOnlyWhileMouseInside(_show: LongBool);
 type
-  TmsgSendWrapper = procedure (param1: objc.id; param2: SEL;_show: LongBool); cdecl;
+  TmsgSendWrapper = procedure (param1: lobjc.id; param2: SEL;_show: LongBool); cdecl;
 var
   vmethod: TmsgSendWrapper;
 begin
@@ -423,9 +423,9 @@ begin
   Result := LongBool(objc_msgSend(Handle, sel_registerName(PChar(StrNSButton_showsBorderOnlyWhileMouseInside)), []));
 end;
 
-procedure NSButton.setSound(_aSound: objc.id {NSSound});
+procedure NSButton.setSound(_aSound: lobjc.id {NSSound});
 type
-  TmsgSendWrapper = procedure (param1: objc.id; param2: SEL;_aSound: objc.id {NSSound}); cdecl;
+  TmsgSendWrapper = procedure (param1: lobjc.id; param2: SEL;_aSound: lobjc.id {NSSound}); cdecl;
 var
   vmethod: TmsgSendWrapper;
 begin
@@ -433,9 +433,9 @@ begin
   vmethod(Handle, sel_registerName(PChar(StrNSButton_setSound)), _aSound);
 end;
 
-function NSButton.sound: objc.id;
+function NSButton.sound: lobjc.id;
 begin
-  Result := objc.id(objc_msgSend(Handle, sel_registerName(PChar(StrNSButton_sound)), []));
+  Result := lobjc.id(objc_msgSend(Handle, sel_registerName(PChar(StrNSButton_sound)), []));
 end;
 
 {$endif}

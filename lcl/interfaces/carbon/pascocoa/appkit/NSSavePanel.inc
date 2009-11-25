@@ -42,7 +42,7 @@ type
 
   NSSavePanel = class(NSPanel)
   public
-    class function getClass: objc.id; override;
+    class function getClass: lobjc.id; override;
     constructor savePanel;
     function URL: CFURLRef;
     function filename: CFStringRef;
@@ -56,12 +56,12 @@ type
     function allowsOtherFileTypes: LongBool;
     procedure setAllowsOtherFileTypes(_flag: LongBool);
     {.$endif}
-    function accessoryView: objc.id;{NSView}
-    procedure setAccessoryView(_view: objc.id {NSView});
+    function accessoryView: lobjc.id;{NSView}
+    procedure setAccessoryView(_view: lobjc.id {NSView});
     {.$ifdef  MAC_OS_X_VERSION_MAX_ALLOWED >= MAC_OS_X_VERSION_10_3}
-    function delegate: objc.id;
+    function delegate: lobjc.id;
     {.$endif}
-    procedure setDelegate(_delegate: objc.id);
+    procedure setDelegate(_delegate: lobjc.id);
     function isExpanded: LongBool;
     {.$ifdef  MAC_OS_X_VERSION_MAX_ALLOWED >= MAC_OS_X_VERSION_10_3}
     function canCreateDirectories: LongBool;
@@ -89,10 +89,10 @@ type
     {.$endif}
     procedure validateVisibleColumns;
     //  A method that was deprecated in Mac OS 10.3.  -[NSSavePanel selectText:] does nothing.
-    function selectText(_sender: objc.id): IBAction;
-    function ok(_sender: objc.id): IBAction;
-    function cancel(_sender: objc.id): IBAction;
-    procedure beginSheetForDirectory_file_modalForWindow_modalDelegate_didEndSelector_contextInfo(_path: CFStringRef; _name: CFStringRef; _docWindow: objc.id {NSWindow}; _delegate: objc.id; _didEndSelector: SEL; _contextInfo: Pointer);
+    function selectText(_sender: lobjc.id): IBAction;
+    function ok(_sender: lobjc.id): IBAction;
+    function cancel(_sender: lobjc.id): IBAction;
+    procedure beginSheetForDirectory_file_modalForWindow_modalDelegate_didEndSelector_contextInfo(_path: CFStringRef; _name: CFStringRef; _docWindow: lobjc.id {NSWindow}; _delegate: lobjc.id; _didEndSelector: SEL; _contextInfo: Pointer);
     function runModalForDirectory_file(_path: CFStringRef; _name: CFStringRef): Integer;
     function runModal: Integer;
   end;
@@ -146,14 +146,14 @@ const
 
 { NSSavePanel }
 
-class function NSSavePanel.getClass: objc.id;
+class function NSSavePanel.getClass: lobjc.id;
 begin
   Result := objc_getClass(StrNSSavePanel_NSSavePanel);
 end;
 
 constructor NSSavePanel.savePanel;
 type
-  TmsgSendWrapper = function (param1: objc.id; param2: SEL): objc.id; cdecl;
+  TmsgSendWrapper = function (param1: lobjc.id; param2: SEL): lobjc.id; cdecl;
 var
   vmethod: TmsgSendWrapper;
 begin
@@ -179,7 +179,7 @@ end;
 
 procedure NSSavePanel.setDirectory(_path: CFStringRef);
 type
-  TmsgSendWrapper = procedure (param1: objc.id; param2: SEL;_path: CFStringRef); cdecl;
+  TmsgSendWrapper = procedure (param1: lobjc.id; param2: SEL;_path: CFStringRef); cdecl;
 var
   vmethod: TmsgSendWrapper;
 begin
@@ -194,7 +194,7 @@ end;
 
 procedure NSSavePanel.setRequiredFileType(__type: CFStringRef);
 type
-  TmsgSendWrapper = procedure (param1: objc.id; param2: SEL;__type: CFStringRef); cdecl;
+  TmsgSendWrapper = procedure (param1: lobjc.id; param2: SEL;__type: CFStringRef); cdecl;
 var
   vmethod: TmsgSendWrapper;
 begin
@@ -210,7 +210,7 @@ end;
 
 procedure NSSavePanel.setAllowedFileTypes(_types: CFArrayRef);
 type
-  TmsgSendWrapper = procedure (param1: objc.id; param2: SEL;_types: CFArrayRef); cdecl;
+  TmsgSendWrapper = procedure (param1: lobjc.id; param2: SEL;_types: CFArrayRef); cdecl;
 var
   vmethod: TmsgSendWrapper;
 begin
@@ -225,7 +225,7 @@ end;
 
 procedure NSSavePanel.setAllowsOtherFileTypes(_flag: LongBool);
 type
-  TmsgSendWrapper = procedure (param1: objc.id; param2: SEL;_flag: LongBool); cdecl;
+  TmsgSendWrapper = procedure (param1: lobjc.id; param2: SEL;_flag: LongBool); cdecl;
 var
   vmethod: TmsgSendWrapper;
 begin
@@ -234,14 +234,14 @@ begin
 end;
 
 {.$endif}
-function NSSavePanel.accessoryView: objc.id;
+function NSSavePanel.accessoryView: lobjc.id;
 begin
-  Result := objc.id(objc_msgSend(Handle, sel_registerName(PChar(StrNSSavePanel_accessoryView)), []));
+  Result := lobjc.id(objc_msgSend(Handle, sel_registerName(PChar(StrNSSavePanel_accessoryView)), []));
 end;
 
-procedure NSSavePanel.setAccessoryView(_view: objc.id {NSView});
+procedure NSSavePanel.setAccessoryView(_view: lobjc.id {NSView});
 type
-  TmsgSendWrapper = procedure (param1: objc.id; param2: SEL;_view: objc.id {NSView}); cdecl;
+  TmsgSendWrapper = procedure (param1: lobjc.id; param2: SEL;_view: lobjc.id {NSView}); cdecl;
 var
   vmethod: TmsgSendWrapper;
 begin
@@ -250,15 +250,15 @@ begin
 end;
 
 {.$ifdef  MAC_OS_X_VERSION_MAX_ALLOWED >= MAC_OS_X_VERSION_10_3}
-function NSSavePanel.delegate: objc.id;
+function NSSavePanel.delegate: lobjc.id;
 begin
-  Result := objc.id(objc_msgSend(Handle, sel_registerName(PChar(StrNSSavePanel_delegate)), []));
+  Result := lobjc.id(objc_msgSend(Handle, sel_registerName(PChar(StrNSSavePanel_delegate)), []));
 end;
 
 {.$endif}
-procedure NSSavePanel.setDelegate(_delegate: objc.id);
+procedure NSSavePanel.setDelegate(_delegate: lobjc.id);
 type
-  TmsgSendWrapper = procedure (param1: objc.id; param2: SEL;_delegate: objc.id); cdecl;
+  TmsgSendWrapper = procedure (param1: lobjc.id; param2: SEL;_delegate: lobjc.id); cdecl;
 var
   vmethod: TmsgSendWrapper;
 begin
@@ -279,7 +279,7 @@ end;
 
 procedure NSSavePanel.setCanCreateDirectories(_flag: LongBool);
 type
-  TmsgSendWrapper = procedure (param1: objc.id; param2: SEL;_flag: LongBool); cdecl;
+  TmsgSendWrapper = procedure (param1: lobjc.id; param2: SEL;_flag: LongBool); cdecl;
 var
   vmethod: TmsgSendWrapper;
 begin
@@ -297,7 +297,7 @@ end;
 {.$endif}
 procedure NSSavePanel.setCanSelectHiddenExtension(_flag: LongBool);
 type
-  TmsgSendWrapper = procedure (param1: objc.id; param2: SEL;_flag: LongBool); cdecl;
+  TmsgSendWrapper = procedure (param1: lobjc.id; param2: SEL;_flag: LongBool); cdecl;
 var
   vmethod: TmsgSendWrapper;
 begin
@@ -312,7 +312,7 @@ end;
 
 procedure NSSavePanel.setExtensionHidden(_flag: LongBool);
 type
-  TmsgSendWrapper = procedure (param1: objc.id; param2: SEL;_flag: LongBool); cdecl;
+  TmsgSendWrapper = procedure (param1: lobjc.id; param2: SEL;_flag: LongBool); cdecl;
 var
   vmethod: TmsgSendWrapper;
 begin
@@ -327,7 +327,7 @@ end;
 
 procedure NSSavePanel.setTreatsFilePackagesAsDirectories(_flag: LongBool);
 type
-  TmsgSendWrapper = procedure (param1: objc.id; param2: SEL;_flag: LongBool); cdecl;
+  TmsgSendWrapper = procedure (param1: lobjc.id; param2: SEL;_flag: LongBool); cdecl;
 var
   vmethod: TmsgSendWrapper;
 begin
@@ -342,7 +342,7 @@ end;
 
 procedure NSSavePanel.setPrompt(_prompt: CFStringRef);
 type
-  TmsgSendWrapper = procedure (param1: objc.id; param2: SEL;_prompt: CFStringRef); cdecl;
+  TmsgSendWrapper = procedure (param1: lobjc.id; param2: SEL;_prompt: CFStringRef); cdecl;
 var
   vmethod: TmsgSendWrapper;
 begin
@@ -357,7 +357,7 @@ end;
 
 procedure NSSavePanel.setTitle(_title: CFStringRef);
 type
-  TmsgSendWrapper = procedure (param1: objc.id; param2: SEL;_title: CFStringRef); cdecl;
+  TmsgSendWrapper = procedure (param1: lobjc.id; param2: SEL;_title: CFStringRef); cdecl;
 var
   vmethod: TmsgSendWrapper;
 begin
@@ -373,7 +373,7 @@ end;
 
 procedure NSSavePanel.setNameFieldLabel(__label: CFStringRef);
 type
-  TmsgSendWrapper = procedure (param1: objc.id; param2: SEL;__label: CFStringRef); cdecl;
+  TmsgSendWrapper = procedure (param1: lobjc.id; param2: SEL;__label: CFStringRef); cdecl;
 var
   vmethod: TmsgSendWrapper;
 begin
@@ -390,7 +390,7 @@ end;
 
 procedure NSSavePanel.setMessage(_message: CFStringRef);
 type
-  TmsgSendWrapper = procedure (param1: objc.id; param2: SEL;_message: CFStringRef); cdecl;
+  TmsgSendWrapper = procedure (param1: lobjc.id; param2: SEL;_message: CFStringRef); cdecl;
 var
   vmethod: TmsgSendWrapper;
 begin
@@ -404,9 +404,9 @@ begin
   objc_msgSend(Handle, sel_registerName(PChar(StrNSSavePanel_validateVisibleColumns)), []);
 end;
 
-function NSSavePanel.selectText(_sender: objc.id): IBAction;
+function NSSavePanel.selectText(_sender: lobjc.id): IBAction;
 type
-  TmsgSendWrapper = function (param1: objc.id; param2: SEL;_sender: objc.id): IBAction; cdecl;
+  TmsgSendWrapper = function (param1: lobjc.id; param2: SEL;_sender: lobjc.id): IBAction; cdecl;
 var
   vmethod: TmsgSendWrapper;
 begin
@@ -414,9 +414,9 @@ begin
   Result := IBAction(vmethod(Handle, sel_registerName(PChar(StrNSSavePanel_selectText)), _sender));
 end;
 
-function NSSavePanel.ok(_sender: objc.id): IBAction;
+function NSSavePanel.ok(_sender: lobjc.id): IBAction;
 type
-  TmsgSendWrapper = function (param1: objc.id; param2: SEL;_sender: objc.id): IBAction; cdecl;
+  TmsgSendWrapper = function (param1: lobjc.id; param2: SEL;_sender: lobjc.id): IBAction; cdecl;
 var
   vmethod: TmsgSendWrapper;
 begin
@@ -424,9 +424,9 @@ begin
   Result := IBAction(vmethod(Handle, sel_registerName(PChar(StrNSSavePanel_ok)), _sender));
 end;
 
-function NSSavePanel.cancel(_sender: objc.id): IBAction;
+function NSSavePanel.cancel(_sender: lobjc.id): IBAction;
 type
-  TmsgSendWrapper = function (param1: objc.id; param2: SEL;_sender: objc.id): IBAction; cdecl;
+  TmsgSendWrapper = function (param1: lobjc.id; param2: SEL;_sender: lobjc.id): IBAction; cdecl;
 var
   vmethod: TmsgSendWrapper;
 begin
@@ -434,9 +434,9 @@ begin
   Result := IBAction(vmethod(Handle, sel_registerName(PChar(StrNSSavePanel_cancel)), _sender));
 end;
 
-procedure NSSavePanel.beginSheetForDirectory_file_modalForWindow_modalDelegate_didEndSelector_contextInfo(_path: CFStringRef; _name: CFStringRef; _docWindow: objc.id {NSWindow}; _delegate: objc.id; _didEndSelector: SEL; _contextInfo: Pointer);
+procedure NSSavePanel.beginSheetForDirectory_file_modalForWindow_modalDelegate_didEndSelector_contextInfo(_path: CFStringRef; _name: CFStringRef; _docWindow: lobjc.id {NSWindow}; _delegate: lobjc.id; _didEndSelector: SEL; _contextInfo: Pointer);
 type
-  TmsgSendWrapper = procedure (param1: objc.id; param2: SEL;_path: CFStringRef; _name: CFStringRef; _docWindow: objc.id {NSWindow}; _delegate: objc.id; _didEndSelector: SEL; _contextInfo: Pointer); cdecl;
+  TmsgSendWrapper = procedure (param1: lobjc.id; param2: SEL;_path: CFStringRef; _name: CFStringRef; _docWindow: lobjc.id {NSWindow}; _delegate: lobjc.id; _didEndSelector: SEL; _contextInfo: Pointer); cdecl;
 var
   vmethod: TmsgSendWrapper;
 begin
@@ -446,7 +446,7 @@ end;
 
 function NSSavePanel.runModalForDirectory_file(_path: CFStringRef; _name: CFStringRef): Integer;
 type
-  TmsgSendWrapper = function (param1: objc.id; param2: SEL;_path: CFStringRef; _name: CFStringRef): Integer; cdecl;
+  TmsgSendWrapper = function (param1: lobjc.id; param2: SEL;_path: CFStringRef; _name: CFStringRef): Integer; cdecl;
 var
   vmethod: TmsgSendWrapper;
 begin

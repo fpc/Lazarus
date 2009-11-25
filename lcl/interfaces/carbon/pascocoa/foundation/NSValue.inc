@@ -28,17 +28,17 @@
 
   NSValue = class(NSObject)
   public
-    class function getClass: objc.id; override;
+    class function getClass: lobjc.id; override;
     procedure getValue(_value: Pointer);
     function objCType: PChar;
     constructor initWithBytes_objCType(_value: Pointer; __type: PChar);
     constructor valueWithBytes_objCType(_value: Pointer; __type: PChar);
     constructor value_withObjCType(_value: Pointer; __type: PChar);
-    constructor valueWithNonretainedObject(_anObject: objc.id);
-    function nonretainedObjectValue: objc.id;
+    constructor valueWithNonretainedObject(_anObject: lobjc.id);
+    function nonretainedObjectValue: lobjc.id;
     constructor valueWithPointer(_pointer: Pointer);
     function pointerValue: Pointer;
-    function isEqualToValue(_value: objc.id {NSValue}): LongBool;
+    function isEqualToValue(_value: lobjc.id {NSValue}): LongBool;
   end;
 
 
@@ -46,7 +46,7 @@
 
   NSNumber = class(NSValue)
   public
-    class function getClass: objc.id; override;
+    class function getClass: lobjc.id; override;
     function charValue: char;
     function unsignedCharValue: byte;
     function shortValue: SmallInt;
@@ -159,14 +159,14 @@ const
 
 { NSValue }
 
-class function NSValue.getClass: objc.id;
+class function NSValue.getClass: lobjc.id;
 begin
   Result := objc_getClass(StrNSValue_NSValue);
 end;
 
 procedure NSValue.getValue(_value: Pointer);
 type
-  TmsgSendWrapper = procedure (param1: objc.id; param2: SEL;_value: Pointer); cdecl;
+  TmsgSendWrapper = procedure (param1: lobjc.id; param2: SEL;_value: Pointer); cdecl;
 var
   vmethod: TmsgSendWrapper;
 begin
@@ -181,7 +181,7 @@ end;
 
 constructor NSValue.initWithBytes_objCType(_value: Pointer; __type: PChar);
 type
-  TmsgSendWrapper = function (param1: objc.id; param2: SEL;_value: Pointer; __type: PChar): objc.id; cdecl;
+  TmsgSendWrapper = function (param1: lobjc.id; param2: SEL;_value: Pointer; __type: PChar): lobjc.id; cdecl;
 var
   vmethod: TmsgSendWrapper;
 begin
@@ -193,7 +193,7 @@ end;
 
 constructor NSValue.valueWithBytes_objCType(_value: Pointer; __type: PChar);
 type
-  TmsgSendWrapper = function (param1: objc.id; param2: SEL;_value: Pointer; __type: PChar): objc.id; cdecl;
+  TmsgSendWrapper = function (param1: lobjc.id; param2: SEL;_value: Pointer; __type: PChar): lobjc.id; cdecl;
 var
   vmethod: TmsgSendWrapper;
 begin
@@ -204,7 +204,7 @@ end;
 
 constructor NSValue.value_withObjCType(_value: Pointer; __type: PChar);
 type
-  TmsgSendWrapper = function (param1: objc.id; param2: SEL;_value: Pointer; __type: PChar): objc.id; cdecl;
+  TmsgSendWrapper = function (param1: lobjc.id; param2: SEL;_value: Pointer; __type: PChar): lobjc.id; cdecl;
 var
   vmethod: TmsgSendWrapper;
 begin
@@ -213,9 +213,9 @@ begin
   Handle := vmethod(ClassID, sel_registerName(PChar(StrNSValue_value_withObjCType)), _value, __type);
 end;
 
-constructor NSValue.valueWithNonretainedObject(_anObject: objc.id);
+constructor NSValue.valueWithNonretainedObject(_anObject: lobjc.id);
 type
-  TmsgSendWrapper = function (param1: objc.id; param2: SEL;_anObject: objc.id): objc.id; cdecl;
+  TmsgSendWrapper = function (param1: lobjc.id; param2: SEL;_anObject: lobjc.id): lobjc.id; cdecl;
 var
   vmethod: TmsgSendWrapper;
 begin
@@ -224,14 +224,14 @@ begin
   Handle := vmethod(ClassID, sel_registerName(PChar(StrNSValue_valueWithNonretainedObject)), _anObject);
 end;
 
-function NSValue.nonretainedObjectValue: objc.id;
+function NSValue.nonretainedObjectValue: lobjc.id;
 begin
-  Result := objc.id(objc_msgSend(Handle, sel_registerName(PChar(StrNSValue_nonretainedObjectValue)), []));
+  Result := lobjc.id(objc_msgSend(Handle, sel_registerName(PChar(StrNSValue_nonretainedObjectValue)), []));
 end;
 
 constructor NSValue.valueWithPointer(_pointer: Pointer);
 type
-  TmsgSendWrapper = function (param1: objc.id; param2: SEL;_pointer: Pointer): objc.id; cdecl;
+  TmsgSendWrapper = function (param1: lobjc.id; param2: SEL;_pointer: Pointer): lobjc.id; cdecl;
 var
   vmethod: TmsgSendWrapper;
 begin
@@ -245,9 +245,9 @@ begin
   Result := Pointer(objc_msgSend(Handle, sel_registerName(PChar(StrNSValue_pointerValue)), []));
 end;
 
-function NSValue.isEqualToValue(_value: objc.id {NSValue}): LongBool;
+function NSValue.isEqualToValue(_value: lobjc.id {NSValue}): LongBool;
 type
-  TmsgSendWrapper = function (param1: objc.id; param2: SEL;_value: objc.id {NSValue}): LongBool; cdecl;
+  TmsgSendWrapper = function (param1: lobjc.id; param2: SEL;_value: lobjc.id {NSValue}): LongBool; cdecl;
 var
   vmethod: TmsgSendWrapper;
 begin
@@ -257,7 +257,7 @@ end;
 
 { NSNumber }
 
-class function NSNumber.getClass: objc.id;
+class function NSNumber.getClass: lobjc.id;
 begin
   Result := objc_getClass(StrNSNumber_NSNumber);
 end;
@@ -334,7 +334,7 @@ end;
 
 function NSNumber.compare(_otherNumber: CFNumberRef): NSComparisonResult;
 type
-  TmsgSendWrapper = function (param1: objc.id; param2: SEL;_otherNumber: CFNumberRef): NSComparisonResult; cdecl;
+  TmsgSendWrapper = function (param1: lobjc.id; param2: SEL;_otherNumber: CFNumberRef): NSComparisonResult; cdecl;
 var
   vmethod: TmsgSendWrapper;
 begin
@@ -344,7 +344,7 @@ end;
 
 function NSNumber.isEqualToNumber(_number: CFNumberRef): LongBool;
 type
-  TmsgSendWrapper = function (param1: objc.id; param2: SEL;_number: CFNumberRef): LongBool; cdecl;
+  TmsgSendWrapper = function (param1: lobjc.id; param2: SEL;_number: CFNumberRef): LongBool; cdecl;
 var
   vmethod: TmsgSendWrapper;
 begin
@@ -354,7 +354,7 @@ end;
 
 function NSNumber.descriptionWithLocale(_locale: CFDictionaryRef): CFStringRef;
 type
-  TmsgSendWrapper = function (param1: objc.id; param2: SEL;_locale: CFDictionaryRef): CFStringRef; cdecl;
+  TmsgSendWrapper = function (param1: lobjc.id; param2: SEL;_locale: CFDictionaryRef): CFStringRef; cdecl;
 var
   vmethod: TmsgSendWrapper;
 begin
@@ -364,7 +364,7 @@ end;
 
 constructor NSNumber.initWithChar(_value: char);
 type
-  TmsgSendWrapper = function (param1: objc.id; param2: SEL;_value: char): objc.id; cdecl;
+  TmsgSendWrapper = function (param1: lobjc.id; param2: SEL;_value: char): lobjc.id; cdecl;
 var
   vmethod: TmsgSendWrapper;
 begin
@@ -376,7 +376,7 @@ end;
 
 constructor NSNumber.initWithUnsignedChar(_value: byte);
 type
-  TmsgSendWrapper = function (param1: objc.id; param2: SEL;_value: byte): objc.id; cdecl;
+  TmsgSendWrapper = function (param1: lobjc.id; param2: SEL;_value: byte): lobjc.id; cdecl;
 var
   vmethod: TmsgSendWrapper;
 begin
@@ -388,7 +388,7 @@ end;
 
 constructor NSNumber.initWithShort(_value: SmallInt);
 type
-  TmsgSendWrapper = function (param1: objc.id; param2: SEL;_value: SmallInt): objc.id; cdecl;
+  TmsgSendWrapper = function (param1: lobjc.id; param2: SEL;_value: SmallInt): lobjc.id; cdecl;
 var
   vmethod: TmsgSendWrapper;
 begin
@@ -400,7 +400,7 @@ end;
 
 constructor NSNumber.initWithUnsignedShort(_value: Word);
 type
-  TmsgSendWrapper = function (param1: objc.id; param2: SEL;_value: Word): objc.id; cdecl;
+  TmsgSendWrapper = function (param1: lobjc.id; param2: SEL;_value: Word): lobjc.id; cdecl;
 var
   vmethod: TmsgSendWrapper;
 begin
@@ -412,7 +412,7 @@ end;
 
 constructor NSNumber.initWithInt(_value: Integer);
 type
-  TmsgSendWrapper = function (param1: objc.id; param2: SEL;_value: Integer): objc.id; cdecl;
+  TmsgSendWrapper = function (param1: lobjc.id; param2: SEL;_value: Integer): lobjc.id; cdecl;
 var
   vmethod: TmsgSendWrapper;
 begin
@@ -424,7 +424,7 @@ end;
 
 constructor NSNumber.initWithUnsignedInt(_value: LongWord);
 type
-  TmsgSendWrapper = function (param1: objc.id; param2: SEL;_value: LongWord): objc.id; cdecl;
+  TmsgSendWrapper = function (param1: lobjc.id; param2: SEL;_value: LongWord): lobjc.id; cdecl;
 var
   vmethod: TmsgSendWrapper;
 begin
@@ -436,7 +436,7 @@ end;
 
 constructor NSNumber.initWithLong(_value: Integer);
 type
-  TmsgSendWrapper = function (param1: objc.id; param2: SEL;_value: Integer): objc.id; cdecl;
+  TmsgSendWrapper = function (param1: lobjc.id; param2: SEL;_value: Integer): lobjc.id; cdecl;
 var
   vmethod: TmsgSendWrapper;
 begin
@@ -448,7 +448,7 @@ end;
 
 constructor NSNumber.initWithUnsignedLong(_value: LongWord);
 type
-  TmsgSendWrapper = function (param1: objc.id; param2: SEL;_value: LongWord): objc.id; cdecl;
+  TmsgSendWrapper = function (param1: lobjc.id; param2: SEL;_value: LongWord): lobjc.id; cdecl;
 var
   vmethod: TmsgSendWrapper;
 begin
@@ -460,7 +460,7 @@ end;
 
 constructor NSNumber.initWithLongLong(_value: Int64);
 type
-  TmsgSendWrapper = function (param1: objc.id; param2: SEL;_value: Int64): objc.id; cdecl;
+  TmsgSendWrapper = function (param1: lobjc.id; param2: SEL;_value: Int64): lobjc.id; cdecl;
 var
   vmethod: TmsgSendWrapper;
 begin
@@ -472,7 +472,7 @@ end;
 
 constructor NSNumber.initWithUnsignedLongLong(_value: Int64);
 type
-  TmsgSendWrapper = function (param1: objc.id; param2: SEL;_value: Int64): objc.id; cdecl;
+  TmsgSendWrapper = function (param1: lobjc.id; param2: SEL;_value: Int64): lobjc.id; cdecl;
 var
   vmethod: TmsgSendWrapper;
 begin
@@ -484,7 +484,7 @@ end;
 
 constructor NSNumber.initWithFloat(_value: Single);
 type
-  TmsgSendWrapper = function (param1: objc.id; param2: SEL;_value: Single): objc.id; cdecl;
+  TmsgSendWrapper = function (param1: lobjc.id; param2: SEL;_value: Single): lobjc.id; cdecl;
 var
   vmethod: TmsgSendWrapper;
 begin
@@ -496,7 +496,7 @@ end;
 
 constructor NSNumber.initWithDouble(_value: double);
 type
-  TmsgSendWrapper = function (param1: objc.id; param2: SEL;_value: double): objc.id; cdecl;
+  TmsgSendWrapper = function (param1: lobjc.id; param2: SEL;_value: double): lobjc.id; cdecl;
 var
   vmethod: TmsgSendWrapper;
 begin
@@ -508,7 +508,7 @@ end;
 
 constructor NSNumber.initWithBool(_value: LongBool);
 type
-  TmsgSendWrapper = function (param1: objc.id; param2: SEL;_value: LongBool): objc.id; cdecl;
+  TmsgSendWrapper = function (param1: lobjc.id; param2: SEL;_value: LongBool): lobjc.id; cdecl;
 var
   vmethod: TmsgSendWrapper;
 begin
@@ -520,7 +520,7 @@ end;
 
 constructor NSNumber.numberWithChar(_value: char);
 type
-  TmsgSendWrapper = function (param1: objc.id; param2: SEL;_value: char): objc.id; cdecl;
+  TmsgSendWrapper = function (param1: lobjc.id; param2: SEL;_value: char): lobjc.id; cdecl;
 var
   vmethod: TmsgSendWrapper;
 begin
@@ -531,7 +531,7 @@ end;
 
 constructor NSNumber.numberWithUnsignedChar(_value: byte);
 type
-  TmsgSendWrapper = function (param1: objc.id; param2: SEL;_value: byte): objc.id; cdecl;
+  TmsgSendWrapper = function (param1: lobjc.id; param2: SEL;_value: byte): lobjc.id; cdecl;
 var
   vmethod: TmsgSendWrapper;
 begin
@@ -542,7 +542,7 @@ end;
 
 constructor NSNumber.numberWithShort(_value: SmallInt);
 type
-  TmsgSendWrapper = function (param1: objc.id; param2: SEL;_value: SmallInt): objc.id; cdecl;
+  TmsgSendWrapper = function (param1: lobjc.id; param2: SEL;_value: SmallInt): lobjc.id; cdecl;
 var
   vmethod: TmsgSendWrapper;
 begin
@@ -553,7 +553,7 @@ end;
 
 constructor NSNumber.numberWithUnsignedShort(_value: Word);
 type
-  TmsgSendWrapper = function (param1: objc.id; param2: SEL;_value: Word): objc.id; cdecl;
+  TmsgSendWrapper = function (param1: lobjc.id; param2: SEL;_value: Word): lobjc.id; cdecl;
 var
   vmethod: TmsgSendWrapper;
 begin
@@ -564,7 +564,7 @@ end;
 
 constructor NSNumber.numberWithInt(_value: Integer);
 type
-  TmsgSendWrapper = function (param1: objc.id; param2: SEL;_value: Integer): objc.id; cdecl;
+  TmsgSendWrapper = function (param1: lobjc.id; param2: SEL;_value: Integer): lobjc.id; cdecl;
 var
   vmethod: TmsgSendWrapper;
 begin
@@ -575,7 +575,7 @@ end;
 
 constructor NSNumber.numberWithUnsignedInt(_value: LongWord);
 type
-  TmsgSendWrapper = function (param1: objc.id; param2: SEL;_value: LongWord): objc.id; cdecl;
+  TmsgSendWrapper = function (param1: lobjc.id; param2: SEL;_value: LongWord): lobjc.id; cdecl;
 var
   vmethod: TmsgSendWrapper;
 begin
@@ -586,7 +586,7 @@ end;
 
 constructor NSNumber.numberWithLong(_value: Integer);
 type
-  TmsgSendWrapper = function (param1: objc.id; param2: SEL;_value: Integer): objc.id; cdecl;
+  TmsgSendWrapper = function (param1: lobjc.id; param2: SEL;_value: Integer): lobjc.id; cdecl;
 var
   vmethod: TmsgSendWrapper;
 begin
@@ -597,7 +597,7 @@ end;
 
 constructor NSNumber.numberWithUnsignedLong(_value: LongWord);
 type
-  TmsgSendWrapper = function (param1: objc.id; param2: SEL;_value: LongWord): objc.id; cdecl;
+  TmsgSendWrapper = function (param1: lobjc.id; param2: SEL;_value: LongWord): lobjc.id; cdecl;
 var
   vmethod: TmsgSendWrapper;
 begin
@@ -608,7 +608,7 @@ end;
 
 constructor NSNumber.numberWithLongLong(_value: Int64);
 type
-  TmsgSendWrapper = function (param1: objc.id; param2: SEL;_value: Int64): objc.id; cdecl;
+  TmsgSendWrapper = function (param1: lobjc.id; param2: SEL;_value: Int64): lobjc.id; cdecl;
 var
   vmethod: TmsgSendWrapper;
 begin
@@ -619,7 +619,7 @@ end;
 
 constructor NSNumber.numberWithUnsignedLongLong(_value: Int64);
 type
-  TmsgSendWrapper = function (param1: objc.id; param2: SEL;_value: Int64): objc.id; cdecl;
+  TmsgSendWrapper = function (param1: lobjc.id; param2: SEL;_value: Int64): lobjc.id; cdecl;
 var
   vmethod: TmsgSendWrapper;
 begin
@@ -630,7 +630,7 @@ end;
 
 constructor NSNumber.numberWithFloat(_value: Single);
 type
-  TmsgSendWrapper = function (param1: objc.id; param2: SEL;_value: Single): objc.id; cdecl;
+  TmsgSendWrapper = function (param1: lobjc.id; param2: SEL;_value: Single): lobjc.id; cdecl;
 var
   vmethod: TmsgSendWrapper;
 begin
@@ -641,7 +641,7 @@ end;
 
 constructor NSNumber.numberWithDouble(_value: double);
 type
-  TmsgSendWrapper = function (param1: objc.id; param2: SEL;_value: double): objc.id; cdecl;
+  TmsgSendWrapper = function (param1: lobjc.id; param2: SEL;_value: double): lobjc.id; cdecl;
 var
   vmethod: TmsgSendWrapper;
 begin
@@ -652,7 +652,7 @@ end;
 
 constructor NSNumber.numberWithBool(_value: LongBool);
 type
-  TmsgSendWrapper = function (param1: objc.id; param2: SEL;_value: LongBool): objc.id; cdecl;
+  TmsgSendWrapper = function (param1: lobjc.id; param2: SEL;_value: LongBool): lobjc.id; cdecl;
 var
   vmethod: TmsgSendWrapper;
 begin

@@ -23,7 +23,7 @@
  * @APPLE_LICENSE_HEADER_END@
  }
 { 
- *	objc-auto.h
+ *	lobjc-auto.h
  *	Copyright 2004 Apple Computer, Inc.
  }
 

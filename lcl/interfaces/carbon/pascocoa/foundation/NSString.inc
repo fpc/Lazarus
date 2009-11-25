@@ -78,7 +78,7 @@ const
 
   NSString = class(NSObject)
   public
-    class function getClass: objc.id; override;
+    class function getClass: lobjc.id; override;
     //  NSString primitive (funnel) methods. See below for the other methods.
     function length: LongWord;
     function characterAtIndex(__index: LongWord): unichar;
@@ -208,25 +208,25 @@ const
     constructor stringWithCString_encoding(_cString: PChar; _enc: NSStringEncoding);
     //  These use the specified encoding.  If nil is returned, the optional error return
     // indicates problem that was encountered (for instance, file system or encoding errors).
-    constructor initWithContentsOfURL_encoding_error(_url: CFURLRef; _enc: NSStringEncoding; _error: objc.id {NSError});
-    constructor initWithContentsOfFile_encoding_error(_path: CFStringRef; _enc: NSStringEncoding; _error: objc.id {NSError});
-    constructor stringWithContentsOfURL_encoding_error(_url: CFURLRef; _enc: NSStringEncoding; _error: objc.id {NSError});
-    constructor stringWithContentsOfFile_encoding_error(_path: CFStringRef; _enc: NSStringEncoding; _error: objc.id {NSError});
+    constructor initWithContentsOfURL_encoding_error(_url: CFURLRef; _enc: NSStringEncoding; _error: lobjc.id {NSError});
+    constructor initWithContentsOfFile_encoding_error(_path: CFStringRef; _enc: NSStringEncoding; _error: lobjc.id {NSError});
+    constructor stringWithContentsOfURL_encoding_error(_url: CFURLRef; _enc: NSStringEncoding; _error: lobjc.id {NSError});
+    constructor stringWithContentsOfFile_encoding_error(_path: CFStringRef; _enc: NSStringEncoding; _error: lobjc.id {NSError});
     //  These try to determine the encoding, and return the encoding which was used.  Note
     // that these methods might get "smarter" in subsequent releases of the system, and
     // use additional techniques for recognizing encodings. If nil is returned, the optional
     // error return indicates problem that was encountered (for instance, file system or
     // encoding errors).
-    constructor initWithContentsOfURL_usedEncoding_error(_url: CFURLRef; _enc: NSStringEncoding; _error: objc.id {NSError});
-    constructor initWithContentsOfFile_usedEncoding_error(_path: CFStringRef; _enc: NSStringEncoding; _error: objc.id {NSError});
-    constructor stringWithContentsOfURL_usedEncoding_error(_url: CFURLRef; _enc: NSStringEncoding; _error: objc.id {NSError});
-    constructor stringWithContentsOfFile_usedEncoding_error(_path: CFStringRef; _enc: NSStringEncoding; _error: objc.id {NSError});
+    constructor initWithContentsOfURL_usedEncoding_error(_url: CFURLRef; _enc: NSStringEncoding; _error: lobjc.id {NSError});
+    constructor initWithContentsOfFile_usedEncoding_error(_path: CFStringRef; _enc: NSStringEncoding; _error: lobjc.id {NSError});
+    constructor stringWithContentsOfURL_usedEncoding_error(_url: CFURLRef; _enc: NSStringEncoding; _error: lobjc.id {NSError});
+    constructor stringWithContentsOfFile_usedEncoding_error(_path: CFStringRef; _enc: NSStringEncoding; _error: lobjc.id {NSError});
     //  Write to specified url or path using the specified encoding.  The optional error
     // return is to indicate file system or encoding errors.
-    function writeToURL_atomically_encoding_error(_url: CFURLRef; _useAuxiliaryFile: LongBool; _enc: NSStringEncoding; _error: objc.id {NSError}): LongBool;
-    function writeToFile_atomically_encoding_error(_path: CFStringRef; _useAuxiliaryFile: LongBool; _enc: NSStringEncoding; _error: objc.id {NSError}): LongBool;
+    function writeToURL_atomically_encoding_error(_url: CFURLRef; _useAuxiliaryFile: LongBool; _enc: NSStringEncoding; _error: lobjc.id {NSError}): LongBool;
+    function writeToFile_atomically_encoding_error(_path: CFStringRef; _useAuxiliaryFile: LongBool; _enc: NSStringEncoding; _error: lobjc.id {NSError}): LongBool;
     {.$endif}
-    function propertyList: objc.id;
+    function propertyList: lobjc.id;
     function propertyListFromStringsFileFormat: CFDictionaryRef;
     //  The methods in this category are deprecated and will be removed from this header
     // file in the near future. These methods use [NSString defaultCStringEncoding] as the
@@ -260,7 +260,7 @@ const
 
   NSMutableString = class(NSString)
   public
-    class function getClass: objc.id; override;
+    class function getClass: lobjc.id; override;
     //  NSMutableString primitive (funnel) method. See below for the other mutation methods.
     procedure replaceCharactersInRange_withString(_range: NSRange; _aString: CFStringRef);
     procedure insertString_atIndex(_aString: CFStringRef; _loc: LongWord);
@@ -291,7 +291,7 @@ const
 
   NSSimpleCString = class(NSString)
   public
-    class function getClass: objc.id; override;
+    class function getClass: lobjc.id; override;
   end;
 
 
@@ -299,7 +299,7 @@ const
 
   NSConstantString = class(NSSimpleCString)
   public
-    class function getClass: objc.id; override;
+    class function getClass: lobjc.id; override;
   end;
 
 {$endif}
@@ -438,7 +438,7 @@ const
 
 { NSString }
 
-class function NSString.getClass: objc.id;
+class function NSString.getClass: lobjc.id;
 begin
   Result := objc_getClass(StrNSString_NSString);
 end;
@@ -450,7 +450,7 @@ end;
 
 function NSString.characterAtIndex(__index: LongWord): unichar;
 type
-  TmsgSendWrapper = function (param1: objc.id; param2: SEL;__index: LongWord): unichar; cdecl;
+  TmsgSendWrapper = function (param1: lobjc.id; param2: SEL;__index: LongWord): unichar; cdecl;
 var
   vmethod: TmsgSendWrapper;
 begin
@@ -460,7 +460,7 @@ end;
 
 procedure NSString.getCharacters(_buffer: unichar);
 type
-  TmsgSendWrapper = procedure (param1: objc.id; param2: SEL;_buffer: unichar); cdecl;
+  TmsgSendWrapper = procedure (param1: lobjc.id; param2: SEL;_buffer: unichar); cdecl;
 var
   vmethod: TmsgSendWrapper;
 begin
@@ -470,7 +470,7 @@ end;
 
 procedure NSString.getCharacters_range(_buffer: unichar; _aRange: NSRange);
 type
-  TmsgSendWrapper = procedure (param1: objc.id; param2: SEL;_buffer: unichar; _aRange: NSRange); cdecl;
+  TmsgSendWrapper = procedure (param1: lobjc.id; param2: SEL;_buffer: unichar; _aRange: NSRange); cdecl;
 var
   vmethod: TmsgSendWrapper;
 begin
@@ -480,7 +480,7 @@ end;
 
 function NSString.substringFromIndex(_from: LongWord): CFStringRef;
 type
-  TmsgSendWrapper = function (param1: objc.id; param2: SEL;_from: LongWord): CFStringRef; cdecl;
+  TmsgSendWrapper = function (param1: lobjc.id; param2: SEL;_from: LongWord): CFStringRef; cdecl;
 var
   vmethod: TmsgSendWrapper;
 begin
@@ -490,7 +490,7 @@ end;
 
 function NSString.substringToIndex(__to: LongWord): CFStringRef;
 type
-  TmsgSendWrapper = function (param1: objc.id; param2: SEL;__to: LongWord): CFStringRef; cdecl;
+  TmsgSendWrapper = function (param1: lobjc.id; param2: SEL;__to: LongWord): CFStringRef; cdecl;
 var
   vmethod: TmsgSendWrapper;
 begin
@@ -500,7 +500,7 @@ end;
 
 function NSString.substringWithRange(_range: NSRange): CFStringRef;
 type
-  TmsgSendWrapper = function (param1: objc.id; param2: SEL;_range: NSRange): CFStringRef; cdecl;
+  TmsgSendWrapper = function (param1: lobjc.id; param2: SEL;_range: NSRange): CFStringRef; cdecl;
 var
   vmethod: TmsgSendWrapper;
 begin
@@ -510,7 +510,7 @@ end;
 
 function NSString.compare(__string: CFStringRef): NSComparisonResult;
 type
-  TmsgSendWrapper = function (param1: objc.id; param2: SEL;__string: CFStringRef): NSComparisonResult; cdecl;
+  TmsgSendWrapper = function (param1: lobjc.id; param2: SEL;__string: CFStringRef): NSComparisonResult; cdecl;
 var
   vmethod: TmsgSendWrapper;
 begin
@@ -520,7 +520,7 @@ end;
 
 function NSString.compare_options(__string: CFStringRef; _mask: LongWord): NSComparisonResult;
 type
-  TmsgSendWrapper = function (param1: objc.id; param2: SEL;__string: CFStringRef; _mask: LongWord): NSComparisonResult; cdecl;
+  TmsgSendWrapper = function (param1: lobjc.id; param2: SEL;__string: CFStringRef; _mask: LongWord): NSComparisonResult; cdecl;
 var
   vmethod: TmsgSendWrapper;
 begin
@@ -530,7 +530,7 @@ end;
 
 function NSString.compare_options_range(__string: CFStringRef; _mask: LongWord; _compareRange: NSRange): NSComparisonResult;
 type
-  TmsgSendWrapper = function (param1: objc.id; param2: SEL;__string: CFStringRef; _mask: LongWord; _compareRange: NSRange): NSComparisonResult; cdecl;
+  TmsgSendWrapper = function (param1: lobjc.id; param2: SEL;__string: CFStringRef; _mask: LongWord; _compareRange: NSRange): NSComparisonResult; cdecl;
 var
   vmethod: TmsgSendWrapper;
 begin
@@ -540,7 +540,7 @@ end;
 
 function NSString.compare_options_range_locale(__string: CFStringRef; _mask: LongWord; _compareRange: NSRange; _dict: CFDictionaryRef): NSComparisonResult;
 type
-  TmsgSendWrapper = function (param1: objc.id; param2: SEL;__string: CFStringRef; _mask: LongWord; _compareRange: NSRange; _dict: CFDictionaryRef): NSComparisonResult; cdecl;
+  TmsgSendWrapper = function (param1: lobjc.id; param2: SEL;__string: CFStringRef; _mask: LongWord; _compareRange: NSRange; _dict: CFDictionaryRef): NSComparisonResult; cdecl;
 var
   vmethod: TmsgSendWrapper;
 begin
@@ -550,7 +550,7 @@ end;
 
 function NSString.caseInsensitiveCompare(__string: CFStringRef): NSComparisonResult;
 type
-  TmsgSendWrapper = function (param1: objc.id; param2: SEL;__string: CFStringRef): NSComparisonResult; cdecl;
+  TmsgSendWrapper = function (param1: lobjc.id; param2: SEL;__string: CFStringRef): NSComparisonResult; cdecl;
 var
   vmethod: TmsgSendWrapper;
 begin
@@ -560,7 +560,7 @@ end;
 
 function NSString.localizedCompare(__string: CFStringRef): NSComparisonResult;
 type
-  TmsgSendWrapper = function (param1: objc.id; param2: SEL;__string: CFStringRef): NSComparisonResult; cdecl;
+  TmsgSendWrapper = function (param1: lobjc.id; param2: SEL;__string: CFStringRef): NSComparisonResult; cdecl;
 var
   vmethod: TmsgSendWrapper;
 begin
@@ -570,7 +570,7 @@ end;
 
 function NSString.localizedCaseInsensitiveCompare(__string: CFStringRef): NSComparisonResult;
 type
-  TmsgSendWrapper = function (param1: objc.id; param2: SEL;__string: CFStringRef): NSComparisonResult; cdecl;
+  TmsgSendWrapper = function (param1: lobjc.id; param2: SEL;__string: CFStringRef): NSComparisonResult; cdecl;
 var
   vmethod: TmsgSendWrapper;
 begin
@@ -580,7 +580,7 @@ end;
 
 function NSString.isEqualToString(_aString: CFStringRef): LongBool;
 type
-  TmsgSendWrapper = function (param1: objc.id; param2: SEL;_aString: CFStringRef): LongBool; cdecl;
+  TmsgSendWrapper = function (param1: lobjc.id; param2: SEL;_aString: CFStringRef): LongBool; cdecl;
 var
   vmethod: TmsgSendWrapper;
 begin
@@ -590,7 +590,7 @@ end;
 
 function NSString.hasPrefix(_aString: CFStringRef): LongBool;
 type
-  TmsgSendWrapper = function (param1: objc.id; param2: SEL;_aString: CFStringRef): LongBool; cdecl;
+  TmsgSendWrapper = function (param1: lobjc.id; param2: SEL;_aString: CFStringRef): LongBool; cdecl;
 var
   vmethod: TmsgSendWrapper;
 begin
@@ -600,7 +600,7 @@ end;
 
 function NSString.hasSuffix(_aString: CFStringRef): LongBool;
 type
-  TmsgSendWrapper = function (param1: objc.id; param2: SEL;_aString: CFStringRef): LongBool; cdecl;
+  TmsgSendWrapper = function (param1: lobjc.id; param2: SEL;_aString: CFStringRef): LongBool; cdecl;
 var
   vmethod: TmsgSendWrapper;
 begin
@@ -610,7 +610,7 @@ end;
 
 function NSString.rangeOfString(_aString: CFStringRef): NSRange;
 type
-  TmsgSendWrapper = procedure (result_param: Pointer; param1: objc.id; param2: SEL;_aString: CFStringRef); cdecl;
+  TmsgSendWrapper = procedure (result_param: Pointer; param1: lobjc.id; param2: SEL;_aString: CFStringRef); cdecl;
 var
   vmethod: TmsgSendWrapper;
 begin
@@ -620,7 +620,7 @@ end;
 
 function NSString.rangeOfString_options(_aString: CFStringRef; _mask: LongWord): NSRange;
 type
-  TmsgSendWrapper = procedure (result_param: Pointer; param1: objc.id; param2: SEL;_aString: CFStringRef; _mask: LongWord); cdecl;
+  TmsgSendWrapper = procedure (result_param: Pointer; param1: lobjc.id; param2: SEL;_aString: CFStringRef; _mask: LongWord); cdecl;
 var
   vmethod: TmsgSendWrapper;
 begin
@@ -630,7 +630,7 @@ end;
 
 function NSString.rangeOfString_options_range(_aString: CFStringRef; _mask: LongWord; _searchRange: NSRange): NSRange;
 type
-  TmsgSendWrapper = procedure (result_param: Pointer; param1: objc.id; param2: SEL;_aString: CFStringRef; _mask: LongWord; _searchRange: NSRange); cdecl;
+  TmsgSendWrapper = procedure (result_param: Pointer; param1: lobjc.id; param2: SEL;_aString: CFStringRef; _mask: LongWord; _searchRange: NSRange); cdecl;
 var
   vmethod: TmsgSendWrapper;
 begin
@@ -640,7 +640,7 @@ end;
 
 function NSString.rangeOfCharacterFromSet(_aSet: CFCharacterSetRef): NSRange;
 type
-  TmsgSendWrapper = procedure (result_param: Pointer; param1: objc.id; param2: SEL;_aSet: CFCharacterSetRef); cdecl;
+  TmsgSendWrapper = procedure (result_param: Pointer; param1: lobjc.id; param2: SEL;_aSet: CFCharacterSetRef); cdecl;
 var
   vmethod: TmsgSendWrapper;
 begin
@@ -650,7 +650,7 @@ end;
 
 function NSString.rangeOfCharacterFromSet_options(_aSet: CFCharacterSetRef; _mask: LongWord): NSRange;
 type
-  TmsgSendWrapper = procedure (result_param: Pointer; param1: objc.id; param2: SEL;_aSet: CFCharacterSetRef; _mask: LongWord); cdecl;
+  TmsgSendWrapper = procedure (result_param: Pointer; param1: lobjc.id; param2: SEL;_aSet: CFCharacterSetRef; _mask: LongWord); cdecl;
 var
   vmethod: TmsgSendWrapper;
 begin
@@ -660,7 +660,7 @@ end;
 
 function NSString.rangeOfCharacterFromSet_options_range(_aSet: CFCharacterSetRef; _mask: LongWord; _searchRange: NSRange): NSRange;
 type
-  TmsgSendWrapper = procedure (result_param: Pointer; param1: objc.id; param2: SEL;_aSet: CFCharacterSetRef; _mask: LongWord; _searchRange: NSRange); cdecl;
+  TmsgSendWrapper = procedure (result_param: Pointer; param1: lobjc.id; param2: SEL;_aSet: CFCharacterSetRef; _mask: LongWord; _searchRange: NSRange); cdecl;
 var
   vmethod: TmsgSendWrapper;
 begin
@@ -670,7 +670,7 @@ end;
 
 function NSString.rangeOfComposedCharacterSequenceAtIndex(__index: LongWord): NSRange;
 type
-  TmsgSendWrapper = procedure (result_param: Pointer; param1: objc.id; param2: SEL;__index: LongWord); cdecl;
+  TmsgSendWrapper = procedure (result_param: Pointer; param1: lobjc.id; param2: SEL;__index: LongWord); cdecl;
 var
   vmethod: TmsgSendWrapper;
 begin
@@ -680,7 +680,7 @@ end;
 
 function NSString.stringByAppendingString(_aString: CFStringRef): CFStringRef;
 type
-  TmsgSendWrapper = function (param1: objc.id; param2: SEL;_aString: CFStringRef): CFStringRef; cdecl;
+  TmsgSendWrapper = function (param1: lobjc.id; param2: SEL;_aString: CFStringRef): CFStringRef; cdecl;
 var
   vmethod: TmsgSendWrapper;
 begin
@@ -690,7 +690,7 @@ end;
 
 function NSString.stringByAppendingFormat(_format: CFStringRef): CFStringRef;
 type
-  TmsgSendWrapper = function (param1: objc.id; param2: SEL;_format: CFStringRef): CFStringRef; cdecl;
+  TmsgSendWrapper = function (param1: lobjc.id; param2: SEL;_format: CFStringRef): CFStringRef; cdecl;
 var
   vmethod: TmsgSendWrapper;
 begin
@@ -715,7 +715,7 @@ end;
 
 function NSString.componentsSeparatedByString(_separator: CFStringRef): CFArrayRef;
 type
-  TmsgSendWrapper = function (param1: objc.id; param2: SEL;_separator: CFStringRef): CFArrayRef; cdecl;
+  TmsgSendWrapper = function (param1: lobjc.id; param2: SEL;_separator: CFStringRef): CFArrayRef; cdecl;
 var
   vmethod: TmsgSendWrapper;
 begin
@@ -725,7 +725,7 @@ end;
 
 function NSString.commonPrefixWithString_options(_aString: CFStringRef; _mask: LongWord): CFStringRef;
 type
-  TmsgSendWrapper = function (param1: objc.id; param2: SEL;_aString: CFStringRef; _mask: LongWord): CFStringRef; cdecl;
+  TmsgSendWrapper = function (param1: lobjc.id; param2: SEL;_aString: CFStringRef; _mask: LongWord): CFStringRef; cdecl;
 var
   vmethod: TmsgSendWrapper;
 begin
@@ -751,7 +751,7 @@ end;
 {.$ifdef  MAC_OS_X_VERSION_10_2 <= MAC_OS_X_VERSION_MAX_ALLOWED}
 function NSString.stringByTrimmingCharactersInSet(__set: CFCharacterSetRef): CFStringRef;
 type
-  TmsgSendWrapper = function (param1: objc.id; param2: SEL;__set: CFCharacterSetRef): CFStringRef; cdecl;
+  TmsgSendWrapper = function (param1: lobjc.id; param2: SEL;__set: CFCharacterSetRef): CFStringRef; cdecl;
 var
   vmethod: TmsgSendWrapper;
 begin
@@ -761,7 +761,7 @@ end;
 
 function NSString.stringByPaddingToLength_withString_startingAtIndex(_newLength: LongWord; _padString: CFStringRef; _padIndex: LongWord): CFStringRef;
 type
-  TmsgSendWrapper = function (param1: objc.id; param2: SEL;_newLength: LongWord; _padString: CFStringRef; _padIndex: LongWord): CFStringRef; cdecl;
+  TmsgSendWrapper = function (param1: lobjc.id; param2: SEL;_newLength: LongWord; _padString: CFStringRef; _padIndex: LongWord): CFStringRef; cdecl;
 var
   vmethod: TmsgSendWrapper;
 begin
@@ -772,7 +772,7 @@ end;
 {.$endif}
 procedure NSString.getLineStart_end_contentsEnd_forRange(_startPtr: PLongWord; _lineEndPtr: PLongWord; _contentsEndPtr: PLongWord; _range: NSRange);
 type
-  TmsgSendWrapper = procedure (param1: objc.id; param2: SEL;_startPtr: PLongWord; _lineEndPtr: PLongWord; _contentsEndPtr: PLongWord; _range: NSRange); cdecl;
+  TmsgSendWrapper = procedure (param1: lobjc.id; param2: SEL;_startPtr: PLongWord; _lineEndPtr: PLongWord; _contentsEndPtr: PLongWord; _range: NSRange); cdecl;
 var
   vmethod: TmsgSendWrapper;
 begin
@@ -782,7 +782,7 @@ end;
 
 function NSString.lineRangeForRange(_range: NSRange): NSRange;
 type
-  TmsgSendWrapper = procedure (result_param: Pointer; param1: objc.id; param2: SEL;_range: NSRange); cdecl;
+  TmsgSendWrapper = procedure (result_param: Pointer; param1: lobjc.id; param2: SEL;_range: NSRange); cdecl;
 var
   vmethod: TmsgSendWrapper;
 begin
@@ -793,7 +793,7 @@ end;
 {.$ifdef  MAC_OS_X_VERSION_10_3 <= MAC_OS_X_VERSION_MAX_ALLOWED}
 procedure NSString.getParagraphStart_end_contentsEnd_forRange(_startPtr: PLongWord; _parEndPtr: PLongWord; _contentsEndPtr: PLongWord; _range: NSRange);
 type
-  TmsgSendWrapper = procedure (param1: objc.id; param2: SEL;_startPtr: PLongWord; _parEndPtr: PLongWord; _contentsEndPtr: PLongWord; _range: NSRange); cdecl;
+  TmsgSendWrapper = procedure (param1: lobjc.id; param2: SEL;_startPtr: PLongWord; _parEndPtr: PLongWord; _contentsEndPtr: PLongWord; _range: NSRange); cdecl;
 var
   vmethod: TmsgSendWrapper;
 begin
@@ -803,7 +803,7 @@ end;
 
 function NSString.paragraphRangeForRange(_range: NSRange): NSRange;
 type
-  TmsgSendWrapper = procedure (result_param: Pointer; param1: objc.id; param2: SEL;_range: NSRange); cdecl;
+  TmsgSendWrapper = procedure (result_param: Pointer; param1: lobjc.id; param2: SEL;_range: NSRange); cdecl;
 var
   vmethod: TmsgSendWrapper;
 begin
@@ -834,7 +834,7 @@ end;
 
 function NSString.dataUsingEncoding_allowLossyConversion(_encoding: NSStringEncoding; _lossy: LongBool): CFDataRef;
 type
-  TmsgSendWrapper = function (param1: objc.id; param2: SEL;_encoding: NSStringEncoding; _lossy: LongBool): CFDataRef; cdecl;
+  TmsgSendWrapper = function (param1: lobjc.id; param2: SEL;_encoding: NSStringEncoding; _lossy: LongBool): CFDataRef; cdecl;
 var
   vmethod: TmsgSendWrapper;
 begin
@@ -844,7 +844,7 @@ end;
 
 function NSString.dataUsingEncoding(_encoding: NSStringEncoding): CFDataRef;
 type
-  TmsgSendWrapper = function (param1: objc.id; param2: SEL;_encoding: NSStringEncoding): CFDataRef; cdecl;
+  TmsgSendWrapper = function (param1: lobjc.id; param2: SEL;_encoding: NSStringEncoding): CFDataRef; cdecl;
 var
   vmethod: TmsgSendWrapper;
 begin
@@ -854,7 +854,7 @@ end;
 
 function NSString.canBeConvertedToEncoding(_encoding: NSStringEncoding): LongBool;
 type
-  TmsgSendWrapper = function (param1: objc.id; param2: SEL;_encoding: NSStringEncoding): LongBool; cdecl;
+  TmsgSendWrapper = function (param1: lobjc.id; param2: SEL;_encoding: NSStringEncoding): LongBool; cdecl;
 var
   vmethod: TmsgSendWrapper;
 begin
@@ -865,7 +865,7 @@ end;
 {.$ifdef  MAC_OS_X_VERSION_10_4 <= MAC_OS_X_VERSION_MAX_ALLOWED}
 function NSString.cStringUsingEncoding(_encoding: NSStringEncoding): PChar;
 type
-  TmsgSendWrapper = function (param1: objc.id; param2: SEL;_encoding: NSStringEncoding): PChar; cdecl;
+  TmsgSendWrapper = function (param1: lobjc.id; param2: SEL;_encoding: NSStringEncoding): PChar; cdecl;
 var
   vmethod: TmsgSendWrapper;
 begin
@@ -875,7 +875,7 @@ end;
 
 function NSString.getCString_maxLength_encoding(_buffer: PChar; _maxBufferCount: LongWord; _encoding: NSStringEncoding): LongBool;
 type
-  TmsgSendWrapper = function (param1: objc.id; param2: SEL;_buffer: PChar; _maxBufferCount: LongWord; _encoding: NSStringEncoding): LongBool; cdecl;
+  TmsgSendWrapper = function (param1: lobjc.id; param2: SEL;_buffer: PChar; _maxBufferCount: LongWord; _encoding: NSStringEncoding): LongBool; cdecl;
 var
   vmethod: TmsgSendWrapper;
 begin
@@ -885,7 +885,7 @@ end;
 
 function NSString.maximumLengthOfBytesUsingEncoding(_enc: NSStringEncoding): LongWord;
 type
-  TmsgSendWrapper = function (param1: objc.id; param2: SEL;_enc: NSStringEncoding): LongWord; cdecl;
+  TmsgSendWrapper = function (param1: lobjc.id; param2: SEL;_enc: NSStringEncoding): LongWord; cdecl;
 var
   vmethod: TmsgSendWrapper;
 begin
@@ -895,7 +895,7 @@ end;
 
 function NSString.lengthOfBytesUsingEncoding(_enc: NSStringEncoding): LongWord;
 type
-  TmsgSendWrapper = function (param1: objc.id; param2: SEL;_enc: NSStringEncoding): LongWord; cdecl;
+  TmsgSendWrapper = function (param1: lobjc.id; param2: SEL;_enc: NSStringEncoding): LongWord; cdecl;
 var
   vmethod: TmsgSendWrapper;
 begin
@@ -943,7 +943,7 @@ end;
 
 constructor NSString.localizedNameOfStringEncoding(_encoding: NSStringEncoding);
 type
-  TmsgSendWrapper = function (param1: objc.id; param2: SEL;_encoding: NSStringEncoding): objc.id; cdecl;
+  TmsgSendWrapper = function (param1: lobjc.id; param2: SEL;_encoding: NSStringEncoding): lobjc.id; cdecl;
 var
   vmethod: TmsgSendWrapper;
 begin
@@ -954,7 +954,7 @@ end;
 
 constructor NSString.init;
 type
-  TmsgSendWrapper = function (param1: objc.id; param2: SEL): objc.id; cdecl;
+  TmsgSendWrapper = function (param1: lobjc.id; param2: SEL): lobjc.id; cdecl;
 var
   vmethod: TmsgSendWrapper;
 begin
@@ -966,7 +966,7 @@ end;
 
 constructor NSString.initWithCharactersNoCopy_length_freeWhenDone(_characters: unichar; _length: LongWord; _freeBuffer: LongBool);
 type
-  TmsgSendWrapper = function (param1: objc.id; param2: SEL;_characters: unichar; _length: LongWord; _freeBuffer: LongBool): objc.id; cdecl;
+  TmsgSendWrapper = function (param1: lobjc.id; param2: SEL;_characters: unichar; _length: LongWord; _freeBuffer: LongBool): lobjc.id; cdecl;
 var
   vmethod: TmsgSendWrapper;
 begin
@@ -978,7 +978,7 @@ end;
 
 constructor NSString.initWithCharacters_length(_characters: unichar; _length: LongWord);
 type
-  TmsgSendWrapper = function (param1: objc.id; param2: SEL;_characters: unichar; _length: LongWord): objc.id; cdecl;
+  TmsgSendWrapper = function (param1: lobjc.id; param2: SEL;_characters: unichar; _length: LongWord): lobjc.id; cdecl;
 var
   vmethod: TmsgSendWrapper;
 begin
@@ -990,7 +990,7 @@ end;
 
 constructor NSString.initWithUTF8String(_nullTerminatedCString: PChar);
 type
-  TmsgSendWrapper = function (param1: objc.id; param2: SEL;_nullTerminatedCString: PChar): objc.id; cdecl;
+  TmsgSendWrapper = function (param1: lobjc.id; param2: SEL;_nullTerminatedCString: PChar): lobjc.id; cdecl;
 var
   vmethod: TmsgSendWrapper;
 begin
@@ -1002,7 +1002,7 @@ end;
 
 constructor NSString.initWithString(_aString: CFStringRef);
 type
-  TmsgSendWrapper = function (param1: objc.id; param2: SEL;_aString: CFStringRef): objc.id; cdecl;
+  TmsgSendWrapper = function (param1: lobjc.id; param2: SEL;_aString: CFStringRef): lobjc.id; cdecl;
 var
   vmethod: TmsgSendWrapper;
 begin
@@ -1014,7 +1014,7 @@ end;
 
 constructor NSString.initWithFormat(_format: CFStringRef);
 type
-  TmsgSendWrapper = function (param1: objc.id; param2: SEL;_format: CFStringRef): objc.id; cdecl;
+  TmsgSendWrapper = function (param1: lobjc.id; param2: SEL;_format: CFStringRef): lobjc.id; cdecl;
 var
   vmethod: TmsgSendWrapper;
 begin
@@ -1026,7 +1026,7 @@ end;
 
 {constructor NSString.initWithFormat_arguments(_format: CFStringRef; const _argList: array of const);
 type
-  TmsgSendWrapper = function (param1: objc.id; param2: SEL;_format: CFStringRef; const _argList: array of const): objc.id; cdecl;
+  TmsgSendWrapper = function (param1: lobjc.id; param2: SEL;_format: CFStringRef; const _argList: array of const): lobjc.id; cdecl;
 var
   vmethod: TmsgSendWrapper;
 begin
@@ -1038,7 +1038,7 @@ end;}
 
 constructor NSString.initWithFormat_locale(_format: CFStringRef; _dict: CFDictionaryRef);
 type
-  TmsgSendWrapper = function (param1: objc.id; param2: SEL;_format: CFStringRef; _dict: CFDictionaryRef): objc.id; cdecl;
+  TmsgSendWrapper = function (param1: lobjc.id; param2: SEL;_format: CFStringRef; _dict: CFDictionaryRef): lobjc.id; cdecl;
 var
   vmethod: TmsgSendWrapper;
 begin
@@ -1050,7 +1050,7 @@ end;
 
 {constructor NSString.initWithFormat_locale_arguments(_format: CFStringRef; _dict: CFDictionaryRef; const _argList: array of const);
 type
-  TmsgSendWrapper = function (param1: objc.id; param2: SEL;_format: CFStringRef; _dict: CFDictionaryRef; const _argList: array of const): objc.id; cdecl;
+  TmsgSendWrapper = function (param1: lobjc.id; param2: SEL;_format: CFStringRef; _dict: CFDictionaryRef; const _argList: array of const): lobjc.id; cdecl;
 var
   vmethod: TmsgSendWrapper;
 begin
@@ -1062,7 +1062,7 @@ end;}
 
 constructor NSString.initWithData_encoding(_data: CFDataRef; _encoding: NSStringEncoding);
 type
-  TmsgSendWrapper = function (param1: objc.id; param2: SEL;_data: CFDataRef; _encoding: NSStringEncoding): objc.id; cdecl;
+  TmsgSendWrapper = function (param1: lobjc.id; param2: SEL;_data: CFDataRef; _encoding: NSStringEncoding): lobjc.id; cdecl;
 var
   vmethod: TmsgSendWrapper;
 begin
@@ -1074,7 +1074,7 @@ end;
 
 constructor NSString.initWithBytes_length_encoding(_bytes: Pointer; _len: LongWord; _encoding: NSStringEncoding);
 type
-  TmsgSendWrapper = function (param1: objc.id; param2: SEL;_bytes: Pointer; _len: LongWord; _encoding: NSStringEncoding): objc.id; cdecl;
+  TmsgSendWrapper = function (param1: lobjc.id; param2: SEL;_bytes: Pointer; _len: LongWord; _encoding: NSStringEncoding): lobjc.id; cdecl;
 var
   vmethod: TmsgSendWrapper;
 begin
@@ -1087,7 +1087,7 @@ end;
 {.$ifdef  MAC_OS_X_VERSION_10_3 <= MAC_OS_X_VERSION_MAX_ALLOWED}
 constructor NSString.initWithBytesNoCopy_length_encoding_freeWhenDone(_bytes: Pointer; _len: LongWord; _encoding: NSStringEncoding; _freeBuffer: LongBool);
 type
-  TmsgSendWrapper = function (param1: objc.id; param2: SEL;_bytes: Pointer; _len: LongWord; _encoding: NSStringEncoding; _freeBuffer: LongBool): objc.id; cdecl;
+  TmsgSendWrapper = function (param1: lobjc.id; param2: SEL;_bytes: Pointer; _len: LongWord; _encoding: NSStringEncoding; _freeBuffer: LongBool): lobjc.id; cdecl;
 var
   vmethod: TmsgSendWrapper;
 begin
@@ -1100,7 +1100,7 @@ end;
 {.$endif}
 constructor NSString.string_;
 type
-  TmsgSendWrapper = function (param1: objc.id; param2: SEL): objc.id; cdecl;
+  TmsgSendWrapper = function (param1: lobjc.id; param2: SEL): lobjc.id; cdecl;
 var
   vmethod: TmsgSendWrapper;
 begin
@@ -1111,7 +1111,7 @@ end;
 
 constructor NSString.stringWithString(__string: CFStringRef);
 type
-  TmsgSendWrapper = function (param1: objc.id; param2: SEL;__string: CFStringRef): objc.id; cdecl;
+  TmsgSendWrapper = function (param1: lobjc.id; param2: SEL;__string: CFStringRef): lobjc.id; cdecl;
 var
   vmethod: TmsgSendWrapper;
 begin
@@ -1122,7 +1122,7 @@ end;
 
 constructor NSString.stringWithCharacters_length(_characters: unichar; _length: LongWord);
 type
-  TmsgSendWrapper = function (param1: objc.id; param2: SEL;_characters: unichar; _length: LongWord): objc.id; cdecl;
+  TmsgSendWrapper = function (param1: lobjc.id; param2: SEL;_characters: unichar; _length: LongWord): lobjc.id; cdecl;
 var
   vmethod: TmsgSendWrapper;
 begin
@@ -1133,7 +1133,7 @@ end;
 
 constructor NSString.stringWithUTF8String(_nullTerminatedCString: PChar);
 type
-  TmsgSendWrapper = function (param1: objc.id; param2: SEL;_nullTerminatedCString: PChar): objc.id; cdecl;
+  TmsgSendWrapper = function (param1: lobjc.id; param2: SEL;_nullTerminatedCString: PChar): lobjc.id; cdecl;
 var
   vmethod: TmsgSendWrapper;
 begin
@@ -1144,7 +1144,7 @@ end;
 
 constructor NSString.stringWithFormat(_format: CFStringRef);
 type
-  TmsgSendWrapper = function (param1: objc.id; param2: SEL;_format: CFStringRef): objc.id; cdecl;
+  TmsgSendWrapper = function (param1: lobjc.id; param2: SEL;_format: CFStringRef): lobjc.id; cdecl;
 var
   vmethod: TmsgSendWrapper;
 begin
@@ -1155,7 +1155,7 @@ end;
 
 constructor NSString.localizedStringWithFormat(_format: CFStringRef);
 type
-  TmsgSendWrapper = function (param1: objc.id; param2: SEL;_format: CFStringRef): objc.id; cdecl;
+  TmsgSendWrapper = function (param1: lobjc.id; param2: SEL;_format: CFStringRef): lobjc.id; cdecl;
 var
   vmethod: TmsgSendWrapper;
 begin
@@ -1167,7 +1167,7 @@ end;
 {.$ifdef  MAC_OS_X_VERSION_10_4 <= MAC_OS_X_VERSION_MAX_ALLOWED}
 constructor NSString.initWithCString_encoding(_nullTerminatedCString: PChar; _encoding: NSStringEncoding);
 type
-  TmsgSendWrapper = function (param1: objc.id; param2: SEL;_nullTerminatedCString: PChar; _encoding: NSStringEncoding): objc.id; cdecl;
+  TmsgSendWrapper = function (param1: lobjc.id; param2: SEL;_nullTerminatedCString: PChar; _encoding: NSStringEncoding): lobjc.id; cdecl;
 var
   vmethod: TmsgSendWrapper;
 begin
@@ -1179,7 +1179,7 @@ end;
 
 constructor NSString.stringWithCString_encoding(_cString: PChar; _enc: NSStringEncoding);
 type
-  TmsgSendWrapper = function (param1: objc.id; param2: SEL;_cString: PChar; _enc: NSStringEncoding): objc.id; cdecl;
+  TmsgSendWrapper = function (param1: lobjc.id; param2: SEL;_cString: PChar; _enc: NSStringEncoding): lobjc.id; cdecl;
 var
   vmethod: TmsgSendWrapper;
 begin
@@ -1188,9 +1188,9 @@ begin
   Handle := vmethod(ClassID, sel_registerName(PChar(StrNSString_stringWithCString_encoding)), _cString, _enc);
 end;
 
-constructor NSString.initWithContentsOfURL_encoding_error(_url: CFURLRef; _enc: NSStringEncoding; _error: objc.id {NSError});
+constructor NSString.initWithContentsOfURL_encoding_error(_url: CFURLRef; _enc: NSStringEncoding; _error: lobjc.id {NSError});
 type
-  TmsgSendWrapper = function (param1: objc.id; param2: SEL;_url: CFURLRef; _enc: NSStringEncoding; _error: objc.id {NSError}): objc.id; cdecl;
+  TmsgSendWrapper = function (param1: lobjc.id; param2: SEL;_url: CFURLRef; _enc: NSStringEncoding; _error: lobjc.id {NSError}): lobjc.id; cdecl;
 var
   vmethod: TmsgSendWrapper;
 begin
@@ -1200,9 +1200,9 @@ begin
   Handle := vmethod(allocbuf, sel_registerName(PChar(StrNSString_initWithContentsOfURL_encoding_error)), _url, _enc, _error);
 end;
 
-constructor NSString.initWithContentsOfFile_encoding_error(_path: CFStringRef; _enc: NSStringEncoding; _error: objc.id {NSError});
+constructor NSString.initWithContentsOfFile_encoding_error(_path: CFStringRef; _enc: NSStringEncoding; _error: lobjc.id {NSError});
 type
-  TmsgSendWrapper = function (param1: objc.id; param2: SEL;_path: CFStringRef; _enc: NSStringEncoding; _error: objc.id {NSError}): objc.id; cdecl;
+  TmsgSendWrapper = function (param1: lobjc.id; param2: SEL;_path: CFStringRef; _enc: NSStringEncoding; _error: lobjc.id {NSError}): lobjc.id; cdecl;
 var
   vmethod: TmsgSendWrapper;
 begin
@@ -1212,9 +1212,9 @@ begin
   Handle := vmethod(allocbuf, sel_registerName(PChar(StrNSString_initWithContentsOfFile_encoding_error)), _path, _enc, _error);
 end;
 
-constructor NSString.stringWithContentsOfURL_encoding_error(_url: CFURLRef; _enc: NSStringEncoding; _error: objc.id {NSError});
+constructor NSString.stringWithContentsOfURL_encoding_error(_url: CFURLRef; _enc: NSStringEncoding; _error: lobjc.id {NSError});
 type
-  TmsgSendWrapper = function (param1: objc.id; param2: SEL;_url: CFURLRef; _enc: NSStringEncoding; _error: objc.id {NSError}): objc.id; cdecl;
+  TmsgSendWrapper = function (param1: lobjc.id; param2: SEL;_url: CFURLRef; _enc: NSStringEncoding; _error: lobjc.id {NSError}): lobjc.id; cdecl;
 var
   vmethod: TmsgSendWrapper;
 begin
@@ -1223,9 +1223,9 @@ begin
   Handle := vmethod(ClassID, sel_registerName(PChar(StrNSString_stringWithContentsOfURL_encoding_error)), _url, _enc, _error);
 end;
 
-constructor NSString.stringWithContentsOfFile_encoding_error(_path: CFStringRef; _enc: NSStringEncoding; _error: objc.id {NSError});
+constructor NSString.stringWithContentsOfFile_encoding_error(_path: CFStringRef; _enc: NSStringEncoding; _error: lobjc.id {NSError});
 type
-  TmsgSendWrapper = function (param1: objc.id; param2: SEL;_path: CFStringRef; _enc: NSStringEncoding; _error: objc.id {NSError}): objc.id; cdecl;
+  TmsgSendWrapper = function (param1: lobjc.id; param2: SEL;_path: CFStringRef; _enc: NSStringEncoding; _error: lobjc.id {NSError}): lobjc.id; cdecl;
 var
   vmethod: TmsgSendWrapper;
 begin
@@ -1234,9 +1234,9 @@ begin
   Handle := vmethod(ClassID, sel_registerName(PChar(StrNSString_stringWithContentsOfFile_encoding_error)), _path, _enc, _error);
 end;
 
-constructor NSString.initWithContentsOfURL_usedEncoding_error(_url: CFURLRef; _enc: NSStringEncoding; _error: objc.id {NSError});
+constructor NSString.initWithContentsOfURL_usedEncoding_error(_url: CFURLRef; _enc: NSStringEncoding; _error: lobjc.id {NSError});
 type
-  TmsgSendWrapper = function (param1: objc.id; param2: SEL;_url: CFURLRef; _enc: NSStringEncoding; _error: objc.id {NSError}): objc.id; cdecl;
+  TmsgSendWrapper = function (param1: lobjc.id; param2: SEL;_url: CFURLRef; _enc: NSStringEncoding; _error: lobjc.id {NSError}): lobjc.id; cdecl;
 var
   vmethod: TmsgSendWrapper;
 begin
@@ -1246,9 +1246,9 @@ begin
   Handle := vmethod(allocbuf, sel_registerName(PChar(StrNSString_initWithContentsOfURL_usedEncoding_error)), _url, _enc, _error);
 end;
 
-constructor NSString.initWithContentsOfFile_usedEncoding_error(_path: CFStringRef; _enc: NSStringEncoding; _error: objc.id {NSError});
+constructor NSString.initWithContentsOfFile_usedEncoding_error(_path: CFStringRef; _enc: NSStringEncoding; _error: lobjc.id {NSError});
 type
-  TmsgSendWrapper = function (param1: objc.id; param2: SEL;_path: CFStringRef; _enc: NSStringEncoding; _error: objc.id {NSError}): objc.id; cdecl;
+  TmsgSendWrapper = function (param1: lobjc.id; param2: SEL;_path: CFStringRef; _enc: NSStringEncoding; _error: lobjc.id {NSError}): lobjc.id; cdecl;
 var
   vmethod: TmsgSendWrapper;
 begin
@@ -1258,9 +1258,9 @@ begin
   Handle := vmethod(allocbuf, sel_registerName(PChar(StrNSString_initWithContentsOfFile_usedEncoding_error)), _path, _enc, _error);
 end;
 
-constructor NSString.stringWithContentsOfURL_usedEncoding_error(_url: CFURLRef; _enc: NSStringEncoding; _error: objc.id {NSError});
+constructor NSString.stringWithContentsOfURL_usedEncoding_error(_url: CFURLRef; _enc: NSStringEncoding; _error: lobjc.id {NSError});
 type
-  TmsgSendWrapper = function (param1: objc.id; param2: SEL;_url: CFURLRef; _enc: NSStringEncoding; _error: objc.id {NSError}): objc.id; cdecl;
+  TmsgSendWrapper = function (param1: lobjc.id; param2: SEL;_url: CFURLRef; _enc: NSStringEncoding; _error: lobjc.id {NSError}): lobjc.id; cdecl;
 var
   vmethod: TmsgSendWrapper;
 begin
@@ -1269,9 +1269,9 @@ begin
   Handle := vmethod(ClassID, sel_registerName(PChar(StrNSString_stringWithContentsOfURL_usedEncoding_error)), _url, _enc, _error);
 end;
 
-constructor NSString.stringWithContentsOfFile_usedEncoding_error(_path: CFStringRef; _enc: NSStringEncoding; _error: objc.id {NSError});
+constructor NSString.stringWithContentsOfFile_usedEncoding_error(_path: CFStringRef; _enc: NSStringEncoding; _error: lobjc.id {NSError});
 type
-  TmsgSendWrapper = function (param1: objc.id; param2: SEL;_path: CFStringRef; _enc: NSStringEncoding; _error: objc.id {NSError}): objc.id; cdecl;
+  TmsgSendWrapper = function (param1: lobjc.id; param2: SEL;_path: CFStringRef; _enc: NSStringEncoding; _error: lobjc.id {NSError}): lobjc.id; cdecl;
 var
   vmethod: TmsgSendWrapper;
 begin
@@ -1280,9 +1280,9 @@ begin
   Handle := vmethod(ClassID, sel_registerName(PChar(StrNSString_stringWithContentsOfFile_usedEncoding_error)), _path, _enc, _error);
 end;
 
-function NSString.writeToURL_atomically_encoding_error(_url: CFURLRef; _useAuxiliaryFile: LongBool; _enc: NSStringEncoding; _error: objc.id {NSError}): LongBool;
+function NSString.writeToURL_atomically_encoding_error(_url: CFURLRef; _useAuxiliaryFile: LongBool; _enc: NSStringEncoding; _error: lobjc.id {NSError}): LongBool;
 type
-  TmsgSendWrapper = function (param1: objc.id; param2: SEL;_url: CFURLRef; _useAuxiliaryFile: LongBool; _enc: NSStringEncoding; _error: objc.id {NSError}): LongBool; cdecl;
+  TmsgSendWrapper = function (param1: lobjc.id; param2: SEL;_url: CFURLRef; _useAuxiliaryFile: LongBool; _enc: NSStringEncoding; _error: lobjc.id {NSError}): LongBool; cdecl;
 var
   vmethod: TmsgSendWrapper;
 begin
@@ -1290,9 +1290,9 @@ begin
   Result := LongBool(vmethod(Handle, sel_registerName(PChar(StrNSString_writeToURL_atomically_encoding_error)), _url, _useAuxiliaryFile, _enc, _error));
 end;
 
-function NSString.writeToFile_atomically_encoding_error(_path: CFStringRef; _useAuxiliaryFile: LongBool; _enc: NSStringEncoding; _error: objc.id {NSError}): LongBool;
+function NSString.writeToFile_atomically_encoding_error(_path: CFStringRef; _useAuxiliaryFile: LongBool; _enc: NSStringEncoding; _error: lobjc.id {NSError}): LongBool;
 type
-  TmsgSendWrapper = function (param1: objc.id; param2: SEL;_path: CFStringRef; _useAuxiliaryFile: LongBool; _enc: NSStringEncoding; _error: objc.id {NSError}): LongBool; cdecl;
+  TmsgSendWrapper = function (param1: lobjc.id; param2: SEL;_path: CFStringRef; _useAuxiliaryFile: LongBool; _enc: NSStringEncoding; _error: lobjc.id {NSError}): LongBool; cdecl;
 var
   vmethod: TmsgSendWrapper;
 begin
@@ -1301,9 +1301,9 @@ begin
 end;
 
 {.$endif}
-function NSString.propertyList: objc.id;
+function NSString.propertyList: lobjc.id;
 begin
-  Result := objc.id(objc_msgSend(Handle, sel_registerName(PChar(StrNSString_propertyList)), []));
+  Result := lobjc.id(objc_msgSend(Handle, sel_registerName(PChar(StrNSString_propertyList)), []));
 end;
 
 function NSString.propertyListFromStringsFileFormat: CFDictionaryRef;
@@ -1328,7 +1328,7 @@ end;
 
 procedure NSString.getCString(_bytes: PChar);
 type
-  TmsgSendWrapper = procedure (param1: objc.id; param2: SEL;_bytes: PChar); cdecl;
+  TmsgSendWrapper = procedure (param1: lobjc.id; param2: SEL;_bytes: PChar); cdecl;
 var
   vmethod: TmsgSendWrapper;
 begin
@@ -1338,7 +1338,7 @@ end;
 
 procedure NSString.getCString_maxLength(_bytes: PChar; _maxLength: LongWord);
 type
-  TmsgSendWrapper = procedure (param1: objc.id; param2: SEL;_bytes: PChar; _maxLength: LongWord); cdecl;
+  TmsgSendWrapper = procedure (param1: lobjc.id; param2: SEL;_bytes: PChar; _maxLength: LongWord); cdecl;
 var
   vmethod: TmsgSendWrapper;
 begin
@@ -1348,7 +1348,7 @@ end;
 
 procedure NSString.getCString_maxLength_range_remainingRange(_bytes: PChar; _maxLength: LongWord; _aRange: NSRange; _leftoverRange: NSRangePointer);
 type
-  TmsgSendWrapper = procedure (param1: objc.id; param2: SEL;_bytes: PChar; _maxLength: LongWord; _aRange: NSRange; _leftoverRange: NSRangePointer); cdecl;
+  TmsgSendWrapper = procedure (param1: lobjc.id; param2: SEL;_bytes: PChar; _maxLength: LongWord; _aRange: NSRange; _leftoverRange: NSRangePointer); cdecl;
 var
   vmethod: TmsgSendWrapper;
 begin
@@ -1358,7 +1358,7 @@ end;
 
 function NSString.writeToFile_atomically(_path: CFStringRef; _useAuxiliaryFile: LongBool): LongBool;
 type
-  TmsgSendWrapper = function (param1: objc.id; param2: SEL;_path: CFStringRef; _useAuxiliaryFile: LongBool): LongBool; cdecl;
+  TmsgSendWrapper = function (param1: lobjc.id; param2: SEL;_path: CFStringRef; _useAuxiliaryFile: LongBool): LongBool; cdecl;
 var
   vmethod: TmsgSendWrapper;
 begin
@@ -1368,7 +1368,7 @@ end;
 
 function NSString.writeToURL_atomically(_url: CFURLRef; _atomically: LongBool): LongBool;
 type
-  TmsgSendWrapper = function (param1: objc.id; param2: SEL;_url: CFURLRef; _atomically: LongBool): LongBool; cdecl;
+  TmsgSendWrapper = function (param1: lobjc.id; param2: SEL;_url: CFURLRef; _atomically: LongBool): LongBool; cdecl;
 var
   vmethod: TmsgSendWrapper;
 begin
@@ -1378,7 +1378,7 @@ end;
 
 constructor NSString.initWithContentsOfFile(_path: CFStringRef);
 type
-  TmsgSendWrapper = function (param1: objc.id; param2: SEL;_path: CFStringRef): objc.id; cdecl;
+  TmsgSendWrapper = function (param1: lobjc.id; param2: SEL;_path: CFStringRef): lobjc.id; cdecl;
 var
   vmethod: TmsgSendWrapper;
 begin
@@ -1390,7 +1390,7 @@ end;
 
 constructor NSString.initWithContentsOfURL(_url: CFURLRef);
 type
-  TmsgSendWrapper = function (param1: objc.id; param2: SEL;_url: CFURLRef): objc.id; cdecl;
+  TmsgSendWrapper = function (param1: lobjc.id; param2: SEL;_url: CFURLRef): lobjc.id; cdecl;
 var
   vmethod: TmsgSendWrapper;
 begin
@@ -1402,7 +1402,7 @@ end;
 
 constructor NSString.stringWithContentsOfFile(_path: CFStringRef);
 type
-  TmsgSendWrapper = function (param1: objc.id; param2: SEL;_path: CFStringRef): objc.id; cdecl;
+  TmsgSendWrapper = function (param1: lobjc.id; param2: SEL;_path: CFStringRef): lobjc.id; cdecl;
 var
   vmethod: TmsgSendWrapper;
 begin
@@ -1413,7 +1413,7 @@ end;
 
 constructor NSString.stringWithContentsOfURL(_url: CFURLRef);
 type
-  TmsgSendWrapper = function (param1: objc.id; param2: SEL;_url: CFURLRef): objc.id; cdecl;
+  TmsgSendWrapper = function (param1: lobjc.id; param2: SEL;_url: CFURLRef): lobjc.id; cdecl;
 var
   vmethod: TmsgSendWrapper;
 begin
@@ -1424,7 +1424,7 @@ end;
 
 constructor NSString.initWithCStringNoCopy_length_freeWhenDone(_bytes: PChar; _length: LongWord; _freeBuffer: LongBool);
 type
-  TmsgSendWrapper = function (param1: objc.id; param2: SEL;_bytes: PChar; _length: LongWord; _freeBuffer: LongBool): objc.id; cdecl;
+  TmsgSendWrapper = function (param1: lobjc.id; param2: SEL;_bytes: PChar; _length: LongWord; _freeBuffer: LongBool): lobjc.id; cdecl;
 var
   vmethod: TmsgSendWrapper;
 begin
@@ -1436,7 +1436,7 @@ end;
 
 constructor NSString.initWithCString_length(_bytes: PChar; _length: LongWord);
 type
-  TmsgSendWrapper = function (param1: objc.id; param2: SEL;_bytes: PChar; _length: LongWord): objc.id; cdecl;
+  TmsgSendWrapper = function (param1: lobjc.id; param2: SEL;_bytes: PChar; _length: LongWord): lobjc.id; cdecl;
 var
   vmethod: TmsgSendWrapper;
 begin
@@ -1448,7 +1448,7 @@ end;
 
 constructor NSString.initWithCString(_bytes: PChar);
 type
-  TmsgSendWrapper = function (param1: objc.id; param2: SEL;_bytes: PChar): objc.id; cdecl;
+  TmsgSendWrapper = function (param1: lobjc.id; param2: SEL;_bytes: PChar): lobjc.id; cdecl;
 var
   vmethod: TmsgSendWrapper;
 begin
@@ -1460,7 +1460,7 @@ end;
 
 constructor NSString.stringWithCString_length(_bytes: PChar; _length: LongWord);
 type
-  TmsgSendWrapper = function (param1: objc.id; param2: SEL;_bytes: PChar; _length: LongWord): objc.id; cdecl;
+  TmsgSendWrapper = function (param1: lobjc.id; param2: SEL;_bytes: PChar; _length: LongWord): lobjc.id; cdecl;
 var
   vmethod: TmsgSendWrapper;
 begin
@@ -1471,7 +1471,7 @@ end;
 
 constructor NSString.stringWithCString(_bytes: PChar);
 type
-  TmsgSendWrapper = function (param1: objc.id; param2: SEL;_bytes: PChar): objc.id; cdecl;
+  TmsgSendWrapper = function (param1: lobjc.id; param2: SEL;_bytes: PChar): lobjc.id; cdecl;
 var
   vmethod: TmsgSendWrapper;
 begin
@@ -1482,14 +1482,14 @@ end;
 
 { NSMutableString }
 
-class function NSMutableString.getClass: objc.id;
+class function NSMutableString.getClass: lobjc.id;
 begin
   Result := objc_getClass(StrNSMutableString_NSMutableString);
 end;
 
 procedure NSMutableString.replaceCharactersInRange_withString(_range: NSRange; _aString: CFStringRef);
 type
-  TmsgSendWrapper = procedure (param1: objc.id; param2: SEL;_range: NSRange; _aString: CFStringRef); cdecl;
+  TmsgSendWrapper = procedure (param1: lobjc.id; param2: SEL;_range: NSRange; _aString: CFStringRef); cdecl;
 var
   vmethod: TmsgSendWrapper;
 begin
@@ -1499,7 +1499,7 @@ end;
 
 procedure NSMutableString.insertString_atIndex(_aString: CFStringRef; _loc: LongWord);
 type
-  TmsgSendWrapper = procedure (param1: objc.id; param2: SEL;_aString: CFStringRef; _loc: LongWord); cdecl;
+  TmsgSendWrapper = procedure (param1: lobjc.id; param2: SEL;_aString: CFStringRef; _loc: LongWord); cdecl;
 var
   vmethod: TmsgSendWrapper;
 begin
@@ -1509,7 +1509,7 @@ end;
 
 procedure NSMutableString.deleteCharactersInRange(_range: NSRange);
 type
-  TmsgSendWrapper = procedure (param1: objc.id; param2: SEL;_range: NSRange); cdecl;
+  TmsgSendWrapper = procedure (param1: lobjc.id; param2: SEL;_range: NSRange); cdecl;
 var
   vmethod: TmsgSendWrapper;
 begin
@@ -1519,7 +1519,7 @@ end;
 
 procedure NSMutableString.appendString(_aString: CFStringRef);
 type
-  TmsgSendWrapper = procedure (param1: objc.id; param2: SEL;_aString: CFStringRef); cdecl;
+  TmsgSendWrapper = procedure (param1: lobjc.id; param2: SEL;_aString: CFStringRef); cdecl;
 var
   vmethod: TmsgSendWrapper;
 begin
@@ -1529,7 +1529,7 @@ end;
 
 procedure NSMutableString.appendFormat(_format: CFStringRef);
 type
-  TmsgSendWrapper = procedure (param1: objc.id; param2: SEL;_format: CFStringRef); cdecl;
+  TmsgSendWrapper = procedure (param1: lobjc.id; param2: SEL;_format: CFStringRef); cdecl;
 var
   vmethod: TmsgSendWrapper;
 begin
@@ -1539,7 +1539,7 @@ end;
 
 procedure NSMutableString.setString(_aString: CFStringRef);
 type
-  TmsgSendWrapper = procedure (param1: objc.id; param2: SEL;_aString: CFStringRef); cdecl;
+  TmsgSendWrapper = procedure (param1: lobjc.id; param2: SEL;_aString: CFStringRef); cdecl;
 var
   vmethod: TmsgSendWrapper;
 begin
@@ -1549,7 +1549,7 @@ end;
 
 constructor NSMutableString.initWithCapacity(_capacity: LongWord);
 type
-  TmsgSendWrapper = function (param1: objc.id; param2: SEL;_capacity: LongWord): objc.id; cdecl;
+  TmsgSendWrapper = function (param1: lobjc.id; param2: SEL;_capacity: LongWord): lobjc.id; cdecl;
 var
   vmethod: TmsgSendWrapper;
 begin
@@ -1561,7 +1561,7 @@ end;
 
 constructor NSMutableString.stringWithCapacity(_capacity: LongWord);
 type
-  TmsgSendWrapper = function (param1: objc.id; param2: SEL;_capacity: LongWord): objc.id; cdecl;
+  TmsgSendWrapper = function (param1: lobjc.id; param2: SEL;_capacity: LongWord): lobjc.id; cdecl;
 var
   vmethod: TmsgSendWrapper;
 begin
@@ -1573,7 +1573,7 @@ end;
 {.$ifdef  MAC_OS_X_VERSION_10_2 <= MAC_OS_X_VERSION_MAX_ALLOWED}
 function NSMutableString.replaceOccurrencesOfString_withString_options_range(_target: CFStringRef; _replacement: CFStringRef; _opts: LongWord; _searchRange: NSRange): LongWord;
 type
-  TmsgSendWrapper = function (param1: objc.id; param2: SEL;_target: CFStringRef; _replacement: CFStringRef; _opts: LongWord; _searchRange: NSRange): LongWord; cdecl;
+  TmsgSendWrapper = function (param1: lobjc.id; param2: SEL;_target: CFStringRef; _replacement: CFStringRef; _opts: LongWord; _searchRange: NSRange): LongWord; cdecl;
 var
   vmethod: TmsgSendWrapper;
 begin
@@ -1584,14 +1584,14 @@ end;
 {.$endif}
 { NSSimpleCString }
 
-class function NSSimpleCString.getClass: objc.id;
+class function NSSimpleCString.getClass: lobjc.id;
 begin
   Result := objc_getClass(StrNSSimpleCString_NSSimpleCString);
 end;
 
 { NSConstantString }
 
-class function NSConstantString.getClass: objc.id;
+class function NSConstantString.getClass: lobjc.id;
 begin
   Result := objc_getClass(StrNSConstantString_NSConstantString);
 end;

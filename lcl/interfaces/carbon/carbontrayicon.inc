@@ -28,7 +28,7 @@ type
     { Structural Methods }
     constructor Create; override;
     destructor Destroy; override;
-    class function getClass: objc.id; override;
+    class function getClass: lobjc.id; override;
     procedure AddMethods; override;
     { Pascal Methods }
     function TrimAllChar(const S: string; const ch: Char): string;
@@ -43,9 +43,9 @@ type
     function ConvertTBitmapToNSImage(ABitmap: TBitmap): NSImage;
     function IsMenuVisible: Boolean;
     { Objective-C compatible methods }
-    class procedure HandleMenuItemClick(_self: objc.id; _cmd: SEL; sender: objc.id); cdecl; //static;
-    class procedure HandleMenuWillOpen(_self: objc.id; _cmd: SEL; sender: objc.id); cdecl; //static;
-    class procedure HandleMenuDidClose(_self: objc.id; _cmd: SEL; sender: objc.id); cdecl; //static;
+    class procedure HandleMenuItemClick(_self: lobjc.id; _cmd: SEL; sender: lobjc.id); cdecl; //static;
+    class procedure HandleMenuWillOpen(_self: lobjc.id; _cmd: SEL; sender: lobjc.id); cdecl; //static;
+    class procedure HandleMenuDidClose(_self: lobjc.id; _cmd: SEL; sender: lobjc.id); cdecl; //static;
   end;
 
 const
@@ -78,7 +78,7 @@ begin
   { The class is registered on the Objective-C runtime before the NSObject constructor is called }
   // The original plan was to create a descendent class, but causes wierd crashes
   // so now we just stuck our method into NSObject
-//  if not CreateClassDefinition(Str_TPrivateCocoaCarbonTrayIcon, Str_NSObject) then WriteLn('Failed to create objc class');
+//  if not CreateClassDefinition(Str_TPrivateCocoaCarbonTrayIcon, Str_NSObject) then WriteLn('Failed to create lobjc class');
 
   EmptyMenuTitle := CFStringCreateWithPascalString(nil, '', kCFStringEncodingUTF8);
 
@@ -108,7 +108,7 @@ begin
   inherited Destroy;
 end;
 
-class function TPrivateCocoaCarbonTrayIcon.getClass: objc.id;
+class function TPrivateCocoaCarbonTrayIcon.getClass: lobjc.id;
 begin
   Result := objc_getClass({Str_TPrivateCocoaCarbonTrayIcon} Str_NSObject);
 end;
@@ -244,7 +244,7 @@ begin
       // is 13, which is wrong, and looks bad.
       AttrStringFont := NSFont.menuFontOfSize(14); // 0 = default size
       AttrStringFont.Handle := FontManager.convertFont_toHaveTrait_(AttrStringFont.Handle, NSBoldFontMask);
-      AttrDictionary := NSDictionary.dictionaryWithObject_forKey(AttrStringFont.Handle, objc.id(NSFontAttributeName));
+      AttrDictionary := NSDictionary.dictionaryWithObject_forKey(AttrStringFont.Handle, lobjc.id(NSFontAttributeName));
       AttrString := NSAttributedString.initWithString_attributes(ItemText, CFDictionaryRef(AttrDictionary.Handle));
       if AttrString.Handle <> nil then
         Result.setAttributedTitle(AttrString.Handle);
@@ -389,7 +389,7 @@ begin
   Result.unlockFocus;
 end;
 
-function _NSGetCarbonMenu(AMenu: objc.id {NSMenu}): MenuRef; cdecl; external name '_NSGetCarbonMenu';
+function _NSGetCarbonMenu(AMenu: lobjc.id {NSMenu}): MenuRef; cdecl; external name '_NSGetCarbonMenu';
 
 function TPrivateCocoaCarbonTrayIcon.IsMenuVisible: Boolean;
 var
@@ -408,8 +408,8 @@ end;
 
 { Here we try to get the LCL MenuItem from the Tag and then call
   it's OnClick method }
-class procedure TPrivateCocoaCarbonTrayIcon.HandleMenuItemClick(_self: objc.id;
-  _cmd: SEL; sender: objc.id); cdecl; //static;
+class procedure TPrivateCocoaCarbonTrayIcon.HandleMenuItemClick(_self: lobjc.id;
+  _cmd: SEL; sender: lobjc.id); cdecl; //static;
 var
   AMenuItem: NSMenuItem;
   LCLMenu: TMenuItem;
@@ -419,8 +419,8 @@ begin
   if (LCLMenu <> nil) and Assigned(LCLMenu.OnClick) then LCLMenu.OnClick(LCLMenu);
 end;
 
-class procedure TPrivateCocoaCarbonTrayIcon.HandleMenuWillOpen(_self: objc.id;
-  _cmd: SEL; sender: objc.id); cdecl; //static;
+class procedure TPrivateCocoaCarbonTrayIcon.HandleMenuWillOpen(_self: lobjc.id;
+  _cmd: SEL; sender: lobjc.id); cdecl; //static;
 var
   AMenu: NSMenu;
   LCLMenu: TPopUpMenu;
@@ -430,8 +430,8 @@ begin
 //  if (LCLMenu <> nil) and Assigned(LCLMenu.OnPopUp) then LCLMenu.OnPopUp(LCLMenu);
 end;
 
-class procedure TPrivateCocoaCarbonTrayIcon.HandleMenuDidClose(_self: objc.id;
-  _cmd: SEL; sender: objc.id); cdecl; //static;
+class procedure TPrivateCocoaCarbonTrayIcon.HandleMenuDidClose(_self: lobjc.id;
+  _cmd: SEL; sender: lobjc.id); cdecl; //static;
 var
   AMenu: NSMenu;
   LCLMenu: TPopUpMenu;

@@ -59,7 +59,7 @@ type
 
   NSImage = class(NSObject)
   public
-    class function getClass: objc.id; override;
+    class function getClass: lobjc.id; override;
     // All instance variables are private
     constructor imageNamed(_name: CFStringRef);
     //  If this finds & creates the image, only name is saved when archived
@@ -74,7 +74,7 @@ type
     {.$ifdef  MAC_OS_X_VERSION_MAX_ALLOWED >= MAC_OS_X_VERSION_10_2}
     constructor initByReferencingURL(_url: CFURLRef);
     {.$endif}
-    constructor initWithPasteboard(_pasteboard: objc.id {NSPasteboard});
+    constructor initWithPasteboard(_pasteboard: lobjc.id {NSPasteboard});
     procedure setSize(_aSize: NSSize);
     function size: NSSize;
     function setName(__string: CFStringRef): LongBool;
@@ -87,8 +87,8 @@ type
     function isCachedSeparately: LongBool;
     procedure setCacheDepthMatchesImageDepth(_flag: LongBool);
     function cacheDepthMatchesImageDepth: LongBool;
-    procedure setBackgroundColor(_aColor: objc.id {NSColor});
-    function backgroundColor: objc.id;{NSColor}
+    procedure setBackgroundColor(_aColor: lobjc.id {NSColor});
+    function backgroundColor: lobjc.id;{NSColor}
     procedure setUsesEPSOnResolutionMismatch(_flag: LongBool);
     function usesEPSOnResolutionMismatch: LongBool;
     procedure setPrefersColorMatch(_flag: LongBool);
@@ -103,27 +103,27 @@ type
     procedure compositeToPoint_fromRect_operation_fraction(_point: NSPoint; _rect: NSRect; _op: NSCompositingOperation; _delta: Single);
     procedure drawAtPoint_fromRect_operation_fraction(_point: NSPoint; _fromRect: NSRect; _op: NSCompositingOperation; _delta: Single);
     procedure drawInRect_fromRect_operation_fraction(_rect: NSRect; _fromRect: NSRect; _op: NSCompositingOperation; _delta: Single);
-    function drawRepresentation_inRect(_imageRep: objc.id {NSImageRep}; _rect: NSRect): LongBool;
+    function drawRepresentation_inRect(_imageRep: lobjc.id {NSImageRep}; _rect: NSRect): LongBool;
     procedure recache;
     function TIFFRepresentation: CFDataRef;
     function TIFFRepresentationUsingCompression_factor(_comp: NSTIFFCompression; _aFloat: Single): CFDataRef;
     function representations: CFArrayRef;
     procedure addRepresentations(_imageReps: CFArrayRef);
-    procedure addRepresentation(_imageRep: objc.id {NSImageRep});
-    procedure removeRepresentation(_imageRep: objc.id {NSImageRep});
+    procedure addRepresentation(_imageRep: lobjc.id {NSImageRep});
+    procedure removeRepresentation(_imageRep: lobjc.id {NSImageRep});
     function isValid: LongBool;
     procedure lockFocus;
-    procedure lockFocusOnRepresentation(_imageRepresentation: objc.id {NSImageRep});
+    procedure lockFocusOnRepresentation(_imageRepresentation: lobjc.id {NSImageRep});
     procedure unlockFocus;
-    function bestRepresentationForDevice(_deviceDescription: CFDictionaryRef): objc.id;{NSImageRep}
-    procedure setDelegate(_anObject: objc.id);
-    function delegate: objc.id;
+    function bestRepresentationForDevice(_deviceDescription: CFDictionaryRef): lobjc.id;{NSImageRep}
+    procedure setDelegate(_anObject: lobjc.id);
+    function delegate: lobjc.id;
     //  These return union of all the types registered with NSImageRep.
     class function imageUnfilteredFileTypes: CFArrayRef;
     class function imageUnfilteredPasteboardTypes: CFArrayRef;
     class function imageFileTypes: CFArrayRef;
     class function imagePasteboardTypes: CFArrayRef;
-    class function canInitWithPasteboard(_pasteboard: objc.id {NSPasteboard}): LongBool;
+    class function canInitWithPasteboard(_pasteboard: lobjc.id {NSPasteboard}): LongBool;
     procedure setFlipped(_flag: LongBool);
     function isFlipped: LongBool;
     {.$ifdef  MAC_OS_X_VERSION_MAX_ALLOWED >= MAC_OS_X_VERSION_10_2}
@@ -209,14 +209,14 @@ const
 
 { NSImage }
 
-class function NSImage.getClass: objc.id;
+class function NSImage.getClass: lobjc.id;
 begin
   Result := objc_getClass(StrNSImage_NSImage);
 end;
 
 constructor NSImage.imageNamed(_name: CFStringRef);
 type
-  TmsgSendWrapper = function (param1: objc.id; param2: SEL;_name: CFStringRef): objc.id; cdecl;
+  TmsgSendWrapper = function (param1: lobjc.id; param2: SEL;_name: CFStringRef): lobjc.id; cdecl;
 var
   vmethod: TmsgSendWrapper;
 begin
@@ -227,7 +227,7 @@ end;
 
 constructor NSImage.initWithSize(_aSize: NSSize);
 type
-  TmsgSendWrapper = function (param1: objc.id; param2: SEL;_aSize: NSSize): objc.id; cdecl;
+  TmsgSendWrapper = function (param1: lobjc.id; param2: SEL;_aSize: NSSize): lobjc.id; cdecl;
 var
   vmethod: TmsgSendWrapper;
 begin
@@ -239,7 +239,7 @@ end;
 
 constructor NSImage.initWithData(_data: CFDataRef);
 type
-  TmsgSendWrapper = function (param1: objc.id; param2: SEL;_data: CFDataRef): objc.id; cdecl;
+  TmsgSendWrapper = function (param1: lobjc.id; param2: SEL;_data: CFDataRef): lobjc.id; cdecl;
 var
   vmethod: TmsgSendWrapper;
 begin
@@ -251,7 +251,7 @@ end;
 
 constructor NSImage.initWithContentsOfFile(_fileName: CFStringRef);
 type
-  TmsgSendWrapper = function (param1: objc.id; param2: SEL;_fileName: CFStringRef): objc.id; cdecl;
+  TmsgSendWrapper = function (param1: lobjc.id; param2: SEL;_fileName: CFStringRef): lobjc.id; cdecl;
 var
   vmethod: TmsgSendWrapper;
 begin
@@ -263,7 +263,7 @@ end;
 
 constructor NSImage.initWithContentsOfURL(_url: CFURLRef);
 type
-  TmsgSendWrapper = function (param1: objc.id; param2: SEL;_url: CFURLRef): objc.id; cdecl;
+  TmsgSendWrapper = function (param1: lobjc.id; param2: SEL;_url: CFURLRef): lobjc.id; cdecl;
 var
   vmethod: TmsgSendWrapper;
 begin
@@ -275,7 +275,7 @@ end;
 
 constructor NSImage.initByReferencingFile(_fileName: CFStringRef);
 type
-  TmsgSendWrapper = function (param1: objc.id; param2: SEL;_fileName: CFStringRef): objc.id; cdecl;
+  TmsgSendWrapper = function (param1: lobjc.id; param2: SEL;_fileName: CFStringRef): lobjc.id; cdecl;
 var
   vmethod: TmsgSendWrapper;
 begin
@@ -288,7 +288,7 @@ end;
 {.$ifdef  MAC_OS_X_VERSION_MAX_ALLOWED >= MAC_OS_X_VERSION_10_2}
 constructor NSImage.initByReferencingURL(_url: CFURLRef);
 type
-  TmsgSendWrapper = function (param1: objc.id; param2: SEL;_url: CFURLRef): objc.id; cdecl;
+  TmsgSendWrapper = function (param1: lobjc.id; param2: SEL;_url: CFURLRef): lobjc.id; cdecl;
 var
   vmethod: TmsgSendWrapper;
 begin
@@ -299,9 +299,9 @@ begin
 end;
 
 {.$endif}
-constructor NSImage.initWithPasteboard(_pasteboard: objc.id {NSPasteboard});
+constructor NSImage.initWithPasteboard(_pasteboard: lobjc.id {NSPasteboard});
 type
-  TmsgSendWrapper = function (param1: objc.id; param2: SEL;_pasteboard: objc.id {NSPasteboard}): objc.id; cdecl;
+  TmsgSendWrapper = function (param1: lobjc.id; param2: SEL;_pasteboard: lobjc.id {NSPasteboard}): lobjc.id; cdecl;
 var
   vmethod: TmsgSendWrapper;
 begin
@@ -313,7 +313,7 @@ end;
 
 procedure NSImage.setSize(_aSize: NSSize);
 type
-  TmsgSendWrapper = procedure (param1: objc.id; param2: SEL;_aSize: NSSize); cdecl;
+  TmsgSendWrapper = procedure (param1: lobjc.id; param2: SEL;_aSize: NSSize); cdecl;
 var
   vmethod: TmsgSendWrapper;
 begin
@@ -328,7 +328,7 @@ end;
 
 function NSImage.setName(__string: CFStringRef): LongBool;
 type
-  TmsgSendWrapper = function (param1: objc.id; param2: SEL;__string: CFStringRef): LongBool; cdecl;
+  TmsgSendWrapper = function (param1: lobjc.id; param2: SEL;__string: CFStringRef): LongBool; cdecl;
 var
   vmethod: TmsgSendWrapper;
 begin
@@ -343,7 +343,7 @@ end;
 
 procedure NSImage.setScalesWhenResized(_flag: LongBool);
 type
-  TmsgSendWrapper = procedure (param1: objc.id; param2: SEL;_flag: LongBool); cdecl;
+  TmsgSendWrapper = procedure (param1: lobjc.id; param2: SEL;_flag: LongBool); cdecl;
 var
   vmethod: TmsgSendWrapper;
 begin
@@ -358,7 +358,7 @@ end;
 
 procedure NSImage.setDataRetained(_flag: LongBool);
 type
-  TmsgSendWrapper = procedure (param1: objc.id; param2: SEL;_flag: LongBool); cdecl;
+  TmsgSendWrapper = procedure (param1: lobjc.id; param2: SEL;_flag: LongBool); cdecl;
 var
   vmethod: TmsgSendWrapper;
 begin
@@ -373,7 +373,7 @@ end;
 
 procedure NSImage.setCachedSeparately(_flag: LongBool);
 type
-  TmsgSendWrapper = procedure (param1: objc.id; param2: SEL;_flag: LongBool); cdecl;
+  TmsgSendWrapper = procedure (param1: lobjc.id; param2: SEL;_flag: LongBool); cdecl;
 var
   vmethod: TmsgSendWrapper;
 begin
@@ -388,7 +388,7 @@ end;
 
 procedure NSImage.setCacheDepthMatchesImageDepth(_flag: LongBool);
 type
-  TmsgSendWrapper = procedure (param1: objc.id; param2: SEL;_flag: LongBool); cdecl;
+  TmsgSendWrapper = procedure (param1: lobjc.id; param2: SEL;_flag: LongBool); cdecl;
 var
   vmethod: TmsgSendWrapper;
 begin
@@ -401,9 +401,9 @@ begin
   Result := LongBool(objc_msgSend(Handle, sel_registerName(PChar(StrNSImage_cacheDepthMatchesImageDepth)), []));
 end;
 
-procedure NSImage.setBackgroundColor(_aColor: objc.id {NSColor});
+procedure NSImage.setBackgroundColor(_aColor: lobjc.id {NSColor});
 type
-  TmsgSendWrapper = procedure (param1: objc.id; param2: SEL;_aColor: objc.id {NSColor}); cdecl;
+  TmsgSendWrapper = procedure (param1: lobjc.id; param2: SEL;_aColor: lobjc.id {NSColor}); cdecl;
 var
   vmethod: TmsgSendWrapper;
 begin
@@ -411,14 +411,14 @@ begin
   vmethod(Handle, sel_registerName(PChar(StrNSImage_setBackgroundColor)), _aColor);
 end;
 
-function NSImage.backgroundColor: objc.id;
+function NSImage.backgroundColor: lobjc.id;
 begin
-  Result := objc.id(objc_msgSend(Handle, sel_registerName(PChar(StrNSImage_backgroundColor)), []));
+  Result := lobjc.id(objc_msgSend(Handle, sel_registerName(PChar(StrNSImage_backgroundColor)), []));
 end;
 
 procedure NSImage.setUsesEPSOnResolutionMismatch(_flag: LongBool);
 type
-  TmsgSendWrapper = procedure (param1: objc.id; param2: SEL;_flag: LongBool); cdecl;
+  TmsgSendWrapper = procedure (param1: lobjc.id; param2: SEL;_flag: LongBool); cdecl;
 var
   vmethod: TmsgSendWrapper;
 begin
@@ -433,7 +433,7 @@ end;
 
 procedure NSImage.setPrefersColorMatch(_flag: LongBool);
 type
-  TmsgSendWrapper = procedure (param1: objc.id; param2: SEL;_flag: LongBool); cdecl;
+  TmsgSendWrapper = procedure (param1: lobjc.id; param2: SEL;_flag: LongBool); cdecl;
 var
   vmethod: TmsgSendWrapper;
 begin
@@ -448,7 +448,7 @@ end;
 
 procedure NSImage.setMatchesOnMultipleResolution(_flag: LongBool);
 type
-  TmsgSendWrapper = procedure (param1: objc.id; param2: SEL;_flag: LongBool); cdecl;
+  TmsgSendWrapper = procedure (param1: lobjc.id; param2: SEL;_flag: LongBool); cdecl;
 var
   vmethod: TmsgSendWrapper;
 begin
@@ -463,7 +463,7 @@ end;
 
 procedure NSImage.dissolveToPoint_fraction(_point: NSPoint; _aFloat: Single);
 type
-  TmsgSendWrapper = procedure (param1: objc.id; param2: SEL;_point: NSPoint; _aFloat: Single); cdecl;
+  TmsgSendWrapper = procedure (param1: lobjc.id; param2: SEL;_point: NSPoint; _aFloat: Single); cdecl;
 var
   vmethod: TmsgSendWrapper;
 begin
@@ -473,7 +473,7 @@ end;
 
 procedure NSImage.dissolveToPoint_fromRect_fraction(_point: NSPoint; _rect: NSRect; _aFloat: Single);
 type
-  TmsgSendWrapper = procedure (param1: objc.id; param2: SEL;_point: NSPoint; _rect: NSRect; _aFloat: Single); cdecl;
+  TmsgSendWrapper = procedure (param1: lobjc.id; param2: SEL;_point: NSPoint; _rect: NSRect; _aFloat: Single); cdecl;
 var
   vmethod: TmsgSendWrapper;
 begin
@@ -483,7 +483,7 @@ end;
 
 procedure NSImage.compositeToPoint_operation(_point: NSPoint; _op: NSCompositingOperation);
 type
-  TmsgSendWrapper = procedure (param1: objc.id; param2: SEL;_point: NSPoint; _op: NSCompositingOperation); cdecl;
+  TmsgSendWrapper = procedure (param1: lobjc.id; param2: SEL;_point: NSPoint; _op: NSCompositingOperation); cdecl;
 var
   vmethod: TmsgSendWrapper;
 begin
@@ -493,7 +493,7 @@ end;
 
 procedure NSImage.compositeToPoint_fromRect_operation(_point: NSPoint; _rect: NSRect; _op: NSCompositingOperation);
 type
-  TmsgSendWrapper = procedure (param1: objc.id; param2: SEL;_point: NSPoint; _rect: NSRect; _op: NSCompositingOperation); cdecl;
+  TmsgSendWrapper = procedure (param1: lobjc.id; param2: SEL;_point: NSPoint; _rect: NSRect; _op: NSCompositingOperation); cdecl;
 var
   vmethod: TmsgSendWrapper;
 begin
@@ -503,7 +503,7 @@ end;
 
 procedure NSImage.compositeToPoint_operation_fraction(_point: NSPoint; _op: NSCompositingOperation; _delta: Single);
 type
-  TmsgSendWrapper = procedure (param1: objc.id; param2: SEL;_point: NSPoint; _op: NSCompositingOperation; _delta: Single); cdecl;
+  TmsgSendWrapper = procedure (param1: lobjc.id; param2: SEL;_point: NSPoint; _op: NSCompositingOperation; _delta: Single); cdecl;
 var
   vmethod: TmsgSendWrapper;
 begin
@@ -513,7 +513,7 @@ end;
 
 procedure NSImage.compositeToPoint_fromRect_operation_fraction(_point: NSPoint; _rect: NSRect; _op: NSCompositingOperation; _delta: Single);
 type
-  TmsgSendWrapper = procedure (param1: objc.id; param2: SEL;_point: NSPoint; _rect: NSRect; _op: NSCompositingOperation; _delta: Single); cdecl;
+  TmsgSendWrapper = procedure (param1: lobjc.id; param2: SEL;_point: NSPoint; _rect: NSRect; _op: NSCompositingOperation; _delta: Single); cdecl;
 var
   vmethod: TmsgSendWrapper;
 begin
@@ -523,7 +523,7 @@ end;
 
 procedure NSImage.drawAtPoint_fromRect_operation_fraction(_point: NSPoint; _fromRect: NSRect; _op: NSCompositingOperation; _delta: Single);
 type
-  TmsgSendWrapper = procedure (param1: objc.id; param2: SEL;_point: NSPoint; _fromRect: NSRect; _op: NSCompositingOperation; _delta: Single); cdecl;
+  TmsgSendWrapper = procedure (param1: lobjc.id; param2: SEL;_point: NSPoint; _fromRect: NSRect; _op: NSCompositingOperation; _delta: Single); cdecl;
 var
   vmethod: TmsgSendWrapper;
 begin
@@ -533,7 +533,7 @@ end;
 
 procedure NSImage.drawInRect_fromRect_operation_fraction(_rect: NSRect; _fromRect: NSRect; _op: NSCompositingOperation; _delta: Single);
 type
-  TmsgSendWrapper = procedure (param1: objc.id; param2: SEL;_rect: NSRect; _fromRect: NSRect; _op: NSCompositingOperation; _delta: Single); cdecl;
+  TmsgSendWrapper = procedure (param1: lobjc.id; param2: SEL;_rect: NSRect; _fromRect: NSRect; _op: NSCompositingOperation; _delta: Single); cdecl;
 var
   vmethod: TmsgSendWrapper;
 begin
@@ -541,9 +541,9 @@ begin
   vmethod(Handle, sel_registerName(PChar(StrNSImage_drawInRect_fromRect_operation_fraction)), _rect, _fromRect, _op, _delta);
 end;
 
-function NSImage.drawRepresentation_inRect(_imageRep: objc.id {NSImageRep}; _rect: NSRect): LongBool;
+function NSImage.drawRepresentation_inRect(_imageRep: lobjc.id {NSImageRep}; _rect: NSRect): LongBool;
 type
-  TmsgSendWrapper = function (param1: objc.id; param2: SEL;_imageRep: objc.id {NSImageRep}; _rect: NSRect): LongBool; cdecl;
+  TmsgSendWrapper = function (param1: lobjc.id; param2: SEL;_imageRep: lobjc.id {NSImageRep}; _rect: NSRect): LongBool; cdecl;
 var
   vmethod: TmsgSendWrapper;
 begin
@@ -563,7 +563,7 @@ end;
 
 function NSImage.TIFFRepresentationUsingCompression_factor(_comp: NSTIFFCompression; _aFloat: Single): CFDataRef;
 type
-  TmsgSendWrapper = function (param1: objc.id; param2: SEL;_comp: NSTIFFCompression; _aFloat: Single): CFDataRef; cdecl;
+  TmsgSendWrapper = function (param1: lobjc.id; param2: SEL;_comp: NSTIFFCompression; _aFloat: Single): CFDataRef; cdecl;
 var
   vmethod: TmsgSendWrapper;
 begin
@@ -578,7 +578,7 @@ end;
 
 procedure NSImage.addRepresentations(_imageReps: CFArrayRef);
 type
-  TmsgSendWrapper = procedure (param1: objc.id; param2: SEL;_imageReps: CFArrayRef); cdecl;
+  TmsgSendWrapper = procedure (param1: lobjc.id; param2: SEL;_imageReps: CFArrayRef); cdecl;
 var
   vmethod: TmsgSendWrapper;
 begin
@@ -586,9 +586,9 @@ begin
   vmethod(Handle, sel_registerName(PChar(StrNSImage_addRepresentations)), _imageReps);
 end;
 
-procedure NSImage.addRepresentation(_imageRep: objc.id {NSImageRep});
+procedure NSImage.addRepresentation(_imageRep: lobjc.id {NSImageRep});
 type
-  TmsgSendWrapper = procedure (param1: objc.id; param2: SEL;_imageRep: objc.id {NSImageRep}); cdecl;
+  TmsgSendWrapper = procedure (param1: lobjc.id; param2: SEL;_imageRep: lobjc.id {NSImageRep}); cdecl;
 var
   vmethod: TmsgSendWrapper;
 begin
@@ -596,9 +596,9 @@ begin
   vmethod(Handle, sel_registerName(PChar(StrNSImage_addRepresentation)), _imageRep);
 end;
 
-procedure NSImage.removeRepresentation(_imageRep: objc.id {NSImageRep});
+procedure NSImage.removeRepresentation(_imageRep: lobjc.id {NSImageRep});
 type
-  TmsgSendWrapper = procedure (param1: objc.id; param2: SEL;_imageRep: objc.id {NSImageRep}); cdecl;
+  TmsgSendWrapper = procedure (param1: lobjc.id; param2: SEL;_imageRep: lobjc.id {NSImageRep}); cdecl;
 var
   vmethod: TmsgSendWrapper;
 begin
@@ -616,9 +616,9 @@ begin
   objc_msgSend(Handle, sel_registerName(PChar(StrNSImage_lockFocus)), []);
 end;
 
-procedure NSImage.lockFocusOnRepresentation(_imageRepresentation: objc.id {NSImageRep});
+procedure NSImage.lockFocusOnRepresentation(_imageRepresentation: lobjc.id {NSImageRep});
 type
-  TmsgSendWrapper = procedure (param1: objc.id; param2: SEL;_imageRepresentation: objc.id {NSImageRep}); cdecl;
+  TmsgSendWrapper = procedure (param1: lobjc.id; param2: SEL;_imageRepresentation: lobjc.id {NSImageRep}); cdecl;
 var
   vmethod: TmsgSendWrapper;
 begin
@@ -631,19 +631,19 @@ begin
   objc_msgSend(Handle, sel_registerName(PChar(StrNSImage_unlockFocus)), []);
 end;
 
-function NSImage.bestRepresentationForDevice(_deviceDescription: CFDictionaryRef): objc.id;
+function NSImage.bestRepresentationForDevice(_deviceDescription: CFDictionaryRef): lobjc.id;
 type
-  TmsgSendWrapper = function (param1: objc.id; param2: SEL;_deviceDescription: CFDictionaryRef): objc.id; cdecl;
+  TmsgSendWrapper = function (param1: lobjc.id; param2: SEL;_deviceDescription: CFDictionaryRef): lobjc.id; cdecl;
 var
   vmethod: TmsgSendWrapper;
 begin
   vmethod := TmsgSendWrapper(@objc_msgSend);
-  Result := objc.id(vmethod(Handle, sel_registerName(PChar(StrNSImage_bestRepresentationForDevice)), _deviceDescription));
+  Result := lobjc.id(vmethod(Handle, sel_registerName(PChar(StrNSImage_bestRepresentationForDevice)), _deviceDescription));
 end;
 
-procedure NSImage.setDelegate(_anObject: objc.id);
+procedure NSImage.setDelegate(_anObject: lobjc.id);
 type
-  TmsgSendWrapper = procedure (param1: objc.id; param2: SEL;_anObject: objc.id); cdecl;
+  TmsgSendWrapper = procedure (param1: lobjc.id; param2: SEL;_anObject: lobjc.id); cdecl;
 var
   vmethod: TmsgSendWrapper;
 begin
@@ -651,9 +651,9 @@ begin
   vmethod(Handle, sel_registerName(PChar(StrNSImage_setDelegate)), _anObject);
 end;
 
-function NSImage.delegate: objc.id;
+function NSImage.delegate: lobjc.id;
 begin
-  Result := objc.id(objc_msgSend(Handle, sel_registerName(PChar(StrNSImage_delegate)), []));
+  Result := lobjc.id(objc_msgSend(Handle, sel_registerName(PChar(StrNSImage_delegate)), []));
 end;
 
 class function NSImage.imageUnfilteredFileTypes: CFArrayRef;
@@ -676,9 +676,9 @@ begin
   Result := CFArrayRef(objc_msgSend(getClass, sel_registerName(PChar(StrNSImage_imagePasteboardTypes)), []));
 end;
 
-class function NSImage.canInitWithPasteboard(_pasteboard: objc.id {NSPasteboard}): LongBool;
+class function NSImage.canInitWithPasteboard(_pasteboard: lobjc.id {NSPasteboard}): LongBool;
 type
-  TmsgSendWrapper = function (param1: objc.id; param2: SEL;_pasteboard: objc.id {NSPasteboard}): LongBool; cdecl;
+  TmsgSendWrapper = function (param1: lobjc.id; param2: SEL;_pasteboard: lobjc.id {NSPasteboard}): LongBool; cdecl;
 var
   vmethod: TmsgSendWrapper;
 begin
@@ -688,7 +688,7 @@ end;
 
 procedure NSImage.setFlipped(_flag: LongBool);
 type
-  TmsgSendWrapper = procedure (param1: objc.id; param2: SEL;_flag: LongBool); cdecl;
+  TmsgSendWrapper = procedure (param1: lobjc.id; param2: SEL;_flag: LongBool); cdecl;
 var
   vmethod: TmsgSendWrapper;
 begin
@@ -709,7 +709,7 @@ end;
 
 procedure NSImage.setCacheMode(_mode: NSImageCacheMode);
 type
-  TmsgSendWrapper = procedure (param1: objc.id; param2: SEL;_mode: NSImageCacheMode); cdecl;
+  TmsgSendWrapper = procedure (param1: lobjc.id; param2: SEL;_mode: NSImageCacheMode); cdecl;
 var
   vmethod: TmsgSendWrapper;
 begin
@@ -725,7 +725,7 @@ end;
 {.$endif}
 constructor NSImage.initWithIconHandle(_icon: Pointer);
 type
-  TmsgSendWrapper = function (param1: objc.id; param2: SEL;_icon: Pointer): objc.id; cdecl;
+  TmsgSendWrapper = function (param1: lobjc.id; param2: SEL;_icon: Pointer): lobjc.id; cdecl;
 var
   vmethod: TmsgSendWrapper;
 begin
@@ -737,7 +737,7 @@ end;
 
 constructor NSImage.initWithBitmapHandle(_bitmap: Pointer);
 type
-  TmsgSendWrapper = function (param1: objc.id; param2: SEL;_bitmap: Pointer): objc.id; cdecl;
+  TmsgSendWrapper = function (param1: lobjc.id; param2: SEL;_bitmap: Pointer): lobjc.id; cdecl;
 var
   vmethod: TmsgSendWrapper;
 begin

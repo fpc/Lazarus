@@ -70,7 +70,7 @@ const
 
   NSPanel = class(NSWindow)
   public
-    class function getClass: objc.id; override;
+    class function getClass: lobjc.id; override;
     // All instance variables are private
     function isFloatingPanel: LongBool;
     procedure setFloatingPanel(_flag: LongBool);
@@ -95,7 +95,7 @@ const
 
 { NSPanel }
 
-class function NSPanel.getClass: objc.id;
+class function NSPanel.getClass: lobjc.id;
 begin
   Result := objc_getClass(StrNSPanel_NSPanel);
 end;
@@ -107,7 +107,7 @@ end;
 
 procedure NSPanel.setFloatingPanel(_flag: LongBool);
 type
-  TmsgSendWrapper = procedure (param1: objc.id; param2: SEL;_flag: LongBool); cdecl;
+  TmsgSendWrapper = procedure (param1: lobjc.id; param2: SEL;_flag: LongBool); cdecl;
 var
   vmethod: TmsgSendWrapper;
 begin
@@ -122,7 +122,7 @@ end;
 
 procedure NSPanel.setBecomesKeyOnlyIfNeeded(_flag: LongBool);
 type
-  TmsgSendWrapper = procedure (param1: objc.id; param2: SEL;_flag: LongBool); cdecl;
+  TmsgSendWrapper = procedure (param1: lobjc.id; param2: SEL;_flag: LongBool); cdecl;
 var
   vmethod: TmsgSendWrapper;
 begin
@@ -137,7 +137,7 @@ end;
 
 procedure NSPanel.setWorksWhenModal(_flag: LongBool);
 type
-  TmsgSendWrapper = procedure (param1: objc.id; param2: SEL;_flag: LongBool); cdecl;
+  TmsgSendWrapper = procedure (param1: lobjc.id; param2: SEL;_flag: LongBool); cdecl;
 var
   vmethod: TmsgSendWrapper;
 begin

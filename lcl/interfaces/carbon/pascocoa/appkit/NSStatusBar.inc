@@ -31,10 +31,10 @@ const
 
   NSStatusBar = class(NSObject)
   public
-    class function getClass: objc.id; override;
+    class function getClass: lobjc.id; override;
     constructor systemStatusBar;
-    function statusItemWithLength(_length: Single): objc.id;{NSStatusItem}
-    procedure removeStatusItem(_item: objc.id {NSStatusItem});
+    function statusItemWithLength(_length: Single): lobjc.id;{NSStatusItem}
+    procedure removeStatusItem(_item: lobjc.id {NSStatusItem});
     function isVertical: LongBool;
     function thickness: Single;
   end;
@@ -53,14 +53,14 @@ const
 
 { NSStatusBar }
 
-class function NSStatusBar.getClass: objc.id;
+class function NSStatusBar.getClass: lobjc.id;
 begin
   Result := objc_getClass(StrNSStatusBar_NSStatusBar);
 end;
 
 constructor NSStatusBar.systemStatusBar;
 type
-  TmsgSendWrapper = function (param1: objc.id; param2: SEL): objc.id; cdecl;
+  TmsgSendWrapper = function (param1: lobjc.id; param2: SEL): lobjc.id; cdecl;
 var
   vmethod: TmsgSendWrapper;
 begin
@@ -69,19 +69,19 @@ begin
   Handle := vmethod(ClassID, sel_registerName(PChar(StrNSStatusBar_systemStatusBar)));
 end;
 
-function NSStatusBar.statusItemWithLength(_length: Single): objc.id;
+function NSStatusBar.statusItemWithLength(_length: Single): lobjc.id;
 type
-  TmsgSendWrapper = function (param1: objc.id; param2: SEL;_length: Single): objc.id; cdecl;
+  TmsgSendWrapper = function (param1: lobjc.id; param2: SEL;_length: Single): lobjc.id; cdecl;
 var
   vmethod: TmsgSendWrapper;
 begin
   vmethod := TmsgSendWrapper(@objc_msgSend);
-  Result := objc.id(vmethod(Handle, sel_registerName(PChar(StrNSStatusBar_statusItemWithLength)), _length));
+  Result := lobjc.id(vmethod(Handle, sel_registerName(PChar(StrNSStatusBar_statusItemWithLength)), _length));
 end;
 
-procedure NSStatusBar.removeStatusItem(_item: objc.id {NSStatusItem});
+procedure NSStatusBar.removeStatusItem(_item: lobjc.id {NSStatusItem});
 type
-  TmsgSendWrapper = procedure (param1: objc.id; param2: SEL;_item: objc.id {NSStatusItem}); cdecl;
+  TmsgSendWrapper = procedure (param1: lobjc.id; param2: SEL;_item: lobjc.id {NSStatusItem}); cdecl;
 var
   vmethod: TmsgSendWrapper;
 begin

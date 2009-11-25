@@ -9,7 +9,7 @@ unit foundation;
 
 interface
 
-uses SysUtils, ctypes, objc, MacOSAll;
+uses SysUtils, ctypes, lobjc, MacOSAll;
 
 {$define HEADER}
 {$include Foundation.inc}

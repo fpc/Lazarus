@@ -6,8 +6,8 @@
 {#include <CoreFoundation/CoreFoundation.h>
 
 #import <AvailabilityMacros.h>
-#import <objc/objc.h>
-#import <objc/objc-auto.h>}
+#import <lobjc/lobjc.h>
+#import <lobjc/lobjc-auto.h>}
 
 {$include NSObjCRuntime.inc}
 {#import <Foundation/NSAffineTransform.h>

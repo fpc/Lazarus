@@ -27,7 +27,7 @@
     Copyright 1988-1996 NeXT Software, Inc.
 
     DEFINED AS:	A common class
-    HEADER FILES:	objc/List.h
+    HEADER FILES:	lobjc/List.h
 
 }
 

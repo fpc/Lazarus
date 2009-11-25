@@ -49,7 +49,7 @@ type
 
   NSToolbar = class(NSObject)
   public
-    class function getClass: objc.id; override;
+    class function getClass: lobjc.id; override;
     constructor initWithIdentifier(_identifier: CFStringRef);
     //  The identifier is used to form the toolbar's autosave name.  Also, toolbars with
     // the same identifier are implicitly synchronized so that they maintain the same state.
@@ -57,14 +57,14 @@ type
     procedure removeItemAtIndex(__index: Integer);
     //  Primitives for explicitly adding and removing items.  Any change made will be propogated
     // immediately to all other toolbars with the same identifier.
-    procedure setDelegate(_delegate: objc.id);
-    function delegate: objc.id;
+    procedure setDelegate(_delegate: lobjc.id);
+    function delegate: lobjc.id;
     //  Customizable toolbars must have a delegate, and must implement the required NSToolbarDelegate
     // methods.
     procedure setVisible(_shown: LongBool);
     function isVisible: LongBool;
     //  toggles the visibliity of the toolbar.
-    procedure runCustomizationPalette(_sender: objc.id);
+    procedure runCustomizationPalette(_sender: lobjc.id);
     function customizationPaletteIsRunning: LongBool;
     //  Customizable toolbars (those with delegates) can show a palette which allows users
     // to populate the toolbar with individual items or to reset the toolbar to some default
@@ -155,14 +155,14 @@ const
 
 { NSToolbar }
 
-class function NSToolbar.getClass: objc.id;
+class function NSToolbar.getClass: lobjc.id;
 begin
   Result := objc_getClass(StrNSToolbar_NSToolbar);
 end;
 
 constructor NSToolbar.initWithIdentifier(_identifier: CFStringRef);
 type
-  TmsgSendWrapper = function (param1: objc.id; param2: SEL;_identifier: CFStringRef): objc.id; cdecl;
+  TmsgSendWrapper = function (param1: lobjc.id; param2: SEL;_identifier: CFStringRef): lobjc.id; cdecl;
 var
   vmethod: TmsgSendWrapper;
 begin
@@ -174,7 +174,7 @@ end;
 
 procedure NSToolbar.insertItemWithItemIdentifier_atIndex(_itemIdentifier: CFStringRef; __index: Integer);
 type
-  TmsgSendWrapper = procedure (param1: objc.id; param2: SEL;_itemIdentifier: CFStringRef; __index: Integer); cdecl;
+  TmsgSendWrapper = procedure (param1: lobjc.id; param2: SEL;_itemIdentifier: CFStringRef; __index: Integer); cdecl;
 var
   vmethod: TmsgSendWrapper;
 begin
@@ -184,7 +184,7 @@ end;
 
 procedure NSToolbar.removeItemAtIndex(__index: Integer);
 type
-  TmsgSendWrapper = procedure (param1: objc.id; param2: SEL;__index: Integer); cdecl;
+  TmsgSendWrapper = procedure (param1: lobjc.id; param2: SEL;__index: Integer); cdecl;
 var
   vmethod: TmsgSendWrapper;
 begin
@@ -192,9 +192,9 @@ begin
   vmethod(Handle, sel_registerName(PChar(StrNSToolbar_removeItemAtIndex)), __index);
 end;
 
-procedure NSToolbar.setDelegate(_delegate: objc.id);
+procedure NSToolbar.setDelegate(_delegate: lobjc.id);
 type
-  TmsgSendWrapper = procedure (param1: objc.id; param2: SEL;_delegate: objc.id); cdecl;
+  TmsgSendWrapper = procedure (param1: lobjc.id; param2: SEL;_delegate: lobjc.id); cdecl;
 var
   vmethod: TmsgSendWrapper;
 begin
@@ -202,14 +202,14 @@ begin
   vmethod(Handle, sel_registerName(PChar(StrNSToolbar_setDelegate)), _delegate);
 end;
 
-function NSToolbar.delegate: objc.id;
+function NSToolbar.delegate: lobjc.id;
 begin
-  Result := objc.id(objc_msgSend(Handle, sel_registerName(PChar(StrNSToolbar_delegate)), []));
+  Result := lobjc.id(objc_msgSend(Handle, sel_registerName(PChar(StrNSToolbar_delegate)), []));
 end;
 
 procedure NSToolbar.setVisible(_shown: LongBool);
 type
-  TmsgSendWrapper = procedure (param1: objc.id; param2: SEL;_shown: LongBool); cdecl;
+  TmsgSendWrapper = procedure (param1: lobjc.id; param2: SEL;_shown: LongBool); cdecl;
 var
   vmethod: TmsgSendWrapper;
 begin
@@ -222,9 +222,9 @@ begin
   Result := LongBool(objc_msgSend(Handle, sel_registerName(PChar(StrNSToolbar_isVisible)), []));
 end;
 
-procedure NSToolbar.runCustomizationPalette(_sender: objc.id);
+procedure NSToolbar.runCustomizationPalette(_sender: lobjc.id);
 type
-  TmsgSendWrapper = procedure (param1: objc.id; param2: SEL;_sender: objc.id); cdecl;
+  TmsgSendWrapper = procedure (param1: lobjc.id; param2: SEL;_sender: lobjc.id); cdecl;
 var
   vmethod: TmsgSendWrapper;
 begin
@@ -239,7 +239,7 @@ end;
 
 procedure NSToolbar.setDisplayMode(_displayMode: NSToolbarDisplayMode);
 type
-  TmsgSendWrapper = procedure (param1: objc.id; param2: SEL;_displayMode: NSToolbarDisplayMode); cdecl;
+  TmsgSendWrapper = procedure (param1: lobjc.id; param2: SEL;_displayMode: NSToolbarDisplayMode); cdecl;
 var
   vmethod: TmsgSendWrapper;
 begin
@@ -255,7 +255,7 @@ end;
 {.$ifdef  MAC_OS_X_VERSION_MAX_ALLOWED >= MAC_OS_X_VERSION_10_3}
 procedure NSToolbar.setSelectedItemIdentifier(_itemIdentifier: CFStringRef);
 type
-  TmsgSendWrapper = procedure (param1: objc.id; param2: SEL;_itemIdentifier: CFStringRef); cdecl;
+  TmsgSendWrapper = procedure (param1: lobjc.id; param2: SEL;_itemIdentifier: CFStringRef); cdecl;
 var
   vmethod: TmsgSendWrapper;
 begin
@@ -272,7 +272,7 @@ end;
 {.$ifdef  MAC_OS_X_VERSION_MAX_ALLOWED >= MAC_OS_X_VERSION_10_2}
 procedure NSToolbar.setSizeMode(_sizeMode: NSToolbarSizeMode);
 type
-  TmsgSendWrapper = procedure (param1: objc.id; param2: SEL;_sizeMode: NSToolbarSizeMode); cdecl;
+  TmsgSendWrapper = procedure (param1: lobjc.id; param2: SEL;_sizeMode: NSToolbarSizeMode); cdecl;
 var
   vmethod: TmsgSendWrapper;
 begin
@@ -289,7 +289,7 @@ end;
 {.$ifdef  MAC_OS_X_VERSION_MAX_ALLOWED >= MAC_OS_X_VERSION_10_4}
 procedure NSToolbar.setShowsBaselineSeparator(_flag: LongBool);
 type
-  TmsgSendWrapper = procedure (param1: objc.id; param2: SEL;_flag: LongBool); cdecl;
+  TmsgSendWrapper = procedure (param1: lobjc.id; param2: SEL;_flag: LongBool); cdecl;
 var
   vmethod: TmsgSendWrapper;
 begin
@@ -305,7 +305,7 @@ end;
 {.$endif}
 procedure NSToolbar.setAllowsUserCustomization(_allowCustomization: LongBool);
 type
-  TmsgSendWrapper = procedure (param1: objc.id; param2: SEL;_allowCustomization: LongBool); cdecl;
+  TmsgSendWrapper = procedure (param1: lobjc.id; param2: SEL;_allowCustomization: LongBool); cdecl;
 var
   vmethod: TmsgSendWrapper;
 begin
@@ -335,7 +335,7 @@ end;
 
 procedure NSToolbar.setAutosavesConfiguration(_flag: LongBool);
 type
-  TmsgSendWrapper = procedure (param1: objc.id; param2: SEL;_flag: LongBool); cdecl;
+  TmsgSendWrapper = procedure (param1: lobjc.id; param2: SEL;_flag: LongBool); cdecl;
 var
   vmethod: TmsgSendWrapper;
 begin
@@ -350,7 +350,7 @@ end;
 
 procedure NSToolbar.setConfigurationFromDictionary(_configDict: CFDictionaryRef);
 type
-  TmsgSendWrapper = procedure (param1: objc.id; param2: SEL;_configDict: CFDictionaryRef); cdecl;
+  TmsgSendWrapper = procedure (param1: lobjc.id; param2: SEL;_configDict: CFDictionaryRef); cdecl;
 var
   vmethod: TmsgSendWrapper;
 begin

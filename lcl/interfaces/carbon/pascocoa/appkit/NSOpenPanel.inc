@@ -30,7 +30,7 @@
 
   NSOpenPanel = class(NSSavePanel)
   public
-    class function getClass: objc.id; override;
+    class function getClass: lobjc.id; override;
     constructor openPanel;
     function URLs: CFArrayRef;
     function filenames: CFArrayRef;
@@ -42,9 +42,9 @@
     procedure setAllowsMultipleSelection(_flag: LongBool);
     function canChooseFiles: LongBool;
     procedure setCanChooseFiles(_flag: LongBool);
-    procedure beginSheetForDirectory_file_types_modalForWindow_modalDelegate_didEndSelector_contextInfo(_path: CFStringRef; _name: CFStringRef; _fileTypes: CFArrayRef; _docWindow: objc.id {NSWindow}; _delegate: objc.id; _didEndSelector: SEL; _contextInfo: Pointer);
+    procedure beginSheetForDirectory_file_types_modalForWindow_modalDelegate_didEndSelector_contextInfo(_path: CFStringRef; _name: CFStringRef; _fileTypes: CFArrayRef; _docWindow: lobjc.id {NSWindow}; _delegate: lobjc.id; _didEndSelector: SEL; _contextInfo: Pointer);
     {.$ifdef  MAC_OS_X_VERSION_MAX_ALLOWED >= MAC_OS_X_VERSION_10_3}
-    procedure beginForDirectory_file_types_modelessDelegate_didEndSelector_contextInfo(_path: CFStringRef; _name: CFStringRef; _fileTypes: CFArrayRef; _delegate: objc.id; _didEndSelector: SEL; _contextInfo: Pointer);
+    procedure beginForDirectory_file_types_modelessDelegate_didEndSelector_contextInfo(_path: CFStringRef; _name: CFStringRef; _fileTypes: CFArrayRef; _delegate: lobjc.id; _didEndSelector: SEL; _contextInfo: Pointer);
     {.$endif}
     function runModalForDirectory_file_types(_path: CFStringRef; _name: CFStringRef; _fileTypes: CFArrayRef): Integer;
     function runModalForTypes(_fileTypes: CFArrayRef): Integer;
@@ -75,14 +75,14 @@ const
 
 { NSOpenPanel }
 
-class function NSOpenPanel.getClass: objc.id;
+class function NSOpenPanel.getClass: lobjc.id;
 begin
   Result := objc_getClass(StrNSOpenPanel_NSOpenPanel);
 end;
 
 constructor NSOpenPanel.openPanel;
 type
-  TmsgSendWrapper = function (param1: objc.id; param2: SEL): objc.id; cdecl;
+  TmsgSendWrapper = function (param1: lobjc.id; param2: SEL): lobjc.id; cdecl;
 var
   vmethod: TmsgSendWrapper;
 begin
@@ -108,7 +108,7 @@ end;
 
 procedure NSOpenPanel.setResolvesAliases(_flag: LongBool);
 type
-  TmsgSendWrapper = procedure (param1: objc.id; param2: SEL;_flag: LongBool); cdecl;
+  TmsgSendWrapper = procedure (param1: lobjc.id; param2: SEL;_flag: LongBool); cdecl;
 var
   vmethod: TmsgSendWrapper;
 begin
@@ -123,7 +123,7 @@ end;
 
 procedure NSOpenPanel.setCanChooseDirectories(_flag: LongBool);
 type
-  TmsgSendWrapper = procedure (param1: objc.id; param2: SEL;_flag: LongBool); cdecl;
+  TmsgSendWrapper = procedure (param1: lobjc.id; param2: SEL;_flag: LongBool); cdecl;
 var
   vmethod: TmsgSendWrapper;
 begin
@@ -138,7 +138,7 @@ end;
 
 procedure NSOpenPanel.setAllowsMultipleSelection(_flag: LongBool);
 type
-  TmsgSendWrapper = procedure (param1: objc.id; param2: SEL;_flag: LongBool); cdecl;
+  TmsgSendWrapper = procedure (param1: lobjc.id; param2: SEL;_flag: LongBool); cdecl;
 var
   vmethod: TmsgSendWrapper;
 begin
@@ -153,7 +153,7 @@ end;
 
 procedure NSOpenPanel.setCanChooseFiles(_flag: LongBool);
 type
-  TmsgSendWrapper = procedure (param1: objc.id; param2: SEL;_flag: LongBool); cdecl;
+  TmsgSendWrapper = procedure (param1: lobjc.id; param2: SEL;_flag: LongBool); cdecl;
 var
   vmethod: TmsgSendWrapper;
 begin
@@ -161,9 +161,9 @@ begin
   vmethod(Handle, sel_registerName(PChar(StrNSOpenPanel_setCanChooseFiles)), _flag);
 end;
 
-procedure NSOpenPanel.beginSheetForDirectory_file_types_modalForWindow_modalDelegate_didEndSelector_contextInfo(_path: CFStringRef; _name: CFStringRef; _fileTypes: CFArrayRef; _docWindow: objc.id {NSWindow}; _delegate: objc.id; _didEndSelector: SEL; _contextInfo: Pointer);
+procedure NSOpenPanel.beginSheetForDirectory_file_types_modalForWindow_modalDelegate_didEndSelector_contextInfo(_path: CFStringRef; _name: CFStringRef; _fileTypes: CFArrayRef; _docWindow: lobjc.id {NSWindow}; _delegate: lobjc.id; _didEndSelector: SEL; _contextInfo: Pointer);
 type
-  TmsgSendWrapper = procedure (param1: objc.id; param2: SEL;_path: CFStringRef; _name: CFStringRef; _fileTypes: CFArrayRef; _docWindow: objc.id {NSWindow}; _delegate: objc.id; _didEndSelector: SEL; _contextInfo: Pointer); cdecl;
+  TmsgSendWrapper = procedure (param1: lobjc.id; param2: SEL;_path: CFStringRef; _name: CFStringRef; _fileTypes: CFArrayRef; _docWindow: lobjc.id {NSWindow}; _delegate: lobjc.id; _didEndSelector: SEL; _contextInfo: Pointer); cdecl;
 var
   vmethod: TmsgSendWrapper;
 begin
@@ -172,9 +172,9 @@ begin
 end;
 
 {.$ifdef  MAC_OS_X_VERSION_MAX_ALLOWED >= MAC_OS_X_VERSION_10_3}
-procedure NSOpenPanel.beginForDirectory_file_types_modelessDelegate_didEndSelector_contextInfo(_path: CFStringRef; _name: CFStringRef; _fileTypes: CFArrayRef; _delegate: objc.id; _didEndSelector: SEL; _contextInfo: Pointer);
+procedure NSOpenPanel.beginForDirectory_file_types_modelessDelegate_didEndSelector_contextInfo(_path: CFStringRef; _name: CFStringRef; _fileTypes: CFArrayRef; _delegate: lobjc.id; _didEndSelector: SEL; _contextInfo: Pointer);
 type
-  TmsgSendWrapper = procedure (param1: objc.id; param2: SEL;_path: CFStringRef; _name: CFStringRef; _fileTypes: CFArrayRef; _delegate: objc.id; _didEndSelector: SEL; _contextInfo: Pointer); cdecl;
+  TmsgSendWrapper = procedure (param1: lobjc.id; param2: SEL;_path: CFStringRef; _name: CFStringRef; _fileTypes: CFArrayRef; _delegate: lobjc.id; _didEndSelector: SEL; _contextInfo: Pointer); cdecl;
 var
   vmethod: TmsgSendWrapper;
 begin
@@ -185,7 +185,7 @@ end;
 {.$endif}
 function NSOpenPanel.runModalForDirectory_file_types(_path: CFStringRef; _name: CFStringRef; _fileTypes: CFArrayRef): Integer;
 type
-  TmsgSendWrapper = function (param1: objc.id; param2: SEL;_path: CFStringRef; _name: CFStringRef; _fileTypes: CFArrayRef): Integer; cdecl;
+  TmsgSendWrapper = function (param1: lobjc.id; param2: SEL;_path: CFStringRef; _name: CFStringRef; _fileTypes: CFArrayRef): Integer; cdecl;
 var
   vmethod: TmsgSendWrapper;
 begin
@@ -195,7 +195,7 @@ end;
 
 function NSOpenPanel.runModalForTypes(_fileTypes: CFArrayRef): Integer;
 type
-  TmsgSendWrapper = function (param1: objc.id; param2: SEL;_fileTypes: CFArrayRef): Integer; cdecl;
+  TmsgSendWrapper = function (param1: lobjc.id; param2: SEL;_fileTypes: CFArrayRef): Integer; cdecl;
 var
   vmethod: TmsgSendWrapper;
 begin

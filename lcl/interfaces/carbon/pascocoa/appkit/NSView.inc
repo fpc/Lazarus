@@ -61,7 +61,7 @@ type
 {$ifndef NSVIEW_PAS_C}
 {$define NSVIEW_PAS_C}
 
-  TProcNSViewcompare0 = function (_param1: objc.id; _param2: objc.id; _param3: Pointer): Integer; cdecl;
+  TProcNSViewcompare0 = function (_param1: lobjc.id; _param2: lobjc.id; _param3: Pointer): Integer; cdecl;
 
 {$include NSResponder.inc}
 {$include AppKitDefines.inc}
@@ -71,15 +71,15 @@ type
 
   NSView = class(NSResponder)
   public
-    class function getClass: objc.id; override;
+    class function getClass: lobjc.id; override;
     // All instance variables are private
     constructor initWithFrame(_frameRect: NSRect);
-    function window: objc.id;{NSWindow}
-    function superview: objc.id;{NSView}
+    function window: lobjc.id;{NSWindow}
+    function superview: lobjc.id;{NSView}
     function subviews: CFArrayRef;
-    function isDescendantOf(_aView: objc.id {NSView}): LongBool;
-    function ancestorSharedWithView(_aView: objc.id {NSView}): objc.id;{NSView}
-    function opaqueAncestor: objc.id;{NSView}
+    function isDescendantOf(_aView: lobjc.id {NSView}): LongBool;
+    function ancestorSharedWithView(_aView: lobjc.id {NSView}): lobjc.id;{NSView}
+    function opaqueAncestor: lobjc.id;{NSView}
     {.$ifdef  MAC_OS_X_VERSION_MAX_ALLOWED >= MAC_OS_X_VERSION_10_3}
     procedure setHidden(_flag: LongBool);
     function isHidden: LongBool;
@@ -88,17 +88,17 @@ type
     function needsToDrawRect(_aRect: NSRect): LongBool;
     function wantsDefaultClipping: LongBool;
     {.$endif}
-    procedure addSubview(_aView: objc.id {NSView});
-    procedure addSubview_positioned_relativeTo(_aView: objc.id {NSView}; _place: NSWindowOrderingMode; _otherView: objc.id {NSView});
+    procedure addSubview(_aView: lobjc.id {NSView});
+    procedure addSubview_positioned_relativeTo(_aView: lobjc.id {NSView}; _place: NSWindowOrderingMode; _otherView: lobjc.id {NSView});
     procedure sortSubviewsUsingFunction_context(_compare: TProcNSViewcompare0; _context: Pointer);
-    procedure viewWillMoveToWindow(_newWindow: objc.id {NSWindow});
+    procedure viewWillMoveToWindow(_newWindow: lobjc.id {NSWindow});
     procedure viewDidMoveToWindow;
-    procedure viewWillMoveToSuperview(_newSuperview: objc.id {NSView});
+    procedure viewWillMoveToSuperview(_newSuperview: lobjc.id {NSView});
     procedure viewDidMoveToSuperview;
-    procedure didAddSubview(_subview: objc.id {NSView});
-    procedure willRemoveSubview(_subview: objc.id {NSView});
+    procedure didAddSubview(_subview: lobjc.id {NSView});
+    procedure willRemoveSubview(_subview: lobjc.id {NSView});
     procedure removeFromSuperview;
-    procedure replaceSubview_with(_oldView: objc.id {NSView}; _newView: objc.id {NSView});
+    procedure replaceSubview_with(_oldView: lobjc.id {NSView}; _newView: lobjc.id {NSView});
     procedure removeFromSuperviewWithoutNeedingDisplay;
     procedure setPostsFrameChangedNotifications(_flag: LongBool);
     function postsFrameChangedNotifications: LongBool;
@@ -127,12 +127,12 @@ type
     function isRotatedFromBase: LongBool;
     function isRotatedOrScaledFromBase: LongBool;
     function isOpaque: LongBool;
-    function convertPoint_fromView(_aPoint: NSPoint; _aView: objc.id {NSView}): NSPoint;
-    function convertPoint_toView(_aPoint: NSPoint; _aView: objc.id {NSView}): NSPoint;
-    function convertSize_fromView(_aSize: NSSize; _aView: objc.id {NSView}): NSSize;
-    function convertSize_toView(_aSize: NSSize; _aView: objc.id {NSView}): NSSize;
-    function convertRect_fromView(_aRect: NSRect; _aView: objc.id {NSView}): NSRect;
-    function convertRect_toView(_aRect: NSRect; _aView: objc.id {NSView}): NSRect;
+    function convertPoint_fromView(_aPoint: NSPoint; _aView: lobjc.id {NSView}): NSPoint;
+    function convertPoint_toView(_aPoint: NSPoint; _aView: lobjc.id {NSView}): NSPoint;
+    function convertSize_fromView(_aSize: NSSize; _aView: lobjc.id {NSView}): NSSize;
+    function convertSize_toView(_aSize: NSSize; _aView: lobjc.id {NSView}): NSSize;
+    function convertRect_fromView(_aRect: NSRect; _aView: lobjc.id {NSView}): NSRect;
+    function convertRect_toView(_aRect: NSRect; _aView: lobjc.id {NSView}): NSRect;
     function centerScanRect(_aRect: NSRect): NSRect;
     function canDraw: LongBool;
     procedure setNeedsDisplay(_flag: LongBool);
@@ -142,7 +142,7 @@ type
     procedure unlockFocus;
     function lockFocusIfCanDraw: LongBool;
     {.$ifdef  MAC_OS_X_VERSION_MAX_ALLOWED >= MAC_OS_X_VERSION_10_4}
-    function lockFocusIfCanDrawInContext(_context: objc.id {NSGraphicsContext}): LongBool;
+    function lockFocusIfCanDrawInContext(_context: lobjc.id {NSGraphicsContext}): LongBool;
     {.$endif}
     constructor focusView;
     function visibleRect: NSRect;
@@ -155,9 +155,9 @@ type
     procedure displayIfNeededInRectIgnoringOpacity(_rect: NSRect);
     procedure drawRect(_rect: NSRect);
     {.$ifdef  MAC_OS_X_VERSION_MAX_ALLOWED >= MAC_OS_X_VERSION_10_4}
-    procedure displayRectIgnoringOpacity_inContext(_aRect: NSRect; _context: objc.id {NSGraphicsContext});
-    function bitmapImageRepForCachingDisplayInRect(_rect: NSRect): objc.id;{NSBitmapImageRep}
-    procedure cacheDisplayInRect_toBitmapImageRep(_rect: NSRect; _bitmapImageRep: objc.id {NSBitmapImageRep});
+    procedure displayRectIgnoringOpacity_inContext(_aRect: NSRect; _context: lobjc.id {NSGraphicsContext});
+    function bitmapImageRepForCachingDisplayInRect(_rect: NSRect): lobjc.id;{NSBitmapImageRep}
+    procedure cacheDisplayInRect_toBitmapImageRep(_rect: NSRect; _bitmapImageRep: lobjc.id {NSBitmapImageRep});
     {.$endif}
     function gState: Integer;
     procedure allocateGState;
@@ -166,35 +166,35 @@ type
     procedure renewGState;
     procedure scrollPoint(_aPoint: NSPoint);
     function scrollRectToVisible(_aRect: NSRect): LongBool;
-    function autoscroll(_theEvent: objc.id {NSEvent}): LongBool;
+    function autoscroll(_theEvent: lobjc.id {NSEvent}): LongBool;
     function adjustScroll(_newVisible: NSRect): NSRect;
     procedure scrollRect_by(_aRect: NSRect; _delta: NSSize);
-    function hitTest(_aPoint: NSPoint): objc.id;{NSView}
+    function hitTest(_aPoint: NSPoint): lobjc.id;{NSView}
     function mouse_inRect(_aPoint: NSPoint; _aRect: NSRect): LongBool;
-    function viewWithTag(_aTag: Integer): objc.id;
+    function viewWithTag(_aTag: Integer): lobjc.id;
     function tag: Integer;
-    function performKeyEquivalent(_theEvent: objc.id {NSEvent}): LongBool;
-    function acceptsFirstMouse(_theEvent: objc.id {NSEvent}): LongBool;
-    function shouldDelayWindowOrderingForEvent(_theEvent: objc.id {NSEvent}): LongBool;
+    function performKeyEquivalent(_theEvent: lobjc.id {NSEvent}): LongBool;
+    function acceptsFirstMouse(_theEvent: lobjc.id {NSEvent}): LongBool;
+    function shouldDelayWindowOrderingForEvent(_theEvent: lobjc.id {NSEvent}): LongBool;
     function needsPanelToBecomeKey: LongBool;
     {.$ifdef  MAC_OS_X_VERSION_MAX_ALLOWED >= MAC_OS_X_VERSION_10_2}
     function mouseDownCanMoveWindow: LongBool;
     {.$endif}
-    procedure addCursorRect_cursor(_aRect: NSRect; _anObj: objc.id {NSCursor});
-    procedure removeCursorRect_cursor(_aRect: NSRect; _anObj: objc.id {NSCursor});
+    procedure addCursorRect_cursor(_aRect: NSRect; _anObj: lobjc.id {NSCursor});
+    procedure removeCursorRect_cursor(_aRect: NSRect; _anObj: lobjc.id {NSCursor});
     procedure discardCursorRects;
     procedure resetCursorRects;
-    function addTrackingRect_owner_userData_assumeInside(_aRect: NSRect; _anObject: objc.id; _data: Pointer; _flag: LongBool): NSTrackingRectTag;
+    function addTrackingRect_owner_userData_assumeInside(_aRect: NSRect; _anObject: lobjc.id; _data: Pointer; _flag: LongBool): NSTrackingRectTag;
     procedure removeTrackingRect(_tag: NSTrackingRectTag);
     function shouldDrawColor: LongBool;
     procedure setPostsBoundsChangedNotifications(_flag: LongBool);
     function postsBoundsChangedNotifications: LongBool;
-    function enclosingScrollView: objc.id;{NSScrollView}
-    function menuForEvent(_event: objc.id {NSEvent}): objc.id;{NSMenu}
-    class function defaultMenu: objc.id;{NSMenu}
+    function enclosingScrollView: lobjc.id;{NSScrollView}
+    function menuForEvent(_event: lobjc.id {NSEvent}): lobjc.id;{NSMenu}
+    class function defaultMenu: lobjc.id;{NSMenu}
     procedure setToolTip(__string: CFStringRef);
     function toolTip: CFStringRef;
-    function addToolTipRect_owner_userData(_aRect: NSRect; _anObject: objc.id; _data: Pointer): NSToolTipTag;
+    function addToolTipRect_owner_userData(_aRect: NSRect; _anObject: lobjc.id; _data: Pointer): NSToolTipTag;
     procedure removeToolTip(_tag: NSToolTipTag);
     procedure removeAllToolTips;
     //  Live resize support
@@ -219,11 +219,11 @@ type
     procedure getRectsExposedDuringLiveResize;
     {.$endif}
     function performMnemonic(_theString: CFStringRef): LongBool;
-    procedure setNextKeyView(_next: objc.id {NSView});
-    function nextKeyView: objc.id;{NSView}
-    function previousKeyView: objc.id;{NSView}
-    function nextValidKeyView: objc.id;{NSView}
-    function previousValidKeyView: objc.id;{NSView}
+    procedure setNextKeyView(_next: lobjc.id {NSView});
+    function nextKeyView: lobjc.id;{NSView}
+    function previousKeyView: lobjc.id;{NSView}
+    function nextValidKeyView: lobjc.id;{NSView}
+    function previousValidKeyView: lobjc.id;{NSView}
     {.$ifdef  MAC_OS_X_VERSION_MAX_ALLOWED >= MAC_OS_X_VERSION_10_3}
     function canBecomeKeyView: LongBool;
     {.$endif}
@@ -234,12 +234,12 @@ type
     class function defaultFocusRingType: NSFocusRingType;
     {.$endif}
     //  EPS/PDF generation
-    procedure writeEPSInsideRect_toPasteboard(_rect: NSRect; _pasteboard: objc.id {NSPasteboard});
+    procedure writeEPSInsideRect_toPasteboard(_rect: NSRect; _pasteboard: lobjc.id {NSPasteboard});
     function dataWithEPSInsideRect(_rect: NSRect): CFDataRef;
-    procedure writePDFInsideRect_toPasteboard(_rect: NSRect; _pasteboard: objc.id {NSPasteboard});
+    procedure writePDFInsideRect_toPasteboard(_rect: NSRect; _pasteboard: lobjc.id {NSPasteboard});
     function dataWithPDFInsideRect(_rect: NSRect): CFDataRef;
     //  Printing action method (Note fax: is obsolete)
-    procedure print(_sender: objc.id);
+    procedure print(_sender: lobjc.id);
     //  Pagination
     function knowsPageRange(_range: NSRangePointer): LongBool;
     function heightAdjustLimit: Single;
@@ -250,8 +250,8 @@ type
     function locationOfPrintRect(_aRect: NSRect): NSPoint;
     procedure drawPageBorderWithSize(_borderSize: NSSize);
     {.$ifdef  MAC_OS_X_VERSION_MAX_ALLOWED >= MAC_OS_X_VERSION_10_4}
-    function pageHeader: objc.id;{NSAttributedString}
-    function pageFooter: objc.id;{NSAttributedString}
+    function pageHeader: lobjc.id;{NSAttributedString}
+    function pageFooter: lobjc.id;{NSAttributedString}
     {.$endif}
     // ** This method is obsolete.  It will never be invoked from within AppKit, and NSView's
     // implementation of it does nothing. **
@@ -264,15 +264,15 @@ type
     procedure endDocument;
     procedure beginPageInRect_atPlacement(_aRect: NSRect; _location: NSPoint);
     procedure endPage;
-    procedure dragImage_at_offset_event_pasteboard_source_slideBack(_anImage: objc.id {NSImage}; _viewLocation: NSPoint; _initialOffset: NSSize; _event: objc.id {NSEvent}; _pboard: objc.id {NSPasteboard}; _sourceObj: objc.id; _slideFlag: LongBool);
+    procedure dragImage_at_offset_event_pasteboard_source_slideBack(_anImage: lobjc.id {NSImage}; _viewLocation: NSPoint; _initialOffset: NSSize; _event: lobjc.id {NSEvent}; _pboard: lobjc.id {NSPasteboard}; _sourceObj: lobjc.id; _slideFlag: LongBool);
     {.$ifdef  MAC_OS_X_VERSION_MAX_ALLOWED >= MAC_OS_X_VERSION_10_4}
     function registeredDraggedTypes: CFArrayRef;
     {.$endif}
     procedure registerForDraggedTypes(_newTypes: CFArrayRef);
     procedure unregisterDraggedTypes;
-    function dragFile_fromRect_slideBack_event(_filename: CFStringRef; _rect: NSRect; _aFlag: LongBool; _event: objc.id {NSEvent}): LongBool;
+    function dragFile_fromRect_slideBack_event(_filename: CFStringRef; _rect: NSRect; _aFlag: LongBool; _event: lobjc.id {NSEvent}): LongBool;
     {.$ifdef  MAC_OS_X_VERSION_MAX_ALLOWED >= MAC_OS_X_VERSION_10_2}
-    function dragPromisedFilesOfTypes_fromRect_source_slideBack_event(_typeArray: CFArrayRef; _rect: NSRect; _sourceObject: objc.id; _aFlag: LongBool; _event: objc.id {NSEvent}): LongBool;
+    function dragPromisedFilesOfTypes_fromRect_source_slideBack_event(_typeArray: CFArrayRef; _rect: NSRect; _sourceObject: lobjc.id; _aFlag: LongBool; _event: lobjc.id {NSEvent}): LongBool;
     {.$endif}
   end;
 
@@ -448,14 +448,14 @@ const
 
 { NSView }
 
-class function NSView.getClass: objc.id;
+class function NSView.getClass: lobjc.id;
 begin
   Result := objc_getClass(StrNSView_NSView);
 end;
 
 constructor NSView.initWithFrame(_frameRect: NSRect);
 type
-  TmsgSendWrapper = function (param1: objc.id; param2: SEL;_frameRect: NSRect): objc.id; cdecl;
+  TmsgSendWrapper = function (param1: lobjc.id; param2: SEL;_frameRect: NSRect): lobjc.id; cdecl;
 var
   vmethod: TmsgSendWrapper;
 begin
@@ -465,14 +465,14 @@ begin
   Handle := vmethod(allocbuf, sel_registerName(PChar(StrNSView_initWithFrame)), _frameRect);
 end;
 
-function NSView.window: objc.id;
+function NSView.window: lobjc.id;
 begin
-  Result := objc.id(objc_msgSend(Handle, sel_registerName(PChar(StrNSView_window)), []));
+  Result := lobjc.id(objc_msgSend(Handle, sel_registerName(PChar(StrNSView_window)), []));
 end;
 
-function NSView.superview: objc.id;
+function NSView.superview: lobjc.id;
 begin
-  Result := objc.id(objc_msgSend(Handle, sel_registerName(PChar(StrNSView_superview)), []));
+  Result := lobjc.id(objc_msgSend(Handle, sel_registerName(PChar(StrNSView_superview)), []));
 end;
 
 function NSView.subviews: CFArrayRef;
@@ -480,9 +480,9 @@ begin
   Result := CFArrayRef(objc_msgSend(Handle, sel_registerName(PChar(StrNSView_subviews)), []));
 end;
 
-function NSView.isDescendantOf(_aView: objc.id {NSView}): LongBool;
+function NSView.isDescendantOf(_aView: lobjc.id {NSView}): LongBool;
 type
-  TmsgSendWrapper = function (param1: objc.id; param2: SEL;_aView: objc.id {NSView}): LongBool; cdecl;
+  TmsgSendWrapper = function (param1: lobjc.id; param2: SEL;_aView: lobjc.id {NSView}): LongBool; cdecl;
 var
   vmethod: TmsgSendWrapper;
 begin
@@ -490,25 +490,25 @@ begin
   Result := LongBool(vmethod(Handle, sel_registerName(PChar(StrNSView_isDescendantOf)), _aView));
 end;
 
-function NSView.ancestorSharedWithView(_aView: objc.id {NSView}): objc.id;
+function NSView.ancestorSharedWithView(_aView: lobjc.id {NSView}): lobjc.id;
 type
-  TmsgSendWrapper = function (param1: objc.id; param2: SEL;_aView: objc.id {NSView}): objc.id; cdecl;
+  TmsgSendWrapper = function (param1: lobjc.id; param2: SEL;_aView: lobjc.id {NSView}): lobjc.id; cdecl;
 var
   vmethod: TmsgSendWrapper;
 begin
   vmethod := TmsgSendWrapper(@objc_msgSend);
-  Result := objc.id(vmethod(Handle, sel_registerName(PChar(StrNSView_ancestorSharedWithView)), _aView));
+  Result := lobjc.id(vmethod(Handle, sel_registerName(PChar(StrNSView_ancestorSharedWithView)), _aView));
 end;
 
-function NSView.opaqueAncestor: objc.id;
+function NSView.opaqueAncestor: lobjc.id;
 begin
-  Result := objc.id(objc_msgSend(Handle, sel_registerName(PChar(StrNSView_opaqueAncestor)), []));
+  Result := lobjc.id(objc_msgSend(Handle, sel_registerName(PChar(StrNSView_opaqueAncestor)), []));
 end;
 
 {.$ifdef  MAC_OS_X_VERSION_MAX_ALLOWED >= MAC_OS_X_VERSION_10_3}
 procedure NSView.setHidden(_flag: LongBool);
 type
-  TmsgSendWrapper = procedure (param1: objc.id; param2: SEL;_flag: LongBool); cdecl;
+  TmsgSendWrapper = procedure (param1: lobjc.id; param2: SEL;_flag: LongBool); cdecl;
 var
   vmethod: TmsgSendWrapper;
 begin
@@ -528,7 +528,7 @@ end;
 
 procedure NSView.getRectsBeingDrawn_count(_rects: NSRect; _count: Integer);
 type
-  TmsgSendWrapper = procedure (param1: objc.id; param2: SEL;_rects: NSRect; _count: Integer); cdecl;
+  TmsgSendWrapper = procedure (param1: lobjc.id; param2: SEL;_rects: NSRect; _count: Integer); cdecl;
 var
   vmethod: TmsgSendWrapper;
 begin
@@ -538,7 +538,7 @@ end;
 
 function NSView.needsToDrawRect(_aRect: NSRect): LongBool;
 type
-  TmsgSendWrapper = function (param1: objc.id; param2: SEL;_aRect: NSRect): LongBool; cdecl;
+  TmsgSendWrapper = function (param1: lobjc.id; param2: SEL;_aRect: NSRect): LongBool; cdecl;
 var
   vmethod: TmsgSendWrapper;
 begin
@@ -552,9 +552,9 @@ begin
 end;
 
 {.$endif}
-procedure NSView.addSubview(_aView: objc.id {NSView});
+procedure NSView.addSubview(_aView: lobjc.id {NSView});
 type
-  TmsgSendWrapper = procedure (param1: objc.id; param2: SEL;_aView: objc.id {NSView}); cdecl;
+  TmsgSendWrapper = procedure (param1: lobjc.id; param2: SEL;_aView: lobjc.id {NSView}); cdecl;
 var
   vmethod: TmsgSendWrapper;
 begin
@@ -562,9 +562,9 @@ begin
   vmethod(Handle, sel_registerName(PChar(StrNSView_addSubview)), _aView);
 end;
 
-procedure NSView.addSubview_positioned_relativeTo(_aView: objc.id {NSView}; _place: NSWindowOrderingMode; _otherView: objc.id {NSView});
+procedure NSView.addSubview_positioned_relativeTo(_aView: lobjc.id {NSView}; _place: NSWindowOrderingMode; _otherView: lobjc.id {NSView});
 type
-  TmsgSendWrapper = procedure (param1: objc.id; param2: SEL;_aView: objc.id {NSView}; _place: NSWindowOrderingMode; _otherView: objc.id {NSView}); cdecl;
+  TmsgSendWrapper = procedure (param1: lobjc.id; param2: SEL;_aView: lobjc.id {NSView}; _place: NSWindowOrderingMode; _otherView: lobjc.id {NSView}); cdecl;
 var
   vmethod: TmsgSendWrapper;
 begin
@@ -574,7 +574,7 @@ end;
 
 procedure NSView.sortSubviewsUsingFunction_context(_compare: TProcNSViewcompare0; _context: Pointer);
 type
-  TmsgSendWrapper = procedure (param1: objc.id; param2: SEL;_compare: TProcNSViewcompare0; _context: Pointer); cdecl;
+  TmsgSendWrapper = procedure (param1: lobjc.id; param2: SEL;_compare: TProcNSViewcompare0; _context: Pointer); cdecl;
 var
   vmethod: TmsgSendWrapper;
 begin
@@ -582,9 +582,9 @@ begin
   vmethod(Handle, sel_registerName(PChar(StrNSView_sortSubviewsUsingFunction_context)), _compare, _context);
 end;
 
-procedure NSView.viewWillMoveToWindow(_newWindow: objc.id {NSWindow});
+procedure NSView.viewWillMoveToWindow(_newWindow: lobjc.id {NSWindow});
 type
-  TmsgSendWrapper = procedure (param1: objc.id; param2: SEL;_newWindow: objc.id {NSWindow}); cdecl;
+  TmsgSendWrapper = procedure (param1: lobjc.id; param2: SEL;_newWindow: lobjc.id {NSWindow}); cdecl;
 var
   vmethod: TmsgSendWrapper;
 begin
@@ -597,9 +597,9 @@ begin
   objc_msgSend(Handle, sel_registerName(PChar(StrNSView_viewDidMoveToWindow)), []);
 end;
 
-procedure NSView.viewWillMoveToSuperview(_newSuperview: objc.id {NSView});
+procedure NSView.viewWillMoveToSuperview(_newSuperview: lobjc.id {NSView});
 type
-  TmsgSendWrapper = procedure (param1: objc.id; param2: SEL;_newSuperview: objc.id {NSView}); cdecl;
+  TmsgSendWrapper = procedure (param1: lobjc.id; param2: SEL;_newSuperview: lobjc.id {NSView}); cdecl;
 var
   vmethod: TmsgSendWrapper;
 begin
@@ -612,9 +612,9 @@ begin
   objc_msgSend(Handle, sel_registerName(PChar(StrNSView_viewDidMoveToSuperview)), []);
 end;
 
-procedure NSView.didAddSubview(_subview: objc.id {NSView});
+procedure NSView.didAddSubview(_subview: lobjc.id {NSView});
 type
-  TmsgSendWrapper = procedure (param1: objc.id; param2: SEL;_subview: objc.id {NSView}); cdecl;
+  TmsgSendWrapper = procedure (param1: lobjc.id; param2: SEL;_subview: lobjc.id {NSView}); cdecl;
 var
   vmethod: TmsgSendWrapper;
 begin
@@ -622,9 +622,9 @@ begin
   vmethod(Handle, sel_registerName(PChar(StrNSView_didAddSubview)), _subview);
 end;
 
-procedure NSView.willRemoveSubview(_subview: objc.id {NSView});
+procedure NSView.willRemoveSubview(_subview: lobjc.id {NSView});
 type
-  TmsgSendWrapper = procedure (param1: objc.id; param2: SEL;_subview: objc.id {NSView}); cdecl;
+  TmsgSendWrapper = procedure (param1: lobjc.id; param2: SEL;_subview: lobjc.id {NSView}); cdecl;
 var
   vmethod: TmsgSendWrapper;
 begin
@@ -637,9 +637,9 @@ begin
   objc_msgSend(Handle, sel_registerName(PChar(StrNSView_removeFromSuperview)), []);
 end;
 
-procedure NSView.replaceSubview_with(_oldView: objc.id {NSView}; _newView: objc.id {NSView});
+procedure NSView.replaceSubview_with(_oldView: lobjc.id {NSView}; _newView: lobjc.id {NSView});
 type
-  TmsgSendWrapper = procedure (param1: objc.id; param2: SEL;_oldView: objc.id {NSView}; _newView: objc.id {NSView}); cdecl;
+  TmsgSendWrapper = procedure (param1: lobjc.id; param2: SEL;_oldView: lobjc.id {NSView}; _newView: lobjc.id {NSView}); cdecl;
 var
   vmethod: TmsgSendWrapper;
 begin
@@ -654,7 +654,7 @@ end;
 
 procedure NSView.setPostsFrameChangedNotifications(_flag: LongBool);
 type
-  TmsgSendWrapper = procedure (param1: objc.id; param2: SEL;_flag: LongBool); cdecl;
+  TmsgSendWrapper = procedure (param1: lobjc.id; param2: SEL;_flag: LongBool); cdecl;
 var
   vmethod: TmsgSendWrapper;
 begin
@@ -669,7 +669,7 @@ end;
 
 procedure NSView.resizeSubviewsWithOldSize(_oldSize: NSSize);
 type
-  TmsgSendWrapper = procedure (param1: objc.id; param2: SEL;_oldSize: NSSize); cdecl;
+  TmsgSendWrapper = procedure (param1: lobjc.id; param2: SEL;_oldSize: NSSize); cdecl;
 var
   vmethod: TmsgSendWrapper;
 begin
@@ -679,7 +679,7 @@ end;
 
 procedure NSView.resizeWithOldSuperviewSize(_oldSize: NSSize);
 type
-  TmsgSendWrapper = procedure (param1: objc.id; param2: SEL;_oldSize: NSSize); cdecl;
+  TmsgSendWrapper = procedure (param1: lobjc.id; param2: SEL;_oldSize: NSSize); cdecl;
 var
   vmethod: TmsgSendWrapper;
 begin
@@ -689,7 +689,7 @@ end;
 
 procedure NSView.setAutoresizesSubviews(_flag: LongBool);
 type
-  TmsgSendWrapper = procedure (param1: objc.id; param2: SEL;_flag: LongBool); cdecl;
+  TmsgSendWrapper = procedure (param1: lobjc.id; param2: SEL;_flag: LongBool); cdecl;
 var
   vmethod: TmsgSendWrapper;
 begin
@@ -704,7 +704,7 @@ end;
 
 procedure NSView.setAutoresizingMask(_mask: LongWord);
 type
-  TmsgSendWrapper = procedure (param1: objc.id; param2: SEL;_mask: LongWord); cdecl;
+  TmsgSendWrapper = procedure (param1: lobjc.id; param2: SEL;_mask: LongWord); cdecl;
 var
   vmethod: TmsgSendWrapper;
 begin
@@ -719,7 +719,7 @@ end;
 
 procedure NSView.setFrameOrigin(_newOrigin: NSPoint);
 type
-  TmsgSendWrapper = procedure (param1: objc.id; param2: SEL;_newOrigin: NSPoint); cdecl;
+  TmsgSendWrapper = procedure (param1: lobjc.id; param2: SEL;_newOrigin: NSPoint); cdecl;
 var
   vmethod: TmsgSendWrapper;
 begin
@@ -729,7 +729,7 @@ end;
 
 procedure NSView.setFrameSize(_newSize: NSSize);
 type
-  TmsgSendWrapper = procedure (param1: objc.id; param2: SEL;_newSize: NSSize); cdecl;
+  TmsgSendWrapper = procedure (param1: lobjc.id; param2: SEL;_newSize: NSSize); cdecl;
 var
   vmethod: TmsgSendWrapper;
 begin
@@ -739,7 +739,7 @@ end;
 
 procedure NSView.setFrame(_frameRect: NSRect);
 type
-  TmsgSendWrapper = procedure (param1: objc.id; param2: SEL;_frameRect: NSRect); cdecl;
+  TmsgSendWrapper = procedure (param1: lobjc.id; param2: SEL;_frameRect: NSRect); cdecl;
 var
   vmethod: TmsgSendWrapper;
 begin
@@ -754,7 +754,7 @@ end;
 
 procedure NSView.setFrameRotation(_angle: Single);
 type
-  TmsgSendWrapper = procedure (param1: objc.id; param2: SEL;_angle: Single); cdecl;
+  TmsgSendWrapper = procedure (param1: lobjc.id; param2: SEL;_angle: Single); cdecl;
 var
   vmethod: TmsgSendWrapper;
 begin
@@ -769,7 +769,7 @@ end;
 
 procedure NSView.setBoundsOrigin(_newOrigin: NSPoint);
 type
-  TmsgSendWrapper = procedure (param1: objc.id; param2: SEL;_newOrigin: NSPoint); cdecl;
+  TmsgSendWrapper = procedure (param1: lobjc.id; param2: SEL;_newOrigin: NSPoint); cdecl;
 var
   vmethod: TmsgSendWrapper;
 begin
@@ -779,7 +779,7 @@ end;
 
 procedure NSView.setBoundsSize(_newSize: NSSize);
 type
-  TmsgSendWrapper = procedure (param1: objc.id; param2: SEL;_newSize: NSSize); cdecl;
+  TmsgSendWrapper = procedure (param1: lobjc.id; param2: SEL;_newSize: NSSize); cdecl;
 var
   vmethod: TmsgSendWrapper;
 begin
@@ -789,7 +789,7 @@ end;
 
 procedure NSView.setBoundsRotation(_angle: Single);
 type
-  TmsgSendWrapper = procedure (param1: objc.id; param2: SEL;_angle: Single); cdecl;
+  TmsgSendWrapper = procedure (param1: lobjc.id; param2: SEL;_angle: Single); cdecl;
 var
   vmethod: TmsgSendWrapper;
 begin
@@ -804,7 +804,7 @@ end;
 
 procedure NSView.translateOriginToPoint(_translation: NSPoint);
 type
-  TmsgSendWrapper = procedure (param1: objc.id; param2: SEL;_translation: NSPoint); cdecl;
+  TmsgSendWrapper = procedure (param1: lobjc.id; param2: SEL;_translation: NSPoint); cdecl;
 var
   vmethod: TmsgSendWrapper;
 begin
@@ -814,7 +814,7 @@ end;
 
 procedure NSView.scaleUnitSquareToSize(_newUnitSize: NSSize);
 type
-  TmsgSendWrapper = procedure (param1: objc.id; param2: SEL;_newUnitSize: NSSize); cdecl;
+  TmsgSendWrapper = procedure (param1: lobjc.id; param2: SEL;_newUnitSize: NSSize); cdecl;
 var
   vmethod: TmsgSendWrapper;
 begin
@@ -824,7 +824,7 @@ end;
 
 procedure NSView.rotateByAngle(_angle: Single);
 type
-  TmsgSendWrapper = procedure (param1: objc.id; param2: SEL;_angle: Single); cdecl;
+  TmsgSendWrapper = procedure (param1: lobjc.id; param2: SEL;_angle: Single); cdecl;
 var
   vmethod: TmsgSendWrapper;
 begin
@@ -834,7 +834,7 @@ end;
 
 procedure NSView.setBounds(_aRect: NSRect);
 type
-  TmsgSendWrapper = procedure (param1: objc.id; param2: SEL;_aRect: NSRect); cdecl;
+  TmsgSendWrapper = procedure (param1: lobjc.id; param2: SEL;_aRect: NSRect); cdecl;
 var
   vmethod: TmsgSendWrapper;
 begin
@@ -867,9 +867,9 @@ begin
   Result := LongBool(objc_msgSend(Handle, sel_registerName(PChar(StrNSView_isOpaque)), []));
 end;
 
-function NSView.convertPoint_fromView(_aPoint: NSPoint; _aView: objc.id {NSView}): NSPoint;
+function NSView.convertPoint_fromView(_aPoint: NSPoint; _aView: lobjc.id {NSView}): NSPoint;
 type
-  TmsgSendWrapper = procedure (result_param: Pointer; param1: objc.id; param2: SEL;_aPoint: NSPoint; _aView: objc.id {NSView}); cdecl;
+  TmsgSendWrapper = procedure (result_param: Pointer; param1: lobjc.id; param2: SEL;_aPoint: NSPoint; _aView: lobjc.id {NSView}); cdecl;
 var
   vmethod: TmsgSendWrapper;
 begin
@@ -877,9 +877,9 @@ begin
   vmethod(@Result, Handle, sel_registerName(PChar(StrNSView_convertPoint_fromView)), _aPoint, _aView);
 end;
 
-function NSView.convertPoint_toView(_aPoint: NSPoint; _aView: objc.id {NSView}): NSPoint;
+function NSView.convertPoint_toView(_aPoint: NSPoint; _aView: lobjc.id {NSView}): NSPoint;
 type
-  TmsgSendWrapper = procedure (result_param: Pointer; param1: objc.id; param2: SEL;_aPoint: NSPoint; _aView: objc.id {NSView}); cdecl;
+  TmsgSendWrapper = procedure (result_param: Pointer; param1: lobjc.id; param2: SEL;_aPoint: NSPoint; _aView: lobjc.id {NSView}); cdecl;
 var
   vmethod: TmsgSendWrapper;
 begin
@@ -887,9 +887,9 @@ begin
   vmethod(@Result, Handle, sel_registerName(PChar(StrNSView_convertPoint_toView)), _aPoint, _aView);
 end;
 
-function NSView.convertSize_fromView(_aSize: NSSize; _aView: objc.id {NSView}): NSSize;
+function NSView.convertSize_fromView(_aSize: NSSize; _aView: lobjc.id {NSView}): NSSize;
 type
-  TmsgSendWrapper = procedure (result_param: Pointer; param1: objc.id; param2: SEL;_aSize: NSSize; _aView: objc.id {NSView}); cdecl;
+  TmsgSendWrapper = procedure (result_param: Pointer; param1: lobjc.id; param2: SEL;_aSize: NSSize; _aView: lobjc.id {NSView}); cdecl;
 var
   vmethod: TmsgSendWrapper;
 begin
@@ -897,9 +897,9 @@ begin
   vmethod(@Result, Handle, sel_registerName(PChar(StrNSView_convertSize_fromView)), _aSize, _aView);
 end;
 
-function NSView.convertSize_toView(_aSize: NSSize; _aView: objc.id {NSView}): NSSize;
+function NSView.convertSize_toView(_aSize: NSSize; _aView: lobjc.id {NSView}): NSSize;
 type
-  TmsgSendWrapper = procedure (result_param: Pointer; param1: objc.id; param2: SEL;_aSize: NSSize; _aView: objc.id {NSView}); cdecl;
+  TmsgSendWrapper = procedure (result_param: Pointer; param1: lobjc.id; param2: SEL;_aSize: NSSize; _aView: lobjc.id {NSView}); cdecl;
 var
   vmethod: TmsgSendWrapper;
 begin
@@ -907,9 +907,9 @@ begin
   vmethod(@Result, Handle, sel_registerName(PChar(StrNSView_convertSize_toView)), _aSize, _aView);
 end;
 
-function NSView.convertRect_fromView(_aRect: NSRect; _aView: objc.id {NSView}): NSRect;
+function NSView.convertRect_fromView(_aRect: NSRect; _aView: lobjc.id {NSView}): NSRect;
 type
-  TmsgSendWrapper = procedure (result_param: Pointer; param1: objc.id; param2: SEL;_aRect: NSRect; _aView: objc.id {NSView}); cdecl;
+  TmsgSendWrapper = procedure (result_param: Pointer; param1: lobjc.id; param2: SEL;_aRect: NSRect; _aView: lobjc.id {NSView}); cdecl;
 var
   vmethod: TmsgSendWrapper;
 begin
@@ -917,9 +917,9 @@ begin
   vmethod(@Result, Handle, sel_registerName(PChar(StrNSView_convertRect_fromView)), _aRect, _aView);
 end;
 
-function NSView.convertRect_toView(_aRect: NSRect; _aView: objc.id {NSView}): NSRect;
+function NSView.convertRect_toView(_aRect: NSRect; _aView: lobjc.id {NSView}): NSRect;
 type
-  TmsgSendWrapper = procedure (result_param: Pointer; param1: objc.id; param2: SEL;_aRect: NSRect; _aView: objc.id {NSView}); cdecl;
+  TmsgSendWrapper = procedure (result_param: Pointer; param1: lobjc.id; param2: SEL;_aRect: NSRect; _aView: lobjc.id {NSView}); cdecl;
 var
   vmethod: TmsgSendWrapper;
 begin
@@ -929,7 +929,7 @@ end;
 
 function NSView.centerScanRect(_aRect: NSRect): NSRect;
 type
-  TmsgSendWrapper = procedure (result_param: Pointer; param1: objc.id; param2: SEL;_aRect: NSRect); cdecl;
+  TmsgSendWrapper = procedure (result_param: Pointer; param1: lobjc.id; param2: SEL;_aRect: NSRect); cdecl;
 var
   vmethod: TmsgSendWrapper;
 begin
@@ -944,7 +944,7 @@ end;
 
 procedure NSView.setNeedsDisplay(_flag: LongBool);
 type
-  TmsgSendWrapper = procedure (param1: objc.id; param2: SEL;_flag: LongBool); cdecl;
+  TmsgSendWrapper = procedure (param1: lobjc.id; param2: SEL;_flag: LongBool); cdecl;
 var
   vmethod: TmsgSendWrapper;
 begin
@@ -954,7 +954,7 @@ end;
 
 procedure NSView.setNeedsDisplayInRect(_invalidRect: NSRect);
 type
-  TmsgSendWrapper = procedure (param1: objc.id; param2: SEL;_invalidRect: NSRect); cdecl;
+  TmsgSendWrapper = procedure (param1: lobjc.id; param2: SEL;_invalidRect: NSRect); cdecl;
 var
   vmethod: TmsgSendWrapper;
 begin
@@ -983,9 +983,9 @@ begin
 end;
 
 {.$ifdef  MAC_OS_X_VERSION_MAX_ALLOWED >= MAC_OS_X_VERSION_10_4}
-function NSView.lockFocusIfCanDrawInContext(_context: objc.id {NSGraphicsContext}): LongBool;
+function NSView.lockFocusIfCanDrawInContext(_context: lobjc.id {NSGraphicsContext}): LongBool;
 type
-  TmsgSendWrapper = function (param1: objc.id; param2: SEL;_context: objc.id {NSGraphicsContext}): LongBool; cdecl;
+  TmsgSendWrapper = function (param1: lobjc.id; param2: SEL;_context: lobjc.id {NSGraphicsContext}): LongBool; cdecl;
 var
   vmethod: TmsgSendWrapper;
 begin
@@ -996,7 +996,7 @@ end;
 {.$endif}
 constructor NSView.focusView;
 type
-  TmsgSendWrapper = function (param1: objc.id; param2: SEL): objc.id; cdecl;
+  TmsgSendWrapper = function (param1: lobjc.id; param2: SEL): lobjc.id; cdecl;
 var
   vmethod: TmsgSendWrapper;
 begin
@@ -1027,7 +1027,7 @@ end;
 
 procedure NSView.displayRect(_rect: NSRect);
 type
-  TmsgSendWrapper = procedure (param1: objc.id; param2: SEL;_rect: NSRect); cdecl;
+  TmsgSendWrapper = procedure (param1: lobjc.id; param2: SEL;_rect: NSRect); cdecl;
 var
   vmethod: TmsgSendWrapper;
 begin
@@ -1037,7 +1037,7 @@ end;
 
 procedure NSView.displayIfNeededInRect(_rect: NSRect);
 type
-  TmsgSendWrapper = procedure (param1: objc.id; param2: SEL;_rect: NSRect); cdecl;
+  TmsgSendWrapper = procedure (param1: lobjc.id; param2: SEL;_rect: NSRect); cdecl;
 var
   vmethod: TmsgSendWrapper;
 begin
@@ -1047,7 +1047,7 @@ end;
 
 procedure NSView.displayRectIgnoringOpacity(_rect: NSRect);
 type
-  TmsgSendWrapper = procedure (param1: objc.id; param2: SEL;_rect: NSRect); cdecl;
+  TmsgSendWrapper = procedure (param1: lobjc.id; param2: SEL;_rect: NSRect); cdecl;
 var
   vmethod: TmsgSendWrapper;
 begin
@@ -1057,7 +1057,7 @@ end;
 
 procedure NSView.displayIfNeededInRectIgnoringOpacity(_rect: NSRect);
 type
-  TmsgSendWrapper = procedure (param1: objc.id; param2: SEL;_rect: NSRect); cdecl;
+  TmsgSendWrapper = procedure (param1: lobjc.id; param2: SEL;_rect: NSRect); cdecl;
 var
   vmethod: TmsgSendWrapper;
 begin
@@ -1067,7 +1067,7 @@ end;
 
 procedure NSView.drawRect(_rect: NSRect);
 type
-  TmsgSendWrapper = procedure (param1: objc.id; param2: SEL;_rect: NSRect); cdecl;
+  TmsgSendWrapper = procedure (param1: lobjc.id; param2: SEL;_rect: NSRect); cdecl;
 var
   vmethod: TmsgSendWrapper;
 begin
@@ -1076,9 +1076,9 @@ begin
 end;
 
 {.$ifdef  MAC_OS_X_VERSION_MAX_ALLOWED >= MAC_OS_X_VERSION_10_4}
-procedure NSView.displayRectIgnoringOpacity_inContext(_aRect: NSRect; _context: objc.id {NSGraphicsContext});
+procedure NSView.displayRectIgnoringOpacity_inContext(_aRect: NSRect; _context: lobjc.id {NSGraphicsContext});
 type
-  TmsgSendWrapper = procedure (param1: objc.id; param2: SEL;_aRect: NSRect; _context: objc.id {NSGraphicsContext}); cdecl;
+  TmsgSendWrapper = procedure (param1: lobjc.id; param2: SEL;_aRect: NSRect; _context: lobjc.id {NSGraphicsContext}); cdecl;
 var
   vmethod: TmsgSendWrapper;
 begin
@@ -1086,19 +1086,19 @@ begin
   vmethod(Handle, sel_registerName(PChar(StrNSView_displayRectIgnoringOpacity_inContext)), _aRect, _context);
 end;
 
-function NSView.bitmapImageRepForCachingDisplayInRect(_rect: NSRect): objc.id;
+function NSView.bitmapImageRepForCachingDisplayInRect(_rect: NSRect): lobjc.id;
 type
-  TmsgSendWrapper = function (param1: objc.id; param2: SEL;_rect: NSRect): objc.id; cdecl;
+  TmsgSendWrapper = function (param1: lobjc.id; param2: SEL;_rect: NSRect): lobjc.id; cdecl;
 var
   vmethod: TmsgSendWrapper;
 begin
   vmethod := TmsgSendWrapper(@objc_msgSend);
-  Result := objc.id(vmethod(Handle, sel_registerName(PChar(StrNSView_bitmapImageRepForCachingDisplayInRect)), _rect));
+  Result := lobjc.id(vmethod(Handle, sel_registerName(PChar(StrNSView_bitmapImageRepForCachingDisplayInRect)), _rect));
 end;
 
-procedure NSView.cacheDisplayInRect_toBitmapImageRep(_rect: NSRect; _bitmapImageRep: objc.id {NSBitmapImageRep});
+procedure NSView.cacheDisplayInRect_toBitmapImageRep(_rect: NSRect; _bitmapImageRep: lobjc.id {NSBitmapImageRep});
 type
-  TmsgSendWrapper = procedure (param1: objc.id; param2: SEL;_rect: NSRect; _bitmapImageRep: objc.id {NSBitmapImageRep}); cdecl;
+  TmsgSendWrapper = procedure (param1: lobjc.id; param2: SEL;_rect: NSRect; _bitmapImageRep: lobjc.id {NSBitmapImageRep}); cdecl;
 var
   vmethod: TmsgSendWrapper;
 begin
@@ -1134,7 +1134,7 @@ end;
 
 procedure NSView.scrollPoint(_aPoint: NSPoint);
 type
-  TmsgSendWrapper = procedure (param1: objc.id; param2: SEL;_aPoint: NSPoint); cdecl;
+  TmsgSendWrapper = procedure (param1: lobjc.id; param2: SEL;_aPoint: NSPoint); cdecl;
 var
   vmethod: TmsgSendWrapper;
 begin
@@ -1144,7 +1144,7 @@ end;
 
 function NSView.scrollRectToVisible(_aRect: NSRect): LongBool;
 type
-  TmsgSendWrapper = function (param1: objc.id; param2: SEL;_aRect: NSRect): LongBool; cdecl;
+  TmsgSendWrapper = function (param1: lobjc.id; param2: SEL;_aRect: NSRect): LongBool; cdecl;
 var
   vmethod: TmsgSendWrapper;
 begin
@@ -1152,9 +1152,9 @@ begin
   Result := LongBool(vmethod(Handle, sel_registerName(PChar(StrNSView_scrollRectToVisible)), _aRect));
 end;
 
-function NSView.autoscroll(_theEvent: objc.id {NSEvent}): LongBool;
+function NSView.autoscroll(_theEvent: lobjc.id {NSEvent}): LongBool;
 type
-  TmsgSendWrapper = function (param1: objc.id; param2: SEL;_theEvent: objc.id {NSEvent}): LongBool; cdecl;
+  TmsgSendWrapper = function (param1: lobjc.id; param2: SEL;_theEvent: lobjc.id {NSEvent}): LongBool; cdecl;
 var
   vmethod: TmsgSendWrapper;
 begin
@@ -1164,7 +1164,7 @@ end;
 
 function NSView.adjustScroll(_newVisible: NSRect): NSRect;
 type
-  TmsgSendWrapper = procedure (result_param: Pointer; param1: objc.id; param2: SEL;_newVisible: NSRect); cdecl;
+  TmsgSendWrapper = procedure (result_param: Pointer; param1: lobjc.id; param2: SEL;_newVisible: NSRect); cdecl;
 var
   vmethod: TmsgSendWrapper;
 begin
@@ -1174,7 +1174,7 @@ end;
 
 procedure NSView.scrollRect_by(_aRect: NSRect; _delta: NSSize);
 type
-  TmsgSendWrapper = procedure (param1: objc.id; param2: SEL;_aRect: NSRect; _delta: NSSize); cdecl;
+  TmsgSendWrapper = procedure (param1: lobjc.id; param2: SEL;_aRect: NSRect; _delta: NSSize); cdecl;
 var
   vmethod: TmsgSendWrapper;
 begin
@@ -1182,19 +1182,19 @@ begin
   vmethod(Handle, sel_registerName(PChar(StrNSView_scrollRect_by)), _aRect, _delta);
 end;
 
-function NSView.hitTest(_aPoint: NSPoint): objc.id;
+function NSView.hitTest(_aPoint: NSPoint): lobjc.id;
 type
-  TmsgSendWrapper = function (param1: objc.id; param2: SEL;_aPoint: NSPoint): objc.id; cdecl;
+  TmsgSendWrapper = function (param1: lobjc.id; param2: SEL;_aPoint: NSPoint): lobjc.id; cdecl;
 var
   vmethod: TmsgSendWrapper;
 begin
   vmethod := TmsgSendWrapper(@objc_msgSend);
-  Result := objc.id(vmethod(Handle, sel_registerName(PChar(StrNSView_hitTest)), _aPoint));
+  Result := lobjc.id(vmethod(Handle, sel_registerName(PChar(StrNSView_hitTest)), _aPoint));
 end;
 
 function NSView.mouse_inRect(_aPoint: NSPoint; _aRect: NSRect): LongBool;
 type
-  TmsgSendWrapper = function (param1: objc.id; param2: SEL;_aPoint: NSPoint; _aRect: NSRect): LongBool; cdecl;
+  TmsgSendWrapper = function (param1: lobjc.id; param2: SEL;_aPoint: NSPoint; _aRect: NSRect): LongBool; cdecl;
 var
   vmethod: TmsgSendWrapper;
 begin
@@ -1202,14 +1202,14 @@ begin
   Result := LongBool(vmethod(Handle, sel_registerName(PChar(StrNSView_mouse_inRect)), _aPoint, _aRect));
 end;
 
-function NSView.viewWithTag(_aTag: Integer): objc.id;
+function NSView.viewWithTag(_aTag: Integer): lobjc.id;
 type
-  TmsgSendWrapper = function (param1: objc.id; param2: SEL;_aTag: Integer): objc.id; cdecl;
+  TmsgSendWrapper = function (param1: lobjc.id; param2: SEL;_aTag: Integer): lobjc.id; cdecl;
 var
   vmethod: TmsgSendWrapper;
 begin
   vmethod := TmsgSendWrapper(@objc_msgSend);
-  Result := objc.id(vmethod(Handle, sel_registerName(PChar(StrNSView_viewWithTag)), _aTag));
+  Result := lobjc.id(vmethod(Handle, sel_registerName(PChar(StrNSView_viewWithTag)), _aTag));
 end;
 
 function NSView.tag: Integer;
@@ -1217,9 +1217,9 @@ begin
   Result := Integer(objc_msgSend(Handle, sel_registerName(PChar(StrNSView_tag)), []));
 end;
 
-function NSView.performKeyEquivalent(_theEvent: objc.id {NSEvent}): LongBool;
+function NSView.performKeyEquivalent(_theEvent: lobjc.id {NSEvent}): LongBool;
 type
-  TmsgSendWrapper = function (param1: objc.id; param2: SEL;_theEvent: objc.id {NSEvent}): LongBool; cdecl;
+  TmsgSendWrapper = function (param1: lobjc.id; param2: SEL;_theEvent: lobjc.id {NSEvent}): LongBool; cdecl;
 var
   vmethod: TmsgSendWrapper;
 begin
@@ -1227,9 +1227,9 @@ begin
   Result := LongBool(vmethod(Handle, sel_registerName(PChar(StrNSView_performKeyEquivalent)), _theEvent));
 end;
 
-function NSView.acceptsFirstMouse(_theEvent: objc.id {NSEvent}): LongBool;
+function NSView.acceptsFirstMouse(_theEvent: lobjc.id {NSEvent}): LongBool;
 type
-  TmsgSendWrapper = function (param1: objc.id; param2: SEL;_theEvent: objc.id {NSEvent}): LongBool; cdecl;
+  TmsgSendWrapper = function (param1: lobjc.id; param2: SEL;_theEvent: lobjc.id {NSEvent}): LongBool; cdecl;
 var
   vmethod: TmsgSendWrapper;
 begin
@@ -1237,9 +1237,9 @@ begin
   Result := LongBool(vmethod(Handle, sel_registerName(PChar(StrNSView_acceptsFirstMouse)), _theEvent));
 end;
 
-function NSView.shouldDelayWindowOrderingForEvent(_theEvent: objc.id {NSEvent}): LongBool;
+function NSView.shouldDelayWindowOrderingForEvent(_theEvent: lobjc.id {NSEvent}): LongBool;
 type
-  TmsgSendWrapper = function (param1: objc.id; param2: SEL;_theEvent: objc.id {NSEvent}): LongBool; cdecl;
+  TmsgSendWrapper = function (param1: lobjc.id; param2: SEL;_theEvent: lobjc.id {NSEvent}): LongBool; cdecl;
 var
   vmethod: TmsgSendWrapper;
 begin
@@ -1259,9 +1259,9 @@ begin
 end;
 
 {.$endif}
-procedure NSView.addCursorRect_cursor(_aRect: NSRect; _anObj: objc.id {NSCursor});
+procedure NSView.addCursorRect_cursor(_aRect: NSRect; _anObj: lobjc.id {NSCursor});
 type
-  TmsgSendWrapper = procedure (param1: objc.id; param2: SEL;_aRect: NSRect; _anObj: objc.id {NSCursor}); cdecl;
+  TmsgSendWrapper = procedure (param1: lobjc.id; param2: SEL;_aRect: NSRect; _anObj: lobjc.id {NSCursor}); cdecl;
 var
   vmethod: TmsgSendWrapper;
 begin
@@ -1269,9 +1269,9 @@ begin
   vmethod(Handle, sel_registerName(PChar(StrNSView_addCursorRect_cursor)), _aRect, _anObj);
 end;
 
-procedure NSView.removeCursorRect_cursor(_aRect: NSRect; _anObj: objc.id {NSCursor});
+procedure NSView.removeCursorRect_cursor(_aRect: NSRect; _anObj: lobjc.id {NSCursor});
 type
-  TmsgSendWrapper = procedure (param1: objc.id; param2: SEL;_aRect: NSRect; _anObj: objc.id {NSCursor}); cdecl;
+  TmsgSendWrapper = procedure (param1: lobjc.id; param2: SEL;_aRect: NSRect; _anObj: lobjc.id {NSCursor}); cdecl;
 var
   vmethod: TmsgSendWrapper;
 begin
@@ -1289,9 +1289,9 @@ begin
   objc_msgSend(Handle, sel_registerName(PChar(StrNSView_resetCursorRects)), []);
 end;
 
-function NSView.addTrackingRect_owner_userData_assumeInside(_aRect: NSRect; _anObject: objc.id; _data: Pointer; _flag: LongBool): NSTrackingRectTag;
+function NSView.addTrackingRect_owner_userData_assumeInside(_aRect: NSRect; _anObject: lobjc.id; _data: Pointer; _flag: LongBool): NSTrackingRectTag;
 type
-  TmsgSendWrapper = function (param1: objc.id; param2: SEL;_aRect: NSRect; _anObject: objc.id; _data: Pointer; _flag: LongBool): NSTrackingRectTag; cdecl;
+  TmsgSendWrapper = function (param1: lobjc.id; param2: SEL;_aRect: NSRect; _anObject: lobjc.id; _data: Pointer; _flag: LongBool): NSTrackingRectTag; cdecl;
 var
   vmethod: TmsgSendWrapper;
 begin
@@ -1301,7 +1301,7 @@ end;
 
 procedure NSView.removeTrackingRect(_tag: NSTrackingRectTag);
 type
-  TmsgSendWrapper = procedure (param1: objc.id; param2: SEL;_tag: NSTrackingRectTag); cdecl;
+  TmsgSendWrapper = procedure (param1: lobjc.id; param2: SEL;_tag: NSTrackingRectTag); cdecl;
 var
   vmethod: TmsgSendWrapper;
 begin
@@ -1316,7 +1316,7 @@ end;
 
 procedure NSView.setPostsBoundsChangedNotifications(_flag: LongBool);
 type
-  TmsgSendWrapper = procedure (param1: objc.id; param2: SEL;_flag: LongBool); cdecl;
+  TmsgSendWrapper = procedure (param1: lobjc.id; param2: SEL;_flag: LongBool); cdecl;
 var
   vmethod: TmsgSendWrapper;
 begin
@@ -1329,29 +1329,29 @@ begin
   Result := LongBool(objc_msgSend(Handle, sel_registerName(PChar(StrNSView_postsBoundsChangedNotifications)), []));
 end;
 
-function NSView.enclosingScrollView: objc.id;
+function NSView.enclosingScrollView: lobjc.id;
 begin
-  Result := objc.id(objc_msgSend(Handle, sel_registerName(PChar(StrNSView_enclosingScrollView)), []));
+  Result := lobjc.id(objc_msgSend(Handle, sel_registerName(PChar(StrNSView_enclosingScrollView)), []));
 end;
 
-function NSView.menuForEvent(_event: objc.id {NSEvent}): objc.id;
+function NSView.menuForEvent(_event: lobjc.id {NSEvent}): lobjc.id;
 type
-  TmsgSendWrapper = function (param1: objc.id; param2: SEL;_event: objc.id {NSEvent}): objc.id; cdecl;
+  TmsgSendWrapper = function (param1: lobjc.id; param2: SEL;_event: lobjc.id {NSEvent}): lobjc.id; cdecl;
 var
   vmethod: TmsgSendWrapper;
 begin
   vmethod := TmsgSendWrapper(@objc_msgSend);
-  Result := objc.id(vmethod(Handle, sel_registerName(PChar(StrNSView_menuForEvent)), _event));
+  Result := lobjc.id(vmethod(Handle, sel_registerName(PChar(StrNSView_menuForEvent)), _event));
 end;
 
-class function NSView.defaultMenu: objc.id;
+class function NSView.defaultMenu: lobjc.id;
 begin
-  Result := objc.id(objc_msgSend(getClass, sel_registerName(PChar(StrNSView_defaultMenu)), []));
+  Result := lobjc.id(objc_msgSend(getClass, sel_registerName(PChar(StrNSView_defaultMenu)), []));
 end;
 
 procedure NSView.setToolTip(__string: CFStringRef);
 type
-  TmsgSendWrapper = procedure (param1: objc.id; param2: SEL;__string: CFStringRef); cdecl;
+  TmsgSendWrapper = procedure (param1: lobjc.id; param2: SEL;__string: CFStringRef); cdecl;
 var
   vmethod: TmsgSendWrapper;
 begin
@@ -1364,9 +1364,9 @@ begin
   Result := CFStringRef(objc_msgSend(Handle, sel_registerName(PChar(StrNSView_toolTip)), []));
 end;
 
-function NSView.addToolTipRect_owner_userData(_aRect: NSRect; _anObject: objc.id; _data: Pointer): NSToolTipTag;
+function NSView.addToolTipRect_owner_userData(_aRect: NSRect; _anObject: lobjc.id; _data: Pointer): NSToolTipTag;
 type
-  TmsgSendWrapper = function (param1: objc.id; param2: SEL;_aRect: NSRect; _anObject: objc.id; _data: Pointer): NSToolTipTag; cdecl;
+  TmsgSendWrapper = function (param1: lobjc.id; param2: SEL;_aRect: NSRect; _anObject: lobjc.id; _data: Pointer): NSToolTipTag; cdecl;
 var
   vmethod: TmsgSendWrapper;
 begin
@@ -1376,7 +1376,7 @@ end;
 
 procedure NSView.removeToolTip(_tag: NSToolTipTag);
 type
-  TmsgSendWrapper = procedure (param1: objc.id; param2: SEL;_tag: NSToolTipTag); cdecl;
+  TmsgSendWrapper = procedure (param1: lobjc.id; param2: SEL;_tag: NSToolTipTag); cdecl;
 var
   vmethod: TmsgSendWrapper;
 begin
@@ -1423,7 +1423,7 @@ end;
 {.$endif}
 function NSView.performMnemonic(_theString: CFStringRef): LongBool;
 type
-  TmsgSendWrapper = function (param1: objc.id; param2: SEL;_theString: CFStringRef): LongBool; cdecl;
+  TmsgSendWrapper = function (param1: lobjc.id; param2: SEL;_theString: CFStringRef): LongBool; cdecl;
 var
   vmethod: TmsgSendWrapper;
 begin
@@ -1431,9 +1431,9 @@ begin
   Result := LongBool(vmethod(Handle, sel_registerName(PChar(StrNSView_performMnemonic)), _theString));
 end;
 
-procedure NSView.setNextKeyView(_next: objc.id {NSView});
+procedure NSView.setNextKeyView(_next: lobjc.id {NSView});
 type
-  TmsgSendWrapper = procedure (param1: objc.id; param2: SEL;_next: objc.id {NSView}); cdecl;
+  TmsgSendWrapper = procedure (param1: lobjc.id; param2: SEL;_next: lobjc.id {NSView}); cdecl;
 var
   vmethod: TmsgSendWrapper;
 begin
@@ -1441,24 +1441,24 @@ begin
   vmethod(Handle, sel_registerName(PChar(StrNSView_setNextKeyView)), _next);
 end;
 
-function NSView.nextKeyView: objc.id;
+function NSView.nextKeyView: lobjc.id;
 begin
-  Result := objc.id(objc_msgSend(Handle, sel_registerName(PChar(StrNSView_nextKeyView)), []));
+  Result := lobjc.id(objc_msgSend(Handle, sel_registerName(PChar(StrNSView_nextKeyView)), []));
 end;
 
-function NSView.previousKeyView: objc.id;
+function NSView.previousKeyView: lobjc.id;
 begin
-  Result := objc.id(objc_msgSend(Handle, sel_registerName(PChar(StrNSView_previousKeyView)), []));
+  Result := lobjc.id(objc_msgSend(Handle, sel_registerName(PChar(StrNSView_previousKeyView)), []));
 end;
 
-function NSView.nextValidKeyView: objc.id;
+function NSView.nextValidKeyView: lobjc.id;
 begin
-  Result := objc.id(objc_msgSend(Handle, sel_registerName(PChar(StrNSView_nextValidKeyView)), []));
+  Result := lobjc.id(objc_msgSend(Handle, sel_registerName(PChar(StrNSView_nextValidKeyView)), []));
 end;
 
-function NSView.previousValidKeyView: objc.id;
+function NSView.previousValidKeyView: lobjc.id;
 begin
-  Result := objc.id(objc_msgSend(Handle, sel_registerName(PChar(StrNSView_previousValidKeyView)), []));
+  Result := lobjc.id(objc_msgSend(Handle, sel_registerName(PChar(StrNSView_previousValidKeyView)), []));
 end;
 
 {.$ifdef  MAC_OS_X_VERSION_MAX_ALLOWED >= MAC_OS_X_VERSION_10_3}
@@ -1470,7 +1470,7 @@ end;
 {.$endif}
 procedure NSView.setKeyboardFocusRingNeedsDisplayInRect(_rect: NSRect);
 type
-  TmsgSendWrapper = procedure (param1: objc.id; param2: SEL;_rect: NSRect); cdecl;
+  TmsgSendWrapper = procedure (param1: lobjc.id; param2: SEL;_rect: NSRect); cdecl;
 var
   vmethod: TmsgSendWrapper;
 begin
@@ -1481,7 +1481,7 @@ end;
 {.$ifdef  MAC_OS_X_VERSION_MAX_ALLOWED >= MAC_OS_X_VERSION_10_3}
 procedure NSView.setFocusRingType(_focusRingType: NSFocusRingType);
 type
-  TmsgSendWrapper = procedure (param1: objc.id; param2: SEL;_focusRingType: NSFocusRingType); cdecl;
+  TmsgSendWrapper = procedure (param1: lobjc.id; param2: SEL;_focusRingType: NSFocusRingType); cdecl;
 var
   vmethod: TmsgSendWrapper;
 begin
@@ -1500,9 +1500,9 @@ begin
 end;
 
 {.$endif}
-procedure NSView.writeEPSInsideRect_toPasteboard(_rect: NSRect; _pasteboard: objc.id {NSPasteboard});
+procedure NSView.writeEPSInsideRect_toPasteboard(_rect: NSRect; _pasteboard: lobjc.id {NSPasteboard});
 type
-  TmsgSendWrapper = procedure (param1: objc.id; param2: SEL;_rect: NSRect; _pasteboard: objc.id {NSPasteboard}); cdecl;
+  TmsgSendWrapper = procedure (param1: lobjc.id; param2: SEL;_rect: NSRect; _pasteboard: lobjc.id {NSPasteboard}); cdecl;
 var
   vmethod: TmsgSendWrapper;
 begin
@@ -1512,7 +1512,7 @@ end;
 
 function NSView.dataWithEPSInsideRect(_rect: NSRect): CFDataRef;
 type
-  TmsgSendWrapper = function (param1: objc.id; param2: SEL;_rect: NSRect): CFDataRef; cdecl;
+  TmsgSendWrapper = function (param1: lobjc.id; param2: SEL;_rect: NSRect): CFDataRef; cdecl;
 var
   vmethod: TmsgSendWrapper;
 begin
@@ -1520,9 +1520,9 @@ begin
   Result := CFDataRef(vmethod(Handle, sel_registerName(PChar(StrNSView_dataWithEPSInsideRect)), _rect));
 end;
 
-procedure NSView.writePDFInsideRect_toPasteboard(_rect: NSRect; _pasteboard: objc.id {NSPasteboard});
+procedure NSView.writePDFInsideRect_toPasteboard(_rect: NSRect; _pasteboard: lobjc.id {NSPasteboard});
 type
-  TmsgSendWrapper = procedure (param1: objc.id; param2: SEL;_rect: NSRect; _pasteboard: objc.id {NSPasteboard}); cdecl;
+  TmsgSendWrapper = procedure (param1: lobjc.id; param2: SEL;_rect: NSRect; _pasteboard: lobjc.id {NSPasteboard}); cdecl;
 var
   vmethod: TmsgSendWrapper;
 begin
@@ -1532,7 +1532,7 @@ end;
 
 function NSView.dataWithPDFInsideRect(_rect: NSRect): CFDataRef;
 type
-  TmsgSendWrapper = function (param1: objc.id; param2: SEL;_rect: NSRect): CFDataRef; cdecl;
+  TmsgSendWrapper = function (param1: lobjc.id; param2: SEL;_rect: NSRect): CFDataRef; cdecl;
 var
   vmethod: TmsgSendWrapper;
 begin
@@ -1540,9 +1540,9 @@ begin
   Result := CFDataRef(vmethod(Handle, sel_registerName(PChar(StrNSView_dataWithPDFInsideRect)), _rect));
 end;
 
-procedure NSView.print(_sender: objc.id);
+procedure NSView.print(_sender: lobjc.id);
 type
-  TmsgSendWrapper = procedure (param1: objc.id; param2: SEL;_sender: objc.id); cdecl;
+  TmsgSendWrapper = procedure (param1: lobjc.id; param2: SEL;_sender: lobjc.id); cdecl;
 var
   vmethod: TmsgSendWrapper;
 begin
@@ -1552,7 +1552,7 @@ end;
 
 function NSView.knowsPageRange(_range: NSRangePointer): LongBool;
 type
-  TmsgSendWrapper = function (param1: objc.id; param2: SEL;_range: NSRangePointer): LongBool; cdecl;
+  TmsgSendWrapper = function (param1: lobjc.id; param2: SEL;_range: NSRangePointer): LongBool; cdecl;
 var
   vmethod: TmsgSendWrapper;
 begin
@@ -1572,7 +1572,7 @@ end;
 
 procedure NSView.adjustPageWidthNew_left_right_limit(_newRight: Single; _oldLeft: Single; _oldRight: Single; _rightLimit: Single);
 type
-  TmsgSendWrapper = procedure (param1: objc.id; param2: SEL;_newRight: Single; _oldLeft: Single; _oldRight: Single; _rightLimit: Single); cdecl;
+  TmsgSendWrapper = procedure (param1: lobjc.id; param2: SEL;_newRight: Single; _oldLeft: Single; _oldRight: Single; _rightLimit: Single); cdecl;
 var
   vmethod: TmsgSendWrapper;
 begin
@@ -1582,7 +1582,7 @@ end;
 
 procedure NSView.adjustPageHeightNew_top_bottom_limit(_newBottom: Single; _oldTop: Single; _oldBottom: Single; _bottomLimit: Single);
 type
-  TmsgSendWrapper = procedure (param1: objc.id; param2: SEL;_newBottom: Single; _oldTop: Single; _oldBottom: Single; _bottomLimit: Single); cdecl;
+  TmsgSendWrapper = procedure (param1: lobjc.id; param2: SEL;_newBottom: Single; _oldTop: Single; _oldBottom: Single; _bottomLimit: Single); cdecl;
 var
   vmethod: TmsgSendWrapper;
 begin
@@ -1592,7 +1592,7 @@ end;
 
 function NSView.rectForPage(_page: Integer): NSRect;
 type
-  TmsgSendWrapper = procedure (result_param: Pointer; param1: objc.id; param2: SEL;_page: Integer); cdecl;
+  TmsgSendWrapper = procedure (result_param: Pointer; param1: lobjc.id; param2: SEL;_page: Integer); cdecl;
 var
   vmethod: TmsgSendWrapper;
 begin
@@ -1602,7 +1602,7 @@ end;
 
 function NSView.locationOfPrintRect(_aRect: NSRect): NSPoint;
 type
-  TmsgSendWrapper = procedure (result_param: Pointer; param1: objc.id; param2: SEL;_aRect: NSRect); cdecl;
+  TmsgSendWrapper = procedure (result_param: Pointer; param1: lobjc.id; param2: SEL;_aRect: NSRect); cdecl;
 var
   vmethod: TmsgSendWrapper;
 begin
@@ -1612,7 +1612,7 @@ end;
 
 procedure NSView.drawPageBorderWithSize(_borderSize: NSSize);
 type
-  TmsgSendWrapper = procedure (param1: objc.id; param2: SEL;_borderSize: NSSize); cdecl;
+  TmsgSendWrapper = procedure (param1: lobjc.id; param2: SEL;_borderSize: NSSize); cdecl;
 var
   vmethod: TmsgSendWrapper;
 begin
@@ -1621,20 +1621,20 @@ begin
 end;
 
 {.$ifdef  MAC_OS_X_VERSION_MAX_ALLOWED >= MAC_OS_X_VERSION_10_4}
-function NSView.pageHeader: objc.id;
+function NSView.pageHeader: lobjc.id;
 begin
-  Result := objc.id(objc_msgSend(Handle, sel_registerName(PChar(StrNSView_pageHeader)), []));
+  Result := lobjc.id(objc_msgSend(Handle, sel_registerName(PChar(StrNSView_pageHeader)), []));
 end;
 
-function NSView.pageFooter: objc.id;
+function NSView.pageFooter: lobjc.id;
 begin
-  Result := objc.id(objc_msgSend(Handle, sel_registerName(PChar(StrNSView_pageFooter)), []));
+  Result := lobjc.id(objc_msgSend(Handle, sel_registerName(PChar(StrNSView_pageFooter)), []));
 end;
 
 {.$endif}
 procedure NSView.drawSheetBorderWithSize(_borderSize: NSSize);
 type
-  TmsgSendWrapper = procedure (param1: objc.id; param2: SEL;_borderSize: NSSize); cdecl;
+  TmsgSendWrapper = procedure (param1: lobjc.id; param2: SEL;_borderSize: NSSize); cdecl;
 var
   vmethod: TmsgSendWrapper;
 begin
@@ -1659,7 +1659,7 @@ end;
 
 procedure NSView.beginPageInRect_atPlacement(_aRect: NSRect; _location: NSPoint);
 type
-  TmsgSendWrapper = procedure (param1: objc.id; param2: SEL;_aRect: NSRect; _location: NSPoint); cdecl;
+  TmsgSendWrapper = procedure (param1: lobjc.id; param2: SEL;_aRect: NSRect; _location: NSPoint); cdecl;
 var
   vmethod: TmsgSendWrapper;
 begin
@@ -1672,9 +1672,9 @@ begin
   objc_msgSend(Handle, sel_registerName(PChar(StrNSView_endPage)), []);
 end;
 
-procedure NSView.dragImage_at_offset_event_pasteboard_source_slideBack(_anImage: objc.id {NSImage}; _viewLocation: NSPoint; _initialOffset: NSSize; _event: objc.id {NSEvent}; _pboard: objc.id {NSPasteboard}; _sourceObj: objc.id; _slideFlag: LongBool);
+procedure NSView.dragImage_at_offset_event_pasteboard_source_slideBack(_anImage: lobjc.id {NSImage}; _viewLocation: NSPoint; _initialOffset: NSSize; _event: lobjc.id {NSEvent}; _pboard: lobjc.id {NSPasteboard}; _sourceObj: lobjc.id; _slideFlag: LongBool);
 type
-  TmsgSendWrapper = procedure (param1: objc.id; param2: SEL;_anImage: objc.id {NSImage}; _viewLocation: NSPoint; _initialOffset: NSSize; _event: objc.id {NSEvent}; _pboard: objc.id {NSPasteboard}; _sourceObj: objc.id; _slideFlag: LongBool); cdecl;
+  TmsgSendWrapper = procedure (param1: lobjc.id; param2: SEL;_anImage: lobjc.id {NSImage}; _viewLocation: NSPoint; _initialOffset: NSSize; _event: lobjc.id {NSEvent}; _pboard: lobjc.id {NSPasteboard}; _sourceObj: lobjc.id; _slideFlag: LongBool); cdecl;
 var
   vmethod: TmsgSendWrapper;
 begin
@@ -1691,7 +1691,7 @@ end;
 {.$endif}
 procedure NSView.registerForDraggedTypes(_newTypes: CFArrayRef);
 type
-  TmsgSendWrapper = procedure (param1: objc.id; param2: SEL;_newTypes: CFArrayRef); cdecl;
+  TmsgSendWrapper = procedure (param1: lobjc.id; param2: SEL;_newTypes: CFArrayRef); cdecl;
 var
   vmethod: TmsgSendWrapper;
 begin
@@ -1704,9 +1704,9 @@ begin
   objc_msgSend(Handle, sel_registerName(PChar(StrNSView_unregisterDraggedTypes)), []);
 end;
 
-function NSView.dragFile_fromRect_slideBack_event(_filename: CFStringRef; _rect: NSRect; _aFlag: LongBool; _event: objc.id {NSEvent}): LongBool;
+function NSView.dragFile_fromRect_slideBack_event(_filename: CFStringRef; _rect: NSRect; _aFlag: LongBool; _event: lobjc.id {NSEvent}): LongBool;
 type
-  TmsgSendWrapper = function (param1: objc.id; param2: SEL;_filename: CFStringRef; _rect: NSRect; _aFlag: LongBool; _event: objc.id {NSEvent}): LongBool; cdecl;
+  TmsgSendWrapper = function (param1: lobjc.id; param2: SEL;_filename: CFStringRef; _rect: NSRect; _aFlag: LongBool; _event: lobjc.id {NSEvent}): LongBool; cdecl;
 var
   vmethod: TmsgSendWrapper;
 begin
@@ -1715,9 +1715,9 @@ begin
 end;
 
 {.$ifdef  MAC_OS_X_VERSION_MAX_ALLOWED >= MAC_OS_X_VERSION_10_2}
-function NSView.dragPromisedFilesOfTypes_fromRect_source_slideBack_event(_typeArray: CFArrayRef; _rect: NSRect; _sourceObject: objc.id; _aFlag: LongBool; _event: objc.id {NSEvent}): LongBool;
+function NSView.dragPromisedFilesOfTypes_fromRect_source_slideBack_event(_typeArray: CFArrayRef; _rect: NSRect; _sourceObject: lobjc.id; _aFlag: LongBool; _event: lobjc.id {NSEvent}): LongBool;
 type
-  TmsgSendWrapper = function (param1: objc.id; param2: SEL;_typeArray: CFArrayRef; _rect: NSRect; _sourceObject: objc.id; _aFlag: LongBool; _event: objc.id {NSEvent}): LongBool; cdecl;
+  TmsgSendWrapper = function (param1: lobjc.id; param2: SEL;_typeArray: CFArrayRef; _rect: NSRect; _sourceObject: lobjc.id; _aFlag: LongBool; _event: lobjc.id {NSEvent}): LongBool; cdecl;
 var
   vmethod: TmsgSendWrapper;
 begin

@@ -28,20 +28,20 @@
 
   NSAttributedString = class(NSObject)
   public
-    class function getClass: objc.id; override;
+    class function getClass: lobjc.id; override;
     function string_: CFStringRef;
     function attributesAtIndex_effectiveRange(_location: LongWord; _range: NSRangePointer): CFDictionaryRef;
     function length: LongWord;
-    function attribute_atIndex_effectiveRange(_attrName: CFStringRef; _location: LongWord; _range: NSRangePointer): objc.id;
-    function attributedSubstringFromRange(_range: NSRange): objc.id;{NSAttributedString}
+    function attribute_atIndex_effectiveRange(_attrName: CFStringRef; _location: LongWord; _range: NSRangePointer): lobjc.id;
+    function attributedSubstringFromRange(_range: NSRange): lobjc.id;{NSAttributedString}
     function attributesAtIndex_longestEffectiveRange_inRange(_location: LongWord; _range: NSRangePointer; _rangeLimit: NSRange): CFDictionaryRef;
-    function attribute_atIndex_longestEffectiveRange_inRange(_attrName: CFStringRef; _location: LongWord; _range: NSRangePointer; _rangeLimit: NSRange): objc.id;
-    function isEqualToAttributedString(_other: objc.id {NSAttributedString}): LongBool;
+    function attribute_atIndex_longestEffectiveRange_inRange(_attrName: CFStringRef; _location: LongWord; _range: NSRangePointer; _rangeLimit: NSRange): lobjc.id;
+    function isEqualToAttributedString(_other: lobjc.id {NSAttributedString}): LongBool;
     constructor initWithString(_str: CFStringRef);
     constructor initWithString_attributes(_str: CFStringRef; _attrs: CFDictionaryRef);
-    constructor initWithAttributedString(_attrStr: objc.id {NSAttributedString});
+    constructor initWithAttributedString(_attrStr: lobjc.id {NSAttributedString});
     { Application Kit Additions }
-    constructor initWithHTML_documentAttributes(data: objc.id {NSData}; docAttributes: Pointer {PNSDictionary});
+    constructor initWithHTML_documentAttributes(data: lobjc.id {NSData}; docAttributes: Pointer {PNSDictionary});
   end;
 
 
@@ -49,18 +49,18 @@
 
   NSMutableAttributedString = class(NSAttributedString)
   public
-    class function getClass: objc.id; override;
+    class function getClass: lobjc.id; override;
     procedure replaceCharactersInRange_withString(_range: NSRange; _str: CFStringRef);
     procedure setAttributes_range(_attrs: CFDictionaryRef; _range: NSRange);
     function mutableString: CFMutableStringRef;
-    procedure addAttribute_value_range(_name: CFStringRef; _value: objc.id; _range: NSRange);
+    procedure addAttribute_value_range(_name: CFStringRef; _value: lobjc.id; _range: NSRange);
     procedure addAttributes_range(_attrs: CFDictionaryRef; _range: NSRange);
     procedure removeAttribute_range(_name: CFStringRef; _range: NSRange);
-    procedure replaceCharactersInRange_withAttributedString(_range: NSRange; _attrString: objc.id {NSAttributedString});
-    procedure insertAttributedString_atIndex(_attrString: objc.id {NSAttributedString}; _loc: LongWord);
-    procedure appendAttributedString(_attrString: objc.id {NSAttributedString});
+    procedure replaceCharactersInRange_withAttributedString(_range: NSRange; _attrString: lobjc.id {NSAttributedString});
+    procedure insertAttributedString_atIndex(_attrString: lobjc.id {NSAttributedString}; _loc: LongWord);
+    procedure appendAttributedString(_attrString: lobjc.id {NSAttributedString});
     procedure deleteCharactersInRange(_range: NSRange);
-    procedure setAttributedString(_attrString: objc.id {NSAttributedString});
+    procedure setAttributedString(_attrString: lobjc.id {NSAttributedString});
     procedure beginEditing;
     procedure endEditing;
   end;
@@ -105,7 +105,7 @@ const
 
 { NSAttributedString }
 
-class function NSAttributedString.getClass: objc.id;
+class function NSAttributedString.getClass: lobjc.id;
 begin
   Result := objc_getClass(StrNSAttributedString_NSAttributedString);
 end;
@@ -117,7 +117,7 @@ end;
 
 function NSAttributedString.attributesAtIndex_effectiveRange(_location: LongWord; _range: NSRangePointer): CFDictionaryRef;
 type
-  TmsgSendWrapper = function (param1: objc.id; param2: SEL;_location: LongWord; _range: NSRangePointer): CFDictionaryRef; cdecl;
+  TmsgSendWrapper = function (param1: lobjc.id; param2: SEL;_location: LongWord; _range: NSRangePointer): CFDictionaryRef; cdecl;
 var
   vmethod: TmsgSendWrapper;
 begin
@@ -130,29 +130,29 @@ begin
   Result := LongWord(objc_msgSend(Handle, sel_registerName(PChar(StrNSAttributedString_length)), []));
 end;
 
-function NSAttributedString.attribute_atIndex_effectiveRange(_attrName: CFStringRef; _location: LongWord; _range: NSRangePointer): objc.id;
+function NSAttributedString.attribute_atIndex_effectiveRange(_attrName: CFStringRef; _location: LongWord; _range: NSRangePointer): lobjc.id;
 type
-  TmsgSendWrapper = function (param1: objc.id; param2: SEL;_attrName: CFStringRef; _location: LongWord; _range: NSRangePointer): objc.id; cdecl;
+  TmsgSendWrapper = function (param1: lobjc.id; param2: SEL;_attrName: CFStringRef; _location: LongWord; _range: NSRangePointer): lobjc.id; cdecl;
 var
   vmethod: TmsgSendWrapper;
 begin
   vmethod := TmsgSendWrapper(@objc_msgSend);
-  Result := objc.id(vmethod(Handle, sel_registerName(PChar(StrNSAttributedString_attribute_atIndex_effectiveRange)), _attrName, _location, _range));
+  Result := lobjc.id(vmethod(Handle, sel_registerName(PChar(StrNSAttributedString_attribute_atIndex_effectiveRange)), _attrName, _location, _range));
 end;
 
-function NSAttributedString.attributedSubstringFromRange(_range: NSRange): objc.id;
+function NSAttributedString.attributedSubstringFromRange(_range: NSRange): lobjc.id;
 type
-  TmsgSendWrapper = function (param1: objc.id; param2: SEL;_range: NSRange): objc.id; cdecl;
+  TmsgSendWrapper = function (param1: lobjc.id; param2: SEL;_range: NSRange): lobjc.id; cdecl;
 var
   vmethod: TmsgSendWrapper;
 begin
   vmethod := TmsgSendWrapper(@objc_msgSend);
-  Result := objc.id(vmethod(Handle, sel_registerName(PChar(StrNSAttributedString_attributedSubstringFromRange)), _range));
+  Result := lobjc.id(vmethod(Handle, sel_registerName(PChar(StrNSAttributedString_attributedSubstringFromRange)), _range));
 end;
 
 function NSAttributedString.attributesAtIndex_longestEffectiveRange_inRange(_location: LongWord; _range: NSRangePointer; _rangeLimit: NSRange): CFDictionaryRef;
 type
-  TmsgSendWrapper = function (param1: objc.id; param2: SEL;_location: LongWord; _range: NSRangePointer; _rangeLimit: NSRange): CFDictionaryRef; cdecl;
+  TmsgSendWrapper = function (param1: lobjc.id; param2: SEL;_location: LongWord; _range: NSRangePointer; _rangeLimit: NSRange): CFDictionaryRef; cdecl;
 var
   vmethod: TmsgSendWrapper;
 begin
@@ -160,19 +160,19 @@ begin
   Result := CFDictionaryRef(vmethod(Handle, sel_registerName(PChar(StrNSAttributedString_attributesAtIndex_longestEffectiveRange_inRange)), _location, _range, _rangeLimit));
 end;
 
-function NSAttributedString.attribute_atIndex_longestEffectiveRange_inRange(_attrName: CFStringRef; _location: LongWord; _range: NSRangePointer; _rangeLimit: NSRange): objc.id;
+function NSAttributedString.attribute_atIndex_longestEffectiveRange_inRange(_attrName: CFStringRef; _location: LongWord; _range: NSRangePointer; _rangeLimit: NSRange): lobjc.id;
 type
-  TmsgSendWrapper = function (param1: objc.id; param2: SEL;_attrName: CFStringRef; _location: LongWord; _range: NSRangePointer; _rangeLimit: NSRange): objc.id; cdecl;
+  TmsgSendWrapper = function (param1: lobjc.id; param2: SEL;_attrName: CFStringRef; _location: LongWord; _range: NSRangePointer; _rangeLimit: NSRange): lobjc.id; cdecl;
 var
   vmethod: TmsgSendWrapper;
 begin
   vmethod := TmsgSendWrapper(@objc_msgSend);
-  Result := objc.id(vmethod(Handle, sel_registerName(PChar(StrNSAttributedString_attribute_atIndex_longestEffectiveRange_inRange)), _attrName, _location, _range, _rangeLimit));
+  Result := lobjc.id(vmethod(Handle, sel_registerName(PChar(StrNSAttributedString_attribute_atIndex_longestEffectiveRange_inRange)), _attrName, _location, _range, _rangeLimit));
 end;
 
-function NSAttributedString.isEqualToAttributedString(_other: objc.id {NSAttributedString}): LongBool;
+function NSAttributedString.isEqualToAttributedString(_other: lobjc.id {NSAttributedString}): LongBool;
 type
-  TmsgSendWrapper = function (param1: objc.id; param2: SEL;_other: objc.id {NSAttributedString}): LongBool; cdecl;
+  TmsgSendWrapper = function (param1: lobjc.id; param2: SEL;_other: lobjc.id {NSAttributedString}): LongBool; cdecl;
 var
   vmethod: TmsgSendWrapper;
 begin
@@ -182,7 +182,7 @@ end;
 
 constructor NSAttributedString.initWithString(_str: CFStringRef);
 type
-  TmsgSendWrapper = function (param1: objc.id; param2: SEL;_str: CFStringRef): objc.id; cdecl;
+  TmsgSendWrapper = function (param1: lobjc.id; param2: SEL;_str: CFStringRef): lobjc.id; cdecl;
 var
   vmethod: TmsgSendWrapper;
 begin
@@ -194,7 +194,7 @@ end;
 
 constructor NSAttributedString.initWithString_attributes(_str: CFStringRef; _attrs: CFDictionaryRef);
 type
-  TmsgSendWrapper = function (param1: objc.id; param2: SEL;_str: CFStringRef; _attrs: CFDictionaryRef): objc.id; cdecl;
+  TmsgSendWrapper = function (param1: lobjc.id; param2: SEL;_str: CFStringRef; _attrs: CFDictionaryRef): lobjc.id; cdecl;
 var
   vmethod: TmsgSendWrapper;
 begin
@@ -204,9 +204,9 @@ begin
   Handle := vmethod(allocbuf, sel_registerName(PChar(StrNSAttributedString_initWithString_attributes)), _str, _attrs);
 end;
 
-constructor NSAttributedString.initWithAttributedString(_attrStr: objc.id {NSAttributedString});
+constructor NSAttributedString.initWithAttributedString(_attrStr: lobjc.id {NSAttributedString});
 type
-  TmsgSendWrapper = function (param1: objc.id; param2: SEL;_attrStr: objc.id {NSAttributedString}): objc.id; cdecl;
+  TmsgSendWrapper = function (param1: lobjc.id; param2: SEL;_attrStr: lobjc.id {NSAttributedString}): lobjc.id; cdecl;
 var
   vmethod: TmsgSendWrapper;
 begin
@@ -218,9 +218,9 @@ end;
 
 { Application Kit Additions }
 
-constructor NSAttributedString.initWithHTML_documentAttributes(data: objc.id {NSData}; docAttributes: Pointer {PNSDictionary});
+constructor NSAttributedString.initWithHTML_documentAttributes(data: lobjc.id {NSData}; docAttributes: Pointer {PNSDictionary});
 type
-  TmsgSendWrapper = function (param1: objc.id; param2: SEL; _data: objc.id; _attr: Pointer): objc.id; cdecl;
+  TmsgSendWrapper = function (param1: lobjc.id; param2: SEL; _data: lobjc.id; _attr: Pointer): lobjc.id; cdecl;
 var
   vmethod: TmsgSendWrapper;
 begin
@@ -232,14 +232,14 @@ end;
 
 { NSMutableAttributedString }
 
-class function NSMutableAttributedString.getClass: objc.id;
+class function NSMutableAttributedString.getClass: lobjc.id;
 begin
   Result := objc_getClass(StrNSMutableAttributedString_NSMutableAttributedString);
 end;
 
 procedure NSMutableAttributedString.replaceCharactersInRange_withString(_range: NSRange; _str: CFStringRef);
 type
-  TmsgSendWrapper = procedure (param1: objc.id; param2: SEL;_range: NSRange; _str: CFStringRef); cdecl;
+  TmsgSendWrapper = procedure (param1: lobjc.id; param2: SEL;_range: NSRange; _str: CFStringRef); cdecl;
 var
   vmethod: TmsgSendWrapper;
 begin
@@ -249,7 +249,7 @@ end;
 
 procedure NSMutableAttributedString.setAttributes_range(_attrs: CFDictionaryRef; _range: NSRange);
 type
-  TmsgSendWrapper = procedure (param1: objc.id; param2: SEL;_attrs: CFDictionaryRef; _range: NSRange); cdecl;
+  TmsgSendWrapper = procedure (param1: lobjc.id; param2: SEL;_attrs: CFDictionaryRef; _range: NSRange); cdecl;
 var
   vmethod: TmsgSendWrapper;
 begin
@@ -262,9 +262,9 @@ begin
   Result := CFMutableStringRef(objc_msgSend(Handle, sel_registerName(PChar(StrNSMutableAttributedString_mutableString)), []));
 end;
 
-procedure NSMutableAttributedString.addAttribute_value_range(_name: CFStringRef; _value: objc.id; _range: NSRange);
+procedure NSMutableAttributedString.addAttribute_value_range(_name: CFStringRef; _value: lobjc.id; _range: NSRange);
 type
-  TmsgSendWrapper = procedure (param1: objc.id; param2: SEL;_name: CFStringRef; _value: objc.id; _range: NSRange); cdecl;
+  TmsgSendWrapper = procedure (param1: lobjc.id; param2: SEL;_name: CFStringRef; _value: lobjc.id; _range: NSRange); cdecl;
 var
   vmethod: TmsgSendWrapper;
 begin
@@ -274,7 +274,7 @@ end;
 
 procedure NSMutableAttributedString.addAttributes_range(_attrs: CFDictionaryRef; _range: NSRange);
 type
-  TmsgSendWrapper = procedure (param1: objc.id; param2: SEL;_attrs: CFDictionaryRef; _range: NSRange); cdecl;
+  TmsgSendWrapper = procedure (param1: lobjc.id; param2: SEL;_attrs: CFDictionaryRef; _range: NSRange); cdecl;
 var
   vmethod: TmsgSendWrapper;
 begin
@@ -284,7 +284,7 @@ end;
 
 procedure NSMutableAttributedString.removeAttribute_range(_name: CFStringRef; _range: NSRange);
 type
-  TmsgSendWrapper = procedure (param1: objc.id; param2: SEL;_name: CFStringRef; _range: NSRange); cdecl;
+  TmsgSendWrapper = procedure (param1: lobjc.id; param2: SEL;_name: CFStringRef; _range: NSRange); cdecl;
 var
   vmethod: TmsgSendWrapper;
 begin
@@ -292,9 +292,9 @@ begin
   vmethod(Handle, sel_registerName(PChar(StrNSMutableAttributedString_removeAttribute_range)), _name, _range);
 end;
 
-procedure NSMutableAttributedString.replaceCharactersInRange_withAttributedString(_range: NSRange; _attrString: objc.id {NSAttributedString});
+procedure NSMutableAttributedString.replaceCharactersInRange_withAttributedString(_range: NSRange; _attrString: lobjc.id {NSAttributedString});
 type
-  TmsgSendWrapper = procedure (param1: objc.id; param2: SEL;_range: NSRange; _attrString: objc.id {NSAttributedString}); cdecl;
+  TmsgSendWrapper = procedure (param1: lobjc.id; param2: SEL;_range: NSRange; _attrString: lobjc.id {NSAttributedString}); cdecl;
 var
   vmethod: TmsgSendWrapper;
 begin
@@ -302,9 +302,9 @@ begin
   vmethod(Handle, sel_registerName(PChar(StrNSMutableAttributedString_replaceCharactersInRange_withAttributedString)), _range, _attrString);
 end;
 
-procedure NSMutableAttributedString.insertAttributedString_atIndex(_attrString: objc.id {NSAttributedString}; _loc: LongWord);
+procedure NSMutableAttributedString.insertAttributedString_atIndex(_attrString: lobjc.id {NSAttributedString}; _loc: LongWord);
 type
-  TmsgSendWrapper = procedure (param1: objc.id; param2: SEL;_attrString: objc.id {NSAttributedString}; _loc: LongWord); cdecl;
+  TmsgSendWrapper = procedure (param1: lobjc.id; param2: SEL;_attrString: lobjc.id {NSAttributedString}; _loc: LongWord); cdecl;
 var
   vmethod: TmsgSendWrapper;
 begin
@@ -312,9 +312,9 @@ begin
   vmethod(Handle, sel_registerName(PChar(StrNSMutableAttributedString_insertAttributedString_atIndex)), _attrString, _loc);
 end;
 
-procedure NSMutableAttributedString.appendAttributedString(_attrString: objc.id {NSAttributedString});
+procedure NSMutableAttributedString.appendAttributedString(_attrString: lobjc.id {NSAttributedString});
 type
-  TmsgSendWrapper = procedure (param1: objc.id; param2: SEL;_attrString: objc.id {NSAttributedString}); cdecl;
+  TmsgSendWrapper = procedure (param1: lobjc.id; param2: SEL;_attrString: lobjc.id {NSAttributedString}); cdecl;
 var
   vmethod: TmsgSendWrapper;
 begin
@@ -324,7 +324,7 @@ end;
 
 procedure NSMutableAttributedString.deleteCharactersInRange(_range: NSRange);
 type
-  TmsgSendWrapper = procedure (param1: objc.id; param2: SEL;_range: NSRange); cdecl;
+  TmsgSendWrapper = procedure (param1: lobjc.id; param2: SEL;_range: NSRange); cdecl;
 var
   vmethod: TmsgSendWrapper;
 begin
@@ -332,9 +332,9 @@ begin
   vmethod(Handle, sel_registerName(PChar(StrNSMutableAttributedString_deleteCharactersInRange)), _range);
 end;
 
-procedure NSMutableAttributedString.setAttributedString(_attrString: objc.id {NSAttributedString});
+procedure NSMutableAttributedString.setAttributedString(_attrString: lobjc.id {NSAttributedString});
 type
-  TmsgSendWrapper = procedure (param1: objc.id; param2: SEL;_attrString: objc.id {NSAttributedString}); cdecl;
+  TmsgSendWrapper = procedure (param1: lobjc.id; param2: SEL;_attrString: lobjc.id {NSAttributedString}); cdecl;
 var
   vmethod: TmsgSendWrapper;
 begin

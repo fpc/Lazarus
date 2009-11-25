@@ -33,8 +33,8 @@ type
 
   NSStatusItem = class(NSObject)
   public
-    class function getClass: objc.id; override;
-    function statusBar: objc.id;{NSStatusBar}
+    class function getClass: lobjc.id; override;
+    function statusBar: lobjc.id;{NSStatusBar}
     function length: Single;
     procedure setLength(_length: Single);
     function action: SEL;
@@ -43,20 +43,20 @@ type
     function doubleAction: SEL;
     procedure setDoubleAction(_action: SEL);
     {.$endif}
-    function target: objc.id;
-    procedure setTarget(_target: objc.id);
+    function target: lobjc.id;
+    procedure setTarget(_target: lobjc.id);
     function title: CFStringRef;
     procedure setTitle(_title: CFStringRef);
-    function attributedTitle: objc.id;{NSAttributedString}
-    procedure setAttributedTitle(_title: objc.id {NSAttributedString});
-    function image: objc.id;{NSImage}
-    procedure setImage(_image: objc.id {NSImage});
+    function attributedTitle: lobjc.id;{NSAttributedString}
+    procedure setAttributedTitle(_title: lobjc.id {NSAttributedString});
+    function image: lobjc.id;{NSImage}
+    procedure setImage(_image: lobjc.id {NSImage});
     {.$ifdef  MAC_OS_X_VERSION_MAX_ALLOWED >= MAC_OS_X_VERSION_10_3}
-    function alternateImage: objc.id;{NSImage}
-    procedure setAlternateImage(_image: objc.id {NSImage});
+    function alternateImage: lobjc.id;{NSImage}
+    procedure setAlternateImage(_image: lobjc.id {NSImage});
     {.$endif}
-    function menu: objc.id;{NSMenu}
-    procedure setMenu(_menu: objc.id {NSMenu});
+    function menu: lobjc.id;{NSMenu}
+    procedure setMenu(_menu: lobjc.id {NSMenu});
     function isEnabled: LongBool;
     procedure setEnabled(_enabled: LongBool);
     function toolTip: CFStringRef;
@@ -65,11 +65,11 @@ type
     function highlightMode: LongBool;
     procedure sendActionOn(_mask: Integer);
     {.$ifdef  MAC_OS_X_VERSION_MAX_ALLOWED >= MAC_OS_X_VERSION_10_3}
-    procedure popUpStatusItemMenu(_menu: objc.id {NSMenu});
+    procedure popUpStatusItemMenu(_menu: lobjc.id {NSMenu});
     procedure drawStatusBarBackgroundInRect_withHighlight(_rect: NSRect; _highlight: LongBool);
     {.$endif}
-    function view: objc.id;{NSView}
-    procedure setView(_view: objc.id {NSView});
+    function view: lobjc.id;{NSView}
+    procedure setView(_view: lobjc.id {NSView});
   end;
 
 {$endif}
@@ -113,14 +113,14 @@ const
 
 { NSStatusItem }
 
-class function NSStatusItem.getClass: objc.id;
+class function NSStatusItem.getClass: lobjc.id;
 begin
   Result := objc_getClass(StrNSStatusItem_NSStatusItem);
 end;
 
-function NSStatusItem.statusBar: objc.id;
+function NSStatusItem.statusBar: lobjc.id;
 begin
-  Result := objc.id(objc_msgSend(Handle, sel_registerName(PChar(StrNSStatusItem_statusBar)), []));
+  Result := lobjc.id(objc_msgSend(Handle, sel_registerName(PChar(StrNSStatusItem_statusBar)), []));
 end;
 
 function NSStatusItem.length: Single;
@@ -130,7 +130,7 @@ end;
 
 procedure NSStatusItem.setLength(_length: Single);
 type
-  TmsgSendWrapper = procedure (param1: objc.id; param2: SEL;_length: Single); cdecl;
+  TmsgSendWrapper = procedure (param1: lobjc.id; param2: SEL;_length: Single); cdecl;
 var
   vmethod: TmsgSendWrapper;
 begin
@@ -145,7 +145,7 @@ end;
 
 procedure NSStatusItem.setAction(_action: SEL);
 type
-  TmsgSendWrapper = procedure (param1: objc.id; param2: SEL;_action: SEL); cdecl;
+  TmsgSendWrapper = procedure (param1: lobjc.id; param2: SEL;_action: SEL); cdecl;
 var
   vmethod: TmsgSendWrapper;
 begin
@@ -161,7 +161,7 @@ end;
 
 procedure NSStatusItem.setDoubleAction(_action: SEL);
 type
-  TmsgSendWrapper = procedure (param1: objc.id; param2: SEL;_action: SEL); cdecl;
+  TmsgSendWrapper = procedure (param1: lobjc.id; param2: SEL;_action: SEL); cdecl;
 var
   vmethod: TmsgSendWrapper;
 begin
@@ -170,14 +170,14 @@ begin
 end;
 
 {.$endif}
-function NSStatusItem.target: objc.id;
+function NSStatusItem.target: lobjc.id;
 begin
-  Result := objc.id(objc_msgSend(Handle, sel_registerName(PChar(StrNSStatusItem_target)), []));
+  Result := lobjc.id(objc_msgSend(Handle, sel_registerName(PChar(StrNSStatusItem_target)), []));
 end;
 
-procedure NSStatusItem.setTarget(_target: objc.id);
+procedure NSStatusItem.setTarget(_target: lobjc.id);
 type
-  TmsgSendWrapper = procedure (param1: objc.id; param2: SEL;_target: objc.id); cdecl;
+  TmsgSendWrapper = procedure (param1: lobjc.id; param2: SEL;_target: lobjc.id); cdecl;
 var
   vmethod: TmsgSendWrapper;
 begin
@@ -192,7 +192,7 @@ end;
 
 procedure NSStatusItem.setTitle(_title: CFStringRef);
 type
-  TmsgSendWrapper = procedure (param1: objc.id; param2: SEL;_title: CFStringRef); cdecl;
+  TmsgSendWrapper = procedure (param1: lobjc.id; param2: SEL;_title: CFStringRef); cdecl;
 var
   vmethod: TmsgSendWrapper;
 begin
@@ -200,14 +200,14 @@ begin
   vmethod(Handle, sel_registerName(PChar(StrNSStatusItem_setTitle)), _title);
 end;
 
-function NSStatusItem.attributedTitle: objc.id;
+function NSStatusItem.attributedTitle: lobjc.id;
 begin
-  Result := objc.id(objc_msgSend(Handle, sel_registerName(PChar(StrNSStatusItem_attributedTitle)), []));
+  Result := lobjc.id(objc_msgSend(Handle, sel_registerName(PChar(StrNSStatusItem_attributedTitle)), []));
 end;
 
-procedure NSStatusItem.setAttributedTitle(_title: objc.id {NSAttributedString});
+procedure NSStatusItem.setAttributedTitle(_title: lobjc.id {NSAttributedString});
 type
-  TmsgSendWrapper = procedure (param1: objc.id; param2: SEL;_title: objc.id {NSAttributedString}); cdecl;
+  TmsgSendWrapper = procedure (param1: lobjc.id; param2: SEL;_title: lobjc.id {NSAttributedString}); cdecl;
 var
   vmethod: TmsgSendWrapper;
 begin
@@ -215,14 +215,14 @@ begin
   vmethod(Handle, sel_registerName(PChar(StrNSStatusItem_setAttributedTitle)), _title);
 end;
 
-function NSStatusItem.image: objc.id;
+function NSStatusItem.image: lobjc.id;
 begin
-  Result := objc.id(objc_msgSend(Handle, sel_registerName(PChar(StrNSStatusItem_image)), []));
+  Result := lobjc.id(objc_msgSend(Handle, sel_registerName(PChar(StrNSStatusItem_image)), []));
 end;
 
-procedure NSStatusItem.setImage(_image: objc.id {NSImage});
+procedure NSStatusItem.setImage(_image: lobjc.id {NSImage});
 type
-  TmsgSendWrapper = procedure (param1: objc.id; param2: SEL;_image: objc.id {NSImage}); cdecl;
+  TmsgSendWrapper = procedure (param1: lobjc.id; param2: SEL;_image: lobjc.id {NSImage}); cdecl;
 var
   vmethod: TmsgSendWrapper;
 begin
@@ -231,14 +231,14 @@ begin
 end;
 
 {.$ifdef  MAC_OS_X_VERSION_MAX_ALLOWED >= MAC_OS_X_VERSION_10_3}
-function NSStatusItem.alternateImage: objc.id;
+function NSStatusItem.alternateImage: lobjc.id;
 begin
-  Result := objc.id(objc_msgSend(Handle, sel_registerName(PChar(StrNSStatusItem_alternateImage)), []));
+  Result := lobjc.id(objc_msgSend(Handle, sel_registerName(PChar(StrNSStatusItem_alternateImage)), []));
 end;
 
-procedure NSStatusItem.setAlternateImage(_image: objc.id {NSImage});
+procedure NSStatusItem.setAlternateImage(_image: lobjc.id {NSImage});
 type
-  TmsgSendWrapper = procedure (param1: objc.id; param2: SEL;_image: objc.id {NSImage}); cdecl;
+  TmsgSendWrapper = procedure (param1: lobjc.id; param2: SEL;_image: lobjc.id {NSImage}); cdecl;
 var
   vmethod: TmsgSendWrapper;
 begin
@@ -247,14 +247,14 @@ begin
 end;
 
 {.$endif}
-function NSStatusItem.menu: objc.id;
+function NSStatusItem.menu: lobjc.id;
 begin
-  Result := objc.id(objc_msgSend(Handle, sel_registerName(PChar(StrNSStatusItem_menu)), []));
+  Result := lobjc.id(objc_msgSend(Handle, sel_registerName(PChar(StrNSStatusItem_menu)), []));
 end;
 
-procedure NSStatusItem.setMenu(_menu: objc.id {NSMenu});
+procedure NSStatusItem.setMenu(_menu: lobjc.id {NSMenu});
 type
-  TmsgSendWrapper = procedure (param1: objc.id; param2: SEL;_menu: objc.id {NSMenu}); cdecl;
+  TmsgSendWrapper = procedure (param1: lobjc.id; param2: SEL;_menu: lobjc.id {NSMenu}); cdecl;
 var
   vmethod: TmsgSendWrapper;
 begin
@@ -269,7 +269,7 @@ end;
 
 procedure NSStatusItem.setEnabled(_enabled: LongBool);
 type
-  TmsgSendWrapper = procedure (param1: objc.id; param2: SEL;_enabled: LongBool); cdecl;
+  TmsgSendWrapper = procedure (param1: lobjc.id; param2: SEL;_enabled: LongBool); cdecl;
 var
   vmethod: TmsgSendWrapper;
 begin
@@ -284,7 +284,7 @@ end;
 
 procedure NSStatusItem.setToolTip(_toolTip: CFStringRef);
 type
-  TmsgSendWrapper = procedure (param1: objc.id; param2: SEL;_toolTip: CFStringRef); cdecl;
+  TmsgSendWrapper = procedure (param1: lobjc.id; param2: SEL;_toolTip: CFStringRef); cdecl;
 var
   vmethod: TmsgSendWrapper;
 begin
@@ -294,7 +294,7 @@ end;
 
 procedure NSStatusItem.setHighlightMode(_highlightMode: LongBool);
 type
-  TmsgSendWrapper = procedure (param1: objc.id; param2: SEL;_highlightMode: LongBool); cdecl;
+  TmsgSendWrapper = procedure (param1: lobjc.id; param2: SEL;_highlightMode: LongBool); cdecl;
 var
   vmethod: TmsgSendWrapper;
 begin
@@ -309,7 +309,7 @@ end;
 
 procedure NSStatusItem.sendActionOn(_mask: Integer);
 type
-  TmsgSendWrapper = procedure (param1: objc.id; param2: SEL;_mask: Integer); cdecl;
+  TmsgSendWrapper = procedure (param1: lobjc.id; param2: SEL;_mask: Integer); cdecl;
 var
   vmethod: TmsgSendWrapper;
 begin
@@ -318,9 +318,9 @@ begin
 end;
 
 {.$ifdef  MAC_OS_X_VERSION_MAX_ALLOWED >= MAC_OS_X_VERSION_10_3}
-procedure NSStatusItem.popUpStatusItemMenu(_menu: objc.id {NSMenu});
+procedure NSStatusItem.popUpStatusItemMenu(_menu: lobjc.id {NSMenu});
 type
-  TmsgSendWrapper = procedure (param1: objc.id; param2: SEL;_menu: objc.id {NSMenu}); cdecl;
+  TmsgSendWrapper = procedure (param1: lobjc.id; param2: SEL;_menu: lobjc.id {NSMenu}); cdecl;
 var
   vmethod: TmsgSendWrapper;
 begin
@@ -330,7 +330,7 @@ end;
 
 procedure NSStatusItem.drawStatusBarBackgroundInRect_withHighlight(_rect: NSRect; _highlight: LongBool);
 type
-  TmsgSendWrapper = procedure (param1: objc.id; param2: SEL;_rect: NSRect; _highlight: LongBool); cdecl;
+  TmsgSendWrapper = procedure (param1: lobjc.id; param2: SEL;_rect: NSRect; _highlight: LongBool); cdecl;
 var
   vmethod: TmsgSendWrapper;
 begin
@@ -339,14 +339,14 @@ begin
 end;
 
 {.$endif}
-function NSStatusItem.view: objc.id;
+function NSStatusItem.view: lobjc.id;
 begin
-  Result := objc.id(objc_msgSend(Handle, sel_registerName(PChar(StrNSStatusItem_view)), []));
+  Result := lobjc.id(objc_msgSend(Handle, sel_registerName(PChar(StrNSStatusItem_view)), []));
 end;
 
-procedure NSStatusItem.setView(_view: objc.id {NSView});
+procedure NSStatusItem.setView(_view: lobjc.id {NSView});
 type
-  TmsgSendWrapper = procedure (param1: objc.id; param2: SEL;_view: objc.id {NSView}); cdecl;
+  TmsgSendWrapper = procedure (param1: lobjc.id; param2: SEL;_view: lobjc.id {NSView}); cdecl;
 var
   vmethod: TmsgSendWrapper;
 begin

@@ -34,12 +34,12 @@ type
 
   NSDate = class(NSObject)
   public
-    class function getClass: objc.id; override;
+    class function getClass: lobjc.id; override;
     function timeIntervalSinceReferenceDate: NSTimeInterval;
     function timeIntervalSinceDate(_anotherDate: CFDateRef): NSTimeInterval;
     function timeIntervalSinceNow: NSTimeInterval;
     function timeIntervalSince1970: NSTimeInterval;
-    function addTimeInterval(_seconds: NSTimeInterval): objc.id;
+    function addTimeInterval(_seconds: NSTimeInterval): lobjc.id;
     function earlierDate(_anotherDate: CFDateRef): CFDateRef;
     function laterDate(_anotherDate: CFDateRef): CFDateRef;
     function compare(_other: CFDateRef): NSComparisonResult;
@@ -89,7 +89,7 @@ const
 
 { NSDate }
 
-class function NSDate.getClass: objc.id;
+class function NSDate.getClass: lobjc.id;
 begin
   Result := objc_getClass(StrNSDate_NSDate);
 end;
@@ -101,7 +101,7 @@ end;
 
 function NSDate.timeIntervalSinceDate(_anotherDate: CFDateRef): NSTimeInterval;
 type
-  TmsgSendWrapper = function (param1: objc.id; param2: SEL;_anotherDate: CFDateRef): NSTimeInterval; cdecl;
+  TmsgSendWrapper = function (param1: lobjc.id; param2: SEL;_anotherDate: CFDateRef): NSTimeInterval; cdecl;
 var
   vmethod: TmsgSendWrapper;
 begin
@@ -119,19 +119,19 @@ begin
   Result := objc_msgSend_fpret(Handle, sel_registerName(PChar(StrNSDate_timeIntervalSince1970)), []);
 end;
 
-function NSDate.addTimeInterval(_seconds: NSTimeInterval): objc.id;
+function NSDate.addTimeInterval(_seconds: NSTimeInterval): lobjc.id;
 type
-  TmsgSendWrapper = function (param1: objc.id; param2: SEL;_seconds: NSTimeInterval): objc.id; cdecl;
+  TmsgSendWrapper = function (param1: lobjc.id; param2: SEL;_seconds: NSTimeInterval): lobjc.id; cdecl;
 var
   vmethod: TmsgSendWrapper;
 begin
   vmethod := TmsgSendWrapper(@objc_msgSend);
-  Result := objc.id(vmethod(Handle, sel_registerName(PChar(StrNSDate_addTimeInterval)), _seconds));
+  Result := lobjc.id(vmethod(Handle, sel_registerName(PChar(StrNSDate_addTimeInterval)), _seconds));
 end;
 
 function NSDate.earlierDate(_anotherDate: CFDateRef): CFDateRef;
 type
-  TmsgSendWrapper = function (param1: objc.id; param2: SEL;_anotherDate: CFDateRef): CFDateRef; cdecl;
+  TmsgSendWrapper = function (param1: lobjc.id; param2: SEL;_anotherDate: CFDateRef): CFDateRef; cdecl;
 var
   vmethod: TmsgSendWrapper;
 begin
@@ -141,7 +141,7 @@ end;
 
 function NSDate.laterDate(_anotherDate: CFDateRef): CFDateRef;
 type
-  TmsgSendWrapper = function (param1: objc.id; param2: SEL;_anotherDate: CFDateRef): CFDateRef; cdecl;
+  TmsgSendWrapper = function (param1: lobjc.id; param2: SEL;_anotherDate: CFDateRef): CFDateRef; cdecl;
 var
   vmethod: TmsgSendWrapper;
 begin
@@ -151,7 +151,7 @@ end;
 
 function NSDate.compare(_other: CFDateRef): NSComparisonResult;
 type
-  TmsgSendWrapper = function (param1: objc.id; param2: SEL;_other: CFDateRef): NSComparisonResult; cdecl;
+  TmsgSendWrapper = function (param1: lobjc.id; param2: SEL;_other: CFDateRef): NSComparisonResult; cdecl;
 var
   vmethod: TmsgSendWrapper;
 begin
@@ -166,7 +166,7 @@ end;
 
 function NSDate.isEqualToDate(_otherDate: CFDateRef): LongBool;
 type
-  TmsgSendWrapper = function (param1: objc.id; param2: SEL;_otherDate: CFDateRef): LongBool; cdecl;
+  TmsgSendWrapper = function (param1: lobjc.id; param2: SEL;_otherDate: CFDateRef): LongBool; cdecl;
 var
   vmethod: TmsgSendWrapper;
 begin
@@ -181,7 +181,7 @@ end;
 
 constructor NSDate.date;
 type
-  TmsgSendWrapper = function (param1: objc.id; param2: SEL): objc.id; cdecl;
+  TmsgSendWrapper = function (param1: lobjc.id; param2: SEL): lobjc.id; cdecl;
 var
   vmethod: TmsgSendWrapper;
 begin
@@ -192,7 +192,7 @@ end;
 
 constructor NSDate.dateWithTimeIntervalSinceNow(_secs: NSTimeInterval);
 type
-  TmsgSendWrapper = function (param1: objc.id; param2: SEL;_secs: NSTimeInterval): objc.id; cdecl;
+  TmsgSendWrapper = function (param1: lobjc.id; param2: SEL;_secs: NSTimeInterval): lobjc.id; cdecl;
 var
   vmethod: TmsgSendWrapper;
 begin
@@ -203,7 +203,7 @@ end;
 
 constructor NSDate.dateWithTimeIntervalSinceReferenceDate(_secs: NSTimeInterval);
 type
-  TmsgSendWrapper = function (param1: objc.id; param2: SEL;_secs: NSTimeInterval): objc.id; cdecl;
+  TmsgSendWrapper = function (param1: lobjc.id; param2: SEL;_secs: NSTimeInterval): lobjc.id; cdecl;
 var
   vmethod: TmsgSendWrapper;
 begin
@@ -214,7 +214,7 @@ end;
 
 constructor NSDate.dateWithTimeIntervalSince1970(_secs: NSTimeInterval);
 type
-  TmsgSendWrapper = function (param1: objc.id; param2: SEL;_secs: NSTimeInterval): objc.id; cdecl;
+  TmsgSendWrapper = function (param1: lobjc.id; param2: SEL;_secs: NSTimeInterval): lobjc.id; cdecl;
 var
   vmethod: TmsgSendWrapper;
 begin
@@ -225,7 +225,7 @@ end;
 
 constructor NSDate.distantFuture;
 type
-  TmsgSendWrapper = function (param1: objc.id; param2: SEL): objc.id; cdecl;
+  TmsgSendWrapper = function (param1: lobjc.id; param2: SEL): lobjc.id; cdecl;
 var
   vmethod: TmsgSendWrapper;
 begin
@@ -236,7 +236,7 @@ end;
 
 constructor NSDate.distantPast;
 type
-  TmsgSendWrapper = function (param1: objc.id; param2: SEL): objc.id; cdecl;
+  TmsgSendWrapper = function (param1: lobjc.id; param2: SEL): lobjc.id; cdecl;
 var
   vmethod: TmsgSendWrapper;
 begin
@@ -247,7 +247,7 @@ end;
 
 constructor NSDate.init;
 type
-  TmsgSendWrapper = function (param1: objc.id; param2: SEL): objc.id; cdecl;
+  TmsgSendWrapper = function (param1: lobjc.id; param2: SEL): lobjc.id; cdecl;
 var
   vmethod: TmsgSendWrapper;
 begin
@@ -259,7 +259,7 @@ end;
 
 constructor NSDate.initWithTimeIntervalSinceReferenceDate(_secsToBeAdded: NSTimeInterval);
 type
-  TmsgSendWrapper = function (param1: objc.id; param2: SEL;_secsToBeAdded: NSTimeInterval): objc.id; cdecl;
+  TmsgSendWrapper = function (param1: lobjc.id; param2: SEL;_secsToBeAdded: NSTimeInterval): lobjc.id; cdecl;
 var
   vmethod: TmsgSendWrapper;
 begin
@@ -271,7 +271,7 @@ end;
 
 constructor NSDate.initWithTimeInterval_sinceDate(_secsToBeAdded: NSTimeInterval; _anotherDate: CFDateRef);
 type
-  TmsgSendWrapper = function (param1: objc.id; param2: SEL;_secsToBeAdded: NSTimeInterval; _anotherDate: CFDateRef): objc.id; cdecl;
+  TmsgSendWrapper = function (param1: lobjc.id; param2: SEL;_secsToBeAdded: NSTimeInterval; _anotherDate: CFDateRef): lobjc.id; cdecl;
 var
   vmethod: TmsgSendWrapper;
 begin
@@ -283,7 +283,7 @@ end;
 
 constructor NSDate.initWithTimeIntervalSinceNow(_secsToBeAddedToNow: NSTimeInterval);
 type
-  TmsgSendWrapper = function (param1: objc.id; param2: SEL;_secsToBeAddedToNow: NSTimeInterval): objc.id; cdecl;
+  TmsgSendWrapper = function (param1: lobjc.id; param2: SEL;_secsToBeAddedToNow: NSTimeInterval): lobjc.id; cdecl;
 var
   vmethod: TmsgSendWrapper;
 begin

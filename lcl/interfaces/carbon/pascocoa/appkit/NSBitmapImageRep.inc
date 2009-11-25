@@ -100,7 +100,7 @@ type
 
   NSBitmapImageRep = class(NSImageRep)
   public
-    class function getClass: objc.id; override;
+    class function getClass: lobjc.id; override;
     // All instance variables are private
     //  Cache
     constructor initWithFocusedViewRect(_rect: NSRect);
@@ -137,14 +137,14 @@ type
     // Gray value of midPoint -> midPointColor, black -> shadowColor, white -> lightColor.
     // Works on images with 8-bit SPP; thus either 8-bit gray or 24-bit color (with optional
     // alpha).
-    procedure colorizeByMappingGray_toColor_blackMapping_whiteMapping(_midPoint: Single; _midPointColor: objc.id {NSColor}; _shadowColor: objc.id {NSColor}; _lightColor: objc.id {NSColor});
+    procedure colorizeByMappingGray_toColor_blackMapping_whiteMapping(_midPoint: Single; _midPointColor: lobjc.id {NSColor}; _shadowColor: lobjc.id {NSColor}; _lightColor: lobjc.id {NSColor});
     {.$ifdef  MAC_OS_X_VERSION_MAX_ALLOWED >= MAC_OS_X_VERSION_10_2}
     constructor initForIncrementalLoad;
     function incrementalLoadFromData_complete(_data: CFDataRef; _complete: LongBool): Integer;
     {.$endif}
     {.$ifdef  MAC_OS_X_VERSION_MAX_ALLOWED >= MAC_OS_X_VERSION_10_4}
-    procedure setColor_atX_y(_color: objc.id {NSColor}; _x: Integer; _y: Integer);
-    function colorAtX_y(_x: Integer; _y: Integer): objc.id;{NSColor}
+    procedure setColor_atX_y(_color: lobjc.id {NSColor}; _x: Integer; _y: Integer);
+    function colorAtX_y(_x: Integer; _y: Integer): lobjc.id;{NSColor}
     procedure getPixel;
     procedure setPixel;
     {.$endif}
@@ -152,8 +152,8 @@ type
     constructor initWithBitmapHandle(_bitmap: Pointer);
     class function representationOfImageRepsInArray_usingType_properties(_imageReps: CFArrayRef; _storageType: NSBitmapImageFileType; _properties: CFDictionaryRef): CFDataRef;
     function representationUsingType_properties(_storageType: NSBitmapImageFileType; _properties: CFDictionaryRef): CFDataRef;
-    procedure setProperty_withValue(__property: CFStringRef; _value: objc.id);
-    function valueForProperty(__property: CFStringRef): objc.id;
+    procedure setProperty_withValue(__property: CFStringRef; _value: lobjc.id);
+    function valueForProperty(__property: CFStringRef): lobjc.id;
   end;
 
     {.$endif}
@@ -205,14 +205,14 @@ const
 
 { NSBitmapImageRep }
 
-class function NSBitmapImageRep.getClass: objc.id;
+class function NSBitmapImageRep.getClass: lobjc.id;
 begin
   Result := objc_getClass(StrNSBitmapImageRep_NSBitmapImageRep);
 end;
 
 constructor NSBitmapImageRep.initWithFocusedViewRect(_rect: NSRect);
 type
-  TmsgSendWrapper = function (param1: objc.id; param2: SEL;_rect: NSRect): objc.id; cdecl;
+  TmsgSendWrapper = function (param1: lobjc.id; param2: SEL;_rect: NSRect): lobjc.id; cdecl;
 var
   vmethod: TmsgSendWrapper;
 begin
@@ -224,7 +224,7 @@ end;
 
 constructor NSBitmapImageRep.initWithBitmapDataPlanes_pixelsWide_pixelsHigh_bitsPerSample_samplesPerPixel_hasAlpha_isPlanar_colorSpaceName_bytesPerRow_bitsPerPixel(_planes: PChar; _width: Integer; _height: Integer; _bps: Integer; _spp: Integer; _alpha: LongBool; _isPlanar: LongBool; _colorSpaceName: CFStringRef; _rBytes: Integer; _pBits: Integer);
 type
-  TmsgSendWrapper = function (param1: objc.id; param2: SEL;_planes: PChar; _width: Integer; _height: Integer; _bps: Integer; _spp: Integer; _alpha: LongBool; _isPlanar: LongBool; _colorSpaceName: CFStringRef; _rBytes: Integer; _pBits: Integer): objc.id; cdecl;
+  TmsgSendWrapper = function (param1: lobjc.id; param2: SEL;_planes: PChar; _width: Integer; _height: Integer; _bps: Integer; _spp: Integer; _alpha: LongBool; _isPlanar: LongBool; _colorSpaceName: CFStringRef; _rBytes: Integer; _pBits: Integer): lobjc.id; cdecl;
 var
   vmethod: TmsgSendWrapper;
 begin
@@ -237,7 +237,7 @@ end;
 {.$ifdef  MAC_OS_X_VERSION_MAX_ALLOWED >= MAC_OS_X_VERSION_10_4}
 constructor NSBitmapImageRep.initWithBitmapDataPlanes_pixelsWide_pixelsHigh_bitsPerSample_samplesPerPixel_hasAlpha_isPlanar_colorSpaceName_bitmapFormat_bytesPerRow_bitsPerPixel(_planes: PChar; _width: Integer; _height: Integer; _bps: Integer; _spp: Integer; _alpha: LongBool; _isPlanar: LongBool; _colorSpaceName: CFStringRef; _bitmapFormat: NSBitmapFormat; _rBytes: Integer; _pBits: Integer);
 type
-  TmsgSendWrapper = function (param1: objc.id; param2: SEL;_planes: PChar; _width: Integer; _height: Integer; _bps: Integer; _spp: Integer; _alpha: LongBool; _isPlanar: LongBool; _colorSpaceName: CFStringRef; _bitmapFormat: NSBitmapFormat; _rBytes: Integer; _pBits: Integer): objc.id; cdecl;
+  TmsgSendWrapper = function (param1: lobjc.id; param2: SEL;_planes: PChar; _width: Integer; _height: Integer; _bps: Integer; _spp: Integer; _alpha: LongBool; _isPlanar: LongBool; _colorSpaceName: CFStringRef; _bitmapFormat: NSBitmapFormat; _rBytes: Integer; _pBits: Integer): lobjc.id; cdecl;
 var
   vmethod: TmsgSendWrapper;
 begin
@@ -250,7 +250,7 @@ end;
 {.$endif}
 class function NSBitmapImageRep.imageRepsWithData(_tiffData: CFDataRef): CFArrayRef;
 type
-  TmsgSendWrapper = function (param1: objc.id; param2: SEL;_tiffData: CFDataRef): CFArrayRef; cdecl;
+  TmsgSendWrapper = function (param1: lobjc.id; param2: SEL;_tiffData: CFDataRef): CFArrayRef; cdecl;
 var
   vmethod: TmsgSendWrapper;
 begin
@@ -260,7 +260,7 @@ end;
 
 constructor NSBitmapImageRep.imageRepWithData(_tiffData: CFDataRef);
 type
-  TmsgSendWrapper = function (param1: objc.id; param2: SEL;_tiffData: CFDataRef): objc.id; cdecl;
+  TmsgSendWrapper = function (param1: lobjc.id; param2: SEL;_tiffData: CFDataRef): lobjc.id; cdecl;
 var
   vmethod: TmsgSendWrapper;
 begin
@@ -271,7 +271,7 @@ end;
 
 constructor NSBitmapImageRep.initWithData(_tiffData: CFDataRef);
 type
-  TmsgSendWrapper = function (param1: objc.id; param2: SEL;_tiffData: CFDataRef): objc.id; cdecl;
+  TmsgSendWrapper = function (param1: lobjc.id; param2: SEL;_tiffData: CFDataRef): lobjc.id; cdecl;
 var
   vmethod: TmsgSendWrapper;
 begin
@@ -288,7 +288,7 @@ end;
 
 procedure NSBitmapImageRep.getBitmapDataPlanes(_data: PChar);
 type
-  TmsgSendWrapper = procedure (param1: objc.id; param2: SEL;_data: PChar); cdecl;
+  TmsgSendWrapper = procedure (param1: lobjc.id; param2: SEL;_data: PChar); cdecl;
 var
   vmethod: TmsgSendWrapper;
 begin
@@ -335,7 +335,7 @@ end;
 {.$endif}
 procedure NSBitmapImageRep.getCompression_factor(_compression: NSTIFFCompression; _factor: Single);
 type
-  TmsgSendWrapper = procedure (param1: objc.id; param2: SEL;_compression: NSTIFFCompression; _factor: Single); cdecl;
+  TmsgSendWrapper = procedure (param1: lobjc.id; param2: SEL;_compression: NSTIFFCompression; _factor: Single); cdecl;
 var
   vmethod: TmsgSendWrapper;
 begin
@@ -345,7 +345,7 @@ end;
 
 procedure NSBitmapImageRep.setCompression_factor(_compression: NSTIFFCompression; _factor: Single);
 type
-  TmsgSendWrapper = procedure (param1: objc.id; param2: SEL;_compression: NSTIFFCompression; _factor: Single); cdecl;
+  TmsgSendWrapper = procedure (param1: lobjc.id; param2: SEL;_compression: NSTIFFCompression; _factor: Single); cdecl;
 var
   vmethod: TmsgSendWrapper;
 begin
@@ -360,7 +360,7 @@ end;
 
 function NSBitmapImageRep.TIFFRepresentationUsingCompression_factor(_comp: NSTIFFCompression; _factor: Single): CFDataRef;
 type
-  TmsgSendWrapper = function (param1: objc.id; param2: SEL;_comp: NSTIFFCompression; _factor: Single): CFDataRef; cdecl;
+  TmsgSendWrapper = function (param1: lobjc.id; param2: SEL;_comp: NSTIFFCompression; _factor: Single): CFDataRef; cdecl;
 var
   vmethod: TmsgSendWrapper;
 begin
@@ -370,7 +370,7 @@ end;
 
 class function NSBitmapImageRep.TIFFRepresentationOfImageRepsInArray(__array: CFArrayRef): CFDataRef;
 type
-  TmsgSendWrapper = function (param1: objc.id; param2: SEL;__array: CFArrayRef): CFDataRef; cdecl;
+  TmsgSendWrapper = function (param1: lobjc.id; param2: SEL;__array: CFArrayRef): CFDataRef; cdecl;
 var
   vmethod: TmsgSendWrapper;
 begin
@@ -380,7 +380,7 @@ end;
 
 class function NSBitmapImageRep.TIFFRepresentationOfImageRepsInArray_usingCompression_factor(__array: CFArrayRef; _comp: NSTIFFCompression; _factor: Single): CFDataRef;
 type
-  TmsgSendWrapper = function (param1: objc.id; param2: SEL;__array: CFArrayRef; _comp: NSTIFFCompression; _factor: Single): CFDataRef; cdecl;
+  TmsgSendWrapper = function (param1: lobjc.id; param2: SEL;__array: CFArrayRef; _comp: NSTIFFCompression; _factor: Single): CFDataRef; cdecl;
 var
   vmethod: TmsgSendWrapper;
 begin
@@ -390,7 +390,7 @@ end;
 
 class procedure NSBitmapImageRep.getTIFFCompressionTypes_count(_list: NSTIFFCompression; _numTypes: Integer);
 type
-  TmsgSendWrapper = procedure (param1: objc.id; param2: SEL;_list: NSTIFFCompression; _numTypes: Integer); cdecl;
+  TmsgSendWrapper = procedure (param1: lobjc.id; param2: SEL;_list: NSTIFFCompression; _numTypes: Integer); cdecl;
 var
   vmethod: TmsgSendWrapper;
 begin
@@ -400,7 +400,7 @@ end;
 
 class function NSBitmapImageRep.localizedNameForTIFFCompressionType(_compression: NSTIFFCompression): CFStringRef;
 type
-  TmsgSendWrapper = function (param1: objc.id; param2: SEL;_compression: NSTIFFCompression): CFStringRef; cdecl;
+  TmsgSendWrapper = function (param1: lobjc.id; param2: SEL;_compression: NSTIFFCompression): CFStringRef; cdecl;
 var
   vmethod: TmsgSendWrapper;
 begin
@@ -410,7 +410,7 @@ end;
 
 function NSBitmapImageRep.canBeCompressedUsing(_compression: NSTIFFCompression): LongBool;
 type
-  TmsgSendWrapper = function (param1: objc.id; param2: SEL;_compression: NSTIFFCompression): LongBool; cdecl;
+  TmsgSendWrapper = function (param1: lobjc.id; param2: SEL;_compression: NSTIFFCompression): LongBool; cdecl;
 var
   vmethod: TmsgSendWrapper;
 begin
@@ -418,9 +418,9 @@ begin
   Result := LongBool(vmethod(Handle, sel_registerName(PChar(StrNSBitmapImageRep_canBeCompressedUsing)), _compression));
 end;
 
-procedure NSBitmapImageRep.colorizeByMappingGray_toColor_blackMapping_whiteMapping(_midPoint: Single; _midPointColor: objc.id {NSColor}; _shadowColor: objc.id {NSColor}; _lightColor: objc.id {NSColor});
+procedure NSBitmapImageRep.colorizeByMappingGray_toColor_blackMapping_whiteMapping(_midPoint: Single; _midPointColor: lobjc.id {NSColor}; _shadowColor: lobjc.id {NSColor}; _lightColor: lobjc.id {NSColor});
 type
-  TmsgSendWrapper = procedure (param1: objc.id; param2: SEL;_midPoint: Single; _midPointColor: objc.id {NSColor}; _shadowColor: objc.id {NSColor}; _lightColor: objc.id {NSColor}); cdecl;
+  TmsgSendWrapper = procedure (param1: lobjc.id; param2: SEL;_midPoint: Single; _midPointColor: lobjc.id {NSColor}; _shadowColor: lobjc.id {NSColor}; _lightColor: lobjc.id {NSColor}); cdecl;
 var
   vmethod: TmsgSendWrapper;
 begin
@@ -431,7 +431,7 @@ end;
 {.$ifdef  MAC_OS_X_VERSION_MAX_ALLOWED >= MAC_OS_X_VERSION_10_2}
 constructor NSBitmapImageRep.initForIncrementalLoad;
 type
-  TmsgSendWrapper = function (param1: objc.id; param2: SEL): objc.id; cdecl;
+  TmsgSendWrapper = function (param1: lobjc.id; param2: SEL): lobjc.id; cdecl;
 var
   vmethod: TmsgSendWrapper;
 begin
@@ -443,7 +443,7 @@ end;
 
 function NSBitmapImageRep.incrementalLoadFromData_complete(_data: CFDataRef; _complete: LongBool): Integer;
 type
-  TmsgSendWrapper = function (param1: objc.id; param2: SEL;_data: CFDataRef; _complete: LongBool): Integer; cdecl;
+  TmsgSendWrapper = function (param1: lobjc.id; param2: SEL;_data: CFDataRef; _complete: LongBool): Integer; cdecl;
 var
   vmethod: TmsgSendWrapper;
 begin
@@ -453,9 +453,9 @@ end;
 
 {.$endif}
 {.$ifdef  MAC_OS_X_VERSION_MAX_ALLOWED >= MAC_OS_X_VERSION_10_4}
-procedure NSBitmapImageRep.setColor_atX_y(_color: objc.id {NSColor}; _x: Integer; _y: Integer);
+procedure NSBitmapImageRep.setColor_atX_y(_color: lobjc.id {NSColor}; _x: Integer; _y: Integer);
 type
-  TmsgSendWrapper = procedure (param1: objc.id; param2: SEL;_color: objc.id {NSColor}; _x: Integer; _y: Integer); cdecl;
+  TmsgSendWrapper = procedure (param1: lobjc.id; param2: SEL;_color: lobjc.id {NSColor}; _x: Integer; _y: Integer); cdecl;
 var
   vmethod: TmsgSendWrapper;
 begin
@@ -463,14 +463,14 @@ begin
   vmethod(Handle, sel_registerName(PChar(StrNSBitmapImageRep_setColor_atX_y)), _color, _x, _y);
 end;
 
-function NSBitmapImageRep.colorAtX_y(_x: Integer; _y: Integer): objc.id;
+function NSBitmapImageRep.colorAtX_y(_x: Integer; _y: Integer): lobjc.id;
 type
-  TmsgSendWrapper = function (param1: objc.id; param2: SEL;_x: Integer; _y: Integer): objc.id; cdecl;
+  TmsgSendWrapper = function (param1: lobjc.id; param2: SEL;_x: Integer; _y: Integer): lobjc.id; cdecl;
 var
   vmethod: TmsgSendWrapper;
 begin
   vmethod := TmsgSendWrapper(@objc_msgSend);
-  Result := objc.id(vmethod(Handle, sel_registerName(PChar(StrNSBitmapImageRep_colorAtX_y)), _x, _y));
+  Result := lobjc.id(vmethod(Handle, sel_registerName(PChar(StrNSBitmapImageRep_colorAtX_y)), _x, _y));
 end;
 
 procedure NSBitmapImageRep.getPixel;
@@ -486,7 +486,7 @@ end;
 {.$endif}
 constructor NSBitmapImageRep.initWithIconHandle(_icon: Pointer);
 type
-  TmsgSendWrapper = function (param1: objc.id; param2: SEL;_icon: Pointer): objc.id; cdecl;
+  TmsgSendWrapper = function (param1: lobjc.id; param2: SEL;_icon: Pointer): lobjc.id; cdecl;
 var
   vmethod: TmsgSendWrapper;
 begin
@@ -498,7 +498,7 @@ end;
 
 constructor NSBitmapImageRep.initWithBitmapHandle(_bitmap: Pointer);
 type
-  TmsgSendWrapper = function (param1: objc.id; param2: SEL;_bitmap: Pointer): objc.id; cdecl;
+  TmsgSendWrapper = function (param1: lobjc.id; param2: SEL;_bitmap: Pointer): lobjc.id; cdecl;
 var
   vmethod: TmsgSendWrapper;
 begin
@@ -510,7 +510,7 @@ end;
 
 class function NSBitmapImageRep.representationOfImageRepsInArray_usingType_properties(_imageReps: CFArrayRef; _storageType: NSBitmapImageFileType; _properties: CFDictionaryRef): CFDataRef;
 type
-  TmsgSendWrapper = function (param1: objc.id; param2: SEL;_imageReps: CFArrayRef; _storageType: NSBitmapImageFileType; _properties: CFDictionaryRef): CFDataRef; cdecl;
+  TmsgSendWrapper = function (param1: lobjc.id; param2: SEL;_imageReps: CFArrayRef; _storageType: NSBitmapImageFileType; _properties: CFDictionaryRef): CFDataRef; cdecl;
 var
   vmethod: TmsgSendWrapper;
 begin
@@ -520,7 +520,7 @@ end;
 
 function NSBitmapImageRep.representationUsingType_properties(_storageType: NSBitmapImageFileType; _properties: CFDictionaryRef): CFDataRef;
 type
-  TmsgSendWrapper = function (param1: objc.id; param2: SEL;_storageType: NSBitmapImageFileType; _properties: CFDictionaryRef): CFDataRef; cdecl;
+  TmsgSendWrapper = function (param1: lobjc.id; param2: SEL;_storageType: NSBitmapImageFileType; _properties: CFDictionaryRef): CFDataRef; cdecl;
 var
   vmethod: TmsgSendWrapper;
 begin
@@ -528,9 +528,9 @@ begin
   Result := CFDataRef(vmethod(Handle, sel_registerName(PChar(StrNSBitmapImageRep_representationUsingType_properties)), _storageType, _properties));
 end;
 
-procedure NSBitmapImageRep.setProperty_withValue(__property: CFStringRef; _value: objc.id);
+procedure NSBitmapImageRep.setProperty_withValue(__property: CFStringRef; _value: lobjc.id);
 type
-  TmsgSendWrapper = procedure (param1: objc.id; param2: SEL;__property: CFStringRef; _value: objc.id); cdecl;
+  TmsgSendWrapper = procedure (param1: lobjc.id; param2: SEL;__property: CFStringRef; _value: lobjc.id); cdecl;
 var
   vmethod: TmsgSendWrapper;
 begin
@@ -538,14 +538,14 @@ begin
   vmethod(Handle, sel_registerName(PChar(StrNSBitmapImageRep_setProperty_withValue)), __property, _value);
 end;
 
-function NSBitmapImageRep.valueForProperty(__property: CFStringRef): objc.id;
+function NSBitmapImageRep.valueForProperty(__property: CFStringRef): lobjc.id;
 type
-  TmsgSendWrapper = function (param1: objc.id; param2: SEL;__property: CFStringRef): objc.id; cdecl;
+  TmsgSendWrapper = function (param1: lobjc.id; param2: SEL;__property: CFStringRef): lobjc.id; cdecl;
 var
   vmethod: TmsgSendWrapper;
 begin
   vmethod := TmsgSendWrapper(@objc_msgSend);
-  Result := objc.id(vmethod(Handle, sel_registerName(PChar(StrNSBitmapImageRep_valueForProperty)), __property));
+  Result := lobjc.id(vmethod(Handle, sel_registerName(PChar(StrNSBitmapImageRep_valueForProperty)), __property));
 end;
 
 {$endif}
