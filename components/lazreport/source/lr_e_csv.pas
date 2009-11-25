@@ -44,6 +44,9 @@ implementation
 
 uses LR_Const;
 
+const
+  FIELD_GRAIN  = 32;  // granularity of fields when converting pixel positions
+
 constructor TfrCSVExportFilter.Create(AStream: TStream);
 begin
   inherited Create(AStream);
@@ -97,7 +100,7 @@ begin
     for j := 0 to FIntervals.Count-1 do
     begin
 
-      if (P <> nil) and (P^.X = PtrInt(FIntervals[j])) then
+      if (P <> nil) and ((P^.X div FIELD_GRAIN) = PtrInt(FIntervals[j])) then
       begin
         Str := p^.Text;
         p := p^.Next;
@@ -120,6 +123,7 @@ procedure TfrCSVExportFilter.OnText(X, Y: Integer; const Text: String;
   View: TfrView);
 begin
   inherited OnText(X, Y, Text, View);
+  x := x div FIELD_GRAIN;
   if FIntervals.IndexOf(pointer(ptrint(x)))<0 then
     FIntervals.Add(pointer(ptrint(x)));
 end;
