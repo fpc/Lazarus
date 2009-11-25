@@ -99,10 +99,11 @@ type
     FList: TFPList;
     function GetItem(AIndex: Integer): TBasicChartSeries;
   public
-    function Count: Integer;
     constructor Create;
     destructor Destroy; override;
-
+  public
+    procedure Clear;
+    function Count: Integer;
   public
     property Items[AIndex: Integer]: TBasicChartSeries read GetItem; default;
   end;
@@ -531,7 +532,7 @@ end;
 
 procedure TChart.ClearSeries;
 begin
-  FSeries.FList.Clear;
+  FSeries.Clear;
   Invalidate;
 end;
 
@@ -691,6 +692,7 @@ begin
   i := FSeries.FList.IndexOf(ASeries);
   if i < 0 then exit;
   FSeries.FList.Delete(i);
+  ASeries.FChart := nil;
   Invalidate;
 end;
 
@@ -1159,6 +1161,17 @@ end;
 
 { TChartSeriesList }
 
+procedure TChartSeriesList.Clear;
+var
+  i: Integer;
+begin
+  for i := 0 to FList.Count - 1 do begin
+    Items[i].FChart := nil;
+    Items[i].Free;
+  end;
+  FList.Clear;
+end;
+
 function TChartSeriesList.Count: Integer;
 begin
   Result := FList.Count;
@@ -1170,13 +1183,8 @@ begin
 end;
 
 destructor TChartSeriesList.Destroy;
-var
-  i: Integer;
 begin
-  for i := 0 to FList.Count - 1 do begin
-    Items[i].FChart := nil;
-    Items[i].Free;
-  end;
+  Clear;
   FList.Free;
   inherited Destroy;
 end;
