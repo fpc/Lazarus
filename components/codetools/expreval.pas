@@ -51,15 +51,16 @@ type
   private
     FChangeStamp: integer;
     FErrorMsg: string;
+    FErrorPos: integer;
     FNames, FValues: ArrayOfAnsiString; // always sorted in FNames and FNames uppercase
     FCount: integer;
     FCapacity: integer;
-    Expr: string;
-    CurPos, Max, AtomStart, AtomEnd, PriorAtomStart, ErrorPos: integer;
+    OldExpr: string;
+    OldCurPos, OldMax, OldAtomStart, OldAtomEnd, OldPriorAtomStart: integer;
     FOnChange: TOnValuesChanged;
     function ReadTilEndBracket:boolean;
     function CompAtom(const UpperCaseTag:string): boolean;
-    function ReadNextAtom:boolean;
+    function OldReadNextAtom:boolean;
     function EvalAtPos:string;
     function CompareValues(const v1, v2: string): integer;
     function GetVariables(const Name: string): string;
@@ -80,7 +81,7 @@ type
     function Eval2(const Expression: string):string;
     function EvalPChar(Expression: PChar; ExprLen: PtrInt): string;
     function Eval(const Expression: string):string;
-    property ErrorPosition: integer read ErrorPos write ErrorPos;
+    property ErrorPosition: integer read FErrorPos write FErrorPos;
     property ErrorMsg: string read FErrorMsg write FErrorMsg;
     property OnChange: TOnValuesChanged read FOnChange write FOnChange;
     function Items(Index: integer): string;
@@ -376,15 +377,15 @@ function TExpressionEvaluator.CompAtom(
 // compare uppercase tag with case insensitive atom
 var a,len:integer;
 begin
-  if (AtomEnd>Max+1) then begin
+  if (OldAtomEnd>OldMax+1) then begin
     Result:=false;  exit;
   end;
-  len:=AtomEnd-AtomStart;
+  len:=OldAtomEnd-OldAtomStart;
   if length(UpperCaseTag)<>len then begin
     Result:=false;  exit;
   end;
   for a:=1 to len do begin
-    if (UpChars[Expr[AtomStart+a-1]]<>UpperCaseTag[a]) then begin
+    if (UpChars[OldExpr[OldAtomStart+a-1]]<>UpperCaseTag[a]) then begin
       Result:=false;  exit;
     end;
   end;
@@ -421,13 +422,13 @@ function TExpressionEvaluator.Eval(const Expression: string): string;
 // -1 = false
 var s:string;
 begin
-  Expr:=Expression;
-  Max:=length(expr);
-  CurPos:=1;
-  AtomStart:=-1;  AtomEnd:=-1;  PriorAtomStart:=-1;
-  ErrorPos:=-1;
+  OldExpr:=Expression;
+  OldMax:=length(OldExpr);
+  OldCurPos:=1;
+  OldAtomStart:=-1;  OldAtomEnd:=-1;  OldPriorAtomStart:=-1;
+  FErrorPos:=-1;
   s:=EvalAtPos;
-  if ErrorPos>=0 then begin
+  if FErrorPos>=0 then begin
     // error
     Result:='';  exit;
   end;
@@ -469,38 +470,38 @@ begin
   Result:='';
   AtomCount:=0;
   repeat
-    if (not ReadNextAtom) then exit;
+    if (not OldReadNextAtom) then exit;
     inc(AtomCount);
-    c:=Expr[AtomStart];
+    c:=OldExpr[OldAtomStart];
     if IsWordChar[c] then begin
       // identifier or keyword
       if (CompAtom('AND')) then begin
-        if (Result='') then ErrorPos:=CurPos
+        if (Result='') then FErrorPos:=OldCurPos
         else if (Result<>'0') then begin
           // true AND ...
           Result:=EvalAtPos();
-          if ErrorPos>=0 then exit;
-          if (Result='') then ErrorPos:=CurPos;
+          if FErrorPos>=0 then exit;
+          if (Result='') then FErrorPos:=OldCurPos;
         end;
         exit;
       end else if (CompAtom('OR')) then begin
         if (Result='0') then begin
           // false OR ...
           Result:=EvalAtPos();
-          if ErrorPos>=0 then exit;
-          if (Result='') then ErrorPos:=CurPos;
-        end else if (AtomCount<=1) then ErrorPos:=CurPos;
+          if FErrorPos>=0 then exit;
+          if (Result='') then FErrorPos:=OldCurPos;
+        end else if (AtomCount<=1) then FErrorPos:=OldCurPos;
         exit;
       end else if (CompAtom('XOR')) then begin
         if (Result='') then begin
-          ErrorPos:=CurPos;  exit;
+          FErrorPos:=OldCurPos;  exit;
         end;
         r:=Result;
         // true/false XOR ...
         Result:=EvalAtPos();
-        if ErrorPos>=0 then exit;
+        if FErrorPos>=0 then exit;
         if (Result='') then begin
-          ErrorPos:=CurPos;  exit;
+          FErrorPos:=OldCurPos;  exit;
         end;
         if (r='0') then begin
           if (Result='0') then Result:='0' else Result:='1';
@@ -510,37 +511,37 @@ begin
         exit;
       end else if (CompAtom('NOT')) then begin
         Result:=EvalAtPos();
-        if ErrorPos>=0 then exit;
+        if FErrorPos>=0 then exit;
         // Note: for Delphi compatibility: "IF not UndefinedVariable" is valid
         if (Result='0') then Result:='1'
         else Result:='0';
         exit;
       end else if (CompAtom('DEFINED')) then begin
         // read DEFINED(identifier) or defined identifier
-        if (Result<>'') or (not ReadNextAtom) then begin
-          ErrorPos:=CurPos;
+        if (Result<>'') or (not OldReadNextAtom) then begin
+          FErrorPos:=OldCurPos;
           exit;
         end;
         HasBracket:=CompAtom('(');
-        if HasBracket and (not ReadNextAtom) then begin
-          ErrorPos:=CurPos;
+        if HasBracket and (not OldReadNextAtom) then begin
+          FErrorPos:=OldCurPos;
           exit;
         end;
-        if IsDefined(copy(Expr,AtomStart,AtomEnd-AtomStart)) then
+        if IsDefined(copy(OldExpr,OldAtomStart,OldAtomEnd-OldAtomStart)) then
           Result:='1'
         else
           Result:='0';
         if HasBracket then begin
-          if (not ReadNextAtom) or (not CompAtom(')')) then begin
-            ErrorPos:=CurPos;
+          if (not OldReadNextAtom) or (not CompAtom(')')) then begin
+            FErrorPos:=OldCurPos;
             exit;
           end;
         end;
       end else if (CompAtom('DECLARED')) then begin
         // read DECLARED(identifier)
-        if (Result<>'') or (not ReadNextAtom) or (CompAtom('(')=false)
-        or (not ReadNextAtom) then begin
-          ErrorPos:=CurPos;
+        if (Result<>'') or (not OldReadNextAtom) or (CompAtom('(')=false)
+        or (not OldReadNextAtom) then begin
+          FErrorPos:=OldCurPos;
           exit;
         end;
         if CompAtom('UNICODESTRING') then begin
@@ -551,105 +552,105 @@ begin
         end else begin
           Result:='0';// this can only be answered by a real compiler
         end;
-        if (not ReadNextAtom) or (not CompAtom(')')) then begin
-          ErrorPos:=CurPos;
+        if (not OldReadNextAtom) or (not CompAtom(')')) then begin
+          FErrorPos:=OldCurPos;
           exit;
         end;
       end else if (CompAtom('UNDEFINED')) then begin
         // read UNDEFINED(identifier) or undefined identifier
-        if (Result<>'') or (not ReadNextAtom) then begin
-          ErrorPos:=CurPos;
+        if (Result<>'') or (not OldReadNextAtom) then begin
+          FErrorPos:=OldCurPos;
           exit;
         end;
         HasBracket:=CompAtom('(');
-        if HasBracket and (not ReadNextAtom) then begin
-          ErrorPos:=CurPos;
+        if HasBracket and (not OldReadNextAtom) then begin
+          FErrorPos:=OldCurPos;
           exit;
         end;
-        Result:=Variables[copy(Expr,AtomStart,AtomEnd-AtomStart)];
+        Result:=Variables[copy(OldExpr,OldAtomStart,OldAtomEnd-OldAtomStart)];
         if Result<>'' then
           Result:='0'
         else
           Result:='1';
         if HasBracket then begin
-          if (not ReadNextAtom) or (not CompAtom(')')) then begin
-            ErrorPos:=CurPos;
+          if (not OldReadNextAtom) or (not CompAtom(')')) then begin
+            FErrorPos:=OldCurPos;
             exit;
           end;
         end;
       end else begin
         // Identifier
         if (Result<>'') then begin
-          ErrorPos:=CurPos;
+          FErrorPos:=OldCurPos;
           exit;
         end else
-          Result:=Variables[copy(Expr,AtomStart,AtomEnd-AtomStart)];
+          Result:=Variables[copy(OldExpr,OldAtomStart,OldAtomEnd-OldAtomStart)];
       end;
     end else if IsNumberBeginChar[c] then begin
       // number
       if (Result<>'') then begin
-        ErrorPos:=CurPos;  exit;
-      end else Result:=copy(Expr,AtomStart,AtomEnd-AtomStart);
+        FErrorPos:=OldCurPos;  exit;
+      end else Result:=copy(OldExpr,OldAtomStart,OldAtomEnd-OldAtomStart);
     end else if c='''' then begin
-      Result:=copy(Expr,AtomStart+1,AtomEnd-AtomStart-2);
+      Result:=copy(OldExpr,OldAtomStart+1,OldAtomEnd-OldAtomStart-2);
     end else begin
       // operator
       case c of
       ')':exit;
       '(':begin
-          OldPos:=AtomStart;
+          OldPos:=OldAtomStart;
           // eval in brackets
           Result:=EvalAtPos();
-          if ErrorPos>=0 then exit;
+          if FErrorPos>=0 then exit;
           // go behind brackets
-          CurPos:=OldPos;
+          OldCurPos:=OldPos;
           if (not ReadTilEndBracket) then exit;
-          inc(CurPos);
+          inc(OldCurPos);
         end;
       '=','>','<':begin
           o1:=c;
-          if AtomEnd=AtomStart+1 then begin
+          if OldAtomEnd=OldAtomStart+1 then begin
             r:=EvalAtPos();
-            if ErrorPos>=0 then exit;
+            if FErrorPos>=0 then exit;
             case o1 of
             '=':if CompareValues(Result,r)=0 then Result:='1' else Result:='0';
             '>':if CompareValues(Result,r)=1 then Result:='1' else Result:='0';
             '<':if CompareValues(Result,r)=-1 then Result:='1' else Result:='0';
             end;
           end else begin
-            o2:=Expr[AtomStart+1];
+            o2:=OldExpr[OldAtomStart+1];
             r:=EvalAtPos();
-            if ErrorPos>=0 then exit;
+            if FErrorPos>=0 then exit;
             if o1='<' then begin
               if o2='>' then begin
                 if CompareValues(Result,r)<>0 then Result:='1' else Result:='0';
               end else if o2='=' then begin
                 if CompareValues(Result,r)<=0 then Result:='1' else Result:='0';
-              end else ErrorPos:=AtomStart;
+              end else FErrorPos:=OldAtomStart;
             end else if o1='>' then begin
               if o2='=' then begin
                 if CompareValues(Result,r)>=0 then Result:='1' else Result:='0';
-              end else ErrorPos:=AtomStart;
-            end else ErrorPos:=AtomStart;
+              end else FErrorPos:=OldAtomStart;
+            end else FErrorPos:=OldAtomStart;
           end;
           exit;
         end;
       '!':
         begin
           Result:=EvalAtPos();
-          if ErrorPos>=0 then exit;
+          if FErrorPos>=0 then exit;
           if (Result='0') then Result:='1'
-          else if (Result='') then ErrorPos:=CurPos
+          else if (Result='') then FErrorPos:=OldCurPos
           else Result:='0';
           exit;
         end;
       else
         begin
-          ErrorPos:=CurPos;
+          FErrorPos:=OldCurPos;
         end;
       end;
     end;
-  until (ErrorPos>=0);
+  until (FErrorPos>=0);
 end;
 
 procedure TExpressionEvaluator.Expand;
@@ -756,60 +757,60 @@ begin
   Result:=IndexOfIdentifier(Identifier,false)>=0;
 end;
 
-function TExpressionEvaluator.ReadNextAtom: boolean;
+function TExpressionEvaluator.OldReadNextAtom: boolean;
 var c,o1,o2:char;
 begin
-  PriorAtomStart:=AtomStart;
-  while (CurPos<=Max) do begin
-    c:=Expr[CurPos];
-    if (c<=' ') then inc(CurPos)
+  OldPriorAtomStart:=OldAtomStart;
+  while (OldCurPos<=OldMax) do begin
+    c:=OldExpr[OldCurPos];
+    if (c<=' ') then inc(OldCurPos)
     else if IsWordChar[c] then begin
       // Identifier
-      AtomStart:=CurPos;
+      OldAtomStart:=OldCurPos;
       repeat
-        inc(CurPos);
-      until (CurPos>Max) or (not IsIdentifierChar[Expr[CurPos]]);
-      AtomEnd:=CurPos;
+        inc(OldCurPos);
+      until (OldCurPos>OldMax) or (not IsIdentifierChar[OldExpr[OldCurPos]]);
+      OldAtomEnd:=OldCurPos;
       Result:=true;
       exit;
     end else if IsNumberBeginChar[c] then begin
       // Number
-      AtomStart:=CurPos;
+      OldAtomStart:=OldCurPos;
       repeat
-        inc(CurPos);
-      until (CurPos>Max) or (IsNumberChar[Expr[CurPos]]=false);
-      AtomEnd:=CurPos;
+        inc(OldCurPos);
+      until (OldCurPos>OldMax) or (IsNumberChar[OldExpr[OldCurPos]]=false);
+      OldAtomEnd:=OldCurPos;
       Result:=true;
       exit;
     end else if c='''' then begin
       // string
-      AtomStart:=CurPos;
+      OldAtomStart:=OldCurPos;
       repeat
-        inc(CurPos);
-        if Expr[CurPos]='''' then begin
-          inc(CurPos);
-          AtomEnd:=CurPos;
+        inc(OldCurPos);
+        if OldExpr[OldCurPos]='''' then begin
+          inc(OldCurPos);
+          OldAtomEnd:=OldCurPos;
           Result:=true;
           exit;
         end;
-        if CurPos>Max then begin
-          AtomEnd:=CurPos;
+        if OldCurPos>OldMax then begin
+          OldAtomEnd:=OldCurPos;
           Result:=false;
           exit;
         end;
-      until (CurPos>Max);
+      until (OldCurPos>OldMax);
     end else begin
       // Symbol
-      AtomStart:=CurPos;
-      inc(CurPos);
-      if (CurPos<=Max) then begin
+      OldAtomStart:=OldCurPos;
+      inc(OldCurPos);
+      if (OldCurPos<=OldMax) then begin
         o1:=c;
-        o2:=Expr[CurPos];
+        o2:=OldExpr[OldCurPos];
         if ((o2='=') and ((o1='<') or (o1='>')))
         or ((o1='<') and (o2='>'))
-        then inc(CurPos);
+        then inc(OldCurPos);
       end;
-      AtomEnd:=CurPos;
+      OldAtomEnd:=OldCurPos;
       Result:=true;
       exit;
     end;
@@ -823,19 +824,19 @@ function TExpressionEvaluator.ReadTilEndBracket: boolean;
 var lvl:integer;
 begin
   lvl:=0;
-  while (CurPos<=Max) do begin
-    if (Expr[CurPos]='(') then
+  while (OldCurPos<=OldMax) do begin
+    if (OldExpr[OldCurPos]='(') then
       inc(lvl)
-    else if (Expr[CurPos]=')') then begin
+    else if (OldExpr[OldCurPos]=')') then begin
       dec(lvl);
       if (lvl=0) then begin
         Result:=true;  exit;
       end else if (lvl<0) then begin
-        ErrorPos:=CurPos;
+        FErrorPos:=OldCurPos;
         Result:=true;  exit;
       end;
     end;
-    inc(CurPos);
+    inc(OldCurPos);
   end;
   Result:=false;
 end;
@@ -969,13 +970,49 @@ var
   StackPtr: integer;}
 var
   ExprEnd: Pointer;
+  p, AtomStart: PChar;
+
+  procedure ReadNextAtom;
+  begin
+    // skip space
+    while p^ in [' ',#9,#10,#13] do inc(p);
+    if p>=ExprEnd then begin
+      p:=ExprEnd;
+      AtomStart:=p;
+      exit;
+    end;
+    AtomStart:=p;
+    case UpChars[p^] of
+    'A'..'Z','_':
+      begin
+        while IsIdentChar[p^] do inc(p);
+        if p>ExprEnd then p:=ExprEnd;
+      end;
+    '>':
+      begin
+        inc(p);
+        case p^ of
+        '=': inc(p); // >=
+        end;
+      end;
+    '<':
+      begin
+        inc(p);
+        case p^ of
+        '>','=': inc(p); // <> <=
+        end;
+      end;
+    else
+      inc(p);
+    end;
+  end;
 
   procedure Error(NewErrorPos: PChar; const NewErrorMsg: string);
   begin
     if NewErrorPos<>nil then
-      ErrorPos:=NewErrorPos-Expression
+      FErrorPos:=NewErrorPos-Expression
     else
-      ErrorPos:=0;
+      FErrorPos:=0;
     ErrorMsg:=NewErrorMsg;
   end;
 
@@ -1004,59 +1041,54 @@ var
     Error(NewErrorPos,'expected '+s+', but found '+f);
   end;
 
-  function ParseDefinedParams(p: PChar; out Operand: TOperandValue): boolean;
+  function ParseDefinedParams(out Operand: TOperandValue): boolean;
   // p is behind defined or undefined keyword
   // Operand: '1' or '-1'
   var
     NeedBracketClose: Boolean;
-    IdentStartPos: PChar;
   begin
     Result:=false;
-    // skip space
-    while IsSpaceChar[p^] do inc(p);
-    if p>=ExprEnd then begin
-      IdentifierMissing(p);
+    ReadNextAtom;
+    if AtomStart>=ExprEnd then begin
+      IdentifierMissing(AtomStart);
       exit;
     end;
     NeedBracketClose:=false;
     if p^='(' then begin
       // defined(
       NeedBracketClose:=true;
+      ReadNextAtom;
       // skip space
-      while IsSpaceChar[p^] do inc(p);
-      if p>=ExprEnd then begin
-        IdentifierMissing(p);
+      if AtomStart>=ExprEnd then begin
+        IdentifierMissing(AtomStart);
         exit;
       end;
     end;
-    if not IsIdentifierChar[p^] then begin
-      StrExpectedAtPos(p,'macro name');
+    if not IsIdentifierChar[AtomStart^] then begin
+      StrExpectedAtPos(AtomStart,'macro name');
       exit;
     end;
-    IdentStartPos:=p;
-    while IsIdentChar[p^] do inc(p);
-    if IsIdentifierDefined(IdentStartPos) then begin
+    if IsIdentifierDefined(AtomStart) then begin
       SetOperandValueChar(Operand,'1');
     end else begin
       SetOperandValueConst(Operand,'-1');
     end;
     if NeedBracketClose then begin
       // read bracket close
-      // skip space
-      while IsSpaceChar[p^] do inc(p);
-      if p>=ExprEnd then begin
+      ReadNextAtom;
+      if AtomStart>=ExprEnd then begin
         CharMissing(ExprEnd,')');
         exit;
       end;
-      if p^<>')' then begin
-        StrExpectedAtPos(p,')');
+      if AtomStart^<>')' then begin
+        StrExpectedAtPos(AtomStart,')');
         exit;
       end;
     end;
     Result:=true;
   end;
 
-  function ReadOperand(var p: PChar; out Operand: TOperandValue): boolean;
+  function ReadOperand(out Operand: TOperandValue): boolean;
   { Examples:
      Variable
      not Variable
@@ -1064,19 +1096,16 @@ var
      defined(Variable)
   }
   var
-    IdentStartPos: PChar;
     i: LongInt;
   begin
     Result:=false;
-    // skip space
-    while IsSpaceChar[p^] do inc(p);
-    if p>=ExprEnd then exit;
-    case UpChars[p^] of
+    ReadNextAtom;
+    if AtomStart>=ExprEnd then exit;
+    case UpChars[AtomStart^] of
     'N':
-      if CompareIdentifiers(p,'NOT')=0 then begin
+      if CompareIdentifiers(AtomStart,'NOT')=0 then begin
         // not
-        inc(p,3);
-        if not ReadOperand(p,Operand) then exit;
+        if not ReadOperand(Operand) then exit;
         if (Operand.Len=1) and (Operand.Value^='1') then begin
           SetOperandValueConst(Operand,'-1');
         end else begin
@@ -1085,17 +1114,15 @@ var
         exit(true);
       end;
     'D':
-      if CompareIdentifiers(p,'DEFINED')=0 then begin
+      if CompareIdentifiers(AtomStart,'DEFINED')=0 then begin
         // "defined V" or "defined(V)"
-        inc(p,length('DEFINED'));
-        if not ParseDefinedParams(p,Operand) then exit;
+        if not ParseDefinedParams(Operand) then exit;
         exit(true);
       end;
     'U':
-      if CompareIdentifiers(p,'UNDEFINED')=0 then begin
+      if CompareIdentifiers(AtomStart,'UNDEFINED')=0 then begin
         // "undefined V" or "undefined(V)"
-        inc(p,length('UNDEFINED'));
-        if not ParseDefinedParams(p,Operand) then exit;
+        if not ParseDefinedParams(Operand) then exit;
         if (Operand.Len=1) and (Operand.Value^='1') then begin
           SetOperandValueConst(Operand,'-1');
         end else begin
@@ -1104,11 +1131,9 @@ var
         exit(true);
       end;
     end;
-    if IsIdentStartChar[p^] then begin
+    if IsIdentStartChar[AtomStart^] then begin
       // identifier => return current value
-      IdentStartPos:=p;
-      while IsIdentChar[p^] do inc(p);
-      i:=IndexOfIdentifier(IdentStartPos,false);
+      i:=IndexOfIdentifier(AtomStart,false);
       if i>=0 then begin
         if Operand.Free then FreeOperandValue(Operand);
         Operand.Value:=PChar(FValues[i]);
@@ -1117,11 +1142,10 @@ var
       exit(true);
     end;
     // invalid operand
-    IdentifierMissing(p);
+    IdentifierMissing(AtomStart);
   end;
 
 var
-  p: PChar;
   Operand: TOperandValue;
 begin
   p:=Expression;
@@ -1132,14 +1156,15 @@ begin
   end;
   ExprEnd:=p+ExprLen;
   // skip space
-  while IsSpaceChar[p^] do inc(p);
-  if p>=ExprEnd then begin
-    ExpressionMissing(p);
+  ReadNextAtom;
+  if AtomStart>=ExprEnd then begin
+    ExpressionMissing(AtomStart);
     exit;
   end;
   // read operand
   Operand:=CleanOperandValue;
-  ReadOperand(p,Operand);
+  ReadOperand(Operand);
+  ReadNextAtom;
 
   FreeOperandValue(Operand);
 end;
@@ -1205,7 +1230,7 @@ var
   j: LongInt;
 begin
   Result:=PtrUInt(InstanceSize)
-    +MemSizeString(Expr)
+    +MemSizeString(OldExpr)
     +SizeOf(Pointer)*PtrUInt(FCount)*2;
   if WithNamesAndValues then begin
     for i:=0 to FCount-1 do begin
