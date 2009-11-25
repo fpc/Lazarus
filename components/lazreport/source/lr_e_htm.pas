@@ -46,7 +46,15 @@ var
   s: String;
 begin
   inherited Create(AStream);
-  s := '<HTML>'#13#10'<Body bgColor="#FFFFFF">'#13#10'<Table>'#13#10;
+
+  s :=  '<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN"' + LineEnding +
+        '    "http://www.w3.org/TR/html4/loose.dtd">' + LineEnding +
+        '<html><head>' + LineEnding +
+        '<meta name="generator" content="LazReport html exporter">' + LineEnding +
+        '<title>LazReport Exported Report</title>' + LineEnding +  // TODO: improve
+        '<meta http-equiv="Content-Type" content="text/html; charset=utf-8">' + LineEnding +
+        '</head><body><table>' + LineEnding;
+
   Stream.Write(s[1], Length(s));
 end;
 
@@ -54,7 +62,7 @@ destructor TfrHTMExportFilter.Destroy;
 var
   s: String;
 begin
-  s := '</Table>'#13#10'</Body>'#13#10'</HTML>'#13#10;
+  s := '</table></body></html>' + LineEnding;
   Stream.Write(s[1], Length(s));
   inherited Destroy;
 end;
@@ -63,7 +71,7 @@ procedure TfrHTMExportFilter.OnEndPage;
 var
   i, n: Integer;
   p: PfrTextRec;
-  s, s1, s2: String;
+  s, s1, s2, s3: String;
 
   function GetHTMLFontSize(Size: Integer): String;
   begin
@@ -86,6 +94,14 @@ var
     if (Style and $4) <> 0 then Result := Result + '<u>';
   end;
 
+  function GetEndHTMLFontStyle(Style: Integer): String;
+  begin
+    Result := '';
+    if (Style and $4) <> 0 then Result := '</u>';
+    if (Style and $2) <> 0 then Result := Result + '</b>';
+    if (Style and $1) <> 0 then Result := Result + '</i>';
+  end;
+
 begin
   n := Lines.Count - 1;
   while n >= 0 do
@@ -97,10 +113,10 @@ begin
   for i := 0 to n do
   begin
     p := PfrTextRec(Lines[i]);
-    s := '<tr>';
+    s := '';
     while p <> nil do
     begin
-      s1 := ''; s2 := '';
+      s1 := ''; s2 := ''; s3 := '';
       if (p^.FontColor = clWhite) or (p^.FontColor = clNone) then
         p^.FontColor := clBlack;
       if p^.FontColor <> clBlack then
@@ -113,12 +129,19 @@ begin
       if not (p^.FontSize in [10..13]) then
         s1 := s1 + ' Size=' + GetHTMLFontSize(p^.FontSize);
       if p^.FontStyle <> 0 then
+      begin
         s2 := GetHTMLFontStyle(p^.FontStyle);
+        s3 := GetEndHTMLFontStyle(p^.FontStyle);
+      end;
       if s1 <> '' then s1 := '<Font ' + s1 + '>';
-      s := s + '<td>' + s1 + s2 + p^.Text + '</td>';
+      s := s + '<td>' + s1 + s2 + p^.Text + s3;
+      if s1 <> '' then s := s + '</Font>';
+      s := s + '</td>';
       p := p^.Next;
     end;
-    s := s + '</tr>'#13#10;
+    if s='' then
+      s := '<td></td>';
+    s := '<tr>' + s + '</tr>' + LineEnding;
     Stream.Write(s[1], Length(s));
   end;
 end;
