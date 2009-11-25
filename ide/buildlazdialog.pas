@@ -445,8 +445,10 @@ begin
       LinkerAddition := LCLWidgetLinkerAddition[Options.LCLPlatform];
       if LinkerAddition <> '' then
       begin
-        if ExtraOptions <> '' then ExtraOptions := ExtraOptions + ' ' + LinkerAddition
-        else ExtraOptions := LinkerAddition;
+        if ExtraOptions <> '' then
+          ExtraOptions := ExtraOptions + ' ' + LinkerAddition
+        else
+          ExtraOptions := LinkerAddition;
       end;
       
       if ExtraOptions<>'' then
@@ -503,6 +505,7 @@ function CreateBuildLazarusOptions(Options: TBuildLazarusOptions;
       ExtraOptions:=ExtraOptions+'"'+AddOption+'"'
     else
       ExtraOptions:=ExtraOptions+AddOption;
+    DebugLn(['AppendExtraOption ',ExtraOptions]);
   end;
 
   procedure AppendExtraOption(const AddOption: string);
@@ -533,10 +536,10 @@ begin
   ExtraOptions:=Options.ExtraOptions;
 
   if CurItem=Options.ItemIDE then begin
-    DebugLn(['CreateBuildLazarusOptions AAA1']);
     // check for special IDE config file
     if (blfUseMakeIDECfg in Flags) then begin
       MakeIDECfgFilename:=GetMakeIDEConfigFilename;
+      //DebugLn(['CreateBuildLazarusOptions MAKE MakeIDECfgFilename=',MakeIDECfgFilename,' ',FileExistsUTF8(MakeIDECfgFilename)]);
       if (FileExistsUTF8(MakeIDECfgFilename)) then begin
         // If a file name contains spaces, a file name whould need to be quoted.
         // Using a single quote is not possible, it is used already in the
@@ -713,6 +716,7 @@ begin
     // add package options for IDE
     AppendExtraOption(PackageOptions,false);
   end;
+  //DebugLn(['CreateBuildLazarusOptions ',CurItem.Name,' ',ExtraOptions]);
 end;
 
 function SaveIDEMakeOptions(Options: TBuildLazarusOptions;
