@@ -1859,6 +1859,8 @@ begin
   or ((Scanner.CompilerMode=cmMacPas)
     and (Scanner.PascalCompiler=pcFPC)
     and (CompareIdentifiers(PChar(Result),'MacPas')=0))
+  or ((Scanner.CompilerModeSwitch=cmsObjectiveC1)
+    and (CompareIdentifiers(PChar(Result),'ObjC')=0))
   then begin
     Result:='';
     exit;
@@ -5751,8 +5753,9 @@ function TFindDeclarationTool.FindIdentifierInHiddenUsedUnits(
 type
   SystemUnitType = (
     sutSystem,
-    sutObjPas,
     sutMacPas,
+    sutObjPas,
+    sutObjC,
     sutLineInfo,
     sutHeapTrc,
     sutSysThrds,
@@ -5789,10 +5792,12 @@ begin
     end;
     if UpAtomIs(SystemAlias) or UpAtomIs('SYSTEM') then
       CurUnitType:=sutSystem
-    else if UpAtomIs('OBJPAS') then
-      CurUnitType:=sutObjPas
     else if UpAtomIs('MACPAS') then
       CurUnitType:=sutMacPas
+    else if UpAtomIs('OBJPAS') then
+      CurUnitType:=sutObjPas
+    else if UpAtomIs('OBJC') then
+      CurUnitType:=sutObjC
     else if UpAtomIs('LINEINFO') then
       CurUnitType:=sutLineInfo
     else if UpAtomIs('HEAPTRC') then
@@ -5828,6 +5833,12 @@ begin
     and (Scanner.PascalCompiler=pcFPC) then begin
       // try hidden used fpc unit 'objpas'
       Result:=FindIdentifierInUsedUnit('ObjPas',Params);
+      if Result and Params.IsFinal then exit;
+    end;
+    if (CurUnitType>sutObjC)
+    and (Scanner.CompilerModeSwitch=cmsObjectiveC1) then begin
+      // try hidden used fpc unit 'objc'
+      Result:=FindIdentifierInUsedUnit('ObjC',Params);
       if Result and Params.IsFinal then exit;
     end;
     if (CurUnitType>sutMacPas)
