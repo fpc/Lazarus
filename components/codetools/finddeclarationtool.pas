@@ -1860,7 +1860,8 @@ begin
     and (Scanner.PascalCompiler=pcFPC)
     and (CompareIdentifiers(PChar(Result),'MacPas')=0))
   or ((Scanner.CompilerModeSwitch=cmsObjectiveC1)
-    and (CompareIdentifiers(PChar(Result),'ObjC')=0))
+    and ((CompareIdentifiers(PChar(Result),'ObjC')=0)
+        or (CompareIdentifiers(PChar(Result),'ObjCBase')=0)))
   then begin
     Result:='';
     exit;
@@ -5756,6 +5757,7 @@ type
     sutMacPas,
     sutObjPas,
     sutObjC,
+    sutObjCBase,
     sutLineInfo,
     sutHeapTrc,
     sutSysThrds,
@@ -5798,6 +5800,8 @@ begin
       CurUnitType:=sutObjPas
     else if UpAtomIs('OBJC') then
       CurUnitType:=sutObjC
+    else if UpAtomIs('OBJCBASE') then
+      CurUnitType:=sutObjCBase
     else if UpAtomIs('LINEINFO') then
       CurUnitType:=sutLineInfo
     else if UpAtomIs('HEAPTRC') then
@@ -5833,6 +5837,12 @@ begin
     and (Scanner.PascalCompiler=pcFPC) then begin
       // try hidden used fpc unit 'objpas'
       Result:=FindIdentifierInUsedUnit('ObjPas',Params);
+      if Result and Params.IsFinal then exit;
+    end;
+    if (CurUnitType>sutObjCBase)
+    and (Scanner.CompilerModeSwitch=cmsObjectiveC1) then begin
+      // try hidden used fpc unit 'objcbase'
+      Result:=FindIdentifierInUsedUnit('ObjCBase',Params);
       if Result and Params.IsFinal then exit;
     end;
     if (CurUnitType>sutObjC)
