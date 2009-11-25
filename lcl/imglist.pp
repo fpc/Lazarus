@@ -157,7 +157,7 @@ type
     procedure Assign(Source: TPersistent); override;
     procedure WriteData(AStream: TStream); virtual;
     procedure ReadData(AStream: TStream); virtual;
-    function Equals(Obj: TObject): boolean; override;
+    function Equals(Obj: TObject): boolean; {$IFNDEF FPC2_2}override;{$ENDIF}
     procedure BeginUpdate;
     procedure EndUpdate;
 

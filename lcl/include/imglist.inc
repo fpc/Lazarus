@@ -1198,7 +1198,11 @@ begin
       CurStream.Free;
     end;
   end else
+    {$IFNDEF FPC2_2}
     Result:=inherited Equals(Obj);
+    {$ELSE}
+    Result:=false;
+    {$ENDIF}
 end;
 
 {------------------------------------------------------------------------------
