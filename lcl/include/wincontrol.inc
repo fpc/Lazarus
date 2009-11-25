@@ -415,7 +415,9 @@ type
     then
       exit(crSuccess); // already computed
     if ChildData.Sides[Side].DistanceState[Direction]=assdfComputing then begin
+      {$IFNDEF DisableChecks}
       DebugLn(['TAutoSizeCtrlData.ComputePositions.ComputePosition CIRCLE detected ',DbgSName(ChildData.Control),' ',dbgs(Side),' ',AutoSizeSideDistDirectionNames[Direction]]);
+      {$ENDIF}
       exit(crCircle); // there is a circle
     end;
     if ChildData.Sides[Side].DistanceState[Direction]<>assdfInvalid then
@@ -460,7 +462,9 @@ type
                 // compute opposite side first
                 Result:=ComputePosition(ChildData,OppositeSide,Direction);
                 if Result<>crSuccess then begin
+                  {$IFNDEF DisableChecks}
                   DebugLn(['ComputePosition FAILED opposite side: ',DbgSName(Child),' ',dbgs(Side),' ',AutoSizeSideDistDirectionNames[Direction]]);
+                  {$ENDIF}
                   exit;
                 end;
                 if ChildData.Sides[OppositeSide].DistanceState[Direction]<>assdfValid
@@ -521,12 +525,16 @@ type
               or (not (Side in AnchorAlign[Child.Align]))) then
             begin
               // there is a circle and it can be broken => break it
+              {$IFNDEF DisableChecks}
               DebugLn(['ComputePosition breaking CIRCLE ',DbgSName(Child),' - ',DbgSName(SiblingData.Control),' ',dbgs(a),' ',AutoSizeSideDistDirectionNames[Direction]]);
+              {$ENDIF}
               Child.Anchors:=Child.Anchors-[Side];
               Result:=crFixedCircled;
             end;
             if Result<>crSuccess then begin
+              {$IFNDEF DisableChecks}
               DebugLn(['ComputePosition FAILED sibling dependency: ',DbgSName(Child),' - ',DbgSName(SiblingData.Control),' Side=',dbgs(Side),' a=',dbgs(a),' ',AutoSizeSideDistDirectionNames[Direction]]);
+              {$ENDIF}
               exit;
             end;
             if SiblingData.Sides[a].DistanceState[Direction]=assdfValid then
@@ -668,7 +676,9 @@ type
     if not (ChildData.Sides[Side].DistanceState[Direction]
             in [assdfUncomputable,assdfValid])
     then begin
+      {$IFNDEF DisableChecks}
       DebugLn(['TAutoSizeCtrlData.ComputePositions.ComputePosition ',DbgSName(Child),' Side=',dbgs(Side),' Direction=',AutoSizeSideDistDirectionNames[Direction]]);
+      {$ENDIF}
       raise Exception.Create('TAutoSizeCtrlData.ComputePositions.ComputePosition assdfValid,assdfUncomputable');
     end;
     Result:=crSuccess;
@@ -688,11 +698,15 @@ begin
     if not ChildData.Visible then continue;
     for a:=Low(TAnchorKind) to High(TAnchorKind) do begin
       if ComputePosition(ChildData,a,assddLeftTop)<>crSuccess then begin
+        {$IFNDEF DisableChecks}
         DebugLn(['TAutoSizeCtrlData.ComputePositions Failed to compute LeftTop ',DbgSName(Child),' ',dbgs(a)]);
+        {$ENDIF}
         exit;
       end;
       if ComputePosition(ChildData,a,assddRightBottom)<>crSuccess then begin
+        {$IFNDEF DisableChecks}
         DebugLn(['TAutoSizeCtrlData.ComputePositions Failed to compute RightBottom ',DbgSName(Child),' ',dbgs(a)]);
+        {$ENDIF}
         exit;
       end;
     end;
@@ -1132,7 +1146,9 @@ begin
     if Child.AnchorSide[a].Control=Control then continue;
     if (Child.AnchorSide[a].Control=Child)
     or (Child.AnchorSide[a].Control.Parent<>Control) then begin
+      {$IFNDEF DisableChecks}
       DebugLn(['TAutoSizeCtrlData.FixControlProperties ',DbgSName(Child),' a=',dbgs(a),' old=',DbgSName(Child.AnchorSide[a].Control),' new=nil']);
+      {$ENDIF}
       Child.AnchorSide[a].Control:=nil;
     end;
   end;
@@ -1143,13 +1159,17 @@ begin
     for a:=Low(TAnchorKind) to High(TAnchorKind) do begin
       if a in AnchorAlign[Child.Align] then begin
         // the aligned sides can not be anchored to a control
+        {$IFNDEF DisableChecks}
         if Child.AnchorSide[a].Control<>nil then
           DebugLn(['TAutoSizeCtrlData.FixControlProperties aligned sides can not be anchored ',DbgSName(Child),' a=',dbgs(a),' old=',DbgSName(Child.AnchorSide[a].Control),' new=nil']);
+        {$ENDIF}
         Child.AnchorSide[a].Control:=nil;
       end;
       if Child.AnchorSide[a].Side=asrCenter then begin
         // an aligned control can not be centered
+        {$IFNDEF DisableChecks}
         DebugLn(['TAutoSizeCtrlData.FixControlProperties aligned control can not be centered ',DbgSName(Child),' a=',dbgs(a)]);
+        {$ENDIF}
         Child.AnchorSide[a].Side:=asrLeft;
         if not (a in AnchorAlign[Child.Align]) then begin
           Child.Anchors:=Child.Anchors-[a];
@@ -1165,8 +1185,10 @@ begin
           // the control should be centered relative to another control
           if a in [akLeft,akTop] then begin
             // un-anchor the other side
+            {$IFNDEF DisableChecks}
             if OppositeAnchor[a] in Child.Anchors then
               DebugLn(['TAutoSizeCtrlData.FixControlProperties control is center-anchored -> unanchor opposite side: ',DbgSName(Child),' a=',dbgs(a)]);
+            {$ENDIF}
             Child.Anchors:=Child.Anchors-[OppositeAnchor[a]];
             Child.AnchorSide[OppositeAnchor[a]].Control:=nil;
           end else begin

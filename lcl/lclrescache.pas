@@ -237,7 +237,9 @@ end;
 
 procedure TResourceCacheItem.WarnReferenceHigh;
 begin
+  {$IFNDEF DisableChecks}
   debugln('WARNING: TResourceCacheItem.IncreaseRefCount ',dbgs(FReferenceCount),' ',Cache.ClassName);
+  {$ENDIF}
 end;
 
 { TResourceCacheDescriptor }

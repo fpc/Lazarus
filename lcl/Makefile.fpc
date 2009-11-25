@@ -80,9 +80,15 @@ packages=
 ifeq ($(findstring $(OS_TARGET),win32 win64 wince),)
 NONWIN32=nonwin32
 endif
+# disable checks on WinCE unless LCL_ENABLE_CHECKS
+ifeq ($(OS_TARGET),wince)
+ifndef LCL_ENABLE_CHECKS
+LCL_DISABLE_CHECKS=-dDisableChecks
+endif
+endif
 
 [compiler]
-options=-gl
+options=-gl $(LCL_DISABLE_CHECKS)
 unittargetdir=units/$(CPU_TARGET)-$(OS_TARGET)
 unitdir=. $(NONWIN32) forms widgetset
 includedir=include

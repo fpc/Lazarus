@@ -2564,7 +2564,9 @@ begin
   then begin
     // since only the interface (or custom interface dependent controls) should
     // call us, the handle is always created
+    {$IFNDEF DisableChecks}
     DebugLN('WARNING: obsolete call to RecreateWnd for %s', [AWinControl.ClassName]);
+    {$ENDIF}
     //DumpStack;
   end;
 
@@ -3287,16 +3289,20 @@ end;
 
 procedure TAnchorSide.SetControl(const AValue: TControl);
 
+  {$IFNDEF DisableChecks}
   procedure RaiseOwnerCircle;
   begin
     DebugLN('RaiseOwnerCircle AValue=',DbgSName(AValue),' FOwner=',DbgSName(FOwner));
     raise Exception.Create('TAnchorSide.SetControl AValue=FOwner');
   end;
+  {$ENDIF}
 
 var
   OldControl: TControl;
 begin
+  {$IFNDEF DisableChecks}
   if (AValue=FOwner) then RaiseOwnerCircle;
+  {$ENDIF}
   if FControl=AValue then exit;
   OldControl:=FControl;
   FControl:=nil;
@@ -3411,7 +3417,9 @@ begin
     if ChainLength>MaxChainLength then begin
       // the chain has more elements than there are siblings -> circle
       //if CheckPosition(Owner) then
+      {$IFNDEF DisableChecks}
       DebugLn(['TAnchorSide.GetSidePosition Circle ',DbgSName(Owner)]);
+      {$ENDIF}
       ReferenceControl:=nil;
       exit;
     end;

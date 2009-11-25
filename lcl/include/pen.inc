@@ -130,7 +130,9 @@ begin
   FDescriptors.Add(Result);
   if FindPenDesc(AExtPen, APattern) = nil then
   begin
+    {$IFNDEF DisableChecks}
     DebugLn('TPenHandleCache.Add Added: %p', [Pointer(Result)]);
+    {$ENDIF}
     RaiseGDBException('');
   end;
 end;

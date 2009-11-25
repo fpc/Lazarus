@@ -1408,7 +1408,9 @@ begin
   end;
 
   else
+    {$IFNDEF DisableChecks}
     DebugLn('WARNING: TLazIntfImage.ChooseRawBitsProc Unsupported BitsPerPixel=',dbgs(BitsPerPixel));
+    {$ENDIF}
     ProcReadRawImageBits  := @ReadRawImageBits_NULL;
     ProcWriteRawImageBits := @WriteRawImageBits_NULL;
   end;
@@ -1735,7 +1737,9 @@ begin
     else begin
       // palette
       // ToDo
+      {$IFNDEF DisableChecks}
       DebugLn('WARNING: TLazIntfImage.ChooseGetSetColorFunctions Palette is unsupported');
+      {$ENDIF}
     end;
   end;
 end;
@@ -3210,7 +3214,9 @@ function TLazIntfImage.CheckDescription(
   procedure DoError(const Msg: string);
   begin
     if ExceptionOnError then Raise FPImageException.Create(Msg);
+    {$IFNDEF DisableChecks}
     DebugLn('TLazIntfImage.CheckDescription: ',Msg);
+    {$ENDIF}
   end;
 
 begin

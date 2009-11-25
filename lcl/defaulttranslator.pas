@@ -214,7 +214,9 @@ initialization
 //We are to search for all
   try
     lcfn:=FindLocaleFileName;
+    {$IFNDEF DisableChecks}
     DebugLn(lcfn);
+    {$ENDIF}
   except
     lcfn:='';
   end;

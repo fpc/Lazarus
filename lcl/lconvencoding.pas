@@ -4777,7 +4777,6 @@ end;
 
 function UTF8ToUTF8BOM(const s: string): string;
 begin
-  DebugLn(['UTF8ToUTF8BOM ']);
   Result:=#$EF#$BB#$BF+s;
 end;
 
@@ -5320,7 +5319,9 @@ begin
   try
     if not IconvLibFound and not InitIconv(Dummy) then
     begin
+      {$IFNDEF DisableChecks}
       DebugLn(['Can not init iconv: ',Dummy]);
+      {$ENDIF}
       Exit;
     end;
     if Iconvert(s, Result, AFrom, ATo)<>0 then

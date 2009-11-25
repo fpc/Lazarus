@@ -81,6 +81,7 @@ var
   
   procedure OutOfBounds;
   begin
+    {$IFNDEF DisableChecks}
     DebugLn('TCustomImage.DoAutoSize NewWidth=',dbgs(NewWidth),
       ' NewHeight=',dbgs(NewHeight),
       ' ModifyWidth='+dbgs(ModifyWidth),
@@ -88,6 +89,7 @@ var
       ' ModifyHeight='+dbgs(ModifyHeight),
       ' Picture.Height='+dbgs(Picture.Height)+
       '');
+    {$ENDIF}
     RaiseGDBException('');
   end;
   

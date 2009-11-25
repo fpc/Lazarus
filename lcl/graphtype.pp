@@ -1387,7 +1387,9 @@ procedure TRawImage.ExtractRect(const ARect: TRect; out ADst: TRawImage);
         end;
       end
       else begin
+        {$IFNDEF DisableChecks}
         DebugLn('ToDo: ExtractRawImageRect DestLineStartPosition.Bit>0');
+        {$ENDIF}
         break;
       end;
     end;

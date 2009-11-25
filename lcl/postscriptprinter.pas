@@ -759,8 +759,10 @@ end;
 
 function TPostScript.DelPattern(AName: String): Boolean;
 begin
+  {$IFNDEF DisableChecks}
   if AName<>'' then
     DebugLn('[TPostScript.DelPattern] ToDo ');
+  {$ENDIF}
 
   // can't do that yet...
   Result:=false;

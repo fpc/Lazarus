@@ -405,9 +405,11 @@ begin
   Result:=true;
   except
     on e: Exception do begin
+      {$IFNDEF DisableChecks}
       DebugLn('Exception while translating ', ResUnitName);
       DebugLn(e.Message);
       DumpExceptionBackTrace;
+      {$ENDIF}
     end;
   end;
 end;

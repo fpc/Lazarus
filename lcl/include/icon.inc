@@ -648,7 +648,10 @@ begin
     then UpdateHandles(BitmapHandle, ImgHandle)
     else UpdateHandles(0, ImgHandle);
   end
-  else DebugLn('TCustomIcon.MaskHandleNeeded: Unable to create makshandle');
+  else
+    {$IFNDEF DisableChecks}
+    DebugLn('TCustomIcon.MaskHandleNeeded: Unable to create maskhandle')
+    {$ENDIF};
 
   if ImagePtr^.Mask = nil then
     MaskImage.FreeData;

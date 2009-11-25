@@ -101,8 +101,10 @@ end;
 
 destructor TLCLComponent.Destroy;
 begin
+  {$IFNDEF DisableChecks}
   if FLCLRefCount>0 then
     DebugLn(['WARNING: TLCLComponent.Destroy with LCLRefCount>0. Hint: Maybe the component is processing an event?']);
+  {$ENDIF}
   {$IFDEF DebugLCLComponents}
   //DebugLn('TLCLComponent.Destroy ',DbgSName(Self));
   DebugLCLComponents.MarkDestroyed(Self);
@@ -196,7 +198,9 @@ begin
   if FCreating
   then begin
     // raise some error ?
+    {$IFNDEF DisableChecks}
     DebugLn('TLCLReferenceComponent: Circulair reference creation');
+    {$ENDIF}
     Exit;
   end;
 
@@ -207,7 +211,9 @@ begin
     if not ReferenceAllocated
     then begin
       // raise some error ?
+      {$IFNDEF DisableChecks}
       DebugLn('TLCLHandleComponent: Reference creation failed');
+      {$ENDIF}
       Exit;
     end;
   finally

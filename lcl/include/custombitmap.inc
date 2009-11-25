@@ -274,7 +274,9 @@ end;
 procedure TCustomBitmap.SetHandleType(AValue: TBitmapHandleType);
 begin
   if HandleType = AValue then exit;
+  {$IFNDEF DisableChecks}
   DebugLn('TCustomBitmap.SetHandleType TCustomBitmap.SetHandleType not implemented');
+  {$ENDIF}
 end;
 
 procedure TCustomBitmap.SetMonochrome(AValue: Boolean);

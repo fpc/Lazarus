@@ -1014,7 +1014,9 @@ begin
           //debugln('THelpDatabase.GetNodesForPascalContexts B FileItem.ClassName=',FileItem.ClassName,' Filename=',Filename,' FileItem.GetFullFilename="',FileItem.GetFullFilename,'"');
           if (FileItem.FileMatches(Filename)) then begin
             CreateNodeQueryListAndAdd(FileItem.Node,PascalContext,ListOfNodes,true);
+            {$IFNDEF DisableChecks}
             debugln('THelpDatabase.GetNodesForPascalContexts C FileItem.ClassName=',FileItem.ClassName,' Filename=',Filename,' ',dbgs(ListOfNodes.Count));
+            {$ENDIF}
           end;
         end;
       end;
@@ -1492,7 +1494,9 @@ begin
   ErrMsg:='';
   Result:=shrSuccess;
 
+  {$IFNDEF DisableChecks}
   debugln('THelpDatabases.ShowHelpForPascalContexts A Count=',dbgs(Query.ListOfPascalHelpContextList.Count));
+  {$ENDIF}
   // search node
   Nodes:=nil;
   try
@@ -1507,7 +1511,9 @@ begin
         [Query.SourcePosition.y, Query.SourcePosition.x, Query.Filename]);
       exit;
     end;
+    {$IFNDEF DisableChecks}
     debugln('THelpDatabases.ShowHelpForPascalContexts B Nodes.Count=',dbgs(Nodes.Count));
+    {$ENDIF}
 
     Result:=ShowHelpForNodes(Query,Nodes,ErrMsg);
   finally
@@ -1559,7 +1565,9 @@ begin
   ErrMsg:='';
   Result:=shrSuccess;
 
+  {$IFNDEF DisableChecks}
   debugln('THelpDatabases.ShowHelpForClass A ',Query.TheClass.ClassName);
+  {$ENDIF}
   // search node
   Nodes:=nil;
   try
@@ -2283,7 +2291,9 @@ begin
   if (FFilename='') or (AFilename='') then exit;
   TheDirectory:=GetFullFilename;
   if TheDirectory='' then begin
+    {$IFNDEF DisableChecks}
     DebugLn(['WARNING: THelpDBISourceDirectory.FileMatches ',DbgSName(Self),' Filename="',Filename,'" -> ""']);
+    {$ENDIF}
     exit;
   end;
   //debugln('THelpDBISourceDirectory.FileMatches TheDirectory="',TheDirectory,'" WithSubDirectories=',dbgs(WithSubDirectories));

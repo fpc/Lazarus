@@ -200,7 +200,9 @@ begin
     end;
   end;
   FullURL:=CombineURL(URLType,URLPath,URLParams);
+  {$IFNDEF DisableChecks}
   debugln('THTMLHelpDatabase.ShowURL B URL=',URL,' URLType=',URLType,' URLPath=',URLPath,' URLParams=',URLParams);
+  {$ENDIF}
 
   // call viewer
   Node:=nil;
@@ -362,7 +364,9 @@ begin
   end;
   CommandLine:=CommandLine+' '+Params;
   
+  {$IFNDEF DisableChecks}
   debugln('THTMLBrowserHelpViewer.ShowNode CommandLine=',CommandLine);
+  {$ENDIF}
 
   // run
   try

@@ -193,7 +193,9 @@ begin
 
   if not CreateCompatibleBitmaps(ImagePtr^, ImgHandle, ImgMaskHandle, SkipMask)
   then begin
+    {$IFNDEF DisableChecks}
     DebugLn('TRasterImage.BitmapHandleNeeded: Unable to create handles, using default');
+    {$ENDIF}
     // create a default handle
     W := Width;
     if W < 1 then W := 1;

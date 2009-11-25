@@ -885,7 +885,9 @@ begin
   AClassName:=GetClassNameFromLRSStream(AStream,IsInherited);
   if IsInherited then begin
     // inherited is not supported by this simple function
+    {$IFNDEF DisableChecks}
     DebugLn('ReadComponentFromBinaryStream WARNING: "inherited" is not supported by this simple function');
+    {$ENDIF}
   end;
   AClass:=nil;
   OnFindComponentClass(nil,AClassName,AClass);
@@ -1331,7 +1333,9 @@ begin
     end;
   except
     on E: Exception do begin
+      {$IFNDEF DisableChecks}
       DebugLn('LFMtoLRSfile ',E.Message);
+      {$ENDIF}
       Result:=false;
     end;
   end;
@@ -1356,7 +1360,9 @@ begin
     end;
   except
     on E: Exception do begin
+      {$IFNDEF DisableChecks}
       DebugLn('LFMtoLRSstream ',E.Message);
+      {$ENDIF}
       Result:=false;
     end;
   end;
@@ -1520,8 +1526,10 @@ begin
   begin
     r1:=TLResource(FList[i]);
     r2:=TLResource(FList[i+1]);
+    {$IFNDEF DisableChecks}
     if (AnsiCompareText(r1.Name,r2.Name)=0) and (r1.ValueType=r2.ValueType) then
       DebugLn(['TLResourceList.Sort ',i,' DUPLICATE RESOURCE FOUND: ',r1.Name,':',r1.ValueType]);
+    {$ENDIF}
   end;
 end;
 
@@ -2259,12 +2267,16 @@ procedure LRSObjectBinaryToText(Input, Output: TStream);
       
       procedure UnknownValueType;
       var
-        HintStr, s: String;
+        s: String;
+        {$IFNDEF DisableChecks}
+        HintStr: string;
         HintLen: Int64;
+        {$ENDIF}
       begin
         s:=ValueTypeAsString(ValueType);
         if s<>'' then
           s:='Unimplemented ValueType='+s;
+        {$IFNDEF DisableChecks}
         HintLen:=Output.Position;
         if HintLen>50 then HintLen:=50;
         SetLength(HintStr,HintLen);
@@ -2277,6 +2289,7 @@ procedure LRSObjectBinaryToText(Input, Output: TStream);
           except
           end;
         end;
+        {$ENDIF}
         s:=s+' ';
         Stop(s);
       end;
