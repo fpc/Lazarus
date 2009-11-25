@@ -1361,6 +1361,16 @@ begin
   if KeyComp('Abstract') and (TopPascalCodeFoldBlockType in [cfbtClass, cfbtClassSection]) then
     Result := tkKey
   else
+  if KeyComp('ObjcClass') then
+  begin
+    Result := tkKey;
+    if (rsAfterEqual in fRange) and (PasCodeFoldRange.BracketNestLevel = 0) then
+    begin
+      fRange := fRange + [rsAtClass];
+      StartPascalCodeFoldBlock(cfbtClass);
+    end;
+  end
+  else
     Result := tkIdentifier;
 end;
 
