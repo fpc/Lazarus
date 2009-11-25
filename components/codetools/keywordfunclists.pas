@@ -818,6 +818,7 @@ begin
     Add('EXPERIMENTAL' ,{$ifdef FPC}@{$endif}AllwaysTrue);
     Add('LIBRARY'      ,{$ifdef FPC}@{$endif}AllwaysTrue);
     Add('DEPRECATED'   ,{$ifdef FPC}@{$endif}AllwaysTrue);
+    Add('WEAKEXTERNAL' ,{$ifdef FPC}@{$endif}AllwaysTrue);
   end;
   
   IsKeyWordProcedureTypeSpecifier:=TKeyWordFunctionList.Create;
