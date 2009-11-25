@@ -505,7 +505,7 @@ function CreateBuildLazarusOptions(Options: TBuildLazarusOptions;
       ExtraOptions:=ExtraOptions+'"'+AddOption+'"'
     else
       ExtraOptions:=ExtraOptions+AddOption;
-    DebugLn(['AppendExtraOption ',ExtraOptions]);
+    //DebugLn(['AppendExtraOption ',ExtraOptions]);
   end;
 
   procedure AppendExtraOption(const AddOption: string);
@@ -714,7 +714,9 @@ begin
     end;
 
     // add package options for IDE
-    AppendExtraOption(PackageOptions,false);
+    //DebugLn(['CreateBuildLazarusOptions blfUseMakeIDECfg=',blfUseMakeIDECfg in FLags,' ExtraOptions="',ExtraOptions,'" ',PackageOptions]);
+    if not (blfUseMakeIDECfg in Flags) then
+      AppendExtraOption(PackageOptions,false);
   end;
   //DebugLn(['CreateBuildLazarusOptions ',CurItem.Name,' ',ExtraOptions]);
 end;
