@@ -1282,19 +1282,16 @@ var
     NeedBracketClose: Boolean;
   begin
     Result:=false;
-    DebugLn(['ParseDefinedParams AAA1 ',GetAtom]);
     ReadNextAtom;
     if AtomStart>=ExprEnd then begin
       IdentifierMissing(AtomStart);
       exit;
     end;
     NeedBracketClose:=false;
-    DebugLn(['ParseDefinedParams AAA2 ',GetAtom]);
     if AtomStart^='(' then begin
       // defined(
       NeedBracketClose:=true;
       ReadNextAtom;
-      DebugLn(['ParseDefinedParams AAA3 ',GetAtom]);
       // skip space
       if AtomStart>=ExprEnd then begin
         IdentifierMissing(AtomStart);
@@ -1308,7 +1305,7 @@ var
     if IsIdentifierDefined(AtomStart) then begin
       SetOperandValueChar(Operand,'1');
     end else begin
-      SetOperandValueConst(Operand,'-1');
+      SetOperandValueConst(Operand,'0');
     end;
     if NeedBracketClose then begin
       // read bracket close
@@ -1563,7 +1560,7 @@ var
   OperatorLvl: Integer;
 begin
   p:=Expression;
-  Result:='0';
+  Result:='';
   if p=nil then begin
     ExpressionMissing(p);
     exit;
