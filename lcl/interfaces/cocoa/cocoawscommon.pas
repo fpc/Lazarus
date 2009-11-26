@@ -70,45 +70,45 @@ end;
 
 class procedure TCocoaWSWinControl.SetText(const AWinControl: TWinControl; const AText: String);
 var
-  obj   : NSObject;
+  obj : NSObject;
 begin
   // sanity check
   obj:=NSObject(AWinControl.Handle);
   if not Assigned(obj) or not obj.isKindOfClass_(NSControl) then Exit;
 
-  SetNSText( NSControl(obj).currentEditor, AText);
+  SetNSControlValue(NSControl(obj), AText);
 end;
 
 class function TCocoaWSWinControl.GetText(const AWinControl: TWinControl; var AText: String): Boolean;
 var
   obj   : NSObject;
-  txt   : NSText;
 begin
   Result:=false;
 
   // sanity check
   obj:=NSObject(AWinControl.Handle);
-  if not Assigned(obj) or not obj.isKindOfClass_(NSControl) then Exit;
+  Result:=Assigned(obj) and obj.isKindOfClass_(NSControl);
+  if not Result then Exit;
 
-  txt:=NSControl(obj).currentEditor;
-  Result := Assigned(txt);
-  if Result then AText:=GetNSText(txt);
+  AText:=GetNSControlValue(NSControl(obj));
+  Result:=true;
 end;
 
 class function TCocoaWSWinControl.GetTextLen(const AWinControl: TWinControl; var ALength: Integer): Boolean;
 var
   obj : NSObject;
-  txt : NSText;
+  s   : NSString;
 begin
   Result:=false;
 
   // sanity check
   obj:=NSObject(AWinControl.Handle);
-  if not Assigned(obj) or not obj.isKindOfClass_(NSControl) then Exit;
+  Result:= Assigned(obj) and obj.isKindOfClass_(NSControl);
+  if not Result then Exit;
 
-  txt:=NSControl(obj).currentEditor;
-  Result:=Assigned(txt);
-  if Result then ALength:=txt.string_.length;
+  s:=NSControl(obj).stringValue;
+  if Assigned(s) then ALength:=s.length
+  else ALength:=0
 end;
 
 end.

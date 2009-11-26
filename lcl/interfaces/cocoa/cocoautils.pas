@@ -29,6 +29,9 @@ procedure SetViewBoundsPos(view: NSView; X,Y: integer; invalidateView: Boolean=f
 procedure SetNSText(text: NSText; const s: String); inline;
 function GetNSText(text: NSText): string; inline;
 
+procedure SetNSControlValue(c: NSControl; const S: String); inline;
+function GetNSControlValue(c: NSControl): String; inline;
+
 implementation
 
 const
@@ -181,6 +184,20 @@ function GetNSText(text: NSText): string; inline;
 begin
   if Assigned(text) then
     Result := NSStringToString(text.string_)
+  else
+    Result:='';
+end;
+
+procedure SetNSControlValue(c: NSControl; const S: String); inline;
+begin
+  if Assigned(c) then
+    c.setStringValue(NSStringUtf8(S));
+end;
+
+function GetNSControlValue(c: NSControl): String; inline;
+begin
+  if Assigned(c) then
+    Result:=NSStringToString(c.stringValue)
   else
     Result:='';
 end;

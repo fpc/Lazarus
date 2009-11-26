@@ -290,7 +290,6 @@ begin
     Result.initWithFrame(CreateParamsToNSRect(AParams));
     DefaultViewSettings(Result);
     Result.setFieldEditor(fieldEditor);
-    {Result.setTitle(NSStringUTF8(AParams.Caption));}
   end;
 end;
 
@@ -300,7 +299,7 @@ begin
   if Assigned(Result) then begin
     TCocoaTextField(Result).callback:=TControlCallback.Create(Result, ATarget);
     Result.initWithFrame(CreateParamsToNSRect(AParams));
-    SetNSText(Result.currentEditor, AParams.Caption);
+    SetNSControlValue(Result, AParams.Caption);
     DefaultViewSettings(Result);
   end;
 end;
