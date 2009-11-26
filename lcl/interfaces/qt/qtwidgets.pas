@@ -710,6 +710,7 @@ type
     // parts
     FLineEdit: TQtLineEdit;
     FDropList: TQtListWidget;
+    FDropListVisibleInternal: Boolean;
     function GetDropList: TQtListWidget;
     function GetLineEdit: TQtLineEdit;
     procedure SetOwnerDrawn(const AValue: Boolean);
@@ -6003,6 +6004,7 @@ begin
   {$ifdef VerboseQt}
     WriteLn('TQtComboBox.Create');
   {$endif}
+  FDropListVisibleInternal := False;
   Result := QComboBox_create();
   // disable AutoCompletion. LCL has its own
   QComboBox_setAutoCompletion(QComboboxH(Result), False);
@@ -6392,7 +6394,11 @@ begin
           QEvent_accept(Event);
         end;
       end;
-      QEventFocusIn: TCustomComboBox(LCLObject).IntfGetItems;
+      QEventFocusIn:
+      begin
+        if not FDropListVisibleInternal then
+          TCustomComboBox(LCLObject).IntfGetItems;
+      end;
       QEventKeyPress,
       QEventKeyRelease:
       begin
@@ -6485,6 +6491,7 @@ begin
   Msg.NotifyCode := VisibilityToCodeMap[AVisible];
 
   DeliverMessage(Msg);
+  FDropListVisibleInternal := AVisible;
 end;
 
 { TQtAbstractSpinBox }
