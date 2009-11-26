@@ -2487,8 +2487,11 @@ begin
         SizeType := WParam or Size_SourceIsInterface;
         if Window = TWin32WidgetSet(WidgetSet).AppHandle then
         begin
-          lWinControl := Application.MainForm;
-          Window := Application.MainForm.Handle;
+          if Assigned(Application.MainForm) and Application.MainForm.HandleAllocated then
+          begin
+            lWinControl := Application.MainForm;
+            Window := Application.MainForm.Handle;
+          end;
         end;
         if IsIconic(Window) then
         begin
