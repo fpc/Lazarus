@@ -1485,12 +1485,23 @@ function TSynPasSyn.Func89: TtkTokenKind;
   end;
 
 begin
-  Result := tkIdentifier;
+  if KeyComp('CppClass') then
+  begin
+    Result := tkKey;
+    if (rsAfterEqual in fRange) and (PasCodeFoldRange.BracketNestLevel = 0) then
+    begin
+      fRange := fRange + [rsAtClass];
+      StartPascalCodeFoldBlock(cfbtClass);
+    end;
+  end
+  else
+    Result := tkIdentifier;
   // Structural Scan / Quick
   if FIsInNextToEOL and not FCatchNodeInfo then
     exit;
   // Scanning for display / Look ahead
-  if KeyComp('strict') then begin
+  if KeyComp('strict') then
+  begin
     if (TopPascalCodeFoldBlockType in [cfbtClass, cfbtClassSection]) then
       if ScanForClassSection then
         Result := tkKey;
