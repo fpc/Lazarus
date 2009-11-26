@@ -1505,11 +1505,6 @@ begin
 end;
 
 procedure DumpExceptionBackTrace;
-// Remove ifdef when bug 14330 is fixed
-{$ifdef WinCE}
-begin
-end;
-{$else}
 var
   FrameCount: integer;
   Frames: PPointer;
@@ -1522,7 +1517,6 @@ begin
   for FrameNumber := 0 to FrameCount-1 do
     DebugLn(BackTraceStrFunc(Frames[FrameNumber]));
 end;
-{$endif}
 
 procedure DumpStack;
 begin
@@ -4473,6 +4467,13 @@ end;
 
 initialization
   InitializeDebugOutput;
+  {$ifdef WinCE}
+  // The stabs based back trace function crashes on wince,
+  // see http://bugs.freepascal.org/view.php?id=14330
+  // To prevent crashes, replace it with the default system back trace function
+  // that just outputs addresses and not source and line number
+  BackTraceStrFunc := @SysBackTraceStr;
+  {$endif}
   InterfaceInitializationHandlers := TFPList.Create;
   InterfaceFinalizationHandlers := TFPList.Create;
   {$IFDEF DebugLCLComponents}
