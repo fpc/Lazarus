@@ -244,6 +244,12 @@ begin
   if Negated then Result:=-Result;
 end;
 
+procedure SetOperandValueStringConst(var V: TOperandValue;
+  StartPos, EndPos: PChar);
+begin
+
+end;
+
 procedure SetOperandValueChar(var V: TOperandValue; const c: Char);
 begin
   if V.Free then FreeOperandValue(V);
@@ -1360,6 +1366,27 @@ var
       if CompareIdentifiers(AtomStart,'UNDEFINED')=0 then begin
         // "undefined V" or "undefined(V)"
         if not ParseDefinedParams(Operand) then exit;
+        if (Operand.Len=1) and (Operand.Value^='0') then begin
+          SetOperandValueChar(Operand,'1');
+        end else begin
+          SetOperandValueChar(Operand,'0');
+        end;
+        exit(true);
+      end
+      else if CompareIdentifiers(AtomStart,'UNICODESTRING')=0 then begin
+        // unicodestring
+        if IsIdentifierDefined('FPC_HAS_UNICODESTRING') then begin
+          SetOperandValueChar(Operand,'1');
+        end else begin
+          SetOperandValueChar(Operand,'0');
+        end;
+        exit(true);
+      end;
+    '!':
+      if p-AtomStart=1 then begin
+        // not
+        ReadNextAtom;
+        if not ReadOperand() then exit;
         if (Operand.Len=1) and (Operand.Value^='0') then begin
           SetOperandValueChar(Operand,'1');
         end else begin
