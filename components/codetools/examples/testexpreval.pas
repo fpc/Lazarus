@@ -38,8 +38,8 @@ var
   OldResult, NewResult: String;
 begin
   DebugLn(['Test Expression="',expr,'"']);
-  OldResult:=e.Eval(Expr);
-  NewResult:=e.Eval2(Expr);
+  OldResult:=e.EvalOld(Expr);
+  NewResult:=e.Eval(Expr);
   DebugLn(['Test eval2 OldResult="',OldResult,'" NewResult="',NewResult,'"']);
   if NewResult<>ExpectedResult then
     DebugLn(['FATAL: Expression="',expr,'" ExpectedResult="',ExpectedResult,'" <> NewResult="',NewResult,'"']);
