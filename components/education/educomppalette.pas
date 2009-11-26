@@ -12,7 +12,7 @@
  *                                                                           *
  *****************************************************************************
 
-  Author: Mattias Gaertner
+  Author: Mattias Gaertner, Michael Kuhardt
 
   Abstract:
     Frame to setup the component palette.
@@ -50,6 +50,8 @@ type
   { TEduCompPaletteFrame }
 
   TEduCompPaletteFrame = class(TAbstractIDEOptionsEditor)
+    ShowExtendedButton: TButton;
+    ShowMinimalButton: TButton;
     ComponentsGroupBox: TGroupBox;
     ComponentsTreeView: TTreeView;
     HideAllButton: TButton;
@@ -60,12 +62,15 @@ type
     procedure FrameClick(Sender: TObject);
     procedure HideAllButtonClick(Sender: TObject);
     procedure ShowAllButtonClick(Sender: TObject);
+    procedure ShowExtendedButtonClick(Sender: TObject);
+    procedure ShowMinimalButtonClick(Sender: TObject);
   private
     HideImgID: LongInt;
     ShowImgID: LongInt;
     procedure FillComponentTreeView;
     procedure SaveFillComponentTreeView;
     procedure ShowHideAll(aShow: boolean);
+    procedure ShowSelected(extended: boolean);
   public
     function GetTitle: String; override;
     procedure ReadSettings(AOptions: TAbstractIDEOptions); override;
@@ -123,6 +128,20 @@ procedure TEduCompPaletteFrame.ShowAllButtonClick(Sender: TObject);
 begin
   ShowHideAll(true);
 end;
+
+procedure TEduCompPaletteFrame.ShowExtendedButtonClick(Sender: TObject);
+begin
+  ShowHideAll(false);
+  ShowSelected(true);
+end;
+
+procedure TEduCompPaletteFrame.ShowMinimalButtonClick(Sender: TObject);
+begin
+  ShowHideAll(false);
+  ShowSelected(false);
+end;
+
+
 
 procedure TEduCompPaletteFrame.FillComponentTreeView;
 var
@@ -203,18 +222,105 @@ begin
   while Node<>nil do begin
     if Node.Parent<>nil then begin
       CompName:=Node.Text;
+
       EduComponentPaletteOptions.ComponentVisible[CompName]:=aShow;
       if aShow then
         Node.StateIndex:=ShowImgID
       else
         Node.StateIndex:=HideImgID;
-    end else begin
+    end
+
+    else begin
 
     end;
+
     Node:=Node.GetNext;
   end;
   ComponentsTreeView.EndUpdate;
 end;
+
+procedure TEduCompPaletteFrame.ShowSelected(extended: boolean);
+var
+  Node: TTreeNode;
+  CompName: String;
+  MinimalComponents: array[0..12] of String;
+  ExtendedComponents: array[0..25] of String;
+  i,k: integer;
+begin
+
+  MinimalComponents[0] :=  'TEdit';
+  MinimalComponents[1] :=  'TButton';
+  MinimalComponents[2] :=  'TCheckBox';
+  MinimalComponents[3] :=  'TLabel';
+  MinimalComponents[4] :=  'TListBox';
+  MinimalComponents[5] :=  'TComboBox';
+  MinimalComponents[6] :=  'TRadioGroup';
+  MinimalComponents[7] :=  'TRadioButton';
+  MinimalComponents[8] :=  'TPanel';
+  MinimalComponents[9] :=  'TMainMenu';
+  MinimalComponents[10] :=  'TMemo';
+  MinimalComponents[11] :=  'TGroupBox';
+  MinimalComponents[12] :=  'TImage';
+
+  ExtendedComponents[0] :=  'TBitBtn';
+  ExtendedComponents[1] :=  'TScrollBar';
+  ExtendedComponents[2] :=  'TPopupMenu';
+  ExtendedComponents[3] :=  'TCheckGroup';
+  ExtendedComponents[4] :=  'TActionList';
+  ExtendedComponents[5] :=  'TStringGrid';
+  ExtendedComponents[6] :=  'TSpeedButton';
+  ExtendedComponents[7] :=  'TTimer';
+  ExtendedComponents[8] :=  'TIdleTimer';
+  ExtendedComponents[9] :=  'TPageControl';
+  ExtendedComponents[10] :=  'TStaticText';
+  ExtendedComponents[11] :=  'TDBGrid';
+  ExtendedComponents[12] :=  'TOpenDialog';
+  ExtendedComponents[13] :=  'TSaveDialog';
+  ExtendedComponents[14] :=  'TSelectDirectoryDialog';
+  ExtendedComponents[15] :=  'TDataSource';
+  ExtendedComponents[16] :=  'TDBNavigator';
+  ExtendedComponents[17] :=  'TDBText';
+  ExtendedComponents[18] :=  'TDBEdit';
+  ExtendedComponents[19] :=  'TDBMemo';
+  ExtendedComponents[20] :=  'TDBImage';
+  ExtendedComponents[21] :=  'TDBListBox';
+  ExtendedComponents[22] :=  'TDBLookupListBox';
+  ExtendedComponents[23] :=  'TDBComboBox';
+  ExtendedComponents[24] :=  'TDBLookupComboBox';
+  ExtendedComponents[25] :=  'TDBCheckBox';
+
+
+
+
+  ComponentsTreeView.BeginUpdate;
+  Node:=ComponentsTreeView.Items.GetFirstNode;
+  while Node<>nil do begin
+    if Node.Parent<>nil then begin
+      CompName:=Node.Text;
+      for i := 0 to 12 do begin
+        if (CompareText (CompName , MinimalComponents[i] )=0) then begin
+            EduComponentPaletteOptions.ComponentVisible[CompName]:=true;
+            Node.StateIndex:=ShowImgID;
+        end;
+      end;
+
+      if extended then begin
+        for k := 0 to 25 do begin
+          if (CompareText (CompName , ExtendedComponents[k] )=0) then begin
+            EduComponentPaletteOptions.ComponentVisible[CompName]:=true;
+            Node.StateIndex:=ShowImgID;
+          end;
+        end;
+      end;
+
+    end;
+
+    Node:=Node.GetNext;
+  end;
+  ComponentsTreeView.EndUpdate;
+end;
+
+
 
 function TEduCompPaletteFrame.GetTitle: String;
 begin
@@ -230,6 +336,8 @@ procedure TEduCompPaletteFrame.Setup(ADialog: TAbstractOptionsEditorDialog);
 begin
   ShowAllButton.Caption:=ersShowAll;
   HideAllButton.Caption:=ersHideAll;
+  ShowMinimalButton.Caption:=ersShowMinimal;
+  ShowExtendedButton.Caption:=ersShowExtended;
   ComponentsGroupBox.Caption:=ersVisibleComponents;
 end;
 

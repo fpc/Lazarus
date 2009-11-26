@@ -31,6 +31,8 @@ resourcestring
   EduRSEducation = 'Education';
   ersShowAll = 'Show all';
   ersHideAll = 'Hide all';
+  ersShowExtended = 'Show Extended';
+  ersShowMinimal = 'Show Minimal';
   ersVisibleComponents = 'Visible components';
   ersShowAllChilds = 'Show all childs';
   ersIDEMenuItems = 'IDE menu items';
