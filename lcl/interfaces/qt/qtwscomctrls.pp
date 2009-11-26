@@ -1348,8 +1348,8 @@ var
 begin
   if not WSCheckHandleAllocated(ALV, 'SetAllocBy') then
     Exit;
-  QtTreeWidget := TQtTreeWidget(ALV.Handle);
-  QtTreeWidget.ItemCount := AValue;
+  // QtTreeWidget := TQtTreeWidget(ALV.Handle);
+  // QtTreeWidget.ItemCount := AValue;
 end;
 
 class procedure TQtWSCustomListView.SetItemsCount(const ALV: TCustomListView;

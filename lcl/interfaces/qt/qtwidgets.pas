@@ -7438,7 +7438,10 @@ var
   Items: TPtrIntArray;
   Item: QTreeWidgetItemH;
 begin
+  if AValue = ItemCount then
+    exit;
   BeginUpdate;
+  try
     ClearItems;
     SetLength(Items, AValue);
     for i := 0 to High(Items) do
@@ -7446,8 +7449,11 @@ begin
       Item := QTreeWidgetItem_create(QTreeWidgetH(Widget), 0);
       Items[i] := PtrUInt(Item);
     end;
-    QTreeWidget_addTopLevelItems(QTreeWidgetH(Widget), @Items);
-  EndUpdate;
+    if length(Items) > 0 then
+      QTreeWidget_addTopLevelItems(QTreeWidgetH(Widget), @Items);
+  finally
+    EndUpdate;
+  end;
 end;
 
 procedure TQtTreeWidget.setMaxColSize(ACol: Integer; const AValue: Integer);
