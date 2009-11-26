@@ -117,8 +117,7 @@ type
     FEditor: TSynEdit;
     FEditPlugin: TSynEditPlugin1;  // used to get the LinesInserted and
                                    //   LinesDeleted messages
-    FSyncroEdit: TSynPluginSyncroEdit;
-    FTemplateEdit: TSynPluginTemplateEdit;
+    FSyncroLockCount: Integer;
     FCodeTemplates: TSynEditAutoComplete;
     FHasExecutionMarks: Boolean;
     FMarksRequested: Boolean;
@@ -171,6 +170,8 @@ type
     procedure EditorPaste(Sender: TObject; var AText: String;
          var AMode: TSynSelectionMode; ALogStartPos: TPoint;
          var AnAction: TSynCopyPasteAction);
+    procedure EditorActivateSyncro(Sender: TObject);
+    procedure EditorDeactivateSyncro(Sender: TObject);
     procedure SetCodeBuffer(NewCodeBuffer: TCodeBuffer);
     function GetSource: TStrings;
     procedure SetPageName(const AValue: string);
@@ -405,10 +406,9 @@ type
     property ReadOnly: Boolean read GetReadOnly write SetReadOnly;
     property Source: TStrings read GetSource write SetSource;
     property SourceNotebook: TSourceNotebook read FSourceNoteBook;
-    property SyncroEdit: TSynPluginSyncroEdit read FSyncroEdit;
     property SyntaxHighlighterType: TLazSyntaxHighlighter
        read fSyntaxHighlighterType write SetSyntaxHighlighterType;
-    property TemplateEdit: TSynPluginTemplateEdit read FTemplateEdit;
+    property SyncroLockCount: Integer read FSyncroLockCount;
   end;
 
   //============================================================================
@@ -1181,6 +1181,7 @@ Begin
   FExecutionMark := nil;
   FHasExecutionMarks := False;
   FMarksRequested := False;
+  FSyncroLockCount := 0;
   FLineInfoNotification := TIDELineInfoNotification.Create;
   FLineInfoNotification.AddReference;
   FLineInfoNotification.OnChange := @LineInfoNotificationChange;
@@ -2598,6 +2599,8 @@ var
   NewName: string;
   i: integer;
   bmp: TCustomBitmap;
+  TemplateEdit: TSynPluginTemplateEdit;
+  SyncroEdit: TSynPluginSyncroEdit;
 Begin
   {$IFDEF IDE_DEBUG}
   writeln('TSourceEditor.CreateEditor  A ');
@@ -2641,11 +2644,15 @@ Begin
       FCodeTemplates.AddEditor(FEditor);
     if aCompletion<>nil then
       aCompletion.AddEditor(FEditor);
-    FTemplateEdit:=TSynPluginTemplateEdit.Create(FEditor);
-    FSyncroEdit := TSynPluginSyncroEdit.Create(FEditor);
+    TemplateEdit:=TSynPluginTemplateEdit.Create(FEditor);
+    TemplateEdit.OnActivate := @EditorActivateSyncro;
+    TemplateEdit.OnDeactivate := @EditorDeactivateSyncro;
+    SyncroEdit := TSynPluginSyncroEdit.Create(FEditor);
     bmp := CreateBitmapFromLazarusResource('tsynsyncroedit');
-    FSyncroEdit.GutterGlyph.Assign(bmp);
+    SyncroEdit.GutterGlyph.Assign(bmp);
     bmp.Free;
+    SyncroEdit.OnActivate := @EditorActivateSyncro;
+    SyncroEdit.OnDeactivate := @EditorDeactivateSyncro;
     RefreshEditorSettings;
     FEditor.EndUpdate;
   end else begin
@@ -3037,8 +3044,7 @@ var
   NewSrc: string;
 begin
   if AMode<>smNormal then exit;
-  if SyncroEdit.Active then exit;
-  if TemplateEdit.Active then exit;
+  if SyncroLockCount > 0 then exit;
   if not CodeToolsOpts.IndentOnPaste then exit;
   {$IFDEF VerboseIndenter}
   debugln(['TSourceEditor.EditorPaste LogCaret=',dbgs(ALogStartPos)]);
@@ -3070,6 +3076,16 @@ begin
   debugln(AText);
   DebugLn(['TSourceEditor.EditorPaste END']);
   {$ENDIF}
+end;
+
+procedure TSourceEditor.EditorActivateSyncro(Sender: TObject);
+begin
+  inc(FSyncroLockCount);
+end;
+
+procedure TSourceEditor.EditorDeactivateSyncro(Sender: TObject);
+begin
+  dec(FSyncroLockCount);
 end;
 
 Procedure TSourceEditor.EditorMouseMoved(Sender: TObject;
@@ -7021,8 +7037,7 @@ begin
                           Reason, SetIndentProc);
     if Result then exit;
   end;
-  if (SrcEdit.SyncroEdit<>nil) and SrcEdit.SyncroEdit.Active then exit;
-  if (SrcEdit.TemplateEdit<>nil) and SrcEdit.TemplateEdit.Active then exit;
+  if (SrcEdit.SyncroLockCount > 0) then exit;
   if not (SrcEdit.SyntaxHighlighterType in [lshFreePascal, lshDelphi]) then
     exit;
   if Reason<>ecLineBreak then exit;

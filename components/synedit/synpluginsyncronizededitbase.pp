@@ -150,6 +150,8 @@ type
     fMarkupInfoSync: TSynSelectedColor;
     fMarkupInfoCurrent: TSynSelectedColor;
     fMarkupInfoArea: TSynSelectedColor;
+    FOnActivate: TNotifyEvent;
+    FOnDeactivate: TNotifyEvent;
 
     function GetActive: Boolean;
     procedure SetActive(const AValue: Boolean);
@@ -187,6 +189,8 @@ type
     property MarkupInfoCurrent: TSynSelectedColor read FMarkupInfoCurrent;
     property MarkupInfoSync: TSynSelectedColor read FMarkupInfoSync;
     property MarkupInfoArea: TSynSelectedColor read FMarkupInfoArea;
+    property OnActivate: TNotifyEvent read FOnActivate write FOnActivate;
+    property OnDeactivate: TNotifyEvent read FOnDeactivate write FOnDeactivate;
   end;
 
   (* TSynPluginCustomSyncroEdit implements:
@@ -937,12 +941,14 @@ end;
 
 procedure TSynPluginSyncronizedEditBase.DoOnActivate;
 begin
-  (* Do Nothing *);
+  if assigned(FOnActivate) then
+    FOnActivate(self);
 end;
 
 procedure TSynPluginSyncronizedEditBase.DoOnDeactivate;
 begin
-  (* Do Nothing *);
+  if assigned(FOnDeactivate) then
+    FOnDeactivate(self);
 end;
 
 { TSynPluginSyncronizedEditCell }
@@ -984,6 +990,7 @@ procedure TSynPluginCustomSyncroEdit.DoOnActivate;
 var
   b: TSynEditStrings;
 begin
+  inherited;
   b := ViewedTextBuffer;
   while b <> nil do begin
     if b is TSynEditStringTrimmingList then TSynEditStringTrimmingList(b).Lock;
@@ -998,6 +1005,7 @@ procedure TSynPluginCustomSyncroEdit.DoOnDeactivate;
 var
   b: TSynEditStrings;
 begin
+  inherited;
   FUndoRealCount := -1;
   FRedoRealCount := -1;
   b := ViewedTextBuffer;
