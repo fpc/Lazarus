@@ -985,6 +985,7 @@ type
 
   TQtTreeWidget = class(TQtTreeView)
   private
+    FOwnerData: Boolean;
     FSyncingItems: Boolean;
     FSorting: Boolean;
     FHeader: TQtHeaderView;
@@ -1004,6 +1005,7 @@ type
     function getMinColSize(ACol: Integer): Integer;
     function getSortEnabled: Boolean;
     procedure setColCount(const AValue: Integer);
+    procedure setItemCount(const AValue: Integer);
     procedure setMaxColSize(ACol: Integer; const AValue: Integer);
     procedure setMinColSize(ACol: Integer; const AValue: Integer);
     procedure setSortEnabled(const AValue: Boolean);
@@ -1011,6 +1013,7 @@ type
     function CreateWidget(const AParams: TCreateParams):QWidgetH; override;
   public
     destructor Destroy; override;
+    procedure ClearItems;
     function currentRow: Integer;
     procedure setCurrentRow(row: Integer);
     function currentItem: QTreeWidgetItemH;
@@ -1048,10 +1051,11 @@ type
     procedure SignalSortIndicatorChanged(ALogicalIndex: Integer; AOrder: QtSortOrder) cdecl;
 
     property ColCount: Integer read getColCount write setColCount;
-    property ItemCount: Integer read getItemCount;
     property Header: TQtHeaderView read getHeader;
+    property ItemCount: Integer read getItemCount write setItemCount;
     property MaxColSize[ACol: Integer]: Integer read getMaxColSize write setMaxColSize;
     property MinColSize[ACol: Integer]: Integer read getMinColSize write setMinColSize;
+    property OwnerData: Boolean read FOwnerData write FOwnerData;
     property SortEnabled: Boolean read getSortEnabled write setSortEnabled;
   end;
   
@@ -7344,6 +7348,7 @@ begin
   {$ifdef VerboseQt}
     WriteLn('TQtTreeWidget.Create');
   {$endif}
+  FOwnerData := False;
   FSyncingItems := False;
   FSorting := False;
   Result := QTreeWidget_create();
@@ -7366,6 +7371,11 @@ begin
     FHeader.Free;
 
   inherited Destroy;
+end;
+
+procedure TQtTreeWidget.ClearItems;
+begin
+  QTreeWidget_clear(QTreeWidgetH(Widget));
 end;
 
 function TQtTreeWidget.getHeader: TQtHeaderView;
@@ -7417,6 +7427,24 @@ end;
 procedure TQtTreeWidget.setColCount(const AValue: Integer);
 begin
   QTreeWidget_setColumnCount(QTreeWidgetH(Widget), AValue);
+end;
+
+procedure TQtTreeWidget.setItemCount(const AValue: Integer);
+var
+  i: Integer;
+  Items: TPtrIntArray;
+  Item: QTreeWidgetItemH;
+begin
+  BeginUpdate;
+    ClearItems;
+    SetLength(Items, AValue);
+    for i := 0 to High(Items) do
+    begin
+      Item := QTreeWidgetItem_create(QTreeWidgetH(Widget), 0);
+      Items[i] := PtrUInt(Item);
+    end;
+    QTreeWidget_addTopLevelItems(QTreeWidgetH(Widget), @Items);
+  EndUpdate;
 end;
 
 procedure TQtTreeWidget.setMaxColSize(ACol: Integer; const AValue: Integer);

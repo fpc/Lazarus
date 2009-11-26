@@ -101,6 +101,9 @@ type
     class function  ItemDisplayRect(const ALV: TCustomListView; const AIndex, ASubItem: Integer; ACode: TDisplayCode): TRect; override;
 
     {parent}
+    class procedure BeginUpdate(const ALV: TCustomListView); override;
+    class procedure EndUpdate(const ALV: TCustomListView); override;
+
     class function GetFocused(const ALV: TCustomListView): Integer; override;
     class function GetItemAt(const ALV: TCustomListView; x,y: integer): Integer; override;
     class function GetSelCount(const ALV: TCustomListView): Integer; override;
@@ -108,6 +111,10 @@ type
     class procedure SetSort(const ALV: TCustomListView; const AType: TSortType; const AColumn: Integer); override;
 
     class function GetBoundingRect(const ALV: TCustomListView): TRect; override;
+
+    class procedure SetAllocBy(const ALV: TCustomListView; const AValue: Integer); override;
+    class procedure SetItemsCount(const ALV: TCustomListView; const Avalue: Integer); override;
+    class procedure SetOwnerData(const ALV: TCustomListView; const AValue: Boolean); override;
 
     class procedure SetProperty(const ALV: TCustomListView; const AProp: TListViewProperty; const AIsSet: Boolean); override;
     class procedure SetProperties(const ALV: TCustomListView; const AProps: TListViewProperties); override;
@@ -122,14 +129,9 @@ type
 
 
     // Item
-
-    class procedure ItemSetImage(const ALV: TCustomListView; const AIndex: Integer; const AItem: TListItem; const ASubIndex, AImageIndex: Integer); virtual;
     class function ItemSetPosition(const ALV: TCustomListView; const AIndex: Integer; const ANewPosition: TPoint): Boolean; virtual;
 
     // LV
-    class procedure BeginUpdate(const ALV: TCustomListView); virtual;
-    class procedure EndUpdate(const ALV: TCustomListView); virtual;
-
 
     class function GetDropTarget(const ALV: TCustomListView): Integer; virtual;
 
@@ -139,7 +141,6 @@ type
     class function GetViewOrigin(const ALV: TCustomListView): TPoint; virtual;
     class function GetVisibleRowCount(const ALV: TCustomListView): Integer; override;
 
-    class procedure SetAllocBy(const ALV: TCustomListView; const AValue: Integer); virtual;
     class procedure SetDefaultItemHeight(const ALV: TCustomListView; const AValue: Integer); virtual;
     class procedure SetHotTrackStyles(const ALV: TCustomListView; const AValue: TListHotTrackStyles); virtual;
     class procedure SetHoverTime(const ALV: TCustomListView; const AValue: Integer); virtual;
@@ -148,7 +149,6 @@ type
     class procedure SetScrollBars(const ALV: TCustomListView; const AValue: TScrollStyle); virtual;
 
     class procedure SetViewOrigin(const ALV: TCustomListView; const AValue: TPoint); virtual;
-    class procedure SetViewStyle(const ALV: TCustomListView; const Avalue: TViewStyle); virtual;
     *)
   end;
 
@@ -1205,6 +1205,26 @@ begin
     Result := QtTreeWidget.visualItemRect(TWI);
 end;
 
+class procedure TQtWSCustomListView.BeginUpdate(const ALV: TCustomListView);
+var
+  QtTreeWidget: TQtTreeWidget;
+begin
+  if not WSCheckHandleAllocated(ALV, 'BeginUpdate') then
+    Exit;
+  QtTreeWidget := TQtTreeWidget(ALV.Handle);
+  QtTreeWidget.setUpdatesEnabled(False);
+end;
+
+class procedure TQtWSCustomListView.EndUpdate(const ALV: TCustomListView);
+var
+  QtTreeWidget: TQtTreeWidget;
+begin
+  if not WSCheckHandleAllocated(ALV, 'EndUpdate') then
+    Exit;
+  QtTreeWidget := TQtTreeWidget(ALV.Handle);
+  QtTreeWidget.setUpdatesEnabled(True);
+end;
+
 {------------------------------------------------------------------------------
   Method: TQtWSCustomListView.GetFocused
   Params:  None
@@ -1327,6 +1347,39 @@ begin
   if not WSCheckHandleAllocated(ALV, 'GetBoundingRect') then
     Exit;
   Result := TQtTreeWidget(ALV.Handle).getFrameGeometry;
+end;
+
+class procedure TQtWSCustomListView.SetAllocBy(const ALV: TCustomListView;
+  const AValue: Integer);
+var
+  QtTreeWidget: TQtTreeWidget;
+begin
+  if not WSCheckHandleAllocated(ALV, 'SetAllocBy') then
+    Exit;
+  QtTreeWidget := TQtTreeWidget(ALV.Handle);
+  QtTreeWidget.ItemCount := AValue;
+end;
+
+class procedure TQtWSCustomListView.SetItemsCount(const ALV: TCustomListView;
+  const Avalue: Integer);
+var
+  QtTreeWidget: TQtTreeWidget;
+begin
+  if not WSCheckHandleAllocated(ALV, 'SetItemsCount') then
+    Exit;
+  QtTreeWidget := TQtTreeWidget(ALV.Handle);
+  QtTreeWidget.ItemCount := AValue;
+end;
+
+class procedure TQtWSCustomListView.SetOwnerData(const ALV: TCustomListView;
+  const AValue: Boolean);
+var
+  QtTreeWidget: TQtTreeWidget;
+begin
+  if not WSCheckHandleAllocated(ALV, 'SetOwnerData') then
+    Exit;
+  QtTreeWidget := TQtTreeWidget(ALV.Handle);
+  QtTreeWidget.OwnerData := AValue;
 end;
 
 class procedure TQtWSCustomListView.SetProperty(const ALV: TCustomListView;
