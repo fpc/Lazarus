@@ -222,7 +222,7 @@ end;
 procedure TCustomCheckGroup.DefineProperties(Filer: TFiler);
 begin
   inherited DefineProperties(Filer);
-  Filer.DefineBinaryProperty('Data', @ReadData, @WriteData,FItems.Count>0);
+  Filer.DefineBinaryProperty('Data', @ReadData, @WriteData, FItems.Count > 0);
 end;
 
 procedure TCustomCheckGroup.ReadData(Stream: TStream);

@@ -761,17 +761,15 @@ procedure TPicture.DefineProperties(Filer: TFiler);
   var
     Ancestor: TPicture;
   begin
-    if Filer.Ancestor <> nil then begin
-      Result := True;
-      if Filer.Ancestor is TPicture then begin
-        Ancestor := TPicture(Filer.Ancestor);
-        Result := not ((Graphic = Ancestor.Graphic)
-                       or ((Graphic <> nil) and (Ancestor.Graphic <> nil)
-                           and Graphic.Equals(Ancestor.Graphic))
-                      );
-      end;
+    if Assigned(Filer.Ancestor) and (Filer.Ancestor is TPicture) then
+    begin
+      Ancestor := TPicture(Filer.Ancestor);
+      if not Assigned(Graphic) then
+        Exit(Assigned(Ancestor.Graphic));
+      Result := not Graphic.Equals(Ancestor.Graphic);
     end
-    else Result := Graphic <> nil;
+    else
+      Result := Assigned(Graphic);
   end;
 
 begin
