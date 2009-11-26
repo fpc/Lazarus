@@ -254,7 +254,7 @@ type
                                var Handled: boolean);
 
     function NonVisualComponentLeftTop(AComponent: TComponent): TPoint;
-    function NonVisualComponentAtPos(x,y: integer): TComponent;
+    function NonVisualComponentAtPos(X, Y: integer): TComponent;
     procedure MoveNonVisualComponentIntoForm(AComponent: TComponent);
     procedure MoveNonVisualComponentsIntoForm;
     function WinControlAtPos(x,y: integer; UseRootAsDefault,
@@ -1327,6 +1327,16 @@ function TDesigner.NonVisualComponentLeftTop(AComponent: TComponent): TPoint;
 begin
   Result.X := LeftFromDesignInfo(AComponent.DesignInfo);
   Result.Y := TopFromDesignInfo(AComponent.DesignInfo);
+  // convert to owner coords
+  while AComponent.Owner <> FLookupRoot do
+  begin
+    AComponent := AComponent.Owner;
+    if AComponent is TControl then
+    begin
+      inc(Result.X, TControl(AComponent).Left);
+      inc(Result.Y, TControl(AComponent).Top);
+    end;
+  end;
 end;
 
 procedure TDesigner.InvalidateWithParent(AComponent: TComponent);
@@ -2876,93 +2886,109 @@ end;
 
 procedure TDesigner.DrawNonVisualComponents(aDDC: TDesignerDeviceContext);
 var
-  AComponent: TComponent;
-  Icon, Surface: TBitmap;
-  i, ItemLeft, ItemTop, ItemRight, ItemBottom: integer;
-  Diff, ItemLeftTop: TPoint;
-  IconRect, TextRect: TRect;
-  TextSize: TSize;
-  IsSelected: Boolean;
-begin
-  Surface := nil;
-  for i := 0 to FLookupRoot.ComponentCount - 1 do
+  Surface: TBitmap;
+
+  procedure DrawComponent(AComponent: TComponent);
+  var
+    Icon: TBitmap;
+    ItemLeft, ItemTop, ItemRight, ItemBottom: integer;
+    Diff, ItemLeftTop: TPoint;
+    IconRect, TextRect: TRect;
+    TextSize: TSize;
+    IsSelected: Boolean;
   begin
-    AComponent := FLookupRoot.Components[i];
-    if ComponentIsIcon(AComponent) then
+    Diff := aDDC.FormOrigin;
+    //DebugLn(['aDDC.FormOrigin - ', Diff.X, ' : ' ,Diff.Y]);
+    // non-visual component
+    ItemLeftTop := NonVisualComponentLeftTop(AComponent);
+    ItemLeft := ItemLeftTop.X - Diff.X;
+    ItemTop := ItemLeftTop.Y - Diff.Y;
+    ItemRight := ItemLeft + NonVisualCompWidth;
+    ItemBottom := ItemTop + NonVisualCompWidth;
+    if not aDDC.RectVisible(ItemLeft, ItemTop, ItemRight, ItemBottom) then
+      Exit;
+
+    IsSelected := ControlSelection.IsSelected(AComponent);
+    aDDC.Save;
+    if Surface = nil then
     begin
-      Diff := aDDC.FormOrigin;
-      //DebugLn(['aDDC.FormOrigin - ', Diff.X, ' : ' ,Diff.Y]);
-      // non-visual component
-      ItemLeftTop := NonVisualComponentLeftTop(AComponent);
-      ItemLeft := ItemLeftTop.X - Diff.X;
-      ItemTop := ItemLeftTop.Y - Diff.Y;
-      ItemRight := ItemLeft + NonVisualCompWidth;
-      ItemBottom := ItemTop + NonVisualCompWidth;
-      if not aDDC.RectVisible(ItemLeft, ItemTop, ItemRight, ItemBottom) then
-        Continue;
+      Surface := TBitmap.Create;
+      Surface.SetSize(NonVisualCompWidth, NonVisualCompWidth);
+      Surface.Canvas.Brush.Color := clBtnFace;
+      Surface.Canvas.Pen.Width := 1;
+    end;
 
-      IsSelected := ControlSelection.IsSelected(AComponent);
-      aDDC.Save;
-      if Surface = nil then
-      begin
-        Surface := TBitmap.Create;
-        Surface.SetSize(NonVisualCompWidth, NonVisualCompWidth);
-        Surface.Canvas.Brush.Color := clBtnFace;
-        Surface.Canvas.Pen.Width := 1;
-      end;
+    IconRect := Rect(0, 0, NonVisualCompWidth, NonVisualCompWidth);
+    Surface.Canvas.Frame3D(IconRect, 1, bvRaised);
+    Surface.Canvas.FillRect(IconRect);
+    if NonVisualCompBorder > 1 then
+      InflateRect(IconRect, -NonVisualCompBorder + 1, -NonVisualCompBorder + 1);
 
-      IconRect := Rect(0, 0, NonVisualCompWidth, NonVisualCompWidth);
-      Surface.Canvas.Frame3D(IconRect, 1, bvRaised);
-      Surface.Canvas.FillRect(IconRect);
-      if NonVisualCompBorder > 1 then
-        InflateRect(IconRect, -NonVisualCompBorder + 1, -NonVisualCompBorder + 1);
+    // draw component Name
+    if ShowComponentCaptions and (((GetKeyState(VK_LBUTTON) and $80) = 0) or not IsSelected) then
+    begin
+      // workarounds gtk2 problem with DrawText on gc with GDK_INCLUDE_INFERIORS
+      // it uses pango drawing and this for some reason does not take subwindow_mode
+      // into account
+      Icon := TBitmap.Create;
+      try
+        TextSize := aDDC.Canvas.TextExtent(AComponent.Name);
+        Icon.SetSize(TextSize.cx, TextSize.cy);
+        TextRect := Rect(0, 0, TextSize.cx, TextSize.cy);
+        if aDDC.Form <> nil then
+          Icon.Canvas.Brush.Color := aDDC.Form.Canvas.Brush.Color
+        else
+          Icon.Canvas.Brush.Color := clBtnFace;
+        Icon.Canvas.FillRect(TextRect);
+        DrawText(Icon.Canvas.Handle, PChar(AComponent.Name), -1, TextRect,
+          DT_CENTER or DT_VCENTER or DT_SINGLELINE or DT_NOCLIP);
+        aDDC.Canvas.Draw(
+          (ItemLeft + ItemRight - TextSize.cx) div 2,
+          ItemBottom + NonVisualCompBorder + 2, Icon);
+      finally
+        Icon.Free;
+      end;
+    end;
+    // draw component icon
+    if Assigned(FOnGetNonVisualCompIcon) then
+    begin
+      Icon := nil;
+      FOnGetNonVisualCompIcon(Self, AComponent, Icon);
+      if Icon <> nil then
+      begin
+        inc(IconRect.Left, (NonVisualCompIconWidth - Icon.Width) div 2);
+        inc(IconRect.Top, (NonVisualCompIconWidth - Icon.Height) div 2);
+        IconRect.Right := IconRect.Left + Icon.Width;
+        IconRect.Bottom := IconRect.Top + Icon.Height;
+        Surface.Canvas.StretchDraw(IconRect, Icon);
+      end;
+    end;
+    aDDC.Canvas.Draw(ItemLeft, ItemTop, Surface);
+    if (ControlSelection.Count > 1) and IsSelected then
+      ControlSelection.DrawMarkerAt(aDDC,
+        ItemLeft, ItemTop, NonVisualCompWidth, NonVisualCompWidth);
+    aDDC.Restore;
+  end;
 
-      // draw component Name
-      if ShowComponentCaptions and (((GetKeyState(VK_LBUTTON) and $80) = 0) or not IsSelected) then
-      begin
-        // workarounds gtk2 problem with DrawText on gc with GDK_INCLUDE_INFERIORS
-        // it uses pango drawing and this for some reason does not take subwindow_mode
-        // into account
-        Icon := TBitmap.Create;
-        try
-          TextSize := aDDC.Canvas.TextExtent(AComponent.Name);
-          Icon.SetSize(TextSize.cx, TextSize.cy);
-          TextRect := Rect(0, 0, TextSize.cx, TextSize.cy);
-          if aDDC.Form <> nil then
-            Icon.Canvas.Brush.Color := aDDC.Form.Canvas.Brush.Color
-          else
-            Icon.Canvas.Brush.Color := clBtnFace;
-          Icon.Canvas.FillRect(TextRect);
-          DrawText(Icon.Canvas.Handle, PChar(AComponent.Name), -1, TextRect,
-            DT_CENTER or DT_VCENTER or DT_SINGLELINE or DT_NOCLIP);
-          aDDC.Canvas.Draw(
-            (ItemLeft + ItemRight - TextSize.cx) div 2,
-            ItemBottom + NonVisualCompBorder + 2, Icon);
-        finally
-          Icon.Free;
-        end;
-      end;
-      // draw component icon
-      if Assigned(FOnGetNonVisualCompIcon) then 
-      begin
-        Icon := nil;
-        FOnGetNonVisualCompIcon(Self, AComponent, Icon);
-        if Icon <> nil then 
-        begin
-          inc(IconRect.Left, (NonVisualCompIconWidth - Icon.Width) div 2);
-          inc(IconRect.Top, (NonVisualCompIconWidth - Icon.Height) div 2);
-          IconRect.Right := IconRect.Left + Icon.Width;
-          IconRect.Bottom := IconRect.Top + Icon.Height;
-          Surface.Canvas.StretchDraw(IconRect, Icon);
-        end;
-      end;
-      aDDC.Canvas.Draw(ItemLeft, ItemTop, Surface);
-      if (ControlSelection.Count > 1) and IsSelected then
-        ControlSelection.DrawMarkerAt(aDDC,
-          ItemLeft, ItemTop, NonVisualCompWidth, NonVisualCompWidth);
-      aDDC.Restore;
+  procedure TraverseComponents(ALookupRoot: TComponent);
+  var
+    i: integer;
+    AComponent: TComponent;
+  begin
+    for i := 0 to ALookupRoot.ComponentCount - 1 do
+    begin
+      AComponent := ALookupRoot.Components[i];
+      if csInline in AComponent.ComponentState then
+        TraverseComponents(AComponent)
+      else
+      if ComponentIsIcon(AComponent) then
+        DrawComponent(AComponent);
     end;
   end;
+
+begin
+  Surface := nil;
+  TraverseComponents(FLookupRoot);
   if Surface <> nil then
     Surface.Free;
 end;
@@ -3104,29 +3130,59 @@ begin
   end;
 end;
 
-function TDesigner.NonVisualComponentAtPos(x,y: integer): TComponent;
-var i: integer;
-  LeftTop: TPoint;
-begin
-  for i:=FLookupRoot.ComponentCount-1 downto 0 do begin
-    Result:=FLookupRoot.Components[i];
-    if ComponentIsIcon(Result) then begin
-      with Result do begin
-        LeftTop:=NonVisualComponentLeftTop(Result);
-        if (LeftTop.x<=x) and (LeftTop.y<=y)
-        and (LeftTop.x+NonVisualCompWidth>x)
-        and (LeftTop.y+NonVisualCompWidth>y) then
-          exit;
+function TDesigner.NonVisualComponentAtPos(X, Y: integer): TComponent;
+
+  function TraverseComponents(ALookupRoot: TComponent): TComponent;
+  var
+    i: integer;
+    LeftTop: TPoint;
+  begin
+    for i := ALookupRoot.ComponentCount - 1 downto 0 do
+    begin
+      Result := ALookupRoot.Components[i];
+      if csInline in Result.ComponentState then
+      begin
+        Result := TraverseComponents(Result);
+        if Result <> nil then
+          Exit;
+      end
+      else
+      if ComponentIsIcon(Result) then
+      begin
+        with Result do
+        begin
+          LeftTop := NonVisualComponentLeftTop(Result);
+          if (LeftTop.x <= x) and (LeftTop.y <= y) and
+             (LeftTop.x + NonVisualCompWidth > x) and
+             (LeftTop.y + NonVisualCompWidth > y) then
+            Exit;
+        end;
       end;
     end;
+    Result := nil;
   end;
-  Result:=nil;
+
+begin
+  Result := TraverseComponents(FLookupRoot);
 end;
 
 procedure TDesigner.MoveNonVisualComponentIntoForm(AComponent: TComponent);
+var
+  P: TPoint;
+  Tmp: TComponent;
 begin
-  with NonVisualComponentLeftTop(AComponent) do
-    AComponent.DesignInfo := LeftTopToDesignInfo(x, y);
+  P := NonVisualComponentLeftTop(AComponent);
+  Tmp := AComponent;
+  while Tmp.Owner <> FLookupRoot do
+  begin
+    Tmp := Tmp.Owner;
+    if Tmp is TControl then
+    begin
+      dec(P.X, TControl(Tmp).Left);
+      dec(P.Y, TControl(Tmp).Top);
+    end;
+  end;
+  AComponent.DesignInfo := LeftTopToDesignInfo(P.X, P.Y);
 end;
 
 procedure TDesigner.MoveNonVisualComponentsIntoForm;
