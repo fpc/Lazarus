@@ -194,7 +194,6 @@ type
     procedure UnbindEditor;
   protected
     ErrorMsgs: TStrings;
-    procedure ReParent(AParent: TWinControl);
 
     procedure ProcessCommand(Sender: TObject;
        var Command: TSynEditorCommand; var AChar: TUTF8Char; Data: pointer);
@@ -2990,11 +2989,6 @@ procedure TSourceEditor.EndUpdate;
 begin
   FEditor.EndUpdate;
 end;
-
-Procedure TSourceEditor.ReParent(AParent: TWInControl);
-Begin
-  CreateEditor(FAOwner,AParent);
-End;
 
 procedure TSourceEditor.SetCodeTemplates(
   NewCodeTemplates: TSynEditAutoComplete);
