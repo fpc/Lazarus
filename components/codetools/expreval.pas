@@ -44,6 +44,13 @@ type
   TOnGetSameString = procedure(var s: string) of object;
   ArrayOfAnsiString = ^AnsiString;
   
+  TOperandValue = record
+    Value: PChar;
+    Len: PtrInt;
+    Data: array[0..3] of char;
+    Free: boolean;
+  end;
+  POperandValue = ^TOperandValue;
 
   { TExpressionEvaluator }
 
@@ -79,7 +86,8 @@ type
     procedure Assign(SourceExpressionEvaluator: TExpressionEvaluator);
     procedure AssignTo(SL: TStringList);
     function Eval2(const Expression: string):string;
-    function EvalPChar(Expression: PChar; ExprLen: PtrInt): string;
+    function EvalPChar(Expression: PChar; ExprLen: PtrInt;
+                       out Operand: TOperandValue): boolean;// true if expression valid
     function Eval(const Expression: string):string;
     property ErrorPosition: integer read FErrorPos write FErrorPos;
     property ErrorMsg: string read FErrorMsg write FErrorMsg;
@@ -119,15 +127,6 @@ type
 
 
 implementation
-
-type
-  TOperandValue = record
-    Value: PChar;
-    Len: PtrInt;
-    Data: array[0..3] of char;
-    Free: boolean;
-  end;
-  POperandValue = ^TOperandValue;
 
 var
   IsWordChar, IsIdentifierChar, IsNumberBeginChar, IsNumberChar:
@@ -1153,13 +1152,21 @@ begin
 end;
 
 function TExpressionEvaluator.Eval2(const Expression: string): string;
+var
+  Operand: TOperandValue;
 begin
   if Expression='' then exit('0');
-  Result:=EvalPChar(PChar(Expression),length(Expression));
+  if not EvalPChar(PChar(Expression),length(Expression),Operand) then
+    Result:=''
+  else begin
+    SetLength(Result,Operand.Len);
+    if Result<>'' then
+      System.Move(Operand.Value^,Result[1],length(Result));
+  end;
 end;
 
-function TExpressionEvaluator.EvalPChar(Expression: PChar; ExprLen: PtrInt
-  ): string;
+function TExpressionEvaluator.EvalPChar(Expression: PChar; ExprLen: PtrInt;
+  out Operand: TOperandValue): boolean;
 {  0 = false
    else true
 
@@ -1179,7 +1186,6 @@ type
   TExprStack = array[0..3] of TOperandAndOperator;
 
 var
-  Operand: TOperandValue;
   ExprStack: TExprStack;
   StackPtr: integer; // -1 = empty
   ExprEnd: Pointer;
@@ -1319,6 +1325,11 @@ var
     Error(NewErrorPos,c+' missing');
   end;
 
+  procedure BracketMissing(NewErrorPos: PChar);
+  begin
+    Error(NewErrorPos,'closing bracket without opening bracket');
+  end;
+
   procedure StrExpectedAtPos(NewErrorPos, ExpectedStr: PChar);
   var
     s: string;
@@ -1382,9 +1393,16 @@ var
      not Variable
      not not undefined Variable
      defined(Variable)
+     !Variable
+     unicodestring
+     123
+     $45
+     'Abc'
+     (expression)
   }
   var
     i: LongInt;
+    BracketLvl: Integer;
   begin
     Result:=false;
     if AtomStart>=ExprEnd then exit;
@@ -1451,6 +1469,28 @@ var
     '''':
       begin
         SetOperandValueStringConst(Operand,AtomStart,p);
+        exit(true);
+      end;
+    '(':
+      begin
+        ReadNextAtom;
+        if AtomStart>=ExprEnd then exit;
+        DebugLn(['ReadOperand BRACKET OPEN']);
+        if not EvalPChar(AtomStart,ExprLen-(AtomStart-Expression),Operand) then
+          exit;
+        DebugLn(['ReadOperand BRACKET CLOSED => skip bracket']);
+        BracketLvl:=1;
+        while AtomStart<ExprEnd do begin
+          case AtomStart^ of
+          '(': inc(BracketLvl);
+          ')':
+            begin
+              dec(BracketLvl);
+              if BracketLvl=0 then break;
+            end;
+          end;
+          ReadNextAtom;
+        end;
         exit(true);
       end;
     end;
@@ -1650,20 +1690,19 @@ var
   OperatorLvl: Integer;
 begin
   p:=Expression;
-  Result:='';
+  Result:=false;
+  ClearOperandValue(Operand);
   if p=nil then begin
     ExpressionMissing(p);
     exit;
   end;
   ExprEnd:=p+ExprLen;
-  // skip space
   ReadNextAtom;
   if AtomStart>=ExprEnd then begin
     ExpressionMissing(AtomStart);
     exit;
   end;
   StackPtr:=-1;
-  ClearOperandValue(Operand);
   FErrorPos:=-1;
   fErrorMsg:='';
   try
@@ -1680,6 +1719,7 @@ begin
       // level 3: = < > <> >= <=
       OperatorLvl:=0;
       case UpChars[AtomStart^] of
+      ')': break;
       '*','/': if p-AtomStart=1 then OperatorLvl:=1;
       '+','-': if p-AtomStart=1 then OperatorLvl:=2;
       '=': if p-AtomStart=1 then OperatorLvl:=3;
@@ -1738,17 +1778,11 @@ begin
       ReadNextAtom;
     end;
     if FErrorPos<0 then begin
-      if ExecuteStack(4) then begin
-        // set result
-        SetLength(Result,Operand.Len);
-        if Result<>'' then
-          System.Move(Operand.Value^,Result[1],length(Result));
-      end;
+      Result:=ExecuteStack(4);
     end;
   finally
     // clean up
     FreeStack;
-    FreeOperandValue(Operand);
   end;
 end;
 
