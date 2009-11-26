@@ -37,15 +37,24 @@ uses
   // interfacebase
   InterfaceBase,
   // private
-  CocoaAll, CocoaPrivate,
+  CocoaAll, CocoaPrivate, CocoaUtils,
   // LCL
   LCLStrConsts, LMessages, LCLMessageGlue, LCLProc, LCLIntf, LCLType,
   CocoaWSFactory;
 
 type
-  { TAppDelegate }
 
-  TNSAppDelegate = objcclass(NSObject)
+  { TCocoaTimerObject }
+
+  TCocoaTimerObject=objcclass(NSObject)
+    func : TFNTimerProc;
+    procedure timerEvent; message 'timerEvent';
+    class function initWithFunc(afunc: TFNTimerProc): TCocoaTimerObject; message 'initWithFunc:';
+  end;
+
+  { TCocoaAppDelegate }
+
+  TCocoaAppDelegate = objcclass(NSObject)
     function applicationShouldTerminate(sender: NSApplication): NSApplicationTerminateReply; message 'applicationShouldTerminate:';
   end;
 
@@ -53,19 +62,11 @@ type
 
   TCocoaWidgetSet = class(TWidgetSet)
   private
-    // Set when the QuitEventHandler terminates
     FTerminating: Boolean;
-{    FMainEventQueue: EventQueueRef;
-    FTimerMap: TMap; // the map contains all installed timers
-    FCurrentCursor: HCURSOR;
-    FMainMenu: TMainMenu; // Main menu attached to menu bar
-    FCaptureWidget: HWND; // Captured widget (TCarbonWidget descendant)
-    FOpenEventHandlerUPP: AEEventHandlerUPP;
-    FQuitEventHandlerUPP: AEEventHandlerUPP;}
 
     pool      : NSAutoreleasePool;
     NSApp     : NSApplication;
-    delegate  : TNSAppDelegate;
+    delegate  : TCocoaAppDelegate;
 
   public
     constructor Create; override;
@@ -82,6 +83,10 @@ type
     procedure AppRestore; override;
     procedure AppBringToFront; override;
     procedure AppSetTitle(const ATitle: string); override;
+
+    function CreateTimer(Interval: integer; TimerFunc: TFNTimerProc): THandle; override;
+    function DestroyTimer(TimerHandle: THandle): boolean; override;
+    function AppHandle: THandle; override;
 
     // the winapi compatibility methods
     {$I cocoawinapih.inc}
@@ -100,14 +105,6 @@ implementation
 //{$I Cocoalclintf.inc}
 
 
-{ TNSAppDelegate }
-
-function TNSAppDelegate.applicationShouldTerminate(sender: NSApplication): NSApplicationTerminateReply;
-begin
-  Result := NSTerminateNow;
-end;
-
-
 { TCocoaWidgetSet }
 
 {------------------------------------------------------------------------------
@@ -122,7 +119,7 @@ begin
     DebugLn('TCocoaWidgetSet.AppInit');
   {$ENDIF}
 
-  delegate:=TNSAppDelegate.alloc;
+  delegate:=TCocoaAppDelegate.alloc;
 
   { Creates the application NSApp object }
   NsApp := NSApplication.sharedApplication;
@@ -149,11 +146,15 @@ end;
   Handle all pending messages
  ------------------------------------------------------------------------------}
 procedure TCocoaWidgetSet.AppProcessMessages;
+var
+  event : NSEvent;
 begin
   {$IFDEF VerboseObject}
     DebugLn('TCocoaWidgetSet.AppProcessMessages');
   {$ENDIF}
 
+  event:=NSApp.nextEventMatchingMask_untilDate_inMode_dequeue(NSAnyEventMask, nil, NSDefaultRunLoopMode, true);
+  NSApp.sendEvent(event);
 
   {$IFDEF VerboseObject}
     DebugLn('TCocoaWidgetSet.AppProcessMessages END');
@@ -163,14 +164,17 @@ end;
 {------------------------------------------------------------------------------
   Method:  TCocoaWidgetSet.AppWaitMessage
 
-  Passes execution control to Carbon
+  Passes execution control to Cocoa
  ------------------------------------------------------------------------------}
 procedure TCocoaWidgetSet.AppWaitMessage;
+var
+  event : NSEvent;
 begin
   {$IFDEF VerboseObject}
     DebugLn('TCocoaWidgetSet.AppWaitMessage');
   {$ENDIF}
-
+  event:=NSApp.nextEventMatchingMask_untilDate_inMode_dequeue(NSAnyEventMask, NSDate.distantFuture, NSDefaultRunLoopMode, true);
+  NSApp.sendEvent(event);
 end;
 
 {------------------------------------------------------------------------------
@@ -227,7 +231,7 @@ begin
   {$IFDEF VerboseObject}
     DebugLn('TCocoaWidgetSet.AppMinimize');
   {$ENDIF}
-
+  NSApp.miniaturizeAll(nil);
 end;
 
 {------------------------------------------------------------------------------
@@ -240,7 +244,7 @@ begin
   {$IFDEF VerboseObject}
     DebugLn('TCocoaWidgetSet.AppRestore');
   {$ENDIF}
-
+  NSApp.unhide(nil);
 end;
 
 {------------------------------------------------------------------------------
@@ -253,7 +257,7 @@ begin
   {$IFDEF VerboseObject}
     DebugLn('TCocoaWidgetSet.AppBringToFront');
   {$ENDIF}
-
+  NSApp.activateIgnoringOtherApps(True);
 end;
 
 {------------------------------------------------------------------------------
@@ -264,19 +268,62 @@ end;
  ------------------------------------------------------------------------------}
 procedure TCocoaWidgetSet.AppSetTitle(const ATitle: string);
 begin
-  // TODO
+  if not Assigned(NSApp.dockTile) then Exit;
+  //todo: setBadgeLabel is for 10.5 only, should be removed
+  if NSApp.dockTile.respondsToSelector_(objcselector('setBadgeLabel:')) then
+    NSApp.dockTile.setBadgeLabel(NSStringUtf8(ATitle));
+end;
+
+function TCocoaWidgetSet.CreateTimer(Interval: integer; TimerFunc: TFNTimerProc): THandle;
+var
+  timer : NSTimer;
+  user  : TCocoaTimerObject;
+begin
+  user:=TCocoaTimerObject.initWithFunc(TimerFunc);
+
+  timer:=NSTimer.timerWithTimeInterval_target_selector_userInfo_repeats(
+    Interval/1000, user, objcselector(user.timerEvent), user, True);
+
+  NSRunLoop.currentRunLoop.addTimer_forMode(timer, NSDefaultRunLoopMode);
+
+  {user is retained (twice, because it's target), by the timer and }
+  {released (twice) on timer invalidation}
+  user.release;
+
+  Result:=THandle(timer);
+end;
+
+function TCocoaWidgetSet.DestroyTimer(TimerHandle: THandle): boolean;
+var
+  obj : NSObject;
+begin
+  obj:=NSObject(TimerHandle);
+  try
+    Result:= Assigned(obj) and obj.isKindOfClass_(NSTimer);
+  except
+    Result:=false;
+  end;
+  if not Result then Exit;
+  NSTimer(obj).invalidate;
+end;
+
+{------------------------------------------------------------------------------
+  Method:  TCocoaWidgetSet.AppHandle
+  Returns: Returns NSApp object, created via NSApplication.sharedApplication
+ ------------------------------------------------------------------------------}
+function TCocoaWidgetSet.AppHandle: THandle;
+begin
+  Result:=THandle(NSApp);
 end;
 
 {------------------------------------------------------------------------------
   Method:  TCocoaWidgetSet.LCLPlatform
-  Returns: lpCarbon - enum value for Carbon widgetset
+  Returns: lpCocoa - enum value for Cocoa widgetset
  ------------------------------------------------------------------------------}
 function TCocoaWidgetSet.LCLPlatform: TLCLPlatform;
 begin
   Result:= lpCocoa;
 end;
-
-
 
 procedure InternalInit;
 begin
@@ -287,6 +334,26 @@ begin
 
 end;
 
+
+{ TCocoaAppDelegate }
+
+function TCocoaAppDelegate.applicationShouldTerminate(sender: NSApplication): NSApplicationTerminateReply;
+begin
+  Result := NSTerminateNow;
+end;
+
+{ TCocoaTimerObject }
+
+procedure TCocoaTimerObject.timerEvent;
+begin
+  if Assigned(@func) then func;
+end;
+
+class function TCocoaTimerObject.initWithFunc(afunc: TFNTimerProc): TCocoaTimerObject;
+begin
+  Result:=alloc;
+  Result.func:=afunc;
+end;
 
 initialization
 //  {$I Cocoaimages.lrs}
