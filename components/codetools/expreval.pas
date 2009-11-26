@@ -109,22 +109,6 @@ type
     procedure IncreaseChangeStamp; inline;
   end;
 
-  { TExpressionSolver
-    Checks if expression is always true 1, always false 0, or something }
-
-  TExpressionSolver = class
-  public
-    //Defines: TStringToStringTree;
-    //Undefines: TStringToStringTree;
-    ErrorMsg: string; // last error message
-    ErrorPos: integer;// last error position
-    constructor Create;
-    destructor Destroy; override;
-    function Solve(const Expr: string; out ExprResult: string): boolean;
-    function Solve(const Src: string; StartPos, EndPos: integer;
-                  out ExprResult: string): boolean;
-  end;
-
 
 implementation
 
@@ -1877,64 +1861,6 @@ begin
     FChangeStamp:=Low(Integer);
 end;
 
-
-{ TExpressionSolver }
-
-constructor TExpressionSolver.Create;
-begin
-
-end;
-
-destructor TExpressionSolver.Destroy;
-begin
-  inherited Destroy;
-end;
-
-function TExpressionSolver.Solve(const Expr: string; out
-  ExprResult: string): boolean;
-begin
-  Result:=Solve(Expr,1,length(Expr),ExprResult);
-end;
-
-function TExpressionSolver.Solve(const Src: string;
-  StartPos, EndPos: integer; out ExprResult: string): boolean;
-{ '' -> ''
-  true = nonzero, false = zero
-  defined(name)
-  sizeof(type)
-  unary operators: not, !
-  binary operators: = <> >= <= > < and or xor shl shr
-  round brackets ()
-}
-var
-  AtomStart: LongInt;
-  SrcPos: LongInt;
-
-  function AtomIs(const s: shortstring): boolean;
-  var
-    len: Integer;
-    i: Integer;
-  begin
-    len:=length(s);
-    if (len<>SrcPos-AtomStart) then exit(false);
-    if SrcPos>EndPos then exit(false);
-    for i:=1 to len do
-      if Src[AtomStart+i-1]<>s[i] then exit(false);
-    Result:=true;
-  end;
-
-begin
-  if StartPos>=EndPos then begin
-    ExprResult:='';
-    exit(true);
-  end;
-  SrcPos:=StartPos;
-  AtomStart:=SrcPos;
-  //ReadNextCAtom(Source,SrcPos,AtomStart);
-  if AtomIs('!') then begin
-
-  end;
-end;
 
 initialization
   InternalInit;
