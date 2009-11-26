@@ -373,8 +373,10 @@ begin
   if (WidgetInfo <> nil) and (WidgetInfo^.LCLObject.InheritsFrom(TCustomListView)) then
   begin
     gtk_tree_model_get(tree_model, iter, [0, @ListItem, -1]);
+    if (ListItem = nil) and TCustomListView(WidgetInfo^.LCLObject).OwnerData then
+      ListItem := TCustomListView(WidgetInfo^.LCLObject).Items[LCLCellRenderer^.Index];
     if ListItem = nil then
-      exit;
+      Exit;
     ListColumn := TListColumn(g_object_get_data(G_OBJECT(cell_layout), 'TListColumn'));
     if ListColumn = nil then
       LCLCellRenderer^.ColumnIndex := -1

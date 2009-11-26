@@ -29,13 +29,13 @@ procedure Gtk2_ItemCheckedChanged(renderer: PGtkCellRendererToggle; PathStr: Pgc
 var
   LV: TLVHack;
   Index: Integer;
-  LI: TLVItemHack;
+  ListItem: TLVItemHack;
 begin
   LV := TLVHack(WidgetInfo^.LCLObject);
   Index := StrToInt(PathStr);
-  LI := TLVItemHack(LV.Items.Item[Index]);
-  if LI <> nil then
-    LI.Checked := not LI.GetCheckedInternal;
+  ListItem := TLVItemHack(LV.Items.Item[Index]);
+  if ListItem <> nil then
+    ListItem.Checked := not ListItem.GetCheckedInternal;
 end;
 
 procedure Gtk2_ItemFocusChanged(treeview: PGtkTreeView; WidgetInfo: PWidgetInfo);cdecl;
@@ -225,10 +225,19 @@ end;
 procedure Gtk2WSLV_ListViewGetCheckedDataFunc(tree_column: PGtkTreeViewColumn;
   cell: PGtkCellRenderer; tree_model: PGtkTreeModel; iter: PGtkTreeIter; WidgetInfo: PWidgetInfo); cdecl;
 var
+  APath: PGtkTreePath;
   ListItem: TLVItemHack;
 begin
   gtk_tree_model_get(tree_model, iter, [0, @ListItem, -1]);
-  if ListITem = nil then
+
+  if (ListItem = nil) and TCustomListView(WidgetInfo^.LCLObject).OwnerData then
+  begin
+    APath := gtk_tree_model_get_path(tree_model,iter);
+    ListItem := TLVItemHack(TCustomListView(WidgetInfo^.LCLObject).Items[gtk_tree_path_get_indices(APath)^]);
+    gtk_tree_path_free(APath);
+  end;
+
+  if ListItem = nil then
     Exit;
   gtk_cell_renderer_toggle_set_active(PGtkCellRendererToggle(cell), ListItem.GetCheckedInternal);
 end;
@@ -243,6 +252,7 @@ var
   ListColumn: TListColumn;
   ImageIndex: Integer;
   ColumnIndex: Integer;
+  APath: PGtkTreePath;
 begin
   PGtkCellRendererPixbuf(cell)^.pixbuf := nil;
   Widgets := PTVWidgets(WidgetInfo^.UserData);
@@ -252,12 +262,23 @@ begin
   if ListColumn = nil then
     Exit;
   ColumnIndex := ListColumn.Index;
-  Images :=  Widgets^.Images;
+  Images := Widgets^.Images;
   if Images = nil then
     Exit;
   ImageIndex := -1;
+
+  if (ListItem = nil) and TCustomListView(WidgetInfo^.LCLObject).OwnerData then
+  begin
+    APath := gtk_tree_model_get_path(tree_model,iter);
+    ListItem := TCustomListView(WidgetInfo^.LCLObject).Items[gtk_tree_path_get_indices(APath)^];
+    gtk_tree_path_free(APath);
+  end;
+
+  if ListItem = nil then
+    Exit;
+
   if ColumnIndex = 0 then
-    ImageIndex := ListITem.ImageIndex
+    ImageIndex := ListItem.ImageIndex
   else
     if ColumnIndex -1 <= ListItem.SubItems.Count-1 then
       ImageIndex := ListItem.SubItemImages[ColumnIndex-1];
@@ -529,9 +550,9 @@ begin
 
   // add renderers
   pixrenderer := gtk_cell_renderer_pixbuf_new();
-  textrenderer := LCLIntfCellRenderer_New;;//gtk_cell_renderer_text_new();
+  textrenderer := LCLIntfCellRenderer_New;//gtk_cell_renderer_text_new();
 
-  gtk_tree_view_column_pack_start(column, pixrenderer, FALSE);
+  gtk_tree_view_column_pack_start(column, pixrenderer, False);
   //gtk_tree_view_column_set_attributes(column, pixrenderer,['pixbuf', RealIndex, nil]);
   gtk_tree_view_column_pack_start(column, textrenderer, True);
   //gtk_tree_view_column_set_attributes(column, textrenderer, ['text', 0, nil]);
@@ -1402,6 +1423,28 @@ begin
         BitImage.Free;
       end;
     end;
+  end;
+end;
+
+class procedure TGtk2WSCustomListView.SetItemsCount(const ALV: TCustomListView;
+  const Avalue: Integer);
+var
+  Widgets: PTVWidgets;
+  Iter: TGtkTreeIter;
+  Index: Integer;
+begin
+  if not WSCheckHandleAllocated(ALV, 'SetItemsCount')
+  then Exit;
+
+  GetCommonTreeViewWidgets(PGtkWidget(ALV.Handle), Widgets);
+
+  with Widgets^ do
+  begin
+    if ItemCache = nil then
+      ItemCache := TStringList.Create;
+    gtk_list_store_clear(PGtkListStore(TreeModel));
+    for Index := 0 to AValue - 1 do
+      gtk_list_store_insert_with_values(PGtkListStore(TreeModel), @Iter, Index, 0, nil, -1);
   end;
 end;
 
