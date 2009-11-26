@@ -121,31 +121,13 @@ type
 implementation
 
 type
-  TOperator = (
-    opNone,
-    opNot,
-    opDefined,
-    opUndefined,
-    opDeclared,
-    opLowerThan,
-    opLowerOrEqual,
-    opEqual,
-    opNotEqual,
-    opGreaterOrEqual,
-    opGreaterThan,
-    opAnd,
-    opOr,
-    opXor,
-    opShl
-    );
   TOperandValue = record
     Value: PChar;
     Len: PtrInt;
     Data: array[0..3] of char;
     Free: boolean;
   end;
-const
-  CleanOperandValue: TOperandValue = (Value:nil; Len:0; Data:#0#0#0#0; Free:false);
+  POperandValue = ^TOperandValue;
 
 var
   IsWordChar, IsIdentifierChar, IsNumberBeginChar, IsNumberChar:
@@ -171,6 +153,95 @@ begin
   end;
 end;
 
+procedure ClearOperandValue(var V: TOperandValue); inline;
+begin
+  V.Free:=false;
+  V.Value:=nil;
+  V.Len:=0;
+end;
+
+function OperandIsTrue(const V: TOperandValue): boolean; inline;
+begin
+  Result:=not ((V.Len=1) and (V.Value^='0'));
+end;
+
+function OperandToInt64(const V: TOperandValue): int64;
+var
+  p: PChar;
+  l: PtrInt;
+  Negated: Boolean;
+  c: Char;
+begin
+  Result:=0;
+  p:=V.Value;
+  l:=V.Len;
+  if l=0 then exit;
+  if p^='-' then begin
+    Negated:=true;
+    inc(p);
+    dec(l);
+  end else
+    Negated:=false;
+  if p^='$' then begin
+    // hex number
+    if l<15 then begin
+      while l>0 do begin
+        c:=p^;
+        case c of
+        '0'..'9': Result:=Result*16+ord(p^)-ord('0');
+        'a'..'f': Result:=Result*16+ord(p^)-ord('a')+10;
+        'A'..'Z': Result:=Result*16+ord(p^)-ord('A')+10;
+        else
+          break;
+        end;
+        inc(p);
+        dec(l);
+      end;
+    end else begin
+      try
+        while l>0 do begin
+          c:=p^;
+          case c of
+          '0'..'9': Result:=Result*16+ord(p^)-ord('0');
+          'a'..'f': Result:=Result*16+ord(p^)-ord('a')+10;
+          'A'..'Z': Result:=Result*16+ord(p^)-ord('A')+10;
+          else
+            break;
+          end;
+          inc(p);
+          dec(l);
+        end;
+      except
+      end;
+    end;
+  end else begin
+    // decimal number
+    if l<15 then begin
+      while l>0 do begin
+        if c in ['0'..'9'] then
+          Result:=Result*10+ord(p^)-ord('0')
+        else
+          break;
+        inc(p);
+        dec(l);
+      end;
+    end else begin
+      try
+        while l>0 do begin
+          if c in ['0'..'9'] then
+            Result:=Result*10+ord(p^)-ord('0')
+          else
+            break;
+          inc(p);
+          dec(l);
+        end;
+      except
+      end;
+    end;
+  end;
+  if Negated then Result:=-Result;
+end;
+
 procedure SetOperandValueChar(var V: TOperandValue; const c: Char);
 begin
   if V.Free then FreeOperandValue(V);
@@ -184,6 +255,79 @@ begin
   if V.Free then FreeOperandValue(V);
   V.Len:=strlen(p);
   V.Value:=p;
+end;
+
+procedure SetOperandValueInt64(var V: TOperandValue; i : int64);
+const
+  HexChrs: array[0..15] of char = '0123456789ABCDEF';
+var
+  j: Integer;
+  k: Integer;
+  i2: Int64;
+begin
+  if (i>=-999) and (i<=9999) then begin
+    // small number => save in data
+    if V.Free then FreeOperandValue(V);
+    V.Value:=@V.Data[0];
+    V.Len:=0;
+    if i<0 then begin
+      // sign
+      V.Data[0]:='-';
+      inc(V.Len);
+      i:=-i;
+    end;
+    if i<10 then
+      j:=1
+    else if i<100 then
+      j:=2
+    else if i<1000 then
+      j:=3
+    else
+      j:=4;
+    inc(V.Len,j);
+    k:=V.Len-1;
+    repeat
+      V.Data[k]:=HexChrs[i mod 10];
+      dec(j);
+      if j=0 then break;
+      i:=i div 10;
+      dec(k);
+    until false;
+  end else begin
+    // big number => save as hex number
+    // calculate needed mem
+    i2:=i;
+    j:=1; // $
+    if i2<0 then begin
+      i2:=-i2;
+      inc(j);
+    end;
+    while i2>0 do begin
+      i2:=i2 shr 4;
+      inc(j);
+    end;
+    V.Len:=j;
+    // allocate mem
+    if V.Free then begin
+      ReAllocMem(V.Value,j);
+    end else begin
+      V.Free:=true;
+      Getmem(V.Value,j);
+    end;
+    // write number
+    if i<0 then i:=-i;
+    while i>0 do begin
+      i:=i shr 4;
+      dec(j);
+      V.Value[j]:=HexChrs[i and $f];
+    end;
+    // write $
+    dec(j);
+    V.Value[j]:='$';
+    // write minus sign
+    if j=0 then
+      V.Value[j]:='-';
+  end;
 end;
 
 function CompareOperand(const Operand: TOperandValue; Value: PChar): integer;
@@ -234,6 +378,20 @@ begin
       Result:=0;
     end;
   end;
+end;
+
+function OperandsAreEqual(const Op1, Op2: TOperandValue): boolean;
+var
+  i: Integer;
+begin
+  Result:=false;
+  if Op1.Len<>Op2.Len then exit;
+  i:=Op1.Len-1;
+  while i>=0 do begin
+    if Op1.Value[i]<>Op2.Value[i] then exit;
+    dec(i);
+  end;
+  Result:=true;
 end;
 
 function GetIdentifierLen(Identifier: PChar): integer;
@@ -948,14 +1106,15 @@ end;
 
 function TExpressionEvaluator.EvalPChar(Expression: PChar; ExprLen: PtrInt
   ): string;
-{  1 = true
-   0 = syntax error
-  -1 = false
+{  0 = false
+   else true
 
   brackets ()
+  constants: false, true
   unary operators: not, defined, undefined
   binary operators: + - * / < <= = <> => > div mod and or xor shl shr
-  functions: defined(), undefined(), declared()
+  functions: defined(), undefined(), declared(), sizeof()=1, option(),
+    high(), low()
 }
 type
   TOperandAndOperator = record
@@ -988,6 +1147,9 @@ var
   end;
 
   procedure ReadNextAtom;
+  var
+    Float: Boolean;
+    Exponent: Boolean;
   begin
     // skip space
     while p^ in [' ',#9,#10,#13] do inc(p);
@@ -1003,18 +1165,63 @@ var
         while IsIdentChar[p^] do inc(p);
         if p>ExprEnd then p:=ExprEnd;
       end;
+    '0'..'9':
+      begin
+        inc(p);
+        Float:=false;
+        Exponent:=false;
+        repeat
+          case p^ of
+          '0'..'9': inc(p);
+          '.':
+            if Float then
+              break
+            else begin
+              Float:=true;
+              inc(p);
+            end;
+          'e','E':
+            if Exponent or (not Float) then
+              break
+            else begin
+              Exponent:=true;
+              inc(p);
+            end;
+          else
+            break;
+          end;
+        until p>=ExprEnd;
+      end;
+    '$':
+      begin
+        inc(p);
+        while IsHexNumberChar[p^] do inc(p);
+      end;
     '>':
       begin
         inc(p);
         case p^ of
-        '=': inc(p); // >=
+        '=','>': inc(p); // >= >>
         end;
       end;
     '<':
       begin
         inc(p);
         case p^ of
-        '>','=': inc(p); // <> <=
+        '<','>','=': inc(p); // <> <= <<
+        end;
+      end;
+    '''':
+      begin
+        inc(p);
+        while (p<=ExprEnd) do begin
+          if p^='''' then begin
+            inc(p);
+            if p^<>'''' then break;
+            inc(p);
+          end else begin
+            inc(p);
+          end;
         end;
       end;
     else
@@ -1031,6 +1238,11 @@ var
       FErrorPos:=0;
     ErrorMsg:=NewErrorMsg;
     DebugLn(['Error ',ErrorMsg,' at ',ErrorPosition]);
+  end;
+
+  procedure Error(NewErrorPos: PChar; E: Exception);
+  begin
+    Error(NewErrorPos,E.Message);
   end;
 
   procedure ExpressionMissing(NewErrorPos: PChar);
@@ -1130,11 +1342,12 @@ var
     'N':
       if CompareIdentifiers(AtomStart,'NOT')=0 then begin
         // not
-        if not ReadOperand then exit;
-        if (Operand.Len=1) and (Operand.Value^='1') then begin
-          SetOperandValueConst(Operand,'-1');
-        end else begin
+        ReadNextAtom;
+        if not ReadOperand() then exit;
+        if (Operand.Len=1) and (Operand.Value^='0') then begin
           SetOperandValueChar(Operand,'1');
+        end else begin
+          SetOperandValueChar(Operand,'0');
         end;
         exit(true);
       end;
@@ -1148,10 +1361,10 @@ var
       if CompareIdentifiers(AtomStart,'UNDEFINED')=0 then begin
         // "undefined V" or "undefined(V)"
         if not ParseDefinedParams(Operand) then exit;
-        if (Operand.Len=1) and (Operand.Value^='1') then begin
-          SetOperandValueConst(Operand,'-1');
-        end else begin
+        if (Operand.Len=1) and (Operand.Value^='0') then begin
           SetOperandValueChar(Operand,'1');
+        end else begin
+          SetOperandValueChar(Operand,'0');
         end;
         exit(true);
       end;
@@ -1173,90 +1386,177 @@ var
   function ExecuteStack(LowerOrEqualOperatorLvl: integer): boolean;
   var
     Op: PChar;
+    Number1: Int64;
+    Number2: Int64;
+    NumberResult: Int64;
+    StackOperand: POperandValue;
   begin
-    Result:=false;
+    Result:=true;
     while (StackPtr>=0)
     and (ExprStack[StackPtr].OperatorLvl<=LowerOrEqualOperatorLvl) do begin
-      // compute stack item
-      Op:=ExprStack[StackPtr].theOperator;
-      case UpChars[Op^] of
-      '*':
-        begin
-
-        end;
-      '/':
-        begin
-
-        end;
-      '+':
-        begin
-
-        end;
-      '-':
-        begin
-
-        end;
-      '=':
-        begin
-
-        end;
-      '<':
-        case Op[1] of
-        '>':
+      try
+        // compute stack item
+        Op:=ExprStack[StackPtr].theOperator;
+        StackOperand:=@ExprStack[StackPtr].Operand;
+        case UpChars[Op^] of
+        '*': // multiply
           begin
-            // <>
+            Number1:=OperandToInt64(StackOperand^);
+            Number2:=OperandToInt64(Operand);
+            NumberResult:=Number1*Number2;
+            SetOperandValueInt64(Operand,NumberResult);
+          end;
+        '+': // Add
+          begin
+            Number1:=OperandToInt64(StackOperand^);
+            Number2:=OperandToInt64(Operand);
+            NumberResult:=Number1+Number2;
+            SetOperandValueInt64(Operand,NumberResult);
+          end;
+        '-': // subtract
+          begin
+            Number1:=OperandToInt64(StackOperand^);
+            Number2:=OperandToInt64(Operand);
+            NumberResult:=Number1-Number2;
+            SetOperandValueInt64(Operand,NumberResult);
           end;
         '=':
+          if OperandsAreEqual(StackOperand^,Operand) then begin
+            SetOperandValueChar(Operand,'1');
+          end else begin
+            SetOperandValueChar(Operand,'0');
+          end;
+        '<':
+          case Op[1] of
+          '>': // <>
+            if OperandsAreEqual(StackOperand^,Operand) then begin
+              SetOperandValueChar(Operand,'0');
+            end else begin
+              SetOperandValueChar(Operand,'1');
+            end;
+          '=':
+            begin
+              // <=
+              Number1:=OperandToInt64(StackOperand^);
+              Number2:=OperandToInt64(Operand);
+              if Number1<=Number2 then
+                SetOperandValueChar(Operand,'1')
+              else
+                SetOperandValueChar(Operand,'0');
+            end;
+          '<':
+            begin
+              // <<
+              Number1:=OperandToInt64(StackOperand^);
+              Number2:=OperandToInt64(Operand);
+              NumberResult:=Number1 shl Number2;
+              SetOperandValueInt64(Operand,NumberResult);
+            end;
+          else
+            // <
+            Number1:=OperandToInt64(StackOperand^);
+            Number2:=OperandToInt64(Operand);
+            if Number1<Number2 then
+              SetOperandValueChar(Operand,'1')
+            else
+              SetOperandValueChar(Operand,'0');
+          end;
+        '>':
+          case Op[1] of
+          '=':
+            begin
+              // >=
+              Number1:=OperandToInt64(StackOperand^);
+              Number2:=OperandToInt64(Operand);
+              if Number1>=Number2 then
+                SetOperandValueChar(Operand,'1')
+              else
+                SetOperandValueChar(Operand,'0');
+            end;
+          '>':
+            begin
+              // >>
+              Number1:=OperandToInt64(StackOperand^);
+              Number2:=OperandToInt64(Operand);
+              NumberResult:=Number1 shr Number2;
+              SetOperandValueInt64(Operand,NumberResult);
+            end;
+          else
+            // >
+            Number1:=OperandToInt64(StackOperand^);
+            Number2:=OperandToInt64(Operand);
+            if Number1>Number2 then
+              SetOperandValueChar(Operand,'1')
+            else
+              SetOperandValueChar(Operand,'0');
+          end;
+        'A': // AND
           begin
-            //<=
+            if OperandIsTrue(StackOperand^) and OperandIsTrue(Operand) then
+              SetOperandValueChar(Operand,'1')
+            else
+              SetOperandValueChar(Operand,'0');
           end;
-        else
-          // <
-        end;
-      '>':
-        if Op[1]='=' then begin
-          // >=
-        end else begin
-          // >
-        end;
-      'A': // AND
-        begin
-
-        end;
-      'D': // DIV
-        begin
-
-        end;
-      'M': // MOD
-        begin
-
-        end;
-      'S':
-        case UpChars[Op[1]] of
-        'H': // SH
-          case UpChars[Op[2]] of
-          'L': // SHL
-            begin
-
-            end;
-          'R': // SHR
-            begin
-
+        'D': // DIV
+          begin
+            Number1:=OperandToInt64(StackOperand^);
+            Number2:=OperandToInt64(Operand);
+            NumberResult:=Number1 div Number2;
+            SetOperandValueInt64(Operand,NumberResult);
+          end;
+        'M': // MOD
+          begin
+            Number1:=OperandToInt64(StackOperand^);
+            Number2:=OperandToInt64(Operand);
+            NumberResult:=Number1 mod Number2;
+            SetOperandValueInt64(Operand,NumberResult);
+          end;
+        'S':
+          case UpChars[Op[1]] of
+          'H': // SH
+            case UpChars[Op[2]] of
+            'L': // SHL
+              begin
+                Number1:=OperandToInt64(StackOperand^);
+                Number2:=OperandToInt64(Operand);
+                NumberResult:=Number1 shl Number2;
+                SetOperandValueInt64(Operand,NumberResult);
+              end;
+            'R': // SHR
+              begin
+                Number1:=OperandToInt64(StackOperand^);
+                Number2:=OperandToInt64(Operand);
+                NumberResult:=Number1 shr Number2;
+                SetOperandValueInt64(Operand,NumberResult);
+              end;
             end;
           end;
+        'O': // OR
+          begin
+            if OperandIsTrue(StackOperand^) or OperandIsTrue(Operand) then
+              SetOperandValueChar(Operand,'1')
+            else
+              SetOperandValueChar(Operand,'0');
+          end;
+        'X': // XOR
+          begin
+            if OperandIsTrue(StackOperand^) xor OperandIsTrue(Operand) then
+              SetOperandValueChar(Operand,'1')
+            else
+              SetOperandValueChar(Operand,'0');
+          end;
         end;
-      'O': // OR
-        begin
 
-        end;
-      'X': // XOR
-        begin
-
+      except
+        on E: Exception do begin
+          Result:=false;
+          Error(AtomStart,E);
         end;
       end;
+      if not Result then exit;
+      FreeOperandValue(ExprStack[StackPtr].Operand);
       dec(StackPtr);
     end;
-    Result:=true;
   end;
 
 var
@@ -1276,70 +1576,87 @@ begin
     exit;
   end;
   StackPtr:=-1;
-  Operand:=CleanOperandValue;
+  ClearOperandValue(Operand);
   FErrorPos:=-1;
   fErrorMsg:='';
-  while AtomStart<ExprEnd do begin
-    // read operand
-    if not ReadOperand then
-      break;
-    // read operator
-    ReadNextAtom;
-    if AtomStart>=ExprEnd then break;
-    // level 0: NOT () DEFINED UNDEFINED DECLARED: handled by ReadOperand
-    // level 1: * / DIV MOD AND SHL SHR
-    // level 2: + - OR XOR
-    // level 3: = < > <> >= <=
-    OperatorLvl:=0;
-    case UpChars[AtomStart^] of
-    '*','/': if AtomStart-p=1 then OperatorLvl:=1;
-    '+','-': if AtomStart-p=1 then OperatorLvl:=2;
-    '=': if AtomStart-p=1 then OperatorLvl:=3;
-    '<': if (AtomStart-p=1)
-         or (AtomStart[2] in ['=','>']) then OperatorLvl:=3;
-    '>': if (AtomStart-p=1)
-         or (AtomStart[2]='=') then OperatorLvl:=3;
-    'A': if CompareIdentifiers(AtomStart,'AND')=0 then OperatorLvl:=1;
-    'D': if CompareIdentifiers(AtomStart,'DIV')=0 then OperatorLvl:=1;
-    'M': if CompareIdentifiers(AtomStart,'MOD')=0 then OperatorLvl:=1;
-    'S':
-      case UpChars[AtomStart[1]] of
-      'H': // SH
-        case UpChars[AtomStart[2]] of
-        'L': if p-AtomStart=3 then OperatorLvl:=1; // SHL
-        'R': if p-AtomStart=3 then OperatorLvl:=1; // SHR
+  try
+    while AtomStart<ExprEnd do begin
+      // read operand
+      if not ReadOperand then
+        break;
+      // read operator
+      ReadNextAtom;
+      if AtomStart>=ExprEnd then break;
+      // level 0: NOT () DEFINED UNDEFINED DECLARED: handled by ReadOperand
+      // level 1: * / DIV MOD AND SHL SHR << >>
+      // level 2: + - OR XOR
+      // level 3: = < > <> >= <=
+      OperatorLvl:=0;
+      case UpChars[AtomStart^] of
+      '*','/': if AtomStart-p=1 then OperatorLvl:=1;
+      '+','-': if AtomStart-p=1 then OperatorLvl:=2;
+      '=': if AtomStart-p=1 then OperatorLvl:=3;
+      '<': if (AtomStart-p=1)
+           or (AtomStart[2] in ['=','>']) then
+             OperatorLvl:=3
+           else if AtomStart[2]='<' then
+             OperatorLvl:=1;
+      '>': if (AtomStart-p=1)
+           or (AtomStart[2]='=') then
+             OperatorLvl:=3
+           else if AtomStart[2]='>' then
+             OperatorLvl:=1;
+      'A':
+        if CompareIdentifiers(AtomStart,'AND')=0 then begin
+          OperatorLvl:=1;
+          if not OperandIsTrue(Operand) then break;
         end;
+      'D': if CompareIdentifiers(AtomStart,'DIV')=0 then OperatorLvl:=1;
+      'M': if CompareIdentifiers(AtomStart,'MOD')=0 then OperatorLvl:=1;
+      'S':
+        case UpChars[AtomStart[1]] of
+        'H': // SH
+          case UpChars[AtomStart[2]] of
+          'L': if p-AtomStart=3 then OperatorLvl:=1; // SHL
+          'R': if p-AtomStart=3 then OperatorLvl:=1; // SHR
+          end;
+        end;
+      'O':
+        case UpChars[AtomStart[1]] of
+        'R':
+          if p-AtomStart=2 then begin
+            OperatorLvl:=2;
+            if OperandIsTrue(Operand) then break;
+          end;
+        end;
+      'X': if CompareIdentifiers(AtomStart,'XOR')=0 then OperatorLvl:=2;
       end;
-    'O':
-      case UpChars[AtomStart[1]] of
-      'R': if p-AtomStart=2 then OperatorLvl:=2;
+      if OperatorLvl=0 then begin
+        OperatorMissing(AtomStart);
+        break;
       end;
-    'X': if CompareIdentifiers(AtomStart,'XOR')=0 then OperatorLvl:=2;
+      if not ExecuteStack(OperatorLvl) then break;
+      // push onto stack
+      inc(StackPtr);
+      ExprStack[StackPtr].Operand:=Operand;
+      ExprStack[StackPtr].OperatorLvl:=OperatorLvl;
+      ExprStack[StackPtr].theOperator:=AtomStart;
+      ClearOperandValue(Operand);
+      ReadNextAtom;
     end;
-    if OperatorLvl=0 then begin
-      OperatorMissing(AtomStart);
-      break;
+    if FErrorPos<0 then begin
+      if ExecuteStack(4) then begin
+        // set result
+        SetLength(Result,Operand.Len);
+        if Result<>'' then
+          System.Move(Operand.Value^,Result[1],length(Result));
+      end;
     end;
-    if not ExecuteStack(OperatorLvl) then break;
-    // push onto stack
-    inc(StackPtr);
-    ExprStack[StackPtr].Operand:=Operand;
-    ExprStack[StackPtr].OperatorLvl:=OperatorLvl;
-    ExprStack[StackPtr].theOperator:=AtomStart;
-    Operand:=CleanOperandValue;
-    ReadNextAtom;
+  finally
+    // clean up
+    FreeStack;
+    FreeOperandValue(Operand);
   end;
-  if FErrorPos<0 then begin
-    if ExecuteStack(4) then begin
-      // set result
-      SetLength(Result,Operand.Len);
-      if Result<>'' then
-        System.Move(Operand.Value^,Result[1],length(Result));
-    end;
-  end;
-  // clean up
-  FreeStack;
-  FreeOperandValue(Operand);
 end;
 
 function TExpressionEvaluator.AsString: string;
