@@ -114,7 +114,10 @@ implementation
 
 uses
   fFloatingSite,
+{$IFDEF WIN32}
   Windows,  //PostMessage
+{$ELSE}
+{$ENDIF}
   LCLProc; //debug only
 
 procedure Register;
