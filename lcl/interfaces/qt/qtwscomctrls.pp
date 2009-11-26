@@ -979,18 +979,12 @@ begin
 
   QtTreeWidget := TQtTreeWidget(ALV.Handle);
   TWI := QtTreeWidget.topLevelItem(AIndex);
-
-  case AState of
-    lisFocused: AIsSet := TWI = QtTreeWidget.currentItem;
-    lisSelected:
-      begin
-        AIsSet := QTreeWidgetItem_isSelected(TWI);
-        if not AIsSet and TListView(ALV).HideSelection then
-          AIsSet := TWI = QtTreeWidget.currentItem;
-      end;
-    else
-      AIsSet := False;
-  end;
+  AIsSet := False;
+  if TWI <> nil then
+    case AState of
+      lisFocused: AIsSet := TWI = QtTreeWidget.currentItem;
+      lisSelected: AIsSet := QTreeWidgetItem_isSelected(TWI);
+    end;
 
   Result := True;
 
@@ -1301,8 +1295,6 @@ begin
     Result := FPInts[0]
   else
     Result := -1;
-  if (Result = -1) and TListView(ALV).HideSelection then
-    Result := QtTreeWidget.currentRow;
 end;
 
 {------------------------------------------------------------------------------
@@ -1417,15 +1409,7 @@ begin
         TQtTreeWidget(ALV.Handle).setSelectionBehavior(BoolToSelectionBehavior[AIsSet]);
       end;
     lvpWrapText: TQtTreeWidget(ALV.Handle).setWordWrap(AIsSet);
-    lvpHideSelection:
-      begin
-        if AIsSet then
-        begin
-          TQtTreeWidget(ALV.Handle).clearSelection;
-          TQtTreeWidget(ALV.Handle).setSelectionMode(QAbstractItemViewNoSelection);
-        end else
-          TQtTreeWidget(ALV.Handle).setSelectionMode(BoolToSelectionMode[ALV.MultiSelect]);
-      end;
+    lvpHideSelection: TQtTreeWidget(ALV.Handle).HideSelection := AIsSet;
   end;
 end;
 

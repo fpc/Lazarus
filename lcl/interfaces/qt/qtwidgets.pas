@@ -985,6 +985,7 @@ type
 
   TQtTreeWidget = class(TQtTreeView)
   private
+    FHideSelection: Boolean;
     FOwnerData: Boolean;
     FSyncingItems: Boolean;
     FSorting: Boolean;
@@ -1052,6 +1053,7 @@ type
 
     property ColCount: Integer read getColCount write setColCount;
     property Header: TQtHeaderView read getHeader;
+    property HideSelection: Boolean read FHideSelection write FHideSelection;
     property ItemCount: Integer read getItemCount write setItemCount;
     property MaxColSize[ACol: Integer]: Integer read getMaxColSize write setMaxColSize;
     property MinColSize[ACol: Integer]: Integer read getMinColSize write setMinColSize;
@@ -7348,6 +7350,7 @@ begin
   {$ifdef VerboseQt}
     WriteLn('TQtTreeWidget.Create');
   {$endif}
+  FHideSelection := False;
   FOwnerData := False;
   FSyncingItems := False;
   FSorting := False;
