@@ -218,8 +218,9 @@ begin
     // decimal number
     if l<15 then begin
       while l>0 do begin
+        c:=p^;
         if c in ['0'..'9'] then
-          Result:=Result*10+ord(p^)-ord('0')
+          Result:=Result*10+ord(c)-ord('0')
         else
           break;
         inc(p);
@@ -228,8 +229,9 @@ begin
     end else begin
       try
         while l>0 do begin
+          c:=p^;
           if c in ['0'..'9'] then
-            Result:=Result*10+ord(p^)-ord('0')
+            Result:=Result*10+ord(c)-ord('0')
           else
             break;
           inc(p);
@@ -1365,6 +1367,14 @@ var
         end;
         exit(true);
       end;
+    '0'..'9','$':
+      begin
+        // number
+        if Operand.Free then FreeOperandValue(Operand);
+        Operand.Value:=AtomStart;
+        Operand.Len:=p-AtomStart;
+        exit(true);
+      end;
     end;
     if IsIdentStartChar[AtomStart^] then begin
       // identifier => return current value
@@ -1395,6 +1405,7 @@ var
         // compute stack item
         Op:=ExprStack[StackPtr].theOperator;
         StackOperand:=@ExprStack[StackPtr].Operand;
+        DebugLn(['ExecuteStack Operator^=',ExprStack[StackPtr].theOperator^]);
         case UpChars[Op^] of
         '*': // multiply
           begin
@@ -1447,6 +1458,7 @@ var
               Number1:=OperandToInt64(StackOperand^);
               Number2:=OperandToInt64(Operand);
               NumberResult:=Number1 shl Number2;
+              DebugLn(['ExecuteStack ',Number1,' ',Number2,' ',NumberResult]);
               SetOperandValueInt64(Operand,NumberResult);
             end;
           else
@@ -1594,14 +1606,14 @@ begin
       '+','-': if AtomStart-p=1 then OperatorLvl:=2;
       '=': if AtomStart-p=1 then OperatorLvl:=3;
       '<': if (AtomStart-p=1)
-           or (AtomStart[2] in ['=','>']) then
+           or (AtomStart[1] in ['=','>']) then
              OperatorLvl:=3
-           else if AtomStart[2]='<' then
+           else if AtomStart[1]='<' then
              OperatorLvl:=1;
       '>': if (AtomStart-p=1)
-           or (AtomStart[2]='=') then
+           or (AtomStart[1]='=') then
              OperatorLvl:=3
-           else if AtomStart[2]='>' then
+           else if AtomStart[1]='>' then
              OperatorLvl:=1;
       'A':
         if CompareIdentifiers(AtomStart,'AND')=0 then begin
