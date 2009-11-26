@@ -120,7 +120,7 @@ function TCompOptConditionals.GetValues(const ValueType: TCOCValueType): string;
     case Node.NodeType of
     cocntIf,cocntElseIf:
       begin
-        ResultStr:=FEvaluator.Eval(Node.Value);
+        ResultStr:=FEvaluator.EvalOld(Node.Value);
         if FEvaluator.ErrorPosition>=0 then begin
           FErrorNode:=Node;
           FErrorMsg:='error in expression at column '+IntToStr(FEvaluator.ErrorPosition);

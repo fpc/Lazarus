@@ -466,38 +466,6 @@ type
     function NewPSourceChangeStep: PSourceChangeStep;
   end;
 
-//----------------------------------------------------------------------------
-// compiler switches
-const
-  CompilerSwitchesNames: array['A'..'Z'] of shortstring=(
-         'ALIGN'          // A
-        ,'BOOLEVAL'       // B
-        ,'ASSERTIONS'     // C
-        ,'DEBUGINFO'      // D
-        ,''               // E
-        ,''               // F
-        ,''               // G
-        ,'LONGSTRINGS'    // H
-        ,'IOCHECKS'       // I
-        ,''               // J
-        ,''               // K
-        ,'LOCALSYMBOLS'   // L
-        ,'TYPEINFO'       // M
-        ,''               // N
-        ,''               // O
-        ,'OPENSTRINGS'    // P
-        ,'OVERFLOWCHECKS' // Q
-        ,'RANGECHECKS'    // R
-        ,''               // S
-        ,'TYPEADDRESS'    // T
-        ,''               // U
-        ,'VARSTRINGCHECKS'// V
-        ,'STACKFRAMES'    // W
-        ,'EXTENDEDSYNTAX' // X
-        ,'REFERENCEINFO'  // Y
-        ,''               // Z
-     );
-
 const
   CompilerModeNames: array[TCompilerMode] of shortstring=(
         'FPC', 'DELPHI', 'GPC', 'TP', 'OBJFPC', 'MACPAS'
@@ -3247,21 +3215,21 @@ end;
 
 function TLinkScanner.InternalIfDirective: boolean;
 // {$if expression} or {$ifc expression} or indirectly called by {$elifc expression}
-var Expr, ResultStr: string;
+var
+  ExprResult: Boolean;
 begin
   //DebugLn(['TLinkScanner.InternalIfDirective FSkippingDirectives=',ord(FSkippingDirectives),' IfLevel=',IfLevel]);
   inc(SrcPos);
-  Expr:=UpperCaseStr(copy(Src,SrcPos,CommentInnerEndPos-SrcPos));
-  ResultStr:=Values.Eval(Expr);
+  ExprResult:=Values.EvalBoolean(@Src[SrcPos],CommentInnerEndPos-SrcPos);
   Result:=true;
-  //DebugLn(['TLinkScanner.InternalIfDirective ResultStr=',ResultStr]);
+  //DebugLn(['TLinkScanner.InternalIfDirective ExprResult=',ExprResult]);
   if Values.ErrorPosition>=0 then begin
     inc(SrcPos,Values.ErrorPosition);
-    RaiseException(ctsErrorInDirectiveExpression)
-  end else if ResultStr='0' then
-    SkipTillEndifElse(lssdTillElse)
+    RaiseException(Values.ErrorMsg)
+  end else if ExprResult then
+    FSkippingDirectives:=lssdNone
   else
-    FSkippingDirectives:=lssdNone;
+    SkipTillEndifElse(lssdTillElse);
 end;
 
 function TLinkScanner.CursorToCleanPos(ACursorPos: integer; ACode: pointer;

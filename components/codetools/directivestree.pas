@@ -39,7 +39,7 @@ uses
   {$ENDIF}
   Classes, SysUtils, FileProcs, CodeToolsStructs, BasicCodeTools,
   KeywordFuncLists, LinkScanner, CodeAtom, CodeCache, AVL_Tree,
-  CodeTree;
+  ExprEval, CodeTree;
 
 type
   TCompilerDirectiveNodeDesc = word;

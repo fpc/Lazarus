@@ -39,6 +39,38 @@ uses
 const
   ExternalMacroStart = '#';
 
+//----------------------------------------------------------------------------
+// compiler switches
+const
+  CompilerSwitchesNames: array['A'..'Z'] of shortstring=(
+         'ALIGN'          // A
+        ,'BOOLEVAL'       // B
+        ,'ASSERTIONS'     // C
+        ,'DEBUGINFO'      // D
+        ,''               // E
+        ,''               // F
+        ,''               // G
+        ,'LONGSTRINGS'    // H
+        ,'IOCHECKS'       // I
+        ,''               // J
+        ,''               // K
+        ,'LOCALSYMBOLS'   // L
+        ,'TYPEINFO'       // M
+        ,''               // N
+        ,''               // O
+        ,'OPENSTRINGS'    // P
+        ,'OVERFLOWCHECKS' // Q
+        ,'RANGECHECKS'    // R
+        ,''               // S
+        ,'TYPEADDRESS'    // T
+        ,''               // U
+        ,'VARSTRINGCHECKS'// V
+        ,'STACKFRAMES'    // W
+        ,'EXTENDEDSYNTAX' // X
+        ,'REFERENCEINFO'  // Y
+        ,''               // Z
+     );
+
 type
   TOnValuesChanged = procedure of object;
   TOnGetSameString = procedure(var s: string) of object;
@@ -65,7 +97,7 @@ type
     OldExpr: string;
     OldCurPos, OldMax, OldAtomStart, OldAtomEnd, OldPriorAtomStart: integer;
     FOnChange: TOnValuesChanged;
-    function ReadTilEndBracket:boolean;
+    function OldReadTilEndBracket:boolean;
     function CompAtom(const UpperCaseTag:string): boolean;
     function OldReadNextAtom:boolean;
     function EvalAtPos:string;
@@ -85,10 +117,11 @@ type
     function Equals(AnExpressionEvaluator: TExpressionEvaluator): boolean; reintroduce;
     procedure Assign(SourceExpressionEvaluator: TExpressionEvaluator);
     procedure AssignTo(SL: TStringList);
-    function Eval2(const Expression: string):string;
+    function Eval(const Expression: string):string;
     function EvalPChar(Expression: PChar; ExprLen: PtrInt;
                        out Operand: TOperandValue): boolean;// true if expression valid
-    function Eval(const Expression: string):string;
+    function EvalBoolean(Expression: PChar; ExprLen: PtrInt): boolean;
+    function EvalOld(const Expression: string):string;
     property ErrorPosition: integer read FErrorPos write FErrorPos;
     property ErrorMsg: string read FErrorMsg write FErrorMsg;
     property OnChange: TOnValuesChanged read FOnChange write FOnChange;
@@ -611,7 +644,7 @@ begin
   end;
 end;
 
-function TExpressionEvaluator.Eval(const Expression: string): string;
+function TExpressionEvaluator.EvalOld(const Expression: string): string;
 //  1 = true
 //  0 = syntax error
 // -1 = false
@@ -799,7 +832,7 @@ begin
           if FErrorPos>=0 then exit;
           // go behind brackets
           OldCurPos:=OldPos;
-          if (not ReadTilEndBracket) then exit;
+          if (not OldReadTilEndBracket) then exit;
           inc(OldCurPos);
         end;
       '=','>','<':begin
@@ -1013,7 +1046,7 @@ begin
   Result:=false;
 end;
 
-function TExpressionEvaluator.ReadTilEndBracket: boolean;
+function TExpressionEvaluator.OldReadTilEndBracket: boolean;
 // true = end bracket found
 // false = not found
 var lvl:integer;
@@ -1135,7 +1168,9 @@ begin
     SL.Add(FNames[i]+'='+FValues[i]);
 end;
 
-function TExpressionEvaluator.Eval2(const Expression: string): string;
+function TExpressionEvaluator.Eval(const Expression: string): string;
+{  0 = false
+   else true }
 var
   Operand: TOperandValue;
 begin
@@ -1328,6 +1363,30 @@ var
     Error(NewErrorPos,'expected '+s+', but found '+f);
   end;
 
+  function ReadTilEndBracket: boolean;
+  // start on bracket open
+  // ends on bracket close
+  var
+    BracketLvl: Integer;
+    BracketOpen: PChar;
+  begin
+    BracketOpen:=AtomStart;
+    BracketLvl:=0;
+    while p<ExprEnd do begin
+      case AtomStart^ of
+      '(': inc(BracketLvl);
+      ')':
+        begin
+          dec(BracketLvl);
+          if BracketLvl=0 then exit(true);
+        end;
+      end;
+      ReadNextAtom;
+    end;
+    BracketMissing(BracketOpen);
+    Result:=false;
+  end;
+
   function ParseDefinedParams(out Operand: TOperandValue): boolean;
   // p is behind defined or undefined keyword
   // Operand: '1' or '-1'
@@ -1375,6 +1434,38 @@ var
     Result:=true;
   end;
 
+  function ParseOptionParams(out Operand: TOperandValue): boolean;
+  // p is behind option keyword
+  // Operand: '1' or '-1'
+  begin
+    Result:=false;
+    ReadNextAtom;
+    if AtomStart>=ExprEnd then begin
+      CharMissing(ExprEnd,'(');
+      exit;
+    end;
+    if AtomStart^<>'(' then begin
+      StrExpectedAtPos(AtomStart,'(');
+      exit;
+    end;
+    ReadNextAtom;
+    if not IsIdentifierChar[AtomStart^] then begin
+      StrExpectedAtPos(AtomStart,'option name');
+      exit;
+    end;
+    SetOperandValueChar(Operand,'1');  // ToDo: check the right flag
+    ReadNextAtom;
+    if AtomStart>=ExprEnd then begin
+      CharMissing(ExprEnd,')');
+      exit;
+    end;
+    if AtomStart^<>')' then begin
+      StrExpectedAtPos(AtomStart,')');
+      exit;
+    end;
+    Result:=true;
+  end;
+
   function ReadOperand: boolean;
   { Examples:
      Variable
@@ -1390,7 +1481,6 @@ var
   }
   var
     i: LongInt;
-    BracketLvl: Integer;
   begin
     Result:=false;
     if AtomStart>=ExprEnd then exit;
@@ -1420,6 +1510,36 @@ var
         // should check if a pascal identifier is already declared
         // can not do this here => treat as defined
         if not ParseDefinedParams(Operand) then exit;
+        exit(true);
+      end;
+    'H':
+      if CompareIdentifiers(AtomStart,'HIGH')=0 then begin
+        ReadNextAtom;
+        if AtomStart^<>'(' then StrExpectedAtPos(AtomStart,'(');
+        if not ReadTilEndBracket then exit;
+        SetOperandValueChar(Operand,'0');
+        exit(true);
+      end;
+    'L':
+      if CompareIdentifiers(AtomStart,'LOW')=0 then begin
+        ReadNextAtom;
+        if AtomStart^<>'(' then StrExpectedAtPos(AtomStart,'(');
+        if not ReadTilEndBracket then exit;
+        SetOperandValueChar(Operand,'0');
+        exit(true);
+      end;
+    'O':
+      if CompareIdentifiers(AtomStart,'OPTION')=0 then begin
+        ReadNextAtom;
+        if not ParseOptionParams(Operand) then exit;
+        exit(true);
+      end;
+    'S':
+      if CompareIdentifiers(AtomStart,'SIZEOF')=0 then begin
+        ReadNextAtom;
+        if AtomStart^<>'(' then StrExpectedAtPos(AtomStart,'(');
+        if not ReadTilEndBracket then exit;
+        SetOperandValueChar(Operand,'1');
         exit(true);
       end;
     'U':
@@ -1479,18 +1599,7 @@ var
         {$IFDEF VerboseExprEval}
         DebugLn(['ReadOperand BRACKET CLOSED => skip bracket']);
         {$ENDIF}
-        BracketLvl:=1;
-        while AtomStart<ExprEnd do begin
-          case AtomStart^ of
-          '(': inc(BracketLvl);
-          ')':
-            begin
-              dec(BracketLvl);
-              if BracketLvl=0 then break;
-            end;
-          end;
-          ReadNextAtom;
-        end;
+        if not ReadTilEndBracket then exit;
         exit(true);
       end;
     end;
@@ -1785,6 +1894,14 @@ begin
     // clean up
     FreeStack;
   end;
+end;
+
+function TExpressionEvaluator.EvalBoolean(Expression: PChar; ExprLen: PtrInt
+  ): boolean;
+var
+  Operand: TOperandValue;
+begin
+  Result:=EvalPChar(Expression,ExprLen,Operand) and OperandIsTrue(Operand);
 end;
 
 function TExpressionEvaluator.AsString: string;
