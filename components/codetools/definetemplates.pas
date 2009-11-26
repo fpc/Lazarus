@@ -2539,7 +2539,7 @@ var
         begin
           // test expression in value
           ReadValue(DirDef,DefTempl.Value,CurPath,TempValue);
-          EvalResult:=DirDef.Values.EvalOld(TempValue);
+          EvalResult:=DirDef.Values.Eval(TempValue);
           if Assigned(OnCalculate) then
             OnCalculate(Self,DefTempl,true,TempValue,true,EvalResult,EvalResult='1');
           //debugln('da_If,da_ElseIf: DefTempl.Value="',DbgStr(DefTempl.Value),'" CurPath="',CurPath,'" TempValue="',TempValue,'" EvalResult=',EvalResult);
