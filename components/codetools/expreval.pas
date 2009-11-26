@@ -1425,6 +1425,12 @@ var
         // "defined V" or "defined(V)"
         if not ParseDefinedParams(Operand) then exit;
         exit(true);
+      end
+      else if CompareIdentifiers(AtomStart,'DECLARED')=0 then begin
+        // should check if a pascal identifier is already declared
+        // can not do this here => treat as defined
+        if not ParseDefinedParams(Operand) then exit;
+        exit(true);
       end;
     'U':
       if CompareIdentifiers(AtomStart,'UNDEFINED')=0 then begin
