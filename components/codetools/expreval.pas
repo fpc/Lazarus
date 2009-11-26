@@ -148,8 +148,9 @@ procedure FreeOperandValue(var V: TOperandValue);
 begin
   if V.Free then begin
     FreeMem(V.Value);
-    V.Value:=nil;
     V.Free:=false;
+    V.Value:=nil;
+    V.Len:=0;
   end;
 end;
 
@@ -246,8 +247,53 @@ end;
 
 procedure SetOperandValueStringConst(var V: TOperandValue;
   StartPos, EndPos: PChar);
+var
+  l: PtrInt;
+  p: PChar;
+  DstPos: PChar;
 begin
-
+  l:=0;
+  p:=StartPos;
+  if p^<>'''' then begin
+    if V.Free then FreeOperandValue(V);
+    V.Len:=0;
+    V.Value:=nil;
+    exit;
+  end;
+  inc(p);
+  while p<EndPos do begin
+    if p^='''' then begin
+      inc(p);
+      if (p^<>'''') or (p=EndPos) then break;
+    end;
+    inc(p);
+    inc(l);
+  end;
+  if l<5 then begin
+    // short string
+    if V.Free then FreeOperandValue(V);
+    V.Value:=@V.Data[0];
+    V.Len:=l;
+  end else begin
+    // big string
+    if V.Free then
+      ReAllocMem(V.Value,l)
+    else
+      Getmem(V.Value,l);
+  end;
+  V.Len:=l;
+  // copy content
+  p:=StartPos+1;
+  DstPos:=V.Value;
+  while p<EndPos do begin
+    if p^='''' then begin
+      inc(p);
+      if (p^<>'''') or (p=EndPos) then break;
+    end;
+    DstPos^:=p^;
+    inc(p);
+    inc(DstPos);
+  end;
 end;
 
 procedure SetOperandValueChar(var V: TOperandValue; const c: Char);
@@ -1402,6 +1448,11 @@ var
         Operand.Len:=p-AtomStart;
         exit(true);
       end;
+    '''':
+      begin
+        SetOperandValueStringConst(Operand,AtomStart,p);
+        exit(true);
+      end;
     end;
     if IsIdentStartChar[AtomStart^] then begin
       // identifier => return current value
@@ -1629,15 +1680,15 @@ begin
       // level 3: = < > <> >= <=
       OperatorLvl:=0;
       case UpChars[AtomStart^] of
-      '*','/': if AtomStart-p=1 then OperatorLvl:=1;
-      '+','-': if AtomStart-p=1 then OperatorLvl:=2;
-      '=': if AtomStart-p=1 then OperatorLvl:=3;
-      '<': if (AtomStart-p=1)
+      '*','/': if p-AtomStart=1 then OperatorLvl:=1;
+      '+','-': if p-AtomStart=1 then OperatorLvl:=2;
+      '=': if p-AtomStart=1 then OperatorLvl:=3;
+      '<': if (p-AtomStart=1)
            or (AtomStart[1] in ['=','>']) then
              OperatorLvl:=3
            else if AtomStart[1]='<' then
              OperatorLvl:=1;
-      '>': if (AtomStart-p=1)
+      '>': if (p-AtomStart=1)
            or (AtomStart[1]='=') then
              OperatorLvl:=3
            else if AtomStart[1]='>' then
