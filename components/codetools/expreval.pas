@@ -1606,7 +1606,10 @@ begin
       'A':
         if CompareIdentifiers(AtomStart,'AND')=0 then begin
           OperatorLvl:=1;
-          if not OperandIsTrue(Operand) then break;
+          if not OperandIsTrue(Operand) then begin
+            SetOperandValueChar(Operand,'0');
+            break;
+          end;
         end;
       'D': if CompareIdentifiers(AtomStart,'DIV')=0 then OperatorLvl:=1;
       'M': if CompareIdentifiers(AtomStart,'MOD')=0 then OperatorLvl:=1;
@@ -1623,7 +1626,10 @@ begin
         'R':
           if p-AtomStart=2 then begin
             OperatorLvl:=2;
-            if OperandIsTrue(Operand) then break;
+            if OperandIsTrue(Operand) then begin
+              SetOperandValueChar(Operand,'1');
+              break;
+            end;
           end;
         end;
       'X': if CompareIdentifiers(AtomStart,'XOR')=0 then OperatorLvl:=2;
