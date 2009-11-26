@@ -51,6 +51,7 @@ uses
   SynEditHighlighter, SynEditAutoComplete, SynEditKeyCmds, SynCompletion,
   SynEditMiscClasses, SynEditMarkupHighAll, SynGutterLineNumber, SynEditMarks,
   SynBeautifier, SynEditTextBase, SynPluginTemplateEdit, SynPluginSyncroEdit,
+  SynPluginSyncronizedEditBase,
   // IDE interface
   MacroIntf, ProjectIntf, SrcEditorIntf, MenuIntf, LazIDEIntf, PackageIntf,
   IDEDialogs, IDEHelpIntf, IDEWindowIntf, IDEImagesIntf,
@@ -3480,10 +3481,8 @@ end;
 
 procedure TSourceEditor.UnbindEditor;
 // disconnect all events
-{$IFDEF SynDualView}
 var
   i: Integer;
-{$ENDIF}
 begin
   {$IFDEF SynDualView}
   for i := 0 to FOtherViewList.Count - 1 do
@@ -3505,6 +3504,11 @@ begin
     OnMouseLink := nil;
     OnKeyDown := nil;
   end;
+  for i := 0 to EditorComponent.PluginCount - 1 do
+    if EditorComponent.Plugin[i] is TSynPluginSyncronizedEditBase then begin
+      TSynPluginSyncronizedEditBase(EditorComponent.Plugin[i]).OnActivate := nil;
+      TSynPluginSyncronizedEditBase(EditorComponent.Plugin[i]).OnDeactivate := nil;
+    end;
   if FEditPlugin<>nil then begin
     FEditPlugin.OnLinesInserted := nil;
     FEditPlugin.OnLinesDeleted := nil;
