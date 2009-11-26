@@ -265,7 +265,11 @@ begin
       //Dock(nil);
     end;
     //Release;  //Close;
+  {$IFDEF WIN32}
     PostMessage(Self.Handle, WM_CLOSE, 0, 0);
+  {$ELSE}
+    //how to close from within an event handler?
+  {$ENDIF}
   end;
 //update the host dock site and its DockManager
   if HostDockSite <> nil then begin

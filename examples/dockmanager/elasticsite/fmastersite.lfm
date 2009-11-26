@@ -32,6 +32,7 @@ object MasterSite: TMasterSite
     Top = 48
     Width = 75
     Caption = 'buSave'
+    OnClick = buSaveClick
     TabOrder = 2
   end
   object buRestore: TButton

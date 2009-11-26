@@ -208,6 +208,15 @@ begin
   end;
 end;
 
+type
+  RSiteRec = packed record
+    Bounds: TRect;
+    NameLen: byte; //+name
+  end;
+var
+  SiteRec: RSiteRec;
+  SiteName: string;
+
 procedure TDockMaster.LoadFromStream(Stream: TStream);
 var
   ctl, pre: TControl;
@@ -218,6 +227,15 @@ var
   begin
     pre := ctl;
     ctl := CreateDockable('', True, False);
+  end;
+
+  function ReadSite: boolean;
+  begin
+    Stream.Read(SiteRec, sizeof(SiteRec));
+    Result := SiteRec.Bounds.Right > 0;
+    SetLength(SiteName, SiteRec.NameLen);
+    if Result and (SiteRec.NameLen > 0) then
+      Stream.Read(SiteName[1], SiteRec.NameLen);
   end;
 
 begin
@@ -234,6 +252,7 @@ Notebooks?
   Ownership?
     When notebooks are dockable, they cannot be owned by the DockSite!
 *)
+{$IFDEF old}
 //Test0;
   site := TFloatingSite.Create(self);
   MakeForm; ctl.ManualDock(site, nil, alClient);
@@ -248,11 +267,48 @@ Notebooks?
     MakeForm; ctl.ManualDock(site, nb, alCustom);
     MakeForm; ctl.ManualDock(site, nb, alCustom);
   end;
+{$ELSE}
+{$ENDIF}
+//restore all DockSites
+//all floating sites
+  while ReadSite do begin
+    site := TFloatingSite.Create(self);
+    site.Name := SiteName;
+    site.BoundsRect := SiteRec.Bounds;
+    site.DockManager.LoadFromStream(Stream);
+  end;
+//all ElasticSites - to come
 end;
 
 procedure TDockMaster.SaveToStream(Stream: TStream);
-begin
 
+  procedure SaveSite(Site: TWinControl);
+  begin
+  (* what if a site doesn't have an DockManager?
+  *)
+    SiteRec.Bounds := Site.BoundsRect;
+    SiteName := Site.Name;
+    SiteRec.NameLen := Length(SiteName);
+    Stream.Write(SiteRec, sizeof(SiteRec));
+    if SiteName <> '' then
+      Stream.Write(SiteName[1], Length(SiteName));
+    Site.DockManager.SaveToStream(Stream);
+  end;
+
+var
+  i: integer;
+  cmp: TComponent;
+  wc: TWinControl absolute cmp;
+begin
+  for i := 0 to ComponentCount - 1 do begin
+    cmp := Components[i];
+    if (cmp is TWinControl) and wc.DockSite then
+      SaveSite(wc);
+  end;
+//end marker
+  SiteRec.Bounds.Right := -1;
+  SiteRec.NameLen := 0;
+  Stream.Write(SiteRec, sizeof(SiteRec));
 end;
 
 function TDockMaster.ReloadForm(const AName: string): TCustomForm;

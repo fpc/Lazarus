@@ -8,7 +8,7 @@ interface
 
 uses
     EasyDockSite, fDockBook, fFloatingSite, fElasticSite, uMiniRestore, 
-  fPageFrame, uMakeSite, LazarusPackageIntf;
+  uMakeSite, LazarusPackageIntf;
 
 implementation
 

@@ -18,6 +18,7 @@ type
     procedure buCreateFormClick(Sender: TObject);
     procedure buDumpClick(Sender: TObject);
     procedure buRestoreClick(Sender: TObject);
+    procedure buSaveClick(Sender: TObject);
     procedure FormCreate(Sender: TObject);
   private
     ms: TMemoryStream;
@@ -47,9 +48,17 @@ end;
 
 procedure TMasterSite.buRestoreClick(Sender: TObject);
 begin
+  if ms <> nil then
+    DockMaster.LoadFromStream(ms);
+end;
+
+procedure TMasterSite.buSaveClick(Sender: TObject);
+begin
   if ms = nil then
-    ms := TMemoryStream.Create;
-  DockMaster.LoadFromStream(ms);
+    ms := TMemoryStream.Create
+  else
+    ms.Clear;
+  DockMaster.SaveToStream(ms);
 end;
 
 procedure TMasterSite.FormCreate(Sender: TObject);

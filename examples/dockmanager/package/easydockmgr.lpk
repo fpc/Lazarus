@@ -17,7 +17,7 @@
     <Description Value="EasyDocking Manager and Notebook"/>
     <License Value="LGPL"/>
     <Version Major="1"/>
-    <Files Count="13">
+    <Files Count="10">
       <Item1>
         <Filename Value="easydocksite.pas"/>
         <UnitName Value="EasyDockSite"/>
@@ -56,21 +56,9 @@
         <UnitName Value="uMiniRestore"/>
       </Item9>
       <Item10>
-        <Filename Value="fpageframe.lfm"/>
-        <Type Value="LFM"/>
-      </Item10>
-      <Item11>
-        <Filename Value="fpageframe.lrs"/>
-        <Type Value="LRS"/>
-      </Item11>
-      <Item12>
-        <Filename Value="fpageframe.pas"/>
-        <UnitName Value="fPageFrame"/>
-      </Item12>
-      <Item13>
         <Filename Value="umakesite.pas"/>
         <UnitName Value="uMakeSite"/>
-      </Item13>
+      </Item10>
     </Files>
     <Type Value="RunAndDesignTime"/>
     <RequiredPkgs Count="2">

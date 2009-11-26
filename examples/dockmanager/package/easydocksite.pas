@@ -248,6 +248,7 @@ type
   {$ENDIF}
     constructor Create(ADockSite: TWinControl); override;
     destructor Destroy; override;
+    procedure DumpToStream(Stream: TStream);
     procedure PaintSite(DC: HDC); override;
     procedure SetStyle(NewStyle: TEasyHeaderStyle);
     function  GetEffectiveStyle: TEasyHeaderStyle;
@@ -285,6 +286,10 @@ uses
   math,
   Themes, LResources,
   LCLproc; //debugging
+
+type
+  TWinControlAccess = class(TWinControl)
+  end;
 
 const
 {$IFDEF restore}
@@ -751,11 +756,6 @@ end;
 {$ELSE}
 {$ENDIF}
 
-procedure TEasyTree.LoadFromStream(Stream: TStream);
-begin
-  //todo
-end;
-
 procedure TEasyTree.MessageHandler(Sender: TControl; var Message: TLMessage);
 //was: procedure TEasyTree.MouseMessage(var Message: TLMessage);
 var
@@ -955,7 +955,121 @@ begin
   FDockSite.Invalidate; //force repaint of headers
 end;
 
+
+type
+  RZone = packed record
+    BottomRight: TPoint;
+    Level: byte;
+    Orientation: TDockOrientation;
+    //Width, Height: word;
+    NameLen: byte; //+chars
+  end;
+
+var
+  ZoneRec: RZone;
+  ZoneName: string;
+
 procedure TEasyTree.SaveToStream(Stream: TStream);
+
+  procedure DoSaveZone(Zone: TEasyZone; Level: byte);
+  var
+    child: TControl;
+  begin
+  //fill ZoneRec
+    ZoneRec.Level := Level;
+    ZoneRec.Orientation := Zone.Orientation;
+    ZoneRec.BottomRight := Zone.BR;
+    child := Zone.ChildControl;
+    if child = nil then
+      ZoneName := ''
+    else
+      ZoneName := child.Name;
+    ZoneRec.NameLen := Length(ZoneName);
+  //write descriptor
+    Stream.Write(ZoneRec, sizeof(ZoneRec));
+    if ZoneRec.NameLen > 0 then
+      Stream.Write(ZoneName[1], ZoneRec.NameLen);
+    { TODO -oDoDi : WritePages of notebook }
+  // recurse into first child
+    if Zone.FirstChild <> nil then
+      DoSaveZone(Zone.FirstChild, Level + 1); //all children of Level
+  // recurse into next sibling
+    if Zone.NextSibling <> nil then
+      DoSaveZone(Zone.NextSibling, Level); //all siblings of Level
+  end;
+
+begin
+// write top zone data
+  //Stream.Write(FTopXYLimit, SizeOf(FTopXYLimit));
+  //WriteLimits(FTopZone);
+// write all zones from tree
+  DoSaveZone(FTopZone, 1);
+//write end marker (dummy record of level 0)
+  ZoneRec.Level := 0;
+  ZoneRec.NameLen := 0;
+  Stream.Write(ZoneRec, sizeof(ZoneRec));
+end;
+
+procedure TEasyTree.LoadFromStream(Stream: TStream);
+
+  function GetRec: integer;
+  var
+    NameLen: integer;
+  begin
+    Stream.Read(ZoneRec, SizeOf(ZoneRec));
+    NameLen := ZoneRec.NameLen;
+    if NameLen > 0 then begin
+      SetLength(ZoneName, NameLen);
+      Stream.Read(ZoneName[1], NameLen);
+    end;
+    Result := ZoneRec.Level;
+  end;
+
+  procedure MakeZone(InZone: TEasyZone; Level: byte);
+  var
+    NewZone, PrevZone: TEasyZone;
+    NewCtl: TControl;
+    fSkip: boolean;
+  begin
+  //ZoneRec has been read before
+    NewZone := InZone; //in case this level's zones are skipped
+    PrevZone := nil; //add as first child
+    while ZoneRec.Level >= Level do begin
+      if ZoneRec.Level = Level then begin
+      //create zone at Level in InZone
+        if ZoneRec.NameLen > 0 then begin
+          TWinControlAccess(DockSite).ReloadDockedControl(ZoneName, NewCtl);
+          fSkip := NewCtl = nil;
+        end else
+          fSkip := False;
+        if not fSkip then begin
+        //sibling = child of InZone
+          NewZone := TEasyZone.Create(self);
+          NewZone.Orientation := ZoneRec.Orientation;
+          NewZone.BR := ZoneRec.BottomRight;
+          NewZone.ChildControl := NewCtl;
+          InZone.InsertAfter(PrevZone, NewZone);
+          PrevZone := NewZone;
+        end;
+        //else skip zone without control - at Level!?
+        GetRec;
+      end else begin // > Level, create children
+      //child = child of last added zone
+        MakeZone(NewZone, Level+1);
+      end;
+    end;  //until GetRec < Level;
+  end;
+
+begin
+//read record
+  if GetRec > 0 then begin
+    FTopZone.BR := ZoneRec.BottomRight;
+    MakeZone(FTopZone, 1);
+  end;
+//finish?
+end;
+
+procedure TEasyTree.DumpToStream(Stream: TStream);
 var
   r: TRect;
   s: string;
