@@ -37,8 +37,6 @@
     SW_SHOWNORMAL, SW_MINIMIZE, SW_SHOWMAXIMIZED
 ------------------------------------------------------------------------------}
 function TCocoaWidgetSet.ShowWindow(hWnd: HWND; nCmdShow: Integer): Boolean;
-{var
-  CocoaForm: TCocoaForm;}
 begin
   {$ifdef VerboseCocoaWinAPI}
     WriteLn('[WinAPI ShowWindow]');
@@ -53,23 +51,6 @@ begin
       NSWindow(hwnd).miniaturize(nil);
   end;
   Result:=true;
-
-{  Result := False;
-  
-  CocoaForm := TCocoaForm(hWnd);
-
-  if CocoaForm <> nil then
-  begin
-    case nCmdShow of
-      SW_SHOW: CocoaForm.MainWindow.orderFront(nil);
-      SW_SHOWNORMAL: CocoaForm.MainWindow.orderFront(nil);
-//      SW_MINIMIZE: Widget.setWindowState(QtWindowMinimized);
-//      SW_SHOWMINIMIZED: Widget.ShowMinimized;
-//      SW_SHOWMAXIMIZED: Widget.ShowMaximized;
-      SW_HIDE: CocoaForm.MainWindow.orderOut(nil);
-    end;
-    Result := True;
-  end;}
 end;
 
 //##apiwiz##eps##   // Do not remove, no wizard declaration after this line

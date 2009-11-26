@@ -35,7 +35,7 @@ uses
   // carbon bindings
   MacOSAll,
   // interfacebase
-  InterfaceBase,
+  InterfaceBase, GraphType,
   // private
   CocoaAll, CocoaPrivate, CocoaUtils,
   // LCL
@@ -87,6 +87,13 @@ type
     function CreateTimer(Interval: integer; TimerFunc: TFNTimerProc): THandle; override;
     function DestroyTimer(TimerHandle: THandle): boolean; override;
     function AppHandle: THandle; override;
+
+    {todo:}
+    function  DCGetPixel(CanvasHandle: HDC; X, Y: integer): TGraphicsColor; override;
+    procedure DCSetPixel(CanvasHandle: HDC; X, Y: integer; AColor: TGraphicsColor); override;
+    procedure DCRedraw(CanvasHandle: HDC); override;
+    procedure DCSetAntialiasing(CanvasHandle: HDC; AEnabled: Boolean); override;
+    procedure SetDesigning(AComponent: TComponent); override;
 
     // the winapi compatibility methods
     {$I cocoawinapih.inc}
@@ -244,7 +251,7 @@ begin
   {$IFDEF VerboseObject}
     DebugLn('TCocoaWidgetSet.AppRestore');
   {$ENDIF}
-  NSApp.unhide(nil);
+  NSApp.activateIgnoringOtherApps(False);
 end;
 
 {------------------------------------------------------------------------------
@@ -279,6 +286,9 @@ var
   timer : NSTimer;
   user  : TCocoaTimerObject;
 begin
+  {$IFDEF VerboseObject}
+    DebugLn('TCocoaWidgetSet.CreateTimer');
+  {$ENDIF}
   user:=TCocoaTimerObject.initWithFunc(TimerFunc);
 
   timer:=NSTimer.timerWithTimeInterval_target_selector_userInfo_repeats(
@@ -297,6 +307,9 @@ function TCocoaWidgetSet.DestroyTimer(TimerHandle: THandle): boolean;
 var
   obj : NSObject;
 begin
+  {$IFDEF VerboseObject}
+    DebugLn('TCocoaWidgetSet.DestroyTimer');
+  {$ENDIF}
   obj:=NSObject(TimerHandle);
   try
     Result:= Assigned(obj) and obj.isKindOfClass_(NSTimer);
@@ -314,6 +327,31 @@ end;
 function TCocoaWidgetSet.AppHandle: THandle;
 begin
   Result:=THandle(NSApp);
+end;
+
+function TCocoaWidgetSet.DCGetPixel(CanvasHandle: HDC; X, Y: integer): TGraphicsColor;
+begin
+  Result:=0;
+end;
+
+procedure TCocoaWidgetSet.DCSetPixel(CanvasHandle: HDC; X, Y: integer; AColor: TGraphicsColor);
+begin
+
+end;
+
+procedure TCocoaWidgetSet.DCRedraw(CanvasHandle: HDC);
+begin
+
+end;
+
+procedure TCocoaWidgetSet.DCSetAntialiasing(CanvasHandle: HDC; AEnabled: Boolean);
+begin
+  inherited DCSetAntialiasing(CanvasHandle, AEnabled);
+end;
+
+procedure TCocoaWidgetSet.SetDesigning(AComponent: TComponent);
+begin
+
 end;
 
 {------------------------------------------------------------------------------
