@@ -1271,7 +1271,9 @@ var
     else
       inc(p);
     end;
+    {$IFDEF VerboseExprEval}
     DebugLn(['ReadNextAtom ',GetAtom]);
+    {$ENDIF}
   end;
 
   procedure Error(NewErrorPos: PChar; const NewErrorMsg: string);
@@ -1281,7 +1283,9 @@ var
     else
       FErrorPos:=0;
     ErrorMsg:=NewErrorMsg;
+    {$IFDEF VerboseExprEval}
     DebugLn(['Error ',ErrorMsg,' at ',ErrorPosition]);
+    {$ENDIF}
   end;
 
   procedure Error(NewErrorPos: PChar; E: Exception);
@@ -1390,7 +1394,9 @@ var
   begin
     Result:=false;
     if AtomStart>=ExprEnd then exit;
+    {$IFDEF VerboseExprEval}
     DebugLn(['ReadOperand ',GetAtom]);
+    {$ENDIF}
     case UpChars[AtomStart^] of
     'N':
       if CompareIdentifiers(AtomStart,'NOT')=0 then begin
@@ -1465,10 +1471,14 @@ var
       begin
         ReadNextAtom;
         if AtomStart>=ExprEnd then exit;
+        {$IFDEF VerboseExprEval}
         DebugLn(['ReadOperand BRACKET OPEN']);
+        {$ENDIF}
         if not EvalPChar(AtomStart,ExprLen-(AtomStart-Expression),Operand) then
           exit;
+        {$IFDEF VerboseExprEval}
         DebugLn(['ReadOperand BRACKET CLOSED => skip bracket']);
+        {$ENDIF}
         BracketLvl:=1;
         while AtomStart<ExprEnd do begin
           case AtomStart^ of
@@ -1513,7 +1523,9 @@ var
         // compute stack item
         Op:=ExprStack[StackPtr].theOperator;
         StackOperand:=@ExprStack[StackPtr].Operand;
+        {$IFDEF VerboseExprEval}
         DebugLn(['ExecuteStack Operator^=',ExprStack[StackPtr].theOperator^]);
+        {$ENDIF}
         case UpChars[Op^] of
         '*': // multiply
           begin
@@ -1566,7 +1578,6 @@ var
               Number1:=OperandToInt64(StackOperand^);
               Number2:=OperandToInt64(Operand);
               NumberResult:=Number1 shl Number2;
-              DebugLn(['ExecuteStack ',Number1,' ',Number2,' ',NumberResult]);
               SetOperandValueInt64(Operand,NumberResult);
             end;
           else
