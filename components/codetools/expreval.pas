@@ -954,23 +954,31 @@ function TExpressionEvaluator.EvalPChar(Expression: PChar; ExprLen: PtrInt
 
   brackets ()
   unary operators: not, defined, undefined
-  binary operators: < <= = <> => > and or xor shl shr
+  binary operators: + - * / < <= = <> => > div mod and or xor shl shr
   functions: defined(), undefined(), declared()
 }
-{type
+type
   TOperandAndOperator = record
-    Operand: TValue;
+    Operand: TOperandValue;
     theOperator: PChar;
     OperatorLvl: integer;
   end;
-  TExprStack = array[0..4] of TOperandAndOperator;
+  TExprStack = array[0..3] of TOperandAndOperator;
 
 var
+  Operand: TOperandValue;
   ExprStack: TExprStack;
-  StackPtr: integer;}
-var
+  StackPtr: integer; // -1 = empty
   ExprEnd: Pointer;
   p, AtomStart: PChar;
+
+  procedure FreeStack;
+  begin
+    while StackPtr>=0 do begin
+      FreeOperandValue(ExprStack[StackPtr].Operand);
+      dec(StackPtr);
+    end;
+  end;
 
   function GetAtom: string;
   begin
@@ -1033,6 +1041,11 @@ var
   procedure IdentifierMissing(NewErrorPos: PChar);
   begin
     Error(NewErrorPos,'identifier missing');
+  end;
+
+  procedure OperatorMissing(NewErrorPos: PChar);
+  begin
+    Error(NewErrorPos,'operator missing');
   end;
 
   procedure CharMissing(NewErrorPos: PChar; c: char);
@@ -1100,7 +1113,7 @@ var
     Result:=true;
   end;
 
-  function ReadOperand(out Operand: TOperandValue): boolean;
+  function ReadOperand: boolean;
   { Examples:
      Variable
      not Variable
@@ -1111,12 +1124,13 @@ var
     i: LongInt;
   begin
     Result:=false;
+    if AtomStart>=ExprEnd then exit;
     DebugLn(['ReadOperand ',GetAtom]);
     case UpChars[AtomStart^] of
     'N':
       if CompareIdentifiers(AtomStart,'NOT')=0 then begin
         // not
-        if not ReadOperand(Operand) then exit;
+        if not ReadOperand then exit;
         if (Operand.Len=1) and (Operand.Value^='1') then begin
           SetOperandValueConst(Operand,'-1');
         end else begin
@@ -1156,8 +1170,97 @@ var
     IdentifierMissing(AtomStart);
   end;
 
+  function ExecuteStack(LowerOrEqualOperatorLvl: integer): boolean;
+  var
+    Op: PChar;
+  begin
+    Result:=false;
+    while (StackPtr>=0)
+    and (ExprStack[StackPtr].OperatorLvl<=LowerOrEqualOperatorLvl) do begin
+      // compute stack item
+      Op:=ExprStack[StackPtr].theOperator;
+      case UpChars[Op^] of
+      '*':
+        begin
+
+        end;
+      '/':
+        begin
+
+        end;
+      '+':
+        begin
+
+        end;
+      '-':
+        begin
+
+        end;
+      '=':
+        begin
+
+        end;
+      '<':
+        case Op[1] of
+        '>':
+          begin
+            // <>
+          end;
+        '=':
+          begin
+            //<=
+          end;
+        else
+          // <
+        end;
+      '>':
+        if Op[1]='=' then begin
+          // >=
+        end else begin
+          // >
+        end;
+      'A': // AND
+        begin
+
+        end;
+      'D': // DIV
+        begin
+
+        end;
+      'M': // MOD
+        begin
+
+        end;
+      'S':
+        case UpChars[Op[1]] of
+        'H': // SH
+          case UpChars[Op[2]] of
+          'L': // SHL
+            begin
+
+            end;
+          'R': // SHR
+            begin
+
+            end;
+          end;
+        end;
+      'O': // OR
+        begin
+
+        end;
+      'X': // XOR
+        begin
+
+        end;
+      end;
+      dec(StackPtr);
+    end;
+    Result:=true;
+  end;
+
 var
-  Operand: TOperandValue;
+  OperatorLvl: Integer;
 begin
   p:=Expression;
   Result:='0';
@@ -1172,14 +1275,70 @@ begin
     ExpressionMissing(AtomStart);
     exit;
   end;
-  // read operand
+  StackPtr:=-1;
   Operand:=CleanOperandValue;
-  ReadOperand(Operand);
-  ReadNextAtom;
-  // set result
-  SetLength(Result,Operand.Len);
-  if Result<>'' then
-    System.Move(Operand.Value^,Result[1],length(Result));
+  FErrorPos:=-1;
+  fErrorMsg:='';
+  while AtomStart<ExprEnd do begin
+    // read operand
+    if not ReadOperand then
+      break;
+    // read operator
+    ReadNextAtom;
+    if AtomStart>=ExprEnd then break;
+    // level 0: NOT () DEFINED UNDEFINED DECLARED: handled by ReadOperand
+    // level 1: * / DIV MOD AND SHL SHR
+    // level 2: + - OR XOR
+    // level 3: = < > <> >= <=
+    OperatorLvl:=0;
+    case UpChars[AtomStart^] of
+    '*','/': if AtomStart-p=1 then OperatorLvl:=1;
+    '+','-': if AtomStart-p=1 then OperatorLvl:=2;
+    '=': if AtomStart-p=1 then OperatorLvl:=3;
+    '<': if (AtomStart-p=1)
+         or (AtomStart[2] in ['=','>']) then OperatorLvl:=3;
+    '>': if (AtomStart-p=1)
+         or (AtomStart[2]='=') then OperatorLvl:=3;
+    'A': if CompareIdentifiers(AtomStart,'AND')=0 then OperatorLvl:=1;
+    'D': if CompareIdentifiers(AtomStart,'DIV')=0 then OperatorLvl:=1;
+    'M': if CompareIdentifiers(AtomStart,'MOD')=0 then OperatorLvl:=1;
+    'S':
+      case UpChars[AtomStart[1]] of
+      'H': // SH
+        case UpChars[AtomStart[2]] of
+        'L': if p-AtomStart=3 then OperatorLvl:=1; // SHL
+        'R': if p-AtomStart=3 then OperatorLvl:=1; // SHR
+        end;
+      end;
+    'O':
+      case UpChars[AtomStart[1]] of
+      'R': if p-AtomStart=2 then OperatorLvl:=2;
+      end;
+    'X': if CompareIdentifiers(AtomStart,'XOR')=0 then OperatorLvl:=2;
+    end;
+    if OperatorLvl=0 then begin
+      OperatorMissing(AtomStart);
+      break;
+    end;
+    if not ExecuteStack(OperatorLvl) then break;
+    // push onto stack
+    inc(StackPtr);
+    ExprStack[StackPtr].Operand:=Operand;
+    ExprStack[StackPtr].OperatorLvl:=OperatorLvl;
+    ExprStack[StackPtr].theOperator:=AtomStart;
+    Operand:=CleanOperandValue;
+    ReadNextAtom;
+  end;
+  if FErrorPos<0 then begin
+    if ExecuteStack(4) then begin
+      // set result
+      SetLength(Result,Operand.Len);
+      if Result<>'' then
+        System.Move(Operand.Value^,Result[1],length(Result));
+    end;
+  end;
+  // clean up
+  FreeStack;
   FreeOperandValue(Operand);
 end;
 
