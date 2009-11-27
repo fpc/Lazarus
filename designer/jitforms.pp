@@ -1079,7 +1079,7 @@ var
   Abort: boolean;
   Ancestors: TFPList;
   AncestorStreams: TFPList;
-  i: Integer;
+  i, j: Integer;
   OldStreamClass: TClass;
 begin
   fCurReadChild:=Component;
@@ -1113,11 +1113,6 @@ begin
             SetComponentDesignMode(Component,true);
             // this is a streamed sub component => set csInline
             SetComponentInlineMode(Component,true);
-            if csInline in NewOwner.ComponentState then
-            begin
-              // this is an ancestor => set csAncestor
-              SetComponentAncestorMode(Component,true);
-            end;
             // now run the constructor
             Component.Create(NewOwner);
           end;
@@ -1139,7 +1134,10 @@ begin
             end;
           end;
           FCurReadStreamClass:=OldStreamClass;
-
+          // set csAncestor for the csInline subcomponents
+          if csInline in Component.ComponentState then
+            for j := 0 to Component.ComponentCount - 1 do
+              SetComponentAncestorMode(Component.Components[j],true);
           // next
           Ancestor:=TComponent(Ancestors[i]);
         end;
