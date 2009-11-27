@@ -3749,7 +3749,7 @@ end;
 {------------------------------------------------------------------------------
   TWinControl GetChildren
 ------------------------------------------------------------------------------}
-procedure TWinControl.GetChildren(Proc: TGetChildProc; Root : TComponent);
+procedure TWinControl.GetChildren(Proc: TGetChildProc; Root: TComponent);
 var
   I : Integer;
   Control : TControl;

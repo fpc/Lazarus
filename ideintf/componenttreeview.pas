@@ -120,27 +120,32 @@ end;
 
 procedure TComponentWalker.Walk(AComponent: TComponent);
 var
-  oldNode: TTreeNode;
-  candidate: TComponentCandidate;
-  avlNode: TAvgLvlTreeNode;
+  OldNode: TTreeNode;
+  Candidate: TComponentCandidate;
+  AVLNode: TAvgLvlTreeNode;
+  Root: TComponent;
 begin
-  if GetLookupRootForComponent(AComponent) <> FRootComponent then exit;
-  avlNode := FCandidates.FindKey(
+  if GetLookupRootForComponent(AComponent) <> FRootComponent then Exit;
+  AVLNode := FCandidates.FindKey(
     AComponent, TListSortCompare(@ComparePersistentWithComponentCandidate));
-  if avlNode = nil then exit;
-  candidate := TComponentCandidate(avlNode.Data);
-  if candidate.Added then exit;
-  candidate.Added := true;
+  if AVLNode = nil then Exit;
+  Candidate := TComponentCandidate(AVLNode.Data);
+  if Candidate.Added then Exit;
+  Candidate.Added := True;
 
-  oldNode := FNode;
+  OldNode := FNode;
   FNode := FTreeView.Items.AddChild(FNode, FTreeView.CreateNodeCaption(AComponent));
   FNode.Data := AComponent;
   FNode.ImageIndex := FTreeView.GetImageFor(AComponent);
   FNode.SelectedIndex := FNode.ImageIndex;
   FNode.MultiSelected := FTreeView.Selection.IndexOf(AComponent) >= 0;
-  TComponentAccessor(AComponent).GetChildren(@Walk, FRootComponent);
-  FNode := oldNode;
-  FNode.Expanded := true;
+  if csInline in AComponent.ComponentState then
+    Root := AComponent
+  else
+    Root := FRootComponent;
+  TComponentAccessor(AComponent).GetChildren(@Walk, Root);
+  FNode := OldNode;
+  FNode.Expanded := True;
 end;
   
 { TComponentTreeView }
@@ -255,7 +260,8 @@ procedure TComponentTreeView.DragOver(Source: TObject; X, Y: Integer;
 var
   Node: TTreeNode;
   AnObject: TObject;
-  AContainer,AControl: TControl;
+  AControl: TControl absolute AnObject;
+  AContainer: TControl;
   AcceptControl, AcceptContainer: Boolean;
   InsertType: TTreeViewInsertMarkType;
   ParentNode: TTreeNode;
@@ -277,13 +283,13 @@ begin
     AnObject := TObject(ParentNode.Data);
     if (AnObject is TWinControl) then
     begin
-      if (csAcceptsControls in TWinControl(AnObject).ControlStyle) and
-         not (csInline in TWinControl(AnObject).ComponentState) and // Because of TWriter, you can not put a control onto an csInline control (e.g. on a frame).
+      if (csAcceptsControls in AControl.ControlStyle) and
+         // Because of TWriter, you can not put a control onto an csInline, csAncestor controls (e.g. on a frame or it child).
+         ([csInline, csAncestor] * AControl.ComponentState = []) and
          ( // TReader/TWriter only supports this
-           (TWinControl(AnObject).Owner = nil) or // root
-           (TWinControl(AnObject).Owner.Owner = nil) // child of a root
-         )
-         then
+           (AControl.Owner = nil) or // root
+           (AControl.Owner.Owner = nil) // child of a root
+         ) then
       begin
         AContainer := TWinControl(AnObject);
         //DebugLn(['TComponentTreeView.DragOver AContainer=',DbgSName(AContainer)]);
@@ -298,10 +304,11 @@ begin
     while Assigned(Node) and AcceptControl do
     begin
       AnObject := TObject(Node.Data);
+      // don't allow to move ancestor components
+      if (AnObject is TComponent) and (csAncestor in TComponent(AnObject).ComponentState) then break;
       if AnObject is TControl then
       begin
-        AControl := TControl(AnObject);
-        if AControl=AContainer then break;
+        if AControl = AContainer then break;
         //DebugLn(['TComponentTreeView.DragOver AControl=',DbgSName(AControl),' Parent=',DbgSName(AControl.Parent),' OldAccepts=',csAcceptsControls in AControl.Parent.ControlStyle]);
         // check if new parent allows this control class
         if not AContainer.CheckChildClassAllowed(AnObject.ClassType, False) then
@@ -407,15 +414,22 @@ end;
 procedure TComponentTreeView.RebuildComponentNodes;
 var
   Candidates: TAvgLvlTree;
-  RootComponent: TComponent;
+  RootObject: TPersistent;
+  RootComponent: TComponent absolute RootObject;
 
   procedure AddChildren(AComponent: TComponent; ANode: TTreeNode);
   var
     walker: TComponentWalker;
+    Root: TComponent;
   begin
     walker := TComponentWalker.Create(Self, Candidates, RootComponent, ANode);
     try
-      TComponentAccessor(AComponent).GetChildren(@walker.Walk, RootComponent);
+      // add inline components children
+      if csInline in AComponent.ComponentState then
+        Root := AComponent
+      else
+        Root := RootComponent;
+      TComponentAccessor(AComponent).GetChildren(@walker.Walk, Root);
     finally
       walker.Free;
     end;
@@ -427,15 +441,19 @@ var
     Candidate: TComponentCandidate;
     i: Integer;
   begin
-    if OwnerComponent=nil then exit;
-    for i:=0 to OwnerComponent.ComponentCount-1 do begin
-      AComponent:=OwnerComponent.Components[i];
-      Candidate:=TComponentCandidate.Create;
-      Candidate.APersistent:=AComponent;
-      if Candidates.Find(Candidate)<>nil then begin
-        DebugLn('WARNING: TComponentTreeView.RebuildComponentNodes doppelganger found ',AComponent.Name);
+    if OwnerComponent = nil then Exit;
+    for i := 0 to OwnerComponent.ComponentCount - 1 do
+    begin
+      AComponent := OwnerComponent.Components[i];
+      Candidate := TComponentCandidate.Create;
+      Candidate.APersistent := AComponent;
+      if Candidates.Find(Candidate)<>nil then
+      begin
+        DebugLn('WARNING: TComponentTreeView.RebuildComponentNodes doppelganger found ', AComponent.Name);
         Candidate.Free;
-      end else begin
+      end
+      else
+      begin
         Candidates.Add(Candidate);
         if csInline in AComponent.ComponentState then
           AddCandidates(AComponent);
@@ -446,7 +464,6 @@ var
 var
   OldExpanded: TTreeNodeExpandedState;
   NewNode: TTreeNode;
-  RootObject: TPersistent;
   i: Integer;
   AComponent: TComponent;
   RootNode: TTreeNode;
@@ -458,44 +475,46 @@ begin
   OldExpanded:=TTreeNodeExpandedState.Create(Self);
   Items.Clear;
 
-  RootObject:=PropertyEditorHook.LookupRoot;
-  if RootObject<>nil then begin
+  RootObject := PropertyEditorHook.LookupRoot;
+  if RootObject <> nil then
+  begin
     Candidates:=TAvgLvlTree.Create(TListSortCompare(@CompareComponentCandidates));
     try
       // first add the lookup root
-      RootNode:=Items.Add(nil,CreateNodeCaption(RootObject));
-      RootNode.Data:=RootObject;
-      RootNode.ImageIndex:=0;
-      RootNode.SelectedIndex:=RootNode.ImageIndex;
-      RootNode.MultiSelected:=Selection.IndexOf(RootObject)>=0;
+      RootNode := Items.Add(nil, CreateNodeCaption(RootObject));
+      RootNode.Data := RootObject;
+      RootNode.ImageIndex := 0;
+      RootNode.SelectedIndex := RootNode.ImageIndex;
+      RootNode.MultiSelected := Selection.IndexOf(RootObject) >= 0;
     
       // create candidate nodes for every child
-      Candidate:=TComponentCandidate.Create;
-      Candidate.APersistent:=RootObject;
-      Candidate.Added:=true;
+      Candidate := TComponentCandidate.Create;
+      Candidate.APersistent := RootObject;
+      Candidate.Added := True;
       Candidates.Add(Candidate);
 
       // add components in creation order and TControl.Parent relationship
-      if RootObject is TComponent then begin
-        RootComponent:=TComponent(RootObject);
+      if RootObject is TComponent then
+      begin
         AddCandidates(RootComponent);
         
-        for i:=0 to RootComponent.ComponentCount-1 do begin
-          AComponent:=RootComponent.Components[i];
-          AVLNode:=Candidates.FindKey(AComponent,
-                     TListSortCompare(@ComparePersistentWithComponentCandidate));
-          Candidate:=TComponentCandidate(AVLNode.Data);
+        for i := 0 to RootComponent.ComponentCount - 1 do
+        begin
+          AComponent := RootComponent.Components[i];
+          AVLNode := Candidates.FindKey(AComponent,
+                      TListSortCompare(@ComparePersistentWithComponentCandidate));
+          Candidate := TComponentCandidate(AVLNode.Data);
           if Candidate.Added or
              AComponent.HasParent and
              (AComponent.GetParentComponent <> nil) and
              (AComponent.GetParentComponent <> RootComponent) then
-            continue;
-          Candidate.Added:=true;
-          NewNode:=Items.AddChild(RootNode,CreateNodeCaption(AComponent));
-          NewNode.Data:=AComponent;
-          NewNode.ImageIndex:=GetImageFor(AComponent);
-          NewNode.SelectedIndex:=NewNode.ImageIndex;
-          NewNode.MultiSelected:=Selection.IndexOf(AComponent)>=0;
+            Continue;
+          Candidate.Added := True;
+          NewNode := Items.AddChild(RootNode, CreateNodeCaption(AComponent));
+          NewNode.Data := AComponent;
+          NewNode.ImageIndex := GetImageFor(AComponent);
+          NewNode.SelectedIndex := NewNode.ImageIndex;
+          NewNode.MultiSelected := Selection.IndexOf(AComponent) >= 0;
           AddChildren(AComponent, NewNode);
         end;
       end;
