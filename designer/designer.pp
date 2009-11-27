@@ -807,7 +807,7 @@ function TDesigner.CopySelectionToStream(AllComponentsStream: TStream): boolean;
         if CurParent=nil then begin
           MessageDlg(lisCanNotCopyTopLevelComponent,
             lisCopyingAWholeFormIsNotImplemented,
-            mtError,[mbCancel],0);
+            mtError,[mbOk],0);
           exit;
         end;
 
@@ -866,7 +866,7 @@ begin
           MessageDlg(lisUnableToStreamSelectedComponents,
             Format(lisThereWasAnErrorDuringWritingTheSelectedComponent, [
               CurComponent.Name, CurComponent.ClassName, #13, E.Message]),
-            mtError,[mbCancel],0);
+            mtError,[mbOk],0);
           exit;
         end;
       end;
@@ -879,7 +879,7 @@ begin
           MessageDlg(lisUnableConvertBinaryStreamToText,
             Format(lisThereWasAnErrorWhileConvertingTheBinaryStreamOfThe, [
               CurComponent.Name, CurComponent.ClassName, #13, E.Message]),
-            mtError,[mbCancel],0);
+            mtError,[mbOk],0);
           exit;
         end;
       end;
@@ -927,7 +927,7 @@ begin
         MessageDlg(lisUnableCopyComponentsToClipboard,
           Format(lisThereWasAnErrorWhileCopyingTheComponentStreamToCli, [#13,
             E.Message]),
-          mtError,[mbCancel],0);
+          mtError,[mbOk],0);
         exit;
       end;
     end;
@@ -1831,7 +1831,7 @@ var
       IDEMessageDialog(lisInvalidCircle,
         Format(lisIsAThisCircleDependencyIsNotAllowed, [dbgsName(LookupRoot),
           dbgsName(NewComponentClass), #13]),
-        mtError,[mbCancel],'');
+        mtError,[mbOk],'');
       exit;
     end;
     
@@ -2320,7 +2320,7 @@ begin
     if ControlSelection.Count>1 then
       MessageDlg(lisInvalidDelete,
        lisTheRootComponentCanNotBeDeleted, mtInformation,
-       [mbCancel],0);
+       [mbOk],0);
     exit;
   end;
   // check if a selected component is inherited (can not be deleted)
@@ -2332,7 +2332,7 @@ begin
       MessageDlg(lisInvalidDelete,
        Format(lisTheComponentIsInheritedFromToDeleteAnInheritedComp, [dbgsName(
          ControlSelection[i].Persistent), dbgsName(AncestorRoot), #13]),
-       mtInformation, [mbCancel],0);
+       mtInformation, [mbOk],0);
       exit;
     end;
   end;
@@ -2344,7 +2344,7 @@ begin
       MessageDlg(lisInvalidDelete,
        Format(lisTheComponentCanNotBeDeletedBecauseItIsNotOwnedBy, [dbgsName(
          ControlSelection[i].Persistent), dbgsName(FLookupRoot)]),
-       mtInformation, [mbCancel],0);
+       mtInformation, [mbOk],0);
       exit;
     end;
   end;
