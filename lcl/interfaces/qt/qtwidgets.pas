@@ -1011,10 +1011,12 @@ type
     procedure setMaxColSize(ACol: Integer; const AValue: Integer);
     procedure setMinColSize(ACol: Integer; const AValue: Integer);
     procedure setSortEnabled(const AValue: Boolean);
+    procedure OwnerDataNeeded(Event: QEventH);
   protected
     function CreateWidget(const AParams: TCreateParams):QWidgetH; override;
   public
     destructor Destroy; override;
+    function itemViewViewportEventFilter(Sender: QObjectH; Event: QEventH): Boolean; cdecl; override;
     procedure ClearItems;
     function currentRow: Integer;
     procedure setCurrentRow(row: Integer);
@@ -1051,6 +1053,8 @@ type
     procedure SignalItemCollapsed(item: QTreeWidgetItemH) cdecl;
     procedure SignalCurrentItemChanged(current: QTreeWidgetItemH; previous: QTreeWidgetItemH) cdecl;
     procedure SignalSortIndicatorChanged(ALogicalIndex: Integer; AOrder: QtSortOrder) cdecl;
+    procedure Update(ARect: PRect = nil); override;
+    procedure Repaint(ARect: PRect = nil); override;
 
     property ColCount: Integer read getColCount write setColCount;
     property Header: TQtHeaderView read getHeader;
@@ -7399,6 +7403,107 @@ begin
   inherited Destroy;
 end;
 
+procedure TQtTreeWidget.OwnerDataNeeded(Event: QEventH);
+var
+  R: TRect;
+  TopItem: Integer;
+  i: Integer;
+  j: Integer;
+  ChildCount: Integer;
+  VHeight: Integer; // viewport height
+  RowHeight: Integer;
+  item: QTreeWidgetItemH;
+  itemChild: QTreeWidgetItemH;
+  v: QVariantH;
+  WStr: WideString;
+begin
+  {do not set items during design time}
+  if csDesigning in LCLObject.ComponentState then
+    exit;
+
+  if QTreeWidget_topLevelItemCount(QTreeWidgetH(Widget)) < 1 then
+    exit;
+
+  {TODO: add QtDecorationRole (icon) etc ... }
+  QWidget_contentsRect(QAbstractScrollArea_viewport(QTreeWidgetH(Widget)), @R);
+  VHeight := R.Bottom - R.Top;
+
+  item := QTreeWidget_itemAt(QTreeWidgetH(Widget), 0, 1);
+  if item <> nil then
+  begin
+
+    TopItem := QTreeWidget_indexOfTopLevelItem(QTreeWidgetH(Widget), item);
+    RowHeight := QAbstractItemView_sizeHintForRow(QTreeWidgetH(Widget), TopItem);
+
+    if (TopItem < 0) or (TopItem > TListView(LCLObject).Items.Count - 1) then
+      exit;
+
+    i := 0;
+
+    while (i < (VHeight + RowHeight)) do
+    begin
+      item := QTreeWidget_itemAt(QTreeWidgetH(Widget), 0, i + 1);
+      if item <> nil then
+      begin
+
+        TopItem := QTreeWidget_indexOfTopLevelItem(QTreeWidgetH(Widget), item);
+        RowHeight := QAbstractItemView_sizeHintForRow(QTreeWidgetH(Widget), TopItem);
+
+        if (TopItem < 0) or (TopItem > TListView(LCLObject).Items.Count - 1) then
+          continue;
+
+        WStr := GetUTF8String(TListView(LCLObject).Items[TopItem].Caption);
+
+        v := QVariant_create(PWideString(@WStr));
+        try
+          QTreeWidgetItem_setData(item, 0, Ord(QtDisplayRole), v);
+        finally
+          QVariant_destroy(v);
+        end;
+
+        ChildCount := QTreeWidgetItem_childCount(Item);
+        if ChildCount = TListView(LCLObject).Items[TopItem].SubItems.Count then
+        begin
+          for j := 0 to ChildCount - 1 do
+          begin
+            itemChild := QTreeWidgetItem_child(item, j);
+            if itemChild <> nil then
+            begin
+              WStr := GetUTF8String(TListView(LCLObject).Items[TopItem].SubItems[j]);
+              v := QVariant_create(PWideString(@WStr));
+              QTreeWidgetItem_setData(itemChild, 0, Ord(QtDisplayRole), v);
+              QVariant_destroy(v);
+            end;
+          end;
+        end else
+        begin
+          for j := 0 to TListView(LCLObject).Items[TopItem].SubItems.Count - 1 do
+          begin
+            WStr := GetUTF8String(TListView(LCLObject).Items[TopItem].SubItems[j]);
+            v := QVariant_create(PWideString(@WStr));
+            QTreeWidgetItem_setData(item, j + 1, Ord(QtDisplayRole), v);
+            QVariant_destroy(v);
+          end;
+        end;
+      end;
+
+      inc(i, RowHeight);
+    end;
+  end;
+end;
+
+function TQtTreeWidget.itemViewViewportEventFilter(Sender: QObjectH;
+  Event: QEventH): Boolean; cdecl;
+begin
+  if LCLObject = nil then
+    exit;
+  {ownerdata is needed only before qt paint's data}
+  if FOwnerData and (QEvent_type(Event) = QEventPaint) then
+    OwnerDataNeeded(Event);
+
+  Result := inherited itemViewViewportEventFilter(Sender, Event);
+end;
+
 procedure TQtTreeWidget.ClearItems;
 begin
   QTreeWidget_clear(QTreeWidgetH(Widget));
@@ -7458,8 +7563,10 @@ end;
 procedure TQtTreeWidget.setItemCount(const AValue: Integer);
 var
   i: Integer;
+  j: Integer;
   Items: TPtrIntArray;
   Item: QTreeWidgetItemH;
+  ItemChild: QTreeWidgetItemH;
 begin
   if AValue = ItemCount then
     exit;
@@ -7470,6 +7577,11 @@ begin
     for i := 0 to High(Items) do
     begin
       Item := QTreeWidgetItem_create(QTreeWidgetH(Widget), 0);
+      for j := 0 to ColCount - 1 do
+      begin
+        ItemChild := QTreeWidgetItem_create(item, 0);
+        QTreeWidgetItem_addChild(item, ItemChild);
+      end;
       Items[i] := PtrUInt(Item);
     end;
     if length(Items) > 0 then
@@ -7995,6 +8107,32 @@ begin
   finally
     FSorting := False;
   end;
+end;
+
+procedure TQtTreeWidget.Update(ARect: PRect);
+var
+  P: TPoint;
+begin
+  if ARect <> nil then
+  begin
+    P := getClientOffset;
+    OffsetRect(ARect^, -P.X , -P.Y);
+    QWidget_update(QAbstractScrollArea_viewport(QTreeWidgetH(Widget)), ARect);
+  end else
+    QWidget_update(QAbstractScrollArea_viewport(QTreeWidgetH(Widget)));
+end;
+
+procedure TQtTreeWidget.Repaint(ARect: PRect);
+var
+  P: TPoint;
+begin
+  if ARect <> nil then
+  begin
+    P := getClientOffset;
+    OffsetRect(ARect^, -P.X , -P.Y);
+    QWidget_repaint(QAbstractScrollArea_viewport(QTreeWidgetH(Widget)), ARect);
+  end else
+    QWidget_repaint(QAbstractScrollArea_viewport(QTreeWidgetH(Widget)));
 end;
 
 {TQtTableView}
