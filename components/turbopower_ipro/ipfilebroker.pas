@@ -49,7 +49,7 @@ function expandLocalHtmlFileName (URL : string) : string;
 
 type
 
-TIpGetHtmlDataEvent =
+  TIpGetHtmlDataEvent =
     procedure(Sender : TObject; const URL : string; const PostData : TIpFormDataEntity; var Stream : TStream) of object;
   TIpGetImageDataEvent =
     procedure(Sender : TIpHtmlNode; const URL : string; var Picture : TPicture) of object;
@@ -65,7 +65,7 @@ TIpGetHtmlDataEvent =
     function(Sender : TObject; const URL : string) : Boolean of object;
 
 
-TIpCustomHtmlDataProvider = class(TIpAbstractHtmlDataProvider)
+  TIpCustomHtmlDataProvider = class(TIpAbstractHtmlDataProvider)
   private
     FProtocols : TStrings;
     FGetHtml : TIpGetHtmlDataEvent;
