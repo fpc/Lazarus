@@ -76,13 +76,13 @@ type
   TOnGetSameString = procedure(var s: string) of object;
   ArrayOfAnsiString = ^AnsiString;
   
-  TOperandValue = record
+  TEvalOperand = record
     Value: PChar;
     Len: PtrInt;
     Data: array[0..3] of char;
     Free: boolean;
   end;
-  POperandValue = ^TOperandValue;
+  PEvalOperand = ^TEvalOperand;
 
   { TExpressionEvaluator }
 
@@ -119,7 +119,7 @@ type
     procedure AssignTo(SL: TStringList);
     function Eval(const Expression: string):string;
     function EvalPChar(Expression: PChar; ExprLen: PtrInt;
-                       out Operand: TOperandValue): boolean;// true if expression valid
+                       out Operand: TEvalOperand): boolean;// true if expression valid
     function EvalBoolean(Expression: PChar; ExprLen: PtrInt): boolean;
     function EvalOld(const Expression: string):string;
     property ErrorPosition: integer read FErrorPos write FErrorPos;
@@ -142,6 +142,11 @@ type
     procedure IncreaseChangeStamp; inline;
   end;
 
+procedure FreeEvalOperand(var V: TEvalOperand);
+procedure ClearEvalOperand(out V: TEvalOperand); inline;
+function EvalOperandIsTrue(const V: TEvalOperand): boolean; inline;
+function EvalOperandToInt64(const V: TEvalOperand): int64;
+function CompareEvalOperand(const Operand: TEvalOperand; Value: PChar): integer;
 
 implementation
 
@@ -160,7 +165,7 @@ begin
   end;
 end;
 
-procedure FreeOperandValue(var V: TOperandValue);
+procedure FreeEvalOperand(var V: TEvalOperand);
 begin
   if V.Free then begin
     FreeMem(V.Value);
@@ -170,19 +175,19 @@ begin
   end;
 end;
 
-procedure ClearOperandValue(out V: TOperandValue); inline;
+procedure ClearEvalOperand(out V: TEvalOperand); inline;
 begin
   V.Free:=false;
   V.Value:=nil;
   V.Len:=0;
 end;
 
-function OperandIsTrue(const V: TOperandValue): boolean; inline;
+function EvalOperandIsTrue(const V: TEvalOperand): boolean; inline;
 begin
   Result:=not ((V.Len=1) and (V.Value^='0'));
 end;
 
-function OperandToInt64(const V: TOperandValue): int64;
+function EvalOperandToInt64(const V: TEvalOperand): int64;
 var
   p: PChar;
   l: PtrInt;
@@ -261,7 +266,7 @@ begin
   if Negated then Result:=-Result;
 end;
 
-procedure SetOperandValueStringConst(var V: TOperandValue;
+procedure SetOperandValueStringConst(var V: TEvalOperand;
   StartPos, EndPos: PChar);
 var
   l: PtrInt;
@@ -271,7 +276,7 @@ begin
   l:=0;
   p:=StartPos;
   if p^<>'''' then begin
-    if V.Free then FreeOperandValue(V);
+    if V.Free then FreeEvalOperand(V);
     V.Len:=0;
     V.Value:=nil;
     exit;
@@ -287,7 +292,7 @@ begin
   end;
   if l<5 then begin
     // short string
-    if V.Free then FreeOperandValue(V);
+    if V.Free then FreeEvalOperand(V);
     V.Value:=@V.Data[0];
   end else begin
     // big string
@@ -313,22 +318,22 @@ begin
   end;
 end;
 
-procedure SetOperandValueChar(var V: TOperandValue; const c: Char);
+procedure SetOperandValueChar(var V: TEvalOperand; const c: Char);
 begin
-  if V.Free then FreeOperandValue(V);
+  if V.Free then FreeEvalOperand(V);
   V.Data[0]:=c;
   V.Value:=@V.Data[0];
   V.Len:=1;
 end;
 
-procedure SetOperandValueConst(var V: TOperandValue; const p: PChar);
+procedure SetOperandValueConst(var V: TEvalOperand; const p: PChar);
 begin
-  if V.Free then FreeOperandValue(V);
+  if V.Free then FreeEvalOperand(V);
   V.Len:=strlen(p);
   V.Value:=p;
 end;
 
-procedure SetOperandValueInt64(var V: TOperandValue; i : int64);
+procedure SetOperandValueInt64(var V: TEvalOperand; i : int64);
 const
   HexChrs: array[0..15] of char = '0123456789ABCDEF';
 var
@@ -338,7 +343,7 @@ var
 begin
   if (i>=-999) and (i<=9999) then begin
     // small number => save in data
-    if V.Free then FreeOperandValue(V);
+    if V.Free then FreeEvalOperand(V);
     V.Value:=@V.Data[0];
     V.Len:=0;
     if i<0 then begin
@@ -401,7 +406,7 @@ begin
   end;
 end;
 
-function CompareOperand(const Operand: TOperandValue; Value: PChar): integer;
+function CompareEvalOperand(const Operand: TEvalOperand; Value: PChar): integer;
 var
   p: PChar;
   l: PtrInt;
@@ -451,7 +456,7 @@ begin
   end;
 end;
 
-function OperandsAreEqual(const Op1, Op2: TOperandValue): boolean;
+function OperandsAreEqual(const Op1, Op2: TEvalOperand): boolean;
 var
   i: Integer;
 begin
@@ -1173,7 +1178,7 @@ function TExpressionEvaluator.Eval(const Expression: string): string;
 {  0 = false
    else true }
 var
-  Operand: TOperandValue;
+  Operand: TEvalOperand;
 begin
   if Expression='' then exit('0');
   if not EvalPChar(PChar(Expression),length(Expression),Operand) then
@@ -1183,11 +1188,11 @@ begin
     if Result<>'' then
       System.Move(Operand.Value^,Result[1],length(Result));
   end;
-  FreeOperandValue(Operand);
+  FreeEvalOperand(Operand);
 end;
 
 function TExpressionEvaluator.EvalPChar(Expression: PChar; ExprLen: PtrInt;
-  out Operand: TOperandValue): boolean;
+  out Operand: TEvalOperand): boolean;
 {  0 = false
    else true
 
@@ -1200,7 +1205,7 @@ function TExpressionEvaluator.EvalPChar(Expression: PChar; ExprLen: PtrInt;
 }
 type
   TOperandAndOperator = record
-    Operand: TOperandValue;
+    Operand: TEvalOperand;
     theOperator: PChar;
     OperatorLvl: integer;
   end;
@@ -1215,7 +1220,7 @@ var
   procedure FreeStack;
   begin
     while StackPtr>=0 do begin
-      FreeOperandValue(ExprStack[StackPtr].Operand);
+      FreeEvalOperand(ExprStack[StackPtr].Operand);
       dec(StackPtr);
     end;
   end;
@@ -1389,7 +1394,7 @@ var
     Result:=false;
   end;
 
-  function ParseDefinedParams(out Operand: TOperandValue): boolean;
+  function ParseDefinedParams(out Operand: TEvalOperand): boolean;
   // p is behind defined or undefined keyword
   // Operand: '1' or '-1'
   var
@@ -1436,7 +1441,7 @@ var
     Result:=true;
   end;
 
-  function ParseOptionParams(out Operand: TOperandValue): boolean;
+  function ParseOptionParams(out Operand: TEvalOperand): boolean;
   // p is behind option keyword
   // Operand: '1' or '-1'
   begin
@@ -1580,7 +1585,7 @@ var
     '0'..'9','$':
       begin
         // number
-        if Operand.Free then FreeOperandValue(Operand);
+        if Operand.Free then FreeEvalOperand(Operand);
         Operand.Value:=AtomStart;
         Operand.Len:=p-AtomStart;
         exit(true);
@@ -1610,7 +1615,7 @@ var
       // identifier => return current value
       i:=IndexOfIdentifier(AtomStart,false);
       if i>=0 then begin
-        if Operand.Free then FreeOperandValue(Operand);
+        if Operand.Free then FreeEvalOperand(Operand);
         Operand.Value:=PChar(FValues[i]);
         Operand.Len:=length(FValues[i]);
       end;
@@ -1626,7 +1631,7 @@ var
     Number1: Int64;
     Number2: Int64;
     NumberResult: Int64;
-    StackOperand: POperandValue;
+    StackOperand: PEvalOperand;
   begin
     Result:=true;
     while (StackPtr>=0)
@@ -1641,22 +1646,22 @@ var
         case UpChars[Op^] of
         '*': // multiply
           begin
-            Number1:=OperandToInt64(StackOperand^);
-            Number2:=OperandToInt64(Operand);
+            Number1:=EvalOperandToInt64(StackOperand^);
+            Number2:=EvalOperandToInt64(Operand);
             NumberResult:=Number1*Number2;
             SetOperandValueInt64(Operand,NumberResult);
           end;
         '+': // Add
           begin
-            Number1:=OperandToInt64(StackOperand^);
-            Number2:=OperandToInt64(Operand);
+            Number1:=EvalOperandToInt64(StackOperand^);
+            Number2:=EvalOperandToInt64(Operand);
             NumberResult:=Number1+Number2;
             SetOperandValueInt64(Operand,NumberResult);
           end;
         '-': // subtract
           begin
-            Number1:=OperandToInt64(StackOperand^);
-            Number2:=OperandToInt64(Operand);
+            Number1:=EvalOperandToInt64(StackOperand^);
+            Number2:=EvalOperandToInt64(Operand);
             NumberResult:=Number1-Number2;
             SetOperandValueInt64(Operand,NumberResult);
           end;
@@ -1677,8 +1682,8 @@ var
           '=':
             begin
               // <=
-              Number1:=OperandToInt64(StackOperand^);
-              Number2:=OperandToInt64(Operand);
+              Number1:=EvalOperandToInt64(StackOperand^);
+              Number2:=EvalOperandToInt64(Operand);
               if Number1<=Number2 then
                 SetOperandValueChar(Operand,'1')
               else
@@ -1687,15 +1692,15 @@ var
           '<':
             begin
               // <<
-              Number1:=OperandToInt64(StackOperand^);
-              Number2:=OperandToInt64(Operand);
+              Number1:=EvalOperandToInt64(StackOperand^);
+              Number2:=EvalOperandToInt64(Operand);
               NumberResult:=Number1 shl Number2;
               SetOperandValueInt64(Operand,NumberResult);
             end;
           else
             // <
-            Number1:=OperandToInt64(StackOperand^);
-            Number2:=OperandToInt64(Operand);
+            Number1:=EvalOperandToInt64(StackOperand^);
+            Number2:=EvalOperandToInt64(Operand);
             if Number1<Number2 then
               SetOperandValueChar(Operand,'1')
             else
@@ -1706,8 +1711,8 @@ var
           '=':
             begin
               // >=
-              Number1:=OperandToInt64(StackOperand^);
-              Number2:=OperandToInt64(Operand);
+              Number1:=EvalOperandToInt64(StackOperand^);
+              Number2:=EvalOperandToInt64(Operand);
               if Number1>=Number2 then
                 SetOperandValueChar(Operand,'1')
               else
@@ -1716,15 +1721,15 @@ var
           '>':
             begin
               // >>
-              Number1:=OperandToInt64(StackOperand^);
-              Number2:=OperandToInt64(Operand);
+              Number1:=EvalOperandToInt64(StackOperand^);
+              Number2:=EvalOperandToInt64(Operand);
               NumberResult:=Number1 shr Number2;
               SetOperandValueInt64(Operand,NumberResult);
             end;
           else
             // >
-            Number1:=OperandToInt64(StackOperand^);
-            Number2:=OperandToInt64(Operand);
+            Number1:=EvalOperandToInt64(StackOperand^);
+            Number2:=EvalOperandToInt64(Operand);
             if Number1>Number2 then
               SetOperandValueChar(Operand,'1')
             else
@@ -1732,22 +1737,22 @@ var
           end;
         'A': // AND
           begin
-            if OperandIsTrue(StackOperand^) and OperandIsTrue(Operand) then
+            if EvalOperandIsTrue(StackOperand^) and EvalOperandIsTrue(Operand) then
               SetOperandValueChar(Operand,'1')
             else
               SetOperandValueChar(Operand,'0');
           end;
         'D': // DIV
           begin
-            Number1:=OperandToInt64(StackOperand^);
-            Number2:=OperandToInt64(Operand);
+            Number1:=EvalOperandToInt64(StackOperand^);
+            Number2:=EvalOperandToInt64(Operand);
             NumberResult:=Number1 div Number2;
             SetOperandValueInt64(Operand,NumberResult);
           end;
         'M': // MOD
           begin
-            Number1:=OperandToInt64(StackOperand^);
-            Number2:=OperandToInt64(Operand);
+            Number1:=EvalOperandToInt64(StackOperand^);
+            Number2:=EvalOperandToInt64(Operand);
             NumberResult:=Number1 mod Number2;
             SetOperandValueInt64(Operand,NumberResult);
           end;
@@ -1757,15 +1762,15 @@ var
             case UpChars[Op[2]] of
             'L': // SHL
               begin
-                Number1:=OperandToInt64(StackOperand^);
-                Number2:=OperandToInt64(Operand);
+                Number1:=EvalOperandToInt64(StackOperand^);
+                Number2:=EvalOperandToInt64(Operand);
                 NumberResult:=Number1 shl Number2;
                 SetOperandValueInt64(Operand,NumberResult);
               end;
             'R': // SHR
               begin
-                Number1:=OperandToInt64(StackOperand^);
-                Number2:=OperandToInt64(Operand);
+                Number1:=EvalOperandToInt64(StackOperand^);
+                Number2:=EvalOperandToInt64(Operand);
                 NumberResult:=Number1 shr Number2;
                 SetOperandValueInt64(Operand,NumberResult);
               end;
@@ -1773,14 +1778,14 @@ var
           end;
         'O': // OR
           begin
-            if OperandIsTrue(StackOperand^) or OperandIsTrue(Operand) then
+            if EvalOperandIsTrue(StackOperand^) or EvalOperandIsTrue(Operand) then
               SetOperandValueChar(Operand,'1')
             else
               SetOperandValueChar(Operand,'0');
           end;
         'X': // XOR
           begin
-            if OperandIsTrue(StackOperand^) xor OperandIsTrue(Operand) then
+            if EvalOperandIsTrue(StackOperand^) xor EvalOperandIsTrue(Operand) then
               SetOperandValueChar(Operand,'1')
             else
               SetOperandValueChar(Operand,'0');
@@ -1794,7 +1799,7 @@ var
         end;
       end;
       if not Result then exit;
-      FreeOperandValue(ExprStack[StackPtr].Operand);
+      FreeEvalOperand(ExprStack[StackPtr].Operand);
       dec(StackPtr);
     end;
   end;
@@ -1804,7 +1809,7 @@ var
 begin
   p:=Expression;
   Result:=false;
-  ClearOperandValue(Operand);
+  ClearEvalOperand(Operand);
   if p=nil then begin
     ExpressionMissing(p);
     exit;
@@ -1849,7 +1854,7 @@ begin
       'A':
         if CompareIdentifiers(AtomStart,'AND')=0 then begin
           OperatorLvl:=1;
-          if not OperandIsTrue(Operand) then begin
+          if not EvalOperandIsTrue(Operand) then begin
             SetOperandValueChar(Operand,'0');
             break;
           end;
@@ -1869,7 +1874,7 @@ begin
         'R':
           if p-AtomStart=2 then begin
             OperatorLvl:=2;
-            if OperandIsTrue(Operand) then begin
+            if EvalOperandIsTrue(Operand) then begin
               SetOperandValueChar(Operand,'1');
               break;
             end;
@@ -1887,7 +1892,7 @@ begin
       ExprStack[StackPtr].Operand:=Operand;
       ExprStack[StackPtr].OperatorLvl:=OperatorLvl;
       ExprStack[StackPtr].theOperator:=AtomStart;
-      ClearOperandValue(Operand);
+      ClearEvalOperand(Operand);
       ReadNextAtom;
     end;
     if FErrorPos<0 then begin
@@ -1902,10 +1907,10 @@ end;
 function TExpressionEvaluator.EvalBoolean(Expression: PChar; ExprLen: PtrInt
   ): boolean;
 var
-  Operand: TOperandValue;
+  Operand: TEvalOperand;
 begin
-  Result:=EvalPChar(Expression,ExprLen,Operand) and OperandIsTrue(Operand);
-  FreeOperandValue(Operand);
+  Result:=EvalPChar(Expression,ExprLen,Operand) and EvalOperandIsTrue(Operand);
+  FreeEvalOperand(Operand);
 end;
 
 function TExpressionEvaluator.AsString: string;
