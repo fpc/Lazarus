@@ -142,10 +142,13 @@ begin
     ParentForm := GetDesignerForm(Component);
     Result.X := LeftFromDesignInfo(Component.DesignInfo);
     Result.Y := TopFromDesignInfo(Component.DesignInfo);
-    while Component.Owner <> ParentForm do
+    while (Component <> nil) and (Component.Owner <> ParentForm) do
     begin
       Component := Component.Owner;
-      if Component is TControl then
+      if Component = nil then
+        break;
+      if (csInline in Component.ComponentState) and
+         (Component is TControl) then
       begin
         inc(Result.X, TControl(Component).Left);
         inc(Result.Y, TControl(Component).Top);
@@ -215,10 +218,13 @@ begin
     ParentForm := GetDesignerForm(Component);
     if ParentForm = nil then
       Exit;
-    while Component.Owner <> ParentForm do
+    while (Component <> nil) and (Component.Owner <> ParentForm) do
     begin
       Component := Component.Owner;
-      if Component is TControl then
+      if Component = nil then
+        break;
+      if (csInline in Component.ComponentState) and
+         (Component is TControl) then
       begin
         inc(Result.X, TControl(Component).Left);
         inc(Result.Y, TControl(Component).Top);
