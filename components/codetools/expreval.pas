@@ -170,7 +170,7 @@ begin
   end;
 end;
 
-procedure ClearOperandValue(var V: TOperandValue); inline;
+procedure ClearOperandValue(out V: TOperandValue); inline;
 begin
   V.Free:=false;
   V.Value:=nil;
@@ -1183,6 +1183,7 @@ begin
     if Result<>'' then
       System.Move(Operand.Value^,Result[1],length(Result));
   end;
+  FreeOperandValue(Operand);
 end;
 
 function TExpressionEvaluator.EvalPChar(Expression: PChar; ExprLen: PtrInt;
@@ -1904,6 +1905,7 @@ var
   Operand: TOperandValue;
 begin
   Result:=EvalPChar(Expression,ExprLen,Operand) and OperandIsTrue(Operand);
+  FreeOperandValue(Operand);
 end;
 
 function TExpressionEvaluator.AsString: string;
