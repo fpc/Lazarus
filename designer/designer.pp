@@ -113,6 +113,11 @@ type
     FHintTimer: TTimer;
     FHintWIndow: THintWindow;
 
+    // component drawing
+    FDDC: TDesignerDeviceContext;
+    FSurface: TBitmap;
+
+    procedure DrawNonVisualComponent(AComponent: TComponent);
     function GetGridColor: TColor;
     function GetGridSizeX: integer;
     function GetGridSizeY: integer;
@@ -380,6 +385,7 @@ implementation
 type
   TCustomFormAccess = class(TCustomForm);
   TControlAccess = class(TControl);
+  TComponentAccess = class(TComponent);
 
 
 const
@@ -2884,113 +2890,112 @@ begin
     Exclude(FFlags, dfShowEditorHints);
 end;
 
+procedure TDesigner.DrawNonVisualComponent(AComponent: TComponent);
+var
+  Icon: TBitmap;
+  ItemLeft, ItemTop, ItemRight, ItemBottom: integer;
+  Diff, ItemLeftTop: TPoint;
+  IconRect, TextRect: TRect;
+  TextSize: TSize;
+  IsSelected: Boolean;
+  Root: TComponent;
+begin
+  // also call draw for the inline components
+  if csInline in AComponent.ComponentState then
+    Root := AComponent
+  else
+    Root := FLookupRoot;
+  TComponentAccess(AComponent).GetChildren(@DrawNonVisualComponent, Root);
+
+  if not ComponentIsIcon(AComponent) then
+    Exit;
+  // actual draw
+  Diff := FDDC.FormOrigin;
+  //DebugLn(['FDDC.FormOrigin - ', Diff.X, ' : ' ,Diff.Y]);
+  // non-visual component
+  ItemLeftTop := NonVisualComponentLeftTop(AComponent);
+  ItemLeft := ItemLeftTop.X - Diff.X;
+  ItemTop := ItemLeftTop.Y - Diff.Y;
+  ItemRight := ItemLeft + NonVisualCompWidth;
+  ItemBottom := ItemTop + NonVisualCompWidth;
+  if not FDDC.RectVisible(ItemLeft, ItemTop, ItemRight, ItemBottom) then
+    Exit;
+
+  IsSelected := ControlSelection.IsSelected(AComponent);
+  FDDC.Save;
+
+  if FSurface = nil then
+  begin
+    FSurface := TBitmap.Create;
+    FSurface.SetSize(NonVisualCompWidth, NonVisualCompWidth);
+    FSurface.Canvas.Brush.Color := clBtnFace;
+    FSurface.Canvas.Pen.Width := 1;
+  end;
+
+  IconRect := Rect(0, 0, NonVisualCompWidth, NonVisualCompWidth);
+  FSurface.Canvas.Frame3D(IconRect, 1, bvRaised);
+  FSurface.Canvas.FillRect(IconRect);
+  if NonVisualCompBorder > 1 then
+    InflateRect(IconRect, -NonVisualCompBorder + 1, -NonVisualCompBorder + 1);
+
+  // draw component Name
+  if ShowComponentCaptions and (((GetKeyState(VK_LBUTTON) and $80) = 0) or not IsSelected) then
+  begin
+    // workarounds gtk2 problem with DrawText on gc with GDK_INCLUDE_INFERIORS
+    // it uses pango drawing and this for some reason does not take subwindow_mode
+    // into account
+    Icon := TBitmap.Create;
+    try
+      TextSize := FDDC.Canvas.TextExtent(AComponent.Name);
+      Icon.SetSize(TextSize.cx, TextSize.cy);
+      TextRect := Rect(0, 0, TextSize.cx, TextSize.cy);
+      if FDDC.Form <> nil then
+        Icon.Canvas.Brush.Color := FDDC.Form.Canvas.Brush.Color
+      else
+        Icon.Canvas.Brush.Color := clBtnFace;
+      Icon.Canvas.FillRect(TextRect);
+      DrawText(Icon.Canvas.Handle, PChar(AComponent.Name), -1, TextRect,
+        DT_CENTER or DT_VCENTER or DT_SINGLELINE or DT_NOCLIP);
+      FDDC.Canvas.Draw(
+        (ItemLeft + ItemRight - TextSize.cx) div 2,
+        ItemBottom + NonVisualCompBorder + 2, Icon);
+    finally
+      Icon.Free;
+    end;
+  end;
+  // draw component icon
+  if Assigned(FOnGetNonVisualCompIcon) then
+  begin
+    Icon := nil;
+    FOnGetNonVisualCompIcon(Self, AComponent, Icon);
+    if Icon <> nil then
+    begin
+      inc(IconRect.Left, (NonVisualCompIconWidth - Icon.Width) div 2);
+      inc(IconRect.Top, (NonVisualCompIconWidth - Icon.Height) div 2);
+      IconRect.Right := IconRect.Left + Icon.Width;
+      IconRect.Bottom := IconRect.Top + Icon.Height;
+      FSurface.Canvas.StretchDraw(IconRect, Icon);
+    end;
+  end;
+  FDDC.Canvas.Draw(ItemLeft, ItemTop, FSurface);
+  if (ControlSelection.Count > 1) and IsSelected then
+    ControlSelection.DrawMarkerAt(FDDC,
+      ItemLeft, ItemTop, NonVisualCompWidth, NonVisualCompWidth);
+  FDDC.Restore;
+end;
+
 procedure TDesigner.DrawNonVisualComponents(aDDC: TDesignerDeviceContext);
 var
-  Surface: TBitmap;
-
-  procedure DrawComponent(AComponent: TComponent);
-  var
-    Icon: TBitmap;
-    ItemLeft, ItemTop, ItemRight, ItemBottom: integer;
-    Diff, ItemLeftTop: TPoint;
-    IconRect, TextRect: TRect;
-    TextSize: TSize;
-    IsSelected: Boolean;
-  begin
-    Diff := aDDC.FormOrigin;
-    //DebugLn(['aDDC.FormOrigin - ', Diff.X, ' : ' ,Diff.Y]);
-    // non-visual component
-    ItemLeftTop := NonVisualComponentLeftTop(AComponent);
-    ItemLeft := ItemLeftTop.X - Diff.X;
-    ItemTop := ItemLeftTop.Y - Diff.Y;
-    ItemRight := ItemLeft + NonVisualCompWidth;
-    ItemBottom := ItemTop + NonVisualCompWidth;
-    if not aDDC.RectVisible(ItemLeft, ItemTop, ItemRight, ItemBottom) then
-      Exit;
-
-    IsSelected := ControlSelection.IsSelected(AComponent);
-    aDDC.Save;
-    if Surface = nil then
-    begin
-      Surface := TBitmap.Create;
-      Surface.SetSize(NonVisualCompWidth, NonVisualCompWidth);
-      Surface.Canvas.Brush.Color := clBtnFace;
-      Surface.Canvas.Pen.Width := 1;
-    end;
-
-    IconRect := Rect(0, 0, NonVisualCompWidth, NonVisualCompWidth);
-    Surface.Canvas.Frame3D(IconRect, 1, bvRaised);
-    Surface.Canvas.FillRect(IconRect);
-    if NonVisualCompBorder > 1 then
-      InflateRect(IconRect, -NonVisualCompBorder + 1, -NonVisualCompBorder + 1);
-
-    // draw component Name
-    if ShowComponentCaptions and (((GetKeyState(VK_LBUTTON) and $80) = 0) or not IsSelected) then
-    begin
-      // workarounds gtk2 problem with DrawText on gc with GDK_INCLUDE_INFERIORS
-      // it uses pango drawing and this for some reason does not take subwindow_mode
-      // into account
-      Icon := TBitmap.Create;
-      try
-        TextSize := aDDC.Canvas.TextExtent(AComponent.Name);
-        Icon.SetSize(TextSize.cx, TextSize.cy);
-        TextRect := Rect(0, 0, TextSize.cx, TextSize.cy);
-        if aDDC.Form <> nil then
-          Icon.Canvas.Brush.Color := aDDC.Form.Canvas.Brush.Color
-        else
-          Icon.Canvas.Brush.Color := clBtnFace;
-        Icon.Canvas.FillRect(TextRect);
-        DrawText(Icon.Canvas.Handle, PChar(AComponent.Name), -1, TextRect,
-          DT_CENTER or DT_VCENTER or DT_SINGLELINE or DT_NOCLIP);
-        aDDC.Canvas.Draw(
-          (ItemLeft + ItemRight - TextSize.cx) div 2,
-          ItemBottom + NonVisualCompBorder + 2, Icon);
-      finally
-        Icon.Free;
-      end;
-    end;
-    // draw component icon
-    if Assigned(FOnGetNonVisualCompIcon) then
-    begin
-      Icon := nil;
-      FOnGetNonVisualCompIcon(Self, AComponent, Icon);
-      if Icon <> nil then
-      begin
-        inc(IconRect.Left, (NonVisualCompIconWidth - Icon.Width) div 2);
-        inc(IconRect.Top, (NonVisualCompIconWidth - Icon.Height) div 2);
-        IconRect.Right := IconRect.Left + Icon.Width;
-        IconRect.Bottom := IconRect.Top + Icon.Height;
-        Surface.Canvas.StretchDraw(IconRect, Icon);
-      end;
-    end;
-    aDDC.Canvas.Draw(ItemLeft, ItemTop, Surface);
-    if (ControlSelection.Count > 1) and IsSelected then
-      ControlSelection.DrawMarkerAt(aDDC,
-        ItemLeft, ItemTop, NonVisualCompWidth, NonVisualCompWidth);
-    aDDC.Restore;
-  end;
-
-  procedure TraverseComponents(ALookupRoot: TComponent);
-  var
-    i: integer;
-    AComponent: TComponent;
-  begin
-    for i := 0 to ALookupRoot.ComponentCount - 1 do
-    begin
-      AComponent := ALookupRoot.Components[i];
-      if csInline in AComponent.ComponentState then
-        TraverseComponents(AComponent)
-      else
-      if ComponentIsIcon(AComponent) then
-        DrawComponent(AComponent);
-    end;
-  end;
-
+  i: integer;
+  AComponent: TComponent;
 begin
-  Surface := nil;
-  TraverseComponents(FLookupRoot);
-  if Surface <> nil then
-    Surface.Free;
+  FSurface := nil;
+  FDDC := aDDC;
+  for i := 0 to FLookupRoot.ComponentCount - 1 do
+    DrawNonVisualComponent(FLookupRoot.Components[i]);
+  FDDC := nil;
+  if FSurface <> nil then
+    FSurface.Free;
 end;
 
 procedure TDesigner.DrawDesignerItems(OnlyIfNeeded: boolean);
