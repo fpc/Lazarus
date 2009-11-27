@@ -2902,10 +2902,11 @@ var
 begin
   // also call draw for the inline components
   if csInline in AComponent.ComponentState then
-    Root := AComponent
-  else
+  begin
+    Root := AComponent;
+    TComponentAccess(AComponent).GetChildren(@DrawNonVisualComponent, Root);
+  end else
     Root := FLookupRoot;
-  TComponentAccess(AComponent).GetChildren(@DrawNonVisualComponent, Root);
 
   if not ComponentIsIcon(AComponent) then
     Exit;
