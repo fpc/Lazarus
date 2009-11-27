@@ -139,19 +139,30 @@ begin
     end;
   end else
   begin
+    ParentForm := GetDesignerForm(Component);
     Result.X := LeftFromDesignInfo(Component.DesignInfo);
     Result.Y := TopFromDesignInfo(Component.DesignInfo);
+    while Component.Owner <> ParentForm do
+    begin
+      Component := Component.Owner;
+      if Component is TControl then
+      begin
+        inc(Result.X, TControl(Component).Left);
+        inc(Result.Y, TControl(Component).Top);
+      end;
+    end;
   end;
 end;
 
 function GetParentFormRelativeBounds(Component: TComponent): TRect;
-var CTopLeft: TPoint;
+var
+  CTopLeft: TPoint;
 begin
-  CTopLeft:=GetParentFormRelativeTopLeft(Component);
-  Result.Left:=CTopLeft.X;
-  Result.Top:=CTopLeft.Y;
-  Result.Right:=Result.Left+GetComponentWidth(Component);
-  Result.Bottom:=Result.Top+GetComponentHeight(Component);
+  CTopLeft := GetParentFormRelativeTopLeft(Component);
+  Result.Left := CTopLeft.X;
+  Result.Top := CTopLeft.Y;
+  Result.Right := Result.Left + GetComponentWidth(Component);
+  Result.Bottom := Result.Top + GetComponentHeight(Component);
 end;
 
 function GetParentFormRelativeClientOrigin(Component: TComponent): TPoint;
@@ -184,19 +195,35 @@ var
   ParentForm: TCustomForm;
   Parent: TWinControl;
 begin
-  if Component is TControl then begin
-    ParentForm:=GetParentForm(TControl(Component));
-    Parent:=TControl(Component).Parent;
-    if (Parent=nil) or (ParentForm=nil) then begin
-      Result:=Point(0,0);
-    end else begin
-      ParentOrigin:=Parent.ClientOrigin;
-      FormOrigin:=ParentForm.ClientOrigin;
-      Result.X:=ParentOrigin.X-FormOrigin.X;
-      Result.Y:=ParentOrigin.Y-FormOrigin.Y;
+  if Component is TControl then
+  begin
+    ParentForm := GetParentForm(TControl(Component));
+    Parent := TControl(Component).Parent;
+    if (Parent = nil) or (ParentForm = nil) then
+      Result := Point(0, 0)
+    else
+    begin
+      ParentOrigin := Parent.ClientOrigin;
+      FormOrigin := ParentForm.ClientOrigin;
+      Result.X := ParentOrigin.X - FormOrigin.X;
+      Result.Y := ParentOrigin.Y - FormOrigin.Y;
     end;
-  end else begin
-    Result:=Point(0,0);
+  end
+  else
+  begin
+    Result := Point(0, 0);
+    ParentForm := GetDesignerForm(Component);
+    if ParentForm = nil then
+      Exit;
+    while Component.Owner <> ParentForm do
+    begin
+      Component := Component.Owner;
+      if Component is TControl then
+      begin
+        inc(Result.X, TControl(Component).Left);
+        inc(Result.Y, TControl(Component).Top);
+      end;
+    end;
   end;
 end;
 
