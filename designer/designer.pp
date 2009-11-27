@@ -2987,7 +2987,6 @@ end;
 procedure TDesigner.DrawNonVisualComponents(aDDC: TDesignerDeviceContext);
 var
   i: integer;
-  AComponent: TComponent;
 begin
   FSurface := nil;
   FDDC := aDDC;
