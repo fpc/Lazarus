@@ -1136,6 +1136,16 @@ type
     property Selection: TPersistentSelectionList read FSelection write SetSelection;
   end;
 
+type
+  TSelectableComponentFlag = (
+    scfWithoutRoot,
+    scfWithoutInlineChilds
+  );
+  TSelectableComponentFlags = set of TSelectableComponentFlag;
+
+procedure GetSelectableComponents(Root: TComponent;
+  Flags: TSelectableComponentFlags; var ComponentList: TFPList);
+
 //==============================================================================
 {
   TPropertyEditorHook
@@ -1605,6 +1615,54 @@ begin
     if (Editor.GetComponent(0)=AnObject)
     and (Editor.OnSubPropertiesChanged<>nil) then
       Editor.UpdateSubProperties;
+  end;
+end;
+
+type
+
+  { TSelectableComponentEnumerator }
+
+  TSelectableComponentEnumerator = class(TComponent)
+  public
+    List: TFPList;
+    Flags: TSelectableComponentFlags;
+    procedure GetSelectableComponents(Root: TComponent);
+    procedure Gather(Child: TComponent);
+  end;
+
+{ TSelectableComponentEnumerator }
+
+procedure TSelectableComponentEnumerator.GetSelectableComponents(
+  Root: TComponent);
+begin
+  if List=nil then
+    List:=TFPList.Create;
+  if Root=nil then exit;
+  if not (scfWithoutRoot in Flags) then List.Add(Root);
+  TSelectableComponentEnumerator(Root).GetChildren(@Gather,Root);
+end;
+
+procedure TSelectableComponentEnumerator.Gather(Child: TComponent);
+begin
+  List.Add(Child);
+  if (csInline in Child.ComponentState)
+  and (not (scfWithoutInlineChilds in Flags)) then
+    TSelectableComponentEnumerator(Child).GetChildren(@Gather,Child);
+end;
+
+procedure GetSelectableComponents(Root: TComponent;
+  Flags: TSelectableComponentFlags; var ComponentList: TFPList);
+var
+  e: TSelectableComponentEnumerator;
+begin
+  e:=TSelectableComponentEnumerator.Create(nil);
+  try
+    e.List:=ComponentList;
+    e.Flags:=Flags;
+    e.GetSelectableComponents(Root);
+    ComponentList:=e.List;
+  finally
+    e.Free;
   end;
 end;
 
