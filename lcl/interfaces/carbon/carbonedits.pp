@@ -309,6 +309,10 @@ end;
 
 procedure TCarbonControlWithEdit.AllowMenuProcess(MenuHotKey: AnsiChar;
   State: TShiftState; var AllowMenu: Boolean);
+{ These characters seems to be hardcoded by apple to Edit controls. }
+{ It doesn't seem possible to change the hotkeys. Even if there're  }
+{ some menu available with the same hotkey, still focused control }
+{ has a priority over the menu  }
 const
   MacHotChars = ['a','A','c','C','v','V','x','X','z','Z'];
 begin
