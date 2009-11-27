@@ -72,6 +72,8 @@ type
     procedure IndicatorMoved; virtual;
     procedure DoAction(AControlPart: ControlPartCode); virtual;
   public
+    procedure AllowMenuProcess(MenuHotKey: AnsiChar; State: TShiftState; var AllowCommandProcess: Boolean); virtual;
+  public
     procedure AddToWidget(AParent: TCarbonWidget); override;
     function GetTopParentWindow: WindowRef; override;
     function GetThemeDrawState: ThemeDrawState;

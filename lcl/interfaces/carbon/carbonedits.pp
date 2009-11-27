@@ -53,6 +53,7 @@ type
     procedure RegisterEvents; override;
   public
     procedure TextDidChange; virtual;
+    procedure AllowMenuProcess(MenuHotKey: AnsiChar; State: TShiftState; var AllowMenu: Boolean); override;
   public
     function GetPreferredSize: TPoint; override;
 
@@ -181,6 +182,7 @@ type
     function GetCreationOptions: TXNFrameOptions; virtual;
     function GetTXNSelection(var iStart, iEnd: Integer): Boolean;
     function SetTXNSelection(iStart, iEnd: Integer): Boolean;
+    procedure AllowMenuProcess(MenuHotKey: AnsiChar; State: TShiftState; var AllowMenu: Boolean); override;
   public
     procedure TextDidChange; override;
     function GetTextObject: TXNObject;
@@ -303,6 +305,14 @@ begin
       RegisterEventHandler(@CarbonTextField_DidChange),
       1, @TmpSpec, Pointer(Self), nil);
   end;
+end;
+
+procedure TCarbonControlWithEdit.AllowMenuProcess(MenuHotKey: AnsiChar;
+  State: TShiftState; var AllowMenu: Boolean);
+const
+  MacHotChars = ['a','A','c','C','v','V','x','X','z','Z'];
+begin
+  AllowMenu:=not ( (State = [ssMeta]) and (MenuHotKey in MacHotChars)) ;
 end;
 
 {------------------------------------------------------------------------------
@@ -1613,6 +1623,11 @@ begin
   Result := not OSError( TXNSetSelection( HITextViewGetTXNObject(Widget), iStart, iEnd),
       Self, 'SetSelSTart', 'SetTXNSelection', '');
   if Result then Invalidate(nil);
+end;
+
+procedure TCarbonMemo.AllowMenuProcess(MenuHotKey: AnsiChar; State: TShiftState; var AllowMenu: Boolean);
+begin
+  AllowMenu:=True;
 end;
 
 function TCarbonMemo.GetSelStart(var ASelStart: Integer): Boolean;

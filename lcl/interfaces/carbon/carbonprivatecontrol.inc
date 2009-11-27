@@ -547,6 +547,11 @@ begin
   end;
 end;
 
+procedure TCarbonControl.AllowMenuProcess(MenuHotKey: AnsiChar; State: TShiftState; var AllowCommandProcess: Boolean);
+begin
+  AllowCommandProcess:=True;
+end;
+
 {------------------------------------------------------------------------------
   Method:  TCarbonControl.GetValue
   Returns: The value of Carbon control

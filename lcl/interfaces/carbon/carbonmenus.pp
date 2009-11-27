@@ -74,6 +74,7 @@ type
     procedure SetShortCut(AShortCut: TShortCut);
     procedure SetStyle;
 
+    function GetShortCutKey: AnsiChar;
     procedure Update;
   end;
   
@@ -723,6 +724,16 @@ begin
     Style := MacOSAll.normal;
 
   SetItemStyle(FParentMenu.Menu, GetIndex + 1, Style);
+end;
+
+function TCarbonMenu.GetShortCutKey: AnsiChar;
+var
+  KeyValue: UInt16;
+begin
+  if GetMenuItemCommandKey(FParentMenu.Menu, GetIndex + 1, False, KeyValue)<>noErr then
+    Result:=#0
+  else
+    Result:=AnsiChar(KeyValue);
 end;
 
 

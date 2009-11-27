@@ -274,7 +274,7 @@ begin
   Parent := HIViewGetSuperview(Widget);
   if not Assigned(Parent) then Exit;
 
-  v := HIViewGetFirstSubview(v);
+  v := HIViewGetFirstSubview(Parent);
   while Assigned(v) do begin
     if (v <> Widget) then begin
       ctrl := GetCarbonControl(v);

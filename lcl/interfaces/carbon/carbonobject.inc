@@ -162,6 +162,9 @@ var
   CarbonMenu: TCarbonMenu;
   Msg: TLMessage;
   S: LongWord;
+  AllowMenu: Boolean;
+  Focused: HWND;
+  HotChar: Char;
 const SName = 'CarbonApp_CommandProcess';
 begin
   {$IFDEF VerboseAppEvent}
@@ -193,6 +196,30 @@ begin
         {$ENDIF}
         if CarbonMenu <> nil then
         begin
+          Hotchar:=CarbonMenu.GetShortCutKey;
+          { CommandProcess is fired before a keyboard event                              }
+          { we must check if the control has default system handlers on the hot-key used }
+          { if so, CommandProcess is not processed, and the key values event are sent    }
+          { to the control by the system.                                                }
+          {                                                                              }
+          { Another possible solution of the problem, is to Post another custom event    }
+          { to the loop, and report LCL about Menu pressed after the event arrives,      }
+          { though it might seem, like interface is lagging }
+          if (HotChar<>#0) then
+          begin
+            AllowMenu := True;
+            Focused:=GetFocus;
+            if (Focused<>0) and (TObject(Focused) is TCarbonControl) then
+            begin
+              TCarbonControl(Focused).AllowMenuProcess(HotChar, GetCarbonShiftState, AllowMenu);
+              if not AllowMenu then
+              begin
+                Result:=eventNotHandledErr;
+                Exit;
+              end;
+            end;
+          end;
+
           FillChar(Msg, SizeOf(Msg), 0);
           Msg.msg := LM_ACTIVATE;
           CarbonMenu.LCLMenuItem.Dispatch(Msg);
