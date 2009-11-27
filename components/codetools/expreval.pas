@@ -289,13 +289,14 @@ begin
     // short string
     if V.Free then FreeOperandValue(V);
     V.Value:=@V.Data[0];
-    V.Len:=l;
   end else begin
     // big string
     if V.Free then
       ReAllocMem(V.Value,l)
-    else
+    else begin
       Getmem(V.Value,l);
+      V.Free:=true;
+    end;
   end;
   V.Len:=l;
   // copy content
