@@ -560,10 +560,6 @@ begin
   WriteNode('',Root);
 end;
 
-{$if not declared(toWString)}
-  const toWString = char(5);
-{$endif}
-
 function TLFMTree.NextToken: Char;
 begin
   TokenStart:=Parser.SourcePos+1;
