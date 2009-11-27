@@ -1394,7 +1394,7 @@ var
     Result:=false;
   end;
 
-  function ParseDefinedParams(out Operand: TEvalOperand): boolean;
+  function ParseDefinedParams(var Operand: TEvalOperand): boolean;
   // p is behind defined or undefined keyword
   // Operand: '1' or '-1'
   var
@@ -1441,7 +1441,7 @@ var
     Result:=true;
   end;
 
-  function ParseOptionParams(out Operand: TEvalOperand): boolean;
+  function ParseOptionParams(var Operand: TEvalOperand): boolean;
   // p is behind option keyword
   // Operand: '1' or '-1'
   begin
