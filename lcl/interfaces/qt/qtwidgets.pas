@@ -2044,9 +2044,19 @@ begin
       FilesList := TStringList.Create;
       try
         FilesList.Text := UTF16ToUTF8(WStr);
-        SetLength(Files, FilesList.Count);
+        if (FilesList.Count > 0) and
+          ( (FilesList[FilesList.Count-1] = #0)
+            or
+            (FilesList[FilesList.Count-1] = '') ) then
+          SetLength(Files, FilesList.Count - 1)
+        else
+          SetLength(Files, FilesList.Count);
         for i := 0 to High(Files) do
+        begin
           Files[i] := FilesList.Strings[i];
+          if UTF8Pos('file://', Files[i]) <> 0 then
+            UTF8Delete(Files[i], 1, 7);
+        end;
       finally
         FilesList.Free;
       end;
