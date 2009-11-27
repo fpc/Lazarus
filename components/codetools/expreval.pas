@@ -1509,8 +1509,9 @@ var
       end
       else if CompareIdentifiers(AtomStart,'DECLARED')=0 then begin
         // should check if a pascal identifier is already declared
-        // can not do this here => treat as defined
+        // can not do this here => return always true
         if not ParseDefinedParams(Operand) then exit;
+        SetOperandValueChar(Operand,'1');
         exit(true);
       end;
     'H':
