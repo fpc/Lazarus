@@ -174,7 +174,6 @@ end;
 class function TCocoaWSCustomForm.GetText(const AWinControl: TWinControl; var AText: String): Boolean;
 var
   win   : TCocoaWindow;
-  title : NSString;
 begin
   win:=TCocoaWindow(AWinControl.Handle);
   Result:=Assigned(win);
@@ -196,7 +195,6 @@ end;
 class procedure TCocoaWSCustomForm.SetText(const AWinControl: TWinControl; const AText: String);
 var
   win   : TCocoaWindow;
-  ns    : NSString;
 begin
   win:=TCocoaWindow(AWinControl.Handle);
   if not Assigned(win) then Exit;

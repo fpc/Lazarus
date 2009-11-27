@@ -195,7 +195,7 @@ var
   mp : NSPoint;
 begin
   mp:=event.locationInWindow;
-  mp.y:=event.window.contentView.bounds.size.height-mp.y;
+  mp.y:=NSView(event.window.contentView).bounds.size.height-mp.y;
   callback.MouseUp(round(mp.x), round(mp.y));
   inherited mouseUp(event);
 end;
@@ -205,7 +205,7 @@ var
   mp : NSPoint;
 begin
   mp:=event.locationInWindow;
-  mp.y:=event.window.contentView.bounds.size.height-mp.y;
+  mp.y:=NSView(event.window.contentView).bounds.size.height-mp.y;
   callback.MouseDown(round(mp.x), round(mp.y));
   inherited mouseDown(event);
 end;
@@ -215,7 +215,7 @@ var
   mp : NSPoint;
 begin
   mp:=event.locationInWindow;
-  mp.y:=event.window.contentView.bounds.size.height-mp.y;
+  mp.y:=NSView(event.window.contentView).bounds.size.height-mp.y;
   callback.MouseMove(round(mp.x), round(mp.y));
   inherited mouseMoved(event);
 end;
@@ -225,7 +225,7 @@ var
   mp : NSPoint;
 begin
   mp:=event.locationInWindow;
-  mp.y:=event.window.contentView.bounds.size.height-mp.y;
+  mp.y:=NSView(event.window.contentView).bounds.size.height-mp.y;
   callback.MouseMove(round(mp.x), round(mp.y));
   inherited mouseMoved(event);
 end;
