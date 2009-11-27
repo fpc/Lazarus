@@ -1723,14 +1723,17 @@ function GetDesignerForm(AComponent: TComponent): TCustomForm;
 var
   OwnerComponent: TComponent;
 begin
-  Result:=nil;
-  if AComponent=nil then exit;
+  if AComponent = nil then Exit(nil);
   if Assigned(OnGetDesignerForm) then
-    Result:=OnGetDesignerForm(AComponent)
-  else begin
-    OwnerComponent:=AComponent;
-    while OwnerComponent.Owner<>nil do OwnerComponent:=OwnerComponent.Owner;
-    if OwnerComponent is TCustomForm then Result:=TCustomForm(OwnerComponent);
+    Result := OnGetDesignerForm(AComponent)
+  else
+  begin
+    Result := nil;
+    OwnerComponent := AComponent;
+    while OwnerComponent.Owner <> nil do
+      OwnerComponent := OwnerComponent.Owner;
+    if OwnerComponent is TCustomForm then
+      Result := TCustomForm(OwnerComponent);
   end;
 end;
 
