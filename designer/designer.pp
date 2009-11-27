@@ -82,7 +82,7 @@ type
 
   TDesigner = class(TComponentEditorDesigner)
   private
-    DesignerPopupMenu: TPopupMenu;
+    FDesignerPopupMenu: TPopupMenu;
     FDefaultFormBounds: TRect;
     FLastFormBounds: TRect;
     FDefaultFormBoundsValid: boolean;
@@ -550,7 +550,7 @@ end;
 
 destructor TDesigner.Destroy;
 Begin
-  FreeAndNil(DesignerPopupMenu);
+  FreeAndNil(FDesignerPopupMenu);
   FreeAndNil(FHintWIndow);
   FreeAndNil(FHintTimer);
   FreeAndNil(DDC);
@@ -2044,7 +2044,7 @@ begin
     PopupMenuComponentEditor:=GetComponentEditorForSelection;
     BuildPopupMenu;
     PopupPos := Form.ClientToScreen(MouseUpPos);
-    DesignerPopupMenu.Popup(PopupPos.X,PopupPos.Y);
+    FDesignerPopupMenu.Popup(PopupPos.X,PopupPos.Y);
   end;
 
   DisableRubberBand;
@@ -3323,10 +3323,10 @@ end;
 
 procedure TDesigner.BuildPopupMenu;
 begin
-  if DesignerPopupMenu = nil then
+  if FDesignerPopupMenu = nil then
   begin
-    DesignerPopupMenu:=TPopupMenu.Create(nil);
-    with DesignerPopupMenu do
+    FDesignerPopupMenu:=TPopupMenu.Create(nil);
+    with FDesignerPopupMenu do
     begin
       Name := 'DesignerPopupmenu';
       OnPopup := @DesignerPopupMenuPopup;
@@ -3341,7 +3341,7 @@ begin
   DesignerPopupMenu.Items.WriteDebugReport('TSourceNotebook.BuildPopupMenu ');
   DesignerMenuRoot.ConsistencyCheck;
   {$ENDIF}
-  DesignerMenuRoot.MenuItem := DesignerPopupMenu.Items;
+  DesignerMenuRoot.MenuItem := FDesignerPopupMenu.Items;
 
   DesignerMenuAlign.OnClick := @OnAlignPopupMenuClick;
   DesignerMenuMirrorHorizontal.OnClick := @OnMirrorHorizontalPopupMenuClick;
