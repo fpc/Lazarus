@@ -1573,7 +1573,7 @@ function IsInteresting(
   const AEditor: TPropertyEditor; const AFilter: TTypeKinds): Boolean;
 
 const
-  NoDefaultValue = Longint($80000000);
+  NoDefaultValue = Longint($80000000); // magic number for properties with nodefault modifier
 
 implementation
 
