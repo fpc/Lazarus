@@ -5432,6 +5432,7 @@ var
     AfterGap: TGapTyp;
     FrontGap: TGapTyp;
     BeautifyFlags: TBeautifyCodeFlags;
+    BehindPos: LongInt;
 
     function EndBlockIsOk: boolean;
     begin
@@ -5725,6 +5726,30 @@ var
     if NeedCompletion then begin
       InsertPos:=CleanCursorPos;
       Indent:=CursorBlockOuterIndent;
+
+      // check code behind
+      BehindPos:=FindNextNonSpace(Src,InsertPos);
+      if BehindPos<=SrcLen then begin
+        if PositionsInSameLine(Src,InsertPos,BehindPos) then begin
+          // target line not empty
+          {$IFDEF ShowCompleteBlock}
+          DebugLn(['CompleteStatements target line not empty => skip']);
+          {$ENDIF}
+          exit;
+        end;
+        if (GetLineIndent(Src,BehindPos)>Indent) then begin
+          // code behind is more indented
+          // for example
+          //   repeat
+          //   |
+          //     DoSomething;
+          {$IFDEF ShowCompleteBlock}
+          DebugLn(['CompleteStatements code behind is indented more => skip']);
+          {$ENDIF}
+          exit;
+        end;
+      end;
+
       NewCode:='';
       FrontGap:=gtEmptyLine;
       AfterGap:=gtNewLine;
