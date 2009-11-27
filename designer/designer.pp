@@ -2898,15 +2898,10 @@ var
   IconRect, TextRect: TRect;
   TextSize: TSize;
   IsSelected: Boolean;
-  Root: TComponent;
 begin
-  // also call draw for the inline components
+  // also call draw for the inline components children
   if csInline in AComponent.ComponentState then
-  begin
-    Root := AComponent;
-    TComponentAccess(AComponent).GetChildren(@DrawNonVisualComponent, Root);
-  end else
-    Root := FLookupRoot;
+    TComponentAccess(AComponent).GetChildren(@DrawNonVisualComponent, AComponent);
 
   if not ComponentIsIcon(AComponent) then
     Exit;
