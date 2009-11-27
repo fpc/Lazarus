@@ -3275,7 +3275,7 @@ function TDesigner.ComponentClassAtPos(const AClass: TComponentClass;
 
 begin
   // If LookupRoot is TWincontol, use the control list. It is ordered by zorder
-  // We cannot use the components in that case since they are at place order
+  // We cannot use the components in that case since they are in stream order
 
   if FLookupRoot is TWinControl
   then Result := DoWinControl
