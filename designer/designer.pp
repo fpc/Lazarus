@@ -446,7 +446,7 @@ begin
         Root:=Child;
         if (Control<>nil)
         and (not (csOwnedChildsSelectable in Control.ControlStyle)) then
-
+          exit;
       end;
       {$IFDEF VerboseDesignerSelect}
       DebugLn(['TComponentSearch.Gather Root=',DbgSName(Root)]);
