@@ -7,15 +7,15 @@ interface
 
 uses
   MacOSAll, CocoaAll,
-  Controls,
+  Controls, {todo: remove controls?}
   WSControls,
   CocoaPrivate, CocoaUtils, LCLMessageGlue;
 
 type
 
-  { TControlCallback }
+  { TLCLCommonCallback }
 
-  TControlCallback = class(TCommonCallback)
+  TLCLCommonCallback = class(TCommonCallback)
   public
     Target  : TControl;
     constructor Create(AOwner: NSObject; ATarget: TControl);
@@ -24,7 +24,6 @@ type
     procedure MouseClick(clickCount: Integer); override;
     procedure MouseMove(x,y: Integer); override;
   end;
-
 
   { TCocoaWSWinControl }
 
@@ -38,30 +37,30 @@ type
 
 implementation
 
-{ TControlCallback }
+{ TLCLCommonCallback }
 
-constructor TControlCallback.Create(AOwner: NSObject; ATarget: TControl);
+constructor TLCLCommonCallback.Create(AOwner: NSObject; ATarget: TControl);
 begin
   inherited Create(AOwner);
   Target:=ATarget;
 end;
 
-procedure TControlCallback.MouseDown(x, y: Integer);
+procedure TLCLCommonCallback.MouseDown(x, y: Integer);
 begin
   LCLSendMouseDownMsg(Target,x,y,mbLeft, []);
 end;
 
-procedure TControlCallback.MouseUp(x, y: Integer);
+procedure TLCLCommonCallback.MouseUp(x, y: Integer);
 begin
   LCLSendMouseUpMsg(Target,x,y,mbLeft, []);
 end;
 
-procedure TControlCallback.MouseClick(clickCount: Integer);
+procedure TLCLCommonCallback.MouseClick(clickCount: Integer);
 begin
   LCLSendClickedMsg(Target);
 end;
 
-procedure TControlCallback.MouseMove(x, y: Integer);
+procedure TLCLCommonCallback.MouseMove(x, y: Integer);
 begin
   LCLSendMouseMoveMsg(Target, x,y, []);
 end;

@@ -31,13 +31,25 @@ uses
   // Libs
   MacOSAll, CocoaAll,
   // LCL
-  Controls, Forms, Graphics, LCLType, LMessages, LCLProc, Classes,
+  Controls, {Forms, } Graphics, LCLType, LMessages, LCLProc, Classes,
   // Widgetset
-  WSForms, WSLCLClasses, WSProc,
+  WSForms, WSLCLClasses, WSProc, LCLMessageGlue,
   // LCL Cocoa
   CocoaPrivate, CocoaUtils, CocoaWSCommon;
 
 type
+  { TLCLWindowCallback }
+
+  TLCLWindowCallback=class(TWindowCallback)
+  public
+    Target  : TControl;
+    constructor Create(AOwner: NSWindow; ATarget: TControl);
+    procedure Activate; override;
+    procedure Deactivate; override;
+    procedure CloseQuery(var CanClose: Boolean); override;
+    procedure Close; override;
+  end;
+
 
   { TCocoaWSScrollingWinControl }
 
@@ -128,6 +140,36 @@ type
 
 implementation
 
+{ TLCLWindowCallback }
+
+constructor TLCLWindowCallback.Create(AOwner: NSWindow; ATarget: TControl);
+begin
+  inherited Create(AOwner);
+  Target:=ATarget;
+end;
+
+procedure TLCLWindowCallback.Activate;
+begin
+  LCLSendActivateMsg(Target, True, false);
+end;
+
+procedure TLCLWindowCallback.Deactivate;
+begin
+  LCLSendDeactivateStartMsg(Target);
+end;
+
+procedure TLCLWindowCallback.CloseQuery(var CanClose: Boolean);
+begin
+  // Message results : 0 - do nothing, 1 - destroy window
+  CanClose:=LCLSendCloseQueryMsg(Target)>0;
+end;
+
+procedure TLCLWindowCallback.Close;
+begin
+  LCLSendCloseUpMsg(Target);
+end;
+
+
 { TCocoaWSCustomForm }
 
 {------------------------------------------------------------------------------
@@ -151,8 +193,10 @@ begin
     Result:=0;
     Exit;
   end;
-  TCocoaWindow(win).callback:=TControlCallback.Create(win, AWinControl);
+  TCocoaWindow(win).callback:=TLCLCommonCallback.Create(win, AWinControl);
+  TCocoaWindow(win).wincallback:=TLCLWindowCallback.Create(win, AWinControl);
   win.initWithContentRect_styleMask_backing_defer(CreateParamsToNSRect(AParams), WinMask, NSBackingStoreBuffered, False);
+  win.setDelegate(win);
   win.setTitle(NSStringUtf8(AWinControl.Caption));
 
   Result := TLCLIntfHandle(win);

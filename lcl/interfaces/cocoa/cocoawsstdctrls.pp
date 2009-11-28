@@ -273,7 +273,7 @@ function AllocButton(ATarget: TWinControl; const AParams: TCreateParams; btnBeze
 begin
   Result:=TCocoaButton.alloc;
   if Assigned(Result) then begin
-    TCocoaButton(Result).callback:=TControlCallback.Create(Result, ATarget);
+    TCocoaButton(Result).callback:=TLCLCommonCallback.Create(Result, ATarget);
     Result.initWithFrame(CreateParamsToNSRect(AParams));
     Result.setTitle(NSStringUTF8(AParams.Caption));
     if btnBezel<>0 then Result.setBezelStyle(btnBezel);
@@ -286,7 +286,7 @@ function AllocTextView(ATarget: TWinControl; const AParams: TCreateParams; field
 begin
   Result:=TCocoaTextView.alloc;
   if Assigned(Result) then begin
-    TCocoaTextView(Result).callback:=TControlCallback.Create(Result, ATarget);
+    TCocoaTextView(Result).callback:=TLCLCommonCallback.Create(Result, ATarget);
     Result.initWithFrame(CreateParamsToNSRect(AParams));
     DefaultViewSettings(Result);
     Result.setFieldEditor(fieldEditor);
@@ -297,7 +297,7 @@ function AllocTextField(ATarget: TWinControl; const AParams: TCreateParams): TCo
 begin
   Result:=TCocoaTextField(TCocoaTextField.alloc);
   if Assigned(Result) then begin
-    TCocoaTextField(Result).callback:=TControlCallback.Create(Result, ATarget);
+    TCocoaTextField(Result).callback:=TLCLCommonCallback.Create(Result, ATarget);
     Result.initWithFrame(CreateParamsToNSRect(AParams));
     SetNSControlValue(Result, AParams.Caption);
     DefaultViewSettings(Result);
@@ -308,7 +308,7 @@ function AllocSecureTextField(ATarget: TWinControl; const AParams: TCreateParams
 begin
   Result:=TCocoaSecureTextField(TCocoaSecureTextField.alloc);
   if Assigned(Result) then begin
-    TCocoaSecureTextField(Result).callback:=TControlCallback.Create(Result, ATarget);
+    TCocoaSecureTextField(Result).callback:=TLCLCommonCallback.Create(Result, ATarget);
     Result.initWithFrame(CreateParamsToNSRect(AParams));
     SetNSText(Result.currentEditor, AParams.Caption);
     DefaultViewSettings(Result);

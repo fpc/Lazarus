@@ -45,6 +45,18 @@ type
     procedure MouseMove(x,y: Integer); virtual; abstract;
   end;
 
+  { TWindowCallback }
+
+  TWindowCallback = class(TObject)
+  public
+    Owner : NSWindow;
+    constructor Create(AOwner: NSWindow);
+    procedure Activate; virtual; abstract;
+    procedure Deactivate; virtual; abstract;
+    procedure CloseQuery(var CanClose: Boolean); virtual; abstract;
+    procedure Close; virtual; abstract;
+  end;
+
   { TCocoaWindowContentView }
 
   TCocoaWindowContentView = objcclass(NSView)
@@ -88,8 +100,14 @@ type
   end;
 
   TCocoaWindow = objcclass(NSWindow)
+  protected
+    function windowShouldClose(sender : id): LongBool; message 'windowShouldClose:';
+    procedure windowWillClose(notification: NSNotification); message 'windowWillClose:';
+    procedure windowDidBecomeKey(notification: NSNotification); message 'windowDidBecomeKey:';
+    procedure windowDidResignKey(notification: NSNotification); message 'windowDidResignKey:';
   public
-    callback  : TCommonCallback;
+    callback      : TCommonCallback;
+    wincallback   : TWindowCallback;
     function acceptsFirstResponder: Boolean; override;
     procedure mouseUp(event: NSEvent); override;
     procedure mouseDown(event: NSEvent); override;
@@ -185,6 +203,30 @@ end;
 
 { TCocoaWindow }
 
+function TCocoaWindow.windowShouldClose(sender: id): LongBool;
+var
+  canClose : Boolean;
+begin
+  canClose:=true;
+  wincallback.CloseQuery(canClose);
+  Result:=canClose;
+end;
+
+procedure TCocoaWindow.windowWillClose(notification: NSNotification);
+begin
+  wincallback.Close;
+end;
+
+procedure TCocoaWindow.windowDidBecomeKey(notification: NSNotification);
+begin
+  wincallback.Activate;
+end;
+
+procedure TCocoaWindow.windowDidResignKey(notification: NSNotification);
+begin
+  wincallback.Deactivate;
+end;
+
 function TCocoaWindow.acceptsFirstResponder: Boolean;
 begin
   Result:=true;
@@ -252,6 +294,13 @@ end;
 function TCocoaSecureTextField.acceptsFirstResponder: Boolean;
 begin
   Result:=True;
+end;
+
+{ TWindowCallback }
+
+constructor TWindowCallback.Create(AOwner: NSWindow);
+begin
+  Owner:=AOwner;
 end;
 
 end.
