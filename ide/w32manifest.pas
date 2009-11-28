@@ -52,7 +52,7 @@ type
     procedure SetUseManifest(const AValue: boolean);
   public
     function UpdateResources(AResources: TAbstractProjectResources; const MainFilename: string): Boolean; override;
-    function CreateManifestFile(ExeFilename: string): TModalResult;
+    function CreateManifestFile: Boolean;
     function NeedManifest(AResources: TAbstractProjectResources): boolean;
 
     property UseManifest: boolean read FUseManifest write SetUseManifest;
@@ -89,7 +89,7 @@ const
 
 procedure TProjectXPManifest.SetFileNames(const MainFilename: string);
 begin
-  FManifestName := ExtractFileNameOnly(MainFilename)+'.manifest';
+  FManifestName := ChangeFileExt(MainFilename, '.manifest');
 end;
 
 procedure TProjectXPManifest.SetUseManifest(const AValue: boolean);
@@ -109,42 +109,39 @@ begin
 
   SetFileNames(MainFilename);
 
-  AResources.AddSystemResource(sManifest + ' "' + ManifestName + '"');
-  Result:=true;
+  AResources.AddSystemResource(sManifest + ' "' + ExtractFileName(ManifestName) + '"');
+  Result := CreateManifestFile;
 end;
 
-function TProjectXPManifest.CreateManifestFile(ExeFilename: string): TModalResult;
+function TProjectXPManifest.CreateManifestFile: Boolean;
 var
-  ManifestFileName: String;
   Code: TCodeBuffer;
 begin
-  Result := mrCancel;
-  if not FilenameIsAbsolute(ExeFilename) then exit(mrOk);
-  ManifestFileName:=ChangeFileExt(ExeFilename,'.manifest');
+  Result := False;
+  if not FilenameIsAbsolute(ManifestName) then exit(True);
   // check if manifest file is uptodate
   // (needed for readonly files and for version control systems)
-  Code:=CodeToolBoss.LoadFile(ManifestFileName,true,true);
-  if (Code<>nil) and (Code.Source=sManifestFileData) then exit(mrOk);
+  Code:=CodeToolBoss.LoadFile(ManifestName, True, True);
+  if (Code <> nil) and (Code.Source = sManifestFileData) then exit(True);
   // save
-  if Code=nil then
-    Code:=CodeToolBoss.CreateFile(ManifestFileName);
-  Code.Source:=sManifestFileData;
-  Result:=SaveCodeBuffer(Code);
+  if Code = nil then
+    Code := CodeToolBoss.CreateFile(ManifestName);
+  Code.Source := sManifestFileData;
+  Result := SaveCodeBuffer(Code) = mrOk;
 end;
 
-function TProjectXPManifest.NeedManifest(AResources: TAbstractProjectResources
-  ): boolean;
+function TProjectXPManifest.NeedManifest(AResources: TAbstractProjectResources): boolean;
 var
   TargetOS: String;
 begin
-  Result:=false;
-  if not UseManifest then exit;
-  if AResources.Project=nil then exit;
-  TargetOS:=AResources.Project.LazCompilerOptions.TargetOS;
-  if (TargetOS='') or (TargetOS='default') then
-    TargetOS:=GetDefaultTargetOS;
-  if (TargetOS<>'win32') and (TargetOS<>'win64') then exit;
-  Result:=true;
+  Result := False;
+  if not UseManifest then Exit;
+  if AResources.Project = nil then Exit;
+  TargetOS := AResources.Project.LazCompilerOptions.TargetOS;
+  if (TargetOS = '') or (TargetOS = 'default') then
+    TargetOS := GetDefaultTargetOS;
+  if (TargetOS <> 'win32') and (TargetOS <> 'win64') then Exit;
+  Result := True;
 end;
 
 

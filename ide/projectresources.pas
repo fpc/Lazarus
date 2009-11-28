@@ -65,7 +65,7 @@ type
     FXPManifest: TProjectXPManifest;
     FProjectIcon: TProjectIcon;
 
-    procedure SetFileNames(const MainFileName: String);
+    procedure SetFileNames(const MainFileName, TestDir: String);
     procedure SetModified(const AValue: Boolean);
     procedure EmbeddedObjectModified(Sender: TObject);
     function Update: Boolean;
@@ -109,10 +109,23 @@ const
 
 { TProjectResources }
 
-procedure TProjectResources.SetFileNames(const MainFileName: String);
+procedure TProjectResources.SetFileNames(const MainFileName, TestDir: String);
 begin
-  rcFileName := ChangeFileExt(MainFileName, '.rc');
-  lrsFileName := ChangeFileExt(MainFileName, '.lrs');
+  // rc is in the exectable dir
+  //rcFileName := TestDir + ExtractFileNameOnly(MainFileName) + '.rc';
+
+  // rc is in the project dir for now because {$R project1.rc} searches only in unit dir
+  // lrs is in the project dir also
+  if FileNameIsAbsolute(MainFileName) then
+  begin
+    rcFileName := ChangeFileExt(MainFileName, '.rc');
+    lrsFileName := ChangeFileExt(MainFileName, '.lrs');
+  end
+  else
+  begin
+    rcFileName := TestDir + ExtractFileNameOnly(MainFileName) + '.rc';
+    lrsFileName := TestDir + ExtractFileNameOnly(MainFileName) + '.lrs';
+  end;
 end;
 
 procedure TProjectResources.SetModified(const AValue: Boolean);
@@ -241,7 +254,7 @@ begin
   // remember old codebuffer filenames
   LastrcFilename := rcFileName;
   LastLrsFileName := lrsFileName;
-  SetFileNames(MainFileName);
+  SetFileNames(MainFileName, SaveToTestDir);
 
   UpdateFlagLrsIncludeAllowed(MainFileName);
 
@@ -342,7 +355,7 @@ begin
   CodeBuf := CodeToolBoss.LoadFile(AFilename, False, False);
   if CodeBuf <> nil then
   begin
-    SetFileNames(AFileName);
+    SetFileNames(AFileName, '');
     Filename := ExtractFileName(rcFileName);
     //debugln(['TProjectResources.UpdateMainSourceFile HasSystemResources=',HasSystemResources,' Filename=',Filename,' HasLazarusResources=',HasLazarusResources]);
 
@@ -479,10 +492,10 @@ begin
   LastRcFilename := rcFileName;
   LastLrsFileName := lrsFileName;
   try
-    SetFileNames(CurFileName);
+    SetFileNames(CurFileName, '');
     oldRcFilename := ExtractFileName(rcFileName);
     oldLrsFileName := ExtractFileName(lrsFileName);
-    SetFileNames(NewFileName);
+    SetFileNames(NewFileName, '');
     newRcFilename := ExtractFileName(rcFileName);
     newLrsFileName := ExtractFileName(lrsFileName);
 

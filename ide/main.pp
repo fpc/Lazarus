@@ -9981,13 +9981,8 @@ begin
       if not (Result in [mrOk,mrIgnore]) then exit;
     end;
 
-    // create manifest
-    if Project1.Resources.XPManifest.UseManifest and (Project1.MainUnitID>=0)
-    and Project1.Resources.XPManifest.NeedManifest(Project1.Resources)
-    then begin
-      Result:=Project1.Resources.XPManifest.CreateManifestFile(TargetExeName);
-      if not (Result in [mrOk,mrIgnore]) then exit;
-    end;
+    if not Project1.Resources.Regenerate(Project1.MainFilename, False, True, TargetExeDirectory) then
+      Exit;
 
     // execute compilation tool 'Before'
     if not (pbfSkipTools in Flags) then begin
