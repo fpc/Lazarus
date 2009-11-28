@@ -1027,9 +1027,10 @@ begin
   end;
   Result:=SourceCache.LoadFile(ExpandedFilename);
   if Result<>nil then begin
-    if Revert then
-      Result.Revert
-    else if UpdateFromDisk and Result.AutoRevertFromDisk
+    if Revert then begin
+      if not Result.Revert then
+        Result:=nil;
+    end else if UpdateFromDisk and Result.AutoRevertFromDisk
     and Result.FileNeedsUpdate then begin
       //debugln(['TCodeToolManager.LoadFile ',ExpandedFilename,' AutoRevert=',Result.AutoRevertFromDisk,' Modified=',Result.Modified,' NeedLoad=',Result.FileNeedsUpdate]);
       Result.Reload;
