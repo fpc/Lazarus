@@ -2991,11 +2991,14 @@ var
   IconRect, TextRect: TRect;
   TextSize: TSize;
   IsSelected: Boolean;
+  Root: TComponent;
 begin
   // also call draw for the inline components children
-  if csInline in AComponent.ComponentState then
-    TComponentAccess(AComponent).GetChildren(@DrawNonVisualComponent, AComponent);
-
+  if (csInline in AComponent.ComponentState) or (AComponent.Owner=nil) then
+    Root:=AComponent
+  else
+    Root:=AComponent.Owner;
+  TComponentAccess(AComponent).GetChildren(@DrawNonVisualComponent, Root);
   if not ComponentIsIcon(AComponent) then
     Exit;
   // actual draw
