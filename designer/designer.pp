@@ -387,6 +387,102 @@ type
   TControlAccess = class(TControl);
   TComponentAccess = class(TComponent);
 
+  { TComponentSearch }
+
+  TComponentSearch = class(TComponent)
+  public
+    Best: TComponent;
+    AtPos: TPoint;
+    MinClass: TComponentClass;
+    IgnoreHidden: boolean;
+    OnlyNonVisual: boolean;
+    Mediator: TDesignerMediator;
+    Root: TComponent;
+    procedure Gather(Child: TComponent);
+    procedure Search(ARoot: TComponent);
+  end;
+
+{ TComponentSearch }
+
+procedure TComponentSearch.Gather(Child: TComponent);
+var
+  Control: TControl;
+  ChildBounds: TRect;
+  OldRoot: TComponent;
+begin
+  if Best<>nil then exit;
+
+  {$IFDEF VerboseDesignerSelect}
+  DebugLn(['TComponentSearch.Gather ',DbgSName(Child),' ',dbgs(AtPos),' MinClass=',DbgSName(MinClass)]);
+  {$ENDIF}
+  // check if child is at position
+  if Child is TControl then
+  begin
+    Control:=TControl(Child);
+    if IgnoreHidden and (csNoDesignVisible in Control.ControlStyle)
+    then
+      exit;
+    if csNoDesignSelectable in Control.ControlStyle then
+      exit;
+  end else
+    Control:=nil;
+  ChildBounds := GetParentFormRelativeBounds(Child);
+  {$IFDEF VerboseDesignerSelect}
+  DebugLn(['TComponentSearch.Gather PtInRect=',PtInRect(ChildBounds, AtPos),' ChildBounds=',dbgs(ChildBounds)]);
+  {$ENDIF}
+  if not PtInRect(ChildBounds, AtPos) then Exit;
+
+  // search in childs
+  if not ((Control<>nil)
+          and (csInline in Control.ComponentState)
+          and (not (csOwnedChildsSelectable in Control.ControlStyle))) then
+  begin
+    {$IFDEF VerboseDesignerSelect}
+    DebugLn(['TComponentSearch.Gather search in childs of ',DbgSName(Child)]);
+    {$ENDIF}
+    OldRoot:=Root;
+    try
+      if csInline in Child.ComponentState then begin
+        Root:=Child;
+        if (Control<>nil)
+        and (not (csOwnedChildsSelectable in Control.ControlStyle)) then
+
+      end;
+      {$IFDEF VerboseDesignerSelect}
+      DebugLn(['TComponentSearch.Gather Root=',DbgSName(Root)]);
+      {$ENDIF}
+      TComponentSearch(Child).GetChildren(@Gather,Root);
+    finally
+      Root:=OldRoot;
+    end;
+    {$IFDEF VerboseDesignerSelect}
+    DebugLn(['TComponentSearch.Gather searched in childs of ',DbgSName(Child)]);
+    {$ENDIF}
+  end;
+
+  if (Best=nil) then begin
+    if not Child.InheritsFrom(MinClass) then exit;
+    if OnlyNonVisual then
+    begin
+      if (Mediator<>nil) then
+      begin
+        if not Mediator.ComponentIsIcon(Child) then exit;
+      end else begin
+        if not DesignerProcs.ComponentIsNonVisual(Child) then exit;
+      end;
+    end;
+    Best:=Child;
+    {$IFDEF VerboseDesignerSelect}
+    DebugLn(['TComponentSearch.Gather Best=',DbgSName(Best)]);
+    {$ENDIF}
+  end;
+end;
+
+procedure TComponentSearch.Search(ARoot: TComponent);
+begin
+  Root:=ARoot;
+  TComponentSearch(Root).GetChildren(@Gather,Root);
+end;
 
 const
   mk_lbutton =   1;
@@ -1610,18 +1706,15 @@ begin
   MouseDownComponent := nil;
   MouseDownSender := nil;
 
-  NonVisualComp := NonVisualComponentAtPos(MouseDownPos.X, MouseDownPos.Y);
-  if NonVisualComp<>nil then
+  MouseDownComponent := ComponentAtPos(MouseDownPos.X, MouseDownPos.Y, True, True);
+  if (MouseDownComponent = nil) then exit;
+
+  if ComponentIsIcon(MouseDownComponent) then
   begin
-    MouseDownComponent := NonVisualComp;
+    NonVisualComp := MouseDownComponent;
     MoveNonVisualComponentIntoForm(NonVisualComp);
   end;
 
-  if (MouseDownComponent = nil) then
-  begin
-    MouseDownComponent := ComponentAtPos(MouseDownPos.X, MouseDownPos.Y, True, True);
-    if (MouseDownComponent = nil) then exit;
-  end;
   MouseDownSender := DesignSender;
 
   GetMouseMsgShift(TheMessage,Shift,Button);
@@ -3131,39 +3224,21 @@ begin
 end;
 
 function TDesigner.NonVisualComponentAtPos(X, Y: integer): TComponent;
-
-  function TraverseComponents(ALookupRoot: TComponent): TComponent;
-  var
-    i: integer;
-    LeftTop: TPoint;
-  begin
-    for i := ALookupRoot.ComponentCount - 1 downto 0 do
-    begin
-      Result := ALookupRoot.Components[i];
-      if csInline in Result.ComponentState then
-      begin
-        Result := TraverseComponents(Result);
-        if Result <> nil then
-          Exit;
-      end
-      else
-      if ComponentIsIcon(Result) then
-      begin
-        with Result do
-        begin
-          LeftTop := NonVisualComponentLeftTop(Result);
-          if (LeftTop.x <= x) and (LeftTop.y <= y) and
-             (LeftTop.x + NonVisualCompWidth > x) and
-             (LeftTop.y + NonVisualCompWidth > y) then
-            Exit;
-        end;
-      end;
-    end;
-    Result := nil;
-  end;
-
+var
+  s: TComponentSearch;
 begin
-  Result := TraverseComponents(FLookupRoot);
+  s:=TComponentSearch.Create(nil);
+  try
+    s.MinClass:=TComponent;
+    s.AtPos:=Point(X,Y);
+    s.IgnoreHidden:=true;
+    s.OnlyNonVisual:=true;
+    s.Search(FLookupRoot);
+    s.Mediator:=Mediator;
+    Result:=s.Best;
+  finally
+    s.Free;
+  end;
 end;
 
 procedure TDesigner.MoveNonVisualComponentIntoForm(AComponent: TComponent);
@@ -3200,82 +3275,29 @@ end;
 
 function TDesigner.ComponentClassAtPos(const AClass: TComponentClass;
   const APos: TPoint; const UseRootAsDefault, IgnoreHidden: boolean): TComponent;
-
-  function DoComponent: TComponent;
-  var
-    i: integer;
-    Bounds: TRect;
-    Flags: TDMCompAtPosFlags;
-  begin
-    if Mediator<>nil then begin
-      Flags:=[];
-      if IgnoreHidden then
-        Include(Flags,dmcapfOnlyVisible);
-      Result:=Mediator.ComponentAtPos(APos,AClass,Flags);
-      //DebugLn(['DoComponent ',dbgs(APos),' AClass=',DbgSName(AClass),' Result=',DbgSName(Result)]);
-    end else begin
-      for i := FLookupRoot.ComponentCount - 1 downto 0 do
-      begin
-        Result := FLookupRoot.Components[i]; // bit tricky, but we set it to nil anyhow
-        if not Result.InheritsFrom(AClass) then Continue;
-        if Result is TControl then begin
-          if IgnoreHidden and (not ControlIsInDesignerVisible(TControl(Result)))
-          then
-            Continue;
-          if csNoDesignSelectable in TControl(Result).ControlStyle then
-            continue;
-        end;
-        Bounds := GetParentFormRelativeBounds(Result);
-        if PtInRect(Bounds, APos) then Exit;
-      end;
-      Result := nil;
-    end;
-  end;
-
-  function DoWinControl: TComponent;
-  var
-    i: integer;
-    Bounds: TRect;
-    Control: TControl;
-    WinControl: TWinControl;
-  begin
-    Result := nil;
-    if not (FLookupRoot is TWinControl) then exit;
-    WinControl := TWinControl(FLookupRoot);
-    i := WinControl.ControlCount;
-    while i > 0 do
-    begin
-      Dec(i);
-      Control := WinControl.Controls[i];
-      if IgnoreHidden and (csNoDesignVisible in Control.ControlStyle) then
-        Continue;
-      if csNoDesignSelectable in Control.ControlStyle then continue;
-      Bounds := GetParentFormRelativeBounds(Control);
-      if not PtInRect(Bounds, APos) then Continue;
-
-      if Control.InheritsFrom(AClass)
-      then Result := Control; // at least this is a match, now look if a child matches
-
-      if Control is TWinControl
-      then begin
-        Wincontrol := TWinControl(Control);
-        i := WinControl.ControlCount;
-        Continue; // next loop
-      end;
-      
-      // Control has no children and a result found, no need to look further
-      if Result <> nil then Exit;
-    end;
-  end;
-
+var
+  s: TComponentSearch;
+  MediatorFlags: TDMCompAtPosFlags;
 begin
-  // If LookupRoot is TWincontol, use the control list. It is ordered by zorder
-  // We cannot use the components in that case since they are in stream order
+  if Mediator<>nil then begin
+    MediatorFlags:=[];
+    if IgnoreHidden then
+      Include(MediatorFlags,dmcapfOnlyVisible);
+    Result:=Mediator.ComponentAtPos(APos,AClass,MediatorFlags);
+  end else begin
+    s:=TComponentSearch.Create(nil);
+    try
+      s.AtPos:=APos;
+      s.MinClass:=AClass;
+      s.IgnoreHidden:=IgnoreHidden;
+      s.Search(FLookupRoot);
+      s.Mediator:=Mediator;
+      Result:=s.Best;
+    finally
+      s.Free;
+    end;
+  end;
 
-  if FLookupRoot is TWinControl
-  then Result := DoWinControl
-  else Result := DoComponent;
-  
   if (Result = nil) and UseRootAsDefault and (FLookupRoot.InheritsFrom(AClass))
   then
     Result := LookupRoot;
@@ -3672,16 +3694,11 @@ begin
     if not (Assigned(AWinControl)) then Exit;
     if GetDesignerForm(AWinControl) <> Form then exit;
 
-    // first search a non visual component at the position
+    // search a component at the position
     ClientPos := Form.ScreenToClient(Position);
-    AComponent := NonVisualComponentAtPos(ClientPos.X, ClientPos.Y);
-    if AComponent = nil then
-    begin
-      // then search a control at the position
-      AComponent := ComponentAtPos(ClientPos.X,ClientPos.Y,true,true);
-      if not Assigned(AComponent) then
-        AComponent := AWinControl;
-    end;
+    AComponent := ComponentAtPos(ClientPos.X,ClientPos.Y,true,true);
+    if not Assigned(AComponent) then
+      AComponent := AWinControl;
     AComponent := GetDesignedComponent(AComponent);
     if AComponent = nil then exit;
     AHint := GetComponentHintText(AComponent);
