@@ -80,7 +80,7 @@ uses
   Compiler, CompilerOptions, CompilerOptionsDlg, CheckCompilerOpts,
   ApplicationBundle, ImExportCompilerOpts, InfoBuild,
   // projects
-  Project, ProjectDefs, NewProjectDlg, ProjectOpts,
+  ProjectResources, Project, ProjectDefs, NewProjectDlg, ProjectOpts,
   PublishProjectDlg, ProjectInspector, PackageDefs,
   // help manager
   IDEContextHelpEdit, IDEHelpIntf, HelpManager, CodeHelp, HelpOptions,
@@ -4430,24 +4430,32 @@ function TMainIDE.DoLoadResourceFile(AnUnitInfo: TUnitInfo;
 var
   LFMFilename: string;
   LRSFilename: String;
+  ResType: TLFMResourceType;
 begin
   LFMCode:=nil;
   ResourceCode:=nil;
   //DebugLn(['TMainIDE.DoLoadResourceFile ',AnUnitInfo.Filename,' HasResources=',AnUnitInfo.HasResources,' IgnoreSourceErrors=',IgnoreSourceErrors,' AutoCreateResourceCode=',AutoCreateResourceCode]);
   if AnUnitInfo.HasResources then begin
     //writeln('TMainIDE.DoLoadResourceFile A "',AnUnitInfo.Filename,'" "',AnUnitInfo.ResourceFileName,'"');
-    LRSFilename:=MainBuildBoss.FindLRSFilename(AnUnitInfo,false);
-    if LRSFilename<>'' then begin
-      Result:=LoadCodeBuffer(ResourceCode,LRSFilename,[lbfUpdateFromDisk],ShowAbort);
-      if Result<>mrOk then exit;
-    end else begin
-      LRSFilename:=MainBuildBoss.GetDefaultLRSFilename(AnUnitInfo);
-      if AutoCreateResourceCode then begin
-        ResourceCode:=CodeToolBoss.CreateFile(LRSFilename);
+
+    ResType:=MainBuildBoss.GetLFMResourceType(AnUnitInfo);
+    if ResType=lfmrtLRS then begin
+      LRSFilename:=MainBuildBoss.FindLRSFilename(AnUnitInfo,false);
+      if LRSFilename<>'' then begin
+        Result:=LoadCodeBuffer(ResourceCode,LRSFilename,[lbfUpdateFromDisk],ShowAbort);
+        if Result<>mrOk then exit;
       end else begin
-        DebugLn(['TMainIDE.DoLoadResourceFile .lrs file not found of unit ',AnUnitInfo.Filename]);
-        exit(mrCancel);
+        LRSFilename:=MainBuildBoss.GetDefaultLRSFilename(AnUnitInfo);
+        if AutoCreateResourceCode then begin
+          ResourceCode:=CodeToolBoss.CreateFile(LRSFilename);
+        end else begin
+          DebugLn(['TMainIDE.DoLoadResourceFile .lrs file not found of unit ',AnUnitInfo.Filename]);
+          exit(mrCancel);
+        end;
       end;
+    end else begin
+      LRSFilename:='';
+      ResourceCode:=nil;
     end;
 
     // if no resource file found (i.e. normally the .lrs file)
@@ -4769,6 +4777,7 @@ var
   i: Integer;
   LRSFilename: String;
   PropPath: String;
+  ResType: TLFMResourceType;
 begin
   Result:=mrCancel;
 
@@ -4784,6 +4793,8 @@ begin
   // LRT file format (in present) are lines
   // <ClassName>.<PropertyName>=<PropertyValue>
   LRSFilename:='';
+  ResType:=MainBuildBoss.GetLFMResourceType(AnUnitInfo);
+  ResourceCode:=nil;
 
   if (AnUnitInfo.Component<>nil) then begin
     // stream component to resource code and to lfm file
@@ -4796,10 +4807,12 @@ begin
     // save designer form properties to the component
     FormEditor1.SaveHiddenDesignerFormProperties(AnUnitInfo.Component);
 
-    if (sfSaveToTestDir in Flags) then
-      LRSFilename:=MainBuildBoss.GetDefaultLRSFilename(AnUnitInfo)
-    else
-      LRSFilename:=MainBuildBoss.FindLRSFilename(AnUnitInfo,true);
+    if ResType=lfmrtLRS then begin
+      if (sfSaveToTestDir in Flags) then
+        LRSFilename:=MainBuildBoss.GetDefaultLRSFilename(AnUnitInfo)
+      else
+        LRSFilename:=MainBuildBoss.FindLRSFilename(AnUnitInfo,true);
+    end;
 
     // stream component to binary stream
     BinCompStream:=TExtMemoryStream.Create;
@@ -4867,7 +4880,7 @@ begin
       until Result<>mrRetry;
 
       // create lazarus form resource code
-      if ComponentSavingOk then begin
+      if ComponentSavingOk and (LRSFilename<>'') then begin
         if ResourceCode=nil then begin
           ResourceCode:=CodeToolBoss.CreateFile(LRSFilename);
           ComponentSavingOk:=(ResourceCode<>nil);
@@ -4931,10 +4944,14 @@ begin
             ResourceCode.Source:=CompResourceCode;
           end;
         end;
-        if (not (sfSaveToTestDir in Flags)) and (not AnUnitInfo.IsVirtual) then
+      end;
+      if ComponentSavingOk then begin
+        if (not AnUnitInfo.IsVirtual) or (sfSaveToTestDir in Flags) then
         begin
           // save lfm file
           LFMFilename:=ChangeFileExt(AnUnitInfo.Filename,'.lfm');
+          if AnUnitInfo.IsVirtual then
+            LFMFilename:=AppendPathDelim(GetTestBuildDirectory)+LFMFilename;
           if LFMCode=nil then begin
             LFMCode:=CodeToolBoss.CreateFile(LFMFilename);
             if LFMCode=nil then begin
@@ -7401,6 +7418,7 @@ var
   LFMCode: TCodeBuffer;
   AProject: TProject;
   LRSFilename: String;
+  ResType: TLFMResourceType;
 begin
   //debugln('TMainIDE.DoNewEditorFile A NewFilename=',NewFilename);
   // empty NewFilename is ok, it will be auto generated
@@ -7499,6 +7517,7 @@ begin
     AncestorType:=NewFileDescriptor.ResourceClass;
     //DebugLn(['TMainIDE.DoNewFile AncestorType=',dbgsName(AncestorType),' ComponentName',NewUnitInfo.ComponentName]);
     if AncestorType<>nil then begin
+      ResType:=MainBuildBoss.GetLFMResourceType(NewUnitInfo);
       LFMSourceText:=NewFileDescriptor.GetResourceSource(NewUnitInfo.ComponentName);
       //DebugLn(['TMainIDE.DoNewFile LFMSourceText=',LFMSourceText]);
       if LFMSourceText<>'' then begin
@@ -7511,7 +7530,7 @@ begin
         Result:=DoLoadLFM(NewUnitInfo,LFMCode,[],[]);
         //DebugLn(['TMainIDE.DoNewFile ',dbgsName(NewUnitInfo.Component),' ',dbgsName(NewUnitInfo.Component.ClassParent)]);
         // make sure the .lrs file exists
-        if NewUnitInfo.IsVirtual then begin
+        if (ResType=lfmrtLRS) and NewUnitInfo.IsVirtual then begin
           LRSFilename:=ChangeFileExt(NewUnitInfo.Filename,'.lrs');
           CodeToolBoss.CreateFile(LRSFilename);
         end;
@@ -9832,6 +9851,7 @@ var
   TargetExeName: String;
   err : TFPCErrorType;
   TargetExeDirectory: String;
+  FPCVersion, FPCRelease, FPCPatch: integer;
 begin
   if Project1.MainUnitInfo=nil then begin
     // this project has not source to compile
@@ -9859,6 +9879,18 @@ begin
   try
     Result:=DoSaveForBuild;
     if Result<>mrOk then exit;
+
+    if (Project1.Resources.LFMResourceType=lfmrtRes) then begin
+      // FPC resources are only supported with FPC 2.4+
+      CodeToolBoss.GetFPCVersionForDirectory(
+        ExtractFilePath(Project1.MainFilename),FPCVersion,FPCRelease,FPCPatch);
+      if (FPCVersion=2) and (FPCRelease<4) then begin
+        MessageDlg(lisFPCTooOld,
+          lisTheProjectUsesTheNewFPCResourcesWhichRequiresAtLea,
+          mtError,[mbCancel],0);
+        exit(mrCancel);
+      end;
+    end;
 
     CreateInfoBuilder(OwningComponent);
     PutInfoBuilderProject(Project1.MainFilename);

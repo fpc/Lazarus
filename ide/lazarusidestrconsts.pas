@@ -692,6 +692,9 @@ resourcestring
   lisInfoBuildWarning = 'Warnings:';
   lisInfoBuildBuild   = 'Build';
   lisInfoBuildComplile = 'Compiling...';
+  lisFPCTooOld = 'FPC too old';
+  lisTheProjectUsesTheNewFPCResourcesWhichRequiresAtLea = 'The project uses '
+    +'the new FPC resources, which requires at least FPC 2.4';
   lisInfoBuildError = 'Error...';
   lisCreateDirectory = 'Create directory?';
   lisTheOutputDirectoryIsMissing = 'The output directory %s%s%s is missing.';
@@ -4387,6 +4390,13 @@ resourcestring
   rsCreatingSymLinkFailed = 'Creating symbolic link "%s" failed!';
   rsCreatingSymLinkNotSupported = 'Creating symbolic link is not supported on this platform!';
   lisPutLrsFilesInOutputDirectory = 'Save .lrs files in the output directory';
+  lisLFMResourceType = 'LFM resource type';
+  lisLrsIncludeFiles = 'lrs include files';
+  lisAutomaticallyConvertLfmFilesToLrsIncludeFiles = 'Automatically convert .'
+    +'lfm files to .lrs include files';
+  lisFPCResources = 'FPC resources';
+  lisRequiresFPC24OrAboveLikeDelphiResources = 'Requires FPC 2.4 or above. '
+    +'Like Delphi resources';
   dlgCOCreateNodeAbove = 'Create node above';
   dlgCOCreateNodeBelow = 'Create node below';
   dlgCOCreateChildNode = 'Create child node';

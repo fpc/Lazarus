@@ -38,11 +38,13 @@ interface
 uses
   Arrow, Buttons, StdCtrls, SysUtils, LCLProc, Classes, CodeToolManager,
   Controls, Dialogs, LCLIntf, LResources, ExtCtrls, Forms, Graphics, Spin,
-  FileUtil, IDEContextHelpEdit, EnvironmentOpts, LCLType,
+  FileUtil, IDEContextHelpEdit, EnvironmentOpts, LCLType, ComCtrls, Math,
+  ButtonPanel,
   IDEWindowIntf, IDEImagesIntf, ProjectIntf, IDEDialogs,
+  ProjectResources,
   IDEOptionDefs, LazarusIDEStrConsts, Project, IDEProcs, W32VersionInfo,
   VersionInfoAdditionalInfo, W32Manifest, ApplicationBundle, ExtDlgs,
-  ButtonPanel, ComCtrls, Math, PackageDefs;
+  PackageDefs;
 
 type
 
@@ -108,6 +110,9 @@ type
     RunnableCheckBox: TCheckBox;
     AlwaysBuildCheckBox: TCheckBox;
     LRSInOutputDirCheckBox: TCheckBox;
+    LFMResourceGroupBox: TGroupBox;
+    UseLRSFilesRadioButton: TRadioButton;
+    UseFPCResourcesRadioButton: TRadioButton;
 
     // Lazdoc settings
     LazDocBrowseButton: TButton;
@@ -366,6 +371,11 @@ begin
   RunnableCheckBox.Caption := lisProjectIsRunnable;
   AlwaysBuildCheckBox.Caption := lisProjOptsAlwaysBuildEvenIfNothingChanged;
   LRSInOutputDirCheckBox.Caption := lisPutLrsFilesInOutputDirectory;
+  LFMResourceGroupBox.Caption:=lisLFMResourceType;
+  UseLRSFilesRadioButton.Caption:=lisLrsIncludeFiles;
+  UseLRSFilesRadioButton.Hint:=lisAutomaticallyConvertLfmFilesToLrsIncludeFiles;
+  UseFPCResourcesRadioButton.Caption:=lisFPCResources;
+  UseFPCResourcesRadioButton.Hint:=lisRequiresFPC24OrAboveLikeDelphiResources;
 end;
 
 procedure TProjectOptionsDialog.SetupVersionInfoPage(PageIndex: Integer);
@@ -442,6 +452,7 @@ begin
     (pfSaveOnlyProjectUnits in AProject.Flags);
   SaveSessionLocationRadioGroup.ItemIndex:=ord(AProject.SessionStorage);
 
+  // misc
   MainUnitIsPascalSourceCheckBox.Checked :=
     (pfMainUnitIsPascalSource in AProject.Flags);
   MainUnitHasUsesSectionForAllUnitsCheckBox.Checked :=
@@ -453,6 +464,10 @@ begin
   RunnableCheckBox.Checked := (pfRunnable in AProject.Flags);
   AlwaysBuildCheckBox.Checked := (pfAlwaysBuild in AProject.Flags);
   LRSInOutputDirCheckBox.Checked := (pfLRSFilesInOutputDirectory in AProject.Flags);
+  case AProject.Resources.LFMResourceType of
+  lfmrtLRS: UseLRSFilesRadioButton.Checked:=true;
+  lfmrtRes: UseFPCResourcesRadioButton.Checked:=true;
+  end;
 
   // lazdoc
   SplitString(Project.LazDocPaths,';',LazDocListBox.Items,true);
@@ -533,6 +548,10 @@ begin
     SetProjectFlag(pfAlwaysBuild, AlwaysBuildCheckBox.Checked);
     SetProjectFlag(pfLRSFilesInOutputDirectory, LRSInOutputDirCheckBox.Checked);
     Project.Flags := NewFlags;
+    if UseLRSFilesRadioButton.Checked then
+      Project.Resources.LFMResourceType:=lfmrtLRS
+    else
+      Project.Resources.LFMResourceType:=lfmrtRes;
     
     if SaveSessionLocationRadioGroup.ItemIndex>=0 then
       Project.SessionStorage:=LocalizedNameToProjectSessionStorage(

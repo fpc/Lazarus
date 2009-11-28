@@ -43,8 +43,8 @@ uses
   LazIDEIntf,
   // IDE
   LazarusIDEStrConsts, DialogProcs, IDEProcs, CodeToolsOptions, InputHistory,
-  MiscOptions, LazConf, EnvironmentOpts, TransferMacros, CompilerOptions,
-  OutputFilter, Compiler, Project, BaseBuildManager;
+  ProjectResources, MiscOptions, LazConf, EnvironmentOpts, TransferMacros,
+  CompilerOptions, OutputFilter, Compiler, Project, BaseBuildManager;
   
 type
 
@@ -145,6 +145,7 @@ type
                                     ): TModalResult; override;
     function BackupFile(const Filename: string): TModalResult; override;
 
+    function GetLFMResourceType(AnUnitInfo: TUnitInfo): TLFMResourceType;
     function FindLRSFilename(AnUnitInfo: TUnitInfo;
                              UseDefaultIfNotFound: boolean): string;
     function GetDefaultLRSFilename(AnUnitInfo: TUnitInfo): string;
@@ -1025,6 +1026,21 @@ begin
   until Result<>mrRetry;
 end;
 
+function TBuildManager.GetLFMResourceType(AnUnitInfo: TUnitInfo
+  ): TLFMResourceType;
+begin
+  if AnUnitInfo.Source=nil then
+    AnUnitInfo.Source:=CodeToolBoss.LoadFile(AnUnitInfo.Filename,true,false);
+  if (AnUnitInfo.Source<>nil)
+  and GuessLFMResourceType(AnUnitInfo.Source,Result) then begin
+    // guessed from source
+  end else if AnUnitInfo.IsPartOfProject then begin
+    // use project resource type
+    Result:=Project1.Resources.LFMResourceType;
+  end else
+    Result:=lfmrtLRS;
+end;
+
 function TBuildManager.FindLRSFilename(AnUnitInfo: TUnitInfo;
   UseDefaultIfNotFound: boolean): string;
 begin
@@ -1094,8 +1110,8 @@ begin
   AnUnitInfo := Project1.FirstPartOfProject;
   while AnUnitInfo<>nil do 
   begin
-    if AnUnitInfo.HasResources then 
-    begin      
+    if AnUnitInfo.HasResources and (Project1.Resources.LFMResourceType=lfmrtLRS)
+    and (GetLFMResourceType(AnUnitInfo)=lfmrtLRS) then begin
       Result := UpdateLRSFromLFM(AnUnitInfo,false);
       if Result = mrIgnore then Result:=mrOk;
       if Result <> mrOk then exit;
