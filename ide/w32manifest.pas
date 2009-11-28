@@ -53,6 +53,7 @@ type
   public
     function UpdateResources(AResources: TAbstractProjectResources; const MainFilename: string): Boolean; override;
     function CreateManifestFile(ExeFilename: string): TModalResult;
+    function NeedManifest(AResources: TAbstractProjectResources): boolean;
 
     property UseManifest: boolean read FUseManifest write SetUseManifest;
     property ManifestName: string read FManifestName;
@@ -103,7 +104,7 @@ function TProjectXPManifest.UpdateResources(AResources: TAbstractProjectResource
 begin
   Result := True;
 
-  if not UseManifest then
+  if not NeedManifest(AResources) then
     Exit;
 
   SetFileNames(MainFilename);
@@ -129,6 +130,21 @@ begin
     Code:=CodeToolBoss.CreateFile(ManifestFileName);
   Code.Source:=sManifestFileData;
   Result:=SaveCodeBuffer(Code);
+end;
+
+function TProjectXPManifest.NeedManifest(AResources: TAbstractProjectResources
+  ): boolean;
+var
+  TargetOS: String;
+begin
+  Result:=false;
+  if not UseManifest then exit;
+  if AResources.Project=nil then exit;
+  TargetOS:=AResources.Project.LazCompilerOptions.TargetOS;
+  if (TargetOS='') or (TargetOS='default') then
+    TargetOS:=GetDefaultTargetOS;
+  if (TargetOS<>'win32') and (TargetOS<>'win64') then exit;
+  Result:=true;
 end;
 
 

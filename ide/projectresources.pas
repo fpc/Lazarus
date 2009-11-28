@@ -38,7 +38,7 @@ interface
 
 uses
   Classes, SysUtils, Controls, LCLProc, LResources, FileUtil, Laz_XMLCfg,
-  ProjectIntf, ProjectResourcesIntf, LazarusIDEStrConsts,
+  Dialogs, ProjectIntf, ProjectResourcesIntf, LazarusIDEStrConsts,
   W32VersionInfo, W32Manifest, ProjectIcon, IDEProcs, DialogProcs,
   CodeToolManager, CodeCache;
 
@@ -598,7 +598,9 @@ procedure TProjectResources.UpdateCodeBuffers;
 
 begin
   if HasSystemResources then
-    UpdateCodeBuffer(rcFileName, FSystemResources.Text);
+    UpdateCodeBuffer(rcFileName, FSystemResources.Text)
+  else if FilenameIsAbsolute(rcFileName) and FileExistsUTF8(rcFileName) then
+    DeleteFileInteractive(rcFileName,[mbRetry]);
   if FLrsIncludeAllowed and HasLazarusResources then
     UpdateCodeBuffer(lrsFileName, FLazarusResources.Text);
 end;

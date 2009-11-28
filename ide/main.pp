@@ -9832,7 +9832,6 @@ var
   TargetExeName: String;
   err : TFPCErrorType;
   TargetExeDirectory: String;
-  TargetOS: String;
 begin
   if Project1.MainUnitInfo=nil then begin
     // this project has not source to compile
@@ -9984,12 +9983,10 @@ begin
 
     // create manifest
     if Project1.Resources.XPManifest.UseManifest and (Project1.MainUnitID>=0)
+    and Project1.Resources.XPManifest.NeedManifest(Project1.Resources)
     then begin
-      TargetOS:=MainBuildBoss.GetTargetOS(true);
-      if (TargetOS='win32') or (TargetOS='win64') then begin
-        Result:=Project1.Resources.XPManifest.CreateManifestFile(TargetExeName);
-        if not (Result in [mrOk,mrIgnore]) then exit;
-      end;
+      Result:=Project1.Resources.XPManifest.CreateManifestFile(TargetExeName);
+      if not (Result in [mrOk,mrIgnore]) then exit;
     end;
 
     // execute compilation tool 'Before'
