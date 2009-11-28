@@ -442,12 +442,8 @@ begin
     {$ENDIF}
     OldRoot:=Root;
     try
-      if csInline in Child.ComponentState then begin
+      if csInline in Child.ComponentState then
         Root:=Child;
-        if (Control<>nil)
-        and (not (csOwnedChildsSelectable in Control.ControlStyle)) then
-          exit;
-      end;
       {$IFDEF VerboseDesignerSelect}
       DebugLn(['TComponentSearch.Gather Root=',DbgSName(Root)]);
       {$ENDIF}

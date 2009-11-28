@@ -139,11 +139,14 @@ begin
   FNode.ImageIndex := FTreeView.GetImageFor(AComponent);
   FNode.SelectedIndex := FNode.ImageIndex;
   FNode.MultiSelected := FTreeView.Selection.IndexOf(AComponent) >= 0;
-  if csInline in AComponent.ComponentState then
+  if (csInline in AComponent.ComponentState) or (AComponent.Owner=nil) then
     Root := AComponent
   else
-    Root := FRootComponent;
-  TComponentAccessor(AComponent).GetChildren(@Walk, Root);
+    Root := AComponent.Owner;
+  if not ((Root is TControl)
+          and (not (csOwnedChildsSelectable in TControl(Root).ControlStyle)))
+  then
+    TComponentAccessor(AComponent).GetChildren(@Walk, Root);
   FNode := OldNode;
   FNode.Expanded := True;
 end;
