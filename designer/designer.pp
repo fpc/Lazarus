@@ -34,6 +34,7 @@ interface
 
 {off $DEFINE VerboseDesigner}
 {off $DEFINE VerboseDesignerDraw}
+{off $DEFINE VerboseDesignerSelect}
 
 uses
   // FCL + LCL
@@ -392,6 +393,7 @@ type
   TComponentSearch = class(TComponent)
   public
     Best: TComponent;
+    BestIsNonVisual: boolean;
     AtPos: TPoint;
     MinClass: TComponentClass;
     IgnoreHidden: boolean;
@@ -409,9 +411,9 @@ var
   Control: TControl;
   ChildBounds: TRect;
   OldRoot: TComponent;
+  IsNonVisual: Boolean;
 begin
-  if Best<>nil then exit;
-
+  if (Best<>nil) and BestIsNonVisual then exit;
   {$IFDEF VerboseDesignerSelect}
   DebugLn(['TComponentSearch.Gather ',DbgSName(Child),' ',dbgs(AtPos),' MinClass=',DbgSName(MinClass)]);
   {$ENDIF}
@@ -456,17 +458,15 @@ begin
     {$ENDIF}
   end;
 
-  if (Best=nil) then begin
+  if (Mediator<>nil) then
+    IsNonVisual:=Mediator.ComponentIsIcon(Child)
+  else
+    IsNonVisual:=DesignerProcs.ComponentIsNonVisual(Child);
+  if (Best=nil)
+  or (IsNonVisual and (not BestIsNonVisual)) then
+  begin
     if not Child.InheritsFrom(MinClass) then exit;
-    if OnlyNonVisual then
-    begin
-      if (Mediator<>nil) then
-      begin
-        if not Mediator.ComponentIsIcon(Child) then exit;
-      end else begin
-        if not DesignerProcs.ComponentIsNonVisual(Child) then exit;
-      end;
-    end;
+    if OnlyNonVisual and not IsNonVisual then exit;
     Best:=Child;
     {$IFDEF VerboseDesignerSelect}
     DebugLn(['TComponentSearch.Gather Best=',DbgSName(Best)]);

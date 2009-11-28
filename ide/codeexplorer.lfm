@@ -3,6 +3,7 @@ object CodeExplorerView: TCodeExplorerView
   Height = 517
   Top = 136
   Width = 215
+  ActiveControl = MainNotebook
   Caption = 'CodeExplorerView'
   ClientHeight = 517
   ClientWidth = 215
@@ -10,7 +11,7 @@ object CodeExplorerView: TCodeExplorerView
   OnClose = CodeExplorerViewCLOSE
   OnCreate = CodeExplorerViewCREATE
   OnDestroy = CodeExplorerViewDestroy
-  LCLVersion = '0.9.27'
+  LCLVersion = '0.9.29'
   object MainNotebook: TNotebook
     AnchorSideTop.Side = asrBottom
     Left = 0
@@ -24,14 +25,14 @@ object CodeExplorerView: TCodeExplorerView
     TabOrder = 0
     object CodePage: TPage
       Caption = 'CodePage'
-      ClientWidth = 207
-      ClientHeight = 489
+      ClientWidth = 213
+      ClientHeight = 488
       object CodeTreeview: TTreeView
         AnchorSideTop.Side = asrBottom
         Left = 0
-        Height = 463
+        Height = 462
         Top = 26
-        Width = 207
+        Width = 213
         Align = alClient
         BorderSpacing.Top = 1
         HideSelection = False
@@ -49,14 +50,14 @@ object CodeExplorerView: TCodeExplorerView
         Left = 0
         Height = 25
         Top = 0
-        Width = 207
+        Width = 213
         Align = alTop
         BevelOuter = bvNone
         ClientHeight = 25
-        ClientWidth = 207
+        ClientWidth = 213
         TabOrder = 1
         object OptionsSpeedButton: TSpeedButton
-          Left = 180
+          Left = 186
           Height = 22
           Hint = 'Options for CodeExplorer'
           Top = 1
@@ -69,7 +70,7 @@ object CodeExplorerView: TCodeExplorerView
           ParentShowHint = False
         end
         object RefreshSpeedButton: TSpeedButton
-          Left = 132
+          Left = 138
           Height = 22
           Hint = 'Refresh CodeExplorer'
           Top = 1
@@ -82,7 +83,7 @@ object CodeExplorerView: TCodeExplorerView
           ParentShowHint = False
         end
         object ModeSpeedButton: TSpeedButton
-          Left = 156
+          Left = 162
           Height = 22
           Top = 1
           Width = 23
@@ -101,9 +102,8 @@ object CodeExplorerView: TCodeExplorerView
           Left = 0
           Height = 23
           Top = 0
-          Width = 130
+          Width = 136
           Anchors = [akTop, akLeft, akRight]
-          AutoSelect = True
           OnChange = CodeFilterEditChange
           TabOrder = 0
           Text = 'CodeFilterEdit'
@@ -112,17 +112,17 @@ object CodeExplorerView: TCodeExplorerView
     end
     object DirectivesPage: TPage
       Caption = 'DirectivesPage'
-      ClientWidth = 207
-      ClientHeight = 489
+      ClientWidth = 213
+      ClientHeight = 488
       object DirectivesFilterEdit: TEdit
         AnchorSideLeft.Control = DirectivesPage
         AnchorSideTop.Control = DirectivesPage
         AnchorSideRight.Control = DirectivesPage
         AnchorSideRight.Side = asrBottom
         Left = 0
-        Height = 23
+        Height = 27
         Top = 0
-        Width = 207
+        Width = 213
         Anchors = [akTop, akLeft, akRight]
         OnChange = DirectivesFilterEditChange
         TabOrder = 0
@@ -132,13 +132,13 @@ object CodeExplorerView: TCodeExplorerView
         AnchorSideTop.Control = DirectivesFilterEdit
         AnchorSideTop.Side = asrBottom
         Left = 0
-        Height = 465
-        Top = 24
-        Width = 207
+        Height = 460
+        Top = 28
+        Width = 213
         Align = alBottom
         Anchors = [akTop, akLeft, akRight, akBottom]
         BorderSpacing.Top = 1
-        DefaultItemHeight = 15
+        DefaultItemHeight = 19
         PopupMenu = TreePopupmenu
         ReadOnly = True
         TabOrder = 1
