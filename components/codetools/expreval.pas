@@ -1379,7 +1379,7 @@ var
   begin
     BracketOpen:=AtomStart;
     BracketLvl:=0;
-    while p<ExprEnd do begin
+    while p<=ExprEnd do begin
       case AtomStart^ of
       '(': inc(BracketLvl);
       ')':
