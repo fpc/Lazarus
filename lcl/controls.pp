@@ -214,7 +214,7 @@ type
     csHasDefaultAction,      // control implements useful ExecuteDefaultAction
     csHasCancelAction,       // control implements useful ExecuteCancelAction
     csNoDesignSelectable,    // control can not be selected at design time
-    csOwnedChildsSelectable  // child controls owned by this control are selectable in the designer
+    csOwnedChildsNotSelectable // child controls owned by this control are NOT selectable in the designer
     );
   TControlStyle = set of TControlStyleType;
 

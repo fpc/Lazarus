@@ -437,7 +437,7 @@ begin
   // search in childs
   if not ((Control<>nil)
           and (csInline in Control.ComponentState)
-          and (not (csOwnedChildsSelectable in Control.ControlStyle))) then
+          and (csOwnedChildsNotSelectable in Control.ControlStyle)) then
   begin
     {$IFDEF VerboseDesignerSelect}
     DebugLn(['TComponentSearch.Gather search in childs of ',DbgSName(Child)]);
@@ -1634,7 +1634,7 @@ begin
   if Result=Form then exit;
   if (Result.Owner is TControl) then begin
     OwnerControl:=TControl(Result.Owner);
-    if csOwnedChildsSelectable in OwnerControl.ControlStyle then
+    if (not (csOwnedChildsNotSelectable in OwnerControl.ControlStyle)) then
       exit;
     Result:=GetDesignControl(OwnerControl);
   end else begin

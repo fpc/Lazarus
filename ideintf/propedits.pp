@@ -1657,7 +1657,7 @@ begin
     if csInline in Child.ComponentState then begin
       if scfWithoutInlineChilds in Flags then exit;
       if (Child is TControl)
-      and (not (csOwnedChildsSelectable in TControl(Child).ControlStyle)) then
+      and (csOwnedChildsNotSelectable in TControl(Child).ControlStyle) then
         exit;
       Root:=Child;
     end;

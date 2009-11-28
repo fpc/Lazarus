@@ -1496,8 +1496,8 @@ end;
 constructor TCustomSynEdit.Create(AOwner: TComponent);
 begin
   inherited Create(AOwner);
-  SetAncestor(True); // temp until tframe does this
   SetInline(True);
+  ControlStyle:=ControlStyle+[csOwnedChildsNotSelectable];
 
   FBeautifier := SynDefaultBeautifier;
 

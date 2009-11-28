@@ -144,7 +144,7 @@ begin
   else
     Root := AComponent.Owner;
   if not ((Root is TControl)
-          and (not (csOwnedChildsSelectable in TControl(Root).ControlStyle)))
+          and (csOwnedChildsNotSelectable in TControl(Root).ControlStyle))
   then
     TComponentAccessor(AComponent).GetChildren(@Walk, Root);
   FNode := OldNode;
@@ -466,11 +466,7 @@ var
 
 var
   OldExpanded: TTreeNodeExpandedState;
-  NewNode: TTreeNode;
-  i: Integer;
-  AComponent: TComponent;
   RootNode: TTreeNode;
-  AVLNode: TAvgLvlTreeNode;
   Candidate: TComponentCandidate;
 begin
   BeginUpdate;
@@ -500,26 +496,7 @@ begin
       if RootObject is TComponent then
       begin
         AddCandidates(RootComponent);
-        
-        for i := 0 to RootComponent.ComponentCount - 1 do
-        begin
-          AComponent := RootComponent.Components[i];
-          AVLNode := Candidates.FindKey(AComponent,
-                      TListSortCompare(@ComparePersistentWithComponentCandidate));
-          Candidate := TComponentCandidate(AVLNode.Data);
-          if Candidate.Added or
-             AComponent.HasParent and
-             (AComponent.GetParentComponent <> nil) and
-             (AComponent.GetParentComponent <> RootComponent) then
-            Continue;
-          Candidate.Added := True;
-          NewNode := Items.AddChild(RootNode, CreateNodeCaption(AComponent));
-          NewNode.Data := AComponent;
-          NewNode.ImageIndex := GetImageFor(AComponent);
-          NewNode.SelectedIndex := NewNode.ImageIndex;
-          NewNode.MultiSelected := Selection.IndexOf(AComponent) >= 0;
-          AddChildren(AComponent, NewNode);
-        end;
+        AddChildren(RootComponent,RootNode);
       end;
     finally
       Candidates.FreeAndClear;
