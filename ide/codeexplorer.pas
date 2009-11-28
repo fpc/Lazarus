@@ -48,8 +48,8 @@ uses
   // IDE Intf
   LazIDEIntf, IDECommands, MenuIntf, SrcEditorIntf,
   // IDE
-  LazarusIDEStrConsts, EnvironmentOpts, IDEOptionDefs, InputHistory, IDEProcs,
-  TodoList, CodeExplOpts;
+  KeyMapping, LazarusIDEStrConsts, EnvironmentOpts, IDEOptionDefs, InputHistory,
+  IDEProcs, TodoList, CodeExplOpts;
 
 type
   TCodeExplorerView = class;
@@ -157,6 +157,8 @@ type
     procedure OptionsSpeedButtonClick(Sender: TObject);
     procedure RefreshMenuitemClick(Sender: TObject);
     procedure RefreshSpeedButtonClick(Sender: TObject);
+    procedure RenameMenuItemClick(Sender: TObject);
+    procedure TreePopupmenuPopup(Sender: TObject);
   private
     FCodeFilename: string;
     fCategoryNodes: array[TCodeExplorerCategory] of TTreeNode;
@@ -239,7 +241,7 @@ type
     procedure RefreshCode(OnlyVisible: boolean);
     procedure RefreshDirectives(OnlyVisible: boolean);
     procedure ClearCTNodes(ATreeView: TTreeView);// remove temporary references
-    procedure JumpToSelection; // jump in source editor
+    function JumpToSelection: boolean; // jump in source editor
     function SelectSourceEditorNode: boolean;
     function SelectCodePosition(CodeBuf: TCodeBuffer; X, Y: integer): boolean; // select deepest node
     function FindCodeTVNodeAtCleanPos(CleanPos: integer): TTreeNode;
@@ -402,6 +404,7 @@ begin
   CEJumpToIDEMenuCommand.OnClick:=@JumpToMenuitemCLICK;
   CERefreshIDEMenuCommand.OnClick:=@RefreshMenuitemCLICK;
   CEDockingIDEMenuCommand.OnClick:=@DockingMenuItemClick;
+  CERenameIDEMenuCommand.OnClick:=@RenameMenuItemClick;
   {$IFNDEF EnableIDEDocking}
   CEDockingIDEMenuCommand.Visible:=false;
   {$ENDIF}
@@ -470,7 +473,7 @@ end;
 procedure TCodeExplorerView.IdleTimer1Timer(Sender: TObject);
 begin
   if ((cevCheckOnIdle in FFlags) or (CodeExplorerOptions.Refresh=cerOnIdle))
-  and (not Active) then
+  and (not Active) and (not (fsModal in Screen.ActiveCustomForm.FormState)) then
     Refresh(true);
 end;
 
@@ -516,6 +519,48 @@ end;
 procedure TCodeExplorerView.RefreshSpeedButtonClick(Sender: TObject);
 begin
   Refresh(true);
+end;
+
+procedure TCodeExplorerView.RenameMenuItemClick(Sender: TObject);
+begin
+  if not JumpToSelection then begin
+    MessageDlg(lisCCOErrorCaption, lisTreeNeedsRefresh, mtError, [mbOk], 0);
+    Refresh(true);
+    exit;
+  end;
+  ExecuteIDECommand(SourceEditorWindow,ecRenameIdentifier);
+end;
+
+procedure TCodeExplorerView.TreePopupmenuPopup(Sender: TObject);
+var
+  CurTreeView: TCustomTreeView;
+  CurItem: TTreeNode;
+  CanRename: boolean;
+  CurNode: TViewNodeData;
+begin
+  CanRename:=false;
+  CurTreeView:=GetCurrentTreeView;
+  if CurTreeView<>nil then begin
+    if tvoAllowMultiselect in CurTreeView.Options then
+      CurItem:=CurTreeView.GetFirstMultiSelected
+    else
+      CurItem:=CurTreeView.Selected;
+    if CurItem<>nil then begin
+      CurNode:=TViewNodeData(CurItem.Data);
+      if CurNode.StartPos>0 then begin
+        case CurrentPage of
+        cepCode:
+          if (CurNode.Desc in AllIdentifierDefinitions)
+          and (CurItem.GetNextMultiSelected=nil) then
+            CanRename:=true;
+        cepDirectives:
+          ;
+        end;
+      end;
+    end;
+  end;
+  CERenameIDEMenuCommand.Visible:=CanRename;
+  DebugLn(['TCodeExplorerView.TreePopupmenuPopup ',CERenameIDEMenuCommand.Visible]);
 end;
 
 function TCodeExplorerView.GetCodeNodeDescription(ACodeTool: TCodeTool;
@@ -1666,7 +1711,7 @@ begin
       and (ACodeTool.Scanner<>nil)
       and (ACodeTool.Scanner.ChangeStep=FLastCodeChangeStep)
       and (Mode=FLastMode)
-      and (FLastCodeChangeStep=CodeExplorerOptions.ChangeStep) then begin
+      and (fLastCodeOptionsChangeStep=CodeExplorerOptions.ChangeStep) then begin
         // still the same source and options
         exit;
       end;
@@ -1814,7 +1859,7 @@ begin
   end;
 end;
 
-procedure TCodeExplorerView.JumpToSelection;
+function TCodeExplorerView.JumpToSelection: boolean;
 var
   CurItem: TTreeNode;
   CurNode: TViewNodeData;
@@ -1823,17 +1868,22 @@ var
   CodeBuffer: TCodeBuffer;
   ACodeTool: TCodeTool;
   CurTreeView: TCustomTreeView;
+  SrcEdit: TSourceEditorInterface;
 begin
+  Result:=false;
   CurTreeView:=GetCurrentTreeView;
+  DebugLn(['TCodeExplorerView.JumpToSelection AAA1']);
   if CurTreeView=nil then exit;
+  DebugLn(['TCodeExplorerView.JumpToSelection AAA2']);
   if tvoAllowMultiselect in CurTreeView.Options then
     CurItem:=CurTreeView.GetFirstMultiSelected
   else
     CurItem:=CurTreeView.Selected;
   if CurItem=nil then exit;
   CurNode:=TViewNodeData(CurItem.Data);
+  DebugLn(['TCodeExplorerView.JumpToSelection AAA3 ',CurNode.StartPos]);
   if CurNode.StartPos<1 then exit;
-
+  CodeBuffer:=nil;
   case CurrentPage of
   cepCode:
     begin
@@ -1858,8 +1908,17 @@ begin
   else
     exit;
   end;
+  DebugLn(['TCodeExplorerView.JumpToSelection AAA1']);
   if Assigned(OnJumpToCode) then
     OnJumpToCode(Self,Caret.Code.Filename,Point(Caret.X,Caret.Y),NewTopLine);
+  SrcEdit:=SourceEditorWindow.ActiveEditor;
+  DebugLn(['TCodeExplorerView.JumpToSelection AAA2 ',SrcEdit.FileName,' ',dbgs(SrcEdit.CursorTextXY),' X=',Caret.X,' Y=',Caret.Y]);
+  // check if jump was successful
+  if (SrcEdit.CodeToolsBuffer<>CodeBuffer)
+  or (SrcEdit.CursorTextXY.X<>Caret.X) or (SrcEdit.CursorTextXY.Y<>Caret.Y) then
+    exit;
+  DebugLn(['TCodeExplorerView.JumpToSelection AAA3']);
+  Result:=true;
 end;
 
 function TCodeExplorerView.SelectSourceEditorNode: boolean;

@@ -55,8 +55,9 @@ LazarusResources.Add('TCodeExplorerView','FORMDATA',[
   +'ons'#11#17'tvoAutoItemHeight'#16'tvoHideSelection'#21'tvoKeepCollapsedNodes'
   +#11'tvoReadOnly'#14'tvoShowButtons'#12'tvoShowLines'#11'tvoShowRoot'#11'tvoT'
   +'oolTips'#0#0#0#0#0#10'TImageList'#10'Imagelist1'#6'Height'#2#18#5'Width'#2
-  +#18#4'left'#2'@'#3'top'#2'@'#0#0#10'TPopupMenu'#13'TreePopupmenu'#4'left'#2
-  +'@'#3'top'#3#128#0#0#9'TMenuItem'#9'MenuItem1'#7'Caption'#6#9'New Item1'#7'V'
-  +'isible'#8#0#0#0#10'TIdleTimer'#10'IdleTimer1'#11'AutoEnabled'#9#8'Interval'
-  +#3#244#1#7'OnTimer'#7#15'IdleTimer1Timer'#4'left'#2'@'#3'top'#3#192#0#0#0#0
+  +#18#4'left'#2'@'#3'top'#2'@'#0#0#10'TPopupMenu'#13'TreePopupmenu'#7'OnPopup'
+  +#7#18'TreePopupmenuPopup'#4'left'#2'@'#3'top'#3#128#0#0#9'TMenuItem'#9'MenuI'
+  +'tem1'#7'Caption'#6#9'New Item1'#7'Visible'#8#0#0#0#10'TIdleTimer'#10'IdleTi'
+  +'mer1'#11'AutoEnabled'#9#8'Interval'#3#244#1#7'OnTimer'#7#15'IdleTimer1Timer'
+  +#4'left'#2'@'#3'top'#3#192#0#0#0#0
 ]);

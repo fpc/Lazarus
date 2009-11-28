@@ -156,6 +156,7 @@ object CodeExplorerView: TCodeExplorerView
     top = 64
   end
   object TreePopupmenu: TPopupMenu
+    OnPopup = TreePopupmenuPopup
     left = 64
     top = 128
     object MenuItem1: TMenuItem
