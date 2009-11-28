@@ -9594,11 +9594,11 @@ begin
   DebugLn('TMainIDE.DoSaveForBuild Project1.IsVirtual=',dbgs(Project1.IsVirtual));
   {$ENDIF}
 
-  Project1.Resources.DoBeforeBuild;
   if not Project1.IsVirtual then
     Result:=DoSaveAll([sfCheckAmbiguousFiles])
   else
     Result:=DoSaveProjectToTestDirectory([sfSaveNonProjectFiles]);
+  Project1.Resources.DoBeforeBuild(Project1.IsVirtual);
   Project1.UpdateExecutableType;
   if Result<>mrOk then begin
     {$IFDEF VerboseSaveForBuild}
@@ -9832,6 +9832,7 @@ var
   TargetExeName: String;
   err : TFPCErrorType;
   TargetExeDirectory: String;
+  TargetOS: String;
 begin
   if Project1.MainUnitInfo=nil then begin
     // this project has not source to compile
@@ -9973,12 +9974,22 @@ begin
 
     // create application bundle
     if Project1.UseAppBundle and (Project1.MainUnitID>=0)
-    and (MainBuildBoss.GetLCLWidgetType(true)='carbon')
+    and (MainBuildBoss.GetLCLWidgetType(true)=LCLPlatformDirNames[lpCarbon])
     then begin
       Result:=CreateApplicationBundle(TargetExeName, Project1.Title);
       if not (Result in [mrOk,mrIgnore]) then exit;
       Result:=CreateAppBundleSymbolicLink(TargetExeName);
       if not (Result in [mrOk,mrIgnore]) then exit;
+    end;
+
+    // create manifest
+    if Project1.Resources.XPManifest.UseManifest and (Project1.MainUnitID>=0)
+    then begin
+      TargetOS:=MainBuildBoss.GetTargetOS(true);
+      if (TargetOS='win32') or (TargetOS='win64') then begin
+        Result:=Project1.Resources.XPManifest.CreateManifestFile(TargetExeName);
+        if not (Result in [mrOk,mrIgnore]) then exit;
+      end;
     end;
 
     // execute compilation tool 'Before'

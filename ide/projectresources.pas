@@ -38,7 +38,7 @@ interface
 
 uses
   Classes, SysUtils, Controls, LCLProc, LResources, FileUtil, Laz_XMLCfg,
-  ProjectResourcesIntf, LazarusIDEStrConsts,
+  ProjectIntf, ProjectResourcesIntf, LazarusIDEStrConsts,
   W32VersionInfo, W32Manifest, ProjectIcon, IDEProcs, DialogProcs,
   CodeToolManager, CodeCache;
 
@@ -75,13 +75,13 @@ type
     procedure UpdateCodeBuffers;
     procedure DeleteLastCodeBuffers;
   public
-    constructor Create; override;
+    constructor Create(AProject: TLazProject); override;
     destructor Destroy; override;
 
     procedure AddSystemResource(const AResource: String); override;
     procedure AddLazarusResource(AResource: TStream; const ResourceName, ResourceType: String); override;
 
-    procedure DoBeforeBuild;
+    procedure DoBeforeBuild(SaveToTestDir: boolean);
     procedure Clear;
     function Regenerate(const MainFileName: String;
                         UpdateSource, PerformSave: boolean;
@@ -160,9 +160,9 @@ begin
     ProjectIcon.Modified;
 end;
 
-constructor TProjectResources.Create;
+constructor TProjectResources.Create(AProject: TLazProject);
 begin
-  inherited Create;
+  inherited Create(AProject);
 
   FInModified := False;
   FLrsIncludeAllowed := False;
@@ -214,11 +214,11 @@ begin
   end;
 end;
 
-procedure TProjectResources.DoBeforeBuild;
+procedure TProjectResources.DoBeforeBuild(SaveToTestDir: boolean);
 begin
-  VersionInfo.DoBeforeBuild(Self);
-  XPManifest.DoBeforeBuild(Self);
-  ProjectIcon.DoBeforeBuild(Self);
+  VersionInfo.DoBeforeBuild(Self,SaveToTestDir);
+  XPManifest.DoBeforeBuild(Self,SaveToTestDir);
+  ProjectIcon.DoBeforeBuild(Self,SaveToTestDir);
 end;
 
 procedure TProjectResources.Clear;
@@ -307,7 +307,6 @@ begin
   with AConfig do
   begin
     ProjectIcon.IcoFileName := ChangeFileExt(FileName, '.ico');
-    XPManifest.ManifestFileName := ChangeFileExt(FileName, '.manifest');
 
     ProjectIcon.IsEmpty := StrToBoolDef(GetValue(Path+'General/Icon/Value', '-1'), False);
     XPManifest.UseManifest := GetValue(Path+'General/UseXPManifest/Value', False);

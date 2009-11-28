@@ -26,6 +26,9 @@
  *   Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA.        *
  *                                                                         *
  ***************************************************************************
+
+  The manifest file is needed for windows XP themes.
+  The file is created in the directory, where the project exe is created.
 }
 unit W32Manifest;
 
@@ -35,23 +38,24 @@ interface
 
 uses
   Classes, SysUtils, FileUtil, Process, LCLProc, Controls, Forms,
-  CodeToolManager, LazConf, LResources, projectresourcesintf;
+  CodeToolManager, CodeCache, LazConf, DialogProcs, LResources,
+  ProjectResourcesIntf;
    
 type
   { TProjectXPManifest }
 
   TProjectXPManifest = class(TAbstractProjectResource)
   private
+    FManifestName: string;
     FUseManifest: boolean;
-    FManifestFileName: string;
     procedure SetFileNames(const MainFilename: string);
     procedure SetUseManifest(const AValue: boolean);
   public
     function UpdateResources(AResources: TAbstractProjectResources; const MainFilename: string): Boolean; override;
-    function CreateManifestFile: Boolean;
+    function CreateManifestFile(ExeFilename: string): TModalResult;
 
     property UseManifest: boolean read FUseManifest write SetUseManifest;
-    property ManifestFileName: String read FManifestFileName write FManifestFileName;
+    property ManifestName: string read FManifestName;
   end;
 
 implementation
@@ -84,7 +88,7 @@ const
 
 procedure TProjectXPManifest.SetFileNames(const MainFilename: string);
 begin
-  FManifestFileName := ChangeFileExt(MainFilename, '.manifest');
+  FManifestName := ExtractFileNameOnly(MainFilename)+'.manifest';
 end;
 
 procedure TProjectXPManifest.SetUseManifest(const AValue: boolean);
@@ -96,8 +100,6 @@ end;
 
 function TProjectXPManifest.UpdateResources(AResources: TAbstractProjectResources;
   const MainFilename: string): Boolean;
-var
-  ManifestName: String;
 begin
   Result := True;
 
@@ -106,28 +108,27 @@ begin
 
   SetFileNames(MainFilename);
 
-  if not FilenameIsAbsolute(FManifestFileName) or CreateManifestFile then
-  begin
-    ManifestName := ExtractFileName(FManifestFileName);
-    AResources.AddSystemResource(sManifest + ' "' + ManifestName + '"');
-  end
-  else
-    Result := False;
+  AResources.AddSystemResource(sManifest + ' "' + ManifestName + '"');
+  Result:=true;
 end;
 
-function TProjectXPManifest.CreateManifestFile: Boolean;
+function TProjectXPManifest.CreateManifestFile(ExeFilename: string): TModalResult;
 var
-  FileStream: TStream;
+  ManifestFileName: String;
+  Code: TCodeBuffer;
 begin
-  Result := False;
-  FileStream := nil;
-  try
-    FileStream := TFileStream.Create(UTF8ToSys(FManifestFileName), fmCreate);
-    FileStream.Write(sManifestFileData[1], Length(sManifestFileData));
-    Result := True;
-  finally
-    FileStream.Free;
-  end;
+  Result := mrCancel;
+  if not FilenameIsAbsolute(ExeFilename) then exit(mrOk);
+  ManifestFileName:=ChangeFileExt(ExeFilename,'.manifest');
+  // check if manifest file is uptodate
+  // (needed for readonly files and for version control systems)
+  Code:=CodeToolBoss.LoadFile(ManifestFileName,true,true);
+  if (Code<>nil) and (Code.Source=sManifestFileData) then exit(mrOk);
+  // save
+  if Code=nil then
+    Code:=CodeToolBoss.CreateFile(ManifestFileName);
+  Code.Source:=sManifestFileData;
+  Result:=SaveCodeBuffer(Code);
 end;
 
 

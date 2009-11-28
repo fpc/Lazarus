@@ -1925,7 +1925,7 @@ begin
   Title := '';
   FUnitList := TFPList.Create;  // list of TUnitInfo
   
-  FResources := TProjectResources.Create;
+  FResources := TProjectResources.Create(Self);
   FResources.OnModified := @EmbeddedObjectModified;
 end;
 

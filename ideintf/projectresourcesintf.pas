@@ -17,7 +17,7 @@ unit ProjectResourcesIntf;
 interface
 
 uses
-  Classes, SysUtils;
+  Classes, SysUtils, ProjectIntf;
 
 type
   TAbstractProjectResources = class;
@@ -31,7 +31,7 @@ type
   public
     constructor Create; virtual;
 
-    procedure DoBeforeBuild(AResources: TAbstractProjectResources); virtual;
+    procedure DoBeforeBuild(AResources: TAbstractProjectResources; SaveToTestDir: boolean); virtual;
     function UpdateResources(AResources: TAbstractProjectResources; const MainFilename: string): Boolean; virtual; abstract;
 
     property Modified: boolean read FModified write SetModified;
@@ -41,10 +41,12 @@ type
   { TAbstractProjectResources }
 
   TAbstractProjectResources = class
+  private
+    FProject: TLazProject;
   protected
     FMessages: TStringList;
   public
-    constructor Create; virtual;
+    constructor Create(AProject: TLazProject); virtual;
     destructor Destroy; override;
 
     procedure AddSystemResource(const AResource: String); virtual; abstract;
@@ -52,6 +54,7 @@ type
                    const ResourceName, ResourceType: String); virtual; abstract;
 
     property Messages: TStringList read FMessages;
+    property Project: TLazProject read FProject;
   end;
 
 implementation
@@ -70,15 +73,17 @@ begin
   FModified := False;
 end;
 
-procedure TAbstractProjectResource.DoBeforeBuild(AResources: TAbstractProjectResources);
+procedure TAbstractProjectResource.DoBeforeBuild(
+  AResources: TAbstractProjectResources; SaveToTestDir: boolean);
 begin
   // nothing
 end;
 
 { TAbstractProjectResources }
 
-constructor TAbstractProjectResources.Create;
+constructor TAbstractProjectResources.Create(AProject: TLazProject);
 begin
+  FProject:=AProject;
   FMessages := TStringList.Create;
 end;
 

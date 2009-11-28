@@ -84,7 +84,8 @@ type
     procedure SetUseVersionInfo(const AValue: boolean);
     procedure SetVersionNr(const AValue: integer);
   public
-    procedure DoBeforeBuild(AResources: TAbstractProjectResources); override;
+    procedure DoBeforeBuild(AResources: TAbstractProjectResources;
+                            SaveToTestDir: boolean); override;
     function UpdateResources(AResources: TAbstractProjectResources; const MainFilename: string): Boolean; override;
 
     property UseVersionInfo: boolean read FUseVersionInfo write SetUseVersionInfo;
@@ -511,7 +512,7 @@ begin
 end;
 
 procedure TProjectVersionInfo.DoBeforeBuild(
-  AResources: TAbstractProjectResources);
+  AResources: TAbstractProjectResources; SaveToTestDir: boolean);
 begin
   if AutoIncrementBuild then // project indicate to use autoincrementbuild
     BuildNr := BuildNr + 1;

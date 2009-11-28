@@ -153,7 +153,7 @@ type
     function DoShowProjectInspector: TModalResult; virtual; abstract;
     function DoImExportCompilerOptions(Sender: TObject): TModalResult; virtual; abstract;
 
-    function PrepareForCompile: TModalResult; virtual; abstract;
+    function PrepareForCompile: TModalResult; virtual; abstract; // stop things that interfere with compilation, like debugging
     function DoSaveBuildIDEConfigs(Flags: TBuildLazarusFlags): TModalResult; virtual; abstract;
     function DoBuildLazarus(Flags: TBuildLazarusFlags): TModalResult; virtual; abstract;
     function DoSaveForBuild: TModalResult; virtual; abstract;
