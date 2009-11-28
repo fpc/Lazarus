@@ -1626,15 +1626,17 @@ type
   public
     List: TFPList;
     Flags: TSelectableComponentFlags;
-    procedure GetSelectableComponents(Root: TComponent);
+    Root: TComponent;
+    procedure GetSelectableComponents(ARoot: TComponent);
     procedure Gather(Child: TComponent);
   end;
 
 { TSelectableComponentEnumerator }
 
 procedure TSelectableComponentEnumerator.GetSelectableComponents(
-  Root: TComponent);
+  ARoot: TComponent);
 begin
+  Root:=ARoot;
   if List=nil then
     List:=TFPList.Create;
   if Root=nil then exit;
@@ -1643,11 +1645,26 @@ begin
 end;
 
 procedure TSelectableComponentEnumerator.Gather(Child: TComponent);
+var
+  OldRoot: TComponent;
 begin
-  List.Add(Child);
-  if (csInline in Child.ComponentState)
-  and (not (scfWithoutInlineChilds in Flags)) then
-    TSelectableComponentEnumerator(Child).GetChildren(@Gather,Child);
+  if not ((Child is TControl)
+          and (csNoDesignSelectable in TControl(Child).ControlStyle))
+  then
+    List.Add(Child);
+  OldRoot:=Root;
+  try
+    if csInline in Child.ComponentState then begin
+      if scfWithoutInlineChilds in Flags then exit;
+      if (Child is TControl)
+      and (not (csOwnedChildsSelectable in TControl(Child).ControlStyle)) then
+        exit;
+      Root:=Child;
+    end;
+    TSelectableComponentEnumerator(Child).GetChildren(@Gather,Root);
+  finally
+    Root:=OldRoot;
+  end;
 end;
 
 procedure GetSelectableComponents(Root: TComponent;
