@@ -794,6 +794,8 @@ begin
       case UpChars[r[1]] of
       'L': // EL
         if CompareIdentifiers('ELSE',r)=0 then begin
+          if Stack.TopType=bbtStatement then
+            EndBlock;
           case Stack.TopType of
           bbtCaseOf,bbtCaseColon:
             begin
