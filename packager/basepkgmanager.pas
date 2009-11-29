@@ -167,7 +167,8 @@ const
     'pofAddToRecent',
     'pofRevert',
     'pofConvertMacros',
-    'pofMultiOpen'
+    'pofMultiOpen',
+    'pofDoNotOpenEditor'
     );
 
 function PkgSaveFlagsToString(Flags: TPkgSaveFlags): string;

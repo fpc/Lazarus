@@ -40,7 +40,8 @@ type
     pofAddToRecent,   // add file to recent files
     pofRevert,        // reload file if already open
     pofConvertMacros, // replace macros in filename
-    pofMultiOpen      // set during loading multiple files, shows 'Cancel all' button using mrAbort
+    pofMultiOpen,     // set during loading multiple files, shows 'Cancel all' button using mrAbort
+    pofDoNotOpenEditor// do not open packageeditor
     );
   TPkgOpenFlags = set of TPkgOpenFlag;
 

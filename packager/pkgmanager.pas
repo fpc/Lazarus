@@ -159,6 +159,7 @@ type
     procedure OnOpenPackageForCurrentSrcEditFile(Sender: TObject);
   private
     // helper functions
+    FLastLazarusSrcDir: string;
     function DoShowSavePackageAsDialog(APackage: TLazPackage): TModalResult;
     function DoWriteMakefile(APackage: TLazPackage): TModalResult;
     function CheckPackageGraphForCompilation(APackage: TLazPackage;
@@ -1695,6 +1696,7 @@ end;
 
 procedure TPkgManager.LoadAutoInstallPackages;
 begin
+  FLastLazarusSrcDir:=EnvironmentOptions.LazarusDirectory;
   PackageGraph.LoadAutoInstallPackages(
     MiscellaneousOptions.BuildLazOpts.StaticAutoInstallPackages);
 end;
@@ -2394,14 +2396,15 @@ begin
     SetRecentPackagesMenu;
   end;
 
-  OpenEditor:=true;
+  OpenEditor:=not (pofDoNotOpenEditor in Flags);
 
   // check if package is already loaded
   APackage:=PackageGraph.FindPackageWithFilename(AFilename);
   if (APackage=nil) or (pofRevert in Flags) then begin
     // package not yet loaded or it should be reloaded
     
-    if (pofRevert in Flags) and (APackage.Editor=nil) then
+    if (pofRevert in Flags)
+    and ((APackage=nil) or (APackage.Editor=nil)) then
       OpenEditor:=false;
     
     if not FileExistsUTF8(AFilename) then begin
@@ -2636,9 +2639,48 @@ begin
 end;
 
 procedure TPkgManager.LazarusSrcDirChanged;
+const
+  LazDirMacro = '$(LazarusDir)';
+var
+  NewLazarusSrcDir: String;
+  OldLazarusSrcDir: String;
+  APackage: TLazPackage;
+  i: Integer;
+  Link: TPackageLink;
+  MsgResult: TModalResult;
+  Filename: String;
 begin
   if PackageGraph=nil then exit;
+  OldLazarusSrcDir:=FLastLazarusSrcDir;
+  NewLazarusSrcDir:=EnvironmentOptions.LazarusDirectory;
+  FLastLazarusSrcDir:=NewLazarusSrcDir;
+  if CompareFilenames(OldLazarusSrcDir,NewLazarusSrcDir)=0 then exit;
+  PkgLinks.UpdateGlobalLinks;
 
+  i:=0;
+  while i<PackageGraph.Count do begin
+    APackage:=PackageGraph.Packages[i];
+    if (SysUtils.CompareText(copy(APackage.Filename,1,length(LazDirMacro)),LazDirMacro)=0)
+    or FileIsInPath(APackage.Filename,OldLazarusSrcDir) then begin
+      // this package was from the old lazarus source directory
+      // check if there is a package in the new verion
+      Link:=PkgLinks.FindLinkWithPkgName(APackage.Name);
+      if Link<>nil then begin
+        Filename:=TrimFilename(Link.Filename);
+        if not FilenameIsAbsolute(Filename) then
+          Filename:=AppendPathDelim(NewLazarusSrcDir)+Filename;
+        if FileIsInPath(Filename,NewLazarusSrcDir)
+        and FileExistsUTF8(Filename) then
+        begin
+          DebugLn(['TPkgManager.LazarusSrcDirChanged load: ',Filename]);
+          // open package in new lazarus source directory
+          MsgResult:=DoOpenPackageFile(Filename,[pofDoNotOpenEditor,pofRevert],true);
+          if MsgResult=mrAbort then break;
+        end;
+      end;
+    end;
+    inc(i);
+  end;
 end;
 
 function TPkgManager.DoCompileProjectDependencies(AProject: TProject;
