@@ -353,7 +353,6 @@ procedure LCLGetLanguageIDs(var Lang, FallbackLang: String);
 function CreateFirstIdentifier(const Identifier: string): string;
 function CreateNextIdentifier(const Identifier: string): string;
 
-
 implementation
 
 uses gettext;
@@ -4298,7 +4297,6 @@ begin
   Result:=copy(Identifier,1,p)
           +IntToStr(1+StrToIntDef(copy(Identifier,p+1,length(Identifier)-p),0));
 end;
-
 
 procedure FreeLineInfoCache;
 var
