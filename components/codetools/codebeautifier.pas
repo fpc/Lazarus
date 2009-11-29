@@ -1690,7 +1690,20 @@ begin
   {$ENDIF}
   if CheckPolicies(Policies,Result) then exit;
 
-  //GetDefaultIndentPolicy(ParentBlock.Typ,Block.Typ);
+  {$IFDEF VerboseIndenter}
+  DebugLn(['TFullyAutomaticBeautifier.GetIndent no examples found']);
+  {$ENDIF}
+  if SubTypeValid then
+    GetDefaultIndentPolicy(Block.Typ,SubType,Indent)
+  else
+    GetDefaultIndentPolicy(Block.Typ,bbtNone,Indent);
+  if Indent.IndentValid then begin
+    {$IFDEF VerboseIndenter}
+    DebugLn(['TFullyAutomaticBeautifier.GetIndent using default ',Indent.Indent]);
+    {$ENDIF}
+    inc(Indent.Indent,GetLineIndentWithTabs(Source,Block.StartPos,DefaultTabWidth));
+    Result:=true;
+  end;
 end;
 
 function TFullyAutomaticBeautifier.GetIndents(const Source: string;
