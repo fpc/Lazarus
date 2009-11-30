@@ -298,6 +298,7 @@ type
     function GetIDEInstallPackageOptions(
                  var InheritedOptionStrings: TInheritedCompOptsStrings): string;
     function SaveAutoInstallConfig: TModalResult;// for the uses section
+    function IsStaticBasePackage(PackageName: string): boolean;
   public
     // registration
     procedure RegisterUnitHandler(const TheUnitName: string;
@@ -331,6 +332,7 @@ type
     property AbortRegistration: boolean read FAbortRegistration
                                         write SetAbortRegistration;
     property ErrorMsg: string read FErrorMsg write FErrorMsg;
+
     property FCLPackage: TLazPackage read FFCLPackage;
     property LCLPackage: TLazPackage read FLCLPackage;
     property SynEditPackage: TLazPackage read FSynEditPackage;
@@ -562,6 +564,7 @@ begin
   CurPkg.Flags:=CurPkg.Flags+[lpfDestroying];
   CurPkg.DefineTemplates.Active:=false;
   if Assigned(OnDeletePackage) then OnDeletePackage(CurPkg);
+  FLazarusBasePackages.Remove(CurPkg);
   FItems.Delete(Index);
   FTree.Remove(CurPkg);
   CurPkg.Free;
@@ -1490,8 +1493,12 @@ begin
   with Result do begin
     AutoCreated:=true;
     Name:='CodeTools';
+    {$IFDEF EnableCodetoolsPkg}
+    Filename:=SetDirSeparators('$(LazarusDir)/components/codetools/codetools.lpk');
+    {$ELSE}
     Filename:=SetDirSeparators('$(LazarusDir)/components/codetools/');
-    Version.SetValues(1,0,0,0);
+    {$ENDIF}
+    Version.SetValues(1,0,1,0);
     Author:='Mattias Gaertner';
     License:='GPL-2';
     AutoInstall:=pitStatic;
@@ -1663,12 +1670,36 @@ begin
 end;
 
 procedure TLazPackageGraph.AddPackage(APackage: TLazPackage);
+
+  procedure SetBasePackage(var BasePackage: TLazPackage);
+  begin
+    if BasePackage=APackage then exit;
+    if BasePackage<>nil then
+      RaiseGDBException('TLazPackageGraph.AddPackage Pkg='+APackage.IDAsString+' conflicts with existing base package');
+    BasePackage:=APackage;
+  end;
+
 var
   Dependency: TPkgDependency;
 begin
   BeginUpdate(true);
   FTree.Add(APackage);
   FItems.Add(APackage);
+
+  if IsStaticBasePackage(APackage.Name) then begin
+    if SysUtils.CompareText(APackage.Name,'FCL')=0 then
+      SetBasePackage(FFCLPackage)
+    else if SysUtils.CompareText(APackage.Name,'LCL')=0 then
+      SetBasePackage(FLCLPackage)
+    else if SysUtils.CompareText(APackage.Name,'IDEIntf')=0 then
+      SetBasePackage(FIDEIntfPackage)
+    else if SysUtils.CompareText(APackage.Name,'SynEdit')=0 then
+      SetBasePackage(FSynEditPackage)
+    else if SysUtils.CompareText(APackage.Name,'CodeTools')=0 then
+      SetBasePackage(FCodeToolsPackage);
+    if FLazarusBasePackages.IndexOf(APackage)<0 then
+      FLazarusBasePackages.Add(APackage);
+  end;
 
   // open all required dependencies
   Dependency:=APackage.FirstRequiredDependency;
@@ -1886,6 +1917,17 @@ begin
   StaticPckIncludeFile:=ConfigDir+'staticpackages.inc';
   Result:=SaveStringToFile(StaticPckIncludeFile,StaticPackagesInc,[],
                            lisPkgMangstaticPackagesConfigFile);
+end;
+
+function TLazPackageGraph.IsStaticBasePackage(PackageName: string
+  ): boolean;
+begin
+  PackageName:=lowercase(PackageName);
+  Result:=(PackageName='fcl')
+       or (PackageName='lcl')
+       or (PackageName='synedit')
+       or (PackageName='ideintf')
+       or (PackageName='codetools');
 end;
 
 procedure TLazPackageGraph.ClosePackage(APackage: TLazPackage);
@@ -3826,45 +3868,73 @@ procedure TLazPackageGraph.OpenInstalledDependency(Dependency: TPkgDependency;
 var
   BrokenPackage: TLazPackage;
   CurResult: TModalResult;
+  BasePackage: TLazPackage;
 begin
   OpenDependency(Dependency,false);
   if Dependency.LoadPackageResult<>lprSuccess then begin
     // a valid lpk file of the installed package can not be found
-    // -> create a broken package
-    BrokenPackage:=TLazPackage.Create;
-    with BrokenPackage do begin
-      BeginUpdate;
-      Missing:=true;
-      AutoCreated:=true;
-      Name:=Dependency.PackageName;
-      Filename:='';
-      Version.SetValues(0,0,0,0);
-      Author:='?';
-      License:='?';
-      AutoUpdate:=pupManually;
-      Description:=lisPkgSysThisPackageIsInstalledButTheLpkFileWasNotFound;
-      PackageType:=lptDesignTime;
-      Installed:=pitStatic;
-      AutoInstall:=pitNope;
-      CompilerOptions.UnitOutputDirectory:='';
+    if IsStaticBasePackage(Dependency.PackageName) then begin
+      // this is one of the Lazarus base packages
+      // auto create the built in version
+      BasePackage:=nil;
+      if (SysUtils.CompareText(Dependency.PackageName,'FCL')=0)
+      and (FCLPackage=nil) then
+        BasePackage:=CreateFCLPackage
+      else if (SysUtils.CompareText(Dependency.PackageName,'LCL')=0)
+      and (LCLPackage=nil) then
+        BasePackage:=CreateLCLPackage
+      else if (SysUtils.CompareText(Dependency.PackageName,'IDEIntf')=0)
+      and (IDEIntfPackage=nil) then
+        BasePackage:=CreateIDEIntfPackage
+      else if (SysUtils.CompareText(Dependency.PackageName,'SynEdit')=0)
+      and (SynEditPackage=nil) then
+        BasePackage:=CreateSynEditPackage
+      else if (SysUtils.CompareText(Dependency.PackageName,'CodeTools')=0)
+      and (CodeToolsPackage=nil) then
+        BasePackage:=CreateCodeToolsPackage;
+      if BasePackage<>nil then begin
+        AddPackage(BasePackage);
+        DebugLn('TLazPackageGraph.OpenInstalledDependency lpk not found using built-in ',BasePackage.IDAsString,' ',dbgs(ord(BasePackage.AutoInstall)));
+        if not Quiet then begin
+          // don't bother the user
+        end;
+      end;
+    end else begin
+      // -> create a broken package
+      BrokenPackage:=TLazPackage.Create;
+      with BrokenPackage do begin
+        BeginUpdate;
+        Missing:=true;
+        AutoCreated:=true;
+        Name:=Dependency.PackageName;
+        Filename:='';
+        Version.SetValues(0,0,0,0);
+        Author:='?';
+        License:='?';
+        AutoUpdate:=pupManually;
+        Description:=lisPkgSysThisPackageIsInstalledButTheLpkFileWasNotFound;
+        PackageType:=lptDesignTime;
+        Installed:=pitStatic;
+        AutoInstall:=pitNope;
+        CompilerOptions.UnitOutputDirectory:='';
 
-      // add lazarus registration unit path
-      UsageOptions.UnitPath:='';
+        // add lazarus registration unit path
+        UsageOptions.UnitPath:='';
 
-      Modified:=false;
-      EndUpdate;
-    end;
-    AddPackage(BrokenPackage);
-    DebugLn('TLazPackageGraph.OpenInstalledDependency ',BrokenPackage.IDAsString,' ',dbgs(ord(BrokenPackage.AutoInstall)));
-
-    if not Quiet then begin
-      // tell the user
-      CurResult:=QuestionDlg(lisPkgSysPackageFileNotFound,
-        Format(lisPkgSysThePackageIsInstalledButNoValidPackageFileWasFound, ['"',
-          BrokenPackage.Name, '"', #13]),
-        mtError,[mrOk,mrYesToAll,'Skip these warnings'],0);
-      if CurResult=mrYesToAll then
-        Quiet:=true;
+        Modified:=false;
+        EndUpdate;
+      end;
+      AddPackage(BrokenPackage);
+      DebugLn('TLazPackageGraph.OpenInstalledDependency ',BrokenPackage.IDAsString,' ',dbgs(ord(BrokenPackage.AutoInstall)));
+      if not Quiet then begin
+        // tell the user
+        CurResult:=QuestionDlg(lisPkgSysPackageFileNotFound,
+          Format(lisPkgSysThePackageIsInstalledButNoValidPackageFileWasFound, ['"',
+            BrokenPackage.Name, '"', #13]),
+          mtError,[mrOk,mrYesToAll,'Skip these warnings'],0);
+        if CurResult=mrYesToAll then
+          Quiet:=true;
+      end;
     end;
 
     // open it
