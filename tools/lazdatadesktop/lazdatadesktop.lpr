@@ -7,11 +7,12 @@ uses
   cthreads,
   {$ENDIF}{$ENDIF}
   Interfaces, // this includes the LCL widgetset
-  Forms
-  { add your units here }, frmmain, dicteditor, DBFLaz,
-  frmimportdd, RunTimeTypeInfoControls, frmgeneratesql, SQLDBLaz,
-  frmSQLConnect, ddfiles, conneditor, datapanel, querypanel, lazdbexport,
-  lazdatadict, frmselectconnectiontype;
+  Forms, frmmain, dicteditor, DBFLaz, frmimportdd,
+  frmgeneratesql, SQLDBLaz, lazdatadict, RunTimeTypeInfoControls, frmSQLConnect,
+  ddfiles, conneditor, datapanel, querypanel, frmselectconnectiontype,
+  lazdatadeskstr, lazdbexport;
+
+{$IFDEF WINDOWS}{$R lazdatadesktop.rc}{$ENDIF}
 
 begin
   Application.Title:='Lazarus Data Desktop';

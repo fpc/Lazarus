@@ -26,7 +26,7 @@ interface
 
 uses
   Classes, SysUtils, LResources, Forms, Controls, Graphics, Dialogs, CheckLst,
-  Buttons, ActnList,fpdatadict, StdCtrls;
+  Buttons, ActnList,fpdatadict, StdCtrls, lazdatadeskstr;
 
 type
 
@@ -43,6 +43,7 @@ type
     CBUpdateExisting: TCheckBox;
     LBItems: TCheckListBox;
     procedure DoSelection(Sender: TObject);
+    procedure FormCreate(Sender: TObject);
     procedure FormShow(Sender: TObject);
     procedure HaveItems(Sender: TObject);
   private
@@ -93,6 +94,18 @@ procedure TImportDDform.DoSelection(Sender: TObject);
 
 begin
   SelectItems(Sender=ASelectAll);
+end;
+
+procedure TImportDDform.FormCreate(Sender: TObject);
+begin
+  //
+  Caption:= sld_Importupdatedatadictionary;
+  BSelectAll.Caption:= sld_Selectall;
+  BSelectNone.Caption:= sld_Selectnone;
+  CBUpdateExisting.Caption:= sld_Updateexistingtables;
+  BOK.Caption:= sld_Ok;
+  BCancel.Caption:= sld_Cancel;
+  //
 end;
 
 procedure TImportDDform.FormShow(Sender: TObject);

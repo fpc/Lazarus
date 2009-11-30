@@ -26,7 +26,7 @@ interface
 
 uses
   Classes, SysUtils, LResources, Forms, Controls, Graphics, Dialogs, ComCtrls,
-  ExtCtrls, Buttons, StdCtrls, Spin, RTTICtrls, fpdatadict;
+  ExtCtrls, Buttons, StdCtrls, {Spin,} RTTICtrls, fpdatadict, lazdatadeskstr;
 
 type
 
@@ -67,7 +67,6 @@ type
     procedure BGenerateClick(Sender: TObject);
     procedure CBTablesChange(Sender: TObject);
     procedure FormCreate(Sender: TObject);
-    procedure PCSQLChange(Sender: TObject);
     procedure TSResize(Sender: TObject);
   private
     FTableDefs : TDDTableDefs;
@@ -101,10 +100,6 @@ var
 implementation
 
 { TGenerateSQLForm }
-
-ResourceString
-  SErrSelectTable  = 'No table selected. Please select a table';
-  SErrSelectFields = 'No fields selected. Please select some fields';
   
 procedure TGenerateSQLForm.TSResize(Sender: TObject);
 
@@ -287,6 +282,33 @@ end;
 
 procedure TGenerateSQLForm.FormCreate(Sender: TObject);
 begin
+  //
+  Caption:= sld_Generatesqlstatements;
+  TSFields.Caption:= sld_Tableandfields;
+  TSSelect.Caption:= sld_Select;
+  TSInsert.Caption:= sld_Insert;
+  TSUpdate.Caption:= sld_Update;
+  TSDelete.Caption:= sld_Delete;
+  TSCreate.Caption:= sld_Createtable;
+  LCBTables.Caption:= sld_Table;
+  LLBKeyFields.Caption:= sld_Keyfields;
+  Label2.Caption:= sld_Selectupdateinsertfields;
+  CLBOptions.Caption:= sld_Options;
+  LSEIndent.Caption:= sld_Indent;
+  LSELineLength.Caption:= sld_Linelength;
+  CBIgnoreSelection.Caption:= sld_Createfulltablecreationsql;
+  BGenerate.Caption:= sld_Generatesql;
+  BCancel.Caption:= sld_Cancel;
+  BOK.Caption:= sld_Ok;
+
+  CLBOptions.Link.AliasValues.Values['eoLineFeedAfterField'] := eoLineFeedAfterField;
+  CLBOptions.Link.AliasValues.Values['eoUseOldInWhereParams'] := eoUseOldInWhereParams;
+  CLBOptions.Link.AliasValues.Values['eoAndTermsInBrackets'] := eoAndTermsInBrackets;
+  CLBOptions.Link.AliasValues.Values['eoQuoteFieldNames'] := eoQuoteFieldNames;
+  CLBOptions.Link.AliasValues.Values['eoLineFeedAfterAndTerm'] := eoLineFeedAfterAndTerm;
+  CLBOptions.Link.AliasValues.Values['eoAddTerminator'] := eoAddTerminator;
+  CLBOptions.Link.AliasValues.Values['eoSkipForeignKeys'] := eoSkipForeignKeys;
+  //
   FGenerator:=TFPDDSQLEngine.Create;
   CLBOptions.Link.TIObject:=FGenerator;
   SEIndent.Link.TIObject:=FGenerator;
@@ -295,12 +317,6 @@ begin
   CBIgnoreSelection.Visible:=False;
 {$ENDIF VER2_2}
 end;
-
-procedure TGenerateSQLForm.PCSQLChange(Sender: TObject);
-begin
-
-end;
-
 
 procedure TGenerateSQLForm.BGenerateClick(Sender: TObject);
 begin

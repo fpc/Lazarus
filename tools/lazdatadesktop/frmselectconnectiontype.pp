@@ -6,7 +6,7 @@ interface
 
 uses
   Classes, SysUtils, FileUtil, LResources, Forms, Controls, Graphics, Dialogs,
-  StdCtrls, ButtonPanel;
+  StdCtrls, ButtonPanel, lazdatadeskstr;
 
 type
 
@@ -54,6 +54,9 @@ Var
   cap : TFPDDEngineCapabilities;
 
 begin
+  //
+  Caption := sld_Selectaconnectiontype;
+  //
   L:=TStringList.Create;
   try
     GetDictionaryEngineList(L);

@@ -26,7 +26,7 @@ interface
 
 uses
   Classes, SysUtils, LResources, Forms, Controls, Graphics, Dialogs, StdCtrls,
-  Buttons, ExtCtrls, ComCtrls, ButtonPanel;
+  Buttons, ExtCtrls, ComCtrls, ButtonPanel, lazdatadeskstr;
 
 type
 
@@ -44,6 +44,7 @@ type
     LEPassword: TLabel;
     LEHostName: TLabel;
     LEDatabaseName: TLabel;
+    procedure FormCreate(Sender: TObject);
   private
     function GetShowHost: Boolean;
     function GetString(Index: integer): String;
@@ -108,6 +109,18 @@ begin
     finally
       Free;
     end;
+end;
+
+procedure TSQLConnectionForm.FormCreate(Sender: TObject);
+begin
+  //
+  Caption:= sld_Connecttoadatabase;
+  LEHostName.Caption:= sld_Host;
+  LEDatabaseName.Caption:= sld_Database;
+  LEUserName.Caption:= sld_Username;
+  LEPassword.Caption:= sld_Password;
+  LCharset.Caption:= sld_Charset;
+  //
 end;
 
 function TSQLConnectionForm.GetShowHost: Boolean;

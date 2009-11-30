@@ -27,7 +27,7 @@ interface
 uses
   Classes, SysUtils, DB, fpDatadict, FileUtil, Controls, ExtCtrls, StdCtrls,
   ComCtrls, LResources, LCLType, Dialogs, ActnList, datapanel, SynEdit, SynMemo,
-  SynHighlighterSQL;
+  SynHighlighterSQL, lazdatadeskstr;
   
 Type
 
@@ -97,27 +97,6 @@ Type
 implementation
 
 uses strutils, fpdataexporter, fpcodegenerator;
-
-Resourcestring
-  SSQLFilters = 'SQL files|*.sql|All files|*.*';
-  SRowsAffected = 'Query executed succesfully: %d rows affected.';
-  SErrNoEngine = 'No database engine !';
-  SExecute = 'Execute SQL';
-  SHintExecute = 'Execute SQL statement';
-  SPrevious = 'Previous';
-  SHintPrevious = 'Previous SQL statement';
-  SNext = 'Next';
-  SHintNext = 'Next SQL statement';
-  SLoad = 'Load SQL';
-  SHintLoad = 'Load SQL statement from file';
-  SSave = 'Save SQL';
-  SHintSave = 'Save SQL statement to file';
-  SClose = 'Close result';
-  SHintClose = 'Close query result data panel';
-  SExport = 'Export data';
-  SHintExport = 'Export this data';
-  SCreateCode = 'Create code';
-  SHintCreateCode = 'Create pascal code for this data';
 
 { TQueryPanel }
 

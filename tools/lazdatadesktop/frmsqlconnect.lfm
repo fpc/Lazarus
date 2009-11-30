@@ -1,20 +1,21 @@
 object SQLConnectionForm: TSQLConnectionForm
-  Left = 549
+  Left = 547
   Height = 215
   Top = 454
-  Width = 345
+  Width = 395
   ActiveControl = EHostName
   BorderIcons = [biSystemMenu]
   BorderStyle = bsDialog
   Caption = 'Connect to a database'
   ClientHeight = 215
-  ClientWidth = 345
+  ClientWidth = 395
+  OnCreate = FormCreate
   LCLVersion = '0.9.27'
   object LEHostName: TLabel
     Left = 8
     Height = 23
-    Top = 15
-    Width = 74
+    Top = 6
+    Width = 97
     Alignment = taRightJustify
     AutoSize = False
     Caption = '&Host'
@@ -25,8 +26,8 @@ object SQLConnectionForm: TSQLConnectionForm
   object LEDatabaseName: TLabel
     Left = 8
     Height = 23
-    Top = 43
-    Width = 74
+    Top = 40
+    Width = 97
     Alignment = taRightJustify
     AutoSize = False
     Caption = '&Database'
@@ -37,8 +38,8 @@ object SQLConnectionForm: TSQLConnectionForm
   object LEUserName: TLabel
     Left = 8
     Height = 23
-    Top = 74
-    Width = 74
+    Top = 72
+    Width = 97
     Alignment = taRightJustify
     AutoSize = False
     Caption = '&Username'
@@ -49,8 +50,8 @@ object SQLConnectionForm: TSQLConnectionForm
   object LEPassword: TLabel
     Left = 8
     Height = 23
-    Top = 105
-    Width = 74
+    Top = 104
+    Width = 97
     Alignment = taRightJustify
     AutoSize = False
     Caption = '&Password'
@@ -59,10 +60,10 @@ object SQLConnectionForm: TSQLConnectionForm
     ParentColor = False
   end
   object LCharset: TLabel
-    Left = 36
+    Left = 44
     Height = 21
-    Top = 143
-    Width = 46
+    Top = 139
+    Width = 60
     Alignment = taRightJustify
     AutoSize = False
     Caption = '&Charset'
@@ -71,34 +72,34 @@ object SQLConnectionForm: TSQLConnectionForm
     ParentColor = False
   end
   object EHostName: TEdit
-    Left = 89
-    Height = 24
-    Top = 15
-    Width = 247
+    Left = 112
+    Height = 27
+    Top = 6
+    Width = 274
     Anchors = [akTop, akLeft, akRight]
     TabOrder = 0
   end
   object EDatabaseName: TEdit
-    Left = 89
-    Height = 24
-    Top = 43
-    Width = 247
+    Left = 112
+    Height = 27
+    Top = 40
+    Width = 274
     Anchors = [akTop, akLeft, akRight]
     TabOrder = 1
   end
   object EUserName: TEdit
-    Left = 89
-    Height = 24
-    Top = 74
-    Width = 247
+    Left = 113
+    Height = 27
+    Top = 72
+    Width = 273
     Anchors = [akTop, akLeft, akRight]
     TabOrder = 2
   end
   object EPassword: TEdit
-    Left = 89
-    Height = 24
-    Top = 105
-    Width = 247
+    Left = 112
+    Height = 27
+    Top = 104
+    Width = 274
     Anchors = [akTop, akLeft, akRight]
     EchoMode = emPassword
     PasswordChar = '*'
@@ -106,17 +107,17 @@ object SQLConnectionForm: TSQLConnectionForm
   end
   object BPButtons: TButtonPanel
     Left = 6
-    Height = 38
-    Top = 171
-    Width = 333
+    Height = 35
+    Top = 174
+    Width = 383
     TabOrder = 4
     ShowButtons = [pbOK, pbCancel]
   end
   object ECharset: TEdit
-    Left = 92
-    Height = 24
-    Top = 140
-    Width = 84
+    Left = 112
+    Height = 27
+    Top = 136
+    Width = 61
     TabOrder = 5
   end
 end
