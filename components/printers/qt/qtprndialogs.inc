@@ -4,14 +4,6 @@
 const
   SExecute = 'Execute';
   
-{TODO: WE HAVE PROBLEM WITH QPrintDialog size (second call resizes it
- to screen width) if QPrintDialog is
- destroyed each time, so that's the reason why we have
- QtPrnDlg variable and finalization in PrintersDlgs
- This is probably qt 4.3 bug.}
-var
-  QtPrnDlg: QPrintDialogH = nil;
-
 { TPageSetupDialog }
 
 function TPageSetupDialog.Execute: Boolean;
@@ -52,6 +44,7 @@ end;
 
 function TPrintDialog.Execute: Boolean;
 var
+  QtPrnDlg: QPrintDialogH;
   PrnOptions: QAbstractPrintDialogPrintDialogOptions;
   Str: WideString;
   i: Integer;
@@ -60,74 +53,77 @@ begin
 
   if not Assigned(Printer) then Exit;
   if Printer.Printers.Count <= 0 then Exit;
-  
-  if QtPrnDlg = nil then
-    QtPrnDlg := QPrintDialog_create(QtDefaultPrinter.Handle, nil);
 
-  if Title <> '' then
-    Str := UTF8Decode(Title)
-  else
-    Str := UTF8Decode(DefaultTitle);
+  QtPrnDlg := QPrintDialog_create(QtDefaultPrinter.Handle, nil);
+  try
 
-  QWidget_setWindowTitle(QtPrnDlg, @Str);
-  
-  if (Width > 0) and (Height > 0) then
-    QWidget_setBaseSize(QtPrnDlg, Width, Height);
+    if Title <> '' then
+      Str := UTF8Decode(Title)
+    else
+      Str := UTF8Decode(DefaultTitle);
 
-  {By default, full page printing is disabled. In this case, the origin of
-   the QPrinter's coordinate system coincides with the top-left corner
-   of the printable area. If full page printing is enabled, the origin of
-   the QPrinter's coordinate system coincides with the top-left corner of
-   the paper itself. In this case, the device metrics will report the
-   exact same dimensions as indicated by PageSize. It may not be
-   possible to print on the entire physical page because of the printer's
-   margins, so the application must account for the margins itself.
-   We can set this property from QtLCL OsPrinters too.
-   QtDefaultPrinter.FullPage := True;
-   THIS IS FIXED IN Qt-4.4, so PageRect returns correct dimensions !}
+    QWidget_setWindowTitle(QtPrnDlg, @Str);
 
-  QAbstractPrintDialog_setMinMax(QtPrnDlg, MinPage, MaxPage);
-  QAbstractPrintDialog_setFromTo(QtPrnDlg, FromPage, ToPage);
+    if (Width > 0) and (Height > 0) then
+      QWidget_setBaseSize(QtPrnDlg, Width, Height);
 
-  PrnOptions := QAbstractPrintDialogPrintCollateCopies
-    or QAbstractPrintDialogPrintShowPageSize;
+    {By default, full page printing is disabled. In this case, the origin of
+     the QPrinter's coordinate system coincides with the top-left corner
+     of the printable area. If full page printing is enabled, the origin of
+     the QPrinter's coordinate system coincides with the top-left corner of
+     the paper itself. In this case, the device metrics will report the
+     exact same dimensions as indicated by PageSize. It may not be
+     possible to print on the entire physical page because of the printer's
+     margins, so the application must account for the margins itself.
+     We can set this property from QtLCL OsPrinters too.
+     QtDefaultPrinter.FullPage := True;
+     THIS IS FIXED IN Qt-4.4, so PageRect returns correct dimensions !}
 
-  if (poPrintToFile in Options) then
-    PrnOptions := PrnOptions or QAbstractPrintDialogPrintToFile;
+    QAbstractPrintDialog_setMinMax(QtPrnDlg, MinPage, MaxPage);
+    QAbstractPrintDialog_setFromTo(QtPrnDlg, FromPage, ToPage);
 
-  if (poSelection in Options) then
-    PrnOptions := PrnOptions or QAbstractPrintDialogPrintSelection;
+    PrnOptions := QAbstractPrintDialogPrintCollateCopies
+      or QAbstractPrintDialogPrintShowPageSize;
 
-  if (poPageNums) in Options then
-    PrnOptions := PrnOptions or QAbstractPrintDialogPrintPageRange;
+    if (poPrintToFile in Options) then
+      PrnOptions := PrnOptions or QAbstractPrintDialogPrintToFile;
 
-  {this function does not have effect on Darwin}
-  QAbstractPrintDialog_setEnabledOptions(QtPrnDlg, PrnOptions);
+    if (poSelection in Options) then
+      PrnOptions := PrnOptions or QAbstractPrintDialogPrintSelection;
 
-  QtDefaultPrinter.numCopies := Copies;
+    if (poPageNums) in Options then
+      PrnOptions := PrnOptions or QAbstractPrintDialogPrintPageRange;
 
-  if PrintToFile then
-    QtDefaultPrinter.OutputFormat := QPrinterPdfFormat;
+    {this function does not have effect on Darwin}
+    QAbstractPrintDialog_setEnabledOptions(QtPrnDlg, PrnOptions);
 
-  Result := QPrintDialog_exec(QtPrnDlg) = Ord(QDialogAccepted);
+    QtDefaultPrinter.numCopies := Copies;
 
-  if Result then
-  begin
-    Collate := QtDefaultPrinter.Collate;
-    MinPage := QAbstractPrintDialog_minPage(QtPrnDlg);
-    MaxPage := QAbstractPrintDialog_maxPage(QtPrnDlg);
-    FromPage := QtDefaultPrinter.fromPage;
-    ToPage := QtDefaultPrinter.toPage;
-    PrintToFile := QtDefaultPrinter.OutputFormat <> QPrinterNativeFormat;
-    Copies := QtDefaultPrinter.numCopies;
-    
-    case QtDefaultPrinter.PrintRange of
-      QPrinterAllPages: PrintRange := prAllPages;
-      QPrinterSelection: PrintRange := prSelection;
-      QPrinterPageRange: PrintRange := prPageNums;
-      else
-        PrintRange := prCurrentPage;
+    if PrintToFile then
+      QtDefaultPrinter.OutputFormat := QPrinterPdfFormat;
+
+    Result := QPrintDialog_exec(QtPrnDlg) = Ord(QDialogAccepted);
+
+    if Result then
+    begin
+      Collate := QtDefaultPrinter.Collate;
+      MinPage := QAbstractPrintDialog_minPage(QtPrnDlg);
+      MaxPage := QAbstractPrintDialog_maxPage(QtPrnDlg);
+      FromPage := QtDefaultPrinter.fromPage;
+      ToPage := QtDefaultPrinter.toPage;
+      PrintToFile := QtDefaultPrinter.OutputFormat <> QPrinterNativeFormat;
+      Copies := QtDefaultPrinter.numCopies;
+
+      case QtDefaultPrinter.PrintRange of
+        QPrinterAllPages: PrintRange := prAllPages;
+        QPrinterSelection: PrintRange := prSelection;
+        QPrinterPageRange: PrintRange := prPageNums;
+        else
+          PrintRange := prCurrentPage;
+      end;
     end;
+  finally
+    QPrintDialog_destroy(QtPrnDlg);
   end;
 end;
 

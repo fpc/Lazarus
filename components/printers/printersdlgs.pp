@@ -132,13 +132,6 @@ begin
   RegisterComponents('Dialogs',[TPrinterSetupDialog,TPrintDialog,TPageSetupDialog]);
 end;
 
-
 initialization
   {$I printersdlgs.lrs}
-{$IFDEF LCLQt}
-finalization
-  if QtPrnDlg<>nil then
-    QPrintDialog_destroy(QtPrnDlg);
-{$ENDIF}
-  
 end.
