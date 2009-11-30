@@ -417,7 +417,6 @@ components/codetools/codetoolmemmanager.pas svneol=native#text/pascal
 components/codetools/codetools.inc svneol=native#text/pascal
 components/codetools/codetools.lpk svneol=native#text/plain
 components/codetools/codetools.pas svneol=native#text/plain
-components/codetools/codetools1.pas svneol=native#text/plain
 components/codetools/codetoolsconfig.pas svneol=native#text/plain
 components/codetools/codetoolsstrconsts.pas svneol=native#text/pascal
 components/codetools/codetoolsstructs.pas svneol=native#text/pascal
