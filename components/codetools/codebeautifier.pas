@@ -161,7 +161,7 @@ const
                         bbtTry,bbtFinally,bbtExcept,
                         bbtIfThen,bbtIfElse,bbtIfBegin];
   bbtAllStatements = bbtAllStatementParents+[
-                      bbtStatementRoundBracket,bbtStatementEdgedBracket];
+                      bbtStatement,bbtStatementRoundBracket,bbtStatementEdgedBracket];
   bbtAllBrackets = [bbtTypeRoundBracket,bbtTypeEdgedBracket,
                     bbtStatementRoundBracket,bbtStatementEdgedBracket];
 const
@@ -1097,7 +1097,8 @@ begin
       BeginBlock(bbtDefinition);
     end;
     if (Stack.TopType in bbtAllStatementParents)
-    and (not AtomStartedBlock) and (not AtomEndedBlock) then begin
+    and (not AtomStartedBlock) and (not AtomEndedBlock)
+    and (r^<>';') then begin
       // new statement
       BeginBlock(bbtStatement);
     end;
