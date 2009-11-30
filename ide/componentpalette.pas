@@ -48,6 +48,11 @@ uses
   FindPaletteComp;
 
 type
+  TComponentSelectionMode = (
+    csmSingle, // reset selection on component add
+    csmMulty   // don't reset selection on component add
+  );
+
   { TComponentPalette }
 
   TComponentPalette = class(TBaseComponentPalette)
@@ -68,6 +73,7 @@ type
     FOnOpenPackage: TNotifyEvent;
     FOnOpenUnit: TNotifyEvent;
     FSelected: TRegisteredComponent;
+    FSelectionMode: TComponentSelectionMode;
     fUnregisteredIcon: TCustomBitmap;
     fSelectButtonIcon: TCustomBitmap;
     fUpdatingNotebook: boolean;
@@ -88,6 +94,7 @@ type
   public
     constructor Create;
     destructor Destroy; override;
+    procedure DoAfterComponentAdded;
     function GetUnregisteredIcon: TCustomBitmap;
     function GetSelectButtonIcon: TCustomBitmap;
     procedure ClearButtons; override;
@@ -103,6 +110,7 @@ type
   public
     property NoteBook: TNotebook read FNoteBook write SetNoteBook;
     property Selected: TRegisteredComponent read FSelected write SetSelected;
+    property SelectionMode: TComponentSelectionMode read FSelectionMode write FSelectionMode;
     property OnOpenPackage: TNotifyEvent read FOnOpenPackage write FOnOpenPackage;
     property OnOpenUnit: TNotifyEvent read FOnOpenUnit write FOnOpenUnit;
   end;
@@ -228,6 +236,10 @@ end;
 
 procedure TComponentPalette.ComponentBtnClick(Sender: TObject);
 begin
+  if ssShift in GetKeyShiftState then
+    SelectionMode := csmMulty
+  else
+    SelectionMode := csmSingle;
   SelectButton(TComponent(Sender));
 end;
 
@@ -369,6 +381,7 @@ end;
 constructor TComponentPalette.Create;
 begin
   inherited Create;
+  FSelectionMode := csmSingle;
   fComponents:=TAVLTree.Create(@CompareRegisteredComponents);
   OnComponentIsInvisible:=@CheckComponentDesignerVisible;
 end;
@@ -383,6 +396,12 @@ begin
   FreeAndNil(fSelectButtonIcon);
   FreeAndNil(PopupMenu);
   inherited Destroy;
+end;
+
+procedure TComponentPalette.DoAfterComponentAdded;
+begin
+  if not (ssShift in GetKeyShiftState) and (SelectionMode = csmSingle) then
+    Selected := nil;
 end;
 
 function TComponentPalette.GetUnregisteredIcon: TCustomBitMap;
@@ -422,9 +441,9 @@ function TComponentPalette.SelectButton(Button: TComponent): boolean;
 var
   NewComponent: TRegisteredComponent;
 begin
-  NewComponent:=FindButton(Button);
-  Selected:=NewComponent;
-  Result:=(Selected=NewComponent);
+  NewComponent := FindButton(Button);
+  Selected := NewComponent;
+  Result := (Selected = NewComponent);
 end;
 
 procedure TComponentPalette.ReAlignButtons(Page: TPage);

@@ -102,7 +102,7 @@ type
     FOnSaveAsXML: TNotifyEvent;
     FOnSetDesigning: TOnSetDesigning;
     FOnShowOptions: TNotifyEvent;
-    FOnUnselectComponentClass: TNotifyEvent;
+    FOnComponentAdded: TNotifyEvent;
     FOnViewLFM: TNotifyEvent;
     FShiftState: TShiftState;
     FTheFormEditor: TCustomFormEditor;
@@ -303,9 +303,9 @@ type
                                read FOnRenameComponent write FOnRenameComponent;
     property OnSetDesigning: TOnSetDesigning
                                      read FOnSetDesigning write FOnSetDesigning;
-    property OnUnselectComponentClass: TNotifyEvent
-                                                read FOnUnselectComponentClass
-                                                write FOnUnselectComponentClass;
+    property OnComponentAdded: TNotifyEvent
+                                      read FOnComponentAdded
+                                      write FOnComponentAdded;
     property OnShowOptions: TNotifyEvent
                                        read FOnShowOptions write FOnShowOptions;
     property OnViewLFM: TNotifyEvent read FOnViewLFM write FOnViewLFM;
@@ -1580,10 +1580,8 @@ var
     // creation completed
     // -> select new component
     SelectOnlyThisComponent(NewComponent);
-    if not (ssShift in Shift) then
-      if Assigned(FOnUnselectComponentClass) then
-        // this resets the component palette to the selection tool
-        FOnUnselectComponentClass(Self);
+    if Assigned(FOnComponentAdded) then // this resets the component palette to the selection tool
+      FOnComponentAdded(Self);
 
     {$IFDEF VerboseDesigner}
     DebugLn('NEW COMPONENT ADDED: Form.ComponentCount=',DbgS(Form.ComponentCount),

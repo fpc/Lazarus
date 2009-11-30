@@ -368,6 +368,7 @@ type
   //---------------------------------------------------------------------------
 
   { TProjectCompilationToolOptions }
+
   TProjectCompilationToolOptions = class(TCompilationToolOptions)
   public
     CompileReasons: TCompileReasons;
@@ -386,6 +387,7 @@ type
 
   TProjectCompilerOptions = class(TBaseCompilerOptions)
   private
+    FBuildModes: TBuildModeGraph;
     FGlobals: TGlobalCompilerOptions;
     FOwnerProject: TProject;
     FCompileReasons: TCompileReasons;
@@ -407,10 +409,12 @@ type
   public
     constructor Create(const AOwner: TObject); override;
     destructor Destroy; override;
+    procedure Clear; override;
     function GetOwnerName: string; override;
     function GetDefaultMainSourceFileName: string; override;
     procedure GetInheritedCompilerOptions(var OptionsList: TFPList); override;
     procedure Assign(Source: TPersistent); override;
+    function IsEqual(CompOpts: TBaseCompilerOptions): boolean; override;
     procedure CreateDiff(CompOpts: TBaseCompilerOptions;
                          Tool: TCompilerDiffTool); override;
     procedure InvalidateOptions;
@@ -418,6 +422,7 @@ type
     property OwnerProject: TProject read FOwnerProject;
     property Project: TProject read FOwnerProject;
     property Globals: TGlobalCompilerOptions read FGlobals;
+    property BuildModes: TBuildModeGraph read FBuildModes;
   published
     property CompileReasons: TCompileReasons read FCompileReasons write FCompileReasons;
   end;
@@ -2118,8 +2123,12 @@ begin
       RunParameterOptions.Save(xmlconfig,Path,fCurStorePathDelim);
       
       // save dependencies
-      SavePkgDependencyList(XMLConfig,Path+'RequiredPackages/',
+      SavePkgDependencyList(xmlconfig,Path+'RequiredPackages/',
         FFirstRequiredDependency,pdlRequires,fCurStorePathDelim);
+
+      // save build modes
+      CompilerOptions.BuildModes.SaveToXMLConfig(xmlconfig,Path+'BuildModes/',
+                                  true,SaveSessionInfoInLPI,fCurStorePathDelim);
 
       // save units
       SaveUnits(XMLConfig,Path,true,SaveSessionInfoInLPI);
@@ -2189,12 +2198,17 @@ begin
       try
         Path:='ProjectSession/';
         fCurStorePathDelim:=SessionStorePathDelim;
-        xmlconfig.SetDeleteValue(Path+'PathDelim/Value',PathDelimSwitchToDelim[fCurStorePathDelim],'/');
+        xmlconfig.SetDeleteValue(Path+'PathDelim/Value',
+                                PathDelimSwitchToDelim[fCurStorePathDelim],'/');
         xmlconfig.SetValue(Path+'Version/Value',ProjectInfoFileVersion);
 
         // save all units
         SaveUnits(XMLConfig,Path,true,true);
-        
+
+        // build modes
+        CompilerOptions.BuildModes.SaveToXMLConfig(xmlconfig,Path+'BuildModes/',
+                                                 false,true,fCurStorePathDelim);
+
         // save session
         SaveSessionInfo(XMLConfig,Path);
 
@@ -2474,6 +2488,10 @@ begin
                                  ProjectSessionStorageNames[pssInProjectInfo]));
       //DebugLn('TProject.ReadProject SessionStorage=',dbgs(ord(SessionStorage)),' ProjectSessionFile=',ProjectSessionFile);
 
+      // build modes
+      CompilerOptions.BuildModes.LoadFromXMLConfig(xmlconfig,Path+'BuildModes/',
+                                                   false,fPathDelimChanged);
+
       NewMainUnitID := xmlconfig.GetValue(Path+'General/MainUnit/Value', -1);
       AutoCreateForms := xmlconfig.GetValue(
          Path+'General/AutoCreateForms/Value', true);
@@ -2554,6 +2572,10 @@ begin
           fCurStorePathDelim:=SessionStorePathDelim;
 
           FileVersion:=XMLConfig.GetValue(Path+'Version/Value',0);
+
+          // load user sepcific build modes
+          CompilerOptions.BuildModes.LoadFromXMLConfig(xmlconfig,Path+'BuildModes/',
+                                                       true,fPathDelimChanged);
 
           // load session info
           LoadSessionInfo(XMLConfig,Path,true);
@@ -4823,13 +4845,31 @@ begin
 end;
 
 procedure TProjectCompilerOptions.Assign(Source: TPersistent);
+var
+  ProjCompOptions: TProjectCompilerOptions;
 begin
   inherited Assign(Source);
-  if Source is TProjectCompilerOptions
-  then FCompileReasons := TProjectCompilerOptions(Source).FCompileReasons
-  else FCompileReasons := [crCompile, crBuild, crRun];
-  
+  if Source is TProjectCompilerOptions then begin
+    ProjCompOptions:=TProjectCompilerOptions(Source);
+    FCompileReasons := ProjCompOptions.FCompileReasons;
+    FBuildModes.Assign(ProjCompOptions.BuildModes);
+  end else begin
+    FCompileReasons := [crCompile, crBuild, crRun];
+    // keep BuildModes
+  end;
   UpdateGlobals;
+end;
+
+function TProjectCompilerOptions.IsEqual(CompOpts: TBaseCompilerOptions
+  ): boolean;
+begin
+  Result:=false;
+  if not inherited IsEqual(CompOpts) then exit;
+  if CompOpts is TProjectCompilerOptions then begin
+    if not TProjectCompilerOptions(CompOpts).BuildModes.IsEqual(BuildModes) then
+      exit;
+  end;
+  Result:=true;
 end;
 
 procedure TProjectCompilerOptions.CreateDiff(CompOpts: TBaseCompilerOptions;
@@ -4859,6 +4899,7 @@ end;
 constructor TProjectCompilerOptions.Create(const AOwner: TObject);
 begin
   FGlobals := TGlobalCompilerOptions.Create;
+  FBuildModes:=TBuildModeGraph.Create;
   FCompileReasons := [crCompile, crBuild, crRun];
   inherited Create(AOwner, TProjectCompilationToolOptions);
   with TProjectCompilationToolOptions(ExecuteBefore) do begin
@@ -4878,6 +4919,13 @@ destructor TProjectCompilerOptions.Destroy;
 begin
   inherited Destroy;
   FreeAndNil(FGlobals);
+  FreeAndNil(FBuildModes);
+end;
+
+procedure TProjectCompilerOptions.Clear;
+begin
+  inherited Clear;
+  FBuildModes.ClearModes;
 end;
 
 function TProjectCompilerOptions.GetOwnerName: string;

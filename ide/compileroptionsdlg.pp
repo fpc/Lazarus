@@ -46,7 +46,7 @@ uses
   MacroIntf, ProjectIntf, IDEWindowIntf, IDEContextHelpEdit,
   TransferMacros, PathEditorDlg, LazarusIDEStrConsts, IDEOptionDefs, LazConf,
   IDEProcs, IDEImagesIntf, ShowCompilerOpts, Project, PackageDefs,
-  CompilerOptions, CheckCompilerOpts, CompOptsModes,
+  CompilerOptions, CheckCompilerOpts, CompOptsModes, BuildModesEditor,
   Compiler_Conditionals_Options, Compiler_BuildVar_Options, CheckLst;
 
 type
@@ -62,8 +62,7 @@ type
   { TfrmCompilerOptions }
 
   TfrmCompilerOptions = class(TForm)
-    chkGenerateDwarf: TCheckBox;
-    lblOptMiddle: TLabel;
+    CategoryTreeView: TTreeView;
     MainNoteBook: TNoteBook;
 
     { Search Paths Controls }
@@ -96,6 +95,9 @@ type
     LCLWidgetTypeLabel: TLabel;
     LCLWidgetTypeComboBox: TComboBox;
 
+    { Build modes }
+    BuildModesPage: TPage;
+
     { Parsing Controls }
     ParsingPage: TPage;
     grpAsmStyle: TRadioGroup;
@@ -122,6 +124,7 @@ type
     grpTargetPlatform: TGroupBox;
     lblTargetOS : TLabel;
     ConditionalSplitter: TSplitter;
+    CategorySplitter: TSplitter;
     TargetOSComboBox: TComboBox;
     lblTargetCPU : TLabel;
     TargetCPUComboBox: TComboBox;
@@ -134,6 +137,7 @@ type
     radOptLevel2: TRadioButton;
     radOptLevel3: TRadioButton;
     chkOptVarsInReg: TCheckBox;
+    lblOptMiddle: TLabel;
     chkOptUncertain: TCheckBox;
     chkOptSmaller: TCheckBox;
 
@@ -142,6 +146,7 @@ type
     grpDebugging: TGroupBox;
     chkDebugGDB: TCheckBox;
     chkUseLineInfoUnit: TCheckBox;
+    chkGenerateDwarf: TCheckBox;
     chkUseHeaptrc: TCheckBox;
     chkUseValgrind: TCheckBox;
     chkGenGProfCode: TCheckBox;
@@ -244,6 +249,7 @@ type
     procedure btnTestClicked(Sender: TObject);
     procedure ButtonLoadSaveClick(Sender: TObject);
     procedure ButtonShowOptionsClicked(Sender: TObject);
+    procedure CategoryTreeViewSelectionChanged(Sender: TObject);
     procedure FileBrowseBtnClick(Sender: TObject);
     procedure HelpButtonClick(Sender: TObject);
     procedure InhTreeViewSelectionChanged(Sender: TObject);
@@ -255,7 +261,11 @@ type
     procedure chklistCompMsgClick(Sender: TObject);
     procedure chkUseMsgFileChange(Sender: TObject);
   private
+    fPathsTVNode: TTreeNode;
+    FBuildModesTVNode: TTreeNode;
+    fBuildModeGrid: TBuildModesGrid;
     procedure SetupSearchPathsTab(Page: integer);
+    procedure SetupBuildModesTab(Page: integer);
     procedure SetupParsingTab(Page: integer);
     procedure SetupCodeGenerationTab(Page: integer);
     procedure SetupLinkingTab(Page: integer);
@@ -282,16 +292,16 @@ type
     procedure SetCompilerMessages;
   public
     CompilerOpts: TBaseCompilerOptions;
-    OldCompOpts: TBaseCompilerOptions;
+    OldCompOpts: TBaseCompilerOptions; // set on loading, used for revert
 
     constructor Create(TheOwner: TComponent); override;
     destructor Destroy; override;
 
-    procedure GetCompilerOptions; // options to dialog
-    procedure GetCompilerOptions(SrcCompilerOptions: TBaseCompilerOptions);
-    function PutCompilerOptions(CheckAndWarn: TCheckCompileOptionsMsgLvl): boolean; // dlg to options
-    function PutCompilerOptions(CheckAndWarn: TCheckCompileOptionsMsgLvl;
-                            DestCompilerOptions: TBaseCompilerOptions): boolean;
+    procedure LoadOptionsToForm;
+    procedure LoadOptionsToForm(SrcCompilerOptions: TBaseCompilerOptions);
+    function SaveFormToOptions(CheckAndWarn: TCheckCompileOptionsMsgLvl): boolean;
+    function SaveFormToOptions(CheckAndWarn: TCheckCompileOptionsMsgLvl;
+                               DestCompilerOptions: TBaseCompilerOptions): boolean;
   public
     property ReadOnly: boolean read FReadOnly write SetReadOnly;
     property OnImExportCompilerOptions: TNotifyEvent
@@ -432,9 +442,12 @@ begin
     ImageIndexInherited := IDEImages.LoadImage(16, 'pkg_inherited');
 
     MainNotebook.PageIndex:=0;
+    MainNoteBook.ShowTabs:=false;
     Page:=0;
 
     SetupSearchPathsTab(Page);
+    inc(Page);
+    SetupBuildModesTab(Page);
     inc(Page);
     SetupParsingTab(Page);
     inc(Page);
@@ -455,6 +468,9 @@ begin
     SetupCompilationTab(Page);
     inc(Page);
     SetupButtonBar;
+
+    CategoryTreeView.Selected:=CategoryTreeView.Items.GetFirstNode;
+    CategoryTreeViewSelectionChanged(nil);
   finally
     EnableAlign;
   end;
@@ -471,9 +487,9 @@ begin
   inherited Destroy;
 end;
 
-procedure TfrmCompilerOptions.GetCompilerOptions;
+procedure TfrmCompilerOptions.LoadOptionsToForm;
 begin
-  GetCompilerOptions(nil);
+  LoadOptionsToForm(nil);
 end;
 
 {------------------------------------------------------------------------------
@@ -485,7 +501,7 @@ begin
   Assert(False, 'Trace:Accept compiler options changes');
   
   { Save the options and hide the dialog }
-  if not PutCompilerOptions(ccomlErrors) then exit;
+  if not SaveFormToOptions(ccomlErrors) then exit;
   ModalResult:=mrOk;
 end;
 
@@ -495,7 +511,7 @@ end;
 procedure TfrmCompilerOptions.btnTestClicked(Sender: TObject);
 begin
   // Apply any changes and test
-  if not PutCompilerOptions(ccomlHints) then exit;
+  if not SaveFormToOptions(ccomlHints) then exit;
   if Assigned(TestCompilerOptions) then begin
     btnCheck.Enabled:=false;
     try
@@ -514,8 +530,19 @@ end;
 procedure TfrmCompilerOptions.ButtonShowOptionsClicked(Sender: TObject);
 begin
   // Test MakeOptionsString function
-  if PutCompilerOptions(ccomlWarning) then
+  if SaveFormToOptions(ccomlWarning) then
     ShowCompilerOptionsDialog(Self, CompilerOpts);
+end;
+
+procedure TfrmCompilerOptions.CategoryTreeViewSelectionChanged(Sender: TObject);
+var
+  Node: TTreeNode;
+begin
+  Node:=CategoryTreeView.Selected;
+  if Node=nil then exit;
+  if TObject(Node.Data) is TPage then begin
+    MainNoteBook.ActivePageComponent:=TPage(Node.Data);
+  end;
 end;
 
 procedure TfrmCompilerOptions.FileBrowseBtnClick(Sender: TObject);
@@ -594,13 +621,14 @@ end;
 {------------------------------------------------------------------------------
   TfrmCompilerOptions GetCompilerOptions
 ------------------------------------------------------------------------------}
-procedure TfrmCompilerOptions.GetCompilerOptions(
+procedure TfrmCompilerOptions.LoadOptionsToForm(
   SrcCompilerOptions: TBaseCompilerOptions);
 var
   i: integer;
   LCLPlatform: TLCLPlatform;
   EnabledLinkerOpts: Boolean;
   Options: TBaseCompilerOptions;
+  HasBuildModes: boolean;
 begin
   if SrcCompilerOptions<>nil then
     Options:=SrcCompilerOptions
@@ -631,6 +659,27 @@ begin
       LCLWidgetTypeComboBox.ItemIndex := ord(LCLPlatform)+1
     else
       LCLWidgetTypeComboBox.ItemIndex := 0;
+
+    // build modes
+    HasBuildModes:=(Options is TProjectCompilerOptions);
+    {$IFNDEF EnableBuildModes}
+    HasBuildModes:=false;
+    {$ENDIF}
+    if HasBuildModes then begin
+      // show build modes
+      if FBuildModesTVNode=nil then begin
+        FBuildModesTVNode:=CategoryTreeView.Items.AddObject(fPathsTVNode,
+                                         BuildModesPage.Caption,BuildModesPage);
+      end;
+      fBuildModeGrid.Graph.Assign(TProjectCompilerOptions(Options).BuildModes);
+      fBuildModeGrid.RebuildGrid;
+    end else begin
+      // hide build modes
+      if FBuildModesTVNode<>nil then begin
+        CategoryTreeView.Items.Delete(FBuildModesTVNode);
+        FBuildModesTVNode:=nil;
+      end;
+    end;
 
     // parsing
     if (Options.AssemblerStyle in [1,2,3])  then
@@ -849,7 +898,7 @@ end;
 {------------------------------------------------------------------------------
   TfrmCompilerOptions PutCompilerOptions
 ------------------------------------------------------------------------------}
-function TfrmCompilerOptions.PutCompilerOptions(
+function TfrmCompilerOptions.SaveFormToOptions(
   CheckAndWarn: TCheckCompileOptionsMsgLvl;
   DestCompilerOptions: TBaseCompilerOptions): boolean;
 
@@ -1130,10 +1179,10 @@ begin
   end;
 end;
 
-function TfrmCompilerOptions.PutCompilerOptions(
+function TfrmCompilerOptions.SaveFormToOptions(
   CheckAndWarn: TCheckCompileOptionsMsgLvl): boolean;
 begin
-  Result:=PutCompilerOptions(CheckAndWarn,nil);
+  Result:=SaveFormToOptions(CheckAndWarn,nil);
 end;
 
 procedure TfrmCompilerOptions.UpdateInheritedTab;
@@ -1259,6 +1308,7 @@ var
   s: String;
 begin
   MainNoteBook.Page[Page].Caption:= dlgCOParsing;
+  CategoryTreeView.Items.AddObject(nil,MainNoteBook.Page[Page].Caption,MainNoteBook.Page[Page]);
 
   // Setup the Parsing Tab
   with grpAsmStyle do begin
@@ -1306,6 +1356,7 @@ procedure TfrmCompilerOptions.SetupCodeGenerationTab(Page: integer);
 begin
   // Setup the Code Generation Tab
   MainNoteBook.Page[Page].Caption:= dlgCodeGeneration;
+  CategoryTreeView.Items.AddObject(nil,MainNoteBook.Page[Page].Caption,MainNoteBook.Page[Page]);
 
   grpSmartLinkUnit.Caption := dlgCOUnitStyle;
   chkSmartLinkUnit.Caption := dlgCOSmartLinkable + ' (-CX)';
@@ -1406,6 +1457,7 @@ end;
 procedure TfrmCompilerOptions.SetupLinkingTab(Page: integer);
 begin
   MainNoteBook.Page[Page].Caption:= dlgCOLinking;
+  CategoryTreeView.Items.AddObject(nil,MainNoteBook.Page[Page].Caption,MainNoteBook.Page[Page]);
 
   // Setup the Linking Tab
   with grpDebugging do begin
@@ -1440,6 +1492,7 @@ procedure TfrmCompilerOptions.SetupVerbosityTab(Page: integer);
 begin
   // Setup the Messages Tab
   MainNoteBook.Page[Page].Caption:= dlgCOVerbosity;
+  CategoryTreeView.Items.AddObject(nil,MainNoteBook.Page[Page].Caption,MainNoteBook.Page[Page]);
 
   with grpVerbosity do begin
     Caption := dlgVerbosity;
@@ -1474,6 +1527,7 @@ end;
 procedure TfrmCompilerOptions.SetupOtherTab(Page: integer);
 begin
   MainNoteBook.Page[Page].Caption:= dlgCOOther;
+  CategoryTreeView.Items.AddObject(nil,MainNoteBook.Page[Page].Caption,MainNoteBook.Page[Page]);
 
   grpConfigFile.Caption := dlgConfigFiles;
   chkConfigFile.Caption := dlgUseFpcCfg+' (If not checked: -n)';
@@ -1489,6 +1543,9 @@ begin
   ConditionalPage.TabVisible:=false;
   {$ENDIF}
   MainNoteBook.Page[Page].Caption:=dlgCOConditionals;
+  {$IFDEF EnableBuildModes}
+  CategoryTreeView.Items.AddObject(nil,MainNoteBook.Page[Page].Caption,MainNoteBook.Page[Page]);
+  {$ENDIF}
   ConditionalsGroupBox.Caption:=dlgOIOptions;
 end;
 
@@ -1498,6 +1555,7 @@ end;
 procedure TfrmCompilerOptions.SetupInheritedTab(Page: integer);
 begin
   MainNoteBook.Page[Page].Caption:= dlgCOInherited;
+  CategoryTreeView.Items.AddObject(nil,MainNoteBook.Page[Page].Caption,MainNoteBook.Page[Page]);
 
   InhNoteLabel.Caption:=lisAdditionalCompilerOptionsInheritedFromPackages;
 
@@ -1516,6 +1574,7 @@ procedure TfrmCompilerOptions.SetupCompilationTab(Page: integer);
 
 begin
   MainNoteBook.Page[Page].Caption:= dlgCOCompilation;
+  CategoryTreeView.Items.AddObject(nil,MainNoteBook.Page[Page].Caption,MainNoteBook.Page[Page]);
 
   chkCreateMakefile.Caption := dlgCOCreateMakefile;
 
@@ -1562,6 +1621,7 @@ var
 begin
   // Setup the Search Paths Tab
   MainNoteBook.Page[Page].Caption:= dlgSearchPaths;
+  fPathsTVNode:=CategoryTreeView.Items.AddObject(nil,MainNoteBook.Page[Page].Caption,MainNoteBook.Page[Page]);
 
   lblOtherUnits.Caption := dlgOtherUnitFiles;
   OtherUnitsPathEditBtn:=TPathEditorButton.Create(Self);
@@ -1684,6 +1744,20 @@ begin
     ItemIndex:=1;
     Constraints.MinWidth:=150;
     // MG: does not work in win32 intf: AutoSize:=True;
+  end;
+end;
+
+procedure TfrmCompilerOptions.SetupBuildModesTab(Page: integer);
+begin
+  // Setup the Build Modes Tab
+  MainNoteBook.Page[Page].Caption:='Build modes';
+  fBuildModesTVNode:=CategoryTreeView.Items.AddObject(nil,MainNoteBook.Page[Page].Caption,MainNoteBook.Page[Page]);
+
+  fBuildModeGrid:=TBuildModesGrid.Create(Self);
+  with fBuildModeGrid do begin
+    Name:='fBuildModeGrid';
+    Align:=alClient;
+    Parent:=BuildModesPage;
   end;
 end;
 
@@ -1877,6 +1951,7 @@ end;
 procedure TfrmCompilerOptions.SetupConfigMsgTab(Page: integer);
 begin
   MainNotebook.Page[Page].Caption := dlgCOCfgCmpMessages;
+  CategoryTreeView.Items.AddObject(nil,MainNoteBook.Page[Page].Caption,MainNoteBook.Page[Page]);
 
   grpCompilerMessages.Caption := dlgCompilerMessage;
   chkUseMsgFile.Caption := dlgUseMsgFile;

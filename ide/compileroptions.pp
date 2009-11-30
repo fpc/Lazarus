@@ -71,37 +71,29 @@ type
     procedure SetDefaultValue(const AValue: string); override;
   end;
 
+type
+  TBuildModeFlagType = (
+    bmftNone,
+    bmftAddUnitPath,
+    bmftAddIncludePath,
+    bmftAddLinkerPath,
+    bmftAddObjectPath,
+    bmftAddLinkerOption,
+    bmftAddCustomOption,
+    bmftSetVariable
+    );
+  TBuildModeFlagTypes = set of TBuildModeFlagType;
+const
+  BuildModeFlagPaths = [bmftAddUnitPath,bmftAddIncludePath,bmftAddLinkerPath,bmftAddObjectPath];
+
+type
   TBuildModeGraph = class;
 
-  { TBuildMode }
-
-  TBuildMode = class
-  private
-    FGraph: TBuildModeGraph;
-    FIncludes: TFPList;// list of TBuildMode
-    FIncludedBy: TFPList;// list of TBuildMode
-    FName: string;
-    FStoredInSession: boolean;
-    function GetIncludeCount: integer;
-    function GetIncludedBy(Index: integer): TBuildMode;
-    function GetIncludedByCount: integer;
-    function GetIncludes(Index: integer): TBuildMode;
-    procedure SetName(const AValue: string);
-    procedure SetStoredInSession(const AValue: boolean);
-  public
-    constructor Create(aGraph: TBuildModeGraph; const aName: string);
-    destructor Destroy; override;
-  public
-    property Name: string read FName write SetName;
-    property Graph: TBuildModeGraph read FGraph;
-    property StoredInSession: boolean read FStoredInSession write SetStoredInSession;
-    property IncludeCount: integer read GetIncludeCount;
-    property Includes[Index: integer]: TBuildMode read GetIncludes;
-    property IncludedByCount: integer read GetIncludedByCount;
-    property IncludedBy[Index: integer]: TBuildMode read GetIncludedBy;
-  end;
-
-  { TIDEBuildVariables - every package and project has a list of variables }
+  { TIDEBuildVariables
+    - every package and project has a list of variables
+    - has a list of possible values
+    - has a default value, or an expression to define the default
+      the expression can use other build variables }
 
   TIDEBuildVariables = class(TLazBuildVariables)
   private
@@ -131,20 +123,125 @@ type
     property BuildModeGraph: TBuildModeGraph read FBuildModeGraph write SetBuildPropertySet;// active in BuildModeSet
   end;
 
-  { TBuildModeGraph }
+  { TBuildModeFlag }
 
-  TBuildModeGraph = class
+  TBuildModeFlag = class(TPersistent)
   private
-    FEvaluator: TExpressionEvaluator;
-    FFirstBuildVars: TIDEBuildVariables; // all active lists of build variables
-    procedure Changed;
+    FFlagType: TBuildModeFlagType;
+    FValue: string;
+    FVariable: string;
   public
     constructor Create;
     destructor Destroy; override;
+    procedure  Assign(Source: TPersistent); override;
+    function IsEqual(aFlag: TBuildModeFlag): boolean;
+    procedure LoadFromXMLConfig(XMLConfig: TXMLConfig; const Path: string;
+                                DoSwitchPathDelims: boolean);
+    procedure SaveToXMLConfig(XMLConfig: TXMLConfig; const Path: string;
+                              UsePathDelim: TPathDelimSwitch);
+  public
+    property FlagType: TBuildModeFlagType read FFlagType write FFlagType;
+    property Value: string read FValue write FValue;
+    property Variable: string read FVariable write FVariable;
+  end;
+
+  { TBuildMode
+    - defined by the project
+    - project specific (saved to lpi) OR user+project specific (saved to project sesssion)
+    - has a list of flags OR a list of modes to activate, but not both
+    - one mode is selected by the graph, and activates it  }
+
+  TBuildMode = class(TPersistent)
+  private
+    FActive: boolean;
+    FFlags: TFPList; // lost TBuildModeFlag
+    FGraph: TBuildModeGraph;
+    FIncludes: TFPList;// list of TBuildMode
+    FIncludedBy: TFPList;// list of TBuildMode
+    FName: string;
+    FStoredInSession: boolean;
+    function GetFlagCount: integer;
+    function GetFlags(Index: integer): TBuildModeFlag;
+    function GetIncludeCount: integer;
+    function GetIncludedBy(Index: integer): TBuildMode;
+    function GetIncludedByCount: integer;
+    function GetIncludes(Index: integer): TBuildMode;
+    procedure SetName(const AValue: string);
+    procedure SetStoredInSession(const AValue: boolean);
+  public
+    constructor Create(aGraph: TBuildModeGraph; const aName: string);
+    destructor Destroy; override;
+    procedure ClearFlags;
+    procedure ClearIncludes;
+    procedure ClearIncludedBys;
+    procedure Include(aMode: TBuildMode);
+    procedure Exclude(aMode: TBuildMode);
+    function AddFlag(FlagType: TBuildModeFlagType; Value: string;
+                     Variable: string = ''): TBuildModeFlag;
+    procedure DeleteFlag(Index: integer);
+    procedure Assign(Source: TPersistent); override; // copy without Name
+    function IsEqual(aMode: TBuildMode): boolean;
+    procedure LoadFromXMLConfig(XMLConfig: TXMLConfig; const Path: string;
+                                DoSwitchPathDelims: boolean);
+    procedure SaveToXMLConfig(XMLConfig: TXMLConfig; const Path: string;
+                              UsePathDelim: TPathDelimSwitch);
+  public
+    property Name: string read FName write SetName;
+    property Graph: TBuildModeGraph read FGraph;
+    property StoredInSession: boolean read FStoredInSession write SetStoredInSession;
+    property IncludeCount: integer read GetIncludeCount;
+    property Includes[Index: integer]: TBuildMode read GetIncludes;
+    property IncludedByCount: integer read GetIncludedByCount;
+    property IncludedBy[Index: integer]: TBuildMode read GetIncludedBy;
+    property Active: boolean read FActive;
+    property FlagCount: integer read GetFlagCount;
+    property Flags[Index: integer]: TBuildModeFlag read GetFlags;
+  end;
+
+  { TBuildModeGraph }
+
+  TBuildModeGraph = class(TPersistent)
+  private
+    FChangeStamp: integer;
+    FEvaluator: TExpressionEvaluator;
+    FFirstBuildVars: TIDEBuildVariables; // all active lists of build variables
+    FModes: TFPList;
+    FActiveModes: TFPList;
+    FModified: boolean;
+    FSelectedMode: TBuildMode;
+    procedure Changed;
+    function GetActiveModes(Index: integer): TBuildMode;
+    function GetModes(Index: integer): TBuildMode;
+    procedure SetModified(const AValue: boolean);
+    procedure SetSelectedMode(const AValue: TBuildMode);
+    procedure UpdateActiveModes;
+  public
+    constructor Create;
+    destructor Destroy; override;
+    procedure Assign(Source: TPersistent); override;
+    function IsEqual(Graph: TBuildModeGraph): boolean;
+    procedure ClearModes;
+    procedure IncreaseChangeStamp;
+    property ChangeStamp: integer read FChangeStamp;
+    function AddMode(aName: string): TBuildMode;
+    procedure LoadFromXMLConfig(XMLConfig: TXMLConfig; const Path: string;
+                                Merge, DoSwitchPathDelims: boolean);
+    procedure SaveToXMLConfig(XMLConfig: TXMLConfig; const Path: string;
+                              SaveData, SaveSession: boolean;
+                              UsePathDelim: TPathDelimSwitch);
     function FindVarWithIdentifier(Identifier: string; out BuildVars: TIDEBuildVariables;
-      out BuildVar: TIDEBuildVariable): boolean;
+                                   out BuildVar: TIDEBuildVariable): boolean;
     function GetUniqueVarName(CheckToo: TIDEBuildVariables): string;
+    function GetUniqueModeName(Ignore, CheckToo: TBuildMode): string;
     property Evaluator: TExpressionEvaluator read FEvaluator;
+    property SelectedMode: TBuildMode read FSelectedMode write SetSelectedMode;// saved to project session
+    function ModeCount: integer;
+    property Modes[Index: integer]: TBuildMode read GetModes;
+    function IndexOfMode(const aName: string): integer;
+    function FindModeWithName(const aName: string): TBuildMode;
+    function ActiveModeCount: integer;
+    property ActiveModes[Index: integer]: TBuildMode read GetActiveModes;
+    property Modified: boolean read FModified write SetModified;
   end;
 
   { TDefaultBuildModeGraph }
@@ -490,7 +587,7 @@ type
     procedure LoadCompilerOptions(UseExistingFile: Boolean);
     procedure SaveCompilerOptions(UseExistingFile: Boolean);
     procedure Assign(Source: TPersistent); override;
-    function IsEqual(CompOpts: TBaseCompilerOptions): boolean;
+    function IsEqual(CompOpts: TBaseCompilerOptions): boolean; virtual;
     procedure CreateDiff(CompOpts: TBaseCompilerOptions; Diff: TStrings);
     procedure CreateDiff(CompOpts: TBaseCompilerOptions;
                          Tool: TCompilerDiffTool); virtual;
@@ -647,8 +744,7 @@ const
     'Build',
     'Run'
     );
-    
-const LCLWidgetLinkerAddition: array[TLCLPlatform] of string = (
+  LCLWidgetLinkerAddition: array[TLCLPlatform] of string = (
 {$IFDEF DARWIN}
     ' -Fl/usr/X11R6/lib -Fl/sw/lib', // gtk
 {$ELSE}
@@ -668,7 +764,7 @@ const LCLWidgetLinkerAddition: array[TLCLPlatform] of string = (
 {$ENDIF}
     '', // qt
     '', // fpGUI
-    '',  // noGUI
+    '', // noGUI
 {$IFDEF DARWIN}
     ' -k-framework -kCocoa' // Cocoa
 {$ELSE}
@@ -712,7 +808,20 @@ const
   symName   = '$Name';
   symItem   = '$Item';
   symLineNo = '$LineNum';
-  
+
+const
+  BuildModeFlagTypeNames: array[TBuildModeFlagType] of string = (
+    'None',
+    'AddUnitPath',
+    'AddIncludePath',
+    'AddLinkerPath',
+    'AddObjectPath',
+    'AddLinkerOption',
+    'AddCustomOption',
+    'SetVariable'
+    );
+function StrToBuildModeFlagType(const s: string): TBuildModeFlagType;
+
 implementation
 
 const
@@ -972,6 +1081,13 @@ begin
   AConfig.SetDeleteValue(APath+'Compile', crCompile in AFlags, crCompile in DefaultFlags);
   AConfig.SetDeleteValue(APath+'Build', crBuild in AFlags, crBuild in DefaultFlags);
   AConfig.SetDeleteValue(APath+'Run', crRun in AFlags, crRun in DefaultFlags);
+end;
+
+function StrToBuildModeFlagType(const s: string): TBuildModeFlagType;
+begin
+  for Result:=Low(TBuildModeFlagType) to high(TBuildModeFlagType) do
+    if SysUtils.CompareText(s,BuildModeFlagTypeNames[Result])=0 then exit;
+  Result:=bmftNone;
 end;
 
 
@@ -3485,9 +3601,59 @@ begin
   IncreaseCompilerParseStamp;
 end;
 
+function TBuildModeGraph.GetActiveModes(Index: integer): TBuildMode;
+begin
+  Result:=TBuildMode(FActiveModes[Index]);
+end;
+
+function TBuildModeGraph.GetModes(Index: integer): TBuildMode;
+begin
+  Result:=TBuildMode(FModes[Index]);
+end;
+
+procedure TBuildModeGraph.SetModified(const AValue: boolean);
+begin
+  if AValue then
+    IncreaseChangeStamp;
+  if FModified=AValue then exit;
+  FModified:=AValue;
+end;
+
+procedure TBuildModeGraph.SetSelectedMode(const AValue: TBuildMode);
+begin
+  if FSelectedMode=AValue then exit;
+  FSelectedMode:=AValue;
+  Modified:=true;
+  UpdateActiveModes;
+end;
+
+procedure TBuildModeGraph.UpdateActiveModes;
+
+  procedure Add(aMode: TBuildMode);
+  var
+    i: Integer;
+  begin
+    if (aMode=nil) or (FActiveModes.IndexOf(aMode)>=0) then exit;
+    FActiveModes.Add(aMode);
+    aMode.FActive:=true;
+    for i:=0 to aMode.IncludeCount-1 do
+      Add(aMode.Includes[i]);
+  end;
+
+var
+  i: Integer;
+begin
+  for i:=0 to ActiveModeCount-1 do
+    ActiveModes[i].FActive:=false;
+  FActiveModes.Clear;
+  Add(FSelectedMode);
+end;
+
 constructor TBuildModeGraph.Create;
 begin
   FEvaluator:=TExpressionEvaluator.Create;
+  FModes:=TFPList.Create;
+  FActiveModes:=TFPList.Create;
 end;
 
 destructor TBuildModeGraph.Destroy;
@@ -3495,6 +3661,7 @@ var
   BuildVar: TIDEBuildVariables;
   NextVar: TIDEBuildVariables;
 begin
+  ClearModes;
   BuildVar:=FFirstBuildVars;
   while BuildVar<>nil do begin
     NextVar:=BuildVar.fNextVars;
@@ -3502,8 +3669,156 @@ begin
       BuildVar.Free;
     BuildVar:=NextVar;
   end;
+  FreeAndNil(FModes);
+  FreeAndNil(FActiveModes);
   FreeAndNil(FEvaluator);
   inherited Destroy;
+end;
+
+procedure TBuildModeGraph.Assign(Source: TPersistent);
+var
+  Src: TBuildModeGraph;
+  i: Integer;
+begin
+  if Source is TBuildModeGraph then begin
+    Src:=TBuildModeGraph(Source);
+    if IsEqual(Src) then exit;
+    IncreaseChangeStamp;
+    ClearModes;
+    // modes referene each other by name, so first create all modes
+    for i:=0 to Src.ModeCount-1 do
+      AddMode(Src.Modes[i].Name);
+    for i:=0 to ModeCount-1 do
+      Modes[i].Assign(Src.Modes[i]);
+  end else
+    inherited Assign(Source);
+end;
+
+function TBuildModeGraph.IsEqual(Graph: TBuildModeGraph): boolean;
+var
+  i: Integer;
+begin
+  Result:=false;
+  if (ModeCount<>Graph.ModeCount) then exit;
+
+  // check SelectedMode
+  if (SelectedMode=nil)<>(Graph.SelectedMode=nil) then exit;
+  if (SelectedMode<>nil)
+  and (SysUtils.CompareText(SelectedMode.Name,Graph.SelectedMode.Name)<>0) then
+    exit;
+
+  // check modes
+  for i:=0 to ModeCount-1 do
+    if not Modes[i].IsEqual(Graph.Modes[i]) then exit;
+
+  Result:=true;
+end;
+
+procedure TBuildModeGraph.ClearModes;
+var
+  i: Integer;
+begin
+  if FModes.Count=0 then exit;
+  FActiveModes.Clear;
+  for i:=FModes.Count-1 downto 0 do begin
+    TObject(FModes[i]).Free;
+  end;
+  FModes.Clear;
+  Modified:=true;
+end;
+
+procedure TBuildModeGraph.IncreaseChangeStamp;
+begin
+  if FChangeStamp<High(FChangeStamp) then
+    inc(FChangeStamp)
+  else
+    FChangeStamp:=Low(FChangeStamp);
+end;
+
+function TBuildModeGraph.AddMode(aName: string): TBuildMode;
+begin
+  Result:=FindModeWithName(aName);
+  if Result<>nil then exit;
+  Result:=TBuildMode.Create(Self,aName);
+  FModes.Add(Result);
+  Modified:=true;
+end;
+
+procedure TBuildModeGraph.LoadFromXMLConfig(XMLConfig: TXMLConfig;
+  const Path: string; Merge, DoSwitchPathDelims: boolean);
+// Merge=false: clear modes and load them
+// Merge=false: keep modes, add/update modes
+var
+  NewCnt: LongInt;
+  i: Integer;
+  SubPath: String;
+  ModeName: String;
+  CurMode: TBuildMode;
+begin
+  // load modes
+  if not Merge then
+    ClearModes;
+
+  // modes can reference each other, so first create all modes
+  NewCnt:=XMLConfig.GetValue('Modes/Count',0);
+  for i:=0 to NewCnt-1 do begin
+    SubPath:=Path+'Modes/Mode'+IntToStr(i)+'/';
+    ModeName:=XMLConfig.GetValue(SubPath+'Name/Value','');
+    if (ModeName='') then continue;
+    CurMode:=AddMode(ModeName);
+    if CurMode=nil then continue; // invalid name
+  end;
+
+  // load modes
+  for i:=0 to NewCnt-1 do begin
+    SubPath:=Path+'Modes/Mode'+IntToStr(i)+'/';
+    ModeName:=XMLConfig.GetValue(SubPath+'Name/Value','');
+    if (ModeName='') then continue;
+    CurMode:=FindModeWithName(ModeName);
+    if CurMode=nil then continue;
+    CurMode.LoadFromXMLConfig(XMLConfig,SubPath,DoSwitchPathDelims);
+  end;
+
+  // selected mode
+  ModeName:=XMLConfig.GetValue('Modes/Selected','');
+  FSelectedMode:=nil;
+  if ModeName<>'' then
+    FSelectedMode:=FindModeWithName(ModeName);
+  UpdateActiveModes;
+
+  Modified:=false;
+end;
+
+procedure TBuildModeGraph.SaveToXMLConfig(XMLConfig: TXMLConfig;
+  const Path: string; SaveData, SaveSession: boolean;
+  UsePathDelim: TPathDelimSwitch);
+var
+  SavedCnt: Integer;
+  i: Integer;
+  CurMode: TBuildMode;
+  s: String;
+begin
+  // save modes
+  SavedCnt:=0;
+  for i:=0 to ModeCount-1 do begin
+    CurMode:=Modes[i];
+    if (CurMode.StoredInSession and SaveSession)
+    or ((not CurMode.StoredInSession) and (SaveData)) then
+    begin
+      CurMode.SaveToXMLConfig(XMLConfig,Path+'Modes/Mode'+IntToStr(SavedCnt)+'/',
+                              UsePathDelim);
+      inc(SavedCnt);
+    end;
+  end;
+  XMLConfig.SetDeleteValue('Modes/Count',SavedCnt,0);
+
+  if FSelectedMode<>nil then
+    s:=FSelectedMode.Name
+  else
+    s:='';
+  XMLConfig.SetDeleteValue('Modes/Selected',s,'');
+
+  Modified:=true;
 end;
 
 function TBuildModeGraph.FindVarWithIdentifier(Identifier: string; out
@@ -3531,6 +3846,52 @@ begin
     Result:='Variable'+IntToStr(i);
   until (not FindVarWithIdentifier(Result,BuildVars,BuildVar))
     and ((CheckToo=nil) or (CheckToo.IndexOfIdentifier(Result)<0));
+end;
+
+function TBuildModeGraph.GetUniqueModeName(Ignore, CheckToo: TBuildMode): string;
+var
+  i: Integer;
+  CurMode: TBuildMode;
+begin
+  i:=0;
+  while true do begin
+    inc(i);
+    Result:='Mode'+IntToStr(i);
+    if (CheckToo<>nil) and (SysUtils.CompareText(CheckToo.Name,Result)=0) then
+      continue;
+    CurMode:=FindModeWithName(Result);
+    if (CurMode<>nil) and (CurMode<>Ignore) then
+      continue;
+    exit;
+  end;
+end;
+
+function TBuildModeGraph.ModeCount: integer;
+begin
+  Result:=FModes.Count;
+end;
+
+function TBuildModeGraph.IndexOfMode(const aName: string): integer;
+begin
+  Result:=FModes.Count-1;
+  while (Result>=0) and (SysUtils.CompareText(aName,Modes[Result].Name)<>0) do
+    dec(Result);
+end;
+
+function TBuildModeGraph.FindModeWithName(const aName: string): TBuildMode;
+var
+  i: LongInt;
+begin
+  i:=IndexOfMode(aName);
+  if i>=0 then
+    Result:=Modes[i]
+  else
+    Result:=nil;
+end;
+
+function TBuildModeGraph.ActiveModeCount: integer;
+begin
+  Result:=FActiveModes.Count;
 end;
 
 { TIDEBuildVariable }
@@ -4443,6 +4804,16 @@ begin
   Result:=FIncludes.Count;
 end;
 
+function TBuildMode.GetFlagCount: integer;
+begin
+  Result:=FFlags.Count;
+end;
+
+function TBuildMode.GetFlags(Index: integer): TBuildModeFlag;
+begin
+  Result:=TBuildModeFlag(FFlags[Index]);
+end;
+
 function TBuildMode.GetIncludedByCount: integer;
 begin
   Result:=FIncludedBy.Count;
@@ -4469,13 +4840,222 @@ constructor TBuildMode.Create(aGraph: TBuildModeGraph; const aName: string);
 begin
   FIncludes:=TFPList.Create;
   FIncludedBy:=TFPList.Create;
+  FFlags:=TFPList.Create;
 end;
 
 destructor TBuildMode.Destroy;
 begin
+  ClearFlags;
+  ClearIncludes;
+  ClearIncludedBys;
+  FreeAndNil(FFlags);
   FreeAndNil(FIncludes);
   FreeAndNil(FIncludedBy);
   inherited Destroy;
+end;
+
+procedure TBuildMode.ClearFlags;
+var
+  i: Integer;
+begin
+  for i:=0 to FFlags.Count-1 do
+    TObject(FFlags[i]).Free;
+  FFlags.Clear;
+end;
+
+procedure TBuildMode.ClearIncludes;
+var
+  i: Integer;
+begin
+  for i:=0 to FIncludes.Count-1 do
+    Includes[i].FIncludedBy.Remove(Self);
+  FIncludes.Clear;
+end;
+
+procedure TBuildMode.ClearIncludedBys;
+var
+  i: Integer;
+begin
+  for i:=0 to FIncludedBy.Count-1 do
+    IncludedBy[i].FIncludes.Remove(Self);
+  FIncludedBy.Clear;
+end;
+
+procedure TBuildMode.Include(aMode: TBuildMode);
+begin
+  if aMode=nil then exit;
+  if FIncludes.IndexOf(aMode)<0 then
+    FIncludes.Add(aMode);
+  if aMode.FIncludedBy.IndexOf(Self)<0 then
+    aMode.FIncludedBy.Add(Self);
+end;
+
+procedure TBuildMode.Exclude(aMode: TBuildMode);
+begin
+  FIncludes.Remove(aMode);
+  if aMode<>nil then aMode.FIncludedBy.Remove(Self);
+end;
+
+function TBuildMode.AddFlag(FlagType: TBuildModeFlagType; Value: string;
+  Variable: string): TBuildModeFlag;
+begin
+  Result:=TBuildModeFlag.Create;
+  Result.FlagType:=FlagType;
+  Result.Value:=Value;
+  Result.Variable:=Variable;
+end;
+
+procedure TBuildMode.DeleteFlag(Index: integer);
+begin
+  Flags[Index].Free;
+  FFlags.Delete(Index);
+end;
+
+procedure TBuildMode.Assign(Source: TPersistent);
+var
+  Src: TBuildMode;
+  i: Integer;
+begin
+  if Source is TBuildMode then begin
+    Src:=TBuildMode(Source);
+    // name is not copied
+    FStoredInSession:=Src.FStoredInSession;
+    // copy includes
+    FIncludes.Clear;
+    for i:=0 to Src.IncludeCount-1 do
+      Include(Graph.FindModeWithName(Src.Includes[i].Name));
+    // copy flags
+    ClearFlags;
+    for i:=0 to Src.FlagCount-1 do begin
+      FFlags.Add(TBuildModeFlag.Create);
+      Flags[i].Assign(Src.Flags[i]);
+    end;
+
+  end else
+    inherited Assign(Source);
+end;
+
+function TBuildMode.IsEqual(aMode: TBuildMode): boolean;
+var
+  i: Integer;
+begin
+  Result:=false;
+  if StoredInSession<>aMode.StoredInSession then exit;
+  if Name<>aMode.Name then exit;
+  if IncludeCount<>aMode.IncludeCount then exit;
+  for i:=0 to IncludeCount-1 do
+    if SysUtils.CompareText(Includes[i].Name,aMode.Includes[i].Name)<>0 then
+      exit;
+  // Note: do not compare includedby
+  if FlagCount<>aMode.FlagCount then exit;
+  for i:=0 to FlagCount-1 do
+    if not Flags[i].IsEqual(aMode.Flags[i]) then
+      exit;
+
+  Result:=true;
+end;
+
+procedure TBuildMode.LoadFromXMLConfig(XMLConfig: TXMLConfig;
+  const Path: string; DoSwitchPathDelims: boolean);
+var
+  NewCnt: LongInt;
+  i: Integer;
+  Flag: TBuildModeFlag;
+  ModeName: String;
+begin
+  ClearIncludes;
+  ClearFlags;
+  FName:=XMLConfig.GetValue(Path+'Name/Value','');
+
+  NewCnt:=XMLConfig.GetValue(Path+'Flags/Count',0);
+  for i:=0 to NewCnt-1 do begin
+    Flag:=TBuildModeFlag.Create;
+    FFlags.Add(Flag);
+    Flag.LoadFromXMLConfig(XMLConfig,Path+'Flags/Item'+IntToStr(i)+'/',
+                           DoSwitchPathDelims);
+  end;
+
+  NewCnt:=XMLConfig.GetValue(Path+'Includes/Count',0);
+  for i:=0 to NewCnt-1 do begin
+    ModeName:=XMLConfig.GetValue(Path+'Includes/Mode'+IntToStr(i)+'/Name','');
+    if ModeName='' then continue;
+    Include(Graph.FindModeWithName(ModeName));
+  end;
+end;
+
+procedure TBuildMode.SaveToXMLConfig(XMLConfig: TXMLConfig; const Path: string;
+  UsePathDelim: TPathDelimSwitch);
+var
+  i: Integer;
+begin
+  XMLConfig.SetDeleteValue(Path+'Name/Value',FName,'');
+  XMLConfig.SetDeleteValue(Path+'Flags/Count',FlagCount,0);
+  for i:=0 to FlagCount-1 do
+    Flags[i].SaveToXMLConfig(XMLConfig,Path+'Flags/Item'+IntToStr(i)+'/',
+                             UsePathDelim);
+  XMLConfig.SetDeleteValue(Path+'Includes/Count',IncludeCount,0);
+  for i:=0 to IncludeCount-1 do
+    XMLConfig.SetDeleteValue(Path+'Includes/Mode'+IntToStr(i)+'/Name',
+                             Includes[i].Name,'');
+end;
+
+{ TBuildModeFlag }
+
+constructor TBuildModeFlag.Create;
+begin
+
+end;
+
+destructor TBuildModeFlag.Destroy;
+begin
+  inherited Destroy;
+end;
+
+procedure TBuildModeFlag.Assign(Source: TPersistent);
+var
+  Src: TBuildModeFlag;
+begin
+  if Source is TBuildModeFlag then begin
+    Src:=TBuildModeFlag(Source);
+    FFlagType:=Src.FFlagType;
+    FValue:=Src.FValue;
+    FVariable:=Src.FVariable;
+  end else
+    inherited Assign(Source);
+end;
+
+function TBuildModeFlag.IsEqual(aFlag: TBuildModeFlag): boolean;
+begin
+  Result:=false;
+  if FFlagType<>aFlag.FFlagType then exit;
+  if FValue<>aFlag.FValue then exit;
+  if FVariable<>aFlag.FVariable then exit;
+  Result:=true;
+end;
+
+procedure TBuildModeFlag.LoadFromXMLConfig(XMLConfig: TXMLConfig;
+  const Path: string; DoSwitchPathDelims: boolean);
+begin
+  FFlagType:=StrToBuildModeFlagType(XMLConfig.GetValue(Path+'Type',
+                                  BuildModeFlagTypeNames[bmftAddCustomOption]));
+  FValue:=XMLConfig.GetValue(Path+'Value','');
+  if FFlagType in BuildModeFlagPaths then
+    FValue:=SwitchPathDelims(FValue,DoSwitchPathDelims);
+  FVariable:=XMLConfig.GetValue(Path+'Variable','');
+end;
+
+procedure TBuildModeFlag.SaveToXMLConfig(XMLConfig: TXMLConfig;
+  const Path: string; UsePathDelim: TPathDelimSwitch);
+var
+  s: String;
+begin
+  XMLConfig.SetDeleteValue(Path+'Type',BuildModeFlagTypeNames[FFlagType],
+                           BuildModeFlagTypeNames[bmftAddCustomOption]);
+  s:=FValue;
+  if FFlagType in BuildModeFlagPaths then
+    SwitchPathDelims(FValue,UsePathDelim);
+  XMLConfig.SetDeleteValue(Path+'Value',s,'');
+  XMLConfig.SetDeleteValue(Path+'Variable',FVariable,'');
 end;
 
 initialization
