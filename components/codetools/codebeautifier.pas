@@ -305,7 +305,7 @@ type
   public
     Stack: PBlock;
     Capacity: integer;
-    Top: integer;
+    Top: integer; // -1 = empty, 0 = 1 item
     TopType: TFABBlockType;
     LastBlockClosed: TBlock;
     LastBlockClosedAt: integer;
@@ -1270,8 +1270,8 @@ function TFullyAutomaticBeautifier.FindStackPosForBlockCloseAtPos(
 
   procedure EndBigSection;
   begin
-    while Stack.Top>=0 do
-      EndBlock;
+    if Stack.Top>=0 then
+      EndBlock(Stack.Top+1);
   end;
 
   procedure EndTopMostBlock(BlockTyp: TFABBlockType);
@@ -1603,7 +1603,8 @@ begin
       {$IFDEF VerboseIndenter}
       DebugLn(['TFullyAutomaticBeautifier.GetIndent parsed code in front: no context']);
       {$ENDIF}
-      GetDefaultSrcIndent(Source,CleanPos,NewNestedComments,Indent);
+      Indent.Indent:=0;
+      Indent.IndentValid:=true;
       exit(Indent.IndentValid);
     end;
 
