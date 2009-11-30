@@ -214,7 +214,8 @@ end;
 
 procedure THintWindow.ReleaseHandle;
 begin
-  DestroyHandle;
+  if HandleAllocated then
+    DestroyHandle;
 end;
 
 // included by forms.pp
