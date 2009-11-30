@@ -541,7 +541,7 @@ begin
       exit;
     end;
 
-    // get class name
+    // get identifier
     if not REMatches(Msg.Msg,'Error: Identifier not found "([a-z_0-9]+)"','I') then begin
       DebugLn('TQuickFixIdentifierNotFoundAddLocal invalid message ',Msg.Msg);
       exit;

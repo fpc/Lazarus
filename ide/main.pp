@@ -1917,6 +1917,7 @@ end;
 procedure TMainIDE.SetupIDEMsgQuickFixItems;
 begin
   InitStandardIDEQuickFixItems;
+  InitCodeBrowserQuickFixItems;
 end;
 
 procedure TMainIDE.SetupStartProject;
@@ -8133,10 +8134,7 @@ end;
 
 procedure TMainIDE.DoShowCodeBrowser;
 begin
-  if CodeBrowserView=nil then begin
-    CodeBrowserView:=TCodeBrowserView.Create(OwningComponent);
-  end;
-
+  CreateCodeBrowser;
   CodeBrowserView.ShowOnTop;
 end;
 

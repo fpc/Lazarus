@@ -113,6 +113,7 @@ type
     FUnitLists: TAVLTree;
     FUnits: TAVLTree;
     FUnitsValid: boolean;
+    fClearing: boolean;
     procedure SetOwner(const AValue: string);
     procedure InternalAddUnitList(List: TCodeBrowserUnitList);
     procedure InternalRemoveUnitList(List: TCodeBrowserUnitList);
@@ -129,6 +130,7 @@ type
     function IsEmpty: boolean;
     procedure DeleteUnit(AnUnit: TCodeBrowserUnit);
     function AddUnit(const Filename: string): TCodeBrowserUnit;
+    procedure AddUnit(AnUnit: TCodeBrowserUnit);
     property Owner: string read FOwner write SetOwner;// IDE, project, package
     property ParentList: TCodeBrowserUnitList read FParentList;
     property Units: TAVLTree read FUnits;
@@ -316,12 +318,14 @@ begin
   if FUnits=nil then
     FUnits:=TAVLTree.Create(@CompareUnitFilenames);
   FUnits.Add(AnUnit);
+  AnUnit.FUnitList:=Self;
 end;
 
 procedure TCodeBrowserUnitList.InternalRemoveUnit(AnUnit: TCodeBrowserUnit);
 begin
-  if FUnits<>nil then
+  if (not fClearing) and (FUnits<>nil) then
     FUnits.Remove(AnUnit);
+  AnUnit.FUnitList:=nil;
 end;
 
 constructor TCodeBrowserUnitList.Create(TheOwner: string;
@@ -359,9 +363,14 @@ procedure TCodeBrowserUnitList.Clear;
   end;
 
 begin
-  FreeTree(FUnits);
-  FreeTree(FUnitLists);
-  FUnitsValid:=false;
+  fClearing:=true;
+  try
+    FreeTree(FUnits);
+    FreeTree(FUnitLists);
+    FUnitsValid:=false;
+  finally
+    fClearing:=false;
+  end;
 end;
 
 function TCodeBrowserUnitList.FindUnit(const Filename: string
@@ -424,6 +433,14 @@ function TCodeBrowserUnitList.AddUnit(const Filename: string
 begin
   Result:=TCodeBrowserUnit.Create(Filename);
   InternalAddUnit(Result);
+end;
+
+procedure TCodeBrowserUnitList.AddUnit(AnUnit: TCodeBrowserUnit);
+begin
+  if (AnUnit.UnitList=Self) then exit;
+  if AnUnit.UnitList<>nil then
+    AnUnit.UnitList.InternalRemoveUnit(AnUnit);
+  InternalAddUnit(AnUnit);
 end;
 
 end.
