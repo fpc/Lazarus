@@ -2581,20 +2581,19 @@ var
   R: TRect;
 begin
   {$ifdef VerboseQtWinAPI}
-    WriteLn('[WinAPI TQtWidgetSet.GetRgnBox] possible wrong implementation !');
+  writeln('Trace:> [WinAPI GetRgnBox] Handle: ' + dbghex(RGN));
   {$endif}
   Result := SIMPLEREGION;
-  If lpRect <> nil then
+  if lpRect <> nil then
     lpRect^ := Rect(0,0,0,0);
-  If Not IsValidGDIObject(RGN) then
+  if not IsValidGDIObject(RGN) then
     Result := ERROR
   else
   begin
     Result := TQtRegion(RGN).GetRegionType;
-    If lpRect <> nil then
+    if not (Result in [ERROR, NULLREGION]) and (lpRect <> nil) then
     begin
       QRegion_boundingRect(TQtRegion(RGN).Widget, @R);
-
       with lpRect^ do
       begin
         Left   := R.Left;

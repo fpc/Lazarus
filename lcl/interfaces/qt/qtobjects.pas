@@ -1631,7 +1631,7 @@ begin
   {$endif}
 
   // Creates the widget
-  if CreateHandle then Widget := QRegion_create;
+  if CreateHandle then Widget := QRegion_create();
 end;
 
 {------------------------------------------------------------------------------
@@ -1641,6 +1641,8 @@ end;
  ------------------------------------------------------------------------------}
 constructor TQtRegion.Create(CreateHandle: Boolean; X1,Y1,X2,Y2:Integer;
   Const RegionType: QRegionRegionType = QRegionRectangle);
+var
+  W, H: Integer;
 begin
   {$ifdef VerboseQt}
     WriteLn('TQtRegion.Create CreateHandle: ', dbgs(CreateHandle));
@@ -1649,7 +1651,16 @@ begin
   // Creates the widget
   // Note that QRegion_create expects a width and a height,
   // and not a X2, Y2 bottom-right point
-  if CreateHandle then Widget := QRegion_create(X1,Y1,X2-X1,Y2-Y1, RegionType);
+  if CreateHandle then
+  begin
+    W := X2 - X1;
+    H := Y2 - Y1;
+    if W < 0 then
+      W := 0;
+    if H < 0 then
+      H := 0;
+    Widget := QRegion_create(X1, Y1, W, H, RegionType);
+  end;
 end;
 
 constructor TQtRegion.Create(CreateHandle: Boolean; Poly: QPolygonH;
