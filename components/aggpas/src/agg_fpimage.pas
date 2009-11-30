@@ -1316,7 +1316,7 @@ end;
 
 function TAggFPCanvas.DoGetTextHeight(str: string): integer;
 begin
-  Result:=ceil(AggTextWidth(str));
+  Result:=ceil(AggTextHeight(str));
 end;
 
 procedure TAggFPCanvas.DoGetTextSize(str: string; var w, h: integer);
