@@ -4967,6 +4967,13 @@ begin
             {$IFDEF IDE_DEBUG}
             writeln('TMainIDE.SaveFileResources E2 LFM=',LFMCode.Filename);
             {$ENDIF}
+            if (ResType=lfmrtRes) and (LFMCode.DiskEncoding<>EncodingUTF8) then
+            begin
+              // the .lfm file is used by fpcres, which only supports UTF8 without BOM
+              DebugLn(['TMainIDE.DoSaveUnitComponent fixing encoding of ',LFMCode.Filename,' from ',LFMCode.DiskEncoding,' to ',EncodingUTF8]);
+              LFMCode.DiskEncoding:=EncodingUTF8;
+            end;
+
             Result:=mrOk;
             repeat
               try

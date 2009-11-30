@@ -35,9 +35,9 @@ interface
 uses
   Classes, SysUtils, AVL_Tree,
   // LCL
-  InterfaceBase, LCLProc, Dialogs, FileUtil, Forms, Controls,
+  LConvEncoding, InterfaceBase, LCLProc, Dialogs, FileUtil, Forms, Controls,
   // codetools
-  ExprEval, BasicCodeTools, CodeToolManager, DefineTemplates,
+  ExprEval, BasicCodeTools, CodeToolManager, DefineTemplates, CodeCache,
   // IDEIntf
   SrcEditorIntf, ProjectIntf, MacroIntf, IDEDialogs, IDEExternToolIntf,
   LazIDEIntf,
@@ -1104,17 +1104,34 @@ end;
 function TBuildManager.UpdateProjectAutomaticFiles(TestDir: string): TModalResult;
 var
   AnUnitInfo: TUnitInfo;
+  Code: TCodeBuffer;
 begin
   // update project resource
   Project1.Resources.Regenerate(Project1.MainFileName, False, True, TestDir);
   AnUnitInfo := Project1.FirstPartOfProject;
   while AnUnitInfo<>nil do 
   begin
-    if AnUnitInfo.HasResources and (Project1.Resources.LFMResourceType=lfmrtLRS)
-    and (GetLFMResourceType(AnUnitInfo)=lfmrtLRS) then begin
-      Result := UpdateLRSFromLFM(AnUnitInfo,false);
-      if Result = mrIgnore then Result:=mrOk;
-      if Result <> mrOk then exit;
+    if AnUnitInfo.HasResources then begin
+      case GetLFMResourceType(AnUnitInfo) of
+      lfmrtLRS:
+        begin
+          Result := UpdateLRSFromLFM(AnUnitInfo,false);
+          if Result = mrIgnore then Result:=mrOk;
+          if Result <> mrOk then exit;
+        end;
+      lfmrtRes:
+        if (AnUnitInfo.Source=nil) and (not AnUnitInfo.IsVirtual) then begin
+          AnUnitInfo.Source:=CodeToolBoss.LoadFile(AnUnitInfo.Filename,true,false);
+          Code:=AnUnitInfo.Source;
+          if (Code<>nil) and (Code.DiskEncoding<>EncodingUTF8) then begin
+            DebugLn(['TBuildManager.UpdateProjectAutomaticFiles fixing encoding of ',Code.Filename,' from ',Code.DiskEncoding,' to ',EncodingUTF8]);
+            Code.DiskEncoding:=EncodingUTF8;
+            if not Code.Save then begin
+              DebugLn(['TBuildManager.UpdateProjectAutomaticFiles failed to save file ',Code.Filename]);
+            end;
+          end;
+        end;
+      end;
     end;
     AnUnitInfo := AnUnitInfo.NextPartOfProject;
   end;
