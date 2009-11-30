@@ -33,17 +33,20 @@ end;
 
 function TPrinterSetupDialog.Execute: Boolean;
 var
-  QtPrnSetupDlg: QPrintDialogH;
+  PgDlg: QPageSetupDialogH;
 begin
   Result := False;
   if not Assigned(Printer) then Exit;
   if Printer.Printers.Count <= 0 then Exit;
-  {This is called by "Properties" button on QPrintDialog,
-   Maybe we should call same as in TPrintDialog.Execute till
-   QPrinterInfo class comes in}
-  raise Printers.EPrinter.Create('TPrinterSetupDialog: no support for  Qt 4.3 !');
+  {There's no special dialog for printer setup under Qt,
+   so we'll use QPageSetupDialog here.}
+  PgDlg := QPageSetupDialog_create(QtDefaultPrinter.Handle, nil);
+  try
+    Result := QPageSetupDialog_exec(PgDlg) = Ord(QDialogAccepted);
+  finally
+    QPageSetupDialog_destroy(PgDlg);
+  end;
 end;
-
 
 { TPrintDialog }
 
