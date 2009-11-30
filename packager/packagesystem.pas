@@ -1775,21 +1775,12 @@ begin
 end;
 
 procedure TLazPackageGraph.AddStaticBasePackages;
-
-  procedure AddStaticBasePackage(NewPackage: TLazPackage;
-    var PackageVariable: TLazPackage);
-  begin
-    PackageVariable:=NewPackage;
-    AddPackage(NewPackage);
-    FLazarusBasePackages.Add(NewPackage);
-  end;
-
 begin
-  AddStaticBasePackage(CreateFCLPackage,FFCLPackage);
-  AddStaticBasePackage(CreateLCLPackage,FLCLPackage);
-  AddStaticBasePackage(CreateIDEIntfPackage,FIDEIntfPackage);
-  AddStaticBasePackage(CreateSynEditPackage,FSynEditPackage);
-  AddStaticBasePackage(CreateCodeToolsPackage,FCodeToolsPackage);
+  AddPackage(CreateFCLPackage);
+  AddPackage(CreateLCLPackage);
+  AddPackage(CreateIDEIntfPackage);
+  AddPackage(CreateSynEditPackage);
+  AddPackage(CreateCodeToolsPackage);
   // the default package will be added on demand
   FDefaultPackage:=CreateDefaultPackage;
 end;
