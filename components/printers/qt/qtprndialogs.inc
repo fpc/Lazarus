@@ -89,7 +89,8 @@ begin
   QAbstractPrintDialog_setMinMax(QtPrnDlg, MinPage, MaxPage);
   QAbstractPrintDialog_setFromTo(QtPrnDlg, FromPage, ToPage);
 
-  PrnOptions := QAbstractPrintDialogPrintCollateCopies;
+  PrnOptions := QAbstractPrintDialogPrintCollateCopies
+    or QAbstractPrintDialogPrintShowPageSize;
 
   if (poPrintToFile in Options) then
     PrnOptions := PrnOptions or QAbstractPrintDialogPrintToFile;
