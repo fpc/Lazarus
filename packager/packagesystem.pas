@@ -563,8 +563,21 @@ begin
   CurPkg:=Packages[Index];
   CurPkg.Flags:=CurPkg.Flags+[lpfDestroying];
   CurPkg.DefineTemplates.Active:=false;
+
   if Assigned(OnDeletePackage) then OnDeletePackage(CurPkg);
+
+  if CurPkg=FCLPackage then
+    FFCLPackage:=nil
+  else if CurPkg=LCLPackage then
+    FLCLPackage:=nil
+  else if CurPkg=IDEIntfPackage then
+    FIDEIntfPackage:=nil
+  else if CurPkg=SynEditPackage then
+    FSynEditPackage:=nil
+  else if CurPkg=CodeToolsPackage then
+    FCodeToolsPackage:=nil;
   FLazarusBasePackages.Remove(CurPkg);
+
   FItems.Delete(Index);
   FTree.Remove(CurPkg);
   CurPkg.Free;
