@@ -2,15 +2,18 @@
 <CONFIG>
   <Package Version="3">
     <Name Value="CodeTools1"/>
+    <AddToProjectUsesSection Value="False"/>
     <Author Value="Mattias Gaertner"/>
     <CompilerOptions>
-      <Version Value="5"/>
+      <Version Value="8"/>
       <SearchPaths>
         <UnitOutputDirectory Value="units/$(TargetCPU)-$(TargetOS)"/>
       </SearchPaths>
-      <CodeGeneration>
-        <Generate Value="Faster"/>
-      </CodeGeneration>
+      <Parsing>
+        <SyntaxOptions>
+          <AllowLabel Value="False"/>
+        </SyntaxOptions>
+      </Parsing>
       <Other>
         <CompilerPath Value="$(CompPath)"/>
       </Other>
@@ -18,8 +21,8 @@
     <Description Value="Tools and functions to parse, browse and edit pascal sources"/>
     <License Value="GPL-2
 "/>
-    <Version Major="1"/>
-    <Files Count="53">
+    <Version Major="1" Release="1"/>
+    <Files Count="57">
       <Item1>
         <Filename Value="Makefile"/>
         <Type Value="Text"/>
@@ -233,6 +236,22 @@
         <Filename Value="stdcodetools.pas"/>
         <UnitName Value="StdCodeTools"/>
       </Item53>
+      <Item54>
+        <Filename Value="allcodetoolunits.pp"/>
+        <UnitName Value="AllCodeToolUnits"/>
+      </Item54>
+      <Item55>
+        <Filename Value="codeindex.pas"/>
+        <UnitName Value="CodeIndex"/>
+      </Item55>
+      <Item56>
+        <Filename Value="findoverloads.pas"/>
+        <UnitName Value="FindOverloads"/>
+      </Item56>
+      <Item57>
+        <Filename Value="pascalexpr.pas"/>
+        <UnitName Value="PascalExpr"/>
+      </Item57>
     </Files>
     <i18n>
       <EnableI18N Value="True"/>
