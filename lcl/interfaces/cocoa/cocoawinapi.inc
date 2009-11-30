@@ -53,4 +53,24 @@ begin
   Result:=true;
 end;
 
+{------------------------------------------------------------------------------
+  Method:  GetWindowRect
+  Params:  Handle - Handle of window
+           Rect   - Record for window coordinates
+  Returns: if the function succeeds, the return value is nonzero; if the
+           function fails, the return value is zero
+
+  Retrieves the screen bounding rectangle of the specified window
+ ------------------------------------------------------------------------------}
+function TCocoaWidgetSet.GetWindowRect(Handle: hwnd; var ARect: TRect): Integer;
+begin
+  Result:=0;
+  if Handle=0 then Exit;
+
+  if NSObject(Handle).isKindOfClass_(NSWindow) then
+    GetNSWindowFrame(NSWindow(Handle), ARect)
+  else
+    {todo: GetNSViewFrame(NSView(Handle), ARect)};
+end;
+
 //##apiwiz##eps##   // Do not remove, no wizard declaration after this line

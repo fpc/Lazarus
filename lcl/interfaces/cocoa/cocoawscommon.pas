@@ -7,6 +7,7 @@ interface
 
 uses
   MacOSAll, CocoaAll,
+  Classes,
   Controls, {todo: remove controls?}
   WSControls,
   CocoaPrivate, CocoaUtils, LCLMessageGlue;
@@ -32,6 +33,10 @@ type
     class procedure SetText(const AWinControl: TWinControl; const AText: String); override;
     class function GetText(const AWinControl: TWinControl; var AText: String): Boolean; override;
     class function GetTextLen(const AWinControl: TWinControl; var ALength: Integer): Boolean; override;
+
+    class function  GetClientBounds(const AWincontrol: TWinControl; var ARect: TRect): Boolean; override;
+    class function  GetClientRect(const AWincontrol: TWinControl; var ARect: TRect): Boolean; override;
+    class procedure SetBounds(const AWinControl: TWinControl; const ALeft, ATop, AWidth, AHeight: Integer); override;
   end;
 
 
@@ -108,6 +113,27 @@ begin
   s:=NSControl(obj).stringValue;
   if Assigned(s) then ALength:=s.length
   else ALength:=0
+end;
+
+class function TCocoaWSWinControl.GetClientBounds(const AWincontrol: TWinControl; var ARect: TRect): Boolean;
+begin
+  Result:=(AWinControl.Handle<>0);
+  if not Result then Exit;
+  GetViewFrame(NSView(AWinControl.Handle), ARect);
+end;
+
+class function TCocoaWSWinControl.GetClientRect(const AWincontrol: TWinControl; var ARect: TRect): Boolean;
+begin
+  Result:=(AWinControl.Handle<>0);
+  if not Result then Exit;
+  NSRectToRect(NSView(AWinControl.Handle).bounds, ARect);
+end;
+
+class procedure TCocoaWSWinControl.SetBounds(const AWinControl: TWinControl;
+  const ALeft, ATop, AWidth, AHeight: Integer);
+begin
+  if (AWinControl.Handle=0) then Exit;
+  SetViewFrame(NSView(AWinControl.Handle), ALeft, ATop, AWidth, AHeight);
 end;
 
 end.

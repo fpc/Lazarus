@@ -35,7 +35,7 @@ uses
   // Widgetset
   WSForms, WSLCLClasses, WSProc, LCLMessageGlue,
   // LCL Cocoa
-  CocoaPrivate, CocoaUtils, CocoaWSCommon;
+  CocoaPrivate, CocoaUtils, CocoaWSCommon, CocoaWSStdCtrls ;
 
 type
   { TLCLWindowCallback }
@@ -48,6 +48,7 @@ type
     procedure Deactivate; override;
     procedure CloseQuery(var CanClose: Boolean); override;
     procedure Close; override;
+    procedure Resize; override;
   end;
 
 
@@ -102,6 +103,11 @@ type
     
 //    class procedure SetBorderIcons(const AForm: TCustomForm; const ABorderIcons: TBorderIcons); override;
 //    class procedure SetFormBorderStyle(const AForm: TCustomForm; const AFormBorderStyle: TFormBorderStyle); override;
+
+    {need to override these }
+    class function  GetClientBounds(const AWincontrol: TWinControl; var ARect: TRect): Boolean; override;
+    class function  GetClientRect(const AWincontrol: TWinControl; var ARect: TRect): Boolean; override;
+    class procedure SetBounds(const AWinControl: TWinControl; const ALeft, ATop, AWidth, AHeight: Integer); override;
   end;
 
   { TCocoaWSForm }
@@ -169,6 +175,17 @@ begin
   LCLSendCloseUpMsg(Target);
 end;
 
+procedure TLCLWindowCallback.Resize;
+var
+  sz  : NSSize;
+  r   : TRect;
+begin
+  sz := Owner.frame.size;
+  TCocoaWSCustomForm.GetClientBounds(TWinControl(Target), r);
+  if Assigned(Target) then
+    LCLSendSizeMsg(Target, Round(sz.width), Round(sz.height), SIZENORMAL);
+end;
+
 
 { TCocoaWSCustomForm }
 
@@ -193,9 +210,9 @@ begin
     Result:=0;
     Exit;
   end;
+  win:=TCocoaWindow(win.initWithContentRect_styleMask_backing_defer(CreateParamsToNSRect(AParams), WinMask, NSBackingStoreBuffered, False));
   TCocoaWindow(win).callback:=TLCLCommonCallback.Create(win, AWinControl);
   TCocoaWindow(win).wincallback:=TLCLWindowCallback.Create(win, AWinControl);
-  win.initWithContentRect_styleMask_backing_defer(CreateParamsToNSRect(AParams), WinMask, NSBackingStoreBuffered, False);
   win.setDelegate(win);
   win.setTitle(NSStringUtf8(AWinControl.Caption));
 
@@ -243,6 +260,42 @@ begin
   win:=TCocoaWindow(AWinControl.Handle);
   if not Assigned(win) then Exit;
   win.setTitle(NSStringUtf8(AText));
+end;
+
+class function TCocoaWSCustomForm.GetClientBounds(const AWinControl: TWinControl; var ARect: TRect): Boolean;
+begin
+  Result:=AWinControl.Handle<>0;
+  if not Result then Exit;
+
+  Result:=GetNSWindowFrame(NSWindow(AWinControl.Handle), ARect);
+end;
+
+class function TCocoaWSCustomForm.GetClientRect(const AWinControl: TWinControl;
+  var ARect: TRect): Boolean;
+begin
+  Result:=AWinControl.Handle<>0;
+  if not Result then Exit;
+
+  {todo:}
+  GetViewFrame( NSWindow(AWinControl.Handle).contentView, ARect );
+  writeln('GetClientRect ... ', ARect.Left, ' ',ARect.Top);
+end;
+
+class procedure TCocoaWSCustomForm.SetBounds(const AWinControl: TWinControl;
+  const ALeft, ATop, AWidth, AHeight: Integer);
+var
+  sf, wf : NSRect;
+begin
+  if AWinControl.Handle=0 then Exit;
+  {todo: setFrame_display(, true)? }
+  sf:=NSScreen.mainScreen.frame;
+
+  writeln('SetBounds: ', ALeft, ' ',ATop, ' ',AWidth,' ',AHeight);
+  LCLToCocoaRect( GetNSRect(ALeft,ATop,AWidth,AHeight), sf, wf);
+
+  NSWindow(AWinControl.Handle).setFrame_display(wf, false);
+  //NSWindow(AWinControl.Handle).setFrame_display( GetNSRect(ALeft,ATop, AWidth, AHeight), false);
+  //NSWindow(AWinControl.Handle).setFrameTopLeftPoint( GetNSPoint(ALeft, ATop));
 end;
 
 end.

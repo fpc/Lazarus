@@ -55,6 +55,7 @@ type
     procedure Deactivate; virtual; abstract;
     procedure CloseQuery(var CanClose: Boolean); virtual; abstract;
     procedure Close; virtual; abstract;
+    procedure Resize; virtual; abstract;
   end;
 
   { TCocoaWindowContentView }
@@ -63,6 +64,12 @@ type
   public
     procedure drawRect(r: NSRect); override;
   end;
+
+  {todo: consider using common protocol for all TCocoa* derived objcclasses }
+  {TCocoaTopLeftRect = objcprotocol
+    procedure getTopLeftFrame(var r: TRect); message 'getTopLeftFrame:';
+    procedure setTopLeftFrame(const r: TRect); message 'setTopLeftFrame:';
+  end;}
 
   { TCocoaButton }
 
@@ -105,6 +112,7 @@ type
     procedure windowWillClose(notification: NSNotification); message 'windowWillClose:';
     procedure windowDidBecomeKey(notification: NSNotification); message 'windowDidBecomeKey:';
     procedure windowDidResignKey(notification: NSNotification); message 'windowDidResignKey:';
+    procedure windowDidResize(notification: NSNotification); message 'windowDidResize:';
   public
     callback      : TCommonCallback;
     wincallback   : TWindowCallback;
@@ -225,6 +233,11 @@ end;
 procedure TCocoaWindow.windowDidResignKey(notification: NSNotification);
 begin
   wincallback.Deactivate;
+end;
+
+procedure TCocoaWindow.windowDidResize(notification: NSNotification);
+begin
+  wincallback.Resize;
 end;
 
 function TCocoaWindow.acceptsFirstResponder: Boolean;
