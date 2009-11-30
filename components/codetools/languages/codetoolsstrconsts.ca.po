@@ -253,6 +253,10 @@ msgstr "esperava end., però s'ha trobat %s"
 msgid "End of source not found"
 msgstr "No s'ha trobat el final del codi font"
 
+#: codetoolsstrconsts.ctsenumerationtype
+msgid "enumeration type"
+msgstr ""
+
 #: codetoolsstrconsts.ctserrorduringcreationofnewprocbodies
 msgid "error during creation of new proc bodies"
 msgstr "s'ha produït un error mentre es creaven els cossos del nou procediment"
@@ -328,6 +332,16 @@ msgstr "Directori font del Free Pascal"
 #: codetoolsstrconsts.ctsfreepascalsourcesplusdesc
 msgid "Free Pascal Sources, %s"
 msgstr "Fonts del Free Pascal, %s"
+
+#: codetoolsstrconsts.ctsfunctiongetenumeratornotfoundinthisclass
+msgctxt "codetoolsstrconsts.ctsfunctiongetenumeratornotfoundinthisclass"
+msgid "function GetEnumerator not found in this class"
+msgstr ""
+
+#: codetoolsstrconsts.ctsfunctiongetenumeratornotfoundinthisclass2
+msgctxt "codetoolsstrconsts.ctsfunctiongetenumeratornotfoundinthisclass2"
+msgid "function GetEnumerator not found in this class"
+msgstr ""
 
 #: codetoolsstrconsts.ctsgenericidentifier
 msgid "generic identifier"
@@ -625,6 +639,10 @@ msgstr "específic del processador"
 msgid "property type expected, but %s found"
 msgstr "s'esperava un tipus de propietat, però s'ha trobat %s"
 
+#: codetoolsstrconsts.ctspropertycurrentnotfound
+msgid "property Current not found"
+msgstr ""
+
 #: codetoolsstrconsts.ctspropertyspecifieralreadydefined
 msgid "property specifier already defined: %s"
 msgstr "l'especificador de la propietat ja està definit: %s"
@@ -636,6 +654,10 @@ msgstr "s'esperava un qualificador, però s'ha trobat %s"
 #: codetoolsstrconsts.ctsresetalldefines
 msgid "Reset all defines"
 msgstr "Reinicia totes les definicions"
+
+#: codetoolsstrconsts.ctsresulttypeoffunctiongetenumeratornotfound
+msgid "result type of function GetEnumerator not found"
+msgstr ""
 
 #: codetoolsstrconsts.ctsruntimelibrary
 msgid "Runtime library"
@@ -704,6 +726,10 @@ msgstr "Term no te un tipus simple"
 #: codetoolsstrconsts.ctstoolsdirectory
 msgid "Tools Directory"
 msgstr "Directori de les eines"
+
+#: codetoolsstrconsts.ctstype
+msgid "type"
+msgstr ""
 
 #: codetoolsstrconsts.ctstypeidentifier
 msgid "type identifier"

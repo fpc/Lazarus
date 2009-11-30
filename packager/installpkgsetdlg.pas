@@ -39,7 +39,7 @@ interface
 
 uses
   Classes, SysUtils, LCLProc, LResources, Forms, Controls, Graphics, Dialogs,
-  StdCtrls, Buttons, FileUtil,
+  KeywordFuncLists, StdCtrls, Buttons, FileUtil, ExtCtrls,
   AVL_Tree, Laz_XMLCfg,
   LazarusIDEStrConsts, EnvironmentOpts, InputHistory, LazConf, IDEProcs,
   PackageDefs, PackageSystem, PackageLinks, IDEContextHelpEdit;
@@ -57,6 +57,7 @@ type
     HelpButton: TBitBtn;
     CancelButton: TBitBtn;
     ExportButton: TButton;
+    Panel1: TPanel;
     PkgInfoMemo: TMemo;
     PkgInfoGroupBox: TGroupBox;
     ImportButton: TButton;
@@ -88,6 +89,7 @@ type
     FSelectedPkg: TLazPackage;
     procedure SetOldInstalledPackages(const AValue: TPkgDependency);
     procedure AssignOldInstalledPackagesToList;
+    function PackageInInstallList(PkgName: string): boolean;
     procedure UpdateAvailablePackages;
     procedure UpdateNewInstalledPackages;
     procedure OnIteratePackages(APackageID: TLazPackageID);
@@ -101,6 +103,7 @@ type
     function IndexOfNewInstalledPkgByName(const APackageName: string): integer;
     procedure SavePackageListToFile(const AFilename: string);
     procedure LoadPackageListFromFile(const AFilename: string);
+    function ExtractNameFromPkgID(ID: string): string;
     procedure AddToInstall;
     procedure AddToUninstall;
   public
@@ -311,6 +314,16 @@ begin
   UpdateNewInstalledPackages;
 end;
 
+function TInstallPkgSetDialog.PackageInInstallList(PkgName: string): boolean;
+var
+  i: Integer;
+begin
+  for i:=0 to InstallListBox.Items.Count-1 do
+    if SysUtils.CompareText(ExtractNameFromPkgID(InstallListBox.Items[i]),PkgName)=0 then
+      exit(true);
+  Result:=false;
+end;
+
 procedure TInstallPkgSetDialog.UpdateAvailablePackages;
 var
   ANode: TAVLTreeNode;
@@ -319,7 +332,6 @@ var
   Pkg: TLazPackageID;
 begin
   fPackages.Clear;
-  // TODO: only distinct files
   PackageGraph.IteratePackages(fpfSearchAllExisting,@OnIteratePackages);
   sl:=TStringList.Create;
   ANode:=fPackages.FindLowest;
@@ -329,9 +341,11 @@ begin
     if (not (Pkg is TLazPackage))
     or (TLazPackage(Pkg).PackageType in [lptDesignTime,lptRunAndDesignTime])
     then begin
-      PkgName:=Pkg.IDAsString;
-      if (sl.IndexOf(PkgName)<0) and (InstallListBox.Items.IndexOf(PkgName)<0) then
-        sl.Add(PkgName);
+      if not PackageInInstallList(Pkg.Name) then begin
+        PkgName:=Pkg.IDAsString;
+        if (sl.IndexOf(PkgName)<0) then
+          sl.Add(PkgName);
+      end;
     end;
     ANode:=fPackages.FindSuccessor(ANode);
   end;
@@ -606,6 +620,15 @@ begin
   end;
 end;
 
+function TInstallPkgSetDialog.ExtractNameFromPkgID(ID: string): string;
+var
+  p: Integer;
+begin
+  p:=1;
+  while (p<=length(ID)) and IsIdentChar[ID[p]] do inc(p);
+  Result:=copy(ID,1,p-1);
+end;
+
 procedure TInstallPkgSetDialog.AddToInstall;
 var
   i: Integer;
@@ -701,11 +724,12 @@ begin
       APackage:=PackageGraph.FindPackageWithID(OldPackageID);
       if APackage<>nil then begin
         // check if package is a base package
-        if APackage.AutoCreated then begin
+        if APackage.AutoCreated
+        or PackageGraph.IsStaticBasePackage(APackage.Name) then begin
           InstallListBox.Selected[i]:=false;
-          MessageDlg('Uninstall impossible',
-            'The package '+APackage.Name+' can not be uninstalled, because it '
-            +'is needed by the IDE itself.',mtError,[mbCancel],0);
+          MessageDlg(lisUninstallImpossible,
+            Format(lisThePackageCanNotBeUninstalledBecauseItIsNeededByTh, [
+              APackage.Name]), mtError, [mbCancel], 0);
           exit;
         end;
       end;

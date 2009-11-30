@@ -254,6 +254,10 @@ msgstr "diharapkan end, tapi %s ditemukan"
 msgid "End of source not found"
 msgstr "Akhir dari sumber tidak ditemukan"
 
+#: codetoolsstrconsts.ctsenumerationtype
+msgid "enumeration type"
+msgstr ""
+
 #: codetoolsstrconsts.ctserrorduringcreationofnewprocbodies
 msgid "error during creation of new proc bodies"
 msgstr "kesalahan selama pembuatan dari badan proc baru"
@@ -329,6 +333,16 @@ msgstr "Direktori Sumber Free Pascal"
 #: codetoolsstrconsts.ctsfreepascalsourcesplusdesc
 msgid "Free Pascal Sources, %s"
 msgstr "Sumber Free Pascal, %s"
+
+#: codetoolsstrconsts.ctsfunctiongetenumeratornotfoundinthisclass
+msgctxt "codetoolsstrconsts.ctsfunctiongetenumeratornotfoundinthisclass"
+msgid "function GetEnumerator not found in this class"
+msgstr ""
+
+#: codetoolsstrconsts.ctsfunctiongetenumeratornotfoundinthisclass2
+msgctxt "codetoolsstrconsts.ctsfunctiongetenumeratornotfoundinthisclass2"
+msgid "function GetEnumerator not found in this class"
+msgstr ""
 
 #: codetoolsstrconsts.ctsgenericidentifier
 msgid "generic identifier"
@@ -626,6 +640,10 @@ msgstr "spesifik prosesor"
 msgid "property type expected, but %s found"
 msgstr "properti type diharapkan, tapi %s yang ditemukan"
 
+#: codetoolsstrconsts.ctspropertycurrentnotfound
+msgid "property Current not found"
+msgstr ""
+
 #: codetoolsstrconsts.ctspropertyspecifieralreadydefined
 msgid "property specifier already defined: %s"
 msgstr "pemisah properti sudah didefinisikan: %s"
@@ -637,6 +655,10 @@ msgstr "pembatas diharapkan tapi %s ditemukan"
 #: codetoolsstrconsts.ctsresetalldefines
 msgid "Reset all defines"
 msgstr "Reset semua define"
+
+#: codetoolsstrconsts.ctsresulttypeoffunctiongetenumeratornotfound
+msgid "result type of function GetEnumerator not found"
+msgstr ""
 
 #: codetoolsstrconsts.ctsruntimelibrary
 msgid "Runtime library"
@@ -705,6 +727,10 @@ msgstr "Term tidak mempunyai tipe sederhana"
 #: codetoolsstrconsts.ctstoolsdirectory
 msgid "Tools Directory"
 msgstr "Direktori Tools"
+
+#: codetoolsstrconsts.ctstype
+msgid "type"
+msgstr ""
 
 #: codetoolsstrconsts.ctstypeidentifier
 msgid "type identifier"

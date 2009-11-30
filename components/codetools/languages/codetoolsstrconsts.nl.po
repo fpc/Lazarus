@@ -253,6 +253,10 @@ msgstr ""
 msgid "End of source not found"
 msgstr "Einde van broncode niet gevonden"
 
+#: codetoolsstrconsts.ctsenumerationtype
+msgid "enumeration type"
+msgstr ""
+
 #: codetoolsstrconsts.ctserrorduringcreationofnewprocbodies
 msgid "error during creation of new proc bodies"
 msgstr ""
@@ -328,6 +332,16 @@ msgstr "Free Pascal broncode directory"
 #: codetoolsstrconsts.ctsfreepascalsourcesplusdesc
 msgid "Free Pascal Sources, %s"
 msgstr "Free Pascal broncodes, %s"
+
+#: codetoolsstrconsts.ctsfunctiongetenumeratornotfoundinthisclass
+msgctxt "codetoolsstrconsts.ctsfunctiongetenumeratornotfoundinthisclass"
+msgid "function GetEnumerator not found in this class"
+msgstr ""
+
+#: codetoolsstrconsts.ctsfunctiongetenumeratornotfoundinthisclass2
+msgctxt "codetoolsstrconsts.ctsfunctiongetenumeratornotfoundinthisclass2"
+msgid "function GetEnumerator not found in this class"
+msgstr ""
 
 #: codetoolsstrconsts.ctsgenericidentifier
 msgid "generic identifier"
@@ -625,6 +639,10 @@ msgstr ""
 msgid "property type expected, but %s found"
 msgstr "property type verwacht, maar %s gevonden"
 
+#: codetoolsstrconsts.ctspropertycurrentnotfound
+msgid "property Current not found"
+msgstr ""
+
 #: codetoolsstrconsts.ctspropertyspecifieralreadydefined
 msgid "property specifier already defined: %s"
 msgstr ""
@@ -635,6 +653,10 @@ msgstr ""
 
 #: codetoolsstrconsts.ctsresetalldefines
 msgid "Reset all defines"
+msgstr ""
+
+#: codetoolsstrconsts.ctsresulttypeoffunctiongetenumeratornotfound
+msgid "result type of function GetEnumerator not found"
 msgstr ""
 
 #: codetoolsstrconsts.ctsruntimelibrary
@@ -703,6 +725,10 @@ msgstr ""
 
 #: codetoolsstrconsts.ctstoolsdirectory
 msgid "Tools Directory"
+msgstr ""
+
+#: codetoolsstrconsts.ctstype
+msgid "type"
 msgstr ""
 
 #: codetoolsstrconsts.ctstypeidentifier

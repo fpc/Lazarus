@@ -90,7 +90,7 @@ type
   TPkgDeleteEvent = procedure(APackage: TLazPackage) of object;
   TPkgWriteMakeFile = function(APackage: TLazPackage): TModalResult of object;
   TPkgUninstall = function(APackage: TLazPackage;
-                           Flags: TPkgUninstallFlags): TModalResult of object;
+                    Flags: TPkgUninstallFlags; ShowAbort: boolean): TModalResult of object;
   TPkgTranslate = procedure(APackage: TLazPackage) of object;
   TDependencyModifiedEvent = procedure(ADependency: TPkgDependency) of object;
   TEndUpdateEvent = procedure(Sender: TObject; GraphChanged: boolean) of object;
@@ -134,6 +134,7 @@ type
     function CreateCodeToolsPackage: TLazPackage;
     function CreateIDEIntfPackage: TLazPackage;
     function CreateDefaultPackage: TLazPackage;
+    function CreateLazarusBasePackage(PkgName: string): TLazPackage;
     function GetCount: Integer;
     function GetPackages(Index: integer): TLazPackage;
     procedure DoDependencyChanged(Dependency: TPkgDependency);
@@ -291,7 +292,7 @@ type
   public
     // installed packages
     FirstAutoInstallDependency: TPkgDependency;
-    procedure AddStaticBasePackages;
+    procedure AddStaticBasePackagesOld;
     procedure LoadStaticBasePackages;
     procedure LoadAutoInstallPackages(PkgList: TStringList);
     procedure SortAutoInstallDependencies;
@@ -1289,7 +1290,8 @@ begin
     Installed:=pitStatic;
     CompilerOptions.UnitOutputDirectory:='';
     Translated:=SystemLanguageID1;
-    
+    AddToProjectUsesSection:=false;
+
     // add lazarus registration unit path
     UsageOptions.UnitPath:=SetDirSeparators(
       '$(LazarusDir)/packager/units/$(TargetCPU)-$(TargetOS)');
@@ -1346,6 +1348,7 @@ begin
     POOutputDirectory:='languages';
     Translated:=SystemLanguageID1;
     LazDocPaths:=SetDirSeparators('$(LazarusDir)/docs/xml/lcl');
+    AddToProjectUsesSection:=false;
 
     // add requirements
     AddRequiredDependency(FCLPackage.CreateDependencyWithOwner(Result));
@@ -1403,6 +1406,7 @@ begin
     POOutputDirectory:='languages';
     Translated:=SystemLanguageID1;
     LazDocPaths:=SetDirSeparators('$(LazarusDir)/components/synedit/docs/xml');
+    AddToProjectUsesSection:=false;
 
     // add requirements
     AddRequiredDependency(LCLPackage.CreateDependencyWithOwner(Result));
@@ -1506,11 +1510,7 @@ begin
   with Result do begin
     AutoCreated:=true;
     Name:='CodeTools';
-    {$IFDEF EnableCodetoolsPkg}
     Filename:=SetDirSeparators('$(LazarusDir)/components/codetools/codetools.lpk');
-    {$ELSE}
-    Filename:=SetDirSeparators('$(LazarusDir)/components/codetools/');
-    {$ENDIF}
     Version.SetValues(1,0,1,0);
     Author:='Mattias Gaertner';
     License:='GPL-2';
@@ -1523,6 +1523,7 @@ begin
     POOutputDirectory:='languages';
     LazDocPaths:='docs';
     Translated:=SystemLanguageID1;
+    AddToProjectUsesSection:=false;
 
     // add requirements
     AddRequiredDependency(FCLPackage.CreateDependencyWithOwner(Result));
@@ -1602,6 +1603,7 @@ begin
     Translated:=SystemLanguageID1;
     LazDocPaths:='docs';
     EnableI18N:=true;
+    AddToProjectUsesSection:=false;
 
     // add requirements
     AddRequiredDependency(LCLPackage.CreateDependencyWithOwner(Result));
@@ -1677,6 +1679,18 @@ begin
   end;
 end;
 
+function TLazPackageGraph.CreateLazarusBasePackage(PkgName: string
+  ): TLazPackage;
+begin
+  PkgName:=lowercase(PkgName);
+  if PkgName='fcl' then Result:=CreateFCLPackage
+  else if PkgName='lcl' then Result:=CreateLCLPackage
+  else if PkgName='ideintf' then Result:=CreateIDEIntfPackage
+  else if PkgName='synedit' then Result:=CreateSynEditPackage
+  else if PkgName='codetools' then Result:=CreateCodeToolsPackage
+  else RaiseGDBException('');
+end;
+
 function TLazPackageGraph.GetCount: Integer;
 begin
   Result:=FItems.Count;
@@ -1700,6 +1714,8 @@ begin
   FItems.Add(APackage);
 
   if IsStaticBasePackage(APackage.Name) then begin
+    APackage.Installed:=pitStatic;
+    APackage.AutoInstall:=pitStatic;
     if SysUtils.CompareText(APackage.Name,'FCL')=0 then
       SetBasePackage(FFCLPackage)
     else if SysUtils.CompareText(APackage.Name,'LCL')=0 then
@@ -1787,33 +1803,30 @@ begin
   EndUpdate;
 end;
 
-procedure TLazPackageGraph.AddStaticBasePackages;
+procedure TLazPackageGraph.LoadStaticBasePackages;
+
+  procedure LoadLazarusBasePackage(PkgName: string);
+  var
+    Dependency: TPkgDependency;
+    Quiet: Boolean;
+  begin
+    Dependency:=TPkgDependency.Create;
+    Dependency.Owner:=Self;
+    Dependency.PackageName:=PkgName;
+    Dependency.AddToList(FirstAutoInstallDependency,pdlRequires);
+    Quiet:=false;
+    OpenInstalledDependency(Dependency,pitStatic,Quiet);
+  end;
+
 begin
-  AddPackage(CreateFCLPackage);
-  AddPackage(CreateLCLPackage);
-  AddPackage(CreateIDEIntfPackage);
-  AddPackage(CreateSynEditPackage);
-  AddPackage(CreateCodeToolsPackage);
+  LoadLazarusBasePackage('FCL');
+  LoadLazarusBasePackage('LCL');
+  LoadLazarusBasePackage('IDEIntf');
+  LoadLazarusBasePackage('SynEdit');
+  LoadLazarusBasePackage('CodeTools');
   // the default package will be added on demand
   FDefaultPackage:=CreateDefaultPackage;
-end;
 
-procedure TLazPackageGraph.LoadStaticBasePackages;
-var
-  i: Integer;
-  BasePackage: TLazPackage;
-  Dependency: TPkgDependency;
-begin
-  // create static base packages
-  AddStaticBasePackages;
-
-  // add them to auto install list
-  for i:=0 to LazarusBasePackages.Count-1 do begin
-    BasePackage:=TLazPackage(LazarusBasePackages[i]);
-    Dependency:=BasePackage.CreateDependencyWithOwner(Self);
-    OpenDependency(Dependency,false);
-    Dependency.AddToList(FirstAutoInstallDependency,pdlRequires)
-  end;
   SortAutoInstallDependencies;
 
   // register them
@@ -3096,6 +3109,7 @@ begin
           exit;
         end;
       end;
+      Result:=mrOk;
     finally
       if (LazarusIDE<>nil) then
         LazarusIDE.MainBarSubTitle:='';
@@ -3112,7 +3126,8 @@ begin
               ['"', APackage.IDAsString, '"', #13]), mtConfirmation,
               [mbYes,mbIgnore])=mrYes then
           begin
-            OnUninstallPackage(APackage,[puifDoNotConfirm,puifDoNotBuildIDE]);
+            Result:=OnUninstallPackage(APackage,
+              [puifDoNotConfirm,puifDoNotBuildIDE],true);
           end;
         end;
       end;
@@ -3120,7 +3135,6 @@ begin
   finally
     PackageGraph.EndUpdate;
   end;
-  Result:=mrOk;
 end;
 
 function TLazPackageGraph.ConvertPackageRSTFiles(APackage: TLazPackage
@@ -3156,6 +3170,11 @@ begin
     exit(mrCancel);
   end;
   Result:=mrOK;
+end;
+
+procedure TLazPackageGraph.AddStaticBasePackagesOld;
+begin
+
 end;
 
 function TLazPackageGraph.PreparePackageOutputDirectory(APackage: TLazPackage;
@@ -3665,7 +3684,7 @@ procedure TLazPackageGraph.RegisterStaticBasePackages;
 begin
   BeginUpdate(true);
   
-  // register IDE built-in packages (Note: codetools do not need)
+  // register IDE built-in packages (Note: codetools do not need this)
   RegisterStaticPackage(FCLPackage,@RegisterFCL.Register);
   RegisterStaticPackage(LCLPackage,@RegisterLCL.Register);
   if Assigned(OnTranslatePackage) then OnTranslatePackage(CodeToolsPackage);
@@ -3801,7 +3820,7 @@ begin
       Dependency.LoadPackageResult:=lprSuccess;
     end;
     if Dependency.LoadPackageResult=lprUndefined then begin
-      // compatible package not yet open
+      // no compatible package yet open
       Dependency.RequiredPackage:=nil;
       Dependency.LoadPackageResult:=lprNotFound;
       if FindAPackageWithName(Dependency.PackageName,nil)=nil then begin
@@ -3880,25 +3899,10 @@ begin
     if IsStaticBasePackage(Dependency.PackageName) then begin
       // this is one of the Lazarus base packages
       // auto create the built in version
-      BasePackage:=nil;
-      if (SysUtils.CompareText(Dependency.PackageName,'FCL')=0)
-      and (FCLPackage=nil) then
-        BasePackage:=CreateFCLPackage
-      else if (SysUtils.CompareText(Dependency.PackageName,'LCL')=0)
-      and (LCLPackage=nil) then
-        BasePackage:=CreateLCLPackage
-      else if (SysUtils.CompareText(Dependency.PackageName,'IDEIntf')=0)
-      and (IDEIntfPackage=nil) then
-        BasePackage:=CreateIDEIntfPackage
-      else if (SysUtils.CompareText(Dependency.PackageName,'SynEdit')=0)
-      and (SynEditPackage=nil) then
-        BasePackage:=CreateSynEditPackage
-      else if (SysUtils.CompareText(Dependency.PackageName,'CodeTools')=0)
-      and (CodeToolsPackage=nil) then
-        BasePackage:=CreateCodeToolsPackage;
+      BasePackage:=CreateLazarusBasePackage(Dependency.PackageName);
       if BasePackage<>nil then begin
         AddPackage(BasePackage);
-        DebugLn('TLazPackageGraph.OpenInstalledDependency lpk not found using built-in ',BasePackage.IDAsString,' ',dbgs(ord(BasePackage.AutoInstall)));
+        //DebugLn('TLazPackageGraph.OpenInstalledDependency lpk not found using built-in ',BasePackage.IDAsString,' ',dbgs(ord(BasePackage.AutoInstall)));
         if not Quiet then begin
           // don't bother the user
         end;

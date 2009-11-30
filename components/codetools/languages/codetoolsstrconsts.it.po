@@ -252,6 +252,10 @@ msgstr "era previsto end. invece è stato trovato %s"
 msgid "End of source not found"
 msgstr "Non è stata trovata la fine del sorgente"
 
+#: codetoolsstrconsts.ctsenumerationtype
+msgid "enumeration type"
+msgstr ""
+
 #: codetoolsstrconsts.ctserrorduringcreationofnewprocbodies
 msgid "error during creation of new proc bodies"
 msgstr "errore durante la creazione di nuovi corpi proc"
@@ -327,6 +331,16 @@ msgstr "Directory sorgenti Free Pascal"
 #: codetoolsstrconsts.ctsfreepascalsourcesplusdesc
 msgid "Free Pascal Sources, %s"
 msgstr "Sorgenti Free Pascal, %s"
+
+#: codetoolsstrconsts.ctsfunctiongetenumeratornotfoundinthisclass
+msgctxt "codetoolsstrconsts.ctsfunctiongetenumeratornotfoundinthisclass"
+msgid "function GetEnumerator not found in this class"
+msgstr ""
+
+#: codetoolsstrconsts.ctsfunctiongetenumeratornotfoundinthisclass2
+msgctxt "codetoolsstrconsts.ctsfunctiongetenumeratornotfoundinthisclass2"
+msgid "function GetEnumerator not found in this class"
+msgstr ""
 
 #: codetoolsstrconsts.ctsgenericidentifier
 msgid "generic identifier"
@@ -624,6 +638,10 @@ msgstr "specifiche di processore"
 msgid "property type expected, but %s found"
 msgstr "era previsto un tipo di proprietà invece è stato trovato %s"
 
+#: codetoolsstrconsts.ctspropertycurrentnotfound
+msgid "property Current not found"
+msgstr ""
+
 #: codetoolsstrconsts.ctspropertyspecifieralreadydefined
 msgid "property specifier already defined: %s"
 msgstr "specificatore di proprietà già definito: %s"
@@ -635,6 +653,10 @@ msgstr "era previsto un qualificatore invece è stato trovato %s"
 #: codetoolsstrconsts.ctsresetalldefines
 msgid "Reset all defines"
 msgstr "Reimposta tutti i define"
+
+#: codetoolsstrconsts.ctsresulttypeoffunctiongetenumeratornotfound
+msgid "result type of function GetEnumerator not found"
+msgstr ""
 
 #: codetoolsstrconsts.ctsruntimelibrary
 msgid "Runtime library"
@@ -703,6 +725,10 @@ msgstr "Il termine non ha un tipo semplice"
 #: codetoolsstrconsts.ctstoolsdirectory
 msgid "Tools Directory"
 msgstr "Directory strumenti"
+
+#: codetoolsstrconsts.ctstype
+msgid "type"
+msgstr ""
 
 #: codetoolsstrconsts.ctstypeidentifier
 msgid "type identifier"

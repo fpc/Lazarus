@@ -292,7 +292,7 @@ type
     function ShowConfigureCustomComponents: TModalResult; override;
     function DoInstallPackage(APackage: TLazPackage): TModalResult;
     function DoUninstallPackage(APackage: TLazPackage;
-                                Flags: TPkgUninstallFlags): TModalResult;
+                   Flags: TPkgUninstallFlags; ShowAbort: boolean): TModalResult;
     procedure DoTranslatePackage(APackage: TLazPackage);
     function DoOpenPackageSource(APackage: TLazPackage): TModalResult;
     function DoViewPackageToDos(APackage: TLazPackage): TModalResult;
@@ -497,7 +497,8 @@ begin
       CurDependency:=PackageGraph.FirstAutoInstallDependency;
       while CurDependency<>nil do begin
         if (CurDependency.RequiredPackage<>nil)
-        and (not CurDependency.RequiredPackage.AutoCreated) then
+        and (not CurDependency.RequiredPackage.AutoCreated)
+        and (not PackageGraph.IsStaticBasePackage(CurDependency.PackageName)) then
           CurDependency.RequiredPackage.AutoInstall:=pitNope;
         CurDependency:=CurDependency.NextRequiresDependency;
       end;
@@ -828,7 +829,7 @@ end;
 function TPkgManager.OnPackageEditorUninstallPackage(Sender: TObject;
   APackage: TLazPackage): TModalResult;
 begin
-  Result:=DoUninstallPackage(APackage,[]);
+  Result:=DoUninstallPackage(APackage,[],false);
 end;
 
 function TPkgManager.OnPackageEditorOpenPkgFile(Sender: TObject;
@@ -963,7 +964,7 @@ end;
 function TPkgManager.PackageGraphExplorerUninstallPackage(Sender: TObject;
   APackage: TLazPackage): TModalResult;
 begin
-  Result:=DoUninstallPackage(APackage,[]);
+  Result:=DoUninstallPackage(APackage,[],false);
 end;
 
 function TPkgManager.PkgLinksDependencyOwnerGetPkgFilename(
@@ -1618,6 +1619,7 @@ begin
   while Dependency<>nil do begin
     if (Dependency.LoadPackageResult=lprSuccess)
     and (not Dependency.RequiredPackage.AutoCreated)
+    and (not PackageGraph.IsStaticBasePackage(Dependency.PackageName))
     and (not Dependency.RequiredPackage.Missing) then begin
       if sl.IndexOf(Dependency.PackageName)<0 then begin
         sl.Add(Dependency.PackageName);
@@ -2661,9 +2663,11 @@ begin
   while i<PackageGraph.Count do begin
     APackage:=PackageGraph.Packages[i];
     if (SysUtils.CompareText(copy(APackage.Filename,1,length(LazDirMacro)),LazDirMacro)=0)
-    or FileIsInPath(APackage.Filename,OldLazarusSrcDir) then begin
+    or FileIsInPath(APackage.Filename,OldLazarusSrcDir)
+    or (PackageGraph.IsStaticBasePackage(APackage.Name) and (not APackage.AutoCreated))
+    then begin
       // this package was from the old lazarus source directory
-      // check if there is a package in the new verion
+      // check if there is a package in the new version
       Link:=PkgLinks.FindLinkWithPkgName(APackage.Name);
       if Link<>nil then begin
         Filename:=TrimFilename(Link.Filename);
@@ -3697,7 +3701,7 @@ begin
 end;
 
 function TPkgManager.DoUninstallPackage(APackage: TLazPackage;
-  Flags: TPkgUninstallFlags): TModalResult;
+  Flags: TPkgUninstallFlags; ShowAbort: boolean): TModalResult;
 var
   DependencyPath: TFPList;
   ParentPackage: TLazPackage;
@@ -3711,18 +3715,27 @@ begin
   if DependencyPath<>nil then begin
     DoShowPackageGraphPathList(DependencyPath);
     ParentPackage:=TLazPackage(DependencyPath[0]);
-    Result:=IDEMessageDialog(lisPkgMangPackageIsRequired,
+    Result:=IDEMessageDialogAb(lisPkgMangPackageIsRequired,
       Format(lisPkgMangThePackageIsRequiredByWhichIsMarkedForInstallation, [
         APackage.IDAsString, ParentPackage.IDAsString, #13]),
-      mtError,[mbCancel,mbAbort]);
+      mtError,[mbCancel],ShowAbort);
+    exit;
+  end;
+
+  // check if package is a lazarus base package
+  if PackageGraph.IsStaticBasePackage(APackage.Name) then begin
+    Result:=IDEMessageDialogAb(lisUninstallImpossible,
+      Format(lisThePackageCanNotBeUninstalledBecauseItIsNeededByTh, [
+        APackage.Name]),
+      mtError,[mbCancel],ShowAbort);
     exit;
   end;
 
   // confirm uninstall package
   if not (puifDoNotConfirm in Flags) then begin
-    Result:=IDEMessageDialog(lisPkgMangUninstallPackage,
+    Result:=IDEMessageDialogAb(lisPkgMangUninstallPackage,
       Format(lisPkgMangUninstallPackage2, [APackage.IDAsString]),
-      mtConfirmation,[mbYes,mbCancel,mbAbort]);
+      mtConfirmation,[mbYes,mbCancel],ShowAbort);
     if Result<>mrYes then exit;
   end;
   

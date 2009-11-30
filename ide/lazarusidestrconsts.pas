@@ -2584,6 +2584,9 @@ resourcestring
   lisUnableToRead = 'Unable to read %s';
   lisErrorReadingPackageListFromFile = 'Error reading package list from file%'
     +'s%s%s%s';
+  lisUninstallImpossible = 'Uninstall impossible';
+  lisThePackageCanNotBeUninstalledBecauseItIsNeededByTh = 'The package %s can '
+    +'not be uninstalled, because it is needed by the IDE itself.';
   lisTheCurrentUnitPathForTheFileIsThePathToTheLCLUnits = 'The current unit '
     +'path for the file%s%s%s%s is%s%s%s%s.%s%sThe path to the LCL units %s%s%'
     +'s is missing.%s%sHint for newbies:%sCreate a lazarus application and '

@@ -248,6 +248,10 @@ msgstr "очікується end., а знайдено %s"
 msgid "End of source not found"
 msgstr "Не знайдено кінця коду"
 
+#: codetoolsstrconsts.ctsenumerationtype
+msgid "enumeration type"
+msgstr ""
+
 #: codetoolsstrconsts.ctserrorduringcreationofnewprocbodies
 msgid "error during creation of new proc bodies"
 msgstr "помилка при створенні нових тіл процедур"
@@ -323,6 +327,16 @@ msgstr "Тека кодів FreePascal"
 #: codetoolsstrconsts.ctsfreepascalsourcesplusdesc
 msgid "Free Pascal Sources, %s"
 msgstr "Коди FreePascal, %s"
+
+#: codetoolsstrconsts.ctsfunctiongetenumeratornotfoundinthisclass
+msgctxt "codetoolsstrconsts.ctsfunctiongetenumeratornotfoundinthisclass"
+msgid "function GetEnumerator not found in this class"
+msgstr ""
+
+#: codetoolsstrconsts.ctsfunctiongetenumeratornotfoundinthisclass2
+msgctxt "codetoolsstrconsts.ctsfunctiongetenumeratornotfoundinthisclass2"
+msgid "function GetEnumerator not found in this class"
+msgstr ""
 
 #: codetoolsstrconsts.ctsgenericidentifier
 msgid "generic identifier"
@@ -620,6 +634,10 @@ msgstr "специфічний для процесора"
 msgid "property type expected, but %s found"
 msgstr "очікується тип властивості, але знайдено %s"
 
+#: codetoolsstrconsts.ctspropertycurrentnotfound
+msgid "property Current not found"
+msgstr ""
+
 #: codetoolsstrconsts.ctspropertyspecifieralreadydefined
 msgid "property specifier already defined: %s"
 msgstr "модифікатор властивості вже визначений: %s"
@@ -631,6 +649,10 @@ msgstr "очікувалось посилання, але знайдено %s"
 #: codetoolsstrconsts.ctsresetalldefines
 msgid "Reset all defines"
 msgstr "Скинути всі визначення"
+
+#: codetoolsstrconsts.ctsresulttypeoffunctiongetenumeratornotfound
+msgid "result type of function GetEnumerator not found"
+msgstr ""
 
 #: codetoolsstrconsts.ctsruntimelibrary
 msgid "Runtime library"
@@ -699,6 +721,10 @@ msgstr "Визначення не має простого типу"
 #: codetoolsstrconsts.ctstoolsdirectory
 msgid "Tools Directory"
 msgstr "Тека інструментів"
+
+#: codetoolsstrconsts.ctstype
+msgid "type"
+msgstr ""
 
 #: codetoolsstrconsts.ctstypeidentifier
 msgid "type identifier"
