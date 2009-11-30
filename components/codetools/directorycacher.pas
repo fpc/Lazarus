@@ -883,32 +883,40 @@ end;
 function TCTDirectoryCache.FindUnitSourceInCompletePath(
   var AUnitName, InFilename: string; AnyCase: boolean): string;
 
+  function FindInFilenameLowUp(aFilename: string): string;
+  begin
+    if AnyCase then
+      Result:=Pool.FindDiskFilename(aFilename)
+    else begin
+      Result:=aFilename;
+      if FileExistsCached(Result) then exit;
+      {$IFNDEF CaseInsensitiveFilenames}
+      Result:=ExtractFilePath(aFilename)+lowercase(ExtractFileName(aFilename));
+      if FileExistsCached(Result) then exit;
+      Result:=ExtractFilePath(aFilename)+uppercase(ExtractFileName(aFilename));
+      if FileExistsCached(Result) then exit;
+      {$ENDIF}
+      Result:='';
+    end;
+  end;
+
   function FindInFilename(aFilename: string): string;
   var
     Ext: String;
   begin
+    Result:='';
+    if not FilenameIsAbsolute(aFilename) then
+      exit;
     Ext:=ExtractFileExt(aFilename);
     if Ext='' then
       aFilename:=aFilename+'.pp'; // append default extension
-    if AnyCase then
-      Result:=Pool.FindDiskFilename(aFilename)
-    else
-      Result:=aFilename;
-    if (not FileExistsCached(Result)) then begin
-      if (Ext<>'') then begin
-        Result:='';
-        exit;
-      end;
+    Result:=FindInFilenameLowUp(aFilename);
+    if Result='' then begin
+      if (Ext<>'') then exit;
       // search for secondary extension
       aFilename:=ChangeFileExt(aFilename,'.pas');
-      if AnyCase then
-        Result:=Pool.FindDiskFilename(aFilename)
-      else
-        Result:=aFilename;
-      if (not FileExistsCached(Result)) then begin
-        Result:='';
-        exit;
-      end;
+      Result:=FindInFilenameLowUp(aFilename);
+      if Result='' then exit;
     end;
     InFilename:=CreateRelativePath(Result,Directory);
   end;
