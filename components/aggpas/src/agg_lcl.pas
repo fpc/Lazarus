@@ -21,6 +21,7 @@ type
   TAggLCLImage = class(TAggFPImage)
   private
     FIntfImg: TLazIntfImage;
+  protected
     procedure ReallocData; override;
   public
     constructor Create(AWidth, AHeight: integer); override;
@@ -107,6 +108,9 @@ type
 
     procedure FillRect(const ARect: TRect); virtual; // no border
     procedure FillRect(X1,Y1,X2,Y2: Integer);        // no border
+    procedure AggTextOut(const x, y: double; str: AnsiString;
+               roundOff: boolean=false;
+               const ddx: double=0.0; const ddy: double=0.0); override;
 
     procedure Frame(const ARect: TRect); virtual; // border using pen
     procedure Frame(X1,Y1,X2,Y2: Integer);        // border using pen
@@ -269,6 +273,12 @@ begin
   Path.m_path.line_to(X1,Y2);
   AggClosePolygon;
   AggDrawPath(AGG_FillOnly);
+end;
+
+procedure TAggLCLCanvas.AggTextOut(const x, y: double; str: AnsiString;
+  roundOff: boolean; const ddx: double; const ddy: double);
+begin
+  inherited AggTextOut(x, y+Font.Size, str, roundOff, ddx, ddy);
 end;
 
 procedure TAggLCLCanvas.Frame(const ARect: TRect);

@@ -716,14 +716,14 @@ type
     procedure AggCopyImage(SrcImage: TAggFPImage; const dstX ,dstY: double);
 
     // text
-    function AggTextWidth(str : AnsiString ) : double;
-    function AggTextHeight(str : AnsiString ) : double;
+    function AggTextWidth(str : AnsiString ) : double; virtual;
+    function AggTextHeight(str : AnsiString ) : double; virtual;
     procedure AggTextOut(
               const x ,y : double;
               str : AnsiString;
               roundOff : boolean = false;
               const ddx : double = 0.0;
-              const ddy : double = 0.0 );
+              const ddy : double = 0.0 ); virtual;
   end;
 
 function FPToAggColor(const c: TFPColor): TAggColor;
