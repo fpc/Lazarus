@@ -6506,10 +6506,26 @@ end;
 function GetLookupRootForComponent(APersistent: TPersistent): TPersistent;
 begin
   Result:=APersistent;
-  if (Result<>nil) and (Result is TComponent) then begin
-    while TComponent(Result).Owner<>nil do
-      Result:=TComponent(Result).Owner;
-  end;
+  if Result=nil then exit;
+  repeat
+    if (Result is TComponent) then begin
+      if TComponent(Result).Owner<>nil then
+        Result:=TComponent(Result).Owner
+      else
+        exit;
+    end else if Result is TCollection then begin
+      if TCollection(Result).Owner<>nil then
+        Result:=TCollection(Result).Owner
+      else
+        exit;
+    end else if Result is TCollectionItem then begin
+      if TCollectionItem(Result).Collection<>nil then
+        Result:=TCollectionItem(Result).Collection
+      else
+        exit;
+    end else
+      exit;
+  until false;
 end;
 
 function KeyAndShiftStateToKeyString(Key: word; ShiftState: TShiftState): String;
