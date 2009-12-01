@@ -227,37 +227,46 @@ Options (to come or to be removed)
   Result := ReloadForm(AName);
   if Result = nil then
     exit;
-//check make dockable
-  if Res.DragKind <> dkDock then begin
-  //make it dockable
-    Res.DragKind := dkDock;
-    Res.OnEndDock := @FormEndDock; //float into default host site
-  end;
-//wrap into floating site, if requested (not on restore Layout)
-  if fWrap then begin
-  //wrap into dock site
-    Site := WrapDockable(Result);
-  end;
-//create a docking handle - should become a component?
-  img := TImage.Create(Result); //we could own the img, and be notified when its parent becomes nil
-  img.Parent := Result;
-  img.Align := alNone;
-  img.Anchors := [akTop, akRight];
-  r := Result.ClientRect;
-  r.bottom := 16;
-  r.Left := r.Right - 16;
-  img.BoundsRect := r;
-  if DockGrip <> nil then  //problem: find grabber picture!?
-    try
-      img.Picture := DockGrip;
-    except
-      DebugLn('exception loading picture');
+  Result.DisableAlign;
+  try
+  //check make dockable
+    if Res.DragKind <> dkDock then begin
+    //make it dockable
+      Res.DragKind := dkDock;
+      Res.OnEndDock := @FormEndDock; //float into default host site
     end;
-  //else???
-  img.OnMouseMove := @DockHandleMouseMove;
-  img.Visible := True;
-//make visible, so that it can be docked without problems
-  Result.Visible := True;
+  //wrap into floating site, if requested (not on restore Layout)
+    if fWrap then begin
+    //wrap into dock site
+      Site := WrapDockable(Result);
+    end;
+  //create a docking handle - should become a component?
+    img := TImage.Create(Result); //we could own the img, and be notified when its parent becomes nil
+    img.Align := alNone;
+    img.AnchorParallel(akRight,0,Result);
+    img.AnchorParallel(akTop,0,Result);
+    img.Anchors:=[akRight,akTop];
+    img.Parent := Result;
+    r := Result.ClientRect;
+    r.bottom := 16;
+    r.Left := r.Right - 16;
+    img.BoundsRect := r;
+    if DockGrip <> nil then  //problem: find grabber picture!?
+      try
+        img.Picture := DockGrip;
+      except
+        on E: Exception do begin
+          DebugLn('exception loading picture ',E.Message);
+        end;
+      end;
+    //else???
+    img.OnMouseMove := @DockHandleMouseMove;
+    img.Visible := True;
+  //make visible, so that it can be docked without problems
+    Result.Visible := True;
+  finally
+    Result.EnableAlign;
+  end;
 end;
 
 procedure TDockMaster.FormEndDock(Sender, Target: TObject; X, Y: Integer);
