@@ -2607,13 +2607,13 @@ procedure TSourceEditor.OnCodeBufferChanged(Sender: TSourceLog;
   var Txt: string;
   begin
     if DirectionForward then begin
-      FEditor.TextBetweenPointsEx[MoveToPos, MoveToPos, scamAdjust] :=
+      FEditor.TextBetweenPoints[MoveToPos, MoveToPos] :=
         FEditor.TextBetweenPoints[StartPos, EndPos];
-      FEditor.TextBetweenPointsEx[StartPos, EndPos, scamAdjust] := '';
+      FEditor.TextBetweenPoints[StartPos, EndPos] := '';
     end else begin
       Txt := FEditor.TextBetweenPoints[StartPos, EndPos];
-      FEditor.TextBetweenPointsEx[StartPos, EndPos, scamAdjust] := '';
-      FEditor.TextBetweenPointsEx[MoveToPos, MoveToPos, scamAdjust] := Txt;;
+      FEditor.TextBetweenPoints[StartPos, EndPos] := '';
+      FEditor.TextBetweenPoints[MoveToPos, MoveToPos] := Txt;;
     end;
   end;
 
@@ -2634,7 +2634,7 @@ begin
         begin
           Sender.AbsoluteToLineCol(SrcLogEntry.Position,StartPos.Y,StartPos.X);
           if StartPos.Y>=1 then
-            FEditor.TextBetweenPointsEx[StartPos, StartPos, scamAdjust] := SrcLogEntry.Txt;
+            FEditor.TextBetweenPoints[StartPos, StartPos] := SrcLogEntry.Txt;
         end;
       sleoDelete:
         begin
@@ -2642,7 +2642,7 @@ begin
           Sender.AbsoluteToLineCol(SrcLogEntry.Position+SrcLogEntry.Len,
             EndPos.Y,EndPos.X);
           if (StartPos.Y>=1) and (EndPos.Y>=1) then
-            FEditor.TextBetweenPointsEx[StartPos, EndPos, scamAdjust] := '';
+            FEditor.TextBetweenPoints[StartPos, EndPos] := '';
         end;
       sleoMove:
         begin
@@ -2806,9 +2806,9 @@ procedure TSourceEditor.ReplaceLines(StartLine, EndLine: integer;
   const NewText: string);
 begin
   if ReadOnly then Exit;
-  FEditor.TextBetweenPointsEx[Point(1,StartLine),
-                            Point(length(FEditor.Lines[Endline-1])+1,EndLine),
-                            scamEnd] := NewText;
+  FEditor.TextBetweenPoints[Point(1,StartLine),
+                            Point(length(FEditor.Lines[Endline-1])+1,EndLine)] :=
+    NewText;
 end;
 
 procedure TSourceEditor.EncloseSelection;
@@ -4020,7 +4020,7 @@ Begin
         SrcEdit:=GetActiveSE;
         Editor:=SrcEdit.EditorComponent;
         if ValueType <> icvNone then
-          Editor.TextBetweenPointsEx[SourceStart, SourceEnd, scamEnd] := NewValue;
+          Editor.TextBetweenPoints[SourceStart, SourceEnd] := NewValue;
         if CursorToLeft>0 then
         begin
           NewCaretXY:=Editor.CaretXY;

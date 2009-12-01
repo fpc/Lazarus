@@ -176,12 +176,6 @@ type
     string; Line, Column: integer; var ReplaceAction: TSynReplaceAction) of object;
 
   TSynEditCaretType = (ctVerticalLine, ctHorizontalLine, ctHalfBlock, ctBlock);
-  TSynCaretAdjustMode = ( // used in TextBetweenPointsEx
-    scamIgnore, // Caret stays at the same numeric values, if text is inserted before caret, the text moves, but the caret stays
-    scamAdjust, // Caret moves with text, if text is inserted
-    scamEnd,
-    scamBegin
-  );
 
   TSynStateFlag = (sfCaretVisible, sfCaretChanged, sfHideCursor,
     sfEnsureCursorPos, sfEnsureCursorPosAtResize,
@@ -475,8 +469,6 @@ type
     procedure SetMouseActions(const AValue: TSynEditMouseActions);
     procedure SetMouseSelActions(const AValue: TSynEditMouseActions);
     procedure SetTextBetweenPoints(aStartPoint, aEndPoint: TPoint; const AValue: String);
-    procedure SetTextBetweenPointsEx(aStartPoint, aEndPoint: TPoint;
-      aCaretMode: TSynCaretAdjustMode; const AValue: String);
     procedure SurrenderPrimarySelection;
     procedure BookMarkOptionsChanged(Sender: TObject);
     procedure ComputeCaret(X, Y: Integer);
@@ -856,7 +848,7 @@ type
 {$ENDIF}
     procedure WndProc(var Msg: TMessage); override;
   public
-    procedure InsertTextAtCaret(aText: String; aCaretMode : TSynCaretAdjustMode = scamEnd);
+    procedure InsertTextAtCaret(aText: String);
     property BlockBegin: TPoint read GetBlockBegin write SetBlockBegin;         // Set Blockbegin. For none persistent also sets Blockend. Setting Caret may undo this and should be done before setting block
     property BlockEnd: TPoint read GetBlockEnd write SetBlockEnd;
     property FoldState: String read GetFoldState write SetFoldState;
@@ -896,8 +888,6 @@ type
     // Logical Points
     property TextBetweenPoints[aStartPoint, aEndPoint: TPoint]: String
       read GetTextBetweenPoints write SetTextBetweenPoints;
-    property TextBetweenPointsEx[aStartPoint, aEndPoint: TPoint; CaretMode: TSynCaretAdjustMode]: String
-      write SetTextBetweenPointsEx;
     property TopLine: Integer read fTopLine write SetTopLine;
     {$IFDEF SYN_LAZARUS}
     property UseUTF8: boolean read FUseUTF8;
@@ -1824,8 +1814,6 @@ begin
   FreeAndNil(FHookedKeyTranslationList);
   fHookedCommandHandlers:=nil;
   fPlugins:=nil;
-  FCaret.Lines := nil;
-  FInternalCaret.Lines := nil;
   FreeAndNil(fScrollTimer);
   FreeAndNil(fTSearch);
   FreeAndNil(fMarkupManager);
@@ -1842,12 +1830,12 @@ begin
   FreeAndNil(fTextDrawer);
   FreeAndNil(fFontDummy);
   FreeAndNil(FWordBreaker);
-  FreeAndNil(FFoldedLinesView); // has reference to caret
+  FreeAndNil(FFoldedLinesView);
   FreeAndNil(FInternalBlockSelection);
   FreeAndNil(FBlockSelection);
   FreeAndNil(FStrings);
   FreeAndNil(FTabbedLinesView);
-  FreeAndNil(FTrimmedLinesView); // has reference to caret
+  FreeAndNil(FTrimmedLinesView);
   FreeAndNil(FDoubleWidthChrLinesView);
   FreeAndNil(fLines);
   FreeAndNil(fCaret);
@@ -4989,29 +4977,8 @@ begin
     FInternalBlockSelection.StartLineBytePos := aStartPoint;
     FInternalBlockSelection.EndLineBytePos := aEndPoint;
     FInternalBlockSelection.SelText := AValue;
+    FCaret.LineBytePos := FInternalBlockSelection.StartLineBytePos;
   finally
-    EndUndoBlock;
-  end;
-end;
-
-procedure TCustomSynEdit.SetTextBetweenPointsEx(aStartPoint, aEndPoint: TPoint;
-  aCaretMode: TSynCaretAdjustMode; const AValue: String);
-begin
-  BeginUndoBlock;
-  try
-    if aCaretMode = scamAdjust then
-      FCaret.AutoMoveOnEdit := True;
-    FInternalBlockSelection.SelectionMode := smNormal;
-    FInternalBlockSelection.StartLineBytePos := aStartPoint;
-    FInternalBlockSelection.EndLineBytePos := aEndPoint;
-    if aCaretMode = scamBegin then
-      FCaret.LineBytePos := FInternalBlockSelection.StartLineBytePos;
-    FInternalBlockSelection.SelText := AValue;
-    if aCaretMode = scamEnd then
-      FCaret.LineBytePos := FInternalBlockSelection.StartLineBytePos;
-  finally
-    if aCaretMode = scamAdjust then
-      FCaret.AutoMoveOnEdit := False;
     EndUndoBlock;
   end;
 end;
@@ -5122,9 +5089,9 @@ begin
     inherited;
 end;
 
-procedure TCustomSynEdit.InsertTextAtCaret(aText: String; aCaretMode : TSynCaretAdjustMode = scamEnd);
+procedure TCustomSynEdit.InsertTextAtCaret(aText: String);
 begin
-  TextBetweenPointsEx[FCaret.LineBytePos, FCaret.LineBytePos, aCaretMode] := aText;
+  TextBetweenPoints[FCaret.LineBytePos, FCaret.LineBytePos] := aText;
 end;
 
 procedure TCustomSynEdit.DragOver(Source: TObject; X, Y: Integer;
@@ -6092,7 +6059,7 @@ begin
       ecBlockCopy:
         begin
           if SelAvail then
-            InsertTextAtCaret(FBlockSelection.SelText, scamEnd);
+            InsertTextAtCaret(FBlockSelection.SelText);
         end;
       ecBlockDelete:
         begin

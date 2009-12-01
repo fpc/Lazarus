@@ -1350,11 +1350,11 @@ begin
                             NewBlockBegin, NewBlockEnd, KeyChar, Shift);
           if (CompareCarets(NewBlockBegin, NewBlockEnd) <> 0) or (Value <> '') then
           begin
-            TextBetweenPointsEx[NewBlockBegin, NewBlockEnd, scamEnd] := Value;
+            TextBetweenPoints[NewBlockBegin, NewBlockEnd] := Value;
             TCustomSynEdit(F.CurrentEditor).SetFocus;
           end;
         end else begin
-          TextBetweenPointsEx[NewBlockBegin, NewBlockEnd, scamEnd] := ItemList[Position];
+          TextBetweenPoints[NewBlockBegin, NewBlockEnd] := ItemList[Position];
           TCustomSynEdit(F.CurrentEditor).SetFocus;
         end;
       end;       
