@@ -877,7 +877,7 @@ function TCodeHelpManager.DoCreateFPDocFileForSource(const SrcFilename: string;
         if BaseDir<>'' then continue;
       end else if TObject(PkgList[i]) is TLazPackage then begin
         APackage:=TLazPackage(PkgList[i]);
-        BaseDir:=APackage.Directory;
+        BaseDir:=APackage.DirectoryExpanded;
         if BaseDir<>'' then continue;
       end;
       // this owner can not be used
@@ -946,7 +946,7 @@ begin
       LazDocPackageName:=GetModuleOwnerName(AProject);
     end else if NewOwner is TLazPackage then begin
       APackage:=TLazPackage(NewOwner);
-      BaseDir:=APackage.Directory;
+      BaseDir:=APackage.DirectoryExpanded;
       if APackage.LazDocPaths='' then
         APackage.LazDocPaths:=SelectNewLazDocPaths(APackage.Name,BaseDir);
       LazDocPaths:=APackage.LazDocPaths;
@@ -1242,7 +1242,8 @@ function TCodeHelpManager.GetFPDocFilenameForSource(SrcFilename: string;
 var
   FPDocName: String;
   SearchedPaths: string;
-  
+  OwnerFound: Boolean;
+
   function SearchInPath(Paths: string; const BaseDir: string;
     out Filename: string): boolean;
   var
@@ -1290,6 +1291,7 @@ var
     end;
     // get all packages owning the file
     if PkgList=nil then exit;
+    if PkgList.Count>0 then OwnerFound:=true;
     try
       for i:=0 to PkgList.Count-1 do begin
         if TObject(PkgList[i]) is TLazProject then begin
@@ -1352,6 +1354,7 @@ begin
   Result:='';
   CacheWasUsed:=true;
   AnOwner:=nil;
+  OwnerFound:=false;
 
   if ResolveIncludeFiles then begin
     CodeBuf:=CodeToolBoss.FindFile(SrcFilename);
@@ -1397,7 +1400,8 @@ begin
     and (not CheckIfInLazarus(Result))
     then begin
       // not found
-      DebugLn(['TCodeHelpManager.GetFPDocFilenameForSource Hint: file without owner: ',SrcFilename]);
+      if not OwnerFound then
+        DebugLn(['TCodeHelpManager.GetFPDocFilenameForSource Hint: file without owner: ',SrcFilename]);
     end;
 
     // save to cache
@@ -1436,7 +1440,7 @@ begin
   CacheWasUsed:=false;
   APackage:=TLazPackage(PkgFile.LazPackage);
   if APackage.LazDocPaths='' then exit;
-  BaseDir:=APackage.Directory;
+  BaseDir:=APackage.DirectoryExpanded;
   if BaseDir='' then exit;
 
   SrcFilename:=PkgFile.Filename;
@@ -1516,7 +1520,8 @@ var
     // check if the file is in the search path
     Path:=ExtractFilePath(FPDocFile.Filename);
     SearchPath:=Pkg.LazDocPaths;
-    if not IDEMacros.CreateAbsoluteSearchPath(SearchPath,Pkg.Directory) then
+    if not IDEMacros.CreateAbsoluteSearchPath(SearchPath,Pkg.Directory)
+    then
       exit;
     SearchPath:=MinimizeSearchPath(SearchPath);
     //DebugLn(['InPackage Path="',Path,'" SearchPath="',SearchPath,'"']);
@@ -1623,7 +1628,7 @@ begin
       APackage:=TLazPackage(TheOwner);
       if (APackage.FindUnit(FirstIdentifier)=nil) then begin
         // the unit is not owned.
-        if SearchLazDocFile(APackage.LazDocPaths,APackage.Directory,
+        if SearchLazDocFile(APackage.LazDocPaths,APackage.DirectoryExpanded,
           FirstIdentifier)='' then
         begin
           // and there is no fpdoc file for this identifier

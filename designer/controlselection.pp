@@ -38,7 +38,8 @@ interface
 
 uses
   Classes, SysUtils, Math, LCLIntf, LCLType, LCLProc, Controls, Forms,
-  GraphType, Graphics, Menus, EnvironmentOpts, PropEdits, DesignerProcs;
+  GraphType, Graphics, Menus, EnvironmentOpts, PropEdits,
+  FormEditingIntf, NonControlDesigner, DesignerProcs;
 
 type
   TControlSelection = class;
@@ -132,7 +133,6 @@ type
     function GetLeft: integer;
     procedure SetLeft(ALeft: integer);
     function GetTop: integer;
-    procedure SetOwner(const AValue: TControlSelection);
     procedure SetTop(ATop: integer);
     function GetWidth: integer;
     procedure SetUseCache(const AValue: boolean);
@@ -144,9 +144,8 @@ type
     destructor Destroy; override;
     procedure SetBounds(ALeft, ATop, AWidth, AHeight: integer);
     procedure SetFormRelativeBounds(ALeft, ATop, AWidth, AHeight: integer);
-    procedure GetFormRelativeBounds(var ALeft, ATop, AWidth, AHeight: integer);
     procedure GetFormRelativeBounds(var ALeft, ATop, AWidth, AHeight: integer;
-                                    StoreAsUsed: boolean);
+                                    StoreAsUsed: boolean = false);
     procedure SetUsedBounds(ALeft, ATop, AWidth, AHeight: integer);
     procedure SaveBounds;
     procedure UpdateCache;
@@ -156,7 +155,7 @@ type
     procedure InvalidateNonVisualPersistent;
 
     property Persistent: TPersistent read FPersistent;
-    property Owner: TControlSelection read FOwner write SetOwner;
+    property Owner: TControlSelection read FOwner;
     property Left: integer read GetLeft write SetLeft;
     property Top: integer read GetTop write SetTop;
     property Width: integer read GetWidth write SetWidth;
@@ -265,7 +264,9 @@ type
   { TControlSelection }
 
   TControlSelection = class(TObject)
+  private
     FControls: TList;  // list of TSelectedControl
+    FMediator: TDesignerMediator;
 
     // current bounds of the selection (only valid if Count>0)
     // These are the values set by the user
@@ -487,13 +488,15 @@ type
 
     procedure SelectAll(ALookupRoot: TComponent);
     procedure SelectWithRubberBand(ALookupRoot: TComponent;
+                                   AMediator: TDesignerMediator;
                                    ClearBefore, ExclusiveOr: boolean;
                                    var SelectionChanged: boolean;
-                                   MaxParentControl: TControl);
+                                   MaxParentComponent: TComponent);
 
     property Visible:boolean read GetVisible write SetVisible;
 
     property SelectionForm: TCustomForm read FForm;
+    property Mediator: TDesignerMediator read FMediator;
     property OnSelectionFormChanged: TOnSelectionFormChanged
       read FOnSelectionFormChanged write FOnSelectionFormChanged;
     property LookupRoot: TComponent read FLookupRoot;
@@ -572,6 +575,8 @@ begin
   FIsTControl:=FPersistent is TControl;
   FIsTWinControl:=FPersistent is TWinControl;
   FIsNonVisualComponent:=FIsTComponent and (not FIsTControl);
+  if (Owner.Mediator<>nil) and FIsTComponent then
+    FIsNonVisualComponent:=Owner.Mediator.ComponentIsIcon(TComponent(FPersistent));
   if FIsTComponent then
     FDesignerForm:=GetDesignerForm(TComponent(FPersistent));
   FIsVisible:=FIsTComponent
@@ -586,19 +591,24 @@ end;
 procedure TSelectedControl.SetBounds(ALeft, ATop, AWidth, AHeight: integer);
 begin
   if FIsTControl then begin
-    TControl(FPersistent).Invalidate;
     TControl(FPersistent).SetBounds(ALeft, ATop, AWidth, AHeight);
     FCachedLeft:=ALeft;
     FCachedTop:=ATop;
     FCachedWidth:=AWidth;
     FCachedHeight:=AHeight;
-  end else if FIsTComponent then begin
+  end else if FIsNonVisualComponent then begin
     if (Left<>ALeft) or (Top<>ATop) then begin
       InvalidateNonVisualPersistent;
       Left:=ALeft;
       Top:=ATop;
       InvalidateNonVisualPersistent;
     end;
+  end else if (Owner.Mediator<>nil) and FIsTComponent then begin
+    FCachedLeft:=ALeft;
+    FCachedTop:=ATop;
+    FCachedWidth:=AWidth;
+    FCachedHeight:=AHeight;
+    Owner.Mediator.SetBounds(TComponent(FPersistent),Bounds(ALeft,ATop,AWidth,AHeight));
   end;
 end;
 
@@ -606,25 +616,44 @@ procedure TSelectedControl.SetFormRelativeBounds(ALeft, ATop, AWidth,
   AHeight: integer);
 var
   ParentOffset: TPoint;
+  OldBounds: TRect;
 begin
   if not FIsTComponent then exit;
-  ParentOffset:=
-               GetParentFormRelativeParentClientOrigin(TComponent(FPersistent));
-  SetBounds(ALeft-ParentOffset.X,ATop-ParentOffset.Y,AWidth,AHeight);
+  if Owner.Mediator<>nil then begin
+    Owner.Mediator.GetBounds(TComponent(FPersistent),OldBounds);
+    ParentOffset:=Owner.Mediator.GetComponentOriginOnForm(TComponent(FPersistent));
+    dec(ParentOffset.X,OldBounds.Left);
+    dec(ParentOffset.Y,OldBounds.Top);
+    Owner.Mediator.SetBounds(TComponent(FPersistent),
+      Bounds(ALeft-ParentOffset.X,ATop-ParentOffset.Y,AWidth,AHeight));
+  end else begin
+    ParentOffset:=GetParentFormRelativeParentClientOrigin(TComponent(FPersistent));
+    SetBounds(ALeft-ParentOffset.X,ATop-ParentOffset.Y,AWidth,AHeight);
+  end;
 end;
 
 procedure TSelectedControl.GetFormRelativeBounds(var ALeft, ATop, AWidth,
-  AHeight: integer);
+  AHeight: integer; StoreAsUsed: boolean);
 var
   ALeftTop: TPoint;
+  CurBounds: TRect;
 begin
   if FIsTComponent then
   begin
-    ALeftTop := GetParentFormRelativeTopLeft(TComponent(FPersistent));
-    ALeft := ALeftTop.X;
-    ATop := ALeftTop.Y;
-    AWidth := GetComponentWidth(TComponent(FPersistent));
-    AHeight := GetComponentHeight(TComponent(FPersistent));
+    if Owner.Mediator<>nil then begin
+      ALeftTop:=Owner.Mediator.GetComponentOriginOnForm(TComponent(FPersistent));
+      Owner.Mediator.GetBounds(TComponent(FPersistent),CurBounds);
+      ALeft:=ALeftTop.X;
+      ATop:=ALeftTop.Y;
+      AWidth:=CurBounds.Right-CurBounds.Left;
+      AHeight:=CurBounds.Bottom-CurBounds.Top;
+    end else begin
+      ALeftTop := GetParentFormRelativeTopLeft(TComponent(FPersistent));
+      ALeft := ALeftTop.X;
+      ATop := ALeftTop.Y;
+      AWidth := GetComponentWidth(TComponent(FPersistent));
+      AHeight := GetComponentHeight(TComponent(FPersistent));
+    end;
   end else
   begin
     ALeft := 0;
@@ -632,12 +661,6 @@ begin
     AWidth := 0;
     AHeight := 0;
   end;
-end;
-
-procedure TSelectedControl.GetFormRelativeBounds(var ALeft, ATop, AWidth,
-  AHeight: integer; StoreAsUsed: boolean);
-begin
-  GetFormRelativeBounds(ALeft, ATop, AWidth, AHeight);
   if StoreAsUsed then
     SetUsedBounds(ALeft, ATop, AWidth, AHeight);
 end;
@@ -651,12 +674,22 @@ begin
 end;
 
 procedure TSelectedControl.SaveBounds;
+var
+  r: TRect;
 begin
   if not FIsTComponent then exit;
-  GetComponentBounds(TComponent(FPersistent),
-                     FOldLeft,FOldTop,FOldWidth,FOldHeight);
-  FOldFormRelativeLeftTop:=
+  if Owner.Mediator<>nil then begin
+    Owner.Mediator.GetBounds(TComponent(FPersistent),r);
+    FOldLeft:=r.Left;
+    FOldTop:=r.Top;
+    FOldWidth:=r.Right-r.Left;
+    FOldHeight:=r.Bottom-r.Top;
+  end else begin
+    GetComponentBounds(TComponent(FPersistent),
+                       FOldLeft,FOldTop,FOldWidth,FOldHeight);
+    FOldFormRelativeLeftTop:=
                           GetParentFormRelativeTopLeft(TComponent(FPersistent));
+  end;
 end;
 
 procedure TSelectedControl.UpdateCache;
@@ -713,67 +746,99 @@ begin
 end;
 
 function TSelectedControl.GetLeft: integer;
+var
+  r: TRect;
 begin
   if FUseCache then
     Result:=FCachedLeft
-  else if FIsTComponent then
-    Result:=GetComponentLeft(TComponent(FPersistent))
-  else
+  else if FIsTComponent then begin
+    if Owner.Mediator<>nil then begin
+      Owner.Mediator.GetBounds(TComponent(FPersistent),r);
+      Result:=r.Left;
+    end else begin
+      Result:=GetComponentLeft(TComponent(FPersistent))
+    end;
+  end else
     Result:=0;
 end;
 
 procedure TSelectedControl.SetLeft(ALeft: Integer);
+var
+  r: TRect;
 begin
   if FIsTControl then
     TControl(FPersistent).Left := Aleft
   else
   if FIsTComponent then
   begin
-    ALeft := Max(Low(SmallInt), Min(ALeft, High(SmallInt)));
-    TComponent(FPersistent).DesignInfo := DesignInfoFrom(ALeft, Top);
+    if Owner.Mediator<>nil then begin
+      Owner.Mediator.GetBounds(TComponent(FPersistent),r);
+      r.Left:=ALeft;
+      Owner.Mediator.SetBounds(TComponent(FPersistent),r)
+    end else begin
+      ALeft := Max(Low(SmallInt), Min(ALeft, High(SmallInt)));
+      TComponent(FPersistent).DesignInfo := LeftTopToDesignInfo(ALeft, Top);
+    end;
   end;
      
   FCachedLeft := ALeft;
 end;
 
 function TSelectedControl.GetTop: integer;
+var
+  r: TRect;
 begin
   if FUseCache then
     Result := FCachedTop
   else 
-  if FIsTComponent then
-    Result := GetComponentTop(TComponent(FPersistent))
-  else
+  if FIsTComponent then begin
+    if Owner.Mediator<>nil then begin
+      Owner.Mediator.GetBounds(TComponent(FPersistent),r);
+      Result:=r.Top;
+    end else begin
+      Result := GetComponentTop(TComponent(FPersistent));
+    end;
+  end else
     Result := 0;
 end;
 
-procedure TSelectedControl.SetOwner(const AValue: TControlSelection);
-begin
-  if FOwner=AValue then exit;
-  FOwner:=AValue;
-end;
-
 procedure TSelectedControl.SetTop(ATop: integer);
+var
+  r: TRect;
 begin
   if FIsTControl then
     TControl(FPersistent).Top := ATop
   else
   if FIsTComponent then
   begin
-    ATop := Max(Low(SmallInt), Min(ATop, High(SmallInt)));
-    TComponent(FPersistent).DesignInfo := DesignInfoFrom(Left, ATop);
+    if Owner.Mediator<>nil then begin
+      Owner.Mediator.GetBounds(TComponent(FPersistent),r);
+      r.Top:=ATop;
+      Owner.Mediator.SetBounds(TComponent(FPersistent),r);
+    end else begin
+      ATop := Max(Low(SmallInt), Min(ATop, High(SmallInt)));
+      TComponent(FPersistent).DesignInfo := LeftTopToDesignInfo(Left, ATop);
+    end;
   end;
     
   FCachedTop := ATop;
 end;
 
 function TSelectedControl.GetWidth: integer;
+var
+  r: TRect;
 begin
   if FUseCache then
     Result := FCachedWidth
   else 
-  if FIsTComponent then
-    Result := GetComponentWidth(TComponent(FPersistent));
+  if FIsTComponent then begin
+    if Owner.Mediator<>nil then begin
+      Owner.Mediator.GetBounds(TComponent(FPersistent),r);
+      Result:=r.Right-r.Left;
+    end else begin
+      Result := GetComponentWidth(TComponent(FPersistent));
+    end;
+  end;
 end;
 
 procedure TSelectedControl.SetUseCache(const AValue: boolean);
@@ -784,27 +849,48 @@ begin
 end;
 
 procedure TSelectedControl.SetWidth(AWidth: integer);
+var
+  r: TRect;
 begin
   if FIsTControl then
-    TControl(FPersistent).Width:=AWidth;
+    TControl(FPersistent).Width:=AWidth
+  else if FIsTComponent and (Owner.Mediator<>nil) then begin
+    Owner.Mediator.GetBounds(TComponent(FPersistent),r);
+    r.Right:=r.Left+AWidth;
+    Owner.Mediator.SetBounds(TComponent(FPersistent),r);
+  end;
   FCachedWidth:=AWidth;
 end;
 
 function TSelectedControl.GetHeight: integer;
+var
+  r: TRect;
 begin
   if FUseCache then
     Result := FCachedHeight
   else 
-  if FIsTComponent then
-    Result := GetComponentHeight(TComponent(FPersistent))
-  else
+  if FIsTComponent then begin
+    if Owner.Mediator<>nil then begin
+      Owner.Mediator.GetBounds(TComponent(FPersistent),r);
+      Result:=r.Bottom-r.Top;
+    end else begin
+      Result := GetComponentHeight(TComponent(FPersistent));
+    end;
+  end else
     Result:=0;
 end;
 
 procedure TSelectedControl.SetHeight(AHeight: integer);
+var
+  r: TRect;
 begin
   if FIsTControl then
-    TControl(FPersistent).Height:=AHeight;
+    TControl(FPersistent).Height:=AHeight
+  else if FIsTComponent and (Owner.Mediator<>nil) then begin
+    Owner.Mediator.GetBounds(TComponent(FPersistent),r);
+    r.Bottom:=r.Top+AHeight;
+    Owner.Mediator.SetBounds(TComponent(FPersistent),r);
+  end;
   FCachedHeight:=AHeight;
 end;
 
@@ -971,6 +1057,10 @@ begin
   InvalidateGrabbers;
   OldCustomForm:=FForm;
   FForm:=NewCustomForm;
+  if FForm is TNonControlDesignerForm then
+    FMediator:=TNonControlDesignerForm(FForm).Mediator
+  else
+    FMediator:=nil;
   FLookupRoot:=GetSelectionOwner;
   if Assigned(FOnSelectionFormChanged) then
     FOnSelectionFormChanged(Self,OldCustomForm,NewCustomForm);
@@ -1190,19 +1280,16 @@ procedure TControlSelection.DoDrawMarker(Index: integer;
   DC: TDesignerDeviceContext);
 var
   CompLeft, CompTop, CompWidth, CompHeight: integer;
-  CompOrigin, DCOrigin: TPoint;
+  DCOrigin: TPoint;
   CurItem: TSelectedControl;
-  AComponent: TComponent;
 begin
   CurItem:=Items[Index];
   if not CurItem.IsTComponent then exit;
-  AComponent:=TComponent(CurItem.Persistent);
 
-  GetComponentBounds(AComponent,CompLeft,CompTop,CompWidth,CompHeight);
-  CompOrigin:=GetParentFormRelativeParentClientOrigin(AComponent);
+  CurItem.GetFormRelativeBounds(CompLeft,CompTop,CompWidth,CompHeight);
   DCOrigin:=DC.FormOrigin;
-  CompLeft:=CompLeft+CompOrigin.X-DCOrigin.X;
-  CompTop:=CompTop+CompOrigin.Y-DCOrigin.Y;
+  CompLeft:=CompLeft-DCOrigin.X;
+  CompTop:=CompTop-DCOrigin.Y;
 
   {writeln('DoDrawMarker A ',FForm.Name
     ,' Component',AComponent.Name,',',CompLeft,',',CompLeft
@@ -1904,6 +1991,7 @@ function TControlSelection.AssignPersistent(APersistent: TPersistent): boolean;
 begin
   Result:=not IsOnlySelected(APersistent);
   if not Result then exit;
+  DebugLn(['TControlSelection.AssignPersistent ',DbgSName(APersistent)]);
   BeginUpdate;
   Clear;
   Add(APersistent);
@@ -1950,6 +2038,7 @@ begin
   FControls.Clear;
   FStates:=FStates+cssSelectionChangeFlags-[cssLookupRootSelected];
   FForm:=nil;
+  FMediator:=nil;
   UpdateBounds;
   SaveBounds;
   DoChange;
@@ -2392,42 +2481,65 @@ begin
 end;
 
 procedure TControlSelection.SelectWithRubberBand(ALookupRoot: TComponent;
-  ClearBefore, ExclusiveOr:boolean; var SelectionChanged: boolean;
-  MaxParentControl: TControl);
+  AMediator: TDesignerMediator; ClearBefore, ExclusiveOr: boolean;
+  var SelectionChanged: boolean; MaxParentComponent: TComponent);
 var
   i: integer;
   AComponent: TComponent;
 
-  function ControlInRubberBand(AComponent: TComponent): boolean;
+  function ComponentInRubberBand(AComponent: TComponent): boolean;
   var
     ALeft, ATop, ARight, ABottom: integer;
     Origin: TPoint;
     AControl: TControl;
+    CurBounds: TRect;
+    CurParent: TComponent;
   begin
     Result:=false;
-    if ComponentIsInvisible(AComponent) then exit;
-    if (AComponent is TControl) then begin
-      AControl:=TControl(AComponent);
-      // check if control is visible on form
-      if not ControlIsInDesignerVisible(AControl) then exit;
-      // check if control
-      if (MaxParentControl<>nil) then begin
-        // select only controls, that are childs of MaxParentControl
-        if (not MaxParentControl.IsParentOf(AControl)) then exit;
-        // check if control is a grand child
+    if AMediator<>nil then begin
+      // check if component is visible on form
+      if not AMediator.ComponentIsVisible(AComponent) then exit;
+      if MaxParentComponent<>nil then begin
+        // check if component is a grand child
+        CurParent:=AComponent.GetParentComponent;
         if (not EnvironmentOptions.RubberbandSelectsGrandChilds)
-        and (AControl.Parent<>MaxParentControl) then exit;
+        and (CurParent<>MaxParentComponent) then exit;
+        // check if component is a child (direct or grand)
+        while (CurParent<>nil) and (CurParent<>MaxParentComponent) do
+          CurParent:=CurParent.GetParentComponent;
+        if CurParent=nil then exit;
       end;
-    end;
-    Origin:=GetParentFormRelativeTopLeft(AComponent);
-    ALeft:=Origin.X;
-    ATop:=Origin.Y;
-    if AComponent is TControl then begin
-      ARight:=ALeft+TControl(AComponent).Width;
-      ABottom:=ATop+TControl(AComponent).Height;
+      AMediator.GetBounds(AComponent,CurBounds);
+      Origin:=AMediator.GetComponentOriginOnForm(AComponent);
+      ALeft:=Origin.X;
+      ATop:=Origin.Y;
+      ARight:=ALeft+CurBounds.Right-CurBounds.Left;
+      ABottom:=ATop+CurBounds.Bottom-CurBounds.Top;
     end else begin
-      ARight:=ALeft+NonVisualCompWidth;
-      ABottom:=ATop+NonVisualCompWidth;
+      if ComponentIsInvisible(AComponent) then exit;
+      if (AComponent is TControl) then begin
+        AControl:=TControl(AComponent);
+        // check if control is visible on form
+        if not ControlIsInDesignerVisible(AControl) then exit;
+        // check if control
+        if (MaxParentComponent is TWinControl) then begin
+          // select only controls, that are childs of MaxParentComponent
+          if (not TWinControl(MaxParentComponent).IsParentOf(AControl)) then exit;
+          // check if control is a grand child
+          if (not EnvironmentOptions.RubberbandSelectsGrandChilds)
+          and (AControl.Parent<>MaxParentComponent) then exit;
+        end;
+      end;
+      Origin:=GetParentFormRelativeTopLeft(AComponent);
+      ALeft:=Origin.X;
+      ATop:=Origin.Y;
+      if AComponent is TControl then begin
+        ARight:=ALeft+TControl(AComponent).Width;
+        ABottom:=ATop+TControl(AComponent).Height;
+      end else begin
+        ARight:=ALeft+NonVisualCompWidth;
+        ABottom:=ATop+NonVisualCompWidth;
+      end;
     end;
     Result:=(ALeft<FRubberBandBounds.Right)
         and (ATop<FRubberBandBounds.Bottom)
@@ -2445,7 +2557,7 @@ begin
     end;
     for i:=0 to ALookupRoot.ComponentCount-1 do begin
       AComponent:=ALookupRoot.Components[i];
-      if not ControlInRubberBand(AComponent) then begin
+      if not ComponentInRubberBand(AComponent) then begin
         if IsSelected(AComponent) then begin
           Remove(AComponent);
           SelectionChanged:=true;
@@ -2455,7 +2567,7 @@ begin
   end;
   for i:=0 to ALookupRoot.ComponentCount-1 do begin
     AComponent:=ALookupRoot.Components[i];
-    if ControlInRubberBand(AComponent) then begin
+    if ComponentInRubberBand(AComponent) then begin
       if IsSelected(AComponent) then begin
         if ExclusiveOr then begin
           Remove(AComponent);

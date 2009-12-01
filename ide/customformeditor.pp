@@ -124,6 +124,7 @@ each control that's dropped onto the form
     FDefineProperties: TAVLTree;// tree of TDefinePropertiesCacheItem
     FStandardDefinePropertiesRegistered: Boolean;
     FDesignerBaseClasses: TFPList; // list of TComponentClass
+    FDesignerMediatorClasses: TFPList;// list of TDesignerMediatorClass
     function GetPropertyEditorHook: TPropertyEditorHook;
     function FindDefinePropertyNode(const APersistentClassName: string
                                     ): TAVLTreeNode;
@@ -136,6 +137,7 @@ each control that's dropped onto the form
     procedure SetObj_Inspector(AnObjectInspector: TObjectInspectorDlg); virtual;
     procedure JITListReaderError(Sender: TObject; Reader: TReader;
           ErrorType: TJITFormError; var Action: TModalResult); virtual;
+    procedure JITListBeforeCreate(Sender: TObject; Instance: TPersistent);
     procedure JITListException(Sender: TObject; E: Exception;
                                var Action: TModalResult);
     procedure JITListPropertyNotFound(Sender: TObject; Reader: TReader;
@@ -211,11 +213,28 @@ each control that's dropped onto the form
     function SaveUnitComponentToBinStream(AnUnitInfo: TUnitInfo;
       var BinCompStream: TExtMemoryStream): TModalResult;
 
+    // ancestors
+    function GetAncestorLookupRoot(AComponent: TComponent): TComponent; override;
+    function GetAncestorInstance(AComponent: TComponent): TComponent; override;
+    function RegisterDesignerBaseClass(AClass: TComponentClass): integer; override;
+    function DesignerBaseClassCount: Integer; override;
+    procedure UnregisterDesignerBaseClass(AClass: TComponentClass); override;
+    function IndexOfDesignerBaseClass(AClass: TComponentClass): integer; override;
+    function DescendFromDesignerBaseClass(AClass: TComponentClass): integer; override;
+    function FindDesignerBaseClassByName(const AClassName: shortstring; WithDefaults: boolean): TComponentClass; override;
+
     // designers
     function DesignerCount: integer; override;
     function GetDesigner(Index: integer): TIDesigner; override;
     function GetCurrentDesigner: TIDesigner; override;
     function GetDesignerByComponent(AComponent: TComponent): TIDesigner; override;
+
+    // designer mediators
+    function GetDesignerMediators(Index: integer): TDesignerMediatorClass; override;
+    procedure RegisterDesignerMediator(MediatorClass: TDesignerMediatorClass); override;
+    procedure UnregisterDesignerMediator(MediatorClass: TDesignerMediatorClass); override;
+    function DesignerMediatorCount: integer; override;
+    function GetDesignerMediatorClass(ComponentClass: TComponentClass): TDesignerMediatorClass;
 
     // component editors
     function GetComponentEditor(AComponent: TComponent): TBaseComponentEditor;
@@ -260,16 +279,6 @@ each control that's dropped onto the form
                                      AComponent: TComponent): Boolean;
     function ComponentDependsOnClass(AComponent: TComponent;
                                      AClass: TComponentClass): Boolean;
-
-    // ancestors
-    function GetAncestorLookupRoot(AComponent: TComponent): TComponent; override;
-    function GetAncestorInstance(AComponent: TComponent): TComponent; override;
-    function RegisterDesignerBaseClass(AClass: TComponentClass): integer; override;
-    function DesignerBaseClassCount: Integer; override;
-    procedure UnregisterDesignerBaseClass(AClass: TComponentClass); override;
-    function IndexOfDesignerBaseClass(AClass: TComponentClass): integer; override;
-    function DescendFromDesignerBaseClass(AClass: TComponentClass): integer; override;
-    function FindDesignerBaseClassByName(const AClassName: shortstring; WithDefaults: boolean): TComponentClass; override;
 
     // define properties
     procedure FindDefineProperty(const APersistentClassName,
@@ -850,6 +859,7 @@ constructor TCustomFormEditor.Create;
   procedure InitJITList(List: TJITComponentList);
   begin
     List.OnReaderError:=@JITListReaderError;
+    List.OnBeforeCreate:=@JITListBeforeCreate;
     List.OnException:=@JITListException;
     List.OnPropertyNotFound:=@JITListPropertyNotFound;
     List.OnFindAncestors:=@JITListFindAncestors;
@@ -864,13 +874,14 @@ begin
   FNonFormForms := TAVLTree.Create(@CompareNonFormDesignerForms);
   FSelection := TPersistentSelectionList.Create;
   FDesignerBaseClasses:=TFPList.Create;
+  FDesignerMediatorClasses:=TFPList.Create;
   for l:=Low(StandardDesignerBaseClasses) to High(StandardDesignerBaseClasses) do
     FDesignerBaseClasses.Add(StandardDesignerBaseClasses[l]);
 
-  JITFormList := TJITForms.Create;
+  JITFormList := TJITForms.Create(nil);
   InitJITList(JITFormList);
 
-  JITNonFormList := TJITNonFormComponents.Create;
+  JITNonFormList := TJITNonFormComponents.Create(nil);
   InitJITList(JITNonFormList);
 
   DesignerMenuItemClick:=@OnDesignerMenuItemClick;
@@ -888,6 +899,7 @@ begin
   end;
   FreeAndNil(JITFormList);
   FreeAndNil(JITNonFormList);
+  FreeAndNil(FDesignerMediatorClasses);
   FreeAndNil(FDesignerBaseClasses);
   FreeAndNil(FComponentInterfaces);
   FreeAndNil(FSelection);
@@ -965,7 +977,7 @@ Begin
       begin
         FNonFormForms.Remove(AForm);
         TCustomNonFormDesignerForm(AForm).LookupRoot := nil;
-        TryFreeComponent(AForm);
+        Application.ReleaseComponent(AForm);
       end;
 
       if FreeComponent then
@@ -1221,6 +1233,8 @@ begin
 end;
 
 function TCustomFormEditor.CreateNonFormForm(LookupRoot: TComponent): TCustomNonFormDesignerForm;
+var
+  MediatorClass: TDesignerMediatorClass;
 begin
   if FindNonFormFormNode(LookupRoot) <> nil then
     RaiseException('TCustomFormEditor.CreateNonFormForm already exists');
@@ -1232,6 +1246,13 @@ begin
       Result := TNonControlDesignerForm.Create(nil);
     Result.LookupRoot := LookupRoot;
     FNonFormForms.Add(Result);
+
+    if Result is TNonControlDesignerForm then begin
+      // create the mediator
+      MediatorClass:=GetDesignerMediatorClass(TComponentClass(LookupRoot.ClassType));
+      if MediatorClass<>nil then
+        TNonControlDesignerForm(Result).Mediator:=MediatorClass.CreateMediator(nil,LookupRoot);
+    end;
   end else
     RaiseException('TCustomFormEditor.CreateNonFormForm Unknown type '
       +LookupRoot.ClassName);
@@ -1501,6 +1522,48 @@ begin
     Result:=AForm.Designer;
 end;
 
+function TCustomFormEditor.GetDesignerMediators(Index: integer
+  ): TDesignerMediatorClass;
+begin
+  Result:=TDesignerMediatorClass(FDesignerMediatorClasses[Index]);
+end;
+
+procedure TCustomFormEditor.RegisterDesignerMediator(
+  MediatorClass: TDesignerMediatorClass);
+begin
+  if FDesignerMediatorClasses.IndexOf(MediatorClass)>=0 then
+    raise Exception.Create('TCustomFormEditor.RegisterDesignerMediator already registered: '+DbgSName(MediatorClass));
+  FDesignerMediatorClasses.Add(MediatorClass);
+  RegisterDesignerBaseClass(MediatorClass.FormClass);
+end;
+
+procedure TCustomFormEditor.UnregisterDesignerMediator(
+  MediatorClass: TDesignerMediatorClass);
+begin
+  UnregisterDesignerBaseClass(MediatorClass.FormClass);
+  FDesignerMediatorClasses.Remove(MediatorClass);
+end;
+
+function TCustomFormEditor.DesignerMediatorCount: integer;
+begin
+  Result:=FDesignerMediatorClasses.Count;
+end;
+
+function TCustomFormEditor.GetDesignerMediatorClass(
+  ComponentClass: TComponentClass): TDesignerMediatorClass;
+var
+  i: Integer;
+  Candidate: TDesignerMediatorClass;
+begin
+  Result:=nil;
+  for i:=0 to DesignerMediatorCount-1 do begin
+    Candidate:=DesignerMediators[i];
+    if not (ComponentClass.InheritsFrom(Candidate.FormClass)) then continue;
+    if (Result<>nil) and Result.InheritsFrom(Candidate.FormClass) then continue;
+    Result:=Candidate;
+  end;
+end;
+
 function TCustomFormEditor.GetComponentEditor(AComponent: TComponent
   ): TBaseComponentEditor;
 var
@@ -1514,8 +1577,11 @@ begin
 end;
 
 function TCustomFormEditor.CreateComponent(ParentCI: TIComponentInterface;
-  TypeClass: TComponentClass; const AUnitName: shortstring; X,Y,W,H: Integer
+  TypeClass: TComponentClass; const AUnitName: shortstring; X, Y, W, H: Integer
   ): TIComponentInterface;
+const
+  PreferredDistanceMin = 30;
+  PreferredDistanceMax = 250;
 var
   Temp: TComponentInterface;
   NewJITIndex: Integer;
@@ -1530,12 +1596,27 @@ var
   DesignForm: TCustomForm;
   NewUnitName: String;
   s: String;
+  Mediator: TDesignerMediator;
+  MonitorBounds: TRect;
+
+  function ActiveMonitor: TMonitor;
+  begin
+    if Screen.ActiveCustomForm <> nil then
+      Result := Screen.ActiveCustomForm.Monitor
+    else
+    if Application.MainForm <> nil then
+      Result := Application.MainForm.Monitor
+    else
+      Result := Screen.PrimaryMonitor;
+  end;
+
 begin
   Result:=nil;
   Temp:=nil;
   ParentComponent:=nil;
   AParent:=nil;
   NewComponent:=nil;
+  Mediator:=nil;
   try
     //DebugLn(['[TCustomFormEditor.CreateComponent] Class="'+TypeClass.ClassName+'" ',X,',',Y,',',W,'x',H]);
     {$IFDEF IDE_MEM_CHECK}CheckHeapWrtMemCnt('TCustomFormEditor.CreateComponent A');{$ENDIF}
@@ -1545,6 +1626,7 @@ begin
     begin
       // add as child component
       ParentComponent := TComponentInterface(ParentCI).Component;
+      Mediator:=GetDesignerMediatorByComponent(ParentComponent);
       OwnerComponent := ParentComponent;
       if OwnerComponent.Owner <> nil then
         OwnerComponent := OwnerComponent.Owner;
@@ -1614,21 +1696,21 @@ begin
       if JITList=nil then
         RaiseException('TCustomFormEditor.CreateComponent '+TypeClass.ClassName);
       NewJITIndex := JITList.AddNewJITComponent(NewUnitName,TypeClass);
-      if NewJITIndex >= 0 then
-        // create component interface
-        Temp := TComponentInterface(CreateComponentInterface(JITList[NewJITIndex],false))
-      else
+      if NewJITIndex < 0 then
         exit;
+      // create component interface
+      NewComponent:=JITList[NewJITIndex];
+      Temp := TComponentInterface(CreateComponentInterface(NewComponent,false))
     end;
     {$IFDEF IDE_MEM_CHECK}CheckHeapWrtMemCnt('TCustomFormEditor.CreateComponent D ');{$ENDIF}
     try
-      NewComponentName := CreateUniqueComponentName(Temp.Component);
-      Temp.Component.Name := NewComponentName;
+      NewComponentName := CreateUniqueComponentName(NewComponent);
+      NewComponent.Name := NewComponentName;
     except
       on e: Exception do begin
         MessageDlg('Error naming component',
           'Error setting the name of a component '
-          +dbgsName(Temp.Component)+' to '+NewComponentName,
+          +dbgsName(NewComponent)+' to '+NewComponentName,
           mtError,[mbCancel],0);
         exit;
       end;
@@ -1640,51 +1722,63 @@ begin
       CompTop:=Y;
       CompWidth:=W;
       CompHeight:=H;
-      if (Temp.IsTControl) then
-      Begin
-        AControl:=TControl(Temp.Component);
+      if NewComponent is TControl then
+      begin
+        AControl := TControl(NewComponent);
         // calc bounds
-        if CompWidth<=0 then CompWidth:=Max(5,AControl.Width);
-        if CompHeight<=0 then CompHeight:=Max(5,AControl.Height);
-        if CompLeft<0 then begin
-          if AParent<>nil then
-            CompLeft:=(AParent.Width - CompWidth) div 2
-          else if (AControl is TCustomForm) then
-            CompLeft:=Max(1,Min(250,Screen.Width-CompWidth-50))
-          else
-            CompLeft:=0;
-        end;
-        if CompTop<0 then begin
-          if AParent<>nil then
-            CompTop:=(AParent.Height - CompHeight) div 2
-          else if (AControl is TCustomForm) then
-            CompTop:=Max(1,Min(250,Screen.Height-CompHeight-50))
-          else
-            CompTop:=0;
-        end;
-        if (AParent<>nil) or (AControl is TCustomForm) then begin
+        if CompWidth <= 0 then CompWidth := Max(5, AControl.Width);
+        if CompHeight <= 0 then CompHeight := Max(5, AControl.Height);
+        MonitorBounds := ActiveMonitor.BoundsRect;
+        if (CompLeft < 0) and (AParent <> nil) then
+          CompLeft := (AParent.Width - CompWidth) div 2
+        else
+        if (AControl is TCustomForm) and (CompLeft < MonitorBounds.Left + PreferredDistanceMin) then
+          with MonitorBounds do
+            CompLeft := Max(Left + PreferredDistanceMin, Min(Left + PreferredDistanceMax, Right - CompWidth - PreferredDistanceMin))
+        else
+        if CompLeft < 0 then
+          CompLeft := 0;
+        if (CompTop < 0) and (AParent <> nil) then
+          CompTop := (AParent.Height - CompHeight) div 2
+        else
+        if (AControl is TCustomForm) and (CompTop < MonitorBounds.Top + PreferredDistanceMin) then
+          with MonitorBounds do
+            CompTop := Max(Top + PreferredDistanceMin, Min(Top + PreferredDistanceMax, Bottom - CompWidth - PreferredDistanceMin))
+        else
+        if CompTop < 0 then
+          CompTop := 0;
+
+        if (AParent <> nil) or (AControl is TCustomForm) then
+        begin
           // set parent after placing control to prevent display at (0,0)
           AControl.SetBounds(CompLeft,CompTop,CompWidth,CompHeight);
           AControl.Parent := AParent;
-        end else begin
+        end else
+        begin
           // no parent and not a form
           AControl.SetBounds(0,0,CompWidth,CompHeight);
-          AControl.DesignInfo := DesignInfoFrom(CompLeft, CompTop);
+          AControl.DesignInfo := LeftTopToDesignInfo(CompLeft, CompTop);
           //DebugLn(['TCustomFormEditor.CreateComponent ',dbgsName(AControl),' ',LongRec(AControl.DesignInfo).Lo,',',LongRec(AControl.DesignInfo).Hi]);
         end;
       end
-      else if (Temp.Component is TDataModule) then begin
+      else
+      if (NewComponent is TDataModule) then
+      begin
         // data module
-        with TDataModule(Temp.Component) do begin
-          if CompWidth<=0 then CompWidth:=Max(50,DesignSize.X);
-          if CompHeight<=0 then CompHeight:=Max(50,DesignSize.Y);
-          if CompLeft<0 then
-            CompLeft:=Max(1,Min(250,Screen.Width-CompWidth-50));
-          if CompTop<0 then
-            CompTop:=Max(1,Min(250,Screen.Height-CompHeight-50));
-          DesignOffset:=Point(CompLeft,CompTop);
-          DesignSize:=Point(CompWidth,CompHeight);
-          //debugln('TCustomFormEditor.CreateComponent TDataModule Bounds ',dbgsName(Temp.Component),' ',dbgs(DesignOffset.X),',',dbgs(DesignOffset.Y),' ',DbgS(Temp.Component),8),' ',DbgS(Cardinal(@DesignOffset));
+        with TDataModule(NewComponent) do
+        begin
+          if CompWidth <= 0 then CompWidth := Max(50, DesignSize.X);
+          if CompHeight <= 0 then CompHeight := Max(50, DesignSize.Y);
+          MonitorBounds := ActiveMonitor.BoundsRect;
+          if CompLeft < MonitorBounds.Left + PreferredDistanceMin then
+            with MonitorBounds do
+              CompLeft := Max(Left + PreferredDistanceMin, Min(Left + PreferredDistanceMax, Right - CompWidth - PreferredDistanceMin));
+          if CompTop < MonitorBounds.Top + PreferredDistanceMin then
+            with MonitorBounds do
+              CompTop := Max(Top + PreferredDistanceMin, Min(Top + PreferredDistanceMax, Bottom - CompWidth - PreferredDistanceMin));
+          DesignOffset := Point(CompLeft, CompTop);
+          DesignSize := Point(CompWidth, CompHeight);
+          //debugln('TCustomFormEditor.CreateComponent TDataModule Bounds ',dbgsName(NewComponent),' ',dbgs(DesignOffset.X),',',dbgs(DesignOffset.Y),' ',DbgS(NewComponent),8),' ',DbgS(Cardinal(@DesignOffset));
         end;
       end
       else begin
@@ -1694,20 +1788,26 @@ begin
 
         CompLeft := Max(Low(SmallInt), Min(High(SmallInt), CompLeft));
         CompTop := Max(Low(SmallInt), Min(High(SmallInt), CompTop));
-        Temp.Component.DesignInfo := DesignInfoFrom(CompLeft, CompTop);
-        if ParentComponent <> nil then 
+
+        SetComponentLeftTopOrDesignInfo(NewComponent,CompLeft,CompTop);
+        if ParentComponent <> nil then
         begin
           DesignForm := GetDesignerForm(ParentComponent);
           if DesignForm <> nil then DesignForm.Invalidate;
         end;
+        if Mediator<>nil then begin
+          Mediator.InitComponent(NewComponent,ParentComponent,
+            Bounds(CompLeft,CompTop,CompWidth,CompHeight));
+        end;
+
       end;
     except
       on e: Exception do begin
         DebugLn(e.Message);
         DumpExceptionBackTrace;
         MessageDlg(lisErrorMovingComponent,
-          Format(lisErrorMovingComponent2, [Temp.Component.Name,
-            Temp.Component.ClassName]),
+          Format(lisErrorMovingComponent2, [NewComponent.Name,
+            NewComponent.ClassName]),
           mtError,[mbCancel],0);
         exit;
       end;
@@ -1715,12 +1815,12 @@ begin
 
     {$IFDEF IDE_MEM_CHECK}CheckHeapWrtMemCnt('TCustomFormEditor.CreateComponent F ');{$ENDIF}
     // add to component list
-    DebugLn(['TCustomFormEditor.CreateComponent ',dbgsName(Temp.Component),' ',FindComponent(Temp.Component)<>nil]);
-    if FindComponent(Temp.Component)=nil then
+    //DebugLn(['TCustomFormEditor.CreateComponent ',dbgsName(NewComponent),' ',FindComponent(NewComponent)<>nil]);
+    if FindComponent(NewComponent)=nil then
       FComponentInterfaces.Add(Temp);
 
-    if Temp.Component.Owner<>nil then
-      CreateChildComponentInterfaces(Temp.Component.Owner);
+    if NewComponent.Owner<>nil then
+      CreateChildComponentInterfaces(NewComponent.Owner);
 
     Result := Temp;
   finally
@@ -2257,6 +2357,18 @@ begin
   end;
 end;
 
+procedure TCustomFormEditor.JITListBeforeCreate(Sender: TObject;
+  Instance: TPersistent);
+var
+  MediatorClass: TDesignerMediatorClass;
+begin
+  if Instance is TComponent then begin
+    MediatorClass:=GetDesignerMediatorClass(TComponentClass(Instance.ClassType));
+    if MediatorClass<>nil then
+      MediatorClass.InitFormInstance(TComponent(Instance));
+  end;
+end;
+
 procedure TCustomFormEditor.JITListException(Sender: TObject; E: Exception;
   var Action: TModalResult);
 var
@@ -2510,6 +2622,7 @@ function TCustomFormEditor.GetDefaultComponentParent(TypeClass: TComponentClass
 var
   NewParent: TComponent;
   Root: TPersistent;
+  Mediator: TDesignerMediator;
 begin
   Result:=nil;
   // find selected component
@@ -2532,8 +2645,19 @@ begin
       // New TypeClass or selected component is not a TControl =>
       // use Root component as parent
       Root:=GetLookupRootForComponent(NewParent);
-      if Root is TComponent then
-        NewParent:=TComponent(Root);
+      if Root is TComponent then begin
+        Mediator:=GetDesignerMediatorByComponent(TComponent(Root));
+        if (Mediator<>nil) then begin
+          while (NewParent<>nil) do begin
+            if Mediator.ParentAcceptsChild(NewParent,TypeClass) then
+              break;
+            NewParent:=NewParent.GetParentComponent;
+          end;
+          if NewParent=nil then
+            NewParent:=TComponent(Root);
+        end else
+          NewParent:=TComponent(Root);
+      end;
     end;
   end;
   if NewParent<>nil then
@@ -2554,86 +2678,82 @@ var
   MaxX: Integer;
   MaxY: Integer;
 begin
-  // TODO: Frames
   Result:=true;
   X:=10;
   Y:=10;
   if ParentCI=nil then
     ParentCI:=GetDefaultComponentParent(TypeClass);
-  if (ParentCI=nil) or (ParentCI.Component=nil) then exit;
-  if TypeClass<>nil then begin
-    if not (TypeClass.InheritsFrom(TControl)) then begin
-      // a non visual component
-      // put it somewhere right or below the other non visual components
-      ParentComponent:=ParentCI.Component;
-      MinX:=-1;
-      MinY:=-1;
-      if (ParentComponent is TWinControl) then 
-      begin
-        MaxX:=TWinControl(ParentComponent).ClientWidth-ComponentPaletteBtnWidth;
-        MaxY:=TWinControl(ParentComponent).ClientHeight-ComponentPaletteBtnHeight;
-      end else 
-      begin
-        AForm:=FindNonFormForm(ParentComponent);
-        if AForm<>nil then begin
-          MaxX:=AForm.ClientWidth-ComponentPaletteBtnWidth;
-          MaxY:=AForm.ClientHeight-ComponentPaletteBtnHeight;
-        end else begin
-          MaxX:=300;
-          MaxY:=0;
-        end;
-      end;
-      // find top left most non visual component
-      for i:=0 to ParentComponent.ComponentCount-1 do begin
-        CurComponent:=ParentComponent.Components[i];
-        if ComponentIsNonVisual(CurComponent) then begin
-          P:=GetParentFormRelativeTopLeft(CurComponent);
-          if (P.X>=0) and (P.Y>=0) then begin
-            if (MinX<0) or (P.Y<MinY) or ((P.Y=MinY) and (P.X<MinX)) then begin
-              MinX:=P.X;
-              MinY:=P.Y;
-            end;
-          end;
-        end;
-      end;
-      if MinX<0 then begin
-        MinX:=10;
-        MinY:=10;
-      end;
-      // find a position without intersection
-      X:=MinX;
-      Y:=MinY;
-      //debugln('TCustomFormEditor.GetDefaultComponentPosition Min=',dbgs(MinX),',',dbgs(MinY));
-      i:=0;
-      while i<ParentComponent.ComponentCount do begin
-        CurComponent:=ParentComponent.Components[i];
-        inc(i);
-        if ComponentIsNonVisual(CurComponent) then begin
-          P:=GetParentFormRelativeTopLeft(CurComponent);
-          //debugln('TCustomFormEditor.GetDefaultComponentPosition ',dbgsName(CurComponent),' P=',dbgs(P));
-          if (P.X>=0) and (P.Y>=0) then begin
-            if (X+ComponentPaletteBtnWidth>=P.X)
-            and (X<=P.X+ComponentPaletteBtnWidth)
-            and (Y+ComponentPaletteBtnHeight>=P.Y)
-            and (Y<=P.Y+ComponentPaletteBtnHeight) then begin
-              // intersection found
-              // move position
-              inc(X,ComponentPaletteBtnWidth+2);
-              if X>MaxX then begin
-                inc(Y,ComponentPaletteBtnHeight+2);
-                X:=MinX;
-              end;
-              // restart intersection test
-              i:=0;
-            end;
-          end;
-        end;
-      end;
-      // keep it visible
-      if X>MaxX then X:=MaxX;
-      if Y>MaxY then Y:=MaxY;
+  if (ParentCI=nil) or (ParentCI.Component=nil) or (TypeClass=nil) then exit;
+  if (TypeClass.InheritsFrom(TControl)) then exit;
+  // a non visual component
+  // put it somewhere right or below the other non visual components
+  ParentComponent:=ParentCI.Component;
+  MinX:=-1;
+  MinY:=-1;
+  if (ParentComponent is TWinControl) then
+  begin
+    MaxX:=TWinControl(ParentComponent).ClientWidth-ComponentPaletteBtnWidth;
+    MaxY:=TWinControl(ParentComponent).ClientHeight-ComponentPaletteBtnHeight;
+  end else
+  begin
+    AForm:=FindNonFormForm(ParentComponent);
+    if AForm<>nil then begin
+      MaxX:=AForm.ClientWidth-ComponentPaletteBtnWidth;
+      MaxY:=AForm.ClientHeight-ComponentPaletteBtnHeight;
+    end else begin
+      MaxX:=300;
+      MaxY:=0;
     end;
   end;
+  // find top left most non visual component
+  for i:=0 to ParentComponent.ComponentCount-1 do begin
+    CurComponent:=ParentComponent.Components[i];
+    if ComponentIsNonVisual(CurComponent) then begin
+      P:=GetParentFormRelativeTopLeft(CurComponent);
+      if (P.X>=0) and (P.Y>=0) then begin
+        if (MinX<0) or (P.Y<MinY) or ((P.Y=MinY) and (P.X<MinX)) then begin
+          MinX:=P.X;
+          MinY:=P.Y;
+        end;
+      end;
+    end;
+  end;
+  if MinX<0 then begin
+    MinX:=10;
+    MinY:=10;
+  end;
+  // find a position without intersection
+  X:=MinX;
+  Y:=MinY;
+  //debugln('TCustomFormEditor.GetDefaultComponentPosition Min=',dbgs(MinX),',',dbgs(MinY));
+  i:=0;
+  while i<ParentComponent.ComponentCount do begin
+    CurComponent:=ParentComponent.Components[i];
+    inc(i);
+    if ComponentIsNonVisual(CurComponent) then begin
+      P:=GetParentFormRelativeTopLeft(CurComponent);
+      //debugln('TCustomFormEditor.GetDefaultComponentPosition ',dbgsName(CurComponent),' P=',dbgs(P));
+      if (P.X>=0) and (P.Y>=0) then begin
+        if (X+ComponentPaletteBtnWidth>=P.X)
+        and (X<=P.X+ComponentPaletteBtnWidth)
+        and (Y+ComponentPaletteBtnHeight>=P.Y)
+        and (Y<=P.Y+ComponentPaletteBtnHeight) then begin
+          // intersection found
+          // move position
+          inc(X,ComponentPaletteBtnWidth+2);
+          if X>MaxX then begin
+            inc(Y,ComponentPaletteBtnHeight+2);
+            X:=MinX;
+          end;
+          // restart intersection test
+          i:=0;
+        end;
+      end;
+    end;
+  end;
+  // keep it visible
+  if X>MaxX then X:=MaxX;
+  if Y>MaxY then Y:=MaxY;
 end;
 
 procedure TCustomFormEditor.OnObjectInspectorModified(Sender: TObject);

@@ -41,7 +41,7 @@ uses
   InterfaceBase, Forms, Controls, GraphType, Graphics, Dialogs, ExtCtrls, Menus,
   ClipBrd,
   // IDEIntf
-  IDEDialogs, PropEdits, ComponentEditors, MenuIntf, IDEImagesIntf,
+  IDEDialogs, PropEdits, ComponentEditors, MenuIntf, IDEImagesIntf, FormEditingIntf,
   // IDE
   LazarusIDEStrConsts, EnvironmentOpts, IDECommands, ComponentReg,
   NonControlDesigner, FrameDesigner, AlignCompsDlg, SizeCompsDlg, ScaleCompsDlg,
@@ -89,6 +89,7 @@ type
     FFlags: TDesignerFlags;
     FGridColor: TColor;
     FLookupRoot: TComponent;
+    FMediator: TDesignerMediator;
     FOnActivated: TNotifyEvent;
     FOnCloseQuery: TNotifyEvent;
     FOnPersistentDeleted: TOnPersistentDeleted;
@@ -127,6 +128,7 @@ type
     procedure SetGridSizeX(const AValue: integer);
     procedure SetGridSizeY(const AValue: integer);
     procedure SetIsControl(Value: Boolean);
+    procedure SetMediator(const AValue: TDesignerMediator);
     procedure SetShowBorderSpacing(const AValue: boolean);
     procedure SetShowComponentCaptions(const AValue: boolean);
     procedure SetShowEditorHints(const AValue: boolean);
@@ -136,7 +138,7 @@ type
     MouseDownComponent: TComponent;
     MouseDownSender: TComponent;
     MouseDownPos: TPoint;
-    MouseDownClickCount: integer;
+    MouseDownShift: TShiftState;
     MouseUpPos: TPoint;
     LastMouseMovePos: TPoint;
     PopupMenuComponentEditor: TBaseComponentEditor;
@@ -153,9 +155,11 @@ type
     procedure MouseDownOnControl(Sender: TControl; var TheMessage : TLMMouse);
     procedure MouseMoveOnControl(Sender: TControl; var TheMessage: TLMMouse);
     procedure MouseUpOnControl(Sender: TControl; var TheMessage:TLMMouse);
-    procedure KeyDown(Sender: TControl; var TheMessage:TLMKEY);
-    procedure KeyUp(Sender: TControl; var TheMessage:TLMKEY);
+    procedure KeyDown(Sender: TControl; var TheMessage: TLMKEY);
+    procedure KeyUp(Sender: TControl; var TheMessage: TLMKEY);
     function  HandleSetCursor(var TheMessage: TLMessage): boolean;
+    procedure GetMouseMsgShift(TheMessage: TLMMouse; var Shift: TShiftState;
+                               var Button: TMouseButton);
 
     // procedures for working with components and persistents
     function GetDesignControl(AControl: TControl): TControl;
@@ -213,6 +217,7 @@ type
     procedure OnSnapToGuideLinesOptionMenuClick(Sender: TObject);
     procedure OnViewLFMMenuClick(Sender: TObject);
     procedure OnSaveAsXMLMenuClick(Sender: TObject);
+    procedure OnCenterFormMenuClick(Sender: TObject);
 
     // hook
     function GetPropertyEditorHook: TPropertyEditorHook; override;
@@ -276,6 +281,8 @@ type
     procedure DrawDesignerItems(OnlyIfNeeded: boolean); override;
     procedure CheckFormBounds;
     procedure DoPaintDesignerItems;
+    function ComponentIsIcon(AComponent: TComponent): boolean;
+    function GetParentFormRelativeClientOrigin(AComponent: TComponent): TPoint;
   public
     property Flags: TDesignerFlags read FFlags;
     property GridSizeX: integer read GetGridSizeX write SetGridSizeX;
@@ -283,6 +290,7 @@ type
     property GridColor: TColor read GetGridColor write SetGridColor;
     property IsControl: Boolean read GetIsControl write SetIsControl;
     property LookupRoot: TComponent read FLookupRoot;
+    property Mediator: TDesignerMediator read FMediator write SetMediator;
     property OnActivated: TNotifyEvent read FOnActivated write FOnActivated;
     property OnCloseQuery: TNotifyEvent read FOnCloseQuery write FOnCloseQuery;
     property OnPersistentDeleted: TOnPersistentDeleted
@@ -350,6 +358,7 @@ var
   DesignerMenuChangeParent: TIDEMenuSection;
   DesignerMenuViewLFM: TIDEMenuCommand;
   DesignerMenuSaveAsXML: TIDEMenuCommand;
+  DesignerMenuCenterForm: TIDEMenuCommand;
 
   DesignerMenuSnapToGridOption: TIDEMenuCommand;
   DesignerMenuSnapToGuideLinesOption: TIDEMenuCommand;
@@ -440,6 +449,8 @@ begin
                                                 'View LFM',lisViewSourceLfm);
     DesignerMenuSaveAsXML:=RegisterIDEMenuCommand(DesignerMenuSectionMisc,
                                                 'Save as XML',fdmSaveFormAsXML);
+    DesignerMenuCenterForm:=RegisterIDEMenuCommand(DesignerMenuSectionMisc,
+                                                'Center form', lisCenterForm);
 
   // register options section
   DesignerMenuSectionOptions:=RegisterIDEMenuSection(DesignerMenuRoot,
@@ -457,10 +468,11 @@ constructor TDesigner.Create(TheDesignerForm: TCustomForm;
 begin
   inherited Create;
   FForm := TheDesignerForm;
-  if FForm is TNonControlDesignerForm then
-    FLookupRoot := TNonControlDesignerForm(FForm).LookupRoot
-  else
-  if FForm is TFrameDesignerForm then
+  if FForm is TNonControlDesignerForm then begin
+    FLookupRoot := TNonControlDesignerForm(FForm).LookupRoot;
+    FMediator:=TNonControlDesignerForm(FForm).Mediator;
+  end
+  else if FForm is TFrameDesignerForm then
     FLookupRoot := TFrameDesignerForm(FForm).LookupRoot
   else
     FLookupRoot := FForm;
@@ -512,7 +524,11 @@ begin
     // delete
     if Form <> nil then
       Form.Designer := nil;
-    TheFormEditor.DeleteComponent(FLookupRoot, FreeComponent);
+    if FMediator<>nil then
+      FMediator.Designer:=nil;
+    if FreeComponent then
+      TheFormEditor.DeleteComponent(FLookupRoot,true);
+    FMediator:=nil;
   end;
   Free;
 end;
@@ -834,7 +850,7 @@ var
         or (P.Y+NonVisualCompWidth>Form.ClientHeight) then
           break;
       until false;
-      AComponent.DesignInfo := DesignInfoFrom(
+      AComponent.DesignInfo := LeftTopToDesignInfo(
         SmallInt(Max(0, Min(P.x, Form.ClientWidth - NonVisualCompWidth))),
         SmallInt(Max(0, Min(P.y, Form.ClientHeight - NonVisualCompWidth))));
     end;
@@ -1242,6 +1258,56 @@ begin
   end;
 end;
 
+procedure TDesigner.GetMouseMsgShift(TheMessage: TLMMouse;
+  var Shift: TShiftState; var Button: TMouseButton);
+begin
+  Shift := [];
+  if (TheMessage.keys and MK_Shift) = MK_Shift then
+    Include(Shift,ssShift);
+  if (TheMessage.keys and MK_Control) = MK_Control then
+    Include(Shift,ssCtrl);
+
+  case TheMessage.Msg of
+  LM_LBUTTONUP,LM_LBUTTONDBLCLK,LM_LBUTTONTRIPLECLK,LM_LBUTTONQUADCLK:
+    begin
+      Include(Shift,ssLeft);
+      Button:=mbLeft;
+    end;
+  LM_MBUTTONUP,LM_MBUTTONDBLCLK,LM_MBUTTONTRIPLECLK,LM_MBUTTONQUADCLK:
+    begin
+      Include(Shift,ssMiddle);
+      Button:=mbMiddle;
+    end;
+  LM_RBUTTONUP,LM_RBUTTONDBLCLK,LM_RBUTTONTRIPLECLK,LM_RBUTTONQUADCLK:
+    begin
+      Include(Shift,ssRight);
+      Button:=mbRight;
+    end;
+  else
+    if (TheMessage.keys and MK_MButton)<>0 then begin
+      Include(Shift,ssMiddle);
+      Button:=mbMiddle;
+    end;
+    if (TheMessage.keys and MK_RButton)<>0 then begin
+      Include(Shift,ssRight);
+      Button:=mbRight;
+    end;
+    if (TheMessage.keys and MK_LButton)<>0 then begin
+      Include(Shift,ssLeft);
+      Button:=mbLeft;
+    end;
+  end;
+
+  case TheMessage.Msg of
+  LM_LBUTTONDBLCLK,LM_MBUTTONDBLCLK,LM_RBUTTONDBLCLK:
+    Include(Shift,ssDouble);
+  LM_LBUTTONTRIPLECLK,LM_MBUTTONTRIPLECLK,LM_RBUTTONTRIPLECLK:
+    Include(Shift,ssTriple);
+  LM_LBUTTONQUADCLK,LM_MBUTTONQUADCLK,LM_RBUTTONQUADCLK:
+    Include(Shift,ssQuad);
+  end;
+end;
+
 function TDesigner.GetDesignControl(AControl: TControl): TControl;
 // checks if AControl is designable.
 // if not check Owner.
@@ -1302,6 +1368,8 @@ var
   ParentForm: TCustomForm;
   Shift: TShiftState;
   DesignSender: TControl;
+  Button: TMouseButton;
+  Handled: Boolean;
 begin
   FHintTimer.Enabled := False;
   Exclude(FFLags, dfHasSized);
@@ -1331,28 +1399,8 @@ begin
   end;
   MouseDownSender := DesignSender;
 
-  case TheMessage.Msg of
-    LM_LBUTTONDOWN, LM_MBUTTONDOWN, LM_RBUTTONDOWN:
-      MouseDownClickCount := 1;
-
-    LM_LBUTTONDBLCLK,LM_MBUTTONDBLCLK,LM_RBUTTONDBLCLK:
-      MouseDownClickCount := 2;
-
-    LM_LBUTTONTRIPLECLK,LM_MBUTTONTRIPLECLK,LM_RBUTTONTRIPLECLK:
-      MouseDownClickCount := 3;
-
-    LM_LBUTTONQUADCLK,LM_MBUTTONQUADCLK,LM_RBUTTONQUADCLK:
-      MouseDownClickCount := 4;
-  else
-    MouseDownClickCount := 1;
-  end;
-
-  Shift := [];
-  if (TheMessage.keys and MK_Shift) = MK_Shift then
-    Include(Shift, ssShift);
-  if (TheMessage.keys and MK_Control) = MK_Control then
-    Include(Shift, ssCtrl);
-
+  GetMouseMsgShift(TheMessage,Shift,Button);
+  MouseDownShift:=Shift;
 
   {$IFDEF VerboseDesigner}
   DebugLn('************************************************************');
@@ -1373,10 +1421,15 @@ begin
     DebugLn(', No CTRL down');
   {$ENDIF}
 
+  if Mediator<>nil then begin
+    Handled:=false;
+    Mediator.MouseDown(Button,Shift,MouseDownPos,Handled);
+    if Handled then exit;
+  end;
+
   SelectedCompClass := GetSelectedComponentClass;
 
-
-  if (TheMessage.Keys and MK_LButton) > 0 then begin
+  if Button=mbLeft then begin
     // left button
     // -> check if a grabber was activated
     ControlSelection.ActiveGrabber:=
@@ -1450,6 +1503,7 @@ procedure TDesigner.MouseUpOnControl(Sender : TControl;
 var
   ParentCI, NewCI: TComponentInterface;
   NewLeft, NewTop, NewWidth, NewHeight: Integer;
+  Button: TMouseButton;
   Shift: TShiftState;
   SenderParentForm: TCustomForm;
   RubberBandWasActive: boolean;
@@ -1457,28 +1511,6 @@ var
   SelectedCompClass: TRegisteredComponent;
   SelectionChanged, NewRubberbandSelection: boolean;
   DesignSender: TControl;
-
-  procedure GetShift;
-  begin
-    Shift := [];
-    if (TheMessage.keys and MK_Shift) = MK_Shift then
-      Include(Shift,ssShift);
-    if (TheMessage.keys and MK_Control) = MK_Control then
-      Include(Shift,ssCtrl);
-
-    case TheMessage.Msg of
-    LM_LBUTTONUP: Include(Shift,ssLeft);
-    LM_MBUTTONUP: Include(Shift,ssMiddle);
-    LM_RBUTTONUP: Include(Shift,ssRight);
-    end;
-
-    if MouseDownClickCount=2 then
-      Include(Shift,ssDouble);
-    if MouseDownClickCount=3 then
-      Include(Shift,ssTriple);
-    if MouseDownClickCount=4 then
-      Include(Shift,ssQuad);
-  end;
 
   procedure AddComponent;
   var
@@ -1496,8 +1528,16 @@ var
     NewComponentClass := SelectedCompClass.GetCreationClass;
 
     // find a parent for the new component
-    if (FLookupRoot is TCustomForm) or (FLookupRoot is TCustomFrame) then
-    begin
+    NewParent := FLookupRoot;
+    if Mediator<>nil then begin
+      NewParent:=MouseDownComponent;
+      while (NewParent<>nil)
+      and (not Mediator.ParentAcceptsChild(NewParent,NewComponentClass)) do
+        NewParent:=NewParent.GetParentComponent;
+      if NewParent=nil then
+        NewParent:=FLookupRoot;
+    end else if (FLookupRoot is TCustomForm) or (FLookupRoot is TCustomFrame)
+    then begin
       if MouseDownComponent is TWinControl then
         NewParentControl := TWinControl(MouseDownComponent)
       else
@@ -1513,8 +1553,7 @@ var
         NewParentControl := NewParentControl.Parent;
       end;
       NewParent := NewParentControl;
-    end else
-      NewParent := FLookupRoot;
+    end;
 
     ParentCI:=TComponentInterface(TheFormEditor.FindComponent(NewParent));
     if not Assigned(ParentCI) then exit;
@@ -1528,10 +1567,17 @@ var
     end;
 
     // calculate initial bounds
-    ParentClientOrigin:=GetParentFormRelativeClientOrigin(NewParent);
     NewLeft:=Min(MouseDownPos.X,MouseUpPos.X);
     NewTop:=Min(MouseDownPos.Y,MouseUpPos.Y);
-    if SelectedCompClass.ComponentClass.InheritsFrom(TControl) then begin
+    if (Mediator<>nil) then begin
+      ParentClientOrigin:=Mediator.GetComponentOriginOnForm(NewParent);
+      DebugLn(['AddComponent ParentClientOrigin=',dbgs(ParentClientOrigin)]);
+      // adjust left,top to parent origin
+      dec(NewLeft,ParentClientOrigin.X);
+      dec(NewTop,ParentClientOrigin.Y);
+    end else if SelectedCompClass.ComponentClass.InheritsFrom(TControl) then
+    begin
+      ParentClientOrigin:=GetParentFormRelativeClientOrigin(NewParent);
       // adjust left,top to parent origin
       dec(NewLeft,ParentClientOrigin.X);
       dec(NewTop,ParentClientOrigin.Y);
@@ -1558,6 +1604,7 @@ var
     end;
     
     // create component and component interface
+    DebugLn(['AddComponent ',DbgSName(NewComponentClass),' Parent=',DbgSName(NewParent),' ',NewLeft,',',NewTop,',',NewWidth,',',NewHeight]);
     NewCI := TComponentInterface(TheFormEditor.CreateComponent(
        ParentCI,NewComponentClass,'',
        NewLeft,NewTop,NewWidth,NewHeight));
@@ -1591,7 +1638,7 @@ var
 
   procedure RubberbandSelect;
   var
-    MaxParentControl: TControl;
+    MaxParentComponent: TComponent;
   begin
     if (ssShift in Shift)
     and (ControlSelection.SelectionForm<>nil)
@@ -1611,14 +1658,17 @@ var
     MoveNonVisualComponentsIntoForm;
     // if user press the Control key, then component candidates are only
     // childs of the control, where the mouse started
-    if (ssCtrl in shift) and (MouseDownComponent is TControl) then
-      MaxParentControl:=TControl(MouseDownComponent)
-    else
-      MaxParentControl:=Form;
+    if (ssCtrl in shift) then begin
+      if MouseDownComponent=Form then
+        MaxParentComponent:=FLookupRoot
+      else
+        MaxParentComponent:=MouseDownComponent;
+    end else
+      MaxParentComponent:=FLookupRoot;
     SelectionChanged:=false;
     ControlSelection.SelectWithRubberBand(
-      FLookupRoot,NewRubberbandSelection,ssShift in Shift,SelectionChanged,
-      MaxParentControl);
+      FLookupRoot,Mediator,NewRubberbandSelection,ssShift in Shift,
+      SelectionChanged,MaxParentComponent);
     if ControlSelection.Count=0 then begin
       ControlSelection.Add(FLookupRoot);
       SelectionChanged:=true;
@@ -1637,7 +1687,7 @@ var
     begin
       // select only the mouse down component
       ControlSelection.AssignPersistent(MouseDownComponent);
-      if (MouseDownClickCount = 2) and (ControlSelection.SelectionForm = Form) then
+      if (ssDouble in MouseDownShift) and (ControlSelection.SelectionForm = Form) then
       begin
         // Double Click -> invoke 'Edit' of the component editor
         FShiftState := Shift;
@@ -1654,6 +1704,8 @@ var
     end;
   end;
 
+var
+  Handled: Boolean;
 Begin
   FHintTimer.Enabled := False;
   SetCaptureControl(nil);
@@ -1677,7 +1729,7 @@ Begin
   RubberBandWasActive:=ControlSelection.RubberBandActive;
   SelectedCompClass:=GetSelectedComponentClass;
 
-  GetShift;
+  GetMouseMsgShift(TheMessage,Shift,Button);
   MouseUpPos:=GetFormRelativeMousePosition(Form);
 
   {$IFDEF VerboseDesigner}
@@ -1688,7 +1740,13 @@ Begin
   DebugLn('');
   {$ENDIF}
 
-  if TheMessage.Msg=LM_LBUTTONUP then begin
+  if Mediator<>nil then begin
+    Handled:=false;
+    Mediator.MouseUp(Button,Shift,MouseUpPos,Handled);
+    if Handled then exit;
+  end;
+
+  if Button=mbLeft then begin
     if SelectedCompClass = nil then begin
       // layout mode (selection, moving and resizing)
       if not (dfHasSized in FFlags) then begin
@@ -1705,7 +1763,7 @@ Begin
       // create new a component on the form
       AddComponent;
     end;
-  end else if TheMessage.Msg=LM_RBUTTONUP then begin
+  end else if Button=mbRight then begin
     // right click -> popup menu
     DisableRubberBand;
     if EnvironmentOptions.RightClickSelects
@@ -1735,6 +1793,7 @@ end;
 procedure TDesigner.MouseMoveOnControl(Sender: TControl;
   var TheMessage: TLMMouse);
 var
+  Button: TMouseButton;
   Shift : TShiftState;
   SenderParentForm:TCustomForm;
   OldMouseMovePos: TPoint;
@@ -1743,13 +1802,15 @@ var
   SelectedCompClass: TRegisteredComponent;
   CurSnappedMousePos, OldSnappedMousePos: TPoint;
   DesignSender: TControl;
+  Handled: Boolean;
 begin
+  GetMouseMsgShift(TheMessage,Shift,Button);
+
   if [dfShowEditorHints]*FFlags<>[] then begin
     FHintTimer.Enabled := False;
 
     // hide hint
-    FHintTimer.Enabled :=
-            (TheMessage.keys or (MK_LButton and MK_RButton and MK_MButton) = 0);
+    FHintTimer.Enabled := Shift*[ssLeft,ssRight,ssMiddle]=[];
     if FHintWindow.Visible then
       FHintWindow.Visible := False;
   end;
@@ -1763,6 +1824,12 @@ begin
   LastMouseMovePos:= GetFormRelativeMousePosition(Form);
   if (OldMouseMovePos.X=LastMouseMovePos.X)
   and (OldMouseMovePos.Y=LastMouseMovePos.Y) then exit;
+
+  if Mediator<>nil then begin
+    Handled:=false;
+    Mediator.MouseMove(Shift,LastMouseMovePos,Handled);
+    if Handled then exit;
+  end;
 
   if ControlSelection.SelectionForm=Form then
     Grabber:=ControlSelection.GrabberAtPos(
@@ -1784,16 +1851,10 @@ begin
     exit;
   end;
 
-  Shift := [];
-  if (TheMessage.keys and MK_Shift) = MK_Shift then
-    Include(Shift,ssShift);
-  if (TheMessage.keys and MK_Control) = MK_Control then
-    Include(Shift,ssCtrl);
-
   if (ControlSelection.SelectionForm=nil)
   or (ControlSelection.SelectionForm=Form)
   then begin
-    if (TheMessage.keys and MK_LButton) = MK_LButton then begin
+    if Button=mbLeft then begin
       // left button pressed
       if (ControlSelection.ActiveGrabber<>nil) then begin
         // grabber moving -> size selection
@@ -1858,7 +1919,7 @@ end;
   Handles the keydown messages.  DEL deletes the selected controls, CTRL-ARROR
   moves the selection up one, SHIFT-ARROW resizes, etc.
 }
-Procedure TDesigner.KeyDown(Sender : TControl; var TheMessage:TLMKEY);
+Procedure TDesigner.KeyDown(Sender : TControl; var TheMessage: TLMKEY);
 var
   Shift: TShiftState;
   Command: word;
@@ -1888,8 +1949,12 @@ begin
   Shift := KeyDataToShiftState(TheMessage.KeyData);
 
   Handled := False;
+
+  if Mediator<>nil then
+    Mediator.KeyDown(Sender,TheMessage.CharCode,Shift);
+
   Command := FTheFormEditor.TranslateKeyToDesignerCommand(
-                                                     TheMessage.CharCode, Shift);
+                                                    TheMessage.CharCode, Shift);
   //DebugLn(['TDesigner.KEYDOWN Command=',dbgs(Command),' ',TheMessage.CharCode,' ',dbgs(Shift)]);
   DoProcessCommand(Self, Command, Handled);
   //DebugLn(['TDesigner.KeyDown Command=',Command,' Handled=',Handled,' TheMessage.CharCode=',TheMessage.CharCode]);
@@ -1930,11 +1995,17 @@ end;
 
 
 {------------------------------------K E Y U P --------------------------------}
-Procedure TDesigner.KeyUp(Sender : TControl; var TheMessage:TLMKEY);
+Procedure TDesigner.KeyUp(Sender : TControl; var TheMessage: TLMKEY);
+var
+  Shift: TShiftState;
 Begin
   {$IFDEF VerboseDesigner}
   //Writeln('TDesigner.KEYUP ',TheMessage.CharCode,' ',TheMessage.KeyData);
   {$ENDIF}
+  if Mediator<>nil then begin
+    Shift := KeyDataToShiftState(TheMessage.KeyData);
+    Mediator.KeyUp(Sender,TheMessage.CharCode,Shift);
+  end;
 end;
 
 function TDesigner.DoDeleteSelectedPersistents: boolean;
@@ -2393,6 +2464,17 @@ begin
   if Assigned(OnSaveAsXML) then OnSaveAsXML(Self);
 end;
 
+procedure TDesigner.OnCenterFormMenuClick(Sender: TObject);
+var
+  NewLeft: Integer;
+  NewTop: Integer;
+begin
+  if Form=nil then exit;
+  NewLeft:=Max(30,(Screen.Width-Form.Width) div 2);
+  NewTop:=Max(30,(Screen.Height-Form.Height) div 2);
+  Form.SetBounds(NewLeft,NewTop,Form.Width,Form.Height);
+end;
+
 procedure TDesigner.OnCopyMenuClick(Sender: TObject);
 begin
   CopySelection;
@@ -2484,6 +2566,14 @@ begin
 
 end;
 
+procedure TDesigner.SetMediator(const AValue: TDesignerMediator);
+begin
+  if FMediator=AValue then exit;
+  if FMediator<>nil then FMediator.Designer:=nil;
+  FMediator:=AValue;
+  if FMediator<>nil then FMediator.Designer:=Self;
+end;
+
 procedure TDesigner.SetShowEditorHints(const AValue: boolean);
 begin
   if AValue=ShowEditorHints then exit;
@@ -2506,7 +2596,7 @@ begin
   for i := 0 to FLookupRoot.ComponentCount - 1 do
   begin
     AComponent := FLookupRoot.Components[i];
-    if ComponentIsNonVisual(AComponent) then 
+    if ComponentIsIcon(AComponent) then
     begin
       Diff := aDDC.FormOrigin;
       //DebugLn(['aDDC.FormOrigin - ', Diff.X, ' : ' ,Diff.Y]);
@@ -2646,6 +2736,29 @@ begin
   end;
 end;
 
+function TDesigner.ComponentIsIcon(AComponent: TComponent): boolean;
+begin
+  Result:=DesignerProcs.ComponentIsNonVisual(AComponent);
+  if Result and (Mediator<>nil) then
+    Result:=Mediator.ComponentIsIcon(AComponent);
+end;
+
+function TDesigner.GetParentFormRelativeClientOrigin(AComponent: TComponent
+  ): TPoint;
+var
+  CurClientArea: TRect;
+  ScrollOffset: TPoint;
+begin
+  if Mediator<>nil then begin
+    Result:=Mediator.GetComponentOriginOnForm(AComponent);
+    Mediator.GetClientArea(AComponent,CurClientArea,ScrollOffset);
+    inc(Result.X,CurClientArea.Left+ScrollOffset.X);
+    inc(Result.Y,CurClientArea.Top+ScrollOffset.Y);
+  end else begin
+    Result:=DesignerProcs.GetParentFormRelativeClientOrigin(AComponent);
+  end;
+end;
+
 function TDesigner.GetDesignedComponent(AComponent: TComponent): TComponent;
 begin
   Result:=AComponent;
@@ -2697,8 +2810,7 @@ var i: integer;
 begin
   for i:=FLookupRoot.ComponentCount-1 downto 0 do begin
     Result:=FLookupRoot.Components[i];
-    if (not (Result is TControl))
-    and (not ComponentIsInvisible(Result)) then begin
+    if ComponentIsIcon(Result) then begin
       with Result do begin
         LeftTop:=NonVisualComponentLeftTop(Result);
         if (LeftTop.x<=x) and (LeftTop.y<=y)
@@ -2714,7 +2826,7 @@ end;
 procedure TDesigner.MoveNonVisualComponentIntoForm(AComponent: TComponent);
 begin
   with NonVisualComponentLeftTop(AComponent) do
-    AComponent.DesignInfo := DesignInfoFrom(x, y);
+    AComponent.DesignInfo := LeftTopToDesignInfo(x, y);
 end;
 
 procedure TDesigner.MoveNonVisualComponentsIntoForm;
@@ -2724,8 +2836,7 @@ var
 begin
   for i:=0 to FLookupRoot.ComponentCount-1 do begin
     AComponent:=FLookupRoot.Components[i];
-    if (not (AComponent is TControl))
-    and (not ComponentIsInvisible(AComponent)) then begin
+    if ComponentIsIcon(AComponent) then begin
       MoveNonVisualComponentIntoForm(AComponent);
     end;
   end;
@@ -2738,22 +2849,31 @@ function TDesigner.ComponentClassAtPos(const AClass: TComponentClass;
   var
     i: integer;
     Bounds: TRect;
+    Flags: TDMCompAtPosFlags;
   begin
-    for i := FLookupRoot.ComponentCount - 1 downto 0 do
-    begin
-      Result := FLookupRoot.Components[i]; // bit tricky, but we set it to nil anyhow
-      if not Result.InheritsFrom(AClass) then Continue;
-      if Result is TControl then begin
-        if IgnoreHidden and (not ControlIsInDesignerVisible(TControl(Result)))
-        then
-          Continue;
-        if csNoDesignSelectable in TControl(Result).ControlStyle then
-          continue;
+    if Mediator<>nil then begin
+      Flags:=[];
+      if IgnoreHidden then
+        Include(Flags,dmcapfOnlyVisible);
+      Result:=Mediator.ComponentAtPos(APos,AClass,Flags);
+      //DebugLn(['DoComponent ',dbgs(APos),' AClass=',DbgSName(AClass),' Result=',DbgSName(Result)]);
+    end else begin
+      for i := FLookupRoot.ComponentCount - 1 downto 0 do
+      begin
+        Result := FLookupRoot.Components[i]; // bit tricky, but we set it to nil anyhow
+        if not Result.InheritsFrom(AClass) then Continue;
+        if Result is TControl then begin
+          if IgnoreHidden and (not ControlIsInDesignerVisible(TControl(Result)))
+          then
+            Continue;
+          if csNoDesignSelectable in TControl(Result).ControlStyle then
+            continue;
+        end;
+        Bounds := GetParentFormRelativeBounds(Result);
+        if PtInRect(Bounds, APos) then Exit;
       end;
-      Bounds := GetParentFormRelativeBounds(Result);
-      if PtInRect(Bounds, APos) then Exit;
+      Result := nil;
     end;
-    Result := nil;
   end;
 
   function DoWinControl: TComponent;
@@ -2877,6 +2997,7 @@ begin
   DesignerMenuChangeClass.OnClick:=@OnChangeClassMenuClick;
   DesignerMenuViewLFM.OnClick:=@OnViewLFMMenuClick;
   DesignerMenuSaveAsXML.OnClick:=@OnSaveAsXMLMenuClick;
+  DesignerMenuCenterForm.OnClick:=@OnCenterFormMenuClick;
 
   DesignerMenuSnapToGridOption.OnClick:=@OnSnapToGridOptionMenuClick;
   DesignerMenuSnapToGridOption.ShowAlwaysCheckable:=true;

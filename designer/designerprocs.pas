@@ -34,7 +34,7 @@ interface
 
 uses
   Classes, SysUtils, Types, LCLProc, LCLIntf, LCLType, Forms, Controls,
-  Graphics, FormEditingIntf;
+  typinfo, Graphics, FormEditingIntf;
 
 type
   TDesignerDCFlag = (
@@ -112,10 +112,6 @@ function GetComponentHeight(AComponent: TComponent): integer;
 
 procedure InvalidateDesignerRect(aHandle: HWND; ARect: pRect);
 
-function DesignInfoFrom(const ALeft, ATop: SmallInt): LongInt;
-procedure DesignInfoTo(ADesignInfo: LongInt; out ALeft, ATop: SmallInt);
-function LeftFromDesignInfo(ADesignInfo: LongInt): SmallInt;
-function TopFromDesignInfo(ADesignInfo: LongInt): SmallInt;
 
 implementation
 
@@ -323,47 +319,6 @@ begin
   end;
 end;
 
-function DesignInfoFrom(const ALeft, ATop: SmallInt): LongInt;
-var
-  ResultRec: packed record
-    Left: SmallInt;
-    Top: SmallInt;
-  end absolute Result;
-begin
-  ResultRec.Left := ALeft;
-  ResultRec.Top := ATop;
-end;
-
-procedure DesignInfoTo(ADesignInfo: LongInt; out ALeft, ATop: SmallInt);
-var
-  DesignInfoRec: packed record
-    Left: SmallInt;
-    Top: SmallInt;
-  end absolute ADesignInfo;
-begin
-  ALeft := DesignInfoRec.Left;
-  ATop := DesignInfoRec.Top;
-end;
-
-function LeftFromDesignInfo(ADesignInfo: LongInt): SmallInt;
-var
-  DesignInfoRec: packed record
-    Left: SmallInt;
-    Top: SmallInt;
-  end absolute ADesignInfo;
-begin
-  Result := DesignInfoRec.Left;
-end;
-
-function TopFromDesignInfo(ADesignInfo: LongInt): SmallInt;
-var
-  DesignInfoRec: packed record
-    Left: SmallInt;
-    Top: SmallInt;
-  end absolute ADesignInfo;
-begin
-  Result := DesignInfoRec.Top;
-end;
 
 { TDesignerDeviceContext }
 

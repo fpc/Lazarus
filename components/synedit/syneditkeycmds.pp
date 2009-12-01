@@ -76,7 +76,7 @@ const
   ecDown            = 4;    // Move cursor down one line
   ecWordLeft        = 5;    // Move cursor left one word
   ecWordRight       = 6;    // Move cursor right one word
-  ecLineStart       = 7;    // Move cursor to beginning of line
+  ecLineStart       = 7;    // Move cursor to beginning of line (smart home)
   ecLineEnd         = 8;    // Move cursor to end of line
   ecPageUp          = 9;    // Move cursor up one page
   ecPageDown        = 10;   // Move cursor down one page
@@ -87,6 +87,7 @@ const
   ecEditorTop       = 15;   // Move cursor to absolute beginning
   ecEditorBottom    = 16;   // Move cursor to absolute end
   ecGotoXY          = 17;   // Move cursor to specific coordinates, Data = PPoint
+  ecLineTextStart   = 18;   // Move cursor to the first none whitespace in the line
 
 //******************************************************************************
 // Maybe the command processor should just take a boolean that signifies if
@@ -118,6 +119,7 @@ const
   ecSelEditorTop    = ecEditorTop + ecSelection;
   ecSelEditorBottom = ecEditorBottom + ecSelection;
   ecSelGotoXY       = ecGotoXY + ecSelection;  // Data = PPoint
+  ecSelLineTextStart= ecLineTextStart + ecSelection;   // Move cursor to the first none whitespace in the line
 
   ecSelCmdRangeStart = ecLeft + ecSelection;
   ecSelCmdRangeEnd   = ecLeft + ecSelection + 49;
@@ -141,6 +143,7 @@ const
   ecColSelPageBottom = ecPageBottom + ecColumnSelection;
   ecColSelEditorTop    = ecEditorTop + ecColumnSelection;
   ecColSelEditorBottom = ecEditorBottom + ecColumnSelection;
+  ecColSelLineTextStart= ecLineTextStart + ecColumnSelection;
 
   ecSelColCmdRangeStart = ecLeft + ecColumnSelection;
   ecSelColCmdRangeEnd   = ecLeft + ecColumnSelection + 48; // 1 less for ecSelectAll
@@ -477,7 +480,7 @@ type
 {$ENDIF}
 
 const
-  EditorCommandStrs: array[0..138] of TIdentMapEntry = (
+  EditorCommandStrs: array[0..141] of TIdentMapEntry = (
     (Value: ecNone; Name: 'ecNone'),
     (Value: ecLeft; Name: 'ecLeft'),
     (Value: ecRight; Name: 'ecRight'),
@@ -496,6 +499,7 @@ const
     (Value: ecEditorTop; Name: 'ecEditorTop'),
     (Value: ecEditorBottom; Name: 'ecEditorBottom'),
     (Value: ecGotoXY; Name: 'ecGotoXY'),
+    (Value: ecLineTextStart; Name: 'ecLineTextStart'),
     (Value: ecSelLeft; Name: 'ecSelLeft'),
     (Value: ecSelRight; Name: 'ecSelRight'),
     (Value: ecSelUp; Name: 'ecSelUp'),
@@ -513,6 +517,7 @@ const
     (Value: ecSelEditorTop; Name: 'ecSelEditorTop'),
     (Value: ecSelEditorBottom; Name: 'ecSelEditorBottom'),
     (Value: ecSelGotoXY; Name: 'ecSelGotoXY'),
+    (Value: ecSelLineTextStart; Name: 'ecSelLineTextStart'),
     (Value: ecColSelLeft; Name: 'ecColSelLeft'),
     (Value: ecColSelRight; Name: 'ecColSelRight'),
     (Value: ecColSelUp; Name: 'ecColSelUp'),
@@ -529,6 +534,7 @@ const
     (Value: ecColSelPageBottom; Name: 'ecColSelPageBottom'),
     (Value: ecColSelEditorTop; Name: 'ecColSelEditorTop'),
     (Value: ecColSelEditorBottom; Name: 'ecColSelEditorBottom'),
+    (Value: ecColSelLineTextStart; Name: 'ecColSelLineTextStart'),
     (Value: ecSelectAll; Name: 'ecSelectAll'),
     (Value: ecDeleteLastChar; Name: 'ecDeleteLastChar'),
     (Value: ecDeleteChar; Name: 'ecDeleteChar'),

@@ -44,6 +44,8 @@ type
     FOnSaveBounds: TNotifyEvent;
   protected
     procedure SetLookupRoot(const AValue: TComponent); virtual;
+    procedure Notification(AComponent: TComponent; Operation: TOperation);
+         override;
   public
     procedure DoLoadBounds; virtual;
     procedure DoSaveBounds; virtual;
@@ -86,11 +88,24 @@ procedure TCustomNonFormDesignerForm.SetLookupRoot(const AValue: TComponent);
 begin
   if FLookupRoot = AValue then 
     Exit;
+  if FLookupRoot<>nil then
+    FLookupRoot.RemoveFreeNotification(Self);
   DoSaveBounds;
   FLookupRoot := AValue;
-  if FLookupRoot <> nil then 
+  if FLookupRoot <> nil then begin
+    FLookupRoot.FreeNotification(Self);
     Caption := FLookupRoot.Name;
+  end;
   DoLoadBounds;
+end;
+
+procedure TCustomNonFormDesignerForm.Notification(AComponent: TComponent;
+  Operation: TOperation);
+begin
+  inherited Notification(AComponent, Operation);
+  if Operation=opRemove then begin
+    if AComponent=FLookupRoot then FLookupRoot:=nil;
+  end;
 end;
 
 procedure TCustomNonFormDesignerForm.DoLoadBounds;

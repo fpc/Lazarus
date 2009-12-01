@@ -494,7 +494,7 @@ resourcestring
   lisUnableToConvertTextFormDataOfFileIntoBinaryStream = 'Unable to convert '
     +'text form data of file %s%s%s%s%sinto binary stream. (%s)';
   lisFormLoadError = 'Form load error';
-  lisSaveProjectLpi = 'Save Project %s (*.lpi)';
+  lisSaveProject = 'Save project %s (*%s)';
   lisInvalidProjectFilename = 'Invalid project filename';
   lisisAnInvalidProjectNamePleaseChooseAnotherEGProject = '%s%s%s is an '
     +'invalid project name.%sPlease choose another (e.g. project1.lpi)';
@@ -1153,6 +1153,7 @@ resourcestring
   dlgPersistentBlock = 'Persistent Block';
   dlgOverwriteBlock = 'Overwrite Block';
   dlgCursorSkipsSelection = 'Cursor skips selection';
+  dlgCursorSkipsTab = 'Cursor skips tabs';
   dlgScrollByOneLess = 'Scroll by one less';
   dlgScrollPastEndFile = 'Scroll past end of file';
   dlgScrollPastEndLine = 'Caret past end of line';
@@ -1632,7 +1633,6 @@ resourcestring
   dlgCCOResults = 'Results';
   lisCCOCopyOutputToCliboard = 'Copy output to clipboard';
   lisCCOContains = 'contains ';
-  lisCCOSpaces = 'spaces';
   lisCCOSpecialCharacters = 'special characters';
   lisCCONonASCII = 'non ASCII';
   lisCCOWrongPathDelimiter = 'wrong path delimiter';
@@ -2056,6 +2056,7 @@ resourcestring
   srkmecEditorTop             = 'Move cursor to absolute beginning';
   srkmecEditorBottom          = 'Move cursor to absolute end';
   srkmecGotoXY                = 'Goto XY';
+  srkmecLineTextStart         = 'Move cursor to text start in line';
   srkmecSelLeft               = 'SelLeft';
   srkmecSelRight              = 'SelRight';
   srkmecSelUp                 = 'Select Up';
@@ -2072,6 +2073,7 @@ resourcestring
   srkmecSelPageBottom         = 'Select Page Bottom';
   srkmecSelEditorTop          = 'Select to absolute beginning';
   srkmecSelEditorBottom       = 'Select to absolute end';
+  srkmecSelLineTextStart      = 'Select to text start in line';
   srkmecColSelUp              = 'Column Select Up';
   srkmecColSelDown            = 'Column Select Down';
   srkmecColSelLeft            = 'Column Select Left';
@@ -2086,6 +2088,7 @@ resourcestring
   srkmecColSelLineEnd         = 'Column Select Line End';
   srkmecColSelEditorTop       = 'Column Select to absolute beginning';
   srkmecColSelEditorBottom    = 'Column Select to absolute end';
+  srkmecColSelLineTextStart   = 'Column Select to text start in line';
   srkmecSelGotoXY             = 'Select Goto XY';
   srkmecSelectAll             = 'Select All';
   srkmecDeleteLastChar        = 'Delete Last Char';
@@ -4472,6 +4475,7 @@ resourcestring
   lisUsePackageInProject2 = 'Use package in project';
   lisUseIdentifier = 'Use identifier';
   lisUsePackageInPackage2 = 'Use package in package';
+  lisCenterForm = 'Center form';
 
 implementation
 

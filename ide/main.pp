@@ -85,7 +85,7 @@ uses
   // help manager
   IDEContextHelpEdit, IDEHelpIntf, HelpManager, CodeHelp, HelpOptions,
   // designer
-  JITForms, ComponentPalette, ComponentList, ComponentReg,
+  JITForms, ComponentPalette, ComponentList, ComponentReg, FormEditingIntf,
   ObjInspExt, Designer, FormEditor, CustomFormEditor,
   ControlSelection, AnchorEditor,
   MenuEditorForm,
@@ -3132,6 +3132,11 @@ begin
     DesignerForm := TCustomForm(AComponent)
   else
     DesignerForm := FormEditor1.CreateNonFormForm(AComponent);
+  // set component and designer form into design mode (csDesigning)
+  SetDesigning(AComponent, True);
+  if AComponent <> DesignerForm then
+    SetDesigning(DesignerForm, True);
+  SetDesignInstance(AComponent, True);
   // create designer
   DesignerForm.Designer := TDesigner.Create(DesignerForm, TheControlSelection);
   {$IFDEF IDE_DEBUG}
@@ -3158,12 +3163,6 @@ begin
     ShowEditorHints:=EnvironmentOptions.ShowEditorHints;
     ShowComponentCaptions := EnvironmentOptions.ShowComponentCaptions;
   end;
-  // set component and designer form into design mode (csDesigning)
-  SetDesigning(AComponent, True);
-  if AComponent <> DesignerForm then
-    SetDesigning(DesignerForm, True);
-  if (AComponent is TForm) or (AComponent is TFrame) or (AComponent is TDataModule) then
-    SetDesignInstance(AComponent, True);
 end;
 
 {-------------------------------------------------------------------------------
@@ -6692,19 +6691,23 @@ begin
       AFilename:=Trim(Project1.Title);
     if AFilename='' then
       AFilename:='project1';
-    Ext:=LowerCase(ExtractFileExt(AFilename));
-    if UseMainSourceFile then begin
-      if (Ext='') or (not FilenameIsPascalSource(AFilename)) then
-        AFilename:=ChangeFileExt(AFilename,'.pas');
-      SaveDialog.Title:='Save project '+Project1.Title+' (*.'+ExtractFileExt(AFilename)+')';
-    end else begin
-      if (Ext='') or FilenameIsPascalSource(AFilename) then
-        AFilename:=ChangeFileExt(AFilename,'.lpi');
-      SaveDialog.Title:=Format(lisSaveProjectLpi, [Project1.Title]);
+    Ext := LowerCase(ExtractFileExt(AFilename));
+    if UseMainSourceFile then
+    begin
+      if (Ext = '') or (not FilenameIsPascalSource(AFilename)) then
+        AFilename := ChangeFileExt(AFilename, '.pas');
+    end else
+    begin
+      if (Ext = '') or FilenameIsPascalSource(AFilename) then
+        AFilename := ChangeFileExt(AFilename, '.lpi');
     end;
-    SaveDialog.FileName:=AFilename;
+    Ext := ExtractFileExt(AFilename);
+    SaveDialog.Title := Format(lisSaveProject, [Project1.Title, Ext]);
+    SaveDialog.FileName := AFilename;
+    SaveDialog.Filter := '*' + Ext + '|' + '*' + Ext;
+    SaveDialog.DefaultExt := ExtractFileExt(AFilename);
     if not Project1.IsVirtual then
-      SaveDialog.InitialDir:=Project1.ProjectDirectory;
+      SaveDialog.InitialDir := Project1.ProjectDirectory;
 
     repeat
       Result:=mrCancel;
@@ -6717,7 +6720,7 @@ begin
         Result:=mrCancel;
         exit;
       end;
-      AFilename:=ExpandFileNameUTF8(SaveDialog.Filename);
+      AFilename:=ExpandFileNameUTF8(SaveDialog.FileName);
       if not FilenameIsAbsolute(AFilename) then
         RaiseException('TMainIDE.DoShowSaveProjectAsDialog: buggy ExpandFileNameUTF8');
 
