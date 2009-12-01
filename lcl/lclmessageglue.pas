@@ -490,8 +490,8 @@ end;
  *  Params                                                                    *
  *                                                                            *
  *  Target      : The Control that will recieve the message LM_CHANGED        *
- *  ItemIndex   : Only used by Listviews. The Index of the Item that has      *
- *                changed.                                                    *
+ *  ItemIndex   : Only used by Listviews and CheckBoxes. The Index of         *
+ *                the Item that has changed.                                  *
  *                                                                            *
  ******************************************************************************}
 function LCLSendChangedMsg(const Target: TControl; ItemIndex: WPARAM = 0): PtrInt;

@@ -1030,6 +1030,7 @@ type
     function GetFocused: TListItem;
     function GetImageList(const ALvilOrd: Integer): TCustomImageList;
     function GetHoverTime: Integer;
+    function GetItemIndex: Integer;
     function GetProperty(const ALvpOrd: Integer): Boolean;
     function GetSelCount: Integer;
     function GetSelection: TListItem;
@@ -1046,6 +1047,7 @@ type
     procedure SetHoverTime(const AValue: Integer);
     procedure SetIconOptions(const AValue: TIconOptions);
     procedure SetImageList(const ALvilOrd: Integer; const AValue: TCustomImageList);
+    procedure SetItemIndex(const AValue: Integer);
     procedure SetItems(const AValue : TListItems);
     procedure SetItemVisible(const AValue: TListItem; const APartialOK: Boolean);
     procedure SetOwnerData(const AValue: Boolean);
@@ -1144,6 +1146,7 @@ type
     property HotTrackStyles: TListHotTrackStyles read FHotTrackStyles write SetHotTrackStyles default [];
     property IconOptions: TIconOptions read FIconOptions write SetIconOptions;
     property ItemFocused: TListItem read GetFocused write SetFocused;
+    property ItemIndex: Integer read GetItemIndex write SetItemIndex;
     property Items: TListItems read FListItems write SetItems;
     // MultiSelect and ReadOnly should be protected, but can't because Carbon Interface
     // needs to access this property and it cannot cast to TListItem, because we have
@@ -1190,6 +1193,7 @@ type
 //    property HotTrackStyles;
 //    property HoverTime;
     property IconOptions;
+    property ItemIndex;
     property Items;
     property LargeImages;
     property MultiSelect;

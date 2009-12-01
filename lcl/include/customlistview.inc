@@ -737,6 +737,14 @@ begin
   else Result := FHoverTime;
 end;
 
+function TCustomListView.GetItemIndex: Integer;
+begin
+  Result := -1;
+  if Selected = nil then
+    Exit;
+  Result := Selected.Index;
+end;
+
 function TCustomListView.GetHitTestInfoAt(X, Y: Integer): THitTests;
 begin
   Result := [];
@@ -907,6 +915,16 @@ begin
 
   if not HandleAllocated then Exit;
   TWSCustomListViewClass(WidgetSetClass).SetImageList(Self, lvil, AValue);
+end;
+
+procedure TCustomListView.SetItemIndex(const AValue: Integer);
+begin
+  if (AValue < -1) or (AValue >= Items.Count) then
+    raise Exception.Create(Format('index %d out of bounds',[AValue]));
+  if AValue = -1 then
+    Selected := nil
+  else
+    Selected := Items.Item[AValue];
 end;
 
 {------------------------------------------------------------------------------
