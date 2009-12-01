@@ -4232,9 +4232,10 @@ end;
 
 procedure TObjectInspectorDlg.ComponentTreeDblClick(Sender: TObject);
 var
-  AComponent: TComponent;
+  APersistent: TPersistent;
   CompEditor: TBaseComponentEditor;
   ADesigner: TIDesigner;
+  AComponent: TComponent;
 begin
   if (PropertyEditorHook=nil) or (PropertyEditorHook.LookupRoot=nil) then
     Exit;
@@ -4242,7 +4243,10 @@ begin
     ComponentTreeSelectionChanged(Sender);
   if not Assigned(ComponentTree.Selected) then
     Exit;
-  AComponent := TComponent(ComponentTree.Selected.Data);
+  APersistent := TPersistent(ComponentTree.Selected.Data);
+  if not (APersistent is TComponent) then
+    exit;
+  AComponent:=TComponent(APersistent);
   ADesigner := FindRootDesigner(AComponent);
   if not (ADesigner is TComponentEditorDesigner) then
     Exit;

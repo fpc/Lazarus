@@ -186,7 +186,7 @@ each control that's dropped onto the form
                                     ): TJITComponentList;
     function FindJITListByClass(AComponentClass: TComponentClass
                                 ): TJITComponentList;
-    function GetDesignerForm(AComponent: TComponent): TCustomForm; override;
+    function GetDesignerForm(APersistent: TPersistent): TCustomForm; override;
 
     function FindNonFormForm(LookupRoot: TComponent): TCustomNonFormDesignerForm;
 
@@ -1207,19 +1207,20 @@ begin
     Result := nil;
 end;
 
-function TCustomFormEditor.GetDesignerForm(AComponent: TComponent): TCustomForm;
+function TCustomFormEditor.GetDesignerForm(APersistent: TPersistent): TCustomForm;
 var
-  OwnerComponent: TComponent;
+  TheOwner: TPersistent;
 begin
-  Result := nil;
-  if AComponent = nil then exit;
-  OwnerComponent := AComponent;
-  while OwnerComponent.Owner <> nil do
-    OwnerComponent := OwnerComponent.Owner;
-  if OwnerComponent is TCustomForm then
-    Result := TCustomForm(OwnerComponent)
+  Result:=nil;
+  TheOwner := GetLookupRootForComponent(APersistent);
+  if TheOwner = nil then
+    exit;
+  if TheOwner is TCustomForm then
+    Result := TCustomForm(TheOwner)
+  else if TheOwner is TComponent then
+    Result := FindNonFormForm(TComponent(TheOwner))
   else
-    Result := FindNonFormForm(OwnerComponent);
+    exit;
 end;
 
 function TCustomFormEditor.FindNonFormForm(LookupRoot: TComponent): TCustomNonFormDesignerForm;

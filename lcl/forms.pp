@@ -1500,15 +1500,15 @@ procedure RestoreFocusState(FocusState: TFocusState);
 
 type
   TGetDesignerFormEvent =
-    function(AComponent: TComponent): TCustomForm of object;
+    function(APersistent: TPersistent): TCustomForm of object;
 
 var
   OnGetDesignerForm: TGetDesignerFormEvent = nil;
 
 function GetParentForm(Control:TControl): TCustomForm;
 function GetFirstParentForm(Control:TControl): TCustomForm;
-function GetDesignerForm(AComponent: TComponent): TCustomForm;
-function FindRootDesigner(AComponent: TComponent): TIDesigner;
+function GetDesignerForm(APersistent: TPersistent): TCustomForm;
+function FindRootDesigner(APersistent: TPersistent): TIDesigner;
 
 function IsAccel(VK: word; const Str: string): Boolean;
 procedure NotifyApplicationUserInput(Msg: Cardinal);
@@ -1705,12 +1705,12 @@ end;
 
 //==============================================================================
 
-function FindRootDesigner(AComponent: TComponent): TIDesigner;
+function FindRootDesigner(APersistent: TPersistent): TIDesigner;
 var
   Form: TCustomForm;
 begin
   Result:=nil;
-  Form:=GetDesignerForm(AComponent);
+  Form:=GetDesignerForm(APersistent);
   if Form<>nil then
     Result:=Form.Designer;
 end;
@@ -1722,21 +1722,35 @@ begin
   Result:=TCustomForm(Control);
 end;
 
-function GetDesignerForm(AComponent: TComponent): TCustomForm;
-var
-  OwnerComponent: TComponent;
+function GetDesignerForm(APersistent: TPersistent): TCustomForm;
 begin
-  if AComponent = nil then Exit(nil);
+  if APersistent = nil then Exit(nil);
   if Assigned(OnGetDesignerForm) then
-    Result := OnGetDesignerForm(AComponent)
+    Result := OnGetDesignerForm(APersistent)
   else
   begin
     Result := nil;
-    OwnerComponent := AComponent;
-    while OwnerComponent.Owner <> nil do
-      OwnerComponent := OwnerComponent.Owner;
-    if OwnerComponent is TCustomForm then
-      Result := TCustomForm(OwnerComponent);
+    repeat
+      if (APersistent is TComponent) then begin
+        if TComponent(APersistent).Owner<>nil then
+          APersistent:=TComponent(APersistent).Owner
+        else
+          exit;
+      end else if APersistent is TCollection then begin
+        if TCollection(APersistent).Owner<>nil then
+          APersistent:=TCollection(APersistent).Owner
+        else
+          exit;
+      end else if APersistent is TCollectionItem then begin
+        if TCollectionItem(APersistent).Collection<>nil then
+          APersistent:=TCollectionItem(APersistent).Collection
+        else
+          exit;
+      end else
+        exit;
+    until false;
+    if APersistent is TCustomForm then
+      Result := TCustomForm(APersistent);
   end;
 end;
 
