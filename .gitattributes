@@ -3855,9 +3855,11 @@ images/components_images_list.txt svneol=native#text/plain
 images/componenttreeview.bat svneol=native#text/x-msdos-program
 images/componenttreeview.lrs svneol=native#text/pascal
 images/componenttreeview/oi_box.png -text svneol=unset#image/png
+images/componenttreeview/oi_collection.png -text svneol=unset#image/png
 images/componenttreeview/oi_comp.png -text svneol=unset#image/png
 images/componenttreeview/oi_control.png -text svneol=unset#image/png
 images/componenttreeview/oi_form.png -text svneol=unset#image/png
+images/componenttreeview/oi_item.png -text svneol=unset#image/png
 images/componenttreeview_list.txt svneol=native#text/plain
 images/debugger/callstack_bottom.png -text
 images/debugger/callstack_goto.png -text
