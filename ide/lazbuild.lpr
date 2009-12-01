@@ -752,8 +752,8 @@ begin
   SetupOutputFilter;
   MainBuildBoss.SetupCompilerInterface;
 
-  // create static base packages
-  PackageGraph.AddStaticBasePackages;
+  // load static base packages
+  PackageGraph.LoadStaticBasePackages;
 
   MainBuildBoss.SetBuildTarget(OSOverride,CPUOverride,WidgetSetOverride);
 
