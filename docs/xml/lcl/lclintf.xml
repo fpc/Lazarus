@@ -9,7 +9,19 @@
     <module name="LCLIntf">
       <short>Contains constants and type definitions for Delphi compatibility</short>
       <descr>
-        <p>This unit is being created specifically for compatibility with Delphi. It should only be used for constants and type definitions that are included in the Delphi Windows unit. This is only done for compatibility</p>
+        <p>This unit is being created specifically for compatibility with Delphi. It
+contains selected functions that are included in the Delphi Windows unit.
+These functions are mostly abstract and implemented by the LCL interfaces.
+<br/>
+For LCL users:<br/>
+The functions can be used to make porting of Delphi applications easier
+and are not 100% emulating winapi functions, not even under windows. They were
+implemented and tested with some common Delphi libraries.
+The LCL contains many extra functions that the Delphi VCL does not have.<br/>
+For example:<br/>
+Instead of using the common windows functions SaveDC and RestoreDC use instead
+the Canvas.SaveHandleState and Canvas.RestoreHandleState.
+</p>
       </descr>
       <!-- unresolved type reference Visibility: default -->
       <element name="Math">
