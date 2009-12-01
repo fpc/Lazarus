@@ -472,7 +472,7 @@ type
     function FindDefaultForActiveControl: TWinControl;
     procedure UpdateMenu;
   protected
-    FActionLists: TList;
+    FActionLists: TList; // keep this TList for Delphi compatibility
     FFormBorderStyle: TFormBorderStyle;
     FFormState: TFormState;
     class procedure WSRegisterClass; override;
@@ -514,6 +514,8 @@ type
     procedure DoAutoSize; override;
     procedure SetAutoSize(Value: Boolean); override;
     procedure SetAutoScroll(Value: Boolean); override;
+    procedure DoAddActionList(List: TCustomActionList);
+    procedure DoRemoveActionList(List: TCustomActionList);
   protected
     // drag and dock
     procedure BeginAutoDrag; override;

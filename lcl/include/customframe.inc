@@ -23,11 +23,7 @@ var
 begin
   ParentForm := GetParentForm(Self);
   if ParentForm <> nil then
-  begin
-    if ParentForm.FActionLists = nil then
-      ParentForm.FActionLists := TList.Create;
-    ParentForm.FActionLists.Add(ActionList);
-  end;
+    ParentForm.DoAddActionList(ActionList);
 end;
 
 procedure TCustomFrame.RemoveActionList(ActionList: TCustomActionList);
@@ -35,8 +31,8 @@ var
   ParentForm: TCustomForm;
 begin
   ParentForm:=GetParentForm(Self);
-  if (ParentForm<>nil) and (ParentForm.FActionLists<>nil) then
-    ParentForm.FActionLists.Remove(ActionList);
+  if (ParentForm<>nil) then
+    ParentForm.DoRemoveActionList(ActionList);
 end;
 
 procedure TCustomFrame.ReadDesignLeft(Reader: TReader);
@@ -107,29 +103,33 @@ end;
 
 procedure TCustomFrame.SetParent(AParent: TWinControl);
 
-  procedure UpdateActionLists(Operation: TOperation);
+  procedure UpdateActionLists(Root: TComponent; Operation: TOperation);
   var
     i: Integer;
     AComponent: TComponent;
   begin
-    for i := 0 to ComponentCount - 1 do
+    for i := 0 to Root.ComponentCount - 1 do
     begin
-      AComponent := Components[i];
+      AComponent := Root.Components[i];
       if AComponent is TCustomActionList then
         case Operation of
           opInsert: AddActionList(TCustomActionList(AComponent));
           opRemove: RemoveActionList(TCustomActionList(AComponent));
         end;
+      // update nested frames
+      if csInline in AComponent.ComponentState then
+        UpdateActionLists(AComponent,Operation);
     end;
   end;
 
 begin
-  if Parent<>nil then UpdateActionLists(opRemove);
+  if Parent<>nil then
+    UpdateActionLists(Self,opRemove);
   if (Parent=nil) and HandleAllocated then
     DestroyHandle;
   inherited SetParent(AParent);
   if Parent <> nil then
-    UpdateActionLists(opInsert);
+    UpdateActionLists(Self,opInsert);
 end;
 
 class function TCustomFrame.GetControlClassDefaultSize: TPoint;

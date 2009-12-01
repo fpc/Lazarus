@@ -141,8 +141,7 @@ begin
       begin
         if AComponent is TCustomActionList then
         begin
-          if FActionLists = nil then FActionLists := TList.Create;
-          FActionLists.Add(AComponent);
+          DoAddActionList(TCustomActionList(AComponent));
         end
         else
         if not (csLoading in ComponentState) and (Menu = nil) and
@@ -152,7 +151,7 @@ begin
     opRemove:
       begin
         if (FActionLists <> nil) and (AComponent is TCustomActionList) then
-          FActionLists.Remove(AComponent)
+          DoRemoveActionList(TCustomActionList(AComponent))
         else
         if AComponent = Menu then Menu := nil;
         if FActiveControl=AComponent then
@@ -1125,6 +1124,22 @@ end;
 procedure TCustomForm.SetAutoScroll(Value: Boolean);
 begin
   inherited SetAutoScroll(Value and (BorderStyle in BorderStylesAllowAutoScroll));
+end;
+
+procedure TCustomForm.DoAddActionList(List: TCustomActionList);
+begin
+  if FActionLists=nil then
+    FActionLists:=TList.Create;
+  if FActionLists.IndexOf(List)<0 then begin
+    FActionLists.Add(List);
+    List.FreeNotification(Self);
+  end;
+end;
+
+procedure TCustomForm.DoRemoveActionList(List: TCustomActionList);
+begin
+  if FActionLists<>nil then
+    FActionLists.Remove(List);
 end;
 
 procedure TCustomForm.BeginAutoDrag;
