@@ -291,7 +291,10 @@ begin
     end else if FileOwner is TLazPackage then begin
       // compare disk and package
       APackage:=TLazPackage(FileOwner);
-      Filename:=APackage.LPKSource.Filename;
+      if APackage.LPKSource<>nil then
+        Filename:=APackage.LPKSource.Filename
+      else
+        Filename:=APackage.GetResolvedFilename(true);
       APackage.SaveToString(Source);
     end else begin
       Filename:='';

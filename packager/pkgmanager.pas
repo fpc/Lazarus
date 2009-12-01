@@ -2367,7 +2367,7 @@ begin
   end;
 
   AFilename:=CleanAndExpandFilename(AFilename);
-  
+
   // check file extension
   if (CompareFileExt(AFilename,'.lpk',false)<>0)
   and (not (pofRevert in Flags)) then begin
@@ -3449,7 +3449,10 @@ begin
   if APackageList=nil then exit(mrOk);
   for i:=0 to APackageList.Count-1 do begin
     APackage:=TLazPackage(APackageList[i]);
-    Result:=DoOpenPackageFile(APackage.Filename,[pofRevert],true);
+    if FileExistsCached(APackage.Filename) then
+      Result:=DoOpenPackageFile(APackage.Filename,[pofRevert],true)
+    else
+      APackage.LPKSource:=nil;
     if Result=mrAbort then exit;
   end;
   Result:=mrOk;

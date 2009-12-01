@@ -827,7 +827,7 @@ type
                                         write FLastCompilerParams;
     property LazDocPaths: string read FLazDocPaths write SetLazDocPaths;
     property License: string read FLicense write SetLicense;
-    property LPKSource: TCodeBuffer read FLPKSource write SetLPKSource;
+    property LPKSource: TCodeBuffer read FLPKSource write SetLPKSource;// can be nil when file on disk was removed
     property LPKSourceChangeStep: integer read FLPKSourceChangeStep write SetLPKSourceChangeStep;
     property Macros: TTransferMacroList read FMacros;
     property Missing: boolean read FMissing write FMissing;
