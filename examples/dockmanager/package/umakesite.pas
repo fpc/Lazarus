@@ -50,6 +50,11 @@ type
   public
   end;
 
+  TAppDockManager = class(TEasyTree)
+  protected
+    function  ReloadDockedControl(const AName: string): TControl; override;
+  end;
+
 (* The owner of all docksites (if ownSites is defined),
   and of all dockable window grips (if ownGrips is defined)
 *)
@@ -59,35 +64,86 @@ type
       X, Y: Integer);
     procedure FormEndDock(Sender, Target: TObject; X, Y: Integer);
   protected //utilities
-    function  ReloadForm(const AName: string): TCustomForm; virtual;
+    function  ReloadForm(const AName: string): TWinControl; virtual;
     function  WrapDockable(Client: TControl): TFloatingSite;
   private
-    LastSite: TFloatingSite;
+    //LastSite: TFloatingSite; //last floating site created
+    LastPanel: TPanel;  //last elastic panel created
   public
     Factory: TWinControl; //generic owner
+    constructor Create(AOwner: TComponent); override;
     procedure AddElasticSites(AForm: TCustomForm; Sides: sDockSides);
-    function  CreateDockable(const AName: string; fMultiInst: boolean; fWrap: boolean = True): TCustomForm;
+    function  CreateDockable(const AName: string; fMultiInst: boolean; fWrap: boolean = True): TWinControl;
     procedure DumpSites;
+  //persistence
     procedure LoadFromStream(Stream: TStream);
     procedure SaveToStream(Stream: TStream);
   end;
+
+function  ReloadDockedControl(const ControlName: string; Site: TWinControl): TControl;
+function  ReloadDockSite(const SiteName, ParentName: string; Aligned: TAlign): TWinControl;
+
+var
+  DockMaster: TDockMaster; //for access by docksites on Reload...
 
 implementation
 
 uses
   LCLIntf, LCLProc;
-  //fMasterSite,
 
 type
   TWinControlAccess = class(TWinControl)
   end;
+  TControlAccess = class(TControl)
+  end;
 
-const
+const //what characters are acceptable, for unique names?
   PanelNames: array[TAlign] of string = (
     '', '', //alNone, alTop,
-    'pnlBottom', 'pnlLeft', 'pnlRight',
+    '_Elastic_Bottom_', '_Elastic_Left_', '_Elastic_Right_',
     '', ''  //alClient, alCustom
   );
+
+function  ReloadDockedControl(const ControlName: string; Site: TWinControl): TControl;
+var
+  wc: TWinControlAccess absolute Result;
+  ctl: TControlAccess absolute Result;
+begin
+(* Reload a previously docked control for Site and make it dockable.
+  Notebooks are assumed to be owned by the Site.
+  Forms are assumed to be owned by Application???
+  Others are assumed to be owned by ???
+*)
+  Result := nil;
+  if (DockMaster <> nil) and (DockMaster.Factory <> nil) then begin
+    TWinControlAccess(DockMaster.Factory).ReLoadDockedControl(ControlName, Result);
+    //if Result <> nil then exit; //done
+  end;
+  if Result = nil then begin
+  //create something
+  end;
+  if ctl.DragKind <> dkDock then begin
+  //make it dockable
+  {$IFDEF new}
+    if Result is TCustomForm then
+      MakeDockable(Result)
+    else
+  {$ELSE}
+  {$ENDIF}
+    begin
+      ctl.DragKind := dkDock;
+      ctl.DragMode := dmAutomatic;
+    end;
+  end;
+end;
+
+function  ReloadDockSite(const SiteName, ParentName: string; Aligned: TAlign): TWinControl;
+begin
+(* Create a DockSite.
+  When ParentName='' then creste a TFloatingSite,
+  else create an elastic panel within the given parent.
+*)
+end;
 
 { TDockMaster }
 
@@ -111,12 +167,13 @@ begin
       {$ELSE}
         pnl := TDockPanel.Create(AForm); //owned by?
       {$ENDIF}
+        LastPanel := pnl; //for reload layout
         pnl.Name := PanelNames[side];
         pnl.Parent := AForm;
         pnl.Align := side;
         pnl.BorderWidth := 1;
         //pnl.BorderStyle := bsSingle; // does not properly handle the size
-        dm := TEasyTree.Create(pnl);
+        dm := TAppDockManager.Create(pnl);
         dm.SetStyle(hsForm);
         pnl.DockSite := True;
         pnl.UseDockManager := True;
@@ -142,8 +199,17 @@ begin
   end;
 end;
 
+constructor TDockMaster.Create(AOwner: TComponent);
+begin
+  inherited Create(AOwner);
+  DebugLn('dockmgr=%s', [DefaultDockManagerClass.ClassName]);
+  DefaultDockManagerClass := TAppDockManager;
+  if DockMaster = nil then
+    DockMaster := self;
+end;
+
 function TDockMaster.CreateDockable(const AName: string;
-  fMultiInst: boolean; fWrap: boolean): TCustomForm;
+  fMultiInst: boolean; fWrap: boolean): TWinControl;
 var
   img: TImage;
   r: TRect;
@@ -154,7 +220,7 @@ begin
   Used also to restore a layout.
 
 Options (to come or to be removed)
-  fMultiInst allows to auto-create new versions (if True),
+  fMultiInst allows to auto-create new instances (if True),
   otherwise an already existing instance is returned. (really returned?)
 *)
 //get the form
@@ -173,19 +239,24 @@ Options (to come or to be removed)
     Site := WrapDockable(Result);
   end;
 //create a docking handle - should become a component?
-  if LastSite <> nil then begin //problem: find grabber picture!?
-    img := TImage.Create(Result); //we could own the img, and be notified when its parent becomes nil
-    img.Parent := Result;
-    img.Align := alNone;
-    img.Anchors := [akTop, akRight];
-    r := Result.ClientRect;
-    r.bottom := 16;
-    r.Left := r.Right - 16;
-    img.BoundsRect := r;
-    img.Picture := LastSite.Image1.Picture;
-    img.OnMouseMove := @DockHandleMouseMove;
-    img.Visible := True;
-  end;
+  img := TImage.Create(Result); //we could own the img, and be notified when its parent becomes nil
+  img.Parent := Result;
+  img.Align := alNone;
+  img.Anchors := [akTop, akRight];
+  r := Result.ClientRect;
+  r.bottom := 16;
+  r.Left := r.Right - 16;
+  img.BoundsRect := r;
+  if DockGrip <> nil then  //problem: find grabber picture!?
+    try
+      img.Picture := DockGrip;
+    except
+      DebugLn('exception loading picture');
+    end;
+  //else???
+  img.OnMouseMove := @DockHandleMouseMove;
+  img.Visible := True;
+//make visible, so that it can be docked without problems
   Result.Visible := True;
 end;
 
@@ -211,6 +282,7 @@ end;
 type
   RSiteRec = packed record
     Bounds: TRect;
+    Align:  TAlign;
     NameLen: byte; //+name
   end;
 var
@@ -220,8 +292,12 @@ var
 procedure TDockMaster.LoadFromStream(Stream: TStream);
 var
   ctl, pre: TControl;
-  site: TFloatingSite;
+  site: TWinControl;
+  host: TForm;
+  hcomp: TComponent absolute host;
   nb: TEasyBook;
+  hostname: string;
+  i: integer;
 
   procedure MakeForm;
   begin
@@ -236,6 +312,10 @@ var
     SetLength(SiteName, SiteRec.NameLen);
     if Result and (SiteRec.NameLen > 0) then
       Stream.Read(SiteName[1], SiteRec.NameLen);
+    if Result then
+      DebugLn('reload site %s', [SiteName])
+    else
+      DebugLn('reload site done');
   end;
 
 begin
@@ -269,28 +349,44 @@ Notebooks?
   end;
 {$ELSE}
 {$ENDIF}
-//restore all DockSites
-//all floating sites
+  Stream.Position := 0; //rewind!
+//restore all floating sites
   while ReadSite do begin
-    site := TFloatingSite.Create(self);
-    site.Name := SiteName;
+    if SiteRec.NameLen = 0 then begin
+    //floating site
+      site := TFloatingSite.Create(self);
+    end else begin
+    //hosted panel - find parent form
+      if Factory = nil then
+        hcomp := Application.FindComponent(SiteName)
+      else begin
+        hcomp := Factory.FindComponent(SiteName);
+        //hcomp := Factory.ReloadDockedControl(SiteName); - reload form!?
+      end;
+      if (hcomp = nil) or not (hcomp is TWinControl) then
+        host := TForm.Create(Application);
+      AddElasticSites(host, [SiteRec.Align]);
+      site := LastPanel;
+    end;
     site.BoundsRect := SiteRec.Bounds;
+    if site.DockManager = nil then
+      TAppDockManager.Create(site);
     site.DockManager.LoadFromStream(Stream);
   end;
-//all ElasticSites - to come
 end;
 
 procedure TDockMaster.SaveToStream(Stream: TStream);
 
-  procedure SaveSite(Site: TWinControl);
+  procedure SaveSite(Site: TWinControl; const AName: string);
   begin
   (* what if a site doesn't have an DockManager?
   *)
     SiteRec.Bounds := Site.BoundsRect;
-    SiteName := Site.Name;
+    SiteName := AName;
+    SiteRec.Align := Site.Align;
     SiteRec.NameLen := Length(SiteName);
     Stream.Write(SiteRec, sizeof(SiteRec));
-    if SiteName <> '' then
+    if AName <> '' then
       Stream.Write(SiteName[1], Length(SiteName));
     Site.DockManager.SaveToStream(Stream);
   end;
@@ -302,8 +398,14 @@ var
 begin
   for i := 0 to ComponentCount - 1 do begin
     cmp := Components[i];
-    if (cmp is TWinControl) and wc.DockSite then
-      SaveSite(wc);
+    if (cmp is TWinControl) and wc.DockSite then begin
+      if wc.Parent = nil then
+        SaveSite(wc, '') //save top level sites
+      else begin
+      //elastic site - not yet
+        //SaveSite(wc, {wc.Name + '@' +} wc.Parent.Name); //elastic site
+      end;
+    end;
   end;
 //end marker
   SiteRec.Bounds.Right := -1;
@@ -311,20 +413,47 @@ begin
   Stream.Write(SiteRec, sizeof(SiteRec));
 end;
 
-function TDockMaster.ReloadForm(const AName: string): TCustomForm;
+function TDockMaster.ReloadForm(const AName: string): TWinControl;
 var
   basename, instname: string;
-  i, l, instno: integer;
-  fc: TFormClass;
+  fc: TWinControlClass;
   fo: TComponent; //form owner
   ctl: TControl;
+  cmp: TComponent absolute Result;
 const
   digits = ['0'..'9'];
+
+  procedure SplitName;
+  var
+    i, l, instno: integer;
+  begin
+  //find the instance number, if present
+    instno := 0;
+    l := Length(AName);
+    i := l;
+    while AName[i] in digits do
+      dec(i);
+    //i now is the position of the last non-digit in the name
+  //extract the instance number
+    basename := Copy(AName, 1, i);
+    while i < l do begin
+      inc(i);
+      instno := instno * 10 + ord(AName[i])-ord('0');
+    end;
+  //single/multi instance?
+    if instno = 0 then
+      instno := 1; //default instance number for forms
+  //lookup existing instance
+    instname := basename + IntToStr(instno);
+  end;
+
 begin
 (* Get a form from the Factory, or search/create it.
 
   The name is split into basename and instance number.
   A component of T<basename> is created (and named AName - automatic!).
+
+  Result type? (a TWinControl is sufficient as a DockSite)
 *)
   Result := nil;
 //check if Factory can provide the form
@@ -343,34 +472,24 @@ begin
   fo := Self; //we own the forms
 {$ENDIF}
   if AName = '' then begin
+  //if True then begin
     //test!
+    //Result := TFloatingSite.Create(fo); //named Form1, Form2...
     Result := TForm.Create(fo); //named Form1, Form2...
   end else begin
-  //find the instance number, if present
-    instno := 0;
-    l := Length(AName);
-    i := l;
-    while AName[i] in digits do begin
-      dec(i);
+    cmp := fo.FindComponent(AName); //(instname);
+    //if Result <> nil then
+    if assigned(cmp) then begin
+      if cmp is TWinControl then
+        exit;
+      cmp.Free; //we NEED at least a TWinControl, of exactly the given name
     end;
-    //i now is the position of the last non-digit in the name
-  //extract the instance number
-    basename := Copy(AName, 1, i);
-    while i < l do begin
-      inc(i);
-      instno := instno * 10 + ord(AName[i])-ord('0');
-    end;
-    if instno = 0 then
-      instno := 1; //default instance number for forms
-  //lookup existing instance
-    instname := basename + IntToStr(instno);
-    if fo.FindComponent(instname) <> nil then
-      exit;
   //create new instance
+    SplitName;
     basename := 'T' + basename;
-    fc := TFormClass(GetClass(basename)); //must be registered class name!
-    if not assigned(fc) then
-      exit;
+    fc := nil;
+    fc := TWinControlClass(GetClass(basename)); //must be registered class name!
+    assert(assigned(fc), 'class not registered');
     Result := fc.Create(fo);
     if Result.Name <> AName then
       Result.Name := AName; //???
@@ -386,7 +505,7 @@ begin
   {$ELSE}
     Site := TFloatingSite.Create(Application); //the new site
   {$ENDIF}
-    LastSite := Site;
+    //LastSite := Site;
     Site.BoundsRect := Client.BoundsRect; //the new position and extension
     Client.Align := alClient;
     Client.Visible := True; //otherwise docking may be rejected
@@ -461,7 +580,7 @@ const
     for j := 0 to Site.DockClientCount - 1 do begin
       ctl := site.DockClients[j];
       s := OrientString[ctl.DockOrientation];
-      DebugLn('  %s.Client=%s@%s (%d,%d)[%d,%d]', [SiteName(ASite), SiteName(ctl), s,
+      DebugLn('  %s.Client=%s.%s@%s (%d,%d)[%d,%d]', [SiteName(ASite), ctl.Owner.Name, SiteName(ctl), s,
         ctl.Left, ctl.Top, ctl.Width, ctl.Height]);
       //if ctl is TFloatingSite then
       if (ctl is TWinControl) and wc.DockSite then
@@ -491,55 +610,17 @@ begin
   DebugLn('--- dump sites ---');
   for i := 0 to ComponentCount - 1 do begin
     cmp := Components[i];
-  {$IFnDEF old}
     if (cmp is TWinControl) and wc.DockSite then
       DumpSite(wc)
     else if ctl is TControl then begin
       DebugLn('Client=%s in %s (%d,%d)[%d,%d]', [SiteName(ctl), SiteName(ctl.HostDockSite),
         ctl.Left, ctl.Top, ctl.Width, ctl.Height]);
     end;
-  {$ELSE}
-    if cmp is TWinControl then begin
-    //path
-      Site := TWinControl(cmp);
-      if Site.DockSite then begin
-      //reached only when ownSites is defined!
-        ctl := Site;
-        s := Format('Site=%s (%d,%d)[%d,%d]', [SiteName(ctl),
-          ctl.Left, ctl.Top, ctl.Width, ctl.Height]);
-        while ctl <> nil do begin
-          hds := ctl.HostDockSite <> nil;
-          if hds then begin
-            Site := ctl.HostDockSite;
-            if Site <> nil then
-              n := ' in ' + SiteName(Site) + '@' + OrientString[ctl.DockOrientation];
-          end else begin
-            Site := ctl.Parent;
-            if Site <> nil then
-              n := ' at ' + SiteName(Site) + '@' + AlignString[ctl.Align];
-          end;
-          if Site = nil then
-            break;
-          s := s + n;
-          ctl := Site;
-        end;
-        DebugLn(s);
-      //clients
-        Site := TWinControl(cmp);
-        for j := 0 to site.DockClientCount - 1 do begin
-          ctl := site.DockClients[j];
-          s := OrientString[ctl.DockOrientation];
-          DebugLn('  Client=%s@%s (%d,%d)[%d,%d]', [SiteName(ctl), s,
-            ctl.Left, ctl.Top, ctl.Width, ctl.Height]);
-          //if ctl is TFloatingSite then
-        end;
-      end else begin
-        ctl := Site;
-        DebugLn('Client=%s in %s (%d,%d)[%d,%d]', [SiteName(ctl), SiteName(ctl.HostDockSite),
-          ctl.Left, ctl.Top, ctl.Width, ctl.Height]);
-      end;
-    end;
-  {$ENDIF}
+  end;
+  DebugLn('--- dump forms ---');
+  for i := 0 to Application.ComponentCount - 1 do begin
+    cmp := Application.Components[i];
+    DebugLn('%s: %s', [cmp.Name, cmp.ClassName]);
   end;
   DebugLn('--- end dump ---');
 end;
@@ -747,5 +828,24 @@ begin
   end;
 end;
 
+{ TAppDockManager }
+
+function TAppDockManager.ReloadDockedControl(const AName: string): TControl;
+begin
+  if False then
+    Result:=inherited ReloadDockedControl(AName); //asking DockSite (very bad idea)
+  if assigned(DockMaster) then begin
+    Result := DockMaster.CreateDockable(AName, True, False);
+  end else begin
+    //Owner.FindComponent(AControlName) as TControl;
+    Result := Application.FindComponent(AName) as TControl;
+  end;
+  if Result <> nil then
+    DebugLn('Reloaded %s.%s', [Result.Owner.Name, Result.Name]);
+end;
+
+initialization
+  RegisterClass(TFloatingSite);
+  DefaultDockManagerClass := TAppDockManager;
 end.
 

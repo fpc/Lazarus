@@ -337,6 +337,6 @@ end;
 
 initialization
   {$I felasticsite.lrs}
-  DefaultDockManagerClass := TEasyTree;
+  //DefaultDockManagerClass := TEasyTree;
 end.
 

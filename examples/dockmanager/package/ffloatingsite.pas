@@ -16,6 +16,8 @@ As with DockBook, closing docked forms results in Exceptions :-(
 
 {$mode objfpc}{$H+}
 
+{$DEFINE appdock}
+
 interface
 
 uses
@@ -32,18 +34,32 @@ type
       NewTarget: TWinControl; var Allow: Boolean);
   protected
     procedure Loaded; override;
+  {$IFDEF appdock}
+  {$ELSE}
+    procedure ReloadDockedControl(const AControlName: string;
+                                  var AControl: TControl); override;
+  {$ENDIF}
   public
     procedure UpdateCaption(without: TControl);
   end;
 
 var
-  FloatingSite: TFloatingSite;
+  //FloatingSite: TFloatingSite;
+  DockGrip: TPicture;
 
 implementation
 
 uses
   LCLproc,  //debugging only
-  EasyDockSite; //our DockManager
+  EasyDockSite, //our DockManager
+  uMakeSite;
+
+type
+{$IFDEF appdock}
+  TOurDockManager = TAppDockManager;
+{$ELSE}
+  TOurDockManager = TEasyTree;
+{$ENDIF}
 
 { TFloatingSite }
 
@@ -143,14 +159,32 @@ begin
 (* select and configure the docking manager.
 *)
   inherited Loaded;
+  if DockGrip = nil then begin
+    DockGrip := TPicture.Create;  //(Application);
+    DockGrip.Assign(self.Image1.Picture);
+  end;
   if DockManager = nil then
-    DockManager := TEasyTree.Create(self);
+    DockManager := TOurDockManager.Create(self);
   if DockManager is TEasyTree then begin
   //adjust as desired (order required!?)
     TEasyTree(DockManager).HideSingleCaption := True; //only show headers for multiple clients
     TEasyTree(DockManager).SetStyle(hsForm);  //show client name in the header
   end;
 end;
+
+{$IFDEF appdock}
+{$ELSE}
+procedure TFloatingSite.ReloadDockedControl(const AControlName: string;
+  var AControl: TControl);
+begin
+  inherited ReloadDockedControl(AControlName, AControl);
+  if AControl = nil then begin
+    AControl := TForm.Create(Application);
+    //make dock client
+    //if uMakeSite...
+  end;
+end;
+{$ENDIF}
 
 initialization
   {$I ffloatingsite.lrs}

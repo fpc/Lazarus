@@ -202,7 +202,10 @@ type
 
   TEasyTree = class(TEasyDockManager)
   private
-    FReplaceZone,
+  {$IFDEF replace}
+    FReplaceZone: TEasyZone;
+  {$ELSE}
+  {$ENDIF}
     FTopZone: TEasyZone;
     FSiteRect: TRect; //to detect changed site extent
     procedure UpdateTree;
@@ -212,11 +215,10 @@ type
     procedure EndUpdate; override;
     procedure PositionDockRect(Client, DropCtl: TControl; DropAlign: TAlign;
       var DockRect: TRect);  override;
-    procedure SetReplacingControl(Control: TControl); override; //unused
   {$ELSE}
     //in base class
-    procedure SetReplacingControl(Control: TControl); override;
   {$ENDIF}
+    procedure SetReplacingControl(Control: TControl); override;
   //extended interface
     //procedure ControlVisibilityChanged(Control: TControl; Visible: Boolean);  override;
     function  ZoneFromPoint(SitePos: TPoint): TEasyZone;
@@ -225,6 +227,7 @@ type
       DropCtl: TControl);  override;
     procedure RemoveControl(Control: TControl);  override;
     procedure ResetBounds(Force: Boolean);  override; //site resized
+    function  ReloadDockedControl(const AName: string): TControl; virtual;
     procedure LoadFromStream(Stream: TStream);  override;
     procedure SaveToStream(Stream: TStream);  override;
   protected //added
@@ -1010,6 +1013,11 @@ begin
   Stream.Write(ZoneRec, sizeof(ZoneRec));
 end;
 
+function TEasyTree.ReloadDockedControl(const AName: string): TControl;
+begin
+  TWinControlAccess(DockSite).ReloadDockedControl(ZoneName, Result);
+end;
+
 procedure TEasyTree.LoadFromStream(Stream: TStream);
 
   function GetRec: integer;
@@ -1018,11 +1026,15 @@ procedure TEasyTree.LoadFromStream(Stream: TStream);
   begin
     Stream.Read(ZoneRec, SizeOf(ZoneRec));
     NameLen := ZoneRec.NameLen;
-    if NameLen > 0 then begin
-      SetLength(ZoneName, NameLen);
+    SetLength(ZoneName, NameLen);
+    if NameLen > 0 then
       Stream.Read(ZoneName[1], NameLen);
-    end;
     Result := ZoneRec.Level;
+  //debug
+    if Result > 0 then
+      DebugLn('reload %s @%d [%d,%d]', [ZoneName, Result, ZoneRec.BottomRight.x, ZoneRec.BottomRight.y])
+    else
+      DebugLn('reload done');
   end;
 
   procedure MakeZone(InZone: TEasyZone; Level: byte);
@@ -1038,6 +1050,7 @@ procedure TEasyTree.LoadFromStream(Stream: TStream);
       if ZoneRec.Level = Level then begin
       //create zone at Level in InZone
         if ZoneRec.NameLen > 0 then begin
+        //we can NOT expect that Reload... is overridden!?
           TWinControlAccess(DockSite).ReloadDockedControl(ZoneName, NewCtl);
           fSkip := NewCtl = nil;
         end else
@@ -1049,6 +1062,7 @@ procedure TEasyTree.LoadFromStream(Stream: TStream);
           NewZone.BR := ZoneRec.BottomRight;
           NewZone.ChildControl := NewCtl;
           InZone.InsertAfter(PrevZone, NewZone);
+          NewCtl.Visible := True;
           PrevZone := NewZone;
         end;
         //else skip zone without control - at Level!?
@@ -1060,13 +1074,78 @@ procedure TEasyTree.LoadFromStream(Stream: TStream);
     end;  //until GetRec < Level;
   end;
 
+  procedure MakeZones;
+  var
+    PrevZone, NewZone: TEasyZone;
+    PrevLvl, NewLvl: byte;
+    NewCtl: TControl;
+  begin
+    PrevZone := FTopZone;
+    PrevLvl := 1;
+    while GetRec > 0 do begin
+      NewLvl := ZoneRec.Level;
+      NewZone := TEasyZone.Create(self);
+      NewZone.Orientation := ZoneRec.Orientation;
+      NewZone.BR := ZoneRec.BottomRight;
+      if ZoneRec.NameLen > 0 then begin
+      //we can NOT expect that Reload... is overridden!?
+        NewCtl := ReloadDockedControl(ZoneName);
+      //do we need a control in any case?
+        if NewCtl = nil then begin
+          NewCtl := TPanel.Create(DockSite);
+        end;
+        try
+          DebugLn('try rename %s into %s', [NewCtl.Name, ZoneName]);
+          NewCtl.Name := ZoneName;
+        except
+          DebugLn('error rename');
+        end;
+        NewCtl.Caption := ZoneName;
+        if NewCtl <> nil then begin
+        {$IFDEF old}
+          NewCtl.Align := alNone;
+          NewCtl.Visible := True;
+          NewCtl.Parent := DockSite;
+          NewCtl.Width := ZoneRec.BottomRight.x;
+          NewCtl.Height := ZoneRec.BottomRight.y;
+          NewZone.ChildControl := NewCtl;
+        {$ELSE}
+          NewCtl.Visible := True;
+          NewZone.ChildControl := NewCtl;
+          SetReplacingControl(NewCtl);
+          NewCtl.ManualDock(DockSite);
+          NewCtl.Width := ZoneRec.BottomRight.x;
+          NewCtl.Height := ZoneRec.BottomRight.y;
+        {$ENDIF}
+        end;
+      end;
+      while NewLvl < PrevLvl do begin
+        PrevZone := PrevZone.Parent;
+        dec(PrevLvl);
+      end;
+      if NewLvl = PrevLvl then //add sibling
+        //PrevZone.AddSibling(NewZone, alRight)
+        PrevZone.Parent.InsertAfter(PrevZone, NewZone)
+      else begin //NewLvl > PrevLvl - make child
+        //InZone.InsertAfter(PrevZone, NewZone);
+        PrevZone.InsertAfter(nil, NewZone);
+        PrevLvl := NewLvl;
+      end;
+      PrevZone := NewZone;
+    end;
+  end;
+
 begin
 //read record
   if GetRec > 0 then begin
     FTopZone.BR := ZoneRec.BottomRight;
-    MakeZone(FTopZone, 1);
+    FTopZone.Orientation := ZoneRec.Orientation;
+    //if GetRec = 2 then MakeZone(FTopZone, 1);
+    MakeZones;
   end;
 //finish?
+//remove all leafs without a child control?
+  ResetBounds(True);
 end;
 
 procedure TEasyTree.DumpToStream(Stream: TStream);
@@ -1136,21 +1215,16 @@ begin
   WriteZone(FTopZone, 0);
 end;
 
-{$IFDEF old}
-procedure TEasyTree.SetReplacingControl(Control: TControl);
-begin
-  //FReplacingControl := Control;
-end;
-{$ELSE}
-
 procedure TEasyTree.SetReplacingControl(Control: TControl);
 begin
 (* The Control may have been undocked, until the replace request is handled.
 *)
   inherited SetReplacingControl(Control);
+{$IFDEF replace}
   FReplaceZone := FindControlZone(FTopZone, Control);
-end;
+{$ELSE}
 {$ENDIF}
+end;
 
 procedure TEasyTree.SetSingleCaption(Value: boolean);
 begin
@@ -1735,6 +1809,7 @@ end;
 
 initialization
 {$I easy_dock_images.lrs}
+  //DefaultDockManagerClass := TEasyTree;
   CreateDockHeaderImages;
 finalization
   DestroyDockHeaderImages;

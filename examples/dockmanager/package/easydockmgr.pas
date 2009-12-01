@@ -7,14 +7,13 @@ unit EasyDockMgr;
 interface
 
 uses
-    EasyDockSite, fDockBook, fFloatingSite, fElasticSite, uMiniRestore, 
-  uMakeSite, LazarusPackageIntf;
+    EasyDockSite, fDockBook, fFloatingSite, uMiniRestore, uMakeSite, 
+  LazarusPackageIntf;
 
 implementation
 
 procedure Register; 
 begin
-  RegisterUnit('fElasticSite', @fElasticSite.Register); 
 end; 
 
 initialization
