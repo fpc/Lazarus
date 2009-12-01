@@ -28,7 +28,7 @@ unit ComponentTreeView;
 interface
 
 uses
-  Classes, SysUtils, LCLProc, AvgLvlTree, Dialogs, Controls, ComCtrls,
+  Classes, SysUtils, TypInfo, LCLProc, AvgLvlTree, Dialogs, Controls, ComCtrls,
   ExtCtrls, LResources,
   ObjInspStrConsts, PropEdits;
   
@@ -78,6 +78,8 @@ type
     Added: boolean;
   end;
 
+  TGetCollectionProc = procedure(AName: String; ACollection: TCollection) of object;
+
   { TComponentWalker }
 
   TComponentWalker = class
@@ -85,12 +87,15 @@ type
     FCandidates: TAvgLvlTree;
     FRootComponent: TComponent;
     FNode: TTreeNode;
+  protected
+    procedure GetCollections(AComponent: TComponent; AProc: TGetCollectionProc);
   public
     constructor Create(
       ATreeView: TComponentTreeView; ACandidates: TAvgLvlTree;
       ARootComponent: TComponent; ANode: TTreeNode);
 
     procedure Walk(AComponent: TComponent);
+    procedure AddCollection(AName: String; ACollection: TCollection);
   end;
 
   TComponentAccessor = class(TComponent);
@@ -109,6 +114,26 @@ end;
 
 { TComponentWalker }
 
+procedure TComponentWalker.GetCollections(AComponent: TComponent; AProc: TGetCollectionProc);
+var
+  PropList: PPropList;
+  i, PropCount: Integer;
+  Obj: TObject;
+begin
+  PropCount := GetPropList(AComponent, PropList);
+  try
+    for i := 0 to PropCount - 1 do
+      if (PropList^[i]^.PropType^.Kind = tkClass) then
+      begin
+        Obj := GetObjectProp(AComponent, PropList^[i], TCollection);
+        if Assigned(Obj) then
+          AProc(PropList^[i]^.Name, TCollection(Obj));
+      end;
+  finally
+    FreeMem(PropList);
+  end;
+end;
+
 constructor TComponentWalker.Create(ATreeView: TComponentTreeView;
   ACandidates: TAvgLvlTree; ARootComponent: TComponent; ANode: TTreeNode);
 begin
@@ -126,9 +151,10 @@ var
   Root: TComponent;
 begin
   if GetLookupRootForComponent(AComponent) <> FRootComponent then Exit;
-  AVLNode := FCandidates.FindKey(
-    AComponent, TListSortCompare(@ComparePersistentWithComponentCandidate));
+
+  AVLNode := FCandidates.FindKey(AComponent, TListSortCompare(@ComparePersistentWithComponentCandidate));
   if AVLNode = nil then Exit;
+
   Candidate := TComponentCandidate(AVLNode.Data);
   if Candidate.Added then Exit;
   Candidate.Added := True;
@@ -139,15 +165,43 @@ begin
   FNode.ImageIndex := FTreeView.GetImageFor(AComponent);
   FNode.SelectedIndex := FNode.ImageIndex;
   FNode.MultiSelected := FTreeView.Selection.IndexOf(AComponent) >= 0;
-  if (csInline in AComponent.ComponentState) or (AComponent.Owner=nil) then
+
+  GetCollections(AComponent, @AddCollection);
+
+  if (csInline in AComponent.ComponentState) or (AComponent.Owner = nil) then
     Root := AComponent
   else
     Root := AComponent.Owner;
-  if not ((Root is TControl)
-          and (csOwnedChildsNotSelectable in TControl(Root).ControlStyle))
-  then
+
+  if not ((Root is TControl) and (csOwnedChildsNotSelectable in TControl(Root).ControlStyle)) then
     TComponentAccessor(AComponent).GetChildren(@Walk, Root);
   FNode := OldNode;
+  FNode.Expanded := True;
+end;
+
+procedure TComponentWalker.AddCollection(AName: String; ACollection: TCollection);
+var
+  CollectionNode, ItemNode: TTreeNode;
+  i: integer;
+  Item: TCollectionItem;
+begin
+  CollectionNode := FTreeView.Items.AddChild(FNode, AName);
+  CollectionNode.Data := ACollection;
+  CollectionNode.ImageIndex := 4;
+  CollectionNode.SelectedIndex := CollectionNode.ImageIndex;
+  CollectionNode.MultiSelected := FTreeView.Selection.IndexOf(ACollection) >= 0;
+
+  for i := 0 to ACollection.Count - 1 do
+  begin
+    Item := ACollection.Items[i];
+    ItemNode := FTreeView.Items.AddChild(CollectionNode, Format('%d - %s', [i, Item.ClassName]));
+    ItemNode.Data := Item;
+    ItemNode.ImageIndex := 5;
+    ItemNode.SelectedIndex := ItemNode.ImageIndex;
+    ItemNode.MultiSelected := FTreeView.Selection.IndexOf(Item) >= 0;
+  end;
+
+  CollectionNode.Expanded := True;
   FNode.Expanded := True;
 end;
   
@@ -368,15 +422,17 @@ end;
 
 function TComponentTreeView.GetImageFor(AComponent: TComponent): integer;
 begin
-  if Assigned(AComponent) then begin
-    if (AComponent is TControl)
-    and (csAcceptsControls in TControl(AComponent).ControlStyle) then
+  if Assigned(AComponent) then
+  begin
+    if (AComponent is TControl) and (csAcceptsControls in TControl(AComponent).ControlStyle) then
       Result := 3
-    else if (AComponent is TControl) then
+    else
+    if (AComponent is TControl) then
       Result := 2
     else
       Result := 1;
-  end else 
+  end
+  else
     Result := -1;
 end;
 
@@ -404,6 +460,8 @@ begin
   FImageList.AddLazarusResource('oi_comp');
   FImageList.AddLazarusResource('oi_control');
   FImageList.AddLazarusResource('oi_box');
+  FImageList.AddLazarusResource('oi_collection');
+  FImageList.AddLazarusResource('oi_item');
   Images := FImageList;
 end;
 
@@ -532,9 +590,9 @@ end;
 
 function TComponentTreeView.CreateNodeCaption(APersistent: TPersistent): string;
 begin
-  Result:=APersistent.ClassName;
+  Result := APersistent.ClassName;
   if APersistent is TComponent then
-    Result:=TComponent(APersistent).Name+': '+Result;
+    Result := TComponent(APersistent).Name + ': ' + Result;
 end;
 
 initialization
