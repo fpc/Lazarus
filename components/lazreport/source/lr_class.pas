@@ -251,6 +251,7 @@ type
     IsPrinting: Boolean;
     Flags: Word;
     DRect: TRect;
+    ParentBandType: TfrBandType; // identify parent band type on exporting view
 
     constructor Create; override;
     destructor Destroy; override;
@@ -1070,7 +1071,10 @@ function GetDefaultDataSet: TfrTDataSet;
 procedure SetBit(var w: Word; e: Boolean; m: Integer);
 
 const
-  frCurrentVersion = 24; // this is current version (2.4)
+  frCurrentVersion = 25;
+    // version 2.5: lazreport: added to binary stream ParentBandType variable
+    //                         on TfrView, used to extend export facilities
+
   frSpecCount = 9;
   frSpecFuncs: Array[0..frSpecCount - 1] of String = ('PAGE#', '',
     'DATE', 'TIME', 'LINE#', 'LINETHROUGH#', 'COLUMN#', 'CURRENT#', 'TOTALPAGES');
@@ -1769,6 +1773,7 @@ procedure TfrView.LoadFromStream(Stream: TStream);
 var
   wb : Word;
   S  : Single;
+  i  : Integer;
 begin
   {$IFDEF DebugLR}
   DebugLn('%s%s.TfrView.LoadFromStream begin StreamMode=%d ClassName=%s',
@@ -1811,6 +1816,12 @@ begin
       Read(wb,2);
       Visible:=(Wb<>0);
     end;
+
+    if (frVersion >= 25) then begin
+      Read(I, 4);
+      ParentBandType := TfrBandType(I);
+    end;
+
   end;
   {$IFDEF DebugLR}
   DebugLn('%s%s.TfrView.LoadFromStream end',[sspc,name]);
@@ -1863,6 +1874,7 @@ end;
 procedure TfrView.SaveToStream(Stream: TStream);
 var
   S: Single;
+  B: Integer;
 begin
   {$IFDEF DebugLR}
   DebugLn('%s%s.SaveToStream begin',[sspc,name]);
@@ -1894,7 +1906,15 @@ begin
       frWriteMemo(Stream, Script);
       Write(Visible, 2);
     end
-    else frWriteMemo(Stream, Memo1);
+    else
+      frWriteMemo(Stream, Memo1);
+
+    // parent band type new in stream format 25
+    B := 0;
+    if Parent<>nil then
+      B := ord(Parent.Typ);
+    Write(B, 4);
+
   end;
   {$IFDEF DebugLR}
   Debugln('%s%s.SaveToStream end',[sspc,name]);
@@ -7751,7 +7771,7 @@ begin
   if frVersion <= frCurrentVersion then
   try
 {$IFDEF FREEREP2217READ}
-    if FRE_COMPATIBLE_READ and (frVersion = 23) then
+    if FRE_COMPATIBLE_READ and (frVersion >= 23) then
       frVersion := 22;
 {$ENDIF}
     Pages.LoadFromStream(Stream);
@@ -7790,7 +7810,7 @@ begin
   if frVersion <= frCurrentVersion then
   try
 {$IFDEF FREEREP2217READ}
-    if FRE_COMPATIBLE_READ and (frVersion = 23) then
+    if FRE_COMPATIBLE_READ and (frVersion >= 23) then
       frVersion := 22;
 {$ENDIF}
     pages.LoadFromXML(XML, Path+'Pages/');
