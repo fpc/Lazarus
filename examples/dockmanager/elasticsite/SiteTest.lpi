@@ -71,7 +71,7 @@
     <PathDelim Value="\"/>
     <SearchPaths>
       <IncludeFiles Value="$(ProjOutDir)\"/>
-      <OtherUnitFiles Value="..\easyedit\;..\package\;$(LazarusDir)\components\synedit\"/>
+      <OtherUnitFiles Value="..\easyedit\"/>
     </SearchPaths>
     <Other>
       <CompilerPath Value="$(CompPath)"/>

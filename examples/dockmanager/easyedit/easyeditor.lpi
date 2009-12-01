@@ -4,11 +4,11 @@
     <PathDelim Value="\"/>
     <Version Value="7"/>
     <General>
+      <SessionStorage Value="InIDEConfig"/>
       <MainUnit Value="0"/>
       <TargetFileExt Value=".exe"/>
       <Title Value="easyeditor"/>
       <UseXPManifest Value="True"/>
-      <ActiveEditorIndexAtStart Value="2"/>
     </General>
     <VersionInfo>
       <ProjectVersion Value=""/>
@@ -22,7 +22,7 @@
     <RunParams>
       <local>
         <FormatVersion Value="1"/>
-        <LaunchingApplication PathPlusParams="/usr/X11R6/bin/xterm -T 'Lazarus Run Output' -e $(LazarusDir)/tools/runwait.sh $(TargetCmdLine)"/>
+        <LaunchingApplication PathPlusParams="\usr\X11R6\bin\xterm -T 'Lazarus Run Output' -e $(LazarusDir)\tools\runwait.sh $(TargetCmdLine)"/>
       </local>
     </RunParams>
     <RequiredPackages Count="3">
@@ -36,14 +36,11 @@
         <PackageName Value="LCL"/>
       </Item3>
     </RequiredPackages>
-    <Units Count="27">
+    <Units Count="4">
       <Unit0>
         <Filename Value="easyeditor.lpr"/>
         <IsPartOfProject Value="True"/>
         <UnitName Value="easyeditor"/>
-        <CursorPos X="1" Y="15"/>
-        <TopLine Value="1"/>
-        <UsageCount Value="56"/>
       </Unit0>
       <Unit1>
         <Filename Value="editmain.pas"/>
@@ -51,306 +48,23 @@
         <ComponentName Value="MainForm"/>
         <ResourceBaseClass Value="Form"/>
         <UnitName Value="EditMain"/>
-        <CursorPos X="1" Y="14"/>
-        <TopLine Value="1"/>
-        <EditorIndex Value="0"/>
-        <UsageCount Value="56"/>
-        <Loaded Value="True"/>
       </Unit1>
       <Unit2>
-        <Filename Value="..\package\fdockbook.pas"/>
-        <ComponentName Value="EasyDockBook"/>
-        <HasResources Value="True"/>
-        <ResourceBaseClass Value="Form"/>
-        <UnitName Value="fDockBook"/>
-        <CursorPos X="24" Y="28"/>
-        <TopLine Value="1"/>
-        <EditorIndex Value="3"/>
-        <UsageCount Value="35"/>
-        <Loaded Value="True"/>
-      </Unit2>
-      <Unit3>
-        <Filename Value="..\package\easydocksite.pas"/>
-        <UnitName Value="EasyDockSite"/>
-        <CursorPos X="20" Y="71"/>
-        <TopLine Value="50"/>
-        <UsageCount Value="11"/>
-      </Unit3>
-      <Unit4>
-        <Filename Value="..\package\fdockbook.lfm"/>
-        <CursorPos X="1" Y="1"/>
-        <TopLine Value="1"/>
-        <UsageCount Value="9"/>
-        <SyntaxHighlighter Value="LFM"/>
-      </Unit4>
-      <Unit5>
-        <Filename Value="easypages.pas"/>
-        <ComponentName Value="EasyBook"/>
-        <ResourceBaseClass Value="Form"/>
-        <UnitName Value="EasyPages"/>
-        <CursorPos X="10" Y="10"/>
-        <TopLine Value="7"/>
-        <UsageCount Value="30"/>
-      </Unit5>
-      <Unit6>
-        <Filename Value="..\..\..\lcl\forms.pp"/>
-        <UnitName Value="Forms"/>
-        <CursorPos X="3" Y="254"/>
-        <TopLine Value="254"/>
-        <UsageCount Value="11"/>
-      </Unit6>
-      <Unit7>
-        <Filename Value="editmain.lrs"/>
-        <CursorPos X="1" Y="1"/>
-        <TopLine Value="1"/>
-        <UsageCount Value="9"/>
-      </Unit7>
-      <Unit8>
-        <Filename Value="..\..\..\..\..\lazarus\fpc\2.2.4\source\rtl\inc\objpash.inc"/>
-        <CursorPos X="23" Y="151"/>
-        <TopLine Value="130"/>
-        <UsageCount Value="9"/>
-      </Unit8>
-      <Unit9>
-        <Filename Value="..\..\..\components\synedit\synedit.pp"/>
-        <UnitName Value="SynEdit"/>
-        <CursorPos X="22" Y="723"/>
-        <TopLine Value="716"/>
-        <UsageCount Value="19"/>
-      </Unit9>
-      <Unit10>
-        <Filename Value="..\ide_demo0\feditwnd.pas"/>
-        <ComponentName Value="EditWnd"/>
-        <HasResources Value="True"/>
-        <ResourceBaseClass Value="Form"/>
-        <UnitName Value="fEditWnd"/>
-        <CursorPos X="5" Y="11"/>
-        <TopLine Value="7"/>
-        <UsageCount Value="19"/>
-      </Unit10>
-      <Unit11>
-        <Filename Value="..\..\..\lcl\controls.pp"/>
-        <UnitName Value="Controls"/>
-        <CursorPos X="1" Y="446"/>
-        <TopLine Value="444"/>
-        <UsageCount Value="19"/>
-      </Unit11>
-      <Unit12>
-        <Filename Value="..\..\..\lcl\include\control.inc"/>
-        <CursorPos X="29" Y="55"/>
-        <TopLine Value="54"/>
-        <UsageCount Value="19"/>
-      </Unit12>
-      <Unit13>
-        <Filename Value="..\..\..\lcl\fileutil.pas"/>
-        <UnitName Value="FileUtil"/>
-        <CursorPos X="10" Y="80"/>
-        <TopLine Value="56"/>
-        <UsageCount Value="9"/>
-      </Unit13>
-      <Unit14>
-        <Filename Value="..\..\..\lcl\include\fileutil.inc"/>
-        <CursorPos X="3" Y="1031"/>
-        <TopLine Value="1023"/>
-        <UsageCount Value="9"/>
-      </Unit14>
-      <Unit15>
-        <Filename Value="..\..\..\lcl\include\dragmanager.inc"/>
-        <CursorPos X="22" Y="577"/>
-        <TopLine Value="564"/>
-        <UsageCount Value="19"/>
-      </Unit15>
-      <Unit16>
-        <Filename Value="..\..\..\lcl\include\wincontrol.inc"/>
-        <CursorPos X="19" Y="7162"/>
-        <TopLine Value="7155"/>
-        <UsageCount Value="19"/>
-      </Unit16>
-      <Unit17>
-        <Filename Value="..\..\..\lcl\include\dragobject.inc"/>
-        <CursorPos X="19" Y="112"/>
-        <TopLine Value="109"/>
-        <UsageCount Value="17"/>
-      </Unit17>
-      <Unit18>
-        <Filename Value="..\..\..\lcl\widgetset\wscontrols.pp"/>
-        <UnitName Value="WSControls"/>
-        <CursorPos X="46" Y="10"/>
-        <TopLine Value="1"/>
-        <UsageCount Value="11"/>
-      </Unit18>
-      <Unit19>
-        <Filename Value="..\..\..\..\pasdocOld\branches\PasDoc2\source\component\PasDoc_Parser.pas"/>
-        <UnitName Value="PasDoc_Parser"/>
-        <CursorPos X="1" Y="1826"/>
-        <TopLine Value="1802"/>
-        <UsageCount Value="10"/>
-      </Unit19>
-      <Unit20>
-        <Filename Value="..\..\..\lcl\lclproc.pas"/>
-        <UnitName Value="LCLProc"/>
-        <CursorPos X="42" Y="171"/>
-        <TopLine Value="169"/>
-        <UsageCount Value="11"/>
-      </Unit20>
-      <Unit21>
-        <Filename Value="..\..\..\lcl\include\customform.inc"/>
-        <CursorPos X="1" Y="1690"/>
-        <TopLine Value="1666"/>
-        <UsageCount Value="11"/>
-      </Unit21>
-      <Unit22>
         <Filename Value="feditform.pas"/>
         <IsPartOfProject Value="True"/>
         <ComponentName Value="EditPage"/>
         <ResourceBaseClass Value="Form"/>
         <UnitName Value="fEditForm"/>
-        <CursorPos X="37" Y="41"/>
-        <TopLine Value="1"/>
-        <EditorIndex Value="1"/>
-        <UsageCount Value="25"/>
-        <Loaded Value="True"/>
-      </Unit22>
-      <Unit23>
+      </Unit2>
+      <Unit3>
         <Filename Value="feditbook.pas"/>
         <IsPartOfProject Value="True"/>
         <ComponentName Value="EditBook"/>
         <HasResources Value="True"/>
         <ResourceBaseClass Value="Form"/>
         <UnitName Value="fEditBook"/>
-        <CursorPos X="59" Y="6"/>
-        <TopLine Value="1"/>
-        <EditorIndex Value="2"/>
-        <UsageCount Value="22"/>
-        <Loaded Value="True"/>
-      </Unit23>
-      <Unit24>
-        <Filename Value="..\..\..\lcl\comctrls.pp"/>
-        <UnitName Value="ComCtrls"/>
-        <CursorPos X="14" Y="1456"/>
-        <TopLine Value="1432"/>
-        <UsageCount Value="11"/>
-      </Unit24>
-      <Unit25>
-        <Filename Value="..\..\..\lcl\include\toolbutton.inc"/>
-        <CursorPos X="1" Y="320"/>
-        <TopLine Value="287"/>
-        <UsageCount Value="11"/>
-      </Unit25>
-      <Unit26>
-        <Filename Value="..\..\..\lcl\themes.pas"/>
-        <UnitName Value="Themes"/>
-        <CursorPos X="17" Y="2020"/>
-        <TopLine Value="2005"/>
-        <UsageCount Value="11"/>
-      </Unit26>
+      </Unit3>
     </Units>
-    <JumpHistory Count="26" HistoryIndex="25">
-      <Position1>
-        <Filename Value="editmain.pas"/>
-        <Caret Line="67" Column="3" TopLine="65"/>
-      </Position1>
-      <Position2>
-        <Filename Value="editmain.pas"/>
-        <Caret Line="103" Column="7" TopLine="75"/>
-      </Position2>
-      <Position3>
-        <Filename Value="editmain.pas"/>
-        <Caret Line="92" Column="1" TopLine="67"/>
-      </Position3>
-      <Position4>
-        <Filename Value="..\package\fdockbook.pas"/>
-        <Caret Line="229" Column="10" TopLine="220"/>
-      </Position4>
-      <Position5>
-        <Filename Value="..\package\fdockbook.pas"/>
-        <Caret Line="232" Column="48" TopLine="224"/>
-      </Position5>
-      <Position6>
-        <Filename Value="editmain.pas"/>
-        <Caret Line="83" Column="19" TopLine="75"/>
-      </Position6>
-      <Position7>
-        <Filename Value="..\package\fdockbook.pas"/>
-        <Caret Line="232" Column="42" TopLine="205"/>
-      </Position7>
-      <Position8>
-        <Filename Value="..\package\fdockbook.pas"/>
-        <Caret Line="238" Column="21" TopLine="208"/>
-      </Position8>
-      <Position9>
-        <Filename Value="..\package\fdockbook.pas"/>
-        <Caret Line="89" Column="19" TopLine="64"/>
-      </Position9>
-      <Position10>
-        <Filename Value="editmain.pas"/>
-        <Caret Line="14" Column="7" TopLine="1"/>
-      </Position10>
-      <Position11>
-        <Filename Value="feditform.pas"/>
-        <Caret Line="24" Column="20" TopLine="1"/>
-      </Position11>
-      <Position12>
-        <Filename Value="feditform.pas"/>
-        <Caret Line="13" Column="24" TopLine="1"/>
-      </Position12>
-      <Position13>
-        <Filename Value="feditform.pas"/>
-        <Caret Line="47" Column="1" TopLine="1"/>
-      </Position13>
-      <Position14>
-        <Filename Value="editmain.pas"/>
-        <Caret Line="40" Column="27" TopLine="10"/>
-      </Position14>
-      <Position15>
-        <Filename Value="editmain.pas"/>
-        <Caret Line="11" Column="31" TopLine="1"/>
-      </Position15>
-      <Position16>
-        <Filename Value="editmain.pas"/>
-        <Caret Line="83" Column="1" TopLine="59"/>
-      </Position16>
-      <Position17>
-        <Filename Value="editmain.pas"/>
-        <Caret Line="41" Column="1" TopLine="1"/>
-      </Position17>
-      <Position18>
-        <Filename Value="editmain.pas"/>
-        <Caret Line="97" Column="1" TopLine="54"/>
-      </Position18>
-      <Position19>
-        <Filename Value="..\package\fdockbook.pas"/>
-        <Caret Line="244" Column="9" TopLine="236"/>
-      </Position19>
-      <Position20>
-        <Filename Value="feditform.pas"/>
-        <Caret Line="30" Column="6" TopLine="10"/>
-      </Position20>
-      <Position21>
-        <Filename Value="editmain.pas"/>
-        <Caret Line="89" Column="21" TopLine="64"/>
-      </Position21>
-      <Position22>
-        <Filename Value="feditform.pas"/>
-        <Caret Line="41" Column="37" TopLine="1"/>
-      </Position22>
-      <Position23>
-        <Filename Value="..\package\fdockbook.pas"/>
-        <Caret Line="37" Column="27" TopLine="1"/>
-      </Position23>
-      <Position24>
-        <Filename Value="feditbook.pas"/>
-        <Caret Line="14" Column="73" TopLine="1"/>
-      </Position24>
-      <Position25>
-        <Filename Value="feditbook.pas"/>
-        <Caret Line="44" Column="1" TopLine="12"/>
-      </Position25>
-      <Position26>
-        <Filename Value="..\package\fdockbook.pas"/>
-        <Caret Line="28" Column="24" TopLine="1"/>
-      </Position26>
-    </JumpHistory>
   </ProjectOptions>
   <CompilerOptions>
     <Version Value="8"/>
@@ -369,17 +83,4 @@
       <CompilerPath Value="$(CompPath)"/>
     </Other>
   </CompilerOptions>
-  <Debugging>
-    <Exceptions Count="3">
-      <Item1>
-        <Name Value="EAbort"/>
-      </Item1>
-      <Item2>
-        <Name Value="ECodetoolError"/>
-      </Item2>
-      <Item3>
-        <Name Value="EFOpenError"/>
-      </Item3>
-    </Exceptions>
-  </Debugging>
 </CONFIG>

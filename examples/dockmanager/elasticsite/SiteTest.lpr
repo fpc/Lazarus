@@ -9,8 +9,6 @@ uses
   Interfaces, // this includes the LCL widgetset
   Forms, EasyDockMgr, fEditorSite, fEditBook, fClientForm;
 
-{$IFDEF WINDOWS}{$R SiteTest.rc}{$ENDIF}
-
 begin
   Application.Initialize;
   Application.CreateForm(TEditorSite, EditorSite);
