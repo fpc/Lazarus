@@ -28,6 +28,8 @@ unit ExprEval;
 
 {$I codetools.inc}
 
+{ $DEFINE VerboseExprEval}
+
 interface
 
 uses
@@ -1488,6 +1490,7 @@ var
   }
   var
     i: LongInt;
+    BracketStart: PChar;
   begin
     Result:=false;
     if AtomStart>=ExprEnd then exit;
@@ -1597,6 +1600,7 @@ var
       end;
     '(':
       begin
+        BracketStart:=AtomStart;
         ReadNextAtom;
         if AtomStart>=ExprEnd then exit;
         {$IFDEF VerboseExprEval}
@@ -1607,6 +1611,8 @@ var
         {$IFDEF VerboseExprEval}
         DebugLn(['ReadOperand BRACKET CLOSED => skip bracket']);
         {$ENDIF}
+        AtomStart:=BracketStart;
+        p:=AtomStart+1;
         if not ReadTilEndBracket then exit;
         exit(true);
       end;
