@@ -27,11 +27,19 @@
 {
 @author(Curtis White <cwhite@aracnet.com>)
 @created(17-Oct-1999)
-@lastmod(17-Oct-1999)
 
 This unit is being created specifically for compatibility with Delphi. It
-should only be used for constants and type definitions that are included in
-the Delphi Windows unit. This is only done for compatibility.
+contains selected functions that are included in the Delphi Windows unit.
+These functions are mostly abstract and implemented by the LCL interfaces.
+
+For LCL users:
+The functions can be used to make porting of Delphi applications easier
+and are not 100% emulating winapi functions, not even under windows. They were
+implemented and tested with some common Delphi libraries.
+The LCL contains many extra functions that the Delphi VCL does not have.
+For example:
+Instead of using the common windows functions SaveDC and RestoreDC use instead
+the Canvas.SaveHandleState and Canvas.RestoreHandleState.
 }
 
 unit LCLIntf;
