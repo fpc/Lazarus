@@ -239,6 +239,8 @@ begin
       FHintTimer:=nil;
     if FComponentsToRelease<>nil then
       FComponentsToRelease.Remove(AComponent);
+    if FComponentsReleasing<>nil then
+      FComponentsReleasing.Remove(AComponent);
     if AComponent = MainForm then begin
       FMainForm:= nil;
       Terminate;
@@ -2043,43 +2045,47 @@ end;
 
 procedure TApplication.ReleaseComponents;
 var
-  List: TFPList;
-  Node: TAvgLvlTreeNode;
   Component: TComponent;
-  i: Integer;
+  Node: TAvgLvlTreeNode;
 begin
-  if FComponentsToRelease<>nil then begin
+  if FComponentsReleasing<>nil then exit; // currently releasing
+  if (FComponentsToRelease<>nil) then begin
+    if FComponentsToRelease.Count=0 then begin
+      FreeAndNil(FComponentsToRelease);
+      exit;
+    end;
     // free components
     // Notes:
     //   - check TLCLComponent.LCLRefCount=0
     //   - during freeing new components can be added to the FComponentsToRelease
-    List:=nil;
+    //   - components can be removed from FComponentsToRelease and FComponentsReleasing
+    FComponentsReleasing:=FComponentsToRelease;
+    FComponentsToRelease:=nil;
     try
-      // collect all components that can be freed
-      Node:=FComponentsToRelease.FindLowest;
-      while Node<>nil do begin
+      while (FComponentsReleasing<>nil) and (FComponentsReleasing.Count>0) do
+      begin
+        Node:=FComponentsReleasing.FindLowest;
         Component:=TComponent(Node.Data);
-        if (not (Component is TLCLComponent))
-        or (TLCLComponent(Component).LCLRefCount=0) then begin
-          if List=nil then
-            List:=TFPList.Create;
-          List.Add(Component);
-        end;
-        Node:=FComponentsToRelease.FindSuccessor(Node);
-      end;
-      // free components
-      if List<>nil then
-        for i:=0 to List.Count-1 do begin
-          Component:=TComponent(List[i]);
-          FComponentsToRelease.Remove(Component);
-          //DebugLn(['TApplication.ReleaseComponents ',DbgSName(Component)]);
+        FComponentsReleasing.Delete(Node);
+        if (Component is TLCLComponent)
+        and (TLCLComponent(Component).LCLRefCount>0) then begin
+          // add again to FComponentsToRelease
+          ReleaseComponent(Component);
+        end else begin
           Component.Free;
         end;
+      end;
     finally
-      List.Free;
+      // add remaining to FComponentsToRelease
+      while (FComponentsReleasing<>nil) and (FComponentsReleasing.Count>0) do
+      begin
+        Node:=FComponentsReleasing.FindLowest;
+        Component:=TComponent(Node.Data);
+        FComponentsReleasing.Delete(Node);
+        ReleaseComponent(Component);
+      end;
+      FreeAndNil(FComponentsReleasing);
     end;
-    if FComponentsToRelease.Count=0 then
-      FreeAndNil(FComponentsToRelease);
   end;
 end;
 

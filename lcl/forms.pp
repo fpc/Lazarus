@@ -1100,6 +1100,7 @@ type
     FApplicationType: TApplicationType;
     FCaptureExceptions: boolean;
     FComponentsToRelease: TAvgLvlTree;
+    FComponentsReleasing: TAvgLvlTree;
     FCreatingForm: TForm;// currently created form (CreateForm), candidate for MainForm
     FFindGlobalComponentEnabled: boolean;
     FFlags: TApplicationFlags;

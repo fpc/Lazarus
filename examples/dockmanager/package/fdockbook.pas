@@ -85,6 +85,8 @@ type
     constructor Create(TheOwner: TComponent); override;
   end;
 
+  { TEasyDockBook }
+
   TEasyDockBook = class(TForm)
     pnlDock: TPanel;
     procedure FormClose(Sender: TObject; var CloseAction: TCloseAction);
@@ -155,6 +157,7 @@ begin
 {$ELSE}
   //not required?
 {$ENDIF}
+  DebugLn(['TEasyDockBook.FormClose ',DbgSName(Self),' ',dbgs(Pointer(Self))]);
   CloseAction := caFree;
 end;
 
@@ -226,7 +229,7 @@ begin
     Client.Visible := True; //make hidden page control visible
   end;
   Tabs.ButtonList.Delete(i);
-  btn.Free; //seems to work
+  Application.ReleaseComponent(btn);
 //special handle remove of current and last tab
 {$IFDEF new}
   //if not StayDocked and (Tabs.ButtonCount = 1) then begin
@@ -241,7 +244,7 @@ begin
     {$ELSE}
       CurTab.Control.ManualDock(HostDockSite, self, alLeft);
     {$ENDIF}
-      PostMessage(Self.Handle, WM_CLOSE, 0, 0);
+      Release;
     end else begin
     end;
   end else
@@ -267,12 +270,7 @@ begin
       //DoUnDock(nil, nil);
       //Dock(nil);
     end;
-    //Release;  //Close;
-  {$IFDEF WIN32}
-    PostMessage(Self.Handle, WM_CLOSE, 0, 0);
-  {$ELSE}
-    //how to close from within an event handler?
-  {$ENDIF}
+    Release;
   end;
 //update the host dock site and its DockManager
   if HostDockSite <> nil then begin
