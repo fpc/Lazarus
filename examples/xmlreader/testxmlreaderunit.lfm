@@ -1,0 +1,191 @@
+object XMLRederForm: TXMLRederForm
+  Left = 312
+  Height = 690
+  Top = 119
+  Width = 939
+  ActiveControl = Panel1
+  Caption = 'XML reader test'
+  ClientHeight = 690
+  ClientWidth = 939
+  OnClose = FormClose
+  OnCreate = FormCreate
+  Position = poScreenCenter
+  LCLVersion = '0.9.29'
+  object TreeView1: TTreeView
+    Left = 0
+    Height = 624
+    Top = 66
+    Width = 457
+    Align = alLeft
+    AutoExpand = True
+    DefaultItemHeight = 19
+    ReadOnly = True
+    TabOrder = 0
+    OnClick = TreeView1Click
+    Options = [tvoAutoExpand, tvoAutoItemHeight, tvoHideSelection, tvoKeepCollapsedNodes, tvoReadOnly, tvoShowButtons, tvoShowLines, tvoShowRoot, tvoToolTips]
+  end
+  object Panel1: TPanel
+    Left = 0
+    Height = 66
+    Top = 0
+    Width = 939
+    Align = alTop
+    AutoSize = True
+    ClientHeight = 66
+    ClientWidth = 939
+    TabOrder = 1
+    object BitBtn1: TBitBtn
+      AnchorSideTop.Control = Label1
+      AnchorSideTop.Side = asrBottom
+      AnchorSideRight.Control = Panel1
+      AnchorSideRight.Side = asrBottom
+      Left = 867
+      Height = 30
+      Top = 30
+      Width = 66
+      Anchors = [akTop, akRight]
+      AutoSize = True
+      BorderSpacing.Around = 6
+      Caption = 'Load'
+      Glyph.Data = {
+        4E010000424D4E01000000000000760000002800000012000000120000000100
+        040000000000D800000000000000000000000000000000000000000000000000
+        8000008000000080800080000000800080008080000080808000C0C0C0000000
+        FF0000FF000000FFFF00FF000000FF00FF00FFFF0000FFFFFF00EEEEEEEEEEEE
+        EEEEEE000000EEEEEEEEEEEEEEEEEE000000EE00000000000EEEEE000000EE00
+        3333333330EEEE000000EE0B03333333330EEE000000EE0FB03333333330EE00
+        0000EE0BFB03333333330E000000EE0FBFB00000000000000000EE0BFBFBFBFB
+        0EEEEE000000EE0FBFBFBFBF0EEEEE000000EE0BFB0000000EEEEE000000EEE0
+        00EEEEEEEE000E000000EEEEEEEEEEEEEEE00E000000EEEEEEEEEE0EEE0E0E00
+        0000EEEEEEEEEEE000EEEE000000EEEEEEEEEEEEEEEEEE000000EEEEEEEEEEEE
+        EEEEEE000000EEEEEEEEEEEEEEEEEE000000
+      }
+      OnClick = BitBtn1Click
+      TabOrder = 0
+    end
+    object Label1: TLabel
+      AnchorSideLeft.Control = Panel1
+      AnchorSideTop.Control = Panel1
+      Left = 6
+      Height = 18
+      Top = 6
+      Width = 66
+      BorderSpacing.Around = 6
+      Caption = 'File name'
+      ParentColor = False
+    end
+    object FileNameEdit1: TFileNameEdit
+      AnchorSideLeft.Control = Label1
+      AnchorSideTop.Control = Label1
+      AnchorSideTop.Side = asrBottom
+      Left = 12
+      Height = 29
+      Top = 30
+      Width = 828
+      FileName = '/home/alexs/work/a/2009-11-24/Magazin_7_RealizaciqTovarovUslug_2009-11-11.xml'
+      DialogOptions = []
+      FilterIndex = 0
+      HideDirectories = False
+      ButtonWidth = 23
+      NumGlyphs = 0
+      Anchors = [akTop, akLeft, akRight]
+      BorderSpacing.Left = 6
+      BorderSpacing.Top = 6
+      BorderSpacing.Bottom = 6
+      MaxLength = 0
+      TabOrder = 1
+    end
+  end
+  object Splitter1: TSplitter
+    Left = 457
+    Height = 624
+    Top = 66
+    Width = 5
+  end
+  object Panel2: TPanel
+    Left = 462
+    Height = 624
+    Top = 66
+    Width = 477
+    Align = alClient
+    Caption = 'Panel2'
+    ClientHeight = 624
+    ClientWidth = 477
+    TabOrder = 3
+    object ListView1: TListView
+      AnchorSideTop.Control = Edit2
+      AnchorSideTop.Side = asrBottom
+      Left = 1
+      Height = 499
+      Top = 124
+      Width = 475
+      Align = alBottom
+      Anchors = [akTop, akLeft, akRight, akBottom]
+      BorderSpacing.Top = 6
+      Columns = <      
+        item
+          Caption = 'Name'
+          Width = 100
+        end      
+        item
+          Caption = 'Value'
+          Width = 350
+        end>
+      TabOrder = 0
+      ViewStyle = vsReport
+    end
+    object Label2: TLabel
+      AnchorSideLeft.Control = Panel2
+      AnchorSideTop.Control = Panel2
+      Left = 6
+      Height = 18
+      Top = 6
+      Width = 81
+      BorderSpacing.Around = 6
+      Caption = 'Node name'
+      ParentColor = False
+    end
+    object Label3: TLabel
+      AnchorSideLeft.Control = Panel2
+      AnchorSideTop.Control = Edit1
+      AnchorSideTop.Side = asrBottom
+      Left = 6
+      Height = 18
+      Top = 65
+      Width = 78
+      BorderSpacing.Around = 6
+      Caption = 'Node value'
+      ParentColor = False
+    end
+    object Edit1: TEdit
+      AnchorSideLeft.Control = Label2
+      AnchorSideTop.Control = Label2
+      AnchorSideTop.Side = asrBottom
+      AnchorSideRight.Control = Panel2
+      AnchorSideRight.Side = asrBottom
+      Left = 12
+      Height = 29
+      Top = 30
+      Width = 459
+      Anchors = [akTop, akLeft, akRight]
+      BorderSpacing.Around = 6
+      TabOrder = 1
+      Text = 'Edit1'
+    end
+    object Edit2: TEdit
+      AnchorSideLeft.Control = Label3
+      AnchorSideTop.Control = Label3
+      AnchorSideTop.Side = asrBottom
+      AnchorSideRight.Control = Panel2
+      AnchorSideRight.Side = asrBottom
+      Left = 12
+      Height = 29
+      Top = 89
+      Width = 459
+      Anchors = [akTop, akLeft, akRight]
+      BorderSpacing.Around = 6
+      TabOrder = 2
+      Text = 'Edit2'
+    end
+  end
+end

@@ -1,0 +1,71 @@
+{ Это - файл ресурсов, автоматически созданный lazarus }
+
+LazarusResources.Add('TXMLRederForm','FORMDATA',[
+  'TPF0'#13'TXMLRederForm'#12'XMLRederForm'#4'Left'#3'8'#1#6'Height'#3#178#2#3
+  +'Top'#2'w'#5'Width'#3#171#3#13'ActiveControl'#7#6'Panel1'#7'Caption'#6#15'XM'
+  +'L reader test'#12'ClientHeight'#3#178#2#11'ClientWidth'#3#171#3#7'OnClose'#7
+  +#9'FormClose'#8'OnCreate'#7#10'FormCreate'#8'Position'#7#14'poScreenCenter'
+  +#10'LCLVersion'#6#6'0.9.29'#0#9'TTreeView'#9'TreeView1'#4'Left'#2#0#6'Height'
+  +#3'p'#2#3'Top'#2'B'#5'Width'#3#201#1#5'Align'#7#6'alLeft'#10'AutoExpand'#9#17
+  +'DefaultItemHeight'#2#19#8'ReadOnly'#9#8'TabOrder'#2#0#7'OnClick'#7#14'TreeV'
+  +'iew1Click'#7'Options'#11#13'tvoAutoExpand'#17'tvoAutoItemHeight'#16'tvoHide'
+  +'Selection'#21'tvoKeepCollapsedNodes'#11'tvoReadOnly'#14'tvoShowButtons'#12
+  +'tvoShowLines'#11'tvoShowRoot'#11'tvoToolTips'#0#0#0#6'TPanel'#6'Panel1'#4'L'
+  +'eft'#2#0#6'Height'#2'B'#3'Top'#2#0#5'Width'#3#171#3#5'Align'#7#5'alTop'#8'A'
+  +'utoSize'#9#12'ClientHeight'#2'B'#11'ClientWidth'#3#171#3#8'TabOrder'#2#1#0#7
+  +'TBitBtn'#7'BitBtn1'#21'AnchorSideTop.Control'#7#6'Label1'#18'AnchorSideTop.'
+  +'Side'#7#9'asrBottom'#23'AnchorSideRight.Control'#7#6'Panel1'#20'AnchorSideR'
+  +'ight.Side'#7#9'asrBottom'#4'Left'#3'c'#3#6'Height'#2#30#3'Top'#2#30#5'Width'
+  +#2'B'#7'Anchors'#11#5'akTop'#7'akRight'#0#8'AutoSize'#9#20'BorderSpacing.Aro'
+  +'und'#2#6#7'Caption'#6#4'Load'#10'Glyph.Data'#10'R'#1#0#0'N'#1#0#0'BMN'#1#0#0
+  +#0#0#0#0'v'#0#0#0'('#0#0#0#18#0#0#0#18#0#0#0#1#0#4#0#0#0#0#0#216#0#0#0#0#0#0
+  +#0#0#0#0#0#0#0#0#0#0#0#0#0#0#0#0#0#0#0#128#0#0#128#0#0#0#128#128#0#128#0#0#0
+  +#128#0#128#0#128#128#0#0#128#128#128#0#192#192#192#0#0#0#255#0#0#255#0#0#0
+  +#255#255#0#255#0#0#0#255#0#255#0#255#255#0#0#255#255#255#0#238#238#238#238
+  +#238#238#238#238#238#0#0#0#238#238#238#238#238#238#238#238#238#0#0#0#238#0#0
+  +#0#0#0#14#238#238#0#0#0#238#0'33330'#238#238#0#0#0#238#11#3'3333'#14#238#0#0
+  +#0#238#15#176'33330'#238#0#0#0#238#11#251#3'3333'#14#0#0#0#238#15#191#176#0#0
+  +#0#0#0#0#0#0#238#11#251#251#251#251#14#238#238#0#0#0#238#15#191#191#191#191
+  +#14#238#238#0#0#0#238#11#251#0#0#0#14#238#238#0#0#0#238#224#0#238#238#238#238
+  +#0#14#0#0#0#238#238#238#238#238#238#238#224#14#0#0#0#238#238#238#238#238#14
+  +#238#14#14#0#0#0#238#238#238#238#238#224#0#238#238#0#0#0#238#238#238#238#238
+  +#238#238#238#238#0#0#0#238#238#238#238#238#238#238#238#238#0#0#0#238#238#238
+  +#238#238#238#238#238#238#0#0#0#7'OnClick'#7#12'BitBtn1Click'#8'TabOrder'#2#0
+  +#0#0#6'TLabel'#6'Label1'#22'AnchorSideLeft.Control'#7#6'Panel1'#21'AnchorSid'
+  +'eTop.Control'#7#6'Panel1'#4'Left'#2#6#6'Height'#2#18#3'Top'#2#6#5'Width'#2
+  +'B'#20'BorderSpacing.Around'#2#6#7'Caption'#6#9'File name'#11'ParentColor'#8
+  +#0#0#13'TFileNameEdit'#13'FileNameEdit1'#22'AnchorSideLeft.Control'#7#6'Labe'
+  +'l1'#21'AnchorSideTop.Control'#7#6'Label1'#18'AnchorSideTop.Side'#7#9'asrBot'
+  +'tom'#4'Left'#2#12#6'Height'#2#29#3'Top'#2#30#5'Width'#3'<'#3#8'FileName'#6
+  +'M/home/alexs/work/a/2009-11-24/Magazin_7_RealizaciqTovarovUslug_2009-11-11.'
+  +'xml'#13'DialogOptions'#11#0#11'FilterIndex'#2#0#15'HideDirectories'#8#11'Bu'
+  +'ttonWidth'#2#23#9'NumGlyphs'#2#0#7'Anchors'#11#5'akTop'#6'akLeft'#7'akRight'
+  +#0#18'BorderSpacing.Left'#2#6#17'BorderSpacing.Top'#2#6#20'BorderSpacing.Bot'
+  +'tom'#2#6#9'MaxLength'#2#0#8'TabOrder'#2#1#0#0#0#9'TSplitter'#9'Splitter1'#4
+  +'Left'#3#201#1#6'Height'#3'p'#2#3'Top'#2'B'#5'Width'#2#5#0#0#6'TPanel'#6'Pan'
+  +'el2'#4'Left'#3#206#1#6'Height'#3'p'#2#3'Top'#2'B'#5'Width'#3#221#1#5'Align'
+  +#7#8'alClient'#7'Caption'#6#6'Panel2'#12'ClientHeight'#3'p'#2#11'ClientWidth'
+  +#3#221#1#8'TabOrder'#2#3#0#9'TListView'#9'ListView1'#21'AnchorSideTop.Contro'
+  +'l'#7#5'Edit2'#18'AnchorSideTop.Side'#7#9'asrBottom'#4'Left'#2#1#6'Height'#3
+  +#243#1#3'Top'#2'|'#5'Width'#3#219#1#5'Align'#7#8'alBottom'#7'Anchors'#11#5'a'
+  +'kTop'#6'akLeft'#7'akRight'#8'akBottom'#0#17'BorderSpacing.Top'#2#6#7'Column'
+  +'s'#14#1#7'Caption'#6#4'Name'#5'Width'#2'd'#0#1#7'Caption'#6#5'Value'#5'Widt'
+  +'h'#3'^'#1#0#0#8'TabOrder'#2#0#9'ViewStyle'#7#8'vsReport'#0#0#6'TLabel'#6'La'
+  +'bel2'#22'AnchorSideLeft.Control'#7#6'Panel2'#21'AnchorSideTop.Control'#7#6
+  +'Panel2'#4'Left'#2#6#6'Height'#2#18#3'Top'#2#6#5'Width'#2'Q'#20'BorderSpacin'
+  +'g.Around'#2#6#7'Caption'#6#9'Node name'#11'ParentColor'#8#0#0#6'TLabel'#6'L'
+  +'abel3'#22'AnchorSideLeft.Control'#7#6'Panel2'#21'AnchorSideTop.Control'#7#5
+  +'Edit1'#18'AnchorSideTop.Side'#7#9'asrBottom'#4'Left'#2#6#6'Height'#2#18#3'T'
+  +'op'#2'A'#5'Width'#2'N'#20'BorderSpacing.Around'#2#6#7'Caption'#6#10'Node va'
+  +'lue'#11'ParentColor'#8#0#0#5'TEdit'#5'Edit1'#22'AnchorSideLeft.Control'#7#6
+  +'Label2'#21'AnchorSideTop.Control'#7#6'Label2'#18'AnchorSideTop.Side'#7#9'as'
+  +'rBottom'#23'AnchorSideRight.Control'#7#6'Panel2'#20'AnchorSideRight.Side'#7
+  +#9'asrBottom'#4'Left'#2#12#6'Height'#2#29#3'Top'#2#30#5'Width'#3#203#1#7'Anc'
+  +'hors'#11#5'akTop'#6'akLeft'#7'akRight'#0#20'BorderSpacing.Around'#2#6#8'Tab'
+  +'Order'#2#1#4'Text'#6#5'Edit1'#0#0#5'TEdit'#5'Edit2'#22'AnchorSideLeft.Contr'
+  +'ol'#7#6'Label3'#21'AnchorSideTop.Control'#7#6'Label3'#18'AnchorSideTop.Side'
+  +#7#9'asrBottom'#23'AnchorSideRight.Control'#7#6'Panel2'#20'AnchorSideRight.S'
+  ,'ide'#7#9'asrBottom'#4'Left'#2#12#6'Height'#2#29#3'Top'#2'Y'#5'Width'#3#203#1
+  +#7'Anchors'#11#5'akTop'#6'akLeft'#7'akRight'#0#20'BorderSpacing.Around'#2#6#8
+  +'TabOrder'#2#2#4'Text'#6#5'Edit2'#0#0#0#0
+]);
