@@ -3324,7 +3324,7 @@ begin
       CurFilename:=AFilename;
       APackage.ShortenFilename(CurFilename,true);
       Result:=APackage.SearchShortFilename(CurFilename,SearchFlags);
-      //debugln(['TPkgManager.SearchFile Pkg=',APackage.Filename,' CurFilename="',CurFilename,'" ',Result<>nil]);
+      //debugln(['TPkgManager.SearchFile Pkg=',APackage.Filename,' CurFilename="',CurFilename,'" Resul=',Result<>nil,' HasDirectory=',APackage.HasDirectory,' ExpFile=',APackage.DirectoryExpanded]);
       if Result<>nil then exit;
     end;
   end;
