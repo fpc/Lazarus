@@ -15,7 +15,7 @@ uses
   FindDeclarationCache, FindDeclarationTool, FindOverloads, H2PasTool, 
   IdentCompletionTool, KeywordFuncLists, Laz_DOM, Laz_XMLCfg, Laz_XMLRead, 
   Laz_XMLStreaming, Laz_XMLWrite, LFMTrees, LinkScanner, MethodJumpTool, 
-  MultiKeyWordListTool, NonPascalCodeTools, PascalExpr, PascalParserTool, 
+  MultiKeyWordListTool, NonPascalCodeTools, PascalParserTool, 
   PascalReaderTool, PPUCodeTools, PPUGraph, PPUParser, ResourceCodeTool, 
   SourceChanger, SourceLog, StdCodeTools, LazarusPackageIntf;
 

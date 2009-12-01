@@ -25,7 +25,7 @@
     <License Value="GPL-2
 "/>
     <Version Major="1" Release="1"/>
-    <Files Count="56">
+    <Files Count="55">
       <Item1>
         <Filename Value="Makefile"/>
         <Type Value="Text"/>
@@ -212,45 +212,41 @@
         <UnitName Value="NonPascalCodeTools"/>
       </Item46>
       <Item47>
-        <Filename Value="pascalexpr.pas"/>
-        <UnitName Value="PascalExpr"/>
-      </Item47>
-      <Item48>
         <Filename Value="pascalparsertool.pas"/>
         <UnitName Value="PascalParserTool"/>
-      </Item48>
-      <Item49>
+      </Item47>
+      <Item48>
         <Filename Value="pascalreadertool.pas"/>
         <UnitName Value="PascalReaderTool"/>
-      </Item49>
-      <Item50>
+      </Item48>
+      <Item49>
         <Filename Value="ppucodetools.pas"/>
         <UnitName Value="PPUCodeTools"/>
-      </Item50>
-      <Item51>
+      </Item49>
+      <Item50>
         <Filename Value="ppugraph.pas"/>
         <UnitName Value="PPUGraph"/>
-      </Item51>
-      <Item52>
+      </Item50>
+      <Item51>
         <Filename Value="ppuparser.pas"/>
         <UnitName Value="PPUParser"/>
-      </Item52>
-      <Item53>
+      </Item51>
+      <Item52>
         <Filename Value="resourcecodetool.pas"/>
         <UnitName Value="ResourceCodeTool"/>
-      </Item53>
-      <Item54>
+      </Item52>
+      <Item53>
         <Filename Value="sourcechanger.pas"/>
         <UnitName Value="SourceChanger"/>
-      </Item54>
-      <Item55>
+      </Item53>
+      <Item54>
         <Filename Value="sourcelog.pas"/>
         <UnitName Value="SourceLog"/>
-      </Item55>
-      <Item56>
+      </Item54>
+      <Item55>
         <Filename Value="stdcodetools.pas"/>
         <UnitName Value="StdCodeTools"/>
-      </Item56>
+      </Item55>
     </Files>
     <i18n>
       <EnableI18N Value="True"/>
