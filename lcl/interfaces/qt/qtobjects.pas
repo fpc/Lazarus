@@ -361,6 +361,7 @@ type
     function setPen(APen: TQtPen): TQtPen;
     function SetBkColor(Color: TcolorRef): TColorRef;
     function SetBkMode(BkMode: Integer): Integer;
+    function getDepth: integer;
     function getDeviceSize: TPoint;
     function getRegionType(ARegion: QRegionH): integer;
     function getClipRegion: TQtRegion;
@@ -2681,6 +2682,13 @@ begin
       Mode := QtTransparentMode;
     QPainter_SetBackgroundMode(Widget, Mode);
   end;
+end;
+
+function TQtDeviceContext.getDepth: integer;
+var
+  device: QPaintDeviceH;
+begin
+  Result := QPaintDevice_depth(Device);
 end;
 
 function TQtDeviceContext.getDeviceSize: TPoint;

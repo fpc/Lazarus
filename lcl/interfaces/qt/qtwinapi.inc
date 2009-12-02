@@ -143,7 +143,7 @@ begin
   {$ifdef VerboseQtWinAPI_MISSING_IMPLEMENTATION}
   	WriteLn('***** [WinAPI TQtWidgetSet.CallWindowProc] missing implementation ');
   {$endif}
-  Result := 0;
+  Result := -1;
 end;
 
 {------------------------------------------------------------------------------
@@ -272,16 +272,52 @@ end;
 
 {------------------------------------------------------------------------------
   Method:  TQtWidgetSet.CreateCompatibleBitmap
-  Params:
-  Returns:
+  Params: HDC, Width & Height
+  Returns: HBITMAP
 
  ------------------------------------------------------------------------------}
 function TQtWidgetSet.CreateCompatibleBitmap(DC: HDC; Width, Height: Integer): HBITMAP;
+var
+  QtDC: TQtDeviceContext;
+  Format: QImageFormat = QImageFormat_ARGB32;
+  ADevice: QPaintDeviceH = nil;
+  ADesktop: QDesktopWidgetH = nil;
 begin
-  {$ifdef VerboseQtWinAPI_MISSING_IMPLEMENTATION}
-  	WriteLn('***** [WinAPI TQtWidgetSet.CreateCompatibleBitmap] missing implementation ');
+  {$ifdef VerboseQtWinAPI}
+    WriteLn('Trace:> [WinAPI CreateCompatibleBitmap]',
+     ' DC:', dbghex(DC),
+     ' Width:', dbgs(Width),
+     ' Height:', dbgs(Height));
   {$endif}
   Result := 0;
+  if IsValidDC(DC) then
+  begin
+    QtDC := TQtDeviceContext(DC);
+    case QtDC.getDepth of
+      1: Format := QImageFormat_Mono;
+      15, 16: Format := QImageFormat_RGB16;
+      24: Format := QImageFormat_RGB32;
+      32: Format := QImageFormat_ARGB32;
+    end;
+  end else
+  begin
+    ADesktop := QApplication_desktop();
+    if ADesktop <> nil then
+      ADevice := QWidget_to_QPaintDevice(ADesktop);
+    if ADevice <> nil then
+    begin
+      case QPaintDevice_depth(ADevice) of
+        1: Format := QImageFormat_Mono;
+        15, 16: Format := QImageFormat_RGB16;
+        24: Format := QImageFormat_RGB32;
+        32: Format := QImageFormat_ARGB32;
+      end;
+    end;
+  end;
+  Result := HBitmap(TQtImage.Create(nil, Width, Height, Format));
+  {$ifdef VerboseQtWinAPI}
+    WriteLn('Trace:< [WinAPI CreateCompatibleBitmap] Bitmap:', dbghex(Result));
+  {$endif}
 end;
 
 {------------------------------------------------------------------------------
