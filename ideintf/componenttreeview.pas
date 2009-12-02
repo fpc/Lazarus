@@ -45,7 +45,7 @@ type
     procedure SetSelection(const NewSelection: TPersistentSelectionList);
   protected
     procedure DoSelectionChanged; override;
-    function GetImageFor(AComponent: TComponent):integer;
+    function GetImageFor(APersistent: TPersistent):integer;
     procedure DragOver(Source: TObject; X,Y: Integer; State: TDragState;
                        var Accept: Boolean); override;
     procedure DragCanceled; override;
@@ -187,7 +187,7 @@ var
 begin
   CollectionNode := FTreeView.Items.AddChild(FNode, AName);
   CollectionNode.Data := ACollection;
-  CollectionNode.ImageIndex := 4;
+  CollectionNode.ImageIndex := FTreeView.GetImageFor(ACollection);
   CollectionNode.SelectedIndex := CollectionNode.ImageIndex;
   CollectionNode.MultiSelected := FTreeView.Selection.IndexOf(ACollection) >= 0;
 
@@ -196,7 +196,7 @@ begin
     Item := ACollection.Items[i];
     ItemNode := FTreeView.Items.AddChild(CollectionNode, Format('%d - %s', [i, Item.ClassName]));
     ItemNode.Data := Item;
-    ItemNode.ImageIndex := 5;
+    ItemNode.ImageIndex := FTreeView.GetImageFor(Item);
     ItemNode.SelectedIndex := ItemNode.ImageIndex;
     ItemNode.MultiSelected := FTreeView.Selection.IndexOf(Item) >= 0;
   end;
@@ -420,17 +420,24 @@ begin
   end;
 end;
 
-function TComponentTreeView.GetImageFor(AComponent: TComponent): integer;
+function TComponentTreeView.GetImageFor(APersistent: TPersistent): integer;
 begin
-  if Assigned(AComponent) then
+  if Assigned(APersistent) then
   begin
-    if (AComponent is TControl) and (csAcceptsControls in TControl(AComponent).ControlStyle) then
+    if (APersistent is TControl) and (csAcceptsControls in TControl(APersistent).ControlStyle) then
       Result := 3
     else
-    if (AComponent is TControl) then
+    if (APersistent is TControl) then
       Result := 2
     else
-      Result := 1;
+    if (APersistent is TComponent) then
+      Result := 1
+    else
+    if (APersistent is TCollection) then
+      Result := 4
+    else
+    if (APersistent is TCollectionItem) then
+      Result := 5;
   end
   else
     Result := -1;
