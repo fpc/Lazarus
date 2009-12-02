@@ -82,6 +82,7 @@ interface
 { $DEFINE ShowCodeBeautifier}
 { $DEFINE ShowCodeBeautifierParser}
 { $DEFINE ShowCodeBeautifierLearn}
+{ $DEFINE VerboseIndenter}
 
 {$IFDEF ShowCodeBeautifierParser}
 {$DEFINE ShowCodeBeautifierLearn}
@@ -1618,17 +1619,18 @@ begin
       exit(Indent.IndentValid);
     end;
 
-    Block:=Stack.Stack[StackIndex];
     if (StackIndex<Stack.Top) then begin
       // block(s) closed by next token
       // use indent of block start
+      Block:=Stack.Stack[StackIndex+1];
       {$IFDEF VerboseIndenter}
-      DebugLn(['TFullyAutomaticBeautifier.GetIndent next token close block: ',FABBlockTypeNames[Stack.TopType]]);
+      DebugLn(['TFullyAutomaticBeautifier.GetIndent next token close block: ',FABBlockTypeNames[Stack.TopType],' Block=',dbgstr(copy(Source,Block.StartPos,20))]);
       {$ENDIF}
       Indent.Indent:=GetLineIndentWithTabs(Source,Block.StartPos,DefaultTabWidth);
       Indent.IndentValid:=true;
       exit(true);
     end;
+    Block:=Stack.Stack[StackIndex];
 
     // search last non empty line start
     PrevLineAtomEndPos:=CleanPos;
@@ -1679,6 +1681,9 @@ begin
       if CheckPolicies(Policies,Result) then exit;
     end;
   finally
+    {$IFDEF VerboseIndenter}
+    DebugLn(['TFullyAutomaticBeautifier.GetIndent Valid=',Indent.IndentValid,' Indent=',Indent.Indent]);
+    {$ENDIF}
     Stack.Free;
     if Policies<>nil then
       FreeAndNil(Policies.Code);
