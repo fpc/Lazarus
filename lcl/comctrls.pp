@@ -2322,6 +2322,7 @@ type
   private
     FBackgroundColor: TColor;
     FBottomItem: TTreeNode;
+    FEditingItem: TTreeNode;
     FExpandSignType: TTreeViewExpandSignType;
     FExpandSignSize: integer;
     FDefItemHeight: integer;
@@ -2442,7 +2443,7 @@ type
     procedure EditorEditingDone(Sender: TObject); virtual;
     procedure EditorKeyDown(Sender: TObject; var Key : Word; Shift : TShiftState); virtual;
     procedure BeginAutoDrag; override;
-    procedure BeginEditing;
+    procedure BeginEditing(ANode: TTreeNode);
     function DoDragMsg(ADragMessage: TDragMessage; APosition: TPoint; ADragObject: TDragObject; ATarget: TControl; ADocking: Boolean): LRESULT; override;
     function CanChange(Node: TTreeNode): Boolean; virtual;
     function CanCollapse(Node: TTreeNode): Boolean; virtual;

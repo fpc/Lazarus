@@ -1473,7 +1473,8 @@ var
   TV: TCustomTreeView;
 begin
   TV:=TreeView;
-  Result:=(TV<>nil) and (tvsIsEditing in TreeView.FStates) and Selected;
+  Result:=(TV<>nil) and (tvsIsEditing in TreeView.FStates);
+  TV.BeginEditing(Self);
 end;
 
 function TTreeNode.DisplayRect(TextOnly: Boolean): TRect;
@@ -2877,17 +2878,20 @@ begin
   BeginDrag(False);
 end;
 
-procedure TCustomTreeView.BeginEditing;
+procedure TCustomTreeView.BeginEditing(ANode: TTreeNode);
 var
-  Node: TTreeNode;
   ARect: TRect;
 begin
   //DebugLn(['TCustomTreeView.BeginEditing tvsIsEditing=',tvsIsEditing in FStates,' Selected=',Selected<>nil]);
-  Node:=Selected;
-  if (tvsIsEditing in FStates) or (Node=nil) then exit;
-  if not CanEdit(Node) then exit;
+  if (tvsIsEditing in FStates) or (ANode=nil) then exit;
+  if not CanEdit(ANode) then exit;
+  // if we are asked to edit another node while one is already being edited then
+  // stop editing that node
+  if FEditingItem <> nil then
+    EndEditing;
+  FEditingItem := ANode;
   // make node visible (this will cancel editing, so call this first)
-  EnsureNodeIsVisible(Node);
+  EnsureNodeIsVisible(ANode);
 
   Include(FStates,tvsIsEditing);
   if FEditor=nil then begin
@@ -2895,14 +2899,14 @@ begin
     FEditor.OnEditingDone:=@EditorEditingDone;
     FEditor.OnKeyDown:=@EditorKeyDown;
   end;
-  ARect:=Rect(Max(BorderWidth,Node.DisplayTextLeft),Node.Top-ScrolledTop,
-              ClientWidth-BorderWidth,Node.Bottom-ScrolledTop);
+  ARect:=Rect(Max(BorderWidth,ANode.DisplayTextLeft),ANode.Top-ScrolledTop,
+              ClientWidth-BorderWidth,ANode.Bottom-ScrolledTop);
   FEditor.BoundsRect:=ARect;
   FEditor.AnchorParallel(akLeft,ARect.Left,Self);
   FEditor.AnchorParallel(akRight,BorderWidth,Self);
   FEditor.Visible:=true;
   FEditor.Parent:=Self;
-  FEditor.Text:=Node.Text;
+  FEditor.Text:=ANode.Text;
   FEditor.SelectAll;
   FEditor.SetFocus;
 end;
@@ -3692,7 +3696,7 @@ begin
 
   else
     if (Key=EditKey) and (Shift=EditKeyShift) and (not ReadOnly) then
-      BeginEditing;
+      BeginEditing(Selected);
   end;
 
   if lNode <> nil then
@@ -4616,7 +4620,7 @@ begin
 
     // commit new value
     if not Cancel then begin
-      Node:=Selected;
+      Node:=FEditingItem;
       if (Node<>nil) then begin
         if Assigned(OnEdited) then
           OnEdited(Self,Node,NewText);
@@ -4624,6 +4628,7 @@ begin
       end;
     end;
   end;
+  FEditingItem := nil;
   Invalidate;
 end;
 
@@ -4772,7 +4777,7 @@ begin
   then begin
     //AquirePrimarySelection;
     if (tvsEditOnMouseUp in FStates) and (not ReadOnly) then
-      BeginEditing;
+      BeginEditing(Selected);
   end;
   fStates:=fStates-[tvsDblClicked,tvsTripleClicked,tvsQuadClicked,tvsEditOnMouseUp];
 end;
