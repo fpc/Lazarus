@@ -7765,7 +7765,7 @@ begin
     TestFilename := MainBuildBoss.GetTestUnitFilename(ActiveUnitInfo);
     if TestFilename <> '' then
     begin
-      DebugLn(['TMainIDE.DoSaveEditorFile TestFilename="',TestFilename,'" Size=',ActiveUnitInfo.Source.SourceLength]);
+      //DebugLn(['TMainIDE.DoSaveEditorFile TestFilename="',TestFilename,'" Size=',ActiveUnitInfo.Source.SourceLength]);
       Result := ActiveUnitInfo.WriteUnitSourceToFile(TestFilename);
       if Result <> mrOk then
         Exit;
@@ -7804,9 +7804,7 @@ begin
   // unset all modified flags
   if not (sfSaveToTestDir in Flags) then begin
     ActiveUnitInfo.ClearModifieds;
-    DebugLn(['TMainIDE.DoSaveEditorFile AAA1 ',ActiveSrcEdit.Modified]);
     ActiveSrcEdit.Modified:=false;
-    DebugLn(['TMainIDE.DoSaveEditorFile AAA2 ',ActiveSrcEdit.Modified]);
     UpdateSaveMenuItemsAndButtons(not (sfProjectSaving in Flags));
   end;
   SourceNoteBook.UpdateStatusBar;
