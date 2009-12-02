@@ -2076,7 +2076,7 @@ cleanlaz: clean
 cleanall: clean bigideclean
 bigideclean:
 	$(MAKE) -C rtticontrols clean
-	$(MAKE) -C printers cleanall
+	$(MAKE) -C printers clean
 	$(MAKE) -C printers/design clean
 	$(MAKE) -C cgi clean
 	$(MAKE) -C cgi/ide clean
