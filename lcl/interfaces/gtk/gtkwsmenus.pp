@@ -406,21 +406,17 @@ end;
 
 function gtkWSPopupDelayedClose(Data: Pointer): gboolean; cdecl;
 var
-  WidgetInfo: PWidgetInfo absolute Data;
+  PopupMenu: TPopupMenu absolute data;
 begin
   Result := False;
-  if (WidgetInfo<>nil) and (wwiValidQueuedEvent in WidgetInfo^.Flags) then
-  begin
-    if WidgetInfo^.LCLObject is TPopupMenu then
-      TPopupMenu(WidgetInfo^.LCLObject).Close;
-  end
-  //else DebugLn('No valid popupDelayedClose event');
+  if PopupMenu is TPopupMenu then
+    PopupMenu.Close;
 end;
 
 procedure gtkWSPopupMenuDeactivate(widget: PGtkWidget; data: gPointer); cdecl;
 begin
-  Include(PWidgetInfo(Data)^.Flags, wwiValidQueuedEvent);
-  g_idle_add(@gtkWSPopupDelayedClose, data);
+  if data <> nil then
+    g_idle_add(@gtkWSPopupDelayedClose, Pointer(PWidgetInfo(data)^.LCLObject));
 end;
 
 class procedure TGtkWSPopupMenu.SetCallbacks(const AGtkWidget: PGtkWidget;
