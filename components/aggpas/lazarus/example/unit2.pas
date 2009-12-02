@@ -52,7 +52,7 @@ begin
       FontFilename:=SetDirSeparators('../../verdana.ttf');
       if not FileExists(FontFilename) then raise Exception.Create('file not found: '+FontFilename+' CurDir='+GetCurrentDirUTF8);
       Font.LoadFromFile(FontFilename);
-      Font.Size:=18;
+      Font.Size:=10;
       Font.Color:=clRed;
     end;
 
@@ -81,11 +81,11 @@ begin
 
   // paint with widgetset to bitmap
   with Bitmap1.Canvas do begin
-    Font.Size:=18;
+    Font.Size:=10;
     Font.Color:=clRed;
 
-    Brush.Color:=clBlue;
-    Pen.Color:=clRed;
+    Brush.Color:=clRed;
+    Pen.Color:=clBlue;
     Pen.Width:=1;
 
     Line(24,10,34,10);
@@ -97,7 +97,7 @@ begin
     GradientFill(Rect(70,22,80,32),clRed,clBlue,gdVertical);
     Frame(85,22,95,32);
 
-    TextOut(10,65,'Font.Size='+IntToStr(Font.Size));
+    TextOut(10,52,'Font.Size='+IntToStr(Font.Size));
   end;
 end;
 

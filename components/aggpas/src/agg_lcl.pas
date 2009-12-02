@@ -117,8 +117,8 @@ type
                roundOff: boolean=false;
                const ddx: double=0.0; const ddy: double=0.0); override;
 
-    procedure Frame(const ARect: TRect); virtual; // border using pen
-    procedure Frame(X1,Y1,X2,Y2: Integer);        // border using pen
+    procedure Frame(const ARect: TRect); virtual; // ToDo: border using brush
+    procedure Frame(X1,Y1,X2,Y2: Integer);        // ToDo: border using brush
 
     procedure GradientFill(ARect: TRect; AStart, AStop: TColor; ADirection: TGradientDirection);
   end;
@@ -283,7 +283,7 @@ end;
 procedure TAggLCLCanvas.AggTextOut(const x, y: double; str: AnsiString;
   roundOff: boolean; const ddx: double; const ddy: double);
 begin
-  inherited AggTextOut(x+0.5, y+Font.Size+0.5, str, roundOff, ddx, ddy);
+  inherited AggTextOut(x-0.5, y+Font.Size+0.5, str, roundOff, ddx, ddy);
 end;
 
 procedure TAggLCLCanvas.Frame(const ARect: TRect);
