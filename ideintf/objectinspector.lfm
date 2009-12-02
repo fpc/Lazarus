@@ -37,7 +37,7 @@ object ObjectInspectorDlg: TObjectInspectorDlg
   end
   object MainPopupMenu: TPopupMenu
     OnPopup = OnMainPopupMenuPopup
-    left = 9
+    left = 8
     top = 11
   end
 end

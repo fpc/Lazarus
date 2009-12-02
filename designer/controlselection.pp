@@ -580,8 +580,7 @@ begin
   FIsNonVisualComponent:=FIsTComponent and (not FIsTControl);
   if (Owner.Mediator<>nil) and FIsTComponent then
     FIsNonVisualComponent:=Owner.Mediator.ComponentIsIcon(TComponent(FPersistent));
-  if FIsTComponent then
-    FDesignerForm:=GetDesignerForm(TComponent(FPersistent));
+  FDesignerForm:=GetDesignerForm(TComponent(FPersistent));
   FIsVisible:=FIsTComponent
               and (not ComponentIsInvisible(TComponent(APersistent)));
 end;
@@ -3190,16 +3189,18 @@ end;
 
 function TControlSelection.GetSelectionOwner: TComponent;
 var
-  AComponent: TComponent;
+  APersistent: TPersistent;
 begin
-  if (FControls.Count>0) and (Items[0].IsTComponent) then begin
-    AComponent:=TComponent(Items[0].Persistent);
-    if AComponent.Owner<>nil then
-      Result:=AComponent.Owner
+  if FControls.Count > 0 then
+  begin
+    APersistent := GetLookupRootForComponent(Items[0].Persistent);
+    if APersistent is TComponent then
+      Result := TComponent(APersistent)
     else
-      Result:=AComponent;
-  end else
-    Result:=nil;
+      Result := nil;
+  end
+  else
+    Result := nil;
 end;
 
 end.

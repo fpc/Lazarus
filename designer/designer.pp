@@ -2507,7 +2507,8 @@ begin
   // delete component
   if APersistent is TComponent then
     TheFormEditor.DeleteComponent(TComponent(APersistent),FreeIt)
-  else if FreeIt then
+  else
+  if FreeIt then
     APersistent.Free;
   // unmark component
   DeletingPersistent.Remove(APersistent);

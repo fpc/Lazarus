@@ -1587,6 +1587,9 @@ const
 
 implementation
 
+type
+  TPersistentAccess = class(TPersistent);
+
 var
   ListPropertyEditors: TList = nil;
   VirtualKeyStrings: TStringHashList = nil;
@@ -6491,41 +6494,35 @@ function TBackupComponentList.IsEqual(ALookupRoot: TPersistent;
 var
   i: Integer;
 begin
-  Result:=false;
-  if ALookupRoot<>LookupRoot then exit;
-  if not FSelection.IsEqual(ASelection) then exit;
-  if (ALookupRoot<>nil) and (FLookupRoot is TComponent) then begin
-    if ComponentCount<>TComponent(ALookupRoot).ComponentCount then exit;
-    for i:=0 to FComponentList.Count-1 do
-      if TComponent(FComponentList[i])<>TComponent(ALookupRoot).Components[i]
-      then exit;
+  Result := False;
+  if ALookupRoot <> LookupRoot then Exit;
+  if not FSelection.IsEqual(ASelection) then Exit;
+  if (ALookupRoot <> nil) and (FLookupRoot is TComponent) then
+  begin
+    if ComponentCount <> TComponent(ALookupRoot).ComponentCount then
+      Exit;
+    for i := 0 to FComponentList.Count - 1 do
+      if TComponent(FComponentList[i]) <> TComponent(ALookupRoot).Components[i] then
+        Exit;
   end;
-  Result:=true;
+  Result := True;
 end;
 
 function GetLookupRootForComponent(APersistent: TPersistent): TPersistent;
+var
+  AOwner: TPersistent;
 begin
-  Result:=APersistent;
-  if Result=nil then exit;
+  Result := APersistent;
+  if Result = nil then
+    Exit;
+
   repeat
-    if (Result is TComponent) then begin
-      if TComponent(Result).Owner<>nil then
-        Result:=TComponent(Result).Owner
-      else
-        exit;
-    end else if Result is TCollection then begin
-      if TCollection(Result).Owner<>nil then
-        Result:=TCollection(Result).Owner
-      else
-        exit;
-    end else if Result is TCollectionItem then begin
-      if TCollectionItem(Result).Collection<>nil then
-        Result:=TCollectionItem(Result).Collection
-      else
-        exit;
-    end else
-      exit;
-  until false;
+    AOwner := TPersistentAccess(Result).GetOwner;
+    if AOwner <> nil then
+      Result := AOwner
+    else
+      Exit;
+  until False;
 end;
 
 function KeyAndShiftStateToKeyString(Key: word; ShiftState: TShiftState): String;

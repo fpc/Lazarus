@@ -3838,7 +3838,7 @@ begin
      oisPasteComponents,'Paste selected item', 'laz_paste',
      @OnPastePopupmenuItemClick,false,true,true);
   AddPopupMenuItem(DeletePopupMenuItem,nil,'DeletePopupMenuItem',
-     oisDeleteComponents,'Delete selected item', '',
+     oisDeleteComponents,'Delete selected item', 'delete_selection',
      @OnDeletePopupmenuItemClick,false,true,true);
   AddPopupMenuItem(OptionsSeparatorMenuItem2,nil, '', 
      '-','','',nil,false,true,true);
@@ -4382,8 +4382,7 @@ begin
   CurGrid.CurrentEditValue:=CurRow.Editor.GetVisualValue;
 end;
 
-procedure TObjectInspectorDlg.OnFindDeclarationPopupmenuItemClick(Sender: TObject
-  );
+procedure TObjectInspectorDlg.OnFindDeclarationPopupmenuItemClick(Sender: TObject);
 begin
   if Assigned(OnFindDeclarationOfProperty) then
     OnFindDeclarationOfProperty(Self);
@@ -4393,11 +4392,11 @@ procedure TObjectInspectorDlg.OnCutPopupmenuItemClick(Sender: TObject);
 var
   ADesigner: TIDesigner;
 begin
-  if (Selection.Count > 0) and (Selection[0] is TComponent) then begin
-    ADesigner:=FindRootDesigner(TComponent(Selection[0]));
-    if ADesigner is TComponentEditorDesigner then begin
+  if (Selection.Count > 0) and (Selection[0] is TComponent) then
+  begin
+    ADesigner := FindRootDesigner(Selection[0]);
+    if ADesigner is TComponentEditorDesigner then
       TComponentEditorDesigner(ADesigner).CutSelection;
-    end;
   end;
 end;
 
@@ -4407,10 +4406,9 @@ var
 begin
   if (Selection.Count > 0) and (Selection[0] is TComponent) then
   begin
-    ADesigner:=FindRootDesigner(TComponent(Selection[0]));
-    if ADesigner is TComponentEditorDesigner then begin
+    ADesigner := FindRootDesigner(Selection[0]);
+    if ADesigner is TComponentEditorDesigner then
       TComponentEditorDesigner(ADesigner).CopySelection;
-    end;
   end;
 end;
 
@@ -4418,11 +4416,11 @@ procedure TObjectInspectorDlg.OnPastePopupmenuItemClick(Sender: TObject);
 var
   ADesigner: TIDesigner;
 begin
-  if Selection.Count > 0 then begin
-    ADesigner:=FindRootDesigner(TComponent(Selection[0]));
-    if ADesigner is TComponentEditorDesigner then begin
+  if Selection.Count > 0 then
+  begin
+    ADesigner := FindRootDesigner(Selection[0]);
+    if ADesigner is TComponentEditorDesigner then
       TComponentEditorDesigner(ADesigner).PasteSelection([]);
-    end;
   end;
 end;
 
@@ -4430,12 +4428,11 @@ procedure TObjectInspectorDlg.OnDeletePopupmenuItemClick(Sender: TObject);
 var
   ADesigner: TIDesigner;
 begin
-  if (Selection.Count > 0) and (Selection[0] is TComponent) then
+  if (Selection.Count > 0) then
   begin
-    ADesigner:=FindRootDesigner(TComponent(Selection[0]));
-    if ADesigner is TComponentEditorDesigner then begin
+    ADesigner := FindRootDesigner(Selection[0]);
+    if ADesigner is TComponentEditorDesigner then
       TComponentEditorDesigner(ADesigner).DeleteSelection;
-    end;
   end;
 end;
 
@@ -4881,17 +4878,20 @@ begin
   else
     UndoPropertyPopupMenuItem.Enabled:=false;
   ShowHintsPopupMenuItem.Checked:=PropertyGrid.ShowHint;
-  if (Selection.Count > 0) and FShowComponentTree then begin
-    CutPopupMenuItem.Visible := true;
-    CopyPopupMenuItem.Visible := true;
-    PastePopupMenuItem.Visible := true;
-    DeletePopupMenuItem.visible := true;
-    OptionsSeparatorMenuItem2.visible := true;
-  end else begin
+  if (Selection.Count > 0) and FShowComponentTree then
+  begin
+    CutPopupMenuItem.Visible := Selection[0] is TComponent;
+    CopyPopupMenuItem.Visible := Selection[0] is TComponent;
+    PastePopupMenuItem.Visible := Selection[0] is TComponent;
+    DeletePopupMenuItem.Visible := true;
+    OptionsSeparatorMenuItem2.Visible := true;
+  end
+  else
+  begin
     CutPopupMenuItem.Visible := false;
     CopyPopupMenuItem.Visible := false;
     PastePopupMenuItem.Visible := false;
-    DeletePopupMenuItem.visible := false;
+    DeletePopupMenuItem.Visible := false;
     OptionsSeparatorMenuItem2.visible := false;
   end;
 end;

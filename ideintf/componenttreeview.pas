@@ -234,33 +234,35 @@ end;
 procedure TComponentTreeView.DoSelectionChanged;
 var
   ANode: TTreeNode;
-  AComponent: TComponent;
+  APersistent: TPersistent;
   NewSelection: TPersistentSelectionList;
 begin
-  NewSelection:=TPersistentSelectionList.Create;
+  NewSelection := TPersistentSelectionList.Create;
   try
-    if (PropertyEditorHook<>nil)
-    and (PropertyEditorHook.LookupRoot<>nil)
-    and (not (csDestroying in ComponentState)) then begin
-      ANode:=GetFirstMultiSelected;
-      while ANode<>nil do begin
-        AComponent:=TComponent(ANode.Data);
-        if AComponent=nil then
+    if (PropertyEditorHook<>nil) and
+       (PropertyEditorHook.LookupRoot<>nil) and
+       (not (csDestroying in ComponentState)) then
+    begin
+      ANode := GetFirstMultiSelected;
+      while ANode <> nil do
+      begin
+        APersistent := TPersistent(ANode.Data);
+        if APersistent = nil then
           RaiseGDBException('TComponentTreeView.DoSelectionChanged ANode.Data=nil');
-        if GetLookupRootForComponent(AComponent)=PropertyEditorHook.LookupRoot
-        then
-          NewSelection.Add(AComponent);
-        ANode:=ANode.GetNextMultiSelected;
+        if GetLookupRootForComponent(APersistent) = PropertyEditorHook.LookupRoot then
+          NewSelection.Add(APersistent);
+        ANode := ANode.GetNextMultiSelected;
       end;
       NewSelection.SortLike(FComponentList.Selection);
     end;
-    if NewSelection.IsEqual(FComponentList.Selection) then exit;
+    if NewSelection.IsEqual(FComponentList.Selection) then
+      Exit;
     FComponentList.Selection.Assign(NewSelection);
-    if (NewSelection.Count=1)
-    and (NewSelection[0] is TCustomPage)
-    and (TCustomPage(NewSelection[0]).Parent is TCustomNotebook)
-    then begin
-      TCustomNotebook(TCustomPage(NewSelection[0]).Parent).PageIndex:=
+    if (NewSelection.Count=1) and
+       (NewSelection[0] is TCustomPage) and
+       (TCustomPage(NewSelection[0]).Parent is TCustomNotebook) then
+    begin
+      TCustomNotebook(TCustomPage(NewSelection[0]).Parent).PageIndex :=
         TCustomPage(NewSelection[0]).PageIndex;
     end;
     inherited DoSelectionChanged;

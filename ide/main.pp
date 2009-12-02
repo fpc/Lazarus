@@ -12272,8 +12272,9 @@ procedure TMainIDE.OnDesignerPersistentDeleted(Sender: TObject;
 var
   CurDesigner: TDesigner;
 begin
-  CurDesigner:=TDesigner(Sender);
+  CurDesigner := TDesigner(Sender);
   if dfDestroyingForm in CurDesigner.Flags then exit;
+  OnControlSelectionChanged(Sender, True);
   ObjectInspector1.FillPersistentComboBox;
 end;
 

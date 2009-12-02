@@ -58,10 +58,10 @@ resourcestring
   oisRemoveFromFavorites = 'Remove from Favorites';
   oisUndo = 'Undo';
   oisFinddeclaration = 'Jump to declaration';
-  oisCutComponents = 'Cut components';
-  oisCopyComponents = 'Copy components';
-  oisPasteComponents = 'Paste components';
-  oisDeleteComponents = 'Delete components';
+  oisCutComponents = 'Cu&t';
+  oisCopyComponents = '&Copy';
+  oisPasteComponents = '&Paste';
+  oisDeleteComponents = '&Delete';
   oisDelete = 'Delete';
   rscdMoveUp = 'Move up';
   rscdMoveDown = 'Move down';
