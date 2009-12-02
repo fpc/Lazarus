@@ -55,9 +55,9 @@ begin
     OwnerFormDesignerModified(Owner);
 end;
 
-constructor TListColumns.Create(TheOwner: TCustomListView);
+constructor TListColumns.Create(AOwner: TCustomListView);
 begin
-  FOwner := TheOwner;
+  FOwner := AOwner;
   inherited Create(TListColumn);
 end;
 
@@ -95,6 +95,11 @@ end;
 procedure TListColumns.SetItem(const AIndex: Integer; const AValue: TListColumn);
 begin
   inherited SetItem(AIndex, AValue);
+end;
+
+function TListColumns.GetOwner: TPersistent;
+begin
+  Result := FOwner;
 end;
 
 // included by comctrls.pp

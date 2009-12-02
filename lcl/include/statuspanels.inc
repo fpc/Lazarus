@@ -17,10 +17,10 @@
 
 }
 
-constructor TStatusPanels.Create(TheStatusBar: TStatusBar);
+constructor TStatusPanels.Create(AStatusBar: TStatusBar);
 begin
-  inherited Create(TheStatusBar.GetPanelClass);
-  FStatusBar := TheStatusBar;
+  inherited Create(AStatusBar.GetPanelClass);
+  FStatusBar := AStatusBar;
 end;
 
 function TStatusPanels.Add: TStatusPanel;

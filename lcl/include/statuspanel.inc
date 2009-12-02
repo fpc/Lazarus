@@ -17,7 +17,7 @@
  *                                                                           *
  *****************************************************************************
 }
-constructor TStatusPanel.Create(aCollection: TCollection);
+constructor TStatusPanel.Create(ACollection: TCollection);
 var
   AStatusBar: TStatusBar;
 begin
@@ -26,7 +26,7 @@ begin
   FParentBiDiMode := True;
   FAlignment := taLeftJustify;
   FIntfFlag := 0;
-  inherited Create(aCollection);
+  inherited Create(ACollection);
   
   AStatusBar:=StatusBar;
   //debugln('TStatusPanel.Create A ',dbgsName(AStatusBar),' ',dbgs(csDesigning in AStatusBar.ComponentState));

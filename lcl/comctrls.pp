@@ -85,7 +85,7 @@ type
     procedure PanelChanged(const Parts: TPanelParts);
     procedure SetIndex(Value: Integer); override;
   public
-    constructor Create(aCollection: TCollection); override;
+    constructor Create(ACollection: TCollection); override;
     destructor Destroy; override;
     procedure Assign(Source: TPersistent); override;
     function StatusBar: TStatusBar;
@@ -106,7 +106,7 @@ type
     function GetOwner: TPersistent; override;
     procedure Update(Item: TCollectionItem); override;
   public
-    constructor Create(TheStatusBar: TStatusBar);
+    constructor Create(AStatusBar: TStatusBar);
     function Add: TStatusPanel;
     property Items[Index: Integer]: TStatusPanel read GetItem write SetItem; default;
     property StatusBar: TStatusBar read FStatusBar;
@@ -905,8 +905,10 @@ type
     function GetItem(const AIndex: Integer): TListColumn;
     procedure WSCreateColumns;
     procedure SetItem(const AIndex: Integer; const AValue: TListColumn);
+  protected
+    function GetOwner: TPersistent; override;
   public
-    constructor Create(TheOwner: TCustomListView);
+    constructor Create(AOwner: TCustomListView);
     destructor Destroy; override;
     procedure Update(Item: TCollectionItem); override;
     function Add: TListColumn;
