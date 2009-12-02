@@ -10,37 +10,41 @@ object MasterSite: TMasterSite
   LCLVersion = '0.9.29'
   object buDump: TButton
     Left = 144
-    Height = 25
+    Height = 23
     Top = 10
-    Width = 75
-    Caption = 'buDump'
+    Width = 53
+    AutoSize = True
+    Caption = 'Dump'
     OnClick = buDumpClick
     TabOrder = 0
   end
   object buCreateForm: TButton
     Left = 10
-    Height = 25
+    Height = 23
     Top = 10
-    Width = 75
-    Caption = 'buCreateForm'
+    Width = 86
+    AutoSize = True
+    Caption = 'Create Form'
     OnClick = buCreateFormClick
     TabOrder = 1
   end
   object buSave: TButton
     Left = 8
-    Height = 25
+    Height = 23
     Top = 48
-    Width = 75
-    Caption = 'buSave'
+    Width = 50
+    AutoSize = True
+    Caption = 'Save'
     OnClick = buSaveClick
     TabOrder = 2
   end
   object buRestore: TButton
     Left = 96
-    Height = 25
+    Height = 23
     Top = 48
-    Width = 75
-    Caption = 'buRestore'
+    Width = 64
+    AutoSize = True
+    Caption = 'Restore'
     OnClick = buRestoreClick
     TabOrder = 3
   end

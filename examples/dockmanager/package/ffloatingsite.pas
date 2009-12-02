@@ -84,10 +84,13 @@ end;
 
 procedure TFloatingSite.FormClose(Sender: TObject;
   var CloseAction: TCloseAction);
+{$IFDEF new}
 var
   i: integer;
   ctl: TControl;
   frm: TCustomForm absolute ctl;
+{$ELSE}
+{$ENDIF}
 begin
 (* When an empty site is closed, it shall be freed.
   Otherwise the clients must be handled (close forms).

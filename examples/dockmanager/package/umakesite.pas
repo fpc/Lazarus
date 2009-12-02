@@ -74,14 +74,12 @@ type
     constructor Create(AOwner: TComponent); override;
     procedure AddElasticSites(AForm: TCustomForm; Sides: sDockSides);
     function  CreateDockable(const AName: string; fMultiInst: boolean; fWrap: boolean = True): TWinControl;
+    function  MakeDockable(AForm: TWinControl; fWrap: boolean = True): TForm;
     procedure DumpSites;
   //persistence
     procedure LoadFromStream(Stream: TStream);
     procedure SaveToStream(Stream: TStream);
   end;
-
-function  ReloadDockedControl(const ControlName: string; Site: TWinControl): TControl;
-function  ReloadDockSite(const SiteName, ParentName: string; Aligned: TAlign): TWinControl;
 
 var
   DockMaster: TDockMaster; //for access by docksites on Reload...
@@ -103,47 +101,6 @@ const //what characters are acceptable, for unique names?
     '_Elastic_Bottom_', '_Elastic_Left_', '_Elastic_Right_',
     '', ''  //alClient, alCustom
   );
-
-function  ReloadDockedControl(const ControlName: string; Site: TWinControl): TControl;
-var
-  wc: TWinControlAccess absolute Result;
-  ctl: TControlAccess absolute Result;
-begin
-(* Reload a previously docked control for Site and make it dockable.
-  Notebooks are assumed to be owned by the Site.
-  Forms are assumed to be owned by Application???
-  Others are assumed to be owned by ???
-*)
-  Result := nil;
-  if (DockMaster <> nil) and (DockMaster.Factory <> nil) then begin
-    TWinControlAccess(DockMaster.Factory).ReLoadDockedControl(ControlName, Result);
-    //if Result <> nil then exit; //done
-  end;
-  if Result = nil then begin
-  //create something
-  end;
-  if ctl.DragKind <> dkDock then begin
-  //make it dockable
-  {$IFDEF new}
-    if Result is TCustomForm then
-      MakeDockable(Result)
-    else
-  {$ELSE}
-  {$ENDIF}
-    begin
-      ctl.DragKind := dkDock;
-      ctl.DragMode := dmAutomatic;
-    end;
-  end;
-end;
-
-function  ReloadDockSite(const SiteName, ParentName: string; Aligned: TAlign): TWinControl;
-begin
-(* Create a DockSite.
-  When ParentName='' then creste a TFloatingSite,
-  else create an elastic panel within the given parent.
-*)
-end;
 
 { TDockMaster }
 
@@ -169,6 +126,7 @@ begin
       {$ENDIF}
         LastPanel := pnl; //for reload layout
         pnl.Name := PanelNames[side];
+        pnl.Caption := '';
         pnl.Parent := AForm;
         pnl.Align := side;
         pnl.BorderWidth := 1;
@@ -210,11 +168,6 @@ end;
 
 function TDockMaster.CreateDockable(const AName: string;
   fMultiInst: boolean; fWrap: boolean): TWinControl;
-var
-  img: TImage;
-  r: TRect;
-  Site: TFloatingSite;
-  Res: TWinControlAccess absolute Result;
 begin
 (* Create a dockable form, based on its name.
   Used also to restore a layout.
@@ -227,7 +180,17 @@ Options (to come or to be removed)
   Result := ReloadForm(AName);
   if Result = nil then
     exit;
-  Result.DisableAlign;
+  MakeDockable(Result, fWrap);
+end;
+
+function TDockMaster.MakeDockable(AForm: TWinControl; fWrap: boolean): TForm;
+var
+  img: TImage;
+  r: TRect;
+  Site: TFloatingSite absolute Result;
+  Res: TWinControlAccess absolute AForm;
+begin
+  AForm.DisableAlign;
   try
   //check make dockable
     if Res.DragKind <> dkDock then begin
@@ -238,16 +201,16 @@ Options (to come or to be removed)
   //wrap into floating site, if requested (not on restore Layout)
     if fWrap then begin
     //wrap into dock site
-      Site := WrapDockable(Result);
+      Site := WrapDockable(AForm);
     end;
   //create a docking handle - should become a component?
-    img := TImage.Create(Result); //we could own the img, and be notified when its parent becomes nil
+    img := TImage.Create(AForm); //we could own the img, and be notified when its parent becomes nil
     img.Align := alNone;
     img.AnchorParallel(akRight,0,Result);
     img.AnchorParallel(akTop,0,Result);
     img.Anchors:=[akRight,akTop];
-    img.Parent := Result;
-    r := Result.ClientRect;
+    img.Parent := AForm;
+    r := AForm.ClientRect;
     r.bottom := 16;
     r.Left := r.Right - 16;
     img.BoundsRect := r;
@@ -263,9 +226,9 @@ Options (to come or to be removed)
     img.OnMouseMove := @DockHandleMouseMove;
     img.Visible := True;
   //make visible, so that it can be docked without problems
-    Result.Visible := True;
+    AForm.Visible := True;
   finally
-    Result.EnableAlign;
+    AForm.EnableAlign;
   end;
 end;
 
@@ -300,19 +263,25 @@ var
 
 procedure TDockMaster.LoadFromStream(Stream: TStream);
 var
+{$IFDEF old}
   ctl, pre: TControl;
   site: TWinControl;
   host: TForm;
   hcomp: TComponent absolute host;
-  nb: TEasyBook;
-  hostname: string;
-  i: integer;
+{$ELSE}
+  site: TWinControl;
+  host: TForm;
+  hcomp: TComponent absolute host;
+{$ENDIF}
 
+{$IFDEF old}
   procedure MakeForm;
   begin
     pre := ctl;
     ctl := CreateDockable('', True, False);
   end;
+{$ELSE}
+{$ENDIF}
 
   function ReadSite: boolean;
   begin
@@ -598,13 +567,14 @@ const
   end;
 
 var
-  i, j: integer;
+  i: integer;
   //Site: TWinControl;
   cmp: TComponent;
   wc: TWinControl absolute cmp;
   ctl: TControl absolute cmp;
-  n, s: string;
-  hds: boolean;
+  //j: integer;
+  //n, s: string;
+  //hds: boolean;
 begin
 (* Dump registered docking sites.
   Elastic panels have no name.

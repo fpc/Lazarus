@@ -58,7 +58,7 @@ LCL TODO:
 
 //depending on widgetset or patched LCL
 {.$DEFINE NoDrop} //applied DoDiPatch1?
-{.$DEFINE PageFrame} //problem: notebook frame cannot Release itself
+//{.$DEFINE PageFrame} //problem: notebook frame cannot Release itself
 {.$DEFINE replace} //using ReplaceDockedControl?
 
 interface
@@ -72,23 +72,14 @@ uses
   Forms,
   ExtCtrls, //splitter
   Controls,
-{$IFDEF PageFrame}
-  fPageFrame,
-{$ELSE}
   fDockBook,
-{$ENDIF}
   ComCtrls; //TPageControl
 
 type
   TEasyTree = class; //forward declaration
   TEasyZone = class; //forward declaration
   TEasySplitter = TCustomSplitter;
-
-{$IFDEF PageFrame}
-  TEasyBook = TPageFrame;
-{$ELSE}
-  TEasyBook = TEasyDockBook;
-{$ENDIF}
+  TEasyBook = class(TEasyDockBook);
 
   TEasyZonePart =
   (
@@ -1035,43 +1026,6 @@ procedure TEasyTree.LoadFromStream(Stream: TStream);
       DebugLn('reload %s @%d [%d,%d]', [ZoneName, Result, ZoneRec.BottomRight.x, ZoneRec.BottomRight.y])
     else
       DebugLn('reload done');
-  end;
-
-  procedure MakeZone(InZone: TEasyZone; Level: byte);
-  var
-    NewZone, PrevZone: TEasyZone;
-    NewCtl: TControl;
-    fSkip: boolean;
-  begin
-  //ZoneRec has been read before
-    NewZone := InZone; //in case this level's zones are skipped
-    PrevZone := nil; //add as first child
-    while ZoneRec.Level >= Level do begin
-      if ZoneRec.Level = Level then begin
-      //create zone at Level in InZone
-        if ZoneRec.NameLen > 0 then begin
-        //we can NOT expect that Reload... is overridden!?
-          TWinControlAccess(DockSite).ReloadDockedControl(ZoneName, NewCtl);
-          fSkip := NewCtl = nil;
-        end else
-          fSkip := False;
-        if not fSkip then begin
-        //sibling = child of InZone
-          NewZone := TEasyZone.Create(self);
-          NewZone.Orientation := ZoneRec.Orientation;
-          NewZone.BR := ZoneRec.BottomRight;
-          NewZone.ChildControl := NewCtl;
-          InZone.InsertAfter(PrevZone, NewZone);
-          NewCtl.Visible := True;
-          PrevZone := NewZone;
-        end;
-        //else skip zone without control - at Level!?
-        GetRec;
-      end else begin // > Level, create children
-      //child = child of last added zone
-        MakeZone(NewZone, Level+1);
-      end;
-    end;  //until GetRec < Level;
   end;
 
   procedure MakeZones;
