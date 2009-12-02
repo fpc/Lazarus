@@ -4152,9 +4152,13 @@ begin
 
   if (Info^.UserData <> nil) and (Info^.DataOwner) then begin
     FreeMem(Info^.UserData);
-    Info^.UserData := nil;
+    //Info^.UserData := nil; // see below the whole memory is cleared by Fillchar
   end;
   gtk_object_set_data(AWidget,'widgetinfo',nil);
+
+  // Set WidgetInfo memory to nil. This will expose bugs that use widgetinfo after
+  // it has been freed and is still referenced by something!
+  FillChar(Info^, SizeOf(TWidgetInfo), 0);
 
   Dispose(Info);
   //DebugLn(['FreeWidgetInfo END']);
