@@ -1881,6 +1881,9 @@ begin
      (QEvent_type(Event) = QEventMouseButtonRelease) or
      (QEvent_type(Event) = QEventMouseButtonDblClick) or
      (QEvent_type(Event) = QEventMouseMove) or
+     (QEvent_type(Event) = QEventHoverEnter) or
+     (QEvent_type(Event) = QEventHoverLeave) or
+     (QEvent_type(Event) = QEventHoverMove) or
      (QEvent_type(Event) = QEventKeyPress) or
      (QEvent_type(Event) = QEventKeyRelease)) then
   begin
@@ -2090,6 +2093,10 @@ var
   MouseMsg: TLMMouseMove absolute Msg;
   MousePos: TQtPoint;
 begin
+
+  if (LCLObject = nil) or (csDestroying in LCLObject.ComponentState) then
+    exit;
+
   if QApplication_mouseButtons() = 0 then // in other case MouseMove will be hooked
   begin
     FillChar(Msg, SizeOf(Msg), #0);
@@ -2143,6 +2150,10 @@ begin
   {$endif}
 
   Result := True;
+
+  if (LCLObject = nil) or (csDestroying in LCLObject.ComponentState) then
+    exit;
+
   FillChar(KeyMsg, SizeOf(KeyMsg), #0);
   FillChar(CharMsg, SizeOf(CharMsg), #0);
   UTF8Text := '';
@@ -2404,6 +2415,9 @@ begin
 
   Result := False; // allow qt to handle message
 
+  if (LCLObject = nil) or (csDestroying in LCLObject.ComponentState) then
+    exit;
+
   // idea of multi click implementation is taken from gtk
 
   FillChar(Msg, SizeOf(Msg), #0);
@@ -2543,6 +2557,9 @@ var
   Msg: TLMMouseMove;
   MousePos: TQtPoint;
 begin
+  if (LCLObject = nil) or (csDestroying in LCLObject.ComponentState) then
+    exit;
+
   FillChar(Msg, SizeOf(Msg), #0);
   
   MousePos := QMouseEvent_pos(QMouseEventH(Event))^;
@@ -2576,6 +2593,9 @@ var
   Modifiers: QtKeyboardModifiers;
   ModifierState: PtrInt;
 begin
+  if (LCLObject = nil) or (csDestroying in LCLObject.ComponentState) then
+    exit;
+
   FillChar(Msg, SizeOf(Msg), #0);
 
   MousePos := QWheelEvent_Pos(QWheelEventH(Event))^;
@@ -2802,7 +2822,8 @@ var
   MousePos: TQtPoint;
   QtEdit: IQtEdit;
 begin
-
+  if (LCLObject = nil) or (csDestroying in LCLObject.ComponentState) then
+    exit;
   if Supports(Self, IQtEdit, QtEdit) then
   begin
     if Assigned(LCLObject.PopupMenu) then
@@ -2835,6 +2856,8 @@ procedure TQtWidget.SlotWhatsThis(Sender: QObjectH; Event: QEventH); cdecl;
 var
   Data: THelpInfo;
 begin
+  if (LCLObject = nil) or (csDestroying in LCLObject.ComponentState) then
+    exit;
   Data.cbSize := SizeOf(Data);
   Data.iContextType := HELPINFO_WINDOW;
   Data.iCtrlId := 0;
@@ -5672,6 +5695,10 @@ var
   Hdr: TNmHdr;
 begin
   Result := False;
+
+  if (LCLObject = nil) or (csDestroying in LCLObject.ComponentState) then
+    exit;
+
   MousePos := QMouseEvent_pos(QMouseEventH(Event))^;
   NewIndex := QTabBar_tabAt(QTabBarH(Sender), @MousePos);
   CurIndex := QTabBar_currentIndex(QTabBarH(Sender));
@@ -8881,6 +8908,11 @@ end;
 
 function TQtCustomControl.EventFilter(Sender: QObjectH; Event: QEventH): Boolean; cdecl;
 begin
+  Result := False;
+  QEvent_accept(Event);
+  if (LCLObject = nil) then
+    exit;
+
   if (QEvent_type(Event) in [
                             QEventPaint,
                             QEventMouseButtonPress,
