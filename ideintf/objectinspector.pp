@@ -4259,7 +4259,7 @@ procedure TObjectInspectorDlg.ComponentTreeKeyDown(Sender: TObject;
   var Key: Word; Shift: TShiftState);
 begin
   if (Shift = []) and (Key = VK_DELETE) and
-     (Selection.Count > 0) and (Selection[0] is TComponent) and
+     (Selection.Count > 0) and
      (MessageDlg(oisDeleteComponents, mtConfirmation,[mbYes, mbNo],0) = mrYes) then
   begin
     OnDeletePopupmenuItemClick(nil);
@@ -4427,12 +4427,27 @@ end;
 procedure TObjectInspectorDlg.OnDeletePopupmenuItemClick(Sender: TObject);
 var
   ADesigner: TIDesigner;
+  ACollection: TCollection;
+  i: integer;
 begin
   if (Selection.Count > 0) then
   begin
     ADesigner := FindRootDesigner(Selection[0]);
     if ADesigner is TComponentEditorDesigner then
+    begin
+      if Selection[0] is TCollection then
+      begin
+        ACollection := TCollection(Selection[0]);
+        Selection.BeginUpdate;
+        Selection.Clear;
+        for i := 0 to ACollection.Count - 1 do
+          Selection.Add(ACollection.Items[i]);
+        Selection.EndUpdate;
+        if Assigned(FOnSelectPersistentsInOI) then
+          FOnSelectPersistentsInOI(Self);
+      end;
       TComponentEditorDesigner(ADesigner).DeleteSelection;
+    end;
   end;
 end;
 
