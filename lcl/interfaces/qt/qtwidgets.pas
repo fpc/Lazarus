@@ -135,6 +135,7 @@ type
     function GetContainerWidget: QWidgetH; virtual;
     procedure Release; override;
   public
+    function CanSendLCLMessage: Boolean;
     function CanPaintBackground: Boolean;
     function DeliverMessage(var Msg): LRESULT; virtual;
     function EventFilter(Sender: QObjectH; Event: QEventH): Boolean; cdecl; override;
@@ -1591,6 +1592,21 @@ begin
 end;
 
 {------------------------------------------------------------------------------
+  Function: TQtWidget.CanSendLCLMessage
+  Params:  None
+  Returns: Boolean
+  If returns FALSE then we should not send any message to LCL since our
+  LCLObject is probably being destroyed or it has csDestroying flag on.
+  This is very important to know before calling NotifyApplicationUserInput,
+  which is often called from mouse & keyboard events.
+ ------------------------------------------------------------------------------}
+function TQtWidget.CanSendLCLMessage: Boolean;
+begin
+  Result := (LCLObject <> nil) and
+    not (csDestroying in LCLObject.ComponentState);
+end;
+
+{------------------------------------------------------------------------------
   Function: TQtWidget.CanPaintBackground
   Params:  None
   Returns: Boolean
@@ -1599,7 +1615,8 @@ end;
  ------------------------------------------------------------------------------}
 function TQtWidget.CanPaintBackground: Boolean;
 begin
-  Result := (not HasPaint or
+  Result := CanSendLCLMessage and
+    (not HasPaint or
     ((ClassType = TQtGroupBox) and
     (LCLObject.Color <> clBtnFace) and
     // DO NOT REMOVE ! because QGroupBox default = clBackground not clBtnFace !
@@ -2094,7 +2111,7 @@ var
   MousePos: TQtPoint;
 begin
 
-  if (LCLObject = nil) or (csDestroying in LCLObject.ComponentState) then
+  if not CanSendLCLMessage then
     exit;
 
   if QApplication_mouseButtons() = 0 then // in other case MouseMove will be hooked
@@ -2151,7 +2168,7 @@ begin
 
   Result := True;
 
-  if (LCLObject = nil) or (csDestroying in LCLObject.ComponentState) then
+  if not CanSendLCLMessage then
     exit;
 
   FillChar(KeyMsg, SizeOf(KeyMsg), #0);
@@ -2415,7 +2432,7 @@ begin
 
   Result := False; // allow qt to handle message
 
-  if (LCLObject = nil) or (csDestroying in LCLObject.ComponentState) then
+  if not CanSendLCLMessage then
     exit;
 
   // idea of multi click implementation is taken from gtk
@@ -2557,7 +2574,7 @@ var
   Msg: TLMMouseMove;
   MousePos: TQtPoint;
 begin
-  if (LCLObject = nil) or (csDestroying in LCLObject.ComponentState) then
+  if not CanSendLCLMessage then
     exit;
 
   FillChar(Msg, SizeOf(Msg), #0);
@@ -2593,7 +2610,7 @@ var
   Modifiers: QtKeyboardModifiers;
   ModifierState: PtrInt;
 begin
-  if (LCLObject = nil) or (csDestroying in LCLObject.ComponentState) then
+  if not CanSendLCLMessage then
     exit;
 
   FillChar(Msg, SizeOf(Msg), #0);
@@ -2711,7 +2728,7 @@ begin
   {$ifdef VerboseQt}
     WriteLn('TQtWidget.SlotPaint ', dbgsName(LCLObject));
   {$endif}
-  if (LCLObject is TWinControl) then
+  if CanSendLCLMessage and (LCLObject is TWinControl) then
   begin
     FillChar(Msg, SizeOf(Msg), #0);
 
@@ -2822,8 +2839,9 @@ var
   MousePos: TQtPoint;
   QtEdit: IQtEdit;
 begin
-  if (LCLObject = nil) or (csDestroying in LCLObject.ComponentState) then
+  if not CanSendLCLMessage then
     exit;
+
   if Supports(Self, IQtEdit, QtEdit) then
   begin
     if Assigned(LCLObject.PopupMenu) then
@@ -2856,7 +2874,7 @@ procedure TQtWidget.SlotWhatsThis(Sender: QObjectH; Event: QEventH); cdecl;
 var
   Data: THelpInfo;
 begin
-  if (LCLObject = nil) or (csDestroying in LCLObject.ComponentState) then
+  if not CanSendLCLMessage then
     exit;
   Data.cbSize := SizeOf(Data);
   Data.iContextType := HELPINFO_WINDOW;
@@ -5696,7 +5714,7 @@ var
 begin
   Result := False;
 
-  if (LCLObject = nil) or (csDestroying in LCLObject.ComponentState) then
+  if not CanSendLCLMessage then
     exit;
 
   MousePos := QMouseEvent_pos(QMouseEventH(Event))^;
