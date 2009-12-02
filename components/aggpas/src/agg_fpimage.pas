@@ -368,6 +368,8 @@ type
               const NewCache : TAggFontCacheType = AGG_VectorFontCache;
               const NewAngle : double = 0.0 ;
               const NewHinting: boolean = true);
+    function AggHeightToSize(const h: double): double; virtual;
+    function SizeToAggHeight(const s: double): double; virtual;
     property AggColor: TAggColor read FAggColor write SetAggColor;
     property AggAlignX: TAggTextAlignment read FAggAlignX write SetAggAlignX default AGG_AlignLeft;
     property AggAlignY: TAggTextAlignment read FAggAlignY write SetAggAlignY default AGG_AlignBottom;
@@ -3421,6 +3423,7 @@ var
 begin
   if FAggHeight=AValue then exit;
   FAggHeight:=AValue;
+  inherited SetSize(round(AggHeightToSize(FAggHeight)));
   {$IFDEF AGG2D_USE_FREETYPE}
   c:=TAggFPCanvas(Canvas);
   if FAggCache = AGG_VectorFontCache then
@@ -3443,7 +3446,17 @@ end;
 
 procedure TAggFPFont.SetSize(AValue: integer);
 begin
-  AggHeight:=AValue;
+  AggHeight:=SizeToAggHeight(AValue);
+end;
+
+function TAggFPFont.AggHeightToSize(const h: double): double;
+begin
+  Result:=h;
+end;
+
+function TAggFPFont.SizeToAggHeight(const s: double): double;
+begin
+  Result:=s;
 end;
 
 procedure TAggFPFont.SetFPColor(const AValue: TFPColor);

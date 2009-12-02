@@ -58,11 +58,16 @@ type
   TAggLCLFont = class(TAggFPFont)
   private
     FColor: TColor;
+    FPixelsPerInch: Integer;
   protected
     procedure SetColor(const AValue: TColor); virtual;
     procedure SetFPColor(const AValue: TFPColor); override;
   public
+    constructor Create; override;
+    function AggHeightToSize(const h: double): double; override;
+    function SizeToAggHeight(const s: double): double; override;
     property Color: TColor read FColor write SetColor;
+    property PixelsPerInch: Integer read FPixelsPerInch write FPixelsPerInch;
   end;
 
   { TAggLCLCanvas }
@@ -278,7 +283,7 @@ end;
 procedure TAggLCLCanvas.AggTextOut(const x, y: double; str: AnsiString;
   roundOff: boolean; const ddx: double; const ddy: double);
 begin
-  inherited AggTextOut(x, y+Font.Size, str, roundOff, ddx, ddy);
+  inherited AggTextOut(x+0.5, y+Font.Size+0.5, str, roundOff, ddx, ddy);
 end;
 
 procedure TAggLCLCanvas.Frame(const ARect: TRect);
@@ -346,6 +351,22 @@ begin
   if FPColor=AValue then exit;
   inherited SetFPColor(AValue);
   FColor:=FPColorToTColor(FPColor);
+end;
+
+constructor TAggLCLFont.Create;
+begin
+  FPixelsPerInch := ScreenInfo.PixelsPerInchY;
+  inherited Create;
+end;
+
+function TAggLCLFont.AggHeightToSize(const h: double): double;
+begin
+  Result:=h*72 / FPixelsPerInch;
+end;
+
+function TAggLCLFont.SizeToAggHeight(const s: double): double;
+begin
+  Result:=s*FPixelsPerInch / 72;
 end;
 
 { TAggLCLImage }
