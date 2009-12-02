@@ -71,6 +71,8 @@ type
 implementation
 
 type
+  TCollectionAccess = class(TCollection);
+
   TComponentCandidate = class
   public
     APersistent: TPersistent;
@@ -78,7 +80,7 @@ type
     Added: boolean;
   end;
 
-  TGetCollectionProc = procedure(AName: String; ACollection: TCollection) of object;
+  TGetCollectionProc = procedure(ACollection: TCollection) of object;
 
   { TComponentWalker }
 
@@ -95,7 +97,7 @@ type
       ARootComponent: TComponent; ANode: TTreeNode);
 
     procedure Walk(AComponent: TComponent);
-    procedure AddCollection(AName: String; ACollection: TCollection);
+    procedure AddCollection(ACollection: TCollection);
   end;
 
   TComponentAccessor = class(TComponent);
@@ -127,7 +129,7 @@ begin
       begin
         Obj := GetObjectProp(AComponent, PropList^[i], TCollection);
         if Assigned(Obj) then
-          AProc(PropList^[i]^.Name, TCollection(Obj));
+          AProc(TCollection(Obj));
       end;
   finally
     FreeMem(PropList);
@@ -179,13 +181,15 @@ begin
   FNode.Expanded := True;
 end;
 
-procedure TComponentWalker.AddCollection(AName: String; ACollection: TCollection);
+procedure TComponentWalker.AddCollection(ACollection: TCollection);
 var
   CollectionNode, ItemNode: TTreeNode;
   i: integer;
   Item: TCollectionItem;
 begin
-  CollectionNode := FTreeView.Items.AddChild(FNode, AName);
+  if GetLookupRootForComponent(ACollection) <> FRootComponent then Exit;
+
+  CollectionNode := FTreeView.Items.AddChild(FNode, FTreeView.CreateNodeCaption(ACollection));
   CollectionNode.Data := ACollection;
   CollectionNode.ImageIndex := FTreeView.GetImageFor(ACollection);
   CollectionNode.SelectedIndex := CollectionNode.ImageIndex;
@@ -194,7 +198,7 @@ begin
   for i := 0 to ACollection.Count - 1 do
   begin
     Item := ACollection.Items[i];
-    ItemNode := FTreeView.Items.AddChild(CollectionNode, Format('%d - %s', [i, Item.ClassName]));
+    ItemNode := FTreeView.Items.AddChild(CollectionNode, FTreeView.CreateNodeCaption(Item));
     ItemNode.Data := Item;
     ItemNode.ImageIndex := FTreeView.GetImageFor(Item);
     ItemNode.SelectedIndex := ItemNode.ImageIndex;
@@ -596,10 +600,53 @@ begin
 end;
 
 function TComponentTreeView.CreateNodeCaption(APersistent: TPersistent): string;
+
+  function GetItemIndex(AItem: TCollectionItem): Integer;
+  var
+    i: integer;
+  begin
+    for i := 0 to AItem.Collection.Count - 1 do
+      if AItem.Collection.Items[i] = AItem then
+        Exit(i);
+    Result := -1;
+  end;
+
+  function GetCollectionName(ACollection: TCollection): String;
+  var
+    PropList: PPropList;
+    i, PropCount: Integer;
+  begin
+    Result := TCollectionAccess(ACollection).PropName;
+    if Result <> '' then
+      Exit;
+
+    Result := '<unknown>';
+    if ACollection.Owner = nil then
+      Exit;
+
+    PropCount := GetPropList(ACollection.Owner, PropList);
+    try
+      for i := 0 to PropCount - 1 do
+        if (PropList^[i]^.PropType^.Kind = tkClass) and
+           (GetObjectProp(ACollection.Owner, PropList^[i], ACollection.ClassType) = ACollection) then
+          Exit(PropList^[i]^.Name);
+    finally
+      FreeMem(PropList);
+    end;
+  end;
+
 begin
   Result := APersistent.ClassName;
   if APersistent is TComponent then
-    Result := TComponent(APersistent).Name + ': ' + Result;
+    Result := TComponent(APersistent).Name + ': ' + Result
+  else
+  if APersistent is TCollection then
+    Result := GetCollectionName(TCollection(APersistent)) + ': ' + Result
+  else
+  if APersistent is TCollectionItem then
+  begin
+    Result := IntToStr(GetItemIndex(TCollectionItem(APersistent))) + ' - ' + TCollectionItem(APersistent).DisplayName;
+  end;
 end;
 
 initialization
