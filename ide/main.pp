@@ -7705,7 +7705,13 @@ begin
   // if nothing modified then a simple Save can be skipped
   //writeln('TMainIDE.DoSaveEditorFile A ',ActiveUnitInfo.Filename,' ',ActiveUnitInfo.NeedsSaveToDisk);
   if ([sfSaveToTestDir,sfSaveAs]*Flags=[])
-  and (not ActiveUnitInfo.NeedsSaveToDisk) then begin
+  and (not ActiveUnitInfo.NeedsSaveToDisk) then
+  begin
+    if ActiveSrcEdit.Modified then
+    begin
+      ActiveUnitInfo.SessionModified:=true;
+      ActiveSrcEdit.Modified:=false;
+    end;
     Result:=mrOk;
     exit;
   end;
@@ -7798,7 +7804,9 @@ begin
   // unset all modified flags
   if not (sfSaveToTestDir in Flags) then begin
     ActiveUnitInfo.ClearModifieds;
+    DebugLn(['TMainIDE.DoSaveEditorFile AAA1 ',ActiveSrcEdit.Modified]);
     ActiveSrcEdit.Modified:=false;
+    DebugLn(['TMainIDE.DoSaveEditorFile AAA2 ',ActiveSrcEdit.Modified]);
     UpdateSaveMenuItemsAndButtons(not (sfProjectSaving in Flags));
   end;
   SourceNoteBook.UpdateStatusBar;
