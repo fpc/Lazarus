@@ -601,16 +601,6 @@ end;
 
 function TComponentTreeView.CreateNodeCaption(APersistent: TPersistent): string;
 
-  function GetItemIndex(AItem: TCollectionItem): Integer;
-  var
-    i: integer;
-  begin
-    for i := 0 to AItem.Collection.Count - 1 do
-      if AItem.Collection.Items[i] = AItem then
-        Exit(i);
-    Result := -1;
-  end;
-
   function GetCollectionName(ACollection: TCollection): String;
   var
     PropList: PPropList;
@@ -644,9 +634,7 @@ begin
     Result := GetCollectionName(TCollection(APersistent)) + ': ' + Result
   else
   if APersistent is TCollectionItem then
-  begin
-    Result := IntToStr(GetItemIndex(TCollectionItem(APersistent))) + ' - ' + TCollectionItem(APersistent).DisplayName;
-  end;
+    Result := IntToStr(TCollectionItem(APersistent).Index) + ' - ' + TCollectionItem(APersistent).DisplayName;
 end;
 
 initialization
