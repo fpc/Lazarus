@@ -242,6 +242,8 @@ type
 
   TQtRegion = class(TQtResource)
   private
+    FPolygon: QPolygonH;
+    function GetIsPolyRegion: Boolean;
   public
     Widget: QRegionH;
     constructor Create(CreateHandle: Boolean); virtual; overload;
@@ -254,6 +256,7 @@ type
     function containsRect(R: TRect): Boolean;
     function GetRegionType: integer;
     function getBoundingRect: TRect;
+    property IsPolyRegion: Boolean read GetIsPolyRegion;
   end;
 
   // NOTE: PQtDCData was a pointer to a structure with QPainter information
@@ -1630,7 +1633,7 @@ begin
   {$ifdef VerboseQt}
     WriteLn('TQtRegion.Create CreateHandle: ', dbgs(CreateHandle));
   {$endif}
-
+  FPolygon := nil;
   // Creates the widget
   if CreateHandle then Widget := QRegion_create();
 end;
@@ -1648,7 +1651,7 @@ begin
   {$ifdef VerboseQt}
     WriteLn('TQtRegion.Create CreateHandle: ', dbgs(CreateHandle));
   {$endif}
-
+  FPolygon := nil;
   // Creates the widget
   // Note that QRegion_create expects a width and a height,
   // and not a X2, Y2 bottom-right point
@@ -1670,7 +1673,12 @@ begin
   {$ifdef VerboseQt}
     WriteLn('TQtRegion.Create polyrgn CreateHandle: ', dbgs(CreateHandle));
   {$endif}
-  if CreateHandle then Widget := QRegion_create(Poly, Fill);
+  FPolygon := nil;
+  if CreateHandle then
+  begin
+    FPolygon := QPolygon_create(Poly);
+    Widget := QRegion_create(FPolygon, Fill);
+  end;
 end;
 
 
@@ -1684,10 +1692,17 @@ begin
   {$ifdef VerboseQt}
     WriteLn('TQtRegion.Destroy');
   {$endif}
-
-  QRegion_destroy(Widget);
+  if FPolygon <> nil then
+    QPolygon_destroy(FPolygon);
+  if Widget <> nil then
+    QRegion_destroy(Widget);
 
   inherited Destroy;
+end;
+
+function TQtRegion.GetIsPolyRegion: Boolean;
+begin
+  Result := FPolygon <> nil;
 end;
 
 function TQtRegion.containsPoint(X, Y: Integer): Boolean;
@@ -1709,11 +1724,11 @@ var
   R: TRect;
 begin
   try
-    if QRegion_isEmpty(Widget) then
+    if not IsPolyRegion and QRegion_isEmpty(Widget) then
       Result := NULLREGION
     else
     begin
-      QRegion_boundingRect(Widget, @R);
+      R := getBoundingRect;
       if QRegion_contains(Widget, PRect(@R)) then
         Result := SIMPLEREGION
       else
@@ -1726,7 +1741,10 @@ end;
 
 function TQtRegion.getBoundingRect: TRect;
 begin
-  QRegion_boundingRect(Widget, @Result);
+  if IsPolyRegion then
+    QPolygon_boundingRect(FPolygon, @Result)
+  else
+    QRegion_boundingRect(Widget, @Result);
 end;
 
 { TQtDeviceContext }

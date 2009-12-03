@@ -2629,7 +2629,7 @@ begin
     Result := TQtRegion(RGN).GetRegionType;
     if not (Result in [ERROR, NULLREGION]) and (lpRect <> nil) then
     begin
-      QRegion_boundingRect(TQtRegion(RGN).Widget, @R);
+      R := TQtRegion(RGN).getBoundingRect;
       with lpRect^ do
       begin
         Left   := R.Left;
