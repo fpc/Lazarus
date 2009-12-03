@@ -795,6 +795,10 @@ type
     function MoveNext: Boolean;
     property Current: TListItem read GetCurrent;
   end;
+
+  TListItemsFlag = (lisfWSItemsCreated);
+  TListItemsFlags = set of TListItemsFlag;
+
   
   { TListItems }
   {
@@ -807,7 +811,8 @@ type
   TListItems = class(TPersistent)
   private
     FOwner: TCustomListView;
-    FItems: TList;        
+    FItems: TList;
+    FFlags: TListItemsFlags;
     FCacheIndex: Integer;  // Caches the last used item 
     FCacheItem: TListItem; //
     procedure WSCreateCacheItem;
@@ -842,6 +847,7 @@ type
     function IndexOf(const AItem: TListItem): Integer;
     function Insert(const AIndex: Integer) : TListItem;
     procedure InsertItem(AItem: TListItem; const AIndex: Integer);
+    property Flags: TListItemsFlags read FFlags;
     property Count: Integer read GetCount write SetCount;
     property Item[const AIndex: Integer]: TListItem read GetItem write SetItem; default;
     property Owner : TCustomListView read FOwner;

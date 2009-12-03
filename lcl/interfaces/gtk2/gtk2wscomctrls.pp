@@ -231,7 +231,7 @@ type
 
 implementation
 
-uses Gtk2CellRenderer, GtkExtra;
+uses Gtk2CellRenderer, GtkExtra{$IFNDEF USEORIGTREEMODEL}, Gtk2ListViewTreeModel{$ENDIF};
 
 // Will be used commonly for ListViews and TreeViews
 procedure GetCommonTreeViewWidgets(ATreeViewHandle: PGtkWidget;

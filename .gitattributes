@@ -4724,6 +4724,7 @@ lcl/interfaces/gtk2/gtk2extrah.inc svneol=native#text/pascal
 lcl/interfaces/gtk2/gtk2int.pas svneol=native#text/pascal
 lcl/interfaces/gtk2/gtk2lclintf.inc svneol=native#text/pascal
 lcl/interfaces/gtk2/gtk2lclintfh.inc svneol=native#text/pascal
+lcl/interfaces/gtk2/gtk2listviewtreemodel.pas svneol=native#text/plain
 lcl/interfaces/gtk2/gtk2memostrings.inc svneol=native#text/pascal
 lcl/interfaces/gtk2/gtk2privatelist.inc svneol=native#text/pascal
 lcl/interfaces/gtk2/gtk2privatewidget.inc svneol=native#text/plain

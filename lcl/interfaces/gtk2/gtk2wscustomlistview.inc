@@ -764,10 +764,14 @@ begin
   GetCommonTreeViewWidgets(PGtkWidget(ALV.Handle), Widgets);
 
   with Widgets^ do begin
+    {$IFDEF USEORIGTREEMODEL}
     if gtk_tree_model_iter_nth_child(TreeModel, @Iter, nil, AIndex) then
     begin
       gtk_list_store_remove(TreeModel, @Iter);
     end;
+    {$ELSE}
+    PLCLListViewModel(TreeModel)^.NotifyRowDeleted(AIndex);
+    {$ENDIF}
   end;
 end;
 
@@ -832,17 +836,25 @@ begin
   if not WSCheckHandleAllocated(ALV, 'ItemInsert')
   then Exit;
 
+
   GetCommonTreeViewWidgets(PGtkWidget(ALV.Handle), Widgets);
 
   with Widgets^ do
   begin
     if ItemCache = nil then
       ItemCache := TStringList.Create;
+    {$IFDEF USEORIGTREEMODEL}
     if AIndex = -1 then
       Index := gtk_tree_model_iter_n_children(TreeModel, nil)
     else
       Index := AIndex;
     gtk_list_store_insert_with_values(PGtkListStore(TreeModel), @Iter, Index, 0, Pointer(AItem), -1);
+    {$ELSE}
+    if not (lisfWSItemsCreated in ALV.Items.Flags) then
+      Exit;
+
+    PLCLListViewModel(TreeModel)^.NotifyRowInserted(AIndex);
+    {$ENDIF}
   end;
 end;
 
@@ -1016,12 +1028,13 @@ var
 begin
   if not WSCheckHandleAllocated(ALV, 'ItemUpdate')
   then Exit;
-
+  {$IFDEF USEORIGTREEMODEL}
   GetCommonTreeViewWidgets(PGtkWidget(ALV.Handle), Widgets);
 
   with Widgets^ do
     if gtk_tree_model_iter_nth_child(TreeModel, @Iter, nil, AIndex) then
       gtk_list_store_set(PGtkListStore(TreeModel), @Iter, [0, Pointer(AItem), -1]);
+  {$ENDIF}
 end;
 
 class function TGtk2WSCustomListView.CreateHandle(const AWinControl: TWinControl;
@@ -1056,12 +1069,16 @@ begin
     Images := nil;
     PtrType := G_TYPE_POINTER;
 
+    {$IFDEF USEORIGTREEMODEL}
     TreeModel := gtk_list_store_newv(1, @PtrType);
+    {$ENDIF}
+    TreeModel:=  LCLListViewModelNew(TCustomListView(AWinControl));
 
 
     MainView:=gtk_tree_view_new_with_model(TreeModel);
     //MainView:=gtk_tree_view_new;
     g_object_unref (G_OBJECT (TreeModel));
+    //gtk_tree_view_set_fixed_height_mode(PGtkTreeView(MainView), True);
 
     TreeSelection := PGtkTreeSelection(gtk_tree_view_get_selection(PGtkTreeView(MainView)));
 
@@ -1440,11 +1457,18 @@ begin
 
   with Widgets^ do
   begin
+    {$IFNDEF USEORIGTREEMODEL}
+    g_object_ref(TreeModel);
+    gtk_tree_view_set_model(PGtkTreeView(MainView), nil);
+    gtk_tree_view_set_model(PGtkTreeView(MainView), TreeModel);
+    g_object_unref(TreeModel);
+    {$ELSE}
     if ItemCache = nil then
       ItemCache := TStringList.Create;
     gtk_list_store_clear(PGtkListStore(TreeModel));
     for Index := 0 to AValue - 1 do
       gtk_list_store_insert_with_values(PGtkListStore(TreeModel), @Iter, Index, 0, nil, -1);
+    {$ENDIF}
   end;
 end;
 

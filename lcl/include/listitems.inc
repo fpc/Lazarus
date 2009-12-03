@@ -193,6 +193,7 @@ begin
     FCacheIndex := n;
     WSCreateCacheItem;
   end;
+  Include(FFlags, lisfWSItemsCreated);
 end;
 
 {------------------------------------------------------------------------------}
