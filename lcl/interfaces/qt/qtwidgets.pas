@@ -262,6 +262,7 @@ type
     FSliderPressedHook: QAbstractSlider_hookH;
     FSliderReleasedHook: QAbstractSlider_hookH;
     FValueChangedHook: QAbstractSlider_hookH;
+    FActionTriggeredHook: QAbstractSlider_hookH;
   protected
     function CreateWidget(const AParams: TCreateParams):QWidgetH; override;
   public
@@ -270,9 +271,10 @@ type
 
     procedure SlotSliderMoved(p1: Integer); cdecl; virtual;
     procedure SlotValueChanged(p1: Integer); cdecl; virtual;
+    procedure SlotActionTriggered(action: Integer); cdecl; virtual;
     procedure SlotRangeChanged(minimum: Integer; maximum: Integer); cdecl; virtual;
     procedure SlotSliderPressed; cdecl;
-    procedure SlotSliderReleased; cdecl;
+    procedure SlotSliderReleased; cdecl; virtual;
   public
     function getOrientation: QtOrientation;
     function getValue: Integer;
@@ -280,7 +282,9 @@ type
     function getMin: Integer;
     function getMax: Integer;
     function getSingleStep: Integer;
+    function getSliderDown: Boolean;
     function getSliderPosition: Integer;
+    function getTracking: Boolean;
 
     procedure setInvertedAppereance(p1: Boolean); virtual;
     procedure setInvertedControls(p1: Boolean); virtual;
@@ -308,6 +312,7 @@ type
   public
     function EventFilter(Sender: QObjectH; Event: QEventH): Boolean; cdecl; override;
     procedure AttachEvents; override;
+    procedure SlotSliderReleased; cdecl; override;
   end;
 
   { TQtFrame }
@@ -4888,6 +4893,7 @@ begin
   FSliderPressedHook := QAbstractSlider_hook_create(Widget);
   FSliderReleasedHook := QAbstractSlider_hook_create(Widget);
   FValueChangedHook := QAbstractSlider_hook_create(Widget);
+  FActionTriggeredHook := QAbstractSlider_hook_create(Widget);
 end;
 
 procedure TQtAbstractSlider.DetachEvents;
@@ -4897,6 +4903,7 @@ begin
   QAbstractSlider_hook_destroy(FSliderPressedHook);
   QAbstractSlider_hook_destroy(FSliderReleasedHook);
   QAbstractSlider_hook_destroy(FValueChangedHook);
+  QAbstractSlider_hook_destroy(FActionTriggeredHook);
   inherited DetachEvents;
 end;
 
@@ -4925,9 +4932,19 @@ begin
   Result := QAbstractSlider_singleStep(QAbstractSliderH(Widget));
 end;
 
+function TQtAbstractSlider.getSliderDown: Boolean;
+begin
+  Result := QAbstractSlider_isSliderDown(QAbstractSliderH(Widget));
+end;
+
 function TQtAbstractSlider.getSliderPosition: Integer;
 begin
   Result := QAbstractSlider_sliderPosition(QAbstractSliderH(Widget));
+end;
+
+function TQtAbstractSlider.getTracking: Boolean;
+begin
+  Result := QAbstractSlider_hasTracking(QAbstractSliderH(Widget));
 end;
 
 {------------------------------------------------------------------------------
@@ -5072,7 +5089,10 @@ begin
  {$ifdef VerboseQt}
   writeln('TQtAbstractSlider.sliderMoved() to pos=',p1);
  {$endif}
- 
+
+  if getTracking then
+    exit;
+
   FillChar(LMScroll, SizeOf(LMScroll), #0);
 
   LMScroll.ScrollBar := PtrUInt(Self);
@@ -5085,7 +5105,8 @@ begin
   LMScroll.Pos := p1;
   LMScroll.ScrollCode := SIF_POS; { SIF_TRACKPOS }
 
-  DeliverMessage(LMScroll);
+  if not InUpdate then
+    DeliverMessage(LMScroll);
 end;
 
 procedure TQtAbstractSlider.SlotSliderPressed; cdecl;
@@ -5118,7 +5139,10 @@ begin
   {$ifdef VerboseQt}
   writeln('TQtAbstractSlider.SlotValueChanged() to value ',p1,' inUpdate ',inUpdate);
   {$endif}
- 
+
+  if not getTracking then
+    exit;
+
   FillChar(LMScroll, SizeOf(LMScroll), #0);
 
   LMScroll.ScrollBar := PtrUInt(Self);
@@ -5131,10 +5155,94 @@ begin
   LMScroll.Pos := p1;
   LMScroll.ScrollCode := SIF_POS;
 
-  if not SliderPressed and not InUpdate then
+  if not InUpdate then
     DeliverMessage(LMScroll);
 end;
 
+procedure TQtAbstractSlider.SlotActionTriggered(action: Integer); cdecl;
+const
+  SliderActions: Array[0..7] of QAbstractSliderSliderAction = (
+    QAbstractSliderSliderNoAction, QAbstractSliderSliderSingleStepAdd,
+    QAbstractSliderSliderSingleStepSub, QAbstractSliderSliderPageStepAdd,
+    QAbstractSliderSliderPageStepSub, QAbstractSliderSliderToMinimum,
+    QAbstractSliderSliderToMaximum, QAbstractSliderSliderMove );
+var
+  LMScroll: TLMScroll;
+  SliderAction: QAbstractSliderSliderAction;
+begin
+  {$ifdef VerboseQt}
+  writeln('TQtAbstractSlider.SlotActionTriggered() action = ',action,' inUpdate ',inUpdate);
+  {$endif}
+
+  FillChar(LMScroll, SizeOf(LMScroll), #0);
+
+  LMScroll.ScrollBar := PtrUInt(Self);
+
+  if QAbstractSlider_orientation(QAbstractSliderH(Widget)) = QtHorizontal then
+    LMScroll.Msg := LM_HSCROLL
+  else
+    LMScroll.Msg := LM_VSCROLL;
+
+  LMScroll.Pos := getSliderPosition;
+
+  SliderAction := SliderActions[Action];
+
+  case SliderAction of
+    QAbstractSliderSliderNoAction: Exit;
+    QAbstractSliderSliderSingleStepAdd:
+      begin
+        if LMScroll.Msg = LM_HSCROLL then
+          LMScroll.ScrollCode := SB_LINERIGHT
+        else
+          LMScroll.ScrollCode := SB_LINEDOWN;
+      end;
+    QAbstractSliderSliderSingleStepSub:
+      begin
+        if LMScroll.Msg = LM_HSCROLL then
+          LMScroll.ScrollCode := SB_LINELEFT
+        else
+          LMScroll.ScrollCode := SB_LINEUP;
+      end;
+    QAbstractSliderSliderPageStepAdd:
+      begin
+        if LMScroll.Msg = LM_HSCROLL then
+          LMScroll.ScrollCode := SB_PAGERIGHT
+        else
+          LMScroll.ScrollCode := SB_PAGEDOWN;
+      end;
+    QAbstractSliderSliderPageStepSub:
+      begin
+        if LMScroll.Msg = LM_HSCROLL then
+          LMScroll.ScrollCode := SB_PAGELEFT
+        else
+          LMScroll.ScrollCode := SB_PAGEUP;
+      end;
+    QAbstractSliderSliderToMinimum:
+      begin
+        if LMScroll.Msg = LM_HSCROLL then
+          LMScroll.ScrollCode := SB_LEFT
+        else
+          LMScroll.ScrollCode := SB_TOP;
+      end;
+    QAbstractSliderSliderToMaximum:
+      begin
+        if LMScroll.Msg = LM_HSCROLL then
+          LMScroll.ScrollCode := SB_RIGHT
+        else
+          LMScroll.ScrollCode := SB_BOTTOM;
+      end;
+    QAbstractSliderSliderMove:
+      begin
+        if getTracking and getSliderDown then
+          LMScroll.ScrollCode := SB_THUMBTRACK
+        else
+          LMScroll.ScrollCode := SB_THUMBPOSITION;
+      end;
+  end;
+
+  if not InUpdate then
+    DeliverMessage(LMScroll);
+end;
 
 { TQtScrollBar }
 
@@ -5184,6 +5292,29 @@ begin
   QAbstractSlider_hook_hook_sliderReleased(FSliderReleasedHook, @SlotSliderReleased);
 
   QAbstractSlider_hook_hook_valueChanged(FValueChangedHook, @SlotValueChanged);
+
+  QAbstractSlider_hook_hook_actionTriggered(FActionTriggeredHook, @SlotActionTriggered);
+end;
+
+procedure TQtScrollBar.SlotSliderReleased; cdecl;
+var
+  LMScroll: TLMScroll;
+begin
+  inherited SlotSliderReleased;
+  FillChar(LMScroll, SizeOf(LMScroll), #0);
+
+  LMScroll.ScrollBar := PtrUInt(Self);
+
+  if QAbstractSlider_orientation(QAbstractSliderH(Widget)) = QtHorizontal then
+    LMScroll.Msg := LM_HSCROLL
+  else
+    LMScroll.Msg := LM_VSCROLL;
+
+  LMScroll.Pos := getSliderPosition;
+  LMScroll.ScrollCode := SIF_POS;
+
+  if not InUpdate then
+    DeliverMessage(LMScroll);
 end;
 
 { TQtToolBar }
