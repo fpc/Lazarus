@@ -59,7 +59,9 @@ type
 
   TBarChartItems = class(TCollection)
   private
-    FBarChart : TCustomBarChart;
+    FBarChart: TCustomBarChart;
+  protected
+    function GetOwner: TPersistent; override;
   public
     constructor Create(BarChart: TCustomBarChart);
   end;
@@ -440,6 +442,11 @@ begin
 end;
 
 { TBarChartItems }
+
+function TBarChartItems.GetOwner: TPersistent;
+begin
+  Result := FBarChart;
+end;
 
 constructor TBarChartItems.Create(BarChart: TCustomBarChart);
 begin

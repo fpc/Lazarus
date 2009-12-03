@@ -535,6 +535,7 @@ type
     procedure SetColumn(Index: Integer; Value: TGridColumn);
     function GetVisibleCount: Integer;
   protected
+    function GetOwner: TPersistent; override;
     procedure Update(Item: TCollectionItem); override;
     procedure TitleFontChanged;
     procedure FontChanged;
@@ -9727,6 +9728,11 @@ begin
   for i:=0 to Count-1 do
     if Items[i].Visible then
       inc(result);
+end;
+
+function TGridColumns.GetOwner: TPersistent;
+begin
+  Result := FGrid;
 end;
 
 procedure TGridColumns.Update(Item: TCollectionItem);
