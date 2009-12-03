@@ -14,6 +14,7 @@ object FloatingSite: TFloatingSite
   LCLVersion = '0.9.29'
   Visible = True
   object Image1: TImage
+    Cursor = crHandPoint
     Left = 361
     Height = 16
     Top = 0
