@@ -2492,8 +2492,6 @@ begin
     try
       {$IFDEF IDE_MEM_CHECK}CheckHeapWrtMemCnt('TProject.ReadProject A reading lpi');{$ENDIF}
       xmlconfig := TXMLConfig.Create(ProjectInfoFile);
-      fLastReadLPIFilename:=ProjectInfoFile;
-      fLastReadLPIFileDate:=Now;
       {$IFDEF IDE_MEM_CHECK}CheckHeapWrtMemCnt('TProject.ReadProject B done lpi');{$ENDIF}
     except
       MessageDlg(Format(lisUnableToReadTheProjectInfoFile, [#13, '"',
@@ -2502,6 +2500,9 @@ begin
       Result:=mrCancel;
       exit;
     end;
+
+    fLastReadLPIFilename:=ProjectInfoFile;
+    fLastReadLPIFileDate:=Now;
 
     NewMainUnitID:=-1;
     try
@@ -2512,6 +2513,13 @@ begin
 
       {$IFDEF IDE_MEM_CHECK}CheckHeapWrtMemCnt('TProject.ReadProject C reading values');{$ENDIF}
       FileVersion:= XMLConfig.GetValue(Path+'Version/Value',0);
+      if (Fileversion=0) and (xmlconfig.GetValue(Path+'Units/Count',0)=0) then
+      begin
+        if MessageDlg(lisStrangeLpiFile,
+          Format(lisTheFileDoesNotLookLikeALpiFile, [ProjectInfoFile]),
+          mtConfirmation,[mbIgnore,mbAbort],0)<>mrIgnore then exit;
+      end;
+
       LoadFlags(XMLConfig,Path);
       
       SessionStorage:=StrToProjectSessionStorage(
