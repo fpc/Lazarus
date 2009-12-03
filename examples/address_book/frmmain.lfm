@@ -1,21 +1,24 @@
 object MainForm: TMainForm
-  Left = 279
+  Left = 484
   Height = 522
-  Top = 165
+  Top = 273
   Width = 734
   HorzScrollBar.Page = 733
   VertScrollBar.Page = 491
-  ActiveControl = GDBA
+  ActiveControl = PTop
   Caption = 'Addressbook'
-  ClientHeight = 492
+  ClientHeight = 497
   ClientWidth = 734
   Font.Height = -13
   Font.Name = 'MS Sans Serif'
   Menu = MMain
   OnClose = FormClose
   OnCloseQuery = FormCloseQuery
+  LCLVersion = '0.9.29'
   object PTop: TPanel
+    Left = 0
     Height = 33
+    Top = 0
     Width = 734
     Align = alTop
     BevelOuter = bvLowered
@@ -37,7 +40,8 @@ object MainForm: TMainForm
     end
   end
   object GDBA: TDBGrid
-    Height = 199
+    Left = 0
+    Height = 204
     Top = 33
     Width = 734
     Align = alClient
@@ -92,17 +96,15 @@ object MainForm: TMainForm
         FieldName = 'WWW'
       end>
     DataSource = DSAddress
-    FixedColor = clBtnFace
-    Options = [dgEditing, dgTitles, dgIndicator, dgColumnResize, dgColumnMove, dgColLines, dgRowLines, dgTabs, dgAlwaysShowSelection, dgConfirmDelete, dgCancelOnExit]
-    OptionsExtra = [dgeAutoColumns, dgeCheckboxColumn]
-    ParentColor = False
     ReadOnly = True
     TabOrder = 1
-    TabStop = True
+    TitleFont.Height = -13
+    TitleFont.Name = 'MS Sans Serif'
   end
   object PBottom: TPanel
+    Left = 0
     Height = 260
-    Top = 232
+    Top = 237
     Width = 734
     Align = alBottom
     BevelOuter = bvLowered
@@ -112,244 +114,244 @@ object MainForm: TMainForm
     TabOrder = 2
     object LELastName: TLabel
       Left = 8
-      Height = 17
+      Height = 19
       Top = 8
-      Width = 89
+      Width = 61
       Alignment = taRightJustify
       Caption = '&Last name'
-      Color = clNone
       FocusControl = ELastName
       Layout = tlCenter
       ParentColor = False
     end
     object LEFirstName: TLabel
       Left = 8
-      Height = 17
-      Top = 32
-      Width = 89
+      Height = 19
+      Top = 34
+      Width = 62
       Alignment = taRightJustify
       Caption = '&First name'
-      Color = clNone
       FocusControl = EFirstName
       Layout = tlCenter
       ParentColor = False
     end
     object LEStreet: TLabel
       Left = 8
-      Height = 17
+      Height = 19
       Top = 64
-      Width = 56
+      Width = 37
       Alignment = taRightJustify
       Caption = '&Street'
-      Color = clNone
       FocusControl = EStreet
       Layout = tlCenter
       ParentColor = False
     end
     object LEZip: TLabel
       Left = 8
-      Height = 17
-      Top = 88
-      Width = 34
+      Height = 19
+      Top = 92
+      Width = 23
       Alignment = taRightJustify
       Caption = '&Zip'
-      Color = clNone
       FocusControl = EZip
       Layout = tlCenter
       ParentColor = False
     end
     object LETown: TLabel
       Left = 264
-      Height = 17
-      Top = 88
-      Width = 52
+      Height = 19
+      Top = 90
+      Width = 35
       Alignment = taRightJustify
       Caption = 'T&own'
-      Color = clNone
       FocusControl = ETown
       Layout = tlCenter
       ParentColor = False
     end
     object LETelephone: TLabel
       Left = 8
-      Height = 17
-      Top = 144
-      Width = 88
+      Height = 19
+      Top = 145
+      Width = 58
       Alignment = taRightJustify
       Caption = '&Telephone'
-      Color = clNone
       FocusControl = ETelephone
       Layout = tlCenter
       ParentColor = False
     end
     object LECountry: TLabel
       Left = 8
-      Height = 17
-      Top = 112
-      Width = 69
+      Height = 19
+      Top = 115
+      Width = 46
       Alignment = taRightJustify
       Caption = 'Countr&y'
-      Color = clNone
       FocusControl = ECountry
       Layout = tlCenter
       ParentColor = False
     end
     object LEFax: TLabel
       Left = 288
-      Height = 17
-      Top = 144
-      Width = 39
+      Height = 19
+      Top = 145
+      Width = 26
       Alignment = taRightJustify
       Caption = 'Fa&x'
-      Color = clNone
       FocusControl = EFax
       Layout = tlCenter
       ParentColor = False
     end
     object LEMobile: TLabel
       Left = 472
-      Height = 17
-      Top = 144
-      Width = 58
+      Height = 19
+      Top = 145
+      Width = 39
       Alignment = taRightJustify
       Caption = '&Mobile'
-      Color = clNone
       FocusControl = EMobile
       Layout = tlCenter
       ParentColor = False
     end
     object LEEmail: TLabel
       Left = 8
-      Height = 17
+      Height = 19
       Top = 176
-      Width = 52
+      Width = 34
       Alignment = taRightJustify
       Caption = '&Email'
-      Color = clNone
       FocusControl = EEmail
       Layout = tlCenter
       ParentColor = False
     end
     object LEWWW: TLabel
       Left = 8
-      Height = 17
+      Height = 19
       Top = 200
-      Width = 57
+      Width = 38
       Alignment = taRightJustify
       Caption = '&WWW'
-      Color = clNone
       FocusControl = EWWW
       Layout = tlCenter
       ParentColor = False
     end
     object ELastName: TDBEdit
       Left = 160
-      Height = 24
+      Height = 28
       Top = 8
       Width = 361
       DataField = 'LastName'
       DataSource = DSAddress
-      ParentColor = False
+      CharCase = ecNormal
+      MaxLength = 0
       TabOrder = 0
     end
     object EFirstName: TDBEdit
       Left = 160
-      Height = 24
-      Top = 32
+      Height = 28
+      Top = 35
       Width = 361
       DataField = 'FirstName'
       DataSource = DSAddress
-      ParentColor = False
+      CharCase = ecNormal
+      MaxLength = 0
       TabOrder = 1
     end
     object EStreet: TDBEdit
       Left = 160
-      Height = 24
-      Top = 64
+      Height = 28
+      Top = 62
       Width = 361
       DataField = 'Street'
       DataSource = DSAddress
-      ParentColor = False
+      CharCase = ecNormal
+      MaxLength = 0
       TabOrder = 2
     end
     object EZip: TDBEdit
       Left = 160
-      Height = 24
-      Top = 88
+      Height = 28
+      Top = 89
       Width = 89
       DataField = 'Zip'
       DataSource = DSAddress
-      ParentColor = False
+      CharCase = ecNormal
+      MaxLength = 0
       TabOrder = 3
     end
     object ECountry: TDBEdit
       Left = 160
-      Height = 24
-      Top = 112
+      Height = 28
+      Top = 116
       Width = 361
       DataField = 'Country'
       DataSource = DSAddress
-      ParentColor = False
+      CharCase = ecNormal
+      MaxLength = 0
       TabOrder = 5
     end
     object EWWW: TDBEdit
       Left = 160
-      Height = 24
-      Top = 200
+      Height = 28
+      Top = 203
       Width = 361
       DataField = 'WWW'
       DataSource = DSAddress
-      ParentColor = False
+      CharCase = ecNormal
+      MaxLength = 0
       TabOrder = 10
     end
     object ETelephone: TDBEdit
       Left = 160
-      Height = 24
+      Height = 28
       Top = 144
       Width = 121
       DataField = 'Telephone'
       DataSource = DSAddress
-      ParentColor = False
+      CharCase = ecNormal
+      MaxLength = 0
       TabOrder = 6
     end
     object EFax: TDBEdit
       Left = 336
-      Height = 24
+      Height = 28
       Top = 144
       Width = 121
       DataField = 'Fax'
       DataSource = DSAddress
-      ParentColor = False
+      CharCase = ecNormal
+      MaxLength = 0
       TabOrder = 7
     end
     object EMobile: TDBEdit
       Left = 520
-      Height = 24
+      Height = 28
       Top = 144
       Width = 121
       DataField = 'Mobile'
       DataSource = DSAddress
-      ParentColor = False
+      CharCase = ecNormal
+      MaxLength = 0
       TabOrder = 8
     end
     object EEmail: TDBEdit
       Left = 160
-      Height = 24
+      Height = 28
       Top = 176
       Width = 361
       DataField = 'Email'
       DataSource = DSAddress
-      ParentColor = False
+      CharCase = ecNormal
+      MaxLength = 0
       TabOrder = 9
     end
     object ETown: TDBEdit
       Left = 320
-      Height = 24
-      Top = 88
+      Height = 28
+      Top = 89
       Width = 201
       DataField = 'Town'
       DataSource = DSAddress
-      ParentColor = False
+      CharCase = ecNormal
+      MaxLength = 0
       TabOrder = 4
     end
   end
@@ -426,8 +428,8 @@ object MainForm: TMainForm
     end
   end
   object ALMain: TActionList
-    left = 64
-    top = 112
+    left = 135
+    top = 72
     object ANew: TAction
       Caption = '&New'
       HelpType = htKeyword
@@ -541,21 +543,20 @@ object MainForm: TMainForm
     IndexDefs = <>
     StoreDefs = True
     TableLevel = 4
+    FilterOptions = []
     AfterInsert = DBAAfterInsert
-    left = 96
-    top = 112
+    left = 215
+    top = 72
   end
   object SDDBA: TSaveDialog
-    Title = 'Save file as'
     DefaultExt = '.dbf'
     Filter = 'DBF files|*.dbf|All files|*.*'
     FilterIndex = 0
     Options = [ofHideReadOnly, ofPathMustExist, ofEnableSizing]
-    left = 96
+    left = 135
     top = 144
   end
   object ODDBA: TOpenDialog
-    Title = 'Open existing file'
     DefaultExt = '.dbf'
     Filter = 'DBF files|*.dbf|All files|*.*'
     FilterIndex = 0
@@ -565,7 +566,7 @@ object MainForm: TMainForm
   end
   object DSAddress: TDatasource
     DataSet = DBA
-    left = 128
-    top = 112
+    left = 290
+    top = 72
   end
 end

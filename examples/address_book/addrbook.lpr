@@ -23,7 +23,7 @@ program addrbook;
 {$mode objfpc}{$H+}
 
 uses
-  Interfaces, frmmain, Forms;
+  Interfaces, frmmain, Forms, DBFLaz;
 
 begin
   Application.Initialize;

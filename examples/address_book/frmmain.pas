@@ -23,7 +23,7 @@ unit frmmain;
 interface
 
 uses
-  Messages, SysUtils, Variants, Classes, Graphics, Controls, Forms,
+  SysUtils, Variants, Classes, Graphics, Controls, Forms,
   Dialogs, DB, Dbf, Grids, DBGrids, DBCtrls, ExtCtrls, ActnList, Menus,
   StdCtrls,lresources;
 
