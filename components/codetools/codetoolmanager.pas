@@ -370,9 +370,9 @@ type
 
     // method jumping
     function JumpToMethod(Code: TCodeBuffer; X,Y: integer;
-          var NewCode: TCodeBuffer;
-          var NewX, NewY, NewTopLine: integer;
-          var RevertableJump: boolean): boolean;
+          out NewCode: TCodeBuffer;
+          out NewX, NewY, NewTopLine: integer;
+          out RevertableJump: boolean): boolean;
 
     // find declaration
     function FindDeclaration(Code: TCodeBuffer; X,Y: integer;
@@ -504,7 +504,8 @@ type
     function ReplaceAllTypeCastFunctions(Code: TCodeBuffer): boolean;
     function FixForwardDefinitions(Code: TCodeBuffer): boolean;
     function FindEmptyMethods(Code: TCodeBuffer;
-                              const AClassName: string; X,Y: integer;
+                              const AClassName: string; // can be ''
+                              X,Y: integer;
                               const Sections: TPascalClassSections;
                               ListOfPCodeXYPosition: TFPList;
                               out AllEmpty: boolean): boolean;
@@ -1696,8 +1697,8 @@ begin
 end;
 
 function TCodeToolManager.JumpToMethod(Code: TCodeBuffer; X,Y: integer;
-  var NewCode: TCodeBuffer; var NewX, NewY, NewTopLine: integer;
-  var RevertableJump: boolean): boolean;
+  out NewCode: TCodeBuffer; out NewX, NewY, NewTopLine: integer;
+  out RevertableJump: boolean): boolean;
 var
   CursorPos: TCodeXYPosition;
   NewPos: TCodeXYPosition;

@@ -268,12 +268,12 @@ type
                         out Graph: TCodeGraph; OnlyInterface: boolean): boolean;
     procedure WriteCodeGraphDebugReport(Graph: TCodeGraph);
     function FindEmptyMethods(CursorPos: TCodeXYPosition;
-                              const AClassName: string;
+                              const AClassName: string; // can be ''
                               const Sections: TPascalClassSections;
                               ListOfPCodeXYPosition: TFPList;
                               out AllEmpty: boolean): boolean;
     function FindEmptyMethods(CursorPos: TCodeXYPosition;
-                              const AClassName: string;
+                              const AClassName: string; // can be ''
                               const Sections: TPascalClassSections;
                               CodeTreeNodeExtensions: TAVLTree;
                               out AllEmpty: boolean): boolean;
@@ -5727,7 +5727,7 @@ begin
             ANode:=ANode.NextBrother;
           end;
         end;
-        
+
         // find a nice position between similar siblings
         case ASourceChangeCache.BeautifyCodeOptions.ClassPartInsertPolicy of
         
@@ -5789,7 +5789,7 @@ begin
             end;
           end
         end;
-        
+
         if InsertNode<>nil then begin
         
           // for variable lists: a,b,c: integer
@@ -5826,7 +5826,14 @@ begin
           Indent:=GetLineIndent(Src,ClassSectionNode.StartPos)
                     +ASourceChangeCache.BeautifyCodeOptions.Indent;
           InsertPos:=ClassSectionNode.StartPos;
-          if (ClassSectionNode.Desc in (AllClassBaseSections+AllClassTypeSections))
+          if (ClassSectionNode.Desc=ctnClassPublished)
+          and (CompareIdentifiers(@Src[ClassSectionNode.StartPos],'published')<>0)
+          then begin
+            // the first published section has no keyword
+            if ClassSectionNode.NextBrother<>nil then
+              Indent:=GetLineIndent(Src,ClassSectionNode.StartPos)
+                      +ASourceChangeCache.BeautifyCodeOptions.Indent;
+          end else if (ClassSectionNode.Desc in (AllClassBaseSections+AllClassTypeSections))
           then begin
             // skip keyword
             MoveCursorToCleanPos(InsertPos);

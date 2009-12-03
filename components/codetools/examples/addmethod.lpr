@@ -62,7 +62,7 @@ begin
   end else begin
     raise Exception.Create('Adding method failed');
   end;
-  
+
   // Example 2: adding methods directly, but several at a time
   AClassName:='TMyClass';
   if not CodeToolBoss.InitClassCompletion(Code,UpperCase(AClassName),Tool) then
