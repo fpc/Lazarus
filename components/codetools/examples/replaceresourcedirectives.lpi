@@ -11,7 +11,7 @@
       <SessionStorage Value="InProjectDir"/>
       <MainUnit Value="0"/>
       <TargetFileExt Value=""/>
-      <Title Value="reduceifdefs"/>
+      <Title Value="ReplaceResourceDirectives"/>
     </General>
     <PublishOptions>
       <Version Value="2"/>

@@ -21,7 +21,7 @@
   Author: Mattias Gaertner
 
   Abstract:
-    Demonstrating, how to add a method to a class and extending the uses section.
+    Demonstrating the TExpressionEvaluator, used for FPC conditionals.
 }
 program TestExprEval;
 
