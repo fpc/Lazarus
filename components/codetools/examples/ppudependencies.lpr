@@ -38,7 +38,7 @@ var
   Group: TPPUGroup;
   i: Integer;
   Member: TPPUMember;
-  MissingUnit: TStringList;
+  MissingUnit: TStrings;
 begin
   if (Paramcount<1) then begin
     writeln('Usage:');

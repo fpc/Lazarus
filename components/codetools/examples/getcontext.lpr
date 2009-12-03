@@ -12,8 +12,8 @@ var
   Code: TCodeBuffer;
   CodeContexts: TCodeContextInfo;
   i: Integer;
-  ExprType: TExpressionType;
   Filename: String;
+  Item: TCodeContextInfoItem;
 begin
   // setup the Options
   CodeToolBoss.SimpleInit(ConfigFilename);
@@ -31,10 +31,10 @@ begin
   begin
     writeln('Contexts found: Count=',CodeContexts.Count);
     for i:=0 to CodeContexts.Count-1 do begin
-      ExprType:=CodeContexts[i];
-      write('i=',i,' ',ExprTypeToString(ExprType));
-      if ExprType.Context.Node<>nil then
-        write(' ',ExprType.Context.Tool.ExtractNode(ExprType.Context.Node,[]));
+      Item:=CodeContexts[i];
+      write('i=',i,' ',ExprTypeToString(Item.Expr));
+      if Item.Expr.Context.Node<>nil then
+        write(' ',Item.Expr.Context.Tool.ExtractNode(Item.Expr.Context.Node,[]));
       writeln;
     end;
   end else begin

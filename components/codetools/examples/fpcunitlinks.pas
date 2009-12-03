@@ -45,7 +45,7 @@ begin
       if FilenameIsPascalUnit(FileInfo.Name,false) then begin
         List.Add(Dir+FileInfo.Name);
       end else if (FileInfo.Attr and faDirectory)>0 then begin
-        CollectUnits(Dir+);
+        CollectUnits(Dir+FileInfo.Name+PathDelim,List);
       end;
     until FindNextUTF8(FileInfo)<>0;
   end;

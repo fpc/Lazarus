@@ -74,7 +74,7 @@ begin
     // complete code
     ListOfPCodeXYPosition:=TFPList.Create;
     Sections:=[pcsPublished,pcsPrivate,pcsProtected,pcsPublic];
-    if CodeToolBoss.FindEmptyMethods(Code,X,Y,Sections,ListOfPCodeXYPosition,All)
+    if CodeToolBoss.FindEmptyMethods(Code,'',X,Y,Sections,ListOfPCodeXYPosition,All)
     then begin
       writeln('Found ',ListOfPCodeXYPosition.Count,' empty methods (All=',All,'):');
       for i:=0 to ListOfPCodeXYPosition.Count-1 do begin
