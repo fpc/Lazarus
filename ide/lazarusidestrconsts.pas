@@ -59,7 +59,7 @@ resourcestring
 
   lisEnterTransla = 'Enter translation language';
   // version
-  lisLazarusVersionString = '%s beta'; // %s is the versionstring (eg. 0.9.10)
+  lisLazarusVersionString = '%s'; // %s is the versionstring (eg. 0.9.30)
   lisLeaveEmptyFo = 'Leave empty for default .po file';
   lisMenuCollectPoFil = 'Collect .po files';
   lisMenuCreatePoFile = 'Create .po files';
