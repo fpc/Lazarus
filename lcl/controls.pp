@@ -972,7 +972,6 @@ type
     function IsAnchorsStored: boolean;
     function IsBiDiModeStored: boolean;
     function IsCaptionStored: Boolean;
-    function IsColorStored: Boolean;
     function IsEnabledStored: Boolean;
     function IsFontStored: Boolean;
     function IsHintStored: Boolean;

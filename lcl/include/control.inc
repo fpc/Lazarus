@@ -888,7 +888,7 @@ end;
 ------------------------------------------------------------------------------}
 function TControl.ColorIsStored: boolean;
 begin
-  Result := not ParentColor or (Parent = nil);
+  Result := not ParentColor;
 end;
 
 {------------------------------------------------------------------------------
@@ -2821,11 +2821,6 @@ end;
 procedure TControl.WMCancelMode(var Message: TLMessage);
 begin
   MouseCapture := False;
-end;
-
-function TControl.IsColorStored: Boolean;
-begin
-  Result := not ParentColor;
 end;
 
 function TControl.IsEnabledStored: Boolean;
