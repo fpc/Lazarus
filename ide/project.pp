@@ -2447,9 +2447,18 @@ var
     BestUnitInfo: TUnitInfo;
   begin
     if FirstUnitWithEditorIndex<>nil then exit;
-    
-    AnUnitInfo:=FirstPartOfProject;
+
     BestUnitInfo:=nil;
+
+    if (MainUnitID>=0)
+    and ([pfMainUnitHasCreateFormStatements,pfMainUnitHasTitleStatement]*Flags=[])
+    then begin
+      // the main unit contains no automatic statements
+      // open the main unit
+      BestUnitInfo:=MainUnitInfo;
+    end;
+
+    AnUnitInfo:=FirstPartOfProject;
     while AnUnitInfo<>nil do begin
       if (BestUnitInfo=nil)
       or (FilenameIsPascalUnit(AnUnitInfo.Filename)
