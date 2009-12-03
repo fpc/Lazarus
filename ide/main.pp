@@ -9192,8 +9192,11 @@ begin
       // read MainUnit Source
       Result:=LoadCodeBuffer(NewBuf,Project1.MainFilename,
                              [lbfUpdateFromDisk,lbfRevert],false);// do not check if source is text
-      if (Result<>mrOk) then exit;
-      Project1.MainUnitInfo.Source:=NewBuf;
+      case Result of
+      mrOk: Project1.MainUnitInfo.Source:=NewBuf;
+      mrIgnore: Project1.MainUnitInfo.Source:=CodeToolBoss.CreateFile(Project1.MainFilename);
+      else exit(mrCancel);
+      end;
     end;
     {$IFDEF IDE_DEBUG}
     writeln('TMainIDE.DoOpenProjectFile C');
