@@ -37,11 +37,11 @@ var
   NewX, NewY, NewTopLine: integer;
   RevertableJump: boolean;
 begin
-  ExpandedFilename:=ExpandFileNameUTF8('scanexamples/tgeneric2.pas');
+  ExpandedFilename:=ExpandFileNameUTF8('scanexamples/methodjump1.pas');
   CodeBuf:=CodeToolBoss.LoadFile(ExpandedFilename,true,false);
   if CodeBuf=nil then
     raise Exception.Create('failed loading '+ExpandedFilename);
-  if CodeToolBoss.JumpToMethod(CodeBuf,3,15,NewCode,NewX,NewY,NewTopLine,
+  if CodeToolBoss.JumpToMethod(CodeBuf,14,10,NewCode,NewX,NewY,NewTopLine,
                                RevertableJump)
   then
     writeln(NewCode.Filename,' ',NewX,',',NewY,' TopLine=',NewTopLine,
