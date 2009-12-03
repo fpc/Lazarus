@@ -35,37 +35,14 @@ uses
 const
   ConfigFilename = 'codetools.config';
 var
-  Options: TCodeToolsOptions;
   Code: TCodeBuffer;
   Filename: String;
   MissingUnits: TStrings;
   ReplaceUnits: TStringToStringTree;
   MissingIncludeFilesCodeXYPos: TFPList;
 begin
-  // setup the Options
-  Options:=TCodeToolsOptions.Create;
-
-  // To not parse the FPC sources every time, the options are saved to a file.
-  if FileExistsUTF8(ConfigFilename) then
-    Options.LoadFromFile(ConfigFilename);
-
-  // setup your paths
-  Options.FPCPath:='/usr/bin/ppc386';
-  Options.FPCSrcDir:=ExpandFileNameUTF8('~/freepascal/fpc');
-  Options.LazarusSrcDir:=ExpandFileNameUTF8('~/pascal/lazarus');
-
-  // optional: ProjectDir and TestPascalFile exists only to easily test some
-  // things.
-  Options.ProjectDir:=GetCurrentDirUTF8+'/scanexamples/';
-  Options.TestPascalFile:=Options.ProjectDir+'simpleunit1.pas';
-
   // init the codetools
-  if not Options.UnitLinkListValid then
-    writeln('Scanning FPC sources may take a while ...');
-  CodeToolBoss.Init(Options);
-
-  // save the options and the FPC unit links results.
-  Options.SaveToFile(ConfigFilename);
+  CodeToolBoss.SimpleInit(ConfigFilename);
 
   // load the example unit
   Filename:=ExpandFileNameUTF8('scanexamples/brokenfilenames.pas');
@@ -103,7 +80,5 @@ begin
   
   writeln('==================================================================');
   writeln(Code.Source);
-  
-  Options.Free;
 end.
 
