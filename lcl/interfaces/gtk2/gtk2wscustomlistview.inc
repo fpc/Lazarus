@@ -84,12 +84,6 @@ begin
   DeliverMessage(WidgetInfo^.LCLObject, msg);
   
   ALV := TLVHack(WidgetInfo^.LCLObject);
-  
-  if ALV.Items.Count = 0 then begin
-    Widgets  := PTVWidgets(WidgetInfo^.UserData);
-    Widgets^.ItemCache.Free;
-    Widgets^.ItemCache := nil;
-  end;
 end;
 
 procedure Gtk2_ItemInserted(model: PGtkTreeModel; path: PGtkTreePAth; Iter: PGtkTreeIter; WidgetInfo: PWidgetInfo); cdecl;
@@ -841,8 +835,6 @@ begin
 
   with Widgets^ do
   begin
-    if ItemCache = nil then
-      ItemCache := TStringList.Create;
     {$IFDEF USEORIGTREEMODEL}
     if AIndex = -1 then
       Index := gtk_tree_model_iter_n_children(TreeModel, nil)
@@ -1065,14 +1057,15 @@ begin
   New(Widgets);
   with Widgets^ do
   begin
-    ItemCache := nil;
+    ItemCache := TStringList.Create;
     Images := nil;
     PtrType := G_TYPE_POINTER;
 
     {$IFDEF USEORIGTREEMODEL}
     TreeModel := gtk_list_store_newv(1, @PtrType);
+    {$ELSE}
+    TreeModel:= LCLListViewModelNew(TCustomListView(AWinControl));
     {$ENDIF}
-    TreeModel:=  LCLListViewModelNew(TCustomListView(AWinControl));
 
 
     MainView:=gtk_tree_view_new_with_model(TreeModel);
@@ -1463,8 +1456,6 @@ begin
     gtk_tree_view_set_model(PGtkTreeView(MainView), TreeModel);
     g_object_unref(TreeModel);
     {$ELSE}
-    if ItemCache = nil then
-      ItemCache := TStringList.Create;
     gtk_list_store_clear(PGtkListStore(TreeModel));
     for Index := 0 to AValue - 1 do
       gtk_list_store_insert_with_values(PGtkListStore(TreeModel), @Iter, Index, 0, nil, -1);
