@@ -2450,23 +2450,27 @@ var
 
     BestUnitInfo:=nil;
 
-    if (MainUnitID>=0)
-    and ([pfMainUnitHasCreateFormStatements,pfMainUnitHasTitleStatement]*Flags=[])
-    then begin
-      // the main unit contains no automatic statements
-      // open the main unit
-      BestUnitInfo:=MainUnitInfo;
+    if (MainUnitID>=0) then begin
+      if Requires(PackageGraph.LCLPackage,true)
+      and (Flags*[pfMainUnitHasCreateFormStatements,pfMainUnitHasTitleStatement]<>[])
+      then begin
+        // this is a probably a LCL project where the main source only contains
+        // automatic code
+      end else
+        BestUnitInfo:=MainUnitInfo;
     end;
 
-    AnUnitInfo:=FirstPartOfProject;
-    while AnUnitInfo<>nil do begin
-      if (BestUnitInfo=nil)
-      or (FilenameIsPascalUnit(AnUnitInfo.Filename)
-           and (not FilenameIsPascalUnit(BestUnitInfo.Filename)))
-      then begin
-        BestUnitInfo:=AnUnitInfo;
+    if BestUnitInfo=nil then begin
+      AnUnitInfo:=FirstPartOfProject;
+      while AnUnitInfo<>nil do begin
+        if (BestUnitInfo=nil)
+        or (FilenameIsPascalUnit(AnUnitInfo.Filename)
+             and (not FilenameIsPascalUnit(BestUnitInfo.Filename)))
+        then begin
+          BestUnitInfo:=AnUnitInfo;
+        end;
+        AnUnitInfo:=AnUnitInfo.NextPartOfProject;
       end;
-      AnUnitInfo:=AnUnitInfo.NextPartOfProject;
     end;
     if BestUnitInfo<>nil then begin
       BestUnitInfo.EditorIndex:=0;
