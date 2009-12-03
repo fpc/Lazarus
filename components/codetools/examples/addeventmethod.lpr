@@ -29,7 +29,7 @@ program AddEventMethod;
 
 uses
   Classes, SysUtils, CodeCache, CodeToolManager, SimpleUnit1, FileProcs,
-  CodeToolsConfig, CodeCompletionTool, ExtCtrls;
+  CodeToolsConfig, CodeCompletionTool, ExtCtrls, Interfaces;
   
 const
   ConfigFilename = 'codetools.config';

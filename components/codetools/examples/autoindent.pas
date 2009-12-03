@@ -34,7 +34,6 @@ uses
 var
   Code: TCodeBuffer;
   Filename: String;
-  FAB: TFullyAutomaticBeautifier;
   Y: LongInt;
   X: LongInt;
   p: integer;
@@ -59,21 +58,15 @@ begin
   if Code=nil then
     raise Exception.Create('unable to read '+Filename);
 
-  FAB:=TFullyAutomaticBeautifier.Create;
-  try
-    Code.LineColToPosition(Y,X,p);
-    if p<1 then begin
-      writeln('ERROR: invalid position: X=',X,' Y=',Y,' in ',Code.Filename);
-      exit;
-    end;
-    if FAB.GetIndent(Code.Source,p,true,Indentation) then begin
-      writeln('Indent=',Indentation.Indent);
-    end else begin
-      writeln('Error: GetIndent failed');
-    end;
-
-  finally
-    FAB.Free;
+  Code.LineColToPosition(Y,X,p);
+  if p<1 then begin
+    writeln('ERROR: invalid position: X=',X,' Y=',Y,' in ',Code.Filename);
+    exit;
+  end;
+  if CodeToolBoss.Indenter.GetIndent(Code.Source,p,true,true,Indentation) then begin
+    writeln('Indent=',Indentation.Indent);
+  end else begin
+    writeln('Error: GetIndent failed');
   end;
 end.
 
