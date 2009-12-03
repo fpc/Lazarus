@@ -51,6 +51,7 @@ type
   private
     FClassHeaderComments: boolean;
     FFilename: string;
+    FIdentComplAddParameterBrackets: boolean;
 
     // General
     FSrcPath: string;
@@ -186,6 +187,8 @@ type
                                              write FIdentComplAddAssignOperator;
     property IdentComplAutoStartAfterPoint: boolean read FIdentComplAutoStartAfterPoint
                                            write FIdentComplAutoStartAfterPoint;
+    property IdentComplAddParameterBrackets: boolean
+      read FIdentComplAddParameterBrackets write FIdentComplAddParameterBrackets;
 
     // indentation
     property IndentOnLineBreak: boolean read FIndentOnLineBreak
@@ -413,6 +416,8 @@ begin
       'CodeToolsOptions/IdentifierCompletion/AddAssignOperator',true);
     FIdentComplAutoStartAfterPoint:=XMLConfig.GetValue(
       'CodeToolsOptions/IdentifierCompletion/AutoStartAfterPoint',true);
+    FIdentComplAddParameterBrackets:=XMLConfig.GetValue(
+      'CodeToolsOptions/IdentifierCompletion/AutoAddParameterBrackets',true);
 
     // indentation
     FIndentOnLineBreak :=
@@ -530,6 +535,8 @@ begin
       FIdentComplAddAssignOperator,true);
     XMLConfig.SetDeleteValue('CodeToolsOptions/IdentifierCompletion/AutoStartAfterPoint',
       FIdentComplAutoStartAfterPoint,true);
+    XMLConfig.SetDeleteValue('CodeToolsOptions/IdentifierCompletion/AutoAddParameterBrackets',
+      FIdentComplAddParameterBrackets,true);
 
     // indentation
     XMLConfig.SetDeleteValue('CodeToolsOptions/Indentation/OnLineBreak/Enabled'
@@ -624,6 +631,7 @@ begin
     FIdentComplAddSemicolon:=CodeToolsOpts.FIdentComplAddSemicolon;
     FIdentComplAddAssignOperator:=CodeToolsOpts.FIdentComplAddAssignOperator;
     FIdentComplAutoStartAfterPoint:=CodeToolsOpts.FIdentComplAutoStartAfterPoint;
+    FIdentComplAddParameterBrackets:=CodeToolsOpts.FIdentComplAddParameterBrackets;
   end
   else
     Clear;
@@ -671,6 +679,7 @@ begin
   FIdentComplAddSemicolon:=true;
   FIdentComplAddAssignOperator:=true;
   FIdentComplAutoStartAfterPoint:=true;
+  FIdentComplAddParameterBrackets:=true;
 
   // indentation
   FIndentOnLineBreak:=true;
@@ -733,6 +742,7 @@ begin
     and (FIdentComplAddSemicolon=CodeToolsOpts.FIdentComplAddSemicolon)
     and (FIdentComplAddAssignOperator=CodeToolsOpts.FIdentComplAddAssignOperator)
     and (FIdentComplAutoStartAfterPoint=CodeToolsOpts.FIdentComplAutoStartAfterPoint)
+    and (FIdentComplAddParameterBrackets=CodeToolsOpts.FIdentComplAddParameterBrackets)
    ;
 end;
 

@@ -33,6 +33,7 @@ type
   { TCodetoolsIndentifierComplietionOptionsFrame }
 
   TCodetoolsIndentifierComplietionOptionsFrame = class(TAbstractIDEOptionsEditor)
+    ICAutoAddParameterBrackets: TCheckBox;
     ICAutoStartAfterPointCheckBox: TCheckBox;
     ICAddAssignOperatorCheckBox: TCheckBox;
     ICAddSemicolonCheckBox: TCheckBox;
@@ -61,6 +62,7 @@ begin
   ICAddSemicolonCheckBox.Caption:=dlgAddSemicolon;
   ICAddAssignOperatorCheckBox.Caption:=dlgAddAssignmentOperator;
   ICAutoStartAfterPointCheckBox.Caption:=lisAutomaticallyInvokeAfterPoint;
+  ICAutoAddParameterBrackets.Caption:=lisAddParameterBrackets;
 end;
 
 procedure TCodetoolsIndentifierComplietionOptionsFrame.ReadSettings(
@@ -71,6 +73,7 @@ begin
     ICAddSemicolonCheckBox.Checked := IdentComplAddSemicolon;
     ICAddAssignOperatorCheckBox.Checked := IdentComplAddAssignOperator;
     ICAutoStartAfterPointCheckBox.Checked := IdentComplAutoStartAfterPoint;
+    ICAutoAddParameterBrackets.Checked:=IdentComplAddParameterBrackets;
   end;
 end;
 
@@ -82,6 +85,7 @@ begin
     IdentComplAddSemicolon := ICAddSemicolonCheckBox.Checked;
     IdentComplAddAssignOperator := ICAddAssignOperatorCheckBox.Checked;
     IdentComplAutoStartAfterPoint := ICAutoStartAfterPointCheckBox.Checked;
+    IdentComplAddParameterBrackets:=ICAutoAddParameterBrackets.Checked;
   end;
 end;
 

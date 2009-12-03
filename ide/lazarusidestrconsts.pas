@@ -4508,6 +4508,7 @@ resourcestring
     +'long description';
   lisInsertPrintShortTag = 'Insert PrintShort tag';
   lisAutomaticallyInvokeAfterPoint = 'Automatically invoke after point';
+  lisAddParameterBrackets = 'Add parameter brackets';
   lisShowEmptyUnitsPackages = 'Show empty units/packages';
   lisUsePackageInProject = 'Use package %s in project';
   lisUsePackageInPackage = 'Use package %s in package %s';

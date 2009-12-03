@@ -517,6 +517,7 @@ begin
     icvProcWithParams:
       // add brackets for parameter lists
       if (AddChar='')
+      and CodeToolsOpts.IdentComplAddParameterBrackets
       and (ilcfStartInStatement in IdentList.ContextFlags)
       and (not IdentList.StartUpAtomBehindIs('('))
       and (not IdentList.StartUpAtomInFrontIs('@')) then begin
@@ -528,6 +529,7 @@ begin
     icvIndexedProp:
       // add brackets for parameter lists
       if (AddChar='')
+      and CodeToolsOpts.IdentComplAddParameterBrackets
       and (ilcfStartInStatement in IdentList.ContextFlags)
       and (not IdentList.StartUpAtomBehindIs('[')) then begin
         Result:=Result+'[]';

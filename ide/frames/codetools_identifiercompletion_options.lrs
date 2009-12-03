@@ -6,15 +6,20 @@ LazarusResources.Add('TCodetoolsIndentifierComplietionOptionsFrame','FORMDATA',[
   +#3','#1#11'ClientWidth'#3#144#1#8'TabOrder'#2#0#7'Visible'#8#10'DesignLeft'#3
   +#139#2#9'DesignTop'#3#6#1#0#242#2#0#9'TCheckBox'#22'ICAddSemicolonCheckBox'
   +#22'AnchorSideLeft.Control'#7#5'Owner'#21'AnchorSideTop.Control'#7#5'Owner'#4
-  +'Left'#2#0#6'Height'#2#22#3'Top'#2#0#5'Width'#3#191#0#7'Caption'#6#22'ICAddS'
-  +'emicolonCheckBox'#8'TabOrder'#2#0#0#0#242#2#1#9'TCheckBox'#27'ICAddAssignOp'
-  +'eratorCheckBox'#22'AnchorSideLeft.Control'#7#5'Owner'#21'AnchorSideTop.Cont'
-  +'rol'#7#22'ICAddSemicolonCheckBox'#18'AnchorSideTop.Side'#7#9'asrBottom'#4'L'
-  +'eft'#2#0#6'Height'#2#22#3'Top'#2#28#5'Width'#3#223#0#17'BorderSpacing.Top'#2
-  +#6#7'Caption'#6#27'ICAddAssignOperatorCheckBox'#8'TabOrder'#2#1#0#0#242#2#2#9
-  +'TCheckBox'#29'ICAutoStartAfterPointCheckBox'#22'AnchorSideLeft.Control'#7#22
-  +'ICAddSemicolonCheckBox'#21'AnchorSideTop.Control'#7#27'ICAddAssignOperatorC'
-  +'heckBox'#18'AnchorSideTop.Side'#7#9'asrBottom'#4'Left'#2#0#6'Height'#2#22#3
-  +'Top'#2'8'#5'Width'#3#224#0#17'BorderSpacing.Top'#2#6#7'Caption'#6#29'ICAuto'
-  +'StartAfterPointCheckBox'#8'TabOrder'#2#2#0#0#0
+  +'Left'#2#6#6'Height'#2#22#3'Top'#2#6#5'Width'#3#191#0#20'BorderSpacing.Aroun'
+  +'d'#2#6#7'Caption'#6#22'ICAddSemicolonCheckBox'#8'TabOrder'#2#0#0#0#242#2#1#9
+  +'TCheckBox'#27'ICAddAssignOperatorCheckBox'#22'AnchorSideLeft.Control'#7#5'O'
+  +'wner'#21'AnchorSideTop.Control'#7#22'ICAddSemicolonCheckBox'#18'AnchorSideT'
+  +'op.Side'#7#9'asrBottom'#4'Left'#2#6#6'Height'#2#22#3'Top'#2'"'#5'Width'#3
+  +#223#0#20'BorderSpacing.Around'#2#6#7'Caption'#6#27'ICAddAssignOperatorCheck'
+  +'Box'#8'TabOrder'#2#1#0#0#242#2#2#9'TCheckBox'#29'ICAutoStartAfterPointCheck'
+  +'Box'#22'AnchorSideLeft.Control'#7#5'Owner'#21'AnchorSideTop.Control'#7#27'I'
+  +'CAddAssignOperatorCheckBox'#18'AnchorSideTop.Side'#7#9'asrBottom'#4'Left'#2
+  +#6#6'Height'#2#22#3'Top'#2'>'#5'Width'#3#224#0#20'BorderSpacing.Around'#2#6#7
+  +'Caption'#6#29'ICAutoStartAfterPointCheckBox'#8'TabOrder'#2#2#0#0#242#2#3#9
+  +'TCheckBox'#26'ICAutoAddParameterBrackets'#22'AnchorSideLeft.Control'#7#5'Ow'
+  +'ner'#21'AnchorSideTop.Control'#7#29'ICAutoStartAfterPointCheckBox'#18'Ancho'
+  +'rSideTop.Side'#7#9'asrBottom'#4'Left'#2#6#6'Height'#2#22#3'Top'#2'Z'#5'Widt'
+  +'h'#3#214#0#20'BorderSpacing.Around'#2#6#7'Caption'#6#26'ICAutoAddParameterB'
+  +'rackets'#8'TabOrder'#2#3#0#0#0
 ]);

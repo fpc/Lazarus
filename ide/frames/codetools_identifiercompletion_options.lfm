@@ -10,10 +10,11 @@ inherited CodetoolsIndentifierComplietionOptionsFrame: TCodetoolsIndentifierComp
   object ICAddSemicolonCheckBox: TCheckBox[0]
     AnchorSideLeft.Control = Owner
     AnchorSideTop.Control = Owner
-    Left = 0
+    Left = 6
     Height = 22
-    Top = 0
+    Top = 6
     Width = 191
+    BorderSpacing.Around = 6
     Caption = 'ICAddSemicolonCheckBox'
     TabOrder = 0
   end
@@ -21,24 +22,36 @@ inherited CodetoolsIndentifierComplietionOptionsFrame: TCodetoolsIndentifierComp
     AnchorSideLeft.Control = Owner
     AnchorSideTop.Control = ICAddSemicolonCheckBox
     AnchorSideTop.Side = asrBottom
-    Left = 0
+    Left = 6
     Height = 22
-    Top = 28
+    Top = 34
     Width = 223
-    BorderSpacing.Top = 6
+    BorderSpacing.Around = 6
     Caption = 'ICAddAssignOperatorCheckBox'
     TabOrder = 1
   end
   object ICAutoStartAfterPointCheckBox: TCheckBox[2]
-    AnchorSideLeft.Control = ICAddSemicolonCheckBox
+    AnchorSideLeft.Control = Owner
     AnchorSideTop.Control = ICAddAssignOperatorCheckBox
     AnchorSideTop.Side = asrBottom
-    Left = 0
+    Left = 6
     Height = 22
-    Top = 56
+    Top = 62
     Width = 224
-    BorderSpacing.Top = 6
+    BorderSpacing.Around = 6
     Caption = 'ICAutoStartAfterPointCheckBox'
     TabOrder = 2
+  end
+  object ICAutoAddParameterBrackets: TCheckBox[3]
+    AnchorSideLeft.Control = Owner
+    AnchorSideTop.Control = ICAutoStartAfterPointCheckBox
+    AnchorSideTop.Side = asrBottom
+    Left = 6
+    Height = 22
+    Top = 90
+    Width = 214
+    BorderSpacing.Around = 6
+    Caption = 'ICAutoAddParameterBrackets'
+    TabOrder = 3
   end
 end
