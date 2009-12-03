@@ -704,105 +704,102 @@ begin
   GetComboBoxInfo := nil;
   GetMenuBarInfo := nil;
   GetWindowInfo := nil;
+  
+  // defaults
+  Pointer(GradientFill) := @_GradientFill;
+  // Detect win98 since aplhablend doesn't support all bitmap types
+  if WindowsVersion = wv98
+  then Pointer(AlphaBlend) := @_AlphaBlend98
+  else Pointer(AlphaBlend) := @_AlphaBlend;
+
 
   msimg32handle := LoadLibrary(msimg32lib);
   if msimg32handle <> 0
   then begin 
-    p := GetProcAddress(msimg32handle, 'AlphaBlend');
-    if p <> nil
+    if WindowsVersion <> wv98
     then begin
-      // Detect win98 since aplhablend doesn't support all bitmap types
-      if WindowsVersion = wv98
-      then begin
-        // windows 98
-        // Pointer(AlphaBlend98) := p;
-        Pointer(AlphaBlend) := @_AlphaBlend98;
-      end
-      else begin
-        // other
-        Pointer(AlphaBlend) := p;
-      end;
-    end
-    else
-      Pointer(AlphaBlend) := @_AlphaBlend;
+      p := GetProcAddress(msimg32handle, 'AlphaBlend');
+      if p <> nil 
+      then Pointer(AlphaBlend) := p;
+    end;
 
     p := GetProcAddress(msimg32handle, 'GradientFill');
-    if p <> nil then
-      Pointer(GradientFill) := p
-    else
-      Pointer(GradientFill) := @_GradientFill;
+    if p <> nil 
+    then Pointer(GradientFill) := p;
   end;
+  
+  // Defaults
+  Pointer(GetComboboxInfo) := @_GetComboboxInfo;
+  Pointer(GetMenuBarInfo) := @_GetMenuBarInfo;
+  Pointer(GetWindowInfo) := @_GetWindowInfo;
+  Pointer(EnumDisplayMonitors) := @_EnumDisplayMonitors;
+  Pointer(GetMonitorInfo) := @_GetMonitorInfo;
+  Pointer(MonitorFromWindow) := @_MonitorFromWindow;
+  Pointer(MonitorFromRect) := @_MonitorFromRect;
+  Pointer(MonitorFromPoint) := @_MonitorFromPoint;
   
   user32handle := LoadLibrary(user32lib);
   if user32handle <> 0 then
   begin
     p := GetProcAddress(user32handle, 'GetComboBoxInfo');
-    if p <> nil then
-      Pointer(GetComboboxInfo) := p
-    else
-      Pointer(GetComboboxInfo) := @_GetComboboxInfo;
+    if p <> nil 
+    then Pointer(GetComboboxInfo) := p;
+
     p := GetProcAddress(user32handle, 'GetMenuBarInfo');
-    if p <> nil then
-      Pointer(GetMenuBarInfo) := p
-    else
-      Pointer(GetMenuBarInfo) := @_GetMenuBarInfo;
+    if p <> nil 
+    then Pointer(GetMenuBarInfo) := p;
+    
     p := GetProcAddress(user32handle, 'GetWindowInfo');
-    if p <> nil then
-      Pointer(GetWindowInfo) := p
-    else
-      Pointer(GetWindowInfo) := @_GetWindowInfo;
+    if p <> nil 
+    then Pointer(GetWindowInfo) := p;
+
     p := GetProcAddress(user32handle, 'EnumDisplayMonitors');
-    if p <> nil then
-      Pointer(EnumDisplayMonitors) := p
-    else
-      Pointer(EnumDisplayMonitors) := @_EnumDisplayMonitors;
+    if p <> nil 
+    then Pointer(EnumDisplayMonitors) := p;
+    
   {$IFDEF WindowsUnicodeSupport}
-    if UnicodeEnabledOS then
-      p := GetProcAddress(user32handle, 'GetMonitorInfoW')
-    else
-      p := GetProcAddress(user32handle, 'GetMonitorInfoA');
+    if UnicodeEnabledOS 
+    then p := GetProcAddress(user32handle, 'GetMonitorInfoW')
+    else p := GetProcAddress(user32handle, 'GetMonitorInfoA');
   {$ELSE}
     p := GetProcAddress(user32handle, 'GetMonitorInfoA');
   {$ENDIF}
-    if p <> nil then
-      Pointer(GetMonitorInfo) := p
-    else
-      Pointer(GetMonitorInfo) := @_GetMonitorInfo;
+    if p <> nil 
+    then Pointer(GetMonitorInfo) := p;
+    
     p := GetProcAddress(user32handle, 'MonitorFromWindow');
-    if p <> nil then
-      Pointer(MonitorFromWindow) := p
-    else
-      Pointer(MonitorFromWindow) := @_MonitorFromWindow;
+    if p <> nil 
+    then Pointer(MonitorFromWindow) := p;
+
     p := GetProcAddress(user32handle, 'MonitorFromRect');
-    if p <> nil then
-      Pointer(MonitorFromRect) := p
-    else
-      Pointer(MonitorFromRect) := @_MonitorFromRect;
+    if p <> nil 
+    then Pointer(MonitorFromRect) := p;
+
     p := GetProcAddress(user32handle, 'MonitorFromPoint');
-    if p <> nil then
-      Pointer(MonitorFromPoint) := p
-    else
-      Pointer(MonitorFromPoint) := @_MonitorFromPoint;
+    if p <> nil 
+    then Pointer(MonitorFromPoint) := p;
   end;
+
+  // Defaults
+  Pointer(SHGetStockIconInfo) := @_SHGetStockIconInfo;
 
   shell32handle := LoadLibrary(shell32lib);
   if shell32handle <> 0 then
   begin
     p := GetProcAddress(shell32handle, 'SHGetStockIconInfo');
-    if p <> nil then
-      Pointer(SHGetStockIconInfo) := p
-    else
-      Pointer(SHGetStockIconInfo) := @_SHGetStockIconInfo;
+    if p <> nil 
+    then Pointer(SHGetStockIconInfo) := p;
   end;
 
+  // Defaults
+  Pointer(SetLayout) := @_SetLayout;
+  
   gdi32handle := LoadLibrary(gdi32lib);
   if gdi32handle <> 0 then
   begin
     p := GetProcAddress(gdi32handle, 'SetLayout');
-    if p <> nil then
-      Pointer(SetLayout) := p
-    else
-      Pointer(SetLayout) := @_SetLayout;
+    if p <> nil 
+    then Pointer(SetLayout) := p;
   end;
 end;
 
