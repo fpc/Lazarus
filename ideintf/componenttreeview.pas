@@ -204,8 +204,7 @@ begin
     ItemNode.SelectedIndex := ItemNode.ImageIndex;
     ItemNode.MultiSelected := FTreeView.Selection.IndexOf(Item) >= 0;
   end;
-
-  CollectionNode.Expanded := True;
+  
   FNode.Expanded := True;
 end;
   
