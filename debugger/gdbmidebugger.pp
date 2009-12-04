@@ -890,8 +890,11 @@ procedure TGDBMINameValueList.Init(AResultValues: PChar; ALength: Integer);
       end;
       // trim value spaces
       if UseTrim then
-        while (Item^.ValueLen > 0) and (Item^.ValuePtr[Item^.ValueLen - 1] = #32) do
+        while (Item^.ValueLen > 0) and (Item^.ValuePtr[0] = #32) do
+        begin
+          inc(Item^.ValuePtr);
           dec(Item^.ValueLen);
+        end;
     end;
 
     Inc(FCount);
@@ -2061,6 +2064,7 @@ function TGDBMIDebugger.GDBEvaluate(const AExpression: String; var AResult: Stri
     VarList: TGDBMINameValueList;
     VType: Integer;
     Addr: TDbgPtr;
+    dt: TDateTime;
     e: Integer;
   begin
     VarList := TGDBMINameValueList.Create('');
@@ -2070,44 +2074,109 @@ function TGDBMIDebugger.GDBEvaluate(const AExpression: String; var AResult: Stri
       VType := StrToIntDef(VarList.Values['VTYPE'], -1);
       if VType = -1 then // can never happen if no error since varType is word
         Exit('variant: unknown type');
-      case VType and varTypeMask of
-        varsmallint: Result := VarList.Values['VSMALLINT'];
-        varinteger: Result := VarList.Values['VINTEGER'];
-        varsingle: Result := VarList.Values['VSINGLE'];
-        vardouble: Result := VarList.Values['VDOUBLE'];
-        vardate:  Result := VarList.Values['VDATE'];
-        varcurrency: Result := VarList.Values['VCURRENCY'];
-        varolestr: Result := VarList.Values['VOLESTR'];
-        vardispatch: Result := VarList.Values['VDISPATCH'];
-        varerror: Result := VarList.Values['VERROR'];
-        varboolean: Result := VarList.Values['VBOOLEAN'];
-        varunknown: Result := VarList.Values['VUNKNOWN'];
-        varshortint: Result := VarList.Values['VSHORTINT'];
-        varbyte: Result := VarList.Values['VBYTE'];
-        varword: Result := VarList.Values['VWORD'];
-        varlongword: Result := VarList.Values['VLONGWORD'];
-        varint64: Result := VarList.Values['VINT64'];
-        varqword: Result := VarList.Values['VQWORD'];
-        varstring:
+      case VType and not varTypeMask of
+        0:
           begin
-            // address of string
-            Result := VarList.Values['VSTRING'];
+            case VType of
+              varEmpty: Result := 'UnAssigned';
+              varNull: Result := 'Null';
+              varsmallint: Result := VarList.Values['VSMALLINT'];
+              varinteger: Result := VarList.Values['VINTEGER'];
+              varsingle: Result := VarList.Values['VSINGLE'];
+              vardouble: Result := VarList.Values['VDOUBLE'];
+              vardate:
+                begin
+                  // float number
+                  Result := VarList.Values['VDATE'];
+                  val(Result, dt, e);
+                  if e = 0 then
+                    Result := DateTimeToStr(dt);
+                end;
+              varcurrency: Result := VarList.Values['VCURRENCY'];
+              varolestr: Result := VarList.Values['VOLESTR'];
+              vardispatch: Result := VarList.Values['VDISPATCH'];
+              varerror: Result := VarList.Values['VERROR'];
+              varboolean: Result := VarList.Values['VBOOLEAN'];
+              varunknown: Result := VarList.Values['VUNKNOWN'];
+              varshortint: Result := VarList.Values['VSHORTINT'];
+              varbyte: Result := VarList.Values['VBYTE'];
+              varword: Result := VarList.Values['VWORD'];
+              varlongword: Result := VarList.Values['VLONGWORD'];
+              varint64: Result := VarList.Values['VINT64'];
+              varqword: Result := VarList.Values['VQWORD'];
+              varstring:
+                begin
+                  // address of string
+                  Result := VarList.Values['VSTRING'];
+                  Val(Result, Addr, e);
+                  if e = 0 then
+                  begin
+                    if Addr = 0 then
+                      Result := ''''''
+                    else
+                      Result := MakePrintable(GetText(Addr));
+                  end;
+                end;
+              varany:  Result := VarList.Values['VANY'];
+            else
+              Result := 'unsupported variant type: ' + IntToStr(VType);
+            end;
+          end;
+        varArray:
+          begin
+            Result := VarList.Values['VARRAY'];
+            Result := 'variant array ' + Result + ': no debugger support yet'
+          end;
+        varByRef:
+          begin
+            Result := VarList.Values['VPOINTER'];
             Val(Result, Addr, e);
-            if e = 0 then 
+            if e = 0 then
             begin
               if Addr = 0 then
-                Result := ''''''
+                Result := '???'
               else
-                Result := MakePrintable(GetText(Addr));
-            end;            
+              begin
+                // Result contains a valid address
+                case VType xor varByRef of
+                  varEmpty: Result := 'UnAssigned';
+                  varNull: Result := 'Null';
+                  varsmallint: Result := GetStrValue('psmallint(%s)^', [Result]);
+                  varinteger: Result := GetStrValue('pinteger(%s)^', [Result]);
+                  varsingle: Result := GetStrValue('psingle(%s)^', [Result]);
+                  vardouble: Result := GetStrValue('pdouble(%s)^', [Result]);
+                  vardate:
+                    begin
+                      // float number
+                      Result := GetStrValue('pdatetime(%s)^', [Result]);
+                      val(Result, dt, e);
+                      if e = 0 then
+                        Result := DateTimeToStr(dt);
+                    end;
+                  varcurrency: Result := GetStrValue('pcurrency(%s)^', [Result]);
+                  varolestr:
+                    begin
+                      Result := GetStrValue('^pointer(%s)^', [Result]);
+                      val(Result, Addr, e);
+                      if e = 0 then
+                        Result := MakePrintable(GetWideText(Addr));
+                    end;
+                  varboolean: Result := GetStrValue('pwordbool(%s)^', [Result]);
+                  varshortint: Result := GetStrValue('pshortint(%s)^', [Result]);
+                  varbyte: Result := GetStrValue('pbyte(%s)^', [Result]);
+                  varword: Result := GetStrValue('pword(%s)^', [Result]);
+                  varlongword: Result := GetStrValue('plongword(%s)^', [Result]);
+                  varint64: Result := GetStrValue('pint64(%s)^', [Result]);
+                  varqword: Result := GetStrValue('pqword(%s)^', [Result]);
+                  varstring: Result := MakePrintable(GetText('pansistring(%s)^', [Result]));
+                else
+                  Result := 'unsupported variant type: ' + IntToStr(VType);
+                end;
+              end;
+            end;
           end;
-        varany:  Result := VarList.Values['VANY'];
-        vararray: Result := VarList.Values['VARRAY'];
-        varbyref: Result := VarList.Values['VPOINTER'];
-        varrecord: Result := VarList.Values['VRECORD'];
-      else
-        // complex variant type
-        Result := 'variant: no debugger support yet';
+        else
+          Result := 'unsupported variant type: ' + IntToStr(VType);
       end;
     finally
       VarList.Free;
