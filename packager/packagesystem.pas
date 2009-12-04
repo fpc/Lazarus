@@ -1296,6 +1296,8 @@ begin
     UsageOptions.UnitPath:=SetDirSeparators(
       '$(LazarusDir)/packager/units/$(TargetCPU)-$(TargetOS)');
 
+    CompilerOptions.CustomOptions:='$(IDEBuildOptions)';
+
     // add registering units
     AddFile(SetDirSeparators('packages/fcl-db/src/base/db.pas'),'DB',pftUnit,[],cpBase);
     AddFile(SetDirSeparators('packages/fcl-process/src/process.pp'),'Process',pftUnit,[],cpBase);
@@ -1377,6 +1379,7 @@ begin
     CompilerOptions.IncludePath:=SetDirSeparators(
       '$(LazarusDir)/lcl/include;$(LazarusDir)/lcl/interfaces/$(LCLWidgetType)');
     AddLCLLinkPaths(UsageOptions);
+    CompilerOptions.CustomOptions:='$(IDEBuildOptions)';
 
     // use the lcl/units/$(TargetCPU)-$(TargetOS)/alllclunits.o
     // file as indicator, if LCL has been recompiled
@@ -1494,6 +1497,7 @@ begin
     // add unit paths
     UsageOptions.UnitPath:=SetDirSeparators(
                      '$(LazarusDir)/components/synedit/units/$(TargetCPU)-$(TargetOS)');
+    CompilerOptions.CustomOptions:='$(IDEBuildOptions)';
 
     // use the components/units/..../allsyneditunits.o file as indicator,
     // if synedit has been recompiled
@@ -1570,6 +1574,8 @@ begin
     AddFile('sourcelog.pas','SourceLog',pftUnit,[],cpBase);
     AddFile('stdcodetools.pas','StdCodeTools',pftUnit,[],cpBase);
 
+    CompilerOptions.CustomOptions:='$(IDEBuildOptions)';
+
     // add unit paths
     UsageOptions.UnitPath:=SetDirSeparators(
            '$(LazarusDir)/components/codetools/units/$(TargetCPU)-$(TargetOS)');
@@ -1641,6 +1647,8 @@ begin
     // add unit paths
     UsageOptions.UnitPath:=SetDirSeparators(
       '$(LazarusDir)/ideintf/units/$(TargetCPU)-$(TargetOS)');
+
+    CompilerOptions.CustomOptions:='$(IDEBuildOptions)';
 
     // use the ideintf/units/$(TargetCPU)/$(TargetOS)/allideintf.o file
     // as indicator, if ideintf has been recompiled

@@ -18,6 +18,7 @@
         <Verbosity>
           <ShowHints Value="False"/>
         </Verbosity>
+        <CustomOptions Value="$(IDEBuildOptions)"/>
         <CompilerPath Value="$(CompPath)"/>
       </Other>
     </CompilerOptions>
