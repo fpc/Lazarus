@@ -662,11 +662,12 @@ end;
   Zero degrees is at the 3'o clock position.
 
  ------------------------------------------------------------------------------}
-procedure TCanvas.Arc(ALeft, ATop, ARight, ABottom, angle1, angle2 : Integer);
+procedure TCanvas.Arc(ALeft, ATop, ARight, ABottom,
+  Angle16Deg, Angle16DegLength: Integer);
 begin
   Changing;
   RequiredState([csHandleValid, csPenValid]);
-  LCLIntf.Arc(FHandle, ALeft, ATop, ARight, ABottom, angle1, angle2);
+  LCLIntf.Arc(FHandle, ALeft, ATop, ARight, ABottom, Angle16Deg, Angle16DegLength);
   Changed;
 end;
 
@@ -1396,11 +1397,11 @@ end;
 
 ------------------------------------------------------------------------------}
 procedure TCanvas.Chord(x1, y1, x2, y2,
-  StartAngle16Deg, EndAngle16Deg: Integer);
+  Angle16Deg, Angle16DegLength: Integer);
 begin
   Changing;
   RequiredState([csHandleValid, csBrushValid, csPenValid]);
-  LCLIntf.AngleChord(FHandle, x1, y1, x2, y2, StartAngle16Deg, EndAngle16Deg);
+  LCLIntf.AngleChord(FHandle, x1, y1, x2, y2, Angle16Deg, Angle16DegLength);
   Changed;
 end;
 

@@ -20,7 +20,10 @@ if [ "x$OutputFile" = "x" ]; then
   exit
 fi
 
-TmpDir=~/tmp
+TmpDir=$TEMP
+if [ -z "$TmpDir" ]; then
+  TmpDir=~/tmp
+fi
 TmpFPCDir=$TmpDir/fpc
 FPCTGZ=$TmpDir/fpc.tgz
 if [ "x$Download" = "xyes" ]; then

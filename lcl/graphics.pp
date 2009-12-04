@@ -1063,12 +1063,12 @@ type
     procedure RestoreHandleState; virtual;
 
     // extra drawing methods (there are more in the ancestor TFPCustomCanvas)
-    procedure Arc(ALeft, ATop, ARight, ABottom, angle1, angle2: Integer); virtual;
+    procedure Arc(ALeft, ATop, ARight, ABottom, Angle16Deg, Angle16DegLength: Integer); virtual;
     procedure Arc(ALeft, ATop, ARight, ABottom, SX, SY, EX, EY: Integer); virtual;
     //procedure BrushCopy(Dest: TRect; InternalImages: TBitmap; Src: TRect;
     //                    TransparentColor: TColor); virtual;
     procedure Chord(x1, y1, x2, y2,
-                    StartAngle16Deg, EndAngle16Deg: Integer); virtual;
+                    Angle16Deg, Angle16DegLength: Integer); virtual;
     procedure Chord(x1, y1, x2, y2, SX, SY, EX, EY: Integer); virtual;
     procedure CopyRect(const Dest: TRect; SrcCanvas: TCanvas;
                        const Source: TRect); virtual;
