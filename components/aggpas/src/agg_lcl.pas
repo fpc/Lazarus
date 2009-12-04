@@ -12,7 +12,7 @@ uses
  Windows ,
  {$ENDIF}
  Classes ,Graphics, LCLProc, IntfGraphics, GraphType, FPimage, FPCanvas,
- agg_fpimage;
+ GraphMath, agg_fpimage;
 
 type
 
@@ -110,6 +110,8 @@ type
     // extra drawing methods (there are more in the ancestor TFPCustomCanvas)
     procedure Arc(ALeft, ATop, ARight, ABottom, StartAngle, AngleLength: Integer); virtual;
     procedure Arc(ALeft, ATop, ARight, ABottom, SX, SY, EX, EY: Integer); virtual;
+    procedure Chord(ALeft, ATop, ARight, ABottom, StartAngle, AngleLength: Integer); virtual;
+    procedure Chord(ALeft, ATop, ARight, ABottom, SX, SY, EX, EY: Integer); virtual;
     function LCLAngleToAggAngle(const angle: double): double;
 
     procedure FillRect(const ARect: TRect); virtual; // no border
@@ -293,6 +295,37 @@ begin
 end;
 
 procedure TAggLCLCanvas.Arc(ALeft, ATop, ARight, ABottom, SX, SY, EX,
+  EY: Integer);
+var
+  StartAngle: Extended;
+  AngleLength: Extended;
+  cx, cy, rx, ry, start, endangle, h: double;
+begin
+  Coords2Angles(ALeft, ATop, ARight-ALeft, ABottom-ATop, SX, SY, EX, EY,
+                StartAngle, AngleLength);
+  if AngleLength=0 then exit;
+  cx:=double(ALeft+ARight)/2;
+  cy:=double(ATop+ABottom)/2;
+  rx:=double(ARight-ALeft)/2;
+  ry:=double(ABottom-ATop)/2;
+  // counter clockwise to clockwise
+  start:=LCLAngleToAggAngle(StartAngle+AngleLength);
+  endangle:=LCLAngleToAggAngle(StartAngle);
+  if AngleLength<0 then begin
+    h:=start;
+    start:=endangle;
+    endangle:=h;
+  end;
+  AggArc(cx,cy,rx,ry,start,endangle);
+end;
+
+procedure TAggLCLCanvas.Chord(ALeft, ATop, ARight, ABottom, StartAngle,
+  AngleLength: Integer);
+begin
+
+end;
+
+procedure TAggLCLCanvas.Chord(ALeft, ATop, ARight, ABottom, SX, SY, EX,
   EY: Integer);
 begin
 
