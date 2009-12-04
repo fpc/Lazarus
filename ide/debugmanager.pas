@@ -1547,7 +1547,7 @@ procedure TDebugManager.DebuggerCurrentLine(Sender: TObject; const ALocation: TD
 // -> show the current execution line in editor
 // if SrcLine < 1 then no source is available
 var
-  SrcFile: String;
+  SrcFile, SrcFullName: String;
   NewSource: TCodeBuffer;
   Editor: TSourceEditor;
   SrcLine: Integer;
@@ -1560,6 +1560,7 @@ begin
 
   FCurrentLocation := ALocation;
   SrcFile := ALocation.SrcFile;
+  SrcFullName := ALocation.SrcFullName;
   SrcLine := ALocation.SrcLine;
 
   if SrcLine < 1
@@ -1573,6 +1574,7 @@ begin
       then begin
         SrcLine := StackEntry.Line;
         SrcFile := StackEntry.Source;
+        SrcFullName := StackEntry.FullFileName;
         StackEntry.Current := True;
         Break;
       end;
@@ -1591,13 +1593,17 @@ begin
     if SrcLine < 1 then Exit;
   end;
 
-  if not GetFullFilename(SrcFile, true) then exit;
+  if (SrcFullName = '') or not GetFullFilename(SrcFullName, False) then
+  begin
+    SrcFullName := SrcFile;
+    if not GetFullFilename(SrcFullName, true) then exit;
+  end;
 
-  NewSource := CodeToolBoss.LoadFile(SrcFile, true, false);
+  NewSource := CodeToolBoss.LoadFile(SrcFullName, true, false);
   if NewSource = nil
   then begin
     MessageDlg(lisDebugUnableToLoadFile,
-      Format(lisDebugUnableToLoadFile2, ['"', SrcFile, '"']),
+      Format(lisDebugUnableToLoadFile2, ['"', SrcFullName, '"']),
       mtError,[mbCancel],0);
     Exit;
   end;
