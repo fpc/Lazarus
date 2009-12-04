@@ -22,8 +22,7 @@ Default floating sites are owned by Application,
 
 {$mode objfpc}{$H+}
 
-{.$DEFINE ownPanels} //elastic panels owned by DockMaster?
-{$DEFINE ownGrips}  //docking grips owned by DockMaster?
+{$DEFINE ownPanels} //elastic panels owned by DockMaster?
 
 interface
 
@@ -55,7 +54,6 @@ type
   end;
 
 (* The owner of all docksites
-  and of all dockable window grips (if ownGrips is defined)
 *)
   TDockMaster = class(TComponent)
   protected //event handlers
@@ -66,11 +64,17 @@ type
     function  ReloadForm(const AName: string; fMultiInst: boolean): TWinControl; virtual;
     function  WrapDockable(Client: TControl): TFloatingSite;
   private
-    LastPanel: TPanel;  //last elastic panel created
+    LastPanel: TDockPanel;  //last elastic panel created
+  {$IFDEF ownPanels}
+    //elastic panels are in Components[]
+  {$ELSE}
+    ElasticSites: TFPList;
+  {$ENDIF}
   public
     Factory: TWinControl; //generic owner
     ForIDE: boolean; //try some special workarounds
     constructor Create(AOwner: TComponent); override;
+    destructor Destroy; override;
     procedure AddElasticSites(AForm: TCustomForm; Sides: sDockSides);
     function  CreateDockable(const AName: string; fMultiInst: boolean; fWrap: boolean = True): TWinControl;
     function  MakeDockable(AForm: TWinControl; fWrap: boolean = True): TForm;
@@ -115,6 +119,35 @@ end;
 
 { TDockMaster }
 
+constructor TDockMaster.Create(AOwner: TComponent);
+begin
+  assert(DockMaster=nil, 'illegal recreate DockMaster');
+  inherited Create(AOwner);
+  //DebugLn('dockmgr=%s', [DefaultDockManagerClass.ClassName]);
+  DefaultDockManagerClass := TAppDockManager;
+  DockMaster := self;
+{$IFDEF ownPanels}
+{$ELSE}
+  ElasticSites := TFPList.Create;
+{$ENDIF}
+end;
+
+destructor TDockMaster.Destroy;
+begin
+{$IFDEF ownPanels}
+{$ELSE}
+  ElasticSites.Free;
+{$ENDIF}
+  inherited Destroy;
+  DockMaster := nil;
+end;
+
+const //panel prefix for form name
+  AlignString: array[TAlign] of string = (
+  //alNone, alTop, alBottom, alLeft, alRight, alClient, alCustom
+    'n', 't', '_B_', '_L_', '_R_', 'n', 'n'
+  );
+
 procedure TDockMaster.AddElasticSites(AForm: TCustomForm; Sides: sDockSides);
 var
   side: TAlign;
@@ -122,24 +155,25 @@ var
   spl: TSplitter;
   dm: TEasyTree;
   po: TComponent; //panel owner
+  pnlName: string;
+
 const
   AllowedSides: sDockSides = [alLeft, alRight, alBottom];
 begin
-{ TODO : Panels cannot be owned by DockMaster - duplicate names! }
 {$IFDEF ownPanels}
-  po := self; //owned by???
+  po := Self;
 {$ELSE}
   po := AForm; //owned by the form - proper destruction
-  //maintain panel list?
 {$ENDIF}
   for side := low(side) to high(side) do begin
     if (side in AllowedSides) and (side in Sides) then begin
-      TComponent(pnl) := po.FindComponent(PanelNames[side]);
+      pnlName := AlignString[side] + AForm.Name;
+      TComponent(pnl) := po.FindComponent(pnlName);
       if pnl = nil then begin
       //create the components
         pnl := TDockPanel.Create(po); //owned by?
         LastPanel := pnl; //for reload layout
-        TryRename(pnl, PanelNames[side]);
+        TryRename(pnl, pnlName);
         pnl.Caption := '';
         pnl.Parent := AForm;
         pnl.Align := side;
@@ -166,18 +200,14 @@ begin
         pnl.OnDockOver := @pnl.pnlDockOver;
         pnl.OnUnDock := @pnl.pnlUnDock;
         pnl.OnGetSiteInfo := @pnl.pnlGetSiteInfo;
+      {$IFDEF ownPanels}
+      {$ELSE}
+      //register panel for load/save
+        ElasticSites.Add(pnl);
+      {$ENDIF}
       end;
     end;
   end;
-end;
-
-constructor TDockMaster.Create(AOwner: TComponent);
-begin
-  inherited Create(AOwner);
-  //DebugLn('dockmgr=%s', [DefaultDockManagerClass.ClassName]);
-  DefaultDockManagerClass := TAppDockManager;
-  if DockMaster = nil then
-    DockMaster := self;
 end;
 
 function TDockMaster.CreateDockable(const AName: string;
@@ -276,9 +306,10 @@ end;
 
 type
   RSiteRec = packed record
-    Bounds: TRect;
+    Bounds, Extent: TRect;  //form and site bounds
     Align:  TAlign;
-    NameLen: byte; //+name
+    AutoExpand: boolean;
+    NameLen: byte; //site name, 0 for floating sites
   end;
 var
   SiteRec: RSiteRec;
@@ -297,16 +328,39 @@ var
     SetLength(SiteName, SiteRec.NameLen);
     if Result and (SiteRec.NameLen > 0) then
       Stream.Read(SiteName[1], SiteRec.NameLen);
-    if Result then
-      DebugLn('reload site %s', [SiteName])
-    else
+    if Result then begin
+      DebugLn('--- Reload site %s', [SiteName]);
+      //DebugLn('--- Error SiteRec ---');
+      //DebugLn('Name=' + SiteName);
+      with SiteRec do begin
+        DebugLn('Bounds=x(%d-%d) y(%d-%d)', [Bounds.Left, Bounds.Right, Bounds.Top, Bounds.Bottom]);
+        DebugLn('Extent=x(%d-%d) y(%d-%d)', [Extent.Left, Extent.Right, Extent.Top, Extent.Bottom]);
+      end;
+    end else
       DebugLn('reload site done');
+  end;
+
+  function MakePanel(const FormName: string; aln: TAlign): TDockPanel;
+  begin
+  (* AName is <align><form>
+  *)
+    hcomp := self.ReloadForm(FormName, True); //try multi-instance first
+    if host <> nil then begin
+      AddElasticSites(host, [aln]);
+      Result := LastPanel; //found or created
+      host.BoundsRect := SiteRec.Bounds;
+      Result.BoundsRect := SiteRec.Extent;
+      Result.AutoExpand := SiteRec.AutoExpand;
+      exit;
+    end;
+  //failed
+    Result := nil;
   end;
 
 begin
 (* Restore a layout.
-- Create all ElasticSites (to come)
 - Create all floating sites
+- Create all ElasticSites
 - Reload all docked controls
 
 Notebooks?
@@ -317,33 +371,18 @@ Notebooks?
   Ownership?
     When notebooks are dockable, they cannot be owned by the DockSite!
 *)
-{$IFDEF old}
-//Test0;
-  site := TFloatingSite.Create(self);
-  MakeForm; ctl.ManualDock(site, nil, alClient);
-  MakeForm; ctl.ManualDock(site, pre, alRight);
-  if False then begin //simple case
-    MakeForm; ctl.ManualDock(site, pre, alBottom);
-    MakeForm; ctl.ManualDock(site, pre, alCustom);
-  end else begin
-    nb := NoteBookCreate(site); //name it...
-    nb.ManualDock(site, ctl, alBottom);
-    //MakeForm; NoteBookAdd(nb, ctl);
-    MakeForm; ctl.ManualDock(site, nb, alCustom);
-    MakeForm; ctl.ManualDock(site, nb, alCustom);
-  end;
-{$ELSE}
-{$ENDIF}
   Stream.Position := 0; //rewind!
 //restore all floating sites
   while ReadSite do begin
     if SiteRec.NameLen = 0 then begin
     //floating site
       site := TFloatingSite.Create(self);
+      site.BoundsRect := SiteRec.Bounds;
     end else begin
     //hosted panel - find parent form
+    {$IFDEF old}
       if Factory = nil then
-        hcomp := Application.FindComponent(SiteName)
+        hcomp := Screen.FindForm(SiteName)
       else begin
         hcomp := Factory.FindComponent(SiteName);
         //hcomp := Factory.ReloadDockedControl(SiteName); - reload form!?
@@ -352,8 +391,15 @@ Notebooks?
         host := TForm.Create(Application);
       AddElasticSites(host, [SiteRec.Align]);
       site := LastPanel;
+    {$ELSE}
+      site := MakePanel(SiteName, SiteRec.Align);
+    {$ENDIF}
     end;
-    site.BoundsRect := SiteRec.Bounds;
+  //debug
+    if site = nil then begin
+      exit; //stream error!
+    end;
+  //adjust host form
     if site.DockManager = nil then
       TAppDockManager.Create(site);
     site.DockManager.LoadFromStream(Stream);
@@ -365,8 +411,22 @@ procedure TDockMaster.SaveToStream(Stream: TStream);
   procedure SaveSite(Site: TWinControl; const AName: string);
   begin
   (* what if a site doesn't have an DockManager?
+    need form bounds always, for elastic sites also the panel extent
   *)
-    SiteRec.Bounds := Site.BoundsRect;
+    if Site.DockManager = nil then
+      exit;
+    if Site is TDockPanel then begin
+      if site.Parent = nil then begin
+      //destroy orphaned panel?
+        site.Free;
+        exit;
+      end;
+      SiteRec.Bounds := Site.Parent.BoundsRect;
+      SiteRec.Extent := site.BoundsRect;
+      SiteRec.AutoExpand := (site as TDockPanel).AutoExpand;
+    end else {if Site.Parent = nil then} begin
+      SiteRec.Bounds := Site.BoundsRect
+    end;
     SiteName := AName;
     SiteRec.Align := Site.Align;
     SiteRec.NameLen := Length(SiteName);
@@ -381,15 +441,18 @@ var
   cmp: TComponent;
   wc: TWinControl absolute cmp;
 begin
+(* Save all floating sites and elastic panels.
+  The sites are in Components[].
+  The panels are in ElasticSites (if ownPanels is undefined).
+*)
+//save floating sites
   for i := 0 to ComponentCount - 1 do begin
     cmp := Components[i];
     if (cmp is TWinControl) and wc.DockSite then begin
       if wc.Parent = nil then
-        SaveSite(wc, '') //save top level sites
-      else begin
-      //elastic site - not yet
-        //SaveSite(wc, {wc.Name + '@' +} wc.Parent.Name); //elastic site
-      end;
+        SaveSite(wc, '') //save top level (floating) sites
+      else if cmp is TDockPanel then
+        SaveSite(wc, wc.Parent.Name); //elastic site
     end;
   end;
 //end marker
@@ -440,7 +503,10 @@ begin
 
   Result type? (a TWinControl is sufficient as a DockSite)
 *)
-  Result := nil;
+//search existing forms
+  Result := Screen.FindForm(AName);
+  if Result <> nil then
+    exit; //found it
 //check if Factory can provide the form
   if assigned(Factory) then begin
     TWinControlAccess(Factory).ReloadDockedControl(AName, ctl);
@@ -455,13 +521,6 @@ begin
   if AName = '' then begin
     Result := TForm.Create(fo); //named Form1, Form2...
   end else begin
-    cmp := fo.FindComponent(AName); //(instname);
-    //if Result <> nil then
-    if assigned(cmp) then begin
-      if cmp is TWinControl then
-        exit;
-      cmp.Free; //we NEED at least a TWinControl, of exactly the given name
-    end;
   //create new instance
     if fMultiInst then
       SplitName
@@ -470,7 +529,11 @@ begin
     basename := 'T' + basename;
     fc := nil;
     fc := TWinControlClass(GetClass(basename)); //must be registered class name!
-    assert(assigned(fc), 'class not registered: ' + basename);
+    //assert(assigned(fc), 'class not registered: ' + basename);
+    if fMultiInst and not assigned(fc) then
+      fc := TWinControlClass(GetClass('T' + AName)); //retry with non-splitted name
+    if not assigned(fc) then
+      exit(nil); //bad form name
     Result := fc.Create(fo);
     if Result.Name <> AName then
       TryRename(Result, AName);
@@ -509,6 +572,8 @@ begin
 *)
   if ssLeft in Shift then begin
     ctl := Sender as TControl;
+    if ForIDE then
+      TControlAccess(ctl.Parent).DragKind := dkDock;
     ctl.Parent.BeginDrag(ForIDE); //start immediately?
   end;
 end;
@@ -518,7 +583,7 @@ const
   OrientString: array[TDockOrientation] of char = (
     'N','H','V' {$IFDEF FPC} ,'P' {$ENDIF}
   );
-  AlignString: array[TAlign] of char = (
+  AlignChar: array[TAlign] of char = (
     //(alNone, alTop, alBottom, alLeft, alRight, alClient, alCustom);
     'n', 't', 'B', 'L', 'R', 'C', 'c'
   );
@@ -553,7 +618,7 @@ const
       end else begin
         Site := ctl.Parent;
         if Site <> nil then
-          n := ' at ' + SiteName(Site) + '@' + AlignString[ctl.Align];
+          n := ' at ' + SiteName(Site) + '@' + AlignChar[ctl.Align];
       end;
       if Site = nil then
         break;
