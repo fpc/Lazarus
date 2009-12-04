@@ -410,6 +410,7 @@ type
     FAggPen: TAggFPPen;
     FAggPath: TAggFPPath;
     FImage: TAggFPImage;
+    FUseUTF8: boolean;
 
     m_rbuf : rendering_buffer;
 
@@ -726,10 +727,13 @@ type
               roundOff : boolean = false;
               const ddx : double = 0.0;
               const ddy : double = 0.0 ); virtual;
+    property UseUTF8: boolean read FUseUTF8 write FUseUTF8;
   end;
 
 function FPToAggColor(const c: TFPColor): TAggColor;
 function AggToFPColor(const c: TAggColor): TFPColor;
+
+function AggUTF8CharToUnicode(p: PChar; out CharLen: int): int32u;
 
 implementation
 
@@ -825,6 +829,56 @@ begin
   Result.green:=c.g or (c.g shl 8);
   Result.blue:=c.b or (c.b shl 8);
   Result.alpha:=c.a or (c.a shl 8);
+end;
+
+function AggUTF8CharToUnicode(p: PChar; out CharLen: int): int32u;
+begin
+  if p=nil then begin
+    Result:=0;
+    CharLen:=0;
+    exit;
+  end;
+  if ord(p^)<%11000000 then begin
+    // regular single byte character (#0 is a normal char, this is pascal ;)
+  end
+  else if ((ord(p^) and %11100000) = %11000000) then begin
+    // could be double byte character
+    if (ord(p[1]) and %11000000) = %10000000 then begin
+      Result:=((ord(p^) and %00011111) shl 6)
+              or (ord(p[1]) and %00111111);
+      CharLen:=2;
+      exit;
+    end;
+  end
+  else if ((ord(p^) and %11110000) = %11100000) then begin
+    // could be triple byte character
+    if ((ord(p[1]) and %11000000) = %10000000)
+    and ((ord(p[2]) and %11000000) = %10000000) then begin
+      Result:=((ord(p^) and %00011111) shl 12)
+              or ((ord(p[1]) and %00111111) shl 6)
+              or (ord(p[2]) and %00111111);
+      CharLen:=3;
+      exit;
+    end;
+  end
+  else if ((ord(p^) and %11111000) = %11110000) then begin
+    // could be 4 byte character
+    if ((ord(p[1]) and %11000000) = %10000000)
+    and ((ord(p[2]) and %11000000) = %10000000)
+    and ((ord(p[3]) and %11000000) = %10000000) then begin
+      Result:=((ord(p^) and %00001111) shl 18)
+              or ((ord(p[1]) and %00111111) shl 12)
+              or ((ord(p[2]) and %00111111) shl 6)
+              or (ord(p[3]) and %00111111);
+      CharLen:=4;
+      exit;
+    end;
+  end
+  else begin
+    // invalid character
+  end;
+  Result:=ord(p^);
+  CharLen:=1;
 end;
 
 
@@ -1508,6 +1562,9 @@ end;
 constructor TAggFPCanvas.Create;
 begin
   inherited Create;
+
+  FUseUTF8:=true;
+
   FAggFont := TAggFPFont(inherited Font);
   FAggPen := TAggFPPen(inherited Pen);
   FAggBrush := TAggFPBrush(inherited Brush);
@@ -2799,6 +2856,8 @@ var
   first : boolean;
   glyph : glyph_cache_ptr;
   str_  : PChar;
+  charlen: int;
+  char_id: int32u;
 begin
   if str='' then exit(0);
   x:=0;
@@ -2809,7 +2868,15 @@ begin
 
   while str_^ <> #0 do
   begin
-    glyph:=m_fontCacheManager.glyph(int32u(str_^ ) );
+    if UseUTF8 then
+    begin
+      char_id:=AggUTF8CharToUnicode(str_,charlen);
+      inc(str_,charlen);
+    end else begin
+      char_id:=int32u(char_ptr(str_)^);
+      inc(str_,sizeof(char));
+    end;
+    glyph:=m_fontCacheManager.glyph(char_id);
 
     if glyph <> NIL then
     begin
@@ -2822,7 +2889,6 @@ begin
       first:=false;
     end;
 
-    inc(ptrcomp(str_ ) );
   end;
 
   if Font.FAggCache = AGG_VectorFontCache then
@@ -2856,12 +2922,13 @@ var
   mtx  : trans_affine;
   str_ : PChar;
 
-  i : int;
-
   tat : trans_affine_translation;
   tar : trans_affine_rotation;
 
   tr : conv_transform;
+  charlen: int;
+  char_id: int32u;
+  First: Boolean;
 
 begin
   if Str='' then exit;
@@ -2927,18 +2994,28 @@ begin
   if Font.FAggCache = AGG_RasterFontCache then
     AggWorldToScreen(@start_x ,@start_y );
 
-  i:=0;
-
   str_:=@str[1 ];
+  First:=true;
 
-  while char_ptr(ptrcomp(str_ ) + i * sizeof(char ) )^ <> #0 do
+  while str_^ <> #0 do
   begin
-    glyph:=m_fontCacheManager.glyph(int32u(char_ptr(ptrcomp(str_ ) + i * sizeof(char ) )^ ) );
+    if UseUTF8 then
+    begin
+      char_id:=AggUTF8CharToUnicode(str_,charlen);
+      inc(str_,charlen);
+    end else begin
+      char_id:=int32u(char_ptr(str_)^);
+      inc(str_,sizeof(char));
+    end;
+    glyph:=m_fontCacheManager.glyph(char_id);
 
     if glyph <> NIL then
     begin
-      if i <> 0 then
+      if First then
+      begin
         m_fontCacheManager.add_kerning(@x ,@y );
+        First:=false;
+      end;
 
       m_fontCacheManager.init_embedded_adaptors(glyph ,start_x ,start_y );
 
@@ -2963,8 +3040,6 @@ begin
       start_x:=start_x + glyph^.advance_x;
       start_y:=start_y + glyph^.advance_y;
     end;
-
-    inc(i );
   end;
 end;
 {$ENDIF}
