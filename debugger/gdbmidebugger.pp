@@ -2340,7 +2340,8 @@ begin
       end;
 
       skRecord: begin
-        if ResultInfo.TypeName = 'Variant' then
+        if (ResultInfo.TypeName = 'Variant') or
+           (ResultInfo.TypeName = 'VARIANT') then
           AResult := GetVariantValue(AResult)
         else
           AResult := 'record ' + ResultInfo.TypeName + ' '+ AResult;
