@@ -274,23 +274,22 @@ procedure TAggLCLCanvas.Arc(ALeft, ATop, ARight, ABottom,
   Zero degrees is at the 3'o clock position.
 }
 var
-  cx, cy, rx, ry, start, sweep, h: double;
+  cx, cy, rx, ry, start, endangle, h: double;
 begin
   if AngleLength=0 then exit;
   cx:=double(ALeft+ARight)/2;
   cy:=double(ATop+ABottom)/2;
   rx:=double(ARight-ALeft)/2;
   ry:=double(ABottom-ATop)/2;
-  if AngleLength>0 then begin
-    // convert counter clockwise to clockwise
-    start:=LCLAngleToAggAngle(StartAngle+AngleLength);
-    sweep:=LCLAngleToAggAngle(AngleLength);
-  end else begin
-    // clockwise
-    start:=LCLAngleToAggAngle(StartAngle);
-    sweep:=LCLAngleToAggAngle(-AngleLength);
+  // counter clockwise to clockwise
+  start:=LCLAngleToAggAngle(StartAngle+AngleLength);
+  endangle:=LCLAngleToAggAngle(StartAngle);
+  if AngleLength<0 then begin
+    h:=start;
+    start:=endangle;
+    endangle:=h;
   end;
-  AggArc(cx,cy,rx,ry,start,sweep);
+  AggArc(cx,cy,rx,ry,start,endangle);
 end;
 
 procedure TAggLCLCanvas.Arc(ALeft, ATop, ARight, ABottom, SX, SY, EX,
@@ -304,7 +303,7 @@ function TAggLCLCanvas.LCLAngleToAggAngle(const angle: double): double;
 // LCL: counter clockwise, Agg: clockwise
 // full circle: LCL = 5760, Agg = 2*pi
 begin
-  Result:=(angle * 2*pi) / 5760;
+  Result:=2*pi* (1-(angle / 5760));
 end;
 
 procedure TAggLCLCanvas.FillRect(const ARect: TRect);

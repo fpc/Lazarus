@@ -77,8 +77,8 @@ begin
     Ellipse(55,10,65,20);
     //GradientFill(Rect(70,10,80,20),clRed,clBlue,gdVertical);
     Frame(85,10,95,20);
-    //Arc(100,10,110,20,1000,2700);
-    //Arc(115,10,125,20,0,2700);
+    Arc(100,10,110,20,0,2700);
+    Arc(115,10,125,20,1000,2700);
 
     s:='Font.Size='+IntToStr(Font.Size);
     GetTextSize(s,TxtW,TxtH);
@@ -108,8 +108,8 @@ begin
     Ellipse(55,22,65,32);
     GradientFill(Rect(70,22,80,32),clRed,clBlue,gdVertical);
     Frame(85,22,95,32);
-    //Arc(100,22,110,32,1000,2700);
-    //Arc(115,22,125,32,0,2700);
+    Arc(100,22,110,32,0,2700);
+    Arc(115,22,125,32,1000,2700);
 
     s:='Font.Size='+IntToStr(Font.Size);
     GetTextSize(s,TxtW,TxtH);
