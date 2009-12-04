@@ -47,6 +47,7 @@ type
     Address: TDBGPtr;
     FuncName: String;
     SrcFile: String;
+    SrcFullName: String;
     SrcLine: Integer;
   end;
 
@@ -912,6 +913,7 @@ type
     FLine: Integer;
     FArguments: TStrings;
     FSource: String;
+    FFullFileName: String;
     function GetArgumentCount: Integer;
     function GetArgumentName(const AnIndex: Integer): String;
     function GetArgumentValue(const AnIndex: Integer): String;
@@ -920,7 +922,8 @@ type
   public
     constructor Create(const AIndex:Integer; const AnAdress: TDbgPtr;
                        const AnArguments: TStrings; const AFunctionName: String;
-                       const ASource: String; const ALine: Integer);
+                       const ASource: String; const AFullFileName: String;
+                       const ALine: Integer);
     constructor CreateCopy(const ASource: TCallStackEntry);
     destructor Destroy; override;
     property Adress: TDbgPtr read FAdress;
@@ -932,6 +935,7 @@ type
     property Index: Integer read FIndex;
     property Line: Integer read FLine;
     property Source: String read FSource;
+    property FullFileName: String read FFullFileName;
   end;
 
   { TBaseCallStack }
@@ -3641,7 +3645,8 @@ end;
 
 constructor TCallStackEntry.Create(const AIndex: Integer;
   const AnAdress: TDbgPtr; const AnArguments: TStrings;
-  const AFunctionName: String; const ASource: String; const ALine: Integer);
+  const AFunctionName: String; const ASource: String; const AFullFileName: String;
+  const ALine: Integer);
 begin
   inherited Create;
   FIndex := AIndex;
@@ -3650,13 +3655,14 @@ begin
   FArguments.Assign(AnArguments);
   FFunctionName := AFunctionName;
   FSource := ASource;
+  FFullFileName := AFullFileName;
   FLine := ALine;
 end;
 
 constructor TCallStackEntry.CreateCopy(const ASource: TCallStackEntry);
 begin
   Create(ASource.FIndex, ASource.FAdress, ASource.FArguments,
-         ASource.FunctionName, ASource.FSource, ASource.FLine);
+         ASource.FunctionName, ASource.FSource, ASource.FFullFileName, ASource.FLine);
 end;
 
 destructor TCallStackEntry.Destroy;

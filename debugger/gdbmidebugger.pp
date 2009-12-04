@@ -2916,6 +2916,7 @@ begin
   if e=0 then ;
   Location.FuncName := Frame.Values['func'];
   Location.SrcFile := ConvertPathDelims(Frame.Values['file']);
+  Location.SrcFullName := ConvertPathDelims(Frame.Values['fullname']);
   Location.SrcLine := StrToIntDef(Frame.Values['line'], -1);
 
   Frame.Free;
@@ -4360,7 +4361,7 @@ var
   List: TGDBMINameValueList;
   Arg: PGDBMINameValue;
   addr: TDbgPtr;
-  func, filename, line : String;
+  func, filename, fullname, line : String;
 begin
   Arguments := TStringList.Create;
 
@@ -4379,6 +4380,7 @@ begin
   addr := 0;
   func := '';
   filename := '';
+  fullname := '';
   line := '';
   if AFrameInfo <> nil
   then begin
@@ -4386,6 +4388,7 @@ begin
     if e=0 then ;
     func := AFrameInfo.Values['func'];
     filename := ConvertPathDelims(AFrameInfo.Values['file']);
+    fullname := ConvertPathDelims(AFrameInfo.Values['fullname']);
     line := AFrameInfo.Values['line'];
   end;
 
@@ -4395,6 +4398,7 @@ begin
     Arguments,
     func,
     filename,
+    fullname,
     StrToIntDef(line, 0)
   );
 
