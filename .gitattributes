@@ -3454,6 +3454,7 @@ ide/keymapschemedlg.pas svneol=native#text/pascal
 ide/keymapshortcutdlg.lfm svneol=native#text/plain
 ide/keymapshortcutdlg.lrs svneol=native#text/pascal
 ide/keymapshortcutdlg.pas svneol=native#text/plain
+ide/lazarus.ico -text svneol=unset#image/ico
 ide/lazarus.lpi svneol=native#text/plain
 ide/lazarus.pp svneol=native#text/pascal
 ide/lazarus.rc svneol=native#text/plain
