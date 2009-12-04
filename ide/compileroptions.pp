@@ -3057,7 +3057,8 @@ procedure TBaseCompilerOptions.CreateDiff(CompOpts: TBaseCompilerOptions;
     if Old=New then exit;
     Tool.AddDiffItem(PropertyName,CompilationExecutableTypeNames[New]);
   end;
-
+var
+  i: Integer;
 begin
   Tool.AddPathsDiff('StorePathDelim',PathDelimSwitchToDelim[FStorePathDelim],
                               PathDelimSwitchToDelim[CompOpts.FStorePathDelim]);
@@ -3124,8 +3125,8 @@ begin
   Tool.AddDiff('Win32GraphicApp',FWin32GraphicApp,CompOpts.FWin32GraphicApp);
        AddDiff('ExecutableType',FExecutableType,CompOpts.FExecutableType);
 
-  // messages
-  Tool.Path:='Messages';
+  // verbosity
+  Tool.Path:='Verbosity';
   Tool.AddDiff('ShowErrors',fShowErrors,CompOpts.fShowErrors);
   Tool.AddDiff('ShowWarn',fShowWarn,CompOpts.fShowWarn);
   Tool.AddDiff('ShowNotes',fShowNotes,CompOpts.fShowNotes);
@@ -3147,6 +3148,15 @@ begin
   Tool.AddDiff('ShowHintsForSenderNotUsed',fShowHintsForSenderNotUsed,CompOpts.fShowHintsForSenderNotUsed);
   Tool.AddDiff('WriteFPCLogo',fWriteFPCLogo,CompOpts.fWriteFPCLogo);
 
+  //messages
+  Tool.Path:='Messages';
+  Tool.AddDiff('UseCustomMessages',fUseCustomMessages,CompOpts.fUseCustomMessages);
+  Tool.AddDiff('UseMsgFile',fUseMsgFile,CompOpts.fUseMsgFile);
+  Tool.AddDiff('MsgFileName',fMsgFileName,CompOpts.fMsgFileName);
+  for i:=0 to fCompilerMessages.Count-1 do
+    Tool.AddDiff('Ignored'+IntToStr(fCompilerMessages.Msg[i].MsgIndex),
+      fCompilerMessages.Msg[i].Ignored,CompOpts.fCompilerMessages.Msg[i].Ignored);
+  
   // other
   Tool.Path:='Other';
   Tool.AddDiff('DontUseConfigFile',fDontUseConfigFile,CompOpts.fDontUseConfigFile);
