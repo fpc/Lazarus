@@ -37,7 +37,7 @@ unit GDBMIDebugger;
 interface
 
 uses
-  Classes, SysUtils, LCLProc, Dialogs, LazConf, DebugUtils, Debugger,
+  Classes, SysUtils, Variants, LCLProc, Dialogs, LazConf, DebugUtils, Debugger,
   FileUtil, CmdLineDebugger, GDBTypeInfo, Maps,
 {$IFdef MSWindows}
   Windows,
@@ -2119,13 +2119,14 @@ function TGDBMIDebugger.GDBEvaluate(const AExpression: String; var AResult: Stri
                 end;
               varany:  Result := VarList.Values['VANY'];
             else
-              Result := 'unsupported variant type: ' + IntToStr(VType);
+              Result := 'unsupported variant type: ' + VarTypeAsText(VType);
             end;
           end;
         varArray:
           begin
-            Result := VarList.Values['VARRAY'];
-            Result := 'variant array ' + Result + ': no debugger support yet'
+            Result := VarTypeAsText(VType);
+            // TODO: show variant array data?
+            // Result := VarList.Values['VARRAY'];
           end;
         varByRef:
           begin
@@ -2170,13 +2171,13 @@ function TGDBMIDebugger.GDBEvaluate(const AExpression: String; var AResult: Stri
                   varqword: Result := GetStrValue('pqword(%s)^', [Result]);
                   varstring: Result := MakePrintable(GetText('pansistring(%s)^', [Result]));
                 else
-                  Result := 'unsupported variant type: ' + IntToStr(VType);
+                  Result := 'unsupported variant type: ' + VarTypeAsText(VType);
                 end;
               end;
             end;
           end;
         else
-          Result := 'unsupported variant type: ' + IntToStr(VType);
+          Result := 'unsupported variant type: ' + VarTypeAsText(VType);
       end;
     finally
       VarList.Free;
