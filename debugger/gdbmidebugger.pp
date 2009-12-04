@@ -236,11 +236,12 @@ type
   end;
 
   { TGDBMINameValueList }
-  TGDBMINameValueList = Class(TObject)
+  TGDBMINameValueList = class(TObject)
   private
     FText: String;
     FCount: Integer;
     FIndex: array of TGDBMINameValue;
+    FUseTrim: Boolean;
 
     function Find(const AName : string): PGDBMINameValue;
     function GetItem(const AIndex: Integer): PGDBMINameValue;
@@ -259,6 +260,7 @@ type
     property Count: Integer read FCount;
     property Items[const AIndex: Integer]: PGDBMINameValue read GetItem;
     property Values[const AName: string]: string read GetValue;
+    property UseTrim: Boolean read FUseTrim write FUseTrim;
   end;
 
   TGDBMIBreakPoint = class(TDBGBreakPoint)
@@ -843,6 +845,15 @@ procedure TGDBMINameValueList.Init(AResultValues: PChar; ALength: Integer);
     Item := @FIndex[FCount];
     if AEquPtr < AStartPtr
     then begin
+      // trim spaces
+      if UseTrim then
+      begin
+        while (AStartPtr < AEndPtr) and (AStartPtr^ = #32) do
+          inc(AStartPtr);
+        while (AEndPtr > AStartPtr) and (AEndPtr^ = #32) do
+          dec(AEndPtr);
+      end;
+
       // only name, no value
       Item^.NamePtr := AStartPtr;
       Item^.NameLen := PtrUInt(AEndPtr) - PtrUInt(AStartPtr) + 1;
@@ -850,8 +861,22 @@ procedure TGDBMINameValueList.Init(AResultValues: PChar; ALength: Integer);
       Item^.ValueLen := 0;
     end
     else begin
+      // trim surrounding spaces
+      if UseTrim then
+      begin
+        while (AStartPtr < AEquPtr) and (AStartPtr^ = #32) do
+          inc(AStartPtr);
+        while (AEndPtr > AEquPtr) and (AEndPtr^ = #32) do
+          dec(AEndPtr);
+      end;
+
       Item^.NamePtr := AStartPtr;
       Item^.NameLen := PtrUInt(AEquPtr) - PtrUInt(AStartPtr);
+
+      // trim name spaces
+      if UseTrim then
+        while (Item^.NameLen > 0) and (Item^.NamePtr[Item^.NameLen - 1] = #32) do
+          dec(Item^.NameLen);
 
       if (AEquPtr < AEndPtr - 1) and (AEquPtr[1] = '"') and (AEndPtr^ = '"')
       then begin
@@ -863,6 +888,10 @@ procedure TGDBMINameValueList.Init(AResultValues: PChar; ALength: Integer);
         Item^.ValuePtr := AEquPtr + 1;
         Item^.ValueLen := PtrUInt(AEndPtr) - PtrUInt(AEquPtr)
       end;
+      // trim value spaces
+      if UseTrim then
+        while (Item^.ValueLen > 0) and (Item^.ValuePtr[Item^.ValueLen - 1] = #32) do
+          dec(Item^.ValueLen);
     end;
 
     Inc(FCount);
@@ -2027,6 +2056,64 @@ function TGDBMIDebugger.GDBEvaluate(const AExpression: String; var AResult: Stri
     else Result := AString;
   end;
 
+  function GetVariantValue(AString: String): String;
+  var
+    VarList: TGDBMINameValueList;
+    VType: Integer;
+    Addr: TDbgPtr;
+    e: Integer;
+  begin
+    VarList := TGDBMINameValueList.Create('');
+    try
+      VarList.UseTrim := True;
+      VarList.Init(AString);
+      VType := StrToIntDef(VarList.Values['VTYPE'], -1);
+      if VType = -1 then // can never happen if no error since varType is word
+        Exit('variant: unknown type');
+      case VType and varTypeMask of
+        varsmallint: Result := VarList.Values['VSMALLINT'];
+        varinteger: Result := VarList.Values['VINTEGER'];
+        varsingle: Result := VarList.Values['VSINGLE'];
+        vardouble: Result := VarList.Values['VDOUBLE'];
+        vardate:  Result := VarList.Values['VDATE'];
+        varcurrency: Result := VarList.Values['VCURRENCY'];
+        varolestr: Result := VarList.Values['VOLESTR'];
+        vardispatch: Result := VarList.Values['VDISPATCH'];
+        varerror: Result := VarList.Values['VERROR'];
+        varboolean: Result := VarList.Values['VBOOLEAN'];
+        varunknown: Result := VarList.Values['VUNKNOWN'];
+        varshortint: Result := VarList.Values['VSHORTINT'];
+        varbyte: Result := VarList.Values['VBYTE'];
+        varword: Result := VarList.Values['VWORD'];
+        varlongword: Result := VarList.Values['VLONGWORD'];
+        varint64: Result := VarList.Values['VINT64'];
+        varqword: Result := VarList.Values['VQWORD'];
+        varstring:
+          begin
+            // address of string
+            Result := VarList.Values['VSTRING'];
+            Val(Result, Addr, e);
+            if e = 0 then 
+            begin
+              if Addr = 0 then
+                Result := ''''''
+              else
+                Result := MakePrintable(GetText(Addr));
+            end;            
+          end;
+        varany:  Result := VarList.Values['VANY'];
+        vararray: Result := VarList.Values['VARRAY'];
+        varbyref: Result := VarList.Values['VPOINTER'];
+        varrecord: Result := VarList.Values['VRECORD'];
+      else
+        // complex variant type
+        Result := 'variant: no debugger support yet';
+      end;
+    finally
+      VarList.Free;
+    end;
+  end;
+
 var
   R, Rtmp: TGDBMIExecResult;
   S: String;
@@ -2168,7 +2255,10 @@ begin
       end;
 
       skRecord: begin
-        AResult:= 'record ' + ResultInfo.TypeName + ' '+ AResult;
+        if ResultInfo.TypeName = 'Variant' then
+          AResult := GetVariantValue(AResult)
+        else
+          AResult:= 'record ' + ResultInfo.TypeName + ' '+ AResult;
       end;
 
       skSimple: begin
