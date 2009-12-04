@@ -4560,6 +4560,7 @@ resourcestring
     +'options to build Lazarus is not supported by this installation.%sThe '
     +'directory %s%s%s is not writable.%sSee the Lazarus website for other '
     +'ways to install Lazarus.';
+  lisIDEBuildOptions = 'IDE build options';
 
 implementation
 

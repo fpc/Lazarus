@@ -57,46 +57,48 @@ type
     function OnSubstituteCompilerOption(Options: TParsedCompilerOptions;
                                         const UnparsedValue: string;
                                         PlatformIndependent: boolean): string;
-    function MacroFuncMakeExe(const Filename: string; const Data: PtrInt;
-                              var Abort: boolean): string;
-    function MacroFuncProject(const Param: string; const Data: PtrInt;
-                              var Abort: boolean): string;
-    function MacroFuncLCLWidgetType(const Param: string; const Data: PtrInt;
-                                    var Abort: boolean): string;
-    function MacroFuncTargetCPU(const Param: string; const Data: PtrInt;
-                                var Abort: boolean): string;
-    function MacroFuncTargetOS(const Param: string; const Data: PtrInt;
-                               var Abort: boolean): string;
-    function MacroFuncSrcOS(const Param: string; const Data: PtrInt;
-                            var Abort: boolean): string;
+    function MacroFuncEnv(const Param: string; const Data: PtrInt;
+                          var Abort: boolean): string;
     function MacroFuncFPCVer(const Param: string; const Data: PtrInt;
                              var Abort: boolean): string;
+    function MacroFuncLCLWidgetType(const Param: string; const Data: PtrInt;
+                                    var Abort: boolean): string;
+    function MacroFuncMake(const Param: string; const Data: PtrInt;
+                           var Abort: boolean): string;// make utility
+    function MacroFuncMakeExe(const Filename: string; const Data: PtrInt;
+                              var Abort: boolean): string;
     function MacroFuncParams(const Param: string; const Data: PtrInt;
                              var Abort: boolean): string;
+    function MacroFuncProject(const Param: string; const Data: PtrInt;
+                              var Abort: boolean): string;
     function MacroFuncProjFile(const Param: string; const Data: PtrInt;
                                var Abort: boolean): string;
-    function MacroFuncProjPath(const Param: string; const Data: PtrInt;
-                               var Abort: boolean): string;
-    function MacroFuncTargetFile(const Param: string; const Data: PtrInt;
-                                 var Abort: boolean): string;
-    function MacroFuncTargetCmdLine(const Param: string; const Data: PtrInt;
-                                    var Abort: boolean): string;
-    function MacroFuncRunCmdLine(const Param: string; const Data: PtrInt;
-                                 var Abort: boolean): string;
-    function MacroFuncProjPublishDir(const Param: string; const Data: PtrInt;
-                                     var Abort: boolean): string;
-    function MacroFuncProjUnitPath(const Param: string; const Data: PtrInt;
-                                   var Abort: boolean): string;
     function MacroFuncProjIncPath(const Param: string; const Data: PtrInt;
-                                  var Abort: boolean): string;
-    function MacroFuncProjSrcPath(const Param: string; const Data: PtrInt;
                                   var Abort: boolean): string;
     function MacroFuncProjOutDir(const Param: string; const Data: PtrInt;
                                  var Abort: boolean): string;
-    function MacroFuncEnv(const Param: string; const Data: PtrInt;
-                          var Abort: boolean): string;
-    function MacroFuncMake(const Param: string; const Data: PtrInt;
-                           var Abort: boolean): string;// make utility
+    function MacroFuncProjPath(const Param: string; const Data: PtrInt;
+                               var Abort: boolean): string;
+    function MacroFuncProjPublishDir(const Param: string; const Data: PtrInt;
+                                     var Abort: boolean): string;
+    function MacroFuncProjSrcPath(const Param: string; const Data: PtrInt;
+                                  var Abort: boolean): string;
+    function MacroFuncProjUnitPath(const Param: string; const Data: PtrInt;
+                                   var Abort: boolean): string;
+    function MacroFuncRunCmdLine(const Param: string; const Data: PtrInt;
+                                 var Abort: boolean): string;
+    function MacroFuncSrcOS(const Param: string; const Data: PtrInt;
+                            var Abort: boolean): string;
+    function MacroFuncTargetCmdLine(const Param: string; const Data: PtrInt;
+                                    var Abort: boolean): string;
+    function MacroFuncTargetCPU(const Param: string; const Data: PtrInt;
+                                var Abort: boolean): string;
+    function MacroFuncTargetFile(const Param: string; const Data: PtrInt;
+                                 var Abort: boolean): string;
+    function MacroFuncTargetOS(const Param: string; const Data: PtrInt;
+                               var Abort: boolean): string;
+    function MacroFuncIDEBuildOptions(const Param: string; const Data: PtrInt;
+                               var Abort: boolean): string;
     function CTMacroFuncProjectUnitPath(Data: Pointer): boolean;
     function CTMacroFuncProjectIncPath(Data: Pointer): boolean;
     function CTMacroFuncProjectSrcPath(Data: Pointer): boolean;
@@ -276,6 +278,8 @@ begin
                       lisMakeExe,@MacroFuncMakeExe,[]));
   GlobalMacroList.Add(TTransferMacro.Create('Make','',
                       lisPathOfTheMakeUtility, @MacroFuncMake, []));
+  GlobalMacroList.Add(TTransferMacro.Create('IDEBuildOptions','',
+                    lisIDEBuildOptions, @MacroFuncIDEBuildOptions, []));
 
   // codetools macro functions
   CodeToolBoss.DefineTree.MacroFunctions.AddExtended(
@@ -1199,6 +1203,17 @@ begin
     Result:='%(OS_TARGET)'
   else
     Result:=GetTargetOS(true);
+end;
+
+function TBuildManager.MacroFuncIDEBuildOptions(const Param: string;
+  const Data: PtrInt; var Abort: boolean): string;
+begin
+  if (MiscellaneousOptions<>nil)
+  and (MiscellaneousOptions.BuildLazOpts<>nil)
+  then
+    Result:=MiscellaneousOptions.BuildLazOpts.ExtraOptions
+  else
+    Result:='';
 end;
 
 function TBuildManager.MacroFuncSrcOS(const Param: string; const Data: PtrInt;
