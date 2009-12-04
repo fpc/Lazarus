@@ -108,8 +108,9 @@ type
     procedure Changed; virtual;
 
     // extra drawing methods (there are more in the ancestor TFPCustomCanvas)
-    //procedure Arc(ALeft, ATop, ARight, ABottom, angle1, angle2: Integer); virtual;
-    //procedure Arc(ALeft, ATop, ARight, ABottom, SX, SY, EX, EY: Integer); virtual;
+    procedure Arc(ALeft, ATop, ARight, ABottom, StartAngle, AngleLength: Integer); virtual;
+    procedure Arc(ALeft, ATop, ARight, ABottom, SX, SY, EX, EY: Integer); virtual;
+    function LCLAngleToAggAngle(const angle: double): double;
 
     procedure FillRect(const ARect: TRect); virtual; // no border
     procedure FillRect(X1,Y1,X2,Y2: Integer);        // no border
@@ -262,6 +263,48 @@ end;
 procedure TAggLCLCanvas.Changed;
 begin
   if Assigned(FOnChange) then FOnChange(Self);
+end;
+
+procedure TAggLCLCanvas.Arc(ALeft, ATop, ARight, ABottom,
+  StartAngle, AngleLength: Integer);
+{ Use Arc to draw an elliptically curved line with the current Pen.
+  The angles angle1 and angle2 are 1/16th of a degree. For example, a full
+  circle equals 5760 (16*360). Positive values of Angle and AngleLength mean
+  counter-clockwise while negative values mean clockwise direction.
+  Zero degrees is at the 3'o clock position.
+}
+var
+  cx, cy, rx, ry, start, sweep, h: double;
+begin
+  if AngleLength=0 then exit;
+  cx:=double(ALeft+ARight)/2;
+  cy:=double(ATop+ABottom)/2;
+  rx:=double(ARight-ALeft)/2;
+  ry:=double(ABottom-ATop)/2;
+  if AngleLength>0 then begin
+    // convert counter clockwise to clockwise
+    start:=LCLAngleToAggAngle(StartAngle+AngleLength);
+    sweep:=LCLAngleToAggAngle(AngleLength);
+  end else begin
+    // clockwise
+    start:=LCLAngleToAggAngle(StartAngle);
+    sweep:=LCLAngleToAggAngle(-AngleLength);
+  end;
+  AggArc(cx,cy,rx,ry,start,sweep);
+end;
+
+procedure TAggLCLCanvas.Arc(ALeft, ATop, ARight, ABottom, SX, SY, EX,
+  EY: Integer);
+begin
+
+end;
+
+function TAggLCLCanvas.LCLAngleToAggAngle(const angle: double): double;
+// both: 0 = 3'o clock
+// LCL: counter clockwise, Agg: clockwise
+// full circle: LCL = 5760, Agg = 2*pi
+begin
+  Result:=(angle * 2*pi) / 5760;
 end;
 
 procedure TAggLCLCanvas.FillRect(const ARect: TRect);

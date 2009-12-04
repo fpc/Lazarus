@@ -33,6 +33,11 @@ procedure TForm1.FormCreate(Sender: TObject);
 var
   HasFont: Boolean;
   FontFilename: String;
+  s: String;
+  TxtW: integer;
+  TxtH: integer;
+  TxtX: Integer;
+  TxtY: Integer;
 begin
   Bitmap1:=TBitmap.Create;
   AggLCLCanvas:=TAggLCLCanvas.Create;
@@ -53,7 +58,7 @@ begin
       if not FileExists(FontFilename) then raise Exception.Create('file not found: '+FontFilename+' CurDir='+GetCurrentDirUTF8);
       Font.LoadFromFile(FontFilename);
       Font.Size:=10;
-      Font.Color:=clRed;
+      Font.Color:=clBlack;
     end;
 
     // solid white background
@@ -72,8 +77,15 @@ begin
     Ellipse(55,10,65,20);
     //GradientFill(Rect(70,10,80,20),clRed,clBlue,gdVertical);
     Frame(85,10,95,20);
+    //Arc(100,10,110,20,1000,2700);
+    //Arc(115,10,125,20,0,2700);
 
-    TextOut(10,40,'Font.Size='+IntToStr(Font.Size));
+    s:='Font.Size='+IntToStr(Font.Size);
+    GetTextSize(s,TxtW,TxtH);
+    TxtX:=10;
+    TxtY:=40;
+    FillRect(TxtX,TxtY,TxtX+TxtW,TxtY+TxtH);
+    TextOut(TxtX,TxtY,s);
   end;
 
   // convert to LCL native pixel format
@@ -82,7 +94,7 @@ begin
   // paint with widgetset to bitmap
   with Bitmap1.Canvas do begin
     Font.Size:=10;
-    Font.Color:=clRed;
+    Font.Color:=clBlack;
 
     Brush.Color:=clRed;
     Pen.Color:=clBlue;
@@ -96,8 +108,15 @@ begin
     Ellipse(55,22,65,32);
     GradientFill(Rect(70,22,80,32),clRed,clBlue,gdVertical);
     Frame(85,22,95,32);
+    //Arc(100,22,110,32,1000,2700);
+    //Arc(115,22,125,32,0,2700);
 
-    TextOut(10,52,'Font.Size='+IntToStr(Font.Size));
+    s:='Font.Size='+IntToStr(Font.Size);
+    GetTextSize(s,TxtW,TxtH);
+    TxtX:=10;
+    TxtY:=60;
+    FillRect(TxtX,TxtY,TxtX+TxtW,TxtY+TxtH);
+    TextOut(TxtX,TxtY,s);
   end;
 end;
 

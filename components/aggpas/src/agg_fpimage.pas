@@ -573,7 +573,7 @@ type
 
     procedure AggEllipse(const cx ,cy ,rx ,ry : double );
 
-    procedure AggArc (const cx ,cy ,rx ,ry ,start ,sweep : double );
+    procedure AggArc (const cx ,cy ,rx ,ry ,start ,sweep : double ); // start: 0 at 3'o clock, clockwise in rad: 180deg = 1pi
     procedure AggStar(const cx, cy, r1, r2, startAngle: double; numRays: integer);
 
     procedure AggCurve(const x1 ,y1 ,x2 ,y2 ,x3 ,y3 : double );
