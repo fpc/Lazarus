@@ -1668,6 +1668,21 @@ end;
 
 function TGDBMIDebugger.GDBEvaluate(const AExpression: String; var AResult: String; out ATypeInfo: TGDBType): Boolean;
 
+  function  FormatCurrency(const AString: String): String;
+  var
+    i, e: Integer;
+    c: Currency;
+  begin
+    Result := AString;
+    Val(Result, i, e);
+    // debugger outputs 12345 for 1,2345 values
+    if e=0 then
+    begin
+      c := i / 10000;
+      Result := CurrToStr(c);
+    end;
+  end;
+
   function MakePrintable(const AString: String): String;
   var
     n: Integer;
@@ -2092,7 +2107,7 @@ function TGDBMIDebugger.GDBEvaluate(const AExpression: String; var AResult: Stri
                   if e = 0 then
                     Result := DateTimeToStr(dt);
                 end;
-              varcurrency: Result := VarList.Values['VCURRENCY'];
+              varcurrency: Result := FormatCurrency(VarList.Values['VCURRENCY']);
               varolestr: Result := VarList.Values['VOLESTR'];
               vardispatch: Result := VarList.Values['VDISPATCH'];
               varerror: Result := VarList.Values['VERROR'];
@@ -2154,7 +2169,7 @@ function TGDBMIDebugger.GDBEvaluate(const AExpression: String; var AResult: Stri
                       if e = 0 then
                         Result := DateTimeToStr(dt);
                     end;
-                  varcurrency: Result := GetStrValue('pcurrency(%s)^', [Result]);
+                  varcurrency: Result := FormatCurrency(GetStrValue('pcurrency(%s)^', [Result]));
                   varolestr:
                     begin
                       Result := GetStrValue('^pointer(%s)^', [Result]);
@@ -2328,11 +2343,14 @@ begin
         if ResultInfo.TypeName = 'Variant' then
           AResult := GetVariantValue(AResult)
         else
-          AResult:= 'record ' + ResultInfo.TypeName + ' '+ AResult;
+          AResult := 'record ' + ResultInfo.TypeName + ' '+ AResult;
       end;
 
       skSimple: begin
-        AResult:=AResult;
+        if ResultInfo.TypeName = 'CURRENCY' then
+          AResult := FormatCurrency(AResult)
+        else
+          AResult := AResult;
       end;
     end;
 
