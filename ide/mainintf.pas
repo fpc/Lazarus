@@ -232,9 +232,16 @@ function SaveFlagsToString(Flags: TSaveFlags): string;
 
 //==============================================================================
 type
+
+  { TFileDescPascalUnitWithProjectResource }
+
+  TFileDescPascalUnitWithProjectResource = class(TFileDescPascalUnitWithResource)
+  protected
+    function GetResourceType: TLFMResourceType; override;
+  end;
   { TFileDescPascalUnitWithForm }
 
-  TFileDescPascalUnitWithForm = class(TFileDescPascalUnitWithResource)
+  TFileDescPascalUnitWithForm = class(TFileDescPascalUnitWithProjectResource)
   public
     constructor Create; override;
     function GetInterfaceUsesSection: string; override;
@@ -244,7 +251,7 @@ type
 
   { TFileDescPascalUnitWithDataModule }
 
-  TFileDescPascalUnitWithDataModule = class(TFileDescPascalUnitWithResource)
+  TFileDescPascalUnitWithDataModule = class(TFileDescPascalUnitWithProjectResource)
   public
     constructor Create; override;
     function GetInterfaceUsesSection: string; override;
@@ -254,7 +261,7 @@ type
 
   { TFileDescPascalUnitWithFrame }
 
-  TFileDescPascalUnitWithFrame = class(TFileDescPascalUnitWithResource)
+  TFileDescPascalUnitWithFrame = class(TFileDescPascalUnitWithProjectResource)
   public
     constructor Create; override;
     function GetInterfaceUsesSection: string; override;
@@ -264,7 +271,7 @@ type
 
   { TFileDescInheritedItem }
 
-  TFileDescInheritedItem = class(TFileDescPascalUnitWithResource)
+  TFileDescInheritedItem = class(TFileDescPascalUnitWithProjectResource)
   private
     FInheritedUnits: string;
   public
@@ -594,6 +601,13 @@ begin
      'var'+LE
     +'  '+ResourceName+': T'+ResourceName+';'+LE
     +LE;
+end;
+
+{ TFileDescPascalUnitWithProjectResource }
+
+function TFileDescPascalUnitWithProjectResource.GetResourceType: TLFMResourceType;
+begin
+  Result := Project1.Resources.LFMResourceType;
 end;
 
 end.

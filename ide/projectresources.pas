@@ -44,11 +44,6 @@ uses
   CodeToolManager, CodeCache;
 
 type
-  TLFMResourceType = (
-    lfmrtLRS,
-    lfmrtRes
-    );
-
   { TProjectResources }
 
   TProjectResources = class(TAbstractProjectResources)

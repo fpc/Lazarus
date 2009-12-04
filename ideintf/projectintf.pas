@@ -45,6 +45,11 @@ const
   ProjDescNameEmpty = 'Empty';
 
 type
+  TLFMResourceType = (
+    lfmrtLRS,
+    lfmrtRes
+    );
+
   TCOCNodeType = (
     cocntNone,
     cocntIf,
@@ -566,6 +571,8 @@ type
   TFileDescPascalUnitWithResource = class(TFileDescPascalUnit)
   private
     FDeclareClassVariable: Boolean;
+  protected
+    function GetResourceType: TLFMResourceType; virtual;
   public
     constructor Create; override;
 
@@ -1345,6 +1352,11 @@ end;
 
 { TFileDescPascalUnitWithResource }
 
+function TFileDescPascalUnitWithResource.GetResourceType: TLFMResourceType;
+begin
+  Result := lfmrtLRS;
+end;
+
 constructor TFileDescPascalUnitWithResource.Create;
 begin
   inherited Create;
@@ -1354,7 +1366,9 @@ end;
 function TFileDescPascalUnitWithResource.GetInterfaceUsesSection: string;
 begin
   Result:=inherited GetInterfaceUsesSection;
-  Result:=Result+', FileUtil, LResources';
+  Result:=Result+', FileUtil';
+  if GetResourceType = lfmrtLRS then
+    Result := Result +', LResources';
 end;
 
 function TFileDescPascalUnitWithResource.GetInterfaceSource(const Filename,
@@ -1386,11 +1400,15 @@ var
   ResourceFilename: String;
   LE: String;
 begin
-  ResourceFilename:=TrimFilename(ExtractFilenameOnly(Filename)+DefaultResFileExt);
   LE:=LineEnding;
-  Result:='initialization'+LE
-    +'  {$I '+ResourceFilename+'}'+LE
-    +LE
+  case GetResourceType of
+    lfmrtLRS:
+      begin
+        ResourceFilename:=TrimFilename(ExtractFilenameOnly(Filename)+DefaultResFileExt);
+        Result:='initialization'+LE+'  {$I '+ResourceFilename+'}'+LE+LE;
+      end;
+    lfmrtRes: Result := LE+'{$R *.lfm}'+LE+LE;
+  end;
 end;
 
 { TProjectDescriptor }
