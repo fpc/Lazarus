@@ -609,6 +609,8 @@ type
     fProjectDirectory: string;
     fProjectDirectoryReferenced: string;
     fProjectInfoFile: String;  // the lpi filename
+    fProjectInfoFileBuffer: TCodeBuffer;
+    fProjectInfoFileDate: LongInt;
     FPublishOptions: TPublishProjectOptions;
     FResources: TProjectResources;
     FRevertLockCount: integer;
@@ -693,6 +695,8 @@ type
     function SomethingModified(CheckData, CheckSession: boolean): boolean;
     procedure MainSourceFilenameChanged;
     procedure GetUnitsChangedOnDisk(var AnUnitList: TFPList);
+    function HasProjectInfoFileChangedOnDisk: boolean;
+    procedure IgnoreProjectInfoFileOnDisk;
     function ReadProject(const NewProjectInfoFile: string): TModalResult;
     function WriteProject(ProjectWriteFlags: TProjectWriteFlags;
                           const OverrideProjectInfoFile: string): TModalResult;
@@ -2171,8 +2175,16 @@ begin
       Result:=mrOk;
     except
       on E: Exception do begin
-        Result:=MessageDlg('Write error','Unable to write to file "'+CfgFilename+'".',
+        Result:=MessageDlg(lisCodeToolsDefsWriteError, Format(
+          lisUnableToWriteToFile, ['"', CfgFilename, '"']),
           mtError,[mbRetry,mbAbort],0);
+      end;
+    end;
+    if CompareFilenames(ProjectInfoFile,xmlconfig.Filename)=0 then begin
+      fProjectInfoFileBuffer:=CodeToolBoss.LoadFile(ProjectInfoFile,true,true);
+      try
+        fProjectInfoFileDate:=FileAgeUTF8(ProjectInfoFile);
+      except
       end;
     end;
     try
@@ -2489,9 +2501,15 @@ begin
     Clear;
 
     ProjectInfoFile:=NewProjectInfoFile;
+    fProjectInfoFileBuffer:=CodeToolBoss.LoadFile(ProjectInfoFile,true,true);
     try
+      fProjectInfoFileDate:=FileAgeUTF8(ProjectInfoFile);
       {$IFDEF IDE_MEM_CHECK}CheckHeapWrtMemCnt('TProject.ReadProject A reading lpi');{$ENDIF}
-      xmlconfig := TXMLConfig.Create(ProjectInfoFile);
+      if fProjectInfoFileBuffer=nil then
+        xmlconfig := TXMLConfig.CreateClean(ProjectInfoFile)
+      else
+        xmlconfig := TXMLConfig.CreateWithSource(ProjectInfoFile,
+                                                 fProjectInfoFileBuffer.Source);
       {$IFDEF IDE_MEM_CHECK}CheckHeapWrtMemCnt('TProject.ReadProject B done lpi');{$ENDIF}
     except
       MessageDlg(Format(lisUnableToReadTheProjectInfoFile, [#13, '"',
@@ -2591,6 +2609,7 @@ begin
       {$IFDEF IDE_MEM_CHECK}CheckHeapWrtMemCnt('TProject.ReadProject freeing xml');{$ENDIF}
       fPathDelimChanged:=false;
       try
+        xmlconfig.Modified:=false;
         xmlconfig.Free;
       except
       end;
@@ -2633,6 +2652,7 @@ begin
 
         fPathDelimChanged:=false;
         try
+          xmlconfig.Modified:=false;
           xmlconfig.Free;
         except
         end;
@@ -3626,6 +3646,37 @@ begin
     end;
     AnUnitInfo:=AnUnitInfo.fNext[uilAutoRevertLocked];
   end;
+end;
+
+function TProject.HasProjectInfoFileChangedOnDisk: boolean;
+var
+  AnUnitInfo: TUnitInfo;
+begin
+  Result:=false;
+  if IsVirtual or Modified then exit;
+  AnUnitInfo:=UnitInfoWithFilename(ProjectInfoFile,[pfsfOnlyEditorFiles]);
+  if (AnUnitInfo<>nil) then begin
+    // users is editing the lpi file in source editor
+    exit;
+  end;
+  AnUnitInfo:=fFirst[uilAutoRevertLocked];
+  while (AnUnitInfo<>nil) do begin
+    if CompareFilenames(AnUnitInfo.Filename,ProjectInfoFile)=0 then begin
+      // revert locked
+      exit;
+    end;
+    AnUnitInfo:=AnUnitInfo.fNext[uilAutoRevertLocked];
+  end;
+
+  if not FileExistsCached(ProjectInfoFile) then exit;
+  if fProjectInfoFileDate=FileAgeUTF8(ProjectInfoFile) then exit;
+  //DebugLn(['TProject.HasProjectInfoFileChangedOnDisk ',ProjectInfoFile,' fProjectInfoFileDate=',fProjectInfoFileDate,' ',FileAgeUTF8(ProjectInfoFile)]);
+  Result:=true;
+end;
+
+procedure TProject.IgnoreProjectInfoFileOnDisk;
+begin
+  fProjectInfoFileDate:=FileAgeUTF8(ProjectInfoFile);
 end;
 
 procedure TProject.SetBookmark(AnUnitInfo: TUnitInfo; X, Y, ID: integer);

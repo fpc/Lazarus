@@ -391,7 +391,7 @@ begin
       break;
     end else begin
       Result:=IDEMessageDialog(lisUnableToWriteFile,
-        Format(lisUnableToWriteFile2, ['"', Buffer.Filename, '"']),
+        Format(lisUnableToWriteToFile, ['"', Buffer.Filename, '"']),
         mtError,ErrorButtons+[mbCancel]);
       if Result<>mrRetry then exit;
     end;
@@ -450,7 +450,7 @@ begin
     end;
   except
     Result:=IDEMessageDialog(lisUnableToWriteFile,
-      Format(lisUnableToWriteFilename, ['"', AFilename, '"']), mtError, [
+      Format(lisUnableToWriteToFile, ['"', AFilename, '"']), mtError, [
         mbCancel, mbAbort]);
     exit;
   end;
@@ -479,7 +479,7 @@ begin
   Result:=mrOk;
   while not FileIsWritable(Filename) do begin
     Result:=IDEMessageDialog(lisFileIsNotWritable,
-      Format(lisUnableToWriteToFile2, ['"', Filename, '"']),
+      Format(lisUnableToWriteToFile, ['"', Filename, '"']),
       mtError,ErrorButtons+[mbCancel]);
     if Result<>mrRetry then exit;
   end;

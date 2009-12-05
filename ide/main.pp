@@ -11245,6 +11245,21 @@ begin
   APackageList:=nil;
   try
     InvalidateFileStateCache;
+
+    if Project1.HasProjectInfoFileChangedOnDisk then begin
+      if QuestionDlg(lisProjectChangedOnDisk,
+        Format(lisTheProjectInformationFileHasChangedOnDisk, ['"',
+          Project1.ProjectInfoFile, '"', #13]), mtConfirmation, [mrYes,
+            lisReopenProject, mrIgnore], '')
+        =mrYes
+      then begin
+        DoOpenProjectFile(Project1.ProjectInfoFile,[]);
+      end else begin
+        Project1.IgnoreProjectInfoFileOnDisk;
+      end;
+      exit(mrOk);
+    end;
+
     Project1.GetUnitsChangedOnDisk(AnUnitList);
     PkgBoss.GetPackagesChangedOnDisk(APackageList);
     if (AnUnitList=nil) and (APackageList=nil) then exit;

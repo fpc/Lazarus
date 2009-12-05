@@ -151,6 +151,7 @@ type
     procedure BeginUpdate;
     procedure EndUpdate;
     procedure SaveUserLinks;
+    function NeedSaveUserLinks(const ConfigFilename: string): boolean;
     procedure WriteLinkTree(LinkTree: TAVLTree);
     function FindLinkWithPkgName(const PkgName: string): TPackageLink;
     function FindLinkWithDependency(Dependency: TPkgDependency): TPackageLink;
@@ -531,6 +532,7 @@ begin
       end else
         NewPkgLink.Free;
     end;
+    XMLConfig.Modified:=false;
     XMLConfig.Free;
     
     UserLinkLoadTime:=FileAgeUTF8(ConfigFilename);
@@ -608,11 +610,8 @@ begin
   ConfigFilename:=GetUserLinkFile;
   
   // check if file needs saving
-  if (not Modified)
-  and UserLinkLoadTimeValid and FileExistsUTF8(ConfigFilename)
-  and (FileAgeUTF8(ConfigFilename)=UserLinkLoadTime) then
-    exit;
-  //DebugLn(['TPackageLinks.SaveUserLinks saving ... ',ConfigFilename]);
+  if not NeedSaveUserLinks(ConfigFilename) then exit;
+  //DebugLn(['TPackageLinks.SaveUserLinks saving ... ',ConfigFilename,' Modified=',Modified,' UserLinkLoadTimeValid=',UserLinkLoadTimeValid,' ',FileAgeUTF8(ConfigFilename)=UserLinkLoadTime]);
 
   LazSrcDir:=EnvironmentOptions.LazarusDirectory;
 
@@ -621,6 +620,7 @@ begin
     XMLConfig:=TXMLConfig.CreateClean(ConfigFilename);
 
     Path:='UserPkgLinks/';
+    XMLConfig.SetValue(Path+'Version',PkgLinksFileVersion);
     ANode:=FUserLinksSortID.FindLowest;
     i:=0;
     while ANode<>nil do begin
@@ -663,6 +663,14 @@ begin
     end;
   end;
   Modified:=false;
+end;
+
+function TPackageLinks.NeedSaveUserLinks(const ConfigFilename: string): boolean;
+begin
+  Result:=Modified
+          or (not UserLinkLoadTimeValid)
+          or (not FileExistsUTF8(ConfigFilename))
+          or (FileAgeUTF8(ConfigFilename)<>UserLinkLoadTime);
 end;
 
 procedure TPackageLinks.WriteLinkTree(LinkTree: TAVLTree);

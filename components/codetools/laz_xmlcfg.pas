@@ -54,13 +54,15 @@ type
   protected
     doc: TXMLDocument;
     FModified: Boolean;
-    fDoNotLoad: boolean;
+    fDoNotLoadFromFile: boolean;
+    fAutoLoadFromSource: string;
     procedure Loaded; override;
     function ExtendedToStr(const e: extended): string;
     function StrToExtended(const s: string; const ADefault: extended): extended;
   public
     constructor Create(const AFilename: String); overload;
     constructor CreateClean(const AFilename: String);
+    constructor CreateWithSource(const AFilename, Source: String);
     destructor Destroy; override;
     procedure Clear;
     procedure Flush;    // Writes the XML file
@@ -109,9 +111,19 @@ constructor TXMLConfig.CreateClean(const AFilename: String);
 begin
   //DebugLn(['TXMLConfig.CreateClean ',AFilename]);
   inherited Create(nil);
-  fDoNotLoad:=true;
+  fDoNotLoadFromFile:=true;
   SetFilename(AFilename);
   FModified:=FileExistsCached(AFilename);
+end;
+
+constructor TXMLConfig.CreateWithSource(const AFilename, Source: String);
+begin
+  fAutoLoadFromSource:=Source;
+  try
+    CreateClean(AFilename);
+  finally
+    fAutoLoadFromSource:='';
+  end;
 end;
 
 destructor TXMLConfig.Destroy;
@@ -143,6 +155,7 @@ procedure TXMLConfig.Flush;
 begin
   if Modified and (Filename<>'') then
   begin
+    DebugLn(['TXMLConfig.Flush ',Filename]);
     WriteXMLFile(doc, Filename);
     FModified := False;
   end;
@@ -429,6 +442,7 @@ end;
 procedure TXMLConfig.SetFilename(const AFilename: String);
 var
   cfg: TDOMElement;
+  ms: TMemoryStream;
 begin
   {$IFDEF MEM_CHECK}CheckHeapWrtMemCnt('TXMLConfig.SetFilename A '+AFilename);{$ENDIF}
   if FFilename = AFilename then exit;
@@ -444,8 +458,18 @@ begin
   end;
 
   doc:=nil;
-  if FileExistsUTF8(AFilename) and (not fDoNotLoad) then
-    ReadXMLFile(doc,AFilename);
+  if (not fDoNotLoadFromFile) and FileExistsUTF8(AFilename) then
+    ReadXMLFile(doc,AFilename)
+  else if fAutoLoadFromSource<>'' then begin
+    ms:=TMemoryStream.Create;
+    try
+      ms.Write(fAutoLoadFromSource[1],length(fAutoLoadFromSource));
+      ms.Position:=0;
+      ReadXMLFile(doc,ms);
+    finally
+      ms.Free;
+    end;
+  end;
 
   if not Assigned(doc) then
     doc := TXMLDocument.Create;

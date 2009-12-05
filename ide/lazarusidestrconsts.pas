@@ -531,6 +531,11 @@ resourcestring
   lisFileNotText = 'File not text';
   lisUnableToRenameFile = 'Unable to rename file';
   lisUnableToCopyFile = 'Unable to copy file';
+  lisWriteError = 'Write Error';
+  lisFileDoesNotLookLikeATextFileOpenItAnyway2 = 'File %s%s%s%sdoes not look '
+    +'like a text file.%sOpen it anyway?';
+  lisUnableToCreateBackupDirectory =
+    'Unable to create backup directory %s%s%s.';
   lisSourceAndDestinationAreTheSame =
     'Source and Destination are the same:%s%s';
   lisUnableToRenameFileTo2 = 'Unable to rename file %s%s%s%sto %s%s%s.';
@@ -588,12 +593,6 @@ resourcestring
     +'file.';
   lisUnableToReadTheProjectInfoFile2 = 'Unable to read the project info file%'
     +'s%s%s%s.';
-  lisWriteError = 'Write Error';
-  lisUnableToWriteToFile = 'Unable to write to file %s%s%s!';
-  lisFileDoesNotLookLikeATextFileOpenItAnyway2 = 'File %s%s%s%sdoes not look '
-    +'like a text file.%sOpen it anyway?';
-  lisUnableToCreateBackupDirectory =
-    'Unable to create backup directory %s%s%s.';
   lisAmbiguousUnitFound2 = 'Ambiguous unit found';
   lisTheUnitExistsTwiceInTheUnitPathOfThe = 'The unit %s exists twice in the '
     +'unit path of the %s:';
@@ -2956,10 +2955,8 @@ resourcestring
     +'yet in the unit path.%sAdd it?';
   lisUnableToCreateFilename = 'Unable to create file %s%s%s.';
   lisUnableToWriteFile = 'Unable to write file';
-  lisUnableToWriteFile2 = 'Unable to write file %s%s%s';
+  lisUnableToWriteToFile = 'Unable to write to file %s%s%s.';
   lisFileIsNotWritable = 'File is not writable';
-  lisUnableToWriteToFile2 = 'Unable to write to file %s%s%s';
-  lisUnableToWriteFilename = 'Unable to write file %s%s%s.';
   lisUnableToReadFile = 'Unable to read file';
   lisUnableToReadFilename = 'Unable to read file %s%s%s.';
   lisErrorDeletingFile = 'Error deleting file';
@@ -4345,6 +4342,10 @@ resourcestring
     +'default compiler. e.g. ppc386 ppcx64 ppcppc etc. default is stored in '
     +'environmentoptions.xml';
   lisNo = 'No';
+  lisProjectChangedOnDisk = 'Project changed on disk';
+  lisTheProjectInformationFileHasChangedOnDisk = 'The project information '
+    +'file %s%s%s%shas changed on disk.';
+  lisReopenProject = 'Reopen project';
   rsOk = 'ok';
   rsScanners = 'Scanners';
   rsAvailableScanners = 'Available scanners';
