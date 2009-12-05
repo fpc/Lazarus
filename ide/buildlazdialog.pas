@@ -112,7 +112,6 @@ type
     FAdvanced: boolean;
     FCleanAll: boolean;
     FGlobals: TGlobalCompilerOptions;
-    FItemCodeTools: TBuildLazarusItem;
     FItemExamples: TBuildLazarusItem;
     FItemIDE: TBuildLazarusItem;
     FItemIDEIntf: TBuildLazarusItem;
@@ -158,7 +157,6 @@ type
     property Items[Index: integer]: TBuildLazarusItem read GetItems;
     property ItemLCL: TBuildLazarusItem read FItemLCL;
     property ItemSynEdit: TBuildLazarusItem read FItemSynEdit;
-    property ItemCodeTools: TBuildLazarusItem read FItemCodeTools;
     property ItemPkgReg: TBuildLazarusItem read FItemPkgReg;
     property ItemIDEIntf: TBuildLazarusItem read FItemIDEIntf;
     property ItemIDE: TBuildLazarusItem read FItemIDE;
@@ -1435,7 +1433,6 @@ begin
 
   FItemLCL:=nil;
   FItemSynEdit:=nil;
-  FItemCodeTools:=nil;
   FItemPkgReg:=nil;
   FItemIDEIntf:=nil;
   FItemIDE:=nil;
@@ -1464,11 +1461,6 @@ begin
   FItemSynEdit:=TBuildLazarusItem.Create(
     'SynEdit',lisSynEdit,'components/synedit',mmBuild);
   FItems.Add(FItemSynEdit);
-
-  // CodeTools
-  FItemCodeTools:=TBuildLazarusItem.Create(
-    'CodeTools',lisCodeTools,'components/codetools',mmBuild);
-  FItems.Add(FItemCodeTools);
 
   // IDE
   FItemIDE:=TBuildLazarusItem.Create('IDE',lisIDE,'',mmBuild);
@@ -1606,7 +1598,6 @@ begin
   FItemPkgReg:=FindName('PkgReg');
   FItemIDEIntf:=FindName('IDEIntf');
   FItemSynEdit:=FindName('SynEdit');
-  FItemCodeTools:=FindName('CodeTools');
   FItemIDE:=FindName('IDE');
   FItemExamples:=FindName('Examples');
 end;
