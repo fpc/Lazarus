@@ -962,6 +962,8 @@ type
 var
   ZoneRec: RZone;
   ZoneName: string;
+const
+  BookZoneName: string = '*';
 
 procedure TEasyTree.SaveToStream(Stream: TStream);
 
@@ -976,8 +978,18 @@ procedure TEasyTree.SaveToStream(Stream: TStream);
     child := Zone.ChildControl;
     if child = nil then
       ZoneName := ''
-    else
-      ZoneName := child.Name;
+  {$IFDEF new}
+    else if child is TEasyDockBook then begin
+      ZoneName := BookZoneName;
+      ZoneName := TEasyDockBook(child).GetDockCaption(child)
+      //ZoneName := TWinControlAccess(child).GetDockCaption(child); // BookZoneName
+    end
+  {$ELSE}
+  {$ENDIF}
+    else begin
+      //ZoneName := child.Name;
+      ZoneName := DockSite.GetDockCaption(child); //default to child.Name
+    end;
     ZoneRec.NameLen := Length(ZoneName);
   //write descriptor
     Stream.Write(ZoneRec, sizeof(ZoneRec));
@@ -1005,9 +1017,22 @@ begin
 end;
 
 function TEasyTree.ReloadDockedControl(const AName: string): TControl;
+{$IFDEF new}
+var
+  nb: TEasyBook;
 begin
-  TWinControlAccess(DockSite).ReloadDockedControl(ZoneName, Result);
+  if Pos(',', AName) > 0 then begin
+    nb := NoteBookCreate(FDockSite);
+    nb.SetDockCaption(AName);
+    Result := nb;
+  end else begin
+    TWinControlAccess(DockSite).ReloadDockedControl(ZoneName???, Result);
 end;
+{$ELSE}
+begin
+  TWinControlAccess(DockSite).ReloadDockedControl(AName, Result);
+end;
+{$ENDIF}
 
 procedure TEasyTree.LoadFromStream(Stream: TStream);
 
@@ -1028,6 +1053,17 @@ procedure TEasyTree.LoadFromStream(Stream: TStream);
       DebugLn('reload done');
   end;
 
+  procedure ClearSite;
+  var
+    i: integer;
+    ctl: TControl;
+  begin
+    for i := FDockSite.DockClientCount - 1 downto 0 do begin
+      ctl := FDockSite.DockClients[i];
+      ctl.ManualDock(nil);
+    end;
+  end;
+
   procedure MakeZones;
   var
     PrevZone, NewZone: TEasyZone;
@@ -1046,31 +1082,31 @@ procedure TEasyTree.LoadFromStream(Stream: TStream);
         NewCtl := ReloadDockedControl(ZoneName);
       //do we need a control in any case?
         if NewCtl = nil then begin
+        //debug: create some control
           NewCtl := TPanel.Create(DockSite);
+          NewCtl.Name := ZoneName;
         end;
+      {$IFDEF old}
         try
           DebugLn('try rename %s into %s', [NewCtl.Name, ZoneName]);
-          NewCtl.Name := ZoneName;
+          if NewCtl is TEasyBook then
+            //TEasyBook(NewCtl).SetDockCaption(ZoneName)
+            DebugLn('!!!DockBook!!!')
+          else
+            NewCtl.Name := ZoneName;
         except
           DebugLn('error rename');
         end;
         NewCtl.Caption := ZoneName;
+      {$ELSE}
+      {$ENDIF}
         if NewCtl <> nil then begin
-        {$IFDEF old}
-          NewCtl.Align := alNone;
-          NewCtl.Visible := True;
-          NewCtl.Parent := DockSite;
-          NewCtl.Width := ZoneRec.BottomRight.x;
-          NewCtl.Height := ZoneRec.BottomRight.y;
-          NewZone.ChildControl := NewCtl;
-        {$ELSE}
           NewCtl.Visible := True;
           NewZone.ChildControl := NewCtl;
           SetReplacingControl(NewCtl);
           NewCtl.ManualDock(DockSite);
           NewCtl.Width := ZoneRec.BottomRight.x;
           NewCtl.Height := ZoneRec.BottomRight.y;
-        {$ENDIF}
         end;
       end;
       while NewLvl < PrevLvl do begin
@@ -1090,6 +1126,8 @@ procedure TEasyTree.LoadFromStream(Stream: TStream);
   end;
 
 begin
+//remove all docked controls
+  ClearSite;
 //read record
   if GetRec > 0 then begin
     FTopZone.BR := ZoneRec.BottomRight;

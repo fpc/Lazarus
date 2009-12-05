@@ -76,12 +76,14 @@ type
     constructor Create(AOwner: TComponent); override;
     destructor Destroy; override;
     procedure AddElasticSites(AForm: TCustomForm; Sides: sDockSides);
+    //function  CreateDockable(const AName: string; site: TWinControl; fMultiInst: boolean; fWrap: boolean = True): TWinControl;
     function  CreateDockable(const AName: string; fMultiInst: boolean; fWrap: boolean = True): TWinControl;
     function  MakeDockable(AForm: TWinControl; fWrap: boolean = True): TForm;
     procedure DumpSites;
   //persistence
     procedure LoadFromStream(Stream: TStream);
     procedure SaveToStream(Stream: TStream);
+    function  ReloadDockedControl(const AName: string; Site: TWinControl): TControl;
   end;
 
 function  TryRename(AComp: TComponent; const NewName: string): boolean;
@@ -210,21 +212,38 @@ begin
   end;
 end;
 
+//function TDockMaster.CreateDockable(const AName: string; site: TWinControl;
 function TDockMaster.CreateDockable(const AName: string;
   fMultiInst: boolean; fWrap: boolean): TWinControl;
+var
+  nb: TEasyBook;
 begin
 (* Create a dockable form, based on its name.
   Used also to restore a layout.
+
+Not now:
+  Used also to restore a DockBook (AName contains ",")
+  (second chance, after LoadFromStream)
 
 Options (to come or to be removed)
   fMultiInst allows to auto-create new instances (if True),
   otherwise an already existing instance is returned. (really returned?)
 *)
-//get the form
-  Result := ReloadForm(AName, fMultiInst);
-  if Result = nil then
-    exit;
-  MakeDockable(Result, fWrap);
+{$IFDEF new}
+  if Pos(',', AName) > 0 then begin
+    nb := NoteBookCreate(site); //DockSite???
+    nb.SetDockCaption(AName);
+    Result := nb;
+  end else
+{$ELSE}
+{$ENDIF}
+  begin
+  //get the form
+    Result := ReloadForm(AName, fMultiInst);
+    if Result = nil then
+      exit;
+    MakeDockable(Result, fWrap);
+  end;
 end;
 
 function TDockMaster.MakeDockable(AForm: TWinControl; fWrap: boolean): TForm;
@@ -283,6 +302,52 @@ begin
     AForm.EnableAlign;
   end;
   img.BringToFront;
+end;
+
+function TDockMaster.ReloadDockedControl(const AName: string;
+  Site: TWinControl): TControl;
+var
+  i: integer;
+  lst: TStringList;
+  nb: TEasyBook absolute Result;
+  s: string;
+  ctl: TControl;
+  //se: TSynEdit;
+begin
+(* Reload docked controls - forms or NoteBook
+  NoteBook identified by comma separated names in AName,
+    FileEditor identified by dot in name.
+*)
+  if Pos(',', AName) > 0 then begin
+  //restore NoteBook
+    nb := NoteBookCreate(Site);
+    lst := TStringList.Create;
+    try
+      lst.CommaText := AName;
+      for i := 0 to lst.Count - 1 do begin
+        s := lst[i];
+        if Pos('.', s) > 0 then begin
+        //restore editor
+          { TODO -cdocking : restore editor for file }
+        end else begin
+          ctl := ReloadForm(s, True); //try both multi and single instance
+          if ctl <> nil then
+            try
+              ctl.ManualDock(nb);
+            except
+              DebugLn('!!!error docking ', s);
+{ TODO 1 : There exists a bug in the destruction of fDockBook (TWinControl).
+The docked clients retain the HostDockSite - which becomes invalid when destroyed! }
+            end;
+        end;
+      end;
+    finally
+      lst.Free;
+    end;
+  end else begin
+  //restore control (form?)
+    Result := ReloadForm(AName, True);
+  end;
 end;
 
 procedure TDockMaster.FormEndDock(Sender, Target: TObject; X, Y: Integer);
@@ -880,13 +945,20 @@ end;
 
 function TAppDockManager.ReloadDockedControl(const AName: string): TControl;
 begin
+(* Special connect to DockManager, and restore NoteBooks.
+*)
   if False then
     Result:=inherited ReloadDockedControl(AName); //asking DockSite (very bad idea)
   if assigned(DockMaster) then begin
-    Result := DockMaster.CreateDockable(AName, True, False);
-  end else begin
+    //Result := DockMaster.CreateDockable(AName, FDockSite, True, False);
+    //Result := DockMaster.CreateDockable(AName, True, False);
+    Result := DockMaster.ReloadDockedControl(AName, FDockSite);
+  end else begin  //application default - search Application or Screen?
     //Owner.FindComponent(AControlName) as TControl;
-    Result := Application.FindComponent(AName) as TControl;
+    //Result := Application.FindComponent(AName) as TControl;
+    Result := Screen.FindForm(AName);
+    //if Result = nil then Result := 'T' + AName
+    { TODO -cdocking : load form by name, or create from typename }
   end;
   if Result <> nil then
     DebugLn('Reloaded %s.%s', [Result.Owner.Name, Result.Name]);

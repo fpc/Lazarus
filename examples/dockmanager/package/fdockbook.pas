@@ -108,6 +108,11 @@ type
     function GetControlTab(AControl: TControl): TTabButton;
   public
     StayDocked: boolean;
+    destructor Destroy; override;
+  {$IFDEF new}
+    procedure SetDockCaption(const AName: string);
+  {$ELSE}
+  {$ENDIF}
   end;
 
 //procedure Register;
@@ -129,6 +134,32 @@ end;
 
 { TEasyDockBook }
 
+destructor TEasyDockBook.Destroy;
+var
+  i: integer;
+  ctl: TControl;
+begin
+(* Problem with undocking?
+
+  The DockClients are not properly undocked when we (HostDockSite) are destroyed :-(
+
+  This code prevents an error when the DockClients are docked later,
+    by definitely undocking all clients.
+
+  But then the bug will strike back when the notebook is destroyed at the
+    end of the application.
+  Fix: check ctl.ComponentState for csDestroying.
+*)
+  for i := DockClientCount - 1 downto 0 do begin
+    ctl := DockClients[i];
+    if not (csDestroying in ctl.ComponentState) then
+      ctl.ManualDock(nil);
+    DebugLn('Undocked %s P=%p H=%p', [ctl.Name,
+      pointer(ctl.Parent), pointer(ctl.HostDockSite)]);
+  end;
+  inherited Destroy;
+end;
+
 procedure TEasyDockBook.FormClose(Sender: TObject;
   var CloseAction: TCloseAction);
 var
@@ -149,9 +180,9 @@ begin
     ctl.ManualDock(nil);
     DebugLn('Undocked %s P=%p H=%p', [ctl.Name,
       pointer(ctl.Parent), pointer(ctl.HostDockSite)]);
-    if ctl is TCustomForm then begin
+    //if ctl is TCustomForm then begin
       //frm.Close;
-    end;
+    //end;
   end;
   //EndFormUpdate;
 {$ELSE}
@@ -309,6 +340,28 @@ begin
       Result := Result + ', ' + pg.Caption;
   end;
 end;
+
+{$IFDEF new}
+procedure TEasyDockBook.SetDockCaption(const AName: string);
+var
+  lst: TStringList;
+  i: integer;
+  s: string;
+  ctl: TControl;
+begin
+  lst := TStringList.Create;
+  lst.CommaText := AName;
+  for i := 0 to lst.Count - 1 do begin
+    s := lst.Strings[i];
+    ReloadDockedControl(s, ctl);
+    if ctl <> nil then begin
+      ctl.Name := s;
+      ctl.ManualDock(self, nil, alCustom);
+    end;
+  end;
+end;
+{$ELSE}
+{$ENDIF}
 
 procedure TEasyDockBook.ToolButton1Click(Sender: TObject);
 var
