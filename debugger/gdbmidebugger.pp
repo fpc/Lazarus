@@ -1668,21 +1668,6 @@ end;
 
 function TGDBMIDebugger.GDBEvaluate(const AExpression: String; var AResult: String; out ATypeInfo: TGDBType): Boolean;
 
-  function  FormatCurrency(const AString: String): String;
-  var
-    i, e: Integer;
-    c: Currency;
-  begin
-    Result := AString;
-    Val(Result, i, e);
-    // debugger outputs 12345 for 1,2345 values
-    if e=0 then
-    begin
-      c := i / 10000;
-      Result := CurrToStr(c);
-    end;
-  end;
-
   function MakePrintable(const AString: String): String;
   var
     n: Integer;
@@ -1859,12 +1844,20 @@ function TGDBMIDebugger.GDBEvaluate(const AExpression: String; var AResult: Stri
     Result := ASource[2] = 'x';
   end;
 
-  function HexCToHexPascal(const ASource: String): String;
+  function HexCToHexPascal(const ASource: String; MinChars: Byte = 0): String;
+  var
+    Zeros: String;
   begin
     if IsHexC(Asource)
     then begin
-      Result := Copy(ASource, 2, Length(ASource) - 1);
-      Result[1] := '$';
+      Result := Copy(ASource, 3, Length(ASource) - 2);
+      if Length(Result) < MinChars then
+      begin
+        SetLength(Zeros, MinChars - Length(Result));
+        FillChar(Zeros[1], Length(Zeros), '0');
+        Result := Zeros + Result;
+      end;
+      Result := '$' + Result;
     end
     else Result := ASource;
   end;
@@ -2074,7 +2067,36 @@ function TGDBMIDebugger.GDBEvaluate(const AExpression: String; var AResult: Stri
     else Result := AString;
   end;
 
+  function FormatCurrency(const AString: String): String;
+  var
+    i, e: Integer;
+    c: Currency;
+  begin
+    Result := AString;
+    Val(Result, i, e);
+    // debugger outputs 12345 for 1,2345 values
+    if e=0 then
+    begin
+      c := i / 10000;
+      Result := CurrToStr(c);
+    end;
+  end;
+
+  function FormatPointer(const AString: String; const TypeCast: String = ''): String;
+  begin
+    // 0xabc0 => $0000ABC0
+    Result := UpperCase(HexCToHexPascal(AString, SizeOf(Pointer) * 2));
+    if TypeCast <> '' then
+      Result := TypeCast + '(' + Result + ')';
+  end;
+
   function GetVariantValue(AString: String): String;
+
+    function FormatVarError(const AString: String): String; inline;
+    begin
+      Result := 'Error('+AString+')';
+    end;
+
   var
     VarList: TGDBMINameValueList;
     VType: Integer;
@@ -2109,10 +2131,10 @@ function TGDBMIDebugger.GDBEvaluate(const AExpression: String; var AResult: Stri
                 end;
               varcurrency: Result := FormatCurrency(VarList.Values['VCURRENCY']);
               varolestr: Result := VarList.Values['VOLESTR'];
-              vardispatch: Result := VarList.Values['VDISPATCH'];
-              varerror: Result := VarList.Values['VERROR'];
+              vardispatch: Result := FormatPointer(VarList.Values['VDISPATCH'], 'IDispatch');
+              varerror: Result := FormatVarError(VarList.Values['VERROR']);
               varboolean: Result := VarList.Values['VBOOLEAN'];
-              varunknown: Result := VarList.Values['VUNKNOWN'];
+              varunknown: Result := FormatPointer(VarList.Values['VUNKNOWN'], 'IUnknown');
               varshortint: Result := VarList.Values['VSHORTINT'];
               varbyte: Result := VarList.Values['VBYTE'];
               varword: Result := VarList.Values['VWORD'];
@@ -2177,7 +2199,10 @@ function TGDBMIDebugger.GDBEvaluate(const AExpression: String; var AResult: Stri
                       if e = 0 then
                         Result := MakePrintable(GetWideText(Addr));
                     end;
+                  vardispatch: Result := FormatPointer(GetStrValue('ppointer(%s)^', [Result]), 'IDispatch');
+                  varerror: Result := FormatVarError(GetStrValue('phresult(%s)^', [Result]));
                   varboolean: Result := GetStrValue('pwordbool(%s)^', [Result]);
+                  varunknown: Result := FormatPointer(GetStrValue('ppointer(%s)^', [Result]), 'IUnknown');
                   varshortint: Result := GetStrValue('pshortint(%s)^', [Result]);
                   varbyte: Result := GetStrValue('pbyte(%s)^', [Result]);
                   varword: Result := GetStrValue('pword(%s)^', [Result]);
