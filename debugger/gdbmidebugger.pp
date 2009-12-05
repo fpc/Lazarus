@@ -2085,7 +2085,7 @@ function TGDBMIDebugger.GDBEvaluate(const AExpression: String; var AResult: Stri
   function FormatPointer(const AString: String; const TypeCast: String = ''): String;
   begin
     // 0xabc0 => $0000ABC0
-    Result := UpperCase(HexCToHexPascal(AString, SizeOf(Pointer) * 2));
+    Result := UpperCase(HexCToHexPascal(AString, TargetWidth div 4));
     if TypeCast <> '' then
       Result := TypeCast + '(' + Result + ')';
   end;
