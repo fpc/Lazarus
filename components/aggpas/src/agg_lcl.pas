@@ -133,6 +133,9 @@ type
                        NumPts: Integer = -1);
     procedure Polyline(Points: PPoint; NumPts: Integer); virtual;
 
+    procedure RoundRect(X1, Y1, X2, Y2: Integer; DX,DY: Integer); virtual;
+    procedure RoundRect(const aRect: TRect; DX,DY: Integer);
+
     procedure TextRect(const ARect: TRect; X, Y: integer; const Text: string);
     function TextExtent(const Text: string): TSize; virtual;
     function TextHeight(const Text: string): Integer; virtual;
@@ -295,8 +298,8 @@ var
   cx, cy, rx, ry, start, endangle, h: double;
 begin
   if AngleLength=0 then exit;
-  cx:=double(ALeft+ARight)/2;
-  cy:=double(ATop+ABottom)/2;
+  cx:=double(ALeft+ARight)/2+0.5;
+  cy:=double(ATop+ABottom)/2+0.5;
   rx:=double(ARight-ALeft)/2;
   ry:=double(ABottom-ATop)/2;
   // counter clockwise to clockwise
@@ -344,8 +347,8 @@ var
   ar : agg_arc.arc;
 begin
   if AngleLength=0 then exit;
-  cx:=double(ALeft+ARight)/2;
-  cy:=double(ATop+ABottom)/2;
+  cx:=double(ALeft+ARight)/2+0.5;
+  cy:=double(ATop+ABottom)/2+0.5;
   rx:=double(ARight-ALeft)/2;
   ry:=double(ABottom-ATop)/2;
   // counter clockwise to clockwise
@@ -378,8 +381,8 @@ begin
   Coords2Angles(ALeft, ATop, ARight-ALeft, ABottom-ATop, SX, SY, EX, EY,
                 StartAngle, AngleLength);
   if AngleLength=0 then exit;
-  cx:=double(ALeft+ARight)/2;
-  cy:=double(ATop+ABottom)/2;
+  cx:=double(ALeft+ARight)/2+0.5;
+  cy:=double(ATop+ABottom)/2+0.5;
   rx:=double(ARight-ALeft)/2;
   ry:=double(ABottom-ATop)/2;
   // counter clockwise to clockwise
@@ -416,10 +419,10 @@ end;
 procedure TAggLCLCanvas.FillRect(X1, Y1, X2, Y2: Integer);
 begin
   Path.m_path.remove_all;
-  Path.m_path.move_to(X1,Y1);
-  Path.m_path.line_to(X2,Y1);
-  Path.m_path.line_to(X2,Y2);
-  Path.m_path.line_to(X1,Y2);
+  Path.m_path.move_to(X1+0.5,Y1+0.5);
+  Path.m_path.line_to(X2+0.5,Y1+0.5);
+  Path.m_path.line_to(X2+0.5,Y2+0.5);
+  Path.m_path.line_to(X1+0.5,Y2+0.5);
   AggClosePolygon;
   AggDrawPath(AGG_FillOnly);
 end;
@@ -551,6 +554,47 @@ begin
     inc(i);
   end;
   AggDrawPath(AGG_StrokeOnly);
+end;
+
+procedure TAggLCLCanvas.RoundRect(X1, Y1, X2, Y2: Integer; DX, DY: Integer);
+{ Draw a filled rectangle but with round edges.
+  The edges are like ellipse with Size of RX,RY
+}
+var
+  rx: double;
+  ry: double;
+  da: double;
+
+  procedure AddArc(cx, cy, startangle, endangle: double);
+  var
+    a: Double;
+  begin
+    a:=startangle;
+    while a<endangle do begin
+      Path.m_path.line_to(cx+rx*cos(a),cy+ry*sin(a));
+      a:=a+da;
+    end;
+  end;
+
+begin
+  Path.m_path.remove_all;
+  rx:=double(DX)/2;
+  ry:=double(DY)/2;
+  da:=PI/16;
+
+  Path.m_path.move_to(X1+0.5,Y1+ry+0.5);
+  AddArc(X1+rx+0.5,Y1+ry+0.5,PI,PI*1.5);
+  AddArc(X2-rx+0.5,Y1+ry+0.5,PI*1.5,PI*2);
+  AddArc(X2-rx+0.5,Y2-ry+0.5,0,PI*0.5);
+  AddArc(X1+rx+0.5,Y2-ry+0.5,PI*0.5,PI);
+
+  AggClosePolygon;
+  AggDrawPath(AGG_FillAndStroke);
+end;
+
+procedure TAggLCLCanvas.RoundRect(const aRect: TRect; DX, DY: Integer);
+begin
+  RoundRect(aRect.Left,aRect.Top,aRect.Right,aRect.Bottom,DX,DY);
 end;
 
 procedure TAggLCLCanvas.TextRect(const ARect: TRect; X, Y: integer;

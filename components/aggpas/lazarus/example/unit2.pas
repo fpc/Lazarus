@@ -90,6 +90,8 @@ begin
     TxtY:=40;
     FillRect(TxtX,TxtY,TxtX+TxtW,TxtY+TxtH);
     TextOut(TxtX,TxtY,s);
+
+    RoundRect(10,80,30,100,15,15);
   end;
 
   // convert to LCL native pixel format
@@ -125,6 +127,8 @@ begin
     TxtY:=60;
     FillRect(TxtX,TxtY,TxtX+TxtW,TxtY+TxtH);
     TextOut(TxtX,TxtY,s);
+
+    RoundRect(10,105,30,125,15,15);
   end;
 end;
 
