@@ -120,7 +120,18 @@ type
     procedure Frame(const ARect: TRect); virtual; // ToDo: border using brush
     procedure Frame(X1,Y1,X2,Y2: Integer);        // ToDo: border using brush
 
-    procedure GradientFill(ARect: TRect; AStart, AStop: TColor; ADirection: TGradientDirection);
+    procedure GradientFill(ARect: TRect; AStart, AStop: TColor; ADirection: TGradientDirection);// ToDo
+
+    procedure Polygon(const Points: array of TPoint;
+                      Winding: Boolean;
+                      StartIndex: Integer = 0;
+                      NumPts: Integer = -1);// ToDo: winding
+    procedure Polygon(Points: PPoint; NumPts: Integer;
+                      Winding: boolean = False); virtual;// ToDo: winding
+    procedure Polyline(const Points: array of TPoint;
+                       StartIndex: Integer;
+                       NumPts: Integer = -1);
+    procedure Polyline(Points: PPoint; NumPts: Integer); virtual;
 
     procedure TextRect(const ARect: TRect; X, Y: integer; const Text: string);
     function TextExtent(const Text: string): TSize; virtual;
@@ -442,6 +453,104 @@ begin
   AggFillLinearGradient(ARect.Left,ARect.Top,ARect.Right,ARect.Bottom,
     LCLToAggColor(AStart),LCLToAggColor(AStop));
   FillRect(ARect);
+end;
+
+procedure TAggLCLCanvas.Polygon(const Points: array of TPoint;
+  Winding: Boolean; StartIndex: Integer; NumPts: Integer);
+var
+  i: LongInt;
+  p: TPoint;
+begin
+  if NumPts=0 then exit;
+  if StartIndex<low(Points) then exit;
+  if StartIndex>=high(Points) then exit;
+  if (NumPts<0) or (StartIndex+NumPts-1>high(Points)) then
+    NumPts:=High(Points)-StartIndex+1;
+  Path.m_path.remove_all;
+  i:=StartIndex;
+  p:=Points[i];
+  Path.m_path.move_to(p.x+0.5 ,p.y+0.5 );
+  inc(i);
+  dec(NumPts);
+  while NumPts>0 do begin
+    p:=points[i];
+    Path.m_path.line_to(p.x+0.5,p.y+0.5);
+    inc(i);
+    dec(NumPts);
+  end;
+  AggClosePolygon;
+  AggDrawPath(AGG_FillOnly);
+end;
+
+procedure TAggLCLCanvas.Polygon(Points: PPoint; NumPts: Integer;
+  Winding: boolean);
+var
+  i: Integer;
+begin
+  if NumPts<=1 then exit;
+  Path.m_path.remove_all;
+  i:=0;
+  Path.m_path.move_to(points[i].x+0.5 ,points[i].y+0.5 );
+  inc(i);
+  while i<NumPts do begin
+    Path.m_path.line_to(points[i].x+0.5,points[i].y+0.5);
+    inc(i);
+  end;
+  AggClosePolygon;
+  AggDrawPath(AGG_FillOnly);
+end;
+
+procedure TAggLCLCanvas.Polyline(const Points: array of TPoint;
+  StartIndex: Integer; NumPts: Integer);
+{ Use Polyline to connect a set of points on the canvas. If you specify only two
+  points, Polyline draws a single line.
+  The Points parameter is an array of points to be connected.
+  StartIndex identifies the first point in the array to use.
+  NumPts indicates the number of points to use. If NumPts is -1 (the default),
+  PolyLine uses all the points from StartIndex to the end of the array.
+  Calling the MoveTo function with the value of the first point, and then
+  repeatedly calling LineTo with all subsequent points will draw the same image
+  on the canvas. However, unlike LineTo, Polyline does not change the value of
+  PenPos.
+}
+var
+  p: TPoint;
+  i: Integer;
+begin
+  if NumPts=0 then exit;
+  if StartIndex<low(Points) then exit;
+  if StartIndex>=high(Points) then exit;
+  if (NumPts<0) or (StartIndex+NumPts-1>high(Points)) then
+    NumPts:=High(Points)-StartIndex+1;
+  Path.m_path.remove_all;
+  i:=StartIndex;
+  p:=Points[i];
+  Path.m_path.move_to(p.x+0.5 ,p.y+0.5 );
+  inc(i);
+  dec(NumPts);
+  while NumPts>0 do begin
+    p:=points[i];
+    Path.m_path.line_to(p.x+0.5,p.y+0.5);
+    inc(i);
+    dec(NumPts);
+  end;
+  AggDrawPath(AGG_StrokeOnly );
+end;
+
+procedure TAggLCLCanvas.Polyline(Points: PPoint; NumPts: Integer);
+var
+  i: Integer;
+begin
+  if NumPts<=1 then exit;
+  Path.m_path.remove_all;
+  i:=0;
+  Path.m_path.move_to(points[i].x+0.5 ,points[i].y+0.5 );
+  inc(i);
+  while i<NumPts do begin
+    Path.m_path.line_to(points[i].x+0.5,points[i].y+0.5);
+    inc(i);
+  end;
+  AggDrawPath(AGG_StrokeOnly);
 end;
 
 procedure TAggLCLCanvas.TextRect(const ARect: TRect; X, Y: integer;
