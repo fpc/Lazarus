@@ -12,7 +12,7 @@ uses
  Windows ,
  {$ENDIF}
  Classes ,Graphics, LCLProc, IntfGraphics, GraphType, FPimage, FPCanvas,
- GraphMath, agg_fpimage;
+ agg_arc, GraphMath, agg_fpimage;
 
 type
 
@@ -321,14 +321,67 @@ end;
 
 procedure TAggLCLCanvas.Chord(ALeft, ATop, ARight, ABottom, StartAngle,
   AngleLength: Integer);
+{ Same as Arc, but closed and filled with Brush.
+}
+var
+  cx, cy, rx, ry, start, endangle, h: double;
+  ar : agg_arc.arc;
 begin
+  if AngleLength=0 then exit;
+  cx:=double(ALeft+ARight)/2;
+  cy:=double(ATop+ABottom)/2;
+  rx:=double(ARight-ALeft)/2;
+  ry:=double(ABottom-ATop)/2;
+  // counter clockwise to clockwise
+  start:=LCLAngleToAggAngle(StartAngle+AngleLength);
+  endangle:=LCLAngleToAggAngle(StartAngle);
+  if AngleLength<0 then begin
+    h:=start;
+    start:=endangle;
+    endangle:=h;
+  end;
 
+  Path.m_path.remove_all;
+
+  ar.Construct(cx ,cy ,rx ,ry ,endangle ,start ,false );
+
+  Path.m_path.add_path(@ar ,0 ,false );
+  AggClosePolygon;
+
+  AggDrawPath(AGG_FillAndStroke);
 end;
 
 procedure TAggLCLCanvas.Chord(ALeft, ATop, ARight, ABottom, SX, SY, EX,
   EY: Integer);
+var
+  StartAngle: Extended;
+  AngleLength: Extended;
+  cx, cy, rx, ry, start, endangle, h: double;
+  ar : agg_arc.arc;
 begin
+  Coords2Angles(ALeft, ATop, ARight-ALeft, ABottom-ATop, SX, SY, EX, EY,
+                StartAngle, AngleLength);
+  if AngleLength=0 then exit;
+  cx:=double(ALeft+ARight)/2;
+  cy:=double(ATop+ABottom)/2;
+  rx:=double(ARight-ALeft)/2;
+  ry:=double(ABottom-ATop)/2;
+  // counter clockwise to clockwise
+  start:=LCLAngleToAggAngle(StartAngle+AngleLength);
+  endangle:=LCLAngleToAggAngle(StartAngle);
+  if AngleLength<0 then begin
+    h:=start;
+    start:=endangle;
+    endangle:=h;
+  end;
+  Path.m_path.remove_all;
 
+  ar.Construct(cx ,cy ,rx ,ry ,endangle ,start ,false );
+
+  Path.m_path.add_path(@ar ,0 ,false );
+  AggClosePolygon;
+
+  AggDrawPath(AGG_FillAndStroke);
 end;
 
 function TAggLCLCanvas.LCLAngleToAggAngle(const angle: double): double;
