@@ -78,8 +78,9 @@ type
   TGDBMIPauseWaitState = (pwsNone, pwsInternal, pwsExternal);
 
   TGDBMITargetFlags = set of (
-    tfHasSymbols,      // Debug symbols are present
-    tfRTLUsesRegCall   // the RTL is compiled with RegCall calling convention
+    tfHasSymbols,     // Debug symbols are present
+    tfRTLUsesRegCall, // the RTL is compiled with RegCall calling convention
+    tfClassIsPointer  // with dwarf class names are pointer. with stabs they are not
   );
 
   TGDBMIDebuggerFlags = set of (
@@ -3293,7 +3294,9 @@ function TGDBMIDebugger.ProcessStopped(const AParams: String; const AIgnoreSigIn
   begin
     if dfImplicidTypes in FDebuggerFlags
     then begin
-      ExceptionMessage := GetText('^Exception(%s)^.FMessage', [AInfo.ObjAddr]);
+      if tfClassIsPointer in FTargetFlags
+      then ExceptionMessage := GetText('Exception(%s).FMessage', [AInfo.ObjAddr])
+      else ExceptionMessage := GetText('^Exception(%s)^.FMessage', [AInfo.ObjAddr]);
       //ExceptionMessage := GetText('^^Exception($fp+8)^^.FMessage', []);
     end
     else ExceptionMessage := '### Not supported on GDB < 5.3 ###';
@@ -3769,6 +3772,13 @@ begin
   else begin
     DebugLn('TGDBMIDebugger.StartDebugging Note: Target has no symbols');
     TempInstalled := False;
+  end;
+
+  // check whether we need class cast dereference
+  if ExecuteCommand('ptype TObject', [cfIgnoreError], R)
+  then begin
+    if (LeftStr(R.Values, 15) = 'type = ^TOBJECT')
+    then include(FTargetFlags, tfClassIsPointer);
   end;
 
   // try Insert Break breakpoint
