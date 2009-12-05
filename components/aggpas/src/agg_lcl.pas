@@ -11,8 +11,8 @@ uses
  {$IFDEF AGG_WINDOWS}
  Windows ,
  {$ENDIF}
- Classes ,Graphics, LCLProc, IntfGraphics, GraphType, FPimage, FPCanvas,
- agg_arc, GraphMath, agg_fpimage;
+ Classes ,Graphics, LCLProc, types, IntfGraphics, GraphType, FPimage, FPCanvas,
+ agg_arc, GraphMath, agg_fpimage, agg_basics;
 
 type
 
@@ -116,14 +116,19 @@ type
 
     procedure FillRect(const ARect: TRect); virtual; // no border
     procedure FillRect(X1,Y1,X2,Y2: Integer);        // no border
-    procedure AggTextOut(const x, y: double; str: AnsiString;
-               roundOff: boolean=false;
-               const ddx: double=0.0; const ddy: double=0.0); override;
 
     procedure Frame(const ARect: TRect); virtual; // ToDo: border using brush
     procedure Frame(X1,Y1,X2,Y2: Integer);        // ToDo: border using brush
 
     procedure GradientFill(ARect: TRect; AStart, AStop: TColor; ADirection: TGradientDirection);
+
+    procedure TextRect(const ARect: TRect; X, Y: integer; const Text: string);
+    function TextExtent(const Text: string): TSize; virtual;
+    function TextHeight(const Text: string): Integer; virtual;
+    function TextWidth(const Text: string): Integer; virtual;
+    procedure AggTextOut(const x, y: double; str: AnsiString;
+               roundOff: boolean=false;
+               const ddx: double=0.0; const ddy: double=0.0); override;
   end;
 
 procedure InitAggPasRawImageDescriptor(APixelFormat: TAggFPImgPixelFormat;
@@ -437,6 +442,31 @@ begin
   AggFillLinearGradient(ARect.Left,ARect.Top,ARect.Right,ARect.Bottom,
     LCLToAggColor(AStart),LCLToAggColor(AStop));
   FillRect(ARect);
+end;
+
+procedure TAggLCLCanvas.TextRect(const ARect: TRect; X, Y: integer;
+  const Text: string);
+var
+  OldClipBox: rect_d;
+begin
+  OldClipBox:=AggGetClipBox;
+  TextOut(x,y,Text);
+  AggSetClipBox(OldClipBox.x1,OldClipBox.y1,OldClipBox.x2,OldClipBox.y2);
+end;
+
+function TAggLCLCanvas.TextExtent(const Text: string): TSize;
+begin
+  GetTextSize(Text,Result.cx,Result.cy);
+end;
+
+function TAggLCLCanvas.TextHeight(const Text: string): Integer;
+begin
+  Result:=GetTextHeight(Text);
+end;
+
+function TAggLCLCanvas.TextWidth(const Text: string): Integer;
+begin
+  Result:=GetTextWidth(Text);
 end;
 
 { TAggLCLBrush }
