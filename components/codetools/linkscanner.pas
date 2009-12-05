@@ -307,7 +307,7 @@ type
     function IncludeFile(const AFilename: string;
                          DynamicExtension: boolean): boolean;
     function SearchIncludeFile(AFilename: string; DynamicExtension: boolean;
-                         var NewCode: Pointer;
+                         out NewCode: Pointer;
                          var MissingIncludeFile: TMissingIncludeFile): boolean;
     procedure PushIncludeLink(ACleanedPos, ASrcPos: integer; ACode: Pointer);
     function PopIncludeLink: TSourceLink;
@@ -2712,7 +2712,7 @@ end;
 
 function TLinkScanner.SearchIncludeFile(AFilename: string;
   DynamicExtension: boolean;
-  var NewCode: Pointer; var MissingIncludeFile: TMissingIncludeFile): boolean;
+  out NewCode: Pointer; var MissingIncludeFile: TMissingIncludeFile): boolean;
 var PathStart, PathEnd: integer;
   IncludePath, PathDivider, CurPath: string;
   ExpFilename: string;
@@ -2749,6 +2749,7 @@ begin
   {$IFDEF VerboseIncludeSearch}
   DebugLn('TLinkScanner.SearchIncludeFile Filename="',AFilename,'"');
   {$ENDIF}
+  NewCode:=nil;
   IncludePath:='';
   if not Assigned(FOnLoadSource) then begin
     NewCode:=nil;
