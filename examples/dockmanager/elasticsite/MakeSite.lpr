@@ -9,6 +9,8 @@ uses
   Interfaces, // this includes the LCL widgetset
   Forms, fMasterSite, fclientform, EasyDockMgr;
 
+{$IFDEF WINDOWS}{$R MakeSite.rc}{$ENDIF}
+
 begin
   Application.Initialize;
   Application.CreateForm(TMasterSite, MasterSite);

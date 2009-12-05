@@ -31,6 +31,10 @@ uses
   fFloatingSite;
 
 type
+//events triggered from load/save docked controls
+  TOnReloadControl = function(const CtrlName: string; ASite: TWinControl): TControl of object;
+  TOnSaveControl = function(ACtrl: TControl): string of object;
+
   sDockSides = TAlignSet;
 
   TDockPanel = class(TPanel)
@@ -65,6 +69,8 @@ type
     function  WrapDockable(Client: TControl): TFloatingSite;
   private
     LastPanel: TDockPanel;  //last elastic panel created
+    FOnSave: TOnSaveControl;
+    FOnRestore: TOnReloadControl;
   {$IFDEF ownPanels}
     //elastic panels are in Components[]
   {$ELSE}
@@ -84,6 +90,8 @@ type
     procedure LoadFromStream(Stream: TStream);
     procedure SaveToStream(Stream: TStream);
     function  ReloadDockedControl(const AName: string; Site: TWinControl): TControl;
+    property OnSave: TOnSaveControl read FOnSave write FOnSave;
+    property OnRestore: TOnReloadControl read FOnRestore write FOnRestore;
   end;
 
 function  TryRename(AComp: TComponent; const NewName: string): boolean;
@@ -94,6 +102,7 @@ var
 implementation
 
 uses
+  //SynEdit,  //try editor notebooks
   LCLIntf, LCLProc;
 
 type
@@ -221,29 +230,15 @@ begin
 (* Create a dockable form, based on its name.
   Used also to restore a layout.
 
-Not now:
-  Used also to restore a DockBook (AName contains ",")
-  (second chance, after LoadFromStream)
-
 Options (to come or to be removed)
   fMultiInst allows to auto-create new instances (if True),
   otherwise an already existing instance is returned. (really returned?)
 *)
-{$IFDEF new}
-  if Pos(',', AName) > 0 then begin
-    nb := NoteBookCreate(site); //DockSite???
-    nb.SetDockCaption(AName);
-    Result := nb;
-  end else
-{$ELSE}
-{$ENDIF}
-  begin
-  //get the form
-    Result := ReloadForm(AName, fMultiInst);
-    if Result = nil then
-      exit;
-    MakeDockable(Result, fWrap);
-  end;
+//get the form
+  Result := ReloadForm(AName, fMultiInst);
+  if Result = nil then
+    exit;
+  MakeDockable(Result, fWrap);
 end;
 
 function TDockMaster.MakeDockable(AForm: TWinControl; fWrap: boolean): TForm;
@@ -312,11 +307,12 @@ var
   nb: TEasyBook absolute Result;
   s: string;
   ctl: TControl;
-  //se: TSynEdit;
 begin
 (* Reload docked controls - forms or NoteBook
-  NoteBook identified by comma separated names in AName,
-    FileEditor identified by dot in name.
+  Called from AppDockManager on ReloadDockedControl.
+
+  NoteBook identified by comma separated names in AName.
+    FileEditor identified by dot in name? (not here)
 *)
   if Pos(',', AName) > 0 then begin
   //restore NoteBook
@@ -326,27 +322,24 @@ begin
       lst.CommaText := AName;
       for i := 0 to lst.Count - 1 do begin
         s := lst[i];
-        if Pos('.', s) > 0 then begin
-        //restore editor
-          { TODO -cdocking : restore editor for file }
-        end else begin
+      //try handler
+        ctl := nil;
+        if assigned(FOnRestore) then
+          ctl := FOnRestore(AName, nb);
+        if ctl = nil then
           ctl := ReloadForm(s, True); //try both multi and single instance
-          if ctl <> nil then
-            try
-              ctl.ManualDock(nb);
-            except
-              DebugLn('!!!error docking ', s);
-{ TODO 1 : There exists a bug in the destruction of fDockBook (TWinControl).
-The docked clients retain the HostDockSite - which becomes invalid when destroyed! }
-            end;
-        end;
+        ctl.ManualDock(nb);
       end;
     finally
       lst.Free;
     end;
   end else begin
   //restore control (form?)
-    Result := ReloadForm(AName, True);
+    Result := nil;
+    if assigned(FOnRestore) then
+      Result := FOnRestore(AName, Site);
+    if Result = nil then
+      Result := ReloadForm(AName, True);
   end;
 end;
 
@@ -357,16 +350,22 @@ var
 begin
 (* Handler for Form.OnEndDock.
   When a form becomes floating, dock immediately into a new floating host docksite.
+
+  Prevent wrapping controls in destruction?
+
+  Since this event is raised during dragging, we should not try to wrap a control
+  that still has its (old?) HostDockSite set. If Nil it seems to be acceptable
+  to set a new dock site, but this would be easier if we simply could update the
+  Target.
+
+  Made WrapDockable check for detailed conditions.
 *)
   if Target <> nil then
     exit; //docked, not floating
   ctl := Sender as TControl;
-  if ctl.HostDockSite = nil then begin
-    //DebugLn('--- floating');
-    WrapDockable(ctl);
-  end else begin
-    //DebugLn('--- in ' + HostDockSite.Name);
-  end;
+  //if not (csDestroying in ctl.ComponentState) and (ctl.HostDockSite = nil) then begin
+  //if (ctl.HostDockSite = nil) then
+  WrapDockable(ctl);
 end;
 
 type
@@ -569,14 +568,16 @@ begin
   Result type? (a TWinControl is sufficient as a DockSite)
 *)
 //search existing forms
-  Result := Screen.FindForm(AName);
-  if Result <> nil then
-    exit; //found it
+  if AName <> '' then begin
+    Result := Screen.FindForm(AName);
+    if Result <> nil then
+      exit; //found it
+  end;
 //check if Factory can provide the form
   if assigned(Factory) then begin
     TWinControlAccess(Factory).ReloadDockedControl(AName, ctl);
-    if ctl is TCustomForm then begin
-      Result := TCustomForm(ctl);
+    if ctl is TWinControl then begin
+      Result := TWinControl(ctl);
       exit;
     end; //else assume that we should do everything?
     FreeAndNil(ctl);
@@ -584,7 +585,7 @@ begin
 //search/create ourselves
   fo := Owner; //our owner also owns the forms
   if AName = '' then begin
-    Result := TForm.Create(fo); //named Form1, Form2...
+    Result := TForm.Create(fo); //named Form1, Form2... - not now???
   end else begin
   //create new instance
     if fMultiInst then
@@ -603,19 +604,41 @@ begin
     if Result.Name <> AName then
       TryRename(Result, AName);
   end;
+  Result.Visible := True; //required for docking
 end;
 
 function TDockMaster.WrapDockable(Client: TControl): TFloatingSite;
 var
   Site: TFloatingSite absolute Result;
   ctl: TControlAccess absolute Client;
+  r: TRect;
 begin
+(* Wrap a control into a floating site.
+  Prevent wrapping under certain conditions:
+  - client under destruction
+  - client already docked
+  - invisible client?
+*)
+  if (csDestroying in Client.ComponentState)
+  or assigned(Client.HostDockSite) //already wrapped
+  or not Client.Visible //or force visible (below)?
+  then
+    exit(nil); //do nothing with client under destruction!
+
   Site := TFloatingSite.Create(Self); //we own the new site
-  //Site := TFloatingSite.Create(Application);
   try
+  {$IFDEF old}
     Site.BoundsRect := Client.BoundsRect; //the new position and extension
+  {$ELSE}
+  //keep undocked extent
+    r := Client.BoundsRect;
+    r.Right := r.Left + Client.UndockWidth;
+    r.Bottom := r.Top + Client.UndockHeight;
+    //site.ClientRect := r;
+    Site.BoundsRect := r;
+  {$ENDIF}
     Client.Align := alClient;
-    Client.Visible := True; //otherwise docking may be rejected
+    //Client.Visible := True; //otherwise docking may be rejected
     Client.ManualDock(Site);
   except
     DebugLn('error WrapDockable: ' + Client.Name);

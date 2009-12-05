@@ -16,7 +16,7 @@ As with DockBook, closing docked forms results in Exceptions :-(
 
 {$mode objfpc}{$H+}
 
-{$DEFINE appdock}
+{$DEFINE appdock} //using DockMaster/AppDockManager?
 
 interface
 
@@ -44,15 +44,14 @@ type
   end;
 
 var
-  //FloatingSite: TFloatingSite;
   DockGrip: TPicture;
 
 implementation
 
 uses
   LCLproc,  //debugging only
-  EasyDockSite, //our DockManager
-  uMakeSite;
+  EasyDockSite, //EasyTree DockManager
+  uMakeSite;    //AppDockManager
 
 type
 {$IFDEF appdock}

@@ -38,6 +38,7 @@ Disallow undocking/floating of a NOT docked dockbook.
   Fix: flag StayDocked.
 
 Clients are not properly undocked on close!?
+  (see undockFix)
 *)
 
 (* Applications
@@ -61,6 +62,12 @@ HostDockSite.UpdateDockCaption (provide composed dock caption)
 *)
 
 {$mode objfpc}{$H+}
+
+{$IFDEF WIN32}
+  {$DEFINE undockFix} //seems to be required for win32 widgetset
+{$ELSE}
+  //no problems on Linux/gtk2
+{$ENDIF}
 
 interface
 
@@ -150,6 +157,7 @@ begin
     end of the application.
   Fix: check ctl.ComponentState for csDestroying.
 *)
+{$IFDEF undockFix}
   for i := DockClientCount - 1 downto 0 do begin
     ctl := DockClients[i];
     if not (csDestroying in ctl.ComponentState) then
@@ -157,6 +165,8 @@ begin
     DebugLn('Undocked %s P=%p H=%p', [ctl.Name,
       pointer(ctl.Parent), pointer(ctl.HostDockSite)]);
   end;
+{$ELSE}
+{$ENDIF}
   inherited Destroy;
 end;
 
@@ -171,7 +181,7 @@ begin
 (* When an empty notebook is closed, it shall be freed.
   Otherwise the clients must be handled (close forms)
 
-  This code is never reached???
+  This code is never reached when we are docked
 *)
 {$IFDEF new}
   //BeginFormUpdate;
@@ -349,6 +359,8 @@ var
   s: string;
   ctl: TControl;
 begin
+(* This is a suggestion for handling arguments in ReloadDockedControl.
+*)
   lst := TStringList.Create;
   lst.CommaText := AName;
   for i := 0 to lst.Count - 1 do begin

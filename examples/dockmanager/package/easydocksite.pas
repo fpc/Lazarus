@@ -956,7 +956,7 @@ type
     Level: byte;
     Orientation: TDockOrientation;
     //Width, Height: word;
-    NameLen: byte; //+chars
+    NameLen: integer; //+chars
   end;
 
 var
@@ -1058,6 +1058,8 @@ procedure TEasyTree.LoadFromStream(Stream: TStream);
     i: integer;
     ctl: TControl;
   begin
+  (* undock all currently docked clients, prior to restoring a layout
+  *)
     for i := FDockSite.DockClientCount - 1 downto 0 do begin
       ctl := FDockSite.DockClients[i];
       ctl.ManualDock(nil);
@@ -1086,20 +1088,6 @@ procedure TEasyTree.LoadFromStream(Stream: TStream);
           NewCtl := TPanel.Create(DockSite);
           NewCtl.Name := ZoneName;
         end;
-      {$IFDEF old}
-        try
-          DebugLn('try rename %s into %s', [NewCtl.Name, ZoneName]);
-          if NewCtl is TEasyBook then
-            //TEasyBook(NewCtl).SetDockCaption(ZoneName)
-            DebugLn('!!!DockBook!!!')
-          else
-            NewCtl.Name := ZoneName;
-        except
-          DebugLn('error rename');
-        end;
-        NewCtl.Caption := ZoneName;
-      {$ELSE}
-      {$ENDIF}
         if NewCtl <> nil then begin
           NewCtl.Visible := True;
           NewZone.ChildControl := NewCtl;
