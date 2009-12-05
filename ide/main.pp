@@ -1260,7 +1260,7 @@ begin
   // load package configs
   HelpBoss.LoadHelpOptions;
 
-  UpdateWindowMenu;
+  UpdateWindowMenu(true);
 end;
 
 procedure TMainIDE.StartIDE;
@@ -2025,7 +2025,7 @@ begin
       // create new project
       DoNewProject(ProjectDescriptorApplication);
 
-    UpdateWindowMenu;
+    UpdateWindowMenu(true);
 
     // load the cmd line files
     if CmdLineFiles<>nil then begin

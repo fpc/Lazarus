@@ -85,6 +85,7 @@ type
     FToolStatus: TIDEToolStatus;
   protected
     FNeedUpdateHighlighters: boolean;
+    FLastWindowMenuUpdate: TDateTime;
 
     function CreateMenuSeparator : TMenuItem;
     procedure CreateMenuItem(Section: TIDEMenuSection;
@@ -157,7 +158,7 @@ type
     function DoOpenMacroFile(Sender: TObject; const AFilename: string
                              ): TModalResult; override;
 
-    procedure UpdateWindowMenu; override;
+    procedure UpdateWindowMenu(Immediately: boolean = false); override;
     procedure SetRecentSubMenu(Section: TIDEMenuSection; FileList: TStringList;
                                OnClickEvent: TNotifyEvent); override;
     procedure UpdateHighlighters(Immediately: boolean = false); override;
@@ -1013,7 +1014,9 @@ begin
                   [ofOnlyIfExists,ofAddToRecent,ofRegularFile,ofConvertMacros]);
 end;
 
-procedure TMainIDEBase.UpdateWindowMenu;
+procedure TMainIDEBase.UpdateWindowMenu(Immediately: boolean = false);
+const
+  UpdatePause = 5/864000; // half a second
 
   function GetMenuItem(Index: Integer): TIDEMenuItem; inline;
   begin
@@ -1029,7 +1032,15 @@ var
   i, ItemCount: Integer;
   CurMenuItem: TIDEMenuItem;
   AForm: TForm;
+  t: TDateTime;
 begin
+  t:=Now;
+  if (not Immediately) then begin
+    if (FLastWindowMenuUpdate<>0) and (t-FLastWindowMenuUpdate<UpdatePause) then
+      exit;
+  end;
+  FLastWindowMenuUpdate:=t;
+
   WindowsList:=TFPList.Create;
   // add typical IDE windows at the start of the list
   if (SourceNotebook<>nil) and (SourceNotebook.Visible) then
