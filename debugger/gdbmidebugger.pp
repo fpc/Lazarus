@@ -2374,6 +2374,12 @@ begin
            (ResultInfo.TypeName = 'SHORTSTRING') then
           AResult := AResult // don't show 'record ShortString' as this is debug info implementation details
         else
+        if (ResultInfo.TypeName = '&ShortString') then
+        begin
+          // we have an address here, so we need to typecast
+          AResult := GetStrValue('ShortString(%s)', [S]);
+        end
+        else
           AResult := 'record ' + ResultInfo.TypeName + ' '+ AResult;
       end;
 
