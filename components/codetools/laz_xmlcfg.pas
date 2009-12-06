@@ -155,7 +155,7 @@ procedure TXMLConfig.Flush;
 begin
   if Modified and (Filename<>'') then
   begin
-    DebugLn(['TXMLConfig.Flush ',Filename]);
+    //DebugLn(['TXMLConfig.Flush ',Filename]);
     WriteXMLFile(doc, Filename);
     FModified := False;
   end;
