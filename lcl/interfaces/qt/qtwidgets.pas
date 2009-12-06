@@ -6144,11 +6144,11 @@ function TQtTabWidget.tabAt(APoint: TPoint): Integer;
 var
   AQtPoint: TQtPoint;
 begin
-  if ((APoint.Y < 0) or (APoint.X < 0))
-    and QWidget_underMouse(TabBar.Widget) then
+  if (APoint.Y < 0) or (APoint.X < 0) then
   begin
-    QCursor_pos(@AQtPoint);
-    QWidget_mapFromGlobal(TabBar.Widget, @AQtPoint, @AQtPoint);
+    QWidget_pos(getStackWidget, @AQtPoint);
+    AQtPoint.x := AQtPoint.x + APoint.x;
+    AQtPoint.y := AQtPoint.y + APoint.y;
   end else
     AQtPoint := QtPoint(APoint.x, APoint.y);
   Result := QTabBar_tabAt(QTabBarH(TabBar.Widget), @AQtPoint);
