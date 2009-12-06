@@ -234,7 +234,8 @@ begin
 
   if not IsValidGDIObject(Dest) or not IsValidGDIObject(Src1) then
     exit
-  else begin
+  else
+  begin
     RDest := TQtRegion(Dest).Widget;
     RSrc1 := TQtRegion(Src1).Widget;
   end;
@@ -263,10 +264,13 @@ begin
   end;
 
   if QRegion_isEmpty(RDest) then
-    result := NULLREGION
-  else begin
-    // TODO: Evaluate if region is complex
-    Result := SIMPLEREGION;
+    Result := NULLREGION
+  else
+  begin
+    if TQtRegion(Dest).IsPolyRegion or (TQtRegion(Dest).numRects > 0) then
+      Result := COMPLEXREGION
+    else
+      Result := SIMPLEREGION;
   end;
 end;
 
@@ -1600,19 +1604,13 @@ begin
 
   QtDC := TQtDeviceContext(DC);
 
-
   QtWidget := QtObjectFromWidgetH(TQtDeviceContext(DC).Parent);
 
   if Assigned(QtWidget) and (QtWidget.PaintData.ClipRegion = nil) then
   begin
     // there is no clipping region in the DC
     Case Mode of
-      RGN_COPY:
-        begin
-         // Result := RegionType(PGdiObject(RGN)^.GDIRegionObject);
-         // If Result <> ERROR then
-          Result := SelectClipRGN(DC, RGN);
-        end;
+      RGN_COPY: Result := SelectClipRGN(DC, RGN);
       RGN_OR,
       RGN_XOR,
       RGN_AND,
@@ -1626,8 +1624,7 @@ begin
             X := QWidget_width(QtDC.Parent);
             Y := QWidget_height(QtDC.Parent);
           end;
-          // GDK_Window_Get_Size(Drawable, @X, @Y);
-          // DCOrigin := GetDCOffset(TQtDeviceContext(DC));
+
           GetDeviceSize(DC, DCOrigin);
 
           if (X = -1) and (Y = -1) then
@@ -1639,7 +1636,6 @@ begin
           // combine
           Result := CombineRGN(Tmp, Clip, RGN, Mode);
           // commit
-          //DebugLn('TGtkWidgetSet.ExtSelectClipRGN B ClipRegValid=',dbgs(ClipRegion),' TmpRGN=',GDKRegionAsString(PGdiObject(Tmp)^.GDIRegionObject));
           SelectClipRGN(DC, Tmp);
           // clean up
           DeleteObject(Clip);
@@ -1648,7 +1644,7 @@ begin
       end;
   end
   else
-    Result := Inherited ExtSelectClipRGN(dc, rgn, mode);
+    Result := inherited ExtSelectClipRGN(dc, rgn, mode);
 end;
 
 {------------------------------------------------------------------------------
@@ -1711,7 +1707,7 @@ begin
   if not IsValidGdiObject(Brush) then
     exit;
 
-  TQTDeviceContext(DC).fillRect(@Rect, TQTBrush(Brush).Widget);
+  TQTDeviceContext(DC).fillRect(@Rect, TQtBrush(Brush).Widget);
 
   result := true;
 end;
@@ -1747,7 +1743,7 @@ begin
       QPainter_clipRegion(QtDC.Widget, OldRgn.Widget);
     if SelectClipRgn(DC, RegionHnd) <> ERROR then
     begin
-      QRegion_boundingRect(TQtRegion(RegionHnd).Widget, @R);
+      R := TQtRegion(RegionHnd).getBoundingRect;
       QtDC.fillRect(@R, TQtBrush(hbr).Widget);
       if hasClipping then
         SelectClipRgn(DC, HRGN(OldRgn));
@@ -2001,10 +1997,10 @@ var
   ARegion: QRegionH;
 begin
   Result := SIMPLEREGION;
-  If lpRect <> nil then
+  if lpRect <> nil then
     lpRect^ := Rect(0,0,0,0);
 
-  If not IsValidDC(DC) then
+  if not IsValidDC(DC) then
     Result := ERROR;
 
   if Result <> ERROR
@@ -2074,7 +2070,8 @@ begin
     exit;
   if not TQtDeviceContext(DC).getClipping then
     Result := 0
-  else begin
+  else
+  begin
     QPainter_ClipRegion(TQtDeviceContext(DC).Widget, TQtRegion(Rgn).Widget);
     Result := 1;
   end;
@@ -3279,7 +3276,6 @@ begin
   begin
     QtDC := TQtDeviceContext(DC);
     ColorRefToTQColor(QtDC.vTextColor, Color);
-    // QColor_setRgb(QColorH(@Color),Red(QtDC.vTextColor),Green(QtDC.vTextColor),Blue(QtDC.vTextColor));
     TQColorToColorRef(Color, Result);
   end;
 end;
@@ -3939,10 +3935,7 @@ begin
     GetMem(QtPoints, NumPts * SizeOf(TQtPoint));
     for i := 0 to NumPts - 1 do
       QtPoints[i] := QtPoint(Points[i].x, Points[i].y);
-    {TODO: discuss with other developers about antialiasing by default}
-    // QPainter_setRenderHint(TQtDeviceContext(DC).Widget, QPainterAntialiasing, True);
-    if Winding
-    then
+    if Winding then
       QPainter_drawPolygon(TQtDeviceContext(DC).Widget, QtPoints, NumPts, QtWindingFill)
     else
       QPainter_drawPolygon(TQtDeviceContext(DC).Widget, QtPoints, NumPts, QtOddEvenFill);
@@ -4258,7 +4251,7 @@ begin
           if QRegion_contains(ARegion, PRect(@R)) then
             Result := SIMPLEREGION
           else
-           Result := COMPLEXREGION;
+            Result := COMPLEXREGION;
         end;
       finally
         QRegion_Destroy(ARegion);

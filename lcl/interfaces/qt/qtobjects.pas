@@ -256,6 +256,7 @@ type
     function containsRect(R: TRect): Boolean;
     function GetRegionType: integer;
     function getBoundingRect: TRect;
+    function numRects: Integer;
     property IsPolyRegion: Boolean read GetIsPolyRegion;
   end;
 
@@ -1745,6 +1746,11 @@ begin
     QPolygon_boundingRect(FPolygon, @Result)
   else
     QRegion_boundingRect(Widget, @Result);
+end;
+
+function TQtRegion.numRects: Integer;
+begin
+  Result := QRegion_numRects(Widget);
 end;
 
 { TQtDeviceContext }
