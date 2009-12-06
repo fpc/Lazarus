@@ -263,7 +263,12 @@ var
   begin
     if (FTypeName = 'Variant') or
        (FTypeName = 'VARIANT') then
-       FKind := skVariant
+      FKind := skVariant
+    else
+    if (FTypeName = 'ShortString') or
+       (FTypeName = 'SHORTSTRING') or
+       (FTypeName = '&ShortString') then
+      FKind := skSimple
     else
       FKind := skRecord;
 

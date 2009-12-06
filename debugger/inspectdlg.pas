@@ -150,16 +150,7 @@ begin
   if not Assigned(FDBGInfo.Fields) then exit;
   EditInspected.Text:=FExpression+' : '+FDBGInfo.TypeName;
   GridDataSetup;
-  // handle special records
-  if (FDBGInfo.TypeName = 'ShortString') or
-     (FDBGInfo.TypeName = 'SHORTSTRING') then
-  begin
-    FGridData.Cells[0,1]:=FExpression;
-    FGridData.Cells[1,1]:=FDBGInfo.TypeName;
-    FGridData.Cells[2,1]:=FHumanReadable;
-  end
-  else
-    ShowDataFields;
+  ShowDataFields;
   FGridData.AutoSizeColumn(2);
 end;
 

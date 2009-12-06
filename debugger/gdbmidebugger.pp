@@ -2372,22 +2372,15 @@ begin
         AResult := GetVariantValue(AResult);
       end;
       skRecord: begin
-        if (ResultInfo.TypeName = 'ShortString') or
-           (ResultInfo.TypeName = 'SHORTSTRING') then
-          AResult := AResult // don't show 'record ShortString' as this is debug info implementation details
-        else
-        if (ResultInfo.TypeName = '&ShortString') then
-        begin
-          // we have an address here, so we need to typecast
-          AResult := GetStrValue('ShortString(%s)', [S]);
-        end
-        else
-          AResult := 'record ' + ResultInfo.TypeName + ' '+ AResult;
+        AResult := 'record ' + ResultInfo.TypeName + ' '+ AResult;
       end;
 
       skSimple: begin
         if ResultInfo.TypeName = 'CURRENCY' then
           AResult := FormatCurrency(AResult)
+        else
+        if (ResultInfo.TypeName = '&ShortString') then
+          AResult := GetStrValue('ShortString(%s)', [S]) // we have an address here, so we need to typecast
         else
           AResult := AResult;
       end;
