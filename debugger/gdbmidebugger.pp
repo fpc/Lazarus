@@ -2008,6 +2008,9 @@ function TGDBMIDebugger.GDBEvaluate(const AExpression: String; var AResult: Stri
         GetPart('','{',ValData);
         PutValuesInTypeRecord(ATypeInfo,ValData);
       end;
+      skVariant: begin
+        ATypeInfo.Value.AsString:=ValData;
+      end;
 //      skEnum: ;
 //      skSet: ;
       skSimple: begin

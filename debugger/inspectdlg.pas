@@ -136,7 +136,7 @@ begin
   GridDataSetup;
   FGridData.Cells[0,1]:=FExpression;
   FGridData.Cells[1,1]:='Variant';
-  FGridData.Cells[2,1]:=FHumanReadable;
+  FGridData.Cells[2,1]:=FDBGInfo.Value.AsString;
   FGridData.AutoSizeColumn(1);
 end;
 
