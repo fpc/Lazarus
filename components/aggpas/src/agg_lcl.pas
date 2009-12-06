@@ -122,6 +122,8 @@ type
 
     procedure GradientFill(ARect: TRect; AStart, AStop: TColor; ADirection: TGradientDirection);// ToDo
 
+    procedure Pie(EllipseX1,EllipseY1,EllipseX2,EllipseY2,
+                  StartX,StartY,EndX,EndY: Integer); virtual;
     procedure Polygon(const Points: array of TPoint;
                       Winding: Boolean;
                       StartIndex: Integer = 0;
@@ -385,17 +387,11 @@ begin
   cy:=double(ATop+ABottom)/2+0.5;
   rx:=double(ARight-ALeft)/2;
   ry:=double(ABottom-ATop)/2;
-  // counter clockwise to clockwise
   start:=LCLAngleToAggAngle(StartAngle+AngleLength);
   endangle:=LCLAngleToAggAngle(StartAngle);
-  if AngleLength<0 then begin
-    h:=start;
-    start:=endangle;
-    endangle:=h;
-  end;
   Path.m_path.remove_all;
 
-  ar.Construct(cx ,cy ,rx ,ry ,endangle ,start ,false );
+  ar.Construct(cx ,cy ,rx ,ry ,endangle ,start ,AngleLength<0 );
 
   Path.m_path.add_path(@ar ,0 ,false );
   AggClosePolygon;
@@ -456,6 +452,51 @@ begin
   AggFillLinearGradient(ARect.Left,ARect.Top,ARect.Right,ARect.Bottom,
     LCLToAggColor(AStart),LCLToAggColor(AStop));
   FillRect(ARect);
+end;
+
+procedure TAggLCLCanvas.Pie(EllipseX1, EllipseY1, EllipseX2, EllipseY2, StartX,
+  StartY, EndX, EndY: Integer);
+{ Use Pie to draw a filled Pie-shaped wedge on the canvas. The pie is part of
+  an ellipse between the points EllipseX1, EllipseY1, EllipseX2, EllipseY2.
+  The values StartX, StartY and EndX, EndY represent the starting and ending
+  radial-points between which the Bounding-Arc is drawn.
+}
+var
+  cx, cy, rx, ry: double;
+  StartAngle16deg, AngleLength16deg: extended;
+  da, startangle, endangle: Double;
+
+  procedure AddArc(startangle, endangle: double);
+  var
+    a: Double;
+  begin
+    a:=startangle;
+    while a<endangle do begin
+      Path.m_path.line_to(cx+rx*cos(a),cy+ry*sin(a));
+      a:=a+da;
+    end;
+    Path.m_path.line_to(cx+rx*cos(endangle),cy+ry*sin(endangle));
+  end;
+
+begin
+  Coords2Angles(EllipseX1, EllipseY1, EllipseX2-EllipseX1, EllipseY2-EllipseY1,
+                StartX, StartY, EndX, EndY,
+                StartAngle16deg, AngleLength16deg);
+
+  Path.m_path.remove_all;
+  cx:=double(EllipseX1+EllipseX2)/2+0.5;
+  cy:=double(EllipseY1+EllipseY2)/2+0.5;
+  rx:=double(EllipseX2-EllipseX1)/2;
+  ry:=double(EllipseY2-EllipseY1)/2;
+  da:=PI/16;
+  startangle:=LCLAngleToAggAngle(StartAngle16deg+AngleLength16deg);
+  endangle:=LCLAngleToAggAngle(StartAngle16deg);
+
+  Path.m_path.move_to(cx,cy);
+  AddArc(startangle,endangle);
+
+  AggClosePolygon;
+  AggDrawPath(AGG_FillAndStroke);
 end;
 
 procedure TAggLCLCanvas.Polygon(const Points: array of TPoint;

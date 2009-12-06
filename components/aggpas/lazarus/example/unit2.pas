@@ -83,6 +83,7 @@ begin
     Chord(145,10,165,30, 0,2700);
     Chord(170,10,190,30, 1000,2700);
     Chord(195,10,215,30, 205,5, 195,30);
+    Pie(220,10,240,30, 230,5, 220,30);
 
     s:='Font.Size='+IntToStr(Font.Size);
     GetTextSize(s,TxtW,TxtH);
@@ -120,6 +121,7 @@ begin
     Chord(145,32,165,52, 0,2700);
     Chord(170,32,190,52, 1000,2700);
     Chord(195,32,215,52, 205,27, 195,52);
+    Pie(220,32,240,52, 230,27, 220,52);
 
     s:='Font.Size='+IntToStr(Font.Size);
     GetTextSize(s,TxtW,TxtH);
