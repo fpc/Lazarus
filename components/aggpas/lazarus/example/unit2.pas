@@ -75,7 +75,7 @@ begin
 
     FillRect(40,10,50,20);
     Ellipse(55,10,65,20);
-    //GradientFill(Rect(70,10,80,20),clRed,clBlue,gdVertical);
+    GradientFill(Rect(70,10,80,20),clRed,clBlue,gdVertical);
     Frame(85,10,95,20);
     Arc(100,10,110,20, 0,2700);
     Arc(115,10,125,20, 1000,2700);

@@ -404,7 +404,7 @@ type
   { TAggFPCanvas }
 
   TAggFPCanvas = class(TFPCustomCanvas)
-  private
+  protected
     FAggBrush: TAggFPBrush;
     FAggFont: TAggFPFont;
     FAggPen: TAggFPPen;
@@ -2096,8 +2096,6 @@ begin
   m_fillGradientD1  :=0.0;
   m_fillGradientD2  :=Sqrt((x2 - x1 ) * (x2 - x1 ) + (y2 - y1 ) * (y2 - y1 ) );
   m_fillGradientFlag:=AGG_Linear;
-
-  Brush.FPColor:=colBlack;  // Set some real color
 end;
 
 procedure TAggFPCanvas.AggLineLinearGradient(const x1, y1, x2, y2: double; c1,
@@ -2230,8 +2228,6 @@ begin
 
   m_fillGradientD1  :=0;
   m_fillGradientFlag:=AGG_Radial;
-
-  Brush.FPColor:=colBlack;  // Set some real color
 end;
 
 procedure TAggFPCanvas.AggLineRadialGradient(const x, y, r: double; c1,
@@ -2343,8 +2339,6 @@ begin
 
   m_fillGradientD1  :=0;
   m_fillGradientFlag:=AGG_Radial;
-
-  Brush.FPColor:=colBlack; // Set some real color
 end;
 
 procedure TAggFPCanvas.AggLineRadialGradient(const x, y, r: double; c1, c2,
@@ -3133,7 +3127,7 @@ begin
 
     renSolid^.color_ (@clr );
     render_scanlines(@m_rasterizer ,@m_scanline ,renSolid );
-   end;
+  end;
 end;
 
 procedure TAggFPCanvas.Agg2DRenderer_render(

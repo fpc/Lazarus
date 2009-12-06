@@ -117,10 +117,10 @@ type
     procedure FillRect(const ARect: TRect); virtual; // no border
     procedure FillRect(X1,Y1,X2,Y2: Integer);        // no border
 
-    procedure Frame(const ARect: TRect); virtual; // ToDo: border using brush
-    procedure Frame(X1,Y1,X2,Y2: Integer);        // ToDo: border using brush
+    procedure Frame(const ARect: TRect); virtual; // border using pen
+    procedure Frame(X1,Y1,X2,Y2: Integer);        // border using pen
 
-    procedure GradientFill(ARect: TRect; AStart, AStop: TColor; ADirection: TGradientDirection);// ToDo
+    procedure GradientFill(ARect: TRect; AStart, AStop: TColor; ADirection: TGradientDirection);
 
     procedure RadialPie(x1, y1, x2, y2,
                         StartAngle16Deg, Angle16DegLength: Integer); virtual;
@@ -153,6 +153,7 @@ procedure InitAggPasRawImageDescriptor(APixelFormat: TAggFPImgPixelFormat;
                        AWidth, AHeight: cardinal; out Desc: TRawImageDescription);
 function AggToLCLColor(const c: TAggColor): TColor;
 function LCLToAggColor(const c: TColor): TAggColor;
+function dbgs(const c: TAggColor): string; overload;
 
 implementation
 
@@ -188,13 +189,21 @@ end;
 
 function AggToLCLColor(const c: TAggColor): TColor;
 begin
-  Result:=RGBToColor(c.r,c.g,c.b);
+  if c.a<>0 then
+    Result:=RGBToColor(c.r,c.g,c.b)
+  else
+    Result:=clNone;
 end;
 
 function LCLToAggColor(const c: TColor): TAggColor;
 begin
-  Result.a:=0;
+  Result.a:=255;
   RedGreenBlue(ColorToRGB(c),Result.r,Result.g,Result.b);
+end;
+
+function dbgs(const c: TAggColor): string; overload;
+begin
+  Result:='r='+IntToStr(c.r)+',g='+IntToStr(c.g)+',b='+IntToStr(c.b)+',a='+IntToStr(c.a);
 end;
 
 { TAggLCLCanvas }
@@ -449,11 +458,25 @@ end;
 
 procedure TAggLCLCanvas.GradientFill(ARect: TRect; AStart, AStop: TColor;
   ADirection: TGradientDirection);
+var
+  x1,y1,x2,y2: double;
 begin
-  raise Exception.Create('TAggLCLCanvas.GradientFill ToDo');
-  AggFillLinearGradient(ARect.Left,ARect.Top,ARect.Right,ARect.Bottom,
-    LCLToAggColor(AStart),LCLToAggColor(AStop));
-  FillRect(ARect);
+  x1:=ARect.Left+0.5;
+  y1:=ARect.Top+0.5;
+  x2:=ARect.Right+0.5;
+  y2:=ARect.Bottom+0.5;
+  if ADirection=gdVertical then
+    AggFillLinearGradient(x1,y1,x1,y2,LCLToAggColor(AStart),LCLToAggColor(AStop))
+  else
+    AggFillLinearGradient(x1,y1,x2,y1,LCLToAggColor(AStart),LCLToAggColor(AStop));
+  Path.m_path.remove_all;
+  Path.m_path.move_to(x1,y1);
+  Path.m_path.line_to(x2,y1);
+  Path.m_path.line_to(x2,y2);
+  Path.m_path.line_to(x1,y2);
+  AggClosePolygon;
+  AggDrawPath(AGG_FillOnly);
+  m_fillGradientFlag:=AGG_Solid;
 end;
 
 procedure TAggLCLCanvas.RadialPie(x1, y1, x2, y2, StartAngle16Deg,
