@@ -2365,11 +2365,10 @@ begin
         end;
       end;
 
+      skVariant: begin
+        AResult := GetVariantValue(AResult);
+      end;
       skRecord: begin
-        if (ResultInfo.TypeName = 'Variant') or
-           (ResultInfo.TypeName = 'VARIANT') then
-          AResult := GetVariantValue(AResult)
-        else
         if (ResultInfo.TypeName = 'ShortString') or
            (ResultInfo.TypeName = 'SHORTSTRING') then
           AResult := AResult // don't show 'record ShortString' as this is debug info implementation details

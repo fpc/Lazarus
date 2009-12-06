@@ -261,7 +261,12 @@ var
     S: String;
     Field: TDBGField;
   begin
-    FKind := skRecord;
+    if (FTypeName = 'Variant') or
+       (FTypeName = 'VARIANT') then
+       FKind := skVariant
+    else
+      FKind := skRecord;
+
     FFields := TDBGFields.Create;
 
     //concatenate all lines and skip last end

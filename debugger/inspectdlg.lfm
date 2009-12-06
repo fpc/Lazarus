@@ -9,7 +9,9 @@ inherited IDEInspectDlg: TIDEInspectDlg
   ClientWidth = 295
   Constraints.MinHeight = 200
   Constraints.MinWidth = 200
+  KeyPreview = True
   OnClose = FormClose
+  OnKeyDown = FormKeyDown
   object StatusBar1: TStatusBar[0]
     Left = 0
     Height = 23

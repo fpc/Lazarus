@@ -30,7 +30,7 @@ interface
 uses
   Classes, SysUtils, TypInfo, FileUtil, LResources, Forms, Controls, Graphics,
   Dialogs, ComCtrls, ObjectInspector, PropEdits, Debugger, DebuggerDlg, BaseDebugManager,
-  LazarusIDEStrConsts, IDEWindowIntf,LCLProc,Grids, StdCtrls;
+  LazarusIDEStrConsts, IDEWindowIntf, LCLProc, LCLType, Grids, StdCtrls;
 
 type
 
@@ -53,6 +53,7 @@ type
     PropertiesPage: TTabSheet;
     MethodsPage: TTabSheet;
     procedure FormClose(Sender: TObject; var CloseAction: TCloseAction);
+    procedure FormKeyDown(Sender: TObject; var Key: Word; Shift: TShiftState);
   private
     FDataGridHook,
     FPropertiesGridHook,
@@ -68,6 +69,7 @@ type
     procedure Localize;
     procedure InspectClass;
     procedure InspectRecord;
+    procedure InspectVariant;
     procedure InspectSimple;
     procedure InspectPointer;
     procedure GridDataSetup;
@@ -90,6 +92,13 @@ begin
   IDEDialogLayoutList.SaveLayout(Self);
 end;
 
+procedure TIDEInspectDlg.FormKeyDown(Sender: TObject; var Key: Word;
+  Shift: TShiftState);
+begin
+  if Key = VK_ESCAPE then
+    Close;
+end;
+
 procedure TIDEInspectDlg.Localize;
 begin
   Caption := lisInspectDialog;
@@ -100,9 +109,9 @@ end;
 
 procedure TIDEInspectDlg.InspectClass;
 begin
-  DataPage.Visible:=true;
-  PropertiesPage.Visible:=false;
-  MethodsPage.Visible:=true;
+  DataPage.TabVisible:=true;
+  PropertiesPage.TabVisible:=false;
+  MethodsPage.TabVisible:=true;
 
   if not Assigned(FDBGInfo) then exit;
   if not Assigned(FDBGInfo.Fields) then exit;
@@ -117,20 +126,32 @@ begin
   FGridMethods.AutoSizeColumn(3);
 end;
 
+procedure TIDEInspectDlg.InspectVariant;
+begin
+  DataPage.TabVisible:=true;
+  PropertiesPage.TabVisible:=false;
+  MethodsPage.TabVisible:=false;
+  if not Assigned(FDBGInfo) then exit;
+  EditInspected.Text:=FExpression+' : Variant';
+  GridDataSetup;
+  FGridData.Cells[0,1]:=FExpression;
+  FGridData.Cells[1,1]:='Variant';
+  FGridData.Cells[2,1]:=FHumanReadable;
+  FGridData.AutoSizeColumn(1);
+end;
+
 procedure TIDEInspectDlg.InspectRecord;
 begin
-  DataPage.Visible:=true;
-  PropertiesPage.Visible:=false;
-  MethodsPage.Visible:=false;
+  DataPage.TabVisible:=true;
+  PropertiesPage.TabVisible:=false;
+  MethodsPage.TabVisible:=false;
 
   if not Assigned(FDBGInfo) then exit;
   if not Assigned(FDBGInfo.Fields) then exit;
   EditInspected.Text:=FExpression+' : '+FDBGInfo.TypeName;
   GridDataSetup;
   // handle special records
-  if (FDBGInfo.TypeName = 'VARIANT') or
-     (FDBGInfo.TypeName = 'Variant') or
-     (FDBGInfo.TypeName = 'ShortString') or
+  if (FDBGInfo.TypeName = 'ShortString') or
      (FDBGInfo.TypeName = 'SHORTSTRING') then
   begin
     FGridData.Cells[0,1]:=FExpression;
@@ -144,6 +165,9 @@ end;
 
 procedure TIDEInspectDlg.InspectSimple;
 begin
+  DataPage.TabVisible:=true;
+  PropertiesPage.TabVisible:=false;
+  MethodsPage.TabVisible:=false;
   if not Assigned(FDBGInfo) then exit;
   EditInspected.Text:=FExpression+' : '+FDBGInfo.TypeName + ' = ' + FDBGInfo.Value.AsString;
   GridDataSetup;
@@ -155,6 +179,9 @@ end;
 
 procedure TIDEInspectDlg.InspectPointer;
 begin
+  DataPage.TabVisible:=true;
+  PropertiesPage.TabVisible:=false;
+  MethodsPage.TabVisible:=false;
   if not Assigned(FDBGInfo) then exit;
   EditInspected.Text:=FExpression+' : ^'+FDBGInfo.TypeName + ' = ' + FDBGInfo.Value.AsString;
   GridDataSetup;
@@ -249,6 +276,13 @@ begin
           inc(k);
           FGridData.Cells[0,k]:=FDBGInfo.Fields[j].Name;
           FGridData.Cells[1,k]:='Record '+FDBGInfo.Fields[j].DBGType.TypeName;
+          FGridData.Cells[2,k]:=FDBGInfo.Fields[j].DBGType.Value.AsString;
+        end;
+      skVariant:
+        begin
+          inc(k);
+          FGridData.Cells[0,k]:=FDBGInfo.Fields[j].Name;
+          FGridData.Cells[1,k]:='Variant';
           FGridData.Cells[2,k]:=FDBGInfo.Fields[j].DBGType.Value.AsString;
         end;
       skProcedure:
@@ -376,6 +410,7 @@ begin
   case FDBGInfo.Kind of
     skClass: InspectClass();
     skRecord: InspectRecord();
+    skVariant: InspectVariant();
   //  skEnum: ;
   //  skSet: ;
   //  skProcedure: ;

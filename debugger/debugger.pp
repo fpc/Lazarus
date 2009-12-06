@@ -452,7 +452,7 @@ type
 (******************************************************************************)
 
   type
-  TDBGSymbolKind = (skClass, skRecord, skEnum, skSet, skProcedure, skFunction, skSimple, skPointer);
+  TDBGSymbolKind = (skClass, skRecord, skEnum, skSet, skProcedure, skFunction, skSimple, skPointer, skVariant);
   TDBGFieldLocation = (flPrivate, flProtected, flPublic, flPublished);
   TDBGFieldFlag = (ffVirtual,ffConstructor,ffDestructor);
   TDBGFieldFlags = set of TDBGFieldFlag;
