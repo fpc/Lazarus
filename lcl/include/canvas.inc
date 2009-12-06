@@ -694,7 +694,7 @@ end;
   Params:   x1, y1, x2, y2, StartAngle16Deg, EndAngle16Deg: Integer
   Returns:  Nothing
 
-  Use Pie to draw a filled pie-shaped wedge on the canvas.
+  Use RadialPie to draw a filled pie-shaped wedge on the canvas.
   The angles StartAngle16Deg and EndAngle16Deg are 1/16th of a degree.
   For example, a full circle equals 5760 (16*360).
   Positive values of Angle and AngleLength mean
@@ -703,11 +703,11 @@ end;
 
  ------------------------------------------------------------------------------}
 procedure TCanvas.RadialPie(x1, y1, x2, y2,
-  StartAngle16Deg, EndAngle16Deg: Integer);
+  StartAngle16Deg, Angle16DegLength: Integer);
 begin
   Changing;
   RequiredState([csHandleValid, csBrushValid, csPenValid]);
-  LCLIntf.RadialPie(FHandle, x1, y1, x2, y2, StartAngle16Deg,EndAngle16Deg);
+  LCLIntf.RadialPie(FHandle, x1, y1, x2, y2, StartAngle16Deg,Angle16DegLength);
   Changed;
 end;
 
