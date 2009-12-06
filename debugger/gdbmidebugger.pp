@@ -2308,8 +2308,8 @@ begin
         if e <> 0 then Exit;
 
         S := Lowercase(ResultInfo.TypeName);
-        case StringCase(S, ['character', 'ansistring', '__vtbl_ptr_type', 'wchar']) of
-          0, 1: begin
+        case StringCase(S, ['char', 'character', 'ansistring', '__vtbl_ptr_type', 'wchar']) of
+          0, 1, 2: begin
             if Addr = 0
             then
               AResult := ''''''
@@ -2317,7 +2317,7 @@ begin
               AResult := MakePrintable(GetText(Addr));
               PrintableString := AResult;
           end;
-          2: begin
+          3: begin
             if Addr = 0
             then AResult := 'nil'
             else begin
@@ -2326,7 +2326,7 @@ begin
               AResult := 'class of ' + S + ' ' + AResult;
             end;
           end;
-          3: begin
+          4: begin
             // widestring handling
             if Addr = 0
             then AResult := ''''''
