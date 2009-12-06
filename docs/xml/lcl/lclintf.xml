@@ -7,7 +7,7 @@
   ====================================================================
 -->
     <module name="LCLIntf">
-      <short>Contains constants and type definitions for Delphi compatibility</short>
+      <short>Contains winapi like functions for Delphi compatibility</short>
       <descr>
         <p>This unit is being created specifically for compatibility with Delphi. It
 contains selected functions that are included in the Delphi Windows unit.
