@@ -292,7 +292,6 @@ type
   public
     // installed packages
     FirstAutoInstallDependency: TPkgDependency;
-    procedure AddStaticBasePackagesOld;
     procedure LoadStaticBasePackages;
     procedure LoadAutoInstallPackages(PkgList: TStringList);
     procedure SortAutoInstallDependencies;
@@ -1818,6 +1817,10 @@ procedure TLazPackageGraph.LoadStaticBasePackages;
     Dependency: TPkgDependency;
     Quiet: Boolean;
   begin
+    if FindDependencyByNameInList(FirstAutoInstallDependency,pdlRequires,
+      PkgName)<>nil
+    then
+      exit;
     Dependency:=TPkgDependency.Create;
     Dependency.Owner:=Self;
     Dependency.PackageName:=PkgName;
@@ -1833,7 +1836,8 @@ begin
   LoadLazarusBasePackage('SynEdit');
   LoadLazarusBasePackage('CodeTools');
   // the default package will be added on demand
-  FDefaultPackage:=CreateDefaultPackage;
+  if FDefaultPackage=nil then
+    FDefaultPackage:=CreateDefaultPackage;
 
   SortAutoInstallDependencies;
 
@@ -3178,11 +3182,6 @@ begin
     exit(mrCancel);
   end;
   Result:=mrOK;
-end;
-
-procedure TLazPackageGraph.AddStaticBasePackagesOld;
-begin
-
 end;
 
 function TLazPackageGraph.PreparePackageOutputDirectory(APackage: TLazPackage;

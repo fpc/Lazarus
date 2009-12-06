@@ -1686,11 +1686,16 @@ begin
   PackageGraph.OpenInstalledDependency(NewDependency,pitStatic,Quiet);
   Result:=NewDependency.RequiredPackage;
   if AddToAutoInstall and (Result<>nil) then begin
-    NewDependency.AddToList(PackageGraph.FirstAutoInstallDependency,pdlRequires);
+    if FindDependencyByNameInList(
+           PackageGraph.FirstAutoInstallDependency,pdlRequires,PackageName)=nil
+    then begin
+      NewDependency.RequiredPackage.AutoInstall:=pitStatic;
+      NewDependency.AddToList(PackageGraph.FirstAutoInstallDependency,pdlRequires)
+    end else
+      NewDependency.Free;
     PackageList:=MiscellaneousOptions.BuildLazOpts.StaticAutoInstallPackages;
-    if PackageList.IndexOf(NewDependency.PackageName)<0 then
-      PackageList.Add(NewDependency.PackageName);
-    NewDependency.RequiredPackage.AutoInstall:=pitStatic;
+    if PackageList.IndexOf(PackageName)<0 then
+      PackageList.Add(PackageName);
   end else begin
     NewDependency.Free;
   end;
