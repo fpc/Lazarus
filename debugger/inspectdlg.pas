@@ -127,7 +127,17 @@ begin
   if not Assigned(FDBGInfo.Fields) then exit;
   EditInspected.Text:=FExpression+' : '+FDBGInfo.TypeName;
   GridDataSetup;
-  ShowDataFields;
+  // handle special records
+  if (FDBGInfo.TypeName = 'VARIANT') or
+     (FDBGInfo.TypeName = 'Variant') or
+     (FDBGInfo.TypeName = 'ShortString') then
+  begin
+    FGridData.Cells[0,1]:=FExpression;
+    FGridData.Cells[1,1]:=FDBGInfo.TypeName;
+    FGridData.Cells[2,1]:=FHumanReadable;
+  end
+  else
+    ShowDataFields;
   FGridData.AutoSizeColumn(2);
 end;
 
