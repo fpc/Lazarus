@@ -122,6 +122,8 @@ type
 
     procedure GradientFill(ARect: TRect; AStart, AStop: TColor; ADirection: TGradientDirection);// ToDo
 
+    procedure RadialPie(x1, y1, x2, y2,
+                        StartAngle16Deg, Angle16DegLength: Integer); virtual;
     procedure Pie(EllipseX1,EllipseY1,EllipseX2,EllipseY2,
                   StartX,StartY,EndX,EndY: Integer); virtual;
     procedure Polygon(const Points: array of TPoint;
@@ -454,6 +456,46 @@ begin
   FillRect(ARect);
 end;
 
+procedure TAggLCLCanvas.RadialPie(x1, y1, x2, y2, StartAngle16Deg,
+  Angle16DegLength: Integer);
+{ Use RadialPie to draw a filled pie-shaped wedge on the canvas.
+  The angles StartAngle16Deg and EndAngle16Deg are 1/16th of a degree.
+  For example, a full circle equals 5760 (16*360).
+  Positive values of Angle and AngleLength mean
+  counter-clockwise while negative values mean clockwise direction.
+  Zero degrees is at the 3'o clock position.
+}
+var
+  cx, cy, rx, ry: double;
+  a, da, startangle, endangle: Double;
+begin
+  if Angle16DegLength=0 then exit;
+  Path.m_path.remove_all;
+  cx:=double(x1+x2)/2+0.5;
+  cy:=double(y1+y2)/2+0.5;
+  rx:=double(x2-x1)/2;
+  ry:=double(y2-y1)/2;
+  da:=PI/16;
+  startangle:=LCLAngleToAggAngle(StartAngle16Deg+Angle16DegLength);
+  endangle:=LCLAngleToAggAngle(StartAngle16deg);
+  if startangle>endangle then begin
+    a:=startangle;
+    startangle:=endangle;
+    endangle:=a;
+  end;
+
+  Path.m_path.move_to(cx,cy);
+  a:=startangle;
+  while a<endangle do begin
+    Path.m_path.line_to(cx+rx*cos(a),cy+ry*sin(a));
+    a:=a+da;
+  end;
+  Path.m_path.line_to(cx+rx*cos(endangle),cy+ry*sin(endangle));
+
+  AggClosePolygon;
+  AggDrawPath(AGG_FillAndStroke);
+end;
+
 procedure TAggLCLCanvas.Pie(EllipseX1, EllipseY1, EllipseX2, EllipseY2, StartX,
   StartY, EndX, EndY: Integer);
 { Use Pie to draw a filled Pie-shaped wedge on the canvas. The pie is part of
@@ -464,24 +506,12 @@ procedure TAggLCLCanvas.Pie(EllipseX1, EllipseY1, EllipseX2, EllipseY2, StartX,
 var
   cx, cy, rx, ry: double;
   StartAngle16deg, AngleLength16deg: extended;
-  da, startangle, endangle: Double;
-
-  procedure AddArc(startangle, endangle: double);
-  var
-    a: Double;
-  begin
-    a:=startangle;
-    while a<endangle do begin
-      Path.m_path.line_to(cx+rx*cos(a),cy+ry*sin(a));
-      a:=a+da;
-    end;
-    Path.m_path.line_to(cx+rx*cos(endangle),cy+ry*sin(endangle));
-  end;
-
+  a, da, startangle, endangle: Double;
 begin
   Coords2Angles(EllipseX1, EllipseY1, EllipseX2-EllipseX1, EllipseY2-EllipseY1,
                 StartX, StartY, EndX, EndY,
                 StartAngle16deg, AngleLength16deg);
+  if AngleLength16deg<=0 then exit;
 
   Path.m_path.remove_all;
   cx:=double(EllipseX1+EllipseX2)/2+0.5;
@@ -491,9 +521,19 @@ begin
   da:=PI/16;
   startangle:=LCLAngleToAggAngle(StartAngle16deg+AngleLength16deg);
   endangle:=LCLAngleToAggAngle(StartAngle16deg);
+  if startangle>endangle then begin
+    a:=startangle;
+    startangle:=endangle;
+    endangle:=a;
+  end;
 
   Path.m_path.move_to(cx,cy);
-  AddArc(startangle,endangle);
+  a:=startangle;
+  while a<endangle do begin
+    Path.m_path.line_to(cx+rx*cos(a),cy+ry*sin(a));
+    a:=a+da;
+  end;
+  Path.m_path.line_to(cx+rx*cos(endangle),cy+ry*sin(endangle));
 
   AggClosePolygon;
   AggDrawPath(AGG_FillAndStroke);
