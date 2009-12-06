@@ -422,7 +422,7 @@ begin
           HS_HORIZONTAL: QtBrush.setStyle(QtHorPattern);
           HS_VERTICAL: QtBrush.setStyle(QtVerPattern);
         else
-          RaiseGDBException('invalid lbHatch');
+          QtBrush.setStyle(QtSolidPattern);
         end;
       end;
 

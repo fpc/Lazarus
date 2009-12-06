@@ -1023,7 +1023,7 @@ begin
                 GObject^.GDIBrushPixmap := gdk_bitmap_create_from_data(
                    nil, pgchar(@HATCH_VERTICAL[0]), 8, 8);
               else
-                RaiseGDBException('invalid lbHatch');
+                GObject^.GDIBrushFill := GDK_SOLID;
             end;
           end;
 
