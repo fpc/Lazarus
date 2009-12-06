@@ -7,7 +7,7 @@ LazarusResources.Add('TMessagesView','FORMDATA',[
   +'t'#2'O'#11'ClientWidth'#3#210#2#10'KeyPreview'#9#12'OnDeactivate'#7#14'Form'
   +'Deactivate'#9'OnKeyDown'#7#19'MessagesViewKeyDown'#0#242#2#0#9'TTreeView'#15
   +'MessageTreeView'#4'Left'#2#0#6'Height'#2'O'#3'Top'#2#0#5'Width'#3#210#2#5'A'
-  +'lign'#7#8'alClient'#17'DefaultItemHeight'#2#19#9'PopupMenu'#7#13'MainPopupM'
+  +'lign'#7#8'alClient'#17'DefaultItemHeight'#2#15#9'PopupMenu'#7#13'MainPopupM'
   +'enu'#8'ReadOnly'#9#10'ScrollBars'#7#10'ssAutoBoth'#8'ShowRoot'#8#8'TabOrder'
   +#2#0#6'OnExit'#7#15'MessageViewExit'#7'Options'#11#19'tvoAllowMultiselect'#17
   +'tvoAutoItemHeight'#16'tvoHideSelection'#21'tvoKeepCollapsedNodes'#11'tvoRea'

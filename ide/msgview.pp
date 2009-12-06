@@ -491,7 +491,7 @@ end;
 
 procedure TMessagesView.AddProgress(ScanLine: TIDEScanMessageLine);
 begin
-  Add(ScanLine.Line, ScanLine.WorkingDirectory, True, True,ScanLine.LineNumber,nil);
+  Add(ScanLine.Line, ScanLine.WorkingDirectory, True, True, ScanLine.LineNumber, nil);
 end;
 
 procedure TMessagesView.AddSeparator;

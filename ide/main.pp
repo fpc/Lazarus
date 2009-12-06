@@ -11660,10 +11660,12 @@ end;
 
 function GetFPCMessage(ALine: TLazMessageLine; var FileName: String; var CaretPos: TPoint; var ErrType: TFPCErrorType): Boolean;
 begin
+  Result := Assigned(ALine.Parts);
+  if Result and (Aline.Filename = '') then
+    Aline.UpdateSourcePosition;
   FileName:=ALine.Filename;
   CaretPos.x:=ALine.Column;
   CaretPos.y:=ALine.LineNumber;
-  Result := Assigned(ALine.Parts);
   if not Result then
     Exit;
   ErrType:=FPCErrorTypeNameToType(ALine.Parts.Values['Type']);

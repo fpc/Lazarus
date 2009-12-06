@@ -17,7 +17,7 @@ inherited MessagesView: TMessagesView
     Top = 0
     Width = 722
     Align = alClient
-    DefaultItemHeight = 19
+    DefaultItemHeight = 15
     PopupMenu = MainPopupMenu
     ReadOnly = True
     ScrollBars = ssAutoBoth
