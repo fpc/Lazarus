@@ -1696,13 +1696,6 @@ begin
         TBreakPointsDlg(CurDialog).BaseDirectory:=Project1.ProjectDirectory;
     end;
   end;
-  if (CurDialog is TEvaluateDlg) and  (sourceNotebook<>nil)
-  then begin
-    if SourceNotebook.GetActiveSE.SelectionAvailable then
-      TEvaluateDlg(CurDialog).FindText := SourceNotebook.GetActiveSE.Selection
-    else
-      TEvaluateDlg(CurDialog).FindText := SourceNotebook.GetActiveSE.GetOperandAtCurrentCaret;
-  end;
   FDialogs[ADialogType].Show;
 end;
 
@@ -1769,10 +1762,14 @@ begin
 end;
 
 procedure TDebugManager.InitInspectDlg;
-//var
-//  TheDialog: TIDEInspectDlg;
+var
+  TheDialog: TIDEInspectDlg;
 begin
-//  TheDialog := TIDEInspectDlg(FDialogs[ddtInspect]);
+  TheDialog := TIDEInspectDlg(FDialogs[ddtInspect]);
+  if SourceNotebook.GetActiveSE.SelectionAvailable then
+    TheDialog.Execute(SourceNotebook.GetActiveSE.Selection)
+  else
+    TheDialog.Execute(SourceNotebook.GetActiveSE.GetOperandAtCurrentCaret);
 end;
 
 procedure TDebugManager.InitCallStackDlg;
@@ -1785,8 +1782,14 @@ begin
 end;
 
 procedure TDebugManager.InitEvaluateDlg;
+var
+  TheDialog: TEvaluateDlg;
 begin
-  // todo: pass current selection
+  TheDialog := TEvaluateDlg(FDialogs[ddtEvaluate]);
+  if SourceNotebook.GetActiveSE.SelectionAvailable then
+    TheDialog.FindText := SourceNotebook.GetActiveSE.Selection
+  else
+    TheDialog.FindText := SourceNotebook.GetActiveSE.GetOperandAtCurrentCaret;
 end;
 
 constructor TDebugManager.Create(TheOwner: TComponent);
@@ -1875,7 +1878,8 @@ begin
 
     itmRunMenuResetDebugger.OnClick := @mnuResetDebuggerClicked;
 
-//    itmRunMenuInspect.OnClick := @mnuViewDebugDialogClick;
+    itmRunMenuInspect.OnClick := @mnuViewDebugDialogClick;
+    itmRunMenuInspect.Tag := Ord(ddtInspect);
     itmRunMenuEvaluate.OnClick := @mnuViewDebugDialogClick;
     itmRunMenuEvaluate.Tag := Ord(ddtEvaluate);
     itmRunMenuAddWatch.OnClick := @mnuAddWatchClicked;
@@ -1888,6 +1892,8 @@ begin
   SrcEditMenuAddWatchAtCursor.OnClick:=@mnuAddWatchClicked;
   SrcEditMenuEvaluateModify.OnClick:=@mnuViewDebugDialogClick;
   SrcEditMenuEvaluateModify.Tag := Ord(ddtEvaluate);
+  SrcEditMenuInspect.OnClick:=@mnuViewDebugDialogClick;
+  SrcEditMenuInspect.Tag := Ord(ddtInspect);
 end;
 
 procedure TDebugManager.SetupMainBarShortCuts;
@@ -1908,7 +1914,6 @@ begin
     itmViewCallStack.Command:=GetCommand(ecToggleCallStack);
     itmViewAssembler.Command:=GetCommand(ecToggleAssembler);
 
-
     itmRunMenuInspect.Command:=GetCommand(ecInspect);
     itmRunMenuEvaluate.Command:=GetCommand(ecEvaluate);
     itmRunMenuAddWatch.Command:=GetCommand(ecAddWatch);
@@ -1927,6 +1932,7 @@ begin
   SrcEditMenuRunToCursor.Command:=GetCommand(ecRunToCursor);
   SrcEditMenuEvaluateModify.Command:=GetCommand(ecEvaluate);
   SrcEditMenuAddWatchAtCursor.Command:=GetCommand(ecAddWatch);
+  SrcEditMenuInspect.Command:=GetCommand(ecInspect);
   SrcEditMenuViewCallStack.Command:=GetCommand(ecToggleCallStack);
 end;
 
@@ -1961,6 +1967,8 @@ begin
     itmRunMenuEvaluate.Enabled := (not DebuggerInvalid)
                               and (dcEvaluate in FDebugger.Commands);
     SrcEditMenuEvaluateModify.Enabled := (not DebuggerInvalid)
+                              and (dcEvaluate in FDebugger.Commands);
+    SrcEditMenuInspect.Enabled := (not DebuggerInvalid)
                               and (dcEvaluate in FDebugger.Commands);
     itmRunMenuAddWatch.Enabled := True; // always allow to add a watch
     // TODO: add other debugger menuitems
@@ -2310,22 +2318,23 @@ end;
 procedure TDebugManager.ProcessCommand(Command: word; var Handled: boolean);
 begin
   //debugln('TDebugManager.ProcessCommand ',dbgs(Command));
-  Handled:=true;
+  Handled := True;
   case Command of
-  ecPause:             DoPauseProject;
-  ecStepInto:          DoStepIntoProject;
-  ecStepOver:          DoStepOverProject;
-  ecRunToCursor:       DoRunToCursor;
-  ecStopProgram:       DoStopProject;
-  ecResetDebugger:     ResetDebugger;
-  ecToggleCallStack:   DoToggleCallStack;
-  ecEvaluate:          ViewDebugDialog(ddtEvaluate);
-  ecToggleWatches:     ViewDebugDialog(ddtWatches);
-  ecToggleBreakPoints: ViewDebugDialog(ddtBreakpoints);
-  ecToggleDebuggerOut: ViewDebugDialog(ddtOutput);
-  ecToggleLocals:      ViewDebugDialog(ddtLocals);
+    ecPause:             DoPauseProject;
+    ecStepInto:          DoStepIntoProject;
+    ecStepOver:          DoStepOverProject;
+    ecRunToCursor:       DoRunToCursor;
+    ecStopProgram:       DoStopProject;
+    ecResetDebugger:     ResetDebugger;
+    ecToggleCallStack:   DoToggleCallStack;
+    ecEvaluate:          ViewDebugDialog(ddtEvaluate);
+    ecInspect:           ViewDebugDialog(ddtInspect);
+    ecToggleWatches:     ViewDebugDialog(ddtWatches);
+    ecToggleBreakPoints: ViewDebugDialog(ddtBreakpoints);
+    ecToggleDebuggerOut: ViewDebugDialog(ddtOutput);
+    ecToggleLocals:      ViewDebugDialog(ddtLocals);
   else
-    Handled:=false;
+    Handled := False;
   end;
 end;
 
@@ -2376,7 +2385,7 @@ begin
   ViewDebugDialog(ddtInspect);
   if FDialogs[ddtInspect] <> nil then
   begin
-    TIDEInspectDlg(FDialogs[ddtInspect]).Execute(FDebugger, AExpression);
+    TIDEInspectDlg(FDialogs[ddtInspect]).Execute(AExpression);
   end;
 end;
 

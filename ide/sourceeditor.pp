@@ -933,6 +933,7 @@ var
     SrcEditMenuRunToCursor: TIDEMenuCommand;
     SrcEditMenuEvaluateModify: TIDEMenuCommand;
     SrcEditMenuAddWatchAtCursor: TIDEMenuCommand;
+    SrcEditMenuInspect: TIDEMenuCommand;
     SrcEditMenuViewCallStack: TIDEMenuCommand;
     // refactoring
     SrcEditMenuCompleteCode: TIDEMenuCommand;
@@ -1107,6 +1108,8 @@ begin
       SrcEditMenuEvaluateModify.Enabled:=False;
       SrcEditMenuAddWatchAtCursor:=RegisterIDEMenuCommand(AParent,
                                      'Add Watch at Cursor',uemAddWatchAtCursor);
+      SrcEditMenuInspect:=RegisterIDEMenuCommand(AParent, 'Inspect...', uemInspect);
+      SrcEditMenuInspect.Enabled:=False;
       SrcEditMenuRunToCursor:=RegisterIDEMenuCommand(AParent,
                                                 'Run to cursor', uemRunToCursor, nil, nil, nil, 'menu_run_cursor');
       SrcEditMenuViewCallStack:=RegisterIDEMenuCommand(AParent,

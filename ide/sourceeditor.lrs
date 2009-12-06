@@ -5,7 +5,7 @@ LazarusResources.Add('TSourceNotebook','FORMDATA',[
   +','#1#3'Top'#3'v'#1#5'Width'#3#144#1#14'AllowDropFiles'#9#7'Caption'#6#14'So'
   +'urceNotebook'#12'ClientHeight'#3','#1#11'ClientWidth'#3#144#1#9'OnMouseUp'#7
   +#11'FormMouseUp'#0#242#2#0#10'TStatusBar'#9'StatusBar'#4'Left'#2#0#6'Height'
-  +#2#20#3'Top'#3#24#1#5'Width'#3#144#1#6'Panels'#14#1#5'Width'#2'd'#0#1#5'Widt'
+  +#2#23#3'Top'#3#21#1#5'Width'#3#144#1#6'Panels'#14#1#5'Width'#2'd'#0#1#5'Widt'
   +'h'#3#150#0#0#1#5'Width'#2'2'#0#1#4'Text'#6#3'INS'#5'Width'#2'2'#0#0#10'Simp'
   +'leText'#6#14'This is a test'#11'SimplePanel'#8#10'OnDblClick'#7#17'StatusBa'
   +'rDblClick'#0#0#0

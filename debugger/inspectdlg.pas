@@ -29,7 +29,7 @@ interface
 
 uses
   Classes, SysUtils, TypInfo, FileUtil, LResources, Forms, Controls, Graphics,
-  Dialogs, ComCtrls, ObjectInspector, PropEdits, Debugger, DebuggerDlg,
+  Dialogs, ComCtrls, ObjectInspector, PropEdits, Debugger, DebuggerDlg, BaseDebugManager,
   LazarusIDEStrConsts, IDEWindowIntf,LCLProc,Grids, StdCtrls;
 
 type
@@ -60,7 +60,6 @@ type
     FDataGrid,
     FPropertiesGrid,
     FMethodsGrid: TOIDBGGrid;
-    FDebugger: TDebugger;
     FExpression: ansistring;
     FHumanReadable: ansistring;
     FDBGInfo: TDBGType;
@@ -79,7 +78,7 @@ type
   public
     constructor Create(AOwner: TComponent); override;
     destructor Destroy; override;
-    procedure Execute(const ADebugger: TDebugger; const AExpression: ansistring);
+    procedure Execute(const AExpression: ansistring);
   end;
 
 implementation
@@ -353,30 +352,26 @@ begin
   inherited Destroy;
 end;
 
-procedure TIDEInspectDlg.Execute(const ADebugger: TDebugger;
-  const AExpression: ansistring);
+procedure TIDEInspectDlg.Execute(const AExpression: ansistring);
 begin
   FExpression:='';
   FreeAndNil(FDBGInfo);
-  FDebugger:=ADebugger;
-  if not FDebugger.Evaluate(AExpression,FHumanReadable,FDBGInfo) then begin
+  if not DebugBoss.Evaluate(AExpression,FHumanReadable,FDBGInfo) or not assigned(FDBGInfo) then
+  begin
     FreeAndNil(FDBGInfo);
     Exit;
   end;
-  if not assigned(FDBGInfo) then begin
-    exit;
-  end;
   FExpression:=AExpression;
   case FDBGInfo.Kind of
-  skClass: InspectClass();
-  skRecord: InspectRecord();
-//  skEnum: ;
-//  skSet: ;
-//  skProcedure: ;
-//  skFunction: ;
-  skSimple: InspectSimple();
-  skPointer: InspectPointer();
-//  skDecomposable: ;
+    skClass: InspectClass();
+    skRecord: InspectRecord();
+  //  skEnum: ;
+  //  skSet: ;
+  //  skProcedure: ;
+  //  skFunction: ;
+    skSimple: InspectSimple();
+    skPointer: InspectPointer();
+  //  skDecomposable: ;
   end;
 end;
 
