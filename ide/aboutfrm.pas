@@ -124,7 +124,7 @@ end;
 
 function GetLazarusVersionString: string;
 begin
-  Result:=format(lisLazarusVersionString,[LazarusVersionStr]);
+  Result:=LazarusVersionStr;
 end;
 
 { TAboutForm }

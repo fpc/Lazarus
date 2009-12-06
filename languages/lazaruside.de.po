@@ -7641,7 +7641,7 @@ msgid "Lazarus unit"
 msgstr "Lazarus-Unit"
 
 #: lazarusidestrconsts.lislazarusversionstring
-msgid "%s beta"
+msgid "%s"
 msgstr "%s Beta"
 
 #: lazarusidestrconsts.lislazbuildaboaction

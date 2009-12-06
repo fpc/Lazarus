@@ -1,6 +1,6 @@
 msgid ""
 msgstr ""
-"Project-Id-Version: 0.9.27 beta\n"
+"Project-Id-Version: 0.9.27\n"
 "POT-Creation-Date: \n"
 "PO-Revision-Date: 2009-04-24 19:20+0800\n"
 "Last-Translator: XY.Chen <chenxinyv@gmail.com>、巫山霏云 <freefcw@gmail.com>(2006-07-27)\n"
@@ -7640,7 +7640,7 @@ msgid "Lazarus unit"
 msgstr "Lazarus 单元"
 
 #: lazarusidestrconsts.lislazarusversionstring
-msgid "%s beta"
+msgid "%s"
 msgstr "%s 测试版"
 
 #: lazarusidestrconsts.lislazbuildaboaction
