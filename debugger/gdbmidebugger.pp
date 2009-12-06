@@ -2370,7 +2370,8 @@ begin
            (ResultInfo.TypeName = 'VARIANT') then
           AResult := GetVariantValue(AResult)
         else
-        if (ResultInfo.TypeName = 'ShortString') then
+        if (ResultInfo.TypeName = 'ShortString') or
+           (ResultInfo.TypeName = 'SHORTSTRING') then
           AResult := AResult // don't show 'record ShortString' as this is debug info implementation details
         else
           AResult := 'record ' + ResultInfo.TypeName + ' '+ AResult;

@@ -130,7 +130,8 @@ begin
   // handle special records
   if (FDBGInfo.TypeName = 'VARIANT') or
      (FDBGInfo.TypeName = 'Variant') or
-     (FDBGInfo.TypeName = 'ShortString') then
+     (FDBGInfo.TypeName = 'ShortString') or
+     (FDBGInfo.TypeName = 'SHORTSTRING') then
   begin
     FGridData.Cells[0,1]:=FExpression;
     FGridData.Cells[1,1]:=FDBGInfo.TypeName;
