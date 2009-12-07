@@ -70,8 +70,6 @@ procedure Gtk2_ItemDeleted(model: PGtkTreeModel; path: PGtkTreePath; WidgetInfo:
 var
   msg: TLMNotify;
   NM: TNMListView;
-  ALV: TLVHack;
-  Widgets: PTVWidgets;
 begin
   //DebugLn('Gtk2_ItemDeleted');
   msg.Msg := CN_NOTIFY;
@@ -82,8 +80,6 @@ begin
   NM.iItem := StrToInt(gtk_tree_path_to_string(path));
   msg.NMHdr := @NM.hdr;
   DeliverMessage(WidgetInfo^.LCLObject, msg);
-  
-  ALV := TLVHack(WidgetInfo^.LCLObject);
 end;
 
 procedure Gtk2_ItemInserted(model: PGtkTreeModel; path: PGtkTreePAth; Iter: PGtkTreeIter; WidgetInfo: PWidgetInfo); cdecl;
@@ -750,7 +746,9 @@ class procedure TGtk2WSCustomListView.ItemDelete(const ALV: TCustomListView;
   const AIndex: Integer);
 var
   Widgets: PTVWidgets;
+  {$IFDEF USEORIGTREEMODEL}
   Iter: TGtkTreeIter;
+  {$ENDIF}
 begin
   if not WSCheckHandleAllocated(ALV, 'ItemDelete')
   then Exit;
@@ -823,9 +821,10 @@ class procedure TGtk2WSCustomListView.ItemInsert(const ALV: TCustomListView;
   const AIndex: Integer; const AItem: TListItem);
 var
   Widgets: PTVWidgets;
+  {$IFDEF USEORIGTREEMODEL}
   Iter: TGtkTreeIter;
   Index: Integer;
-//  BitImage: TBitmap;
+  {$ENDIF}
 begin
   if not WSCheckHandleAllocated(ALV, 'ItemInsert')
   then Exit;
@@ -1014,9 +1013,11 @@ end;
 
 class procedure TGtk2WSCustomListView.ItemUpdate(const ALV: TCustomListView;
   const AIndex: Integer; const AItem: TListItem);
+{$IFDEF USEORIGTREEMODEL}
 var
   Widgets: PTVWidgets;
   Iter: TGtkTreeIter;
+  {$ENDIF}
 begin
   if not WSCheckHandleAllocated(ALV, 'ItemUpdate')
   then Exit;
@@ -1037,7 +1038,9 @@ var
   //ListViewData: PCustomListViewData;
   //Allocation: TGTKAllocation;
   ScrollWidget: PGtkScrolledWindow;
+  {$IFDEF USEORIGTREEMODEL}
   PtrType: GType;
+  {$ENDIF}
 begin
   Result := TGtkWSBaseScrollingWinControl.CreateHandle(AWinControl, AParams);
   if Result = 0 then Exit;
@@ -1059,9 +1062,9 @@ begin
   begin
     ItemCache := TStringList.Create;
     Images := nil;
-    PtrType := G_TYPE_POINTER;
 
     {$IFDEF USEORIGTREEMODEL}
+    PtrType := G_TYPE_POINTER;
     TreeModel := gtk_list_store_newv(1, @PtrType);
     {$ELSE}
     TreeModel:= LCLListViewModelNew(TCustomListView(AWinControl));
@@ -1440,8 +1443,10 @@ class procedure TGtk2WSCustomListView.SetItemsCount(const ALV: TCustomListView;
   const Avalue: Integer);
 var
   Widgets: PTVWidgets;
+  {$IFDEF USEORIGTREEMODEL}
   Iter: TGtkTreeIter;
   Index: Integer;
+  {$ENDIF}
 begin
   if not WSCheckHandleAllocated(ALV, 'SetItemsCount')
   then Exit;

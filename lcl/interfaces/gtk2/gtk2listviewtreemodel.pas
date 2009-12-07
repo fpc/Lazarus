@@ -238,9 +238,9 @@ procedure TLCLListViewModel.get_value(iter: PGtkTreeIter; column: gint;
   value: PGValue); cdecl;
 var
   Index: Integer;
-  ValueType: GType;
   Item: TLVItemHack;
-  SubIndex: Integer;
+  //ValueType: GType;
+  //SubIndex: Integer;
 begin
   Index := PtrUint(Iter^.user_data);
   Item := TLVItemHack(ListView.Items.Item[Index]);
