@@ -2775,6 +2775,8 @@ type
     procedure SetWidth(Value: Integer);
     procedure SetImageIndex(const Value: TImageIndex);
     procedure CheckConstraints;
+  protected
+    function GetDisplayName: string; override;
   public
     constructor Create(ACollection: TCollection); override;
     procedure Assign(Source: TPersistent); override;

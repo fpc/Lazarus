@@ -594,6 +594,14 @@ begin
     FWidth := FMaxWidth;
 end;
 
+function THeaderSection.GetDisplayName: string;
+begin
+  if Length(Text) = 0 then
+    Result := inherited GetDisplayName
+  else
+    Result := Text;
+end;
+
 constructor THeaderSection.Create(ACollection: TCollection);
 begin
   inherited Create(ACollection);
