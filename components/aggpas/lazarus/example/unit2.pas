@@ -94,6 +94,11 @@ begin
     TextOut(TxtX,TxtY,s);
 
     RoundRect(10,80,30,100,15,15);
+    Polyline([Point(35,80),Point(45,80),Point(55,80),Point(55,90),
+              Point(55,90),Point(55,100),Point(35,90),Point(35,100)]);
+    PolyBezier([Point(35,80),Point(45,80),Point(55,80),Point(55,90),
+                Point(55,90),Point(55,100),Point(35,90),Point(35,100)],
+                false,false);
   end;
 
   // convert to LCL native pixel format
@@ -133,6 +138,11 @@ begin
     TextOut(TxtX,TxtY,s);
 
     RoundRect(10,105,30,125,15,15);
+    Polyline([Point(35,105),Point(45,105),Point(55,105),Point(55,115),
+              Point(55,115),Point(55,125),Point(35,115),Point(35,125)]);
+    PolyBezier([Point(35,105),Point(45,105),Point(55,105),Point(55,115),
+                Point(55,115),Point(55,125),Point(35,115),Point(35,125)],
+                false,false);
   end;
 end;
 

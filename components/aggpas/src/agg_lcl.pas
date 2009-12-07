@@ -126,16 +126,22 @@ type
                         StartAngle16Deg, Angle16DegLength: Integer); virtual;
     procedure Pie(EllipseX1,EllipseY1,EllipseX2,EllipseY2,
                   StartX,StartY,EndX,EndY: Integer); virtual;
+    procedure PolyBezier(Points: PPoint; NumPts: Integer;
+                         Filled: boolean = False;
+                         Continuous: boolean = False); virtual;
+    procedure PolyBezier(const Points: array of TPoint;
+                         Filled: boolean = False;
+                         Continuous: boolean = False);
     procedure Polygon(const Points: array of TPoint;
                       Winding: Boolean;
                       StartIndex: Integer = 0;
                       NumPts: Integer = -1);// ToDo: winding
     procedure Polygon(Points: PPoint; NumPts: Integer;
                       Winding: boolean = False); virtual;// ToDo: winding
-    procedure Polyline(const Points: array of TPoint;
-                       StartIndex: Integer;
+    procedure PolyLine(const Points: array of TPoint;
+                       StartIndex: Integer = 0;
                        NumPts: Integer = -1);
-    procedure Polyline(Points: PPoint; NumPts: Integer); virtual;
+    procedure PolyLine(Points: PPoint; NumPts: Integer); virtual;
 
     procedure RoundRect(X1, Y1, X2, Y2: Integer; DX,DY: Integer); virtual;
     procedure RoundRect(const aRect: TRect; DX,DY: Integer);
@@ -388,7 +394,7 @@ procedure TAggLCLCanvas.Chord(ALeft, ATop, ARight, ABottom, SX, SY, EX,
 var
   StartAngle: Extended;
   AngleLength: Extended;
-  cx, cy, rx, ry, start, endangle, h: double;
+  cx, cy, rx, ry, start, endangle: double;
   ar : agg_arc.arc;
 begin
   Coords2Angles(ALeft, ATop, ARight-ALeft, ABottom-ATop, SX, SY, EX, EY,
@@ -562,31 +568,53 @@ begin
   AggDrawPath(AGG_FillAndStroke);
 end;
 
+procedure TAggLCLCanvas.PolyBezier(Points: PPoint; NumPts: Integer;
+  Filled: boolean; Continuous: boolean);
+{ Use Polybezier to draw cubic Bézier curves. The first curve is drawn from the
+  first point to the fourth point with the second and third points being the
+  control points. If the Continuous flag is TRUE then each subsequent curve
+  requires three more points, using the end-point of the previous Curve as its
+  starting point, the first and second points being used as its control points,
+  and the third point its end-point. If the continous flag is set to FALSE,
+  then each subsequent Curve requires 4 additional points, which are used
+  exactly as in the first curve. Any additonal points which do not add up to
+  a full bezier(4 for Continuous, 3 otherwise) are ignored. There must be at
+  least 4 points for an drawing to occur. If the Filled Flag is set to TRUE
+  then the resulting Poly-Bézier will be drawn as a Polygon.
+}
+var
+  LinePoints: PPoint;
+  LinePointCount: integer;
+begin
+  if NumPts<4 then exit;
+  LinePoints:=nil;
+  LinePointCount:=0;
+  PolyBezier2Polyline(Points,NumPts,LinePoints,LinePointCount,Continuous);
+  if LinePointCount>1 then begin
+    if Filled then
+      Polygon(LinePoints,LinePointCount)
+    else
+      Polyline(LinePoints,LinePointCount);
+  end;
+  ReAllocMem(LinePoints,0);
+end;
+
+procedure TAggLCLCanvas.PolyBezier(const Points: array of TPoint;
+  Filled: boolean; Continuous: boolean);
+begin
+  if length(Points)<2 then exit;
+  PolyBezier(@Points[0],length(Points),Filled,Continuous);
+end;
+
 procedure TAggLCLCanvas.Polygon(const Points: array of TPoint;
   Winding: Boolean; StartIndex: Integer; NumPts: Integer);
-var
-  i: LongInt;
-  p: TPoint;
 begin
   if NumPts=0 then exit;
   if StartIndex<low(Points) then exit;
   if StartIndex>=high(Points) then exit;
   if (NumPts<0) or (StartIndex+NumPts-1>high(Points)) then
     NumPts:=High(Points)-StartIndex+1;
-  Path.m_path.remove_all;
-  i:=StartIndex;
-  p:=Points[i];
-  Path.m_path.move_to(p.x+0.5 ,p.y+0.5 );
-  inc(i);
-  dec(NumPts);
-  while NumPts>0 do begin
-    p:=points[i];
-    Path.m_path.line_to(p.x+0.5,p.y+0.5);
-    inc(i);
-    dec(NumPts);
-  end;
-  AggClosePolygon;
-  AggDrawPath(AGG_FillOnly);
+  Polygon(@Points[StartIndex],NumPts,Winding);
 end;
 
 procedure TAggLCLCanvas.Polygon(Points: PPoint; NumPts: Integer;
@@ -607,7 +635,7 @@ begin
   AggDrawPath(AGG_FillOnly);
 end;
 
-procedure TAggLCLCanvas.Polyline(const Points: array of TPoint;
+procedure TAggLCLCanvas.PolyLine(const Points: array of TPoint;
   StartIndex: Integer; NumPts: Integer);
 { Use Polyline to connect a set of points on the canvas. If you specify only two
   points, Polyline draws a single line.
@@ -620,31 +648,20 @@ procedure TAggLCLCanvas.Polyline(const Points: array of TPoint;
   on the canvas. However, unlike LineTo, Polyline does not change the value of
   PenPos.
 }
-var
-  p: TPoint;
-  i: Integer;
 begin
   if NumPts=0 then exit;
   if StartIndex<low(Points) then exit;
   if StartIndex>=high(Points) then exit;
   if (NumPts<0) or (StartIndex+NumPts-1>high(Points)) then
     NumPts:=High(Points)-StartIndex+1;
-  Path.m_path.remove_all;
-  i:=StartIndex;
-  p:=Points[i];
-  Path.m_path.move_to(p.x+0.5 ,p.y+0.5 );
-  inc(i);
-  dec(NumPts);
-  while NumPts>0 do begin
-    p:=points[i];
-    Path.m_path.line_to(p.x+0.5,p.y+0.5);
-    inc(i);
-    dec(NumPts);
-  end;
-  AggDrawPath(AGG_StrokeOnly );
+  PolyLine(@Points[StartIndex],NumPts);
 end;
 
-procedure TAggLCLCanvas.Polyline(Points: PPoint; NumPts: Integer);
+procedure TAggLCLCanvas.PolyLine(Points: PPoint; NumPts: Integer);
+{ Use Polyline to connect a set of points on the canvas. If you specify only two
+  points, Polyline draws a single line.
+  The Points parameter is an array of points to be connected.
+}
 var
   i: Integer;
 begin
