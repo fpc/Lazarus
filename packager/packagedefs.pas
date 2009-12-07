@@ -4166,6 +4166,7 @@ begin
   NewSourceDirs:=LazPackage.SourceDirectories.CreateFileList;
   try
     MergeSearchPaths(NewSourceDirs,CurUnitPath);
+    MergeSearchPaths(NewSourceDirs,LazPackage.CompilerOptions.BaseDirectory);
 
     // real check if something has changed
     if (fLastSourceDirectories<>nil)
