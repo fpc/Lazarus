@@ -2927,9 +2927,7 @@ begin
     if @parser.m_characterDataHandler <> NIL then
      begin
       c:=XML_Char($A );
-
       parser.m_characterDataHandler(parser.m_handlerArg ,@c ,1 );
-
      end
     else
      if @parser.m_defaultHandler <> NIL then

@@ -51,6 +51,9 @@ const
 
 type
  parser_ptr = ^parser;
+
+ { parser }
+
  parser = object
    m_path      : path_renderer_ptr;
    m_tokenizer : path_tokenizer;
@@ -72,7 +75,8 @@ type
    constructor Construct(path : path_renderer_ptr );
    destructor  Destruct;
 
-   procedure parse(fname : string );
+   procedure parse(fname : string ); overload; // UTF8
+   procedure parse(sourcestream: TStream); overload;
    function  title : char_ptr;
 
   // XML event handlers
@@ -617,7 +621,7 @@ begin
 end;
 
 { CONSTRUCT }
-constructor parser.Construct;
+constructor parser.Construct(path : path_renderer_ptr );
 begin
  m_path:=path;
 
@@ -653,83 +657,70 @@ begin
 
 end;
 
-{ PARSE }
-procedure parser.parse(fname : string );
+procedure parser.parse(fname: string);
 var
- msg : array[0..1023 ] of char;
+  fs: TFileStream;
+begin
+  fs:=TFileStream.Create(UTF8ToSys(fname),fmOpenRead+fmShareDenyWrite);
+  try
+    parse(fs);
+  finally
+    fs.Free;
+  end;
+end;
 
+{ PARSE }
+procedure parser.parse(sourcestream: TStream);
+var
  p  : XML_Parser;
  ts : char_ptr;
 
  done : boolean;
  len  : int;
 
- fs: TFileStream;
+ Msg : ansistring;
 begin
  p:=XML_ParserCreate(NIL );
 
  if p = NIL then
   raise svg_exception.Construct(PChar('Couldn''t allocate memory for parser' ) );
-
- XML_SetUserData            (p ,@self );
- XML_SetElementHandler      (p ,@start_element ,@end_element );
- XML_SetCharacterDataHandler(p ,@content );
-
  try
-   fs:=TFileStream.Create(fname,fmOpenRead+fmShareDenyWrite);
- except
-   sprintf(@msg[0 ] ,'Couldn''t open file %s' ,unsigned(@fname[1 ] ) );
-
-   XML_ParserFree(p );
-
-   raise svg_exception.Construct(PChar(@msg[0 ] ) );
- end;
- try
+   XML_SetUserData            (p ,@self );
+   XML_SetElementHandler      (p ,@start_element ,@end_element );
+   XML_SetCharacterDataHandler(p ,@content );
 
    done:=false;
 
    repeat
-    len:=fs.Read(m_buf^,buf_size);
+    len:=sourcestream.Read(m_buf^,buf_size);
 
     done:=len < buf_size;
 
     if XML_Parse(p ,pointer(m_buf ) ,len ,int(done ) ) = XML_STATUS_ERROR then
      begin
       XML_ParserFree(p );
-
-      sprintf(
-       @msg[0 ] ,
-       '%s at line ' ,
-       unsigned(
-        XML_ErrorString(
-         XML_GetErrorCode(p ) ) ) );
-
-      sprintf(
-       @msg[StrLen(msg ) ] ,
-       '%d'#13 ,
-       XML_GetCurrentLineNumber(p ) );
-
-      raise svg_exception.Construct(PChar(@msg[0 ] ) );
+      Msg:=PChar(XML_ErrorString(XML_GetErrorCode(p)));
+      Msg:=' at line '+IntToStr(XML_GetCurrentLineNumber(p));
+      raise svg_exception.Construct(PChar(Msg) );
 
      end;
 
    until done;
+
+   ts:=m_title;
+
+   while ts^ <> #0 do
+    begin
+     if byte(ts^ ) < byte(' ' ) then
+      ts^:=' ';
+
+     inc(ptrcomp(ts ) );
+
+    end;
+
  finally
-   fs.Free;
+   XML_ParserFree(p );
  end;
- XML_ParserFree(p );
-
- ts:=m_title;
-
- while ts^ <> #0 do
-  begin
-   if byte(ts^ ) < byte(' ' ) then
-    ts^:=' ';
-
-   inc(ptrcomp(ts ) );
-
-  end;
-
 end;
 
 { TITLE }

@@ -5,6 +5,7 @@
 //
 // Paths: src;src\ctrl;src\svg;src\util;src\platform\win;expat-wrap
 //
+{$mode delphi}
 program
  svg_test ;
 
@@ -37,9 +38,9 @@ uses
  agg_svg_parser ,
  agg_svg_path_renderer ,
  agg_svg_exception ,
- file_utils_ ;
+ file_utils_, AggPasLCL ;
 
-{$I agg_mode.inc }
+{$I src/agg_mode.inc }
 
 const
  flip_y = false;
