@@ -52,8 +52,8 @@ procedure Angles2Coords(X,Y, Width, Height : Integer;
 procedure Arc2Bezier(X, Y, Width, Height : Longint; Angle1, Angle2,
   Rotation : Extended; var Points : TBezier);
 
-function Bezier(const C1,C2,C3,C4 : TFloatPoint): TBezier; Overload;
-function Bezier(const C1,C2,C3,C4 : TPoint): TBezier; Overload;
+function Bezier(const C1,C2,C3,C4 : TFloatPoint): TBezier; Overload; inline;
+function Bezier(const C1,C2,C3,C4 : TPoint): TBezier; Overload; inline;
 
 procedure Bezier2Polyline(const Bezier : TBezier; var Points : PPoint;
   var Count : Longint);
@@ -865,15 +865,15 @@ begin
     end;
   If Not Continuous then begin
     NB := BCount;
-    NB := Floor(NB div 4);
+    NB := NB div 4;
     For I := 0 to NB - 1 do
       Bezier2PolyLine(Bezier(Beziers[I*4],Beziers[I*4+1],
         Beziers[I*4+2],Beziers[I*4+3]), Points, Count);
   end
   else begin
     NB := BCount - 1;
-    NB := Floor(NB div 3);
-    For I := 0 to NB do
+    NB := NB div 3;
+    For I := 0 to NB-1 do
       Bezier2PolyLine(Bezier(Beziers[(I - 1)*3 + 3],Beziers[I*3 + 1],
         Beziers[I*3+2],Beziers[I*3+3]), Points, Count);
   end;

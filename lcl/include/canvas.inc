@@ -745,8 +745,8 @@ end;
   starting point, the first and second points being used as its control points,
   and the third point its end-point. If the continous flag is set to FALSE,
   then each subsequent Curve requires 4 additional points, which are used
-  excatly as in the first curve. Any additonal points which do not add up to
-  a full bezier(4 for Continuous, 3 otherwise) are ingored. There must be at
+  exactly as in the first curve. Any additonal points which do not add up to
+  a full bezier(4 for Continuous, 3 otherwise) are ignored. There must be at
   least 4 points for an drawing to occur. If the Filled Flag is set to TRUE
   then the resulting Poly-Bézier will be drawn as a Polygon.
 
