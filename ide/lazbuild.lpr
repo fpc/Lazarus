@@ -419,7 +419,10 @@ begin
 
   MainBuildBoss.SetBuildTargetIDE;
   Flags:=[];
-  
+
+  // try loading install packages
+  PackageGraph.LoadAutoInstallPackages(BuildLazOptions.StaticAutoInstallPackages);
+
   // save target directory
   TargetDir:=MiscellaneousOptions.BuildLazOpts.TargetDirectory;
   IDEMacros.SubstituteMacros(TargetDir);
