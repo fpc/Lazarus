@@ -1511,6 +1511,10 @@ resourcestring
   
   // compiler options
   dlgCompilerOptions = 'Compiler Options';
+  dlgCOUseAsDefault = 'Use these settings as default for new projects';
+  lisWhenEnabledTheCurrentOptionsAreSavedToTheTemplateW = 'When enabled the '
+    +'current options are saved to the template, which is used when creating '
+    +'new projects';
   lisPkgEdOnlineHelpNotYetImplemented = 'Online Help not yet implemented';
   lisPkgEdRightClickOnTheItemsTreeToGetThePopupmenuWithAllAv = 'Right click '
     +'on the items tree to get the popupmenu with all available package '

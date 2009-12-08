@@ -392,7 +392,7 @@ type
     FLazPackage: TLazPackage;
     FSkipCompiler: Boolean;
   protected
-    procedure LoadTheCompilerOptions(const APath: string); override;
+    function LoadTheCompilerOptions(const APath: string): TModalResult; override;
     procedure SaveTheCompilerOptions(const APath: string); override;
 
     procedure SetLazPackage(const AValue: TLazPackage);
@@ -3700,9 +3700,9 @@ end;
 
 { TPkgCompilerOptions }
 
-procedure TPkgCompilerOptions.LoadTheCompilerOptions(const APath: string);
+function TPkgCompilerOptions.LoadTheCompilerOptions(const APath: string): TModalResult;
 begin
-  inherited LoadTheCompilerOptions(APath);
+  Result:=inherited LoadTheCompilerOptions(APath);
 
   FSkipCompiler := XMLConfigFile.GetValue(APath+'SkipCompiler/Value', False);
 end;

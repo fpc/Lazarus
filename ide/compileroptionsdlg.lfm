@@ -1,7 +1,7 @@
 object frmCompilerOptions: TfrmCompilerOptions
-  Left = 368
+  Left = 321
   Height = 528
-  Top = 187
+  Top = 101
   Width = 669
   ActiveControl = MainNotebook
   Align = alClient
@@ -17,7 +17,7 @@ object frmCompilerOptions: TfrmCompilerOptions
   object MainNotebook: TNotebook
     AnchorSideBottom.Control = BtnPanel
     Left = 126
-    Height = 480
+    Height = 462
     Top = 0
     Width = 543
     Align = alClient
@@ -905,16 +905,16 @@ object frmCompilerOptions: TfrmCompilerOptions
     object CfgCmpMsgPage: TPage
       Caption = 'CfgCmpMsgPage'
       ClientWidth = 537
-      ClientHeight = 441
+      ClientHeight = 423
       object grpCompilerMessages: TGroupBox
         Left = 6
-        Height = 429
+        Height = 411
         Top = 6
         Width = 525
         Align = alClient
         BorderSpacing.Around = 6
         Caption = 'grpCompilerMessages'
-        ClientHeight = 407
+        ClientHeight = 389
         ClientWidth = 517
         TabOrder = 0
         object chkUseMsgFile: TCheckBox
@@ -971,7 +971,7 @@ object frmCompilerOptions: TfrmCompilerOptions
           AnchorSideBottom.Control = grpCompilerMessages
           AnchorSideBottom.Side = asrBottom
           Left = 6
-          Height = 367
+          Height = 349
           Top = 34
           Width = 505
           Anchors = [akTop, akLeft, akRight, akBottom]
@@ -1740,7 +1740,7 @@ object frmCompilerOptions: TfrmCompilerOptions
   end
   object CategoryTreeView: TTreeView
     Left = 0
-    Height = 480
+    Height = 462
     Top = 0
     Width = 121
     Align = alLeft
@@ -1752,8 +1752,23 @@ object frmCompilerOptions: TfrmCompilerOptions
   end
   object CategorySplitter: TSplitter
     Left = 121
-    Height = 480
+    Height = 462
     Top = 0
     Width = 5
+  end
+  object chkUseAsDefault: TCheckBox
+    AnchorSideTop.Control = MainNotebook
+    AnchorSideTop.Side = asrBottom
+    AnchorSideBottom.Control = BtnPanel
+    Left = 10
+    Height = 18
+    Top = 462
+    Width = 659
+    Align = alBottom
+    Anchors = [akTop, akLeft, akRight, akBottom]
+    AutoSize = False
+    BorderSpacing.Left = 10
+    Caption = 'chkUseAsDefault'
+    TabOrder = 4
   end
 end

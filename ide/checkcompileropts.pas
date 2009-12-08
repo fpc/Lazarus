@@ -390,7 +390,7 @@ begin
   try
     // create compiler command line options
     CmdLineParams:=Options.MakeOptionsString(BogusFilename,nil,
-              [ccloAddVerboseAll,ccloDoNotAppendOutFileOption,cclAbsolutePaths])
+              [ccloAddVerboseAll,ccloDoNotAppendOutFileOption,ccloAbsolutePaths])
               +' '+BogusFilename;
 
     CompileTool:=TExternalToolOptions.Create;

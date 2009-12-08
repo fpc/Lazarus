@@ -63,6 +63,7 @@ type
 
   TfrmCompilerOptions = class(TForm)
     CategoryTreeView: TTreeView;
+    chkUseAsDefault: TCheckBox;
     MainNoteBook: TNoteBook;
 
     { Search Paths Controls }
@@ -290,6 +291,7 @@ type
     procedure UpdateInheritedTab;
     procedure ClearInheritedTree;
     procedure SetCompilerMessages;
+    function GetUseAsDefault: Boolean;
   public
     CompilerOpts: TBaseCompilerOptions;
     OldCompOpts: TBaseCompilerOptions; // set on loading, used for revert
@@ -304,6 +306,7 @@ type
                                DestCompilerOptions: TBaseCompilerOptions): boolean;
   public
     property ReadOnly: boolean read FReadOnly write SetReadOnly;
+    property UseAsDefault: boolean read GetUseAsDefault;
     property OnImExportCompilerOptions: TNotifyEvent
                read FOnImExportCompilerOptions write FOnImExportCompilerOptions;
   end;
@@ -468,6 +471,9 @@ begin
     SetupCompilationTab(Page);
     inc(Page);
     SetupButtonBar;
+    chkUseAsDefault.Caption := dlgCOUseAsDefault;
+    chkUseAsDefault.ShowHint:=true;
+    chkUseAsDefault.Hint:=lisWhenEnabledTheCurrentOptionsAreSavedToTheTemplateW;
 
     CategoryTreeView.Selected:=CategoryTreeView.Items.GetFirstNode;
     CategoryTreeViewSelectionChanged(nil);
@@ -642,6 +648,7 @@ begin
   DisableAlign;
   try
     EnabledLinkerOpts:=Options.NeedsLinkerOpts;
+    chkUseAsDefault.Visible:=Options.CanBeDefaulForProject;
 
     { Get the compiler options and apply them to the dialog }
 
@@ -2036,7 +2043,10 @@ begin
   end;
 end;
 
-
+function TfrmCompilerOptions.GetUseAsDefault: Boolean;
+begin
+  Result := chkUseAsDefault.Checked;
+end;
 
 initialization
   {$I compileroptionsdlg.lrs}

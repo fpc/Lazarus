@@ -754,6 +754,7 @@ type
     procedure MarkUnitsModifiedUsingSubComponent(SubComponent: TComponent);
 
     // project(s)
+    procedure DoLoadDefaultCompilerOptions(AProject: TProject);
     function DoNewProject(ProjectDesc: TProjectDescriptor): TModalResult; override;
     function DoSaveProject(Flags: TSaveFlags): TModalResult; override;
     function DoCloseProject: TModalResult; override;
@@ -3792,7 +3793,11 @@ begin
       MainBuildBoss.RescanCompilerDefines(true,true);
       Project1.DefineTemplates.AllChanged;
       IncreaseCompilerParseStamp;
-      UpdateHighlighters;
+      UpdateHighlighters; // because of FPC/Delphi mode
+      if frmCompilerOptions.UseAsDefault then begin
+        // save to primary config directory
+        Project1.CompilerOptions.SaveCompilerOptions(false);
+      end;
     end;
   finally
     frmCompilerOptions.Free;
@@ -8872,6 +8877,13 @@ begin
   end;
 end;
 
+procedure TMainIDE.DoLoadDefaultCompilerOptions(AProject: TProject);
+begin
+  // load default compiler options
+  if AProject.CompilerOptions.LoadCompilerOptions(false)<>mrOk then
+    DebugLn(['TMainIDE.DoLoadDefaultCompilerOptions failed']);
+end;
+
 function TMainIDE.DoNewProject(ProjectDesc: TProjectDescriptor):TModalResult;
 var
   i:integer;
@@ -8915,6 +8927,7 @@ begin
     Project1.BeginUpdate(true);
     try
       Project1.CompilerOptions.CompilerPath:='$(CompPath)';
+      DoLoadDefaultCompilerOptions(Project1);
       Project1.AutoAddOutputDirToIncPath;
       UpdateCaption;
       if ProjInspector<>nil then ProjInspector.LazProject:=Project1;
@@ -9428,6 +9441,7 @@ begin
     MainUnitInfo:=Project1.MainUnitInfo;
     MainUnitInfo.Source:=ProgramBuf;
     Project1.ProjectInfoFile:=ChangeFileExt(ProgramBuf.Filename,'.lpi');
+    DoLoadDefaultCompilerOptions(Project1);
     UpdateCaption;
     IncreaseCompilerParseStamp;
 
@@ -9969,7 +9983,7 @@ begin
     //DebugLn(['TMainIDE.DoBuildProject CompilerFilename="',CompilerFilename,'" CompilerPath="',Project1.CompilerOptions.CompilerPath,'"']);
     // Note: use absolute paths, because some external tools resolve symlinked directories
     CompilerParams :=
-      Project1.CompilerOptions.MakeOptionsString(SrcFilename,nil,[cclAbsolutePaths])
+      Project1.CompilerOptions.MakeOptionsString(SrcFilename,nil,[ccloAbsolutePaths])
              + ' ' + PrepareCmdLineOption(SrcFilename);
     //DebugLn('TMainIDE.DoBuildProject WorkingDir="',WorkingDir,'" SrcFilename="',SrcFilename,'" CompilerFilename="',CompilerFilename,'" CompilerParams="',CompilerParams,'"');
 

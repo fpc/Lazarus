@@ -396,7 +396,7 @@ type
     FOwnerProject: TProject;
     FCompileReasons: TCompileReasons;
   protected
-    procedure LoadTheCompilerOptions(const APath: string); override;
+    function LoadTheCompilerOptions(const APath: string): TModalResult; override;
     procedure SaveTheCompilerOptions(const APath: string); override;
 
     procedure SetTargetCPU(const AValue: string); override;
@@ -414,6 +414,7 @@ type
     constructor Create(const AOwner: TObject); override;
     destructor Destroy; override;
     procedure Clear; override;
+    function CanBeDefaulForProject: boolean; override;
     function GetOwnerName: string; override;
     function GetDefaultMainSourceFileName: string; override;
     procedure GetInheritedCompilerOptions(var OptionsList: TFPList); override;
@@ -4862,9 +4863,10 @@ end;
 
 { TProjectCompilerOptions }
 
-procedure TProjectCompilerOptions.LoadTheCompilerOptions(const APath: string);
+function TProjectCompilerOptions.LoadTheCompilerOptions(
+  const APath: string): TModalResult;
 begin
-  inherited LoadTheCompilerOptions(APath);
+  Result:=inherited LoadTheCompilerOptions(APath);
   
   // old compatebility
   if XMLConfigFile.GetValue(APath+'SkipCompiler/Value',false)
@@ -5044,6 +5046,11 @@ procedure TProjectCompilerOptions.Clear;
 begin
   inherited Clear;
   FBuildModes.ClearModes;
+end;
+
+function TProjectCompilerOptions.CanBeDefaulForProject: boolean;
+begin
+  Result:=true;
 end;
 
 function TProjectCompilerOptions.GetOwnerName: string;

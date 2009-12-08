@@ -430,7 +430,7 @@ type
     ccloNoLinkerOpts,  // exclude linker options
     ccloAddVerboseAll,  // add -va
     ccloDoNotAppendOutFileOption, // do not add -o option
-    cclAbsolutePaths
+    ccloAbsolutePaths
     );
   TCompilerCmdLineOptions = set of TCompilerCmdLineOption;
   
@@ -572,7 +572,7 @@ type
     procedure SetTargetFilename(const AValue: String); override;
     procedure SetModified(const AValue: boolean); override;
   protected
-    procedure LoadTheCompilerOptions(const Path: string); virtual;
+    function LoadTheCompilerOptions(const Path: string): TModalResult; virtual;
     procedure SaveTheCompilerOptions(const Path: string); virtual;
     procedure ClearInheritedOptions;
     procedure SetDefaultMakeOptionsFlags(const AValue: TCompilerCmdLineOptions);
@@ -586,7 +586,7 @@ type
     procedure LoadFromXMLConfig(AXMLConfig: TXMLConfig; const Path: string);
     procedure SaveToXMLConfig(AXMLConfig: TXMLConfig; const Path: string);
     
-    procedure LoadCompilerOptions(UseExistingFile: Boolean);
+    function LoadCompilerOptions(UseExistingFile: Boolean): TModalResult;
     procedure SaveCompilerOptions(UseExistingFile: Boolean);
     procedure Assign(Source: TPersistent); override;
     function IsEqual(CompOpts: TBaseCompilerOptions): boolean; virtual;
@@ -610,6 +610,7 @@ type
                                 Parsed: TCompilerOptionsParseType = coptParsed
                                 ): string; virtual;
     function GetDefaultMainSourceFileName: string; virtual;
+    function CanBeDefaulForProject: boolean; virtual;
     function NeedsLinkerOpts: boolean;
     function GetUnitPath(RelativeToBaseDir: boolean;
                          Parsed: TCompilerOptionsParseType = coptParsed;
@@ -1154,13 +1155,15 @@ end;
 {------------------------------------------------------------------------------
   TBaseCompilerOptions LoadCompilerOptions
 ------------------------------------------------------------------------------}
-procedure TBaseCompilerOptions.LoadCompilerOptions(UseExistingFile: Boolean);
+function TBaseCompilerOptions.LoadCompilerOptions(UseExistingFile: Boolean
+  ): TModalResult;
 var
   confPath: String;
 begin
+  Result:=mrCancel;
   if (UseExistingFile and (XMLConfigFile <> nil)) then
   begin
-    LoadTheCompilerOptions('CompilerOptions');
+    Result:=LoadTheCompilerOptions('CompilerOptions');
   end
   else
   begin
@@ -1170,6 +1173,7 @@ begin
       LoadTheCompilerOptions('CompilerOptions');
       XMLConfigFile.Free;
       XMLConfigFile := nil;
+      Result:=mrOk;
     except
       on E: Exception do begin
         DebugLn('TBaseCompilerOptions.LoadCompilerOptions '+Classname+' '+E.Message);
@@ -1316,7 +1320,7 @@ end;
 {------------------------------------------------------------------------------
   TfrmCompilerOptions LoadTheCompilerOptions
 ------------------------------------------------------------------------------}
-procedure TBaseCompilerOptions.LoadTheCompilerOptions(const Path: string);
+function TBaseCompilerOptions.LoadTheCompilerOptions(const Path: string): TModalResult;
 var
   p: String;
   PathDelimChange: boolean;
@@ -1363,6 +1367,7 @@ var
   end;
 
 begin
+  Result:=mrOk;
   { Load the compiler options from the XML file }
   p:=Path;
   FileVersion:=XMLConfigFile.GetValue(p+'Version/Value', 0);
@@ -1528,9 +1533,9 @@ begin
   CreateMakefileOnBuild:=XMLConfigFile.GetValue(p+'CreateMakefileOnBuild/Value',false);
 end;
 
-{------------------------------------------------------------------------------}
-{  TfrmCompilerOptions SaveCompilerOptions                                     }
-{------------------------------------------------------------------------------}
+{------------------------------------------------------------------------------
+  TfrmCompilerOptions SaveCompilerOptions
+------------------------------------------------------------------------------}
 procedure TBaseCompilerOptions.SaveCompilerOptions(UseExistingFile: Boolean);
 var
   confPath: String;
@@ -1549,7 +1554,7 @@ begin
       XMLConfigFile := nil;
     except
       on E: Exception do begin
-        DebugLn('TBaseCompilerOptions.LoadCompilerOptions '+Classname+' '+E.Message);
+        DebugLn('TBaseCompilerOptions.SaveCompilerOptions '+Classname+' '+E.Message);
       end;
     end;
   end;
@@ -1844,6 +1849,11 @@ end;
 function TBaseCompilerOptions.GetDefaultMainSourceFileName: string;
 begin
   Result:='';
+end;
+
+function TBaseCompilerOptions.CanBeDefaulForProject: boolean;
+begin
+  Result:=false;
 end;
 
 function TBaseCompilerOptions.NeedsLinkerOpts: boolean;
@@ -2534,7 +2544,7 @@ begin
   // inherited Linker options
   if (not (ccloNoLinkerOpts in Flags)) then begin
     InhLinkerOpts:=GetInheritedOption(icoLinkerOptions,
-      not (cclAbsolutePaths in Flags),coptParsed);
+      not (ccloAbsolutePaths in Flags),coptParsed);
     if InhLinkerOpts<>'' then
       switches := switches + ' ' + ConvertOptionsToCmdLine(' ','-k', InhLinkerOpts);
   end;
@@ -2618,27 +2628,27 @@ begin
   { ------------- Search Paths ---------------- }
   
   // include path
-  CurIncludePath:=GetIncludePath(not (cclAbsolutePaths in Flags),
+  CurIncludePath:=GetIncludePath(not (ccloAbsolutePaths in Flags),
                                  coptParsed,false);
   if (CurIncludePath <> '') then
     switches := switches + ' ' + ConvertSearchPathToCmdLine('-Fi', CurIncludePath);
 
   // library path
   if (not (ccloNoLinkerOpts in Flags)) then begin
-    CurLibraryPath:=GetLibraryPath(not (cclAbsolutePaths in Flags),
+    CurLibraryPath:=GetLibraryPath(not (ccloAbsolutePaths in Flags),
                                    coptParsed,false);
     if (CurLibraryPath <> '') then
       switches := switches + ' ' + ConvertSearchPathToCmdLine('-Fl', CurLibraryPath);
   end;
 
   // object path
-  CurObjectPath:=GetObjectPath(not (cclAbsolutePaths in Flags),
+  CurObjectPath:=GetObjectPath(not (ccloAbsolutePaths in Flags),
                                coptParsed,false);
   if (CurObjectPath <> '') then
     switches := switches + ' ' + ConvertSearchPathToCmdLine('-Fo', CurObjectPath);
 
   // unit path
-  CurUnitPath:=GetUnitPath(not (cclAbsolutePaths in Flags));
+  CurUnitPath:=GetUnitPath(not (ccloAbsolutePaths in Flags));
   //debugln('TBaseCompilerOptions.MakeOptionsString A ',dbgsName(Self),' CurUnitPath="',CurUnitPath,'"');
   // always add the current directory to the unit path, so that the compiler
   // checks for changed files in the directory
@@ -2650,7 +2660,7 @@ begin
   { Unit output directory }
   if (UnitOutputDirectory<>'') then begin
     CurOutputDir:=ParsedOpts.GetParsedValue(pcosOutputDir);
-    if not (cclAbsolutePaths in Flags) then
+    if not (ccloAbsolutePaths in Flags) then
       CurOutputDir:=CreateRelativePath(CurOutputDir,BaseDirectory,true);
   end else
     CurOutputDir:='';
@@ -2721,7 +2731,7 @@ begin
        ((CompareFileNames(NewTargetFilename,ChangeFileExt(CurMainSrcFile,''))<>0) or
        (CurOutputDir<>'')) then
     begin
-      if not (cclAbsolutePaths in Flags) then
+      if not (ccloAbsolutePaths in Flags) then
         NewTargetFilename := CreateRelativePath(NewTargetFilename, BaseDirectory);
       NewTargetDirectory := ExtractFilePath(NewTargetFilename);
       if NewTargetDirectory <> '' then
@@ -2810,14 +2820,14 @@ end;
  ------------------------------------------------------------------------------}
 function TBaseCompilerOptions.GetXMLConfigPath: String;
 var
-  fn: String;
+  AFilename: String;
 begin
   // Setup the filename to write to
-  fn := XMLFile;
-  if (fn = '') then
-    fn := Config_Filename;
-  Result := GetPrimaryConfigPath + '/' + fn;
-  CopySecondaryConfigFile(fn);
+  AFilename := XMLFile;
+  if (AFilename = '') then
+    AFilename := Config_Filename;
+  Result := AppendPathDelim(GetPrimaryConfigPath) + AFilename;
+  CopySecondaryConfigFile(AFilename);
 end;
 
 {------------------------------------------------------------------------------
