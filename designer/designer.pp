@@ -393,7 +393,9 @@ type
   TComponentSearch = class(TComponent)
   public
     Best: TComponent;
+    BestLevel: integer;
     BestIsNonVisual: boolean;
+    Level: integer;
     AtPos: TPoint;
     MinClass: TComponentClass;
     IgnoreHidden: boolean;
@@ -413,7 +415,7 @@ var
   OldRoot: TComponent;
   IsNonVisual: Boolean;
 begin
-  if (Best<>nil) and BestIsNonVisual then exit;
+  if (Best<>nil) and BestIsNonVisual and (BestLevel<=Level) then exit;
   {$IFDEF VerboseDesignerSelect}
   DebugLn(['TComponentSearch.Gather ',DbgSName(Child),' ',dbgs(AtPos),' MinClass=',DbgSName(MinClass)]);
   {$ENDIF}
@@ -444,6 +446,7 @@ begin
     {$ENDIF}
     OldRoot:=Root;
     try
+      inc(Level);
       if csInline in Child.ComponentState then
         Root:=Child;
       {$IFDEF VerboseDesignerSelect}
@@ -451,6 +454,7 @@ begin
       {$ENDIF}
       TComponentSearch(Child).GetChildren(@Gather,Root);
     finally
+      dec(Level);
       Root:=OldRoot;
     end;
     {$IFDEF VerboseDesignerSelect}
@@ -468,6 +472,8 @@ begin
     if not Child.InheritsFrom(MinClass) then exit;
     if OnlyNonVisual and not IsNonVisual then exit;
     Best:=Child;
+    BestIsNonVisual:=IsNonVisual;
+    BestLevel:=Level;
     {$IFDEF VerboseDesignerSelect}
     DebugLn(['TComponentSearch.Gather Best=',DbgSName(Best)]);
     {$ENDIF}
@@ -477,7 +483,9 @@ end;
 procedure TComponentSearch.Search(ARoot: TComponent);
 begin
   Root:=ARoot;
+  Level:=1;
   TComponentSearch(Root).GetChildren(@Gather,Root);
+  Level:=0;
 end;
 
 const
