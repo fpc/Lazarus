@@ -2024,7 +2024,7 @@ var
   SrcFilename: String;
 begin
   if (AnUnitInfo.EditorIndex < 0) or Destroying then exit;
-  ASrcEdit := SourceNotebook.Editors[AnUnitInfo.EditorIndex];
+  ASrcEdit := SourceNotebook.FindSourceEditorWithPageIndex(AnUnitInfo.EditorIndex);
   // set breakpoints for this unit
   SrcFilename:=AnUnitInfo.Filename;
   for i := 0 to FBreakpoints.Count-1 do
