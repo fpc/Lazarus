@@ -3113,6 +3113,8 @@ resourcestring
   lisExtToolUnableToRunTheTool = 'Unable to run the tool %s%s%s:%s%s';
   lisExtToolExternalTools = 'External tools';
   lisExtToolRemove = 'Remove';
+  lisTheseSettingsAreStoredWithTheProject = 'These settings are stored with '
+    +'the project.';
   lisKeepThemAndContinue = 'Keep them and continue';
   lisRemoveThem = 'Remove them';
   lisExtToolMoveUp = 'Up';

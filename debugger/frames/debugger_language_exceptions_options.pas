@@ -39,6 +39,7 @@ type
     clbExceptions: TCheckListBox;
     cmdExceptionAdd: TBitBtn;
     cmdExceptionRemove: TBitBtn;
+    DbgLangExceptHint: TLabel;
     procedure clbExceptionsClick(Sender: TObject);
     procedure cmdExceptionAddClick(Sender: TObject);
     procedure cmdExceptionRemoveClick(Sender: TObject);
@@ -142,6 +143,7 @@ procedure TDebuggerLanguageExceptionsOptions.Setup(
   ADialog: TAbstractOptionsEditorDialog);
 begin
   bgIgnoreExceptions.Caption := lisDebugOptionsFrmIgnoreTheseExceptions;
+  DbgLangExceptHint.Caption := lisTheseSettingsAreStoredWithTheProject;
   cmdExceptionRemove.Caption := lisExtToolRemove;
   cmdExceptionAdd.Caption := lisCodeTemplAdd;
   cmdExceptionRemove.LoadGlyphFromLazarusResource('laz_delete');
