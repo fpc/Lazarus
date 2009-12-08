@@ -753,9 +753,9 @@ begin
       OldAction:=nil;
     except
       on E: Exception do begin
-        MessageDlg('Error deleting action',
-          'Error while deleting action:'#13
-          +E.Message,mtError,[mbOk],0);
+        MessageDlg(oisErrorDeletingAction,
+          Format(oisErrorWhileDeletingAction, [#13, E.Message]), mtError, [mbOk
+            ], 0);
       end;
     end;
   end;
@@ -828,6 +828,7 @@ begin
   SBShowMenuNewActions.Hint := cActionListEditorNewAction;
   mItemToolBarNewAction.Caption := cActionListEditorNewAction;
   mItemToolBarNewStdAction.Caption := cActionListEditorNewStdAction;
+  mItemActListNewAction.Caption := cActionListEditorNewAction;
   mItemActListNewStdAction.Caption := cActionListEditorNewStdAction;
   mItemActListMoveDownAction.Caption := cActionListEditorMoveDownAction;
   mItemActListMoveUpAction.Caption := cActionListEditorMoveUpAction;

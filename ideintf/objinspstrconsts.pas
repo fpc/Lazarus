@@ -224,6 +224,8 @@ resourcestring
   
   oisEditActionList = 'Edit action list...';
   oisActionListEditor = 'Action List Editor';
+  oisErrorDeletingAction = 'Error deleting action';
+  oisErrorWhileDeletingAction = 'Error while deleting action:%s%s';
   cActionListEditorNewAction = 'New Action';
   cActionListEditorNewStdAction = 'New Standard Action';
   cActionListEditorMoveDownAction = 'Move Down';
