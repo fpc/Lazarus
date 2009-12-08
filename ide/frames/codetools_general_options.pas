@@ -25,8 +25,9 @@ unit codetools_general_options;
 interface
 
 uses
-  Classes, SysUtils, FileUtil, LResources, Forms, StdCtrls, Buttons, Dialogs,
-  IDEDialogs,
+  Classes, SysUtils, FileUtil, LResources, Forms, Controls, StdCtrls, Buttons,
+  Dialogs,
+  IDEDialogs, PathEditorDlg,
   CodeToolsOptions, LazarusIDEStrConsts, IDEOptionsIntf;
 
 type
@@ -46,11 +47,13 @@ type
     JumpingGroupBox: TGroupBox;
     IndentFileLabel: TLabel;
     SkipForwardDeclarationsCheckBox: TCheckBox;
+    SrcPathButton: TSpeedButton;
     SrcPathEdit: TEdit;
     SrcPathGroupBox: TGroupBox;
     procedure IndentOnLineBreakCheckBoxChange(Sender: TObject);
     procedure IndentFileButtonClick(Sender: TObject);
     procedure IndentOnPasteCheckBoxChange(Sender: TObject);
+    procedure SrcPathButtonClick(Sender: TObject);
   private
     procedure VisualizeIndentEnabled;
   public
@@ -85,6 +88,21 @@ procedure TCodetoolsGeneralOptionsFrame.IndentOnPasteCheckBoxChange(
   Sender: TObject);
 begin
   VisualizeIndentEnabled;
+end;
+
+procedure TCodetoolsGeneralOptionsFrame.SrcPathButtonClick(Sender: TObject);
+begin
+  with TPathEditorDialog.Create(Self) do
+  try
+    Path := SrcPathEdit.Text;
+    Templates:=SetDirSeparators(
+        '/home/username/buggypackage'
+      );
+    if (ShowModal = mrOK) then
+      SrcPathEdit.Text := Path;
+  finally
+    Free;
+  end;
 end;
 
 procedure TCodetoolsGeneralOptionsFrame.VisualizeIndentEnabled;
