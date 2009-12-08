@@ -4269,8 +4269,8 @@ begin
     Format(ctsAddsDirToSourcePath,['lcl, components']),
     ExternalMacroStart+'SrcPath',
       d(LazarusSrcDir+'/debugger'
-       +LazarusSrcDir+'/debugger/frames'
-       +LazarusSrcDir+'/ide'
+       +';'+LazarusSrcDir+'/debugger/frames'
+       +';'+LazarusSrcDir+'/ide'
        +';'+LazarusSrcDir+'/ideintf'
        +';'+LazarusSrcDir+'/components/codetools'
        +';'+LazarusSrcDir+'/lcl'
