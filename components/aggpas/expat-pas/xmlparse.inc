@@ -2296,7 +2296,6 @@ label
  _break ;
 
 begin
- writeln('doContent FFF1 ',Assigned(parser.m_startElementHandler));
 { save one level of indirection }
  temp:=nil;
  dtd:=parser.m_dtd;
@@ -2317,7 +2316,6 @@ begin
  eventPP^:=s;
 
  repeat
-  writeln('doContent FFF2 ');
   next:=s; { XmlContentTok doesn't always set the last arg }
 
   tok:=XmlContentTok(enc ,pointer(s ) ,pointer(end_ ) ,@next );
@@ -2453,7 +2451,6 @@ begin
 
    XML_TOK_ENTITY_REF :
     begin
-     writeln('doContent FFF3 ');
      ch:=
       XML_Char(XmlPredefinedEntityName(
        enc ,
@@ -2468,7 +2465,6 @@ begin
         if @parser.m_defaultHandler <> NIL then
          reportDefault(parser ,enc ,s ,next );
 
-       writeln('doContent FFF4 ');
        goto _break;
 
       end;
@@ -2605,10 +2601,8 @@ begin
 
    XML_TOK_START_TAG_NO_ATTS ,XML_TOK_START_TAG_WITH_ATTS :
     begin
-     writeln('doContent FFF5 ');
      if parser.m_freeTagList <> NIL then
       begin
-       writeln('doContent FFF5.1 ');
        tag:=parser.m_freeTagList;
 
        parser.m_freeTagList:=parser.m_freeTagList.parent;
@@ -2616,7 +2610,6 @@ begin
       end
      else
       begin
-       writeln('doContent FFF5.2 ');
        parser.m_mem.malloc_fcn(pointer(tag ) ,sizeof(expat.TAG ) );
 
        if tag = NIL then
@@ -2646,7 +2639,6 @@ begin
 
       end;
 
-     writeln('doContent FFF6 ');
      tag.bindings      :=NIL;
      tag.parent        :=parser.m_tagStack;
      parser.m_tagStack :=tag;
@@ -2662,7 +2654,6 @@ begin
      toPtr     :=XML_Char_ptr(tag.buf );
 
      repeat
-      writeln('doContent FFF7 temp=',HexStr(Cardinal(temp),8));
       XmlConvert(
        enc ,
        @fromPtr ,rawNameEnd ,
@@ -2670,20 +2661,16 @@ begin
 
       convLen:=(ptrcomp(toPtr ) - ptrcomp(tag.buf ) ) div sizeof(XML_Char );
 
-      writeln('doContent FFF8 temp=',HexStr(Cardinal(temp),8));
       if fromPtr = rawNameEnd then
        begin
         tag.name.strLen:=convLen;
 
-        writeln('doContent FFF9 ');
         break;
 
        end;
-      writeln('doContent FFF10 temp=',HexStr(Cardinal(temp),8));
 
       bufSize:=(ptrcomp(tag.bufEnd ) - ptrcomp(tag.buf ) ) shl 1;
 
-      writeln('doContent FFF11 temp=',HexStr(Cardinal(temp),8));
       parser.m_mem.realloc_fcn(pointer(tag.buf ) ,tag.alloc ,bufSize );
 
       if temp = NIL then
@@ -2707,17 +2694,14 @@ begin
 
      toPtr^ :=XML_T(#0 );
      result_:=storeAtts(parser ,enc ,s ,@tag.name ,@tag.bindings );
-     writeln('doContent FFF12 ',tag.name.str^);
 
      if result_ <> XML_Error(0 ) then
       begin
-       writeln('doContent FFF13 ',tag.name.str^);
        result:=result_;
 
        exit;
 
       end;
-     writeln('doContent FFF14 ');
      if @parser.m_startElementHandler <> NIL then
       parser.m_startElementHandler(
        parser.m_handlerArg ,tag.name.str ,
@@ -2726,7 +2710,6 @@ begin
       if @parser.m_defaultHandler <> NIL then
        reportDefault(parser ,enc ,s ,next );
 
-     writeln('doContent FFF15 ');
      poolClear(@parser.m_tempPool );
 
     end;
@@ -2751,7 +2734,6 @@ begin
       end;
 
      poolFinish(@parser.m_tempPool );
-
      result_:=storeAtts(parser ,enc ,s ,@name_ ,@bindings );
 
      if result_ <> XML_Error(0 ) then
@@ -3159,12 +3141,10 @@ var
  result_ : XML_Error;
 
 begin
- writeln('contentProcessor EEE1 ',Assigned(parser.m_startElementHandler));
  result_:=
   doContent(
    parser ,0 ,parser.m_encoding ,start ,end_ ,
    endPtr ,XML_Bool(not parser.m_parsingStatus.finalBuffer ) );
- writeln('contentProcessor EEE2');
 
  if result_ = XML_ERROR_NONE then
   if storeRawNames(parser ) = 0 then
@@ -4270,9 +4250,7 @@ begin
 
     {$ENDIF }
      parser.m_processor:=@contentProcessor;
-     writeln('doProlog DDD1');
      result:=contentProcessor(parser ,s ,end_ ,nextPtr );
-     writeln('doProlog DDD3');
      exit;
 
     end;
@@ -5712,12 +5690,10 @@ var
 begin
  next:=s;
  tok :=XmlPrologTok(parser.m_encoding ,pointer(s ) ,pointer(end_ ) ,@next );
- writeln('prologProcessor CCC1');
  result:=
   doProlog(
    parser ,parser.m_encoding ,s ,end_ ,tok ,next ,
    nextPtr ,XML_Bool(not parser.m_parsingStatus.finalBuffer ) );
-  writeln('prologProcessor CCC2');
 end;
 
 { prologInitProcessor }
@@ -5726,10 +5702,7 @@ var
  result_ : XML_Error;
 
 begin
- writeln('prologInitProcessor BBB1 ',HexStr(Cardinal(parser),8));
- writeln('prologInitProcessor BBB1.2 ',Assigned(parser.m_processor));
  result_:=initializeEncoding(parser );
- writeln('prologInitProcessor BBB2 ',HexStr(Cardinal(parser),8));
 
  if result_ <> XML_ERROR_NONE then
   begin
@@ -5738,10 +5711,8 @@ begin
    exit;
 
   end;
- writeln('prologInitProcessor BBB3 ',HexStr(Cardinal(parser),8));
 
  parser.m_processor:=@prologProcessor;
- writeln('prologInitProcessor BBB4 ',HexStr(Cardinal(parser),8));
 
  result:=prologProcessor(parser ,s ,end_ ,nextPtr );
 
@@ -6286,7 +6257,6 @@ begin
  inc(ptrcomp(parser.m_parseEndByteIndex ) ,len );
 
  parser.m_parsingStatus.finalBuffer:=XML_Bool(isFinal );
- writeln('XML_ParseBuffer AAA1');
  parser.m_errorCode:=parser.m_processor(parser ,start ,parser.m_parseEndPtr ,@parser.m_bufferPtr );
 
  if parser.m_errorCode <> XML_ERROR_NONE then
@@ -6387,7 +6357,6 @@ begin
      
     else
      begin
-      writeln('XML_Parse ',len);
       move(s^ ,buff^ ,len );
 
       result:=XML_ParseBuffer(parser ,len ,isFinal );
