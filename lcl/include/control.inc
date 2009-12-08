@@ -4201,8 +4201,13 @@ begin
     SetParent(nil);
     Dock(nil, BoundsRect);
     FHostDockSite := nil;
-  end else
+  end else begin
+    if (FHostDockSite<>nil) and (FHostDockSite.FDockClients<>nil) then begin
+      FHostDockSite.FDockClients.Remove(Self);
+      FHostDockSite:=nil;
+    end;
     SetParent(nil);
+  end;
   FreeThenNil(FActionLink);
   for Side := Low(FAnchorSides) to High(FAnchorSides) do
     FreeThenNil(FAnchorSides[Side]);
