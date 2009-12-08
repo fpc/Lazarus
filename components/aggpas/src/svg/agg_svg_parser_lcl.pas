@@ -695,6 +695,7 @@ begin
     len:=sourcestream.Read(m_buf^,buf_size);
 
     done:=len < buf_size;
+    writeln('parser.parse ',done,' ',len,' ',buf_size);
 
     if XML_Parse(p ,pointer(m_buf ) ,len ,int(done ) ) = XML_STATUS_ERROR then
      begin

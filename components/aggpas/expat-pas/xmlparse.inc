@@ -319,6 +319,7 @@ var
  p : DTD_ptr;
 
 begin
+ p:=nil;
  ms.malloc_fcn(pointer(p ) ,sizeof(DTD ) );
 
  if p = NIL then
@@ -413,6 +414,7 @@ end;
 { handleUnknownEncoding ..}
 function handleUnknownEncoding(parser : XML_Parser; encodingName : XML_Char_ptr ) : XML_Error;
 begin
+ Result:=XML_ERROR_NONE;
 end;
 
 { initializeEncoding }
@@ -450,6 +452,7 @@ end;
 { getContext ..}
 function getContext(parser : XML_Parser ) : XML_Char_ptr;
 begin
+Result:=nil;
 end;
 
 { processXmlDecl }
@@ -901,6 +904,7 @@ end;
 { poolAppendString {..}
 function poolAppendString(pool : STRING_POOL_ptr; s : XML_Char_ptr ) : XML_Char_ptr;
 begin
+ Result:=nil;
 end;
 
 { poolStart }
@@ -1017,6 +1021,7 @@ var
  newV : NAMED_ptr_ptr;
 
 begin
+ newV:=nil;
  if table.size = 0 then
   begin
    if createSize = 0 then
@@ -1237,6 +1242,7 @@ end;
 { setElementTypePrefix {..}
 function setElementTypePrefix(parser : XML_Parser; elementType : ELEMENT_TYPE_ptr ) : int;
 begin
+ Result:=0;
 end;
 
 { addBinding {..}
@@ -1246,6 +1252,7 @@ function addBinding(
           parser : XML_Parser; prefix : PREFIX_ptr; attId : ATTRIBUTE_ID_ptr;
           uri : XML_Char_ptr; bindingsPtr : BINDING_ptr_ptr ) : XML_Error;
 begin
+ Result:=XML_ERROR_NONE;
 end;
 
 { storeRawNames }
@@ -1374,6 +1381,7 @@ label
  _w0 ,_w1 ;
 
 begin
+ uri:=nil;
  dtd:=parser.m_dtd; { save one level of indirection }
 
  attIndex :=0;
@@ -2068,6 +2076,7 @@ end;
 { processInternalEntity {..}
 function processInternalEntity(parser : XML_Parser; entity : ENTITY_ptr; betweenDecl : XML_Bool ) : XML_Error;
 begin
+ Result:=XML_ERROR_NONE;
 end;
 
 { epilogProcessor }
@@ -2235,6 +2244,7 @@ function doCdataSection(
           nextPtr : char_ptr_ptr;
           haveMore : XML_Bool ) : XML_Error;
 begin
+ Result:=XML_ERROR_NONE;
 end;
 
 { cdataSectionProcessor {..}
@@ -2242,6 +2252,7 @@ end;
   the whole file is parsed with one call. }
 function cdataSectionProcessor(parser : XML_Parser; start ,end_ : char_ptr; endPtr : char_ptr_ptr ) : XML_Error;
 begin
+ Result:=XML_ERROR_NONE;
 end;
 
 { doContent }
@@ -2286,6 +2297,7 @@ label
 
 begin
 { save one level of indirection }
+ temp:=nil;
  dtd:=parser.m_dtd;
 
  if enc = parser.m_encoding then
@@ -3151,6 +3163,7 @@ end;
 { getElementType {..}
 function getElementType(parser : XML_Parser; enc : ENCODING_ptr; ptr ,end_ : char_ptr ) : ELEMENT_TYPE_ptr;
 begin
+ Result:=0;
 end;
 
 { getAttributeId }
@@ -3287,6 +3300,7 @@ function defineAttribute(
           type_ : ELEMENT_TYPE_ptr; attId : ATTRIBUTE_ID_ptr;
           isCdata ,isId : XML_Bool; value : XML_Char_ptr; parser : XML_Parser ) : int;
 begin
+ Result:=0;
 end;
 
 { appendAttributeValue }
@@ -3641,6 +3655,7 @@ end;
 { storeEntityValue {..}
 function storeEntityValue(parser : XML_Parser; enc : ENCODING_ptr; start ,end_ : char_ptr ) : XML_Error;
 begin
+ Result:=XML_ERROR_NONE;
 end;
 
 { doIgnoreSection {..}
@@ -3654,6 +3669,7 @@ function doIgnoreSection(
           nextPtr : char_ptr_ptr;
           haveMore : XML_Bool ) : XML_Error;
 begin
+ Result:=XML_ERROR_NONE;
 end;
 
 { ignoreSectionProcessor {..}
@@ -3661,21 +3677,25 @@ end;
   the whole file is parsed with one call. }
 function ignoreSectionProcessor(parser : XML_Parser; start ,end_ : char_ptr; endPtr : char_ptr_ptr ) : XML_Error;
 begin
+ Result:=XML_ERROR_NONE;
 end;
 
 { nextScaffoldPart {..}
 function nextScaffoldPart(parser : XML_Parser ) : int;
 begin
+ Result:=0;
 end;
 
 { build_model {..}
 function build_model(parser : XML_Parser ) : XML_Content_ptr;
 begin
+ Result:=nil;
 end;
 
 { reportProcessingInstruction {..}
 function reportProcessingInstruction(parser : XML_Parser; enc : ENCODING_ptr; start ,end_ : char_ptr ) : int;
 begin
+ Result:=0;
 end;
 
 { normalizeLines {..}
@@ -3768,9 +3788,10 @@ var
 
  entity : ENTITY_ptr;
 
- ctemp ,nxt : char_ptr;
+ //ctemp : char_ptr;
+ nxt : char_ptr;
 
- itemp : int_ptr;
+ //itemp : int_ptr;
 
  content ,model : XML_Content_ptr;
 
@@ -4119,7 +4140,7 @@ begin
          dtd.paramEntityRead:=XML_FALSE;
 
          if parser.m_externalEntityRefHandler(
-             parser.m_externalEntityRefHandlerArg ,0 ,
+             parser.m_externalEntityRefHandlerArg ,nil ,
              entity.base ,
              entity.systemId ,
              entity.publicId ) = 0 then
@@ -4195,7 +4216,7 @@ begin
          dtd.paramEntityRead:=XML_FALSE;
 
          if parser.m_externalEntityRefHandler(
-             parser.m_externalEntityRefHandlerArg ,0 ,
+             parser.m_externalEntityRefHandlerArg ,nil ,
              entity.base ,
              entity.systemId ,
              entity.publicId ) = 0 then
@@ -4383,7 +4404,7 @@ begin
       if defineAttribute(
           parser.m_declElementType ,parser.m_declAttributeId ,
           parser.m_declAttributeIsCdata ,parser.m_declAttributeIsId ,
-          0 ,parser ) = 0 then
+          nil ,parser ) = 0 then
        begin
         result:=XML_ERROR_NO_MEMORY;
 
@@ -4419,7 +4440,7 @@ begin
         parser.m_attlistDeclHandler(
          parser.m_handlerArg ,parser.m_declElementType.name ,
          parser.m_declAttributeId.name ,parser.m_declAttributeType ,
-         0 ,int(role = XML_ROLE_REQUIRED_ATTRIBUTE_VALUE ) );
+         nil ,int(role = XML_ROLE_REQUIRED_ATTRIBUTE_VALUE ) );
 
         poolClear(@parser.m_tempPool );
 
@@ -4526,7 +4547,7 @@ begin
            parser.m_declEntity.is_param,
            parser.m_declEntity.textPtr,
            parser.m_declEntity.textLen,
-           parser.m_curBase ,0 ,0 ,0 );
+           parser.m_curBase ,nil ,nil ,nil );
 
           handleDefault:=XML_FALSE;
 
@@ -4663,11 +4684,11 @@ begin
        parser.m_handlerArg ,
        parser.m_declEntity.name ,
        parser.m_declEntity.is_param ,
-       0 ,0 ,
+       nil ,0 ,
        parser.m_declEntity.base ,
        parser.m_declEntity.systemId ,
        parser.m_declEntity.publicId ,
-       0 );
+       nil );
 
       handleDefault:=XML_FALSE;
 
@@ -4712,7 +4733,7 @@ begin
          parser.m_entityDeclHandler(
           parser.m_handlerArg ,
           parser.m_declEntity.name ,
-          0 ,0 ,0 ,
+          0 ,nil ,0 ,
           parser.m_declEntity.base,
           parser.m_declEntity.systemId ,
           parser.m_declEntity.publicId ,
@@ -4972,7 +4993,7 @@ begin
         parser.m_handlerArg ,
         parser.m_declNotationName ,
         parser.m_curBase ,
-        0 ,
+        nil ,
         parser.m_declNotationPublicId );
 
        handleDefault:=XML_FALSE;
@@ -5288,7 +5309,7 @@ begin
 
          if parser.m_externalEntityRefHandler(
              parser.m_externalEntityRefHandlerArg ,
-             0 ,
+             nil ,
              entity.base ,
              entity.systemId ,
              entity.publicId ) = 0 then
@@ -5363,6 +5384,7 @@ begin
      begin
       if @parser.m_elementDeclHandler <> NIL then
        begin
+        content:=nil;
         parser.m_mem.malloc_fcn(pointer(content ) ,sizeof(XML_Content ) );
 
         if content = NIL then
@@ -5696,7 +5718,7 @@ begin
   end;
 
  parser.m_processor:=@prologProcessor;
-
+ //writeln('prologInitProcessor BBB1');
  result:=prologProcessor(parser ,s ,end_ ,nextPtr );
 
 end;
@@ -5715,7 +5737,7 @@ begin
 
  parser.m_curBase:=NIL;
 
- XmlInitEncoding(@parser.m_initEncoding ,@parser.m_encoding ,0 );
+ XmlInitEncoding(@parser.m_initEncoding ,@parser.m_encoding ,nil );
 
  parser.m_userData  :=NIL;
  parser.m_handlerArg:=NIL;
@@ -5958,6 +5980,7 @@ end;
 { setContext {..}
 function setContext(parser : XML_Parser; context : XML_Char_ptr ) : XML_Bool;
 begin
+ Result:=0;
 end;
 
 { XML_PARSERCREATE }
@@ -6109,6 +6132,7 @@ begin
 
      until bufferSize >= neededSize;
 
+     newBuf:=nil;
      parser.m_mem.malloc_fcn(pointer(newBuf ) ,bufferSize );
 
      if newBuf = NIL then
@@ -6238,7 +6262,7 @@ begin
  inc(ptrcomp(parser.m_parseEndByteIndex ) ,len );
 
  parser.m_parsingStatus.finalBuffer:=XML_Bool(isFinal );
-
+ writeln('XML_ParseBuffer AAA1');
  parser.m_errorCode:=parser.m_processor(parser ,start ,parser.m_parseEndPtr ,@parser.m_bufferPtr );
 
  if parser.m_errorCode <> XML_ERROR_NONE then
@@ -6339,6 +6363,7 @@ begin
      
     else
      begin
+      writeln('XML_Parse ',len);
       move(s^ ,buff^ ,len );
 
       result:=XML_ParseBuffer(parser ,len ,isFinal );
@@ -6352,16 +6377,19 @@ end;
 { XML_GETERRORCODE {..}
 function XML_GetErrorCode;
 begin
+ Result:=XML_ERROR_NO_MEMORY;
 end;
 
 { XML_ERRORSTRING {..}
 function XML_ErrorString;
 begin
+ Result:=nil;
 end;
 
 { XML_GETCURRENTLINENUMBER {..}
 function XML_GetCurrentLineNumber;
 begin
+ Result:=0;
 end;
 
 { destroyBindings }

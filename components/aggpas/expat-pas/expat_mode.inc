@@ -2,6 +2,10 @@
 // PasExpat 2.0.0 RM0.83 compiler options configuration file
 //
 
+{$IFDEF FPC }
+ {$MODE DELPHI }
+{$ENDIF }
+
 {DEFINE EXPAT_DEBUG }
 
 //----------------------------------------------------------------------------
@@ -41,10 +45,6 @@
 {$IFDEF CPU64}
 {$DEFINE XML_LARGE_SIZE }
 {$ENDIF}
-
-{$IFDEF FPC }
- {$MODE DELPHI }
-{$ENDIF }
 
 //----------------------------------------------------------------------------
 {$IFDEF EXPAT_DEBUG }
