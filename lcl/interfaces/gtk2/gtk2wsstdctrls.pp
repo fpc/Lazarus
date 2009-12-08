@@ -1886,6 +1886,42 @@ begin
   Result := DeliverMessage(AInfo^.LCLObject, Msg) = 0;
 end;
 
+procedure Gtk2WSButton_SizeAllocate(widget: PGtkWidget; allocation: PGtkAllocation; user_data: gpointer); cdecl;
+var
+  xthickness, ythickness: gint;
+  inner_border: PGtkBorder;
+begin
+  //the default GtkButton size_allocate handler takes into account
+  //*thickness and inner_border properties to position the child (label)
+  //see gtk_button_size_allocate in gtkbutton.c
+  //here this is reverted so the child is not padded
+  xthickness := widget^.style^.xthickness;
+  ythickness := widget^.style^.ythickness;
+  with PGtkBin(widget)^.child^.allocation do
+  begin
+    y := y - ythickness;
+    height := height + 2 * ythickness;
+    x := x - xthickness;
+    width := width + 2 * xthickness;
+    gtk_widget_style_get (widget, 'inner-border', @inner_border, nil);
+    if inner_border <> nil then
+    begin
+       x := x - inner_border^.left;
+       width := width + inner_border^.left + inner_border^.right;
+       y := y - inner_border^.top;
+       height := height + inner_border^.top + inner_border^.bottom;
+    end
+    else
+    begin
+      //if no inner-border is set, GtkButton uses a default border = (1,1,1,1)
+      dec(x);
+      dec(y);
+      inc(width, 2);
+      inc(height, 2);
+    end;
+  end;
+end;
+
 { TGtk2WSButton }
 
 class function TGtk2WSButton.GetButtonWidget(AEventBox: PGtkEventBox): PGtkButton;
@@ -1903,6 +1939,7 @@ class procedure TGtk2WSButton.SetCallbacks(const AGtkWidget: PGtkWidget;
 begin
   TGtkWSWinControl.SetCallbacks(PGtkObject(AGtkWidget), TComponent(AWidgetInfo^.LCLObject));
   SignalConnect(AWidgetInfo^.CoreWidget, 'clicked', @Gtk2WSButton_Clicked, AWidgetInfo);
+  SignalConnect(AWidgetInfo^.CoreWidget, 'size-allocate', @Gtk2WSButton_SizeAllocate, AWidgetInfo);
 end;
 
 {
