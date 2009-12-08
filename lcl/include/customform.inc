@@ -1719,10 +1719,19 @@ end;
        TCustomForm Method CloseQuery
 ------------------------------------------------------------------------------}
 function TCustomForm.CloseQuery: boolean;
+var
+  i: Integer;
 begin
   if FormStyle = fsMDIForm then
   begin
     // Query children forms whether we can close
+    i:=0;
+    while i<DockClientCount do begin
+      if (DockClients[i] is TCustomForm)
+      and not (TCustomForm(DockClients[i]).CloseQuery) then
+        exit(false);
+      inc(i);
+    end;
     // TODO: mdi logic
   end;
   Result := True;
