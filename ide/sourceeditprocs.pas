@@ -520,7 +520,8 @@ begin
       and CodeToolsOpts.IdentComplAddParameterBrackets
       and (ilcfStartInStatement in IdentList.ContextFlags)
       and (not IdentList.StartUpAtomBehindIs('('))
-      and (not IdentList.StartUpAtomInFrontIs('@')) then begin
+      and (not IdentList.StartUpAtomInFrontIs('@'))
+      and (IdentItem.ParamNameList<>'') then begin
         Result:=Result+'()';
         inc(CursorToLeft);
         CursorAtEnd:=false;
