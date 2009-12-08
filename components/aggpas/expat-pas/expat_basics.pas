@@ -67,6 +67,9 @@ begin
 
  try
   getmem(ptr ,sz );
+  {$IFDEF EXPAT_CLEARMEM}
+  FillByte(ptr^,sz,0);
+  {$ENDIF}
 
   result:=true;
 
