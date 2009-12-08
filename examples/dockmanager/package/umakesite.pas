@@ -328,6 +328,7 @@ begin
           ctl := FOnRestore(AName, nb);
         if ctl = nil then
           ctl := ReloadForm(s, True); //try both multi and single instance
+        DebugLn(['TDockMaster.ReloadDockedControl ',DbgSName(ctl)]);
         ctl.ManualDock(nb);
       end;
     finally
@@ -661,7 +662,7 @@ begin
   if ssLeft in Shift then begin
     ctl := Sender as TControl;
     if ForIDE then
-      TControlAccess(ctl.Parent).DragKind := dkDock;
+      TWinControlAccess(ctl.Parent).DragKind := dkDock;
     ctl.Parent.BeginDrag(ForIDE); //start immediately?
   end;
 end;

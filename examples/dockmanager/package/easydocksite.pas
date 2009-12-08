@@ -177,16 +177,16 @@ type
     FDockSite: TWinControl;
     FReplacingControl: TControl;
     FUpdateCount: integer;
-    procedure BeginUpdate; override;
-    procedure EndUpdate; override;
     procedure Update; virtual;
-    procedure SetReplacingControl(Control: TControl); override; //unused
     property  DockSite: TWinControl read FDockSite;
   public
     constructor Create(ADockSite: TWinControl); override;
     class function  DetectAlign(ZoneRect: TRect; MousePos: TPoint): TAlign;
     procedure PositionDockRect(Client, DropCtl: TControl; DropAlign: TAlign;
       var DockRect: TRect);  override;
+    procedure SetReplacingControl(Control: TControl); override; //unused
+    procedure BeginUpdate; override;
+    procedure EndUpdate; override;
   end;
 
   { TEasyTree }
@@ -209,20 +209,11 @@ type
   {$ELSE}
     //in base class
   {$ENDIF}
-    procedure SetReplacingControl(Control: TControl); override;
   //extended interface
     //procedure ControlVisibilityChanged(Control: TControl; Visible: Boolean);  override;
     function  ZoneFromPoint(SitePos: TPoint): TEasyZone;
-    procedure GetControlBounds(Control: TControl; out CtlBounds: TRect);  override;
-    procedure InsertControl(Control: TControl; InsertAt: TAlign;
-      DropCtl: TControl);  override;
-    procedure RemoveControl(Control: TControl);  override;
-    procedure ResetBounds(Force: Boolean);  override; //site resized
     function  ReloadDockedControl(const AName: string): TControl; virtual;
-    procedure LoadFromStream(Stream: TStream);  override;
-    procedure SaveToStream(Stream: TStream);  override;
   protected //added
-    procedure PositionDockRect(ADockObject: TDragDockObject); override;
     function  FindControlZone(zone: TEasyZone; Control: TControl): TEasyZone;
     procedure RemoveZone(Zone: TEasyZone);
   //Lazarus extension
@@ -236,6 +227,14 @@ type
     procedure SetSingleCaption(Value: boolean);
   public
     procedure MessageHandler(Sender: TControl; var Message: TLMessage); override;
+    procedure GetControlBounds(Control: TControl; out CtlBounds: TRect);  override;
+    procedure InsertControl(Control: TControl; InsertAt: TAlign;
+      DropCtl: TControl);  override;
+    procedure RemoveControl(Control: TControl);  override;
+    procedure ResetBounds(Force: Boolean);  override; //site resized
+    procedure LoadFromStream(Stream: TStream);  override;
+    procedure SaveToStream(Stream: TStream);  override;
+    procedure SetReplacingControl(Control: TControl); override;
   public
   {$IFDEF singleTab}
     SingleTab: boolean; //always create notebook for alCustom?
@@ -246,6 +245,7 @@ type
     procedure PaintSite(DC: HDC); override;
     procedure SetStyle(NewStyle: TEasyHeaderStyle);
     function  GetEffectiveStyle: TEasyHeaderStyle;
+    procedure PositionDockRect(ADockObject: TDragDockObject); override;
     property HideSingleCaption: boolean read FHideSingleCaption write SetSingleCaption;
   end;
 
@@ -1030,6 +1030,7 @@ begin
 end;
 {$ELSE}
 begin
+  Result:=nil;
   TWinControlAccess(DockSite).ReloadDockedControl(AName, Result);
 end;
 {$ENDIF}
