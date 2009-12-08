@@ -78,6 +78,7 @@ begin
     m_min_y:=0.0;
     m_max_x:=0.0;
     m_max_y:=0.0;
+
     p.Construct(@m_path);
     try
       p.parse(SetDirSeparators('../../svg/tiger.svg'));
