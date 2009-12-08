@@ -4268,11 +4268,13 @@ begin
   DirTempl.AddChild(TDefineTemplate.Create('LCL path addition',
     Format(ctsAddsDirToSourcePath,['lcl, components']),
     ExternalMacroStart+'SrcPath',
-      d('../ide'
-       +';../ideintf'
-       +';../components/codetools'
-       +';../lcl'
-       +';../lcl/interfaces/'+WidgetType)
+      d(LazarusSrcDir+'/debugger'
+       +LazarusSrcDir+'/debugger/frames'
+       +LazarusSrcDir+'/ide'
+       +';'+LazarusSrcDir+'/ideintf'
+       +';'+LazarusSrcDir+'/components/codetools'
+       +';'+LazarusSrcDir+'/lcl'
+       +';'+LazarusSrcDir+'/lcl/interfaces/'+WidgetType)
        +';'+SrcPath
     ,da_DefineRecurse));
   MainDir.AddChild(DirTempl);
@@ -4294,7 +4296,7 @@ begin
        +';../lcl'
        +';../lcl/interfaces/'+WidgetType)
        +';'+SrcPath
-    ,da_DefineRecurse));
+    ,da_Define));
   MainDir.AddChild(DirTempl);
 
 
