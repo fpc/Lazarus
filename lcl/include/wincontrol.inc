@@ -4989,7 +4989,7 @@ var
   i: integer;
   AWinControl: TWinControl;
 begin
-  ///DebugLn(['TWinControl.DestroyHandle START ',DbgSName(Self)]);
+  //DebugLn(['TWinControl.DestroyHandle START ',DbgSName(Self)]);
   if not HandleAllocated then begin
     DebugLn('Warning: TWinControl.DestroyHandle ',Name,':',ClassName,' Handle not Allocated');
     //RaiseGDBException('');
@@ -6284,6 +6284,7 @@ begin
     Control := Controls[n - 1];
     //DebugLn('[TWinControl.Destroy] C  ',Name,':',ClassName,' ',Control.Name,':',Control.ClassName);
     Remove(Control);
+    //DebugLn(['TWinControl.Destroy ',DbgSName(Control.HostDockSite)]);
     if Control.HostDockSite = Self then
       Control.HostDockSite := nil;
     // don't free the control just set parent to nil
@@ -6291,6 +6292,13 @@ begin
     //Control.Free;
     Control.Parent := nil;
     n := ControlCount;
+  end;
+
+  // undock controls that use this as HostDockSite
+  while DockClientCount>0 do begin
+    Control:=DockClients[DockClientCount-1];
+    //DebugLn(['TWinControl.Destroy ',DbgSName(Self),' undocking ',DbgSName(Control)]);
+    Control.HostDockSite:=nil;
   end;
 
   FreeThenNil(FBrush);

@@ -3919,8 +3919,7 @@ begin
       // undock from old HostSite
       // - this only undocks from the DockManager
       // - this control still uses the DockSite as parent control
-      { TODO -cdocking : Combine with ManualFloat, for consistent handling
- }
+      { TODO -cdocking : Combine with ManualFloat, for consistent handling }
       DebugLn('TControl.ManualDock UNDOCKING ',Name);
       Result:=HostDockSite.DoUndock(NewDockSite,Self);
     end;
