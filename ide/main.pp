@@ -5725,8 +5725,10 @@ begin
       end;
 
       if MissingClasses<>nil then begin
+        //DebugLn(['TMainIDE.DoLoadLFM has nested: ',AnUnitInfo.Filename]);
         for i:=MissingClasses.Count-1 downto 0 do begin
           NestedClassName:=MissingClasses[i];
+          //DebugLn(['TMainIDE.DoLoadLFM nested ',i,' ',MissingClasses.Count,': ',NestedClassName]);
           if SysUtils.CompareText(NestedClassName,AncestorType.ClassName)=0 then
           begin
             MissingClasses.Delete(i);
@@ -5742,6 +5744,7 @@ begin
             end;
           end;
         end;
+        //DebugLn(['TMainIDE.DoLoadLFM had nested: ',AnUnitInfo.Filename]);
       end;
 
       BinStream:=nil;
@@ -6084,6 +6087,11 @@ var
       exit;
     end;
 
+    if RefUnitInfo.LoadingComponent then begin
+      Result:=mrRetry;
+      exit;
+    end;
+
     // load resource hidden
     Result:=DoLoadLFM(RefUnitInfo,LFMCode,
                       OpenFlags+[ofLoadHiddenResource],[]);
@@ -6108,6 +6116,7 @@ var
   ReferenceRootNames: TStringList;
   ReferenceInstanceNames: TStringList;
   LoadResult: TModalResult;
+  LoadingReferenceNames: TStringList;
 begin
   Result:=mrOk;
   CurRoot:=RootComponent;
@@ -6121,6 +6130,7 @@ begin
   RootComponents:=TFPList.Create;
   ReferenceRootNames:=TStringList.Create;
   ReferenceInstanceNames:=TStringList.Create;
+  LoadingReferenceNames:=TStringList.Create;
   try
     BeginFixupComponentReferences;
     GatherRootComponents(RootComponent,RootComponents);
@@ -6135,12 +6145,17 @@ begin
         ReferenceInstanceNames.Clear;
         GetFixupInstanceNames(CurRoot,RefRootName,ReferenceInstanceNames);
 
-        DebugLn(['TMainIDE.DoFixupComponentReferences BEFORE loading ',j,' Root=',dbgsName(CurRoot),' RefRoot=',RefRootName,' Refs="',Trim(ReferenceInstanceNames.Text),'"']);
+        DebugLn(['TMainIDE.DoFixupComponentReferences UNRESOLVED BEFORE loading ',j,' Root=',dbgsName(CurRoot),' RefRoot=',RefRootName,' Refs="',Trim(ReferenceInstanceNames.Text),'"']);
 
         // load the referenced component
         LoadResult:=LoadDependencyHidden(RefRootName);
 
-        if LoadResult<>mrOk then begin
+        if LoadResult=mrRetry then begin
+          // the other component is still loading
+          // this means both components reference each other
+          LoadingReferenceNames.Add(RefRootName);
+        end
+        else if LoadResult<>mrOk then begin
           // ToDo: give a nice error message and give user the choice between
           // a) ignore and loose the references
           // b) undo the opening (close the designer forms)
@@ -6167,9 +6182,12 @@ begin
       GetFixupReferenceNames(CurRoot,ReferenceRootNames);
       for j:=0 to ReferenceRootNames.Count-1 do begin
         RefRootName:=ReferenceRootNames[j];
+        if AnsiSearchInStringList(LoadingReferenceNames,RefRootName)>=0
+        then
+          continue;
         ReferenceInstanceNames.Clear;
         GetFixupInstanceNames(CurRoot,RefRootName,ReferenceInstanceNames);
-        DebugLn(['TMainIDE.DoFixupComponentReferences AFTER loading ',j,' ',dbgsName(CurRoot),' RefRoot=',RefRootName,' Refs="',Trim(ReferenceInstanceNames.Text),'"']);
+        DebugLn(['TMainIDE.DoFixupComponentReferences UNRESOLVED AFTER loading ',j,' ',dbgsName(CurRoot),' RefRoot=',RefRootName,' Refs="',Trim(ReferenceInstanceNames.Text),'"']);
 
         // forget the rest of the dangling references
         RemoveFixupReferences(CurRoot,RefRootName);
@@ -6177,6 +6195,7 @@ begin
     end;
   finally
     EndFixupComponentReferences;
+    LoadingReferenceNames.Free;
     RootComponents.Free;
     UnitFilenames.Free;
     ComponentNameToUnitFilename.Free;
