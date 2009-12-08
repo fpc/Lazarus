@@ -26,6 +26,14 @@ resourcestring
   
   oiscAdd = '&Add';
   oiscDelete = '&Delete';
+  oisDeleteSelectedFieldS = 'Delete selected field(s)';
+  oisNew = '&New';
+  oisCreateNewFieldAndAddItAtCurrentPosition = 'Create new field and add it '
+    +'at current position';
+  oisMoveUp = 'Move &Up';
+  oisMoveDown = 'Move &Down';
+  oisSelectAll = '&Select all';
+  oisUnselectAll = '&Unselect all';
   oisConfirmDelete = 'Confirm delete';
   oisDeleteItem = 'Delete item %s%s%s?';
   oisUnknown = 'Unknown';
@@ -361,6 +369,8 @@ resourcestring
   
   // Fields Editor
   fesFeTitle = 'Edit Fields';
+  oisAddFields = '&Add fields';
+  oisAddFieldsFromFieldDefs = 'Add fields from FieldDefs';
   fesNoFields = 'It was not possible to get the dataset field''s list';
   fesCheckDset = 'Check dataset settings';
   fesFlTitle = 'FieldDefs';

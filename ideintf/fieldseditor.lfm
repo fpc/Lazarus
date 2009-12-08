@@ -64,21 +64,18 @@ object DSFieldsEditorFrm: TDSFieldsEditorFrm
     object AddFieldsActn: TAction
       Category = 'Fields'
       Caption = '&Add fields'
-      Hint = 'Add fields from FieldDefs'
       OnExecute = AddFieldsActnExecute
       ShortCut = 16429
     end
     object DeleteFieldsActn: TAction
       Category = 'Fields'
       Caption = '&Delete'
-      Hint = 'Delete selected field(s)'
       OnExecute = DeleteFieldsActnExecute
       ShortCut = 46
     end
     object NewActn: TAction
       Category = 'Fields'
       Caption = '&New'
-      Hint = 'Create new field and add it at current position'
       OnExecute = NewActnExecute
       ShortCut = 45
     end

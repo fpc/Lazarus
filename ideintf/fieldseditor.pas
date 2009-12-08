@@ -136,6 +136,17 @@ begin
   LinkDataset := ADataset;
   FDesigner := ADesigner;
   Caption := fesFeTitle + ' - ' + LinkDataset.Name;
+  AddFieldsActn.Caption := oisAddFields;
+  AddFieldsActn.Hint := oisAddFieldsFromFieldDefs;
+  DeleteFieldsActn.Caption:=oiscDelete;
+  DeleteFieldsActn.Hint:=oisDeleteSelectedFieldS;
+  NewActn.Caption:=oisNew;
+  NewActn.Hint:=oisCreateNewFieldAndAddItAtCurrentPosition;
+  MoveUpActn.Caption:=oisMoveUp;
+  MoveDownActn.Caption:=oisMoveDown;
+  SelectAllActn.Caption:=oisSelectAll;
+  UnselectAllActn.Caption:=oisUnselectAll;
+
   FieldsListBox.Clear;
   RefreshFieldsListBox(False);
 
