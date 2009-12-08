@@ -221,6 +221,8 @@ begin
 
         Attr := pango_attr_strikethrough_new(LogFont.lfStrikeOut<>0);
         pango_attr_list_change(AttrList, Attr);
+
+        pango_layout_set_attributes(CurFont, AttrList);
         
         if AttrListTemporary then
           pango_attr_list_unref(AttrList);
