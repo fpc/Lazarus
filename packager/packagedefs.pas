@@ -135,6 +135,7 @@ type
   TPkgFileType = (
     pftUnit,    // file is pascal unit
     pftVirtualUnit,// file is virtual pascal unit
+    pftMainUnit, // file is the auto created main pascal unit
     pftLFM,     // lazarus form text file
     pftLRS,     // lazarus resource file
     pftInclude, // include file
@@ -145,7 +146,8 @@ type
   TPkgFileTypes = set of TPkgFileType;
   
 const
-  PkgFileUnitTypes = [pftUnit,pftVirtualUnit];
+  PkgFileUnitTypes = [pftUnit,pftVirtualUnit,pftMainUnit];
+  PkgFileRealUnitTypes = [pftUnit,pftMainUnit];
   
 type
   TPFComponentBaseClass = (
@@ -625,6 +627,7 @@ type
     FLPKSource: TCodeBuffer;
     FLPKSourceChangeStep: integer;
     FMacros: TTransferMacroList;
+    FMainUnit: TPkgFile;
     FMissing: boolean;
     FModifiedLock: integer;
     FOutputStateFile: string;
@@ -830,6 +833,7 @@ type
     property LPKSource: TCodeBuffer read FLPKSource write SetLPKSource;// can be nil when file on disk was removed
     property LPKSourceChangeStep: integer read FLPKSourceChangeStep write SetLPKSourceChangeStep;
     property Macros: TTransferMacroList read FMacros;
+    property MainUnit: TPkgFile read FMainUnit;
     property Missing: boolean read FMissing write FMissing;
     property Modified: boolean read GetModified write SetModified;
     property OutputStateFile: string read FOutputStateFile write SetOutputStateFile;
@@ -871,10 +875,12 @@ const
   LazPkgXMLFileVersion = 3;
   
   PkgFileTypeNames: array[TPkgFileType] of string = (
-    'pftUnit', 'pftVirtualUnit', 'pftLFM', 'pftLRS', 'pftInclude', 'pftIssues',
+    'pftUnit', 'pftVirtualUnit', 'pftMainUnit',
+    'pftLFM', 'pftLRS', 'pftInclude', 'pftIssues',
     'pftText', 'pftBinary');
   PkgFileTypeIdents: array[TPkgFileType] of string = (
-    'Unit', 'Virtual Unit', 'LFM', 'LRS', 'Include', 'Issues', 'Text', 'Binary');
+    'Unit', 'Virtual Unit', 'Main Unit',
+    'LFM', 'LRS', 'Include', 'Issues', 'Text', 'Binary');
   PkgFileFlag: array[TPkgFileFlag] of string = (
     'pffHasRegisterProc', 'pffAddToPkgUsesSection', 'pffReportedAsRemoved');
   PkgDependencyFlagNames: array[TPkgDependencyFlag] of string = (
@@ -978,6 +984,7 @@ begin
   case FileType of
   pftUnit: Result:=lisPkgFileTypeUnit;
   pftVirtualUnit: Result:=lisPkgFileTypeVirtualUnit;
+  pftMainUnit: Result:=lisPkgFileTypeMainUnit;
   pftLFM: Result:=lisPkgFileTypeLFM;
   pftLRS: Result:=lisPkgFileTypeLRS;
   pftInclude: Result:=lisPkgFileTypeInclude;
@@ -1451,7 +1458,7 @@ procedure TPkgFile.SetRemoved(const AValue: boolean);
 begin
   if FRemoved=AValue then exit;
   FRemoved:=AValue;
-  FSourceDirNeedReference:=(FileType=pftUnit) and not Removed;
+  FSourceDirNeedReference:=(FileType in PkgFileRealUnitTypes) and not Removed;
   UpdateSourceDirectoryReference;
 end;
 
@@ -1468,9 +1475,17 @@ end;
 procedure TPkgFile.SetFileType(const AValue: TPkgFileType);
 begin
   if FFileType=AValue then exit;
+  if (LazPackage<>nil) and (LazPackage.MainUnit=Self) then
+    LazPackage.FMainUnit:=nil;
   FFileType:=AValue;
-  FSourceDirNeedReference:=(FFileType=pftUnit) and not Removed;
+  FSourceDirNeedReference:=(FFileType in PkgFileRealUnitTypes) and not Removed;
   UpdateSourceDirectoryReference;
+  if (FFileType=pftMainUnit) and (LazPackage<>nil)
+  and (LazPackage.MainUnit<>Self) then begin
+    if LazPackage.MainUnit<>nil then
+      LazPackage.MainUnit.FileType:=pftUnit;
+    LazPackage.FMainUnit:=Self;
+  end;
 end;
 
 procedure TPkgFile.SetFlags(const AValue: TPkgFileFlags);
@@ -1572,6 +1587,8 @@ begin
   FSourceDirectoryReferenced:=false;
   FSourceDirNeedReference:=true;
   FreeThenNil(FComponents);
+  if (LazPackage<>nil) and (LazPackage.MainUnit=Self) then
+    LazPackage.FMainUnit:=nil;
 end;
 
 procedure TPkgFile.LoadFromXMLConfig(XMLConfig: TXMLConfig; const Path: string;
@@ -3387,7 +3404,10 @@ end;
 
 function TLazPackage.GetCompileSourceFilename: string;
 begin
-  Result:=ChangeFileExt(ExtractFilename(Filename),'.pas');
+  if MainUnit<>nil then
+    Result:=ExtractFilename(MainUnit.GetFullFilename)
+  else
+    Result:=ChangeFileExt(ExtractFilename(Filename),'.pas');
 end;
 
 function TLazPackage.GetOutputDirectory: string;
@@ -3406,7 +3426,10 @@ end;
 
 function TLazPackage.GetSrcFilename: string;
 begin
-  Result:=FDirectory+GetCompileSourceFilename;
+  if MainUnit<>nil then
+    Result:=MainUnit.GetFullFilename
+  else
+    Result:=FDirectory+GetCompileSourceFilename;
 end;
 
 function TLazPackage.GetCompilerFilename: string;

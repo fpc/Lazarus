@@ -385,7 +385,7 @@ begin
     if Removed then begin
       // re-add file
       AFilename:=PkgFile.Filename;
-      if PkgFile.FileType=pftUnit then begin
+      if PkgFile.FileType in PkgFileRealUnitTypes then begin
         if not CheckAddingUnitFilename(LazPackage,d2ptUnit,
           PackageEditors.OnGetIDEFileInfo,AFilename) then exit;
       end else if PkgFile.FileType=pftVirtualUnit then begin
@@ -1188,7 +1188,7 @@ begin
   for CurPFT:=Low(TPkgFileType) to High(TPkgFileType) do begin
     if CurItem.Caption=GetPkgFileTypeLocalizedName(CurPFT) then begin
       if (not FilenameIsPascalUnit(CurFile.Filename))
-      and (CurPFT in [pftUnit,pftVirtualUnit]) then exit;
+      and (CurPFT in PkgFileUnitTypes) then exit;
       if CurFile.FileType<>CurPFT then begin
         CurFile.FileType:=CurPFT;
         LazPackage.Modified:=true;
@@ -1501,7 +1501,7 @@ procedure TPackageEditorForm.UpdateFiles;
   procedure SetImageIndex(ANode: TTreeNode; PkgFile: TPkgFile);
   begin
     case PkgFile.FileType of
-    pftUnit,pftVirtualUnit:
+    pftUnit,pftVirtualUnit,pftMainUnit:
       if PkgFile.HasRegisterProc then
         ANode.ImageIndex:=ImageIndexRegisterUnit
       else
@@ -1696,9 +1696,10 @@ begin
     CallRegisterProcCheckBox.Enabled:=(not LazPackage.ReadOnly)
                              and (CurFile.FileType in [pftUnit,pftVirtualUnit]);
     CallRegisterProcCheckBox.Checked:=pffHasRegisterProc in CurFile.Flags;
-    AddToUsesPkgSectionCheckBox.Checked:=pffAddToPkgUsesSection in CurFile.Flags;
+    AddToUsesPkgSectionCheckBox.Checked:=(pffAddToPkgUsesSection in CurFile.Flags)
+                                              or (CurFile.FileType=pftMainUnit);
     AddToUsesPkgSectionCheckBox.Enabled:=(not LazPackage.ReadOnly)
-                                     and (CurFile.FileType in PkgFileUnitTypes);
+                             and (CurFile.FileType in [pftUnit,pftVirtualUnit]);
     // fetch all registered plugins
     CurListIndex:=0;
     RegCompCnt:=CurFile.ComponentCount;

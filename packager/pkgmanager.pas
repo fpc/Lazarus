@@ -2197,7 +2197,8 @@ begin
   and (not ADependency.RequiredPackage.AutoCreated)
   and ADependency.RequiredPackage.AddToProjectUsesSection
   then begin
-    AddUnitToProjectMainUsesSection(AProject,ADependency.PackageName,'');
+    AddUnitToProjectMainUsesSection(AProject,
+      ExtractFileNameOnly(ADependency.RequiredPackage.GetCompileSourceFilename),'');
   end;
 end;
 

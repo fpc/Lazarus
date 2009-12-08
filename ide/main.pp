@@ -12909,7 +12909,7 @@ begin
           end else if TObject(Owners[i]) is TLazPackage then begin
             APackage:=TLazPackage(Owners[i]);
             for j:=0 to APackage.FileCount-1 do begin
-              if APackage.Files[j].FileType=pftUnit then
+              if APackage.Files[j].FileType in PkgFileRealUnitTypes then
                 AddFile(APackage.Files[j].GetFullFilename);
             end;
           end;

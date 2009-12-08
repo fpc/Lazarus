@@ -453,7 +453,7 @@ begin
     for i:=1 to FileCount do begin
       SubPath:=Path+'Item'+IntToStr(i)+'/';
       FileType:=PkgFileTypeIdentToType(XMLConfig.GetValue(SubPath+'Type/Value',''));
-      if FileType<>pftUnit then continue;
+      if not (FileType in PkgFileRealUnitTypes) then continue;
       Filename:=XMLConfig.GetValue(SubPath+'Filename/Value','');
       AUnitName:=ExtractFileNameOnly(Filename);
       //DebugLn(['TFindUnitDialog.CheckPackageOnDisk ',UnitName]);

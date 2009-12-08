@@ -2826,6 +2826,7 @@ resourcestring
   // packages
   lisPkgFileTypeUnit = 'Unit';
   lisPkgFileTypeVirtualUnit = 'Virtual Unit';
+  lisPkgFileTypeMainUnit = 'Main Unit';
   lisPkgFileTypeLFM = 'LFM - Lazarus form text';
   lisPkgFileTypeLRS = 'LRS - Lazarus resource';
   lisPkgFileTypeInclude = 'Include file';

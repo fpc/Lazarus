@@ -1940,7 +1940,9 @@ begin
   while Dependency<>nil do begin
     if (Dependency.RequiredPackage<>nil)
     and (not Dependency.RequiredPackage.AutoCreated) then
-      StaticPackagesInc:=StaticPackagesInc+Dependency.PackageName+','+LineEnding;
+      StaticPackagesInc:=StaticPackagesInc
+        +ExtractFileNameOnly(Dependency.RequiredPackage.GetCompileSourceFilename)
+        +','+LineEnding;
     Dependency:=Dependency.NextRequiresDependency;
   end;
   StaticPckIncludeFile:=ConfigDir+'staticpackages.inc';
@@ -2435,7 +2437,7 @@ function TLazPackageGraph.FindFPCConflictUnit(APackage: TLazPackage;
     Cnt:=Pkg1.FileCount;
     for i:=0 to Cnt-1 do begin
       CurFile:=Pkg1.Files[i];
-      if (CurFile.FileType in (PkgFileUnitTypes-[pftVirtualUnit]))
+      if (CurFile.FileType in PkgFileRealUnitTypes)
       and (pffAddToPkgUsesSection in CurFile.Flags) then begin
         Result:=CheckUnitName(CurFile.Unit_Name);
         if Result then begin
@@ -3363,9 +3365,15 @@ begin
   RegistrationCode:='';
   for i:=0 to APackage.FileCount-1 do begin
     CurFile:=APackage.Files[i];
+    if CurFile.FileType=pftMainUnit then continue;
     // update unitname
     if FilenameIsPascalUnit(CurFile.Filename)
     and (CurFile.FileType in PkgFileUnitTypes) then begin
+      NeedsRegisterProcCall:=CurFile.HasRegisterProc
+        and (APackage.PackageType in [lptDesignTime,lptRunAndDesignTime]);
+      if not (NeedsRegisterProcCall or CurFile.AddToUsesPkgSection) then
+        continue;
+
       CurUnitName:=ExtractFileNameOnly(CurFile.Filename);
 
       if CurUnitName=lowercase(CurUnitName) then begin
@@ -3390,13 +3398,9 @@ begin
       end;
 
       if (CurUnitName<>'') and IsValidIdent(CurUnitName) then begin
-        NeedsRegisterProcCall:=CurFile.HasRegisterProc
-          and (APackage.PackageType in [lptDesignTime,lptRunAndDesignTime]);
-        if NeedsRegisterProcCall or CurFile.AddToUsesPkgSection then begin
-          if UsedUnits<>'' then
-            UsedUnits:=UsedUnits+', ';
-          UsedUnits:=UsedUnits+CurUnitName;
-        end;
+        if UsedUnits<>'' then
+          UsedUnits:=UsedUnits+', ';
+        UsedUnits:=UsedUnits+CurUnitName;
         if NeedsRegisterProcCall then begin
           RegistrationCode:=RegistrationCode+
             '  RegisterUnit('''+CurUnitName+''',@'+CurUnitName+'.Register);'+e;
@@ -3431,7 +3435,7 @@ begin
            +'  '+lisPkgMangThisSourceIsOnlyUsedToCompileAndInstallThePackage+e
            +' }'+e+e;
   Src:=HeaderSrc
-      +'unit '+APackage.Name+';'+e
+      +'unit '+ExtractFileNameOnly(SrcFilename)+';'+e
       +e
       +'interface'+e
       +e;
