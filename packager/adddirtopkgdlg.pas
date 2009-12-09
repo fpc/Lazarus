@@ -162,23 +162,19 @@ function TAddDirToPkgDialog.GatherFiles(Directory: string;
   begin
     Result:=false;
 
-    DebugLn(['FileCanBeAdded AAA1 ',AFilename]);
     // check include filter
     if (fIncludeFilterRE.Expression<>'')
     and (not fIncludeFilterRE.Exec(ExtractFilename(AFilename))) then
       exit;
 
-    DebugLn(['FileCanBeAdded AAA2 ',AFilename]);
     // check exclude filter
     if (fExcludeFilterRE.Expression<>'')
     and (fExcludeFilterRE.Exec(ExtractFilename(AFilename))) then
       exit;
 
-    DebugLn(['FileCanBeAdded AAA3 ',AFilename]);
     // check binaries
     if OnlyTextFiles and (not FileIsText(AFilename)) then exit;
 
-    DebugLn(['FileCanBeAdded AAA4 ',AFilename]);
     Result:=true;
   end;
 
