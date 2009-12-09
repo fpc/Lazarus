@@ -1,33 +1,35 @@
 object InstallPkgSetDialog: TInstallPkgSetDialog
   Left = 300
-  Height = 438
+  Height = 442
   Top = 167
-  Width = 529
+  Width = 572
   ActiveControl = InstallListBox
   BorderStyle = bsSizeToolWin
   Caption = 'InstallPkgSetDialog'
-  ClientHeight = 438
-  ClientWidth = 529
+  ClientHeight = 442
+  ClientWidth = 572
   OnCreate = InstallPkgSetDialogCreate
   OnDestroy = InstallPkgSetDialogDestroy
   OnResize = InstallPkgSetDialogResize
   Position = poScreenCenter
   LCLVersion = '0.9.29'
   object InstallPkgGroupBox: TGroupBox
+    AnchorSideLeft.Control = Owner
+    AnchorSideTop.Control = Owner
     AnchorSideBottom.Control = PkgInfoGroupBox
     Left = 6
-    Height = 288
+    Height = 292
     Top = 6
     Width = 255
     Anchors = [akTop, akLeft, akBottom]
     BorderSpacing.Around = 6
     Caption = 'InstallPkgGroupBox'
-    ClientHeight = 269
+    ClientHeight = 273
     ClientWidth = 251
     TabOrder = 0
     object InstallListBox: TListBox
       Left = 6
-      Height = 164
+      Height = 168
       Top = 6
       Width = 239
       Align = alClient
@@ -43,7 +45,7 @@ object InstallPkgSetDialog: TInstallPkgSetDialog
     object UninstallButton: TButton
       Left = 6
       Height = 25
-      Top = 176
+      Top = 180
       Width = 239
       Align = alBottom
       BorderSpacing.Around = 6
@@ -54,7 +56,7 @@ object InstallPkgSetDialog: TInstallPkgSetDialog
     object ImportButton: TButton
       Left = 6
       Height = 25
-      Top = 207
+      Top = 211
       Width = 239
       Align = alBottom
       BorderSpacing.Around = 6
@@ -65,7 +67,7 @@ object InstallPkgSetDialog: TInstallPkgSetDialog
     object ExportButton: TButton
       Left = 6
       Height = 25
-      Top = 238
+      Top = 242
       Width = 239
       Align = alBottom
       BorderSpacing.Around = 6
@@ -75,22 +77,25 @@ object InstallPkgSetDialog: TInstallPkgSetDialog
     end
   end
   object AvailablePkgGroupBox: TGroupBox
+    AnchorSideTop.Control = Owner
+    AnchorSideRight.Control = Owner
+    AnchorSideRight.Side = asrBottom
     AnchorSideBottom.Control = PkgInfoGroupBox
     Left = 267
-    Height = 288
+    Height = 292
     Top = 6
-    Width = 255
-    Anchors = [akTop, akLeft, akBottom]
+    Width = 299
+    Anchors = [akTop, akLeft, akRight, akBottom]
     BorderSpacing.Around = 6
     Caption = 'AvailablePkgGroupBox'
-    ClientHeight = 269
-    ClientWidth = 251
+    ClientHeight = 273
+    ClientWidth = 295
     TabOrder = 1
     object AvailableListBox: TListBox
       Left = 6
-      Height = 226
+      Height = 230
       Top = 6
-      Width = 239
+      Width = 283
       Align = alClient
       BorderSpacing.Around = 6
       ClickOnSelChange = False
@@ -104,8 +109,8 @@ object InstallPkgSetDialog: TInstallPkgSetDialog
     object AddToInstallButton: TButton
       Left = 6
       Height = 25
-      Top = 238
-      Width = 239
+      Top = 242
+      Width = 283
       Align = alBottom
       BorderSpacing.Around = 6
       Caption = 'AddToInstallButton'
@@ -117,18 +122,18 @@ object InstallPkgSetDialog: TInstallPkgSetDialog
     AnchorSideBottom.Control = HelpButton
     Left = 0
     Height = 93
-    Top = 304
-    Width = 529
+    Top = 308
+    Width = 572
     Align = alBottom
     Caption = 'PkgInfoGroupBox'
     ClientHeight = 74
-    ClientWidth = 525
+    ClientWidth = 568
     TabOrder = 2
     object PkgInfoMemo: TMemo
       Left = 6
       Height = 62
       Top = 6
-      Width = 513
+      Width = 556
       Align = alClient
       BorderSpacing.Around = 6
       ReadOnly = True
@@ -136,72 +141,17 @@ object InstallPkgSetDialog: TInstallPkgSetDialog
       TabOrder = 0
     end
   end
-  object SaveAndRebuildButton: TBitBtn
-    AnchorSideTop.Control = HelpButton
-    AnchorSideRight.Control = SaveAndExitButton
-    AnchorSideBottom.Control = Owner
-    AnchorSideBottom.Side = asrBottom
-    Left = 90
-    Height = 7
-    Top = 425
-    Width = 176
-    Anchors = [akTop, akRight, akBottom]
-    AutoSize = True
-    BorderSpacing.Right = 6
-    BorderSpacing.Bottom = 6
-    Caption = 'SaveAndRebuildButton'
-    Constraints.MinWidth = 75
-    Glyph.Data = {
-      36040000424D3604000000000000360000002800000010000000100000000100
-      2000000000000004000064000000640000000000000000000000000000000000
-      0000000000000000000000000000000000000000000000000000000000000000
-      0000000000000000000000000000000000000000000000000000000000000000
-      0000000000000000000000000000000000000000000000000000000000000000
-      0000000000000000000000000000000000000000000000000000000000000000
-      000000000000000000000000000000000000BE7A45FFBE7A45FFBE7A45FF0000
-      0000000000000000000000000000000000000000000000000000000000000000
-      000000000000BE7A45FFBE7A45FF78553958BE7A45FFE3CDBCFFBE7A45FF7855
-      3958BE7A45FFBE7A45FF00000000000000000000000000000000000000000000
-      0000BE7A45FFE3CDBCFFD2A786FFBE7A45FFC79064FFDAB89DFFC79064FFBE7A
-      45FFD2A786FFE3CDBCFFBE7A45FF000000000000000000000000000000000000
-      0000BE7A45FFD2A786FFDAB89DFFDAB89DFFDAB89DFFDAB89DFFDAB89DFFDAB8
-      9DFFDAB89DFFD2A786FFBE7A45FF000000000000000000000000000000000000
-      000078553958BE7A45FFE3CDBCFFCFA17CFFBD7F4CF8C38656FFBA7A46F4D5AE
-      8FFFDAB89DFFBE7A45FF7855395800000000000000000000000000000000BE7A
-      45FFBE7A45FFC79064FFDAB89DFFBD7F4CF8B78256CD78553959A56F43C0BA7A
-      46F4DAB89DFFC79064FFBE7A45FFBE7A45FF000000000000000000000000BE7A
-      45FFE3CDBCFFDAB89DFFDAB89DFFC38656FF785539590000000078553959C386
-      56FFDAB89DFFDAB89DFFE3CDBCFFBE7A45FF000000000000000000000000BE7A
-      45FFBE7A45FFC79064FFDAB89DFFBA7A46F49C6B42AE785539598F633F97BA7C
-      49EEDAB89DFFC79064FFBE7A45FFBE7A45FF0000000000000000000000000000
-      000078553958BE7A45FFDAB89DFFCFA17CFFBA7A46F4C38656FFBA7A46F4D1A5
-      82FFDAB89DFFBE7A45FF78553958000000000000000000000000000000000000
-      0000BE7A45FFD2A786FFDAB89DFFDAB89DFFDAB89DFFDAB89DFFDAB89DFFDAB8
-      9DFFDAB89DFFD2A786FFBE7A45FF000000000000000000000000000000000000
-      0000BE7A45FFE3CDBCFFD2A786FFBE7A45FFC79064FFDAB89DFFC79064FFBE7A
-      45FFD2A786FFE3CDBCFFBE7A45FF000000000000000000000000000000000000
-      000078553958BE7A45FFBE7A45FF78553958BE7A45FFE3CDBCFFBE7A45FF7855
-      3958BE7A45FFBE7A45FF00000000000000000000000000000000000000000000
-      000000000000000000000000000000000000BE7A45FFBE7A45FFBE7A45FF0000
-      0000000000000000000000000000000000000000000000000000000000000000
-      0000000000000000000000000000000000000000000000000000000000000000
-      0000000000000000000000000000000000000000000000000000
-    }
-    NumGlyphs = 0
-    OnClick = InstallButtonClick
-    TabOrder = 3
-  end
-  object Panel1: TPanel
+  object BtnPanel: TPanel
     Left = 0
     Height = 41
-    Top = 397
-    Width = 529
+    Top = 401
+    Width = 572
     Align = alBottom
     AutoSize = True
     BevelOuter = bvNone
     ClientHeight = 41
-    ClientWidth = 529
-    TabOrder = 4
+    ClientWidth = 572
+    TabOrder = 3
     object HelpButton: TBitBtn
       AnchorSideBottom.Side = asrBottom
       Left = 6
@@ -221,7 +171,7 @@ object InstallPkgSetDialog: TInstallPkgSetDialog
     object CancelButton: TBitBtn
       AnchorSideRight.Side = asrBottom
       AnchorSideBottom.Side = asrBottom
-      Left = 288
+      Left = 149
       Height = 29
       Top = 6
       Width = 75
@@ -238,7 +188,7 @@ object InstallPkgSetDialog: TInstallPkgSetDialog
     end
     object SaveAndExitButton: TBitBtn
       AnchorSideBottom.Side = asrBottom
-      Left = 369
+      Left = 412
       Height = 29
       Top = 6
       Width = 154
@@ -286,6 +236,57 @@ object InstallPkgSetDialog: TInstallPkgSetDialog
       NumGlyphs = 0
       OnClick = SaveAndExitButtonClick
       TabOrder = 2
+    end
+    object SaveAndRebuildButton: TBitBtn
+      AnchorSideBottom.Side = asrBottom
+      Left = 230
+      Height = 29
+      Top = 6
+      Width = 176
+      Align = alRight
+      AutoSize = True
+      BorderSpacing.Around = 6
+      Caption = 'SaveAndRebuildButton'
+      Constraints.MinWidth = 75
+      Glyph.Data = {
+        36040000424D3604000000000000360000002800000010000000100000000100
+        2000000000000004000064000000640000000000000000000000000000000000
+        0000000000000000000000000000000000000000000000000000000000000000
+        0000000000000000000000000000000000000000000000000000000000000000
+        0000000000000000000000000000000000000000000000000000000000000000
+        0000000000000000000000000000000000000000000000000000000000000000
+        000000000000000000000000000000000000BE7A45FFBE7A45FFBE7A45FF0000
+        0000000000000000000000000000000000000000000000000000000000000000
+        000000000000BE7A45FFBE7A45FF78553958BE7A45FFE3CDBCFFBE7A45FF7855
+        3958BE7A45FFBE7A45FF00000000000000000000000000000000000000000000
+        0000BE7A45FFE3CDBCFFD2A786FFBE7A45FFC79064FFDAB89DFFC79064FFBE7A
+        45FFD2A786FFE3CDBCFFBE7A45FF000000000000000000000000000000000000
+        0000BE7A45FFD2A786FFDAB89DFFDAB89DFFDAB89DFFDAB89DFFDAB89DFFDAB8
+        9DFFDAB89DFFD2A786FFBE7A45FF000000000000000000000000000000000000
+        000078553958BE7A45FFE3CDBCFFCFA17CFFBD7F4CF8C38656FFBA7A46F4D5AE
+        8FFFDAB89DFFBE7A45FF7855395800000000000000000000000000000000BE7A
+        45FFBE7A45FFC79064FFDAB89DFFBD7F4CF8B78256CD78553959A56F43C0BA7A
+        46F4DAB89DFFC79064FFBE7A45FFBE7A45FF000000000000000000000000BE7A
+        45FFE3CDBCFFDAB89DFFDAB89DFFC38656FF785539590000000078553959C386
+        56FFDAB89DFFDAB89DFFE3CDBCFFBE7A45FF000000000000000000000000BE7A
+        45FFBE7A45FFC79064FFDAB89DFFBA7A46F49C6B42AE785539598F633F97BA7C
+        49EEDAB89DFFC79064FFBE7A45FFBE7A45FF0000000000000000000000000000
+        000078553958BE7A45FFDAB89DFFCFA17CFFBA7A46F4C38656FFBA7A46F4D1A5
+        82FFDAB89DFFBE7A45FF78553958000000000000000000000000000000000000
+        0000BE7A45FFD2A786FFDAB89DFFDAB89DFFDAB89DFFDAB89DFFDAB89DFFDAB8
+        9DFFDAB89DFFD2A786FFBE7A45FF000000000000000000000000000000000000
+        0000BE7A45FFE3CDBCFFD2A786FFBE7A45FFC79064FFDAB89DFFC79064FFBE7A
+        45FFD2A786FFE3CDBCFFBE7A45FF000000000000000000000000000000000000
+        000078553958BE7A45FFBE7A45FF78553958BE7A45FFE3CDBCFFBE7A45FF7855
+        3958BE7A45FFBE7A45FF00000000000000000000000000000000000000000000
+        000000000000000000000000000000000000BE7A45FFBE7A45FFBE7A45FF0000
+        0000000000000000000000000000000000000000000000000000000000000000
+        0000000000000000000000000000000000000000000000000000000000000000
+        0000000000000000000000000000000000000000000000000000
+      }
+      NumGlyphs = 0
+      OnClick = InstallButtonClick
+      TabOrder = 3
     end
   end
 end

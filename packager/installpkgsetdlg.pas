@@ -57,7 +57,7 @@ type
     HelpButton: TBitBtn;
     CancelButton: TBitBtn;
     ExportButton: TButton;
-    Panel1: TPanel;
+    BtnPanel: TPanel;
     PkgInfoMemo: TMemo;
     PkgInfoGroupBox: TGroupBox;
     ImportButton: TButton;
