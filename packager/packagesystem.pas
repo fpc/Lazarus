@@ -3195,8 +3195,23 @@ var
   i: Integer;
   CurFile: TPkgFile;
   OutputFileName: String;
+  NewOutputDir: String;
 begin
-  OutputDir:=APackage.GetOutputDirectory;
+  // get default output directory
+  OutputDir:=APackage.GetOutputDirectory(false);
+  if Assigned(OnGetWritablePkgOutputDirectory) then begin
+    // check if default output directory is writable
+    NewOutputDir:=OutputDir;
+    OnGetWritablePkgOutputDirectory(APackage,NewOutputDir);
+    if NewOutputDir<>OutputDir then begin
+      // default output directory is not writable => redirect to another place
+      OutputDir:=NewOutputDir;
+      APackage.CompilerOptions.ParsedOpts.OutputDirectoryOverride:=OutputDir;
+    end else begin
+      // default output directory is writable => no redirect
+      APackage.CompilerOptions.ParsedOpts.OutputDirectoryOverride:='';
+    end;
+  end;
   StateFile:=APackage.GetStateFilename;
   PkgSrcDir:=ExtractFilePath(APackage.GetSrcFilename);
 

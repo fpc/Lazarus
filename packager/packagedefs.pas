@@ -684,7 +684,6 @@ type
     procedure OnMacroListSubstitution(TheMacro: TTransferMacro;
       const MacroName: string; var s: string;
       const Data: PtrInt; var Handled, Abort: boolean);
-    procedure GetWritableOutputDirectory(var AnOutDir: string);
     procedure Clear;
     procedure UpdateSourceDirectories;
     procedure SourceDirectoriesChanged(Sender: TObject);
@@ -715,7 +714,7 @@ type
     function GetResolvedFilename(ResolveMacros: boolean): string;
     function GetSourceDirs(WithPkgDir, WithoutOutputDir: boolean): string;
     procedure GetInheritedCompilerOptions(var OptionsList: TFPList);
-    function GetOutputDirectory: string;
+    function GetOutputDirectory(UseOverride: boolean = true): string; // this can change before building, when default dir is readonly
     function GetStateFilename: string;
     function GetCompileSourceFilename: string;// as GetSrcFilename without directory
     function GetSrcFilename: string;
@@ -2217,12 +2216,6 @@ begin
   end;
 end;
 
-procedure TLazPackage.GetWritableOutputDirectory(var AnOutDir: string);
-begin
-  if Assigned(OnGetWritablePkgOutputDirectory) then
-    OnGetWritablePkgOutputDirectory(Self,AnOutDir);
-end;
-
 function TLazPackage.GetAutoIncrementVersionOnBuild: boolean;
 begin
   Result:=lpfAutoIncrementVersionOnBuild in FFlags;
@@ -2506,8 +2499,6 @@ begin
   FCompilerOptions:=TPkgCompilerOptions.Create(Self);
   FCompilerOptions.ParsedOpts.InvalidateParseOnChange:=true;
   FCompilerOptions.ParsedOpts.OnLocalSubstitute:=@SubstitutePkgMacro;
-  FCompilerOptions.ParsedOpts.GetWritableOutputDirectory:=
-                                                    @GetWritableOutputDirectory;
   FCompilerOptions.DefaultMakeOptionsFlags:=[ccloNoLinkerOpts];
   FUsageOptions:=TPkgAdditionalCompilerOptions.Create(Self);
   FUsageOptions.ParsedOpts.OnLocalSubstitute:=@SubstitutePkgMacro;
@@ -3410,10 +3401,10 @@ begin
     Result:=ChangeFileExt(ExtractFilename(Filename),'.pas');
 end;
 
-function TLazPackage.GetOutputDirectory: string;
+function TLazPackage.GetOutputDirectory(UseOverride: boolean = true): string;
 begin
   if HasDirectory then begin
-    Result:=CompilerOptions.ParsedOpts.GetParsedValue(pcosOutputDir);
+    Result:=CompilerOptions.ParsedOpts.GetParsedValue(pcosOutputDir,UseOverride);
   end else
     Result:='';
 end;

@@ -383,9 +383,10 @@ type
   TParsedCompilerOptions = class
   private
     FConditionals: TCompOptConditionals;
-    FGetWritableOutputDirectory: TGetWritableOutputDirectory;
     FInvalidateParseOnChange: boolean;
     FOnLocalSubstitute: TLocalSubstitutionEvent;
+    FOutputDirectoryOverride: string;
+    procedure SetOutputDirectoryOverride(const AValue: string);
   public
     UnparsedValues: array[TParsedCompilerOptString] of string;
     // parsed
@@ -397,13 +398,13 @@ type
     ParsedPIStamp: array[TParsedCompilerOptString] of integer;
     ParsingPI: array[TParsedCompilerOptString] of boolean;
     constructor Create(TheConditionals: TCompOptConditionals);
-    function GetParsedValue(Option: TParsedCompilerOptString): string;
-    function GetParsedPIValue(Option: TParsedCompilerOptString): string;
+    function GetParsedValue(Option: TParsedCompilerOptString;
+                            WithOverrides: boolean = true): string;
+    function GetParsedPIValue(Option: TParsedCompilerOptString): string;// platform independent
     procedure SetUnparsedValue(Option: TParsedCompilerOptString;
                                const NewValue: string);
     function DoParseOption(const OptionText: string;
                            Option: TParsedCompilerOptString;
-                           UseGetWritableOutputDirectory,
                            PlatformIndependent: boolean): string;
     procedure Clear;
     procedure InvalidateAll;
@@ -413,8 +414,8 @@ type
                                                        write FOnLocalSubstitute;
     property InvalidateParseOnChange: boolean read FInvalidateParseOnChange
                                               write FInvalidateParseOnChange;
-    property GetWritableOutputDirectory: TGetWritableOutputDirectory
-             read FGetWritableOutputDirectory write FGetWritableOutputDirectory;
+    property OutputDirectoryOverride: string read FOutputDirectoryOverride
+                                             write SetOutputDirectoryOverride;
     property Conditionals: TCompOptConditionals read FConditionals;
   end;
 
@@ -3331,17 +3332,36 @@ end;
 
 { TParsedCompilerOptions }
 
+procedure TParsedCompilerOptions.SetOutputDirectoryOverride(const AValue: string
+  );
+begin
+  if FOutputDirectoryOverride=AValue then exit;
+  FOutputDirectoryOverride:=AValue;
+  if InvalidateParseOnChange then
+    IncreaseCompilerParseStamp;// the output dir is used by other packages
+  if FOutputDirectoryOverride<>'' then
+    DebugLn(['TParsedCompilerOptions.SetOutputDirectoryOverride New=',FOutputDirectoryOverride])
+  else
+    DebugLn(['TParsedCompilerOptions.SetOutputDirectoryOverride using default']);
+end;
+
 constructor TParsedCompilerOptions.Create(TheConditionals: TCompOptConditionals);
 begin
   FConditionals:=TheConditionals;
   Clear;
 end;
 
-function TParsedCompilerOptions.GetParsedValue(Option: TParsedCompilerOptString
-  ): string;
+function TParsedCompilerOptions.GetParsedValue(Option: TParsedCompilerOptString;
+  WithOverrides: boolean): string;
 var
   s: String;
 begin
+  if WithOverrides then begin
+    if (Option=pcosOutputDir) and (OutputDirectoryOverride<>'') then begin
+      Result:=OutputDirectoryOverride;
+      exit;
+    end;
+  end;
   if ParsedStamp[Option]<>CompilerParseStamp then begin
     if Parsing[Option] then begin
       DebugLn('TParsedCompilerOptions.GetParsedValue Circle in Options: ',ParsedCompilerOptStringNames[Option]);
@@ -3349,7 +3369,7 @@ begin
     end;
     Parsing[Option]:=true;
     try
-      s:=DoParseOption(UnparsedValues[Option],Option,true,false);
+      s:=DoParseOption(UnparsedValues[Option],Option,false);
       ParsedValues[Option]:=s;
       ParsedStamp[Option]:=CompilerParseStamp;
       //if Option=pcosCustomOptions then begin
@@ -3374,7 +3394,7 @@ begin
     end;
     ParsingPI[Option]:=true;
     try
-      s:=DoParseOption(UnparsedValues[Option],Option,false,true);
+      s:=DoParseOption(UnparsedValues[Option],Option,true);
       ParsedPIValues[Option]:=s;
       ParsedPIStamp[Option]:=CompilerParseStamp;
       //if Option=pcosCustomOptions then begin
@@ -3402,8 +3422,7 @@ begin
 end;
 
 function TParsedCompilerOptions.DoParseOption(const OptionText: string;
-  Option: TParsedCompilerOptString; UseGetWritableOutputDirectory,
-  PlatformIndependent: boolean): string;
+  Option: TParsedCompilerOptString; PlatformIndependent: boolean): string;
 var
   s: String;
   BaseDirectory: String;
@@ -3460,11 +3479,6 @@ begin
       else
         BaseDirectory:=GetParsedValue(pcosBaseDir);
       if (BaseDirectory<>'') then s:=TrimFilename(BaseDirectory+s);
-      if (Option in ParsedCompilerOutDirectories)
-      and UseGetWritableOutputDirectory
-      and Assigned(GetWritableOutputDirectory) then begin
-        GetWritableOutputDirectory(s);
-      end;
     end;
     s:=AppendPathDelim(s);
   end
