@@ -398,6 +398,7 @@ var
 begin
   for i:=0 to FNewInstalledPackages.Count-1 do
     TObject(FNewInstalledPackages[i]).Free;
+  FNewInstalledPackages.Clear;
 end;
 
 function TInstallPkgSetDialog.CheckSelection: boolean;
@@ -595,9 +596,8 @@ begin
         LazPackageID:=TLazPackageID.Create;
       end;
       // clean up old list
-      for i:=0 to FNewInstalledPackages.Count-1 do
-        TObject(FNewInstalledPackages[i]).Free;
-      FNewInstalledPackages.Clear;
+      ClearNewInstalledPackages;
+      FNewInstalledPackages.Free;
       // assign new list
       FNewInstalledPackages:=NewList;
       NewList:=nil;
@@ -704,14 +704,16 @@ var
   OldPackageID: TLazPackageID;
   APackage: TLazPackage;
   Deletions: TFPList;
+  DelPackageID: TLazPackageID;
+  j: LongInt;
 begin
   OldPackageID := nil;
   Deletions:=TFPList.Create;
   try
     for i:=0 to InstallListBox.Items.Count-1 do begin
+      if not InstallListBox.Selected[i] then continue;
       if OldPackageID = nil then
         OldPackageID:=TLazPackageID.Create;
-      if not InstallListBox.Selected[i] then continue;
       if not OldPackageID.StringToID(InstallListBox.Items[i]) then begin
         InstallListBox.Selected[i]:=false;
         debugln('TInstallPkgSetDialog.AddToUninstallButtonClick invalid ID: ',
@@ -720,8 +722,10 @@ begin
       end;
       // ok => add to deletions
       Deletions.Add(OldPackageID);
+      DelPackageID:=OldPackageID;
+      OldPackageID := nil;
       // get package
-      APackage:=PackageGraph.FindPackageWithID(OldPackageID);
+      APackage:=PackageGraph.FindPackageWithID(DelPackageID);
       if APackage<>nil then begin
         // check if package is a base package
         if APackage.AutoCreated
@@ -733,22 +737,24 @@ begin
           exit;
         end;
       end;
-      OldPackageID := nil;
     end;
 
     // ok => remove from list
     InstallListBox.ItemIndex:=-1;
     for i:=0 to Deletions.Count-1 do begin
-      OldPackageID:=TLazPackageID(Deletions[i]);
-      FNewInstalledPackages.Delete(IndexOfNewInstalledPackageID(OldPackageID));
+      DelPackageID:=TLazPackageID(Deletions[i]);
+      j:=IndexOfNewInstalledPackageID(DelPackageID);
+      TObject(FNewInstalledPackages[j]).Free;
+      FNewInstalledPackages.Delete(j);
     end;
 
     UpdateNewInstalledPackages;
     UpdateButtonStates;
   finally
+    OldPackageID.Free;
     for i:=0 to Deletions.Count-1 do begin
-      OldPackageID:=TLazPackageID(Deletions[i]);
-      OldPackageID.Free;
+      DelPackageID:=TLazPackageID(Deletions[i]);
+      DelPackageID.Free;
     end;
     Deletions.Clear;
     Deletions.Free;
