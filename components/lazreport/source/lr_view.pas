@@ -131,7 +131,6 @@ type
     FindBtn: TBitBtn;
     HelpBtn: TBitBtn;
     ExitBtn: TBitBtn;
-    procedure Bevel1ChangeBounds(Sender: TObject);
     procedure FormResize(Sender: TObject);
     procedure VScrollBarChange(Sender: TObject);
     procedure HScrollBarChange(Sender: TObject);
@@ -798,10 +797,6 @@ begin
   
   SetToCurPage;
   PaintAllowed := True;
-end;
-
-procedure TfrPreviewForm.Bevel1ChangeBounds(Sender: TObject);
-begin
 end;
 
 procedure TfrPreviewForm.SetToCurPage;
