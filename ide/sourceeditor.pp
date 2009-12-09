@@ -3400,7 +3400,7 @@ begin
 
   for i := 0 to EditorComponent.Lines.Count - 1 do
   begin
-    Addr := DebugBoss.LineInfo.Values[idx, i];
+    Addr := DebugBoss.LineInfo.GetAddress(idx, i);
     if (Addr <> 0) then
       EditorComponent.SetDebugMarks(i, i);
   end;

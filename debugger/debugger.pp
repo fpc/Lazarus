@@ -774,15 +774,16 @@ type
   TBaseLineInfo = class(TObject)
   protected
     function GetSource(const AnIndex: integer): String; virtual;
-    function GetValue(const AnIndex: Integer; const ALine: Integer): TDbgPtr; virtual;
   public
     constructor Create;
     function Count: Integer; virtual;
+    function GetAddress(const AIndex: Integer; const ALine: Integer): TDbgPtr; virtual;
+    function GetAddress(const ASource: String; const ALine: Integer): TDbgPtr;
+    function GetInfo(AAdress: TDbgPtr; out ASource, ALine, AOffset: Integer): Boolean; virtual;
     function IndexOf(const ASource: String): integer; virtual;
     procedure Request(const ASource: String); virtual;
   public
     property Sources[const AnIndex: Integer]: String read GetSource;
-    property Values[const AnIndex: Integer; const ALine: Integer]: TDbgPtr read GetValue;
   end;
 
   { TIDELineInfo }
@@ -1327,8 +1328,8 @@ type
     function  Evaluate(const AExpression: String; var AResult: String;
                           var ATypeInfo: TDBGType): Boolean;                     // Evaluates the given expression, returns true if valid
     function  Modify(const AExpression, AValue: String): Boolean;                // Modifies the given expression, returns true if valid
-    function  Disassemble(AAddr: TDbgPtr; ABackward: Boolean;
-                          out ANextAddr: TDbgPtr; out ADump, AStatement: String): Boolean;
+    function  Disassemble(AAddr: TDbgPtr; ABackward: Boolean; out ANextAddr: TDbgPtr;
+                          out ADump, AStatement, AFile: String; out ALine: Integer): Boolean;
   public
     property Arguments: String read FArguments write FArguments;                 // Arguments feed to the program
     property BreakPoints: TDBGBreakPoints read FBreakPoints;                     // list of all breakpoints
@@ -1617,9 +1618,9 @@ begin
   inherited;
 end;
 
-function TDebugger.Disassemble(AAddr: TDbgPtr; ABackward: Boolean; out ANextAddr: TDbgPtr; out ADump, AStatement: String): Boolean;
+function TDebugger.Disassemble(AAddr: TDbgPtr; ABackward: Boolean; out ANextAddr: TDbgPtr; out ADump, AStatement, AFile: String; out ALine: Integer): Boolean;
 begin
-  Result := ReqCmd(dcDisassemble, [AAddr, ABackward, @ANextAddr, @ADump, @AStatement]);
+  Result := ReqCmd(dcDisassemble, [AAddr, ABackward, @ANextAddr, @ADump, @AStatement, @AFile, @ALine]);
 end;
 
 procedure TDebugger.Done;
@@ -4394,11 +4395,6 @@ end;
 
 { TBaseLineInfo }
 
-function TBaseLineInfo.GetValue(const AnIndex: Integer; const ALine: Integer): TDbgPtr;
-begin
-  Result := 0;
-end;
-
 function TBaseLineInfo.GetSource(const AnIndex: integer): String;
 begin
   Result := '';
@@ -4412,6 +4408,26 @@ end;
 constructor TBaseLineInfo.Create;
 begin
   inherited Create;
+end;
+
+function TBaseLineInfo.GetAddress(const AIndex: Integer; const ALine: Integer): TDbgPtr;
+begin
+  Result := 0;
+end;
+
+function TBaseLineInfo.GetAddress(const ASource: String; const ALine: Integer): TDbgPtr;
+var
+  idx: Integer;
+begin
+  idx := IndexOf(ASource);
+  if idx = -1
+  then Result := 0
+  else Result := GetAddress(idx, ALine);
+end;
+
+function TBaseLineInfo.GetInfo(AAdress: TDbgPtr; out ASource, ALine, AOffset: Integer): Boolean;
+begin
+  Result := False;
 end;
 
 procedure TBaseLineInfo.Request(const ASource: String);

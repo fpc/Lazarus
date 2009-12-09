@@ -44,6 +44,8 @@ type
       Addr: TDbgPtr;
       Dump: String;
       Statement: String;
+      FileName: String;
+      SourceLine: Integer;
     end;
     FLineMapMin: Byte;
     FLineMapMax: Byte;
@@ -185,7 +187,7 @@ end;
 procedure TAssemblerDlg.pbAsmPaint(Sender: TObject);
 var
   R: TRect;
-  n, X, Y, Line, idx: Integer;
+  n, X, Y, Line, idx, W: Integer;
   S: String;
 begin
 
@@ -212,17 +214,27 @@ begin
       pbAsm.Canvas.Brush.Color := pbAsm.Color;
       pbAsm.Canvas.Font.Color := pbAsm.Font.Color;
     end;
+    pbAsm.Canvas.Font.Bold := (FLineMap[idx].State = lmsSource);
 
     S := '';
     //S :=  Format('[a:%8.8u l:%8.8d i:%3.3u] ', [Cardinal(FLineMap[idx].Addr), Line, idx]);
-    if FDebugger <> nil
-    then S := S + HexStr(FLineMap[idx].Addr, FDebugger.TargetWidth div 4) + ' ';
+    if FDebugger = nil
+    then W := 16
+    else W := FDebugger.TargetWidth div 4;
+
+    S := S + HexStr(FLineMap[idx].Addr, W) + ' ';
+
     if FLineMap[idx].Line = Line
     then begin
       case FLineMap[idx].State of
         lmsUnknown: S := S + '??????';
         lmsInvalid: S := S + '......';
-        lmsStatement: S := S + Copy(FLineMap[idx].Dump + '                 ', 1, 17) + FLineMap[idx].Statement;
+        lmsStatement: S := S + Copy(FLineMap[idx].Dump + '                         ', 1, 25) + FLineMap[idx].Statement;
+        lmsSource: begin
+          if FLineMap[idx].SourceLine = 0
+          then S := '---'
+          else S :=  Format('%s:%u', [FLineMap[idx].FileName, FLineMap[idx].SourceLine]);
+        end;
       end;
     end;
     pbAsm.Canvas.TextRect(R, X, Y, S);
@@ -357,12 +369,41 @@ end;
 
 
 procedure TAssemblerDlg.UpdateLineData(ALine: Integer);
+  procedure DecLineMapMin;
+  begin
+    if FLineMapMin = 0
+    then FLineMapMin := High(FLineMap)
+    else Dec(FLineMapMin);
+    // check if we overlap with our end
+    if FLineMapMin = FLineMapMax
+    then begin
+      if FLineMapMax = 0
+      then FLineMapMax := High(FLineMap)
+      else Dec(FLineMapMax);
+    end;
+  end;
+
+  procedure IncLineMapMax;
+  begin
+    if FLineMapMax = High(FLineMap)
+    then FLineMapMax := 0
+    else Inc(FLineMapMax);
+    // check if we overlap with our start
+    if FLineMapMin = FLineMapMax
+    then begin
+      if FLineMapMin = High(FLineMap)
+      then FLineMapMin := 0
+      else Inc(FLineMapMin);
+    end;
+  end;
+
 var
   Addr, NextAddr: TDbgPtr;
-  OK: Boolean;
-  Line: Integer;
-  Idx: Byte;
-  Dump, Statement: String;
+  OK, SameFile, SameSource: Boolean;
+  Line, Line2, SourceLine: Integer;
+  Idx, OldIdx: Byte;
+  Dump, Statement, FileName: String;
+
 begin
   if FDebugger = nil then Exit;
   if not FLineMapValid then Exit;
@@ -380,32 +421,59 @@ begin
       // get lines before min
       Addr := FLineMap[FLineMapMin].Addr;
       Line := FLineMap[FLineMapMin].Line - 1;
-      if FLineMapMin = 0
-      then FLineMapMin := High(FLineMap)
-      else Dec(FLineMapMin);
-      // check if we overlap with our end
-      if FLineMapMin = FLineMapMax
-      then begin
-        if FLineMapMax = 0
-        then FLineMapMax := High(FLineMap)
-        else Dec(FLineMapMax);
-      end;
+      Line2 := Line;
+      OldIdx := FLineMapMin;
+      DecLineMapMin;
 
       FLineMap[FLineMapMin].State := lmsUnknown;
       FLineMap[FLineMapMin].Line := Line;
-      OK := FDebugger.Disassemble(Addr, True, NextAddr, Dump, Statement);
+      OK := FDebugger.Disassemble(Addr, True, NextAddr, Dump, Statement, FileName, SourceLine);
       if OK
       then begin
-        FLineMap[FLineMapMin].State := lmsStatement;
-        FLineMap[FLineMapMin].Dump := Dump;
-        FLineMap[FLineMapMin].Statement := Statement;
+        SameFile := FileName = FLineMap[OldIdx].FileName;
+        // to reduce the amount of unique duplicated strings,
+        // use "our" copy of the filename and not the given one.
+        if SameFile
+        then FLineMap[FLineMapMin].FileName := FLineMap[OldIdx].FileName
+        else FLineMap[FLineMapMin].FileName := FileName;
+
+        SameSource := SameFile and (SourceLine = FLineMap[OldIdx].SourceLine);
+        if SameSource
+        then begin
+          // Check if OldIdx points to a Source line
+          if FLineMap[OldIdx].State = lmsSource
+          then begin
+            FLineMap[FLineMapMin] := FLineMap[OldIdx];
+            FLineMap[FLineMapMin].Line := Line;
+            Inc(Line);
+            Idx := OldIdx;
+          end
+          else Idx := FLineMapMin;
+        end
+        else begin
+          // Insert source line
+          Idx := FLineMapMin;
+          DecLineMapMin;
+          FLineMap[FLineMapMin].State := lmsSource;
+          FLineMap[FLineMapMin].Line := Line - 1;
+          FLineMap[FLineMapMin].Dump := '';
+          FLineMap[FLineMapMin].Statement := '';
+          FLineMap[FLineMapMin].SourceLine := SourceLine;
+          FLineMap[FLineMapMin].FileName := FLineMap[idx].FileName;
+        end;
+
+        FLineMap[idx].Addr := NextAddr;
+        FLineMap[idx].State := lmsStatement;
+        FLineMap[idx].Dump := Dump;
+        FLineMap[idx].Statement := Statement;
+        FLineMap[idx].SourceLine := SourceLine;
       end
       else begin
         FLineMap[FLineMapMin].State := lmsInvalid;
         NextAddr := Addr - 1;
       end;
       FLineMap[FLineMapMin].Addr := NextAddr;
-      if OK and (Line = ALine) then Exit;
+      if OK and ((Line = ALine) or (Line2 = ALine)) then Exit;
     end;
 
     if FLineMap[FLineMapMax].Line < ALine
@@ -413,39 +481,57 @@ begin
       // get lines after max
       // get startingpoint
       Addr := FLineMap[FLineMapMax].Addr;
-      if not FDebugger.Disassemble(Addr, False, NextAddr, Dump, Statement)
+      if not FDebugger.Disassemble(Addr, False, NextAddr, Dump, Statement, FileName, SourceLine)
       then NextAddr := Addr + 1;
 
       while FLineMap[FLineMapMax].Line < ALine do
       begin
         Addr := NextAddr;
         Line := FLineMap[FLineMapMax].Line + 1;
-        if FLineMapMax = High(FLineMap)
-        then FLineMapMax := 0
-        else Inc(FLineMapMax);
-        // check if we overlap with our start
-        if FLineMapMin = FLineMapMax
-        then begin
-          if FLineMapMin = High(FLineMap)
-          then FLineMapMin := 0
-          else Inc(FLineMapMin);
-        end;
+        Line2 := Line;
+        OldIdx := FLineMapMax;
+        IncLineMapMax;
 
         FLineMap[FLineMapMax].State := lmsUnknown;
         FLineMap[FLineMapMax].Line := Line;
         FLineMap[FLineMapMax].Addr := Addr;
-        OK := FDebugger.Disassemble(Addr, False, NextAddr, Dump, Statement);
+        OK := FDebugger.Disassemble(Addr, False, NextAddr, Dump, Statement, FileName, SourceLine);
         if OK
         then begin
+          SameFile := FileName = FLineMap[OldIdx].FileName;
+          // to reduce the amount of unique duplicated strings,
+          // use "our" copy of the filename and not the given one.
+          if SameFile
+          then FLineMap[FLineMapMax].FileName := FLineMap[OldIdx].FileName
+          else FLineMap[FLineMapMax].FileName := FileName;
+
+          SameSource := SameFile and (SourceLine = FLineMap[OldIdx].SourceLine);
+          if not SameSource
+          then begin
+            // Insert source line first
+            FLineMap[FLineMapMax].State := lmsSource;
+            FLineMap[FLineMapMax].Dump := '';
+            FLineMap[FLineMapMax].Statement := '';
+            FLineMap[FLineMapMax].SourceLine := SourceLine;
+
+            OldIdx := FLineMapMax;
+            IncLineMapMax;
+            Inc(Line);
+            FLineMap[FLineMapMax].Line := Line;
+            FLineMap[FLineMapMax].Addr := Addr;
+          end;
+
           FLineMap[FLineMapMax].State := lmsStatement;
           FLineMap[FLineMapMax].Dump := Dump;
           FLineMap[FLineMapMax].Statement := Statement;
+          FLineMap[FLineMapMax].SourceLine := SourceLine;
+          FLineMap[FLineMapMax].FileName := FLineMap[OldIdx].FileName;
         end
         else begin
           FLineMap[FLineMapMax].State := lmsInvalid;
           NextAddr := Addr + 1;
         end;
-        if OK and (Line = ALine) then Exit;
+        if OK and ((Line = ALine) or (Line2 = ALine)) then Exit;
       end;
     end;
 
@@ -454,11 +540,40 @@ begin
 
     FLineMap[idx].Line := ALine;
     Addr := FLineMap[idx].Addr;
-    if FDebugger.Disassemble(Addr, False, NextAddr, Dump, Statement)
+    if FDebugger.Disassemble(Addr, False, NextAddr, Dump, Statement, FileName, SourceLine)
     then begin
+      OldIdx := Cardinal(ALine-1) mod Length(FLineMap);
+
+      SameFile := FileName = FLineMap[OldIdx].FileName;
+      // to reduce the amount of unique duplicated strings,
+      // use "our" copy of the filename and not the given one.
+      if SameFile
+      then FLineMap[idx].FileName := FLineMap[OldIdx].FileName
+      else FLineMap[idx].FileName := FileName;
+
+      SameSource := SameFile and (SourceLine = FLineMap[OldIdx].SourceLine);
+      if not SameSource
+      then begin
+        // Insert source line first
+        FLineMap[idx].State := lmsSource;
+        FLineMap[idx].Dump := '';
+        FLineMap[idx].Statement := '';
+        FLineMap[idx].SourceLine := SourceLine;
+
+        if idx = FLineMapMax then IncLineMapMax;
+        OldIdx := idx;
+        Line := ALine + 1;
+        idx := Cardinal(Line) mod Length(FLineMap);
+        FLineMap[idx].Line := Line;
+        FLineMap[idx].Addr := Addr;
+      end;
+
+
       FLineMap[idx].State := lmsStatement;
       FLineMap[idx].Dump := Dump;
       FLineMap[idx].Statement := Statement;
+      FLineMap[idx].FileName := FLineMap[OldIdx].FileName;
+      FLineMap[idx].SourceLine := SourceLine;
     end
     else begin
       FLineMap[idx].State := lmsUnknown;

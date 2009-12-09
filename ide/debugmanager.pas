@@ -303,10 +303,11 @@ type
     procedure LineInfoChanged(const ASender: TObject; const ASource: String);
     procedure SetMaster(const AMaster: TDBGLineInfo);
   protected
-    function GetSource(const AnIndex: integer): String; override;
-    function GetValue(const AnIndex: Integer; const ALine: Integer): TDbgPtr; override;
+    function GetSource(const AIndex: Integer): String; override;
   public
     function Count: Integer; override;
+    function GetAddress(const AIndex: Integer; const ALine: Integer): TDbgPtr; override;
+    function GetInfo(AAdress: TDbgPtr; out ASource, ALine, AOffset: Integer): Boolean; override;
     function IndexOf(const ASource: String): integer; override;
     procedure Request(const ASource: String); override;
     property Master: TDBGLineInfo read FMaster write SetMaster;
@@ -422,18 +423,25 @@ begin
   end;
 end;
 
-function TManagedLineInfo.GetSource(const AnIndex: integer): String;
+function TManagedLineInfo.GetSource(const AIndex: Integer): String;
 begin
   if Master = nil
-  then Result := inherited GetSource(AnIndex)
-  else Result := Master.Sources[AnIndex];
+  then Result := inherited GetSource(AIndex)
+  else Result := Master.Sources[AIndex];
 end;
 
-function TManagedLineInfo.GetValue(const AnIndex: Integer; const ALine: Integer): TDbgPtr;
+function TManagedLineInfo.GetAddress(const AIndex: Integer; const ALine: Integer): TDbgPtr;
 begin
   if Master = nil
-  then Result := inherited GetValue(AnIndex, ALine)
-  else Result := Master.Values[AnIndex, ALine];
+  then Result := inherited GetAddress(AIndex, ALine)
+  else Result := Master.GetAddress(AIndex, ALine);
+end;
+
+function TManagedLineInfo.GetInfo(AAdress: TDbgPtr; out ASource, ALine, AOffset: Integer): Boolean;
+begin
+  if Master = nil
+  then Result := inherited GetInfo(AAdress, ASource, ALine, AOffset)
+  else Result := Master.GetInfo(AAdress, ASource, ALine, AOffset);
 end;
 
 function TManagedLineInfo.IndexOf(const ASource: String): integer;
