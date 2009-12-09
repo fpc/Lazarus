@@ -6133,10 +6133,13 @@ var
   var
     n: Integer;
   begin
-    n := Length(BooksBkUp);
-    SetLength(BooksBkUp, n+1);
-    BooksBkUp[n].Dataset := b.Dataset;
-    BooksBkUp[n].Bookmark := b.Dataset.GetBookmark;
+    if b.Dataset <> nil then
+    begin
+      n := Length(BooksBkUp);
+      SetLength(BooksBkUp, n+1);
+      BooksBkUp[n].Dataset := b.Dataset;
+      BooksBkUp[n].Bookmark := b.Dataset.GetBookmark;
+    end;
     if b.Typ in [btDetailData,btSubDetailData] then
       inc(DetailCount);
   end;
