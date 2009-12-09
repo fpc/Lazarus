@@ -2310,7 +2310,7 @@ function TGDBMIDebugger.GDBEvaluate(const AExpression: String; var AResult: Stri
     List.Free;
   end;
 
-  function PascalizePointer(AString: String): String;
+  function PascalizePointer(AString: String; const TypeCast: String = ''): String;
   begin
     if IsHexC(AString)
     then begin
@@ -2322,11 +2322,13 @@ function TGDBMIDebugger.GDBEvaluate(const AExpression: String; var AResult: Stri
         Result[3] := 'l';
       end
       else begin
-        Result := Copy(AString, 2, Length(AString) - 1);
-        Result[1] := '$';
+        // 0xabc0 => $0000ABC0
+        Result := UpperCase(HexCToHexPascal(AString, TargetWidth div 4));
       end;
     end
     else Result := AString;
+    if TypeCast <> '' then
+      Result := TypeCast + '(' + Result + ')';
   end;
 
   function FormatCurrency(const AString: String): String;
@@ -2342,14 +2344,6 @@ function TGDBMIDebugger.GDBEvaluate(const AExpression: String; var AResult: Stri
       c := i / 10000;
       Result := CurrToStr(c);
     end;
-  end;
-
-  function FormatPointer(const AString: String; const TypeCast: String = ''): String;
-  begin
-    // 0xabc0 => $0000ABC0
-    Result := UpperCase(HexCToHexPascal(AString, TargetWidth div 4));
-    if TypeCast <> '' then
-      Result := TypeCast + '(' + Result + ')';
   end;
 
   function GetVariantValue(AString: String): String;
@@ -2393,10 +2387,10 @@ function TGDBMIDebugger.GDBEvaluate(const AExpression: String; var AResult: Stri
                 end;
               varcurrency: Result := FormatCurrency(VarList.Values['VCURRENCY']);
               varolestr: Result := VarList.Values['VOLESTR'];
-              vardispatch: Result := FormatPointer(VarList.Values['VDISPATCH'], 'IDispatch');
+              vardispatch: Result := PascalizePointer(VarList.Values['VDISPATCH'], 'IDispatch');
               varerror: Result := FormatVarError(VarList.Values['VERROR']);
               varboolean: Result := VarList.Values['VBOOLEAN'];
-              varunknown: Result := FormatPointer(VarList.Values['VUNKNOWN'], 'IUnknown');
+              varunknown: Result := PascalizePointer(VarList.Values['VUNKNOWN'], 'IUnknown');
               varshortint: Result := VarList.Values['VSHORTINT'];
               varbyte: Result := VarList.Values['VBYTE'];
               varword: Result := VarList.Values['VWORD'];
@@ -2461,10 +2455,10 @@ function TGDBMIDebugger.GDBEvaluate(const AExpression: String; var AResult: Stri
                       if e = 0 then
                         Result := MakePrintable(GetWideText(Addr));
                     end;
-                  vardispatch: Result := FormatPointer(GetStrValue('ppointer(%s)^', [Result]), 'IDispatch');
+                  vardispatch: Result := PascalizePointer(GetStrValue('ppointer(%s)^', [Result]), 'IDispatch');
                   varerror: Result := FormatVarError(GetStrValue('phresult(%s)^', [Result]));
                   varboolean: Result := GetStrValue('pwordbool(%s)^', [Result]);
-                  varunknown: Result := FormatPointer(GetStrValue('ppointer(%s)^', [Result]), 'IUnknown');
+                  varunknown: Result := PascalizePointer(GetStrValue('ppointer(%s)^', [Result]), 'IUnknown');
                   varshortint: Result := GetStrValue('pshortint(%s)^', [Result]);
                   varbyte: Result := GetStrValue('pbyte(%s)^', [Result]);
                   varword: Result := GetStrValue('pword(%s)^', [Result]);
@@ -2602,7 +2596,7 @@ begin
               S[1] := 'T';
               if Length(S) > 1 then S[2] := UpperCase(S[2])[1];
             end;
-            AResult := '^' + S + ' ' + PascalizePointer(AResult);
+            AResult := PascalizePointer(AResult, '^' + S);
           end;
         end;
 
