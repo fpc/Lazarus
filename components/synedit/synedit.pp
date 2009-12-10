@@ -4981,10 +4981,13 @@ begin
 
   // TODO: all plugins SetEditor = nil => release all flines
   Plugins := TList.Create; // remmeber them
-  for i := 0 to FPlugins.Count - 1 do begin
+  for i := FPlugins.Count - 1 downto 0 do begin
     Plugins.Add(FPlugins[i]);
     TSynEditPlugin(FPlugins[i]).Editor := nil;
   end;
+
+  if FHighlighter <> nil then
+    FHighlighter.DetachFromLines(FLines);
 
   OldLines := TSynEditStringList(FLines);
   if AValue = nil then begin
@@ -4994,6 +4997,9 @@ begin
     TSynEditStringList(FLines).IncRefCount;
   end;
   TSynEditStringsLinked(FTopLinesView).NextLines := FLines;
+
+  if FHighlighter <> nil then
+    FHighlighter.AttachToLines(FLines);
 
   // Todo: copy events (have a list of all event owners)
   TSynEditStringList(FLines).CopyHanlders(OldLines, self);
@@ -5021,7 +5027,7 @@ begin
   // TOdo: highlighter
 
   for i := 0 to Plugins.Count - 1 do begin
-    FPlugins.Add(FPlugins[i]);
+    FPlugins.Add(Plugins[i]);
   end;
   Plugins.Free;
 
@@ -8451,7 +8457,7 @@ procedure TSynEditPlugin.SetEditor(const AValue: TCustomSynEdit);
 begin
   if AValue = FriendEdit then exit;
   if (FriendEdit <> nil) and (Editor.fPlugins <> nil) then
-    Editor.fPlugins.Remove(FriendEdit);
+    Editor.fPlugins.Remove(Self);
   FriendEdit := AValue;
   if FriendEdit <> nil then
     Editor.fPlugins.Add(Self);
