@@ -1392,14 +1392,19 @@ begin
   if (DefMethodValue.Data=MethodValue.Data)
   and (DefMethodValue.Code=MethodValue.Code) then
     exit;
-
-  Writer.Driver.BeginProperty(Writer.PropertyPath + PPropInfo(PropInfo)^.Name);
   if IsJITMethod(MethodValue) then
     CurName:=TJITMethod(MethodValue.Data).TheMethodName
-  else if MethodValue.Code<>nil then
-    CurName:=Writer.LookupRoot.MethodName(MethodValue.Code)
-  else
+  else if MethodValue.Code<>nil then begin
+    CurName:=Writer.LookupRoot.MethodName(MethodValue.Code);
+    if CurName='' then begin
+      // this event was not set by the IDE
+      // for Delphi compatibility, do not write this property
+      // see bug 13846
+      exit;
+    end;
+  end else
     CurName:='';
+  Writer.Driver.BeginProperty(Writer.PropertyPath + PPropInfo(PropInfo)^.Name);
   Writer.Driver.WriteMethodName(CurName);
   Writer.Driver.EndProperty;
 end;
