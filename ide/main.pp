@@ -10246,7 +10246,10 @@ begin
   CurResult:=DoCallModalFunctionHandler(lihtOnSavingAll);
   if CurResult=mrAbort then exit(mrAbort);
   if CurResult<>mrOk then Result:=mrCancel;
-  CurResult:=DoSaveProject(Flags);
+  if Project1.Modified or Project1.SessionModified then
+    CurResult:=DoSaveProject(Flags)
+  else
+    CurResult:=mrOk;
   SaveEnvironment;
   SaveIncludeLinks;
   PkgBoss.SaveSettings;

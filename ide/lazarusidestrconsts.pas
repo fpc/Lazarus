@@ -4569,6 +4569,8 @@ resourcestring
     +'directory %s%s%s is not writable.%sSee the Lazarus website for other '
     +'ways to install Lazarus.';
   lisIDEBuildOptions = 'IDE build options';
+  lisUnableToWriteTheProjectInfoFileError = 'Unable to write the project info '
+    +'file%s%s%s%s.%sError: %s';
 
 implementation
 

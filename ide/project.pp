@@ -2081,20 +2081,18 @@ begin
   // first save the .lpi file
   SaveSessionInfoInLPI:=(CurSessionFilename='')
                         or (CompareFilenames(CurSessionFilename,CfgFilename)=0);
-  if (pwfDoNotSaveSessionInfo in ProjectWriteFlags) then
-    SaveSessionInfoInLPI:=false;
-  if (SessionStorage=pssNone) then
+  if (pwfDoNotSaveSessionInfo in ProjectWriteFlags)
+  or (SessionStorage=pssNone) then
     SaveSessionInfoInLPI:=false;
   repeat
     try
       xmlconfig := TXMLConfig.CreateClean(CfgFilename);
     except
       on E: Exception do begin
-        DebugLn('ERROR: ',E.Message);
-        MessageDlg('Write error',
-          'Unable to write the project info file'#13
-          +'"'+ProjectInfoFile+'".'#13
-          +'Error: '+E.Message
+        DebugLn('Error: ', E.Message);
+        MessageDlg(lisCodeToolsDefsWriteError,
+          Format(lisUnableToWriteTheProjectInfoFileError, [#13, '"',
+            ProjectInfoFile, '"', #13, E.Message])
           ,mtError,[mbOk],0);
         Result:=mrCancel;
         exit;
