@@ -6,8 +6,7 @@ interface
 
 uses
   Classes, SysUtils, LCLProc, FileUtil, LResources, Forms, Controls, Graphics,
-  Dialogs, FPimage, agg_fpimage, Agg_LCL,
-  agg_svg_parser_lcl, agg_svg_path_renderer;
+  Dialogs, FPimage, agg_fpimage, Agg_LCL;
 
 type
 
@@ -21,10 +20,6 @@ type
   public
     AggLCLCanvas: TAggLCLCanvas;
     Bitmap1: TBitmap;
-
-    p : parser;
-    m_path : path_renderer;
-    m_min_x, m_min_y, m_max_x, m_max_y: double;
   end;
 
 var
@@ -38,6 +33,11 @@ procedure TForm1.FormCreate(Sender: TObject);
 var
   HasFont: Boolean;
   FontFilename: String;
+  s: String;
+  TxtW: integer;
+  TxtH: integer;
+  TxtX: Integer;
+  TxtY: Integer;
 begin
   Bitmap1:=TBitmap.Create;
   AggLCLCanvas:=TAggLCLCanvas.Create;
@@ -69,24 +69,13 @@ begin
     Pen.Color:=clBlue;
     Pen.Width:=1;
 
-    Line(12,10,22,10);
-    Line(10,12,10,22);
-    Line(12,12,22,22);
+    s:='Font.Size='+IntToStr(Font.Size);
+    GetTextSize(s,TxtW,TxtH);
+    TxtX:=10;
+    TxtY:=40;
+    FillRect(TxtX,TxtY,TxtX+TxtW,TxtY+TxtH);
+    TextOut(TxtX,TxtY,s);
 
-    m_path.Construct;
-    m_min_x:=0.0;
-    m_min_y:=0.0;
-    m_max_x:=0.0;
-    m_max_y:=0.0;
-
-    p.Construct(@m_path);
-    try
-      p.parse(SetDirSeparators('../../svg/tiger.svg'));
-      {m_path.arrange_orientations;
-      m_path.bounding_rect(@m_min_x ,@m_min_y ,@m_max_x ,@m_max_y );}
-    finally
-      p.Destruct;
-    end;
   end;
 
   // convert to LCL native pixel format
@@ -101,10 +90,12 @@ begin
     Pen.Color:=clBlue;
     Pen.Width:=1;
 
-    Line(24,10,34,10);
-    Line(10,24,10,34);
-    Line(24,24,34,34);
-
+    s:='Font.Size='+IntToStr(Font.Size);
+    GetTextSize(s,TxtW,TxtH);
+    TxtX:=10;
+    TxtY:=60;
+    FillRect(TxtX,TxtY,TxtX+TxtW,TxtY+TxtH);
+    TextOut(TxtX,TxtY,s);
   end;
 end;
 
@@ -112,7 +103,6 @@ procedure TForm1.FormDestroy(Sender: TObject);
 begin
   AggLCLCanvas.Free;
   Bitmap1.Free;
-  m_path.Destruct;
 end;
 
 procedure TForm1.FormPaint(Sender: TObject);
