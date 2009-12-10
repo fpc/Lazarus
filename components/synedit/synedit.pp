@@ -4812,6 +4812,7 @@ begin
       fUndoList.AddChange(TSynEditUndoUnIndent.Create(TSynEditUndoUnIndent(Item).FPosY1,
          TSynEditUndoUnIndent(Item).FPosY2, TSynEditUndoUnIndent(Item).FText));
       // Delete string
+      fUndoList.Lock;
       StrToDelete := PChar(TSynEditUndoUnIndent(Item).FText);
       CaretY := TSynEditUndoUnIndent(Item).FPosY1;
       x := -1;
@@ -4820,11 +4821,8 @@ begin
         Len := Run - StrToDelete;
         if x < 0 then
           x:= Len;
-        if Len > 0 then begin
-          TempString := FTheLinesView[CaretY - 1];
-          Delete(TempString, 1, Len);
-          FTheLinesView[CaretY - 1] := TempString;
-        end;
+        if Len > 0 then
+          FTheLinesView.EditDelete(1, CaretY, Len);
         if Run^ in [#10,#13] then begin
           if (Run[1] in [#10,#13]) and (Run^<>Run[1]) then
             Inc(Run,2)
@@ -4834,6 +4832,7 @@ begin
         end;
         StrToDelete := Run;
       until Run^ = #0;
+      fUndoList.Unlock;
     end
     else
       if not Item.PerformUndo(self) then
@@ -4911,7 +4910,9 @@ begin
       fRedoList.AddChange(TSynEditUndoIndent.Create(TSynEditUndoIndent(Item).FPosY1,
          TSynEditUndoIndent(Item).FPosY2, TSynEditUndoIndent(Item).FCnt));
       // remove the column
+      fRedoList.Lock;
       SetSelTextPrimitive(smNormal, nil);
+      fRedoList.Unlock;
     end
     else
     if Item.ClassType = TSynEditUndoUnIndent then
@@ -4919,8 +4920,10 @@ begin
       fRedoList.AddChange(TSynEditUndoUnIndent.Create(TSynEditUndoUnIndent(Item).FPosY1,
           TSynEditUndoUnIndent(Item).FPosY2, TSynEditUndoUnIndent(Item).FText));
       // reinsert the string
+      fRedoList.Lock;
       FInternalBlockSelection.StartLineBytePos := Point(1, TSynEditUndoUnIndent(Item).FPosY1);
       FInternalBlockSelection.SetSelTextPrimitive(smColumn, PChar(TSynEditUndoUnIndent(Item).FText));
+      fRedoList.Unlock;
     end
     else
       if not Item.PerformUndo(self) then
