@@ -2589,14 +2589,18 @@ begin
           if Addr = 0
           then AResult := 'nil';
 
-          if (Length(S) > 0) and (S <> 'pointer')
+          if (Length(S) > 0)
           then begin
-            if S[1] = 't'
+            if (S <> 'pointer')
             then begin
-              S[1] := 'T';
-              if Length(S) > 1 then S[2] := UpperCase(S[2])[1];
-            end;
-            AResult := PascalizePointer(AResult, '^' + S);
+              if S[1] = 't'
+              then begin
+                S[1] := 'T';
+                if Length(S) > 1 then S[2] := UpperCase(S[2])[1];
+              end;
+              AResult := PascalizePointer(AResult, '^' + S);
+            end
+            else AResult := PascalizePointer(AResult);
           end;
         end;
 
