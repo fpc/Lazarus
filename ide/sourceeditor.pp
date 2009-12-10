@@ -1108,7 +1108,8 @@ begin
       SrcEditMenuEvaluateModify.Enabled:=False;
       SrcEditMenuAddWatchAtCursor:=RegisterIDEMenuCommand(AParent,
                                      'Add Watch at Cursor',uemAddWatchAtCursor);
-      SrcEditMenuInspect:=RegisterIDEMenuCommand(AParent, 'Inspect...', uemInspect);
+      SrcEditMenuInspect:=RegisterIDEMenuCommand(AParent,
+                             'Inspect...', uemInspect, nil, nil, nil, 'debugger_inspect');
       SrcEditMenuInspect.Enabled:=False;
       SrcEditMenuRunToCursor:=RegisterIDEMenuCommand(AParent,
                                                 'Run to cursor', uemRunToCursor, nil, nil, nil, 'menu_run_cursor');
