@@ -4790,7 +4790,6 @@ procedure TCustomSynEdit.RedoItem(Item: TSynEditUndoItem);
 var
   Run, StrToDelete: PChar;
   Len, x : integer;
-  TempString: string;
 begin
   if Assigned(Item) then
   try
