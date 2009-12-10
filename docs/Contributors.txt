@@ -101,6 +101,7 @@ Marton Papp
 Martyn Ranyard
 Matthijs Willemstein
 Mattias Gaertner
+Mattias Hansson
 Maxim Ganetsky
 Mazen Neifer
 Michael A. Hess
