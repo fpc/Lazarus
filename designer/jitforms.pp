@@ -1365,12 +1365,7 @@ function TJITComponentList.CreateNewMethod(JITComponent: TComponent;
   const AName: ShortString): TMethod;
 var
   OldCode: Pointer;
-  {$IFNDEF DisableFakeMethods}
   JITMethod: TJITMethod;
-  {$ELSE}
-  CodeTemplate, NewCode: Pointer;
-  CodeSize: integer;
-  {$ENDIF}
 begin
   {$IFDEF VerboseJITForms}
   debugln('TJITComponentList.CreateNewMethod ',JITComponent.Name,':',JITComponent.Name,' Method=',AName);
@@ -1389,19 +1384,9 @@ begin
     Result.Code:=OldCode;
     exit;
   end;
-  {$IFNDEF DisableFakeMethods}
   // create a TJITMethod
   JITMethod:=JITMethods.Add(JITComponent.ClassType,AName);
   Result:=JITMethod.Method;
-  {$ELSE}
-  CodeTemplate:=MethodAddress('DoNothing');
-  CodeSize:=100; // !!! what is the real codesize of DoNothing? !!!
-  GetMem(NewCode,CodeSize);
-  Move(CodeTemplate^,NewCode^,CodeSize);
-  DoAddNewMethod(JITComponent.ClassType,AName,NewCode);
-  Result.Data:=JITComponent;
-  Result.Code:=NewCode;
-  {$ENDIF}
 end;
 
 procedure TJITComponentList.Notification(AComponent: TComponent;
@@ -1700,24 +1685,11 @@ end;
 }
 procedure TJITComponentList.ReaderFindMethod(Reader: TReader;
   const FindMethodName: Ansistring;  var Address: Pointer; var Error: Boolean);
-{$IFDEF DisableFakeMethods}
-var NewMethod: TMethod;
-{$ENDIF}
 begin
   {$IFDEF IDE_DEBUG}
   debugln('[TJITComponentList.ReaderFindMethod] A "'+FindMethodName+'" Address=',DbgS(Address));
   {$ENDIF}
-  {$IFNDEF DisableFakeMethods}
   RaiseGDBException('TJITComponentList.ReaderFindMethod this event should never be called -> this is a bug in TReader, or misuse of TReader.OnFindMethod');
-  {$ELSE}
-  if Address=nil then begin
-    // there is no method in the ancestor class with this name
-    // => add a JIT method with this name to the JITForm
-    NewMethod:=CreateNewMethod(FCurReadJITComponent,FindMethodName);
-    Address:=NewMethod.Code;
-    Error:=false;
-  end;
-  {$ENDIF}
 end;
 
 procedure TJITComponentList.ReaderPropertyNotFound(Reader: TReader;
@@ -1733,14 +1705,11 @@ end;
 procedure TJITComponentList.ReaderSetMethodProperty(Reader: TReader;
   Instance: TPersistent; PropInfo: PPropInfo; const TheMethodName: string;
   var Handled: boolean);
-{$IFNDEF DisableFakeMethods}
 var
   Method: TMethod;
   JITMethod: TJITMethod;
   CurLookupRoot: TPersistent;
-{$ENDIF}
 begin
-  {$IFNDEF DisableFakeMethods}
   //debugln('TJITComponentList.ReaderSetMethodProperty ',DbgSName(Instance),' LookupRoot=',DbgSName(Reader.LookupRoot),' ',PropInfo^.Name,':=',TheMethodName);
   Method.Code:=FCurReadJITComponent.MethodAddress(TheMethodName);
   if Method.Code<>nil then begin
@@ -1768,7 +1737,6 @@ begin
   SetMethodProp(Instance, PropInfo, Method);
   
   Handled:=true;
-  {$ENDIF}
 end;
 
 procedure TJITComponentList.ReaderSetName(Reader: TReader;

@@ -28,10 +28,6 @@
 
 { $DEFINE IDE_DEBUG}
 
-{$IFDEF VER2_0}
-{$DEFINE DisableFakeMethods}
-{$ENDIF}
-
 {$DEFINE VerboseIDEMultiForm}
 
 {off $apptype console}

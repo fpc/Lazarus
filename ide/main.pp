@@ -4848,9 +4848,7 @@ begin
           end;
           if HasI18N then
             Grubber:=TLRTGrubber.Create(Writer);
-          {$IFNDEF DisableFakeMethods}
           Writer.OnWriteMethodProperty:=@FormEditor1.WriteMethodPropertyEvent;
-          {$ENDIF}
           //DebugLn(['TMainIDE.DoSaveUnitComponent AncestorInstance=',dbgsName(AncestorInstance)]);
           Writer.OnFindAncestor:=@FormEditor1.WriterFindAncestor;
           AncestorUnit:=AnUnitInfo.FindAncestorUnit;

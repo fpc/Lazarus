@@ -1381,12 +1381,9 @@ end;
 procedure TCustomFormEditor.WriteMethodPropertyEvent(Writer: TWriter;
   Instance: TPersistent; PropInfo: PPropInfo;
   const MethodValue, DefMethodValue: TMethod; var Handled: boolean);
-{$IFNDEF DisableFakeMethods}
 var
   CurName: String;
-{$ENDIF}
 begin
-  {$IFNDEF DisableFakeMethods}
   Handled:=true;
 
   //DebugLn(['TCustomFormEditor.WriteMethodPropertyEvent ',GlobalDesignHook.GetMethodName(MethodValue,nil)]);
@@ -1405,7 +1402,6 @@ begin
     CurName:='';
   Writer.Driver.WriteMethodName(CurName);
   Writer.Driver.EndProperty;
-  {$ENDIF}
 end;
 
 function TCustomFormEditor.SaveUnitComponentToBinStream(AnUnitInfo: TUnitInfo;
@@ -1436,9 +1432,7 @@ begin
     try
       BinCompStream.Position:=0;
       Writer:=CreateLRSWriter(BinCompStream,DestroyDriver);
-      {$IFNDEF DisableFakeMethods}
       Writer.OnWriteMethodProperty:=@WriteMethodPropertyEvent;
-      {$ENDIF}
       Writer.OnFindAncestor:=@WriterFindAncestor;
       AncestorUnit:=AnUnitInfo.FindAncestorUnit;
       Ancestor:=nil;
