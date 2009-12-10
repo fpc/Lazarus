@@ -10246,7 +10246,7 @@ begin
   CurResult:=DoCallModalFunctionHandler(lihtOnSavingAll);
   if CurResult=mrAbort then exit(mrAbort);
   if CurResult<>mrOk then Result:=mrCancel;
-  if Project1.Modified or Project1.SessionModified then
+  if SomethingOfProjectIsModified then
     CurResult:=DoSaveProject(Flags)
   else
     CurResult:=mrOk;
