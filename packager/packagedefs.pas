@@ -622,6 +622,7 @@ type
     FLastCompilerFileDate: integer;
     FLastCompilerFilename: string;
     FLastCompilerParams: string;
+    FLastStateFileName: string;
     FLazDocPaths: string;
     FLicense: string;
     FLPKSource: TCodeBuffer;
@@ -639,7 +640,7 @@ type
     FRegistered: boolean;
     FRemovedFiles: TFPList; // TFPList of TPkgFile
     FSourceDirectories: TFileReferenceList;
-    FStateFileDate: longint;
+    FLastStateFileDate: longint;
     FStorePathDelim: TPathDelimSwitch;
     FTopologicalLevel: integer;
     FTranslated: string;
@@ -715,7 +716,7 @@ type
     function GetSourceDirs(WithPkgDir, WithoutOutputDir: boolean): string;
     procedure GetInheritedCompilerOptions(var OptionsList: TFPList);
     function GetOutputDirectory(UseOverride: boolean = true): string; // this can change before building, when default dir is readonly
-    function GetStateFilename: string;
+    function GetStateFilename(OutputDir: string = ''): string;
     function GetCompileSourceFilename: string;// as GetSrcFilename without directory
     function GetSrcFilename: string;
     function GetCompilerFilename: string;
@@ -847,7 +848,8 @@ type
     property RemovedFilesCount: integer read GetRemovedCount;
     property RemovedFiles[Index: integer]: TPkgFile read GetRemovedFiles;
     property SourceDirectories: TFileReferenceList read FSourceDirectories;
-    property StateFileDate: longint read FStateFileDate write FStateFileDate;
+    property LastStateFileDate: longint read FLastStateFileDate write FLastStateFileDate;
+    property LastStateFileName: string read FLastStateFileName write FLastStateFileName;
     property StorePathDelim: TPathDelimSwitch read FStorePathDelim write SetStorePathDelim;
     property TopologicalLevel: integer read FTopologicalLevel write FTopologicalLevel;
     property Translated: string read FTranslated write FTranslated;
@@ -3409,10 +3411,11 @@ begin
     Result:='';
 end;
 
-function TLazPackage.GetStateFilename: string;
+function TLazPackage.GetStateFilename(OutputDir: string = ''): string;
 begin
-  Result:=GetOutputDirectory
-          +ChangeFileExt(GetCompileSourceFilename,'.compiled');
+  if OutputDir='' then
+    OutputDir:=GetOutputDirectory;
+  Result:=OutputDir+Name+'.compiled';
 end;
 
 function TLazPackage.GetSrcFilename: string;

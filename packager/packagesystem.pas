@@ -2648,7 +2648,8 @@ begin
     APackage.LastCompilerFilename:=CompilerFilename;
     APackage.LastCompilerFileDate:=CompilerFileDate;
     APackage.LastCompilerParams:=CompilerParams;
-    APackage.StateFileDate:=FileAgeUTF8(StateFile);
+    APackage.LastStateFileName:=StateFile;
+    APackage.LastStateFileDate:=FileAgeUTF8(StateFile);
     APackage.Flags:=APackage.Flags+[lpfStateFileLoaded];
   except
     on E: Exception do begin
@@ -2681,7 +2682,8 @@ begin
   // read the state file
   StateFileAge:=FileAgeUTF8(StateFile);
   if (not (lpfStateFileLoaded in APackage.Flags))
-  or (APackage.StateFileDate<>StateFileAge) then begin
+  or (APackage.LastStateFileDate<>StateFileAge)
+  or (APackage.LastStateFileName<>StateFile) then begin
     APackage.Flags:=APackage.Flags-[lpfStateFileLoaded];
     try
       XMLConfig:=TXMLConfig.Create(StateFile);
@@ -2692,7 +2694,8 @@ begin
       finally
         XMLConfig.Free;
       end;
-      APackage.StateFileDate:=StateFileAge;
+      APackage.LastStateFileName:=StateFile;
+      APackage.LastStateFileDate:=StateFileAge;
     except
       on E: Exception do begin
         if IgnoreErrors then begin
@@ -2743,7 +2746,7 @@ begin
           DebugLn('TPkgManager.CheckCompileNeedDueToDependencies  No state file for ',RequiredPackage.IDAsString);
           exit;
         end;
-        if StateFileAge<RequiredPackage.StateFileDate then begin
+        if StateFileAge<RequiredPackage.LastStateFileDate then begin
           DebugLn('TPkgManager.CheckCompileNeedDueToDependencies  Required ',
             RequiredPackage.IDAsString,' State file is newer than ',
             'State file ',GetOwnerID);
@@ -2805,6 +2808,8 @@ var
   StateFileAge: Integer;
   i: Integer;
   CurFile: TPkgFile;
+  NewOutputDir: String;
+  OutputDir: String;
 begin
   Result:=mrYes;
   {$IFDEF VerbosePkgCompile}
@@ -2813,7 +2818,7 @@ begin
   NeedBuildAllFlag:=false;
   
   if APackage.AutoUpdate=pupManually then exit(mrNo);
-  
+
   if (APackage.LastCompilerFilename<>CompilerFilename)
   or (ExtractCompilerParamsForBuildAll(APackage.LastCompilerParams)
       <>ExtractCompilerParamsForBuildAll(CompilerParams))
@@ -2822,6 +2827,30 @@ begin
       and (FileAgeUTF8(CompilerFilename)<>APackage.LastCompilerFileDate))
   then
     NeedBuildAllFlag:=true;
+
+  if (APackage.CompilerOptions.ParsedOpts.OutputDirectoryOverride='') then
+  begin
+    OutputDir:=APackage.GetOutputDirectory(false);
+    if not DirectoryIsWritableCached(OutputDir) then
+    begin
+      // the package uses the default output directory, but the default is
+      // not writable.
+      // => check the alternative
+      if Assigned(OnGetWritablePkgOutputDirectory) then begin
+        NewOutputDir:=OutputDir;
+        OnGetWritablePkgOutputDirectory(APackage,NewOutputDir);
+        if (NewOutputDir<>OutputDir) and (NewOutputDir<>'') then begin
+          StateFilename:=APackage.GetStateFilename(NewOutputDir);
+          if FileExistsCached(StateFilename) then begin
+            // the alternative output directory contains a state file
+            // this means the user has compiled his own version
+            // => use the alternative output directory
+            APackage.CompilerOptions.ParsedOpts.OutputDirectoryOverride:=NewOutputDir;
+          end;
+        end;
+      end;
+    end;
+  end;
 
   // check state file
   StateFilename:=APackage.GetStateFilename;
