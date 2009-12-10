@@ -14056,10 +14056,12 @@ begin
       DBGTypeDerefer:=nil;
       if not DebugBoss.Evaluate(Expression, DebugEval, DBGType) or (DebugEval = '') then
         DebugEval := '???';
-      if Assigned(DBGType) and ((DBGType.Kind=skPointer) or (DBGType.Kind=skClass)) then begin
-        if DBGType.Value.AsPointer<>nil then begin
-          if DebugBoss.Evaluate(Expression+'^', DebugEvalDerefer, DBGTypeDerefer) then
-              DebugEval:=DebugEval+' = '+DebugEvalDerefer;
+      if Assigned(DBGType) and (DBGType.Kind=skClass) then
+      begin
+        if DBGType.Value.AsPointer <> nil then
+        begin
+          if DebugBoss.Evaluate(Expression + '^', DebugEvalDerefer, DBGTypeDerefer) then
+            DebugEval := DebugEval + ' = ' + DebugEvalDerefer;
         end;
       end;
       FreeAndNil(DBGType);
