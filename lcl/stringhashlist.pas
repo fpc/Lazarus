@@ -243,16 +243,18 @@ begin
   begin
     Result:= -1;
     First:= Temp -1;
-    if First > 0 then
-    while CompareValue(Value, FList[First]^.HashValue) = 0 do
+    //Find first matching hash index
+    while (First >= 0) and (CompareValue(Value, FList[First]^.HashValue) = 0) do
       dec(First);
-    inc(First);
+    if (First < 0) or ((CompareValue(Value, FList[First]^.HashValue) <> 0)) then
+      inc(First);
+    //Find the last matching hash index
     Last:= Temp +1;
-    if Last < Count -1 then
-    while CompareValue(Value, FList[Last]^.HashValue) = 0 do
+    while (Last <= (FCount - 1)) and (CompareValue(Value, FList[Last]^.HashValue) = 0) do
       inc(Last);
-    dec(Last);
-    for I:= First to Last do
+    if (Last > (FCount - 1)) or (CompareValue(Value, FList[Last]^.HashValue) <> 0) then
+      dec(Last);
+    for I := First to Last do
       if CompareString(S, FList[I]^.Key) then
       begin
         Result:= I;
