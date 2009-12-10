@@ -641,7 +641,7 @@ begin
     SetLength(FSourceMaps, idx+1);
     FSourceMaps[idx].Map := nil;
     FSourceMaps[idx].Source := ASource;
-    idx := FSourceIndex.AddObject(ASource, TObject(PtrInt(idx)));
+    n := FSourceIndex.AddObject(ASource, TObject(PtrInt(idx)));
   end
   else idx := PtrInt(FSourceIndex.Objects[n]);
 
