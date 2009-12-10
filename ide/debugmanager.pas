@@ -2014,12 +2014,17 @@ end;
 procedure TDebugManager.SaveProjectSpecificInfo(XMLConfig: TXMLConfig;
   Flags: TProjectWriteFlags);
 begin
-  if not (pwfDoNotSaveSessionInfo in Flags) then begin
+  if not (pwfDoNotSaveSessionInfo in Flags) then 
+  begin
     FBreakPointGroups.SaveToXMLConfig(XMLConfig,
                                       'Debugging/'+XMLBreakPointGroupsNode+'/');
     FBreakPoints.SaveToXMLConfig(XMLConfig,'Debugging/'+XMLBreakPointsNode+'/',
                                  @Project1.ShortenFilename);
     FWatches.SaveToXMLConfig(XMLConfig,'Debugging/'+XMLWatchesNode+'/');
+  end;
+  if not (pwfDoNotSaveProjectInfo in Flags) then
+  begin
+    // exceptions are not part of the project info (#0015256)
     FExceptions.SaveToXMLConfig(XMLConfig,'Debugging/'+XMLExceptionsNode+'/');
   end;
 end;
