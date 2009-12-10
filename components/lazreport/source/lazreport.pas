@@ -1,5 +1,5 @@
-{ This file was automatically created by Lazarus. do not edit!
-  This source is only used to compile and install the package.
+{ Este archivo ha sido creado automáticamente por Lazarus. ¡No lo edite!
+  Este fuente se utiliza sólo para compilar e instalar el paquete.
  }
 
 unit lazreport; 
@@ -11,7 +11,7 @@ uses
   LR_PGrid, LR_View, lr_expres, lr_funct_editor_unit, lr_funct_editor_unit1, 
   LR_Prntr, LR_Edit, LR_Pars, LR_fmted, LR_Const, LR_pgopt, LR_Dopt, LR_GEdit, 
   LR_Utils, LR_GrpEd, lr_propedit, LR_progr, LR_IFlds, SysUtilsAdds, LR_RRect, 
-  LR_Shape, LR_E_TXT, LR_E_HTM, LR_E_CSV, LazarusPackageIntf;
+  LR_Shape, LR_E_TXT, LR_E_HTM, LR_E_CSV, lr_e_gen, LazarusPackageIntf;
 
 implementation
 

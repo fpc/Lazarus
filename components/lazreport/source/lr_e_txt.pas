@@ -28,12 +28,21 @@ type
     Constructor Create(aOwner : TComponent); override;
   end;
 
+  { TfrTextExportFilter }
+
   TfrTextExportFilter = class(TfrExportFilter)
+  private
+    FUsedFont: Integer;
+  protected
+    procedure GetUsedFont; virtual;
+    procedure Setup; override;
   public
     constructor Create(AStream: TStream); override;
     procedure OnEndPage; override;
     procedure OnBeginPage; override;
     procedure OnText(X, Y: Integer; const Text: String; View: TfrView); override;
+
+    property UsedFont: integer read FUsedFont write FUsedFont;
   end;
 
 
@@ -42,17 +51,28 @@ implementation
 uses LR_Utils, LR_Const;
 
 
-var
-  UsedFont: Integer = 16;
-
-constructor TfrTextExportFilter.Create(AStream: TStream);
+procedure TfrTextExportFilter.GetUsedFont;
 var
   s: String;
   n: Integer;
 begin
+  s := InputBox(sFilter, sFilterParam, '10');
+  Val(s, FUsedFont, n);
+  if n<>0 then
+    FUsedFont := 10;
+end;
+
+procedure TfrTextExportFilter.Setup;
+begin
+  inherited Setup;
+  if FUsedFont<=0 then
+    GetUsedFont;
+end;
+
+constructor TfrTextExportFilter.Create(AStream: TStream);
+begin
   inherited;
-  s := InputBox(sFilter, sFilterParam, '16');
-  Val(s, UsedFont, n);
+  FUsedFont := 10;
 end;
 
 procedure TfrTextExportFilter.OnEndPage;

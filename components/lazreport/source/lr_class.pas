@@ -18,9 +18,7 @@ uses
   SysUtils, Classes, Controls, FileUtil,
   Forms, ComCtrls, Dialogs, Menus,
   Variants, DB,Graphics,Printers,osPrinters,XMLConf,
-  
-  LCLType,LCLIntf,TypInfo,LCLProc,
-  SysUtilsAdds,
+  LCLType,LCLIntf,TypInfo,LCLProc, SysUtilsAdds,
   LR_View, LR_Pars, LR_Intrp, LR_DSet, LR_DBSet, LR_DBRel, LR_Const;
 
 const
@@ -29,13 +27,17 @@ const
   flWordWrap               = 2;
   flWordBreak              = 4;
   flAutoSize               = 8;
-  flHideDuplicates         = 16;
+  flHideDuplicates         = $10;
+  flStartRecord            = $20;
+  flEndRecord              = $40;
+
   flBandNewPageAfter       = 2;
   flBandPrintifSubsetEmpty = 4;
   flBandPageBreak          = 8;
   flBandOnFirstPage        = $10;
   flBandOnLastPage         = $20;
   flBandRepeatHeader       = $40;
+
   flPictCenter             = 2;
   flPictRatio              = 4;
   flWantHook               = $8000;
@@ -66,6 +68,7 @@ type
                  btOverlay, btColumnHeader, btColumnFooter,
                  btGroupHeader, btGroupFooter,
                  btCrossHeader, btCrossData, btCrossFooter, btNone);
+  TfrBandTypes = set of TfrBandType;
   TfrDataSetPosition = (psLocal, psGlobal);
   TfrValueType = (vtNotAssigned, vtDBField, vtOther, vtFRVar);
   TfrPageMode = (pmNormal, pmBuildList);
@@ -796,11 +799,20 @@ type
     property Count: Integer read GetCount;
   end;
 
+  { TfrExportFilter }
+
+  TExportFilterSetup = procedure(Sender: TfrExportFilter) of object;
+
   TfrExportFilter = class(TObject)
+  private
+    FOnSetup: TExportFilterSetup;
+    FBandTypes: TfrBandTypes;
+    FUseProgressBar: boolean;
   protected
     Stream: TStream;
     Lines: TFpList;
     procedure ClearLines;
+    procedure Setup; virtual;
   public
     constructor Create(AStream: TStream); virtual;
     destructor Destroy; override;
@@ -810,6 +822,10 @@ type
     procedure OnEndPage; virtual;
     procedure OnData(x, y: Integer; View: TfrView); virtual;
     procedure OnText(x, y: Integer; const text: String; View: TfrView); virtual;
+
+    property BandTypes: TfrBandTypes read FBandTypes write FBandTypes;
+    property UseProgressbar: boolean read FUseProgressBar write FUseProgressBar;
+    property OnSetup: TExportFilterSetup read FOnSetup write FOnSetup;
   end;
 
   TfrExportFilterClass = class of TfrExportFilter;
@@ -821,6 +837,7 @@ type
   TfrReport = class(TComponent)
   private
     FDataType: TfrDataType;
+    FOnExportFilterSetup: TExportFilterSetup;
     FPages: TfrPages;
     FEMFPages: TfrEMFPages;
     FReportAutor: string;
@@ -985,6 +1002,7 @@ type
     property OnBeginColumn: TBeginColumnEvent read FOnBeginColumn write FOnBeginColumn;
     property OnPrintColumn: TPrintColumnEvent read FOnPrintColumn write FOnPrintColumn;
     property OnManualBuild: TManualBuildEvent read FOnManualBuild write FOnManualBuild;
+    property OnExportFilterSetup: TExportFilterSetup read FOnExportFilterSetup write FOnExportFilterSetup;
   end;
 
   TfrCompositeReport = class(TfrReport)
@@ -1093,6 +1111,7 @@ type
     Text: String[255];
     FontName: String[32];
     FontSize, FontStyle, FontColor, FontCharset, FillColor: Integer;
+    Typ: Byte;
   end;
 
   TfrAddInObjectInfo = record
@@ -4682,6 +4701,11 @@ begin
       DoSubReports;
       break;
     end;
+
+    t.Flags:=t.Flags and not (flStartRecord or flEndRecord);
+    if i=0 then               t.Flags := t.Flags or flStartRecord;
+    if i=Objects.Count-1 then t.Flags := t.Flags or flEndRecord;
+
     DrawObject(t);
     if MasterReport.Terminated then break;
   end;
@@ -8280,11 +8304,18 @@ var
 begin
   ExportStream := TFileStream.Create(UTF8ToSys(aFileName), fmCreate);
   FCurrentFilter := FilterClass.Create(ExportStream);
-  FCurrentFilter.OnBeginDoc;
 
   CurReport := Self;
   MasterReport := Self;
+
+  FCurrentFilter.OnSetup:=CurReport.OnExportFilterSetup;
+
+  FCurrentFilter.Setup;
+  FCurrentFilter.OnBeginDoc;
+
   SavedAllPages := EMFPages.Count;
+
+  if FCurrentFilter.UseProgressbar then
   with frProgressForm do
   begin
     s := sReportPreparing;
@@ -8296,7 +8327,8 @@ begin
     Label1.Caption := FirstCaption + '  1';
     OnBeforeModal := @ExportBeforeModal;
     Show_Modal(Self);
-  end;
+  end else
+    ExportBeforeModal(nil);
 
   FreeAndNil(FCurrentFilter);
   ExportStream.Free;
@@ -8925,6 +8957,7 @@ begin
   inherited Create;
   Stream := AStream;
   Lines := TFpList.Create;
+  FBandTypes := [btMasterHeader, btMasterData];
 end;
 
 destructor TfrExportFilter.Destroy;
@@ -8950,6 +8983,12 @@ begin
     end;
   end;
   Lines.Clear;
+end;
+
+procedure TfrExportFilter.Setup;
+begin
+  if assigned(FOnSetup) then
+    FOnSetup(Self);
 end;
 
 procedure TfrExportFilter.OnBeginDoc;

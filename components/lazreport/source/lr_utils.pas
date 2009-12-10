@@ -59,6 +59,7 @@ function UTF8Char(S:string; index:Integer; Desc:string): TUTF8Char;
 function UTF8Range(S:string; index,count:Integer; Desc:String):string;
 function UTF8Index(S:string; index:integer; desc:string): Integer;
 function UTF8CharIn(ch:TUTF8Char; const arrstr:array of string): boolean;
+function UTF8QuotedStr(s:string; Quote: TUTF8Char; desc:string=''): string;
 
 implementation
 
@@ -627,5 +628,31 @@ begin
       break;
     end;
 end;
+
+// converted from FPC AnsiQuotedStr()
+function UTF8QuotedStr(s: string; Quote: TUTF8Char; desc:string=''): string;
+var
+    i, j, count: integer;
+begin
+  result := '' + Quote;
+  if desc='' then
+    count := UTF8Desc(s, desc)
+  else
+    count := length(s);
+
+  i := 0;
+  j := 0;
+  while i < count do begin
+    i := i + 1;
+    if UTF8Char(s,i,desc) = Quote then begin
+      result := result + UTF8Range(S, 1 + j, i - j, desc) + Quote;
+      j := i;
+    end;
+  end;
+
+  if i <> j then
+    result := result + UTF8Range(S, 1 + j, i - j, desc);
+  result := result + Quote;
+end ;
 
 end.
