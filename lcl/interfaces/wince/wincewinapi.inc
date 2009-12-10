@@ -317,11 +317,17 @@ end;
   Params:  FormatID - a registered format identifier (0 is invalid)
   Returns: the corresponding mime type as string
  ------------------------------------------------------------------------------}
-{function TWinCEWidgetSet.ClipboardFormatToMimeType(FormatID: TClipboardFormat
-  ): string;
+function TWinCEWidgetSet.ClipboardFormatToMimeType(FormatID: TClipboardFormat): string;
+var
+  FormatLength: Integer;
+  WideStr: widestring;
 begin
-  Result:=inherited ClipboardFormatToMimeType(FormatID);
-end; }
+  SetLength(WideStr, 1000);
+  FormatLength:= Windows.GetClipboardFormatNameW(FormatID, PWideChar(WideStr), 1000);
+  SetLength(WideStr, FormatLength);
+  Result := UTF16ToUTF8(WideStr);
+end;
+
 {------------------------------------------------------------------------------
   Method:  ClipboardGetData
   Params:  ClipboardType - clipboard type
@@ -330,11 +336,97 @@ end; }
                            stream
   Returns: true on success
  ------------------------------------------------------------------------------}
-{function TWinCEWidgetSet.ClipboardGetData(ClipboardType: TClipboardType;
+function TWinCEWidgetSet.ClipboardGetData(ClipboardType: TClipboardType;
   FormatID: TClipboardFormat; Stream: TStream): boolean;
+var
+  DataHandle: HGLOBAL;
+  Data: pointer;
+  Size: integer;
+  Bitmap: TBitmap;
+  BufferStream: TMemoryStream;
+  BufferWideString: widestring;
+  BufferString: ansistring;
+
+  function ReadClipboardToStream(DestStream: TStream): Boolean;
+  begin
+    Result := false;
+
+    DataHandle := Windows.GetClipboardData(FormatID);
+    if DataHandle<>HWND(0) then
+    begin
+      Size := Windows.GlobalSize(DataHandle);
+      if Size>0 then
+      begin
+        Data := Windows.GlobalLock(DataHandle);
+        try
+          DestStream.Write(Data^, Size);
+        finally
+          Windows.GlobalUnlock(DataHandle);
+        end;
+        Result := true;
+      end;
+    end;
+  end;
+
 begin
-  Result:=inherited ClipboardGetData(ClipboardType, FormatID, Stream);
-end;   }
+//  Assert(False, 'TWin32WidgetSet.ClipboardGetData - Start');
+  Result := false;
+  if FormatID=PredefinedClipboardFormat(pcfDelphiBitmap)
+    then FormatID := CF_BITMAP;
+  if (FormatID=0) or (Stream=nil) or
+    not Windows.IsClipboardFormatAvailable(FormatID) then exit;
+
+  if Windows.OpenClipboard(Windows.HWND(nil)) then
+    try
+      case FormatID of
+      Windows.CF_BITMAP:
+        begin
+          Bitmap:= TBitmap.Create;
+          Bitmap.TransparentColor := clNone;
+          DataHandle := Windows.GetClipboardData(FormatID);
+          Bitmap.SetHandles(DataHandle, 0);
+          Bitmap.SaveToStream(Stream);
+          Bitmap.Free;
+          Result := true;
+        end;
+      { In the case of unicode text, it's necessary to
+        convert it from UTF-16 to UTF-8 }
+      Windows.CF_UNICODETEXT, Windows.CF_TEXT:
+        begin
+          BufferStream := TMemoryStream.Create;
+          try
+            Result := ReadClipboardToStream(BufferStream);
+
+            if Size>0 then
+            begin
+              BufferStream.Position := 0;
+              if FormatID=Windows.CF_UNICODETEXT then
+              begin;
+                SetLength(BufferWideString, Size div 2);
+                BufferStream.Read(BufferWideString[1], Size);
+                BufferString := UTF16ToUTF8(BufferWideString);
+              end
+              else
+              begin
+                SetLength(BufferString, Size);
+                BufferStream.Read(BufferString[1], Size);
+                BufferString := AnsiToUtf8(BufferString);
+              end;
+              Stream.Write(BufferString[1], Length(BufferString));
+            end;
+          finally
+            BufferStream.Free;
+          end;
+        end
+      else
+        Result := ReadClipboardToStream(Stream)
+      end;
+    finally
+      Windows.CloseClipboard;
+    end;
+//  Assert(False, 'TWin32WidgetSet.ClipboardGetData - Exit');
+end;
+
 {------------------------------------------------------------------------------
   Method:  ClipboardGetFormats
   Params:  ClipboardType - the type of clipboard operation (GTK only; ignored here)
@@ -343,11 +435,42 @@ end;   }
                            (you must free it yourself)
   Returns: true on success
  ------------------------------------------------------------------------------}
-{function TWinCEWidgetSet.ClipboardGetFormats(ClipboardType: TClipboardType;
+function TWinCEWidgetSet.ClipboardGetFormats(ClipboardType: TClipboardType;
   var Count: integer; var List: PClipboardFormat): boolean;
+var
+  FormatID: UINT;
+  c: integer;
 begin
-  Result:=inherited ClipboardGetFormats(ClipboardType, Count, List);
-end;   }
+  Result := false;
+  List := nil;
+//  {$IFDEF VerboseWin32Clipbrd}
+//  debugln('TWin32WidgetSet.ClipboardGetData ');
+//  {$ENDIF}
+  if not Windows.OpenClipboard(HWND(AppHandle)) then begin
+//    {$IFDEF VerboseWin32Clipbrd}
+//    debugln('TWin32WidgetSet.ClipboardGetData OpenClipboard failed');
+//    {$ENDIF}
+    exit;
+  end;
+  Count := CountClipboardFormats;
+  GetMem(List, Count * SizeOf(TClipboardFormat));
+  try
+    c := 0;
+    FormatID := 0;
+    repeat
+      FormatID := EnumClipboardFormats(FormatID);
+      if (FormatID<>0) then begin
+        List[c] := FormatID;
+        inc(c);
+      end;
+    until (c>=Count) or (FormatID=0);
+    Count := c;
+  finally
+    Windows.CloseClipboard;
+  end;
+
+  Result := true;
+end;
 
 {------------------------------------------------------------------------------
   Method:  ClipboardGetOwnerShip
@@ -367,13 +490,170 @@ end;   }
   if someone else requests the ownership, the OnRequestProc will be executed
   with the invalid FormatID 0 to notify the old owner of the lost of ownership.
  ------------------------------------------------------------------------------}
-{function TWinCEWidgetSet.ClipboardGetOwnerShip(ClipboardType: TClipboardType;
+function TWinCEWidgetSet.ClipboardGetOwnerShip(ClipboardType: TClipboardType;
   OnRequestProc: TClipboardRequestEvent; FormatCount: integer;
   Formats: PClipboardFormat): boolean;
+
+  procedure WriteStreamToClipBoard(FormatID: integer; SourceStream: TStream);
+  var
+    DataHandle : THandle;//Windows.HGLOBAL;
+    DataPtr: pointer;
+  begin
+    DataHandle := Windows.GlobalAlloc(Windows.GMEM_MOVEABLE, SourceStream.Size);
+    if (DataHandle=HWND(0)) then begin
+      debugln('TWin32WidgetSet.ClipboardGetOwnerShip DataHandle=',dbgs(DataHandle),' DataSize=',dbgs(SourceStream.Size));
+      Result := false;
+      exit;
+    end;
+    DataPtr := GlobalLock(DataHandle);
+    try
+      SourceStream.Read(DataPtr^, SourceStream.Size);
+    finally
+      Windows.GlobalUnlock(DataHandle);
+    end;
+    Windows.SetClipboardData(FormatID, DataHandle);
+  end;
+
+  procedure PutOnClipBoard(FormatID: integer);
+  var
+    DataStream, BufferStream: TStream;
+    Bitmap: TBitmap;
+    BufferWideString: widestring;
+    BufferString: ansistring;
+    ScreenDC, MemDC: HDC;
+    OldBitmap, NewBitmap, Mask: HBitmap;
+  begin
+    DataStream := TMemoryStream.Create;
+    BufferStream := TMemoryStream.Create;
+    try
+      OnClipBoardRequest(FormatID, DataStream);
+      DataStream.Position:=0;
+      case FormatID of
+      CF_BITMAP:
+        begin
+          Bitmap:= TBitmap.Create;
+          try
+            Bitmap.LoadFromStream(DataStream);
+            ScreenDC := GetDC(0);
+            try
+              MemDC := Windows.CreateCompatibleDC(ScreenDC);
+              NewBitmap := Windows.CreateCompatibleBitmap(ScreenDC, Bitmap.Width, Bitmap.Height);
+              OldBitmap := Windows.SelectObject(MemDC, NewBitmap);
+              if Bitmap.Masked then
+                Mask := Bitmap.MaskHandle
+              else
+                Mask := 0;
+              StretchMaskBlt(MemDC, 0, 0, Bitmap.Width, Bitmap.Height,
+                Bitmap.Canvas.Handle, 0, 0, Bitmap.Width, Bitmap.Height,
+                Mask, 0, 0, SRCCOPY);
+              Windows.SelectObject(MemDC, OldBitmap);
+              Windows.DeleteDC(MemDC);
+              Windows.SetClipboardData(FormatID, NewBitmap);
+              // GDI objects count does not vary if we delete it or not
+              // DeleteObject(NewBitmap);
+            finally
+              ReleaseDC(0, ScreenDC);
+            end;
+          finally
+            Bitmap.Free;
+          end;
+        end;
+      Windows.CF_UNICODETEXT, Windows.CF_TEXT:
+        // CF_UNICODETEXT is used by UnicodeEnabledOS, CF_TEXT by others
+        // we need to convert it from UTF8 to UTF16 or Ansi
+        begin
+          if DataStream.Size>0 then begin
+            SetLength(BufferString, DataStream.Size);
+            DataStream.Read(BufferString[1], DataStream.Size);
+            if FormatID=Windows.CF_UNICODETEXT then
+            begin
+              BufferWideString := UTF8ToUTF16(BufferString);
+              if BufferWideString<>'' then  // bufferstring may contain invalid UTF8
+                BufferStream.Write(BufferWideString[1], Length(BufferWideString) * 2);
+            end
+            else
+            begin
+              BufferString := Utf8ToAnsi(BufferString);
+              if BufferString<>'' then  // original string may contain invalid UTF8
+                BufferStream.Write(BufferString[1], Length(BufferString));
+            end;
+            BufferStream.Position := 0;
+          end;
+          WriteStreamToClipBoard(FormatID, BufferStream);
+        end
+      else
+        begin
+          WriteStreamToClipBoard(FormatID, DataStream);
+        end;
+      end;
+    finally
+      DataStream.Free;
+      BufferStream.Free;
+    end;
+  end;
+
+var
+  I: Integer;
 begin
-  Result:=inherited ClipboardGetOwnerShip(ClipboardType, OnRequestProc,
-    FormatCount, Formats);
-end;   }
+  Result := false;
+
+//  {$IFDEF VerboseWin32Clipbrd}
+//  debugln('TWin32WidgetSet.ClipboardGetOwnerShip START FormatCount=',dbgs(FormatCount),' OnRequestProc=',dbgs(OnRequestProc=nil));
+//  {$ENDIF}
+
+  if ClipboardType<>ctClipBoard then begin
+  { the win32 interface does not support this kind of clipboard,
+    so the application can have the ownership at any time.
+    The TClipboard in clipbrd.pp has an internal cache system, so that an
+    application can use all types of clipboards even if the underlying
+    platform does not support it.
+    Of course this will only be a local clipboard, invisible to other
+    applications. }
+//    {$IFDEF VerboseWin32Clipbrd}
+//    debugln('TWin32WidgetSet.ClipboardGetOwnerShip unsupported ClipboardType under win32');
+//    {$ENDIF}
+    Result := true;
+    exit;
+  end;
+
+  if (FormatCount=0) or (OnRequestProc=nil) then begin
+  { The LCL indicates it doesn't have the clipboard data anymore
+    and the interface can't use the OnRequestProc anymore.}
+//    {$IFDEF VerboseWin32Clipbrd}
+//    debugln('TWin32WidgetSet.ClipboardGetOwnerShip clearing OnClipBoardRequest');
+//    {$ENDIF}
+    OnClipBoardRequest := nil;
+    Result := true;
+  end else begin
+  { clear OnClipBoardRequest to prevent destroying the LCL clipboard,
+    when emptying the clipboard}
+    OnClipBoardRequest := nil;
+    if not Windows.OpenClipboard(FAppHandle) then begin
+//      {$IFDEF VerboseWin32Clipbrd}
+//      debugln('TWin32WidgetSet.ClipboardGetOwnerShip A OpenClipboard failed');
+//      {$ENDIF}
+      exit;
+    end;
+    try
+      if not Windows.EmptyClipboard then begin
+//        debugln('TWin32WidgetSet.ClipboardGetOwnerShip A EmptyClipboard failed');
+        exit;
+      end;
+      Result := true;
+      OnClipBoardRequest := OnRequestProc;
+      for I := 0 To FormatCount-1 do begin
+//        {$IFDEF VerboseWin32Clipbrd}
+//        debugln('TWin32WidgetSet.ClipboardGetOwnerShip A Formats['+dbgs(i)+']=',dbgs(Formats[i]));
+//        {$ENDIF}
+        PutOnClipBoard(Formats[i]);
+      end;
+    finally
+//      if not Windows.CloseClipboard then begin
+//        debugln('TWin32WidgetSet.ClipboardGetOwnerShip A CloseClipboard failed');
+//      end;
+    end;
+  end;
+end;
 
 {------------------------------------------------------------------------------
   Method:  ClipboardRegisterFormat
@@ -381,11 +661,20 @@ end;   }
                        type to register
   Returns: the registered Format identifier (TClipboardFormat)
  ------------------------------------------------------------------------------}
-{function TWinCEWidgetSet.ClipboardRegisterFormat(const AMimeType: string
-  ): TClipboardFormat;
+function TWinCEWidgetSet.ClipboardRegisterFormat(const AMimeType: string): TClipboardFormat;
+var
+  WideStr: widestring;
 begin
-  Result:=inherited ClipboardRegisterFormat(AMimeType);
-end;}
+  if AMimeType=PredefinedClipboardMimeTypes[pcfText] then
+    Result := Windows.CF_UNICODETEXT
+  else if (AMimeType=PredefinedClipboardMimeTypes[pcfBitmap]) then
+    Result := Windows.CF_BITMAP
+  else
+  begin
+    WideStr := UTF8ToUTF16(AMimeType);
+    Result := Windows.RegisterClipboardFormatW(PWideChar(WideStr));
+  end;
+end;
 
 {------------------------------------------------------------------------------
   Function: CombineRgn

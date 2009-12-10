@@ -283,7 +283,7 @@ var
   MouseDownFocusStatus: TMouseDownFocusStatus = mfNone;
   ComboBoxHandleSizeWindow: HWND = 0;//just dont know the use yet
   IgnoreNextCharWindow: HWND = 0;  // ignore next WM_(SYS)CHAR message
-
+  OnClipBoardRequest: TClipboardRequestEvent = nil;
 
 {$I wincelistsl.inc}
 {$I wincecallback.inc}

@@ -1319,17 +1319,17 @@ begin
         Windows.DestroyWindow(WindowInfo^.Overlay);
       LMessage.Msg := LM_DESTROY;
     end;
-(*    WM_DESTROYCLIPBOARD:
+    WM_DESTROYCLIPBOARD:
     begin
       if assigned(OnClipBoardRequest) then begin
-        {$IFDEF VerboseWin32Clipbrd}
-        debugln('WM_DESTROYCLIPBOARD');
-        {$ENDIF}
+//        {$IFDEF VerboseWin32Clipbrd}
+//        debugln('WM_DESTROYCLIPBOARD');
+//        {$ENDIF}
         OnClipBoardRequest(0, nil);
         OnClipBoardRequest := nil;
         LMessage.Result := 0;
       end;
-    end;*)
+    end;
     WM_DRAWITEM:
     begin
       // TODO: this could crash for a MenuItem.
