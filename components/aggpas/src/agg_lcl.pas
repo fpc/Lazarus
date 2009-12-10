@@ -12,6 +12,9 @@ uses
  Windows ,
  {$ENDIF}
  Classes ,Graphics, LCLProc, types, IntfGraphics, GraphType, FPimage, FPCanvas,
+ {$IFDEF LCLGtk2}
+ pango, LCLType, GTKProc, GtkDef, gtk2,
+ {$ENDIF}
  agg_arc, GraphMath, agg_fpimage, agg_basics;
 
 type
@@ -66,6 +69,9 @@ type
     constructor Create; override;
     function AggHeightToSize(const h: double): double; override;
     function SizeToAggHeight(const s: double): double; override;
+    {$IFDEF LCLGtk2}
+    procedure LoadViaPango;
+    {$ENDIF}
     property Color: TColor read FColor write SetColor;
     property PixelsPerInch: Integer read FPixelsPerInch write FPixelsPerInch;
   end;
@@ -800,6 +806,26 @@ function TAggLCLFont.SizeToAggHeight(const s: double): double;
 begin
   Result:=s*FPixelsPerInch / 72;
 end;
+
+{$IFDEF LCLGtk2}
+procedure TAggLCLFont.LoadViaPango;
+var
+  FullString: String;
+  PangoDesc: PPangoFontDescription;
+  PangoLayout: PPangoLayout;
+begin
+  FullString := Name+' '+IntToStr(Size);
+  PangoDesc := pango_font_description_from_string(PChar(FullString));
+  if Bold then
+    pango_font_description_set_weight(PangoDesc, FW_BOLD);
+  if Italic then
+    pango_font_description_set_style(PangoDesc, PANGO_STYLE_ITALIC);
+  pango_font_description_set_size(PangoDesc, Size*PANGO_SCALE);
+  PangoLayout:=gtk_widget_create_pango_layout(GetStyleWidget(lgsdefault), nil);
+  pango_layout_set_font_description(PangoLayout,PangoDesc);
+
+end;
+{$ENDIF}
 
 { TAggLCLImage }
 

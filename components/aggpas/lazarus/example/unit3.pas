@@ -6,7 +6,7 @@ interface
 
 uses
   Classes, SysUtils, LCLProc, FileUtil, LResources, Forms, Controls, Graphics,
-  Dialogs, FPimage, agg_fpimage, Agg_LCL, pango, LCLType, GTKProc, GtkDef, gtk2;
+  Dialogs, FPimage, agg_fpimage, Agg_LCL;
 
 type
 
@@ -20,7 +20,6 @@ type
   public
     AggLCLCanvas: TAggLCLCanvas;
     Bitmap1: TBitmap;
-    procedure CreatePangoFont(AggFont: TAggLCLFont);
   end;
 
 var
@@ -32,8 +31,6 @@ implementation
 
 procedure TForm1.FormCreate(Sender: TObject);
 var
-  HasFont: Boolean;
-  FontFilename: String;
   s: String;
   TxtW: integer;
   TxtH: integer;
@@ -46,17 +43,16 @@ begin
     Image.PixelFormat:=afpimRGBA32;
     Image.SetSize(500,500);
   end;
-  HasFont:=true;
 
   // paint to agg canvas
   with AggLCLCanvas do begin
-    if HasFont then begin
+    {if HasFont then begin
       FontFilename:=SetDirSeparators('../../verdana.ttf');
       if not FileExists(FontFilename) then raise Exception.Create('file not found: '+FontFilename+' CurDir='+GetCurrentDirUTF8);
-      Font.LoadFromFile(FontFilename);
-      Font.Size:=10;
-      Font.Color:=clBlack;
-    end;
+      Font.LoadFromFile(FontFilename);}
+    Font.Size:=10;
+    Font.Color:=clBlack;
+    Font.LoadViaPango;
 
     // solid white background
     Brush.Color:=clWhite;
@@ -72,7 +68,6 @@ begin
     TxtY:=40;
     FillRect(TxtX,TxtY,TxtX+TxtW,TxtY+TxtH);
     TextOut(TxtX,TxtY,s);
-
   end;
 
   // convert to LCL native pixel format
@@ -105,24 +100,6 @@ end;
 procedure TForm1.FormPaint(Sender: TObject);
 begin
   Canvas.Draw(0,0,Bitmap1);
-end;
-
-procedure TForm1.CreatePangoFont(AggFont: TAggLCLFont);
-var
-  FullString: String;
-  PangoDesc: PPangoFontDescription;
-  PangoLayout: PPangoLayout;
-begin
-  FullString := AggFont.Name+' '+IntToStr(AggFont.Size);
-  PangoDesc := pango_font_description_from_string(PChar(FullString));
-  if AggFont.Bold then
-    pango_font_description_set_weight(PangoDesc, FW_BOLD);
-  if AggFont.Italic then
-    pango_font_description_set_style(PangoDesc, PANGO_STYLE_ITALIC);
-  pango_font_description_set_size(PangoDesc, AggFont.Size*PANGO_SCALE);
-  PangoLayout:=gtk_widget_create_pango_layout(GetStyleWidget(lgsdefault), nil);
-  pango_layout_set_font_description(PangoLayout,PangoDesc);
-
 end;
 
 initialization
