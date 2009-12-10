@@ -648,9 +648,7 @@ begin
         PutOnClipBoard(Formats[i]);
       end;
     finally
-//      if not Windows.CloseClipboard then begin
-//        debugln('TWin32WidgetSet.ClipboardGetOwnerShip A CloseClipboard failed');
-//      end;
+      Windows.CloseClipboard();
     end;
   end;
 end;
