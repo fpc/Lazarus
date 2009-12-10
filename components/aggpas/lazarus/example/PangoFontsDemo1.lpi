@@ -51,6 +51,7 @@
     <Version Value="8"/>
     <SearchPaths>
       <IncludeFiles Value="$(ProjOutDir)/"/>
+      <LCLWidgetType Value="gtk2"/>
     </SearchPaths>
     <Linking>
       <Options>
