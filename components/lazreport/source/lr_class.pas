@@ -2449,7 +2449,7 @@ begin
           CanBreak := True;
       end;
       if CanBreak then
-        Result := Result + Chr(UTF8CharToByteIndex(pchar(s),length(s),i));
+        Result := Result + Chr(i);
       Inc(i);
     until i > Len - 2;
   end;
@@ -2463,6 +2463,7 @@ var
   size, size1, maxwidth: Integer;
   b: TWordBreaks;
   WCanvas: TCanvas;
+  desc: string;
 
   procedure OutLine(const str: String);
   var
@@ -2481,9 +2482,11 @@ var
 
   procedure WrapLine(const s: String);
   var
-    i, cur, beg, last: Integer;
+    i, cur, beg, last, len: Integer;
     WasBreak, CRLF: Boolean;
+    ch: TUTF8char;
   begin
+
     CRLF := False;
     for i := 1 to Length(s) do
     begin
@@ -2493,108 +2496,107 @@ var
         break;
       end;
     end;
+
     last := 1; beg := 1;
-    {$IFDEF DebugLR}
-    debugLn('        WrapLine: init "',dbgstr(s),'" wcanvas.txtw=',dbgs(WCanvas.TextWidth(s)),
-      ' maxwidth=',dbgs(maxwidth),' crlf=',dbgs(crlf));
-    {$ENDIF}
     if not CRLF and ((Length(s) <= 1) or (WCanvas.TextWidth(s) <= maxwidth)) then
     begin
-      {$IFDEF DebugLR}
-      debugLn('        WrapLine: fast crlf=',dbgs(crlf),' wcanvas.txtw=',dbgs(Wcanvas.TextWidth(s)));
-      {$ENDIF}
       OutLine(s + #1)
     end else
     begin
+
       cur := 1;
-      while cur <= Length(s) do
+      Len := UTF8Desc(S, Desc);
+
+      while cur <= Len do
       begin
-        if s[cur] in [#10, #13] then
+        Ch := UTF8Char(s, cur, Desc);
+
+        // check for items with soft-breaks
+        if (Ch=#10) or (Ch=#13) then
         begin
-          {$IFDEF DebugLR}
-          debugLn('        Wrapline: crlf beg=',dbgs(beg),' cur=',dbgs(cur));
-          {$ENDIF}
-          OutLine(Copy(s, beg, cur - beg) + #1);
-          while (cur < Length(s)) and (s[cur] in [#10, #13]) do Inc(cur);
+          OutLine(UTF8Range(s, beg, cur - beg, Desc) + #1);
+          while (cur<Len) and UTF8CharIn(ch, [#10,#13]) do
+          begin
+            inc(cur);
+            if cur<=len then
+              ch := UTF8Char(s, cur, desc);
+          end;
+
           beg := cur; last := beg;
-          if s[cur] in [#13, #10] then begin
-            {$IFDEF DebugLR}
-            debugln('        Wrapline: Exiting as cur is in crlf cur=',dbgs(cur));
-            {$ENDIF}
-            Exit;
-          end else
+          if UTF8CharIn(Ch,[#13, #10]) then
+            exit
+          else
             continue;
         end;
-        if s[cur] <> ' ' then
-        if WCanvas.TextWidth(Copy(s, beg, cur - beg + 1)) > maxwidth then
+
+        if ch <> ' ' then
+        if WCanvas.TextWidth(UTF8Range(s, beg, cur - beg + 1, Desc)) > maxwidth then
         begin
+
           WasBreak := False;
           if (Flags and flWordBreak) <> 0 then
           begin
+
+            // in case of breaking in the middle, get the full word
             i := cur;
-            while (i <= Length(s)) and not (s[i] in spaces) do
+            while (i <= Len) and not UTF8CharIn(ch, [' ', '.', ',', '-']) do
+            begin
               Inc(i);
-            {$IFDEF DebugLR}
-            debugln('        wrapline: to BreakWord: ini=',dbgs(last+1),' fin=',dbgs(i-last-1));
-            {$ENDIF}
-            b := BreakWord(Copy(s, last + 1, i - last - 1));
+              if i<=len then
+                ch := UTF8Char(s, i, Desc);
+            end;
+
+            // find word's break points using some simple hyphenator algorithm
+            // TODO: implement interface so users can use their own hyphenator
+            //       algorithm
+            b := BreakWord(UTF8Range(s, last, i - last, Desc));
+
+            // if word can be broken in many segments, find the last segment that
+            // fits within maxwidth
             if Length(b) > 0 then
             begin
               i := 1;
-              cur := last;
               while (i <= Length(b)) and
-                (WCanvas.TextWidth(Copy(s, beg, last - beg + 1 + Ord(b[i])) + '-') <= maxwidth) do
+                (WCanvas.TextWidth(UTF8Range(s, beg, last - beg + Ord(b[i]), Desc) + '-') <= maxwidth) do
               begin
                 WasBreak := True;
-                cur := last + Ord(b[i]);
+                cur := last + Ord(b[i]);  // cur now points to next char after breaking word
                 Inc(i);
               end;
-              last := cur;
             end;
+
+            // last now points to nex char to be processed
+            last := cur;
           end
           else
-            if last = beg then last := cur;
-          if WasBreak then begin
-            {$IFDEF DebugLR}
-            debugln('        wrapline: wasbreak=true, beg=',dbgs(beg),' fin=',dbgs(last-beg+1));
-            {$ENDIF}
-            OutLine(Copy(s, beg, last - beg + 1) + '-');
-          end else if s[last] = ' ' then begin
-                 {$IFDEF DebugLR}
-                 debugln('        wrapline: s[last]=" ", beg=',dbgs(beg),' fin=',dbgs(last-beg));
-                 {$ENDIF}
-                 OutLine(Copy(s, beg, last - beg))
-               end else begin
-                  {$IFDEF DebugLR}
-                  debugln('        wrapline: s[last]<>" ", beg=',dbgs(beg),' fin=',dbgs(last-beg));
-                  {$ENDIF}
-                  OutLine(Copy(s, beg, last - beg + 1));
-               end;
-          if ((Flags and flWordBreak) <> 0) and not WasBreak and (last = cur) then
           begin
-            beg := cur + 1;
-            cur := Length(s);
-            break;
+            if last = beg then
+              last := cur;
           end;
-          if (Flags and flWordBreak) = 0 then
+
+          if WasBreak then
           begin
-            if last = cur then
-            begin
-              beg := cur;
-              break;
-            end;
+            // if word has been broken, output the partial word plus an hyphen
+            OutLine(UTF8Range(s, beg, last - beg, Desc) + '-');
+          end else
+          begin
+            // output the portion of word that fits maxwidth
+            OutLine(UTF8Range(s, beg, last - beg, Desc));
+            // if space was found, advance to next no space char
+            if s[last] = ' ' then
+              last := last + 1;
           end;
-          beg := last + 1; last := beg;
+
+          beg := last;
         end;
-        if s[cur] in spaces then last := cur;
+
+        if UTF8CharIn(Ch, [' ', '.', ',', '-']) then
+          last := cur;
         Inc(cur);
       end;
-      if beg <> cur then begin
-        {$IFDEF DebugLR}
-        debugln('        wrapline: beg<>cur, beg=',dbgs(beg),' fin=',dbgs(cur-beg+1));
-        {$ENDIF}
-        OutLine(Copy(s, beg, cur - beg + 1) + #1);
-      end;
+
+      if beg <> cur then
+        OutLine(UTF8Range(s, beg, cur - beg + 1, Desc) + #1);
     end;
   end;
 

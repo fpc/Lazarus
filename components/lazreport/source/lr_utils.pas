@@ -53,9 +53,19 @@ function StrTofrTypeObject(St : string) : Byte;
 
 function lrGetUnBrackedStr(const S:string):string; //remove '[' from begion of string and ']' from end
 
+// utf8 tools
+function UTF8Desc(S:string; var Desc: string): Integer;
+function UTF8Char(S:string; index:Integer; Desc:string): TUTF8Char;
+function UTF8Range(S:string; index,count:Integer; Desc:String):string;
+function UTF8Index(S:string; index:integer; desc:string): Integer;
+function UTF8CharIn(ch:TUTF8Char; const arrstr:array of string): boolean;
+
 implementation
 
 uses LR_Class;
+
+var
+  LocalDescri: string;
 
 procedure frInitFont(aFont : TFont; aColor : TColor; aSize : Integer; aStyle : TFontStyles);
 begin
@@ -528,6 +538,94 @@ begin
       end;
   end;
   Result:=S;
+end;
+
+function UTF8Desc(S: string; var Desc: string): Integer;
+var
+    i,b: Integer;
+begin
+  i := 1;
+  Result := 0;
+  SetLength(Desc, Length(S));
+  while i<=Length(s) do begin
+    b := UTF8CharacterStrictLength(@S[i]);
+    inc(i,b);
+    inc(Result);
+    Desc[Result] := Char(b);
+  end;
+  Setlength(Desc, Result);
+end;
+
+function UTF8Char(S: string; index: Integer; Desc: string): TUTF8Char;
+var
+  i,j: Integer;
+begin
+  Result := '';
+  if (index<1) or (index>Length(Desc)) then begin
+    //Result := #$EF#$BF#$BD  // replacement character
+    exit;
+  end;
+
+  i:=0; j:=1;
+  while i<Length(Desc) do begin
+    inc(i);
+    if i=index then begin
+      Move(S[j],Result[1],ord(Desc[i]));
+      Result[0]:=Desc[i];
+      break;
+    end;
+    inc(j, ord(Desc[i]));
+  end;
+
+end;
+
+function UTF8Range(S: string; index, count: Integer; Desc: String
+  ): string;
+var
+  c,i: Integer;
+begin
+  result := '';
+  c := 0;
+  i := index;
+  while (Count>0) and (i<=Length(Desc)) do begin
+    c := c + ord(Desc[i]);
+    inc(i);
+    Dec(Count);
+  end;
+  i := UTF8Index(S, Index, Desc);
+  if i>0 then begin
+    SetLength(Result, c);
+    Move(S[i],Result[1],c);
+  end;
+end;
+
+// this assume index is in valid range
+function UTF8Index(S: string; index: integer; desc: string): Integer;
+var
+  i,c: integer;
+begin
+  result := 0;
+  c := 0;
+  for i:=1 to Length(Desc) do begin
+    inc(c);
+    if i=index then begin
+      result := c;
+      break;
+    end;
+    c := c + ord(Desc[i]) - 1;
+  end;
+end;
+
+function UTF8CharIn(ch:TUTF8Char; const arrstr: array of string): boolean;
+var
+  i: Integer;
+begin
+  result := false;
+  for i:=low(arrstr) to high(arrstr) do
+    if arrstr[i]=ch then begin
+      result := true;
+      break;
+    end;
 end;
 
 end.
