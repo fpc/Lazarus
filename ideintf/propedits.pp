@@ -6003,11 +6003,42 @@ procedure TPropertyEditorHook.Modified(Sender: TObject);
 var
   i: Integer;
   AForm: TCustomForm;
+  Editor: TPropertyEditor;
+  List: TFPList;
+  APersistent: TPersistent;
+  ARoot: TPersistent;
 begin
   i:=GetHandlerCount(htModified);
   while GetNextHandlerIndex(htModified,i) do
     TPropHookModified(FHandlers[htModified][i])(Sender);
-  if (FLookupRoot<>nil) and (FLookupRoot is TComponent) then begin
+  if Sender is TPropertyEditor then begin
+    // mark the designer form of every selected persistent
+    Editor:=TPropertyEditor(Sender);
+    List:=TFPList.Create;
+    try
+      for i:=0 to Editor.PropCount-1 do begin
+        // for every selected persistent ...
+        APersistent:=Editor.GetComponent(i);
+        if APersistent=nil then continue;
+        if List.IndexOf(APersistent)>=0 then continue;
+        List.Add(APersistent);
+        // ... get the lookuproot ...
+        ARoot:=GetLookupRootForComponent(APersistent);
+        if ARoot=nil then continue;
+        if (ARoot<>APersistent) and (List.IndexOf(ARoot)>=0) then continue;
+        List.Add(ARoot);
+        if ARoot is TComponent then begin
+          // ... get the designer ...
+          AForm:=GetDesignerForm(TComponent(ARoot));
+          if (AForm<>nil) and (AForm.Designer<>nil) then
+            AForm.Designer.Modified; // ... and mark it modified
+        end;
+      end;
+    finally
+      List.Free;
+    end;
+  end
+  else if (FLookupRoot<>nil) and (FLookupRoot is TComponent) then begin
     AForm:=GetDesignerForm(TComponent(FLookupRoot));
     if (AForm<>nil) and (AForm.Designer<>nil) then
       AForm.Designer.Modified;
