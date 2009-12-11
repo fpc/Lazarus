@@ -1490,6 +1490,7 @@ resourcestring
   dlgIdentifierPolicy = 'Identifier policy';
   dlgPropertyCompletion = 'Property completion';
   lisHeaderCommentForClass = 'Header comment for class';
+  lisImplementationCommentForClass = 'Implementation comment for class';
   dlgCompleteProperties = 'Complete properties';
   dlgCDTReadPrefix = 'Read prefix';
   dlgCDTWritePrefix = 'Write prefix';

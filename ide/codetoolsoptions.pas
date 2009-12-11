@@ -50,6 +50,7 @@ type
   TCodeToolsOptions = class(TAbstractIDEOptions)
   private
     FClassHeaderComments: boolean;
+    FClassImplementationComments: boolean;
     FFilename: string;
     FIdentComplAddParameterBrackets: boolean;
 
@@ -153,6 +154,8 @@ type
       read FKeepForwardProcOrder write FKeepForwardProcOrder;
     property ClassHeaderComments: boolean
       read FClassHeaderComments write FClassHeaderComments;
+    property ClassImplementationComments: boolean
+      read FClassImplementationComments write FClassImplementationComments;
     property MethodInsertPolicy: TMethodInsertPolicy
       read FMethodInsertPolicy write FMethodInsertPolicy;
     property KeyWordPolicy : TWordPolicy
@@ -377,6 +380,8 @@ begin
       'CodeToolsOptions/KeepForwardProcOrder/Value',true);
     FClassHeaderComments:=XMLConfig.GetValue(
       'CodeToolsOptions/ClassHeaderComments/Value',true);
+    FClassImplementationComments:=XMLConfig.GetValue(
+      'CodeToolsOptions/ClassImplementationComments/Value',true);
 
     FMethodInsertPolicy:=MethodInsertPolicyNameToPolicy(XMLConfig.GetValue(
       'CodeToolsOptions/MethodInsertPolicy/Value',
@@ -497,6 +502,9 @@ begin
       'CodeToolsOptions/KeepForwardProcOrder/Value',FKeepForwardProcOrder,true);
     XMLConfig.SetDeleteValue(
       'CodeToolsOptions/ClassHeaderComments/Value',FClassHeaderComments,true);
+    XMLConfig.SetDeleteValue(
+      'CodeToolsOptions/ClassImplementationComments/Value',
+      FClassImplementationComments,true);
     XMLConfig.SetDeleteValue('CodeToolsOptions/MethodInsertPolicy/Value',
       MethodInsertPolicyNames[FMethodInsertPolicy],
       MethodInsertPolicyNames[mipClassOrder]);
@@ -613,6 +621,7 @@ begin
     FForwardProcBodyInsertPolicy:=CodeToolsOpts.ForwardProcBodyInsertPolicy;
     FKeepForwardProcOrder:=CodeToolsOpts.KeepForwardProcOrder;
     FClassHeaderComments:=CodeToolsOpts.ClassHeaderComments;
+    FClassImplementationComments:=CodeToolsOpts.ClassImplementationComments;
     FMethodInsertPolicy:=CodeToolsOpts.FMethodInsertPolicy;
     FKeyWordPolicy:=CodeToolsOpts.FKeyWordPolicy;
     FIdentifierPolicy:=CodeToolsOpts.FIdentifierPolicy;
@@ -661,6 +670,7 @@ begin
   FForwardProcBodyInsertPolicy:=fpipInFrontOfMethods;
   FKeepForwardProcOrder:=true;
   FClassHeaderComments:=true;
+  FClassImplementationComments:=true;
   FMethodInsertPolicy:=mipClassOrder;
   FKeyWordPolicy:=wpLowerCase;
   FIdentifierPolicy:=wpNone;
@@ -724,6 +734,7 @@ begin
     and (FForwardProcBodyInsertPolicy=CodeToolsOpts.ForwardProcBodyInsertPolicy)
     and (FKeepForwardProcOrder=CodeToolsOpts.KeepForwardProcOrder)
     and (FClassHeaderComments=CodeToolsOpts.ClassHeaderComments)
+    and (FClassImplementationComments=CodeToolsOpts.ClassImplementationComments)
     and (FMethodInsertPolicy=CodeToolsOpts.FMethodInsertPolicy)
     and (FKeyWordPolicy=CodeToolsOpts.FKeyWordPolicy)
     and (FIdentifierPolicy=CodeToolsOpts.FIdentifierPolicy)
@@ -818,6 +829,7 @@ begin
     BeautifyCodeOptions.ForwardProcBodyInsertPolicy:=ForwardProcBodyInsertPolicy;
     BeautifyCodeOptions.KeepForwardProcOrder:=KeepForwardProcOrder;
     BeautifyCodeOptions.ClassHeaderComments:=ClassHeaderComments;
+    BeautifyCodeOptions.ClassImplementationComments:=ClassImplementationComments;
     BeautifyCodeOptions.MethodInsertPolicy:=MethodInsertPolicy;
     BeautifyCodeOptions.KeyWordPolicy:=KeyWordPolicy;
     BeautifyCodeOptions.IdentifierPolicy:=IdentifierPolicy;

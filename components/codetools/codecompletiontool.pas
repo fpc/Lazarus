@@ -6571,6 +6571,9 @@ var
   begin
     // insert class comment
     if ClassProcs.Count=0 then exit;
+    if not ASourceChangeCache.BeautifyCodeOptions.ClassImplementationComments
+    then
+      exit;
     // find the start of the class (the position in front of the class name)
     // check if there is already a comment in front
     if FindClassMethodsComment(InsertPos,CommentStart,CommentEnd) then begin

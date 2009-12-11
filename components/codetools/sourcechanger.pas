@@ -127,6 +127,7 @@ type
     KeepForwardProcOrder: boolean;
     // classes, methods, properties
     ClassHeaderComments: boolean;
+    ClassImplementationComments: boolean;
     ClassPartInsertPolicy: TClassPartInsertPolicy;
     MixMethodsAndProperties: boolean;
     MethodInsertPolicy: TMethodInsertPolicy;

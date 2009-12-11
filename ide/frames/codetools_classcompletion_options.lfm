@@ -77,20 +77,21 @@ inherited CodetoolsClassCompletionOptionsFrame: TCodetoolsClassCompletionOptions
   end
   object PropertyCompletionGroupBox: TGroupBox[4]
     AnchorSideLeft.Control = Owner
+    AnchorSideTop.Control = ClassImplementationCommentsCheckBox
     AnchorSideTop.Side = asrBottom
     AnchorSideRight.Control = Owner
     AnchorSideRight.Side = asrBottom
     AnchorSideBottom.Side = asrBottom
     Left = 0
-    Height = 194
-    Top = 173
+    Height = 193
+    Top = 190
     Width = 572
     Anchors = [akTop, akLeft, akRight]
     AutoSize = True
     BorderSpacing.Top = 6
     Caption = 'PropertyCompletionGroupBox'
     ClientHeight = 175
-    ClientWidth = 568
+    ClientWidth = 570
     TabOrder = 4
     object PropertyCompletionCheckBox: TCheckBox
       AnchorSideLeft.Control = PropertyCompletionGroupBox
@@ -112,7 +113,7 @@ inherited CodetoolsClassCompletionOptionsFrame: TCodetoolsClassCompletionOptions
       Left = 6
       Height = 135
       Top = 34
-      Width = 556
+      Width = 558
       Anchors = [akTop, akLeft, akRight]
       AutoSize = True
       BorderSpacing.Around = 6
@@ -120,7 +121,7 @@ inherited CodetoolsClassCompletionOptionsFrame: TCodetoolsClassCompletionOptions
       ChildSizing.Layout = cclTopToBottomThenLeftToRight
       ChildSizing.ControlsPerLine = 5
       ClientHeight = 135
-      ClientWidth = 556
+      ClientWidth = 558
       TabOrder = 1
       object SetPropertyVariablenameLabel: TLabel
         AnchorSideTop.Side = asrCenter
@@ -233,5 +234,17 @@ inherited CodetoolsClassCompletionOptionsFrame: TCodetoolsClassCompletionOptions
         Text = 'PropertyReadIdentPrefixEdit'
       end
     end
+  end
+  object ClassImplementationCommentsCheckBox: TCheckBox[5]
+    AnchorSideLeft.Control = Owner
+    AnchorSideTop.Control = ClassHeaderCommentsCheckBox
+    AnchorSideTop.Side = asrBottom
+    Left = 6
+    Height = 22
+    Top = 162
+    Width = 293
+    BorderSpacing.Around = 6
+    Caption = 'ClassImplementationCommentsCheckBox'
+    TabOrder = 5
   end
 end

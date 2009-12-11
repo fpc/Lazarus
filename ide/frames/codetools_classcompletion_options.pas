@@ -34,6 +34,7 @@ type
 
   TCodetoolsClassCompletionOptionsFrame = class(TAbstractIDEOptionsEditor)
     ClassHeaderCommentsCheckBox: TCheckBox;
+    ClassImplementationCommentsCheckBox: TCheckBox;
     ClassPartInsertPolicyRadioGroup: TRadioGroup;
     MethodInsertPolicyRadioGroup: TRadioGroup;
     MixMethodsAndPropertiesCheckBox: TCheckBox;
@@ -96,29 +97,15 @@ begin
     end;
   end;
 
-  with ClassHeaderCommentsCheckBox do
-    Caption:=lisHeaderCommentForClass;
-
-  with PropertyCompletionGroupBox do
-    Caption:=dlgPropertyCompletion;
-
-  with PropertyCompletionCheckBox do
-    Caption:=dlgCompleteProperties;
-
-  with PropertyReadIdentPrefixLabel do
-    Caption:=dlgCDTReadPrefix;
-
-  with PropertyWriteIdentPrefixLabel do
-    Caption:=dlgCDTWritePrefix;
-
-  with PropertyStoredIdentPostfixLabel do
-    Caption:=dlgCDTStoredPostfix;
-
-  with PrivateVariablePrefixLabel do
-    Caption:=dlgCDTVariablePrefix;
-
-  with SetPropertyVariablenameLabel do
-    Caption:=dlgSetPropertyVariable;
+  ClassHeaderCommentsCheckBox.Caption:=lisHeaderCommentForClass;
+  ClassImplementationCommentsCheckBox.Caption:=lisImplementationCommentForClass;
+  PropertyCompletionGroupBox.Caption:=dlgPropertyCompletion;
+  PropertyCompletionCheckBox.Caption:=dlgCompleteProperties;
+  PropertyReadIdentPrefixLabel.Caption:=dlgCDTReadPrefix;
+  PropertyWriteIdentPrefixLabel.Caption:=dlgCDTWritePrefix;
+  PropertyStoredIdentPostfixLabel.Caption:=dlgCDTStoredPostfix;
+  PrivateVariablePrefixLabel.Caption:=dlgCDTVariablePrefix;
+  SetPropertyVariablenameLabel.Caption:=dlgSetPropertyVariable;
 end;
 
 procedure TCodetoolsClassCompletionOptionsFrame.ReadSettings(
@@ -137,6 +124,7 @@ begin
     MixMethodsAndPropertiesCheckBox.Checked := MixMethodsAndProperties;
 
     ClassHeaderCommentsCheckBox.Checked := ClassHeaderComments;
+    ClassImplementationCommentsCheckBox.Checked := ClassImplementationComments;
     case MethodInsertPolicy of
       mipAlphabetically:
         MethodInsertPolicyRadioGroup.ItemIndex:=0;
@@ -169,6 +157,7 @@ begin
     MixMethodsAndProperties := MixMethodsAndPropertiesCheckBox.Checked;
 
     ClassHeaderComments := ClassHeaderCommentsCheckBox.Checked;
+    ClassImplementationComments := ClassImplementationCommentsCheckBox.Checked;
 
     case MethodInsertPolicyRadioGroup.ItemIndex of
       0: MethodInsertPolicy := mipAlphabetically;
