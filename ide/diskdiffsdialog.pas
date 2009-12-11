@@ -52,6 +52,7 @@ type
   { TDiskDiffsDlg }
 
   TDiskDiffsDlg = class(TForm)
+    BtnPanel: TPanel;
     CheckDiskChangesWithLoadingCheckBox: TCheckBox;
     DiffSynEdit: TSynEdit;
     FilesListBox: TListBox;
