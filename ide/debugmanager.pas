@@ -1877,10 +1877,12 @@ begin
     itmViewLocals.Tag := Ord(ddtLocals);
     itmViewRegisters.OnClick := @mnuViewDebugDialogClick;
     itmViewRegisters.Tag := Ord(ddtRegisters);
+    itmViewRegisters.Enabled := False;
     itmViewCallStack.OnClick := @mnuViewDebugDialogClick;
     itmViewCallStack.Tag := Ord(ddtCallStack);
     itmViewAssembler.OnClick := @mnuViewDebugDialogClick;
     itmViewAssembler.Tag := Ord(ddtAssembler);
+    itmViewAssembler.Enabled := False;
     itmViewDebugOutput.OnClick := @mnuViewDebugDialogClick;
     itmViewDebugOutput.Tag := Ord(ddtOutput);
 
@@ -1979,6 +1981,10 @@ begin
     SrcEditMenuInspect.Enabled := (not DebuggerInvalid)
                               and (dcEvaluate in FDebugger.Commands);
     itmRunMenuAddWatch.Enabled := True; // always allow to add a watch
+
+    // menu view
+    itmViewRegisters.Enabled := (not DebuggerInvalid);
+    itmViewAssembler.Enabled := (not DebuggerInvalid);
     // TODO: add other debugger menuitems
     // TODO: implement by actions
   end;
