@@ -3012,7 +3012,8 @@ end;
 
 function TCarbonWidgetSet.SetCapture(AHandle: HWND): HWND;
 begin
-  Result:=inherited SetCapture(AHandle);
+  Result:=CarbonWidgetSet.CaptureWidgetSet;
+  CarbonWidgetSet.SetCaptureWidget(AHandle);
 end;
 
 {------------------------------------------------------------------------------

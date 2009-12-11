@@ -140,6 +140,7 @@ type
     procedure SetTextFractional(ACanvas: TCanvas; AEnabled: Boolean);
     procedure SetFocusedWidget(const AWidget: HWND);
     function GetFocusedWidget: HWND;
+    property CaptureWidgetSet: HWND read FCaptureWidget;
   end;
   
 const
