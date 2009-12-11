@@ -94,7 +94,7 @@ var
       if s = '' then
         s := aStr
       else
-        s := aStr + Separator + aStr;
+        s := s + Separator + aStr;
     end else begin
       if s = '' then
         s := UTF8Quotedstr(aStr, QuoteChar)

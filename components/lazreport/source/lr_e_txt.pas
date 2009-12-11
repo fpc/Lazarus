@@ -32,17 +32,20 @@ type
 
   TfrTextExportFilter = class(TfrExportFilter)
   private
+    FUseBOM: boolean;
     FUsedFont: Integer;
   protected
     procedure GetUsedFont; virtual;
     procedure Setup; override;
   public
     constructor Create(AStream: TStream); override;
+    procedure OnBeginDoc; override;
     procedure OnEndPage; override;
     procedure OnBeginPage; override;
     procedure OnText(X, Y: Integer; const Text: String; View: TfrView); override;
 
     property UsedFont: integer read FUsedFont write FUsedFont;
+    property UseBOM: boolean read FUseBOM write FUseBOM;
   end;
 
 
@@ -73,6 +76,16 @@ constructor TfrTextExportFilter.Create(AStream: TStream);
 begin
   inherited;
   FUsedFont := 10;
+  FUseBOM := false;
+end;
+
+procedure TfrTextExportFilter.OnBeginDoc;
+begin
+  if FUseBOM then begin
+    Stream.WriteByte($EF);
+    Stream.WriteByte($BB);
+    Stream.WriteByte($BF);
+  end;
 end;
 
 procedure TfrTextExportFilter.OnEndPage;
