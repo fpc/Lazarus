@@ -139,19 +139,22 @@ begin
     end;
   end else
   begin
-    ParentForm := GetDesignerForm(Component);
     Result.X := LeftFromDesignInfo(Component.DesignInfo);
     Result.Y := TopFromDesignInfo(Component.DesignInfo);
-    while (Component <> nil) and (Component.Owner <> ParentForm) do
+    ParentForm := GetDesignerForm(Component);
+    if ParentForm = nil then
+      Exit;
+
+    if (Component <> nil) and (Component.Owner <> ParentForm) then
     begin
       Component := Component.Owner;
-      if Component = nil then
-        break;
-      if (csInline in Component.ComponentState) and
-         (Component is TControl) then
+      if (csInline in Component.ComponentState) and (Component is TControl) then
       begin
-        inc(Result.X, TControl(Component).Left);
-        inc(Result.Y, TControl(Component).Top);
+        with ParentForm.ScreenToClient(TControl(Component).ClientToScreen(Point(0, 0))) do
+        begin
+          inc(Result.X, X);
+          inc(Result.Y, Y);
+        end;
       end;
     end;
   end;
@@ -218,16 +221,16 @@ begin
     ParentForm := GetDesignerForm(Component);
     if ParentForm = nil then
       Exit;
-    while (Component <> nil) and (Component.Owner <> ParentForm) do
+    if (Component <> nil) and (Component.Owner <> ParentForm) then
     begin
       Component := Component.Owner;
-      if Component = nil then
-        break;
-      if (csInline in Component.ComponentState) and
-         (Component is TControl) then
+      if (csInline in Component.ComponentState) and (Component is TControl) then
       begin
-        inc(Result.X, TControl(Component).Left);
-        inc(Result.Y, TControl(Component).Top);
+        with ParentForm.ScreenToClient(TControl(Component).ClientToScreen(Point(0, 0))) do
+        begin
+          inc(Result.X, X);
+          inc(Result.Y, Y);
+        end;
       end;
     end;
   end;

@@ -245,7 +245,7 @@ type
     destructor Destroy; override;
 
     procedure Modified; override;
-    procedure SelectOnlyThisComponent(AComponent:TComponent); override;
+    procedure SelectOnlyThisComponent(AComponent: TComponent); override;
     function CopySelection: boolean; override;
     function CutSelection: boolean; override;
     function CanPaste: Boolean; override;
@@ -1338,7 +1338,7 @@ begin
   end;
 end;
 
-procedure TDesigner.SelectOnlyThisComponent(AComponent:TComponent);
+procedure TDesigner.SelectOnlyThisComponent(AComponent: TComponent);
 begin
   ControlSelection.AssignPersistent(AComponent);
 end;
@@ -1431,15 +1431,16 @@ function TDesigner.NonVisualComponentLeftTop(AComponent: TComponent): TPoint;
 begin
   Result.X := LeftFromDesignInfo(AComponent.DesignInfo);
   Result.Y := TopFromDesignInfo(AComponent.DesignInfo);
-  // convert to owner coords
-  while AComponent.Owner <> FLookupRoot do
+  // convert to lookuproot coords
+  if (AComponent.Owner <> FLookupRoot) and (FLookupRoot is TControl) then
   begin
     AComponent := AComponent.Owner;
     if AComponent is TControl then
-    begin
-      inc(Result.X, TControl(AComponent).Left);
-      inc(Result.Y, TControl(AComponent).Top);
-    end;
+      with TControl(FLookupRoot).ScreenToClient(TControl(AComponent).ClientToScreen(Point(0, 0))) do
+      begin
+        inc(Result.X, X);
+        inc(Result.Y, Y);
+      end;
   end;
 end;
 
@@ -2991,10 +2992,11 @@ var
   Icon: TBitmap;
   ItemLeft, ItemTop, ItemRight, ItemBottom: integer;
   Diff, ItemLeftTop: TPoint;
-  IconRect, TextRect: TRect;
+  OwnerRect, IconRect, TextRect: TRect;
   TextSize: TSize;
   IsSelected: Boolean;
   Root: TComponent;
+  RGN: HRGN;
 begin
   // also call draw for the inline components children
   if (csInline in AComponent.ComponentState) or (AComponent.Owner=nil) then
@@ -3002,7 +3004,9 @@ begin
   else
     Root:=AComponent.Owner;
   TComponentAccess(AComponent).GetChildren(@DrawNonVisualComponent, Root);
-  if not ComponentIsIcon(AComponent) then
+  if not ComponentIsIcon(AComponent) or (AComponent.Owner = nil) then
+    Exit;
+  if not (AComponent.Owner is TControl) then
     Exit;
   // actual draw
   Diff := FDDC.FormOrigin;
@@ -3018,6 +3022,19 @@ begin
 
   IsSelected := ControlSelection.IsSelected(AComponent);
   FDDC.Save;
+
+  // set clipping
+  if AComponent.Owner <> FDDC.Form then
+  begin
+    OwnerRect := TControl(AComponent.Owner).ClientRect;
+    Diff := FDDC.Form.ScreenToClient(TControl(AComponent.Owner).ClientToScreen(Point(0, 0)));
+    OffsetRect(OwnerRect, Diff.X, Diff.Y);
+    // don't restore later FDDC.Restore will do this itself
+    with OwnerRect do
+      RGN := CreateRectRGN(Left, Top, Right, Bottom);
+    SelectClipRGN(FDDC.DC, RGN);
+    DeleteObject(RGN);
+  end;
 
   if FSurface = nil then
   begin
@@ -3249,21 +3266,10 @@ end;
 
 procedure TDesigner.MoveNonVisualComponentIntoForm(AComponent: TComponent);
 var
-  P: TPoint;
-  Tmp: TComponent;
+  X, Y: SmallInt;
 begin
-  P := NonVisualComponentLeftTop(AComponent);
-  Tmp := AComponent;
-  while Tmp.Owner <> FLookupRoot do
-  begin
-    Tmp := Tmp.Owner;
-    if Tmp is TControl then
-    begin
-      dec(P.X, TControl(Tmp).Left);
-      dec(P.Y, TControl(Tmp).Top);
-    end;
-  end;
-  AComponent.DesignInfo := LeftTopToDesignInfo(P.X, P.Y);
+  DesignInfoToLeftTop(AComponent.DesignInfo, X, Y);
+  AComponent.DesignInfo := LeftTopToDesignInfo(X, Y);
 end;
 
 procedure TDesigner.MoveNonVisualComponentsIntoForm;
