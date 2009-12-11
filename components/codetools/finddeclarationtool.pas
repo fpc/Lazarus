@@ -7730,6 +7730,13 @@ begin
     // same base type
     Result:=tcExact;
   end
+  else if (TargetContext.Node.Desc=ctnGenericParameter)
+  or ((ExpressionType.Desc=xtContext)
+      and (ExpressionType.Context.Node.Desc=ctnGenericParameter))
+  then begin
+    // generic type is always preferred
+    Result:=tcExact;
+  end
   else if (TargetContext.Node.Desc=ctnSetType) then begin
     {$IFDEF ShowExprEval}
     DebugLn('[TFindDeclarationTool.IsCompatible] TargetContext.Node.Desc=ctnSetType',
@@ -7769,12 +7776,18 @@ function TFindDeclarationTool.IsCompatible(TargetType,
   ExpressionType: TExpressionType; Params: TFindDeclarationParams
   ): TTypeCompatibility;
 begin
-  if TargetType.Desc=xtContext then
+  if TargetType.Desc=xtContext then begin
+    if TargetType.Context.Node.Desc=ctnGenericParameter then
+      exit(tcExact);
     TargetType:=TargetType.Context.Tool.ConvertNodeToExpressionType(
                     TargetType.Context.Node,Params);
-  if ExpressionType.Desc=xtContext then
+  end;
+  if ExpressionType.Desc=xtContext then begin
+    if ExpressionType.Context.Node.Desc=ctnGenericParameter then
+      exit(tcExact);
     ExpressionType:=ExpressionType.Context.Tool.ConvertNodeToExpressionType(
                     ExpressionType.Context.Node,Params);
+  end;
   Result:=IsBaseCompatible(TargetType,ExpressionType,Params);
 end;
 
@@ -7996,6 +8009,12 @@ begin
   ' ExpressionType=',ExprTypeToString(ExpressionType));
   {$ENDIF}
   Result:=tcIncompatible;
+  if (TargetType.Desc=xtContext)
+  and (TargetType.Context.Node.Desc=ctnGenericParameter) then
+    exit(tcExact);
+  if (ExpressionType.Desc=xtContext)
+  and (ExpressionType.Context.Node.Desc=ctnGenericParameter) then
+    exit(tcExact);
   if (TargetType.Desc=ExpressionType.Desc) then begin
     case TargetType.Desc of
     
