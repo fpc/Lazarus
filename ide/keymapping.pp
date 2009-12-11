@@ -499,6 +499,8 @@ begin
   ecToggleBreakPoints: SetResult(VK_B,[ssCtrl,ssAlt],VK_UNKNOWN,[]);
   ecToggleLocals: SetResult(VK_L,[ssCtrl,ssAlt],VK_UNKNOWN,[]);
   ecToggleCallStack: SetResult(VK_S,[ssCtrl,ssAlt],VK_UNKNOWN,[]);
+  ecToggleRegisters: SetResult(VK_R,[ssCtrl,ssAlt],VK_UNKNOWN,[]);
+  ecToggleAssembler: SetResult(VK_D,[ssCtrl,ssAlt],VK_UNKNOWN,[]);
   ecToggleDebuggerOut: SetResult(VK_UNKNOWN,[],VK_UNKNOWN,[]);
   ecViewUnits: SetResult(VK_F12,[ssCtrl],VK_UNKNOWN,[]);
   ecViewForms: SetResult(VK_F12,[ssShift],VK_UNKNOWN,[]);
@@ -918,6 +920,8 @@ begin
   ecToggleBreakPoints: SetResult(VK_F8,[ssCtrl],VK_UNKNOWN,[],VK_UNKNOWN,[],VK_UNKNOWN,[]);
   ecToggleLocals: SetResult(VK_UNKNOWN,[],VK_UNKNOWN,[],VK_UNKNOWN,[],VK_UNKNOWN,[]);
   ecToggleCallStack: SetResult(VK_F3,[ssCtrl],VK_UNKNOWN,[],VK_UNKNOWN,[],VK_UNKNOWN,[]);
+  ecToggleRegisters: SetResult(VK_UNKNOWN,[],VK_UNKNOWN,[],VK_UNKNOWN,[],VK_UNKNOWN,[]);
+  ecToggleAssembler: SetResult(VK_UNKNOWN,[],VK_UNKNOWN,[],VK_UNKNOWN,[],VK_UNKNOWN,[]);
   ecToggleDebuggerOut: SetResult(VK_UNKNOWN,[],VK_UNKNOWN,[],VK_UNKNOWN,[],VK_UNKNOWN,[]);
   ecViewUnits: SetResult(VK_F12,[ssCtrl],VK_UNKNOWN,[],VK_UNKNOWN,[],VK_UNKNOWN,[]);
   ecViewForms: SetResult(VK_F12,[ssShift],VK_UNKNOWN,[],VK_UNKNOWN,[],VK_UNKNOWN,[]);
@@ -1519,6 +1523,8 @@ begin
   ecToggleBreakPoints: SetResult(VK_B,[ssCtrl,ssAlt],VK_UNKNOWN,[]);
   ecToggleLocals: SetResult(VK_L,[ssCtrl,ssAlt],VK_UNKNOWN,[]);
   ecToggleCallStack: SetResult(VK_S,[ssCtrl,ssAlt],VK_UNKNOWN,[]);
+  ecToggleRegisters: SetResult(VK_R,[ssCtrl,ssAlt],VK_UNKNOWN,[]);
+  ecToggleAssembler: SetResult(VK_D,[ssCtrl,ssAlt],VK_UNKNOWN,[]);
   ecToggleDebuggerOut: SetResult(VK_UNKNOWN,[],VK_UNKNOWN,[]);
   ecViewUnits: SetResult(VK_U,[ssCtrl,ssAlt],VK_UNKNOWN,[]);
   ecViewForms: SetResult(VK_U,[ssShift,ssCtrl],VK_UNKNOWN,[]);
@@ -2008,6 +2014,8 @@ begin
     ecToggleDebuggerOut       : Result:= srkmecToggleDebuggerOut;
     ecToggleLocals            : Result:= srkmecToggleLocals;
     ecToggleCallStack         : Result:= srkmecToggleCallStack;
+    ecToggleRegisters         : Result:= srkmecToggleRegisters;
+    ecToggleAssembler         : Result:= srkmecToggleAssembler;
     ecViewUnits               : Result:= srkmecViewUnits;
     ecViewForms               : Result:= srkmecViewForms;
     ecViewUnitDependencies    : Result:= srkmecViewUnitDependencies;
@@ -2706,6 +2714,10 @@ begin
     ecToggleLocals);
   AddDefault(C, 'Toggle view Call Stack', lisKMToggleViewCallStack,
     ecToggleCallStack);
+  AddDefault(C, 'Toggle view Registers', lisKMToggleViewRegisters,
+    ecToggleRegisters);
+  AddDefault(C, 'Toggle view Assembler', lisKMToggleViewAssembler,
+    ecToggleAssembler);
   AddDefault(C, 'Toggle view Debugger Output', lisKMToggleViewDebuggerOutput,
     ecToggleDebuggerOut);
   AddDefault(C, 'View Units', lisHintViewUnits, ecViewUnits);

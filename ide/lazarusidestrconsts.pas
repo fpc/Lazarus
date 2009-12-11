@@ -2286,6 +2286,8 @@ resourcestring
   srkmecToggleDebuggerOut         = 'View debugger output';
   srkmecToggleLocals              = 'View local variables';
   srkmecTogglecallStack           = 'View call stack';
+  srkmecToggleRegisters           = 'View registers';
+  srkmecToggleAssembler           = 'View assembler';
   srkmecViewUnits                 = 'View units';
   srkmecViewForms                 = 'View forms';
   srkmecViewComponents            = 'View components';
@@ -2418,6 +2420,8 @@ resourcestring
   lisKMToggleViewBreakpoints = 'Toggle view Breakpoints';
   lisKMToggleViewLocalVariables = 'Toggle view Local Variables';
   lisKMToggleViewCallStack = 'Toggle view Call Stack';
+  lisKMToggleViewRegisters = 'Toggle view Registers';
+  lisKMToggleViewAssembler = 'Toggle view Assembler';
   lisKMToggleViewDebuggerOutput = 'Toggle view Debugger Output';
   srkmCatProjectMenu    = 'Project menu commands';
   lisKMNewProject = 'New project';
