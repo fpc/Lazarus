@@ -153,3 +153,25 @@ begin
     Result:=not Result; // message handled by LCL, stop processing
 end;
 
+procedure GTKStyleChangedAfter(Widget: PGtkWidget; previous_style : PGTKStyle;
+  Data: Pointer); cdecl;
+begin
+  if (Widget=nil) or (Data=nil) or (previous_style=nil) then ;
+  {$IFDEF EventTrace}
+  EventTrace('style-set', nil);
+  {$ENDIF}
+
+  { Note:
+    This event is called for many widgets but not for all.
+    It is called on creation and called when the theme changes.
+    The resizing should occur when all styles were updated by the gtk.
+    The gtk itself uses size messages via queue.
+    Maybe the solution is to use g_idle_add for the top level form and resize.
+  }
+  //debugln('style-set after ',DbgSName(TWinControl(Data)));
+  //LCLObject.InvalidateClientRectCache(False);
+  {$IFNDEF NewAutoSize}
+
+  {$ENDIF}
+end;
+

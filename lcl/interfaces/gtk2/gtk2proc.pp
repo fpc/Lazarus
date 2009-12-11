@@ -51,13 +51,9 @@ uses
   LMessages, LCLProc, LCLStrConsts, LCLIntf, LCLType, DynHashArray, Maps, Masks,
   GraphType, GraphMath, Graphics, GTKWinApiWindow, LResources, Controls, Forms,
   Buttons, Menus, StdCtrls, ComCtrls, ExtCtrls, Dialogs, ExtDlgs,
-  FileUtil, ImgList, GtkFontCache, GTKGlobals, gtkDef, GtkExtra, GtkDebug;
+  FileUtil, ImgList, GtkFontCache, GTKGlobals, gtkDef, GtkExtra, GtkDebug,
+  gtkproc; // Remove when separation is complete
 
-{
-  Callbacks for events
-
-  gtk2callback.inc headers
-}
 const
   gtkevent_window_state_event = 'window-state-event';
 
@@ -67,6 +63,8 @@ function GTKWindowStateEventCB(widget: PGtkWidget;
 
 function gtkMouseWheelCB(widget: PGtkWidget; event: PGdkEventScroll;
                          data: gPointer): GBoolean; cdecl;
+procedure GTKStyleChangedAfter(Widget: PGtkWidget; previous_style : PGTKStyle;
+  Data: Pointer); cdecl;
 
 { Miscelaneus Widget functions }
 
@@ -74,8 +72,6 @@ function  WidgetGetSelStart(const Widget: PGtkWidget): integer;
 procedure WidgetSetSelLength(const Widget: PGtkWidget; NewLength: integer);
 
 implementation
-
-uses gtkproc; // Remove when separation is complete
 
 { Callbacks for events }
 

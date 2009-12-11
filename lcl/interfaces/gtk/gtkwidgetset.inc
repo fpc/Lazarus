@@ -3394,15 +3394,16 @@ begin
 
     LM_PAINT :
     begin
-      //DebugLn(['TGtkWidgetSet.SetCallback ',DbgSName(ALCLObject)]);
+      //DebugLn(['TGtkWidgetSet.SetCallback ',DbgSName(ALCLObject),' ',GetWidgetDebugReport(PGtkWIdget(gfixed))]);
       {$Ifdef GTK1}
       //ConnectSenderSignal(gFixed, 'draw', @gtkDrawCB);
       ConnectSenderSignalAfter(gFixed, 'draw', @gtkDrawAfterCB);
       {$EndIf}
       {$Ifdef GTK2}
-      ConnectSenderSignal(gFixed, 'expose-event', @GTKExposeEvent);
+      ConnectSenderSignal(gFixed,'expose-event', @GTKExposeEvent);
+      ConnectSenderSignalAfter(gFixed,'style-set', @GTKStyleChangedAfter);
       {$EndIf}
-      ConnectSenderSignalAfter(gFixed, 'expose-event', @GTKExposeEventAfter);
+      ConnectSenderSignalAfter(gFixed,'expose-event', @GTKExposeEventAfter);
       ConnectSenderSignal(gFixed,'style-set', @GTKStyleChanged);
     end;
 
