@@ -35,6 +35,7 @@ inherited CallStackDlg: TCallStackDlg
         Caption = 'Function'
         Width = 280
       end>
+    ItemIndex = -1
     PopupMenu = mnuPopup
     ReadOnly = True
     RowSelect = True
@@ -135,7 +136,7 @@ inherited CallStackDlg: TCallStackDlg
       TabOrder = 0
       object txtGoto: TEdit
         Left = 2
-        Height = 23
+        Height = 21
         Top = 8
         Width = 46
         OnKeyPress = txtGotoKeyPress

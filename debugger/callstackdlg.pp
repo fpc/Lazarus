@@ -330,9 +330,16 @@ begin
   Entry := GetCurrentEntry;
   if Entry = nil then Exit;
 
-  Filename := Entry.Source;
-  if (FileName <> '') and DebugBoss.GetFullFilename(Filename, True)
-  then MainIDE.DoJumpToSourcePosition(Filename, 0, Entry.Line, 0, True, True);
+  // check the full name first
+  Filename := Entry.FullFileName;
+  if (Filename = '') or not DebugBoss.GetFullFilename(Filename, False) then
+  begin
+    // if fails the check the short file name
+    Filename := Entry.Source;
+    if (FileName = '') or not DebugBoss.GetFullFilename(Filename, True) then
+      Exit;
+  end;
+  MainIDE.DoJumpToSourcePosition(Filename, 0, Entry.Line, 0, True, True);
 end;
 
 procedure TCallStackDlg.CopyToClipBoard;
