@@ -25,7 +25,7 @@ unit formed_options;
 interface
 
 uses
-  Classes, SysUtils, FileUtil, LResources, Forms, StdCtrls, Dialogs,
+  Classes, SysUtils, FileUtil, LResources, Forms, StdCtrls, Dialogs, Spin,
   EnvironmentOpts, LazarusIDEStrConsts, IDEProcs, IDEOptionsIntf;
 
 type
@@ -42,9 +42,9 @@ type
     GridColorButton: TColorButton;
     GridColorLabel: TLabel;
     GridGroupBox: TGroupBox;
-    GridSizeXComboBox: TComboBox;
+    GridSizeXSpinEdit: TSpinEdit;
     GridSizeXLabel: TLabel;
-    GridSizeYComboBox: TComboBox;
+    GridSizeYSpinEdit: TSpinEdit;
     GridSizeYLabel: TLabel;
     GuideLineColorLeftTopButton: TColorButton;
     GuideLineColorLeftTopLabel: TLabel;
@@ -93,9 +93,9 @@ procedure TFormEditorOptionsFrame.Setup(ADialog: TAbstractOptionsEditorDialog);
     ShowGridCheckBox.Caption:=dlgQShowGrid;
     GridColorLabel.Caption:=dlgGridColor;
     SnapToGridCheckBox.Caption:=dlgQSnapToGrid;
-    GridSizeXComboBox.Hint:=dlgGridXHint;
+    GridSizeXSpinEdit.Hint:=dlgGridXHint;
     GridSizeXLabel.Caption:=dlgGridX;
-    GridSizeYComboBox.Hint:=dlgGridYHint;
+    GridSizeYSpinEdit.Hint:=dlgGridYHint;
     GridSizeYLabel.Caption:=dlgGridY;
   end;
 
@@ -151,8 +151,8 @@ begin
     ShowGridCheckBox.Checked:=ShowGrid;
     GridColorButton.ButtonColor:=GridColor;
     SnapToGridCheckBox.Checked:=SnapToGrid;
-    SetComboBoxText(GridSizeXComboBox,IntToStr(GridSizeX));
-    SetComboBoxText(GridSizeYComboBox,IntToStr(GridSizeY));
+    GridSizeXSpinEdit.Value := GridSizeX;
+    GridSizeYSpinEdit.Value := GridSizeY;
     ShowGuideLinesCheckBox.Checked:=ShowGuideLines;
     SnapToGuideLinesCheckBox.Checked:=SnapToGuideLines;
     GuideLineColorLeftTopButton.ButtonColor:=GuideLineColorLeftTop;
@@ -179,8 +179,8 @@ begin
     ShowGrid:=ShowGridCheckBox.Checked;
     GridColor:=GridColorButton.ButtonColor;
     SnapToGrid:=SnapToGridCheckBox.Checked;
-    GridSizeX:=StrToIntDef(GridSizeXComboBox.Text,GridSizeX);
-    GridSizeY:=StrToIntDef(GridSizeYComboBox.Text,GridSizeY);
+    GridSizeX:=GridSizeXSpinEdit.Value;
+    GridSizeY:=GridSizeYSpinEdit.Value;
     ShowGuideLines:=ShowGuideLinesCheckBox.Checked;
     SnapToGuideLines:=SnapToGuideLinesCheckBox.Checked;
     GuideLineColorLeftTop:=GuideLineColorLeftTopButton.ButtonColor;
