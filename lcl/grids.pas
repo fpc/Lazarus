@@ -3026,7 +3026,7 @@ end;
 
 procedure TCustomGrid.ResetEditor;
 begin
-  EditorGetValue;
+  EditorGetValue(True);
   if EditorAlwaysShown then
     EditorShow(True);
 end;
