@@ -81,8 +81,6 @@ type
   { TAddToPackageDlg }
 
   TAddToPackageDlg = class(TForm)
-    AddFileButton: TBitBtn;
-    CancelAddFileButton: TBitBtn;
     CancelDependButton: TBitBtn;
     CancelNewComponentButton: TBitBtn;
     NewCompBtnPanel: TPanel;
@@ -97,7 +95,6 @@ type
     NewFilePage: TPage;
     NewComponentPage: TPage;
     NewRequirementPage: TPage;
-    AddFilePage: TPage;
     AddFilesPage: TPage;
     // new file page
     NewFileTreeView: TTreeView;
@@ -124,12 +121,6 @@ type
     DependMinVersionEdit: TEdit;
     DependMaxVersionLabel: TLabel;
     DependMaxVersionEdit: TEdit;
-    // add file page
-    AddFilenameLabel: TLabel;
-    AddFilenameEdit: TEdit;
-    AddFileBrowseButton: TButton;
-    AddFileShortenButton: TButton;
-    AddFileTypeRadioGroup: TRadioGroup;
     // add files page
     FilesAddButton: TButton;
     FilesDirButton: TButton;
@@ -139,9 +130,6 @@ type
     FilesBrowseButton: TButton;
     NewFileBtnPanel: TPanel;
     AddFilesBtnPanel: TPanel;
-    procedure AddFileBrowseButtonClick(Sender: TObject);
-    procedure AddFileButtonClick(Sender: TObject);
-    procedure AddFileShortenButtonClick(Sender: TObject);
     procedure AddToPackageDlgClose(Sender: TObject;
                                    var CloseAction: TCloseAction);
     procedure AddToPackageDlgKeyDown(Sender: TObject; var Key: Word;
@@ -182,13 +170,11 @@ type
     procedure SetupNewFilePage;
     procedure SetupNewComponentPage;
     procedure SetupAddDependencyPage;
-    procedure SetupAddFilePage;
     procedure SetupAddFilesPage;
     procedure OnIterateComponentClasses(PkgComponent: TPkgComponent);
     procedure OnIteratePackages(APackageID: TLazPackageID);
     procedure AutoCompleteNewComponent;
     procedure AutoCompleteNewComponentUnitName;
-    procedure UpdateAddFileInfo;
     function SwitchRelativeAbsoluteFilename(const Filename: string): string;
     procedure FillNewFileTreeView;
     function FindFileInFilesList(AFilename: string): Integer;
@@ -436,91 +422,6 @@ procedure TAddToPackageDlg.AddToPackageDlgKeyDown(Sender: TObject;
 begin
   if (Key=VK_ESCAPE) and (Shift=[]) then
     ModalResult:=mrCancel;
-end;
-
-procedure TAddToPackageDlg.AddFileShortenButtonClick(Sender: TObject);
-begin
-  if lisA2PchooseAnExistingFile=AddFilenameEdit.Text then exit;
-  AddFilenameEdit.Text:=
-    SwitchRelativeAbsoluteFilename(AddFilenameEdit.Text);
-end;
-
-procedure TAddToPackageDlg.AddFileBrowseButtonClick(Sender: TObject);
-var
-  OpenDialog: TOpenDialog;
-  AFilename: string;
-begin
-  OpenDialog:=TOpenDialog.Create(nil);
-  try
-    InputHistories.ApplyFileDialogSettings(OpenDialog);
-    OpenDialog.InitialDir:=
-      LazPackage.GetFileDialogInitialDir(OpenDialog.InitialDir);
-    OpenDialog.Title:=lisOpenFile;
-    OpenDialog.Options:=OpenDialog.Options+[ofFileMustExist,ofPathMustExist];
-    OpenDialog.Filter:=lisLazarusFile+' (*.pas;*.pp;*.inc;*.lfm;*.lrs;*.xml)|*.'
-      +'pas;*.pp;*.inc;*.lfm;*.lrs;*.xml'
-      +'|'+lisPascalUnit+' (*.pp;*.pas)|*.pp;*.pas'
-      +'|'+lisPascalSourceFile+' (*.pas)|*.pas'
-      +'|'+lisFreePascalSourceFile+' (*.pp)|*.pp'
-      +'|'+lisPkgFileTypeIssues+' (*.xml)|*.xml'
-      +'|'+dlgAllFiles+' ('+GetAllFilesMask+')|'+GetAllFilesMask;
-    if OpenDialog.Execute then begin
-      AFilename:=CleanAndExpandFilename(OpenDialog.Filename);
-      if FileExistsUTF8(AFilename) then begin
-        LazPackage.ShortenFilename(AFilename,true);
-        AddFilenameEdit.Text:=AFilename;
-        UpdateAddFileInfo;
-      end;
-    end;
-    InputHistories.StoreFileDialogSettings(OpenDialog);
-  finally
-    OpenDialog.Free;
-  end;
-end;
-
-procedure TAddToPackageDlg.AddFileButtonClick(Sender: TObject);
-var
-  i: Integer;
-  CurPFT: TPkgFileType;
-  Filename: String;
-begin
-  Filename:=AddFilenameEdit.Text;
-  if Filename='' then exit;
-  LazPackage.LongenFilename(Filename);
-
-  Params.Clear;
-  Params.AddType:=d2ptUnit;
-  Params.UnitFilename:=Filename;
-  Params.FileType:=pftText;
-  Params.Unit_Name:='';
-  Params.PkgFileFlags:=[];
-
-  if not FileExistsUTF8(Params.UnitFilename) then begin
-    MessageDlg(lisFileNotFound,
-      Format(lisPkgMangFileNotFound, ['"', Params.UnitFilename, '"']),
-      mtError,[mbCancel],0);
-    exit;
-  end;
-  if LazPackage.FindPkgFile(Params.UnitFilename,true,false)<>nil then begin
-    MessageDlg(lisA2PFileAlreadyInPackage,
-      Format(lisA2PTheFileIsAlreadyInThePackage, ['"', Params.UnitFilename, '"']
-        ),
-      mtError,[mbCancel],0);
-    exit;
-  end;
-  
-  i:=0;
-  for CurPFT:=Low(TPkgFileType) to High(TPkgFileType) do begin
-    if CurPFT=pftVirtualUnit then continue;
-    if i=AddFileTypeRadioGroup.ItemIndex then begin
-      Params.FileType:=CurPFT;
-    end;
-    inc(i);
-  end;
-  if Params.FileType in PkgFileUnitTypes then
-    Include(Params.PkgFileFlags,pffAddToPkgUsesSection);
-
-  ModalResult:=mrOk;
 end;
 
 procedure TAddToPackageDlg.AncestorComboBoxCloseUp(Sender: TObject);
@@ -1046,14 +947,12 @@ begin
   NewFilePage.Caption:=lisA2PNewFile;
   NewComponentPage.Caption:=lisA2PNewComponent;
   NewRequirementPage.Caption:=lisProjAddNewRequirement;
-  AddFilePage.Caption:=lisA2PAddFile;
   AddFilesPage.Caption:=lisA2PAddFiles;
   NoteBook.PageIndex:=0;
 
   SetupNewFilePage;
   SetupNewComponentPage;
   SetupAddDependencyPage;
-  SetupAddFilePage;
   SetupAddFilesPage;
 end;
 
@@ -1180,48 +1079,6 @@ begin
   end;
 end;
 
-procedure TAddToPackageDlg.SetupAddFilePage;
-var
-  pft: TPkgFileType;
-begin
-  with AddFilenameLabel do begin
-    Caption:=lisA2PFileName;
-  end;
-
-  with AddFilenameEdit do begin
-    Text:=lisA2PchooseAnExistingFile;
-  end;
-
-  with AddFileBrowseButton do begin
-    Caption:='...';
-  end;
-
-  with AddFileShortenButton do begin
-    Caption:='<>';
-  end;
-
-  with AddFileTypeRadioGroup do begin
-    Caption:=lisAF2PFileType;
-    with Items do begin
-      BeginUpdate;
-      Clear;
-      for pft:=Low(TPkgFileType) to High(TPkgFileType) do begin
-        if pft=pftVirtualUnit then continue;
-        Add(GetPkgFileTypeLocalizedName(pft));
-      end;
-      EndUpdate;
-    end;
-  end;
-
-  with AddFileButton do begin
-    Caption:=lisLazBuildOk;
-  end;
-
-  with CancelAddFileButton do begin
-    Caption:=dlgCancel;
-  end;
-end;
-
 procedure TAddToPackageDlg.SetupAddFilesPage;
 var
   CurColumn: TListColumn;
@@ -1323,25 +1180,6 @@ begin
   if LazPackage.HasDirectory then
     NewFileName:=LazPackage.Directory+NewFileName;
   ComponentUnitFileEdit.Text:=NewFileName;
-end;
-
-procedure TAddToPackageDlg.UpdateAddFileInfo;
-var
-  CurFilename: String;
-  NewPFT: TPkgFileType;
-  CurPFT: TPkgFileType;
-  i: Integer;
-begin
-  CurFilename:=AddFilenameEdit.Text;
-  NewPFT:=FileNameToPkgFileType(CurFilename);
-  if NewPFT=pftVirtualUnit then NewPFT:=pftUnit;
-  i:=0;
-  for CurPFT:=Low(TPkgFileType) to High(TPkgFileType) do begin
-    if CurPFT=pftVirtualUnit then continue;
-    if CurPFT=NewPFT then break;
-    inc(i);
-  end;
-  AddFileTypeRadioGroup.ItemIndex:=i;
 end;
 
 function TAddToPackageDlg.SwitchRelativeAbsoluteFilename(const Filename: string
