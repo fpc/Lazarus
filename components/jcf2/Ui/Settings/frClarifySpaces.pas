@@ -31,15 +31,15 @@ interface
 
 uses
   { delphi }
-  Classes, Controls, Forms,
-  StdCtrls,
-  { JVCL }
-  JvEdit, JvExStdCtrls, JvValidateEdit,
+  Classes, Controls, LResources, Forms, StdCtrls, ExtCtrls, Spin,
   { local}
-  frmBaseSettingsFrame, ExtCtrls;
+  IDEOptionsIntf;
 
 type
-  TfClarifySpaces = class(TfrSettingsFrame)
+
+  { TfClarifySpaces }
+
+  TfClarifySpaces = class(TAbstractIDEOptionsEditor)
     cbFixSpacing: TCheckBox;
     cbSpaceClassHeritage: TCheckBox;
     gbColon: TGroupBox;
@@ -47,23 +47,23 @@ type
     lblSpacesBeforeColonClassVar: TLabel;
     lblSpaceBeforeColonFn: TLabel;
     lblSpaceBeforeColonParam: TLabel;
-    eSpaceBeforeColonVar: TJvValidateEdit;
-    eSpaceBeforeColonParam: TJvValidateEdit;
-    eSpaceBeforeColonFn: TJvValidateEdit;
-    eSpacesBeforeColonClassVar: TJvValidateEdit;
+    eSpaceBeforeColonVar: TSpinEdit;
+    eSpaceBeforeColonParam: TSpinEdit;
+    eSpaceBeforeColonFn: TSpinEdit;
+    eSpacesBeforeColonClassVar: TSpinEdit;
     gbTabs: TGroupBox;
     cbTabsToSpaces: TCheckBox;
     cbSpacesToTabs: TCheckBox;
     Label1: TLabel;
-    edtSpacesPerTab: TJvValidateEdit;
+    edtSpacesPerTab: TSpinEdit;
     Label3: TLabel;
-    edtSpacesForTab: TJvValidateEdit;
-    eSpacesBeforeCaseLabel: TJvValidateEdit;
-    eSpacesBeforeLabel: TJvValidateEdit;
+    edtSpacesForTab: TSpinEdit;
+    eSpacesBeforeCaseLabel: TSpinEdit;
+    eSpacesBeforeLabel: TSpinEdit;
     lblSpacesBeforeCaseLabel: TLabel;
     lbSpacesBeforeLabel: TLabel;
     cbMaxSpaces: TCheckBox;
-    edtMaxSpacesInCode: TJvValidateEdit;
+    edtMaxSpacesInCode: TSpinEdit;
     rgOperators: TRadioGroup;
     GroupBoxInsertSpaceBeforeBracket: TGroupBox;
     cbInsertSpaceBeforeBracketinFunctionDeclaration: TCheckBox;
@@ -72,45 +72,51 @@ type
     GroupBoxSpacesInsideBrackets: TGroupBox;
     CheckBoxInsertSpaceBeforeEnd: TCheckBox;
     cbInsertSpaceAfterOpen: TCheckBox;
-    eSpacesBeforeColonGeneric: TJvValidateEdit;
+    eSpacesBeforeColonGeneric: TSpinEdit;
     lblSpacesBeforeColonGeneric: TLabel;
-    eSpaceBeforeColonConst: TJvValidateEdit;
+    eSpaceBeforeColonConst: TSpinEdit;
     lblSpaceBeforeColonConst: TLabel;
-    eSpacesBeforeColonRecordField: TJvValidateEdit;
+    eSpacesBeforeColonRecordField: TSpinEdit;
     lblSpacesBeforeColonRecordField: TLabel;
     cbMoveSpacesToBeforeColon: TCheckBox;
     procedure cbTabsToSpacesClick(Sender: TObject);
     procedure cbSpacesToTabsClick(Sender: TObject);
     procedure cbMaxSpacesClick(Sender: TObject);
-  private
   public
     constructor Create(AOwner: TComponent); override;
 
-    procedure Read; override;
-    procedure Write; override;
-
+    function GetTitle: String; override;
+    procedure Setup(ADialog: TAbstractOptionsEditorDialog); override;
+    procedure ReadSettings(AOptions: TAbstractIDEOptions); override;
+    procedure WriteSettings(AOptions: TAbstractIDEOptions); override;
+    class function SupportedOptionsClass: TAbstractIDEOptionsClass; override;
   end;
 
 implementation
 
-{$ifdef FPC}
-  {$R *.lfm}
-{$else}
-  {$R *.dfm}
-{$endif}
-
-uses JcfHelp, JcfSettings, SetSpaces, SettingsTypes;
+uses
+  JcfHelp, JcfSettings, SetSpaces, SettingsTypes;
 
 constructor TfClarifySpaces.Create(AOwner: TComponent);
 begin
   inherited;
-  fiHelpContext := HELP_CLARIFY_SPACES;
+  //fiHelpContext := HELP_CLARIFY_SPACES;
+end;
+
+function TfClarifySpaces.GetTitle: String;
+begin
+  Result := 'Spaces';
+end;
+
+procedure TfClarifySpaces.Setup(ADialog: TAbstractOptionsEditorDialog);
+begin
+  //
 end;
 
 {-------------------------------------------------------------------------------
   worker procs }
 
-procedure TfClarifySpaces.Read;
+procedure TfClarifySpaces.ReadSettings(AOptions: TAbstractIDEOptions);
 begin
   with FormatSettings.Spaces do
   begin
@@ -154,7 +160,7 @@ begin
   cbMaxSpacesClick(nil);
 end;
 
-procedure TfClarifySpaces.Write;
+procedure TfClarifySpaces.WriteSettings(AOptions: TAbstractIDEOptions);
 begin
   with FormatSettings.Spaces do
   begin
@@ -197,6 +203,11 @@ begin
   end;
 end;
 
+class function TfClarifySpaces.SupportedOptionsClass: TAbstractIDEOptionsClass;
+begin
+  Result := TFormatSettings;
+end;
+
 {-------------------------------------------------------------------------------
   event handlers }
 
@@ -215,4 +226,7 @@ begin
   edtMaxSpacesInCode.Enabled := cbMaxSpaces.Checked;
 end;
 
+initialization
+  {$I frClarifySpaces.lrs}
+  RegisterIDEOptionsEditor(JCFOptionsGroup, TfClarifySpaces, JCFOptionSpaces, JCFOptionClarify);
 end.

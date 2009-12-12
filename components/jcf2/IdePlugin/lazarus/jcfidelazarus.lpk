@@ -7,7 +7,7 @@
       <Version Value="8"/>
       <PathDelim Value="\"/>
       <SearchPaths>
-        <IncludeFiles Value="..\..\Include\"/>
+        <IncludeFiles Value="..\..\Include\;C:\programming\lazarus\components\jcf2\Ui\Settings\"/>
         <OtherUnitFiles Value="..\..\;..\..\Parse\;..\..\Parse\PreProcessor\;..\..\Parse\UI\;..\..\Process\;..\..\Process\Align\;..\..\Process\Capitalisation\;..\..\Process\Indent\;..\..\Process\Info\;..\..\Process\Obfuscate\;..\..\Process\Onceoffs\;..\..\Process\Returns\;..\..\Process\Spacing\;..\..\Process\Transform\;..\..\Process\Warnings\;..\..\ReadWrite\;..\..\Settings\;..\..\Settings\Streams\;..\..\Ui\;..\..\Ui\Settings\;..\..\Utils\;..\..\Utils\DragDrop\"/>
         <UnitOutputDirectory Value="lib\$(TargetCPU)-$(TargetOS)"/>
       </SearchPaths>
@@ -22,7 +22,7 @@
     </CompilerOptions>
     <Description Value="JEDI Code Format IDE Plugin for Lazarus"/>
     <Version Major="2"/>
-    <Files Count="126">
+    <Files Count="132">
       <Item1>
         <Filename Value="jcfidemain.pas"/>
         <UnitName Value="JcfIdeMain"/>
@@ -528,6 +528,30 @@
         <Filename Value="..\..\Ui\Settings\frObfuscateSettings.pas"/>
         <UnitName Value="frObfuscateSettings"/>
       </Item126>
+      <Item127>
+        <Filename Value="..\..\Ui\Settings\frClarify.lfm"/>
+        <Type Value="LFM"/>
+      </Item127>
+      <Item128>
+        <Filename Value="..\..\Ui\Settings\frClarify.lrs"/>
+        <Type Value="LRS"/>
+      </Item128>
+      <Item129>
+        <Filename Value="..\..\Ui\Settings\frClarify.pas"/>
+        <UnitName Value="frClarify"/>
+      </Item129>
+      <Item130>
+        <Filename Value="..\..\Ui\Settings\frClarifySpaces.lfm"/>
+        <Type Value="LFM"/>
+      </Item130>
+      <Item131>
+        <Filename Value="..\..\Ui\Settings\frClarifySpaces.lrs"/>
+        <Type Value="LRS"/>
+      </Item131>
+      <Item132>
+        <Filename Value="..\..\Ui\Settings\frClarifySpaces.pas"/>
+        <UnitName Value="frClarifySpaces"/>
+      </Item132>
     </Files>
     <Type Value="RunAndDesignTime"/>
     <RequiredPkgs Count="2">

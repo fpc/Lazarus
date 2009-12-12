@@ -31,47 +31,54 @@ interface
 
 uses
   { delphi }
-  Classes, Controls, Forms,
-  StdCtrls, ExtCtrls,
+  Classes, Controls, LResources, Forms, StdCtrls, ExtCtrls,
   { local}
-  frmBaseSettingsFrame;
+  IDEOptionsIntf;
 
 type
-  TfClarify = class(TfrSettingsFrame)
+
+  { TfClarify }
+
+  TfClarify = class(TAbstractIDEOptionsEditor)
     rgRunOnceOffs: TRadioGroup;
     mFileExtensions: TMemo;
     Label1: TLabel;
-  private
-
   public
     constructor Create(AOwner: TComponent); override;
 
-    procedure Read; override;
-    procedure Write; override;
-
+    function GetTitle: String; override;
+    procedure Setup(ADialog: TAbstractOptionsEditorDialog); override;
+    procedure ReadSettings(AOptions: TAbstractIDEOptions); override;
+    procedure WriteSettings(AOptions: TAbstractIDEOptions); override;
+    class function SupportedOptionsClass: TAbstractIDEOptionsClass; override;
   end;
 
 implementation
 
-{$ifdef FPC}
-  {$R *.lfm}
-{$else}
-  {$R *.dfm}
-{$endif}
-
-uses JcfSettings, JcfHelp, SetClarify;
+uses
+  JcfSettings, JcfHelp, SetClarify;
 
 constructor TfClarify.Create(AOwner: TComponent);
 begin
   inherited;
-  fiHelpContext := HELP_CLARIFY;
+  //fiHelpContext := HELP_CLARIFY;
+end;
+
+function TfClarify.GetTitle: String;
+begin
+  Result := 'Clarify';
+end;
+
+procedure TfClarify.Setup(ADialog: TAbstractOptionsEditorDialog);
+begin
+  // nothing
 end;
 
 
 {-------------------------------------------------------------------------------
   worker procs }
 
-procedure TfClarify.Read;
+procedure TfClarify.ReadSettings(AOptions: TAbstractIDEOptions);
 begin
   with FormatSettings.Clarify do
   begin
@@ -81,7 +88,7 @@ begin
   end;
 end;
 
-procedure TfClarify.Write;
+procedure TfClarify.WriteSettings(AOptions: TAbstractIDEOptions);
 begin
   with FormatSettings.Clarify do
   begin
@@ -92,7 +99,14 @@ begin
   end;
 end;
 
+class function TfClarify.SupportedOptionsClass: TAbstractIDEOptionsClass;
+begin
+  Result := TFormatSettings;
+end;
+
 {-------------------------------------------------------------------------------
   event handlers }
-
+initialization
+  {$I frClarify.lrs}
+  RegisterIDEOptionsEditor(JCFOptionsGroup, TfClarify, JCFOptionClarify);
 end.

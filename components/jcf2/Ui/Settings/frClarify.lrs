@@ -1,0 +1,20 @@
+{ This is an automatically generated lazarus resource file }
+
+LazarusResources.Add('TfClarify','FORMDATA',[
+  'TPF0'#241#9'TfClarify'#8'fClarify'#6'Height'#3'$'#1#5'Width'#3#170#1#12'Clie'
+  +'ntHeight'#3'$'#1#11'ClientWidth'#3#170#1#12'Font.CharSet'#7#12'ANSI_CHARSET'
+  +#11'Font.Height'#2#241#9'Font.Name'#6#8'Segoe UI'#10'ParentFont'#8#0#242#2#0
+  +#6'TLabel'#6'Label1'#4'Left'#2#8#6'Height'#2#18#3'Top'#2#8#5'Width'#3#164#0#7
+  +'Caption'#6#26'File extensions to format:'#11'ParentColor'#8#0#0#242#2#1#11
+  +'TRadioGroup'#13'rgRunOnceOffs'#4'Left'#3#136#0#6'Height'#2'W'#3'Top'#2'"'#5
+  +'Width'#3#141#0#8'AutoFill'#9#7'Caption'#6#13'Run once-offs'#28'ChildSizing.'
+  +'LeftRightSpacing'#2#6#28'ChildSizing.TopBottomSpacing'#2#6#29'ChildSizing.E'
+  +'nlargeHorizontal'#7#24'crsHomogenousChildResize'#27'ChildSizing.EnlargeVert'
+  +'ical'#7#24'crsHomogenousChildResize'#28'ChildSizing.ShrinkHorizontal'#7#14
+  +'crsScaleChilds'#26'ChildSizing.ShrinkVertical'#7#14'crsScaleChilds'#18'Chil'
+  +'dSizing.Layout'#7#29'cclLeftToRightThenTopToBottom'#27'ChildSizing.Controls'
+  +'PerLine'#2#1#12'ClientHeight'#2'E'#11'ClientWidth'#3#137#0#13'Items.Strings'
+  +#1#6#11'Do &not run'#6#7'Do &run'#6#15'Run &only these'#0#8'TabOrder'#2#0#0#0
+  +#242#2#2#5'TMemo'#15'mFileExtensions'#4'Left'#2#8#6'Height'#2#127#3'Top'#2'"'
+  +#5'Width'#2'm'#8'TabOrder'#2#1#0#0#0
+]);

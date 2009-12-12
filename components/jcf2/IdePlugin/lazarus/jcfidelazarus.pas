@@ -34,7 +34,8 @@ uses
   SetReplace, SetReturns, SetSpaces, SettingsTypes, SetTransform, SetUses, 
   SetWordList, SettingsStream, fJcfErrorDisplay, Delay, IntList, 
   JcfFontSetFunctions, JcfHelp, JcfLog, JcfMiscFunctions, fAbout, 
-  JcfVersionConsts, frFiles, frObfuscateSettings, LazarusPackageIntf;
+  JcfVersionConsts, frFiles, frObfuscateSettings, frClarify, frClarifySpaces, 
+  LazarusPackageIntf;
 
 implementation
 
