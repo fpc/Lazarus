@@ -8,6 +8,8 @@ LazarusResources.Add('TBuildModesEditorFrame','FORMDATA',[
   +'th'#3#144#1#7'Caption'#6#17'BuildModesToolBar'#8'TabOrder'#2#0#0#11'TToolBu'
   +'tton'#22'NewBuildModeToolButton'#4'Left'#2#1#3'Top'#2#2#7'Caption'#6#3'New'
   +#14'ParentShowHint'#8#8'ShowHint'#9#7'OnClick'#7#27'NewBuildModeToolButtonCl'
-  +'ick'#0#0#0#10'TPopupMenu'#19'BuildModesPopupMenu'#4'left'#2'S'#3'top'#2's'#0
-  +#0#0
+  +'ick'#0#0#11'TToolButton'#22'NewBuildFlagToolButton'#4'Left'#2#24#3'Top'#2#2
+  +#7'Caption'#6#22'NewBuildFlagToolButton'#14'ParentShowHint'#8#8'ShowHint'#9#7
+  +'OnClick'#7#27'NewBuildFlagToolButtonClick'#0#0#0#10'TPopupMenu'#19'BuildMod'
+  +'esPopupMenu'#4'left'#2'S'#3'top'#2's'#0#0#0
 ]);

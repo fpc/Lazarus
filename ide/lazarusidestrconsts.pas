@@ -1069,6 +1069,12 @@ resourcestring
   dlgSubPropColor = 'SubProperties';
   dlgReferenceColor = 'Reference';
   dlgValueColor = 'Value';
+  lisUnableToAddSetting = 'Unable to add setting';
+  lisIsAGroupASettingCanOnlyBeAddedToNormalBuildModes = '%s is a group. A '
+    +'setting can only be added to normal build modes.';
+  lisPleaseSelectABuildModeFirst = 'Please select a build mode first.';
+  lisNewBuildMode = 'New build mode';
+  lisNewSetting = 'New setting';
   dlfReadOnlyColor = 'Read Only';
   dlgHighlightColor = 'Highlight Color';
   dlgHighlightFontColor = 'Highlight Font Color';
@@ -4575,6 +4581,7 @@ resourcestring
   lisIDEBuildOptions = 'IDE build options';
   lisUnableToWriteTheProjectInfoFileError = 'Unable to write the project info '
     +'file%s%s%s%s.%sError: %s';
+  lisBuildMode = 'Build mode';
 
 implementation
 

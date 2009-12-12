@@ -23,6 +23,14 @@ object BuildModesEditorFrame: TBuildModesEditorFrame
       ShowHint = True
       OnClick = NewBuildModeToolButtonClick
     end
+    object NewBuildFlagToolButton: TToolButton
+      Left = 24
+      Top = 2
+      Caption = 'NewBuildFlagToolButton'
+      ParentShowHint = False
+      ShowHint = True
+      OnClick = NewBuildFlagToolButtonClick
+    end
   end
   object BuildModesPopupMenu: TPopupMenu
     left = 83

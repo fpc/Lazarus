@@ -26,9 +26,9 @@ interface
 
 uses
   Classes, SysUtils, LCLProc, Controls, FileUtil, LResources, Forms, Grids,
-  Menus, ComCtrls,
+  Menus, ComCtrls, Dialogs,
   IDEImagesIntf,
-  CompilerOptions, IDEProcs;
+  LazarusIDEStrConsts, CompilerOptions, IDEProcs;
 
 type
 
@@ -63,10 +63,12 @@ type
                            var NewValue:string): boolean; override;
     function ValidateCell(const ACol, ARow: Integer;
                            var NewValue:string): boolean;
+    procedure UpdateIndexInGroup(aRow: integer);
   public
     constructor Create(TheOwner: TComponent); override;
     destructor Destroy; override;
     function AddNewBuildMode: TBuildMode;
+    function InsertNewBuildFlagBehind: TBuildModeFlag;
     property Graph: TBuildModeGraph read FGraph;
     procedure RebuildGrid; // call this after Graph changed
     property ModeRowCount: integer read GetModeRowCount;
@@ -80,6 +82,8 @@ type
     BuildModesPopupMenu: TPopupMenu;
     BuildModesToolBar: TToolBar;
     NewBuildModeToolButton: TToolButton;
+    NewBuildFlagToolButton: TToolButton;
+    procedure NewBuildFlagToolButtonClick(Sender: TObject);
     procedure NewBuildModeToolButtonClick(Sender: TObject);
   private
     FGrid: TBuildModesGrid;
@@ -149,10 +153,10 @@ begin
   TypeCol:=GroupModeCount+1;
   ValueCol:=TypeCol+1;
   if i=0 then begin
-    Cells[0,0]:='Build mode';
+    Cells[0, 0]:=lisBuildMode;
     for i:=1 to GroupModeCount do Cells[i,0]:='';
-    Cells[TypeCol,0]:='Type';
-    Cells[ValueCol,0]:='Value';
+    Cells[TypeCol, 0]:=dlgEnvType;
+    Cells[ValueCol, 0]:=dlgValueColor;
   end else begin
     CurRow:=ModeRows[i-1];
     // name
@@ -192,45 +196,80 @@ end;
 function TBuildModesGrid.ValidateCell(const ACol, ARow: Integer;
   var NewValue: string): boolean;
 var
-  CurMode: TBuildModeGridRow;
+  CurModeRow: TBuildModeGridRow;
   TypeCol: Integer;
   ValueCol: Integer;
   FlagType: TBuildModeFlagType;
 begin
   Result:=true;
   if (aRow>=1) and (aRow<=ModeRowCount) then begin
-    CurMode:=ModeRows[aRow-1];
+    CurModeRow:=ModeRows[aRow-1];
     TypeCol:=GroupModeCount+1;
     ValueCol:=TypeCol+1;
     //DebugLn(['TBuildModesGrid.ValidateCell aCol=',acol,' aRow=',arow,' ValueCol=',ValueCol]);
     if aCol=0 then begin
-      // set new mode name
-      NewValue:=Graph.FixModeName(NewValue,CurMode.Mode);
-      CurMode.Mode.Name:=NewValue;
+      if CurModeRow.IndexInGroup=0 then
+      begin
+        // set new mode name
+        NewValue:=Graph.FixModeName(NewValue,CurModeRow.Mode);
+        CurModeRow.Mode.Name:=NewValue;
+      end else begin
+        // this is a sub flag => should be empty
+        NewValue:='';
+      end;
     end else if ACol=TypeCol then begin
-      NewValue:=SpecialCharsToSpaces(NewValue,true);
-      FlagType:=CaptionToBuildModeFlagType(NewValue);
-      if (CurMode.Flag=nil) and (FlagType<>bmftNone) then begin
-        // create flag
-        CurMode.FFlag:=CurMode.Mode.AddFlag(FlagType,'','');
-      end else if CurMode.Flag<>nil then
-        // set new FlagType
-        CurMode.Flag.FlagType:=FlagType;
-      if FlagType=bmftSetVariable then
-        // set variable name
-        CurMode.Flag.Variable:=NewValue
-      else
-        // clean up variable name
-        CurMode.Flag.Variable:='';
+      if CurModeRow.Mode.ShowIncludes then begin
+        // this is a group mode => no flags allowed
+        NewValue:='';
+      end else begin
+        NewValue:=SpecialCharsToSpaces(NewValue,true);
+        FlagType:=CaptionToBuildModeFlagType(NewValue);
+        if (CurModeRow.Flag=nil) and (FlagType<>bmftNone) then begin
+          // create flag
+          CurModeRow.FFlag:=CurModeRow.Mode.AddFlag(FlagType,'','');
+        end else if CurModeRow.Flag<>nil then
+          // set new FlagType
+          CurModeRow.Flag.FlagType:=FlagType;
+        if FlagType=bmftSetVariable then
+          // set variable name
+          CurModeRow.Flag.Variable:=NewValue
+        else
+          // clean up variable name
+          CurModeRow.Flag.Variable:='';
+      end;
     end else if ACol=ValueCol then begin
-      NewValue:=SpecialCharsToSpaces(NewValue,true);
-      if (CurMode.Flag=nil) or (CurMode.Flag.FlagType=bmftNone) then
-        // no flag => no value
-        NewValue:=''
-      else
-        // set new value
-        CurMode.Flag.Value:=NewValue;
+      if CurModeRow.Mode.ShowIncludes then begin
+        // this is a group mode => no flags allowed
+        NewValue:='';
+      end else begin
+        NewValue:=SpecialCharsToSpaces(NewValue,true);
+        if (CurModeRow.Flag=nil) or (CurModeRow.Flag.FlagType=bmftNone) then
+          // no flag => no value
+          NewValue:=''
+        else
+          // set new value
+          CurModeRow.Flag.Value:=NewValue;
+      end;
     end;
+  end;
+end;
+
+procedure TBuildModesGrid.UpdateIndexInGroup(aRow: integer);
+var
+  IndexInGroup: Integer;
+  Mode: TBuildMode;
+  Index: LongInt;
+begin
+  Index:=aRow-1;
+  Mode:=ModeRows[Index].Mode;
+  while (Index>0) and (Mode=ModeRows[Index-1].Mode) do
+    dec(Index);
+  IndexInGroup:=0;
+  while (Index<ModeRowCount) and (ModeRows[Index].Mode=Mode) do
+  begin
+    ModeRows[Index].IndexInGroup:=IndexInGroup;
+    inc(Index);
+    inc(IndexInGroup);
   end;
 end;
 
@@ -266,6 +305,39 @@ begin
   GridRow:=TBuildModeGridRow.Create(Result,CurFlag);
   FModeRows.Add(GridRow);
   FillGridRow(RowCount-1);
+end;
+
+function TBuildModesGrid.InsertNewBuildFlagBehind: TBuildModeFlag;
+var
+  CurModeRow: TBuildModeGridRow;
+  InsertPos: Integer;
+  GridRow: TBuildModeGridRow;
+begin
+  if (Row<1) or (Row>ModeRowCount) then
+  begin
+    MessageDlg(lisUnableToAddSetting,
+      lisPleaseSelectABuildModeFirst, mtError, [mbCancel], 0);
+    exit;
+  end;
+  DebugLn(['TBuildModesGrid.InsertNewBuildFlagBehind ',Row]);
+  CurModeRow:=ModeRows[Row-1];
+  if CurModeRow.Mode.ShowIncludes then
+  begin
+    MessageDlg(lisUnableToAddSetting,
+      Format(lisIsAGroupASettingCanOnlyBeAddedToNormalBuildModes, [
+        CurModeRow.Mode.Name]),
+      mtError, [mbCancel], 0);
+    exit;
+  end;
+  DebugLn(['TBuildModesGrid.InsertNewBuildFlagBehind AAA1']);
+  Result:=CurModeRow.Mode.InsertFlag(CurModeRow.IndexInGroup+1,bmftNone,'','');
+  InsertPos:=Row+1;
+  GridRow:=TBuildModeGridRow.Create(CurModeRow.Mode,Result);
+  FModeRows.Insert(InsertPos-1,GridRow);
+  UpdateIndexInGroup(InsertPos);
+  InsertColRow(false,InsertPos);
+  FillGridRow(InsertPos);
+  Row:=InsertPos;
 end;
 
 procedure TBuildModesGrid.RebuildGrid;
@@ -351,6 +423,11 @@ begin
   Grid.AddNewBuildMode;
 end;
 
+procedure TBuildModesEditorFrame.NewBuildFlagToolButtonClick(Sender: TObject);
+begin
+  Grid.InsertNewBuildFlagBehind;
+end;
+
 constructor TBuildModesEditorFrame.Create(TheOwner: TComponent);
 begin
   inherited Create(TheOwner);
@@ -362,8 +439,11 @@ begin
   end;
 
   BuildModesToolBar.Images := IDEImages.Images_16;
-  NewBuildModeToolButton.Hint:='New build mode';
+  NewBuildModeToolButton.Hint:=lisNewBuildMode;
   NewBuildModeToolButton.ImageIndex := IDEImages.LoadImage(16, 'laz_add');
+  NewBuildFlagToolButton.Hint:=lisNewSetting;
+  NewBuildFlagToolButton.ImageIndex := IDEImages.LoadImage(16, 'laz_edit');
+
   // laz_delete, laz_edit, arrow_up, arrow_down
 end;
 

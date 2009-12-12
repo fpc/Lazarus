@@ -183,6 +183,8 @@ type
     procedure Exclude(aMode: TBuildMode);
     function AddFlag(FlagType: TBuildModeFlagType; Value: string;
                      Variable: string = ''): TBuildModeFlag;
+    function InsertFlag(InsertPos: integer; FlagType: TBuildModeFlagType;
+                     Value: string; Variable: string = ''): TBuildModeFlag;
     procedure DeleteFlag(Index: integer);
     procedure Assign(Source: TPersistent); override; // copy without Name
     function IsEqual(aMode: TBuildMode): boolean;
@@ -5010,10 +5012,20 @@ end;
 function TBuildMode.AddFlag(FlagType: TBuildModeFlagType; Value: string;
   Variable: string): TBuildModeFlag;
 begin
+  Result:=InsertFlag(FlagCount,FlagType,Value,Variable);
+end;
+
+function TBuildMode.InsertFlag(InsertPos: integer;
+  FlagType: TBuildModeFlagType; Value: string; Variable: string
+  ): TBuildModeFlag;
+begin
+  if (InsertPos<0) or (InsertPos>FlagCount) then
+    RaiseGDBException('');
   Result:=TBuildModeFlag.Create;
   Result.FlagType:=FlagType;
   Result.Value:=Value;
   Result.Variable:=Variable;
+  FFlags.Insert(InsertPos,Result);
 end;
 
 procedure TBuildMode.DeleteFlag(Index: integer);
