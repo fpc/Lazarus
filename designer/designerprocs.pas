@@ -121,6 +121,7 @@ var
   FormOrigin: TPoint;
   ParentForm: TCustomForm;
   Parent: TWinControl;
+  p: TPoint;
 begin
   if Component is TControl then
   begin
@@ -141,20 +142,16 @@ begin
   begin
     Result.X := LeftFromDesignInfo(Component.DesignInfo);
     Result.Y := TopFromDesignInfo(Component.DesignInfo);
-    ParentForm := GetDesignerForm(Component);
-    if ParentForm = nil then
-      Exit;
-
-    if (Component <> nil) and (Component.Owner <> ParentForm) then
+    if Component.Owner is TWinControl then
     begin
-      Component := Component.Owner;
-      if (csInline in Component.ComponentState) and (Component is TControl) then
+      Parent:=TWinControl(Component.Owner);
+      ParentForm := GetParentForm(Parent);
+      if ParentForm<>Parent then
       begin
-        with ParentForm.ScreenToClient(TControl(Component).ClientToScreen(Point(0, 0))) do
-        begin
-          inc(Result.X, X);
-          inc(Result.Y, Y);
-        end;
+        p:=Parent.ClientOrigin;
+        FormOrigin := ParentForm.ClientOrigin;
+        inc(Result.X,p.X-FormOrigin.X);
+        inc(Result.Y,p.Y-FormOrigin.Y);
       end;
     end;
   end;
