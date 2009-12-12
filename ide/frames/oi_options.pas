@@ -30,11 +30,6 @@ uses
   ColorBox, Graphics;
 
 type
-  TColorRec = record
-    ColorName: String;
-    ColorValue: TColor;
-  end;
-
   TOIColor = (
     ocBackground,
     ocGutter,
@@ -295,7 +290,7 @@ begin
     ObjectInspectorOptions.DefaultValueColor := ColorsListBox.Colors[Ord(ocDefValue)];
     ObjectInspectorOptions.SubPropertiesColor := ColorsListBox.Colors[Ord(ocSubProp)];
     ObjectInspectorOptions.ReferencesColor := ColorsListBox.Colors[Ord(ocReference)];
-    ObjectInspectorOptions.ReadOnlyColor :=  ColorsListBox.Colors[Ord(ocReadOnly)];
+    ObjectInspectorOptions.ReadOnlyColor := ColorsListBox.Colors[Ord(ocReadOnly)];
 
     ObjectInspectorOptions.ShowHints := OIShowHintCheckBox.Checked;
     ObjectInspectorOptions.AutoShow := OIAutoShowCheckBox.Checked;

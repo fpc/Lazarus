@@ -3,6 +3,7 @@ inherited OIOptionsFrame: TOIOptionsFrame
   Width = 634
   ClientHeight = 484
   ClientWidth = 634
+  TabOrder = 0
   Visible = False
   DesignLeft = 403
   DesignTop = 218
