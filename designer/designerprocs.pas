@@ -54,9 +54,10 @@ type
     FFlags: TDesignerDCFlags;
     FFormClientOrigin: TPoint; // Form client origin on desktop
     FFormOrigin: TPoint; // DC origin relative to designer Form
-    FSavedDC: HDC;
     FDcSize: TPoint;
     FForm: TCustomForm;
+    FSavedDC: HDC;
+    FPaintCount: integer;
     function GetDCOrigin: TPoint;
     function GetDCSize: TPoint;
     function GetFormClientOrigin: TPoint;
@@ -66,8 +67,8 @@ type
     destructor Destroy; override;
     procedure SetDC(AForm: TCustomForm; ADCControl: TWinControl; ADC: HDC);
     procedure Clear;
-    procedure Save;
-    procedure Restore;
+    procedure BeginPainting;
+    procedure EndPainting;
     function RectVisible(ALeft, ATop, ARight, ABottom: integer): boolean;
     property Canvas: TCanvas read FCanvas;
     property DC: HDC read FDC;
@@ -455,23 +456,28 @@ end;
 
 procedure TDesignerDeviceContext.Clear;
 begin
-  Restore;
+  if (FSavedDC<>0) or (FPaintCount>0) then
+    RaiseGDBException('');
   FDC := 0;
   FFlags := FFlags - [ddcFormOriginValid, ddcFormClientOriginValid, ddcDCOriginValid, ddcSizeValid];
 end;
 
-procedure TDesignerDeviceContext.Save;
+procedure TDesignerDeviceContext.BeginPainting;
 begin
-  if FSavedDC = 0 then 
+  if FSavedDC = 0 then
   begin
     FSavedDC := SaveDC(DC);
     FCanvas.Handle := DC;
   end;
+  inc(FPaintCount);
+  //DebugLn(['TDesignerDeviceContext.BeginPainting ',FPaintCount]);
 end;
 
-procedure TDesignerDeviceContext.Restore;
+procedure TDesignerDeviceContext.EndPainting;
 begin
-  if FSavedDC <> 0 then 
+  //DebugLn(['TDesignerDeviceContext.EndPainting ',FPaintCount]);
+  dec(FPaintCount);
+  if (FPaintCount=0) and (FSavedDC <> 0) then
   begin
     FCanvas.Handle := 0;
     RestoreDC(DC, FSavedDC);

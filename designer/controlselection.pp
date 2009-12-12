@@ -2294,13 +2294,13 @@ var
     if not DC.RectVisible(RLeft, RTop, RRight, RBottom) then Exit;
     if not RestoreBrush then
     begin
-      DC.Save;
+      DC.BeginPainting;
+      RestoreBrush := True;
       with DC.Canvas do
       begin
         OldBrushColor := Brush.Color;
         Brush.Color := GrabberColor;
       end;
-      RestoreBrush := True;
     end;
     DC.Canvas.FillRect(Rect(RLeft, RTop, RRight, RBottom));
     //DC.Canvas.TextOut(RLeft,RTop,dbgs(ord(g)));
@@ -2327,7 +2327,7 @@ begin
   if RestoreBrush then
   begin
     DC.Canvas.Brush.Color:=OldBrushColor;
-    DC.Restore;
+    DC.EndPainting;
   end;
 end;
 
@@ -2342,7 +2342,7 @@ var
     if not DC.RectVisible(RLeft, RTop, RRight, RBottom) then exit;
     if not RestoreBrush then
     begin
-      DC.Save;
+      DC.BeginPainting;
       OldBrushColor:=DC.Canvas.Brush.Color;
       DC.Canvas.Brush.Color:=MarkerColor;
       RestoreBrush := True;
@@ -2360,7 +2360,7 @@ begin
   if RestoreBrush then
   begin
     DC.Canvas.Brush.Color:=OldBrushColor;
-    DC.Restore;
+    DC.EndPainting;
   end;
 end;
 
@@ -2465,7 +2465,7 @@ var
     begin
       if not DC.RectVisible(StartX, StartY, EndX, EndY) then exit;
       if not RestorePen then begin
-        DC.Save;
+        DC.BeginPainting;
         with DC.Canvas do begin
           OldPenColor:=Pen.Color;
           if RubberbandType=rbtSelection then
@@ -2499,7 +2499,7 @@ var
     if RestorePen then
     begin
       DC.Canvas.Pen.Color:=OldPenColor;
-      DC.Restore;
+      DC.EndPainting;
       Include(FStates,cssRubberbandPainted);
     end;
   end;
@@ -3109,7 +3109,7 @@ var
     if not DC.RectVisible(ARect.Left,ARect.Top,ARect.Right,ARect.Bottom) then
       exit;
     if not RestorePen then begin
-      DC.Save;
+      DC.BeginPainting;
       OldPenColor:=DC.Canvas.Pen.Color;
       RestorePen:=true;
     end;
@@ -3136,7 +3136,6 @@ begin
 
   RestorePen:=false;
 
-  DC.Save;
   DCOrigin:=DC.FormOrigin;
   OldPenColor:=DC.Canvas.Pen.Color;
   // draw bottom guideline
@@ -3160,9 +3159,8 @@ begin
   if RestorePen then
   begin
     DC.Canvas.Pen.Color:=OldPenColor;
-    DC.Restore;
+    DC.EndPainting;
   end;
-  DC.Restore;
   Include(FStates,cssGuideLinesPainted);
 end;
 

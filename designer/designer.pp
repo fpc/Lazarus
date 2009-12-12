@@ -1428,19 +1428,17 @@ begin
 end;
 
 function TDesigner.NonVisualComponentLeftTop(AComponent: TComponent): TPoint;
+var
+  ParentForm: TPoint;
 begin
   Result.X := LeftFromDesignInfo(AComponent.DesignInfo);
   Result.Y := TopFromDesignInfo(AComponent.DesignInfo);
   // convert to lookuproot coords
-  if (AComponent.Owner <> FLookupRoot) and (FLookupRoot is TControl) then
+  if (AComponent.Owner <> FLookupRoot) then
   begin
-    AComponent := AComponent.Owner;
-    if AComponent is TControl then
-      with TControl(FLookupRoot).ScreenToClient(TControl(AComponent).ClientToScreen(Point(0, 0))) do
-      begin
-        inc(Result.X, X);
-        inc(Result.Y, Y);
-      end;
+    ParentForm:=GetParentFormRelativeClientOrigin(AComponent.Owner);
+    inc(Result.X,ParentForm.X);
+    inc(Result.Y,ParentForm.Y);
   end;
 end;
 
@@ -2683,7 +2681,7 @@ begin
   or (not (csAcceptsControls in AWinControl.ControlStyle))
   or ((not ShowGrid) and (not ShowBorderSpacing)) then exit;
 
-  aDDC.Save;
+  aDDC.BeginPainting;
   try
     // exclude all child control areas
     Count:=AWinControl.ControlCount;
@@ -2724,7 +2722,7 @@ begin
       end;
     end;
   finally
-    aDDC.Restore;
+    aDDC.EndPainting;
   end;
 end;
 
@@ -2995,18 +2993,44 @@ var
   OwnerRect, IconRect, TextRect: TRect;
   TextSize: TSize;
   IsSelected: Boolean;
-  Root: TComponent;
   RGN: HRGN;
 begin
-  // also call draw for the inline components children
-  if (csInline in AComponent.ComponentState) or (AComponent.Owner=nil) then
-    Root:=AComponent
-  else
-    Root:=AComponent.Owner;
-  TComponentAccess(AComponent).GetChildren(@DrawNonVisualComponent, Root);
+  if (AComponent is TControl)
+  and (csNoDesignVisible in TControl(AComponent).ControlStyle) then
+    exit;
+
+  // draw children
+  if (AComponent.Owner=nil) then
+  begin
+    FDDC.BeginPainting;
+    TComponentAccess(AComponent).GetChildren(@DrawNonVisualComponent, AComponent);
+    FDDC.EndPainting;
+  end
+  else if (csInline in AComponent.ComponentState) then
+  begin
+    if AComponent is TControl then
+    begin
+      // clip to client area
+      FDDC.BeginPainting;
+      FDDC.Canvas.SaveHandleState;
+      OwnerRect := TControl(AComponent).ClientRect;
+      GetParentFormRelativeClientOrigin(AComponent);
+      with OwnerRect do
+        RGN := CreateRectRGN(Left, Top, Right, Bottom);
+      SelectClipRGN(FDDC.DC, RGN);
+      DeleteObject(RGN);
+    end;
+    TComponentAccess(AComponent).GetChildren(@DrawNonVisualComponent, AComponent);
+    if AComponent is TControl then
+    begin
+      FDDC.Canvas.RestoreHandleState;
+      FDDC.EndPainting;
+    end;
+  end else begin
+    TComponentAccess(AComponent).GetChildren(@DrawNonVisualComponent, AComponent.Owner);
+  end;
+
   if not ComponentIsIcon(AComponent) or (AComponent.Owner = nil) then
-    Exit;
-  if not (AComponent.Owner is TControl) then
     Exit;
   // actual draw
   Diff := FDDC.FormOrigin;
@@ -3021,20 +3045,6 @@ begin
     Exit;
 
   IsSelected := ControlSelection.IsSelected(AComponent);
-  FDDC.Save;
-
-  // set clipping
-  if AComponent.Owner <> FDDC.Form then
-  begin
-    OwnerRect := TControl(AComponent.Owner).ClientRect;
-    Diff := FDDC.Form.ScreenToClient(TControl(AComponent.Owner).ClientToScreen(Point(0, 0)));
-    OffsetRect(OwnerRect, Diff.X, Diff.Y);
-    // don't restore later FDDC.Restore will do this itself
-    with OwnerRect do
-      RGN := CreateRectRGN(Left, Top, Right, Bottom);
-    SelectClipRGN(FDDC.DC, RGN);
-    DeleteObject(RGN);
-  end;
 
   if FSurface = nil then
   begin
@@ -3051,7 +3061,8 @@ begin
     InflateRect(IconRect, -NonVisualCompBorder + 1, -NonVisualCompBorder + 1);
 
   // draw component Name
-  if ShowComponentCaptions and (((GetKeyState(VK_LBUTTON) and $80) = 0) or not IsSelected) then
+  if ShowComponentCaptions
+  and (((GetKeyState(VK_LBUTTON) and $80) = 0) or not IsSelected) then
   begin
     // workarounds gtk2 problem with DrawText on gc with GDK_INCLUDE_INFERIORS
     // it uses pango drawing and this for some reason does not take subwindow_mode
@@ -3093,17 +3104,13 @@ begin
   if (ControlSelection.Count > 1) and IsSelected then
     ControlSelection.DrawMarkerAt(FDDC,
       ItemLeft, ItemTop, NonVisualCompWidth, NonVisualCompWidth);
-  FDDC.Restore;
 end;
 
 procedure TDesigner.DrawNonVisualComponents(aDDC: TDesignerDeviceContext);
-var
-  i: integer;
 begin
   FSurface := nil;
   FDDC := aDDC;
-  for i := 0 to FLookupRoot.ComponentCount - 1 do
-    DrawNonVisualComponent(FLookupRoot.Components[i]);
+  DrawNonVisualComponent(FLookupRoot);
   FDDC := nil;
   if FSurface <> nil then
     FSurface.Free;
@@ -3122,7 +3129,9 @@ begin
   //writeln('TDesigner.DrawDesignerItems B painting');
   DesignerDC := GetDesignerDC(Form.Handle);
   DDC.SetDC(Form, Form, DesignerDC);
+  DDC.BeginPainting;
   DoPaintDesignerItems;
+  DDC.EndPainting;
   DDC.Clear;
   ReleaseDesignerDC(Form.Handle, DesignerDC);
 end;
