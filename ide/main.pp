@@ -4185,18 +4185,7 @@ begin
     begin
       OnLoadIDEOptions:=@Self.OnLoadIDEOptions;
       OnSaveIDEOptions:=@Self.OnSaveIDEOptions;
-      // load settings from EnvironmentOptions to IDEOptionsDialog
-      ReadSettings(EnvironmentOptions);
-      // load settings from EditorOptions to IDEOptionsDialog
-      ReadSettings(EditorOpts);
-      // load settings from CodetoolsOptions to IDEOptionsDialog
-      ReadSettings(CodeToolsOpts);
-      // load settings from CodeExplorerOptions to IDEOptionsDialog
-      ReadSettings(CodeExplorerOptions);
-      // load settings from HelpOptions to IDEOptionsDialog
-      ReadSettings(HelpOpts);
-      // load other settings that does not belong to any group
-      ReadSettings(nil);
+      ReadAll;
     end;
     if IDEOptionsDialog.ShowModal = mrOk then
     begin
@@ -4206,12 +4195,7 @@ begin
       // load settings from IDEOptionsDialog to EnvironmentOptions
       OldCompilerFilename:=EnvironmentOptions.CompilerFilename;
       OldLanguage:=EnvironmentOptions.LanguageID;
-      IDEOptionsDialog.WriteSettings(EnvironmentOptions);
-      IDEOptionsDialog.WriteSettings(EditorOpts);
-      IDEOptionsDialog.WriteSettings(CodeToolsOpts);
-      IDEOptionsDialog.WriteSettings(CodeExplorerOptions);
-      IDEOptionsDialog.WriteSettings(HelpOpts);
-      IDEOptionsDialog.WriteSettings(nil);
+      IDEOptionsDialog.WriteAll;
       ShowCompileDialog := EnvironmentOptions.ShowCompileDialog;
 
       UpdateDefaultPascalFileExtensions;

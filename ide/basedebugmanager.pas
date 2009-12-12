@@ -58,6 +58,7 @@ type
   TDebuggerOptions = class(TAbstractIDEOptions)
   public
     class function GetGroupCaption:string; override;
+    class function GetInstance: TAbstractIDEOptions; override;
   end;
 
   TBaseDebugManager = class(TComponent)
@@ -185,6 +186,11 @@ end;
 class function TDebuggerOptions.GetGroupCaption: string;
 begin
   Result := dlgGroupDebugger;
+end;
+
+class function TDebuggerOptions.GetInstance: TAbstractIDEOptions;
+begin
+  Result := nil;
 end;
 
 initialization

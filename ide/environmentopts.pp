@@ -272,6 +272,7 @@ type
     procedure SetTestBuildDirectory(const AValue: string);
   public
     class function GetGroupCaption:string; override;
+    class function GetInstance: TAbstractIDEOptions; override;
   public
     constructor Create;
     destructor Destroy; override;
@@ -755,6 +756,11 @@ end;
 class function TEnvironmentOptions.GetGroupCaption: string;
 begin
   Result := dlgGroupEnvironment;
+end;
+
+class function TEnvironmentOptions.GetInstance: TAbstractIDEOptions;
+begin
+  Result := EnvironmentOptions;
 end;
 
 procedure TEnvironmentOptions.SetLazarusDefaultFilename;

@@ -66,6 +66,9 @@ type
     function FindEditor(AEditor: TAbstractIDEOptionsEditorClass): TAbstractIDEOptionsEditor; override;
     procedure ReadSettings(AOptions: TAbstractIDEOptions);
     procedure WriteSettings(AOptions: TAbstractIDEOptions);
+
+    procedure ReadAll;
+    procedure WriteAll;
   end;
 
 implementation
@@ -216,6 +219,52 @@ begin
     ClassTypeForCompare := nil;
 
   Traverse(CategoryTree.Items.GetFirstNode);
+end;
+
+procedure TIDEOptionsDialog.ReadAll;
+var
+  i: integer;
+  Rec: PIDEOptionsGroupRec;
+  Instance: TAbstractIDEOptions;
+begin
+  for i := 0 to IDEEditorGroups.Count - 1 do
+  begin
+    Rec := IDEEditorGroups[i];
+    if Rec^.Items <> nil then
+    begin
+      if Rec^.GroupClass <> nil then
+      begin
+        Instance := Rec^.GroupClass.GetInstance;
+        if Instance <> nil then
+          ReadSettings(Instance);
+      end;
+    end;
+  end;
+  // load settings that does not belong to any group
+  ReadSettings(nil);
+end;
+
+procedure TIDEOptionsDialog.WriteAll;
+var
+  i: integer;
+  Rec: PIDEOptionsGroupRec;
+  Instance: TAbstractIDEOptions;
+begin
+  for i := 0 to IDEEditorGroups.Count - 1 do
+  begin
+    Rec := IDEEditorGroups[i];
+    if Rec^.Items <> nil then
+    begin
+      if Rec^.GroupClass <> nil then
+      begin
+        Instance := Rec^.GroupClass.GetInstance;
+        if Instance <> nil then
+          WriteSettings(Instance);
+      end;
+    end;
+  end;
+  // save settings that does not belong to any group
+  WriteSettings(nil);
 end;
 
 function TIDEOptionsDialog.CheckValues: boolean;

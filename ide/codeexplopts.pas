@@ -154,6 +154,7 @@ type
     procedure SetRefresh(const AValue: TCodeExplorerRefresh);
   public
     class function GetGroupCaption:string; override;
+    class function GetInstance: TAbstractIDEOptions; override;
   public
     constructor Create;
     destructor Destroy; override;
@@ -405,6 +406,11 @@ end;
 class function TCodeExplorerOptions.GetGroupCaption: string;
 begin
   Result := dlgGroupCodeExplorer;
+end;
+
+class function TCodeExplorerOptions.GetInstance: TAbstractIDEOptions;
+begin
+  Result := CodeExplorerOptions;
 end;
 
 procedure TCodeExplorerOptions.Clear;

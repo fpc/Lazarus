@@ -35,9 +35,13 @@ type
   TAbstractOptionsEditorDialog = class;
 
   // types
+
+  { TAbstractIDEOptions }
+
   TAbstractIDEOptions = class(TPersistent)
   public
     class function GetGroupCaption:string; virtual; abstract;
+    class function GetInstance: TAbstractIDEOptions; virtual; abstract;
   end;
   TAbstractIDEOptionsClass = class of TAbstractIDEOptions;
 
@@ -48,8 +52,11 @@ type
 
   TAbstractIDEOptionsEditor = class(TFrame)
   private
+    FOnChange: TNotifyEvent;
     FOnLoadIDEOptions: TOnLoadIDEOptions;
     FOnSaveIDEOptions: TOnSaveIDEOptions;
+  protected
+    procedure DoOnChange;
   public
     function Check: Boolean; virtual;
     function GetTitle: String; virtual; abstract;
@@ -60,6 +67,7 @@ type
 
     property OnLoadIDEOptions: TOnLoadIDEOptions read FOnLoadIDEOptions write FOnLoadIDEOptions;
     property OnSaveIDEOptions: TOnSaveIDEOptions read FOnSaveIDEOptions write FOnSaveIDEOptions;
+    property OnChange: TNotifyEvent read FOnChange write FOnChange;
   end;
   TAbstractIDEOptionsEditorClass = class of TAbstractIDEOptionsEditor;
 
@@ -257,6 +265,12 @@ begin
 end;
 
 { TAbstractIDEOptionsEditor }
+
+procedure TAbstractIDEOptionsEditor.DoOnChange;
+begin
+  if Assigned(FOnChange) then
+    FOnChange(self);
+end;
 
 function TAbstractIDEOptionsEditor.Check: Boolean;
 begin

@@ -103,6 +103,7 @@ type
     procedure SetFilename(const AValue: string);
   public
     class function GetGroupCaption:string; override;
+    class function GetInstance: TAbstractIDEOptions; override;
   public
     constructor Create;
     destructor Destroy; override;
@@ -308,6 +309,11 @@ end;
 class function TCodeToolsOptions.GetGroupCaption: string;
 begin
   Result := dlgGroupCodetools;
+end;
+
+class function TCodeToolsOptions.GetInstance: TAbstractIDEOptions;
+begin
+  Result := CodeToolsOpts;
 end;
 
 procedure TCodeToolsOptions.Load;

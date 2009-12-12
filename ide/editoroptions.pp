@@ -919,6 +919,7 @@ type
     function OldAdditionalAttributeName(NewAha:String): string;
   public
     class function GetGroupCaption:string; override;
+    class function GetInstance: TAbstractIDEOptions; override;
   public
     constructor Create;
     destructor Destroy; override;
@@ -3023,8 +3024,12 @@ begin
   Result := dlgGroupEditor;
 end;
 
-function TEditorOptions.GetSynEditOptionName(SynOption: TSynEditorOption
-  ): string;
+class function TEditorOptions.GetInstance: TAbstractIDEOptions;
+begin
+  Result := EditorOpts;
+end;
+
+function TEditorOptions.GetSynEditOptionName(SynOption: TSynEditorOption): string;
 begin
   case SynOption of
     eoAutoIndent:

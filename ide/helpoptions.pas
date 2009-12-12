@@ -51,6 +51,7 @@ type
     procedure SetFilename(const AValue: string);
   public
     class function GetGroupCaption:string; override;
+    class function GetInstance: TAbstractIDEOptions; override;
   public
     constructor Create;
     procedure Clear;
@@ -98,6 +99,11 @@ end;
 class function THelpOptions.GetGroupCaption: string;
 begin
   Result := dlgGroupHelp;
+end;
+
+class function THelpOptions.GetInstance: TAbstractIDEOptions;
+begin
+  Result := HelpOpts;
 end;
 
 procedure THelpOptions.Clear;
