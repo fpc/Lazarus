@@ -82,10 +82,7 @@ type
 
   TAddToPackageDlg = class(TForm)
     AddFileButton: TBitBtn;
-    AddUnitButton: TBitBtn;
-    AddUnitUpdateButton: TBitBtn;
     CancelAddFileButton: TBitBtn;
-    CancelAddUnitButton: TBitBtn;
     CancelDependButton: TBitBtn;
     CancelNewComponentButton: TBitBtn;
     NewCompBtnPanel: TPanel;
@@ -98,7 +95,6 @@ type
     // notebook
     NoteBook: TNoteBook;
     NewFilePage: TPage;
-    AddUnitPage: TPage;
     NewComponentPage: TPage;
     NewRequirementPage: TPage;
     AddFilePage: TPage;
@@ -107,16 +103,6 @@ type
     NewFileTreeView: TTreeView;
     NewFileDescriptionGroupBox: TGroupBox;
     NewFileHelpLabel: TLabel;
-    // add unit page
-    AddUnitFilenameLabel: TLabel;
-    AddUnitFilenameEdit: TEdit;
-    AddUnitFileBrowseButton: TButton;
-    AddUnitFileShortenButton: TButton;
-    AddUnitSrcNameLabel: TLabel;
-    AddUnitSrcNameEdit: TEdit;
-    AddUnitHasRegisterCheckBox: TCheckBox;
-    AddUnitIsVirtualCheckBox: TCheckBox;
-    AddSecondaryFilesCheckBox: TCheckBox;
     // new component page
     AncestorTypeLabel: TLabel;
     AncestorComboBox: TComboBox;
@@ -160,11 +146,6 @@ type
                                    var CloseAction: TCloseAction);
     procedure AddToPackageDlgKeyDown(Sender: TObject; var Key: Word;
                                      Shift: TShiftState);
-    procedure AddUnitButtonClick(Sender: TObject);
-    procedure AddUnitFileBrowseButtonClick(Sender: TObject);
-    procedure AddUnitFileShortenButtonClick(Sender: TObject);
-    procedure AddUnitIsVirtualCheckBoxClick(Sender: TObject);
-    procedure AddUnitUpdateButtonClick(Sender: TObject);
     procedure AncestorComboBoxCloseUp(Sender: TObject);
     procedure AncestorShowAllCheckBoxClick(Sender: TObject);
     procedure CancelAddFileButtonClick(Sender: TObject);
@@ -199,7 +180,6 @@ type
     procedure SetLazPackage(const AValue: TLazPackage);
     procedure SetupComponents;
     procedure SetupNewFilePage;
-    procedure SetupAddUnitPage;
     procedure SetupNewComponentPage;
     procedure SetupAddDependencyPage;
     procedure SetupAddFilePage;
@@ -208,7 +188,6 @@ type
     procedure OnIteratePackages(APackageID: TLazPackageID);
     procedure AutoCompleteNewComponent;
     procedure AutoCompleteNewComponentUnitName;
-    procedure UpdateAddUnitInfo;
     procedure UpdateAddFileInfo;
     function SwitchRelativeAbsoluteFilename(const Filename: string): string;
     procedure FillNewFileTreeView;
@@ -444,54 +423,7 @@ begin
   end;
 end;
 
-
 { TAddToPackageDlg }
-
-procedure TAddToPackageDlg.AddUnitButtonClick(Sender: TObject);
-begin
-  Params.Clear;
-  if not AddUnitIsVirtualCheckBox.Checked then begin
-    // normal unit
-    Params.AddType:=d2ptUnit;
-
-    Params.UnitFilename:=AddUnitFilenameEdit.Text;
-    Params.Unit_Name:=AddUnitSrcNameEdit.Text;
-    Params.FileType:=pftUnit;
-    Params.PkgFileFlags:=[pffAddToPkgUsesSection];
-    Params.AutoAddLFMFile:=AddSecondaryFilesCheckBox.Checked;
-    Params.AutoAddLRSFile:=AddSecondaryFilesCheckBox.Checked;
-    if AddUnitHasRegisterCheckBox.Checked then
-      Include(Params.PkgFileFlags,pffHasRegisterProc);
-  end else begin
-    // virtual unit
-    Params.AddType:=d2ptVirtualUnit;
-
-    Params.UnitFilename:=ExtractFilename(AddUnitFilenameEdit.Text);
-    Params.Unit_Name:=AddUnitSrcNameEdit.Text;
-    Params.FileType:=pftVirtualUnit;
-    Params.PkgFileFlags:=[];
-    Params.AutoAddLFMFile:=false;
-    Params.AutoAddLRSFile:=false;
-  end;
-  LazPackage.LongenFilename(Params.UnitFilename);
-
-  // check filename
-  if not CheckAddingUnitFilename(LazPackage,Params.AddType,
-    OnGetIDEFileInfo,Params.UnitFilename) then exit;
-    
-  // check unitname
-  if CompareText(Params.Unit_Name,ExtractFileNameOnly(Params.UnitFilename))<>0
-  then begin
-    MessageDlg(lisA2PInvalidUnitName,
-      Format(lisA2PTheUnitNameAndFilenameDiffer, ['"',
-        Params.Unit_Name, '"', #13, '"', Params.UnitFilename, '"']),
-      mtError,[mbCancel],0);
-    exit;
-  end;
-
-  // add it ...
-  ModalResult:=mrOk;
-end;
 
 procedure TAddToPackageDlg.AddToPackageDlgClose(Sender: TObject;
   var CloseAction: TCloseAction);
@@ -589,59 +521,6 @@ begin
     Include(Params.PkgFileFlags,pffAddToPkgUsesSection);
 
   ModalResult:=mrOk;
-end;
-
-procedure TAddToPackageDlg.AddUnitFileBrowseButtonClick(Sender: TObject);
-var
-  OpenDialog: TOpenDialog;
-  AFilename: string;
-begin
-  OpenDialog:=TOpenDialog.Create(nil);
-  try
-    InputHistories.ApplyFileDialogSettings(OpenDialog);
-    OpenDialog.InitialDir:=
-      LazPackage.GetFileDialogInitialDir(OpenDialog.InitialDir);
-    OpenDialog.Title:=lisOpenFile;
-    OpenDialog.Options:=OpenDialog.Options+[ofFileMustExist,ofPathMustExist];
-    OpenDialog.Filter:=lisPascalUnit+' (*.pp;*.pas)|*.pp;*.pas'
-      +'|'+lisPascalSourceFile+' (*.pas)|*.pas'
-      +'|'+lisFreePascalSourceFile+' (*.pp)|*.pp'
-      +'|'+dlgAllFiles+' ('+GetAllFilesMask+')|'+GetAllFilesMask;
-    if OpenDialog.Execute then begin
-      AFilename:=CleanAndExpandFilename(OpenDialog.Filename);
-      if FileExistsUTF8(AFilename) then begin
-        LazPackage.ShortenFilename(AFilename,true);
-        AddUnitFilenameEdit.Text:=AFilename;
-        UpdateAddUnitInfo;
-      end;
-    end;
-    InputHistories.StoreFileDialogSettings(OpenDialog);
-  finally
-    OpenDialog.Free;
-  end;
-end;
-
-procedure TAddToPackageDlg.AddUnitFileShortenButtonClick(Sender: TObject);
-begin
-  if lisA2PchooseAnExistingFile=AddUnitFilenameEdit.Text then exit;
-  AddUnitFilenameEdit.Text:=
-    SwitchRelativeAbsoluteFilename(AddUnitFilenameEdit.Text);
-end;
-
-procedure TAddToPackageDlg.AddUnitIsVirtualCheckBoxClick(Sender: TObject);
-var
-  VirtualFile: Boolean;
-begin
-  VirtualFile:=AddUnitIsVirtualCheckBox.Checked;
-  AddUnitFileBrowseButton.Enabled:=not VirtualFile;
-  AddUnitFileShortenButton.Enabled:=not VirtualFile;
-  AddUnitUpdateButton.Enabled:=not VirtualFile;
-  AddSecondaryFilesCheckBox.Enabled:=not VirtualFile;
-end;
-
-procedure TAddToPackageDlg.AddUnitUpdateButtonClick(Sender: TObject);
-begin
-  UpdateAddUnitInfo;
 end;
 
 procedure TAddToPackageDlg.AncestorComboBoxCloseUp(Sender: TObject);
@@ -1165,70 +1044,17 @@ end;
 procedure TAddToPackageDlg.SetupComponents;
 begin
   NewFilePage.Caption:=lisA2PNewFile;
-  AddUnitPage.Caption:=lisA2PAddUnit;
   NewComponentPage.Caption:=lisA2PNewComponent;
   NewRequirementPage.Caption:=lisProjAddNewRequirement;
   AddFilePage.Caption:=lisA2PAddFile;
   AddFilesPage.Caption:=lisA2PAddFiles;
   NoteBook.PageIndex:=0;
 
-  SetupAddUnitPage;
   SetupNewFilePage;
   SetupNewComponentPage;
   SetupAddDependencyPage;
   SetupAddFilePage;
   SetupAddFilesPage;
-end;
-
-procedure TAddToPackageDlg.SetupAddUnitPage;
-begin
-  with AddUnitFilenameLabel do begin
-    Caption:=lisA2PUnitFileName;
-  end;
-
-  with AddUnitFilenameEdit do begin
-    Text:=lisA2PchooseAnExistingFile;
-  end;
-
-  with AddUnitFileBrowseButton do begin
-    Caption:='...';
-  end;
-
-  with AddUnitFileShortenButton do begin
-    Caption:='<>';
-  end;
-
-  with AddUnitSrcNameLabel do begin
-    Caption:=lisAF2PUnitName;
-  end;
-
-  with AddUnitSrcNameEdit do begin
-    Text:='';
-  end;
-
-  with AddUnitHasRegisterCheckBox do begin
-    Caption:=lisAF2PHasRegisterProcedure;
-  end;
-
-  with AddUnitIsVirtualCheckBox do begin
-    Caption:=lisAF2PIsVirtualUnit;
-  end;
-
-  with AddSecondaryFilesCheckBox do begin
-    Caption:=lisA2PAddLFMLRSFilesIfTheyExist;
-  end;
-
-  with AddUnitUpdateButton do begin
-    Caption:=lisA2PUpdateUnitNameAndHasRegisterProcedure;
-  end;
-
-  with AddUnitButton do begin
-    Caption:=lisA2PAddUnit;
-  end;
-
-  with CancelAddUnitButton do begin
-    Caption:=dlgCancel;
-  end;
 end;
 
 procedure TAddToPackageDlg.SetupNewFilePage;
@@ -1497,22 +1323,6 @@ begin
   if LazPackage.HasDirectory then
     NewFileName:=LazPackage.Directory+NewFileName;
   ComponentUnitFileEdit.Text:=NewFileName;
-end;
-
-procedure TAddToPackageDlg.UpdateAddUnitInfo;
-var
-  AnUnitName: string;
-  HasRegisterProc: boolean;
-  Filename: String;
-begin
-  if Assigned(OnGetUnitRegisterInfo) and not AddUnitIsVirtualCheckBox.Checked
-  then begin
-    Filename:=AddUnitFilenameEdit.Text;
-    LazPackage.LongenFilename(Filename);
-    OnGetUnitRegisterInfo(Self,Filename,AnUnitName,HasRegisterProc);
-    AddUnitSrcNameEdit.Text:=AnUnitName;
-    AddUnitHasRegisterCheckBox.Checked:=HasRegisterProc;
-  end;
 end;
 
 procedure TAddToPackageDlg.UpdateAddFileInfo;
