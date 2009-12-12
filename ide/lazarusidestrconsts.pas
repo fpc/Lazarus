@@ -1032,8 +1032,8 @@ resourcestring
   dlgGridYHint = 'Vertical grid step size';
   dlgGuideLines = 'Show Guide Lines';
   dlgSnapGuideLines = 'Snap to Guide Lines';
-  dlgLeftTopClr = 'color for left, top';
-  dlgRightBottomClr = 'color for right, bottom';
+  dlgLeftTopClr = 'Guid lines Left,Top';
+  dlgRightBottomClr = 'Guide lines Right,Bottom';
   dlgShowCaps = 'Show component captions';
   dlgShowEdrHints = 'Show editor hints';
   dlgAutoForm = 'Auto create form when opening unit';
@@ -1046,10 +1046,9 @@ resourcestring
   dlgEnvGrid = 'Grid';
   dlgEnvLGuideLines = 'Guide lines';
   dlgEnvMisc = 'Miscellaneous';
-  dlgRuberbandSelectionColor = 'Selection';
-  dlgRuberbandCreationColor = 'Creation';
+  dlgRuberbandSelectionColor = 'Rubberband Selection';
+  dlgRuberbandCreationColor = 'Rubberband Creation';
   dlgRubberbandSelectsGrandChildren = 'Select grandchildren';
-  dlgRubberBandGroup='Rubber band';
   dlgPasExt = 'Default pascal extension';
   dlgCharCaseFileAct = 'Save As - auto rename pascal files lower case';
   

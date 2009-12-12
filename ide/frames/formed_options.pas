@@ -25,40 +25,37 @@ unit formed_options;
 interface
 
 uses
-  Classes, SysUtils, FileUtil, LResources, Forms, StdCtrls, Dialogs, Spin,
-  EnvironmentOpts, LazarusIDEStrConsts, IDEProcs, IDEOptionsIntf;
+  Classes, SysUtils, FileUtil, Graphics, LResources, Forms, StdCtrls, Dialogs, Spin,
+  ColorBox, EnvironmentOpts, LazarusIDEStrConsts, IDEProcs, IDEOptionsIntf;
 
 type
+  TDesignerColor = (
+    dcGrid,
+    dcGridLinesLeftTop,
+    dcGridLinesRightBottom,
+    dcGrabber,
+    dcMarker,
+    dcRuberbandSelection,
+    dcRuberbandCreation
+  );
 
   { TFormEditorOptionsFrame }
 
   TFormEditorOptionsFrame = class(TAbstractIDEOptionsEditor)
     AutoCreateFormsOnOpenCheckBox: TCheckBox;
+    ColorBox: TColorBox;
+    ColorsListBox: TColorListBox;
     CreateCompFocusNameCheckBox: TCheckBox;
     DesignerPaintLazyCheckBox: TCheckBox;
     FormEditMiscGroupBox: TGroupBox;
-    GrabberColorButton: TColorButton;
-    GrabberColorLabel: TLabel;
-    GridColorButton: TColorButton;
-    GridColorLabel: TLabel;
     GridGroupBox: TGroupBox;
     GridSizeXSpinEdit: TSpinEdit;
     GridSizeXLabel: TLabel;
     GridSizeYSpinEdit: TSpinEdit;
     GridSizeYLabel: TLabel;
-    GuideLineColorLeftTopButton: TColorButton;
-    GuideLineColorLeftTopLabel: TLabel;
-    GuideLineColorRightBottomButton: TColorButton;
-    GuideLineColorRightBottomLabel: TLabel;
     GuideLinesGroupBox: TGroupBox;
-    MarkerColorButton: TColorButton;
-    MarkerColorLabel: TLabel;
+    DesignerColorsGroupBox: TGroupBox;
     RightClickSelectsCheckBox: TCheckBox;
-    RubberbandCreateColorButton: TColorButton;
-    RubberbandCreateColorLabel: TLabel;
-    RubberbandGroupBox: TGroupBox;
-    RubberbandSelectColorButton: TColorButton;
-    RubberbandSelectColorLabel: TLabel;
     RubberbandSelectsGrandChildsCheckBox: TCheckBox;
     ShowBorderSpaceCheckBox: TCheckBox;
     ShowComponentCaptionsCheckBox: TCheckBox;
@@ -67,8 +64,14 @@ type
     ShowGuideLinesCheckBox: TCheckBox;
     SnapToGridCheckBox: TCheckBox;
     SnapToGuideLinesCheckBox: TCheckBox;
+    procedure ColorBoxChange(Sender: TObject);
+    procedure ColorsListBoxGetColors(Sender: TCustomColorListBox;
+      Items: TStrings);
+    procedure ColorsListBoxSelectionChange(Sender: TObject; User: boolean);
     procedure FrameResize(Sender: TObject);
   private
+    FLoaded: Boolean;
+    procedure ChangeColor(AIndex: Integer; NewColor: TColor);
   public
     function GetTitle: String; override;
     procedure Setup(ADialog: TAbstractOptionsEditorDialog); override;
@@ -91,7 +94,6 @@ procedure TFormEditorOptionsFrame.Setup(ADialog: TAbstractOptionsEditorDialog);
   begin
     ShowBorderSpaceCheckBox.Caption:=dlgQShowBorderSpacing;
     ShowGridCheckBox.Caption:=dlgQShowGrid;
-    GridColorLabel.Caption:=dlgGridColor;
     SnapToGridCheckBox.Caption:=dlgQSnapToGrid;
     GridSizeXSpinEdit.Hint:=dlgGridXHint;
     GridSizeXLabel.Caption:=dlgGridX;
@@ -103,8 +105,6 @@ procedure TFormEditorOptionsFrame.Setup(ADialog: TAbstractOptionsEditorDialog);
   begin
     ShowGuideLinesCheckBox.Caption:=dlgGuideLines;
     SnapToGuideLinesCheckBox.Caption:=dlgSnapGuideLines;
-    GuideLineColorLeftTopLabel.Caption:=dlgLeftTopClr;
-    GuideLineColorRightBottomLabel.Caption:=dlgRightBottomClr;
   end;
 
   procedure SetupMiscGroupBox;
@@ -113,89 +113,88 @@ procedure TFormEditorOptionsFrame.Setup(ADialog: TAbstractOptionsEditorDialog);
     ShowEditorHintsCheckBox.Caption:=dlgShowEdrHints;
     AutoCreateFormsOnOpenCheckBox.Caption:=dlgAutoForm;
     RightClickSelectsCheckBox.Caption:=dlgRightClickSelects;
-    GrabberColorLabel.Caption:=dlgGrabberColor;
-    MarkerColorLabel.Caption:=dlgMarkerColor;
 
-    with DesignerPaintLazyCheckBox do begin
+    with DesignerPaintLazyCheckBox do
+    begin
       Caption:=lisFEPaintDesignerItemsOnIdle;
       Hint:=lisFEPaintDesignerItemsOnIdleReduceOverheadForSlowCompu;
     end;
-    with CreateCompFocusNameCheckBox do begin
+    with CreateCompFocusNameCheckBox do
+    begin
       Caption:=lisAskNameOnCreate;
       Hint:=lisAskForComponentNameAfterPuttingItOnForm;
     end;
-  end;
-
-  procedure SetupRubberbandBox;
-  begin
-    RubberbandSelectColorLabel.Caption:=dlgRuberbandSelectionColor;
-    RubberbandCreateColorLabel.Caption:=dlgRuberbandCreationColor;
     RubberbandSelectsGrandChildsCheckBox.Caption:=dlgRubberbandSelectsGrandChildren;
   end;
 begin
   GridGroupBox.Caption := dlgEnvGrid;
-  SetupGridGroupBox;
   GuideLinesGroupBox.Caption := dlgEnvLGuideLines;
-  SetupGuideLinesGroupBox;
-  RubberbandGroupBox.Caption := dlgRubberBandGroup;
-  SetupRubberbandBox;
   FormEditMiscGroupBox.Caption := dlgEnvMisc;
+  DesignerColorsGroupBox.Caption := dlgEnvColors;
+  SetupGridGroupBox;
+  SetupGuideLinesGroupBox;
   SetupMiscGroupBox;
+  FLoaded := False;
 end;
 
 procedure TFormEditorOptionsFrame.ReadSettings(AOptions: TAbstractIDEOptions);
 begin
   with AOptions as TEnvironmentOptions do
   begin
-    ShowBorderSpaceCheckBox.Checked:=ShowBorderSpacing;
-    ShowGridCheckBox.Checked:=ShowGrid;
-    GridColorButton.ButtonColor:=GridColor;
-    SnapToGridCheckBox.Checked:=SnapToGrid;
+    // read colors
+    ColorsListBox.Items.Objects[Ord(dcGrid)] := TObject(PtrInt(GridColor));
+    ColorsListBox.Items.Objects[Ord(dcGridLinesLeftTop)] := TObject(PtrInt(GuideLineColorLeftTop));
+    ColorsListBox.Items.Objects[Ord(dcGridLinesRightBottom)] := TObject(PtrInt(GuideLineColorRightBottom));
+    ColorsListBox.Items.Objects[Ord(dcGrabber)] := TObject(PtrInt(GrabberColor));
+    ColorsListBox.Items.Objects[Ord(dcMarker)] := TObject(PtrInt(MarkerColor));
+    ColorsListBox.Items.Objects[Ord(dcRuberbandSelection)] := TObject(PtrInt(RubberbandSelectionColor));
+    ColorsListBox.Items.Objects[Ord(dcRuberbandCreation)] := TObject(PtrInt(RubberbandCreationColor));
+
+    ShowBorderSpaceCheckBox.Checked := ShowBorderSpacing;
+    ShowGridCheckBox.Checked := ShowGrid;
+    SnapToGridCheckBox.Checked := SnapToGrid;
     GridSizeXSpinEdit.Value := GridSizeX;
     GridSizeYSpinEdit.Value := GridSizeY;
-    ShowGuideLinesCheckBox.Checked:=ShowGuideLines;
-    SnapToGuideLinesCheckBox.Checked:=SnapToGuideLines;
-    GuideLineColorLeftTopButton.ButtonColor:=GuideLineColorLeftTop;
-    GuideLineColorRightBottomButton.ButtonColor:=GuideLineColorRightBottom;
-    ShowComponentCaptionsCheckBox.Checked:=ShowComponentCaptions;
-    ShowEditorHintsCheckBox.Checked:=ShowEditorHints;
-    AutoCreateFormsOnOpenCheckBox.Checked:=AutoCreateFormsOnOpen;
-    RightClickSelectsCheckBox.Checked:=RightClickSelects;
-    GrabberColorButton.ButtonColor:=GrabberColor;
-    MarkerColorButton.ButtonColor:=MarkerColor;
-    RubberbandSelectColorButton.ButtonColor:=RubberbandSelectionColor;
-    RubberbandCreateColorButton.ButtonColor:=RubberbandCreationColor;
-    RubberbandSelectsGrandChildsCheckBox.Checked:=RubberbandSelectsGrandChilds;
-    DesignerPaintLazyCheckBox.Checked:=DesignerPaintLazy;
-    CreateCompFocusNameCheckBox.Checked:=CreateComponentFocusNameProperty;
+    ShowGuideLinesCheckBox.Checked := ShowGuideLines;
+    SnapToGuideLinesCheckBox.Checked := SnapToGuideLines;
+    ShowComponentCaptionsCheckBox.Checked := ShowComponentCaptions;
+    ShowEditorHintsCheckBox.Checked := ShowEditorHints;
+    AutoCreateFormsOnOpenCheckBox.Checked := AutoCreateFormsOnOpen;
+    RightClickSelectsCheckBox.Checked := RightClickSelects;
+    RubberbandSelectsGrandChildsCheckBox.Checked := RubberbandSelectsGrandChilds;
+    DesignerPaintLazyCheckBox.Checked := DesignerPaintLazy;
+    CreateCompFocusNameCheckBox.Checked := CreateComponentFocusNameProperty;
   end;
+  FLoaded := True;
 end;
 
 procedure TFormEditorOptionsFrame.WriteSettings(AOptions: TAbstractIDEOptions);
 begin
   with AOptions as TEnvironmentOptions do
   begin
-    ShowBorderSpacing:=ShowBorderSpaceCheckBox.Checked;
-    ShowGrid:=ShowGridCheckBox.Checked;
-    GridColor:=GridColorButton.ButtonColor;
-    SnapToGrid:=SnapToGridCheckBox.Checked;
-    GridSizeX:=GridSizeXSpinEdit.Value;
-    GridSizeY:=GridSizeYSpinEdit.Value;
-    ShowGuideLines:=ShowGuideLinesCheckBox.Checked;
-    SnapToGuideLines:=SnapToGuideLinesCheckBox.Checked;
-    GuideLineColorLeftTop:=GuideLineColorLeftTopButton.ButtonColor;
-    GuideLineColorRightBottom:=GuideLineColorRightBottomButton.ButtonColor;
-    ShowComponentCaptions:=ShowComponentCaptionsCheckBox.Checked;
-    ShowEditorHints:=ShowEditorHintsCheckBox.Checked;
-    AutoCreateFormsOnOpen:=AutoCreateFormsOnOpenCheckBox.Checked;
-    RightClickSelects:=RightClickSelectsCheckBox.Checked;
-    GrabberColor:=GrabberColorButton.ButtonColor;
-    MarkerColor:=MarkerColorButton.ButtonColor;
-    RubberbandSelectionColor:=RubberbandSelectColorButton.ButtonColor;
-    RubberbandCreationColor:=RubberbandCreateColorButton.ButtonColor;
-    RubberbandSelectsGrandChilds:=RubberbandSelectsGrandChildsCheckBox.Checked;
-    DesignerPaintLazy:=DesignerPaintLazyCheckBox.Checked;
-    CreateComponentFocusNameProperty:=CreateCompFocusNameCheckBox.Checked;
+    // write colors
+    GridColor := ColorsListBox.Colors[Ord(dcGrid)];
+    GuideLineColorLeftTop := ColorsListBox.Colors[Ord(dcGridLinesLeftTop)];
+    GuideLineColorRightBottom := ColorsListBox.Colors[Ord(dcGridLinesRightBottom)];
+    GrabberColor := ColorsListBox.Colors[Ord(dcGrabber)];
+    MarkerColor := ColorsListBox.Colors[Ord(dcMarker)];
+    RubberbandSelectionColor := ColorsListBox.Colors[Ord(dcRuberbandSelection)];
+    RubberbandCreationColor := ColorsListBox.Colors[Ord(dcRuberbandCreation)];
+
+    ShowBorderSpacing := ShowBorderSpaceCheckBox.Checked;
+    ShowGrid := ShowGridCheckBox.Checked;
+    SnapToGrid := SnapToGridCheckBox.Checked;
+    GridSizeX := GridSizeXSpinEdit.Value;
+    GridSizeY := GridSizeYSpinEdit.Value;
+    ShowGuideLines := ShowGuideLinesCheckBox.Checked;
+    SnapToGuideLines := SnapToGuideLinesCheckBox.Checked;
+    ShowComponentCaptions := ShowComponentCaptionsCheckBox.Checked;
+    ShowEditorHints := ShowEditorHintsCheckBox.Checked;
+    AutoCreateFormsOnOpen := AutoCreateFormsOnOpenCheckBox.Checked;
+    RightClickSelects := RightClickSelectsCheckBox.Checked;
+    RubberbandSelectsGrandChilds := RubberbandSelectsGrandChildsCheckBox.Checked;
+    DesignerPaintLazy := DesignerPaintLazyCheckBox.Checked;
+    CreateComponentFocusNameProperty := CreateCompFocusNameCheckBox.Checked;
   end;
 end;
 
@@ -206,6 +205,39 @@ begin
   w := ((ClientWidth - 3 * 5) * 5) div 10;
   GridGroupBox.Width := w;
   FormEditMiscGroupBox.Width := GridGroupBox.Width;
+end;
+
+procedure TFormEditorOptionsFrame.ChangeColor(AIndex: Integer; NewColor: TColor);
+begin
+  ColorsListBox.Items.Objects[AIndex] := TObject(PtrInt(NewColor));
+end;
+
+procedure TFormEditorOptionsFrame.ColorsListBoxGetColors(
+  Sender: TCustomColorListBox; Items: TStrings);
+begin
+  Items.Add(dlgGridColor);
+  Items.Add(dlgLeftTopClr);
+  Items.Add(dlgRightBottomClr);
+  Items.Add(dlgGrabberColor);
+  Items.Add(dlgMarkerColor);
+  Items.Add(dlgRuberbandSelectionColor);
+  Items.Add(dlgRuberbandCreationColor);
+end;
+
+procedure TFormEditorOptionsFrame.ColorBoxChange(Sender: TObject);
+begin
+  if not FLoaded or (ColorsListBox.ItemIndex < 0) then
+    Exit;
+  ChangeColor(ColorsListBox.ItemIndex, ColorBox.Selected);
+  ColorsListBox.Invalidate;
+end;
+
+procedure TFormEditorOptionsFrame.ColorsListBoxSelectionChange(Sender: TObject;
+  User: boolean);
+begin
+  if not (FLoaded and User) then
+    Exit;
+  ColorBox.Selected := ColorsListBox.Selected;
 end;
 
 class function TFormEditorOptionsFrame.SupportedOptionsClass: TAbstractIDEOptionsClass;
