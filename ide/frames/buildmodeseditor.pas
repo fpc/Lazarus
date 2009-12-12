@@ -25,8 +25,10 @@ unit BuildModesEditor;
 interface
 
 uses
-  Classes, SysUtils, Controls, FileUtil, LResources, Forms, Grids, Menus,
-  ComCtrls, CompilerOptions, IDEImagesIntf;
+  Classes, SysUtils, LCLProc, Controls, FileUtil, LResources, Forms, Grids,
+  Menus, ComCtrls,
+  IDEImagesIntf,
+  CompilerOptions, IDEProcs;
 
 type
 
@@ -59,6 +61,8 @@ type
   protected
     function ValidateEntry(const ACol,ARow:Integer; const OldValue:string;
                            var NewValue:string): boolean; override;
+    function ValidateCell(const ACol, ARow: Integer;
+                           var NewValue:string): boolean;
   public
     constructor Create(TheOwner: TComponent); override;
     destructor Destroy; override;
@@ -87,6 +91,7 @@ type
   end;
 
 function BuildModeFlagTypeCaptions(f: TBuildModeFlagType): string;
+function CaptionToBuildModeFlagType(s: string): TBuildModeFlagType;
 
 implementation
 
@@ -101,6 +106,17 @@ begin
   bmftAddCustomOption: Result:='+CustomOptions';
   else Result:='';
   end;
+end;
+
+function CaptionToBuildModeFlagType(s: string): TBuildModeFlagType;
+begin
+  if s='' then exit(bmftNone);
+  for Result:=low(Result) to high(Result) do
+    if SysUtils.CompareText(s,BuildModeFlagTypeCaptions(Result))=0 then exit;
+  if IsValidIdent(s) then
+    Result:=bmftSetVariable
+  else
+    Result:=bmftNone;
 end;
 
 { TBuildModesGrid }
@@ -166,18 +182,48 @@ end;
 
 function TBuildModesGrid.ValidateEntry(const ACol, ARow: Integer;
   const OldValue: string; var NewValue: string): boolean;
-var
-  CurMode: TBuildModeGridRow;
 begin
+  //DebugLn(['TBuildModesGrid.ValidateEntry ',aCol]);
   Result:=inherited ValidateEntry(aCol, aRow, OldValue, NewValue);
   if not Result then exit;
+  Result:=ValidateCell(ACol,ARow,NewValue);
+end;
+
+function TBuildModesGrid.ValidateCell(const ACol, ARow: Integer;
+  var NewValue: string): boolean;
+var
+  CurMode: TBuildModeGridRow;
+  TypeCol: Integer;
+  ValueCol: Integer;
+  FlagType: TBuildModeFlagType;
+begin
+  Result:=true;
   if (aRow>=1) and (aRow<=ModeRowCount) then begin
     CurMode:=ModeRows[aRow-1];
+    TypeCol:=GroupModeCount+1;
+    ValueCol:=TypeCol+1;
+    //DebugLn(['TBuildModesGrid.ValidateCell aCol=',acol,' aRow=',arow,' ValueCol=',ValueCol]);
     if aCol=0 then begin
+      // set new mode name
       NewValue:=Graph.FixModeName(NewValue,CurMode.Mode);
       CurMode.Mode.Name:=NewValue;
-    end else begin
-
+    end else if ACol=TypeCol then begin
+      NewValue:=SpecialCharsToSpaces(NewValue,true);
+      FlagType:=CaptionToBuildModeFlagType(NewValue);
+      if (CurMode.Flag=nil) and (FlagType<>bmftNone) then begin
+        // create flag
+        CurMode.FFlag:=CurMode.Mode.AddFlag(FlagType,'','');
+      end else if CurMode.Flag<>nil then
+        // set new FlagType
+        CurMode.Flag.FlagType:=FlagType;
+    end else if ACol=ValueCol then begin
+      NewValue:=SpecialCharsToSpaces(NewValue,true);
+      if (CurMode.Flag=nil) or (CurMode.Flag.FlagType=bmftNone) then
+        // no flag => no value
+        NewValue:=''
+      else
+        // set new value
+        CurMode.Flag.Value:=NewValue;
     end;
   end;
 end;

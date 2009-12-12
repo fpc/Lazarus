@@ -1004,7 +1004,7 @@ begin
   // custom options
   CurCustomOptions:=InheritedOptionStrings[icoCustomOptions];
   if CurCustomOptions<>'' then
-    Result := Result + ' ' +  SpecialCharsToSpaces(CurCustomOptions);
+    Result := Result + ' ' +  SpecialCharsToSpaces(CurCustomOptions,true);
 end;
 
 function MergeLinkerOptions(const OldOptions, AddOptions: string): string;
@@ -2098,7 +2098,7 @@ begin
   if Result='' then exit;
   
   // eliminate line breaks
-  Result:=SpecialCharsToSpaces(Result);
+  Result:=SpecialCharsToSpaces(Result,true);
 end;
 
 function TBaseCompilerOptions.GetOptionsForCTDefines: string;
@@ -3498,7 +3498,7 @@ begin
       BaseDirectory:=GetParsedValue(pcosBaseDir);
     s:=TrimSearchPath(s,BaseDirectory);
   end else if Option=pcosCustomOptions then begin
-    s:=SpecialCharsToSpaces(s);
+    s:=SpecialCharsToSpaces(s,true);
   end;
   Result:=s;
 end;
@@ -3933,11 +3933,13 @@ function TBuildModeGraph.FixModeName(const ModeName: string;
   var
     CurMode: TBuildMode;
   begin
+    Result:=false;
+    if s='' then exit;
     if (CheckToo<>nil) and (SysUtils.CompareText(CheckToo.Name,s)=0) then
-      exit(false);
+      exit;
     CurMode:=FindModeWithName(s);
     if (CurMode<>nil) and (CurMode<>Ignore) then
-      exit(false);
+      exit;
     Result:=true;
   end;
 
@@ -3945,14 +3947,7 @@ var
   i: Integer;
   Prefix: String;
 begin
-  Result:=ModeName;
-  if Result<>'' then
-    Result:=copy(Result,1,strlen(PChar(Result)));
-  if Result<>'' then
-    UTF8FixBroken(PChar(Result));
-  for i:=length(Result) downto 1 do
-    if Result[i] in [#0..#31,#127] then
-      System.Delete(Result,i,1);
+  Result:=SpecialCharsToSpaces(ModeName,true);
   if NameOk(Result) then exit;
   Prefix:=Result;
   i:=0;

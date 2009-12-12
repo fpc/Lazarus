@@ -701,8 +701,8 @@ var
 begin
   // get values from dialog
   // build
-  BuildWorkingDir:=Trim(SpecialCharsToSpaces(BuildWorkDirCombobox.Text));
-  BuildCommand:=Trim(SpecialCharsToSpaces(BuildCommandMemo.Lines.Text));
+  BuildWorkingDir:=SpecialCharsToSpaces(BuildWorkDirCombobox.Text,true);
+  BuildCommand:=SpecialCharsToSpaces(BuildCommandMemo.Lines.Text,true);
   BuildScanForFPCMsg:=BuildScanForFPCMsgCheckbox.Checked;
   BuildScanForMakeMsg:=BuildScanForMakeMsgCheckbox.Checked;
   BuildScan:=[];
@@ -713,8 +713,8 @@ begin
   AlwaysBuildBeforeRun:=AlwaysCompileFirstCheckbox.Checked;
   RunFlags:=[];
   if AlwaysBuildBeforeRun then Include(RunFlags,idedrfBuildBeforeRun);
-  RunWorkingDir:=Trim(SpecialCharsToSpaces(RunWorkDirCombobox.Text));
-  RunCommand:=Trim(SpecialCharsToSpaces(RunCommandMemo.Lines.Text));
+  RunWorkingDir:=SpecialCharsToSpaces(RunWorkDirCombobox.Text,true);
+  RunCommand:=SpecialCharsToSpaces(RunCommandMemo.Lines.Text,true);
   
   // set values to directivelist
   //DebugLn(['TBuildFileDialog.WriteDirectiveList ']);

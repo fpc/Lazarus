@@ -208,7 +208,7 @@ function BinaryStrToText(const s: string): string;
 function SplitString(const s: string; Delimiter: char): TStrings;
 procedure SplitString(const s: string; Delimiter: char; AddTo: TStrings;
                       ClearList: boolean = true);
-function SpecialCharsToSpaces(const s: string): string;
+function SpecialCharsToSpaces(const s: string; FixUTF8: boolean): string;
 function SpecialCharsToHex(const s: string): string;
 function LineBreaksToDelimiter(const s: string; Delimiter: char): string;
 function LineBreaksToSystemLineBreaks(const s: string): string;
@@ -1579,15 +1579,24 @@ end;
 
 {-------------------------------------------------------------------------------
   function SpecialCharsToSpaces(const s: string): string;
+
+  Converts illegal characters to spaces.
+  Trim leading and trailing spaces.
 -------------------------------------------------------------------------------}
-function SpecialCharsToSpaces(const s: string): string;
+function SpecialCharsToSpaces(const s: string; FixUTF8: boolean): string;
 var
   i: Integer;
 begin
   Result:=s;
   for i:=1 to length(Result) do
-    if Result[i]<' ' then Result[i]:=' ';
+    if Result[i] in [#0..#31,#127] then Result[i]:=' ';
   if Result='' then exit;
+  if FixUTF8 then begin
+    Result:=copy(Result,1,strlen(PChar(Result)));
+    if Result='' then exit;
+    UniqueString(Result);
+    UTF8FixBroken(PChar(Result));
+  end;
   if (Result[1]=' ') or (Result[length(Result)]=' ') then
     Result:=Trim(Result);
 end;
