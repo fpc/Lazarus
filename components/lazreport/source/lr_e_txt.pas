@@ -15,9 +15,8 @@ interface
 {$I lr_vers.inc}
 
 uses
-  Classes, SysUtils, LResources,
-  Graphics,GraphType, Controls, Forms, Dialogs,
-  LCLType,LCLIntf,LR_Class;
+  Classes, SysUtils, LResources, Graphics, GraphType, Controls, Forms, Dialogs,
+  LCLType, LCLIntf, LR_Class;
 
 type
 
@@ -25,7 +24,7 @@ type
 
   TfrTextExport = class(TComponent)
   public
-    Constructor Create(aOwner : TComponent); override;
+    constructor Create(aOwner: TComponent); override;
   end;
 
   { TfrTextExportFilter }
@@ -106,21 +105,22 @@ begin
   n := Lines.Count - 1;
   while n >= 0 do
   begin
-    if Lines[n] <> nil then break;
+    if Lines[n] <> nil then
+      break;
     Dec(n);
   end;
 
   for i := 0 to n do
   begin
-    s := '';
-    tc1 := 0;
-    p := PfrTextRec(Lines[i]);
+    s  := '';
+    tc1:= 0;
+    p  := PfrTextRec(Lines[i]);
     while p <> nil do
     begin
-      x := Round(p^.X / 6.5);
-      s := s + Dup(x - tc1) + p^.Text;
-      tc1 := x + Length(p^.Text);
-      p := p^.Next;
+      x  := Round(p^.X / 6.5);
+      s  := s + Dup(x - tc1) + p^.Text;
+      tc1:= x + Length(p^.Text);
+      p  := p^.Next;
     end;
     s := s + LineEnding;
     Stream.Write(s[1], Length(s));
@@ -131,10 +131,11 @@ end;
 
 procedure TfrTextExportFilter.OnBeginPage;
 var
-  i: Integer;
+  i: integer;
 begin
   ClearLines;
-  for i := 0 to 200 do Lines.Add(nil);
+  for i := 0 to 200 do
+    Lines.Add(nil);
 end;
 
 procedure TfrTextExportFilter.OnText(X, Y: Integer; const Text: String;
@@ -142,30 +143,38 @@ procedure TfrTextExportFilter.OnText(X, Y: Integer; const Text: String;
 var
   p, p1, p2: PfrTextRec;
 begin
-  if View = nil then Exit;
+  if View = nil then
+    Exit;
   Y := Round(Y / UsedFont);
-  p1 := PfrTextRec(Lines[Y]);
+  p1:= PfrTextRec(Lines[Y]);
   GetMem(p, SizeOf(TfrTextRec));
   FillChar(p^, SizeOf(TfrTextRec), 0);
   p^.Next := nil;
-  p^.X := X;
+  p^.X    := Round(View.X / UsedFont);
+  p^.W    := Round(View.Width / UsedFont);
   p^.Text := Text;
+  p^.FillColor  := View.FillColor;
+  p^.Borders    := View.Frames;
+  p^.BorderColor:= View.FrameColor;
+  p^.BorderStyle:= View.FrameStyle;
+  p^.BorderWidth:= Round(View.FrameWidth);
   if View is TfrMemoView then
     with View as TfrMemoView do
     begin
-      p^.FontName := Font.Name;
-      p^.FontSize := Font.Size;
-      p^.FontStyle := frGetFontStyle(Font.Style);
-      p^.FontColor := Font.Color;
+      p^.FontName    := Font.Name;
+      p^.FontSize    := Font.Size;
+      p^.FontStyle   := frGetFontStyle(Font.Style);
+      p^.FontColor   := Font.Color;
       p^.FontCharset := Font.Charset;
+      p^.Alignment   := Alignment;
     end;
-  p^.FillColor := View.FillColor;
+
   if p1 = nil then
     Lines[Y] := TObject(p)
   else
   begin
     p2 := p1;
-    while (p1 <> nil) and (p1^.X < p^.X) do
+    while (p1 <> nil) and (p1^.X <= p^.X) do
     begin
       p2 := p1;
       p1 := p1^.Next;
@@ -173,12 +182,12 @@ begin
     if p2 <> p1 then
     begin
       p2^.Next := p;
-      p^.Next := p1;
+      p^.Next  := p1;
     end
     else
     begin
       Lines[Y] := TObject(p);
-      p^.Next := p1;
+      p^.Next  := p1;
     end;
   end;
 end;

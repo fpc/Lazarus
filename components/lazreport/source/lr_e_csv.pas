@@ -69,6 +69,7 @@ begin
   FQuoteType := qtQuoteChar;
   FQuoteChar := '"';
   FSeparator := ';';
+  BandTypes := [btMasterHeader,btMasterData,btColumnHeader];
 end;
 
 procedure TfrCSVExportFilter.OnBeginPage;

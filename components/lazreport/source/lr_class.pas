@@ -1108,9 +1108,15 @@ type
   TfrTextRec = record
     Next: PfrTextRec;
     X: Integer;
-    Text: String[255];
+    W: Integer;
+    Text: string;
     FontName: String[32];
     FontSize, FontStyle, FontColor, FontCharset, FillColor: Integer;
+    Alignment: TAlignment;
+    Borders: TfrFrameBorders;
+    BorderColor: TColor;
+    BorderStyle: TfrFrameStyle;
+    BorderWidth: Integer;
     Typ: Byte;
   end;
 
@@ -8489,6 +8495,7 @@ begin
   else
   begin
     p := TfrPreviewForm.Create(nil);
+    p.BorderIcons:=p.BorderIcons - [biMinimize];
     {$IFDEF DebugLR}
     DebugLn('1 TfrPreviewForm.visible=',BooLToStr(p.Visible));
     {$ENDIF}
@@ -8957,7 +8964,7 @@ begin
   inherited Create;
   Stream := AStream;
   Lines := TFpList.Create;
-  FBandTypes := [btMasterHeader, btMasterData];
+  FBandTypes := [btReportTitle..btNone];
 end;
 
 destructor TfrExportFilter.Destroy;
@@ -8979,6 +8986,7 @@ begin
     begin
       p1 := p;
       p := p^.Next;
+      SetLength(p1^.Text, 0);
       FreeMem(p1, SizeOf(TfrTextRec));
     end;
   end;
