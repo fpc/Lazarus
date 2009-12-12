@@ -2230,7 +2230,6 @@ debian/lazarus-ide.install.in svneol=native#text/plain
 debian/lazarus-ide.links.in svneol=native#text/plain
 debian/lazarus-ide.menu svneol=native#text/plain
 debian/lazarus-src.install.in svneol=native#text/plain
-debian/lazarus.substvars svneol=native#text/plain
 debian/orig-tar.sh svneol=native#text/plain
 debian/overrides/lazarus-ide svneol=native#text/plain
 debian/overrides/lazarus-src svneol=native#text/plain
