@@ -90,10 +90,11 @@ type
   TBuildModeGraph = class;
 
   { TIDEBuildVariables
-    - every package and project has a list of variables
-    - has a list of possible values
-    - has a default value, or an expression to define the default
-      the expression can use other build variables }
+    - every package and project has this list of variables
+      every variable has
+      - a list of possible values
+      - and has a default value, or an expression to define the default
+        the expression can use other build variables }
 
   TIDEBuildVariables = class(TLazBuildVariables)
   private
@@ -123,7 +124,10 @@ type
     property BuildModeGraph: TBuildModeGraph read FBuildModeGraph write SetBuildPropertySet;// active in BuildModeSet
   end;
 
-  { TBuildModeFlag }
+  { TBuildModeFlag
+    The project can set global values, which are used to set the
+    build variables (TIDEBuildVariable). Either directly or indirectly via the
+    conditionals (TLazCompOptConditionals). }
 
   TBuildModeFlag = class(TPersistent)
   private
@@ -159,6 +163,7 @@ type
     FIncludes: TFPList;// list of TBuildMode
     FIncludedBy: TFPList;// list of TBuildMode
     FName: string;
+    FShowIncludes: boolean;
     FStoredInSession: boolean;
     function GetFlagCount: integer;
     function GetFlags(Index: integer): TBuildModeFlag;
@@ -194,6 +199,7 @@ type
     property IncludedByCount: integer read GetIncludedByCount;
     property IncludedBy[Index: integer]: TBuildMode read GetIncludedBy;
     property Active: boolean read FActive;
+    property ShowIncludes: boolean read FShowIncludes write FShowIncludes;
     property FlagCount: integer read GetFlagCount;
     property Flags[Index: integer]: TBuildModeFlag read GetFlags;
   end;
@@ -5045,6 +5051,7 @@ begin
                            DoSwitchPathDelims);
   end;
 
+  FShowIncludes:=XMLConfig.GetValue(Path+'Includes/Show',false);
   NewCnt:=XMLConfig.GetValue(Path+'Includes/Count',0);
   for i:=0 to NewCnt-1 do begin
     ModeName:=XMLConfig.GetValue(Path+'Includes/Mode'+IntToStr(i)+'/Name','');
@@ -5063,6 +5070,7 @@ begin
   for i:=0 to FlagCount-1 do
     Flags[i].SaveToXMLConfig(XMLConfig,Path+'Flags/Item'+IntToStr(i)+'/',
                              UsePathDelim);
+  XMLConfig.SetDeleteValue(Path+'Includes/Show',ShowIncludes,false);
   XMLConfig.SetDeleteValue(Path+'Includes/Count',IncludeCount,0);
   for i:=0 to IncludeCount-1 do
     XMLConfig.SetDeleteValue(Path+'Includes/Mode'+IntToStr(i)+'/Name',

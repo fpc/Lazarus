@@ -102,7 +102,8 @@ const
 type
   TLazCompOptConditionals = class;
 
-  { TCompOptCondNode - a node in the conditional tree of the compiler options
+  { TCompOptCondNode
+    a node in the conditional tree of the compiler options
     of a project or package }
 
   TCompOptCondNode = class
@@ -132,6 +133,7 @@ type
     procedure Move(NewParent: TCompOptCondNode; NewIndex: integer);
     procedure Delete(Index: integer);
     procedure Assign(Source: TCompOptCondNode);
+  public
     property NodeType: TCOCNodeType read FNodeType write SetNodeType;
     property ValueType: TCOCValueType read FValueType write SetValueType;
     property Value: string read FValue write SetValue;
@@ -157,7 +159,7 @@ type
     property Root: TCompOptCondNode read FRoot write FRoot;
   end;
 
-  { TLazBuildProperty }
+  { TLazBuildVariable }
 
   TLazBuildVariable = class
   protected
