@@ -56,6 +56,9 @@ type
     function GetModeRows(Index: integer): TBuildModeGridRow;
     procedure ClearModeRows;
     procedure FillGridRow(i: integer);
+  protected
+    function ValidateEntry(const ACol,ARow:Integer; const OldValue:string;
+                           var NewValue:string): boolean; override;
   public
     constructor Create(TheOwner: TComponent); override;
     destructor Destroy; override;
@@ -161,6 +164,24 @@ begin
   end;
 end;
 
+function TBuildModesGrid.ValidateEntry(const ACol, ARow: Integer;
+  const OldValue: string; var NewValue: string): boolean;
+var
+  CurMode: TBuildModeGridRow;
+begin
+  Result:=inherited ValidateEntry(aCol, aRow, OldValue, NewValue);
+  if not Result then exit;
+  if (aRow>=1) and (aRow<=ModeRowCount) then begin
+    CurMode:=ModeRows[aRow-1];
+    if aCol=0 then begin
+      NewValue:=Graph.FixModeName(NewValue,CurMode.Mode);
+      CurMode.Mode.Name:=NewValue;
+    end else begin
+
+    end;
+  end;
+end;
+
 function TBuildModesGrid.GetModeRowCount: integer;
 begin
   Result:=FModeRows.Count;
@@ -171,6 +192,7 @@ begin
   inherited Create(TheOwner);
   fGraph:=TBuildModeGraph.Create;
   FModeRows:=TFPList.Create;
+  Options:=Options+[goEditing];
 end;
 
 destructor TBuildModesGrid.Destroy;
@@ -246,6 +268,7 @@ begin
   RowCount:=FModeRows.Count+1;
   FixedRows:=1;
   ColCount:=GroupModeCount+3;
+  FixedCols:=0;
   TypeCol:=GroupModeCount+1;
   ValueCol:=TypeCol+1;
   ColWidths[0]:=150;

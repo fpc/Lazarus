@@ -238,7 +238,9 @@ type
     function FindVarWithIdentifier(Identifier: string; out BuildVars: TIDEBuildVariables;
                                    out BuildVar: TIDEBuildVariable): boolean;
     function GetUniqueVarName(CheckToo: TIDEBuildVariables): string;
-    function GetUniqueModeName(Ignore, CheckToo: TBuildMode): string;
+    function GetUniqueModeName(Ignore: TBuildMode = nil; CheckToo: TBuildMode = nil): string;
+    function FixModeName(const ModeName: string; Ignore: TBuildMode = nil;
+                         CheckToo: TBuildMode = nil): string;
     property Evaluator: TExpressionEvaluator read FEvaluator;
     property SelectedMode: TBuildMode read FSelectedMode write SetSelectedMode;// saved to project session
     function ModeCount: integer;
@@ -3905,7 +3907,8 @@ begin
     and ((CheckToo=nil) or (CheckToo.IndexOfIdentifier(Result)<0));
 end;
 
-function TBuildModeGraph.GetUniqueModeName(Ignore, CheckToo: TBuildMode): string;
+function TBuildModeGraph.GetUniqueModeName(Ignore: TBuildMode;
+  CheckToo: TBuildMode): string;
 var
   i: Integer;
   CurMode: TBuildMode;
@@ -3921,6 +3924,42 @@ begin
       continue;
     exit;
   end;
+end;
+
+function TBuildModeGraph.FixModeName(const ModeName: string;
+  Ignore: TBuildMode; CheckToo: TBuildMode): string;
+
+  function NameOk(s: string): boolean;
+  var
+    CurMode: TBuildMode;
+  begin
+    if (CheckToo<>nil) and (SysUtils.CompareText(CheckToo.Name,s)=0) then
+      exit(false);
+    CurMode:=FindModeWithName(s);
+    if (CurMode<>nil) and (CurMode<>Ignore) then
+      exit(false);
+    Result:=true;
+  end;
+
+var
+  i: Integer;
+  Prefix: String;
+begin
+  Result:=ModeName;
+  if Result<>'' then
+    Result:=copy(Result,1,strlen(PChar(Result)));
+  if Result<>'' then
+    UTF8FixBroken(PChar(Result));
+  for i:=length(Result) downto 1 do
+    if Result[i] in [#0..#31,#127] then
+      System.Delete(Result,i,1);
+  if NameOk(Result) then exit;
+  Prefix:=Result;
+  i:=0;
+  repeat
+    inc(i);
+    Result:=Prefix+IntToStr(i);
+  until NameOk(Result);
 end;
 
 function TBuildModeGraph.ModeCount: integer;
