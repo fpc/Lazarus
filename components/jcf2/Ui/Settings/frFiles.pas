@@ -31,50 +31,46 @@ interface
 
 uses
   { delphi }
-  Windows, SysUtils, Classes, Controls, Forms, StdCtrls, Graphics,
-  { local }
-  frmBaseSettingsFrame, JvMemo, JvExStdCtrls;
+  SysUtils, Classes, Controls, Forms, StdCtrls, Graphics,
+  { lazarus }
+  IDEOptionsIntf;
 
 type
-  TfFiles = class(TfrSettingsFrame)
+
+  { TfFiles }
+
+  TfFiles = class(TAbstractIDEOptionsEditor)
     lblStatus: TLabel;
     lblDate: TLabel;
     lblVersion: TLabel;
     lblDescription: TLabel;
-    mDescription: TJvMemo;
+    mDescription: TMemo;
     lblFormatFileName: TLabel;
     procedure FrameResize(Sender: TObject);
-  private
-
-
   public
-
-    procedure Read; override;
-    procedure Write; override;
+    function GetTitle: String; override;
+    procedure Setup(ADialog: TAbstractOptionsEditorDialog); override;
+    procedure ReadSettings(AOptions: TAbstractIDEOptions); override;
+    procedure WriteSettings(AOptions: TAbstractIDEOptions); override;
+    class function SupportedOptionsClass: TAbstractIDEOptionsClass; override;
   end;
 
 implementation
 
 uses
-  { jcl }
-  JclFileUtils,
   { local }
-  JcfRegistrySettings, JcfSettings;
+  JcfFileUtils, JcfRegistrySettings, JcfSettings;
 
-{$ifdef FPC}
-  {$R *.lfm}
-{$else}
-  {$R *.dfm}
-{$endif}
+{$R *.lfm}
 
-procedure TfFiles.Read;
+procedure TfFiles.ReadSettings(AOptions: TAbstractIDEOptions);
 var
   lcSet: TJCFRegistrySettings;
 begin
   { from the registry, about the file }
   lcSet := GetRegSettings;
-  //lblFormatFileName.Caption := 'Format file is ' + lcSet.FormatConfigFileName;
-  lblFormatFileName.Caption := PathCompactPath(lblFormatFileName.Canvas.Handle, 'Format file is ' + lcSet.FormatConfigFileName, 450, cpCenter);
+  lblFormatFileName.Caption := 'Format file is ' + lcSet.FormatConfigFileName;
+  //lblFormatFileName.Caption := PathCompactPath(lblFormatFileName.Canvas.Handle, 'Format file is ' + lcSet.FormatConfigFileName, 450, cpCenter);
 
   if not FileExists(lcSet.FormatConfigFileName) then
   begin
@@ -104,7 +100,7 @@ begin
   end;
 end;
 
-procedure TfFiles.Write;
+procedure TfFiles.WriteSettings(AOptions: TAbstractIDEOptions);
 begin
   FormatSettings.Description := mDescription.Text;
 end;
@@ -137,7 +133,24 @@ begin
 
   mDescription.Left  := SPACING;
   mDescription.Width := ClientWidth - (mDescription.Left + SPACING);
-
 end;
 
+function TfFiles.GetTitle: String;
+begin
+  Result := 'Format File';
+end;
+
+procedure TfFiles.Setup(ADialog: TAbstractOptionsEditorDialog);
+begin
+  // nothing
+end;
+
+class function TfFiles.SupportedOptionsClass: TAbstractIDEOptionsClass;
+begin
+  Result := TFormatSettings;
+end;
+
+initialization
+  // register
+  RegisterIDEOptionsEditor(JCFOptionsGroup, TfFiles, JCFOptionFormatFile);
 end.

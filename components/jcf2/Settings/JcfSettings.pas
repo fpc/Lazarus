@@ -40,11 +40,13 @@ uses
   SetComments, SetCaps, SetWordList,
   SetAlign, SetReplace, SetUses, SetPreProcessor,
   SettingsStream, SetTransform,  SetAsm,
-  JcfVersionConsts;
+  JcfVersionConsts, IDEOptionsIntf;
 
 type
 
-  TFormatSettings = class(TObject)
+  { TFormatSettings }
+
+  TFormatSettings = class(TAbstractIDEOptions)
   private
     fcObfuscate: TSetObfuscate;
     fcClarify: TSetClarify;
@@ -78,12 +80,11 @@ type
     fsWriteVersion: string;
 
     procedure FromStream(const pcStream: TSettingsInput);
-
-  protected
-
   public
     constructor Create(const pbReadRegFile: boolean);
     destructor Destroy; override;
+    class function GetGroupCaption: String; override;
+    class function GetInstance: TAbstractIDEOptions; override;
 
     procedure Read;
     procedure ReadFromFile(const psFileName: string; const pbMustExist: boolean);
@@ -130,6 +131,35 @@ function FormatSettings: TFormatSettings;
 
 // create from a settings file
 function FormatSettingsFromFile(const psFileName: string): TFormatSettings;
+
+var
+  JCFOptionsGroup: Integer;
+const
+  JCFOptionFormatFile = 1;
+  JCFOptionObfuscate = 2;
+  JCFOptionClarify = 3;
+  JCFOptionSpaces = 4;
+  JCFOptionIndentation = 5;
+  JCFOptionLongLines = 6;
+  JCFOptionReturns = 7;
+  JCFOptionBlankLines = 8;
+  JCFOptionBlocks = 9;
+  JCFOptionCaseBlocks = 10;
+  JCFOptionAlign = 11;
+  JCFOptionObjectPascal = 12;
+  JCFOptionAnyWord = 13;
+  JCFOptionIdentifiers = 14;
+  JCFOptionNotIdentifiers = 15;
+  JCFOptionUnitName = 16;
+  JCFOptionFindAndReplace = 17;
+  JCFOptionUses = 18;
+  JCFOptionBasic = 19;
+  JCFOptionPreProcessor = 20;
+  JCFOptionComments = 21;
+  JCFOptionTransform = 22;
+  JCFOptionCompilerDirectives = 23;
+  JCFOptionWarnings = 24;
+  JCFOptionAsm = 25;
 
 implementation
 
@@ -205,6 +235,16 @@ begin
   FreeAndNil(fcTransform);
   
   inherited;
+end;
+
+class function TFormatSettings.GetGroupCaption: String;
+begin
+  Result := 'JCF Format Settings';
+end;
+
+class function TFormatSettings.GetInstance: TAbstractIDEOptions;
+begin
+  Result := FormatSettings;
 end;
 
 const
@@ -463,7 +503,8 @@ begin
 end;
 
 initialization
-
+  JCFOptionsGroup := GetFreeIDEOptionsGroupIndex(GroupEditor);
+  RegisterIDEOptionsGroup(JCFOptionsGroup, TFormatSettings);
 finalization
   FreeAndNil(mcFormatSettings);
 end.

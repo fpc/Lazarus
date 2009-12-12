@@ -1,4 +1,4 @@
-{ This file was automatically created by Lazarus. do not edit!
+{ This file was automatically created by Lazarus. do not edit ! 
   This source is only used to compile and install the package.
  }
 
@@ -34,7 +34,7 @@ uses
   SetReplace, SetReturns, SetSpaces, SettingsTypes, SetTransform, SetUses, 
   SetWordList, SettingsStream, fJcfErrorDisplay, Delay, IntList, 
   JcfFontSetFunctions, JcfHelp, JcfLog, JcfMiscFunctions, fAbout, 
-  JcfVersionConsts, LazarusPackageIntf;
+  JcfVersionConsts, frFiles, LazarusPackageIntf;
 
 implementation
 
