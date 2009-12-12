@@ -38,8 +38,8 @@ unit AddToPackageDlg;
 interface
 
 uses
-  Classes, SysUtils, LResources, LCLType, Forms, Controls, Buttons, StdCtrls,
-  ExtCtrls, Dialogs, FileUtil, ComCtrls, AVL_Tree, LCLProc,
+  Math, Classes, SysUtils, LResources, LCLType, Forms, Controls, Buttons,
+  StdCtrls, ExtCtrls, Dialogs, FileUtil, ComCtrls, AVL_Tree, LCLProc,
   NewItemIntf, ProjectIntf,
   LazarusIDEStrConsts, IDEWindowIntf, InputHistory, CodeToolManager, IDEDefs,
   IDEProcs, EnvironmentOpts, PackageSystem, PackageDefs, ComponentReg,
@@ -88,8 +88,11 @@ type
     CancelAddUnitButton: TBitBtn;
     CancelDependButton: TBitBtn;
     CancelNewComponentButton: TBitBtn;
+    NewCompBtnPanel: TPanel;
     NewComponentButton: TBitBtn;
+    NewDepBtnPanel: TPanel;
     NewDependButton: TBitBtn;
+    NewDepPanel: TPanel;
     NewFileCancelButton: TBitBtn;
     NewFileOkButton: TBitBtn;
     // notebook
@@ -178,6 +181,7 @@ type
     procedure FormCreate(Sender: TObject);
     procedure FormDestroy(Sender: TObject);
     procedure NewComponentButtonClick(Sender: TObject);
+    procedure NewComponentPageResize(Sender: TObject);
     procedure NewDependButtonClick(Sender: TObject);
     procedure NewFileOkButtonClick(Sender: TObject);
     procedure NewFilePageResize(Sender: TObject);
@@ -1037,6 +1041,19 @@ begin
   end;
 
   ModalResult:=mrOk;
+end;
+
+procedure TAddToPackageDlg.NewComponentPageResize(Sender: TObject);
+var
+  x: Integer;
+begin
+  x:=0;
+  x:=Max(x,AncestorTypeLabel.Left+AncestorTypeLabel.Width);
+  x:=Max(x,ClassNameLabel.Left+ClassNameLabel.Width);
+  x:=Max(x,PalettePageLabel.Left+PalettePageLabel.Width);
+  x:=Max(x,ComponentUnitFileLabel.Left+ComponentUnitFileLabel.Width);
+  x:=Max(x,ComponentUnitNameLabel.Left+ComponentUnitNameLabel.Width);
+  AncestorComboBox.Left:=x+6;
 end;
 
 procedure TAddToPackageDlg.NewDependButtonClick(Sender: TObject);

@@ -1,12 +1,12 @@
 object AddToPackageDlg: TAddToPackageDlg
   Left = 395
-  Height = 300
+  Height = 322
   Top = 386
-  Width = 500
+  Width = 658
   ActiveControl = NoteBook
   Caption = 'Add to package'
-  ClientHeight = 300
-  ClientWidth = 500
+  ClientHeight = 322
+  ClientWidth = 658
   KeyPreview = True
   OnClose = AddToPackageDlgClose
   OnCreate = FormCreate
@@ -16,25 +16,25 @@ object AddToPackageDlg: TAddToPackageDlg
   LCLVersion = '0.9.29'
   object NoteBook: TNotebook
     Left = 0
-    Height = 300
+    Height = 322
     Top = 0
-    Width = 500
+    Width = 658
     Align = alClient
     PageIndex = 0
     TabOrder = 0
     object NewFilePage: TPage
       Caption = 'New File'
-      ClientWidth = 492
-      ClientHeight = 274
+      ClientWidth = 656
+      ClientHeight = 295
       OnResize = NewFilePageResize
       object NewFileTreeView: TTreeView
         Left = 0
-        Height = 219
+        Height = 249
         Top = 0
         Width = 249
         Align = alLeft
         BorderSpacing.Bottom = 5
-        DefaultItemHeight = 15
+        DefaultItemHeight = 19
         ReadOnly = True
         RightClickSelect = True
         TabOrder = 0
@@ -48,20 +48,20 @@ object AddToPackageDlg: TAddToPackageDlg
         AnchorSideLeft.Side = asrBottom
         AnchorSideRight.Side = asrBottom
         Left = 249
-        Height = 219
+        Height = 249
         Top = 0
-        Width = 243
+        Width = 407
         Align = alClient
         BorderSpacing.Bottom = 5
         Caption = 'NewFileDescriptionGroupBox'
-        ClientHeight = 201
-        ClientWidth = 239
+        ClientHeight = 230
+        ClientWidth = 403
         TabOrder = 1
         object NewFileHelpLabel: TLabel
           Left = 0
-          Height = 201
+          Height = 230
           Top = 0
-          Width = 239
+          Width = 403
           Align = alClient
           Caption = 'NewFileHelpLabel'
           ParentColor = False
@@ -70,25 +70,26 @@ object AddToPackageDlg: TAddToPackageDlg
       end
       object NewFileBtnPanel: TPanel
         Left = 0
-        Height = 50
-        Top = 224
-        Width = 492
+        Height = 41
+        Top = 254
+        Width = 656
         Align = alBottom
+        AutoSize = True
         BevelOuter = bvNone
-        ClientHeight = 50
-        ClientWidth = 492
+        ClientHeight = 41
+        ClientWidth = 656
         TabOrder = 2
         object NewFileOkButton: TBitBtn
           AnchorSideBottom.Side = asrBottom
-          Left = 207
-          Height = 38
+          Left = 342
+          Height = 29
           Top = 6
-          Width = 127
+          Width = 138
           Align = alRight
-          Anchors = [akBottom]
           AutoSize = True
           BorderSpacing.Around = 6
           Caption = 'NewFileOkButton'
+          Constraints.MinWidth = 75
           Enabled = False
           Glyph.Data = {
             36040000424D3604000000000000360000002800000010000000100000000100
@@ -132,14 +133,15 @@ object AddToPackageDlg: TAddToPackageDlg
         end
         object NewFileCancelButton: TBitBtn
           AnchorSideLeft.Side = asrBottom
-          Left = 340
-          Height = 38
+          Left = 486
+          Height = 29
           Top = 6
-          Width = 146
+          Width = 164
           Align = alRight
           AutoSize = True
           BorderSpacing.Around = 6
           Caption = 'NewFileCancelButton'
+          Constraints.MinWidth = 75
           Glyph.Data = {
             36040000424D3604000000000000360000002800000010000000100000000100
             2000000000000004000064000000640000000000000000000000FFFFFF00FFFF
@@ -184,15 +186,15 @@ object AddToPackageDlg: TAddToPackageDlg
     end
     object AddUnitPage: TPage
       Caption = 'Add Unit'
-      ClientWidth = 492
-      ClientHeight = 274
+      ClientWidth = 656
+      ClientHeight = 295
       object AddUnitFilenameLabel: TLabel
         AnchorSideTop.Control = AddUnitFilenameEdit
         AnchorSideTop.Side = asrCenter
         Left = 5
-        Height = 14
-        Top = 11
-        Width = 106
+        Height = 18
+        Top = 9
+        Width = 143
         Caption = 'AddUnitFilenameLabel'
         ParentColor = False
       end
@@ -200,9 +202,9 @@ object AddToPackageDlg: TAddToPackageDlg
         AnchorSideTop.Control = AddUnitSrcNameEdit
         AnchorSideTop.Side = asrCenter
         Left = 5
-        Height = 14
-        Top = 44
-        Width = 106
+        Height = 18
+        Top = 42
+        Width = 146
         Caption = 'AddUnitSrcNameLabel'
         ParentColor = False
       end
@@ -210,20 +212,20 @@ object AddToPackageDlg: TAddToPackageDlg
         AnchorSideLeft.Control = AddUnitFilenameLabel
         AnchorSideLeft.Side = asrBottom
         AnchorSideRight.Control = AddUnitFileBrowseButton
-        Left = 111
+        Left = 148
         Height = 27
         Top = 5
-        Width = 301
+        Width = 450
         Anchors = [akTop, akLeft, akRight]
         TabOrder = 0
         Text = 'AddUnitFilenameEdit'
       end
       object AddUnitFileBrowseButton: TButton
         AnchorSideRight.Control = AddUnitFileShortenButton
-        Left = 412
-        Height = 23
+        Left = 598
+        Height = 29
         Top = 5
-        Width = 38
+        Width = 24
         Anchors = [akTop, akRight]
         AutoSize = True
         Caption = '...'
@@ -233,10 +235,10 @@ object AddToPackageDlg: TAddToPackageDlg
       object AddUnitFileShortenButton: TButton
         AnchorSideRight.Control = AddUnitPage
         AnchorSideRight.Side = asrBottom
-        Left = 450
-        Height = 23
+        Left = 622
+        Height = 29
         Top = 5
-        Width = 42
+        Width = 34
         Anchors = [akTop, akRight]
         AutoSize = True
         Caption = '<>'
@@ -248,7 +250,7 @@ object AddToPackageDlg: TAddToPackageDlg
         AnchorSideLeft.Side = asrBottom
         AnchorSideTop.Control = AddUnitFilenameEdit
         AnchorSideTop.Side = asrBottom
-        Left = 111
+        Left = 151
         Height = 27
         Top = 38
         Width = 156
@@ -260,9 +262,9 @@ object AddToPackageDlg: TAddToPackageDlg
         AnchorSideTop.Control = AddUnitSrcNameEdit
         AnchorSideTop.Side = asrBottom
         Left = 5
-        Height = 19
+        Height = 22
         Top = 71
-        Width = 169
+        Width = 214
         BorderSpacing.Around = 6
         Caption = 'AddUnitHasRegisterCheckBox'
         TabOrder = 4
@@ -272,9 +274,9 @@ object AddToPackageDlg: TAddToPackageDlg
         AnchorSideTop.Control = AddUnitHasRegisterCheckBox
         AnchorSideTop.Side = asrBottom
         Left = 5
-        Height = 19
-        Top = 96
-        Width = 150
+        Height = 22
+        Top = 99
+        Width = 189
         BorderSpacing.Top = 6
         Caption = 'AddUnitIsVirtualCheckBox'
         OnClick = AddUnitIsVirtualCheckBoxClick
@@ -285,9 +287,9 @@ object AddToPackageDlg: TAddToPackageDlg
         AnchorSideTop.Control = AddUnitIsVirtualCheckBox
         AnchorSideTop.Side = asrBottom
         Left = 5
-        Height = 19
-        Top = 121
-        Width = 164
+        Height = 22
+        Top = 127
+        Width = 207
         BorderSpacing.Top = 6
         Caption = 'AddSecondaryFilesCheckBox'
         Checked = True
@@ -298,10 +300,10 @@ object AddToPackageDlg: TAddToPackageDlg
         AnchorSideLeft.Control = AddUnitButton
         AnchorSideLeft.Side = asrBottom
         AnchorSideTop.Control = AddUnitButton
-        Left = 130
-        Height = 26
+        Left = 140
+        Height = 29
         Top = 194
-        Width = 147
+        Width = 168
         AutoSize = True
         BorderSpacing.Left = 10
         Caption = 'CancelAddUnitButton'
@@ -349,9 +351,9 @@ object AddToPackageDlg: TAddToPackageDlg
         AnchorSideLeft.Control = AddUnitHasRegisterCheckBox
         AnchorSideTop.Side = asrBottom
         Left = 5
-        Height = 26
+        Height = 29
         Top = 194
-        Width = 115
+        Width = 125
         AutoSize = True
         BorderSpacing.Top = 25
         Caption = 'AddUnitButton'
@@ -400,9 +402,9 @@ object AddToPackageDlg: TAddToPackageDlg
         AnchorSideTop.Control = AddSecondaryFilesCheckBox
         AnchorSideTop.Side = asrBottom
         Left = 5
-        Height = 26
-        Top = 146
-        Width = 150
+        Height = 29
+        Top = 155
+        Width = 172
         AutoSize = True
         BorderSpacing.Top = 6
         Caption = 'AddUnitUpdateButton'
@@ -449,15 +451,16 @@ object AddToPackageDlg: TAddToPackageDlg
     end
     object NewComponentPage: TPage
       Caption = 'New Component'
-      ClientWidth = 492
-      ClientHeight = 274
+      ClientWidth = 656
+      ClientHeight = 295
+      OnResize = NewComponentPageResize
       object AncestorTypeLabel: TLabel
         AnchorSideTop.Control = AncestorComboBox
         AnchorSideTop.Side = asrCenter
         Left = 5
-        Height = 14
-        Top = 8
-        Width = 93
+        Height = 18
+        Top = 11
+        Width = 120
         Caption = 'AncestorTypeLabel'
         ParentColor = False
       end
@@ -465,9 +468,9 @@ object AddToPackageDlg: TAddToPackageDlg
         AnchorSideTop.Control = ClassNameEdit
         AnchorSideTop.Side = asrCenter
         Left = 5
-        Height = 14
-        Top = 38
-        Width = 78
+        Height = 18
+        Top = 45
+        Width = 108
         Caption = 'ClassNameLabel'
         ParentColor = False
       end
@@ -475,9 +478,9 @@ object AddToPackageDlg: TAddToPackageDlg
         AnchorSideTop.Control = PalettePageCombobox
         AnchorSideTop.Side = asrCenter
         Left = 5
-        Height = 14
-        Top = 68
-        Width = 84
+        Height = 18
+        Top = 79
+        Width = 110
         Caption = 'PalettePageLabel'
         ParentColor = False
       end
@@ -485,9 +488,9 @@ object AddToPackageDlg: TAddToPackageDlg
         AnchorSideTop.Control = ComponentUnitFileEdit
         AnchorSideTop.Side = asrCenter
         Left = 5
-        Height = 14
-        Top = 98
-        Width = 116
+        Height = 18
+        Top = 113
+        Width = 156
         Caption = 'ComponentUnitFileLabel'
         ParentColor = False
       end
@@ -495,20 +498,21 @@ object AddToPackageDlg: TAddToPackageDlg
         AnchorSideTop.Control = ComponentUnitNameEdit
         AnchorSideTop.Side = asrCenter
         Left = 5
-        Height = 14
-        Top = 131
-        Width = 127
+        Height = 18
+        Top = 146
+        Width = 175
         Caption = 'ComponentUnitNameLabel'
         ParentColor = False
       end
       object AncestorComboBox: TComboBox
-        AnchorSideLeft.Control = AncestorTypeLabel
         AnchorSideLeft.Side = asrBottom
-        Left = 98
-        Height = 21
-        Top = 5
+        AnchorSideTop.Control = NewComponentPage
+        Left = 184
+        Height = 29
+        Top = 6
         Width = 200
-        ItemHeight = 13
+        BorderSpacing.Top = 6
+        ItemHeight = 0
         OnCloseUp = AncestorComboBoxCloseUp
         TabOrder = 0
         Text = 'AncestorComboBox'
@@ -518,10 +522,10 @@ object AddToPackageDlg: TAddToPackageDlg
         AnchorSideLeft.Side = asrBottom
         AnchorSideTop.Control = AncestorComboBox
         AnchorSideTop.Side = asrCenter
-        Left = 298
-        Height = 19
-        Top = 6
-        Width = 153
+        Left = 384
+        Height = 22
+        Top = 9
+        Width = 193
         Caption = 'AncestorShowAllCheckBox'
         Checked = True
         OnClick = AncestorShowAllCheckBoxClick
@@ -529,56 +533,61 @@ object AddToPackageDlg: TAddToPackageDlg
         TabOrder = 1
       end
       object ClassNameEdit: TEdit
-        AnchorSideLeft.Control = ClassNameLabel
-        AnchorSideLeft.Side = asrBottom
+        AnchorSideLeft.Control = AncestorComboBox
         AnchorSideTop.Control = AncestorComboBox
         AnchorSideTop.Side = asrBottom
-        Left = 83
+        AnchorSideRight.Control = AncestorComboBox
+        AnchorSideRight.Side = asrBottom
+        Left = 184
         Height = 27
-        Top = 32
+        Top = 41
         Width = 200
+        Anchors = [akTop, akLeft, akRight]
         BorderSpacing.Top = 6
         OnChange = ClassNameEditChange
         TabOrder = 2
         Text = 'ClassNameEdit'
       end
       object PalettePageCombobox: TComboBox
-        AnchorSideLeft.Control = PalettePageLabel
-        AnchorSideLeft.Side = asrBottom
+        AnchorSideLeft.Control = AncestorComboBox
         AnchorSideTop.Control = ClassNameEdit
         AnchorSideTop.Side = asrBottom
-        Left = 89
-        Height = 21
-        Top = 65
+        AnchorSideRight.Control = AncestorComboBox
+        AnchorSideRight.Side = asrBottom
+        Left = 184
+        Height = 29
+        Top = 74
         Width = 200
         BorderSpacing.Top = 6
-        ItemHeight = 13
+        ItemHeight = 0
         TabOrder = 3
         Text = 'PalettePageCombobox'
       end
       object ComponentUnitFileEdit: TEdit
-        AnchorSideLeft.Control = ComponentUnitFileLabel
-        AnchorSideLeft.Side = asrBottom
+        AnchorSideLeft.Control = AncestorComboBox
         AnchorSideTop.Control = PalettePageCombobox
         AnchorSideTop.Side = asrBottom
-        Left = 121
+        AnchorSideRight.Control = ComponentUnitFileBrowseButton
+        Left = 184
         Height = 27
-        Top = 92
-        Width = 129
+        Top = 109
+        Width = 414
+        Anchors = [akTop, akLeft, akRight]
         BorderSpacing.Top = 6
         TabOrder = 4
         Text = 'ComponentUnitFileEdit'
       end
       object ComponentUnitFileBrowseButton: TButton
-        AnchorSideLeft.Control = ComponentUnitFileEdit
         AnchorSideLeft.Side = asrBottom
         AnchorSideTop.Control = ComponentUnitFileEdit
         AnchorSideTop.Side = asrCenter
-        Left = 250
-        Height = 23
+        AnchorSideRight.Control = ComponentUnitFileShortenButton
+        Left = 598
+        Height = 29
         Hint = 'Save file dialog'
-        Top = 94
-        Width = 38
+        Top = 108
+        Width = 24
+        Anchors = [akTop, akRight]
         AutoSize = True
         Caption = '...'
         OnClick = ComponentUnitFileBrowseButtonClick
@@ -587,15 +596,17 @@ object AddToPackageDlg: TAddToPackageDlg
         TabOrder = 5
       end
       object ComponentUnitFileShortenButton: TButton
-        AnchorSideLeft.Control = ComponentUnitFileBrowseButton
         AnchorSideLeft.Side = asrBottom
         AnchorSideTop.Control = ComponentUnitFileEdit
         AnchorSideTop.Side = asrCenter
-        Left = 288
-        Height = 23
+        AnchorSideRight.Control = NewComponentPage
+        AnchorSideRight.Side = asrBottom
+        Left = 622
+        Height = 29
         Hint = 'Shorten or expand filename'
-        Top = 94
-        Width = 42
+        Top = 108
+        Width = 34
+        Anchors = [akTop, akRight]
         AutoSize = True
         Caption = '<>'
         OnClick = ComponentUnitFileShortenButtonClick
@@ -604,306 +615,344 @@ object AddToPackageDlg: TAddToPackageDlg
         TabOrder = 6
       end
       object ComponentUnitNameEdit: TEdit
-        AnchorSideLeft.Control = ComponentUnitNameLabel
-        AnchorSideLeft.Side = asrBottom
+        AnchorSideLeft.Control = AncestorComboBox
         AnchorSideTop.Control = ComponentUnitFileEdit
         AnchorSideTop.Side = asrBottom
-        Left = 132
+        AnchorSideRight.Control = AncestorComboBox
+        AnchorSideRight.Side = asrBottom
+        Left = 184
         Height = 27
-        Top = 125
-        Width = 156
+        Top = 142
+        Width = 200
+        Anchors = [akTop, akLeft, akRight]
         BorderSpacing.Top = 6
         TabOrder = 7
         Text = 'ComponentUnitNameEdit'
       end
-      object CancelNewComponentButton: TBitBtn
-        AnchorSideLeft.Control = NewComponentButton
-        AnchorSideLeft.Side = asrBottom
-        AnchorSideTop.Control = NewComponentButton
-        Left = 164
-        Height = 26
-        Top = 177
-        Width = 185
+      object NewCompBtnPanel: TPanel
+        Left = 0
+        Height = 41
+        Top = 254
+        Width = 656
+        Align = alBottom
         AutoSize = True
-        BorderSpacing.Left = 6
-        Caption = 'CancelNewComponentButton'
-        Glyph.Data = {
-          36040000424D3604000000000000360000002800000010000000100000000100
-          2000000000000004000064000000640000000000000000000000FFFFFF00FFFF
-          FF00FFFFFF00FFFFFF00FFFFFF00FFFFFF00FFFFFF00FFFFFF00FFFFFF00FFFF
-          FF00FFFFFF00FFFFFF00FFFFFF00FFFFFF00FFFFFF00FFFFFF00FFFFFF00FFFF
-          FF00FFFFFF003F3DED413B38EB08FFFFFF00FFFFFF00FFFFFF00FFFFFF00FFFF
-          FF00FFFFFF00211FE3081E1CE241FFFFFF00FFFFFF00FFFFFF00FFFFFF00FFFF
-          FF004A47F0414F4CF2FF403EEDFD3C39EB08FFFFFF00FFFFFF00FFFFFF00FFFF
-          FF002725E5082422E4FC312FEAFF1F1DE241FFFFFF00FFFFFF00FFFFFF005451
-          F3415856F5FF6361FAFF5855F6FF413FEDFC3D3AEC08FFFFFF00FFFFFF00302D
-          E7082C2AE6FC413FF1FF4C4AF6FF312FEAFF1F1DE241FFFFFF00FFFFFF005956
-          F52B5B58F6FF6562FAFF7170FFFF5956F6FF4240EEFC3E3BEC083937EB083532
-          E9FC4745F2FF6362FFFF4A48F4FF2F2DE9FF2220E32BFFFFFF00FFFFFF00FFFF
-          FF005A57F52B5B59F6FF6663FAFF7471FFFF5A58F6FF4341EEFC3E3CECFD504D
-          F4FF6867FFFF504EF5FF3634EBFF2A27E52BFFFFFF00FFFFFF00FFFFFF00FFFF
-          FF00FFFFFF005B58F62B5C5AF6FF6764FAFF7472FFFF7370FFFF706EFFFF6E6C
-          FFFF5755F7FF3F3DEEFF3230E82BFFFFFF00FFFFFF00FFFFFF00FFFFFF00FFFF
-          FF00FFFFFF00FFFFFF005C59F62B5D5BF7FF7976FFFF5956FFFF5754FFFF7270
-          FFFF4846F0FF3C39EB2BFFFFFF00FFFFFF00FFFFFF00FFFFFF00FFFFFF00FFFF
-          FF00FFFFFF00FFFFFF00615EF8085D5AF6FD7D79FFFF5E5BFFFF5B58FFFF7674
-          FFFF4643EFFD413FED08FFFFFF00FFFFFF00FFFFFF00FFFFFF00FFFFFF00FFFF
-          FF00FFFFFF006967FB086663F9FC706DFBFF807EFFFF7E7BFFFF7C79FFFF7977
-          FFFF5E5CF7FF4744EFFC4240EE08FFFFFF00FFFFFF00FFFFFF00FFFFFF00FFFF
-          FF00716EFD086E6BFCFC7774FDFF8682FFFF7673FCFF6462F8FF605DF7FF6D6A
-          FAFF7B79FFFF605DF7FF4845EFFC4341EE08FFFFFF00FFFFFF00FFFFFF007673
-          FF087471FEFD7D7AFEFF8A87FFFF7C79FDFF6C69FBFF6361F92B5F5CF72B615E
-          F8FF6E6CFAFF7D7AFFFF615FF7FF4946F0FC4441EE05FFFFFF00FFFFFF007774
-          FF1F7A77FFFF817EFFFF817EFEFF7471FDFF6C69FB2BFFFFFF00FFFFFF00605D
-          F72B625FF8FF6F6DFBFF7E7CFFFF625FF8FF4A47F06F4542EE02FFFFFF00FFFF
-          FF007774FF1F7A77FFFF7976FEFF726FFD2BFFFFFF00FFFFFF00FFFFFF00FFFF
-          FF00615EF82B6461F8FF6A68F9FF5451F3A84F4DF229FFFFFF00FFFFFF00FFFF
-          FF00FFFFFF007774FF1F7774FF2BFFFFFF00FFFFFF00FFFFFF00FFFFFF00FFFF
-          FF00FFFFFF00625FF82B5D5BF76F5956F53EFFFFFF00FFFFFF00FFFFFF00FFFF
-          FF00FFFFFF00FFFFFF00FFFFFF00FFFFFF00FFFFFF00FFFFFF00FFFFFF00FFFF
-          FF00FFFFFF00FFFFFF006360F80AFFFFFF00FFFFFF00FFFFFF00
-        }
-        NumGlyphs = 0
-        OnClick = CancelNewComponentButtonClick
+        BevelOuter = bvNone
+        ClientHeight = 41
+        ClientWidth = 656
         TabOrder = 8
-      end
-      object NewComponentButton: TBitBtn
-        AnchorSideLeft.Control = ComponentUnitNameLabel
-        AnchorSideTop.Control = ComponentUnitNameEdit
-        AnchorSideTop.Side = asrBottom
-        Left = 5
-        Height = 26
-        Top = 177
-        Width = 153
-        AutoSize = True
-        BorderSpacing.Top = 25
-        Caption = 'NewComponentButton'
-        Glyph.Data = {
-          36040000424D3604000000000000360000002800000010000000100000000100
-          2000000000000004000064000000640000000000000000000000FFFFFF00FFFF
-          FF00FFFFFF00FFFFFF00FFFFFF00FFFFFF00FFFFFF00FFFFFF00FFFFFF00FFFF
-          FF00FFFFFF00FFFFFF00FFFFFF00FFFFFF00FFFFFF00FFFFFF00FFFFFF00FFFF
-          FF00FFFFFF00FFFFFF00FFFFFF00317A360A2D753207FFFFFF00FFFFFF00FFFF
-          FF00FFFFFF00FFFFFF00FFFFFF00FFFFFF00FFFFFF00FFFFFF00FFFFFF00FFFF
-          FF00FFFFFF00FFFFFF003985400A37833DFF317B37FB2E763307FFFFFF00FFFF
-          FF00FFFFFF00FFFFFF00FFFFFF00FFFFFF00FFFFFF00FFFFFF00FFFFFF00FFFF
-          FF00FFFFFF004292490A408E47FF54A35CFF4F9F57FF327C38FE2E773408FFFF
-          FF00FFFFFF00FFFFFF00FFFFFF00FFFFFF00FFFFFF00FFFFFF00FFFFFF00FFFF
-          FF004B9E530A499A51FF5BAC64FF77CA82FF74C87EFF51A059FF337D39FE2F78
-          3508FFFFFF00FFFFFF00FFFFFF00FFFFFF00FFFFFF00FFFFFF00FFFFFF0053A9
-          5C0A51A65AFF63B56DFF7ECE89FF7BCC87FF76CA81FF76C981FF52A25AFF347E
-          3AFE30793508FFFFFF00FFFFFF00FFFFFF00FFFFFF00FFFFFF005AB4650959B0
-          63FF6BBD76FF84D290FF7AC985FF60B26AFF63B46DFF78C983FF78CB82FF53A3
-          5CFF347F3AFD317A3608FFFFFF00FFFFFF00FFFFFF00FFFFFF005EB969465BB5
-          66E479C986FF80CE8DFF51A65AFC4DA1566F499C518B5CAD67FF7CCC86FF79CB
-          85FF54A45DFF35803BFC317B3708FFFFFF00FFFFFF00FFFFFF00FFFFFF005FBA
-          6A3C5CB666E66DC079FF55AC5F6FFFFFFF00FFFFFF004A9D52915EAE68FF7DCD
-          89FF7CCD87FF56A55FFF36813CFC327C3808FFFFFF00FFFFFF00FFFFFF00FFFF
-          FF005FBB6A435CB76765FFFFFF00FFFFFF00FFFFFF00FFFFFF004B9E53915FAF
-          69FF7FCE8AFF7ECE89FF57A660FF37823DFC337D3908FFFFFF00FFFFFF00FFFF
-          FF00FFFFFF00FFFFFF00FFFFFF00FFFFFF00FFFFFF00FFFFFF00FFFFFF004B9F
-          549160B06AFF81CF8DFF7FCF8BFF58A761FF398540FF347E3A08FFFFFF00FFFF
-          FF00FFFFFF00FFFFFF00FFFFFF00FFFFFF00FFFFFF00FFFFFF00FFFFFF00FFFF
-          FF004CA0559162B26CFF82D18FFF7AC885FF57A660FF38843F7BFFFFFF00FFFF
-          FF00FFFFFF00FFFFFF00FFFFFF00FFFFFF00FFFFFF00FFFFFF00FFFFFF00FFFF
-          FF00FFFFFF004DA1569163B36DFF5FAF69FF41914979FFFFFF00FFFFFF00FFFF
-          FF00FFFFFF00FFFFFF00FFFFFF00FFFFFF00FFFFFF00FFFFFF00FFFFFF00FFFF
-          FF00FFFFFF00FFFFFF004EA257914A9D527FFFFFFF00FFFFFF00FFFFFF00FFFF
-          FF00FFFFFF00FFFFFF00FFFFFF00FFFFFF00FFFFFF00FFFFFF00FFFFFF00FFFF
-          FF00FFFFFF00FFFFFF00FFFFFF00FFFFFF00FFFFFF00FFFFFF00FFFFFF00FFFF
-          FF00FFFFFF00FFFFFF00FFFFFF00FFFFFF00FFFFFF00FFFFFF00FFFFFF00FFFF
-          FF00FFFFFF00FFFFFF00FFFFFF00FFFFFF00FFFFFF00FFFFFF00
-        }
-        NumGlyphs = 0
-        OnClick = NewComponentButtonClick
-        TabOrder = 9
+        object NewComponentButton: TBitBtn
+          AnchorSideTop.Side = asrBottom
+          Left = 249
+          Height = 29
+          Top = 6
+          Width = 176
+          Align = alRight
+          AutoSize = True
+          BorderSpacing.Around = 6
+          Caption = 'NewComponentButton'
+          Constraints.MinWidth = 75
+          Glyph.Data = {
+            36040000424D3604000000000000360000002800000010000000100000000100
+            2000000000000004000064000000640000000000000000000000FFFFFF00FFFF
+            FF00FFFFFF00FFFFFF00FFFFFF00FFFFFF00FFFFFF00FFFFFF00FFFFFF00FFFF
+            FF00FFFFFF00FFFFFF00FFFFFF00FFFFFF00FFFFFF00FFFFFF00FFFFFF00FFFF
+            FF00FFFFFF00FFFFFF00FFFFFF00317A360A2D753207FFFFFF00FFFFFF00FFFF
+            FF00FFFFFF00FFFFFF00FFFFFF00FFFFFF00FFFFFF00FFFFFF00FFFFFF00FFFF
+            FF00FFFFFF00FFFFFF003985400A37833DFF317B37FB2E763307FFFFFF00FFFF
+            FF00FFFFFF00FFFFFF00FFFFFF00FFFFFF00FFFFFF00FFFFFF00FFFFFF00FFFF
+            FF00FFFFFF004292490A408E47FF54A35CFF4F9F57FF327C38FE2E773408FFFF
+            FF00FFFFFF00FFFFFF00FFFFFF00FFFFFF00FFFFFF00FFFFFF00FFFFFF00FFFF
+            FF004B9E530A499A51FF5BAC64FF77CA82FF74C87EFF51A059FF337D39FE2F78
+            3508FFFFFF00FFFFFF00FFFFFF00FFFFFF00FFFFFF00FFFFFF00FFFFFF0053A9
+            5C0A51A65AFF63B56DFF7ECE89FF7BCC87FF76CA81FF76C981FF52A25AFF347E
+            3AFE30793508FFFFFF00FFFFFF00FFFFFF00FFFFFF00FFFFFF005AB4650959B0
+            63FF6BBD76FF84D290FF7AC985FF60B26AFF63B46DFF78C983FF78CB82FF53A3
+            5CFF347F3AFD317A3608FFFFFF00FFFFFF00FFFFFF00FFFFFF005EB969465BB5
+            66E479C986FF80CE8DFF51A65AFC4DA1566F499C518B5CAD67FF7CCC86FF79CB
+            85FF54A45DFF35803BFC317B3708FFFFFF00FFFFFF00FFFFFF00FFFFFF005FBA
+            6A3C5CB666E66DC079FF55AC5F6FFFFFFF00FFFFFF004A9D52915EAE68FF7DCD
+            89FF7CCD87FF56A55FFF36813CFC327C3808FFFFFF00FFFFFF00FFFFFF00FFFF
+            FF005FBB6A435CB76765FFFFFF00FFFFFF00FFFFFF00FFFFFF004B9E53915FAF
+            69FF7FCE8AFF7ECE89FF57A660FF37823DFC337D3908FFFFFF00FFFFFF00FFFF
+            FF00FFFFFF00FFFFFF00FFFFFF00FFFFFF00FFFFFF00FFFFFF00FFFFFF004B9F
+            549160B06AFF81CF8DFF7FCF8BFF58A761FF398540FF347E3A08FFFFFF00FFFF
+            FF00FFFFFF00FFFFFF00FFFFFF00FFFFFF00FFFFFF00FFFFFF00FFFFFF00FFFF
+            FF004CA0559162B26CFF82D18FFF7AC885FF57A660FF38843F7BFFFFFF00FFFF
+            FF00FFFFFF00FFFFFF00FFFFFF00FFFFFF00FFFFFF00FFFFFF00FFFFFF00FFFF
+            FF00FFFFFF004DA1569163B36DFF5FAF69FF41914979FFFFFF00FFFFFF00FFFF
+            FF00FFFFFF00FFFFFF00FFFFFF00FFFFFF00FFFFFF00FFFFFF00FFFFFF00FFFF
+            FF00FFFFFF00FFFFFF004EA257914A9D527FFFFFFF00FFFFFF00FFFFFF00FFFF
+            FF00FFFFFF00FFFFFF00FFFFFF00FFFFFF00FFFFFF00FFFFFF00FFFFFF00FFFF
+            FF00FFFFFF00FFFFFF00FFFFFF00FFFFFF00FFFFFF00FFFFFF00FFFFFF00FFFF
+            FF00FFFFFF00FFFFFF00FFFFFF00FFFFFF00FFFFFF00FFFFFF00FFFFFF00FFFF
+            FF00FFFFFF00FFFFFF00FFFFFF00FFFFFF00FFFFFF00FFFFFF00
+          }
+          NumGlyphs = 0
+          OnClick = NewComponentButtonClick
+          TabOrder = 0
+        end
+        object CancelNewComponentButton: TBitBtn
+          AnchorSideLeft.Side = asrBottom
+          Left = 431
+          Height = 29
+          Top = 6
+          Width = 219
+          Align = alRight
+          AutoSize = True
+          BorderSpacing.Around = 6
+          Caption = 'CancelNewComponentButton'
+          Constraints.MinWidth = 75
+          Glyph.Data = {
+            36040000424D3604000000000000360000002800000010000000100000000100
+            2000000000000004000064000000640000000000000000000000FFFFFF00FFFF
+            FF00FFFFFF00FFFFFF00FFFFFF00FFFFFF00FFFFFF00FFFFFF00FFFFFF00FFFF
+            FF00FFFFFF00FFFFFF00FFFFFF00FFFFFF00FFFFFF00FFFFFF00FFFFFF00FFFF
+            FF00FFFFFF003F3DED413B38EB08FFFFFF00FFFFFF00FFFFFF00FFFFFF00FFFF
+            FF00FFFFFF00211FE3081E1CE241FFFFFF00FFFFFF00FFFFFF00FFFFFF00FFFF
+            FF004A47F0414F4CF2FF403EEDFD3C39EB08FFFFFF00FFFFFF00FFFFFF00FFFF
+            FF002725E5082422E4FC312FEAFF1F1DE241FFFFFF00FFFFFF00FFFFFF005451
+            F3415856F5FF6361FAFF5855F6FF413FEDFC3D3AEC08FFFFFF00FFFFFF00302D
+            E7082C2AE6FC413FF1FF4C4AF6FF312FEAFF1F1DE241FFFFFF00FFFFFF005956
+            F52B5B58F6FF6562FAFF7170FFFF5956F6FF4240EEFC3E3BEC083937EB083532
+            E9FC4745F2FF6362FFFF4A48F4FF2F2DE9FF2220E32BFFFFFF00FFFFFF00FFFF
+            FF005A57F52B5B59F6FF6663FAFF7471FFFF5A58F6FF4341EEFC3E3CECFD504D
+            F4FF6867FFFF504EF5FF3634EBFF2A27E52BFFFFFF00FFFFFF00FFFFFF00FFFF
+            FF00FFFFFF005B58F62B5C5AF6FF6764FAFF7472FFFF7370FFFF706EFFFF6E6C
+            FFFF5755F7FF3F3DEEFF3230E82BFFFFFF00FFFFFF00FFFFFF00FFFFFF00FFFF
+            FF00FFFFFF00FFFFFF005C59F62B5D5BF7FF7976FFFF5956FFFF5754FFFF7270
+            FFFF4846F0FF3C39EB2BFFFFFF00FFFFFF00FFFFFF00FFFFFF00FFFFFF00FFFF
+            FF00FFFFFF00FFFFFF00615EF8085D5AF6FD7D79FFFF5E5BFFFF5B58FFFF7674
+            FFFF4643EFFD413FED08FFFFFF00FFFFFF00FFFFFF00FFFFFF00FFFFFF00FFFF
+            FF00FFFFFF006967FB086663F9FC706DFBFF807EFFFF7E7BFFFF7C79FFFF7977
+            FFFF5E5CF7FF4744EFFC4240EE08FFFFFF00FFFFFF00FFFFFF00FFFFFF00FFFF
+            FF00716EFD086E6BFCFC7774FDFF8682FFFF7673FCFF6462F8FF605DF7FF6D6A
+            FAFF7B79FFFF605DF7FF4845EFFC4341EE08FFFFFF00FFFFFF00FFFFFF007673
+            FF087471FEFD7D7AFEFF8A87FFFF7C79FDFF6C69FBFF6361F92B5F5CF72B615E
+            F8FF6E6CFAFF7D7AFFFF615FF7FF4946F0FC4441EE05FFFFFF00FFFFFF007774
+            FF1F7A77FFFF817EFFFF817EFEFF7471FDFF6C69FB2BFFFFFF00FFFFFF00605D
+            F72B625FF8FF6F6DFBFF7E7CFFFF625FF8FF4A47F06F4542EE02FFFFFF00FFFF
+            FF007774FF1F7A77FFFF7976FEFF726FFD2BFFFFFF00FFFFFF00FFFFFF00FFFF
+            FF00615EF82B6461F8FF6A68F9FF5451F3A84F4DF229FFFFFF00FFFFFF00FFFF
+            FF00FFFFFF007774FF1F7774FF2BFFFFFF00FFFFFF00FFFFFF00FFFFFF00FFFF
+            FF00FFFFFF00625FF82B5D5BF76F5956F53EFFFFFF00FFFFFF00FFFFFF00FFFF
+            FF00FFFFFF00FFFFFF00FFFFFF00FFFFFF00FFFFFF00FFFFFF00FFFFFF00FFFF
+            FF00FFFFFF00FFFFFF006360F80AFFFFFF00FFFFFF00FFFFFF00
+          }
+          NumGlyphs = 0
+          OnClick = CancelNewComponentButtonClick
+          TabOrder = 1
+        end
       end
     end
     object NewRequirementPage: TPage
       Caption = 'New Requirement'
-      ClientWidth = 492
-      ClientHeight = 274
-      object DependPkgNameLabel: TLabel
-        AnchorSideTop.Control = DependPkgNameComboBox
-        AnchorSideTop.Side = asrCenter
-        Left = 5
-        Height = 14
-        Top = 8
-        Width = 107
-        Caption = 'DependPkgNameLabel'
-        ParentColor = False
-      end
-      object DependMinVersionLabel: TLabel
-        AnchorSideTop.Control = DependMinVersionEdit
-        AnchorSideTop.Side = asrCenter
-        Left = 5
-        Height = 14
-        Top = 38
-        Width = 114
-        Caption = 'DependMinVersionLabel'
-        ParentColor = False
-      end
-      object DependMaxVersionLabel: TLabel
-        AnchorSideTop.Control = DependMaxVersionEdit
-        AnchorSideTop.Side = asrCenter
-        Left = 5
-        Height = 14
-        Top = 71
-        Width = 118
-        Caption = 'DependMaxVersionLabel'
-        ParentColor = False
-      end
-      object DependPkgNameComboBox: TComboBox
-        AnchorSideLeft.Control = DependPkgNameLabel
-        AnchorSideLeft.Side = asrBottom
-        Left = 112
-        Height = 21
-        Top = 5
-        Width = 215
-        ItemHeight = 13
+      ClientWidth = 656
+      ClientHeight = 295
+      object NewDepBtnPanel: TPanel
+        Left = 0
+        Height = 41
+        Top = 254
+        Width = 656
+        Align = alBottom
+        AutoSize = True
+        BevelOuter = bvNone
+        ClientHeight = 41
+        ClientWidth = 656
         TabOrder = 0
-        Text = 'DependPkgNameComboBox'
+        object CancelDependButton: TBitBtn
+          AnchorSideLeft.Control = NewDependButton
+          AnchorSideLeft.Side = asrBottom
+          Left = 483
+          Height = 29
+          Top = 6
+          Width = 167
+          Align = alRight
+          AutoSize = True
+          BorderSpacing.Around = 6
+          Caption = 'CancelDependButton'
+          Constraints.MinWidth = 75
+          Glyph.Data = {
+            36040000424D3604000000000000360000002800000010000000100000000100
+            2000000000000004000064000000640000000000000000000000FFFFFF00FFFF
+            FF00FFFFFF00FFFFFF00FFFFFF00FFFFFF00FFFFFF00FFFFFF00FFFFFF00FFFF
+            FF00FFFFFF00FFFFFF00FFFFFF00FFFFFF00FFFFFF00FFFFFF00FFFFFF00FFFF
+            FF00FFFFFF003F3DED413B38EB08FFFFFF00FFFFFF00FFFFFF00FFFFFF00FFFF
+            FF00FFFFFF00211FE3081E1CE241FFFFFF00FFFFFF00FFFFFF00FFFFFF00FFFF
+            FF004A47F0414F4CF2FF403EEDFD3C39EB08FFFFFF00FFFFFF00FFFFFF00FFFF
+            FF002725E5082422E4FC312FEAFF1F1DE241FFFFFF00FFFFFF00FFFFFF005451
+            F3415856F5FF6361FAFF5855F6FF413FEDFC3D3AEC08FFFFFF00FFFFFF00302D
+            E7082C2AE6FC413FF1FF4C4AF6FF312FEAFF1F1DE241FFFFFF00FFFFFF005956
+            F52B5B58F6FF6562FAFF7170FFFF5956F6FF4240EEFC3E3BEC083937EB083532
+            E9FC4745F2FF6362FFFF4A48F4FF2F2DE9FF2220E32BFFFFFF00FFFFFF00FFFF
+            FF005A57F52B5B59F6FF6663FAFF7471FFFF5A58F6FF4341EEFC3E3CECFD504D
+            F4FF6867FFFF504EF5FF3634EBFF2A27E52BFFFFFF00FFFFFF00FFFFFF00FFFF
+            FF00FFFFFF005B58F62B5C5AF6FF6764FAFF7472FFFF7370FFFF706EFFFF6E6C
+            FFFF5755F7FF3F3DEEFF3230E82BFFFFFF00FFFFFF00FFFFFF00FFFFFF00FFFF
+            FF00FFFFFF00FFFFFF005C59F62B5D5BF7FF7976FFFF5956FFFF5754FFFF7270
+            FFFF4846F0FF3C39EB2BFFFFFF00FFFFFF00FFFFFF00FFFFFF00FFFFFF00FFFF
+            FF00FFFFFF00FFFFFF00615EF8085D5AF6FD7D79FFFF5E5BFFFF5B58FFFF7674
+            FFFF4643EFFD413FED08FFFFFF00FFFFFF00FFFFFF00FFFFFF00FFFFFF00FFFF
+            FF00FFFFFF006967FB086663F9FC706DFBFF807EFFFF7E7BFFFF7C79FFFF7977
+            FFFF5E5CF7FF4744EFFC4240EE08FFFFFF00FFFFFF00FFFFFF00FFFFFF00FFFF
+            FF00716EFD086E6BFCFC7774FDFF8682FFFF7673FCFF6462F8FF605DF7FF6D6A
+            FAFF7B79FFFF605DF7FF4845EFFC4341EE08FFFFFF00FFFFFF00FFFFFF007673
+            FF087471FEFD7D7AFEFF8A87FFFF7C79FDFF6C69FBFF6361F92B5F5CF72B615E
+            F8FF6E6CFAFF7D7AFFFF615FF7FF4946F0FC4441EE05FFFFFF00FFFFFF007774
+            FF1F7A77FFFF817EFFFF817EFEFF7471FDFF6C69FB2BFFFFFF00FFFFFF00605D
+            F72B625FF8FF6F6DFBFF7E7CFFFF625FF8FF4A47F06F4542EE02FFFFFF00FFFF
+            FF007774FF1F7A77FFFF7976FEFF726FFD2BFFFFFF00FFFFFF00FFFFFF00FFFF
+            FF00615EF82B6461F8FF6A68F9FF5451F3A84F4DF229FFFFFF00FFFFFF00FFFF
+            FF00FFFFFF007774FF1F7774FF2BFFFFFF00FFFFFF00FFFFFF00FFFFFF00FFFF
+            FF00FFFFFF00625FF82B5D5BF76F5956F53EFFFFFF00FFFFFF00FFFFFF00FFFF
+            FF00FFFFFF00FFFFFF00FFFFFF00FFFFFF00FFFFFF00FFFFFF00FFFFFF00FFFF
+            FF00FFFFFF00FFFFFF006360F80AFFFFFF00FFFFFF00FFFFFF00
+          }
+          ModalResult = 2
+          NumGlyphs = 0
+          TabOrder = 0
+        end
+        object NewDependButton: TBitBtn
+          AnchorSideTop.Side = asrBottom
+          Left = 326
+          Height = 29
+          Top = 6
+          Width = 151
+          Align = alRight
+          AutoSize = True
+          BorderSpacing.Around = 6
+          Caption = 'NewDependButton'
+          Constraints.MinWidth = 75
+          Glyph.Data = {
+            36040000424D3604000000000000360000002800000010000000100000000100
+            2000000000000004000064000000640000000000000000000000FFFFFF00FFFF
+            FF00FFFFFF00FFFFFF00FFFFFF00FFFFFF00FFFFFF00FFFFFF00FFFFFF00FFFF
+            FF00FFFFFF00FFFFFF00FFFFFF00FFFFFF00FFFFFF00FFFFFF00FFFFFF00FFFF
+            FF00FFFFFF00FFFFFF00FFFFFF00317A360A2D753207FFFFFF00FFFFFF00FFFF
+            FF00FFFFFF00FFFFFF00FFFFFF00FFFFFF00FFFFFF00FFFFFF00FFFFFF00FFFF
+            FF00FFFFFF00FFFFFF003985400A37833DFF317B37FB2E763307FFFFFF00FFFF
+            FF00FFFFFF00FFFFFF00FFFFFF00FFFFFF00FFFFFF00FFFFFF00FFFFFF00FFFF
+            FF00FFFFFF004292490A408E47FF54A35CFF4F9F57FF327C38FE2E773408FFFF
+            FF00FFFFFF00FFFFFF00FFFFFF00FFFFFF00FFFFFF00FFFFFF00FFFFFF00FFFF
+            FF004B9E530A499A51FF5BAC64FF77CA82FF74C87EFF51A059FF337D39FE2F78
+            3508FFFFFF00FFFFFF00FFFFFF00FFFFFF00FFFFFF00FFFFFF00FFFFFF0053A9
+            5C0A51A65AFF63B56DFF7ECE89FF7BCC87FF76CA81FF76C981FF52A25AFF347E
+            3AFE30793508FFFFFF00FFFFFF00FFFFFF00FFFFFF00FFFFFF005AB4650959B0
+            63FF6BBD76FF84D290FF7AC985FF60B26AFF63B46DFF78C983FF78CB82FF53A3
+            5CFF347F3AFD317A3608FFFFFF00FFFFFF00FFFFFF00FFFFFF005EB969465BB5
+            66E479C986FF80CE8DFF51A65AFC4DA1566F499C518B5CAD67FF7CCC86FF79CB
+            85FF54A45DFF35803BFC317B3708FFFFFF00FFFFFF00FFFFFF00FFFFFF005FBA
+            6A3C5CB666E66DC079FF55AC5F6FFFFFFF00FFFFFF004A9D52915EAE68FF7DCD
+            89FF7CCD87FF56A55FFF36813CFC327C3808FFFFFF00FFFFFF00FFFFFF00FFFF
+            FF005FBB6A435CB76765FFFFFF00FFFFFF00FFFFFF00FFFFFF004B9E53915FAF
+            69FF7FCE8AFF7ECE89FF57A660FF37823DFC337D3908FFFFFF00FFFFFF00FFFF
+            FF00FFFFFF00FFFFFF00FFFFFF00FFFFFF00FFFFFF00FFFFFF00FFFFFF004B9F
+            549160B06AFF81CF8DFF7FCF8BFF58A761FF398540FF347E3A08FFFFFF00FFFF
+            FF00FFFFFF00FFFFFF00FFFFFF00FFFFFF00FFFFFF00FFFFFF00FFFFFF00FFFF
+            FF004CA0559162B26CFF82D18FFF7AC885FF57A660FF38843F7BFFFFFF00FFFF
+            FF00FFFFFF00FFFFFF00FFFFFF00FFFFFF00FFFFFF00FFFFFF00FFFFFF00FFFF
+            FF00FFFFFF004DA1569163B36DFF5FAF69FF41914979FFFFFF00FFFFFF00FFFF
+            FF00FFFFFF00FFFFFF00FFFFFF00FFFFFF00FFFFFF00FFFFFF00FFFFFF00FFFF
+            FF00FFFFFF00FFFFFF004EA257914A9D527FFFFFFF00FFFFFF00FFFFFF00FFFF
+            FF00FFFFFF00FFFFFF00FFFFFF00FFFFFF00FFFFFF00FFFFFF00FFFFFF00FFFF
+            FF00FFFFFF00FFFFFF00FFFFFF00FFFFFF00FFFFFF00FFFFFF00FFFFFF00FFFF
+            FF00FFFFFF00FFFFFF00FFFFFF00FFFFFF00FFFFFF00FFFFFF00FFFFFF00FFFF
+            FF00FFFFFF00FFFFFF00FFFFFF00FFFFFF00FFFFFF00FFFFFF00
+          }
+          NumGlyphs = 0
+          OnClick = NewDependButtonClick
+          TabOrder = 1
+        end
       end
-      object DependMinVersionEdit: TEdit
-        AnchorSideLeft.Control = DependMinVersionLabel
-        AnchorSideLeft.Side = asrBottom
-        AnchorSideTop.Control = DependPkgNameComboBox
-        AnchorSideTop.Side = asrBottom
-        Left = 119
-        Height = 27
-        Top = 32
-        Width = 100
-        BorderSpacing.Top = 6
+      object NewDepPanel: TPanel
+        Left = 0
+        Height = 254
+        Top = 0
+        Width = 656
+        Align = alClient
+        BevelOuter = bvNone
+        ChildSizing.LeftRightSpacing = 6
+        ChildSizing.TopBottomSpacing = 6
+        ChildSizing.HorizontalSpacing = 6
+        ChildSizing.VerticalSpacing = 6
+        ChildSizing.Layout = cclLeftToRightThenTopToBottom
+        ChildSizing.ControlsPerLine = 2
+        ClientHeight = 254
+        ClientWidth = 656
         TabOrder = 1
-        Text = 'DependMinVersionEdit'
-      end
-      object DependMaxVersionEdit: TEdit
-        AnchorSideLeft.Control = DependMaxVersionLabel
-        AnchorSideLeft.Side = asrBottom
-        AnchorSideTop.Control = DependMinVersionEdit
-        AnchorSideTop.Side = asrBottom
-        Left = 123
-        Height = 27
-        Top = 65
-        Width = 100
-        BorderSpacing.Top = 6
-        TabOrder = 2
-        Text = 'DependMaxVersionEdit'
-      end
-      object NewDependButton: TBitBtn
-        AnchorSideLeft.Control = DependMaxVersionLabel
-        AnchorSideTop.Control = DependMaxVersionEdit
-        AnchorSideTop.Side = asrBottom
-        Left = 5
-        Height = 26
-        Top = 117
-        Width = 135
-        AutoSize = True
-        BorderSpacing.Top = 25
-        Caption = 'NewDependButton'
-        Glyph.Data = {
-          36040000424D3604000000000000360000002800000010000000100000000100
-          2000000000000004000064000000640000000000000000000000FFFFFF00FFFF
-          FF00FFFFFF00FFFFFF00FFFFFF00FFFFFF00FFFFFF00FFFFFF00FFFFFF00FFFF
-          FF00FFFFFF00FFFFFF00FFFFFF00FFFFFF00FFFFFF00FFFFFF00FFFFFF00FFFF
-          FF00FFFFFF00FFFFFF00FFFFFF00317A360A2D753207FFFFFF00FFFFFF00FFFF
-          FF00FFFFFF00FFFFFF00FFFFFF00FFFFFF00FFFFFF00FFFFFF00FFFFFF00FFFF
-          FF00FFFFFF00FFFFFF003985400A37833DFF317B37FB2E763307FFFFFF00FFFF
-          FF00FFFFFF00FFFFFF00FFFFFF00FFFFFF00FFFFFF00FFFFFF00FFFFFF00FFFF
-          FF00FFFFFF004292490A408E47FF54A35CFF4F9F57FF327C38FE2E773408FFFF
-          FF00FFFFFF00FFFFFF00FFFFFF00FFFFFF00FFFFFF00FFFFFF00FFFFFF00FFFF
-          FF004B9E530A499A51FF5BAC64FF77CA82FF74C87EFF51A059FF337D39FE2F78
-          3508FFFFFF00FFFFFF00FFFFFF00FFFFFF00FFFFFF00FFFFFF00FFFFFF0053A9
-          5C0A51A65AFF63B56DFF7ECE89FF7BCC87FF76CA81FF76C981FF52A25AFF347E
-          3AFE30793508FFFFFF00FFFFFF00FFFFFF00FFFFFF00FFFFFF005AB4650959B0
-          63FF6BBD76FF84D290FF7AC985FF60B26AFF63B46DFF78C983FF78CB82FF53A3
-          5CFF347F3AFD317A3608FFFFFF00FFFFFF00FFFFFF00FFFFFF005EB969465BB5
-          66E479C986FF80CE8DFF51A65AFC4DA1566F499C518B5CAD67FF7CCC86FF79CB
-          85FF54A45DFF35803BFC317B3708FFFFFF00FFFFFF00FFFFFF00FFFFFF005FBA
-          6A3C5CB666E66DC079FF55AC5F6FFFFFFF00FFFFFF004A9D52915EAE68FF7DCD
-          89FF7CCD87FF56A55FFF36813CFC327C3808FFFFFF00FFFFFF00FFFFFF00FFFF
-          FF005FBB6A435CB76765FFFFFF00FFFFFF00FFFFFF00FFFFFF004B9E53915FAF
-          69FF7FCE8AFF7ECE89FF57A660FF37823DFC337D3908FFFFFF00FFFFFF00FFFF
-          FF00FFFFFF00FFFFFF00FFFFFF00FFFFFF00FFFFFF00FFFFFF00FFFFFF004B9F
-          549160B06AFF81CF8DFF7FCF8BFF58A761FF398540FF347E3A08FFFFFF00FFFF
-          FF00FFFFFF00FFFFFF00FFFFFF00FFFFFF00FFFFFF00FFFFFF00FFFFFF00FFFF
-          FF004CA0559162B26CFF82D18FFF7AC885FF57A660FF38843F7BFFFFFF00FFFF
-          FF00FFFFFF00FFFFFF00FFFFFF00FFFFFF00FFFFFF00FFFFFF00FFFFFF00FFFF
-          FF00FFFFFF004DA1569163B36DFF5FAF69FF41914979FFFFFF00FFFFFF00FFFF
-          FF00FFFFFF00FFFFFF00FFFFFF00FFFFFF00FFFFFF00FFFFFF00FFFFFF00FFFF
-          FF00FFFFFF00FFFFFF004EA257914A9D527FFFFFFF00FFFFFF00FFFFFF00FFFF
-          FF00FFFFFF00FFFFFF00FFFFFF00FFFFFF00FFFFFF00FFFFFF00FFFFFF00FFFF
-          FF00FFFFFF00FFFFFF00FFFFFF00FFFFFF00FFFFFF00FFFFFF00FFFFFF00FFFF
-          FF00FFFFFF00FFFFFF00FFFFFF00FFFFFF00FFFFFF00FFFFFF00FFFFFF00FFFF
-          FF00FFFFFF00FFFFFF00FFFFFF00FFFFFF00FFFFFF00FFFFFF00
-        }
-        NumGlyphs = 0
-        OnClick = NewDependButtonClick
-        TabOrder = 3
-      end
-      object CancelDependButton: TBitBtn
-        AnchorSideLeft.Control = NewDependButton
-        AnchorSideLeft.Side = asrBottom
-        AnchorSideTop.Control = NewDependButton
-        Left = 146
-        Height = 26
-        Top = 117
-        Width = 146
-        AutoSize = True
-        BorderSpacing.Left = 6
-        Caption = 'CancelDependButton'
-        Glyph.Data = {
-          36040000424D3604000000000000360000002800000010000000100000000100
-          2000000000000004000064000000640000000000000000000000FFFFFF00FFFF
-          FF00FFFFFF00FFFFFF00FFFFFF00FFFFFF00FFFFFF00FFFFFF00FFFFFF00FFFF
-          FF00FFFFFF00FFFFFF00FFFFFF00FFFFFF00FFFFFF00FFFFFF00FFFFFF00FFFF
-          FF00FFFFFF003F3DED413B38EB08FFFFFF00FFFFFF00FFFFFF00FFFFFF00FFFF
-          FF00FFFFFF00211FE3081E1CE241FFFFFF00FFFFFF00FFFFFF00FFFFFF00FFFF
-          FF004A47F0414F4CF2FF403EEDFD3C39EB08FFFFFF00FFFFFF00FFFFFF00FFFF
-          FF002725E5082422E4FC312FEAFF1F1DE241FFFFFF00FFFFFF00FFFFFF005451
-          F3415856F5FF6361FAFF5855F6FF413FEDFC3D3AEC08FFFFFF00FFFFFF00302D
-          E7082C2AE6FC413FF1FF4C4AF6FF312FEAFF1F1DE241FFFFFF00FFFFFF005956
-          F52B5B58F6FF6562FAFF7170FFFF5956F6FF4240EEFC3E3BEC083937EB083532
-          E9FC4745F2FF6362FFFF4A48F4FF2F2DE9FF2220E32BFFFFFF00FFFFFF00FFFF
-          FF005A57F52B5B59F6FF6663FAFF7471FFFF5A58F6FF4341EEFC3E3CECFD504D
-          F4FF6867FFFF504EF5FF3634EBFF2A27E52BFFFFFF00FFFFFF00FFFFFF00FFFF
-          FF00FFFFFF005B58F62B5C5AF6FF6764FAFF7472FFFF7370FFFF706EFFFF6E6C
-          FFFF5755F7FF3F3DEEFF3230E82BFFFFFF00FFFFFF00FFFFFF00FFFFFF00FFFF
-          FF00FFFFFF00FFFFFF005C59F62B5D5BF7FF7976FFFF5956FFFF5754FFFF7270
-          FFFF4846F0FF3C39EB2BFFFFFF00FFFFFF00FFFFFF00FFFFFF00FFFFFF00FFFF
-          FF00FFFFFF00FFFFFF00615EF8085D5AF6FD7D79FFFF5E5BFFFF5B58FFFF7674
-          FFFF4643EFFD413FED08FFFFFF00FFFFFF00FFFFFF00FFFFFF00FFFFFF00FFFF
-          FF00FFFFFF006967FB086663F9FC706DFBFF807EFFFF7E7BFFFF7C79FFFF7977
-          FFFF5E5CF7FF4744EFFC4240EE08FFFFFF00FFFFFF00FFFFFF00FFFFFF00FFFF
-          FF00716EFD086E6BFCFC7774FDFF8682FFFF7673FCFF6462F8FF605DF7FF6D6A
-          FAFF7B79FFFF605DF7FF4845EFFC4341EE08FFFFFF00FFFFFF00FFFFFF007673
-          FF087471FEFD7D7AFEFF8A87FFFF7C79FDFF6C69FBFF6361F92B5F5CF72B615E
-          F8FF6E6CFAFF7D7AFFFF615FF7FF4946F0FC4441EE05FFFFFF00FFFFFF007774
-          FF1F7A77FFFF817EFFFF817EFEFF7471FDFF6C69FB2BFFFFFF00FFFFFF00605D
-          F72B625FF8FF6F6DFBFF7E7CFFFF625FF8FF4A47F06F4542EE02FFFFFF00FFFF
-          FF007774FF1F7A77FFFF7976FEFF726FFD2BFFFFFF00FFFFFF00FFFFFF00FFFF
-          FF00615EF82B6461F8FF6A68F9FF5451F3A84F4DF229FFFFFF00FFFFFF00FFFF
-          FF00FFFFFF007774FF1F7774FF2BFFFFFF00FFFFFF00FFFFFF00FFFFFF00FFFF
-          FF00FFFFFF00625FF82B5D5BF76F5956F53EFFFFFF00FFFFFF00FFFFFF00FFFF
-          FF00FFFFFF00FFFFFF00FFFFFF00FFFFFF00FFFFFF00FFFFFF00FFFFFF00FFFF
-          FF00FFFFFF00FFFFFF006360F80AFFFFFF00FFFFFF00FFFFFF00
-        }
-        ModalResult = 2
-        NumGlyphs = 0
-        TabOrder = 4
+        object DependPkgNameLabel: TLabel
+          Left = 6
+          Height = 18
+          Top = 10
+          Width = 147
+          BorderSpacing.CellAlignHorizontal = ccaLeftTop
+          BorderSpacing.CellAlignVertical = ccaCenter
+          Caption = 'DependPkgNameLabel'
+          ParentColor = False
+        end
+        object DependPkgNameComboBox: TComboBox
+          AnchorSideLeft.Side = asrBottom
+          Left = 170
+          Height = 27
+          Top = 6
+          Width = 200
+          Constraints.MinWidth = 200
+          ItemHeight = 0
+          TabOrder = 0
+          Text = 'DependPkgNameComboBox'
+        end
+        object DependMinVersionLabel: TLabel
+          Left = 6
+          Height = 18
+          Top = 43
+          Width = 154
+          BorderSpacing.CellAlignHorizontal = ccaLeftTop
+          BorderSpacing.CellAlignVertical = ccaCenter
+          Caption = 'DependMinVersionLabel'
+          ParentColor = False
+        end
+        object DependMinVersionEdit: TEdit
+          AnchorSideLeft.Side = asrBottom
+          Left = 170
+          Height = 27
+          Top = 39
+          Width = 200
+          BorderSpacing.Top = 6
+          TabOrder = 1
+          Text = 'DependMinVersionEdit'
+        end
+        object DependMaxVersionLabel: TLabel
+          Left = 6
+          Height = 18
+          Top = 76
+          Width = 158
+          BorderSpacing.CellAlignHorizontal = ccaLeftTop
+          BorderSpacing.CellAlignVertical = ccaCenter
+          Caption = 'DependMaxVersionLabel'
+          ParentColor = False
+        end
+        object DependMaxVersionEdit: TEdit
+          AnchorSideLeft.Side = asrBottom
+          Left = 170
+          Height = 27
+          Top = 72
+          Width = 200
+          BorderSpacing.Top = 6
+          TabOrder = 2
+          Text = 'DependMaxVersionEdit'
+        end
       end
     end
     object AddFilePage: TPage
       Caption = 'Add File'
-      ClientWidth = 492
-      ClientHeight = 274
+      ClientWidth = 656
+      ClientHeight = 295
       object AddFilenameLabel: TLabel
         AnchorSideTop.Control = AddFilenameEdit
         AnchorSideTop.Side = asrCenter
         Left = 5
-        Height = 14
-        Top = 11
-        Width = 87
+        Height = 18
+        Top = 9
+        Width = 117
         Caption = 'AddFilenameLabel'
         ParentColor = False
       end
@@ -911,20 +960,20 @@ object AddToPackageDlg: TAddToPackageDlg
         AnchorSideLeft.Control = AddFilenameLabel
         AnchorSideLeft.Side = asrBottom
         AnchorSideRight.Control = AddFileBrowseButton
-        Left = 92
+        Left = 122
         Height = 27
         Top = 5
-        Width = 320
+        Width = 476
         Anchors = [akTop, akLeft, akRight]
         TabOrder = 0
         Text = 'AddFilenameEdit'
       end
       object AddFileBrowseButton: TButton
         AnchorSideRight.Control = AddFileShortenButton
-        Left = 412
-        Height = 23
+        Left = 598
+        Height = 29
         Top = 5
-        Width = 38
+        Width = 24
         Anchors = [akTop, akRight]
         AutoSize = True
         Caption = '...'
@@ -934,10 +983,10 @@ object AddToPackageDlg: TAddToPackageDlg
       object AddFileShortenButton: TButton
         AnchorSideRight.Control = AddFilePage
         AnchorSideRight.Side = asrBottom
-        Left = 450
-        Height = 23
+        Left = 622
+        Height = 29
         Top = 5
-        Width = 42
+        Width = 34
         Anchors = [akTop, akRight]
         AutoSize = True
         Caption = '<>'
@@ -973,9 +1022,9 @@ object AddToPackageDlg: TAddToPackageDlg
         AnchorSideTop.Control = AddFileTypeRadioGroup
         AnchorSideTop.Side = asrBottom
         Left = 5
-        Height = 26
+        Height = 29
         Top = 93
-        Width = 112
+        Width = 119
         AutoSize = True
         BorderSpacing.Top = 25
         Caption = 'AddFileButton'
@@ -1023,10 +1072,10 @@ object AddToPackageDlg: TAddToPackageDlg
         AnchorSideLeft.Control = AddFileButton
         AnchorSideLeft.Side = asrBottom
         AnchorSideTop.Control = AddFileButton
-        Left = 123
-        Height = 26
+        Left = 130
+        Height = 29
         Top = 93
-        Width = 144
+        Width = 162
         AutoSize = True
         BorderSpacing.Left = 6
         Caption = 'CancelAddFileButton'
@@ -1073,14 +1122,14 @@ object AddToPackageDlg: TAddToPackageDlg
     end
     object AddFilesPage: TPage
       Caption = 'Add Files'
-      ClientWidth = 492
-      ClientHeight = 274
+      ClientWidth = 656
+      ClientHeight = 295
       object FilesListView: TListView
         AnchorSideBottom.Control = FilesBrowseButton
         Left = 0
-        Height = 228
+        Height = 249
         Top = 0
-        Width = 492
+        Width = 656
         Align = alClient
         BorderSpacing.Bottom = 5
         Columns = <        
@@ -1090,8 +1139,9 @@ object AddToPackageDlg: TAddToPackageDlg
           end        
           item
             Caption = 'Type'
-            Width = 280
+            Width = 436
           end>
+        ItemIndex = -1
         MultiSelect = True
         TabOrder = 0
         ViewStyle = vsReport
@@ -1099,21 +1149,21 @@ object AddToPackageDlg: TAddToPackageDlg
       object AddFilesBtnPanel: TPanel
         Left = 0
         Height = 41
-        Top = 233
-        Width = 492
+        Top = 254
+        Width = 656
         Align = alBottom
         AutoSize = True
         BevelOuter = bvNone
         ClientHeight = 41
-        ClientWidth = 492
+        ClientWidth = 656
         TabOrder = 1
         object FilesBrowseButton: TButton
           AnchorSideBottom.Side = asrBottom
-          Left = 6
+          Left = 28
           Height = 29
           Top = 6
           Width = 128
-          Align = alLeft
+          Align = alRight
           AutoSize = True
           BorderSpacing.Around = 6
           Caption = 'FilesBrowseButton'
@@ -1122,11 +1172,11 @@ object AddToPackageDlg: TAddToPackageDlg
         end
         object FilesAddButton: TButton
           AnchorSideLeft.Side = asrBottom
-          Left = 492
+          Left = 543
           Height = 29
           Top = 6
           Width = 107
-          Align = alLeft
+          Align = alRight
           AutoSize = True
           BorderSpacing.Around = 6
           Caption = 'FilesAddButton'
@@ -1135,11 +1185,11 @@ object AddToPackageDlg: TAddToPackageDlg
         end
         object FilesShortenButton: TBitBtn
           AnchorSideLeft.Side = asrBottom
-          Left = 379
+          Left = 268
           Height = 29
           Top = 6
           Width = 136
-          Align = alLeft
+          Align = alRight
           AutoSize = True
           BorderSpacing.Around = 6
           Caption = 'FilesShortenButton'
@@ -1148,11 +1198,11 @@ object AddToPackageDlg: TAddToPackageDlg
         end
         object FilesDeleteButton: TBitBtn
           AnchorSideLeft.Side = asrBottom
-          Left = 246
+          Left = 410
           Height = 29
           Top = 6
           Width = 127
-          Align = alLeft
+          Align = alRight
           AutoSize = True
           BorderSpacing.Around = 6
           Caption = 'FilesDeleteButton'
@@ -1160,11 +1210,11 @@ object AddToPackageDlg: TAddToPackageDlg
           TabOrder = 3
         end
         object FilesDirButton: TButton
-          Left = 140
+          Left = 162
           Height = 29
           Top = 6
           Width = 100
-          Align = alLeft
+          Align = alRight
           AutoSize = True
           BorderSpacing.Around = 6
           Caption = 'FilesDirButton'
