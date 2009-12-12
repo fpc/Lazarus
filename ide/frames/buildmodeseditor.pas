@@ -26,7 +26,7 @@ interface
 
 uses
   Classes, SysUtils, Controls, FileUtil, LResources, Forms, Grids, Menus,
-  ComCtrls, CompilerOptions;
+  ComCtrls, CompilerOptions, IDEImagesIntf;
 
 type
 
@@ -55,9 +55,11 @@ type
     function GetModeRowCount: integer;
     function GetModeRows(Index: integer): TBuildModeGridRow;
     procedure ClearModeRows;
+    procedure FillGridRow(i: integer);
   public
     constructor Create(TheOwner: TComponent); override;
     destructor Destroy; override;
+    function AddNewBuildMode: TBuildMode;
     property Graph: TBuildModeGraph read FGraph;
     procedure RebuildGrid; // call this after Graph changed
     property ModeRowCount: integer read GetModeRowCount;
@@ -69,13 +71,15 @@ type
 
   TBuildModesEditorFrame = class(TFrame)
     BuildModesPopupMenu: TPopupMenu;
-    BuildModesToolBar1: TToolBar;
+    BuildModesToolBar: TToolBar;
     NewBuildModeToolButton: TToolButton;
+    procedure NewBuildModeToolButtonClick(Sender: TObject);
   private
     FGrid: TBuildModesGrid;
   public
     constructor Create(TheOwner: TComponent); override;
     destructor Destroy; override;
+    procedure SetGraph(Graph: TBuildModeGraph);
     property Grid: TBuildModesGrid read FGrid;
   end;
 
@@ -113,6 +117,50 @@ begin
   FGroupModeCount:=0;
 end;
 
+procedure TBuildModesGrid.FillGridRow(i: integer);
+var
+  CurRow: TBuildModeGridRow;
+  j: Integer;
+  CurFlag: TBuildModeFlag;
+  TypeStr: String;
+  ValueStr: String;
+  TypeCol: Integer;
+  ValueCol: Integer;
+begin
+  TypeCol:=GroupModeCount+1;
+  ValueCol:=TypeCol+1;
+  if i=0 then begin
+    Cells[0,0]:='Build mode';
+    for i:=1 to GroupModeCount do Cells[i,0]:='';
+    Cells[TypeCol,0]:='Type';
+    Cells[ValueCol,0]:='Value';
+  end else begin
+    CurRow:=ModeRows[i-1];
+    // name
+    if CurRow.IndexInGroup=0 then
+      Cells[0,i]:=CurRow.Mode.Name
+    else
+      Cells[0,i]:='';
+    // included by
+    for j:=0 to GroupModeCount-1 do
+      Cells[j+1,i]:='';
+    // type + value
+    CurFlag:=CurRow.Flag;
+    TypeStr:='';
+    ValueStr:='';
+    if CurFlag<>nil then begin
+      if CurFlag.FlagType=bmftSetVariable then
+      begin
+        TypeStr:=CurFlag.Variable;
+        ValueStr:=CurFlag.Value;
+      end else
+        TypeStr:=BuildModeFlagTypeCaptions(CurFlag.FlagType);
+    end;
+    Cells[TypeCol,i]:=TypeStr;
+    Cells[ValueCol,i]:=ValueStr;
+  end;
+end;
+
 function TBuildModesGrid.GetModeRowCount: integer;
 begin
   Result:=FModeRows.Count;
@@ -131,6 +179,19 @@ begin
   FreeAndNil(FModeRows);
   FreeAndNil(FGraph);
   inherited Destroy;
+end;
+
+function TBuildModesGrid.AddNewBuildMode: TBuildMode;
+var
+  GridRow: TBuildModeGridRow;
+  CurFlag: TBuildModeFlag;
+begin
+  Result:=Graph.AddMode(Graph.GetUniqueModeName(nil,nil));
+  CurFlag:=Result.AddFlag(bmftNone,'');
+  RowCount:=RowCount+1;
+  GridRow:=TBuildModeGridRow.Create(Result,CurFlag);
+  FModeRows.Add(GridRow);
+  FillGridRow(RowCount-1);
 end;
 
 procedure TBuildModesGrid.RebuildGrid;
@@ -159,12 +220,9 @@ var
   CurMode: TBuildMode;
   NewRow: TBuildModeGridRow;
   j: Integer;
-  CurRow: TBuildModeGridRow;
   TypeCol: Integer;
   ValueCol: Integer;
   CurFlag: TBuildModeFlag;
-  TypeStr: String;
-  ValueStr: String;
 begin
   ClearModeRows;
   GroupInsertPos:=0;
@@ -184,43 +242,18 @@ begin
       end;
     end;
   end;
-  // grid size
+  // setup grid
   RowCount:=FModeRows.Count+1;
+  FixedRows:=1;
   ColCount:=GroupModeCount+3;
-  // header
-  Cells[0,0]:='Build mode';
-  for i:=1 to GroupModeCount do Cells[i,0]:='';
   TypeCol:=GroupModeCount+1;
   ValueCol:=TypeCol+1;
-  Cells[TypeCol,0]:='Type';
-  Cells[ValueCol,0]:='Value';
-  // values
-  for i:=1 to ModeRowCount do begin
-    CurRow:=ModeRows[i-1];
-    // name
-    if CurRow.IndexInGroup=0 then
-      Cells[0,i]:=CurRow.Mode.Name
-    else
-      Cells[0,i]:='';
-    // included by
-    for j:=0 to GroupModeCount-1 do
-      Cells[j+1,i]:='';
-    // type + value
-    CurFlag:=CurRow.Flag;
-    TypeStr:='';
-    ValueStr:='';
-    if CurFlag<>nil then begin
-      if CurFlag.FlagType=bmftSetVariable then
-      begin
-        TypeStr:=CurFlag.Variable;
-        ValueStr:=CurFlag.Value;
-      end else
-        TypeStr:=BuildModeFlagTypeCaptions(CurFlag.FlagType);
-    end;
-    Cells[TypeCol,i]:=TypeStr;
-    Cells[ValueCol,i]:=ValueStr;
-  end;
-
+  ColWidths[0]:=150;
+  ColWidths[TypeCol]:=120;
+  ColWidths[ValueCol]:=1000;
+  // fill cells
+  for i:=0 to ModeRowCount do
+    FillGridRow(i);
 end;
 
 { TBuildModeGridRow }
@@ -238,6 +271,11 @@ end;
 
 { TBuildModesEditorFrame }
 
+procedure TBuildModesEditorFrame.NewBuildModeToolButtonClick(Sender: TObject);
+begin
+  Grid.AddNewBuildMode;
+end;
+
 constructor TBuildModesEditorFrame.Create(TheOwner: TComponent);
 begin
   inherited Create(TheOwner);
@@ -247,11 +285,22 @@ begin
     Parent:=Self;
     Align:=alClient;
   end;
+
+  BuildModesToolBar.Images := IDEImages.Images_16;
+  NewBuildModeToolButton.Hint:='New build mode';
+  NewBuildModeToolButton.ImageIndex := IDEImages.LoadImage(16, 'laz_add');
+  // laz_delete, laz_edit, arrow_up, arrow_down
 end;
 
 destructor TBuildModesEditorFrame.Destroy;
 begin
   inherited Destroy;
+end;
+
+procedure TBuildModesEditorFrame.SetGraph(Graph: TBuildModeGraph);
+begin
+  Grid.Graph.Assign(Graph);
+  Grid.RebuildGrid;
 end;
 
 initialization

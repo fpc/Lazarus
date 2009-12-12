@@ -4914,6 +4914,7 @@ end;
 
 constructor TBuildMode.Create(aGraph: TBuildModeGraph; const aName: string);
 begin
+  FName:=aName;
   FIncludes:=TFPList.Create;
   FIncludedBy:=TFPList.Create;
   FFlags:=TFPList.Create;

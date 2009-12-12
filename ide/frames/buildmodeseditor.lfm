@@ -8,17 +8,20 @@ object BuildModesEditorFrame: TBuildModesEditorFrame
   TabOrder = 0
   DesignLeft = 460
   DesignTop = 269
-  object BuildModesToolBar1: TToolBar
+  object BuildModesToolBar: TToolBar
     Left = 0
     Height = 26
     Top = 0
     Width = 400
-    Caption = 'BuildModesToolBar1'
+    Caption = 'BuildModesToolBar'
     TabOrder = 0
     object NewBuildModeToolButton: TToolButton
       Left = 1
       Top = 2
-      Caption = 'NewBuildModeToolButton'
+      Caption = 'New'
+      ParentShowHint = False
+      ShowHint = True
+      OnClick = NewBuildModeToolButtonClick
     end
   end
   object BuildModesPopupMenu: TPopupMenu

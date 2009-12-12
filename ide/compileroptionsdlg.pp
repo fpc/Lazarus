@@ -264,7 +264,7 @@ type
   private
     fPathsTVNode: TTreeNode;
     FBuildModesTVNode: TTreeNode;
-    fBuildModeGrid: TBuildModesGrid;
+    fBuildModeFrame: TBuildModesEditorFrame;
     procedure SetupSearchPathsTab(Page: integer);
     procedure SetupBuildModesTab(Page: integer);
     procedure SetupParsingTab(Page: integer);
@@ -678,8 +678,7 @@ begin
         FBuildModesTVNode:=CategoryTreeView.Items.AddObject(fPathsTVNode,
                                          BuildModesPage.Caption,BuildModesPage);
       end;
-      fBuildModeGrid.Graph.Assign(TProjectCompilerOptions(Options).BuildModes);
-      fBuildModeGrid.RebuildGrid;
+      fBuildModeFrame.SetGraph(TProjectCompilerOptions(Options).BuildModes);
     end else begin
       // hide build modes
       if FBuildModesTVNode<>nil then begin
@@ -1759,9 +1758,9 @@ begin
   fBuildModesTVNode:=CategoryTreeView.Items.AddObject(nil,MainNoteBook.Page[Page].Caption,MainNoteBook.Page[Page]);
   {$ENDIF}
 
-  fBuildModeGrid:=TBuildModesGrid.Create(Self);
-  with fBuildModeGrid do begin
-    Name:='fBuildModeGrid';
+  fBuildModeFrame:=TBuildModesEditorFrame.Create(Self);
+  with fBuildModeFrame do begin
+    Name:='fBuildModeFrame';
     Align:=alClient;
     Parent:=BuildModesPage;
   end;
