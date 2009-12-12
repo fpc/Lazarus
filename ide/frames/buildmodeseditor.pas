@@ -216,6 +216,12 @@ begin
       end else if CurMode.Flag<>nil then
         // set new FlagType
         CurMode.Flag.FlagType:=FlagType;
+      if FlagType=bmftSetVariable then
+        // set variable name
+        CurMode.Flag.Variable:=NewValue
+      else
+        // clean up variable name
+        CurMode.Flag.Variable:='';
     end else if ACol=ValueCol then begin
       NewValue:=SpecialCharsToSpaces(NewValue,true);
       if (CurMode.Flag=nil) or (CurMode.Flag.FlagType=bmftNone) then
