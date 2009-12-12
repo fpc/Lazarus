@@ -31,48 +31,54 @@ interface
 
 uses
   { delphi }
-  Classes, Controls, Forms,
-  StdCtrls, ExtCtrls,
+  Classes, Controls, LResources, Forms, StdCtrls, ExtCtrls,
   { local }
-  frmBaseSettingsFrame;
+  IDEOptionsIntf;
 
 type
-  TfObfuscateSettings = class(TfrSettingsFrame)
+  { TfObfuscateSettings }
+
+  TfObfuscateSettings = class(TAbstractIDEOptionsEditor)
     cbRemoveWhiteSpace: TCheckBox;
     cbRemoveComments: TCheckBox;
     rgObfuscateCaps: TRadioGroup;
     cbRebreak: TCheckBox;
     cbRemoveIndent: TCheckBox;
     cbEnabled: TCheckBox;
-  private
-
   public
     constructor Create(AOwner: TComponent); override;
 
-    procedure Read; override;
-    procedure Write; override;
-
+    function GetTitle: String; override;
+    procedure Setup(ADialog: TAbstractOptionsEditorDialog); override;
+    procedure ReadSettings(AOptions: TAbstractIDEOptions); override;
+    procedure WriteSettings(AOptions: TAbstractIDEOptions); override;
+    class function SupportedOptionsClass: TAbstractIDEOptionsClass; override;
   end;
 
 implementation
 
-{$ifdef FPC}
-  {$R *.lfm}
-{$else}
-  {$R *.dfm}
-{$endif}
-
-uses JcfSettings, SettingsTypes, JcfHelp, SetObfuscate;
+uses
+  JcfSettings, SettingsTypes, JcfHelp, SetObfuscate;
 
 { TfObfuscateSettings }
 
 constructor TfObfuscateSettings.Create(AOwner: TComponent);
 begin
   inherited;
-  fiHelpContext := HELP_OBFUSCATE_SETTINGS;
+  //fiHelpContext := HELP_OBFUSCATE_SETTINGS;
 end;
 
-procedure TfObfuscateSettings.Read;
+function TfObfuscateSettings.GetTitle: String;
+begin
+  Result := 'Obfuscate';
+end;
+
+procedure TfObfuscateSettings.Setup(ADialog: TAbstractOptionsEditorDialog);
+begin
+  // nothing
+end;
+
+procedure TfObfuscateSettings.ReadSettings(AOptions: TAbstractIDEOptions);
 begin
   with FormatSettings.Obfuscate do
   begin
@@ -85,7 +91,7 @@ begin
   end;
 end;
 
-procedure TfObfuscateSettings.Write;
+procedure TfObfuscateSettings.WriteSettings(AOptions: TAbstractIDEOptions);
 begin
   with FormatSettings.Obfuscate do
   begin
@@ -98,4 +104,12 @@ begin
   end;
 end;
 
+class function TfObfuscateSettings.SupportedOptionsClass: TAbstractIDEOptionsClass;
+begin
+  Result := TFormatSettings;
+end;
+
+initialization
+  {$I frObfuscateSettings.lrs}
+  RegisterIDEOptionsEditor(JCFOptionsGroup, TfObfuscateSettings, JCFOptionObfuscate);
 end.

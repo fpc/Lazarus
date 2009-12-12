@@ -1,0 +1,29 @@
+{ This is an automatically generated lazarus resource file }
+
+LazarusResources.Add('TfObfuscateSettings','FORMDATA',[
+  'TPF0'#241#19'TfObfuscateSettings'#18'fObfuscateSettings'#6'Height'#3#15#1#5
+  +'Width'#3#19#1#12'ClientHeight'#3#15#1#11'ClientWidth'#3#19#1#12'Font.CharSe'
+  +'t'#7#12'ANSI_CHARSET'#11'Font.Height'#2#241#9'Font.Name'#6#8'Segoe UI'#10'P'
+  +'arentFont'#8#0#242#2#0#9'TCheckBox'#18'cbRemoveWhiteSpace'#4'Left'#2#8#6'He'
+  +'ight'#2#21#3'Top'#3#160#0#5'Width'#3#155#0#7'Caption'#6#19'Remove &white sp'
+  +'ace'#7'Checked'#9#5'State'#7#9'cbChecked'#8'TabOrder'#2#2#0#0#242#2#1#9'TCh'
+  +'eckBox'#16'cbRemoveComments'#4'Left'#2#8#6'Height'#2#21#3'Top'#3#180#0#5'Wi'
+  +'dth'#3#147#0#7'Caption'#6#16'Remove c&omments'#7'Checked'#9#5'State'#7#9'cb'
+  +'Checked'#8'TabOrder'#2#3#0#0#242#2#2#11'TRadioGroup'#15'rgObfuscateCaps'#4
+  +'Left'#2#8#6'Height'#2'l'#3'Top'#2'&'#5'Width'#3#169#0#8'AutoFill'#9#7'Capti'
+  +'on'#6#20'Obfuscate word &caps'#28'ChildSizing.LeftRightSpacing'#2#6#28'Chil'
+  +'dSizing.TopBottomSpacing'#2#6#29'ChildSizing.EnlargeHorizontal'#7#24'crsHom'
+  +'ogenousChildResize'#27'ChildSizing.EnlargeVertical'#7#24'crsHomogenousChild'
+  +'Resize'#28'ChildSizing.ShrinkHorizontal'#7#14'crsScaleChilds'#26'ChildSizin'
+  +'g.ShrinkVertical'#7#14'crsScaleChilds'#18'ChildSizing.Layout'#7#29'cclLeftT'
+  +'oRightThenTopToBottom'#27'ChildSizing.ControlsPerLine'#2#1#12'ClientHeight'
+  +#2'Z'#11'ClientWidth'#3#165#0#9'ItemIndex'#2#0#13'Items.Strings'#1#6#12'ALL '
+  +'CAPITALS'#6#13'all lowercase'#6#10'Mixed Case'#6#11'Leave alone'#0#8'TabOrd'
+  +'er'#2#1#0#0#242#2#3#9'TCheckBox'#9'cbRebreak'#4'Left'#2#8#6'Height'#2#21#3
+  +'Top'#3#220#0#5'Width'#2'k'#7'Caption'#6#14'Rebreak &lines'#7'Checked'#9#5'S'
+  +'tate'#7#9'cbChecked'#8'TabOrder'#2#5#0#0#242#2#4#9'TCheckBox'#14'cbRemoveIn'
+  +'dent'#4'Left'#2#8#6'Height'#2#21#3'Top'#3#200#0#5'Width'#2't'#7'Caption'#6
+  +#14'Remove &indent'#7'Checked'#9#5'State'#7#9'cbChecked'#8'TabOrder'#2#4#0#0
+  +#242#2#5#9'TCheckBox'#9'cbEnabled'#4'Left'#2#8#6'Height'#2#21#3'Top'#2#8#5'W'
+  +'idth'#2#127#7'Caption'#6#15'&Obfuscate mode'#8'TabOrder'#2#0#0#0#0
+]);

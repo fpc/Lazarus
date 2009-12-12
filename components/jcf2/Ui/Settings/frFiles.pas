@@ -31,7 +31,7 @@ interface
 
 uses
   { delphi }
-  SysUtils, Classes, Controls, Forms, StdCtrls, Graphics,
+  SysUtils, Classes, Controls, LResources, Forms, StdCtrls, Graphics,
   { lazarus }
   IDEOptionsIntf;
 
@@ -60,8 +60,6 @@ implementation
 uses
   { local }
   JcfFileUtils, JcfRegistrySettings, JcfSettings;
-
-{$R *.lfm}
 
 procedure TfFiles.ReadSettings(AOptions: TAbstractIDEOptions);
 var
@@ -151,6 +149,6 @@ begin
 end;
 
 initialization
-  // register
+  {$I frFiles.lrs}
   RegisterIDEOptionsEditor(JCFOptionsGroup, TfFiles, JCFOptionFormatFile);
 end.
