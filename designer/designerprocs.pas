@@ -146,7 +146,7 @@ begin
     begin
       Parent:=TWinControl(Component.Owner);
       ParentForm := GetParentForm(Parent);
-      if ParentForm<>Parent then
+      if (ParentForm<>nil) and (ParentForm<>Parent) then
       begin
         p:=Parent.ClientOrigin;
         FormOrigin := ParentForm.ClientOrigin;
