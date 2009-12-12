@@ -113,6 +113,8 @@ type
     function FindEditor(AEditor: TAbstractIDEOptionsEditorClass): TAbstractIDEOptionsEditor; virtual; abstract;
   end;
 
+function GetFreeIDEOptionsGroupIndex(AStartIndex: Integer): Integer;
+function GetFreeIDEOptionsIndex(AGroupIndex: Integer; AStartIndex: Integer): Integer;
 procedure RegisterIDEOptionsGroup(AGroupIndex: Integer; AGroupClass: TAbstractIDEOptionsClass);
 procedure RegisterIDEOptionsEditor(AGroupIndex: Integer; AEditorClass: TAbstractIDEOptionsEditorClass; AIndex: Integer; AParent: Integer = NoParent);
 
@@ -178,7 +180,7 @@ begin
   Result := FIDEEditorGroups;
 end;
 
-procedure RegisterIDEOptionsGroup(AGroupIndex: Integer; AGroupClass:TAbstractIDEOptionsClass);
+procedure RegisterIDEOptionsGroup(AGroupIndex: Integer; AGroupClass: TAbstractIDEOptionsClass);
 begin
   IDEEditorGroups.Add(AGroupIndex, AGroupClass);
 end;
@@ -200,6 +202,30 @@ begin
       Rec^.Items := TIDEOptionsEditorList.Create;
     Rec^.Items.Add(AEditorClass, AIndex, AParent);
   end;
+end;
+
+function GetFreeIDEOptionsGroupIndex(AStartIndex: Integer): Integer;
+var
+  I: Integer;
+begin
+  for I := AStartIndex to High(Integer) do
+    if IDEEditorGroups.GetByIndex(I) = nil then
+      Exit(I);
+end;
+
+function GetFreeIDEOptionsIndex(AGroupIndex: Integer; AStartIndex: Integer): Integer;
+var
+  Rec: PIDEOptionsGroupRec;
+  I: Integer;
+begin
+  Result := -1; // -1 = error
+  Rec := IDEEditorGroups.GetByIndex(AGroupIndex);
+  if Rec = nil then
+    Exit;
+
+  for I := AStartIndex to High(Integer) do
+    if Rec^.Items.GetByIndex(I) = nil then
+      Exit(I);
 end;
 
 function GroupListCompare(Item1, Item2: Pointer): Integer;
