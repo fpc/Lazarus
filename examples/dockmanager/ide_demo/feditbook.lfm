@@ -1,0 +1,8 @@
+object EditBook: TEditBook
+  Left = 670
+  Height = 240
+  Top = 115
+  Width = 320
+  Caption = 'EditBook'
+  LCLVersion = '0.9.29'
+end

@@ -1,11 +1,11 @@
 { This is an automatically generated lazarus resource file }
 
 LazarusResources.Add('TDockingSite','FORMDATA',[
-  'TPF0'#12'TDockingSite'#11'DockingSite'#4'Left'#3#188#1#6'Height'#3#163#0#3'T'
-  +'op'#3#156#0#5'Width'#3#255#0#8'AutoSize'#9#7'Caption'#6#9'Dock Site'#12'Cli'
-  +'entHeight'#3#163#0#11'ClientWidth'#3#255#0#10'LCLVersion'#6#6'0.9.29'#7'Vis'
-  +'ible'#9#0#6'TPanel'#7'pnlLeft'#4'Left'#2#0#6'Height'#3#138#0#3'Top'#2#0#5'W'
-  +'idth'#2#0#5'Align'#7#6'alLeft'#7'Caption'#6#7'pnlLeft'#5'Color'#7#7'clWhite'
+  'TPF0'#12'TDockingSite'#11'DockingSite'#4'Left'#3#253#1#6'Height'#3#163#0#3'T'
+  +'op'#3#12#1#5'Width'#3#255#0#8'AutoSize'#9#7'Caption'#6#9'Dock Site'#12'Clie'
+  +'ntHeight'#3#163#0#11'ClientWidth'#3#255#0#10'LCLVersion'#6#6'0.9.29'#7'Visi'
+  +'ble'#9#0#6'TPanel'#7'pnlLeft'#4'Left'#2#0#6'Height'#3#138#0#3'Top'#2#0#5'Wi'
+  +'dth'#2#0#5'Align'#7#6'alLeft'#7'Caption'#6#7'pnlLeft'#5'Color'#7#7'clWhite'
   +#8'DockSite'#9#11'ParentColor'#8#8'TabOrder'#2#0#10'OnDockDrop'#7#15'pnlLeft'
   +'DockDrop'#10'OnDockOver'#7#15'pnlLeftDockOver'#13'OnGetSiteInfo'#7#18'pnlLe'
   +'ftGetSiteInfo'#8'OnUnDock'#7#13'pnlLeftUnDock'#0#0#9'TSplitter'#9'splitLeft'

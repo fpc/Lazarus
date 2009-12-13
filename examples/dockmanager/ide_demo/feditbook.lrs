@@ -1,0 +1,6 @@
+{ This is an automatically generated lazarus resource file }
+
+LazarusResources.Add('TEditBook','FORMDATA',[
+  'TPF0'#9'TEditBook'#8'EditBook'#4'Left'#3#158#2#6'Height'#3#240#0#3'Top'#2's'
+  +#5'Width'#3'@'#1#7'Caption'#6#8'EditBook'#10'LCLVersion'#6#6'0.9.29'#0#0
+]);

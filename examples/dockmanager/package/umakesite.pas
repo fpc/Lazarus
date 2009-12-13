@@ -52,9 +52,14 @@ type
   public
   end;
 
+(* DockManager derived from EasyTree.
+  Added handling of notebooks.
+*)
   TAppDockManager = class(TEasyTree)
   protected
     function  ReloadDockedControl(const AName: string): TControl; override;
+    //function  SaveDockedControl(Control: TControl; Site: TWinControl): string; override;
+    function  SaveDockedControl(Control: TControl): string; override;
   end;
 
 (* The owner of all docksites
@@ -89,12 +94,11 @@ type
   //persistence
     procedure LoadFromStream(Stream: TStream);
     procedure SaveToStream(Stream: TStream);
-    function  ReloadDockedControl(const AName: string; Site: TWinControl): TControl;
+    function  ReloadDockedControl(const AName: string; Site: TWinControl): TControl; virtual;
+    function  SaveDockedControl(ACtrl:  TControl; Site: TWinControl): string; virtual;
     property OnSave: TOnSaveControl read FOnSave write FOnSave;
     property OnRestore: TOnReloadControl read FOnRestore write FOnRestore;
   end;
-
-function  TryRename(AComp: TComponent; const NewName: string): boolean;
 
 var
   DockMaster: TDockMaster; //for access by docksites on Reload...
@@ -111,22 +115,14 @@ type
   TControlAccess = class(TControl)
   end;
 
+{
 const //what characters are acceptable, for unique names?
   PanelNames: array[TAlign] of string = (
     '', '', //alNone, alTop,
     '_Elastic_Bottom_', '_Elastic_Left_', '_Elastic_Right_',
     '', ''  //alClient, alCustom
   );
-
-function  TryRename(AComp: TComponent; const NewName: string): boolean;
-begin
-  Result := True; //assume done
-  try
-    AComp.Name := NewName;
-  except
-    Result := False;
-  end;
-end;
+}
 
 { TDockMaster }
 
@@ -183,7 +179,6 @@ begin
       if pnl = nil then begin
       //create the components
         pnl := TDockPanel.Create(po); //owned by?
-        LastPanel := pnl; //for reload layout
         TryRename(pnl, pnlName);
         pnl.Caption := '';
         pnl.Parent := AForm;
@@ -217,6 +212,7 @@ begin
         ElasticSites.Add(pnl);
       {$ENDIF}
       end;
+      LastPanel := pnl; //for reload layout
     end;
   end;
 end;
@@ -225,7 +221,7 @@ end;
 function TDockMaster.CreateDockable(const AName: string;
   fMultiInst: boolean; fWrap: boolean): TWinControl;
 var
-  nb: TEasyBook;
+  nb: TCustomDockSite;
 begin
 (* Create a dockable form, based on its name.
   Used also to restore a layout.
@@ -268,10 +264,12 @@ begin
   //create a docking handle - should become a component?
     img := TImage.Create(AForm); //we could own the img, and be notified when its parent becomes nil
     img.Align := alNone;
-    //if not ForIDE then
-    begin  //prevent problems with the following code!
+    if ForIDE then
+    try //begin  //prevent problems with the following code!
       img.AnchorParallel(akRight,0,Result);
       img.AnchorParallel(akTop,0,Result);
+    except
+      DebugLn('error AnchorParallel');
     end;
     img.Anchors:=[akRight,akTop];
     img.Cursor := crHandPoint;
@@ -304,19 +302,21 @@ function TDockMaster.ReloadDockedControl(const AName: string;
 var
   i: integer;
   lst: TStringList;
-  nb: TEasyBook absolute Result;
+  nb: TCustomDockSite absolute Result;
   s: string;
   ctl: TControl;
 begin
-(* Reload docked controls - forms or NoteBook
+(* Reload docked control(s) - forms or NoteBook
   Called from AppDockManager on ReloadDockedControl.
 
   NoteBook identified by comma separated names in AName.
-    FileEditor identified by dot in name? (not here)
+
+  Call OnRestore before or after notebook handling?
 *)
-  if Pos(',', AName) > 0 then begin
+  if Pos(',', AName) > 1 then begin
   //restore NoteBook
-    nb := NoteBookCreate(Site);
+    nb := NoteBookCreate(Site); //!!!which notebook class???
+  {$IFDEF old}
     lst := TStringList.Create;
     try
       lst.CommaText := AName;
@@ -334,6 +334,9 @@ begin
     finally
       lst.Free;
     end;
+  {$ELSE}
+    nb.AsString := AName;
+  {$ENDIF}
   end else begin
   //restore control (form?)
     Result := nil;
@@ -342,6 +345,15 @@ begin
     if Result = nil then
       Result := ReloadForm(AName, True);
   end;
+end;
+
+function TDockMaster.SaveDockedControl(ACtrl: TControl;
+  Site: TWinControl): string;
+begin
+  if Assigned(FOnSave) then
+    Result := FOnSave(ACtrl);
+  if Result = '' then
+    Result := Site.GetDockCaption(ACtrl);
 end;
 
 procedure TDockMaster.FormEndDock(Sender, Target: TObject; X, Y: Integer);
@@ -425,7 +437,7 @@ var
 begin
 (* Restore a layout.
 - Create all floating sites
-- Create all ElasticSites
+- Create all ElasticSites - should exist???
 - Reload all docked controls
 
 Notebooks?
@@ -445,20 +457,7 @@ Notebooks?
       site.BoundsRect := SiteRec.Bounds;
     end else begin
     //hosted panel - find parent form
-    {$IFDEF old}
-      if Factory = nil then
-        hcomp := Screen.FindForm(SiteName)
-      else begin
-        hcomp := Factory.FindComponent(SiteName);
-        //hcomp := Factory.ReloadDockedControl(SiteName); - reload form!?
-      end;
-      if (hcomp = nil) or not (hcomp is TWinControl) then
-        host := TForm.Create(Application);
-      AddElasticSites(host, [SiteRec.Align]);
-      site := LastPanel;
-    {$ELSE}
       site := MakePanel(SiteName, SiteRec.Align);
-    {$ENDIF}
     end;
   //debug
     if site = nil then begin
@@ -528,7 +527,8 @@ end;
 
 function TDockMaster.ReloadForm(const AName: string; fMultiInst: boolean): TWinControl;
 var
-  basename, instname: string;
+  //instname: string
+  basename: string;
   fc: TWinControlClass;
   fo: TComponent; //form owner
   ctl: TControl;
@@ -541,14 +541,20 @@ const
     i, l, instno: integer;
   begin
   //find the instance number, if present
-    instno := 0;
     l := Length(AName);
     i := l;
     while AName[i] in digits do
       dec(i);
     //i now is the position of the last non-digit in the name
-  //extract the instance number
-    basename := Copy(AName, 1, i);
+  (*extract the instance number
+    TReader.ReadRootComponent appends "_nnn"
+  *)
+  {$IFDEF old}
+    if AName[i] = '_' then //handle name_inst
+      basename := Copy(AName, 1, i-1)
+    else
+      basename := Copy(AName, 1, i);
+    instno := 0;
     while i < l do begin
       inc(i);
       instno := instno * 10 + ord(AName[i])-ord('0');
@@ -558,6 +564,14 @@ const
       instno := 1; //default instance number for forms
   //lookup existing instance
     instname := basename + IntToStr(instno);
+  {$ELSE}
+    if AName[i] = '_' then begin
+    //assume this is a multi-instance name
+      basename := 'T' + Copy(AName, 1, i-1);
+      //instname := AName;
+    end else
+      basename := 'T' + AName;
+  {$ENDIF}
   end;
 
 begin
@@ -573,6 +587,10 @@ begin
     Result := Screen.FindForm(AName);
     if Result <> nil then
       exit; //found it
+  //also search in our Owner
+    cmp := Owner.FindComponent(AName);
+    if (Result <> nil) and (Result is TWinControl) then
+      exit;
   end;
 //check if Factory can provide the form
   if assigned(Factory) then begin
@@ -589,6 +607,7 @@ begin
     Result := TForm.Create(fo); //named Form1, Form2... - not now???
   end else begin
   //create new instance
+  {$IFDEF old}
     if fMultiInst then
       SplitName
     else
@@ -599,8 +618,14 @@ begin
     //assert(assigned(fc), 'class not registered: ' + basename);
     if fMultiInst and not assigned(fc) then
       fc := TWinControlClass(GetClass('T' + AName)); //retry with non-splitted name
-    if not assigned(fc) then
+  {$ELSE}
+    SplitName;
+    fc := TWinControlClass(GetClass(basename));
+  {$ENDIF}
+    if not assigned(fc) then begin
+      DebugLn(basename , ' is not a registered class');
       exit(nil); //bad form name
+    end;
     Result := fc.Create(fo);
     if Result.Name <> AName then
       TryRename(Result, AName);
@@ -971,21 +996,29 @@ function TAppDockManager.ReloadDockedControl(const AName: string): TControl;
 begin
 (* Special connect to DockManager, and restore NoteBooks.
 *)
-  if False then
-    Result:=inherited ReloadDockedControl(AName); //asking DockSite (very bad idea)
+  if False then Result:=inherited ReloadDockedControl(AName); //asking DockSite (very bad idea)
   if assigned(DockMaster) then begin
-    //Result := DockMaster.CreateDockable(AName, FDockSite, True, False);
-    //Result := DockMaster.CreateDockable(AName, True, False);
     Result := DockMaster.ReloadDockedControl(AName, FDockSite);
   end else begin  //application default - search Application or Screen?
-    //Owner.FindComponent(AControlName) as TControl;
-    //Result := Application.FindComponent(AName) as TControl;
     Result := Screen.FindForm(AName);
     //if Result = nil then Result := 'T' + AName
     { TODO -cdocking : load form by name, or create from typename }
   end;
   if Result <> nil then
-    DebugLn('Reloaded %s.%s', [Result.Owner.Name, Result.Name]);
+    DebugLn('Reloaded %s.%s', [Result.Owner.Name, Result.Name])
+  else
+    DebugLn('NOT reloaded: ', AName, ' ------------------');
+end;
+
+function TAppDockManager.SaveDockedControl(Control: TControl //; Site: TWinControl
+  ): string;
+begin
+  if assigned(DockMaster) then
+    Result := DockMaster.SaveDockedControl(Control, FDockSite)
+  else
+    //Result:=inherited SaveDockedControl(Control, FDockSite);
+    Result:=inherited SaveDockedControl(Control);
+  DebugLn('Saved as ', Result);
 end;
 
 initialization

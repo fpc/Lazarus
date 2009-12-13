@@ -1,47 +1,51 @@
-inherited EditorSite: TEditorSite
-  Left = 354
-  Height = 300
-  Top = 156
+object MainBar: TMainBar
+  Left = 248
+  Height = 66
+  Top = 113
   Width = 400
-  Caption = 'EditorSite'
-  ClientHeight = 281
+  Caption = 'MainBar'
+  ClientHeight = 47
   ClientWidth = 400
   Menu = MainMenu1
-  OnActivate = FormActivate
   OnCreate = FormCreate
-  OnDeactivate = FormDeactivate
-  OnHide = FormHide
-  OnResize = FormResize
-  OnWindowStateChange = FormWindowStateChange
-  inherited pnlLeft: TPanel
-    Height = 256
+  LCLVersion = '0.9.29'
+  object cbLayouts: TComboBox
+    Left = 88
+    Height = 21
+    Top = 0
+    Width = 144
+    ItemHeight = 13
+    Style = csDropDownList
+    TabOrder = 0
   end
-  inherited splitLeft: TSplitter
-    Height = 256
+  object Label1: TLabel
+    Left = 8
+    Height = 14
+    Top = 0
+    Width = 34
+    Caption = 'Layout'
+    ParentColor = False
   end
-  inherited pnlRight: TPanel
-    Left = 400
-    Height = 256
+  object buRestore: TButton
+    Left = 304
+    Height = 25
+    Top = 1
+    Width = 91
+    Caption = 'Restore'
+    OnClick = buRestoreClick
+    TabOrder = 1
   end
-  inherited pnlBottom: TPanel
-    Top = 260
-    Width = 400
+  object buSave: TButton
+    Left = 240
+    Height = 25
+    Top = 1
+    Width = 59
+    Caption = 'Save'
+    OnClick = buSaveClick
+    TabOrder = 2
   end
-  inherited splitRight: TSplitter
-    Left = 396
-    Height = 256
-  end
-  inherited StatusBar1: TStatusBar
-    Top = 261
-    Width = 400
-  end
-  inherited splitBottom: TSplitter
-    Top = 256
-    Width = 400
-  end
-  object MainMenu1: TMainMenu[7]
-    left = 240
-    top = 48
+  object MainMenu1: TMainMenu
+    left = 96
     object mnFile: TMenuItem
       Caption = '&File'
       object mnOpen: TMenuItem
@@ -110,21 +114,22 @@ inherited EditorSite: TEditorSite
       Caption = '&Windows'
       object mnWindowDump: TMenuItem
         Caption = '&Dump'
-        OnClick = mnWindowDumpClick
       end
       object mnMinimize: TMenuItem
         Caption = 'Minimize all'
-        OnClick = mnMinimizeClick
       end
       object mnRestore: TMenuItem
         Caption = 'Restore all'
-        OnClick = mnRestoreClick
       end
     end
   end
-  object OpenDialog1: TOpenDialog[8]
+  object OpenDialog1: TOpenDialog
     Filter = '*.pas|*.pas|All Files|*.*'
-    left = 309
-    top = 48
+    left = 184
+  end
+  object dlgLayout: TSaveDialog
+    DefaultExt = '.lyt'
+    Filter = 'Layouts|*.lyt'
+    left = 144
   end
 end

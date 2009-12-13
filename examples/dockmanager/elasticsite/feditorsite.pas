@@ -36,7 +36,9 @@ interface
 uses
   Classes, SysUtils, FileUtil, LResources, Forms, Controls, Graphics, Dialogs,
   ExtCtrls, ComCtrls, Menus,
-  fElasticSite, fEditBook, fEditForm;
+  //fElasticSite,
+  fEditBook,
+  fEditForm;
 
 type
   TEditorSite = class(TDockingSite)

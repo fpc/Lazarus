@@ -25,20 +25,9 @@ normally react on mouse buttons (borders...). E.g. a SynEdit has to be wrapped
 into a form, before it can be dragged and docked by dragging the form.
 
 Apply ToolButtonAutoSizeAlign.patch to improve the appearance and behaviour
-of the toolbar buttons.
+of the toolbar buttons. (new version will use TToggleBox)
 
-ToDo:
-- Check use of ToggleBox instead of TToolButton
-- Load/Store layout
-+ Update parent on un/dock: Caption and DockHeaders!
-
-Problems:
-
-Disallow undocking/floating of a NOT docked dockbook.
-  Fix: flag StayDocked.
-
-Clients are not properly undocked on close!?
-  (see undockFix)
+Close docked forms on notebook destruction.
 *)
 
 (* Applications
@@ -63,17 +52,14 @@ HostDockSite.UpdateDockCaption (provide composed dock caption)
 
 {$mode objfpc}{$H+}
 
-{$IFDEF WIN32}
-  {$DEFINE undockFix} //seems to be required for win32 widgetset
-{$ELSE}
-  //no problems on Linux/gtk2
-{$ENDIF}
+{.$DEFINE undockFix}
+{$DEFINE closeFix}
 
 interface
 
 uses
   Classes, SysUtils, FileUtil, LResources, Forms, Controls, Graphics, Dialogs,
-  ComCtrls, ExtCtrls, StdCtrls;
+  ComCtrls, ExtCtrls, StdCtrls, EasyDockSite;
 
 type
   TTabButton = class(TToolButton)
@@ -94,7 +80,7 @@ type
 
   { TEasyDockBook }
 
-  TEasyDockBook = class(TForm)
+  TEasyDockBook = class(TCustomDockSite)
     pnlDock: TPanel;
     procedure FormClose(Sender: TObject; var CloseAction: TCloseAction);
     procedure FormCreate(Sender: TObject);
@@ -107,18 +93,21 @@ type
     procedure FormUnDock(Sender: TObject; Client: TControl;
       NewTarget: TWinControl; var Allow: Boolean);
     procedure ToolButton1Click(Sender: TObject);
-  private
+  protected
     Tabs: TTabs;
     CurTab: TTabButton;
   protected
     function GetDefaultDockCaption: string; override;
     function GetControlTab(AControl: TControl): TTabButton;
+    procedure AfterUndock(tabidx: integer); virtual;
+    procedure LoadNames(const str: string); override;
+    function  SaveNames: string; override;
   public
-    StayDocked: boolean;
+  {$IFDEF undockFix}
     destructor Destroy; override;
-  {$IFDEF new}
-    procedure SetDockCaption(const AName: string);
-  {$ELSE}
+  {$ENDIF}
+  {$IFDEF closeFix}
+    destructor Destroy; override;
   {$ENDIF}
   end;
 
@@ -128,10 +117,6 @@ implementation
 
 uses
   fFloatingSite,
-{$IFDEF WIN32}
-  Windows,  //PostMessage
-{$ELSE}
-{$ENDIF}
   LCLProc; //debug only
 
 procedure Register;
@@ -141,6 +126,7 @@ end;
 
 { TEasyDockBook }
 
+{$IFDEF undockFix}
 destructor TEasyDockBook.Destroy;
 var
   i: integer;
@@ -157,7 +143,6 @@ begin
     end of the application.
   Fix: check ctl.ComponentState for csDestroying.
 *)
-{$IFDEF undockFix}
   for i := DockClientCount - 1 downto 0 do begin
     ctl := DockClients[i];
     if not (csDestroying in ctl.ComponentState) then
@@ -165,10 +150,37 @@ begin
     DebugLn('Undocked %s P=%p H=%p', [ctl.Name,
       pointer(ctl.Parent), pointer(ctl.HostDockSite)]);
   end;
-{$ELSE}
-{$ENDIF}
   inherited Destroy;
 end;
+{$ELSE}
+  //LCL updated accordingly?
+{$ENDIF}
+
+{$IFDEF closeFix}
+destructor TEasyDockBook.Destroy;
+var
+  i: integer;
+  ctl: TControl;
+  frm: TCustomForm absolute ctl;
+begin
+(* Close docked forms, make all docked controls visible - or hidden?
+*)
+  for i := DockClientCount - 1 downto 0 do begin
+    ctl := DockClients[i];
+    if not (csDestroying in ctl.ComponentState) then begin
+      ctl.Visible := True; //make hidden notebook pages visible
+      if ctl is TCustomForm then
+        if frm.CloseQuery then
+          frm.Close
+        else
+          ctl.Visible := True; //make hidden notebook pages visible
+    end;
+  end;
+  inherited Destroy;
+end;
+{$ELSE}
+  //pure option
+{$ENDIF}
 
 procedure TEasyDockBook.FormClose(Sender: TObject;
   var CloseAction: TCloseAction);
@@ -180,24 +192,7 @@ var
 begin
 (* When an empty notebook is closed, it shall be freed.
   Otherwise the clients must be handled (close forms)
-
-  This code is never reached when we are docked
 *)
-{$IFDEF new}
-  //BeginFormUpdate;
-  for i := DockClientCount - 1 downto 0 do begin
-    ctl := DockClients[i];
-    ctl.ManualDock(nil);
-    DebugLn('Undocked %s P=%p H=%p', [ctl.Name,
-      pointer(ctl.Parent), pointer(ctl.HostDockSite)]);
-    //if ctl is TCustomForm then begin
-      //frm.Close;
-    //end;
-  end;
-  //EndFormUpdate;
-{$ELSE}
-  //not required?
-{$ENDIF}
   DebugLn(['TEasyDockBook.FormClose ',DbgSName(Self),' ',dbgs(Pointer(Self))]);
   CloseAction := caFree;
 end;
@@ -234,13 +229,7 @@ begin
 //unmanaged dock site requires an OnDockOver handler.
   Accept := True; //this is the default, can be omitted
 //make DockRect reflect the docking area
-  with Source do begin
-    ARect := pnlDock.ClientRect;
-    ARect.TopLeft := pnlDock.ClientToScreen(ARect.TopLeft);
-    inc(ARect.Bottom, ARect.Top);
-    inc(ARect.Right, ARect.Left);
-    DockRect := ARect;
-  end;
+  Source.DockRect := ScreenRect(pnlDock);
 end;
 
 procedure TEasyDockBook.FormGetSiteInfo(Sender: TObject; DockClient: TControl;
@@ -248,6 +237,7 @@ procedure TEasyDockBook.FormGetSiteInfo(Sender: TObject; DockClient: TControl;
 begin
 //override TCustomForm behaviour!
   CanDock := True;
+  InfluenceRect := ScreenRect(pnlDock);
 end;
 
 procedure TEasyDockBook.FormUnDock(Sender: TObject; Client: TControl;
@@ -272,6 +262,24 @@ begin
   Tabs.ButtonList.Delete(i);
   Application.ReleaseComponent(btn);
 //special handle remove of current and last tab
+  AfterUndock(i);
+end;
+
+procedure TEasyDockBook.AfterUndock(tabidx: integer);
+begin
+(* A client has undocked, we have various options:
+  If 1 client remains, replace ourselves by this client (if docked)
+    Opt: hide Tabs.
+  If 0 clients remain, free ourselves (if docked or floating)
+
+Finally update Parent (DockCaption if docked, if destroying self)
+
+We can be either:
+  docked - HDS<>nil, HDS<>floating site
+  floating - HDS=Parent=floating site (which exactly? having no kids except us?)
+  child - HDS=nil, Parent<>nil.
+
+*)
 {$IFDEF new}
   //if not StayDocked and (Tabs.ButtonCount = 1) then begin
   if False then begin
@@ -291,27 +299,31 @@ begin
   end else
 {$ELSE}
   //above code doesn't work :-(
+  //retry: explicit replace by last client, undock(?) and release
 {$ENDIF}
   if Tabs.ButtonCount > 0 then begin
   //tab moved?
     if CurTab = nil then begin //current button removed
     //find next tab to show
-      if i >= Tabs.ButtonCount then
-        i := Pred(Tabs.ButtonCount);  //  dec(i);
+      if tabidx >= Tabs.ButtonCount then
+        tabidx := Pred(Tabs.ButtonCount);  //  dec(i);
     //activate new tab
-      CurTab := Tabs.Buttons[i] as TTabButton;
+      CurTab := Tabs.Buttons[tabidx] as TTabButton;
       CurTab.Down := True;
       CurTab.Click;
     end;
     Caption := GetDefaultDockCaption;
   end else if not StayDocked then begin
   //last tab removed - close ONLY if we are docked or floating
-    if (HostDockSite <> nil) then begin //may be cleared already???
+    if (Parent = nil) then begin
+    //we are floating
+      Release;
+      exit;
+    end else if (HostDockSite <> nil) then begin //may be cleared already???
       ManualDock(nil);  //undock before closing
-      //DoUnDock(nil, nil);
-      //Dock(nil);
+      Release;
+      exit;
     end;
-    Release;
   end;
 //update the host dock site and its DockManager
   if HostDockSite <> nil then begin
@@ -319,6 +331,8 @@ begin
       TFloatingSite(HostDockSite).UpdateCaption(nil);
     if HostDockSite.DockManager <> nil then
       HostDockSite.Invalidate;
+  end else if Parent <> nil then begin
+    //notify - how?
   end;
 end;
 
@@ -351,8 +365,7 @@ begin
   end;
 end;
 
-{$IFDEF new}
-procedure TEasyDockBook.SetDockCaption(const AName: string);
+procedure TEasyDockBook.LoadNames(const str: string);
 var
   lst: TStringList;
   i: integer;
@@ -360,20 +373,40 @@ var
   ctl: TControl;
 begin
 (* This is a suggestion for handling arguments in ReloadDockedControl.
+  Skip lst[0], it contains our ClassName and (optional) Name
+    ','<ClassName> ['='<Name>]
 *)
   lst := TStringList.Create;
-  lst.CommaText := AName;
-  for i := 0 to lst.Count - 1 do begin
+  lst.CommaText := str;
+  //s := lst.Names[0];
+  s := lst.ValueFromIndex[0];
+  if s <> '' then
+    TryRename(self, s);
+  for i := i to lst.Count - 1 do begin
     s := lst.Strings[i];
-    ReloadDockedControl(s, ctl);
+    ReloadDockedControl(s, ctl); //handle everything in s!
     if ctl <> nil then begin
-      ctl.Name := s;
-      ctl.ManualDock(self, nil, alCustom);
+      //ctl.Name := s;
+      ctl.ManualDock(pnlDock, nil, alCustom);
     end;
   end;
 end;
-{$ELSE}
-{$ENDIF}
+
+function TEasyDockBook.SaveNames: string;
+var
+  i: integer;
+  ctl: TControl;
+begin
+(* Entry[0] is <ClassName> ['='<Name>]
+  else <Name> (with ClassName = 'T'<Name>)
+*)
+  //Result := '*' + Name + '=' + ClassName; //really?
+  Result := ClassName + '=' + Name;
+  for i := 0 to pnlDock.DockClientCount - 1 do begin
+    ctl := pnlDock.DockClients[i];
+    Result := Result + ',' + ctl.Name;
+  end;
+end;
 
 procedure TEasyDockBook.ToolButton1Click(Sender: TObject);
 var
@@ -419,8 +452,8 @@ begin
       end else
 }
 //both immediate and delayed drag start seem to work
-        Control.BeginDrag(False); //delayed docking
-        //Control.BeginDrag(True); //immediate drag
+        //Control.BeginDrag(False); //delayed docking
+        Control.BeginDrag(True); //immediate drag
     end;
   end;
 end;

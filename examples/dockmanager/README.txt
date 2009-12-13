@@ -23,18 +23,27 @@ elasticsite/project1
 demonstrates elastic dock sites, which become visible only after a control
 has been docked into them.
 
+elasticsite/SiteTest
+====================
+demonstrates elastic panels and dockable forms.
+
+elasticsite/MakeSite
+====================
+demonstrates persistent layouts, using default features.
+For special forms see ide_demo/MiniIDE
+
+ide_demo/MiniIDE
+================
+A Lazarus-like IDE with:
+- dockable windows
+- multiple editor forms
+- persistent layouts with special form handling
+
+Loading a layout should not affect files in the editors, because these are project specific. This can result in empty editor windows, for now.
+More features to come...
+
+
 toolbar/test1
 =============
 mainly demonstrates TToolBar/TToolButton related problems.
 (see provided patches)
-
--------
-
-In prepraration:
-
-ide_demo
-========
-A Lazarus-like IDE, with dockable windows.
-Shall demonstrate the use of dockable windows, multi-page editor, 
-elastic dock sites, flexible component palette (old/new Delphi style).
-Also shall allow to store/reload a layout.

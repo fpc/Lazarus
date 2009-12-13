@@ -11,15 +11,22 @@ unit fEditBook;
 {$mode objfpc}{$H+}
 
 { TODO : figure out what's wrong with the mru list - with multiple windows }
-{.$DEFINE mru} //problems with MRU list???
+{$DEFINE mru} //problems with MRU list???
 
 interface
 
 uses
   Classes, SysUtils, FileUtil, LResources, Forms, Controls, Graphics, Dialogs,
+  SynEdit,
   fDockBook;
 
 type
+  TEditPage = class(TSynEdit)
+  public
+    FileName: string;
+    procedure LoadFile(const AName: string);
+  end;
+
   TEditBook = class(TEasyDockBook)
     procedure FormActivate(Sender: TObject);
     procedure FormClose(Sender: TObject; var CloseAction: TCloseAction);
@@ -28,7 +35,8 @@ type
   protected
     NRUEdit: TEditBook; //Next Recently Used EditBook
   public
-    { public declarations }
+    constructor Create(TheOwner: TComponent); override;
+    function OpenFile(const AName: string): boolean;
   end; 
 
 var
@@ -36,7 +44,16 @@ var
 
 implementation
 
+uses
+  uMakeSite;
+
 { TEditBook }
+
+constructor TEditBook.Create(TheOwner: TComponent);
+begin
+  inherited Create(TheOwner);
+  DockMaster.AddElasticSites(self, [alLeft, alRight, alBottom]);
+end;
 
 procedure TEditBook.FormActivate(Sender: TObject);
 var
@@ -76,6 +93,23 @@ begin
   NRUEdit := nil;
 {$ELSE}
 {$ENDIF}
+end;
+
+function TEditBook.OpenFile(const AName: string): boolean;
+var
+  se: TEditPage;
+begin
+  se := TEditPage.Create(Owner);
+  se.ManualDock(self);
+  se.LoadFile(AName);
+end;
+
+{ TEditPage }
+
+procedure TEditPage.LoadFile(const AName: string);
+begin
+  FileName := AName;
+  Lines.LoadFromFile(AName);
 end;
 
 initialization

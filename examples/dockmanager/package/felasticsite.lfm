@@ -1,7 +1,7 @@
 object DockingSite: TDockingSite
-  Left = 444
+  Left = 509
   Height = 163
-  Top = 156
+  Top = 268
   Width = 255
   AutoSize = True
   Caption = 'Dock Site'

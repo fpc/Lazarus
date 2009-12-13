@@ -72,14 +72,12 @@ uses
   Forms,
   ExtCtrls, //splitter
   Controls,
-  fDockBook,
   ComCtrls; //TPageControl
 
 type
   TEasyTree = class; //forward declaration
   TEasyZone = class; //forward declaration
   TEasySplitter = TCustomSplitter;
-  TEasyBook = class(TEasyDockBook);
 
   TEasyZonePart =
   (
@@ -170,6 +168,23 @@ type
     property Top: integer read GetTop;
   end;
 
+(* General DockSite, also Notebook dock site.
+
+  All restorable application forms should inherit from this class,
+  regardless of docking capabilities.
+*)
+  TCustomDockSite = class(TForm)
+  protected
+    //function GetDefaultDockCaption: string; override;
+    procedure LoadNames(const str: string); virtual; abstract;
+    function  SaveNames: string; virtual; abstract;
+  public
+    StayDocked: boolean;
+    property AsString: string read SaveNames write LoadNames;
+  end;
+
+  TDockSiteClass = class of TCustomDockSite;
+
 (* TEasyDockManager implements some of the abstract methods of TDockManager.
 *)
   TEasyDockManager = class(TDockManager)
@@ -201,18 +216,11 @@ type
     FSiteRect: TRect; //to detect changed site extent
     procedure UpdateTree;
   protected
-  {$IFDEF old}
-    procedure BeginUpdate; override;
-    procedure EndUpdate; override;
-    procedure PositionDockRect(Client, DropCtl: TControl; DropAlign: TAlign;
-      var DockRect: TRect);  override;
-  {$ELSE}
-    //in base class
-  {$ENDIF}
   //extended interface
     //procedure ControlVisibilityChanged(Control: TControl; Visible: Boolean);  override;
     function  ZoneFromPoint(SitePos: TPoint): TEasyZone;
     function  ReloadDockedControl(const AName: string): TControl; virtual;
+    function  SaveDockedControl(Control: TControl): string; virtual;
   protected //added
     function  FindControlZone(zone: TEasyZone; Control: TControl): TEasyZone;
     procedure RemoveZone(Zone: TEasyZone);
@@ -249,8 +257,33 @@ type
     property HideSingleCaption: boolean read FHideSingleCaption write SetSingleCaption;
   end;
 
-function  NoteBookCreate(AOwner: TWinControl): TEasyBook; inline;
-procedure NoteBookAdd(ABook: TEasyBook; AItem: TControl); inline;
+(* Application loader - a single method for consistency.
+The method has several tasks, depending on
+fLoad,fSite:
+  F,F: save Ctrl description in AName.
+  T,F: provide Ctrl for Site from AName.
+  F,T: save Site description in AName.
+  T,T: provide Site and its container Ctrl from AName.
+The DockManager only deals with dock clients, i.e. fSite is always False.
+
+The DockMaster manages sites, i.e. fSite is True.
+When a site is to be created, notebook sites can have a different docksite
+control. Here Ctrl is the outer control, containing Site.
+*)
+//application loader link
+type
+  TAppLoadStore = function(fLoad, fSite: boolean;
+    var Site: TWinControl; var Ctrl: TControl; var AName: string): boolean of object;
+var
+  AppLoadStore: TAppLoadStore;
+
+//handy function for DockRect initialization
+function  ScreenRect(ACtrl: TControl): TRect;
+
+//primarily for DockManager internal use
+function  NoteBookCreate(AOwner: TWinControl): TCustomDockSite;
+procedure NoteBookAdd(ABook: TCustomDockSite; AItem: TControl); //to be removed
+function  TryRename(AComp: TComponent; const NewName: string): boolean;
 
 const
   AlignNames: array[TAlign] of string = (
@@ -269,7 +302,9 @@ const
     'zpCloseButton'     // header close button
   );
 
-var //debug only
+//var  AppDockBookClass: TDockBookClass;
+
+var //debug only, these are valid only until drop
   DropOn: TControl;
   DockObj: TDragDockObject;
 
@@ -279,6 +314,7 @@ uses
   SysUtils, Types,
   math,
   Themes, LResources,
+  fDockBook,
   LCLproc; //debugging
 
 type
@@ -292,14 +328,40 @@ const
   HeaderButtons = [zpCloseButton];
 {$ENDIF}
 
-function  NoteBookCreate(AOwner: TWinControl): TEasyBook; inline;
+function  NoteBookCreate(AOwner: TWinControl): TCustomDockSite;
 begin
-  Result := TEasyBook.Create(AOwner);
+(* Create default dockbook type.
+*)
+{
+  if assigned(AppDockBookClass) then
+    Result := AppDockBookClass.Create(AOwner)
+  else
+}
+  Result := TEasyDockBook.Create(AOwner);
 end;
 
-procedure NoteBookAdd(ABook: TEasyBook; AItem: TControl); inline;
+procedure NoteBookAdd(ABook: TCustomDockSite; AItem: TControl);
 begin
   AItem.ManualDock(ABook);
+end;
+
+function  TryRename(AComp: TComponent; const NewName: string): boolean;
+begin
+(* catch errors in renaming a component
+*)
+  try
+    AComp.Name := NewName;
+    Result := True;
+  except
+    Result := False;
+  end;
+end;
+
+function  ScreenRect(ACtrl: TControl): TRect;
+begin
+  Result.TopLeft := ACtrl.ControlOrigin; //screen coords
+  Result.Right := Result.Left + ACtrl.Width;
+  Result.Bottom := Result.Top + ACtrl.Height;
 end;
 
 //from CustomFormEditor.pp
@@ -308,17 +370,25 @@ function {TCustomFormEditor.}CreateUniqueComponentName(const AClassName: string;
 var
   i, j: integer;
 begin
+(* Add instance number until unique.
+  <T><basename> ==> <basename><_><number>
+  The classname can be reconstructed by prefixing 'T' (typically)
+  and stripping trailing digits and (optionally) '_'.
+*)
   Result:=AClassName;
   if (OwnerComponent=nil) or (Result='') then exit;
   i:=1;
   while true do begin
-    j:=OwnerComponent.ComponentCount-1;
     Result:=AClassName;
+  //strip leading 'T'
     if (length(Result)>1) and (Result[1]='T') then
       Result:=RightStr(Result,length(Result)-1);
+  //if trailing digit, append '_'
     if Result[length(Result)] in ['0'..'9'] then
       Result:=Result+'_';
     Result:=Result+IntToStr(i);
+  //append instance number
+    j:=OwnerComponent.ComponentCount-1;
     while (j>=0)
     and (CompareText(Result,OwnerComponent.Components[j].Name)<>0) do
       dec(j);
@@ -477,7 +547,7 @@ procedure TEasyTree.InsertControl(Control: TControl; InsertAt: TAlign;
 var
   DropZone, OldZone, NewZone, OldParent, NewParent: TEasyZone;
   r: TRect;
-  NoteBook: TEasyBook;
+  NoteBook: TCustomDockSite;
 (* special cases:
   1) first child in top zone - no orientation
   2) second child in top zone - determines orientation
@@ -545,21 +615,23 @@ begin
   Valid only when dropped onto an existing control, not into empty dock site.
   Create notebook, if required (put both controls into new notebook).
 
-  Try: create notebook already for first dropped control.
+  Try: create notebook already for first dropped control (ifdef singleTab).
+
+  Use custom handler? Per Site or per application?
 *)
   if (InsertAt = alCustom) then begin
   //dock into book
     if (FTopZone.FirstChild <> nil) then begin
     //root zone is not empty
-      if (DropCtl is TEasyBook) then begin
-        NoteBook := DropCtl as TEasyBook;
+      if (DropCtl is TCustomDockSite) then begin
+        NoteBook := TCustomDockSite(DropCtl);
       end else begin
       //create new book
         NoteBook := NoteBookCreate(FDockSite);
       {$IFDEF replace}
         NoteBook.ReplaceDockedControl(DropZone.ChildControl, NoteBook, nil, alCustom);
       {$ELSE}
-        NoteBook.ManualDock(nil, nil);
+        NoteBook.ManualDock(nil, nil); //float it - purpose???
       //hack: manually dock the notebook
         FReplacingControl := NoteBook; //ignore insert (see above)
         NoteBook.ManualDock(FDockSite); //move into DockClients[]
@@ -640,7 +712,7 @@ begin
     end;
   //set control orientation
     DropZone.AddSibling(NewZone, InsertAt);
-  //clear eventually moved zone
+  //clear eventually moved zone, when redocking within this site
     if OldZone <> nil then begin
       RemoveZone(OldZone); //must NOT modify moved control!
       OldZone.Free;
@@ -955,85 +1027,12 @@ type
     BottomRight: TPoint;
     Level: byte;
     Orientation: TDockOrientation;
-    //Width, Height: word;
-    NameLen: integer; //+chars
+    NameLen: integer; //+chars, can be a complete notebook description
   end;
 
 var
   ZoneRec: RZone;
   ZoneName: string;
-const
-  BookZoneName: string = '*';
-
-procedure TEasyTree.SaveToStream(Stream: TStream);
-
-  procedure DoSaveZone(Zone: TEasyZone; Level: byte);
-  var
-    child: TControl;
-  begin
-  //fill ZoneRec
-    ZoneRec.Level := Level;
-    ZoneRec.Orientation := Zone.Orientation;
-    ZoneRec.BottomRight := Zone.BR;
-    child := Zone.ChildControl;
-    if child = nil then
-      ZoneName := ''
-  {$IFDEF new}
-    else if child is TEasyDockBook then begin
-      ZoneName := BookZoneName;
-      ZoneName := TEasyDockBook(child).GetDockCaption(child)
-      //ZoneName := TWinControlAccess(child).GetDockCaption(child); // BookZoneName
-    end
-  {$ELSE}
-  {$ENDIF}
-    else begin
-      //ZoneName := child.Name;
-      ZoneName := DockSite.GetDockCaption(child); //default to child.Name
-    end;
-    ZoneRec.NameLen := Length(ZoneName);
-  //write descriptor
-    Stream.Write(ZoneRec, sizeof(ZoneRec));
-    if ZoneRec.NameLen > 0 then
-      Stream.Write(ZoneName[1], ZoneRec.NameLen);
-    { TODO -oDoDi : WritePages of notebook }
-  // recurse into first child
-    if Zone.FirstChild <> nil then
-      DoSaveZone(Zone.FirstChild, Level + 1); //all children of Level
-  // recurse into next sibling
-    if Zone.NextSibling <> nil then
-      DoSaveZone(Zone.NextSibling, Level); //all siblings of Level
-  end;
-
-begin
-// write top zone data
-  //Stream.Write(FTopXYLimit, SizeOf(FTopXYLimit));
-  //WriteLimits(FTopZone);
-// write all zones from tree
-  DoSaveZone(FTopZone, 1);
-//write end marker (dummy record of level 0)
-  ZoneRec.Level := 0;
-  ZoneRec.NameLen := 0;
-  Stream.Write(ZoneRec, sizeof(ZoneRec));
-end;
-
-function TEasyTree.ReloadDockedControl(const AName: string): TControl;
-{$IFDEF new}
-var
-  nb: TEasyBook;
-begin
-  if Pos(',', AName) > 0 then begin
-    nb := NoteBookCreate(FDockSite);
-    nb.SetDockCaption(AName);
-    Result := nb;
-  end else begin
-    TWinControlAccess(DockSite).ReloadDockedControl(ZoneName???, Result);
-end;
-{$ELSE}
-begin
-  Result:=nil;
-  TWinControlAccess(DockSite).ReloadDockedControl(AName, Result);
-end;
-{$ENDIF}
 
 procedure TEasyTree.LoadFromStream(Stream: TStream);
 
@@ -1063,7 +1062,8 @@ procedure TEasyTree.LoadFromStream(Stream: TStream);
   *)
     for i := FDockSite.DockClientCount - 1 downto 0 do begin
       ctl := FDockSite.DockClients[i];
-      ctl.ManualDock(nil);
+      ctl.Visible := True;
+      ctl.ManualDock(nil);  //restore undocked position and extent
     end;
   end;
 
@@ -1087,7 +1087,7 @@ procedure TEasyTree.LoadFromStream(Stream: TStream);
         if NewCtl = nil then begin
         //debug: create some control
           NewCtl := TPanel.Create(DockSite);
-          NewCtl.Name := ZoneName;
+          TryRename(NewCtl, ZoneName);
         end;
         if NewCtl <> nil then begin
           NewCtl.Visible := True;
@@ -1103,10 +1103,8 @@ procedure TEasyTree.LoadFromStream(Stream: TStream);
         dec(PrevLvl);
       end;
       if NewLvl = PrevLvl then //add sibling
-        //PrevZone.AddSibling(NewZone, alRight)
         PrevZone.Parent.InsertAfter(PrevZone, NewZone)
       else begin //NewLvl > PrevLvl - make child
-        //InZone.InsertAfter(PrevZone, NewZone);
         PrevZone.InsertAfter(nil, NewZone);
         PrevLvl := NewLvl;
       end;
@@ -1121,12 +1119,79 @@ begin
   if GetRec > 0 then begin
     FTopZone.BR := ZoneRec.BottomRight;
     FTopZone.Orientation := ZoneRec.Orientation;
-    //if GetRec = 2 then MakeZone(FTopZone, 1);
     MakeZones;
   end;
 //finish?
 //remove all leafs without a child control?
+//refresh the site
   ResetBounds(True);
+end;
+
+function TEasyTree.ReloadDockedControl(const AName: string): TControl;
+var
+  n: string;
+begin
+  Result:=nil;
+  n := AName;
+  if assigned(AppLoadStore)
+  and AppLoadStore(True, False, DockSite, Result, n) then begin
+    //all done
+  end else
+    TWinControlAccess(DockSite).ReloadDockedControl(AName, Result);
+end;
+
+function TEasyTree.SaveDockedControl(Control: TControl): string;
+begin
+(* Create string descriptor for docked control.
+  Override in sync with ReloadDockedControl!
+*)
+  if Assigned(AppLoadStore)
+  and AppLoadStore(False, False, FDockSite, Control, Result) then begin
+    //all done
+  end else if Control is TCustomDockSite then
+    Result := TCustomDockSite(Control).AsString
+  else begin
+    //Result := Control.Name; //Delphi default
+    Result := FDockSite.GetDockCaption(Control); //defaults to child.Name
+    //notebooks will return comma separated name list
+  end;
+end;
+
+procedure TEasyTree.SaveToStream(Stream: TStream);
+
+  procedure DoSaveZone(Zone: TEasyZone; Level: byte);
+  var
+    child: TControl;
+  begin
+  //fill ZoneRec
+    ZoneRec.Level := Level;
+    ZoneRec.Orientation := Zone.Orientation;
+    ZoneRec.BottomRight := Zone.BR;
+    child := Zone.ChildControl;
+    if child = nil then
+      ZoneName := ''
+    else
+      ZoneName := SaveDockedControl(child);
+    ZoneRec.NameLen := Length(ZoneName);
+  //write descriptor
+    Stream.Write(ZoneRec, sizeof(ZoneRec));
+    if ZoneRec.NameLen > 0 then
+      Stream.Write(ZoneName[1], ZoneRec.NameLen);
+  // recurse into first child
+    if Zone.FirstChild <> nil then
+      DoSaveZone(Zone.FirstChild, Level + 1); //all children of Level
+  // recurse into next sibling
+    if Zone.NextSibling <> nil then
+      DoSaveZone(Zone.NextSibling, Level); //all siblings of Level
+  end;
+
+begin
+// write all zones from tree
+  DoSaveZone(FTopZone, 1);
+//write end marker (dummy record of level 0)
+  ZoneRec.Level := 0;
+  ZoneRec.NameLen := 0;
+  Stream.Write(ZoneRec, sizeof(ZoneRec));
 end;
 
 procedure TEasyTree.DumpToStream(Stream: TStream);
