@@ -1134,7 +1134,7 @@ begin
   Result:=nil;
   n := AName;
   if assigned(AppLoadStore)
-  and AppLoadStore(True, False, DockSite, Result, n) then begin
+  and AppLoadStore(True, False, FDockSite, Result, n) then begin
     //all done
   end else
     TWinControlAccess(DockSite).ReloadDockedControl(AName, Result);
