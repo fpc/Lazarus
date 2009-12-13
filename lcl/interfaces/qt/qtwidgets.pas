@@ -895,6 +895,8 @@ type
     procedure setSelectionBehavior(ABehavior: QAbstractItemViewSelectionBehavior);
     property OwnerDrawn: Boolean read GetOwnerDrawn write SetOwnerDrawn;
   public
+    procedure Update(ARect: PRect = nil); override;
+    procedure Repaint(ARect: PRect = nil); override;
     procedure ItemDelegateSizeHint(option: QStyleOptionViewItemH; index: QModelIndexH; Size: PSize); cdecl; virtual;
     procedure ItemDelegatePaint(painter: QPainterH; option: QStyleOptionViewItemH; index: QModelIndexH); cdecl; virtual;
   end;
@@ -1059,8 +1061,6 @@ type
     procedure SignalItemCollapsed(item: QTreeWidgetItemH) cdecl;
     procedure SignalCurrentItemChanged(current: QTreeWidgetItemH; previous: QTreeWidgetItemH) cdecl;
     procedure SignalSortIndicatorChanged(ALogicalIndex: Integer; AOrder: QtSortOrder) cdecl;
-    procedure Update(ARect: PRect = nil); override;
-    procedure Repaint(ARect: PRect = nil); override;
 
     property ColCount: Integer read getColCount write setColCount;
     property Header: TQtHeaderView read getHeader;
@@ -8285,32 +8285,6 @@ begin
   end;
 end;
 
-procedure TQtTreeWidget.Update(ARect: PRect);
-var
-  P: TPoint;
-begin
-  if ARect <> nil then
-  begin
-    P := getClientOffset;
-    OffsetRect(ARect^, -P.X , -P.Y);
-    QWidget_update(QAbstractScrollArea_viewport(QTreeWidgetH(Widget)), ARect);
-  end else
-    QWidget_update(QAbstractScrollArea_viewport(QTreeWidgetH(Widget)));
-end;
-
-procedure TQtTreeWidget.Repaint(ARect: PRect);
-var
-  P: TPoint;
-begin
-  if ARect <> nil then
-  begin
-    P := getClientOffset;
-    OffsetRect(ARect^, -P.X , -P.Y);
-    QWidget_repaint(QAbstractScrollArea_viewport(QTreeWidgetH(Widget)), ARect);
-  end else
-    QWidget_repaint(QAbstractScrollArea_viewport(QTreeWidgetH(Widget)));
-end;
-
 {TQtTableView}
 
 function TQtTableView.CreateWidget(const Params: TCreateParams): QWidgetH;
@@ -9820,6 +9794,32 @@ procedure TQtAbstractItemView.setSelectionBehavior(
   ABehavior: QAbstractItemViewSelectionBehavior);
 begin
   QAbstractItemView_setSelectionBehavior(QAbstractItemViewH(Widget), ABehavior);
+end;
+
+procedure TQtAbstractItemView.Update(ARect: PRect);
+var
+  P: TPoint;
+begin
+  if ARect <> nil then
+  begin
+    P := getClientOffset;
+    OffsetRect(ARect^, -P.X , -P.Y);
+    QWidget_update(QAbstractScrollArea_viewport(QAbstractItemViewH(Widget)), ARect);
+  end else
+    QWidget_update(QAbstractScrollArea_viewport(QAbstractItemViewH(Widget)));
+end;
+
+procedure TQtAbstractItemView.Repaint(ARect: PRect);
+var
+  P: TPoint;
+begin
+  if ARect <> nil then
+  begin
+    P := getClientOffset;
+    OffsetRect(ARect^, -P.X , -P.Y);
+    QWidget_repaint(QAbstractScrollArea_viewport(QAbstractItemViewH(Widget)), ARect);
+  end else
+    QWidget_repaint(QAbstractScrollArea_viewport(QAbstractItemViewH(Widget)));
 end;
 
 procedure TQtAbstractItemView.ItemDelegateSizeHint(
