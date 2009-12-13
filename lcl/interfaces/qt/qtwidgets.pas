@@ -8576,20 +8576,28 @@ end;
  ------------------------------------------------------------------------------}
 procedure TQtMenu.SlotTriggered(checked: Boolean); cdecl;
 var
-  Msg: TLMessage;
+  Event: QLCLMessageEventH;
 begin
-  FillChar(Msg, SizeOf(Msg), 0);
-  Msg.msg := LM_ACTIVATE;
-  if Assigned(FMenuItem) then
-    FMenuItem.Dispatch(Msg);
+  Event := QLCLMessageEvent_create(LCLQt_PopupMenuTriggered);
+  QCoreApplication_postEvent(Widget, Event, 1 {high priority});
 end;
 
 function TQtMenu.EventFilter(Sender: QObjectH; Event: QEventH): Boolean; cdecl;
+var
+  Msg: TLMessage;
 begin
   Result := False;
   QEvent_accept(Event);
   BeginEventProcessing;
   case QEvent_type(Event) of
+    LCLQt_PopupMenuTriggered:
+      begin
+        FillChar(Msg, SizeOf(Msg), 0);
+        Msg.msg := LM_ACTIVATE;
+        if Assigned(FMenuItem) then
+          FMenuItem.Dispatch(Msg);
+        Result := True;
+      end;
     LCLQt_PopupMenuClose:
       begin
         DoPopupClose;

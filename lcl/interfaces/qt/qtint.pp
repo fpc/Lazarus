@@ -161,6 +161,7 @@ const
    QEventLCLMessage = QEventUser;
    LCLQt_CheckSynchronize = QEventType(Ord(QEventUser) + $1001);
    LCLQt_PopupMenuClose = QEventType(Ord(QEventUser) + $1002);
+   LCLQt_PopupMenuTriggered = QEventType(Ord(QEventUser) + $1003);
 
 var
   QtWidgetSet: TQtWidgetSet;
