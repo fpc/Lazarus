@@ -1076,8 +1076,19 @@ begin
     CurNode.Desc:=ctnClassTypeProtected
   else if UpAtomIs('PUBLISHED') then
     CurNode.Desc:=ctnClassTypePublished
-  else
-    RaiseStringExpectedButAtomFound('public');
+  else begin
+    if CurNode.PriorBrother<>nil then begin
+      case CurNode.PriorBrother.Desc of
+      ctnClassPrivate:  CurNode.Desc:=ctnClassTypePrivate;
+      ctnClassProtected:  CurNode.Desc:=ctnClassTypeProtected;
+      ctnClassPublic:  CurNode.Desc:=ctnClassTypePublic;
+      ctnClassPublished:  CurNode.Desc:=ctnClassTypePublished;
+      else
+        RaiseStringExpectedButAtomFound('public');
+      end;
+    end;
+    UndoReadNextAtom;
+  end;
   Result:=true;
 end;
 
