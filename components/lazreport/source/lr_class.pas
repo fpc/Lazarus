@@ -808,11 +808,17 @@ type
     FOnSetup: TExportFilterSetup;
     FBandTypes: TfrBandTypes;
     FUseProgressBar: boolean;
+    FLineIndex: Integer;
   protected
     Stream: TStream;
     Lines: TFpList;
     procedure ClearLines;
     procedure Setup; virtual;
+    function  AddData(x, y: Integer; view: TfrView): pointer; virtual;
+    procedure NewRec(View: TfrView; const AText:string; var P:Pointer); virtual;
+    procedure AddRec(ALineIndex: Integer; ARec: Pointer); virtual;
+    function  GetviewText(View:TfrView): string; virtual;
+    function  CheckView(View:TfrView): boolean; virtual;
   public
     constructor Create(AStream: TStream); virtual;
     destructor Destroy; override;
@@ -8991,12 +8997,114 @@ begin
     end;
   end;
   Lines.Clear;
+  FLineIndex := -1;
 end;
 
 procedure TfrExportFilter.Setup;
 begin
   if assigned(FOnSetup) then
     FOnSetup(Self);
+end;
+
+function TfrExportFilter.AddData(x, y: Integer; view: TfrView):pointer;
+var
+  p: PfrTextRec;
+  s: string;
+  i: Integer;
+begin
+  result := nil;
+
+  if (View = nil) or not (View.ParentBandType in BandTypes) then
+    exit;
+
+  if View.Flags and flStartRecord<>0 then
+    Inc(FLineIndex);
+
+  if CheckView(View) then
+  begin
+    s := GetViewText(View);
+    NewRec(View, s, p);
+    AddRec(FLineIndex, p);
+    result := p;
+  end;
+end;
+
+procedure TfrExportFilter.NewRec(View: TfrView; const AText: string;
+  var p:pointer);
+begin
+  GetMem(p, SizeOf(TfrTextRec));
+  FillChar(p^, SizeOf(TfrTextRec), 0);
+  with PfrTextRec(p)^ do
+  begin
+    Next  := nil;
+    X     := View.X;
+    W     := round(View.Width);
+    Typ   := View.Typ;
+    Text  := AText;
+    FillColor   := View.FillColor;
+    Borders     := View.Frames;
+    BorderColor := View.FrameColor;
+    BorderStyle := View.FrameStyle;
+    BorderWidth := Round(View.FrameWidth);
+    if View is TfrMemoView then
+      with View as TfrMemoView do
+      begin
+        FontName    := Font.Name;
+        FontSize    := Font.Size;
+        FontStyle   := frGetFontStyle(Font.Style);
+        FontColor   := Font.Color;
+        FontCharset := Font.Charset;
+        Alignment   := Alignment;
+      end;
+  end;
+end;
+
+procedure TfrExportFilter.AddRec(ALineIndex: Integer; ARec: pointer);
+var
+  p, p1, p2: PfrTextRec;
+begin
+
+  p := ARec;
+  p1 := Lines[ALineIndex];
+  if p1 = nil then
+    Lines[ALineIndex] := TObject(p)
+  else
+  begin
+    p2 := p1;
+    while (p1 <> nil) and (p1^.X <= p^.X) do
+    begin
+      p2 := p1;
+      p1 := p1^.Next;
+    end;
+    if p2 <> p1 then
+    begin
+      p2^.Next := p;
+      p^.Next := p1;
+    end
+    else
+    begin
+      Lines[ALineIndex] := TObject(p);
+      p^.Next := p1;
+    end;
+  end;
+
+end;
+
+function TfrExportFilter.GetviewText(View: TfrView): string;
+var
+  i: Integer;
+begin
+  result := '';
+  for i:=0 to View.Memo.Count-1 do begin
+    result := result + View.Memo[i];
+    if i<>View.Memo.Count-1 then
+      result := result + LineEnding;
+  end;
+end;
+
+function TfrExportFilter.CheckView(View: TfrView): boolean;
+begin
+  result := true;
 end;
 
 procedure TfrExportFilter.OnBeginDoc;

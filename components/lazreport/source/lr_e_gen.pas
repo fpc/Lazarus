@@ -109,6 +109,7 @@ end;
 
 procedure TfrDBGExportFilter.OnData(x, y: Integer; View: TfrView);
 begin
+  if View.Flags and flStartRecord <>0 then WriteLn;
   Write('   OnData [');
   if View.Flags and flStartRecord <>0 then Write(' StartRecord');
   if View.Flags and flEndRecord <>0 then Write(' EndRecord');

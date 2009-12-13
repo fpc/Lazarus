@@ -43,6 +43,7 @@ type
     FUseCSS: boolean;
     styleStartLine: integer;
     outputLines: TStringList;
+    FLastField: PfrTextRec;
     function AddStyle(p: PfrTextRec): Integer;
     function ColorToHex(c: TColor): AnsiString;
     function StyleIndex(p: PfrTextRec; AddIfNotFound: boolean = true): Integer;
@@ -50,9 +51,12 @@ type
   protected
     procedure AppendLine(const s: UTF8String);
     procedure InsertLine(const s: UTF8String; position: Integer);
+    function  GetviewText(View:TfrView): string; override;
   public
     constructor Create(AStream: TStream); override;
     destructor Destroy; override;
+    procedure OnData(x, y: Integer; View: TfrView); override;
+    procedure OnText(X, Y: Integer; const Text: String; View: TfrView); override;
     procedure OnEndPage; override;
     procedure OnEndDoc; override;
 
@@ -92,6 +96,8 @@ begin
   AppendLine(s);
   s:= '<body bgColor="#FFFFFF">' + LineEnding;
   AppendLine(s);
+
+  FUseCSS := true;
 end;
 
 destructor TfrHTMExportFilter.Destroy;
@@ -245,6 +251,7 @@ begin
       sp:= Format('%.5d', [p^.X]);
       xp:= xPos.IndexOf(sp);
       sp:= Format('%.5d', [p^.X + p^.W]);
+      xp2 := 0;
       xPos.Find(sp, xp2);
       if Assigned(p^.Next) then
       begin
@@ -387,6 +394,25 @@ end;
 procedure TfrHTMExportFilter.InsertLine(const s: UTF8String; position: Integer);
 begin
   outputLines.Insert(position, s);
+end;
+
+procedure TfrHTMExportFilter.OnData(x, y: Integer; View: TfrView);
+begin
+  FLastField := AddData(x, y, View);
+end;
+
+procedure TfrHTMExportFilter.OnText(X, Y: Integer; const Text: String;
+  View: TfrView);
+begin
+  if FLastField^.Text='' then
+    FLastField^.Text := Text
+  else
+    FLastField^.Text := FLastField^.Text + '<br>' + Text;
+end;
+
+function TfrHTMExportFilter.GetviewText(View: TfrView): string;
+begin
+  result := '';
 end;
 
 

@@ -36,6 +36,9 @@ type
   protected
     procedure GetUsedFont; virtual;
     procedure Setup; override;
+    procedure NewRec(View: TfrView; const AText:string; var p:pointer); override;
+    procedure CalcXCoords(var x,w: integer); virtual;
+    function  CheckView(View: TfrView): boolean; override;
   public
     constructor Create(AStream: TStream); override;
     procedure OnBeginDoc; override;
@@ -69,6 +72,24 @@ begin
   inherited Setup;
   if FUsedFont<=0 then
     GetUsedFont;
+end;
+
+procedure TfrTextExportFilter.NewRec(View: TfrView; const AText: string;
+  var p:pointer);
+begin
+  inherited NewRec(View, AText, p);
+  CalcXCoords(PfrTextRec(p)^.X, PfrTextRec(p)^.W);
+end;
+
+procedure TfrTextExportFilter.CalcXCoords(var x, w: integer);
+begin
+  x := round(x/UsedFont);
+  w := round(w/UsedFont);
+end;
+
+function TfrTextExportFilter.CheckView(View: TfrView): boolean;
+begin
+  Result:= View.Typ in [gtMemo,gtAddin];
 end;
 
 constructor TfrTextExportFilter.Create(AStream: TStream);
@@ -146,50 +167,9 @@ begin
   if View = nil then
     Exit;
   Y := Round(Y / UsedFont);
-  p1:= PfrTextRec(Lines[Y]);
-  GetMem(p, SizeOf(TfrTextRec));
-  FillChar(p^, SizeOf(TfrTextRec), 0);
-  p^.Next := nil;
-  p^.X    := Round(View.X / UsedFont);
-  p^.W    := Round(View.Width / UsedFont);
-  p^.Text := Text;
-  p^.FillColor  := View.FillColor;
-  p^.Borders    := View.Frames;
-  p^.BorderColor:= View.FrameColor;
-  p^.BorderStyle:= View.FrameStyle;
-  p^.BorderWidth:= Round(View.FrameWidth);
-  if View is TfrMemoView then
-    with View as TfrMemoView do
-    begin
-      p^.FontName    := Font.Name;
-      p^.FontSize    := Font.Size;
-      p^.FontStyle   := frGetFontStyle(Font.Style);
-      p^.FontColor   := Font.Color;
-      p^.FontCharset := Font.Charset;
-      p^.Alignment   := Alignment;
-    end;
 
-  if p1 = nil then
-    Lines[Y] := TObject(p)
-  else
-  begin
-    p2 := p1;
-    while (p1 <> nil) and (p1^.X <= p^.X) do
-    begin
-      p2 := p1;
-      p1 := p1^.Next;
-    end;
-    if p2 <> p1 then
-    begin
-      p2^.Next := p;
-      p^.Next  := p1;
-    end
-    else
-    begin
-      Lines[Y] := TObject(p);
-      p^.Next  := p1;
-    end;
-  end;
+  NewRec(View, Text, p);
+  AddRec(Y, p);
 end;
 
 
