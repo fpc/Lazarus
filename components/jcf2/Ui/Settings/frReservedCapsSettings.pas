@@ -31,13 +31,15 @@ interface
 
 uses
   { delphi }
-  Classes, Controls, Forms,
-  StdCtrls, ExtCtrls,
+  Classes, Controls, LResources, Forms, StdCtrls, ExtCtrls,
   { local }
-  frmBaseSettingsFrame;
+  IDEOptionsIntf;
 
 type
-  TfrReservedCapsSettings = class(TfrSettingsFrame)
+
+  { TfrReservedCapsSettings }
+
+  TfrReservedCapsSettings = class(TAbstractIDEOptionsEditor)
     cbEnable: TCheckBox;
     rgReservedWords: TRadioGroup;
     rgOperators: TRadioGroup;
@@ -45,28 +47,35 @@ type
     rgConstants: TRadioGroup;
     rgDirectives: TRadioGroup;
     procedure cbEnableClick(Sender: TObject);
-  private
   public
     constructor Create(AOwner: TComponent); override;
 
-    procedure Read; override;
-    procedure Write; override;
+    function GetTitle: String; override;
+    procedure Setup(ADialog: TAbstractOptionsEditorDialog); override;
+    procedure ReadSettings(AOptions: TAbstractIDEOptions); override;
+    procedure WriteSettings(AOptions: TAbstractIDEOptions); override;
+    class function SupportedOptionsClass: TAbstractIDEOptionsClass; override;
   end;
 
 implementation
 
-{$ifdef FPC}
-  {$R *.lfm}
-{$else}
-  {$R *.dfm}
-{$endif}
-
-uses SettingsTypes, JcfHelp, JcfSettings;
+uses 
+  SettingsTypes, JcfHelp, JcfSettings;
 
 constructor TfrReservedCapsSettings.Create(AOwner: TComponent);
 begin
   inherited;
-  fiHelpContext := HELP_CLARIFY_CAPITALISATION;
+  //fiHelpContext := HELP_CLARIFY_CAPITALISATION;
+end;
+
+function TfrReservedCapsSettings.GetTitle: String;
+begin
+  Result := 'Capitalisation';
+end;
+
+procedure TfrReservedCapsSettings.Setup(ADialog: TAbstractOptionsEditorDialog);
+begin
+  //;
 end;
 
 procedure TfrReservedCapsSettings.cbEnableClick(Sender: TObject);
@@ -78,7 +87,7 @@ begin
   rgTypes.Enabled := cbEnable.Checked;
 end;
 
-procedure TfrReservedCapsSettings.Read;
+procedure TfrReservedCapsSettings.ReadSettings(AOptions: TAbstractIDEOptions);
 begin
   cbEnable.Checked := FormatSettings.Caps.Enabled;
 
@@ -92,7 +101,7 @@ begin
   end;
 end;
 
-procedure TfrReservedCapsSettings.Write;
+procedure TfrReservedCapsSettings.WriteSettings(AOptions: TAbstractIDEOptions);
 begin
   FormatSettings.Caps.Enabled := cbEnable.Checked;
 
@@ -106,5 +115,12 @@ begin
   end;
 end;
 
+class function TfrReservedCapsSettings.SupportedOptionsClass: TAbstractIDEOptionsClass;
+begin
+  Result := TFormatSettings;
+end;
 
+initialization
+  {$I frReservedCapsSettings.lrs}
+  RegisterIDEOptionsEditor(JCFOptionsGroup, TfrReservedCapsSettings, JCFOptionObjectPascal, JCFOptionClarify);
 end.

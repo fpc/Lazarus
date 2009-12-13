@@ -31,50 +31,54 @@ interface
 
 uses
   { delphi }
-  Classes, Controls, Forms,
-  StdCtrls, ExtCtrls,
-  { JVCL }
-  JvEdit, JvExStdCtrls, JvValidateEdit,
-  { local}
-  frmBaseSettingsFrame;
+  Classes, Controls, LResources, Forms, StdCtrls, ExtCtrls, Spin,
+  IDEOptionsIntf;
 
 type
-  TfClarifyLongLineBreaker = class(TfrSettingsFrame)
-    edtMaxLineLength: TJvValidateEdit;
+
+  { TfClarifyLongLineBreaker }
+
+  TfClarifyLongLineBreaker = class(TAbstractIDEOptionsEditor)
+    edtMaxLineLength: TSpinEdit;
     Label3: TLabel;
     rgRebreakLongLines: TRadioGroup;
     procedure cbRebreakLinesClick(Sender: TObject);
-  private
-
   public
     constructor Create(AOwner: TComponent); override;
 
-    procedure Read; override;
-    procedure Write; override;
-
+    function GetTitle: String; override;
+    procedure Setup(ADialog: TAbstractOptionsEditorDialog); override;
+    procedure ReadSettings(AOptions: TAbstractIDEOptions); override;
+    procedure WriteSettings(AOptions: TAbstractIDEOptions); override;
+    class function SupportedOptionsClass: TAbstractIDEOptionsClass; override;
   end;
 
 implementation
 
-{$ifdef FPC}
-  {$R *.lfm}
-{$else}
-  {$R *.dfm}
-{$endif}
-
-uses JcfSettings, SetReturns, JcfHelp;
+uses 
+  JcfSettings, SetReturns, JcfHelp;
 
 
 constructor TfClarifyLongLineBreaker.Create(AOwner: TComponent);
 begin
   inherited;
-  fiHelpContext := HELP_CLARIFY_LONG_LINES;
+  //fiHelpContext := HELP_CLARIFY_LONG_LINES;
+end;
+
+function TfClarifyLongLineBreaker.GetTitle: String;
+begin
+  Result := 'Line Breaking';
+end;
+
+procedure TfClarifyLongLineBreaker.Setup(ADialog: TAbstractOptionsEditorDialog);
+begin
+  //
 end;
 
 {-------------------------------------------------------------------------------
   worker procs }
 
-procedure TfClarifyLongLineBreaker.Read;
+procedure TfClarifyLongLineBreaker.ReadSettings(AOptions: TAbstractIDEOptions);
 begin
   with FormatSettings.Returns do
   begin
@@ -84,7 +88,7 @@ begin
   end;
 end;
 
-procedure TfClarifyLongLineBreaker.Write;
+procedure TfClarifyLongLineBreaker.WriteSettings(AOptions: TAbstractIDEOptions);
 begin
   with FormatSettings.Returns do
   begin
@@ -92,6 +96,11 @@ begin
     MaxLineLength := edtMaxLineLength.Value;
     RebreakLines  := TWhenToRebreakLines(rgRebreakLongLines.ItemIndex);
   end;
+end;
+
+class function TfClarifyLongLineBreaker.SupportedOptionsClass: TAbstractIDEOptionsClass;
+begin
+  Result := TFormatSettings;
 end;
 
 {-------------------------------------------------------------------------------
@@ -102,4 +111,7 @@ begin
   edtMaxLineLength.Enabled := (rgRebreakLongLines.ItemIndex > 0);
 end;
 
+initialization
+  {$I frClarifyLongLineBreaker.lrs}
+  RegisterIDEOptionsEditor(JCFOptionsGroup, TfClarifyLongLineBreaker, JCFOptionLongLines, JCFOptionClarify);
 end.

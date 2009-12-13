@@ -1,0 +1,34 @@
+{ This is an automatically generated lazarus resource file }
+
+LazarusResources.Add('TfBlankLines','FORMDATA',[
+  'TPF0'#241#12'TfBlankLines'#11'fBlankLines'#6'Height'#3#24#1#5'Width'#3'|'#1
+  +#12'ClientHeight'#3#24#1#11'ClientWidth'#3'|'#1#10'DesignLeft'#3#196#1#9'Des'
+  +'ignTop'#3#192#0#0#242#2#0#6'TLabel'#6'Label1'#4'Left'#2#8#6'Height'#2#14#3
+  +'Top'#3#144#0#5'Width'#3#211#0#7'Caption'#6'-Number of returns after the uni'
+  +'t''s final end.'#11'ParentColor'#8#0#0#242#2#1#6'TLabel'#6'Label2'#4'Left'#2
+  +#8#6'Height'#2#14#3'Top'#3#200#0#5'Width'#3#178#0#7'Caption'#6'#Max consecut'
+  +'ive blank lines anwhere'#11'ParentColor'#8#0#0#242#2#2#6'TLabel'#6'Label3'#4
+  +'Left'#2#8#6'Height'#2#14#3'Top'#3#226#0#5'Width'#2'p'#7'Caption'#6#22'Lines'
+  +' before procedure'#11'ParentColor'#8#0#0#242#2#3#9'TSpinEdit'#24'eNumReturn'
+  +'sAfterFinalEnd'#4'Left'#3':'#1#6'Height'#2#21#3'Top'#3#140#0#5'Width'#2'1'#8
+  +'MaxValue'#3#255#0#8'TabOrder'#2#1#0#0#242#2#4#9'TCheckBox'#29'cbRemoveConse'
+  +'cutiveBlankLines'#4'Left'#2#8#6'Height'#2#17#3'Top'#3#176#0#5'Width'#3#169#0
+  +#7'Caption'#6#30'Remove consecutive blank lines'#8'TabOrder'#2#2#0#0#242#2#5
+  +#9'TSpinEdit'#27'edtMaxConsecutiveBlankLines'#4'Left'#3':'#1#6'Height'#2#21#3
+  +'Top'#3#192#0#5'Width'#2'1'#8'MaxValue'#2'c'#8'TabOrder'#2#3#0#0#242#2#6#9'T'
+  +'GroupBox'#18'gbRemoveBlankLines'#4'Left'#2#8#6'Height'#2'~'#3'Top'#2#3#5'Wi'
+  +'dth'#3'n'#1#7'Caption'#6#18'Remove blank lines'#12'ClientHeight'#2'l'#11'Cl'
+  +'ientWidth'#3'j'#1#8'TabOrder'#2#0#0#6'TLabel'#6'Label4'#4'Left'#2#8#6'Heigh'
+  +'t'#2#14#3'Top'#2'Q'#5'Width'#3#209#0#7'Caption'#6'*Max consecutive blank li'
+  +'nes before removal'#11'ParentColor'#8#0#0#9'TCheckBox'#23'cbRemoveBlockBlan'
+  +'kLines'#4'Left'#2#8#6'Height'#2#17#3'Top'#2'6'#5'Width'#3#192#0#7'Caption'#6
+  +'$At start and end of begin..end block'#8'TabOrder'#2#2#0#0#9'TCheckBox!cbRe'
+  +'moveBlankLinesAfterProcHeader'#4'Left'#2#8#6'Height'#2#17#3'Top'#2#31#5'Wid'
+  +'th'#3#132#0#7'Caption'#6#22'After procedure header'#8'TabOrder'#2#1#0#0#9'T'
+  +'CheckBox'#21'cbRemoveVarBlankLines'#4'Left'#2#6#6'Height'#2#17#3'Top'#2#8#5
+  +'Width'#3#136#0#7'Caption'#6#24'In procedure var section'#8'TabOrder'#2#0#0#0
+  +#9'TSpinEdit'#25'edtMaxBlankLinesInSection'#4'Left'#3'2'#1#6'Height'#2#21#3
+  +'Top'#2'N'#5'Width'#2'1'#8'MaxValue'#2'c'#8'TabOrder'#2#3#0#0#0#242#2#7#9'TS'
+  +'pinEdit'#23'edtLinesBeforeProcedure'#4'Left'#3':'#1#6'Height'#2#21#3'Top'#3
+  +#226#0#5'Width'#2'1'#8'MaxValue'#2#9#8'TabOrder'#2#4#0#0#0
+]);

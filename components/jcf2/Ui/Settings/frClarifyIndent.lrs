@@ -1,0 +1,44 @@
+{ This is an automatically generated lazarus resource file }
+
+LazarusResources.Add('TfClarifyIndent','FORMDATA',[
+  'TPF0'#241#15'TfClarifyIndent'#14'fClarifyIndent'#6'Height'#3'V'#1#5'Width'#3
+  +#174#1#12'ClientHeight'#3'V'#1#11'ClientWidth'#3#174#1#10'DesignLeft'#3#225#2
+  +#9'DesignTop'#3'+'#1#0#242#2#0#6'TLabel'#6'Label2'#4'Left'#2#4#6'Height'#2#14
+  +#3'Top'#2#6#5'Width'#2'v'#7'Caption'#6#24'Block indentation spaces'#11'Paren'
+  +'tColor'#8#0#0#242#2#1#9'TSpinEdit'#15'edtIndentSpaces'#4'Left'#3#180#0#6'He'
+  +'ight'#2#21#3'Top'#2#4#5'Width'#2'2'#8'MaxValue'#2#12#8'TabOrder'#2#0#0#0#242
+  +#2#2#9'TGroupBox'#9'gbOptions'#4'Left'#2#4#6'Height'#3'6'#1#3'Top'#2' '#5'Wi'
+  +'dth'#3#161#1#7'Caption'#6#7'Options'#12'ClientHeight'#3'$'#1#11'ClientWidth'
+  +#3#157#1#8'TabOrder'#2#1#0#9'TCheckBox'#16'cbIndentBeginEnd'#4'Left'#2#8#6'H'
+  +'eight'#2#17#3'Top'#2#19#5'Width'#3#232#0#7'Caption'#6',Extra indent for beg'
+  +'in/end inside procedures'#7'OnClick'#7#21'cbIndentBeginEndClick'#8'TabOrder'
+  +#2#0#0#0#9'TSpinEdit'#21'eIndentBeginEndSpaces'#4'Left'#3'd'#1#6'Height'#2#21
+  +#3'Top'#2#7#5'Width'#2'2'#8'MaxValue'#2#10#8'MinValue'#2#246#8'TabOrder'#2#1
+  +#0#0#9'TCheckBox'#21'cbHasFirstLevelIndent'#4'Left'#2#8#6'Height'#2#17#3'Top'
+  +#2')'#5'Width'#3#158#0#7'Caption'#6' Different indent for first level'#7'OnC'
+  +'lick'#7#26'cbHasFirstLevelIndentClick'#8'TabOrder'#2#2#0#0#9'TSpinEdit'#17
+  +'eFirstLevelIndent'#4'Left'#3'd'#1#6'Height'#2#21#3'Top'#2'#'#5'Width'#2'2'#8
+  +'TabOrder'#2#3#0#0#9'TCheckBox'#16'cbKeepWithInProc'#4'Left'#2#8#6'Height'#2
+  +#17#3'Top'#2'?'#5'Width'#3#4#1#7'Caption'#6'1Keep single-line comments with '
+  +'code in procedures'#8'TabOrder'#2#4#0#0#9'TCheckBox'#19'cbKeepWithInGlobals'
+  +#4'Left'#2#8#6'Height'#2#17#3'Top'#2'U'#5'Width'#3#239#0#7'Caption'#6'.Keep '
+  +'single-line comments with code in globals'#8'TabOrder'#2#5#0#0#9'TCheckBox'
+  +#20'cbKeepWithInClassDef'#4'Left'#2#8#6'Height'#2#17#3'Top'#2'k'#5'Width'#3
+  +#25#1#7'Caption'#6'8Keep single-line comments with code in class definitions'
+  +#8'TabOrder'#2#6#0#0#9'TCheckBox'#19'cbKeepWithElsewhere'#4'Left'#2#8#6'Heig'
+  +'ht'#2#17#3'Top'#3#129#0#5'Width'#3#244#0#7'Caption'#6'-Keep single-line com'
+  +'ments with code elsewhere'#8'TabOrder'#2#7#0#0#9'TCheckBox'#14'cbIndentIfEl'
+  +'se'#4'Left'#2#8#6'Height'#2#17#3'Top'#3#151#0#5'Width'#3#170#0#7'Caption'#6
+  +'!Extra Indent for If...Else blocks'#8'TabOrder'#2#8#0#0#9'TCheckBox'#16'cbI'
+  +'ndentCaseElse'#4'Left'#2#8#6'Height'#2#17#3'Top'#3#173#0#5'Width'#3#186#0#7
+  +'Caption'#6'#Extra Indent for Case...Else blocks'#8'TabOrder'#2#9#0#0#9'TChe'
+  +'ckBox'#20'cbIndentLibraryProcs'#4'Left'#2#8#6'Height'#2#17#3'Top'#3#195#0#5
+  +'Width'#3#168#0#7'Caption'#6' Indent for procedures in library'#8'TabOrder'#2
+  +#10#0#0#9'TCheckBox'#21'cbIndentProcedureBody'#4'Left'#2#8#6'Height'#2#17#3
+  +'Top'#3#217#0#5'Width'#3#146#0#7'Caption'#6#25'Indent for procedure body'#8
+  +'TabOrder'#2#11#0#0#9'TCheckBox'#19'cbIndentNestedTypes'#4'Left'#2#8#6'Heigh'
+  +'t'#2#17#3'Top'#3#239#0#5'Width'#2't'#7'Caption'#6#19'Indent nested types'#8
+  +'TabOrder'#2#12#0#0#9'TCheckBox'#26'cbIndentVarAndConstInClass'#4'Left'#2#8#6
+  +'Height'#2#17#3'Top'#3#5#1#5'Width'#3#156#0#7'Caption'#6#29'Indent var and c'
+  +'onst in class'#8'TabOrder'#2#13#0#0#0#0
+]);

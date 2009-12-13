@@ -31,13 +31,15 @@ interface
 
 uses
   { delphi }
-  Classes, Controls, Forms,
-  StdCtrls, ExtCtrls,
+  Classes, Controls, LResources, Forms, StdCtrls, ExtCtrls,
   { local}
-  JvEdit, frmBaseSettingsFrame, JvExStdCtrls, JvValidateEdit;
+  IDEOptionsIntf;
 
 type
-  TfClarifyReturns = class(TfrSettingsFrame)
+
+  { TfClarifyReturns }
+
+  TfClarifyReturns = class(TAbstractIDEOptionsEditor)
     rgReturnChars: TRadioGroup;
     gbRemoveReturns: TGroupBox;
     cbRemoveProcDefReturns: TCheckBox;
@@ -49,23 +51,17 @@ type
     cbUsesClauseOnePerLine: TCheckBox;
     cbInsertReturns: TCheckBox;
     cbBreakAfterUses: TCheckBox;
-  private
-
   public
     constructor Create(AOwner: TComponent); override;
 
-    procedure Read; override;
-    procedure Write; override;
-
+    function GetTitle: String; override;
+    procedure Setup(ADialog: TAbstractOptionsEditorDialog); override;
+    procedure ReadSettings(AOptions: TAbstractIDEOptions); override;
+    procedure WriteSettings(AOptions: TAbstractIDEOptions); override;
+    class function SupportedOptionsClass: TAbstractIDEOptionsClass; override;
   end;
 
 implementation
-
-{$ifdef FPC}
-  {$R *.lfm}
-{$else}
-  {$R *.dfm}
-{$endif}
 
 uses
   SettingsTypes, JcfSettings, SetReturns, JcfHelp;
@@ -74,13 +70,23 @@ uses
 constructor TfClarifyReturns.Create(AOwner: TComponent);
 begin
   inherited;
-  fiHelpContext := HELP_CLARIFY_RETURNS;
+  //fiHelpContext := HELP_CLARIFY_RETURNS;
+end;
+
+function TfClarifyReturns.GetTitle: String;
+begin
+  Result := 'Returns';
+end;
+
+procedure TfClarifyReturns.Setup(ADialog: TAbstractOptionsEditorDialog);
+begin
+  //
 end;
 
 {-------------------------------------------------------------------------------
   worker procs }
 
-procedure TfClarifyReturns.Read;
+procedure TfClarifyReturns.ReadSettings(AOptions: TAbstractIDEOptions);
 begin
   with FormatSettings.Returns do
   begin
@@ -98,7 +104,7 @@ begin
   end;
 end;
 
-procedure TfClarifyReturns.Write;
+procedure TfClarifyReturns.WriteSettings(AOptions: TAbstractIDEOptions);
 begin
   with FormatSettings.Returns do
   begin
@@ -116,4 +122,12 @@ begin
   end;
 end;
 
+class function TfClarifyReturns.SupportedOptionsClass: TAbstractIDEOptionsClass;
+begin
+  Result := TFormatSettings;
+end;
+
+initialization
+  {$I frClarifyReturns.lrs}
+  RegisterIDEOptionsEditor(JCFOptionsGroup, TfClarifyReturns, JCFOptionReturns, JCFOptionLongLines);
 end.

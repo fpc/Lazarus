@@ -1,0 +1,51 @@
+inherited fPreProcessor: TfPreProcessor
+  Height = 282
+  Width = 409
+  ClientHeight = 282
+  ClientWidth = 409
+  OnResize = FrameResize
+  DesignLeft = 627
+  DesignTop = 292
+  object lblSymbols: TLabel[0]
+    Left = 8
+    Height = 14
+    Top = 30
+    Width = 210
+    Caption = 'Symbols defined for conditional compilation:'
+    ParentColor = False
+  end
+  object lblCompilerOptions: TLabel[1]
+    Left = 8
+    Height = 14
+    Top = 138
+    Width = 250
+    Caption = 'Compiler options defined for conditional compilation:'
+    ParentColor = False
+  end
+  object mSymbols: TMemo[2]
+    Left = 8
+    Height = 79
+    Top = 50
+    Width = 364
+    ScrollBars = ssVertical
+    TabOrder = 1
+  end
+  object cbEnable: TCheckBox[3]
+    Left = 8
+    Height = 17
+    Top = 6
+    Width = 154
+    Caption = 'Enable preprocessor parsing'
+    Checked = True
+    State = cbChecked
+    TabOrder = 0
+  end
+  object mOptions: TMemo[4]
+    Left = 8
+    Height = 79
+    Top = 158
+    Width = 364
+    ScrollBars = ssVertical
+    TabOrder = 2
+  end
+end

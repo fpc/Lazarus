@@ -30,48 +30,55 @@ unit frReplace;
 interface
 
 uses
-    { delphi }
-  Classes, Controls, Forms,
-  StdCtrls,
-    { local }
-  JvMemo, frmBaseSettingsFrame, JvExStdCtrls;
+  { delphi }
+  Classes, Controls, LResources, Forms, StdCtrls,
+  { local }
+  IDEOptionsIntf;
 
 type
-  TfReplace = class(TfrSettingsFrame)
+
+  { TfReplace }
+
+  TfReplace = class(TAbstractIDEOptionsEditor)
     cbEnable: TCheckBox;
-    mWords: TJvMemo;
+    mWords: TMemo;
     lblWordList: TLabel;
     procedure cbEnableClick(Sender: TObject);
     procedure FrameResize(Sender: TObject);
-  private
-    { Private declarations }
   public
     constructor Create(AOwner: TComponent); override;
 
-    procedure Read; override;
-    procedure Write; override;
-
+    function GetTitle: String; override;
+    procedure Setup(ADialog: TAbstractOptionsEditorDialog); override;
+    procedure ReadSettings(AOptions: TAbstractIDEOptions); override;
+    procedure WriteSettings(AOptions: TAbstractIDEOptions); override;
+    class function SupportedOptionsClass: TAbstractIDEOptionsClass; override;
   end;
 
 implementation
 
-{$ifdef FPC}
-  {$R *.lfm}
-{$else}
-  {$R *.dfm}
-{$endif}
-
-uses JcfHelp, JcfSettings;
+uses 
+  JcfHelp, JcfSettings;
 
 { TfReplace }
 
 constructor TfReplace.Create(AOwner: TComponent);
 begin
   inherited;
-  fiHelpContext := HELP_CLARIFY_FIND_AND_REPLACE;
+  //fiHelpContext := HELP_CLARIFY_FIND_AND_REPLACE;
 end;
 
-procedure TfReplace.Read;
+function TfReplace.GetTitle: String;
+begin
+  Result := 'Find and Replace';
+end;
+
+procedure TfReplace.Setup(ADialog: TAbstractOptionsEditorDialog);
+begin
+  //
+end;
+
+procedure TfReplace.ReadSettings(AOptions: TAbstractIDEOptions);
 begin
   with FormatSettings.Replace do
   begin
@@ -81,7 +88,7 @@ begin
   cbEnableClick(nil);
 end;
 
-procedure TfReplace.Write;
+procedure TfReplace.WriteSettings(AOptions: TAbstractIDEOptions);
 begin
   with FormatSettings.Replace do
   begin
@@ -89,6 +96,11 @@ begin
     Words.Assign(mWords.Lines);
     SplitWords;
   end;
+end;
+
+class function TfReplace.SupportedOptionsClass: TAbstractIDEOptionsClass;
+begin
+  Result := TFormatSettings;
 end;
 
 {-------------------------------------------------------------------------------
@@ -106,5 +118,7 @@ begin
   mWords.Height := ClientHeight - (lblWordList.Top + lblWordList.Height + PAD);
 end;
 
-
+initialization
+  {$I frReplace.lrs}
+  RegisterIDEOptionsEditor(JCFOptionsGroup, TfReplace, JCFOptionFindAndReplace, JCFOptionClarify);
 end.

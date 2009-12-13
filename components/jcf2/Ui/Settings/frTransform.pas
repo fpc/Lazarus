@@ -30,13 +30,15 @@ See http://www.gnu.org/licenses/gpl.html
 interface
 
 uses
-  Classes, Graphics, Controls, Forms, 
-  StdCtrls, ExtCtrls,
+  Classes, Graphics, Controls, LResources, Forms, StdCtrls, ExtCtrls,
   { local }
-  frmBaseSettingsFrame;
+  IDEOptionsIntf;
 
 type
-  TfTransform = class(TfrSettingsFrame)
+
+  { TfTransform }
+
+  TfTransform = class(TAbstractIDEOptionsEditor)
     cbBlockEndSemicolons: TCheckBox;
     rbBeginEnd: TRadioGroup;
     bgSortUses: TGroupBox;
@@ -47,31 +49,38 @@ type
     rgUsesSortOrder: TRadioGroup;
     cbNoComments: TCheckBox;
     cbSortProgramUses: TCheckBox;
-  private
   public
     constructor Create(AOwner: TComponent); override;
 
-    procedure Read; override;
-    procedure Write; override;
+    function GetTitle: String; override;
+    procedure Setup(ADialog: TAbstractOptionsEditorDialog); override;
+    procedure ReadSettings(AOptions: TAbstractIDEOptions); override;
+    procedure WriteSettings(AOptions: TAbstractIDEOptions); override;
+    class function SupportedOptionsClass: TAbstractIDEOptionsClass; override;
   end;
 
 implementation
 
-uses SettingsTypes, JcfSettings, JcfHelp, SetTransform;
-
-{$ifdef FPC}
-  {$R *.lfm}
-{$else}
-  {$R *.dfm}
-{$endif}
+uses 
+  SettingsTypes, JcfSettings, JcfHelp, SetTransform;
 
 constructor TfTransform.Create(AOwner: TComponent);
 begin
   inherited;
-  fiHelpContext := HELP_CLARIFY_TRANSFORM;
+  //fiHelpContext := HELP_CLARIFY_TRANSFORM;
 end;
 
-procedure TfTransform.Read;
+function TfTransform.GetTitle: String;
+begin
+  Result := 'Transform';
+end;
+
+procedure TfTransform.Setup(ADialog: TAbstractOptionsEditorDialog);
+begin
+  //
+end;
+
+procedure TfTransform.ReadSettings(AOptions: TAbstractIDEOptions);
 begin
   with FormatSettings.Transform do
   begin
@@ -91,7 +100,7 @@ begin
 
 end;
 
-procedure TfTransform.Write;
+procedure TfTransform.WriteSettings(AOptions: TAbstractIDEOptions);
 begin
   with FormatSettings.Transform do
   begin
@@ -112,4 +121,12 @@ begin
 
 end;
 
+class function TfTransform.SupportedOptionsClass: TAbstractIDEOptionsClass;
+begin
+  Result := TFormatSettings;
+end;
+
+initialization
+  {$I frTransform.lrs}
+  RegisterIDEOptionsEditor(JCFOptionsGroup, TfTransform, JCFOptionTransform, JCFOptionClarify);
 end.

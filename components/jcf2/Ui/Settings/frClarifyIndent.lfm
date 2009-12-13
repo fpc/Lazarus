@@ -1,0 +1,148 @@
+inherited fClarifyIndent: TfClarifyIndent
+  Height = 342
+  Width = 430
+  ClientHeight = 342
+  ClientWidth = 430
+  DesignLeft = 737
+  DesignTop = 299
+  object Label2: TLabel[0]
+    Left = 4
+    Height = 14
+    Top = 6
+    Width = 118
+    Caption = 'Block indentation spaces'
+    ParentColor = False
+  end
+  object edtIndentSpaces: TSpinEdit[1]
+    Left = 180
+    Height = 21
+    Top = 4
+    Width = 50
+    MaxValue = 12
+    TabOrder = 0
+  end
+  object gbOptions: TGroupBox[2]
+    Left = 4
+    Height = 310
+    Top = 32
+    Width = 417
+    Caption = 'Options'
+    ClientHeight = 292
+    ClientWidth = 413
+    TabOrder = 1
+    object cbIndentBeginEnd: TCheckBox
+      Left = 8
+      Height = 17
+      Top = 19
+      Width = 232
+      Caption = 'Extra indent for begin/end inside procedures'
+      OnClick = cbIndentBeginEndClick
+      TabOrder = 0
+    end
+    object eIndentBeginEndSpaces: TSpinEdit
+      Left = 356
+      Height = 21
+      Top = 7
+      Width = 50
+      MaxValue = 10
+      MinValue = -10
+      TabOrder = 1
+    end
+    object cbHasFirstLevelIndent: TCheckBox
+      Left = 8
+      Height = 17
+      Top = 41
+      Width = 158
+      Caption = 'Different indent for first level'
+      OnClick = cbHasFirstLevelIndentClick
+      TabOrder = 2
+    end
+    object eFirstLevelIndent: TSpinEdit
+      Left = 356
+      Height = 21
+      Top = 35
+      Width = 50
+      TabOrder = 3
+    end
+    object cbKeepWithInProc: TCheckBox
+      Left = 8
+      Height = 17
+      Top = 63
+      Width = 260
+      Caption = 'Keep single-line comments with code in procedures'
+      TabOrder = 4
+    end
+    object cbKeepWithInGlobals: TCheckBox
+      Left = 8
+      Height = 17
+      Top = 85
+      Width = 239
+      Caption = 'Keep single-line comments with code in globals'
+      TabOrder = 5
+    end
+    object cbKeepWithInClassDef: TCheckBox
+      Left = 8
+      Height = 17
+      Top = 107
+      Width = 281
+      Caption = 'Keep single-line comments with code in class definitions'
+      TabOrder = 6
+    end
+    object cbKeepWithElsewhere: TCheckBox
+      Left = 8
+      Height = 17
+      Top = 129
+      Width = 244
+      Caption = 'Keep single-line comments with code elsewhere'
+      TabOrder = 7
+    end
+    object cbIndentIfElse: TCheckBox
+      Left = 8
+      Height = 17
+      Top = 151
+      Width = 170
+      Caption = 'Extra Indent for If...Else blocks'
+      TabOrder = 8
+    end
+    object cbIndentCaseElse: TCheckBox
+      Left = 8
+      Height = 17
+      Top = 173
+      Width = 186
+      Caption = 'Extra Indent for Case...Else blocks'
+      TabOrder = 9
+    end
+    object cbIndentLibraryProcs: TCheckBox
+      Left = 8
+      Height = 17
+      Top = 195
+      Width = 168
+      Caption = 'Indent for procedures in library'
+      TabOrder = 10
+    end
+    object cbIndentProcedureBody: TCheckBox
+      Left = 8
+      Height = 17
+      Top = 217
+      Width = 146
+      Caption = 'Indent for procedure body'
+      TabOrder = 11
+    end
+    object cbIndentNestedTypes: TCheckBox
+      Left = 8
+      Height = 17
+      Top = 239
+      Width = 116
+      Caption = 'Indent nested types'
+      TabOrder = 12
+    end
+    object cbIndentVarAndConstInClass: TCheckBox
+      Left = 8
+      Height = 17
+      Top = 261
+      Width = 156
+      Caption = 'Indent var and const in class'
+      TabOrder = 13
+    end
+  end
+end

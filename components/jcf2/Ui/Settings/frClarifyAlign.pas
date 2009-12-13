@@ -31,19 +31,19 @@ interface
 
 uses
   { delphi }
-  Classes, Controls, Forms,
-  StdCtrls,
-  { JVCL }
-  JvEdit, JvExStdCtrls, JvValidateEdit,
+  Classes, Controls, LResources, Forms, StdCtrls, Spin,
   { local}
-  frmBaseSettingsFrame;
+  IDEOptionsIntf;
 
 type
-  TfClarifyAlign = class(TfrSettingsFrame)
+
+  { TfClarifyAlign }
+
+  TfClarifyAlign = class(TAbstractIDEOptionsEditor)
     cbInterfaceOnly: TCheckBox;
-    edtMaxVariance: TJvValidateEdit;
-    edtMaxColumn: TJvValidateEdit;
-    edtMinColumn: TJvValidateEdit;
+    edtMaxVariance: TSpinEdit;
+    edtMaxColumn: TSpinEdit;
+    edtMinColumn: TSpinEdit;
     Label6: TLabel;
     Label4: TLabel;
     Label5: TLabel;
@@ -54,38 +54,44 @@ type
     cbAlignTypedef: TCheckBox;
     cbAlignComment: TCheckBox;
     Label1: TLabel;
-    eMaxUnaligned: TJvValidateEdit;
+    eMaxUnaligned: TSpinEdit;
     cbAlignField: TCheckBox;
-    edtMaxVarianceInterface: TJvValidateEdit;
+    edtMaxVarianceInterface: TSpinEdit;
     Label2: TLabel;
     procedure edtMinColumnExit(Sender: TObject);
     procedure edtMaxColumnExit(Sender: TObject);
   private
     procedure CheckMax;
     procedure CheckMin;
-
   public
     constructor Create(AOwner: TComponent); override;
 
-    procedure Read; override;
-    procedure Write; override;
-
+    function GetTitle: String; override;
+    procedure Setup(ADialog: TAbstractOptionsEditorDialog); override;
+    procedure ReadSettings(AOptions: TAbstractIDEOptions); override;
+    procedure WriteSettings(AOptions: TAbstractIDEOptions); override;
+    class function SupportedOptionsClass: TAbstractIDEOptionsClass; override;
   end;
 
 implementation
 
-{$ifdef FPC}
-  {$R *.lfm}
-{$else}
-  {$R *.dfm}
-{$endif}
-
-uses JcfSettings, JcfHelp, SetAlign;
+uses
+  JcfSettings, JcfHelp, SetAlign;
 
 constructor TfClarifyAlign.Create(AOwner: TComponent);
 begin
   inherited;
-  fiHelpContext := HELP_CLARIFY_ALIGN;
+  //fiHelpContext := HELP_CLARIFY_ALIGN;
+end;
+
+function TfClarifyAlign.GetTitle: String;
+begin
+  Result := 'Align';
+end;
+
+procedure TfClarifyAlign.Setup(ADialog: TAbstractOptionsEditorDialog);
+begin
+  //
 end;
 
 
@@ -110,7 +116,7 @@ begin
     edtMinColumn.Value := edtMaxColumn.Value;
 end;
 
-procedure TfClarifyAlign.Read;
+procedure TfClarifyAlign.ReadSettings(AOptions: TAbstractIDEOptions);
 begin
   with FormatSettings.Align do
   begin
@@ -131,7 +137,7 @@ begin
   end;
 end;
 
-procedure TfClarifyAlign.Write;
+procedure TfClarifyAlign.WriteSettings(AOptions: TAbstractIDEOptions);
 begin
   with FormatSettings.Align do
   begin
@@ -152,6 +158,11 @@ begin
   end;
 end;
 
+class function TfClarifyAlign.SupportedOptionsClass: TAbstractIDEOptionsClass;
+begin
+  Result := TFormatSettings;
+end;
+
 {-------------------------------------------------------------------------------
   event handlers }
 
@@ -166,4 +177,7 @@ begin
   CheckMax;
 end;
 
+initialization
+  {$I frClarifyAlign.lrs}
+  RegisterIDEOptionsEditor(JCFOptionsGroup, TfClarifyAlign, JCFOptionAlign, JCFOptionClarify);
 end.

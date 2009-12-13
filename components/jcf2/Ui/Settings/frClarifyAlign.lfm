@@ -1,0 +1,162 @@
+inherited fClarifyAlign: TfClarifyAlign
+  Height = 367
+  Width = 330
+  ClientHeight = 367
+  ClientWidth = 330
+  DesignLeft = 719
+  DesignTop = 331
+  object Label6: TLabel[0]
+    Left = 8
+    Height = 14
+    Top = 268
+    Width = 65
+    Caption = 'Max Variance'
+    ParentColor = False
+  end
+  object Label4: TLabel[1]
+    Left = 8
+    Height = 14
+    Top = 240
+    Width = 59
+    Caption = 'Max Column'
+    ParentColor = False
+  end
+  object Label5: TLabel[2]
+    Left = 8
+    Height = 14
+    Top = 212
+    Width = 55
+    Caption = 'Min Column'
+    ParentColor = False
+  end
+  object Label1: TLabel[3]
+    Left = 8
+    Height = 14
+    Top = 328
+    Width = 70
+    Caption = 'Max unaligned'
+    ParentColor = False
+  end
+  object Label2: TLabel[4]
+    Left = 8
+    Height = 14
+    Top = 296
+    Width = 113
+    Caption = 'Max Variance Interface'
+    ParentColor = False
+  end
+  object cbInterfaceOnly: TCheckBox[5]
+    Left = 8
+    Height = 17
+    Top = 6
+    Width = 88
+    Caption = 'Interface Only'
+    TabOrder = 0
+  end
+  object edtMaxVariance: TSpinEdit[6]
+    Left = 176
+    Height = 21
+    Top = 264
+    Width = 57
+    MaxValue = 999
+    MinValue = 1
+    OnExit = edtMaxColumnExit
+    TabOrder = 4
+    Value = 1
+  end
+  object edtMaxColumn: TSpinEdit[7]
+    Left = 176
+    Height = 21
+    Top = 236
+    Width = 57
+    MaxValue = 150
+    OnExit = edtMaxColumnExit
+    TabOrder = 3
+  end
+  object edtMinColumn: TSpinEdit[8]
+    Left = 176
+    Height = 21
+    Top = 207
+    Width = 57
+    MaxValue = 150
+    OnExit = edtMinColumnExit
+    TabOrder = 2
+  end
+  object gbWhat: TGroupBox[9]
+    Left = 8
+    Height = 164
+    Top = 29
+    Width = 231
+    Caption = 'What to Align'
+    ClientHeight = 146
+    ClientWidth = 227
+    TabOrder = 1
+    object cbAlignAsign: TCheckBox
+      Left = 8
+      Height = 17
+      Top = 4
+      Width = 49
+      Caption = 'Assign'
+      TabOrder = 0
+    end
+    object cbAlignConst: TCheckBox
+      Left = 8
+      Height = 17
+      Top = 27
+      Width = 46
+      Caption = 'Const'
+      TabOrder = 1
+    end
+    object cbAlignVar: TCheckBox
+      Left = 8
+      Height = 17
+      Top = 50
+      Width = 95
+      Caption = 'Var declarations'
+      TabOrder = 2
+    end
+    object cbAlignTypedef: TCheckBox
+      Left = 8
+      Height = 17
+      Top = 96
+      Width = 66
+      Caption = 'Type defs'
+      TabOrder = 3
+    end
+    object cbAlignComment: TCheckBox
+      Left = 8
+      Height = 17
+      Top = 119
+      Width = 63
+      Caption = 'Comment'
+      TabOrder = 4
+    end
+    object cbAlignField: TCheckBox
+      Left = 8
+      Height = 17
+      Top = 73
+      Width = 121
+      Caption = 'Class and record field'
+      TabOrder = 5
+    end
+  end
+  object eMaxUnaligned: TSpinEdit[10]
+    Left = 176
+    Height = 21
+    Top = 322
+    Width = 57
+    MaxValue = 999
+    TabOrder = 5
+  end
+  object edtMaxVarianceInterface: TSpinEdit[11]
+    Left = 176
+    Height = 21
+    Top = 293
+    Width = 57
+    MaxValue = 999
+    MinValue = 1
+    OnExit = edtMaxColumnExit
+    TabOrder = 6
+    Value = 1
+  end
+end

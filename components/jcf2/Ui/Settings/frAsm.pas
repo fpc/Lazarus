@@ -30,31 +30,35 @@ See http://www.gnu.org/licenses/gpl.html
 interface
 
 uses
-  Messages, SysUtils, Variants, Classes, Graphics, Controls, Forms,
-  Dialogs, StdCtrls, ExtCtrls, 
+  Messages, SysUtils, Variants, Classes, Graphics, Controls, LResources, Forms,
+  Dialogs, StdCtrls, ExtCtrls, Spin,
   { local}
-  frmBaseSettingsFrame, JvExStdCtrls, JvEdit, JvValidateEdit;
+  IDEOptionsIntf;
 
 type
-  TfAsm = class(TfrSettingsFrame)
+
+  { TfAsm }
+
+  TfAsm = class(TAbstractIDEOptionsEditor)
     rgCaps: TRadioGroup;
     gbStatementIndent: TGroupBox;
-    edtStatementIndent: TJvValidateEdit;
+    edtStatementIndent: TSpinEdit;
     cbStatementIndent: TCheckBox;
     gbBreaksAfterLabel: TGroupBox;
     cbBreaksAfterLabelEnabled: TCheckBox;
-    edtBreaksAfterLabel: TJvValidateEdit;
+    edtBreaksAfterLabel: TSpinEdit;
     Label7: TLabel;
     Label1: TLabel;
     gbParamsIndent: TGroupBox;
     Label2: TLabel;
-    edtParamsIndent: TJvValidateEdit;
+    edtParamsIndent: TSpinEdit;
     cbParamsIndent: TCheckBox;
-  private
   public
-    procedure Read; override;
-    procedure Write; override;
-
+    function GetTitle: String; override;
+    procedure Setup(ADialog: TAbstractOptionsEditorDialog); override;
+    procedure ReadSettings(AOptions: TAbstractIDEOptions); override;
+    procedure WriteSettings(AOptions: TAbstractIDEOptions); override;
+    class function SupportedOptionsClass: TAbstractIDEOptionsClass; override;
   end;
 
 implementation
@@ -65,13 +69,17 @@ uses
   { local }
   Capitalisation, SettingsTypes, SetAsm;
 
-{$ifdef FPC}
-  {$R *.lfm}
-{$else}
-  {$R *.dfm}
-{$endif}
+function TfAsm.GetTitle: String;
+begin
+  Result := 'Asm';
+end;
 
-procedure TfAsm.Read;
+procedure TfAsm.Setup(ADialog: TAbstractOptionsEditorDialog);
+begin
+  //
+end;
+
+procedure TfAsm.ReadSettings(AOptions: TAbstractIDEOptions);
 begin
 
   with FormatSettings.SetAsm do
@@ -91,7 +99,7 @@ begin
 
 end;
 
-procedure TfAsm.Write;
+procedure TfAsm.WriteSettings(AOptions: TAbstractIDEOptions);
 begin
 
   with FormatSettings.SetAsm do
@@ -109,4 +117,12 @@ begin
   end;
 end;
 
+class function TfAsm.SupportedOptionsClass: TAbstractIDEOptionsClass;
+begin
+  Result := TFormatSettings;
+end;
+
+initialization
+  {$I frAsm.lrs}
+  RegisterIDEOptionsEditor(JCFOptionsGroup, TfAsm, JCFOptionAsm, JCFOptionClarify);
 end.

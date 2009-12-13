@@ -30,12 +30,14 @@ See http://www.gnu.org/licenses/gpl.html
 interface
 
 uses
-  Classes, Graphics, Controls, Forms,
-  StdCtrls, ExtCtrls,
-  frmBaseSettingsFrame;
+  Classes, Graphics, Controls, LResources, Forms, StdCtrls, ExtCtrls,
+  IDEOptionsIntf;
 
 type
-  TfCompilerDirectReturns = class(TfrSettingsFrame)
+
+  { TfCompilerDirectReturns }
+
+  TfCompilerDirectReturns = class(TAbstractIDEOptionsEditor)
     Label1: TLabel;
     rgBeforeUses: TRadioGroup;
     rgBeforeStatements: TRadioGroup;
@@ -44,23 +46,20 @@ type
     rgAfterStatements: TRadioGroup;
     rgAfterUses: TRadioGroup;
     Label2: TLabel;
-  private
   public
     constructor Create(AOwner: TComponent); override;
 
-    procedure Read; override;
-    procedure Write; override;
+    function GetTitle: String; override;
+    procedure Setup(ADialog: TAbstractOptionsEditorDialog); override;
+    procedure ReadSettings(AOptions: TAbstractIDEOptions); override;
+    procedure WriteSettings(AOptions: TAbstractIDEOptions); override;
+    class function SupportedOptionsClass: TAbstractIDEOptionsClass; override;
   end;
 
 implementation
 
-uses JcfSettings, SettingsTypes;
-
-{$ifdef FPC}
-  {$R *.lfm}
-{$else}
-  {$R *.dfm}
-{$endif}
+uses
+  JcfSettings, SettingsTypes;
 
 constructor TfCompilerDirectReturns.Create(AOwner: TComponent);
 begin
@@ -68,7 +67,17 @@ begin
   //  fiHelpContext := ?? ;
 end;
 
-procedure TfCompilerDirectReturns.Read;
+function TfCompilerDirectReturns.GetTitle: String;
+begin
+  Result := 'Compiler Directives';
+end;
+
+procedure TfCompilerDirectReturns.Setup(ADialog: TAbstractOptionsEditorDialog);
+begin
+  inherited Setup(ADialog);
+end;
+
+procedure TfCompilerDirectReturns.ReadSettings(AOptions: TAbstractIDEOptions);
 begin
   with FormatSettings.Returns do
   begin
@@ -82,7 +91,7 @@ begin
   end;
 end;
 
-procedure TfCompilerDirectReturns.Write;
+procedure TfCompilerDirectReturns.WriteSettings(AOptions: TAbstractIDEOptions);
 begin
   with FormatSettings.Returns do
   begin
@@ -97,4 +106,12 @@ begin
   end;
 end;
 
+class function TfCompilerDirectReturns.SupportedOptionsClass: TAbstractIDEOptionsClass;
+begin
+  Result := TFormatSettings;
+end;
+
+initialization
+  {$I frCompilerDirectReturns.lrs}
+  RegisterIDEOptionsEditor(JCFOptionsGroup, TfCompilerDirectReturns, JCFOptionCompilerDirectives, JCFOptionLongLines);
 end.

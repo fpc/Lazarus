@@ -1,0 +1,18 @@
+{ This is an automatically generated lazarus resource file }
+
+LazarusResources.Add('TfPreProcessor','FORMDATA',[
+  'TPF0'#241#14'TfPreProcessor'#13'fPreProcessor'#6'Height'#3#26#1#5'Width'#3
+  +#153#1#12'ClientHeight'#3#26#1#11'ClientWidth'#3#153#1#8'OnResize'#7#11'Fram'
+  +'eResize'#10'DesignLeft'#3's'#2#9'DesignTop'#3'$'#1#0#242#2#0#6'TLabel'#10'l'
+  +'blSymbols'#4'Left'#2#8#6'Height'#2#14#3'Top'#2#30#5'Width'#3#210#0#7'Captio'
+  +'n'#6',Symbols defined for conditional compilation:'#11'ParentColor'#8#0#0
+  +#242#2#1#6'TLabel'#18'lblCompilerOptions'#4'Left'#2#8#6'Height'#2#14#3'Top'#3
+  +#138#0#5'Width'#3#250#0#7'Caption'#6'5Compiler options defined for condition'
+  +'al compilation:'#11'ParentColor'#8#0#0#242#2#2#5'TMemo'#8'mSymbols'#4'Left'
+  +#2#8#6'Height'#2'O'#3'Top'#2'2'#5'Width'#3'l'#1#10'ScrollBars'#7#10'ssVertic'
+  +'al'#8'TabOrder'#2#1#0#0#242#2#3#9'TCheckBox'#8'cbEnable'#4'Left'#2#8#6'Heig'
+  +'ht'#2#17#3'Top'#2#6#5'Width'#3#154#0#7'Caption'#6#27'Enable preprocessor pa'
+  +'rsing'#7'Checked'#9#5'State'#7#9'cbChecked'#8'TabOrder'#2#0#0#0#242#2#4#5'T'
+  +'Memo'#8'mOptions'#4'Left'#2#8#6'Height'#2'O'#3'Top'#3#158#0#5'Width'#3'l'#1
+  +#10'ScrollBars'#7#10'ssVertical'#8'TabOrder'#2#2#0#0#0
+]);

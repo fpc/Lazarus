@@ -1,0 +1,37 @@
+inherited fIdentifierCapsSettings: TfIdentifierCapsSettings
+  Height = 230
+  Width = 366
+  ClientHeight = 230
+  ClientWidth = 366
+  OnResize = FrameResize
+  DesignLeft = 656
+  DesignTop = 326
+  object Label1: TLabel[0]
+    Left = 108
+    Height = 14
+    Top = 3
+    Width = 177
+    Caption = 'Set capitalisation on these identifiers'
+    ParentColor = False
+  end
+  object cbEnableAnyWords: TCheckBox[1]
+    Left = 8
+    Height = 17
+    Top = 5
+    Width = 50
+    Caption = 'Enable'
+    Checked = True
+    OnClick = cbEnableAnyWordsClick
+    State = cbChecked
+    TabOrder = 0
+  end
+  object mWords: TMemo[2]
+    Left = 0
+    Height = 198
+    Top = 32
+    Width = 366
+    Align = alBottom
+    ScrollBars = ssVertical
+    TabOrder = 1
+  end
+end

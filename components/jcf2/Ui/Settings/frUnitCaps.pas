@@ -29,32 +29,32 @@ See http://www.gnu.org/licenses/gpl.html
 interface
 
 uses
-  Classes, Controls, Forms,
-  { local}frmBaseSettingsFrame, StdCtrls, JvMemo, JvExStdCtrls;
+  Classes, Controls, LResources, Forms, StdCtrls,
+  IDEOptionsIntf;
 
 type
-  TfrUnitNameCaps = class(TfrSettingsFrame)
-    mWords: TJvMemo;
+
+  { TfrUnitNameCaps }
+
+  TfrUnitNameCaps = class(TAbstractIDEOptionsEditor)
+    mWords: TMemo;
     cbEnableAnyWords: TCheckBox;
     Label1: TLabel;
     procedure FrameResize(Sender: TObject);
-  private
   public
     constructor Create(AOwner: TComponent); override;
 
-    procedure Read; override;
-    procedure Write; override;
+    function GetTitle: String; override;
+    procedure Setup(ADialog: TAbstractOptionsEditorDialog); override;
+    procedure ReadSettings(AOptions: TAbstractIDEOptions); override;
+    procedure WriteSettings(AOptions: TAbstractIDEOptions); override;
+    class function SupportedOptionsClass: TAbstractIDEOptionsClass; override;
   end;
 
 implementation
 
-{$ifdef FPC}
-  {$R *.lfm}
-{$else}
-  {$R *.dfm}
-{$endif}
-
-uses JcfSettings;
+uses
+  JcfSettings;
 
 constructor TfrUnitNameCaps.Create(AOwner: TComponent);
 begin
@@ -62,7 +62,17 @@ begin
 
 end;
 
-procedure TfrUnitNameCaps.Read;
+function TfrUnitNameCaps.GetTitle: String;
+begin
+  Result := 'Unit Name';
+end;
+
+procedure TfrUnitNameCaps.Setup(ADialog: TAbstractOptionsEditorDialog);
+begin
+  inherited Setup(ADialog);
+end;
+
+procedure TfrUnitNameCaps.ReadSettings(AOptions: TAbstractIDEOptions);
 begin
   inherited;
   with FormatSettings.UnitNameCaps do
@@ -73,7 +83,7 @@ begin
 
 end;
 
-procedure TfrUnitNameCaps.Write;
+procedure TfrUnitNameCaps.WriteSettings(AOptions: TAbstractIDEOptions);
 begin
   inherited;
   with FormatSettings.UnitNameCaps do
@@ -84,10 +94,18 @@ begin
 
 end;
 
+class function TfrUnitNameCaps.SupportedOptionsClass: TAbstractIDEOptionsClass;
+begin
+  Result := TFormatSettings;
+end;
+
 procedure TfrUnitNameCaps.FrameResize(Sender: TObject);
 begin
   mWords.Height := ClientHeight -
     (cbEnableAnyWords.Top + cbEnableAnyWords.Height + GUI_PAD);
 end;
 
+initialization
+  {$I frUnitCaps.lrs}
+  RegisterIDEOptionsEditor(JCFOptionsGroup, TfrUnitNameCaps, JCFOptionUnitName, JCFOptionObjectPascal);
 end.

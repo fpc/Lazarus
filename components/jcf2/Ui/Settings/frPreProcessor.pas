@@ -31,45 +31,53 @@ interface
 { preprocessor symbols }
 
 uses
-  Classes, Controls, Forms,
-  StdCtrls, JvMemo,
-   { local}frmBaseSettingsFrame, JvExStdCtrls;
+  Classes, Controls, LResources, Forms, StdCtrls,
+  IDEOptionsIntf;
 
 type
-  TfPreProcessor = class(TfrSettingsFrame)
-    mSymbols: TJvMemo;
+
+  { TfPreProcessor }
+
+  TfPreProcessor = class(TAbstractIDEOptionsEditor)
+    mSymbols: TMemo;
     cbEnable: TCheckBox;
     lblSymbols: TLabel;
-    mOptions: TJvMemo;
+    mOptions: TMemo;
     lblCompilerOptions: TLabel;
     procedure FrameResize(Sender: TObject);
-  private
   public
     constructor Create(AOwner: TComponent); override;
 
-    procedure Read; override;
-    procedure Write; override;
+    function GetTitle: String; override;
+    procedure Setup(ADialog: TAbstractOptionsEditorDialog); override;
+    procedure ReadSettings(AOptions: TAbstractIDEOptions); override;
+    procedure WriteSettings(AOptions: TAbstractIDEOptions); override;
+    class function SupportedOptionsClass: TAbstractIDEOptionsClass; override;
   end;
 
 implementation
 
-{$ifdef FPC}
-  {$R *.lfm}
-{$else}
-  {$R *.dfm}
-{$endif}
-
-uses JcfHelp, JcfSettings;
+uses 
+  JcfHelp, JcfSettings;
 
 constructor TfPreProcessor.Create(AOwner: TComponent);
 begin
   inherited;
-  fiHelpContext := HELP_CLARIFY;
+  //fiHelpContext := HELP_CLARIFY;
 end;
 
-procedure TfPreProcessor.Read;
+function TfPreProcessor.GetTitle: String;
 begin
-  inherited;
+  Result := 'PreProcessor';
+end;
+
+procedure TfPreProcessor.Setup(ADialog: TAbstractOptionsEditorDialog);
+begin
+  //
+end;
+
+procedure TfPreProcessor.ReadSettings(AOptions: TAbstractIDEOptions);
+begin
   with FormatSettings.PreProcessor do
   begin
     cbEnable.Checked := Enabled;
@@ -79,15 +87,19 @@ begin
 
 end;
 
-procedure TfPreProcessor.Write;
+procedure TfPreProcessor.WriteSettings(AOptions: TAbstractIDEOptions);
 begin
-  inherited;
   with FormatSettings.PreProcessor do
   begin
     Enabled := cbEnable.Checked;
     DefinedSymbols.Assign(mSymbols.Lines);
     DefinedOptions.Assign(mOptions.Lines);
   end;
+end;
+
+class function TfPreProcessor.SupportedOptionsClass: TAbstractIDEOptionsClass;
+begin
+  Result := TFormatSettings;
 end;
 
 procedure TfPreProcessor.FrameResize(Sender: TObject);
@@ -111,5 +123,7 @@ begin
 
 end;
 
-
+initialization
+  {$I frPreProcessor.lrs}
+  RegisterIDEOptionsEditor(JCFOptionsGroup, TfPreProcessor, JCFOptionPreProcessor);
 end.

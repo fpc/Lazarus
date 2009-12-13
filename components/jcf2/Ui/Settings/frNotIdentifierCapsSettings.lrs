@@ -1,0 +1,15 @@
+{ This is an automatically generated lazarus resource file }
+
+LazarusResources.Add('TfNotIdentifierCapsSettings','FORMDATA',[
+  'TPF0'#241#27'TfNotIdentifierCapsSettings'#26'fNotIdentifierCapsSettings'#6'H'
+  +'eight'#3#232#0#5'Width'#3#140#1#12'ClientHeight'#3#232#0#11'ClientWidth'#3
+  +#140#1#8'OnResize'#7#11'FrameResize'#10'DesignLeft'#3#177#2#9'DesignTop'#3':'
+  +#2#0#242#2#0#6'TLabel'#6'Label1'#4'Left'#2'l'#6'Height'#2#14#3'Top'#2#3#5'Wi'
+  +'dth'#3#199#0#7'Caption'#6'+Set capitalisation on these non-identifiers'#11
+  +'ParentColor'#8#0#0#242#2#1#9'TCheckBox'#16'cbEnableAnyWords'#4'Left'#2#8#6
+  +'Height'#2#17#3'Top'#2#5#5'Width'#2'2'#7'Caption'#6#6'Enable'#7'Checked'#9#7
+  +'OnClick'#7#21'cbEnableAnyWordsClick'#5'State'#7#9'cbChecked'#8'TabOrder'#2#0
+  +#0#0#242#2#2#5'TMemo'#6'mWords'#4'Left'#2#0#6'Height'#3#198#0#3'Top'#2'"'#5
+  +'Width'#3#140#1#5'Align'#7#8'alBottom'#10'ScrollBars'#7#10'ssVertical'#8'Tab'
+  +'Order'#2#1#0#0#0
+]);

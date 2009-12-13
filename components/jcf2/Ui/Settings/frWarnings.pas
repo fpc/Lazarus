@@ -31,42 +31,52 @@ interface
 
 uses
   { delphi }
-  StdCtrls, Classes, Controls, Forms,
+  StdCtrls, Classes, Controls, LResources, Forms,
   { local }
-  frmBaseSettingsFrame;
+  IDEOptionsIntf;
 
 type
-  TfWarnings = class(TfrSettingsFrame)
+
+  { TfWarnings }
+
+  TfWarnings = class(TAbstractIDEOptionsEditor)
     cbWarningsOn: TCheckBox;
     cbWarnUnusedParams: TCheckBox;
     mIgnoreUnusedParams: TMemo;
     Label1: TLabel;
     procedure FrameResize(Sender: TObject);
-  private
   public
     constructor Create(AOwner: TComponent); override;
 
-    procedure Read; override;
-    procedure Write; override;
+    function GetTitle: String; override;
+    procedure Setup(ADialog: TAbstractOptionsEditorDialog); override;
+    procedure ReadSettings(AOptions: TAbstractIDEOptions); override;
+    procedure WriteSettings(AOptions: TAbstractIDEOptions); override;
+    class function SupportedOptionsClass: TAbstractIDEOptionsClass; override;
   end;
 
 implementation
 
-{$ifdef FPC}
-  {$R *.lfm}
-{$else}
-  {$R *.dfm}
-{$endif}
-
-uses JcfHelp, JcfSettings;
+uses
+  JcfHelp, JcfSettings;
 
 constructor TfWarnings.Create(AOwner: TComponent);
 begin
   inherited;
-  fiHelpContext := HELP_CLARIFY_WARNINGS;
+  //fiHelpContext := HELP_CLARIFY_WARNINGS;
 end;
 
-procedure TfWarnings.Read;
+function TfWarnings.GetTitle: String;
+begin
+  Result := 'Warnings';
+end;
+
+procedure TfWarnings.Setup(ADialog: TAbstractOptionsEditorDialog);
+begin
+  inherited Setup(ADialog);
+end;
+
+procedure TfWarnings.ReadSettings(AOptions: TAbstractIDEOptions);
 begin
   with FormatSettings.Clarify do
   begin
@@ -77,7 +87,7 @@ begin
   end;
 end;
 
-procedure TfWarnings.Write;
+procedure TfWarnings.WriteSettings(AOptions: TAbstractIDEOptions);
 begin
   with FormatSettings.Clarify do
   begin
@@ -86,6 +96,11 @@ begin
     IgnoreUnusedParams.Assign(mIgnoreUnusedParams.Lines);
     IgnoreUnusedParams.Sort;
   end;
+end;
+
+class function TfWarnings.SupportedOptionsClass: TAbstractIDEOptionsClass;
+begin
+  Result := TFormatSettings;
 end;
 
 procedure TfWarnings.FrameResize(Sender: TObject);
@@ -97,4 +112,7 @@ begin
   mIgnoreUnusedParams.Height := ClientHeight - (mIgnoreUnusedParams.Top + PAD);
 end;
 
+initialization
+  {$I frWarnings.lrs}
+  RegisterIDEOptionsEditor(JCFOptionsGroup, TfWarnings, JCFOptionWarnings, JCFOptionClarify);
 end.

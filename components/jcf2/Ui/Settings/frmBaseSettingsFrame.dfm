@@ -1,2 +1,0 @@
-inherited frSettingsFrame: TfrSettingsFrame
-end

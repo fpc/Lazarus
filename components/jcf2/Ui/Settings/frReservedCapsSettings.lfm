@@ -1,0 +1,149 @@
+inherited frReservedCapsSettings: TfrReservedCapsSettings
+  Height = 359
+  Width = 325
+  ClientHeight = 359
+  ClientWidth = 325
+  DesignLeft = 222
+  DesignTop = 200
+  object cbEnable: TCheckBox[0]
+    Left = 8
+    Height = 17
+    Top = 6
+    Width = 130
+    Caption = 'Enable fix capitalisation'
+    Checked = True
+    OnClick = cbEnableClick
+    State = cbChecked
+    TabOrder = 0
+  end
+  object rgReservedWords: TRadioGroup[1]
+    Left = 8
+    Height = 106
+    Top = 26
+    Width = 150
+    AutoFill = True
+    Caption = 'Reserved words'
+    ChildSizing.LeftRightSpacing = 6
+    ChildSizing.TopBottomSpacing = 6
+    ChildSizing.EnlargeHorizontal = crsHomogenousChildResize
+    ChildSizing.EnlargeVertical = crsHomogenousChildResize
+    ChildSizing.ShrinkHorizontal = crsScaleChilds
+    ChildSizing.ShrinkVertical = crsScaleChilds
+    ChildSizing.Layout = cclLeftToRightThenTopToBottom
+    ChildSizing.ControlsPerLine = 1
+    ClientHeight = 88
+    ClientWidth = 146
+    ItemIndex = 1
+    Items.Strings = (
+      'ALL CAPITALS'
+      'all lowercase'
+      'Mixed Case'
+      'Leave alone'
+    )
+    TabOrder = 1
+  end
+  object rgOperators: TRadioGroup[2]
+    Left = 164
+    Height = 106
+    Top = 26
+    Width = 150
+    AutoFill = True
+    Caption = 'Operators'
+    ChildSizing.LeftRightSpacing = 6
+    ChildSizing.TopBottomSpacing = 6
+    ChildSizing.EnlargeHorizontal = crsHomogenousChildResize
+    ChildSizing.EnlargeVertical = crsHomogenousChildResize
+    ChildSizing.ShrinkHorizontal = crsScaleChilds
+    ChildSizing.ShrinkVertical = crsScaleChilds
+    ChildSizing.Layout = cclLeftToRightThenTopToBottom
+    ChildSizing.ControlsPerLine = 1
+    ClientHeight = 88
+    ClientWidth = 146
+    ItemIndex = 1
+    Items.Strings = (
+      'ALL CAPITALS'
+      'all lowercase'
+      'Mixed Case'
+      'Leave alone'
+    )
+    TabOrder = 2
+  end
+  object rgTypes: TRadioGroup[3]
+    Left = 8
+    Height = 106
+    Top = 248
+    Width = 150
+    AutoFill = True
+    Caption = 'Types'
+    ChildSizing.LeftRightSpacing = 6
+    ChildSizing.TopBottomSpacing = 6
+    ChildSizing.EnlargeHorizontal = crsHomogenousChildResize
+    ChildSizing.EnlargeVertical = crsHomogenousChildResize
+    ChildSizing.ShrinkHorizontal = crsScaleChilds
+    ChildSizing.ShrinkVertical = crsScaleChilds
+    ChildSizing.Layout = cclLeftToRightThenTopToBottom
+    ChildSizing.ControlsPerLine = 1
+    ClientHeight = 88
+    ClientWidth = 146
+    ItemIndex = 1
+    Items.Strings = (
+      'ALL CAPITALS'
+      'all lowercase'
+      'Mixed Case'
+      'Leave alone'
+    )
+    TabOrder = 5
+  end
+  object rgConstants: TRadioGroup[4]
+    Left = 164
+    Height = 106
+    Top = 138
+    Width = 150
+    AutoFill = True
+    Caption = 'Constants'
+    ChildSizing.LeftRightSpacing = 6
+    ChildSizing.TopBottomSpacing = 6
+    ChildSizing.EnlargeHorizontal = crsHomogenousChildResize
+    ChildSizing.EnlargeVertical = crsHomogenousChildResize
+    ChildSizing.ShrinkHorizontal = crsScaleChilds
+    ChildSizing.ShrinkVertical = crsScaleChilds
+    ChildSizing.Layout = cclLeftToRightThenTopToBottom
+    ChildSizing.ControlsPerLine = 1
+    ClientHeight = 88
+    ClientWidth = 146
+    ItemIndex = 1
+    Items.Strings = (
+      'ALL CAPITALS'
+      'all lowercase'
+      'Mixed Case'
+      'Leave alone'
+    )
+    TabOrder = 4
+  end
+  object rgDirectives: TRadioGroup[5]
+    Left = 8
+    Height = 106
+    Top = 138
+    Width = 150
+    AutoFill = True
+    Caption = 'Directives'
+    ChildSizing.LeftRightSpacing = 6
+    ChildSizing.TopBottomSpacing = 6
+    ChildSizing.EnlargeHorizontal = crsHomogenousChildResize
+    ChildSizing.EnlargeVertical = crsHomogenousChildResize
+    ChildSizing.ShrinkHorizontal = crsScaleChilds
+    ChildSizing.ShrinkVertical = crsScaleChilds
+    ChildSizing.Layout = cclLeftToRightThenTopToBottom
+    ChildSizing.ControlsPerLine = 1
+    ClientHeight = 88
+    ClientWidth = 146
+    ItemIndex = 1
+    Items.Strings = (
+      'ALL CAPITALS'
+      'all lowercase'
+      'Mixed Case'
+      'Leave alone'
+    )
+    TabOrder = 3
+  end
+end

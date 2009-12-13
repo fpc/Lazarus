@@ -140,26 +140,29 @@ const
   JCFOptionClarify = 3;
   JCFOptionSpaces = 4;
   JCFOptionIndentation = 5;
-  JCFOptionLongLines = 6;
-  JCFOptionReturns = 7;
-  JCFOptionBlankLines = 8;
-  JCFOptionBlocks = 9;
+  JCFOptionBlankLines = 6;
+  JCFOptionAlign = 7;
+  JCFOptionLongLines = 8;
+  JCFOptionReturns = 9;
   JCFOptionCaseBlocks = 10;
-  JCFOptionAlign = 11;
-  JCFOptionObjectPascal = 12;
-  JCFOptionAnyWord = 13;
-  JCFOptionIdentifiers = 14;
-  JCFOptionNotIdentifiers = 15;
-  JCFOptionUnitName = 16;
-  JCFOptionFindAndReplace = 17;
-  JCFOptionUses = 18;
-  JCFOptionBasic = 19;
-  JCFOptionPreProcessor = 20;
-  JCFOptionComments = 21;
-  JCFOptionTransform = 22;
-  JCFOptionCompilerDirectives = 23;
-  JCFOptionWarnings = 24;
-  JCFOptionAsm = 25;
+  JCFOptionBlocks = 11;
+  JCFOptionCompilerDirectives = 12;
+  JCFOptionComments = 13;
+  JCFOptionWarnings = 14;
+  JCFOptionObjectPascal = 15;
+  JCFOptionAnyWord = 16;
+  JCFOptionIdentifiers = 17;
+  JCFOptionNotIdentifiers = 18;
+  JCFOptionUnitName = 19;
+  JCFOptionFindAndReplace = 20;
+  JCFOptionUses = 21;
+  JCFOptionBasic = 22;
+  JCFOptionTransform = 23;
+  JCFOptionAsm = 24;
+  JCFOptionPreProcessor = 25;
+
+const
+  GUI_PAD = 3;
 
 implementation
 

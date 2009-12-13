@@ -31,22 +31,21 @@ interface
 
 uses
   { delphi }
-  Classes, Controls, Forms,
-  StdCtrls,
-  { JVCL }
-  JvEdit, JvExStdCtrls, JvValidateEdit,
-  { local}
-  frmBaseSettingsFrame;
+  Classes, Controls, Forms, LResources, StdCtrls, Spin,
+  IDEOptionsIntf;
 
 type
-  TfClarifyIndent = class(TfrSettingsFrame)
+
+  { TfClarifyIndent }
+
+  TfClarifyIndent = class(TAbstractIDEOptionsEditor)
     Label2: TLabel;
-    edtIndentSpaces: TJvValidateEdit;
+    edtIndentSpaces: TSpinEdit;
     gbOptions: TGroupBox;
     cbIndentBeginEnd: TCheckBox;
-    eIndentBeginEndSpaces: TJvValidateEdit;
+    eIndentBeginEndSpaces: TSpinEdit;
     cbHasFirstLevelIndent: TCheckBox;
-    eFirstLevelIndent: TJvValidateEdit;
+    eFirstLevelIndent: TSpinEdit;
     cbKeepWithInProc: TCheckBox;
     cbKeepWithInGlobals: TCheckBox;
     cbKeepWithInClassDef: TCheckBox;
@@ -59,35 +58,41 @@ type
     cbIndentVarAndConstInClass: TCheckBox;
     procedure cbIndentBeginEndClick(Sender: TObject);
     procedure cbHasFirstLevelIndentClick(Sender: TObject);
-  private
   public
     constructor Create(AOwner: TComponent); override;
 
-    procedure Read; override;
-    procedure Write; override;
-
+    function GetTitle: String; override;
+    procedure Setup(ADialog: TAbstractOptionsEditorDialog); override;
+    procedure ReadSettings(AOptions: TAbstractIDEOptions); override;
+    procedure WriteSettings(AOptions: TAbstractIDEOptions); override;
+    class function SupportedOptionsClass: TAbstractIDEOptionsClass; override;
   end;
 
 implementation
 
-{$ifdef FPC}
-  {$R *.lfm}
-{$else}
-  {$R *.dfm}
-{$endif}
-
-uses JcfHelp, JcfSettings, SetIndent;
+uses
+  JcfHelp, JcfSettings, SetIndent;
 
 constructor TfClarifyIndent.Create(AOwner: TComponent);
 begin
   inherited;
-  fiHelpContext := HELP_CLARIFY_INDENTATION;
+  //fiHelpContext := HELP_CLARIFY_INDENTATION;
+end;
+
+function TfClarifyIndent.GetTitle: String;
+begin
+  Result := 'Indentation';
+end;
+
+procedure TfClarifyIndent.Setup(ADialog: TAbstractOptionsEditorDialog);
+begin
+  //;
 end;
 
 {-------------------------------------------------------------------------------
   worker procs }
 
-procedure TfClarifyIndent.Read;
+procedure TfClarifyIndent.ReadSettings(AOptions: TAbstractIDEOptions);
 begin
   with FormatSettings.Indent do
   begin
@@ -116,7 +121,7 @@ begin
   cbHasFirstLevelIndentClick(nil);
 end;
 
-procedure TfClarifyIndent.Write;
+procedure TfClarifyIndent.WriteSettings(AOptions: TAbstractIDEOptions);
 begin
 
   with FormatSettings.Indent do
@@ -143,6 +148,11 @@ begin
   end;
 end;
 
+class function TfClarifyIndent.SupportedOptionsClass: TAbstractIDEOptionsClass;
+begin
+  Result := TFormatSettings;
+end;
+
 {-------------------------------------------------------------------------------
   event handlers }
 
@@ -156,4 +166,7 @@ begin
   eFirstLevelIndent.Enabled := cbHasFirstLevelIndent.Checked;
 end;
 
+initialization
+  {$I frClarifyIndent.lrs}
+  RegisterIDEOptionsEditor(JCFOptionsGroup, TfClarifyIndent, JCFOptionIndentation, JCFOptionClarify);
 end.

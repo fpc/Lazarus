@@ -31,49 +31,55 @@ interface
 
 uses
   { delphi }
-  Classes, Controls, Forms,
-  StdCtrls, ExtCtrls,
-  { local}
-  frmBaseSettingsFrame;
+  Classes, Controls, LResources, Forms, StdCtrls, ExtCtrls,
+  IDEOptionsIntf;
 
 type
-  TfClarifyBlocks = class(TfrSettingsFrame)
+
+  { TfClarifyBlocks }
+
+  TfClarifyBlocks = class(TAbstractIDEOptionsEditor)
     rgBlockBegin: TRadioGroup;
     rgBlock: TRadioGroup;
     rgEndElse: TRadioGroup;
     Label1: TLabel;
     rgElseIf: TRadioGroup;
     rgElseBegin: TRadioGroup;
-  private
-
   public
     constructor Create(AOwner: TComponent); override;
 
-    procedure Read; override;
-    procedure Write; override;
-
+    function GetTitle: String; override;
+    procedure Setup(ADialog: TAbstractOptionsEditorDialog); override;
+    procedure ReadSettings(AOptions: TAbstractIDEOptions); override;
+    procedure WriteSettings(AOptions: TAbstractIDEOptions); override;
+    class function SupportedOptionsClass: TAbstractIDEOptionsClass; override;
   end;
 
 implementation
 
-uses JcfSettings, SettingsTypes, JcfHelp;
-
-{$ifdef FPC}
-  {$R *.lfm}
-{$else}
-  {$R *.dfm}
-{$endif}
+uses
+  JcfSettings, SettingsTypes, JcfHelp;
 
 constructor TfClarifyBlocks.Create(AOwner: TComponent);
 begin
   inherited;
-  fiHelpContext := HELP_CLARIFY_BLOCKS;
+  //fiHelpContext := HELP_CLARIFY_BLOCKS;
+end;
+
+function TfClarifyBlocks.GetTitle: String;
+begin
+  Result := 'Blocks';
+end;
+
+procedure TfClarifyBlocks.Setup(ADialog: TAbstractOptionsEditorDialog);
+begin
+  inherited Setup(ADialog);
 end;
 
 {-------------------------------------------------------------------------------
   worker procs }
 
-procedure TfClarifyBlocks.Read;
+procedure TfClarifyBlocks.ReadSettings(AOptions: TAbstractIDEOptions);
 begin
   with FormatSettings.Returns do
   begin
@@ -87,7 +93,7 @@ begin
   end;
 end;
 
-procedure TfClarifyBlocks.Write;
+procedure TfClarifyBlocks.WriteSettings(AOptions: TAbstractIDEOptions);
 begin
   with FormatSettings.Returns do
   begin
@@ -101,7 +107,15 @@ begin
   end;
 end;
 
+class function TfClarifyBlocks.SupportedOptionsClass: TAbstractIDEOptionsClass;
+begin
+  Result := TFormatSettings;
+end;
+
 {-------------------------------------------------------------------------------
   event handlers }
 
+initialization
+  {$I frClarifyBlocks.lrs}
+  RegisterIDEOptionsEditor(JCFOptionsGroup, TfClarifyBlocks, JCFOptionBlocks, JCFOptionLongLines);
 end.

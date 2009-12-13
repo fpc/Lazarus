@@ -1,0 +1,114 @@
+inherited fBlankLines: TfBlankLines
+  Height = 280
+  Width = 380
+  ClientHeight = 280
+  ClientWidth = 380
+  DesignLeft = 452
+  DesignTop = 192
+  object Label1: TLabel[0]
+    Left = 8
+    Height = 14
+    Top = 144
+    Width = 211
+    Caption = 'Number of returns after the unit''s final end.'
+    ParentColor = False
+  end
+  object Label2: TLabel[1]
+    Left = 8
+    Height = 14
+    Top = 200
+    Width = 178
+    Caption = 'Max consecutive blank lines anwhere'
+    ParentColor = False
+  end
+  object Label3: TLabel[2]
+    Left = 8
+    Height = 14
+    Top = 226
+    Width = 112
+    Caption = 'Lines before procedure'
+    ParentColor = False
+  end
+  object eNumReturnsAfterFinalEnd: TSpinEdit[3]
+    Left = 314
+    Height = 21
+    Top = 140
+    Width = 49
+    MaxValue = 255
+    TabOrder = 1
+  end
+  object cbRemoveConsecutiveBlankLines: TCheckBox[4]
+    Left = 8
+    Height = 17
+    Top = 176
+    Width = 169
+    Caption = 'Remove consecutive blank lines'
+    TabOrder = 2
+  end
+  object edtMaxConsecutiveBlankLines: TSpinEdit[5]
+    Left = 314
+    Height = 21
+    Top = 192
+    Width = 49
+    MaxValue = 99
+    TabOrder = 3
+  end
+  object gbRemoveBlankLines: TGroupBox[6]
+    Left = 8
+    Height = 126
+    Top = 3
+    Width = 366
+    Caption = 'Remove blank lines'
+    ClientHeight = 108
+    ClientWidth = 362
+    TabOrder = 0
+    object Label4: TLabel
+      Left = 8
+      Height = 14
+      Top = 81
+      Width = 209
+      Caption = 'Max consecutive blank lines before removal'
+      ParentColor = False
+    end
+    object cbRemoveBlockBlankLines: TCheckBox
+      Left = 8
+      Height = 17
+      Top = 54
+      Width = 192
+      Caption = 'At start and end of begin..end block'
+      TabOrder = 2
+    end
+    object cbRemoveBlankLinesAfterProcHeader: TCheckBox
+      Left = 8
+      Height = 17
+      Top = 31
+      Width = 132
+      Caption = 'After procedure header'
+      TabOrder = 1
+    end
+    object cbRemoveVarBlankLines: TCheckBox
+      Left = 6
+      Height = 17
+      Top = 8
+      Width = 136
+      Caption = 'In procedure var section'
+      TabOrder = 0
+    end
+    object edtMaxBlankLinesInSection: TSpinEdit
+      Left = 306
+      Height = 21
+      Top = 78
+      Width = 49
+      MaxValue = 99
+      TabOrder = 3
+    end
+  end
+  object edtLinesBeforeProcedure: TSpinEdit[7]
+    Left = 314
+    Height = 21
+    Top = 226
+    Width = 49
+    MaxValue = 9
+    TabOrder = 4
+  end
+end

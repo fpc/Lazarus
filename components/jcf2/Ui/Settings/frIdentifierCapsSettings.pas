@@ -31,47 +31,52 @@ interface
 
 uses
   { delphi }
-  Classes, Controls, Forms,
-  StdCtrls,
-  JvMemo, JvExStdCtrls,
-  { local }
-  frmBaseSettingsFrame;
+  Classes, Controls, LResources, Forms, StdCtrls,
+  IDEOptionsIntf;
 
 type
-  TfIdentifierCapsSettings = class(TfrSettingsFrame)
+
+  { TfIdentifierCapsSettings }
+
+  TfIdentifierCapsSettings = class(TAbstractIDEOptionsEditor)
     Label1: TLabel;
     cbEnableAnyWords: TCheckBox;
-    mWords: TJvMemo;
+    mWords: TMemo;
     procedure cbEnableAnyWordsClick(Sender: TObject);
     procedure FrameResize(Sender: TObject);
-  private
-    { Private declarations }
   public
     constructor Create(AOwner: TComponent); override;
 
-    procedure Read; override;
-    procedure Write; override;
-
+    function GetTitle: String; override;
+    procedure Setup(ADialog: TAbstractOptionsEditorDialog); override;
+    procedure ReadSettings(AOptions: TAbstractIDEOptions); override;
+    procedure WriteSettings(AOptions: TAbstractIDEOptions); override;
+    class function SupportedOptionsClass: TAbstractIDEOptionsClass; override;
   end;
 
 implementation
 
-uses JcfHelp, JcfSettings;
-
-{$ifdef FPC}
-  {$R *.lfm}
-{$else}
-  {$R *.dfm}
-{$endif}
+uses 
+  JcfHelp, JcfSettings;
 
 constructor TfIdentifierCapsSettings.Create(AOwner: TComponent);
 begin
   inherited;
-  fiHelpContext := HELP_CLARIFY_CAPITALISATION;
+  //fiHelpContext := HELP_CLARIFY_CAPITALISATION;
+end;
+
+function TfIdentifierCapsSettings.GetTitle: String;
+begin
+  Result := 'Identifiers';
+end;
+
+procedure TfIdentifierCapsSettings.Setup(ADialog: TAbstractOptionsEditorDialog);
+begin
+  //
 end;
 
 
-procedure TfIdentifierCapsSettings.Read;
+procedure TfIdentifierCapsSettings.ReadSettings(AOptions: TAbstractIDEOptions);
 begin
   with FormatSettings.IdentifierCaps do
   begin
@@ -80,13 +85,18 @@ begin
   end;
 end;
 
-procedure TfIdentifierCapsSettings.Write;
+procedure TfIdentifierCapsSettings.WriteSettings(AOptions: TAbstractIDEOptions);
 begin
   with FormatSettings.IdentifierCaps do
   begin
     Enabled := cbEnableAnyWords.Checked;
     Words.Assign(mWords.Lines);
   end;
+end;
+
+class function TfIdentifierCapsSettings.SupportedOptionsClass: TAbstractIDEOptionsClass;
+begin
+  Result := TFormatSettings;
 end;
 
 procedure TfIdentifierCapsSettings.cbEnableAnyWordsClick(Sender: TObject);
@@ -100,4 +110,7 @@ begin
     (cbEnableAnyWords.Top + cbEnableAnyWords.Height + GUI_PAD);
 end;
 
+initialization
+  {$I frIdentifierCapsSettings.lrs}
+  RegisterIDEOptionsEditor(JCFOptionsGroup, TfIdentifierCapsSettings, JCFOptionIdentifiers, JCFOptionObjectPascal);
 end.

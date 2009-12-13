@@ -1,0 +1,15 @@
+{ This is an automatically generated lazarus resource file }
+
+LazarusResources.Add('TfWarnings','FORMDATA',[
+  'TPF0'#241#10'TfWarnings'#9'fWarnings'#6'Height'#3#255#0#12'ClientHeight'#3
+  +#255#0#8'OnResize'#7#11'FrameResize'#10'DesignLeft'#3#254#0#9'DesignTop'#3
+  +#175#0#0#242#2#0#6'TLabel'#6'Label1'#4'Left'#2#8#6'Height'#2#14#3'Top'#2'<'#5
+  +'Width'#3#168#0#7'Caption'#6' &Ignore unused parameters named:'#12'FocusCont'
+  +'rol'#7#19'mIgnoreUnusedParams'#11'ParentColor'#8#0#0#242#2#1#9'TCheckBox'#12
+  +'cbWarningsOn'#4'Left'#2#8#6'Height'#2#17#3'Top'#2#8#5'Width'#2'P'#7'Caption'
+  +#6#12'&Warnings On'#8'TabOrder'#2#0#0#0#242#2#2#9'TCheckBox'#18'cbWarnUnused'
+  +'Params'#4'Left'#2#8#6'Height'#2#17#3'Top'#2#31#5'Width'#3#140#0#7'Caption'#6
+  +#23'Warn &unused parameters'#8'TabOrder'#2#1#0#0#242#2#3#5'TMemo'#19'mIgnore'
+  +'UnusedParams'#4'Left'#2#8#6'Height'#3#153#0#3'Top'#2'S'#5'Width'#3#227#0#10
+  +'ScrollBars'#7#10'ssVertical'#8'TabOrder'#2#2#0#0#0
+]);

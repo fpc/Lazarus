@@ -31,13 +31,15 @@ interface
 
 uses
   { delphi }
-  Classes, Controls, Forms,
-  StdCtrls, ExtCtrls,
+  Classes, Controls, LResources, Forms, StdCtrls, ExtCtrls,
   { local}
-  frmBaseSettingsFrame;
+  IDEOptionsIntf;
 
 type
-  TfClarifyCaseBlocks = class(TfrSettingsFrame)
+
+  { TfClarifyCaseBlocks }
+
+  TfClarifyCaseBlocks = class(TAbstractIDEOptionsEditor)
     rgLabelBegin: TRadioGroup;
     rgLabel: TRadioGroup;
     Label1: TLabel;
@@ -45,37 +47,42 @@ type
     rgElseCase: TRadioGroup;
     rgCaseBegin: TRadioGroup;
     rgCaseElseBegin: TRadioGroup;
-  private
-
   public
     constructor Create(AOwner: TComponent); override;
 
-    procedure Read; override;
-    procedure Write; override;
-
+    function GetTitle: String; override;
+    procedure Setup(ADialog: TAbstractOptionsEditorDialog); override;
+    procedure ReadSettings(AOptions: TAbstractIDEOptions); override;
+    procedure WriteSettings(AOptions: TAbstractIDEOptions); override;
+    class function SupportedOptionsClass: TAbstractIDEOptionsClass; override;
   end;
 
 implementation
 
-{$ifdef FPC}
-  {$R *.lfm}
-{$else}
-  {$R *.dfm}
-{$endif}
-
-uses JcfSettings, SettingsTypes, JcfHelp;
+uses
+  JcfSettings, SettingsTypes, JcfHelp;
 
 constructor TfClarifyCaseBlocks.Create(AOwner: TComponent);
 begin
   inherited;
-  fiHelpContext := HELP_CLARIFY_BLOCKS;
+  //fiHelpContext := HELP_CLARIFY_BLOCKS;
+end;
+
+function TfClarifyCaseBlocks.GetTitle: String;
+begin
+  Result := 'Case Blocks';
+end;
+
+procedure TfClarifyCaseBlocks.Setup(ADialog: TAbstractOptionsEditorDialog);
+begin
+  //
 end;
 
 
 {-------------------------------------------------------------------------------
   worker procs }
 
-procedure TfClarifyCaseBlocks.Read;
+procedure TfClarifyCaseBlocks.ReadSettings(AOptions: TAbstractIDEOptions);
 begin
   with FormatSettings.Returns do
   begin
@@ -90,7 +97,7 @@ begin
   end;
 end;
 
-procedure TfClarifyCaseBlocks.Write;
+procedure TfClarifyCaseBlocks.WriteSettings(AOptions: TAbstractIDEOptions);
 begin
   with FormatSettings.Returns do
   begin
@@ -105,7 +112,15 @@ begin
   end;
 end;
 
+class function TfClarifyCaseBlocks.SupportedOptionsClass: TAbstractIDEOptionsClass;
+begin
+  Result := TFormatSettings;
+end;
+
 {-------------------------------------------------------------------------------
   event handlers }
 
+initialization
+  {$I frClarifyCaseBlocks.lrs}
+  RegisterIDEOptionsEditor(JCFOptionsGroup, TfClarifyCaseBlocks, JCFOptionCaseBlocks, JCFOptionLongLines);
 end.

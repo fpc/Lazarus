@@ -1,0 +1,38 @@
+{ This is an automatically generated lazarus resource file }
+
+LazarusResources.Add('TfClarifyReturns','FORMDATA',[
+  'TPF0'#241#16'TfClarifyReturns'#15'fClarifyReturns'#6'Height'#3#28#1#5'Width'
+  +#3#197#1#12'ClientHeight'#3#28#1#11'ClientWidth'#3#197#1#10'DesignLeft'#3'3'
+  +#3#9'DesignTop'#3#139#1#0#242#2#0#11'TRadioGroup'#13'rgReturnChars'#4'Left'#2
+  +#8#6'Height'#2'c'#3'Top'#3#174#0#5'Width'#3#182#1#8'AutoFill'#9#7'Caption'#6
+  +#12'Return chars'#28'ChildSizing.LeftRightSpacing'#2#6#28'ChildSizing.TopBot'
+  +'tomSpacing'#2#6#29'ChildSizing.EnlargeHorizontal'#7#24'crsHomogenousChildRe'
+  +'size'#27'ChildSizing.EnlargeVertical'#7#24'crsHomogenousChildResize'#28'Chi'
+  +'ldSizing.ShrinkHorizontal'#7#14'crsScaleChilds'#26'ChildSizing.ShrinkVertic'
+  +'al'#7#14'crsScaleChilds'#18'ChildSizing.Layout'#7#29'cclLeftToRightThenTopT'
+  +'oBottom'#27'ChildSizing.ControlsPerLine'#2#1#12'ClientHeight'#2'Q'#11'Clien'
+  +'tWidth'#3#178#1#13'Items.Strings'#1#6#11'Leave as is'#6'!Convert to Carriag'
+  +'e Return (UNIX)'#6'3Convert to Carriage Return + Linefeed (DOS/Windows)'#0#8
+  +'TabOrder'#2#2#0#0#242#2#1#9'TGroupBox'#15'gbRemoveReturns'#4'Left'#2#8#6'He'
+  +'ight'#3#160#0#4'Hint'#6#8'bgRemove'#3'Top'#2#8#5'Width'#3#202#0#7'Caption'#6
+  +#14'Remove returns'#12'ClientHeight'#3#142#0#11'ClientWidth'#3#198#0#8'TabOr'
+  +'der'#2#0#0#9'TCheckBox'#22'cbRemoveProcDefReturns'#4'Left'#2#8#6'Height'#2
+  +#17#3'Top'#2'='#5'Width'#3#132#0#7'Caption'#6#24'In procedure definitions'#8
+  +'TabOrder'#2#2#0#0#9'TCheckBox'#18'cbRemoveVarReturns'#4'Left'#2#8#6'Height'
+  +#2#17#3'Top'#2'V'#5'Width'#3#130#0#7'Caption'#6#24'In variable declarations'
+  +#8'TabOrder'#2#3#0#0#9'TCheckBox'#19'cbRemoveExprReturns'#4'Left'#2#8#6'Heig'
+  +'ht'#2#17#3'Top'#2'o'#5'Width'#2'X'#7'Caption'#6#14'In expressions'#8'TabOrd'
+  +'er'#2#4#0#0#9'TCheckBox'#23'cbRemovePropertyReturns'#4'Left'#2#8#6'Height'#2
+  +#17#3'Top'#2'$'#5'Width'#2'P'#7'Caption'#6#13'In properties'#8'TabOrder'#2#1
+  +#0#0#9'TCheckBox'#15'cbRemoveReturns'#4'Left'#2#8#6'Height'#2#17#3'Top'#2#12
+  +#5'Width'#2'm'#7'Caption'#6#19'In misc. bad places'#8'TabOrder'#2#0#0#0#0#242
+  +#2#2#9'TGroupBox'#8'gbInsert'#4'Left'#3#216#0#6'Height'#3#161#0#3'Top'#2#7#5
+  +'Width'#3#230#0#7'Caption'#6#14'Insert returns'#12'ClientHeight'#3#143#0#11
+  +'ClientWidth'#3#226#0#8'TabOrder'#2#1#0#9'TCheckBox'#22'cbUsesClauseOnePerLi'
+  +'ne'#4'Left'#2#8#6'Height'#2#17#3'Top'#2''''#5'Width'#3#157#0#7'Caption'#6#29
+  +'One uses clause item per line'#8'TabOrder'#2#1#0#0#9'TCheckBox'#15'cbInsert'
+  +'Returns'#4'Left'#2#8#6'Height'#2#17#3'Top'#2#15#5'Width'#2's'#7'Caption'#6
+  +#20'In misc. good places'#8'TabOrder'#2#0#0#0#9'TCheckBox'#16'cbBreakAfterUs'
+  +'es'#4'Left'#2#8#6'Height'#2#17#3'Top'#2'>'#5'Width'#2'D'#7'Caption'#6#10'Af'
+  +'ter uses'#8'TabOrder'#2#2#0#0#0#0
+]);

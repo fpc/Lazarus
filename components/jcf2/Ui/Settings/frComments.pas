@@ -31,39 +31,49 @@ interface
 
 uses
   { delphi }
-  StdCtrls, Classes, Controls, Forms,
+  StdCtrls, Classes, Controls, LResources, Forms,
   { local }
-  frmBaseSettingsFrame;
+  IDEOptionsIntf;
 
 type
-  TfComments = class(TfrSettingsFrame)
+
+  { TfComments }
+
+  TfComments = class(TAbstractIDEOptionsEditor)
     cbRemoveEmptyDoubleSlashComments: TCheckBox;
     cbRemoveEmptyCurlyBraceComments: TCheckBox;
-  private
   public
     constructor Create(AOwner: TComponent); override;
 
-    procedure Read; override;
-    procedure Write; override;
+    function GetTitle: String; override;
+    procedure Setup(ADialog: TAbstractOptionsEditorDialog); override;
+    procedure ReadSettings(AOptions: TAbstractIDEOptions); override;
+    procedure WriteSettings(AOptions: TAbstractIDEOptions); override;
+    class function SupportedOptionsClass: TAbstractIDEOptionsClass; override;
   end;
 
 implementation
 
-{$ifdef FPC}
-  {$R *.lfm}
-{$else}
-  {$R *.dfm}
-{$endif}
-
-uses JcfHelp, JcfSettings, SetComments;
+uses
+  JcfHelp, JcfSettings, SetComments;
 
 constructor TfComments.Create(AOwner: TComponent);
 begin
   inherited;
-  fiHelpContext := HELP_CLARIFY_COMMENTS;
+  //fiHelpContext := HELP_CLARIFY_COMMENTS;
 end;
 
-procedure TfComments.Read;
+function TfComments.GetTitle: String;
+begin
+  Result := 'Comments';
+end;
+
+procedure TfComments.Setup(ADialog: TAbstractOptionsEditorDialog);
+begin
+  inherited Setup(ADialog);
+end;
+
+procedure TfComments.ReadSettings(AOptions: TAbstractIDEOptions);
 begin
   with FormatSettings.Comments do
   begin
@@ -72,7 +82,7 @@ begin
   end;
 end;
 
-procedure TfComments.Write;
+procedure TfComments.WriteSettings(AOptions: TAbstractIDEOptions);
 begin
   with FormatSettings.Comments do
   begin
@@ -81,4 +91,12 @@ begin
   end;
 end;
 
+class function TfComments.SupportedOptionsClass: TAbstractIDEOptionsClass;
+begin
+  Result := TFormatSettings;
+end;
+
+initialization
+  {$I frComments.lrs}
+  RegisterIDEOptionsEditor(JCFOptionsGroup, TfComments, JCFOptionComments, JCFOptionClarify);
 end.

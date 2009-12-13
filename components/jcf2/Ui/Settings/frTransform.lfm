@@ -1,0 +1,123 @@
+inherited fTransform: TfTransform
+  Height = 315
+  Width = 412
+  ClientHeight = 315
+  ClientWidth = 412
+  DesignLeft = 388
+  DesignTop = 201
+  object cbBlockEndSemicolons: TCheckBox[0]
+    Left = 8
+    Height = 17
+    Top = 112
+    Width = 234
+    Caption = 'Put &semicolons after last statement in a block'
+    TabOrder = 0
+  end
+  object rbBeginEnd: TRadioGroup[1]
+    Left = 8
+    Height = 93
+    Top = 4
+    Width = 395
+    AutoFill = True
+    Caption = 'Add or Remove &begin and end from single statements'
+    ChildSizing.LeftRightSpacing = 6
+    ChildSizing.TopBottomSpacing = 6
+    ChildSizing.EnlargeHorizontal = crsHomogenousChildResize
+    ChildSizing.EnlargeVertical = crsHomogenousChildResize
+    ChildSizing.ShrinkHorizontal = crsScaleChilds
+    ChildSizing.ShrinkVertical = crsScaleChilds
+    ChildSizing.Layout = cclLeftToRightThenTopToBottom
+    ChildSizing.ControlsPerLine = 1
+    ClientHeight = 75
+    ClientWidth = 391
+    Items.Strings = (
+      'Add begin and end to single statements'
+      'Leave begin and end as is'
+      'Remove begin and end from around single statements'
+    )
+    TabOrder = 1
+  end
+  object bgSortUses: TGroupBox[2]
+    Left = 8
+    Height = 171
+    Top = 139
+    Width = 218
+    Caption = 'Sort &uses clauses'
+    ClientHeight = 153
+    ClientWidth = 214
+    TabOrder = 2
+    object cbSortInterfaceUses: TCheckBox
+      Left = 8
+      Height = 17
+      Top = 7
+      Width = 109
+      Caption = 'Sort i&nterface uses'
+      TabOrder = 0
+    end
+    object cbSortImplementationUses: TCheckBox
+      Left = 8
+      Height = 17
+      Top = 30
+      Width = 138
+      Caption = 'Sort i&mplementation uses'
+      TabOrder = 1
+    end
+    object cbBreakUsesSortOnComment: TCheckBox
+      Left = 8
+      Height = 17
+      Top = 99
+      Width = 106
+      Caption = 'Break on &comment'
+      TabOrder = 2
+    end
+    object cbBreakUsesSortOnReturn: TCheckBox
+      Left = 8
+      Height = 17
+      Top = 76
+      Width = 93
+      Caption = 'Break on &return'
+      TabOrder = 3
+    end
+    object cbNoComments: TCheckBox
+      Left = 8
+      Height = 17
+      Top = 122
+      Width = 129
+      Caption = 'Only with no comments'
+      TabOrder = 4
+    end
+    object cbSortProgramUses: TCheckBox
+      Left = 8
+      Height = 17
+      Top = 53
+      Width = 106
+      Caption = 'Sort &program uses'
+      TabOrder = 5
+    end
+  end
+  object rgUsesSortOrder: TRadioGroup[3]
+    Left = 231
+    Height = 114
+    Top = 139
+    Width = 172
+    AutoFill = True
+    Caption = 'Uses sort &order'
+    ChildSizing.LeftRightSpacing = 6
+    ChildSizing.TopBottomSpacing = 6
+    ChildSizing.EnlargeHorizontal = crsHomogenousChildResize
+    ChildSizing.EnlargeVertical = crsHomogenousChildResize
+    ChildSizing.ShrinkHorizontal = crsScaleChilds
+    ChildSizing.ShrinkVertical = crsScaleChilds
+    ChildSizing.Layout = cclLeftToRightThenTopToBottom
+    ChildSizing.ControlsPerLine = 1
+    ClientHeight = 96
+    ClientWidth = 168
+    Items.Strings = (
+      'Alphabetic'
+      'Reverse Alphabetic'
+      'Shortest to longest'
+      'Longest to shortest'
+    )
+    TabOrder = 3
+  end
+end

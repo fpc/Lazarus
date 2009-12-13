@@ -1,0 +1,44 @@
+{ This is an automatically generated lazarus resource file }
+
+LazarusResources.Add('TfTransform','FORMDATA',[
+  'TPF0'#241#11'TfTransform'#10'fTransform'#6'Height'#3';'#1#5'Width'#3#156#1#12
+  +'ClientHeight'#3';'#1#11'ClientWidth'#3#156#1#10'DesignLeft'#3#132#1#9'Desig'
+  +'nTop'#3#201#0#0#242#2#0#9'TCheckBox'#20'cbBlockEndSemicolons'#4'Left'#2#8#6
+  +'Height'#2#17#3'Top'#2'p'#5'Width'#3#234#0#7'Caption'#6'/Put &semicolons aft'
+  +'er last statement in a block'#8'TabOrder'#2#0#0#0#242#2#1#11'TRadioGroup'#10
+  +'rbBeginEnd'#4'Left'#2#8#6'Height'#2']'#3'Top'#2#4#5'Width'#3#139#1#8'AutoFi'
+  +'ll'#9#7'Caption'#6'3Add or Remove &begin and end from single statements'#28
+  +'ChildSizing.LeftRightSpacing'#2#6#28'ChildSizing.TopBottomSpacing'#2#6#29'C'
+  +'hildSizing.EnlargeHorizontal'#7#24'crsHomogenousChildResize'#27'ChildSizing'
+  +'.EnlargeVertical'#7#24'crsHomogenousChildResize'#28'ChildSizing.ShrinkHoriz'
+  +'ontal'#7#14'crsScaleChilds'#26'ChildSizing.ShrinkVertical'#7#14'crsScaleChi'
+  +'lds'#18'ChildSizing.Layout'#7#29'cclLeftToRightThenTopToBottom'#27'ChildSiz'
+  +'ing.ControlsPerLine'#2#1#12'ClientHeight'#2'K'#11'ClientWidth'#3#135#1#13'I'
+  +'tems.Strings'#1#6'&Add begin and end to single statements'#6#25'Leave begin'
+  +' and end as is'#6'2Remove begin and end from around single statements'#0#8
+  +'TabOrder'#2#1#0#0#242#2#2#9'TGroupBox'#10'bgSortUses'#4'Left'#2#8#6'Height'
+  +#3#171#0#3'Top'#3#139#0#5'Width'#3#218#0#7'Caption'#6#18'Sort &uses clauses'
+  +#12'ClientHeight'#3#153#0#11'ClientWidth'#3#214#0#8'TabOrder'#2#2#0#9'TCheck'
+  +'Box'#19'cbSortInterfaceUses'#4'Left'#2#8#6'Height'#2#17#3'Top'#2#7#5'Width'
+  +#2'm'#7'Caption'#6#20'Sort i&nterface uses'#8'TabOrder'#2#0#0#0#9'TCheckBox'
+  +#24'cbSortImplementationUses'#4'Left'#2#8#6'Height'#2#17#3'Top'#2#30#5'Width'
+  +#3#138#0#7'Caption'#6#25'Sort i&mplementation uses'#8'TabOrder'#2#1#0#0#9'TC'
+  +'heckBox'#24'cbBreakUsesSortOnComment'#4'Left'#2#8#6'Height'#2#17#3'Top'#2'c'
+  +#5'Width'#2'j'#7'Caption'#6#17'Break on &comment'#8'TabOrder'#2#2#0#0#9'TChe'
+  +'ckBox'#23'cbBreakUsesSortOnReturn'#4'Left'#2#8#6'Height'#2#17#3'Top'#2'L'#5
+  +'Width'#2']'#7'Caption'#6#16'Break on &return'#8'TabOrder'#2#3#0#0#9'TCheckB'
+  +'ox'#12'cbNoComments'#4'Left'#2#8#6'Height'#2#17#3'Top'#2'z'#5'Width'#3#129#0
+  +#7'Caption'#6#21'Only with no comments'#8'TabOrder'#2#4#0#0#9'TCheckBox'#17
+  +'cbSortProgramUses'#4'Left'#2#8#6'Height'#2#17#3'Top'#2'5'#5'Width'#2'j'#7'C'
+  +'aption'#6#18'Sort &program uses'#8'TabOrder'#2#5#0#0#0#242#2#3#11'TRadioGro'
+  +'up'#15'rgUsesSortOrder'#4'Left'#3#231#0#6'Height'#2'r'#3'Top'#3#139#0#5'Wid'
+  +'th'#3#172#0#8'AutoFill'#9#7'Caption'#6#16'Uses sort &order'#28'ChildSizing.'
+  +'LeftRightSpacing'#2#6#28'ChildSizing.TopBottomSpacing'#2#6#29'ChildSizing.E'
+  +'nlargeHorizontal'#7#24'crsHomogenousChildResize'#27'ChildSizing.EnlargeVert'
+  +'ical'#7#24'crsHomogenousChildResize'#28'ChildSizing.ShrinkHorizontal'#7#14
+  +'crsScaleChilds'#26'ChildSizing.ShrinkVertical'#7#14'crsScaleChilds'#18'Chil'
+  +'dSizing.Layout'#7#29'cclLeftToRightThenTopToBottom'#27'ChildSizing.Controls'
+  +'PerLine'#2#1#12'ClientHeight'#2'`'#11'ClientWidth'#3#168#0#13'Items.Strings'
+  +#1#6#10'Alphabetic'#6#18'Reverse Alphabetic'#6#19'Shortest to longest'#6#19
+  +'Longest to shortest'#0#8'TabOrder'#2#3#0#0#0
+]);

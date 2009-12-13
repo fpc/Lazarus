@@ -1,0 +1,24 @@
+{ This is an automatically generated lazarus resource file }
+
+LazarusResources.Add('TfUses','FORMDATA',[
+  'TPF0'#241#6'TfUses'#5'fUses'#6'Height'#3'='#1#5'Width'#3#163#1#12'ClientHeig'
+  +'ht'#3'='#1#11'ClientWidth'#3#163#1#10'DesignLeft'#3#133#1#9'DesignTop'#3#253
+  +#0#0#242#2#0#9'TCheckBox'#15'cbRemoveEnabled'#4'Left'#2#8#6'Height'#2#17#3'T'
+  +'op'#2#4#5'Width'#2'9'#7'Caption'#6#6'Remove'#7'OnClick'#7#20'cbRemoveEnable'
+  +'dClick'#8'TabOrder'#2#0#0#0#242#2#1#9'TCheckBox'#17'cbInsertInterface'#4'Le'
+  +'ft'#2#8#6'Height'#2#17#3'Top'#2'l'#5'Width'#2't'#7'Caption'#6#21'Insert int'
+  +'o Interface'#7'OnClick'#7#22'cbInsertInterfaceClick'#8'TabOrder'#2#2#0#0#242
+  +#2#2#9'TCheckBox'#22'cbInsertImplementation'#4'Left'#3#180#0#6'Height'#2#17#3
+  +'Top'#2'l'#5'Width'#3#145#0#7'Caption'#6#26'Insert into Implementation'#7'On'
+  +'Click'#7#27'cbInsertImplementationClick'#8'TabOrder'#2#4#0#0#242#2#3#9'TChe'
+  +'ckBox'#13'cbFindReplace'#4'Left'#2#8#6'Height'#2#17#3'Top'#3#212#0#5'Width'
+  +#2'8'#7'Caption'#6#7'Replace'#7'OnClick'#7#18'cbFindReplaceClick'#8'TabOrder'
+  +#2#6#0#0#242#2#4#5'TMemo'#7'mRemove'#4'Left'#2#8#6'Height'#2'F'#3'Top'#2#24#5
+  +'Width'#3#160#0#8'TabOrder'#2#1#0#0#242#2#5#5'TMemo'#16'mInsertInterface'#4
+  +'Left'#2#8#6'Height'#2'F'#3'Top'#3#128#0#5'Width'#3#160#0#8'TabOrder'#2#3#0#0
+  +#242#2#6#5'TMemo'#5'mFind'#4'Left'#2#8#6'Height'#2'F'#3'Top'#3#232#0#5'Width'
+  +#3#160#0#8'TabOrder'#2#7#0#0#242#2#7#5'TMemo'#21'mInsertImplementation'#4'Le'
+  +'ft'#3#180#0#6'Height'#2'F'#3'Top'#3#128#0#5'Width'#3#160#0#13'Lines.Strings'
+  +#1#6#0#0#8'TabOrder'#2#5#0#0#242#2#8#5'TMemo'#8'mReplace'#4'Left'#3#180#0#6
+  +'Height'#2'F'#3'Top'#3#232#0#5'Width'#3#160#0#8'TabOrder'#2#8#0#0#0
+]);

@@ -1,0 +1,137 @@
+inherited fAsm: TfAsm
+  Height = 216
+  Width = 375
+  ClientHeight = 216
+  ClientWidth = 375
+  DesignLeft = 598
+  DesignTop = 337
+  object rgCaps: TRadioGroup[0]
+    Left = 165
+    Height = 109
+    Top = 3
+    Width = 196
+    AutoFill = True
+    Caption = '&Capitalization'
+    ChildSizing.LeftRightSpacing = 6
+    ChildSizing.TopBottomSpacing = 6
+    ChildSizing.EnlargeHorizontal = crsHomogenousChildResize
+    ChildSizing.EnlargeVertical = crsHomogenousChildResize
+    ChildSizing.ShrinkHorizontal = crsScaleChilds
+    ChildSizing.ShrinkVertical = crsScaleChilds
+    ChildSizing.Layout = cclLeftToRightThenTopToBottom
+    ChildSizing.ControlsPerLine = 1
+    ClientHeight = 91
+    ClientWidth = 192
+    ItemIndex = 1
+    Items.Strings = (
+      'ALL CAPITALS'
+      'all lowercase'
+      'Mixed Case'
+      'Leave alone'
+    )
+    TabOrder = 1
+  end
+  object gbStatementIndent: TGroupBox[1]
+    Left = 9
+    Height = 86
+    Top = 3
+    Width = 150
+    Caption = '&Statement Indents'
+    ClientHeight = 68
+    ClientWidth = 146
+    TabOrder = 0
+    object Label1: TLabel
+      Left = 8
+      Height = 14
+      Top = 34
+      Width = 33
+      Caption = 'Indent'
+      ParentColor = False
+    end
+    object edtStatementIndent: TSpinEdit
+      Left = 72
+      Height = 21
+      Top = 32
+      Width = 49
+      MaxValue = 99
+      TabOrder = 1
+    end
+    object cbStatementIndent: TCheckBox
+      Left = 8
+      Height = 17
+      Top = 9
+      Width = 56
+      Caption = '&Enabled'
+      TabOrder = 0
+    end
+  end
+  object gbBreaksAfterLabel: TGroupBox[2]
+    Left = 165
+    Height = 91
+    Top = 118
+    Width = 196
+    Caption = '&Breaks after label'
+    ClientHeight = 73
+    ClientWidth = 192
+    TabOrder = 2
+    object Label7: TLabel
+      Left = 8
+      Height = 14
+      Top = 36
+      Width = 86
+      Caption = '&Number of breaks'
+      FocusControl = edtBreaksAfterLabel
+      ParentColor = False
+    end
+    object cbBreaksAfterLabelEnabled: TCheckBox
+      Left = 8
+      Height = 17
+      Top = 13
+      Width = 56
+      Caption = 'En&abled'
+      TabOrder = 0
+    end
+    object edtBreaksAfterLabel: TSpinEdit
+      Left = 131
+      Height = 21
+      Top = 33
+      Width = 49
+      MaxValue = 9
+      TabOrder = 1
+    end
+  end
+  object gbParamsIndent: TGroupBox[3]
+    Left = 9
+    Height = 86
+    Top = 95
+    Width = 150
+    Caption = '&Params Indents'
+    ClientHeight = 68
+    ClientWidth = 146
+    TabOrder = 3
+    object Label2: TLabel
+      Left = 8
+      Height = 14
+      Top = 36
+      Width = 33
+      Caption = 'Indent'
+      ParentColor = False
+    end
+    object edtParamsIndent: TSpinEdit
+      Left = 72
+      Height = 21
+      Top = 33
+      Width = 49
+      MaxValue = 99
+      TabOrder = 1
+    end
+    object cbParamsIndent: TCheckBox
+      Left = 8
+      Height = 17
+      Top = 11
+      Width = 56
+      Caption = '&Enabled'
+      TabOrder = 0
+    end
+  end
+end

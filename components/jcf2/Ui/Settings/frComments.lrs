@@ -1,0 +1,10 @@
+{ This is an automatically generated lazarus resource file }
+
+LazarusResources.Add('TfComments','FORMDATA',[
+  'TPF0'#241#10'TfComments'#9'fComments'#10'DesignLeft'#3#148#0#9'DesignTop'#3
+  +#150#0#0#242#2#0#9'TCheckBox cbRemoveEmptyDoubleSlashComments'#4'Left'#2#8#6
+  +'Height'#2#17#3'Top'#2#8#5'Width'#3#156#0#7'Caption'#6#26'Remove empty ''//'
+  +''' comments'#8'TabOrder'#2#0#0#0#242#2#1#9'TCheckBox'#31'cbRemoveEmptyCurly'
+  +'BraceComments'#4'Left'#2#8#6'Height'#2#17#3'Top'#2#31#5'Width'#3#161#0#7'Ca'
+  +'ption'#6#27'Remove empty ''{ }'' comments'#8'TabOrder'#2#1#0#0#0
+]);

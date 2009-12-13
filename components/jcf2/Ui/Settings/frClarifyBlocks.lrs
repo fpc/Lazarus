@@ -1,0 +1,54 @@
+{ This is an automatically generated lazarus resource file }
+
+LazarusResources.Add('TfClarifyBlocks','FORMDATA',[
+  'TPF0'#241#15'TfClarifyBlocks'#14'fClarifyBlocks'#6'Height'#3'P'#1#5'Width'#3
+  +'N'#1#12'ClientHeight'#3'P'#1#11'ClientWidth'#3'N'#1#10'DesignLeft'#3#187#2#9
+  +'DesignTop'#3#227#0#0#242#2#0#6'TLabel'#6'Label1'#4'Left'#2#8#6'Height'#2#14
+  +#3'Top'#2#4#5'Width'#3#148#0#7'Caption'#6' Block styles: use a new line at:'
+  +#11'ParentColor'#8#0#0#242#2#1#11'TRadioGroup'#12'rgBlockBegin'#4'Left'#2#8#6
+  +'Height'#2'Y'#3'Top'#2#30#5'Width'#3#149#0#8'AutoFill'#9#7'Caption'#6#16'Blo'
+  +'ck with begin'#28'ChildSizing.LeftRightSpacing'#2#6#28'ChildSizing.TopBotto'
+  +'mSpacing'#2#6#29'ChildSizing.EnlargeHorizontal'#7#24'crsHomogenousChildResi'
+  +'ze'#27'ChildSizing.EnlargeVertical'#7#24'crsHomogenousChildResize'#28'Child'
+  +'Sizing.ShrinkHorizontal'#7#14'crsScaleChilds'#26'ChildSizing.ShrinkVertical'
+  +#7#14'crsScaleChilds'#18'ChildSizing.Layout'#7#29'cclLeftToRightThenTopToBot'
+  +'tom'#27'ChildSizing.ControlsPerLine'#2#1#12'ClientHeight'#2'G'#11'ClientWid'
+  +'th'#3#145#0#13'Items.Strings'#1#6#6'Always'#6#11'Leave as is'#6#5'Never'#0#8
+  +'TabOrder'#2#0#0#0#242#2#2#11'TRadioGroup'#7'rgBlock'#4'Left'#3#163#0#6'Heig'
+  +'ht'#2'Y'#3'Top'#2#30#5'Width'#3#162#0#8'AutoFill'#9#7'Caption'#6#19'Block w'
+  +'ithout begin'#28'ChildSizing.LeftRightSpacing'#2#6#28'ChildSizing.TopBottom'
+  +'Spacing'#2#6#29'ChildSizing.EnlargeHorizontal'#7#24'crsHomogenousChildResiz'
+  +'e'#27'ChildSizing.EnlargeVertical'#7#24'crsHomogenousChildResize'#28'ChildS'
+  +'izing.ShrinkHorizontal'#7#14'crsScaleChilds'#26'ChildSizing.ShrinkVertical'
+  +#7#14'crsScaleChilds'#18'ChildSizing.Layout'#7#29'cclLeftToRightThenTopToBot'
+  +'tom'#27'ChildSizing.ControlsPerLine'#2#1#12'ClientHeight'#2'G'#11'ClientWid'
+  +'th'#3#158#0#13'Items.Strings'#1#6#6'Always'#6#11'Leave as is'#6#5'Never'#0#8
+  +'TabOrder'#2#1#0#0#242#2#3#11'TRadioGroup'#9'rgEndElse'#4'Left'#3#163#0#6'He'
+  +'ight'#2'Y'#3'Top'#2#127#5'Width'#3#162#0#8'AutoFill'#9#7'Caption'#6#20'Betw'
+  +'een end and else'#28'ChildSizing.LeftRightSpacing'#2#6#28'ChildSizing.TopBo'
+  +'ttomSpacing'#2#6#29'ChildSizing.EnlargeHorizontal'#7#24'crsHomogenousChildR'
+  +'esize'#27'ChildSizing.EnlargeVertical'#7#24'crsHomogenousChildResize'#28'Ch'
+  +'ildSizing.ShrinkHorizontal'#7#14'crsScaleChilds'#26'ChildSizing.ShrinkVerti'
+  +'cal'#7#14'crsScaleChilds'#18'ChildSizing.Layout'#7#29'cclLeftToRightThenTop'
+  +'ToBottom'#27'ChildSizing.ControlsPerLine'#2#1#12'ClientHeight'#2'G'#11'Clie'
+  +'ntWidth'#3#158#0#13'Items.Strings'#1#6#6'Always'#6#11'Leave as is'#6#5'Neve'
+  +'r'#0#8'TabOrder'#2#3#0#0#242#2#4#11'TRadioGroup'#8'rgElseIf'#4'Left'#2#8#6
+  +'Height'#2'Y'#3'Top'#2#127#5'Width'#3#149#0#8'AutoFill'#9#7'Caption'#6#19'Be'
+  +'tween else and if'#28'ChildSizing.LeftRightSpacing'#2#6#28'ChildSizing.TopB'
+  +'ottomSpacing'#2#6#29'ChildSizing.EnlargeHorizontal'#7#24'crsHomogenousChild'
+  +'Resize'#27'ChildSizing.EnlargeVertical'#7#24'crsHomogenousChildResize'#28'C'
+  +'hildSizing.ShrinkHorizontal'#7#14'crsScaleChilds'#26'ChildSizing.ShrinkVert'
+  +'ical'#7#14'crsScaleChilds'#18'ChildSizing.Layout'#7#29'cclLeftToRightThenTo'
+  +'pToBottom'#27'ChildSizing.ControlsPerLine'#2#1#12'ClientHeight'#2'G'#11'Cli'
+  +'entWidth'#3#145#0#13'Items.Strings'#1#6#6'Always'#6#11'Leave as is'#6#5'Nev'
+  +'er'#0#8'TabOrder'#2#2#0#0#242#2#5#11'TRadioGroup'#11'rgElseBegin'#4'Left'#2
+  +#8#6'Height'#2'Y'#3'Top'#3#222#0#5'Width'#3#149#0#8'AutoFill'#9#7'Caption'#6
+  +#10'Else begin'#28'ChildSizing.LeftRightSpacing'#2#6#28'ChildSizing.TopBotto'
+  +'mSpacing'#2#6#29'ChildSizing.EnlargeHorizontal'#7#24'crsHomogenousChildResi'
+  +'ze'#27'ChildSizing.EnlargeVertical'#7#24'crsHomogenousChildResize'#28'Child'
+  +'Sizing.ShrinkHorizontal'#7#14'crsScaleChilds'#26'ChildSizing.ShrinkVertical'
+  +#7#14'crsScaleChilds'#18'ChildSizing.Layout'#7#29'cclLeftToRightThenTopToBot'
+  +'tom'#27'ChildSizing.ControlsPerLine'#2#1#12'ClientHeight'#2'G'#11'ClientWid'
+  +'th'#3#145#0#13'Items.Strings'#1#6#6'Always'#6#11'Leave as is'#6#5'Never'#0#8
+  +'TabOrder'#2#4#0#0#0
+]);

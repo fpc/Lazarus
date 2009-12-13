@@ -1,0 +1,34 @@
+inherited frUnitNameCaps: TfrUnitNameCaps
+  Width = 362
+  ClientWidth = 362
+  OnResize = FrameResize
+  DesignLeft = 494
+  DesignTop = 229
+  object Label1: TLabel[0]
+    Left = 108
+    Height = 14
+    Top = 3
+    Width = 182
+    Caption = 'Set capitalisation on these unit names'
+    ParentColor = False
+  end
+  object mWords: TMemo[1]
+    Left = 0
+    Height = 211
+    Top = 29
+    Width = 362
+    Align = alBottom
+    ScrollBars = ssVertical
+    TabOrder = 1
+  end
+  object cbEnableAnyWords: TCheckBox[2]
+    Left = 8
+    Height = 17
+    Top = 5
+    Width = 50
+    Caption = 'Enable'
+    Checked = True
+    State = cbChecked
+    TabOrder = 0
+  end
+end

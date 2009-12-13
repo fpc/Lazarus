@@ -35,6 +35,11 @@ uses
   SetWordList, SettingsStream, fJcfErrorDisplay, Delay, IntList, 
   JcfFontSetFunctions, JcfHelp, JcfLog, JcfMiscFunctions, fAbout, 
   JcfVersionConsts, frFiles, frObfuscateSettings, frClarify, frClarifySpaces, 
+  frClarifyIndent, frBlankLines, frClarifyAlign, frClarifyLongLineBreaker, 
+  frClarifyReturns, frCompilerDirectReturns, frClarifyBlocks, 
+  frClarifyCaseBlocks, frComments, frWarnings, frReservedCapsSettings, 
+  frAnyCapsSettings, frIdentifierCapsSettings, frNotIdentifierCapsSettings, 
+  frUnitCaps, frReplace, frUses, frTransform, frAsm, frPreProcessor, 
   LazarusPackageIntf;
 
 implementation

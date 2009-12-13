@@ -31,13 +31,15 @@ interface
 
 uses
   { delphi }
-  Classes, Controls, Forms,
-  StdCtrls,
+  Classes, Controls, LResources, Forms, StdCtrls,
   { local }
-  frmBaseSettingsFrame;
+  IDEOptionsIntf;
 
 type
-  TfUses = class(TfrSettingsFrame)
+
+  { TfUses }
+
+  TfUses = class(TAbstractIDEOptionsEditor)
     cbRemoveEnabled: TCheckBox;
     cbInsertInterface: TCheckBox;
     cbInsertImplementation: TCheckBox;
@@ -51,33 +53,39 @@ type
     procedure cbInsertImplementationClick(Sender: TObject);
     procedure cbRemoveEnabledClick(Sender: TObject);
     procedure cbFindReplaceClick(Sender: TObject);
-  private
   public
     constructor Create(AOwner: TComponent); override;
 
-    procedure Read; override;
-    procedure Write; override;
+    function GetTitle: String; override;
+    procedure Setup(ADialog: TAbstractOptionsEditorDialog); override;
+    procedure ReadSettings(AOptions: TAbstractIDEOptions); override;
+    procedure WriteSettings(AOptions: TAbstractIDEOptions); override;
+    class function SupportedOptionsClass: TAbstractIDEOptionsClass; override;
   end;
 
 implementation
 
-{$ifdef FPC}
-  {$R *.lfm}
-{$else}
-  {$R *.dfm}
-{$endif}
-
 uses
-  { local }JcfHelp, JcfSettings;
+  JcfHelp, JcfSettings;
 
 constructor TfUses.Create(AOwner: TComponent);
 begin
   inherited;
-  fiHelpContext := HELP_CLARIFY_FIND_AND_REPLACE_USES;
+  //fiHelpContext := HELP_CLARIFY_FIND_AND_REPLACE_USES;
+end;
+
+function TfUses.GetTitle: String;
+begin
+  Result := 'Uses';
+end;
+
+procedure TfUses.Setup(ADialog: TAbstractOptionsEditorDialog);
+begin
+  //
 end;
 
 
-procedure TfUses.Read;
+procedure TfUses.ReadSettings(AOptions: TAbstractIDEOptions);
 begin
   with FormatSettings.UsesClause do
   begin
@@ -99,7 +107,7 @@ begin
   cbFindReplaceClick(nil);
 end;
 
-procedure TfUses.Write;
+procedure TfUses.WriteSettings(AOptions: TAbstractIDEOptions);
 begin
   with FormatSettings.UsesClause do
   begin
@@ -115,6 +123,11 @@ begin
     Replace.Assign(mReplace.Lines);
   end;
 
+end;
+
+class function TfUses.SupportedOptionsClass: TAbstractIDEOptionsClass;
+begin
+  Result := TFormatSettings;
 end;
 
 procedure TfUses.cbInsertInterfaceClick(Sender: TObject);
@@ -138,4 +151,7 @@ begin
   mReplace.Enabled := cbFindReplace.Checked;
 end;
 
+initialization
+  {$I frUses.lrs}
+  RegisterIDEOptionsEditor(JCFOptionsGroup, TfUses, JCFOptionUses, JCFOptionFindAndReplace);
 end.

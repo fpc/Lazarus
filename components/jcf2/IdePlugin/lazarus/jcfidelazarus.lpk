@@ -22,7 +22,7 @@
     </CompilerOptions>
     <Description Value="JEDI Code Format IDE Plugin for Lazarus"/>
     <Version Major="2"/>
-    <Files Count="132">
+    <Files Count="178">
       <Item1>
         <Filename Value="jcfidemain.pas"/>
         <UnitName Value="JcfIdeMain"/>
@@ -552,6 +552,190 @@
         <Filename Value="..\..\Ui\Settings\frClarifySpaces.pas"/>
         <UnitName Value="frClarifySpaces"/>
       </Item132>
+      <Item133>
+        <Filename Value="..\..\Ui\Settings\frClarifyIndent.lfm"/>
+        <Type Value="LFM"/>
+      </Item133>
+      <Item134>
+        <Filename Value="..\..\Ui\Settings\frClarifyIndent.lrs"/>
+        <Type Value="LRS"/>
+      </Item134>
+      <Item135>
+        <Filename Value="..\..\Ui\Settings\frClarifyIndent.pas"/>
+        <UnitName Value="frClarifyIndent"/>
+      </Item135>
+      <Item136>
+        <Filename Value="..\..\Ui\Settings\frBlankLines.lfm"/>
+        <Type Value="LFM"/>
+      </Item136>
+      <Item137>
+        <Filename Value="..\..\Ui\Settings\frBlankLines.lrs"/>
+        <Type Value="LRS"/>
+      </Item137>
+      <Item138>
+        <Filename Value="..\..\Ui\Settings\frBlankLines.pas"/>
+        <UnitName Value="frBlankLines"/>
+      </Item138>
+      <Item139>
+        <Filename Value="..\..\Ui\Settings\frClarifyAlign.lfm"/>
+        <Type Value="LFM"/>
+      </Item139>
+      <Item140>
+        <Filename Value="..\..\Ui\Settings\frClarifyAlign.lrs"/>
+        <Type Value="LRS"/>
+      </Item140>
+      <Item141>
+        <Filename Value="..\..\Ui\Settings\frClarifyAlign.pas"/>
+        <UnitName Value="frClarifyAlign"/>
+      </Item141>
+      <Item142>
+        <Filename Value="..\..\Ui\Settings\frClarifyLongLineBreaker.lfm"/>
+        <Type Value="LFM"/>
+      </Item142>
+      <Item143>
+        <Filename Value="..\..\Ui\Settings\frClarifyLongLineBreaker.lrs"/>
+        <Type Value="LRS"/>
+      </Item143>
+      <Item144>
+        <Filename Value="..\..\Ui\Settings\frClarifyLongLineBreaker.pas"/>
+        <UnitName Value="frClarifyLongLineBreaker"/>
+      </Item144>
+      <Item145>
+        <Filename Value="..\..\Ui\Settings\frClarifyReturns.lfm"/>
+        <Type Value="LFM"/>
+      </Item145>
+      <Item146>
+        <Filename Value="..\..\Ui\Settings\frClarifyReturns.pas"/>
+        <UnitName Value="frClarifyReturns"/>
+      </Item146>
+      <Item147>
+        <Filename Value="..\..\Ui\Settings\frCompilerDirectReturns.lfm"/>
+        <Type Value="LFM"/>
+      </Item147>
+      <Item148>
+        <Filename Value="..\..\Ui\Settings\frCompilerDirectReturns.pas"/>
+        <UnitName Value="frCompilerDirectReturns"/>
+      </Item148>
+      <Item149>
+        <Filename Value="..\..\Ui\Settings\frClarifyBlocks.lfm"/>
+        <Type Value="LFM"/>
+      </Item149>
+      <Item150>
+        <Filename Value="..\..\Ui\Settings\frClarifyBlocks.pas"/>
+        <UnitName Value="frClarifyBlocks"/>
+      </Item150>
+      <Item151>
+        <Filename Value="..\..\Ui\Settings\frClarifyCaseBlocks.lfm"/>
+        <Type Value="LFM"/>
+      </Item151>
+      <Item152>
+        <Filename Value="..\..\Ui\Settings\frClarifyCaseBlocks.pas"/>
+        <UnitName Value="frClarifyCaseBlocks"/>
+      </Item152>
+      <Item153>
+        <Filename Value="..\..\Ui\Settings\frComments.lfm"/>
+        <Type Value="LFM"/>
+      </Item153>
+      <Item154>
+        <Filename Value="..\..\Ui\Settings\frComments.pas"/>
+        <UnitName Value="frComments"/>
+      </Item154>
+      <Item155>
+        <Filename Value="..\..\Ui\Settings\frWarnings.lfm"/>
+        <Type Value="LFM"/>
+      </Item155>
+      <Item156>
+        <Filename Value="..\..\Ui\Settings\frWarnings.pas"/>
+        <UnitName Value="frWarnings"/>
+      </Item156>
+      <Item157>
+        <Filename Value="..\..\Ui\Settings\frReservedCapsSettings.lfm"/>
+        <Type Value="LFM"/>
+      </Item157>
+      <Item158>
+        <Filename Value="..\..\Ui\Settings\frReservedCapsSettings.lrs"/>
+        <Type Value="LRS"/>
+      </Item158>
+      <Item159>
+        <Filename Value="..\..\Ui\Settings\frReservedCapsSettings.pas"/>
+        <UnitName Value="frReservedCapsSettings"/>
+      </Item159>
+      <Item160>
+        <Filename Value="..\..\Ui\Settings\frAnyCapsSettings.lfm"/>
+        <Type Value="LFM"/>
+      </Item160>
+      <Item161>
+        <Filename Value="..\..\Ui\Settings\frAnyCapsSettings.pas"/>
+        <UnitName Value="frAnyCapsSettings"/>
+      </Item161>
+      <Item162>
+        <Filename Value="..\..\Ui\Settings\frIdentifierCapsSettings.lfm"/>
+        <Type Value="LFM"/>
+      </Item162>
+      <Item163>
+        <Filename Value="..\..\Ui\Settings\frIdentifierCapsSettings.pas"/>
+        <UnitName Value="frIdentifierCapsSettings"/>
+      </Item163>
+      <Item164>
+        <Filename Value="..\..\Ui\Settings\frNotIdentifierCapsSettings.lfm"/>
+        <Type Value="LFM"/>
+      </Item164>
+      <Item165>
+        <Filename Value="..\..\Ui\Settings\frNotIdentifierCapsSettings.pas"/>
+        <UnitName Value="frNotIdentifierCapsSettings"/>
+      </Item165>
+      <Item166>
+        <Filename Value="..\..\Ui\Settings\frUnitCaps.lfm"/>
+        <Type Value="LFM"/>
+      </Item166>
+      <Item167>
+        <Filename Value="..\..\Ui\Settings\frUnitCaps.lrs"/>
+        <Type Value="LRS"/>
+      </Item167>
+      <Item168>
+        <Filename Value="..\..\Ui\Settings\frUnitCaps.pas"/>
+        <UnitName Value="frUnitCaps"/>
+      </Item168>
+      <Item169>
+        <Filename Value="..\..\Ui\Settings\frReplace.lfm"/>
+        <Type Value="LFM"/>
+      </Item169>
+      <Item170>
+        <Filename Value="..\..\Ui\Settings\frReplace.pas"/>
+        <UnitName Value="frReplace"/>
+      </Item170>
+      <Item171>
+        <Filename Value="..\..\Ui\Settings\frUses.lfm"/>
+        <Type Value="LFM"/>
+      </Item171>
+      <Item172>
+        <Filename Value="..\..\Ui\Settings\frUses.pas"/>
+        <UnitName Value="frUses"/>
+      </Item172>
+      <Item173>
+        <Filename Value="..\..\Ui\Settings\frTransform.lfm"/>
+        <Type Value="LFM"/>
+      </Item173>
+      <Item174>
+        <Filename Value="..\..\Ui\Settings\frTransform.pas"/>
+        <UnitName Value="frTransform"/>
+      </Item174>
+      <Item175>
+        <Filename Value="..\..\Ui\Settings\frAsm.lfm"/>
+        <Type Value="LFM"/>
+      </Item175>
+      <Item176>
+        <Filename Value="..\..\Ui\Settings\frAsm.pas"/>
+        <UnitName Value="frAsm"/>
+      </Item176>
+      <Item177>
+        <Filename Value="..\..\Ui\Settings\frPreProcessor.lfm"/>
+        <Type Value="LFM"/>
+      </Item177>
+      <Item178>
+        <Filename Value="..\..\Ui\Settings\frPreProcessor.pas"/>
+        <UnitName Value="frPreProcessor"/>
+      </Item178>
     </Files>
     <Type Value="RunAndDesignTime"/>
     <RequiredPkgs Count="2">

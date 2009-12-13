@@ -30,44 +30,40 @@ interface
 
 uses
   { delphi }
-  Classes, Controls, Forms,
-  StdCtrls,
-  { JVCL }
-  JvEdit, JvExStdCtrls, JvValidateEdit,
+  Classes, Controls, LResources, Forms, StdCtrls, Spin,
   { local}
-  frmBaseSettingsFrame;
+  IDEOptionsIntf;
 
 
 type
-  TfBlankLines = class(TfrSettingsFrame)
+
+  { TfBlankLines }
+
+  TfBlankLines = class(TAbstractIDEOptionsEditor)
     Label1: TLabel;
-    eNumReturnsAfterFinalEnd: TJvValidateEdit;
+    eNumReturnsAfterFinalEnd: TSpinEdit;
     cbRemoveConsecutiveBlankLines: TCheckBox;
-    edtMaxConsecutiveBlankLines: TJvValidateEdit;
+    edtMaxConsecutiveBlankLines: TSpinEdit;
     Label2: TLabel;
     gbRemoveBlankLines: TGroupBox;
     cbRemoveBlockBlankLines: TCheckBox;
     cbRemoveBlankLinesAfterProcHeader: TCheckBox;
     cbRemoveVarBlankLines: TCheckBox;
-    edtLinesBeforeProcedure: TJvValidateEdit;
+    edtLinesBeforeProcedure: TSpinEdit;
     Label3: TLabel;
     Label4: TLabel;
-    edtMaxBlankLinesInSection: TJvValidateEdit;
-  private
+    edtMaxBlankLinesInSection: TSpinEdit;
   public
     constructor Create(AOwner: TComponent); override;
 
-    procedure Read; override;
-    procedure Write; override;
+    function GetTitle: String; override;
+    procedure Setup(ADialog: TAbstractOptionsEditorDialog); override;
+    procedure ReadSettings(AOptions: TAbstractIDEOptions); override;
+    procedure WriteSettings(AOptions: TAbstractIDEOptions); override;
+    class function SupportedOptionsClass: TAbstractIDEOptionsClass; override;
   end;
 
 implementation
-
-{$ifdef FPC}
-  {$R *.lfm}
-{$else}
-  {$R *.dfm}
-{$endif}
 
 uses
   { delphi }
@@ -78,10 +74,20 @@ uses
 constructor TfBlankLines.Create(AOwner: TComponent);
 begin
   inherited;
-  fiHelpContext := HELP_CLARIFY_BLANK_LINES;
+  //fiHelpContext := HELP_CLARIFY_BLANK_LINES;
 end;
 
-procedure TfBlankLines.Read;
+function TfBlankLines.GetTitle: String;
+begin
+  Result := 'Blank Lines';
+end;
+
+procedure TfBlankLines.Setup(ADialog: TAbstractOptionsEditorDialog);
+begin
+  //
+end;
+
+procedure TfBlankLines.ReadSettings(AOptions: TAbstractIDEOptions);
 begin
   with FormatSettings.Returns do
   begin
@@ -99,7 +105,7 @@ begin
   end;
 end;
 
-procedure TfBlankLines.Write;
+procedure TfBlankLines.WriteSettings(AOptions: TAbstractIDEOptions);
 begin
   with FormatSettings.Returns do
   begin
@@ -119,4 +125,12 @@ begin
   end;
 end;
 
+class function TfBlankLines.SupportedOptionsClass: TAbstractIDEOptionsClass;
+begin
+  Result := TFormatSettings;
+end;
+
+initialization
+  {$I frBlankLines.lrs}
+  RegisterIDEOptionsEditor(JCFOptionsGroup, TfBlankLines, JCFOptionBlankLines, JCFOptionClarify);
 end.

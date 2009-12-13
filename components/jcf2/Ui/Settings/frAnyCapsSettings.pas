@@ -31,46 +31,53 @@ interface
 
 uses
   { delphi }
-  Classes, Controls, Forms,
-  StdCtrls,
+  Classes, Controls, LResources, Forms, StdCtrls,
   { local }
-  JvMemo, JvExStdCtrls, frmBaseSettingsFrame;
+  IDEOptionsIntf;
 
 type
-  TfrAnyCapsSettings = class(TfrSettingsFrame)
+
+  { TfrAnyCapsSettings }
+
+  TfrAnyCapsSettings = class(TAbstractIDEOptionsEditor)
     Label1: TLabel;
     cbEnableAnyWords: TCheckBox;
-    mWords: TJvMemo;
+    mWords: TMemo;
     procedure cbEnableAnyWordsClick(Sender: TObject);
     procedure FrameResize(Sender: TObject);
-  private
-    { Private declarations }
   public
     constructor Create(AOwner: TComponent); override;
 
-    procedure Read; override;
-    procedure Write; override;
-
+    function GetTitle: String; override;
+    procedure Setup(ADialog: TAbstractOptionsEditorDialog); override;
+    procedure ReadSettings(AOptions: TAbstractIDEOptions); override;
+    procedure WriteSettings(AOptions: TAbstractIDEOptions); override;
+    class function SupportedOptionsClass: TAbstractIDEOptionsClass; override;
   end;
 
 implementation
 
-uses JcfHelp, JcfSettings;
-
-{$ifdef FPC}
-  {$R *.lfm}
-{$else}
-  {$R *.dfm}
-{$endif}
+uses 
+  JcfHelp, JcfSettings;
 
 constructor TfrAnyCapsSettings.Create(AOwner: TComponent);
 begin
   inherited;
-  fiHelpContext := HELP_CLARIFY_CAPITALISATION;
+  //fiHelpContext := HELP_CLARIFY_CAPITALISATION;
+end;
+
+function TfrAnyCapsSettings.GetTitle: String;
+begin
+  Result := 'Any Word';
+end;
+
+procedure TfrAnyCapsSettings.Setup(ADialog: TAbstractOptionsEditorDialog);
+begin
+  inherited Setup(ADialog);
 end;
 
 
-procedure TfrAnyCapsSettings.Read;
+procedure TfrAnyCapsSettings.ReadSettings(AOptions: TAbstractIDEOptions);
 begin
   with FormatSettings.SpecificWordCaps do
   begin
@@ -79,13 +86,18 @@ begin
   end;
 end;
 
-procedure TfrAnyCapsSettings.Write;
+procedure TfrAnyCapsSettings.WriteSettings(AOptions: TAbstractIDEOptions);
 begin
   with FormatSettings.SpecificWordCaps do
   begin
     Enabled := cbEnableAnyWords.Checked;
     Words.Assign(mWords.Lines);
   end;
+end;
+
+class function TfrAnyCapsSettings.SupportedOptionsClass: TAbstractIDEOptionsClass;
+begin
+  Result := TFormatSettings;
 end;
 
 procedure TfrAnyCapsSettings.cbEnableAnyWordsClick(Sender: TObject);
@@ -99,4 +111,7 @@ begin
     (cbEnableAnyWords.Top + cbEnableAnyWords.Height + GUI_PAD);
 end;
 
+initialization
+  {$I frAnyCapsSettings.lrs}
+  RegisterIDEOptionsEditor(JCFOptionsGroup, TfrAnyCapsSettings, JCFOptionAnyWord, JCFOptionObjectPascal);
 end.
