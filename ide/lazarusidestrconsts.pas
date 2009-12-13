@@ -712,6 +712,10 @@ resourcestring
 
   // file dialogs
   lisOpenFile = 'Open file';
+  lisProjectSRaisedExceptionClassS =
+    'Project %s raised exception class ''%s''.';
+  lisProjectSRaisedExceptionClassSWithMessageSS = 'Project %s raised '
+    +'exception class ''%s'' with message:%s%s';
   lisPEEditVirtualUnit = 'Edit Virtual Unit';
   lisIECOExportFileExists = 'Export file exists';
   lisIECOExportFileExistsOpenFileAndReplaceOnlyCompilerOpti = 'Export file %s%'

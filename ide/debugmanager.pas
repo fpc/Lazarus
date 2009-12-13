@@ -1394,7 +1394,7 @@ begin
 
   if AExceptionText = ''
   then
-    msg := Format('Project %s raised exception class ''%s''.',
+    msg := Format(lisProjectSRaisedExceptionClassS,
                   [GetTitle, AExceptionClass])
   else begin
     ExceptMsg := AExceptionText;
@@ -1402,12 +1402,12 @@ begin
     // then assume it has the ansi encoding and convert it
     if FindInvalidUTF8Character(pchar(ExceptMsg),length(ExceptMsg), False) > 0 then
       ExceptMsg := AnsiToUtf8(ExceptMsg);
-    msg := Format('Project %s raised exception class ''%s'' with message:%s%s',
+    msg := Format(lisProjectSRaisedExceptionClassSWithMessageSS,
                   [GetTitle, AExceptionClass, #13, ExceptMsg]);
   end;
 
   if AExceptionType <> deInternal then
-    MessageDlg('Error', msg, mtError, [mbOk], 0)
+    MessageDlg(lisCCOErrorCaption, msg, mtError, [mbOk], 0)
   else
   begin
     AContinue := ExecuteExceptionDialog(msg, Ignore) = mrCancel;
