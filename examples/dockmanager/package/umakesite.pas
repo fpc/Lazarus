@@ -585,12 +585,17 @@ begin
 //search existing forms
   if AName <> '' then begin
     Result := Screen.FindForm(AName);
-    if Result <> nil then
+    if Result <> nil then begin
+      Result.Visible := True; //empty edit book?
       exit; //found it
-  //also search in our Owner
+    end;
+{
+//also search in our Owner
     cmp := Owner.FindComponent(AName);
     if (Result <> nil) and (Result is TWinControl) then
       exit;
+  { TODO -oDoDi : why are not all existing forms found? }
+}
   end;
 //check if Factory can provide the form
   if assigned(Factory) then begin
@@ -607,6 +612,7 @@ begin
     Result := TForm.Create(fo); //named Form1, Form2... - not now???
   end else begin
   //create new instance
+    //DebugLn('!!! create new: ', AName);
   {$IFDEF old}
     if fMultiInst then
       SplitName
@@ -997,6 +1003,7 @@ begin
 (* Special connect to DockManager, and restore NoteBooks.
 *)
   if False then Result:=inherited ReloadDockedControl(AName); //asking DockSite (very bad idea)
+{$IFDEF old}
   if assigned(DockMaster) then begin
     Result := DockMaster.ReloadDockedControl(AName, FDockSite);
   end else begin  //application default - search Application or Screen?
@@ -1004,6 +1011,11 @@ begin
     //if Result = nil then Result := 'T' + AName
     { TODO -cdocking : load form by name, or create from typename }
   end;
+{$ELSE}
+  Result := Screen.FindForm(AName);
+  if (Result = nil) and assigned(DockMaster) then
+    Result := DockMaster.ReloadDockedControl(AName, FDockSite);
+{$ENDIF}
   if Result <> nil then
     DebugLn('Reloaded %s.%s', [Result.Owner.Name, Result.Name])
   else

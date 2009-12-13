@@ -238,7 +238,6 @@ examples/designerbaseclass/example/units
 examples/designerbaseclass/lib/*.bak
 examples/designerbaseclass/lib/units
 examples/designerbaseclass/units
-examples/dockmanager/ide_demo/MiniIDE.rc
 examples/dropfiles/units[!!-~]*.bak
 examples/easter/*.bak
 examples/easter/units

@@ -49,6 +49,7 @@ type
     procedure FormCreate(Sender: TObject);
     procedure mnExitClick(Sender: TObject);
     procedure mnOpenClick(Sender: TObject);
+    procedure mnWindowDumpClick(Sender: TObject);
     procedure ViewMenuClick(Sender: TObject);
   private
     procedure GetLayouts;
@@ -66,6 +67,8 @@ var
 implementation
 
 uses
+  LCLProc,
+  EasyDockSite,
   uMakeSite, fEditBook, fClientForm;
 
 { TMainBar }
@@ -101,6 +104,49 @@ begin
   if OpenDialog1.Execute then begin
     OpenFile(OpenDialog1.FileName);
   end;
+end;
+
+procedure TMainBar.mnWindowDumpClick(Sender: TObject);
+
+  procedure DumpOwner(fo: TComponent);
+  var
+    i: integer;
+    cmp: TComponent;
+  begin
+    for i := 0 to fo.ComponentCount - 1 do begin
+      cmp := fo.Components[i];
+      //if cmp.Name <> '' then
+      begin
+        DebugLn(cmp.Name, ': ', cmp.ClassName);
+      end;
+    end;
+  end;
+
+  procedure DumpForms;
+  var
+    i: integer;
+    cmp: TComponent;
+  begin
+    DebugLn('- Forms');
+    for i := 0 to Screen.FormCount - 1 do begin
+      cmp := Screen.Forms[i];
+      //if cmp.Name <> '' then
+      begin
+        DebugLn(cmp.Name, ': ', cmp.ClassName);
+      end;
+    end;
+  end;
+
+begin
+//debug only
+  DebugLn('--- Screen');
+  DumpOwner(Screen);
+  DumpForms;
+{
+  DebugLn('--- Owner');
+  DumpOwner(DockMaster.Owner);
+}
+  DebugLn('--- end dump');
 end;
 
 procedure TMainBar.OpenFile(const AName: string);
@@ -175,6 +221,7 @@ function TMainBar.CreateDockable(const cap: string; fWrap: boolean): TWinControl
 var
   //Site: TFloatingSite;
   Client: TViewWindow;
+  n: string;
 begin
 (* Translate into layout Reload format:
   <name>%t=<type>[%f=<editfile>]
@@ -183,19 +230,20 @@ begin
   We must force docking here, later the client will dock itself into
   a float host site, when it becomes floating.
 *)
-//create the form
-  Client := TViewWindow.Create(Self);
-  Client.Label1.Caption := cap;
-  Client.Visible := True;
-//name it
-  Client.Caption := cap;
-  try
-    Client.Name := StringReplace(cap, ' ', '', [rfReplaceAll]);
-  except
-    //here: simply ignore duplicate name
+//lookup existing (assume single instance forms)
+  n := StringReplace(cap, ' ', '', [rfReplaceAll]);
+  Result := Screen.FindForm(n);
+  if Result = nil then begin
+  //create the form
+    Client := TViewWindow.Create(Self);
+    Client.Label1.Caption := cap;
+    Client.Visible := True;
+  //name it
+    Client.Caption := cap;
+    TryRename(Client, n);
+    DockMaster.MakeDockable(Client, fWrap);
+    Result := Client;
   end;
-  DockMaster.MakeDockable(Client, fWrap);
-  Result := Client;
 end;
 
 (* Special load/store cases:
@@ -216,9 +264,11 @@ Since commas are used for notebook docking, we have to choose other delimiters.
   <name>%t=<type>[%f=<editfile>]
 Default type is 'T'<name><instNo>, default instNo is 1?
 *)
-  if CtrlName[1] = '@' then
-    Result := CreateDockable(copy(CtrlName, 2, Length(CtrlName)), False)
-  else if CtrlName[1] = ',' then begin
+  if CtrlName[1] = '@' then begin
+    s := copy(CtrlName, 2, Length(CtrlName));
+    Result := CreateDockable(s, False);
+    //if Result <> nil then Result.Visible := True; //edit forms without pages are hidden?
+  end else if CtrlName[1] = ',' then begin
     eb := TEditBook.Create(Application);
     lst := TStringList.Create;
     try

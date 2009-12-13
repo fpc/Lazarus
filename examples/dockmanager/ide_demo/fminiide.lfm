@@ -114,6 +114,7 @@ object MainBar: TMainBar
       Caption = '&Windows'
       object mnWindowDump: TMenuItem
         Caption = '&Dump'
+        OnClick = mnWindowDumpClick
       end
       object mnMinimize: TMenuItem
         Caption = 'Minimize all'
