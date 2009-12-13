@@ -3,15 +3,13 @@ inherited fObfuscateSettings: TfObfuscateSettings
   Width = 275
   ClientHeight = 271
   ClientWidth = 275
-  Font.CharSet = ANSI_CHARSET
-  Font.Height = -15
-  Font.Name = 'Segoe UI'
-  ParentFont = False
+  DesignLeft = 426
+  DesignTop = 292
   object cbRemoveWhiteSpace: TCheckBox[0]
     Left = 8
-    Height = 21
+    Height = 17
     Top = 160
-    Width = 155
+    Width = 117
     Caption = 'Remove &white space'
     Checked = True
     State = cbChecked
@@ -19,9 +17,9 @@ inherited fObfuscateSettings: TfObfuscateSettings
   end
   object cbRemoveComments: TCheckBox[1]
     Left = 8
-    Height = 21
+    Height = 17
     Top = 180
-    Width = 147
+    Width = 108
     Caption = 'Remove c&omments'
     Checked = True
     State = cbChecked
@@ -55,9 +53,9 @@ inherited fObfuscateSettings: TfObfuscateSettings
   end
   object cbRebreak: TCheckBox[3]
     Left = 8
-    Height = 21
+    Height = 17
     Top = 220
-    Width = 107
+    Width = 82
     Caption = 'Rebreak &lines'
     Checked = True
     State = cbChecked
@@ -65,9 +63,9 @@ inherited fObfuscateSettings: TfObfuscateSettings
   end
   object cbRemoveIndent: TCheckBox[4]
     Left = 8
-    Height = 21
+    Height = 17
     Top = 200
-    Width = 116
+    Width = 90
     Caption = 'Remove &indent'
     Checked = True
     State = cbChecked
@@ -75,9 +73,9 @@ inherited fObfuscateSettings: TfObfuscateSettings
   end
   object cbEnabled: TCheckBox[5]
     Left = 8
-    Height = 21
+    Height = 17
     Top = 8
-    Width = 127
+    Width = 97
     Caption = '&Obfuscate mode'
     TabOrder = 0
   end

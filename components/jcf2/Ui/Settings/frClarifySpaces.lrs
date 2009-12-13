@@ -2,98 +2,96 @@
 
 LazarusResources.Add('TfClarifySpaces','FORMDATA',[
   'TPF0'#241#15'TfClarifySpaces'#14'fClarifySpaces'#6'Height'#3#207#1#5'Width'#3
-  +#216#1#12'ClientHeight'#3#207#1#11'ClientWidth'#3#216#1#12'Font.CharSet'#7#12
-  +'ANSI_CHARSET'#11'Font.Height'#2#241#9'Font.Name'#6#8'Segoe UI'#10'ParentFon'
-  +'t'#8#10'DesignLeft'#3#237#1#9'DesignTop'#3#188#0#0#242#2#0#9'TCheckBox'#12
-  +'cbFixSpacing'#4'Left'#2#8#6'Height'#2#21#3'Top'#2#6#5'Width'#2'\'#7'Caption'
-  +#6#12'Fix &spacing'#8'TabOrder'#2#0#0#0#242#2#1#9'TCheckBox'#20'cbSpaceClass'
-  +'Heritage'#4'Left'#2#8#6'Height'#2#21#3'Top'#2#29#5'Width'#3#200#0#7'Caption'
-  +#6#28'Space before class &heritage'#8'TabOrder'#2#1#0#0#242#2#2#9'TGroupBox'
-  +#7'gbColon'#4'Left'#2#8#6'Height'#3'$'#1#3'Top'#2'2'#5'Width'#3#246#0#7'Capt'
-  +'ion'#6#23'Spaces &before colon in'#12'ClientHeight'#3#18#1#11'ClientWidth'#3
-  +#242#0#8'TabOrder'#2#2#0#6'TLabel'#22'lblSpaceBeforeColonVar'#4'Left'#2#8#6
-  +'Height'#2#18#3'Top'#2#3#5'Width'#2'j'#7'Caption'#6#17'&Var declarations'#12
-  +'FocusControl'#7#20'eSpaceBeforeColonVar'#11'ParentColor'#8#0#0#6'TLabel'#28
-  +'lblSpacesBeforeColonClassVar'#4'Left'#2#8#6'Height'#2#18#3'Top'#2'{'#5'Widt'
-  +'h'#2'e'#7'Caption'#6#16'&Class variables'#12'FocusControl'#7#26'eSpacesBefo'
-  +'reColonClassVar'#11'ParentColor'#8#0#0#6'TLabel'#21'lblSpaceBeforeColonFn'#4
-  +'Left'#2#8#6'Height'#2#18#3'Top'#2']'#5'Width'#3#138#0#7'Caption'#6#22'&Func'
-  +'tion return types'#12'FocusControl'#7#19'eSpaceBeforeColonFn'#11'ParentColo'
-  +'r'#8#0#0#6'TLabel'#24'lblSpaceBeforeColonParam'#4'Left'#2#8#6'Height'#2#18#3
-  +'Top'#2'?'#5'Width'#3#148#0#7'Caption'#6#21'&Procedure parameters'#12'FocusC'
-  +'ontrol'#7#22'eSpaceBeforeColonParam'#11'ParentColor'#8#0#0#6'TLabel'#24'lbl'
-  +'SpacesBeforeCaseLabel'#4'Left'#2#5#6'Height'#2#18#3'Top'#3#183#0#5'Width'#2
-  +'F'#7'Caption'#6#11'Case l&abel'#12'FocusControl'#7#22'eSpacesBeforeCaseLabe'
-  +'l'#11'ParentColor'#8#0#0#6'TLabel'#19'lbSpacesBeforeLabel'#4'Left'#2#5#6'He'
-  +'ight'#2#18#3'Top'#3#213#0#5'Width'#2'$'#7'Caption'#6#6'&Label'#12'FocusCont'
-  +'rol'#7#18'eSpacesBeforeLabel'#11'ParentColor'#8#0#0#6'TLabel'#27'lblSpacesB'
-  +'eforeColonGeneric'#4'Left'#2#5#6'Height'#2#18#3'Top'#3#243#0#5'Width'#2'@'#7
-  +'Caption'#6#11'In &generic'#12'FocusControl'#7#25'eSpacesBeforeColonGeneric'
-  +#11'ParentColor'#8#0#0#6'TLabel'#24'lblSpaceBeforeColonConst'#4'Left'#2#7#6
-  +'Height'#2#18#3'Top'#2'!'#5'Width'#2'{'#7'Caption'#6#19'C&onst declarations'
-  +#12'FocusControl'#7#22'eSpaceBeforeColonConst'#11'ParentColor'#8#0#0#6'TLabe'
-  +'l'#31'lblSpacesBeforeColonRecordField'#4'Left'#2#8#6'Height'#2#18#3'Top'#3
-  +#153#0#5'Width'#2'W'#7'Caption'#6#14'&Record fields'#12'FocusControl'#7#29'e'
-  +'SpacesBeforeColonRecordField'#11'ParentColor'#8#0#0#9'TSpinEdit'#20'eSpaceB'
-  +'eforeColonVar'#4'Left'#3#180#0#6'Height'#2#25#3'Top'#2#1#5'Width'#2'2'#8'Ta'
-  +'bOrder'#2#0#0#0#9'TSpinEdit'#22'eSpaceBeforeColonParam'#4'Left'#3#180#0#6'H'
-  +'eight'#2#25#3'Top'#2'='#5'Width'#2'2'#8'TabOrder'#2#1#0#0#9'TSpinEdit'#19'e'
-  +'SpaceBeforeColonFn'#4'Left'#3#180#0#6'Height'#2#25#3'Top'#2'['#5'Width'#2'2'
-  +#8'TabOrder'#2#2#0#0#9'TSpinEdit'#26'eSpacesBeforeColonClassVar'#4'Left'#3
-  +#180#0#6'Height'#2#25#3'Top'#2'y'#5'Width'#2'2'#8'TabOrder'#2#3#0#0#9'TSpinE'
-  +'dit'#22'eSpacesBeforeCaseLabel'#4'Left'#3#180#0#6'Height'#2#25#3'Top'#3#181
-  +#0#5'Width'#2'2'#8'TabOrder'#2#4#0#0#9'TSpinEdit'#18'eSpacesBeforeLabel'#4'L'
-  +'eft'#3#180#0#6'Height'#2#25#3'Top'#3#211#0#5'Width'#2'2'#8'TabOrder'#2#5#0#0
-  +#9'TSpinEdit'#25'eSpacesBeforeColonGeneric'#4'Left'#3#180#0#6'Height'#2#25#3
-  +'Top'#3#241#0#5'Width'#2'2'#8'TabOrder'#2#6#0#0#9'TSpinEdit'#22'eSpaceBefore'
-  +'ColonConst'#4'Left'#3#180#0#6'Height'#2#25#3'Top'#2#31#5'Width'#2'2'#8'TabO'
-  +'rder'#2#7#0#0#9'TSpinEdit'#29'eSpacesBeforeColonRecordField'#4'Left'#3#180#0
-  +#6'Height'#2#25#3'Top'#3#151#0#5'Width'#2'2'#8'TabOrder'#2#8#0#0#0#242#2#3#9
-  +'TGroupBox'#6'gbTabs'#4'Left'#2#8#6'Height'#2'N'#3'Top'#3'X'#1#5'Width'#3#201
-  +#1#7'Caption'#6#15'&Tab characters'#12'ClientHeight'#2'<'#11'ClientWidth'#3
-  +#197#1#8'TabOrder'#2#3#0#6'TLabel'#6'Label1'#4'Left'#3#240#0#6'Height'#2#18#3
-  +'Top'#2#7#5'Width'#2'd'#7'Caption'#6#14'Spaces per tab'#11'ParentColor'#8#0#0
-  +#6'TLabel'#6'Label3'#4'Left'#3#240#0#6'Height'#2#18#3'Top'#2#29#5'Width'#2'`'
-  +#7'Caption'#6#14'Spaces for tab'#11'ParentColor'#8#0#0#9'TCheckBox'#14'cbTab'
-  +'sToSpaces'#4'Left'#2#6#6'Height'#2#21#3'Top'#2#9#5'Width'#3#148#0#7'Caption'
-  +#6#19'Turn tabs to spaces'#7'OnClick'#7#19'cbTabsToSpacesClick'#8'TabOrder'#2
-  +#0#0#0#9'TCheckBox'#14'cbSpacesToTabs'#4'Left'#2#6#6'Height'#2#21#3'Top'#2#31
-  +#5'Width'#3#148#0#7'Caption'#6#19'Turn spaces to tabs'#7'OnClick'#7#19'cbSpa'
-  +'cesToTabsClick'#8'TabOrder'#2#2#0#0#9'TSpinEdit'#15'edtSpacesPerTab'#4'Left'
-  +#3'd'#1#6'Height'#2#25#3'Top'#2#5#5'Width'#2'1'#8'MaxValue'#2#12#8'TabOrder'
-  +#2#1#0#0#9'TSpinEdit'#15'edtSpacesForTab'#4'Left'#3'd'#1#6'Height'#2#25#3'To'
-  +'p'#2#29#5'Width'#2'1'#8'MaxValue'#2#12#8'TabOrder'#2#3#0#0#0#242#2#4#9'TChe'
-  +'ckBox'#11'cbMaxSpaces'#4'Left'#2#8#6'Height'#2#21#3'Top'#3#170#1#5'Width'#3
-  +#147#0#7'Caption'#6#19'&Max spaces in code'#7'OnClick'#7#16'cbMaxSpacesClick'
-  ,#8'TabOrder'#2#4#0#0#242#2#5#9'TSpinEdit'#18'edtMaxSpacesInCode'#4'Left'#3
-  +#193#0#6'Height'#2#25#3'Top'#3#168#1#5'Width'#2'2'#8'MaxValue'#2'c'#8'TabOrd'
-  +'er'#2#5#0#0#242#2#6#11'TRadioGroup'#11'rgOperators'#4'Left'#3#4#1#6'Height'
-  +#2'\'#3'Top'#2#6#5'Width'#3#202#0#8'AutoFill'#9#7'Caption'#6#24'Spaces aroun'
-  +'d &operators'#28'ChildSizing.LeftRightSpacing'#2#6#28'ChildSizing.TopBottom'
-  +'Spacing'#2#6#29'ChildSizing.EnlargeHorizontal'#7#24'crsHomogenousChildResiz'
-  +'e'#27'ChildSizing.EnlargeVertical'#7#24'crsHomogenousChildResize'#28'ChildS'
-  +'izing.ShrinkHorizontal'#7#14'crsScaleChilds'#26'ChildSizing.ShrinkVertical'
-  +#7#14'crsScaleChilds'#18'ChildSizing.Layout'#7#29'cclLeftToRightThenTopToBot'
-  +'tom'#27'ChildSizing.ControlsPerLine'#2#1#12'ClientHeight'#2'J'#11'ClientWid'
-  +'th'#3#198#0#13'Items.Strings'#1#6#6'Always'#6#11'Leave as is'#6#5'Never'#0#8
-  +'TabOrder'#2#6#0#0#242#2#7#9'TGroupBox GroupBoxInsertSpaceBeforeBracket'#4'L'
-  +'eft'#3#4#1#6'Height'#2'_'#3'Top'#2'b'#5'Width'#3#202#0#7'Caption'#6#28'&Ins'
-  +'ert space before bracket'#12'ClientHeight'#2'M'#11'ClientWidth'#3#198#0#8'T'
-  +'abOrder'#2#7#0#9'TCheckBox/cbInsertSpaceBeforeBracketinFunctionDeclaration'
-  +#4'Left'#2#8#6'Height'#2#21#3'Top'#2#10#5'Width'#3#159#0#7'Caption'#6#24'In '
-  +'function &declaration'#8'TabOrder'#2#0#0#0#9'TCheckBox(cbInsertSpaceBeforeB'
-  +'racketinFunctionCall'#4'Left'#2#8#6'Height'#2#21#3'Top'#2' '#5'Width'#2'n'#7
-  +'Caption'#6#17'In function &call'#8'TabOrder'#2#1#0#0#9'TCheckBox%cbBeforeOp'
-  +'enSquareBracketInExpression'#4'Left'#2#8#6'Height'#2#21#3'Top'#2'4'#5'Width'
-  +#3#159#0#7'Caption'#6#22'Before [ in expression'#8'TabOrder'#2#2#0#0#0#242#2
-  +#8#9'TGroupBox'#28'GroupBoxSpacesInsideBrackets'#4'Left'#3#4#1#6'Height'#2'F'
-  +#3'Top'#3#194#0#5'Width'#3#202#0#7'Caption'#6#28'Insert space inside bracket'
-  +'s'#12'ClientHeight'#2'4'#11'ClientWidth'#3#198#0#8'TabOrder'#2#8#0#9'TCheck'
-  +'Box'#28'CheckBoxInsertSpaceBeforeEnd'#4'Left'#2#8#6'Height'#2#21#3'Top'#2#27
-  +#5'Width'#2'Y'#7'Caption'#6#10'Before end'#8'TabOrder'#2#0#0#0#9'TCheckBox'
-  +#22'cbInsertSpaceAfterOpen'#4'Left'#2#8#6'Height'#2#21#3'Top'#2#4#5'Width'#2
-  +'T'#7'Caption'#6#10'After open'#8'TabOrder'#2#1#0#0#0#242#2#9#9'TCheckBox'#25
-  +'cbMoveSpacesToBeforeColon'#4'Left'#3#4#1#6'Height'#2#21#3'Top'#3#14#1#5'Wid'
-  +'th'#3#204#0#7'Caption'#6#27'Move spaces to before colon'#8'TabOrder'#2#9#0#0
-  +#0
+  +#216#1#12'ClientHeight'#3#207#1#11'ClientWidth'#3#216#1#10'DesignLeft'#3#223
+  +#1#9'DesignTop'#3#188#0#0#242#2#0#9'TCheckBox'#12'cbFixSpacing'#4'Left'#2#8#6
+  +'Height'#2#17#3'Top'#2#6#5'Width'#2'G'#7'Caption'#6#12'Fix &spacing'#8'TabOr'
+  +'der'#2#0#0#0#242#2#1#9'TCheckBox'#20'cbSpaceClassHeritage'#4'Left'#2#8#6'He'
+  +'ight'#2#17#3'Top'#2#29#5'Width'#3#151#0#7'Caption'#6#28'Space before class '
+  +'&heritage'#8'TabOrder'#2#1#0#0#242#2#2#9'TGroupBox'#7'gbColon'#4'Left'#2#8#6
+  +'Height'#3'$'#1#3'Top'#2'2'#5'Width'#3#246#0#7'Caption'#6#23'Spaces &before '
+  +'colon in'#12'ClientHeight'#3#18#1#11'ClientWidth'#3#242#0#8'TabOrder'#2#2#0
+  +#6'TLabel'#22'lblSpaceBeforeColonVar'#4'Left'#2#8#6'Height'#2#14#3'Top'#2#3#5
+  +'Width'#2'N'#7'Caption'#6#17'&Var declarations'#12'FocusControl'#7#20'eSpace'
+  +'BeforeColonVar'#11'ParentColor'#8#0#0#6'TLabel'#28'lblSpacesBeforeColonClas'
+  +'sVar'#4'Left'#2#8#6'Height'#2#14#3'Top'#2'{'#5'Width'#2'H'#7'Caption'#6#16
+  +'&Class variables'#12'FocusControl'#7#26'eSpacesBeforeColonClassVar'#11'Pare'
+  +'ntColor'#8#0#0#6'TLabel'#21'lblSpaceBeforeColonFn'#4'Left'#2#8#6'Height'#2
+  +#14#3'Top'#2']'#5'Width'#2'i'#7'Caption'#6#22'&Function return types'#12'Foc'
+  +'usControl'#7#19'eSpaceBeforeColonFn'#11'ParentColor'#8#0#0#6'TLabel'#24'lbl'
+  +'SpaceBeforeColonParam'#4'Left'#2#8#6'Height'#2#14#3'Top'#2'?'#5'Width'#2'l'
+  +#7'Caption'#6#21'&Procedure parameters'#12'FocusControl'#7#22'eSpaceBeforeCo'
+  +'lonParam'#11'ParentColor'#8#0#0#6'TLabel'#24'lblSpacesBeforeCaseLabel'#4'Le'
+  +'ft'#2#5#6'Height'#2#14#3'Top'#3#183#0#5'Width'#2'2'#7'Caption'#6#11'Case l&'
+  +'abel'#12'FocusControl'#7#22'eSpacesBeforeCaseLabel'#11'ParentColor'#8#0#0#6
+  +'TLabel'#19'lbSpacesBeforeLabel'#4'Left'#2#5#6'Height'#2#14#3'Top'#3#213#0#5
+  +'Width'#2#26#7'Caption'#6#6'&Label'#12'FocusControl'#7#18'eSpacesBeforeLabel'
+  +#11'ParentColor'#8#0#0#6'TLabel'#27'lblSpacesBeforeColonGeneric'#4'Left'#2#5
+  +#6'Height'#2#14#3'Top'#3#243#0#5'Width'#2'1'#7'Caption'#6#11'In &generic'#12
+  +'FocusControl'#7#25'eSpacesBeforeColonGeneric'#11'ParentColor'#8#0#0#6'TLabe'
+  +'l'#24'lblSpaceBeforeColonConst'#4'Left'#2#7#6'Height'#2#14#3'Top'#2'!'#5'Wi'
+  +'dth'#2'Z'#7'Caption'#6#19'C&onst declarations'#12'FocusControl'#7#22'eSpace'
+  +'BeforeColonConst'#11'ParentColor'#8#0#0#6'TLabel'#31'lblSpacesBeforeColonRe'
+  +'cordField'#4'Left'#2#8#6'Height'#2#14#3'Top'#3#153#0#5'Width'#2'?'#7'Captio'
+  +'n'#6#14'&Record fields'#12'FocusControl'#7#29'eSpacesBeforeColonRecordField'
+  +#11'ParentColor'#8#0#0#9'TSpinEdit'#20'eSpaceBeforeColonVar'#4'Left'#3#180#0
+  +#6'Height'#2#21#3'Top'#2#1#5'Width'#2'2'#8'TabOrder'#2#0#0#0#9'TSpinEdit'#22
+  +'eSpaceBeforeColonParam'#4'Left'#3#180#0#6'Height'#2#21#3'Top'#2'='#5'Width'
+  +#2'2'#8'TabOrder'#2#1#0#0#9'TSpinEdit'#19'eSpaceBeforeColonFn'#4'Left'#3#180
+  +#0#6'Height'#2#21#3'Top'#2'['#5'Width'#2'2'#8'TabOrder'#2#2#0#0#9'TSpinEdit'
+  +#26'eSpacesBeforeColonClassVar'#4'Left'#3#180#0#6'Height'#2#21#3'Top'#2'y'#5
+  +'Width'#2'2'#8'TabOrder'#2#3#0#0#9'TSpinEdit'#22'eSpacesBeforeCaseLabel'#4'L'
+  +'eft'#3#180#0#6'Height'#2#21#3'Top'#3#181#0#5'Width'#2'2'#8'TabOrder'#2#4#0#0
+  +#9'TSpinEdit'#18'eSpacesBeforeLabel'#4'Left'#3#180#0#6'Height'#2#21#3'Top'#3
+  +#211#0#5'Width'#2'2'#8'TabOrder'#2#5#0#0#9'TSpinEdit'#25'eSpacesBeforeColonG'
+  +'eneric'#4'Left'#3#180#0#6'Height'#2#21#3'Top'#3#241#0#5'Width'#2'2'#8'TabOr'
+  +'der'#2#6#0#0#9'TSpinEdit'#22'eSpaceBeforeColonConst'#4'Left'#3#180#0#6'Heig'
+  +'ht'#2#21#3'Top'#2#31#5'Width'#2'2'#8'TabOrder'#2#7#0#0#9'TSpinEdit'#29'eSpa'
+  +'cesBeforeColonRecordField'#4'Left'#3#180#0#6'Height'#2#21#3'Top'#3#151#0#5
+  +'Width'#2'2'#8'TabOrder'#2#8#0#0#0#242#2#3#9'TGroupBox'#6'gbTabs'#4'Left'#2#8
+  +#6'Height'#2'N'#3'Top'#3'X'#1#5'Width'#3#201#1#7'Caption'#6#15'&Tab characte'
+  +'rs'#12'ClientHeight'#2'<'#11'ClientWidth'#3#197#1#8'TabOrder'#2#3#0#6'TLabe'
+  +'l'#6'Label1'#4'Left'#3#240#0#6'Height'#2#14#3'Top'#2#7#5'Width'#2'I'#7'Capt'
+  +'ion'#6#14'Spaces per tab'#11'ParentColor'#8#0#0#6'TLabel'#6'Label3'#4'Left'
+  +#3#240#0#6'Height'#2#14#3'Top'#2#29#5'Width'#2'G'#7'Caption'#6#14'Spaces for'
+  +' tab'#11'ParentColor'#8#0#0#9'TCheckBox'#14'cbTabsToSpaces'#4'Left'#2#6#6'H'
+  +'eight'#2#17#3'Top'#2#9#5'Width'#2'q'#7'Caption'#6#19'Turn tabs to spaces'#7
+  +'OnClick'#7#19'cbTabsToSpacesClick'#8'TabOrder'#2#0#0#0#9'TCheckBox'#14'cbSp'
+  +'acesToTabs'#4'Left'#2#6#6'Height'#2#17#3'Top'#2#31#5'Width'#2'q'#7'Caption'
+  +#6#19'Turn spaces to tabs'#7'OnClick'#7#19'cbSpacesToTabsClick'#8'TabOrder'#2
+  +#2#0#0#9'TSpinEdit'#15'edtSpacesPerTab'#4'Left'#3'd'#1#6'Height'#2#21#3'Top'
+  +#2#5#5'Width'#2'1'#8'MaxValue'#2#12#8'TabOrder'#2#1#0#0#9'TSpinEdit'#15'edtS'
+  +'pacesForTab'#4'Left'#3'd'#1#6'Height'#2#21#3'Top'#2#29#5'Width'#2'1'#8'MaxV'
+  +'alue'#2#12#8'TabOrder'#2#3#0#0#0#242#2#4#9'TCheckBox'#11'cbMaxSpaces'#4'Lef'
+  +'t'#2#8#6'Height'#2#17#3'Top'#3#170#1#5'Width'#2'o'#7'Caption'#6#19'&Max spa'
+  +'ces in code'#7'OnClick'#7#16'cbMaxSpacesClick'#8'TabOrder'#2#4#0#0#242#2#5#9
+  +'TSpinEdit'#18'edtMaxSpacesInCode'#4'Left'#3#193#0#6'Height'#2#21#3'Top'#3
+  ,#168#1#5'Width'#2'2'#8'MaxValue'#2'c'#8'TabOrder'#2#5#0#0#242#2#6#11'TRadioG'
+  +'roup'#11'rgOperators'#4'Left'#3#4#1#6'Height'#2'\'#3'Top'#2#6#5'Width'#3#202
+  +#0#8'AutoFill'#9#7'Caption'#6#24'Spaces around &operators'#28'ChildSizing.Le'
+  +'ftRightSpacing'#2#6#28'ChildSizing.TopBottomSpacing'#2#6#29'ChildSizing.Enl'
+  +'argeHorizontal'#7#24'crsHomogenousChildResize'#27'ChildSizing.EnlargeVertic'
+  +'al'#7#24'crsHomogenousChildResize'#28'ChildSizing.ShrinkHorizontal'#7#14'cr'
+  +'sScaleChilds'#26'ChildSizing.ShrinkVertical'#7#14'crsScaleChilds'#18'ChildS'
+  +'izing.Layout'#7#29'cclLeftToRightThenTopToBottom'#27'ChildSizing.ControlsPe'
+  +'rLine'#2#1#12'ClientHeight'#2'J'#11'ClientWidth'#3#198#0#13'Items.Strings'#1
+  +#6#6'Always'#6#11'Leave as is'#6#5'Never'#0#8'TabOrder'#2#6#0#0#242#2#7#9'TG'
+  +'roupBox GroupBoxInsertSpaceBeforeBracket'#4'Left'#3#4#1#6'Height'#2'_'#3'To'
+  +'p'#2'b'#5'Width'#3#202#0#7'Caption'#6#28'&Insert space before bracket'#12'C'
+  +'lientHeight'#2'M'#11'ClientWidth'#3#198#0#8'TabOrder'#2#7#0#9'TCheckBox/cbI'
+  +'nsertSpaceBeforeBracketinFunctionDeclaration'#4'Left'#2#8#6'Height'#2#17#3
+  +'Top'#2#10#5'Width'#2'~'#7'Caption'#6#24'In function &declaration'#8'TabOrde'
+  +'r'#2#0#0#0#9'TCheckBox(cbInsertSpaceBeforeBracketinFunctionCall'#4'Left'#2#8
+  +#6'Height'#2#17#3'Top'#2' '#5'Width'#2'X'#7'Caption'#6#17'In function &call'
+  +#8'TabOrder'#2#1#0#0#9'TCheckBox%cbBeforeOpenSquareBracketInExpression'#4'Le'
+  +'ft'#2#8#6'Height'#2#17#3'Top'#2'4'#5'Width'#2'{'#7'Caption'#6#22'Before [ i'
+  +'n expression'#8'TabOrder'#2#2#0#0#0#242#2#8#9'TGroupBox'#28'GroupBoxSpacesI'
+  +'nsideBrackets'#4'Left'#3#4#1#6'Height'#2'F'#3'Top'#3#194#0#5'Width'#3#202#0
+  +#7'Caption'#6#28'Insert space inside brackets'#12'ClientHeight'#2'4'#11'Clie'
+  +'ntWidth'#3#198#0#8'TabOrder'#2#8#0#9'TCheckBox'#28'CheckBoxInsertSpaceBefor'
+  +'eEnd'#4'Left'#2#8#6'Height'#2#17#3'Top'#2#27#5'Width'#2'G'#7'Caption'#6#10
+  +'Before end'#8'TabOrder'#2#0#0#0#9'TCheckBox'#22'cbInsertSpaceAfterOpen'#4'L'
+  +'eft'#2#8#6'Height'#2#17#3'Top'#2#4#5'Width'#2'F'#7'Caption'#6#10'After open'
+  +#8'TabOrder'#2#1#0#0#0#242#2#9#9'TCheckBox'#25'cbMoveSpacesToBeforeColon'#4
+  +'Left'#3#4#1#6'Height'#2#17#3'Top'#3#14#1#5'Width'#3#156#0#7'Caption'#6#27'M'
+  +'ove spaces to before colon'#8'TabOrder'#2#9#0#0#0
 ]);

@@ -3,15 +3,13 @@ inherited fClarify: TfClarify
   Width = 426
   ClientHeight = 292
   ClientWidth = 426
-  Font.CharSet = ANSI_CHARSET
-  Font.Height = -15
-  Font.Name = 'Segoe UI'
-  ParentFont = False
+  DesignLeft = 130
+  DesignTop = 131
   object Label1: TLabel[0]
     Left = 8
-    Height = 18
+    Height = 14
     Top = 8
-    Width = 164
+    Width = 124
     Caption = 'File extensions to format:'
     ParentColor = False
   end

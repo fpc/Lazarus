@@ -3,25 +3,21 @@ inherited fClarifySpaces: TfClarifySpaces
   Width = 472
   ClientHeight = 463
   ClientWidth = 472
-  Font.CharSet = ANSI_CHARSET
-  Font.Height = -15
-  Font.Name = 'Segoe UI'
-  ParentFont = False
-  DesignLeft = 493
+  DesignLeft = 479
   DesignTop = 188
   object cbFixSpacing: TCheckBox[0]
     Left = 8
-    Height = 21
+    Height = 17
     Top = 6
-    Width = 92
+    Width = 71
     Caption = 'Fix &spacing'
     TabOrder = 0
   end
   object cbSpaceClassHeritage: TCheckBox[1]
     Left = 8
-    Height = 21
+    Height = 17
     Top = 29
-    Width = 200
+    Width = 151
     Caption = 'Space before class &heritage'
     TabOrder = 1
   end
@@ -36,144 +32,144 @@ inherited fClarifySpaces: TfClarifySpaces
     TabOrder = 2
     object lblSpaceBeforeColonVar: TLabel
       Left = 8
-      Height = 18
+      Height = 14
       Top = 3
-      Width = 106
+      Width = 78
       Caption = '&Var declarations'
       FocusControl = eSpaceBeforeColonVar
       ParentColor = False
     end
     object lblSpacesBeforeColonClassVar: TLabel
       Left = 8
-      Height = 18
+      Height = 14
       Top = 123
-      Width = 101
+      Width = 72
       Caption = '&Class variables'
       FocusControl = eSpacesBeforeColonClassVar
       ParentColor = False
     end
     object lblSpaceBeforeColonFn: TLabel
       Left = 8
-      Height = 18
+      Height = 14
       Top = 93
-      Width = 138
+      Width = 105
       Caption = '&Function return types'
       FocusControl = eSpaceBeforeColonFn
       ParentColor = False
     end
     object lblSpaceBeforeColonParam: TLabel
       Left = 8
-      Height = 18
+      Height = 14
       Top = 63
-      Width = 148
+      Width = 108
       Caption = '&Procedure parameters'
       FocusControl = eSpaceBeforeColonParam
       ParentColor = False
     end
     object lblSpacesBeforeCaseLabel: TLabel
       Left = 5
-      Height = 18
+      Height = 14
       Top = 183
-      Width = 70
+      Width = 50
       Caption = 'Case l&abel'
       FocusControl = eSpacesBeforeCaseLabel
       ParentColor = False
     end
     object lbSpacesBeforeLabel: TLabel
       Left = 5
-      Height = 18
+      Height = 14
       Top = 213
-      Width = 36
+      Width = 26
       Caption = '&Label'
       FocusControl = eSpacesBeforeLabel
       ParentColor = False
     end
     object lblSpacesBeforeColonGeneric: TLabel
       Left = 5
-      Height = 18
+      Height = 14
       Top = 243
-      Width = 64
+      Width = 49
       Caption = 'In &generic'
       FocusControl = eSpacesBeforeColonGeneric
       ParentColor = False
     end
     object lblSpaceBeforeColonConst: TLabel
       Left = 7
-      Height = 18
+      Height = 14
       Top = 33
-      Width = 123
+      Width = 90
       Caption = 'C&onst declarations'
       FocusControl = eSpaceBeforeColonConst
       ParentColor = False
     end
     object lblSpacesBeforeColonRecordField: TLabel
       Left = 8
-      Height = 18
+      Height = 14
       Top = 153
-      Width = 87
+      Width = 63
       Caption = '&Record fields'
       FocusControl = eSpacesBeforeColonRecordField
       ParentColor = False
     end
     object eSpaceBeforeColonVar: TSpinEdit
       Left = 180
-      Height = 25
+      Height = 21
       Top = 1
       Width = 50
       TabOrder = 0
     end
     object eSpaceBeforeColonParam: TSpinEdit
       Left = 180
-      Height = 25
+      Height = 21
       Top = 61
       Width = 50
       TabOrder = 1
     end
     object eSpaceBeforeColonFn: TSpinEdit
       Left = 180
-      Height = 25
+      Height = 21
       Top = 91
       Width = 50
       TabOrder = 2
     end
     object eSpacesBeforeColonClassVar: TSpinEdit
       Left = 180
-      Height = 25
+      Height = 21
       Top = 121
       Width = 50
       TabOrder = 3
     end
     object eSpacesBeforeCaseLabel: TSpinEdit
       Left = 180
-      Height = 25
+      Height = 21
       Top = 181
       Width = 50
       TabOrder = 4
     end
     object eSpacesBeforeLabel: TSpinEdit
       Left = 180
-      Height = 25
+      Height = 21
       Top = 211
       Width = 50
       TabOrder = 5
     end
     object eSpacesBeforeColonGeneric: TSpinEdit
       Left = 180
-      Height = 25
+      Height = 21
       Top = 241
       Width = 50
       TabOrder = 6
     end
     object eSpaceBeforeColonConst: TSpinEdit
       Left = 180
-      Height = 25
+      Height = 21
       Top = 31
       Width = 50
       TabOrder = 7
     end
     object eSpacesBeforeColonRecordField: TSpinEdit
       Left = 180
-      Height = 25
+      Height = 21
       Top = 151
       Width = 50
       TabOrder = 8
@@ -190,41 +186,41 @@ inherited fClarifySpaces: TfClarifySpaces
     TabOrder = 3
     object Label1: TLabel
       Left = 240
-      Height = 18
+      Height = 14
       Top = 7
-      Width = 100
+      Width = 73
       Caption = 'Spaces per tab'
       ParentColor = False
     end
     object Label3: TLabel
       Left = 240
-      Height = 18
+      Height = 14
       Top = 29
-      Width = 96
+      Width = 71
       Caption = 'Spaces for tab'
       ParentColor = False
     end
     object cbTabsToSpaces: TCheckBox
       Left = 6
-      Height = 21
+      Height = 17
       Top = 9
-      Width = 148
+      Width = 113
       Caption = 'Turn tabs to spaces'
       OnClick = cbTabsToSpacesClick
       TabOrder = 0
     end
     object cbSpacesToTabs: TCheckBox
       Left = 6
-      Height = 21
+      Height = 17
       Top = 31
-      Width = 148
+      Width = 113
       Caption = 'Turn spaces to tabs'
       OnClick = cbSpacesToTabsClick
       TabOrder = 2
     end
     object edtSpacesPerTab: TSpinEdit
       Left = 356
-      Height = 25
+      Height = 21
       Top = 5
       Width = 49
       MaxValue = 12
@@ -232,7 +228,7 @@ inherited fClarifySpaces: TfClarifySpaces
     end
     object edtSpacesForTab: TSpinEdit
       Left = 356
-      Height = 25
+      Height = 21
       Top = 29
       Width = 49
       MaxValue = 12
@@ -241,16 +237,16 @@ inherited fClarifySpaces: TfClarifySpaces
   end
   object cbMaxSpaces: TCheckBox[4]
     Left = 8
-    Height = 21
+    Height = 17
     Top = 426
-    Width = 147
+    Width = 111
     Caption = '&Max spaces in code'
     OnClick = cbMaxSpacesClick
     TabOrder = 4
   end
   object edtMaxSpacesInCode: TSpinEdit[5]
     Left = 193
-    Height = 25
+    Height = 21
     Top = 424
     Width = 50
     MaxValue = 99
@@ -291,25 +287,25 @@ inherited fClarifySpaces: TfClarifySpaces
     TabOrder = 7
     object cbInsertSpaceBeforeBracketinFunctionDeclaration: TCheckBox
       Left = 8
-      Height = 21
+      Height = 17
       Top = 10
-      Width = 159
+      Width = 126
       Caption = 'In function &declaration'
       TabOrder = 0
     end
     object cbInsertSpaceBeforeBracketinFunctionCall: TCheckBox
       Left = 8
-      Height = 21
+      Height = 17
       Top = 32
-      Width = 110
+      Width = 88
       Caption = 'In function &call'
       TabOrder = 1
     end
     object cbBeforeOpenSquareBracketInExpression: TCheckBox
       Left = 8
-      Height = 21
+      Height = 17
       Top = 52
-      Width = 159
+      Width = 123
       Caption = 'Before [ in expression'
       TabOrder = 2
     end
@@ -325,26 +321,26 @@ inherited fClarifySpaces: TfClarifySpaces
     TabOrder = 8
     object CheckBoxInsertSpaceBeforeEnd: TCheckBox
       Left = 8
-      Height = 21
+      Height = 17
       Top = 27
-      Width = 89
+      Width = 71
       Caption = 'Before end'
       TabOrder = 0
     end
     object cbInsertSpaceAfterOpen: TCheckBox
       Left = 8
-      Height = 21
+      Height = 17
       Top = 4
-      Width = 84
+      Width = 70
       Caption = 'After open'
       TabOrder = 1
     end
   end
   object cbMoveSpacesToBeforeColon: TCheckBox[9]
     Left = 260
-    Height = 21
+    Height = 17
     Top = 270
-    Width = 204
+    Width = 156
     Caption = 'Move spaces to before colon'
     TabOrder = 9
   end
