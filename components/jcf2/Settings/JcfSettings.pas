@@ -85,6 +85,7 @@ type
     destructor Destroy; override;
     class function GetGroupCaption: String; override;
     class function GetInstance: TAbstractIDEOptions; override;
+    procedure DoAfterWrite; override;
 
     procedure Read;
     procedure ReadFromFile(const psFileName: string; const pbMustExist: boolean);
@@ -248,6 +249,16 @@ end;
 class function TFormatSettings.GetInstance: TAbstractIDEOptions;
 begin
   Result := FormatSettings;
+end;
+
+procedure TFormatSettings.DoAfterWrite;
+begin
+  { settings are now in need of saving }
+  Dirty := True;
+  { check consistency of settings }
+  MakeConsistent;
+  { save to file }
+  Write;
 end;
 
 const
