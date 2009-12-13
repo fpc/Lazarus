@@ -316,7 +316,7 @@ msgstr "Automaattinen sisennys"
 
 #: lazarusidestrconsts.dlgautoremoveemptymethods
 msgid "Auto remove empty methods"
-msgstr ""
+msgstr "Poista automaattisesti tyhjät metodit"
 
 #: lazarusidestrconsts.dlgautoren
 msgid "Auto rename file lowercase"
@@ -1421,7 +1421,7 @@ msgstr ""
 
 #: lazarusidestrconsts.dlgideoptions
 msgid "IDE Options"
-msgstr ""
+msgstr "Kehitysympäristön asetukset"
 
 #: lazarusidestrconsts.dlgignoreverb
 msgid "Ignore"
@@ -3367,7 +3367,7 @@ msgstr "Varmistetaan vielä erikseen että korvataanko kyseinen kohta"
 
 #: lazarusidestrconsts.lisaskforcomponentnameafterputtingitonform
 msgid "Ask for component name after putting it on a designer form"
-msgstr ""
+msgstr "Kysytään komponentin nimi välittömästi kun se sijoitetaan suunnitteluaikana lomakkeelle (form) "
 
 #: lazarusidestrconsts.lisaskforfilenameonnewfile
 msgid "Ask for file name on new file"
@@ -3375,7 +3375,7 @@ msgstr ""
 
 #: lazarusidestrconsts.lisasknameoncreate
 msgid "Ask name on create"
-msgstr ""
+msgstr "Kysy komponentin nimi sitä luodessa"
 
 #: lazarusidestrconsts.lisautocompletionoff
 msgid "Auto completion: off"
@@ -3518,7 +3518,7 @@ msgstr ""
 #: lazarusidestrconsts.lisbreak
 msgctxt "lazarusidestrconsts.lisbreak"
 msgid "Break"
-msgstr ""
+msgstr "Keskeytä"
 
 #: lazarusidestrconsts.lisbreakpointproperties
 msgid "Breakpoint Properties"
@@ -3986,7 +3986,7 @@ msgstr ""
 
 #: lazarusidestrconsts.lischooseanameforthenewcomponent
 msgid "Choose a name for the new component"
-msgstr ""
+msgstr "Anna nimi uudelle komponentille"
 
 #: lazarusidestrconsts.lischooseapascalfileforindentationexamples
 msgid "Choose a pascal file for indentation examples"
@@ -4030,7 +4030,7 @@ msgstr "Valitse make-työkalun hakupolku"
 
 #: lazarusidestrconsts.lischoosename
 msgid "Choose name"
-msgstr ""
+msgstr "Valitse nimi"
 
 #: lazarusidestrconsts.lischooseoneoftheseitemstocreateanewfile
 msgid "Choose one of these items to create a new File"
@@ -5627,11 +5627,11 @@ msgstr ""
 
 #: lazarusidestrconsts.lisdonotshowthismessageagain
 msgid "Do not show this message again"
-msgstr ""
+msgstr "Älä näytä tätä viestiä enään"
 
 #: lazarusidestrconsts.lisdrawgridlinesobjectinspector
 msgid "Draw grid lines"
-msgstr ""
+msgstr "Näytä kohdistusviivat"
 
 #: lazarusidestrconsts.lisdsgcopycomponents
 msgid "Copy selected components to clipboard"
@@ -6064,7 +6064,7 @@ msgstr ""
 
 #: lazarusidestrconsts.liseverynthlinenumber
 msgid "Every n-th line number:"
-msgstr ""
+msgstr "Rivinumeroiden näyttöväli:"
 
 #: lazarusidestrconsts.lisexamplefile
 msgid "Example file:"
@@ -6080,7 +6080,7 @@ msgstr ""
 
 #: lazarusidestrconsts.lisexceptiondialog
 msgid "Debugger Exception Notification"
-msgstr ""
+msgstr "Virheejäljettimen kiinniottaman poikkeuksen havainto"
 
 #: lazarusidestrconsts.lisexcludefilter
 msgid "Exclude Filter"
@@ -6203,7 +6203,7 @@ msgstr "Vähennä näytön päivittämistä"
 
 #: lazarusidestrconsts.lisfepaintdesigneritemsonidlereduceoverheadforslowcompu
 msgid "Paint designer items only on idle (reduce overhead for slow computers)"
-msgstr "Piirretään suunnitteluaaikaiset kohdat joutoaikana (vähentää hitaiden tietokoineiden kuormaa)"
+msgstr "Piirretään suunnitteluaikaiset kohdat joutoaikana (vähentää hitaiden tietokoneiden kuormitusta)"
 
 #: lazarusidestrconsts.lisfiledoesnotlooklikeatextfileopenitanyway
 msgctxt "lazarusidestrconsts.lisfiledoesnotlooklikeatextfileopenitanyway"
@@ -6729,7 +6729,7 @@ msgstr ""
 
 #: lazarusidestrconsts.lisignoreexceptiontype
 msgid "Ignore this exception type"
-msgstr ""
+msgstr "Ohita tämän tyyppiset poikkeukset"
 
 #: lazarusidestrconsts.lisignoremissingfile
 msgid "Ignore missing file"
@@ -7624,7 +7624,7 @@ msgstr ""
 #: lazarusidestrconsts.lislazbuildaboaction
 msgctxt "lazarusidestrconsts.lislazbuildaboaction"
 msgid "Action"
-msgstr ""
+msgstr "Toiminta"
 
 #: lazarusidestrconsts.lislazbuildabochooseoutputdir
 msgid "Choose output directory of the IDE executable "
@@ -10249,7 +10249,7 @@ msgstr "Asennettaessa komponettipaketti %s tullaan automaattisesti asentamaan pa
 
 #: lazarusidestrconsts.lispkgmanginvalidcompilerfilename
 msgid "invalid Compiler filename"
-msgstr ""
+msgstr "Virheellinen kääntäjän tiedostonimi"
 
 #: lazarusidestrconsts.lispkgmanginvalidfileextension
 msgid "Invalid file extension"
@@ -11529,7 +11529,7 @@ msgstr ""
 
 #: lazarusidestrconsts.lisshowinfoboxinobjectinspector
 msgid "Show information box"
-msgstr ""
+msgstr "Näytä lisätietojaosa"
 
 #: lazarusidestrconsts.lisshowoldtaborder
 msgid "Show old tab order"
@@ -11991,7 +11991,7 @@ msgstr ""
 
 #: lazarusidestrconsts.listhenewunitisnotyetintheunitsearchpathadddirectory
 msgid "The new unit is not yet in the unit search path.%sAdd directory %s?"
-msgstr "Tämän käännösyksikön (unit) polku ei vielä ole hakupolussa.%sLisätäänkö"
+msgstr "Tämän käännösyksikön (unit) polku ei vielä ole hakupolussa.%sLisätäänkö kansio %s hakupolkuun?"
 
 #: lazarusidestrconsts.listheoutputdirectoryismissing
 msgid "The output directory %s%s%s is missing."
@@ -12587,12 +12587,12 @@ msgstr ""
 #: lazarusidestrconsts.lisunabletoreadtheprojectinfofile
 msgctxt "lazarusidestrconsts.lisunabletoreadtheprojectinfofile"
 msgid "Unable to read the project info file%s%s%s%s."
-msgstr ""
+msgstr "Ei pystytä lukemaan 'project info file'- tiedostoa."
 
 #: lazarusidestrconsts.lisunabletoreadtheprojectinfofile2
 msgctxt "lazarusidestrconsts.lisunabletoreadtheprojectinfofile2"
 msgid "Unable to read the project info file%s%s%s%s."
-msgstr ""
+msgstr "Ei pystytä lukemaan 'project info file'- tiedostoa"
 
 #: lazarusidestrconsts.lisunabletoremoveoldbackupfile
 msgid "Unable to remove old backup file %s%s%s!"
@@ -14313,7 +14313,7 @@ msgstr "Kirjainmerkki"
 
 #: lazarusidestrconsts.uemcloseotherpages
 msgid "Close All &Other Pages"
-msgstr ""
+msgstr "Sulje kaikki muut välilehdet"
 
 #: lazarusidestrconsts.uemclosepage
 msgid "&Close Page"
@@ -14392,19 +14392,19 @@ msgstr "Käännä sijoitus päinvastaiseksi"
 
 #: lazarusidestrconsts.uemmovepageleft
 msgid "Move page left"
-msgstr ""
+msgstr "Siirrä välilehteä vasemmalle"
 
 #: lazarusidestrconsts.uemmovepageleftmost
 msgid "Move page leftmost"
-msgstr ""
+msgstr "Siirrä välilehti vasemmanpuolimmaiseksi"
 
 #: lazarusidestrconsts.uemmovepageright
 msgid "Move page right"
-msgstr ""
+msgstr "Siirrä välilehteä oikealle"
 
 #: lazarusidestrconsts.uemmovepagerightmost
 msgid "Move page rightmost"
-msgstr ""
+msgstr "Siirrä välilehti oikeanpuolimmaiseksi"
 
 #: lazarusidestrconsts.uemnextbookmark
 msgid "Goto next Bookmark"
