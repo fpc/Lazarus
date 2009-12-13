@@ -4224,6 +4224,7 @@ begin
       UpdateEditorOptions;
 
       // save to disk
+      IDEEditorGroups.DoAfterWrite;
       EnvironmentOptions.Save(False);
       EditorOpts.Save;
       CodeToolsOpts.AssignTo(CodeToolBoss);

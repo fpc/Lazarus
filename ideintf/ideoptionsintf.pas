@@ -42,6 +42,7 @@ type
   public
     class function GetGroupCaption:string; virtual; abstract;
     class function GetInstance: TAbstractIDEOptions; virtual; abstract;
+    procedure DoAfterWrite; virtual;
   end;
   TAbstractIDEOptionsClass = class of TAbstractIDEOptions;
 
@@ -111,6 +112,7 @@ type
     function GetByIndex(AIndex: Integer): PIDEOptionsGroupRec;
   public
     procedure Resort;
+    procedure DoAfterWrite;
     procedure Add(AGroupIndex: Integer; AGroupClass: TAbstractIDEOptionsClass); reintroduce;
     property Items[AIndex: Integer]: PIDEOptionsGroupRec read GetItem write SetItem; default;
   end;
@@ -376,6 +378,27 @@ begin
       Items[i]^.Items.Resort;
 end;
 
+procedure TIDEOptionsGroupList.DoAfterWrite;
+var
+  i: integer;
+  Rec: PIDEOptionsGroupRec;
+  Instance: TAbstractIDEOptions;
+begin
+  for i := 0 to Count - 1 do
+  begin
+    Rec := Items[i];
+    if Rec^.Items <> nil then
+    begin
+      if Rec^.GroupClass <> nil then
+      begin
+        Instance := Rec^.GroupClass.GetInstance;
+        if Instance <> nil then
+          Instance.DoAfterWrite;
+      end;
+    end;
+  end;
+end;
+
 procedure TIDEOptionsGroupList.Add(AGroupIndex: Integer; AGroupClass: TAbstractIDEOptionsClass);
 var
   Rec: PIDEOptionsGroupRec;
@@ -390,6 +413,13 @@ begin
   end;
 
   Rec^.GroupClass := AGroupClass;
+end;
+
+{ TAbstractIDEOptions }
+
+procedure TAbstractIDEOptions.DoAfterWrite;
+begin
+  // nothing
 end;
 
 initialization
