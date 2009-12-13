@@ -264,6 +264,14 @@ var
 begin
   Result := False;
   case QEvent_type(Event) of
+    QEventApplicationActivate:
+      if Assigned(Application) then
+        Application.IntfAppActivate;
+
+    QEventApplicationDeactivate:
+      if Assigned(Application) then
+        Application.IntfAppDeactivate;
+
     QEventStyleChange: ClearCachedColors;
     LCLQt_Destroy:
       begin
