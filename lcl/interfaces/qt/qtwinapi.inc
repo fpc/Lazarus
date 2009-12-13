@@ -4217,14 +4217,22 @@ var
   EmptyRegion: QRegionH;
   Painter: QPainterH;
   R: TRect;
+  AIsPolyRegion: boolean = False;
 begin
   Result := ERROR;
   if IsValidDC(DC) then
   begin
     Painter := TQtDeviceContext(DC).Widget;
     if RGN <> 0 then
-      QPainter_setClipRegion(Painter, TQtRegion(Rgn).Widget)
-    else
+    begin
+      AIsPolyRegion := TQtRegion(Rgn).IsPolyRegion;
+      QPainter_setClipRegion(Painter, TQtRegion(Rgn).Widget);
+      if AIsPolyRegion then
+      begin
+        Result := COMPLEXREGION;
+        exit;
+      end;
+    end else
     begin
       {$IFDEF UNIX}
       {looks like a qt bug, this helps to mac & linux}
