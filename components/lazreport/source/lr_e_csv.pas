@@ -37,6 +37,7 @@ type
     FSeparator: TUTF8Char;
   protected
     procedure GetUsedFont; override;
+    procedure CalcXCoords(var x,w: integer); override;
   public
     constructor Create(AStream: TStream); override;
     procedure OnEndPage; override;
@@ -56,6 +57,11 @@ uses LR_Const;
 procedure TfrCSVExportFilter.GetUsedFont;
 begin
   // never ask usedfont dialog in CSV exporter
+end;
+
+procedure TfrCSVExportFilter.CalcXCoords(var x, w: integer);
+begin
+  // do not convert x coords in CSV exporter
 end;
 
 constructor TfrCSVExportFilter.Create(AStream: TStream);
