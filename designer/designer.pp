@@ -3014,7 +3014,8 @@ begin
       FDDC.BeginPainting;
       FDDC.Canvas.SaveHandleState;
       OwnerRect := TControl(AComponent).ClientRect;
-      GetParentFormRelativeClientOrigin(AComponent);
+      Diff := GetParentFormRelativeClientOrigin(AComponent);
+      OffsetRect(OwnerRect, Diff.X, Diff.Y);
       with OwnerRect do
         RGN := CreateRectRGN(Left, Top, Right, Bottom);
       SelectClipRGN(FDDC.DC, RGN);
@@ -3026,9 +3027,9 @@ begin
       FDDC.Canvas.RestoreHandleState;
       FDDC.EndPainting;
     end;
-  end else begin
+  end
+  else
     TComponentAccess(AComponent).GetChildren(@DrawNonVisualComponent, AComponent.Owner);
-  end;
 
   if not ComponentIsIcon(AComponent) or (AComponent.Owner = nil) then
     Exit;
