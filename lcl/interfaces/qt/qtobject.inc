@@ -388,7 +388,7 @@ begin
     Painter := TQtDeviceContext(CanvasHandle).Widget;
     Pen := QPainter_pen(Painter);
     QPen_color(Pen, @ASavedColor);
-    QColor_fromRgb(@Color, Red(AColor),Green(AColor),Blue(AColor));
+    QColor_fromRgb(@Color, ColorToRGB(AColor));
     QPainter_setPen(Painter, @Color);
     QPainter_drawPoint(Painter, X,Y);
     QPainter_setPen(Painter, @ASavedColor);

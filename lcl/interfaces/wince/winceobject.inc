@@ -623,7 +623,7 @@ end;
  ------------------------------------------------------------------------------}
 procedure TWinCEWidgetSet.DCSetPixel(CanvasHandle: HDC; X, Y: integer; AColor: TGraphicsColor);
 begin
-  Windows.SetPixel(CanvasHandle, X, Y, AColor);
+  Windows.SetPixel(CanvasHandle, X, Y, ColorToRGB(AColor));
 end;
 
 {------------------------------------------------------------------------------

@@ -776,7 +776,7 @@ end;
  ------------------------------------------------------------------------------}
 procedure TWin32WidgetSet.DCSetPixel(CanvasHandle: HDC; X, Y: integer; AColor: TGraphicsColor);
 begin
-  Windows.SetPixel(CanvasHandle, X, Y, Windows.ColorRef(AColor));
+  Windows.SetPixel(CanvasHandle, X, Y, Windows.ColorRef(ColorToRGB(AColor)));
 end;
 
 {------------------------------------------------------------------------------

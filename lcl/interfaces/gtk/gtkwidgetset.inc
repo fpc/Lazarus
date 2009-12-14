@@ -4508,7 +4508,7 @@ begin
   inc(Y,DCOrigin.Y);
 
   DC.SelectedColors := dcscCustom;
-  GDKColor := AllocGDKColor(AColor);
+  GDKColor := AllocGDKColor(ColorToRGB(AColor));
   gdk_gc_set_foreground(DC.GC, @GDKColor);
   {$IFDEF DebugGDK}BeginGDKErrorTrap;{$ENDIF}
   gdk_draw_point(DC.Drawable, DC.GC, X, Y);
