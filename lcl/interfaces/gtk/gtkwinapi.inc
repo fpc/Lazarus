@@ -58,6 +58,7 @@ function TGtkWidgetSet.Arc(DC: HDC;
 var
   DevCtx: TGtkDeviceContext absolute DC;
   DCOrigin: TPoint;
+  Angle: Integer;
 begin
   Result := IsValidDC(DC);
   if not Result then Exit;
@@ -71,6 +72,17 @@ begin
     Exit;
   end;
   if DevCtx.IsNullPen then Exit;
+
+  if DevCtx.HasTransf then
+  begin
+    DevCtx.TransfRect(Left, Top, Right, Bottom);
+    DevCtx.TransfNormalize(Left, Right);
+    DevCtx.TransfNormalize(Top, Bottom);
+    // we must convert angles too because of possible negative axis orientations
+    Angle := Angle1 + Angle2;
+    DevCtx.TransfAngles(Angle1, Angle);
+    Angle2 := Angle - Angle1;
+  end;
 
   DCOrigin := DevCtx.Offset;
   inc(Left, DCOrigin.X);
@@ -1477,6 +1489,7 @@ begin
   Result := 0;
   GDIObject := NewGDIObject(gdiFont);
   try
+    GdiObject^.UntransfFontHeight := 0;
     GdiObject^.LogFont := LogFont;
 
     CachedFont:=FontCache.FindGTkFontDesc(LogFont,LongFontName);
@@ -2064,6 +2077,7 @@ begin
   Assert(False, 'trace:[TGtkWidgetSet.CreatePenIndirect]');
 //write('CreatePenIndirect->');
   GObject := NewGDIObject(gdiPen);
+  GObject^.UnTransfPenWidth := 0;
   GObject^.GDIPenDashes := nil;
 
   GObject^.IsExtPen := False;
@@ -2496,6 +2510,7 @@ function TGtkWidgetSet.DrawFrameControl(DC: HDC; const Rect : TRect;
 var
   DevCtx: TGtkDeviceContext absolute DC;
   Widget: PGtkWidget;
+  R: TRect;
 
   procedure DrawButtonPush;
   var
@@ -2577,8 +2592,8 @@ var
            nil,
            GetStyleWidget(lgsButton),
            'button',
-           Rect.Left+DCOrigin.X,Rect.Top+DCOrigin.Y,
-           Rect.Right-Rect.Left,Rect.Bottom-Rect.Top)
+           R.Left+DCOrigin.X,R.Top+DCOrigin.Y,
+           R.Right-R.Left,R.Bottom-R.Top)
       else
         gtk_paint_box(aStyle,aDC.Drawable,
            State,
@@ -2586,8 +2601,8 @@ var
            nil,
            GetStyleWidget(lgsButton),
            'button',
-           Rect.Left+DCOrigin.X,Rect.Top+DCOrigin.Y,
-           Rect.Right-Rect.Left,Rect.Bottom-Rect.Top);
+           R.Left+DCOrigin.X,R.Top+DCOrigin.Y,
+           R.Right-R.Left,R.Bottom-R.Top);
     end;
     Result := True;
   end;
@@ -2639,16 +2654,16 @@ var
       Widget^.Window := aDC.Drawable;
       gtk_paint_check(Style,aDC.Drawable, State,
         Shadow, nil, Widget, 'checkbutton',
-        Rect.Left+DCOrigin.X,Rect.Top+DCOrigin.Y,
-        Rect.Right-Rect.Left, Rect.Bottom-Rect.Top);
+        R.Left+DCOrigin.X,R.Top+DCOrigin.Y,
+        R.Right-R.Left, R.Bottom-R.Top);
       Result := True;
     end
     else begin
       {$IfNDef Win32}
       if Style<>nil then
         gtk_draw_check(Style,aDC.Drawable, State,
-          Shadow, Rect.Left+DCOrigin.X,Rect.Top+DCOrigin.Y,
-          Rect.Right-Rect.Left, Rect.Bottom-Rect.Top);
+          Shadow, R.Left+DCOrigin.X,R.Top+DCOrigin.Y,
+          R.Right-R.Left, R.Bottom-R.Top);
       {$EndIf}
       Result := True;
     end;
@@ -2660,6 +2675,14 @@ begin
   Result := False;
   if IsValidDC(DC) then 
   begin
+    if DevCtx.HasTransf then
+    begin
+      R := DevCtx.TransfRectIndirect(Rect);
+      DevCtx.TransfNormalize(R.Left, R.Right);
+      DevCtx.TransfNormalize(R.Top, R.Bottom);
+    end else
+      R := Rect;
+
     Widget:=TGtkDeviceContext(DC).Widget;
     ClientWidget:=GetFixedWidget(Widget);
     if ClientWidget<>nil then
@@ -2680,7 +2703,7 @@ begin
       end;
     DFC_BUTTON:
       begin
-        Assert(False, Format('Trace:  [TGtkWidgetSet.DrawFrameControl] DFC_BUTTON --> draw rect = %d,%d,%d,%d',[Rect.Left,Rect.Top,REct.Right,REct.Bottom]));
+        Assert(False, Format('Trace:  [TGtkWidgetSet.DrawFrameControl] DFC_BUTTON --> draw rect = %d,%d,%d,%d',[R.Left,R.Top,R.Right,R.Bottom]));
         //figure out the style first
         case uState and $1F of
           DFCS_BUTTONRADIOIMAGE:
@@ -2721,9 +2744,8 @@ end;
 function TGTKWidgetSet.DrawFocusRect(DC: HDC; const Rect: TRect): boolean;
 var
   DevCtx: TGtkDeviceContext absolute DC;
-
   Origin: TPoint;
-  
+
   procedure DrawPixel(X1,Y1: Integer);
   begin
     inc(X1,Origin.X);
@@ -2763,6 +2785,7 @@ var
   OldROP: Integer;
   APen, TempPen: HPEN;
   LogPen : TLogPen;
+  R: TRect;
 begin
   Result := False;
   if IsValidDC(DC) then begin
@@ -2771,6 +2794,11 @@ begin
       lopnWidth.X := 2;
       lopnColor   := clWhite;
     end;
+    if DevCtx.HasTransf then
+      R := DevCtx.TransfRectIndirect(Rect)
+    else
+      R := Rect;
+
     APen := CreatePenIndirect(LogPen);
     TempPen := SelectObject(DC, APen);
     OldRop := SetROP2(DC, R2_XORPEN);
@@ -2778,7 +2806,7 @@ begin
     Origin := DevCtx.Offset;
     try
 
-      with Rect do begin
+      with R do begin
         DrawHorzLine(Left, Top, Right-1);
         DrawVertLine(Right-1, Top, Bottom-1);
         DrawHorzLine(Right-1, Bottom-1, Left);
@@ -2846,8 +2874,17 @@ begin
   then with TGtkDeviceContext(DC) do
   begin
     R := ARect;
+
+    if DevCtx.HasTransf then
+    begin
+      R := DevCtx.TransfRectIndirect(R);
+      TransfNormalize(R.Left, R.Right);
+      TransfNormalize(R.Top, R.Bottom);
+    end;
+
     DCOrigin := Offset;
     OffsetRect(R,DCOrigin.X,DCOrigin.Y);
+
 
     // try to use the gdk functions, so that the current theme is used
     BInner := False;
@@ -3162,7 +3199,7 @@ begin
   // Don't try to use StrLen(Str) in cases count >= 0
   // In those cases str is NOT required to have a null terminator !
   if Count = -1 then Count := StrLen(Str);
-  
+
   Lines := nil;
   NumLines := 0;
   TempDC := HDC(-1);
@@ -3795,6 +3832,9 @@ begin
   Result := IsValidDC(DC);
   if not Result then Exit;
 
+  if DevCtx.HasTransf then
+    DevCtx.TransfRect(X1, Y1, X2, Y2);
+
   CalculateLeftTopWidthHeight(X1, Y1, X2, Y2, Left, Top, Width, Height);
   if (Width = 0) or (Height = 0) then Exit(True);
   // X2, Y2 is not part of the rectangle
@@ -3865,7 +3905,7 @@ var
   i: integer;
 begin
   GObject := NewGDIObject(gdiPen);
-
+  GObject^.UnTransfPenWidth := 0;
   GObject^.IsExtPen := True;
   GObject^.GDIPenStyle := dwPenStyle;
   GObject^.GDIPenWidth := dwWidth;
@@ -4046,7 +4086,18 @@ begin
   Assert(False, Format('trace:> [TGtkWidgetSet.ExtTextOut] DC:0x%x, X:%d, Y:%d, Options:%d, Str:''%s'', Count: %d', [DC, X, Y, Options, Str, Count]));
 
   if not IsValidDC(DC) then Exit(False);
-  
+
+  if DevCtx.HasTransf then
+  begin
+    DevCtx.TransfPoint(X, Y);
+    if Rect <> nil then
+    begin
+      Rect^ := DevCtx.TransfRectIndirect(Rect^);
+      DevCtx.TransfNormalize(Rect^.Left, Rect^.Right);
+      DevCtx.TransfNormalize(Rect^.Top, Rect^.Bottom);
+    end;
+  end;
+
   if ((Options and (ETO_OPAQUE or ETO_CLIPPED)) <> 0)
   and (Rect=nil)
   then begin
@@ -4181,6 +4232,7 @@ function TGtkWidgetSet.Frame(DC: HDC; const ARect: TRect): Integer;
 var
   DCOrigin: TPoint;
   DevCtx: TGtkDeviceContext absolute DC;
+  R: TRect;
 begin
   Result:=0;
   if not IsValidDC(DC) then exit;
@@ -4192,10 +4244,18 @@ begin
   Result := 1;
   if DevCtx.IsNullPen then Exit;
 
+  if DevCtx.HasTransf then
+  begin
+    R :=DevCtx.TransfRectIndirect(ARect);
+    DevCtx.TransfNormalize(R.Left, R.Right);
+    DevCtx.TransfNormalize(R.Top, R.Bottom);
+  end else
+    R := ARect;
+
   DCOrigin := DevCtx.Offset;
   gdk_draw_rectangle(DevCtx.Drawable, DevCtx.GC, 0,
-                     ARect.Left+DCOrigin.X, ARect.Top+DCOrigin.Y,
-                     ARect.Right-ARect.Left, ARect.Bottom-ARect.Top);
+                     R.Left+DCOrigin.X, R.Top+DCOrigin.Y,
+                     R.Right-R.Left, R.Bottom-R.Top);
 end;
 
 {------------------------------------------------------------------------------
@@ -4208,8 +4268,10 @@ end;
 function TGtkWidgetSet.Frame3d(DC: HDC; var ARect: TRect;
   const FrameWidth: integer; const Style: TBevelCut): boolean;
 var
+  DevCtx: TGtkDeviceContext absolute DC;
   TheStyle: PGtkStyle;
-  i: integer;
+  i, AWidth: integer;
+  P: TPoint;
   gc1, gc2: PGdkGC;
   OldGC1Values, OldGC2Values: TGdkGCValues;
 begin
@@ -4218,10 +4280,22 @@ begin
   TheStyle := gtk_widget_get_style(GetStyleWidget(lgsButton));
   if TheStyle = nil then exit;
 
+  if DevCtx.HasTransf then
+  begin
+    ARect := DevCtx.TransfRectIndirect(ARect);
+    DevCtx.TransfNormalize(ARect.Left, ARect.Right);
+    DevCtx.TransfNormalize(ARect.Top, ARect.Bottom);
+    P.X := FrameWidth;
+    P.Y := FrameWidth;
+    P := DevCtx.TransfExtentIndirect(P);
+    AWidth := Abs(Min(P.X, P.Y));
+  end else
+    AWidth := FrameWidth;
+
   case Style of
     bvNone:
       begin
-        InflateRect(ARect, -FrameWidth, -FrameWidth);
+        InflateRect(ARect, -AWidth, -AWidth);
         Exit;
       end;
     bvLowered:
@@ -4236,12 +4310,12 @@ begin
      end;
     bvSpace:
      begin
-        InflateRect(ARect, -FrameWidth, -FrameWidth);
+        InflateRect(ARect, -AWidth, -AWidth);
         Exit;
      end;
   end;
 
-  with TGtkDeviceContext(DC) do
+  with DevCtx do
   begin
     if WithChildWindows then
     begin
@@ -4251,7 +4325,7 @@ begin
       gdk_gc_set_subwindow(gc2, GDK_INCLUDE_INFERIORS);
     end;
 
-    for i := 1 to FrameWidth do
+    for i := 1 to AWidth do
     begin
       gdk_draw_line(Drawable, gc1, ARect.Left + Offset.x, ARect.Top + Offset.y,
         ARect.Right + Offset.x - 2, ARect.Top + Offset.y);
@@ -4283,6 +4357,7 @@ function TGtkWidgetSet.FrameRect(DC: HDC; const ARect: TRect;
 var
   DevCtx: TGtkDeviceContext absolute DC;
   DCOrigin: TPoint;
+  R: TRect;
 begin
   Result:=0;
   if not IsValidDC(DC) then Exit;
@@ -4291,13 +4366,22 @@ begin
   // Draw outline
   Result := 1;
   if PGdiObject(hBr)^.IsNullBrush then Exit;
-  
+
   DevCtx.SelectedColors:= dcscCustom;
   EnsureGCColor(DC, dccGDIBrushColor, True, False);//Brush Color
+
+  if DevCtx.HasTransf then
+  begin
+    R := DevCtx.TransfRectIndirect(ARect);
+    DevCtx.TransfNormalize(R.Left, R.Right);
+    DevCtx.TransfNormalize(R.Top, R.Bottom);
+  end else
+    R := ARect;
+
   DCOrigin := DevCtx.Offset;
   gdk_draw_rectangle(DevCtx.Drawable, DevCtx.GC, 0,
-                     ARect.Left+DCOrigin.X, ARect.Top+DCOrigin.Y,
-                     ARect.Right-ARect.Left-1, ARect.Bottom-ARect.Top-1);
+                     R.Left+DCOrigin.X, R.Top+DCOrigin.Y,
+                     R.Right-R.Left-1, R.Bottom-R.Top-1);
 end;
 
 {------------------------------------------------------------------------------
@@ -5271,6 +5355,16 @@ begin
   end;
 
   //Assert(False, Format('Trace:[TGtkWidgetSet.GetKeyState] %d -> 0x%x', [nVirtKey, Result]));
+end;
+
+function TGtkWidgetSet.GetMapMode(DC: HDC): Integer;
+var
+  DevCtx: TGtkDeviceContext absolute DC;
+begin
+  if IsValidDC(DC) then
+    Result := DevCtx.MapMode
+  else
+    Result := 0;
 end;
 
 function TGTKWidgetSet.GetMonitorInfo(Monitor: HMONITOR; lpmi: PMonitorInfo): Boolean;
@@ -6259,6 +6353,14 @@ begin
               ascent+descent;
               {$ENDIF}
     //debugln('TGtkWidgetSet.GetTextExtentPoint END Str="'+DbgStr(Str)+'" Size=',dbgs(Size.cX),'x',dbgs(Size.cY),' ascent=',dbgs(ascent),' descent=',dbgs(descent),' tmDescent=',dbgs(TGtkDeviceContext(DC).DCTextMetric.TextMetric.tmDescent));
+
+    if DevCtx.HasTransf then
+    begin
+      DevCtx.InvTransfExtent(Size.cx, Size.cy);
+      Size.cx := Abs(Size.cx);
+      Size.cy := Abs(Size.cy);
+    end;
+
   end;
   Assert(False, 'trace:< [TGtkWidgetSet.GetTextExtentPoint]');
 
@@ -6286,6 +6388,45 @@ begin
   end;
 
   Assert(False, Format('Trace:< TODO FINISH[TGtkWidgetSet.GetTextMetrics] DC: 0x%x', [DC]));
+end;
+
+function TGtkWidgetSet.GetViewPortExtEx(DC: HDC; Size: PSize): Integer;
+var
+  DevCtx: TGtkDeviceContext absolute DC;
+begin
+  if IsValidDC(DC) and (Size <> nil) then
+  begin
+    Size^.cx := DevCtx.ViewPortExt.x;
+    Size^.cy := DevCtx.ViewPortExt.y;
+    Result := Integer(True);
+  end else
+    Result := Integer(False);
+end;
+
+function TGtkWidgetSet.GetViewPortOrgEx(DC: HDC; P: PPoint): Integer;
+var
+  DevCtx: TGtkDeviceContext absolute DC;
+begin
+  if IsValidDC(DC) and (P <> nil) then
+  begin
+    P^.x := DevCtx.ViewPortOrg.x;
+    P^.y := DevCtx.ViewPortOrg.y;
+    Result := Integer(True);
+  end else
+    Result := Integer(False);
+end;
+
+function TGtkWidgetSet.GetWindowExtEx(DC: HDC; Size: PSize): Integer;
+var
+  DevCtx: TGtkDeviceContext absolute DC;
+begin
+  if IsValidDC(DC) and (Size <> nil) then
+  begin
+    Size^.cx := DevCtx.WindowExt.x;
+    Size^.cy := DevCtx.WindowExt.y;
+    Result := Integer(True);
+  end else
+    Result := Integer(False);
 end;
 
 {------------------------------------------------------------------------------
@@ -6688,7 +6829,18 @@ end;
  ------------------------------------------------------------------------------}
 function TGtkWidgetSet.IntersectClipRect(dc: hdc;
   Left, Top, Right, Bottom: Integer): Integer;
+var
+  DevCtx: TGtkDeviceContext absolute DC;
 begin
+  if not IsValidDC(DC) then Exit;
+
+  if DevCtx.HasTransf then
+  begin
+    DevCtx.TransfRect(Left, Top, Right, Bottom);
+    DevCtx.TransfNormalize(Left, Right);
+    DevCtx.TransfNormalize(Top, Bottom);
+  end;
+
   Result := inherited IntersectClipRect(DC, Left, Top, Right, Bottom);
 end;
 
@@ -6876,6 +7028,9 @@ begin
   
   if DevCtx.IsNullPen then Exit(True);
 
+  if DevCtx.HasTransf then
+    DevCtx.TransfPoint(X, Y);
+
   DCOrigin := DevCtx.Offset;
 
   FromX:=DevCtx.PenPos.X+DCOrigin.X;
@@ -7035,6 +7190,10 @@ begin
   then with TGtkDeviceContext(DC) do
   begin
     if OldPoint <> nil then OldPoint^ := PenPos;
+
+    if DevCtx.HasTransf then
+      DevCtx.TransfPoint(X, Y);
+
     PenPos := Point(X, Y);
   end;
   Assert(False, Format('trace:< [TGtkWidgetSet.MoveToEx] DC:0x%x, X:%d, Y:%d', [DC, X, Y]));
@@ -7168,6 +7327,8 @@ begin
     GetMem(PointArray, SizeOf(TGdkPoint) * (NumPts + 1)); // +1 for return line
     for i := 0 to NumPts - 1 do
     begin
+      if DevCtx.HasTransf then
+        Points[I] := DevCtx.TransfPointIndirect(Points[I]);
       PointArray[i].x := Points[i].x + DCOrigin.X;
       PointArray[i].y := Points[i].y + DCOrigin.Y;
     end;
@@ -7197,6 +7358,12 @@ begin
       ExtSelectClipRGN(DC, RGN, RGN_AND);
       DeleteObject(RGN);
       GetClipBox(DC, @ClipRect);
+      if DevCtx.HasTransf then
+      begin
+        ClipRect := DevCtx.InvTransfRectIndirect(ClipRect);
+        DevCtx.TransfNormalize(ClipRect.Left, ClipRect.Right);
+        DevCtx.TransfNormalize(ClipRect.Top, ClipRect.Bottom);
+      end;
       // draw polygon area
       DevCtx.FillRect(ClipRect, HBrush(PtrUInt(DevCtx.GetBrush)), False);
       // restore old clipping
@@ -7242,6 +7409,8 @@ begin
   GetMem(PointArray, SizeOf(TGdkPoint)*NumPts);
   for i:=0 to NumPts-1 do
   begin
+    if DevCtx.HasTransf then
+      Points[I] := DevCtx.TransfPointIndirect(Points[I]);
     PointArray[i].x:=Points[i].x+DCOrigin.X;
     PointArray[i].y:=Points[i].y+DCOrigin.Y;
   end;
@@ -7467,6 +7636,9 @@ var
 begin
   Assert(False, Format('trace:> [TGtkWidgetSet.Rectangle] DC:0x%x, X1:%d, Y1:%d, X2:%d, Y2:%d', [DC, X1, Y1, X2, Y2]));
   if not IsValidDC(DC) then Exit(False);
+
+  if DevCtx.HasTransf then
+    DevCtx.TransfRect(X1, Y1, X2, Y2);
 
   CalculateLeftTopWidthHeight(X1, Y1, X2, Y2, Left, Top, Width, Height);
   if (Width = 0) or (Height = 0) then Exit(True);
@@ -8042,9 +8214,10 @@ begin
       Assert(False, Format('trace:  [TGtkWidgetSet.SelectObject] DC: 0x%x, Type: Font', [DC]));
         
       ResultObj := DevCtx.GetFont;// always create, because a valid GDIObject is needed to restore
-      if DevCtx.CurrentFont = GDIObject then Exit;
+      if (DevCtx.CurrentFont = GDIObject) and not DevCtx.HasTransf then Exit;
       
       DevCtx.CurrentFont := GDIObject;
+
       {$ifdef GTK1}
       if DevCtx.GC <> nil then
         gdk_gc_set_font(DevCtx.GC, GdiObject^.GDIFontObject);
@@ -8810,6 +8983,16 @@ begin
   end;
 end;
 
+function TGtkWidgetSet.SetMapMode(DC: HDC; fnMapMode : Integer): Integer;
+var
+  DevCtx: TGtkDeviceContext absolute DC;
+begin
+  Result := Integer(False);
+  if not IsValidDC(DC) then Exit(0);
+  DevCtx.MapMode := fnMapMode;
+  Result := Integer(True);
+end;
+
 {------------------------------------------------------------------------------
   function TGtkWidgetSet.SetProp(Handle: hwnd; Str : PChar;
                               Data : Pointer) : Boolean;
@@ -9133,6 +9316,70 @@ begin
     end;
   end;
   Assert(False, Format('trace:< [TGtkWidgetSet.SetTextColor] DC: 0x%x Color: %8x --> %8x', [Integer(DC), Color, Result]));
+end;
+
+function TGtkWidgetSet.SetViewPortExtEx(DC: HDC; XExtent, YExtent : Integer; OldSize: PSize): Boolean;
+var
+  DevCtx: TGtkDeviceContext absolute DC;
+begin
+  Result := False;
+  if not IsValidDC(DC) then Exit;
+  if OldSize <> nil then
+  begin
+    OldSize^.cx := DevCtx.ViewPortExt.x;
+    OldSize^.cy := DevCtx.ViewPortExt.y;
+  end;
+  if (XExtent <> DevCtx.ViewPortExt.x) or (YExtent <> DevCtx.ViewPortExt.y) then
+  begin
+    case DevCtx.MapMode of
+      MM_ANISOTROPIC, MM_ISOTROPIC:
+      begin
+        DevCtx.ViewPortExt := Point(XExtent, YExtent);
+        Result := True;
+      end;
+    end;
+  end;
+end;
+
+function TGtkWidgetSet.SetViewPortOrgEx(DC: HDC; NewX, NewY: Integer; OldPoint: PPoint): Boolean;
+var
+  DevCtx: TGtkDeviceContext absolute DC;
+begin
+  Result := False;
+  if not IsValidDC(DC) then Exit;
+  if OldPoint <> nil then
+  begin
+    OldPoint^.x := DevCtx.ViewPortOrg.x;
+    OldPoint^.y := DevCtx.ViewPortOrg.y;
+  end;
+  if (NewX <> DevCtx.ViewPortOrg.x) or (NewY <> DevCtx.ViewPortOrg.y) then
+  begin
+    DevCtx.ViewPortOrg := Point(NewX, NewY);
+    Result := True;
+  end;
+end;
+
+function TGtkWidgetSet.SetWindowExtEx(DC: HDC; XExtent, YExtent: Integer; OldSize: PSize): Boolean;
+var
+  DevCtx: TGtkDeviceContext absolute DC;
+begin
+  Result := False;
+  if not IsValidDC(DC) then Exit;
+  if OldSize <> nil then
+  begin
+    OldSize^.cx := DevCtx.WindowExt.x;
+    OldSize^.cy := DevCtx.WindowExt.y;
+  end;
+  if (XExtent <> DevCtx.WindowExt.x) or (YExtent <> DevCtx.WindowExt.y) then
+  begin
+    case DevCtx.MapMode of
+      MM_ANISOTROPIC, MM_ISOTROPIC:
+      begin
+        DevCtx.WindowExt := Point(XExtent, YExtent);
+        Result := True;
+      end;
+    end;
+  end;
 end;
 
 {------------------------------------------------------------------------------
@@ -9586,6 +9833,9 @@ begin
     Underline := DevCtx.CurrentFont^.LogFont.lfUnderline <> 0;
     StrikeOut := DevCtx.CurrentFont^.LogFont.lfStrikeOut <> 0;
   end;
+
+  if DevCtx.HasTransf then
+    DevCtx.TransfPoint(X, Y);
 
   DCOrigin := DevCtx.Offset;
   descent:=0;

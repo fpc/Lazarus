@@ -919,6 +919,11 @@ begin
   Result := 0;
 end;
 
+function TWidgetSet.GetMapMode(DC: HDC): Integer;
+begin
+  Result := 0;
+end;
+
 function TWidgetset.GetMonitorInfo(hMonitor: HMONITOR; lpmi: PMonitorInfo): Boolean;
 begin
   Result := False;
@@ -1017,6 +1022,21 @@ end;
 function TWidgetSet.GetTextMetrics(DC: HDC; var TM: TTextMetric): Boolean;
 begin
   Result := False;
+end;
+
+function TWidgetSet.GetViewPortExtEx(DC: HDC; Size: PSize): Integer;
+begin
+  Result := 0;
+end;
+
+function TWidgetSet.GetViewPortOrgEx(DC: HDC; P: PPoint): Integer;
+begin
+  Result := 0;
+end;
+
+function TWidgetSet.GetWindowExtEx(DC: HDC; Size: PSize): Integer;
+begin
+  Result := 0;
 end;
 
 function TWidgetSet.GetWindowLong(Handle : hwnd; int : Integer): PtrInt;
@@ -1454,6 +1474,11 @@ begin
   Result := False;
 end;
 
+function TWidgetSet.SetMapMode(DC: HDC; fnMapMode : Integer): Integer;
+begin
+  Result := 0;
+end;
+
 function TWidgetSet.SetProp(Handle: hwnd; Str : PChar;
   Data : Pointer) : Boolean;
 Begin
@@ -1492,6 +1517,21 @@ end;
 function TWidgetSet.SetTextColor(DC: HDC; Color: TColorRef): TColorRef;
 begin
   Result := CLR_INVALID;
+end;
+
+function TWidgetSet.SetViewPortExtEx(DC: HDC; XExtent, YExtent : Integer; OldSize: PSize): Boolean;
+begin
+  Result := False;
+end;
+
+function TWidgetSet.SetViewPortOrgEx(DC: HDC; NewX, NewY: Integer; OldPoint: PPoint): Boolean;
+begin
+  Result := False;
+end;
+
+function TWidgetSet.SetWindowExtEx(DC: HDC; XExtent, YExtent: Integer; OldSize: PSize): Boolean;
+begin
+  Result := False;
 end;
 
 function TWidgetSet.SetWindowLong(Handle: HWND;

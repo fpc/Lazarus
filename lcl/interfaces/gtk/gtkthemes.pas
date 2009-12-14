@@ -445,9 +445,11 @@ end;
 procedure TGtkThemeServices.DrawElement(DC: HDC;
   Details: TThemedElementDetails; const R: TRect; ClipRect: PRect);
 var
+  DevCtx: TGtkDeviceContext absolute DC;
   Area: TGdkRectangle;
   StyleParams: TGtkStyleParams;
   i: integer;
+  RDest: TRect;
 begin
   if IsRectEmpty(R) then
     Exit;
@@ -456,10 +458,19 @@ begin
     StyleParams := GetGtkStyleParams(DC, Details, i);
     if StyleParams.Style <> nil then
     begin
-      if ClipRect <> nil then
+      if DevCtx.HasTransf then
+      begin
+        if ClipRect <> nil then RDest := ClipRect^ else RDest := R;
+        RDest := DevCtx.TransfRectIndirect(R);
+        DevCtx.TransfNormalize(RDest.Left, RDest.Right);
+        DevCtx.TransfNormalize(RDest.Top, RDest.Bottom);
+        Area := GdkRectFromRect(RDest);
+      end
+      else if ClipRect <> nil then
         Area := GdkRectFromRect(ClipRect^)
       else
         Area := GdkRectFromRect(R);
+
 
       // move to origin
       inc(Area.x, StyleParams.Origin.x);

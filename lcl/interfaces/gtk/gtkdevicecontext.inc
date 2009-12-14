@@ -114,6 +114,8 @@ end;
 procedure TGtkDeviceContext.SetCurrentFont(const AValue: PGdiObject);
 begin
   ChangeGDIObject(FCurrentFont,AValue);
+  if FHasTransf then
+    TransfUpdateFont;
 end;
 
 procedure TGtkDeviceContext.SetCurrentPalette(const AValue: PGdiObject);
@@ -126,6 +128,8 @@ begin
   ChangeGDIObject(FCurrentPen,AValue);
   if FSelectedColors = dcscPen
   then FSelectedColors := dcscCustom;
+  if FHasTransf then
+    TransfUpdatePen;
 end;
 
 procedure TGtkDeviceContext.ChangeGDIObject(var GDIObject: PGdiObject;
@@ -156,6 +160,35 @@ begin
     gdiPen:     ChangeGDIObject(fCurrentPen,AValue);
     gdiPalette: ChangeGDIObject(fCurrentPalette,AValue);
     gdiRegion:  ChangeGDIObject(fClipRegion,AValue);
+  end;
+end;
+
+procedure TGtkDeviceContext.SetMapMode(AValue: Integer);
+begin
+  if AValue <> FMapMode then
+  begin
+    case AValue of
+      MM_ANISOTROPIC:; // user's choice
+      MM_ISOTROPIC:; // adjusted after each SetViewPortExtEx call (see MSDN for details)
+      MM_HIENGLISH: FWindowExt := Point(1000, -1000);
+      MM_HIMETRIC: FWindowExt := Point(2540, -2540);
+      MM_LOENGLISH: FWindowExt := Point(100, -100);
+      MM_LOMETRIC: FWindowExt := Point(254, -254);
+      MM_TWIPS: FWindowExt := Point(1440, -1440);
+    else
+      AValue := MM_TEXT;
+      FWindowExt := Point(1, 1);
+      FViewPortExt := Point(1, 1);
+    end;
+    FMapMode := AValue;
+    FHasTransf :=  FMapMode <> MM_TEXT; // to do: combine with affine transformations here when they get implemented
+    if not (FMapMode in [MM_TEXT, MM_ANISOTROPIC, MM_ISOTROPIC]) then
+    begin
+      FViewPortExt.X := GtkWidgetSet.GetDeviceCaps(HDC(Self), LOGPIXELSX);
+      FViewPortExt.Y := GtkWidgetSet.GetDeviceCaps(HDC(Self), LOGPIXELSX);
+    end;
+    TransfUpdateFont;
+    TransfUpdatePen;
   end;
 end;
 
@@ -200,6 +233,44 @@ begin
   gdk_gc_get_values(GC, @FGCValues);
 end;
 
+procedure TGtkDeviceContext.SetViewPortExt(const AValue: TPoint);
+var
+  Ratio: Single;
+begin
+  if (AValue.x <> FViewPortExt.x) or (AValue.y <> FViewPortExt.y) and
+    (FMapMode in [MM_ISOTROPIC, MM_ANISOTROPIC]) then
+  begin
+    if FMapMode = MM_ISOTROPIC then
+    begin
+      // TK: Is here also an adjustment on Windows if DPIX and DPIY are different?
+      Ratio := FWindowExt.x / FWindowExt.y; // no check, programmer cannot put nonsense
+      if AValue.y * Ratio > AValue.x then
+        FViewPortExt := Point(AValue.x, RoundToInt(AValue.x / Ratio))
+      else if AValue.y * Ratio < AValue.x then
+        FViewPortExt := Point(RoundToInt(AValue.y * Ratio), AValue.y)
+      else
+        FViewPortExt := AValue;
+    end else
+      FViewPortExt := AValue;
+    TransfUpdateFont;
+    TransfUpdatePen;
+  end;
+end;
+
+procedure TGtkDeviceContext.SetWindowExt(const AValue: TPoint);
+begin
+  if (AValue.x <> FWindowExt.x) or (AValue.y <> FWindowExt.y) and
+    (FMapMode in [MM_ISOTROPIC, MM_ANISOTROPIC]) then
+  begin
+    FWindowExt := AValue;
+    if FMapMode = MM_ANISOTROPIC then
+    begin
+      TransfUpdateFont;
+      TransfUpdatePen;
+    end;
+  end;
+end;
+
 procedure TGtkDeviceContext.SetSelectedColors(AValue: TDevContextSelectedColorsType);
 begin
   if FSelectedColors = AValue then Exit;
@@ -217,6 +288,172 @@ begin
   if AValid
   then Include(FFlags, dcfTextMetricsValid)
   else Exclude(FFlags, dcfTextMetricsValid);
+end;
+
+procedure TGtkDeviceContext.InvTransfPoint(var X1, Y1: Integer);
+begin
+  X1 := MulDiv(X1 - FViewPortOrg.x, FWindowExt.x, FViewPortExt.x);
+  Y1 := MulDiv(Y1 - FViewPortOrg.y, FWindowExt.y, FViewPortExt.y);
+  // to do: put affine inverse transformation here (for all Inv.. methods)
+end;
+
+function TGtkDeviceContext.InvTransfPointIndirect(const P: TPoint): TPoint;
+begin
+  Result.X := MulDiv(P.X - FViewPortOrg.x, FWindowExt.x, FViewPortExt.x);
+  Result.Y := MulDiv(P.Y - FViewPortOrg.y, FWindowExt.y, FViewPortExt.y);
+end;
+
+procedure TGtkDeviceContext.InvTransfRect(var X1, Y1, X2, Y2: Integer);
+begin
+  X1 := MulDiv(X1 - FViewPortOrg.x, FWindowExt.x, FViewPortExt.x);
+  Y1 := MulDiv(Y1 - FViewPortOrg.y, FWindowExt.y, FViewPortExt.y);
+  X2 := MulDiv(X2 - FViewPortOrg.x, FWindowExt.x, FViewPortExt.x);
+  Y2 := MulDiv(Y2 - FViewPortOrg.y, FWindowExt.y, FViewPortExt.y);
+end;
+
+function TGtkDeviceContext.InvTransfRectIndirect(const R: TRect): TRect;
+begin
+  Result.Left := MulDiv(R.Left - FViewPortOrg.x, FWindowExt.x, FViewPortExt.x);
+  Result.Top := MulDiv(R.Top - FViewPortOrg.y, FWindowExt.y, FViewPortExt.y);
+  Result.Right := MulDiv(R.Right - FViewPortOrg.x, FWindowExt.x, FViewPortExt.x);
+  Result.Bottom := MulDiv(R.Bottom - FViewPortOrg.y, FWindowExt.y, FViewPortExt.y);
+end;
+
+procedure TGtkDeviceContext.InvTransfExtent(var ExtX, ExtY: Integer);
+begin
+  ExtX := MulDiv(ExtX, FWindowExt.x, FViewPortExt.x);
+  ExtY := MulDiv(ExtY, FWindowExt.y, FViewPortExt.y);
+end;
+
+function TGtkDeviceContext.InvTransfExtentIndirect(const Extent: TPoint): TPoint;
+begin
+  Result.X := MulDiv(Extent.X, FWindowExt.x, FViewPortExt.x);
+  Result.Y := MulDiv(Extent.Y, FWindowExt.y, FViewPortExt.y);
+end;
+
+procedure TGtkDeviceContext.TransfAngles(var Angle1, Angle2: Integer);
+begin
+  if FWindowExt.x * FViewPortExt.x < 0 then
+  begin
+    // flip angles along 90-270 degree axis
+    Angle1 := 2880 - Angle1;
+    Angle2 := 2880 - Angle2;
+  end;
+  if FWindowExt.y * FViewPortExt.y < 0 then
+  begin
+    // flip angles along 0-180 degree axis
+    Angle1 := 5760 - Angle1;
+    Angle2 := 5760 - Angle2;
+  end;
+end;
+
+procedure TGtkDeviceContext.TransfNormalize(var Lower, Higher: Integer);
+var
+  Tmp: Integer;
+begin
+  if Lower > Higher then
+  begin
+    Tmp := Lower;
+    Lower := Higher;
+    Higher := Tmp;
+  end;
+end;
+
+procedure TGtkDeviceContext.TransfPoint(var X1, Y1: Integer);
+begin
+  // to do: put affine transformation here (for all Transf.. methods)
+  X1 := MulDiv(X1, FViewPortExt.x, FWindowExt.x) + FViewPortOrg.x;
+  Y1 := MulDiv(Y1, FViewPortExt.y, FWindowExt.y) + FViewPortOrg.y;
+end;
+
+function TGtkDeviceContext.TransfPointIndirect(const P: TPoint): TPoint;
+begin
+  Result.x := MulDiv(P.x, FViewPortExt.x, FWindowExt.x) + FViewPortOrg.x;
+  Result.Y := MulDiv(P.y, FViewPortExt.y, FWindowExt.y) + FViewPortOrg.y;
+end;
+
+procedure TGtkDeviceContext.TransfRect(var X1, Y1, X2, Y2: Integer);
+begin
+  X1 := MulDiv(X1, FViewPortExt.x, FWindowExt.x) + FViewPortOrg.x;
+  Y1 := MulDiv(Y1, FViewPortExt.y, FWindowExt.y) + FViewPortOrg.y;
+  X2 := MulDiv(X2, FViewPortExt.x, FWindowExt.x) + FViewPortOrg.x;
+  Y2 := MulDiv(Y2, FViewPortExt.y, FWindowExt.y) + FViewPortOrg.y;
+end;
+
+function TGtkDeviceContext.TransfRectIndirect(const R: TRect): TRect;
+begin
+  Result.Left := MulDiv(R.Left, FViewPortExt.x, FWindowExt.x) + FViewPortOrg.x;
+  Result.Top := MulDiv(R.Top, FViewPortExt.y, FWindowExt.y) + FViewPortOrg.y;
+  Result.Right := MulDiv(R.Right, FViewPortExt.x, FWindowExt.x) + FViewPortOrg.x;
+  Result.Bottom := MulDiv(R.Bottom, FViewPortExt.y, FWindowExt.y) + FViewPortOrg.y;
+end;
+
+procedure TGtkDeviceContext.TransfExtent(var ExtX, ExtY: Integer);
+begin
+  ExtX := MulDiv(ExtX, FViewPortExt.x, FWindowExt.x);
+  ExtY := MulDiv(ExtY, FViewPortExt.y, FWindowExt.y);
+end;
+
+function TGtkDeviceContext.TransfExtentIndirect(const Extent: TPoint): TPoint;
+begin
+  Result.X := MulDiv(Extent.X, FViewPortExt.x, FWindowExt.x);
+  Result.Y := MulDiv(Extent.Y, FViewPortExt.y, FWindowExt.y);
+end;
+
+procedure TGtkDeviceContext.TransfUpdateFont;
+var
+  AWidth, AHeight: Integer;
+  TmpObj: PGdiObject;
+begin
+  if (FCurrentFont <> nil) and (FCurrentFont^.GDIFontObject <> nil) and (FCurrentFont^.LogFont.lfFaceName[0] <> #0) then
+  begin
+    if FCurrentFont^.UntransfFontHeight = 0 then
+      FCurrentFont^.UntransfFontHeight := FCurrentFont^.LogFont.lfHeight;
+    AWidth := 0; AHeight := FCurrentFont^.UntransfFontHeight;
+    TransfExtent(AWidth, AHeight);
+    if FCurrentFont^.UntransfFontHeight > 0 then
+      AHeight := Abs(AHeight)
+    else
+      AHeight := -Abs(AHeight);
+    if AHeight = 0 then
+      if FCurrentFont^.LogFont.lfHeight > 0 then
+        AHeight := 1
+      else
+        AHeight := -1;
+    if FCurrentFont^.LogFont.lfHeight <> AHeight then
+    begin
+      FontCache.Unreference(FCurrentFont^.GDIFontObject);
+      FCurrentFont^.LogFont.lfHeight := AHeight;
+      TmpObj := PGdiObject(PtrUInt(GTKWidgetSet.CreateFontIndirect(FCurrentFont^.LogFont)));
+      FCurrentFont^.GDIFontObject := TmpObj^.GDIFontObject;
+      TmpObj^.GDIFontObject := nil;
+      GTKWidgetSet.DisposeGDIObject(TmpObj);
+    end;
+  end;
+end;
+
+procedure TGtkDeviceContext.TransfUpdatePen;
+var
+  AWidth, AHeight: Integer;
+begin
+  if FCurrentPen <> nil then
+  begin
+    if FCurrentPen^.UnTransfPenWidth = 0 then
+      FCurrentPen^.UnTransfPenWidth := FCurrentPen^.GDIPenWidth;
+    AWidth := FCurrentPen^.UnTransfPenWidth;
+    AHeight := FCurrentPen^.UnTransfPenWidth;
+    TransfExtent(AWidth, AHeight);
+    AWidth := Abs(AWidth);
+    AHeight := Abs(AHeight);
+    if AWidth > AHeight then AWidth := AHeight;
+    if AWidth <= 0 then AWidth := 1;
+    if FCurrentPen^.GDIPenWidth <> DWord(AWidth) then
+    begin
+      FCurrentPen^.GDIPenWidth := AWidth;
+      Exclude(FFlags, dcfPenSelected);
+      SelectPenProps;
+    end;
+  end;
 end;
 
 procedure TGtkDeviceContext.SetWidget(AWidget: PGtkWidget; AWindow: PGdkWindow;
@@ -327,6 +564,17 @@ begin
   FDrawable := nil;
   FGC := nil;
   FillChar(FGCValues, SizeOf(FGCValues), 0);
+
+  FViewPortExt := Point(1, 1);
+  FViewPortOrg := Point(0, 0);
+  FWindowExt := Point(1, 1);
+  FMapMode := MM_TEXT;
+  if FHasTransf then
+  begin
+    FHasTransf := False;
+    TransfUpdateFont;
+    TransfUpdatePen;
+  end;
 
   FOrigin.X := 0;
   FOrigin.Y := 0;
@@ -450,6 +698,29 @@ begin
   CopyGDIColor(ASource.CurrentBackColor, CurrentBackColor);
 
   SelectedColors := dcscCustom;
+
+  if FHasTransf then
+  begin
+    FHasTransf := False;
+    FMapMode := MM_TEXT;
+    FViewPortExt := Point(1, 1);
+    FViewPortOrg := Point(0, 0);
+    FWindowExt := Point(1, 1);
+    TransfUpdateFont;
+    TransfUpdatePen;
+  end;
+
+  FHasTransf := ASource.HasTransf;
+  if FHasTransf then
+  begin
+    FMapMode := ASource.MapMode;
+    FViewPortExt := ASource.ViewPortExt;
+    FViewPortOrg := ASource.ViewPortOrg;
+    FWindowExt := ASource.WindowExt;
+    TransfUpdateFont;
+    TransfUpdatePen;
+  end;
+
   SavedContext := nil;
 end;
 
@@ -463,6 +734,13 @@ begin
   BrushChanged := False;
   if not IsNullBrush then
   begin
+    if FHasTransf then
+    begin
+      ARect := TransfRectIndirect(ARect);
+      TransfNormalize(ARect.Left, ARect.Right);
+      TransfNormalize(ARect.Top, ARect.Bottom);
+    end;
+
     Width := ARect.Right - ARect.Left;
     Height := ARect.Bottom - ARect.Top;
 
@@ -513,8 +791,9 @@ begin
 end;
 
 procedure TGtkDeviceContext.CreateFont;
-{$IFDEF Gtk2}
 var
+  NewFont: PGDIObject;
+{$IFDEF Gtk2}
   ClientWidget: PGtkWidget;
 {$ENDIF}
 begin
@@ -524,7 +803,9 @@ begin
   {$ifdef gtk1}
   if FGCValues.Font <> nil
   then begin
-    CurrentFont := GtkWidgetset.NewGDIObject(gdiFont);
+    NewFont := GtkWidgetset.NewGDIObject(gdiFont);
+    NewFont^.UntransfFontHeight := 0;
+    CurrentFont := NewFont;
     FCurrentFont^.GDIFontObject := FGCValues.Font;
     FontCache.Reference(FCurrentFont^.GDIFontObject);
   end
@@ -536,7 +817,9 @@ begin
   then begin
     ClientWidget := GetFixedWidget(FWidget);
 
-    CurrentFont := GtkWidgetset.NewGDIObject(gdiFont);
+    NewFont := GtkWidgetset.NewGDIObject(gdiFont);
+    NewFont^.UntransfFontHeight := 0;
+    CurrentFont := NewFont;
     FCurrentFont^.GDIFontObject := gtk_widget_create_pango_layout(ClientWidget, nil);
 
     {$ifdef fontconsistencychecks}

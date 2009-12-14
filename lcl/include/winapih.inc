@@ -125,6 +125,7 @@ function GetFocus: HWND; {$IFDEF IF_BASE_MEMBER}virtual;{$ENDIF}
 function GetFontLanguageInfo(DC: HDC): DWord; {$IFDEF IF_BASE_MEMBER}virtual;{$ENDIF}
 function GetForegroundWindow: HWND; {$IFDEF IF_BASE_MEMBER}virtual;{$ENDIF}
 function GetKeyState(nVirtKey: Integer): Smallint; {$IFDEF IF_BASE_MEMBER}virtual;{$ENDIF}
+function GetMapMode(DC: HDC): Integer; {$IFDEF IF_BASE_MEMBER}virtual;{$ENDIF}
 function GetMonitorInfo(hMonitor: HMONITOR; lpmi: PMonitorInfo): Boolean; {$IFDEF IF_BASE_MEMBER}virtual;{$ENDIF}
 function GetObject(GDIObject: HGDIOBJ; BufSize: Integer; Buf: Pointer): Integer; {$IFDEF IF_BASE_MEMBER}virtual;{$ENDIF}
 function GetPaletteEntries(Palette: HPALETTE; StartIndex, NumEntries: UINT;
@@ -146,6 +147,9 @@ function GetTextExtentExPoint(DC: HDC; Str: PChar; Count, MaxWidth: Integer; Max
 function GetTextExtentPoint(DC: HDC; Str: PChar; Count: Integer; var Size: TSize): Boolean; {$IFDEF IF_BASE_MEMBER}virtual;{$ENDIF}
 function GetTextExtentPoint32(DC: HDC; Str: PChar; Count: Integer; var Size: TSize): Boolean; {$IFDEF IF_BASE_MEMBER}virtual;{$ENDIF}
 function GetTextMetrics(DC: HDC; var TM: TTextMetric): Boolean;  {$IFDEF IF_BASE_MEMBER}virtual;{$ENDIF}
+function GetViewPortExtEx(DC: HDC; Size: PSize): Integer; {$IFDEF IF_BASE_MEMBER}virtual;{$ENDIF}
+function GetViewPortOrgEx(DC: HDC; P: PPoint): Integer; {$IFDEF IF_BASE_MEMBER}virtual;{$ENDIF}
+function GetWindowExtEx(DC: HDC; Size: PSize): Integer; {$IFDEF IF_BASE_MEMBER}virtual;{$ENDIF}
 function GetWindowLong(Handle : hwnd; int : Integer): PtrInt; {$IFDEF IF_BASE_MEMBER}virtual;{$ENDIF}
 function GetWindowRect(Handle : hwnd; var Rect : TRect): Integer; {$IFDEF IF_BASE_MEMBER}virtual;{$ENDIF}
 function GetWindowSize(Handle : hwnd; var Width, Height: integer): boolean; {$IFDEF IF_BASE_MEMBER}virtual;{$ENDIF}
@@ -219,6 +223,7 @@ function SetCursor(hCursor: HICON): HCURSOR; {$IFDEF IF_BASE_MEMBER}virtual;{$EN
 function SetCursorPos(X, Y: Integer): Boolean; {$IFDEF IF_BASE_MEMBER}virtual;{$ENDIF}
 function SetFocus(hWnd: HWND): HWND; {$IFDEF IF_BASE_MEMBER}virtual;{$ENDIF}
 function SetForegroundWindow(hWnd : HWND): Boolean; {$IFDEF IF_BASE_MEMBER}virtual;{$ENDIF}
+function SetMapMode(DC: HDC; fnMapMode : Integer): Integer; {$IFDEF IF_BASE_MEMBER}virtual;{$ENDIF}
 function SetMenu(AWindowHandle: HWND; AMenuHandle: HMENU): Boolean; {$IFDEF IF_BASE_MEMBER}virtual;{$ENDIF}
 function SetProp(Handle: hwnd; Str : PChar; Data : Pointer) : Boolean; {$IFDEF IF_BASE_MEMBER}virtual;{$ENDIF}
 //function SetRect --> independent
@@ -232,7 +237,10 @@ function SetSysColors(cElements: Integer; const lpaElements; const lpaRgbValues)
 function SetTextCharacterExtra(_hdc : hdc; nCharExtra : Integer):Integer; {$IFDEF IF_BASE_MEMBER}virtual;{$ENDIF}
 function SetTextColor(DC: HDC; Color: TColorRef): TColorRef; {$IFDEF IF_BASE_MEMBER}virtual;{$ENDIF}
 function SetWindowLong(Handle: HWND; Idx: Integer; NewLong : PtrInt): PtrInt;{$IFDEF IF_BASE_MEMBER}virtual;{$ENDIF}
-function SetWindowOrgEx(dc : hdc; NewX, NewY : Integer; OldPoint: PPoint): Boolean; {$IFDEF IF_BASE_MEMBER}virtual;{$ENDIF}
+function SetViewPortExtEx(DC: HDC; XExtent, YExtent : Integer; OldSize: PSize): Boolean; {$IFDEF IF_BASE_MEMBER}virtual;{$ENDIF}
+function SetViewPortOrgEx(DC: HDC; NewX, NewY: Integer; OldPoint: PPoint): Boolean; {$IFDEF IF_BASE_MEMBER}virtual;{$ENDIF}
+function SetWindowExtEx(DC: HDC; XExtent, YExtent: Integer; OldSize: PSize): Boolean; {$IFDEF IF_BASE_MEMBER}virtual;{$ENDIF}
+function SetWindowOrgEx(dc : hdc; NewX, NewY: Integer; OldPoint: PPoint): Boolean; {$IFDEF IF_BASE_MEMBER}virtual;{$ENDIF}
 function SetWindowPos(hWnd: HWND; hWndInsertAfter: HWND;
        X, Y, cx, cy: Integer; uFlags: UINT): Boolean;  {$IFDEF IF_BASE_MEMBER}virtual;{$ENDIF}
 function SetWindowRgn(hWnd: HWND; hRgn: HRGN; bRedraw: Boolean):longint; {$IFDEF IF_BASE_MEMBER}virtual;{$ENDIF}

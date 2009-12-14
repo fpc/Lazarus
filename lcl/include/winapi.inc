@@ -394,6 +394,11 @@ begin
   Result := WidgetSet.GetKeyState(nVirtKey);
 end;
 
+function GetMapMode(DC: HDC): Integer;
+begin
+  Result := WidgetSet.GetMapMode(DC);
+end;
+
 function GetMonitorInfo(hMonitor: HMONITOR; lpmi: PMonitorInfo): Boolean;
 begin
   Result := Widgetset.GetMonitorInfo(hMonitor, lpmi);
@@ -485,6 +490,21 @@ end;
 function GetTextMetrics(DC: HDC; var TM: TTextMetric): Boolean;
 begin
   Result := WidgetSet.GetTextMetrics(DC, TM);
+end;
+
+function GetViewPortExtEx(DC: HDC; Size: PSize): Integer;
+begin
+  Result := WidgetSet.GetViewPortExtEx(DC, Size);
+end;
+
+function GetViewPortOrgEx(DC: HDC; P: PPoint): Integer;
+begin
+  Result := WidgetSet.GetViewPortOrgEx(DC, P);
+end;
+
+function GetWindowExtEx(DC: HDC; Size: PSize): Integer;
+begin
+  Result := WidgetSet.GetWindowExtEx(DC, Size);
 end;
 
 function GetWindowLong(Handle : hwnd; int : Integer): PtrInt;
@@ -781,6 +801,11 @@ begin
   Result := WidgetSet.SetMenu(AWindowHandle, AMenuHandle);
 end;
 
+function SetMapMode(DC: HDC; fnMapMode : Integer): Integer;
+begin
+  Result := WidgetSet.SetMapMode(DC, fnMapMode);
+end;
+
 function SetProp(Handle: hwnd; Str : PChar; Data : Pointer) : Boolean;
 begin
   Result := WidgetSet.SetProp(Handle,Str,Data);
@@ -842,6 +867,21 @@ end;
 function SetTextColor(DC: HDC; Color: TColorRef): TColorRef;
 begin
   Result := WidgetSet.SetTextColor(DC, Color);
+end;
+
+function SetViewPortExtEx(DC: HDC; XExtent, YExtent : Integer; OldSize: PSize): Boolean;
+begin
+  Result := WidgetSet.SetViewPortExtEx(dc, XExtent, YExtent, OldSize);
+end;
+
+function SetViewPortOrgEx(DC: HDC; NewX, NewY: Integer; OldPoint: PPoint): Boolean;
+begin
+  Result := WidgetSet.SetViewPortOrgEx(dc, NewX, NewY, OldPoint);
+end;
+
+function SetWindowExtEx(DC: HDC; XExtent, YExtent: Integer; OldSize: PSize): Boolean;
+begin
+  Result := WidgetSet.SetWindowExtEx(dc, XExtent, YExtent, OldSize);
 end;
 
 function SetWindowLong(Handle: HWND; Idx: Integer; NewLong : PtrInt): PtrInt;

@@ -1925,6 +1925,17 @@ begin
   Result := Windows.GetKeyState(nVirtKey);
 end;
 
+{------------------------------------------------------------------------------
+  Method: GetMapMode
+  Params: DC - display device context
+
+  Returns mapping mode for the device context or zero if unsuccessfull
+ ------------------------------------------------------------------------------}
+function TWin32WidgetSet.GetMapMode(DC: HDC): Integer;
+begin
+  Result := Windows.GetMapMode(DC);
+end;
+
 function TWin32WidgetSet.GetMonitorInfo(hMonitor: HMONITOR; lpmi: PMonitorInfo): Boolean;
 {$IFDEF WindowsUnicodeSupport}
 var
@@ -2159,6 +2170,21 @@ begin
   Assert(False, Format('Trace:> TODO FINISH[TWin32WidgetSet.GetTextMetrics] DC: 0x%x', [DC]));
   Result := Boolean(Windows.GetTextMetrics(DC, @TM));
   Assert(False, Format('Trace:< TODO FINISH[TWin32WidgetSet.GetTextMetrics] DC: 0x%x', [DC]));
+end;
+
+function TWin32WidgetSet.GetViewPortExtEx(DC: HDC; Size: PSize): Integer;
+begin
+  Result := Integer(Windows.GetViewPortExtEx(DC, LPSize(Size)));
+end;
+
+function TWin32WidgetSet.GetViewPortOrgEx(DC: HDC; P: PPoint): Integer;
+begin
+  Result := Integer(Windows.GetViewPortOrgEx(DC, LPPoint(P)));
+end;
+
+function TWin32WidgetSet.GetWindowExtEx(DC: HDC; Size: PSize): Integer;
+begin
+  Result := Integer(Windows.GetWindowExtEx(DC, LPSize(Size)));
 end;
 
 {------------------------------------------------------------------------------
@@ -3141,6 +3167,18 @@ end;
 
 
 {------------------------------------------------------------------------------
+  Method:  SetMapMode
+  Params:  DC			- Device Context
+           fnMapMode		- Mapping mode
+
+  Returns: 0 if unsuccessful or the old Mode if successful
+ ------------------------------------------------------------------------------}
+function TWin32WidgetSet.SetMapMode(DC: HDC; fnMapMode : Integer): Integer;
+begin
+  Result := Windows.SetMapMode(DC, fnMapMode);
+end;
+
+{------------------------------------------------------------------------------
   Method:  SetProp
   Params:  Handle - handle of window
            Str    - string
@@ -3241,6 +3279,21 @@ begin
   Assert(False, Format('Trace:> [TWin32WidgetSet.SetTextColor] DC: 0x%x Color: %8x', [Integer(DC), Color]));
   Result := TColorRef(Windows.SetTextColor(DC, Windows.COLORREF(ColorToRGB(Color))));
   Assert(False, Format('Trace:< [TWin32WidgetSet.SetTextColor] DC: 0x%x Color: %8x --> %8x', [Integer(DC), Color, Result]));
+end;
+
+function TWin32WidgetSet.SetViewPortExtEx(DC: HDC; XExtent, YExtent : Integer; OldSize: PSize): Boolean;
+begin
+  Result := Boolean(Windows.SetViewPortExtEx(DC, XExtent, YExtent, LPSize(OldSize)));
+end;
+
+function TWin32WidgetSet.SetViewPortOrgEx(DC: HDC; NewX, NewY: Integer; OldPoint: PPoint): Boolean;
+begin
+  Result := Boolean(Windows.SetViewPortOrgEx(DC, NewX, NewY, LPPoint(OldPoint)));
+end;
+
+function TWin32WidgetSet.SetWindowExtEx(DC: HDC; XExtent, YExtent: Integer; OldSize: PSize): Boolean;
+begin
+  Result := Boolean(Windows.SetWindowExtEx(DC, XExtent, YExtent, LPSize(OldSize)));
 end;
 
 {------------------------------------------------------------------------------

@@ -2875,6 +2875,20 @@ begin
   {$ENDIF}
   if not Result then Exit;
 
+  if SrcDevContext.HasTransf then
+  begin
+    // TK: later with shear and rotation error here?
+    SrcDevContext.TransfPoint(XSrc, YSrc);
+    SrcDevContext.TransfExtent(SrcWidth, SrcHeight);
+  end;
+
+  if DstDevContext.HasTransf then
+  begin
+    // TK: later with shear and rotation error here?
+    DstDevContext.TransfPoint(X, Y);
+    DstDevContext.TransfExtent(Width, Height);
+  end;
+
   FlipHorz := Width < 0;
   if FlipHorz then
   begin
@@ -4912,6 +4926,7 @@ var
   CachedFont: TGtkFontCacheDescriptor;
 begin
   Result := NewGDIObject(gdiFont);
+  Result^.UntransfFontHeight := 0;
   Result^.GDIFontObject:=GetDefaultGtkFont(false);
   CachedFont:=FontCache.FindADescriptor(Result^.GDIFontObject);
   if CachedFont<>nil then
@@ -4931,6 +4946,7 @@ function TGtkWidgetSet.CreateDefaultPen: PGdiObject;
 begin
   //write('  TGtkWidgetSet.CreateDefaultPen ->');
   Result := NewGDIObject(gdiPen);
+  Result^.UnTransfPenWidth := 0;
   Result^.GDIPenStyle := PS_SOLID;
   Result^.GDIPenColor.ColorRef := 0;
   Result^.GDIPenColor.Colormap := gdk_colormap_get_system;

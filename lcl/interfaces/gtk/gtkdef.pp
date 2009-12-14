@@ -185,6 +185,7 @@ type
       gdiFont: (
         GDIFontObject: TGtkIntfFont;
         LogFont: TLogFont;// font info is stored as well, for later query font params
+        UnTransfFontHeight: Integer;
       );
       gdiPen: (
         IsNullPen : Boolean;//GDK will bomb with a NULL Pen Hatch
@@ -194,7 +195,8 @@ type
         GDIPenStyle: DWord;
         GDIPenDashes: Pgint8;
         GDIPenDashesCount: DWord;
-      ); 
+        UnTransfPenWidth: DWord;
+      );
       gdiRegion: (
         GDIRegionObject: PGdkRegion;
           { ! Always without the DCOrigin
@@ -274,13 +276,13 @@ type
     FGC: pgdkGC;
     FGCValues: TGdkGCValues;
 
+    FHasTransf: Boolean; // is any viewport/affine transformation applied?
     
     FDrawable: PGDKDrawable; // either the gdk_window of the owner
                              // or the gdk_bitmap/pixmap of the selected image
                              // or the double buffer (OriginalDrawable will hold the original)
 
     FOriginalDrawable: PGDKDrawable; // only set if dcfDoubleBuffer in DCFlags
-
 
     FWidget: PGtkWidget;     // the owner (in case of a windowDC)
     
@@ -292,6 +294,12 @@ type
     FSelectedColors: TDevContextSelectedColorsType;
 
     FOwnedGDIObjects: array[TGDIType] of PGdiObject;
+
+    // viewport/affine transformations
+    FMapMode: Integer; // current viewport/window mapping mode
+    FViewPortExt: TPoint; // current viewport extent
+    FViewPortOrg: TPoint; // current viewport origin
+    FWindowExt: TPoint; // current window extent
 
     function GetGDIObjects(ID: TGDIType): PGdiObject;
     function GetOffset: TPoint;
@@ -305,6 +313,7 @@ type
     procedure ChangeGDIObject(var GDIObject: PGdiObject;
                               const NewValue: PGdiObject);
     procedure SetGDIObjects(ID: TGDIType; const AValue: PGdiObject);
+    procedure SetMapMode(AValue: Integer);
     procedure SetOwnedGDIObjects(ID: TGDIType; const AValue: PGdiObject);
     procedure SetSelectedColors(AValue: TDevContextSelectedColorsType);
 
@@ -313,6 +322,8 @@ type
     // winapi
     function  GetROP2: Integer;
     procedure SetROP2(AROP: Integer);
+    procedure SetViewPortExt(const AValue: TPoint);
+    procedure SetWindowExt(const AValue: TPoint);
   protected
     function CreateGC: PGdkGC; virtual;
 
@@ -324,6 +335,11 @@ type
     // winapi
     function SelectBitmap(AGdiObject: PGdiObject): PGdiObject; virtual;
     function SelectPen(AGdiObject: PGdiObject): PGdiObject; virtual;
+
+    // viewport/affine transformations
+    procedure TransfUpdateFont; virtual;
+    procedure TransfUpdatePen; virtual;
+    // brushes not transformed!
   public
     {$ifdef TraceGdiCalls}
     StackAddrs: TCallBacksArray;
@@ -356,6 +372,23 @@ type
     function IsNullPen: boolean;
     function SelectObject(AGdiObject: PGdiObject): PGdiObject;
     procedure SetTextMetricsValid(AValid: Boolean); // temp helper, to allow flag manipulation
+
+    // viewport/affine transformations
+    procedure InvTransfPoint(var X1, Y1: Integer);
+    function InvTransfPointIndirect(const P: TPoint): TPoint; // point can be const
+    procedure InvTransfRect(var X1, Y1, X2, Y2: Integer);
+    function InvTransfRectIndirect(const R: TRect): TRect; // rect can be const
+    procedure InvTransfExtent(var ExtX, ExtY: Integer);
+    function InvTransfExtentIndirect(const Extent: TPoint): TPoint; // extent can be const
+    procedure TransfAngles(var Angle1, Angle2: Integer);
+    procedure TransfNormalize(var Lower, Higher: Integer);
+    procedure TransfPoint(var X1, Y1: Integer);
+    function TransfPointIndirect(const P: TPoint): TPoint; // point can be const
+    procedure TransfRect(var X1, Y1, X2, Y2: Integer);
+    function TransfRectIndirect(const R: TRect): TRect; // rect can be const
+    procedure TransfExtent(var ExtX, ExtY: Integer);
+    function TransfExtentIndirect(const Extent: TPoint): TPoint; // extent can be const
+
     // help functions
     function CopyDataFrom(ASource: TGtkDeviceContext; AClearSource, AMoveGDIOwnerShip, ARestore: Boolean): Boolean;
     function FillRect(ARect: TRect; ABrush: HBrush; SkipRop: Boolean): Boolean;
@@ -372,6 +405,12 @@ type
     property ClipRegion: PGdiObject read FClipRegion write SetClipRegion;
     property GCValues: TGdkGCValues read FGCValues;
     property GDIObjects[ID: TGDIType]: PGdiObject read GetGDIObjects write SetGDIObjects;
+    // viewport/window and affine transformations
+    property HasTransf: Boolean read FHasTransf;
+    property MapMode: Integer read FMapMode write SetMapMode;
+    property ViewPortExt: TPoint read FViewPortExt write SetViewPortExt;
+    property ViewPortOrg: TPoint read FViewPortOrg write FViewPortOrg;
+    property WindowExt: TPoint read FWindowExt write SetWindowExt;
     // control
     property SelectedColors: TDevContextSelectedColorsType read FSelectedColors write SetSelectedColors;
     property Flags: TDeviceContextsFlags read FFlags write FFlags;

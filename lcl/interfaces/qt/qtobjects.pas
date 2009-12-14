@@ -309,6 +309,7 @@ type
     vClipRect: PRect;         // is the cliprect paint event give to us
     vClipRectDirty: boolean;  // false=paint cliprect is still valid
     vTextColor: TColor;
+    vMapMode: Integer;
   public
     { Our own functions }
     constructor Create(AWidget: QWidgetH; const APaintEvent: Boolean = False); virtual;
@@ -1873,6 +1874,8 @@ begin
   vBackgroundBrush.Owner := Self;
 
   vTextColor := ColorToRGB(clWindowText);
+
+  vMapMode := MM_TEXT;
 end;
 
 procedure TQtDeviceContext.DestroyObjects;

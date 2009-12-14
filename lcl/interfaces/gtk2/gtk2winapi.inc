@@ -97,6 +97,7 @@ begin
     if CachedFont<>nil then begin
       CachedFont.Item.IncreaseRefCount;
       GdiObject := NewGdiObject(gdiFont);
+      GdiObject^.UntransfFontHeight := 0;
       GdiObject^.GDIFontObject := TGtkFontCacheItem(CachedFont.Item).GtkFont;
       {$IFDEF VerboseFonts}
       WriteLn('Was already in cache');
@@ -198,6 +199,7 @@ begin
       // create font
       // TODO: use context widget (CreateFontIndirectEx needs a parameter for this: Context: HWnd)
       GdiObject := NewGdiObject(gdiFont);
+      GdiObject^.UntransfFontHeight := 0;
       GdiObject^.GDIFontObject:=gtk_widget_create_pango_layout(
                                                GetStyleWidget(lgsdefault), nil);
       CurFont:=GdiObject^.GDIFontObject;
@@ -446,7 +448,7 @@ begin
   end;
 
   // to reduce flickering calculate first and then paint
-  
+
   DCOrigin := DevCtx.Offset;
 
   if (Options and ETO_CLIPPED) <> 0
@@ -455,6 +457,13 @@ begin
     Y := Rect^.Top;
     IntersectClipRect(DC, Rect^.Left, Rect^.Top,
                       Rect^.Right, Rect^.Bottom);
+  end;
+
+  if DevCtx.HasTransf then
+  begin
+    if Rect <> nil then
+      Rect^ := DevCtx.TransfRectIndirect(Rect^);
+    DevCtx.TransfPoint(X, Y);
   end;
 
   LineLen := FindLineLen(Str,Count);
@@ -560,6 +569,7 @@ end;
 function TGtk2WidgetSet.GetTextExtentPoint(DC: HDC; Str: PChar; Count: Integer;
   var Size: TSize): Boolean;
 var
+  DevCtx: TGtk2DeviceContext absolute DC;
   UseFont : PPangoLayout;
 begin
   //inherited GetTextExtentPoint;
@@ -579,6 +589,12 @@ begin
   pango_layout_get_pixel_size(UseFont, @Size.cX, @Size.cY);
   //DebugLn(['TGtk2WidgetSet.GetTextExtentPoint Str="',copy(Str,1,Count),' Count=',Count,' X=',Size.cx,' Y=',Size.cY]);
 
+  if DevCtx.HasTransf then
+  begin
+    DevCtx.InvTransfExtent(Size.cx, Size.cy);
+    Size.cx := Abs(Size.cx);
+    Size.cy := Abs(Size.cy);
+  end;
 end;
 
 {------------------------------------------------------------------------------
@@ -726,7 +742,10 @@ begin
   Result := IsValidDC(DC);
   if not Result then Exit;
   if Count <= 0 then Exit;
-  
+
+  if DevCtx.HasTransf then
+    DevCtx.TransfPoint(X, Y);
+
   UpdateDCTextMetric(DevCtx);
   DCOrigin := DevCtx.Offset;
   

@@ -2296,6 +2296,14 @@ begin
   end;
 end;
 
+function TQtWidgetSet.GetMapMode(DC: HDC): Integer;
+begin
+  if IsValidDC(DC) then
+    Result := TQtDeviceContext(DC).vMapMode
+  else
+    Result := 0;
+end;
+
 function TQtWidgetSet.GetMonitorInfo(Monitor: HMONITOR; lpmi: PMonitorInfo): Boolean;
 var
   Desktop: QDesktopWidgetH;
@@ -3375,6 +3383,47 @@ begin
 
     TM.tmCharSet := DEFAULT_CHARSET;
   end;
+end;
+
+function TQtWidgetSet.GetViewPortExtEx(DC: HDC; Size: PSize): Integer;
+var
+  R: TRect;
+begin
+  if IsValidDC(DC) and (Size <> nil) then
+  begin
+    QPainter_ViewPort(TQtDeviceContext(DC).Widget, @R);
+    Size^.cx := R.Right - R.Left;
+    Size^.cy := R.Bottom - R.Top;
+    Result := Integer(True);
+  end else
+    Result := Integer(False);
+end;
+
+function TQtWidgetSet.GetViewPortOrgEx(DC: HDC; P: PPoint): Integer;
+var
+  R: TRect;
+begin
+  if IsValidDC(DC) and (P <> nil) then
+  begin
+    QPainter_ViewPort(TQtDeviceContext(DC).Widget, @R);
+    P^ := R.TopLeft;
+    Result := Integer(True);
+  end else
+    Result := Integer(False);
+end;
+
+function TQtWidgetSet.GetWindowExtEx(DC: HDC; Size: PSize): Integer;
+var
+  R: TRect;
+begin
+  if IsValidDC(DC) and (Size <> nil) then
+  begin
+    QPainter_Window(TQtDeviceContext(DC).Widget, @R);
+    Size^.cx := R.Right - R.Left;
+    Size^.cy := R.Bottom - R.Top;
+    Result := Integer(True);
+  end else
+    Result := Integer(False);
 end;
 
 function TQtWidgetSet.GetWindowLong(Handle : hwnd; int: Integer): PtrInt;
@@ -4583,6 +4632,125 @@ begin
     end
     else
       QtMainWindow.setMenuBar(QMenuBarH(QtMainWindow.MenuBar.Widget));
+  end;
+end;
+
+function TQtWidgetSet.SetMapMode(DC: HDC; fnMapMode : Integer): Integer;
+var
+  AWindowExt: TPoint;
+  R: TRect;
+begin
+  if IsValidDC(DC) then
+  begin
+    if fnMapMode <> TQtDeviceContext(DC).vMapMode then
+    begin
+      case fnMapMode of
+        MM_ANISOTROPIC:; // user's choice
+        MM_ISOTROPIC:; // adjusted after each SetViewPortExtEx call (see MSDN for details)
+        MM_HIENGLISH: AWindowExt := Point(1000, -1000);
+        MM_HIMETRIC: AWindowExt := Point(2540, -2540);
+        MM_LOENGLISH: AWindowExt := Point(100, -100);
+        MM_LOMETRIC: AWindowExt := Point(254, -254);
+        MM_TWIPS: AWindowExt := Point(1440, -1440);
+      else
+        fnMapMode := MM_TEXT;
+      end;
+      TQtDeviceContext(DC).vMapMode := fnMapMode;
+      QPainter_setViewTransformEnabled(TQtDeviceContext(DC).Widget, fnMapMode <> MM_TEXT);
+      if not (fnMapMode in [MM_TEXT, MM_ANISOTROPIC, MM_ISOTROPIC]) then
+      begin
+        QPainter_Window(TQtDeviceContext(DC).Widget, @R);
+        R.BottomRight := AWindowExt;
+        QPainter_setWindow(TQtDeviceContext(DC).Widget, @R);
+        QPainter_ViewPort(TQtDeviceContext(DC).Widget, @R);
+        R.Right := QtWidgetSet.GetDeviceCaps(DC, LOGPIXELSX);
+        R.Bottom := QtWidgetSet.GetDeviceCaps(DC, LOGPIXELSX);
+        QPainter_setViewPort(TQtDeviceContext(DC).Widget, @R);
+      end;
+    end;
+    Result := Integer(True);
+  end else
+    Result := Integer(False);
+end;
+
+function TQtWidgetSet.SetViewPortExtEx(DC: HDC; XExtent, YExtent : Integer; OldSize: PSize): Boolean;
+var
+  R, RW: TRect;
+  Ratio: Single;
+begin
+  Result := False;
+  if IsValidDC(DC) then
+  begin
+    QPainter_ViewPort(TQtDeviceContext(DC).Widget, @R);
+    if OldSize <> nil then
+    begin
+      OldSize^.cx := R.Right - R.Left;
+      OldSize^.cy := R.Bottom - R.Top;
+    end;
+    if (XExtent <> R.Right) or (YExtent <> R.Bottom) then
+    begin
+      case TQtDeviceContext(DC).vMapMode of
+        MM_ANISOTROPIC, MM_ISOTROPIC:
+        begin
+          if TQtDeviceContext(DC).vMapMode = MM_ISOTROPIC then
+          begin
+            // TK: Is here also an adjustment on Windows if DPIX and DPIY are different?
+            QPainter_Window(TQtDeviceContext(DC).Widget, @RW);
+            Ratio := RW.Right / RW.Bottom; // no check, programmer cannot put nonsense
+            if YExtent * Ratio > XExtent then
+              YExtent := RoundToInt(XExtent / Ratio)
+            else if YExtent * Ratio < XExtent then
+              XExtent := RoundToInt(YExtent * Ratio)
+          end;
+          QPainter_setViewPort(TQtDeviceContext(DC).Widget, R.Left, R.Top, XExtent, YExtent);
+          Result := True;
+        end;
+      end;
+    end;
+  end;
+end;
+
+function TQtWidgetSet.SetViewPortOrgEx(DC: HDC; NewX, NewY: Integer; OldPoint: PPoint): Boolean;
+var
+  R: TRect;
+begin
+  Result := False;
+  if IsValidDC(DC) then
+  begin
+    QPainter_ViewPort(TQtDeviceContext(DC).Widget, @R);
+    if OldPoint <> nil then
+      OldPoint^ := R.TopLeft;
+    if (TQtDeviceContext(DC).vMapMode <> MM_TEXT) and (NewX <> R.Left) or (NewY <> R.Top) then
+    begin
+      QPainter_setViewPort(TQtDeviceContext(DC).Widget, NewX, NewY, R.Right - R.Left, R.Bottom - R.Top);
+      Result := True;
+    end;
+  end;
+end;
+
+function TQtWidgetSet.SetWindowExtEx(DC: HDC; XExtent, YExtent: Integer; OldSize: PSize): Boolean;
+var
+  R: TRect;
+begin
+  Result := False;
+  if IsValidDC(DC) then
+  begin
+    QPainter_Window(TQtDeviceContext(DC).Widget, @R);
+    if OldSize <> nil then
+    begin
+      OldSize^.cx := R.Right - R.Left;
+      OldSize^.cy := R.Bottom - R.Top;
+    end;
+    if (XExtent <> R.Right) or (YExtent <> R.Bottom) then
+    begin
+      case TQtDeviceContext(DC).vMapMode of
+        MM_ANISOTROPIC, MM_ISOTROPIC:
+        begin
+          QPainter_setWindow(TQtDeviceContext(DC).Widget, R.Left, R.Top, XExtent, YExtent);
+          Result := True;
+        end;
+      end;
+    end;
   end;
 end;
 
