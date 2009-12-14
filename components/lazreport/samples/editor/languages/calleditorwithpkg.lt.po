@@ -54,6 +54,10 @@ msgstr "Peržiūrėti veikiamąjį pranešimą"
 msgid "Print directly the active report (i.e. without preview)"
 msgstr "Spausdinti veikiamąjį pranešimą iškart (t.y. praleidžiant peržiūrą)"
 
+#: maincalleditor.cerhintthumbnails
+msgid "This Action will Load and Preview a thumbnails Report"
+msgstr ""
+
 #: maincalleditor.cerindex
 msgid "Index"
 msgstr "Rodyklė"
@@ -98,6 +102,11 @@ msgstr "Spausdinti tinklelį"
 msgid "Print report"
 msgstr "Spausdinti pranešimą"
 
+#: maincalleditor.certhumbnails
+msgctxt "maincalleditor.certhumbnails"
+msgid "Thumbnails"
+msgstr "Miniatiūros"
+
 #: TFRMMAIN.ACCCLOSE.CAPTION
 msgid "Close"
 msgstr "Užverti"
@@ -110,6 +119,10 @@ msgstr "Keisti pranešimą"
 #: TFRMMAIN.ACCEXPORTTOCSV.CAPTION
 msgid "Export to CSV"
 msgstr "Eksportuoti CSV formatu"
+
+#: TFRMMAIN.ACCEXPORTTODBG.CAPTION
+msgid "Export Debug"
+msgstr ""
 
 #: TFRMMAIN.ACCEXPORTTOHTML.CAPTION
 msgid "Export to html"

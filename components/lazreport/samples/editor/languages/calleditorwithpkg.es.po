@@ -51,6 +51,10 @@ msgstr "Vista previa del Reporte activo"
 msgid "Print directly the active report (i.e. without preview)"
 msgstr "Imprimir directamente el Reporte activo (o sea, sin vista previa)"
 
+#: maincalleditor.cerhintthumbnails
+msgid "This Action will Load and Preview a thumbnails Report"
+msgstr ""
+
 #: maincalleditor.cerindex
 msgid "Index"
 msgstr "Indice"
@@ -95,6 +99,11 @@ msgstr "Imprimir Rejilla"
 msgid "Print report"
 msgstr "Imprimir Reporte"
 
+#: maincalleditor.certhumbnails
+msgctxt "maincalleditor.certhumbnails"
+msgid "Thumbnails"
+msgstr "Imágenes"
+
 #: TFRMMAIN.ACCCLOSE.CAPTION
 msgid "Close"
 msgstr "Cerrar"
@@ -107,6 +116,10 @@ msgstr "Editar Reporte"
 #: TFRMMAIN.ACCEXPORTTOCSV.CAPTION
 msgid "Export to CSV"
 msgstr "Exportar a CSV"
+
+#: TFRMMAIN.ACCEXPORTTODBG.CAPTION
+msgid "Export Debug"
+msgstr ""
 
 #: TFRMMAIN.ACCEXPORTTOHTML.CAPTION
 msgid "Export to html"

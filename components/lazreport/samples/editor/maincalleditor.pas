@@ -29,7 +29,8 @@ uses
   Classes, SysUtils, FileUtil, LResources, Forms, Controls, Graphics, Dialogs,
   Buttons, StdCtrls, LR_Const, LR_Class, LR_Desgn, Dbf, DB, DBGrids, LR_DBSet,
   LR_PGrid, Menus, ComCtrls, ActnList, Lr_e_txt, Lr_e_htm, LR_E_CSV, LR_DSet,
-  LR_BarC, LR_RRect, LR_Shape, LR_ChBox;
+  LR_BarC, LR_RRect, LR_Shape, LR_ChBox, lr_e_pdf, lconvencoding, lr_e_gen,
+  lr_utils, LCLProc;
 
 type
 
@@ -47,6 +48,7 @@ type
     accOpenReport: TAction;
     accExportToCSV: TAction;
     accThumbnails: TAction;
+    accExportToDbg: TAction;
     ActionList1: TActionList;
     ApplicationProperties1: TApplicationProperties;
     btnCallEditor: TButton;
@@ -74,6 +76,7 @@ type
     MenuItem10: TMenuItem;
     MenuItem11: TMenuItem;
     MenuItem12: TMenuItem;
+    MenuItem13: TMenuItem;
     MenuItem2: TMenuItem;
     MenuItem3: TMenuItem;
     MenuItem4: TMenuItem;
@@ -87,6 +90,7 @@ type
     sbar: TStatusBar;
     TheReport: TfrReport;
     procedure accExportToCSVExecute(Sender: TObject);
+    procedure accExportToDbgExecute(Sender: TObject);
     procedure accExportToHtmlExecute(Sender: TObject);
     procedure accExportToTextExecute(Sender: TObject);
     procedure accThumbnailsExecute(Sender: TObject);
@@ -102,11 +106,15 @@ type
     procedure comboIndexSelect(Sender: TObject);
     procedure dbGrid1TitleClick(Column: TColumn);
     procedure frmMainCreate(Sender: TObject);
+    procedure TheReportBeginDoc;
     procedure TheReportEnterRect(Memo: TStringList; View: TfrView);
+    procedure TheReportExportFilterSetup(Sender: TfrExportFilter);
+    procedure TheReportGetValue(const ParName: String; var ParValue: Variant);
   private
     { private declarations }
     FImageList: TStringList;
     FImageListIndex: Integer;
+    FObjCount: Integer;
     procedure UpdateAppTranslation;
     procedure SetIndex(const aIndexName: string);
     procedure OpenReport(const aFileName:string);
@@ -184,10 +192,8 @@ end;
 
 procedure TfrmMain.accExportToTextExecute(Sender: TObject);
 begin
-  TheReport.LoadFromFile(ExtractFilePath(ParamStrUTF8(0))+'salida.lrf');
   if TheReport.PrepareReport then
-    ShowMessage(cerNotImplemented)
-    //TheReport.ExportTo(TfrTextExportFilter, 'salida.txt')
+    TheReport.ExportTo(TfrTextExportFilter, 'salida.txt')
   else
     ShowMessage(cerPrepareFailed);
 end;
@@ -211,19 +217,24 @@ end;
 
 procedure TfrmMain.accExportToHtmlExecute(Sender: TObject);
 begin
-  TheReport.LoadFromFile(ExtractFilePath(ParamStrUTF8(0))+'salida.lrf');
   if TheReport.PrepareReport then begin
     TheReport.ExportTo(TfrHTMExportFilter, 'salida.html');
-    ShowMessage(cerNotImplemented);
   end else
     ShowMessage(cerPrepareFailed);
 end;
 
 procedure TfrmMain.accExportToCSVExecute(Sender: TObject);
 begin
-  TheReport.LoadFromFile(ExtractFilePath(ParamStrUTF8(0))+'salida.lrf');
   if TheReport.PrepareReport then begin
     TheReport.ExportTo(TfrCSVExportFilter, 'salida.csv');
+  end else
+    ShowMessage(cerPrepareFailed);
+end;
+
+procedure TfrmMain.accExportToDbgExecute(Sender: TObject);
+begin
+  if TheReport.PrepareReport then begin
+    TheReport.ExportTo(TfrDbgExportFilter, 'salida.dbg');
   end else
     ShowMessage(cerPrepareFailed);
 end;
@@ -321,11 +332,51 @@ begin
     OpenReport(ExtractFilePath(ParamStrUTF8(0))+'salida.lrf');
 end;
 
+procedure TfrmMain.TheReportBeginDoc;
+begin
+  FObjCount := 0;
+end;
+
 procedure TfrmMain.TheReportEnterRect(Memo: TStringList; View: TfrView);
 begin
   if (FImageList<>nil) and (View.Name='thumbnail') then begin
     TFrPictureView(View).Picture.LoadFromFile(FImageList[FImageListIndex]);
     Inc(FImageListIndex);
+  end;
+end;
+
+procedure TfrmMain.TheReportExportFilterSetup(Sender: TfrExportFilter);
+begin
+  // parameters that all export filters can change
+  Sender.UseProgressbar:=false;
+  //Sender.BandTypes := [btMasterData]; // by default all bandtypes are processed
+
+  if sender is TfrHtmExportFilter then begin
+    //TfrTextExportFilter(sender).UseBOM := true; // false by default
+    //TfrTextExportFilter(Sender).UsedFont:=0; // force to show used font dialog
+    TfrHtmExportFilter(Sender).UseCSS:=false;  // true by default
+  end else
+  if sender is TfrCSVExportFilter then begin
+    TfrCSVExportFilter(sender).UseBOM := true;    // default settings + BOM = excel compatible
+    //TfrCSVExportFilter(sender).QuoteChar := '''';
+    //TfrCSVExportFilter(sender).QuoteType := qtNone;
+    //TfrCSVExportFilter(sender).Separator := ';';
+  end else
+  if Sender is TfrTextExportFilter then begin
+    TfrTextExportFilter(sender).UseBOM := false;
+    TfrTextExportFilter(Sender).UsedFont:=0; // force to show used font dialog
+  end;
+end;
+
+procedure TfrmMain.TheReportGetValue(const ParName: String;
+  var ParValue: Variant);
+begin
+  if ParName='vv1' then begin
+    if FObjCount mod 3 = 0 then
+      ParValue := 'áñâàÑ€¼2³¤€¼½¾'
+    else
+      ParValue := '12345678901234';
+    Inc(FObjCount);
   end;
 end;
 

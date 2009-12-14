@@ -5,24 +5,24 @@ object frmMain: TfrmMain
   Width = 569
   ActiveControl = btnCallEditor
   Caption = 'LazReport Test Suite'
-  ClientHeight = 413
+  ClientHeight = 412
   ClientWidth = 569
   Menu = MainMenu1
   OnCreate = frmMainCreate
   ShowHint = True
-  LCLVersion = '0.9.27'
+  LCLVersion = '0.9.29'
   object lblIndex: TLabel
     Left = 12
-    Height = 14
+    Height = 23
     Top = 44
-    Width = 1
+    Width = 10
     ParentColor = False
   end
   object lblExpr: TLabel
     Left = 235
-    Height = 14
+    Height = 23
     Top = 44
-    Width = 1
+    Width = 10
     ParentColor = False
   end
   object btnCallEditor: TButton
@@ -36,7 +36,7 @@ object frmMain: TfrmMain
   end
   object dbGrid1: TDBGrid
     Left = 0
-    Height = 322
+    Height = 325
     Top = 68
     Width = 569
     Align = alBottom
@@ -67,8 +67,8 @@ object frmMain: TfrmMain
   end
   object sbar: TStatusBar
     Left = 0
-    Height = 23
-    Top = 390
+    Height = 19
+    Top = 393
     Width = 569
     Panels = <    
       item
@@ -104,11 +104,11 @@ object frmMain: TfrmMain
     TabOrder = 6
   end
   object comboIndex: TComboBox
-    Left = 76
-    Height = 21
-    Top = 40
+    Left = 72
+    Height = 29
+    Top = 37
     Width = 148
-    ItemHeight = 13
+    ItemHeight = 0
     OnSelect = comboIndexSelect
     TabOrder = 8
   end
@@ -125,11 +125,14 @@ object frmMain: TfrmMain
     InitialZoom = pzDefault
     PreviewButtons = [pbZoom, pbLoad, pbSave, pbPrint, pbFind, pbHelp, pbExit]
     DataType = dtDataSet
+    OnBeginDoc = TheReportBeginDoc
+    OnGetValue = TheReportGetValue
     OnEnterRect = TheReportEnterRect
+    OnExportFilterSetup = TheReportExportFilterSetup
     left = 96
     top = 112
     ReportForm = {
-      18000000
+      19000000
     }
   end
   object Dbf1: TDbf
@@ -204,6 +207,10 @@ object frmMain: TfrmMain
         Action = accExportToCSV
         OnClick = accExportToCSVExecute
       end
+      object MenuItem13: TMenuItem
+        Action = accExportToDbg
+        OnClick = accExportToDbgExecute
+      end
     end
   end
   object ApplicationProperties1: TApplicationProperties
@@ -269,6 +276,11 @@ object frmMain: TfrmMain
       Category = 'Sample Reports'
       Caption = 'Thumbnails'
       OnExecute = accThumbnailsExecute
+    end
+    object accExportToDbg: TAction
+      Category = 'Export'
+      Caption = 'Export Debug'
+      OnExecute = accExportToDbgExecute
     end
   end
   object OpenDialog1: TOpenDialog

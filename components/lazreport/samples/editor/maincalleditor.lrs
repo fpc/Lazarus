@@ -1,16 +1,16 @@
-{ This is an automatically generated lazarus resource file }
+{ Este es un archivo de recurso de Lazarus generado automáticamente }
 
 LazarusResources.Add('TfrmMain','FORMDATA',[
-  'TPF0'#8'TfrmMain'#7'frmMain'#4'Left'#3#21#1#6'Height'#3#177#1#3'Top'#2''#5
+  'TPF0'#8'TfrmMain'#7'frmMain'#4'Left'#3#21#1#6'Height'#3#177#1#3'Top'#2#127#5
   +'Width'#3'9'#2#13'ActiveControl'#7#13'btnCallEditor'#7'Caption'#6#20'LazRepo'
-  +'rt Test Suite'#12'ClientHeight'#3#157#1#11'ClientWidth'#3'9'#2#4'Menu'#7#9
+  +'rt Test Suite'#12'ClientHeight'#3#156#1#11'ClientWidth'#3'9'#2#4'Menu'#7#9
   +'MainMenu1'#8'OnCreate'#7#13'frmMainCreate'#8'ShowHint'#9#10'LCLVersion'#6#6
-  +'0.9.27'#0#6'TLabel'#8'lblIndex'#4'Left'#2#12#6'Height'#2#14#3'Top'#2','#5'W'
-  +'idth'#2#1#11'ParentColor'#8#0#0#6'TLabel'#7'lblExpr'#4'Left'#3#235#0#6'Heig'
-  +'ht'#2#14#3'Top'#2','#5'Width'#2#1#11'ParentColor'#8#0#0#7'TButton'#13'btnCa'
-  +'llEditor'#4'Left'#2#24#6'Height'#2#25#3'Top'#2#8#5'Width'#2'P'#6'Action'#7
+  +'0.9.29'#0#6'TLabel'#8'lblIndex'#4'Left'#2#12#6'Height'#2#23#3'Top'#2','#5'W'
+  +'idth'#2#10#11'ParentColor'#8#0#0#6'TLabel'#7'lblExpr'#4'Left'#3#235#0#6'Hei'
+  +'ght'#2#23#3'Top'#2','#5'Width'#2#10#11'ParentColor'#8#0#0#7'TButton'#13'btn'
+  +'CallEditor'#4'Left'#2#24#6'Height'#2#25#3'Top'#2#8#5'Width'#2'P'#6'Action'#7
   +#12'accNewReport'#25'BorderSpacing.InnerBorder'#2#4#8'TabOrder'#2#0#0#0#7'TD'
-  +'BGrid'#7'dbGrid1'#4'Left'#2#0#6'Height'#3'B'#1#3'Top'#2'D'#5'Width'#3'9'#2#5
+  +'BGrid'#7'dbGrid1'#4'Left'#2#0#6'Height'#3'E'#1#3'Top'#2'D'#5'Width'#3'9'#2#5
   +'Align'#7#8'alBottom'#7'Anchors'#11#5'akTop'#6'akLeft'#7'akRight'#8'akBottom'
   +#0#5'Color'#7#7'clWhite'#10'DataSource'#7#11'Datasource1'#7'Options'#11#9'dg'
   +'Editing'#8'dgTitles'#11'dgIndicator'#14'dgColumnResize'#10'dgColLines'#10'd'
@@ -20,8 +20,8 @@ LazarusResources.Add('TfrmMain','FORMDATA',[
   +#6'Action'#7#12'accPrintGrid'#25'BorderSpacing.InnerBorder'#2#4#8'TabOrder'#2
   +#1#0#0#7'TButton'#7'Button2'#4'Left'#3'"'#1#6'Height'#2#25#3'Top'#2#8#5'Widt'
   +'h'#2'`'#6'Action'#7#16'accPreviewReport'#25'BorderSpacing.InnerBorder'#2#4#8
-  +'TabOrder'#2#2#0#0#10'TStatusBar'#4'sbar'#4'Left'#2#0#6'Height'#2#23#3'Top'#3
-  +#134#1#5'Width'#3'9'#2#6'Panels'#14#1#5'Width'#3#250#0#0#0#11'SimplePanel'#8
+  +'TabOrder'#2#2#0#0#10'TStatusBar'#4'sbar'#4'Left'#2#0#6'Height'#2#19#3'Top'#3
+  +#137#1#5'Width'#3'9'#2#6'Panels'#14#1#5'Width'#3#250#0#0#0#11'SimplePanel'#8
   +#0#0#7'TButton'#7'Button3'#4'Left'#3#210#0#6'Height'#2#25#3'Top'#2#8#5'Width'
   +#2'K'#6'Action'#7#13'accEditReport'#25'BorderSpacing.InnerBorder'#2#4#8'TabO'
   +'rder'#2#3#0#0#7'TButton'#7'Button4'#4'Left'#3#135#1#6'Height'#2#25#3'Top'#2
@@ -29,57 +29,62 @@ LazarusResources.Add('TfrmMain','FORMDATA',[
   +#2#4#8'TabOrder'#2#4#0#0#7'TButton'#13'btnOpenReport'#4'Left'#2'm'#6'Height'
   +#2#25#3'Top'#2#8#5'Width'#2'`'#6'Action'#7#13'accOpenReport'#25'BorderSpacin'
   +'g.InnerBorder'#2#4#8'TabOrder'#2#6#0#0#9'TComboBox'#10'comboIndex'#4'Left'#2
-  +'L'#6'Height'#2#21#3'Top'#2'('#5'Width'#3#148#0#10'ItemHeight'#2#13#8'OnSele'
-  +'ct'#7#16'comboIndexSelect'#8'TabOrder'#2#8#0#0#7'TButton'#12'btnImageList'#4
+  +'H'#6'Height'#2#29#3'Top'#2'%'#5'Width'#3#148#0#10'ItemHeight'#2#0#8'OnSelec'
+  +'t'#7#16'comboIndexSelect'#8'TabOrder'#2#8#0#0#7'TButton'#12'btnImageList'#4
   +'Left'#3#224#1#6'Height'#2#25#3'Top'#2'$'#5'Width'#2'K'#6'Action'#7#13'accTh'
   +'umbnails'#8'TabOrder'#2#9#0#0#9'TfrReport'#9'TheReport'#7'Dataset'#7#12'frD'
   +'BDataSet1'#11'InitialZoom'#7#9'pzDefault'#14'PreviewButtons'#11#6'pbZoom'#6
   +'pbLoad'#6'pbSave'#7'pbPrint'#6'pbFind'#6'pbHelp'#6'pbExit'#0#8'DataType'#7#9
-  +'dtDataSet'#11'OnEnterRect'#7#18'TheReportEnterRect'#4'left'#2'`'#3'top'#2'p'
-  +#10'ReportForm'#10#4#0#0#0#24#0#0#0#0#0#4'TDbf'#4'Dbf1'#9'IndexDefs'#14#0#10
-  +'TableLevel'#2#3#13'FilterOptions'#11#0#4'left'#3#128#0#3'top'#2'H'#0#0#11'T'
-  +'Datasource'#11'Datasource1'#7'DataSet'#7#4'Dbf1'#4'left'#2'`'#3'top'#2'H'#0
-  +#0#12'TfrDBDataSet'#12'frDBDataSet1'#7'DataSet'#7#4'Dbf1'#4'left'#2'`'#3'top'
-  +#3#144#0#0#0#12'TFrPrintGrid'#2'PG'#6'DBGrid'#7#7'dbGrid1'#11'Orientation'#7
-  +#11'poLandscape'#7'Caption'#6#4'Grid'#11'ShowCaption'#9#4'left'#2'`'#3'top'#3
-  +#176#0#0#0#9'TMainMenu'#9'MainMenu1'#4'left'#2#8#3'top'#2'`'#0#9'TMenuItem'#9
-  +'MenuItem1'#7'Caption'#6#5'Files'#0#9'TMenuItem'#9'MenuItem2'#6'Action'#7#8
-  +'accClose'#7'OnClick'#7#15'accCloseExecute'#0#0#0#9'TMenuItem'#9'MenuItem3'#7
-  +'Caption'#6#5'Tests'#0#9'TMenuItem'#9'MenuItem4'#6'Action'#7#12'accNewReport'
-  +#7'OnClick'#7#19'accNewReportExecute'#0#0#9'TMenuItem'#9'MenuItem5'#6'Action'
-  +#7#13'accEditReport'#7'OnClick'#7#20'accEditReportExecute'#0#0#9'TMenuItem'#9
-  +'MenuItem6'#6'Action'#7#16'accPreviewReport'#7'OnClick'#7#23'accPreviewRepor'
-  +'tExecute'#0#0#9'TMenuItem'#9'MenuItem7'#6'Action'#7#14'accPrintReport'#7'On'
-  +'Click'#7#21'accPrintReportExecute'#0#0#9'TMenuItem'#9'MenuItem8'#6'Action'#7
-  +#12'accPrintGrid'#7'OnClick'#7#19'accPrintGridExecute'#0#0#0#9'TMenuItem'#9
-  +'MenuItem9'#7'Caption'#6#6'Export'#0#9'TMenuItem'#10'MenuItem10'#6'Action'#7
-  +#15'accExportToText'#7'OnClick'#7#22'accExportToTextExecute'#0#0#9'TMenuItem'
-  +#10'MenuItem11'#6'Action'#7#15'accExportToHtml'#7'OnClick'#7#22'accExportToH'
-  +'tmlExecute'#0#0#9'TMenuItem'#10'MenuItem12'#6'Action'#7#14'accExportToCSV'#7
-  +'OnClick'#7#21'accExportToCSVExecute'#0#0#0#0#22'TApplicationProperties'#22
-  +'ApplicationProperties1'#9'HintPause'#2#10#10'OnShowHint'#7#30'ApplicationPr'
-  +'operties1ShowHint'#4'left'#2'`'#3'top'#3#240#0#0#0#11'TActionList'#11'Actio'
-  +'nList1'#4'left'#2'0'#3'top'#2'`'#0#7'TAction'#12'accNewReport'#8'Category'#6
-  +#5'Tests'#7'Caption'#6#10'New Report'#9'OnExecute'#7#19'accNewReportExecute'
-  +#0#0#7'TAction'#13'accEditReport'#8'Category'#6#5'Tests'#7'Caption'#6#11'Edi'
-  +'t Report'#9'OnExecute'#7#20'accEditReportExecute'#0#0#7'TAction'#16'accPrev'
-  +'iewReport'#8'Category'#6#5'Tests'#7'Caption'#6#14'Preview Report'#9'OnExecu'
-  +'te'#7#23'accPreviewReportExecute'#0#0#7'TAction'#12'accPrintGrid'#8'Categor'
-  ,'y'#6#5'Tests'#7'Caption'#6#10'Print Grid'#9'OnExecute'#7#19'accPrintGridExe'
-  +'cute'#0#0#7'TAction'#14'accPrintReport'#8'Category'#6#5'Tests'#7'Caption'#6
-  +#12'Print Report'#9'OnExecute'#7#21'accPrintReportExecute'#0#0#7'TAction'#8
-  +'accClose'#8'Category'#6#5'Files'#7'Caption'#6#5'Close'#9'OnExecute'#7#15'ac'
-  +'cCloseExecute'#0#0#7'TAction'#15'accExportToText'#8'Category'#6#6'Export'#7
-  +'Caption'#6#14'Export to text'#9'OnExecute'#7#22'accExportToTextExecute'#0#0
-  +#7'TAction'#15'accExportToHtml'#8'Category'#6#6'Export'#7'Caption'#6#14'Expo'
-  +'rt to html'#9'OnExecute'#7#22'accExportToHtmlExecute'#0#0#7'TAction'#13'acc'
-  +'OpenReport'#8'Category'#6#5'Files'#7'Caption'#6#11'Open Report'#9'OnExecute'
-  +#7#20'accOpenReportExecute'#0#0#7'TAction'#14'accExportToCSV'#8'Category'#6#6
-  +'Export'#7'Caption'#6#13'Export to CSV'#9'OnExecute'#7#21'accExportToCSVExec'
-  +'ute'#0#0#7'TAction'#13'accThumbnails'#8'Category'#6#14'Sample Reports'#7'Ca'
-  +'ption'#6#10'Thumbnails'#9'OnExecute'#7#20'accThumbnailsExecute'#0#0#0#11'TO'
-  +'penDialog'#11'OpenDialog1'#6'Filter'#6':LazReport Files|*.lrf|FreeReport Fi'
-  +'les|*.frf|All Files|*.*'#11'FilterIndex'#2#0#4'left'#2'd'#3'top'#3#16#1#0#0
+  +'dtDataSet'#10'OnBeginDoc'#7#17'TheReportBeginDoc'#10'OnGetValue'#7#17'TheRe'
+  +'portGetValue'#11'OnEnterRect'#7#18'TheReportEnterRect'#19'OnExportFilterSet'
+  +'up'#7#26'TheReportExportFilterSetup'#4'left'#2'`'#3'top'#2'p'#10'ReportForm'
+  +#10#4#0#0#0#25#0#0#0#0#0#4'TDbf'#4'Dbf1'#9'IndexDefs'#14#0#10'TableLevel'#2#3
+  +#13'FilterOptions'#11#0#4'left'#3#128#0#3'top'#2'H'#0#0#11'TDatasource'#11'D'
+  +'atasource1'#7'DataSet'#7#4'Dbf1'#4'left'#2'`'#3'top'#2'H'#0#0#12'TfrDBDataS'
+  +'et'#12'frDBDataSet1'#7'DataSet'#7#4'Dbf1'#4'left'#2'`'#3'top'#3#144#0#0#0#12
+  +'TFrPrintGrid'#2'PG'#6'DBGrid'#7#7'dbGrid1'#11'Orientation'#7#11'poLandscape'
+  +#7'Caption'#6#4'Grid'#11'ShowCaption'#9#4'left'#2'`'#3'top'#3#176#0#0#0#9'TM'
+  +'ainMenu'#9'MainMenu1'#4'left'#2#8#3'top'#2'`'#0#9'TMenuItem'#9'MenuItem1'#7
+  +'Caption'#6#5'Files'#0#9'TMenuItem'#9'MenuItem2'#6'Action'#7#8'accClose'#7'O'
+  +'nClick'#7#15'accCloseExecute'#0#0#0#9'TMenuItem'#9'MenuItem3'#7'Caption'#6#5
+  +'Tests'#0#9'TMenuItem'#9'MenuItem4'#6'Action'#7#12'accNewReport'#7'OnClick'#7
+  +#19'accNewReportExecute'#0#0#9'TMenuItem'#9'MenuItem5'#6'Action'#7#13'accEdi'
+  +'tReport'#7'OnClick'#7#20'accEditReportExecute'#0#0#9'TMenuItem'#9'MenuItem6'
+  +#6'Action'#7#16'accPreviewReport'#7'OnClick'#7#23'accPreviewReportExecute'#0
+  +#0#9'TMenuItem'#9'MenuItem7'#6'Action'#7#14'accPrintReport'#7'OnClick'#7#21
+  +'accPrintReportExecute'#0#0#9'TMenuItem'#9'MenuItem8'#6'Action'#7#12'accPrin'
+  +'tGrid'#7'OnClick'#7#19'accPrintGridExecute'#0#0#0#9'TMenuItem'#9'MenuItem9'
+  +#7'Caption'#6#6'Export'#0#9'TMenuItem'#10'MenuItem10'#6'Action'#7#15'accExpo'
+  +'rtToText'#7'OnClick'#7#22'accExportToTextExecute'#0#0#9'TMenuItem'#10'MenuI'
+  +'tem11'#6'Action'#7#15'accExportToHtml'#7'OnClick'#7#22'accExportToHtmlExecu'
+  +'te'#0#0#9'TMenuItem'#10'MenuItem12'#6'Action'#7#14'accExportToCSV'#7'OnClic'
+  +'k'#7#21'accExportToCSVExecute'#0#0#9'TMenuItem'#10'MenuItem13'#6'Action'#7
+  +#14'accExportToDbg'#7'OnClick'#7#21'accExportToDbgExecute'#0#0#0#0#22'TAppli'
+  +'cationProperties'#22'ApplicationProperties1'#9'HintPause'#2#10#10'OnShowHin'
+  +'t'#7#30'ApplicationProperties1ShowHint'#4'left'#2'`'#3'top'#3#240#0#0#0#11
+  +'TActionList'#11'ActionList1'#4'left'#2'0'#3'top'#2'`'#0#7'TAction'#12'accNe'
+  +'wReport'#8'Category'#6#5'Tests'#7'Caption'#6#10'New Report'#9'OnExecute'#7
+  +#19'accNewReportExecute'#0#0#7'TAction'#13'accEditReport'#8'Category'#6#5'Te'
+  ,'sts'#7'Caption'#6#11'Edit Report'#9'OnExecute'#7#20'accEditReportExecute'#0
+  +#0#7'TAction'#16'accPreviewReport'#8'Category'#6#5'Tests'#7'Caption'#6#14'Pr'
+  +'eview Report'#9'OnExecute'#7#23'accPreviewReportExecute'#0#0#7'TAction'#12
+  +'accPrintGrid'#8'Category'#6#5'Tests'#7'Caption'#6#10'Print Grid'#9'OnExecut'
+  +'e'#7#19'accPrintGridExecute'#0#0#7'TAction'#14'accPrintReport'#8'Category'#6
+  +#5'Tests'#7'Caption'#6#12'Print Report'#9'OnExecute'#7#21'accPrintReportExec'
+  +'ute'#0#0#7'TAction'#8'accClose'#8'Category'#6#5'Files'#7'Caption'#6#5'Close'
+  +#9'OnExecute'#7#15'accCloseExecute'#0#0#7'TAction'#15'accExportToText'#8'Cat'
+  +'egory'#6#6'Export'#7'Caption'#6#14'Export to text'#9'OnExecute'#7#22'accExp'
+  +'ortToTextExecute'#0#0#7'TAction'#15'accExportToHtml'#8'Category'#6#6'Export'
+  +#7'Caption'#6#14'Export to html'#9'OnExecute'#7#22'accExportToHtmlExecute'#0
+  +#0#7'TAction'#13'accOpenReport'#8'Category'#6#5'Files'#7'Caption'#6#11'Open '
+  +'Report'#9'OnExecute'#7#20'accOpenReportExecute'#0#0#7'TAction'#14'accExport'
+  +'ToCSV'#8'Category'#6#6'Export'#7'Caption'#6#13'Export to CSV'#9'OnExecute'#7
+  +#21'accExportToCSVExecute'#0#0#7'TAction'#13'accThumbnails'#8'Category'#6#14
+  +'Sample Reports'#7'Caption'#6#10'Thumbnails'#9'OnExecute'#7#20'accThumbnails'
+  +'Execute'#0#0#7'TAction'#14'accExportToDbg'#8'Category'#6#6'Export'#7'Captio'
+  +'n'#6#12'Export Debug'#9'OnExecute'#7#21'accExportToDbgExecute'#0#0#0#11'TOp'
+  +'enDialog'#11'OpenDialog1'#6'Filter'#6':LazReport Files|*.lrf|FreeReport Fil'
+  +'es|*.frf|All Files|*.*'#11'FilterIndex'#2#0#4'left'#2'd'#3'top'#3#16#1#0#0
   +#12'TfrCSVExport'#12'frCSVExport1'#4'left'#3#188#0#3'top'#2'H'#0#0#14'TfrUse'
   +'rDataset'#14'frUserDataset1'#8'RangeEnd'#7#7'reCount'#4'left'#3#132#0#3'top'
   +#3#144#0#0#0#16'TfrBarCodeObject'#16'frBarCodeObject1'#4'left'#3#16#1#3'top'
