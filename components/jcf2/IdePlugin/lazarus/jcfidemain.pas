@@ -81,7 +81,7 @@ uses
   { jcf }
   JcfStringUtils,
   { local }
-  fAbout{, fAllSettings, JcfRegistrySettings, fRegistrySettings};
+  fAbout, frFiles {, JcfRegistrySettings, fRegistrySettings};
 
 
 function FileIsAllowedType(const psFileName: string): boolean;
@@ -209,22 +209,9 @@ begin
 end;
 
 procedure TJcfIdeMain.DoFormatSettings(Sender: TObject);
-{var
-  lfAllSettings: TFormAllSettings;
-}
 begin
-  ShowMessage('unimplemented');
-{ TODO: convert JCF settings form (it contains some TJvXXX components atm)
-  if not GetRegSettings.HasRead then
-    GetRegSettings.ReadAll;
-
-  lfAllSettings := TFormAllSettings.Create(nil);
-  try
-    lfAllSettings.Execute;
-  finally
-    lfAllSettings.Release;
-  end;
-}
+  // open with the first frame
+  LazarusIDE.DoOpenIDEOptions(TfFiles);
 end;
 
 procedure TJcfIdeMain.DoAbout(Sender: TObject);
