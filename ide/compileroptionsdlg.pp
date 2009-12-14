@@ -670,7 +670,7 @@ begin
     // build modes
     HasBuildModes:=(Options is TProjectCompilerOptions);
     {$IFNDEF EnableBuildModes}
-    HasBuildModes:=false;
+    HasBuildModes:= false;
     {$ENDIF}
     if HasBuildModes then begin
       // show build modes

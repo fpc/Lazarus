@@ -4586,6 +4586,10 @@ resourcestring
   lisUnableToWriteTheProjectInfoFileError = 'Unable to write the project info '
     +'file%s%s%s%s.%sError: %s';
   lisBuildMode = 'Build mode';
+  lisDeleteRow = 'Delete row';
+  lisDeleteSetting = 'Delete setting';
+  lisDeleteBuildMode = 'Delete build mode';
+  lisUnableToDelete = 'Unable to delete';
 
 implementation
 

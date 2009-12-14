@@ -54,6 +54,7 @@ type
     FGraph: TBuildModeGraph;
     FGroupModeCount: integer;
     FModeRows: TFPList; // list of TBuildModeGridRow
+    function GetSelectedModeRow: TBuildModeGridRow;
     function GetModeRowCount: integer;
     function GetModeRows(Index: integer): TBuildModeGridRow;
     procedure ClearModeRows;
@@ -69,11 +70,13 @@ type
     destructor Destroy; override;
     function AddNewBuildMode: TBuildMode;
     function InsertNewBuildFlagBehind: TBuildModeFlag;
+    procedure DeleteSelectedModeRow;
     property Graph: TBuildModeGraph read FGraph;
     procedure RebuildGrid; // call this after Graph changed
     property ModeRowCount: integer read GetModeRowCount;
     property ModeRows[Index: integer]: TBuildModeGridRow read GetModeRows;
     property GroupModeCount: integer read FGroupModeCount; // number of modes that are group of modes
+    property SelectedModeRow: TBuildModeGridRow read GetSelectedModeRow;
   end;
 
   { TBuildModesEditorFrame }
@@ -83,10 +86,15 @@ type
     BuildModesToolBar: TToolBar;
     NewBuildModeToolButton: TToolButton;
     NewBuildFlagToolButton: TToolButton;
+    DeleteBMRowToolButton: TToolButton;
+    procedure DeleteBMRowToolButtonClick(Sender: TObject);
+    procedure GridSelectCell(Sender: TObject; aCol, aRow: Integer;
+      var CanSelect: Boolean);
     procedure NewBuildFlagToolButtonClick(Sender: TObject);
     procedure NewBuildModeToolButtonClick(Sender: TObject);
   private
     FGrid: TBuildModesGrid;
+    procedure UpdateButtons;
   public
     constructor Create(TheOwner: TComponent); override;
     destructor Destroy; override;
@@ -278,6 +286,14 @@ begin
   Result:=FModeRows.Count;
 end;
 
+function TBuildModesGrid.GetSelectedModeRow: TBuildModeGridRow;
+begin
+  if (Row<1) or (Row>ModeRowCount) then
+    Result:=nil
+  else
+    Result:=ModeRows[Row-1];
+end;
+
 constructor TBuildModesGrid.Create(TheOwner: TComponent);
 begin
   inherited Create(TheOwner);
@@ -319,7 +335,7 @@ begin
       lisPleaseSelectABuildModeFirst, mtError, [mbCancel], 0);
     exit;
   end;
-  DebugLn(['TBuildModesGrid.InsertNewBuildFlagBehind ',Row]);
+  //DebugLn(['TBuildModesGrid.InsertNewBuildFlagBehind ',Row]);
   CurModeRow:=ModeRows[Row-1];
   if CurModeRow.Mode.ShowIncludes then
   begin
@@ -329,7 +345,6 @@ begin
       mtError, [mbCancel], 0);
     exit;
   end;
-  DebugLn(['TBuildModesGrid.InsertNewBuildFlagBehind AAA1']);
   Result:=CurModeRow.Mode.InsertFlag(CurModeRow.IndexInGroup+1,bmftNone,'','');
   InsertPos:=Row+1;
   GridRow:=TBuildModeGridRow.Create(CurModeRow.Mode,Result);
@@ -338,6 +353,33 @@ begin
   InsertColRow(false,InsertPos);
   FillGridRow(InsertPos);
   Row:=InsertPos;
+end;
+
+procedure TBuildModesGrid.DeleteSelectedModeRow;
+var
+  CurModeRow: TBuildModeGridRow;
+begin
+  if (Row<1) or (Row>ModeRowCount) then
+  begin
+    MessageDlg(lisUnableToDelete,
+      lisPleaseSelectABuildModeFirst, mtError, [mbCancel], 0);
+    exit;
+  end;
+  CurModeRow:=ModeRows[Row-1];
+  if (not CurModeRow.Mode.ShowIncludes) and (CurModeRow.Mode.FlagCount>1) then
+  begin
+    // delete flag
+    if MessageDlg('Delete setting?',
+      'Delete setting "'+BuildModeFlagTypeCaptions(CurModeRow.Flag.FlagType)+'"?',
+      mtConfirmation,[mbYes,mbNo],0)<>mrYes
+    then
+      exit;
+    CurModeRow.Mode.DeleteFlag(CurModeRow.IndexInGroup);
+    DeleteColRow(false,Row);
+  end else begin
+    // delete build mode
+
+  end;
 end;
 
 procedure TBuildModesGrid.RebuildGrid;
@@ -423,9 +465,34 @@ begin
   Grid.AddNewBuildMode;
 end;
 
+procedure TBuildModesEditorFrame.UpdateButtons;
+var
+  Mode: TBuildModeGridRow;
+begin
+  Mode:=Grid.SelectedModeRow;
+  NewBuildFlagToolButton.Enabled:=(Mode<>nil) and (not Mode.Mode.ShowIncludes);
+  DeleteBMRowToolButton.Enabled:=(Mode<>nil);
+  if (Mode<>nil) and (not Mode.Mode.ShowIncludes) and (Mode.Mode.FlagCount>1)
+  then
+    DeleteBMRowToolButton.Hint:=lisDeleteSetting
+  else
+    DeleteBMRowToolButton.Hint:=lisDeleteBuildMode;
+end;
+
 procedure TBuildModesEditorFrame.NewBuildFlagToolButtonClick(Sender: TObject);
 begin
   Grid.InsertNewBuildFlagBehind;
+end;
+
+procedure TBuildModesEditorFrame.GridSelectCell(Sender: TObject; aCol,
+  aRow: Integer; var CanSelect: Boolean);
+begin
+  UpdateButtons;
+end;
+
+procedure TBuildModesEditorFrame.DeleteBMRowToolButtonClick(Sender: TObject);
+begin
+  Grid.DeleteSelectedModeRow;
 end;
 
 constructor TBuildModesEditorFrame.Create(TheOwner: TComponent);
@@ -436,6 +503,7 @@ begin
     Name:='Grid';
     Parent:=Self;
     Align:=alClient;
+    OnSelectCell:=@GridSelectCell;
   end;
 
   BuildModesToolBar.Images := IDEImages.Images_16;
@@ -443,8 +511,11 @@ begin
   NewBuildModeToolButton.ImageIndex := IDEImages.LoadImage(16, 'laz_add');
   NewBuildFlagToolButton.Hint:=lisNewSetting;
   NewBuildFlagToolButton.ImageIndex := IDEImages.LoadImage(16, 'laz_edit');
+  DeleteBMRowToolButton.Hint:=lisDeleteRow;
+  DeleteBMRowToolButton.ImageIndex := IDEImages.LoadImage(16, 'laz_delete');
 
-  // laz_delete, laz_edit, arrow_up, arrow_down
+  // laz_edit, arrow_up, arrow_down
+  UpdateButtons;
 end;
 
 destructor TBuildModesEditorFrame.Destroy;

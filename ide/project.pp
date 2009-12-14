@@ -3655,7 +3655,7 @@ begin
   if IsVirtual or Modified then exit;
   AnUnitInfo:=UnitInfoWithFilename(ProjectInfoFile,[pfsfOnlyEditorFiles]);
   if (AnUnitInfo<>nil) then begin
-    // users is editing the lpi file in source editor
+    // user is editing the lpi file in source editor
     exit;
   end;
   AnUnitInfo:=fFirst[uilAutoRevertLocked];
@@ -3669,6 +3669,7 @@ begin
 
   if not FileExistsCached(ProjectInfoFile) then exit;
   if fProjectInfoFileDate=FileAgeUTF8(ProjectInfoFile) then exit;
+
   //DebugLn(['TProject.HasProjectInfoFileChangedOnDisk ',ProjectInfoFile,' fProjectInfoFileDate=',fProjectInfoFileDate,' ',FileAgeUTF8(ProjectInfoFile)]);
   Result:=true;
 end;
