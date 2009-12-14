@@ -347,7 +347,7 @@ type
     // Environment options dialog events
     procedure OnLoadIDEOptions(Sender: TObject; AOptions: TAbstractIDEOptions);
     procedure OnSaveIDEOptions(Sender: TObject; AOptions: TAbstractIDEOptions);
-    procedure DoShowEnvGeneralOptions(AEditor: TAbstractIDEOptionsEditorClass);
+    procedure DoOpenIDEOptions(AEditor: TAbstractIDEOptionsEditorClass); override;
 
     // SourceNotebook events
     procedure OnSrcNoteBookActivated(Sender: TObject);
@@ -1384,7 +1384,7 @@ end;
 
 procedure TMainIDE.OIOnShowOptions(Sender: TObject);
 begin
-  DoShowEnvGeneralOptions(TOIOptionsFrame);
+  DoOpenIDEOptions(TOIOptionsFrame);
 end;
 
 procedure TMainIDE.OIOnViewRestricted(Sender: TObject);
@@ -4053,7 +4053,7 @@ end;
 
 procedure TMainIDE.mnuEnvGeneralOptionsClicked(Sender: TObject);
 begin
-  DoShowEnvGeneralOptions(nil);
+  DoOpenIDEOptions(nil);
 end;
 
 //------------------------------------------------------------------------------
@@ -4110,7 +4110,7 @@ begin
     SaveDesktopSettings(AOptions as TEnvironmentOptions);
 end;
 
-procedure TMainIDE.DoShowEnvGeneralOptions(AEditor: TAbstractIDEOptionsEditorClass);
+procedure TMainIDE.DoOpenIDEOptions(AEditor: TAbstractIDEOptionsEditorClass);
 var
   IDEOptionsDialog: TIDEOptionsDialog;
   MacroValueChanged,
@@ -4200,7 +4200,6 @@ begin
 
       UpdateDefaultPascalFileExtensions;
 
-      //DebugLn(['TMainIDE.DoShowEnvGeneralOptions OldLanguage=',OldLanguage,' EnvironmentOptions.LanguageID=',EnvironmentOptions.LanguageID]);
       if OldLanguage<>EnvironmentOptions.LanguageID then
       begin
         TranslateResourceStrings(EnvironmentOptions.LazarusDirectory,
@@ -4248,7 +4247,7 @@ end;
 
 procedure TMainIDE.mnuEnvEditorOptionsClicked(Sender: TObject);
 begin
-  DoShowEnvGeneralOptions(TEditorGeneralOptionsFrame);
+  DoOpenIDEOptions(TEditorGeneralOptionsFrame);
 end;
 
 procedure TMainIDE.mnuEnvCodeTemplatesClicked(Sender: TObject);
@@ -12224,7 +12223,7 @@ end;
 
 procedure TMainIDE.OnDesignerShowOptions(Sender: TObject);
 begin
-  DoShowEnvGeneralOptions(TFormEditorOptionsFrame);
+  DoOpenIDEOptions(TFormEditorOptionsFrame);
 end;
 
 procedure TMainIDE.OnDesignerPasteComponent(Sender: TObject;
@@ -12465,7 +12464,7 @@ end;
 
 procedure TMainIDE.OnCodeExplorerShowOptions(Sender: TObject);
 begin
-  DoShowEnvGeneralOptions(TCodeExplorerUpdateOptionsFrame);
+  DoOpenIDEOptions(TCodeExplorerUpdateOptionsFrame);
 end;
 
 procedure TMainIDE.OnCodeToolNeedsExternalChanges(Manager: TCodeToolManager;

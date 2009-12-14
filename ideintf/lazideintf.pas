@@ -23,7 +23,7 @@ interface
 
 uses
   Classes, SysUtils, LCLProc, Forms, Controls, Dialogs, PropEdits, LazHelpHTML,
-  IDEExternToolIntf, ProjectIntf, SrcEditorIntf, LDockCtrl;
+  IDEExternToolIntf, IDEOptionsIntf, ProjectIntf, SrcEditorIntf, LDockCtrl;
 
 type
   // open file flags
@@ -214,6 +214,7 @@ type
     function GetPrimaryConfigPath: String; virtual; abstract;
     function GetSecondaryConfigPath: String; virtual; abstract;
     procedure CopySecondaryConfigFile(const AFilename: String); virtual; abstract;
+    procedure DoOpenIDEOptions(AEditor: TAbstractIDEOptionsEditorClass); virtual; abstract;
 
     // filenames, paths
     function CreateNewUniqueFilename(const Prefix, Ext: string;
