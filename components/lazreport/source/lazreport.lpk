@@ -26,7 +26,7 @@ Lazarus Port: Olivier Guilbaud, Jesus Reyes A.
     <License Value="Modified LGPL
 See license.txt and license-lazreport.txt for details.
 "/>
-    <Version Minor="9" Release="5"/>
+    <Version Minor="9" Release="6"/>
     <Files Count="65">
       <Item1>
         <Filename Value="lr_class.pas"/>
