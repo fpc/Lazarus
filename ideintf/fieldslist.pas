@@ -70,20 +70,42 @@ var
   PreActive: boolean;
   FieldDef: TFieldDef;
 
-function CreateFieldName(Owner:TComponent;const AName:string):string;
-var
-  j:integer;
-begin
-  for j:=0 to Owner.ComponentCount - 1 do
+  function FieldNameToPascalIdentifer(const AName: string): string;
+  var
+    i : integer;
   begin
-    if CompareText(Owner.Components[j].Name, AName)=0 then
+    Result := '';
+    // FieldName is an ansistring
+    for i := 0 to Length(AName) do
+      if AName[i] in ['0'..'9','a'..'z','A'..'Z','_'] then
+        Result := Result + AName[i];
+    if (Length(Result) > 0) and (not (Result[1] in ['0'..'9'])) then
+        Exit;
+    if Assigned(FieldDef.FieldClass) then
     begin
-      Result:=FDesigner.CreateUniqueComponentName(LinkDataset.Name + NewField.FieldName);
-      exit;
-    end;
+      Result := FieldDef.FieldClass.ClassName + Result;
+      if Copy(Result, 1, 1) = 'T' then
+        Result := Copy(Result, 2, Length(Result) - 1);
+    end
+    else
+      Result := 'Field' + Result;
   end;
-  Result:=AName;
-end;
+
+  function CreateFieldName(Owner: TComponent; const AName: string): string;
+  var
+    j:integer;
+  begin
+    for j := 0 to Owner.ComponentCount - 1 do
+    begin
+      if CompareText(Owner.Components[j].Name, AName) = 0 then
+      begin
+        Result := FDesigner.CreateUniqueComponentName(LinkDataset.Name +
+          FieldNameToPascalIdentifer(NewField.FieldName));
+        exit;
+      end;
+    end;
+    Result := AName;
+  end;
 
 begin
   LinkDataset.DisableControls;
@@ -100,7 +122,8 @@ begin
           if FieldDef = nil then
             Continue;
           NewField := FieldDef.CreateField(LinkDataset.Owner);
-          NewField.Name := CreateFieldName(LinkDataset.Owner, LinkDataset.Name + NewField.FieldName);
+          NewField.Name := CreateFieldName(LinkDataset.Owner, LinkDataset.Name +
+            FieldNameToPascalIdentifer(NewField.FieldName));
           FDesigner.PropertyEditorHook.PersistentAdded(NewField, True);
           fModified := True;
         end;
