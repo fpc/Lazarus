@@ -4297,7 +4297,7 @@ begin
   DCOrigin := DevCtx.Offset;
   gdk_draw_rectangle(DevCtx.Drawable, DevCtx.GC, 0,
                      ARect.Left+DCOrigin.X, ARect.Top+DCOrigin.Y,
-                     ARect.Right-ARect.Left, ARect.Bottom-ARect.Top);
+                     ARect.Right-ARect.Left-1, ARect.Bottom-ARect.Top-1);
 end;
 
 {------------------------------------------------------------------------------
