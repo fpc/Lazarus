@@ -1,0 +1,26 @@
+object Form1: TForm1
+  Left = 16
+  Height = 300
+  Top = 176
+  Width = 400
+  Caption = 'Form1'
+  ClientHeight = 300
+  ClientWidth = 400
+  LCLVersion = '0.9.26.2'
+  object StringGrid1: TStringGrid
+    Left = 24
+    Height = 156
+    Top = 40
+    Width = 352
+    Columns = <    
+      item
+      end    
+      item
+      end    
+      item
+      end    
+      item
+      end>
+    TabOrder = 0
+  end
+end

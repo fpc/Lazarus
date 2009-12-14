@@ -1,0 +1,657 @@
+<?xml version="1.0"?>
+<CONFIG>
+  <ProjectOptions>
+    <PathDelim Value="\"/>
+    <Version Value="7"/>
+    <General>
+      <MainUnit Value="0"/>
+      <TargetFileExt Value=".exe"/>
+      <UseXPManifest Value="True"/>
+      <ActiveEditorIndexAtStart Value="0"/>
+    </General>
+    <VersionInfo>
+      <ProjectVersion Value=""/>
+    </VersionInfo>
+    <PublishOptions>
+      <Version Value="2"/>
+      <IgnoreBinaries Value="False"/>
+      <IncludeFileFilter Value="*.(pas|pp|inc|lfm|lpr|lrs|lpi|lpk|sh|xml)"/>
+      <ExcludeFileFilter Value="*.(bak|ppu|ppw|o|so);*~;backup"/>
+    </PublishOptions>
+    <RunParams>
+      <local>
+        <FormatVersion Value="1"/>
+        <LaunchingApplication PathPlusParams="\usr\X11R6\bin\xterm -T 'Lazarus Run Output' -e $(LazarusDir)\tools\runwait.sh $(TargetCmdLine)"/>
+      </local>
+    </RunParams>
+    <RequiredPackages Count="1">
+      <Item1>
+        <PackageName Value="LCL"/>
+      </Item1>
+    </RequiredPackages>
+    <Units Count="81">
+      <Unit0>
+        <Filename Value="project1.lpr"/>
+        <IsPartOfProject Value="True"/>
+        <UnitName Value="project1"/>
+        <CursorPos X="13" Y="18"/>
+        <TopLine Value="1"/>
+        <EditorIndex Value="1"/>
+        <UsageCount Value="169"/>
+        <Loaded Value="True"/>
+      </Unit0>
+      <Unit1>
+        <Filename Value="unit1.pas"/>
+        <IsPartOfProject Value="True"/>
+        <ComponentName Value="Form1"/>
+        <ResourceBaseClass Value="Form"/>
+        <UnitName Value="Unit1"/>
+        <CursorPos X="60" Y="28"/>
+        <TopLine Value="1"/>
+        <EditorIndex Value="0"/>
+        <UsageCount Value="169"/>
+        <Loaded Value="True"/>
+      </Unit1>
+      <Unit2>
+        <Filename Value="..\KComponents\source\kgrids.pas"/>
+        <UnitName Value="KGrids"/>
+        <CursorPos X="1" Y="1"/>
+        <TopLine Value="1"/>
+        <UsageCount Value="49"/>
+      </Unit2>
+      <Unit3>
+        <Filename Value="C:\lazarusSVN\lcl\printers.pas"/>
+        <UnitName Value="Printers"/>
+        <CursorPos X="1" Y="379"/>
+        <TopLine Value="351"/>
+        <UsageCount Value="7"/>
+      </Unit3>
+      <Unit4>
+        <Filename Value="..\KComponents\source\kcontrols.pas"/>
+        <UnitName Value="KControls"/>
+        <CursorPos X="1" Y="1"/>
+        <TopLine Value="1"/>
+        <UsageCount Value="48"/>
+      </Unit4>
+      <Unit5>
+        <Filename Value="C:\lazarusSVN\lcl\include\canvas.inc"/>
+        <CursorPos X="1" Y="1196"/>
+        <TopLine Value="1168"/>
+        <UsageCount Value="44"/>
+      </Unit5>
+      <Unit6>
+        <Filename Value="C:\lazarusSVN\lcl\include\winapi.inc"/>
+        <CursorPos X="1" Y="736"/>
+        <TopLine Value="708"/>
+        <UsageCount Value="73"/>
+      </Unit6>
+      <Unit7>
+        <Filename Value="C:\lazarusSVN\lcl\interfaces\win32\win32winapi.inc"/>
+        <CursorPos X="1" Y="3337"/>
+        <TopLine Value="3293"/>
+        <UsageCount Value="10"/>
+      </Unit7>
+      <Unit8>
+        <Filename Value="..\KComponents\source\kgraphics.pas"/>
+        <UnitName Value="KGraphics"/>
+        <CursorPos X="1" Y="863"/>
+        <TopLine Value="835"/>
+        <UsageCount Value="45"/>
+      </Unit8>
+      <Unit9>
+        <Filename Value="C:\lazarusSVN\lcl\lcltype.pp"/>
+        <UnitName Value="LCLType"/>
+        <CursorPos X="3" Y="1411"/>
+        <TopLine Value="1383"/>
+        <UsageCount Value="23"/>
+      </Unit9>
+      <Unit10>
+        <Filename Value="C:\lazarusSVN\lcl\include\customcontrol.inc"/>
+        <CursorPos X="1" Y="115"/>
+        <TopLine Value="84"/>
+        <UsageCount Value="14"/>
+      </Unit10>
+      <Unit11>
+        <Filename Value="C:\lazarusSVN\lcl\include\wincontrol.inc"/>
+        <CursorPos X="1" Y="5036"/>
+        <TopLine Value="5008"/>
+        <UsageCount Value="18"/>
+      </Unit11>
+      <Unit12>
+        <Filename Value="C:\lazarusSVN\lcl\include\control.inc"/>
+        <CursorPos X="1" Y="1637"/>
+        <TopLine Value="1609"/>
+        <UsageCount Value="26"/>
+      </Unit12>
+      <Unit13>
+        <Filename Value="C:\lazarusSVN\lcl\include\customform.inc"/>
+        <CursorPos X="1" Y="1060"/>
+        <TopLine Value="1032"/>
+        <UsageCount Value="10"/>
+      </Unit13>
+      <Unit14>
+        <Filename Value="C:\lazarusSVN\lcl\interfaces\qt\qtwinapi.inc"/>
+        <CursorPos X="75" Y="4578"/>
+        <TopLine Value="4545"/>
+        <UsageCount Value="45"/>
+      </Unit14>
+      <Unit15>
+        <Filename Value="C:\lazarusSVN\lcl\interfaces\qt\qtwidgets.pas"/>
+        <UnitName Value="qtwidgets"/>
+        <CursorPos X="1" Y="3845"/>
+        <TopLine Value="3817"/>
+        <UsageCount Value="17"/>
+      </Unit15>
+      <Unit16>
+        <Filename Value="C:\lazarusSVN\lcl\include\winapih.inc"/>
+        <CursorPos X="10" Y="84"/>
+        <TopLine Value="56"/>
+        <UsageCount Value="38"/>
+      </Unit16>
+      <Unit17>
+        <Filename Value="C:\lazarusSVN\lcl\interfacebase.pp"/>
+        <UnitName Value="InterfaceBase"/>
+        <CursorPos X="78" Y="11"/>
+        <TopLine Value="1"/>
+        <UsageCount Value="9"/>
+      </Unit17>
+      <Unit18>
+        <Filename Value="C:\lazarusSVN\lcl\include\intfbasewinapi.inc"/>
+        <CursorPos X="19" Y="1102"/>
+        <TopLine Value="1074"/>
+        <UsageCount Value="9"/>
+      </Unit18>
+      <Unit19>
+        <Filename Value="C:\lazarusSVN\lcl\interfaces\win32\win32winapih.inc"/>
+        <CursorPos X="1" Y="208"/>
+        <TopLine Value="155"/>
+        <UsageCount Value="2"/>
+      </Unit19>
+      <Unit20>
+        <Filename Value="C:\fpc\2.2.4\source\rtl\objpas\types.pp"/>
+        <UnitName Value="types"/>
+        <CursorPos X="29" Y="114"/>
+        <TopLine Value="77"/>
+        <UsageCount Value="7"/>
+      </Unit20>
+      <Unit21>
+        <Filename Value="C:\lazarusSVN\lcl\interfaces\qt\qtobjects.pas"/>
+        <UnitName Value="qtobjects"/>
+        <CursorPos X="19" Y="338"/>
+        <TopLine Value="295"/>
+        <UsageCount Value="9"/>
+      </Unit21>
+      <Unit22>
+        <Filename Value="C:\lazarusSVN\lcl\themes.pas"/>
+        <UnitName Value="Themes"/>
+        <CursorPos X="1" Y="622"/>
+        <TopLine Value="594"/>
+        <UsageCount Value="22"/>
+      </Unit22>
+      <Unit23>
+        <Filename Value="C:\lazarusSVN\lcl\interfaces\qt\qtwinapih.inc"/>
+        <CursorPos X="10" Y="127"/>
+        <TopLine Value="84"/>
+        <UsageCount Value="42"/>
+      </Unit23>
+      <Unit24>
+        <Filename Value="C:\lazarusSVN\lcl\interfaces\qt\qtint.pp"/>
+        <UnitName Value="qtint"/>
+        <CursorPos X="1" Y="29"/>
+        <TopLine Value="29"/>
+        <UsageCount Value="42"/>
+      </Unit24>
+      <Unit25>
+        <Filename Value="C:\lazarusSVN\lcl\interfaces\qt\qtobject.inc"/>
+        <CursorPos X="18" Y="178"/>
+        <TopLine Value="156"/>
+        <UsageCount Value="43"/>
+      </Unit25>
+      <Unit26>
+        <Filename Value="C:\lazarusSVN\lcl\interfaces\qt\qt45.pas"/>
+        <UnitName Value="qt45"/>
+        <CursorPos X="1" Y="13366"/>
+        <TopLine Value="13338"/>
+        <UsageCount Value="18"/>
+      </Unit26>
+      <Unit27>
+        <Filename Value="C:\lazarusSVN\lcl\graphics.pp"/>
+        <UnitName Value="Graphics"/>
+        <CursorPos X="11" Y="1790"/>
+        <TopLine Value="1762"/>
+        <UsageCount Value="22"/>
+      </Unit27>
+      <Unit28>
+        <Filename Value="C:\lazarusSVN\lcl\interfaces\qt\qtthemes.pas"/>
+        <UnitName Value="QtThemes"/>
+        <CursorPos X="33" Y="168"/>
+        <TopLine Value="143"/>
+        <UsageCount Value="1"/>
+      </Unit28>
+      <Unit29>
+        <Filename Value="C:\lazarusSVN\lcl\interfaces\gtk\gtkwinapi.inc"/>
+        <CursorPos X="1" Y="8063"/>
+        <TopLine Value="8035"/>
+        <UsageCount Value="65"/>
+      </Unit29>
+      <Unit30>
+        <Filename Value="C:\lazarusSVN\lcl\interfaces\gtk\gtkproc.pp"/>
+        <UnitName Value="GTKProc"/>
+        <CursorPos X="18" Y="451"/>
+        <TopLine Value="422"/>
+        <UsageCount Value="34"/>
+      </Unit30>
+      <Unit31>
+        <Filename Value="C:\lazarusSVN\lcl\interfaces\gtk\gtkproc.inc"/>
+        <CursorPos X="1" Y="3714"/>
+        <TopLine Value="3686"/>
+        <UsageCount Value="34"/>
+      </Unit31>
+      <Unit32>
+        <Filename Value="C:\fpc\2.2.4\source\packages\gtk2\src\gtk+\gdk\gdkwindow.inc"/>
+        <CursorPos X="10" Y="449"/>
+        <TopLine Value="449"/>
+        <UsageCount Value="34"/>
+      </Unit32>
+      <Unit33>
+        <Filename Value="C:\fpc\2.2.4\source\packages\gtk2\src\gtk+\gdk\gdktypes.inc"/>
+        <CursorPos X="14" Y="37"/>
+        <TopLine Value="8"/>
+        <UsageCount Value="34"/>
+      </Unit33>
+      <Unit34>
+        <Filename Value="C:\fpc\2.2.4\source\packages\gtk2\src\glib\gtypes.inc"/>
+        <CursorPos X="14" Y="33"/>
+        <TopLine Value="5"/>
+        <UsageCount Value="34"/>
+      </Unit34>
+      <Unit35>
+        <Filename Value="C:\fpc\2.2.4\source\rtl\inc\ctypes.pp"/>
+        <UnitName Value="ctypes"/>
+        <CursorPos X="3" Y="49"/>
+        <TopLine Value="29"/>
+        <UsageCount Value="34"/>
+      </Unit35>
+      <Unit36>
+        <Filename Value="C:\lazarusSVN\lcl\interfaces\gtk\gtkwinapih.inc"/>
+        <CursorPos X="10" Y="107"/>
+        <TopLine Value="79"/>
+        <UsageCount Value="39"/>
+      </Unit36>
+      <Unit37>
+        <Filename Value="C:\lazarusSVN\lcl\interfaces\gtk\gtkdef.pp"/>
+        <UnitName Value="GtkDef"/>
+        <CursorPos X="15" Y="338"/>
+        <TopLine Value="310"/>
+        <UsageCount Value="64"/>
+      </Unit37>
+      <Unit38>
+        <Filename Value="C:\lazarusSVN\lcl\interfaces\gtk\gtkdevicecontext.inc"/>
+        <CursorPos X="1" Y="574"/>
+        <TopLine Value="546"/>
+        <UsageCount Value="64"/>
+      </Unit38>
+      <Unit39>
+        <Filename Value="C:\lazarusSVN\lcl\graphmath.pp"/>
+        <UnitName Value="GraphMath"/>
+        <CursorPos X="1" Y="627"/>
+        <TopLine Value="599"/>
+        <UsageCount Value="19"/>
+      </Unit39>
+      <Unit40>
+        <Filename Value="C:\fpc\2.2.4\source\rtl\objpas\classes\classesh.inc"/>
+        <CursorPos X="30" Y="33"/>
+        <TopLine Value="4"/>
+        <UsageCount Value="17"/>
+      </Unit40>
+      <Unit41>
+        <Filename Value="..\KComponents\source\KPrintSetup.pas"/>
+        <ComponentName Value="KPrintSetupForm"/>
+        <HasResources Value="True"/>
+        <ResourceBaseClass Value="Form"/>
+        <UnitName Value="KPrintSetup"/>
+        <CursorPos X="84" Y="109"/>
+        <TopLine Value="89"/>
+        <UsageCount Value="29"/>
+      </Unit41>
+      <Unit42>
+        <Filename Value="..\KComponents\source\khexeditor.pas"/>
+        <UnitName Value="KHexEditor"/>
+        <CursorPos X="1" Y="1823"/>
+        <TopLine Value="1795"/>
+        <UsageCount Value="16"/>
+      </Unit42>
+      <Unit43>
+        <Filename Value="C:\fpc\2.2.4\source\rtl\inc\systemh.inc"/>
+        <CursorPos X="3" Y="212"/>
+        <TopLine Value="184"/>
+        <UsageCount Value="18"/>
+      </Unit43>
+      <Unit44>
+        <Filename Value="C:\lazarusSVN\lcl\include\brush.inc"/>
+        <CursorPos X="1" Y="158"/>
+        <TopLine Value="130"/>
+        <UsageCount Value="11"/>
+      </Unit44>
+      <Unit45>
+        <Filename Value="C:\lazarusSVN\lcl\interfaces\qt\qtcaret.pas"/>
+        <UnitName Value="QtCaret"/>
+        <CursorPos X="1" Y="211"/>
+        <TopLine Value="183"/>
+        <UsageCount Value="18"/>
+      </Unit45>
+      <Unit46>
+        <Filename Value="C:\lazarusSVN\components\synedit\synedit.pp"/>
+        <UnitName Value="SynEdit"/>
+        <CursorPos X="29" Y="4386"/>
+        <TopLine Value="4362"/>
+        <UsageCount Value="15"/>
+      </Unit46>
+      <Unit47>
+        <Filename Value="C:\lazarusSVN\components\synedit\syneditmiscclasses.pp"/>
+        <UnitName Value="SynEditMiscClasses"/>
+        <CursorPos X="3" Y="94"/>
+        <TopLine Value="66"/>
+        <UsageCount Value="15"/>
+      </Unit47>
+      <Unit48>
+        <Filename Value="C:\lazarusSVN\lcl\controls.pp"/>
+        <UnitName Value="Controls"/>
+        <CursorPos X="1" Y="2656"/>
+        <TopLine Value="2628"/>
+        <UsageCount Value="31"/>
+      </Unit48>
+      <Unit49>
+        <Filename Value="C:\lazarusSVN\lcl\customtimer.pas"/>
+        <UnitName Value="CustomTimer"/>
+        <CursorPos X="1" Y="198"/>
+        <TopLine Value="161"/>
+        <UsageCount Value="17"/>
+      </Unit49>
+      <Unit50>
+        <Filename Value="..\KComponents\source\keditcommon.pas"/>
+        <UnitName Value="KEditCommon"/>
+        <CursorPos X="19" Y="393"/>
+        <TopLine Value="357"/>
+        <UsageCount Value="13"/>
+      </Unit50>
+      <Unit51>
+        <Filename Value="C:\lazarusSVN\lcl\interfaces\gtk\gtkint.pp"/>
+        <UnitName Value="GtkInt"/>
+        <CursorPos X="3" Y="279"/>
+        <TopLine Value="251"/>
+        <UsageCount Value="29"/>
+      </Unit51>
+      <Unit52>
+        <Filename Value="C:\lazarusSVN\lcl\interfaces\gtk\gtkwidgetset.inc"/>
+        <CursorPos X="18" Y="1542"/>
+        <TopLine Value="1524"/>
+        <UsageCount Value="35"/>
+      </Unit52>
+      <Unit53>
+        <Filename Value="..\KComponents\packages\kcontrols\kcontrolslaz.pas"/>
+        <UnitName Value="KControlsLaz"/>
+        <CursorPos X="29" Y="12"/>
+        <TopLine Value="1"/>
+        <UsageCount Value="10"/>
+      </Unit53>
+      <Unit54>
+        <Filename Value="C:\fpc\2.2.4\source\rtl\win\wininc\base.inc"/>
+        <CursorPos X="113" Y="3"/>
+        <TopLine Value="1"/>
+        <UsageCount Value="7"/>
+      </Unit54>
+      <Unit55>
+        <Filename Value="C:\lazarusSVN\lcl\include\intfbaselcl.inc"/>
+        <CursorPos X="1" Y="620"/>
+        <TopLine Value="592"/>
+        <UsageCount Value="18"/>
+      </Unit55>
+      <Unit56>
+        <Filename Value="C:\lazarusSVN\lcl\include\lclintfh.inc"/>
+        <CursorPos X="10" Y="1"/>
+        <TopLine Value="1"/>
+        <UsageCount Value="10"/>
+      </Unit56>
+      <Unit57>
+        <Filename Value="C:\lazarusSVN\lcl\graphtype.pp"/>
+        <UnitName Value="GraphType"/>
+        <CursorPos X="1" Y="1"/>
+        <TopLine Value="1"/>
+        <UsageCount Value="25"/>
+      </Unit57>
+      <Unit58>
+        <Filename Value="C:\lazarusSVN\lcl\include\lclintf.inc"/>
+        <CursorPos X="1" Y="418"/>
+        <TopLine Value="390"/>
+        <UsageCount Value="19"/>
+      </Unit58>
+      <Unit59>
+        <Filename Value="C:\lazarusSVN\lcl\interfaces\gtk\gtkthemes.pas"/>
+        <UnitName Value="GtkThemes"/>
+        <CursorPos X="10" Y="464"/>
+        <TopLine Value="437"/>
+        <UsageCount Value="25"/>
+      </Unit59>
+      <Unit60>
+        <Filename Value="C:\lazarusSVN\lcl\interfaces\gtk\gtklclintfh.inc"/>
+        <CursorPos X="1" Y="1"/>
+        <TopLine Value="1"/>
+        <UsageCount Value="33"/>
+      </Unit60>
+      <Unit61>
+        <Filename Value="C:\lazarusSVN\lcl\interfaces\gtk\gtklclintf.inc"/>
+        <CursorPos X="17" Y="1"/>
+        <TopLine Value="1"/>
+        <UsageCount Value="33"/>
+      </Unit61>
+      <Unit62>
+        <Filename Value="C:\lazarusSVN\lcl\include\application.inc"/>
+        <CursorPos X="1" Y="39"/>
+        <TopLine Value="11"/>
+        <UsageCount Value="19"/>
+      </Unit62>
+      <Unit63>
+        <Filename Value="C:\lazarusSVN\lcl\interfaces\gtk2\gtk2lclintf.inc"/>
+        <CursorPos X="1" Y="1"/>
+        <TopLine Value="1"/>
+        <UsageCount Value="30"/>
+      </Unit63>
+      <Unit64>
+        <Filename Value="C:\lazarusSVN\lcl\interfaces\gtk2\gtk2winapi.inc"/>
+        <CursorPos X="15" Y="592"/>
+        <TopLine Value="564"/>
+        <UsageCount Value="33"/>
+      </Unit64>
+      <Unit65>
+        <Filename Value="C:\lazarusSVN\lcl\include\font.inc"/>
+        <CursorPos X="1" Y="1"/>
+        <TopLine Value="1"/>
+        <UsageCount Value="24"/>
+      </Unit65>
+      <Unit66>
+        <Filename Value="C:\lazarusSVN\lcl\include\controlcanvas.inc"/>
+        <CursorPos X="1" Y="1"/>
+        <TopLine Value="1"/>
+        <UsageCount Value="20"/>
+      </Unit66>
+      <Unit67>
+        <Filename Value="C:\fpc\2.2.4\source\packages\gtk2\src\pango\pango-font.inc"/>
+        <CursorPos X="30" Y="178"/>
+        <TopLine Value="169"/>
+        <UsageCount Value="8"/>
+      </Unit67>
+      <Unit68>
+        <Filename Value="C:\lazarusSVN\lcl\interfaces\gtk\gtkfontcache.pas"/>
+        <UnitName Value="GtkFontCache"/>
+        <CursorPos X="1" Y="230"/>
+        <TopLine Value="202"/>
+        <UsageCount Value="11"/>
+      </Unit68>
+      <Unit69>
+        <Filename Value="C:\fpc\2.2.4\source\packages\gtk2\src\pango\pango-layout.inc"/>
+        <CursorPos X="10" Y="66"/>
+        <TopLine Value="38"/>
+        <UsageCount Value="8"/>
+      </Unit69>
+      <Unit70>
+        <Filename Value="C:\lazarusSVN\lcl\dynhasharray.pp"/>
+        <UnitName Value="DynHashArray"/>
+        <CursorPos X="1" Y="626"/>
+        <TopLine Value="598"/>
+        <UsageCount Value="9"/>
+      </Unit70>
+      <Unit71>
+        <Filename Value="C:\fpc\2.2.4\source\packages\gtk2\src\gtk+\gtk\gtkwidget.inc"/>
+        <CursorPos X="1" Y="1"/>
+        <TopLine Value="1"/>
+        <UsageCount Value="16"/>
+      </Unit71>
+      <Unit72>
+        <Filename Value="C:\lazarusSVN\lcl\interfaces\gtk2\gtk2devicecontext.inc"/>
+        <CursorPos X="63" Y="2"/>
+        <TopLine Value="1"/>
+        <UsageCount Value="18"/>
+      </Unit72>
+      <Unit73>
+        <Filename Value="C:\fpc\2.2.4\source\packages\gtk1\src\gdk\gdkmain.pp"/>
+        <UnitName Value="gdkmain"/>
+        <CursorPos X="25" Y="1"/>
+        <TopLine Value="1"/>
+        <UsageCount Value="14"/>
+      </Unit73>
+      <Unit74>
+        <Filename Value="C:\lazarusSVN\lcl\lclproc.pas"/>
+        <UnitName Value="LCLProc"/>
+        <CursorPos X="12" Y="1815"/>
+        <TopLine Value="1797"/>
+        <UsageCount Value="18"/>
+      </Unit74>
+      <Unit75>
+        <Filename Value="C:\lazarusSVN\lcl\intfgraphics.pas"/>
+        <UnitName Value="IntfGraphics"/>
+        <CursorPos X="24" Y="5143"/>
+        <TopLine Value="5114"/>
+        <UsageCount Value="11"/>
+      </Unit75>
+      <Unit76>
+        <Filename Value="C:\lazarusSVN\lcl\lclintf.pas"/>
+        <UnitName Value="LCLIntf"/>
+        <CursorPos X="6" Y="65"/>
+        <TopLine Value="1"/>
+        <UsageCount Value="10"/>
+      </Unit76>
+      <Unit77>
+        <Filename Value="C:\lazarusSVN\lcl\include\graphiccontrol.inc"/>
+        <CursorPos X="1" Y="72"/>
+        <TopLine Value="44"/>
+        <UsageCount Value="10"/>
+      </Unit77>
+      <Unit78>
+        <Filename Value="C:\lazarusSVN\lcl\include\paintbox.inc"/>
+        <CursorPos X="1" Y="52"/>
+        <TopLine Value="5"/>
+        <UsageCount Value="10"/>
+      </Unit78>
+      <Unit79>
+        <Filename Value="C:\lazarusSVN\lcl\lclmessageglue.pas"/>
+        <UnitName Value="LCLMessageGlue"/>
+        <CursorPos X="1" Y="121"/>
+        <TopLine Value="93"/>
+        <UsageCount Value="10"/>
+      </Unit79>
+      <Unit80>
+        <Filename Value="C:\lazarusSVN\lcl\interfaces\gtk\gtkcallback.inc"/>
+        <CursorPos X="1" Y="61"/>
+        <TopLine Value="33"/>
+        <UsageCount Value="10"/>
+      </Unit80>
+    </Units>
+    <JumpHistory Count="6" HistoryIndex="5">
+      <Position1>
+        <Filename Value="unit1.pas"/>
+        <Caret Line="137" Column="1" TopLine="96"/>
+      </Position1>
+      <Position2>
+        <Filename Value="unit1.pas"/>
+        <Caret Line="138" Column="1" TopLine="96"/>
+      </Position2>
+      <Position3>
+        <Filename Value="unit1.pas"/>
+        <Caret Line="113" Column="1" TopLine="85"/>
+      </Position3>
+      <Position4>
+        <Filename Value="unit1.pas"/>
+        <Caret Line="137" Column="1" TopLine="96"/>
+      </Position4>
+      <Position5>
+        <Filename Value="unit1.pas"/>
+        <Caret Line="110" Column="29" TopLine="85"/>
+      </Position5>
+      <Position6>
+        <Filename Value="unit1.pas"/>
+        <Caret Line="10" Column="31" TopLine="1"/>
+      </Position6>
+    </JumpHistory>
+  </ProjectOptions>
+  <CompilerOptions>
+    <Version Value="8"/>
+    <PathDelim Value="\"/>
+    <SearchPaths>
+      <IncludeFiles Value="$(ProjOutDir)\"/>
+      <OtherUnitFiles Value="D:\Data\Delphi\KComponents\source\"/>
+    </SearchPaths>
+    <Linking>
+      <Options>
+        <Win32>
+          <GraphicApplication Value="True"/>
+        </Win32>
+      </Options>
+    </Linking>
+    <Other>
+      <CompilerPath Value="$(CompPath)"/>
+    </Other>
+  </CompilerOptions>
+  <Debugging>
+    <Watches Count="9">
+      <Item1>
+        <Expression Value="FCurrentFont^.LogFont.lfHeight"/>
+      </Item1>
+      <Item2>
+        <Expression Value="FCurrentFont^.UntransfHeight"/>
+      </Item2>
+      <Item3>
+        <Expression Value="FCurrentFont"/>
+      </Item3>
+      <Item4>
+        <Expression Value="AValue"/>
+      </Item4>
+      <Item5>
+        <Expression Value="FCurrentFont^.GDIFontObject"/>
+      </Item5>
+      <Item6>
+        <Expression Value="FNewFontHeight"/>
+      </Item6>
+      <Item7>
+        <Expression Value="AFont^.GDIFontObject"/>
+      </Item7>
+      <Item8>
+        <Expression Value="Pointer(OldStr)"/>
+      </Item8>
+      <Item9>
+        <Expression Value="ALayout"/>
+      </Item9>
+    </Watches>
+    <Exceptions Count="3">
+      <Item1>
+        <Name Value="EAbort"/>
+      </Item1>
+      <Item2>
+        <Name Value="ECodetoolError"/>
+      </Item2>
+      <Item3>
+        <Name Value="EFOpenError"/>
+      </Item3>
+    </Exceptions>
+  </Debugging>
+</CONFIG>

@@ -2652,6 +2652,15 @@ examples/address_book/mybook.dbf -text svneol=unset#application/x-dbf
 examples/address_book/mybook.mdx -text svneol=unset#application/x-mdx
 examples/address_book/mybook2.dbf -text svneol=unset#application/x-dbf
 examples/address_book/mybook2.mdx -text svneol=unset#application/x-mdx
+examples/affinetransforms/buy_64.bmp -text
+examples/affinetransforms/project1.lfm svneol=native#text/plain
+examples/affinetransforms/project1.lpi svneol=native#text/plain
+examples/affinetransforms/project1.lpr svneol=native#text/plain
+examples/affinetransforms/project1.manifest svneol=native#text/plain
+examples/affinetransforms/project1.rc svneol=native#text/plain
+examples/affinetransforms/unit1.lfm svneol=native#text/plain
+examples/affinetransforms/unit1.lrs svneol=native#text/plain
+examples/affinetransforms/unit1.pas svneol=native#text/plain
 examples/anchordocking/README.txt svneol=native#text/plain
 examples/anchordocking/dockform1unit.lfm svneol=native#text/plain
 examples/anchordocking/dockform1unit.lrs svneol=native#text/pascal
