@@ -273,6 +273,7 @@ type
   public
     class function GetGroupCaption:string; override;
     class function GetInstance: TAbstractIDEOptions; override;
+    procedure DoAfterWrite; override;
   public
     constructor Create;
     destructor Destroy; override;
@@ -761,6 +762,11 @@ end;
 class function TEnvironmentOptions.GetInstance: TAbstractIDEOptions;
 begin
   Result := EnvironmentOptions;
+end;
+
+procedure TEnvironmentOptions.DoAfterWrite;
+begin
+  Save(False);
 end;
 
 procedure TEnvironmentOptions.SetLazarusDefaultFilename;

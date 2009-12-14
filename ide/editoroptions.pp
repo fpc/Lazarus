@@ -920,6 +920,7 @@ type
   public
     class function GetGroupCaption:string; override;
     class function GetInstance: TAbstractIDEOptions; override;
+    procedure DoAfterWrite; override;
   public
     constructor Create;
     destructor Destroy; override;
@@ -3027,6 +3028,11 @@ end;
 class function TEditorOptions.GetInstance: TAbstractIDEOptions;
 begin
   Result := EditorOpts;
+end;
+
+procedure TEditorOptions.DoAfterWrite;
+begin
+  Save;
 end;
 
 function TEditorOptions.GetSynEditOptionName(SynOption: TSynEditorOption): string;

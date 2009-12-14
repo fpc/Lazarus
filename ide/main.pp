@@ -4223,14 +4223,9 @@ begin
 
       UpdateEditorOptions;
 
+      CodeToolsOpts.AssignTo(CodeToolBoss);
       // save to disk
       IDEEditorGroups.DoAfterWrite;
-      EnvironmentOptions.Save(False);
-      EditorOpts.Save;
-      CodeToolsOpts.AssignTo(CodeToolBoss);
-      CodeToolsOpts.Save;
-      CodeExplorerOptions.Save;
-      HelpBoss.SaveHelpOptions;
 
       // update environment
       UpdateDesigners;

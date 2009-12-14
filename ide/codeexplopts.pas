@@ -155,6 +155,7 @@ type
   public
     class function GetGroupCaption:string; override;
     class function GetInstance: TAbstractIDEOptions; override;
+    procedure DoAfterWrite; override;
   public
     constructor Create;
     destructor Destroy; override;
@@ -411,6 +412,11 @@ end;
 class function TCodeExplorerOptions.GetInstance: TAbstractIDEOptions;
 begin
   Result := CodeExplorerOptions;
+end;
+
+procedure TCodeExplorerOptions.DoAfterWrite;
+begin
+  Save;
 end;
 
 procedure TCodeExplorerOptions.Clear;
