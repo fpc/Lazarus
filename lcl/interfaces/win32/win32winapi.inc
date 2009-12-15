@@ -1578,7 +1578,7 @@ var
   OldBrush: HGDIOBJ;
 begin
   OldBrush := Windows.SelectObject(DC, Brush);
-  Result := Boolean(Windows.ExtFloodFill(DC, X, Y, Color, FillType[FillStyle]));
+  Result := Boolean(Windows.ExtFloodFill(DC, X, Y, Windows.ColorRef(ColorToRGB(Color)), FillType[FillStyle]));
   Windows.SelectObject(DC, OldBrush);
 end;
 
