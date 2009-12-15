@@ -315,7 +315,7 @@ end;
 {------------------------------------------------------------------------------
        TControl.ChangeBounds
 ------------------------------------------------------------------------------}
-procedure TControl.ChangeBounds(ALeft, ATop, AWidth, AHeight : integer);
+procedure TControl.ChangeBounds(ALeft, ATop, AWidth, AHeight: integer);
 var
   SizeChanged, PosChanged : boolean;
   OldLeft: Integer;
@@ -896,12 +896,13 @@ end;
 ------------------------------------------------------------------------------}
 procedure TControl.DoConstrainedResize(var NewLeft, NewTop,
   NewWidth, NewHeight: integer);
-var MinWidth, MinHeight, MaxWidth, MaxHeight : TConstraintSize;
+var
+  MinWidth, MinHeight, MaxWidth, MaxHeight : TConstraintSize;
 begin
-  MinWidth:= Constraints.EffectiveMinWidth;
-  MinHeight:= Constraints.EffectiveMinHeight;
-  MaxWidth:= Constraints.EffectiveMaxWidth;
-  MaxHeight:= Constraints.EffectiveMaxHeight;
+  MinWidth := Constraints.EffectiveMinWidth;
+  MinHeight := Constraints.EffectiveMinHeight;
+  MaxWidth := Constraints.EffectiveMaxWidth;
+  MaxHeight := Constraints.EffectiveMaxHeight;
 
   ConstrainedResize(MinWidth, MinHeight, MaxWidth, MaxHeight);
 
@@ -914,7 +915,7 @@ begin
       if NewLeft < Left then
         NewLeft := Left;
     end;
-    NewWidth:= MinWidth
+    NewWidth := MinWidth
   end else if (MaxWidth > 0) and (NewWidth > MaxWidth) then
   begin
     if (NewLeft+NewWidth) = (Left+Width) then
@@ -923,7 +924,7 @@ begin
       if NewLeft > Left then
         NewLeft := Left;
     end;
-    NewWidth:= MaxWidth;
+    NewWidth := MaxWidth;
   end;
 
   if (MinHeight > 0) and (NewHeight < MinHeight) then
@@ -935,7 +936,7 @@ begin
       if NewTop < Top then
         NewTop := Top;
     end;
-    NewHeight:= MinHeight
+    NewHeight := MinHeight
   end else if (MaxHeight > 0) and (NewHeight > MaxHeight) then
   begin
     if (NewTop+NewHeight) = (Top+Height) then
@@ -944,7 +945,7 @@ begin
       if NewTop > Top then
         NewTop := Top;
     end;
-    NewHeight:= MaxHeight;
+    NewHeight := MaxHeight;
   end;
   //debugln('TControl.DoConstrainedResize ',DbgSName(Self),' ',dbgs(NewWidth),',',dbgs(NewHeight));
 end;
@@ -2524,7 +2525,7 @@ end;
 {------------------------------------------------------------------------------
        TControl SetBoundsRect
 ------------------------------------------------------------------------------}
-procedure TControl.SetBoundsRect(const ARect : TRect);
+procedure TControl.SetBoundsRect(const ARect: TRect);
 begin
   {$IFDEF CHECK_POSITION}
   if CheckPosition(Self) then
@@ -3168,7 +3169,7 @@ end;
 {------------------------------------------------------------------------------
   TControl SetBounds
 ------------------------------------------------------------------------------}
-procedure TControl.SetBounds(ALeft, ATop, AWidth, AHeight : integer);
+procedure TControl.SetBounds(ALeft, ATop, AWidth, AHeight: integer);
 begin
   ChangeBounds(ALeft, ATop, AWidth, AHeight);
 end;
@@ -3404,7 +3405,7 @@ begin
   end;
   if [csDesigning,csDestroying,csLoading]*ComponentState=[csDesigning] then
     CheckDesignBounds;
-  SetBounds(FLeft, FTop, Max(0,Value), FHeight);
+  SetBounds(FLeft, FTop, Max(0, Value), FHeight);
 end;
 
 class procedure TControl.WSRegisterClass;
@@ -3447,7 +3448,7 @@ begin
   end;
   if [csDesigning,csDestroying,csLoading]*ComponentState=[csDesigning] then
     CheckDesignBounds;
-  SetBounds(FLeft, FTop, FWidth, Max(0,Value));
+  SetBounds(FLeft, FTop, FWidth, Max(0, Value));
 end;
 
 {------------------------------------------------------------------------------

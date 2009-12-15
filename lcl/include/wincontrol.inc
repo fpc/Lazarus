@@ -4100,12 +4100,14 @@ begin
 
   Perform(LM_WindowposChanged, 0, 0);
 
-  if SizeChanged then begin
-    with SizeMsg do begin
-      Msg:= LM_SIZE;
-      SizeType:= 6; // force realign
-      Width:= FWidth;
-      Height:= FHeight;
+  if SizeChanged then
+  begin
+    with SizeMsg do
+    begin
+      Msg := LM_SIZE;
+      SizeType := 6; // force realign
+      Width := FWidth;
+      Height := FHeight;
       {$IFDEF CHECK_POSITION}
       if CheckPosition(Self) then
       DebugLn(' [TControl.SendMoveSizeMessages] ',Name,':',ClassName,' SizeMsg Width=',DbgS(Width),' Height=',DbgS(Height));
@@ -4114,8 +4116,10 @@ begin
     WindowProc(TLMessage(SizeMsg));
   end;
   
-  if PosChanged then begin
-    with MoveMsg do begin
+  if PosChanged then
+  begin
+    with MoveMsg do
+    begin
       Msg:= LM_MOVE;
       MoveType:= 1;
       XPos:= FLeft;
@@ -7541,7 +7545,7 @@ end;
 
   Sets the bounds of the control.
  ------------------------------------------------------------------------------}
-procedure TWinControl.SetBounds(aLeft, aTop, aWidth, aHeight : integer);
+procedure TWinControl.SetBounds(ALeft, ATop, AWidth, AHeight: integer);
 
   procedure CheckDesignBounds;
   begin

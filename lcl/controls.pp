@@ -1911,7 +1911,7 @@ type
     procedure DoAdjustClientRectChange(const InvalidateRect: Boolean = True);
     procedure InvalidateClientRectCache(WithChildControls: boolean);
     function ClientRectNeedsInterfaceUpdate: boolean;
-    procedure SetBounds(aLeft, aTop, aWidth, aHeight: integer); override;
+    procedure SetBounds(ALeft, ATop, AWidth, AHeight: integer); override;
     function  GetChildsRect(Scrolled: boolean): TRect; override;
     procedure DisableAlign;
     procedure EnableAlign;
