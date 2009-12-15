@@ -1608,7 +1608,8 @@ end;
 function TQtWidget.CanSendLCLMessage: Boolean;
 begin
   Result := (LCLObject <> nil) and
-    not (csDestroying in LCLObject.ComponentState);
+    not ((csDestroying in LCLObject.ComponentState) or
+         (csDestroyingHandle in LCLObject.ControlState));
 end;
 
 {------------------------------------------------------------------------------
