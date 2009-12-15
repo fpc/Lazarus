@@ -415,77 +415,74 @@ var
   OldRoot: TComponent;
   IsNonVisual: Boolean;
 begin
-  if (Best<>nil) and BestIsNonVisual and (BestLevel<=Level) then exit;
+  if Assigned(Best) and BestIsNonVisual and (BestLevel <= Level) then exit;
   {$IFDEF VerboseDesignerSelect}
   DebugLn(['TComponentSearch.Gather ',DbgSName(Child),' ',dbgs(AtPos),' MinClass=',DbgSName(MinClass)]);
   {$ENDIF}
   // check if child is at position
   if Child is TControl then
   begin
-    Control:=TControl(Child);
-    if IgnoreHidden and (csNoDesignVisible in Control.ControlStyle)
-    then
+    Control := TControl(Child);
+    if IgnoreHidden and (csNoDesignVisible in Control.ControlStyle) then
       exit;
     if csNoDesignSelectable in Control.ControlStyle then
       exit;
-  end else
-    Control:=nil;
+  end
+  else
+    Control := nil;
   ChildBounds := GetParentFormRelativeBounds(Child);
   {$IFDEF VerboseDesignerSelect}
   DebugLn(['TComponentSearch.Gather PtInRect=',PtInRect(ChildBounds, AtPos),' ChildBounds=',dbgs(ChildBounds)]);
   {$ENDIF}
   if not PtInRect(ChildBounds, AtPos) then Exit;
 
-  // search in childs
-  if not ((Control<>nil)
-          and (csInline in Control.ComponentState)
-          and (csOwnedChildsNotSelectable in Control.ControlStyle)) then
+  if Assigned(Mediator) then
+    IsNonVisual := Mediator.ComponentIsIcon(Child)
+  else
+    IsNonVisual := DesignerProcs.ComponentIsNonVisual(Child);
+
+  if Child.InheritsFrom(MinClass) and (IsNonVisual or not OnlyNonVisual) then
   begin
+    Best := Child;
+    BestIsNonVisual := IsNonVisual;
+    BestLevel := Level;
     {$IFDEF VerboseDesignerSelect}
-    DebugLn(['TComponentSearch.Gather search in childs of ',DbgSName(Child)]);
-    {$ENDIF}
-    OldRoot:=Root;
-    try
-      inc(Level);
-      if csInline in Child.ComponentState then
-        Root:=Child;
-      {$IFDEF VerboseDesignerSelect}
-      DebugLn(['TComponentSearch.Gather Root=',DbgSName(Root)]);
-      {$ENDIF}
-      TComponentSearch(Child).GetChildren(@Gather,Root);
-    finally
-      dec(Level);
-      Root:=OldRoot;
-    end;
-    {$IFDEF VerboseDesignerSelect}
-    DebugLn(['TComponentSearch.Gather searched in childs of ',DbgSName(Child)]);
+    DebugLn(['TComponentSearch.Gather Best=',DbgSName(Best)]);
     {$ENDIF}
   end;
 
-  if (Mediator<>nil) then
-    IsNonVisual:=Mediator.ComponentIsIcon(Child)
-  else
-    IsNonVisual:=DesignerProcs.ComponentIsNonVisual(Child);
-  if (Best=nil)
-  or (IsNonVisual and (not BestIsNonVisual)) then
+  // search in children
+  if (csInline in Child.ComponentState) or
+     (Assigned(Control) and not (csOwnedChildsNotSelectable in Control.ControlStyle)) then
   begin
-    if not Child.InheritsFrom(MinClass) then exit;
-    if OnlyNonVisual and not IsNonVisual then exit;
-    Best:=Child;
-    BestIsNonVisual:=IsNonVisual;
-    BestLevel:=Level;
     {$IFDEF VerboseDesignerSelect}
-    DebugLn(['TComponentSearch.Gather Best=',DbgSName(Best)]);
+    DebugLn(['TComponentSearch.Gather search in children of ',DbgSName(Child)]);
+    {$ENDIF}
+    OldRoot := Root;
+    try
+      inc(Level);
+      if csInline in Child.ComponentState then
+        Root := Child;
+      {$IFDEF VerboseDesignerSelect}
+      DebugLn(['TComponentSearch.Gather Root=',DbgSName(Root)]);
+      {$ENDIF}
+      TComponentAccess(Child).GetChildren(@Gather, Root);
+    finally
+      dec(Level);
+      Root := OldRoot;
+    end;
+    {$IFDEF VerboseDesignerSelect}
+    DebugLn(['TComponentSearch.Gather searched in children of ',DbgSName(Child)]);
     {$ENDIF}
   end;
 end;
 
 procedure TComponentSearch.Search(ARoot: TComponent);
 begin
-  Root:=ARoot;
-  Level:=1;
-  TComponentSearch(Root).GetChildren(@Gather,Root);
-  Level:=0;
+  Root := ARoot;
+  Level := 1;
+  TComponentAccess(Root).GetChildren(@Gather, Root);
+  Level := 0;
 end;
 
 const
@@ -3260,15 +3257,15 @@ function TDesigner.NonVisualComponentAtPos(X, Y: integer): TComponent;
 var
   s: TComponentSearch;
 begin
-  s:=TComponentSearch.Create(nil);
+  s := TComponentSearch.Create(nil);
   try
-    s.MinClass:=TComponent;
-    s.AtPos:=Point(X,Y);
-    s.IgnoreHidden:=true;
-    s.OnlyNonVisual:=true;
+    s.MinClass := TComponent;
+    s.AtPos := Point(X,Y);
+    s.IgnoreHidden := true;
+    s.OnlyNonVisual := true;
     s.Search(FLookupRoot);
-    s.Mediator:=Mediator;
-    Result:=s.Best;
+    s.Mediator := Mediator;
+    Result := s.Best;
   finally
     s.Free;
   end;
@@ -3301,27 +3298,29 @@ var
   s: TComponentSearch;
   MediatorFlags: TDMCompAtPosFlags;
 begin
-  if Mediator<>nil then begin
-    MediatorFlags:=[];
+  if Mediator <> nil then
+  begin
+    MediatorFlags := [];
     if IgnoreHidden then
-      Include(MediatorFlags,dmcapfOnlyVisible);
-    Result:=Mediator.ComponentAtPos(APos,AClass,MediatorFlags);
-  end else begin
-    s:=TComponentSearch.Create(nil);
+      Include(MediatorFlags, dmcapfOnlyVisible);
+    Result := Mediator.ComponentAtPos(APos,AClass,MediatorFlags);
+  end
+  else
+  begin
+    s := TComponentSearch.Create(nil);
     try
-      s.AtPos:=APos;
-      s.MinClass:=AClass;
-      s.IgnoreHidden:=IgnoreHidden;
+      s.AtPos := APos;
+      s.MinClass := AClass;
+      s.IgnoreHidden := IgnoreHidden;
       s.Search(FLookupRoot);
-      s.Mediator:=Mediator;
-      Result:=s.Best;
+      s.Mediator := Mediator;
+      Result := s.Best;
     finally
       s.Free;
     end;
   end;
 
-  if (Result = nil) and UseRootAsDefault and (FLookupRoot.InheritsFrom(AClass))
-  then
+  if (Result = nil) and UseRootAsDefault and (FLookupRoot.InheritsFrom(AClass)) then
     Result := LookupRoot;
 end;
 
