@@ -232,6 +232,7 @@ type
     procedure IncreaseChangeStamp;
     property ChangeStamp: integer read FChangeStamp;
     function AddMode(aName: string): TBuildMode;
+    procedure DeleteMode(aMode: TBuildMode);
     procedure LoadFromXMLConfig(XMLConfig: TXMLConfig; const Path: string;
                                 Merge, DoSwitchPathDelims: boolean);
     procedure SaveToXMLConfig(XMLConfig: TXMLConfig; const Path: string;
@@ -3805,6 +3806,21 @@ begin
   Modified:=true;
 end;
 
+procedure TBuildModeGraph.DeleteMode(aMode: TBuildMode);
+var
+  WasActive: Boolean;
+begin
+  if aMode.Graph<>Self then
+    RaiseException('');
+  WasActive:=FActiveModes.IndexOf(aMode)>=0;
+  if FSelectedMode=aMode then FSelectedMode:=nil;
+  FModes.Remove(aMode);
+  aMode.Free;
+  if WasActive then
+    UpdateActiveModes;
+  Modified:=true;
+end;
+
 procedure TBuildModeGraph.LoadFromXMLConfig(XMLConfig: TXMLConfig;
   const Path: string; Merge, DoSwitchPathDelims: boolean);
 // Merge=false: clear modes and load them
@@ -4950,6 +4966,7 @@ end;
 
 constructor TBuildMode.Create(aGraph: TBuildModeGraph; const aName: string);
 begin
+  FGraph:=aGraph;
   FName:=aName;
   FIncludes:=TFPList.Create;
   FIncludedBy:=TFPList.Create;

@@ -358,6 +358,7 @@ end;
 procedure TBuildModesGrid.DeleteSelectedModeRow;
 var
   CurModeRow: TBuildModeGridRow;
+  GroupCol: LongInt;
 begin
   if (Row<1) or (Row>ModeRowCount) then
   begin
@@ -369,16 +370,33 @@ begin
   if (not CurModeRow.Mode.ShowIncludes) and (CurModeRow.Mode.FlagCount>1) then
   begin
     // delete flag
-    if MessageDlg('Delete setting?',
-      'Delete setting "'+BuildModeFlagTypeCaptions(CurModeRow.Flag.FlagType)+'"?',
-      mtConfirmation,[mbYes,mbNo],0)<>mrYes
-    then
-      exit;
+    if (CurModeRow.Flag.Value<>'') or (CurModeRow.Flag.Variable<>'') then
+    begin
+      if MessageDlg(lisDeleteSetting2,
+        Format(lisDeleteSetting3, ['"', BuildModeFlagTypeCaptions(
+          CurModeRow.Flag.FlagType), '"']),
+        mtConfirmation,[mbYes,mbNo],0)<>mrYes
+      then
+        exit;
+    end;
     CurModeRow.Mode.DeleteFlag(CurModeRow.IndexInGroup);
     DeleteColRow(false,Row);
   end else begin
     // delete build mode
-
+    if MessageDlg(lisDeleteBuildMode2,
+      Format(lisDeleteBuildMode3, ['"', CurModeRow.Mode.Name, '"']),
+      mtConfirmation,[mbYes,mbNo],0)<>mrYes
+    then
+      exit;
+    if CurModeRow.Mode.ShowIncludes then begin
+      // delete a group build mode
+      GroupCol:=Row;
+      DeleteColRow(true,GroupCol);
+    end;
+    // delete a normal build mode
+    FModeRows.Remove(CurModeRow);
+    DeleteColRow(false,Row);
+    Graph.DeleteMode(CurModeRow.Mode);
   end;
 end;
 
