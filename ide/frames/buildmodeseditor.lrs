@@ -13,6 +13,8 @@ LazarusResources.Add('TBuildModesEditorFrame','FORMDATA',[
   +'OnClick'#7#27'NewBuildFlagToolButtonClick'#0#0#11'TToolButton'#21'DeleteBMR'
   +'owToolButton'#4'Left'#2'/'#3'Top'#2#2#7'Caption'#6#21'DeleteBMRowToolButton'
   +#14'ParentShowHint'#8#8'ShowHint'#9#7'OnClick'#7#26'DeleteBMRowToolButtonCli'
-  +'ck'#0#0#0#10'TPopupMenu'#19'BuildModesPopupMenu'#4'left'#2'S'#3'top'#2's'#0
-  +#0#0
+  +'ck'#0#0#11'TToolButton'#27'NewBuildModeGroupToolButton'#4'Left'#2'F'#3'Top'
+  +#2#2#7'Caption'#6#27'NewBuildModeGroupToolButton'#14'ParentShowHint'#8#8'Sho'
+  +'wHint'#9#0#0#0#10'TPopupMenu'#19'BuildModesPopupMenu'#4'left'#2'S'#3'top'#2
+  +'s'#0#0#0
 ]);

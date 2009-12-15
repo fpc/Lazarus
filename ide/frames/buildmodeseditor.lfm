@@ -39,6 +39,13 @@ object BuildModesEditorFrame: TBuildModesEditorFrame
       ShowHint = True
       OnClick = DeleteBMRowToolButtonClick
     end
+    object NewBuildModeGroupToolButton: TToolButton
+      Left = 70
+      Top = 2
+      Caption = 'NewBuildModeGroupToolButton'
+      ParentShowHint = False
+      ShowHint = True
+    end
   end
   object BuildModesPopupMenu: TPopupMenu
     left = 83

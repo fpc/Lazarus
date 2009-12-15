@@ -87,6 +87,7 @@ type
     NewBuildModeToolButton: TToolButton;
     NewBuildFlagToolButton: TToolButton;
     DeleteBMRowToolButton: TToolButton;
+    NewBuildModeGroupToolButton: TToolButton;
     procedure DeleteBMRowToolButtonClick(Sender: TObject);
     procedure GridSelectCell(Sender: TObject; aCol, aRow: Integer;
       var CanSelect: Boolean);
@@ -531,6 +532,8 @@ begin
   NewBuildFlagToolButton.ImageIndex := IDEImages.LoadImage(16, 'laz_edit');
   DeleteBMRowToolButton.Hint:=lisDeleteRow;
   DeleteBMRowToolButton.ImageIndex := IDEImages.LoadImage(16, 'laz_delete');
+  NewBuildModeGroupToolButton.Hint:=lisNewGroupASetOfModes;
+  NewBuildModeGroupToolButton.ImageIndex:=IDEImages.LoadImage(16, 'laz_add');
 
   // laz_edit, arrow_up, arrow_down
   UpdateButtons;
