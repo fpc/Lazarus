@@ -2532,7 +2532,7 @@ begin
   DebugLn('[TControl.SetBoundsRect] ',Name,':',ClassName);
   {$ENDIF}
   with ARect do
-    SetBounds(Left,Top,Right - Left, Bottom - Top);
+    SetBounds(Left, Top, Max(Right - Left, 0), Max(Bottom - Top, 0));
 end;
 
 procedure TControl.SetBoundsRectForNewParent(const AValue: TRect);
