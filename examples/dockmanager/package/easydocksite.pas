@@ -979,10 +979,14 @@ begin
   if FTopZone.FirstChild = nil then
     exit; //no zones - nothing to paint
   ACanvas := TCanvas.Create;
-  ACanvas.Handle := DC;
-  GetCursorPos(MousePos);
-  MousePos := DockSite.ScreenToClient(MousePos);
-  PaintZone(FTopZone);
+  try
+    ACanvas.Handle := DC;
+    GetCursorPos(MousePos);
+    MousePos := DockSite.ScreenToClient(MousePos);
+    PaintZone(FTopZone);
+  finally
+    Acanvas.Free;
+  end;
 end;
 
 procedure TEasyTree.RemoveControl(Control: TControl);
