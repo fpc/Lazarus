@@ -1142,6 +1142,38 @@ const
     CurrentIdentifierList.Add(NewItem);
   end;
 
+  procedure AddBaseType(const BaseName: PChar);
+  var
+    NewItem: TIdentifierListItem;
+  begin
+    NewItem:=TIdentifierListItem.Create(
+        icompUnknown,
+        false,
+        CompilerFuncHistoryIndex,
+        BaseName,
+        CompilerFuncLevel,
+        nil,
+        nil,
+        ctnTypeDefinition);
+    CurrentIdentifierList.Add(NewItem);
+  end;
+
+  procedure AddBaseConstant(const BaseName: PChar);
+  var
+    NewItem: TIdentifierListItem;
+  begin
+    NewItem:=TIdentifierListItem.Create(
+        icompUnknown,
+        false,
+        CompilerFuncHistoryIndex,
+        BaseName,
+        CompilerFuncLevel,
+        nil,
+        nil,
+        ctnConstant);
+    CurrentIdentifierList.Add(NewItem);
+  end;
+
 var
   NewItem: TIdentifierListItem;
   ProcNode: TCodeTreeNode;
@@ -1226,6 +1258,34 @@ begin
       CurrentIdentifierList.Add(NewItem);
     end;
   end;
+
+  AddBaseType('Char');
+  AddBaseType('WideChar');
+  AddBaseType('Real');
+  AddBaseType('Single');
+  AddBaseType('Double');
+  AddBaseType('Extended');
+  AddBaseType('Currency');
+  AddBaseType('Comp');
+  AddBaseType('Int64');
+  AddBaseType('Cardinal');
+  AddBaseType('QWord');
+  AddBaseType('Boolean');
+  AddBaseType('ByteBool');
+  AddBaseType('LongBool');
+  AddBaseType('String');
+  AddBaseType('AnsiString');
+  AddBaseType('ShortString');
+  AddBaseType('WideString');
+  AddBaseType('UnicodeString');
+  AddBaseType('Pointer');
+  AddBaseType('File');
+  AddBaseType('Text');
+  AddBaseType('Word');
+  AddBaseType('SmallInt');
+  AddBaseType('ShortInt');
+  AddBaseType('Byte');
+  AddBaseConstant('Nil');
 end;
 
 procedure TIdentCompletionTool.GatherUsefulIdentifiers(CleanPos: integer;
