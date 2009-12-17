@@ -633,6 +633,7 @@ type
     procedure ComponentRestrictedPaint(Sender: TObject);
     procedure DoUpdateRestricted;
     procedure DoViewRestricted;
+    procedure DoComponentEditorVerbMenuItemClick(Sender: TObject);
   private
     FAutoShow: Boolean;
     FFavourites: TOIFavouriteProperties;
@@ -664,7 +665,9 @@ type
     FShowStatusBar: Boolean;
     FUpdateLock: integer;
     FUpdatingAvailComboBox: boolean;
+    FComponentEditor: TBaseComponentEditor;
     function GetGridControl(Page: TObjectInspectorPage): TOICustomPropertyGrid;
+    procedure SetComponentEditor(const AValue: TBaseComponentEditor);
     procedure SetFavourites(const AValue: TOIFavouriteProperties);
     procedure SetComponentTreeHeight(const AValue: integer);
     procedure SetDefaultItemHeight(const AValue: integer);
@@ -698,6 +701,8 @@ type
     procedure CreateNoteBook;
     procedure KeyDown(var Key: Word; Shift: TShiftState); override;
     procedure KeyUp(var Key: Word; Shift: TShiftState); override;
+    function GetComponentEditorForSelection: TBaseComponentEditor;
+    property ComponentEditor: TBaseComponentEditor read FComponentEditor write SetComponentEditor;
   public
     constructor Create(AnOwner: TComponent); override;
     destructor Destroy; override;
@@ -3801,6 +3806,7 @@ begin
   FShowStatusBar := True;
   FInfoBoxHeight := 80;
   FShowInfoBox := False;
+  FComponentEditor := nil;
 
   Caption := oisObjectInspector;
   StatusBar.SimpleText := oisAll;
@@ -3903,6 +3909,7 @@ end;
 destructor TObjectInspectorDlg.Destroy;
 begin
   FreeAndNil(FSelection);
+  FreeAndNil(FComponentEditor);
   inherited Destroy;
   FreeAndNil(FFavourites);
 end;
@@ -4230,29 +4237,40 @@ begin
   end;
 end;
 
-procedure TObjectInspectorDlg.ComponentTreeDblClick(Sender: TObject);
+function TObjectInspectorDlg.GetComponentEditorForSelection: TBaseComponentEditor;
 var
   APersistent: TPersistent;
-  CompEditor: TBaseComponentEditor;
+  AComponent: TComponent absolute APersistent;
   ADesigner: TIDesigner;
-  AComponent: TComponent;
 begin
-  if (PropertyEditorHook=nil) or (PropertyEditorHook.LookupRoot=nil) then
+  if not Assigned(ComponentTree.Selected) then
+    Exit(nil);
+  APersistent := TPersistent(ComponentTree.Selected.Data);
+  if not (APersistent is TComponent) then
+    Exit(nil);
+  ADesigner := FindRootDesigner(AComponent);
+  if not (ADesigner is TComponentEditorDesigner) then
+    Exit(nil);
+  Result := GetComponentEditor(AComponent, TComponentEditorDesigner(ADesigner));
+end;
+
+procedure TObjectInspectorDlg.ComponentTreeDblClick(Sender: TObject);
+var
+  CompEditor: TBaseComponentEditor;
+begin
+  if (PropertyEditorHook = nil) or (PropertyEditorHook.LookupRoot = nil) then
     Exit;
   if not FSelection.IsEqual(ComponentTree.Selection) then
     ComponentTreeSelectionChanged(Sender);
-  if not Assigned(ComponentTree.Selected) then
-    Exit;
-  APersistent := TPersistent(ComponentTree.Selected.Data);
-  if not (APersistent is TComponent) then
-    exit;
-  AComponent:=TComponent(APersistent);
-  ADesigner := FindRootDesigner(AComponent);
-  if not (ADesigner is TComponentEditorDesigner) then
-    Exit;
-  CompEditor := GetComponentEditor(AComponent, TComponentEditorDesigner(ADesigner));
+  CompEditor := GetComponentEditorForSelection;
   if Assigned(CompEditor) then
-    CompEditor.Edit;
+  begin
+    try
+      CompEditor.Edit;
+    finally
+      CompEditor.Free;
+    end;
+  end;
 end;
 
 procedure TObjectInspectorDlg.ComponentTreeKeyDown(Sender: TObject;
@@ -4867,16 +4885,53 @@ begin
 end;
 
 procedure TObjectInspectorDlg.OnMainPopupMenuPopup(Sender: TObject);
+
+  procedure RemoveComponentEditorMenuItems;
+  var
+    I: Integer;
+  begin
+    for I := MainPopupMenu.Items.Count - 1 downto 0 do
+      if Pos('ComponentEditorVerbMenuItem', MainPopupMenu.Items[I].Name) = 1 then
+        MainPopupMenu.Items[I].Free;
+  end;
+
+  procedure AddComponentEditorMenuItems;
+  var
+    I, VerbCount: Integer;
+    Item: TMenuItem;
+  begin
+    if (ComponentEditor = nil) then
+      Exit;
+    VerbCount := ComponentEditor.GetVerbCount;
+    for I := 0 to VerbCount - 1 do
+    begin
+      Item := NewItem(ComponentEditor.GetVerb(I), 0, False, True,
+        @DoComponentEditorVerbMenuItemClick, 0, 'ComponentEditorVerbMenuItem' + IntToStr(i));
+      ComponentEditor.PrepareItem(I, Item);
+      MainPopupMenu.Items.Insert(I, Item);
+    end;
+    // insert the separator
+    if VerbCount > 0 then
+    begin
+      Item := NewLine;
+      Item.Name := 'ComponentEditorVerbMenuItem' + IntToStr(VerbCount);
+      MainPopupMenu.Items.Insert(VerbCount, Item);
+    end;
+  end;
+
 var
   DefaultStr: String;
   CurGrid: TOICustomPropertyGrid;
   CurRow: TOIPropertyGridRow;
 begin
-  SetDefaultPopupMenuItem.Enabled:=GetCurRowDefaultValue(DefaultStr);
+  ComponentEditor := GetComponentEditorForSelection;
+  RemoveComponentEditorMenuItems;
+  AddComponentEditorMenuItems;
+  SetDefaultPopupMenuItem.Enabled := GetCurRowDefaultValue(DefaultStr);
   if SetDefaultPopupMenuItem.Enabled then
-    SetDefaultPopupMenuItem.Caption:=Format(oisSetToDefault, [DefaultStr])
+    SetDefaultPopupMenuItem.Caption := Format(oisSetToDefault, [DefaultStr])
   else
-    SetDefaultPopupMenuItem.Caption:=oisSetToDefaultValue;
+    SetDefaultPopupMenuItem.Caption := oisSetToDefaultValue;
 
   AddToFavoritesPopupMenuItem.Visible:=(Favourites<>nil) and ShowFavorites
                 and (GetActivePropertyGrid<>FavouriteGrid)
@@ -4921,6 +4976,20 @@ begin
   if Assigned(FOnViewRestricted) then FOnViewRestricted(Self);
 end;
 
+procedure TObjectInspectorDlg.DoComponentEditorVerbMenuItemClick(Sender: TObject);
+var
+  Verb: integer;
+  AMenuItem: TMenuItem;
+begin
+  if Sender is TMenuItem then
+    AMenuItem := TMenuItem(Sender)
+  else
+    Exit;
+  // component menu items start from the start of menu
+  Verb := AMenuItem.MenuIndex;
+  ComponentEditor.ExecuteVerb(Verb);
+end;
+
 procedure TObjectInspectorDlg.HookRefreshPropertyValues;
 begin
   RefreshPropertyValues;
@@ -4959,6 +5028,16 @@ begin
   oipgpEvents: Result:=EventGrid;
   oipgpRestricted: Result:=RestrictedGrid;
   else  Result:=PropertyGrid;
+  end;
+end;
+
+procedure TObjectInspectorDlg.SetComponentEditor(
+  const AValue: TBaseComponentEditor);
+begin
+  if FComponentEditor <> AValue then
+  begin
+    FComponentEditor.Free;
+    FComponentEditor := AValue;
   end;
 end;
 
