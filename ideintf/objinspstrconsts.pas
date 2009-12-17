@@ -89,7 +89,7 @@ resourcestring
   
   // TreeView Items Editor
   sccsTrEdtCaption         = 'TreeView Items Editor';
-  sccsTrEdt                = 'Edit TreeView Items...';
+  sccsTrEdt                = 'Edit Items...';
   sccsTrEdtGrpLCaption     = 'Items';
   sccsTrEdtGrpRCaption     = 'Item Properties';
   sccsTrEdtNewItem         = 'New Item';
@@ -108,7 +108,7 @@ resourcestring
 
   // ListView Items Editor
   sccsLvEdtCaption         = 'ListView Items Editor';
-  sccsLvEdt                = 'Edit ListView Items...';
+  sccsLvEdt                = 'Edit Items...';
   sccsLvColEdt             = 'Edit Columns ...';
   sccsLvEdtGrpLCaption     = 'Items';
   sccsLvEdtGrpRCaption     = 'Item Properties';
@@ -368,7 +368,7 @@ resourcestring
   s_SplitImage = 'Split image';
   
   // Fields Editor
-  fesFeTitle = 'Edit Fields';
+  fesFeTitle = 'Edit Fields...';
   oisAddFields = '&Add fields';
   oisAddFieldsFromFieldDefs = 'Add fields from FieldDefs';
   fesNoFields = 'It was not possible to get the dataset field''s list';
