@@ -28,7 +28,7 @@
 
 { $DEFINE IDE_DEBUG}
 
-{$DEFINE VerboseIDEMultiForm}
+{ $DEFINE VerboseIDEMultiForm}
 
 {off $apptype console}
 
