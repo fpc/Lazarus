@@ -3503,7 +3503,7 @@ ide/keymapshortcutdlg.pas svneol=native#text/plain
 ide/lazarus.ico -text svneol=unset#image/ico
 ide/lazarus.lpi svneol=native#text/plain
 ide/lazarus.pp svneol=native#text/pascal
-ide/lazarus.rc svneol=native#text/plain
+ide/lazarus.rc svneol=CRLF#text/plain eol=crlf
 ide/lazarus_about_logo.lrs svneol=native#text/pascal
 ide/lazarus_dci.lrs svneol=native#text/pascal
 ide/lazarus_indentation.lrs svneol=native#text/plain
