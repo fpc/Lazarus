@@ -720,7 +720,8 @@ and then check the result to see if the user made a valid choice and pressed the
       </element>
       <!-- property Visibility: published -->
       <element name="TFileDialog.FileName">
-        <short>String to store the name of the file chosen by the user.</short>
+        <short>String storing the name of the file chosen by the user as UTF8.</short>
+        <descr>If you need the filename as system encoded, you can use UTF8ToSys from the unit FileUtil.</descr>
       </element>
       <!-- property Visibility: published -->
       <element name="TFileDialog.Filter">
