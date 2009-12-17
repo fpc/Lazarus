@@ -357,6 +357,10 @@ begin
     IsValidDirectory := (DirInfo.Name <> '.') and (DirInfo.Name <> '..');
 
     IsHidden := (DirInfo.Attr and faHidden = faHidden);
+    {$IFDEF Unix}
+    if (DirInfo.Name<>'') and (DirInfo.Name[1]='.') then
+      IsHidden:=true;
+    {$ENDIF}
 
     // First check if we show hidden files
     if IsHidden then AddFile := (otHidden in AObjectTypes)
