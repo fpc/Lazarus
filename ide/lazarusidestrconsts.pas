@@ -986,6 +986,7 @@ resourcestring
   dlgMinimizeAllOnMinimizeMain = 'Minimize all on minimize main';
   dlgHideIDEOnRun = 'Hide IDE windows on run';
   dlgHideMessagesIcons = 'Hide Messages Icons';
+  lisIDETitleStartsWithProjectName = 'IDE title starts with project name';
   dlgDesktopHints = 'Hints';
   dlgPalHints = 'Hints for component palette';
   dlgSpBHints = 'Hints for main speed buttons (open, save, ...)';
@@ -999,6 +1000,8 @@ resourcestring
   lisEnvDoubleClickOnMessagesJumpsOtherwiseSingleClick = 'Double click on '
     +'messages jumps (otherwise: single click)';
   dlgWinPos = 'Window Positions';
+  lisTitleInTaskbarShowsForExampleProject1LpiLazarus = 'Title in taskbar '
+    +'shows for example: project1.lpi - Lazarus';
   dlgMainMenu = 'Main Menu';
   dlgSrcEdit = 'Source Editor';
   dlgMsgs = 'Messages';

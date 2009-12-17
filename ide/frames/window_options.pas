@@ -33,28 +33,29 @@ type
   { TWindowOptionsFrame }
 
   TWindowOptionsFrame = class(TAbstractIDEOptionsEditor)
+    ApplyButton: TButton;
     Bevel1: TBevel;
     Bevel2: TBevel;
-    GetWindowPositionButton: TButton;
-    ApplyButton: TButton;
-    HideMessagesIconsCheckBox: TCheckBox;
-    LeftLabel: TLabel;
+    CustomPositionRadioButton: TRadioButton;
+    DefaultRadioButton: TRadioButton;
     DockedRadioButton: TRadioButton;
-    TopLabel: TLabel;
-    WidthLabel: TLabel;
+    GetWindowPositionButton: TButton;
+    HeightEdit: TSpinEdit;
     HeightLabel: TLabel;
+    HideIDEOnRunCheckBox: TCheckBox;
+    HideMessagesIconsCheckBox: TCheckBox;
     lblWindowCaption: TLabel;
     LeftEdit: TSpinEdit;
-    TopEdit: TSpinEdit;
-    WidthEdit: TSpinEdit;
-    HeightEdit: TSpinEdit;
-    UseWindowManagerSettingRadioButton: TRadioButton;
-    DefaultRadioButton: TRadioButton;
-    RestoreWindowGeometryRadioButton: TRadioButton;
-    CustomPositionRadioButton: TRadioButton;
-    WindowPositionsGroupBox: TGroupBox;
-    HideIDEOnRunCheckBox: TCheckBox;
+    LeftLabel: TLabel;
     MinimizeAllOnMinimizeMainCheckBox: TCheckBox;
+    RestoreWindowGeometryRadioButton: TRadioButton;
+    TitleStartsWithProjectCheckBox: TCheckBox;
+    TopEdit: TSpinEdit;
+    TopLabel: TLabel;
+    UseWindowManagerSettingRadioButton: TRadioButton;
+    WidthEdit: TSpinEdit;
+    WidthLabel: TLabel;
+    WindowPositionsGroupBox: TGroupBox;
     WindowPositionsListBox: TListBox;
     procedure ApplyButtonClick(Sender: TObject);
     procedure GetWindowPositionButtonClick(Sender: TObject);
@@ -93,6 +94,9 @@ begin
   MinimizeAllOnMinimizeMainCheckBox.Caption := dlgMinimizeAllOnMinimizeMain;
   HideIDEOnRunCheckBox.Caption := dlgHideIDEOnRun;
   HideMessagesIconsCheckBox.Caption := dlgHideMessagesIcons;
+  TitleStartsWithProjectCheckBox.Caption:=lisIDETitleStartsWithProjectName;
+  TitleStartsWithProjectCheckBox.Hint:=
+    lisTitleInTaskbarShowsForExampleProject1LpiLazarus;
 
   // Window Positions
   WindowPositionsGroupBox.Caption := dlgWinPos;
@@ -130,6 +134,7 @@ begin
     MinimizeAllOnMinimizeMainCheckBox.Checked := MinimizeAllOnMinimizeMain;
     HideIDEOnRunCheckBox.Checked := HideIDEOnRun;
     HideMessagesIconsCheckBox.Checked := HideMessagesIcons;
+    TitleStartsWithProjectCheckBox.Checked:=IDETitleStartsWithProject;
   end;
 end;
 
@@ -142,6 +147,7 @@ begin
     MinimizeAllOnMinimizeMain:=MinimizeAllOnMinimizeMainCheckBox.Checked;
     HideIDEOnRun:=HideIDEOnRunCheckBox.Checked;
     HideMessagesIcons:=HideMessagesIconsCheckBox.Checked;
+    IDETitleStartsWithProject:=TitleStartsWithProjectCheckBox.Checked;
   end;
 end;
 

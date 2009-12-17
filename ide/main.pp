@@ -4237,6 +4237,8 @@ begin
       if LazarusSrcDirChanged then
         PkgBoss.LazarusSrcDirChanged;
 
+      UpdateCaption;
+
       if CodeExplorerView<>nil then
         CodeExplorerView.Refresh(true);
     end;
@@ -11452,6 +11454,7 @@ end;
 
 procedure TMainIDE.UpdateCaption;
 var NewCaption: string;
+  ProjectName: String;
 begin
   if MainIDEBar=nil then exit;
   if ToolStatus = itExiting then exit;
@@ -11460,12 +11463,19 @@ begin
     NewCaption:=NewCaption+' - '+MainBarSubTitle;
   end else begin
     if Project1<>nil then begin
+      ProjectName:='';
       if Project1.Title<>'' then
-        NewCaption:=NewCaption +' - '+Project1.Title
+        ProjectName:=Project1.Title
       else if Project1.ProjectInfoFile<>'' then
-        NewCaption:=NewCaption+' - '+ExtractFileName(Project1.ProjectInfoFile)
-      else
-        NewCaption:=Format(lisnewProject, [NewCaption])
+        ProjectName:=ExtractFileName(Project1.ProjectInfoFile);
+      if ProjectName<>'' then
+      begin
+        if EnvironmentOptions.IDETitleStartsWithProject then
+          NewCaption:=ProjectName+' - '+NewCaption
+        else
+          NewCaption:=NewCaption+' - '+ProjectName;
+      end else
+        NewCaption:=Format(lisnewProject, [NewCaption]);
     end;
   end;
   case ToolStatus of
