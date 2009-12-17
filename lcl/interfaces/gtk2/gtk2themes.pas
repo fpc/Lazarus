@@ -176,7 +176,7 @@ begin
   else
     Style := GetStyle(lgsWindow);
 
-  if (Style = nil) and not GTK_IS_STYLE(Style) then
+  if (Style = nil) or (not GTK_IS_STYLE(Style)) then
   begin
     Result := inherited GetStockImage(StockID, Image, Mask);
     Exit;
