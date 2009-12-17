@@ -26,9 +26,9 @@ interface
 
 uses
   Classes, SysUtils, LCLProc, Controls, FileUtil, LResources, Forms, Grids,
-  Menus, ComCtrls, Dialogs,
-  IDEImagesIntf,
-  LazarusIDEStrConsts, CompilerOptions, IDEProcs;
+  Menus, ComCtrls, Dialogs, AvgLvlTree,
+  ProjectIntf, IDEImagesIntf,
+  Project, PackageSystem, LazarusIDEStrConsts, CompilerOptions, IDEProcs;
 
 type
 
@@ -65,6 +65,7 @@ type
     function ValidateCell(const ACol, ARow: Integer;
                            var NewValue:string): boolean;
     procedure UpdateIndexInGroup(aRow: integer);
+    procedure UpdateTypePickList;
   public
     constructor Create(TheOwner: TComponent); override;
     destructor Destroy; override;
@@ -162,10 +163,10 @@ begin
   TypeCol:=GroupModeCount+1;
   ValueCol:=TypeCol+1;
   if i=0 then begin
-    Cells[0, 0]:=lisBuildMode;
-    for i:=1 to GroupModeCount do Cells[i,0]:='';
-    Cells[TypeCol, 0]:=dlgEnvType;
-    Cells[ValueCol, 0]:=dlgValueColor;
+    Columns[0].Title.Caption:=lisBuildMode;
+    for i:=1 to GroupModeCount do Columns[i].Title.Caption:='';
+    Columns[TypeCol].Title.Caption:=dlgEnvType;
+    Columns[ValueCol].Title.Caption:=dlgValueColor;
   end else begin
     CurRow:=ModeRows[i-1];
     // name
@@ -279,6 +280,67 @@ begin
     ModeRows[Index].IndexInGroup:=IndexInGroup;
     inc(Index);
     inc(IndexInGroup);
+  end;
+end;
+
+procedure TBuildModesGrid.UpdateTypePickList;
+var
+  Identifiers: TStringToStringTree;
+
+  procedure AddVar(V: TLazBuildVariable);
+  begin
+    if (V.Identifier='') or (not IsValidIdent(V.Identifier)) then exit;
+    if Identifiers.Contains(V.Identifier) then exit;
+    Identifiers[V.Identifier]:='';
+  end;
+
+  procedure AddVars(Vars: TLazBuildVariables);
+  var
+    i: Integer;
+  begin
+    for i:=0 to Vars.Count-1 do
+      AddVar(Vars.Items[i]);
+  end;
+
+var
+  TypeCol: Integer;
+  i: Integer;
+  Node: TAvgLvlTreeNode;
+  t: TBuildModeFlagType;
+  s: String;
+  sl: TStringList;
+begin
+  TypeCol:=GroupModeCount+1;
+  Identifiers:=TStringToStringTree.Create(false);
+  sl:=nil;
+  try
+    // add types
+    for t:=low(TBuildModeFlagType) to high(TBuildModeFlagType) do
+    begin
+      s:=BuildModeFlagTypeCaptions(t);
+      if s<>'' then
+        Identifiers[s]:='';
+    end;
+
+    // add standard variable names
+    Identifiers['TargetOS']:='';
+    Identifiers['TargetCPU']:='';
+    // add package variable names
+    for i:=0 to PackageGraph.Count-1 do
+      AddVars(PackageGraph.Packages[i].CompilerOptions.BuildVariables);
+    // add project variable names
+    AddVars(Project1.CompilerOptions.BuildVariables);
+
+    sl:=TStringList.Create;
+    Node:=Identifiers.Tree.FindLowest;
+    while Node<>nil do begin
+      sl.Add(PStringToStringItem(Node.Data)^.Name);
+      Node:=Identifiers.Tree.FindSuccessor(Node);
+    end;
+    Columns[TypeCol].PickList:=sl;
+  finally
+    sl.Free;
+    Identifiers.Free;
   end;
 end;
 
@@ -452,16 +514,28 @@ begin
   // setup grid
   RowCount:=FModeRows.Count+1;
   FixedRows:=1;
-  ColCount:=GroupModeCount+3;
   FixedCols:=0;
+  DebugLn(['TBuildModesGrid.RebuildGrid AAA0 ',Columns.Count,' ',ColCount,' ',TypeCol,' ',GroupModeCount]);
+  while Columns.Count<GroupModeCount+3 do
+    Columns.Add;
+  while Columns.Count>GroupModeCount+3 do
+    Columns.Delete(Columns.Count-1);
   TypeCol:=GroupModeCount+1;
+  DebugLn(['TBuildModesGrid.RebuildGrid AAA1 ',Columns.Count,' ',ColCount,' ',TypeCol,' ',GroupModeCount]);
   ValueCol:=TypeCol+1;
-  ColWidths[0]:=150;
-  ColWidths[TypeCol]:=120;
-  ColWidths[ValueCol]:=1000;
+  Columns[0].Width:=150;
+  for i:=1 to TypeCol-1 do
+    Columns[i].Width:=20;
+  DebugLn(['TBuildModesGrid.RebuildGrid AAA2 ',Columns.Count,' ',ColCount,' ',TypeCol,' ',GroupModeCount]);
+  Columns[TypeCol].Width:=120;
+  Columns[TypeCol].ButtonStyle:=cbsPickList;
+  Columns[ValueCol].Width:=1000;
+
   // fill cells
   for i:=0 to ModeRowCount do
     FillGridRow(i);
+
+  UpdateTypePickList;
 end;
 
 { TBuildModeGridRow }
