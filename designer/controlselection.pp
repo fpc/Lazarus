@@ -580,7 +580,7 @@ begin
   FIsNonVisualComponent:=FIsTComponent and (not FIsTControl);
   if (Owner.Mediator<>nil) and FIsTComponent then
     FIsNonVisualComponent:=Owner.Mediator.ComponentIsIcon(TComponent(FPersistent));
-  FDesignerForm:=GetDesignerForm(TComponent(FPersistent));
+  FDesignerForm:=GetDesignerForm(FPersistent);
   FIsVisible:=FIsTComponent
               and (not ComponentIsInvisible(TComponent(APersistent)));
 end;

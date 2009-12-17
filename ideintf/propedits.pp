@@ -6027,20 +6027,20 @@ begin
         if ARoot=nil then continue;
         if (ARoot<>APersistent) and (List.IndexOf(ARoot)>=0) then continue;
         List.Add(ARoot);
-        if ARoot is TComponent then begin
-          // ... get the designer ...
-          AForm:=GetDesignerForm(TComponent(ARoot));
-          if (AForm<>nil) and (AForm.Designer<>nil) then
-            AForm.Designer.Modified; // ... and mark it modified
-        end;
+        // ... get the designer ...
+        AForm:=GetDesignerForm(ARoot);
+        if (AForm <> nil) and (AForm.Designer <> nil) then
+          AForm.Designer.Modified; // ... and mark it modified
       end;
     finally
       List.Free;
     end;
   end
-  else if (FLookupRoot<>nil) and (FLookupRoot is TComponent) then begin
-    AForm:=GetDesignerForm(TComponent(FLookupRoot));
-    if (AForm<>nil) and (AForm.Designer<>nil) then
+  else 
+  if (FLookupRoot <> nil) then
+  begin
+    AForm := GetDesignerForm(FLookupRoot);
+    if (AForm <> nil) and (AForm.Designer <> nil) then
       AForm.Designer.Modified;
   end;
 end;

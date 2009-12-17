@@ -555,7 +555,7 @@ begin
       RootNode.ImageIndex := 0;
       RootNode.SelectedIndex := RootNode.ImageIndex;
       RootNode.MultiSelected := Selection.IndexOf(RootObject) >= 0;
-    
+
       // create candidate nodes for every child
       Candidate := TComponentCandidate.Create;
       Candidate.APersistent := RootObject;

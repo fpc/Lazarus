@@ -633,7 +633,6 @@ type
     procedure ComponentRestrictedPaint(Sender: TObject);
     procedure DoUpdateRestricted;
     procedure DoViewRestricted;
-    procedure DoComponentEditorVerbMenuItemClick(Sender: TObject);
   private
     FAutoShow: Boolean;
     FFavourites: TOIFavouriteProperties;
@@ -684,6 +683,8 @@ type
     procedure ShowNextPage(Delta: integer);
     procedure RestrictedPaint(
       ABox: TPaintBox; const ARestrictions: TWidgetSetRestrictionsArray);
+    procedure DoComponentEditorVerbMenuItemClick(Sender: TObject);
+    procedure DoCollectionAddItem(Sender: TObject);
   protected
     function PersistentToString(APersistent: TPersistent): string;
     procedure AddPersistentToList(APersistent: TPersistent; List: TStrings);
@@ -701,6 +702,8 @@ type
     procedure CreateNoteBook;
     procedure KeyDown(var Key: Word; Shift: TShiftState); override;
     procedure KeyUp(var Key: Word; Shift: TShiftState); override;
+    procedure DoModified;
+    function GetSelectedPersistent: TPersistent;
     function GetComponentEditorForSelection: TBaseComponentEditor;
     property ComponentEditor: TBaseComponentEditor read FComponentEditor write SetComponentEditor;
   public
@@ -4125,8 +4128,7 @@ begin
   end;
 end;
 
-procedure TObjectInspectorDlg.SetSelection(
-  const ASelection:TPersistentSelectionList);
+procedure TObjectInspectorDlg.SetSelection(const ASelection: TPersistentSelectionList);
 begin
   if not ASelection.ForceUpdate and FSelection.IsEqual(ASelection) then
     Exit;
@@ -4243,9 +4245,7 @@ var
   AComponent: TComponent absolute APersistent;
   ADesigner: TIDesigner;
 begin
-  if not Assigned(ComponentTree.Selected) then
-    Exit(nil);
-  APersistent := TPersistent(ComponentTree.Selected.Data);
+  APersistent := GetSelectedPersistent;
   if not (APersistent is TComponent) then
     Exit(nil);
   ADesigner := FindRootDesigner(AComponent);
@@ -4471,7 +4471,7 @@ end;
 
 procedure TObjectInspectorDlg.OnGridModified(Sender: TObject);
 begin
-  if Assigned(FOnModified) then FOnModified(Self);
+  DoModified;
 end;
 
 procedure TObjectInspectorDlg.OnGridSelectionChange(Sender: TObject);
@@ -4864,6 +4864,20 @@ begin
     OnRemainingKeyUp(Self,Key,Shift);
 end;
 
+procedure TObjectInspectorDlg.DoModified;
+begin
+  if Assigned(FOnModified) then
+    FOnModified(Self)
+end;
+
+function TObjectInspectorDlg.GetSelectedPersistent: TPersistent;
+begin
+  if ComponentTree.Selection.Count = 1 then
+    Result := ComponentTree.Selection[0]
+  else
+    Result := nil;
+end;
+
 procedure TObjectInspectorDlg.OnShowHintPopupMenuItemClick(Sender : TObject);
 var
   Page: TObjectInspectorPage;
@@ -4900,8 +4914,6 @@ procedure TObjectInspectorDlg.OnMainPopupMenuPopup(Sender: TObject);
     I, VerbCount: Integer;
     Item: TMenuItem;
   begin
-    if (ComponentEditor = nil) then
-      Exit;
     VerbCount := ComponentEditor.GetVerbCount;
     for I := 0 to VerbCount - 1 do
     begin
@@ -4919,14 +4931,38 @@ procedure TObjectInspectorDlg.OnMainPopupMenuPopup(Sender: TObject);
     end;
   end;
 
+  procedure AddCollectionEditorMenuItems(ACollection: TCollection);
+  var
+    Item: TMenuItem;
+  begin
+    Item := NewItem(oisAddCollectionItem, 0, False, True,
+      @DoCollectionAddItem, 0, 'ComponentEditorVerbMenuItem0');
+    MainPopupMenu.Items.Insert(0, Item);
+    Item := NewLine;
+    Item.Name := 'ComponentEditorVerbMenuItem1';
+    MainPopupMenu.Items.Insert(1, Item);
+  end;
+
 var
   DefaultStr: String;
   CurGrid: TOICustomPropertyGrid;
   CurRow: TOIPropertyGridRow;
+  Persistent: TPersistent;
 begin
-  ComponentEditor := GetComponentEditorForSelection;
   RemoveComponentEditorMenuItems;
-  AddComponentEditorMenuItems;
+  ComponentEditor := GetComponentEditorForSelection;
+  if ComponentEditor <> nil then
+    AddComponentEditorMenuItems
+  else
+  begin
+    // check if it is a TCollection
+    Persistent := GetSelectedPersistent;
+    if Persistent is TCollection then
+      AddCollectionEditorMenuItems(TCollection(Persistent))
+    else
+    if Persistent is TCollectionItem then
+      AddCollectionEditorMenuItems(TCollectionItem(Persistent).Collection);
+  end;
   SetDefaultPopupMenuItem.Enabled := GetCurRowDefaultValue(DefaultStr);
   if SetDefaultPopupMenuItem.Enabled then
     SetDefaultPopupMenuItem.Caption := Format(oisSetToDefault, [DefaultStr])
@@ -4988,6 +5024,28 @@ begin
   // component menu items start from the start of menu
   Verb := AMenuItem.MenuIndex;
   ComponentEditor.ExecuteVerb(Verb);
+end;
+
+procedure TObjectInspectorDlg.DoCollectionAddItem(Sender: TObject);
+var
+  Persistent: TPersistent;
+  Collection: TCollection absolute Persistent;
+begin
+  Persistent := GetSelectedPersistent;
+  if Persistent = nil then
+    Exit;
+  if Persistent is TCollectionItem then
+    Persistent := TCollectionItem(Persistent).Collection;
+  if not (Persistent is TCollection) then
+    Exit;
+  Collection.Add;
+  DoModified;
+  Selection.ForceUpdate := True;
+  try
+    SetSelection(Selection);
+  finally
+    Selection.ForceUpdate := False;
+  end;
 end;
 
 procedure TObjectInspectorDlg.HookRefreshPropertyValues;

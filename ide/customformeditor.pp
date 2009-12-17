@@ -2796,11 +2796,7 @@ begin
   or (FSelection.Count <= 0) then Exit;
   
   Instance := FSelection[0];
-  if Instance is TComponent then
-    CustomForm:=GetDesignerForm(TComponent(Instance))
-  else
-    CustomForm:=nil;
-
+  CustomForm:=GetDesignerForm(Instance);
   if (CustomForm<>nil) and (CustomForm.Designer<>nil) then
     CustomForm.Designer.Modified;
 end;
