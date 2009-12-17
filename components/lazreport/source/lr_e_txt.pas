@@ -15,8 +15,8 @@ interface
 {$I lr_vers.inc}
 
 uses
-  Classes, SysUtils, LResources, Graphics, GraphType, Controls, Forms, Dialogs,
-  LCLType, LCLIntf, LR_Class;
+  Classes, SysUtils, LCLProc, LResources, Graphics, GraphType, Controls, Forms,
+  Dialogs, LCLType, LCLIntf, LR_Class;
 
 type
 
@@ -83,8 +83,6 @@ end;
 
 procedure TfrTextExportFilter.CalcXCoords(var x, w: integer);
 begin
-  x := round(x/UsedFont);
-  w := round(w/UsedFont);
 end;
 
 function TfrTextExportFilter.CheckView(View: TfrView): boolean;
@@ -140,7 +138,7 @@ begin
     begin
       x  := Round(p^.X / 6.5);
       s  := s + Dup(x - tc1) + p^.Text;
-      tc1:= x + Length(p^.Text);
+      tc1:= x + UTF8Length(p^.Text);
       p  := p^.Next;
     end;
     s := s + LineEnding;

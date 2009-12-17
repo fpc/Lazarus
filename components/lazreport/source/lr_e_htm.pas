@@ -52,6 +52,7 @@ type
     procedure AppendLine(const s: UTF8String);
     procedure InsertLine(const s: UTF8String; position: Integer);
     function  GetviewText(View:TfrView): string; override;
+    procedure CalcXCoords(var x,w: integer); override;
   public
     constructor Create(AStream: TStream); override;
     destructor Destroy; override;
@@ -413,6 +414,12 @@ end;
 function TfrHTMExportFilter.GetviewText(View: TfrView): string;
 begin
   result := '';
+end;
+
+procedure TfrHTMExportFilter.CalcXCoords(var x, w: integer);
+begin
+  x := round(x/UsedFont);
+  w := round(w/UsedFont);
 end;
 
 
