@@ -26,7 +26,7 @@ interface
 
 uses
   Classes, SysUtils, LCLProc, Controls, FileUtil, LResources, Forms, Grids,
-  Menus, ComCtrls, Dialogs, AvgLvlTree,
+  Menus, ComCtrls, Dialogs, AvgLvlTree, DefineTemplates,
   ProjectIntf, IDEImagesIntf,
   Project, PackageSystem, LazarusIDEStrConsts, CompilerOptions, IDEProcs;
 
@@ -54,6 +54,7 @@ type
     FGraph: TBuildModeGraph;
     FGroupModeCount: integer;
     FModeRows: TFPList; // list of TBuildModeGridRow
+    FRebuilding: boolean;
     function GetSelectedModeRow: TBuildModeGridRow;
     function GetModeRowCount: integer;
     function GetModeRows(Index: integer): TBuildModeGridRow;
@@ -66,6 +67,10 @@ type
                            var NewValue:string): boolean;
     procedure UpdateIndexInGroup(aRow: integer);
     procedure UpdateTypePickList;
+    procedure UpdateValuePickList;
+    procedure FindBuildVariable(const Identifier: string;
+      out Vars: TLazBuildVariables; out aVariable: TLazBuildVariable);
+    function SelectCell(aCol, aRow: Integer): boolean; override;
   public
     constructor Create(TheOwner: TComponent); override;
     destructor Destroy; override;
@@ -246,6 +251,7 @@ begin
         else
           // clean up variable name
           CurModeRow.Flag.Variable:='';
+        UpdateValuePickList;
       end;
     end else if ACol=ValueCol then begin
       if CurModeRow.Mode.ShowIncludes then begin
@@ -325,11 +331,11 @@ begin
     // add standard variable names
     Identifiers['TargetOS']:='';
     Identifiers['TargetCPU']:='';
+    // add project variable names
+    AddVars(Project1.CompilerOptions.BuildVariables);
     // add package variable names
     for i:=0 to PackageGraph.Count-1 do
       AddVars(PackageGraph.Packages[i].CompilerOptions.BuildVariables);
-    // add project variable names
-    AddVars(Project1.CompilerOptions.BuildVariables);
 
     sl:=TStringList.Create;
     Node:=Identifiers.Tree.FindLowest;
@@ -342,6 +348,92 @@ begin
     sl.Free;
     Identifiers.Free;
   end;
+end;
+
+procedure TBuildModesGrid.UpdateValuePickList;
+var
+  CurModeRow: TBuildModeGridRow;
+  sl: TStringList;
+  ValueCol: Integer;
+  Identifier: String;
+  i: integer;
+  Vars: TLazBuildVariables;
+  aVariable: TLazBuildVariable;
+begin
+  ValueCol:=GroupModeCount+2;
+  if ValueCol>=Columns.Count then exit;
+  CurModeRow:=GetSelectedModeRow;
+  sl:=TStringList.Create;
+  try
+    if (CurModeRow<>nil) and (CurModeRow.Flag<>nil) then begin
+      if CurModeRow.Flag.FlagType=bmftSetVariable then begin
+        Identifier:=CurModeRow.Flag.Variable;
+        // check standard variables
+        if SysUtils.CompareText(Identifier,'TargetOS')=0 then begin
+          for i:=low(FPCOperatingSystemNames) to high(FPCOperatingSystemNames) do
+            sl.Add(FPCOperatingSystemNames[i]);
+        end
+        else if SysUtils.CompareText(Identifier,'TargetCPU')=0 then begin
+          for i:=low(FPCProcessorNames) to high(FPCProcessorNames) do
+            sl.Add(FPCProcessorNames[i]);
+        end
+        else begin
+          // search build variable
+          FindBuildVariable(Identifier,Vars,aVariable);
+          if aVariable<>nil then
+            sl.Assign(aVariable.Values);
+        end;
+      end;
+    end;
+    sl.Sort;
+    Columns[ValueCol].PickList:=sl;
+  finally
+    sl.Free;
+  end;
+end;
+
+procedure TBuildModesGrid.FindBuildVariable(const Identifier: string; out
+  Vars: TLazBuildVariables; out aVariable: TLazBuildVariable);
+
+  function CheckVars(CurVars: TLazBuildVariables): boolean;
+  var
+    CurVar: TLazBuildVariable;
+    i: Integer;
+  begin
+    for i:=0 to CurVars.Count-1 do begin
+      CurVar:=CurVars[i];
+      if SysUtils.CompareText(Identifier,CurVar.Identifier)=0 then
+      begin
+        Vars:=CurVars;
+        aVariable:=CurVar;
+        exit(true);
+      end;
+    end;
+    Result:=false;
+  end;
+
+var
+  i: Integer;
+begin
+  Vars:=nil;
+  aVariable:=nil;
+
+  // check project variables
+  if CheckVars(Project1.CompilerOptions.BuildVariables) then
+    exit;
+  // check package variables
+  for i:=0 to PackageGraph.Count-1 do
+    if CheckVars(PackageGraph.Packages[i].CompilerOptions.BuildVariables) then
+      exit;
+end;
+
+function TBuildModesGrid.SelectCell(aCol, aRow: Integer): boolean;
+begin
+  Result:=inherited SelectCell(aCol, aRow);
+  if (not FRebuilding)
+  and (not (csDestroyingHandle in ControlState))
+  then
+    UpdateValuePickList;
 end;
 
 function TBuildModesGrid.GetModeRowCount: integer;
@@ -493,49 +585,53 @@ var
   ValueCol: Integer;
   CurFlag: TBuildModeFlag;
 begin
-  ClearModeRows;
-  GroupInsertPos:=0;
-  // create rows
-  for i:=0 to Graph.ModeCount-1 do begin
-    CurMode:=Graph.Modes[i];
-    if CurMode.ShowIncludes then inc(FGroupModeCount);
-    if (CurMode.FlagCount=0) then begin
-      // no flags => create an empty one
-      NewRow:=TBuildModeGridRow.Create(CurMode,nil);
-      AddRow(CurMode,NewRow);
-    end else begin
-      for j:=0 to CurMode.FlagCount-1 do begin
-        CurFlag:=CurMode.Flags[j];
-        NewRow:=TBuildModeGridRow.Create(CurMode,CurFlag);
+  FRebuilding:=true;
+  try
+    ClearModeRows;
+    GroupInsertPos:=0;
+    // create rows
+    for i:=0 to Graph.ModeCount-1 do begin
+      CurMode:=Graph.Modes[i];
+      if CurMode.ShowIncludes then inc(FGroupModeCount);
+      if (CurMode.FlagCount=0) then begin
+        // no flags => create an empty one
+        NewRow:=TBuildModeGridRow.Create(CurMode,nil);
         AddRow(CurMode,NewRow);
+      end else begin
+        for j:=0 to CurMode.FlagCount-1 do begin
+          CurFlag:=CurMode.Flags[j];
+          NewRow:=TBuildModeGridRow.Create(CurMode,CurFlag);
+          AddRow(CurMode,NewRow);
+        end;
       end;
     end;
+    // setup grid
+    RowCount:=FModeRows.Count+1;
+    FixedRows:=1;
+    FixedCols:=0;
+    while Columns.Count<GroupModeCount+3 do
+      Columns.Add;
+    while Columns.Count>GroupModeCount+3 do
+      Columns.Delete(Columns.Count-1);
+    TypeCol:=GroupModeCount+1;
+    ValueCol:=TypeCol+1;
+    Columns[0].Width:=150;
+    for i:=1 to TypeCol-1 do
+      Columns[i].Width:=20;
+    Columns[TypeCol].Width:=120;
+    Columns[TypeCol].ButtonStyle:=cbsPickList;
+    Columns[ValueCol].Width:=300;
+    Columns[ValueCol].ButtonStyle:=cbsPickList;
+
+    // fill cells
+    for i:=0 to ModeRowCount do
+      FillGridRow(i);
+
+  finally
+    FRebuilding:=false;
   end;
-  // setup grid
-  RowCount:=FModeRows.Count+1;
-  FixedRows:=1;
-  FixedCols:=0;
-  DebugLn(['TBuildModesGrid.RebuildGrid AAA0 ',Columns.Count,' ',ColCount,' ',TypeCol,' ',GroupModeCount]);
-  while Columns.Count<GroupModeCount+3 do
-    Columns.Add;
-  while Columns.Count>GroupModeCount+3 do
-    Columns.Delete(Columns.Count-1);
-  TypeCol:=GroupModeCount+1;
-  DebugLn(['TBuildModesGrid.RebuildGrid AAA1 ',Columns.Count,' ',ColCount,' ',TypeCol,' ',GroupModeCount]);
-  ValueCol:=TypeCol+1;
-  Columns[0].Width:=150;
-  for i:=1 to TypeCol-1 do
-    Columns[i].Width:=20;
-  DebugLn(['TBuildModesGrid.RebuildGrid AAA2 ',Columns.Count,' ',ColCount,' ',TypeCol,' ',GroupModeCount]);
-  Columns[TypeCol].Width:=120;
-  Columns[TypeCol].ButtonStyle:=cbsPickList;
-  Columns[ValueCol].Width:=1000;
-
-  // fill cells
-  for i:=0 to ModeRowCount do
-    FillGridRow(i);
-
   UpdateTypePickList;
+  UpdateValuePickList;
 end;
 
 { TBuildModeGridRow }
