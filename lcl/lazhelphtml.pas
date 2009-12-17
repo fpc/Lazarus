@@ -98,7 +98,7 @@ type
   public
     constructor Create(TheOwner: TComponent); override;
     function ShowNode(Node: THelpNode; var ErrMsg: string): TShowHelpResult; override;
-    procedure FindDefaultBrowser(var Browser, Params: string); virtual;
+    procedure FindDefaultBrowser(out Browser, Params: string); virtual;
     procedure Assign(Source: TPersistent); override;
     procedure Load(Storage: TConfigStorage); override;
     procedure Save(Storage: TConfigStorage); override;
@@ -386,7 +386,7 @@ begin
   end;
 end;
 
-procedure THTMLBrowserHelpViewer.FindDefaultBrowser(var Browser, Params: string);
+procedure THTMLBrowserHelpViewer.FindDefaultBrowser(out Browser, Params: string);
 begin
   if FDefaultBrowser='' then
   begin
