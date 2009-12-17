@@ -681,7 +681,6 @@ begin
           IDEMessagesWindow.AddMsg('Error: failed to create application bundle '+BundleDir,NewTargetDirectory,-1);
           exit;
         end;
-        //debugln(['CreateBuildLazarusOptions BundleDir exists: ',FileExists(BundleDir)]);
         Result:=CreateAppBundleSymbolicLink(CurTargetFilename);
         if not (Result in [mrOk,mrIgnore]) then begin
           debugln(['CreateBuildLazarusOptions CreateAppBundleSymbolicLink failed']);

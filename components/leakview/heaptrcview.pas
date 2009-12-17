@@ -231,7 +231,7 @@ begin
   try
     ClearItems;
     trvTraceInfo.Items.Clear;
-    if not FileExists(edtTrcFileName.Text) then Exit;
+    if not FileExistsUTF8(edtTrcFileName.Text) then Exit;
 
     info := AllocHeapTraceInfo(edtTrcFileName.Text);
     try
@@ -332,7 +332,7 @@ procedure THeapTrcViewForm.LazarusJump(Sender: TObject; const SourceFile: string
 var
   nm  : string;
 begin
-  if not FileExists(SourceFile) then begin
+  if not FileExistsUTF8(SourceFile) then begin
     nm := LazarusIDE.FindSourceFile(SourceFile, '', [fsfUseIncludePaths] );
     if nm = '' then nm := SourceFile;
   end else

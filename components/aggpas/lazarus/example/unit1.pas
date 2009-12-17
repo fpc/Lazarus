@@ -59,7 +59,7 @@ begin
 
     // solid blue text
     FontFilename:=SetDirSeparators('../../verdana.ttf');
-    DebugLn(['TForm1.FormCreate ',FontFilename,' ',FileExists(FontFilename)]);
+    DebugLn(['TForm1.FormCreate ',FontFilename,' ',FileExistsUTF8(FontFilename)]);
     Font.LoadFromFile(FontFilename);
     Font.Size:=18;
     Font.Color:=clRed;

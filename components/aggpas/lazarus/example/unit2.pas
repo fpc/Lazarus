@@ -55,7 +55,7 @@ begin
   with AggLCLCanvas do begin
     if HasFont then begin
       FontFilename:=SetDirSeparators('../../verdana.ttf');
-      if not FileExists(FontFilename) then raise Exception.Create('file not found: '+FontFilename+' CurDir='+GetCurrentDirUTF8);
+      if not FileExistsUTF8(FontFilename) then raise Exception.Create('file not found: '+FontFilename+' CurDir='+GetCurrentDirUTF8);
       Font.LoadFromFile(FontFilename);
       Font.Size:=10;
       Font.Color:=clBlack;
