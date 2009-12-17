@@ -5,7 +5,7 @@
  *                                                                           *
  *  This file is part of the Lazarus Component Library (LCL)                 *
  *                                                                           *
- *  See the file COPYING.modifiedLGPL.txt, included in this distribution,        *
+ *  See the file COPYING.modifiedLGPL.txt, included in this distribution,    *
  *  for details about the copyright.                                         *
  *                                                                           *
  *  This program is distributed in the hope that it will be useful,          *
@@ -28,7 +28,10 @@ begin
   if Window = nil then Exit;
   // always recurse windows which do not accept controls.
   // this way we will catch all widgets with double windows
-  SetWindowCursor(Window, AInfo^.ControlCursor, not (csAcceptsControls in TControl(AInfo^.LCLObject).ControlStyle));
+  if not (csAcceptsControls in TControl(AInfo^.LCLObject).ControlStyle) then
+    SetWindowCursor(Window, AInfo^.ControlCursor, True)
+  else
+    SetCursorForWindowsWithInfo(Window, AInfo);
 end;
 
 class procedure TGtkPrivateWidget.SetDefaultCursor(AInfo: PWidgetInfo);

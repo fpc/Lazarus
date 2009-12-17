@@ -185,6 +185,7 @@ type
 
 function GetWidgetWithWindow(const AHandle: THandle): PGtkWidget;
 procedure SetWindowCursor(AWindow: PGdkWindow; ACursor: HCursor; ARecursive: Boolean);
+procedure SetCursorForWindowsWithInfo(AWindow: PGdkWindow; AInfo: PWidgetInfo);
 
 implementation
 
@@ -242,6 +243,41 @@ begin
   if ARecursive
   then SetCursorRecursive(AWindow)
   else gdk_window_set_cursor(AWindow, Cursor);
+end;
+
+procedure SetCursorForWindowsWithInfo(AWindow: PGdkWindow; AInfo: PWidgetInfo);
+var
+  Cursor: PGdkCursor;
+  Data: gpointer;
+  Info: PWidgetInfo;
+
+  procedure SetCursorRecursive(AWindow: PGdkWindow);
+  var
+    ChildWindows, ListEntry: PGList;
+  begin
+    gdk_window_get_user_data(AWindow, @Data);
+    if (Data <> nil) and GTK_IS_WIDGET(Data) then
+    begin
+      Info := GetWidgetInfo(PGtkWidget(Data), False);
+      if Info = AInfo then
+        gdk_window_set_cursor(AWindow, Cursor);
+    end;
+
+    ChildWindows := gdk_window_get_children(AWindow);
+
+    ListEntry := ChildWindows;
+    while ListEntry <> nil do
+    begin
+      SetCursorRecursive(PGdkWindow(ListEntry^.Data));
+      ListEntry := ListEntry^.Next;
+    end;
+    g_list_free(ChildWindows);
+  end;
+begin
+  if AInfo = nil then Exit;
+  Cursor := PGdkCursor(AInfo^.ControlCursor);
+  if Cursor = nil then Exit;
+  SetCursorRecursive(AWindow);
 end;
 
 { TGtkPrivateScrolling }
