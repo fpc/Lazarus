@@ -249,7 +249,7 @@ begin
         s:='type';
       end;
 
-    ctnConstDefinition:
+    ctnConstDefinition,ctnConstant:
       begin
         AColor:=clOlive;
         s:='const';
