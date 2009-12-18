@@ -3907,6 +3907,9 @@ resourcestring
   lisHelpSelectorDialog = 'Help selector';
   lisSelectAHelpItem = 'Select a help item:';
   lisErrorMovingComponent = 'Error moving component';
+  lisErrorNamingComponent = 'Error naming component';
+  lisErrorSettingTheNameOfAComponentTo = 'Error setting the name of a '
+    +'component %s to %s';
   lisErrorMovingComponent2 = 'Error moving component %s:%s';
   lisInstalledPackages = 'Installed Packages';
   lisAvailablePackages = 'Available packages';

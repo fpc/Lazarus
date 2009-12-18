@@ -254,7 +254,7 @@ each control that's dropped onto the form
     function CreateComponent(ParentCI: TIComponentInterface;
                              TypeClass: TComponentClass;
                              const AUnitName: shortstring;
-                             X,Y,W,H: Integer): TIComponentInterface; override;
+                             NewLeft,NewTop,NewWidth,NewHeight: Integer): TIComponentInterface; override;
     function CreateComponentFromStream(BinStream: TStream;
                       AncestorType: TComponentClass;
                       const NewUnitName: ShortString;
@@ -1578,7 +1578,7 @@ begin
 end;
 
 function TCustomFormEditor.CreateComponent(ParentCI: TIComponentInterface;
-  TypeClass: TComponentClass; const AUnitName: shortstring; X, Y, W, H: Integer
+  TypeClass: TComponentClass; const AUnitName: shortstring; NewLeft, NewTop, NewWidth, NewHeight: Integer
   ): TIComponentInterface;
 const
   PreferredDistanceMin = 30;
@@ -1622,7 +1622,7 @@ begin
   Mediator:=nil;
   FreeMediator:=false;
   try
-    //DebugLn(['[TCustomFormEditor.CreateComponent] Class="'+TypeClass.ClassName+'" ',X,',',Y,',',W,'x',H]);
+    //DebugLn(['[TCustomFormEditor.CreateComponent] Class="'+TypeClass.ClassName+'" ',NewLeft,',',NewTop,',',NewWidth,'x',NewHeight]);
     {$IFDEF IDE_MEM_CHECK}CheckHeapWrtMemCnt('TCustomFormEditor.CreateComponent A');{$ENDIF}
 
     OwnerComponent:=nil;
@@ -1712,9 +1712,9 @@ begin
       NewComponent.Name := NewComponentName;
     except
       on e: Exception do begin
-        MessageDlg('Error naming component',
-          'Error setting the name of a component '
-          +dbgsName(NewComponent)+' to '+NewComponentName,
+        MessageDlg(lisErrorNamingComponent,
+          Format(lisErrorSettingTheNameOfAComponentTo, [dbgsName(NewComponent),
+            NewComponentName]),
           mtError,[mbCancel],0);
         exit;
       end;
@@ -1722,10 +1722,10 @@ begin
 
     try
       // set bounds
-      CompLeft:=X;
-      CompTop:=Y;
-      CompWidth:=W;
-      CompHeight:=H;
+      CompLeft:=NewLeft;
+      CompTop:=NewTop;
+      CompWidth:=NewWidth;
+      CompHeight:=NewHeight;
       if NewComponent is TControl then
       begin
         AControl := TControl(NewComponent);
