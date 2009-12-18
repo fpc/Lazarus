@@ -74,9 +74,11 @@ type
   public
     constructor Create(TheOwner: TComponent); override;
     destructor Destroy; override;
-    function AddNewBuildMode: TBuildMode;
+    function AddNewBuildMode(Group: boolean): TBuildMode;
     function InsertNewBuildFlagBehind: TBuildModeFlag;
     procedure DeleteSelectedModeRow;
+    function BuildGroupToCol(GroupIndex: integer): integer;
+    function ColToBuildGroup(aCol: integer): integer;
     property Graph: TBuildModeGraph read FGraph;
     procedure RebuildGrid; // call this after Graph changed
     property ModeRowCount: integer read GetModeRowCount;
@@ -98,6 +100,7 @@ type
     procedure GridSelectCell(Sender: TObject; aCol, aRow: Integer;
       var CanSelect: Boolean);
     procedure NewBuildFlagToolButtonClick(Sender: TObject);
+    procedure NewBuildModeGroupToolButtonClick(Sender: TObject);
     procedure NewBuildModeToolButtonClick(Sender: TObject);
   private
     FGrid: TBuildModesGrid;
@@ -465,17 +468,37 @@ begin
   inherited Destroy;
 end;
 
-function TBuildModesGrid.AddNewBuildMode: TBuildMode;
+function TBuildModesGrid.AddNewBuildMode(Group: boolean): TBuildMode;
 var
   GridRow: TBuildModeGridRow;
   CurFlag: TBuildModeFlag;
+  InsertPos: LongInt;
+  InsertRow: Integer;
+  InsertCol: LongInt;
 begin
-  Result:=Graph.AddMode(Graph.GetUniqueModeName(nil,nil));
-  CurFlag:=Result.AddFlag(bmftNone,'');
-  RowCount:=RowCount+1;
-  GridRow:=TBuildModeGridRow.Create(Result,CurFlag);
-  FModeRows.Add(GridRow);
-  FillGridRow(RowCount-1);
+  FRebuilding:=true;
+  try
+    Result:=Graph.AddMode(Graph.GetUniqueModeName(nil,nil));
+    if Group then
+    begin
+      Result.ShowIncludes:=true;
+      CurFlag:=nil;
+      InsertPos:=GroupModeCount;
+      InsertCol:=BuildGroupToCol(GroupModeCount-1);
+      InsertColRow(true,InsertCol);
+      Columns[InsertCol].Title.Caption:=' ';
+    end else begin
+      CurFlag:=Result.AddFlag(bmftNone,'');
+      InsertPos:=ModeRowCount;
+    end;
+    InsertRow:=InsertPos+1;
+    InsertColRow(false,InsertRow);
+    GridRow:=TBuildModeGridRow.Create(Result,CurFlag);
+    FModeRows.Insert(InsertPos,GridRow);
+    FillGridRow(InsertRow);
+  finally
+    FRebuilding:=false;
+  end;
 end;
 
 function TBuildModesGrid.InsertNewBuildFlagBehind: TBuildModeFlag;
@@ -553,6 +576,16 @@ begin
     DeleteColRow(false,Row);
     Graph.DeleteMode(CurModeRow.Mode);
   end;
+end;
+
+function TBuildModesGrid.BuildGroupToCol(GroupIndex: integer): integer;
+begin
+  Result:=GroupModeCount-GroupIndex;
+end;
+
+function TBuildModesGrid.ColToBuildGroup(aCol: integer): integer;
+begin
+  Result:=GroupModeCount-aCol;
 end;
 
 procedure TBuildModesGrid.RebuildGrid;
@@ -651,7 +684,7 @@ end;
 
 procedure TBuildModesEditorFrame.NewBuildModeToolButtonClick(Sender: TObject);
 begin
-  Grid.AddNewBuildMode;
+  Grid.AddNewBuildMode(false);
 end;
 
 procedure TBuildModesEditorFrame.UpdateButtons;
@@ -671,6 +704,12 @@ end;
 procedure TBuildModesEditorFrame.NewBuildFlagToolButtonClick(Sender: TObject);
 begin
   Grid.InsertNewBuildFlagBehind;
+end;
+
+procedure TBuildModesEditorFrame.NewBuildModeGroupToolButtonClick(
+  Sender: TObject);
+begin
+  Grid.AddNewBuildMode(true);
 end;
 
 procedure TBuildModesEditorFrame.GridSelectCell(Sender: TObject; aCol,

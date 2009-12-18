@@ -45,6 +45,7 @@ object BuildModesEditorFrame: TBuildModesEditorFrame
       Caption = 'NewBuildModeGroupToolButton'
       ParentShowHint = False
       ShowHint = True
+      OnClick = NewBuildModeGroupToolButtonClick
     end
   end
   object BuildModesPopupMenu: TPopupMenu
