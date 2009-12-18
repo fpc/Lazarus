@@ -123,6 +123,10 @@ resourcestring
   lisPathOfTheMakeUtility = 'Path of the make utility';
   lisProjectMacroProperties = 'Project macro properties';
   lisOpenProject2 = 'Open project';
+  lisFileHasNoProject = 'File has no project';
+  lisTheFileIsNotALazarusProjectCreateANewProjectForThi = 'The file %s%s%s is '
+    +'not a lazarus project.%sCreate a new project for this %s?';
+  lisCreateProject = 'Create project';
   lisKMSaveProject = 'Save project';
   lisKMCloseProject = 'Close project';
   lisKMSaveProjectAs = 'Save project as';

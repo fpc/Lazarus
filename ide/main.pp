@@ -3498,6 +3498,10 @@ Procedure TMainIDE.mnuOpenProjectClicked(Sender: TObject);
 var
   OpenDialog:TOpenDialog;
   AFileName: string;
+  LoadFlags: TLoadBufferFlags;
+  PreReadBuf: TCodeBuffer;
+  SourceType: String;
+  LPIFilename: String;
 begin
   if (Sender is TIDEMenuItem)
   and (TIDEMenuItem(Sender).Section=itmProjectRecentOpen) then begin
@@ -3521,6 +3525,44 @@ begin
                           +lisAllFiles+'|'+GetAllFilesMask;
       if OpenDialog.Execute then begin
         AFilename:=ExpandFileNameUTF8(OpenDialog.Filename);
+        if CompareFileExt(AFilename,'.lpi')<>0 then begin
+          // not a lpi file
+          // check if it is a program source
+
+          // load the source
+          LoadFlags := [lbfCheckIfText,lbfUpdateFromDisk,lbfRevert];
+          if LoadCodeBuffer(PreReadBuf,AFileName,LoadFlags,true)<>mrOk then exit;
+
+          // check if unit is a program
+          SourceType:=CodeToolBoss.GetSourceType(PreReadBuf,false);
+          if (SysUtils.CompareText(SourceType,'PROGRAM')=0)
+          or (SysUtils.CompareText(SourceType,'LIBRARY')=0)
+          then begin
+            // source is a program
+            // either this is a lazarus project
+            // or it is not yet a lazarus project ;)
+            LPIFilename:=ChangeFileExt(AFilename,'.lpi');
+            if FileExistsUTF8(LPIFilename) then begin
+              if QuestionDlg(lisProjectInfoFileDetected,
+                  Format(lisTheFileSeemsToBeTheProgramFileOfAnExistingLazarusP, [
+                  AFilename]), mtConfirmation,
+                  [mrOk, lisOpenProject2, mrCancel], 0)
+                <>mrOk
+              then
+                exit;
+              AFilename:=LPIFilename;
+            end else begin
+              if QuestionDlg(lisFileHasNoProject,
+                Format(lisTheFileIsNotALazarusProjectCreateANewProjectForThi, [
+                  '"', AFilename, '"', #13, '"'+lowercase(SourceType)+'"']),
+                mtConfirmation, [mrYes, lisCreateProject, mrCancel], 0)<>mrYes
+              then
+                exit;
+              DoCreateProjectForProgram(PreReadBuf);
+              exit;
+            end;
+          end;
+        end;
         DoOpenProjectFile(AFilename,[ofAddToRecent]);
       end;
       InputHistories.StoreFileDialogSettings(OpenDialog);
