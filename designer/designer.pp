@@ -161,10 +161,11 @@ type
     function MoveControl(Sender: TControl; TheMessage: TLMMove): Boolean;
     procedure MouseDownOnControl(Sender: TControl; var TheMessage: TLMMouse);
     procedure MouseMoveOnControl(Sender: TControl; var TheMessage: TLMMouse);
-    procedure MouseUpOnControl(Sender: TControl; var TheMessage:TLMMouse);
+    procedure MouseUpOnControl(Sender: TControl; var TheMessage: TLMMouse);
     procedure KeyDown(Sender: TControl; var TheMessage: TLMKEY);
     procedure KeyUp(Sender: TControl; var TheMessage: TLMKEY);
     function  HandleSetCursor(var TheMessage: TLMessage): boolean;
+    procedure HandlePopupMenu(Sender: TControl; var Message: TLMMouse);
     procedure GetMouseMsgShift(TheMessage: TLMMouse; var Shift: TShiftState;
                                var Button: TMouseButton);
 
@@ -1560,6 +1561,18 @@ begin
   end;
 end;
 
+procedure TDesigner.HandlePopupMenu(Sender: TControl; var Message: TLMMouse);
+var
+  PopupPos: TPoint;
+begin
+  PopupMenuComponentEditor := GetComponentEditorForSelection;
+  BuildPopupMenu;
+  with ControlSelection do
+    PopupPos := Point(Left + Width, Top);
+  with Form.ClientToScreen(PopupPos) do
+    FDesignerPopupMenu.Popup(X, Y);
+end;
+
 procedure TDesigner.GetMouseMsgShift(TheMessage: TLMMouse;
   var Shift: TShiftState; var Button: TMouseButton);
 begin
@@ -2132,10 +2145,10 @@ begin
     and (not ControlSelection.IsSelected(MouseDownComponent))
     and (Shift - [ssRight] = []) then
       PointSelect;
-    PopupMenuComponentEditor:=GetComponentEditorForSelection;
+    PopupMenuComponentEditor := GetComponentEditorForSelection;
     BuildPopupMenu;
     PopupPos := Form.ClientToScreen(MouseUpPos);
-    FDesignerPopupMenu.Popup(PopupPos.X,PopupPos.Y);
+    FDesignerPopupMenu.Popup(PopupPos.X, PopupPos.Y);
   end;
 
   DisableRubberBand;
@@ -2539,9 +2552,8 @@ begin
     FOnGetSelectedComponentClass(Self,Result);
 end;
 
-function TDesigner.IsDesignMsg(Sender: TControl;
-  var TheMessage: TLMessage): Boolean;
-Begin
+function TDesigner.IsDesignMsg(Sender: TControl; var TheMessage: TLMessage): Boolean;
+begin
   Result := false;
   if csDesigning in Sender.ComponentState then begin
     Result:=true;
@@ -2553,13 +2565,14 @@ Begin
       LM_RBUTTONDOWN,
       LM_LBUTTONDBLCLK: MouseDownOnControl(Sender,TLMMouse(TheMessage));
       LM_LBUTTONUP,
-      LM_RBUTTONUP:   MouseUpOnControl(Sender,TLMMouse(TheMessage));
+      LM_RBUTTONUP:   MouseUpOnControl(Sender, TLMMouse(TheMessage));
       LM_MOUSEMOVE:   MouseMoveOnControl(Sender, TLMMouse(TheMessage));
-      LM_SIZE:        Result:=SizeControl(Sender,TLMSize(TheMessage));
-      LM_MOVE:        Result:=MoveControl(Sender,TLMMove(TheMessage));
+      LM_SIZE:        Result:=SizeControl(Sender, TLMSize(TheMessage));
+      LM_MOVE:        Result:=MoveControl(Sender, TLMMove(TheMessage));
       LM_ACTIVATE:    Result:=OnFormActivated;
       LM_CLOSEQUERY:  Result:=OnFormCloseQuery;
       LM_SETCURSOR:   Result:=HandleSetCursor(TheMessage);
+      LM_CONTEXTMENU: HandlePopupMenu(Sender, TLMMouse(TheMessage));
     else
       Result:=false;
     end;
