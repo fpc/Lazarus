@@ -178,7 +178,7 @@ begin
   else
     Root := AComponent.Owner;
 
-  if not ((Root is TControl) and (csOwnedChildsNotSelectable in TControl(Root).ControlStyle)) then
+  if not ((Root is TControl) and (csOwnedChildrenNotSelectable in TControl(Root).ControlStyle)) then
     TComponentAccessor(AComponent).GetChildren(@Walk, Root);
   FNode := OldNode;
   FNode.Expanded := True;
