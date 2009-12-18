@@ -2591,6 +2591,7 @@ type
     procedure LockSelectionChangeEvent;
     procedure UnlockSelectionChangeEvent;
     function GetFirstMultiSelected: TTreeNode;
+    function GetLastMultiSelected: TTreeNode;
     function SelectionVisible: boolean;
     procedure MakeSelectionVisible;
   public

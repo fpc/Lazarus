@@ -5178,7 +5178,12 @@ end;
 
 function TCustomTreeView.GetFirstMultiSelected: TTreeNode;
 begin
-  Result:=Items.FFirstMultiSelected;
+  Result := Items.FFirstMultiSelected;
+end;
+
+function TCustomTreeView.GetLastMultiSelected: TTreeNode;
+begin
+  Result := Items.FLastMultiSelected;
 end;
 
 function TCustomTreeView.SelectionVisible: boolean;
