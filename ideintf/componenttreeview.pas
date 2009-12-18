@@ -46,7 +46,7 @@ type
   protected
     procedure DoSelectionChanged; override;
     function GetImageFor(APersistent: TPersistent):integer;
-    procedure DragOver(Source: TObject; X,Y: Integer; State: TDragState;
+    procedure DragOver(Source: TObject; X, Y: Integer; State: TDragState;
                        var Accept: Boolean); override;
     procedure DragCanceled; override;
     procedure MouseLeave; override;
@@ -56,7 +56,7 @@ type
   public
     constructor Create(TheOwner: TComponent); override;
     destructor Destroy; override;
-    procedure DragDrop(Source: TObject; X,Y: Integer); override;
+    procedure DragDrop(Source: TObject; X, Y: Integer); override;
     procedure RebuildComponentNodes; virtual;
     procedure UpdateComponentNodesValues; virtual;
     function CreateNodeCaption(APersistent: TPersistent): string; virtual;
@@ -273,17 +273,19 @@ end;
 procedure TComponentTreeView.DragDrop(Source: TObject; X, Y: Integer);
 var
   Node, SelNode: TTreeNode;
+  ACollection: TCollection;
   AContainer: TWinControl;
   AControl: TControl;
   ParentNode: TTreeNode;
   InsertType: TTreeViewInsertMarkType;
+  NewIndex, AIndex: Integer;
   ok: Boolean;
 begin
-  GetComponentInsertMarkAt(X,Y,Node,InsertType);
-  SetInsertMark(nil,tvimNone);
-  ParentNode:=Node;
-  if InsertType in [tvimAsNextSibling,tvimAsPrevSibling] then
-    ParentNode:=ParentNode.Parent;
+  GetComponentInsertMarkAt(X, Y, Node, InsertType);
+  SetInsertMark(nil, tvimNone);
+  ParentNode := Node;
+  if InsertType in [tvimAsNextSibling, tvimAsPrevSibling] then
+    ParentNode := ParentNode.Parent;
   if Assigned(ParentNode) then
   begin
     if TObject(ParentNode.Data) is TWinControl then
@@ -300,17 +302,51 @@ begin
             AControl.Parent := AContainer;
             ok:=true;
           except
-            on E: Exception do begin
+            on E: Exception do
               MessageDlg(oisError,
                 Format(oisUnableToChangeParentOfControlToNewParent, ['"',
                   DbgSName(AControl), '"', '"', DbgSName(AContainer), '"', #13,
-                  E.Message]), mtError, [mbCancel], 0);
-            end;
+                  E.Message]), mtError, [mbOk], 0);
           end;
           if not ok then break;
         end;
         SelNode := SelNode.GetNextMultiSelected;
       end;
+    end
+    else
+    if TObject(Node.Data) is TCollectionItem then
+    begin
+      ACollection := TCollectionItem(Node.Data).Collection;
+      ACollection.BeginUpdate;
+      case InsertType of
+        tvimAsNextSibling:
+          NewIndex := TCollectionItem(Node.Data).Index + 1;
+        tvimAsPrevSibling:
+          NewIndex := TCollectionItem(Node.Data).Index;
+      end;
+      SelNode := GetLastMultiSelected;
+      while Assigned(SelNode) do
+      begin
+        if (TObject(SelNode.Data) is TCollectionItem) and
+           (TCollectionItem(SelNode.Data).Collection = ACollection) then
+        begin
+          ok := False;
+          try
+            AIndex := TCollectionItem(SelNode.Data).Index;
+            if AIndex < NewIndex then
+              TCollectionItem(SelNode.Data).Index := NewIndex - 1
+            else
+              TCollectionItem(SelNode.Data).Index := NewIndex;
+            ok := True;
+          except
+            on E: Exception do
+              MessageDlg(E.Message, mtError, [mbOk], 0);
+          end;
+          if not ok then break;
+        end;
+        SelNode := SelNode.GetPrevMultiSelected;
+      end;
+      ACollection.EndUpdate;
     end;
     RebuildComponentNodes;
   end;
@@ -323,7 +359,7 @@ var
   Node: TTreeNode;
   AnObject: TObject;
   AControl: TControl absolute AnObject;
-  AContainer: TControl;
+  AContainer: TPersistent;
   AcceptControl, AcceptContainer: Boolean;
   InsertType: TTreeViewInsertMarkType;
   ParentNode: TTreeNode;
@@ -333,13 +369,13 @@ begin
   AcceptContainer := False;
   AcceptControl := True;
 
-  GetComponentInsertMarkAt(X,Y,Node,InsertType);
-  SetInsertMark(Node,InsertType);
+  GetComponentInsertMarkAt(X, Y, Node, InsertType);
+  SetInsertMark(Node, InsertType);
 
   // check new parent
-  ParentNode:=Node;
-  if InsertType in [tvimAsNextSibling,tvimAsPrevSibling] then
-    ParentNode:=ParentNode.Parent;
+  ParentNode := Node;
+  if InsertType in [tvimAsNextSibling, tvimAsPrevSibling] then
+    ParentNode := ParentNode.Parent;
   if Assigned(ParentNode) and Assigned(ParentNode.Data) then
   begin
     AnObject := TObject(ParentNode.Data);
@@ -353,10 +389,17 @@ begin
            (AControl.Owner.Owner = nil) // child of a root
          ) then
       begin
-        AContainer := TWinControl(AnObject);
+        AContainer := TPersistent(AnObject);
         //DebugLn(['TComponentTreeView.DragOver AContainer=',DbgSName(AContainer)]);
         AcceptContainer := True;
       end;
+    end
+    else
+    if (AnObject is TCollection) then
+    begin
+      // it is allowed to move container items inside the container
+      AContainer := TPersistent(AnObject);
+      AcceptContainer := True;
     end;
   end;
 
@@ -367,25 +410,36 @@ begin
     begin
       AnObject := TObject(Node.Data);
       // don't allow to move ancestor components
-      if (AnObject is TComponent) and (csAncestor in TComponent(AnObject).ComponentState) then break;
-      if AnObject is TControl then
+      if (AnObject is TComponent) and
+         (csAncestor in TComponent(AnObject).ComponentState) then break;
+      if (AnObject is TControl) then
       begin
-        if AControl = AContainer then break;
+        if AnObject = AContainer then break;
+        if not (AContainer is TWinControl) then break;
         //DebugLn(['TComponentTreeView.DragOver AControl=',DbgSName(AControl),' Parent=',DbgSName(AControl.Parent),' OldAccepts=',csAcceptsControls in AControl.Parent.ControlStyle]);
         // check if new parent allows this control class
-        if not AContainer.CheckChildClassAllowed(AnObject.ClassType, False) then
+        if not TWinControl(AContainer).CheckChildClassAllowed(AnObject.ClassType, False) then
           break;
         // check if one of the parent of the container is the control itself
-        if AControl.IsParentOf(AContainer) then break;
-        // do not move childs of a restricted parent to another parent
+        if AControl.IsParentOf(TWinControl(AContainer)) then break;
+        // do not move children of a restricted parent to another parent
         // e.g. TPage of TPageControl
-        if (AControl.Parent<>nil) and (AControl.Parent<>AContainer)
-        and (not (csAcceptsControls in AControl.Parent.ControlStyle)) then
+        if (AControl.Parent <> nil) and (AControl.Parent <> AContainer) and
+            (not (csAcceptsControls in AControl.Parent.ControlStyle)) then
+          break;
+      end
+      else
+      if (AnObject is TCollectionItem) then
+      begin
+        if AnObject = AContainer then break;
+        if not (AContainer is TCollection) then
+          break;
+        if TCollectionItem(AnObject).Collection <> TCollection(AContainer) then
           break;
       end;
       Node := Node.GetNextMultiSelected;
     end;
-    AcceptControl:=(Node=nil);
+    AcceptControl := (Node = nil);
   end;
 
   Accept := AcceptContainer and AcceptControl;
@@ -393,13 +447,12 @@ begin
   inherited DragOver(Source, X, Y, State, Accept);
   //debugln('TComponentTreeView.DragOver B ',dbgs(Accept));
 
-  Accept := AcceptContainer and AcceptControl
-            and ((OnDragOver=nil) or Accept);
+  Accept := AcceptContainer and AcceptControl and ((OnDragOver=nil) or Accept);
 end;
 
 procedure TComponentTreeView.DragCanceled;
 begin
-  SetInsertMark(nil,tvimNone);
+  SetInsertMark(nil, tvimNone);
   inherited DragCanceled;
 end;
 
@@ -414,14 +467,19 @@ procedure TComponentTreeView.GetComponentInsertMarkAt(X, Y: Integer; out
 var
   Node: TTreeNode;
 begin
-  Node:=GetFirstMultiSelected;
-  if (Node<>nil) and (TObject(Node.Data) is TControl) then
+  Node := GetFirstMultiSelected;
+  if (Node <> nil) and (TObject(Node.Data) is TControl) then
   begin
-    // TWinControl allows only to add/remove childs, but not at a specific position
-    AnInsertMarkNode:=GetNodeAt(X,Y);
-    AnInsertMarkType:=tvimAsFirstChild;
-  end else begin
-    GetInsertMarkAt(X,Y,AnInsertMarkNode,AnInsertMarkType);
+    // TWinControl allows only to add/remove children, but not at a specific position
+    AnInsertMarkNode := GetNodeAt(X,Y);
+    AnInsertMarkType := tvimAsFirstChild;
+  end
+  else
+  begin
+    GetInsertMarkAt(X, Y, AnInsertMarkNode, AnInsertMarkType);
+    if (Node <> nil) and (TObject(Node.Data) is TCollectionItem) then
+      if AnInsertMarkType = tvimAsFirstChild then
+        AnInsertMarkType := tvimAsPrevSibling;
   end;
 end;
 
