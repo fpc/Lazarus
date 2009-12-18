@@ -1160,7 +1160,7 @@ begin
   CodeExplorerOptions.Load;
 
   MainBuildBoss.SetupInputHistories;
-  ShowCompileDialog:=EnvironmentOptions.ShowCompileDialog;
+  CompileProgress.SetEnabled(EnvironmentOptions.ShowCompileDialog);
 
   CreateDirUTF8(GetProjectSessionsConfigPath);
 end;
@@ -4240,7 +4240,7 @@ begin
       OldCompilerFilename:=EnvironmentOptions.CompilerFilename;
       OldLanguage:=EnvironmentOptions.LanguageID;
       IDEOptionsDialog.WriteAll;
-      ShowCompileDialog := EnvironmentOptions.ShowCompileDialog;
+      CompileProgress.SetEnabled(EnvironmentOptions.ShowCompileDialog);
 
       UpdateDefaultPascalFileExtensions;
 
@@ -9964,9 +9964,7 @@ begin
       end;
     end;
 
-    CreateInfoBuilder(OwningComponent);
-    PutInfoBuilderProject(Project1.MainFilename);
-    PutInfoBuilderStatus(lisInfoBuildComplile);
+    CompileProgress.CreateDialog(OwningComponent, Project1.MainFilename, lisInfoBuildComplile);
 
     // clear old error lines
     SourceNotebook.ClearErrorLines;
@@ -9995,7 +9993,7 @@ begin
       Result:=PkgBoss.DoCompileProjectDependencies(Project1,PkgFlags);
       if Result <> mrOk then
       begin
-        PutExitInfoBuilder(lisInfoBuildError);
+        CompileProgress.Ready(lisInfoBuildError);
         exit;
       end;
       Result:=DoCallModalFunctionHandler(lihtOnProjectDependenciesCompiled);
@@ -10014,7 +10012,7 @@ begin
     Result:=DoWarnAmbiguousFiles;
     if Result<>mrOk then
     begin
-      PutExitInfoBuilder(lisInfoBuildError);
+      CompileProgress.Ready(lisInfoBuildError);
       exit;
     end;
 
@@ -10028,13 +10026,13 @@ begin
       if  (pbfOnlyIfNeeded in Flags)
       and (not (pfAlwaysBuild in Project1.Flags)) then begin
         if Result=mrNo then begin
-          PutExitInfoBuilder(lisInfoBuildError);
+          CompileProgress.Ready(lisInfoBuildError);
           Result:=mrOk;
           exit;
         end;
         if Result<>mrYes then
         begin
-          PutExitInfoBuilder(lisInfoBuildError);
+          CompileProgress.Ready(lisInfoBuildError);
           exit;
         end;
       end;
@@ -10097,7 +10095,7 @@ begin
                            Project1.ProjectDirectory,lisExecutingCommandBefore);
         if Result<>mrOk then
         begin
-          PutExitInfoBuilder(lisInfoBuildError);
+          CompileProgress.Ready(lisInfoBuildError);
           exit;
         end;
       end;
@@ -10126,20 +10124,20 @@ begin
           Project1.LastCompilerParams:=CompilerParams;
           Project1.LastCompilerFileDate:=FileAgeUTF8(CompilerFilename);
           DoJumpToCompilerMessage(-1,true);
-          PutExitInfoBuilder(lisInfoBuildError);
+          CompileProgress.Ready(lisInfoBuildError);
           exit;
         end;
         // compilation succeded -> write state file
         Result:=Project1.SaveStateFile(CompilerFilename,CompilerParams);
         if Result<>mrOk then begin
-          PutExitInfoBuilder(lisInfoBuildError);
+          CompileProgress.Ready(lisInfoBuildError);
           exit;
         end;
 
         // update project .po file
         Result:=UpdateProjectPOFile(Project1);
         if Result<>mrOk then begin
-          PutExitInfoBuilder(lisInfoBuildError);
+          CompileProgress.Ready(lisInfoBuildError);
           exit;
         end;
 
@@ -10158,7 +10156,7 @@ begin
                             Project1.ProjectDirectory,lisExecutingCommandAfter);
         if Result<>mrOk then
         begin
-          PutExitInfoBuilder(lisInfoBuildError);
+          CompileProgress.Ready(lisInfoBuildError);
           exit;
         end;
       end;
@@ -10167,7 +10165,7 @@ begin
     // add success message
     MessagesView.AddMsg(Format(lisProjectSuccessfullyBuilt, ['"',
                                         Project1.ShortDescription, '"']),'',-1);
-    PutExitInfoBuilder(lisInfoBuildSuccess);
+    CompileProgress.Ready(lisInfoBuildSuccess);
 
   finally
     // check sources
@@ -10525,8 +10523,7 @@ begin
     // first compile all lazarus components (LCL, SynEdit, CodeTools, ...)
     // but not the IDE
     SourceNotebook.ClearErrorLines;
-    CreateInfoBuilder(OwningComponent);
-    PutInfoBuilderProject('Lazarus...');
+    CompileProgress.CreateDialog(OwningComponent, 'Lazarus...', '');
     Result:=BuildLazarus(MiscellaneousOptions.BuildLazOpts,
                          EnvironmentOptions.ExternalTools,GlobalMacroList,
                          '',EnvironmentOptions.CompilerFilename,
@@ -10540,7 +10537,7 @@ begin
     // then compile the 'installed' packages
     if ([blfWithStaticPackages,blfOnlyIDE]*Flags=[])
     and (MiscellaneousOptions.BuildLazOpts.ItemIDE.MakeMode=mmNone) then begin
-      AbleInfoBuilderExit;
+      CompileProgress.Ready;
       exit;
     end;
 
@@ -10608,13 +10605,13 @@ begin
     MessagesView.EndBlock;
 
     if Result = mrOK then
-      PutExitInfoBuilder(lisinfoBuildSuccess)
+      CompileProgress.Ready(lisinfoBuildSuccess)
     else
-      PutExitInfoBuilder(lisInfoBuildError);
+      CompileProgress.Ready(lisInfoBuildError);
   end;
   if (Result=mrOK) and MiscellaneousOptions.BuildLazOpts.RestartAfterBuild then
   begin
-    DestroyInfoBuilder;
+    CompileProgress.Close;
     mnuRestartClicked(nil);
   end;
 end;
@@ -10698,9 +10695,9 @@ begin
   Result:=mrOk;
 
   {if AReason <> crRun then
-    AbleInfoBuilderExit
+    CompileProgress.Ready
   else}
-    DestroyInfoBuilder;
+    CompileProgress.Close;
 end;
 
 function TMainIDE.DoRunFile: TModalResult;

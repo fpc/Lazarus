@@ -31,15 +31,13 @@ interface
 
 uses
   Classes, SysUtils, LResources, Forms, Controls, Graphics, Dialogs, Buttons,
-  LCLProc, ExtCtrls, StdCtrls, ExtDlgs,
-  LazIDEIntf,
-  LazarusIDEStrConsts;
+  LCLProc, ExtCtrls, StdCtrls, ExtDlgs, LazIDEIntf, LazarusIDEStrConsts;
 
 type
 
-  { TFInfoCompile }
+  { TCompileInfoDlg }
 
-  TFInfoCompile = class ( TForm )
+  TCompileInfoDlg = class (TForm)
     BClose: TBitBtn;
     lbInfo: TLabel;
     LInfoError: TLabel;
@@ -64,8 +62,8 @@ type
     PCurrentStatus : TLabel;
     Panel1 : TPanel;
     PnlTitle : TPanel;
-    procedure BCloseClick ( Sender : TObject ) ;
-    procedure FormCreate ( Sender : TObject ) ;
+    procedure BCloseClick(Sender: TObject);
+    procedure FormCreate(Sender: TObject);
   private
     NHints    : Integer;
     NWarnings : Integer;
@@ -74,30 +72,42 @@ type
     NLines    : Integer;
     ToAbort   : Boolean;
   public
-    Procedure SetProjectName(Const Sname : String);
-    Procedure SetStatus(Const SStatus : String);
-    Procedure SetCanClose;
-    Procedure MakeBold;
+    procedure SetProjectName(const Sname: String);
+    procedure SetStatus(const SStatus: String);
+    procedure SetCanClose;
+    procedure MakeBold;
+  end;
+
+  TCompileProgressClass = class of TCompileProgress;
+
+  { TCompileProgress }
+
+  TCompileProgress = class
+    class procedure CreateDialog(AOwner: TComponent; const AProject, AStatus: String);
+    class procedure Close;
+    class procedure Show;
+    class procedure Hide;
+    class procedure SetEnabled(AValue: Boolean);
+    class procedure SetStatus(const AStatus: String);
+    class procedure SetProject(const AProject: String);
+    class procedure Ready(const AMessage: String = '');
+    class procedure Ready(const AMessage: String; const AParams: array of const);
   end;
 
 var
-  FInfoCompile : TFInfoCompile;
-  ShowCompileDialog: Boolean = false;
-
-Procedure CreateInfoBuilder(Owner: TComponent);
-Procedure DestroyInfoBuilder;
-Procedure PutInfoBuilderStatus(Const Info : String);
-Procedure PutInfoBuilderProject(Const Info : String);
-Procedure AbleInfoBuilderExit;
-Procedure PutExitInfoBuilder(Const Info : String);
+  CompileProgress: TCompileProgressClass = TCompileProgress;
 
 implementation
 
-{ TFInfoCompile }
+var
+  MCompileInfoDlg: TCompileInfoDlg;
+  MCompileDialogEnabled: Boolean = False;
 
-procedure TFInfoCompile.BCloseClick ( Sender : TObject ) ;
+{ TCompileInfoDlg }
+
+procedure TCompileInfoDlg.BCloseClick(Sender: TObject);
 begin
-  If ToAbort then
+  if ToAbort then
   begin
     LazarusIDE.AbortBuild;
     SetStatus('Aborted...!');
@@ -107,7 +117,7 @@ begin
     Close;
 end;
 
-procedure TFInfoCompile.FormCreate ( Sender : TObject ) ;
+procedure TCompileInfoDlg.FormCreate (Sender: TObject);
 begin
   NHints    := 0;
   NWarnings := 0;
@@ -133,12 +143,12 @@ begin
 end;
 
 
-Procedure TFInfoCompile.SetProjectName(Const Sname : String);
+procedure TCompileInfoDlg.SetProjectName(const Sname : String);
 begin
   lbInfo.Caption := lisInfoBuildBuild + ' '+ ExtractFileName(Sname);
 end;
 
-Procedure TFInfoCompile.SetStatus(Const SStatus : String);
+procedure TCompileInfoDlg.SetStatus(const SStatus : String);
 Var
   S  : String;
   Ok : Boolean;
@@ -196,58 +206,83 @@ begin
   pnlInfo.Refresh;
 end;
 
-Procedure TFInfoCompile.SetCanClose;
+procedure TCompileInfoDlg.SetCanClose;
 begin
   ToAbort        := False;
   BClose.Kind    := bkOk;
   BClose.Caption := lisMenuClose;
 end;
 
-Procedure TFInfoCompile.MakeBold;
+procedure TCompileInfoDlg.MakeBold;
 begin
   PCurrentStatus.Font.Style:= PCurrentStatus.Font.Style + [fsBold];
 end;
 
-Procedure PutInfoBuilderStatus(Const Info : String);
+
+{ TCompileProgress }
+
+class procedure TCompileProgress.Close;
 begin
-  if Assigned(FInfoCompile) then FInfoCompile.SetStatus(Info);
+  FreeAndNil(MCompileInfoDlg);
 end;
 
-Procedure DestroyInfoBuilder;
+class procedure TCompileProgress.CreateDialog(AOwner: TComponent; const AProject, AStatus: String);
 begin
-  if Assigned(FInfoCompile) then
+  Close;
+  if MCompileDialogEnabled then
   begin
-    FInfoCompile.Free;
-    FinfoCompile := Nil;
+    MCompileInfoDlg := TCompileInfoDlg.Create(AOwner);
+    MCompileInfoDlg.SetProjectName(AProject);
+    MCompileInfoDlg.SetStatus(AStatus);
+    // delay show til actual compile
+    //MCompileInfoDlg.Show;
   end;
 end;
 
-Procedure CreateInfoBuilder(Owner: TComponent);
+class procedure TCompileProgress.Hide;
 begin
-  //DebugLn(['CreateInfoBuilder ',ShowCompileDialog]);
-  DestroyInfoBuilder;
-  if ShowCompileDialog then
-  begin
-    FInfoCompile := TFInfoCompile.Create(Owner);
-    FInfoCompile.Show;
+  if MCompileInfoDlg = nil then Exit;
+  MCompileInfoDlg.Hide;
+end;
+
+class procedure TCompileProgress.SetEnabled(AValue: Boolean);
+begin
+  MCompileDialogEnabled := AValue;
+end;
+
+class procedure TCompileProgress.SetProject(const AProject: String);
+begin
+  if MCompileInfoDlg = nil then Exit;
+  MCompileInfoDlg.SetProjectName(AProject);
+end;
+
+class procedure TCompileProgress.Ready(const AMessage: String);
+begin
+  if MCompileInfoDlg = nil then Exit;
+  if AMessage <> ''
+  then begin
+    MCompileInfoDlg.SetStatus(AMessage);
+    MCompileInfoDlg.MakeBold;
   end;
+  MCompileInfoDlg.SetCanClose;
 end;
 
-Procedure PutInfoBuilderProject(Const Info : String);
+class procedure TCompileProgress.Ready(const AMessage: String; const AParams: array of const);
 begin
-  if Assigned(FInfoCompile) then FInfoCompile.SetProjectName(Info);
+  if MCompileInfoDlg = nil then Exit;
+  Ready(Format(AMessage, AParams));
 end;
 
-Procedure AbleInfoBuilderExit;
+class procedure TCompileProgress.SetStatus(const AStatus: String);
 begin
-  if Assigned(FInfoCompile) then FInfoCompile.SetCanClose;
+  if MCompileInfoDlg = nil then Exit;
+  MCompileInfoDlg.SetStatus(AStatus);
 end;
 
-Procedure PutExitInfoBuilder(Const Info : String);
+class procedure TCompileProgress.Show;
 begin
-  PutInfoBuilderStatus(Info);
-  if Assigned(FInfoCompile) then FInfoCompile.MakeBold;
-  AbleInfoBuilderExit;
+  if MCompileInfoDlg = nil then Exit;
+  MCompileInfoDlg.Show;
 end;
 
 initialization

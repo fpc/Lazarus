@@ -1,4 +1,4 @@
-object FInfoCompile: TFInfoCompile
+object CompileInfoDlg: TCompileInfoDlg
   Left = 628
   Height = 200
   Top = 372
@@ -125,10 +125,10 @@ object FInfoCompile: TFInfoCompile
       ClientWidth = 122
       TabOrder = 0
       object LNLines: TLabel
-        Left = 49
+        Left = 47
         Height = 46
         Top = 2
-        Width = 66
+        Width = 68
         Align = alClient
         Alignment = taRightJustify
         AutoSize = False
@@ -141,7 +141,7 @@ object FInfoCompile: TFInfoCompile
         Left = 6
         Height = 46
         Top = 2
-        Width = 43
+        Width = 41
         Align = alLeft
         BorderSpacing.Left = 4
         Caption = 'Lines:'
@@ -178,10 +178,10 @@ object FInfoCompile: TFInfoCompile
         ClientWidth = 114
         TabOrder = 0
         object LNHint: TLabel
-          Left = 45
+          Left = 43
           Height = 18
           Top = 0
-          Width = 67
+          Width = 69
           Align = alClient
           Alignment = taRightJustify
           AutoSize = False
@@ -195,7 +195,7 @@ object FInfoCompile: TFInfoCompile
           Left = 0
           Height = 18
           Top = 0
-          Width = 43
+          Width = 41
           Align = alLeft
           Caption = 'Hints:'
           ParentColor = False
@@ -218,16 +218,16 @@ object FInfoCompile: TFInfoCompile
           Left = 0
           Height = 18
           Top = 0
-          Width = 71
+          Width = 65
           Align = alLeft
           Caption = 'Warnings:'
           ParentColor = False
         end
         object LNWarning: TLabel
-          Left = 73
+          Left = 67
           Height = 18
           Top = 0
-          Width = 39
+          Width = 45
           Align = alClient
           Alignment = taRightJustify
           AutoSize = False
@@ -270,16 +270,16 @@ object FInfoCompile: TFInfoCompile
           Left = 0
           Height = 18
           Top = 0
-          Width = 48
+          Width = 47
           Align = alLeft
           Caption = 'Notes:'
           ParentColor = False
         end
         object LNNote: TLabel
-          Left = 50
+          Left = 49
           Height = 18
           Top = 0
-          Width = 62
+          Width = 63
           Align = alClient
           Alignment = taRightJustify
           AutoSize = False
@@ -307,16 +307,16 @@ object FInfoCompile: TFInfoCompile
           Left = 0
           Height = 18
           Top = 0
-          Width = 49
+          Width = 45
           Align = alLeft
           Caption = 'Errors:'
           ParentColor = False
         end
         object LNError: TLabel
-          Left = 51
+          Left = 47
           Height = 18
           Top = 0
-          Width = 61
+          Width = 65
           Align = alClient
           Alignment = taRightJustify
           AutoSize = False

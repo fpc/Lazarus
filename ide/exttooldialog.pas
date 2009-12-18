@@ -319,8 +319,9 @@ begin
           ),
         mtError,[mbIgnore,mbAbort],0);
       if Result=mrIgnore then Result:=mrCancel;
-      PutExitInfoBuilder(Format(lisExtToolUnableToRunTheTool, ['"', Title, '"', #13,
-          'Program '+Filename+' not found']));
+
+      CompileProgress.Ready(lisExtToolUnableToRunTheTool, ['"', Title, '"', #13,
+          'Program '+Filename+' not found']);
       exit;
     end;
     Filename:=NewFilename;
@@ -347,7 +348,7 @@ begin
         Abort:=false;
         OnNeedsOutputFilter(TheOutputFilter,Abort);
         if Abort then begin
-          PutExitInfoBuilder(lisInfoBuildAbort);
+          CompileProgress.Ready(lisInfoBuildAbort);
           Result:=mrAbort;
           exit;
         end;
@@ -417,8 +418,7 @@ begin
       DebugLn(['TExternalToolList.Run AAA2']);
       if Result=mrIgnore then Result:=mrCancel;
       DebugLn(['TExternalToolList.Run AAA3']);
-      PutExitInfoBuilder(Format(lisExtToolUnableToRunTheTool,
-                                ['"', Title, '"', #13, e.Message]));
+      CompileProgress.Ready(lisExtToolUnableToRunTheTool, ['"', Title, '"', #13, e.Message]);
       DebugLn(['TExternalToolList.Run AAA4']);
     end;
   end;

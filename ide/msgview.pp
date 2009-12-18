@@ -437,7 +437,7 @@ begin
     end;
   end;
 
-  if ToStoreMessage then PutInfoBuilderStatus(Msg);
+  if ToStoreMessage then CompileProgress.SetStatus(Msg);
   
   if NewMsg=nil then begin
     NewMsg := TLazMessageLine.Create;

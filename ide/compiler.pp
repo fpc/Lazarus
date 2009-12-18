@@ -39,7 +39,7 @@ unit Compiler;
 interface
 
 uses
-  Classes, SysUtils, Process, LCLProc, Forms, Controls, FileUtil,
+  Classes, SysUtils, Process, LCLProc, Forms, Controls, FileUtil, InfoBuild,
   LazarusIDEStrConsts, CompilerOptions, Project, OutputFilter, UTF8Process;
 
 type
@@ -102,6 +102,9 @@ var
 begin
   Result:=mrCancel;
   DebugLn('TCompiler.Compile WorkingDir="',WorkingDir,'" CompilerFilename="',CompilerFilename,'" CompilerParams="',CompilerParams,'"');
+
+  // if we want to show the compile progress, it's now time to show the dialog
+  CompileProgress.Show;
 
   // change working directory
   OldCurDir:=GetCurrentDirUTF8;
