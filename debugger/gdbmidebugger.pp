@@ -3079,6 +3079,31 @@ begin
 end;
 
 procedure TGDBMIDebugger.Init;
+  function ParseGDBVersionMI: Boolean;
+  var
+    R: TGDBMIExecResult;
+    S: String;
+    List: TGDBMINameValueList;
+  begin
+    if not ExecuteCommand('-gdb-version', [], [], R)
+    then Exit(False);
+
+    if R.Values = '' then Exit(False);
+
+    List := TGDBMINameValueList.Create(R);
+
+    FGDBVersion := List.Values['version'];
+    S := List.Values['target'];
+
+    FGDBCPU := GetPart('', '-', S);
+    GetPart('-', '-', S); // strip vendor
+    FGDBOS := GetPart(['-'], ['-', ''], S);
+
+    List.Free;
+
+    Result := FGDBVersion <> '';
+  end;
+
   procedure ParseGDBVersion;
   var
     R: TGDBMIExecResult;
@@ -3141,7 +3166,7 @@ begin
     // ignore the error on other platforms
     ExecuteCommand('-gdb-set new-console off', [cfIgnoreError]);
 
-    ParseGDBVersion;
+    if not ParseGDBVersionMI then ParseGDBVersion;
     CheckGDBVersion;
 
     inherited Init;
@@ -4094,8 +4119,7 @@ begin
   and ExecuteCommand('-exec-run', [], R)
   then begin
     // some versions of gdb (OSX) output the PID here
-    TargetPIDPart := GetPart(['process '],
-                             [' local'], R.Values, True);
+    TargetPIDPart := GetPart(['process '], [' local', ']'], R.Values, True);
     FTargetPID := StrToIntDef(TargetPIDPart, 0);
     R.State := dsNone;
   end;
@@ -4107,6 +4131,16 @@ begin
     TargetPIDPart := GetPart(['child process ', 'child thread ', 'lwp '],
                              [' ', '.', ')'], R.Values, True);
     FTargetPID := StrToIntDef(TargetPIDPart, 0);
+  end;
+
+  // apple
+  if (FTargetPID = 0)
+  and ExecuteCommand('info pid', [], [cfIgnoreError], R)
+  and (R.State <> dsError)
+  then begin
+    List := TGDBMINameValueList.Create(R);
+    FTargetPID := StrToIntDef(List.Values['process-id'], 0);
+    List.Free;
   end;
 
   if FTargetPID = 0
