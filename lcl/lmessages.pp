@@ -96,7 +96,6 @@ const
 
   LM_GRABFOCUS      = LM_LCL + 80;
   LM_DRAWLISTITEM   = LM_LCL + 81;
-  LM_CONTEXTMENU    = LM_LCL + 82;
 
   // these IDs are reserved for internal messages in the interfaces
   LM_INTERFACEFIRST = LM_LCL + 99;
@@ -168,6 +167,7 @@ const
   LM_WINDOWPOSCHANGED  = $0047;
   LM_NOTIFY            = $004E;
   LM_NOTIFYFORMAT      = $0055;
+  LM_CONTEXTMENU       = $007B;
 
   LM_NCCALCSIZE        = $0083;
   LM_NCHITTEST         = $0084;
