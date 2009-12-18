@@ -11497,36 +11497,43 @@ begin
 end;
 
 procedure TMainIDE.UpdateCaption;
-var NewCaption: string;
-  ProjectName: String;
+var
+  NewCaption, NewTitle, ProjectName: String;
 begin
-  if MainIDEBar=nil then exit;
-  if ToolStatus = itExiting then exit;
+  if MainIDEBar = nil then Exit;
+  if ToolStatus = itExiting then Exit;
   NewCaption := Format(lisLazarusEditorV, [GetLazarusVersionString]);
-  if MainBarSubTitle<>'' then begin
-    NewCaption:=NewCaption+' - '+MainBarSubTitle;
-  end else begin
-    if Project1<>nil then begin
-      ProjectName:='';
-      if Project1.Title<>'' then
-        ProjectName:=Project1.Title
-      else if Project1.ProjectInfoFile<>'' then
-        ProjectName:=ExtractFileName(Project1.ProjectInfoFile);
-      if ProjectName<>'' then
+  NewTitle := NewCaption;
+  if MainBarSubTitle <> '' then
+    NewCaption := NewCaption + ' - ' + MainBarSubTitle
+  else
+  begin
+    if Project1 <> nil then
+    begin
+      ProjectName := '';
+      if Project1.Title <> '' then
+        ProjectName := Project1.Title
+      else
+      if Project1.ProjectInfoFile <> '' then
+        ProjectName := ExtractFileName(Project1.ProjectInfoFile);
+      if ProjectName <> '' then
       begin
         if EnvironmentOptions.IDETitleStartsWithProject then
-          NewCaption:=ProjectName+' - '+NewCaption
+          NewCaption := ProjectName + ' - ' + NewCaption
         else
-          NewCaption:=NewCaption+' - '+ProjectName;
-      end else
-        NewCaption:=Format(lisnewProject, [NewCaption]);
+          NewCaption := NewCaption + ' - ' + ProjectName;
+      end
+      else
+        NewCaption := Format(lisnewProject, [NewCaption]);
+      NewTitle := NewCaption;
     end;
   end;
   case ToolStatus of
-  itBuilder:  NewCaption:=Format(liscompiling, [NewCaption]);
-  itDebugger: NewCaption:=Format(lisdebugging, [NewCaption]);
+    itBuilder:  NewCaption := Format(liscompiling, [NewCaption]);
+    itDebugger: NewCaption := Format(lisdebugging, [NewCaption]);
   end;
-  MainIDEBar.Caption:=NewCaption;
+  MainIDEBar.Caption := NewCaption;
+  Application.Title := NewTitle;
 end;
 
 procedure TMainIDE.HideIDE;
