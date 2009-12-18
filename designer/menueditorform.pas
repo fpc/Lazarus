@@ -270,17 +270,21 @@ end;
 
 function TMainMenuComponentEditor.GetVerbCount: Integer;
 begin
-  Result:=1;
+  Result := 1;
 end;
 
 function TMainMenuComponentEditor.GetVerb(Index: Integer): string;
 begin
-  Result:='Edit';
+  case Index of
+    0: Result := lisMenuEditor;
+  end;
 end;
 
 procedure TMainMenuComponentEditor.ExecuteVerb(Index: Integer);
 begin
-  Edit;
+  case Index of
+    0: Edit;
+  end;
 end;
 
 { TMenuItemsPropertyEditor }

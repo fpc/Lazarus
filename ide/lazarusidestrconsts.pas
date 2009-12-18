@@ -3740,6 +3740,7 @@ resourcestring
   lisCmpLstInheritance = 'Inheritance';
 
   // menu editor
+  lisMenuEditor = 'Menu Editor...';
   lisMenuEditorMenuEditor = 'Menu Editor';
   lisMenuEditorSelectMenu = 'Select Menu:';
   lisMenuEditorSelectTemplate = 'Select Template:';
