@@ -596,7 +596,7 @@ end;
 
 function TImageListComponentEditor.GetVerb(Index: Integer): String;
 begin
-  Result := sccsILEdtCaption + '...';
+  Result := oisImageListComponentEditor;
 end;
 
 function TImageListComponentEditor.GetVerbCount: Integer;

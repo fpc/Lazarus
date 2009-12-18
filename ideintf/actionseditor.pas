@@ -1018,7 +1018,7 @@ end;
 
 function TActionListComponentEditor.GetVerb(Index: Integer): string;
 begin
-  Result := oisEditActionList;
+  Result := oisActionListComponentEditor;
 end;
 
 procedure TActionListComponentEditor.ExecuteVerb(Index: Integer);

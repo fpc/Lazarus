@@ -122,6 +122,7 @@ resourcestring
   sccsLvEdtItem            = 'Item';
 
   // Image editor strings
+  oisImageListComponentEditor = 'I&mageList Editor...';
   sccsILEdtCaption     = 'ImageList Editor';
   sccsILEdtGrpLCaption = 'Images';
   sccsILEdtGrpRCaption = 'Selected Image';
@@ -230,8 +231,8 @@ resourcestring
   cActionListEditorFileCategory = 'File';
   cActionListEditorDatabaseCategory = 'Database';
   
-  oisEditActionList = 'Edit action list...';
-  oisActionListEditor = 'Action List Editor';
+  oisActionListComponentEditor = 'Action&List Editor...';
+  oisActionListEditor = 'ActionList Editor';
   oisErrorDeletingAction = 'Error deleting action';
   oisErrorWhileDeletingAction = 'Error while deleting action:%s%s';
   cActionListEditorNewAction = 'New Action';
