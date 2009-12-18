@@ -3237,12 +3237,11 @@ end;
 
 function TDesigner.GetComponentEditorForSelection: TBaseComponentEditor;
 begin
-  Result:=nil;
-  if (ControlSelection.Count<>1)
-  or (ControlSelection.SelectionForm<>Form)
-  or (not ControlSelection[0].IsTComponent) then exit;
-  Result:=
-   TheFormEditor.GetComponentEditor(TComponent(ControlSelection[0].Persistent));
+  Result := nil;
+  if (ControlSelection.Count <> 1) or
+     (ControlSelection.SelectionForm <> Form) or
+     (not ControlSelection[0].IsTComponent) then Exit;
+  Result := TheFormEditor.GetComponentEditor(TComponent(ControlSelection[0].Persistent));
 end;
 
 procedure TDesigner.AddComponentEditorMenuItems(
@@ -3251,18 +3250,21 @@ var
   VerbCount, i: integer;
   NewMenuCmd: TIDEMenuCommand;
 begin
-  if (AComponentEditor=nil) or (DesignerMenuSectionComponentEditor=nil) then
-    exit;
   if ClearOldOnes then
     DesignerMenuSectionComponentEditor.Clear;
-  VerbCount:=AComponentEditor.GetVerbCount;
-  for i:=0 to VerbCount-1 do begin
+
+  if (AComponentEditor = nil) or (DesignerMenuSectionComponentEditor = nil) then
+    Exit;
+
+  VerbCount := AComponentEditor.GetVerbCount;
+  for i := 0 to VerbCount - 1 do
+  begin
     NewMenuCmd:=RegisterIDEMenuCommand(DesignerMenuSectionComponentEditor,
-      'ComponentEditorVerMenuItem'+IntToStr(i),
+      'ComponentEditorVerMenuItem' + IntToStr(i),
       AComponentEditor.GetVerb(i),
       @OnComponentEditorVerbMenuItemClick);
     if NewMenuCmd.MenuItem<>nil then
-      AComponentEditor.PrepareItem(i,NewMenuCmd.MenuItem);
+      AComponentEditor.PrepareItem(i, NewMenuCmd.MenuItem);
   end;
 end;
 
