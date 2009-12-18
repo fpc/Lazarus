@@ -1242,7 +1242,8 @@ begin
   Filename := TrimFilename(Filename);
   SrcFile := Filename;
   SrcFile := MainIDE.FindSourceFile(SrcFile, Project1.ProjectDirectory,
-                      [fsfSearchForProject, fsfUseIncludePaths, fsfUseDebugPath]);
+                      [fsfSearchForProject, fsfUseIncludePaths, fsfUseDebugPath,
+                       fsfMapTempToVirtualFiles]);
   if SrcFile = '' then SrcFile := Filename;
 
   if not FilenameIsAbsolute(SrcFile)
@@ -1272,6 +1273,7 @@ begin
     begin
       // the file is an unsaved file -> can not be extended
       Result := True;
+      Filename := SrcFile;
       Exit;
     end;
   end;

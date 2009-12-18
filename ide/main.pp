@@ -12167,6 +12167,19 @@ begin
   {$IFDEF VerboseFindSourceFile}
   debugln(['TMainIDE.FindSourceFile Filename="',AFilename,'" BaseDirectory="',BaseDirectory,'"']);
   {$ENDIF}
+
+  if fsfMapTempToVirtualFiles in Flags then
+  begin
+    BaseDir:=GetTestBuildDirectory;
+    if FilenameIsAbsolute(AFilename)
+    and FileIsInPath(AFilename,BaseDir) then
+    begin
+      Result:=CreateRelativePath(AFilename,BaseDir);
+      if Project1.UnitInfoWithFilename(Result)<>nil then
+        exit;
+    end;
+  end;
+
   if FilenameIsAbsolute(AFilename) then
   begin
     Result := AFilename;

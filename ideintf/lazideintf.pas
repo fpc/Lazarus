@@ -116,7 +116,8 @@ type
   TFindSourceFlag = (
     fsfSearchForProject,
     fsfUseIncludePaths,
-    fsfUseDebugPath
+    fsfUseDebugPath,
+    fsfMapTempToVirtualFiles
     );
   TFindSourceFlags = set of TFindSourceFlag;
   
