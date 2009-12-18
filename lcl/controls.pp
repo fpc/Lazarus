@@ -187,7 +187,7 @@ type
   TWndMethod = procedure(var TheMessage: TLMessage) of Object;
 
   TControlStyleType = (
-    csAcceptsControls,       // can have childs in the designer
+    csAcceptsControls,       // can have children in the designer
     csCaptureMouse,
     csDesignInteractive,     // wants mouse events in design mode
     csClickEvents,
@@ -588,7 +588,7 @@ type
   { TControlBorderSpacing }
 
   { TControlBorderSpacing defines the spacing around a control.
-    The spacing around its childs and between its childs is defined in
+    The spacing around its children and between its children is defined in
     TWinControl.ChildSizing.
 
     Left, Top, Right, Bottom: integer;
