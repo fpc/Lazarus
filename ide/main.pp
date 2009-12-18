@@ -4382,7 +4382,7 @@ begin
   // create jit component
   CInterface := TComponentInterface(
     FormEditor1.CreateComponent(nil,TComponentClass(AncestorType),
-      NewUnitInfo.CreateUnitName, new_x, new_y, 400,300));
+      NewUnitInfo.CreateUnitName, new_x, new_y, 0,0));
   if CInterface=nil then begin
     DebugLn(['TMainIDE.CreateNewForm FormEditor1.CreateComponent failed ',dbgsName(TComponentClass(AncestorType))]);
     exit(mrCancel);
