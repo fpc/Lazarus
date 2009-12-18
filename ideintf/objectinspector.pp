@@ -702,7 +702,7 @@ type
     procedure CreateNoteBook;
     procedure KeyDown(var Key: Word; Shift: TShiftState); override;
     procedure KeyUp(var Key: Word; Shift: TShiftState); override;
-    procedure DoModified;
+    procedure DoModified(Sender: TObject);
     function GetSelectedPersistent: TPersistent;
     function GetComponentEditorForSelection: TBaseComponentEditor;
     property ComponentEditor: TBaseComponentEditor read FComponentEditor write SetComponentEditor;
@@ -3884,6 +3884,7 @@ begin
     OnDblClick := @ComponentTreeDblClick;
     OnKeyDown := @ComponentTreeKeyDown;
     OnSelectionChanged := @ComponentTreeSelectionChanged;
+    OnModified := @DoModified;
     Visible := FShowComponentTree;
     Scrollbars := ssAutoBoth;
   end;
@@ -4471,7 +4472,7 @@ end;
 
 procedure TObjectInspectorDlg.OnGridModified(Sender: TObject);
 begin
-  DoModified;
+  DoModified(Self);
 end;
 
 procedure TObjectInspectorDlg.OnGridSelectionChange(Sender: TObject);
@@ -4864,10 +4865,10 @@ begin
     OnRemainingKeyUp(Self,Key,Shift);
 end;
 
-procedure TObjectInspectorDlg.DoModified;
+procedure TObjectInspectorDlg.DoModified(Sender: TObject);
 begin
   if Assigned(FOnModified) then
-    FOnModified(Self)
+    FOnModified(Sender)
 end;
 
 function TObjectInspectorDlg.GetSelectedPersistent: TPersistent;
@@ -5039,7 +5040,7 @@ begin
   if not (Persistent is TCollection) then
     Exit;
   Collection.Add;
-  DoModified;
+  DoModified(Self);
   Selection.ForceUpdate := True;
   try
     SetSelection(Selection);

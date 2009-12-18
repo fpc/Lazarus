@@ -38,6 +38,7 @@ type
   TComponentTreeView = class(TCustomTreeView)
   private
     FComponentList: TBackupComponentList;
+    FOnModified: TNotifyEvent;
     FPropertyEditorHook: TPropertyEditorHook;
     FImageList: TImageList;
     function GetSelection: TPersistentSelectionList;
@@ -53,6 +54,7 @@ type
     procedure GetComponentInsertMarkAt(X, Y: Integer;
                               out AnInsertMarkNode: TTreeNode;
                               out AnInsertMarkType: TTreeViewInsertMarkType);
+    procedure DoModified;
   public
     constructor Create(TheOwner: TComponent); override;
     destructor Destroy; override;
@@ -66,6 +68,7 @@ type
     property PropertyEditorHook: TPropertyEditorHook
                            read FPropertyEditorHook write SetPropertyEditorHook;
     property OnSelectionChanged;
+    property OnModified: TNotifyEvent read FOnModified write FOnModified;
   end;
 
 implementation
@@ -301,6 +304,7 @@ begin
           try
             AControl.Parent := AContainer;
             ok:=true;
+            DoModified;
           except
             on E: Exception do
               MessageDlg(oisError,
@@ -338,6 +342,7 @@ begin
             else
               TCollectionItem(SelNode.Data).Index := NewIndex;
             ok := True;
+            DoModified;
           except
             on E: Exception do
               MessageDlg(E.Message, mtError, [mbOk], 0);
@@ -481,6 +486,12 @@ begin
       if AnInsertMarkType = tvimAsFirstChild then
         AnInsertMarkType := tvimAsPrevSibling;
   end;
+end;
+
+procedure TComponentTreeView.DoModified;
+begin
+  if Assigned(FOnModified) then
+    OnModified(Self);
 end;
 
 function TComponentTreeView.GetImageFor(APersistent: TPersistent): integer;
