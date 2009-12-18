@@ -422,6 +422,7 @@ type
                                            APersistentClass: TPersistentClass;
                                            AParent: TPersistent): boolean;
     procedure OnPropHookComponentRenamed(AComponent: TComponent);
+    procedure OnPropHookModified(Sender: TObject);
     procedure OnPropHookPersistentAdded(APersistent: TPersistent;
                                         Select: boolean);
     procedure OnPropHookPersistentDeleting(APersistent: TPersistent);
@@ -1825,6 +1826,7 @@ begin
   GlobalDesignHook.AddHandlerRenameMethod(@OnPropHookRenameMethod);
   GlobalDesignHook.AddHandlerBeforeAddPersistent(@OnPropHookBeforeAddPersistent);
   GlobalDesignHook.AddHandlerComponentRenamed(@OnPropHookComponentRenamed);
+  GlobalDesignHook.AddHandlerModified(@OnPropHookModified);
   GlobalDesignHook.AddHandlerPersistentAdded(@OnPropHookPersistentAdded);
   GlobalDesignHook.AddHandlerPersistentDeleting(@OnPropHookPersistentDeleting);
   GlobalDesignHook.AddHandlerDeletePersistent(@OnPropHookDeletePersistent);
@@ -15363,6 +15365,11 @@ end;
 procedure TMainIDE.OnPropHookComponentRenamed(AComponent: TComponent);
 begin
   FormEditor1.UpdateComponentName(AComponent);
+end;
+
+procedure TMainIDE.OnPropHookModified(Sender: TObject);
+begin
+  // any change of property can cause a change of a display name
   ObjectInspector1.FillPersistentComboBox;
 end;
 

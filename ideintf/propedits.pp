@@ -2633,7 +2633,7 @@ end;
 
 procedure TPropertyEditor.Modified;
 begin
-  if PropertyHook<>nil then
+  if PropertyHook <> nil then
     PropertyHook.Modified(Self);
 end;
 
