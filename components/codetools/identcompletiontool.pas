@@ -1279,12 +1279,14 @@ begin
   AddBaseType('WideString');
   AddBaseType('UnicodeString');
   AddBaseType('Pointer');
-  AddBaseType('File');
-  AddBaseType('Text');
   AddBaseType('Word');
   AddBaseType('SmallInt');
   AddBaseType('ShortInt');
   AddBaseType('Byte');
+  if not (ilcfStartInStatement in CurrentIdentifierList.ContextFlags) then begin
+    AddBaseType('File');
+    AddBaseType('Text');
+  end;
   AddBaseConstant('Nil');
 end;
 
