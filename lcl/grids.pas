@@ -8043,7 +8043,7 @@ var
 begin
   AState := cbUnchecked;
   GetCheckBoxState(aCol, aRow, aState);
-  DebugLn(['TCustomDrawGrid.DrawCellCheckboxBitmaps ',aCol,' ',aRow,' State=',ord(aState)]);
+  //DebugLn(['TCustomDrawGrid.DrawCellCheckboxBitmaps ',aCol,' ',aRow,' State=',ord(aState)]);
   DrawGridCheckboxBitmaps(aRect, aState);
 end;
 
