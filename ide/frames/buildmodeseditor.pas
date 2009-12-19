@@ -28,7 +28,8 @@ uses
   Classes, SysUtils, LCLProc, Controls, FileUtil, LResources, Forms, Grids,
   Menus, ComCtrls, Dialogs, AvgLvlTree, DefineTemplates,
   ProjectIntf, IDEImagesIntf,
-  Project, PackageSystem, LazarusIDEStrConsts, CompilerOptions, IDEProcs;
+  PathEditorDlg, Project, PackageSystem, LazarusIDEStrConsts, CompilerOptions,
+  IDEProcs;
 
 type
 
@@ -71,6 +72,7 @@ type
     procedure FindBuildVariable(const Identifier: string;
       out Vars: TLazBuildVariables; out aVariable: TLazBuildVariable);
     function SelectCell(aCol, aRow: Integer): boolean; override;
+    procedure BuildModesGridEditButtonClick(Sender: TObject);
   public
     constructor Create(TheOwner: TComponent); override;
     destructor Destroy; override;
@@ -122,7 +124,7 @@ begin
   case f of
   bmftAddUnitPath: Result:='+UnitPath';
   bmftAddIncludePath: Result:='+IncludePath';
-  bmftAddLinkerPath: Result:='+linkerPath';
+  bmftAddLinkerPath: Result:='+LinkerPath';
   bmftAddObjectPath: Result:='+ObjectPath';
   bmftAddLinkerOption: Result:='+LinkerOptions';
   bmftAddCustomOption: Result:='+CustomOptions';
@@ -386,7 +388,9 @@ begin
           if aVariable<>nil then
             sl.Assign(aVariable.Values);
         end;
-      end;
+        Columns[ValueCol].ButtonStyle:=cbsPickList;
+      end else if CurModeRow.Flag.FlagType in BuildModeFlagPaths then
+        Columns[ValueCol].ButtonStyle:=cbsEllipsis;
     end;
     sl.Sort;
     Columns[ValueCol].PickList:=sl;
@@ -444,6 +448,32 @@ begin
   Result:=FModeRows.Count;
 end;
 
+procedure TBuildModesGrid.BuildModesGridEditButtonClick(Sender: TObject);
+var
+  CurModeRow: TBuildModeGridRow;
+  CurPathEditor: TPathEditorDialog;
+  ValueCol: Integer;
+begin
+  CurModeRow:=SelectedModeRow;
+  if CurModeRow=nil then exit;
+  if CurModeRow.Flag=nil then exit;
+  ValueCol:=GroupModeCount+2;
+  if CurModeRow.Flag.FlagType in BuildModeFlagPaths then begin
+    CurPathEditor:=TPathEditorDialog.Create(nil);
+    try
+      CurPathEditor.BaseDirectory:=Project1.ProjectDirectory;
+      CurPathEditor.Path:=CurModeRow.Flag.Value;
+      CurPathEditor.Templates:='';
+      if CurPathEditor.ShowModal=mrOk then begin
+        CurModeRow.Flag.Value:=CurPathEditor.Path;
+        Cells[ValueCol,Row]:=CurModeRow.Flag.Value;
+      end;
+    finally
+      CurPathEditor.Free;
+    end;
+  end;
+end;
+
 function TBuildModesGrid.GetSelectedModeRow: TBuildModeGridRow;
 begin
   if (Row<1) or (Row>ModeRowCount) then
@@ -458,6 +488,7 @@ begin
   fGraph:=TBuildModeGraph.Create;
   FModeRows:=TFPList.Create;
   Options:=Options+[goEditing];
+  OnEditButtonClick:=@BuildModesGridEditButtonClick;
 end;
 
 destructor TBuildModesGrid.Destroy;
