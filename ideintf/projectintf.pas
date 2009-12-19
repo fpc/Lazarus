@@ -629,7 +629,8 @@ type
     pfMainUnitHasTitleStatement,// add/remove Application.Title:= statements
     pfRunnable, // project can be run
     pfAlwaysBuild, // skip IDE's smart check if compilation is needed and always compile
-    pfLRSFilesInOutputDirectory // put .lrs files in output directory
+    pfLRSFilesInOutputDirectory, // put .lrs files in output directory
+    pfUseDefaultCompilerOptions // load users default compiler options
     );
   TProjectFlags = set of TProjectFlag;
 
@@ -833,7 +834,8 @@ const
       'MainUnitHasTitleStatement',
       'Runnable',
       'AlwaysBuild',
-      'LRSInOutputDirectory'
+      'LRSInOutputDirectory',
+      'UseDefaultCompilerOptions'
     );
 
   ProjectSessionStorageNames: array[TProjectSessionStorage] of string = (

@@ -5435,7 +5435,8 @@ constructor TProjectProgramDescriptor.Create;
 begin
   inherited Create;
   Name:=ProjDescNameProgram;
-  Flags:=Flags-[pfMainUnitHasCreateFormStatements,pfMainUnitHasTitleStatement];
+  Flags:=Flags-[pfMainUnitHasCreateFormStatements,pfMainUnitHasTitleStatement]
+              +[pfUseDefaultCompilerOptions];
 end;
 
 function TProjectProgramDescriptor.GetLocalizedName: string;
@@ -5497,6 +5498,7 @@ constructor TProjectApplicationDescriptor.Create;
 begin
   inherited Create;
   Name:=ProjDescNameApplication;
+  Flags:=Flags+[pfUseDefaultCompilerOptions];
 end;
 
 function TProjectApplicationDescriptor.GetLocalizedName: string;
@@ -5567,7 +5569,8 @@ begin
   Name:=ProjDescNameCustomProgram;
   Flags:=Flags-[pfMainUnitHasUsesSectionForAllUnits,
                 pfMainUnitHasCreateFormStatements,
-                pfMainUnitHasTitleStatement];
+                pfMainUnitHasTitleStatement]
+              +[pfUseDefaultCompilerOptions];
   FAddMainSource:=true;
 end;
 
@@ -5635,7 +5638,8 @@ constructor TProjectLibraryDescriptor.Create;
 begin
   inherited Create;
   Name:=ProjDescNameLibrary;
-  Flags:=Flags-[pfMainUnitHasCreateFormStatements,pfMainUnitHasTitleStatement];
+  Flags:=Flags-[pfMainUnitHasCreateFormStatements,pfMainUnitHasTitleStatement]
+              +[pfUseDefaultCompilerOptions];
 end;
 
 function TProjectLibraryDescriptor.GetLocalizedName: string;
@@ -5857,7 +5861,8 @@ constructor TProjectConsoleApplicationDescriptor.Create;
 begin
   inherited Create;
   Name:=ProjDescNameConsoleApplication;
-  Flags:=Flags-[pfMainUnitHasCreateFormStatements,pfMainUnitHasTitleStatement];
+  Flags:=Flags-[pfMainUnitHasCreateFormStatements,pfMainUnitHasTitleStatement]
+              +[pfUseDefaultCompilerOptions];
 end;
 
 function TProjectConsoleApplicationDescriptor.GetLocalizedName: string;
