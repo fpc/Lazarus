@@ -8902,7 +8902,8 @@ end;
 
 procedure TMainIDE.DoLoadDefaultCompilerOptions(AProject: TProject);
 begin
-  // load default compiler options
+  // load default compiler options if exists
+  if not FileExistsUTF8(AProject.CompilerOptions.GetXMLConfigPath) then exit;
   if AProject.CompilerOptions.LoadCompilerOptions(false)<>mrOk then
     DebugLn(['TMainIDE.DoLoadDefaultCompilerOptions failed']);
 end;
