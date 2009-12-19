@@ -181,6 +181,7 @@ type
     procedure ClearIncludedBys;
     procedure Include(aMode: TBuildMode);
     procedure Exclude(aMode: TBuildMode);
+    function IsIncludedBy(aMode: TBuildMode): boolean;
     function AddFlag(FlagType: TBuildModeFlagType; Value: string;
                      Variable: string = ''): TBuildModeFlag;
     function InsertFlag(InsertPos: integer; FlagType: TBuildModeFlagType;
@@ -5024,6 +5025,15 @@ procedure TBuildMode.Exclude(aMode: TBuildMode);
 begin
   FIncludes.Remove(aMode);
   if aMode<>nil then aMode.FIncludedBy.Remove(Self);
+end;
+
+function TBuildMode.IsIncludedBy(aMode: TBuildMode): boolean;
+var
+  i: Integer;
+begin
+  for i:=0 to IncludedByCount-1 do
+    if IncludedBy[i]=aMode then exit(true);
+  Result:=false;
 end;
 
 function TBuildMode.AddFlag(FlagType: TBuildModeFlagType; Value: string;
