@@ -258,6 +258,7 @@ begin
   finally
     sl.Free;
   end;
+  TemplateGroupBox.Visible:=TemplatesListBox.Items.Count>0;
 end;
 
 function TPathEditorDialog.TextToPath(const AText: string): string;
