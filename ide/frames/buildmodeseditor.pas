@@ -25,8 +25,9 @@ unit BuildModesEditor;
 interface
 
 uses
-  Classes, SysUtils, LCLProc, Controls, FileUtil, LResources, Forms, Grids,
-  Menus, ComCtrls, Dialogs, AvgLvlTree, DefineTemplates, StdCtrls,
+  Math, Classes, SysUtils, LCLProc, Controls, FileUtil, LResources, Forms,
+  Grids, Graphics, Menus, ComCtrls, Dialogs, AvgLvlTree, DefineTemplates,
+  StdCtrls, GraphMath,
   ProjectIntf, IDEImagesIntf,
   PathEditorDlg, Project, PackageSystem, LazarusIDEStrConsts, CompilerOptions,
   IDEProcs;
@@ -56,11 +57,13 @@ type
     FGroupModeCount: integer;
     FModeRows: TFPList; // list of TBuildModeGridRow
     FRebuilding: boolean;
+    FShowGroupGrid: boolean;
     function GetSelectedModeRow: TBuildModeGridRow;
     function GetModeRowCount: integer;
     function GetModeRows(Index: integer): TBuildModeGridRow;
     procedure ClearModeRows;
     procedure FillGridRow(i: integer);
+    procedure SetShowGroupGrid(const AValue: boolean);
   protected
     function ValidateEntry(const ACol,ARow:Integer; const OldValue:string;
                            var NewValue:string): boolean; override;
@@ -96,6 +99,7 @@ type
     property ModeRows[Index: integer]: TBuildModeGridRow read GetModeRows;
     property GroupModeCount: integer read FGroupModeCount; // number of modes that are group of modes
     property SelectedModeRow: TBuildModeGridRow read GetSelectedModeRow;
+    property ShowGroupGrid: boolean read FShowGroupGrid write SetShowGroupGrid;
   end;
 
   { TBuildModesEditorFrame }
@@ -215,6 +219,13 @@ begin
     Cells[TypeCol,i]:=TypeStr;
     Cells[ValueCol,i]:=ValueStr;
   end;
+end;
+
+procedure TBuildModesGrid.SetShowGroupGrid(const AValue: boolean);
+begin
+  if FShowGroupGrid=AValue then exit;
+  FShowGroupGrid:=AValue;
+  Invalidate;
 end;
 
 function TBuildModesGrid.ValidateEntry(const ACol, ARow: Integer;
@@ -505,40 +516,49 @@ var
   GrpMode: TBuildMode;
   NewState: TCheckBoxState;
 begin
-  //DebugLn(['TBuildModesGrid.SetCheckboxState ',acol,' ',arow,' ',ord(aState)]);
+  DebugLn(['TBuildModesGrid.SetCheckboxState ',acol,' ',arow,' ',ord(aState)]);
   NewState:=cbUnchecked;
-  CurModeRow:=GetSelectedModeRow;
-  if (CurModeRow<>nil) and (CurModeRow.IndexInGroup=0) then begin
+  if (aRow>=1) and (aRow<=ModeRowCount) and (ModeRows[aRow-1].IndexInGroup=0)
+  then begin
+    CurModeRow:=ModeRows[aRow-1];
     GrpID:=ColToBuildGroup(aCol);
     if (GrpID>=0) and (GrpID<GroupModeCount) then begin
-      GrpMode:=ModeRows[GrpID].Mode;
-      if CurModeRow.Mode=GrpMode then begin
-        // invalid circle
-        DebugLn(['TBuildModesGrid.SetCheckboxState invalid circle']);
-      end else if CurModeRow.Mode.IsIncludedBy(GrpMode)<>(aState=cbChecked) then
-      begin
-        // state changed
-        //DebugLn(['TBuildModesGrid.SetCheckboxState STATE CHANGED']);
-        if aState=cbChecked then begin
-          GrpMode.Include(CurModeRow.Mode);
-          NewState:=cbChecked;
+      if ShowGroupGrid or (not CurModeRow.Mode.ShowIncludes) then begin
+        GrpMode:=ModeRows[GrpID].Mode;
+        if CurModeRow.Mode=GrpMode then begin
+          // invalid circle
+          DebugLn(['TBuildModesGrid.SetCheckboxState invalid circle']);
+        end else if CurModeRow.Mode.IsIncludedBy(GrpMode)<>(aState=cbChecked) then
+        begin
+          // state changed
+          DebugLn(['TBuildModesGrid.SetCheckboxState STATE CHANGED']);
+          if aState=cbChecked then begin
+            GrpMode.Include(CurModeRow.Mode);
+            NewState:=cbChecked;
+          end else begin
+            GrpMode.Exclude(CurModeRow.Mode);
+          end;
         end else begin
-          GrpMode.Exclude(CurModeRow.Mode);
+          // state kept
+          DebugLn(['TBuildModesGrid.SetCheckboxState STATE KEPT']);
+          if CurModeRow.Mode.IsIncludedBy(GrpMode) then
+            NewState:=cbChecked;
         end;
-      end else if CurModeRow.Mode.IsIncludedBy(GrpMode) then begin
-        // state kept
-        //DebugLn(['TBuildModesGrid.SetCheckboxState STATE KEPT']);
-        NewState:=cbChecked;
+      end else begin
+        // invalid column
+        DebugLn(['TBuildModesGrid.SetCheckboxState invalid col ',ACol,' ',GrpId,' ',GroupModeCount]);
       end;
     end else begin
-      // invalid column
-      DebugLn(['TBuildModesGrid.SetCheckboxState invalid col ',ACol,' ',GrpId,' ',GroupModeCount]);
+      // group grid is hidden => keep state
+      DebugLn(['TBuildModesGrid.SetCheckboxState group grid is hidden']);
+      if CellToInclude(aCol,aRow) then
+        NewState:=cbChecked;
     end;
   end else begin
     // invalid row
     DebugLn(['TBuildModesGrid.SetCheckboxState invalid row']);
   end;
-  //DebugLn(['TBuildModesGrid.SetCheckboxState END ',aCol,' ',aRow,' ',ord(NewState)]);
+  DebugLn(['TBuildModesGrid.SetCheckboxState END ',aCol,' ',aRow,' ',ord(NewState)]);
   inherited SetCheckboxState(aCol, aRow, NewState);
   {for i:=1 to ModeRowCount do begin
     dbgout('  '+dbgs(i));
@@ -558,6 +578,8 @@ end;
 
 procedure TBuildModesGrid.DrawCell(aCol, aRow: Integer; aRect: TRect;
   aState: TGridDrawState);
+const
+  w = 3;
 
   procedure DrawGrid(Right, Bottom: boolean);
   begin
@@ -582,28 +604,76 @@ procedure TBuildModesGrid.DrawCell(aCol, aRow: Integer; aRect: TRect;
 var
   CurModeRow: TBuildModeGridRow;
   TypeCol: Integer;
+  GrpID: LongInt;
+  x: Integer;
+  y: Integer;
+  RowGrpID: Integer;
+  BezierPoints: PPoint;
+  r: Integer;
 begin
   if (aRow>=1) and (aRow<=ModeRowCount) then begin
     TypeCol:=GroupModeCount+1;
     CurModeRow:=ModeRows[aRow-1];
-    DebugLn(['TBuildModesGrid.DrawCell ',aCol,' ',aRow,' IndexInGroup=',CurModeRow.IndexInGroup]);
+    //DebugLn(['TBuildModesGrid.DrawCell ',aCol,' ',aRow,' IndexInGroup=',CurModeRow.IndexInGroup]);
     if (CurModeRow.IndexInGroup>0) and (aCol<TypeCol) then begin
       // only the first line of a group shows the name and groups
       // => clear
+      PrepareCanvas(aCol, aRow, aState);
       Canvas.FillRect(aRect);
       DrawGrid(aCol=TypeCol-1,
                CurModeRow.IndexInGroup=CurModeRow.Mode.FlagCount-1);
       exit;
     end else if CurModeRow.Mode.ShowIncludes then begin
+      GrpID:=ColToBuildGroup(aCol);
       if aCol>=TypeCol then begin
         // groups have no type/value
+        PrepareCanvas(aCol, aRow, aState);
         Canvas.FillRect(aRect);
+        if aRow=GroupModeCount then
+          DrawGrid(false,true);
+        exit;
+      end else if (GrpID>=0) and (GrpID<GroupModeCount) then begin
+        // draw paths from mode row to mode column
+        PrepareCanvas(aCol, aRow, aState);
+        Canvas.FillRect(aRect);
+        Canvas.Brush.Style := bsSolid;
+        Canvas.Brush.Color := clBtnFace;
+        Canvas.Pen.Style := psClear;
+        x:=(aRect.Left+aRect.Right) div 2;
+        y:=(aRect.Top+aRect.Bottom) div 2;
+        r:=Min(aRect.Right-aRect.Left,aRect.Bottom-aRect.Top) div 2;
+        RowGrpID:=aRow-1;
+        if GrpID=RowGrpID then begin
+          // draw curve left to bottom
+          GetMem(BezierPoints,SizeOf(TPoint)*10);
+          BezierPoints[0]:=Point(x-r,y-w); // middle,left
+            BezierPoints[1]:=Point(x-r+10,y-w); // to the right
+            BezierPoints[2]:=Point(x+w,y+r-10); // downwards
+          BezierPoints[3]:=Point(x+w,y+r); // bottom, middle
+            BezierPoints[4]:=Point(x+w-10,y+r); // to the left
+            BezierPoints[5]:=Point(x-w-10,y+r); // to the left
+          BezierPoints[6]:=Point(x-w,y+r); // bottom, middle
+            BezierPoints[7]:=Point(x-w,y+r-10); // upwards
+            BezierPoints[8]:=Point(x-r-10,y+w); // to the left
+          BezierPoints[9]:=Point(x-r,y+w); // middle,left
+          Canvas.PolyBezier(BezierPoints,10,true,true);
+          Freemem(BezierPoints);
+          Canvas.FillRect(aRect.Left,y-w,x-r,y+w+1);
+          Canvas.FillRect(x-w,y+r,x+w+1,aRect.Bottom);
+        end else if GrpID>RowGrpID then begin
+          // draw left to right
+          Canvas.FillRect(aRect.Left,y-w,aRect.Right,y+w+1);
+        end else begin
+          // draw top to bottom
+          Canvas.FillRect(x-w,aRect.Top,x+w+1,aRect.Bottom);
+        end;
         if aRow=GroupModeCount then
           DrawGrid(false,true);
         exit;
       end;
     end;
   end;
+  //DebugLn(['TBuildModesGrid.DrawCell draw default ',aCol,' ',aRow]);
   inherited DrawCell(aCol, aRow, aRect, aState);
 end;
 

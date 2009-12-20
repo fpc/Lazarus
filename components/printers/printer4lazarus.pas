@@ -2,7 +2,7 @@
   This source is only used to compile and install the package.
  }
 
-unit Printer4Lazarus; 
+unit printer4lazarus; 
 
 interface
 

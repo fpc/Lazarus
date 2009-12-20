@@ -884,18 +884,20 @@ end;
   Params:   X, Y, Width, Height, Angle1, Angle2, Rotation, Points, Count
   Returns:  Nothing
 
-  Use PolyBezierArcPoints to convert an Arc and ArcLength into a Pointer Array
-  of TPoints for use with Polyline or Polygon. The Rotation parameter accepts
-  a Rotation-Angle for a rotated Ellipse'- for a non-rotated ellipse this
-  value would be 0, or 360. The result is an Aproximation based on 1 or more
-  Beziers. If the AngleLength is greater than 45 degrees, it recursively breaks
-  the Arc into Arcs of 45 degrees or less, and converts them into Beziers with
-  BezierArcPoints. The angles are 1/16th of a degree. For example, a full circle
-  equals 5760 (16*360). Positive values of Angle and AngleLength mean
-  counter-clockwise while negative values mean clockwise direction. Zero
-  degrees is at the 3'o clock position. Points is automatically initialized,
-  so any existing information is lost, and the array starts at 0. Points
-  should ALWAYS be Freed when done by calling to ReallocMem(Points, 0).
+  Use PolyBezierArcPoints to convert an Agnle and AgnleLength into a
+  Pointer Array of TPoints for use with Polyline or Polygon.
+  The Rotation parameter accepts a Rotation-Angle for a rotated Ellipse'- for
+  a non-rotated ellipse this value would be 0, or 360*16.
+  The result is an Aproximation based on 1 or more Beziers. If the AngleLength
+  is greater than 45*16 degrees, it recursively breaks the Arc into Arcs of
+  45*16 degrees or less, and converts them into Beziers with BezierArcPoints.
+  The angles are 1/16th of a degree. For example, a full circle equals
+  5760 (16*360).
+  Positive values of Angle and AngleLength mean counter-clockwise while negative
+  values mean clockwise direction. Zero degrees is at the 3'o clock position.
+  Points is automatically initialized, so any existing information is lost,
+  and the array starts at 0. Points should ALWAYS be Freed when done by calling
+  to ReallocMem(Points, 0).
 
 ------------------------------------------------------------------------------}
 procedure PolyBezierArcPoints(X, Y, Width, Height : Longint; Angle1, Angle2,
