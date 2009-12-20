@@ -8,7 +8,6 @@ object ObjectInspectorDlg: TObjectInspectorDlg
   ClientWidth = 275
   KeyPreview = True
   OnResize = ObjectInspectorResize
-  PopupMenu = MainPopupMenu
   LCLVersion = '0.9.29'
   object StatusBar: TStatusBar
     Left = 0

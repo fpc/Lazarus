@@ -591,6 +591,7 @@ type
     ComponentRestrictedLabel: TLabel;
     ComponentRestrictedBox: TPaintBox;
     FindDeclarationPopupmenuItem: TMenuItem;
+    OptionsSeparatorMenuItem: TMenuItem;
     MainPopupMenu: TPopupMenu;
     NoteBook: TNoteBook;
     OptionsSeparatorMenuItem2: TMenuItem;
@@ -3778,21 +3779,19 @@ constructor TObjectInspectorDlg.Create(AnOwner: TComponent);
       MainPopupMenu.Items.Add(NewMenuItem);
   end;
 
-  procedure AddSeparatorMenuItem(ParentMenuItem: TMenuItem;
-    const AName: string; VisibleFlag: boolean);
-  var
-    NewMenuItem: TMenuItem;
+  function AddSeparatorMenuItem(ParentMenuItem: TMenuItem; const AName: string; VisibleFlag: boolean): TMenuItem;
   begin
-    NewMenuItem:=TMenuItem.Create(Self);
-    with NewMenuItem do begin
-      Name:=AName;
-      Caption:='-';
-      Visible:=VisibleFlag;
+    Result := TMenuItem.Create(Self);
+    with Result do
+    begin
+      Name := AName;
+      Caption := cLineCaption;
+      Visible := VisibleFlag;
     end;
-    if ParentMenuItem<>nil then
-      ParentMenuItem.Add(NewMenuItem)
+    if ParentMenuItem <> nil then
+      ParentMenuItem.Add(Result)
     else
-      MainPopupMenu.Items.Add(NewMenuItem);
+      MainPopupMenu.Items.Add(Result);
   end;
 
 begin
@@ -3836,7 +3835,7 @@ begin
   AddPopupMenuItem(FindDeclarationPopupmenuItem,nil,'FindDeclarationPopupmenuItem',
      oisFinddeclaration,'Jump to declaration of property', '',
      @OnFindDeclarationPopupmenuItemClick,false,true,false);
-  AddSeparatorMenuItem(nil,'OptionsSeparatorMenuItem',true);
+  OptionsSeparatorMenuItem := AddSeparatorMenuItem(nil, 'OptionsSeparatorMenuItem', true);
   AddPopupMenuItem(CutPopupMenuItem,nil,'CutPopupMenuItem',
      oisCutComponents,'Cut selected item', 'laz_cut',
      @OnCutPopupmenuItemClick,false,true,true);
@@ -3849,8 +3848,7 @@ begin
   AddPopupMenuItem(DeletePopupMenuItem,nil,'DeletePopupMenuItem',
      oisDeleteComponents,'Delete selected item', 'delete_selection',
      @OnDeletePopupmenuItemClick,false,true,true);
-  AddPopupMenuItem(OptionsSeparatorMenuItem2,nil, '', 
-     '-','','',nil,false,true,true);
+  OptionsSeparatorMenuItem2 := AddSeparatorMenuItem(nil, 'OptionsSeparatorMenuItem2', true);
   AddPopupMenuItem(ShowHintsPopupMenuItem,nil
      ,'ShowHintPopupMenuItem',oisShowHints,'Grid hints', ''
      ,@OnShowHintPopupMenuItemClick,false,true,true);
@@ -3864,29 +3862,31 @@ begin
      ,@OnShowOptionsPopupMenuItemClick,false,true,FOnShowOptions<>nil);
 
   // combobox at top (filled with available persistents)
-  with AvailPersistentComboBox do begin
-    Sorted:=true;
-    AutoSelect:=true;
-    AutoComplete:=true;
+  with AvailPersistentComboBox do
+  begin
+    Sorted := true;
+    AutoSelect := true;
+    AutoComplete := true;
     DropDownCount := 12;
-    Visible:=not FShowComponentTree;
+    Visible := not FShowComponentTree;
   end;
 
   // Component Tree at top (filled with available components)
   ComponentTree := TComponentTreeView.Create(Self);
   with ComponentTree do
   begin
-    Name:='ComponentTree';
-    Constraints.MinHeight:=16;
-    Height:=ComponentTreeHeight;
-    Parent:=Self;
-    Align:=alTop;
+    Name := 'ComponentTree';
+    Constraints.MinHeight := 16;
+    Height := ComponentTreeHeight;
+    Parent := Self;
+    Align := alTop;
     OnDblClick := @ComponentTreeDblClick;
     OnKeyDown := @ComponentTreeKeyDown;
     OnSelectionChanged := @ComponentTreeSelectionChanged;
     OnModified := @DoModified;
     Visible := FShowComponentTree;
     Scrollbars := ssAutoBoth;
+    PopupMenu := MainPopupMenu;
   end;
 
   InfoPanel := TPanel.Create(Self);
@@ -3898,6 +3898,7 @@ begin
     Parent := Self;
     BevelOuter := bvLowered;
     Align := alBottom;
+    PopupMenu := MainPopupMenu;
     Visible := FShowInfoBox;
   end;
 
@@ -4722,7 +4723,8 @@ procedure TObjectInspectorDlg.CreateNoteBook;
   begin
     Result:=TOICustomPropertyGrid.CreateWithParams(
       Self, PropertyEditorHook, ATypeFilter, FDefaultItemHeight);
-    with Result do begin
+    with Result do
+    begin
       Name := DefaultOIGridNames[AOIPage];
       Selection := Self.FSelection;
       Align := alClient;
@@ -4749,30 +4751,31 @@ begin
 
   // NoteBook
   NoteBook:=TNoteBook.Create(Self);
-  with NoteBook do begin
-    Name:='NoteBook';
-    Parent:=Self;
-    Align:= alClient;
-    if PageCount>0 then
-      Pages.Strings[0]:=oisProperties
+  with NoteBook do
+  begin
+    Name := 'NoteBook';
+    Parent := Self;
+    Align := alClient;
+    if PageCount > 0 then
+      Pages.Strings[0] := oisProperties
     else
       Pages.Add(oisProperties);
-    Page[0].Name:=DefaultOIPageNames[oipgpProperties];
+    Page[0].Name := DefaultOIPageNames[oipgpProperties];
     
     Pages.Add(oisEvents);
-    Page[1].Name:=DefaultOIPageNames[oipgpEvents];
+    Page[1].Name := DefaultOIPageNames[oipgpEvents];
     
     Pages.Add(oisFavorites);
-    Page[2].Name:=DefaultOIPageNames[oipgpFavourite];
+    Page[2].Name := DefaultOIPageNames[oipgpFavourite];
     Page[2].TabVisible := ShowFavorites;
     
     Pages.Add(oisRestricted);
-    Page[3].Name:=DefaultOIPageNames[oipgpRestricted];
+    Page[3].Name := DefaultOIPageNames[oipgpRestricted];
     Page[3].TabVisible := ShowRestricted;
     Page[3].OnShow := @RestrictedPageShow;
     
     PageIndex:=0;
-    PopupMenu:=MainPopupMenu;
+    PopupMenu := MainPopupMenu;
   end;
 
   PropertyGrid := CreateGrid(PROPS, oipgpProperties, 0);
@@ -4951,55 +4954,81 @@ var
   Persistent: TPersistent;
 begin
   RemoveComponentEditorMenuItems;
-  ComponentEditor := GetComponentEditorForSelection;
-  if ComponentEditor <> nil then
-    AddComponentEditorMenuItems
-  else
+  // show component editors only for component treeview
+  if MainPopupMenu.PopupComponent = ComponentTree then
   begin
-    // check if it is a TCollection
-    Persistent := GetSelectedPersistent;
-    if Persistent is TCollection then
-      AddCollectionEditorMenuItems(TCollection(Persistent))
+    ComponentEditor := GetComponentEditorForSelection;
+    if ComponentEditor <> nil then
+      AddComponentEditorMenuItems
     else
-    if Persistent is TCollectionItem then
-      AddCollectionEditorMenuItems(TCollectionItem(Persistent).Collection);
-  end;
-  SetDefaultPopupMenuItem.Enabled := GetCurRowDefaultValue(DefaultStr);
-  if SetDefaultPopupMenuItem.Enabled then
-    SetDefaultPopupMenuItem.Caption := Format(oisSetToDefault, [DefaultStr])
-  else
-    SetDefaultPopupMenuItem.Caption := oisSetToDefaultValue;
+    begin
+      // check if it is a TCollection
+      Persistent := GetSelectedPersistent;
+      if Persistent is TCollection then
+        AddCollectionEditorMenuItems(TCollection(Persistent))
+      else
+      if Persistent is TCollectionItem then
+        AddCollectionEditorMenuItems(TCollectionItem(Persistent).Collection);
+    end;
 
-  AddToFavoritesPopupMenuItem.Visible:=(Favourites<>nil) and ShowFavorites
-                and (GetActivePropertyGrid<>FavouriteGrid)
-                and Assigned(OnAddToFavourites) and (GetActivePropertyRow<>nil);
-  RemoveFromFavoritesPopupMenuItem.Visible:=(Favourites<>nil) and ShowFavorites
-           and (GetActivePropertyGrid=FavouriteGrid)
-           and Assigned(OnRemoveFromFavourites) and (GetActivePropertyRow<>nil);
-
-  CurGrid:=GetActivePropertyGrid;
-  CurRow:=GetActivePropertyRow;
-  if (CurRow<>nil) and (CurRow.Editor.GetVisualValue<>CurGrid.CurrentEditValue)
-  then
-    UndoPropertyPopupMenuItem.Enabled:=true
-  else
-    UndoPropertyPopupMenuItem.Enabled:=false;
-  ShowHintsPopupMenuItem.Checked:=PropertyGrid.ShowHint;
-  if (Selection.Count > 0) and FShowComponentTree then
-  begin
-    CutPopupMenuItem.Visible := Selection[0] is TComponent;
-    CopyPopupMenuItem.Visible := Selection[0] is TComponent;
-    PastePopupMenuItem.Visible := Selection[0] is TComponent;
-    DeletePopupMenuItem.Visible := true;
-    OptionsSeparatorMenuItem2.Visible := true;
+    CutPopupMenuItem.Visible := (Selection.Count > 0) and (Selection[0] is TComponent);
+    CopyPopupMenuItem.Visible := (Selection.Count > 0) and (Selection[0] is TComponent);
+    PastePopupMenuItem.Visible := (Selection.Count > 0) and (Selection[0] is TComponent);
+    DeletePopupMenuItem.Visible := True;
+    OptionsSeparatorMenuItem2.Visible := True;
   end
   else
   begin
-    CutPopupMenuItem.Visible := false;
-    CopyPopupMenuItem.Visible := false;
-    PastePopupMenuItem.Visible := false;
-    DeletePopupMenuItem.Visible := false;
-    OptionsSeparatorMenuItem2.visible := false;
+    CutPopupMenuItem.Visible := False;
+    CopyPopupMenuItem.Visible := False;
+    PastePopupMenuItem.Visible := False;
+    DeletePopupMenuItem.Visible := False;
+    OptionsSeparatorMenuItem2.Visible := False;
+  end;
+
+
+  if (MainPopupMenu.PopupComponent is TOICustomPropertyGrid) then
+  begin
+    SetDefaultPopupMenuItem.Visible := True;
+
+    SetDefaultPopupMenuItem.Enabled := GetCurRowDefaultValue(DefaultStr);
+    if SetDefaultPopupMenuItem.Enabled then
+      SetDefaultPopupMenuItem.Caption := Format(oisSetToDefault, [DefaultStr])
+    else
+      SetDefaultPopupMenuItem.Caption := oisSetToDefaultValue;
+
+    AddToFavoritesPopupMenuItem.Visible :=
+      (Favourites <> nil) and
+      ShowFavorites and
+      (GetActivePropertyGrid <> FavouriteGrid) and
+      Assigned(OnAddToFavourites) and
+      (GetActivePropertyRow <> nil);
+
+    RemoveFromFavoritesPopupMenuItem.Visible :=
+      (Favourites<>nil) and
+      ShowFavorites and
+      (GetActivePropertyGrid = FavouriteGrid) and
+      Assigned(OnRemoveFromFavourites) and
+      (GetActivePropertyRow <> nil);
+
+    CurGrid := GetActivePropertyGrid;
+    CurRow := GetActivePropertyRow;
+    UndoPropertyPopupMenuItem.Visible := True;
+    UndoPropertyPopupMenuItem.Enabled := (CurRow<>nil) and (CurRow.Editor.GetVisualValue <> CurGrid.CurrentEditValue);
+    ShowHintsPopupMenuItem.Checked := PropertyGrid.ShowHint;
+    FindDeclarationPopupmenuItem.Visible := True;
+    ViewRestrictedPropertiesPopupMenuItem.Visible := True;
+    OptionsSeparatorMenuItem.Visible := True;
+  end
+  else
+  begin
+    SetDefaultPopupMenuItem.Visible := False;
+    AddToFavoritesPopupMenuItem.Visible := False;
+    RemoveFromFavoritesPopupMenuItem.Visible := False;
+    UndoPropertyPopupMenuItem.Visible := False;
+    FindDeclarationPopupmenuItem.Visible := False;
+    ViewRestrictedPropertiesPopupMenuItem.Visible := False;
+    OptionsSeparatorMenuItem.Visible := False;
   end;
 end;
 
