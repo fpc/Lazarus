@@ -55,6 +55,7 @@ type
     FGraph: TBuildModeGraph;
     FGroupModeCount: integer;
     FModeRows: TFPList; // list of TBuildModeGridRow
+    FOnCellSelected: TNotifyEvent;
     FRebuilding: boolean;
     function GetSelectedModeRow: TBuildModeGridRow;
     function GetModeRowCount: integer;
@@ -77,6 +78,11 @@ type
                                var aState: TCheckboxState); override;
     procedure SetCheckboxState(const aCol, aRow: Integer;
                                const aState: TCheckboxState); override;
+    procedure SetEditText(aCol, aRow: Longint; const aValue: string);
+            override;
+    procedure DrawCell(aCol, aRow: Integer; aRect: TRect;
+          aState: TGridDrawState); override;
+    procedure SelectEditor; override;
   public
     constructor Create(TheOwner: TComponent); override;
     destructor Destroy; override;
@@ -87,11 +93,12 @@ type
     function ColToBuildGroup(aCol: integer): integer;
     function CellToInclude(aCol, aRow: integer): boolean;
     property Graph: TBuildModeGraph read FGraph;
-    procedure RebuildGrid; // call this after Graph changed
+    procedure RebuildGrid; // call this after Graph has changed
     property ModeRowCount: integer read GetModeRowCount;
     property ModeRows[Index: integer]: TBuildModeGridRow read GetModeRows;
     property GroupModeCount: integer read FGroupModeCount; // number of modes that are group of modes
     property SelectedModeRow: TBuildModeGridRow read GetSelectedModeRow;
+    property OnCellSelected: TNotifyEvent read FOnCellSelected write FOnCellSelected;
   end;
 
   { TBuildModesEditorFrame }
@@ -104,8 +111,7 @@ type
     DeleteBMRowToolButton: TToolButton;
     NewBuildModeGroupToolButton: TToolButton;
     procedure DeleteBMRowToolButtonClick(Sender: TObject);
-    procedure GridSelectCell(Sender: TObject; aCol, aRow: Integer;
-      var CanSelect: Boolean);
+    procedure GridCellSelected(Sender: TObject);
     procedure NewBuildFlagToolButtonClick(Sender: TObject);
     procedure NewBuildModeGroupToolButtonClick(Sender: TObject);
     procedure NewBuildModeToolButtonClick(Sender: TObject);
@@ -486,20 +492,12 @@ end;
 
 procedure TBuildModesGrid.GetCheckBoxState(const aCol, aRow: Integer;
   var aState: TCheckboxState);
-var
-  CurModeRow: TBuildModeGridRow;
-  GrpID: LongInt;
 begin
-  CurModeRow:=GetSelectedModeRow;
-  aState:=cbUnchecked;
-  if (CurModeRow<>nil) and (CurModeRow.IndexInGroup=0) then begin
-    GrpID:=ColToBuildGroup(aCol);
-    if (GrpID>=0) and (GrpID<GroupModeCount) then begin
-      if CurModeRow.Mode.IsIncludedBy(ModeRows[GrpID].Mode) then
-        aState:=cbChecked;
-    end;
-  end;
-  DebugLn(['TBuildModesGrid.GetCheckBoxState ',acol,' ',arow,' ',ord(aState)]);
+  if CellToInclude(aCol,aRow) then
+    aState:=cbChecked
+  else
+    aState:=cbUnchecked;
+  //DebugLn(['TBuildModesGrid.GetCheckBoxState ',acol,' ',arow,' ',ord(aState)]);
 end;
 
 procedure TBuildModesGrid.SetCheckboxState(const aCol, aRow: Integer;
@@ -510,7 +508,7 @@ var
   GrpMode: TBuildMode;
   NewState: TCheckBoxState;
 begin
-  DebugLn(['TBuildModesGrid.SetCheckboxState ',acol,' ',arow,' ',ord(aState)]);
+  //DebugLn(['TBuildModesGrid.SetCheckboxState ',acol,' ',arow,' ',ord(aState)]);
   NewState:=cbUnchecked;
   CurModeRow:=GetSelectedModeRow;
   if (CurModeRow<>nil) and (CurModeRow.IndexInGroup=0) then begin
@@ -523,7 +521,7 @@ begin
       end else if CurModeRow.Mode.IsIncludedBy(GrpMode)<>(aState=cbChecked) then
       begin
         // state changed
-        DebugLn(['TBuildModesGrid.SetCheckboxState STATE CHANGED']);
+        //DebugLn(['TBuildModesGrid.SetCheckboxState STATE CHANGED']);
         if aState=cbChecked then begin
           GrpMode.Include(CurModeRow.Mode);
           NewState:=cbChecked;
@@ -532,7 +530,7 @@ begin
         end;
       end else if CurModeRow.Mode.IsIncludedBy(GrpMode) then begin
         // state kept
-        DebugLn(['TBuildModesGrid.SetCheckboxState STATE KEPT']);
+        //DebugLn(['TBuildModesGrid.SetCheckboxState STATE KEPT']);
         NewState:=cbChecked;
       end;
     end else begin
@@ -543,8 +541,79 @@ begin
     // invalid row
     DebugLn(['TBuildModesGrid.SetCheckboxState invalid row']);
   end;
-  DebugLn(['TBuildModesGrid.SetCheckboxState END ',aCol,' ',aRow,' ',ord(NewState)]);
+  //DebugLn(['TBuildModesGrid.SetCheckboxState END ',aCol,' ',aRow,' ',ord(NewState)]);
   inherited SetCheckboxState(aCol, aRow, NewState);
+  {for i:=1 to ModeRowCount do begin
+    dbgout('  '+dbgs(i));
+    for j:=1 to GroupModeCount do begin
+      dbgout(' '+dbgs(CellToInclude(j,i)));
+    end;
+    debugln;
+  end;}
+end;
+
+procedure TBuildModesGrid.SetEditText(aCol, aRow: Longint; const aValue: string
+  );
+begin
+  inherited SetEditText(aCol, aRow, aValue);
+  //DebugLn(['TBuildModesGrid.SetEditText ',aCol,' ',aRow,' ',aValue]);
+end;
+
+procedure TBuildModesGrid.DrawCell(aCol, aRow: Integer; aRect: TRect;
+  aState: TGridDrawState);
+
+  procedure DrawGrid(Right, Bottom: boolean);
+  begin
+    if Right then begin
+      // draw right grid
+      Canvas.Pen.Style := GridLineStyle;
+      Canvas.Pen.Color := GridLineColor;
+      Canvas.Pen.Width := GridLineWidth;
+      Canvas.MoveTo(aRect.Right-1,aRect.Top);
+      Canvas.LineTo(aRect.Right-1,aRect.Bottom);
+    end;
+    if Bottom then begin
+      // draw bottom grid
+      Canvas.Pen.Style := GridLineStyle;
+      Canvas.Pen.Color := GridLineColor;
+      Canvas.Pen.Width := GridLineWidth;
+      Canvas.MoveTo(aRect.Left,aRect.Bottom-1);
+      Canvas.LineTo(aRect.Right,aRect.Bottom-1);
+    end;
+  end;
+
+var
+  CurModeRow: TBuildModeGridRow;
+  TypeCol: Integer;
+begin
+  if (aRow>=1) and (aRow<=ModeRowCount) then begin
+    TypeCol:=GroupModeCount+1;
+    CurModeRow:=ModeRows[aRow-1];
+    DebugLn(['TBuildModesGrid.DrawCell ',aCol,' ',aRow,' IndexInGroup=',CurModeRow.IndexInGroup]);
+    if (CurModeRow.IndexInGroup>0) and (aCol<TypeCol) then begin
+      // only the first line of a group shows the name and groups
+      // => clear
+      Canvas.FillRect(aRect);
+      DrawGrid(aCol=TypeCol-1,
+               CurModeRow.IndexInGroup=CurModeRow.Mode.FlagCount-1);
+      exit;
+    end else if CurModeRow.Mode.ShowIncludes then begin
+      if aCol>=TypeCol then begin
+        // groups have no type/value
+        Canvas.FillRect(aRect);
+        if aRow=GroupModeCount then
+          DrawGrid(false,true);
+        exit;
+      end;
+    end;
+  end;
+  inherited DrawCell(aCol, aRow, aRect, aState);
+end;
+
+procedure TBuildModesGrid.SelectEditor;
+begin
+  inherited SelectEditor;
+  if Assigned(OnCellSelected) then OnCellSelected(Self);
 end;
 
 function TBuildModesGrid.GetSelectedModeRow: TBuildModeGridRow;
@@ -836,15 +905,14 @@ begin
   Grid.AddNewBuildMode(true);
 end;
 
-procedure TBuildModesEditorFrame.GridSelectCell(Sender: TObject; aCol,
-  aRow: Integer; var CanSelect: Boolean);
-begin
-  UpdateButtons;
-end;
-
 procedure TBuildModesEditorFrame.DeleteBMRowToolButtonClick(Sender: TObject);
 begin
   Grid.DeleteSelectedModeRow;
+end;
+
+procedure TBuildModesEditorFrame.GridCellSelected(Sender: TObject);
+begin
+  UpdateButtons;
 end;
 
 constructor TBuildModesEditorFrame.Create(TheOwner: TComponent);
@@ -855,7 +923,7 @@ begin
     Name:='Grid';
     Parent:=Self;
     Align:=alClient;
-    OnSelectCell:=@GridSelectCell;
+    OnCellSelected:=@GridCellSelected;
   end;
 
   BuildModesToolBar.Images := IDEImages.Images_16;
