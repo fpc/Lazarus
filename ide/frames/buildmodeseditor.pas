@@ -55,7 +55,6 @@ type
     FGraph: TBuildModeGraph;
     FGroupModeCount: integer;
     FModeRows: TFPList; // list of TBuildModeGridRow
-    FOnCellSelected: TNotifyEvent;
     FRebuilding: boolean;
     function GetSelectedModeRow: TBuildModeGridRow;
     function GetModeRowCount: integer;
@@ -82,7 +81,6 @@ type
             override;
     procedure DrawCell(aCol, aRow: Integer; aRect: TRect;
           aState: TGridDrawState); override;
-    procedure SelectEditor; override;
   public
     constructor Create(TheOwner: TComponent); override;
     destructor Destroy; override;
@@ -98,7 +96,6 @@ type
     property ModeRows[Index: integer]: TBuildModeGridRow read GetModeRows;
     property GroupModeCount: integer read FGroupModeCount; // number of modes that are group of modes
     property SelectedModeRow: TBuildModeGridRow read GetSelectedModeRow;
-    property OnCellSelected: TNotifyEvent read FOnCellSelected write FOnCellSelected;
   end;
 
   { TBuildModesEditorFrame }
@@ -111,7 +108,7 @@ type
     DeleteBMRowToolButton: TToolButton;
     NewBuildModeGroupToolButton: TToolButton;
     procedure DeleteBMRowToolButtonClick(Sender: TObject);
-    procedure GridCellSelected(Sender: TObject);
+    procedure GridSelection(Sender: TObject; aCol, aRow: Integer);
     procedure NewBuildFlagToolButtonClick(Sender: TObject);
     procedure NewBuildModeGroupToolButtonClick(Sender: TObject);
     procedure NewBuildModeToolButtonClick(Sender: TObject);
@@ -610,12 +607,6 @@ begin
   inherited DrawCell(aCol, aRow, aRect, aState);
 end;
 
-procedure TBuildModesGrid.SelectEditor;
-begin
-  inherited SelectEditor;
-  if Assigned(OnCellSelected) then OnCellSelected(Self);
-end;
-
 function TBuildModesGrid.GetSelectedModeRow: TBuildModeGridRow;
 begin
   if (Row<1) or (Row>ModeRowCount) then
@@ -910,7 +901,8 @@ begin
   Grid.DeleteSelectedModeRow;
 end;
 
-procedure TBuildModesEditorFrame.GridCellSelected(Sender: TObject);
+procedure TBuildModesEditorFrame.GridSelection(Sender: TObject; aCol,
+  aRow: Integer);
 begin
   UpdateButtons;
 end;
@@ -923,7 +915,8 @@ begin
     Name:='Grid';
     Parent:=Self;
     Align:=alClient;
-    OnCellSelected:=@GridCellSelected;
+    //OnCellSelected:=@GridCellSelected;
+    OnSelection:=@GridSelection;
   end;
 
   BuildModesToolBar.Images := IDEImages.Images_16;
