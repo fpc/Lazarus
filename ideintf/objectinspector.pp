@@ -4523,29 +4523,28 @@ end;
 
 procedure TObjectInspectorDlg.SetShowComponentTree(const AValue: boolean);
 begin
-  if FShowComponentTree=AValue then exit;
-  FShowComponentTree:=AValue;
+  if FShowComponentTree = AValue then Exit;
+  FShowComponentTree := AValue;
   BeginUpdate;
   try
-    ShowComponentTreePopupMenuItem.Checked:=FShowComponentTree;
+    ShowComponentTreePopupMenuItem.Checked := FShowComponentTree;
     // hide controls while rebuilding
-    if Splitter1<>nil then
-      Splitter1.Visible:=false;
-    DestroyNoteBook;
-    ComponentTree.Visible:=false;
-    AvailPersistentComboBox.Visible:=false;
+    if Splitter1 <> nil then
+      Splitter1.Visible := False;
+    ComponentTree.Visible := False;
+    AvailPersistentComboBox.Visible := False;
     // rebuild controls
-    ComponentTree.Parent:=Self;
-    ComponentTree.Align:=alTop;
+    ComponentTree.Parent := Self;
+    ComponentTree.Align := alTop;
     if FShowComponentTree then
       CreateSplitter(True)
-    else begin
-      ComponentTree.Height:=ComponentTreeHeight;
+    else
+    begin
+      ComponentTree.Height := ComponentTreeHeight;
       FreeAndNil(Splitter1);
     end;
-    ComponentTree.Visible:=FShowComponentTree;
-    AvailPersistentComboBox.Visible:=not FShowComponentTree;
-    CreateNoteBook;
+    ComponentTree.Visible := FShowComponentTree;
+    AvailPersistentComboBox.Visible := not FShowComponentTree;
   finally
     EndUpdate;
   end;
