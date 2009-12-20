@@ -9690,6 +9690,29 @@ Navigation Options is a set, so can take zero or more of the available values</d
       <element name="TCustomFrame.WSRegisterClass" link="#LCL.LCLClasses.TLCLComponent.WSRegisterClass"/>
       <element name="TCustomForm.WSRegisterClass" link="#LCL.LCLClasses.TLCLComponent.WSRegisterClass"/>
       <element name="THintWindow.WSRegisterClass" link="#LCL.LCLClasses.TLCLComponent.WSRegisterClass"/>
+      <element name="TApplicationProperties.ShowButtonGlyphs">
+        <short>
+          <var>ShowButtonGlyphs</var> - determines whether to show show or not glyphs on TBitBtn controls</short>
+        <descr>This option allows to set rule for all application TBitBtn controls which have GlyphShowMode = gsmApplication.
+
+Different operation systems has different preferences regards showing button glyphs. Mac OS X and Windows UI guidlines suggests not to use them. Gnome has a special theme setting for this. sbgSystem option allows application to use system preferences for glyphs showing. sbgAlways is the default value because of Delphi compatibility.</descr>
+      </element>
+      <element name="TApplicationProperties.ShowMenuGlyphs">
+        <short>
+          <var>ShowMenuGlyphs</var> - Deturmines whether show or not glyphs in menu</short>
+        <descr>This option allows to set rule for all application TMenuItem components which have GlyphShowMode = gsmApplication.
+
+Different operation systems has different preferences regards showing images in menus. Mac OS X suggests not to use them. Gnome has a special theme setting for this. sbgSystem option allows application to use system preferences for menu icons showing. sbgAlways is the default value because of Delphi compatibility.</descr>
+      </element>
+      <element name="TApplicationShowGlyphs">
+        <short>
+          <var>TApplicationShowGlyphs</var> - enumerated type to describe the glyphs showing rule - whether to show them always, never or depends on system settings</short>
+        <descr>
+          <p>sbgAlways - show glyphs always (inspite of system preferences)</p>
+          <p>sbgNever - show glyphs never (inspite of system preferences)</p>
+          <p>sbgSystem - use system preferences for glyphs showing</p>
+        </descr>
+      </element>
     </module>
     <!-- Forms -->
   </package>
