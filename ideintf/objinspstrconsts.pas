@@ -59,6 +59,11 @@ resourcestring
 
   
   //Object Inspector Popup Menu
+  oisZOrder = 'Z-order';
+  oisOrderMoveToFront = 'Move to Front';
+  oisOrderMoveToBack = 'Move to Back';
+  oisOrderForwardOne = 'Forward One';
+  oisOrderBackOne = 'Back One';
   oisSetToDefault = 'Set to default: %s';
   oisSetToDefaultValue = 'Set to default value';
   oisAddToFavorites = 'Add to Favorites';

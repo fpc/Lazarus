@@ -519,7 +519,7 @@ begin
     DesignerMenuSize:=RegisterIDEMenuCommand(DesignerMenuSectionAlign,
                                        'Size',fdmSizeWord, nil, nil, nil, 'size');
 
-  // register tab and order section
+  // register tab and z-order section
   DesignerMenuSectionOrder:=RegisterIDEMenuSection(DesignerMenuRoot,
                                                                'Order section');
     DesignerMenuTabOrder:=RegisterIDEMenuCommand(DesignerMenuSectionOrder,

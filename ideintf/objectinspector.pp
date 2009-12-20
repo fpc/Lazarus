@@ -686,6 +686,7 @@ type
       ABox: TPaintBox; const ARestrictions: TWidgetSetRestrictionsArray);
     procedure DoComponentEditorVerbMenuItemClick(Sender: TObject);
     procedure DoCollectionAddItem(Sender: TObject);
+    procedure DoZOrderItemClick(Sender: TObject);
   protected
     function PersistentToString(APersistent: TPersistent): string;
     procedure AddPersistentToList(APersistent: TPersistent; List: TStrings);
@@ -4903,6 +4904,8 @@ begin
 end;
 
 procedure TObjectInspectorDlg.OnMainPopupMenuPopup(Sender: TObject);
+var
+  EditorVerbSeparator: TMenuItem;
 
   procedure RemoveComponentEditorMenuItems;
   var
@@ -4929,9 +4932,9 @@ procedure TObjectInspectorDlg.OnMainPopupMenuPopup(Sender: TObject);
     // insert the separator
     if VerbCount > 0 then
     begin
-      Item := NewLine;
-      Item.Name := 'ComponentEditorVerbMenuItem' + IntToStr(VerbCount);
-      MainPopupMenu.Items.Insert(VerbCount, Item);
+      EditorVerbSeparator := NewLine;
+      EditorVerbSeparator.Name := 'ComponentEditorVerbMenuItem' + IntToStr(VerbCount);
+      MainPopupMenu.Items.Insert(VerbCount, EditorVerbSeparator);
     end;
   end;
 
@@ -4942,9 +4945,39 @@ procedure TObjectInspectorDlg.OnMainPopupMenuPopup(Sender: TObject);
     Item := NewItem(oisAddCollectionItem, 0, False, True,
       @DoCollectionAddItem, 0, 'ComponentEditorVerbMenuItem0');
     MainPopupMenu.Items.Insert(0, Item);
+    EditorVerbSeparator := NewLine;
+    EditorVerbSeparator.Name := 'ComponentEditorVerbMenuItem1';
+    MainPopupMenu.Items.Insert(1, EditorVerbSeparator);
+  end;
+
+  procedure AddZOrderMenuItems;
+  var
+    ZItem, Item: TMenuItem;
+  begin
+    ZItem := NewSubMenu(oisZOrder, 0, 'ComponentEditorVerbMenuItemZOrder', [], True);
+    Item := NewItem(oisOrderMoveToFront, 0, True, True, @DoZOrderItemClick, 0, '');
+    Item.ImageIndex := IDEImages.LoadImage(16, 'Order_move_front');
+    Item.Tag := 0;
+    ZItem.Add(Item);
+    Item := NewItem(oisOrderMoveToBack, 0, True, True, @DoZOrderItemClick, 0, '');
+    Item.ImageIndex := IDEImages.LoadImage(16, 'Order_move_back');
+    Item.Tag := 1;
+    ZItem.Add(Item);
+    Item := NewItem(oisOrderForwardOne, 0, True, True, @DoZOrderItemClick, 0, '');
+    Item.ImageIndex := IDEImages.LoadImage(16, 'Order_forward_one');
+    Item.Tag := 2;
+    ZItem.Add(Item);
+    Item := NewItem(oisOrderBackOne, 0, True, True, @DoZOrderItemClick, 0, '');
+    Item.ImageIndex := IDEImages.LoadImage(16, 'Order_back_one');
+    Item.Tag := 3;
+    ZItem.Add(Item);
+    if EditorVerbSeparator <> nil then
+      MainPopupMenu.Items.Insert(EditorVerbSeparator.MenuIndex + 1, ZItem)
+    else
+      MainPopupMenu.Items.Insert(0, ZItem);
     Item := NewLine;
-    Item.Name := 'ComponentEditorVerbMenuItem1';
-    MainPopupMenu.Items.Insert(1, Item);
+    Item.Name := 'ComponentEditorVerbMenuItemZOrderSeparator';
+    MainPopupMenu.Items.Insert(ZItem.MenuIndex + 1, Item);
   end;
 
 var
@@ -4957,6 +4990,7 @@ begin
   // show component editors only for component treeview
   if MainPopupMenu.PopupComponent = ComponentTree then
   begin
+    EditorVerbSeparator := nil;
     ComponentEditor := GetComponentEditorForSelection;
     if ComponentEditor <> nil then
       AddComponentEditorMenuItems
@@ -4970,6 +5004,11 @@ begin
       if Persistent is TCollectionItem then
         AddCollectionEditorMenuItems(TCollectionItem(Persistent).Collection);
     end;
+
+    // add Z-Order menu
+
+    if (Selection.Count = 1) and (Selection[0] is TControl) then
+      AddZOrderMenuItems;
 
     CutPopupMenuItem.Visible := (Selection.Count > 0) and (Selection[0] is TComponent);
     CopyPopupMenuItem.Visible := (Selection.Count > 0) and (Selection[0] is TComponent);
@@ -5076,6 +5115,25 @@ begin
   finally
     Selection.ForceUpdate := False;
   end;
+end;
+
+procedure TObjectInspectorDlg.DoZOrderItemClick(Sender: TObject);
+var
+  Control: TControl;
+begin
+  if not (Sender is TMenuItem) then Exit;
+  if (Selection.Count <> 1) or
+     not (Selection[0] is TControl) then Exit;
+  Control := TControl(Selection[0]);
+  if Control.Parent = nil then Exit;
+
+  case TMenuItem(Sender).Tag of
+    0: Control.BringToFront;
+    1: Control.SendToBack;
+    2: Control.Parent.SetControlIndex(Control, Control.Parent.GetControlIndex(Control) + 1);
+    3: Control.Parent.SetControlIndex(Control, Control.Parent.GetControlIndex(Control) - 1);
+  end;
+  DoModified(Self);
 end;
 
 procedure TObjectInspectorDlg.HookRefreshPropertyValues;
