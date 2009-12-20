@@ -640,11 +640,11 @@ function TBarSeries.CalcBarWidth(AX: Double; AIndex: Integer): Double;
 begin
   case CASE_OF_TWO[AIndex > 0, AIndex < Count - 1] of
     cotNone: Result := 1.0;
-    cotFirst: Result := Abs(AX - Source[AIndex - 1]^.X);
-    cotSecond: Result := Abs(AX - Source[AIndex + 1]^.X);
+    cotFirst: Result := Abs(AX - GetGraphPointX(AIndex - 1));
+    cotSecond: Result := Abs(AX - GetGraphPointX(AIndex + 1));
     cotBoth: Result := Min(
-      Abs(AX - Source[AIndex - 1]^.X),
-      Abs(AX - Source[AIndex + 1]^.X));
+      Abs(AX - GetGraphPointX(AIndex - 1)),
+      Abs(AX - GetGraphPointX(AIndex + 1)));
   end;
   Result *= FBarWidthPercent * PERCENT / 2;
 end;
@@ -725,7 +725,7 @@ begin
       if Bottom = Top then Dec(Top);
       if Left = Right then Inc(Right);
     end;
-    ACanvas.Brush.Color := ColorOrDefault(Source[i]^.Color);
+    ACanvas.Brush.Color := GetColor(i);
     DrawBar(imageBar);
   end;
 
@@ -738,15 +738,17 @@ begin
 end;
 
 function TBarSeries.Extent: TDoubleRect;
+var
+  x: Double;
 begin
   Result := inherited Extent;
   if IsEmpty then exit;
   UpdateMinMax(0, Result.a.Y, Result.b.Y);
   // Show first and last bars fully.
-  with Source[0]^ do
-    Result.a.X := Min(Result.a.X, X - CalcBarWidth(X, 0));
-  with Source[Count - 1]^ do
-    Result.b.X := Max(Result.b.X, X + CalcBarWidth(X, Count - 1));
+  x := GetGraphPointX(0);
+  Result.a.X := Min(Result.a.X, x - CalcBarWidth(x, 0));
+  x := GetGraphPointX(Count - 1);
+  Result.b.X := Max(Result.b.X, x + CalcBarWidth(x, Count - 1));
 end;
 
 procedure TBarSeries.GetLegendItems(AItems: TChartLegendItems);
