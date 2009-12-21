@@ -68,6 +68,12 @@ type
     procedure UpdateMargins(ACanvas: TCanvas; var AMargins: TRect); virtual;
 
   protected
+    function AxisToGraphX(AX: Double): Double; virtual;
+    function AxisToGraphY(AY: Double): Double; virtual;
+    function GraphToAxisX(AX: Double): Double; virtual;
+    function GraphToAxisY(AY: Double): Double; virtual;
+
+  protected
     procedure ReadState(Reader: TReader); override;
     procedure SetParentComponent(AParent: TComponent); override;
 
@@ -1069,6 +1075,7 @@ procedure TChart.UpdateExtent;
 var
   i: Integer;
   seriesBounds: TDoubleRect;
+  s: TBasicChartSeries;
 begin
   if FIsZoomed then begin
     FCurrentExtent := FZoomExtent;
@@ -1078,15 +1085,21 @@ begin
 
   FCurrentExtent := EmptyExtent;
   for i := 0 to SeriesCount - 1 do begin
-    if Series[i].Active then begin
-      seriesBounds := EmptyExtent;
-      Series[i].GetBounds(seriesBounds);
-      with FCurrentExtent do begin
-        a.X := Min(a.X, seriesBounds.a.X);
-        b.X := Max(b.X, seriesBounds.b.X);
-        a.Y := Min(a.Y, seriesBounds.a.Y);
-        b.Y := Max(b.Y, seriesBounds.b.Y);
-      end;
+    s := Series[i];
+    if not s.Active then continue;
+    seriesBounds := EmptyExtent;
+    s.GetBounds(seriesBounds);
+    with seriesBounds do begin
+      a.X := s.AxisToGraphX(a.X);
+      a.Y := s.AxisToGraphY(a.Y);
+      b.X := s.AxisToGraphX(b.X);
+      b.Y := s.AxisToGraphY(b.Y);
+    end;
+    with FCurrentExtent do begin
+      a.X := Min(a.X, seriesBounds.a.X);
+      b.X := Max(b.X, seriesBounds.b.X);
+      a.Y := Min(a.Y, seriesBounds.a.Y);
+      b.Y := Max(b.Y, seriesBounds.b.Y);
     end;
   end;
   with FCurrentExtent, Extent do begin
@@ -1111,6 +1124,16 @@ end;
 procedure TBasicChartSeries.AfterDraw;
 begin
   // empty
+end;
+
+function TBasicChartSeries.AxisToGraphX(AX: Double): Double;
+begin
+  Result := AX;
+end;
+
+function TBasicChartSeries.AxisToGraphY(AY: Double): Double;
+begin
+  Result := AY;
 end;
 
 procedure TBasicChartSeries.BeforeDraw;
@@ -1139,6 +1162,16 @@ end;
 function TBasicChartSeries.GetParentComponent: TComponent;
 begin
   Result := FChart;
+end;
+
+function TBasicChartSeries.GraphToAxisX(AX: Double): Double;
+begin
+  Result := AX;
+end;
+
+function TBasicChartSeries.GraphToAxisY(AY: Double): Double;
+begin
+  Result := AY;
 end;
 
 function TBasicChartSeries.HasParent: Boolean;

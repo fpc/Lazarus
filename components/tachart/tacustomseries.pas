@@ -315,14 +315,14 @@ end;
 function TChartSeries.GetGraphPoint(AIndex: Integer): TDoublePoint;
 begin
   with Source[AIndex]^ do begin
-    Result.X := X;
-    Result.Y := Y;
+    Result.X := AxisToGraphX(X);
+    Result.Y := AxisToGraphY(Y);
   end;
 end;
 
 function TChartSeries.GetGraphPointX(AIndex: Integer): Double;
 begin
-  Result := Source[AIndex]^.X;
+  Result := AxisToGraphX(Source[AIndex]^.X);
 end;
 
 procedure TChartSeries.GetMax(out X, Y: Double);
