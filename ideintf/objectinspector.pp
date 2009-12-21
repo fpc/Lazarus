@@ -4954,19 +4954,19 @@ var
     ZItem, Item: TMenuItem;
   begin
     ZItem := NewSubMenu(oisZOrder, 0, 'ComponentEditorVerbMenuItemZOrder', [], True);
-    Item := NewItem(oisOrderMoveToFront, 0, True, True, @DoZOrderItemClick, 0, '');
+    Item := NewItem(oisOrderMoveToFront, 0, False, True, @DoZOrderItemClick, 0, '');
     Item.ImageIndex := IDEImages.LoadImage(16, 'Order_move_front');
     Item.Tag := 0;
     ZItem.Add(Item);
-    Item := NewItem(oisOrderMoveToBack, 0, True, True, @DoZOrderItemClick, 0, '');
+    Item := NewItem(oisOrderMoveToBack, 0, False, True, @DoZOrderItemClick, 0, '');
     Item.ImageIndex := IDEImages.LoadImage(16, 'Order_move_back');
     Item.Tag := 1;
     ZItem.Add(Item);
-    Item := NewItem(oisOrderForwardOne, 0, True, True, @DoZOrderItemClick, 0, '');
+    Item := NewItem(oisOrderForwardOne, 0, False, True, @DoZOrderItemClick, 0, '');
     Item.ImageIndex := IDEImages.LoadImage(16, 'Order_forward_one');
     Item.Tag := 2;
     ZItem.Add(Item);
-    Item := NewItem(oisOrderBackOne, 0, True, True, @DoZOrderItemClick, 0, '');
+    Item := NewItem(oisOrderBackOne, 0, False, True, @DoZOrderItemClick, 0, '');
     Item.ImageIndex := IDEImages.LoadImage(16, 'Order_back_one');
     Item.Tag := 3;
     ZItem.Add(Item);
