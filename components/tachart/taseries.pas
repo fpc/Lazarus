@@ -84,6 +84,8 @@ type
     procedure Draw(ACanvas: TCanvas); override;
     function Extent: TDoubleRect; override;
   published
+    property AxisIndexX;
+    property AxisIndexY;
     property BarBrush: TBrush read FBarBrush write SetBarBrush;
     property BarPen: TPen read FBarPen write SetBarPen;
     property BarWidthPercent: Integer
@@ -136,6 +138,8 @@ type
 
     procedure Draw(ACanvas: TCanvas); override;
   published
+    property AxisIndexX;
+    property AxisIndexY;
     property AreaBrush: TBrush read FAreaBrush write SetAreaBrush;
     property AreaLinesPen: TPen read FAreaLinesPen write FAreaLinesPen;
     property Depth;
@@ -184,6 +188,8 @@ type
     procedure BeginUpdate;
     procedure EndUpdate;
   published
+    property AxisIndexX;
+    property AxisIndexY;
     property Depth;
     property LinePen: TPen read FLinePen write SetLinePen;
     property LineType: TLineType

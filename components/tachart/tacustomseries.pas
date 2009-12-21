@@ -26,10 +26,19 @@ uses
   Classes, Graphics, SysUtils,
   TAChartUtils, TAGraph, TASources, TATypes;
 
+const
+  DEF_AXIS_INDEX = -1;
+
 type
   { TCustomChartSeries }
 
   TCustomChartSeries = class(TBasicChartSeries)
+  private
+    FAxisIndexX: Integer;
+    FAxisIndexY: Integer;
+    procedure SetAxisIndexX(AValue: Integer);
+    procedure SetAxisIndexY(AValue: Integer);
+
   protected
     procedure SetActive(AValue: Boolean); override;
     procedure SetDepth(AValue: TChartDistance); override;
@@ -37,8 +46,17 @@ type
     procedure SetZPosition(AValue: TChartDistance); override;
     procedure StyleChanged(Sender: TObject);
     procedure UpdateParentChart;
+
+  protected
+    function AxisToGraphX(AX: Double): Double; override;
+    function AxisToGraphY(AY: Double): Double; override;
+    function GraphToAxisX(AX: Double): Double; override;
+    function GraphToAxisY(AY: Double): Double; override;
+
   public
     constructor Create(AOwner: TComponent); override;
+    property AxisIndexX: Integer read FAxisIndexX write SetAxisIndexX default DEF_AXIS_INDEX;
+    property AxisIndexY: Integer read FAxisIndexY write SetAxisIndexY default DEF_AXIS_INDEX;
   end;
 
   TChartGetMarkEvent = procedure (
@@ -114,6 +132,21 @@ type
 
 implementation
 
+uses
+  Math, TAChartAxis;
+
+var
+  VIdentityTransformation: TChartAxisTransformation;
+
+function TransformationByAxis(
+  AChart: TChart; AAxisIndex: Integer): TChartAxisTransformation;
+begin
+  if InRange(AAxisIndex, 0, AChart.AxisList.Count - 1) then
+    Result := AChart.AxisList[AAxisIndex].Transformation
+  else
+    Result := VIdentityTransformation;
+end;
+
 type
 
   { TChartSeriesListener }
@@ -147,17 +180,53 @@ end;
 
 { TCustomChartSeries }
 
+function TCustomChartSeries.AxisToGraphX(AX: Double): Double;
+begin
+  Result := TransformationByAxis(FChart, AxisIndexX).AxisToGraph(AX)
+end;
+
+function TCustomChartSeries.AxisToGraphY(AY: Double): Double;
+begin
+  Result := TransformationByAxis(FChart, AxisIndexY).AxisToGraph(AY)
+end;
+
 constructor TCustomChartSeries.Create(AOwner: TComponent);
 begin
   inherited Create(AOwner);
   FActive := true;
   FShowInLegend := true;
+  FAxisIndexX := DEF_AXIS_INDEX;
+  FAxisIndexY := DEF_AXIS_INDEX;
+end;
+
+function TCustomChartSeries.GraphToAxisX(AX: Double): Double;
+begin
+  Result := TransformationByAxis(FChart, AxisIndexX).GraphToAxis(AX)
+end;
+
+function TCustomChartSeries.GraphToAxisY(AY: Double): Double;
+begin
+  Result := TransformationByAxis(FChart, AxisIndexY).GraphToAxis(AY)
 end;
 
 procedure TCustomChartSeries.SetActive(AValue: Boolean);
 begin
   if FActive = AValue then exit;
   FActive := AValue;
+  UpdateParentChart;
+end;
+
+procedure TCustomChartSeries.SetAxisIndexX(AValue: Integer);
+begin
+  if FAxisIndexX = AValue then exit;
+  FAxisIndexX := AValue;
+  UpdateParentChart;
+end;
+
+procedure TCustomChartSeries.SetAxisIndexY(AValue: Integer);
+begin
+  if FAxisIndexY = AValue then exit;
+  FAxisIndexY := AValue;
   UpdateParentChart;
 end;
 
@@ -452,6 +521,9 @@ procedure TChartSeries.SetYValue(AIndex: Integer; AValue: Double); inline;
 begin
   ListSource.SetYValue(AIndex, AValue);
 end;
+
+initialization
+  VIdentityTransformation := TChartAxisTransformation.Create;
 
 end.
 
