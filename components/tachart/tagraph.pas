@@ -30,7 +30,7 @@ interface
 uses
   LCLIntF, LCLType, LResources,
   SysUtils, Classes, Controls, Graphics, Dialogs,
-  TAChartUtils, TATypes, TALegend;
+  TAChartUtils, TATypes, TALegend, TAChartAxis;
 
 type
   TChart = class;

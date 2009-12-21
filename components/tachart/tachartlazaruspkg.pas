@@ -2,13 +2,13 @@
   This source is only used to compile and install the package.
  }
 
-unit TAChartLazarusPkg; 
+unit tachartlazaruspkg; 
 
 interface
 
 uses
-  TASeries, TAGraph, TAChartUtils, TASeriesEditor, TATypes, TASources, 
-  TADbSource, TACustomSeries, TALegend, LazarusPackageIntf;
+    TASeries, TAGraph, TAChartUtils, TASeriesEditor, TATypes, TASources, 
+  TADbSource, TACustomSeries, TALegend, TAChartAxis, LazarusPackageIntf;
 
 implementation
 
