@@ -1080,29 +1080,30 @@ begin
   if Value = NullDate then
     Text := ''
   else
-    begin
-    If (FDateFormat='') then
-      Text:=DateToStr(Value)
+  begin
+    if (FDateFormat = '') then
+      Text := DateToStr(Value)
     else
-      Text:=FormatDateTime(FDateFormat,Value)
-    end;
-  if D <> Date then
-    Change;
+      Text := FormatDateTime(FDateFormat, Value)
+  end;
+  // don't call Change - it is called by assignment to Text
+  // if D <> Date then
+  //   Change;
 end;
 
 procedure TDateEdit.CalendarPopupReturnDate(Sender: TObject;
   const ADate: TDateTime);
 var
-  B:Boolean;
-  D:TDateTime;
+  B: Boolean;
+  D: TDateTime;
 begin
   try
-    B:=true;
-    D:=ADate;
+    B := True;
+    D := ADate;
     if Assigned(FOnAcceptDate) then
       FOnAcceptDate(Self, D, B);
-   if B then
-      Self.Date:=D;
+    if B then
+      Self.Date := D;
   except
     on E:Exception do
       MessageDlg(E.Message, mtError, [mbOK], 0);
