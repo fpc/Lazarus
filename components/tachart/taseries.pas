@@ -224,7 +224,7 @@ type
     procedure SetUseBounds(AValue: Boolean);
   protected
     procedure GetLegendItems(AItems: TChartLegendItems); override;
-    procedure UpdateBounds(var ABounds: TDoubleRect); override;
+    procedure GetBounds(out ABounds: TDoubleRect); override;
   public
     constructor Create(AOwner: TComponent); override;
     destructor  Destroy; override;
@@ -265,7 +265,7 @@ type
     procedure SetStep(AValue: TFuncSeriesStep);
   protected
     procedure GetLegendItems(AItems: TChartLegendItems); override;
-    procedure UpdateBounds(var ABounds: TDoubleRect); override;
+    procedure GetBounds(out ABounds: TDoubleRect); override;
 
   public
     constructor Create(AOwner: TComponent); override;
@@ -287,19 +287,19 @@ type
   end;
 
   TSeriesDrawEvent = procedure (ACanvas: TCanvas; const ARect: TRect) of object;
-  TSeriesUpdateBoundsEvent = procedure (var ABounds: TDoubleRect) of object;
+  TSeriesGetBoundsEvent = procedure (out ABounds: TDoubleRect) of object;
 
   { TUserDrawnSeries }
 
   TUserDrawnSeries = class(TCustomChartSeries)
   private
     FOnDraw: TSeriesDrawEvent;
-    FOnUpdateBounds: TSeriesUpdateBoundsEvent;
+    FOnGetBounds: TSeriesGetBoundsEvent;
     procedure SetOnDraw(AValue: TSeriesDrawEvent);
-    procedure SetOnUpdateBounds(AValue: TSeriesUpdateBoundsEvent);
+    procedure SetOnGetBounds(AValue: TSeriesGetBoundsEvent);
   protected
+    procedure GetBounds(out ABounds: TDoubleRect); override;
     procedure GetLegendItems(AItems: TChartLegendItems); override;
-    procedure UpdateBounds(var ABounds: TDoubleRect); override;
   public
     procedure Draw(ACanvas: TCanvas); override;
     function IsEmpty: Boolean; override;
@@ -308,8 +308,8 @@ type
     property ZPosition;
   published
     property OnDraw: TSeriesDrawEvent read FOnDraw write SetOnDraw;
-    property OnUpdateBounds: TSeriesUpdateBoundsEvent
-      read FOnUpdateBounds write SetOnUpdateBounds;
+    property OnGetBounds: TSeriesGetBoundsEvent
+      read FOnGetBounds write SetOnGetBounds;
   end;
 
 implementation
@@ -488,6 +488,21 @@ begin
     end;
 end;
 
+procedure TLine.GetBounds(out ABounds: TDoubleRect);
+begin
+  if not UseBounds then exit;
+  case LineStyle of
+    lsHorizontal: begin
+      ABounds.a.Y := FPosGraph;
+      ABounds.b.Y := FPosGraph;
+    end;
+    lsVertical: begin
+      ABounds.a.X := FPosGraph;
+      ABounds.b.X := FPosGraph;
+    end;
+  end;
+end;
+
 procedure TLine.GetLegendItems(AItems: TChartLegendItems);
 begin
   AItems.Add(TLegendItemLine.Create(Pen, Title));
@@ -528,15 +543,6 @@ begin
   if FUseBounds = AValue then exit;
   FUseBounds := AValue;
   UpdateParentChart;
-end;
-
-procedure TLine.UpdateBounds(var ABounds: TDoubleRect);
-begin
-  if not UseBounds then exit;
-  case LineStyle of
-    lsHorizontal: UpdateMinMax(FPosGraph, ABounds.a.Y, ABounds.b.Y);
-    lsVertical: UpdateMinMax(FPosGraph, ABounds.a.X, ABounds.b.X);
-  end;
 end;
 
 { TBasicPointSeries }
@@ -1102,6 +1108,16 @@ begin
   end;
 end;
 
+procedure TFuncSeries.GetBounds(out ABounds: TDoubleRect);
+begin
+  with Extent do begin
+    if UseXMin then ABounds.a.X := XMin;
+    if UseYMin then ABounds.a.Y := YMin;
+    if UseXMax then ABounds.b.X := XMax;
+    if UseYMax then ABounds.b.Y := YMax;
+  end;
+end;
+
 procedure TFuncSeries.GetLegendItems(AItems: TChartLegendItems);
 begin
   AItems.Add(TLegendItemLine.Create(Pen, Title));
@@ -1140,22 +1156,18 @@ begin
   UpdateParentChart;
 end;
 
-procedure TFuncSeries.UpdateBounds(var ABounds: TDoubleRect);
-begin
-  with Extent do begin
-    if UseXMin and (XMin < ABounds.a.X) then ABounds.a.X := XMin;
-    if UseYMin and (YMin < ABounds.a.Y) then ABounds.a.Y := YMin;
-    if UseXMax and (XMax > ABounds.b.X) then ABounds.b.X := XMax;
-    if UseYMax and (YMax > ABounds.b.Y) then ABounds.b.Y := YMax;
-  end;
-end;
-
 { TUserDrawnSeries }
 
 procedure TUserDrawnSeries.Draw(ACanvas: TCanvas);
 begin
   if Assigned(FOnDraw) then
      FOnDraw(ACanvas, FChart.ClipRect);
+end;
+
+procedure TUserDrawnSeries.GetBounds(out ABounds: TDoubleRect);
+begin
+  if Assigned(FOnGetBounds) then
+    FOnGetBounds(ABounds);
 end;
 
 procedure TUserDrawnSeries.GetLegendItems(AItems: TChartLegendItems);
@@ -1175,17 +1187,11 @@ begin
   UpdateParentChart;
 end;
 
-procedure TUserDrawnSeries.SetOnUpdateBounds(AValue: TSeriesUpdateBoundsEvent);
+procedure TUserDrawnSeries.SetOnGetBounds(AValue: TSeriesGetBoundsEvent);
 begin
-  if FOnUpdateBounds = AValue then exit;
-  FOnUpdateBounds := AValue;
+  if TMethod(FOnGetBounds) = TMethod(AValue) then exit;
+  FOnGetBounds := AValue;
   UpdateParentChart;
-end;
-
-procedure TUserDrawnSeries.UpdateBounds(var ABounds: TDoubleRect);
-begin
-  if Assigned(FOnUpdateBounds) then
-    FOnUpdateBounds(ABounds);
 end;
 
 initialization

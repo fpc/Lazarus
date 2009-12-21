@@ -64,7 +64,7 @@ type
     procedure SetDepth(AValue: TChartDistance); virtual; abstract;
     procedure SetShowInLegend(AValue: Boolean); virtual; abstract;
     procedure SetZPosition(AValue: TChartDistance); virtual; abstract;
-    procedure UpdateBounds(var ABounds: TDoubleRect); virtual; abstract;
+    procedure GetBounds(out ABounds: TDoubleRect); virtual; abstract;
     procedure UpdateMargins(ACanvas: TCanvas; var AMargins: TRect); virtual;
 
   protected
@@ -1068,6 +1068,7 @@ procedure TChart.UpdateExtent;
 
 var
   i: Integer;
+  seriesBounds: TDoubleRect;
 begin
   if FIsZoomed then begin
     FCurrentExtent := FZoomExtent;
@@ -1076,10 +1077,18 @@ begin
   Extent.CheckBoundsOrder;
 
   FCurrentExtent := EmptyExtent;
-  for i := 0 to SeriesCount - 1 do
-    with Series[i] do
-      if Active then
-        UpdateBounds(FCurrentExtent);
+  for i := 0 to SeriesCount - 1 do begin
+    if Series[i].Active then begin
+      seriesBounds := EmptyExtent;
+      Series[i].GetBounds(seriesBounds);
+      with FCurrentExtent do begin
+        a.X := Min(a.X, seriesBounds.a.X);
+        b.X := Max(b.X, seriesBounds.b.X);
+        a.Y := Min(a.Y, seriesBounds.a.Y);
+        b.Y := Max(b.Y, seriesBounds.b.Y);
+      end;
+    end;
+  end;
   with FCurrentExtent, Extent do begin
     SetBounds(a.X, b.X, XMin, XMax, UseXMin, UseXMax);
     SetBounds(a.Y, b.Y, YMin, YMax, UseYMin, UseYMax);

@@ -68,7 +68,7 @@ type
     function GetGraphPointX(AIndex: Integer): Double;
     function GetSeriesColor: TColor; virtual;
     function GetXMaxVal: Integer;
-    procedure UpdateBounds(var ABounds: TDoubleRect); override;
+    procedure GetBounds(out ABounds: TDoubleRect); override;
   public
     constructor Create(AOwner: TComponent); override;
     destructor Destroy; override;
@@ -301,6 +301,12 @@ begin
     Result := DefaultFormattedMark(AIndex);
 end;
 
+procedure TChartSeries.GetBounds(out ABounds: TDoubleRect);
+begin
+  if not Active or (Count = 0) then exit;
+  ABounds := Extent;
+end;
+
 function TChartSeries.GetColor(AIndex: Integer): TColor;
 begin
   Result := ColorOrDefault(Source[AIndex]^.Color);
@@ -445,17 +451,6 @@ end;
 procedure TChartSeries.SetYValue(AIndex: Integer; AValue: Double); inline;
 begin
   ListSource.SetYValue(AIndex, AValue);
-end;
-
-procedure TChartSeries.UpdateBounds(var ABounds: TDoubleRect);
-begin
-  if not Active or (Count = 0) then exit;
-  with Extent do begin
-    if a.X < ABounds.a.X then ABounds.a.X := a.X;
-    if a.Y < ABounds.a.Y then ABounds.a.Y := a.Y;
-    if b.X > ABounds.b.X then ABounds.b.X := b.X;
-    if b.Y > ABounds.b.Y then ABounds.b.Y := b.Y;
-  end;
 end;
 
 end.
