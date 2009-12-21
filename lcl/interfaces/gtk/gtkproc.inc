@@ -7443,7 +7443,7 @@ begin
       {$IFDEF DEBUG_CLIPBOARD}
       DebugLn('[WaitForClipboardAnswer] G');
       {$ENDIF}
-      Application.HandleMessage;
+      Application.ProcessMessages;
       if (ValidDateSelection) or (c^.Stopping) then begin
         {$IFDEF DEBUG_CLIPBOARD}
         DebugLn('[WaitForClipboardAnswer] H  Yeah, Response received after waiting with timer');
