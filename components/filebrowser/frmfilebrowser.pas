@@ -26,14 +26,18 @@ type
 
   TFileBrowserForm = class(TForm)
     btnConfigure: TButton;
+    btnReload: TButton;
     cbHidden: TCheckBox;
     FileListBox: TFileListBox;
+    FilterComboBox: TFilterComboBox;
     Panel1: TPanel;
     Splitter1: TSplitter;
     TV: TTreeView;
     procedure btnConfigureClick(Sender: TObject);
+    procedure btnReloadClick(Sender: TObject);
     procedure cbHiddenChange(Sender: TObject);
     procedure FileListBoxDblClick(Sender: TObject);
+    procedure FilterComboBoxChange(Sender: TObject);
     procedure FormClose(Sender: TObject; var CloseAction: TCloseAction);
     procedure FormCreate(Sender: TObject);
     procedure FormShow(Sender: TObject);
@@ -87,6 +91,12 @@ implementation
 uses
   Windows;
 {$ENDIF}
+
+const
+  cFilter = 'All Files (' + AllFilesMask + ')|' + AllFilesMask +
+            '|Source(*.pas;*.pp)|*.pas;*.pp' +
+            '|Projectfiles(*.pas;*.pp;*.inc;*.lfm;*.lpr;*.lrs;*.lpi;*.lpk)|' +
+            '*.pas;*.pp;*.inc;*.lfm;*.lpr;*.lrs;*.lpi;*.lpk;|';
 
 
 {function HasSubDirs returns True if the directory passed has subdirectories}
@@ -155,6 +165,19 @@ begin
     FOnConfigure(Self);
 end;
 
+procedure TFileBrowserForm.btnReloadClick(Sender: TObject);
+var
+  d: string;
+begin
+  // save current directory location
+  d := ChompPathDelim(SelectedDir);
+  // rebuild tree
+  TV.Items.Clear;
+  InitializeTreeview;
+  // restore directory
+  Directory := d;
+end;
+
 procedure TFileBrowserForm.cbHiddenChange(Sender: TObject);
 begin
   ShowHidden := cbHidden.Checked;
@@ -170,6 +193,11 @@ begin
     FOnOpenFile(Self, FileListBox.FileName);
 end;
 
+procedure TFileBrowserForm.FilterComboBoxChange(Sender: TObject);
+begin
+  FileListBox.Mask := FilterComboBox.Mask;
+end;
+
 procedure TFileBrowserForm.FormClose(Sender: TObject; var CloseAction: TCloseAction);
 begin
   if Assigned(FOnSaveLayout) then
@@ -181,6 +209,7 @@ procedure TFileBrowserForm.FormCreate(Sender: TObject);
 begin
   FShowHidden := False;
   InitializeTreeview;
+  FilterComboBox.Filter := cFilter;
 end;
 
 procedure TFileBrowserForm.FormShow(Sender: TObject);
@@ -356,12 +385,13 @@ var
   n: integer;
   drvs: string;
 begin
-  // making drive list, skipping drives A: and B:
+  // making drive list, skipping drives A: and B: and Removable Devices without media
   n := 2;
   while n <= MAX_DRIVES do
   begin
     drvs := chr(n + Ord('A')) + ':\';
-    if Windows.GetDriveType(PChar(drvs)) <> 1 then
+    if (Windows.GetDriveType(PChar(drvs)) <> 1) and
+    (GetDiskFreeSpaceEx(PChar(drvs), nil, nil, nil)) then
       TV.Items.Add(nil, drvs);
     Inc(n);
   end;
