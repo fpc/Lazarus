@@ -49,6 +49,9 @@ implementation
 uses
   Menus;
 
+type
+  TPersistentAccess = class(TPersistent);
+
 function FindLocaleFileName: string;
 var
   Lang, T: string;
@@ -210,27 +213,30 @@ procedure TDefaultTranslator.TranslateStringProperty(Sender: TObject;
 var
   s: string;
   Section: string;
+  Tmp: TPersistent;
   Component: TComponent;
 begin
   if not Assigned(FMOFile) then
     exit;
   if not Assigned(PropInfo) then
     exit;
-  // do not translate at design time
-  if Instance is TComponent then
-    if csDesigning in (Instance as TComponent).ComponentState then
-      exit;
-
   if (UpperCase(PropInfo^.PropType^.Name) <> 'TTRANSLATESTRING') then
     exit;
+  // do not translate at design time
+  // get the component
+  Tmp := Instance;
+  while Assigned(Tmp) and not (Tmp is TComponent) do
+    Tmp := TPersistentAccess(Tmp).GetOwner;
+  if not Assigned(Tmp) then
+    exit;
+  Component := Tmp as TComponent;
+  if (csDesigning in Component.ComponentState) then
+    exit;
+
   s := FMOFile.Translate(Content);
   if s = '' then
   begin
-    Component := Instance as TComponent;
-    if Component.Owner <> nil then
-      Section := UpperCase(Component.Owner.Name) + '.';
-    Section := 'T' + Section + UpperCase(Component.Name) + '.' +
-      UpperCase(PropInfo^.Name);
+    Section := 'T' + UpperCase(Instance.GetNamePath) + '.' + UpperCase(PropInfo^.Name);
     s := FMoFile.Translate(Section + #4 + Content);
   end;
   if s <> '' then
