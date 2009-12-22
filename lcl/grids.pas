@@ -386,6 +386,7 @@ type
     function  GetDefaultAlignment: TAlignment;
     function  GetDefaultColor: TColor;
     function  GetDefaultLayout: TTextLayout;
+    function  GetOwner: TPersistent; override;
     procedure SetCaption(const AValue: TCaption); virtual;
   public
     constructor Create(TheColumn: TGridColumn); virtual;
@@ -9151,6 +9152,11 @@ end;
 function TGridColumnTitle.GetDefaultLayout: TTextLayout;
 begin
   result := tlCenter
+end;
+
+function TGridColumnTitle.GetOwner: TPersistent;
+begin
+  Result := FColumn;
 end;
 
 constructor TGridColumnTitle.Create(TheColumn: TGridColumn);
