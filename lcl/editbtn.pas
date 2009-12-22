@@ -329,6 +329,7 @@ type
     FDefaultToday: Boolean;
     FDialogTitle: TCaption;
     FDisplaySettings: TDisplaySettings;
+    FDroppedDown: Boolean;
     FOnAcceptDate: TAcceptDateEvent;
     FOnCustomDate: TCustomDateEvent;
     FOKCaption: TCaption;
@@ -338,6 +339,7 @@ type
     function IsStoreTitle: boolean;
     procedure SetDate(Value: TDateTime);
     procedure CalendarPopupReturnDate(Sender: TObject; const ADate: TDateTime);
+    procedure CalendarPopupShowHide(Sender: TObject);
     procedure SetDateOrder(const AValue: TDateOrder);
   protected
     function GetDefaultGlyph: TBitmap; override;
@@ -351,6 +353,7 @@ type
     function GetDateFormat: string;
     property Date: TDateTime read GetDate write SetDate;
     property Button;
+    property DroppedDown: Boolean read FDroppedDown;
   published
     property DialogTitle: TCaption read FDialogTitle write FDialogTitle stored IsStoreTitle;
     property CalendarDisplaySettings: TDisplaySettings read FDisplaySettings write FDisplaySettings;
@@ -960,14 +963,15 @@ end;
 procedure TDateEdit.DoButtonClick(Sender: TObject);//or onClick
 var
   PopupOrigin: TPoint;
+  ADate: TDateTime;
 begin
   inherited DoButtonClick(Sender);
 
   PopupOrigin := ControlToScreen(Point(0, Height));
-  if (GetDate=NullDate) then
-    ShowCalendarPopup(PopupOrigin, SysUtils.Date, @CalendarPopupReturnDate)
-  else
-    ShowCalendarPopup(PopupOrigin, GetDate, @CalendarPopupReturnDate)
+  ADate := GetDate;
+  if ADate = NullDate then
+    ADate := SysUtils.Date;
+  ShowCalendarPopup(PopupOrigin, ADate, @CalendarPopupReturnDate, @CalendarPopupShowHide)
 end;
 
 procedure TDateEdit.DblClick;
@@ -1066,8 +1070,6 @@ begin
 end;
 
 procedure TDateEdit.SetDate(Value: TDateTime);
-var
-  D: TDateTime;
 begin
   if {not IsValidDate(Value) or }(Value = NullDate) then
   begin
@@ -1076,7 +1078,6 @@ begin
     else
       Value := NullDate;
   end;
-  D := Self.Date;
   if Value = NullDate then
     Text := ''
   else
@@ -1086,9 +1087,6 @@ begin
     else
       Text := FormatDateTime(FDateFormat, Value)
   end;
-  // don't call Change - it is called by assignment to Text
-  // if D <> Date then
-  //   Change;
 end;
 
 procedure TDateEdit.CalendarPopupReturnDate(Sender: TObject;
@@ -1108,6 +1106,11 @@ begin
     on E:Exception do
       MessageDlg(E.Message, mtError, [mbOK], 0);
   end;
+end;
+
+procedure TDateEdit.CalendarPopupShowHide(Sender: TObject);
+begin
+  FDroppedDown := (Sender as TForm).Visible;
 end;
 
 procedure TDateEdit.SetDateOrder(const AValue: TDateOrder);

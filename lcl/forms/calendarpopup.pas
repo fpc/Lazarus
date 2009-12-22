@@ -51,18 +51,20 @@ type
   end;
 
 procedure ShowCalendarPopup(const Position: TPoint; ADate: TDateTime;
-                            OnReturnDate: TReturnDateEvent);
+                            OnReturnDate: TReturnDateEvent; OnShowHide: TNotifyEvent = nil);
 
 implementation
 
 procedure ShowCalendarPopup(const Position: TPoint; ADate: TDateTime;
-                            OnReturnDate: TReturnDateEvent);
+                            OnReturnDate: TReturnDateEvent; OnShowHide: TNotifyEvent = nil);
 var
   PopupForm: TCalendarPopupForm;
 begin
   PopupForm := TCalendarPopupForm.Create(nil);
   PopupForm.Initialize(Position, ADate);
   PopupForm.FOnReturnDate := OnReturnDate;
+  PopupForm.OnShow := OnShowHide;
+  PopupForm.OnHide := OnShowHide;
   //TODO: Change to PopupForm.Show when gtk supports non modal forms on top of
   //modal forms.
   {$IFDEF windows}
