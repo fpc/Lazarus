@@ -142,7 +142,6 @@ type
     procedure CreateDialog; virtual;
   public
     constructor Create(TheOwner: TComponent); override;
-    destructor Destroy; override;
     function Handlestarget(Target: TObject): Boolean; override;
     procedure ExecuteTarget(Target: TObject); override;
     property ExecuteResult: Boolean read FExecuteResult;
@@ -194,10 +193,6 @@ type
     FFileName: TFileName;
   published
     property FileName: TFileName read FFileName write FFileName;
-    property HelpContext;
-    property HelpKeyword;
-    property HelpType;
-    property BeforeExecute;
     property AfterOpen: TNotifyEvent read FAfterOpen write FAfterOpen;
   end;
 
@@ -691,11 +686,6 @@ begin
   
   DisableIfNoHandler := False;
   Enabled := True;
-end;
-
-destructor TCommonDialogAction.Destroy;
-begin
-  inherited Destroy;
 end;
 
 function TCommonDialogAction.Handlestarget(Target: TObject): Boolean;
