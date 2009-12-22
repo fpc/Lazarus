@@ -295,7 +295,7 @@ procedure DoFuncId; forward;
       if buf^[i] > ' ' then Inc(c);
     i := 0;
     j := 1;
-    while c > 0 do
+    while (c > 0) and (i < MemoFrom.Count) do
     begin
       s1 := MemoFrom[i];
       j := 1;
