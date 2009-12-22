@@ -2844,6 +2844,23 @@ var
   Modifiers: QtKeyboardModifiers;
   MousePos: TQtPoint;
   QtEdit: IQtEdit;
+  AResult: LResult;
+
+  procedure SendMouseReleaseEventToSelf;
+  var
+    AEvent: QEventH;
+    Modifiers: QtKeyboardModifiers;
+  begin
+    Modifiers := QInputEvent_modifiers(QInputEventH(Event));
+    AEvent := QMouseEvent_create(QEventMouseButtonRelease,
+      QContextMenuEvent_pos(QContextMenuEventH(Event)),
+      QContextMenuEvent_globalPos(QContextMenuEventH(Event)),
+      QtRightButton,
+      QtRightButton,
+      Modifiers);
+    QCoreApplication_postEvent(Widget, AEvent, 1);
+  end;
+
 begin
   if not CanSendLCLMessage then
     exit;
@@ -2873,7 +2890,9 @@ begin
   Msg.XPos := SmallInt(MousePos.X);
   Msg.YPos := SmallInt(MousePos.Y);
 
-  DeliverMessage(Msg);
+  AResult := DeliverMessage(Msg);
+  if (AResult = 1) and (csDesigning in LCLObject.ComponentState) then
+    SendMouseReleaseEventToSelf;
 end;
 
 procedure TQtWidget.SlotWhatsThis(Sender: QObjectH; Event: QEventH); cdecl;
