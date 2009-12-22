@@ -524,6 +524,7 @@ end;
 
 initialization
   VIdentityTransformation := TChartAxisTransformation.Create;
-
+finalization
+  VIdentityTransformation.Free;
 end.
 
