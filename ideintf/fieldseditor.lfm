@@ -27,6 +27,7 @@ object DSFieldsEditorFrm: TDSFieldsEditorFrm
     TabOrder = 0
   end
   object PopupMenu1: TPopupMenu
+    OnPopup = PopupMenu1Popup
     left = 8
     top = 144
     object MenuItem1: TMenuItem

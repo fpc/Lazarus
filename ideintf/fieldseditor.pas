@@ -60,6 +60,7 @@ type
     procedure ListBox1Click(Sender: TObject);
     procedure MoveDownActnExecute(Sender: TObject);
     procedure MoveUpActnExecute(Sender: TObject);
+    procedure PopupMenu1Popup(Sender: TObject);
     procedure SelectAllActnExecute(Sender: TObject);
     procedure UnselectAllActnExecute(Sender: TObject);
   protected
@@ -301,6 +302,26 @@ begin
     end;
   SelectionChanged;
   if bModified then fDesigner.Modified;
+end;
+
+procedure TDSFieldsEditorFrm.PopupMenu1Popup(Sender: TObject);
+var
+  b: boolean;
+  i, SelectedCount: integer;
+begin
+  b := FieldsListBox.Count > 0;
+  SelectedCount := 0;
+  for i:= 0 to FieldsListBox.Count-1 do
+    if FieldsListBox.Selected[i] then
+      Inc(SelectedCount);
+
+  DeleteFieldsActn.Enabled := b and (SelectedCount > 0);
+  MoveDownActn.Enabled := b and (SelectedCount > 0)
+    and (Not FieldsListBox.Selected[FieldsListBox.Items.Count - 1]);
+  MoveUpActn.Enabled := b and (SelectedCount > 0)
+    and (Not FieldsListBox.Selected[0]);
+  SelectAllActn.Enabled := b and (FieldsListBox.Count <> SelectedCount);
+  UnselectAllActn.Enabled := b and (SelectedCount > 0);
 end;
 
 procedure TDSFieldsEditorFrm.SelectAllActnExecute(Sender: TObject);
