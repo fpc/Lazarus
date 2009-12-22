@@ -1178,21 +1178,8 @@ end;
   Draws a frame control of the specified type and style.
  ------------------------------------------------------------------------------}
 function TWin32WidgetSet.DrawFrameControl(DC: HDC; const Rect: TRect; UType, UState: Cardinal): Boolean;
-var
-  Flags: dword;
 begin
-  // flat button border cannot be drawn by DrawFrameControl, draw ourselves
-  if (UType = DFC_BUTTON) and ((UState and DFCS_FLAT) <> 0) then
-  begin
-    if (UState and DFCS_PUSHED) <> 0 then
-      Flags := BDR_SUNKENOUTER
-    else
-      if (UState and DFCS_FLAT) <> 0 then Flags := 0
-      else Flags := BDR_RAISEDINNER;
-    Result := Boolean(Windows.DrawEdge(DC, @Rect, Flags, BF_RECT));
-  end else begin
-    Result := Boolean(Windows.DrawFrameControl(DC, @Rect, UType, UState));
-  end;
+  Result := Boolean(Windows.DrawFrameControl(DC, @Rect, UType, UState));
 end;
 
 function TWin32WidgetSet.DrawFocusRect(DC: HDC; const Rect: TRect): boolean;
