@@ -1571,6 +1571,7 @@ begin
     PopupPos := Point(Left + Width, Top);
   with Form.ClientToScreen(PopupPos) do
     FDesignerPopupMenu.Popup(X, Y);
+  Message.Result := 1;
 end;
 
 procedure TDesigner.GetMouseMsgShift(TheMessage: TLMMouse;
