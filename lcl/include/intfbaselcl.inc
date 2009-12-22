@@ -581,11 +581,11 @@ function TWidgetSet.PromptUser(const DialogCaption, DialogMessage : String;
   DialogType : longint; Buttons : PLongint;
   ButtonCount, DefaultIndex, EscapeResult : Longint) : Longint;
 begin
-  if PromptDialogFunction<>nil then
-    Result:=PromptDialogFunction(DialogCaption, DialogMessage, DialogType,
-       Buttons, ButtonCount, DefaultIndex, EscapeResult, true, 0, 0)
+  if PromptDialogFunction <> nil then
+    Result := PromptDialogFunction(DialogCaption, DialogMessage, DialogType,
+       Buttons, ButtonCount, DefaultIndex, EscapeResult, True, 0, 0)
   else
-    Result:=0;
+    Result := 0;
 end;
 
 function TWidgetSet.PromptUserAtXY(const DialogCaption,

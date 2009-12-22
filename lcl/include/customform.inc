@@ -2303,24 +2303,22 @@ function TCustomForm.ShowModal: Integer;
 var
   DisabledList: TList;
   SavedFocusState: TFocusState;
-  //SaveCursor: TCursor;
-  //SaveCount: Integer;
   ActiveWindow: HWnd;
 begin
-  if Self=nil then raise
-    EInvalidOperation.Create('TCustomForm.ShowModal Self=nil');
+  if Self = nil then
+    raise EInvalidOperation.Create('TCustomForm.ShowModal Self = nil');
   if Application.Terminated then
-    ModalResult:=0;
+    ModalResult := 0;
   // cancel drags
   DragManager.DragStop(false);
   // close popupmenus
-  if ActivePopupMenu<>nil then ActivePopupMenu.Close;
-  //DebugLn('[TCustomForm.ShowModal] START ',Classname);
-  if Visible or not Enabled or (fsModal in FFormState)
-  or (FormStyle = fsMDIChild) then
+  if ActivePopupMenu <> nil then
+    ActivePopupMenu.Close;
+  if Visible or not Enabled or (fsModal in FFormState) or (FormStyle = fsMDIChild) then
     RaiseShowModalImpossible;
   // Kill capture when opening another dialog
-  if GetCapture <> 0 then SendMessage(GetCapture,LM_CANCELMODE,0,0);
+  if GetCapture <> 0 then
+    SendMessage(GetCapture, LM_CANCELMODE, 0, 0);
   ReleaseCapture;
 
   Include(FFormState, fsModal);
@@ -2362,7 +2360,7 @@ begin
           if ModalResult<>0 then break;
         end;
         Application.Idle(true);
-      until false;
+      until False;
 
       Result := ModalResult;
       if HandleAllocated and (GetActiveWindow <> Handle) then
@@ -2383,11 +2381,11 @@ begin
     begin
       Screen.FFocusedForm := TCustomForm(Screen.FSaveFocusedList.First);
       Screen.FSaveFocusedList.Remove(Screen.FFocusedForm);
-    end else
+    end
+    else
       Screen.FFocusedForm := nil;
     Exclude(FFormState, fsModal);
     RestoreFocusState(SavedFocusState);
-    //DebugLn('TCustomForm.ShowModal ',dbgs(ActiveWindow));
     if ActiveWindow <> 0 then
       SetActiveWindow(ActiveWindow);
   end;

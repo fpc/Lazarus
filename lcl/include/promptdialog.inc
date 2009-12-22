@@ -525,19 +525,20 @@ end;
 
 
 function ShowPromptDialog(const DialogCaption,
-  DialogMessage : String;
-  DialogType : longint; Buttons : PLongint;
-  ButtonCount, DefaultIndex, EscapeResult : Longint;
+  DialogMessage: String;
+  DialogType: longint; Buttons: PLongint;
+  ButtonCount, DefaultIndex, EscapeResult: Longint;
   UseDefaultPos: boolean;
-  X, Y : Longint) : Longint;
+  X, Y: Longint): Longint;
 var
-  theModalResult : longint;
+  theModalResult: longint;
 begin
   with TPromptDialog.CreateMessageDialog (DialogCaption, DialogMessage,
     DialogType, Buttons, ButtonCount, DefaultIndex)
   do
     try
-      if not UseDefaultPos then begin
+      if not UseDefaultPos then
+      begin
         Position := poDesigned;
         Left := X;
         Top := Y;
@@ -545,8 +546,8 @@ begin
       theModalResult := ShowModal;
       case theModalResult of
         -1 : Result := EscapeResult
-        else
-          Result := DialogResult[theModalResult];
+      else
+        Result := DialogResult[theModalResult];
       end;
     finally
       Free;
