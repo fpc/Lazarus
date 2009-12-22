@@ -651,7 +651,7 @@ end;
 
 procedure TCustomEditButton.DoButtonClick (Sender: TObject);
 begin
-  If not ReadOnly then
+  if not ReadOnly then
     if Assigned(FOnButtonClick) then
       FOnButtonClick(Self);
 end;
@@ -977,7 +977,8 @@ end;
 procedure TDateEdit.DblClick;
 begin
   inherited DblClick;
-  DoButtonClick(nil);
+  if not ReadOnly then
+    DoButtonClick(nil);
 end;
 
 procedure TDateEdit.SetDateMask;
