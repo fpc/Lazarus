@@ -81,15 +81,29 @@ var
   strItem: string;
 begin
   if InputQuery(clbCheckListBoxEditor, clbAdd, strItem) then
+   begin
     FCheck.Items.Add(strItem);
+    Change;
+   end;
 end;
 
 procedure TCheckListBoxEditorDlg.DeleteItem(Sender:TObject);
+  var
+    OldIndex : integer;
 begin
   if FCheck.ItemIndex = -1 then exit;
   if MessageDlg(clbCheckListBoxEditor,Format(clbDeleteQuest,[FCheck.ItemIndex,FCheck.Items[FCheck.ItemIndex]]),
     mtConfirmation, mbYesNo, 0) = mrYes then
+   begin
+    //  save old index
+    OldIndex := FCheck.ItemIndex;
     FCheck.Items.Delete(FCheck.ItemIndex);
+    if (FCheck.Count-1<OldIndex) then
+       FCheck.ItemIndex := FCheck.Count-1
+      else
+       FCheck.ItemIndex := OldIndex;
+    Change;
+   end;
 end;
 
 procedure TCheckListBoxEditorDlg.FCheckClick(Sender: TObject);
@@ -135,7 +149,8 @@ begin
   FCheck.Checked[FCheck.ItemIndex-1]:=FCheck.Checked[FCheck.ItemIndex];
   FCheck.Items[FCheck.ItemIndex]:=itemtmp;
   FCheck.Checked[FCheck.ItemIndex]:=checkedtmp;
-  FCheck.ItemIndex:=FCheck.ItemIndex-1
+  FCheck.ItemIndex:=FCheck.ItemIndex-1;
+  Change;
 end;
 
 procedure TCheckListBoxEditorDlg.MoveDownItem(Sender:TObject);
@@ -150,7 +165,8 @@ begin
   FCheck.Checked[FCheck.ItemIndex+1]:=FCheck.Checked[FCheck.ItemIndex];
   FCheck.Items[FCheck.ItemIndex]:=itemtmp;
   FCheck.Checked[FCheck.ItemIndex]:=checkedtmp;
-  FCheck.ItemIndex:=FCheck.ItemIndex+1
+  FCheck.ItemIndex:=FCheck.ItemIndex+1;
+  Change;
 end;
 
 procedure TCheckListBoxEditorDlg.ModifyItem(Sender:TObject);
