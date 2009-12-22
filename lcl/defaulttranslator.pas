@@ -236,7 +236,16 @@ begin
   s := FMOFile.Translate(Content);
   if s = '' then
   begin
-    Section := 'T' + UpperCase(Instance.GetNamePath) + '.' + UpperCase(PropInfo^.Name);
+    if not (Sender is TReader) then
+      Exit;
+    if Component = TReader(Sender).Root then
+      Section := UpperCase(Component.ClassName)
+    else
+    if Component.Owner = TReader(Sender).Root then
+      Section := UpperCase(Component.Owner.ClassName + '.' + Instance.GetNamePath)
+    else
+      Exit;
+    Section := Section + '.' + UpperCase(PropInfo^.Name);
     s := FMoFile.Translate(Section + #4 + Content);
   end;
   if s <> '' then
