@@ -731,9 +731,11 @@ begin
   {$IFNDEF gtk_no_set_modal}
   gtk_window_set_modal(GtkWindow, true);
   {$ENDIF}
-  gtk_widget_show(PGtkWidget(GtkWindow));
   {$IFDEF Gtk1}
+  gtk_widget_show(PGtkWidget(GtkWindow));
   GDK_WINDOW_ACTIVATE(PGdkWindowPrivate(PGtkWidget(GtkWindow)^.window));
+  {$ELSE}
+  gtk_window_present(GtkWindow);
   {$ENDIF}
 
   {$IFDEF VerboseTransient}
