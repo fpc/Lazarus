@@ -140,21 +140,23 @@ end;
 function TScreen.CustomFormZIndex(AForm: TCustomForm): integer;
 begin
   Result:=FCustomFormsZOrdered.Count-1;
-  while (Result>=0) and (CustomFormsZOrdered[Result]<>AForm) do dec(Result);
+  while (Result >= 0) and (CustomFormsZOrdered[Result] <> AForm) do dec(Result);
 end;
 
 procedure TScreen.MoveFormToFocusFront(ACustomForm: TCustomForm);
 begin
-  if (Self=nil) or (ACustomForm=nil)
-  or (csDestroying in ACustomForm.ComponentState) then
+  if (Self = nil) or (ACustomForm = nil) or
+     (csDestroying in ACustomForm.ComponentState) then
     RaiseGDBException('TScreen.MoveFormToFocusFront');
   if (FCustomForms.Count=0) or (TObject(FCustomForms[0])<>ACustomForm) then
   begin
     FCustomForms.Remove(ACustomForm);
     FCustomForms.Insert(0, ACustomForm);
   end;
-  if ACustomForm is TForm then begin
-    if (FFormList.Count=0) or (TObject(FFormList[0])<>ACustomForm) then begin
+  if ACustomForm is TForm then
+  begin
+    if (FFormList.Count=0) or (TObject(FFormList[0])<>ACustomForm) then
+    begin
       FFormList.Remove(ACustomForm);
       FFormList.Insert(0, ACustomForm);
     end;
@@ -163,14 +165,12 @@ begin
 end;
 
 procedure TScreen.MoveFormToZFront(ACustomForm: TCustomForm);
-//var i: Integer;
 begin
-  if (FCustomFormsZOrdered.Count=0)
-  or (TObject(FCustomFormsZOrdered[0])<>ACustomForm) then begin
+  if (FCustomFormsZOrdered.Count = 0) or
+     (TObject(FCustomFormsZOrdered[0]) <> ACustomForm) then
+  begin
     FCustomFormsZOrdered.Remove(ACustomForm);
     FCustomFormsZOrdered.Insert(0, ACustomForm);
-    //for i:=0 to FCustomFormsZOrdered.Count-1 do
-    //  DebugLn(['TScreen.MoveFormToZFront ',i,'/',FCustomFormsZOrdered.Count,' ',dbgsName(CustomFormsZOrdered[i])]);
   end;
 end;
 
@@ -178,20 +178,19 @@ function TScreen.GetCurrentModalForm: TCustomForm;
 var
   i: Integer;
 begin
-  i:=GetCurrentModalFormZIndex;
-  if (i>=0) then
-    Result:=CustomFormsZOrdered[i]
+  i := GetCurrentModalFormZIndex;
+  if (i >= 0) then
+    Result := CustomFormsZOrdered[i]
   else
-    Result:=nil;
+    Result := nil;
 end;
 
 function TScreen.GetCurrentModalFormZIndex: Integer;
 begin
-  Result:=0;
-  while (Result<CustomFormCount)
-  and (not (fsModal in CustomFormsZOrdered[Result].FormState)) do
+  Result := 0;
+  while (Result < CustomFormCount) and not (fsModal in CustomFormsZOrdered[Result].FormState) do
     inc(Result);
-  if Result=CustomFormCount then Result:=-1;
+  if Result = CustomFormCount then Result := -1;
 end;
 
 function TScreen.CustomFormBelongsToActiveGroup(AForm: TCustomForm): Boolean;
@@ -199,12 +198,13 @@ var
   CurForm: TCustomForm;
   i: Integer;
 begin
-  i:=0;
-  Result:=false;
-  while (i<CustomFormCount) do begin
-    CurForm:=CustomFormsZOrdered[i];
-    if CurForm=AForm then
-      Result:=true;
+  i := 0;
+  Result := False;
+  while (i < CustomFormCount) do
+  begin
+    CurForm := CustomFormsZOrdered[i];
+    if CurForm = AForm then
+      Result := True;
     if fsModal in CurForm.FormState then exit;
     inc(i);
   end;
@@ -214,10 +214,10 @@ function TScreen.FindForm(const FormName: string): TCustomForm;
 var
   i: Integer;
 begin
-  for i:=0 to FCustomForms.Count-1 do
-    if CompareText(TCustomForm(FCustomForms[i]).Name,FormName)=0 then
-      exit(TCustomForm(FCustomForms[i]));
-  Result:=nil;
+  for i := 0 to FCustomForms.Count - 1 do
+    if CompareText(TCustomForm(FCustomForms[i]).Name, FormName) = 0 then
+      Exit(TCustomForm(FCustomForms[i]));
+  Result := nil;
 end;
 
 function TScreen.FindDataModule(const DataModuleName: string): TDataModule;
@@ -225,21 +225,21 @@ var
   i: Integer;
 begin
   for i:=0 to FDataModuleList.Count-1 do
-    if CompareText(TDataModule(FDataModuleList[i]).Name, DataModuleName)=0 then
+    if CompareText(TDataModule(FDataModuleList[i]).Name, DataModuleName) = 0 then
     begin
-      Result:=TDataModule(FDataModuleList[i]);
+      Result := TDataModule(FDataModuleList[i]);
       Exit;
     end;
-  Result:=nil;
+  Result := nil;
 end;
 
 procedure TScreen.UpdateScreen;
 var
   DC: HDC;
 begin
-  DC:=GetDC(0);
-  FPixelsPerInch:=GetDeviceCaps(DC,LOGPIXELSX);
-  ReleaseDC(0,DC);
+  DC := GetDC(0);
+  FPixelsPerInch := GetDeviceCaps(DC,LOGPIXELSX);
+  ReleaseDC(0, DC);
 end;
 
 procedure TScreen.AddHandlerFormAdded(OnFormAdded: TScreenFormEvent;
@@ -465,7 +465,8 @@ end;
  ------------------------------------------------------------------------------}
 function TScreen.GetFonts : TStrings;
 begin
-  if FFonts.Count=0 then begin
+  if FFonts.Count = 0 then
+  begin
     GetScreenFontsList(FFonts);
     TStringList(FFonts).Sort;
   end;
@@ -537,12 +538,12 @@ end;
  ------------------------------------------------------------------------------}
 function TScreen.GetCustomFormCount: Integer;
 begin
-  Result:=FCustomForms.Count;
+  Result := FCustomForms.Count;
 end;
 
 function TScreen.GetCustomFormZOrderCount: Integer;
 begin
-  Result:=FCustomFormsZOrdered.Count;
+  Result := FCustomFormsZOrdered.Count;
 end;
 
 {------------------------------------------------------------------------------
@@ -814,10 +815,11 @@ procedure TScreen.UpdateLastActive;
     Handler: TScreenFormEvent;
   begin
     if Assigned(FOnActiveFormChange) then FOnActiveFormChange(Self);
-    i:=FScreenHandlers[snActiveFormChanged].Count;
-    while FScreenHandlers[snActiveFormChanged].NextDownIndex(i) do begin
-      Handler:=TScreenFormEvent(FScreenHandlers[snActiveFormChanged][i]);
-      Handler(Self,FLastActiveCustomForm);
+    i := FScreenHandlers[snActiveFormChanged].Count;
+    while FScreenHandlers[snActiveFormChanged].NextDownIndex(i) do
+    begin
+      Handler := TScreenFormEvent(FScreenHandlers[snActiveFormChanged][i]);
+      Handler(Self, FLastActiveCustomForm);
     end;
   end;
 
@@ -827,10 +829,11 @@ procedure TScreen.UpdateLastActive;
     Handler: TScreenControlEvent;
   begin
     if Assigned(FOnActiveControlChange) then FOnActiveControlChange(Self);
-    i:=FScreenHandlers[snActiveControlChanged].Count;
-    while FScreenHandlers[snActiveControlChanged].NextDownIndex(i) do begin
-      Handler:=TScreenControlEvent(FScreenHandlers[snActiveControlChanged][i]);
-      Handler(Self,FLastActiveControl);
+    i := FScreenHandlers[snActiveControlChanged].Count;
+    while FScreenHandlers[snActiveControlChanged].NextDownIndex(i) do
+    begin
+      Handler := TScreenControlEvent(FScreenHandlers[snActiveControlChanged][i]);
+      Handler(Self, FLastActiveControl);
     end;
   end;
 
@@ -878,14 +881,14 @@ end;
 procedure TScreen.AddHandler(HandlerType: TScreenNotification;
   const Handler: TMethod; AsLast: Boolean);
 begin
-  if Handler.Code=nil then RaiseGDBException('TScreen.AddHandler');
-  if FScreenHandlers[HandlerType]=nil then
-    FScreenHandlers[HandlerType]:=TMethodList.Create;
-  FScreenHandlers[HandlerType].Add(Handler,AsLast);
+  if Handler.Code = nil then
+    RaiseGDBException('TScreen.AddHandler');
+  if FScreenHandlers[HandlerType] = nil then
+    FScreenHandlers[HandlerType] := TMethodList.Create;
+  FScreenHandlers[HandlerType].Add(Handler, AsLast);
 end;
 
-procedure TScreen.RemoveHandler(HandlerType: TScreenNotification;
-  const Handler: TMethod);
+procedure TScreen.RemoveHandler(HandlerType: TScreenNotification; const Handler: TMethod);
 begin
   FScreenHandlers[HandlerType].Remove(Handler);
 end;
