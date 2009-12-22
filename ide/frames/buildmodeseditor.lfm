@@ -1,51 +1,101 @@
 object BuildModesEditorFrame: TBuildModesEditorFrame
   Left = 0
-  Height = 300
+  Height = 306
   Top = 0
-  Width = 400
-  ClientHeight = 300
-  ClientWidth = 400
+  Width = 419
+  ClientHeight = 306
+  ClientWidth = 419
+  OnClick = FrameClick
   TabOrder = 0
   DesignLeft = 460
   DesignTop = 269
-  object BuildModesToolBar: TToolBar
+  object BuildModeBtnPanel: TPanel
     Left = 0
-    Height = 26
+    Height = 31
     Top = 0
-    Width = 400
-    Caption = 'BuildModesToolBar'
+    Width = 419
+    Align = alTop
+    AutoSize = True
+    ClientHeight = 31
+    ClientWidth = 419
     TabOrder = 0
-    object NewBuildModeToolButton: TToolButton
+    object NewBuildModeSpeedButton: TSpeedButton
       Left = 1
-      Top = 2
-      Caption = 'New'
-      ParentShowHint = False
+      Height = 29
+      Top = 1
+      Width = 23
+      Align = alLeft
+      AutoSize = True
+      Color = clBtnFace
+      NumGlyphs = 0
+      OnClick = NewBuildModeButtonClick
       ShowHint = True
-      OnClick = NewBuildModeToolButtonClick
+      ParentShowHint = False
     end
-    object NewBuildFlagToolButton: TToolButton
+    object NewBuildFlagSpeedButton: TSpeedButton
       Left = 24
-      Top = 2
-      Caption = 'NewBuildFlagToolButton'
-      ParentShowHint = False
+      Height = 29
+      Top = 1
+      Width = 23
+      Align = alLeft
+      AutoSize = True
+      Color = clBtnFace
+      NumGlyphs = 0
+      OnClick = NewBuildFlagButtonClick
       ShowHint = True
-      OnClick = NewBuildFlagToolButtonClick
+      ParentShowHint = False
     end
-    object DeleteBMRowToolButton: TToolButton
+    object DeleteBMRowSpeedButton: TSpeedButton
       Left = 47
-      Top = 2
-      Caption = 'DeleteBMRowToolButton'
-      ParentShowHint = False
+      Height = 29
+      Top = 1
+      Width = 23
+      Align = alLeft
+      AutoSize = True
+      Color = clBtnFace
+      NumGlyphs = 0
+      OnClick = DeleteBMRowButtonClick
       ShowHint = True
-      OnClick = DeleteBMRowToolButtonClick
+      ParentShowHint = False
     end
-    object NewBuildModeGroupToolButton: TToolButton
+    object NewBuildGroupSpeedButton: TSpeedButton
       Left = 70
-      Top = 2
-      Caption = 'NewBuildModeGroupToolButton'
+      Height = 29
+      Top = 1
+      Width = 23
+      Align = alLeft
+      AutoSize = True
+      Color = clBtnFace
+      NumGlyphs = 0
+      OnClick = NewBuildGroupButtonClick
+      ShowHint = True
+      ParentShowHint = False
+    end
+    object CurBuildModeLabel: TLabel
+      AnchorSideLeft.Control = NewBuildGroupSpeedButton
+      AnchorSideLeft.Side = asrBottom
+      AnchorSideTop.Control = CurBuildModeComboBox
+      AnchorSideTop.Side = asrCenter
+      Left = 108
+      Height = 18
+      Top = 6
+      Width = 123
+      BorderSpacing.Left = 15
+      Caption = 'CurBuildModeLabel'
+      ParentColor = False
+    end
+    object CurBuildModeComboBox: TComboBox
+      AnchorSideLeft.Control = CurBuildModeLabel
+      AnchorSideLeft.Side = asrBottom
+      Left = 231
+      Height = 29
+      Top = 1
+      Width = 176
+      ItemHeight = 0
       ParentShowHint = False
       ShowHint = True
-      OnClick = NewBuildModeGroupToolButtonClick
+      TabOrder = 0
+      Text = 'CurBuildModeComboBox'
     end
   end
   object BuildModesPopupMenu: TPopupMenu

@@ -27,7 +27,7 @@ interface
 uses
   Math, Classes, SysUtils, LCLProc, Controls, FileUtil, LResources, Forms,
   Grids, Graphics, Menus, ComCtrls, Dialogs, AvgLvlTree, DefineTemplates,
-  StdCtrls, GraphMath,
+  StdCtrls, GraphMath, ExtCtrls, Buttons,
   ProjectIntf, IDEImagesIntf,
   PathEditorDlg, Project, PackageSystem, LazarusIDEStrConsts, CompilerOptions,
   IDEProcs;
@@ -106,16 +106,19 @@ type
 
   TBuildModesEditorFrame = class(TFrame)
     BuildModesPopupMenu: TPopupMenu;
-    BuildModesToolBar: TToolBar;
-    NewBuildModeToolButton: TToolButton;
-    NewBuildFlagToolButton: TToolButton;
-    DeleteBMRowToolButton: TToolButton;
-    NewBuildModeGroupToolButton: TToolButton;
-    procedure DeleteBMRowToolButtonClick(Sender: TObject);
+    CurBuildModeComboBox: TComboBox;
+    CurBuildModeLabel: TLabel;
+    BuildModeBtnPanel: TPanel;
+    NewBuildModeSpeedButton: TSpeedButton;
+    NewBuildFlagSpeedButton: TSpeedButton;
+    DeleteBMRowSpeedButton: TSpeedButton;
+    NewBuildGroupSpeedButton: TSpeedButton;
+    procedure DeleteBMRowButtonClick(Sender: TObject);
+    procedure FrameClick(Sender: TObject);
     procedure GridSelection(Sender: TObject; aCol, aRow: Integer);
-    procedure NewBuildFlagToolButtonClick(Sender: TObject);
-    procedure NewBuildModeGroupToolButtonClick(Sender: TObject);
-    procedure NewBuildModeToolButtonClick(Sender: TObject);
+    procedure NewBuildFlagButtonClick(Sender: TObject);
+    procedure NewBuildGroupButtonClick(Sender: TObject);
+    procedure NewBuildModeButtonClick(Sender: TObject);
   private
     FGrid: TBuildModesGrid;
     procedure UpdateButtons;
@@ -936,7 +939,7 @@ end;
 
 { TBuildModesEditorFrame }
 
-procedure TBuildModesEditorFrame.NewBuildModeToolButtonClick(Sender: TObject);
+procedure TBuildModesEditorFrame.NewBuildModeButtonClick(Sender: TObject);
 begin
   Grid.AddNewBuildMode(false);
 end;
@@ -946,29 +949,34 @@ var
   Mode: TBuildModeGridRow;
 begin
   Mode:=Grid.SelectedModeRow;
-  NewBuildFlagToolButton.Enabled:=(Mode<>nil) and (not Mode.Mode.ShowIncludes);
-  DeleteBMRowToolButton.Enabled:=(Mode<>nil);
+  NewBuildFlagSpeedButton.Enabled:=(Mode<>nil) and (not Mode.Mode.ShowIncludes);
+  DeleteBMRowSpeedButton.Enabled:=(Mode<>nil);
   if (Mode<>nil) and (not Mode.Mode.ShowIncludes) and (Mode.Mode.FlagCount>1)
   then
-    DeleteBMRowToolButton.Hint:=lisDeleteSetting
+    DeleteBMRowSpeedButton.Hint:=lisDeleteSetting
   else
-    DeleteBMRowToolButton.Hint:=lisDeleteBuildMode;
+    DeleteBMRowSpeedButton.Hint:=lisDeleteBuildMode;
 end;
 
-procedure TBuildModesEditorFrame.NewBuildFlagToolButtonClick(Sender: TObject);
+procedure TBuildModesEditorFrame.NewBuildFlagButtonClick(Sender: TObject);
 begin
   Grid.InsertNewBuildFlagBehind;
 end;
 
-procedure TBuildModesEditorFrame.NewBuildModeGroupToolButtonClick(
+procedure TBuildModesEditorFrame.NewBuildGroupButtonClick(
   Sender: TObject);
 begin
   Grid.AddNewBuildMode(true);
 end;
 
-procedure TBuildModesEditorFrame.DeleteBMRowToolButtonClick(Sender: TObject);
+procedure TBuildModesEditorFrame.DeleteBMRowButtonClick(Sender: TObject);
 begin
   Grid.DeleteSelectedModeRow;
+end;
+
+procedure TBuildModesEditorFrame.FrameClick(Sender: TObject);
+begin
+
 end;
 
 procedure TBuildModesEditorFrame.GridSelection(Sender: TObject; aCol,
@@ -989,15 +997,16 @@ begin
     OnSelection:=@GridSelection;
   end;
 
-  BuildModesToolBar.Images := IDEImages.Images_16;
-  NewBuildModeToolButton.Hint:=lisNewBuildMode;
-  NewBuildModeToolButton.ImageIndex := IDEImages.LoadImage(16, 'laz_add');
-  NewBuildFlagToolButton.Hint:=lisNewSetting;
-  NewBuildFlagToolButton.ImageIndex := IDEImages.LoadImage(16, 'laz_edit');
-  DeleteBMRowToolButton.Hint:=lisDeleteRow;
-  DeleteBMRowToolButton.ImageIndex := IDEImages.LoadImage(16, 'laz_delete');
-  NewBuildModeGroupToolButton.Hint:=lisNewGroupASetOfModes;
-  NewBuildModeGroupToolButton.ImageIndex:=IDEImages.LoadImage(16, 'laz_add');
+  NewBuildModeSpeedButton.Hint:=lisNewBuildMode;
+  NewBuildModeSpeedButton.LoadGlyphFromLazarusResource('laz_add');
+  NewBuildFlagSpeedButton.Hint:=lisNewSetting;
+  NewBuildFlagSpeedButton.LoadGlyphFromLazarusResource('laz_edit');
+  DeleteBMRowSpeedButton.Hint:=lisDeleteRow;
+  DeleteBMRowSpeedButton.LoadGlyphFromLazarusResource('laz_delete');
+  NewBuildGroupSpeedButton.Hint:=lisNewGroupASetOfModes;
+  NewBuildGroupSpeedButton.LoadGlyphFromLazarusResource('laz_add');
+  CurBuildModeLabel.Caption:=lisCurrent;
+  CurBuildModeComboBox.Hint:=lisSelectTheActiveBuildMode;
 
   // laz_edit, arrow_up, arrow_down
   UpdateButtons;

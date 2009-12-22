@@ -4606,6 +4606,7 @@ resourcestring
   lisDeleteBuildMode2 = 'Delete build mode?';
   lisDeleteBuildMode3 = 'Delete build mode %s%s%s?';
   lisNewGroupASetOfModes = 'New group - a set of modes';
+  lisSelectTheActiveBuildMode = 'Select the active build mode';
 
 implementation
 
