@@ -49,7 +49,9 @@ type
   TDebugManagerState = (
     dmsInitializingDebuggerObject,
     dmsInitializingDebuggerObjectFailed,
-    dmsDebuggerObjectBroken  // the debugger entered the error state
+    dmsDebuggerObjectBroken,  // the debugger entered the error state
+    dmsWaitForRun, // waiting for call to RunDebugger, set by StartDebugging
+    dmsRunning  // set by RunDebugger
     );
   TDebugManagerStates = set of TDebugManagerState;
 
@@ -107,7 +109,8 @@ type
     procedure DoToggleCallStack; virtual; abstract;
     procedure ProcessCommand(Command: word; var Handled: boolean); virtual; abstract;
 
-    function RunDebugger: TModalResult; virtual; abstract;
+    function StartDebugging: TModalResult; virtual; abstract; // set ToolStatus to itDebugger, but do not run debugger yet
+    function RunDebugger: TModalResult; virtual; abstract; // run program, wait until program ends
     procedure EndDebugging; virtual; abstract;
 
     function Evaluate(const AExpression: String; var AResult: String;

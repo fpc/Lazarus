@@ -23,7 +23,6 @@
     TTreeView for LCL
 
   ToDo:
-    - Editing
     - Columns
 }
 

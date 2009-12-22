@@ -10250,7 +10250,7 @@ begin
 
   Result := mrCancel;
 
-  Result := DebugBoss.RunDebugger;
+  Result := DebugBoss.StartDebugging;
 //  if Result<>mrOk then exit;
 
   DebugLn('[TMainIDE.DoRunProject] END');

@@ -76,6 +76,7 @@ type
 
   TDebugManager = class(TBaseDebugManager)
     procedure BreakAutoContinueTimer(Sender: TObject);
+    procedure OnRunTimer(Sender: TObject);
     // Menu events
     procedure mnuViewDebugDialogClick(Sender: TObject);
     procedure mnuResetDebuggerClicked(Sender: TObject);
@@ -109,6 +110,8 @@ type
 
     // when the debug output log is not open, store the debug log internally
     FHiddenDebugOutputLog: TStringList;
+
+    FRunTimer: TTimer;
 
     procedure SetDebugger(const ADebugger: TDebugger);
 
@@ -164,7 +167,8 @@ type
     procedure DoToggleCallStack; override;
     procedure ProcessCommand(Command: word; var Handled: boolean); override;
 
-    function RunDebugger: TModalResult; override;
+    function StartDebugging: TModalResult; override; // returns immediately
+    function RunDebugger: TModalResult; override; // waits till program ends
     procedure EndDebugging; override;
     function Evaluate(const AExpression: String; var AResult: String;
                      var ATypeInfo: TDBGType): Boolean; override;
@@ -1320,6 +1324,13 @@ begin
   FDebugger.Run;
 end;
 
+procedure TDebugManager.OnRunTimer(Sender: TObject);
+begin
+  FRunTimer.Enabled:=false;
+  if dmsWaitForRun in FManagerStates then
+    RunDebugger;
+end;
+
 procedure TDebugManager.DebuggerBreakPointHit(ADebugger: TDebugger;
   ABreakPoint: TBaseBreakPoint; var ACanContinue: Boolean);
 begin
@@ -1825,6 +1836,9 @@ begin
   FAutoContinueTimer := TTimer.Create(Self);
   FAutoContinueTimer.Enabled := False;
   FAutoContinueTimer.OnTimer := @BreakAutoContinueTimer;
+  FRunTimer := TTimer.Create(Self);
+  FRunTimer.Interval := 1;
+  FRunTimer.OnTimer := @OnRunTimer;
 
   inherited Create(TheOwner);
 end;
@@ -2359,18 +2373,19 @@ begin
   end;
 end;
 
-function TDebugManager.RunDebugger: TModalResult;
+function TDebugManager.StartDebugging: TModalResult;
 begin
-{$ifdef VerboseDebugger}
-  DebugLn('TDebugManager.RunDebugger A ',DbgS(FDebugger<>nil),' Destroying=',DbgS(Destroying));
-{$endif}
+  {$ifdef VerboseDebugger}
+  DebugLn('TDebugManager.StartDebugging A ',DbgS(FDebugger<>nil),' Destroying=',DbgS(Destroying));
+  {$endif}
   Result:=mrCancel;
   if Destroying then exit;
+  if [dmsWaitForRun,dmsRunning]*FManagerStates<>[] then exit;
   if (FDebugger <> nil) then
   begin
-  {$ifdef VerboseDebugger}
-    DebugLn('TDebugManager.RunDebugger B ',FDebugger.ClassName);
-  {$endif}
+    {$ifdef VerboseDebugger}
+    DebugLn('TDebugManager.StartDebugging B ',FDebugger.ClassName);
+    {$endif}
     // check if debugging needs restart
     if (dmsDebuggerObjectBroken in FManagerStates)
     and (MainIDE.ToolStatus=itDebugger) then begin
@@ -2378,13 +2393,47 @@ begin
       Result:=mrCancel;
       exit;
     end;
-    FDebugger.Run;
+    Include(FManagerStates,dmsWaitForRun);
+    FRunTimer.Enabled:=true;
+    Result:=mrOk;
+  end;
+end;
+
+function TDebugManager.RunDebugger: TModalResult;
+begin
+  {$ifdef VerboseDebugger}
+  DebugLn('TDebugManager.RunDebugger A ',DbgS(FDebugger<>nil),' Destroying=',DbgS(Destroying));
+  {$endif}
+  Result:=mrCancel;
+  if Destroying then exit;
+  Exclude(FManagerStates,dmsWaitForRun);
+  if dmsRunning in FManagerStates then exit;
+  if MainIDE.ToolStatus<>itDebugger then exit;
+  if (FDebugger <> nil) then
+  begin
+    {$ifdef VerboseDebugger}
+    DebugLn('TDebugManager.RunDebugger B ',FDebugger.ClassName);
+    {$endif}
+    // check if debugging needs restart
+    if (dmsDebuggerObjectBroken in FManagerStates)
+    and (MainIDE.ToolStatus=itDebugger) then begin
+      MainIDE.ToolStatus:=itNone;
+      Result:=mrCancel;
+      exit;
+    end;
+    Include(FManagerStates,dmsRunning);
+    try
+      FDebugger.Run;
+    finally
+      Exclude(FManagerStates,dmsRunning);
+    end;
     Result:=mrOk;
   end;
 end;
 
 procedure TDebugManager.EndDebugging;
 begin
+  Exclude(FManagerStates,dmsWaitForRun);
   if FDebugger <> nil then FDebugger.Done;
   // if not already freed
   FreeDebugger;
