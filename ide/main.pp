@@ -8111,23 +8111,32 @@ begin
   and FilenameIsAbsolute(AFilename) and FileExistsUTF8(AFilename) then begin
     // check if file is a lazarus project (.lpi)
     if (CompareFileExt(AFilename,'.lpi',false)=0) then begin
-      if QuestionDlg(lisOpenProject, Format(lisOpenTheProject, [AFilename]),
-        mtConfirmation, [mrYes, lisOpenProject2, mrNoToAll, lisOpenAsXmlFile], 0)=
-          mrYes
-      then begin
-        Result:=DoOpenProjectFile(AFilename,[ofAddToRecent]);
-        exit;
+      case
+        QuestionDlg(
+          lisOpenProject, Format(lisOpenTheProject, [AFilename]), mtConfirmation,
+          [mrYes, lisOpenProject2, mrNoToAll, lisOpenAsXmlFile, mrCancel], 0)
+      of
+        mrYes: begin
+          Result:=DoOpenProjectFile(AFilename,[ofAddToRecent]);
+          exit;
+        end;
+        mrNoToAll: include(Flags, ofRegularFile);
+        mrCancel: exit(mrCancel);
       end;
-      include(Flags, ofRegularFile);
+
     end;
     // check if file is a lazarus package (.lpk)
     if (CompareFileExt(AFilename,'.lpk',false)=0) then begin
-      if QuestionDlg(lisOpenPackage,
-        Format(lisOpenThePackage, [AFilename]), mtConfirmation,
-        [mrYes, lisCompPalOpenPackage, mrNoToAll, lisOpenAsXmlFile], 0)=mrYes
-      then begin
-        Result:=PkgBoss.DoOpenPackageFile(AFilename,[pofAddToRecent],CanAbort);
-        exit;
+      case
+        QuestionDlg(
+          lisOpenPackage, Format(lisOpenThePackage, [AFilename]), mtConfirmation,
+          [mrYes, lisCompPalOpenPackage, mrNoToAll, lisOpenAsXmlFile, mrCancel], 0)
+      of
+        mrYes: begin
+          Result:=PkgBoss.DoOpenPackageFile(AFilename,[pofAddToRecent],CanAbort);
+          exit;
+        end;
+        mrCancel: exit(mrCancel);
       end;
     end;
   end;
