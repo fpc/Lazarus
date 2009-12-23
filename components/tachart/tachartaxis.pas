@@ -118,9 +118,7 @@ type
     FAlignment: TChartAxisAlignment;
     FGrid: TChartAxisPen;
     FInverted: Boolean;
-    FOffset: Double;
     FOnMarkToText: TChartAxisMarkToTextEvent;
-    FScale: Double;
     FTickColor: TColor;
     FTickLength: Integer;
     FTitle: TChartAxisTitle;
@@ -130,9 +128,7 @@ type
     procedure SetAlignment(AValue: TChartAxisAlignment);
     procedure SetGrid(AValue: TChartAxisPen);
     procedure SetInverted(AValue: Boolean);
-    procedure SetOffset(AValue: Double);
     procedure SetOnMarkToText(const AValue: TChartAxisMarkToTextEvent);
-    procedure SetScale(AValue: Double);
     procedure SetTickColor(AValue: TColor);
     procedure SetTickLength(AValue: Integer);
     procedure SetTitle(AValue: TChartAxisTitle);
@@ -164,8 +160,6 @@ type
     property Grid: TChartAxisPen read FGrid write SetGrid;
     // Inverts the axis scale from increasing to decreasing.
     property Inverted: boolean read FInverted write SetInverted default false;
-    property Offset: Double read FOffset write SetOffset;
-    property Scale: Double read FScale write SetScale;
     property TickColor: TColor read FTickColor write SetTickColor default clBlack;
     property TickLength: Integer
       read FTickLength write SetTickLength default DEF_TICK_LENGTH;
@@ -204,7 +198,7 @@ type
 implementation
 
 uses
-  Math;
+  LResources, Math;
 
 const
   FONT_SLOPE_VERTICAL = 45 * 10;
@@ -283,7 +277,6 @@ begin
   FGrid := TChartAxisPen.Create;
   FGrid.OnChange := @StyleChanged;
   FGrid.Style := psDot;
-  FScale := 1.0;
   FTickColor := clBlack;
   FTickLength := DEF_TICK_LENGTH;
   FTitle := TChartAxisTitle.Create(ACollection.Owner as TCustomChart);
@@ -552,26 +545,10 @@ begin
   StyleChanged(Self);
 end;
 
-procedure TChartAxis.SetOffset(AValue: Double);
-begin
-  if FOffset = AValue then exit;
-  FOffset := AValue;
-  StyleChanged(Self);
-end;
-
 procedure TChartAxis.SetOnMarkToText(const AValue: TChartAxisMarkToTextEvent);
 begin
   if FOnMarkToText = AValue then exit;
   FOnMarkToText := AValue;
-  StyleChanged(Self);
-end;
-
-procedure TChartAxis.SetScale(AValue: Double);
-begin
-  if FScale = AValue then exit;
-  FScale := AValue;
-  if FScale = 0.0 then
-    FScale := 1.0;
   StyleChanged(Self);
 end;
 
@@ -744,6 +721,17 @@ begin
   if FScale = 0 then FScale := 1.0;
   Changed;
 end;
+
+procedure SkipObsoleteAxisProperties;
+const
+  TRANSFORM_NOTE = 'Obsolete, use Transformation instead';
+begin
+  RegisterPropertyToSkip(TChartAxis, 'Offset', TRANSFORM_NOTE, '');
+  RegisterPropertyToSkip(TChartAxis, 'Scale', TRANSFORM_NOTE, '');
+end;
+
+initialization
+  SkipObsoleteAxisProperties;
 
 end.
 
