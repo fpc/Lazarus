@@ -60,6 +60,11 @@ begin
     inherited AssignTo(Dest);
 end;
 
+function TIconOptions.GetOwner: TPersistent;
+begin
+  Result := FListView;
+end;
+
 constructor TIconOptions.Create(AOwner: TCustomListView);
 begin
   inherited Create;

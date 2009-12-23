@@ -75,6 +75,11 @@ begin
   end;
 end;
 
+function TListItems.GetOwner: TPersistent;
+begin
+  Result := FOwner;
+end;
+
 {------------------------------------------------------------------------------}
 {   TListItems SetItem                                                         }
 {------------------------------------------------------------------------------}

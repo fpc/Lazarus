@@ -747,6 +747,8 @@ type
     function IsSideStored: boolean;
     procedure SetControl(const AValue: TControl);
     procedure SetSide(const AValue: TAnchorSideReference);
+  protected
+    function GetOwner: TPersistent; override;
   public
     constructor Create(TheOwner: TControl; TheKind: TAnchorKind);
     destructor Destroy; override;
@@ -3343,6 +3345,11 @@ begin
   FOwner.AnchorSideChanged(Self);
   if FControl<>nil then
     FControl.ForeignAnchorSideChanged(Self,ascoChangeSide);
+end;
+
+function TAnchorSide.GetOwner: TPersistent;
+begin
+  Result := FOwner;
 end;
 
 constructor TAnchorSide.Create(TheOwner: TControl; TheKind: TAnchorKind);

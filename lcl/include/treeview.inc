@@ -1727,6 +1727,11 @@ begin
     Items[I].WriteDelphiData(Stream, Info);
 end;
 
+function TTreeNode.GetOwner: TPersistent;
+begin
+  Result := FOwner;
+end;
+
 procedure TTreeNode.ConsistencyCheck;
 var RealSubTreeCount: integer;
   i: integer;
@@ -1835,6 +1840,11 @@ begin
   Result:=FCount;
   //if Owner.HandleAllocated then Result := TreeView_GetCount(Handle)
   //else Result := 0;
+end;
+
+function TTreeNodes.GetOwner: TPersistent;
+begin
+  Result := FOwner;
 end;
 
 function TTreeNodes.GetHandle: THandle;

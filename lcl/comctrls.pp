@@ -682,6 +682,7 @@ type
     procedure SetWrapText(Value: Boolean);
   protected
     procedure AssignTo(Dest: TPersistent); override;
+    function GetOwner: TPersistent; override;
   public
     constructor Create(AOwner: TCustomListView);
   published
@@ -735,10 +736,11 @@ type
   protected
     function IsEqual(const AItem: TListItem): Boolean;
     function GetCheckedInternal: Boolean;
+    function GetOwner: TPersistent; override;
   public
     procedure Assign(ASource: TPersistent); override;
 
-    constructor Create(AOwner : TListItems);
+    constructor Create(AOwner: TListItems);
     destructor Destroy; override;
     procedure Delete;
     procedure MakeVisible(PartialOK: Boolean);
@@ -826,9 +828,10 @@ type
   protected
     procedure DefineProperties(Filer: TFiler); override;
     function GetCount : Integer;
-    procedure SetCount(const ACount: Integer);
     function GetItem(const AIndex: Integer): TListItem;
+    function GetOwner: TPersistent; override;
     procedure WSCreateItems;
+    procedure SetCount(const ACount: Integer);
     procedure SetItem(const AIndex: Integer; const AValue: TListItem);
   public
     function Add: TListItem;
@@ -2076,6 +2079,8 @@ type
     procedure UnbindFromMultiSelected;
     procedure WriteData(Stream: TStream);
     procedure WriteDelphiData(Stream: TStream; Info: PDelphiNodeInfo);
+  protected
+    function GetOwner: TPersistent; override;
   public
     constructor Create(AnOwner: TTreeNodes);
     function AlphaSort: Boolean;
@@ -2216,6 +2221,7 @@ type
       Data: Pointer; AddMode: TAddMode): TTreeNode;
     procedure DefineProperties(Filer: TFiler); override;
     function GetCount: Integer;
+    function GetOwner: TPersistent; override;
     procedure SetItem(Index: Integer; AValue: TTreeNode);
     procedure SetUpdateState(Updating: Boolean);
   public

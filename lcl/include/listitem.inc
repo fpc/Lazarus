@@ -486,6 +486,11 @@ begin
   Result := FChecked;
 end;
 
+function TListItem.GetOwner: TPersistent;
+begin
+  Result := FOwner;
+end;
+
 {------------------------------------------------------------------------------}
 {   TListItem GetChecked                                                       }
 {------------------------------------------------------------------------------}

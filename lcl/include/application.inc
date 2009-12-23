@@ -2094,6 +2094,9 @@ var
   IsFirstItem: Boolean;
 begin
   if csDestroying in AComponent.ComponentState then exit;
+  if AComponent.ClassName='TSynEdit' then
+    DumpStack;
+
   //DebugLn(['TApplication.ReleaseComponent ',DbgSName(AComponent)]);
   if AppDestroying in FFlags then begin
     // free immediately
