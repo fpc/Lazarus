@@ -759,10 +759,7 @@ begin
   if csLoading in ComponentState then Exit;
   
   if FParentColor then
-  begin
     Color := FParent.Color;
-    FParentColor := true;
-  end;
 end;
 
 {------------------------------------------------------------------------------
@@ -775,10 +772,7 @@ begin
   if csLoading in ComponentState then Exit;
 
   if FParentShowHint then
-  begin
     ShowHint := FParent.ShowHint;
-    FParentShowHint := True;
-  end;
 end;
 
 {------------------------------------------------------------------------------}
@@ -4919,7 +4913,6 @@ begin
   begin
     if FParent <> nil then
       BidiMode := FParent.BidiMode;
-    ParentBidiMode := True;
   end;
 end;
 
