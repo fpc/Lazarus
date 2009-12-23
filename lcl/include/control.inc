@@ -284,10 +284,7 @@ begin
   if csLoading in ComponentState then exit;
 
   if FParentFont then
-  begin
     Font := FParent.Font;
-    FParentFont := True;
-  end;
   Perform(CM_PARENTFONTCHANGED, 0, 0);
 end;
 
