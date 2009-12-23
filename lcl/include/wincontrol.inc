@@ -4530,7 +4530,7 @@ procedure TWinControl.FontChanged(Sender: TObject);
 var
   i: Integer;
 begin
-  ParentFont := False;
+  FParentFont := False;
   if HandleAllocated and ([csLoading, csDestroying] * ComponentState = []) then
   begin
     TWSWinControlClass(WidgetSetClass).SetFont(Self, Font);
@@ -4544,6 +4544,7 @@ begin
   end
   else
     Include(FWinControlFlags, wcfFontChanged);
+  inherited;
   for i := 0 to ControlCount - 1 do
     Controls[i].ParentFontChanged;
 end;
