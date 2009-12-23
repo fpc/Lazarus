@@ -392,19 +392,6 @@ begin
 end;
 
 {------------------------------------------------------------------------------
-  Method:  TCustomEdit.RealSetText
-  Params:  Override of text setup to watch for max length
-  Returns: Nothing
- ------------------------------------------------------------------------------}
-procedure TCustomEdit.RealSetText(const Value: TCaption);
-begin
-  if (MaxLength > 0) and (Length(Value) > MaxLength) then
-    inherited RealSetText(UTF8Copy(Value, 1, MaxLength))
-  else
-    inherited RealSetText(Value);
-end;
-
-{------------------------------------------------------------------------------
   function TCustomEdit.ChildClassAllowed(ChildClass: TClass): boolean;
 ------------------------------------------------------------------------------}
 function TCustomEdit.ChildClassAllowed(ChildClass: TClass): boolean;

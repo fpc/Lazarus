@@ -720,7 +720,6 @@ type
     procedure SetSelLength(Val: integer); virtual;
     procedure SetSelStart(Val: integer); virtual;
     procedure SetSelText(const Val: string); virtual;
-    procedure RealSetText(const Value: TCaption); override;
     function ChildClassAllowed(ChildClass: TClass): boolean; override;
     class function GetControlClassDefaultSize: TPoint; override;
     procedure KeyUp(var Key: Word; Shift: TShiftState); override;

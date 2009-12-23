@@ -174,6 +174,7 @@ type
     class procedure SetReadOnly(const ACustomEdit: TCustomEdit; NewReadOnly: boolean); override;
     class procedure SetSelStart(const ACustomEdit: TCustomEdit; NewStart: integer); override;
     class procedure SetSelLength(const ACustomEdit: TCustomEdit; NewLength: integer); override;
+    class procedure SetText(const AWinControl: TWinControl; const AText: string); override;
 
     class procedure Undo(const ACustomEdit: TCustomEdit); override;
   end;
@@ -1225,6 +1226,17 @@ end;
 class procedure TWin32WSCustomEdit.SetSelLength(const ACustomEdit: TCustomEdit; NewLength: integer);
 begin
   EditSetSelLength(ACustomEdit.Handle, NewLength);
+end;
+
+class procedure TWin32WSCustomEdit.SetText(const AWinControl: TWinControl;
+  const AText: string);
+var
+  ACustomEdit: TCustomEdit absolute AWinControl;
+begin
+  if (ACustomEdit.MaxLength > 0) and (Length(AText) > ACustomEdit.MaxLength) then
+    TWin32WSWinControl.SetText(ACustomEdit, UTF8Copy(AText, 1, ACustomEdit.MaxLength))
+  else
+    TWin32WSWinControl.SetText(ACustomEdit, AText);
 end;
 
 class procedure TWin32WSCustomEdit.Undo(const ACustomEdit: TCustomEdit);
