@@ -98,7 +98,9 @@ type
     constructor Create(AOwner: TComponent); override;
     destructor Destroy; override;
   public
-    function Add(AX, AY: Double; const ALabel: String; AColor: TColor): Integer;
+    function Add(
+      AX, AY: Double; const ALabel: String; AColor: TColor;
+      AInOrder: Boolean = true): Integer;
     procedure Clear;
     procedure CopyForm(ASource: TCustomChartSource);
     procedure Delete(AIndex: Integer); inline;
@@ -427,7 +429,8 @@ end;
 { TListChartSource }
 
 function TListChartSource.Add(
-  AX, AY: Double; const ALabel: String; AColor: TColor): Integer;
+  AX, AY: Double; const ALabel: String;
+  AColor: TColor; AInOrder: Boolean): Integer;
 var
   pcc: PChartDataItem;
 begin
@@ -438,14 +441,16 @@ begin
   pcc^.Text := ALabel;
   UpdateCachesAfterAdd(AX, AY);
 
-  // We keep data points ordered by X coordinate.
-  // Note that this leads to O(N^2) time except
-  // for the case of adding already ordered points.
-  // So, is the user wants to add many (>10000) points to a graph,
-  // he should pre-sort them to avoid performance penalty.
   Result := FData.Count;
-  while (Result > 0) and (Item[Result - 1]^.X > AX) do
-    Dec(Result);
+  if AInOrder then begin
+    // Keep data points ordered by X coordinate.
+    // Note that this leads to O(N^2) time except
+    // for the case of adding already ordered points.
+    // So, is the user wants to add many (>10000) points to a graph,
+    // he should pre-sort them to avoid performance penalty.
+    while (Result > 0) and (Item[Result - 1]^.X > AX) do
+      Dec(Result);
+  end;
   FData.Insert(Result, pcc);
   Notify;
 end;
