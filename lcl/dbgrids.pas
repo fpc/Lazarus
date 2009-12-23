@@ -522,6 +522,7 @@ type
     property OnColExit;
     property OnColumnMoved;
     property OnColumnSized;
+    property OnContextPopup;
     property OnDrawColumnCell;
     property OnDblClick;
     property OnDragDrop;

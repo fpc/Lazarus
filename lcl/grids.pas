@@ -1305,7 +1305,6 @@ type
     property VisibleColCount;
     property VisibleRowCount;
 
-
     property OnBeforeSelection;
     property OnClick;
     property OnColRowDeleted;
@@ -1313,10 +1312,15 @@ type
     property OnColRowInserted;
     property OnColRowMoved;
     property OnCompareCells;
+    property OnContextPopup;
     property OnDblClick;
+    property OnDragDrop;
+    property OnDragOver;
     property OnDrawCell;
     property OnEditButtonClick;
     property OnEditingDone;
+    property OnEndDock;
+    property OnEndDrag;
     property OnEnter;
     property OnExit;
     property OnGetEditMask;
@@ -1337,14 +1341,9 @@ type
     property OnSelection;
     property OnSelectCell;
     property OnSetEditText;
-    property OnTopleftChanged;
-    property OnContextPopup;
-    property OnDragDrop;
-    property OnDragOver;
-    property OnEndDock;
-    property OnEndDrag;
     property OnStartDock;
     property OnStartDrag;
+    property OnTopleftChanged;
     property OnUTF8KeyPress;
   end;
 
@@ -1498,7 +1497,6 @@ type
     property VisibleColCount;
     property VisibleRowCount;
 
-
     property OnBeforeSelection;
     property OnChangeBounds;
     property OnClick;
@@ -1507,6 +1505,7 @@ type
     property OnColRowInserted;
     property OnColRowMoved;
     property OnCompareCells;
+    property OnContextPopup;
     property OnDragDrop;
     property OnDragOver;
     property OnDblClick;
@@ -1543,7 +1542,6 @@ type
     property OnTopLeftChanged;
     property OnUTF8KeyPress;
     property OnValidateEntry;
-    property OnContextPopup;
   end;
 
 procedure DrawRubberRect(Canvas: TCanvas; aRect: TRect; Color: TColor);
