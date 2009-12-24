@@ -5219,11 +5219,10 @@ Indicates how text is displayed in a text editing control.</p>
       <!-- property Visibility: public -->
       <element name="TCustomEdit.MaxLength">
         <short>
-          <var>MaxLength</var>
+          <var>MaxLength</var>: maximum length allowed for text string</short>
+        <descr>MaxLength determines the maximum number of characters allowed in a TCustomEdit. When its value is 0, the user is allowed to enter any number of characters.
 
-
-
-: maximum length allowed for text string</short>
+Unlike VCL, if a text set through the Text property has more characters then MaxLength it will be truncated. It's not possible to implement the VCL behavior due to characteristics of non win32 widgetsets.</descr>
       </element>
       <!-- property Visibility: public -->
       <element name="TCustomEdit.Modified">
