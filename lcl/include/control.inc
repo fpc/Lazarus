@@ -4921,10 +4921,7 @@ begin
   if csLoading in ComponentState then exit;
 
   if ParentBidiMode then
-  begin
-    if FParent <> nil then
-      BidiMode := FParent.BidiMode;
-  end;
+    BidiMode := FParent.BidiMode;
 end;
 
 {------------------------------------------------------------------------------
