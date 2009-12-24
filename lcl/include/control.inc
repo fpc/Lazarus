@@ -3068,25 +3068,25 @@ begin
     if ParentColor then
     begin
       Color := Parent.Color;
-      ParentColor := True;
+      FParentColor := True;
     end;
 
     if ParentFont then
     begin
       Font := Parent.Font;
-      ParentFont := True;
+      FParentFont := True;
     end;
 
     if ParentBidiMode then
     begin
       BiDiMode := Parent.BiDiMode;
-      ParentBidiMode := True;
+      FParentBidiMode := True;
     end;
 
     if ParentShowHint then
     begin
       ShowHint := Parent.ShowHint;
-      ParentShowHint := True;
+      FParentShowHint := True;
     end;
   end;
 
