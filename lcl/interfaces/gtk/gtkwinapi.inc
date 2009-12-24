@@ -2618,16 +2618,19 @@ var
   begin
     // use the gtk paint functions to draw a widget style dependent check(box)
 
+    if (DFCS_CHECKED and uState)<>0 then
+      Shadow := GTK_SHADOW_IN //checked style
+    else
+      Shadow := GTK_SHADOW_OUT; //unchecked style
+
     if (DFCS_PUSHED and uState)<>0 then begin
-      STATE := GTK_STATE_ACTIVE;//button checked(GTK ignores disabled)
-      Shadow := GTK_SHADOW_IN;//checked style
+      STATE := GTK_STATE_ACTIVE;//button pressed(GTK ignores disabled)
     end
     else begin
-      Shadow := GTK_SHADOW_OUT; //unchecked style
       if (DFCS_INACTIVE and uState)<>0 then begin
         State:=GTK_STATE_INSENSITIVE;//button disabled
       end else
-        if (DFCS_CHECKED and uState)<>0 then begin
+        if (DFCS_HOT and uState)<>0 then begin
           // button enabled, special (e.g. mouse over)
           State:=GTK_STATE_PRELIGHT;
         end else begin
