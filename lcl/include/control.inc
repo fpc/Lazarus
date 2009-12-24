@@ -755,7 +755,10 @@ begin
   if csLoading in ComponentState then Exit;
   
   if FParentColor then
+  begin
     Color := FParent.Color;
+    FParentColor := True;
+  end;
 end;
 
 {------------------------------------------------------------------------------
@@ -768,7 +771,10 @@ begin
   if csLoading in ComponentState then exit;
 
   if FParentFont then
+  begin
     Font := FParent.Font;
+    FParentFont := True;
+  end;
   //call here for compatibility with older LCL code
   ParentFontChanged;
 end;
@@ -783,7 +789,10 @@ begin
   if csLoading in ComponentState then Exit;
 
   if FParentShowHint then
+  begin
     ShowHint := FParent.ShowHint;
+    FParentShowHint := True;
+  end;
 end;
 
 {------------------------------------------------------------------------------}
@@ -4921,7 +4930,10 @@ begin
   if csLoading in ComponentState then exit;
 
   if ParentBidiMode then
+  begin
     BidiMode := FParent.BidiMode;
+    FParentBiDiMode := True;
+  end;
 end;
 
 {------------------------------------------------------------------------------
