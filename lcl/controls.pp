@@ -1113,6 +1113,7 @@ type
     procedure CMHintShow(var Message: TLMessage); message CM_HINTSHOW;
     procedure CMParentBiDiModeChanged(var Message: TLMessage); message CM_PARENTBIDIMODECHANGED;
     procedure CMParentColorChanged(var Message: TLMessage); message CM_PARENTCOLORCHANGED;
+    procedure CMParentFontChanged(var Message: TLMessage); message CM_PARENTFONTCHANGED;
     procedure CMParentShowHintChanged(var Message: TLMessage); message CM_PARENTSHOWHINTCHANGED;
     procedure CMVisibleChanged(var Message: TLMessage); message CM_VISIBLECHANGED;
     procedure CMTextChanged(var Message: TLMessage); message CM_TEXTCHANGED;

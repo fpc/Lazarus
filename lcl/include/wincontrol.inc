@@ -4546,7 +4546,7 @@ begin
     Include(FWinControlFlags, wcfFontChanged);
   inherited;
   for i := 0 to ControlCount - 1 do
-    Controls[i].ParentFontChanged;
+    Controls[i].Perform(CM_PARENTFONTCHANGED, 0, 0);
 end;
 
 procedure TWinControl.SetColor(Value: TColor);
@@ -5989,7 +5989,7 @@ begin
       AControl.Perform(CM_PARENTCOLORCHANGED, 0, 0);
       AControl.Perform(CM_PARENTSHOWHINTCHANGED, 0, 0);
       AControl.Perform(CM_PARENTBIDIMODECHANGED, 0, 0);
-      AControl.ParentFontChanged;
+      AControl.Perform(CM_PARENTFONTCHANGED, 0, 0);
       if AControl is TWinControl then
         TWinControl(AControl).UpdateControlState
       else
@@ -7273,7 +7273,7 @@ begin
         TWSWinControlClass(WidgetSetClass).SetFont(Self,Font);
         NotifyControls(CM_PARENTCOLORCHANGED);
         for i := 0 to ControlCount - 1 do
-          Controls[i].ParentFontChanged;
+          Controls[i].Perform(CM_PARENTFONTCHANGED, 0, 0);
         FWinControlFlags:=FWinControlFlags-[wcfFontChanged];
       end;
     end;

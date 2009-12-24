@@ -281,11 +281,7 @@ end;
 
 procedure TControl.ParentFontChanged;
 begin
-  if csLoading in ComponentState then exit;
-
-  if FParentFont then
-    Font := FParent.Font;
-  Perform(CM_PARENTFONTCHANGED, 0, 0);
+  //kept for compatibility. The real work is done in CMParentFontChanged
 end;
 
 procedure TControl.SetAction(Value: TBasicAction);
@@ -760,6 +756,21 @@ begin
   
   if FParentColor then
     Color := FParent.Color;
+end;
+
+{------------------------------------------------------------------------------
+       TControl.CMParentFontChanged
+
+       assumes: FParent <> nil
+------------------------------------------------------------------------------}
+procedure TControl.CMParentFontChanged(var Message: TLMessage);
+begin
+  if csLoading in ComponentState then exit;
+
+  if FParentFont then
+    Font := FParent.Font;
+  //call here for compatibility with older LCL code
+  ParentFontChanged;
 end;
 
 {------------------------------------------------------------------------------
@@ -3522,7 +3533,7 @@ begin
   begin
     FParentFont := Value;
     if Assigned(FParent) and not (csReading in ComponentState) then
-      ParentFontChanged;
+      Perform(CM_PARENTFONTCHANGED, 0, 0);
   end;
 end;
 
