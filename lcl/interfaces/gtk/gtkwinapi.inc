@@ -2617,8 +2617,9 @@ var
     Widget : PGTKWidget;
   begin
     // use the gtk paint functions to draw a widget style dependent check(box)
-
-    if (DFCS_CHECKED and uState)<>0 then
+    if (DFCS_BUTTON3STATE and uState)<>0 then
+      Shadow := GTK_SHADOW_ETCHED_IN //3state style
+    else if (DFCS_CHECKED and uState)<>0 then
       Shadow := GTK_SHADOW_IN //checked style
     else
       Shadow := GTK_SHADOW_OUT; //unchecked style
@@ -2725,18 +2726,14 @@ begin
             begin
               Assert(False, 'Trace:State ButtonRadio');
             end;
-          DFCS_BUTTON3STATE:
-            begin
-              Assert(False, 'Trace:State Button3State');
-            end;
           DFCS_BUTTONPUSH:
             begin
               Assert(False, 'Trace:DFCS_BUTTONPUSH in uState');
               DrawButtonPush;
             end;
-          DFCS_BUTTONCHECK:
+          DFCS_BUTTONCHECK, DFCS_BUTTON3STATE:
             begin
-              Assert(False, 'Trace:State ButtonCheck');
+              Assert(False, 'Trace:State ButtonCheck, Button3State');
               DrawCheck;
             end;
         else
