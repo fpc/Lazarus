@@ -2684,9 +2684,13 @@ begin
       R := Rect;
 
     Widget:=TGtkDeviceContext(DC).Widget;
-    ClientWidget:=GetFixedWidget(Widget);
-    if ClientWidget<>nil then
-      Widget:=ClientWidget;
+    //It's possible to draw in a DC without a widget, e.g., a Bitmap
+    if Widget <> nil then
+    begin
+      ClientWidget:=GetFixedWidget(Widget);
+      if ClientWidget<>nil then
+        Widget:=ClientWidget;
+    end;
   end else
     Widget:=nil;
 
