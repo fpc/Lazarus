@@ -4527,8 +4527,6 @@ begin
 end;
 
 procedure TWinControl.FontChanged(Sender: TObject);
-var
-  i: Integer;
 begin
   FParentFont := False;
   if HandleAllocated and ([csLoading, csDestroying] * ComponentState = []) then
@@ -4545,8 +4543,7 @@ begin
   else
     Include(FWinControlFlags, wcfFontChanged);
   inherited;
-  for i := 0 to ControlCount - 1 do
-    Controls[i].Perform(CM_PARENTFONTCHANGED, 0, 0);
+  NotifyControls(CM_PARENTFONTCHANGED);
 end;
 
 procedure TWinControl.SetColor(Value: TColor);
@@ -7272,8 +7269,7 @@ begin
       begin
         TWSWinControlClass(WidgetSetClass).SetFont(Self,Font);
         NotifyControls(CM_PARENTCOLORCHANGED);
-        for i := 0 to ControlCount - 1 do
-          Controls[i].Perform(CM_PARENTFONTCHANGED, 0, 0);
+        NotifyControls(CM_PARENTFONTCHANGED);
         FWinControlFlags:=FWinControlFlags-[wcfFontChanged];
       end;
     end;
