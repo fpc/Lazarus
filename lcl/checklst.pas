@@ -65,7 +65,6 @@ type
     procedure ItemClick(const AIndex: Integer); virtual;
     procedure KeyDown(var Key: Word; Shift: TShiftState); override;
     procedure FontChanged(Sender: TObject); override;
-    procedure ParentFontChanged; override;
   public
     constructor Create(AOwner: TComponent); override;
     procedure MeasureItem(Index: Integer; var TheHeight: Integer); override;
@@ -326,13 +325,6 @@ end;
 procedure TCustomCheckListBox.FontChanged(Sender: TObject);
 begin
   inherited FontChanged(Sender);
-  if ([csLoading, csDestroying] * ComponentState = []) and (Style = lbStandard) then
-    ItemHeight := CalculateStandardItemHeight;
-end;
-
-procedure TCustomCheckListBox.ParentFontChanged;
-begin
-  inherited ParentFontChanged;
   if ([csLoading, csDestroying] * ComponentState = []) and (Style = lbStandard) then
     ItemHeight := CalculateStandardItemHeight;
 end;

@@ -725,12 +725,6 @@ begin
   ApplyFontForButtons;
 end;
 
-procedure TToolBar.ParentFontChanged;
-begin
-  inherited ParentFontChanged;
-  ApplyFontForButtons;
-end;
-
 function TToolBar.CheckMenuDropdown(Button: TToolButton): Boolean;
 var
   APoint: TPoint;

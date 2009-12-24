@@ -1709,7 +1709,6 @@ type
     procedure ControlsAligned; override;
     function FindButtonFromAccel(Accel: Word): TToolButton;
     procedure FontChanged(Sender: TObject); override;
-    procedure ParentFontChanged; override;
     procedure Loaded; override;
     procedure Notification(AComponent: TComponent; Operation: TOperation); override;
     procedure RepositionButton(Index: Integer);
