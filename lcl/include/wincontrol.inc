@@ -7263,12 +7263,12 @@ begin
       if wcfColorChanged in FWinControlFlags then
       begin
         TWSWinControlClass(WidgetSetClass).SetColor(Self);
+        NotifyControls(CM_PARENTCOLORCHANGED);
         Exclude(FWinControlFlags,wcfColorChanged);
       end;
       if wcfFontChanged in FWinControlFlags then
       begin
         TWSWinControlClass(WidgetSetClass).SetFont(Self,Font);
-        NotifyControls(CM_PARENTCOLORCHANGED);
         NotifyControls(CM_PARENTFONTCHANGED);
         FWinControlFlags:=FWinControlFlags-[wcfFontChanged];
       end;
