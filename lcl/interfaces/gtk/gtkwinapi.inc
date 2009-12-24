@@ -2573,11 +2573,12 @@ var
     aDC:=TGtkDeviceContext(DC);
     DCOrigin:= aDC.Offset;
 
-    aStyle := gtk_widget_get_style(Widget);
-    if aStyle=nil then
+    If Widget <> nil then
+      aStyle := gtk_widget_get_style(Widget)
+    else
       aStyle := GetStyle(lgsButton);
     If aStyle = nil then
-       aStyle := GetStyle(lgsGTK_Default);
+      aStyle := GetStyle(lgsGTK_Default);
 
     If State = GTK_STATE_SELECTED then
         State := GTK_STATE_ACTIVE;
