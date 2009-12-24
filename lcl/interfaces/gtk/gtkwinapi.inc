@@ -2618,7 +2618,7 @@ var
     Style : PGTKStyle;
     Widget : PGTKWidget;
   begin
-    // use the gtk paint functions to draw a widget style dependent check(box)
+    // use the gtk paint functions to draw a widget style dependent check/radio button
     if (DFCS_BUTTON3STATE and uState)<>0 then
       Shadow := GTK_SHADOW_ETCHED_IN //3state style
     else if (DFCS_CHECKED and uState)<>0 then
@@ -2657,8 +2657,10 @@ var
 
     If Widget = nil then
       Widget := GetStyleWidget(lgsDefault);
-    If (Widget <> nil) and (Style <> nil) then begin
+    If Widget <> nil then
       Widget^.Window := aDC.Drawable;
+    Result := Style <> nil;
+    If Result then begin
       if IsRadioButton then
         gtk_paint_option(Style,aDC.Drawable, State,
           Shadow, nil, Widget, 'radiobutton',
@@ -2669,16 +2671,6 @@ var
           Shadow, nil, Widget, 'checkbutton',
           R.Left+DCOrigin.X,R.Top+DCOrigin.Y,
           R.Right-R.Left, R.Bottom-R.Top);
-      Result := True;
-    end
-    else begin
-      {$IfNDef Win32}
-      if Style<>nil then
-        gtk_draw_check(Style,aDC.Drawable, State,
-          Shadow, R.Left+DCOrigin.X,R.Top+DCOrigin.Y,
-          R.Right-R.Left, R.Bottom-R.Top);
-      {$EndIf}
-      Result := True;
     end;
   end;
 
