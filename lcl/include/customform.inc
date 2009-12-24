@@ -621,7 +621,6 @@ begin
       BidiMode := Parent.BidiMode
     else
       BidiMode := Application.BidiMode;
-    ParentBidiMode := True;
   end;
 end;
 
