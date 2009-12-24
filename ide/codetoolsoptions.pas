@@ -47,7 +47,7 @@ type
 
   { TCodeToolsOptions }
 
-  TCodeToolsOptions = class(TAbstractIDEOptions)
+  TCodeToolsOptions = class(TAbstractIDEEnvironmentOptions)
   private
     FClassHeaderComments: boolean;
     FClassImplementationComments: boolean;

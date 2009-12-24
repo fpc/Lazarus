@@ -39,12 +39,29 @@ type
   { TAbstractIDEOptions }
 
   TAbstractIDEOptions = class(TPersistent)
+  private
+    FOnAfterRead: TNotifyEvent;
+    FOnAfterWrite: TNotifyEvent;
+    FOnBeforeRead: TNotifyEvent;
+    FOnBeforeWrite: TNotifyEvent;
   public
     class function GetGroupCaption:string; virtual; abstract;
     class function GetInstance: TAbstractIDEOptions; virtual; abstract;
+
+    procedure DoBeforeRead; virtual;
+    procedure DoAfterRead; virtual;
+    procedure DoBeforeWrite; virtual;
     procedure DoAfterWrite; virtual;
+
+    property OnBeforeRead: TNotifyEvent read FOnBeforeRead write FOnBeforeRead;
+    property OnAfterRead: TNotifyEvent read FOnAfterRead write FOnAfterRead;
+    property OnBeforeWrite: TNotifyEvent read FOnBeforeWrite write FOnBeforeWrite;
+    property OnAfterWrite: TNotifyEvent read FOnAfterWrite write FOnAfterWrite;
   end;
   TAbstractIDEOptionsClass = class of TAbstractIDEOptions;
+
+  TAbstractIDEEnvironmentOptions = class(TAbstractIDEOptions);
+  TAbstractIDEProjectOptions = class(TAbstractIDEOptions);
 
   TOnLoadIDEOptions = procedure(Sender: TObject; AOptions: TAbstractIDEOptions) of object;
   TOnSaveIDEOptions = procedure(Sender: TObject; AOptions: TAbstractIDEOptions) of object;
@@ -417,9 +434,28 @@ end;
 
 { TAbstractIDEOptions }
 
+procedure TAbstractIDEOptions.DoBeforeRead;
+begin
+  if Assigned(FOnBeforeRead) then
+    OnBeforeRead(Self);
+end;
+
+procedure TAbstractIDEOptions.DoAfterRead;
+begin
+  if Assigned(FOnAfterRead) then
+    OnAfterRead(Self);
+end;
+
+procedure TAbstractIDEOptions.DoBeforeWrite;
+begin
+  if Assigned(FOnBeforeWrite) then
+    OnBeforeWrite(Self);
+end;
+
 procedure TAbstractIDEOptions.DoAfterWrite;
 begin
-  // nothing
+  if Assigned(FOnAfterWrite) then
+    OnAfterWrite(Self);
 end;
 
 initialization

@@ -128,7 +128,7 @@ const
 
 type
 
-  TCodeExplorerOptions = class(TAbstractIDEOptions)
+  TCodeExplorerOptions = class(TAbstractIDEEnvironmentOptions)
   private
     FCategories: TCodeExplorerCategories;
     FChangeStep: integer;

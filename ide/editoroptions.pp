@@ -844,7 +844,7 @@ type
 
   { TEditorOptions - Editor Options object used to hold the editor options }
 
-  TEditorOptions = class(TAbstractIDEOptions)
+  TEditorOptions = class(TAbstractIDEEnvironmentOptions)
   private
     xmlconfig: TRttiXMLConfig;
 

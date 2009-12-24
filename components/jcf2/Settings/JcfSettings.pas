@@ -46,7 +46,7 @@ type
 
   { TFormatSettings }
 
-  TFormatSettings = class(TAbstractIDEOptions)
+  TFormatSettings = class(TAbstractIDEEnvironmentOptions)
   private
     fcObfuscate: TSetObfuscate;
     fcClarify: TSetClarify;

@@ -50,25 +50,32 @@ type
   private
     FOnLoadOptions: TOnLoadIDEOptions;
     FOnSaveOptions: TOnSaveIDEOptions;
+    FOptionsFilter: TAbstractIDEOptionsClass;
     PrevEditor: TAbstractIDEOptionsEditor;
+    FEditorToOpen: TAbstractIDEOptionsEditorClass;
+    FEditorsCreated: Boolean;
 
     function CheckValues: boolean;
+    procedure DoOpenEditor;
     procedure LoadIDEOptions(Sender: TObject; AOptions: TAbstractIDEOptions);
     procedure SaveIDEOptions(Sender: TObject; AOptions: TAbstractIDEOptions);
     procedure CreateEditors;
     function SearchEditorNode(AEditor: TAbstractIDEOptionsEditorClass): TTreeNode;
-  published
-    property OnLoadIDEOptions: TOnLoadIDEOptions read FOnLoadOptions write FOnLoadOptions;
-    property OnSaveIDEOptions: TOnSaveIDEOptions read FOnSaveOptions write FOnSaveOptions;
+    function PassesFilter(ARec: PIDEOptionsGroupRec): Boolean;
   public
     constructor Create(AOwner: TComponent); override;
+    function ShowModal: Integer; override;
+
     procedure OpenEditor(AEditor: TAbstractIDEOptionsEditorClass); override;
     function FindEditor(AEditor: TAbstractIDEOptionsEditorClass): TAbstractIDEOptionsEditor; override;
     procedure ReadSettings(AOptions: TAbstractIDEOptions);
     procedure WriteSettings(AOptions: TAbstractIDEOptions);
-
     procedure ReadAll;
     procedure WriteAll;
+
+    property OptionsFilter: TAbstractIDEOptionsClass read FOptionsFilter write FOptionsFilter;
+    property OnLoadIDEOptions: TOnLoadIDEOptions read FOnLoadOptions write FOnLoadOptions;
+    property OnSaveIDEOptions: TOnSaveIDEOptions read FOnSaveOptions write FOnSaveOptions;
   end;
 
 implementation
@@ -82,18 +89,14 @@ constructor TIDEOptionsDialog.Create(AOwner: TComponent);
 begin
   inherited Create(AOwner);
   PrevEditor := nil;
+  FEditorToOpen := nil;
+  FEditorsCreated := False;
 
   IDEDialogLayoutList.ApplyLayout(Self, Width, Height);
   Caption := dlgIDEOptions;
-
-  CreateEditors;
-
   ButtonPanel.OKButton.OnClick := @OKButtonClick;
   ButtonPanel.CancelButton.OnClick := @CancelButtonClick;
   ButtonPanel.HelpButton.OnClick := @HelpButtonClick;
-
-  if CategoryTree.Items.Count > 0 then
-    CategoryTree.Selected := CategoryTree.Items.GetFirstNode;
 end;
 
 procedure TIDEOptionsDialog.HelpButtonClick(Sender: TObject);
@@ -187,6 +190,7 @@ var
   end;
 
 begin
+  CreateEditors;
   if AOptions <> nil then
     ClassTypeForCompare := AOptions.ClassType
   else
@@ -230,13 +234,19 @@ begin
   for i := 0 to IDEEditorGroups.Count - 1 do
   begin
     Rec := IDEEditorGroups[i];
+    if not PassesFilter(Rec) then
+      Continue;
     if Rec^.Items <> nil then
     begin
       if Rec^.GroupClass <> nil then
       begin
         Instance := Rec^.GroupClass.GetInstance;
         if Instance <> nil then
+        begin
+          Instance.DoBeforeRead;
           ReadSettings(Instance);
+          Instance.DoAfterRead;
+        end;
       end;
     end;
   end;
@@ -253,13 +263,19 @@ begin
   for i := 0 to IDEEditorGroups.Count - 1 do
   begin
     Rec := IDEEditorGroups[i];
+    if not PassesFilter(Rec) then
+      Continue;
     if Rec^.Items <> nil then
     begin
       if Rec^.GroupClass <> nil then
       begin
         Instance := Rec^.GroupClass.GetInstance;
         if Instance <> nil then
+        begin
+          Instance.DoBeforeWrite;
           WriteSettings(Instance);
+          Instance.DoAfterWrite;
+        end;
       end;
     end;
   end;
@@ -331,17 +347,22 @@ var
   Rec: PIDEOptionsGroupRec;
   ACaption: string;
 begin
+  if FEditorsCreated then
+    Exit;
+  FEditorsCreated := True;
   IDEEditorGroups.Resort;
 
   for i := 0 to IDEEditorGroups.Count - 1 do
   begin
     Rec := IDEEditorGroups[i];
+    if not PassesFilter(Rec) then
+      Continue;
     if Rec^.Items <> nil then
     begin
       if Rec^.GroupClass<>nil then
         ACaption := Rec^.GroupClass.GetGroupCaption
       else
-        ACaption := format('g<%d>',[i]);
+        ACaption := format('Group<%d>',[i]);
       GroupNode := CategoryTree.Items.AddChild(nil, ACaption);
       for j := 0 to Rec^.Items.Count - 1 do
       begin
@@ -392,13 +413,39 @@ begin
   Result := Traverse(CategoryTree.Items.GetFirstNode);
 end;
 
-procedure TIDEOptionsDialog.OpenEditor(AEditor: TAbstractIDEOptionsEditorClass);
+function TIDEOptionsDialog.PassesFilter(ARec: PIDEOptionsGroupRec): Boolean;
+begin
+  if (ARec^.GroupClass = nil) and (OptionsFilter <> nil) then
+    Exit(False);
+  if (ARec^.GroupClass <> nil) and not ARec^.GroupClass.InheritsFrom(OptionsFilter) then
+    Exit(False);
+  Result := True;
+end;
+
+procedure TIDEOptionsDialog.DoOpenEditor;
 var
   Node: TTreeNode;
 begin
-  Node := SearchEditorNode(AEditor);
+  if FEditorToOpen = nil then
+    Node := CategoryTree.Items.GetFirstNode
+  else
+    Node := SearchEditorNode(FEditorToOpen);
   if Node <> nil then
     CategoryTree.Selected := Node;
+end;
+
+function TIDEOptionsDialog.ShowModal: Integer;
+begin
+  CreateEditors;
+  DoOpenEditor;
+  Result := inherited ShowModal;
+end;
+
+procedure TIDEOptionsDialog.OpenEditor(AEditor: TAbstractIDEOptionsEditorClass);
+begin
+  FEditorToOpen := AEditor;
+  if Visible then
+    DoOpenEditor;
 end;
 
 function TIDEOptionsDialog.FindEditor(AEditor: TAbstractIDEOptionsEditorClass): TAbstractIDEOptionsEditor;

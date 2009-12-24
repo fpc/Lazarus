@@ -137,13 +137,14 @@ const
 type
   { TEnvironmentOptions - class for storing environment options }
 
-  TEnvironmentOptions = class(TAbstractIDEOptions)
+  TEnvironmentOptions = class(TAbstractIDEEnvironmentOptions)
   private
     FFilename: string;
     FFileAge: longint;
     FFileHasChangedOnDisk: boolean;
     FIDESpeedButtonsVisible: boolean;
     FIDETitleStartsWithProject: boolean;
+    FOnChange: TNotifyEvent;
     FShowButtonGlyphs: TApplicationShowGlyphs;
     FShowMenuGlyphs: TApplicationShowGlyphs;
     FXMLCfg: TXMLConfig;
@@ -771,6 +772,7 @@ end;
 procedure TEnvironmentOptions.DoAfterWrite;
 begin
   Save(False);
+  inherited DoAfterWrite;
 end;
 
 procedure TEnvironmentOptions.SetLazarusDefaultFilename;

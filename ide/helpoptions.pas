@@ -43,7 +43,7 @@ uses
 type
   { THelpOptions }
 
-  THelpOptions = class(TAbstractIDEOptions)
+  THelpOptions = class(TAbstractIDEEnvironmentOptions)
   private
     FFilename: string;
     FFPCDocsHTMLDirectory: string;

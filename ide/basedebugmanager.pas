@@ -57,7 +57,7 @@ type
 
   { TDebuggerOptions }
 
-  TDebuggerOptions = class(TAbstractIDEOptions)
+  TDebuggerOptions = class(TAbstractIDEEnvironmentOptions)
   public
     class function GetGroupCaption:string; override;
     class function GetInstance: TAbstractIDEOptions; override;

@@ -347,7 +347,16 @@ type
     // Environment options dialog events
     procedure OnLoadIDEOptions(Sender: TObject; AOptions: TAbstractIDEOptions);
     procedure OnSaveIDEOptions(Sender: TObject; AOptions: TAbstractIDEOptions);
-    procedure DoOpenIDEOptions(AEditor: TAbstractIDEOptionsEditorClass); override;
+    procedure DoOpenIDEOptions(AEditor: TAbstractIDEOptionsEditorClass;
+      AOptionsFilter: TAbstractIDEOptionsClass = nil); override;
+
+    procedure DoEnvironmentOptionsBeforeRead(Sender: TObject);
+    procedure DoEnvironmentOptionsBeforeWrite(Sender: TObject);
+    procedure DoEnvironmentOptionsAfterWrite(Sender: TObject);
+    procedure DoEditorOptionsBeforeRead(Sender: TObject);
+    procedure DoEditorOptionsAfterWrite(Sender: TObject);
+    procedure DoCodetoolsOptionsAfterWrite(Sender: TObject);
+    procedure DoCodeExplorerOptionsAfterWrite(Sender: TObject);
 
     // SourceNotebook events
     procedure OnSrcNoteBookActivated(Sender: TObject);
@@ -558,6 +567,7 @@ type
     FOIHelpProvider: TAbstractIDEHTMLProvider;
     FWaitForClose: Boolean;
     FFixingGlobalComponentLock: integer;
+    OldCompilerFilename, OldLanguage: String;
 
     procedure RenameInheritedMethods(AnUnitInfo: TUnitInfo; List: TStrings);
     function OIHelpProvider: TAbstractIDEHTMLProvider;
@@ -1120,6 +1130,9 @@ begin
   EnvironmentOptions := TEnvironmentOptions.Create;
   with EnvironmentOptions do
   begin
+    OnBeforeRead := @DoEnvironmentOptionsBeforeRead;
+    OnBeforeWrite := @DoEnvironmentOptionsBeforeWrite;
+    OnAfterWrite := @DoEnvironmentOptionsAfterWrite;
     SetLazarusDefaultFilename;
     Load(false);
     if Application.HasOption('language') then
@@ -1140,6 +1153,8 @@ begin
   UpdateDefaultPascalFileExtensions;
 
   EditorOpts := TEditorOptions.Create;
+  EditorOpts.OnBeforeRead := @DoEditorOptionsBeforeRead;
+  EditorOpts.OnAfterWrite := @DoEditorOptionsAfterWrite;
   SetupIDECommands;
   SetupIDEMsgQuickFixItems;
   EditorOpts.Load;
@@ -1152,11 +1167,13 @@ begin
   CodeToolsOpts := TCodeToolsOptions.Create;
   with CodeToolsOpts do
   begin
+    OnAfterWrite := @DoCodetoolsOptionsAfterWrite;
     SetLazarusDefaultFilename;
     Load;
   end;
 
   CodeExplorerOptions := TCodeExplorerOptions.Create;
+  CodeExplorerOptions.OnAfterWrite := @DoCodeExplorerOptionsAfterWrite;
   CodeExplorerOptions.Load;
 
   MainBuildBoss.SetupInputHistories;
@@ -4154,14 +4171,52 @@ begin
     SaveDesktopSettings(AOptions as TEnvironmentOptions);
 end;
 
-procedure TMainIDE.DoOpenIDEOptions(AEditor: TAbstractIDEOptionsEditorClass);
+procedure TMainIDE.DoOpenIDEOptions(AEditor: TAbstractIDEOptionsEditorClass;
+  AOptionsFilter: TAbstractIDEOptionsClass = nil);
 var
   IDEOptionsDialog: TIDEOptionsDialog;
+begin
+  IDEOptionsDialog := TIDEOptionsDialog.Create(nil);
+
+  try
+    if AOptionsFilter = nil then
+      if AEditor <> nil then
+        AOptionsFilter := AEditor.SupportedOptionsClass
+      else
+        AOptionsFilter := TAbstractIDEEnvironmentOptions;
+    IDEOptionsDialog.OptionsFilter := AOptionsFilter;
+    IDEOptionsDialog.OpenEditor(AEditor);
+
+    with IDEOptionsDialog do
+    begin
+      OnLoadIDEOptions:=@Self.OnLoadIDEOptions;
+      OnSaveIDEOptions:=@Self.OnSaveIDEOptions;
+      ReadAll;
+    end;
+    if IDEOptionsDialog.ShowModal = mrOk then
+      IDEOptionsDialog.WriteAll;
+  finally
+    IDEOptionsDialog.Free;
+  end;
+end;
+
+procedure TMainIDE.DoEnvironmentOptionsBeforeRead(Sender: TObject);
+begin
+  // update EnvironmentOptions (save current window positions)
+  SaveDesktopSettings(EnvironmentOptions);
+end;
+
+procedure TMainIDE.DoEnvironmentOptionsBeforeWrite(Sender: TObject);
+begin
+  OldCompilerFilename:=EnvironmentOptions.CompilerFilename;
+  OldLanguage:=EnvironmentOptions.LanguageID;
+end;
+
+procedure TMainIDE.DoEnvironmentOptionsAfterWrite(Sender: TObject);
+var
   MacroValueChanged,
   FPCSrcDirChanged, FPCCompilerChanged,
   LazarusSrcDirChanged: boolean;
-  OldCompilerFilename: string;
-  OldLanguage: String;
 
   procedure ChangeMacroValue(const MacroName, NewValue: string);
   begin
@@ -4208,87 +4263,65 @@ var
     EnvironmentOptions.ObjectInspectorOptions.AssignTo(ObjectInspector1);
   end;
 
-  procedure UpdateEditorOptions;
-  begin
-    Project1.UpdateAllSyntaxHighlighter;
-    SourceNotebook.ReloadEditorOptions;
-    ReloadMenuShortCuts;
-  end;
-
 begin
-  IDEOptionsDialog := TIDEOptionsDialog.Create(nil);
-
-  try
-    IDEOptionsDialog.OpenEditor(AEditor);
-    // update EnvironmentOptions (save current window positions)
-    SaveDesktopSettings(EnvironmentOptions);
-    // update editor options?
-    Project1.UpdateAllCustomHighlighter;
-
-    with IDEOptionsDialog do
-    begin
-      OnLoadIDEOptions:=@Self.OnLoadIDEOptions;
-      OnSaveIDEOptions:=@Self.OnSaveIDEOptions;
-      ReadAll;
-    end;
-    if IDEOptionsDialog.ShowModal = mrOk then
-    begin
-      // invalidate cached substituted macros
-      IncreaseCompilerParseStamp;
-
-      // load settings from IDEOptionsDialog to EnvironmentOptions
-      OldCompilerFilename:=EnvironmentOptions.CompilerFilename;
-      OldLanguage:=EnvironmentOptions.LanguageID;
-      IDEOptionsDialog.WriteAll;
-      CompileProgress.SetEnabled(EnvironmentOptions.ShowCompileDialog);
-
-      UpdateDefaultPascalFileExtensions;
-
-      if OldLanguage<>EnvironmentOptions.LanguageID then
-      begin
-        TranslateResourceStrings(EnvironmentOptions.LazarusDirectory,
-                                 EnvironmentOptions.LanguageID);
-        PkgBoss.TranslateResourceStrings;
-      end;
-
-      // set global variables
-      UpdateEnglishErrorMsgFilename;
-      MacroValueChanged:=false;
-      FPCSrcDirChanged:=false;
-      FPCCompilerChanged:=OldCompilerFilename<>EnvironmentOptions.CompilerFilename;
-      LazarusSrcDirChanged:=false;
-      ChangeMacroValue('LazarusDir',EnvironmentOptions.LazarusDirectory);
-      ChangeMacroValue('FPCSrcDir',EnvironmentOptions.FPCSourceDirectory);
-
-      if MacroValueChanged then CodeToolBoss.DefineTree.ClearCache;
-      if FPCCompilerChanged or FPCSrcDirChanged then
-        MainBuildBoss.RescanCompilerDefines(true, false);
-
-      UpdateEditorOptions;
-
-      CodeToolsOpts.AssignTo(CodeToolBoss);
-      // save to disk
-      IDEEditorGroups.DoAfterWrite;
-
-      // update environment
-      UpdateDesigners;
-      UpdateObjectInspector;
-      SetupHints;
-      Application.ShowButtonGlyphs := EnvironmentOptions.ShowButtonGlyphs;
-      Application.ShowMenuGlyphs := EnvironmentOptions.ShowMenuGlyphs;
-
-      // reload lazarus packages
-      if LazarusSrcDirChanged then
-        PkgBoss.LazarusSrcDirChanged;
-
-      UpdateCaption;
-
-      if CodeExplorerView<>nil then
-        CodeExplorerView.Refresh(true);
-    end;
-  finally
-    IDEOptionsDialog.Free;
+  // invalidate cached substituted macros
+  IncreaseCompilerParseStamp;
+  CompileProgress.SetEnabled(EnvironmentOptions.ShowCompileDialog);
+  UpdateDefaultPascalFileExtensions;
+  if OldLanguage <> EnvironmentOptions.LanguageID then
+  begin
+    TranslateResourceStrings(EnvironmentOptions.LazarusDirectory,
+                             EnvironmentOptions.LanguageID);
+    PkgBoss.TranslateResourceStrings;
   end;
+  // set global variables
+  UpdateEnglishErrorMsgFilename;
+  MacroValueChanged:=false;
+  FPCSrcDirChanged:=false;
+  FPCCompilerChanged:=OldCompilerFilename<>EnvironmentOptions.CompilerFilename;
+  LazarusSrcDirChanged:=false;
+  ChangeMacroValue('LazarusDir',EnvironmentOptions.LazarusDirectory);
+  ChangeMacroValue('FPCSrcDir',EnvironmentOptions.FPCSourceDirectory);
+
+  if MacroValueChanged then CodeToolBoss.DefineTree.ClearCache;
+  if FPCCompilerChanged or FPCSrcDirChanged then
+    MainBuildBoss.RescanCompilerDefines(true, false);
+
+  // update environment
+  UpdateDesigners;
+  UpdateObjectInspector;
+  SetupHints;
+  Application.ShowButtonGlyphs := EnvironmentOptions.ShowButtonGlyphs;
+  Application.ShowMenuGlyphs := EnvironmentOptions.ShowMenuGlyphs;
+
+  // reload lazarus packages
+  if LazarusSrcDirChanged then
+    PkgBoss.LazarusSrcDirChanged;
+  UpdateCaption;
+end;
+
+procedure TMainIDE.DoEditorOptionsBeforeRead(Sender: TObject);
+begin
+  // update editor options?
+  Project1.UpdateAllCustomHighlighter;
+end;
+
+procedure TMainIDE.DoEditorOptionsAfterWrite(Sender: TObject);
+begin
+  Project1.UpdateAllSyntaxHighlighter;
+  SourceNotebook.ReloadEditorOptions;
+  ReloadMenuShortCuts;
+end;
+
+procedure TMainIDE.DoCodetoolsOptionsAfterWrite(Sender: TObject);
+begin
+  CodeToolsOpts.AssignTo(CodeToolBoss);
+end;
+
+procedure TMainIDE.DoCodeExplorerOptionsAfterWrite(Sender: TObject);
+begin
+  if CodeExplorerView<>nil then
+    CodeExplorerView.Refresh(true);
 end;
 
 procedure TMainIDE.mnuEnvEditorOptionsClicked(Sender: TObject);

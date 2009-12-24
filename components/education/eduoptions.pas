@@ -116,7 +116,7 @@ type
     property ChangeStep: integer read FChangeStep write SetChangeStep;
   end;
 
-  TEduOptions = class(TAbstractIDEOptions)
+  TEduOptions = class(TAbstractIDEEnvironmentOptions)
   private
     FEnabled: boolean;
     FFilename: string;
@@ -129,6 +129,7 @@ type
     constructor Create;
     destructor Destroy; override;
     class function GetGroupCaption: string; override;
+    class function GetInstance: TAbstractIDEOptions;
     property Root: TEduOptionsNode read FRoot;
     function Load(Config: TConfigStorage): TModalResult; virtual;
     function Save(Config: TConfigStorage): TModalResult; virtual;
@@ -320,6 +321,12 @@ class function TEduOptions.GetGroupCaption: string;
 begin
   Result:=EduRSEducation;
 end;
+
+class function TEduOptions.GetInstance: TAbstractIDEOptions;
+begin
+  Result := EducationOptions;
+end;
+
 
 function TEduOptions.Load(Config: TConfigStorage): TModalResult;
 begin
