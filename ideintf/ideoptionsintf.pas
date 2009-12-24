@@ -45,7 +45,7 @@ type
     FOnBeforeRead: TNotifyEvent;
     FOnBeforeWrite: TNotifyEvent;
   public
-    class function GetGroupCaption:string; virtual; abstract;
+    class function GetGroupCaption: string; virtual; abstract;
     class function GetInstance: TAbstractIDEOptions; virtual; abstract;
 
     procedure DoBeforeRead; virtual;
@@ -148,7 +148,7 @@ procedure RegisterIDEOptionsEditor(AGroupIndex: Integer; AEditorClass: TAbstract
 function IDEEditorGroups: TIDEOptionsGroupList;
 
 const
-  // options groups
+  // predefined environment options groups
   GroupEnvironment  = 100;
     EnvOptionsFiles   = 100;
     EnvOptionsDesktop = 200;
@@ -195,6 +195,9 @@ const
   GroupHelp         = 500;
     HlpOptionsGeneral = 100;
 
+  // predefined project options groups
+  GroupProject      = 100100;
+  GroupCompiler     = 100200;
 implementation
 
 var

@@ -57,7 +57,7 @@ uses
   CompOptsModes, ProjectResources, LazConf, frmCustomApplicationOptions,
   LazarusIDEStrConsts, CompilerOptions,
   TransferMacros, EditorOptions, IDEProcs, RunParamsOpts, ProjectDefs,
-  FileReferenceList, EditDefineTree, PackageDefs, PackageSystem;
+  FileReferenceList, EditDefineTree, PackageDefs, PackageSystem, IDEOptionsIntf;
 
 type
   TUnitInfo = class;
@@ -413,6 +413,8 @@ type
   public
     constructor Create(const AOwner: TObject); override;
     destructor Destroy; override;
+    class function GetInstance: TAbstractIDEOptions; override;
+    class function GetGroupCaption: string; override;
     procedure Clear; override;
     function CanBeDefaulForProject: boolean; override;
     function GetOwnerName: string; override;
@@ -682,6 +684,8 @@ type
   public
     constructor Create(ProjectDescription: TProjectDescriptor); override;
     destructor Destroy; override;
+    class function GetInstance: TAbstractIDEOptions; override;
+    class function GetGroupCaption: string; override;
     procedure Clear;
     procedure BeginUpdate(Change: boolean);
     procedure EndUpdate;
@@ -2958,6 +2962,16 @@ begin
   end;
 end;
 
+class function TProject.GetInstance: TAbstractIDEOptions;
+begin
+  Result := Project1;
+end;
+
+class function TProject.GetGroupCaption: string;
+begin
+  Result := dlgProjectOptions;
+end;
+
 function TProject.UnitCount:integer;
 begin
   Result:=FUnitList.Count;
@@ -5015,6 +5029,16 @@ begin
   FGlobals.TargetOS:=TargetOS;
 end;
 
+class function TProjectCompilerOptions.GetInstance: TAbstractIDEOptions;
+begin
+  Result := Project1.CompilerOptions;
+end;
+
+class function TProjectCompilerOptions.GetGroupCaption: string;
+begin
+  Result := dlgCompilerOptions;
+end;
+
 constructor TProjectCompilerOptions.Create(const AOwner: TObject);
 begin
   FGlobals := TGlobalCompilerOptions.Create;
@@ -6029,5 +6053,8 @@ begin
   RequiresPropPath:=DestPath;
 end;
 
+initialization
+  RegisterIDEOptionsGroup(GroupProject, TProject);
+  RegisterIDEOptionsGroup(GroupCompiler, TProjectCompilerOptions);
 end.
 

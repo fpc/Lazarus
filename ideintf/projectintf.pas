@@ -23,7 +23,7 @@ interface
 
 uses
   Classes, SysUtils, LCLProc, FileUtil, Controls, Forms, AvgLvlTree,
-  NewItemIntf, ObjInspStrConsts;
+  NewItemIntf, ObjInspStrConsts, IDEOptionsIntf;
 
 const
   FileDescGroupName = 'File';
@@ -221,7 +221,7 @@ const
 type
   { TLazCompilerOptions }
 
-  TLazCompilerOptions = class(TPersistent)
+  TLazCompilerOptions = class(TAbstractIDEProjectOptions)
   private
     FOnModified: TNotifyEvent;
     fOwner: TObject;
@@ -709,7 +709,7 @@ type
     petUnit
     );
 
-  TLazProject = class(TPersistent)
+  TLazProject = class(TAbstractIDEProjectOptions)
   private
     FCustomData: TStringToStringTree;
     FCustomSessionData: TStringToStringTree;

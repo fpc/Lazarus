@@ -44,7 +44,7 @@ uses
   Classes, SysUtils, FileProcs, FileUtil, InterfaceBase, LCLProc, Forms,
   Controls, Laz_XMLCfg, ExprEval,
   // IDEIntf
-  ProjectIntf, MacroIntf, IDEExternToolIntf, SrcEditorIntf,
+  ProjectIntf, MacroIntf, IDEExternToolIntf, SrcEditorIntf, IDEOptionsIntf,
   // IDE
   IDEProcs, IDEMsgIntf, LazConf, TransferMacros, CompOptsModes;
 
@@ -595,6 +595,8 @@ type
                   const AToolClass: TCompilationToolClass);
     destructor Destroy; override;
     procedure Clear; virtual;
+    class function GetInstance: TAbstractIDEOptions; override;
+    class function GetGroupCaption: string; override;
 
     procedure LoadFromXMLConfig(AXMLConfig: TXMLConfig; const Path: string);
     procedure SaveToXMLConfig(AXMLConfig: TXMLConfig; const Path: string);
@@ -1734,6 +1736,16 @@ begin
   FModified:=AValue;
   if Assigned(OnModified) then
     OnModified(Self);
+end;
+
+class function TBaseCompilerOptions.GetInstance: TAbstractIDEOptions;
+begin
+  Result := nil;
+end;
+
+class function TBaseCompilerOptions.GetGroupCaption: string;
+begin
+  Result := '';
 end;
 
 procedure TBaseCompilerOptions.ClearInheritedOptions;
