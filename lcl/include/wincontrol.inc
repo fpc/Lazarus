@@ -4528,7 +4528,6 @@ end;
 
 procedure TWinControl.FontChanged(Sender: TObject);
 begin
-  FParentFont := False;
   if HandleAllocated and ([csLoading, csDestroying] * ComponentState = []) then
   begin
     TWSWinControlClass(WidgetSetClass).SetFont(Self, Font);
