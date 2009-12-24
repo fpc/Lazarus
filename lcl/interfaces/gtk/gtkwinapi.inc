@@ -2607,7 +2607,9 @@ var
     Result := True;
   end;
 
-  procedure DrawCheck;
+  procedure DrawCheckOrRadioButton(IsRadioButton: Boolean);
+  const
+    LazGtkStyleMap: array[Boolean] of TLazGtkStyle = (lgsCheckbox, lgsRadiobutton);
   var
     State: TGtkStateType;
     Shadow: TGtkShadowType;
@@ -2643,7 +2645,7 @@ var
     aDC:=TGtkDeviceContext(DC);
     DCOrigin := aDC.Offset;
 
-    Style := GetStyle(lgsCheckbox);
+    Style := GetStyle(LazGtkStyleMap[IsRadioButton]);
 
     If Style = nil then begin
       Style := GetStyle(lgsGTK_Default);
@@ -2651,15 +2653,22 @@ var
         Style := gtk_style_attach(gtk_style_ref(Style),aDC.Drawable);
     end;
 
-    Widget := GetStyleWidget(lgsCheckbox);
+    Widget := GetStyleWidget(LazGtkStyleMap[IsRadioButton]);
+
     If Widget = nil then
       Widget := GetStyleWidget(lgsDefault);
     If (Widget <> nil) and (Style <> nil) then begin
       Widget^.Window := aDC.Drawable;
-      gtk_paint_check(Style,aDC.Drawable, State,
-        Shadow, nil, Widget, 'checkbutton',
-        R.Left+DCOrigin.X,R.Top+DCOrigin.Y,
-        R.Right-R.Left, R.Bottom-R.Top);
+      if IsRadioButton then
+        gtk_paint_option(Style,aDC.Drawable, State,
+          Shadow, nil, Widget, 'radiobutton',
+          R.Left+DCOrigin.X,R.Top+DCOrigin.Y,
+          R.Right-R.Left, R.Bottom-R.Top)
+      else
+        gtk_paint_check(Style,aDC.Drawable, State,
+          Shadow, nil, Widget, 'checkbutton',
+          R.Left+DCOrigin.X,R.Top+DCOrigin.Y,
+          R.Right-R.Left, R.Bottom-R.Top);
       Result := True;
     end
     else begin
@@ -2725,6 +2734,8 @@ begin
           DFCS_BUTTONRADIO:
             begin
               Assert(False, 'Trace:State ButtonRadio');
+              //todo: implement 3 state radio button
+              DrawCheckOrRadioButton(True);
             end;
           DFCS_BUTTONPUSH:
             begin
@@ -2734,7 +2745,7 @@ begin
           DFCS_BUTTONCHECK, DFCS_BUTTON3STATE:
             begin
               Assert(False, 'Trace:State ButtonCheck, Button3State');
-              DrawCheck;
+              DrawCheckOrRadioButton(False);
             end;
         else
           DebugLn(Format('ERROR: [TGtkWidgetSet.DrawFrameControl] Unknown State 0x%x', [uState]));
