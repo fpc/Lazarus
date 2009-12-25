@@ -2531,30 +2531,15 @@ var
     //  ' DFCS_FLAT=',uState and DFCS_FLAT,
     //  '');
     // set State (the interior filling style)
-    if (DFCS_INACTIVE and uState)<>0 then begin
-      // button disabled
-      State:=GTK_STATE_INSENSITIVE;
-    end else begin
-      if (DFCS_PUSHED and uState)<>0 then begin
-        // button enabled, down
-        if (DFCS_CHECKED and uState)<>0 then begin
-          // button enabled, down, special (e.g. mouse over)
-          State:=GTK_STATE_ACTIVE;
-        end else begin
-          // button enabled, down, normal
-          State:=GTK_STATE_SELECTED;
-        end;
-      end else begin
-        // button enabled, up
-        if (DFCS_CHECKED and uState)<>0 then begin
-          // button enabled, up, special (e.g. mouse over)
-          State:=GTK_STATE_PRELIGHT;
-        end else begin
-          // button enabled, up, normal
-          State:=GTK_STATE_NORMAL;
-        end;
-      end;
-    end;
+    if (DFCS_PUSHED and uState)<>0 then
+      State := GTK_STATE_ACTIVE //button pressed(GTK ignores disabled)
+    else if (DFCS_INACTIVE and uState)<>0 then
+      State := GTK_STATE_INSENSITIVE //button disabled
+    else if (DFCS_HOT and uState)<>0 then
+      State := GTK_STATE_PRELIGHT // button enabled, special (e.g. mouse over)
+    else
+      State := GTK_STATE_NORMAL; // button enabled, normal
+
     // set Shadow (the border style)
     if (DFCS_PUSHED and uState)<>0 then begin
       // button down
@@ -2580,8 +2565,6 @@ var
     If aStyle = nil then
       aStyle := GetStyle(lgsGTK_Default);
 
-    If State = GTK_STATE_SELECTED then
-        State := GTK_STATE_ACTIVE;
       // MG: You can't assign a style to any window. Why it is needed anyway?
       //aStyle := gtk_style_attach(gtk_style_ref(aStyle),aDC.Drawable);
 
