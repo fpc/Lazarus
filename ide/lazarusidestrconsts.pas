@@ -1047,8 +1047,8 @@ resourcestring
   dlgRightBottomClr = 'Guide lines Right,Bottom';
   dlgShowCaps = 'Show component captions';
   dlgShowEdrHints = 'Show editor hints';
-  dlgAutoForm = 'Auto create form when opening unit';
   dlgrightClickSelects = 'Right Click selects';
+  lisOpenDesignerOnOpenUnit = 'Open designer on open unit';
   dlgGrabberColor = 'Grabber color';
   dlgMarkerColor = 'Marker color';
   lisFEPaintDesignerItemsOnIdle = 'Reduce designer painting';

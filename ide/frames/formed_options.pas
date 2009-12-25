@@ -42,7 +42,7 @@ type
   { TFormEditorOptionsFrame }
 
   TFormEditorOptionsFrame = class(TAbstractIDEOptionsEditor)
-    AutoCreateFormsOnOpenCheckBox: TCheckBox;
+    OpenDesignerOnOpenUnitCheckBox: TCheckBox;
     ColorBox: TColorBox;
     ColorsListBox: TColorListBox;
     CreateCompFocusNameCheckBox: TCheckBox;
@@ -111,7 +111,7 @@ procedure TFormEditorOptionsFrame.Setup(ADialog: TAbstractOptionsEditorDialog);
   begin
     ShowComponentCaptionsCheckBox.Caption:=dlgShowCaps;
     ShowEditorHintsCheckBox.Caption:=dlgShowEdrHints;
-    AutoCreateFormsOnOpenCheckBox.Caption:=dlgAutoForm;
+    OpenDesignerOnOpenUnitCheckBox.Caption:=lisOpenDesignerOnOpenUnit;
     RightClickSelectsCheckBox.Caption:=dlgRightClickSelects;
 
     with DesignerPaintLazyCheckBox do
@@ -159,7 +159,7 @@ begin
     SnapToGuideLinesCheckBox.Checked := SnapToGuideLines;
     ShowComponentCaptionsCheckBox.Checked := ShowComponentCaptions;
     ShowEditorHintsCheckBox.Checked := ShowEditorHints;
-    AutoCreateFormsOnOpenCheckBox.Checked := AutoCreateFormsOnOpen;
+    OpenDesignerOnOpenUnitCheckBox.Checked := AutoCreateFormsOnOpen;
     RightClickSelectsCheckBox.Checked := RightClickSelects;
     RubberbandSelectsGrandChildsCheckBox.Checked := RubberbandSelectsGrandChilds;
     DesignerPaintLazyCheckBox.Checked := DesignerPaintLazy;
@@ -190,7 +190,7 @@ begin
     SnapToGuideLines := SnapToGuideLinesCheckBox.Checked;
     ShowComponentCaptions := ShowComponentCaptionsCheckBox.Checked;
     ShowEditorHints := ShowEditorHintsCheckBox.Checked;
-    AutoCreateFormsOnOpen := AutoCreateFormsOnOpenCheckBox.Checked;
+    AutoCreateFormsOnOpen := OpenDesignerOnOpenUnitCheckBox.Checked;
     RightClickSelects := RightClickSelectsCheckBox.Checked;
     RubberbandSelectsGrandChilds := RubberbandSelectsGrandChildsCheckBox.Checked;
     DesignerPaintLazy := DesignerPaintLazyCheckBox.Checked;
