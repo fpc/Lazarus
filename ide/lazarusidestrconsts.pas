@@ -4431,7 +4431,7 @@ resourcestring
   rsCreatingSymLinkNotSupported = 'Creating symbolic link is not supported on this platform!';
   lisPutLrsFilesInOutputDirectory = 'Save .lrs files in the output directory';
   lisLrsIncludeFiles = 'lrs include files';
-  lisLFMResourceTypeForNewFiles = 'LFM resource type for new files';
+  lisLFMResourceTypeOfNewFiles = 'LFM resource type of new files';
   lisAutomaticallyConvertLfmFilesToLrsIncludeFiles = 'Automatically convert .'
     +'lfm files to .lrs include files';
   lisFPCResources = 'FPC resources';

@@ -371,7 +371,7 @@ begin
   RunnableCheckBox.Caption := lisProjectIsRunnable;
   AlwaysBuildCheckBox.Caption := lisProjOptsAlwaysBuildEvenIfNothingChanged;
   LRSInOutputDirCheckBox.Caption := lisPutLrsFilesInOutputDirectory;
-  LFMResourceGroupBox.Caption:=lisLFMResourceTypeForNewFiles;
+  LFMResourceGroupBox.Caption:=lisLFMResourceTypeOfNewFiles;
   UseLRSFilesRadioButton.Caption:=lisLrsIncludeFiles;
   UseLRSFilesRadioButton.Hint:=lisAutomaticallyConvertLfmFilesToLrsIncludeFiles;
   UseFPCResourcesRadioButton.Caption:=lisFPCResources;
