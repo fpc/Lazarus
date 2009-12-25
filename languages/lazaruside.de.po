@@ -2,7 +2,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: \n"
 "POT-Creation-Date: \n"
-"PO-Revision-Date: 2009-11-18 16:30+0100\n"
+"PO-Revision-Date: 2009-12-21 12:46+0100\n"
 "Last-Translator: Swen Heinig <swen.heinig@freenet.de>\n"
 "Language-Team: Deutsch <lazarus@miraclec.com>\n"
 "MIME-Version: 1.0\n"
@@ -3182,7 +3182,7 @@ msgstr ""
 
 #: lazarusidestrconsts.lisaddpackagetoproject
 msgid "Add package %s to project?"
-msgstr ""
+msgstr "Package %s zum Projekt hinzufügen?"
 
 #: lazarusidestrconsts.lisaddtoproject
 msgid "Add %s to project?"
@@ -3271,7 +3271,7 @@ msgstr "Alle Dateien"
 
 #: lazarusidestrconsts.lisallinheritedoptions
 msgid "All inherited options"
-msgstr ""
+msgstr "Alle übernommenen Einstellungen"
 
 #: lazarusidestrconsts.lisallowfunctio
 msgid "Allow Function Calls"
@@ -3299,7 +3299,7 @@ msgstr "Immer"
 
 #: lazarusidestrconsts.lisalwaysignore
 msgid "Always ignore"
-msgstr ""
+msgstr "Immer ignorieren"
 
 #: lazarusidestrconsts.lisambiguousfilefound
 msgid "Ambiguous file found"
@@ -3371,7 +3371,7 @@ msgstr "Build-Flag (-B) auf für die Abhängigkeiten setzen"
 
 #: lazarusidestrconsts.lisaprojectunitcannotbeusedbyotherpackagesprojects
 msgid "A project unit can not be used by other packages/projects"
-msgstr ""
+msgstr "Eine Projekt-Unit kann nicht von anderen Packages/Projekten verwendet werden"
 
 #: lazarusidestrconsts.lisaroundborderspacehint
 msgid "Borderspace around the control. The other four borderspaces are added to this value."
@@ -3849,7 +3849,7 @@ msgstr "Kontrollelement senkrecht relativ zum angegebenen Geschwister zentrieren
 
 #: lazarusidestrconsts.liscenterform
 msgid "Center form"
-msgstr ""
+msgstr "Form zentrieren"
 
 #: lazarusidestrconsts.liscenterinwindow
 msgid "Center in window"
@@ -4008,11 +4008,11 @@ msgstr "Taste auswählen..."
 
 #: lazarusidestrconsts.lischooseanameforthenewcomponent
 msgid "Choose a name for the new component"
-msgstr ""
+msgstr "Wählen Sie einen Namen für die neue Komponente"
 
 #: lazarusidestrconsts.lischooseapascalfileforindentationexamples
 msgid "Choose a pascal file for indentation examples"
-msgstr ""
+msgstr "Wählen Sie eine Pascal-Datei für Einrückungsbeispiele"
 
 #: lazarusidestrconsts.lischoosecompilerpath
 msgid "Choose compiler filename (%s)"
@@ -5470,7 +5470,7 @@ msgstr "Breakpoint bei %s\"%s\", Zeile %d löschen?"
 
 #: lazarusidestrconsts.lisdeletebuildvar
 msgid "Delete build variable %s%s%s?"
-msgstr ""
+msgstr "Build-Variable %s%s%s löschen?"
 
 #: lazarusidestrconsts.lisdeletefilefailed
 msgid "Delete file failed"
@@ -6671,7 +6671,7 @@ msgstr "IDE-Schnittstelle"
 
 #: lazarusidestrconsts.lisidentifier
 msgid "identifier"
-msgstr ""
+msgstr "Bezeichner"
 
 #: lazarusidestrconsts.lisidentifierbeginswith
 msgid "Identifier begins with ..."
@@ -6847,7 +6847,7 @@ msgstr "Warnungen:"
 
 #: lazarusidestrconsts.lisinformation
 msgid "Information"
-msgstr ""
+msgstr "Information"
 
 #: lazarusidestrconsts.lisinformationaboutunit
 msgid "Information about %s"
@@ -6923,7 +6923,7 @@ msgstr ""
 
 #: lazarusidestrconsts.lisinspect
 msgid "&Inspect"
-msgstr ""
+msgstr "Überprüfung"
 
 #: lazarusidestrconsts.lisinspectdata
 msgid "Data"
@@ -6960,7 +6960,7 @@ msgstr "Interner Name:"
 
 #: lazarusidestrconsts.lisinvalidbuildvarthebuildvarmustbeapascalidentifie
 msgid "Invalid build variable %s%s%s. The build variable must be a pascal identifier."
-msgstr ""
+msgstr "Ungültige Build-Variable %s%s%s. Die Build-Variable muß ein Pascal-Bezeichner sein."
 
 #: lazarusidestrconsts.lisinvalidcircle
 msgid "Invalid circle"
@@ -9240,7 +9240,7 @@ msgstr "Keine Delphi-Unit"
 
 #: lazarusidestrconsts.lisnotavalidpascalidentifier
 msgid "Not a valid pascal identifier"
-msgstr ""
+msgstr "Kein gültiger Pascal-Bezeichner"
 
 #: lazarusidestrconsts.lisnotecouldnotcreatedefinetemplateforfreepascal
 msgid "NOTE: Could not create Define Template for Free Pascal Sources"
@@ -10771,7 +10771,7 @@ msgstr "&Objekte"
 
 #: lazarusidestrconsts.lisplistprocedurelist
 msgid "Procedure List"
-msgstr ""
+msgstr "Prozedur-Liste"
 
 #: lazarusidestrconsts.lisplisttype
 msgctxt "lazarusidestrconsts.lisplisttype"
@@ -12078,11 +12078,11 @@ msgstr "Es gibt eine Datei mit dem gleichen Namen und einer ähnlichen Endung au
 
 #: lazarusidestrconsts.listhereisalreadyabuildvarwiththename
 msgid "There is already a build variable with the name %s%s%s."
-msgstr ""
+msgstr "Es gibt bereits eine Build-Variable namens %s%s%s."
 
 #: lazarusidestrconsts.listhereisalreadyacomponentwiththisname
 msgid "There is already a component with this name"
-msgstr ""
+msgstr "Es gibt bereits eine Komponente mit diesem Namen."
 
 #: lazarusidestrconsts.listhereisalreadyaformwiththename
 msgid "There is already a form with the name %s%s%s"
@@ -12819,19 +12819,19 @@ msgstr "Startprogramm"
 
 #: lazarusidestrconsts.lisusepackageinpackage
 msgid "Use package %s in package %s"
-msgstr ""
+msgstr "Verwende Package %s in Ppackage %s"
 
 #: lazarusidestrconsts.lisusepackageinpackage2
 msgid "Use package in package"
-msgstr ""
+msgstr "Verwende Package in Package"
 
 #: lazarusidestrconsts.lisusepackageinproject
 msgid "Use package %s in project"
-msgstr ""
+msgstr "Verwende Package %s in Projekt"
 
 #: lazarusidestrconsts.lisusepackageinproject2
 msgid "Use package in project"
-msgstr ""
+msgstr "Verwende Package in Projekt"
 
 #: lazarusidestrconsts.lisusershomedirectory
 msgid "User's home directory"
@@ -12839,7 +12839,7 @@ msgstr "Heimatverzeichnis des Users"
 
 #: lazarusidestrconsts.lisuseunitinunit
 msgid "Use unit %s in unit %s"
-msgstr ""
+msgstr "Verwende Unit %s in Unit %s"
 
 #: lazarusidestrconsts.lisutf8withbom
 msgid "UTF-8 with BOM"
@@ -13412,7 +13412,7 @@ msgstr "Block einrücken"
 
 #: lazarusidestrconsts.srkmecblockmove
 msgid "Move Block"
-msgstr ""
+msgstr "Block verschieben"
 
 #: lazarusidestrconsts.srkmecblocksetbegin
 msgid "Set block begin"
