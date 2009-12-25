@@ -94,6 +94,7 @@ type
   TSourceLog = class
   private
     FDiskEncoding: string;
+    FDiskLineEnding: string;
     FLineCount: integer;
     FLineRanges: PLineRange;
     FMemEncoding: string;
@@ -168,6 +169,7 @@ type
     property ReadOnly: boolean read FReadOnly write SetReadOnly;
     property DiskEncoding: string read FDiskEncoding write FDiskEncoding;
     property MemEncoding: string read FMemEncoding write FMemEncoding;
+    property DiskLineEnding: string read FDiskLineEnding write FDiskLineEnding;
     property WriteLock: integer read FWriteLock;
     procedure IncWriteLock;
     procedure DecWriteLock;
@@ -188,6 +190,7 @@ type
                                                       write FOnEncodeSaving;
   end;
   
+function ChangeLineEndings(const s, NewLineEnding: string): string;
 
 implementation
 
@@ -212,6 +215,54 @@ begin
       inc(i);
   end;
   LengthOfLastLine:=TxtLen-LastLineEndPos;
+end;
+
+function ChangeLineEndings(const s, NewLineEnding: string): string;
+var
+  NewLength: Integer;
+  p, StartPos: Integer;
+  Src: PChar;
+  Dest: PChar;
+  EndLen: Integer;
+  EndPos: PChar;
+begin
+  if s='' then begin
+    Result:=s;
+    exit;
+  end;
+  EndLen:=length(NewLineEnding);
+  NewLength:=length(s);
+  p:=1;
+  while p<length(s) do begin
+    if s[p] in [#10,#13] then begin
+      StartPos:=p;
+      inc(p);
+      if (s[p] in [#10,#13]) and (s[p]<>s[p-1]) then inc(p);
+      inc(NewLength,EndLen-(p-StartPos));
+    end else
+      inc(p);
+  end;
+  SetLength(Result,NewLength);
+  Src:=PChar(s);
+  Dest:=PChar(Result);
+  EndPos:=Dest+NewLength;
+  while (Dest<EndPos) do begin
+    if Src^ in [#10,#13] then begin
+      for p:=1 to EndLen do begin
+        Dest^:=NewLineEnding[p];
+        inc(Dest);
+      end;
+      if (Src[1] in [#10,#13]) and (Src^<>Src[1]) then
+        inc(Src,2)
+      else
+        inc(Src);
+    end else begin
+      Dest^:=Src^;
+      inc(Src);
+      inc(Dest);
+    end;
+  end;
+  //if Src-1<>@s[length(s)] then RaiseGDBException('');
 end;
 
 
@@ -724,6 +775,7 @@ function TSourceLog.LoadFromFile(const Filename: string): boolean;
 var
   s: string;
   fs: TFileStream;
+  p: Integer;
 begin
   Result := True;
   try
@@ -735,6 +787,20 @@ begin
       FDiskEncoding := '';
       FMemEncoding := '';
       DecodeLoaded(Filename, s, FDiskEncoding, FMemEncoding);
+
+      // get line ending
+      FDiskLineEnding:=LineEnding;
+      p:=1;
+      while p<=length(s) do begin
+        if s[p] in [#10,#13] then begin
+          if s[p]=#10 then fDiskLineEnding:=#10
+          else if (p<length(s)) and (s[p+1]=#10) then fDiskLineEnding:=#13#10
+          else fDiskLineEnding:=#13;
+          break;
+        end;
+        inc(p);
+      end;
+
       Source := s;
     finally
       fs.Free;
@@ -778,6 +844,12 @@ begin
     try
       s := Source;
       EncodeSaving(Filename, s);
+
+      // convert line ending to disk line ending
+      if (DiskLineEnding<>'') and (LineEnding <> DiskLineEnding) then begin
+        s := ChangeLineEndings(s, DiskLineEnding);
+        DebugLn(['TSourceLog.SaveToFile ',Filename]);
+      end;
       if s <> '' then
         fs.Write(s[1], length(s));
     finally
@@ -926,6 +998,7 @@ function TSourceLog.CalcMemSize: PtrUInt;
 begin
   Result:=PtrUInt(InstanceSize)
     +MemSizeString(FDiskEncoding)
+    +MemSizeString(FDiskLineEnding)
     +PtrUint(FLineCount)*SizeOf(TLineRange)
     +MemSizeString(FMemEncoding)
     +PtrUInt(FChangeHookCount)*SizeOf(TOnSourceChange)
