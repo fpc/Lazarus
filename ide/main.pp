@@ -11199,7 +11199,9 @@ begin
   AnUnitInfo:=AFile as TUnitInfo;
   AForm:=GetDesignerFormOfSource(AnUnitInfo,LoadForm);
   if AForm<>nil then
-    Result:=AForm.Designer;
+    Result:=AForm.Designer
+  else
+    Result:=nil;
 end;
 
 procedure TMainIDE.GetObjectInspectorUnit(
@@ -12540,7 +12542,9 @@ function TMainIDE.UnitDependenciesViewGetProjectMainFilename(Sender: TObject
   ): string;
 begin
   if Project1.MainUnitID>=0 then
-    Result:=Project1.MainUnitInfo.Filename;
+    Result:=Project1.MainUnitInfo.Filename
+  else
+    Result:='';
 end;
 
 procedure TMainIDE.UnitDependenciesViewOpenFile(Sender: TObject;
