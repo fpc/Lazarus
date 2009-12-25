@@ -144,7 +144,6 @@ type
     FFileHasChangedOnDisk: boolean;
     FIDESpeedButtonsVisible: boolean;
     FIDETitleStartsWithProject: boolean;
-    FOnChange: TNotifyEvent;
     FShowButtonGlyphs: TApplicationShowGlyphs;
     FShowMenuGlyphs: TApplicationShowGlyphs;
     FXMLCfg: TXMLConfig;
