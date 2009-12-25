@@ -498,6 +498,7 @@ type
     procedure BookMarkToggleClicked(Sender: TObject);
     procedure BookmarkSetFreeClicked(Sender: TObject);
     procedure EditorPropertiesClicked(Sender: TObject);
+    procedure LineEndingClicked(Sender: TObject);
     procedure EncodingClicked(Sender: TObject);
     procedure HighlighterClicked(Sender: TObject);
     procedure FindDeclarationClicked(Sender: TObject);
@@ -595,6 +596,7 @@ type
     function GetPageIndex: Integer;
     procedure SetPageIndex(const AValue: Integer);
     procedure UpdateHighlightMenuItems;
+    procedure UpdateLineEndingMenuItems;
     procedure UpdateEncodingMenuItems;
     procedure RemoveUserDefinedMenuItems;
     function AddUserDefinedPopupMenuItem(const NewCaption: string;
@@ -1057,6 +1059,8 @@ begin
                                                       uemHighlighter);
       SrcEditSubMenuEncoding:=RegisterIDESubMenu(AParent,'Encoding',
                                                       uemEncoding);
+      SrcEditSubMenuLineEnding:=RegisterIDESubMenu(AParent,'LineEnding',
+                                                      uemLineEnding);
 
   // register the Clipboard section
   SrcEditMenuSectionClipboard:=RegisterIDEMenuSection(SourceEditorMenuRoot,
@@ -4420,6 +4424,33 @@ begin
     FOnEditorPropertiesClicked(Sender);
 end;
 
+procedure TSourceNotebook.LineEndingClicked(Sender: TObject);
+var
+  IDEMenuItem: TIDEMenuItem;
+  SrcEdit: TSourceEditor;
+  NewLineEnding: String;
+  OldLineEnding: String;
+begin
+  SrcEdit:=GetActiveSE;
+  if SrcEdit=nil then exit;
+  if not (Sender is TIDEMenuItem) then exit;
+  if SrcEdit.CodeBuffer=nil then exit;
+  IDEMenuItem:=TIDEMenuItem(Sender);
+  NewLineEnding:=IDEMenuItem.Caption;
+  DebugLn(['TSourceNotebook.LineEndingClicked NewLineEnding=',NewLineEnding]);
+  NewLineEnding:=StringReplace(StringReplace(NewLineEnding,'CR',#13,[rfReplaceAll]),'LF',#10,[rfReplaceAll]);
+  OldLineEnding:=SrcEdit.CodeBuffer.DiskLineEnding;
+  if OldLineEnding='' then
+    OldLineEnding:=LineEnding;
+  if NewLineEnding<>SrcEdit.CodeBuffer.DiskLineEnding then begin
+    DebugLn(['TSourceNotebook.LineEndingClicked Old=',dbgstr(OldLineEnding),' New=',dbgstr(NewLineEnding)]);
+    // change file
+    SrcEdit.CodeBuffer.DiskLineEnding:=NewLineEnding;
+    SrcEdit.CodeBuffer.Modified:=true;
+    SrcEdit.Modified:=true;
+  end;
+end;
+
 procedure TSourceNotebook.EncodingClicked(Sender: TObject);
 var
   IDEMenuItem: TIDEMenuItem;
@@ -4574,6 +4605,7 @@ begin
     SrcEditMenuShowLineNumbers.MenuItem.Checked :=
       EditorComp.Gutter.LineNumberPart.Visible;
     UpdateHighlightMenuItems;
+    UpdateLineEndingMenuItems;
     UpdateEncodingMenuItems;
 
     // bookmarks
@@ -4895,6 +4927,48 @@ begin
                                           and (SrcEdit.SyntaxHighlighterType=h);
     inc(i);
   end;
+end;
+
+procedure TSourceNotebook.UpdateLineEndingMenuItems;
+var
+  List: TStringList;
+  i: Integer;
+  SrcEdit: TSourceEditor;
+  DiskLineEnding: String;
+  CurLineEnding: string;
+  CurName: String;
+  CurCaption: String;
+  IDEMenuItem: TIDEMenuItem;
+begin
+  SrcEditSubMenuLineEnding.ChildsAsSubMenu:=true;
+  SrcEdit:=GetActiveSE;
+  DiskLineEnding:=LineEnding;
+  if (SrcEdit<>nil) and (SrcEdit.CodeBuffer<>nil) then
+    DiskLineEnding:=SrcEdit.CodeBuffer.DiskLineEnding;
+  DiskLineEnding:=StringReplace(StringReplace(DiskLineEnding,#13,'CR',[rfReplaceAll]),#10,'LF',[rfReplaceAll]);
+  //DebugLn(['TSourceNotebook.UpdateEncodingMenuItems ',Encoding]);
+  List:=TStringList.Create;
+  List.add('LF');
+  List.add('CR');
+  List.add('CRLF');
+  for i:=0 to List.Count-1 do begin
+    CurName:='LineEnding'+IntToStr(i);
+    CurLineEnding:=List[i];
+    CurCaption:=CurLineEnding;
+    if SrcEditSubMenuLineEnding.Count=i then begin
+      // add new item
+      IDEMenuItem:=RegisterIDEMenuCommand(SrcEditSubMenuLineEnding,
+                             CurName,CurCaption,@LineEndingClicked);
+    end else begin
+      IDEMenuItem:=SrcEditSubMenuLineEnding[i];
+      IDEMenuItem.Caption:=CurCaption;
+      IDEMenuItem.OnClick:=@LineEndingClicked;
+    end;
+    if IDEMenuItem is TIDEMenuCommand then
+      TIDEMenuCommand(IDEMenuItem).Checked:=
+        DiskLineEnding=CurLineEnding;
+  end;
+  List.Free;
 end;
 
 procedure TSourceNotebook.UpdateEncodingMenuItems;

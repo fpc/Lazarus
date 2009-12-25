@@ -390,6 +390,7 @@ var
     SrcEditSubMenuRefactor: TIDEMenuSection;
     SrcEditSubMenuFlags: TIDEMenuSection;
       SrcEditSubMenuHighlighter: TIDEMenuSection;
+      SrcEditSubMenuLineEnding: TIDEMenuSection;
       SrcEditSubMenuEncoding: TIDEMenuSection;
 
   // Messages window popupmenu

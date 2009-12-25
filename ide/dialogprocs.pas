@@ -214,7 +214,7 @@ begin
                                          lbfRevert in Flags)
     else
       ACodeBuffer:=nil;
-                                         
+
     if ACodeBuffer<>nil then begin
       Result:=mrOk;
     end else begin

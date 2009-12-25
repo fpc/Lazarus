@@ -2024,6 +2024,7 @@ resourcestring
   lisCodeHelpShowUnusedUnits = 'Show unused units';
   uemHighlighter = 'Highlighter';
   uemEncoding = 'Encoding';
+  uemLineEnding = 'Line ending';
 
   // Form designer
   lisInvalidMultiselection = 'Invalid multiselection';

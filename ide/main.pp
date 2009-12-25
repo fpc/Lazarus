@@ -8261,6 +8261,7 @@ begin
         DebugLn(['TMainIDE.DoOpenEditorFile failed LoadCodeBuffer: ',AFilename]);
         exit;
       end;
+
       NewUnitInfo.Source:=NewBuf;
       if FilenameIsPascalUnit(NewUnitInfo.Filename) then
         NewUnitInfo.ReadUnitNameFromSource(false);
@@ -8281,12 +8282,14 @@ begin
     {$IFDEF IDE_DEBUG}
     writeln('[TMainIDE.DoOpenEditorFile] B');
     {$ENDIF}
+
     // open file in source notebook
     Result:=DoOpenFileInSourceEditor(NewUnitInfo,PageIndex,Flags);
     if Result<>mrOk then begin
       DebugLn(['TMainIDE.DoOpenEditorFile failed DoOpenFileInSourceEditor: ',AFilename]);
       exit;
     end;
+
 
     {$IFDEF IDE_DEBUG}
     writeln('[TMainIDE.DoOpenEditorFile] C');

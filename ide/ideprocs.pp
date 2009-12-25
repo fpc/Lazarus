@@ -30,7 +30,7 @@ unit IDEProcs;
 interface
 
 uses
-  Classes, SysUtils, Laz_XMLCfg, FileUtil, LCLProc, AvgLvlTree,
+  Classes, SysUtils, Laz_XMLCfg, FileUtil, LCLProc, AvgLvlTree, SourceLog,
   FileProcs, LazConf, StdCtrls, ExtCtrls;
 
 type
@@ -210,8 +210,8 @@ procedure SplitString(const s: string; Delimiter: char; AddTo: TStrings;
                       ClearList: boolean = true);
 function SpecialCharsToSpaces(const s: string; FixUTF8: boolean): string;
 function SpecialCharsToHex(const s: string): string;
-function LineBreaksToDelimiter(const s: string; Delimiter: char): string;
 function LineBreaksToSystemLineBreaks(const s: string): string;
+function LineBreaksToDelimiter(const s: string; Delimiter: char): string;
 function StringListToText(List: TStrings; const Delimiter: string;
                           IgnoreEmptyLines: boolean = false): string;
 function StringListPartToText(List: TStrings; FromIndex, ToIndex: integer;
@@ -1614,6 +1614,11 @@ begin
               +copy(Result,i+1,length(Result));
 end;
 
+function LineBreaksToSystemLineBreaks(const s: string): string;
+begin
+  Result:=ChangeLineEndings(s,LineEnding);
+end;
+
 function LineBreaksToDelimiter(const s: string; Delimiter: char): string;
 var
   p: Integer;
@@ -1635,56 +1640,6 @@ begin
       inc(p);
     end;
   end;
-end;
-
-function LineBreaksToSystemLineBreaks(const s: string): string;
-var
-  e: string;
-  NewLength: Integer;
-  p, StartPos: Integer;
-  Src: PChar;
-  Dest: PChar;
-  EndLen: Integer;
-  EndPos: PChar;
-begin
-  if s='' then begin
-    Result:=s;
-    exit;
-  end;
-  e:=LineEnding;
-  EndLen:=length(e);
-  NewLength:=length(s);
-  p:=1;
-  while p<length(s) do begin
-    if s[p] in [#10,#13] then begin
-      StartPos:=p;
-      inc(p);
-      if (s[p] in [#10,#13]) and (s[p]<>s[p-1]) then inc(p);
-      inc(NewLength,EndLen-(p-StartPos));
-    end else
-      inc(p);
-  end;
-  SetLength(Result,NewLength);
-  Src:=PChar(s);
-  Dest:=PChar(Result);
-  EndPos:=Dest+NewLength;
-  while (Dest<EndPos) do begin
-    if Src^ in [#10,#13] then begin
-      for p:=1 to EndLen do begin
-        Dest^:=e[p];
-        inc(Dest);
-      end;
-      if (Src[1] in [#10,#13]) and (Src^<>Src[1]) then
-        inc(Src,2)
-      else
-        inc(Src);
-    end else begin
-      Dest^:=Src^;
-      inc(Src);
-      inc(Dest);
-    end;
-  end;
-  //if Src-1<>@s[length(s)] then RaiseGDBException('');
 end;
 
 function StringListToText(List: TStrings; const Delimiter: string;
