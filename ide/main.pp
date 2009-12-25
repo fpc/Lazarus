@@ -2534,7 +2534,12 @@ begin
   Flags:=[nfOpenInEditor,nfCreateDefaultSrc];
   if (not Project1.IsVirtual) and EnvironmentOptions.AskForFilenameOnNewFile then
     Flags:=Flags+[nfAskForFilename,nfSave];
-  DoNewEditorFile(Desc,'','',Flags);
+  Desc.Owner:=Project1;
+  try
+    DoNewEditorFile(Desc,'','',Flags);
+  finally
+    Desc.Owner:=nil;
+  end;
 end;
 
 procedure TMainIDE.mnuNewFormClicked(Sender: TObject);
@@ -2553,7 +2558,12 @@ begin
   Flags:=[nfOpenInEditor,nfCreateDefaultSrc];
   if (not Project1.IsVirtual) and EnvironmentOptions.AskForFilenameOnNewFile then
     Flags:=Flags+[nfAskForFilename,nfSave];
-  DoNewEditorFile(Desc,'','',Flags);
+  Desc.Owner:=Project1;
+  try
+    DoNewEditorFile(Desc,'','',Flags);
+  finally
+    Desc.Owner:=nil;
+  end;
 end;
 
 procedure TMainIDE.mnuNewOtherClicked(Sender: TObject);
@@ -7679,8 +7689,15 @@ begin
   if Result<>mrOk then exit;
   if NewIDEItem is TNewItemProjectFile then begin
     // file
-    Result:=DoNewEditorFile(TNewItemProjectFile(NewIDEItem).Descriptor,
-                                   '','',[nfOpenInEditor,nfCreateDefaultSrc]);
+    if TNewItemProjectFile(NewIDEItem).Descriptor<>nil then
+      TNewItemProjectFile(NewIDEItem).Descriptor.Owner:=Project1;
+    try
+      Result:=DoNewEditorFile(TNewItemProjectFile(NewIDEItem).Descriptor,
+                                     '','',[nfOpenInEditor,nfCreateDefaultSrc]);
+    finally
+      if TNewItemProjectFile(NewIDEItem).Descriptor<>nil then
+        TNewItemProjectFile(NewIDEItem).Descriptor.Owner:=nil;
+    end;
   end else if NewIDEItem is TNewItemProject then begin
     // project
     //debugln('TMainIDE.DoNewOther ',dbgsName(TNewItemProject(NewIDEItem).Descriptor));

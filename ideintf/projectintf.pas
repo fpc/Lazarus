@@ -493,6 +493,7 @@ type
     FIsComponent: boolean;
     FIsPascalUnit: boolean;
     FName: string;
+    FOwner: TObject;
     FReferenceCount: integer;
     FResourceClass: TPersistentClass;
     FRequiredPackages: string;
@@ -500,13 +501,14 @@ type
     FUseCreateFormStatements: boolean;
     FVisibleInNewDialog: boolean;
   protected
-    procedure SetDefaultFilename(const AValue: string); virtual;
     procedure SetDefaultFileExt(const AValue: string); virtual;
-    procedure SetDefaultSourceName(const AValue: string); virtual;
+    procedure SetDefaultFilename(const AValue: string); virtual;
     procedure SetDefaultResFileExt(const AValue: string); virtual;
+    procedure SetDefaultSourceName(const AValue: string); virtual;
     procedure SetName(const AValue: string); virtual;
-    procedure SetResourceClass(const AValue: TPersistentClass); virtual;
+    procedure SetOwner(const AValue: TObject); virtual;
     procedure SetRequiredPackages(const AValue: string); virtual;
+    procedure SetResourceClass(const AValue: TPersistentClass); virtual;
   public
     constructor Create; virtual;
     function GetLocalizedName: string; virtual;
@@ -518,6 +520,7 @@ type
                           ResourceName: string): string; virtual;
     procedure UpdateDefaultPascalFileExtension(const DefPasExt: string); virtual;
   public
+    property Owner: TObject read FOwner write SetOwner; // project, package or nil
     property Name: string read FName write SetName;
     property DefaultFilename: string read FDefaultFilename write SetDefaultFilename;
     property DefaultFileExt: string read FDefaultFileExt write SetDefaultFileExt;
@@ -560,6 +563,7 @@ type
                           ResourceName: string): string; override;
     function GetLocalizedName: string; override;
     function GetLocalizedDescription: string; override;
+    function GetUnitDirectives: string; virtual;
     function GetInterfaceUsesSection: string; virtual;
     function GetInterfaceSource(const Filename, SourceName,
                                 ResourceName: string): string; virtual;
@@ -1224,6 +1228,12 @@ begin
   FRequiredPackages:=AValue;
 end;
 
+procedure TProjectFileDescriptor.SetOwner(const AValue: TObject);
+begin
+  if FOwner=AValue then exit;
+  FOwner:=AValue;
+end;
+
 procedure TProjectFileDescriptor.SetDefaultFilename(const AValue: string);
 begin
   if FDefaultFilename=AValue then exit;
@@ -1312,7 +1322,7 @@ begin
   Result:=
      'unit '+SourceName+';'+LE
     +LE
-    +'{$mode objfpc}{$H+}'+LE
+    +GetUnitDirectives+LE
     +LE
     +'interface'+LE
     +LE
@@ -1335,6 +1345,24 @@ end;
 function TFileDescPascalUnit.GetLocalizedDescription: string;
 begin
   Result:=oisCreateANewPascalUnit;
+end;
+
+function TFileDescPascalUnit.GetUnitDirectives: string;
+var
+  Project: TLazProject;
+  SyntaxMode: String;
+begin
+  Result:='{$mode objfpc}{$H+}';
+  if Owner is TLazProject then begin
+    Project:=TLazProject(Owner);
+    SyntaxMode:=Project.LazCompilerOptions.SyntaxMode;
+    if SyntaxMode<>'' then begin
+      Result:='{$mode '+lowercase(SyntaxMode)+'}';
+      if Project.LazCompilerOptions.UseAnsiStrings
+      and (SysUtils.CompareText(SyntaxMode,'Delphi')<>0) then
+        Result:=Result+'{$H+}';
+    end;
+  end;
 end;
 
 function TFileDescPascalUnit.GetInterfaceUsesSection: string;

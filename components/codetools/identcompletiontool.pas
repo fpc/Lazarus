@@ -2403,7 +2403,7 @@ begin
         ClassAndAncestors.Count*(SizeOf(TAVLTreeNode)+SizeOf(TCodeXYPosition)));
   if FoundPublicProperties<>nil then
     Stats.Add('TIdentCompletionTool.FoundPublicProperties',
-              FoundPublicProperties.COunt*SizeOf(TAVLTreeNode));
+              FoundPublicProperties.Count*SizeOf(TAVLTreeNode));
   if FoundMethods<>nil then begin
     m:=PtrUint(FoundMethods.Count)*SizeOf(TAVLTreeNode);
     Node:=FoundMethods.FindLowest;
