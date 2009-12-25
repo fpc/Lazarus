@@ -4430,8 +4430,8 @@ resourcestring
   rsCreatingSymLinkFailed = 'Creating symbolic link "%s" failed!';
   rsCreatingSymLinkNotSupported = 'Creating symbolic link is not supported on this platform!';
   lisPutLrsFilesInOutputDirectory = 'Save .lrs files in the output directory';
-  lisLFMResourceType = 'LFM resource type';
   lisLrsIncludeFiles = 'lrs include files';
+  lisLFMResourceTypeForNewFiles = 'LFM resource type for new files';
   lisAutomaticallyConvertLfmFilesToLrsIncludeFiles = 'Automatically convert .'
     +'lfm files to .lrs include files';
   lisFPCResources = 'FPC resources';
