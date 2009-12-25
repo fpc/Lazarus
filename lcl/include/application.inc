@@ -943,17 +943,39 @@ var
   Event: TDataEvent;
   Data: PtrInt;
 begin
-  // take care: we may be called from within lItem^.Method
-  while FAsyncCallQueue <> nil do
-  begin
-    lItem := FAsyncCallQueue;
-    FAsyncCallQueue := lItem^.NextItem;
-    Event:=lItem^.Method;
-    Data:=lItem^.Data;
-    Dispose(lItem);
-    Event(Data);
+  with FAsyncCall do begin
+    // move the items of NextQueue to CurQueue
+    if Next.Top<>nil then
+    begin
+      if Cur.Last<>nil then
+      begin
+        Cur.Last^.NextItem:=Next.Top;
+        Next.Top^.PrevItem:=Cur.Last;
+      end else
+        Cur.Top:=Next.Top;
+      Cur.Last:=Next.Last;
+      Next.Top:=nil;
+      Next.Last:=nil;
+    end;
+
+    // only process items from last to top in current queue
+    // this can create new items, which are added to the next queue
+    // or it can call ProcessAsyncCallQueue, for example via calling
+    // Application.ProcesssMessages
+    while Cur.Last <> nil do
+    begin
+      lItem:=Cur.Last;
+      Cur.Last:=lItem^.PrevItem;
+      if Cur.Last=nil then
+        Cur.Top:=nil
+      else
+        Cur.Last^.NextItem:=nil;
+      Event:=lItem^.Method;
+      Data:=lItem^.Data;
+      Dispose(lItem);
+      Event(Data);
+    end;
   end;
-  FAsyncCallQueueLast := nil;
 end;
 
 procedure TApplication.DoBeforeFinalization;
@@ -2029,11 +2051,14 @@ begin
   lItem^.Method := AMethod;
   lItem^.Data := Data;
   lItem^.NextItem := nil;
-  if FAsyncCallQueue = nil then
-    FAsyncCallQueue := lItem
-  else
-    FAsyncCallQueueLast^.NextItem := lItem;
-  FAsyncCallQueueLast := lItem;
+  with FAsyncCall.Next do begin
+    lItem^.PrevItem := Last;
+    if Last<>nil then
+      Last^.NextItem := lItem
+    else
+      Top := lItem;
+    Last := lItem;
+  end;
 end;
 
 procedure TApplication.FreeComponent(Data: PtrInt);

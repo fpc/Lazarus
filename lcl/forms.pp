@@ -1076,7 +1076,13 @@ type
   TAsyncCallQueueItem = record
     Method: TDataEvent;
     Data: PtrInt;
-    NextItem: PAsyncCallQueueItem;
+    NextItem, PrevItem: PAsyncCallQueueItem;
+  end;
+  TAsyncCallQueue = record
+    Top, Last: PAsyncCallQueueItem;
+  end;
+  TAsyncCallQueues = record
+    Cur, Next: TAsyncCallQueue;
   end;
   
   TApplicationType = (
@@ -1148,8 +1154,7 @@ type
     FOnShortcut: TShortcutEvent;
     FOnShowHint: TShowHintEvent;
     FOnUserInput: TOnUserInputEvent;
-    FAsyncCallQueue: PAsyncCallQueueItem;
-    FAsyncCallQueueLast: PAsyncCallQueueItem;
+    FAsyncCall: TAsyncCallQueues;
     FShowHint: Boolean;
     FShowMainForm: Boolean;
     FLastMousePos: TPoint;
