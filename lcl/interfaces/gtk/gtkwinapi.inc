@@ -2843,7 +2843,7 @@ var
 
 var
   InnerTL, OuterTL,
-  InnerBR, OuterBR: TGDKColor;
+  InnerBR, OuterBR, MiddleColor: TGDKColor;
   BInner, BOuter: Boolean;
   Width, Height: Integer;
   R: TRect;
@@ -2914,18 +2914,13 @@ begin
 //      gdk_colormap_free_colors(gdk_colormap_get_system, @InnerBR, 1);
 
     //Draw interiour
-    if ((grfFlags and BF_MIDDLE) = BF_MIDDLE) and not IsNullBrush
-    then begin
+    if ((grfFlags and BF_MIDDLE) = BF_MIDDLE) then
+    begin
       Width := R.Right - R.Left + 1;
       Height := R.Bottom - R.Top + 1;
-      SelectBrushProps;
-      if (GetBrush^.GDIBrushFill = GDK_SOLID)
-      and (IsBackgroundColor(TColor(GetBrush^.GDIBrushColor.ColorRef)))
-      then
-        StyleFillRectangle(Drawable, GC, GetBrush^.GDIBrushColor.ColorRef,
-                           R.Left, R.Top, Width, Height)
-      else
-        gdk_draw_rectangle(Drawable, GC, 1, R.Left, R.Top, Width, Height);
+      MiddleColor := AllocGDKColor(GetSysColor(COLOR_BTNFACE));
+      gdk_gc_set_foreground(GC, @MiddleColor);
+      gdk_draw_rectangle(Drawable, GC, 1, R.Left, R.Top, Width, Height);
     end;
 
     // adjust rect if needed
