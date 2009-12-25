@@ -2708,34 +2708,31 @@ begin
       begin
         Assert(False, Format('Trace:  [TGtkWidgetSet.DrawFrameControl] DFC_BUTTON --> draw rect = %d,%d,%d,%d',[R.Left,R.Top,R.Right,R.Bottom]));
         //figure out the style first
-        case uState and $1F of
-          DFCS_BUTTONRADIOIMAGE:
-            begin
-              Assert(False, 'Trace:State ButtonRadioImage');
-            end;
-          DFCS_BUTTONRADIOMASK:
-            begin
-              Assert(False, 'Trace:State ButtonRadioMask');
-            end;
-          DFCS_BUTTONRADIO:
-            begin
-              Assert(False, 'Trace:State ButtonRadio');
-              //todo: implement 3 state radio button
-              DrawCheckOrRadioButton(True);
-            end;
-          DFCS_BUTTONPUSH:
-            begin
-              Assert(False, 'Trace:DFCS_BUTTONPUSH in uState');
-              DrawButtonPush;
-            end;
-          DFCS_BUTTONCHECK, DFCS_BUTTON3STATE:
-            begin
-              Assert(False, 'Trace:State ButtonCheck, Button3State');
-              DrawCheckOrRadioButton(False);
-            end;
-        else
-          DebugLn(Format('ERROR: [TGtkWidgetSet.DrawFrameControl] Unknown State 0x%x', [uState]));
-        end;
+        if (uState and $1F) in [DFCS_BUTTONCHECK, DFCS_BUTTON3STATE] then
+         begin
+           Assert(False, 'Trace:State ButtonCheck');
+           DrawCheckOrRadioButton(False);
+         end
+         else if (DFCS_BUTTONRADIO and uState) <> 0 then
+         begin
+           Assert(False, 'Trace:State ButtonRadio');
+           DrawCheckOrRadioButton(True);
+         end
+         else if (DFCS_BUTTONPUSH and uState) <> 0 then
+         begin
+           Assert(False, 'Trace:State ButtonPush');
+           DrawButtonPush;
+         end
+         else if (DFCS_BUTTONRADIOIMAGE and uState) <> 0 then
+         begin
+           Assert(False, 'Trace:State ButtonRadioImage');
+         end
+         else if (DFCS_BUTTONRADIOMASK and uState) <> 0 then
+         begin
+           Assert(False, 'Trace:State ButtonRadioMask');
+         end
+         else
+           DebugLn(Format('ERROR: [TGtkWidgetSet.DrawFrameControl] Unknown State 0x%x', [uState]));
       end;
   else
     DebugLn(Format('ERROR: [TGtkWidgetSet.DrawFrameControl] Unknown type %d', [uType]));
