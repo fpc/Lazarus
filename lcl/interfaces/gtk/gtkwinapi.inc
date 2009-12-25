@@ -2922,9 +2922,11 @@ begin
     end;
 
     // adjust rect if needed
-    if (grfFlags and BF_ADJUST) = BF_ADJUST
-    then ARect := R;
-
+    if (grfFlags and BF_ADJUST) = BF_ADJUST then
+    begin
+      OffsetRect(R, -DCOrigin.X, -DCOrigin.Y);
+      ARect := R;
+    end;
     Result := True;
   end;
 end;
