@@ -2845,7 +2845,6 @@ var
   InnerTL, OuterTL,
   InnerBR, OuterBR, MiddleColor: TGDKColor;
   BInner, BOuter: Boolean;
-  Width, Height: Integer;
   R: TRect;
   DCOrigin: TPoint;
 begin
@@ -2916,11 +2915,10 @@ begin
     //Draw interiour
     if ((grfFlags and BF_MIDDLE) = BF_MIDDLE) then
     begin
-      Width := R.Right - R.Left + 1;
-      Height := R.Bottom - R.Top + 1;
       MiddleColor := AllocGDKColor(GetSysColor(COLOR_BTNFACE));
       gdk_gc_set_foreground(GC, @MiddleColor);
-      gdk_draw_rectangle(Drawable, GC, 1, R.Left, R.Top, Width, Height);
+      gdk_draw_rectangle(Drawable, GC, 1, R.Left, R.Top,
+        R.Right - R.Left, R.Bottom - R.Top);
     end;
 
     // adjust rect if needed
