@@ -848,7 +848,7 @@ begin
       // convert line ending to disk line ending
       if (DiskLineEnding<>'') and (LineEnding <> DiskLineEnding) then begin
         s := ChangeLineEndings(s, DiskLineEnding);
-        DebugLn(['TSourceLog.SaveToFile ',Filename]);
+        //DebugLn(['TSourceLog.SaveToFile ',Filename]);
       end;
       if s <> '' then
         fs.Write(s[1], length(s));
