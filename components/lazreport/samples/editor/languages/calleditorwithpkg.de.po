@@ -12,67 +12,14 @@ msgstr ""
 "X-Poedit-Country: GERMANY\n"
 "X-Poedit-SourceCharset: utf-8\n"
 
-#: maincalleditor.ceractivereport
-msgid "Active report: %s"
-msgstr "Aktiver Report: %s"
-
-#: maincalleditor.cerappcaption
-msgctxt "maincalleditor.cerappcaption"
-msgid "LazReport Test Suite"
-msgstr "LazReport-Testsuite"
-
 #: maincalleditor.cereditreport
 msgctxt "maincalleditor.cereditreport"
 msgid "Edit Report"
 msgstr "Report bearbeiten"
 
-#: maincalleditor.cerhintcloseapp
-msgid "Close application"
-msgstr "Anwendung schließen"
-
-#: maincalleditor.cerhinteditreport
-msgid "Edit active report"
-msgstr "Aktiven Report bearbeiten"
-
-#: maincalleditor.cerhintnewreport
-msgid "Create and edit a empty report"
-msgstr "Anlegen und bearbeiten eines leeren Reports"
-
-#: maincalleditor.cerhintopenreport
-msgid "Open an existing report"
-msgstr "Vorhandenen Report öffnen"
-
-#: maincalleditor.cerhintprevgrid
-msgid "Print preview current DbGrid content"
-msgstr "Vorschau des aktuellen DBGrid-Inhalts drucken"
-
-#: maincalleditor.cerhintprevreport
-msgid "Preview active report"
-msgstr "Vorschau des aktiven Reports"
-
-#: maincalleditor.cerhintprnreport
-msgid "Print directly the active report (i.e. without preview)"
-msgstr "Aktiven Report sofort drucken (ohne Vorschau)"
-
-#: maincalleditor.cerhintthumbnails
-msgid "This Action will Load and Preview a thumbnails Report"
-msgstr ""
-
-#: maincalleditor.cerindex
-msgid "Index"
-msgstr "Index"
-
-#: maincalleditor.cerindexfields
-msgid "Index Fields: %s"
-msgstr "Index Felder: %s"
-
 #: maincalleditor.cernewreport
 msgid "New report"
 msgstr "Neuer Report"
-
-#: maincalleditor.cernone
-msgid "none"
-msgstr "keiner"
 
 #: maincalleditor.cernotimplemented
 msgid "This feature is not yet implemented!"
@@ -81,10 +28,6 @@ msgstr "Diese Funktion ist noch nicht implementiert!"
 #: maincalleditor.ceropenreport
 msgid "Open report"
 msgstr "Report öffnen"
-
-#: maincalleditor.ceropenreportfirst
-msgid "Open report first"
-msgstr "Zuerst Report öffnen"
 
 #: maincalleditor.cerpreparefailed
 msgid "PrepareReport Failed!"
@@ -101,11 +44,6 @@ msgstr "Gitter drucken"
 #: maincalleditor.cerprintreport
 msgid "Print report"
 msgstr "Report drucken"
-
-#: maincalleditor.certhumbnails
-msgctxt "maincalleditor.certhumbnails"
-msgid "Thumbnails"
-msgstr "Vorschaubilder"
 
 #: TFRMMAIN.ACCCLOSE.CAPTION
 msgid "Close"

@@ -748,6 +748,10 @@ msgstr ""
 msgid "Unit Style:"
 msgstr ""
 
+#: lazarusidestrconsts.dlgcouseasdefault
+msgid "Use these settings as default for new projects"
+msgstr ""
+
 #: lazarusidestrconsts.dlgcovalgrind
 msgid "Generate code for valgrind"
 msgstr ""
@@ -1508,7 +1512,7 @@ msgid "Left:"
 msgstr ""
 
 #: lazarusidestrconsts.dlglefttopclr
-msgid "color for left, top"
+msgid "Guid lines Left,Top"
 msgstr ""
 
 #: lazarusidestrconsts.dlglevel1opt
@@ -2205,7 +2209,7 @@ msgid "Report"
 msgstr ""
 
 #: lazarusidestrconsts.dlgrightbottomclr
-msgid "color for right, bottom"
+msgid "Guide lines Right,Bottom"
 msgstr ""
 
 #: lazarusidestrconsts.dlgrightclickselects
@@ -2220,21 +2224,17 @@ msgstr ""
 msgid "Working directory"
 msgstr ""
 
-#: lazarusidestrconsts.dlgrubberbandgroup
-msgid "Rubber band"
-msgstr ""
-
 #: lazarusidestrconsts.dlgrubberbandselectsgrandchildren
 msgid "Select grandchildren"
 msgstr ""
 
 #: lazarusidestrconsts.dlgruberbandcreationcolor
-msgid "Creation"
+msgid "Rubberband Creation"
 msgstr ""
 
 #: lazarusidestrconsts.dlgruberbandselectioncolor
 msgctxt "lazarusidestrconsts.dlgruberbandselectioncolor"
-msgid "Selection"
+msgid "Rubberband Selection"
 msgstr ""
 
 #: lazarusidestrconsts.dlgrunodisplay
@@ -3151,6 +3151,10 @@ msgstr ""
 msgid "Add package %s to project?"
 msgstr ""
 
+#: lazarusidestrconsts.lisaddparameterbrackets
+msgid "Add parameter brackets"
+msgstr ""
+
 #: lazarusidestrconsts.lisaddtoproject
 msgid "Add %s to project?"
 msgstr "%s projeye eklensin mi?"
@@ -3380,6 +3384,10 @@ msgstr ""
 msgid "Auto continue after:"
 msgstr ""
 
+#: lazarusidestrconsts.lisautomaticallyconvertlfmfilestolrsincludefiles
+msgid "Automatically convert .lfm files to .lrs include files"
+msgstr ""
+
 #: lazarusidestrconsts.lisautomaticallyinvokeafterpoint
 msgid "Automatically invoke after point"
 msgstr ""
@@ -3539,6 +3547,14 @@ msgstr ""
 
 #: lazarusidestrconsts.lisbuildidewithpackages
 msgid "build IDE with packages"
+msgstr ""
+
+#: lazarusidestrconsts.lisbuildinglazarusfailed
+msgid "Building Lazarus failed"
+msgstr ""
+
+#: lazarusidestrconsts.lisbuildmode
+msgid "Build mode"
 msgstr ""
 
 #: lazarusidestrconsts.lisbuildnewproject
@@ -4155,7 +4171,7 @@ msgstr ""
 #: lazarusidestrconsts.liscocallonbuild
 msgctxt "lazarusidestrconsts.liscocallonbuild"
 msgid "Build"
-msgstr ""
+msgstr "Oluştur"
 
 #: lazarusidestrconsts.liscocalloncompile
 msgctxt "lazarusidestrconsts.liscocalloncompile"
@@ -4165,7 +4181,7 @@ msgstr ""
 #: lazarusidestrconsts.liscocallonrun
 msgctxt "lazarusidestrconsts.liscocallonrun"
 msgid "Run"
-msgstr ""
+msgstr "Çalıştır"
 
 #: lazarusidestrconsts.liscoclickokifaresuretodothat
 msgid "%s%sClick OK if you are sure to do that."
@@ -5145,6 +5161,10 @@ msgstr ""
 msgid "Create new project"
 msgstr "Yeni proje oluştur"
 
+#: lazarusidestrconsts.liscreateproject
+msgid "Create project"
+msgstr ""
+
 #: lazarusidestrconsts.lisctdefchoosedirectory
 msgid "Choose Directory"
 msgstr ""
@@ -5432,6 +5452,18 @@ msgstr ""
 msgid "Delete breakpoint at%s\"%s\" line %d?"
 msgstr ""
 
+#: lazarusidestrconsts.lisdeletebuildmode
+msgid "Delete build mode"
+msgstr ""
+
+#: lazarusidestrconsts.lisdeletebuildmode2
+msgid "Delete build mode?"
+msgstr ""
+
+#: lazarusidestrconsts.lisdeletebuildmode3
+msgid "Delete build mode %s%s%s?"
+msgstr ""
+
 #: lazarusidestrconsts.lisdeletebuildvar
 msgid "Delete build variable %s%s%s?"
 msgstr ""
@@ -5448,8 +5480,24 @@ msgstr "%s%s%s adlı eski dosya silinsin mi?"
 msgid "Delete old file?"
 msgstr ""
 
+#: lazarusidestrconsts.lisdeleterow
+msgid "Delete row"
+msgstr ""
+
 #: lazarusidestrconsts.lisdeleteselectedfiles
 msgid "Delete selected files"
+msgstr ""
+
+#: lazarusidestrconsts.lisdeletesetting
+msgid "Delete setting"
+msgstr ""
+
+#: lazarusidestrconsts.lisdeletesetting2
+msgid "Delete setting?"
+msgstr ""
+
+#: lazarusidestrconsts.lisdeletesetting3
+msgid "Delete setting %s%s%s?"
 msgstr ""
 
 #: lazarusidestrconsts.lisdeletevalue
@@ -5538,6 +5586,10 @@ msgstr ""
 
 #: lazarusidestrconsts.lisdirectorynotfound
 msgid "Directory %s%s%s not found."
+msgstr ""
+
+#: lazarusidestrconsts.lisdirectorynotwritable
+msgid "Directory not writable"
 msgstr ""
 
 #: lazarusidestrconsts.lisdisableallinsamesource
@@ -6000,6 +6052,10 @@ msgstr ""
 msgid "Error moving component %s:%s"
 msgstr ""
 
+#: lazarusidestrconsts.liserrornamingcomponent
+msgid "Error naming component"
+msgstr ""
+
 #: lazarusidestrconsts.liserroropeningcomponent
 msgid "Error opening component"
 msgstr ""
@@ -6031,6 +6087,10 @@ msgstr ""
 
 #: lazarusidestrconsts.liserrorsavingto
 msgid "Error saving %s to%s%s%s%s"
+msgstr ""
+
+#: lazarusidestrconsts.liserrorsettingthenameofacomponentto
+msgid "Error setting the name of a component %s to %s"
 msgstr ""
 
 #: lazarusidestrconsts.liserrorwritingpackagelisttofile
@@ -6214,6 +6274,10 @@ msgstr ""
 msgid "File %s%s%s has changed. Save?"
 msgstr ""
 
+#: lazarusidestrconsts.lisfilehasnoproject
+msgid "File has no project"
+msgstr ""
+
 #: lazarusidestrconsts.lisfileisnotwritable
 msgid "File is not writable"
 msgstr ""
@@ -6379,9 +6443,17 @@ msgctxt "lazarusidestrconsts.lisfpcomponents"
 msgid "Components"
 msgstr ""
 
+#: lazarusidestrconsts.lisfpcresources
+msgid "FPC resources"
+msgstr ""
+
 #: lazarusidestrconsts.lisfpcsourcedirectoryerror
 msgid "FPC Source Directory error"
 msgstr "FPC Kaynak Dizini Hatası"
+
+#: lazarusidestrconsts.lisfpctooold
+msgid "FPC too old"
+msgstr ""
 
 #: lazarusidestrconsts.lisfpcversion
 msgid "FPC Version: "
@@ -6553,7 +6625,7 @@ msgstr ""
 #: lazarusidestrconsts.lishintrun
 msgctxt "lazarusidestrconsts.lishintrun"
 msgid "Run"
-msgstr ""
+msgstr "Çalıştır"
 
 #: lazarusidestrconsts.lishintsave
 msgctxt "lazarusidestrconsts.lishintsave"
@@ -6629,6 +6701,10 @@ msgstr ""
 msgid "IDE"
 msgstr ""
 
+#: lazarusidestrconsts.lisidebuildoptions
+msgid "IDE build options"
+msgstr ""
+
 #: lazarusidestrconsts.lisideintf
 msgid "IDE Interface"
 msgstr ""
@@ -6648,6 +6724,10 @@ msgstr ""
 #: lazarusidestrconsts.lisideoptions
 msgid "IDE Options:"
 msgstr "IDE Seçenekleri:"
+
+#: lazarusidestrconsts.lisidetitlestartswithprojectname
+msgid "IDE title starts with project name"
+msgstr ""
 
 #: lazarusidestrconsts.lisiecoerroraccessingxml
 msgid "Error accessing xml"
@@ -6730,6 +6810,10 @@ msgstr ""
 msgid "Imitate indentation of current unit, project or package"
 msgstr ""
 
+#: lazarusidestrconsts.lisimplementationcommentforclass
+msgid "Implementation comment for class"
+msgstr ""
+
 #: lazarusidestrconsts.lisimportlist
 msgid "Import list"
 msgstr ""
@@ -6765,7 +6849,7 @@ msgstr ""
 #: lazarusidestrconsts.lisinfobuildbuild
 msgctxt "lazarusidestrconsts.lisinfobuildbuild"
 msgid "Build"
-msgstr ""
+msgstr "Oluştur"
 
 #: lazarusidestrconsts.lisinfobuildcaption
 msgid "Compile Project"
@@ -6996,6 +7080,10 @@ msgstr ""
 
 #: lazarusidestrconsts.lisinvalidselection
 msgid "Invalid selection"
+msgstr ""
+
+#: lazarusidestrconsts.lisisagroupasettingcanonlybeaddedtonormalbuildmodes
+msgid "%s is a group. A setting can only be added to normal build modes."
 msgstr ""
 
 #: lazarusidestrconsts.lisisalreadypartoftheproject
@@ -7464,6 +7552,10 @@ msgstr ""
 msgid "Toggle marker 9"
 msgstr ""
 
+#: lazarusidestrconsts.liskmtoggleviewassembler
+msgid "Toggle view Assembler"
+msgstr ""
+
 #: lazarusidestrconsts.liskmtoggleviewbreakpoints
 msgid "Toggle view Breakpoints"
 msgstr ""
@@ -7502,6 +7594,10 @@ msgstr ""
 
 #: lazarusidestrconsts.liskmtoggleviewobjectinspector
 msgid "Toggle view Object Inspector"
+msgstr ""
+
+#: lazarusidestrconsts.liskmtoggleviewregisters
+msgid "Toggle view Registers"
 msgstr ""
 
 #: lazarusidestrconsts.liskmtoggleviewsearchresults
@@ -7604,10 +7700,6 @@ msgstr ""
 msgid "Lazarus unit"
 msgstr ""
 
-#: lazarusidestrconsts.lislazarusversionstring
-msgid "%s"
-msgstr "%s önsürüm"
-
 #: lazarusidestrconsts.lislazbuildaboaction
 msgctxt "lazarusidestrconsts.lislazbuildaboaction"
 msgid "Action"
@@ -7628,7 +7720,7 @@ msgstr "Gelişmiş inşa seçenekleri"
 #: lazarusidestrconsts.lislazbuildbuild
 msgctxt "lazarusidestrconsts.lislazbuildbuild"
 msgid "Build"
-msgstr ""
+msgstr "Oluştur"
 
 #: lazarusidestrconsts.lislazbuildbuildcodetools
 msgid "Build CodeTools"
@@ -7852,6 +7944,10 @@ msgstr "LFM dosyası bulunamadı"
 msgid "LFM is ok"
 msgstr ""
 
+#: lazarusidestrconsts.lislfmresourcetype
+msgid "LFM resource type"
+msgstr ""
+
 #: lazarusidestrconsts.lislgplnotice
 msgid "<description>%sCopyright (C) <year> <name of author> <contact>%sThis library is free software; you can redistribute it and/or modify it under the terms of the GNU Library General Public License as published by the Free Software Foundation; either version 2 of the License, or (at your option) any later version. %sThis program is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU Library General Public License for more details. %sYou should have received a copy of the GNU Library General Public License along with this library; if not, write to the Free Software Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA."
 msgstr "<description>%sCopyright (C) <year> <name of author> <contact>%sThis library is free software; you can redistribute it and/or modify it under the terms of the GNU Library General Public License as published by the Free Software Foundation; either version 2 of the License, or (at your option) any later version. %sThis program is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU Library General Public License for more details. %sYou should have received a copy of the GNU Library General Public License along with this library; if not, write to the Free Software Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA."
@@ -7920,6 +8016,10 @@ msgstr ""
 
 #: lazarusidestrconsts.lislowercasestringgivenasparameter
 msgid "Lowercase string given as parameter"
+msgstr ""
+
+#: lazarusidestrconsts.lislrsincludefiles
+msgid "lrs include files"
 msgstr ""
 
 #: lazarusidestrconsts.lismacpascal
@@ -8218,6 +8318,10 @@ msgstr "Bağlama duyarlı yardımı düzenle"
 #: lazarusidestrconsts.lismenueditinstallpkgs
 msgid "Configure installed packages ..."
 msgstr "Yüklü paketleri yapılandır ..."
+
+#: lazarusidestrconsts.lismenueditor
+msgid "Menu Editor..."
+msgstr ""
 
 #: lazarusidestrconsts.lismenueditorcancel
 msgctxt "lazarusidestrconsts.lismenueditorcancel"
@@ -9062,6 +9166,10 @@ msgstr ""
 msgid "New Ancestors"
 msgstr ""
 
+#: lazarusidestrconsts.lisnewbuildmode
+msgid "New build mode"
+msgstr ""
+
 #: lazarusidestrconsts.lisnewclass
 msgid "New Class"
 msgstr ""
@@ -9134,9 +9242,17 @@ msgstr ""
 msgid "New encoding:"
 msgstr ""
 
+#: lazarusidestrconsts.lisnewgroupasetofmodes
+msgid "New group - a set of modes"
+msgstr ""
+
 #: lazarusidestrconsts.lisnewproject
 msgid "%s - (new project)"
 msgstr "%s - (yeni proje)"
+
+#: lazarusidestrconsts.lisnewsetting
+msgid "New setting"
+msgstr ""
 
 #: lazarusidestrconsts.lisnewunitsareaddedtousessections
 msgid "New units are added to uses sections:"
@@ -10117,6 +10233,10 @@ msgstr ""
 msgid "LRS - Lazarus resource"
 msgstr ""
 
+#: lazarusidestrconsts.lispkgfiletypemainunit
+msgid "Main Unit"
+msgstr ""
+
 #: lazarusidestrconsts.lispkgfiletypetext
 msgctxt "lazarusidestrconsts.lispkgfiletypetext"
 msgid "Text"
@@ -10709,6 +10829,10 @@ msgstr "Lütfen freepascal kaynak dizinini denetleyin"
 msgid "Please open a unit before run."
 msgstr ""
 
+#: lazarusidestrconsts.lispleaseselectabuildmodefirst
+msgid "Please select a build mode first."
+msgstr ""
+
 #: lazarusidestrconsts.lispleaseselectsomecodetoextractanewproceduremethod
 msgid "Please select some code to extract a new procedure/method."
 msgstr ""
@@ -10948,6 +11072,10 @@ msgstr ""
 msgid "Project changed"
 msgstr "Proje değiştirilmiş"
 
+#: lazarusidestrconsts.lisprojectchangedondisk
+msgid "Project changed on disk"
+msgstr ""
+
 #: lazarusidestrconsts.lisprojectdirectory
 msgctxt "lazarusidestrconsts.lisprojectdirectory"
 msgid "Project directory"
@@ -10983,6 +11111,14 @@ msgstr "macro ProjectUnitPath"
 
 #: lazarusidestrconsts.lisprojectoutdir
 msgid "Project Output directory (e.g. the ppu directory)"
+msgstr ""
+
+#: lazarusidestrconsts.lisprojectsraisedexceptionclasss
+msgid "Project %s raised exception class '%s'."
+msgstr ""
+
+#: lazarusidestrconsts.lisprojectsraisedexceptionclassswithmessagess
+msgid "Project %s raised exception class '%s' with message:%s%s"
 msgstr ""
 
 #: lazarusidestrconsts.lisprojectsrcpath
@@ -11225,6 +11361,10 @@ msgstr "Başarısız olan dosyayı yeniden adlandır"
 msgid "Rename to lowercase"
 msgstr "Küçük harflerle yeniden adlandır"
 
+#: lazarusidestrconsts.lisreopenproject
+msgid "Reopen project"
+msgstr ""
+
 #: lazarusidestrconsts.lisreopenwithanotherencoding
 msgid "Reopen with another encoding"
 msgstr ""
@@ -11240,6 +11380,10 @@ msgstr ""
 #: lazarusidestrconsts.lisreportingbugurl
 msgid "http://wiki.lazarus.freepascal.org/How_do_I_create_a_bug_report"
 msgstr "http://wiki.lazarus.freepascal.org/How_do_I_create_a_bug_report"
+
+#: lazarusidestrconsts.lisrequiresfpc24orabovelikedelphiresources
+msgid "Requires FPC 2.4 or above. Like Delphi resources"
+msgstr ""
 
 #: lazarusidestrconsts.lisrescan
 msgid "Rescan"
@@ -11486,6 +11630,10 @@ msgstr "Seçim, dizi sabitini aşıyor"
 msgid "Selection tool"
 msgstr "Seçim aracı"
 
+#: lazarusidestrconsts.lisselecttheactivebuildmode
+msgid "Select the active build mode"
+msgstr ""
+
 #: lazarusidestrconsts.lissetdefault
 msgid "Set default"
 msgstr ""
@@ -11711,6 +11859,10 @@ msgstr ""
 msgid "Stop the debugging?"
 msgstr "Hata ayıklama durdurulsun mu?"
 
+#: lazarusidestrconsts.lisstrangelpifile
+msgid "Strange lpi file"
+msgstr ""
+
 #: lazarusidestrconsts.lisstreamerror
 msgid "Stream Error"
 msgstr ""
@@ -11896,6 +12048,10 @@ msgstr ""
 msgid "The directory %s%s%s is no longer needed in the unit path.%sRemove it?"
 msgstr ""
 
+#: lazarusidestrconsts.listhedirectoryisnotwritable
+msgid "The directory %s%s%s is not writable."
+msgstr ""
+
 #: lazarusidestrconsts.listhedirectoryisnotyetintheunitpathaddit
 msgid "The directory %s%s%s is not yet in the unit path.%sAdd it?"
 msgstr ""
@@ -11908,6 +12064,10 @@ msgstr ""
 msgid "The file %s%s%s"
 msgstr "%s%s%s dosyası"
 
+#: lazarusidestrconsts.listhefiledoesnotlooklikealpifile
+msgid "The file %s does not look like a lpi file."
+msgstr ""
+
 #: lazarusidestrconsts.listhefileisasymlinkopeninstead
 msgid "The file %s%s%s is a symlink.%s%sOpen %s%s%s instead?"
 msgstr ""
@@ -11918,6 +12078,10 @@ msgstr "%s%s%s dosyası bir Delphi projesi(.dpr) değil"
 
 #: lazarusidestrconsts.listhefileisnotadelphiunit
 msgid "The file %s%s%s is not a Delphi unit."
+msgstr ""
+
+#: lazarusidestrconsts.listhefileisnotalazarusprojectcreateanewprojectforthi
+msgid "The file %s%s%s is not a lazarus project.%sCreate a new project for this %s?"
 msgstr ""
 
 #: lazarusidestrconsts.listhefileseemstobeaprogramclosecurrentproject
@@ -12024,6 +12188,10 @@ msgstr ""
 msgid "The package already contains a unit with this name."
 msgstr ""
 
+#: lazarusidestrconsts.listhepackagecannotbeuninstalledbecauseitisneededbyth
+msgid "The package %s can not be uninstalled, because it is needed by the IDE itself."
+msgstr ""
+
 #: lazarusidestrconsts.listheprogrammakewasnotfoundthistoolisneededtobuildla
 msgid "The program %smake%s was not found.%sThis tool is needed to build lazarus.%s"
 msgstr ""
@@ -12036,12 +12204,20 @@ msgstr ""
 msgid "The project info file %s%s%s%sis equal to the project main source file!"
 msgstr "%s%s%s%s adlı proje bilgi dosyası, projenin ana kaynak kodu dosyasıyla aynı!"
 
+#: lazarusidestrconsts.listheprojectinformationfilehaschangedondisk
+msgid "The project information file %s%s%s%shas changed on disk."
+msgstr ""
+
 #: lazarusidestrconsts.listheprojectmustbesavedbeforebuildingifyousetthetest
 msgid "The project must be saved before building%sIf you set the Test Directory in the environment options,%syou can create new projects and build them at once.%sSave project?"
 msgstr "Proje inşa edilmeden önce kaydedilmek zorunda%sEğer ortam seçeneklerinde Test Dizinini belirlersen,%syeni projeler oluşturabilir ve onları anında inşa edebilirsin.%sProje kaydedilsin mi?"
 
 #: lazarusidestrconsts.listheprojectusestargetosandcputhesystemppuforthistar
 msgid "The project uses target OS=%s and CPU=%s.%sThe system.ppu for this target was not found in the FPC binary directories. %sMake sure fpc is installed correctly for this target and the fpc.cfg contains the right directories."
+msgstr ""
+
+#: lazarusidestrconsts.listheprojectusesthenewfpcresourceswhichrequiresatlea
+msgid "The project uses the new FPC resources, which requires at least FPC 2.4"
 msgstr ""
 
 #: lazarusidestrconsts.listhereareotherfilesinthedirectorywiththesamename
@@ -12092,6 +12268,10 @@ msgstr ""
 msgid "The root component can not be deleted."
 msgstr ""
 
+#: lazarusidestrconsts.listhesesettingsarestoredwiththeproject
+msgid "These settings are stored with the project."
+msgstr ""
+
 #: lazarusidestrconsts.listhetestdirectorycouldnotbefoundseeenvironmentopt
 msgid "The Test Directory could not be found:%s%s%s%s%s(see environment options)"
 msgstr ""
@@ -12140,6 +12320,10 @@ msgstr "bu yardım iletisi"
 msgid "This looks like a pascal file.%sIt is recommended to use lower case filenames, to avoid various problems on some filesystems and different compilers.%sRename it to lowercase?"
 msgstr "Bu bir pascal dosyası gibi görünüyor.%sBazı dosya sistemlerinde ve farklı derleyicilerde oluşabilecek sorunları önlemek için küçük harfli dosya adlarının kullanıması önerilir.%sDosya adı küçük harfe dönüştürülsün mü?"
 
+#: lazarusidestrconsts.listhissetofoptionstobuildlazarusisnotsupportedbythis
+msgid "This set of options to build Lazarus is not supported by this installation.%sThe directory %s%s%s is not writable.%sSee the Lazarus website for other ways to install Lazarus."
+msgstr ""
+
 #: lazarusidestrconsts.listhisstatementcannotbeextractedpleaseselectsomecode
 msgid "This statement can not be extracted.%sPlease select some code to extract a new procedure/method."
 msgstr ""
@@ -12150,6 +12334,10 @@ msgstr ""
 
 #: lazarusidestrconsts.listitle
 msgid "&Title"
+msgstr ""
+
+#: lazarusidestrconsts.listitleintaskbarshowsforexampleproject1lpilazarus
+msgid "Title in taskbar shows for example: project1.lpi - Lazarus"
 msgstr ""
 
 #: lazarusidestrconsts.listitleleaveemptyfordefault
@@ -12272,6 +12460,10 @@ msgstr ""
 
 #: lazarusidestrconsts.listopspaceequally
 msgid "Top space equally"
+msgstr ""
+
+#: lazarusidestrconsts.listreeneedsrefresh
+msgid "Tree needs refresh"
 msgstr ""
 
 #: lazarusidestrconsts.listtodolcategory
@@ -12407,6 +12599,10 @@ msgstr "%s%s%s%s adlı kaynak dosyasına kaynak başlık açıklaması eklenemed
 msgid "Unable to add resource T%s:FORMDATA to resource file %s%s%s%s.%sProbably a syntax error."
 msgstr "%s%s%s%s adlı kaynak dosyasına T%s:FORMDATA kaynağı eklenemedi.%sMuhtemelen bir sözdizimi hatası."
 
+#: lazarusidestrconsts.lisunabletoaddsetting
+msgid "Unable to add setting"
+msgstr ""
+
 #: lazarusidestrconsts.lisunabletoaddtoprojectbecausethereisalreadyaunitwith
 msgid "Unable to add %s to project, because there is already a unit with the same name in the Project."
 msgstr "%s projeye eklenemiyor, çünkü projede zaten bu adı almış bir birim var."
@@ -12493,6 +12689,10 @@ msgstr "Yeni yöntem oluşturulamıyor. Lütfen ileti penceresinde görüntülen
 
 #: lazarusidestrconsts.lisunabletocreatetemporarylfmbuffer
 msgid "Unable to create temporary lfm buffer."
+msgstr ""
+
+#: lazarusidestrconsts.lisunabletodelete
+msgid "Unable to delete"
 msgstr ""
 
 #: lazarusidestrconsts.lisunabletodeleteambiguousfile
@@ -12673,28 +12873,26 @@ msgstr ""
 msgid "Unable to write file"
 msgstr ""
 
-#: lazarusidestrconsts.lisunabletowritefile2
-msgid "Unable to write file %s%s%s"
-msgstr ""
-
 #: lazarusidestrconsts.lisunabletowritefileerror
 msgid "Unable to write file %s%s%s%sError: %s"
 msgstr "%s%s%s%s dosyasına yazılamadı hatası: %s"
 
-#: lazarusidestrconsts.lisunabletowritefilename
-msgid "Unable to write file %s%s%s."
+#: lazarusidestrconsts.lisunabletowritetheprojectinfofileerror
+msgid "Unable to write the project info file%s%s%s%s.%sError: %s"
 msgstr ""
 
 #: lazarusidestrconsts.lisunabletowritetofile
-msgid "Unable to write to file %s%s%s!"
+#, fuzzy
+#| msgid "Unable to write to file %s%s%s!"
+msgid "Unable to write to file %s%s%s."
 msgstr "%s%s%s adlı dosyaya yazılamaz!"
-
-#: lazarusidestrconsts.lisunabletowritetofile2
-msgid "Unable to write to file %s%s%s"
-msgstr ""
 
 #: lazarusidestrconsts.lisunabletowritexmlstreamtoerror
 msgid "Unable to write xml stream to %s%sError: %s"
+msgstr ""
+
+#: lazarusidestrconsts.lisuninstallimpossible
+msgid "Uninstall impossible"
 msgstr ""
 
 #: lazarusidestrconsts.lisuninstallselection
@@ -12883,6 +13081,10 @@ msgstr ""
 
 #: lazarusidestrconsts.liswhenaunitisrenamedupdatereferences
 msgid "When a unit is renamed, update references ..."
+msgstr ""
+
+#: lazarusidestrconsts.liswhenenabledthecurrentoptionsaresavedtothetemplatew
+msgid "When enabled the current options are saved to the template, which is used when creating new projects"
 msgstr ""
 
 #: lazarusidestrconsts.liswithrequiredpackages
@@ -14125,6 +14327,10 @@ msgstr ""
 msgid "Syntax check"
 msgstr ""
 
+#: lazarusidestrconsts.srkmectoggleassembler
+msgid "View assembler"
+msgstr ""
+
 #: lazarusidestrconsts.srkmectogglebreakpoint
 msgid "toggle break point"
 msgstr ""
@@ -14188,6 +14394,10 @@ msgstr ""
 
 #: lazarusidestrconsts.srkmectoggleobjectinsp
 msgid "View Object Inspector"
+msgstr ""
+
+#: lazarusidestrconsts.srkmectoggleregisters
+msgid "View registers"
 msgstr ""
 
 #: lazarusidestrconsts.srkmectogglerestrictionbrowser
@@ -14379,8 +14589,16 @@ msgstr ""
 msgid "Insert Todo"
 msgstr ""
 
+#: lazarusidestrconsts.ueminspect
+msgid "&Inspect..."
+msgstr ""
+
 #: lazarusidestrconsts.ueminvertassignment
 msgid "Invert Assignment"
+msgstr ""
+
+#: lazarusidestrconsts.uemlineending
+msgid "Line ending"
 msgstr ""
 
 #: lazarusidestrconsts.uemmovepageleft

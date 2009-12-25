@@ -136,7 +136,7 @@ msgid "Check dataset settings"
 msgstr ""
 
 #: objinspstrconsts.fesfetitle
-msgid "Edit Fields"
+msgid "Edit Fields..."
 msgstr ""
 
 #: objinspstrconsts.fesfltitle
@@ -292,9 +292,27 @@ msgstr ""
 msgid "Action"
 msgstr "Akcja"
 
+#: objinspstrconsts.oisactionlistcomponenteditor
+msgid "Action&List Editor..."
+msgstr ""
+
 #: objinspstrconsts.oisactionlisteditor
-msgid "Action List Editor"
+#, fuzzy
+#| msgid "Action List Editor"
+msgid "ActionList Editor"
 msgstr "Edytor ActionList"
+
+#: objinspstrconsts.oisaddcollectionitem
+msgid "&Add Item"
+msgstr ""
+
+#: objinspstrconsts.oisaddfields
+msgid "&Add fields"
+msgstr ""
+
+#: objinspstrconsts.oisaddfieldsfromfielddefs
+msgid "Add fields from FieldDefs"
+msgstr ""
 
 #: objinspstrconsts.oisaddtofavorites
 msgid "Add to Favorites"
@@ -371,7 +389,9 @@ msgid "Confirm delete"
 msgstr "Potwierdź usunięcie"
 
 #: objinspstrconsts.oiscopycomponents
-msgid "Copy components"
+#, fuzzy
+#| msgid "Copy components"
+msgid "&Copy"
 msgstr "Kopiuj komponenty"
 
 #: objinspstrconsts.oiscreateanewpascalunit
@@ -382,8 +402,14 @@ msgstr "Utwórz nowy moduł (plik źródłowy pascala)."
 msgid "Create default event"
 msgstr "Utwórz domyślne zdarzenie"
 
+#: objinspstrconsts.oiscreatenewfieldandadditatcurrentposition
+msgid "Create new field and add it at current position"
+msgstr ""
+
 #: objinspstrconsts.oiscutcomponents
-msgid "Cut components"
+#, fuzzy
+#| msgid "Cut components"
+msgid "Cu&t"
 msgstr "Wytnij komponenty"
 
 #: objinspstrconsts.oisdelete
@@ -392,20 +418,22 @@ msgid "Delete"
 msgstr "Usuń"
 
 #: objinspstrconsts.oisdeletecomponents
-msgid "Delete components"
+#, fuzzy
+#| msgid "Delete components"
+msgid "&Delete"
 msgstr "Usuń komponenty"
 
 #: objinspstrconsts.oisdeleteitem
 msgid "Delete item %s%s%s?"
 msgstr "Usuń element %s%s%s?"
 
+#: objinspstrconsts.oisdeleteselectedfields
+msgid "Delete selected field(s)"
+msgstr ""
+
 #: objinspstrconsts.oisdlinesdchars
 msgid "%d lines, %d chars"
 msgstr "%d linii, %d znaków"
-
-#: objinspstrconsts.oiseditactionlist
-msgid "Edit action list..."
-msgstr "Edytuj ActionList..."
 
 #: objinspstrconsts.oisenumeration
 msgid "Enumeration"
@@ -415,6 +443,10 @@ msgstr ""
 msgid "Error"
 msgstr "Błąd"
 
+#: objinspstrconsts.oiserrordeletingaction
+msgid "Error deleting action"
+msgstr ""
+
 #: objinspstrconsts.oiserrorloadingimage
 msgid "Error loading image"
 msgstr "Błąd ładowania obrazu"
@@ -422,6 +454,10 @@ msgstr "Błąd ładowania obrazu"
 #: objinspstrconsts.oiserrorloadingimage2
 msgid "Error loading image %s%s%s:%s%s"
 msgstr "Błąd ładowania obrazu %s%s%s:%s%s"
+
+#: objinspstrconsts.oiserrorwhiledeletingaction
+msgid "Error while deleting action:%s%s"
+msgstr ""
 
 #: objinspstrconsts.oisevents
 msgid "Events"
@@ -438,6 +474,10 @@ msgstr "Skocz do deklaracji"
 #: objinspstrconsts.oisfloat
 msgid "Float"
 msgstr "Float"
+
+#: objinspstrconsts.oisimagelistcomponenteditor
+msgid "I&mageList Editor..."
+msgstr ""
 
 #: objinspstrconsts.oisincompatibleidentifier
 msgid "Incompatible Identifier"
@@ -495,6 +535,18 @@ msgstr ""
 msgid "Method"
 msgstr ""
 
+#: objinspstrconsts.oismovedown
+msgid "Move &Down"
+msgstr ""
+
+#: objinspstrconsts.oismoveup
+msgid "Move &Up"
+msgstr ""
+
+#: objinspstrconsts.oisnew
+msgid "&New"
+msgstr ""
+
 #: objinspstrconsts.oisnone
 msgid "(none)"
 msgstr "(brak)"
@@ -527,8 +579,26 @@ msgstr ""
 msgid "Options"
 msgstr "Opcje"
 
+#: objinspstrconsts.oisorderbackone
+msgid "Back One"
+msgstr ""
+
+#: objinspstrconsts.oisorderforwardone
+msgid "Forward One"
+msgstr ""
+
+#: objinspstrconsts.oisordermovetoback
+msgid "Move to Back"
+msgstr ""
+
+#: objinspstrconsts.oisordermovetofront
+msgid "Move to Front"
+msgstr ""
+
 #: objinspstrconsts.oispastecomponents
-msgid "Paste components"
+#, fuzzy
+#| msgid "Paste components"
+msgid "&Paste"
 msgstr "Wstaw komponenty"
 
 #: objinspstrconsts.oispeopenimagefile
@@ -582,6 +652,10 @@ msgstr "Zapisz obraz"
 #: objinspstrconsts.oisselectafile
 msgid "Select a file"
 msgstr "Wybierz plik"
+
+#: objinspstrconsts.oisselectall
+msgid "&Select all"
+msgstr ""
 
 #: objinspstrconsts.oisselectshortcut
 msgid "Select short cut"
@@ -941,6 +1015,10 @@ msgctxt "objinspstrconsts.oisunknown"
 msgid "Unknown"
 msgstr "Nieznany"
 
+#: objinspstrconsts.oisunselectall
+msgid "&Unselect all"
+msgstr ""
+
 #: objinspstrconsts.oisvalue
 msgid "Value:"
 msgstr "Wartość:"
@@ -960,6 +1038,10 @@ msgstr "Ograniczenia ogólne widżetu:"
 #: objinspstrconsts.oisword
 msgid "Word"
 msgstr "Word"
+
+#: objinspstrconsts.oiszorder
+msgid "Z-order"
+msgstr ""
 
 #: objinspstrconsts.pefilter
 msgid "Filter"
@@ -1154,7 +1236,9 @@ msgid "Edit Columns ..."
 msgstr ""
 
 #: objinspstrconsts.sccslvedt
-msgid "Edit ListView Items..."
+#, fuzzy
+#| msgid "Edit ListView Items..."
+msgid "Edit Items..."
 msgstr "Edytuj elementy ListView..."
 
 #: objinspstrconsts.sccslvedtapply
@@ -1263,7 +1347,9 @@ msgid "Save"
 msgstr "Zapisz"
 
 #: objinspstrconsts.sccstredt
-msgid "Edit TreeView Items..."
+#, fuzzy
+#| msgid "Edit TreeView Items..."
+msgid "Edit Items..."
 msgstr "Edytuj elementy TreeView..."
 
 #: objinspstrconsts.sccstredtapply

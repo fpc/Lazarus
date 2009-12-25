@@ -1,7 +1,7 @@
 inherited DesktopOptionsFrame: TDesktopOptionsFrame
-  Height = 489
+  Height = 512
   Width = 597
-  ClientHeight = 489
+  ClientHeight = 512
   ClientWidth = 597
   TabOrder = 0
   Visible = False
@@ -142,9 +142,9 @@ inherited DesktopOptionsFrame: TDesktopOptionsFrame
     AnchorSideTop.Control = Owner
     AnchorSideTop.Side = asrCenter
     Left = 297
-    Height = 15
-    Top = 237
-    Width = 2
+    Height = 16
+    Top = 248
+    Width = 3
     ParentColor = False
   end
   object Bevel7: TBevel[11]
@@ -449,7 +449,7 @@ inherited DesktopOptionsFrame: TDesktopOptionsFrame
     Left = 6
     Height = 29
     Top = 218
-    Width = 290
+    Width = 291
     Anchors = [akTop, akLeft, akRight]
     AutoSize = True
     BorderSpacing.Left = 6
@@ -500,6 +500,7 @@ inherited DesktopOptionsFrame: TDesktopOptionsFrame
       Width = 167
       Caption = 'rbBtnGlyphShowNever'
       TabOrder = 1
+      TabStop = False
     end
     object rbBtnGlyphShowAlways: TRadioButton
       Left = 345
@@ -508,6 +509,7 @@ inherited DesktopOptionsFrame: TDesktopOptionsFrame
       Width = 172
       Caption = 'rbBtnGlyphShowAlways'
       TabOrder = 2
+      TabStop = False
     end
   end
   object Panel2: TPanel[34]
@@ -550,6 +552,7 @@ inherited DesktopOptionsFrame: TDesktopOptionsFrame
       Width = 180
       Caption = 'rbMenuGlyphShowNever'
       TabOrder = 1
+      TabStop = False
     end
     object rbMenuGlyphShowAlways: TRadioButton
       Left = 371
@@ -558,6 +561,7 @@ inherited DesktopOptionsFrame: TDesktopOptionsFrame
       Width = 185
       Caption = 'rbMenuGlyphShowAlways'
       TabOrder = 2
+      TabStop = False
     end
   end
 end

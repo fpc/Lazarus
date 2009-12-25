@@ -129,7 +129,9 @@ msgid "Check dataset settings"
 msgstr "データセットの設定を調べてください"
 
 #: objinspstrconsts.fesfetitle
-msgid "Edit Fields"
+#, fuzzy
+#| msgid "Edit Fields"
+msgid "Edit Fields..."
 msgstr "フィールドを編集"
 
 #: objinspstrconsts.fesfltitle
@@ -285,9 +287,19 @@ msgstr "1 行、 %d 文字"
 msgid "Action"
 msgstr "アクション"
 
+#: objinspstrconsts.oisactionlistcomponenteditor
+msgid "Action&List Editor..."
+msgstr ""
+
 #: objinspstrconsts.oisactionlisteditor
-msgid "Action List Editor"
+#, fuzzy
+#| msgid "Action List Editor"
+msgid "ActionList Editor"
 msgstr "アクションリストエディター"
+
+#: objinspstrconsts.oisaddcollectionitem
+msgid "&Add Item"
+msgstr ""
 
 #: objinspstrconsts.oisaddfields
 msgid "&Add fields"
@@ -421,10 +433,6 @@ msgstr ""
 msgid "%d lines, %d chars"
 msgstr "%d 行, %d 文字"
 
-#: objinspstrconsts.oiseditactionlist
-msgid "Edit action list..."
-msgstr "アクションリストを編集..."
-
 #: objinspstrconsts.oisenumeration
 msgid "Enumeration"
 msgstr ""
@@ -463,6 +471,10 @@ msgstr "宣言にジャンプする"
 
 #: objinspstrconsts.oisfloat
 msgid "Float"
+msgstr ""
+
+#: objinspstrconsts.oisimagelistcomponenteditor
+msgid "I&mageList Editor..."
 msgstr ""
 
 #: objinspstrconsts.oisincompatibleidentifier
@@ -564,6 +576,22 @@ msgstr "マスクファイルを開く(*.dem)"
 #: objinspstrconsts.oisoptions
 msgid "Options"
 msgstr "オプション"
+
+#: objinspstrconsts.oisorderbackone
+msgid "Back One"
+msgstr ""
+
+#: objinspstrconsts.oisorderforwardone
+msgid "Forward One"
+msgstr ""
+
+#: objinspstrconsts.oisordermovetoback
+msgid "Move to Back"
+msgstr ""
+
+#: objinspstrconsts.oisordermovetofront
+msgid "Move to Front"
+msgstr ""
 
 #: objinspstrconsts.oispastecomponents
 #, fuzzy
@@ -1013,6 +1041,10 @@ msgstr "General widget setの制限: "
 msgid "Word"
 msgstr ""
 
+#: objinspstrconsts.oiszorder
+msgid "Z-order"
+msgstr ""
+
 #: objinspstrconsts.pefilter
 msgid "Filter"
 msgstr "フィルター"
@@ -1206,7 +1238,9 @@ msgid "Edit Columns ..."
 msgstr "列を編集..."
 
 #: objinspstrconsts.sccslvedt
-msgid "Edit ListView Items..."
+#, fuzzy
+#| msgid "Edit ListView Items..."
+msgid "Edit Items..."
 msgstr "ListViewのアイテムを編集..."
 
 #: objinspstrconsts.sccslvedtapply
@@ -1315,7 +1349,9 @@ msgid "Save"
 msgstr "保存"
 
 #: objinspstrconsts.sccstredt
-msgid "Edit TreeView Items..."
+#, fuzzy
+#| msgid "Edit TreeView Items..."
+msgid "Edit Items..."
 msgstr "TreeViewのアイテムを編集..."
 
 #: objinspstrconsts.sccstredtapply

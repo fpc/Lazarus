@@ -5198,6 +5198,10 @@ msgstr "それを作成"
 msgid "Create new project"
 msgstr "新しいフプロジェクトを作成"
 
+#: lazarusidestrconsts.liscreateproject
+msgid "Create project"
+msgstr ""
+
 #: lazarusidestrconsts.lisctdefchoosedirectory
 msgid "Choose Directory"
 msgstr "ディレクトリ選択してください"
@@ -6085,6 +6089,10 @@ msgstr "コンポーネントの移動中にエラー"
 msgid "Error moving component %s:%s"
 msgstr "コンポーネント%sの移動中にエラー:%s"
 
+#: lazarusidestrconsts.liserrornamingcomponent
+msgid "Error naming component"
+msgstr ""
+
 #: lazarusidestrconsts.liserroropeningcomponent
 msgid "Error opening component"
 msgstr "コンポーネントを開く際にエラー"
@@ -6117,6 +6125,10 @@ msgstr "エラー"
 #: lazarusidestrconsts.liserrorsavingto
 msgid "Error saving %s to%s%s%s%s"
 msgstr "%s%s%s%sを%sに保存中にエラー"
+
+#: lazarusidestrconsts.liserrorsettingthenameofacomponentto
+msgid "Error setting the name of a component %s to %s"
+msgstr ""
 
 #: lazarusidestrconsts.liserrorwritingpackagelisttofile
 msgid "Error writing package list to file%s%s%s%s"
@@ -6298,6 +6310,10 @@ msgstr "ファイルフィルタ"
 #: lazarusidestrconsts.lisfilehaschangedsave
 msgid "File %s%s%s has changed. Save?"
 msgstr "ファイル%s%s%sは変更されています。保存しますか？"
+
+#: lazarusidestrconsts.lisfilehasnoproject
+msgid "File has no project"
+msgstr ""
 
 #: lazarusidestrconsts.lisfileisnotwritable
 msgid "File is not writable"
@@ -6745,6 +6761,10 @@ msgstr "識別子が次を含む ..."
 #: lazarusidestrconsts.lisideoptions
 msgid "IDE Options:"
 msgstr "IDE オプション"
+
+#: lazarusidestrconsts.lisidetitlestartswithprojectname
+msgid "IDE title starts with project name"
+msgstr ""
 
 #: lazarusidestrconsts.lisiecoerroraccessingxml
 msgid "Error accessing xml"
@@ -8335,6 +8355,10 @@ msgstr "状況感知型ヘルプを編集"
 #: lazarusidestrconsts.lismenueditinstallpkgs
 msgid "Configure installed packages ..."
 msgstr "インストール済みパッケージを設定 ..."
+
+#: lazarusidestrconsts.lismenueditor
+msgid "Menu Editor..."
+msgstr ""
 
 #: lazarusidestrconsts.lismenueditorcancel
 msgctxt "lazarusidestrconsts.lismenueditorcancel"
@@ -11641,6 +11665,10 @@ msgstr "選択範囲が文字列定数を超過しています。"
 msgid "Selection tool"
 msgstr "選択ツール"
 
+#: lazarusidestrconsts.lisselecttheactivebuildmode
+msgid "Select the active build mode"
+msgstr ""
+
 #: lazarusidestrconsts.lissetdefault
 msgid "Set default"
 msgstr "デフォルトにセット"
@@ -12087,6 +12115,10 @@ msgstr "ファイル %s%s%sはDelphiプロジェクト(.dpr)ではありませ�
 msgid "The file %s%s%s is not a Delphi unit."
 msgstr "ファイル %s%s%sはDelphiユニットではありません。"
 
+#: lazarusidestrconsts.listhefileisnotalazarusprojectcreateanewprojectforthi
+msgid "The file %s%s%s is not a lazarus project.%sCreate a new project for this %s?"
+msgstr ""
+
 #: lazarusidestrconsts.listhefileseemstobeaprogramclosecurrentproject
 msgid "The file %s%s%s%sseems to be a program. Close current project and create a new lazarus project for this program?%s\"No\" will load the file as normal source."
 msgstr "ファイル %s%s%sはプログラムのようです。現在のプロジェクトを閉じ、このプログラムについての新しいlazarusプロジェクトを作成しますか？%s\"いいえ\"を選択するとファイルを通常のソースとして読み込みます。"
@@ -12338,6 +12370,10 @@ msgstr "%s%s%sが起こりそうです。続けますか？"
 #: lazarusidestrconsts.listitle
 msgid "&Title"
 msgstr "タイトル(&T)"
+
+#: lazarusidestrconsts.listitleintaskbarshowsforexampleproject1lpilazarus
+msgid "Title in taskbar shows for example: project1.lpi - Lazarus"
+msgstr ""
 
 #: lazarusidestrconsts.listitleleaveemptyfordefault
 msgid "Title (leave empty for default)"
@@ -14597,6 +14633,10 @@ msgstr "検査(&I)"
 #: lazarusidestrconsts.ueminvertassignment
 msgid "Invert Assignment"
 msgstr "代入を反転"
+
+#: lazarusidestrconsts.uemlineending
+msgid "Line ending"
+msgstr ""
 
 #: lazarusidestrconsts.uemmovepageleft
 msgid "Move page left"
