@@ -2627,21 +2627,14 @@ var
     else
       Shadow := GTK_SHADOW_OUT; //unchecked style
 
-    if (DFCS_PUSHED and uState)<>0 then begin
-      STATE := GTK_STATE_ACTIVE;//button pressed(GTK ignores disabled)
-    end
-    else begin
-      if (DFCS_INACTIVE and uState)<>0 then begin
-        State:=GTK_STATE_INSENSITIVE;//button disabled
-      end else
-        if (DFCS_HOT and uState)<>0 then begin
-          // button enabled, special (e.g. mouse over)
-          State:=GTK_STATE_PRELIGHT;
-        end else begin
-          // button enabled, normal
-          State:=GTK_STATE_NORMAL;
-        end;
-    end;
+    if (DFCS_PUSHED and uState)<>0 then
+      State := GTK_STATE_ACTIVE //button pressed(GTK ignores disabled)
+    else if (DFCS_INACTIVE and uState)<>0 then
+      State := GTK_STATE_INSENSITIVE //button disabled
+    else if (DFCS_HOT and uState)<>0 then
+      State := GTK_STATE_PRELIGHT // button enabled, special (e.g. mouse over)
+    else
+      State := GTK_STATE_NORMAL; // button enabled, normal
 
     aDC:=TGtkDeviceContext(DC);
     DCOrigin := aDC.Offset;
