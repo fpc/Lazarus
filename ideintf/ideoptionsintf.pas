@@ -107,7 +107,7 @@ type
     function GetByIndex(AIndex: Integer): PIDEOptionsEditorRec;
   public
     procedure Resort;
-    procedure Add(AEditorClass: TAbstractIDEOptionsEditorClass; AIndex, AParent: Integer); reintroduce;
+    function Add(AEditorClass: TAbstractIDEOptionsEditorClass; AIndex, AParent: Integer): PIDEOptionsEditorRec; reintroduce;
     property Items[AIndex: Integer]: PIDEOptionsEditorRec read GetItem write SetItem; default;
   end;
 
@@ -122,16 +122,17 @@ type
 
   TIDEOptionsGroupList = class(TList)
   private
-    function GetItem(AIndex: Integer): PIDEOptionsGroupRec;
-    procedure SetItem(AIndex: Integer; const AValue: PIDEOptionsGroupRec);
+    function GetItem(Position: Integer): PIDEOptionsGroupRec;
+    procedure SetItem(Position: Integer; const AValue: PIDEOptionsGroupRec);
   protected
     procedure Notify(Ptr: Pointer; Action: TListNotification); override;
-    function GetByIndex(AIndex: Integer): PIDEOptionsGroupRec;
   public
     procedure Resort;
     procedure DoAfterWrite;
-    procedure Add(AGroupIndex: Integer; AGroupClass: TAbstractIDEOptionsClass); reintroduce;
-    property Items[AIndex: Integer]: PIDEOptionsGroupRec read GetItem write SetItem; default;
+    function GetByIndex(AIndex: Integer): PIDEOptionsGroupRec;
+    function GetByGroupClass(AGroupClass: TAbstractIDEOptionsClass): PIDEOptionsGroupRec;
+    function Add(AGroupIndex: Integer; AGroupClass: TAbstractIDEOptionsClass): PIDEOptionsGroupRec; reintroduce;
+    property Items[Position: Integer]: PIDEOptionsGroupRec read GetItem write SetItem; default;
   end;
 
   TAbstractOptionsEditorDialog = class(TForm)
@@ -142,8 +143,13 @@ type
 
 function GetFreeIDEOptionsGroupIndex(AStartIndex: Integer): Integer;
 function GetFreeIDEOptionsIndex(AGroupIndex: Integer; AStartIndex: Integer): Integer;
-procedure RegisterIDEOptionsGroup(AGroupIndex: Integer; AGroupClass: TAbstractIDEOptionsClass);
-procedure RegisterIDEOptionsEditor(AGroupIndex: Integer; AEditorClass: TAbstractIDEOptionsEditorClass; AIndex: Integer; AParent: Integer = NoParent);
+function RegisterIDEOptionsGroup(AGroupIndex: Integer;
+           AGroupClass: TAbstractIDEOptionsClass;
+           FindFreeIndex: boolean = true): PIDEOptionsGroupRec;
+function RegisterIDEOptionsEditor(AGroupIndex: Integer;
+           AEditorClass: TAbstractIDEOptionsEditorClass;
+           AIndex: Integer; AParent: Integer = NoParent;
+           AutoCreateGroup: boolean = false): PIDEOptionsEditorRec;
 
 function IDEEditorGroups: TIDEOptionsGroupList;
 
@@ -210,28 +216,31 @@ begin
   Result := FIDEEditorGroups;
 end;
 
-procedure RegisterIDEOptionsGroup(AGroupIndex: Integer; AGroupClass: TAbstractIDEOptionsClass);
+function RegisterIDEOptionsGroup(AGroupIndex: Integer;
+  AGroupClass: TAbstractIDEOptionsClass; FindFreeIndex: boolean): PIDEOptionsGroupRec;
 begin
-  IDEEditorGroups.Add(AGroupIndex, AGroupClass);
+  if FindFreeIndex then
+    AGroupIndex:=GetFreeIDEOptionsGroupIndex(AGroupIndex);
+  Result:=IDEEditorGroups.Add(AGroupIndex, AGroupClass);
 end;
 
-procedure RegisterIDEOptionsEditor(AGroupIndex: Integer; AEditorClass: TAbstractIDEOptionsEditorClass; AIndex: Integer; AParent: Integer = NoParent);
+function RegisterIDEOptionsEditor(AGroupIndex: Integer;
+  AEditorClass: TAbstractIDEOptionsEditorClass; AIndex: Integer;
+  AParent: Integer; AutoCreateGroup: boolean): PIDEOptionsEditorRec;
 var
   Rec: PIDEOptionsGroupRec;
 begin
   Rec := IDEEditorGroups.GetByIndex(AGroupIndex);
   if Rec = nil then
   begin
-    RegisterIDEOptionsGroup(AGroupIndex, nil);
-    Rec := IDEEditorGroups.GetByIndex(AGroupIndex);
+    if not AutoCreateGroup then
+      raise Exception.Create('RegisterIDEOptionsEditor: missing Group');
+    Rec := RegisterIDEOptionsGroup(AGroupIndex, nil);
   end;
 
-  if Rec <> nil then
-  begin
-    if Rec^.Items = nil then
-      Rec^.Items := TIDEOptionsEditorList.Create;
-    Rec^.Items.Add(AEditorClass, AIndex, AParent);
-  end;
+  if Rec^.Items = nil then
+    Rec^.Items := TIDEOptionsEditorList.Create;
+  Result:=Rec^.Items.Add(AEditorClass, AIndex, AParent);
 end;
 
 function GetFreeIDEOptionsGroupIndex(AStartIndex: Integer): Integer;
@@ -336,33 +345,32 @@ begin
   Sort(@OptionsListCompare);
 end;
 
-procedure TIDEOptionsEditorList.Add(AEditorClass: TAbstractIDEOptionsEditorClass; AIndex, AParent: Integer);
-var
-  Rec: PIDEOptionsEditorRec;
+function TIDEOptionsEditorList.Add(AEditorClass: TAbstractIDEOptionsEditorClass;
+  AIndex, AParent: Integer): PIDEOptionsEditorRec;
 begin
-  Rec := GetByIndex(AIndex);
-  if Rec = nil then
+  Result := GetByIndex(AIndex);
+  if Result = nil then
   begin
-    New(Rec);
-    Rec^.Index := AIndex;
-    Rec^.Parent := AParent;
-    inherited Add(Rec);
+    New(Result);
+    Result^.Index := AIndex;
+    Result^.Parent := AParent;
+    inherited Add(Result);
   end;
 
-  Rec^.EditorClass := AEditorClass;
+  Result^.EditorClass := AEditorClass;
 end;
 
 { TIDEOptionsGroupList }
 
-function TIDEOptionsGroupList.GetItem(AIndex: Integer): PIDEOptionsGroupRec;
+function TIDEOptionsGroupList.GetItem(Position: Integer): PIDEOptionsGroupRec;
 begin
-  Result := PIDEOptionsGroupRec(inherited Get(AIndex));
+  Result := PIDEOptionsGroupRec(inherited Get(Position));
 end;
 
-procedure TIDEOptionsGroupList.SetItem(AIndex: Integer;
+procedure TIDEOptionsGroupList.SetItem(Position: Integer;
   const AValue: PIDEOptionsGroupRec);
 begin
-  inherited Put(AIndex, AValue);
+  inherited Put(Position, AValue);
 end;
 
 procedure TIDEOptionsGroupList.Notify(Ptr: Pointer; Action: TListNotification);
@@ -386,6 +394,19 @@ begin
       Result := Items[i];
       break;
     end;
+end;
+
+function TIDEOptionsGroupList.GetByGroupClass(
+  AGroupClass: TAbstractIDEOptionsClass): PIDEOptionsGroupRec;
+var
+  i: Integer;
+begin
+  for i:=0 to Count-1 do
+  begin
+    Result:=Items[i];
+    if Result^.GroupClass=AGroupClass then exit;
+  end;
+  Result:=nil;
 end;
 
 procedure TIDEOptionsGroupList.Resort;
@@ -419,20 +440,19 @@ begin
   end;
 end;
 
-procedure TIDEOptionsGroupList.Add(AGroupIndex: Integer; AGroupClass: TAbstractIDEOptionsClass);
-var
-  Rec: PIDEOptionsGroupRec;
+function TIDEOptionsGroupList.Add(AGroupIndex: Integer;
+  AGroupClass: TAbstractIDEOptionsClass): PIDEOptionsGroupRec;
 begin
-  Rec := GetByIndex(AGroupIndex);
-  if Rec = nil then
+  Result := GetByIndex(AGroupIndex);
+  if Result = nil then
   begin
-    New(Rec);
-    Rec^.Index := AGroupIndex;
-    Rec^.Items := nil;
-    inherited Add(Rec);
+    New(Result);
+    Result^.Index := AGroupIndex;
+    Result^.Items := nil;
+    inherited Add(Result);
   end;
 
-  Rec^.GroupClass := AGroupClass;
+  Result^.GroupClass := AGroupClass;
 end;
 
 { TAbstractIDEOptions }
