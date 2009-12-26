@@ -62,8 +62,10 @@
       <Unit3>
         <Filename Value="fclientform.pas"/>
         <IsPartOfProject Value="True"/>
+        <ComponentName Value="ViewWindow"/>
         <HasResources Value="True"/>
-        <UnitName Value="fclientform"/>
+        <ResourceBaseClass Value="Form"/>
+        <UnitName Value="fClientForm"/>
       </Unit3>
     </Units>
   </ProjectOptions>

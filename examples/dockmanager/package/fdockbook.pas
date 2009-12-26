@@ -100,15 +100,6 @@ type
     function GetDefaultDockCaption: string; override;
     function GetControlTab(AControl: TControl): TTabButton;
     procedure AfterUndock(tabidx: integer); virtual;
-  {$IFDEF old}
-    procedure LoadNames(const str: string); override;
-    function  SaveNames: string; override;
-  {$ELSE}
-    //class function ReloadSite(AName: string; AOwner: TComponent): TCustomDockSite;
-    //function  SaveSite: string; virtual;
-    //procedure LoadFromStream(strm: TStream); override;
-    //procedure SaveToStream(strm: TStream); override;
-  {$ENDIF}
   public
   {$IFDEF undockFix}
     destructor Destroy; override;
@@ -386,52 +377,6 @@ begin
 *)
   if false then inherited SaveToStream(strm);
   ...
-end;
-{$ELSE}
-{$ENDIF}
-
-{$IFDEF old}
-procedure TEasyDockBook.LoadNames(const str: string);
-var
-  lst: TStringList;
-  i: integer;
-  s: string;
-  ctl: TControl;
-begin
-(* This is a suggestion for handling arguments in ReloadDockedControl.
-  Skip lst[0], it contains our ClassName and (optional) Name
-    ','<ClassName> ['='<Name>]
-*)
-  lst := TStringList.Create;
-  lst.CommaText := str;
-  //s := lst.Names[0];
-  s := lst.ValueFromIndex[0];
-  if s <> '' then
-    TryRename(self, s);
-  for i := i to lst.Count - 1 do begin
-    s := lst.Strings[i];
-    ReloadDockedControl(s, ctl); //handle everything in s!
-    if ctl <> nil then begin
-      //ctl.Name := s;
-      ctl.ManualDock(pnlDock, nil, alCustom);
-    end;
-  end;
-end;
-
-function TEasyDockBook.SaveNames: string;
-var
-  i: integer;
-  ctl: TControl;
-begin
-(* Entry[0] is <ClassName> ['='<Name>]
-  else <Name> (with ClassName = 'T'<Name>)
-*)
-  //Result := '*' + Name + '=' + ClassName; //really?
-  Result := ClassName + '=' + Name;
-  for i := 0 to pnlDock.DockClientCount - 1 do begin
-    ctl := pnlDock.DockClients[i];
-    Result := Result + ',' + ctl.Name;
-  end;
 end;
 {$ELSE}
 {$ENDIF}

@@ -504,23 +504,6 @@ begin
   inherited;
 end;
 
-{$IFDEF old}
-procedure TEasyTree.BeginUpdate;
-begin
-  inc(FUpdateCount);
-end;
-
-procedure TEasyTree.EndUpdate;
-begin
-  dec(FUpdateCount);
-  if (FUpdateCount = 0) and (FTopZone.FirstChild <> nil) then begin
-    //DebugLn('EndUpdate---');
-    UpdateTree;
-  end;
-end;
-{$ELSE}
-{$ENDIF}
-
 function TEasyTree.ZoneFromPoint(SitePos: TPoint): TEasyZone;
 var
   zone: TEasyZone;
@@ -840,41 +823,6 @@ Signal results:
   end;
 end;
 
-{$IFDEF old}
-procedure TEasyTree.PositionDockRect(Client, DropCtl: TControl;
-  DropAlign: TAlign; var DockRect: TRect);
-var
-  wh: integer;
-begin
-(* DockRect is initialized to the screen rect of the dock site by TControl,
-  or to the zone rect by TEasyTree.
-*)
-//debug!
-  DropOn := DropCtl;
-
-  if (DropCtl = nil) {$IFDEF singleTab} and not SingleTab {$ENDIF}  then
-    exit; //empty dock site
-
-  case DropAlign of
-  //alClient: as is
-  alTop:    DockRect.Bottom := (DockRect.Top + DockRect.Bottom) div 2;
-  alBottom: DockRect.Top := (DockRect.Top + DockRect.Bottom) div 2;
-  alLeft:   DockRect.Right := (DockRect.Left + DockRect.Right) div 2;
-  alRight:  DockRect.Left := (DockRect.Left + DockRect.Right) div 2;
-  alCustom: //pages
-    begin
-      wh := (DockRect.Right - DockRect.Left) div 3;
-      inc(DockRect.Left, wh);
-      dec(DockRect.Right, wh);
-      wh := (DockRect.Bottom - DockRect.Top) div 3;
-      inc(DockRect.Top, wh);
-      dec(DockRect.Bottom, wh);
-    end;
-  end;
-end;
-{$ELSE}
-{$ENDIF}
-
 procedure TEasyTree.MessageHandler(Sender: TControl; var Message: TLMessage);
 //was: procedure TEasyTree.MouseMessage(var Message: TLMessage);
 var
@@ -1184,27 +1132,13 @@ begin
 end;
 
 function TEasyTree.ReloadDockedControl(const AName: string): TControl;
-//var n: string;
 begin
 (* Reload from
 - saved site info (if CustomDockSite)
 - AppLoadStore
 - DockSite
 *)
-{$IFDEF old}
-  Result:=nil;
-  n := AName;
-//first check for special CustomDockSite format
-  if ord(AName[1]) = CustomDockSiteID then
-    TCustomDockSite.ReloadSite(AName, FDockSite)
-  else if assigned(AppLoadStore)
-  and AppLoadStore(alsReloadControl, FDockSite, Result, n) then begin
-    //all done
-  end else
-    TWinControlAccess(DockSite).ReloadDockedControl(AName, Result);
-{$ELSE}
   Result := DockLoader.ReloadControl(AName, FDockSite);
-{$ENDIF}
 end;
 
 function TEasyTree.SaveDockedControl(Control: TControl): string;
@@ -1212,18 +1146,7 @@ begin
 (* Create string descriptor for docked control.
   Override in sync with ReloadDockedControl!
 *)
-{$IFDEF old}
-  if Control is TCustomDockSite then
-    Result := TCustomDockSite(Control).SaveSite
-  else if Assigned(AppLoadStore)
-  and AppLoadStore(alsSaveControl, FDockSite, Control, Result) then begin
-    //all done
-  end else begin
-    Result := Control.Name; //definitely child.Name
-  end;
-{$ELSE}
   Result := DockLoader.SaveControl(Control, FDockSite);
-{$ENDIF}
 end;
 
 procedure TEasyTree.SaveToStream(Stream: TStream);
@@ -1530,14 +1453,7 @@ begin
   A single notebook client deserves no header at all.
   Other single clients can have no header (optional)
 *)
-{$IFDEF old}
-  if ChildControl is TEasyBook then
-    Result := hsMinimal //or none at all?
-  else
-    Result := FTree.FStyle;
-{$ELSE}
   Result := FTree.GetEffectiveStyle;
-{$ENDIF}
 end;
 
 function TEasyZone.HasSizer: boolean;

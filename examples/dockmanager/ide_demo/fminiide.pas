@@ -219,13 +219,9 @@ end;
 
 function TMainBar.CreateDockable(const cap: string; fWrap: boolean): TWinControl;
 var
-  //Site: TFloatingSite;
   Client: TViewWindow;
   n: string;
 begin
-(* Translate into layout Reload format:
-  <name>%t=<type>[%f=<editfile>]
-*)
 (* Create a client form, and dock it into a floating dock host site.
   We must force docking here, later the client will dock itself into
   a float host site, when it becomes floating.
@@ -248,7 +244,7 @@ end;
 
 (* Special load/store cases:
   ViewWindow: @<caption>
-  EditForm/Book: EditBook:f1,f2...
+  EditForm/Book: special load/save
   EditPage?
 *)
 function TMainBar.OnReloadControl(const CtrlName: string;
