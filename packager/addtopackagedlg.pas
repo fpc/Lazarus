@@ -57,6 +57,7 @@ type
     );
     
   TAddToPkgResult = class
+    Pkg: TLazPackage;
     AddType: TAddToPkgType;
     Dependency: TPkgDependency;
     UnitFilename: string;
@@ -937,6 +938,7 @@ procedure TAddToPackageDlg.SetLazPackage(const AValue: TLazPackage);
 begin
   if FLazPackage=AValue then exit;
   FLazPackage:=AValue;
+  Params.Pkg:=FLazPackage;
   UpdateAvailableAncestorTypes;
   UpdateAvailablePageNames;
   UpdateAvailableDependencyNames;

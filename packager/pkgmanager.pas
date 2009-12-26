@@ -747,6 +747,7 @@ var
   LE: String;
   UsesLine: String;
   NewSource: String;
+  UnitDirectives: String;
 begin
   Result:=mrCancel;
   // create sourcecode
@@ -755,10 +756,15 @@ begin
   if (System.Pos(Params.UsedUnitname,UsesLine)<1)
   and (Params.UsedUnitname<>'') then
     UsesLine:=UsesLine+', '+Params.UsedUnitname;
+  UnitDirectives:='{$mode objfpc}{$H+}';
+  if Params.Pkg<>nil then
+    UnitDirectives:=TFileDescPascalUnit.CompilerOptionsToUnitDirectives(
+                                                    Params.Pkg.CompilerOptions);
+
   NewSource:=
      'unit '+Params.Unit_Name+';'+LE
     +LE
-    +'{$mode objfpc}{$H+}'+LE
+    +UnitDirectives+LE
     +LE
     +'interface'+LE
     +LE
@@ -788,9 +794,14 @@ begin
     +LE
     +'end.'+LE;
 
-  Result:=MainIDE.DoNewEditorFile(FileDescriptorUnit,
-     Params.UnitFilename,NewSource,
-     [nfOpenInEditor,nfIsNotPartOfProject,nfSave,nfAddToRecent]);
+  FileDescriptorUnit.Owner:=Params.Pkg;
+  try
+    Result:=MainIDE.DoNewEditorFile(FileDescriptorUnit,
+       Params.UnitFilename,NewSource,
+       [nfOpenInEditor,nfIsNotPartOfProject,nfSave,nfAddToRecent]);
+  finally
+    FileDescriptorUnit.Owner:=nil;
+  end;
 end;
 
 function TPkgManager.OnPackageEditorDeleteAmbiguousFiles(Sender: TObject;

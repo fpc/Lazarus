@@ -569,6 +569,7 @@ type
                                 ResourceName: string): string; virtual;
     function GetImplementationSource(const Filename, SourceName,
                                      ResourceName: string): string; virtual;
+    class function CompilerOptionsToUnitDirectives(CompOpts: TLazCompilerOptions): string;
   end;
 
 
@@ -1348,21 +1349,10 @@ begin
 end;
 
 function TFileDescPascalUnit.GetUnitDirectives: string;
-var
-  Project: TLazProject;
-  SyntaxMode: String;
 begin
   Result:='{$mode objfpc}{$H+}';
-  if Owner is TLazProject then begin
-    Project:=TLazProject(Owner);
-    SyntaxMode:=Project.LazCompilerOptions.SyntaxMode;
-    if SyntaxMode<>'' then begin
-      Result:='{$mode '+lowercase(SyntaxMode)+'}';
-      if Project.LazCompilerOptions.UseAnsiStrings
-      and (SysUtils.CompareText(SyntaxMode,'Delphi')<>0) then
-        Result:=Result+'{$H+}';
-    end;
-  end;
+  if Owner is TLazProject then
+    Result:=CompilerOptionsToUnitDirectives(TLazProject(Owner).LazCompilerOptions);
 end;
 
 function TFileDescPascalUnit.GetInterfaceUsesSection: string;
@@ -1380,6 +1370,22 @@ function TFileDescPascalUnit.GetImplementationSource(const Filename,
   SourceName, ResourceName: string): string;
 begin
   Result:='';
+end;
+
+class function TFileDescPascalUnit.CompilerOptionsToUnitDirectives(
+  CompOpts: TLazCompilerOptions): string;
+var
+  SyntaxMode: String;
+begin
+  Result:='{$mode objfpc}{$H+}';
+  if CompOpts=nil then exit;
+  SyntaxMode:=CompOpts.SyntaxMode;
+  if SyntaxMode<>'' then begin
+    Result:='{$mode '+lowercase(SyntaxMode)+'}';
+    if CompOpts.UseAnsiStrings
+    and (SysUtils.CompareText(SyntaxMode,'Delphi')<>0) then
+      Result:=Result+'{$H+}';
+  end;
 end;
 
 { TFileDescPascalUnitWithResource }
