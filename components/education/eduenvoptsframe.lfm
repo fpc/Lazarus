@@ -5,15 +5,15 @@ inherited EduEnvFrame: TEduEnvFrame
   ClientWidth = 495
   OnClick = FrameClick
   TabOrder = 0
-  DesignLeft = 352
-  DesignTop = 192
+  DesignLeft = 725
+  DesignTop = 198
   object EnableCheckBox: TCheckBox[0]
     AnchorSideLeft.Control = Owner
     AnchorSideTop.Control = Owner
     Left = 6
-    Height = 18
+    Height = 17
     Top = 6
-    Width = 124
+    Width = 99
     BorderSpacing.Around = 6
     Caption = 'EnableCheckBox'
     TabOrder = 0

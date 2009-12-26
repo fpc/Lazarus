@@ -324,7 +324,7 @@ end;
 
 function TEduCompPaletteFrame.GetTitle: String;
 begin
-  Result:='Component palette';
+  Result:=ersEduCompPaletteTitle;
 end;
 
 procedure TEduCompPaletteFrame.ReadSettings(AOptions: TAbstractIDEOptions);

@@ -59,6 +59,37 @@ resourcestring
     +'default source code';
   ersLoadSourceFromFile = 'Load source from file';
 
+  ersGrpBoxPropsMin = 'Properties: Minimal Configuration';
+  ersGrpBoxPropsExt = 'Properties: Extended Configuration';
+  ersGrpBoxPropsFull = 'Properties: Full Configuration';
+
+  ersGrpBoxEventsMin = 'Events: Minimal Configuration';
+  ersGrpBoxEventsExt = 'Events: Extended Configuration';
+  ersGrpBoxEventsFull = 'Events: Full Configuration';
+
+  ersStTextPropsMin = 'Name, Caption, Visible, Text, Checked, Items, Font, Color, Enabled, Height, Width, MaxLength, Picture, Columns';
+  ersStTextPropsExt ='Align, Left, Top, Hint, ShowHint, ParentFont, TabOrder, ParentShowHint, WordWrap, FixedCols, FixedRows, DefaultColWidth, DefaultRowHeight, ColCount, RowCount, Borderstyle, Glyph, State, Interval, DataSource, DataField, InitialDir';
+  ersStTextPropsFull = 'All Properties available';
+
+  ersStTextEventsMin = 'OnClick, OnChange, OnMouseMove';
+  ersStTextEventsExt = 'OnClick, OnChange, OnMouseMove, OnDblClick, OnCreate, OnKeyPress, OnFormCreate';
+  ersStTextEventsFull = 'All Events available';
+
+  ersRdGrpPropsCaption = 'Properties';
+  ersRdGrpEventsCaption = 'Events';
+
+  ersEduEnvOptsFrameTitle = 'General';
+  ersEduPropsEventsTitle = 'Properties & Events';
+  ersEduCompPaletteTitle = 'Component palette';
+  ersEduNewProgramTitle = 'New program';
+  ersEduMenuTitle = 'Menus';
+
+  ersRdBtnFull = 'Show All';
+  ersEnableEduCheckBoxCaption = 'Enable education settings';
+
+
+
+
 const
   DefaultEduOptionsFilename = 'education.xml';
 
@@ -67,6 +98,7 @@ const
     EduOptionCompPaletteID = 200;
     EduOptionMenuID        = 300;
     EduOptionNewPrgID      = 400;
+    EduPropsEventsOptionsID = 500;
 
 type
 
@@ -116,7 +148,7 @@ type
     property ChangeStep: integer read FChangeStep write SetChangeStep;
   end;
 
-  TEduOptions = class(TAbstractIDEEnvironmentOptions)
+  TEduOptions = class(TAbstractIDEOptions)
   private
     FEnabled: boolean;
     FFilename: string;
@@ -129,7 +161,6 @@ type
     constructor Create;
     destructor Destroy; override;
     class function GetGroupCaption: string; override;
-    class function GetInstance: TAbstractIDEOptions;
     property Root: TEduOptionsNode read FRoot;
     function Load(Config: TConfigStorage): TModalResult; virtual;
     function Save(Config: TConfigStorage): TModalResult; virtual;
@@ -321,12 +352,6 @@ class function TEduOptions.GetGroupCaption: string;
 begin
   Result:=EduRSEducation;
 end;
-
-class function TEduOptions.GetInstance: TAbstractIDEOptions;
-begin
-  Result := EducationOptions;
-end;
-
 
 function TEduOptions.Load(Config: TConfigStorage): TModalResult;
 begin

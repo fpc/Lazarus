@@ -2,13 +2,13 @@
   This source is only used to compile and install the package.
  }
 
-unit EducationLaz; 
+unit educationlaz; 
 
 interface
 
 uses
     EduEnvOptsFrame, EduOptions, EduPkgSystem, EduCompPalette, EduMenu, 
-  EduNewProgram, LazarusPackageIntf;
+  EduNewProgram, EduPropsEvents, LazarusPackageIntf;
 
 implementation
 
@@ -19,6 +19,7 @@ begin
   RegisterUnit('EduCompPalette', @EduCompPalette.Register); 
   RegisterUnit('EduMenu', @EduMenu.Register); 
   RegisterUnit('EduNewProgram', @EduNewProgram.Register); 
+  RegisterUnit('EduPropsEvents', @EduPropsEvents.Register); 
 end; 
 
 initialization

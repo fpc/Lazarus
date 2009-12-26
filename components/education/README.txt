@@ -2,15 +2,9 @@ Package EducationLaz
 ====================
 
 This package helps to setup the IDE for courses, training and education.
+Install this package in the IDE and setup it in
+  Environment / Options .. / Education
 
-ToDo:
-register menu item for options dialog
-option to hide various tools
-option to hide menu items for frames
-option to hide menu items for packages
-option to hide menu items for forms
-option to hide components in the component palette
-speed button for single file program
-option component name at create
-option file name at create
-option Form name at create
+The documentation can be found here:
+http://wiki.lazarus.freepascal.org/Lazarus_for_education
+

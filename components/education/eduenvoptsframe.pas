@@ -98,12 +98,12 @@ end;
 
 function TEduEnvFrame.GetTitle: String;
 begin
-  Result:='General';
+  Result:=ersEduEnvOptsFrameTitle;
 end;
 
 procedure TEduEnvFrame.Setup(ADialog: TAbstractOptionsEditorDialog);
 begin
-  EnableCheckBox.Caption:='Enable education settings';
+  EnableCheckBox.Caption:=ersEnableEduCheckBoxCaption;
 end;
 
 procedure TEduEnvFrame.ReadSettings(AOptions: TAbstractIDEOptions);

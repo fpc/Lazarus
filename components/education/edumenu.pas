@@ -294,7 +294,7 @@ end;
 
 function TEduMenuFrame.GetTitle: String;
 begin
-  Result:='Menus';
+  Result:=ersEduMenuTitle
 end;
 
 procedure TEduMenuFrame.ReadSettings(AOptions: TAbstractIDEOptions);

@@ -5,26 +5,26 @@ inherited EduMenuFrame: TEduMenuFrame
   ClientWidth = 437
   OnClick = FrameClick
   TabOrder = 0
-  DesignLeft = 297
-  DesignTop = 171
+  DesignLeft = 437
+  DesignTop = 99
   object MenusGroupBox: TGroupBox[0]
-    Left = 176
+    Left = 143
     Height = 289
     Top = 6
-    Width = 255
+    Width = 288
     Align = alClient
     BorderSpacing.Around = 6
     Caption = 'MenusGroupBox'
-    ClientHeight = 267
-    ClientWidth = 247
+    ClientHeight = 271
+    ClientWidth = 284
     TabOrder = 0
     object MenusTreeView: TTreeView
       Left = 0
-      Height = 267
+      Height = 271
       Top = 0
-      Width = 247
+      Width = 284
       Align = alClient
-      DefaultItemHeight = 19
+      DefaultItemHeight = 15
       ReadOnly = True
       TabOrder = 0
       OnMouseDown = MenusTreeViewMouseDown
@@ -35,7 +35,7 @@ inherited EduMenuFrame: TEduMenuFrame
     Left = 0
     Height = 301
     Top = 0
-    Width = 170
+    Width = 137
     Align = alLeft
     AutoSize = True
     ChildSizing.LeftRightSpacing = 6
@@ -43,13 +43,13 @@ inherited EduMenuFrame: TEduMenuFrame
     ChildSizing.HorizontalSpacing = 6
     ChildSizing.VerticalSpacing = 6
     ClientHeight = 301
-    ClientWidth = 170
+    ClientWidth = 137
     TabOrder = 1
     object ShowAllButton: TButton
       Left = 7
-      Height = 20
+      Height = 23
       Top = 7
-      Width = 156
+      Width = 123
       Align = alTop
       AutoSize = True
       Caption = 'ShowAllButton'
@@ -58,9 +58,9 @@ inherited EduMenuFrame: TEduMenuFrame
     end
     object ShowAllChildsButton: TButton
       Left = 7
-      Height = 20
-      Top = 33
-      Width = 156
+      Height = 23
+      Top = 36
+      Width = 123
       Align = alTop
       AutoSize = True
       Caption = 'ShowAllChildsButton'

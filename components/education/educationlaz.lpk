@@ -15,7 +15,7 @@
     <Description Value="IDE package for training, courses and education."/>
     <License Value="LGPL-2 or any later"/>
     <Version Major="1" Release="1"/>
-    <Files Count="7">
+    <Files Count="8">
       <Item1>
         <Filename Value="eduenvoptsframe.pas"/>
         <HasRegisterProc Value="True"/>
@@ -49,8 +49,14 @@
         <HasRegisterProc Value="True"/>
         <UnitName Value="EduNewProgram"/>
       </Item7>
+      <Item8>
+        <Filename Value="edupropsevents.pas"/>
+        <HasRegisterProc Value="True"/>
+        <UnitName Value="EduPropsEvents"/>
+      </Item8>
     </Files>
     <i18n>
+      <EnableI18N Value="True"/>
       <OutDir Value="languages"/>
     </i18n>
     <Type Value="RunAndDesignTime"/>

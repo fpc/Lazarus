@@ -277,7 +277,7 @@ end;
 
 function TEduNewPrgFrame.GetTitle: String;
 begin
-  Result:='New program';
+  Result:=ersEduNewProgramTitle;
 end;
 
 procedure TEduNewPrgFrame.ReadSettings(AOptions: TAbstractIDEOptions);

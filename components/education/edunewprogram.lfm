@@ -4,24 +4,24 @@ inherited EduNewPrgFrame: TEduNewPrgFrame
   ClientHeight = 320
   ClientWidth = 453
   TabOrder = 0
-  DesignLeft = 297
-  DesignTop = 171
+  DesignLeft = 795
+  DesignTop = 54
   object SrcGroupBox: TGroupBox[0]
     Left = 6
-    Height = 258
-    Top = 56
+    Height = 262
+    Top = 52
     Width = 441
     Align = alClient
     BorderSpacing.Around = 6
     Caption = 'SrcGroupBox'
-    ClientHeight = 236
-    ClientWidth = 433
+    ClientHeight = 244
+    ClientWidth = 437
     TabOrder = 0
     object SrcSynEdit: TSynEdit
       Left = 0
-      Height = 210
+      Height = 218
       Top = 26
-      Width = 433
+      Width = 437
       Align = alClient
       Font.Height = 12
       Font.Name = 'Monaco'
@@ -30,7 +30,8 @@ inherited EduNewPrgFrame: TEduNewPrgFrame
       ParentColor = False
       ParentFont = False
       TabOrder = 0
-      Gutter.Width = 55
+      BookMarkOptions.OnChange = nil
+      Gutter.Width = 61
       Gutter.MouseActions = <      
         item
           Shift = []
@@ -608,7 +609,7 @@ inherited EduNewPrgFrame: TEduNewPrgFrame
           Width = 23
         end
         object TSynGutterLineNumber
-          Width = 15
+          Width = 21
           MouseActions = <>
           MarkupInfo.Background = clBtnFace
           MarkupInfo.Foreground = clNone
@@ -715,7 +716,7 @@ inherited EduNewPrgFrame: TEduNewPrgFrame
       Left = 0
       Height = 26
       Top = 0
-      Width = 433
+      Width = 437
       Caption = 'SrcToolBar'
       TabOrder = 1
       object SrcLoadDefaultSrcToolButton: TToolButton
@@ -735,38 +736,38 @@ inherited EduNewPrgFrame: TEduNewPrgFrame
   end
   object OptsPanel: TPanel[1]
     Left = 0
-    Height = 50
+    Height = 46
     Top = 0
     Width = 453
     Align = alTop
     AutoSize = True
     ChildSizing.Layout = cclTopToBottomThenLeftToRight
     ChildSizing.ControlsPerLine = 2
-    ClientHeight = 50
+    ClientHeight = 46
     ClientWidth = 453
     TabOrder = 1
     object AddToNewDlgCheckBox: TCheckBox
       Left = 6
-      Height = 18
+      Height = 17
       Top = 6
-      Width = 176
+      Width = 139
       BorderSpacing.Around = 6
       Caption = 'AddToNewDlgCheckBox'
       TabOrder = 0
     end
     object AddNewPrgBtnCheckBox: TCheckBox
       Left = 6
-      Height = 18
-      Top = 30
-      Width = 176
+      Height = 17
+      Top = 29
+      Width = 139
       Caption = 'AddNewPrgBtnCheckBox'
       TabOrder = 1
     end
     object AddNewPrgMenuItmCheckBox: TCheckBox
-      Left = 188
-      Height = 18
+      Left = 151
+      Height = 17
       Top = 6
-      Width = 211
+      Width = 165
       Caption = 'AddNewPrgMenuItmCheckBox'
       TabOrder = 2
     end

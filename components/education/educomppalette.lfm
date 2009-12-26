@@ -5,8 +5,8 @@ inherited EduCompPaletteFrame: TEduCompPaletteFrame
   ClientWidth = 480
   OnClick = FrameClick
   TabOrder = 0
-  DesignLeft = 623
-  DesignTop = 145
+  DesignLeft = 906
+  DesignTop = 133
   object ComponentsGroupBox: TGroupBox[0]
     AnchorSideTop.Control = Owner
     AnchorSideBottom.Control = Owner
