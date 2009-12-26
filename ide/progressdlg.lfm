@@ -9,7 +9,7 @@ object IDEProgressDialog: TIDEProgressDialog
   OnCreate = FormCreate
   OnDestroy = FormDestroy
   Position = poScreenCenter
-  LCLVersion = '0.9.27'
+  LCLVersion = '0.9.29'
   object DescriptionLabel: TLabel
     Left = 152
     Height = 13
@@ -22,19 +22,25 @@ object IDEProgressDialog: TIDEProgressDialog
     WordWrap = True
   end
   object ProgressBar: TProgressBar
+    AnchorSideLeft.Control = Owner
+    AnchorSideRight.Control = Owner
+    AnchorSideRight.Side = asrBottom
     Left = 15
     Height = 20
     Top = 64
     Width = 370
-    Anchors = [akTop]
+    Anchors = [akTop, akLeft, akRight]
+    BorderSpacing.Left = 15
+    BorderSpacing.Right = 15
     TabOrder = 0
   end
   object AbortButton: TBitBtn
-    Left = 130
-    Height = 33
-    Top = 92
-    Width = 139
+    Left = 161
+    Height = 26
+    Top = 99
+    Width = 77
     Anchors = [akBottom]
+    AutoSize = True
     Cancel = True
     Caption = 'Cancel'
     Kind = bkCancel

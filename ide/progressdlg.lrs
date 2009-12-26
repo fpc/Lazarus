@@ -1,16 +1,19 @@
-{ Ceci est un fichier ressource généré automatiquement par Lazarus }
+{ This is an automatically generated lazarus resource file }
 
 LazarusResources.Add('TIDEProgressDialog','FORMDATA',[
   'TPF0'#18'TIDEProgressDialog'#17'IDEProgressDialog'#4'Left'#3#30#1#6'Height'#3
   +#132#0#3'Top'#3#202#0#5'Width'#3#144#1#7'Caption'#6#17'IDEProgressDialog'#12
   +'ClientHeight'#3#132#0#11'ClientWidth'#3#144#1#8'OnCreate'#7#10'FormCreate'#9
   +'OnDestroy'#7#11'FormDestroy'#8'Position'#7#14'poScreenCenter'#10'LCLVersion'
-  +#6#6'0.9.27'#0#6'TLabel'#16'DescriptionLabel'#4'Left'#3#152#0#6'Height'#2#13
+  +#6#6'0.9.29'#0#6'TLabel'#16'DescriptionLabel'#4'Left'#3#152#0#6'Height'#2#13
   +#3'Top'#2#16#5'Width'#2'_'#7'Anchors'#11#5'akTop'#0#8'AutoSize'#8#7'Caption'
   +#6#16'DescriptionLabel'#11'ParentColor'#8#8'WordWrap'#9#0#0#12'TProgressBar'
-  +#11'ProgressBar'#4'Left'#2#15#6'Height'#2#20#3'Top'#2'@'#5'Width'#3'r'#1#7'A'
-  +'nchors'#11#5'akTop'#0#8'TabOrder'#2#0#0#0#7'TBitBtn'#11'AbortButton'#4'Left'
-  +#3#130#0#6'Height'#2'!'#3'Top'#2'\'#5'Width'#3#139#0#7'Anchors'#11#8'akBotto'
-  +'m'#0#6'Cancel'#9#7'Caption'#6#6'Cancel'#4'Kind'#7#8'bkCancel'#11'ModalResul'
-  +'t'#2#3#9'NumGlyphs'#2#0#8'TabOrder'#2#1#0#0#0
+  +#11'ProgressBar'#22'AnchorSideLeft.Control'#7#5'Owner'#23'AnchorSideRight.Co'
+  +'ntrol'#7#5'Owner'#20'AnchorSideRight.Side'#7#9'asrBottom'#4'Left'#2#15#6'He'
+  +'ight'#2#20#3'Top'#2'@'#5'Width'#3'r'#1#7'Anchors'#11#5'akTop'#6'akLeft'#7'a'
+  +'kRight'#0#18'BorderSpacing.Left'#2#15#19'BorderSpacing.Right'#2#15#8'TabOrd'
+  +'er'#2#0#0#0#7'TBitBtn'#11'AbortButton'#4'Left'#3#161#0#6'Height'#2#26#3'Top'
+  +#2'c'#5'Width'#2'M'#7'Anchors'#11#8'akBottom'#0#8'AutoSize'#9#6'Cancel'#9#7
+  +'Caption'#6#6'Cancel'#4'Kind'#7#8'bkCancel'#11'ModalResult'#2#3#9'NumGlyphs'
+  +#2#0#8'TabOrder'#2#1#0#0#0
 ]);

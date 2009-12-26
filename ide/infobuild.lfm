@@ -45,19 +45,19 @@ object CompileInfoDlg: TCompileInfoDlg
   end
   object Panel1: TPanel
     Left = 6
-    Height = 62
+    Height = 70
     Top = 36
     Width = 374
     Align = alClient
     BevelInner = bvRaised
     BevelOuter = bvLowered
-    ClientHeight = 62
+    ClientHeight = 70
     ClientWidth = 374
     ParentColor = False
     TabOrder = 1
     object PCurrentStatus: TLabel
       Left = 4
-      Height = 54
+      Height = 62
       Top = 4
       Width = 366
       Align = alClient
@@ -76,23 +76,26 @@ object CompileInfoDlg: TCompileInfoDlg
   end
   object pnlButton: TPanel
     Left = 6
-    Height = 34
-    Top = 160
+    Height = 26
+    Top = 168
     Width = 374
     Align = alBottom
+    AutoSize = True
     BevelOuter = bvNone
-    ClientHeight = 34
+    ClientHeight = 26
     ClientWidth = 374
     TabOrder = 2
     object BClose: TBitBtn
-      AnchorSideBottom.Control = Owner
       AnchorSideBottom.Side = asrBottom
-      Left = 134
-      Height = 34
+      Left = 150
+      Height = 26
       Top = 0
-      Width = 107
+      Width = 75
       Anchors = [akTop]
+      AutoSize = True
       Caption = '&OK'
+      Constraints.MinHeight = 23
+      Constraints.MinWidth = 75
       Default = True
       Kind = bkOK
       ModalResult = 1
@@ -104,7 +107,7 @@ object CompileInfoDlg: TCompileInfoDlg
   object pnlInfo: TPanel
     Left = 6
     Height = 50
-    Top = 104
+    Top = 112
     Width = 374
     Align = alBottom
     BevelOuter = bvNone
@@ -125,10 +128,10 @@ object CompileInfoDlg: TCompileInfoDlg
       ClientWidth = 122
       TabOrder = 0
       object LNLines: TLabel
-        Left = 47
+        Left = 35
         Height = 46
         Top = 2
-        Width = 68
+        Width = 80
         Align = alClient
         Alignment = taRightJustify
         AutoSize = False
@@ -141,7 +144,7 @@ object CompileInfoDlg: TCompileInfoDlg
         Left = 6
         Height = 46
         Top = 2
-        Width = 41
+        Width = 29
         Align = alLeft
         BorderSpacing.Left = 4
         Caption = 'Lines:'
@@ -178,10 +181,10 @@ object CompileInfoDlg: TCompileInfoDlg
         ClientWidth = 114
         TabOrder = 0
         object LNHint: TLabel
-          Left = 43
+          Left = 31
           Height = 18
           Top = 0
-          Width = 69
+          Width = 81
           Align = alClient
           Alignment = taRightJustify
           AutoSize = False
@@ -195,7 +198,7 @@ object CompileInfoDlg: TCompileInfoDlg
           Left = 0
           Height = 18
           Top = 0
-          Width = 41
+          Width = 29
           Align = alLeft
           Caption = 'Hints:'
           ParentColor = False
@@ -218,16 +221,16 @@ object CompileInfoDlg: TCompileInfoDlg
           Left = 0
           Height = 18
           Top = 0
-          Width = 65
+          Width = 50
           Align = alLeft
           Caption = 'Warnings:'
           ParentColor = False
         end
         object LNWarning: TLabel
-          Left = 67
+          Left = 52
           Height = 18
           Top = 0
-          Width = 45
+          Width = 60
           Align = alClient
           Alignment = taRightJustify
           AutoSize = False
@@ -270,16 +273,16 @@ object CompileInfoDlg: TCompileInfoDlg
           Left = 0
           Height = 18
           Top = 0
-          Width = 47
+          Width = 33
           Align = alLeft
           Caption = 'Notes:'
           ParentColor = False
         end
         object LNNote: TLabel
-          Left = 49
+          Left = 35
           Height = 18
           Top = 0
-          Width = 63
+          Width = 77
           Align = alClient
           Alignment = taRightJustify
           AutoSize = False
@@ -307,16 +310,16 @@ object CompileInfoDlg: TCompileInfoDlg
           Left = 0
           Height = 18
           Top = 0
-          Width = 45
+          Width = 34
           Align = alLeft
           Caption = 'Errors:'
           ParentColor = False
         end
         object LNError: TLabel
-          Left = 47
+          Left = 36
           Height = 18
           Top = 0
-          Width = 65
+          Width = 76
           Align = alClient
           Alignment = taRightJustify
           AutoSize = False
