@@ -48,7 +48,6 @@ type
 
   TProjectResources = class(TAbstractProjectResources)
   private
-    FLFMResourceType: TLFMResourceType;
     FModified: Boolean;
     FOnModified: TNotifyEvent;
     FInModified: Boolean;
@@ -67,7 +66,6 @@ type
     FProjectIcon: TProjectIcon;
 
     procedure SetFileNames(const MainFileName, TestDir: String);
-    procedure SetLFMResourceType(const AValue: TLFMResourceType);
     procedure SetModified(const AValue: Boolean);
     procedure EmbeddedObjectModified(Sender: TObject);
     function Update: Boolean;
@@ -76,12 +74,14 @@ type
     function Save(SaveToTestDir: string): Boolean;
     procedure UpdateCodeBuffers;
     procedure DeleteLastCodeBuffers;
+  protected
+    procedure SetResourceType(const AValue: TResourceType); override;
   public
     constructor Create(AProject: TLazProject); override;
     destructor Destroy; override;
 
     procedure AddSystemResource(const AResource: String); override;
-    procedure AddLazarusResource(AResource: TStream; const ResourceName, ResourceType: String); override;
+    procedure AddLazarusResource(AResource: TStream; const AResourceName, AResourceType: String); override;
 
     procedure DoBeforeBuild(SaveToTestDir: boolean);
     procedure Clear;
@@ -103,78 +103,81 @@ type
 
     property Modified: Boolean read FModified write SetModified;
     property OnModified: TNotifyEvent read FOnModified write FOnModified;
-
-    property LFMResourceType: TLFMResourceType read FLFMResourceType write SetLFMResourceType;
   end;
 
-procedure ParseLFMResourceType(const Src: string; NestedComments: boolean;
+procedure ParseResourceType(const Src: string; NestedComments: boolean;
   out HasLRSIncludeDirective, HasRDirective: boolean);
-function GuessLFMResourceType(Code: TCodeBuffer; out Typ: TLFMResourceType
-  ): boolean;
+function GuessResourceType(Code: TCodeBuffer; out Typ: TResourceType): boolean;
 
 const
-  LFMResourceTypeNames: array[TLFMResourceType] of string = (
+  ResourceTypeNames: array[TResourceType] of string = (
     'lrs',
     'res'
-    );
-function StrToLFMResourceType(const s: string): TLFMResourceType;
+  );
+function StrToResourceType(const s: string): TResourceType;
 
 implementation
 
 const
   LazResourcesUnit = 'LResources';
 
-function StrToLFMResourceType(const s: string): TLFMResourceType;
+function StrToResourceType(const s: string): TResourceType;
 var
-  t: TLFMResourceType;
+  t: TResourceType;
 begin
-  for t:=Low(TLFMResourceType) to high(TLFMResourceType) do
-    if SysUtils.CompareText(LFMResourceTypeNames[t],s)=0 then exit(t);
-  Result:=lfmrtLRS;
+  for t := Low(TResourceType) to High(TResourceType) do
+    if SysUtils.CompareText(ResourceTypeNames[t], s) = 0 then exit(t);
+  Result := rtLRS;
 end;
 
-procedure ParseLFMResourceType(const Src: string; NestedComments: boolean;
+procedure ParseResourceType(const Src: string; NestedComments: boolean;
   out HasLRSIncludeDirective, HasRDirective: boolean);
 var
   p: Integer;
   d: PChar;
   PointPos: PChar;
 begin
-  HasLRSIncludeDirective:=false;
-  HasRDirective:=false;
+  HasLRSIncludeDirective := False;
+  HasRDirective := False;
   p:=1;
-  while p<length(Src) do begin
-    p:=FindNextCompilerDirective(Src,p,NestedComments);
-    if p>length(Src) then break;
-    d:=@Src[p];
-    if (d[0]='{') and (d[1]='$') then begin
-      inc(d,2);
-      if (d[0] in ['r','R']) and (not IsIdentChar[d[1]]) then begin
+  while p < length(Src) do
+  begin
+    p := FindNextCompilerDirective(Src, p, NestedComments);
+    if p > length(Src) then break;
+    d := @Src[p];
+    if (d[0]='{') and (d[1]='$') then
+    begin
+      inc(d, 2);
+      if (d[0] in ['r','R']) and (not IsIdentChar[d[1]]) then
+      begin
         // using resources
-        HasRDirective:=true;
-      end else if (d[0] in ['i','I'])
-        and ((d[1] in [' ',#9]) or (CompareIdentifiers(@d[0],'include')=0))
-      then begin
-        PointPos:=nil;
-        while not (d^ in [#0,#10,#13,'}']) do begin
-          if d^='.' then
-            PointPos:=d;
+        HasRDirective := True;
+      end
+      else
+      if (d[0] in ['i','I']) and ((d[1] in [' ',#9]) or
+         (CompareIdentifiers(@d[0],'include')=0)) then
+      begin
+        PointPos := nil;
+        while not (d^ in [#0,#10,#13,'}']) do
+        begin
+          if d^ = '.' then
+            PointPos := d;
           inc(d);
         end;
-        if (PointPos<>nil) and (d-PointPos=4)
-        and (PointPos[1]='l') and (PointPos[2]='r') and (PointPos[3]='s') then
+        if (PointPos<>nil) and (d-PointPos=4) and (PointPos[1]='l') and
+           (PointPos[2]='r') and (PointPos[3]='s') then
         begin
           // using include directive with lrs file
-          HasLRSIncludeDirective:=true;
+          HasLRSIncludeDirective := True;
         end;
       end;
     end;
-    p:=FindCommentEnd(Src,p,NestedComments);
+    p := FindCommentEnd(Src, p, NestedComments);
   end;
 end;
 
 type
-  TLFMResourceTypesCacheItem = class
+  TResourceTypesCacheItem = class
   public
     Code: TCodeBuffer;
     CodeStamp: integer;
@@ -182,27 +185,27 @@ type
     HasRDirective: boolean;
   end;
 
-function CompareLFMResTypCacheItems(Data1, Data2: Pointer): integer;
+function CompareResTypCacheItems(Data1, Data2: Pointer): integer;
 var
-  Item1: TLFMResourceTypesCacheItem absolute Data1;
-  Item2: TLFMResourceTypesCacheItem absolute Data2;
+  Item1: TResourceTypesCacheItem absolute Data1;
+  Item2: TResourceTypesCacheItem absolute Data2;
 begin
   Result:=CompareFilenames(Item1.Code.Filename,Item2.Code.Filename);
 end;
 
-function CompareCodeWithLFMResTypCacheItem(CodeBuf, CacheItem: Pointer): integer;
+function CompareCodeWithResTypCacheItem(CodeBuf, CacheItem: Pointer): integer;
 var
   Code: TCodeBuffer absolute CodeBuf;
-  Item: TLFMResourceTypesCacheItem absolute CacheItem;
+  Item: TResourceTypesCacheItem absolute CacheItem;
 begin
   Result:=CompareFilenames(Code.Filename,Item.Code.Filename);
 end;
 
 type
 
-  { TLFMResourceTypesCache }
+  { TResourceTypesCache }
 
-  TLFMResourceTypesCache = class
+  TResourceTypesCache = class
   public
     Tree: TAvgLvlTree; //
     constructor Create;
@@ -211,71 +214,78 @@ type
                     out HasLRSIncludeDirective, HasRDirective: boolean);
   end;
 
-{ TLFMResourceTypesCache }
+{ TResourceTypesCache }
 
-constructor TLFMResourceTypesCache.Create;
+constructor TResourceTypesCache.Create;
 begin
-  Tree:=TAvgLvlTree.Create(@CompareLFMResTypCacheItems);
+  Tree:=TAvgLvlTree.Create(@CompareResTypCacheItems);
 end;
 
-destructor TLFMResourceTypesCache.Destroy;
+destructor TResourceTypesCache.Destroy;
 begin
   Tree.FreeAndClear;
   FreeAndNil(Tree);
   inherited Destroy;
 end;
 
-procedure TLFMResourceTypesCache.Parse(Code: TCodeBuffer; out
+procedure TResourceTypesCache.Parse(Code: TCodeBuffer; out
   HasLRSIncludeDirective, HasRDirective: boolean);
 var
   Node: TAvgLvlTreeNode;
-  Item: TLFMResourceTypesCacheItem;
+  Item: TResourceTypesCacheItem;
 begin
-  Node:=Tree.FindKey(Code,@CompareCodeWithLFMResTypCacheItem);
-  if (Node<>nil) then begin
-    Item:=TLFMResourceTypesCacheItem(Node.Data);
-    if (Item.CodeStamp=Item.Code.ChangeStep) then begin
+  Node := Tree.FindKey(Code, @CompareCodeWithResTypCacheItem);
+  if (Node <> nil) then
+  begin
+    Item := TResourceTypesCacheItem(Node.Data);
+    if (Item.CodeStamp = Item.Code.ChangeStep) then
+    begin
       // cache valid
-      HasLRSIncludeDirective:=Item.HasLRSIncludeDirective;
-      HasRDirective:=Item.HasRDirective;
+      HasLRSIncludeDirective := Item.HasLRSIncludeDirective;
+      HasRDirective := Item.HasRDirective;
       exit;
     end;
-  end else
-    Item:=nil;
+  end
+  else
+    Item := nil;
   // update
-  if Item=nil then begin
-    Item:=TLFMResourceTypesCacheItem.Create;
-    Item.Code:=Code;
+  if Item = nil then
+  begin
+    Item := TResourceTypesCacheItem.Create;
+    Item.Code := Code;
     Tree.Add(Item);
   end;
-  Item.CodeStamp:=Code.ChangeStep;
-  ParseLFMResourceType(Code.Source,
+  Item.CodeStamp := Code.ChangeStep;
+  ParseResourceType(Code.Source,
     CodeToolBoss.GetNestedCommentsFlagForFile(Code.Filename),
-    Item.HasLRSIncludeDirective,Item.HasRDirective);
+    Item.HasLRSIncludeDirective, Item.HasRDirective);
 end;
 
 var
-  LFMResourceTypesCache: TLFMResourceTypesCache = nil;
+  ResourceTypesCache: TResourceTypesCache = nil;
 
-function GuessLFMResourceType(Code: TCodeBuffer; out Typ: TLFMResourceType
-  ): boolean;
+function GuessResourceType(Code: TCodeBuffer; out Typ: TResourceType): boolean;
 var
-  HasLRSIncludeDirective,HasRDirective: Boolean;
+  HasLRSIncludeDirective, HasRDirective: Boolean;
 begin
-  if LFMResourceTypesCache=nil then
-    LFMResourceTypesCache:=TLFMResourceTypesCache.Create;
-  LFMResourceTypesCache.Parse(Code,HasLRSIncludeDirective,HasRDirective);
-  if HasLRSIncludeDirective then begin
-    Typ:=lfmrtLRS;
-    Result:=true;
+  if ResourceTypesCache = nil then
+    ResourceTypesCache := TResourceTypesCache.Create;
+  ResourceTypesCache.Parse(Code, HasLRSIncludeDirective, HasRDirective);
+  if HasLRSIncludeDirective then
+  begin
+    Typ := rtLRS;
+    Result := True;
   end
-  else if HasRDirective then begin
-    Typ:=lfmrtRes;
-    Result:=true;
+  else
+  if HasRDirective then
+  begin
+    Typ := rtRes;
+    Result := True;
   end
-  else begin
-    Typ:=lfmrtLRS;
-    Result:=false;
+  else
+  begin
+    Typ := rtLRS;
+    Result := False;
   end;
 end;
 
@@ -300,11 +310,13 @@ begin
   end;
 end;
 
-procedure TProjectResources.SetLFMResourceType(const AValue: TLFMResourceType);
+procedure TProjectResources.SetResourceType(const AValue: TResourceType);
 begin
-  if FLFMResourceType=AValue then exit;
-  FLFMResourceType:=AValue;
-  Modified:=true;
+  if ResourceType <> AValue then
+  begin
+    inherited SetResourceType(AValue);
+    Modified := True;
+  end;
 end;
 
 procedure TProjectResources.SetModified(const AValue: Boolean);
@@ -393,13 +405,13 @@ begin
 end;
 
 procedure TProjectResources.AddLazarusResource(AResource: TStream;
-  const ResourceName, ResourceType: String);
+  const AResourceName, AResourceType: String);
 var
   OutStream: TStringStream;
 begin
   OutStream := TStringStream.Create('');
   try
-    BinaryToLazarusResourceCode(AResource, OutStream, ResourceName, ResourceType);
+    BinaryToLazarusResourceCode(AResource, OutStream, AResourceName, AResourceType);
     FLazarusResources.Add(OutStream.DataString);
   finally
     OutStream.Free;
@@ -471,7 +483,7 @@ begin
   // todo: further split by classes
   with AConfig do
   begin
-    SetDeleteValue(Path+'General/LFMResourceType/Value', LFMResourceTypeNames[LFMResourceType], LFMResourceTypeNames[lfmrtLRS]);
+    SetDeleteValue(Path+'General/ResourceType/Value', ResourceTypeNames[ResourceType], ResourceTypeNames[rtLRS]);
     SetDeleteValue(Path+'General/Icon/Value', BoolToStr(ProjectIcon.IsEmpty), '-1');
     SetDeleteValue(Path+'General/UseXPManifest/Value', XPManifest.UseManifest, False);
     SetDeleteValue(Path+'VersionInfo/UseVersionInfo/Value', VersionInfo.UseVersionInfo,false);
@@ -501,7 +513,7 @@ begin
   begin
     ProjectIcon.IcoFileName := ChangeFileExt(FileName, '.ico');
 
-    LFMResourceType := StrToLFMResourceType(GetValue(Path+'General/LFMResourceType/Value', LFMResourceTypeNames[lfmrtLRS]));
+    ResourceType := StrToResourceType(GetValue(Path+'General/ResourceType/Value', ResourceTypeNames[rtLRS]));
     ProjectIcon.IsEmpty := StrToBoolDef(GetValue(Path+'General/Icon/Value', '-1'), False);
     XPManifest.UseManifest := GetValue(Path+'General/UseXPManifest/Value', False);
     VersionInfo.UseVersionInfo := GetValue(Path+'VersionInfo/UseVersionInfo/Value', False);
@@ -528,7 +540,7 @@ function TProjectResources.UpdateMainSourceFile(const AFileName: string): Boolea
 var
   NewX, NewY, NewTopLine: integer;
   CodeBuf, NewCode: TCodeBuffer;
-  Filename: String;
+  Filename, Directive: String;
   NamePos, InPos: integer;
 begin
   Result := True;
@@ -586,8 +598,14 @@ begin
     else
     if HasSystemResources then
     begin
-      if not CodeToolBoss.AddResourceDirective(CodeBuf,
-        Filename, false, '{$IFDEF WINDOWS}{$R '+Filename+'}{$ENDIF}') then
+      // if we are using fpc resources only we need to compile them on all systems
+      // since we have no other way to get them. If LRS are used then we can
+      // skip compiling of rc on other than windows systems
+      case ResourceType of
+        rtLRS: Directive := '{$IFDEF WINDOWS}{$R '+Filename+'}{$ENDIF}';
+        rtRes: Directive := '{$R '+Filename+'}';
+      end;
+      if not CodeToolBoss.AddResourceDirective(CodeBuf, Filename, false, Directive) then
       begin
         Result := False;
         Messages.Add(Format(lisCouldNotAddRToMainSource, ['"', Filename, '"']));
@@ -654,12 +672,12 @@ begin
   end;
 end;
 
-function TProjectResources.RenameDirectives(const CurFileName,
-  NewFileName: String): Boolean;
+function TProjectResources.RenameDirectives(const CurFileName, NewFileName: String): Boolean;
 var
   NewX, NewY, NewTopLine: integer;
   CodeBuf, NewCode: TCodeBuffer;
 
+  Directive,
   oldRcFileName, oldLrsFileName,
   newRcFilename, newLrsFileName: String;
 begin
@@ -699,8 +717,11 @@ begin
         debugln(['TProjectResources.RenameDirectives failed: removing resource directive']);
         Messages.Add('Could not remove "{$R '+ oldRcFileName +'"} from main source!');
       end;
-      if not CodeToolBoss.AddResourceDirective(CodeBuf,
-        newRcFileName, false, '{$IFDEF WINDOWS}{$R '+ newRcFileName +'}{$ENDIF}') then
+      case ResourceType of
+        rtLRS: Directive := '{$IFDEF WINDOWS}{$R '+ newRcFileName +'}{$ENDIF}';
+        rtRes: Directive := '{$R '+ newRcFileName +'}';
+      end;
+      if not CodeToolBoss.AddResourceDirective(CodeBuf, newRcFileName, false, Directive) then
       begin
         Result := False;
         debugln(['TProjectResources.RenameDirectives failed: adding resource directive']);
@@ -821,7 +842,7 @@ begin
 end;
 
 finalization
-  LFMResourceTypesCache.Free;
+  ResourceTypesCache.Free;
 
 end.
 

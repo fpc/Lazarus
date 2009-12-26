@@ -110,7 +110,7 @@ type
     RunnableCheckBox: TCheckBox;
     AlwaysBuildCheckBox: TCheckBox;
     LRSInOutputDirCheckBox: TCheckBox;
-    LFMResourceGroupBox: TGroupBox;
+    ResourceGroupBox: TGroupBox;
     UseLRSFilesRadioButton: TRadioButton;
     UseFPCResourcesRadioButton: TRadioButton;
 
@@ -371,11 +371,11 @@ begin
   RunnableCheckBox.Caption := lisProjectIsRunnable;
   AlwaysBuildCheckBox.Caption := lisProjOptsAlwaysBuildEvenIfNothingChanged;
   LRSInOutputDirCheckBox.Caption := lisPutLrsFilesInOutputDirectory;
-  LFMResourceGroupBox.Caption:=lisLFMResourceTypeOfNewFiles;
-  UseLRSFilesRadioButton.Caption:=lisLrsIncludeFiles;
-  UseLRSFilesRadioButton.Hint:=lisAutomaticallyConvertLfmFilesToLrsIncludeFiles;
-  UseFPCResourcesRadioButton.Caption:=lisFPCResources;
-  UseFPCResourcesRadioButton.Hint:=lisRequiresFPC24OrAboveLikeDelphiResources;
+  ResourceGroupBox.Caption := lisResourceTypeOfNewFiles;
+  UseLRSFilesRadioButton.Caption := lisLrsIncludeFiles;
+  UseLRSFilesRadioButton.Hint := lisAutomaticallyConvertLfmFilesToLrsIncludeFiles;
+  UseFPCResourcesRadioButton.Caption := lisFPCResources;
+  UseFPCResourcesRadioButton.Hint := lisRequiresFPC24OrAboveLikeDelphiResources;
 end;
 
 procedure TProjectOptionsDialog.SetupVersionInfoPage(PageIndex: Integer);
@@ -464,9 +464,9 @@ begin
   RunnableCheckBox.Checked := (pfRunnable in AProject.Flags);
   AlwaysBuildCheckBox.Checked := (pfAlwaysBuild in AProject.Flags);
   LRSInOutputDirCheckBox.Checked := (pfLRSFilesInOutputDirectory in AProject.Flags);
-  case AProject.Resources.LFMResourceType of
-  lfmrtLRS: UseLRSFilesRadioButton.Checked:=true;
-  lfmrtRes: UseFPCResourcesRadioButton.Checked:=true;
+  case AProject.Resources.ResourceType of
+    rtLRS: UseLRSFilesRadioButton.Checked := True;
+    rtRes: UseFPCResourcesRadioButton.Checked := True;
   end;
 
   // lazdoc
@@ -549,9 +549,9 @@ begin
     SetProjectFlag(pfLRSFilesInOutputDirectory, LRSInOutputDirCheckBox.Checked);
     Project.Flags := NewFlags;
     if UseLRSFilesRadioButton.Checked then
-      Project.Resources.LFMResourceType:=lfmrtLRS
+      Project.Resources.ResourceType := rtLRS
     else
-      Project.Resources.LFMResourceType:=lfmrtRes;
+      Project.Resources.ResourceType := rtRes;
     
     if SaveSessionLocationRadioGroup.ItemIndex>=0 then
       Project.SessionStorage:=LocalizedNameToProjectSessionStorage(

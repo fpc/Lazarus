@@ -45,10 +45,10 @@ const
   ProjDescNameEmpty = 'Empty';
 
 type
-  TLFMResourceType = (
-    lfmrtLRS,
-    lfmrtRes
-    );
+  TResourceType = (
+    rtLRS,   // lazarus resources
+    rtRes    // fpc resources
+  );
 
   TCOCNodeType = (
     cocntNone,
@@ -579,7 +579,7 @@ type
   private
     FDeclareClassVariable: Boolean;
   protected
-    function GetResourceType: TLFMResourceType; virtual;
+    function GetResourceType: TResourceType; virtual;
   public
     constructor Create; override;
 
@@ -1390,9 +1390,9 @@ end;
 
 { TFileDescPascalUnitWithResource }
 
-function TFileDescPascalUnitWithResource.GetResourceType: TLFMResourceType;
+function TFileDescPascalUnitWithResource.GetResourceType: TResourceType;
 begin
-  Result := lfmrtLRS;
+  Result := rtLRS;
 end;
 
 constructor TFileDescPascalUnitWithResource.Create;
@@ -1405,7 +1405,7 @@ function TFileDescPascalUnitWithResource.GetInterfaceUsesSection: string;
 begin
   Result:=inherited GetInterfaceUsesSection;
   Result:=Result+', FileUtil';
-  if GetResourceType = lfmrtLRS then
+  if GetResourceType = rtLRS then
     Result := Result +', LResources';
 end;
 
@@ -1440,12 +1440,12 @@ var
 begin
   LE:=LineEnding;
   case GetResourceType of
-    lfmrtLRS:
+    rtLRS:
       begin
         ResourceFilename:=TrimFilename(ExtractFilenameOnly(Filename)+DefaultResFileExt);
         Result:='initialization'+LE+'  {$I '+ResourceFilename+'}'+LE+LE;
       end;
-    lfmrtRes: Result := LE+'{$R *.lfm}'+LE+LE;
+    rtRes: Result := LE+'{$R *.lfm}'+LE+LE;
   end;
 end;
 

@@ -147,7 +147,7 @@ type
                                     ): TModalResult; override;
     function BackupFile(const Filename: string): TModalResult; override;
 
-    function GetLFMResourceType(AnUnitInfo: TUnitInfo): TLFMResourceType;
+    function GetResourceType(AnUnitInfo: TUnitInfo): TResourceType;
     function FindLRSFilename(AnUnitInfo: TUnitInfo;
                              UseDefaultIfNotFound: boolean): string;
     function GetDefaultLRSFilename(AnUnitInfo: TUnitInfo): string;
@@ -1030,19 +1030,22 @@ begin
   until Result<>mrRetry;
 end;
 
-function TBuildManager.GetLFMResourceType(AnUnitInfo: TUnitInfo
-  ): TLFMResourceType;
+function TBuildManager.GetResourceType(AnUnitInfo: TUnitInfo): TResourceType;
 begin
-  if AnUnitInfo.Source=nil then
-    AnUnitInfo.Source:=CodeToolBoss.LoadFile(AnUnitInfo.Filename,true,false);
-  if (AnUnitInfo.Source<>nil)
-  and GuessLFMResourceType(AnUnitInfo.Source,Result) then begin
+  if AnUnitInfo.Source = nil then
+    AnUnitInfo.Source := CodeToolBoss.LoadFile(AnUnitInfo.Filename, True, False);
+  if (AnUnitInfo.Source <> nil) and GuessResourceType(AnUnitInfo.Source, Result) then
+  begin
     // guessed from source
-  end else if AnUnitInfo.IsPartOfProject then begin
+  end
+  else
+  if AnUnitInfo.IsPartOfProject then
+  begin
     // use project resource type
-    Result:=Project1.Resources.LFMResourceType;
-  end else
-    Result:=lfmrtLRS;
+    Result := Project1.Resources.ResourceType;
+  end
+  else
+    Result := rtLRS;
 end;
 
 function TBuildManager.FindLRSFilename(AnUnitInfo: TUnitInfo;
@@ -1116,14 +1119,14 @@ begin
   while AnUnitInfo<>nil do 
   begin
     if AnUnitInfo.HasResources then begin
-      case GetLFMResourceType(AnUnitInfo) of
-      lfmrtLRS:
+      case GetResourceType(AnUnitInfo) of
+      rtLRS:
         begin
           Result := UpdateLRSFromLFM(AnUnitInfo,false);
           if Result = mrIgnore then Result:=mrOk;
           if Result <> mrOk then exit;
         end;
-      lfmrtRes:
+      rtRes:
         if (AnUnitInfo.Source=nil) and (not AnUnitInfo.IsVirtual) then begin
           AnUnitInfo.Source:=CodeToolBoss.LoadFile(AnUnitInfo.Filename,true,false);
           Code:=AnUnitInfo.Source;

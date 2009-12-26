@@ -237,7 +237,7 @@ type
 
   TFileDescPascalUnitWithProjectResource = class(TFileDescPascalUnitWithResource)
   protected
-    function GetResourceType: TLFMResourceType; override;
+    function GetResourceType: TResourceType; override;
   end;
   { TFileDescPascalUnitWithForm }
 
@@ -605,9 +605,9 @@ end;
 
 { TFileDescPascalUnitWithProjectResource }
 
-function TFileDescPascalUnitWithProjectResource.GetResourceType: TLFMResourceType;
+function TFileDescPascalUnitWithProjectResource.GetResourceType: TResourceType;
 begin
-  Result := Project1.Resources.LFMResourceType;
+  Result := Project1.Resources.ResourceType;
 end;
 
 end.

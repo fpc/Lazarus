@@ -4503,7 +4503,7 @@ function TMainIDE.DoLoadResourceFile(AnUnitInfo: TUnitInfo;
 var
   LFMFilename: string;
   LRSFilename: String;
-  ResType: TLFMResourceType;
+  ResType: TResourceType;
 begin
   LFMCode:=nil;
   ResourceCode:=nil;
@@ -4511,8 +4511,8 @@ begin
   if AnUnitInfo.HasResources then begin
     //writeln('TMainIDE.DoLoadResourceFile A "',AnUnitInfo.Filename,'" "',AnUnitInfo.ResourceFileName,'"');
 
-    ResType:=MainBuildBoss.GetLFMResourceType(AnUnitInfo);
-    if ResType=lfmrtLRS then begin
+    ResType:=MainBuildBoss.GetResourceType(AnUnitInfo);
+    if ResType=rtLRS then begin
       LRSFilename:=MainBuildBoss.FindLRSFilename(AnUnitInfo,false);
       if LRSFilename<>'' then begin
         Result:=LoadCodeBuffer(ResourceCode,LRSFilename,[lbfUpdateFromDisk],ShowAbort);
@@ -4850,7 +4850,7 @@ var
   i: Integer;
   LRSFilename: String;
   PropPath: String;
-  ResType: TLFMResourceType;
+  ResType: TResourceType;
 begin
   Result:=mrCancel;
 
@@ -4866,7 +4866,7 @@ begin
   // LRT file format (in present) are lines
   // <ClassName>.<PropertyName>=<PropertyValue>
   LRSFilename:='';
-  ResType:=MainBuildBoss.GetLFMResourceType(AnUnitInfo);
+  ResType:=MainBuildBoss.GetResourceType(AnUnitInfo);
   ResourceCode:=nil;
 
   if (AnUnitInfo.Component<>nil) then begin
@@ -4880,7 +4880,7 @@ begin
     // save designer form properties to the component
     FormEditor1.SaveHiddenDesignerFormProperties(AnUnitInfo.Component);
 
-    if ResType=lfmrtLRS then begin
+    if ResType=rtLRS then begin
       if (sfSaveToTestDir in Flags) then
         LRSFilename:=MainBuildBoss.GetDefaultLRSFilename(AnUnitInfo)
       else
@@ -5038,7 +5038,7 @@ begin
             {$IFDEF IDE_DEBUG}
             writeln('TMainIDE.SaveFileResources E2 LFM=',LFMCode.Filename);
             {$ENDIF}
-            if (ResType=lfmrtRes) and (LFMCode.DiskEncoding<>EncodingUTF8) then
+            if (ResType=rtRes) and (LFMCode.DiskEncoding<>EncodingUTF8) then
             begin
               // the .lfm file is used by fpcres, which only supports UTF8 without BOM
               DebugLn(['TMainIDE.DoSaveUnitComponent fixing encoding of ',LFMCode.Filename,' from ',LFMCode.DiskEncoding,' to ',EncodingUTF8]);
@@ -7515,7 +7515,7 @@ var
   LFMCode: TCodeBuffer;
   AProject: TProject;
   LRSFilename: String;
-  ResType: TLFMResourceType;
+  ResType: TResourceType;
 begin
   //debugln('TMainIDE.DoNewEditorFile A NewFilename=',NewFilename);
   // empty NewFilename is ok, it will be auto generated
@@ -7614,7 +7614,7 @@ begin
     AncestorType:=NewFileDescriptor.ResourceClass;
     //DebugLn(['TMainIDE.DoNewFile AncestorType=',dbgsName(AncestorType),' ComponentName',NewUnitInfo.ComponentName]);
     if AncestorType<>nil then begin
-      ResType:=MainBuildBoss.GetLFMResourceType(NewUnitInfo);
+      ResType:=MainBuildBoss.GetResourceType(NewUnitInfo);
       LFMSourceText:=NewFileDescriptor.GetResourceSource(NewUnitInfo.ComponentName);
       //DebugLn(['TMainIDE.DoNewFile LFMSourceText=',LFMSourceText]);
       if LFMSourceText<>'' then begin
@@ -7627,7 +7627,7 @@ begin
         Result:=DoLoadLFM(NewUnitInfo,LFMCode,[],[]);
         //DebugLn(['TMainIDE.DoNewFile ',dbgsName(NewUnitInfo.Component),' ',dbgsName(NewUnitInfo.Component.ClassParent)]);
         // make sure the .lrs file exists
-        if (ResType=lfmrtLRS) and NewUnitInfo.IsVirtual then begin
+        if (ResType=rtLRS) and NewUnitInfo.IsVirtual then begin
           LRSFilename:=ChangeFileExt(NewUnitInfo.Filename,'.lrs');
           CodeToolBoss.CreateFile(LRSFilename);
         end;
@@ -10016,7 +10016,7 @@ begin
     Result:=DoSaveForBuild;
     if Result<>mrOk then exit;
 
-    if (Project1.Resources.LFMResourceType=lfmrtRes) then begin
+    if (Project1.Resources.ResourceType=rtRes) then begin
       // FPC resources are only supported with FPC 2.4+
       CodeToolBoss.GetFPCVersionForDirectory(
         ExtractFilePath(Project1.MainFilename),FPCVersion,FPCRelease,FPCPatch);

@@ -43,18 +43,21 @@ type
   TAbstractProjectResources = class
   private
     FProject: TLazProject;
+    FResourceType: TResourceType;
   protected
     FMessages: TStringList;
+    procedure SetResourceType(const AValue: TResourceType); virtual;
   public
     constructor Create(AProject: TLazProject); virtual;
     destructor Destroy; override;
 
     procedure AddSystemResource(const AResource: String); virtual; abstract;
     procedure AddLazarusResource(AResource: TStream;
-                   const ResourceName, ResourceType: String); virtual; abstract;
+                   const AResourceName, AResourceType: String); virtual; abstract;
 
     property Messages: TStringList read FMessages;
     property Project: TLazProject read FProject;
+    property ResourceType: TResourceType read FResourceType write SetResourceType;
   end;
 
 implementation
@@ -80,6 +83,11 @@ begin
 end;
 
 { TAbstractProjectResources }
+
+procedure TAbstractProjectResources.SetResourceType(const AValue: TResourceType);
+begin
+  FResourceType := AValue;
+end;
 
 constructor TAbstractProjectResources.Create(AProject: TLazProject);
 begin

@@ -36,7 +36,7 @@ interface
 uses
   Classes, SysUtils, FileUtil, Process, LCLProc, Controls, Forms,
   CodeToolManager, LazConf, LResources,
-  ProjectResourcesIntf;
+  ProjectIntf, ProjectResourcesIntf;
    
 type
   TIconData = array of byte;
@@ -113,11 +113,15 @@ begin
 
   SetFileNames(MainFilename);
 
-  AResource := GetStream;
-  try
-    AResources.AddLazarusResource(AResource, 'MAINICON', 'ICO');
-  finally
-    AResource.Free;
+  // don't add icon to lazarus resources if we are using fpc resources
+  if AResources.ResourceType <> rtRes then
+  begin
+    AResource := GetStream;
+    try
+      AResources.AddLazarusResource(AResource, 'MAINICON', 'ICO');
+    finally
+      AResource.Free;
+    end;
   end;
 
   // the preferred way is this:
