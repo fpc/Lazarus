@@ -3,6 +3,12 @@ unit EasyDockSite;
 
 This project can be used instead of the LDockTree manager.
 
+AppLoadStore is a global link to an application handler for saving and reloading
+sites and docked controls.
+
+CustomDockSites have their own handler for saving and loading site and clients.
+
+
 To be added or ported:
   - field and method argument names
 
@@ -10,11 +16,11 @@ Possible extensions:
   - separate docking management and dock site layout
   + various dock headers
   - multiple splitters (on zones without controls)
-  - persistence (requires application wide management of dock sources!)
+  + persistence (requires application wide management of dock sources!)
   - purpose of Restore button?
 
 Known bugs:
-  - Problem with dragging header, seems to interfere with dragmanager (capture)?
+  + Problem with dragging header, seems to interfere with dragmanager (capture)?
 
 More issues, concerning the rest of the LCL (mainly unit Controls):
 
@@ -58,7 +64,6 @@ LCL TODO:
 
 //depending on widgetset or patched LCL
 {.$DEFINE NoDrop} //applied DoDiPatch1?
-//{.$DEFINE PageFrame} //problem: notebook frame cannot Release itself
 {.$DEFINE replace} //using ReplaceDockedControl?
 
 interface
@@ -168,23 +173,6 @@ type
     property Top: integer read GetTop;
   end;
 
-(* General DockSite, also Notebook dock site.
-
-  All restorable application forms should inherit from this class,
-  regardless of docking capabilities.
-*)
-  TCustomDockSite = class(TForm)
-  protected
-    //function GetDefaultDockCaption: string; override;
-    procedure LoadNames(const str: string); virtual; abstract;
-    function  SaveNames: string; virtual; abstract;
-  public
-    StayDocked: boolean;
-    property AsString: string read SaveNames write LoadNames;
-  end;
-
-  TDockSiteClass = class of TCustomDockSite;
-
 (* TEasyDockManager implements some of the abstract methods of TDockManager.
 *)
   TEasyDockManager = class(TDockManager)
@@ -197,6 +185,7 @@ type
   public
     constructor Create(ADockSite: TWinControl); override;
     class function  DetectAlign(ZoneRect: TRect; MousePos: TPoint): TAlign;
+    function GetDockEdge(ADockObject: TDragDockObject): boolean; override;
     procedure PositionDockRect(Client, DropCtl: TControl; DropAlign: TAlign;
       var DockRect: TRect);  override;
     procedure SetReplacingControl(Control: TControl); override; //unused
@@ -257,23 +246,80 @@ type
     property HideSingleCaption: boolean read FHideSingleCaption write SetSingleCaption;
   end;
 
-(* Application loader - a single method for consistency.
-The method has several tasks, depending on
-fLoad,fSite:
-  F,F: save Ctrl description in AName.
-  T,F: provide Ctrl for Site from AName.
-  F,T: save Site description in AName.
-  T,T: provide Site and its container Ctrl from AName.
-The DockManager only deals with dock clients, i.e. fSite is always False.
+(* General DockSite, also Notebook dock site.
 
-The DockMaster manages sites, i.e. fSite is True.
+  All restorable application forms should inherit from this class,
+  regardless of docking capabilities.
+
+  Add Save/Reload of docked controls?
+*)
+  TCustomDockSite = class(TForm)
+  public
+    StayDocked: boolean; //here???
+    class function ReloadSite(AName: string; AOwner: TComponent): TCustomDockSite;
+    function  SaveSite: string; virtual;
+    procedure LoadFromStream(strm: TStream); virtual;
+    procedure SaveToStream(strm: TStream); virtual;
+  end;
+
+  TDockSiteClass = class of TCustomDockSite;
+
+
+//events triggered from load/save docked controls
+  TOnReloadControl = function(const CtrlName: string; ASite: TWinControl): TControl of object;
+  TOnSaveControl = function(ACtrl: TControl): string of object;
+
+(* TDockMaster base class, contains function for layout save/load controls.
+  The default implementation is for use by both a DockManager and a (unmanaged) DockSite.
+  Unless overridden, it handles in this sequence:
+  1) TCustomDockSite (notebooks...)
+  2) AppLoadStore
+  3) OnSave/Reload
+  4) default (Delphi) compatible handling.
+
+  Customization is provided by OnSave/Restore handlers.
+  Further customization is feasable using the AppLoadStore variable (below).
+
+  The DockLoader variable is initialized to a default TCustomDockMaster instance,
+  but can be overridden by the application. This variable is not free'd.
+  uMakeSite.DockMaster represents the full interface.
+*)
+  TCustomDockMaster = class(TComponent)
+  protected
+    FOnSave: TOnSaveControl;
+    FOnRestore: TOnReloadControl;
+  public //become class functions?
+    function SaveControl(Control: TControl; Site: TWinControl): string; virtual;
+    function ReloadControl(const AName: string; Site: TWinControl): TControl; virtual;
+    property OnSave: TOnSaveControl read FOnSave write FOnSave;
+    property OnRestore: TOnReloadControl read FOnRestore write FOnRestore;
+  end;
+var
+  DockLoader: TCustomDockMaster;
+
+(* Application loader - a single method for consistency.
+  The method has several tasks, see eAppLoadStore.
+  When the application handles the request, it returns True.
+  If False is returned, default actions are used (load/store controls by name).
+
+The DockManager only deals with docked clients, whereas
+the DockLoader manages sites.
+
 When a site is to be created, notebook sites can have a different docksite
 control. Here Ctrl is the outer control, containing Site.
 *)
 //application loader link
 type
-  TAppLoadStore = function(fLoad, fSite: boolean;
-    var Site: TWinControl; var Ctrl: TControl; var AName: string): boolean of object;
+  eAppLoadStore = (
+    alsSaveControl,   //save docked Control as string
+    alsReloadControl, //load docked Control from string
+    alsSaveSite,  //save entire Site as string
+    alsReloadSite //load entire Site from string
+  );
+
+  //TAppLoadStore = function(fLoad, fSite: boolean;
+  TAppLoadStore = function(mode: eAppLoadStore;
+    var Site: TWinControl; var Control: TControl; var AName: string): boolean of object;
 var
   AppLoadStore: TAppLoadStore;
 
@@ -285,6 +331,8 @@ function  NoteBookCreate(AOwner: TWinControl): TCustomDockSite;
 procedure NoteBookAdd(ABook: TCustomDockSite; AItem: TControl); //to be removed
 function  TryRename(AComp: TComponent; const NewName: string): boolean;
 
+const
+  CustomDockSiteID = 1;
 const
   AlignNames: array[TAlign] of string = (
     'alNone', 'alTop', 'alBottom', 'alLeft', 'alRight', 'alClient', 'alCustom'
@@ -315,7 +363,8 @@ uses
   math,
   Themes, LResources,
   fDockBook,
-  LCLproc; //debugging
+  Dialogs,
+  LCLproc; //DebugLn
 
 type
   TWinControlAccess = class(TWinControl)
@@ -396,6 +445,7 @@ begin
     inc(i);
   end;
 end;
+
 
 //implement various headers
 {$I zoneheader.inc}
@@ -745,8 +795,11 @@ Signal results:
   with ADockObject do begin
   //mouse position within dock site
     DragTargetPos := DragTarget.ScreenToClient(DragPos);
-  //find zone
-    zone := ZoneFromPoint(DragTargetPos);
+  //find zone, handle empty site for elastic panels
+    if DockSite.DockClientCount = 0 then
+      zone := FTopZone
+    else
+      zone := ZoneFromPoint(DragTargetPos);
 
     if (zone = nil) or (Control = zone.ChildControl) then begin
       DropAlign := alNone; //prevent drop (below)
@@ -1031,7 +1084,8 @@ type
     BottomRight: TPoint;
     Level: byte;
     Orientation: TDockOrientation;
-    NameLen: integer; //+chars, can be a complete notebook description
+    //NameLen: integer; //+chars, can be a complete notebook description
+    //+ZoneName as AnsiString
   end;
 
 var
@@ -1041,15 +1095,12 @@ var
 procedure TEasyTree.LoadFromStream(Stream: TStream);
 
   function GetRec: integer;
-  var
-    NameLen: integer;
+  //var NameLen: integer;
   begin
     Stream.Read(ZoneRec, SizeOf(ZoneRec));
-    NameLen := ZoneRec.NameLen;
-    SetLength(ZoneName, NameLen);
-    if NameLen > 0 then
-      Stream.Read(ZoneName[1], NameLen);
     Result := ZoneRec.Level;
+    if Result > 0 then
+      ZoneName := Stream.ReadAnsiString;
   //debug
     if Result > 0 then
       DebugLn('reload %s @%d [%d,%d]', [ZoneName, Result, ZoneRec.BottomRight.x, ZoneRec.BottomRight.y])
@@ -1084,7 +1135,8 @@ procedure TEasyTree.LoadFromStream(Stream: TStream);
       NewZone := TEasyZone.Create(self);
       NewZone.Orientation := ZoneRec.Orientation;
       NewZone.BR := ZoneRec.BottomRight;
-      if ZoneRec.NameLen > 0 then begin
+      //if ZoneRec.NameLen > 0 then begin
+      if ZoneName <> '' then begin
       //we can NOT expect that Reload... is overridden!?
         NewCtl := ReloadDockedControl(ZoneName);
       //do we need a control in any case?
@@ -1132,16 +1184,27 @@ begin
 end;
 
 function TEasyTree.ReloadDockedControl(const AName: string): TControl;
-var
-  n: string;
+//var n: string;
 begin
+(* Reload from
+- saved site info (if CustomDockSite)
+- AppLoadStore
+- DockSite
+*)
+{$IFDEF old}
   Result:=nil;
   n := AName;
-  if assigned(AppLoadStore)
-  and AppLoadStore(True, False, FDockSite, Result, n) then begin
+//first check for special CustomDockSite format
+  if ord(AName[1]) = CustomDockSiteID then
+    TCustomDockSite.ReloadSite(AName, FDockSite)
+  else if assigned(AppLoadStore)
+  and AppLoadStore(alsReloadControl, FDockSite, Result, n) then begin
     //all done
   end else
     TWinControlAccess(DockSite).ReloadDockedControl(AName, Result);
+{$ELSE}
+  Result := DockLoader.ReloadControl(AName, FDockSite);
+{$ENDIF}
 end;
 
 function TEasyTree.SaveDockedControl(Control: TControl): string;
@@ -1149,16 +1212,18 @@ begin
 (* Create string descriptor for docked control.
   Override in sync with ReloadDockedControl!
 *)
-  if Assigned(AppLoadStore)
-  and AppLoadStore(False, False, FDockSite, Control, Result) then begin
+{$IFDEF old}
+  if Control is TCustomDockSite then
+    Result := TCustomDockSite(Control).SaveSite
+  else if Assigned(AppLoadStore)
+  and AppLoadStore(alsSaveControl, FDockSite, Control, Result) then begin
     //all done
-  end else if Control is TCustomDockSite then
-    Result := TCustomDockSite(Control).AsString
-  else begin
-    //Result := Control.Name; //Delphi default
-    Result := FDockSite.GetDockCaption(Control); //defaults to child.Name
-    //notebooks will return comma separated name list
+  end else begin
+    Result := Control.Name; //definitely child.Name
   end;
+{$ELSE}
+  Result := DockLoader.SaveControl(Control, FDockSite);
+{$ENDIF}
 end;
 
 procedure TEasyTree.SaveToStream(Stream: TStream);
@@ -1167,26 +1232,26 @@ procedure TEasyTree.SaveToStream(Stream: TStream);
   var
     child: TControl;
   begin
-  //fill ZoneRec
-    ZoneRec.Level := Level;
-    ZoneRec.Orientation := Zone.Orientation;
-    ZoneRec.BottomRight := Zone.BR;
-    child := Zone.ChildControl;
-    if child = nil then
-      ZoneName := ''
-    else
-      ZoneName := SaveDockedControl(child);
-    ZoneRec.NameLen := Length(ZoneName);
-  //write descriptor
-    Stream.Write(ZoneRec, sizeof(ZoneRec));
-    if ZoneRec.NameLen > 0 then
-      Stream.Write(ZoneName[1], ZoneRec.NameLen);
-  // recurse into first child
-    if Zone.FirstChild <> nil then
-      DoSaveZone(Zone.FirstChild, Level + 1); //all children of Level
-  // recurse into next sibling
-    if Zone.NextSibling <> nil then
-      DoSaveZone(Zone.NextSibling, Level); //all siblings of Level
+    while Zone <> nil do begin
+    //fill ZoneRec
+      ZoneRec.Level := Level;
+      ZoneRec.Orientation := Zone.Orientation;
+      ZoneRec.BottomRight := Zone.BR;
+      child := Zone.ChildControl;
+      if child = nil then
+        ZoneName := ''
+      else
+        ZoneName := SaveDockedControl(child);
+    //write descriptor
+      Stream.Write(ZoneRec, sizeof(ZoneRec));
+      Stream.WriteAnsiString(ZoneName);
+    // recurse into first child
+      if Zone.FirstChild <> nil then
+        DoSaveZone(Zone.FirstChild, Level + 1); //all children of Level
+    // recurse into next sibling
+      Zone := Zone.NextSibling;
+      //if Zone <> nil then DoSaveZone(Zone, Level); //all siblings of Level
+    end;
   end;
 
 begin
@@ -1194,7 +1259,7 @@ begin
   DoSaveZone(FTopZone, 1);
 //write end marker (dummy record of level 0)
   ZoneRec.Level := 0;
-  ZoneRec.NameLen := 0;
+  //ZoneRec.NameLen := 0;
   Stream.Write(ZoneRec, sizeof(ZoneRec));
 end;
 
@@ -1815,6 +1880,39 @@ begin
     Update;
 end;
 
+function TEasyDockManager.GetDockEdge(ADockObject: TDragDockObject): boolean;
+var
+  CanDock: boolean; //dummy
+  r: TRect;
+begin
+(* Determine dock target(?) and align.
+  Called with current DockRect (should use InfluenceRect?)
+  Usage: Only to prevent calls to the target control, in case of extended
+    InfluenceRect.
+*)
+  if false then Result:=inherited GetDockEdge(ADockObject);
+  //ADockObject.DockRect
+  Result := DockSite.DockClientCount = 0; //do nothing if docked clients exist!
+  if Result then begin
+    ADockObject.DropAlign := DetectAlign(ADockObject.DockRect, ADockObject.DragPos);
+  {$IFDEF VerboseDrag}
+    DebugLn('dockedge x(%d-%d) y(%d-%d) %s', [
+      ADockObject.DockRect.Left, ADockObject.DockRect.Right,
+      ADockObject.DockRect.Top, ADockObject.DockRect.Bottom,
+      AlignNames[ADockObject.DropAlign]
+      ]);
+  {$ELSE}
+  {$ENDIF}
+  end else begin
+  //init a valid DockRect?
+    r := ADockObject.DockRect;
+    TWinControlAccess(FDockSite).GetSiteInfo(nil, r, ADockObject.DragPos, CanDock);
+    ADockObject.DockRect := r;
+    Result := CanDock;
+  end;
+  //Result := True;
+end;
+
 procedure TEasyDockManager.PositionDockRect(Client, DropCtl: TControl;
   DropAlign: TAlign; var DockRect: TRect);
 var
@@ -1857,11 +1955,196 @@ begin
   //nop
 end;
 
+{ TCustomDockSite }
+
+class function TCustomDockSite.ReloadSite(AName: string;
+  AOwner: TComponent): TCustomDockSite;
+var
+  ss: TStringStream;
+  tn: string;
+  //tc: TClass;
+  ct: TPersistentClass;
+  dst: TDockSiteClass absolute ct;
+begin
+(* Restore from typename, then restore clients.
+*)
+  Result := nil;
+  ss := TStringStream.Create(AName);
+  try
+    if ss.ReadByte <> CustomDockSiteID then begin
+      ShowMessage('bad stream format');
+      exit; //bad format
+    end;
+    tn := ss.ReadAnsiString;
+    ct := GetClass(tn);
+    if ct = nil then begin
+      ShowMessage('class not registered: ' + tn);
+      exit;
+    end;
+    if ct.InheritsFrom(TCustomDockSite) then begin
+      Result := dst.Create(AOwner);
+      Result.LoadFromStream(ss);
+    end;
+  finally
+    ss.Free;
+  end;
+end;
+
+function TCustomDockSite.SaveSite: string;
+var
+  ss: TStringStream;
+begin
+(* Save typename and clients.
+*)
+{
+  if DockManager <> nil then
+    Result := Name  //reload by name
+  else
+}
+  begin
+    ss := TStringStream.Create('');
+    try
+      ss.WriteByte(CustomDockSiteID);
+      ss.WriteAnsiString(ClassName);
+      SaveToStream(ss);
+      Result := ss.DataString;
+    finally
+      ss.Free;
+    end;
+  end;
+end;
+
+procedure TCustomDockSite.SaveToStream(strm: TStream);
+var
+  i, n: integer;
+  ctl: TControl;
+  s: string;
+begin
+(* Save all docked controls.
+  Flag nested custom dock sites - how?
+*)
+  n := DockClientCount;
+  strm.WriteByte(n);
+  for i := 0 to n-1 do begin
+    ctl := DockClients[i];
+    s := DockLoader.SaveControl(ctl, self);
+    strm.WriteAnsiString(s);
+  end;
+end;
+
+procedure TCustomDockSite.LoadFromStream(strm: TStream);
+var
+  i, n: integer;
+  ctl: TControl;
+  cn: string;
+begin
+  n := strm.ReadByte;
+  for i := 1 to n do begin
+    cn := strm.ReadAnsiString;
+    ctl := DockLoader.ReloadControl(cn, self);
+    if ctl <> nil then
+      ctl.ManualDock(self);
+  end;
+end;
+
+{ TCustomDockMaster }
+
+function TCustomDockMaster.SaveControl(Control: TControl;
+  Site: TWinControl): string;
+begin
+(* Create string descriptor for docked control.
+*)
+  Result := '';
+  if Control is TCustomDockSite then
+    Result := TCustomDockSite(Control).SaveSite
+  else if Assigned(AppLoadStore)
+  and AppLoadStore(alsSaveControl, Site, Control, Result) then begin
+    //all done
+  end else if Assigned(FOnSave) then
+    Result := FOnSave(Control);
+//last resort
+  if Result = '' then
+    Result := Control.Name; //definitely child.Name
+end;
+
+function TCustomDockMaster.ReloadControl(const AName: string;
+  Site: TWinControl): TControl;
+var
+  n: string;
+  basename: string;
+  fc: TWinControlClass;
+  fo: TComponent; //form owner
+  ctl: TControl;
+  cmp: TComponent absolute Result;
+const
+  digits = ['0'..'9'];
+
+  procedure SplitName;
+  var
+    i, l, instno: integer;
+  begin
+  //find the instance number, if present
+    l := Length(AName);
+    i := l;
+    while AName[i] in digits do
+      dec(i);
+    //i now is the position of the last non-digit in the name
+  (*extract the instance number
+    TReader.ReadRootComponent appends "_nnn"
+  *)
+    if AName[i] = '_' then begin
+    //assume this is a multi-instance name
+      basename := 'T' + Copy(AName, 1, i-1);
+    end else
+      basename := 'T' + AName;
+  end;
+
+begin
+(* Reload from
+- saved site info (if CustomDockSite)
+- AppLoadStore
+- OnRestore
+- create by name
+- DockSite
+*)
+  Result := nil;
+  n := AName;
+//first check for special CustomDockSite format
+  if ord(AName[1]) = CustomDockSiteID then
+    Result := TCustomDockSite.ReloadSite(AName, Site)
+  else if assigned(AppLoadStore)
+  and AppLoadStore(alsReloadControl, Site, Result, n) then begin
+    //all done
+  end else if assigned(FOnRestore) then
+    Result := FOnRestore(n, Site);
+  if Result <> nil then
+    exit;
+//try create from name
+  SplitName;
+  fc := TWinControlClass(GetClass(basename));
+  if not assigned(fc) then begin
+    DebugLn(basename , ' is not a registered class');
+    //exit(nil); //bad form name
+  end else begin
+    fo := Owner;
+    Result := fc.Create(fo);
+    if Result.Name <> AName then
+      TryRename(Result, AName);
+  end;
+//last resort
+  if Result = nil then
+    TWinControlAccess(Site).ReloadDockedControl(AName, Result);
+end;
+
 initialization
 {$I easy_dock_images.lrs}
   //DefaultDockManagerClass := TEasyTree;
   CreateDockHeaderImages;
+  if DockLoader = nil then
+    DockLoader := TCustomDockMaster.Create(Application);
 finalization
   DestroyDockHeaderImages;
+  //FreeAndNil(LoadStore);
 end.
+
 

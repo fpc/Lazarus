@@ -33,6 +33,7 @@ type
     procedure FormUnDock(Sender: TObject; Client: TControl;
       NewTarget: TWinControl; var Allow: Boolean);
   protected
+    destructor Destroy; override;
     procedure Loaded; override;
   {$IFDEF appdock}
   {$ELSE}
@@ -79,6 +80,12 @@ begin
   end;
   SetLength(s, Length(s) - 2); //strip trailing ", "
   Caption := s;
+end;
+
+destructor TFloatingSite.Destroy;
+begin
+  DebugLn('destroying ', Name);
+  inherited Destroy;
 end;
 
 procedure TFloatingSite.FormClose(Sender: TObject;
@@ -149,6 +156,7 @@ Fix: disallow TControls to become floating.
     exit; //all done
 
   if DockClientCount <= 1 then begin
+    DebugLn('release ', Name);
     Release; //destroy empty site
   end else begin
     UpdateCaption(Client); //update caption, excluding removed client
@@ -192,4 +200,5 @@ initialization
   {$I ffloatingsite.lrs}
 
 end.
+
 

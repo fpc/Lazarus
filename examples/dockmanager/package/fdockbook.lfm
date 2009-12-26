@@ -1,4 +1,4 @@
-object EasyDockBook: TEasyDockBook
+inherited EasyDockBook: TEasyDockBook
   Left = 263
   Height = 300
   Top = 146
@@ -14,9 +14,8 @@ object EasyDockBook: TEasyDockBook
   OnDockOver = FormDockOver
   OnGetSiteInfo = FormGetSiteInfo
   OnUnDock = FormUnDock
-  LCLVersion = '0.9.29'
   Visible = True
-  object pnlDock: TPanel
+  object pnlDock: TPanel[0]
     Left = 0
     Height = 300
     Top = 0

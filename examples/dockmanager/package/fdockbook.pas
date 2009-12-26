@@ -100,8 +100,15 @@ type
     function GetDefaultDockCaption: string; override;
     function GetControlTab(AControl: TControl): TTabButton;
     procedure AfterUndock(tabidx: integer); virtual;
+  {$IFDEF old}
     procedure LoadNames(const str: string); override;
     function  SaveNames: string; override;
+  {$ELSE}
+    //class function ReloadSite(AName: string; AOwner: TComponent): TCustomDockSite;
+    //function  SaveSite: string; virtual;
+    //procedure LoadFromStream(strm: TStream); override;
+    //procedure SaveToStream(strm: TStream); override;
+  {$ENDIF}
   public
   {$IFDEF undockFix}
     destructor Destroy; override;
@@ -365,6 +372,25 @@ begin
   end;
 end;
 
+{$IFDEF new}
+procedure TEasyDockBook.LoadFromStream(strm: TStream);
+begin
+(*
+*)
+  inherited LoadFromStream(strm);
+end;
+
+procedure TEasyDockBook.SaveToStream(strm: TStream);
+begin
+(* Save docked pages, residing in?
+*)
+  if false then inherited SaveToStream(strm);
+  ...
+end;
+{$ELSE}
+{$ENDIF}
+
+{$IFDEF old}
 procedure TEasyDockBook.LoadNames(const str: string);
 var
   lst: TStringList;
@@ -407,6 +433,8 @@ begin
     Result := Result + ',' + ctl.Name;
   end;
 end;
+{$ELSE}
+{$ENDIF}
 
 procedure TEasyDockBook.ToolButton1Click(Sender: TObject);
 var
@@ -492,6 +520,7 @@ end;
 
 initialization
   {$I fdockbook.lrs}
-
+  RegisterClass(TEasyDockBook);
 end.
+
 

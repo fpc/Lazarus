@@ -23,6 +23,7 @@ Default floating sites are owned by Application,
 {$mode objfpc}{$H+}
 
 {$DEFINE ownPanels} //elastic panels owned by DockMaster?
+{.$DEFINE appDockMgr} //using special AppDockManager?
 
 interface
 
@@ -31,10 +32,6 @@ uses
   fFloatingSite;
 
 type
-//events triggered from load/save docked controls
-  TOnReloadControl = function(const CtrlName: string; ASite: TWinControl): TControl of object;
-  TOnSaveControl = function(ACtrl: TControl): string of object;
-
   sDockSides = TAlignSet;
 
   TDockPanel = class(TPanel)
@@ -52,8 +49,9 @@ type
   public
   end;
 
-(* DockManager derived from EasyTree.
-  Added handling of notebooks.
+{$IFDEF appDockMgr}
+(* DockManager derived from EasyTree, connecting to DockMaster.
+  Assume only forms are docked.
 *)
   TAppDockManager = class(TEasyTree)
   protected
@@ -61,10 +59,14 @@ type
     //function  SaveDockedControl(Control: TControl; Site: TWinControl): string; override;
     function  SaveDockedControl(Control: TControl): string; override;
   end;
+{$ELSE}
+  TAppDockManager = TEasyTree;
+{$ENDIF}
 
 (* The owner of all docksites
 *)
-  TDockMaster = class(TComponent)
+  //TDockMaster = class(TComponent)
+  TDockMaster = class(TCustomDockMaster)
   protected //event handlers
     procedure DockHandleMouseMove(Sender: TObject; Shift: TShiftState;
       X, Y: Integer);
@@ -74,8 +76,6 @@ type
     function  WrapDockable(Client: TControl): TFloatingSite;
   private
     LastPanel: TDockPanel;  //last elastic panel created
-    FOnSave: TOnSaveControl;
-    FOnRestore: TOnReloadControl;
   {$IFDEF ownPanels}
     //elastic panels are in Components[]
   {$ELSE}
@@ -95,9 +95,7 @@ type
     procedure LoadFromStream(Stream: TStream);
     procedure SaveToStream(Stream: TStream);
     function  ReloadDockedControl(const AName: string; Site: TWinControl): TControl; virtual;
-    function  SaveDockedControl(ACtrl:  TControl; Site: TWinControl): string; virtual;
-    property OnSave: TOnSaveControl read FOnSave write FOnSave;
-    property OnRestore: TOnReloadControl read FOnRestore write FOnRestore;
+    //function  SaveDockedControl(ACtrl:  TControl; Site: TWinControl): string; virtual;
   end;
 
 var
@@ -107,6 +105,7 @@ implementation
 
 uses
   //SynEdit,  //try editor notebooks
+  Dialogs,
   LCLIntf, LCLProc;
 
 type
@@ -130,9 +129,15 @@ constructor TDockMaster.Create(AOwner: TComponent);
 begin
   assert(DockMaster=nil, 'illegal recreate DockMaster');
   inherited Create(AOwner);
+{$IFDEF appDockMgr}
   //DebugLn('dockmgr=%s', [DefaultDockManagerClass.ClassName]);
   DefaultDockManagerClass := TAppDockManager;
+{$ELSE}
+{$ENDIF}
   DockMaster := self;
+  if assigned(DockLoader) then
+    DockLoader.Free;
+  DockLoader := self;
 {$IFDEF ownPanels}
 {$ELSE}
   ElasticSites := TFPList.Create;
@@ -147,6 +152,7 @@ begin
 {$ENDIF}
   inherited Destroy;
   DockMaster := nil;
+  DockLoader := nil;
 end;
 
 const //panel prefix for form name
@@ -306,47 +312,24 @@ var
   s: string;
   ctl: TControl;
 begin
-(* Reload docked control(s) - forms or NoteBook
-  Called from AppDockManager on ReloadDockedControl.
-
-  NoteBook identified by comma separated names in AName.
-
-  Call OnRestore before or after notebook handling?
+(* Reload docked forms
 *)
-  if Pos(',', AName) > 1 then begin
-  //restore NoteBook
-    nb := NoteBookCreate(Site); //!!!which notebook class???
-  {$IFDEF old}
-    lst := TStringList.Create;
-    try
-      lst.CommaText := AName;
-      for i := 0 to lst.Count - 1 do begin
-        s := lst[i];
-      //try handler
-        ctl := nil;
-        if assigned(FOnRestore) then
-          ctl := FOnRestore(AName, nb);
-        if ctl = nil then
-          ctl := ReloadForm(s, True); //try both multi and single instance
-        DebugLn(['TDockMaster.ReloadDockedControl ',DbgSName(ctl)]);
-        ctl.ManualDock(nb);
-      end;
-    finally
-      lst.Free;
+//search existing forms
+  Result := nil;
+  if AName <> '' then begin
+    Result := Screen.FindForm(AName);
+    if Result <> nil then begin
+      Result.Visible := True; //empty edit book?
+      exit; //found it
     end;
-  {$ELSE}
-    nb.AsString := AName;
-  {$ENDIF}
-  end else begin
-  //restore control (form?)
-    Result := nil;
-    if assigned(FOnRestore) then
-      Result := FOnRestore(AName, Site);
-    if Result = nil then
-      Result := ReloadForm(AName, True);
   end;
+//not found
+  Result := inherited ReloadControl(AName, Site);
+  if Result = nil then
+    Result := ReloadForm(AName, True);
 end;
 
+{$IFDEF old}
 function TDockMaster.SaveDockedControl(ACtrl: TControl;
   Site: TWinControl): string;
 begin
@@ -355,6 +338,8 @@ begin
   if Result = '' then
     Result := Site.GetDockCaption(ACtrl);
 end;
+{$ELSE}
+{$ENDIF}
 
 procedure TDockMaster.FormEndDock(Sender, Target: TObject; X, Y: Integer);
 var
@@ -382,11 +367,23 @@ begin
 end;
 
 type
+  eSiteKind = (
+  //top level sites
+    skEnd,      //end marker
+    skElastic,  //include host
+    skFloating, //unnamed? don't dock
+  //nested sites
+    skManaged,  //create EasyTree by default, use DockManager for save/restore
+    skUnManaged,//notebook..., use their own format
+  //keep last
+    skNone      //nostore
+  );
   RSiteRec = packed record
     Bounds, Extent: TRect;  //form and site bounds
     Align:  TAlign;
     AutoExpand: boolean;
-    NameLen: byte; //site name, 0 for floating sites
+    Kind: eSiteKind;
+    //NameLen: byte; //site name, 0 for floating sites
   end;
 var
   SiteRec: RSiteRec;
@@ -401,11 +398,9 @@ var
   function ReadSite: boolean;
   begin
     Stream.Read(SiteRec, sizeof(SiteRec));
-    Result := SiteRec.Bounds.Right > 0;
-    SetLength(SiteName, SiteRec.NameLen);
-    if Result and (SiteRec.NameLen > 0) then
-      Stream.Read(SiteName[1], SiteRec.NameLen);
+    Result := SiteRec.Kind <> skEnd;
     if Result then begin
+      SiteName := Stream.ReadAnsiString;
       DebugLn('--- Reload site %s', [SiteName]);
       //DebugLn('--- Error SiteRec ---');
       //DebugLn('Name=' + SiteName);
@@ -449,8 +444,9 @@ Notebooks?
     When notebooks are dockable, they cannot be owned by the DockSite!
 *)
   Stream.Position := 0; //rewind!
-//restore all floating sites
+//restore all top level sites
   while ReadSite do begin
+  {$IFDEF old}
     if SiteRec.NameLen = 0 then begin
     //floating site
       site := TFloatingSite.Create(self);
@@ -467,16 +463,59 @@ Notebooks?
     if site.DockManager = nil then
       TAppDockManager.Create(site);
     site.DockManager.LoadFromStream(Stream);
+  {$ELSE}
+    case SiteRec.Kind of
+    skEnd,      //end marker
+    skNone:     //not to be saved/restored
+      break;  //should never occur
+    skElastic:  //hosted panel - find parent form
+      begin
+        site := MakePanel(SiteName, SiteRec.Align);
+        //continue;
+      end;
+    skFloating: //floating site
+      begin
+        site := TFloatingSite.Create(self);
+        site.BoundsRect := SiteRec.Bounds;
+      end;
+    skManaged,
+    skUnManaged:
+      begin //we own all top level sites
+        site := TCustomDockSite.ReloadSite(SiteName, self); // Owner);
+        //if SiteRec.Kind = skManaged then
+        continue; //unmanaged sites do everything themselves
+      end
+    else
+      DebugLn('unhandled site kind: ', SiteName);
+      ShowMessage('unhandled site kind: ' + SiteName);
+      exit;
+    end;
+    //debug
+      if site = nil then begin
+        ShowMessage('could not reload ' + SiteName);
+        exit; //stream error!
+      end;
+    //adjust host form
+      if site.DockManager = nil then
+        TAppDockManager.Create(site);
+      site.DockManager.LoadFromStream(Stream);
+  {$ENDIF}
   end;
 end;
 
 procedure TDockMaster.SaveToStream(Stream: TStream);
 
-  procedure SaveSite(Site: TWinControl; const AName: string);
+  procedure SaveSite(Site: TWinControl);
   begin
   (* what if a site doesn't have an DockManager?
     need form bounds always, for elastic sites also the panel extent
   *)
+  //don't store empty sites?
+    if Site.DockClientCount = 0 then begin
+      //destroy empty floating sites?
+      exit;
+    end;
+  {$IFDEF old}
     if Site.DockManager = nil then
       exit;
     if Site is TDockPanel then begin
@@ -498,6 +537,57 @@ procedure TDockMaster.SaveToStream(Stream: TStream);
     if AName <> '' then
       Stream.Write(SiteName[1], Length(SiteName));
     Site.DockManager.SaveToStream(Stream);
+  {$ELSE}
+    SiteRec.Kind := skNone;
+  //handle elastic sites first!
+    if Site is TDockPanel then begin
+    //elastic panel
+      if site.Parent = nil then begin
+      //destroy orphaned panel?
+        site.Free;
+        exit;
+      end;
+      SiteRec.Kind := skElastic;
+      SiteRec.Bounds := Site.Parent.BoundsRect;
+      SiteRec.Extent := site.BoundsRect;
+      SiteRec.AutoExpand := (site as TDockPanel).AutoExpand;
+      SiteName := Site.Parent.Name; //parent site
+    end else if Site.HostDockSite = nil then begin
+    //floating site - must be managed!
+      if Site.DockManager = nil then
+        exit; //must be managed
+      SiteRec.Bounds := Site.BoundsRect;
+      SiteRec.Kind := skFloating;
+      SiteName := ''; //default floating site
+{this could become another public method, for storing custom dock sites
+    end else if Site is TCustomDockSite then begin
+    //nested site
+      if Site.DockManager <> nil then
+        SiteRec.Kind := skManaged
+      else
+        SiteRec.Kind := skUnManaged;
+      SiteName := TCustomDockSite(Site).SaveSite;
+}
+{
+    end else if Site.DockManager = nil then begin
+      exit; //don't store
+}
+    end else begin
+      exit; //unhandled, skNone - don't store
+    end;
+    SiteRec.Align := Site.Align;
+    Stream.Write(SiteRec, sizeof(SiteRec));
+    Stream.WriteAnsiString(SiteName);
+    case SiteRec.Kind of
+    skManaged, skUnManaged: //everything stored in SiteName
+      ; //unexpected here
+    skFloating, skElastic:
+      Site.DockManager.SaveToStream(Stream);
+    else
+      ShowMessage('unhandled site ' + SiteName);
+      //raise...
+    end;
+  {$ENDIF}
   end;
 
 var
@@ -513,15 +603,17 @@ begin
   for i := 0 to ComponentCount - 1 do begin
     cmp := Components[i];
     if (cmp is TWinControl) and wc.DockSite then begin
-      if wc.Parent = nil then
-        SaveSite(wc, '') //save top level (floating) sites
-      else if cmp is TDockPanel then
-        SaveSite(wc, wc.Parent.Name); //elastic site
+      SaveSite(wc) //save top level sites
     end;
   end;
 //end marker
+{$IFDEF old}
   SiteRec.Bounds.Right := -1;
   SiteRec.NameLen := 0;
+{$ELSE}
+  SiteRec.Kind := skEnd;
+  //SiteName:='';
+{$ENDIF}
   Stream.Write(SiteRec, sizeof(SiteRec));
 end;
 
@@ -589,13 +681,6 @@ begin
       Result.Visible := True; //empty edit book?
       exit; //found it
     end;
-{
-//also search in our Owner
-    cmp := Owner.FindComponent(AName);
-    if (Result <> nil) and (Result is TWinControl) then
-      exit;
-  { TODO -oDoDi : why are not all existing forms found? }
-}
   end;
 //check if Factory can provide the form
   if assigned(Factory) then begin
@@ -613,21 +698,8 @@ begin
   end else begin
   //create new instance
     //DebugLn('!!! create new: ', AName);
-  {$IFDEF old}
-    if fMultiInst then
-      SplitName
-    else
-      basename := AName;
-    basename := 'T' + basename;
-    fc := nil;
-    fc := TWinControlClass(GetClass(basename)); //must be registered class name!
-    //assert(assigned(fc), 'class not registered: ' + basename);
-    if fMultiInst and not assigned(fc) then
-      fc := TWinControlClass(GetClass('T' + AName)); //retry with non-splitted name
-  {$ELSE}
     SplitName;
     fc := TWinControlClass(GetClass(basename));
-  {$ENDIF}
     if not assigned(fc) then begin
       DebugLn(basename , ' is not a registered class');
       exit(nil); //bad form name
@@ -889,7 +961,7 @@ var
 var
   dw, dh: integer;
 const
-  d = 10; //shift mousepos with InfluenceRect
+  d = 2; //shift mousepos slightly outside container
 begin
 (* This handler has to determine the intended DockRect,
   and the alignment within this rectangle.
@@ -996,45 +1068,43 @@ begin
   end;
 end;
 
+{$IFDEF appDockMgr}
 { TAppDockManager }
 
 function TAppDockManager.ReloadDockedControl(const AName: string): TControl;
 begin
-(* Special connect to DockManager, and restore NoteBooks.
+(* Special connect to DockMaster.
+  Assume docking forms ONLY:
+  - try get existing form from Screen
+  - if none exists, defer to DockMaster
 *)
   if False then Result:=inherited ReloadDockedControl(AName); //asking DockSite (very bad idea)
-{$IFDEF old}
-  if assigned(DockMaster) then begin
-    Result := DockMaster.ReloadDockedControl(AName, FDockSite);
-  end else begin  //application default - search Application or Screen?
-    Result := Screen.FindForm(AName);
-    //if Result = nil then Result := 'T' + AName
-    { TODO -cdocking : load form by name, or create from typename }
-  end;
-{$ELSE}
   Result := Screen.FindForm(AName);
   if (Result = nil) and assigned(DockMaster) then
     Result := DockMaster.ReloadDockedControl(AName, FDockSite);
-{$ENDIF}
   if Result <> nil then
     DebugLn('Reloaded %s.%s', [Result.Owner.Name, Result.Name])
   else
     DebugLn('NOT reloaded: ', AName, ' ------------------');
 end;
 
-function TAppDockManager.SaveDockedControl(Control: TControl //; Site: TWinControl
-  ): string;
+function TAppDockManager.SaveDockedControl(Control: TControl): string;
 begin
   if assigned(DockMaster) then
     Result := DockMaster.SaveDockedControl(Control, FDockSite)
   else
-    //Result:=inherited SaveDockedControl(Control, FDockSite);
     Result:=inherited SaveDockedControl(Control);
   DebugLn('Saved as ', Result);
 end;
+{$ELSE}
+{$ENDIF}
 
 initialization
   RegisterClass(TFloatingSite);
+{$IFDEF appDockMgr}
   DefaultDockManagerClass := TAppDockManager;
+{$ELSE}
+  DefaultDockManagerClass := TEasyTree; //required?
+{$ENDIF}
 end.
 

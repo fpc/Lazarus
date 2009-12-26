@@ -258,27 +258,23 @@ var
   lst: TStringList;
   s: string;
   eb: TEditBook absolute Result;
+  ss: TStringStream;
 begin
-(* Format
-Since commas are used for notebook docking, we have to choose other delimiters.
-  <name>%t=<type>[%f=<editfile>]
-Default type is 'T'<name><instNo>, default instNo is 1?
+(* Handle special cases:
+  ViewWindow
+  EditBook
 *)
   if CtrlName[1] = '@' then begin
     s := copy(CtrlName, 2, Length(CtrlName));
     Result := CreateDockable(s, False);
     //if Result <> nil then Result.Visible := True; //edit forms without pages are hidden?
-  end else if CtrlName[1] = ',' then begin
+  end else if ord(CtrlName[1]) = EditBookID then begin
     eb := TEditBook.Create(Application);
-    lst := TStringList.Create;
+    ss := TStringStream.Create(CtrlName);
     try
-      lst.CommaText := CtrlName;
-      for i := 1 to lst.Count - 1 do begin
-        s := lst[i];
-        eb.OpenFile(s);
-      end;
+      eb.LoadFromStream(ss);
     finally
-      lst.Free;
+      ss.Free;
     end;
   end else
     Result := nil; //for now
@@ -288,13 +284,26 @@ function TMainBar.OnSaveControl(ACtrl: TControl): string;
 var
   i: integer;
   ep: TEditPage;
+  ss: TStringStream;
 begin
+(* handle special cases:
+  ViewWindow
+  EditBook
+*)
   if ACtrl is TViewWindow then begin
-    Result := '@' + ACtrl.Caption;
+    Result := '@' + ACtrl.Caption
   end else if ACtrl is TEditBook then begin
-    Result := ',' + TWinControl(ACtrl).GetDockCaption(ACtrl);
+    ss := TStringStream.Create('');
+    try
+      TEditBook(ACtrl).SaveToStream(ss);
+      Result := ss.DataString;
+    finally
+      ss.Free;
+    end;
+    //Result := ',' + TWinControl(ACtrl).GetDockCaption(ACtrl);
   end else
-    Result := ACtrl.HostDockSite.GetDockCaption(ACtrl);
+    Result := ''; //unhandled
+    //Result := ACtrl.HostDockSite.GetDockCaption(ACtrl);
 end;
 
 initialization

@@ -49,19 +49,17 @@ type
   AsString is implemented for save/load the entire form.
   Reloading files has to be done separately, not as part of a layout?
 *)
-{$IFDEF new}
+{$IFDEF dockSite}
   TEditBook = class(TCustomDockSite)
   protected
     FEdit: TEditPages;
-    procedure LoadNames(const str: string); override;
-    function  SaveNames: string; override;
-    //procedure OpenFiles(TheFiles: string);
   public
     constructor Create(TheOwner: TComponent); override;
     function  OpenFile(const AName: string): boolean; //virtual;
-    //property  Files: string read SaveNames write LoadNames;
-    property  AsString;
-  end; 
+    function  AddFile(const AName: string): boolean; //virtual;
+    procedure LoadFromStream(strm: TStream); override;
+    procedure SaveToStream(strm: TStream); override;
+  end;
 {$ELSE}
   TEditBook = class(TForm)
   protected
@@ -69,8 +67,14 @@ type
   public
     constructor Create(TheOwner: TComponent); override;
     function  OpenFile(const AName: string): boolean; //virtual;
+    function  AddFile(const AName: string): boolean; //virtual;
+    procedure LoadFromStream(strm: TStream); //override;
+    procedure SaveToStream(strm: TStream); //override;
   end;
 {$ENDIF}
+
+const
+  EditBookID = CustomDockSiteID + 1;
 
 var
   MRUEdit: TEditPage; //Most Recently Used EditPage
@@ -95,6 +99,22 @@ begin
   DockMaster.AddElasticSites(self, [alLeft, alRight, alBottom]);
 end;
 
+function TEditBook.AddFile(const AName: string): boolean;
+var
+  i: integer;
+  ctl: TControl;
+  ep: TEditPage absolute ctl;
+begin
+  for i := 0 to FEdit.DockClientCount - 1 do begin
+    ctl := FEdit.DockClients[i];
+    Result := ep.FileName = AName;
+    if Result then
+      exit;
+  end;
+//file not found
+  Result := OpenFile(AName);
+end;
+
 function TEditBook.OpenFile(const AName: string): boolean;
 var
   se: TEditPage;
@@ -102,6 +122,41 @@ begin
   se := TEditPage.Create(Owner);
   se.LoadFile(AName);
   se.ManualDock(FEdit);
+end;
+
+procedure TEditBook.LoadFromStream(strm: TStream);
+var
+  i, f, n: byte;
+  fn: string;
+begin
+(* Merge list of files with already open files.
+*)
+  //inherited LoadFromStream(strm);
+  i := strm.ReadByte;
+  assert(i = EditBookID, 'bad stream');
+  n := strm.ReadByte;
+  for i := 0 to n-1 do begin
+    fn := strm.ReadAnsiString;
+    AddFile(fn);
+  end;
+end;
+
+procedure TEditBook.SaveToStream(strm: TStream);
+var
+  i, n: byte;
+  ctl: TControl;
+  ep: TEditPage absolute ctl;
+begin
+(* Stream list of open files.
+*)
+  //inherited SaveToStream(strm);
+  strm.WriteByte(EditBookID);
+  n := FEdit.DockClientCount;
+  strm.WriteByte(n);
+  for i := 0 to n - 1 do begin
+    ctl := FEdit.DockClients[i];
+    strm.WriteAnsiString(ep.FileName);
+  end;
 end;
 
 { TEditPage }
