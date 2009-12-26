@@ -43,6 +43,11 @@ begin
   Result := 'cur';
 end;
 
+function TCursorImage.GetResourceType: TResourceType;
+begin
+  Result := RT_GROUP_CURSOR;
+end;
+
 class function TCursorImage.GetSharedImageClass: TSharedRasterImageClass;
 begin
   Result := TSharedCursorImage;

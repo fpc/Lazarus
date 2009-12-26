@@ -53,6 +53,34 @@ type
   
   PIconDirEntry = ^TIconDirEntry;
 
+  // executables and libraries has the next structures for icons and cursors
+  TGrpIconDirEntry = packed record
+    bWidth: Byte;               // Width, in pixels, of the image
+    bHeight: Byte;              // Height, in pixels, of the image
+    bColorCount: Byte;          // Number of colors in image (0 if >=8bpp)
+    bReserved: Byte;            // Reserved
+    case Byte of
+      1: (
+        // icon
+        wPlanes: Word;          // color planes
+        wBpp: Word;             // bits per pixel
+        // common
+        dwBytesInRes: Dword;    // how many bytes in this resource?
+        nID: Word;              // the ID
+      );
+      2:(
+        // cursor
+        wXHotSpot: Word;
+        wYHotSpot: Word;
+      );
+  end;
+
+  TGrpIconDir = packed record
+    idReserved: Word; // Reserved (must be 0)
+    idType: Word;     // Resource type (1 for icons)
+    idCount: Word;    //  How many images?
+    idEntries: array[0..0] of TGrpIconDirEntry; // The entries for each image
+  end;
 
 function TestStreamIsIcon(const AStream: TStream): boolean;
 var
@@ -612,6 +640,95 @@ begin
     Result := inherited LazarusResourceTypeValid(ResType);
   end;
 end;
+
+procedure TCustomIcon.LoadFromResourceName(Instance: THandle; const ResName: String);
+{$IFDEF FPC_HAS_WINLIKERESOURCES}
+var
+  ResType: TResourceType;
+  ResHandle: TFPResourceHandle;
+{$ENDIF}
+begin
+{$IFDEF FPC_HAS_WINLIKERESOURCES}
+  ResType := GetResourceType;
+  if ResType = nil then Exit;
+
+  ResHandle := FindResource(Instance, PChar(ResName), ResType);
+  if ResHandle = 0 then
+    raise EResNotFound.Create(ResName); // todo: valid exception
+  LoadFromResourceHandle(Instance, ResHandle);
+{$ENDIF}
+end;
+
+procedure TCustomIcon.LoadFromResourceID(Instance: THandle; ResID: Integer);
+{$IFDEF FPC_HAS_WINLIKERESOURCES}
+var
+  ResType: TResourceType;
+  ResHandle: TFPResourceHandle;
+{$ENDIF}
+begin
+  {$IFDEF FPC_HAS_WINLIKERESOURCES}
+  ResType := GetResourceType;
+  if ResType = nil then Exit;
+
+  ResHandle := FindResource(Instance, PChar(ResID), ResType);
+  if ResHandle = 0 then
+    raise EResNotFound.Create(''); // todo: valid exception
+  LoadFromResourceHandle(Instance, ResHandle);
+  {$ENDIF}
+end;
+
+{$IFDEF FPC_HAS_WINLIKERESOURCES}
+procedure TCustomIcon.LoadFromResourceHandle(Instance: THandle; ResHandle: TFPResourceHandle);
+var
+  GlobalHandle: TFPResourceHGlobal;
+  Dir: ^TGrpIconDir;
+  DirEntry: TGrpIconDirEntry;
+  IconEntry: TIconDirEntry;
+  i, offset: integer;
+  Stream: TMemoryStream;
+  IconStream: TResourceStream;
+begin
+  // build a usual ico/cur stream using several RT_ICON resources
+  GlobalHandle := LoadResource(Instance, ResHandle);
+  if GlobalHandle = 0 then
+    Exit;
+  Dir := LockResource(GlobalHandle);
+  if Dir = nil then
+    Exit;
+
+  Stream := TMemoryStream.Create;
+  try
+    // write icon header
+    Stream.Write(Dir^, SizeOf(TIconHeader));
+    // write icon entries headers
+    offset := Stream.Position + SizeOf(IconEntry) * Dir^.idCount;
+    for i := 0 to Dir^.idCount - 1 do
+    begin
+      DirEntry := Dir^.idEntries[i];
+      Move(DirEntry, IconEntry, SizeOf(DirEntry));
+      IconEntry.dwImageOffset := offset;
+      inc(offset, IconEntry.dwBytesInRes);
+      Stream.Write(IconEntry, SizeOf(IconEntry));
+    end;
+    // write icons data
+    for i := 0 to Dir^.idCount - 1 do
+    begin
+      IconStream := TResourceStream.CreateFromID(Instance, Dir^.idEntries[i].nID, RT_ICON);
+      try
+        Stream.CopyFrom(IconStream, IconStream.Size);
+      finally
+        IconStream.Free;
+      end;
+    end;
+    Stream.Position := 0;
+    ReadData(Stream);
+  finally
+    Stream.Free;
+    UnLockResource(GlobalHandle);
+    FreeResource(GlobalHandle);
+  end;
+end;
+{$ENDIF}
 
 function TCustomIcon.MaskHandleAllocated: boolean;
 begin
@@ -1220,6 +1337,11 @@ function TIcon.ReleaseHandle: HICON;
 begin
   HandleNeeded;
   Result := FSharedImage.ReleaseHandle;
+end;
+
+function TIcon.GetResourceType: TResourceType;
+begin
+  Result := RT_GROUP_ICON;
 end;
 
 procedure TIcon.SetIconHandle(const AValue: HICON);

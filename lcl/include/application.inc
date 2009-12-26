@@ -359,6 +359,10 @@ end;
        needs to occur.
 ------------------------------------------------------------------------------}
 procedure TApplication.Initialize;
+{$IFDEF FPC_HAS_WINLIKERESOURCES}
+var
+  Res: TFPResourceHandle;
+{$ENDIF}
 begin
   inherited Initialize;
   // interface object and screen
@@ -375,7 +379,15 @@ begin
 
   // application icon
   if LazarusResources.Find('MAINICON') <> nil then
-    Icon.LoadFromLazarusResource('MAINICON');
+    Icon.LoadFromLazarusResource('MAINICON')
+  {$IFDEF FPC_HAS_WINLIKERESOURCES}
+  else
+  begin
+    Res := FindResource(HInstance, PChar('MAINICON'), RT_GROUP_ICON);
+    if Res <> 0 then
+      Icon.LoadFromResourceHandle(Hinstance, Res);
+  end;
+  {$ENDIF}
 end;
 
 {------------------------------------------------------------------------------

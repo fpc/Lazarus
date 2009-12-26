@@ -1953,13 +1953,41 @@ const
 {$ifdef windows}
   RT_CURSOR = Windows.RT_CURSOR;
   RT_BITMAP = Windows.RT_BITMAP;
-  RT_ICON   = Windows.RT_ICON;
+  RT_ICON = Windows.RT_ICON;
+  RT_MENU = Windows.RT_MENU;
+  RT_DIALOG = Windows.RT_DIALOG;
+  RT_STRING = Windows.RT_STRING;
+  RT_FONTDIR = Windows.RT_FONTDIR;
+  RT_FONT = Windows.RT_FONT;
+  RT_ACCELERATOR = Windows.RT_ACCELERATOR;
   RT_RCDATA = Windows.RT_RCDATA;
+  RT_MESSAGETABLE = Windows.RT_MESSAGETABLE;
+  RT_GROUP_CURSOR = Windows.RT_GROUP_CURSOR;
+  RT_GROUP_ICON = Windows.RT_GROUP_ICON;
+  RT_VERSION = Windows.RT_VERSION;
+  RT_ANICURSOR = Windows.RT_ANICURSOR;
+  RT_ANIICON = Windows.RT_ANIICON;
+  RT_HTML = Windows.RT_HTML;
+  RT_MANIFEST = Windows.RT_MANIFEST;
 {$else}
   RT_CURSOR = TResourceType(1);
   RT_BITMAP = TResourceType(2);
-  RT_ICON   = TResourceType(3);
+  RT_ICON = TResourceType(3);
+  RT_MENU = TResourceType(4);
+  RT_DIALOG = TResourceType(5);
+  RT_STRING = TResourceType(6);
+  RT_FONTDIR = TResourceType(7);
+  RT_FONT = TResourceType(8);
+  RT_ACCELERATOR = TResourceType(9);
   RT_RCDATA = TResourceType(10);
+  RT_MESSAGETABLE = TResourceType(11);
+  RT_GROUP_CURSOR = TResourceType(12);
+  RT_GROUP_ICON = TResourceType(14);
+  RT_VERSION = TResourceType(16);
+  RT_ANICURSOR = TResourceType(21);
+  RT_ANIICON = TResourceType(22);
+  RT_HTML = TResourceType(23);
+  RT_MANIFEST = TResourceType(24);
 {$endif}
 
 

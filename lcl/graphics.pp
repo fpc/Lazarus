@@ -795,8 +795,8 @@ type
     procedure LoadFromStream(Stream: TStream); virtual; abstract;
     procedure LoadFromMimeStream(AStream: TStream; const AMimeType: string); virtual;
     procedure LoadFromLazarusResource(const ResName: String); virtual;
-    procedure LoadFromResourceName(Instance: THandle; const ResName: String);
-    procedure LoadFromResourceID(Instance: THandle; ResID: Integer);
+    procedure LoadFromResourceName(Instance: THandle; const ResName: String); virtual;
+    procedure LoadFromResourceID(Instance: THandle; ResID: Integer); virtual;
     procedure LoadFromClipboardFormat(FormatID: TClipboardFormat); virtual;
     procedure LoadFromClipboardFormatID(ClipboardType: TClipboardType;
       FormatID: TClipboardFormat); virtual;
@@ -1607,6 +1607,11 @@ type
     procedure SetSize(AWidth, AHeight: integer); override;
     class function GetFileExtensions: string; override;
     function LazarusResourceTypeValid(const ResourceType: string): boolean; override;
+    procedure LoadFromResourceName(Instance: THandle; const ResName: String); override;
+    procedure LoadFromResourceID(Instance: THandle; ResID: Integer); override;
+    {$IFDEF FPC_HAS_WINLIKERESOURCES}
+    procedure LoadFromResourceHandle(Instance: THandle; ResHandle: TFPResourceHandle);
+    {$ENDIF}
     function BitmapHandleAllocated: boolean; override;
     function MaskHandleAllocated: boolean; override;
     function PaletteAllocated: boolean; override;
@@ -1628,6 +1633,7 @@ type
     procedure HandleNeeded; override;
   public
     function ReleaseHandle: HICON;
+    function GetResourceType: TResourceType; override;
     property Handle: HICON read GetIconHandle write SetIconHandle;
   end;
   
@@ -1705,6 +1711,7 @@ type
     class function GetTypeID: Word; override;
   public
     class function GetFileExtensions: string; override;
+    function GetResourceType: TResourceType; override;
     function LazarusResourceTypeValid(const ResourceType: string): boolean; override;
     function ReleaseHandle: HCURSOR;
     property HotSpot: TPoint read GetHotSpot;
