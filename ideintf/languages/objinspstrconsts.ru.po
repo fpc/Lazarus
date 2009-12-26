@@ -390,6 +390,7 @@ msgstr "Подтвердить удаление"
 #: objinspstrconsts.oiscopycomponents
 #, fuzzy
 #| msgid "Copy components"
+msgctxt "objinspstrconsts.oiscopycomponents"
 msgid "&Copy"
 msgstr "Копировать компоненты"
 
@@ -408,6 +409,7 @@ msgstr ""
 #: objinspstrconsts.oiscutcomponents
 #, fuzzy
 #| msgid "Cut components"
+msgctxt "objinspstrconsts.oiscutcomponents"
 msgid "Cu&t"
 msgstr "Вырезать компоненты"
 
@@ -419,6 +421,7 @@ msgstr "Удалить"
 #: objinspstrconsts.oisdeletecomponents
 #, fuzzy
 #| msgid "Delete components"
+msgctxt "objinspstrconsts.oisdeletecomponents"
 msgid "&Delete"
 msgstr "Удалить компоненты"
 
@@ -597,6 +600,7 @@ msgstr ""
 #: objinspstrconsts.oispastecomponents
 #, fuzzy
 #| msgid "Paste components"
+msgctxt "objinspstrconsts.oispastecomponents"
 msgid "&Paste"
 msgstr "Вставить компоненты"
 
@@ -797,6 +801,7 @@ msgid "Refresh"
 msgstr "Обновить"
 
 #: objinspstrconsts.oistdacteditcopyheadline
+msgctxt "objinspstrconsts.oistdacteditcopyheadline"
 msgid "&Copy"
 msgstr "Копиров&ать"
 
@@ -809,6 +814,7 @@ msgid "Copy"
 msgstr "Копировать"
 
 #: objinspstrconsts.oistdacteditcutheadline
+msgctxt "objinspstrconsts.oistdacteditcutheadline"
 msgid "Cu&t"
 msgstr "Выре&зать"
 
@@ -835,6 +841,7 @@ msgid "Delete"
 msgstr "Удалить"
 
 #: objinspstrconsts.oistdacteditpasteheadline
+msgctxt "objinspstrconsts.oistdacteditpasteheadline"
 msgid "&Paste"
 msgstr "&Вставить"
 
@@ -1237,6 +1244,7 @@ msgstr "Редактировать столбцы ..."
 #: objinspstrconsts.sccslvedt
 #, fuzzy
 #| msgid "Edit ListView Items..."
+msgctxt "objinspstrconsts.sccslvedt"
 msgid "Edit Items..."
 msgstr "Редактировать элементы ListView..."
 
@@ -1348,6 +1356,7 @@ msgstr "Сохранить"
 #: objinspstrconsts.sccstredt
 #, fuzzy
 #| msgid "Edit TreeView Items..."
+msgctxt "objinspstrconsts.sccstredt"
 msgid "Edit Items..."
 msgstr "Редактировать элементы TreeView..."
 

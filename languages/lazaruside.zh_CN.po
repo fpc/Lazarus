@@ -310,10 +310,6 @@ msgstr "创建一个新的窗体时,添加到自动创建的窗体"
 msgid "Auto delete file"
 msgstr "自动删除文件"
 
-#: lazarusidestrconsts.dlgautoform
-msgid "Auto create form when opening unit"
-msgstr "当打开单元文件时自动创建窗体"
-
 #: lazarusidestrconsts.dlgautohidecursor
 msgid "Hide mouse when typing"
 msgstr ""
@@ -7987,10 +7983,6 @@ msgstr "LFM 文件未找到"
 msgid "LFM is ok"
 msgstr ""
 
-#: lazarusidestrconsts.lislfmresourcetype
-msgid "LFM resource type"
-msgstr ""
-
 #: lazarusidestrconsts.lislgplnotice
 msgid "<description>%sCopyright (C) <year> <name of author> <contact>%sThis library is free software; you can redistribute it and/or modify it under the terms of the GNU Library General Public License as published by the Free Software Foundation; either version 2 of the License, or (at your option) any later version. %sThis program is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU Library General Public License for more details. %sYou should have received a copy of the GNU Library General Public License along with this library; if not, write to the Free Software Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA."
 msgstr ""
@@ -9550,6 +9542,10 @@ msgstr ""
 #: lazarusidestrconsts.lisopenasxmlfile
 msgid "Open as XML file"
 msgstr "以 XML 文件格式打开"
+
+#: lazarusidestrconsts.lisopendesigneronopenunit
+msgid "Open designer on open unit"
+msgstr ""
 
 #: lazarusidestrconsts.lisopenexistingfile
 msgid "Open existing file"
@@ -11439,6 +11435,10 @@ msgstr "资源装载错误"
 #: lazarusidestrconsts.lisresourcesaveerror
 msgid "Resource save error"
 msgstr "资源保存错误"
+
+#: lazarusidestrconsts.lisresourcetypeofnewfiles
+msgid "Resource type of project:"
+msgstr ""
 
 #: lazarusidestrconsts.lisresult
 msgid "Result :="

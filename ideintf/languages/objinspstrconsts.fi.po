@@ -383,6 +383,7 @@ msgstr "Vahvista poisto"
 #: objinspstrconsts.oiscopycomponents
 #, fuzzy
 #| msgid "Copy components"
+msgctxt "objinspstrconsts.oiscopycomponents"
 msgid "&Copy"
 msgstr "Kopio komponentti leikepöydälle"
 
@@ -401,6 +402,7 @@ msgstr ""
 #: objinspstrconsts.oiscutcomponents
 #, fuzzy
 #| msgid "Cut components"
+msgctxt "objinspstrconsts.oiscutcomponents"
 msgid "Cu&t"
 msgstr "Siirrä komponentti leikepöydälle"
 
@@ -412,6 +414,7 @@ msgstr "Poista"
 #: objinspstrconsts.oisdeletecomponents
 #, fuzzy
 #| msgid "Delete components"
+msgctxt "objinspstrconsts.oisdeletecomponents"
 msgid "&Delete"
 msgstr "Poista komponentti"
 
@@ -590,6 +593,7 @@ msgstr ""
 #: objinspstrconsts.oispastecomponents
 #, fuzzy
 #| msgid "Paste components"
+msgctxt "objinspstrconsts.oispastecomponents"
 msgid "&Paste"
 msgstr "Lisää leikepöydän komponentti"
 
@@ -790,8 +794,9 @@ msgid "Refresh"
 msgstr ""
 
 #: objinspstrconsts.oistdacteditcopyheadline
+msgctxt "objinspstrconsts.oistdacteditcopyheadline"
 msgid "&Copy"
-msgstr ""
+msgstr "Kopio komponentti leikepöydälle"
 
 #: objinspstrconsts.oistdacteditcopyshortcut
 msgid "Ctrl+C"
@@ -802,8 +807,9 @@ msgid "Copy"
 msgstr "Kopioi"
 
 #: objinspstrconsts.oistdacteditcutheadline
+msgctxt "objinspstrconsts.oistdacteditcutheadline"
 msgid "Cu&t"
-msgstr ""
+msgstr "Siirrä komponentti leikepöydälle"
 
 #: objinspstrconsts.oistdacteditcutshortcut
 msgid "Ctrl+X"
@@ -828,8 +834,9 @@ msgid "Delete"
 msgstr "Poista"
 
 #: objinspstrconsts.oistdacteditpasteheadline
+msgctxt "objinspstrconsts.oistdacteditpasteheadline"
 msgid "&Paste"
-msgstr ""
+msgstr "Lisää leikepöydän komponentti"
 
 #: objinspstrconsts.oistdacteditpasteshortcut
 msgid "Ctrl+V"
@@ -1228,6 +1235,7 @@ msgid "Edit Columns ..."
 msgstr ""
 
 #: objinspstrconsts.sccslvedt
+msgctxt "objinspstrconsts.sccslvedt"
 msgid "Edit Items..."
 msgstr ""
 
@@ -1339,6 +1347,7 @@ msgstr ""
 #: objinspstrconsts.sccstredt
 #, fuzzy
 #| msgid "Edit TreeView Items..."
+msgctxt "objinspstrconsts.sccstredt"
 msgid "Edit Items..."
 msgstr "Muokkaa TreeView:n valintoja"
 

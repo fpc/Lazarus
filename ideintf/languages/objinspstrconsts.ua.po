@@ -381,6 +381,7 @@ msgid "Confirm delete"
 msgstr "Підтвердити видалення"
 
 #: objinspstrconsts.oiscopycomponents
+msgctxt "objinspstrconsts.oiscopycomponents"
 msgid "&Copy"
 msgstr ""
 
@@ -397,6 +398,7 @@ msgid "Create new field and add it at current position"
 msgstr ""
 
 #: objinspstrconsts.oiscutcomponents
+msgctxt "objinspstrconsts.oiscutcomponents"
 msgid "Cu&t"
 msgstr ""
 
@@ -406,8 +408,9 @@ msgid "Delete"
 msgstr "Видалити"
 
 #: objinspstrconsts.oisdeletecomponents
+msgctxt "objinspstrconsts.oisdeletecomponents"
 msgid "&Delete"
-msgstr ""
+msgstr "&Видалити"
 
 #: objinspstrconsts.oisdeleteitem
 msgid "Delete item %s%s%s?"
@@ -582,6 +585,7 @@ msgid "Move to Front"
 msgstr ""
 
 #: objinspstrconsts.oispastecomponents
+msgctxt "objinspstrconsts.oispastecomponents"
 msgid "&Paste"
 msgstr ""
 
@@ -782,6 +786,7 @@ msgid "Refresh"
 msgstr "Перезавантажити"
 
 #: objinspstrconsts.oistdacteditcopyheadline
+msgctxt "objinspstrconsts.oistdacteditcopyheadline"
 msgid "&Copy"
 msgstr "&Копіювати"
 
@@ -794,6 +799,7 @@ msgid "Copy"
 msgstr "Копіювати"
 
 #: objinspstrconsts.oistdacteditcutheadline
+msgctxt "objinspstrconsts.oistdacteditcutheadline"
 msgid "Cu&t"
 msgstr "Вир&ізати"
 
@@ -820,6 +826,7 @@ msgid "Delete"
 msgstr "Видалити"
 
 #: objinspstrconsts.oistdacteditpasteheadline
+msgctxt "objinspstrconsts.oistdacteditpasteheadline"
 msgid "&Paste"
 msgstr "&Вставити"
 
@@ -1220,6 +1227,7 @@ msgid "Edit Columns ..."
 msgstr ""
 
 #: objinspstrconsts.sccslvedt
+msgctxt "objinspstrconsts.sccslvedt"
 msgid "Edit Items..."
 msgstr ""
 
@@ -1329,6 +1337,7 @@ msgid "Save"
 msgstr ""
 
 #: objinspstrconsts.sccstredt
+msgctxt "objinspstrconsts.sccstredt"
 msgid "Edit Items..."
 msgstr ""
 

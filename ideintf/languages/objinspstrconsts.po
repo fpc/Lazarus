@@ -379,6 +379,7 @@ msgid "Confirm delete"
 msgstr ""
 
 #: objinspstrconsts.oiscopycomponents
+msgctxt "objinspstrconsts.oiscopycomponents"
 msgid "&Copy"
 msgstr ""
 
@@ -395,6 +396,7 @@ msgid "Create new field and add it at current position"
 msgstr ""
 
 #: objinspstrconsts.oiscutcomponents
+msgctxt "objinspstrconsts.oiscutcomponents"
 msgid "Cu&t"
 msgstr ""
 
@@ -404,6 +406,7 @@ msgid "Delete"
 msgstr ""
 
 #: objinspstrconsts.oisdeletecomponents
+msgctxt "objinspstrconsts.oisdeletecomponents"
 msgid "&Delete"
 msgstr ""
 
@@ -580,6 +583,7 @@ msgid "Move to Front"
 msgstr ""
 
 #: objinspstrconsts.oispastecomponents
+msgctxt "objinspstrconsts.oispastecomponents"
 msgid "&Paste"
 msgstr ""
 
@@ -780,6 +784,7 @@ msgid "Refresh"
 msgstr ""
 
 #: objinspstrconsts.oistdacteditcopyheadline
+msgctxt "objinspstrconsts.oistdacteditcopyheadline"
 msgid "&Copy"
 msgstr ""
 
@@ -792,6 +797,7 @@ msgid "Copy"
 msgstr ""
 
 #: objinspstrconsts.oistdacteditcutheadline
+msgctxt "objinspstrconsts.oistdacteditcutheadline"
 msgid "Cu&t"
 msgstr ""
 
@@ -818,6 +824,7 @@ msgid "Delete"
 msgstr ""
 
 #: objinspstrconsts.oistdacteditpasteheadline
+msgctxt "objinspstrconsts.oistdacteditpasteheadline"
 msgid "&Paste"
 msgstr ""
 
@@ -1218,6 +1225,7 @@ msgid "Edit Columns ..."
 msgstr ""
 
 #: objinspstrconsts.sccslvedt
+msgctxt "objinspstrconsts.sccslvedt"
 msgid "Edit Items..."
 msgstr ""
 
@@ -1327,6 +1335,7 @@ msgid "Save"
 msgstr ""
 
 #: objinspstrconsts.sccstredt
+msgctxt "objinspstrconsts.sccstredt"
 msgid "Edit Items..."
 msgstr ""
 

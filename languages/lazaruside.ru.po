@@ -322,10 +322,6 @@ msgstr "При создании новых форм добавить их к а�
 msgid "Auto delete file"
 msgstr "Автоматически удалить файл"
 
-#: lazarusidestrconsts.dlgautoform
-msgid "Auto create form when opening unit"
-msgstr "Автосоздание форм при открытии модуля"
-
 #: lazarusidestrconsts.dlgautohidecursor
 msgid "Hide mouse when typing"
 msgstr "Скрывать курсор мыши во время набора текста"
@@ -7978,10 +7974,6 @@ msgstr "Файл LFM не найден"
 msgid "LFM is ok"
 msgstr "Файл LFM верен"
 
-#: lazarusidestrconsts.lislfmresourcetype
-msgid "LFM resource type"
-msgstr ""
-
 #: lazarusidestrconsts.lislgplnotice
 msgid "<description>%sCopyright (C) <year> <name of author> <contact>%sThis library is free software; you can redistribute it and/or modify it under the terms of the GNU Library General Public License as published by the Free Software Foundation; either version 2 of the License, or (at your option) any later version. %sThis program is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU Library General Public License for more details. %sYou should have received a copy of the GNU Library General Public License along with this library; if not, write to the Free Software Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA."
 msgstr "<description>%sCopyright (C) <year> <name of author> <contact>%sThis library is free software; you can redistribute it and/or modify it under the terms of the GNU Library General Public License as published by the Free Software Foundation; either version 2 of the License, or (at your option) any later version. %sThis program is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU Library General Public License for more details. %sYou should have received a copy of the GNU Library General Public License along with this library; if not, write to the Free Software Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA."
@@ -9532,6 +9524,10 @@ msgstr "При вставке из буфера обмена"
 #: lazarusidestrconsts.lisopenasxmlfile
 msgid "Open as XML file"
 msgstr "Открыть как файл XML"
+
+#: lazarusidestrconsts.lisopendesigneronopenunit
+msgid "Open designer on open unit"
+msgstr ""
 
 #: lazarusidestrconsts.lisopenexistingfile
 msgid "Open existing file"
@@ -11420,6 +11416,10 @@ msgstr "Ошибка загрузки ресурса"
 #: lazarusidestrconsts.lisresourcesaveerror
 msgid "Resource save error"
 msgstr "Ошибка сохранения ресурса"
+
+#: lazarusidestrconsts.lisresourcetypeofnewfiles
+msgid "Resource type of project:"
+msgstr ""
 
 #: lazarusidestrconsts.lisresult
 msgid "Result :="

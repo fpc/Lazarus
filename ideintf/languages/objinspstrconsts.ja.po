@@ -1240,6 +1240,7 @@ msgstr "列を編集..."
 #: objinspstrconsts.sccslvedt
 #, fuzzy
 #| msgid "Edit ListView Items..."
+msgctxt "objinspstrconsts.sccslvedt"
 msgid "Edit Items..."
 msgstr "ListViewのアイテムを編集..."
 
@@ -1351,6 +1352,7 @@ msgstr "保存"
 #: objinspstrconsts.sccstredt
 #, fuzzy
 #| msgid "Edit TreeView Items..."
+msgctxt "objinspstrconsts.sccstredt"
 msgid "Edit Items..."
 msgstr "TreeViewのアイテムを編集..."
 

@@ -312,10 +312,6 @@ msgstr "Nový formulár pridať k automaticky vytváraným formulárom"
 msgid "Auto delete file"
 msgstr "Auto zmazanie súboru"
 
-#: lazarusidestrconsts.dlgautoform
-msgid "Auto create form when opening unit"
-msgstr "Auto vytvorenie formulára pri otvorení jednotky"
-
 #: lazarusidestrconsts.dlgautohidecursor
 msgid "Hide mouse when typing"
 msgstr ""
@@ -7985,10 +7981,6 @@ msgstr "LFM súbor nenájdený"
 msgid "LFM is ok"
 msgstr ""
 
-#: lazarusidestrconsts.lislfmresourcetype
-msgid "LFM resource type"
-msgstr ""
-
 #: lazarusidestrconsts.lislgplnotice
 msgid "<description>%sCopyright (C) <year> <name of author> <contact>%sThis library is free software; you can redistribute it and/or modify it under the terms of the GNU Library General Public License as published by the Free Software Foundation; either version 2 of the License, or (at your option) any later version. %sThis program is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU Library General Public License for more details. %sYou should have received a copy of the GNU Library General Public License along with this library; if not, write to the Free Software Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA."
 msgstr "<popis>%sCopyright (C) <rok> <meno autora> <kontakt>%sToto je slobodný program;môžete ho distribuovať a/alebo upravovať za podmienok GNU Library General Public License, tak ako ju zverejnila Free Software Foundation; buď verzie 2 Licencie alebo (podľa Vašej voľby) akejkoľvek novšej verzie. %sTento program je distribuovaný v nádeji, že bude užitočný, ale BEZ AKEJKOĽVEK ZÁRUKY; dokonca aj bbez záruky MERCHANTABILITY alebo FITNESS FOR A PARTICULAR PURPOSE. Ďalšie podrobnosti hľadajte v GNU Library General Public License. %sKópi GNU Library General Public License máte získať spolu s touto knižnicou, ak nie napíšte Free Software Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA."
@@ -9552,6 +9544,10 @@ msgstr ""
 #: lazarusidestrconsts.lisopenasxmlfile
 msgid "Open as XML file"
 msgstr "Otvoriť ako súbor XML"
+
+#: lazarusidestrconsts.lisopendesigneronopenunit
+msgid "Open designer on open unit"
+msgstr ""
 
 #: lazarusidestrconsts.lisopenexistingfile
 msgid "Open existing file"
@@ -11441,6 +11437,10 @@ msgstr "Chyba načítania resource"
 #: lazarusidestrconsts.lisresourcesaveerror
 msgid "Resource save error"
 msgstr "Chyba uloženia resource"
+
+#: lazarusidestrconsts.lisresourcetypeofnewfiles
+msgid "Resource type of project:"
+msgstr ""
 
 #: lazarusidestrconsts.lisresult
 msgid "Result :="

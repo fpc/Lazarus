@@ -388,6 +388,7 @@ msgstr "Confirma l'eliminació"
 #: objinspstrconsts.oiscopycomponents
 #, fuzzy
 #| msgid "Copy components"
+msgctxt "objinspstrconsts.oiscopycomponents"
 msgid "&Copy"
 msgstr "Copiar components"
 
@@ -406,6 +407,7 @@ msgstr ""
 #: objinspstrconsts.oiscutcomponents
 #, fuzzy
 #| msgid "Cut components"
+msgctxt "objinspstrconsts.oiscutcomponents"
 msgid "Cu&t"
 msgstr "Retallar components"
 
@@ -417,6 +419,7 @@ msgstr "Elimina"
 #: objinspstrconsts.oisdeletecomponents
 #, fuzzy
 #| msgid "Delete components"
+msgctxt "objinspstrconsts.oisdeletecomponents"
 msgid "&Delete"
 msgstr "Eliminar components"
 
@@ -595,6 +598,7 @@ msgstr ""
 #: objinspstrconsts.oispastecomponents
 #, fuzzy
 #| msgid "Paste components"
+msgctxt "objinspstrconsts.oispastecomponents"
 msgid "&Paste"
 msgstr "Enganxar components"
 
@@ -795,6 +799,7 @@ msgid "Refresh"
 msgstr "Refresca"
 
 #: objinspstrconsts.oistdacteditcopyheadline
+msgctxt "objinspstrconsts.oistdacteditcopyheadline"
 msgid "&Copy"
 msgstr "Co&pia"
 
@@ -807,6 +812,7 @@ msgid "Copy"
 msgstr "Copia"
 
 #: objinspstrconsts.oistdacteditcutheadline
+msgctxt "objinspstrconsts.oistdacteditcutheadline"
 msgid "Cu&t"
 msgstr "&Talla"
 
@@ -833,6 +839,7 @@ msgid "Delete"
 msgstr "Elimina"
 
 #: objinspstrconsts.oistdacteditpasteheadline
+msgctxt "objinspstrconsts.oistdacteditpasteheadline"
 msgid "&Paste"
 msgstr "&Enganxa"
 
@@ -1233,6 +1240,7 @@ msgid "Edit Columns ..."
 msgstr ""
 
 #: objinspstrconsts.sccslvedt
+msgctxt "objinspstrconsts.sccslvedt"
 msgid "Edit Items..."
 msgstr ""
 
@@ -1342,6 +1350,7 @@ msgid "Save"
 msgstr ""
 
 #: objinspstrconsts.sccstredt
+msgctxt "objinspstrconsts.sccstredt"
 msgid "Edit Items..."
 msgstr ""
 

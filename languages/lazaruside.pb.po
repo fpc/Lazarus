@@ -321,10 +321,6 @@ msgstr "Quando criar novos formulários, adicioná-los a formulários auto. cria
 msgid "Auto delete file"
 msgstr "Auto excluir arquivos"
 
-#: lazarusidestrconsts.dlgautoform
-msgid "Auto create form when opening unit"
-msgstr "Auto criar o form. ao abrir a unidade"
-
 #: lazarusidestrconsts.dlgautohidecursor
 msgid "Hide mouse when typing"
 msgstr "Ocultar \"mouse\" ao digitar"
@@ -7982,10 +7978,6 @@ msgstr "Arquivo LFM não encontrado"
 msgid "LFM is ok"
 msgstr "LFM está ok"
 
-#: lazarusidestrconsts.lislfmresourcetype
-msgid "LFM resource type"
-msgstr ""
-
 #: lazarusidestrconsts.lislgplnotice
 msgid "<description>%sCopyright (C) <year> <name of author> <contact>%sThis library is free software; you can redistribute it and/or modify it under the terms of the GNU Library General Public License as published by the Free Software Foundation; either version 2 of the License, or (at your option) any later version. %sThis program is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU Library General Public License for more details. %sYou should have received a copy of the GNU Library General Public License along with this library; if not, write to the Free Software Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA."
 msgstr "<description>%sCopyright (C) <year> <name of author> <contact>%sEsta biblioteca é software livre; você pode redistribuí-la e/ou modificá-la sob os termos da GNU Library General Public License como publicada pela Free Software Foundation; ou a versão 2 da Licença, ou (a sua escolha) qualquer versão posterior. %sEste programa é distribuido na esperanca de que seja útil, mas SEM QUALQUER GARANTIA; nem mesmo a garantia implícita de COMERCIABILIDADE ou ADEQUAÇÃO A UMA FINALIDADE PARTICULAR. Veja a licença GNU General Public License para maiores detalhes.%sVocê deve ter recebido uma cópia da licença GNU Library General Public License juntamente com esta biblioteca; senão, escreva a Free Software Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA."
@@ -9536,6 +9528,10 @@ msgstr "Ao colar da Área de Transferência"
 #: lazarusidestrconsts.lisopenasxmlfile
 msgid "Open as XML file"
 msgstr "Abrir como arquivo XML"
+
+#: lazarusidestrconsts.lisopendesigneronopenunit
+msgid "Open designer on open unit"
+msgstr ""
 
 #: lazarusidestrconsts.lisopenexistingfile
 msgid "Open existing file"
@@ -11424,6 +11420,10 @@ msgstr "Erro no carregamento de recurso"
 #: lazarusidestrconsts.lisresourcesaveerror
 msgid "Resource save error"
 msgstr "Erro ao salvar recurso"
+
+#: lazarusidestrconsts.lisresourcetypeofnewfiles
+msgid "Resource type of project:"
+msgstr ""
 
 #: lazarusidestrconsts.lisresult
 msgid "Result :="

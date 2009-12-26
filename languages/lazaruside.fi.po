@@ -302,10 +302,6 @@ msgstr "Kun tehdään uusi lomake niin se laitetaan automaattisesti luotaviin lo
 msgid "Auto delete file"
 msgstr "Poista tiedosto automaattisesti"
 
-#: lazarusidestrconsts.dlgautoform
-msgid "Auto create form when opening unit"
-msgstr "Luo myös uusi lomake kun avataan uusi käännösyksikkö"
-
 #: lazarusidestrconsts.dlgautohidecursor
 msgid "Hide mouse when typing"
 msgstr ""
@@ -1934,7 +1930,7 @@ msgstr ""
 #: lazarusidestrconsts.dlgmouseoptnodegutter
 msgctxt "lazarusidestrconsts.dlgmouseoptnodegutter"
 msgid "Gutter"
-msgstr ""
+msgstr "Vasen reunus"
 
 #: lazarusidestrconsts.dlgmouseoptnodegutterfold
 msgid "Fold Tree"
@@ -7965,10 +7961,6 @@ msgstr ""
 msgid "LFM is ok"
 msgstr ""
 
-#: lazarusidestrconsts.lislfmresourcetype
-msgid "LFM resource type"
-msgstr ""
-
 #: lazarusidestrconsts.lislgplnotice
 msgid "<description>%sCopyright (C) <year> <name of author> <contact>%sThis library is free software; you can redistribute it and/or modify it under the terms of the GNU Library General Public License as published by the Free Software Foundation; either version 2 of the License, or (at your option) any later version. %sThis program is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU Library General Public License for more details. %sYou should have received a copy of the GNU Library General Public License along with this library; if not, write to the Free Software Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA."
 msgstr ""
@@ -9526,6 +9518,10 @@ msgstr ""
 #: lazarusidestrconsts.lisopenasxmlfile
 msgid "Open as XML file"
 msgstr "Avataan XML-tiedostona"
+
+#: lazarusidestrconsts.lisopendesigneronopenunit
+msgid "Open designer on open unit"
+msgstr ""
 
 #: lazarusidestrconsts.lisopenexistingfile
 msgid "Open existing file"
@@ -11412,6 +11408,10 @@ msgstr "Resurssitiedoston lukeminen epäonnistui"
 
 #: lazarusidestrconsts.lisresourcesaveerror
 msgid "Resource save error"
+msgstr ""
+
+#: lazarusidestrconsts.lisresourcetypeofnewfiles
+msgid "Resource type of project:"
 msgstr ""
 
 #: lazarusidestrconsts.lisresult

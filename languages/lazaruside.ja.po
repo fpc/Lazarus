@@ -308,10 +308,6 @@ msgstr "新しいフォームを作成した時、自動生成フォームに追
 msgid "Auto delete file"
 msgstr "自動的にファイル削除"
 
-#: lazarusidestrconsts.dlgautoform
-msgid "Auto create form when opening unit"
-msgstr "ユニットを開くとき自動的にフォーム生成"
-
 #: lazarusidestrconsts.dlgautohidecursor
 msgid "Hide mouse when typing"
 msgstr "タイプ時にマウスを隠す"
@@ -7981,10 +7977,6 @@ msgstr "LFMファイルが見つかりません"
 msgid "LFM is ok"
 msgstr "LFMはOK"
 
-#: lazarusidestrconsts.lislfmresourcetype
-msgid "LFM resource type"
-msgstr "LFM リソースタイプ"
-
 #: lazarusidestrconsts.lislgplnotice
 msgid "<description>%sCopyright (C) <year> <name of author> <contact>%sThis library is free software; you can redistribute it and/or modify it under the terms of the GNU Library General Public License as published by the Free Software Foundation; either version 2 of the License, or (at your option) any later version. %sThis program is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU Library General Public License for more details. %sYou should have received a copy of the GNU Library General Public License along with this library; if not, write to the Free Software Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA."
 msgstr "著作権(C)<年><作者名>%sこのライブラリはフリーソフトです。あなたは、Free Software Foundation  が公表したGNU一般公有使用許諾の「バージョン2」或いはそれ以降の各バージョンの中からいずれかを選択し、そのバージョンが定める条項に従って本プログラムを再頒布または変更することができます。%s本プログラムは有用とは思いますが、頒布にあたっては、市場性及び特定目的適合性についての暗黙の保証を含めて、いかなる保証も行ないません。詳細についてはGNU一般公衆使用許諾書をお読みください。%sGNU一般公衆使用許諾書のコピーはインターネット上の<http://www.gnu.org/copyleft/gpl.html>.。次の住所に手紙でリクエストすることによっても入手できます：Free Software Foundation Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA"
@@ -9546,6 +9538,10 @@ msgstr "クリップボードから貼り付けたとき"
 #: lazarusidestrconsts.lisopenasxmlfile
 msgid "Open as XML file"
 msgstr "XMLファイルとして開く"
+
+#: lazarusidestrconsts.lisopendesigneronopenunit
+msgid "Open designer on open unit"
+msgstr ""
 
 #: lazarusidestrconsts.lisopenexistingfile
 msgid "Open existing file"
@@ -11435,6 +11431,10 @@ msgstr "リソースの読み込みに失敗"
 #: lazarusidestrconsts.lisresourcesaveerror
 msgid "Resource save error"
 msgstr "リソース保存エラー"
+
+#: lazarusidestrconsts.lisresourcetypeofnewfiles
+msgid "Resource type of project:"
+msgstr ""
 
 #: lazarusidestrconsts.lisresult
 msgid "Result :="

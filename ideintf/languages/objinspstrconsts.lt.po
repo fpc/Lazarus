@@ -392,6 +392,7 @@ msgstr "Patvirtinimas šalinant"
 #: objinspstrconsts.oiscopycomponents
 #, fuzzy
 #| msgid "Copy components"
+msgctxt "objinspstrconsts.oiscopycomponents"
 msgid "&Copy"
 msgstr "Kopijuoti komponentą"
 
@@ -410,6 +411,7 @@ msgstr ""
 #: objinspstrconsts.oiscutcomponents
 #, fuzzy
 #| msgid "Cut components"
+msgctxt "objinspstrconsts.oiscutcomponents"
 msgid "Cu&t"
 msgstr "Iškirpti komponentą"
 
@@ -421,6 +423,7 @@ msgstr "Pašalinti"
 #: objinspstrconsts.oisdeletecomponents
 #, fuzzy
 #| msgid "Delete components"
+msgctxt "objinspstrconsts.oisdeletecomponents"
 msgid "&Delete"
 msgstr "Pašalinti komponentą"
 
@@ -599,6 +602,7 @@ msgstr ""
 #: objinspstrconsts.oispastecomponents
 #, fuzzy
 #| msgid "Paste components"
+msgctxt "objinspstrconsts.oispastecomponents"
 msgid "&Paste"
 msgstr "Įterpti komponentą"
 
@@ -799,6 +803,7 @@ msgid "Refresh"
 msgstr "Atnaujinti"
 
 #: objinspstrconsts.oistdacteditcopyheadline
+msgctxt "objinspstrconsts.oistdacteditcopyheadline"
 msgid "&Copy"
 msgstr "&Kopijuoti"
 
@@ -811,6 +816,7 @@ msgid "Copy"
 msgstr "Kopijuoti"
 
 #: objinspstrconsts.oistdacteditcutheadline
+msgctxt "objinspstrconsts.oistdacteditcutheadline"
 msgid "Cu&t"
 msgstr "&Iškirpti"
 
@@ -837,6 +843,7 @@ msgid "Delete"
 msgstr "Pašalnti"
 
 #: objinspstrconsts.oistdacteditpasteheadline
+msgctxt "objinspstrconsts.oistdacteditpasteheadline"
 msgid "&Paste"
 msgstr "Į&dėti"
 
@@ -1239,6 +1246,7 @@ msgstr "Keisti stulpelis..."
 #: objinspstrconsts.sccslvedt
 #, fuzzy
 #| msgid "Edit ListView Items..."
+msgctxt "objinspstrconsts.sccslvedt"
 msgid "Edit Items..."
 msgstr "Keisti ListView elementus..."
 
@@ -1350,6 +1358,7 @@ msgstr "Įrašyti"
 #: objinspstrconsts.sccstredt
 #, fuzzy
 #| msgid "Edit TreeView Items..."
+msgctxt "objinspstrconsts.sccstredt"
 msgid "Edit Items..."
 msgstr "Keisti TreeView elementus..."
 
