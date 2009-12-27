@@ -402,21 +402,26 @@ end;
 
 procedure TQtComboStrings.Put(Index: Integer; const S: string);
 begin
+  FOwner.BeginUpdate;
   inherited Put(Index, S);
   FOwner.setItemText(Index, S);
+  FOwner.EndUpdate;
 end;
 
 procedure TQtComboStrings.InsertItem(Index: Integer; const S: string);
 begin
+  FOwner.BeginUpdate;
   inherited InsertItem(Index, S);
   FOwner.insertItem(Index, S);
+  FOwner.EndUpdate;
 end;
 
 procedure TQtComboStrings.InsertItem(Index: Integer; const S: string; O: TObject);
 begin
+  FOwner.BeginUpdate;
   inherited InsertItem(Index, S, O);
-
   FOwner.insertItem(Index, S);
+  FOwner.EndUpdate;
 end;
 
 constructor TQtComboStrings.Create(AOwner: TQtComboBox);
@@ -438,35 +443,41 @@ var
   C: Integer;
 begin
   C := Count;
+  FOwner.BeginUpdate;
   inherited Clear;
   for I := C - 1 downto 0 do
     FOwner.removeItem(I);
+  FOwner.EndUpdate;
 end;
 
 procedure TQtComboStrings.Delete(Index: Integer);
 begin
+  FOwner.BeginUpdate;
   inherited Delete(Index);
-
   FOwner.removeItem(Index);
+  FOwner.EndUpdate;
 end;
 
 procedure TQtComboStrings.Sort;
 var
   I: Integer;
 begin
+  FOwner.BeginUpdate;
   inherited Sort;
-
   for I := 0 to Count - 1 do
     FOwner.setItemText(I, Strings[I]);
+  FOwner.EndUpdate;
 end;
 
 procedure TQtComboStrings.Exchange(AIndex1, AIndex2: Integer);
 var
   i: Integer;
 begin
+  FOwner.BeginUpdate;
   inherited Exchange(AIndex1, AIndex2);
   for I := 0 to Count - 1 do
     FOwner.setItemText(I, Strings[I]);
+  FOwner.EndUpdate;
 end;
 
 { TQtListStrings }
