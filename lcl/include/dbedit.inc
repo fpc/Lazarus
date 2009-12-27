@@ -156,10 +156,6 @@ begin
       FDatalink.Edit
     else
       Key := VK_UNKNOWN;
-  end else
-  if Key=VK_TAB then begin
-    if FDataLink.CanModify and FDatalink.Editing then
-      FDataLink.UpdateRecord;
   end;
 end;
 
