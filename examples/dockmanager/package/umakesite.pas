@@ -96,6 +96,8 @@ type
     procedure SaveToStream(Stream: TStream);
     function  ReloadDockedControl(const AName: string; Site: TWinControl): TControl; virtual;
     //function  SaveDockedControl(ACtrl:  TControl; Site: TWinControl): string; virtual;
+    procedure LoadFromFile(const AName: string);
+    procedure SaveToFile(const AName: string);
   end;
 
 var
@@ -205,6 +207,8 @@ begin
         pnl.Splitter := spl;
         if side in [alLeft,alRight] then
           pnl.Width := 0
+        else if ForIDE then
+          pnl.Height := 1 //keep above StatusBar
         else
           pnl.Height := 0;
       //handlers required for elastic sites
@@ -250,7 +254,8 @@ var
   Site: TFloatingSite absolute Result;
   Res: TWinControlAccess absolute AForm;
 begin
-  AForm.DisableAlign;
+  Result := nil;
+  //AForm.DisableAlign;
   try
   //check make dockable
     { TODO -cdocking : problems with IDE windows:
@@ -270,9 +275,9 @@ begin
   //create a docking handle - should become a component?
     img := TImage.Create(AForm); //we could own the img, and be notified when its parent becomes nil
     img.Align := alNone;
-    if ForIDE then
+    //if ForIDE then
     try //begin  //prevent problems with the following code!
-      img.AnchorParallel(akRight,0,Result);
+      img.AnchorParallel(akRight,0,Result); //anchor to Result=Site or to AForm?
       img.AnchorParallel(akTop,0,Result);
     except
       DebugLn('error AnchorParallel');
@@ -298,9 +303,14 @@ begin
   //make visible, so that it can be docked without problems
     AForm.Visible := True;
   finally
-    AForm.EnableAlign;
+    //AForm.EnableAlign;
   end;
   img.BringToFront;
+  if ForIDE and fWrap and assigned(Site) and assigned(Site.DockManager) then begin
+    //site.DockManager.ResetBounds(True); //doesn't help
+    //AForm.Invalidate;
+    Site.Invalidate;
+  end;
 end;
 
 function TDockMaster.ReloadDockedControl(const AName: string;
@@ -364,6 +374,30 @@ begin
   //if not (csDestroying in ctl.ComponentState) and (ctl.HostDockSite = nil) then begin
   //if (ctl.HostDockSite = nil) then
   WrapDockable(ctl);
+end;
+
+procedure TDockMaster.LoadFromFile(const AName: string);
+var
+  fs: TFileStream;
+begin
+  fs := TFileStream.Create(AName, fmOpenRead or fmShareDenyWrite);
+  try
+    LoadFromStream(fs);
+  finally
+    fs.Free;
+  end;
+end;
+
+procedure TDockMaster.SaveToFile(const AName: string);
+var
+  fs: TFileStream;
+begin
+  fs := TFileStream.Create(AName, fmCreate or fmShareExclusive);
+  try
+    SaveToStream(fs);
+  finally
+    fs.Free;
+  end;
 end;
 
 type
@@ -731,19 +765,21 @@ begin
 
   Site := TFloatingSite.Create(Self); //we own the new site
   try
-  {$IFDEF old}
-    Site.BoundsRect := Client.BoundsRect; //the new position and extension
-  {$ELSE}
   //keep undocked extent
     r := Client.BoundsRect;
     r.Right := r.Left + Client.UndockWidth;
     r.Bottom := r.Top + Client.UndockHeight;
     //site.ClientRect := r;
     Site.BoundsRect := r;
-  {$ENDIF}
-    Client.Align := alClient;
+    Client.Align := alNone;
     //Client.Visible := True; //otherwise docking may be rejected
     Client.ManualDock(Site);
+    if ForIDE then begin
+      //Site.Invalidate; //helps?
+      //Client.Top := 0;
+      //Client.Left := 0;
+      Site.DockManager.ResetBounds(True);
+    end;
   except
     DebugLn('error WrapDockable: ' + Client.Name);
     if Client.HostDockSite <> Site then
