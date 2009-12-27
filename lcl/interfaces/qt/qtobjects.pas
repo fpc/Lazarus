@@ -3338,6 +3338,8 @@ function TQtClipboard.GetOwnerShip(ClipboardType: TClipboardType;
       MimeType := FormatToMimeType(Formats[I]);
       FOnClipBoardRequest(Formats[I], DataStream);
       Data := QByteArray_create(PAnsiChar(DataStream.Memory), DataStream.Size);
+      if (QByteArray_length(Data) > 1) and QByteArray_endsWith(Data, #0) then
+        QByteArray_chop(Data, 1);
       QMimeData_setData(MimeData, @MimeType, Data);
       QByteArray_destroy(Data);
     end;
