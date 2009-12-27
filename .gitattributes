@@ -2863,6 +2863,7 @@ examples/dockmanager/package/umakesite.pas svneol=native#text/pascal
 examples/dockmanager/package/uminirestore.pas svneol=native#text/pascal
 examples/dockmanager/package/zoneheader.inc svneol=native#text/pascal
 examples/dockmanager/patches/FloatHostDockable.patch svneol=native#text/pascal
+examples/dockmanager/patches/IdeFix_big.patch svneol=native#text/plain
 examples/dockmanager/patches/NewClients.patch svneol=native#text/pascal
 examples/dockmanager/patches/README.txt svneol=native#text/plain
 examples/dockmanager/patches/ToolButtonAutoSizeAlign.patch svneol=native#text/pascal
