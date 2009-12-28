@@ -313,7 +313,7 @@ Var
 
 begin
   N:=FDocument.DocumentElement.FirstChild;
-  While (N<>Nil) and IsPackageNode(N) do
+  While (N<>Nil) and Not IsPackageNode(N) do
     N:=N.NextSibling;
   Result:=TDomElement(N);
 end;

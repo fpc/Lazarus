@@ -420,7 +420,7 @@ end;
 Procedure TPackageEditor.SelectModule(Sender : TDomElement);
 begin
   Inherited CurrentTopic:=Nil;
-  Inherited CurrentPackage:=FCurrentModule.ParentNode as TDomElement;
+  Inherited CurrentPackage:=Sender.ParentNode as TDomElement;
   Inherited CurrentModule:=Sender;
   Inherited CurrentElement:=Sender;
   ShowModuleElements(FCurrentModule);
