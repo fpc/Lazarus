@@ -1,0 +1,74 @@
+<?xml version="1.0"?>
+<fpdoc-descriptions>
+  <package name="IDEIntf">
+    <module name="IDEOptionsIntf">
+      <element name="TAbstractIDEOptions">
+        <short>
+          <var>TAbstractIDEOptions</var> - abstract ancestor for any options class which IDE should know about</short>
+        <descr>To create own options classes inherit them from the TAbstractIDEOptions class. This is so for TEnvironmentOptions, TEditorOptions, THelpOptions which IDE registers itself.</descr>
+      </element>
+      <element name="TAbstractIDEOptionsEditor">
+        <short>
+          <var>TAbstractIDEOptionsEditor</var> - abstract ancestor for any options frame class which IDE should  know about</short>
+        <descr>If there is a need to register an own options frame in IDE options dialog inherit it from the TAbstractIDEOptionEditor which is Frame with predefined methods which must be implemented in the descendant.</descr>
+      </element>
+      <element name="TAbstractIDEOptions.GetGroupCaption">
+        <short>
+          <var>GetGroupCaption</var> - class function which returns a caption of the option group in the IDE options dialog</short>
+      </element>
+      <element name="TAbstractIDEOptions.GetInstance">
+        <short>
+          <var>GetInstance</var> - class function which must return an instance of the paticular options class</short>
+      </element>
+      <element name="TAbstractIDEOptionsEditor.Check">
+        <short>
+          <var>Check</var> - function which must return True if options are correct and dialog can be closed and False in other case</short>
+      </element>
+      <element name="TAbstractIDEOptionsEditor.GetTitle">
+        <short>
+          <var>GetTitle</var> - function which must return a string Title for the options frame</short>
+      </element>
+      <element name="TAbstractIDEOptionsEditor.Setup">
+        <short>
+          <var>Setup</var> - method which executes on options page showing</short>
+        <descr>Setup controls captions or create dynamic controls or perform another initialization actions when Setup is called.</descr>
+      </element>
+      <element name="TAbstractIDEOptionsEditor.ReadSettings">
+        <short>
+          <var>ReadSettings</var> - method which is called when options frame should load options</short>
+        <descr>Load component values from options in this method.</descr>
+      </element>
+      <element name="TAbstractIDEOptionsEditor.WriteSettings">
+        <short>
+          <var>WriteSettings</var> - method which is called when options frame should save options</short>
+        <descr>Save component values to options in this method.</descr>
+      </element>
+      <element name="TAbstractIDEOptionsEditor.SupportedOptionsClass">
+        <short>
+          <var>SupportedOptionsClass</var> - class function which must return an options class which this frame supports</short>
+      </element>
+      <element name="RegisterIDEOptionsGroup">
+        <short>
+          <var>RegisterIDEOptionsGroup</var> - function which registers options class for showing in IDE options dialog</short>
+        <descr>
+          <var>AGroupIndex: Integer</var> - group index defines the position of the options group among other
+<var>AGroupClass: TAbstractIDEOptionsClass</var> - options class
+<var>FindFreeIndex: boolean = true</var> - defines whether to search for the free group index starting from the passed value or to use paticular passed value
+
+Function returns a pointer to the record which IDE stores in the internal list of options classes.</descr>
+      </element>
+      <element name="RegisterIDEOptionsEditor">
+        <short>
+          <var>RegisterIDEOptionsEditor</var> - function which registers options frame for showing in the IDE options dialog</short>
+        <descr>
+          <var>AGroupIndex: Integer;</var> - index of a group where the options frame will be shown
+<var>AEditorClass: TAbstractIDEOptionsEditorClass;</var> - options frame to register
+<var>AIndex: Integer;</var> - index of the frame defines a position of the frame among other
+<var>AParent: Integer = NoParent;</var> - index of the parent options frame if needed
+<var>AutoCreateGroup: boolean = false;</var> - create group if not exists (can be used if registration order is not reliable)
+
+Function returns a pointer to the record which IDE stores in the internal list of options frame classes.</descr>
+      </element>
+    </module>
+  </package>
+</fpdoc-descriptions>
