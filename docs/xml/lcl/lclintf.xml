@@ -3739,7 +3739,7 @@ the Canvas.SaveHandleState and Canvas.RestoreHandleState.
       </element>
       <!-- function Visibility: default -->
       <element name="OffSetRect">
-        <short/>
+        <short>Move Left/Right by dx, Top/Bottom by dy. Return Top and Left are &gt;= 0.</short>
         <descr/>
         <errors/>
         <seealso/>

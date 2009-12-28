@@ -1736,13 +1736,13 @@ mrLast=mrYesToAll=10</descr>
       </element>
       <!-- property Visibility: public -->
       <element name="TDragObject.DragPos">
-        <short>Find position for this object</short>
+        <short>Mouse position in screen coordinates</short>
         <descr>Reads or writes flag with position (as X, Y co-ordinates)</descr>
       </element>
       <!-- property Visibility: public -->
       <element name="TDragObject.DragTargetPos">
-        <short>The position of the taget control object to which the currect object is to be dragged</short>
-        <descr>Reads or writes flag with position (X, Y co-ordinates) of control object to which the current object is to be dragged</descr>
+        <short>Mouse position in client coordinates of the DragTarget (site)</short>
+        <descr>Reads or writes the mouse position (X, Y client coordinates) of control object to which the current object is to be dragged</descr>
       </element>
       <!-- property Visibility: public -->
       <element name="TDragObject.DragTarget">
@@ -2366,7 +2366,7 @@ mrLast=mrYesToAll=10</descr>
       <!-- procedure Visibility: default -->
       <element name="TDockManager.RemoveControl">
         <short>
-          <var>RemoveControl</var> - delete the specified control</short>
+          <var>RemoveControl</var> - remove undocked control from layout.</short>
         <descr/>
         <errors/>
         <seealso/>
@@ -5462,7 +5462,13 @@ mrLast=mrYesToAll=10</descr>
       </element>
       <!-- procedure Visibility: protected -->
       <element name="TControl.CalculateDockSizes">
-        <short>Calculate the sizes required for docking</short>
+        <short>Calculate the sizes related to docking</short>
+        <descr>In floating state sets UndockWidth/Height to the current Width/Height.
+
+In docked state sets LRDockWidth/TBDockHeight to the current Width/Height.
+Note: should save both in any case, independent from DockOrientation or host Align.
+Rationale: a DockManager will either ignore these values, or use them according to the *new* alignment.
+Without a DockManager both extents are required, because no (valid) alignment information applies.</descr>
       </element>
       <!-- function Visibility: protected -->
       <element name="TControl.CreateFloatingDockSite">
@@ -5563,7 +5569,7 @@ mrLast=mrYesToAll=10</descr>
       <!-- procedure Visibility: protected -->
       <element name="TControl.DoDragMsg">
         <short>
-          <var>DoDragMsg</var> - sends a drag message at specified position for nominated object and target; returns an integer Result for success</short>
+          <var>DoDragMsg</var> - sends to AControl a drag message at specified position for nominated object and target; returns an integer Result for success</short>
         <descr/>
         <errors/>
         <seealso/>
@@ -9676,9 +9682,10 @@ Reads message from flag area, or stores a message
       </element>
       <!-- procedure Visibility: protected -->
       <element name="TWinControl.DockOver">
-        <short>
-          <var>DockOver</var> - software emulation of the OnDockOver event</short>
-        <descr/>
+        <short>Position DockRect, invoke OnDockOver (via DoDockOver)</short>
+        <descr>Called on dragmanager message dmEnter/Leave/Move to get the DockRect to show.
+Accept has been set to True, to signal acceptance.
+Everything can be overridden by the OnDockOver handler, if installed.</descr>
         <errors/>
         <seealso/>
       </element>
@@ -9765,10 +9772,10 @@ Reads message from flag area, or stores a message
       </element>
       <!-- procedure Visibility: protected -->
       <element name="TWinControl.GetSiteInfo">
-        <short>
-          <var>GetSiteInfo</var> - software emulation of the 
-          <var>OnGetSiteInfo </var>event</short>
-        <descr/>
+        <short>Return information about this dock site (InfluenceRect).</short>
+        <descr>The InfluenceRect determines the screen coordinates, within which a drop is accepted.
+The InfluenceRect is the slightly inflated WindowRect of the dock site, adjustable in an OnGetSiteInfo handler.
+</descr>
         <errors/>
         <seealso/>
       </element>
@@ -15104,9 +15111,11 @@ and that description should be read to understand their definitions more fully.
       <!-- function Visibility: protected -->
       <element name="TWinControl.DoDockClientMsg">
         <short>
-          <var>DoDockClientMsg</var> - issues a Dock Client message for a specified 
-          <var>DragDropOject</var> at a given position; returns True if successful</short>
-        <descr/>
+          <var>DoDockClientMsg</var> - handles dmDragDock message for a specified <var>DragDockObject</var> at a given position; returns True if successful</short>
+        <descr>Called when a control is dropped for docking.
+Asks the dropped control to Dock itself into this control (adjust HostDockSite etc.)
+Calls an installed DockManager to adjust the coordinates of the docked control.
+The Result is always True (unless overridden).</descr>
         <errors/>
         <seealso/>
       </element>
@@ -15125,7 +15134,7 @@ and that description should be read to understand their definitions more fully.
       <!-- function Visibility: protected -->
       <element name="TWinControl.DoUndockClientMsg">
         <short>
-          <var>DoUndockClientMsg</var> - issues a message to undock a client control; returns True if successful</short>
+          <var>DoUndockClientMsg</var> - notifies DockManager of undock of a client control; always returns True.</short>
         <descr/>
         <errors/>
         <seealso/>
@@ -16103,6 +16112,47 @@ and that description should be read to understand their definitions more fully.
 bounds to the wanted position and sends a move message to the interface. It is up to the interface to handle moves instantly or queued.</p>
         </descr>
       </topic>
+      <element name="TDragDockCommon.SendDragMessage">
+        <short>
+          <var>SendDragMsg</var> - sends to AControl a drag message at specified position for nominated object; returns an integer Result for success</short>
+      </element>
+      <element name="TDragDockCommon.SendCmDragMsg">
+        <short>
+          <var>SendCmDragMsg</var> - sends to DragTarget a drag message at specified position for nominated object; returns True for success</short>
+        <descr>The Result is used to select the DragCursor (deny/accept drop).</descr>
+      </element>
+      <element name="TDragDockObject.MoveDockImage">
+        <short>Draw the DockRect outlines when its position has changed</short>
+        <descr>Checks the DockRect for changes against EraseDockRect, to prevent flicker.
+Remembers the drawn frame coordinates in EraseDockRect.</descr>
+      </element>
+      <element name="TDragDockObject.ShowDockImage">
+        <short>Shows the DockRect, remembers the coordinates in EraseDockRect</short>
+      </element>
+      <element name="TDragDockObject.HideDockImage">
+        <short>Hides the DockRect, invalidates EraseDockRect to prevent further erases.</short>
+      </element>
+      <element name="TDragDockObject.InitDock">
+        <short>Initializes the dragging coordinates.</short>
+        <descr>Determines hotspot offset for adjusting the undocked rectangle.
+Since the undocked extent of the control doesn't change, we fix the hotspot offset.
+Usage: OffsetRect(DockRect, FDockOffset);
+</descr>
+      </element>
+      <element name="TDockManager.GetDockEdge">
+        <short>Determine the DropAlign.</short>
+        <descr>ADockObject contains valid DragTarget, DragPos and DragTargetPos relative dock site.
+DropOnControl may be Nil if nothing has been docked yet, or no target control exists at the mouse coordinates.
+DockRect may be unusable in this case (not yet determined).
+
+Return True if ADockObject.DropAlign has been determined.
+</descr>
+      </element>
+      <element name="TDockPerformer.DragMove.GetDropControl">
+        <short>Determine the target control within the target DockSite.</short>
+        <descr>Do nothing (return Nil) unless a DockManager is installed in the target site and something has already been docked.
+</descr>
+      </element>
     </module>
     <!-- Controls -->
   </package>
