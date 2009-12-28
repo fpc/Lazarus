@@ -3656,6 +3656,7 @@ ideintf/componentreg.pas svneol=native#text/pascal
 ideintf/componenttreeview.pas svneol=native#text/pascal
 ideintf/dbpropedits.pas svneol=native#text/pascal
 ideintf/docs/formeditingintf.xml svneol=native#text/plain
+ideintf/docs/ideimagesintf.xml svneol=native#text/plain
 ideintf/docs/ideoptionsintf.xml svneol=native#text/plain
 ideintf/fieldseditor.lfm svneol=native#text/plain
 ideintf/fieldseditor.lrs svneol=native#text/pascal
