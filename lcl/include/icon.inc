@@ -701,19 +701,19 @@ begin
     // write icon header
     Stream.Write(Dir^, SizeOf(TIconHeader));
     // write icon entries headers
-    offset := Stream.Position + SizeOf(IconEntry) * Dir^.idCount;
-    for i := 0 to Dir^.idCount - 1 do
+    offset := Stream.Position + SizeOf(IconEntry) * LEtoN(Dir^.idCount);
+    for i := 0 to LEtoN(Dir^.idCount) - 1 do
     begin
       DirEntry := Dir^.idEntries[i];
       Move(DirEntry, IconEntry, SizeOf(DirEntry));
-      IconEntry.dwImageOffset := offset;
-      inc(offset, IconEntry.dwBytesInRes);
+      IconEntry.dwImageOffset := NtoLE(offset);
+      inc(offset, LEtoN(IconEntry.dwBytesInRes));
       Stream.Write(IconEntry, SizeOf(IconEntry));
     end;
     // write icons data
-    for i := 0 to Dir^.idCount - 1 do
+    for i := 0 to LEtoN(Dir^.idCount) - 1 do
     begin
-      IconStream := TResourceStream.CreateFromID(Instance, Dir^.idEntries[i].nID, RT_ICON);
+      IconStream := TResourceStream.CreateFromID(Instance, LEtoN(Dir^.idEntries[i].nID), RT_ICON);
       try
         Stream.CopyFrom(IconStream, IconStream.Size);
       finally
