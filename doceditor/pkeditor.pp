@@ -295,6 +295,7 @@ begin
     Images:=FImageList;
     OnChange:=@ModuleChange;
     OnChanging:=@ModuleChanging;
+    ReadOnly:=True;
     end;
   FSplitter:=TSplitter.Create(Self);
   With FSplitter do
@@ -327,6 +328,7 @@ begin
     Images:=FImageList;
     OnChange:=@ElementChange;
     OnChanging:=@ElementChanging;
+    ReadOnly:=True;
     end;
   PEMenu:=TPopupMenu.Create(Self);
   FERenameMenu:=NewMenuItem(SMenuRename,@MenuRenameClick);
