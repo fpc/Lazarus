@@ -246,6 +246,19 @@ begin
 end;
 
 function TMenu.IsShortcut(var Message: TLMKey): boolean;
+
+  procedure HandleItem(Item: TMenuItem);
+  begin
+    if Item = nil then
+      Exit;
+    HandleItem(Item.Parent);
+    if Item.Enabled then
+    begin
+      Item.InitiateActions;
+      Item.Click;
+    end;
+  end;
+
 var
   Item: TMenuItem;
   Shortcut: TShortcut;
@@ -258,9 +271,8 @@ begin
   //DebugLn(['TMenu.IsShortcut ',dbgsName(Self),' Result=',Result,' Message.CharCode=',Message.CharCode,' ShiftState=',dbgs(ShiftState)]);
   if Result then
   begin
-    FShortcutHandled := true;
-    Item.InitiateActions;
-    Item.Click;
+    FShortcutHandled := True;
+    HandleItem(Item);
     Result := FShortcutHandled;
   end;
 end;
