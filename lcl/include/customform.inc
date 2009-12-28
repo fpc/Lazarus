@@ -1203,40 +1203,35 @@ function TCustomForm.DoExecuteAction(ExeAction: TBasicAction): boolean;
     i: integer;
     ChildControl: TControl;
   begin
-    Result := true;
-    for i := 0 to ParentControl.ControlCount-1 do
+    Result := True;
+    for i := 0 to ParentControl.ControlCount - 1 do
     begin
       ChildControl := ParentControl.Controls[i];
       if ChildControl.Visible then
       begin
-        if ChildControl.ExecuteAction(AnAction)
-          then exit;
+        if ChildControl.ExecuteAction(AnAction) then Exit;
         if (ChildControl is TWinControl) and
-           DoExecuteActionInChildControls(TWinControl(ChildControl), AnAction)
-          then exit;
+           DoExecuteActionInChildControls(TWinControl(ChildControl), AnAction) then Exit;
       end;
     end;
-    Result := false;
+    Result := False;
   end;
   
 begin
   // don't execute action while designing or when form is not visible
   if (csDesigning in ComponentState) or not Visible then
-    exit(false);
+    Exit(False);
 
   // assume it gets handled somewhere
-  Result := true;
-  if assigned(ActiveControl) and ActiveControl.ExecuteAction(ExeAction)
-    then exit;
+  Result := True;
+  if Assigned(ActiveControl) and ActiveControl.ExecuteAction(ExeAction) then Exit;
     
-  if ExecuteAction(ExeAction)
-    then exit;
+  if ExecuteAction(ExeAction) then Exit;
     
-  if DoExecuteActionInChildControls(Self, ExeAction)
-    then exit;
+  if DoExecuteActionInChildControls(Self, ExeAction) then Exit;
 
   // not handled anywhere, return false
-  Result := false;
+  Result := False;
 end;
 
 function TCustomForm.DoUpdateAction(TheAction: TBasicAction): boolean;
@@ -1267,12 +1262,13 @@ function TCustomForm.DoUpdateAction(TheAction: TBasicAction): boolean;
   end;
 
 begin
-  Result:=false;
-  if (csDesigning in ComponentState) or not Showing then exit;
+  Result := False;
+  if (csDesigning in ComponentState) or not Showing then Exit;
   // Find a target for given Command (Message.LParam).
-  if ProcessUpdate(ActiveControl) or ProcessUpdate(Self)
-  or TraverseClients(Self) then
-    Result:=true;
+  if ProcessUpdate(ActiveControl) or
+     ProcessUpdate(Self) or
+     TraverseClients(Self) then
+    Result := True;
 end;
 
 procedure TCustomForm.UpdateActions;
