@@ -87,9 +87,6 @@ resourcestring
   ersRdBtnFull = 'Show All';
   ersEnableEduCheckBoxCaption = 'Enable education settings';
 
-
-
-
 const
   DefaultEduOptionsFilename = 'education.xml';
 
@@ -148,7 +145,7 @@ type
     property ChangeStep: integer read FChangeStep write SetChangeStep;
   end;
 
-  TEduOptions = class(TAbstractIDEOptions)
+  TEduOptions = class(TAbstractIDEEnvironmentOptions)
   private
     FEnabled: boolean;
     FFilename: string;
@@ -161,6 +158,7 @@ type
     constructor Create;
     destructor Destroy; override;
     class function GetGroupCaption: string; override;
+    class function GetInstance: TAbstractIDEOptions; override;
     property Root: TEduOptionsNode read FRoot;
     function Load(Config: TConfigStorage): TModalResult; virtual;
     function Save(Config: TConfigStorage): TModalResult; virtual;
@@ -351,6 +349,11 @@ end;
 class function TEduOptions.GetGroupCaption: string;
 begin
   Result:=EduRSEducation;
+end;
+
+class function TEduOptions.GetInstance: TAbstractIDEOptions;
+begin
+  Result:=EducationOptions;
 end;
 
 function TEduOptions.Load(Config: TConfigStorage): TModalResult;

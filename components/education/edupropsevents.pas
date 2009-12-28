@@ -73,9 +73,9 @@ type
     EventsExtRadioBtn: TRadioButton;
     EventsFullRadioBtn: TRadioButton;
     rdGrpEvents: TRadioGroup;
-    stTextEvents: TStaticText;
-    stTextProps2: TStaticText;
-    stTextProps: TStaticText;
+    stTextEvents: TLabel;
+    stTextProps: TLabel;
+    stTextProps2: TLabel;
 
     procedure EventsExtRadioBtnClick(Sender: TObject);
     procedure EventsFullRadioBtnClick(Sender: TObject);
@@ -168,7 +168,6 @@ end;
 
 { TEduPropsEventsFrame }
 
-
 procedure TEduPropsEventsFrame.PropsMinRadioBtnClick(Sender: TObject);
 begin
   grpBoxProps.Caption:=ersGrpBoxPropsMin;
@@ -212,8 +211,6 @@ begin
   stTextProps.Caption:=ersStTextPropsFull;
     stTextProps2.Visible:=false;
 end;
-
-
 
 function TEduPropsEventsFrame.GetTitle: String;
 begin

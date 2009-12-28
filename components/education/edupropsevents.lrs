@@ -1,0 +1,58 @@
+{ This is an automatically generated lazarus resource file }
+
+LazarusResources.Add('TEduPropsEventsFrame','FORMDATA',[
+  'TPF0'#241#20'TEduPropsEventsFrame'#19'EduPropsEventsFrame'#6'Height'#3#137#1
+  +#5'Width'#3#200#1#12'ClientHeight'#3#137#1#11'ClientWidth'#3#200#1#8'TabOrde'
+  +'r'#2#0#10'DesignLeft'#3#159#1#9'DesignTop'#3'.'#1#0#242#2#0#6'TPanel'#9'Opt'
+  +'sPanel'#4'Left'#2#0#6'Height'#3#128#0#3'Top'#2#0#5'Width'#3#200#1#5'Align'#7
+  +#5'alTop'#18'ChildSizing.Layout'#7#29'cclTopToBottomThenLeftToRight'#27'Chil'
+  +'dSizing.ControlsPerLine'#2#2#12'ClientHeight'#3#128#0#11'ClientWidth'#3#200
+  +#1#8'TabOrder'#2#0#0#11'TRadioGroup'#10'rdGrpProps'#4'Left'#2#7#6'Height'#2
+  +'r'#3'Top'#2#7#5'Width'#3#185#0#5'Align'#7#6'alLeft'#8'AutoFill'#9#20'Border'
+  +'Spacing.Around'#2#6#7'Caption'#6#10'rdGrpProps'#28'ChildSizing.LeftRightSpa'
+  +'cing'#2#6#28'ChildSizing.TopBottomSpacing'#2#6#29'ChildSizing.EnlargeHorizo'
+  +'ntal'#7#24'crsHomogenousChildResize'#27'ChildSizing.EnlargeVertical'#7#24'c'
+  +'rsHomogenousChildResize'#28'ChildSizing.ShrinkHorizontal'#7#14'crsScaleChil'
+  +'ds'#26'ChildSizing.ShrinkVertical'#7#14'crsScaleChilds'#18'ChildSizing.Layo'
+  +'ut'#7#29'cclLeftToRightThenTopToBottom'#27'ChildSizing.ControlsPerLine'#2#1
+  +#12'ClientHeight'#2'_'#11'ClientWidth'#3#181#0#7'OnClick'#7#15'rdGrpPropsCli'
+  +'ck'#8'TabOrder'#2#0#0#12'TRadioButton'#16'PropsMinRadioBtn'#4'Left'#2#14#6
+  +'Height'#2#17#3'Top'#2#8#5'Width'#3#165#0#5'Align'#7#8'alCustom'#7'Caption'#6
+  +#16'PropsMinRadioBtn'#7'Checked'#9#7'OnClick'#7#21'PropsMinRadioBtnClick'#5
+  +'State'#7#9'cbChecked'#8'TabOrder'#2#0#7'TabStop'#8#0#0#12'TRadioButton'#16
+  +'PropsExtRadioBtn'#4'Left'#2#14#6'Height'#2#17#3'Top'#2' '#5'Width'#3#165#0#5
+  +'Align'#7#8'alCustom'#7'Caption'#6#16'PropsExtRadioBtn'#7'OnClick'#7#21'Prop'
+  +'sExtRadioBtnClick'#8'TabOrder'#2#1#7'TabStop'#8#0#0#12'TRadioButton'#17'Pro'
+  +'psFullRadioBtn'#4'Left'#2#14#6'Height'#2#17#3'Top'#2'8'#5'Width'#3#166#0#5
+  +'Align'#7#8'alCustom'#7'Caption'#6#17'PropsFullRadioBtn'#7'OnClick'#7#22'Pro'
+  +'psFullRadioBtnClick'#8'TabOrder'#2#2#0#0#0#11'TRadioGroup'#11'rdGrpEvents'#4
+  +'Left'#3#198#0#6'Height'#2'r'#3'Top'#2#7#5'Width'#3#185#0#5'Align'#7#6'alLef'
+  +'t'#8'AutoFill'#9#20'BorderSpacing.Around'#2#6#7'Caption'#6#11'rdGrpEvents'
+  +#28'ChildSizing.LeftRightSpacing'#2#6#28'ChildSizing.TopBottomSpacing'#2#6#29
+  +'ChildSizing.EnlargeHorizontal'#7#24'crsHomogenousChildResize'#27'ChildSizin'
+  +'g.EnlargeVertical'#7#24'crsHomogenousChildResize'#28'ChildSizing.ShrinkHori'
+  +'zontal'#7#14'crsScaleChilds'#26'ChildSizing.ShrinkVertical'#7#14'crsScaleCh'
+  +'ilds'#18'ChildSizing.Layout'#7#29'cclLeftToRightThenTopToBottom'#27'ChildSi'
+  +'zing.ControlsPerLine'#2#1#12'ClientHeight'#2'_'#11'ClientWidth'#3#181#0#8'T'
+  +'abOrder'#2#1#0#12'TRadioButton'#17'EventsMinRadioBtn'#4'Left'#2#14#6'Height'
+  +#2#17#3'Top'#2#8#5'Width'#3#160#0#5'Align'#7#8'alCustom'#7'Caption'#6#17'Eve'
+  +'ntsMinRadioBtn'#7'Checked'#9#7'OnClick'#7#22'EventsMinRadioBtnClick'#5'Stat'
+  +'e'#7#9'cbChecked'#8'TabOrder'#2#0#0#0#12'TRadioButton'#17'EventsExtRadioBtn'
+  +#4'Left'#2#14#6'Height'#2#17#3'Top'#2' '#5'Width'#3#160#0#5'Align'#7#8'alCus'
+  +'tom'#7'Caption'#6#17'EventsExtRadioBtn'#7'OnClick'#7#22'EventsExtRadioBtnCl'
+  +'ick'#8'TabOrder'#2#1#0#0#12'TRadioButton'#18'EventsFullRadioBtn'#4'Left'#2
+  +#14#6'Height'#2#17#3'Top'#2'8'#5'Width'#3#161#0#5'Align'#7#8'alCustom'#7'Cap'
+  +'tion'#6#18'EventsFullRadioBtn'#7'OnClick'#7#23'EventsFullRadioBtnClick'#8'T'
+  +'abOrder'#2#2#0#0#0#0#242#2#1#9'TGroupBox'#12'grpBoxEvents'#4'Left'#2#0#6'He'
+  +'ight'#2'A'#3'Top'#3#0#1#5'Width'#3#200#1#5'Align'#7#5'alTop'#7'Caption'#6#12
+  +'grpBoxEvents'#12'ClientHeight'#2'.'#11'ClientWidth'#3#196#1#8'TabOrder'#2#1
+  +#0#6'TLabel'#12'stTextEvents'#4'Left'#2#14#6'Height'#2#18#3'Top'#2#8#5'Width'
+  +#2'Q'#7'Caption'#6#12'stTextEvents'#11'ParentColor'#8#0#0#0#242#2#2#9'TGroup'
+  +'Box'#11'grpBoxProps'#4'Left'#2#0#6'Height'#3#128#0#3'Top'#3#128#0#5'Width'#3
+  +#200#1#5'Align'#7#5'alTop'#7'Caption'#6#11'grpBoxProps'#12'ClientHeight'#2'm'
+  +#11'ClientWidth'#3#196#1#8'TabOrder'#2#2#0#6'TLabel'#11'stTextProps'#4'Left'
+  +#2#14#6'Height'#2#18#3'Top'#2#8#5'Width'#2'J'#7'Caption'#6#11'stTextProps'#11
+  +'ParentColor'#8#0#0#6'TLabel'#12'stTextProps2'#18'AnchorSideTop.Side'#7#9'as'
+  +'rBottom'#4'Left'#2#14#6'Height'#2#18#3'Top'#2'('#5'Width'#2'R'#7'Caption'#6
+  +#12'stTextProps2'#11'ParentColor'#8#0#0#0#0
+]);

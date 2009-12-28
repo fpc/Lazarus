@@ -723,6 +723,7 @@ components/education/edupkgsystem.lfm svneol=native#text/plain
 components/education/edupkgsystem.lrs svneol=native#text/plain
 components/education/edupkgsystem.pas svneol=native#text/plain
 components/education/edupropsevents.lfm svneol=native#text/plain
+components/education/edupropsevents.lrs svneol=native#text/plain
 components/education/edupropsevents.pas svneol=native#text/plain
 components/filebrowser/frmconfigfilebrowser.lfm svneol=native#text/plain
 components/filebrowser/frmconfigfilebrowser.lrs svneol=native#text/pascal
