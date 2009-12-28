@@ -30,9 +30,10 @@ unit IdeOptionsDlg;
 interface
 
 uses
-  Classes, SysUtils, Controls, Forms, LResources, ComCtrls, ButtonPanel,
+  Classes, SysUtils, Controls, Forms, LResources, ComCtrls, LCLProc, LCLType,
+  ButtonPanel,
   EnvironmentOpts, LazarusIDEStrConsts, IDEWindowIntf, IDEOptionsIntf,
-  EditorOptions, IDECommands, LCLType;
+  EditorOptions, IDECommands;
 
 type
   { TIDEOptionsDialog }
@@ -355,6 +356,7 @@ begin
   for i := 0 to IDEEditorGroups.Count - 1 do
   begin
     Rec := IDEEditorGroups[i];
+    //DebugLn(['TIDEOptionsDialog.CreateEditors ',Rec^.GroupClass.ClassName]);
     if not PassesFilter(Rec) then
       Continue;
     if Rec^.Items <> nil then
@@ -417,7 +419,8 @@ function TIDEOptionsDialog.PassesFilter(ARec: PIDEOptionsGroupRec): Boolean;
 begin
   if (ARec^.GroupClass = nil) and (OptionsFilter <> nil) then
     Exit(False);
-  if (ARec^.GroupClass <> nil) and not ARec^.GroupClass.InheritsFrom(OptionsFilter) then
+  if (OptionsFilter<>nil) and (ARec^.GroupClass <> nil)
+  and (not ARec^.GroupClass.InheritsFrom(OptionsFilter)) then
     Exit(False);
   Result := True;
 end;
