@@ -1,9 +1,11 @@
 <?xml version="1.0"?>
 <CONFIG>
   <ProjectOptions>
-    <PathDelim Value="/"/>
-    <Version Value="6"/>
+    <Version Value="7"/>
     <General>
+      <Flags>
+        <LRSInOutputDirectory Value="False"/>
+      </Flags>
       <MainUnit Value="0"/>
       <TargetFileExt Value=".exe"/>
       <ActiveEditorIndexAtStart Value="4"/>
@@ -33,7 +35,7 @@
         <PackageName Value="LCL"/>
       </Item2>
     </RequiredPackages>
-    <Units Count="20">
+    <Units Count="21">
       <Unit0>
         <Filename Value="fpdocupdater.lpr"/>
         <IsPartOfProject Value="True"/>
@@ -46,11 +48,10 @@
       </Unit0>
       <Unit1>
         <Filename Value="mainunit.pas"/>
-        <ComponentName Value="FormMain"/>
         <IsPartOfProject Value="True"/>
-        <ResourceFilename Value="mainunit.lrs"/>
+        <ComponentName Value="FormMain"/>
         <UnitName Value="MainUnit"/>
-        <CursorPos X="1" Y="100"/>
+        <CursorPos X="30" Y="105"/>
         <TopLine Value="83"/>
         <EditorIndex Value="0"/>
         <UsageCount Value="48"/>
@@ -59,10 +60,13 @@
       <Unit2>
         <Filename Value="fpdocfiles.pas"/>
         <UnitName Value="FPDocFiles"/>
-        <CursorPos X="15" Y="634"/>
-        <TopLine Value="614"/>
+        <CursorPos X="7" Y="377"/>
+        <TopLine Value="372"/>
         <EditorIndex Value="4"/>
         <UsageCount Value="21"/>
+        <Bookmarks Count="1">
+          <Item0 X="25" Y="396" ID="1"/>
+        </Bookmarks>
         <Loaded Value="True"/>
       </Unit2>
       <Unit3>
@@ -71,14 +75,13 @@
       </Unit3>
       <Unit4>
         <Filename Value="unitmove.pas"/>
+        <IsPartOfProject Value="True"/>
         <ComponentName Value="FormMove"/>
         <HasResources Value="True"/>
-        <IsPartOfProject Value="True"/>
-        <ResourceFilename Value="unitmove.lrs"/>
         <UnitName Value="UnitMove"/>
         <CursorPos X="50" Y="81"/>
         <TopLine Value="57"/>
-        <EditorIndex Value="5"/>
+        <EditorIndex Value="6"/>
         <UsageCount Value="36"/>
         <Loaded Value="True"/>
       </Unit4>
@@ -156,9 +159,8 @@
       </Unit15>
       <Unit16>
         <Filename Value="unitsummary.pas"/>
-        <ComponentName Value="FormSummary"/>
         <IsPartOfProject Value="True"/>
-        <ResourceFilename Value="unitsummary.lrs"/>
+        <ComponentName Value="FormSummary"/>
         <UnitName Value="UnitSummary"/>
         <CursorPos X="33" Y="72"/>
         <TopLine Value="43"/>
@@ -171,8 +173,8 @@
         <ComponentName Value="HelpOptionsDialog"/>
         <HasResources Value="True"/>
         <UnitName Value="HelpOptions"/>
-        <CursorPos X="24" Y="337"/>
-        <TopLine Value="324"/>
+        <CursorPos X="24" Y="240"/>
+        <TopLine Value="241"/>
         <EditorIndex Value="2"/>
         <UsageCount Value="10"/>
         <Loaded Value="True"/>
@@ -191,8 +193,17 @@
         <TopLine Value="24"/>
         <UsageCount Value="10"/>
       </Unit19>
+      <Unit20>
+        <Filename Value="../../../fpc/packages/fcl-xml/src/xmlread.pp"/>
+        <UnitName Value="XMLRead"/>
+        <CursorPos X="11" Y="3879"/>
+        <TopLine Value="3879"/>
+        <EditorIndex Value="5"/>
+        <UsageCount Value="10"/>
+        <Loaded Value="True"/>
+      </Unit20>
     </Units>
-    <JumpHistory Count="19" HistoryIndex="18">
+    <JumpHistory Count="22" HistoryIndex="21">
       <Position1>
         <Filename Value="fpdocfiles.pas"/>
         <Caret Line="341" Column="9" TopLine="329"/>
@@ -269,6 +280,18 @@
         <Filename Value="fpdocfiles.pas"/>
         <Caret Line="645" Column="15" TopLine="624"/>
       </Position19>
+      <Position20>
+        <Filename Value="fpdocfiles.pas"/>
+        <Caret Line="634" Column="15" TopLine="614"/>
+      </Position20>
+      <Position21>
+        <Filename Value="fpdocfiles.pas"/>
+        <Caret Line="396" Column="14" TopLine="378"/>
+      </Position21>
+      <Position22>
+        <Filename Value="../../../fpc/packages/fcl-xml/src/xmlread.pp"/>
+        <Caret Line="3875" Column="6" TopLine="3873"/>
+      </Position22>
     </JumpHistory>
   </ProjectOptions>
   <CompilerOptions>

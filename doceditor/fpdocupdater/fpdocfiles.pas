@@ -374,7 +374,7 @@ end;
 procedure TFPDocNode.SetDOMNodeValue(const AName, AValue: String);
 var
   N: TDOMNode;
-  S: TStringStream;
+  S: TStream;
 begin
   //DebugLn(FName, ' ', AName);
   N := FDOMNode.FindNode(AName);
