@@ -39,6 +39,7 @@ type
     function GetHelpEXE: String;
     function DBFindViewer(HelpDB: THelpDatabase; const MimeType: string;
       var ErrMsg: string; out Viewer: THelpViewer): TShowHelpResult;
+    function GetHelpLabel: String;
   protected
     function GetFileNameAndURL(RawUrl: String; out FileName: String; out URL: String): Boolean;
     procedure SetHelpEXE(AValue: String);
@@ -60,7 +61,7 @@ type
     function GetLocalizedName: string; override;
   published
     property HelpEXE: String read GetHelpEXE write SetHelpEXE;
-    property HelpLabel: String read fHelpLabel write SetHelpLabel;
+    property HelpLabel: String read GetHelpLabel write SetHelpLabel;
     property HelpFilesPath: String read fChmsFilePath write fChmsFilePath;
 
   end;
@@ -102,6 +103,13 @@ function TChmHelpViewer.DBFindViewer(HelpDB: THelpDatabase;
 begin
   Viewer:=Self;
   Result:=shrSuccess;
+end;
+
+function TChmHelpViewer.GetHelpLabel: String;
+begin
+  if Length(fHelpLabel) = 0 then
+    fHelpLabel := 'lazhelp';
+  Result := fHelpLabel;
 end;
 
 function TChmHelpViewer.GetHelpEXE: String;
@@ -354,7 +362,7 @@ begin
 
   FileName := DocsDir+FileName;
 
-  fHelpConnection.StartHelpServer(fHelpLabel, HelpExe);
+  fHelpConnection.StartHelpServer(HelpLabel, HelpExe);
   Res := fHelpConnection.OpenURL(FileName, Url);
 
   case Res of
