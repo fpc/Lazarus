@@ -201,18 +201,18 @@ var
   ClientWidget: PGtkWidget;
 begin
   FillByte(Result, SizeOf(Result), 0);
-  Result.Style := nil;
   if not GTKWidgetSet.IsValidDC(DC) then Exit;
   
   Result.Widget := DevCtx.Widget;
-  ClientWidget := GetFixedWidget(Result.Widget);
-  if ClientWidget <> nil then
-    Result.Widget := ClientWidget;
+  if Result.Widget <> nil then
+  begin
+    ClientWidget := GetFixedWidget(Result.Widget);
+    if ClientWidget <> nil then
+      Result.Widget := ClientWidget;
+    Result.Style := gtk_widget_get_style(Result.Widget);
+  end;
   Result.Window := DevCtx.Drawable;
   Result.Origin := DevCtx.Offset;
-  Result.Style := gtk_widget_get_style(Result.Widget);
-  if Result.Style = nil then
-    Result.Style := gtk_widget_get_default_style();
 
   Result.Painter := gptDefault;
   Result.State := GTK_STATE_NORMAL;
@@ -233,6 +233,8 @@ begin
           BP_PUSHBUTTON:
             begin
               Result.Widget := GetStyleWidget(lgsButton);
+              if Result.Style = nil then
+                Result.Style := GetStyle(lgsButton);
               Result.State := GtkButtonMap[Details.State];
               if Details.State = PBS_PRESSED then
                 Result.Shadow := GTK_SHADOW_IN
@@ -246,6 +248,8 @@ begin
           BP_RADIOBUTTON:
             begin
               Result.Widget := GetStyleWidget(lgsRadiobutton);
+              if Result.Style = nil then
+                Result.Style := GetStyle(lgsRadiobutton);
               Result.State := GtkRadioCheckBoxMap[Details.State];
               if Details.State >= RBS_CHECKEDNORMAL then
                 Result.Shadow := GTK_SHADOW_IN
@@ -257,6 +261,8 @@ begin
           BP_CHECKBOX:
             begin
               Result.Widget := GetStyleWidget(lgsCheckbox);
+              if Result.Style = nil then
+                Result.Style := GetStyle(lgsCheckbox);
               Result.State := GtkRadioCheckBoxMap[Details.State];
               Result.Detail := 'checkbutton';
               if Details.State >= CBS_MIXEDNORMAL then
@@ -273,6 +279,8 @@ begin
     teHeader:
       begin
         Result.Widget := GetStyleWidget(lgsButton);
+        if Result.Style = nil then
+          Result.Style := GetStyle(lgsButton);
         Result.State := GtkButtonMap[Details.State];
         if Details.State = PBS_PRESSED then
           Result.Shadow := GTK_SHADOW_IN
@@ -303,6 +311,8 @@ begin
               else
               begin
                 Result.Widget := GetStyleWidget(lgsToolButton);
+                if Result.Style = nil then
+                  Result.Style := GetStyle(lgsToolButton);
                 Result.State := GtkButtonMap[Details.State];
                 if Details.State in [TS_PRESSED, TS_CHECKED, TS_HOTCHECKED] then
                   Result.Shadow := GTK_SHADOW_IN
@@ -349,11 +359,15 @@ to alternate splitter painting}
               begin
                 Result.Detail := 'hpaned';
                 Result.Widget := GetStyleWidget(lgsHorizontalPaned);
+                if Result.Style = nil then
+                  Result.Style := GetStyle(lgsHorizontalPaned);
               end
               else
               begin
                 Result.Detail := 'vpaned';
                 Result.Widget := GetStyleWidget(lgsVerticalPaned);
+                if Result.Style = nil then
+                  Result.Style := GetStyle(lgsVerticalPaned);
               end;
               Result.Painter := gptBox;
 
@@ -390,6 +404,8 @@ to alternate splitter painting}
     teTab:
       begin
         Result.Widget := GetStyleWidget(lgsNotebook);
+        if Result.Style = nil then
+          Result.Style := GetStyle(lgsNotebook);
         Result.State := GTK_STATE_NORMAL;
         Result.Shadow := GTK_SHADOW_OUT;
         Result.Detail := 'notebook';
@@ -412,6 +428,8 @@ to alternate splitter painting}
           Result.Painter := gptFlatBox;
       end;
   end;
+  if Result.Style = nil then
+    Result.Style := gtk_widget_get_default_style();
 end;
 
 function TGtkThemeServices.InitThemes: Boolean;
