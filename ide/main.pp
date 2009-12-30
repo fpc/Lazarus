@@ -4411,7 +4411,7 @@ var
 
         { Just exit if the form list is the same }
         i := OldList.Count - 1;
-        while (i >= 0) and (CompareText(OldList[i], Project.TmpAutoCreatedForms[i]) = 0) do
+        while (i >= 0) and (SysUtils.CompareText(OldList[i], Project.TmpAutoCreatedForms[i]) = 0) do
           Dec(i);
         if i < 0 then
           Exit;
