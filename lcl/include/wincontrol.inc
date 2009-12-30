@@ -4532,7 +4532,6 @@ begin
   begin
     TWSWinControlClass(WidgetSetClass).SetFont(Self, Font);
     Exclude(FWinControlFlags, wcfFontChanged);
-    Invalidate;
     if AutoSize then
     begin
       InvalidatePreferredSize;
