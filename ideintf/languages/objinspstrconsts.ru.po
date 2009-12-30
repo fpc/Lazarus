@@ -5,7 +5,7 @@ msgstr ""
 "Content-Transfer-Encoding: 8bit\n"
 "Project-Id-Version: \n"
 "POT-Creation-Date: \n"
-"PO-Revision-Date: 2009-11-16 00:12+0300\n"
+"PO-Revision-Date: 2009-12-28 02:21+0300\n"
 "Last-Translator: Maxim Ganetsky <maxkill@mail.ru>\n"
 "Language-Team: \n"
 
@@ -133,10 +133,9 @@ msgid "Check dataset settings"
 msgstr "Проверить параметры набора данных"
 
 #: objinspstrconsts.fesfetitle
-#, fuzzy
 #| msgid "Edit Fields"
 msgid "Edit Fields..."
-msgstr "Редактировать поля"
+msgstr "Редактировать поля..."
 
 #: objinspstrconsts.fesfltitle
 msgid "FieldDefs"
@@ -293,25 +292,24 @@ msgstr "Действие"
 
 #: objinspstrconsts.oisactionlistcomponenteditor
 msgid "Action&List Editor..."
-msgstr ""
+msgstr "Редактор Action&List..."
 
 #: objinspstrconsts.oisactionlisteditor
-#, fuzzy
 #| msgid "Action List Editor"
 msgid "ActionList Editor"
-msgstr "Редактор списка действий"
+msgstr "Редактор ActionList"
 
 #: objinspstrconsts.oisaddcollectionitem
 msgid "&Add Item"
-msgstr ""
+msgstr "&Добавить элемент"
 
 #: objinspstrconsts.oisaddfields
 msgid "&Add fields"
-msgstr ""
+msgstr "&Добавить поля"
 
 #: objinspstrconsts.oisaddfieldsfromfielddefs
 msgid "Add fields from FieldDefs"
-msgstr ""
+msgstr "Добавить поля из FieldDefs"
 
 #: objinspstrconsts.oisaddtofavorites
 msgid "Add to Favorites"
@@ -388,11 +386,10 @@ msgid "Confirm delete"
 msgstr "Подтвердить удаление"
 
 #: objinspstrconsts.oiscopycomponents
-#, fuzzy
 #| msgid "Copy components"
 msgctxt "objinspstrconsts.oiscopycomponents"
 msgid "&Copy"
-msgstr "Копировать компоненты"
+msgstr "&Копировать"
 
 #: objinspstrconsts.oiscreateanewpascalunit
 msgid "Create a new pascal unit."
@@ -404,14 +401,13 @@ msgstr "Создать событие по умолчанию"
 
 #: objinspstrconsts.oiscreatenewfieldandadditatcurrentposition
 msgid "Create new field and add it at current position"
-msgstr ""
+msgstr "Создать новое поле и вставить его в текущую позицию"
 
 #: objinspstrconsts.oiscutcomponents
-#, fuzzy
 #| msgid "Cut components"
 msgctxt "objinspstrconsts.oiscutcomponents"
 msgid "Cu&t"
-msgstr "Вырезать компоненты"
+msgstr "В&ырезать"
 
 #: objinspstrconsts.oisdelete
 msgctxt "objinspstrconsts.oisdelete"
@@ -419,11 +415,10 @@ msgid "Delete"
 msgstr "Удалить"
 
 #: objinspstrconsts.oisdeletecomponents
-#, fuzzy
 #| msgid "Delete components"
 msgctxt "objinspstrconsts.oisdeletecomponents"
 msgid "&Delete"
-msgstr "Удалить компоненты"
+msgstr "&Удалить"
 
 #: objinspstrconsts.oisdeleteitem
 msgid "Delete item %s%s%s?"
@@ -431,7 +426,7 @@ msgstr "Удалить элемент %s%s%s?"
 
 #: objinspstrconsts.oisdeleteselectedfields
 msgid "Delete selected field(s)"
-msgstr ""
+msgstr "Удалить выбранные поля"
 
 #: objinspstrconsts.oisdlinesdchars
 msgid "%d lines, %d chars"
@@ -447,7 +442,7 @@ msgstr "Ошибка"
 
 #: objinspstrconsts.oiserrordeletingaction
 msgid "Error deleting action"
-msgstr ""
+msgstr "Ошибка при удалении действия"
 
 #: objinspstrconsts.oiserrorloadingimage
 msgid "Error loading image"
@@ -459,7 +454,7 @@ msgstr "Ошибка загрузки изображения %s%s%s:%s%s"
 
 #: objinspstrconsts.oiserrorwhiledeletingaction
 msgid "Error while deleting action:%s%s"
-msgstr ""
+msgstr "Ошибка при удалении действия:%s%s"
 
 #: objinspstrconsts.oisevents
 msgid "Events"
@@ -479,7 +474,7 @@ msgstr "Float"
 
 #: objinspstrconsts.oisimagelistcomponenteditor
 msgid "I&mageList Editor..."
-msgstr ""
+msgstr "Редактор I&mageList..."
 
 #: objinspstrconsts.oisincompatibleidentifier
 msgid "Incompatible Identifier"
@@ -539,15 +534,15 @@ msgstr "Метод"
 
 #: objinspstrconsts.oismovedown
 msgid "Move &Down"
-msgstr ""
+msgstr "Переместить в&низ"
 
 #: objinspstrconsts.oismoveup
 msgid "Move &Up"
-msgstr ""
+msgstr "Переместить &вверх"
 
 #: objinspstrconsts.oisnew
 msgid "&New"
-msgstr ""
+msgstr "&Новое"
 
 #: objinspstrconsts.oisnone
 msgid "(none)"
@@ -583,26 +578,25 @@ msgstr "Параметры"
 
 #: objinspstrconsts.oisorderbackone
 msgid "Back One"
-msgstr ""
+msgstr "На один назад"
 
 #: objinspstrconsts.oisorderforwardone
 msgid "Forward One"
-msgstr ""
+msgstr "На один вперёд"
 
 #: objinspstrconsts.oisordermovetoback
 msgid "Move to Back"
-msgstr ""
+msgstr "Поместить сзади"
 
 #: objinspstrconsts.oisordermovetofront
 msgid "Move to Front"
-msgstr ""
+msgstr "Поместить спереди"
 
 #: objinspstrconsts.oispastecomponents
-#, fuzzy
 #| msgid "Paste components"
 msgctxt "objinspstrconsts.oispastecomponents"
 msgid "&Paste"
-msgstr "Вставить компоненты"
+msgstr "В&ставить"
 
 #: objinspstrconsts.oispeopenimagefile
 msgid "Open image file"
@@ -658,7 +652,7 @@ msgstr "Выберите файл"
 
 #: objinspstrconsts.oisselectall
 msgid "&Select all"
-msgstr ""
+msgstr "Вы&делить все"
 
 #: objinspstrconsts.oisselectshortcut
 msgid "Select short cut"
@@ -855,7 +849,7 @@ msgstr "Вставить"
 
 #: objinspstrconsts.oistdacteditselectallheadline
 msgid "Select &All"
-msgstr "Вы&брать все..."
+msgstr "Вы&делить все..."
 
 #: objinspstrconsts.oistdacteditselectallshortcut
 msgid "Ctrl+A"
@@ -1023,7 +1017,7 @@ msgstr "Неизвестный"
 
 #: objinspstrconsts.oisunselectall
 msgid "&Unselect all"
-msgstr ""
+msgstr "&Снять выделение"
 
 #: objinspstrconsts.oisvalue
 msgid "Value:"
@@ -1047,7 +1041,7 @@ msgstr "Word"
 
 #: objinspstrconsts.oiszorder
 msgid "Z-order"
-msgstr ""
+msgstr "Z-порядок"
 
 #: objinspstrconsts.pefilter
 msgid "Filter"
@@ -1242,11 +1236,10 @@ msgid "Edit Columns ..."
 msgstr "Редактировать столбцы ..."
 
 #: objinspstrconsts.sccslvedt
-#, fuzzy
 #| msgid "Edit ListView Items..."
 msgctxt "objinspstrconsts.sccslvedt"
 msgid "Edit Items..."
-msgstr "Редактировать элементы ListView..."
+msgstr "Редактировать элементы..."
 
 #: objinspstrconsts.sccslvedtapply
 msgctxt "objinspstrconsts.sccslvedtapply"
@@ -1354,11 +1347,10 @@ msgid "Save"
 msgstr "Сохранить"
 
 #: objinspstrconsts.sccstredt
-#, fuzzy
 #| msgid "Edit TreeView Items..."
 msgctxt "objinspstrconsts.sccstredt"
 msgid "Edit Items..."
-msgstr "Редактировать элементы TreeView..."
+msgstr "Редактировать элементы..."
 
 #: objinspstrconsts.sccstredtapply
 msgctxt "objinspstrconsts.sccstredtapply"

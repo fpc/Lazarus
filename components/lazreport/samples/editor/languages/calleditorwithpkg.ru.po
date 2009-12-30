@@ -2,7 +2,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: \n"
 "POT-Creation-Date: \n"
-"PO-Revision-Date: 2009-04-23 02:14+0300\n"
+"PO-Revision-Date: 2009-12-27 23:13+0300\n"
 "Last-Translator: Maxim Ganetsky <maxkill@mail.ru>\n"
 "Language-Team: \n"
 "MIME-Version: 1.0\n"
@@ -57,7 +57,7 @@ msgstr "Экспорт в CSV"
 
 #: TFRMMAIN.ACCEXPORTTODBG.CAPTION
 msgid "Export Debug"
-msgstr ""
+msgstr "Экспорт отладочной информации"
 
 #: TFRMMAIN.ACCEXPORTTOHTML.CAPTION
 msgid "Export to html"
