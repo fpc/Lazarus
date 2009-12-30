@@ -117,7 +117,12 @@ end;
 procedure TProjectApplicationOptionsFrame.LoadIconButtonClick(Sender: TObject);
 begin
   if OpenPictureDialog1.Execute then
-    IconImage.Picture.LoadFromFile(OpenPictureDialog1.FileName);
+    try
+      IconImage.Picture.LoadFromFile(OpenPictureDialog1.FileName)
+    except
+      on E: Exception do
+        MessageDlg(E.Message, mtError, [mbOK], 0);
+    end;
 end;
 
 procedure TProjectApplicationOptionsFrame.SaveIconButtonClick(Sender: TObject);
