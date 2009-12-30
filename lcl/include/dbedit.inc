@@ -40,7 +40,8 @@ begin
     end else
       //otherwise display the pretified/formated text since we can't
       EditText := FDataLink.Field.DisplayText;
-    MaxLength := FDatalink.Field.Size;
+    if (FDataLink.Field.DataType = ftString) and (MaxLength = 0) then
+      MaxLength := FDatalink.Field.Size;
   end
   else begin
     //todo: uncomment this when TField implements EditMask
