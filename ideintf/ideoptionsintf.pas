@@ -212,6 +212,18 @@ const
     ProjectOptionsMisc        = 700;
 
   GroupCompiler     = 100200;
+    CompilerOptionsSearchPaths    = 0100;
+    CompilerOptionsBuildModes     = 0200;
+    CompilerOptionsParsing        = 0300;
+    CompilerOptionsCodeGeneration = 0400;
+    CompilerOptionsLinking        = 0500;
+    CompilerOptionsVerbosity      = 0600;
+    CompilerOptionsMessages       = 0700;
+    CompilerOptionsOther          = 0800;
+    CompilerOptionsConditional    = 0900;
+    CompilerOptionsInherited      = 1000;
+    CompilerOptionsCompilation    = 1100;
+
 implementation
 
 var

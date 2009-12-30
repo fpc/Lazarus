@@ -179,7 +179,7 @@ end;
 
 initialization
   {$I compiler_messages_options.lrs}
-  RegisterIDEOptionsEditor(GroupCompiler, TCompilerMessagesOptionsFrame, 500{todo: CompilerOptionsMessages});
+  RegisterIDEOptionsEditor(GroupCompiler, TCompilerMessagesOptionsFrame, CompilerOptionsMessages);
 
 end.
 
