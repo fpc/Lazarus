@@ -1,7 +1,7 @@
 object DSFieldsEditorFrm: TDSFieldsEditorFrm
-  Left = 44
+  Left = 22
   Height = 288
-  Top = 58
+  Top = 29
   Width = 215
   HorzScrollBar.Page = 214
   VertScrollBar.Page = 287
@@ -27,7 +27,6 @@ object DSFieldsEditorFrm: TDSFieldsEditorFrm
     TabOrder = 0
   end
   object PopupMenu1: TPopupMenu
-    OnPopup = PopupMenu1Popup
     left = 8
     top = 144
     object MenuItem1: TMenuItem
@@ -60,6 +59,7 @@ object DSFieldsEditorFrm: TDSFieldsEditorFrm
     end
   end
   object ActionList1: TActionList
+    OnUpdate = ActionList1Update
     left = 40
     top = 144
     object AddFieldsActn: TAction

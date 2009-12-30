@@ -49,6 +49,7 @@ type
     MenuItem4: TMenuItem;
     MenuItem5: TMenuItem;
     PopupMenu1: TPopupMenu;
+    procedure ActionList1Update(AAction: TBasicAction; var Handled: Boolean);
     procedure AddFieldsActnExecute(Sender: TObject);
     procedure DeleteFieldsActnExecute(Sender: TObject);
     procedure FieldsEditorFrmClose(Sender: TObject;
@@ -60,7 +61,6 @@ type
     procedure ListBox1Click(Sender: TObject);
     procedure MoveDownActnExecute(Sender: TObject);
     procedure MoveUpActnExecute(Sender: TObject);
-    procedure PopupMenu1Popup(Sender: TObject);
     procedure SelectAllActnExecute(Sender: TObject);
     procedure UnselectAllActnExecute(Sender: TObject);
   protected
@@ -304,7 +304,8 @@ begin
   if bModified then fDesigner.Modified;
 end;
 
-procedure TDSFieldsEditorFrm.PopupMenu1Popup(Sender: TObject);
+procedure TDSFieldsEditorFrm.ActionList1Update(AAction: TBasicAction;
+  var Handled: Boolean);
 var
   b: boolean;
   i, SelectedCount: integer;
@@ -360,6 +361,7 @@ begin
   finally
     GlobalDesignHook.AddHandlerSetSelection(@OnSetSelection);
   end;
+  ActionList1.UpdateAction(nil);
 end;
 
 procedure TDSFieldsEditorFrm.OnComponentRenamed(AComponent: TComponent);
