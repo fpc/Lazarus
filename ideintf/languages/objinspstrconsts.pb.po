@@ -133,7 +133,6 @@ msgid "Check dataset settings"
 msgstr "Verificar ajustes \"dataset\""
 
 #: objinspstrconsts.fesfetitle
-#, fuzzy
 #| msgid "Edit Fields"
 msgid "Edit Fields..."
 msgstr "Editar Campos"
@@ -293,25 +292,24 @@ msgstr "Ação"
 
 #: objinspstrconsts.oisactionlistcomponenteditor
 msgid "Action&List Editor..."
-msgstr ""
+msgstr "Editor Lista &Ações"
 
 #: objinspstrconsts.oisactionlisteditor
-#, fuzzy
 #| msgid "Action List Editor"
 msgid "ActionList Editor"
-msgstr "Editor de lista ações"
+msgstr "Editor Lista Ações"
 
 #: objinspstrconsts.oisaddcollectionitem
 msgid "&Add Item"
-msgstr ""
+msgstr "&Adicionar Item"
 
 #: objinspstrconsts.oisaddfields
 msgid "&Add fields"
-msgstr ""
+msgstr "&Adicionar campos"
 
 #: objinspstrconsts.oisaddfieldsfromfielddefs
 msgid "Add fields from FieldDefs"
-msgstr ""
+msgstr "Adicionar campos de \"FieldDefs\""
 
 #: objinspstrconsts.oisaddtofavorites
 msgid "Add to Favorites"
@@ -388,11 +386,10 @@ msgid "Confirm delete"
 msgstr "Confirmar exclusão"
 
 #: objinspstrconsts.oiscopycomponents
-#, fuzzy
 #| msgid "Copy components"
 msgctxt "objinspstrconsts.oiscopycomponents"
 msgid "&Copy"
-msgstr "Copiar componentes"
+msgstr "&Copiar"
 
 #: objinspstrconsts.oiscreateanewpascalunit
 msgid "Create a new pascal unit."
@@ -404,14 +401,13 @@ msgstr "Criar evento padrão"
 
 #: objinspstrconsts.oiscreatenewfieldandadditatcurrentposition
 msgid "Create new field and add it at current position"
-msgstr ""
+msgstr "Criar novo campo e adicioná-lo na posição atual"
 
 #: objinspstrconsts.oiscutcomponents
-#, fuzzy
 #| msgid "Cut components"
 msgctxt "objinspstrconsts.oiscutcomponents"
 msgid "Cu&t"
-msgstr "Recortar componentes"
+msgstr "Recor&tar"
 
 #: objinspstrconsts.oisdelete
 msgctxt "objinspstrconsts.oisdelete"
@@ -419,11 +415,10 @@ msgid "Delete"
 msgstr "Excluir"
 
 #: objinspstrconsts.oisdeletecomponents
-#, fuzzy
 #| msgid "Delete components"
 msgctxt "objinspstrconsts.oisdeletecomponents"
 msgid "&Delete"
-msgstr "Excluir componentes"
+msgstr "&Excluir"
 
 #: objinspstrconsts.oisdeleteitem
 msgid "Delete item %s%s%s?"
@@ -431,7 +426,7 @@ msgstr "Excluir item %s%s%s?"
 
 #: objinspstrconsts.oisdeleteselectedfields
 msgid "Delete selected field(s)"
-msgstr ""
+msgstr "Excluir campo(s) selecionado(s)"
 
 #: objinspstrconsts.oisdlinesdchars
 msgid "%d lines, %d chars"
@@ -447,7 +442,7 @@ msgstr "Erro"
 
 #: objinspstrconsts.oiserrordeletingaction
 msgid "Error deleting action"
-msgstr ""
+msgstr "Erro ao excluir ação"
 
 #: objinspstrconsts.oiserrorloadingimage
 msgid "Error loading image"
@@ -459,7 +454,7 @@ msgstr "Erro carregando imagem %s%s%s:%s%s"
 
 #: objinspstrconsts.oiserrorwhiledeletingaction
 msgid "Error while deleting action:%s%s"
-msgstr ""
+msgstr "Erro ao excluir ação:%s%s"
 
 #: objinspstrconsts.oisevents
 msgid "Events"
@@ -479,7 +474,7 @@ msgstr "Flutuante"
 
 #: objinspstrconsts.oisimagelistcomponenteditor
 msgid "I&mageList Editor..."
-msgstr ""
+msgstr "Editor Lista I&magens..."
 
 #: objinspstrconsts.oisincompatibleidentifier
 msgid "Incompatible Identifier"
@@ -539,15 +534,15 @@ msgstr "Método"
 
 #: objinspstrconsts.oismovedown
 msgid "Move &Down"
-msgstr ""
+msgstr "Mover A&baixo"
 
 #: objinspstrconsts.oismoveup
 msgid "Move &Up"
-msgstr ""
+msgstr "Mover Ac&ima"
 
 #: objinspstrconsts.oisnew
 msgid "&New"
-msgstr ""
+msgstr "&Novo"
 
 #: objinspstrconsts.oisnone
 msgid "(none)"
@@ -583,26 +578,25 @@ msgstr "Opções"
 
 #: objinspstrconsts.oisorderbackone
 msgid "Back One"
-msgstr ""
+msgstr "Retroceder Um"
 
 #: objinspstrconsts.oisorderforwardone
 msgid "Forward One"
-msgstr ""
+msgstr "Avançar Um"
 
 #: objinspstrconsts.oisordermovetoback
 msgid "Move to Back"
-msgstr ""
+msgstr "Mover para Trás"
 
 #: objinspstrconsts.oisordermovetofront
 msgid "Move to Front"
-msgstr ""
+msgstr "Mover para Frente"
 
 #: objinspstrconsts.oispastecomponents
-#, fuzzy
 #| msgid "Paste components"
 msgctxt "objinspstrconsts.oispastecomponents"
 msgid "&Paste"
-msgstr "Colar componentes"
+msgstr "C&olar"
 
 #: objinspstrconsts.oispeopenimagefile
 msgid "Open image file"
@@ -658,7 +652,7 @@ msgstr "Selecione um arquivo"
 
 #: objinspstrconsts.oisselectall
 msgid "&Select all"
-msgstr ""
+msgstr "&Selecionar tudo"
 
 #: objinspstrconsts.oisselectshortcut
 msgid "Select short cut"
@@ -1023,7 +1017,7 @@ msgstr "Desconhecido"
 
 #: objinspstrconsts.oisunselectall
 msgid "&Unselect all"
-msgstr ""
+msgstr "&Desmarcar tudo"
 
 #: objinspstrconsts.oisvalue
 msgid "Value:"
@@ -1047,7 +1041,7 @@ msgstr "Palavra"
 
 #: objinspstrconsts.oiszorder
 msgid "Z-order"
-msgstr ""
+msgstr "Ordem-Z"
 
 #: objinspstrconsts.pefilter
 msgid "Filter"

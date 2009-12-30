@@ -57,7 +57,7 @@ msgstr "Exportar para \"CSV\""
 
 #: TFRMMAIN.ACCEXPORTTODBG.CAPTION
 msgid "Export Debug"
-msgstr ""
+msgstr "Exportar Depuração"
 
 #: TFRMMAIN.ACCEXPORTTOHTML.CAPTION
 msgid "Export to html"
