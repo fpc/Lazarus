@@ -215,7 +215,8 @@ type
     function GetPrimaryConfigPath: String; virtual; abstract;
     function GetSecondaryConfigPath: String; virtual; abstract;
     procedure CopySecondaryConfigFile(const AFilename: String); virtual; abstract;
-    procedure DoOpenIDEOptions(AEditor: TAbstractIDEOptionsEditorClass;
+    procedure DoOpenIDEOptions(AEditor: TAbstractIDEOptionsEditorClass = nil;
+      ACaption: String = '';
       AOptionsFilter: TAbstractIDEOptionsClass = nil); virtual; abstract;
 
     // filenames, paths

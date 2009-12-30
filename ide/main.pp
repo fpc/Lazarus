@@ -355,7 +355,8 @@ type
     // Environment options dialog events
     procedure OnLoadIDEOptions(Sender: TObject; AOptions: TAbstractIDEOptions);
     procedure OnSaveIDEOptions(Sender: TObject; AOptions: TAbstractIDEOptions);
-    procedure DoOpenIDEOptions(AEditor: TAbstractIDEOptionsEditorClass;
+    procedure DoOpenIDEOptions(AEditor: TAbstractIDEOptionsEditorClass = nil;
+      ACaption: String = '';
       AOptionsFilter: TAbstractIDEOptionsClass = nil); override;
 
     procedure DoEnvironmentOptionsBeforeRead(Sender: TObject);
@@ -3703,7 +3704,7 @@ end;
 
 procedure TMainIDE.mnuProjectOptionsClicked(Sender: TObject);
 begin
-  DoOpenIDEOptions(nil, TAbstractIDEProjectOptions);
+  DoOpenIDEOptions(nil, dlgProjectOptions, TAbstractIDEProjectOptions);
 end;
 
 function TMainIDE.UpdateProjectPOFile(AProject: TProject): TModalResult;
@@ -4128,7 +4129,7 @@ end;
 
 procedure TMainIDE.mnuEnvGeneralOptionsClicked(Sender: TObject);
 begin
-  DoOpenIDEOptions(nil);
+  DoOpenIDEOptions;
 end;
 
 //------------------------------------------------------------------------------
@@ -4185,14 +4186,17 @@ begin
     SaveDesktopSettings(AOptions as TEnvironmentOptions);
 end;
 
-procedure TMainIDE.DoOpenIDEOptions(AEditor: TAbstractIDEOptionsEditorClass;
-  AOptionsFilter: TAbstractIDEOptionsClass = nil);
+procedure TMainIDE.DoOpenIDEOptions(AEditor: TAbstractIDEOptionsEditorClass = nil;
+      ACaption: String = '';
+      AOptionsFilter: TAbstractIDEOptionsClass = nil);
 var
   IDEOptionsDialog: TIDEOptionsDialog;
 begin
   IDEOptionsDialog := TIDEOptionsDialog.Create(nil);
 
   try
+    if ACaption <> '' then
+      IDEOptionsDialog.Caption := ACaption;
     if AOptionsFilter = nil then
       if AEditor <> nil then
         AOptionsFilter := AEditor.SupportedOptionsClass
