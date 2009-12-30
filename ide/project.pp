@@ -579,6 +579,7 @@ type
   private
     fActiveEditorIndexAtStart: integer;
     FAutoCreateForms: boolean;
+    FTmpAutoCreatedForms: TStrings; // temporary, used to apply auto create forms changes
     FAutoOpenDesignerFormsDisabled: boolean;
     FBookmarks: TProjectBookmarkList;
     fChanged: boolean;
@@ -839,6 +840,10 @@ type
     
     // i18n
     function GetPOOutDirectory: string;
+
+    //auto created forms
+    function GetAutoCreatedFormsList: TStrings;
+    property TmpAutoCreatedForms: TStrings read FTmpAutoCreatedForms write FTmpAutoCreatedForms;
   public
     property ActiveEditorIndexAtStart: integer read fActiveEditorIndexAtStart
                                                write fActiveEditorIndexAtStart;
@@ -4308,6 +4313,27 @@ begin
   IDEMacros.SubstituteMacros(Result);
   Result:=TrimFilename(Result);
   LongenFilename(Result);
+end;
+
+function TProject.GetAutoCreatedFormsList: TStrings;
+var
+  i, j: integer;
+begin
+  if (MainUnitID >= 0) then
+  begin
+    Result := CodeToolBoss.ListAllCreateFormStatements(MainUnitInfo.Source);
+    if Result <> nil then
+      for i := 0 to Result.Count - 1 do
+      begin
+        j := Pos(':', Result[i]);
+        if j > 0 then
+          if 't' + LowerCase(Copy(Result[i], 1, j - 1)) = LowerCase(
+            Copy(Result[i], j + 1, Length(Result[i]) - j)) then
+            Result[i] := Copy(Result[i], 1, j - 1);
+      end;// shorten lines of type 'FormName:TFormName' to simply 'FormName'
+  end
+  else
+    Result := nil;
 end;
 
 procedure TProject.OnUnitNameChange(AnUnitInfo: TUnitInfo;

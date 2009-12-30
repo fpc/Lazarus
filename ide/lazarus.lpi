@@ -43,7 +43,7 @@
         <PackageName Value="SynEdit"/>
       </Item4>
     </RequiredPackages>
-    <Units Count="52">
+    <Units Count="59">
       <Unit0>
         <Filename Value="lazarus.pp"/>
         <IsPartOfProject Value="True"/>
@@ -400,6 +400,55 @@
         <ResourceBaseClass Value="Form"/>
         <UnitName Value="AskCompNameDlg"/>
       </Unit51>
+      <Unit52>
+        <Filename Value="frames/project_application_options.pas"/>
+        <IsPartOfProject Value="True"/>
+        <ComponentName Value="ProjectApplicationOptionsFrame"/>
+        <ResourceBaseClass Value="Frame"/>
+        <UnitName Value="project_application_options"/>
+      </Unit52>
+      <Unit53>
+        <Filename Value="frames/project_forms_options.pas"/>
+        <IsPartOfProject Value="True"/>
+        <ComponentName Value="ProjectFormsOptionsFrame"/>
+        <ResourceBaseClass Value="Frame"/>
+        <UnitName Value="project_forms_options"/>
+      </Unit53>
+      <Unit54>
+        <Filename Value="frames/project_lazdoc_options.pas"/>
+        <IsPartOfProject Value="True"/>
+        <ComponentName Value="ProjectLazDocOptionsFrame"/>
+        <ResourceBaseClass Value="Frame"/>
+        <UnitName Value="project_lazdoc_options"/>
+      </Unit54>
+      <Unit55>
+        <Filename Value="frames/project_save_options.pas"/>
+        <IsPartOfProject Value="True"/>
+        <ComponentName Value="ProjectSaveOptionsFrame"/>
+        <ResourceBaseClass Value="Frame"/>
+        <UnitName Value="project_save_options"/>
+      </Unit55>
+      <Unit56>
+        <Filename Value="frames/project_versioninfo_options.pas"/>
+        <IsPartOfProject Value="True"/>
+        <ComponentName Value="ProjectVersionInfoOptionsFrame"/>
+        <ResourceBaseClass Value="Frame"/>
+        <UnitName Value="project_versioninfo_options"/>
+      </Unit56>
+      <Unit57>
+        <Filename Value="frames/project_i18n_options.pas"/>
+        <IsPartOfProject Value="True"/>
+        <ComponentName Value="ProjectI18NOptionsFrame"/>
+        <ResourceBaseClass Value="Frame"/>
+        <UnitName Value="project_i18n_options"/>
+      </Unit57>
+      <Unit58>
+        <Filename Value="frames/project_misc_options.pas"/>
+        <IsPartOfProject Value="True"/>
+        <ComponentName Value="ProjectMiscOptionsFrame"/>
+        <ResourceBaseClass Value="Frame"/>
+        <UnitName Value="project_misc_options"/>
+      </Unit58>
     </Units>
   </ProjectOptions>
   <CompilerOptions>

@@ -203,6 +203,14 @@ const
 
   // predefined project options groups
   GroupProject      = 100100;
+    ProjectOptionsApplication = 100;
+    ProjectOptionsForms       = 200;
+    ProjectOptionsLazDoc      = 300;
+    ProjectOptionsSave        = 400;
+    ProjectOptionsVersionInfo = 500;
+    ProjectOptionsI18N        = 600;
+    ProjectOptionsMisc        = 700;
+
   GroupCompiler     = 100200;
 implementation
 

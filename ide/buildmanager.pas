@@ -44,7 +44,8 @@ uses
   // IDE
   LazarusIDEStrConsts, DialogProcs, IDEProcs, CodeToolsOptions, InputHistory,
   ProjectResources, MiscOptions, LazConf, EnvironmentOpts, TransferMacros,
-  CompilerOptions, OutputFilter, Compiler, Project, BaseBuildManager;
+  CompilerOptions, OutputFilter, Compiler, Project, BaseBuildManager,
+  ApplicationBundle;
   
 type
 
@@ -145,6 +146,7 @@ type
     function CheckUnitPathForAmbiguousPascalFiles(const BaseDir, TheUnitPath,
                                     CompiledExt, ContextDescription: string
                                     ): TModalResult; override;
+    function CreateProjectApplicationBundle: Boolean; override;
     function BackupFile(const Filename: string): TModalResult; override;
 
     function GetResourceType(AnUnitInfo: TUnitInfo): TResourceType;
@@ -893,6 +895,28 @@ begin
     FreeUnitTree(CompiledUnitTree);
   end;
   Result:=mrOk;
+end;
+
+function TBuildManager.CreateProjectApplicationBundle: Boolean;
+var
+  TargetExeName: string;
+begin
+  Result := False;
+  if Project1.MainUnitInfo = nil then
+    Exit;
+  if Project1.IsVirtual then
+    TargetExeName := GetTestBuildDirectory +
+      ExtractFilename(Project1.MainUnitInfo.Filename)
+  else
+    TargetExeName := Project1.CompilerOptions.CreateTargetFilename(
+      Project1.MainFilename);
+
+  if not (CreateApplicationBundle(TargetExeName, Project1.Title, True) in
+    [mrOk, mrIgnore]) then
+    Exit;
+  if not (CreateAppBundleSymbolicLink(TargetExeName, True) in [mrOk, mrIgnore]) then
+    Exit;
+  Result := True;
 end;
 
 function TBuildManager.BackupFile(const Filename: string): TModalResult;

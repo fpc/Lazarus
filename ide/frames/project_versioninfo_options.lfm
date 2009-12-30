@@ -1,0 +1,295 @@
+inherited ProjectVersionInfoOptionsFrame: TProjectVersionInfoOptionsFrame
+  Height = 364
+  Width = 594
+  ClientHeight = 364
+  ClientWidth = 594
+  TabOrder = 0
+  DesignLeft = 273
+  DesignTop = 145
+  object VersionInfoGroupBox: TGroupBox[0]
+    AnchorSideTop.Side = asrBottom
+    AnchorSideRight.Side = asrBottom
+    Left = 0
+    Height = 100
+    Top = 23
+    Width = 594
+    Align = alTop
+    AutoSize = True
+    BorderSpacing.Top = 6
+    Caption = 'Version Numbering'
+    ClientHeight = 82
+    ClientWidth = 590
+    TabOrder = 0
+    object VersionLabel: TLabel
+      AnchorSideLeft.Control = VersionInfoGroupBox
+      AnchorSideTop.Control = VersionInfoGroupBox
+      Left = 6
+      Height = 14
+      Top = 6
+      Width = 40
+      BorderSpacing.Around = 6
+      Caption = 'Version:'
+      ParentColor = False
+    end
+    object MajorRevisionLabel: TLabel
+      AnchorSideLeft.Control = VersionSpinEdit
+      AnchorSideLeft.Side = asrBottom
+      AnchorSideTop.Control = VersionInfoGroupBox
+      Left = 106
+      Height = 14
+      Top = 6
+      Width = 75
+      BorderSpacing.Left = 24
+      BorderSpacing.Around = 6
+      Caption = 'Major Revision:'
+      ParentColor = False
+    end
+    object MinorRevisionLabel: TLabel
+      AnchorSideLeft.Control = MajorRevisionSpinEdit
+      AnchorSideLeft.Side = asrBottom
+      AnchorSideTop.Control = VersionInfoGroupBox
+      Left = 206
+      Height = 14
+      Top = 6
+      Width = 74
+      BorderSpacing.Left = 24
+      BorderSpacing.Around = 6
+      Caption = 'Minor Revision:'
+      ParentColor = False
+    end
+    object BuildLabel: TLabel
+      AnchorSideLeft.Control = MinorRevisionSpinEdit
+      AnchorSideLeft.Side = asrBottom
+      AnchorSideTop.Control = VersionInfoGroupBox
+      Left = 306
+      Height = 14
+      Top = 6
+      Width = 27
+      BorderSpacing.Left = 24
+      BorderSpacing.Around = 6
+      Caption = 'Build:'
+      ParentColor = False
+    end
+    object VersionSpinEdit: TSpinEdit
+      AnchorSideLeft.Control = VersionLabel
+      AnchorSideTop.Control = VersionLabel
+      AnchorSideTop.Side = asrBottom
+      Left = 6
+      Height = 21
+      Top = 26
+      Width = 70
+      MaxValue = 65535
+      TabOrder = 0
+    end
+    object MajorRevisionSpinEdit: TSpinEdit
+      AnchorSideLeft.Control = MajorRevisionLabel
+      AnchorSideTop.Control = MajorRevisionLabel
+      AnchorSideTop.Side = asrBottom
+      Left = 106
+      Height = 21
+      Top = 26
+      Width = 70
+      MaxValue = 65535
+      TabOrder = 1
+    end
+    object MinorRevisionSpinEdit: TSpinEdit
+      AnchorSideLeft.Control = MinorRevisionLabel
+      AnchorSideTop.Control = MinorRevisionLabel
+      AnchorSideTop.Side = asrBottom
+      Left = 206
+      Height = 21
+      Top = 26
+      Width = 70
+      MaxValue = 65535
+      TabOrder = 2
+    end
+    object AutomaticallyIncreaseBuildCheckBox: TCheckBox
+      AnchorSideLeft.Control = VersionInfoGroupBox
+      AnchorSideTop.Control = VersionSpinEdit
+      AnchorSideTop.Side = asrBottom
+      Left = 6
+      Height = 17
+      Top = 59
+      Width = 150
+      BorderSpacing.Top = 6
+      BorderSpacing.Around = 6
+      Caption = 'Automatically increase Build'
+      TabOrder = 4
+    end
+    object BuildSpinEdit: TSpinEdit
+      AnchorSideLeft.Control = BuildLabel
+      AnchorSideTop.Control = BuildLabel
+      AnchorSideTop.Side = asrBottom
+      Left = 306
+      Height = 21
+      Top = 26
+      Width = 70
+      MaxValue = 65535
+      TabOrder = 3
+    end
+  end
+  object UseVersionInfoCheckBox: TCheckBox[1]
+    Left = 0
+    Height = 17
+    Top = 0
+    Width = 594
+    Align = alTop
+    Caption = 'Include Version Info in executable'
+    OnChange = UseVersionInfoCheckBoxChange
+    TabOrder = 1
+  end
+  object LanguageSettingsGroupBox: TGroupBox[2]
+    AnchorSideTop.Side = asrBottom
+    AnchorSideRight.Side = asrBottom
+    Left = 0
+    Height = 71
+    Top = 129
+    Width = 594
+    Align = alTop
+    AutoSize = True
+    BorderSpacing.Top = 6
+    Caption = 'Language Options'
+    ClientHeight = 53
+    ClientWidth = 590
+    TabOrder = 2
+    object LanguageSelectionLabel: TLabel
+      AnchorSideLeft.Control = LanguageSettingsGroupBox
+      AnchorSideTop.Control = LanguageSettingsGroupBox
+      Left = 6
+      Height = 14
+      Top = 6
+      Width = 98
+      BorderSpacing.Around = 6
+      Caption = 'Language Selection:'
+      ParentColor = False
+    end
+    object CharacterSetLabel: TLabel
+      AnchorSideLeft.Control = LanguageSelectionComboBox
+      AnchorSideLeft.Side = asrBottom
+      AnchorSideTop.Control = LanguageSettingsGroupBox
+      Left = 260
+      Height = 14
+      Top = 6
+      Width = 72
+      BorderSpacing.Around = 6
+      Caption = 'Character Set:'
+      ParentColor = False
+    end
+    object LanguageSelectionComboBox: TComboBox
+      AnchorSideLeft.Control = LanguageSelectionLabel
+      AnchorSideTop.Control = LanguageSelectionLabel
+      AnchorSideTop.Side = asrBottom
+      Left = 6
+      Height = 21
+      Top = 26
+      Width = 248
+      BorderSpacing.Top = 2
+      BorderSpacing.Bottom = 6
+      ItemHeight = 13
+      TabOrder = 0
+      Text = 'U.S. English'
+    end
+    object CharacterSetComboBox: TComboBox
+      AnchorSideLeft.Control = CharacterSetLabel
+      AnchorSideTop.Control = LanguageSelectionComboBox
+      AnchorSideRight.Control = LanguageSettingsGroupBox
+      AnchorSideRight.Side = asrBottom
+      Left = 260
+      Height = 21
+      Top = 26
+      Width = 324
+      Anchors = [akTop, akLeft, akRight]
+      BorderSpacing.Right = 6
+      BorderSpacing.Bottom = 6
+      ItemHeight = 13
+      TabOrder = 1
+      Text = 'Multilingual'
+    end
+  end
+  object OtherInfoGroupBox: TGroupBox[3]
+    AnchorSideTop.Side = asrBottom
+    AnchorSideRight.Side = asrBottom
+    Left = 0
+    Height = 107
+    Top = 206
+    Width = 594
+    Align = alTop
+    AutoSize = True
+    BorderSpacing.Top = 6
+    Caption = 'Other Info'
+    ClientHeight = 89
+    ClientWidth = 590
+    TabOrder = 3
+    object DescriptionLabel: TLabel
+      AnchorSideTop.Control = DescriptionEdit
+      AnchorSideTop.Side = asrCenter
+      Left = 6
+      Height = 14
+      Top = 9
+      Width = 58
+      BorderSpacing.Left = 6
+      Caption = 'Description:'
+      ParentColor = False
+    end
+    object CopyrightLabel: TLabel
+      AnchorSideLeft.Control = DescriptionLabel
+      AnchorSideTop.Control = CopyrightEdit
+      AnchorSideTop.Side = asrCenter
+      Left = 6
+      Height = 14
+      Top = 36
+      Width = 52
+      Caption = 'Copyright:'
+      ParentColor = False
+    end
+    object DescriptionEdit: TEdit
+      AnchorSideLeft.Control = DescriptionLabel
+      AnchorSideLeft.Side = asrBottom
+      AnchorSideTop.Control = OtherInfoGroupBox
+      AnchorSideRight.Control = OtherInfoGroupBox
+      AnchorSideRight.Side = asrBottom
+      Left = 74
+      Height = 21
+      Top = 6
+      Width = 510
+      Anchors = [akTop, akLeft, akRight]
+      BorderSpacing.Left = 10
+      BorderSpacing.Top = 6
+      BorderSpacing.Right = 6
+      TabOrder = 0
+    end
+    object CopyrightEdit: TEdit
+      AnchorSideLeft.Control = DescriptionEdit
+      AnchorSideTop.Control = DescriptionEdit
+      AnchorSideTop.Side = asrBottom
+      AnchorSideRight.Control = OtherInfoGroupBox
+      AnchorSideRight.Side = asrBottom
+      Left = 74
+      Height = 21
+      Top = 33
+      Width = 510
+      Anchors = [akTop, akLeft, akRight]
+      BorderSpacing.Top = 6
+      BorderSpacing.Right = 6
+      TabOrder = 1
+    end
+    object AdditionalInfoButton: TBitBtn
+      AnchorSideTop.Control = CopyrightEdit
+      AnchorSideTop.Side = asrBottom
+      AnchorSideRight.Control = OtherInfoGroupBox
+      AnchorSideRight.Side = asrBottom
+      AnchorSideBottom.Side = asrBottom
+      Left = 488
+      Height = 23
+      Top = 60
+      Width = 96
+      Anchors = [akTop, akRight]
+      AutoSize = True
+      BorderSpacing.Around = 6
+      Caption = 'Additional Info'
+      NumGlyphs = 0
+      OnClick = AdditionalInfoButtonClick
+      TabOrder = 2
+    end
+  end
+end

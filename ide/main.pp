@@ -80,7 +80,7 @@ uses
   Compiler, CompilerOptions, CompilerOptionsDlg, CheckCompilerOpts,
   ApplicationBundle, ImExportCompilerOpts, InfoBuild,
   // projects
-  ProjectResources, Project, ProjectDefs, NewProjectDlg, ProjectOpts,
+  ProjectResources, Project, ProjectDefs, NewProjectDlg, 
   PublishProjectDlg, ProjectInspector, PackageDefs,
   // help manager
   IDEContextHelpEdit, IDEHelpIntf, HelpManager, CodeHelp, HelpOptions,
@@ -103,8 +103,9 @@ uses
   ChgEncodingDlg, DelphiUnit2Laz, DelphiProject2Laz, LazXMLForms,
   // rest of the ide
   Splash, IDEDefs, LazarusIDEStrConsts, LazConf, MsgView, SearchResultView,
-  CodeTemplatesDlg, CodeBrowser, FindUnitDlg, OI_options, IdeOptionsDlg,
-  editor_general_options, formed_options,
+  CodeTemplatesDlg, CodeBrowser, FindUnitDlg, IdeOptionsDlg,
+  // environment options
+  editor_general_options, formed_options, OI_options,
   files_options, desktop_options, window_options,
   Backup_Options, naming_options, fpdoc_options,
   editor_display_options, editor_keymapping_options, editor_mouseaction_options,
@@ -120,6 +121,11 @@ uses
   codeexplorer_update_options, codeexplorer_categories_options,
   codeobserver_options,
   help_general_options,
+  // project options
+  project_application_options, project_forms_options, project_lazdoc_options,
+  project_save_options, project_versioninfo_options, project_i18n_options,
+  project_misc_options,
+
   PublishModule, EnvironmentOpts, TransferMacros, KeyMapping, IDETranslations,
   IDEProcs, ExtToolDialog, ExtToolEditDlg, OutputFilter, JumpHistoryView,
   BuildLazDialog, MiscOptions, InputHistory, UnitDependencies, ClipBoardHistory,
@@ -357,6 +363,8 @@ type
     procedure DoEditorOptionsAfterWrite(Sender: TObject);
     procedure DoCodetoolsOptionsAfterWrite(Sender: TObject);
     procedure DoCodeExplorerOptionsAfterWrite(Sender: TObject);
+    procedure DoProjectBeforeRead(Sender: TObject);
+    procedure DoProjectAfterWrite(Sender: TObject);
 
     // SourceNotebook events
     procedure OnSrcNoteBookActivated(Sender: TObject);
@@ -3692,14 +3700,8 @@ begin
 end;
 
 procedure TMainIDE.mnuProjectOptionsClicked(Sender: TObject);
-var
-  ActiveSrcEdit: TSourceEditor;
-  ActiveUnitInfo: TUnitInfo;
 begin
-  BeginCodeTool(ActiveSrcEdit, ActiveUnitInfo, []);
-  if ShowProjectOptionsDialog(Project1)=mrOk then begin
-    UpdateCaption;
-  end;
+  DoOpenIDEOptions(nil, TAbstractIDEProjectOptions);
 end;
 
 function TMainIDE.UpdateProjectPOFile(AProject: TProject): TModalResult;
@@ -4332,6 +4334,112 @@ procedure TMainIDE.DoCodeExplorerOptionsAfterWrite(Sender: TObject);
 begin
   if CodeExplorerView<>nil then
     CodeExplorerView.Refresh(true);
+end;
+
+procedure TMainIDE.DoProjectBeforeRead(Sender: TObject);
+var
+  ActiveSrcEdit: TSourceEditor;
+  ActiveUnitInfo: TUnitInfo;
+begin
+  BeginCodeTool(ActiveSrcEdit, ActiveUnitInfo, []);
+end;
+
+procedure TMainIDE.DoProjectAfterWrite(Sender: TObject);
+var
+  Project: TProject absolute Sender;
+
+  function GetTitle: String;
+  begin
+    Result := '';
+    if (Project = nil) or (Project.MainUnitID < 0) then
+      Exit;
+    CodeToolBoss.GetApplicationTitleStatement(Project.MainUnitInfo.Source, Result);
+  end;
+
+  function SetTitle: Boolean;
+  var
+    OldTitle: String;
+  begin
+    Result := True;
+    if (Project.MainUnitID < 0) or
+      (not (pfMainUnitHasTitleStatement in Project.Flags)) then
+      Exit;
+    OldTitle := GetTitle;
+    if (OldTitle = '') and Project.TitleIsDefault then
+      Exit;
+
+    if (OldTitle <> Project.Title) and (not Project.TitleIsDefault) then
+      if not CodeToolBoss.SetApplicationTitleStatement(Project.MainUnitInfo.Source, Project.Title) then
+      begin
+        MessageDlg(lisProjOptsError,
+          'Unable to change project title in source.'#13 +
+          CodeToolBoss.ErrorMessage,
+          mtWarning, [mbOk], 0);
+        Result := False;
+        Exit;
+      end;// set Application.Title:= statement
+
+    if (OldTitle <> '') and Project.TitleIsDefault then
+      if not CodeToolBoss.RemoveApplicationTitleStatement(Project.MainUnitInfo.Source) then
+      begin
+        MessageDlg(lisProjOptsError,
+          'Unable to remove project title from source.'#13 +
+          CodeToolBoss.ErrorMessage,
+          mtWarning, [mbOk], 0);
+        Result := False;
+        Exit;
+      end;// delete title
+  end;
+
+  function SetAutoCreateForms: boolean;
+  var
+    i: integer;
+    OldList: TStrings;
+  begin
+    Result := True;
+    if (Project.MainUnitID < 0) or
+      (not (pfMainUnitHasUsesSectionForAllUnits in Project.Flags)) then
+      Exit;
+    OldList := Project.GetAutoCreatedFormsList;
+    if (OldList = nil) then
+      Exit;
+    try
+      if OldList.Count = Project.TmpAutoCreatedForms.Count then
+      begin
+
+        { Just exit if the form list is the same }
+        i := OldList.Count - 1;
+        while (i >= 0) and (CompareText(OldList[i], Project.TmpAutoCreatedForms[i]) = 0) do
+          Dec(i);
+        if i < 0 then
+          Exit;
+      end;
+
+      if not CodeToolBoss.SetAllCreateFromStatements(Project.MainUnitInfo.Source,
+        Project.TmpAutoCreatedForms) then
+      begin
+        MessageDlg(lisProjOptsError,
+          Format(lisProjOptsUnableToChangeTheAutoCreateFormList, [LineEnding]),
+          mtWarning, [mbOK], 0);
+        Result := False;
+        Exit;
+      end;
+    finally
+      OldList.Free;
+    end;
+  end;
+
+begin
+  SetTitle;
+  SetAutoCreateForms;
+  // extend include path
+  Project.AutoAddOutputDirToIncPath;
+  if Project.Resources.Modified and (Project.MainUnitID >= 0) then
+  begin
+    if not Project.Resources.Regenerate(Project.MainFilename, True, False, '') then
+      MessageDlg(Project.Resources.Messages.Text, mtWarning, [mbOk], 0);
+  end;
+  UpdateCaption;
 end;
 
 procedure TMainIDE.mnuEnvEditorOptionsClicked(Sender: TObject);
@@ -6892,6 +7000,8 @@ begin
   Result.OnSaveUnitSessionInfo:=@OnSaveProjectUnitSessionInfo;
   Result.OnGetTestDirectory:=@OnProjectGetTestDirectory;
   Result.OnChangeProjectInfoFile:=@OnProjectChangeInfoFile;
+  Result.OnBeforeRead:=@DoProjectBeforeRead;
+  Result.OnAfterWrite:=@DoProjectAfterWrite;
 end;
 
 procedure TMainIDE.OnSaveProjectUnitSessionInfo(AUnitInfo: TUnitInfo);

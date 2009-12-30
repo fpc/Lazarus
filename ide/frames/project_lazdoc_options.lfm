@@ -1,0 +1,90 @@
+inherited ProjectLazDocOptionsFrame: TProjectLazDocOptionsFrame
+  Height = 269
+  Width = 478
+  ClientHeight = 269
+  ClientWidth = 478
+  TabOrder = 0
+  DesignLeft = 422
+  DesignTop = 407
+  object LazDocListBox: TListBox[0]
+    AnchorSideLeft.Control = Owner
+    AnchorSideTop.Control = Owner
+    AnchorSideRight.Control = Owner
+    AnchorSideRight.Side = asrBottom
+    Left = 0
+    Height = 108
+    Top = 0
+    Width = 478
+    Anchors = [akTop, akLeft, akRight]
+    ItemHeight = 0
+    TabOrder = 0
+  end
+  object LazDocPathEdit: TEdit[1]
+    AnchorSideLeft.Control = Owner
+    AnchorSideTop.Control = LazDocListBox
+    AnchorSideTop.Side = asrBottom
+    AnchorSideRight.Control = LazDocBrowseButton
+    Left = 0
+    Height = 21
+    Top = 114
+    Width = 454
+    Anchors = [akTop, akLeft, akRight]
+    BorderSpacing.Top = 6
+    BorderSpacing.Bottom = 6
+    TabOrder = 1
+    Text = 'LazDocPathEdit'
+  end
+  object LazDocBrowseButton: TButton[2]
+    AnchorSideLeft.Control = LazDocPathEdit
+    AnchorSideLeft.Side = asrBottom
+    AnchorSideTop.Control = LazDocPathEdit
+    AnchorSideRight.Control = Owner
+    AnchorSideRight.Side = asrBottom
+    AnchorSideBottom.Control = LazDocPathEdit
+    AnchorSideBottom.Side = asrBottom
+    Left = 454
+    Height = 21
+    Top = 114
+    Width = 24
+    Anchors = [akTop, akRight, akBottom]
+    Caption = '...'
+    OnClick = LazDocBrowseButtonClick
+    TabOrder = 2
+  end
+  object LazDocAddPathButton: TBitBtn[3]
+    AnchorSideLeft.Control = Owner
+    AnchorSideTop.Control = LazDocPathEdit
+    AnchorSideTop.Side = asrBottom
+    Left = 0
+    Height = 23
+    Top = 141
+    Width = 133
+    AutoSize = True
+    BorderSpacing.Top = 6
+    Caption = 'LazDocAddPathButton'
+    NumGlyphs = 0
+    OnClick = LazDocAddPathButtonClick
+    TabOrder = 3
+  end
+  object LazDocDeletePathButton: TBitBtn[4]
+    AnchorSideLeft.Control = LazDocAddPathButton
+    AnchorSideLeft.Side = asrBottom
+    AnchorSideTop.Control = LazDocPathEdit
+    AnchorSideTop.Side = asrBottom
+    Left = 139
+    Height = 23
+    Top = 141
+    Width = 145
+    AutoSize = True
+    BorderSpacing.Around = 6
+    Caption = 'LazDocDeletePathButton'
+    NumGlyphs = 0
+    OnClick = LazDocDeletePathButtonClick
+    TabOrder = 4
+  end
+  object SelectDirectoryDialog: TSelectDirectoryDialog[5]
+    FilterIndex = 0
+    left = 116
+    top = 241
+  end
+end

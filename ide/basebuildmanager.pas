@@ -66,6 +66,7 @@ type
     function CheckUnitPathForAmbiguousPascalFiles(const BaseDir, TheUnitPath,
                                     CompiledExt, ContextDescription: string
                                     ): TModalResult; virtual; abstract;
+    function CreateProjectApplicationBundle: Boolean; virtual; abstract;
 
     function BackupFile(const Filename: string): TModalResult; virtual; abstract;
 

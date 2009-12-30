@@ -1,0 +1,75 @@
+inherited ProjectI18NOptionsFrame: TProjectI18NOptionsFrame
+  Height = 177
+  Width = 438
+  ClientHeight = 177
+  ClientWidth = 438
+  TabOrder = 0
+  DesignLeft = 467
+  DesignTop = 355
+  object EnableI18NCheckBox: TCheckBox[0]
+    Left = 0
+    Height = 17
+    Top = 0
+    Width = 438
+    Align = alTop
+    Caption = 'Enable i18n'
+    OnChange = EnableI18NCheckBoxChange
+    TabOrder = 0
+  end
+  object I18NGroupBox: TGroupBox[1]
+    AnchorSideTop.Side = asrBottom
+    AnchorSideRight.Side = asrBottom
+    Left = 0
+    Height = 73
+    Top = 23
+    Width = 438
+    Align = alTop
+    AutoSize = True
+    BorderSpacing.Top = 6
+    Caption = 'i18n Options'
+    ClientHeight = 55
+    ClientWidth = 434
+    TabOrder = 1
+    object PoOutDirLabel: TLabel
+      Left = 6
+      Height = 14
+      Top = 6
+      Width = 103
+      BorderSpacing.Around = 6
+      Caption = 'PO Output Directory:'
+      ParentColor = False
+    end
+    object POOutDirEdit: TEdit
+      AnchorSideLeft.Control = I18NGroupBox
+      AnchorSideTop.Control = PoOutDirLabel
+      AnchorSideTop.Side = asrBottom
+      AnchorSideRight.Control = POOutDirButton
+      Left = 6
+      Height = 21
+      Top = 26
+      Width = 398
+      Anchors = [akTop, akLeft, akRight]
+      BorderSpacing.Left = 6
+      BorderSpacing.Top = 6
+      BorderSpacing.Bottom = 6
+      TabOrder = 0
+      Text = 'POOutDirEdit'
+    end
+    object POOutDirButton: TButton
+      AnchorSideTop.Control = POOutDirEdit
+      AnchorSideRight.Control = I18NGroupBox
+      AnchorSideRight.Side = asrBottom
+      AnchorSideBottom.Control = POOutDirEdit
+      AnchorSideBottom.Side = asrBottom
+      Left = 404
+      Height = 21
+      Top = 26
+      Width = 24
+      Anchors = [akTop, akRight, akBottom]
+      BorderSpacing.Right = 6
+      Caption = '...'
+      OnClick = POOutDirButtonClick
+      TabOrder = 1
+    end
+  end
+end

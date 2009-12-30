@@ -69,14 +69,12 @@ type
   end; 
 
 
-function ShowVersionInfoAdditionailInfoForm(LocalVersionInfo: TProjectVersionInfo;
-                                            var ProjectModified: boolean) : TModalResult;
+function ShowVersionInfoAdditionailInfoForm(LocalVersionInfo: TProjectVersionInfo) : TModalResult;
 
 implementation
 
 
-function ShowVersionInfoAdditionailInfoForm(LocalVersionInfo: TProjectVersionInfo;
-                                            var ProjectModified: boolean) : TModalResult;
+function ShowVersionInfoAdditionailInfoForm(LocalVersionInfo: TProjectVersionInfo) : TModalResult;
 
 var VersionInfoAdditionalInfoForm: TVersionInfoAdditinalInfoForm;
 begin

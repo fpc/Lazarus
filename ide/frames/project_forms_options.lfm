@@ -1,0 +1,143 @@
+inherited ProjectFormsOptionsFrame: TProjectFormsOptionsFrame
+  Height = 463
+  Width = 501
+  ClientHeight = 463
+  ClientWidth = 501
+  TabOrder = 0
+  DesignLeft = 356
+  DesignTop = 178
+  object FormsAutoCreatedLabel: TLabel[0]
+    AnchorSideLeft.Control = FormsAutoCreatedListBox
+    AnchorSideTop.Control = Owner
+    Left = 30
+    Height = 14
+    Top = 0
+    Width = 117
+    Caption = 'FormsAutoCreatedLabel'
+    ParentColor = False
+  end
+  object FormsAvailFormsLabel: TLabel[1]
+    AnchorSideLeft.Control = FormsAvailFormsListBox
+    AnchorSideTop.Control = Owner
+    Left = 284
+    Height = 14
+    Top = 0
+    Width = 107
+    Caption = 'FormsAvailFormsLabel'
+    ParentColor = False
+  end
+  object FormsMoveAutoCreatedFormUpBtn: TSpeedButton[2]
+    AnchorSideLeft.Control = Owner
+    Left = 0
+    Height = 24
+    Top = 36
+    Width = 24
+    Color = clBtnFace
+    NumGlyphs = 0
+    OnClick = FormsMoveAutoCreatedFormUpBtnClick
+  end
+  object FormsMoveAutoCreatedFormsDownBtn: TSpeedButton[3]
+    AnchorSideLeft.Control = Owner
+    AnchorSideTop.Control = FormsMoveAutoCreatedFormUpBtn
+    AnchorSideTop.Side = asrBottom
+    Left = 0
+    Height = 24
+    Top = 66
+    Width = 24
+    BorderSpacing.Top = 6
+    Color = clBtnFace
+    NumGlyphs = 0
+    OnClick = FormsMoveAutoCreatedFormsDownBtnClick
+  end
+  object FormsRemoveFromAutoCreatedFormsBtn: TSpeedButton[4]
+    AnchorSideLeft.Side = asrCenter
+    AnchorSideRight.Control = FormsAvailFormsLabel
+    Left = 254
+    Height = 24
+    Top = 36
+    Width = 24
+    Anchors = [akTop, akRight]
+    BorderSpacing.Right = 6
+    Color = clBtnFace
+    NumGlyphs = 0
+    OnClick = FormsRemoveFromAutoCreatedFormsBtnClick
+  end
+  object FormsAddToAutoCreatedFormsBtn: TSpeedButton[5]
+    AnchorSideLeft.Control = FormsRemoveFromAutoCreatedFormsBtn
+    AnchorSideTop.Control = FormsRemoveFromAutoCreatedFormsBtn
+    AnchorSideTop.Side = asrBottom
+    Left = 254
+    Height = 24
+    Top = 66
+    Width = 24
+    BorderSpacing.Top = 6
+    Color = clBtnFace
+    NumGlyphs = 0
+    OnClick = FormsAddToAutoCreatedFormsBtnClick
+  end
+  object FormsAutoCreatedListBox: TListBox[6]
+    AnchorSideLeft.Control = FormsMoveAutoCreatedFormsDownBtn
+    AnchorSideLeft.Side = asrBottom
+    AnchorSideTop.Control = FormsAutoCreatedLabel
+    AnchorSideTop.Side = asrBottom
+    AnchorSideRight.Control = lblMiddle
+    AnchorSideBottom.Control = FormsAutoCreateNewFormsCheckBox
+    Left = 30
+    Height = 420
+    Top = 20
+    Width = 217
+    Anchors = [akTop, akLeft, akRight, akBottom]
+    BorderSpacing.Left = 6
+    BorderSpacing.Top = 6
+    BorderSpacing.Right = 3
+    BorderSpacing.Bottom = 6
+    ItemHeight = 0
+    MultiSelect = True
+    OnDblClick = FormsRemoveFromAutoCreatedFormsBtnClick
+    TabOrder = 0
+  end
+  object FormsAvailFormsListBox: TListBox[7]
+    AnchorSideLeft.Control = lblMiddle
+    AnchorSideLeft.Side = asrBottom
+    AnchorSideTop.Control = FormsAvailFormsLabel
+    AnchorSideTop.Side = asrBottom
+    AnchorSideRight.Control = Owner
+    AnchorSideRight.Side = asrBottom
+    AnchorSideBottom.Control = FormsAutoCreateNewFormsCheckBox
+    Left = 284
+    Height = 420
+    Top = 20
+    Width = 217
+    Anchors = [akTop, akLeft, akRight, akBottom]
+    BorderSpacing.Left = 33
+    BorderSpacing.Top = 6
+    BorderSpacing.Bottom = 6
+    ItemHeight = 0
+    MultiSelect = True
+    OnDblClick = FormsAddToAutoCreatedFormsBtnClick
+    TabOrder = 1
+  end
+  object FormsAutoCreateNewFormsCheckBox: TCheckBox[8]
+    AnchorSideLeft.Control = FormsAddToAutoCreatedFormsBtn
+    AnchorSideTop.Control = FormsAutoCreatedListBox
+    Left = 0
+    Height = 17
+    Top = 446
+    Width = 501
+    Align = alBottom
+    Caption = 'FormsAutoCreateNewFormsCheckBox'
+    TabOrder = 2
+  end
+  object lblMiddle: TLabel[9]
+    AnchorSideLeft.Control = Owner
+    AnchorSideLeft.Side = asrCenter
+    AnchorSideTop.Control = Owner
+    AnchorSideTop.Side = asrCenter
+    Left = 250
+    Height = 1
+    Top = 231
+    Width = 1
+    AutoSize = False
+    ParentColor = False
+  end
+end

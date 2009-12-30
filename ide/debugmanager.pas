@@ -47,7 +47,7 @@ uses
   SynEdit, CodeCache, CodeToolManager,
   SrcEditorIntf, MenuIntf, IDECommands, LazIDEIntf, ProjectIntf, IDEDialogs,
   LazConf,
-  CompilerOptions, EditorOptions, EnvironmentOpts, ProjectOpts, KeyMapping, SourceEditor,
+  CompilerOptions, EditorOptions, EnvironmentOpts, KeyMapping, SourceEditor,
   ProjectDefs, Project, IDEProcs, InputHistory, Debugger, CmdLineDebugger,
   IDEOptionDefs, LazarusIDEStrConsts,
   MainBar, MainIntf, MainBase, BaseBuildManager,
@@ -2171,7 +2171,7 @@ begin
           [LaunchingCmdLine, #13, #13, #13, #13]),
         mtError, [mbYes, mbNo, mbCancel], 0) = mrYes then
       begin
-        if not CreateProjectApplicationBundle(Project1) then Exit;
+        if not BuildBoss.CreateProjectApplicationBundle then Exit;
       end
       else
         Exit;
