@@ -1,0 +1,85 @@
+inherited ProjectMessagesOptionsFrame: TProjectMessagesOptionsFrame
+  Height = 455
+  Width = 626
+  ClientHeight = 455
+  ClientWidth = 626
+  DesignLeft = 364
+  DesignTop = 347
+  object grpCompilerMessages: TGroupBox[0]
+    Left = 6
+    Height = 443
+    Top = 6
+    Width = 614
+    Align = alClient
+    BorderSpacing.Around = 6
+    Caption = 'grpCompilerMessages'
+    ClientHeight = 421
+    ClientWidth = 606
+    TabOrder = 0
+    object chkUseMsgFile: TCheckBox
+      AnchorSideLeft.Control = grpCompilerMessages
+      AnchorSideTop.Control = editMsgFileName
+      AnchorSideTop.Side = asrCenter
+      Left = 6
+      Height = 18
+      Top = 8
+      Width = 113
+      BorderSpacing.Around = 6
+      Caption = 'chkUseMsgFile'
+      OnChange = chkUseMsgFileChange
+      TabOrder = 0
+    end
+    object editMsgFileName: TEdit
+      AnchorSideLeft.Control = chkUseMsgFile
+      AnchorSideLeft.Side = asrBottom
+      AnchorSideTop.Control = grpCompilerMessages
+      AnchorSideRight.Control = btnBrowseMsg
+      Left = 127
+      Height = 22
+      Top = 6
+      Width = 395
+      Anchors = [akTop, akLeft, akRight]
+      BorderSpacing.Left = 8
+      BorderSpacing.Top = 6
+      BorderSpacing.Right = 8
+      TabOrder = 1
+      Text = 'editMsgFileName'
+    end
+    object btnBrowseMsg: TButton
+      AnchorSideTop.Control = editMsgFileName
+      AnchorSideRight.Control = grpCompilerMessages
+      AnchorSideRight.Side = asrBottom
+      AnchorSideBottom.Control = editMsgFileName
+      AnchorSideBottom.Side = asrBottom
+      Left = 530
+      Height = 22
+      Top = 6
+      Width = 70
+      Anchors = [akTop, akRight, akBottom]
+      AutoSize = True
+      BorderSpacing.Right = 6
+      Caption = '...'
+      OnClick = btnBrowseMsgClick
+      TabOrder = 2
+    end
+    object chklistCompMsg: TCheckListBox
+      AnchorSideLeft.Control = grpCompilerMessages
+      AnchorSideTop.Control = editMsgFileName
+      AnchorSideTop.Side = asrBottom
+      AnchorSideRight.Control = grpCompilerMessages
+      AnchorSideRight.Side = asrBottom
+      AnchorSideBottom.Control = grpCompilerMessages
+      AnchorSideBottom.Side = asrBottom
+      Left = 6
+      Height = 381
+      Top = 34
+      Width = 594
+      Anchors = [akTop, akLeft, akRight, akBottom]
+      BorderSpacing.Around = 6
+      ItemHeight = 0
+      OnClick = chklistCompMsgClick
+      Sorted = True
+      TabOrder = 3
+    end
+  end
+end
