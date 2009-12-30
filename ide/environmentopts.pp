@@ -1414,7 +1414,7 @@ begin
   AMacroList.Add(TTransferMacro.Create('TestDir','',
                  lisTestDirectory,@MacroFuncTestDir,[]));
   AMacroList.Add(TTransferMacro.Create('ConfDir','',
-                 lisProjectSrcPath,@MacroFuncConfDir,[]));
+                 lisConfigDirectory,@MacroFuncConfDir,[]));
   AMacroList.Add(TTransferMacro.Create('Home',GetUserDir,
                  lisUserSHomeDirectory, nil, []));
 end;
