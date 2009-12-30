@@ -1,4 +1,4 @@
-unit project_messages_options;
+unit compiler_messages_options;
 
 {$mode objfpc}{$H+}
 
@@ -13,9 +13,9 @@ uses
 
 type
 
-  { TProjectMessagesOptionsFrame }
+  { TCompilerMessagesOptionsFrame }
 
-  TProjectMessagesOptionsFrame = class(TAbstractIDEOptionsEditor)
+  TCompilerMessagesOptionsFrame = class(TAbstractIDEOptionsEditor)
     btnBrowseMsg: TButton;
     chklistCompMsg: TCheckListBox;
     chkUseMsgFile: TCheckBox;
@@ -42,14 +42,14 @@ type
 
 implementation
 
-{ TProjectMessagesOptionsFrame }
+{ TCompilerMessagesOptionsFrame }
 
-procedure TProjectMessagesOptionsFrame.chkUseMsgFileChange(Sender: TObject);
+procedure TCompilerMessagesOptionsFrame.chkUseMsgFileChange(Sender: TObject);
 begin
   UpdateMessages;
 end;
 
-procedure TProjectMessagesOptionsFrame.chklistCompMsgClick(Sender: TObject);
+procedure TCompilerMessagesOptionsFrame.chklistCompMsgClick(Sender: TObject);
 var
   i : Integer;
 begin
@@ -57,7 +57,7 @@ begin
     TCompilerMessageConfig(chklistCompMsg.Items.Objects[i]).Ignored := not chklistCompMsg.Checked[i];
 end;
 
-procedure TProjectMessagesOptionsFrame.btnBrowseMsgClick(Sender: TObject);
+procedure TCompilerMessagesOptionsFrame.btnBrowseMsgClick(Sender: TObject);
 var
   dlg : TOpenDialog;
 begin
@@ -72,7 +72,7 @@ begin
   end;
 end;
 
-procedure TProjectMessagesOptionsFrame.UpdateMessages;
+procedure TCompilerMessagesOptionsFrame.UpdateMessages;
 const
   MaxIndexLen = 5;
 var
@@ -122,38 +122,39 @@ begin
   end;
 end;
 
-constructor TProjectMessagesOptionsFrame.Create(TheOwner: TComponent);
+constructor TCompilerMessagesOptionsFrame.Create(TheOwner: TComponent);
 begin
   inherited Create(TheOwner);
   TempMessages:=TCompilerMessagesList.Create;
 end;
 
-destructor TProjectMessagesOptionsFrame.Destroy;
+destructor TCompilerMessagesOptionsFrame.Destroy;
 begin
   TempMessages.Free;
   inherited Destroy;
 end;
 
-function TProjectMessagesOptionsFrame.GetTitle: String;
+function TCompilerMessagesOptionsFrame.GetTitle: String;
 begin
   Result:=dlgCOCfgCmpMessages;
 end;
 
-procedure TProjectMessagesOptionsFrame.Setup(ADialog: TAbstractOptionsEditorDialog);
+procedure TCompilerMessagesOptionsFrame.Setup(ADialog: TAbstractOptionsEditorDialog);
 begin
   grpCompilerMessages.Caption := dlgCompilerMessage;
   chkUseMsgFile.Caption := dlgUseMsgFile;
   editMsgFileName.Caption := '';
 end;
 
-procedure TProjectMessagesOptionsFrame.ReadSettings(AOptions: TAbstractIDEOptions);
+procedure TCompilerMessagesOptionsFrame.ReadSettings(AOptions: TAbstractIDEOptions);
 begin
   chkUseMsgFile.OnChange := nil;
   try
-    with AOptions as TProject do begin
-      chkUseMsgFile.Checked := CompilerOptions.UseMsgFile;
-      editMsgFileName.Caption := CompilerOptions.MsgFileName;
-      TempMessages.Assign(CompilerOptions.CompilerMessages);
+    with AOptions as TProjectCompilerOptions do 
+    begin
+      chkUseMsgFile.Checked := UseMsgFile;
+      editMsgFileName.Caption := MsgFileName;
+      TempMessages.Assign(CompilerMessages);
       UpdateMessages;
     end;
   finally
@@ -161,24 +162,24 @@ begin
   end;
 end;
 
-procedure TProjectMessagesOptionsFrame.WriteSettings(AOptions: TAbstractIDEOptions);
+procedure TCompilerMessagesOptionsFrame.WriteSettings(AOptions: TAbstractIDEOptions);
 begin
-  with AOptions as TProject do
+  with AOptions as TProjectCompilerOptions do
   begin
-    CompilerOptions.UseMsgFile := chkUseMsgFile.Checked;
-    CompilerOptions.MsgFileName := editMsgFileName.Caption;
-    CompilerOptions.CompilerMessages.Assign(TempMessages);
+    UseMsgFile := chkUseMsgFile.Checked;
+    MsgFileName := editMsgFileName.Caption;
+    CompilerMessages.Assign(TempMessages);
   end;
 end;
 
-class function TProjectMessagesOptionsFrame.SupportedOptionsClass: TAbstractIDEOptionsClass;
+class function TCompilerMessagesOptionsFrame.SupportedOptionsClass: TAbstractIDEOptionsClass;
 begin
-  Result:=TProject;
+  Result:=TProjectCompilerOptions;
 end;
 
 initialization
-  {$I project_messages_options.lrs}
-  RegisterIDEOptionsEditor(GroupCompiler, TProjectMessagesOptionsFrame, 500{todo: CompilerOptionsMessages});
+  {$I compiler_messages_options.lrs}
+  RegisterIDEOptionsEditor(GroupCompiler, TCompilerMessagesOptionsFrame, 500{todo: CompilerOptionsMessages});
 
 end.
 

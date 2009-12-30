@@ -1,4 +1,4 @@
-inherited ProjectMessagesOptionsFrame: TProjectMessagesOptionsFrame
+inherited CompilerMessagesOptionsFrame: TCompilerMessagesOptionsFrame
   Height = 455
   Width = 626
   ClientHeight = 455

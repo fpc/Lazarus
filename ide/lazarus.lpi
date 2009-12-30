@@ -450,11 +450,11 @@
         <UnitName Value="project_misc_options"/>
       </Unit58>
       <Unit59>
-        <Filename Value="frames/project_messages_options.pas"/>
+        <Filename Value="frames/compile_messages_options.pas"/>
         <IsPartOfProject Value="True"/>
-        <ComponentName Value="ProjectMessagesOptionsFrame"/>
+        <ComponentName Value="CompilerMessagesOptionsFrame"/>
         <ResourceBaseClass Value="Frame"/>
-        <UnitName Value="project_messages_options"/>
+        <UnitName Value="compiler_messages_options"/>
       </Unit59>
     </Units>
   </ProjectOptions>
