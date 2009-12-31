@@ -1,10 +1,10 @@
 msgid ""
 msgstr ""
+"MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"PO-Revision-Date: 2009-12-17 19:29+0900\n"
+"PO-Revision-Date: 2009-12-28 20:52+0900\n"
 "Project-Id-Version: lazaruside.ja\n"
-"MIME-Version: 1.0\n"
 "Last-Translator: Haruyuki Fujimaki\n"
 "Language-Team: Japanese Lazarus ML\n"
 
@@ -793,7 +793,7 @@ msgstr "デバッガの種類とパス"
 
 #: lazarusidestrconsts.dlgdefaulteditorfont
 msgid "Default editor font"
-msgstr "初期エディターフォント"
+msgstr "初期エディタ フォント"
 
 #: lazarusidestrconsts.dlgdefvaluecolor
 msgid "Default Value"
@@ -993,7 +993,7 @@ msgstr "エディタのフォントの大きさ"
 #: lazarusidestrconsts.dlgeditoroptions
 msgctxt "lazarusidestrconsts.dlgeditoroptions"
 msgid "Editor options"
-msgstr "エディターオプション"
+msgstr "エディタ オプション"
 
 #: lazarusidestrconsts.dlgedmisc
 msgid "Misc"
@@ -2798,11 +2798,11 @@ msgstr "オプション：ガイドラインに留まる"
 #, fuzzy
 #| msgid "Tab order..."
 msgid "Tab Order..."
-msgstr "タブオーダー..."
+msgstr "タブ 順序..."
 
 #: lazarusidestrconsts.fdmzorder
 msgid "Z-order"
-msgstr ""
+msgstr "Z 順序"
 
 #: lazarusidestrconsts.gldhighlightbothsidesofcursor
 msgid "On Both Sides"
@@ -5675,7 +5675,7 @@ msgstr "大文字と小文字（例:Aとa）を区別する"
 
 #: lazarusidestrconsts.lisdocumentationeditor
 msgid "Documentation Editor"
-msgstr "ドキュメントエディター"
+msgstr "ドキュメントエディタ"
 
 #: lazarusidestrconsts.lisdoesnotexists
 msgid "%s does not exists: %s"
@@ -7270,7 +7270,7 @@ msgstr "状況感知型ヘルプを編集"
 #: lazarusidestrconsts.liskmeditoroptions
 msgctxt "lazarusidestrconsts.liskmeditoroptions"
 msgid "Editor options"
-msgstr "エディターオプション"
+msgstr "エディタオプション"
 
 #: lazarusidestrconsts.liskmencloseselection
 msgid "Enclose selection"
@@ -8350,7 +8350,7 @@ msgstr "インストール済みパッケージを設定 ..."
 
 #: lazarusidestrconsts.lismenueditor
 msgid "Menu Editor..."
-msgstr ""
+msgstr "メニュー エディタ..."
 
 #: lazarusidestrconsts.lismenueditorcancel
 msgctxt "lazarusidestrconsts.lismenueditorcancel"
@@ -8387,7 +8387,7 @@ msgstr "新しいアイテムを挿入（前）"
 
 #: lazarusidestrconsts.lismenueditormenueditor
 msgid "Menu Editor"
-msgstr "メニューエディター"
+msgstr "メニューエディタ"
 
 #: lazarusidestrconsts.lismenueditormovedown
 msgid "Move Down (or right)"
@@ -10959,7 +10959,7 @@ msgstr "privateメソッド"
 
 #: lazarusidestrconsts.lisprobablyyouneedtoinstallsomepackagesforbeforeconti
 msgid "Probably you need to install some packages for before continuing.%s%sWarning:%sThe project depends on some packages, which contain units with the Register procedure. The Register procedure is normally used to install components in the IDE. But the following units belong to packages which are not yet installed in the IDE. If you try to open a form in the IDE, that uses such components, you will get errors about missing components and the form loading will probably create very unpleasant results.%s%sThis has no impact on opening the project or any of its sources.%s%sIt only means: It is a bad idea to open the forms for designing, before installing the missing packages.%s%s"
-msgstr "おそらく続行する前にいくつかのパッケージをインストールする必要があります。%s%s警告:%sプロジェクトは Register手続きを持つユニットを含むいくつかのパッケージに依存します。Register手続きはふつう、コンポーネントをIDEにインストールするために用いられます。しかし以下のユニットはまだIDEにインストールされていないパッケージに属しています。もしIDEでそのようなコンポーネントを用いているフォームを開こうとすると、コンポーネントが見付からないというエラーが表示され、フォーム読み込みがおそらく非常に不快な結果をもたらします。%s%sこれはプロジェクトを開くことやそのソースに対しては影響を与えません。%s%sただ、見つからないパッケージをインストールする前に、設計のためフォームを開くこと�"
+msgstr "おそらく続行する前にいくつかのパッケージをインストールする必要があります。%s%s警告:%sプロジェクトは Register手続きを持つユニットを含むいくつかのパッケージに依存します。Register手続きはふつう、コンポーネントをIDEにインストールするために用いられます。しかし以下のユニットはまだIDEにインストールされていないパッケージに属しています。もしIDEでそのようなコンポーネントを用いているフォームを開こうとすると、コンポーネントが見付からないというエラーが表示され、フォーム読み込みがおそらく非常に不快な結果をもたらします。%s%sこれはプロジェクトを開くことやそのソースに対しては影響を与えません。%s%sただ、見つからないパッケージをインストールする前に、設計のためフォームを開くこと"
 
 #: lazarusidestrconsts.lisprocedure
 msgctxt "lazarusidestrconsts.lisprocedure"
@@ -11699,7 +11699,7 @@ msgstr "ガターを表示"
 
 #: lazarusidestrconsts.lisshowhintsinobjectinspector
 msgid "Show hints"
-msgstr "オブジェクトインスペクターのヒントを表示"
+msgstr "オブジェクトインスペクタのヒントを表示"
 
 #: lazarusidestrconsts.lisshowidentifiers
 msgid "Show identifiers"
@@ -11711,7 +11711,7 @@ msgstr "情報ボックスを表示"
 
 #: lazarusidestrconsts.lisshowoldtaborder
 msgid "Show old tab order"
-msgstr "古いタブオーダーを表示"
+msgstr "古いタブ順序を表示"
 
 #: lazarusidestrconsts.lisshowpackages
 msgid "Show packages"
@@ -11957,7 +11957,7 @@ msgstr "タブ"
 
 #: lazarusidestrconsts.listaborderof
 msgid "Tab Order of"
-msgstr "次のタブオーダー"
+msgstr "次のタブ順序"
 
 #: lazarusidestrconsts.listargetcpu
 msgid "Target CPU"
@@ -12025,7 +12025,7 @@ msgstr "クラス%s%s%sのコンポーネントエディタがエラーを出し
 
 #: lazarusidestrconsts.listhecomponenteditorofclassinvokedwithverbhascreated
 msgid "The component editor of class %s%s%s%sinvoked with verb #%s %s%s%s%shas created the error:%s%s%s%s"
-msgstr "クラス %s%s%s%s (それは、動詞#%s %s%s%s%s で呼びだされた)のコンポーネントエディターがエラーを発生させました:%s%s%s%s"
+msgstr "クラス %s%s%s%s (それは、動詞#%s %s%s%s%s で呼びだされた)のコンポーネントエディタがエラーを発生させました:%s%s%s%s"
 
 #: lazarusidestrconsts.listhecomponentisinheritedfromtodeleteaninheritedcomp
 msgid "The component %s is inherited from %s.%sTo delete an inherited component open the ancestor and delete it there."
@@ -12117,7 +12117,7 @@ msgstr "ファイル %s%s%sはDelphiユニットではありません。"
 
 #: lazarusidestrconsts.listhefileisnotalazarusprojectcreateanewprojectforthi
 msgid "The file %s%s%s is not a lazarus project.%sCreate a new project for this %s?"
-msgstr ""
+msgstr "ファイル %s%s%s は、lazarusプロジェクトではありません。%sこの %s のための新しいプロジェクトを作成しますか?"
 
 #: lazarusidestrconsts.listhefileseemstobeaprogramclosecurrentproject
 msgid "The file %s%s%s%sseems to be a program. Close current project and create a new lazarus project for this program?%s\"No\" will load the file as normal source."
@@ -14429,7 +14429,7 @@ msgstr "切り替えモード"
 
 #: lazarusidestrconsts.srkmectoggleobjectinsp
 msgid "View Object Inspector"
-msgstr "オブジェクトインスペクターを表示"
+msgstr "オブジェクトインスペクタを表示"
 
 #: lazarusidestrconsts.srkmectoggleregisters
 msgid "View registers"
@@ -14586,7 +14586,7 @@ msgstr "デバッグ"
 
 #: lazarusidestrconsts.uemeditorproperties
 msgid "Editor properties"
-msgstr "エディタープロパティ"
+msgstr "エディタプロパティ"
 
 #: lazarusidestrconsts.uemencloseselection
 msgctxt "lazarusidestrconsts.uemencloseselection"
