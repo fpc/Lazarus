@@ -3,6 +3,7 @@ inherited CompilerMessagesOptionsFrame: TCompilerMessagesOptionsFrame
   Width = 626
   ClientHeight = 455
   ClientWidth = 626
+  TabOrder = 0
   DesignLeft = 364
   DesignTop = 347
   object grpCompilerMessages: TGroupBox[0]
@@ -33,14 +34,14 @@ inherited CompilerMessagesOptionsFrame: TCompilerMessagesOptionsFrame
       AnchorSideLeft.Side = asrBottom
       AnchorSideTop.Control = grpCompilerMessages
       AnchorSideRight.Control = btnBrowseMsg
-      Left = 101
+      Left = 99
       Height = 21
       Top = 6
-      Width = 469
+      Width = 473
       Anchors = [akTop, akLeft, akRight]
-      BorderSpacing.Left = 8
+      BorderSpacing.Left = 6
       BorderSpacing.Top = 6
-      BorderSpacing.Right = 8
+      BorderSpacing.Right = 6
       TabOrder = 1
       Text = 'editMsgFileName'
     end

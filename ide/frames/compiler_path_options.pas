@@ -335,7 +335,7 @@ begin
     Anchors := [akRight, akTop, akBottom];
     AnchorParallel(akTop, 0, edtOtherUnits);
     AnchorParallel(akBottom, 0, edtOtherUnits);
-    AnchorParallel(akRight, 6, Self);
+    AnchorParallel(akRight, 0, Self);
     AutoSize := True;
     OnClick := @PathEditBtnClick;
     OnExecuted := @PathEditBtnExecuted;
@@ -353,7 +353,7 @@ begin
     Anchors := [akRight, akTop, akBottom];
     AnchorParallel(akTop, 0, edtIncludeFiles);
     AnchorParallel(akBottom, 0, edtIncludeFiles);
-    AnchorParallel(akRight, 6, Self);
+    AnchorParallel(akRight, 0, Self);
     AutoSize := True;
     Caption := '...';
     OnClick := @PathEditBtnClick;
@@ -372,7 +372,7 @@ begin
     Anchors := [akRight, akTop, akBottom];
     AnchorParallel(akTop, 0, edtOtherSources);
     AnchorParallel(akBottom, 0, edtOtherSources);
-    AnchorParallel(akRight, 6, Self);
+    AnchorParallel(akRight, 0, Self);
     AutoSize := True;
     Caption := '...';
     OnClick := @PathEditBtnClick;
@@ -391,7 +391,7 @@ begin
     Anchors := [akRight, akTop, akBottom];
     AnchorParallel(akTop, 0, edtLibraries);
     AnchorParallel(akBottom, 0, edtLibraries);
-    AnchorParallel(akRight, 6, Self);
+    AnchorParallel(akRight, 0, Self);
     AutoSize := True;
     Caption := '...';
     OnClick := @PathEditBtnClick;
@@ -410,7 +410,7 @@ begin
     Anchors := [akRight, akTop, akBottom];
     AnchorParallel(akTop, 0, edtUnitOutputDir);
     AnchorParallel(akBottom, 0, edtUnitOutputDir);
-    AnchorParallel(akRight, 6, Self);
+    AnchorParallel(akRight, 0, Self);
     AutoSize := True;
     Caption := '...';
     OnClick := @FileBrowseBtnClick;
@@ -428,7 +428,7 @@ begin
     Anchors := [akRight, akTop, akBottom];
     AnchorParallel(akTop, 0, edtDebugPath);
     AnchorParallel(akBottom, 0, edtDebugPath);
-    AnchorParallel(akRight, 6, Self);
+    AnchorParallel(akRight, 0, Self);
     AutoSize := True;
     Caption := '...';
     OnClick := @PathEditBtnClick;
