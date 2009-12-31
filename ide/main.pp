@@ -126,7 +126,7 @@ uses
   project_save_options, project_versioninfo_options, project_i18n_options,
   project_misc_options,
   // project compiler options
-  compiler_path_options, compiler_messages_options,
+  compiler_path_options, compiler_parsing_options, compiler_messages_options,
 
   PublishModule, EnvironmentOpts, TransferMacros, KeyMapping, IDETranslations,
   IDEProcs, ExtToolDialog, ExtToolEditDlg, OutputFilter, JumpHistoryView,

@@ -1,4 +1,4 @@
-inherited TCompilerPathOptionsFrame: TTCompilerPathOptionsFrame
+inherited CompilerPathOptionsFrame: TCompilerPathOptionsFrame
   Height = 356
   Width = 473
   ClientHeight = 356

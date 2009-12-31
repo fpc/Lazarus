@@ -12,9 +12,9 @@ uses
 
 type
 
-  { TTCompilerPathOptionsFrame }
+  { TCompilerPathOptionsFrame }
 
-  TTCompilerPathOptionsFrame = class(TAbstractIDEOptionsEditor)
+  TCompilerPathOptionsFrame = class(TAbstractIDEOptionsEditor)
     edtDebugPath: TEdit;
     edtIncludeFiles: TEdit;
     edtLibraries: TEdit;
@@ -53,9 +53,9 @@ type
 
 implementation
 
-{ TTCompilerPathOptionsFrame }
+{ TCompilerPathOptionsFrame }
 
-function TTCompilerPathOptionsFrame.Check: boolean;
+function TCompilerPathOptionsFrame.Check: boolean;
 
   function CheckPutSearchPath(
   const Context, OldExpandedPath, NewExpandedPath: string): boolean;
@@ -108,12 +108,12 @@ begin
   Result := True;
 end;
 
-function TTCompilerPathOptionsFrame.GetTitle: string;
+function TCompilerPathOptionsFrame.GetTitle: string;
 begin
   Result := dlgSearchPaths;
 end;
 
-function TTCompilerPathOptionsFrame.CheckSearchPath(const Context, ExpandedPath: string;
+function TCompilerPathOptionsFrame.CheckSearchPath(const Context, ExpandedPath: string;
   Level: TCheckCompileOptionsMsgLvl): boolean;
 var
   CurPath: string;
@@ -179,7 +179,7 @@ begin
   Result := True;
 end;
 
-procedure TTCompilerPathOptionsFrame.PathEditBtnClick(Sender: TObject);
+procedure TCompilerPathOptionsFrame.PathEditBtnClick(Sender: TObject);
 var
   AButton: TPathEditorButton;
   OldPath, Templates: string;
@@ -233,7 +233,7 @@ begin
   end;
 end;
 
-procedure TTCompilerPathOptionsFrame.PathEditBtnExecuted(Sender: TObject);
+procedure TCompilerPathOptionsFrame.PathEditBtnExecuted(Sender: TObject);
 
   function CheckPath(const Context, NewPath: string): boolean;
   var
@@ -288,7 +288,7 @@ begin
   end;
 end;
 
-procedure TTCompilerPathOptionsFrame.FileBrowseBtnClick(Sender: TObject);
+procedure TCompilerPathOptionsFrame.FileBrowseBtnClick(Sender: TObject);
 var
   OpenDialog: TOpenDialog;
   DefaultFilename: string;
@@ -321,7 +321,7 @@ begin
   end;
 end;
 
-procedure TTCompilerPathOptionsFrame.Setup(ADialog: TAbstractOptionsEditorDialog);
+procedure TCompilerPathOptionsFrame.Setup(ADialog: TAbstractOptionsEditorDialog);
 var
   LCLInterface: TLCLPlatform;
   s: string;
@@ -458,7 +458,7 @@ begin
   end;
 end;
 
-procedure TTCompilerPathOptionsFrame.ReadSettings(AOptions: TAbstractIDEOptions);
+procedure TCompilerPathOptionsFrame.ReadSettings(AOptions: TAbstractIDEOptions);
 var
   LCLPlatform: TLCLPlatform;
 begin
@@ -480,7 +480,7 @@ begin
   end;
 end;
 
-procedure TTCompilerPathOptionsFrame.WriteSettings(AOptions: TAbstractIDEOptions);
+procedure TCompilerPathOptionsFrame.WriteSettings(AOptions: TAbstractIDEOptions);
 var
   i: integer;
 begin
@@ -501,14 +501,14 @@ begin
   end;
 end;
 
-class function TTCompilerPathOptionsFrame.SupportedOptionsClass: TAbstractIDEOptionsClass;
+class function TCompilerPathOptionsFrame.SupportedOptionsClass: TAbstractIDEOptionsClass;
 begin
   Result := TProjectCompilerOptions;
 end;
 
 initialization
   {$I compiler_path_options.lrs}
-  RegisterIDEOptionsEditor(GroupCompiler, TTCompilerPathOptionsFrame,
+  RegisterIDEOptionsEditor(GroupCompiler, TCompilerPathOptionsFrame,
     CompilerOptionsSearchPaths);
 
 end.
