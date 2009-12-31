@@ -1,0 +1,213 @@
+inherited TCompilerPathOptionsFrame: TTCompilerPathOptionsFrame
+  Height = 356
+  Width = 473
+  ClientHeight = 356
+  ClientWidth = 473
+  TabOrder = 0
+  DesignLeft = 346
+  DesignTop = 328
+  object lblOtherUnits: TLabel[0]
+    AnchorSideLeft.Control = Owner
+    AnchorSideTop.Control = Owner
+    AnchorSideRight.Control = Owner
+    AnchorSideRight.Side = asrBottom
+    Left = 0
+    Height = 14
+    Top = 0
+    Width = 473
+    Anchors = [akTop, akLeft, akRight]
+    Caption = 'lblOtherUnits'
+    ParentColor = False
+  end
+  object lblIncludeFiles: TLabel[1]
+    AnchorSideLeft.Control = Owner
+    AnchorSideTop.Control = edtOtherUnits
+    AnchorSideTop.Side = asrBottom
+    AnchorSideRight.Control = Owner
+    AnchorSideRight.Side = asrBottom
+    Left = 0
+    Height = 14
+    Top = 41
+    Width = 473
+    Anchors = [akTop, akLeft, akRight]
+    BorderSpacing.Top = 6
+    Caption = 'lblIncludeFiles'
+    ParentColor = False
+  end
+  object lblOtherSources: TLabel[2]
+    AnchorSideLeft.Control = Owner
+    AnchorSideTop.Control = edtIncludeFiles
+    AnchorSideTop.Side = asrBottom
+    AnchorSideRight.Control = Owner
+    AnchorSideRight.Side = asrBottom
+    Left = 0
+    Height = 14
+    Top = 82
+    Width = 473
+    Anchors = [akTop, akLeft, akRight]
+    BorderSpacing.Top = 6
+    Caption = 'lblOtherSources'
+    ParentColor = False
+  end
+  object lblLibraries: TLabel[3]
+    AnchorSideLeft.Control = Owner
+    AnchorSideTop.Control = edtOtherSources
+    AnchorSideTop.Side = asrBottom
+    AnchorSideRight.Control = Owner
+    AnchorSideRight.Side = asrBottom
+    Left = 0
+    Height = 14
+    Top = 123
+    Width = 473
+    Anchors = [akTop, akLeft, akRight]
+    BorderSpacing.Top = 6
+    Caption = 'lblLibraries'
+    ParentColor = False
+  end
+  object lblUnitOutputDir: TLabel[4]
+    AnchorSideLeft.Control = Owner
+    AnchorSideTop.Control = edtLibraries
+    AnchorSideTop.Side = asrBottom
+    AnchorSideRight.Control = Owner
+    AnchorSideRight.Side = asrBottom
+    Left = 0
+    Height = 14
+    Top = 164
+    Width = 473
+    Anchors = [akTop, akLeft, akRight]
+    BorderSpacing.Top = 6
+    Caption = 'lblUnitOutputDir'
+    ParentColor = False
+  end
+  object lblDebugPath: TLabel[5]
+    AnchorSideLeft.Control = Owner
+    AnchorSideTop.Control = edtUnitOutputDir
+    AnchorSideTop.Side = asrBottom
+    AnchorSideRight.Control = Owner
+    AnchorSideRight.Side = asrBottom
+    Left = 0
+    Height = 14
+    Top = 205
+    Width = 473
+    Anchors = [akTop, akLeft, akRight]
+    BorderSpacing.Top = 6
+    Caption = 'lblDebugPath'
+    ParentColor = False
+  end
+  object LCLWidgetTypeLabel: TLabel[6]
+    AnchorSideLeft.Control = Owner
+    AnchorSideTop.Control = LCLWidgetTypeComboBox
+    AnchorSideTop.Side = asrCenter
+    Left = 0
+    Height = 14
+    Top = 249
+    Width = 101
+    Caption = 'LCLWidgetTypeLabel'
+    ParentColor = False
+  end
+  object edtOtherUnits: TEdit[7]
+    AnchorSideLeft.Control = Owner
+    AnchorSideTop.Control = lblOtherUnits
+    AnchorSideTop.Side = asrBottom
+    AnchorSideRight.Control = Owner
+    AnchorSideRight.Side = asrBottom
+    Left = 0
+    Height = 21
+    Top = 14
+    Width = 473
+    Anchors = [akTop, akLeft, akRight]
+    BorderSpacing.Bottom = 6
+    TabOrder = 0
+    Text = 'edtOtherUnits'
+  end
+  object edtIncludeFiles: TEdit[8]
+    AnchorSideLeft.Control = Owner
+    AnchorSideTop.Control = lblIncludeFiles
+    AnchorSideTop.Side = asrBottom
+    AnchorSideRight.Control = Owner
+    AnchorSideRight.Side = asrBottom
+    Left = 0
+    Height = 21
+    Top = 55
+    Width = 473
+    Anchors = [akTop, akLeft, akRight]
+    BorderSpacing.Bottom = 6
+    TabOrder = 1
+    Text = 'edtIncludeFiles'
+  end
+  object edtOtherSources: TEdit[9]
+    AnchorSideLeft.Control = Owner
+    AnchorSideTop.Control = lblOtherSources
+    AnchorSideTop.Side = asrBottom
+    AnchorSideRight.Control = Owner
+    AnchorSideRight.Side = asrBottom
+    Left = 0
+    Height = 21
+    Top = 96
+    Width = 473
+    Anchors = [akTop, akLeft, akRight]
+    BorderSpacing.Bottom = 6
+    TabOrder = 2
+    Text = 'edtOtherSources'
+  end
+  object edtLibraries: TEdit[10]
+    AnchorSideLeft.Control = Owner
+    AnchorSideTop.Control = lblLibraries
+    AnchorSideTop.Side = asrBottom
+    AnchorSideRight.Control = Owner
+    AnchorSideRight.Side = asrBottom
+    Left = 0
+    Height = 21
+    Top = 137
+    Width = 473
+    Anchors = [akTop, akLeft, akRight]
+    BorderSpacing.Bottom = 6
+    TabOrder = 3
+    Text = 'edtLibraries'
+  end
+  object edtUnitOutputDir: TEdit[11]
+    AnchorSideLeft.Control = Owner
+    AnchorSideTop.Control = lblUnitOutputDir
+    AnchorSideTop.Side = asrBottom
+    AnchorSideRight.Control = Owner
+    AnchorSideRight.Side = asrBottom
+    Left = 0
+    Height = 21
+    Top = 178
+    Width = 473
+    Anchors = [akTop, akLeft, akRight]
+    BorderSpacing.Bottom = 6
+    TabOrder = 4
+    Text = 'edtUnitOutputDir'
+  end
+  object edtDebugPath: TEdit[12]
+    AnchorSideLeft.Control = Owner
+    AnchorSideTop.Control = lblDebugPath
+    AnchorSideTop.Side = asrBottom
+    AnchorSideRight.Control = Owner
+    AnchorSideRight.Side = asrBottom
+    Left = 0
+    Height = 21
+    Top = 219
+    Width = 473
+    Anchors = [akTop, akLeft, akRight]
+    BorderSpacing.Bottom = 6
+    TabOrder = 5
+    Text = 'edtDebugPath'
+  end
+  object LCLWidgetTypeComboBox: TComboBox[13]
+    AnchorSideLeft.Control = LCLWidgetTypeLabel
+    AnchorSideLeft.Side = asrBottom
+    AnchorSideTop.Control = edtDebugPath
+    AnchorSideTop.Side = asrBottom
+    Left = 107
+    Height = 21
+    Top = 246
+    Width = 171
+    BorderSpacing.Left = 6
+    BorderSpacing.Top = 6
+    ItemHeight = 13
+    Style = csDropDownList
+    TabOrder = 6
+  end
+end

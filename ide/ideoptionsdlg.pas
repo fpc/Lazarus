@@ -96,6 +96,7 @@ begin
   IDEDialogLayoutList.ApplyLayout(Self, Width, Height);
   Caption := dlgIDEOptions;
   ButtonPanel.OKButton.OnClick := @OKButtonClick;
+  ButtonPanel.OKButton.ModalResult := mrNone;
   ButtonPanel.CancelButton.OnClick := @CancelButtonClick;
   ButtonPanel.HelpButton.OnClick := @HelpButtonClick;
 end;

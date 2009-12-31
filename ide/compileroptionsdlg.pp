@@ -50,15 +50,6 @@ uses
   Compiler_Conditionals_Options, Compiler_BuildVar_Options, CheckLst;
 
 type
-  { Compiler options form }
-  
-  TCheckCompileOptionsMsgLvl = (
-    ccomlHints,
-    ccomlWarning,
-    ccomlErrors,
-    ccomlNone
-    );
-  
   { TfrmCompilerOptions }
 
   TfrmCompilerOptions = class(TForm)
@@ -224,7 +215,6 @@ type
     chkCompilerRun: TCheckBox;
     lblCompiler: TLabel;
     edtCompiler: TEdit;
-    btnCompiler: TButton;
 
     ExecuteAfterGroupBox: TGroupBox;
     lblRunIfExecAfter: TLabel;
@@ -557,18 +547,10 @@ var
   DefaultFilename: String;
   NewFilename: String;
 begin
-  if Sender=btnCompiler then
-    OpenDialog:=TOpenDialog.Create(Self)
-  else
-    OpenDialog:=TSelectDirectoryDialog.Create(Self);
+  OpenDialog:=TSelectDirectoryDialog.Create(Self);
   try
     DefaultFilename:='';
-    if Sender=btnCompiler then begin
-      OpenDialog.Title:=Format(lisBrowseForCompiler, [GetDefaultCompilerFilename
-        ]);
-      DefaultFilename:=FindDefaultCompilerPath;
-      OpenDialog.Options:=OpenDialog.Options+[ofFileMustExist];
-    end else if Sender=btnUnitOutputDir then begin
+    if Sender=btnUnitOutputDir then begin
       OpenDialog.Title:=lisUnitOutputDirectory;
       OpenDialog.Options:=OpenDialog.Options+[ofPathMustExist];
     end else
@@ -582,9 +564,7 @@ begin
       NewFilename:=TrimFilename(OpenDialog.Filename);
       if CompilerOpts<>nil then
         NewFilename:=CompilerOpts.ShortenPath(NewFilename,false);
-      if Sender=btnCompiler then begin
-        edtCompiler.Text:=OpenDialog.Filename;
-      end else if Sender=btnUnitOutputDir then begin
+      if Sender=btnUnitOutputDir then begin
         edtUnitOutputDir.Text:=OpenDialog.Filename;
       end;
     end;

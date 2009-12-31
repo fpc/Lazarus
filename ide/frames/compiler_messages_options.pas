@@ -174,7 +174,7 @@ end;
 
 class function TCompilerMessagesOptionsFrame.SupportedOptionsClass: TAbstractIDEOptionsClass;
 begin
-  Result:=TProjectCompilerOptions;
+  Result := TProjectCompilerOptions;
 end;
 
 initialization

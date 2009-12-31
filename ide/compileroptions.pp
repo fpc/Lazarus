@@ -50,6 +50,13 @@ uses
 
 type
 
+  TCheckCompileOptionsMsgLvl = (
+    ccomlHints,
+    ccomlWarning,
+    ccomlErrors,
+    ccomlNone
+    );
+
   { TIDEBuildVariable }
 
   TIDEBuildVariable = class(TLazBuildVariable)

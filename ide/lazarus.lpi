@@ -43,7 +43,7 @@
         <PackageName Value="SynEdit"/>
       </Item4>
     </RequiredPackages>
-    <Units Count="60">
+    <Units Count="61">
       <Unit0>
         <Filename Value="lazarus.pp"/>
         <IsPartOfProject Value="True"/>
@@ -456,6 +456,13 @@
         <ResourceBaseClass Value="Frame"/>
         <UnitName Value="compiler_messages_options"/>
       </Unit59>
+      <Unit60>
+        <Filename Value="frames/compiler_path_options.pas"/>
+        <IsPartOfProject Value="True"/>
+        <ComponentName Value="TCompilerPathOptionsFrame"/>
+        <ResourceBaseClass Value="Frame"/>
+        <UnitName Value="compiler_path_options"/>
+      </Unit60>
     </Units>
   </ProjectOptions>
   <CompilerOptions>
