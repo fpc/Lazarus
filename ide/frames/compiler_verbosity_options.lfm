@@ -1,0 +1,50 @@
+inherited CompilerVerbosityOptionsFrame: TCompilerVerbosityOptionsFrame
+  Height = 538
+  Width = 697
+  ClientHeight = 538
+  ClientWidth = 697
+  DesignLeft = 396
+  DesignTop = 187
+  object grpVerbosity: TCheckGroup[0]
+    Left = 0
+    Height = 481
+    Top = 0
+    Width = 697
+    Align = alClient
+    AutoFill = True
+    Caption = 'grpVerbosity'
+    ChildSizing.LeftRightSpacing = 6
+    ChildSizing.TopBottomSpacing = 6
+    ChildSizing.EnlargeHorizontal = crsHomogenousChildResize
+    ChildSizing.EnlargeVertical = crsHomogenousChildResize
+    ChildSizing.ShrinkHorizontal = crsScaleChilds
+    ChildSizing.ShrinkVertical = crsScaleChilds
+    ChildSizing.Layout = cclLeftToRightThenTopToBottom
+    ChildSizing.ControlsPerLine = 2
+    Columns = 2
+    TabOrder = 0
+  end
+  object grpErrorCnt: TGroupBox[1]
+    Left = 0
+    Height = 51
+    Top = 487
+    Width = 697
+    Align = alBottom
+    AutoSize = True
+    BorderSpacing.Top = 6
+    Caption = 'grpErrorCnt'
+    ClientHeight = 33
+    ClientWidth = 693
+    TabOrder = 1
+    object edtErrorCnt: TEdit
+      Left = 6
+      Height = 21
+      Top = 6
+      Width = 681
+      Align = alTop
+      BorderSpacing.Around = 6
+      TabOrder = 0
+      Text = 'edtErrorCnt'
+    end
+  end
+end
