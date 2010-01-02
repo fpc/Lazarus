@@ -184,7 +184,8 @@ var
     begin
       if Node.Data <> nil then
         with TAbstractIDEOptionsEditor(Node.Data) do
-          if SupportedOptionsClass = ClassTypeForCompare then
+          if ((ClassTypeForCompare = nil) and (SupportedOptionsClass = nil)) or
+             ClassTypeForCompare.InheritsFrom(SupportedOptionsClass) then
             ReadSettings(AOptions);
       Traverse(Node.GetFirstChild);
       Traverse(Node.GetNextSibling);
@@ -211,7 +212,8 @@ var
     begin
       if Node.Data <> nil then
         with TAbstractIDEOptionsEditor(Node.Data) do
-          if SupportedOptionsClass = ClassTypeForCompare then
+          if ((ClassTypeForCompare = nil) and (SupportedOptionsClass = nil)) or
+             ClassTypeForCompare.InheritsFrom(SupportedOptionsClass) then
             WriteSettings(AOptions);
       Traverse(Node.GetFirstChild);
       Traverse(Node.GetNextSibling);
