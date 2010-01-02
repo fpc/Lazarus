@@ -311,23 +311,19 @@ function TGtkListStoreStringList.IsEqual(List: TStrings): Boolean;
 var
   i, Cnt: Integer;
 begin
-  if List = Self then
-  begin
-    Result := True;
-    Exit;
-  end;
-  Result := False;
-  if List = nil then Exit;
+  if List = Self then Exit(True);
+  if List = nil then Exit(False);
 
-  BeginUpdate;
   Cnt := Count;
-  if (Cnt <> List.Count) then Exit;
+  if (Cnt <> List.Count) then Exit(False);
 
   for i := 0 to Cnt - 1 do
-    if (Strings[i] <> List[i]) or (Objects[i] <> List.Objects[i]) then Exit;
+  begin
+    if Strings[i] <> List[i] then Exit(False);
+    if Objects[i] <> List.Objects[i] then Exit(False);
+  end;
   
   Result := True;
-  EndUpdate;
 end;
 
 procedure TGtkListStoreStringList.BeginUpdate;
@@ -426,20 +422,18 @@ begin
 
   Result := Item;
   g_free(Item);
-
 end;
 
 function TGtkListStoreStringList.GetObject(Index: Integer): TObject;
 var
   ListItem: TGtkTreeIter;
 begin
-  Result := nil;
-  if (Index < 0) or (Index >= Count) 
+  if (Index < 0) or (Index >= Count)
   then begin
     RaiseGDBException('TGtkListStoreStringList.GetObject Out of bounds.');
-    Exit;
+    Exit(nil);
   end;
-  if FGtkListStore = nil then Exit;
+  if FGtkListStore = nil then Exit(nil);
 
   UpdateItemCache;
   ListItem := FCachedItems[Index];
@@ -613,39 +607,22 @@ end;
 procedure TGtkListStoreStringList.Insert(Index: Integer; const S: String);
 var
   li: TGtkTreeIter;
-  l, m, r, cmp: Integer;
   LCLIndex: PInteger;
-
-  {procedure TestNewItem;
-  var
-    Item: PChar;
-    CurString: String;
-  begin
-    Item := nil;
-    gtk_tree_model_get(GTK_TREE_MODEL(FGtkListStore), @li,
-                       [FColumnIndex, @Item, -1]);
-    if (Item <> nil) then begin
-      CurString:= StrPas(Item);
-      DebugLn(['TestNewItem NewItem="',dbgstr(CurString),'"']);
-      g_free(Item);
-      if (not (glsItemCacheNeedsUpdate in FStates))
-      and (not CompareMem(@li,@FCachedItems[Index],SizeOf(li))) then begin
-        DebugLn(['TestNewItem Cache item invalid: Index=',Index]);
-      end;
-    end
-    else
-      DebugLn(['TestNewItem FAILED: new item missing']);
-  end;}
-
 begin
+  if (Index < 0) or (Index > Count)
+  then begin
+    RaiseGDBException('TGtkListStoreStringList.Insert: Index ' + IntToStr(Index) + ' out of bounds. Count=' + IntToStr(Count));
+    Exit;
+  end;
+
+  if Owner = nil
+  then begin
+    RaiseGDBException('TGtkListStoreStringList.Insert Unspecified owner');
+    Exit;
+  end;
+
   BeginUpdate;
   try
-    if (Index < 0) or (Index > Count) 
-    then RaiseGDBException('TGtkListStoreStringList.Insert: Index ' + IntToStr(Index) + ' out of bounds. Count=' + IntToStr(Count));
-
-    if Owner = nil 
-    then RaiseGDBException('TGtkListStoreStringList.Insert Unspecified owner');
-
     // this call is few times faster than gtk_list_store_insert, gtk_list_store_set
     gtk_list_store_insert_with_values(FGtkListStore, @li, Index, FColumnIndex, PChar(S), -1);
     IncreaseChangeStamp;
@@ -675,8 +652,6 @@ begin
     end
     else
       Include(FStates, glsItemCacheNeedsUpdate);
-
-    //TestNewItem;
   finally
     EndUpdate;
   end;
