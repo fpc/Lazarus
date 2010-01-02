@@ -368,8 +368,10 @@ type
     procedure DoEditorOptionsAfterWrite(Sender: TObject);
     procedure DoCodetoolsOptionsAfterWrite(Sender: TObject);
     procedure DoCodeExplorerOptionsAfterWrite(Sender: TObject);
-    procedure DoProjectBeforeRead(Sender: TObject);
-    procedure DoProjectAfterWrite(Sender: TObject);
+    procedure DoProjectOptionsBeforeRead(Sender: TObject);
+    procedure DoProjectOptionsAfterWrite(Sender: TObject);
+    procedure DoCompilerOptionsBeforeWrite(Sender: TObject);
+    procedure DoCompilerOptionsAfterWrite(Sender: TObject);
 
     // SourceNotebook events
     procedure OnSrcNoteBookActivated(Sender: TObject);
@@ -581,6 +583,7 @@ type
     FWaitForClose: Boolean;
     FFixingGlobalComponentLock: integer;
     OldCompilerFilename, OldLanguage: String;
+    OldCompOpts: TBaseCompilerOptions;
 
     procedure RenameInheritedMethods(AnUnitInfo: TUnitInfo; List: TStrings);
     function OIHelpProvider: TAbstractIDEHTMLProvider;
@@ -4344,7 +4347,7 @@ begin
     CodeExplorerView.Refresh(true);
 end;
 
-procedure TMainIDE.DoProjectBeforeRead(Sender: TObject);
+procedure TMainIDE.DoProjectOptionsBeforeRead(Sender: TObject);
 var
   ActiveSrcEdit: TSourceEditor;
   ActiveUnitInfo: TUnitInfo;
@@ -4352,7 +4355,7 @@ begin
   BeginCodeTool(ActiveSrcEdit, ActiveUnitInfo, []);
 end;
 
-procedure TMainIDE.DoProjectAfterWrite(Sender: TObject);
+procedure TMainIDE.DoProjectOptionsAfterWrite(Sender: TObject);
 var
   Project: TProject absolute Sender;
 
@@ -4448,6 +4451,22 @@ begin
       MessageDlg(Project.Resources.Messages.Text, mtWarning, [mbOk], 0);
   end;
   UpdateCaption;
+end;
+
+procedure TMainIDE.DoCompilerOptionsBeforeWrite(Sender: TObject);
+begin
+  OldCompOpts := TBaseCompilerOptionsClass(Sender.ClassType).Create(nil);
+  OldCompOpts.Assign(TBaseCompilerOptions(Sender));
+end;
+
+procedure TMainIDE.DoCompilerOptionsAfterWrite(Sender: TObject);
+begin
+  if not OldCompOpts.IsEqual(TBaseCompilerOptions(Sender)) then
+  begin
+    TBaseCompilerOptions(Sender).Modified := True;
+    IncreaseCompilerParseStamp;
+  end;
+  OldCompOpts.Free;
 end;
 
 procedure TMainIDE.mnuEnvEditorOptionsClicked(Sender: TObject);
@@ -7008,8 +7027,10 @@ begin
   Result.OnSaveUnitSessionInfo:=@OnSaveProjectUnitSessionInfo;
   Result.OnGetTestDirectory:=@OnProjectGetTestDirectory;
   Result.OnChangeProjectInfoFile:=@OnProjectChangeInfoFile;
-  Result.OnBeforeRead:=@DoProjectBeforeRead;
-  Result.OnAfterWrite:=@DoProjectAfterWrite;
+  Result.OnBeforeRead:=@DoProjectOptionsBeforeRead;
+  Result.OnAfterWrite:=@DoProjectOptionsAfterWrite;
+  Result.CompilerOptions.OnBeforeWrite:=@DoCompilerOptionsBeforeWrite;
+  Result.CompilerOptions.OnAfterWrite:=@DoCompilerOptionsAfterWrite;
 end;
 
 procedure TMainIDE.OnSaveProjectUnitSessionInfo(AUnitInfo: TUnitInfo);
