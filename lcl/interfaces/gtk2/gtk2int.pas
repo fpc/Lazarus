@@ -66,11 +66,11 @@ type
     procedure AppInit(var ScreenInfo: TScreenInfo); override;
     function AppHandle: THandle; override;
 
-    procedure SetCallbackEx(const AMsg: LongInt; const AGTKObject: PGTKObject; const ALCLObject: TObject; Direct: boolean);override;
+    procedure SetCallbackEx(const AMsg: LongInt; const AGTKObject: PGTKObject; const ALCLObject: TObject; Direct: Boolean);override;
     procedure SetCommonCallbacks(const AGTKObject: PGTKObject; const ALCLObject: TObject); override;
     procedure SetLabelCaption(const ALabel: PGtkLabel; const ACaption: String); override;
     procedure SetSelectionMode(Sender: TObject; Widget: PGtkWidget;
-      MultiSelect, ExtendedSelect: boolean); override;
+      MultiSelect, ExtendedSelect: Boolean); override;
     procedure SetWidgetFont(const AWidget: PGtkWidget; const AFont: TFont); override;
 
     {$I gtk2winapih.inc}
@@ -81,46 +81,46 @@ type
 
   TGtkListStoreStringList = class(TStrings)
   private
-    FChangeStamp: integer;
-    FColumnIndex : Integer;
-    FGtkListStore : PGtkListStore;
+    FChangeStamp: Integer;
+    FColumnIndex: Integer;
+    FGtkListStore: PGtkListStore;
     FOwner: TWinControl;
-    FSorted : boolean;
+    FSorted: Boolean;
     FStates: TGtkListStringsStates;
-    FCachedCount: integer;
-    FCachedCapacity: integer;
-    FCachedSize: integer;
+    FCachedCount: Integer;
+    FCachedCapacity: Integer;
+    FCachedSize: Integer;
     FCachedItems: PGtkTreeIter;
-    FUpdateCount: integer;
+    FUpdateCount: Integer;
   protected
-    function GetCount : integer; override;
-    function Get(Index : Integer) : string; override;
+    function GetCount: Integer; override;
+    function Get(Index: Integer): String; override;
     function GetObject(Index: Integer): TObject; override;
-    procedure Put(Index: Integer; const S: string); override;
+    procedure Put(Index: Integer; const S: String); override;
     procedure PutObject(Index: Integer; AnObject: TObject); override;
-    procedure SetSorted(Val : boolean); virtual;
+    procedure SetSorted(Val: Boolean); virtual;
     procedure UpdateItemCache;
     procedure GrowCache;
     procedure ShrinkCache;
     procedure IncreaseChangeStamp;
   public
-    constructor Create(TheListStore : PGtkListStore;
-                       ColumnIndex : Integer; TheOwner: TWinControl);
+    constructor Create(AListStore: PGtkListStore;
+                       ColumnIndex: Integer; AOwner: TWinControl);
     destructor Destroy; override;
-    function Add(const S: string): Integer; override;
-    procedure Assign(Source : TPersistent); override;
+    function Add(const S: String): Integer; override;
+    procedure Assign(Source: TPersistent); override;
     procedure Clear; override;
-    procedure Delete(Index : integer); override;
-    function IndexOf(const S: string): Integer; override;
-    procedure Insert(Index : integer; const S: string); override;
+    procedure Delete(Index: Integer); override;
+    function IndexOf(const S: String): Integer; override;
+    procedure Insert(Index: Integer; const S: String); override;
     procedure Sort; virtual;
-    function IsEqual(List: TStrings): boolean;
+    function IsEqual(List: TStrings): Boolean;
     procedure BeginUpdate;
     procedure EndUpdate;
   public
-    property Sorted : boolean read FSorted write SetSorted;
+    property Sorted: Boolean read FSorted write SetSorted;
     property Owner: TWinControl read FOwner;
-    property ChangeStamp: integer read FChangeStamp;
+    property ChangeStamp: Integer read FChangeStamp;
   end;
 
 var
@@ -128,7 +128,7 @@ var
 
 
 implementation
-  
+
 uses
 {$ifdef Windows}
   Gtk2Windows,
@@ -158,39 +158,39 @@ const
   Returns:
 
  ------------------------------------------------------------------------------}
-constructor TGtkListStoreStringList.Create(TheListStore : PGtkListStore;
-  ColumnIndex : Integer; TheOwner: TWinControl);
+constructor TGtkListStoreStringList.Create(AListStore: PGtkListStore;
+  ColumnIndex: Integer; AOwner: TWinControl);
 begin
   inherited Create;
-  if TheListStore = nil then RaiseGDBException(
-    'TGtkListStoreStringList.Create Unspecified list store');
-  fGtkListStore:=TheListStore;
+  if AListStore = nil 
+  then RaiseGDBException('TGtkListStoreStringList.Create Unspecified list store');
 
-  if (ColumnIndex < 0) or
-    (ColumnIndex >= gtk_tree_model_get_n_columns(GTK_TREE_MODEL(fGtkListStore)))
-  then
-    RaiseGDBException('TGtkListStoreStringList.Create Invalid Column Index');
-  FColumnIndex:=ColumnIndex;
+  FGtkListStore := AListStore;
 
-  if TheOwner = nil then RaiseGDBException(
-    'TGtkListStoreStringList.Create Unspecified owner');
-  FOwner:=TheOwner;
-  FStates:=[glsItemCacheNeedsUpdate,glsCountNeedsUpdate];
+  if (ColumnIndex < 0) 
+  or (ColumnIndex >= gtk_tree_model_get_n_columns(GTK_TREE_MODEL(fGtkListStore))) 
+  then RaiseGDBException('TGtkListStoreStringList.Create Invalid Column Index');
+  FColumnIndex := ColumnIndex;
+
+  if AOwner = nil 
+  then RaiseGDBException('TGtkListStoreStringList.Create Unspecified owner');
+  FOwner := AOwner;
+  FStates := [glsItemCacheNeedsUpdate, glsCountNeedsUpdate];
 end;
 
 destructor TGtkListStoreStringList.Destroy;
 begin
-  fGtkListStore:=nil;
+  FGtkListStore := nil;
   // don't destroy the widgets
-  ReAllocMem(FCachedItems,0);
+  ReAllocMem(FCachedItems, 0);
   inherited Destroy;
 end;
 
-function TGtkListStoreStringList.Add(const S: string): Integer;
+function TGtkListStoreStringList.Add(const S: String): Integer;
 begin
-  Result:=Count;
+  Result := Count;
   //DebugLn(['TGtkListStoreStringList.Add ',S,' Count=',Result]);
-  Insert(Count,S);
+  Insert(Result, S);
 end;
 
 {------------------------------------------------------------------------------
@@ -199,20 +199,22 @@ end;
   Returns:
 
  ------------------------------------------------------------------------------}
-procedure TGtkListStoreStringList.SetSorted(Val : boolean);
+procedure TGtkListStoreStringList.SetSorted(Val: Boolean);
 var
   i: Integer;
 begin
-  if Val <> FSorted then begin
-    if Val then begin
-      for i:=0 to Count-2 do begin
-        if AnsiCompareText(Strings[i],Strings[i+1])<0 then begin
-          Sort;
-          break;
-        end;
-      end;
+  if Val = FSorted then Exit;
+
+  FSorted := Val;
+  if not FSorted then Exit;
+
+  for i := 0 to Count - 2 do
+  begin
+    if AnsiCompareText(Strings[i], Strings[i + 1]) < 0 then
+    begin
+      Sort;
+      Break;
     end;
-    FSorted:= Val;
   end;
 end;
 
@@ -223,53 +225,57 @@ end;
 
 procedure TGtkListStoreStringList.UpdateItemCache;
 var
-  i: integer;
+  i: Integer;
 begin
   if not (glsItemCacheNeedsUpdate in FStates) then exit;
+
   //DebugLn(['TGtkListStoreStringList.UpdateItemCache ']); DumpStack;
-  FCachedSize:=Count;
-  FCachedCapacity:=Count;
-  ReAllocMem(FCachedItems,SizeOf(TGtkTreeIter)*FCachedCapacity);
-  if FGtkListStore<>nil then
-    For I := 0 to FCachedSize - 1 do
+  FCachedSize := Count;
+  FCachedCapacity := Count;
+  ReAllocMem(FCachedItems, SizeOf(TGtkTreeIter) * FCachedCapacity);
+  if FGtkListStore <> nil then
+    for I := 0 to FCachedSize - 1 do
       gtk_tree_model_iter_nth_child(GTK_TREE_MODEL(FGtkListStore),
         @FCachedItems[i], nil, I);
-  Exclude(FStates,glsItemCacheNeedsUpdate);
+  Exclude(FStates, glsItemCacheNeedsUpdate);
 end;
 
 procedure TGtkListStoreStringList.GrowCache;
 begin
-  FCachedCapacity:=((FCachedCapacity*5) div 4)+10;
-  ReAllocMem(FCachedItems,SizeOf(TGtkTreeIter)*FCachedCapacity);
+  FCachedCapacity := ((FCachedCapacity * 5) div 4) + 10;
+  ReAllocMem(FCachedItems, SizeOf(TGtkTreeIter) * FCachedCapacity);
 end;
 
 procedure TGtkListStoreStringList.ShrinkCache;
 begin
-  FCachedCapacity:=FCachedSize+1;
-  ReAllocMem(FCachedItems,SizeOf(TGtkTreeIter)*FCachedCapacity);
+  FCachedCapacity := FCachedSize + 1;
+  ReAllocMem(FCachedItems, SizeOf(TGtkTreeIter) * FCachedCapacity);
 end;
 
 procedure TGtkListStoreStringList.IncreaseChangeStamp;
 begin
-  if FChangeStamp<High(FChangeStamp) then
-    inc(FChangeStamp)
+  if FChangeStamp < High(FChangeStamp) then
+    Inc(FChangeStamp)
   else
-    FChangeStamp:=Low(FChangeStamp);
+    FChangeStamp := Low(FChangeStamp);
 end;
 
 procedure TGtkListStoreStringList.PutObject(Index: Integer; AnObject: TObject);
 var
-  ListItem : TGtkTreeIter;
+  ListItem: TGtkTreeIter;
 begin
-  if (Index < 0) or (Index >= Count) then
-    RaiseGDBException('TGtkListStoreStringList.PutObject Out of bounds.')
-  else if FGtkListStore<>nil then begin
-    UpdateItemCache;
-    ListItem:=FCachedItems[Index];
-    gtk_list_store_set(FGtkListStore, @ListItem,
-                       [FColumnIndex+1, Pointer(AnObject), -1]);
-    IncreaseChangeStamp;
+  if (Index < 0) or (Index >= Count) 
+  then begin
+    RaiseGDBException('TGtkListStoreStringList.PutObject Out of bounds.');
+    Exit;
   end;
+
+  if FGtkListStore = nil then Exit;
+
+  UpdateItemCache;
+  ListItem := FCachedItems[Index];
+  gtk_list_store_set(FGtkListStore, @ListItem, [FColumnIndex + 1, Pointer(AnObject), -1]);
+  IncreaseChangeStamp;
 end;
 
 {------------------------------------------------------------------------------
@@ -285,44 +291,48 @@ var
 begin
   BeginUpdate;
   // sort internally (sorting in the widget would be slow and unpretty ;)
-  sl:=TStringList.Create;
+  sl := TStringList.Create;
   sl.Assign(Self);
-  MergeSort(sl,@AnsiCompareText);
-  OldSorted:=Sorted;
-  FSorted:=false;
+  MergeSort(sl, @AnsiCompareText);
+  OldSorted := Sorted;
+  FSorted := False;
   Assign(sl);
-  FSorted:=OldSorted;
+  FSorted := OldSorted;
   sl.Free;
   EndUpdate;
 end;
 
-function TGtkListStoreStringList.IsEqual(List: TStrings): boolean;
+function TGtkListStoreStringList.IsEqual(List: TStrings): Boolean;
 var
-  i, Cnt: integer;
+  i, Cnt: Integer;
 begin
-  if List=Self then begin
-    Result:=true;
-    exit;
+  if List = Self then
+  begin
+    Result := True;
+    Exit;
   end;
-  Result:=false;
-  if List=nil then exit;
+  Result := False;
+  if List = nil then Exit;
+
   BeginUpdate;
-  Cnt:=Count;
-  if (Cnt<>List.Count) then exit;
-  for i:=0 to Cnt-1 do
-    if (Strings[i]<>List[i]) or (Objects[i]<>List.Objects[i]) then exit;
-  Result:=true;
+  Cnt := Count;
+  if (Cnt <> List.Count) then Exit;
+
+  for i := 0 to Cnt - 1 do
+    if (Strings[i] <> List[i]) or (Objects[i] <> List.Objects[i]) then Exit;
+  
+  Result := True;
   EndUpdate;
 end;
 
 procedure TGtkListStoreStringList.BeginUpdate;
 begin
-  inc(FUpdateCount);
+  Inc(FUpdateCount);
 end;
 
 procedure TGtkListStoreStringList.EndUpdate;
 begin
-  dec(FUpdateCount);
+  Dec(FUpdateCount);
 end;
 
 {------------------------------------------------------------------------------
@@ -331,46 +341,56 @@ end;
   Returns:
 
  ------------------------------------------------------------------------------}
-procedure TGtkListStoreStringList.Assign(Source : TPersistent);
+procedure TGtkListStoreStringList.Assign(Source: TPersistent);
 var
-  i, Cnt: integer;
+  i, Cnt: Integer;
   CmpList: TStrings;
   OldSorted: Boolean;
 begin
-  if (Source=Self) or (Source=nil) then exit;
-  if ((Source is TGtkListStoreStringList)
-    and (TGtkListStoreStringList(Source).FGtkListStore=FGtkListStore))
-  then
+  if (Source = Self) or (Source = nil) then Exit;
+
+  if ((Source is TGtkListStoreStringList) 
+  and (TGtkListStoreStringList(Source).FGtkListStore = FGtkListStore)) then
     RaiseGDBException('TGtkListStoreStringList.Assign: There are 2 lists with the same FGtkListStore');
+
   BeginUpdate;
-  OldSorted:=Sorted;
-  CmpList:=nil;
+  OldSorted := Sorted;
+  CmpList := nil;
   try
-    if Source is TStrings then begin
+    if Source is TStrings then
+    begin
       // clearing and resetting can change other properties of the widget,
       // => don't change if the content is already the same
-      if Sorted then begin
-        CmpList:=TStringList.Create;
+      if Sorted then
+      begin
+        CmpList := TStringList.Create;
         CmpList.Assign(TStrings(Source));
-        MergeSort(TStringList(CmpList),@AnsiCompareText);
-      end else
-        CmpList:=TStrings(Source);
-      if IsEqual(CmpList) then exit;
+        TStringList(CmpList).Sort;
+      end
+      else
+        CmpList := TStrings(Source);
+     
+      if IsEqual(CmpList) then Exit;
+
       Clear;
-      FSorted:=false;
-      Cnt:=TStrings(Source).Count;
-      for i:=0 to Cnt - 1 do begin
-        AddObject(CmpList[i],CmpList.Objects[i]);
+      FSorted := False;
+      Cnt := TStrings(Source).Count;
+      for i := 0 to Cnt - 1 do
+      begin
+        AddObject(CmpList[i], CmpList.Objects[i]);
         //DebugLn(['TGtkListStoreStringList.Assign ',i,' ',CmpList[i],' ',Count]);
       end;
       // ToDo: restore other settings
 
       // Do not call inherited Assign as it does things we do not want to happen
-    end else
+    end
+    else
       inherited Assign(Source);
   finally
-    fSorted:=OldSorted;
-    if CmpList<>Source then CmpList.Free;
+    fSorted := OldSorted;
+    if CmpList <> Source 
+    then CmpList.Free;
+
     EndUpdate;
   end;
 end;
@@ -381,55 +401,63 @@ end;
   Returns:
 
  ------------------------------------------------------------------------------}
-function TGtkListStoreStringList.Get(Index : integer) : string;
+function TGtkListStoreStringList.Get(Index: Integer): String;
 var
-  Item : PChar;
-  ListItem : TGtkTreeIter;
+  Item: PChar;
+  ListItem: TGtkTreeIter;
 begin
-  if (Index < 0) or (Index >= Count) then
-    RaiseGDBException('TGtkListStoreStringList.Get Out of bounds.')
-  else begin
-    UpdateItemCache;
-    ListItem:=FCachedItems[Index];
-
-    Item := nil;
-    gtk_tree_model_get(GTK_TREE_MODEL(FGtkListStore), @ListItem,
-                       [FColumnIndex, @Item, -1]);
-    if (Item <> nil) then begin
-      Result:= StrPas(Item);
-      g_free(Item);
-    end
-    else
-      result := '';
+  if (Index < 0) or (Index >= Count) 
+  then begin
+    RaiseGDBException('TGtkListStoreStringList.Get Out of bounds.');
+    Exit;
   end;
+
+  UpdateItemCache;
+  ListItem := FCachedItems[Index];
+
+  Item := nil;
+  gtk_tree_model_get(GTK_TREE_MODEL(FGtkListStore), @ListItem, [FColumnIndex, @Item, -1]);
+  if (Item <> nil) then
+  begin
+    Result := StrPas(Item);
+    g_free(Item);
+  end
+  else 
+    Result := '';
 end;
 
 function TGtkListStoreStringList.GetObject(Index: Integer): TObject;
 var
-  ListItem : TGtkTreeIter;
+  ListItem: TGtkTreeIter;
 begin
-  Result:=nil;
-  if (Index < 0) or (Index >= Count) then
-    RaiseGDBException('TGtkListStoreStringList.GetObject Out of bounds.')
-  else if FGtkListStore<>nil then begin
-    UpdateItemCache;
-    ListItem:=FCachedItems[Index];
-    gtk_tree_model_get(FGtkListStore, @ListItem, [FColumnIndex+1, @Result, -1]);
+  Result := nil;
+  if (Index < 0) or (Index >= Count) 
+  then begin
+    RaiseGDBException('TGtkListStoreStringList.GetObject Out of bounds.');
+    Exit;
   end;
+  if FGtkListStore = nil then Exit;
+
+  UpdateItemCache;
+  ListItem := FCachedItems[Index];
+  gtk_tree_model_get(FGtkListStore, @ListItem, [FColumnIndex + 1, @Result, -1]);
 end;
 
-procedure TGtkListStoreStringList.Put(Index: Integer; const S: string);
+procedure TGtkListStoreStringList.Put(Index: Integer; const S: String);
 var
-  ListItem : TGtkTreeIter;
+  ListItem: TGtkTreeIter;
 begin
-  if (Index < 0) or (Index >= Count) then
-    RaiseGDBException('TGtkListStoreStringList.Put Out of bounds.')
-  else if FGtkListStore<>nil then begin
-    UpdateItemCache;
-    ListItem:=FCachedItems[Index];
-    gtk_list_store_set(FGtkListStore, @ListItem, [FColumnIndex, PChar(S), -1]);
-    IncreaseChangeStamp;
+  if (Index < 0) or (Index >= Count) 
+  then begin
+    RaiseGDBException('TGtkListStoreStringList.Put Out of bounds.');
+    Exit;
   end;
+  if FGtkListStore = nil then Exit;
+
+  UpdateItemCache;
+  ListItem := FCachedItems[Index];
+  gtk_list_store_set(FGtkListStore, @ListItem, [FColumnIndex, PChar(S), -1]);
+  IncreaseChangeStamp;
 end;
 
 {------------------------------------------------------------------------------
@@ -438,16 +466,17 @@ end;
   Returns:
 
  ------------------------------------------------------------------------------}
-function TGtkListStoreStringList.GetCount: integer;
+function TGtkListStoreStringList.GetCount: Integer;
 begin
-  if (glsCountNeedsUpdate in FStates) then begin
-    if FGtkListStore<>nil then
-      FCachedCount:=gtk_tree_model_iter_n_children(GTK_TREE_MODEL(FGtkListStore),nil)
+  if (glsCountNeedsUpdate in FStates) then
+  begin
+    if FGtkListStore <> nil then
+      FCachedCount := gtk_tree_model_iter_n_children(GTK_TREE_MODEL(FGtkListStore), nil)
     else
-      FCachedCount:=0;
-    Exclude(FStates,glsCountNeedsUpdate);
+      FCachedCount := 0;
+    Exclude(FStates, glsCountNeedsUpdate);
   end;
-  Result:=FCachedCount;
+  Result := FCachedCount;
 end;
 
 {------------------------------------------------------------------------------
@@ -465,25 +494,26 @@ begin
 
   //Lock the widget to avoid trigger events
   //Note: Assign/Clear is called inside CreateHandle before Handle is set
-  if FOwner.HandleAllocated then begin
+  if FOwner.HandleAllocated then
+  begin
     WidgetInfo := GetWidgetInfo(Pointer(FOwner.Handle), False);
     Inc(WidgetInfo^.ChangeLock);
-    
+
     gtk_list_store_clear(FGtkListStore);
 
     Dec(WidgetInfo^.ChangeLock);
     //Update the internal Index cache
     PInteger(WidgetInfo^.UserData)^ := -1;
   end;
-    
+
   IncreaseChangeStamp;
 
-  ReAllocMem(FCachedItems,0);
-  FCachedCapacity:=0;
-  FCachedSize:=0;
-  Exclude(FStates,glsItemCacheNeedsUpdate);
-  FCachedCount:=0;
-  Exclude(FStates,glsCountNeedsUpdate);
+  ReAllocMem(FCachedItems, 0);
+  FCachedCapacity := 0;
+  FCachedSize := 0;
+  Exclude(FStates, glsItemCacheNeedsUpdate);
+  FCachedCount := 0;
+  Exclude(FStates, glsCountNeedsUpdate);
 end;
 
 {------------------------------------------------------------------------------
@@ -492,7 +522,7 @@ end;
   Returns:
 
  ------------------------------------------------------------------------------}
-procedure TGtkListStoreStringList.Delete(Index : integer);
+procedure TGtkListStoreStringList.Delete(Index: Integer);
 var
   ListItem: TGtkTreeIter;
   WidgetInfo: PWidgetInfo;
@@ -509,16 +539,17 @@ begin
   gtk_list_store_remove(FGtkListStore, @ListItem);
   Dec(WidgetInfo^.ChangeLock);
   IncreaseChangeStamp;
-  
+
   if not (glsCountNeedsUpdate in FStates) then
-    dec(FCachedCount);
-  if (not (glsItemCacheNeedsUpdate in FStates)) and (Index=Count) then
+    Dec(FCachedCount);
+  if (not (glsItemCacheNeedsUpdate in FStates)) and (Index = Count) then
   begin
     // cache is valid and the last item was deleted -> just remove last item
-    dec(FCachedSize);
+    Dec(FCachedSize);
     if (FCachedSize < FCachedCapacity div 2) then
       ShrinkCache;
-  end else
+  end
+  else
     Include(FStates, glsItemCacheNeedsUpdate);
 
   if FOwner is TCustomComboBox then
@@ -564,12 +595,12 @@ end;
   Returns:
 
  ------------------------------------------------------------------------------}
-procedure TGtkListStoreStringList.Insert(Index : integer; const S : string);
+procedure TGtkListStoreStringList.Insert(Index: Integer; const S: String);
 var
-  li : TGtkTreeIter;
-  l, m, r, cmp: integer;
+  li: TGtkTreeIter;
+  l, m, r, cmp: Integer;
   LCLIndex: PInteger;
-  
+
   {procedure TestNewItem;
   var
     Item: PChar;
@@ -590,7 +621,7 @@ var
     else
       DebugLn(['TestNewItem FAILED: new item missing']);
   end;}
-  
+
 begin
   BeginUpdate;
   try
@@ -612,11 +643,12 @@ begin
         inc(m);
       Index:=m;
     end;
-    if (Index < 0) or (Index > Count) then
-      RaiseGDBException('TGtkListStoreStringList.Insert: Index '+IntToStr(Index)
-        +' out of bounds. Count='+IntToStr(Count));
-    if Owner = nil then RaiseGDBException(
-      'TGtkListStoreStringList.Insert Unspecified owner');
+
+    if (Index < 0) or (Index > Count) 
+    then RaiseGDBException('TGtkListStoreStringList.Insert: Index ' + IntToStr(Index) + ' out of bounds. Count=' + IntToStr(Count));
+
+    if Owner = nil 
+    then RaiseGDBException('TGtkListStoreStringList.Insert Unspecified owner');
 
     // this call is few times faster than gtk_list_store_insert, gtk_list_store_set
     gtk_list_store_insert_with_values(FGtkListStore, @li, Index, FColumnIndex, PChar(S), -1);
@@ -634,17 +666,19 @@ begin
     // ToDo: connect callbacks
 
     if not (glsCountNeedsUpdate in FStates) then
-      inc(FCachedCount);
+      Inc(FCachedCount);
 
-    if (not (glsItemCacheNeedsUpdate in FStates)) and (Index=Count-1) then begin
+    if (not (glsItemCacheNeedsUpdate in FStates)) and (Index = Count - 1) then
+    begin
       // cache is valid and item was added as last
       // Add item to cache (instead of updating the whole cache)
       // This accelerates Assign.
-      if FCachedSize=FCachedCapacity then GrowCache;
-      FCachedItems[FCachedSize]:=li;
-      inc(FCachedSize);
-    end else
-      Include(FStates,glsItemCacheNeedsUpdate);
+      if FCachedSize = FCachedCapacity then GrowCache;
+      FCachedItems[FCachedSize] := li;
+      Inc(FCachedSize);
+    end
+    else
+      Include(FStates, glsItemCacheNeedsUpdate);
 
     //TestNewItem;
   finally
@@ -653,3 +687,4 @@ begin
 end;
 
 end.
+
