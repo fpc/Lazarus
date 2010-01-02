@@ -128,7 +128,8 @@ const
   // restrict cdecl etc to places where they can be.
   // this needs a better parser
   ProcModifierAllowed: TPascalCodeFoldBlockTypes =
-    [cfbtNone, cfbtProcedure, cfbtProgram, cfbtClassSection, cfbtUnitSection]; // unitsection, actually interface only
+    [cfbtNone, cfbtProcedure, cfbtProgram, cfbtClassSection, cfbtUnitSection, // unitsection, actually interface only
+     cfbtVarType, cfbtLocalVarType];
 
 type
 
@@ -1109,8 +1110,13 @@ end;
 
 function TSynPasSyn.Func52: TtkTokenKind;
 begin
-  if KeyComp('Pascal') then Result := tkKey
-  else if KeyComp('Raise') then Result := tkKey else Result := tkIdentifier;
+  if KeyComp('Pascal') and (TopPascalCodeFoldBlockType in ProcModifierAllowed) then
+    Result := tkKey
+  else
+  if KeyComp('Raise') then
+    Result := tkKey
+  else
+    Result := tkIdentifier;
 end;
 
 function TSynPasSyn.Func54: TtkTokenKind;
@@ -1157,7 +1163,10 @@ end;
 
 function TSynPasSyn.Func59: TtkTokenKind;
 begin
-  if KeyComp('Safecall') then Result := tkKey else Result := tkIdentifier;
+  if KeyComp('Safecall') and (TopPascalCodeFoldBlockType in ProcModifierAllowed) then
+    Result := tkKey
+  else
+    Result := tkIdentifier;
 end;
 
 function TSynPasSyn.Func60: TtkTokenKind;
@@ -1591,7 +1600,7 @@ end;
 
 function TSynPasSyn.Func101: TtkTokenKind;
 begin
-  if KeyComp('Register') then
+  if KeyComp('Register') and (TopPascalCodeFoldBlockType in ProcModifierAllowed) then
     Result := tkKey
   else
     if KeyComp('Platform') then
