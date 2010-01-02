@@ -111,6 +111,7 @@ type
     procedure Assign(Source: TPersistent); override;
     procedure Clear; override;
     procedure Delete(Index: Integer); override;
+    function Find(const S: String; var Index: Integer): Boolean;
     function IndexOf(const S: String): Integer; override;
     procedure Insert(Index: Integer; const S: String); override;
     procedure Sort; virtual;
@@ -188,7 +189,11 @@ end;
 
 function TGtkListStoreStringList.Add(const S: String): Integer;
 begin
-  Result := Count;
+  if FSorted then
+    Find(S, Result)
+  else
+    Result := Count;
+
   //DebugLn(['TGtkListStoreStringList.Add ',S,' Count=',Result]);
   Insert(Result, S);
 end;
@@ -293,7 +298,7 @@ begin
   // sort internally (sorting in the widget would be slow and unpretty ;)
   sl := TStringList.Create;
   sl.Assign(Self);
-  MergeSort(sl, @AnsiCompareText);
+  sl.Sort;
   OldSorted := Sorted;
   FSorted := False;
   Assign(sl);
@@ -417,13 +422,11 @@ begin
 
   Item := nil;
   gtk_tree_model_get(GTK_TREE_MODEL(FGtkListStore), @ListItem, [FColumnIndex, @Item, -1]);
-  if (Item <> nil) then
-  begin
-    Result := StrPas(Item);
-    g_free(Item);
-  end
-  else 
-    Result := '';
+  if Item = nil then Exit('');
+
+  Result := Item;
+  g_free(Item);
+
 end;
 
 function TGtkListStoreStringList.GetObject(Index: Integer): TObject;
@@ -560,32 +563,44 @@ begin
   end;
 end;
 
-function TGtkListStoreStringList.IndexOf(const S: string): Integer;
+function TGtkListStoreStringList.Find(const S: String; var Index: Integer): Boolean;
 var
-  l, m, r, cmp: integer;
+  L, R, I: Integer;
+  CompareRes: Integer;
 begin
-  BeginUpdate;
-  if FSorted then begin
-    l:=0;
-    r:=Count-1;
-    m:=l;
-    while (l<=r) do begin
-      m:=(l+r) shr 1;
-      cmp:=AnsiCompareText(S,Strings[m]);
-
-      if cmp<0 then
-        r:=m-1
-      else if cmp>0 then
-        l:=m+1
-      else begin
-        Result:=m;
-        exit;
+  Result := False;
+  // Use binary search.
+  L := 0;
+  R := Count - 1;
+  while (L <= R) do
+  begin
+    I := L + (R - L) div 2;
+    CompareRes := AnsiCompareText(S, Strings[I]);
+    if (CompareRes > 0) then
+      L := I + 1
+    else
+    begin
+      R := I - 1;
+      if (CompareRes = 0) then
+      begin
+        Result := True;
+        L := I; // forces end of while loop
       end;
     end;
-    Result:=-1;
-  end else begin
-    Result:=inherited IndexOf(S);
   end;
+  Index := L;
+end;
+
+function TGtkListStoreStringList.IndexOf(const S: String): Integer;
+begin
+  BeginUpdate;
+  if FSorted then
+  begin
+    //Binary Search
+    if not Find(S, Result) then
+      Result := -1;
+  end else
+    Result := inherited IndexOf(S);
   EndUpdate;
 end;
 
@@ -625,25 +640,6 @@ var
 begin
   BeginUpdate;
   try
-    if FSorted then begin
-      l:=0;
-      r:=Count-1;
-      m:=l;
-      while (l<=r) do begin
-        m:=(l+r) shr 1;
-        cmp:=AnsiCompareText(S,Strings[m]);
-        if cmp<0 then
-          r:=m-1
-        else if cmp>0 then
-          l:=m+1
-        else
-          break;
-      end;
-      if (m<Count) and (AnsiCompareText(S,Strings[m])>0) then
-        inc(m);
-      Index:=m;
-    end;
-
     if (Index < 0) or (Index > Count) 
     then RaiseGDBException('TGtkListStoreStringList.Insert: Index ' + IntToStr(Index) + ' out of bounds. Count=' + IntToStr(Count));
 
