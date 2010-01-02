@@ -1,0 +1,49 @@
+inherited CompilerInheritedOptionsFrame: TCompilerInheritedOptionsFrame
+  Height = 444
+  Width = 576
+  ClientHeight = 444
+  ClientWidth = 576
+  DesignLeft = 957
+  DesignTop = 308
+  object InhNoteLabel: TLabel[0]
+    Left = 0
+    Height = 14
+    Top = 0
+    Width = 576
+    Align = alTop
+    Caption = 'InhNoteLabel'
+    ParentColor = False
+  end
+  object InhTreeView: TTreeView[1]
+    Left = 0
+    Height = 247
+    Top = 14
+    Width = 576
+    Align = alTop
+    DefaultItemHeight = 15
+    ReadOnly = True
+    RightClickSelect = True
+    TabOrder = 0
+    OnSelectionChanged = InhTreeViewSelectionChanged
+    Options = [tvoAutoItemHeight, tvoHideSelection, tvoKeepCollapsedNodes, tvoReadOnly, tvoRightClickSelect, tvoShowButtons, tvoShowLines, tvoShowRoot, tvoToolTips]
+  end
+  object InhItemMemo: TMemo[2]
+    Left = 0
+    Height = 178
+    Top = 266
+    Width = 576
+    Align = alClient
+    ReadOnly = True
+    ScrollBars = ssAutoVertical
+    TabOrder = 1
+  end
+  object InhSplitter: TSplitter[3]
+    Cursor = crVSplit
+    Left = 0
+    Height = 5
+    Top = 261
+    Width = 576
+    Align = alTop
+    ResizeAnchor = akTop
+  end
+end

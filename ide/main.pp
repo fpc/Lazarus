@@ -128,7 +128,7 @@ uses
   // project compiler options
   compiler_path_options, compiler_parsing_options, compiler_codegen_options,
   compiler_linking_options, compiler_verbosity_options, compiler_messages_options,
-  compiler_other_options,
+  compiler_other_options, compiler_inherited_options,
 
   PublishModule, EnvironmentOpts, TransferMacros, KeyMapping, IDETranslations,
   IDEProcs, ExtToolDialog, ExtToolEditDlg, OutputFilter, JumpHistoryView,
