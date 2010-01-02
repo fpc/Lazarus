@@ -34,6 +34,7 @@ inherited CompilerOtherOptionsFrame: TCompilerOtherOptionsFrame
       Align = alTop
       BorderSpacing.Around = 6
       Caption = 'chkCustomConfigFile'
+      OnClick = chkCustomConfigFileClick
       TabOrder = 1
     end
     object edtConfigPath: TEdit

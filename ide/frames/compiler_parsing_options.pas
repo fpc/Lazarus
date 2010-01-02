@@ -113,7 +113,7 @@ end;
 
 procedure TCompilerParsingOptionsFrame.ReadSettings(AOptions: TAbstractIDEOptions);
 begin
-  with AOptions as TProjectCompilerOptions do
+  with AOptions as TBaseCompilerOptions do
   begin
     if (AssemblerStyle in [1,2,3]) then
       grpAsmStyle.ItemIndex := AssemblerStyle
@@ -138,7 +138,7 @@ end;
 
 procedure TCompilerParsingOptionsFrame.WriteSettings(AOptions: TAbstractIDEOptions);
 begin
-  with AOptions as TProjectCompilerOptions do
+  with AOptions as TBaseCompilerOptions do
   begin
     AssemblerStyle := grpAsmStyle.ItemIndex;
 
@@ -160,7 +160,7 @@ end;
 
 class function TCompilerParsingOptionsFrame.SupportedOptionsClass: TAbstractIDEOptionsClass;
 begin
-  Result := TProjectCompilerOptions;
+  Result := TBaseCompilerOptions;
 end;
 
 initialization

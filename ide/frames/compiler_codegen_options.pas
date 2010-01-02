@@ -197,7 +197,7 @@ procedure TCompilerCodegenOptionsFrame.ReadSettings(AOptions: TAbstractIDEOption
 var
   i: longint;
 begin
-  with AOptions as TProjectCompilerOptions do
+  with AOptions as TBaseCompilerOptions do
   begin
     chkSmartLinkUnit.Checked := SmartLinkUnit;
 
@@ -243,7 +243,7 @@ var
   NewTargetOS: string;
   NewTargetCPU: string;
 begin
-  with AOptions as TProjectCompilerOptions do
+  with AOptions as TBaseCompilerOptions do
   begin
     SmartLinkUnit := chkSmartLinkUnit.Checked;
 
@@ -289,7 +289,7 @@ end;
 
 class function TCompilerCodegenOptionsFrame.SupportedOptionsClass: TAbstractIDEOptionsClass;
 begin
-  Result := TProjectCompilerOptions;
+  Result := TBaseCompilerOptions;
 end;
 
 initialization

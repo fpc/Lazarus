@@ -150,7 +150,7 @@ procedure TCompilerMessagesOptionsFrame.ReadSettings(AOptions: TAbstractIDEOptio
 begin
   chkUseMsgFile.OnChange := nil;
   try
-    with AOptions as TProjectCompilerOptions do 
+    with AOptions as TBaseCompilerOptions do 
     begin
       chkUseMsgFile.Checked := UseMsgFile;
       editMsgFileName.Caption := MsgFileName;
@@ -164,7 +164,7 @@ end;
 
 procedure TCompilerMessagesOptionsFrame.WriteSettings(AOptions: TAbstractIDEOptions);
 begin
-  with AOptions as TProjectCompilerOptions do
+  with AOptions as TBaseCompilerOptions do
   begin
     UseMsgFile := chkUseMsgFile.Checked;
     MsgFileName := editMsgFileName.Caption;
@@ -174,7 +174,7 @@ end;
 
 class function TCompilerMessagesOptionsFrame.SupportedOptionsClass: TAbstractIDEOptionsClass;
 begin
-  Result := TProjectCompilerOptions;
+  Result := TBaseCompilerOptions;
 end;
 
 initialization

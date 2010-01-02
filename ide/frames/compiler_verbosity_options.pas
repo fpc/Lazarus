@@ -69,7 +69,7 @@ end;
 
 procedure TCompilerVerbosityOptionsFrame.ReadSettings(AOptions: TAbstractIDEOptions);
 begin
-  with AOptions as TProjectCompilerOptions, grpVerbosity do
+  with AOptions as TBaseCompilerOptions, grpVerbosity do
   begin
     Checked[0] := ShowErrors;
     Checked[1] := ShowHintsForSenderNotUsed;
@@ -98,7 +98,7 @@ end;
 
 procedure TCompilerVerbosityOptionsFrame.WriteSettings(AOptions: TAbstractIDEOptions);
 begin
-  with AOptions as TProjectCompilerOptions, grpVerbosity do
+  with AOptions as TBaseCompilerOptions, grpVerbosity do
   begin
     ShowErrors := Checked[0];
     ShowHintsForSenderNotUsed := Checked[1];
@@ -124,10 +124,9 @@ begin
   end;
 end;
 
-class function TCompilerVerbosityOptionsFrame.SupportedOptionsClass:
-TAbstractIDEOptionsClass;
+class function TCompilerVerbosityOptionsFrame.SupportedOptionsClass: TAbstractIDEOptionsClass;
 begin
-  Result := TProjectCompilerOptions;
+  Result := TBaseCompilerOptions;
 end;
 
 initialization

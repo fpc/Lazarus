@@ -19,8 +19,9 @@ type
     grpConfigFile: TGroupBox;
     grpCustomOptions: TGroupBox;
     memCustomOptions: TMemo;
+    procedure chkCustomConfigFileClick(Sender: TObject);
   private
-    FOptions: TProjectCompilerOptions;
+    FOptions: TBaseCompilerOptions;
   public
     function Check: Boolean; override;
     function GetTitle: string; override;
@@ -33,6 +34,11 @@ type
 implementation
 
 { TCompilerOtherOptionsFrame }
+
+procedure TCompilerOtherOptionsFrame.chkCustomConfigFileClick(Sender: TObject);
+begin
+  edtConfigPath.Enabled := chkCustomConfigFile.Checked;
+end;
 
 function TCompilerOtherOptionsFrame.Check: Boolean;
 var
@@ -86,7 +92,7 @@ end;
 
 procedure TCompilerOtherOptionsFrame.ReadSettings(AOptions: TAbstractIDEOptions);
 begin
-  FOptions := AOptions as TProjectCompilerOptions;
+  FOptions := AOptions as TBaseCompilerOptions;
   with FOptions do
   begin
     chkConfigFile.Checked := not DontUseConfigFile;
@@ -99,7 +105,7 @@ end;
 
 procedure TCompilerOtherOptionsFrame.WriteSettings(AOptions: TAbstractIDEOptions);
 begin
-  with AOptions as TProjectCompilerOptions do
+  with AOptions as TBaseCompilerOptions do
   begin
     DontUseConfigFile := not chkConfigFile.Checked;
     CustomConfigFile := chkCustomConfigFile.Checked;
@@ -110,7 +116,7 @@ end;
 
 class function TCompilerOtherOptionsFrame.SupportedOptionsClass: TAbstractIDEOptionsClass;
 begin
-  Result := TProjectCompilerOptions;
+  Result := TBaseCompilerOptions;
 end;
 
 initialization

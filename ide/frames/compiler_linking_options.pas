@@ -77,7 +77,7 @@ end;
 
 procedure TCompilerLinkingOptionsFrame.ReadSettings(AOptions: TAbstractIDEOptions);
 begin
-  with AOptions as TProjectCompilerOptions do
+  with AOptions as TBaseCompilerOptions do
   begin
     chkDebugGDB.Checked := GenerateDebugInfo;
     chkUseLineInfoUnit.Checked := UseLineInfoUnit;
@@ -102,7 +102,7 @@ end;
 
 procedure TCompilerLinkingOptionsFrame.WriteSettings(AOptions: TAbstractIDEOptions);
 begin
-  with AOptions as TProjectCompilerOptions do
+  with AOptions as TBaseCompilerOptions do
   begin
     GenerateDebugInfo := chkDebugGDB.Checked;
     UseLineInfoUnit := chkUseLineInfoUnit.Checked;
@@ -122,7 +122,7 @@ end;
 
 class function TCompilerLinkingOptionsFrame.SupportedOptionsClass: TAbstractIDEOptionsClass;
 begin
-  Result := TProjectCompilerOptions;
+  Result := TBaseCompilerOptions;
 end;
 
 initialization

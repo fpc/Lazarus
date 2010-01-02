@@ -30,7 +30,7 @@ type
     LCLWidgetTypeComboBox: TComboBox;
     LCLWidgetTypeLabel: TLabel;
   private
-    FCompilerOpts: TProjectCompilerOptions;
+    FCompilerOpts: TBaseCompilerOptions;
     OtherUnitsPathEditBtn: TPathEditorButton;
     IncludeFilesPathEditBtn: TPathEditorButton;
     OtherSourcesPathEditBtn: TPathEditorButton;
@@ -462,7 +462,7 @@ procedure TCompilerPathOptionsFrame.ReadSettings(AOptions: TAbstractIDEOptions);
 var
   LCLPlatform: TLCLPlatform;
 begin
-  FCompilerOpts := AOptions as TProjectCompilerOptions;
+  FCompilerOpts := AOptions as TBaseCompilerOptions;
   with FCompilerOpts do
   begin
     edtOtherUnits.Text := OtherUnitFiles;
@@ -484,7 +484,7 @@ procedure TCompilerPathOptionsFrame.WriteSettings(AOptions: TAbstractIDEOptions)
 var
   i: integer;
 begin
-  with AOptions as TProjectCompilerOptions do
+  with AOptions as TBaseCompilerOptions do
   begin
     OtherUnitFiles := edtOtherUnits.Text;
     IncludePath := edtIncludeFiles.Text;
@@ -503,7 +503,7 @@ end;
 
 class function TCompilerPathOptionsFrame.SupportedOptionsClass: TAbstractIDEOptionsClass;
 begin
-  Result := TProjectCompilerOptions;
+  Result := TBaseCompilerOptions;
 end;
 
 initialization
