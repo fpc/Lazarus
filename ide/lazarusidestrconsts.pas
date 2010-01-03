@@ -1528,7 +1528,7 @@ resourcestring
   
   // compiler options
   dlgCompilerOptions = 'Compiler Options';
-  dlgCOUseAsDefault = 'Use these settings as default for new projects';
+  dlgCOUseAsDefault = 'Use these compiler options as default for new projects';
   lisWhenEnabledTheCurrentOptionsAreSavedToTheTemplateW = 'When enabled the '
     +'current options are saved to the template, which is used when creating '
     +'new projects';
