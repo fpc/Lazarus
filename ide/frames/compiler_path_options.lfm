@@ -3,7 +3,6 @@ inherited CompilerPathOptionsFrame: TCompilerPathOptionsFrame
   Width = 473
   ClientHeight = 356
   ClientWidth = 473
-  TabOrder = 0
   DesignLeft = 346
   DesignTop = 328
   object lblOtherUnits: TLabel[0]

@@ -6,9 +6,9 @@ interface
 
 uses
   Classes, SysUtils, FileUtil, LResources, Forms, Controls, Graphics, Dialogs,
-  StdCtrls, InterfaceBase, IDEOptionsIntf, Project, CompilerOptions,
-  LazarusIDEStrConsts, PathEditorDlg, LazConf, IDEProcs, CheckCompilerOpts,
-  MacroIntf;
+  Buttons, StdCtrls, LCLType, InterfaceBase, IDEOptionsIntf, Project,
+  CompilerOptions, LazarusIDEStrConsts, PathEditorDlg, LazConf, IDEProcs,
+  CheckCompilerOpts, MacroIntf, ShowCompilerOpts;
 
 type
 
@@ -37,11 +37,20 @@ type
     LibrariesPathEditBtn: TPathEditorButton;
     btnUnitOutputDir: TButton;
     DebugPathEditBtn: TPathEditorButton;
+    btnShowOptions: TBitBtn;
+    btnCheck: TBitBtn;
+    btnLoadSave: TBitBtn;
+    chkUseAsDefault: TCheckBox;
     function CheckSearchPath(const Context, ExpandedPath: string;
       Level: TCheckCompileOptionsMsgLvl): boolean;
     procedure FileBrowseBtnClick(Sender: TObject);
     procedure PathEditBtnClick(Sender: TObject);
     procedure PathEditBtnExecuted(Sender: TObject);
+    procedure DoShowOptions(Sender: TObject);
+    procedure DoCheck(Sender: TObject);
+    procedure DoLoadSave(Sender: TObject);
+  protected
+    procedure DoSaveSettings(AOptions: TAbstractIDEOptions);
   public
     function Check: boolean; override;
     function GetTitle: string; override;
@@ -111,6 +120,51 @@ end;
 function TCompilerPathOptionsFrame.GetTitle: string;
 begin
   Result := dlgSearchPaths;
+end;
+
+procedure TCompilerPathOptionsFrame.DoShowOptions(Sender: TObject);
+var
+  Options: TBaseCompilerOptions;
+begin
+  Options := TBaseCompilerOptionsClass(FCompilerOpts.ClassType).Create(FCompilerOpts.Owner);
+  try
+    DoSaveSettings(Options);
+    ShowCompilerOptionsDialog(Self, Options);
+  finally
+    Options.Free;
+  end;
+end;
+
+procedure TCompilerPathOptionsFrame.DoCheck(Sender: TObject);
+var
+  Options: TBaseCompilerOptions;
+begin
+  Options := TBaseCompilerOptionsClass(FCompilerOpts.ClassType).Create(FCompilerOpts.Owner);
+  try
+    DoSaveSettings(Options);
+    if Assigned(TestCompilerOptions) then
+    begin
+      btnCheck.Enabled := False;
+      try
+        TestCompilerOptions(Options);
+      finally
+        btnCheck.Enabled := True;
+      end;
+    end;
+  finally
+    Options.Free;
+  end;
+end;
+
+procedure TCompilerPathOptionsFrame.DoLoadSave(Sender: TObject);
+begin
+  ShowMessage('TODO: unimplemented');
+end;
+
+procedure TCompilerPathOptionsFrame.DoSaveSettings(AOptions: TAbstractIDEOptions);
+begin
+  if Assigned(OnSaveIDEOptions) then
+    OnSaveIDEOptions(Self, AOptions);
 end;
 
 function TCompilerPathOptionsFrame.CheckSearchPath(const Context, ExpandedPath: string;
@@ -322,6 +376,14 @@ begin
 end;
 
 procedure TCompilerPathOptionsFrame.Setup(ADialog: TAbstractOptionsEditorDialog);
+
+  function CreateButton(ACaption: String; AKind: TBitBtnKind = bkCustom): TBitBtn;
+  begin
+    Result := ADialog.AddButton;
+    Result.Kind := AKind;
+    Result.Caption := ACaption;
+  end;
+
 var
   LCLInterface: TLCLPlatform;
   s: string;
@@ -456,6 +518,25 @@ begin
     ItemIndex := 1;
     Constraints.MinWidth := 150;
   end;
+
+  // register special buttons in the dialog itself
+  btnShowOptions := CreateButton(dlgCOShowOptions);
+  btnShowOptions.LoadGlyphFromLazarusResource('menu_compiler_options');
+  btnShowOptions.OnClick  := @DoShowOptions;
+  btnCheck := CreateButton(lisCompTest, bkYes);
+  btnCheck.ModalResult := mrNone;
+  btnCheck.OnClick  := @DoCheck;
+  btnLoadSave := CreateButton('...');
+  btnLoadSave.OnClick  := @DoLoadSave;
+  btnLoadSave.Hint := dlgCOLoadSave;
+  btnLoadSave.LoadGlyphFromStock(idButtonSave);
+  if btnLoadSave.Glyph.Empty then
+    btnLoadSave.LoadGlyphFromLazarusResource('laz_save');
+
+  chkUseAsDefault := TCheckBox(ADialog.AddControl(TCheckBox));
+  chkUseAsDefault.Caption := dlgCOUseAsDefault;
+  chkUseAsDefault.ShowHint := True;
+  chkUseAsDefault.Hint := lisWhenEnabledTheCurrentOptionsAreSavedToTheTemplateW;
 end;
 
 procedure TCompilerPathOptionsFrame.ReadSettings(AOptions: TAbstractIDEOptions);
@@ -477,6 +558,7 @@ begin
       LCLWidgetTypeComboBox.ItemIndex := Ord(LCLPlatform) + 1
     else
       LCLWidgetTypeComboBox.ItemIndex := 0;
+    chkUseAsDefault.Visible := CanBeDefaulForProject;
   end;
 end;
 
