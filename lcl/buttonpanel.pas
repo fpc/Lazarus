@@ -148,6 +148,9 @@ procedure Register;
 
 implementation
 
+type
+  TCustomButtonAccess = class(TCustomButton);
+
 const
   DEFAULT_BUTTONPANEL_BORDERSPACING: TControlBorderSpacingDefault = (
     Left:0; Top:0; Right:0; Bottom:0; Around:6;
@@ -251,7 +254,7 @@ end;
 
 procedure TCustomButtonPanel.UpdateSizes;
 var
-  btn: TPanelButton;
+  i: Integer;
   BtnWidth, BtnHeight: Integer;
   Details: TThemedElementDetails;
   DefButtonSize: TSize;
@@ -264,14 +267,14 @@ begin
   FButtonsWidth := DefButtonSize.cx;
   FButtonsHeight := DefButtonSize.cy;
 
-  for btn := Low(btn) to High(btn) do
+  for i := 0 to ControlCount - 1 do
   begin
-    if FButtons[btn] = nil then Continue;
-    FButtons[btn].CalculatePreferredSize(BtnWidth, BtnHeight, True);
+    if not (Controls[i] is TCustomButton) then Continue;
+    TCustomButtonAccess(Controls[i]).CalculatePreferredSize(BtnWidth, BtnHeight, True);
     if Align in [alTop, alBottom] then
-      FButtons[btn].Width := BtnWidth;
+      Controls[i].Width := BtnWidth;
     if Align in [alLeft, alRight] then
-      FButtons[btn].Height := BtnHeight;
+      Controls[i].Height := BtnHeight;
     if BtnWidth > FButtonsWidth then
       FButtonsWidth := BtnWidth;
     if BtnHeight > FButtonsHeight then
@@ -502,7 +505,18 @@ begin
   if AControl1 = FBevel then Exit(True);
   if AControl2 = FBevel then Exit(False);
 
-  Result := TWincontrol(AControl2).TabOrder > TWincontrol(AControl1).TabOrder;
+  if (AControl1 is TPanelBitBtn) and (AControl2 is TPanelBitBtn) then
+    Result := TWincontrol(AControl2).TabOrder > TWincontrol(AControl1).TabOrder
+  else
+  begin
+    if AControl1 = FButtons[pbHelp] then
+      Exit(True)
+    else
+    if AControl2 = FButtons[pbHelp] then
+      Exit(False)
+    else
+      Result := TWincontrol(AControl2).TabOrder < TWincontrol(AControl1).TabOrder
+  end;
 end;
 
 procedure TCustomButtonPanel.CustomAlignPosition(AControl: TControl; var ANewLeft, ANewTop,
