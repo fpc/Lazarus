@@ -20,14 +20,6 @@ LazarusResources.Add('TBuildModesEditorFrame','FORMDATA',[
   +'edButton'#24'NewBuildGroupSpeedButton'#4'Left'#2'F'#6'Height'#2#29#3'Top'#2
   +#1#5'Width'#2#23#5'Align'#7#6'alLeft'#8'AutoSize'#9#5'Color'#7#9'clBtnFace'#9
   +'NumGlyphs'#2#0#7'OnClick'#7#24'NewBuildGroupButtonClick'#8'ShowHint'#9#14'P'
-  +'arentShowHint'#8#0#0#6'TLabel'#17'CurBuildModeLabel'#22'AnchorSideLeft.Cont'
-  +'rol'#7#24'NewBuildGroupSpeedButton'#19'AnchorSideLeft.Side'#7#9'asrBottom'
-  +#21'AnchorSideTop.Control'#7#20'CurBuildModeComboBox'#18'AnchorSideTop.Side'
-  +#7#9'asrCenter'#4'Left'#2'l'#6'Height'#2#18#3'Top'#2#6#5'Width'#2'{'#18'Bord'
-  +'erSpacing.Left'#2#15#7'Caption'#6#17'CurBuildModeLabel'#11'ParentColor'#8#0
-  +#0#9'TComboBox'#20'CurBuildModeComboBox'#22'AnchorSideLeft.Control'#7#17'Cur'
-  +'BuildModeLabel'#19'AnchorSideLeft.Side'#7#9'asrBottom'#4'Left'#3#231#0#6'He'
-  +'ight'#2#29#3'Top'#2#1#5'Width'#3#176#0#10'ItemHeight'#2#0#14'ParentShowHint'
-  +#8#8'ShowHint'#9#8'TabOrder'#2#0#4'Text'#6#20'CurBuildModeComboBox'#0#0#0#10
-  +'TPopupMenu'#19'BuildModesPopupMenu'#4'left'#2'S'#3'top'#2's'#0#0#0
+  +'arentShowHint'#8#0#0#0#10'TPopupMenu'#19'BuildModesPopupMenu'#4'left'#2'S'#3
+  +'top'#2's'#0#0#0
 ]);

@@ -5040,16 +5040,22 @@ end;
 procedure TBuildMode.Include(aMode: TBuildMode);
 begin
   if aMode=nil then exit;
-  if FIncludes.IndexOf(aMode)<0 then
-    FIncludes.Add(aMode);
-  if aMode.FIncludedBy.IndexOf(Self)<0 then
-    aMode.FIncludedBy.Add(Self);
+  if FIncludes.IndexOf(aMode)>=0 then exit;
+  if aMode.FIncludedBy.IndexOf(Self)>=0 then
+    RaiseException('');
+  FIncludes.Add(aMode);
+  aMode.FIncludedBy.Add(Self);
+  if Active or aMode.Active then
+    Graph.UpdateActiveModes;
 end;
 
 procedure TBuildMode.Exclude(aMode: TBuildMode);
 begin
+  if FIncludes.IndexOf(aMode)<0 then exit;
   FIncludes.Remove(aMode);
-  if aMode<>nil then aMode.FIncludedBy.Remove(Self);
+  aMode.FIncludedBy.Remove(Self);
+  if Active or aMode.Active then
+    Graph.UpdateActiveModes;
 end;
 
 function TBuildMode.IsIncludedBy(aMode: TBuildMode): boolean;

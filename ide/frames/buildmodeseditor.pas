@@ -93,6 +93,8 @@ type
     function BuildGroupToCol(GroupIndex: integer): integer;
     function ColToBuildGroup(aCol: integer): integer;
     function CellToInclude(aCol, aRow: integer): boolean;
+    function GetFirstGroupCol: integer;
+    function GetTypeCol: integer;
     property Graph: TBuildModeGraph read FGraph;
     procedure RebuildGrid; // call this after Graph has changed
     property ModeRowCount: integer read GetModeRowCount;
@@ -106,8 +108,6 @@ type
 
   TBuildModesEditorFrame = class(TFrame)
     BuildModesPopupMenu: TPopupMenu;
-    CurBuildModeComboBox: TComboBox;
-    CurBuildModeLabel: TLabel;
     BuildModeBtnPanel: TPanel;
     NewBuildModeSpeedButton: TSpeedButton;
     NewBuildFlagSpeedButton: TSpeedButton;
@@ -185,11 +185,13 @@ var
   TypeCol: Integer;
   ValueCol: Integer;
 begin
-  TypeCol:=GroupModeCount+1;
+  TypeCol:=GetTypeCol;
   ValueCol:=TypeCol+1;
   if i=0 then begin
     Columns[0].Title.Caption:=lisBuildMode;
-    for i:=1 to GroupModeCount do Columns[i].Title.Caption:='';
+    Columns[1].Title.Caption:=lisSelected;
+    for i:=0 to GroupModeCount-1 do
+      Columns[i+GetFirstGroupCol].Title.Caption:=ModeRows[i].Mode.Name;
     Columns[TypeCol].Title.Caption:=dlgEnvType;
     Columns[ValueCol].Title.Caption:=dlgValueColor;
   end else begin
@@ -199,13 +201,18 @@ begin
       Cells[0,i]:=CurRow.Mode.Name
     else
       Cells[0,i]:='';
+    // selected
+    if CurRow.Mode=Graph.SelectedMode then
+      Cells[1,i]:=Columns[1].ValueChecked
+    else
+      Cells[1,i]:=Columns[1].ValueUnchecked;
     // included by
     for j:=0 to GroupModeCount-1 do begin
       if CellToInclude(j+1,i) then
         Cells[j+1,i]:=Columns[j+1].ValueChecked
       else
         Cells[j+1,i]:=Columns[j+1].ValueUnchecked;
-      DebugLn(['TBuildModesGrid.FillGridRow ',j+1,' ',i,' ',Cells[j+1,i]]);
+      //DebugLn(['TBuildModesGrid.FillGridRow ',j+1,' ',i,' ',Cells[j+1,i]]);
     end;
     // type + value
     CurFlag:=CurRow.Flag;
@@ -251,7 +258,7 @@ begin
   Result:=true;
   if (aRow>=1) and (aRow<=ModeRowCount) then begin
     CurModeRow:=ModeRows[aRow-1];
-    TypeCol:=GroupModeCount+1;
+    TypeCol:=GetTypeCol;
     ValueCol:=TypeCol+1;
     //DebugLn(['TBuildModesGrid.ValidateCell aCol=',acol,' aRow=',arow,' ValueCol=',ValueCol]);
     if aCol=0 then begin
@@ -260,6 +267,10 @@ begin
         // set new mode name
         NewValue:=Graph.FixModeName(NewValue,CurModeRow.Mode);
         CurModeRow.Mode.Name:=NewValue;
+        if CurModeRow.Mode.ShowIncludes then begin
+          // this is a group mode => update column caption
+          Columns[ColToBuildGroup(aCol)].Title.Caption:=CurModeRow.Mode.Name;
+        end;
       end else begin
         // this is a sub flag => should be empty
         NewValue:='';
@@ -348,7 +359,7 @@ var
   s: String;
   sl: TStringList;
 begin
-  TypeCol:=GroupModeCount+1;
+  TypeCol:=GetTypeCol;
   Identifiers:=TStringToStringTree.Create(false);
   sl:=nil;
   try
@@ -484,7 +495,7 @@ begin
   CurModeRow:=SelectedModeRow;
   if CurModeRow=nil then exit;
   if CurModeRow.Flag=nil then exit;
-  ValueCol:=GroupModeCount+2;
+  ValueCol:=GetTypeCol+1;
   if CurModeRow.Flag.FlagType in BuildModeFlagPaths then begin
     CurPathEditor:=TPathEditorDialog.Create(nil);
     try
@@ -503,12 +514,30 @@ end;
 
 procedure TBuildModesGrid.GetCheckBoxState(const aCol, aRow: Integer;
   var aState: TCheckboxState);
+var
+  CurModeRow: TBuildModeGridRow;
 begin
-  if CellToInclude(aCol,aRow) then
-    aState:=cbChecked
+  if (aRow>=1) and (aRow<=ModeRowCount) then
+    CurModeRow:=ModeRows[aRow-1]
   else
+    CurModeRow:=nil;
+  if aCol=1 then
+  begin
     aState:=cbUnchecked;
-  //DebugLn(['TBuildModesGrid.GetCheckBoxState ',acol,' ',arow,' ',ord(aState)]);
+    if (CurModeRow<>nil) and (CurModeRow.IndexInGroup=0) then
+    begin
+      if (Graph.SelectedMode=CurModeRow.Mode) then
+        aState:=cbChecked
+      else if CurModeRow.Mode.Active then
+        aState:=cbGrayed;
+    end;
+  end else begin
+    if CellToInclude(aCol,aRow) then
+      aState:=cbChecked
+    else
+      aState:=cbUnchecked;
+  end;
+  //DebugLn(['TBuildModesGrid.GetCheckBoxState Col=',aCol,' Row=',aRow,' State=',ord(aState)]);
 end;
 
 procedure TBuildModesGrid.SetCheckboxState(const aCol, aRow: Integer;
@@ -518,8 +547,9 @@ var
   GrpID: LongInt;
   GrpMode: TBuildMode;
   NewState: TCheckBoxState;
+  dummystate: TCheckboxState;
 begin
-  DebugLn(['TBuildModesGrid.SetCheckboxState ',acol,' ',arow,' ',ord(aState)]);
+  //DebugLn(['TBuildModesGrid.SetCheckboxState Col=',acol,' Row=',arow,' State=',ord(aState)]);
   NewState:=cbUnchecked;
   if (aRow>=1) and (aRow<=ModeRowCount) and (ModeRows[aRow-1].IndexInGroup=0)
   then begin
@@ -534,26 +564,34 @@ begin
         end else if CurModeRow.Mode.IsIncludedBy(GrpMode)<>(aState=cbChecked) then
         begin
           // state changed
-          DebugLn(['TBuildModesGrid.SetCheckboxState STATE CHANGED']);
+          //DebugLn(['TBuildModesGrid.SetCheckboxState INCLUDE CHANGE check=',aState=cbChecked,' GrpMode=',GrpMode.Name,' ClickedMode=',CurModeRow.Mode.Name]);
           if aState=cbChecked then begin
             GrpMode.Include(CurModeRow.Mode);
             NewState:=cbChecked;
           end else begin
             GrpMode.Exclude(CurModeRow.Mode);
           end;
+          InvalidateCol(1); // update selected
+          GetCheckBoxState(aCol,aRow,dummystate);
         end else begin
           // state kept
-          DebugLn(['TBuildModesGrid.SetCheckboxState STATE KEPT']);
+          //DebugLn(['TBuildModesGrid.SetCheckboxState STATE KEPT']);
           if CurModeRow.Mode.IsIncludedBy(GrpMode) then
             NewState:=cbChecked;
         end;
       end else begin
-        // invalid column
-        DebugLn(['TBuildModesGrid.SetCheckboxState invalid col ',ACol,' ',GrpId,' ',GroupModeCount]);
+        // group grid is hidden => keep state
+        DebugLn(['TBuildModesGrid.SetCheckboxState group grid is hidden']);
       end;
+    end else if (aCol=1) and (CurModeRow.IndexInGroup=0) then begin
+      if Graph.SelectedMode=CurModeRow.Mode then
+        Graph.SelectedMode:=nil
+      else
+        Graph.SelectedMode:=CurModeRow.Mode;
+      InvalidateCol(1); // update selected
     end else begin
-      // group grid is hidden => keep state
-      DebugLn(['TBuildModesGrid.SetCheckboxState group grid is hidden']);
+      // invalid column
+      DebugLn(['TBuildModesGrid.SetCheckboxState invalid col Col=',ACol,' GrpID=',GrpId,' GroupModeCount=',GroupModeCount]);
       if CellToInclude(aCol,aRow) then
         NewState:=cbChecked;
     end;
@@ -561,7 +599,7 @@ begin
     // invalid row
     DebugLn(['TBuildModesGrid.SetCheckboxState invalid row']);
   end;
-  DebugLn(['TBuildModesGrid.SetCheckboxState END ',aCol,' ',aRow,' ',ord(NewState)]);
+  //DebugLn(['TBuildModesGrid.SetCheckboxState END Col=',aCol,' Row=',aRow,' NewState=',ord(NewState)]);
   inherited SetCheckboxState(aCol, aRow, NewState);
   {for i:=1 to ModeRowCount do begin
     dbgout('  '+dbgs(i));
@@ -615,7 +653,7 @@ var
   r: Integer;
 begin
   if (aRow>=1) and (aRow<=ModeRowCount) then begin
-    TypeCol:=GroupModeCount+1;
+    TypeCol:=GetTypeCol;
     CurModeRow:=ModeRows[aRow-1];
     //DebugLn(['TBuildModesGrid.DrawCell ',aCol,' ',aRow,' IndexInGroup=',CurModeRow.IndexInGroup]);
     if (CurModeRow.IndexInGroup>0) and (aCol<TypeCol) then begin
@@ -723,7 +761,7 @@ begin
       InsertPos:=GroupModeCount;
       InsertCol:=BuildGroupToCol(GroupModeCount-1);
       InsertColRow(true,InsertCol);
-      Columns[InsertCol].Title.Caption:=' ';
+      Columns[InsertCol].Title.Caption:=Result.Name;
       Columns[InsertCol].ButtonStyle:=cbsCheckboxColumn;
       inc(FGroupModeCount);
     end else begin
@@ -809,22 +847,24 @@ begin
       // delete a group build mode
       GroupCol:=Row;
       DeleteColRow(true,GroupCol);
+      dec(FGroupModeCount);
     end;
     // delete a normal build mode
     FModeRows.Remove(CurModeRow);
     DeleteColRow(false,Row);
     Graph.DeleteMode(CurModeRow.Mode);
+    Invalidate;
   end;
 end;
 
 function TBuildModesGrid.BuildGroupToCol(GroupIndex: integer): integer;
 begin
-  Result:=GroupModeCount-GroupIndex;
+  Result:=GroupModeCount-GroupIndex-1+GetFirstGroupCol;
 end;
 
 function TBuildModesGrid.ColToBuildGroup(aCol: integer): integer;
 begin
-  Result:=GroupModeCount-aCol;
+  Result:=GroupModeCount-1-(aCol-GetFirstGroupCol);
 end;
 
 function TBuildModesGrid.CellToInclude(aCol, aRow: integer): boolean;
@@ -832,7 +872,8 @@ var
   GrpID: LongInt;
   CurMode: TBuildModeGridRow;
 begin
-  if (aRow>=1) and (ARow<=GroupModeCount) then begin
+  //DebugLn(['TBuildModesGrid.CellToInclude Col=',aCol,' aRow=',aRow,' GroupModeCount=',GroupModeCount]);
+  if (aRow>=1) and (ARow<=ModeRowCount) then begin
     CurMode:=ModeRows[aRow-1];
     GrpID:=ColToBuildGroup(aCol);
     if (GrpID>=0) and (GrpID<GroupModeCount) then begin
@@ -841,6 +882,16 @@ begin
     end;
   end;
   Result:=false;
+end;
+
+function TBuildModesGrid.GetFirstGroupCol: integer;
+begin
+  Result:=2;
+end;
+
+function TBuildModesGrid.GetTypeCol: integer;
+begin
+  Result:=GetFirstGroupCol+GroupModeCount;
 end;
 
 procedure TBuildModesGrid.RebuildGrid;
@@ -872,6 +923,7 @@ var
   TypeCol: Integer;
   ValueCol: Integer;
   CurFlag: TBuildModeFlag;
+  NeededColCount: Integer;
 begin
   FRebuilding:=true;
   try
@@ -897,14 +949,17 @@ begin
     RowCount:=FModeRows.Count+1;
     FixedRows:=1;
     FixedCols:=0;
-    while Columns.Count<GroupModeCount+3 do
+    NeededColCount:=GroupModeCount+4;
+    while Columns.Count<NeededColCount do
       Columns.Add;
-    while Columns.Count>GroupModeCount+3 do
+    while Columns.Count>NeededColCount do
       Columns.Delete(Columns.Count-1);
-    TypeCol:=GroupModeCount+1;
+    TypeCol:=GetTypeCol;
     ValueCol:=TypeCol+1;
     Columns[0].Width:=150;
-    for i:=1 to TypeCol-1 do begin
+    Columns[1].Width:=15;
+    Columns[1].ButtonStyle:=cbsCheckboxColumn;
+    for i:=GetFirstGroupCol to TypeCol-1 do begin
       Columns[i].Width:=15;
       Columns[i].ButtonStyle:=cbsCheckboxColumn;
     end;
@@ -1005,8 +1060,6 @@ begin
   DeleteBMRowSpeedButton.LoadGlyphFromLazarusResource('laz_delete');
   NewBuildGroupSpeedButton.Hint:=lisNewGroupASetOfModes;
   NewBuildGroupSpeedButton.LoadGlyphFromLazarusResource('laz_add');
-  CurBuildModeLabel.Caption:=lisCurrent;
-  CurBuildModeComboBox.Hint:=lisSelectTheActiveBuildMode;
 
   // laz_edit, arrow_up, arrow_down
   UpdateButtons;

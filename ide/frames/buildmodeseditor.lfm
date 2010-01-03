@@ -71,32 +71,6 @@ object BuildModesEditorFrame: TBuildModesEditorFrame
       ShowHint = True
       ParentShowHint = False
     end
-    object CurBuildModeLabel: TLabel
-      AnchorSideLeft.Control = NewBuildGroupSpeedButton
-      AnchorSideLeft.Side = asrBottom
-      AnchorSideTop.Control = CurBuildModeComboBox
-      AnchorSideTop.Side = asrCenter
-      Left = 108
-      Height = 18
-      Top = 6
-      Width = 123
-      BorderSpacing.Left = 15
-      Caption = 'CurBuildModeLabel'
-      ParentColor = False
-    end
-    object CurBuildModeComboBox: TComboBox
-      AnchorSideLeft.Control = CurBuildModeLabel
-      AnchorSideLeft.Side = asrBottom
-      Left = 231
-      Height = 29
-      Top = 1
-      Width = 176
-      ItemHeight = 0
-      ParentShowHint = False
-      ShowHint = True
-      TabOrder = 0
-      Text = 'CurBuildModeComboBox'
-    end
   end
   object BuildModesPopupMenu: TPopupMenu
     left = 83
