@@ -1732,6 +1732,7 @@ begin
   {$ENDIF}
 
   fBuildModeFrame:=TBuildModesEditorFrame.Create(Self);
+  fBuildModeFrame.Setup(nil);
   with fBuildModeFrame do begin
     Name:='fBuildModeFrame';
     Align:=alClient;

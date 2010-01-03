@@ -28,7 +28,7 @@ uses
   Math, Classes, SysUtils, LCLProc, Controls, FileUtil, LResources, Forms,
   Grids, Graphics, Menus, ComCtrls, Dialogs, AvgLvlTree, DefineTemplates,
   StdCtrls, GraphMath, ExtCtrls, Buttons,
-  ProjectIntf, IDEImagesIntf,
+  ProjectIntf, IDEImagesIntf, IDEOptionsIntf,
   PathEditorDlg, Project, PackageSystem, LazarusIDEStrConsts, CompilerOptions,
   IDEProcs;
 
@@ -106,7 +106,7 @@ type
 
   { TBuildModesEditorFrame }
 
-  TBuildModesEditorFrame = class(TFrame)
+  TBuildModesEditorFrame = class(TAbstractIDEOptionsEditor)
     BuildModesPopupMenu: TPopupMenu;
     BuildModeBtnPanel: TPanel;
     NewBuildModeSpeedButton: TSpeedButton;
@@ -114,7 +114,6 @@ type
     DeleteBMRowSpeedButton: TSpeedButton;
     NewBuildGroupSpeedButton: TSpeedButton;
     procedure DeleteBMRowButtonClick(Sender: TObject);
-    procedure FrameClick(Sender: TObject);
     procedure GridSelection(Sender: TObject; aCol, aRow: Integer);
     procedure NewBuildFlagButtonClick(Sender: TObject);
     procedure NewBuildGroupButtonClick(Sender: TObject);
@@ -123,8 +122,11 @@ type
     FGrid: TBuildModesGrid;
     procedure UpdateButtons;
   public
-    constructor Create(TheOwner: TComponent); override;
-    destructor Destroy; override;
+    function GetTitle: String; override;
+    procedure Setup(ADialog: TAbstractOptionsEditorDialog); override;
+    procedure ReadSettings(AOptions: TAbstractIDEOptions); override;
+    procedure WriteSettings(AOptions: TAbstractIDEOptions); override;
+    class function SupportedOptionsClass: TAbstractIDEOptionsClass; override;
     procedure SetGraph(Graph: TBuildModeGraph);
     property Grid: TBuildModesGrid read FGrid;
   end;
@@ -1013,6 +1015,11 @@ begin
     DeleteBMRowSpeedButton.Hint:=lisDeleteBuildMode;
 end;
 
+function TBuildModesEditorFrame.GetTitle: String;
+begin
+  Result := 'Build modes';
+end;
+
 procedure TBuildModesEditorFrame.NewBuildFlagButtonClick(Sender: TObject);
 begin
   Grid.InsertNewBuildFlagBehind;
@@ -1029,20 +1036,14 @@ begin
   Grid.DeleteSelectedModeRow;
 end;
 
-procedure TBuildModesEditorFrame.FrameClick(Sender: TObject);
-begin
-
-end;
-
 procedure TBuildModesEditorFrame.GridSelection(Sender: TObject; aCol,
   aRow: Integer);
 begin
   UpdateButtons;
 end;
 
-constructor TBuildModesEditorFrame.Create(TheOwner: TComponent);
+procedure TBuildModesEditorFrame.Setup(ADialog: TAbstractOptionsEditorDialog);
 begin
-  inherited Create(TheOwner);
   FGrid:=TBuildModesGrid.Create(Self);
   with Grid do begin
     Name:='Grid';
@@ -1065,9 +1066,19 @@ begin
   UpdateButtons;
 end;
 
-destructor TBuildModesEditorFrame.Destroy;
+procedure TBuildModesEditorFrame.ReadSettings(AOptions: TAbstractIDEOptions);
 begin
-  inherited Destroy;
+  SetGraph((AOptions as TProjectCompilerOptions).BuildModes);
+end;
+
+procedure TBuildModesEditorFrame.WriteSettings(AOptions: TAbstractIDEOptions);
+begin
+  // todo:
+end;
+
+class function TBuildModesEditorFrame.SupportedOptionsClass: TAbstractIDEOptionsClass;
+begin
+  Result := TProjectCompilerOptions;
 end;
 
 procedure TBuildModesEditorFrame.SetGraph(Graph: TBuildModeGraph);
@@ -1078,6 +1089,8 @@ end;
 
 initialization
   {$I buildmodeseditor.lrs}
+  RegisterIDEOptionsEditor(GroupCompiler, TBuildModesEditorFrame,
+    CompilerOptionsBuildModes);
 
 end.
 

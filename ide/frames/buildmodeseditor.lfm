@@ -5,7 +5,6 @@ object BuildModesEditorFrame: TBuildModesEditorFrame
   Width = 419
   ClientHeight = 306
   ClientWidth = 419
-  OnClick = FrameClick
   TabOrder = 0
   DesignLeft = 460
   DesignTop = 269
