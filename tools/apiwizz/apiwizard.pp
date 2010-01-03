@@ -1,10 +1,10 @@
 {  $Id$  }
 {
  /***************************************************************************
-                                APIWiZZard.pp 
+                                APIWizard.pp
                              -------------------
-                   APIWiZZ is an API wizzard to generate WINAPI
-                   Templates for GTK.
+                   APIWiZZ is an API wizard to generate WINAPI
+                   Templates for the LCL widgetsets.
 
                    Initial Revision  : 05-02-2000
 
@@ -32,13 +32,19 @@ interface
 
 uses
   Classes, SysUtils, FileUtil, LResources, Forms, Controls, Graphics, Dialogs,
-  StdCtrls, Buttons, ExtCtrls;
+  StdCtrls, Buttons, ExtCtrls, LCLproc, ComCtrls;
 
 type
+
+  { TApiWizForm }
+
   TApiWizForm = class(TForm)
+    cmdCopy: TButton;
+    cmdScan: TButton;
     cbgLCLPlatform: TCHECKGROUP;
     cmdGenerate: TButton;
     Groupbox1: TGROUPBOX;
+    lvExisting: TListView;
     txtDeclarations: TMemo;
     rbIndependent: TRADIOBUTTON;
     rbDependent: TRADIOBUTTON;
@@ -46,15 +52,30 @@ type
     lblDeclare: TLabel;
     txtLazarus: TEdit;
     lblLazarus: TLabel;
+    procedure cmdCopyClick(Sender: TObject);
     procedure cmdGenerateClick(Sender: TObject);
     procedure ApiWizFormCreate(Sender: TObject);
+    procedure cmdScanClick(Sender: TObject);
+    procedure FormDestroy(Sender: TObject);
     procedure rbPlatformDependencyClick(Sender: TObject);
     procedure rdgApiTypeClick (Sender: TObject );
   private
+    FLineInfo: TStringList;
   public
   end;
 
   TProcType = (ptFunction, ptProcedure);
+
+  TApiWidgetset = (awCarbon, awCocoa, awFpgui, awGtk, awGtk2, awNoGui, awQt, awWin32, awWinCE);
+  TApiWidgetsets = set of TApiWidgetset;
+
+  TApiLine = class
+    Declaration: String;
+    Independent: Boolean;
+    WinApi: Boolean;
+    Widgetsets: TApiWidgetsets;
+    Base: Boolean;
+  end;
 
 var
   ApiWizForm: TApiWizForm;
@@ -64,32 +85,9 @@ implementation
 const
   DECL_OFFSET: array[TProctype] of Integer = (9, 10);
 
-{ TApiWizForm }
-
-procedure TApiWizForm.ApiWizFormCreate(Sender: TObject);
-var
-  n: Integer;
-  S: String;
-begin
-  S := ParamStrUTF8(1);
-  // find the lazarus dir
-  if S = ''
-  then begin
-    S := ExtractFilePath(ParamStrUTF8(0));
-    n := Pos('apiwizz', S);
-    if n <> 0
-    then S := Copy(S, 1, n - 7)
-    else S := '';
-  end;
-
-  if S = ''
-  then begin
-    S := GetCurrentDirUTF8;
-    n := Pos('apiwizz', S);
-    if n <> 0 then S := Copy(S, 1, n - 7);
-  end;
-  txtLazarus.Text := S;
-end;
+  WS_NAME: array[TApiWidgetset] of string = (
+    'carbon', 'cocoa', 'fpgui', 'gtk', 'gtk2', 'nogui', 'qt', 'win32', 'wince'
+  );
 
 function GetName(const ADeclaration: String): String;
 var
@@ -309,8 +307,6 @@ begin
     end;
   end
   else Result := -1
-
-
 end;
 
 procedure InsertLines(const Idx: Integer; const TargetLines, SourceLines: TStringList);
@@ -320,6 +316,150 @@ begin
   for n := SourceLines.Count - 1 downto 0 do
   begin
     TargetLines.Insert(Idx, SourceLines[n]);
+  end;
+end;
+
+procedure Scan(const AFileName, ATag: String; AResult: TStringList);
+var
+  StartFound: Boolean;
+  StartTag, EndTag: String;
+  Line, LineName: String;
+  Lines: TStringList;
+  n: Integer;
+begin
+  AResult.Clear;
+  if not FileExistsUTF8(AFileName) then Exit;
+
+  Lines := TStringList.Create;
+  Lines.LoadFromFile(UTF8ToSys(AFileName));
+
+  StartFound := False;
+  StartTag := Format('##apiwiz##s%s##', [ATag]);
+  EndTag   := Format('##apiwiz##e%s##', [ATag]);
+
+  for n := 0 to Lines.Count - 1 do
+  begin
+    Line := Lines[n];
+    if not StartFound
+    then begin
+      StartFound := Pos(StartTag, Line) <> 0;
+      Continue;
+    end;
+
+    if Pos(EndTag, Line) <> 0
+    then begin
+      Break;
+    end;
+
+    if (Line = '') or (Line[1] = ' ') then Continue;
+    LineName := GetName(Line);
+    if LineName = '' then Continue;
+    Line := GetPart([], ['{$'], Line);
+
+    AResult.Add(line);
+  end;
+
+  Lines.Free;
+end;
+
+{ TApiWizForm }
+
+procedure TApiWizForm.ApiWizFormCreate(Sender: TObject);
+var
+  n: Integer;
+  S: String;
+  WS: TApiWidgetset;
+  C: TListColumn;
+begin
+  cbgLCLPlatform.Items.Clear;
+  for WS := Low(WS) to High(Ws) do
+    cbgLCLPlatform.Items.Add(WS_NAME[WS]);
+
+  lvExisting.Columns.BeginUpdate;
+  for WS := Low(WS) to High(Ws) do
+  begin
+    C := lvExisting.Columns.Add;
+    C.Caption := WS_NAME[WS];
+    C.Alignment := taCenter;
+    C.AutoSize := True;
+  end;
+  // add dummy
+  C := lvExisting.Columns.Add;
+  C.Caption := '';
+  C.AutoSize := True;
+  lvExisting.Columns.EndUpdate;
+
+  FLineInfo := TStringList.Create;
+  FLineInfo.Sorted := True;
+  FLineInfo.Duplicates := dupIgnore;
+  FLineInfo.CaseSensitive := False;
+
+  S := ParamStrUTF8(1);
+  // find the lazarus dir
+  if S = ''
+  then begin
+    S := ExtractFilePath(ParamStrUTF8(0));
+    n := Pos('apiwizz', S);
+    if n <> 0
+    then S := Copy(S, 1, n - 7)
+    else S := '';
+  end;
+
+  if S = ''
+  then begin
+    S := GetCurrentDirUTF8;
+    n := Pos('apiwizz', S);
+    if n <> 0 then S := Copy(S, 1, n - 7);
+  end;
+  txtLazarus.Text := S;
+end;
+
+procedure TApiWizForm.cmdCopyClick(Sender: TObject);
+var
+  Line: TApiLine;
+  WS: TApiWidgetset;
+begin
+  if lvExisting.Selected = nil then Exit;
+
+  Line := TApiLine(lvExisting.Selected.Data);
+  if Line = nil then Exit; //???
+
+  if txtDeclarations.Lines.Count = 0
+  then begin
+    txtDeclarations.Lines.Add(Line.Declaration);
+
+    if Line.WinApi
+    then rdgApiType.ItemIndex := 0
+    else rdgApiType.ItemIndex := 1;
+
+    rbIndependent.Checked := Line.Independent;
+    rbDependent.Checked := not Line.Independent;
+
+    for WS := Low(WS) to High(Ws) do
+    begin
+      cbgLCLPlatform.Checked[Ord(WS)] := not(WS in Line.Widgetsets);
+    end;
+    Exit;
+  end;
+
+  // Check match
+  if Line.WinApi <> (rdgApiType.ItemIndex = 0)
+  then begin
+    ShowMessage('API type mismatch');
+    Exit;
+  end;
+
+  if rbIndependent.Checked <> Line.Independent
+  then begin
+    ShowMessage('Dependency mismatch');
+    Exit;
+  end;
+
+  txtDeclarations.Lines.Add(Line.Declaration);
+  for WS := Low(WS) to High(Ws) do
+  begin
+    if (WS in Line.Widgetsets) then Continue;
+    cbgLCLPlatform.Checked[Ord(WS)] := True;
   end;
 end;
 
@@ -333,8 +473,9 @@ var
   S, DeclarationText: String;
   ProcName, FileName, IntfBase: String;
   PlatformPrefix, PlatformDir, PlatformObject: String;
-  Line, LineCount, n, Idx, PlatformIdx: Integer;
+  Line, LineCount, n, Idx: Integer;
   ProcType: TProcType;
+  WS: TApiWidgetset;
 
   procedure CreateLeadingCR;
   var
@@ -517,14 +658,13 @@ begin
           ApiText.SaveToFile(UTF8ToSys(txtLazarus.text + '/lcl/include/' + IntfBase));
         end;
 
-        for PlatformIdx := 0 to cbgLCLPlatform.Items.Count - 1 do
+        for WS := Low(WS) to High(Ws) do
         begin
-          if not cbgLCLPlatform.Checked[PlatformIdx] then Continue;
+          if not cbgLCLPlatform.Checked[Ord(WS)] then Continue;
 
-          // for now they can all be based on the check caption
-          PlatformPrefix := cbgLCLPlatform.Items[PlatformIdx];
-          PlatformDir := PlatformPrefix;
-          PlatformObject := 'T' + PlatformPrefix + 'WidgetSet';
+          PlatformPrefix := WS_NAME[WS];
+          PlatformDir := WS_NAME[WS];
+          PlatformObject := 'T' + WS_NAME[WS] + 'WidgetSet';
           PlatformObject[2] := UpCase(PlatformObject[2]);
 
           //------------------
@@ -587,6 +727,157 @@ begin
 
     ShowMessage(Format('%d lines inserted', [LineCount]));
   end;
+end;
+
+procedure TApiWizForm.cmdScanClick(Sender: TObject);
+var
+  Lines: TStringlist;
+  S: String;
+  n, idx: Integer;
+  Line: TApiLine;
+  Item: TListItem;
+  WS: TApiWidgetset;
+begin
+  FLineInfo.Clear;
+
+  Lines := TStringList.Create;
+  Scan(txtLazarus.text + '/lcl/include/winapih.inc', 'ps', Lines);
+  for n := 0 to Lines.Count - 1 do
+  begin
+    Line := TApiLine.Create;
+    Line.Declaration := Lines[n];
+    Line.WinApi := True;
+    S := GetName(Lines[n]);
+    FLineInfo.AddObject(S, Line);
+  end;
+
+  Scan(txtLazarus.text + '/lcl/include/winapih.inc', 'pi', Lines);
+  for n := 0 to Lines.Count - 1 do
+  begin
+    Line := TApiLine.Create;
+    Line.Independent := True;
+    Line.WinApi := True;
+    Line.Declaration := Lines[n];
+    S := GetName(Lines[n]);
+    FLineInfo.AddObject(S, Line);
+  end;
+
+  Scan(txtLazarus.text + '/lcl/include/lclintfh.inc', 'ps', Lines);
+  for n := 0 to Lines.Count - 1 do
+  begin
+    Line := TApiLine.Create;
+    Line.Declaration := Lines[n];
+    S := GetName(Lines[n]);
+    FLineInfo.AddObject(S, Line);
+  end;
+
+  Scan(txtLazarus.text + '/lcl/include/lclintfh.inc', 'pi', Lines);
+  for n := 0 to Lines.Count - 1 do
+  begin
+    Line := TApiLine.Create;
+    Line.Independent := True;
+    Line.Declaration := Lines[n];
+    S := GetName(Lines[n]);
+    FLineInfo.AddObject(S, Line);
+  end;
+
+  // implementations
+
+
+  Scan(txtLazarus.text + '/lcl/include/intfbasewinapi.inc', 'ps', Lines);
+  for n := 0 to Lines.Count - 1 do
+  begin
+    S := GetName(Lines[n]);
+    idx := FLineInfo.IndexOf(S);
+    if idx = -1 then Continue;
+
+    Line := TApiLine(FLineInfo.Objects[idx]);
+    Line.Base := True;
+  end;
+
+  Scan(txtLazarus.text + '/lcl/include/intfbaselcl.inc', 'ps', Lines);
+  for n := 0 to Lines.Count - 1 do
+  begin
+    S := GetName(Lines[n]);
+    idx := FLineInfo.IndexOf(S);
+    if idx = -1 then Continue;
+
+    Line := TApiLine(FLineInfo.Objects[idx]);
+    Line.Base := True;
+  end;
+
+  for WS := Low(WS) to High(Ws) do
+  begin
+    Scan(txtLazarus.text + '/lcl/interfaces/' + WS_NAME[WS] + '/' +  WS_NAME[WS] + 'winapih.inc', 'ps', Lines);
+    for n := 0 to Lines.Count - 1 do
+    begin
+      S := GetName(Lines[n]);
+      idx := FLineInfo.IndexOf(S);
+      if idx = -1 then Continue;
+
+      Line := TApiLine(FLineInfo.Objects[idx]);
+      Include(Line.Widgetsets, WS);
+    end;
+
+    Scan(txtLazarus.text + '/lcl/interfaces/' + WS_NAME[WS] + '/' +  WS_NAME[WS] + 'lclintfh.inc', 'ps', Lines);
+    for n := 0 to Lines.Count - 1 do
+    begin
+      S := GetName(Lines[n]);
+      idx := FLineInfo.IndexOf(S);
+      if idx = -1 then Continue;
+
+      Line := TApiLine(FLineInfo.Objects[idx]);
+      Include(Line.Widgetsets, WS);
+    end;
+  end;
+
+  lvExisting.BeginUpdate;
+  lvExisting.Clear;
+
+  for n := 0 to FLineInfo.Count - 1 do
+  begin
+    Item := lvExisting.Items.Add;
+    Item.Caption := FLineInfo[n];
+    Line := TApiLine(FLineInfo.Objects[n]);
+    Item.Data := Line;
+
+    if Line.WinApi
+    then Item.SubItems.Add('Win')
+    else Item.SubItems.Add('LCL');
+
+    if Line.Independent
+    then Item.SubItems.Add('X')
+    else Item.SubItems.Add('');
+
+    if Line.Base
+    then Item.SubItems.Add('X')
+    else begin
+      if Line.Independent
+      then Item.SubItems.Add('-')
+      else Item.SubItems.Add('');
+    end;
+
+    for WS := Low(WS) to High(Ws) do
+    begin
+      if WS in Line.Widgetsets
+      then Item.SubItems.Add('X')
+      else begin
+        if Line.Independent
+        then Item.SubItems.Add('-')
+        else Item.SubItems.Add('');
+      end;
+    end;
+  end;
+
+  lvExisting.EndUpdate;
+
+
+  Lines.Free;
+end;
+
+procedure TApiWizForm.FormDestroy(Sender: TObject);
+begin
+  FreeAndNil(FLineInfo);
 end;
 
 procedure TApiWizForm.rbPlatformDependencyClick (Sender: TObject );
