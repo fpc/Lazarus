@@ -801,14 +801,14 @@ begin
   Result := WidgetSet.SetCursorPos(X, Y);
 end;
 
-function SetMenu(AWindowHandle: HWND; AMenuHandle: HMENU): Boolean;
-begin
-  Result := WidgetSet.SetMenu(AWindowHandle, AMenuHandle);
-end;
-
 function SetMapMode(DC: HDC; fnMapMode : Integer): Integer;
 begin
   Result := WidgetSet.SetMapMode(DC, fnMapMode);
+end;
+
+function SetMenu(AWindowHandle: HWND; AMenuHandle: HMENU): Boolean;
+begin
+  Result := WidgetSet.SetMenu(AWindowHandle, AMenuHandle);
 end;
 
 function SetProp(Handle: hwnd; Str : PChar; Data : Pointer) : Boolean;

@@ -1529,14 +1529,14 @@ begin
   Result := false;
 end;
 
-function TWidgetSet.SetMenu(AWindowHandle: HWND; AMenuHandle: HMENU): Boolean;
-begin
-  Result := False;
-end;
-
 function TWidgetSet.SetMapMode(DC: HDC; fnMapMode : Integer): Integer;
 begin
   Result := 0;
+end;
+
+function TWidgetSet.SetMenu(AWindowHandle: HWND; AMenuHandle: HMENU): Boolean;
+begin
+  Result := False;
 end;
 
 function TWidgetSet.SetProp(Handle: hwnd; Str : PChar;
