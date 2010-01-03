@@ -68,6 +68,7 @@ type
     function ShowModal: Integer; override;
 
     function AddButton: TBitBtn; override;
+    function AddControl(AControlClass: TControlClass): TControl; override;
     procedure OpenEditor(AEditor: TAbstractIDEOptionsEditorClass); override;
     function FindEditor(AEditor: TAbstractIDEOptionsEditorClass): TAbstractIDEOptionsEditor; override;
     procedure ReadSettings(AOptions: TAbstractIDEOptions);
@@ -133,7 +134,7 @@ begin
     AEditor.AnchorSideRight.Side := asrBottom;
     AEditor.AnchorSideRight.Control := Self;
     AEditor.AnchorSideBottom.Side := asrTop;
-    AEditor.AnchorSideBottom.Control := ButtonPanel;
+    AEditor.AnchorSideBottom.Control := CategoryTree.AnchorSide[akBottom].Control;
     AEditor.BorderSpacing.Around := 6;
     //AEditor.Parent := Self;
     AEditor.Visible := True;
@@ -453,6 +454,22 @@ begin
   Result := TBitBtn.Create(Self);
   Result.Align := alCustom;
   Result.Parent := ButtonPanel;
+end;
+
+function TIDEOptionsDialog.AddControl(AControlClass: TControlClass): TControl;
+var
+  Control: TControl;
+begin
+  Result := AControlClass.Create(Self);
+  Result.Parent := Self;
+  Result.Anchors := [akLeft, akBottom];
+  Result.BorderSpacing.Around := 6;
+  Control := CategoryTree;
+  while Control.AnchorSide[akBottom].Control <> ButtonPanel do
+    Control := Control.AnchorSide[akBottom].Control;
+  Result.AnchorSide[akBottom].Control := ButtonPanel;
+  Result.AnchorSide[akLeft].Control := Self;
+  Control.AnchorSide[akBottom].Control := Result;
 end;
 
 procedure TIDEOptionsDialog.OpenEditor(AEditor: TAbstractIDEOptionsEditorClass);
