@@ -505,17 +505,21 @@ begin
   if AControl1 = FBevel then Exit(True);
   if AControl2 = FBevel then Exit(False);
 
-  if (AControl1 is TPanelBitBtn) and (AControl2 is TPanelBitBtn) then
-    Result := TWincontrol(AControl2).TabOrder > TWincontrol(AControl1).TabOrder
+  Result := TWincontrol(AControl2).TabOrder > TWincontrol(AControl1).TabOrder;
+  if not (AControl1 is TPanelBitBtn) and (AControl2 is TPanelBitBtn) then
+  begin
+    if AControl2 = FButtons[pbHelp] then
+      Exit(False)
+    else
+      Exit(True);
+  end
   else
+  if (AControl1 is TPanelBitBtn) and not (AControl2 is TPanelBitBtn) then
   begin
     if AControl1 = FButtons[pbHelp] then
       Exit(True)
     else
-    if AControl2 = FButtons[pbHelp] then
-      Exit(False)
-    else
-      Result := TWincontrol(AControl2).TabOrder < TWincontrol(AControl1).TabOrder
+      Exit(False);
   end;
 end;
 
