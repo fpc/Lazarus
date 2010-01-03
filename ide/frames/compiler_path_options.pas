@@ -580,6 +580,7 @@ begin
       LCLWidgetType := ''
     else
       LCLWidgetType := LCLPlatformDirNames[TLCLPlatform(i - 1)];
+    UseAsDefault := chkUseAsDefault.Checked;
   end;
 end;
 

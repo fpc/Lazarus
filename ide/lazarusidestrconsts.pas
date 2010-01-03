@@ -1778,6 +1778,7 @@ resourcestring
 
   // project options dialog
   dlgProjectOptions = 'Project Options';
+  dlgProjectOptionsFor = 'Options for Project: %s';
   dlgPOApplication = 'Application';
   lisApplicationAGraphicalLclFreepascalProgramTheProgra = 'Application%sA '
     +'graphical lcl/freepascal program. The program file is automatically '

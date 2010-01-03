@@ -285,7 +285,6 @@ type
     procedure mnuProjectOptionsClicked(Sender: TObject);
     procedure mnuProjectCompilerSettingsClicked(Sender: TObject);
 
-
     // run menu
     procedure mnuBuildProjectClicked(Sender: TObject);
     procedure mnuBuildAllProjectClicked(Sender: TObject);
@@ -3708,8 +3707,13 @@ begin
 end;
 
 procedure TMainIDE.mnuProjectOptionsClicked(Sender: TObject);
+var
+  NewCaption: String;
 begin
-  DoOpenIDEOptions(nil, dlgProjectOptions, TAbstractIDEProjectOptions);
+  NewCaption := Project1.Title;
+  if NewCaption = '' then
+    NewCaption := ExtractFilenameOnly(Project1.ProjectInfoFile);
+  DoOpenIDEOptions(nil, Format(dlgProjectOptionsFor, [NewCaption]), TAbstractIDEProjectOptions);
 end;
 
 function TMainIDE.UpdateProjectPOFile(AProject: TProject): TModalResult;
@@ -4353,6 +4357,11 @@ var
   ActiveUnitInfo: TUnitInfo;
 begin
   BeginCodeTool(ActiveSrcEdit, ActiveUnitInfo, []);
+  with Sender as TProject do
+  begin
+    UpdateExecutableType;
+    CompilerOptions.UseAsDefault := False;
+  end;
 end;
 
 procedure TMainIDE.DoProjectOptionsAfterWrite(Sender: TObject);
@@ -4451,6 +4460,10 @@ begin
       MessageDlg(Project.Resources.Messages.Text, mtWarning, [mbOk], 0);
   end;
   UpdateCaption;
+  Project.DefineTemplates.AllChanged;
+  // save to primary config directory
+  if Project.CompilerOptions.UseAsDefault then
+    Project.CompilerOptions.SaveCompilerOptions(False);
 end;
 
 procedure TMainIDE.DoCompilerOptionsBeforeWrite(Sender: TObject);
@@ -4465,6 +4478,9 @@ begin
   begin
     TBaseCompilerOptions(Sender).Modified := True;
     IncreaseCompilerParseStamp;
+    MainBuildBoss.RescanCompilerDefines(True, True);
+    IncreaseCompilerParseStamp;
+    UpdateHighlighters; // because of FPC/Delphi mode
   end;
   OldCompOpts.Free;
 end;

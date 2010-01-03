@@ -559,6 +559,7 @@ type
     fOptionsString: String;
     FParsedOpts: TParsedCompilerOptions;
     FStorePathDelim: TPathDelimSwitch;
+    FUseAsDefault: Boolean;
     fXMLFile: String;
     FXMLConfig: TXMLConfig;
 
@@ -697,6 +698,9 @@ type
     property CompilerMessages: TCompilerMessagesList read fCompilerMessages;
     property UseMsgFile: Boolean read fUseMsgFile write fUseMsgFile;
     property MsgFileName: String read fMsgFileName write fMsgFileName;
+
+    // for dialog only
+    property UseAsDefault: Boolean read FUseAsDefault write FUseAsDefault;
   end;
   
   
