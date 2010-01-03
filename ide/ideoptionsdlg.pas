@@ -31,7 +31,7 @@ interface
 
 uses
   Classes, SysUtils, Controls, Forms, LResources, ComCtrls, LCLProc, LCLType,
-  ButtonPanel,
+  Buttons, ButtonPanel,
   EnvironmentOpts, LazarusIDEStrConsts, IDEWindowIntf, IDEOptionsIntf,
   EditorOptions, IDECommands;
 
@@ -67,6 +67,7 @@ type
     constructor Create(AOwner: TComponent); override;
     function ShowModal: Integer; override;
 
+    function AddButton: TBitBtn; override;
     procedure OpenEditor(AEditor: TAbstractIDEOptionsEditorClass); override;
     function FindEditor(AEditor: TAbstractIDEOptionsEditorClass): TAbstractIDEOptionsEditor; override;
     procedure ReadSettings(AOptions: TAbstractIDEOptions);
@@ -445,6 +446,13 @@ begin
   CreateEditors;
   DoOpenEditor;
   Result := inherited ShowModal;
+end;
+
+function TIDEOptionsDialog.AddButton: TBitBtn;
+begin
+  Result := TBitBtn.Create(Self);
+  Result.Align := alCustom;
+  Result.Parent := ButtonPanel;
 end;
 
 procedure TIDEOptionsDialog.OpenEditor(AEditor: TAbstractIDEOptionsEditorClass);

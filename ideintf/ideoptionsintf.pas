@@ -25,7 +25,7 @@ unit IDEOptionsIntf;
 interface
 
 uses
-  Classes, SysUtils, Forms;
+  Classes, SysUtils, Buttons, Forms;
 
 const
   NoParent = -1;
@@ -137,6 +137,7 @@ type
 
   TAbstractOptionsEditorDialog = class(TForm)
   public
+    function AddButton: TBitBtn; virtual; abstract;
     procedure OpenEditor(AEditor: TAbstractIDEOptionsEditorClass); virtual; abstract;
     function FindEditor(AEditor: TAbstractIDEOptionsEditorClass): TAbstractIDEOptionsEditor; virtual; abstract;
   end;
