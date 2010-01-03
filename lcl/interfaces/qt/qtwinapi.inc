@@ -4810,15 +4810,12 @@ begin
   {$endif}
 
   // Basic checks
-
-  if (hWnd = 0) then Exit;
+  if (hWnd = 0) or (hRgn = 0) then Exit;
 
   w := TQtWidget(hWnd);
-
   r := TQtRegion(hRgn);
 
   // Now set the mask in the widget
-
   w.setMask(r.Widget);
 
   Result := 1;

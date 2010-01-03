@@ -187,6 +187,66 @@ begin
   Result := 0;
 end;
 
+{
+  In each of the 4 corners an ellipse will be created which has the expected
+  nWidthEllipse and nHeightEllipse. Then we need to create a square in the
+  appropriate corner of the ellipse, according to where it will be placed.
+  CornerCutRgn = Execute AND between the rectangle and ellipse.
+  CornerCutRgn = Execute SUB between the CornerCutRgn and the rectangle. (To invert it)
+  Execute SUB between each r2 and the rectangle and get the final rounded rectangle.
+}
+function TWidgetSet.CreateRoundRectRgn(X1, Y1, X2, Y2, nWidthEllipse, nHeightEllipse: Integer): HRGN;
+var
+  RoundRgn, CornerSquareRgn, CornerCutRgn: HRGN;
+begin
+  Result := 0;
+
+  // The resulting region
+  Result := CreateRectRgn(X1, Y1, X2, Y2);
+
+  // We create this region with dummy values just because
+  // CombineRgn requires an existing region to receive the result
+  CornerCutRgn := CreateRectRgn(0, 0, nWidthEllipse, nHeightEllipse);
+
+  // Top-left corner
+  RoundRgn := CreateEllipticRgn(X1, Y1, X1 + nWidthEllipse * 2, Y1 + nHeightEllipse * 2);
+  CornerSquareRgn := CreateRectRgn(X1, Y1, X1 + nWidthEllipse, Y1 + nHeightEllipse);
+  CombineRgn(CornerCutRgn, RoundRgn, CornerSquareRgn, RGN_AND);
+  CombineRgn(CornerCutRgn, CornerSquareRgn, CornerCutRgn, RGN_DIFF);
+  CombineRgn(Result, Result, CornerCutRgn, RGN_DIFF);
+  DeleteObject(RoundRgn);
+  DeleteObject(CornerSquareRgn);
+
+  // Bottom-left corner
+  RoundRgn := CreateEllipticRgn(X1, Y2 - nHeightEllipse * 2, X1 + nWidthEllipse * 2, Y2);
+  CornerSquareRgn := CreateRectRgn(X1, Y2 - nHeightEllipse, X1 + nWidthEllipse, Y2);
+  CombineRgn(CornerCutRgn, RoundRgn, CornerSquareRgn, RGN_AND);
+  CombineRgn(CornerCutRgn, CornerSquareRgn, CornerCutRgn, RGN_DIFF);
+  CombineRgn(Result, Result, CornerCutRgn, RGN_DIFF);
+  DeleteObject(RoundRgn);
+  DeleteObject(CornerSquareRgn);
+
+  // Top-Right corner
+  RoundRgn := CreateEllipticRgn(X2 - nWidthEllipse * 2 , Y1, X2, Y1 + nHeightEllipse * 2);
+  CornerSquareRgn := CreateRectRgn(X2 - nWidthEllipse, Y1, X2, Y1 + nHeightEllipse);
+  CombineRgn(CornerCutRgn, RoundRgn, CornerSquareRgn, RGN_AND);
+  CombineRgn(CornerCutRgn, CornerSquareRgn, CornerCutRgn, RGN_DIFF);
+  CombineRgn(Result, Result, CornerCutRgn, RGN_DIFF);
+  DeleteObject(RoundRgn);
+  DeleteObject(CornerSquareRgn);
+
+  // Bottom-Right corner
+  RoundRgn := CreateEllipticRgn(X2 - nWidthEllipse * 2, Y2 - nHeightEllipse * 2, X2, Y2);
+  CornerSquareRgn := CreateRectRgn(X2 - nWidthEllipse, Y2 - nHeightEllipse, X2, Y2);
+  CombineRgn(CornerCutRgn, RoundRgn, CornerSquareRgn, RGN_AND);
+  CombineRgn(CornerCutRgn, CornerSquareRgn, CornerCutRgn, RGN_DIFF);
+  CombineRgn(Result, Result, CornerCutRgn, RGN_DIFF);
+  DeleteObject(RoundRgn);
+  DeleteObject(CornerSquareRgn);
+
+  DeleteObject(CornerCutRgn);
+end;
+
 procedure TWidgetSet.DeleteCriticalSection(var CritSection: TCriticalSection);
 begin
   DebugLn('TWidgetSet.DeleteCriticalSection Not implemented yet');

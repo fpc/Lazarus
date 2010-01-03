@@ -161,6 +161,11 @@ Begin
   Result := WidgetSet.CreateRectRgn(X1,Y1,X2,Y2);
 end;
 
+function CreateRoundRectRgn(X1, Y1, X2, Y2, nWidthEllipse, nHeightEllipse: Integer): HRGN;
+begin
+    Result := WidgetSet.CreateRoundRectRgn(X1, Y1, X2, Y2, nWidthEllipse, nHeightEllipse);
+end;
+
 procedure DeleteCriticalSection(var CritSection: TCriticalSection);
 begin
   WidgetSet.DeleteCriticalSection(CritSection);
