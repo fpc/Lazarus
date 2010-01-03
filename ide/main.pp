@@ -4461,9 +4461,6 @@ begin
   end;
   UpdateCaption;
   Project.DefineTemplates.AllChanged;
-  // save to primary config directory
-  if Project.CompilerOptions.UseAsDefault then
-    Project.CompilerOptions.SaveCompilerOptions(False);
 end;
 
 procedure TMainIDE.DoCompilerOptionsBeforeWrite(Sender: TObject);
@@ -4483,6 +4480,8 @@ begin
     UpdateHighlighters; // because of FPC/Delphi mode
   end;
   OldCompOpts.Free;
+  if TBaseCompilerOptions(Sender).UseAsDefault then
+    TBaseCompilerOptions(Sender).SaveCompilerOptions(False);
 end;
 
 procedure TMainIDE.mnuEnvEditorOptionsClicked(Sender: TObject);
