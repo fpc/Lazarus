@@ -301,9 +301,6 @@ type
                read FOnImExportCompilerOptions write FOnImExportCompilerOptions;
   end;
 
-var
-  TestCompilerOptions: TNotifyEvent = nil;
-
 function SyntaxModeToCaption(const Mode: string): string;
 function CaptionToSyntaxMode(const Caption: string): string;
 function ProcessorToCaption(const Processor: string): string;

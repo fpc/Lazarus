@@ -845,6 +845,8 @@ const
     'SetVariable'
     );
 function StrToBuildModeFlagType(const s: string): TBuildModeFlagType;
+var
+  TestCompilerOptions: TNotifyEvent = nil;
 
 implementation
 

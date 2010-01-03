@@ -313,7 +313,7 @@ object frmCompilerOptions: TfrmCompilerOptions
     object CodeGenPage: TPage
       Caption = 'CodeGenPage'
       ClientWidth = 535
-      ClientHeight = 432
+      ClientHeight = 447
       object grpSmartLinkUnit: TGroupBox
         AnchorSideLeft.Control = grpChecks
         AnchorSideLeft.Side = asrBottom
@@ -321,10 +321,10 @@ object frmCompilerOptions: TfrmCompilerOptions
         AnchorSideRight.Control = CodeGenPage
         AnchorSideRight.Side = asrBottom
         AnchorSideBottom.Side = asrBottom
-        Left = 159
+        Left = 160
         Height = 47
         Top = 6
-        Width = 370
+        Width = 369
         Anchors = [akTop, akLeft, akRight]
         AutoSize = True
         BorderSpacing.Left = 6
@@ -332,13 +332,13 @@ object frmCompilerOptions: TfrmCompilerOptions
         BorderSpacing.Right = 6
         Caption = 'grpSmartLinkUnit'
         ClientHeight = 29
-        ClientWidth = 366
+        ClientWidth = 365
         TabOrder = 0
         object chkSmartLinkUnit: TCheckBox
           Left = 6
           Height = 17
           Top = 6
-          Width = 354
+          Width = 353
           Align = alTop
           BorderSpacing.Around = 6
           Caption = 'chkSmartLinkUnit'
@@ -352,14 +352,14 @@ object frmCompilerOptions: TfrmCompilerOptions
         Left = 6
         Height = 133
         Top = 6
-        Width = 147
+        Width = 148
         AutoSize = True
         BorderSpacing.Around = 6
         Caption = 'grpChecks'
         ChildSizing.Layout = cclLeftToRightThenTopToBottom
         ChildSizing.ControlsPerLine = 1
         ClientHeight = 115
-        ClientWidth = 143
+        ClientWidth = 144
         TabOrder = 1
         object chkChecksIO: TCheckBox
           Left = 6
@@ -413,22 +413,22 @@ object frmCompilerOptions: TfrmCompilerOptions
         AnchorSideTop.Side = asrBottom
         AnchorSideRight.Control = CodeGenPage
         AnchorSideRight.Side = asrBottom
-        Left = 159
-        Height = 53
+        Left = 160
+        Height = 51
         Top = 59
-        Width = 370
+        Width = 369
         Anchors = [akTop, akLeft, akRight]
         AutoSize = True
         BorderSpacing.Around = 6
         Caption = 'grpHeapSize'
-        ClientHeight = 35
-        ClientWidth = 366
+        ClientHeight = 33
+        ClientWidth = 365
         TabOrder = 2
         object edtHeapSize: TEdit
           Left = 6
-          Height = 23
+          Height = 21
           Top = 6
-          Width = 354
+          Width = 353
           Align = alTop
           BorderSpacing.Around = 6
           TabOrder = 0
@@ -442,16 +442,16 @@ object frmCompilerOptions: TfrmCompilerOptions
         AnchorSideTop.Side = asrBottom
         AnchorSideRight.Control = CodeGenPage
         AnchorSideRight.Side = asrBottom
-        Left = 159
+        Left = 160
         Height = 105
-        Top = 118
-        Width = 370
+        Top = 116
+        Width = 369
         Anchors = [akTop, akLeft, akRight]
         AutoSize = True
         BorderSpacing.Around = 6
         Caption = 'grpTargetPlatform'
         ClientHeight = 87
-        ClientWidth = 366
+        ClientWidth = 365
         TabOrder = 3
         object lblTargetOS: TLabel
           AnchorSideLeft.Control = grpTargetPlatform
@@ -498,7 +498,7 @@ object frmCompilerOptions: TfrmCompilerOptions
           Left = 75
           Height = 21
           Top = 6
-          Width = 285
+          Width = 284
           Anchors = [akTop, akLeft, akRight]
           BorderSpacing.Left = 6
           BorderSpacing.Around = 6
@@ -516,7 +516,7 @@ object frmCompilerOptions: TfrmCompilerOptions
           Left = 81
           Height = 21
           Top = 33
-          Width = 279
+          Width = 278
           Anchors = [akTop, akLeft, akRight]
           BorderSpacing.Left = 6
           BorderSpacing.Around = 6
@@ -534,7 +534,7 @@ object frmCompilerOptions: TfrmCompilerOptions
           Left = 129
           Height = 21
           Top = 60
-          Width = 231
+          Width = 230
           Anchors = [akTop, akLeft, akRight]
           BorderSpacing.Left = 6
           BorderSpacing.Around = 6
@@ -552,13 +552,13 @@ object frmCompilerOptions: TfrmCompilerOptions
         AnchorSideBottom.Control = CodeGenPage
         AnchorSideBottom.Side = asrBottom
         Left = 6
-        Height = 197
-        Top = 229
+        Height = 214
+        Top = 227
         Width = 523
         Anchors = [akTop, akLeft, akRight, akBottom]
         BorderSpacing.Around = 6
         Caption = 'grpOptimizations'
-        ClientHeight = 179
+        ClientHeight = 196
         ClientWidth = 519
         TabOrder = 4
         object lblOptMiddle: TLabel
@@ -568,7 +568,7 @@ object frmCompilerOptions: TfrmCompilerOptions
           AnchorSideTop.Side = asrCenter
           Left = 259
           Height = 1
-          Top = 89
+          Top = 98
           Width = 1
           AutoSize = False
           ParentColor = False
@@ -593,7 +593,7 @@ object frmCompilerOptions: TfrmCompilerOptions
           Left = 6
           Height = 17
           Top = 29
-          Width = 82
+          Width = 83
           BorderSpacing.Around = 6
           Caption = 'radOptLevel1'
           TabOrder = 1
@@ -606,7 +606,7 @@ object frmCompilerOptions: TfrmCompilerOptions
           Left = 6
           Height = 17
           Top = 52
-          Width = 82
+          Width = 83
           BorderSpacing.Around = 6
           Caption = 'radOptLevel2'
           TabOrder = 2
@@ -619,7 +619,7 @@ object frmCompilerOptions: TfrmCompilerOptions
           Left = 6
           Height = 17
           Top = 75
-          Width = 82
+          Width = 83
           BorderSpacing.Around = 6
           Caption = 'radOptLevel3'
           TabOrder = 3
@@ -631,7 +631,7 @@ object frmCompilerOptions: TfrmCompilerOptions
           Left = 259
           Height = 17
           Top = 6
-          Width = 103
+          Width = 102
           BorderSpacing.Top = 6
           Caption = 'chkOptVarsInReg'
           TabOrder = 4
@@ -643,7 +643,7 @@ object frmCompilerOptions: TfrmCompilerOptions
           Left = 259
           Height = 17
           Top = 29
-          Width = 99
+          Width = 98
           BorderSpacing.Top = 6
           Caption = 'chkOptUncertain'
           TabOrder = 5
@@ -655,7 +655,7 @@ object frmCompilerOptions: TfrmCompilerOptions
           Left = 259
           Height = 17
           Top = 52
-          Width = 87
+          Width = 86
           BorderSpacing.Top = 6
           Caption = 'chkOptSmaller'
           TabOrder = 6
@@ -665,7 +665,7 @@ object frmCompilerOptions: TfrmCompilerOptions
     object LinkingPage: TPage
       Caption = 'LinkingPage'
       ClientWidth = 535
-      ClientHeight = 432
+      ClientHeight = 447
       object grpLinkLibraries: TGroupBox
         Left = 6
         Height = 47
@@ -714,14 +714,14 @@ object frmCompilerOptions: TfrmCompilerOptions
       end
       object grpOptions: TGroupBox
         Left = 6
-        Height = 76
+        Height = 74
         Top = 326
         Width = 523
         Align = alTop
         AutoSize = True
         BorderSpacing.Around = 6
         Caption = 'grpOptions'
-        ClientHeight = 58
+        ClientHeight = 56
         ClientWidth = 519
         TabOrder = 2
         object chkOptionsLinkOpt: TCheckBox
@@ -736,7 +736,7 @@ object frmCompilerOptions: TfrmCompilerOptions
         end
         object edtOptionsLinkOpt: TEdit
           Left = 6
-          Height = 23
+          Height = 21
           Top = 29
           Width = 507
           Align = alTop
@@ -763,7 +763,7 @@ object frmCompilerOptions: TfrmCompilerOptions
           Left = 6
           Height = 17
           Top = 6
-          Width = 91
+          Width = 85
           BorderSpacing.Around = 6
           Caption = 'chkDebugGDB'
           TabOrder = 0
@@ -775,7 +775,7 @@ object frmCompilerOptions: TfrmCompilerOptions
           Left = 6
           Height = 17
           Top = 29
-          Width = 112
+          Width = 110
           BorderSpacing.Around = 6
           Caption = 'chkUseLineInfoUnit'
           TabOrder = 1
@@ -787,7 +787,7 @@ object frmCompilerOptions: TfrmCompilerOptions
           Left = 6
           Height = 17
           Top = 75
-          Width = 93
+          Width = 90
           BorderSpacing.Around = 6
           Caption = 'chkUseHeaptrc'
           TabOrder = 2
@@ -799,7 +799,7 @@ object frmCompilerOptions: TfrmCompilerOptions
           Left = 6
           Height = 17
           Top = 98
-          Width = 93
+          Width = 90
           BorderSpacing.Around = 6
           Caption = 'chkUseValgrind'
           TabOrder = 3
@@ -811,7 +811,7 @@ object frmCompilerOptions: TfrmCompilerOptions
           Left = 6
           Height = 17
           Top = 121
-          Width = 108
+          Width = 105
           BorderSpacing.Around = 6
           Caption = 'chkGenGProfCode'
           TabOrder = 4
@@ -823,7 +823,7 @@ object frmCompilerOptions: TfrmCompilerOptions
           Left = 6
           Height = 17
           Top = 144
-          Width = 96
+          Width = 95
           BorderSpacing.Around = 6
           Caption = 'chkSymbolsStrip'
           TabOrder = 5
@@ -835,7 +835,7 @@ object frmCompilerOptions: TfrmCompilerOptions
           Left = 6
           Height = 17
           Top = 167
-          Width = 138
+          Width = 136
           BorderSpacing.Around = 6
           Caption = 'chkUseExternalDbgSyms'
           TabOrder = 6
@@ -857,10 +857,10 @@ object frmCompilerOptions: TfrmCompilerOptions
     object MsgPage: TPage
       Caption = 'MsgPage'
       ClientWidth = 535
-      ClientHeight = 432
+      ClientHeight = 447
       object grpVerbosity: TCheckGroup
         Left = 6
-        Height = 347
+        Height = 378
         Top = 6
         Width = 523
         Align = alClient
@@ -880,19 +880,19 @@ object frmCompilerOptions: TfrmCompilerOptions
       end
       object grpErrorCnt: TGroupBox
         Left = 6
-        Height = 67
-        Top = 359
+        Height = 51
+        Top = 390
         Width = 523
         Align = alBottom
         AutoSize = True
         BorderSpacing.Around = 6
         Caption = 'grpErrorCnt'
-        ClientHeight = 49
+        ClientHeight = 33
         ClientWidth = 519
         TabOrder = 1
         object edtErrorCnt: TEdit
           Left = 6
-          Height = 22
+          Height = 21
           Top = 6
           Width = 507
           Align = alTop
@@ -986,17 +986,17 @@ object frmCompilerOptions: TfrmCompilerOptions
     object OtherPage: TPage
       Caption = 'OtherPage'
       ClientWidth = 535
-      ClientHeight = 432
+      ClientHeight = 447
       object grpConfigFile: TGroupBox
         Left = 6
-        Height = 99
+        Height = 97
         Top = 6
         Width = 523
         Align = alTop
         AutoSize = True
         BorderSpacing.Around = 6
         Caption = 'grpConfigFile'
-        ClientHeight = 81
+        ClientHeight = 79
         ClientWidth = 519
         TabOrder = 0
         object chkConfigFile: TCheckBox
@@ -1022,7 +1022,7 @@ object frmCompilerOptions: TfrmCompilerOptions
         end
         object edtConfigPath: TEdit
           Left = 6
-          Height = 23
+          Height = 21
           Top = 52
           Width = 507
           Align = alTop
@@ -1033,18 +1033,18 @@ object frmCompilerOptions: TfrmCompilerOptions
       end
       object grpCustomOptions: TGroupBox
         Left = 6
-        Height = 315
-        Top = 111
+        Height = 332
+        Top = 109
         Width = 523
         Align = alClient
         BorderSpacing.Around = 6
         Caption = 'grpCustomOptions'
-        ClientHeight = 297
+        ClientHeight = 314
         ClientWidth = 519
         TabOrder = 1
         object memCustomOptions: TMemo
           Left = 6
-          Height = 285
+          Height = 302
           Top = 6
           Width = 507
           Align = alClient
@@ -1056,7 +1056,7 @@ object frmCompilerOptions: TfrmCompilerOptions
     object ConditionalPage: TPage
       Caption = 'ConditionalPage'
       ClientWidth = 535
-      ClientHeight = 432
+      ClientHeight = 447
       object ConditionalsGroupBox: TGroupBox
         Left = 0
         Height = 214
@@ -1091,22 +1091,23 @@ object frmCompilerOptions: TfrmCompilerOptions
         ResizeAnchor = akTop
       end
       inline BuildVarsFrame: TCompOptBuildVarsFrame
-        Height = 213
+        Height = 228
         Top = 219
         Width = 535
         Align = alClient
-        ClientHeight = 213
+        ClientHeight = 228
         ClientWidth = 535
         TabOrder = 2
         Visible = True
         inherited BuildVarsGroupBox: TGroupBox
-          Height = 213
+          Height = 228
           Width = 535
-          ClientHeight = 195
+          ClientHeight = 210
           ClientWidth = 531
           inherited BuildVarsTreeView: TTreeView
-            Height = 195
+            Height = 210
             Width = 531
+            DefaultItemHeight = 15
           end
         end
       end
@@ -1114,7 +1115,7 @@ object frmCompilerOptions: TfrmCompilerOptions
     object InheritedPage: TPage
       Caption = 'InheritedPage'
       ClientWidth = 535
-      ClientHeight = 432
+      ClientHeight = 447
       object InhNoteLabel: TLabel
         Left = 6
         Height = 14
@@ -1141,7 +1142,7 @@ object frmCompilerOptions: TfrmCompilerOptions
       end
       object InhItemMemo: TMemo
         Left = 6
-        Height = 148
+        Height = 163
         Top = 278
         Width = 523
         Align = alClient
