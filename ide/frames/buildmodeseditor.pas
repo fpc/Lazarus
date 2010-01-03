@@ -361,7 +361,9 @@ var
   s: String;
   sl: TStringList;
 begin
+  //DebugLn(['TBuildModesGrid.UpdateTypePickList ']);
   TypeCol:=GetTypeCol;
+  if TypeCol>=Columns.Count then exit;
   Identifiers:=TStringToStringTree.Create(false);
   sl:=nil;
   try
@@ -388,7 +390,9 @@ begin
       sl.Add(PStringToStringItem(Node.Data)^.Name);
       Node:=Identifiers.Tree.FindSuccessor(Node);
     end;
+    Columns[TypeCol].ButtonStyle:=cbsPickList;
     Columns[TypeCol].PickList:=sl;
+    //DebugLn(['TBuildModesGrid.UpdateTypePickList ',TypeCol,' ',sl.Text]);
   finally
     sl.Free;
     Identifiers.Free;
@@ -405,7 +409,7 @@ var
   Vars: TLazBuildVariables;
   aVariable: TLazBuildVariable;
 begin
-  ValueCol:=GroupModeCount+2;
+  ValueCol:=GetTypeCol+1;
   if ValueCol>=Columns.Count then exit;
   CurModeRow:=GetSelectedModeRow;
   sl:=TStringList.Create;
@@ -478,9 +482,11 @@ function TBuildModesGrid.SelectCell(aCol, aRow: Integer): boolean;
 begin
   Result:=inherited SelectCell(aCol, aRow);
   if (not FRebuilding)
-  and (not (csDestroyingHandle in ControlState))
-  then
+  and (not (csDestroyingHandle in ControlState)) then
+  begin
+    UpdateTypePickList;
     UpdateValuePickList;
+  end;
 end;
 
 function TBuildModesGrid.GetModeRowCount: integer;
@@ -733,7 +739,7 @@ begin
   inherited Create(TheOwner);
   fGraph:=TBuildModeGraph.Create;
   FModeRows:=TFPList.Create;
-  Options:=Options+[goEditing];
+  Options:=Options+[goEditing,goColSizing];
   OnEditButtonClick:=@BuildModesGridEditButtonClick;
 end;
 
