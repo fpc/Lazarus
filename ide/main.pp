@@ -501,7 +501,6 @@ type
 
     // compiler options dialog events
     procedure OnCompilerOptionsDialogTest(Sender: TObject);
-    procedure OnCompilerOptionsImExport(Sender: TObject);
 
     // unit dependencies events
     procedure UnitDependenciesViewAccessingSources(Sender: TObject);
@@ -3873,7 +3872,6 @@ begin
       ]);
     frmCompilerOptions.CompilerOpts:=Project1.CompilerOptions;
     frmCompilerOptions.LoadOptionsToForm;
-    frmCompilerOptions.OnImExportCompilerOptions:=@OnCompilerOptionsImExport;
     if frmCompilerOptions.ShowModal=mrOk then begin
       MainBuildBoss.RescanCompilerDefines(true,true);
       Project1.DefineTemplates.AllChanged;
@@ -9605,22 +9603,31 @@ end;
 function TMainIDE.DoImExportCompilerOptions(Sender: TObject): TModalResult;
 var
   CompOptsDialog: TfrmCompilerOptions;
+  Options: TCompilerOptions;
   ImExportResult: TImExportCompOptsResult;
   Filename: string;
 begin
-  Result:=mrOk;
-  if not (Sender is TfrmCompilerOptions) then
+  Result := mrOk;
+  if Sender is TfrmCompilerOptions then
+  begin
+    CompOptsDialog := TfrmCompilerOptions(Sender);
+    Options := CompOptsDialog.CompilerOpts;
+  end
+  else
+  if Sender is TCompilerOptions then
+  begin
+    Options := TCompilerOptions(Sender);
+    CompOptsDialog := nil;
+  end
+  else
     RaiseException('TMainIDE.OnCompilerOptionsImExport');
-  CompOptsDialog:=TfrmCompilerOptions(Sender);
-  ImExportResult:=ShowImExportCompilerOptionsDialog(
-                                          CompOptsDialog.CompilerOpts,Filename);
-  if (ImExportResult=iecorCancel) or (Filename='') then exit;
-  if ImExportResult=iecorImport then
-    Result:=DoImportCompilerOptions(CompOptsDialog,CompOptsDialog.CompilerOpts,
-                                    Filename)
-  else if ImExportResult=iecorExport then
-    Result:=DoExportCompilerOptions(CompOptsDialog,CompOptsDialog.CompilerOpts,
-                                    Filename);
+  ImExportResult := ShowImExportCompilerOptionsDialog(Options, Filename);
+  if (ImExportResult = iecorCancel) or (Filename='') then Exit;
+  if ImExportResult = iecorImport then
+    Result := DoImportCompilerOptions(CompOptsDialog, Options, Filename)
+  else
+  if ImExportResult = iecorExport then
+    Result := DoExportCompilerOptions(CompOptsDialog, Options, Filename);
 end;
 
 function TMainIDE.DoShowProjectInspector: TModalResult;
@@ -15241,11 +15248,6 @@ end;
 procedure TMainIDE.OnCompilerOptionsDialogTest(Sender: TObject);
 begin
   DoTestCompilerSettings(Sender as TCompilerOptions);
-end;
-
-procedure TMainIDE.OnCompilerOptionsImExport(Sender: TObject);
-begin
-  DoImExportCompilerOptions(Sender);
 end;
 
 procedure TMainIDE.ProjInspectorOpen(Sender: TObject);

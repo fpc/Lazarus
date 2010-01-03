@@ -43,7 +43,7 @@ uses
   ComCtrls, Buttons, StdCtrls, ExtCtrls, Graphics, LResources, FileUtil,
   Dialogs, Controls, GraphType, LCLType,
   LinkScanner,
-  MacroIntf, ProjectIntf, IDEWindowIntf, IDEContextHelpEdit,
+  MacroIntf, ProjectIntf, IDEWindowIntf, IDEContextHelpEdit, MainIntf,
   TransferMacros, PathEditorDlg, LazarusIDEStrConsts, IDEOptionDefs, LazConf,
   IDEProcs, IDEImagesIntf, ShowCompilerOpts, Project, PackageDefs,
   CompilerOptions, CheckCompilerOpts, CompOptsModes, BuildModesEditor,
@@ -270,7 +270,6 @@ type
     function CheckSearchPath(const Context, ExpandedPath: string;
                              Level: TCheckCompileOptionsMsgLvl): boolean;
   private
-    FOnImExportCompilerOptions: TNotifyEvent;
     FReadOnly: boolean;
     ImageIndexPackage: integer;
     ImageIndexRequired: integer;
@@ -297,8 +296,6 @@ type
   public
     property ReadOnly: boolean read FReadOnly write SetReadOnly;
     property UseAsDefault: boolean read GetUseAsDefault;
-    property OnImExportCompilerOptions: TNotifyEvent
-               read FOnImExportCompilerOptions write FOnImExportCompilerOptions;
   end;
 
 function SyntaxModeToCaption(const Mode: string): string;
@@ -597,8 +594,7 @@ end;
 
 procedure TfrmCompilerOptions.ButtonLoadSaveClick(Sender: TObject);
 begin
-  if Assigned(OnImExportCompilerOptions) then
-    OnImExportCompilerOptions(Self);
+  MainIDEInterface.DoImExportCompilerOptions(Self);
 end;
 
 {------------------------------------------------------------------------------

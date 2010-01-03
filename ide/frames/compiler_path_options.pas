@@ -8,7 +8,7 @@ uses
   Classes, SysUtils, FileUtil, LResources, Forms, Controls, Graphics, Dialogs,
   Buttons, StdCtrls, LCLType, InterfaceBase, IDEOptionsIntf, Project,
   CompilerOptions, LazarusIDEStrConsts, PathEditorDlg, LazConf, IDEProcs,
-  CheckCompilerOpts, MacroIntf, ShowCompilerOpts;
+  CheckCompilerOpts, MacroIntf, ShowCompilerOpts, MainIntf;
 
 type
 
@@ -157,8 +157,16 @@ begin
 end;
 
 procedure TCompilerPathOptionsFrame.DoLoadSave(Sender: TObject);
+var
+  Options: TBaseCompilerOptions;
 begin
-  ShowMessage('TODO: unimplemented');
+  Options := TBaseCompilerOptionsClass(FCompilerOpts.ClassType).Create(FCompilerOpts.Owner);
+  try
+    DoSaveSettings(Options);
+    MainIDEInterface.DoImExportCompilerOptions(Options);
+  finally
+    Options.Free;
+  end;
 end;
 
 procedure TCompilerPathOptionsFrame.DoSaveSettings(AOptions: TAbstractIDEOptions);

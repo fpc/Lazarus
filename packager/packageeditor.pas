@@ -235,7 +235,6 @@ type
     FOnFreeEditor: TOnFreePkgEditor;
     FOnGetIDEFileInfo: TGetIDEFileStateEvent;
     FOnGetUnitRegisterInfo: TOnGetUnitRegisterInfo;
-    FOnImExportCompilerOptions: TNotifyEvent;
     FOnInstallPackage: TOnInstallPackage;
     FOnOpenFile: TOnOpenFile;
     FOnOpenPackage: TOnOpenPackage;
@@ -315,8 +314,6 @@ type
                                                  write FOnViewPackageToDos;
     property OnDeleteAmbiguousFiles: TOnDeleteAmbiguousFiles
                      read FOnDeleteAmbiguousFiles write FOnDeleteAmbiguousFiles;
-    property OnImExportCompilerOptions: TNotifyEvent
-               read FOnImExportCompilerOptions write FOnImExportCompilerOptions;
     property OnAddToProject: TOnAddPkgToProject read FOnAddToProject
                                                 write FOnAddToProject;
     property OnCreateMakefile: TOnCreatePkgMakefile read FOnCreatePkgMakefile
@@ -1223,8 +1220,6 @@ var
 begin
   CompilerOptsDlg:=TfrmCompilerOptions.Create(Self);
   CompilerOptsDlg.CompilerOpts:=LazPackage.CompilerOptions;
-  CompilerOptsDlg.OnImExportCompilerOptions:=
-                                       PackageEditors.OnImExportCompilerOptions;
   with CompilerOptsDlg do begin
     LoadOptionsToForm();
     Caption:=Format(lisPckEditCompilerOptionsForPackage,[LazPackage.IDAsString]);
