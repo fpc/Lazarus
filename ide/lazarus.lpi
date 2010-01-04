@@ -262,7 +262,7 @@
         <UnitName Value="W32VersionInfo"/>
       </Unit31>
       <Unit32>
-        <Filename Value="frames/compiler_conditionals_options.pas"/>
+        <Filename Value="frames/compiler_condtree.pas"/>
         <IsPartOfProject Value="True"/>
         <ComponentName Value="CompOptsConditionalsFrame"/>
         <HasResources Value="True"/>
