@@ -2,7 +2,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: \n"
 "POT-Creation-Date: \n"
-"PO-Revision-Date: 2009-12-21 12:46+0100\n"
+"PO-Revision-Date: 2010-01-03 18:03+0100\n"
 "Last-Translator: Swen Heinig <swen.heinig@freenet.de>\n"
 "Language-Team: Deutsch <lazarus@miraclec.com>\n"
 "MIME-Version: 1.0\n"
@@ -750,7 +750,7 @@ msgstr "Unit-Stil:"
 
 #: lazarusidestrconsts.dlgcouseasdefault
 msgid "Use these settings as default for new projects"
-msgstr ""
+msgstr "Diese Einstellungen als Vorgabe für neue Projekte verwenden"
 
 #: lazarusidestrconsts.dlgcovalgrind
 msgid "Generate code for valgrind"
@@ -3190,7 +3190,7 @@ msgstr "Package %s zum Projekt hinzufügen?"
 
 #: lazarusidestrconsts.lisaddparameterbrackets
 msgid "Add parameter brackets"
-msgstr ""
+msgstr "Parameter-Klammern hinzufügen"
 
 #: lazarusidestrconsts.lisaddtoproject
 msgid "Add %s to project?"
@@ -3423,7 +3423,7 @@ msgstr ""
 
 #: lazarusidestrconsts.lisautomaticallyconvertlfmfilestolrsincludefiles
 msgid "Automatically convert .lfm files to .lrs include files"
-msgstr ""
+msgstr ".lfm-Dateien automatisch in .lrs-Include-Dateien umwandeln"
 
 #: lazarusidestrconsts.lisautomaticallyinvokeafterpoint
 msgid "Automatically invoke after point"
@@ -6485,7 +6485,7 @@ msgstr "Komponenten"
 
 #: lazarusidestrconsts.lisfpcresources
 msgid "FPC resources"
-msgstr ""
+msgstr "FPC-Ressourcen"
 
 #: lazarusidestrconsts.lisfpcsourcedirectoryerror
 msgid "FPC Source Directory error"
@@ -6493,7 +6493,7 @@ msgstr "FPC-Quelltextverzeichnis-Fehler"
 
 #: lazarusidestrconsts.lisfpctooold
 msgid "FPC too old"
-msgstr ""
+msgstr "FPC ist zu alt"
 
 #: lazarusidestrconsts.lisfpcversion
 msgid "FPC Version: "
@@ -6767,7 +6767,7 @@ msgstr "IDE-Einstellungen"
 
 #: lazarusidestrconsts.lisidetitlestartswithprojectname
 msgid "IDE title starts with project name"
-msgstr ""
+msgstr "IDE-Titel beginnt mit Projektname"
 
 #: lazarusidestrconsts.lisiecoerroraccessingxml
 msgid "Error accessing xml"
@@ -6852,7 +6852,7 @@ msgstr ""
 
 #: lazarusidestrconsts.lisimplementationcommentforclass
 msgid "Implementation comment for class"
-msgstr ""
+msgstr "Implementierungs-Kommentar für die Klasse"
 
 #: lazarusidestrconsts.lisimportlist
 msgid "Import list"
@@ -8026,7 +8026,7 @@ msgstr "Laden von %s fehlgeschlagen"
 
 #: lazarusidestrconsts.lislocals
 msgid "Locals"
-msgstr "Locals"
+msgstr "Lokale Variablen"
 
 #: lazarusidestrconsts.lislocalsdlgname
 msgctxt "lazarusidestrconsts.lislocalsdlgname"
@@ -8056,7 +8056,7 @@ msgstr ""
 
 #: lazarusidestrconsts.lislrsincludefiles
 msgid "lrs include files"
-msgstr ""
+msgstr "lrs Include-Dateien"
 
 #: lazarusidestrconsts.lismacpascal
 msgid "Mac Pascal"
@@ -8356,7 +8356,7 @@ msgstr "Installierte Packages einrichten ..."
 
 #: lazarusidestrconsts.lismenueditor
 msgid "Menu Editor..."
-msgstr ""
+msgstr "Menü-Editor..."
 
 #: lazarusidestrconsts.lismenueditorcancel
 msgctxt "lazarusidestrconsts.lismenueditorcancel"
@@ -11143,11 +11143,11 @@ msgstr "Projekt-Ausgabeverzeichnis (z.B. das ppu Verzeichnis)"
 
 #: lazarusidestrconsts.lisprojectsraisedexceptionclasss
 msgid "Project %s raised exception class '%s'."
-msgstr ""
+msgstr "Projekt %s hat Exception-Klasse '%s' ausgelöst."
 
 #: lazarusidestrconsts.lisprojectsraisedexceptionclassswithmessagess
 msgid "Project %s raised exception class '%s' with message:%s%s"
-msgstr ""
+msgstr "Projekt %s hat Exception-Klasse '%s' ausgelöst mit der Meldung:%s%s"
 
 #: lazarusidestrconsts.lisprojectsrcpath
 msgid "Project Src Path"
@@ -11411,7 +11411,7 @@ msgstr "http://wiki.lazarus.freepascal.org/How_do_I_create_a_bug_report"
 
 #: lazarusidestrconsts.lisrequiresfpc24orabovelikedelphiresources
 msgid "Requires FPC 2.4 or above. Like Delphi resources"
-msgstr ""
+msgstr "Benötigt FPC 2.4 oder höher. Wie Delphi-Ressourcen"
 
 #: lazarusidestrconsts.lisrescan
 msgid "Rescan"
@@ -11431,7 +11431,7 @@ msgstr "Ressourcen-Schreibfehler"
 
 #: lazarusidestrconsts.lisresourcetypeofnewfiles
 msgid "Resource type of project:"
-msgstr ""
+msgstr "Ressourcentyp des Projekts:"
 
 #: lazarusidestrconsts.lisresult
 msgid "Result :="
@@ -11893,7 +11893,7 @@ msgstr "Debuggen abbrechen?"
 
 #: lazarusidestrconsts.lisstrangelpifile
 msgid "Strange lpi file"
-msgstr ""
+msgstr "Sonderbare .lpi-Datei"
 
 #: lazarusidestrconsts.lisstreamerror
 msgid "Stream Error"
@@ -12082,7 +12082,7 @@ msgstr "Das Verzeichnis %s%s%s wird nicht länger im Unit-Pfad benötigt.%sEntfe
 
 #: lazarusidestrconsts.listhedirectoryisnotwritable
 msgid "The directory %s%s%s is not writable."
-msgstr ""
+msgstr "Im Verzeichnis %s%s%s kann nicht geschrieben werden."
 
 #: lazarusidestrconsts.listhedirectoryisnotyetintheunitpathaddit
 msgid "The directory %s%s%s is not yet in the unit path.%sAdd it?"
@@ -12098,7 +12098,7 @@ msgstr "Die Datei %s%s%s"
 
 #: lazarusidestrconsts.listhefiledoesnotlooklikealpifile
 msgid "The file %s does not look like a lpi file."
-msgstr ""
+msgstr "Die Datei %s sieht nicht wie eine .lpi-Datei aus."
 
 #: lazarusidestrconsts.listhefileisasymlinkopeninstead
 msgid "The file %s%s%s is a symlink.%s%sOpen %s%s%s instead?"
@@ -12222,7 +12222,7 @@ msgstr "Dieses Package enthält bereits eine Unit mit diesem Namen."
 
 #: lazarusidestrconsts.listhepackagecannotbeuninstalledbecauseitisneededbyth
 msgid "The package %s can not be uninstalled, because it is needed by the IDE itself."
-msgstr ""
+msgstr "Das Package %s kann nicht deinstalliert werden, da es von der IDE selbst benötigt wird."
 
 #: lazarusidestrconsts.listheprogrammakewasnotfoundthistoolisneededtobuildla
 msgid "The program %smake%s was not found.%sThis tool is needed to build lazarus.%s"
@@ -12250,7 +12250,7 @@ msgstr "Das Project nutzt die Ziele OS=%s und CPU=%s.%sDie system.ppu für diese
 
 #: lazarusidestrconsts.listheprojectusesthenewfpcresourceswhichrequiresatlea
 msgid "The project uses the new FPC resources, which requires at least FPC 2.4"
-msgstr ""
+msgstr "Das Projekt verwendet die neuen FPC Ressourcen, welche wenigstens FPC 2.4 benötigen"
 
 #: lazarusidestrconsts.listhereareotherfilesinthedirectorywiththesamename
 msgid "There are other files in the directory with the same name,%swhich only differ in case:%s%s%sDelete them?"
@@ -12302,7 +12302,7 @@ msgstr "Die Ursprungskomponente kann nicht gelöscht werden."
 
 #: lazarusidestrconsts.listhesesettingsarestoredwiththeproject
 msgid "These settings are stored with the project."
-msgstr ""
+msgstr "Diese Einstellungen werden mit dem Projekt gespeichert."
 
 #: lazarusidestrconsts.listhetestdirectorycouldnotbefoundseeenvironmentopt
 msgid "The Test Directory could not be found:%s%s%s%s%s(see environment options)"
@@ -12370,7 +12370,7 @@ msgstr "&Titel"
 
 #: lazarusidestrconsts.listitleintaskbarshowsforexampleproject1lpilazarus
 msgid "Title in taskbar shows for example: project1.lpi - Lazarus"
-msgstr ""
+msgstr "Der Titel in der Taskbar zeigt z.B.: project1.lpi - Lazarus"
 
 #: lazarusidestrconsts.listitleleaveemptyfordefault
 msgid "Title (leave empty for default)"
@@ -12814,12 +12814,12 @@ msgstr "Die Datei %s%s%s kann nicht gelesen werden."
 #: lazarusidestrconsts.lisunabletoreadtheprojectinfofile
 msgctxt "lazarusidestrconsts.lisunabletoreadtheprojectinfofile"
 msgid "Unable to read the project info file%s%s%s%s."
-msgstr ""
+msgstr "Kann Projekt-Infodatei%s%s%s%s nicht lesen."
 
 #: lazarusidestrconsts.lisunabletoreadtheprojectinfofile2
 msgctxt "lazarusidestrconsts.lisunabletoreadtheprojectinfofile2"
 msgid "Unable to read the project info file%s%s%s%s."
-msgstr ""
+msgstr "Kann Projekt-Infodatei%s%s%s%s nicht lesen."
 
 #: lazarusidestrconsts.lisunabletoremoveoldbackupfile
 msgid "Unable to remove old backup file %s%s%s!"
@@ -14615,7 +14615,7 @@ msgstr "&Suche Deklaration"
 msgid "Find Identifier References"
 msgstr "Bezeichnerreferenzen suchen"
 
-#: lazarusidestrconsts.uemgotobookmark
+#: lazarusidestrconsts.udmgotobookmark
 msgid "&Goto Bookmark"
 msgstr "&Gehe zum Lesezeichen"
 
