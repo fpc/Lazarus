@@ -263,7 +263,7 @@ type
     procedure SetupVerbosityTab(Page: integer);
     procedure SetupConfigMsgTab(Page: integer);
     procedure SetupOtherTab(Page: integer);
-    procedure SetupConditionalTab(Page: integer);
+    procedure SetupConditionalsTab(Page: integer);
     procedure SetupInheritedTab(Page: integer);
     procedure SetupCompilationTab(Page: integer);
     procedure SetupButtonBar;
@@ -448,7 +448,7 @@ begin
     inc(Page);
     SetupOtherTab(Page);
     inc(Page);
-    SetupConditionalTab(Page);
+    SetupConditionalsTab(Page);
     inc(Page);
     SetupInheritedTab(Page);
     inc(Page);
@@ -1518,7 +1518,8 @@ end;
 
 procedure TfrmCompilerOptions.SetupConditionalTab(Page: integer);
 begin
-  MainNoteBook.Page[Page].Caption:=dlgCOConditionals;
+  ConditionalPage:=MainNoteBook.Page[Page];
+  ConditionalPage.Caption:=dlgCOConditionals;
   {$IFDEF EnableBuildModes}
   CategoryTreeView.Items.AddObject(nil,MainNoteBook.Page[Page].Caption,MainNoteBook.Page[Page]);
   {$ENDIF}
