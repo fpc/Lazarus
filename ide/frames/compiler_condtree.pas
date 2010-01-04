@@ -17,7 +17,7 @@
  *                                                                         *
  ***************************************************************************
 }
-unit Compiler_Conditionals_Options;
+unit Compiler_CondTree;
 
 {$mode objfpc}{$H+}
 
@@ -613,7 +613,7 @@ begin
 end;
 
 initialization
-  {$I compiler_conditionals_options.lrs}
+  {$I compiler_condtree.lrs}
 
 end.
 

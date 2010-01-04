@@ -267,7 +267,7 @@
         <ComponentName Value="CompOptsConditionalsFrame"/>
         <HasResources Value="True"/>
         <ResourceBaseClass Value="Frame"/>
-        <UnitName Value="Compiler_Conditionals_Options"/>
+        <UnitName Value="Compiler_CondTree"/>
       </Unit32>
       <Unit33>
         <Filename Value="frames/compiler_buildvar_options.pas"/>

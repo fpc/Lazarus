@@ -27,7 +27,7 @@ uses
   Classes, SysUtils, LCLProc, FileUtil, Controls, LResources, Forms, StdCtrls,
   Grids, Buttons, ExtCtrls, Dialogs, ComCtrls, Menus, AvgLvlTree,
   IDEImagesIntf, ProjectIntf, CompilerOptions,
-  Compiler_Conditionals_Options, LazarusIDEStrConsts, CompOptsModes;
+  Compiler_CondTree, LazarusIDEStrConsts, CompOptsModes;
 
 type
   TCBMNodeType = (

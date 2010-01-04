@@ -47,7 +47,7 @@ uses
   TransferMacros, PathEditorDlg, LazarusIDEStrConsts, IDEOptionDefs, LazConf,
   IDEProcs, IDEImagesIntf, ShowCompilerOpts, Project, PackageDefs,
   CompilerOptions, CheckCompilerOpts, CompOptsModes, BuildModesEditor,
-  Compiler_Conditionals_Options, Compiler_BuildVar_Options, CheckLst;
+  Compiler_CondTree, Compiler_BuildVar_Options, CheckLst;
 
 type
   { TfrmCompilerOptions }
