@@ -277,6 +277,11 @@ begin
   FParentFont := False;
   Invalidate;
   Perform(CM_FONTCHANGED, 0, 0);
+  if AutoSize then
+  begin
+    InvalidatePreferredSize;
+    AdjustSize;
+  end;
 end;
 
 procedure TControl.ParentFontChanged;

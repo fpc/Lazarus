@@ -4532,15 +4532,10 @@ begin
   begin
     TWSWinControlClass(WidgetSetClass).SetFont(Self, Font);
     Exclude(FWinControlFlags, wcfFontChanged);
-    if AutoSize then
-    begin
-      InvalidatePreferredSize;
-      AdjustSize;
-    end;
   end
   else
     Include(FWinControlFlags, wcfFontChanged);
-  inherited;
+  inherited FontChanged(Sender);
   NotifyControls(CM_PARENTFONTCHANGED);
 end;
 
