@@ -341,20 +341,20 @@ end;
  ------------------------------------------------------------------------------}
 class procedure TQtWSFileDialog.ShowModal(const ACommonDialog: TCommonDialog);
 var
-  selectedFilter, ReturnText,
-  saveFileName, saveTitle, saveFilter: WideString;
+  ReturnText: WideString;
   FileDialog: TFileDialog;
   ReturnList: QStringListH;
   i: integer;
   QtFileDialog: TQtFileDialog;
+  {$ifdef QT_NATIVE_DIALOGS}
+  selectedFilter, saveFileName, saveFilter, saveTitle: WideString;
   Flags: Cardinal;
+  {$endif}
 begin
   {------------------------------------------------------------------------------
     Initialization of variables
    ------------------------------------------------------------------------------}
   ReturnText := '';
-  saveFileName := '';
-  saveTitle := '';
 
   FileDialog := TFileDialog(ACommonDialog);
   QtFileDialog := TQtFileDialog(FileDialog.Handle);
@@ -529,7 +529,11 @@ end;
  ------------------------------------------------------------------------------}
 class procedure TQtWSSelectDirectoryDialog.ShowModal(const ACommonDialog: TCommonDialog);
 var
-  ReturnText, saveFileName, saveTitle: WideString;
+  ReturnText: WideString;
+  {$ifdef QT_NATIVE_DIALOGS}
+  saveFileName: WideString;
+  saveTitle: WideString;
+  {$endif}
   FileDialog: TSelectDirectoryDialog;
   QtFileDialog: TQtFileDialog;
   ReturnList: QStringListH;
@@ -539,8 +543,6 @@ begin
     Initialization of variables
    ------------------------------------------------------------------------------}
   ReturnText := '';
-  saveFileName := '';
-  saveTitle := '';
 
   FileDialog := TSelectDirectoryDialog(ACommonDialog);
   QtFileDialog := TQtFileDialog(FileDialog.Handle);

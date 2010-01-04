@@ -717,7 +717,7 @@ var
 function CheckGDIObject(const AGDIObject: HGDIOBJ; const AMethodName: String;
   AParamName: String): Boolean;
 begin
-  {$note TODO: make TQTImage a TQtResource}
+  {$note CheckGDIObject TODO: make TQTImage a TQtResource}
   Result := (TObject(AGDIObject) is TQtResource) or (TObject(AGDIObject) is TQtImage);
   if Result then Exit;
 
@@ -2848,7 +2848,7 @@ begin
     end;
   end else
   begin
-    {$note workaround - possible qt4 bug with QPainter & RGB32 images.}
+    {$note TQtDeviceContext.drawImage workaround - possible qt4 bug with QPainter & RGB32 images.}
     {Workaround: we must convert image to ARGB32 , since we can get strange
      results with RGB32 images on Linux and Win32 if DstRect <> sourceRect.
      Explanation: Look at #11713 linux & win screenshoots.

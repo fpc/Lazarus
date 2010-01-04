@@ -2199,7 +2199,7 @@ begin
   // Loads the UTF-8 character associated with the keypress, if any
   QKeyEvent_text(QKeyEventH(Event), @Text);
 
-  {$note this is workaround for Qt bug which reports
+  {$note TQtWidget.SlotKey: this is workaround for Qt bug which reports
    wrong keys with Shift+Ctrl pressed. Fixes #13450.
    LAST REVISION: Qt-4.5.2 git snapshot 20090607. zeljko}
   if (Modifiers = QtShiftModifier or QtControlModifier) then
@@ -2929,7 +2929,7 @@ begin
   {$IFDEF LINUX}
   // qt X11 bug ?  activates window but it's not in
   // front of others.
-  {$note Check this with next qt version (>4.3.4)}
+  {$note TQtWidget.Activate: Check this with next qt version (>4.3.4)}
   if QWidget_isWindow(Widget)
   and not QWidget_isModal(Widget) then
     QWidget_raise(Widget);
@@ -4189,7 +4189,7 @@ begin
     AMetrics := QFontMetrics_create(QWidget_font(Widget));
     PreferredWidth := QFontMetrics_width(AMetrics, @W, -1);
     PreferredHeight := QFontMetrics_height(AMetrics);
-    {$note there's a bug with QFontMetrics_width() & QFontMetrics_height()
+    {$note TQtPushButton.preferredSize: there's a bug with QFontMetrics_width() & QFontMetrics_height()
      on MacOSX (qt-4.3,qt-4.4)
      so we must increase PrefW & PrefH for some reasonable value.}
     {$IFDEF DARWIN}
@@ -5631,7 +5631,7 @@ end;
 
 function TQtTextEdit.getMaxLength: Integer;
 begin
-  {$note implement}
+  {$note implement TQtTextEdit.getMaxLength}
   Result := 0;
 end;
 
@@ -5677,7 +5677,7 @@ end;
 
 procedure TQtTextEdit.setEchoMode(const AMode: QLineEditEchoMode);
 begin
-  {$note implement}
+  {$note implement TQtTextEdit.setEchoMode}
 end;
 
 procedure TQtTextEdit.setLineWrapMode(const AMode: QTextEditLineWrapMode);
@@ -5687,7 +5687,7 @@ end;
 
 procedure TQtTextEdit.setMaxLength(const ALength: Integer);
 begin
-  {$note implement}
+  {$note implement TQtTextEdit.setMaxLength}
 end;
 
 procedure TQtTextEdit.setText(const AText: WideString);
@@ -5919,7 +5919,7 @@ function TQtTabWidget.getTabBar: TQtTabBar;
 begin
   if FTabBar = nil then
   begin
-    {$note we can remove QLCLTabWidget, and get it like StackWidget,
+    {$note TQtTabWidget.getTabBar: we can remove QLCLTabWidget, and get it like StackWidget,
      objectName is qt_tabwidget_tabbar.}
     FTabBar := TQtTabBar.CreateFrom(LCLObject, QLCLTabWidget_tabBarHandle(QTabWidgetH(Widget)));
     FTabBar.AttachEvents;
@@ -7731,13 +7731,13 @@ end;
 
 function TQtTreeWidget.getMaxColSize(ACol: Integer): Integer;
 begin
-  {$note QSizeH implementation missing for this}
+  {$note QSizeH implementation missing for TQtTreeWidget.getMaxColSize}
   Result := MAXINT -1;
 end;
 
 function TQtTreeWidget.getMinColSize(ACol: Integer): Integer;
 begin
-  {$note QSizeH implementation missing for this}
+  {$note QSizeH implementation missing for TQtTreeWidget.getMinColSize}
   Result := 0;
 end;
 
@@ -7789,13 +7789,13 @@ end;
 
 procedure TQtTreeWidget.setMaxColSize(ACol: Integer; const AValue: Integer);
 begin
-  {$note QSizeH implementation missing for this}
+  {$note QSizeH implementation missing for TQtTreeWidget.setMaxColSize}
 end;
 
 procedure TQtTreeWidget.setMinColSize(ACol: Integer; const AValue: Integer);
 begin
   // QTreeWidgetItem_setSizeHint(headerItem, @Size, ACol);
-  {$note QSizeH implementation missing for this}
+  {$note QSizeH implementation missing for TQtTreeWidget.setMinColSize}
 end;
 
 {------------------------------------------------------------------------------
@@ -9654,7 +9654,7 @@ begin
   else
   if ((not AValue) and (FNewDelegate <> nil)) then
   begin
-    {$note this call avoid sporadic AVs with QLCLItemDelegate_destroy(FNewDelegate).}
+    {$note TQtAbstractItemView.SetOwnerDrawn: this call avoid sporadic AVs with QLCLItemDelegate_destroy(FNewDelegate).}
     {howto reproduce: comment next code line, recompile laz, and then in oi click
      in first field eg. Action (TForm), now push kbd down arrow let it pass all properties,
      you'll have crash at Constraints property.}

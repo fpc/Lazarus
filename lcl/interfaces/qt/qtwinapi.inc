@@ -1482,7 +1482,7 @@ begin
     end;
   end else
   begin
-   {$note implement}
+   {$note implement EnumFontFamiliesEx for other than default}
     Result := 0;
   end;
 end;
@@ -4263,7 +4263,9 @@ end;
 function TQtWidgetSet.SelectClipRGN(DC: hDC; RGN: HRGN): Longint;
 var
   ARegion: QRegionH;
+  {$IFNDEF UNIX}
   EmptyRegion: QRegionH;
+  {$ENDIF}
   Painter: QPainterH;
   R: TRect;
   AIsPolyRegion: boolean = False;

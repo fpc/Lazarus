@@ -897,7 +897,7 @@ begin
   QtTreeWidget := TQtTreeWidget(ALV.Handle);
   QtTreeWidget.takeTopLevelItem(AIndex);
 
-  {$note FIXME workaround issue #9746}
+  {$note FIXME workaround issue #9746, TQtWSCustomListView.ItemDelete}
   {workaround for ListOutOfBounds in some cases. Described with issue #9746}
   QtItem := QtTreeWidget.currentItem;
 
@@ -1343,8 +1343,8 @@ end;
 
 class procedure TQtWSCustomListView.SetAllocBy(const ALV: TCustomListView;
   const AValue: Integer);
-var
-  QtTreeWidget: TQtTreeWidget;
+//var
+//  QtTreeWidget: TQtTreeWidget;
 begin
   if not WSCheckHandleAllocated(ALV, 'SetAllocBy') then
     Exit;

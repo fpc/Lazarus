@@ -505,7 +505,7 @@ class procedure TQtWSCustomListBox.SetColumnCount(const ACustomListBox: TCustomL
   QtListWidget: TQtListWidget;
   AModel: QAbstractItemModelH;}
 begin
-  {$note implement}
+  {$note implement TQtWSCustomListBox.SetColumnCount}
 {  QtListWidget := TQtListWidget(ACustomListBox.Handle);
   AModel := QtListWidget.getModel;
 
@@ -1254,7 +1254,7 @@ end;
 class procedure TQtWSCustomComboBox.SetArrowKeysTraverseList(
   const ACustomComboBox: TCustomComboBox; NewTraverseList: boolean);
 begin
-  {$note implement}
+  {$note implement TQtWSCustomComboBox.SetArrowKeysTraverseList}
 end;
 
 class procedure TQtWSCustomComboBox.SetDropDownCount(

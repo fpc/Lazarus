@@ -385,7 +385,6 @@ class function TQtWSCustomNotebook.GetTabRect(const ANotebook: TCustomNotebook;
   const AIndex: Integer): TRect;
 var
   TabWidget: TQtTabWidget;
-  R: TRect;
 begin
   Result := Rect(-1, -1, -1, -1);
   if not WSCheckHandleAllocated(ANotebook, 'GetTabRect') then
