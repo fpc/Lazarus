@@ -11007,6 +11007,7 @@ type
     QStyleOptionSO_RubberBand,
     QStyleOptionSO_ToolBar,
     QStyleOptionSO_GraphicsItem,
+    QStyleOptionSO_CustomBase = $f00,
     QStyleOptionSO_Complex = $f0000,
     QStyleOptionSO_Slider,
     QStyleOptionSO_SpinBox,
@@ -11016,7 +11017,6 @@ type
     QStyleOptionSO_TitleBar,
     QStyleOptionSO_GroupBox,
     QStyleOptionSO_SizeGrip,
-    QStyleOptionSO_CustomBase = $f00,
     QStyleOptionSO_ComplexCustomBase = $f000000 );
 
   QStyleOptionStyleOptionVersion = (  //QStyleOption::StyleOptionVersion (2s)
@@ -11959,8 +11959,8 @@ function QStyleFactory_create(p1: PWideString): QStyleH; cdecl; external QtIntf 
 
 type
   QGraphicsSceneItemIndexMethod = (  //QGraphicsScene::ItemIndexMethod (2)
-    QGraphicsSceneBspTreeIndex,
-    QGraphicsSceneNoIndex = -1 );
+    QGraphicsSceneNoIndex = -1,
+    QGraphicsSceneBspTreeIndex = 0);
 
 type
   QGraphicsSceneSceneLayer = cardinal; // QGraphicsScene::SceneLayer
@@ -12176,11 +12176,11 @@ type
     QSslEmailEntry, QSslDnsEntry );
 
   QSslSslProtocol = (  //QSsl::SslProtocol (2)
-    QSslSslV3,
+    QSslUnknownProtocol = -1,
+    QSslSslV3 = 0,
     QSslSslV2,
     QSslTlsV1,
-    QSslAnyProtocol,
-    QSslUnknownProtocol = -1 );
+    QSslAnyProtocol);
 
 function QSslCipher_create(): QSslCipherH; overload; cdecl; external QtIntf name 'QSslCipher_create';
 procedure QSslCipher_destroy(handle: QSslCipherH); cdecl; external QtIntf name 'QSslCipher_destroy'; 
@@ -12213,7 +12213,8 @@ function QSslKey_handle(handle: QSslKeyH): QtHANDLE; cdecl; external QtIntf name
 
 type
   QSslErrorSslError = (  //QSslError::SslError (2)
-    QSslErrorNoError,
+    QSslErrorUnspecifiedError = -1,
+    QSslErrorNoError = 0,
     QSslErrorUnableToGetIssuerCertificate,
     QSslErrorUnableToDecryptCertificateSignature,
     QSslErrorUnableToDecodeIssuerPublicKey,
@@ -12236,8 +12237,7 @@ type
     QSslErrorAuthorityIssuerSerialNumberMismatch,
     QSslErrorNoPeerCertificate,
     QSslErrorHostNameMismatch,
-    QSslErrorNoSslSupport,
-    QSslErrorUnspecifiedError = -1 );
+    QSslErrorNoSslSupport);
 
 function QSslError_create(error: QSslErrorSslError = QSslErrorNoError; certificate: QSslCertificateH = nil): QSslErrorH; overload; cdecl; external QtIntf name 'QSslError_create';
 procedure QSslError_destroy(handle: QSslErrorH); cdecl; external QtIntf name 'QSslError_destroy'; 
@@ -12430,11 +12430,11 @@ procedure QNetworkRequest_setSslConfiguration(handle: QNetworkRequestH; configur
 
 type
   QNetworkAccessManagerOperation = (  //QNetworkAccessManager::Operation (2)
+    QNetworkAccessManagerUnknownOperation = 0,
     QNetworkAccessManagerHeadOperation = 1,
     QNetworkAccessManagerGetOperation,
     QNetworkAccessManagerPutOperation,
-    QNetworkAccessManagerPostOperation,
-    QNetworkAccessManagerUnknownOperation = 0 );
+    QNetworkAccessManagerPostOperation);
 
 function QNetworkAccessManager_create(parent: QObjectH = nil): QNetworkAccessManagerH; cdecl; external QtIntf name 'QNetworkAccessManager_create';
 procedure QNetworkAccessManager_destroy(handle: QNetworkAccessManagerH); cdecl; external QtIntf name 'QNetworkAccessManager_destroy'; 
