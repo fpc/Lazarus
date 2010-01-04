@@ -1516,7 +1516,7 @@ begin
   grpCustomOptions.Caption:=lisCustomOptions2;
 end;
 
-procedure TfrmCompilerOptions.SetupConditionalTab(Page: integer);
+procedure TfrmCompilerOptions.SetupConditionalsTab(Page: integer);
 begin
   ConditionalPage:=MainNoteBook.Page[Page];
   ConditionalPage.Caption:=dlgCOConditionals;
