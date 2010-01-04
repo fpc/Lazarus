@@ -4600,7 +4600,7 @@ begin
                               ResourceFileExt));
   end;
   //debugln('TMainIDE.CreateNewForm B ',ResourceCode.Filename);
-  ResourceCode.Source:='{ '+lisResourceFileComment+' }';
+  ResourceCode.Source:='{ '+LRSComment+' }';
   CodeToolBoss.CreateFile(ChangeFileExt(NewUnitInfo.Filename,'.lfm'));
 
   // clear formeditor
@@ -5137,7 +5137,7 @@ begin
             end;
             // add comment to resource file (if not already exists)
             if (not CodeToolBoss.AddLazarusResourceHeaderComment(ResourceCode,
-               lisResourceFileComment)) then
+               LRSComment)) then
             begin
               ACaption:=lisResourceSaveError;
               AText:=Format(lisUnableToAddResourceHeaderCommentToResourceFile, [

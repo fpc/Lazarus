@@ -44,8 +44,12 @@ uses
   {$DEFINE UseRES}
 {$ENDIF}
 
+const
+  LRSComment =  // do not translate this!
+    'This is an automatically generated lazarus resource file';
 type
   TFilerSignature = array[1..4] of Char;
+
 
   { TLResourceList }
 
