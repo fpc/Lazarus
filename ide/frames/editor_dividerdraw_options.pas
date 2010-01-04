@@ -263,6 +263,7 @@ end;
 procedure TEditorDividerDrawOptionsFrame.Setup(ADialog: TAbstractOptionsEditorDialog);
 begin
   LanguageLabel.Caption := dlgLang;
+  DividerSpinEdit.Hint := lis0No1DrawDividerLinesOnlyForTopLevel2DrawLinesForFi;
   DividerSpinLabel.Caption := dlgDividerDrawDepth;
   TopLvlColorLabel.Caption := dlgDividerTopColor;
   TopLvlColorCheckBox.Caption := dlgDividerColorDefault;

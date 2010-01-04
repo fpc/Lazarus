@@ -1332,6 +1332,9 @@ resourcestring
   lisEdOptsChooseScheme = 'Choose Scheme';
   dlgEdHintCommand = 'Hint: click on the command you want to edit';
   dlgLang = 'Language';
+  lis0No1DrawDividerLinesOnlyForTopLevel2DrawLinesForFi = '0 = no, 1 = draw '
+    +'divider lines only for top level, 2 = draw lines for first two '
+    +'levels, ...';
   dlgClrScheme = 'Color Scheme';
   dlgFileExts = 'File extensions';
   dlgSetElementDefault = 'Set element to default';
