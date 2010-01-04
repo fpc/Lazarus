@@ -262,7 +262,7 @@
         <UnitName Value="W32VersionInfo"/>
       </Unit31>
       <Unit32>
-        <Filename Value="../packager/frames/compiler_conditionals_options.pas"/>
+        <Filename Value="../ide/frames/compiler_conditionals_options.pas"/>
         <IsPartOfProject Value="True"/>
         <ComponentName Value="CompOptsConditionalsFrame"/>
         <HasResources Value="True"/>
@@ -270,7 +270,7 @@
         <UnitName Value="Compiler_Conditionals_Options"/>
       </Unit32>
       <Unit33>
-        <Filename Value="../packager/frames/compiler_buildvar_options.pas"/>
+        <Filename Value="../ide/frames/compiler_buildvar_options.pas"/>
         <IsPartOfProject Value="True"/>
         <ComponentName Value="CompOptBuildVarsFrame"/>
         <HasResources Value="True"/>
