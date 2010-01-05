@@ -90,12 +90,17 @@ type
     procedure EnumerateItems(const Method: TLCLEnumItemsMethod);
   end;
 
+{$IF (FPC_VERSION=2) AND (FPC_RELEASE>4)}
+  TStreamSizeType = PtrInt;
+{$ELSE}
+  TStreamSizeType = Longint;
+{$IFEND}
 
   { TExtMemoryStream }
   
   TExtMemoryStream = class(TMemoryStream)
   protected
-    function Realloc(var NewCapacity: Longint): Pointer; override;
+    function Realloc(var NewCapacity: TStreamSizeType): Pointer; override;
   public
     property Capacity;
   end;
@@ -275,12 +280,12 @@ end;
 
 { TExtMemoryStream }
 
-function TExtMemoryStream.Realloc(var NewCapacity: LongInt): Pointer;
+function TExtMemoryStream.Realloc(var NewCapacity: TStreamSizeType): Pointer;
 begin
   // if we are growing, grow at least a quarter
-  if (NewCapacity>Capacity) then
+  if (NewCapacity > Capacity) then
     NewCapacity := Max(NewCapacity, Capacity + Capacity div 4);
-  Result:=inherited Realloc(NewCapacity);
+  Result := inherited Realloc(NewCapacity);
 end;
 
 end.
