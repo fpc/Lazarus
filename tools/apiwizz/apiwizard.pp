@@ -61,6 +61,7 @@ type
     procedure rdgApiTypeClick (Sender: TObject );
   private
     FLineInfo: TStringList;
+    procedure Clear;
   public
   end;
 
@@ -340,6 +341,8 @@ begin
   for n := 0 to Lines.Count - 1 do
   begin
     Line := Lines[n];
+    if Length(Line) < 8 then Continue; // min lenght of function,procedure,tag
+
     if not StartFound
     then begin
       StartFound := Pos(StartTag, Line) <> 0;
@@ -351,7 +354,9 @@ begin
       Break;
     end;
 
-    if (Line = '') or (Line[1] = ' ') then Continue;
+    if Line[1] = ' ' then Continue;
+    if (Line[1] = '/') and (Line[2] = '/') then Continue;
+
     LineName := GetName(Line);
     if LineName = '' then Continue;
     Line := GetPart([], ['{$'], Line);
@@ -412,6 +417,17 @@ begin
     if n <> 0 then S := Copy(S, 1, n - 7);
   end;
   txtLazarus.Text := S;
+end;
+
+procedure TApiWizForm.Clear;
+var
+  n: Integer;
+begin
+  lvExisting.Clear;
+  for n := 0 to FLineInfo.Count - 1 do
+    FLineInfo.Objects[n].Free;
+
+  FLineInfo.Clear;
 end;
 
 procedure TApiWizForm.cmdCopyClick(Sender: TObject);
@@ -738,7 +754,9 @@ var
   Item: TListItem;
   WS: TApiWidgetset;
 begin
-  FLineInfo.Clear;
+  Screen.Cursor := crHourGlass;
+  lvExisting.BeginUpdate;
+  Clear;
 
   Lines := TStringList.Create;
   Scan(txtLazarus.text + '/lcl/include/winapih.inc', 'ps', Lines);
@@ -754,11 +772,13 @@ begin
   Scan(txtLazarus.text + '/lcl/include/winapih.inc', 'pi', Lines);
   for n := 0 to Lines.Count - 1 do
   begin
+    S := GetName(Lines[n]);
+    if FLineInfo.IndexOf(s) >= 0 then Continue;  //overloaded
+
     Line := TApiLine.Create;
     Line.Independent := True;
     Line.WinApi := True;
     Line.Declaration := Lines[n];
-    S := GetName(Lines[n]);
     FLineInfo.AddObject(S, Line);
   end;
 
@@ -774,15 +794,16 @@ begin
   Scan(txtLazarus.text + '/lcl/include/lclintfh.inc', 'pi', Lines);
   for n := 0 to Lines.Count - 1 do
   begin
+    S := GetName(Lines[n]);
+    if FLineInfo.IndexOf(s) >= 0 then Continue;  //overloaded
+
     Line := TApiLine.Create;
     Line.Independent := True;
     Line.Declaration := Lines[n];
-    S := GetName(Lines[n]);
     FLineInfo.AddObject(S, Line);
   end;
 
   // implementations
-
 
   Scan(txtLazarus.text + '/lcl/include/intfbasewinapi.inc', 'ps', Lines);
   for n := 0 to Lines.Count - 1 do
@@ -831,8 +852,6 @@ begin
     end;
   end;
 
-  lvExisting.BeginUpdate;
-  lvExisting.Clear;
 
   for n := 0 to FLineInfo.Count - 1 do
   begin
@@ -871,8 +890,9 @@ begin
 
   lvExisting.EndUpdate;
 
-
   Lines.Free;
+
+  Screen.Cursor := crDefault;
 end;
 
 procedure TApiWizForm.FormDestroy(Sender: TObject);
