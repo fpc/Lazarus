@@ -53,9 +53,6 @@ function ClipboardGetOwnerShip(ClipboardType: TClipboardType;
   OnRequestProc: TClipboardRequestEvent;  FormatCount: integer;
   Formats: PClipboardFormat): boolean; {$IFDEF IF_BASE_MEMBER}virtual;{$ENDIF}
 function ClipboardRegisterFormat(const AMimeType: string): TClipboardFormat; {$IFDEF IF_BASE_MEMBER}virtual;{$ENDIF}
-{$ifdef OldRawImageProcs}
-function CreateBitmapFromRawImage(const RawImage: TRawImage; var Bitmap, MaskBitmap: HBitmap; AlwaysCreateMask: boolean): boolean; {$IFDEF IF_BASE_MEMBER}virtual;{$ENDIF}
-{$endif}
 function CreateEmptyRegion: hRGN; {$IFDEF IF_BASE_MEMBER}virtual;{$ENDIF}
 function CreatePixmapIndirect(const Data: Pointer; const TransColor: Longint): HBITMAP; {$IFDEF IF_BASE_MEMBER}virtual;{$ENDIF}
 function CreateRegionCopy(SrcRGN: hRGN): hRGN; {$IFDEF IF_BASE_MEMBER}virtual;{$ENDIF}
@@ -75,24 +72,14 @@ function Frame(DC: HDC; const ARect: TRect): Integer; {$IFDEF IF_BASE_MEMBER}vir
 function Frame3d(DC: HDC; var ARect: TRect; const FrameWidth : integer; const Style : TGraphicsBevelCut): Boolean; {$IFDEF IF_BASE_MEMBER}virtual;{$ENDIF}
 
 function GetAcceleratorString(const AVKey: Byte; const AShiftState: TShiftState): String; {$IFDEF IF_BASE_MEMBER}virtual;{$ENDIF}
-{$ifdef OldRawImageProcs}
-function GetBitmapRawImageDescription(Bitmap: HBITMAP; Desc: PRawImageDescription): boolean; {$IFDEF IF_BASE_MEMBER}virtual;{$ENDIF}
-{$endif}
 function GetCaretRespondToFocus(handle: HWND; var ShowHideOnFocus: boolean): Boolean; {$IFDEF IF_BASE_MEMBER}virtual;{$ENDIF}
 function GetClientBounds(handle : HWND; var ARect: TRect) : Boolean; {$IFDEF IF_BASE_MEMBER}virtual;{$ENDIF}
 function GetCmdLineParamDescForInterface: string; {$IFDEF IF_BASE_MEMBER}virtual;{$ENDIF}
 function GetControlConstraints(Constraints: TObject): boolean; {$IFDEF IF_BASE_MEMBER}virtual;{$ENDIF}
 function GetDCOriginRelativeToWindow(PaintDC: HDC; WindowHandle: HWND; var OriginDiff: TPoint): boolean; {$IFDEF IF_BASE_MEMBER}virtual;{$ENDIF}
 function GetDesignerDC(WindowHandle: HWND): HDC; {$IFDEF IF_BASE_MEMBER}virtual;{$ENDIF}
-{$ifdef OldRawImageProcs}
-function GetDeviceRawImageDescription(DC: HDC; Desc: PRawImageDescription): boolean; {$IFDEF IF_BASE_MEMBER}virtual;{$ENDIF}
-{$endif}
 function GetDeviceSize(DC: HDC; var p: TPoint): boolean; {$IFDEF IF_BASE_MEMBER}virtual;{$ENDIF}
 function GetLCLOwnerObject(Handle: HWnd): TObject; {$IFDEF IF_BASE_MEMBER}virtual;{$ENDIF}
-{$ifdef OldRawImageProcs}
-function GetRawImageFromDevice(SrcDC: HDC; const SrcRect: TRect; var NewRawImage: TRawImage): boolean; {$IFDEF IF_BASE_MEMBER}virtual;{$ENDIF}
-function GetRawImageFromBitmap(SrcBitmap, SrcMaskBitmap: HBITMAP; const SrcRect: TRect; var NewRawImage: TRawImage): boolean; {$IFDEF IF_BASE_MEMBER}virtual;{$ENDIF}
-{$endif}
 function GetScrollBarSize(Handle: HWND; SBStyle: Integer): integer; {$IFDEF IF_BASE_MEMBER}virtual;{$ENDIF}
 function GetScrollbarVisible(Handle: HWND; SBStyle: Integer): boolean; {$IFDEF IF_BASE_MEMBER}virtual;{$ENDIF}
 function GetWindowRelativePosition(Handle : hwnd; var Left, Top: integer): boolean; {$IFDEF IF_BASE_MEMBER}virtual;{$ENDIF}

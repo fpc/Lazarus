@@ -93,17 +93,6 @@ begin
   Result := WidgetSet.ClipboardRegisterFormat(AMimeType);
 end;
 
-function CreateBitmapFromRawImage(const RawImage: TRawImage;
-  var Bitmap, MaskBitmap: HBitmap; AlwaysCreateMask: boolean): boolean;
-begin
-  {$ifdef OldRawImageProcs}
-  Result := WidgetSet.CreateBitmapFromRawImage(RawImage,Bitmap,MaskBitmap,
-                                                     AlwaysCreateMask);
-  {$else}
-  Result := False;
-  {$endif}
-end;
-
 function CreateEmptyRegion: hRGN;
 begin
   Result := WidgetSet.CreateEmptyRegion;
@@ -212,14 +201,6 @@ begin
   Result := WidgetSet.Frame3d(DC, ARect, FrameWidth, Style);
 end;
 
-{$ifdef OldRawImageProcs}
-function GetBitmapRawImageDescription(Bitmap: HBITMAP;
-  Desc: PRawImageDescription): boolean;
-begin
-  Result := WidgetSet.GetBitmapRawImageDescription(Bitmap,Desc);
-end;
-{$endif}
-
 function GetCaretRespondToFocus(handle: HWND; var ShowHideOnFocus: boolean): Boolean;
 begin
   Result := WidgetSet.GetCaretRespondToFocus(handle,ShowHideOnFocus);
@@ -281,14 +262,6 @@ begin
   Result := WidgetSet.GetDesignerDC(WindowHandle);
 end;
 
-{$ifdef OldRawImageProcs}
-function GetDeviceRawImageDescription(DC: HDC;
-  Desc: PRawImageDescription): boolean;
-begin
-  Result := WidgetSet.GetDeviceRawImageDescription(DC,Desc);
-end;
-{$endif}
-
 function GetDeviceSize(DC: HDC; var p: TPoint): boolean;
 begin
   Result := WidgetSet.GetDeviceSize(DC,p);
@@ -298,23 +271,6 @@ function GetLCLOwnerObject(Handle: HWnd): TObject;
 begin
   Result := WidgetSet.GetLCLOwnerObject(Handle);
 end;
-
-{$ifdef OldRawImageProcs}
-function GetRawImageFromDevice(SrcDC: HDC; const SrcRect: TRect;
-  var NewRawImage: TRawImage): boolean;
-begin
-  Result := WidgetSet.GetRawImageFromDevice(SrcDC,SrcRect,NewRawImage);
-end;
-{$endif}
-
-{$ifdef OldRawImageProcs}
-function GetRawImageFromBitmap(SrcBitmap, SrcMaskBitmap: HBITMAP;
-  const SrcRect: TRect; var NewRawImage: TRawImage): boolean;
-begin
-  Result := WidgetSet.GetRawImageFromBitmap(SrcBitmap,SrcMaskBitmap,
-                                                  SrcRect,NewRawImage);
-end;
-{$endif}
 
 function GetScrollBarSize(Handle: HWND; SBStyle: Integer): integer;
 begin
