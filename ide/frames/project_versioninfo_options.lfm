@@ -3,7 +3,6 @@ inherited ProjectVersionInfoOptionsFrame: TProjectVersionInfoOptionsFrame
   Width = 594
   ClientHeight = 364
   ClientWidth = 594
-  TabOrder = 0
   DesignLeft = 273
   DesignTop = 145
   object VersionInfoGroupBox: TGroupBox[0]
@@ -186,8 +185,8 @@ inherited ProjectVersionInfoOptionsFrame: TProjectVersionInfoOptionsFrame
       BorderSpacing.Top = 2
       BorderSpacing.Bottom = 6
       ItemHeight = 13
+      Style = csDropDownList
       TabOrder = 0
-      Text = 'U.S. English'
     end
     object CharacterSetComboBox: TComboBox
       AnchorSideLeft.Control = CharacterSetLabel
@@ -202,8 +201,8 @@ inherited ProjectVersionInfoOptionsFrame: TProjectVersionInfoOptionsFrame
       BorderSpacing.Right = 6
       BorderSpacing.Bottom = 6
       ItemHeight = 13
+      Style = csDropDownList
       TabOrder = 1
-      Text = 'Multilingual'
     end
   end
   object OtherInfoGroupBox: TGroupBox[3]
