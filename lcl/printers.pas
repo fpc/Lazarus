@@ -974,6 +974,9 @@ begin
   if Assigned(fPrinter) then
     result := fPrinter.PaperSize.Height
   else
+  if fPaperHeight<=0 then
+    result :=  round(YDPI * 842 / 72)   // default to A4 paper
+  else
     result := fPaperHeight;
 end;
 
@@ -981,6 +984,9 @@ function TPrinterCanvas.GetPaperWidth: Integer;
 begin
   if Assigned(fPrinter) then
     result := fPrinter.PaperSize.Width
+  else
+  if fPaperWidth<=0 then
+    result := round(XDPI * 595 / 72)    // default to A4 paper
   else
     result := fPaperWidth;
 end;
