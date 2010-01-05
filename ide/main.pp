@@ -12651,23 +12651,25 @@ end;
 procedure TMainIDE.OnDesignerModified(Sender: TObject);
 var
   SrcEdit: TSourceEditor;
-  CurDesigner: TDesigner;
+  CurDesigner: TDesigner absolute Sender;
   AnUnitInfo: TUnitInfo;
 begin
-  CurDesigner:=TDesigner(Sender);
-  if dfDestroyingForm in CurDesigner.Flags then exit;
-  AnUnitInfo:=Project1.UnitWithComponent(CurDesigner.LookupRoot);
-  if AnUnitInfo<>nil then begin
-    AnUnitInfo.Modified:=true;
+  if dfDestroyingForm in CurDesigner.Flags then Exit;
+  AnUnitInfo := Project1.UnitWithComponent(CurDesigner.LookupRoot);
+  if AnUnitInfo <> nil then
+  begin
+    AnUnitInfo.Modified := True;
     if AnUnitInfo.Loaded then
-      SrcEdit:=SourceNotebook.FindSourceEditorWithPageIndex(
-                                                        AnUnitInfo.EditorIndex);
-    if SrcEdit<>nil then begin
-      SrcEdit.Modified:=true;
-      SourceNotebook.UpdateStatusBar;
-      {$IFDEF VerboseDesignerModified}
-      DumpStack;
-      {$ENDIF}
+    begin
+      SrcEdit := SourceNotebook.FindSourceEditorWithPageIndex(AnUnitInfo.EditorIndex);
+      if SrcEdit <> nil then
+      begin
+        SrcEdit.Modified := True;
+        SourceNotebook.UpdateStatusBar;
+        {$IFDEF VerboseDesignerModified}
+        DumpStack;
+        {$ENDIF}
+      end;
     end;
   end;
 end;
