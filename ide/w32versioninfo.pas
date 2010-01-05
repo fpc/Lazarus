@@ -38,7 +38,8 @@ interface
 
 uses
   Classes, SysUtils, Process, LCLProc, Controls, Forms, FileUtil,
-  CodeToolManager, LazConf, ProjectResourcesIntf;
+  CodeToolManager, LazConf, ProjectResourcesIntf, resource, versionresource,
+  versiontypes;
    
 type
   { TProjectVersionInfo }
@@ -46,7 +47,6 @@ type
   TProjectVersionInfo = class(TAbstractProjectResource)
   private
     FAutoIncrementBuild: boolean;
-    FBuildNr: integer;
     FCommentsString: string;
     FCompanyString: string;
     FCopyrightString: string;
@@ -54,20 +54,18 @@ type
     FHexCharSet: string;
     FHexLang: string;
     FInternalNameString: string;
-    FMajorRevNr: integer;
-    FMinorRevNr: integer;
     FOriginalFilenameString: string;
     FProdNameString: string;
     FProductVersionString: string;
     FTrademarksString: string;
     FUseVersionInfo: boolean;
-    FVersionNr: integer;
+    FVersion: TFileProductVersion;
     function GetCharSets: TStringList;
     function GetHexCharSets: TStringList;
     function GetHexLanguages: TStringList;
     function GetLanguages: TStringList;
+    function GetVersion(AIndex: integer): integer;
     procedure SetAutoIncrementBuild(const AValue: boolean);
-    procedure SetBuildNr(const AValue: integer);
     procedure SetCommentsString(const AValue: string);
     procedure SetCompanyString(const AValue: string);
     procedure SetCopyrightString(const AValue: string);
@@ -75,14 +73,13 @@ type
     procedure SetHexCharSet(const AValue: string);
     procedure SetHexLang(const AValue: string);
     procedure SetInternalNameString(const AValue: string);
-    procedure SetMajorRevNr(const AValue: integer);
-    procedure SetMinorRevNr(const AValue: integer);
     procedure SetOriginalFilenameString(const AValue: string);
     procedure SetProdNameString(const AValue: string);
     procedure SetProductVersionString(const AValue: string);
     procedure SetTrademarksString(const AValue: string);
     procedure SetUseVersionInfo(const AValue: boolean);
-    procedure SetVersionNr(const AValue: integer);
+    procedure SetVersion(AIndex: integer; const AValue: integer);
+    function ExtractProductVersion: TFileProductVersion;
   public
     procedure DoBeforeBuild(AResources: TAbstractProjectResources;
                             SaveToTestDir: boolean); override;
@@ -90,10 +87,12 @@ type
 
     property UseVersionInfo: boolean read FUseVersionInfo write SetUseVersionInfo;
     property AutoIncrementBuild: boolean read FAutoIncrementBuild write SetAutoIncrementBuild;
-    property VersionNr: integer read FVersionNr write SetVersionNr;
-    property MajorRevNr: integer read FMajorRevNr write SetMajorRevNr;
-    property MinorRevNr: integer read FMinorRevNr write SetMinorRevNr;
-    property BuildNr: integer read FBuildNr write SetBuildNr;
+
+    property VersionNr: integer index 0 read GetVersion write SetVersion;
+    property MajorRevNr: integer index 1 read GetVersion write SetVersion;
+    property MinorRevNr: integer index 2 read GetVersion write SetVersion;
+    property BuildNr: integer index 3 read GetVersion write SetVersion;
+
     property HexLang: string read FHexLang write SetHexLang;
     property HexCharSet: string read FHexCharSet write SetHexCharSet;
     property DescriptionString: string read FDescriptionString write SetDescriptionString;
@@ -272,96 +271,36 @@ end;
 
 function TProjectVersionInfo.UpdateResources(AResources: TAbstractProjectResources;
   const MainFilename: string): Boolean;
-   { File structure
-    A rc file can contain several pieces of information. One of those pieces
-    is the version information. The version information is a block of data
-    the following form:
-       <version-id> VERSIONINFO <fixed-info> [ <block-statement> ... ]
-    <version-id> must always be 1. <fixed-info> can be one or more of the
-    following key-words followed by a parameter:
-       FILEVERSION <version>
-       PRODUCTVERSION <version>
-       FILEFLAGSMASK <fileflagsmask>     *
-       FILEFLAGS <fileflags>             *
-       FILEOS <fileos>                   *
-       FILETYPE <filetype>               *
-       FILESUBTYPE <subtype>             *
-    In this routine only FILEVERSION and PRODUCTVERSION are used. Between
-    the parantheses 2 blocks can be used:
-       STRINGFILEINFO
-       VARFILEINFO
-    The format for the STRINGFILEINFO is:
-       BLOCK "StringFileInfo" [ BLOCK "<lang><charset>" [ VALUE
-          "<string-name>", "<value>" ...] ]
-    <lang> is the language code notated as 4 digit hex value. <charset> is
-    the character set code also in 4 digit hex. Possble string-names are:
-       Comments
-       CompanyName
-       FileDescription
-       FileVersion
-       InternalName
-       LegalCopyright
-       LegalTrademarks
-       OriginalFilename
-       PrivateBuild      *
-       ProductName
-       ProductVersion
-       SpecialBuild      *
-    In this routine all values except PrivateBuild and SpecialBuild are
-    used. The format for the VARFILEINFO is:
-       BLOCK "VarFileInfo" [ VALUE "Translation", <lang>, <charset> ... ]
-    <lang> and <charset> are the same hex values as in StringFileInfo, but
-    here they "0x" needs to be put in front of the value.
-}
 var
-  AList: TStringList;
+  ARes: TVersionResource;
+  st: TVersionStringTable;
+  ti: TVerTranslationInfo;
 begin
   Result := True;
   if UseVersionInfo then
   begin
     // project indicates to use the versioninfo
-    if ProductVersionString = '' then
-       ProductVersionString := IntToStr(VersionNr) + '.' +
-                               IntToStr(MajorRevNr) + '.' +
-                               IntToStr(MinorRevNr) + '.' +
-                               IntToStr(BuildNr);
-    // todo: improve this
-    AList := TStringList.Create;
-    AList.Add('1 VERSIONINFO');
-    AList.Add('FILEVERSION ' + IntToStr(VersionNr) + ',' +
-                               IntToStr(MajorRevNr) + ',' +
-                               IntToStr(MinorRevNr) + ',' +
-                               IntToStr(BuildNr));
-    AList.Add('PRODUCTVERSION ' + StringReplace(Utf8ToAnsi(ProductVersionString), '.', ',', [rfReplaceAll]));
-    AList.Add('{');
-    AList.Add(' BLOCK "StringFileInfo"');
-    AList.Add(' {');
-    AList.Add('  BLOCK "' + HexLang + HexCharSet + '"');
-    AList.Add('  {');
-    AList.Add('   VALUE "Comments", "' + Utf8ToAnsi(CommentsString) + '\000"');
-    AList.Add('   VALUE "CompanyName", "' + Utf8ToAnsi(CompanyString) + '\000"');
-    AList.Add('   VALUE "FileDescription", "' + Utf8ToAnsi(DescriptionString) + '\000"');
-    AList.Add('   VALUE "FileVersion", "' + IntToStr(VersionNr) + '.' +
-                                            IntToStr(MajorRevNr) + '.' +
-                                            IntToStr(MinorRevNr) + '.' +
-                                            IntToStr(BuildNr) + '\000"');
-    AList.Add('   VALUE "InternalName", "' + Utf8ToAnsi(InternalNameString) + '\000"');
-    AList.Add('   VALUE "LegalCopyright", "' + Utf8ToAnsi(CopyrightString) + '\000"');
-    AList.Add('   VALUE "LegalTrademarks", "' + Utf8ToAnsi(TrademarksString) + '\000"');
-    AList.Add('   VALUE "OriginalFilename", "' + Utf8ToAnsi(OriginalFilenameString) + '\000"');
-    AList.Add('   VALUE "ProductName", "' + Utf8ToAnsi(ProdNameString) + '\000"');
-    AList.Add('   VALUE "ProductVersion", "' +
-              StringReplace(Utf8ToAnsi(ProductVersionString), ',', '.', [rfReplaceAll]) +
-              '\000"');
-    AList.Add('  }');
-    AList.Add(' }');
-    AList.Add(' BLOCK "VarFileInfo"');
-    AList.Add(' {');
-    AList.Add('  VALUE "Translation", 0x' + HexLang + ', 0x' + HexCharSet);
-    AList.Add(' }');
-    AList.Add('}');
-    AResources.AddSystemResource(AList.Text);
-    AList.Free;
+    ARes := TVersionResource.Create(nil, nil); //it's always RT_VERSION and 1 respectively
+    ARes.FixedInfo.FileVersion := FVersion;
+    ARes.FixedInfo.ProductVersion := ExtractProductVersion;
+
+    st := TVersionStringTable.Create(HexLang + HexCharSet);
+    st.Add('Comments', Utf8ToAnsi(CommentsString));
+    st.Add('CompanyName', Utf8ToAnsi(CompanyString));
+    st.Add('FileDescription', Utf8ToAnsi(DescriptionString));
+    st.Add('FileVersion', IntToStr(VersionNr) + '.' + IntToStr(MajorRevNr) + '.' + IntToStr(MinorRevNr) + '.' + IntToStr(BuildNr));
+    st.Add('InternalName', Utf8ToAnsi(InternalNameString));
+    st.Add('LegalCopyright', Utf8ToAnsi(CopyrightString));
+    st.Add('LegalTrademarks', Utf8ToAnsi(TrademarksString));
+    st.Add('OriginalFilename', Utf8ToAnsi(OriginalFilenameString));
+    st.Add('ProductName', Utf8ToAnsi(ProdNameString));
+    st.Add('ProductVersion', StringReplace(Utf8ToAnsi(ProductVersionString), ',', '.', [rfReplaceAll]));
+    ARes.StringFileInfo.Add(st);
+
+    ti.language := StrToInt('$'+HexLang);
+    ti.codepage := StrToInt('$'+HexCharSet);
+    ARes.VarFileInfo.Add(ti);
+    AResources.AddSystemResource(ARes);
   end;
 end;
 
@@ -389,17 +328,15 @@ begin
   Result:=fLanguages;
 end;
 
+function TProjectVersionInfo.GetVersion(AIndex: integer): integer;
+begin
+  Result := FVersion[AIndex];
+end;
+
 procedure TProjectVersionInfo.SetAutoIncrementBuild(const AValue: boolean);
 begin
   if FAutoIncrementBuild=AValue then exit;
   FAutoIncrementBuild:=AValue;
-  Modified:=true;
-end;
-
-procedure TProjectVersionInfo.SetBuildNr(const AValue: integer);
-begin
-  if FBuildNr=AValue then exit;
-  FBuildNr:=AValue;
   Modified:=true;
 end;
 
@@ -452,20 +389,6 @@ begin
   Modified:=true;
 end;
 
-procedure TProjectVersionInfo.SetMajorRevNr(const AValue: integer);
-begin
-  if FMajorRevNr=AValue then exit;
-  FMajorRevNr:=AValue;
-  Modified:=true;
-end;
-
-procedure TProjectVersionInfo.SetMinorRevNr(const AValue: integer);
-begin
-  if FMinorRevNr=AValue then exit;
-  FMinorRevNr:=AValue;
-  Modified:=true;
-end;
-
 procedure TProjectVersionInfo.SetOriginalFilenameString(const AValue: string);
 begin
   if FOriginalFilenameString=AValue then exit;
@@ -504,11 +427,34 @@ begin
   Modified:=true;
 end;
 
-procedure TProjectVersionInfo.SetVersionNr(const AValue: integer);
+procedure TProjectVersionInfo.SetVersion(AIndex: integer; const AValue: integer);
 begin
-  if FVersionNr=AValue then exit;
-  FVersionNr:=AValue;
-  Modified:=true;
+  if FVersion[AIndex] = AValue then Exit;
+  FVersion[AIndex] := AValue;
+  Modified := True;
+end;
+
+function TProjectVersionInfo.ExtractProductVersion: TFileProductVersion;
+var
+  S, Part: String;
+  i, p: integer;
+begin
+  S := ProductVersionString;
+  for i := 0 to 3 do
+  begin
+    p := Pos('.', S);
+    if p >= 1 then
+    begin
+      Part := Copy(S, 1, p - 1);
+      Delete(S, 1, P);
+    end
+    else
+    begin
+      Part := S;
+      S := '';
+    end;
+    Result[i] := StrToIntDef(Part, 0);
+  end;
 end;
 
 procedure TProjectVersionInfo.DoBeforeBuild(

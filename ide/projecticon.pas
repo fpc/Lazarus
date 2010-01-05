@@ -35,7 +35,7 @@ interface
 
 uses
   Classes, SysUtils, FileUtil, Process, LCLProc, Controls, Forms,
-  CodeToolManager, LazConf, LResources,
+  CodeToolManager, LazConf, LResources, resource, groupiconresource,
   ProjectIntf, ProjectResourcesIntf;
    
 type
@@ -46,13 +46,11 @@ type
   TProjectIcon = class(TAbstractProjectResource)
   private
     FData: TIconData;
-    FicoFileName: string;
+    FIcoFileName: string;
     function GetIsEmpry: Boolean;
     procedure SetIconData(const AValue: TIconData);
     procedure SetFileNames(const MainFilename: string);
     procedure SetIsEmpty(const AValue: Boolean);
-  protected
-    function GetAsHex: String;
   public
     constructor Create; override;
 
@@ -69,11 +67,6 @@ type
   end;
 
 implementation
-
-const
-  sIcon: String =
-    'MAINICON ICON';
-
 
 function TProjectIcon.GetStream: TStream;
 begin
@@ -104,7 +97,8 @@ function TProjectIcon.UpdateResources(AResources: TAbstractProjectResources;
   const MainFilename: string): Boolean;
 var
   AResource: TStream;
-  IconName: String;
+  AName: TResourceDesc;
+  ARes: TGroupIconResource;
 begin
   Result := True;
 
@@ -112,6 +106,8 @@ begin
     Exit;
 
   SetFileNames(MainFilename);
+  if FilenameIsAbsolute(FIcoFileName) then
+    CreateIconFile;
 
   // don't add icon to lazarus resources if we are using fpc resources
   if AResources.ResourceType <> rtRes then
@@ -124,17 +120,17 @@ begin
     end;
   end;
 
-  // the preferred way is this:
-  // RCIcon := sIcon + #$D#$A + GetAsHex;
-  // but it does not work
+  AName := TResourceDesc.Create('MAINICON');
+  ARes := TGroupIconResource.Create(nil, AName); //type is always RT_GROUP_ICON
+  aName.Free; //not needed anymore
+  AResource := GetStream;
+  try
+    ARes.ItemData.CopyFrom(AResource, AResource.Size);
+  finally
+    AResource.Free;
+  end;
 
-  if not FilenameIsAbsolute(FicoFileName) or CreateIconFile then
-  begin
-    IconName := ExtractFileName(FicoFileName);
-    AResources.AddSystemResource(sIcon + ' "' + IconName + '"');
-  end
-  else
-    Result := False;
+  AResources.AddSystemResource(ARes);
 end;
 
 function TProjectIcon.CreateIconFile: Boolean;
@@ -159,7 +155,7 @@ end;
 -----------------------------------------------------------------------------}
 procedure TProjectIcon.SetFileNames(const MainFilename: string);
 begin
-  FicoFileName := ExtractFilePath(MainFilename) +
+  FIcoFileName := ExtractFilePath(MainFilename) +
     ExtractFileNameWithoutExt(ExtractFileName(MainFileName)) + '.ico';
 end;
 
@@ -222,35 +218,6 @@ end;
 function TProjectIcon.GetIsEmpry: Boolean;
 begin
   Result := FData = nil;
-end;
-
-function TProjectIcon.GetAsHex: String;
-var
-  AStream: TStream;
-  i, l: integer;
-  b: PByte;
-begin
-  Result := '';
-  AStream := GetStream;
-  b := TMemoryStream(AStream).Memory;
-  l := AStream.Size - 1;
-  for i := 0 to l do
-  begin
-    if (i mod 16) = 0 then
-      Result := Result + '''';
-    Result := Result + IntToHex(b^, 2);
-    if (i <> l) then
-    begin
-      Result := Result + ' ';
-      if ((succ(i) mod 16) = 0) then
-        Result := Result + ''''#$D#$A;
-    end;
-    inc(b);
-  end;
-  if l > 0 then
-    Result := Result + '''';
-  Result := '{'#$D#$A + Result + #$D#$A'}';
-  AStream.Free;
 end;
 
 end.

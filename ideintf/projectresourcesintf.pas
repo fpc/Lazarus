@@ -17,7 +17,7 @@ unit ProjectResourcesIntf;
 interface
 
 uses
-  Classes, SysUtils, ProjectIntf;
+  Classes, SysUtils, ProjectIntf, resource;
 
 type
   TAbstractProjectResources = class;
@@ -51,7 +51,7 @@ type
     constructor Create(AProject: TLazProject); virtual;
     destructor Destroy; override;
 
-    procedure AddSystemResource(const AResource: String); virtual; abstract;
+    procedure AddSystemResource(AResource: TAbstractResource); virtual; abstract;
     procedure AddLazarusResource(AResource: TStream;
                    const AResourceName, AResourceType: String); virtual; abstract;
 

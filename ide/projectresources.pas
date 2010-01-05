@@ -41,7 +41,7 @@ uses
   Dialogs, ProjectIntf, ProjectResourcesIntf, LazarusIDEStrConsts, AvgLvlTree,
   KeywordFuncLists, BasicCodeTools,
   W32VersionInfo, W32Manifest, ProjectIcon, IDEProcs, DialogProcs,
-  CodeToolManager, CodeCache;
+  CodeToolManager, CodeCache, resource, reswriter;
 
 type
   { TProjectResources }
@@ -53,12 +53,12 @@ type
     FInModified: Boolean;
     FLrsIncludeAllowed: Boolean;
 
-    FSystemResources: TStringList;
+    FSystemResources: TResources;
     FLazarusResources: TStringList;
 
-    rcFileName: String;
+    resFileName: String;
     lrsFileName: String;
-    LastrcFilename: String;
+    LastResFilename: String;
     LastLrsFileName: String;
 
     FVersionInfo: TProjectVersionInfo;
@@ -80,7 +80,7 @@ type
     constructor Create(AProject: TLazProject); override;
     destructor Destroy; override;
 
-    procedure AddSystemResource(const AResource: String); override;
+    procedure AddSystemResource(AResource: TAbstractResource); override;
     procedure AddLazarusResource(AResource: TStream; const AResourceName, AResourceType: String); override;
 
     procedure DoBeforeBuild(SaveToTestDir: boolean);
@@ -293,19 +293,19 @@ end;
 
 procedure TProjectResources.SetFileNames(const MainFileName, TestDir: String);
 begin
-  // rc is in the exectable dir
-  //rcFileName := TestDir + ExtractFileNameOnly(MainFileName) + '.rc';
+  // rc is in the executable dir
+  //resFileName := TestDir + ExtractFileNameOnly(MainFileName) + '.rc';
 
-  // rc is in the project dir for now because {$R project1.rc} searches only in unit dir
+  // res is in the project dir for now because {$R project1.res} searches only in unit dir
   // lrs is in the project dir also
   if FileNameIsAbsolute(MainFileName) then
   begin
-    rcFileName := ChangeFileExt(MainFileName, '.rc');
+    resFileName := ChangeFileExt(MainFileName, '.res');
     lrsFileName := ChangeFileExt(MainFileName, '.lrs');
   end
   else
   begin
-    rcFileName := TestDir + ExtractFileNameOnly(MainFileName) + '.rc';
+    resFileName := TestDir + ExtractFileNameOnly(MainFileName) + '.res';
     lrsFileName := TestDir + ExtractFileNameOnly(MainFileName) + '.lrs';
   end;
 end;
@@ -343,17 +343,17 @@ function TProjectResources.Update: Boolean;
 begin
   Clear;
   // handle versioninfo
-  Result := VersionInfo.UpdateResources(Self, rcFileName);
+  Result := VersionInfo.UpdateResources(Self, resFileName);
   if not Result then
     Exit;
 
   // handle manifest
-  Result := XPManifest.UpdateResources(Self, rcFileName);
+  Result := XPManifest.UpdateResources(Self, resFileName);
   if not Result then
     Exit;
 
   // handle project icon
-  Result := ProjectIcon.UpdateResources(Self, rcFileName);
+  Result := ProjectIcon.UpdateResources(Self, resFileName);
 end;
 
 procedure TProjectResources.EmbeddedObjectModified(Sender: TObject);
@@ -371,7 +371,7 @@ begin
   FInModified := False;
   FLrsIncludeAllowed := False;
 
-  FSystemResources := TStringList.Create;
+  FSystemResources := TResources.Create;
   FLazarusResources := TStringList.Create;
 
   FVersionInfo := TProjectVersionInfo.Create;
@@ -399,7 +399,7 @@ begin
   inherited Destroy;
 end;
 
-procedure TProjectResources.AddSystemResource(const AResource: String);
+procedure TProjectResources.AddSystemResource(AResource: TAbstractResource);
 begin
   FSystemResources.Add(AResource);
 end;
@@ -443,7 +443,7 @@ begin
     Exit;
 
   // remember old codebuffer filenames
-  LastrcFilename := rcFileName;
+  LastResFilename := resFileName;
   LastLrsFileName := lrsFileName;
   SetFileNames(MainFileName, SaveToTestDir);
 
@@ -549,7 +549,7 @@ begin
   if CodeBuf <> nil then
   begin
     SetFileNames(AFileName, '');
-    Filename := ExtractFileName(rcFileName);
+    Filename := ExtractFileName(resFileName);
     //debugln(['TProjectResources.UpdateMainSourceFile HasSystemResources=',HasSystemResources,' Filename=',Filename,' HasLazarusResources=',HasLazarusResources]);
 
     // update LResources uses
@@ -678,8 +678,8 @@ var
   CodeBuf, NewCode: TCodeBuffer;
 
   Directive,
-  oldRcFileName, oldLrsFileName,
-  newRcFilename, newLrsFileName: String;
+  oldResFileName, oldLrsFileName,
+  newResFilename, newLrsFileName: String;
 begin
   //DebugLn(['TProjectResources.RenameDirectives CurFileName="',CurFileName,'" NewFileName="',NewFileName,'"']);
   Result := True;
@@ -688,44 +688,41 @@ begin
   if CodeBuf = nil then
     Exit;
 
-  LastRcFilename := rcFileName;
+  LastResFilename := resFileName;
   LastLrsFileName := lrsFileName;
   try
     SetFileNames(CurFileName, '');
-    oldRcFilename := ExtractFileName(rcFileName);
+    oldResFilename := ExtractFileName(resFileName);
     oldLrsFileName := ExtractFileName(lrsFileName);
     SetFileNames(NewFileName, '');
-    newRcFilename := ExtractFileName(rcFileName);
+    newResFilename := ExtractFileName(resFileName);
     newLrsFileName := ExtractFileName(lrsFileName);
 
     // update resources (FLazarusResources, FSystemResources, ...)
     UpdateFlagLrsIncludeAllowed(CurFileName);
     if not Update then
       Exit;
-    // update codebuffers of new .lrs and .rc files
+    // update codebuffers of new .lrs and .res files
     UpdateCodeBuffers;
 
     // update {$R filename} directive
     if CodeToolBoss.FindResourceDirective(CodeBuf, 1, 1,
                                NewCode, NewX, NewY,
-                               NewTopLine, oldRcFileName, false) then
+                               NewTopLine, oldResFileName, false) then
     begin
       // there is a resource directive in the source
       if not CodeToolBoss.RemoveDirective(NewCode, NewX, NewY, true) then
       begin
         Result := False;
         debugln(['TProjectResources.RenameDirectives failed: removing resource directive']);
-        Messages.Add('Could not remove "{$R '+ oldRcFileName +'"} from main source!');
+        Messages.Add('Could not remove "{$R '+ oldResFileName +'"} from main source!');
       end;
-      case ResourceType of
-        rtLRS: Directive := '{$IFDEF WINDOWS}{$R '+ newRcFileName +'}{$ENDIF}';
-        rtRes: Directive := '{$R '+ newRcFileName +'}';
-      end;
-      if not CodeToolBoss.AddResourceDirective(CodeBuf, newRcFileName, false, Directive) then
+      Directive := '{$R '+ newResFileName +'}';
+      if not CodeToolBoss.AddResourceDirective(CodeBuf, newResFileName, false, Directive) then
       begin
         Result := False;
         debugln(['TProjectResources.RenameDirectives failed: adding resource directive']);
-        Messages.Add('Could not add "{$R '+ newRcFileName +'"} to main source!');
+        Messages.Add('Could not add "{$R '+ newResFileName +'"} to main source!');
       end;
     end;
 
@@ -770,7 +767,7 @@ procedure TProjectResources.DeleteResourceBuffers;
 
 begin
   DeleteLastCodeBuffers;
-  DeleteBuffer(rcFileName);
+  DeleteBuffer(resFileName);
   DeleteBuffer(lrsFileName);
 end;
 
@@ -783,41 +780,52 @@ function TProjectResources.Save(SaveToTestDir: string): Boolean;
   begin
     CodeBuf := CodeToolBoss.FindFile(Filename);
     if (CodeBuf = nil) or CodeBuf.IsDeleted then
-      Exit(true);
+      Exit(True);
     if not CodeBuf.IsVirtual then
     begin
       Result := SaveCodeBuffer(CodeBuf) in [mrOk,mrIgnore];
     end else if SaveToTestDir<>'' then
     begin
-      TestFilename:=AppendPathDelim(SaveToTestDir)+CodeBuf.Filename;
-      Result := SaveCodeBufferToFile(CodeBuf,TestFilename) in [mrOk,mrIgnore];
+      TestFilename := AppendPathDelim(SaveToTestDir) + CodeBuf.Filename;
+      Result := SaveCodeBufferToFile(CodeBuf, TestFilename) in [mrOk, mrIgnore];
     end;
   end;
 
 begin
   Result := False;
-  if not SaveCodeBuf(rcFileName) then Exit;
+  if not SaveCodeBuf(resFileName) then Exit;
   if not SaveCodeBuf(lrsFileName) then Exit;
   Result := True;
 end;
 
 procedure TProjectResources.UpdateCodeBuffers;
-
-  procedure UpdateCodeBuffer(NewFilename, Source: string);
-  var
-    CodeBuf: TCodeBuffer;
-  begin
-    CodeBuf := CodeToolBoss.CreateFile(NewFileName);
-    CodeBuf.Source := Source;
-  end;
-
+var
+  CodeBuf: TCodeBuffer;
+  S: TStream;
+  Writer: TAbstractResourceWriter;
 begin
   if HasSystemResources then
-    UpdateCodeBuffer(rcFileName, FSystemResources.Text)
-  else if FilenameIsAbsolute(rcFileName) and FileExistsUTF8(rcFileName) then
-    DeleteFileInteractive(rcFileName,[mbRetry]);
+  begin
+    CodeBuf := CodeToolBoss.CreateFile(resFileName);
+    S := TMemoryStream.Create;
+    Writer := TResResourceWriter.Create;
+    try
+      FSystemResources.WriteToStream(S, Writer);
+      S.Position := 0;
+      CodeBuf.LoadFromStream(S);
+    finally
+      Writer.Free;
+      S.Free;
+    end;
+  end
+  else
+  if FilenameIsAbsolute(resFileName) and FileExistsUTF8(resFileName) then
+    DeleteFileInteractive(resFileName,[mbRetry]);
   if FLrsIncludeAllowed and HasLazarusResources then
-    UpdateCodeBuffer(lrsFileName, FLazarusResources.Text);
+  begin
+    CodeBuf := CodeToolBoss.CreateFile(lrsFileName);
+    CodeBuf.Source := FLazarusResources.Text;
+  end;
 end;
 
 procedure TProjectResources.DeleteLastCodeBuffers;
@@ -837,8 +845,8 @@ procedure TProjectResources.DeleteLastCodeBuffers;
   end;
 
 begin
-  CleanCodeBuffer(LastrcFilename, rcFileName);
-  CleanCodeBuffer(LastlrsFilename, lrsFileName);
+  CleanCodeBuffer(LastResFilename, resFileName);
+  CleanCodeBuffer(LastLrsFileName, lrsFileName);
 end;
 
 finalization
