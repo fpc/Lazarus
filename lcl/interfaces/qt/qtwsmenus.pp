@@ -259,7 +259,7 @@ begin
   {$ifdef VerboseQt}
     WriteLn('[TQtWSMenuItem.SetVisible] SetShortCut: ' + AMenuItem.Caption + ' Visible: ', Visible);
   {$endif}
-  if not WSCheckMenuItem(AMenuItem, 'SetEnable') then
+  if not WSCheckMenuItem(AMenuItem, 'SetVisible') then
     Exit;
     
   TQtMenu(AMenuItem.Handle).setVisible(Visible);
@@ -274,7 +274,7 @@ class function TQtWSMenuItem.SetCheck(const AMenuItem: TMenuItem; const Checked:
 begin
   Result := False;
 
-  if not WSCheckMenuItem(AMenuItem, 'SetEnable') then
+  if not WSCheckMenuItem(AMenuItem, 'SetCheck') then
     Exit;
 
   TQtMenu(AMenuItem.Handle).setChecked(Checked);
@@ -308,7 +308,7 @@ class function TQtWSMenuItem.SetRadioItem(const AMenuItem: TMenuItem; const Radi
 begin
   Result := False;
 
-  if not WSCheckMenuItem(AMenuItem, 'SetEnable') then
+  if not WSCheckMenuItem(AMenuItem, 'SetRadioItem') then
     Exit;
 
   TQtMenu(AMenuItem.Handle).setCheckable(RadioItem);
@@ -324,7 +324,7 @@ end;
  ------------------------------------------------------------------------------}
 class function TQtWSMenuItem.SetRightJustify(const AMenuItem: TMenuItem; const Justified: boolean): boolean;
 begin
-  if not WSCheckMenuItem(AMenuItem, 'SetEnable') then
+  if not WSCheckMenuItem(AMenuItem, 'SetRightJustify') then
     Exit;
 
   // what should be done here? maybe this?

@@ -8457,9 +8457,14 @@ begin
 end;
 
 procedure TQtMenu.SlotAboutToHide; cdecl;
+var
+  Event: QLCLMessageEventH;
 begin
   if FMenuItem.Menu is TPopupMenu then
-    DoPopupClose;
+  begin
+    Event := QLCLMessageEvent_create(LCLQt_PopupMenuClose);
+    QCoreApplication_postEvent(Widget, Event);
+  end;
 end;
 
 procedure TQtMenu.DoPopupClose;
