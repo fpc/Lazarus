@@ -598,13 +598,7 @@ begin
     else
     if HasSystemResources then
     begin
-      // if we are using fpc resources only we need to compile them on all systems
-      // since we have no other way to get them. If LRS are used then we can
-      // skip compiling of rc on other than windows systems
-      case ResourceType of
-        rtLRS: Directive := '{$IFDEF WINDOWS}{$R '+Filename+'}{$ENDIF}';
-        rtRes: Directive := '{$R '+Filename+'}';
-      end;
+      Directive := '{$R '+Filename+'}';
       if not CodeToolBoss.AddResourceDirective(CodeBuf, Filename, false, Directive) then
       begin
         Result := False;

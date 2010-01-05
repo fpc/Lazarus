@@ -109,7 +109,7 @@ begin
   if FilenameIsAbsolute(FIcoFileName) then
     CreateIconFile;
 
-  // don't add icon to lazarus resources if we are using fpc resources
+{ to create an lrs with icon we can use this but there is no reason anymore
   if AResources.ResourceType <> rtRes then
   begin
     AResource := GetStream;
@@ -119,6 +119,7 @@ begin
       AResource.Free;
     end;
   end;
+}
 
   AName := TResourceDesc.Create('MAINICON');
   ARes := TGroupIconResource.Create(nil, AName); //type is always RT_GROUP_ICON
