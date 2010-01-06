@@ -18,7 +18,6 @@ unit fieldseditor;
 
 interface
 
-{$IFNDEF VER2_0}
 uses
   Classes, SysUtils, LResources, TypInfo, LCLProc, Forms,
   Controls, Menus, Graphics, Dialogs, ComCtrls,
@@ -488,8 +487,4 @@ end;
 initialization
   {$I fieldseditor.lrs}
   RegisterComponentEditor(TDataset, TFieldsComponentEditor);
-
-{$ELSE The FCL of FPC 2.0 does not support this}
-implementation
-{$ENDIF}
 end.

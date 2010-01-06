@@ -122,14 +122,12 @@ end;
 function TNewFieldFrm.CreateField(fType: TFieldType; FName: string): TField;
 begin
   Result := Nil;
-  {$IFNDEF VER2_0}
   if DefaultFieldClasses[fType] <> Nil then begin
     Result := DefaultFieldClasses[fType].Create(LinkDataSet.Owner);
     Result.FieldName := fName;
     Result.Name := FDesigner.CreateUniqueComponentName(LinkDataset.Name + FName);
     Result.DataSet := LinkDataSet;
   end;
-  {$ENDIF}
 end;
 
 constructor TNewFieldFrm.Create(AOwner: TComponent; ADataset: TDataset;
