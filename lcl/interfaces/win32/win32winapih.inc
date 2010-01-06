@@ -108,7 +108,7 @@ function GetFocus: HWND; override;
 function GetForegroundWindow: HWND; override;
 function GetKeyState(NVirtKey: Integer): SmallInt; override;
 function GetMapMode(DC: HDC): Integer; override;
-function GetMonitorInfo(hMonitor: HMONITOR; lpmi: PMonitorInfo): Boolean; override;
+function GetMonitorInfo(hMonitor: HMONITOR; lpmi: LCLType.PMonitorInfo): Boolean; override;
 function GetObject(GDIObj: HGDIOBJ; BufSize: Integer; Buf: Pointer): Integer; override;
 function GetParent(Handle: HWND): HWND; override;
 function GetProp(Handle: HWND; Str: PChar): Pointer; override;

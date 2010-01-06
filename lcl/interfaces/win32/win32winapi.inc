@@ -1328,7 +1328,7 @@ end;
 
 function TWin32WidgetSet.EnumDisplayMonitors(hdc: HDC; lprcClip: PRect; lpfnEnum: MonitorEnumProc; dwData: LPARAM): LongBool;
 begin
-  Result := Win32Extra.EnumDisplayMonitors(hdc, lprcClip, lpfnEnum, dwData);
+  Result := MultiMon.EnumDisplayMonitors(hdc, lprcClip, lpfnEnum, dwData);
 end;
 
 function TWin32WidgetSet.EnumFontFamilies(DC: HDC; Family: Pchar;
@@ -1923,7 +1923,7 @@ begin
   Result := Windows.GetMapMode(DC);
 end;
 
-function TWin32WidgetSet.GetMonitorInfo(hMonitor: HMONITOR; lpmi: PMonitorInfo): Boolean;
+function TWin32WidgetSet.GetMonitorInfo(hMonitor: HMONITOR; lpmi: LCLType.PMonitorInfo): Boolean;
 {$IFDEF WindowsUnicodeSupport}
 var
   LocalInfo: TMonitorInfoExW;
@@ -1935,7 +1935,7 @@ begin
     if UnicodeEnabledOS then
     begin
       LocalInfo.cbSize := SizeOf(TMonitorInfoExW);
-      Result := Win32Extra.GetMonitorInfo(hMonitor, @LocalInfo);
+      Result := MultiMon.GetMonitorInfo(hMonitor, @LocalInfo);
       lpmi^.rcMonitor := LocalInfo.rcMonitor;
       lpmi^.rcWork := LocalInfo.rcWork;
       lpmi^.dwFlags := LocalInfo.dwFlags;
@@ -1946,7 +1946,7 @@ begin
   end
   else
   {$ENDIF}
-    Result := Win32Extra.GetMonitorInfo(hMonitor, lpmi);
+    Result := MultiMon.GetMonitorInfo(hMonitor, LPMonitorInfo(lpmi));
 end;
 
 {------------------------------------------------------------------------------
@@ -2568,17 +2568,17 @@ end;
 
 function TWin32WidgetSet.MonitorFromPoint(ptScreenCoords: TPoint; dwFlags: DWord): HMONITOR;
 begin
-  Result := Win32Extra.MonitorFromPoint(ptScreenCoords, dwFlags);
+  Result := MultiMon.MonitorFromPoint(ptScreenCoords, dwFlags);
 end;
 
 function TWin32WidgetSet.MonitorFromRect(lprcScreenCoords: PRect; dwFlags: DWord): HMONITOR;
 begin
-  Result := Win32Extra.MonitorFromRect(lprcScreenCoords, dwFlags);
+  Result := MultiMon.MonitorFromRect(lprcScreenCoords, dwFlags);
 end;
 
 function TWin32WidgetSet.MonitorFromWindow(hWnd: HWND; dwFlags: DWord): HMONITOR;
 begin
-  Result := Win32Extra.MonitorFromWindow(hWnd, dwFlags);
+  Result := MultiMon.MonitorFromWindow(hWnd, dwFlags);
 end;
 
 {------------------------------------------------------------------------------

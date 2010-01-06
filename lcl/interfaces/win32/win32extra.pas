@@ -36,13 +36,6 @@ uses
 
 { Win32 API constants not included in windows.pp }
 const
-  // progress bar
-  PBM_SETMARQUEE = WM_USER + 10;
-  PBS_MARQUEE    = $08;
-
-  // missed messages
-  WM_NCMOUSELEAVE = $2A2; // declared in fpc 2.3.1
-
   // Layout orientation
   LAYOUT_RTL                        = $00000001; // Right to left
   LAYOUT_BTT                        = $00000002; // Bottom to top
@@ -85,11 +78,6 @@ var
   GetComboBoxInfo: function(hwndCombo: HWND; pcbi: PComboboxInfo): BOOL; stdcall;
   GetMenuBarInfo: function(hwnd: HWND; idObject: LONG; idItem: LONG; pmbi: PMENUBARINFO): BOOL; stdcall;
   GetWindowInfo: function(hwnd: HWND; pwi: PWINDOWINFO): BOOL; stdcall;
-  EnumDisplayMonitors: function(hdc: HDC; lprcClip: PRect; lpfnEnum: MonitorEnumProc; dwData: LPARAM): LongBool; stdcall;
-  GetMonitorInfo: function(hMonitor: HMONITOR; lpmi: PMonitorInfo): Boolean; stdcall;
-  MonitorFromWindow: function(hWnd: HWND; dwFlags: DWORD): HMONITOR; stdcall;
-  MonitorFromRect: function(lprcScreenCoords: PRect; dwFlags: DWord): HMONITOR; stdcall;
-  MonitorFromPoint: function(ptScreenCoords: TPoint; dwFlags: DWord): HMONITOR; stdcall;
   SetLayout: function(dc: HDC; l: DWord): DWord; stdcall;
 
 const
@@ -125,9 +113,6 @@ implementation
 
 uses
   Win32Proc;
-
-const
-  xPRIMARY_MONITOR = $12340042;
 
 {$PACKRECORDS NORMAL}
 
@@ -550,128 +535,6 @@ begin
   Result := False;
 end;
 
-function _EnumDisplayMonitors(hdcOptionalForPainting: HDC;
-  lprcEnumMonitorsThatIntersect: PRect;
-  lpfnEnumProc: MonitorEnumProc;
-  dwData: LPARAM): LongBool; stdcall;
-var
-  rcLimit, rcClip: TRect;
-  ptOrg: TPoint;
-  Cb: Integer;
-begin
-  // from MultiMon.h
-  rcLimit.left   := 0;
-  rcLimit.top    := 0;
-  rcLimit.right  := GetSystemMetrics(SM_CXSCREEN);
-  rcLimit.bottom := GetSystemMetrics(SM_CYSCREEN);
-
-  if (hdcOptionalForPainting <> 0) then
-  begin
-    Cb := GetClipBox(hdcOptionalForPainting, @rcClip);
-    if not GetDCOrgEx(hdcOptionalForPainting, @ptOrg) then
-      Exit(False);
-
-    OffsetRect(rcLimit, -ptOrg.x, -ptOrg.y);
-    if (IntersectRect(rcLimit, rcLimit, rcClip) and
-       ((lprcEnumMonitorsThatIntersect = nil) or
-         IntersectRect(rcLimit, rcLimit, lprcEnumMonitorsThatIntersect^))) then
-    begin
-      if Cb =  NULLREGION then
-        Exit(True)
-      else
-      if Cb = ERROR then
-        Exit(False);
-    end
-  end
-  else
-  if ((lprcEnumMonitorsThatIntersect <> nil) and
-      not IntersectRect(rcLimit, rcLimit, lprcEnumMonitorsThatIntersect^)) then
-    Exit(True);
-
-  Result := lpfnEnumProc(
-              xPRIMARY_MONITOR,
-              hdcOptionalForPainting,
-              @rcLimit,
-              dwData);
-end;
-
-function _GetMonitorInfo(hMonitor: HMONITOR; lpMonitorInfo: PMonitorInfo): Boolean; stdcall;
-var
-  rcWork: TRect;
-begin
-  // from MultiMon.h
-  if ((hMonitor = xPRIMARY_MONITOR) and
-      (lpMonitorInfo <> nil) and
-      (lpMonitorInfo^.cbSize >= sizeof(TMonitorInfo)) and
-      SystemParametersInfo(SPI_GETWORKAREA, 0, @rcWork, 0)) then
-  begin
-    lpMonitorInfo^.rcMonitor.left := 0;
-    lpMonitorInfo^.rcMonitor.top  := 0;
-    lpMonitorInfo^.rcMonitor.right  := GetSystemMetrics(SM_CXSCREEN);
-    lpMonitorInfo^.rcMonitor.bottom := GetSystemMetrics(SM_CYSCREEN);
-    lpMonitorInfo^.rcWork := rcWork;
-    lpMonitorInfo^.dwFlags := MONITORINFOF_PRIMARY;
-
-    {$IFDEF WindowsUnicodeSupport}
-    if UnicodeEnabledOS then
-    begin
-      if (lpMonitorInfo^.cbSize >= sizeof(TMonitorInfoExW)) then
-        PMonitorInfoExW(lpMonitorInfo)^.szDevice := 'DISPLAY'
-    end
-    else
-    {$ENDIF}
-    if (lpMonitorInfo^.cbSize >= sizeof(TMonitorInfoEx)) then
-      PMonitorInfoEx(lpMonitorInfo)^.szDevice := 'DISPLAY';
-
-    Result := True;
-  end
-  else
-    Result := False;
-end;
-
-function _MonitorFromPoint(ptScreenCoords: TPoint; dwFlags: DWord): HMONITOR; stdcall;
-begin
-  if ((dwFlags and (MONITOR_DEFAULTTOPRIMARY or MONITOR_DEFAULTTONEAREST) <> 0 ) or
-      ((ptScreenCoords.x >= 0) and
-      (ptScreenCoords.x < GetSystemMetrics(SM_CXSCREEN)) and
-      (ptScreenCoords.y >= 0) and
-      (ptScreenCoords.y < GetSystemMetrics(SM_CYSCREEN)))) then
-    Result := xPRIMARY_MONITOR
-  else
-    Result := 0;
-end;
-
-function _MonitorFromRect(lprcScreenCoords: PRect; dwFlags: DWord): HMONITOR; stdcall;
-begin
-  if ((dwFlags and (MONITOR_DEFAULTTOPRIMARY or MONITOR_DEFAULTTONEAREST) <> 0) or
-      ((lprcScreenCoords^.right > 0) and
-      (lprcScreenCoords^.bottom > 0) and
-      (lprcScreenCoords^.left < GetSystemMetrics(SM_CXSCREEN)) and
-      (lprcScreenCoords^.top < GetSystemMetrics(SM_CYSCREEN)))) then
-    Result := xPRIMARY_MONITOR
-  else
-    Result := 0;
-end;
-
-function _MonitorFromWindow(hWnd: HWND; dwFlags: DWord): HMONITOR; stdcall;
-var
-  wp: TWindowPlacement;
-  B: Boolean;
-begin
-  if (dwFlags and (MONITOR_DEFAULTTOPRIMARY or MONITOR_DEFAULTTONEAREST) <> 0) then
-    Exit(xPRIMARY_MONITOR);
-
-  if IsIconic(hWnd) then
-    B := GetWindowPlacement(hWnd, @wp)
-  else
-    B := GetWindowRect(hWnd, @wp.rcNormalPosition);
-
-  if B then
-    Result := _MonitorFromRect(@wp.rcNormalPosition, dwFlags)
-  else
-    Result := 0;
-end;
-
 function _SHGetStockIconInfo(siid: integer; uFlags: UINT; psii: PSHSTOCKICONINFO): HResult; stdcall;
 begin
   Result := E_NOTIMPL;
@@ -732,12 +595,7 @@ begin
   Pointer(GetComboboxInfo) := @_GetComboboxInfo;
   Pointer(GetMenuBarInfo) := @_GetMenuBarInfo;
   Pointer(GetWindowInfo) := @_GetWindowInfo;
-  Pointer(EnumDisplayMonitors) := @_EnumDisplayMonitors;
-  Pointer(GetMonitorInfo) := @_GetMonitorInfo;
-  Pointer(MonitorFromWindow) := @_MonitorFromWindow;
-  Pointer(MonitorFromRect) := @_MonitorFromRect;
-  Pointer(MonitorFromPoint) := @_MonitorFromPoint;
-  
+
   user32handle := LoadLibrary(user32lib);
   if user32handle <> 0 then
   begin
@@ -752,32 +610,6 @@ begin
     p := GetProcAddress(user32handle, 'GetWindowInfo');
     if p <> nil 
     then Pointer(GetWindowInfo) := p;
-
-    p := GetProcAddress(user32handle, 'EnumDisplayMonitors');
-    if p <> nil 
-    then Pointer(EnumDisplayMonitors) := p;
-    
-  {$IFDEF WindowsUnicodeSupport}
-    if UnicodeEnabledOS 
-    then p := GetProcAddress(user32handle, 'GetMonitorInfoW')
-    else p := GetProcAddress(user32handle, 'GetMonitorInfoA');
-  {$ELSE}
-    p := GetProcAddress(user32handle, 'GetMonitorInfoA');
-  {$ENDIF}
-    if p <> nil 
-    then Pointer(GetMonitorInfo) := p;
-    
-    p := GetProcAddress(user32handle, 'MonitorFromWindow');
-    if p <> nil 
-    then Pointer(MonitorFromWindow) := p;
-
-    p := GetProcAddress(user32handle, 'MonitorFromRect');
-    if p <> nil 
-    then Pointer(MonitorFromRect) := p;
-
-    p := GetProcAddress(user32handle, 'MonitorFromPoint');
-    if p <> nil 
-    then Pointer(MonitorFromPoint) := p;
   end;
 
   // Defaults

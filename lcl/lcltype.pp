@@ -133,7 +133,7 @@ type
   HBITMAP = Windows.HBITMAP;
   HPALETTE = Windows.HPALETTE;
   HBRUSH = Windows.HBRUSH;
-  HMONITOR = Windows.HANDLE; // define as Windows.HMONITOR when fpc have it
+  HMONITOR = HANDLE;
 
   WPARAM = Windows.WPARAM;
   LPARAM = Windows.LPARAM;
