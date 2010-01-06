@@ -203,6 +203,9 @@ mrLast=mrYesToAll=10</descr>
       <element name="TWinControlClass">
         <short>
           <var>TWinControlClass</var> - class of 
+          
+          
+          
           <var>TWinControl</var>
         </short>
         <descr/>
@@ -212,6 +215,9 @@ mrLast=mrYesToAll=10</descr>
       <element name="TControlClass">
         <short>
           <var>TControlClass</var> - class of 
+          
+          
+          
           <var>TControl</var>
         </short>
         <descr/>
@@ -1003,6 +1009,9 @@ mrLast=mrYesToAll=10</descr>
       <element name="TControlCanvas.CreateFont">
         <short>
           <var>CreateFont</var> - creates font by calling inherited 
+          
+          
+          
           <var>CreateFont</var>
         </short>
         <descr/>
@@ -1022,6 +1031,9 @@ mrLast=mrYesToAll=10</descr>
       <element name="TControlCanvas.Create">
         <short>
           <var>Create</var> - constructor for TControlCanvas: calls inherited 
+          
+          
+          
           <var>Create</var> then initialises local variables to show an empty control</short>
         <seealso>
           <link id="#fcl.FPCanvas.TFPCustomCanvas.create">TFPCustomCanvas.create</link>
@@ -1031,7 +1043,13 @@ mrLast=mrYesToAll=10</descr>
       <element name="TControlCanvas.Destroy">
         <short>
           <var>Destroy</var> - destructor for 
+          
+          
+          
           <var>TControlCanvas</var>: frees handle and calls inherited 
+          
+          
+          
           <var>Destroy</var>
         </short>
         <seealso>
@@ -1262,8 +1280,15 @@ mrLast=mrYesToAll=10</descr>
       </element>
       <!-- enumeration type Visibility: default -->
       <element name="TDragMessage">
-        <short/>
-        <descr/>
+        <short>DragManager message types</short>
+        <descr>dmDragEnter: mouse enters control
+dmDragLeave: mouse leaves control
+dmDragMove: mouse moves over control (after dmDragEnter)
+dmDragDrop: control dropped
+dmDragCancel: dragging aborted
+dmFindTarget: find child control under the mouse
+
+All messages are sent to the target control, except dmDragDrop and dmDragCancel is sent to the source control.</descr>
         <seealso/>
       </element>
       <!-- enumeration value Visibility: default -->
@@ -1770,6 +1795,9 @@ mrLast=mrYesToAll=10</descr>
       <element name="TDragObjectClass">
         <short>
           <var>TDragObjectClass</var> - class of 
+          
+          
+          
           <var>TDragObject</var>
         </short>
         <descr/>
@@ -2249,11 +2277,14 @@ mrLast=mrYesToAll=10</descr>
       </element>
       <!-- object Visibility: default -->
       <element name="TDockManager">
-        <short>A base class for managing the docking process</short>
+        <short>A base class for managing the layout of docksites</short>
         <descr>
-          <p>TDockManager is an abstract class for managing a dock site's docked controls. </p>
+          <p>TDockManager is an abstract class for managing a dock site's docked controls. It's somewhat incompatible with the Delphi declaration, where IDockManager is an interface, not a class.</p>
           <p>The declaration contains a number of procedure definitions that are 'virtual' and 'abstract'. This means that there is no implementation specified: these essentially represent 'place-holders',  and it is the responsibility of the developer of descendant classes to override these methods and implement them as desired.</p>
         </descr>
+        <seealso>
+          <link id="TDockTree"/>
+        </seealso>
       </element>
       <!-- procedure Visibility: default -->
       <element name="TDockManager.BeginUpdate">
@@ -2266,7 +2297,7 @@ mrLast=mrYesToAll=10</descr>
       <!-- procedure Visibility: default -->
       <element name="TDockManager.EndUpdate">
         <short>
-          <var>EndUpdate</var> - finish updating the dock process</short>
+          <var>EndUpdate</var> - finish updating the layout</short>
         <descr/>
         <errors/>
         <seealso/>
@@ -2274,8 +2305,10 @@ mrLast=mrYesToAll=10</descr>
       <!-- procedure Visibility: default -->
       <element name="TDockManager.GetControlBounds">
         <short>
-          <var>GetControlBounds</var> - finds the bounds of the control for docking</short>
-        <descr/>
+          <var>GetControlBounds</var> - returns the bounds of a docked control to become floating</short>
+        <descr>The TDockTree manager returns the bounds of the dockzone, including the dock header.
+
+When the control is not docked, an empty Rect(0,0,0,0) is returned.</descr>
         <errors/>
         <seealso/>
       </element>
@@ -2290,14 +2323,17 @@ mrLast=mrYesToAll=10</descr>
       <!-- procedure Visibility: default -->
       <element name="TDockManager.InsertControl">
         <short>
-          <var>InsertControl</var> - insert the specified 
-          <var>DropCtl</var> into the nominated 
-          <var>Control</var>, using the alignment specified by 
-          <var>InsertAt</var>
+          <var>InsertControl</var> - position <var>DropCtl</var> relative <var>Control</var>, using the alignment specified by <var>InsertAt</var>
         </short>
-        <descr/>
+        <descr>InsertControl determines the layout and appearance of the just docked control, forcing a repaint of the container control if necessary.
+
+When SetReplacingControl has been called with a non-Nil Control before, the dropped control only should replace that control.
+</descr>
         <errors/>
-        <seealso/>
+        <seealso>
+          <link id="TDockManager.RemoveControl"/>
+          <link id="TDockManager.RemoveControl"/>
+        </seealso>
       </element>
       <!-- argument Visibility: default -->
       <element name="TDockManager.InsertControl.Control">
@@ -2314,10 +2350,13 @@ mrLast=mrYesToAll=10</descr>
       <!-- procedure Visibility: default -->
       <element name="TDockManager.LoadFromStream">
         <short>
-          <var>LoadFromStream</var> - loads object for docking from a stream</short>
-        <descr/>
+          <var>LoadFromStream</var> - restores the layout of the docksite from Stream</short>
+        <descr>The controls to be docked can be retrieved by ReloadDockedControl from the docksite; this method returns only existing controls of the given name, owned by the owner of the docksite, by default.</descr>
         <errors/>
-        <seealso/>
+        <seealso>
+          <link id="TWinControl.ReloadDockedControl"/>
+          <link id="TDockManager.SaveToStream"/>
+        </seealso>
       </element>
       <!-- argument Visibility: default -->
       <element name="TDockManager.LoadFromStream.Stream">
@@ -2326,8 +2365,8 @@ mrLast=mrYesToAll=10</descr>
       <!-- procedure Visibility: default -->
       <element name="TDockManager.PaintSite">
         <short>
-          <var>PaintSite</var> - a handle for the site to be painted</short>
-        <descr/>
+          <var>PaintSite</var> - handles special painting of the docksite</short>
+        <descr>While the docked controls paint themselves. eventual dockheaders and other decoration have to be painted by the DockManager.</descr>
         <errors/>
         <seealso/>
       </element>
@@ -2337,15 +2376,16 @@ mrLast=mrYesToAll=10</descr>
       </element>
       <!-- procedure Visibility: default -->
       <element name="TDockManager.PositionDockRect">
-        <short>
-          <var>PositionDockRect</var> method for determining the position (
-          <var>DockRect</var>) where the 
-          <var>DropCtl</var> is to be placed on the Client, aligned according to 
-          <var>DropAlign</var>
-        </short>
-        <descr/>
+        <short>Determines the DockRect while dragging a control over the docksite</short>
+        <descr>This method updates DockRect for the visual feedback, when a control is dragged over the docksite.
+
+The Delphi compatible version only can use the parameters determined by the default processing in the docksite.
+
+The Lazarus specific version can update the DockObject with better suited parameters. A DockManager here can implement any algorithm for the placement of a dropped control. The default implementation calls the Delphi compatible version.</descr>
         <errors/>
-        <seealso/>
+        <seealso>
+          <link id="TDragDockObject"/>
+        </seealso>
       </element>
       <!-- argument Visibility: default -->
       <element name="TDockManager.PositionDockRect.Client">
@@ -2366,8 +2406,8 @@ mrLast=mrYesToAll=10</descr>
       <!-- procedure Visibility: default -->
       <element name="TDockManager.RemoveControl">
         <short>
-          <var>RemoveControl</var> - remove undocked control from layout.</short>
-        <descr/>
+          <var>RemoveControl</var> - remove undocked control from the docksite layout.</short>
+        <descr>When SetReplacingControl has been called with a non-Nil argument before, the layout of the docksite should not be changed. Instead the next inserted control should take the place and role of this control.</descr>
         <errors/>
         <seealso/>
       </element>
@@ -2378,8 +2418,13 @@ mrLast=mrYesToAll=10</descr>
       <!-- procedure Visibility: default -->
       <element name="TDockManager.ResetBounds">
         <short>
-          <var>ResetBounds</var> to their default values</short>
-        <descr/>
+          <var>ResetBounds</var> refreshes the layout of the docksite</short>
+        <descr>This method typically notifies the DockManager of a Resize of the docksite.
+
+When the extent of the docksite really has changed, the DockManager should reposition and resize all docked controls accordingly.
+
+The layout always should be refreshed when <var>Force</var> is True.
+</descr>
         <errors/>
         <seealso/>
       </element>
@@ -2390,10 +2435,12 @@ mrLast=mrYesToAll=10</descr>
       <!-- procedure Visibility: default -->
       <element name="TDockManager.SaveToStream">
         <short>
-          <var>SaveToStream</var> - saves the docking object to a stream</short>
+          <var>SaveToStream</var> - saves the docksite layout to a stream</short>
         <descr/>
         <errors/>
-        <seealso/>
+        <seealso>
+          <link id="TDockManager.LoadFromStream"/>
+        </seealso>
       </element>
       <!-- argument Visibility: default -->
       <element name="TDockManager.SaveToStream.Stream">
@@ -2402,10 +2449,15 @@ mrLast=mrYesToAll=10</descr>
       <!-- procedure Visibility: default -->
       <element name="TDockManager.SetReplacingControl">
         <short>
-          <var>SetReplacingControl</var> - specify the control for replacing</short>
-        <descr/>
+          <var>SetReplacingControl</var> - specifies the control to be replaced subsequently</short>
+        <descr>This method is called by ReplaceDockedControl, to announce a pending replacement of Control by another control. The next RemoveControl should be ignored, and InsertControl should only exchange the controls, without reorganizing the layout of the docksite. When Control is Nil, this call signals the end of the exchange.
+
+The name "SetReplacingControl" is a misnomer, it should read "SetControlToBeReplaced".</descr>
         <errors/>
-        <seealso/>
+        <seealso>
+          <link id="TDockManager.InsertControl"/>
+          <link id="TDockManager.RemoveControl"/>
+        </seealso>
       </element>
       <!-- argument Visibility: default -->
       <element name="TDockManager.SetReplacingControl.Control">
@@ -2541,6 +2593,9 @@ mrLast=mrYesToAll=10</descr>
       <element name="TSizeConstraints.AssignTo">
         <short>
           <var>AssignTo</var> - copies constraints to destination if it is of the same type and has different values, else calls inherited 
+          
+          
+          
           <var>AssignTo</var>
         </short>
         <descr/>
@@ -2605,7 +2660,13 @@ mrLast=mrYesToAll=10</descr>
       <element name="TSizeConstraints.Create">
         <short>
           <var>Create</var> - constructor for 
+          
+          
+          
           <var>TSizeConstraints</var>: calls inherited 
+          
+          
+          
           <var>Create</var> and sets some default (zero) constraints</short>
         <descr/>
         <errors/>
@@ -2990,6 +3051,9 @@ mrLast=mrYesToAll=10</descr>
       <element name="TControlBorderSpacing.Change">
         <short>
           <var>Change</var> - software emulation of the 
+          
+          
+          
           <var>OnChange</var> event</short>
         <descr/>
         <errors/>
@@ -2999,12 +3063,21 @@ mrLast=mrYesToAll=10</descr>
       <element name="TControlBorderSpacing.Create">
         <short>
           <var>Create</var> - constructor for 
+          
+          
+          
           <var>TControlBorderSpacing</var>: sets some default positions, dimensions and alignments, then performs inherited 
+          
+          
+          
           <var>Create</var>
         </short>
         <descr>
           <p>
             <var>Create</var> - constructor for TControlBorderSpacing: sets some default positions, dimensions and alignments, then performs inherited 
+            
+            
+            
             <var>Create</var>
           </p>
           <p>Overrides ancestor constructors, and may be overridden</p>
@@ -3022,7 +3095,13 @@ mrLast=mrYesToAll=10</descr>
       <element name="TControlBorderSpacing.Assign">
         <short>
           <var>Assign</var> the contents of 
+          
+          
+          
           <var>Source</var> to the current control. If it is of the same type, copies selected spacing properties, otherwise calls inherited 
+          
+          
+          
           <var>Assign</var>
         </short>
         <descr/>
@@ -3039,6 +3118,9 @@ mrLast=mrYesToAll=10</descr>
       <element name="TControlBorderSpacing.AssignTo">
         <short>
           <var>AssignTo</var> - calls the 
+          
+          
+          
           <var>Assign</var> procedure for the Destination control</short>
         <descr/>
         <errors/>
@@ -3261,7 +3343,13 @@ mrLast=mrYesToAll=10</descr>
       <element name="TAnchorSide.Create">
         <short>
           <var>Create</var> - constructor for 
+          
+          
+          
           <var>TAnchorSide</var>: calls inherited 
+          
+          
+          
           <var>Create</var>, copies arguments to local variables and sets default anchor to Top</short>
         <descr/>
         <errors/>
@@ -3301,7 +3389,13 @@ mrLast=mrYesToAll=10</descr>
       <element name="TAnchorSide.Assign">
         <short>
           <var>Assign</var> - copies anchoring information from 
+          
+          
+          
           <var>Source</var> if it is of the same type as the current control, otherwise calls inherited 
+          
+          
+          
           <var>Assign</var>
         </short>
         <descr/>
@@ -3553,6 +3647,9 @@ mrLast=mrYesToAll=10</descr>
       <element name="TControlActionLinkClass">
         <short>
           <var>TControlActionLinkClass</var> - class of 
+          
+          
+          
           <var>TControlActionLink</var>
         </short>
         <descr/>
@@ -3669,8 +3766,9 @@ mrLast=mrYesToAll=10</descr>
           <p>Properties defined here can be overridden by descendant classes.</p>
         </descr>
         <seealso>
-          <link id="#lcl.lclClasses.TLCLComponent">TLCLComponent</link>
-          <link id="#rtl.Classes.TComponent">TComponent</link>
+          <link id="#lcl.lclClasses.TLCLComponent"/>
+          <link id="#rtl.Classes.TComponent"/>
+          <link id="TWinControl"/>
         </seealso>
       </element>
       <!-- variable Visibility: private -->
@@ -4805,7 +4903,9 @@ mrLast=mrYesToAll=10</descr>
       <!-- function Visibility: protected -->
       <element name="TControl.AutoSizeCanStart">
         <short>
-          <var>AutoSizeCanStart</var> - checks whether  <var>DoAutoSize</var> is permitted to start</short>
+          <var>AutoSizeCanStart</var> - checks whether            
+          
+          <var>DoAutoSize</var> is permitted to start</short>
         <descr>
           <p>
             <printshort id="TControl.AutoSizeCanStart"/>
@@ -4818,6 +4918,7 @@ mrLast=mrYesToAll=10</descr>
   It returns false if
   - AutoSize=false
   - or the control is currently autosizing
+  - or the control is in design state (csDesigning) and is not a top level control (form, frame)
   - or the control is not visible
   - or the control is destroying
 
@@ -4931,6 +5032,9 @@ mrLast=mrYesToAll=10</descr>
             <var>TWinControl</var>
  overrides this and asks the interface for theme dependent values.
   See 
+            
+            
+            
             
             <link id="#lcl.Controls.TWinControl.CalculatePreferredSize">TWinControl.CalculatePreferredSize</link> for more information.</p>
           <p>WithThemeSpace: If true, adds space for stacking.</p>
@@ -5091,7 +5195,12 @@ mrLast=mrYesToAll=10</descr>
       </element>
       <!-- function Visibility: protected -->
       <element name="TControl.GetClientOrigin">
-        <short>Find the origin (top left pixel) of the client control</short>
+        <short>Returns the screen coordinates of the control's client origin</short>
+        <descr>Returns the screen coordinates of the client area origin.
+
+Note that this value is the position as stored in the interface and is not always in sync with the LCL.
+When a control is moved, the LCL sets the bounds to the wanted position and sends a move message to the interface.
+It is up to the interface to handle moves instantly or queued.</descr>
       </element>
       <!-- function result Visibility: default -->
       <element name="TControl.GetClientOrigin.Result">
@@ -5135,7 +5244,12 @@ mrLast=mrYesToAll=10</descr>
       </element>
       <!-- function Visibility: protected -->
       <element name="TControl.GetControlOrigin">
-        <short>Find the origin (top left pixel) of this control</short>
+        <short>Find the origin (top left pixel) of this control on the screen</short>
+        <descr>Returns the screen coordinate of the topleft coordinate 0,0 of the control area. (The topleft pixel of the control on the screen)
+
+Note that this value is the position as stored in the interface and is not always in sync with the LCL.
+When a control is moved, the LCL sets the bounds to the wanted position and sends a move message to the interface.
+It is up to the interface to handle moves instantly or queued.</descr>
       </element>
       <!-- function result Visibility: default -->
       <element name="TControl.GetControlOrigin.Result">
@@ -5553,7 +5667,7 @@ Without a DockManager both extents are required, because no (valid) alignment in
       </element>
       <!-- procedure Visibility: protected -->
       <element name="TControl.DoDock">
-        <short>Perform the docking manoeuvre to the new dock site at the position specified by ARect</short>
+        <short>Adjust the control's position and extent for the new docksite.</short>
         <descr/>
         <errors/>
         <seealso/>
@@ -5568,9 +5682,13 @@ Without a DockManager both extents are required, because no (valid) alignment in
       </element>
       <!-- procedure Visibility: protected -->
       <element name="TControl.DoDragMsg">
-        <short>
-          <var>DoDragMsg</var> - sends to AControl a drag message at specified position for nominated object and target; returns an integer Result for success</short>
-        <descr/>
+        <short>Dispatch a drag message, sent by the DragManager</short>
+        <descr>On dmFindTarget: return Self for the DropOnControl.
+
+On dmDragEnter/Leave/Move: invokes DragOver or, if docking, the target.DockOver. Result indicates acceptance of an drop.
+When the DragObject has been AutoCreated, the dragged control is passed to DragOver as the Sender; otherwise the DragObject itself is passed as Sender.
+
+On dmDragDrop: invokes DragDrop or, if docking, the target.DockDrop. Returns nothing!</descr>
         <errors/>
         <seealso/>
       </element>
@@ -5649,10 +5767,17 @@ Without a DockManager both extents are required, because no (valid) alignment in
       </element>
       <!-- procedure Visibility: protected -->
       <element name="TControl.DragOver">
-        <short>Drag the control over the source; <var>Accept</var> determines if the dragged object will be accepted</short>
-        <descr/>
+        <short>Determines whether a drop is acceptable, using the OnDragOver handler.</short>
+        <descr>An OnDragOver handler is required, or any drop will be rejected (Accept becomes False).
+
+When an OnDragOver handler is installed, Accept is set to True and can be changed by the handler.
+
+Caution: Sender can be either a TDragObject, or the dragged control.
+</descr>
         <errors/>
-        <seealso/>
+        <seealso>
+          <link id="TControl.OnDragOver"/>
+        </seealso>
       </element>
       <!-- argument Visibility: default -->
       <element name="TControl.DragOver.Source">
@@ -5724,47 +5849,89 @@ Without a DockManager both extents are required, because no (valid) alignment in
       <element name="TControl.Click">
         <short>
           <var>Click</var> - a procedure that allows the programmer to simulate a mouse click over the control, and initiates the same           
+          
+          
+          
           <var>Action</var> as that associated with the           
+          
+          
+          
           <link id="#lcl.Controls.TControl.OnClick">OnClick</link> event</short>
       </element>
       <!-- procedure Visibility: protected -->
       <element name="TControl.DblClick">
         <short>
           <var>DblClick</var>   - a procedure that allows the programmer to simulate a mouse double-click over the control, and initiates the same           
+          
+          
+          
           <var>Action</var>  as that associated with the 	  
+          
+          
+          
           <link id="#lcl.Controls.TControl.OnDblClick">OnDblClick</link>  event</short>
       </element>
       <!-- procedure Visibility: protected -->
       <element name="TControl.TripleClick">
         <short>
           <var>TripleClick</var>   - a procedure that allows the programmer to simulate a mouse triple-click over the control, and initiates the same           
+          
+          
+          
           <var>Action</var>  as that associated with the 	  
+          
+          
+          
           <link id="#lcl.Controls.TControl.OnTripleClick">OnTripleClick</link> event</short>
       </element>
       <!-- procedure Visibility: protected -->
       <element name="TControl.QuadClick">
         <short>
           <var>QuadClick</var>   - a procedure that allows the programmer to simulate a mouse quadruple-click over the control, and initiates the same           
+          
+          
+          
           <var>Action</var>  as that associated with the 	  
+          
+          
+          
           <link id="#lcl.Controls.TControl.OnQuadClick">OnQuadClick</link>  event</short>
       </element>
       <!-- procedure Visibility: protected -->
       <element name="TControl.MouseDown">
         <short>
           <var>MouseDown</var>   - a procedure that allows the programmer to simulate a mouse button being down over the control, and initiates the same           
+          
+          
+          
           <var>Action</var>  as that associated with the 	  
+          
+          
+          
           <link id="#lcl.Controls.TControl.OnMouseDown">OnMouseDown</link>  event</short>
         <descr>
           <p>
             <var>MouseDown</var>   - a procedure that allows the programmer to simulate a mouse button being down over the control, and initiates the same 
             
+            
+            
+            
             <var>Action</var>  as that associated with the 
 	    
+            
+            
+            
             <link id="#lcl.Controls.TControl.OnMouseDown"/>  event</p>
           <p>
             <var>Button</var> specifies which mouse button; 
             
+            
+            
+            
             <var>Shift</var> signifies whether Ctrl, Shift or Alt keys are also pressed; 
+            
+            
+            
             
             <var>X, Y</var> show mouse position</p>
         </descr>
@@ -5791,17 +5958,32 @@ Without a DockManager both extents are required, because no (valid) alignment in
       <element name="TControl.MouseMove">
         <short>
           <var>MouseMove</var>   - a procedure that allows the programmer to simulate a mouse being moved over the control, and initiates the same           
+          
+          
+          
           <var>Action</var>  as that associated with the 	  
+          
+          
+          
           <link id="#lcl.Controls.TControl.OnMouseMove">OnMouseMove</link>  event</short>
         <descr>
           <p>
             <var>MouseMove</var>   - a procedure that allows the programmer to simulate a mouse being moved over the control, and initiates the same 
             
+            
+            
+            
             <var>Action</var>  as that associated with the 
 	    
+            
+            
+            
             <link id="#lcl.Controls.TControl.OnMouseMove"/>  event</p>
           <p>
             <var>Shift</var> signifies whether Ctrl, Shift or Alt keys are also pressed; 
+            
+            
+            
             
             <var>X, Y</var> show mouse position</p>
         </descr>
@@ -5824,19 +6006,37 @@ Without a DockManager both extents are required, because no (valid) alignment in
       <element name="TControl.MouseUp">
         <short>
           <var>MouseUp</var>   - a procedure that allows the programmer to simulate a mouse button being Up over the control, and initiates the same           
+          
+          
+          
           <var>Action</var>  as that associated with the 	  
+          
+          
+          
           <link id="#lcl.Controls.TControl.OnMouseUp">OnMouseUp</link>  event</short>
         <descr>
           <p>
             <var>MouseUp</var>   - a procedure that allows the programmer to simulate a mouse button being Up over the control, and initiates the same 
             
+            
+            
+            
             <var>Action</var>  as that associated with the 
 	    
+            
+            
+            
             <link id="#lcl.Controls.TControl.OnMouseUp"/>  event</p>
           <p>
             <var>Button</var> specifies which mouse button; 
             
+            
+            
+            
             <var>Shift</var> signifies whether Ctrl, Shift or Alt keys are also pressed; 
+            
+            
+            
             
             <var>X, Y</var> show mouse position</p>
         </descr>
@@ -5863,7 +6063,13 @@ Without a DockManager both extents are required, because no (valid) alignment in
       <element name="TControl.MouseEnter">
         <short>
           <var>MouseEnter</var> - a procedure that allows the programmer to simulate a mouse entering the control, and initiates the same           
+          
+          
+          
           <var>Action</var> as that associated with the 	  
+          
+          
+          
           <link id="#lcl.Controls.TControl.OnMouseEnter">OnMouseEnter</link> event</short>
         <descr/>
         <errors/>
@@ -5873,7 +6079,13 @@ Without a DockManager both extents are required, because no (valid) alignment in
       <element name="TControl.MouseLeave">
         <short>
           <var>MouseLeave</var> - a procedure that allows the programmer to simulate a mouse leaving the control, and initiates the same           
+          
+          
+          
           <var>Action</var> as that associated with the 	  
+          
+          
+          
           <link id="#lcl.Controls.TControl.OnMouseLeave">OnMouseLeave</link> event</short>
         <descr/>
         <errors/>
@@ -5935,6 +6147,9 @@ Without a DockManager both extents are required, because no (valid) alignment in
       <element name="TControl.Loaded">
         <short>
           <var>Loaded</var> - called when the component has finished loading. Calls inherited 
+          
+          
+          
           <var>Loaded</var> then copies various properties from client and parent</short>
         <descr/>
         <errors/>
@@ -5961,11 +6176,17 @@ Without a DockManager both extents are required, because no (valid) alignment in
       <element name="TControl.AssignTo">
         <short>
           <var>AssignTo</var> - if the Destination is a CustomAction, copies some specified properties to the Destination, otherwise calls inherited 
+          
+          
+          
           <var>AssignTo</var>
         </short>
         <descr>
           <p>
             <var>AssignTo</var> - if the Destination is a CustomAction, copies some specified properties to the Destination, otherwise calls inherited 
+            
+            
+            
             <var>AssignTo</var>
           </p>
           <p>The copied properties are:</p>
@@ -6173,6 +6394,9 @@ Without a DockManager both extents are required, because no (valid) alignment in
           <var>ParentFormHandleInitialized </var>
 - called by 
           
+          
+          
+          
           <var>ChildHandlesCreated</var> of parent form</short>
         <descr>
           <p>The form is a real connection to the target screen.</p>
@@ -6194,10 +6418,16 @@ Without a DockManager both extents are required, because no (valid) alignment in
       <element name="TControl.Notification">
         <short>
           <var>Notification</var> - calls inherited 
+          
+          
+          
           <var>Notification</var>, then takes action depending on Operation</short>
         <descr>
           <p>
             <var>Notification</var> - calls inherited 
+            
+            
+            
             <var>Notification</var>, then takes action depending on Operation</p>
           <p>If Operation is removal, then nullifies any popupmenus or actions.</p>
           <p>Disconnects all anchors.</p>
@@ -6231,6 +6461,9 @@ Without a DockManager both extents are required, because no (valid) alignment in
       <element name="TControl.GetDeviceContext">
         <short>
           <var>GetDeviceContext</var> - returns a device handle to correspond with the nominated 
+          
+          
+          
           <var>WindowHandle</var>
         </short>
         <descr/>
@@ -6249,6 +6482,9 @@ Without a DockManager both extents are required, because no (valid) alignment in
       <element name="TControl.GetEnabled">
         <short>
           <var>GetEnabled</var> - returns the 
+          
+          
+          
           <var>Enabled</var> status</short>
         <descr/>
         <errors/>
@@ -6274,6 +6510,9 @@ Without a DockManager both extents are required, because no (valid) alignment in
       <element name="TControl.DoOnShowHint">
         <short>
           <var>DoOnShowHint</var> - perform the code for the 
+          
+          
+          
           <var>OnShowHint</var> event handler</short>
         <descr/>
         <errors/>
@@ -6287,6 +6526,9 @@ Without a DockManager both extents are required, because no (valid) alignment in
       <element name="TControl.VisibleChanging">
         <short>
           <var>VisibleChanging</var> - method to use when the 
+          
+          
+          
           <var>Visible</var> property is changing</short>
         <descr/>
         <errors/>
@@ -6398,26 +6640,35 @@ Without a DockManager both extents are required, because no (valid) alignment in
       <!-- property Visibility: protected -->
       <element name="TControl.DragCursor">
         <short>
-          <var>DragCursor </var>
-- the style of cursor to be used during the Drag process</short>
+          <var>DragCursor </var>- the style of cursor to be used during the Drag process</short>
+        <descr>Default is crDrag. When no drop is allowed, the cursor changes temporarily to crNoDrop.</descr>
       </element>
       <!-- property Visibility: protected -->
       <element name="TControl.DragKind">
         <short>
           <var>DragKind</var> - what sort of dragging? Drag or Dock</short>
-        <descr/>
+        <descr>Set to dkDrag to allow for drag-drop, or to dkDock to allow for drag-dock.</descr>
         <seealso/>
       </element>
       <!-- property Visibility: protected -->
       <element name="TControl.DragMode">
         <short>
-          <var>DragMode </var>
-- whether manual or automatic</short>
+          <var>DragMode </var>- whether manual or automatic</short>
+        <descr>
+          <p>Default is dmManual, meaning that dragging must be started in code.</p>
+          <p>Set to dmAutomatic to allow the user to drag this control. In this mode dragging can start immediately (on left mouse button press) or delayed, after the mouse has been moved away by a number of pixels (Threshold).</p>
+        </descr>
+        <seealso>
+          <link id="TDragManager.DragImmediate"/>
+        </seealso>
       </element>
       <!-- property Visibility: protected -->
       <element name="TControl.MouseCapture">
-        <short>Is the mouse position captured?</short>
-        <descr/>
+        <short>Are mouse messages captured by this control?</short>
+        <descr>
+          <p>Mouse messages can be sent to a capturing control. This occurs automatically when a control is dragged. In normal operation all mouse messages are sent to the control under the mouse pointer.</p>
+          <p>Applications should capture mouse events only for special purposes, and release the capture as soon as a the target position has been determined. Limited user feedback is possible while the mouse is captured, but not all application controls will work properly so long.</p>
+        </descr>
         <seealso/>
       </element>
       <!-- property Visibility: protected -->
@@ -6484,7 +6735,15 @@ Without a DockManager both extents are required, because no (valid) alignment in
       </element>
       <!-- property Visibility: protected -->
       <element name="TControl.OnDragDrop">
-        <short>Event handler for the Drag-Drop manoeuvre</short>
+        <short>Event handler for the drop of a control onto this control.</short>
+        <descr>
+          <p>The handler determines what shall happen when another control is dropped onto this (Sender) control.</p>
+          <p>Sender is the target control onto which the Source control is dropped.</p>
+          <p>X and Y are the client coordinates of the drop.</p>
+        </descr>
+        <seealso>
+          <link id="TControl.DragDrop"/>
+        </seealso>
       </element>
       <!-- property Visibility: protected -->
       <element name="TControl.OnDragOver">
@@ -6493,10 +6752,23 @@ Without a DockManager both extents are required, because no (valid) alignment in
       <!-- property Visibility: protected -->
       <element name="TControl.OnEndDock">
         <short>Event handler for the end of a docking manoeuvre</short>
+        <descr>
+          <p>Sender is the control to be docked.</p>
+          <p>Target is the control into which the Sender is docked, or Nil when dragging has been aborted.</p>
+          <p>X and Y are the screen coordinates of the drop.</p>
+        </descr>
       </element>
       <!-- property Visibility: protected -->
       <element name="TControl.OnEndDrag">
         <short>Event handler for the end of a dragging process</short>
+        <descr>
+          <p>Sender is the dragged control.</p>
+          <p>Target is the control onto which the Sender has been dropped, or Nil when dragging has been aborted.</p>
+          <p>X and Y are the screen coordinates of the drop.</p>
+        </descr>
+        <seealso>
+          <link id="TDragDropEvent"/>
+        </seealso>
       </element>
       <!-- property Visibility: protected -->
       <element name="TControl.OnMouseDown">
@@ -6545,8 +6817,10 @@ Without a DockManager both extents are required, because no (valid) alignment in
       </element>
       <!-- procedure Visibility: public -->
       <element name="TControl.DragDrop">
-        <short>
-          <var>DragDrop</var> - Procedure to govern Dragging/Dropping of control</short>
+        <short>Invokes the OnDragDrop handler, when the control is dropped</short>
+        <seealso>
+          <link id="TControl.OnDragDrop"/>
+        </seealso>
       </element>
       <!-- argument Visibility: default -->
       <element name="TControl.DragDrop.Source">
@@ -6562,14 +6836,10 @@ Without a DockManager both extents are required, because no (valid) alignment in
       </element>
       <!-- procedure Visibility: public -->
       <element name="TControl.Dock">
-        <short>
-          <var>Dock</var>
- - Procedure governing Docking of Control</short>
+        <short>Move the control into a new docksite.</short>
         <descr>
-          <p>
-            <var>Dock</var>
- - Procedure governing Docking of Control</p>
-          <p>Performs checks that there is already a valid host control to which the present control is to be docked, removes old controls from the list of docked controls and adds the new control to the list, then calls <link id="#lcl.Controls.TControl.DoDock">DoDock</link> to perform the actual docking process</p>
+          <p>Removes the control from the DockClients of the old docksite, and adds it to the DockClients of the new docksite. Adjusts the position and extent for the new docksite, then calls the DoAdd/RemoveDockClient methods of the old and new docksite.
+Performs checks that there is already a valid host control to which the present control is to be docked, removes old controls from the list of docked controls and adds the new control to the list, then calls <link id="#lcl.Controls.TControl.DoDock">DoDock</link> to perform the actual docking process</p>
         </descr>
         <errors>An exception is raised if there is already a docking process in progress for this control</errors>
       </element>
@@ -6583,13 +6853,11 @@ Without a DockManager both extents are required, because no (valid) alignment in
       </element>
       <!-- function Visibility: public -->
       <element name="TControl.ManualDock">
-        <short>
-          <var>ManualDock</var>
- - permits operator-defined docking</short>
+        <short>Docks a control programmatically.</short>
         <descr>
-          <p>Docks this control to DropControl or on NewDockSite.</p>
-          <p>If DropControl is not <b>nil</b>, ControlSide defines on which side of DropControl this control is docked. (alNone,alClient for stacked in pages). DropControl will become part of a TDockManager.</p>
-          <p>If DropControl is <b>nil</b>, then DropControl becomes a normal child of NewDockSite and ControlSide is ignored.</p>
+          <p>Docks this control into NewDockSite, relative to DropControl. When NewDockSite is Nil, the control becomes floating.</p>
+          <p>When the new docksite uses an DockManager, and DropControl is not Nil, the control will be docked relative to DropControl, as specified by ControlSide. The interpretation of ControlSide depends on the DockManager of NewDockSite, or on the OnDockDrop handler in an unmanaged  docksite. A tree docking manager (TDockTree) should interpret alCustom as NoteBook docking, i.e. a tabbed notebook is created in place of DropControl, and both DropControl and this control are docked into pages of this notebook.
+</p>
         </descr>
       </element>
       <!-- function result Visibility: default -->
@@ -6616,6 +6884,9 @@ Without a DockManager both extents are required, because no (valid) alignment in
           <var>ManualFloat</var>
  - the opposite of 
           
+          
+          
+          
           <var>ManualDock</var>, allows operator to Float a control</short>
         <descr>
           <pre>function TControl.ManualFloat(TheScreenRect: TRect;
@@ -6640,7 +6911,14 @@ Without a DockManager both extents are required, because no (valid) alignment in
       <!-- function Visibility: public -->
       <element name="TControl.ReplaceDockedControl">
         <short>Remove a previously docked control and put a new control in its place</short>
-        <descr>Checks to see whether there is a previously docked control, <br/>and removes it, then puts the new control in its place</descr>
+        <descr>This method works only when the control to replace resides in a managed docksite (using an DockManager), or is not docked at all. Even then exist situations where it won't work as expected, depending on the used DockManager and other subtle conditions.
+
+When the control to replace is docked, then it's replaced by this control; otherwise this control becomes floating (seems to be a design flaw).
+
+Finally the control to replace is docked into NewDockSite, according to DropControl and ControlSide (see <link id="TControl.ManualDock"/>).
+
+This method primarily exists for use by the DockManager itself, for NoteBook docking. It should not be used in application code.
+</descr>
         <seealso>
           <link id="#lcl.Controls.TControl.ManualDock">ManualDock</link>
         </seealso>
@@ -6677,12 +6955,18 @@ Without a DockManager both extents are required, because no (valid) alignment in
       <!-- procedure Visibility: public -->
       <element name="TControl.AdjustSize">
         <short>
-          <var>AdjustSize</var> - Smart way to  <var>DoAutoSize</var>
+          <var>AdjustSize</var> - Smart way to  
+          
+          
+          <var>DoAutoSize</var>
         </short>
         <descr>
           <p>
             <var>TControl.AdjustSize</var>
  calls 
+            
+            
+            
             
             <var>DoAutoSize</var> in a smart fashion.</p>
           <p>During loading and handle creation the calls are delayed.</p>
@@ -6863,6 +7147,9 @@ Without a DockManager both extents are required, because no (valid) alignment in
  overrides this and asks the interface for theme dependent values.
   See 
             
+            
+            
+            
             <link id="#lcl.Controls.TWinControl.CalculatePreferredSize">TWinControl.CalculatePreferredSize</link> for more information.</p>
         </descr>
       </element>
@@ -6896,7 +7183,13 @@ Without a DockManager both extents are required, because no (valid) alignment in
         </seealso>
         <short>
           <var>Create</var> - constructor for 
+          
+          
+          
           <var>TControl </var>and derived classes: calls inherited 
+          
+          
+          
           <var>Create</var> and sets a number of defaults</short>
       </element>
       <!-- argument Visibility: default -->
@@ -6917,12 +7210,18 @@ Without a DockManager both extents are required, because no (valid) alignment in
         </seealso>
         <short>
           <var>Destroy</var> - Destructor for 
+          
+          
+          
           <var>TControl</var>. Detaches control from parents, removes graphics, frees memory and Operating System handles, pointers etc</short>
       </element>
       <!-- procedure Visibility: public -->
       <element name="TControl.EditingDone">
         <short>
           <var>EditingDone</var> - what to do when you have finished editing; calls the 
+          
+          
+          
           <var>OnEditingDone</var> event handler if assigned</short>
         <descr>
           <p>
@@ -7347,6 +7646,9 @@ Without a DockManager both extents are required, because no (valid) alignment in
       <element name="TControl.AddHandlerOnResize">
         <short>
           <var>AddHandlerOnResize</var> - method for adding a handler for the 
+          
+          
+          
           <var>OnResize</var> event</short>
         <descr/>
         <errors/>
@@ -7364,6 +7666,9 @@ Without a DockManager both extents are required, because no (valid) alignment in
       <element name="TControl.RemoveHandlerOnResize">
         <short>
           <var>RemoveHandlerOnResize</var> - method for removing a handler for the 
+          
+          
+          
           <var>OnResize</var> event</short>
         <descr/>
         <errors/>
@@ -7377,6 +7682,9 @@ Without a DockManager both extents are required, because no (valid) alignment in
       <element name="TControl.AddHandlerOnChangeBounds">
         <short>
           <var>AddHandlerOnChangeBounds</var> - method for adding a handler for the 
+          
+          
+          
           <var>OnChangeBounds</var> event</short>
         <descr/>
         <errors/>
@@ -7394,6 +7702,9 @@ Without a DockManager both extents are required, because no (valid) alignment in
       <element name="TControl.RemoveHandlerOnChangeBounds">
         <short>
           <var>RemoveHandlerOnChangeBounds</var> - method to remove a handler for the 
+          
+          
+          
           <var>OnChangeBounds</var> event</short>
         <descr/>
         <errors/>
@@ -7470,10 +7781,10 @@ Without a DockManager both extents are required, because no (valid) alignment in
       </element>
       <!-- property Visibility: public -->
       <element name="TControl.BoundsRect">
-        <short>Determines the rectangle bounding this control</short>
+        <short>Determines the rectangle bounding this control (read/write)</short>
         <descr>
-          <p>// standard properties, which should be supported by all descendants</p>
-          <p>Finds the values for the bounding rectangle, or sets the values.</p>
+          <p>The BoundsRect rectangle describes the TopLeft and BottomRight coordinates of the control, relative to its parent. The values are based on the Top, Left, Width and Height of the control.</p>
+          <p>Set BoundsRect to move the control.</p>
           <p>Bounding rectangle (top-left, bottom-right) is defined in <link id="#rtl.Classes.TRect">TRect</link>
           </p>
         </descr>
@@ -7481,9 +7792,10 @@ Without a DockManager both extents are required, because no (valid) alignment in
       <!-- property Visibility: public -->
       <element name="TControl.BoundsRectForNewParent">
         <short>
-          <var>BoundsRectForNewParent</var> - finds (or sometimes specifies) the bounding rectangle for a new parent control</short>
-        <descr>// standard properties, which should be supported by all descendants
-</descr>
+          <var>BoundsRectForNewParent</var> - get or set the bounding rectangle for a new parent control</short>
+        <descr>The rectangle describes the placement of the control when its Parent is changed later.
+
+Setting the rectangle also sets a flag, indicating that the values are available.</descr>
       </element>
       <!-- property Visibility: public -->
       <element name="TControl.Caption">
@@ -7702,9 +8014,11 @@ Especially it is not sufficient to write only a TForm.OnResize handler to resize
       </element>
       <!-- property Visibility: public -->
       <element name="TControl.Parent">
-        <short>Determine what is the parent for this control</short>
-        <descr>// standard properties, which should be supported by all descendants<br/>
-Reads or writes a flag to find or store the identity of the parent for this control. The parent is of type TWincontrol</descr>
+        <short>The container control of which this control is a child.</short>
+        <descr>
+          <p>Parent is a TWinControl, which contains the control. The control is shown inside the client area of its Parent. Its origin (Top,Left) is expressed in client coordinates, i.e. relative to the client area of its Parent. When the Parent is changed, the visual control moves into the client area of its new Parent.</p>
+          <p>Parent can be Nil only for TWinControls, which can exist outside a container control. A simple TControl without a parent is invisible. Forms with a Parent loose some of their attributes and functionality, and behave more like ordinary client controls.</p>
+        </descr>
         <seealso>
           <link id="#lcl.Controls.TWinControl"/>
         </seealso>
@@ -8189,6 +8503,9 @@ Reads message from flag area, or stores a message
       <element name="TControlChildSizing.Change">
         <short>
           <var>Change</var> - software emulation of the 
+          
+          
+          
           <var>OnChange</var> event</short>
         <descr/>
         <errors/>
@@ -8198,12 +8515,24 @@ Reads message from flag area, or stores a message
       <element name="TControlChildSizing.Create">
         <short>
           <var>Create</var> - constructor for 
+          
+          
+          
           <var>TControlChildSizing</var>: performs inherited 
+          
+          
+          
           <var>Create</var> then sets some default alignments and sizes</short>
         <descr>
           <p>
             <var>Create</var> - constructor for 
+            
+            
+            
             <var>TControlChildSizing</var>: performs inherited 
+            
+            
+            
             <var>Create</var> then sets some default alignments and sizes</p>
           <p>Overrides ancestors, may be overridden</p>
         </descr>
@@ -8220,6 +8549,9 @@ Reads message from flag area, or stores a message
       <element name="TControlChildSizing.Assign">
         <short>
           <var>Assign</var> - if source is the same type as current control, copies a large number of explicit properties from source, else calls inherited 
+          
+          
+          
           <var>Assign</var>
         </short>
         <descr/>
@@ -8236,6 +8568,9 @@ Reads message from flag area, or stores a message
       <element name="TControlChildSizing.AssignTo">
         <short>
           <var>AssignTo</var> - calls the 
+          
+          
+          
           <var>Assign</var> method for the destination control</short>
         <descr/>
         <errors/>
@@ -8336,6 +8671,9 @@ Reads message from flag area, or stores a message
       <element name="TWinControlActionLink">
         <short>
           <var>TWinControlActionLink</var> - same as 
+          
+          
+          
           <var>TControlActionLink</var>
         </short>
         <descr/>
@@ -8379,6 +8717,9 @@ Reads message from flag area, or stores a message
       <element name="TWinControlActionLinkClass">
         <short>
           <var>TWinControlActionLinkClass</var> - class of 
+          
+          
+          
           <var>TWinControlActionLink</var>
         </short>
         <descr/>
@@ -9042,11 +9383,11 @@ Reads message from flag area, or stores a message
         <short/>
       </element>
       <!-- procedure Visibility: protected -->
-      <element name="TWinControl.DoDragMsg">
-        <short>
-          <var>DoDragMsg</var> - issues a Drag message for a nominated drag object at a specified position, to a specific target with 
-          <var>ADocking</var> set True or False; returns an integer result</short>
-        <descr/>
+      <element name="TWinControl.DoDragMsg" link="#LCL.Controls.TControl.DoDragMsg">
+        <short>Dispatch a drag message, sent by the DragManager</short>
+        <descr>On dmFindTarget a TWinControl returns the child control under the mouse, or Self if none is found.
+
+All other messages are handled by <link id="TControl.DoDragMsg"/>.</descr>
         <errors/>
         <seealso/>
       </element>
@@ -9237,7 +9578,10 @@ Reads message from flag area, or stores a message
           <p>This value is independent of constraints and siblings, only the inner parts
   are relevant.</p>
           <p>
-            <var>WithThemeSpace</var>: If true, adds space for stacking. For example: <var>TRadioButton</var>
+            <var>WithThemeSpace</var>: If true, adds space for stacking. For example: 
+            
+            
+            <var>TRadioButton</var>
   has a minimum size. But for stacking multiple TRadioButtons there should be
   some space around. This space is theme dependent, so it is passed as a parameter to
   the widgetset. </p>
@@ -9356,6 +9700,9 @@ Reads message from flag area, or stores a message
       <element name="TWinControl.CMEnabledChanged">
         <short>
           <var>CMEnabledChanged</var> - control message for a change in the 
+          
+          
+          
           <var>Enabled</var> property</short>
         <descr/>
         <errors/>
@@ -9369,6 +9716,9 @@ Reads message from flag area, or stores a message
       <element name="TWinControl.CMShowHintChanged">
         <short>
           <var>CMShowHintChanged</var> - control message for a change in the 
+          
+          
+          
           <var>ShowHint</var> property</short>
         <descr/>
         <errors/>
@@ -9666,11 +10016,8 @@ Reads message from flag area, or stores a message
       </element>
       <!-- procedure Visibility: protected -->
       <element name="TWinControl.DoAddDockClient">
-        <short>
-          <var>DoAddDockClient</var> - add the specified control as a client for docking in the specified location (Arect)</short>
-        <descr/>
-        <errors/>
-        <seealso/>
+        <short>Perform special actions when a control is docked</short>
+        <descr>The default action is to set the Parent to the new docksite (this control), so that the client is displayed within the new site.</descr>
       </element>
       <!-- argument Visibility: default -->
       <element name="TWinControl.DoAddDockClient.Client">
@@ -9712,7 +10059,7 @@ Everything can be overridden by the OnDockOver handler, if installed.</descr>
       <!-- procedure Visibility: protected -->
       <element name="TWinControl.DoDockOver">
         <short>
-          <var>DoDockOver</var> - perform the DockOver method</short>
+          <var>DoDockOver</var> - invoke the OnDockOver handler</short>
         <descr/>
         <errors/>
         <seealso/>
@@ -9739,9 +10086,8 @@ Everything can be overridden by the OnDockOver handler, if installed.</descr>
       </element>
       <!-- procedure Visibility: protected -->
       <element name="TWinControl.DoRemoveDockClient">
-        <short>
-          <var>DoRemoveDockClient</var> - method for removing a docking client </short>
-        <descr/>
+        <short>Perform special actions on removal of an docked client</short>
+        <descr>The default implementation does nothing.</descr>
         <errors/>
         <seealso/>
       </element>
@@ -9751,12 +10097,12 @@ Everything can be overridden by the OnDockOver handler, if installed.</descr>
       </element>
       <!-- function Visibility: protected -->
       <element name="TWinControl.DoUnDock">
-        <short>
-          <var>DoUnDock</var> - software emulation of the 
-          <var>OnUnDock</var> evnet</short>
-        <descr/>
+        <short>Notifies an <var>OnUnDock</var> handler and DockManager of the undocked client control.</short>
+        <descr>The OnUnDock handler can deny to undock the control.</descr>
         <errors/>
-        <seealso/>
+        <seealso>
+          <link id="TWinControl.DoUndockClientMsg"/>
+        </seealso>
       </element>
       <!-- function result Visibility: default -->
       <element name="TWinControl.DoUnDock.Result">
@@ -9827,6 +10173,9 @@ The InfluenceRect is the slightly inflated WindowRect of the dock site, adjustab
       <element name="TWinControl.DoEnter">
         <short>
           <var>DoEnter</var> - perform the action for the 
+          
+          
+          
           <var>OnEnter</var> event handleer</short>
         <descr/>
         <errors/>
@@ -9836,6 +10185,9 @@ The InfluenceRect is the slightly inflated WindowRect of the dock site, adjustab
       <element name="TWinControl.DoExit">
         <short>
           <var>DoExit</var> - perform the action for the 
+          
+          
+          
           <var>OnExit</var> event handler</short>
         <descr/>
         <errors/>
@@ -10081,6 +10433,9 @@ The InfluenceRect is the slightly inflated WindowRect of the dock site, adjustab
         <short>
           <var>KeyDown</var> - emulate the action of pressing the specified key (makes 
           
+          
+          
+          
           <var>OnKeyDown</var> respond)</short>
         <descr/>
         <errors/>
@@ -10142,6 +10497,9 @@ The InfluenceRect is the slightly inflated WindowRect of the dock site, adjustab
       <element name="TWinControl.KeyUp">
         <short>
           <var>KeyUp</var> - emulates the action of a key being released (makes 
+          
+          
+          
           
           <var>OnKeyUp</var> respond)</short>
         <descr/>
@@ -10268,7 +10626,11 @@ The InfluenceRect is the slightly inflated WindowRect of the dock site, adjustab
       <!-- function Visibility: protected -->
       <element link="#LCL.Controls.TControl.GetClientOrigin" name="TWinControl.GetClientOrigin">
         <short/>
-        <descr/>
+        <descr>Returns the screen coordinate of the topleft coordinate 0,0 of the control area. (The topleft pixel of the control on the screen)
+
+Note that this value is the position as stored in the interface and is not always in sync with the LCL.
+When a control is moved, the LCL sets the bounds to the wanted position and sends a move message to the interface.
+It is up to the interface to handle moves instantly or queued.</descr>
         <errors/>
         <seealso/>
       </element>
@@ -10290,7 +10652,11 @@ The InfluenceRect is the slightly inflated WindowRect of the dock site, adjustab
       <!-- function Visibility: protected -->
       <element link="#LCL.Controls.TControl.GetControlOrigin" name="TWinControl.GetControlOrigin">
         <short/>
-        <descr/>
+        <descr>Returns the screen coordinate of the topleft coordinate 0,0 of the control area. (The topleft pixel of the control on the screen)
+
+Note that this value is the position as stored in the interface and is not always in sync with the LCL.
+When a control is moved, the LCL sets the bounds to the wanted position and sends a move message to the interface.
+It is up to the interface to handle moves instantly or queued.</descr>
         <errors/>
         <seealso/>
       </element>
@@ -10454,6 +10820,9 @@ End;
       <element name="TWinControl.Loaded">
         <short>
           <var>Loaded</var> makes a number of checks, using client size if specified, and copying appropriate flags, fonts, text etc, makes list of child controls to notify them of any changes, then calls inherited 
+          
+          
+          
           <var>Loaded</var>
         </short>
         <descr/>
@@ -10613,6 +10982,9 @@ End;
       <element name="TWinControl.UpdateShowing">
         <short>
           <var>UpdateShowing</var> - update the value of the 
+          
+          
+          
           <var>Showing</var> property</short>
         <descr/>
         <errors/>
@@ -10622,6 +10994,9 @@ End;
       <element name="TWinControl.WndProc">
         <short>
           <var>WndProc</var> - makes specific reactions according to the message passed, then calls inherited 
+          
+          
+          
           <var>WndProc</var>
         </short>
         <descr>
@@ -10714,14 +11089,15 @@ End;
       </element>
       <!-- property Visibility: public -->
       <element name="TWinControl.DockClientCount">
-        <short>The number of clients to which this control is docked</short>
-        <descr>Reads count from flag</descr>
+        <short>The number of clients docked to this control</short>
+        <descr>The docked controls can be accessed in DockClients[]. DockClientCount is equivalent to DockClients.Count, but handles also the special case when DockClients is Nil.</descr>
+        <seealso>
+          <link id="TWinControl.DockClients"/>
+        </seealso>
       </element>
       <!-- property Visibility: public -->
       <element name="TWinControl.DockClients">
-        <short>The indexed list of dock clients of this window</short>
-        <descr>Reads a flag to find the actual dock client controls
-</descr>
+        <short>The indexed list of controls docked into this control</short>
       </element>
       <!-- argument Visibility: default -->
       <element name="TWinControl.DockClients.Index">
@@ -10729,10 +11105,19 @@ End;
       </element>
       <!-- property Visibility: public -->
       <element name="TWinControl.DockManager">
-        <short>Property that actually controls the docking process</short>
-        <descr>Reads or writes a flag. Derived from the parent class TDockManager</descr>
+        <short>The docking layout manager for this control.</short>
+        <descr>
+          <p>A docksite can be managed (using an DockManager) or unmanaged (positioning docked controls in the event handlers). The DockManager determines the placement of docked controls, by setting DropOnControl and DropAlign before the drop, and by resizing and positioning the control when it's dropped.</p>
+          <p>A DockManager is used only when UseDockManager also is True. Setting UseDockManager to True creates an DockManager of the DefaultDockManagerClass for this docksite, if none was previously installed.</p>
+          <p>An unmanaged docksite, without an DockManager, can handle the placement of dropped controls in the OnDockOver and OnDockDrop event handlers.</p>
+        </descr>
         <seealso>
           <link id="#lcl.Controls.TDockManager"/>
+          <link id="TWinControl.UseDockManager"/>
+          <link id="TWinControl.DockSite"/>
+          <link id="TWinControl.OnDockDrop"/>
+          <link id="TWinControl.OnDockOver"/>
+          <link id="DefaultDockTreeClass"/>
         </seealso>
       </element>
       <!-- property Visibility: public -->
@@ -10942,6 +11327,9 @@ If the TabStop is True, the control is in the tab order. If TabStop is False, th
         <short>
           <var>ControlAtPos</var> - the identity of the control located at the specified point 
           
+          
+          
+          
           <var>Pos</var>
         </short>
         <descr/>
@@ -10957,6 +11345,9 @@ If the TabStop is True, the control is in the tab order. If TabStop is False, th
         <short>
           <var>ControlAtPos</var> - the identity of the control located at the specified point 
 		      
+          
+          
+          
           <var>Pos</var>
         </short>
       </element>
@@ -10969,6 +11360,9 @@ If the TabStop is True, the control is in the tab order. If TabStop is False, th
         <short>
           <var>ControlAtPos</var> - the identity of the control located at the specified point 
 		      
+          
+          
+          
           <var>Pos</var>
         </short>
         <descr/>
@@ -10996,6 +11390,9 @@ If the TabStop is True, the control is in the tab order. If TabStop is False, th
         <short>
           <var>ControlAtPos</var> - the identity of the control located at the specified point 
 		      
+          
+          
+          
           <var>Pos</var>
         </short>
         <descr/>
@@ -11084,12 +11481,24 @@ If the TabStop is True, the control is in the tab order. If TabStop is False, th
         </seealso>
         <short>
           <var>Create</var> - constructor for 
+          
+          
+          
           <var>TWinControl</var>: performs inherited 
+          
+          
+          
           <var>Create</var> and initialises some local variables</short>
         <descr>
           <p>
             <var>Create</var> - Constructor for 
+            
+            
+            
             <var>TWinControl</var>: performs inherited 
+            
+            
+            
             <var>Create</var> and initialises some local variables</p>
           <p>Overrides ancestor constructor, and may in turn be overridden</p>
           <p>Among additional variables initialised are: CompStyle, ChildSizing, Brush, TabOrder and TabStop</p>
@@ -11131,12 +11540,21 @@ If the TabStop is True, the control is in the tab order. If TabStop is False, th
       <element name="TWinControl.Destroy">
         <short>
           <var>Destroy</var> - destructor for 
+          
+          
+          
           <var>TWinControl</var> and derived classes. Removes handles and docked controls, frees resources, then calls inherited 
+          
+          
+          
           <var>Destroy</var>
         </short>
         <descr>
           <p>
             <var>Destroy</var> - destructor for 
+            
+            
+            
             <var>TWinControl</var> and derived classes</p>
           <p>Destroys any allocated handles, removes any docking links, and frees the resources used by the control, then performs inherited <var>Destroy</var>
           </p>
@@ -11148,11 +11566,13 @@ If the TabStop is True, the control is in the tab order. If TabStop is False, th
       </element>
       <!-- procedure Visibility: public -->
       <element name="TWinControl.DockDrop">
-        <short>
-          <var>DockDrop</var> - drop a dragged object into its docking position</short>
-        <descr/>
-        <errors/>
-        <seealso/>
+        <short>A dragged control has been dropped onto this docksite</short>
+        <descr>Asks the dropped control to dock itself into the target control, updating its Parent, HostDockSite and the DockClients of the old and new DockSite. When a DockManager is installed, asks the DockManager to position the docked control (InsertControl). Finally sends an OnDockDrop event.</descr>
+        <seealso>
+          <link id="TWinControl.DoDockClientMsg"/>
+          <link id="TWinControl.OnDockDrop"/>
+          <link id="TDragDockObject"/>
+        </seealso>
       </element>
       <!-- argument Visibility: default -->
       <element name="TWinControl.DockDrop.DockObject">
@@ -11279,6 +11699,9 @@ If the TabStop is True, the control is in the tab order. If TabStop is False, th
         <short>
           <var>BroadCast</var> - send 
           
+          
+          
+          
           <var>ToAllMessage</var> to all recipients</short>
         <descr/>
         <errors/>
@@ -11293,6 +11716,9 @@ If the TabStop is True, the control is in the tab order. If TabStop is False, th
         <short>
           <var>NotifyControls</var> - send 
           
+          
+          
+          
           <var>Msg </var>(a message) to all controls</short>
         <descr/>
         <errors/>
@@ -11306,6 +11732,9 @@ If the TabStop is True, the control is in the tab order. If TabStop is False, th
       <element name="TWinControl.DefaultHandler">
         <short>
           <var>DefaultHandler</var> - performs 
+          
+          
+          
           <var>CallDefaultWndHandler</var>
         </short>
         <descr/>
@@ -11562,7 +11991,13 @@ need the ability to accept keyboard input or contain other controls. </p>
             <var>TGraphicControl</var>
  provides a 
             
+            
+            
+            
             <var>Canvas</var> property for access to the control's drawing surface and a virtual 
+            
+            
+            
             
             <var>Paint</var> method called in response to paint requests received by the parent control.</p>
         </descr>
@@ -11602,15 +12037,33 @@ need the ability to accept keyboard input or contain other controls. </p>
       <element name="TGraphicControl.Create">
         <short>
           <var>Create</var> - constructor for 
+          
+          
+          
           <var>TGraphicControl</var>: performs inherited 
+          
+          
+          
           <var>Create</var> then creates local 
+          
+          
+          
           <var>Canvas</var>
         </short>
         <descr>
           <p>
             <var>Create</var> - constructor for 
+            
+            
+            
             <var>TGraphicControl</var>: performs inherited 
+            
+            
+            
             <var>Create</var> then creates local 
+            
+            
+            
             <var>Canvas</var>
           </p>
           <p>Overrides ancestor and may be overridden</p>
@@ -11627,13 +12080,25 @@ need the ability to accept keyboard input or contain other controls. </p>
       <element name="TGraphicControl.Destroy">
         <short>
           <var>Destroy</var> - destructor for 
+          
+          
+          
           <var>TGraphicControl</var>: frees local canvas and performs inherited 
+          
+          
+          
           <var>Destroy</var>
         </short>
         <descr>
           <p>
             <var>Destroy</var> - destructor for 
+            
+            
+            
             <var>TGraphicControl</var>: frees local canvas and performs inherited 
+            
+            
+            
             <var>Destroy</var>
           </p>
           <p>Overrides ancestor destructors, and may be overridden</p>
@@ -11718,9 +12183,21 @@ descendants to do the actual painting
       <element name="TCustomControl.Create">
         <short>
           <var>Create</var> - constructor for 
+          
+          
+          
           <var>TCustomControl</var>: performs inherited 
+          
+          
+          
           <var>Create</var>, then creates local 
+          
+          
+          
           <var>Canvas</var> and sets 
+          
+          
+          
           <var>DoubleBuffered</var> to be False</short>
         <seealso>
           <link id="#LCL.Controls.TControl.Create">TControl.Create</link>
@@ -11735,15 +12212,33 @@ descendants to do the actual painting
       <element name="TCustomControl.Destroy">
         <short>
           <var>Destroy</var> - destructor for 
+          
+          
+          
           <var>TCustomControl</var>: frees local 
+          
+          
+          
           <var>Canvas</var> then performs inherited 
+          
+          
+          
           <var>Destroy</var>
         </short>
         <descr>
           <p>
             <var>Destroy</var> - destructor for 
+            
+            
+            
             <var>TCustomControl</var>: frees local 
+            
+            
+            
             <var>Canvas</var> then performs inherited 
+            
+            
+            
             <var>Destroy</var>
           </p>
           <p>Overrides ancestor destructors, may be overridden</p>
@@ -11845,6 +12340,9 @@ and that description should be read to understand their definitions more fully.
       <element name="TDockZone">
         <short>
           <var>TDockZone</var> is a node in the 
+          
+          
+          
           <var>TDockTree</var> and encapsulates a region into which  other zones or a single control are contained.</short>
         <descr>This is an ancestor class for <var>TDockTree</var>, in the sense that it forms the elementary component of which the tree is constructed
 </descr>
@@ -11967,6 +12465,9 @@ and that description should be read to understand their definitions more fully.
       <element name="TDockZone.GetVisible">
         <short>
           <var>GetVisible</var> - returns the 
+          
+          
+          
           <var>Visible</var> status</short>
         <descr/>
         <errors/>
@@ -12050,18 +12551,42 @@ and that description should be read to understand their definitions more fully.
         <descr>
           <p>
             <var>Create</var> - constructor for 
+            
+            
+            
             <var>TDockZone</var>: sets local variables to show the 
+            
+            
+            
             <var>Tree</var> to which the zone belongs and the 
+            
+            
+            
             <var>ChildControl</var> which it contains, sets default bounds and then performs inherited 
+            
+            
+            
             <var>Create</var>
           </p>
           <p>Overrides ancestor constructors, and may be overridden</p>
         </descr>
         <short>
           <var>Create</var> - constructor for 
+          
+          
+          
           <var>TDockZone</var>: sets local variables to show the 
+          
+          
+          
           <var>Tree</var> and the 
+          
+          
+          
           <var>ChildControl</var>, sets default bounds and then performs inherited 
+          
+          
+          
           <var>Create</var>
         </short>
         <seealso>
@@ -12211,6 +12736,9 @@ and that description should be read to understand their definitions more fully.
       <element name="TDockZoneClass">
         <short>
           <var>TDockZoneClass</var> - class of 
+          
+          
+          
           <var>TDockZone</var>
         </short>
         <descr/>
@@ -12230,6 +12758,9 @@ and that description should be read to understand their definitions more fully.
       <element name="TDockTreeClass">
         <short>
           <var>TDockTreeClass</var> - class of 
+          
+          
+          
           <var>TDockTree</var>
         </short>
         <descr/>
@@ -12253,13 +12784,14 @@ and that description should be read to understand their definitions more fully.
       </element>
       <!-- object Visibility: default -->
       <element name="TDockTree">
-        <short>
-          <var>TDockTree</var> - A tree of dock zones - every docked window has one tree</short>
-        <descr>
-          <pre>TDockTree - a tree of TDockZones - Every docked window has one tree
+        <short>A docking manager for tree-style layouts</short>
+        <descr>A tree-style layout is organized in layers of a specific (horizontal or vertical) orientation. Every node in the tree is either a container for other nodes, or represents a zone with a single docked control. All child zones of an node have the same DockOrientation.
 
-  
-    This is an abstract class. The real implementation is in ldocktree.pas.
+The following documentation is copied from the Controls unit. It is of historical interest only, since it effectively describes the AnchorDocking, implemented in TCustomAnchoredDockManager. AnchorDocking is not related to visual drag-dock procedures, it merely is an attempt to implement just an layout manager.
+
+Both the TLazDockTree and TCustomAnchoredDockManager implementation never was finished, due to problems with the anchor "docking" mechanism.
+
+<pre>This is an abstract class. A real implementation is e.g. in ldocktree.pas.
 
     Docking means here: Combining several windows to one. A window can here be
     a TCustomForm or a floating control (undocked) or a TDockForm.
@@ -12414,8 +12946,10 @@ and that description should be read to understand their definitions more fully.
       <!-- procedure Visibility: protected -->
       <element name="TDockTree.AdjustDockRect">
         <short>
-          <var>AdjustDockRect</var> - adjust the position of the docking rectangle for the nominated control</short>
-        <descr/>
+          <var>AdjustDockRect</var> - adjust the docking rectangle for AControl</short>
+        <descr>ARect initially describes the dockzone into which the control is docked. From that area the zone decoration is excluded, so that ARect describes the area reserved for the docked control.
+
+AdjustDockRect is not part of the general docking model. It can implemented and used for any purpose in a dock tree manager. Most docking managers will replace it by a method with more arguments, that allow to identify the zone and its properties immediately.</descr>
         <errors/>
         <seealso/>
       </element>
@@ -12472,11 +13006,21 @@ and that description should be read to understand their definitions more fully.
         <short/>
       </element>
       <!-- procedure Visibility: protected -->
-      <element link="#LCL.Controls.TDockManager.InsertControl" name="TDockTree.InsertControl">
-        <short/>
-        <descr/>
+      <element name="TDockTree.InsertControl">
+        <short>
+          <var>InsertControl</var> - position <var>DropCtl</var> relative <var>Control</var>, using the alignment specified by <var>InsertAt</var>
+        </short>
+        <descr>InsertControl determines the layout and appearance of the just docked control, forcing a repaint of the container control if necessary.
+
+When SetReplacingControl has been called with a non-Nil Control before, the dropped control only should replace that control.
+
+A tree docking manager organizes the docksite into layers of horizontol or vertical orientation. As long as no more than one control is docked into a docksite, the tree has no orientation at all. The second docked control determines the orientation of the docksite and the dock tree. All further drops are either isogonal (in direction of the zone orientation) or orthogonal (opposite to the zone orientation). On an isogonal drop a new leaf zone is created for the dropped control, as a sibling of the already existing child zones. On an orthogonal drop the zone containing the DropControl becomes the root of another subtree, whose initial members are the leaf zones for Control and DropCtl.
+
+One value of InsertAt (alCustom) is reserved for notebook docking, where DropCtl is replaced by a tabbed notebook, and Control and DropCtl are moved into pages of the notebook. The notebook is a docksite of its own, further drops into the notebook are handled by the notebook itself, the DockManager of the host docksite is not involved.</descr>
         <errors/>
-        <seealso/>
+        <seealso>
+          <link id="TDockManager.RemoveControl"/>
+        </seealso>
       </element>
       <!-- argument Visibility: default -->
       <element name="TDockTree.InsertControl.AControl">
@@ -12607,18 +13151,48 @@ and that description should be read to understand their definitions more fully.
       <element name="TDockTree.Create">
         <short>
           <var>Create</var> - constructor for 
+          
+          
+          
           <var>TDockTree</var>: sets up the 
+          
+          
+          
           <var>DockSite</var>, performs inherited 
+          
+          
+          
           <var>Create</var> and sets default 
+          
+          
+          
           <var>BorderWidth</var>, creates the 
+          
+          
+          
           <var>RootZone</var> for the Tree</short>
         <descr>
           <p>
             <var>Create</var> - constructor for 
+            
+            
+            
             <var>TDockTree</var>: sets up the 
+            
+            
+            
             <var>DockSite</var>, performs inherited 
+            
+            
+            
             <var>Create</var> and sets default 
+            
+            
+            
             <var>BorderWidth</var>, creates the 
+            
+            
+            
             <var>RootZone</var> for the Tree</p>
           <p>Overrides ancestor constructors, may be overridden</p>
         </descr>
@@ -12634,15 +13208,33 @@ and that description should be read to understand their definitions more fully.
       <element name="TDockTree.Destroy">
         <short>
           <var>Destroy</var> - destructor for 
+          
+          
+          
           <var>TDockTree</var>: deletes the 
+          
+          
+          
           <var>RootZone</var> then performs inherited 
+          
+          
+          
           <var>Destroy</var>
         </short>
         <descr>
           <p>
             <var>Destroy</var> - destructor for 
+            
+            
+            
             <var>TDockTree</var>: deletes the 
+            
+            
+            
             <var>RootZone</var> then performs inherited 
+            
+            
+            
             <var>Destroy</var>
           </p>
           <p>Overrides ancestor destructors, and may be overridden</p>
@@ -12742,7 +13334,13 @@ and that description should be read to understand their definitions more fully.
       <element name="TMouse.Create">
         <short>
           <var>Create</var> - constructor for 
+          
+          
+          
           <var>TMouse</var>: calls inherited 
+          
+          
+          
           <var>Create</var>
         </short>
         <seealso>
@@ -12755,7 +13353,13 @@ and that description should be read to understand their definitions more fully.
 </descr>
         <short>
           <var>Destroy</var> - destructor for 
+          
+          
+          
           <var>TMouse</var>: calls inherited 
+          
+          
+          
           <var>Destroy</var>
         </short>
         <seealso>
@@ -13589,7 +14193,13 @@ and that description should be read to understand their definitions more fully.
       <element name="TDragObject.Create">
         <short>
           <var>Create</var> - constructor fro 
+          
+          
+          
           <var>TDragObject</var>: copies 
+          
+          
+          
           <var>AControl</var> to local variable</short>
         <descr/>
         <errors/>
@@ -13781,8 +14391,17 @@ and that description should be read to understand their definitions more fully.
       <element name="TDragManager.Create">
         <short>
           <var>Create</var> - constructor for 
+          
+          
+          
           <var>TDragManager</var>: calls inherited 
+          
+          
+          
           <var>Create</var> and sets default drag threshold; sets 
+          
+          
+          
           <var>DragImmediate</var> True</short>
         <descr/>
         <errors/>
@@ -14053,7 +14672,13 @@ and that description should be read to understand their definitions more fully.
       <element name="TAnchorSide.Destroy">
         <short>
           <var>Destroy</var> - destructor for 
+          
+          
+          
           <var>TAnchorSide</var>: removes all anchoring links then calls inherited 
+          
+          
+          
           <var>Destroy</var>
         </short>
         <descr/>
@@ -14207,11 +14832,11 @@ and that description should be read to understand their definitions more fully.
       </element>
       <!-- procedure Visibility: protected -->
       <element name="TControl.BeginAutoSizing">
-        <short>Procedure for the beginning of the autosizing process</short>
+        <short>Sets AutoSizing=true, used to prevent loops.</short>
       </element>
       <!-- procedure Visibility: protected -->
       <element name="TControl.EndAutoSizing">
-        <short>Procedure for the end of the autosizing process</short>
+        <short>End the autosizing process, reset AutoSizing to False.</short>
       </element>
       <!-- procedure Visibility: protected -->
       <element name="TControl.ForeignAnchorSideChanged">
@@ -14354,6 +14979,9 @@ and that description should be read to understand their definitions more fully.
         <short>
           <var>UpdateMouseCursor</var> - ensure co-ordinates 
           
+          
+          
+          
           <var>X, Y </var> for the cursor are correctly stored</short>
         <descr/>
         <errors/>
@@ -14410,6 +15038,9 @@ and that description should be read to understand their definitions more fully.
       <element name="TControl.VisibleChanged">
         <short>
           <var>VisibleChanged</var> - method to use when the 
+          
+          
+          
           <var>Visible</var> property has changed</short>
         <descr/>
         <errors/>
@@ -14596,7 +15227,8 @@ and that description should be read to understand their definitions more fully.
       </element>
       <!-- property Visibility: public -->
       <element name="TControl.BaseBounds">
-        <short>The rectangle defining the base bounds for this control</short>
+        <short>The rectangle defining <b>what?</b>
+        </short>
       </element>
       <!-- property Visibility: public -->
       <element name="TControl.ReadBounds">
@@ -14695,6 +15327,9 @@ and that description should be read to understand their definitions more fully.
       <element name="TControl.AddHandlerOnVisibleChanging">
         <short>
           <var>AddHandlerOnVisibleChanging</var> - method for adding a handler for the 
+          
+          
+          
           <var>OnVisibleChanging</var> event</short>
         <descr/>
         <errors/>
@@ -14712,6 +15347,9 @@ and that description should be read to understand their definitions more fully.
       <element name="TControl.RemoveHandlerOnVisibleChanging">
         <short>
           <var>RemoveHandlerOnVisibleChanging</var> - method to remove a handler for the 
+          
+          
+          
           <var>OnVisibleChanging</var> event</short>
         <descr/>
         <errors/>
@@ -14725,6 +15363,9 @@ and that description should be read to understand their definitions more fully.
       <element name="TControl.AddHandlerOnVisibleChanged">
         <short>
           <var>AddHandlerOnVisibleChanged</var> - method for adding a handler for the 
+          
+          
+          
           <var>OnVisibleChanged</var> event</short>
         <descr/>
         <errors/>
@@ -14742,6 +15383,9 @@ and that description should be read to understand their definitions more fully.
       <element name="TControl.RemoveHandlerOnVisibleChanged">
         <short>
           <var>RemoveHandlerOnVisibleChanged</var> - method to remove handler for the 
+          
+          
+          
           <var>OnVisibleChanged</var> event</short>
         <descr/>
         <errors/>
@@ -15111,7 +15755,10 @@ and that description should be read to understand their definitions more fully.
       <!-- function Visibility: protected -->
       <element name="TWinControl.DoDockClientMsg">
         <short>
-          <var>DoDockClientMsg</var> - handles dmDragDock message for a specified <var>DragDockObject</var> at a given position; returns True if successful</short>
+          <var>DoDockClientMsg</var> - handles dmDragDock message for a specified 
+          
+          
+          <var>DragDockObject</var> at a given position; returns True if successful</short>
         <descr>Called when a control is dropped for docking.
 Asks the dropped control to Dock itself into this control (adjust HostDockSite etc.)
 Calls an installed DockManager to adjust the coordinates of the docked control.
@@ -15133,11 +15780,12 @@ The Result is always True (unless overridden).</descr>
       </element>
       <!-- function Visibility: protected -->
       <element name="TWinControl.DoUndockClientMsg">
-        <short>
-          <var>DoUndockClientMsg</var> - notifies DockManager of undock of a client control; always returns True.</short>
+        <short>Notifies the DockManager of the undock of a client control; always returns True.</short>
         <descr/>
         <errors/>
-        <seealso/>
+        <seealso>
+          <link id="TDockManager.RemoveControl"/>
+        </seealso>
       </element>
       <!-- function result Visibility: default -->
       <element name="TWinControl.DoUndockClientMsg.Result">
@@ -15163,6 +15811,9 @@ The Result is always True (unless overridden).</descr>
       <element name="TWinControl.RealizeBoundsRecursive">
         <short>
           <var>RealizeBoundsRecursive</var> - perform 
+          
+          
+          
           <var>RealizeBounds</var> in a recursive manner</short>
         <descr/>
         <errors/>
@@ -15176,6 +15827,9 @@ The Result is always True (unless overridden).</descr>
       <element name="TWinControl.CMBiDiModeChanged">
         <short>
           <var>CMBiDiModeChanged</var> - control message for a change in the 
+          
+          
+          
           <var>BiDiMode</var> property</short>
         <descr/>
         <errors/>
@@ -15252,6 +15906,9 @@ The Result is always True (unless overridden).</descr>
       <element name="TWinControl.FormEndUpdated">
         <short>
           <var>FormEndUpdated</var> - calls inherited 
+          
+          
+          
           <var>FormEndUpdated</var> then informs each child control</short>
         <descr/>
         <errors/>
@@ -15514,7 +16171,13 @@ The Result is always True (unless overridden).</descr>
       <element name="TDockZone.ReplaceChild">
         <short>
           <var>ReplaceChild</var> - replace the 
+          
+          
+          
           <var>OldChild</var> zone with the 
+          
+          
+          
           <var>NewChild</var>
         </short>
         <descr/>
@@ -15826,7 +16489,8 @@ The Result is always True (unless overridden).</descr>
       </element>
       <element name="TDockManager.AutoFreeByControl">
         <short>
-          <var>AutoFreeByControl</var> - returns True if an object has been automatically freed by a control</short>
+          <var>AutoFreeByControl</var> - True if the DockManager should be freed together with the docksite</short>
+        <descr>This is a Lazarus specific extension of the Delphi TDockManager. It allows multiple docksites to share the same DockManager instance. If False (default), the DockManager is destroyed when its associated docksite is destroyed.</descr>
       </element>
       <element name="TControl.WMMouseWheel">
         <short>Protected message to system - when mouse wheel moves</short>
@@ -15847,6 +16511,9 @@ The Result is always True (unless overridden).</descr>
       <element name="TControl.CreateControlBorderSpacing">
         <short>
           <var>CreateControlBorderSpacing</var> - calls 
+          
+          
+          
           <var>TControlBorderSpacing.Create</var> to create the border spacing for this control</short>
         <seealso>
           <link id="TControlBorderSpacing.Create">TControlBorderSpacing.Create</link>
@@ -15861,16 +16528,25 @@ The Result is always True (unless overridden).</descr>
       <element name="TWinControl.CustomAlignInsertBefore">
         <short>
           <var>CustomAlignInsertBefore</var> - returns True if the 
+          
+          
+          
           <var>OnAlignInsertBefore</var> event handler has been assigned and executes successfully</short>
       </element>
       <element name="TWinControl.CustomAlignPosition">
         <short>
           <var>CustomAlignPosition</var> calls the 
+          
+          
+          
           <var>OnAlignPosition</var> event handler to make a highly specified alignment</short>
       </element>
       <element name="TWinControl.CMBorderChanged">
         <short>
           <var>CMBorderChanged</var> - ControlMessage for a change in the 
+          
+          
+          
           <var>Border</var> property</short>
       </element>
       <element name="TWinControl.OnAlignInsertBefore">
@@ -15928,7 +16604,10 @@ The Result is always True (unless overridden).</descr>
           <p>During handle creation not all interfaces can create complete Device Contexts which are needed to calculate things like text size.</p>
           <p>That's why you should always call <link id="#lcl.Controls.TControl.AdjustSize">AdjustSize</link> instead of <var>DoAutoSize</var>.</p>
           <p>
-            <var>TControl.AdjustSize</var> calls <var>DoAutoSize</var> in a smart fashion.</p>
+            <var>TControl.AdjustSize</var> calls 
+            
+            
+            <var>DoAutoSize</var> in a smart fashion.</p>
           <p>During loading and handle creation the calls are delayed.</p>
           <p>This method initially does the same as <link id="#lcl.Controls.TWinControl.DoAutoSize">TWinControl.DoAutoSize</link>.  But since <var>DoAutoSize</var> is commonly overriden by descendant components,  it is not useful to perform all tests, which can result in too much overhead. To reduce this the LCL calls <var>AdjustSize</var> instead.</p>
           <p>When setting <var>AutoSize</var> = true the LCL autosizes the control in width and height. This is one of the most complex parts of the LCL, because the result depends on nearly a hundred properties. Let's start simple:</p>
@@ -16152,6 +16831,41 @@ Return True if ADockObject.DropAlign has been determined.
         <short>Determine the target control within the target DockSite.</short>
         <descr>Do nothing (return Nil) unless a DockManager is installed in the target site and something has already been docked.
 </descr>
+      </element>
+      <topic name="Control coordinates">
+        <short>The coordinates of a control can be specified or retrieved in various ways.</short>
+        <descr>Every control has an origin (Top, Left) and extent (Width, Hight). The origin is relative to its Parent control (client coordinates), or for floating controls (forms) with Parent=Nil relative to the screen.
+
+The BoundsRect describes the TopLeft and BottomRight coordinates of the control, relative to its Parent.
+
+The BoundsRectForNewParent holds the new coordinates, to be used when the Parent of the control is changed later.
+
+The ClientRect describes the internal (client) area of a container control (TWinControl), excluding borders. Its Top and Left are always zero. In a TScrollingWinControl...(?)
+
+BaseBounds is what?
+
+GetControlOrigin returns the screen coordinates of the control. These values are not always in sync with the true screen position, managed by the widgetset.
+
+ScreenToClient returns the client coordinates of screen coordinates, i.e. the coordinates relative to the control's origin.</descr>
+      </topic>
+      <element name="DefaultDockManagerClass">
+        <short>The default class used to create an DockManager.</short>
+        <descr>Used to create an DockManager object in CreateDockManager.</descr>
+        <seealso>
+          <link id="TWinControl.CreateDockManager"/>
+        </seealso>
+      </element>
+      <element name="TDockManager.Create">
+        <short>Creates an DockManager for ADockSite</short>
+      </element>
+      <element name="TDockManager.MessageHandler">
+        <short>Handles the messages sent to a docksite</short>
+        <descr>This handler must handle all mouse messages, related to the client area of the docksite that is not covered by docked controls (dock headers...).
+
+Handling mouse messages while dragging is not required. Painting of the docksite has to be implemented in PaintSite.</descr>
+        <seealso>
+          <link id="TDockManager.PaintSite"/>
+        </seealso>
       </element>
     </module>
     <!-- Controls -->
