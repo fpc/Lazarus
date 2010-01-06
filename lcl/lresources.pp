@@ -137,7 +137,7 @@ type
       var CompClassName, CompName: String); override;
     function BeginProperty: String; override;
 
-    procedure Read(var Buf; Count: LongInt); {$IFNDEF VER2_0}override;{$ENDIF}
+    procedure Read(var Buf; Count: LongInt); override;
     procedure ReadBinary(const DestData: TMemoryStream); override;
     function ReadFloat: Extended; override;
     function ReadSingle: Single; override;
@@ -250,7 +250,7 @@ type
     procedure EndProperty; override;
     function GetStackPath(Root: TComponent): string;
 
-    procedure Write(const Buffer; Count: Longint); {$IFNDEF VER2_0}override;{$ENDIF}
+    procedure Write(const Buffer; Count: Longint); override;
     procedure WriteBinary(const Buffer; Count: LongInt); override;
     procedure WriteBoolean(Value: Boolean); override;
     procedure WriteFloat(const Value: Extended); override;

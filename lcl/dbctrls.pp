@@ -1326,9 +1326,7 @@ begin
   RegisterComponents('Data Controls',[TDBNavigator,TDBText,TDBEdit,TDBMemo,
     TDBImage,TDBListBox,TDBLookupListBox,TDBComboBox,TDBLookupComboBox,
     TDBCheckBox, TDBRadioGroup, TDBCalendar,TDBGroupBox]);
-  {$IFNDEF VER2_0}
   RegFields(DefaultFieldClasses);
-  {$ENDIF}
 end;
 
 

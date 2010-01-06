@@ -2186,17 +2186,10 @@ function TWin32WidgetSet.GetWindowLong(Handle: HWND; Int: Integer): PtrInt;
 begin
   //TODO:Started but not finished
   Assert(False, Format('Trace:> [TWin32WidgetSet.GETWINDOWLONG] HWND: 0x%x, int: 0x%x (%d)', [Handle, int, int]));
-{$ifdef ver2_0}
-  if UnicodeEnabledOS then
-    Result := Windows.GetWindowLongW(Handle, int)
-  else
-    Result := Windows.GetWindowLong(Handle, int);
-{$else}
   if UnicodeEnabledOS then
     Result := Windows.GetWindowLongPtrW(Handle, int)
   else
     Result := Windows.GetWindowLongPtr(Handle, int);
-{$endif}
   Assert(False, Format('Trace:< [TWin32WidgetSet.GETWINDOWLONG] HWND: 0x%x, int: 0x%x (%d) --> 0x%x (%d)', [Handle, int, int, Result, Result]));
 end;
 
@@ -3296,17 +3289,10 @@ function TWin32WidgetSet.SetWindowLong(Handle: HWND; Idx: Integer; NewLong: PtrI
 begin
   //TODO: Finish this;
   Assert(False, Format('Trace:> [TWin32WidgetSet.SetWindowLong] HWND: 0x%x, Idx: 0x%x(%d), Value: 0x%x(%d)', [Handle, Idx, Idx, NewLong, NewLong]));
-{$ifdef ver2_0}
-  if UnicodeEnabledOS then
-    Result := Windows.SetWindowLongW(Handle, Idx, NewLong)
-  else
-    Result := Windows.SetWindowLong(Handle, Idx, NewLong);
-{$else}
   if UnicodeEnabledOS then
     Result := Windows.SetWindowLongPtrW(Handle, Idx, NewLong)
   else
      Result := Windows.SetWindowLongPtr(Handle, Idx, NewLong);
-{$endif}
   Assert(False, Format('Trace:< [TWin32WidgetSet.SetWindowLong] HWND: 0x%x, Idx: 0x%x(%d), Value: 0x%x(%d) --> 0x%x(%d)', [Handle, Idx, Idx, NewLong, NewLong, Result, Result]));
 end;
 

@@ -334,7 +334,6 @@ begin
   end;
 end;
 
-{$ifndef ver2_0}
 function Translate (Name,Value : AnsiString; Hash : Longint; arg:pointer) : AnsiString;
 var
   po: TPOFile;
@@ -346,7 +345,6 @@ begin
   if result<>'' then
     result:=UTF8ToSystemCharSet(result);
 end;
-{$endif ver2_0}
 
 function TranslateUnitResourceStrings(const ResUnitName, AFilename: string
   ): boolean;
@@ -365,44 +363,12 @@ begin
   end;
 end;
 
-function TranslateUnitResourceStrings(const ResUnitName: string; po: TPOFile
-  ): boolean;
-{$ifdef ver2_0}
-var
-  TableID, StringID, TableCount: Integer;
-  s: String;
-  DefValue: String;
-{$endif ver2_0}
+function TranslateUnitResourceStrings(const ResUnitName: string; po: TPOFile): boolean;
 begin
   Result:=false;
   try
-{$ifdef ver2_0}
-    for TableID:=0 to ResourceStringTableCount - 1 do begin
-      TableCount := ResourceStringCount(TableID);
-
-      // check if this table belongs to the ResUnitName
-      if TableCount=0 then continue;
-      s:=GetResourceStringName(TableID,0);
-      if CompareText(ResUnitName+'.',LeftStr(s,length(ResUnitName)+1))<>0
-      then continue;
-      
-      // translate all resource strings of the unit
-      for StringID := 0 to TableCount - 1 do begin
-        DefValue:=GetResourceStringDefaultValue(TableID,StringID);
-        // get UTF8 string
-        s := po.Translate(GetResourceStringName(TableID,StringID),DefValue);
-
-        if Length(s) > 0 then begin
-          // convert UTF8 to current local
-          s:=UTF8ToSystemCharSet(s);
-          SetResourceStringValue(TableID,StringID,s);
-        end;
-      end;
-    end;
-{$else ver2_0}
     SetUnitResourceStrings(ResUnitName,@Translate,po);
-{$endif ver2_0}
-  Result:=true;
+    Result:=true;
   except
     on e: Exception do begin
       {$IFNDEF DisableChecks}
