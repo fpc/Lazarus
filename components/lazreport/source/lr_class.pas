@@ -7893,12 +7893,8 @@ procedure TfrReport.LoadFromXMLFile(const Fname: String);
 var
   XML: TLrXMLConfig;
 begin
-  {$IFDEF ver2_0_0}
-  XML := TLrXMLConfig.Create(FName);
-  {$ELSE}
   XML := TLrXMLConfig.Create(nil);
   XML.Filename := UTF8ToSys(FName);
-  {$ENDIF}
   try
     LoadFromXML(XML, 'LazReport/');
     FileName := FName;
@@ -7955,13 +7951,9 @@ procedure TfrReport.SaveToXMLFile(const FName: String);
 var
   XML: TLrXMLConfig;
 begin
-  {$IFDEF ver2_0_0}
-  XML := TLrXMLConfig.CreateClean(FName);
-  {$ELSE}
   XML := TLrXMLConfig.Create(nil);
   XML.StartEmpty := True;
   XML.Filename := UTF8ToSys(FName);
-  {$ENDIF}
   try
     SaveToXML(XML, 'LazReport/');
     XML.Flush;

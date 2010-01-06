@@ -19,9 +19,9 @@
 {$H+}
 unit WebLazIDEIntf;
 
-{$IFNDEF VER2_0}{$IFNDEF VER2_2}
+{$IFNDEF VER2_2}
   {$DEFINE HasFastCGISupport}
-{$ENDIF VER2_0}{$ENDIF VER2_2}
+{$ENDIF VER2_2}
 
 interface
 
@@ -130,7 +130,7 @@ begin
                                THTMLSelectProducer,
                                THTMLDatasetSelectProducer,
                                THTMLEntityProducer
-                               {$IFNDEF VER2_0}{$IFNDEF VER2_2},THTMLPageProducer{$ENDIF}{$ENDIF}
+                               {$IFNDEF VER2_2},THTMLPageProducer{$ENDIF}
                                ])
 
 end;

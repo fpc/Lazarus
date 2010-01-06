@@ -30,12 +30,7 @@ interface
 uses
   Classes, SysUtils, FileUtil, LResources, Forms, Controls, Graphics, Dialogs,
   ExtCtrls, Buttons, ComCtrls, ActnList, Menus, Clipbrd, StdCtrls,
-  testdecorator,
-{$IFDEF VER2_0}
-  xmlreporter,
-{$ELSE}
-  xmltestreport,
-{$ENDIF}
+  testdecorator, xmltestreport,
   fpcunit, testregistry, SynEdit, SynHighlighterXML;
 
 
@@ -621,12 +616,8 @@ begin
     SkipUncheckedTests(testResult, TestTree.Selected);
     skipsCounter := testResult.NumberOfSkippedTests;
     testResult.AddListener(self);
-    {$IFDEF VER2_0}
-    w := TXMLResultsWriter.Create;
-    {$ELSE}
     w := TXMLResultsWriter.Create(nil);
     w.FileName := 'null'; // prevents output to the console
-    {$ENDIF}
     testResult.AddListener(w);
 
     MemoLog('Running ' + TestTree.Selected.Text);

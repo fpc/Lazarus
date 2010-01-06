@@ -23,7 +23,7 @@ unit Laz_XMLStreaming;
 {$H+}
 
 {$DEFINE HasReadWriteBuf}
-{$IF defined(VER2_2_0) or defined(VER2_0)}
+{$IF defined(VER2_2_0)}
 {$UNDEF HasReadWriteBuf}
 {$ENDIF}
 
