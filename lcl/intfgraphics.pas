@@ -123,12 +123,6 @@ type
     FMaskReadRawImageBits: TOnReadRawImageBits;
     FMaskWriteRawImageBits: TOnWriteRawImageBits;
     FDataOwner: Boolean;
-    {$ifdef VER2_0}
-    // workaround for IE200310221 on 2.0.4
-    function GetDataDescription: TRawImageDescription;
-    function GetMaskData: PByte;
-    function GetPixelData: PByte;
-    {$endif}
     function GetMasked(x, y: integer): Boolean;
     function GetTColors(x, y: integer): TGraphicsColor;
 
@@ -261,18 +255,10 @@ type
     function  HasTransparency: boolean; virtual;
     function  HasMask: boolean; virtual;
   public
-    {$ifdef VER2_0}
-    // workaround for IE200310221 on 2.0.4
-    property PixelData: PByte read GetPixelData;
-    property MaskData: PByte read GetMaskData;
-    property DataDescription: TRawImageDescription read GetDataDescription
-                                                   write SetDataDescription;
-    {$else}
     property PixelData: PByte read FRawImage.Data;
     property MaskData: PByte read FRawImage.Mask;
     property DataDescription: TRawImageDescription read FRawImage.Description
                                                    write SetDataDescription;
-    {$endif}
     property TColors[x,y: integer]: TGraphicsColor read GetTColors write SetTColors;
     property Masked[x,y:integer]: Boolean read GetMasked write SetMasked;
   end;
@@ -3018,23 +3004,6 @@ begin
 //  CheckIndex (x,y);
   GetMask_Generic(x, y, Result);
 end;
-
-{$ifdef VER2_0}
-function TLazIntfImage.GetDataDescription: TRawImageDescription;
-begin
-  Result := FRawImage.Description;
-end;
-
-function TLazIntfImage.GetMaskData: PByte;
-begin
-  Result := FRawImage.Mask;
-end;
-
-function TLazIntfImage.GetPixelData: PByte;
-begin
-  Result := FRawImage.Data;
-end;
-{$endif}
 
 procedure TLazIntfImage.FreeData;
 begin
