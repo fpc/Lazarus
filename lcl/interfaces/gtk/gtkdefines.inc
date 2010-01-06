@@ -69,7 +69,7 @@
     {$else}
       {$define HasX}
     {$endif}
-    {$if defined(HasX) and not defined(VER2_0)}
+    {$if defined(HasX)}
       {$define HasGdk2X}
     {$endif}
   {$endif}

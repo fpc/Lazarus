@@ -26,9 +26,6 @@ unit FPCAdds;
 {$IFDEF VER2_3}
 {$DEFINE FPC_HAS_QWORDCOMPAREVALUE}
 {$ENDIF}
-{$IFNDEF VER2_0}
-{$DEFINE FPC_HAS_COMPAREVALUE}
-{$ENDIF}
 
 interface
 
@@ -78,30 +75,12 @@ end;
 
 function CompareValue(const A, B: Integer): TValueRelationship; inline;
 begin
-{$IFDEF FPC_HAS_COMPAREVALUE}
   Result := Math.CompareValue(A, B);
-{$ELSE}
-  result:=GreaterThanValue;
-  if a=b then
-    result:=EqualsValue
-  else
-   if a<b then
-     result:=LessThanValue;
-{$ENDIF}
 end;
 
 function CompareValue(const A, B: Int64): TValueRelationship; inline;
 begin
-{$IFDEF FPC_HAS_COMPAREVALUE}
   Result := Math.CompareValue(A, B);
-{$ELSE}
-  result:=GreaterThanValue;
-  if a=b then
-    result:=EqualsValue
-  else
-   if a<b then
-     result:=LessThanValue;
-{$ENDIF}
 end;
 {$ENDIF}
 

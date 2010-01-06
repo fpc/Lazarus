@@ -96,7 +96,7 @@ function pango_attr_gravity_new(gravity: TPangoGravity): PPangoAttribute; cdecl;
 
 function pango_version_check(required_major, required_minor, required_micro: integer): PChar; cdecl; external pangolib;
 
-{$if defined(VER2_0) or defined(VER2_2_0)}
+{$if defined(VER2_2_0)}
 function pango_layout_get_font_description(layout:PPangoLayout):PPangoFontDescription; cdecl; external pangolib;
 {$ifend}
 
