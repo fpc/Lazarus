@@ -7773,14 +7773,13 @@ Checks for the presence of a valid Lazarus Resource, then uses
       <!-- object Visibility: default -->
       <element name="TIcon">
         <short>
-          <var>TIcon</var>  - icons, small images typically associated with applications, controls, etc. Stored in files with .ico extension</short>
+          <var>TIcon</var>  - icons, small images typically associated with applications, controls, etc.</short>
         <descr>
-          <p>
-            <var>TIcon</var> reads and writes .ICO file format.</p>
-          <p>A .ico file typically contains several versions of the same image. </p>
-          <p>When loading, the largest/most colourful image is loaded as the <var>TBitmap</var> and so can be handled as any other bitmap. Any other versions of the images are available via the <var>Bitmaps</var> property</p>
-          <p>Writing is not (yet) implemented.</p>
+          <p>Icons can be loaded from .ICO files, or from Lazarus resources.</p>
+          <p>An icon resource typically contains several versions of the same image, in multiple resolutions and color depths. </p>
+          <p>When loading, the largest/most colourful image is loaded as the <var>Bitmap</var> property, and so can be handled as any other bitmap.</p>
         </descr>
+        <errors>Writing to icon files is not (yet) implemented.</errors>
       </element>
       <!-- variable Visibility: private -->
       <element name="TIcon.FBitmaps">

@@ -235,9 +235,9 @@
       </element>
       <!-- variable Visibility: default -->
       <element name="TRawImageDescription.BitsPerPixel">
-        <short>
-          <var>BitsPerPixel</var> - can be greater than Depth</short>
-        <descr/>
+        <short>Bits stored per pixel</short>
+        <descr>
+          <var>BitsPerPixel</var> can be greater than the logical (used) <var>Depth</var>.</descr>
         <seealso/>
       </element>
       <!-- variable Visibility: default -->

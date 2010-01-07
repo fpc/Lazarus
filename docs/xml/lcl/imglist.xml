@@ -182,31 +182,17 @@
       <element name="TCustomImageList">
         <short>
           <var>TCustomImageList</var>  - base class for <var>TImageList</var> (not the same as a <var>TBitmap</var> collection)</short>
-        <descr>
-          <p>
-            <printshort id="TCustomImageList"/>
-          </p>
-          <p>Ancestor of <var>TDragImageList</var> which is base class for <var>TImageList</var> in Unit <var>Controls</var>
-          </p>
-          <pre>Delphi's TCustomImageList is based on the Win32 imagelists which has
-    internally only one bitmap to hold all images. This reduces handle
-    allocation.
-    The original Lazarus TCustomImageList implementation was LCL only based, so for
-    other platforms the single bitmap implementation had some speed drawbacks.
-    Therefore it was implemented as a list of bitmaps, however it doesn't reduce
-    handle allocation.
-    In its current form, the imagelist is again based on a 32bit RGBA raw
-    imagedata and the widgetset is notified when images are added or removed,
-    so the widgetset can create its own optimal storage. The LCL keeps only the
-    data, so all transparency info will be stored cross platform. (not all
-    platforms have an 8bit alpha channel).
+        <descr>An ImageList contains images (bitmaps or icons) of the same Width and Height, accessible by index. The images are stored in one big (wide) bitmap, whose width is Width*Count. When an image of a different Width or Height is inserted, the previous contents of the list are discarded!
 
-    NOTE: due to its implementation, the TCustomImageList is not a TBitmap
-    collection. If a fast storage of bitmaps is needed, create your own list!
-</pre>
-          <p/>
-        </descr>
-        <errors/>
+It's okay, however, to insert an imagelist-like bitmap, that contains multiple bitmaps of the same Width and Height as used by the ImageList. This allows to insert e.g. other (compatible) ImageLists, or bitmaps for multiple states of essentially the same image (button pressed, released and disabled).
+
+Transparency is implemented in the alpha channel of the raw 32 bit RGBA imagedata array - but not all platforms support such an alpha channel. [What exactly does this mean to the user?]
+
+The painting of an image from the list is handled by the widgetset, no bitmap or icon component is involved. The widgetset can use a different internal organization of the data, optimized for immediate painting of an image.
+
+<b>NOTE:</b> A TCustomImageList is <b>not</b> a TBitmap collection.
+If a storage of distinct bitmaps is needed, create your own list of TBitMaps (array or TList).</descr>
+        <errors>Currently only the insertion of Bitmaps is supported. Other image types should be rendered as bitmaps of Width and Height, which then can be inserted.</errors>
         <seealso/>
       </element>
       <!-- variable Visibility: private -->
@@ -533,8 +519,7 @@
       </element>
       <!-- procedure Visibility: public -->
       <element name="TCustomImageList.WriteData">
-        <short>
-          <var>WriteData</var> to a stream</short>
+        <short>Writes the ImageList data into the stream</short>
         <descr/>
         <errors/>
         <seealso/>
@@ -545,8 +530,7 @@
       </element>
       <!-- procedure Visibility: public -->
       <element name="TCustomImageList.ReadData">
-        <short>
-          <var>ReadData</var> from a stream</short>
+        <short>Restores the ImageList data from the stream</short>
         <descr/>
         <errors/>
         <seealso/>
@@ -559,7 +543,10 @@
       <element name="TCustomImageList.BeginUpdate">
         <short>
           <var>BeginUpdate</var> - start updating the data</short>
-        <descr/>
+        <descr>Use together with EndUpdate to speed up the insertion of multiple images.
+
+Every BeginUpdate must be matched by an EndUpdate, i.e. update operations can be nested.
+</descr>
         <errors/>
         <seealso/>
       </element>
@@ -567,14 +554,17 @@
       <element name="TCustomImageList.EndUpdate">
         <short>
           <var>EndUpdate</var> - finish updating the data</short>
-        <descr/>
+        <descr>Decrements the internal UpdateCount and, when it reaches zero, does whatever is required to reflect the new content.
+</descr>
         <errors/>
-        <seealso/>
+        <seealso>
+          <link id="TCustomImageList.Change"/>
+        </seealso>
       </element>
       <!-- function Visibility: public -->
       <element name="TCustomImageList.Add">
         <short>
-          <var>Add</var> an Image and Mask to the list. Returns the index of the added image or -1 if unsucessful</short>
+          <var>Add</var> an Image and Mask bitmap to the list. Returns the index of the added image or -1 if unsucessful</short>
         <descr/>
         <errors/>
         <seealso/>
@@ -631,9 +621,8 @@
       </element>
       <!-- function Visibility: public -->
       <element name="TCustomImageList.AddIcon">
-        <short>
-          <var>AddIcon</var> - add an icon to the list, returning the index of the icon or -1 if not successful (not yet supported)</short>
-        <descr/>
+        <short>Adds an icon to the list (not yet!), returning the index of the icon or -1 if not successful</short>
+        <descr>Adding graphics other than bitmaps can be implemented by converting the graphics item into a bitmap, which then can be added to the image list. Most graphics classes support such a conversion, so that specialized methods are redundant.</descr>
         <errors/>
         <seealso/>
       </element>
@@ -649,7 +638,7 @@
       <element name="TCustomImageList.AddImages">
         <short>
           <var>AddImages</var> - adds images from another imagelist to the list</short>
-        <descr/>
+        <descr>Both lists must have the same image Width and Height, else the old images are discarded.</descr>
         <errors/>
         <seealso/>
       </element>
@@ -660,8 +649,12 @@
       <!-- function Visibility: public -->
       <element name="TCustomImageList.AddMasked">
         <short>
-          <var>AddMasked</var> - adds one or more bitmaps to the list. Every instance of MaskColor will be converted to transparent. Returns index of added bitmap, or -1 if unsuccessful</short>
-        <descr/>
+          <var>AddMasked</var> - adds one or more bitmaps to the list</short>
+        <descr>Every pixel of MaskColor will become transparent.
+
+Image can contain multiple images of the same Width and Height.
+
+Returns the index of the first added bitmap, or -1 if unsuccessful.</descr>
         <errors/>
         <seealso/>
       </element>
@@ -695,8 +688,8 @@
       <!-- procedure Visibility: public -->
       <element name="TCustomImageList.Change">
         <short>
-          <var>Change</var> - software method to force <var>OnChange</var> event</short>
-        <descr/>
+          <var>Change</var> - send change notifications</short>
+        <descr>Notifies all members of the ChangeLinkList, and calls the <var>OnChange</var> handler.</descr>
         <errors/>
         <seealso/>
       </element>
@@ -710,9 +703,8 @@
       </element>
       <!-- constructor Visibility: public -->
       <element name="TCustomImageList.CreateSize">
-        <short>
-          <var>CreateSize</var> - runtime constructor for image(s) with given height and width</short>
-        <descr/>
+        <short>Initialize the list for image(s) with the given height and width</short>
+        <descr>The Width and Height is reset with every insertion of a bitmap. It may be useful, however, to initialize a list for the insertion of graphics other than bitmaps, so that the images can be rendered as bitmaps of the intended width and height, before they are inserted.</descr>
         <errors/>
         <seealso/>
       </element>
@@ -726,9 +718,7 @@
       </element>
       <!-- procedure Visibility: public -->
       <element name="TCustomImageList.Delete">
-        <short>
-          <var>Delete</var> the image specified by <var>AIndex</var>
-        </short>
+        <short>Delete the specified image</short>
         <descr/>
         <errors/>
         <seealso/>
@@ -746,10 +736,8 @@
       </element>
       <!-- procedure Visibility: public -->
       <element name="TCustomImageList.Draw">
-        <short>
-          <var>Draw</var> the image specified by <var>AIndex</var> on the specified <var>canvas</var> at position <var>AX, AY</var>
-        </short>
-        <descr/>
+        <short>Paint an image</short>
+        <descr>Paints the image specified by <var>AIndex</var> on <var>Canvas</var> at position <var>AX, AY</var>.</descr>
         <errors/>
         <seealso/>
       </element>
@@ -775,8 +763,7 @@
       </element>
       <!-- procedure Visibility: public -->
       <element name="TCustomImageList.GetBitmap">
-        <short>
-          <var>GetBitmap</var> - creates a copy of the indexed image</short>
+        <short>Copies the selected image into the given bitmap</short>
         <descr/>
         <errors/>
         <seealso/>
@@ -853,8 +840,12 @@
       <!-- procedure Visibility: public -->
       <element name="TCustomImageList.Insert">
         <short>
-          <var>Insert</var> one or more bitmaps into the list at the index position.  If Mask is nil, the image has no transparent parts</short>
-        <descr/>
+          <var>Insert</var> one or more images into the list at the index position.</short>
+        <descr>The insterted bitmap can consist of multiple images, of the same width and height, which become accessible as distinct images in the ImageList.
+
+The height of the inserted images must match the ImageList height, else the ImageList content is <b>replaced</b> by the added images. The width must be a multiple of the ImageList width, so that the list always contains an integral number of images.
+
+If Mask is nil, the inserted images have no transparent parts.</descr>
         <errors/>
         <seealso/>
       </element>
@@ -888,10 +879,12 @@
       <!-- procedure Visibility: public -->
       <element name="TCustomImageList.InsertMasked">
         <short>
-          <var>InsertMasked</var> - adds one or more bitmaps to the list. Every instance of MaskColor will be converted to transparent</short>
-        <descr/>
+          <var>InsertMasked</var> - adds one or more transparent bitmaps to the list.</short>
+        <descr>MaskColor is the RGB color of the transparent pixels. Every occurence of a MaskColor pixel will be converted into a transparent pixel.</descr>
         <errors/>
-        <seealso/>
+        <seealso>
+          <link id="TCustomImageList.Insert"/>
+        </seealso>
       </element>
       <!-- argument Visibility: default -->
       <element name="TCustomImageList.InsertMasked.Index">
@@ -908,10 +901,13 @@
       <!-- procedure Visibility: public -->
       <element name="TCustomImageList.Move">
         <short>
-          <var>Move</var> an image from the <var>CurIndex </var>location to <var>NewIndex</var> location</short>
+          <var>Move</var> an image from index <var>CurIndex</var> to <var>NewIndex</var>
+        </short>
         <descr/>
         <errors/>
-        <seealso/>
+        <seealso>
+          <link id="TCustomImageList"/>
+        </seealso>
       </element>
       <!-- argument Visibility: default -->
       <element name="TCustomImageList.Move.CurIndex">
@@ -925,7 +921,7 @@
       <element name="TCustomImageList.Replace">
         <short>
           <var>Replace</var> an indexed image with the Bitmap given</short>
-        <descr/>
+        <descr>AMask can be nil, if the image has no transparent parts.</descr>
         <errors/>
         <seealso/>
       </element>
@@ -959,10 +955,12 @@
       <!-- procedure Visibility: public -->
       <element name="TCustomImageList.ReplaceMasked">
         <short>
-          <var>ReplaceMasked</var> - replaces the indexed image with the image given. Every instance of MaskColor will be converted to transparent</short>
-        <descr/>
+          <var>ReplaceMasked</var> - replaces the indexed image with the image given.</short>
+        <descr>Every instance of MaskColor will be converted to transparent</descr>
         <errors/>
-        <seealso/>
+        <seealso>
+          <link id="TCustomImageList.InsertMasked"/>
+        </seealso>
       </element>
       <!-- argument Visibility: default -->
       <element name="TCustomImageList.ReplaceMasked.Index">
@@ -1131,6 +1129,14 @@
           <var>StretchDraw</var> - draw the image to fill the canvas</short>
       </element>
       <element name="TCustomImageList.WSRegisterClass" link="#LCL.LCLClasses.TLCLComponent.WSRegisterClass"/>
+      <element name="TCustomImageList.InternalInsert"/>
+      <element name="TCustomImageList.Equals">
+        <short>Check for equivalence with another ImageList</short>
+        <descr>This is an expensive operation, since both imagelists are written into memory streams, which then are compared bytewise.</descr>
+      </element>
+      <element name="TCustomImageList.GetFullRawImage">
+        <short>Copies the image description and the data pointer</short>
+      </element>
     </module>
     <!-- ImgList -->
   </package>

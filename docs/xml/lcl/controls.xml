@@ -1072,7 +1072,19 @@ mrLast=mrYesToAll=10</descr>
       <element name="TDragImageList">
         <short>
           <var>TDragImageList</var> - a list of Images to be dragged</short>
-        <descr/>
+        <descr>A drag image is shown when a DragImageList is supplied at all, <b>and</b> when no accepting target is under the mouse, or the source control style includes csDisplayDragImage, or AlwaysShowDragImage is set in the DragObject.
+
+In drag-dock operations typically no drag image is shown, since the DockRect frame already gives all required visual feedback.
+
+This is a vague idea of the usage of this class:
+
+SetDragImage selects an image from the list, and establishes an hotspot (of the image)
+
+DragLock specifies a window (handle), to which the image should be attached (what exactly does this mean?)
+
+ShowDragImage shows the image, combined with the mouse cursor. The HotSpot indicates the shift of the image, relative to the current mouse position.
+
+HideDragImage hides the image, shown at its last position.</descr>
         <errors/>
         <seealso/>
       </element>
@@ -1483,8 +1495,18 @@ All messages are sent to the target control, except dmDragDrop and dmDragCancel 
       </element>
       <!-- object Visibility: default -->
       <element name="TDragObject">
-        <short>
-          <var>TDragObject</var> - the base class for many objects that are designed to be dragged and dropped</short>
+        <short>Base class for managing drag operations and feedback</short>
+        <descr>Every dragging operation has an associated DragObject, holding references to the source and target controls, and other parameters for the customization of the visual user feedback.
+
+A default DragObject is created automatically when a dragging operation starts, and is destroyed when the operation has ended, so that you must not take special care on it. But an application can provide a customized DragObject in the <link id="TControl.OnStartDrag"/> or <link id="TControl.OnStartDock"/> an OnStartDrag handler of the source control (being dragged).
+
+TDragObject is the ancestor of an whole tree of dragging objects, with the main branches supporting either drag-drop or dock-drop operations. The type of the operation is determined from the <link id="TControl.DragKind"/> property of the source control. In contrast to the Delphi implementation, Lazarus has moved a couple of methods into the drag performers, so that these are no more available for customization.
+
+A Lazarus DragObject mainly supplies the cursor and images, used in visual user feedback. Drag-drop operations typically signal acceptance of an possible drop by variations of the mouse cursor, and optionally can attach to it shapes of the dragged object(s). Dock-drop operations instead show a docking rectangle, that snaps to possible target locations when the mouse moves over docksites.</descr>
+        <seealso>
+          <link id="TDragControlObject"/>
+          <link id="TDragDockObject"/>
+        </seealso>
       </element>
       <!-- variable Visibility: private -->
       <element name="TDragObject.FDragTarget">
@@ -1567,8 +1589,8 @@ All messages are sent to the target control, except dmDragDrop and dmDragCancel 
       <!-- function Visibility: protected -->
       <element name="TDragObject.GetDragCursor">
         <short>
-          <var>GetDragCursor</var> - returns the cursor for use during dragging</short>
-        <descr/>
+          <var>GetDragCursor</var> - returns the current cursor type while dragging</short>
+        <descr>In drag-drop operations the cursor signals acceptance or rejection of an drop, depending on Accepted.</descr>
         <errors/>
         <seealso/>
       </element>
@@ -1592,7 +1614,7 @@ All messages are sent to the target control, except dmDragDrop and dmDragCancel 
       <element name="TDragObject.GetDragImages">
         <short>
           <var>GetDragImages</var> - returns a list of images for dragging</short>
-        <descr/>
+        <descr>The returned <link id="TDragImageList"/> provides methods for the selection and display of an image, shown while dragging.</descr>
         <errors/>
         <seealso/>
       </element>
@@ -1729,7 +1751,7 @@ All messages are sent to the target control, except dmDragDrop and dmDragCancel 
       </element>
       <!-- procedure Visibility: public -->
       <element name="TDragObject.HideDragImage">
-        <short>Procedure for hiding the drag image during movement</short>
+        <short>Hides the drag image</short>
         <seealso>
           <link id="#lcl.Controls.TDragObject.ShowDragImage">ShowDragImage</link>
         </seealso>
@@ -1744,7 +1766,7 @@ All messages are sent to the target control, except dmDragDrop and dmDragCancel 
       </element>
       <!-- procedure Visibility: public -->
       <element name="TDragObject.ShowDragImage">
-        <short>Procedure for keeping the image visible during movement</short>
+        <short>Shows the drag image</short>
         <seealso>
           <link id="#lcl.Controls.TDragObject.HideDragImage">HideDragImage</link>
         </seealso>
@@ -1771,13 +1793,13 @@ All messages are sent to the target control, except dmDragDrop and dmDragCancel 
       </element>
       <!-- property Visibility: public -->
       <element name="TDragObject.DragTarget">
-        <short>The control object to which the current object is to be dragged (target)</short>
+        <short>The control  to which the current object is dragged (target)</short>
         <descr>Reads or writes flag with identity of the target control object to which the currect object is to be dragged</descr>
       </element>
       <!-- property Visibility: public -->
       <element name="TDragObject.Dropped">
-        <short>Has the drag object been dropped yet?</short>
-        <descr>Boolean property, true if the object has been dropped; reads or writes a flag with this information</descr>
+        <short>Indicates whether the drag object has been dropped yet</short>
+        <descr>False while dragging is in progress or has been aborted.</descr>
       </element>
       <!-- property Visibility: public -->
       <element name="TDragObject.MouseDeltaX">
@@ -5717,7 +5739,7 @@ On dmDragDrop: invokes DragDrop or, if docking, the target.DockDrop. Returns not
       </element>
       <!-- procedure Visibility: protected -->
       <element name="TControl.DoEndDrag">
-        <short>End the dragging process</short>
+        <short>Invokes the OnEndDrag handler</short>
         <descr/>
         <errors/>
         <seealso/>
@@ -14108,8 +14130,7 @@ One value of InsertAt (alCustom) is reserved for notebook docking, where DropCtl
       </element>
       <!-- function Visibility: public -->
       <element name="TDragImageList.SetDragImage">
-        <short>
-          <var>SetDragImage</var> - place the indexed drag image at the specified location, returning True if successful</short>
+        <short>Determines the image to be shown</short>
         <descr/>
         <errors/>
         <seealso/>
@@ -14214,12 +14235,13 @@ One value of InsertAt (alCustom) is reserved for notebook docking, where DropCtl
       <!-- property Visibility: public -->
       <element name="TDragObject.AlwaysShowDragImages">
         <short>Should the image of dragged objects always be shown?</short>
-        <descr/>
+        <descr>This is another chance for enforcing the display of a drag image, even if a drop is acceptable.
+[where to describe the various conditions?]</descr>
         <seealso/>
       </element>
       <!-- property Visibility: public -->
       <element name="TDragObject.Control">
-        <short>The control that is to be dragged</short>
+        <short>The control that is dragged (source)</short>
         <descr/>
         <seealso/>
       </element>
@@ -16473,11 +16495,12 @@ The Result is always True (unless overridden).</descr>
       </element>
       <element name="TDragObject.AutoCreated">
         <short>
-          <var>AutoCreated</var> - if True, the drag object is automatically created</short>
+          <var>AutoCreated</var> - if True, the drag object was created automatically</short>
+        <descr>This property is of little use, more important is the AutoFree property.</descr>
       </element>
       <element name="TDragObject.EndDrag">
-        <short>
-          <var>EndDrag</var> - method for terminating drag of nominated object at specified location</short>
+        <short>Called when a dragging operation ends.</short>
+        <descr>The default implementation calls source.DoEndDrag, which in turn invokes an OnEndDrag handler.</descr>
       </element>
       <element name="TDragDockObject.DockOffset">
         <short>
@@ -16866,6 +16889,14 @@ Handling mouse messages while dragging is not required. Painting of the docksite
         <seealso>
           <link id="TDockManager.PaintSite"/>
         </seealso>
+      </element>
+      <element name="TDragObject.AutoCreate">
+        <short>Special constructor, enforcing the destruction of the object at the end of the dragging operation</short>
+        <descr>This constructor sets the AutoCreated and AutoFree flags. AutoFree is tested by the DragManager at the end of the dragging operation.</descr>
+      </element>
+      <element name="TDragObject.AutoFree">
+        <short>Indicates whether the object shall be destroyed at the end of the dragging operation</short>
+        <descr>This is a Lazarus specific property, introduced to get rid of the special Delphi TDrag...Ex classes.</descr>
       </element>
     </module>
     <!-- Controls -->
