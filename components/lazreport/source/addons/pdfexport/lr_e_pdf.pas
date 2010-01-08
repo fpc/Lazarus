@@ -19,12 +19,14 @@ unit lr_e_pdf;
 interface
 
 uses
-    SysUtils, Classes, Graphics, Forms, StdCtrls, lr_BarC,
-    lr_class, PdfDoc, PdfTypes, PdfFonts, PReport, Dialogs, Controls;
+    SysUtils, Classes, Graphics, Forms, StdCtrls, lr_class, lr_BarC,
+    lr_shape, PdfDoc, PdfTypes, PdfFonts, PReport, Dialogs, Controls;
 
 type
     TfrTNPDFExport = class(TComponent) // fake component
     end;
+
+    { TfrTNPDFExportFilter }
 
     TfrTNPDFExportFilter = class(TfrExportFilter)
     private
@@ -45,6 +47,7 @@ type
         procedure ShowFrame(View: TfrView; x, y, h, w: integer);
         procedure ShowBarCode(View: TfrBarCodeView; x, y, h, w: integer);
         procedure ShowPicture(View: TfrPictureView; x, y, h, w: integer);
+        procedure ShowShape(View: TfrShapeView; x, y, h, w: integer);
         procedure OnText(X, Y: Integer; const Text: string; View: TfrView);
             override;
         procedure OnData(x, y: Integer; View: TfrView); override;
@@ -233,6 +236,59 @@ begin
     end;
 end;
 
+procedure TfrTNPDFExportFilter.ShowShape(View: TfrShapeView; x, y, h, w: integer
+  );
+var
+  Canvas: TPDFCanvas;
+  PRRect: TPRRect;
+
+  function CreateShape(ShapeClass: TPRShapeClass): TPRShape;
+  begin
+    result := ShapeClass.Create(PRPanel);
+    result.Parent := PRPanel;
+    result.FillColor := view.FillColor;
+    result.Left := x;
+    result.Top := y;
+    result.Height := h;
+    result.Width := w;
+    result.LineStyle := TPenStyle(View.FrameStyle);
+    result.LineWidth := View.FrameWidth - 0.5;
+    result.LineColor := View.FrameColor;
+  end;
+
+begin
+  Canvas := PDF.GetPdfDoc.Canvas;
+  case View.ShapeType of
+    frstRectangle:
+      CreateShape(TPRRect);
+
+    frstEllipse:
+      CreateShape(TPREllipse);
+
+    frstTriangle:
+      with TPRPolygon(CreateShape(TPRPolygon)) do begin
+        SetLength(Points, 3);
+        Points[0] := PRPoint(x+w, y+h);
+        Points[1] := PRPoint(x, y+h);
+        Points[2] := PRPoint(x+w/2, y);
+      end;
+
+    frstDiagonal1:
+      with TPRPolygon(CreateShape(TPRPolygon)) do begin
+        SetLength(Points, 2);
+        Points[0] := PRPoint(x,y);
+        Points[1] := PRPoint(x+w,y+h);
+      end;
+
+    frstDiagonal2:
+      with TPRPolygon(CreateShape(TPRPolygon)) do begin
+        SetLength(Points, 2);
+        Points[0] := PRPoint(x,y+h);
+        Points[1] := PRPoint(x+w,y);
+      end;
+  end;
+end;
+
 procedure TfrTNPDFExportFilter.OnData(x, y: Integer; View: TfrView);
 var
     nx, ny, ndx, ndy: Integer;
@@ -242,19 +298,25 @@ begin
     ndx := Round((View.dx) * PDFEscx + 1) ;
     ndy := Round((View.dy) * PDFEscy + 1) ;
 
-    if View.FillColor <> clNone then
-        ShowBackGround(View, nx, ny, ndy, ndx);
+    if View is TfrShapeView then begin
 
-    if View is TfrBarCodeView then
-        ShowBarCode(TfrBarCodeView(View), nx, ny, ndy, ndx)
-    else if View is TfrPictureView then
-        ShowPicture(TfrPictureView(View), nx, ny, ndy, ndx);
-        //   For debugging only
-        //    else if not View is  TfrMemoView then
-        //        MessageDlg(View.ClassName, mtWarning, [mbOK], 0);
+      ShowShape(TfrShapeView(View), nx, ny, ndy, ndx);
 
-    if (View.Frames<>[]) and not (View is TfrBarCodeView) then
-       ShowFrame(View, nx, ny, ndy, ndx);
+    end else begin
+      if View.FillColor <> clNone then
+          ShowBackGround(View, nx, ny, ndy, ndx);
+
+      if View is TfrBarCodeView then
+          ShowBarCode(TfrBarCodeView(View), nx, ny, ndy, ndx)
+      else if View is TfrPictureView then
+          ShowPicture(TfrPictureView(View), nx, ny, ndy, ndx);
+          //   For debugging only
+          //    else if not View is  TfrMemoView then
+          //        MessageDlg(View.ClassName, mtWarning, [mbOK], 0);
+
+      if (View.Frames<>[]) and not (View is TfrBarCodeView) then
+         ShowFrame(View, nx, ny, ndy, ndx);
+    end;
 end;
 
 procedure TfrTNPDFExportFilter.OnText(X, Y: Integer; const Text: string;
