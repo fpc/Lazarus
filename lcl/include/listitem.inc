@@ -777,7 +777,10 @@ begin
     FDataIndex := ADataIndex;
     FCached := False;
     if Assigned(FSubItems) then FSubItems.Clear;   
-    if FDataIndex>=0 then WSUpdateState;
+    if FDataIndex>=0 then begin 
+      WSUpdateState;
+      DoCacheItem;
+    end;
   end;
 end;
 
