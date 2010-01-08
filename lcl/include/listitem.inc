@@ -777,6 +777,7 @@ begin
     FDataIndex := ADataIndex;
     FCached := False;
     if Assigned(FSubItems) then FSubItems.Clear;   
+    if FDataIndex>=0 then WSUpdateState;
   end;
 end;
 
