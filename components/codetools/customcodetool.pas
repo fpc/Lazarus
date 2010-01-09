@@ -725,8 +725,7 @@ end;
 function TCustomCodeTool.AtomIsStringConstant: boolean;
 begin
   Result:=(CurPos.StartPos<=SrcLen)
-      and ((Src[CurPos.StartPos] in ['''','#'])
-           or ((Src[CurPos.StartPos]='^') and (CurPos.EndPos-CurPos.StartPos=2)));
+      and (Src[CurPos.StartPos] in ['''','#']);
 end;
 
 function TCustomCodeTool.AtomIsCharConstant: boolean;
@@ -755,11 +754,6 @@ begin
           and (not (Src[i] in ['''','#'])) then
             Result:=true;
         end;
-      end;
-    '^':
-      begin
-        if CurPos.EndPos-CurPos.StartPos=2 then
-          Result:=true;
       end;
 
     '''':
@@ -1090,13 +1084,6 @@ begin
         inc(CurPos.EndPos);
         while (CurPos.EndPos<=SrcLen)
         and (IsHexNumberChar[Src[CurPos.EndPos]]) do
-          inc(CurPos.EndPos);
-      end;
-    '^':
-      begin
-        // dereference operator or character constant
-        inc(CurPos.EndPos);
-        if Src[CurPos.EndPos] in ['a'..'z','A'..'Z'] then
           inc(CurPos.EndPos);
       end;
     ';':

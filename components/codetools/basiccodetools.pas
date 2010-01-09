@@ -1780,13 +1780,6 @@ begin
         while (Position<=Len) and (Src[Position-1] in ['0'..'7']) do
           inc(Position);
       end;
-     '^':
-       begin
-         // dereference operator or character constant
-         inc(Position);
-         if Src[Position] in ['a'..'z','A'..'Z'] then
-           inc(Position);
-       end;
      '{':  // compiler directive
       begin
         CommentLvl:=1;

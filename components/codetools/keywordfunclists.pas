@@ -154,7 +154,7 @@ var
 
   IsSpaceChar,
   IsLineEndChar,
-  IsWordChar,
+  IsWordChar, // ['a'..'z','A'..'Z']
   IsNonWordChar,      // [#0..#127]-IsIdentChar
   IsIdentStartChar,
   IsIdentChar,

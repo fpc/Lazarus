@@ -42,7 +42,7 @@ interface
 {$I codetools.inc}
 
 { $DEFINE DisableIgnoreErrorAfter}
-{ $DEFINE VerboseGetStringConstBounds}
+{$DEFINE VerboseGetStringConstBounds}
 { $DEFINE ShowCompleteBlock}
 
 uses
@@ -3480,14 +3480,16 @@ function TStandardCodeTool.GetStringConstAsFormatString(StartPos,
           // read char constant
           inc(APos);
           if APos<EndPos then begin
-            if IsNumberChar[Src[APos]] then begin
-              // read decimal number
-              while (APos<EndPos) and IsNumberChar[Src[APos]] do
-                inc(APos);
-            end else if Src[APos]='$' then begin
-              // read hexnumber
-              while (APos<EndPos) and IsHexNumberChar[Src[APos]] do
-                inc(APos);
+            if Src[APos-1]='#' then begin
+              if IsNumberChar[Src[APos]] then begin
+                // read decimal number
+                while (APos<EndPos) and IsNumberChar[Src[APos]] do
+                  inc(APos);
+              end else if Src[APos]='$' then begin
+                // read hexnumber
+                while (APos<EndPos) and IsHexNumberChar[Src[APos]] do
+                  inc(APos);
+              end;
             end;
           end;
         until (APos>=EndPos) or (Src[APos]<>'#');
