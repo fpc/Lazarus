@@ -76,7 +76,7 @@ uses
       SQLDBLaz, DBFLaz,
     {$ENDIF}
   {$ENDIF}
-  MainBase;
+  MainBase, compiler_conditionals_options;
 
 {$I revision.inc}
 

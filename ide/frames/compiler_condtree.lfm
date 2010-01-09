@@ -1,19 +1,19 @@
-object CompOptsConditionalsFrame: TCompOptsConditionalsFrame
+object CompOptsCondTreeFrame: TCompOptsCondTreeFrame
   Left = 0
   Height = 170
   Top = 0
   Width = 385
-  ClientHeight = 166
-  ClientWidth = 381
+  ClientHeight = 170
+  ClientWidth = 385
   TabOrder = 0
   Visible = False
   DesignLeft = 449
   DesignTop = 401
   object COCTreeView: TTreeView
     Left = 0
-    Height = 166
+    Height = 170
     Top = 0
-    Width = 381
+    Width = 385
     Align = alClient
     AutoExpand = True
     DefaultItemHeight = 19

@@ -181,7 +181,7 @@ type
 
     { Conditionals }
     ConditionalPage: TPage;
-    ConditionalOptionsFrame: TCompOptsConditionalsFrame;
+    ConditionalOptionsFrame: TCompOptsCondTreeFrame;
     ConditionalsGroupBox: TGroupBox;
     BuildVarsFrame: TCompOptBuildVarsFrame;
 

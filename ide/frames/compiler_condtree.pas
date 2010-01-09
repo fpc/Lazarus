@@ -81,9 +81,9 @@ type
     property DefaultValue: string read FDefaultValue write FDefaultValue;
   end;
 
-  { TCompOptsConditionalsFrame }
+  { TCompOptsCondTreeFrame }
 
-  TCompOptsConditionalsFrame = class(TFrame)
+  TCompOptsCondTreeFrame = class(TFrame)
     COCTreeView: TTreeView;
     COCPopupMenu: TPopupMenu;
     procedure COCPopupMenuPopup(Sender: TObject);
@@ -106,49 +106,49 @@ type
 
 implementation
 
-{ TCompOptsConditionalsFrame }
+{ TCompOptsCondTreeFrame }
 
-procedure TCompOptsConditionalsFrame.COCPopupMenuPopup(Sender: TObject);
+procedure TCompOptsCondTreeFrame.COCPopupMenuPopup(Sender: TObject);
 begin
   COCPopupMenu.Items.Clear;
   Editor.FillPopupMenu(COCPopupMenu);
 end;
 
-procedure TCompOptsConditionalsFrame.COCTreeViewEdited(Sender: TObject;
+procedure TCompOptsCondTreeFrame.COCTreeViewEdited(Sender: TObject;
   Node: TTreeNode; var S: string);
 begin
   Editor.TreeViewEdited(Sender,Node,S);
 end;
 
-procedure TCompOptsConditionalsFrame.COCTreeViewEditing(Sender: TObject; 
+procedure TCompOptsCondTreeFrame.COCTreeViewEditing(Sender: TObject;
   Node: TTreeNode; var AllowEdit: Boolean);
 begin
   Editor.TreeViewEditing(Sender,Node,AllowEdit);
 end;
 
-procedure TCompOptsConditionalsFrame.SetConditionals(
+procedure TCompOptsCondTreeFrame.SetConditionals(
   const AValue: TCompOptConditionals);
 begin
   Editor.Conditionals:=AValue;
 end;
 
-procedure TCompOptsConditionalsFrame.SetAllowedValueTypes(
+procedure TCompOptsCondTreeFrame.SetAllowedValueTypes(
   const AValue: TCOCValueTypes);
 begin
   Editor.AllowedValueTypes:=AValue;
 end;
 
-function TCompOptsConditionalsFrame.GetConditionals: TCompOptConditionals;
+function TCompOptsCondTreeFrame.GetConditionals: TCompOptConditionals;
 begin
   Result:=Editor.Conditionals;
 end;
 
-function TCompOptsConditionalsFrame.GetAllowedValueTypes: TCOCValueTypes;
+function TCompOptsCondTreeFrame.GetAllowedValueTypes: TCOCValueTypes;
 begin
   Result:=Editor.AllowedValueTypes;
 end;
 
-constructor TCompOptsConditionalsFrame.Create(TheOwner: TComponent);
+constructor TCompOptsCondTreeFrame.Create(TheOwner: TComponent);
 begin
   inherited Create(TheOwner);
   FEditor:=TCompOptsExprEditor.Create(Self);

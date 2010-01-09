@@ -1,0 +1,49 @@
+object CompOptsConditionalsFrame: TCompOptsConditionalsFrame
+  Left = 0
+  Height = 411
+  Top = 0
+  Width = 499
+  ClientHeight = 411
+  ClientWidth = 499
+  TabOrder = 0
+  DesignLeft = 426
+  DesignTop = 475
+  object ConditionalsGroupBox: TGroupBox
+    Left = 0
+    Height = 200
+    Top = 0
+    Width = 499
+    Align = alTop
+    Caption = 'ConditionalsGroupBox'
+    ClientHeight = 181
+    ClientWidth = 495
+    TabOrder = 1
+    inline ConditionalsTreeFrame: TCompOptsCondTreeFrame
+      Height = 181
+      Width = 495
+      Align = alClient
+      ClientHeight = 181
+      ClientWidth = 495
+      Visible = True
+      inherited COCTreeView: TTreeView
+        Height = 181
+        Width = 495
+      end
+    end
+  end
+  object ConditionalsSplitter: TSplitter
+    Cursor = crVSplit
+    Left = 0
+    Height = 5
+    Top = 200
+    Width = 499
+    Align = alTop
+    ResizeAnchor = akTop
+  end
+    inline BuildVariablesFrame: TCompOptBuildVarsFrame
+      Left = 51
+      Top = 13
+Align = alClient
+      Visible = True
+    end
+end
