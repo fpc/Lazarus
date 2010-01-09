@@ -2,7 +2,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: \n"
 "POT-Creation-Date: \n"
-"PO-Revision-Date: 2010-01-03 18:03+0100\n"
+"PO-Revision-Date: 2010-01-09 17:11+0100\n"
 "Last-Translator: Swen Heinig <swen.heinig@freenet.de>\n"
 "Language-Team: Deutsch <lazarus@miraclec.com>\n"
 "MIME-Version: 1.0\n"
@@ -1228,7 +1228,7 @@ msgstr ""
 
 #: lazarusidestrconsts.dlgfoldxmlprocess
 msgid "Processing Instruction"
-msgstr ""
+msgstr "Verarbeite Anweisung"
 
 #: lazarusidestrconsts.dlgforecolor
 msgid "Foreground"
@@ -3592,7 +3592,7 @@ msgstr ""
 
 #: lazarusidestrconsts.lisbuildmode
 msgid "Build mode"
-msgstr ""
+msgstr "Erstellungsmodus"
 
 #: lazarusidestrconsts.lisbuildnewproject
 msgid "Build new project"
@@ -5494,15 +5494,15 @@ msgstr "Breakpoint bei %s\"%s\", Zeile %d löschen?"
 
 #: lazarusidestrconsts.lisdeletebuildmode
 msgid "Delete build mode"
-msgstr ""
+msgstr "Erstellungsmodus löschen"
 
 #: lazarusidestrconsts.lisdeletebuildmode2
 msgid "Delete build mode?"
-msgstr ""
+msgstr "Erstellungsmodus löschen?"
 
 #: lazarusidestrconsts.lisdeletebuildmode3
 msgid "Delete build mode %s%s%s?"
-msgstr ""
+msgstr "Erstellungsmodus %s%s%s löschen?"
 
 #: lazarusidestrconsts.lisdeletebuildvar
 msgid "Delete build variable %s%s%s?"
@@ -5522,7 +5522,7 @@ msgstr "Alte Datei löschen?"
 
 #: lazarusidestrconsts.lisdeleterow
 msgid "Delete row"
-msgstr ""
+msgstr "Zeile löschen"
 
 #: lazarusidestrconsts.lisdeleteselectedfiles
 msgid "Delete selected files"
@@ -5530,15 +5530,15 @@ msgstr "Gewählte Dateien löschen"
 
 #: lazarusidestrconsts.lisdeletesetting
 msgid "Delete setting"
-msgstr ""
+msgstr "Einstellung löschen"
 
 #: lazarusidestrconsts.lisdeletesetting2
 msgid "Delete setting?"
-msgstr ""
+msgstr "Einstellung löschen?"
 
 #: lazarusidestrconsts.lisdeletesetting3
 msgid "Delete setting %s%s%s?"
-msgstr ""
+msgstr "Einstellung %s%s%s löschen?"
 
 #: lazarusidestrconsts.lisdeletevalue
 msgid "Delete value %s%s%s"
@@ -6316,7 +6316,7 @@ msgstr "Datei %s%s%s wurde geändert. Speichern?"
 
 #: lazarusidestrconsts.lisfilehasnoproject
 msgid "File has no project"
-msgstr ""
+msgstr "Datei gehört zu keinem Projekt"
 
 #: lazarusidestrconsts.lisfileisnotwritable
 msgid "File is not writable"
@@ -9192,7 +9192,7 @@ msgstr "Neue Vorfahren"
 
 #: lazarusidestrconsts.lisnewbuildmode
 msgid "New build mode"
-msgstr ""
+msgstr "Neuer Erstellungsmodus"
 
 #: lazarusidestrconsts.lisnewclass
 msgid "New Class"
@@ -9276,7 +9276,7 @@ msgstr "%s - (Neues Projekt)"
 
 #: lazarusidestrconsts.lisnewsetting
 msgid "New setting"
-msgstr ""
+msgstr "Neue Einstellung"
 
 #: lazarusidestrconsts.lisnewunitsareaddedtousessections
 msgid "New units are added to uses sections:"
@@ -10859,7 +10859,7 @@ msgstr "Btte öffnen Sie eine Unit vor dem Starten."
 
 #: lazarusidestrconsts.lispleaseselectabuildmodefirst
 msgid "Please select a build mode first."
-msgstr ""
+msgstr "Bitte wählen Sie zuerst einen Erstellungsmodus."
 
 #: lazarusidestrconsts.lispleaseselectsomecodetoextractanewproceduremethod
 msgid "Please select some code to extract a new procedure/method."

@@ -1,0 +1,83 @@
+msgid ""
+msgstr ""
+"Content-Type: text/plain; charset=UTF-8\n"
+"Project-Id-Version: \n"
+"POT-Creation-Date: \n"
+"PO-Revision-Date: \n"
+"Last-Translator: Swen Heinig <swen.heinig@freenet.de>\n"
+"Language-Team: \n"
+"MIME-Version: 1.0\n"
+"Content-Transfer-Encoding: 8bit\n"
+
+#: sdb_consts.scancelrecordsexported
+msgid "Exported %d before user canceled."
+msgstr "%d exportiert vor Benutzerabbruch."
+
+#: sdb_consts.sdb_availableexportformats
+msgid "Available export formats:"
+msgstr "Verfügbare Exportformate:"
+
+#: sdb_consts.sdb_cancel
+msgid "&Cancel"
+msgstr "Abbre&chen"
+
+#: sdb_consts.sdb_configuredataexport
+msgid "Configure data export"
+msgstr "Konfiguriere Datenexport"
+
+#: sdb_consts.sdb_exportprogress
+msgid "Export progress"
+msgstr "Exportfortschritt"
+
+#: sdb_consts.sdb_fields
+msgid "Fields"
+msgstr "Felder"
+
+#: sdb_consts.sdb_filename
+msgid "Filename:"
+msgstr "Dateiname:"
+
+#: sdb_consts.sdb_formatting
+msgid "Formatting"
+msgstr "Formatiere"
+
+#: sdb_consts.sdb_moveselectedfielddown
+msgid "Move selected field down"
+msgstr "Gewähltes Feld nach unten"
+
+#: sdb_consts.sdb_moveselectedfieldup
+msgid "Move selected field up"
+msgstr "Gewähltes Feld nach oben"
+
+#: sdb_consts.sdb_propertiesforselectedfield
+msgid "Properties for selected field:"
+msgstr "Eigenschaften für gewähltes Feld:"
+
+#: sdb_consts.sdb_selectdataexportformat
+msgid "Select data export Format"
+msgstr "Datenexport-Format wählen"
+
+#: sdb_consts.sdb_selectfieldstoexport
+msgid "Select fi&elds to export"
+msgstr "F&elder zum Export auswählen"
+
+#: sdb_consts.serrnodatasetassigned
+msgid "DataExporter has no Dataset assigned."
+msgstr "Dem DataExporter ist kein Dataset zugewiesen."
+
+#: sdb_consts.serropeningdataset
+msgid "Could not open dataset for exporting: %s"
+msgstr "Kann Dataset nicht für Export öffnen: %s"
+
+#: sdb_consts.sexecute
+msgid "Execute..."
+msgstr "Ausführen..."
+
+#: sdb_consts.snrecordsexported
+msgid "Succesfully exported %d records."
+msgstr "%d Datensätze erfolgreich exportiert."
+
+#: sdb_consts.sprogress
+msgid "Exporting %d records"
+msgstr "Exportiere %d Datensätze"
+
