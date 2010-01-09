@@ -738,6 +738,10 @@ msgstr ""
 msgid "type identifier"
 msgstr "tipo identifikatorius"
 
+#: codetoolsstrconsts.ctstypeisonlyallowedingenericsendofclassnotfound
+msgid "type is only allowed in generics, end of class not found"
+msgstr ""
+
 #: codetoolsstrconsts.ctstypesectionofclassnotfound
 msgid "type section of class not found"
 msgstr "klasėje nerasta tipo sekcija"
@@ -813,6 +817,10 @@ msgstr "naudojamas modulis n4ra paskalio modulis"
 #: codetoolsstrconsts.ctsutilsdirectories
 msgid "Utils directories"
 msgstr "Paslaugų programų aplankai"
+
+#: codetoolsstrconsts.ctsvarisonlyallowedingenericsendofclassnotfound
+msgid "var is only allowed in generics, end of class not found"
+msgstr ""
 
 #: codetoolsstrconsts.ctswidgetdirectory
 msgid "Widget Directory"

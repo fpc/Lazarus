@@ -1068,6 +1068,7 @@ begin
   EndChildNode;
   // start new section
   CreateChildNode;
+  if UpAtomIs('CLASS') then ReadNextAtom;
   ReadNextAtom;
   if UpAtomIs('PUBLIC') then
     CurNode.Desc:=ctnClassTypePublic
@@ -1094,6 +1095,13 @@ begin
 end;
 
 function TPascalParserTool.KeyWordFuncClassVarSection: boolean;
+{
+  var private
+  var protected
+  var public
+  var published
+  class var private
+}
 begin
   // end last section
   CurNode.EndPos:=CurPos.StartPos;
@@ -1101,6 +1109,7 @@ begin
   // start new section
   CreateChildNode;
   CurNode.Desc:=ctnClassVarPublic;
+  if UpAtomIs('CLASS') then ReadNextAtom;
   ReadNextAtom;
   if UpAtomIs('PUBLIC') then
     CurNode.Desc:=ctnClassVarPublic
@@ -1119,9 +1128,9 @@ function TPascalParserTool.KeyWordFuncClassClass: boolean;
 { parse
     class procedure
     class property
+    class var
+    class type
 }
-var
-  p: PChar;
 begin
   ReadNextAtom;
   if UpAtomIs('PROCEDURE') or UpAtomIs('FUNCTION') then begin
@@ -1130,6 +1139,9 @@ begin
   end else if UpAtomIs('PROPERTY') then begin
     UndoReadNextAtom;
     Result:=KeyWordFuncClassProperty;
+  end else if UpAtomIs('VAR') then begin
+    UndoReadNextAtom;
+    Result:=KeyWordFuncClassVarSection;
   end else
     RaiseStringExpectedButAtomFound('procedure');
 end;
@@ -3489,12 +3501,14 @@ begin
           'T':
             if CompareSrcIdentifiers(p,'TYPE')
             and (not CurNode.HasParentOfType(ctnGenericType)) then
-              SaveRaiseException(ctsEndForClassNotFound);
+              SaveRaiseException(
+                ctsTypeIsOnlyAllowedInGenericsEndOfClassNotFound);
           'V':
             if CompareSrcIdentifiers(p,'VAR')
             and (BracketLvl=0)
             and (not CurNode.HasParentOfType(ctnGenericType)) then
-              SaveRaiseException(ctsEndForClassNotFound);
+              SaveRaiseException(ctsVarIsOnlyAllowedInGenericsEndOfClassNotFound
+                );
           end;
         end;
       end;

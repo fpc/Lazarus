@@ -735,6 +735,10 @@ msgstr ""
 msgid "type identifier"
 msgstr ""
 
+#: codetoolsstrconsts.ctstypeisonlyallowedingenericsendofclassnotfound
+msgid "type is only allowed in generics, end of class not found"
+msgstr ""
+
 #: codetoolsstrconsts.ctstypesectionofclassnotfound
 msgid "type section of class not found"
 msgstr "type sectie van klasse niet gevonden"
@@ -809,6 +813,10 @@ msgstr "gebruikte unit is geen pascal unit"
 
 #: codetoolsstrconsts.ctsutilsdirectories
 msgid "Utils directories"
+msgstr ""
+
+#: codetoolsstrconsts.ctsvarisonlyallowedingenericsendofclassnotfound
+msgid "var is only allowed in generics, end of class not found"
 msgstr ""
 
 #: codetoolsstrconsts.ctswidgetdirectory

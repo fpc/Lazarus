@@ -101,6 +101,10 @@ ResourceString
   ctsPointHintProcStartAt = '.  Hint: proc start at ';
   ctsMissingPointAfterEnd = 'missing . after end';
   ctsEndForClassNotFound = '"end" for class/object not found';
+  ctsVarIsOnlyAllowedInGenericsEndOfClassNotFound = 'var is only allowed in '
+    +'generics, end of class not found';
+  ctsTypeIsOnlyAllowedInGenericsEndOfClassNotFound = 'type is only allowed in '
+    +'generics, end of class not found';
   ctsUnexpectedSubRangeOperatorFound = 'unexpected subrange operator ''..'' found';
   ctsInvalidSubrange = 'invalid subrange';
   ctsExportsClauseOnlyAllowedInLibraries = 'exports clause only allowed in libraries';

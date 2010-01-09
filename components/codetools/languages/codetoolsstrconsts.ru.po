@@ -735,6 +735,10 @@ msgstr "тип"
 msgid "type identifier"
 msgstr "идентификатор типа"
 
+#: codetoolsstrconsts.ctstypeisonlyallowedingenericsendofclassnotfound
+msgid "type is only allowed in generics, end of class not found"
+msgstr ""
+
 #: codetoolsstrconsts.ctstypesectionofclassnotfound
 msgid "type section of class not found"
 msgstr "секция type класса не найдена"
@@ -810,6 +814,10 @@ msgstr "используемый модуль не является модуле
 #: codetoolsstrconsts.ctsutilsdirectories
 msgid "Utils directories"
 msgstr "Каталоги утилит"
+
+#: codetoolsstrconsts.ctsvarisonlyallowedingenericsendofclassnotfound
+msgid "var is only allowed in generics, end of class not found"
+msgstr ""
 
 #: codetoolsstrconsts.ctswidgetdirectory
 msgid "Widget Directory"
