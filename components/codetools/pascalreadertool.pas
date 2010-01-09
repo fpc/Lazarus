@@ -288,6 +288,7 @@ begin
   MoveCursorToNodeStart(PropNode);
   ReadNextAtom;
   if (PropNode.Desc=ctnProperty) then begin
+    if UpAtomIs('CLASS') then ReadNextAtom;
     if (not UpAtomIs('PROPERTY')) then exit;
     ReadNextAtom;
   end;
@@ -895,6 +896,7 @@ begin
   MoveCursorToNodeStart(PropNode);
   ReadNextAtom;
   if (PropNode.Desc=ctnProperty) then begin
+    if UpAtomIs('CLASS') then ReadNextAtom;
     if (not UpAtomIs('PROPERTY')) then exit;
     ReadNextAtom;
   end;
@@ -906,9 +908,9 @@ begin
   end;
   if CurPos.Flag in [cafSemicolon,cafEND] then exit;
   if not (CurPos.Flag=cafColon) then
-    RaiseExceptionFmt(ctsStrExpectedButAtomFound,[':',GetAtom]);
+    RaiseCharExpectedButAtomFound(':');
   ReadNextAtom;
-  AtomIsIdentifier(true);
+  Result:=CurPos.Flag=cafWord;
 end;
 
 function TPascalReaderTool.MoveCursorToPropName(PropNode: TCodeTreeNode
@@ -921,11 +923,11 @@ begin
   MoveCursorToNodeStart(PropNode);
   ReadNextAtom;
   if (PropNode.Desc=ctnProperty) then begin
+    if UpAtomIs('CLASS') then ReadNextAtom;
     if (not UpAtomIs('PROPERTY')) then exit;
     ReadNextAtom;
   end;
-  AtomIsIdentifier(true);
-  Result:=true;
+  Result:=CurPos.Flag=cafWord;
 end;
 
 function TPascalReaderTool.ProcNodeHasSpecifier(ProcNode: TCodeTreeNode;
@@ -1015,6 +1017,8 @@ begin
   MoveCursorToNodeStart(PropNode);
   ExtractNextAtom(false,Attr);
   if (PropNode.Desc=ctnProperty) then begin
+    if UpAtomIs('CLASS') then
+      ExtractNextAtom(phpWithStart in Attr,Attr);
     // parse 'property'
     ExtractNextAtom(phpWithStart in Attr,Attr);
   end;
@@ -1047,16 +1051,11 @@ end;
 function TPascalReaderTool.GetPropertyNameIdentifier(PropNode: TCodeTreeNode
   ): PChar;
 begin
-
   // ToDo: ppu, ppw, dcu
 
   Result:=nil;
   if PropNode=nil then exit;
-  MoveCursorToNodeStart(PropNode);
-  if (PropNode.Desc=ctnProperty) then begin
-    ReadNextAtom; // read 'property'
-  end;
-  ReadNextAtom; // read name
+  if not MoveCursorToPropName(PropNode) then exit;
   Result:=@Src[CurPos.StartPos];
 end;
 
@@ -1079,6 +1078,7 @@ begin
   MoveCursorToNodeStart(PropNode);
   if (PropNode.Desc=ctnProperty) then begin
     ReadNextAtom; // read 'property'
+    if UpAtomIs('CLASS') then ReadNextAtom;
   end;
   ReadNextAtom; // read name
   Result:=(CurPos.Flag=cafWord)
@@ -1845,11 +1845,7 @@ begin
   // ToDo: ppu, ppw, dcu
 
   Result:=false;
-  MoveCursorToNodeStart(PropNode);
-  if (PropNode.Desc=ctnProperty) then begin
-    ReadNextAtom; // read 'property'
-  end;
-  ReadNextAtom; // read name
+  if not MoveCursorToPropName(PropNode) then exit;
   ReadNextAtom;
   Result:=(CurPos.Flag=cafEdgedBracketOpen);
 end;
@@ -1861,11 +1857,7 @@ begin
   // ToDo: ppu, ppw, dcu
 
   Result:=false;
-  MoveCursorToNodeStart(PropNode);
-  if (PropNode.Desc=ctnProperty) then begin
-    ReadNextAtom; // read 'property'
-  end;
-  ReadNextAtom; // read name
+  if not MoveCursorToPropName(PropNode) then exit;
   ReadNextAtom; // read colon, skip parameters
   if CurPos.Flag=cafEdgedBracketOpen then begin
     ReadTilBracketClose(true);
@@ -1881,17 +1873,7 @@ begin
   // ToDo: ppu, ppw, dcu
 
   Result:=false;
-  if (PropNode=nil) or (not (PropNode.Desc in [ctnProperty,ctnGlobalProperty]))
-  then
-    exit;
-  MoveCursorToNodeStart(PropNode);
-  ReadNextAtom;
-  if not UpAtomIs('PROPERTY') then begin
-    if ExceptionOnNotFound then
-      RaiseStringExpectedButAtomFound('property');
-    exit;
-  end;
-  ReadNextAtom;
+  if not MoveCursorToPropName(PropNode) then exit;
   if not AtomIsIdentifier(ExceptionOnNotFound) then exit;
   ReadNextAtom;
   if CurPos.Flag=cafEdgedBracketOpen then begin

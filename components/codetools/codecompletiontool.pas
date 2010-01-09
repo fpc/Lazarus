@@ -5163,6 +5163,7 @@ var AccessParam, AccessParamPrefix, CleanAccessFunc, AccessFunc,
   begin
     MoveCursorToNodeStart(PropNode);
     ReadNextAtom; // read 'property'
+    if UpAtomIs('CLASS') then ReadNextAtom;
     ReadNextAtom; // read name
     Parts[ppName]:=CurPos;
     ReadNextAtom;

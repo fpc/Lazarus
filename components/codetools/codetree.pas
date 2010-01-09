@@ -423,7 +423,7 @@ begin
   ctnGlobalProperty: Result:='Global Property';
   ctnUseUnit: Result:='use unit';
 
-  ctnProperty: Result:='Property';
+  ctnProperty: Result:='Property'; // can start with 'class property'
   ctnMethodMap: Result:='Method Map';
 
   ctnIdentifier: Result:='Identifier';

@@ -156,6 +156,7 @@ type
     function KeyWordFuncClassSection: boolean;
     function KeyWordFuncClassTypeSection: boolean;
     function KeyWordFuncClassVarSection: boolean;
+    function KeyWordFuncClassClass: boolean;
     function KeyWordFuncClassMethod: boolean;
     function KeyWordFuncClassProperty: boolean;
     function KeyWordFuncClassIdentifier: boolean;
@@ -172,7 +173,7 @@ type
     function ParseType(StartPos, WordLen: integer): boolean;
     function ParseInnerClass(StartPos, WordLen: integer): boolean;
     function ParseClassVarType(StartPos, WordLen: integer): boolean;
-    function ParseInnerClassInterface(StartPos, WordLen: integer): boolean;
+    function SkipInnerClassInterface(StartPos, WordLen: integer): boolean;
     function UnexpectedKeyWord: boolean;
     function EndOfSourceExpected: boolean;
     // read functions
@@ -425,7 +426,7 @@ begin
   case UpChars[p^] of
   'C':
     case UpChars[p[1]] of
-    'L': if CompareSrcIdentifiers(p,'CLASS') then exit(KeyWordFuncClassMethod);
+    'L': if CompareSrcIdentifiers(p,'CLASS') then exit(KeyWordFuncClassClass);
     'O': if CompareSrcIdentifiers(p,'CONSTRUCTOR') then exit(KeyWordFuncClassMethod);
     end;
   'D':
@@ -502,9 +503,9 @@ begin
   Result:=KeyWordFuncClassVarTypeIdent;
 end;
 
-function TPascalParserTool.ParseInnerClassInterface(StartPos, WordLen: integer
+function TPascalParserTool.SkipInnerClassInterface(StartPos, WordLen: integer
   ): boolean;
-// KeyWordFunctions for parsing in a class interface, dispinterface
+// KeyWordFunctions for skipping in a class interface, dispinterface
 var
   p: PChar;
 begin
@@ -1112,6 +1113,25 @@ begin
   else
     RaiseStringExpectedButAtomFound('public');
   Result:=true;
+end;
+
+function TPascalParserTool.KeyWordFuncClassClass: boolean;
+{ parse
+    class procedure
+    class property
+}
+var
+  p: PChar;
+begin
+  ReadNextAtom;
+  if UpAtomIs('PROCEDURE') or UpAtomIs('FUNCTION') then begin
+    UndoReadNextAtom;
+    Result:=KeyWordFuncClassMethod;
+  end else if UpAtomIs('PROPERTY') then begin
+    UndoReadNextAtom;
+    Result:=KeyWordFuncClassProperty;
+  end else
+    RaiseStringExpectedButAtomFound('procedure');
 end;
 
 function TPascalParserTool.KeyWordFuncClassMethod: boolean;
@@ -2008,6 +2028,11 @@ begin
   CreateChildNode;
   CurNode.Desc:=ctnProperty;
   // read property Name
+  if UpAtomIs('CLASS') then begin
+    ReadNextAtom;
+    if not UpAtomIs('PROPERTY') then
+      RaiseStringExpectedButAtomFound('property');
+  end;
   ReadNextAtom;
   AtomIsIdentifier(true);
   ReadNextAtom;
@@ -3548,7 +3573,7 @@ begin
     // parse till "end" of interface
     repeat
       if (CurPos.Flag=cafEnd) or (CurPos.StartPos>SrcLen) then break;
-      if not ParseInnerClassInterface(CurPos.StartPos,CurPos.EndPos-CurPos.StartPos)
+      if not SkipInnerClassInterface(CurPos.StartPos,CurPos.EndPos-CurPos.StartPos)
       then
         break;
       ReadNextAtom;
@@ -4335,6 +4360,7 @@ function TPascalParserTool.ReadTilTypeOfProperty(
 begin
   MoveCursorToNodeStart(PropertyNode);
   ReadNextAtom; // read keyword 'property'
+  if UpAtomIs('CLASS') then ReadNextAtom;
   ReadNextAtom; // read property name
   AtomIsIdentifier(true);
   ReadNextAtom;

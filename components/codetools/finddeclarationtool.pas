@@ -1340,8 +1340,10 @@ var CleanCursorPos: integer;
     if (CursorNode.Desc=ctnProperty) or (CursorNode.Desc=ctnGlobalProperty) then
     begin
       MoveCursorToNodeStart(CursorNode);
-      if (CursorNode.Desc=ctnProperty) then
+      if (CursorNode.Desc=ctnProperty) then begin
         ReadNextAtom; // read 'property'
+        if UpAtomIs('CLASS') then ReadNextAtom;
+      end;
       ReadNextAtom; // read property name
       if CleanCursorPos<CurPos.EndPos then begin
         DirectSearch:=true;
@@ -2710,8 +2712,10 @@ var
     if (fdfCollect in Params.Flags)
     or (Params.Identifier[0]<>'[') then begin
       MoveCursorToNodeStart(ContextNode);
-      if (ContextNode.Desc=ctnProperty) then
+      if (ContextNode.Desc=ctnProperty) then begin
         ReadNextAtom; // read keyword 'property'
+        if UpAtomIs('CLASS') then ReadNextAtom;
+      end;
       ReadNextAtom; // read name
       if (fdfCollect in Params.Flags)
       or CompareSrcIdentifiers(CurPos.StartPos,Params.Identifier) then begin
@@ -3428,17 +3432,7 @@ begin
       if (Result.Node.Desc=ctnProperty)
       or (Result.Node.Desc=ctnGlobalProperty) then begin
         // this is a property -> search the type definition of the property
-        MoveCursorToNodeStart(Result.Node);
-        if (Result.Node.Desc=ctnProperty) then
-          ReadNextAtom; // read 'property'
-        ReadNextAtom; // read name
-        ReadNextAtom;
-        if CurPos.Flag=cafEdgedBracketOpen then begin
-          // this is an indexed property
-          exit;
-        end;
-        if CurPos.Flag=cafColon then begin
-          ReadNextAtom;
+        if MoveCursorToPropType(Result.Node) then begin
           AtomIsIdentifier(true);
           OldPos:=CurPos.StartPos;
           ReadNextAtom;
@@ -3484,9 +3478,7 @@ begin
           // property has no type
           // -> search ancestor property
           Params.Save(OldInput);
-          MoveCursorToNodeStart(Result.Node);
-          ReadNextAtom; // read 'property'
-          ReadNextAtom; // read name
+          if not MoveCursorToPropName(Result.Node) then exit;
           OldPos:=CurPos.StartPos;
           Params.SetIdentifier(Self,@Src[CurPos.StartPos],nil);
           Params.Flags:=[fdfExceptionOnNotFound,fdfSearchInAncestors]
