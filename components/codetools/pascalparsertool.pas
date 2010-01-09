@@ -3499,16 +3499,16 @@ begin
             if CompareSrcIdentifiers(p,'RESOURCESTRING') then
               SaveRaiseException(ctsEndForClassNotFound);
           'T':
-            if CompareSrcIdentifiers(p,'TYPE')
-            and (not CurNode.HasParentOfType(ctnGenericType)) then
-              SaveRaiseException(
-                ctsTypeIsOnlyAllowedInGenericsEndOfClassNotFound);
+            if CompareSrcIdentifiers(p,'THREADVAR') then
+              SaveRaiseException(ctsEndForClassNotFound)
+            else if CompareSrcIdentifiers(p,'TYPE')
+            and (BracketLvl>0) then
+              SaveRaiseException(ctsEndForClassNotFound);
           'V':
             if CompareSrcIdentifiers(p,'VAR')
-            and (BracketLvl=0)
-            and (not CurNode.HasParentOfType(ctnGenericType)) then
-              SaveRaiseException(ctsVarIsOnlyAllowedInGenericsEndOfClassNotFound
-                );
+            and (BracketLvl>1) then begin
+              SaveRaiseException(ctsEndForClassNotFound);
+            end;
           end;
         end;
       end;
