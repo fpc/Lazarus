@@ -13553,7 +13553,7 @@ msgstr "Comandos de menú de herramientas"
 
 #: lazarusidestrconsts.srkmcatviewmenu
 msgid "View menu commands"
-msgstr "Ver comandos de menú"
+msgstr "Comandos del menú Ver"
 
 #: lazarusidestrconsts.srkmcommand
 msgctxt "lazarusidestrconsts.srkmcommand"
