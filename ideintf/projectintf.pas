@@ -195,7 +195,7 @@ type
     procedure Delete(Index: integer); virtual; abstract;
     procedure Move(OldIndex, NewIndex: integer); virtual; abstract;
     function IndexOfIdentifier(Identifier: string): integer; virtual; abstract;
-    function ModeWithIdentifier(Identifier: string): TLazBuildVariable; virtual; abstract;
+    function VarWithIdentifier(Identifier: string): TLazBuildVariable; virtual; abstract;
     function Count: integer; virtual; abstract;
     procedure Clear; virtual; abstract;
     property Items[Index: integer]: TLazBuildVariable read GetItems; default;

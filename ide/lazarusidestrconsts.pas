@@ -4447,6 +4447,7 @@ resourcestring
   lisValue = 'Value:';
   lisValues = 'Values';
   lisDefaultValue = 'Default value';
+  lisBuildVariables = 'Build variables';
   lisConfirmDelete = 'Confirm delete';
   lisDeleteBuildVar = 'Delete build variable %s%s%s?';
   lisValue2 = 'Value%s';

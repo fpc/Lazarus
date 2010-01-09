@@ -119,7 +119,7 @@ type
     procedure Delete(Index: integer); override;
     destructor Destroy; override;
     function IndexOfIdentifier(Identifier: string): integer; override;
-    function ModeWithIdentifier(Identifier: string): TIDEBuildVariable; override;
+    function VarWithIdentifier(Identifier: string): TIDEBuildVariable; override;
     procedure Move(OldIndex, NewIndex: integer); override;
     procedure LoadFromXMLConfig(AXMLConfig: TXMLConfig; const Path: string;
                                 DoSwitchPathDelims: boolean);
@@ -3930,7 +3930,7 @@ begin
   BuildVar:=nil;
   BuildVars:=FFirstBuildVars;
   while BuildVars<>nil do begin
-    BuildVar:=BuildVars.ModeWithIdentifier(Identifier);
+    BuildVar:=BuildVars.VarWithIdentifier(Identifier);
     if BuildVar<>nil then exit(true);
     BuildVars:=BuildVars.fNextVars;
   end;
@@ -4220,7 +4220,7 @@ begin
     dec(Result);
 end;
 
-function TIDEBuildVariables.ModeWithIdentifier(Identifier: string): TIDEBuildVariable;
+function TIDEBuildVariables.VarWithIdentifier(Identifier: string): TIDEBuildVariable;
 var
   i: LongInt;
 begin

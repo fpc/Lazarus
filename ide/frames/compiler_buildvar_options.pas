@@ -58,7 +58,7 @@ type
     procedure DeleteValueClick(Sender: TObject);
   private
     FBuildVariables: TIDEBuildVariables;
-    fModeImgID: LongInt;
+    fVarImgID: LongInt;
     fValuesImgID: LongInt;
     fValueImgID: LongInt;
     fDefValueImgID: LongInt;
@@ -205,9 +205,9 @@ begin
   if NodeType in [cbmntValue] then
     Add('Delete value ...',@DeleteValueClick);
   AddSeparator;
-  Add('New build mode',@NewBuildVarClick);
+  Add('New build variable',@NewBuildVarClick);
   if NodeType in [cbmntBuildVar] then
-    Add('Delete build mode ...',@DeleteBuildVarClick);
+    Add('Delete build variable ...',@DeleteBuildVarClick);
   if NodeType in [cbmntDefaultValue,cbmntDefaultValueEditor] then begin
     Editor:=GetEditor(BuildProperty);
     Editor.FillPopupMenu(BuildVarsTVPopupMenu);
@@ -243,7 +243,7 @@ begin
 
   cbmntBuildVar:
     if S<>BuildProperty.Identifier then begin
-      // rename build mode
+      // rename build variable
       if (S='') or (not IsValidIdent(S)) then begin
         MessageDlg(lisCCOErrorCaption,
           Format(lisInvalidBuildVarTheBuildVarMustBeAPascalIdentifie, ['"',
@@ -252,7 +252,7 @@ begin
         S:=BuildProperty.Identifier;
         exit;
       end;
-      ConflictBuildProperty:=BuildVariables.ModeWithIdentifier(S);
+      ConflictBuildProperty:=BuildVariables.VarWithIdentifier(S);
       if (ConflictBuildProperty<>nil) and (ConflictBuildProperty<>BuildProperty) then
       begin
         MessageDlg(lisCCOErrorCaption,
@@ -297,7 +297,7 @@ begin
   BuildVarsTreeView.Items.Clear;
   FreeEditors;
   if BuildVariables<>nil then begin
-    // first level: build modes
+    // first level: build variables
     for i:=0 to BuildVariables.Count-1 do
       TreeViewAddBuildVar(BuildVariables.Items[i]);
   end;
@@ -314,9 +314,9 @@ var
   DefValueTVNode: TTreeNode;
   Editor: TCompOptsExprEditor;
 begin
-  // create node for the build mode
+  // create node for the build variable
   TVNode:=BuildVarsTreeView.Items.AddObject(nil,BuildProperty.Identifier,BuildProperty);
-  TVNode.ImageIndex:=fModeImgID;
+  TVNode.ImageIndex:=fVarImgID;
   TVNode.SelectedIndex:=TVNode.ImageIndex;
   // second level
   begin
@@ -442,11 +442,11 @@ begin
 
   FEditors:=TFPList.Create;
   BuildVarsTreeView.Images := IDEImages.Images_24;
-  fModeImgID:=IDEImages.LoadImage(24,'da_define');
+  fVarImgID:=IDEImages.LoadImage(24,'da_define');
   fValueImgID:=IDEImages.LoadImage(24,'da_define');
   fDefValueImgID:=IDEImages.LoadImage(24,'da_define');
 
-  BuildVarsGroupBox.Caption:='Build modes';
+  BuildVarsGroupBox.Caption:=lisBuildVariables;
 end;
 
 destructor TCompOptBuildVarsFrame.Destroy;
