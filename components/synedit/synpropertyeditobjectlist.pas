@@ -36,7 +36,7 @@ type
   protected
     function ReadElementCount: integer; override;
     function ReadElement(Index: integer): TPersistent; override;
-    function ClassList: TStringList; virtual; abstract;
+    class function ClassList: TStringList; virtual; abstract;
   public
     function GetAttributes: TPropertyAttributes; override;
     procedure Edit; override;
@@ -48,7 +48,7 @@ type
 
   TSynPropertyEditGutterPartList = class(TSynPropertyEditObjectList)
   protected
-    function ClassList: TStringList; override;
+    class function ClassList: TStringList; override;
   end;
 
   { TSynObjectPartListPropertyEditorForm }
@@ -471,7 +471,7 @@ end;
 
 { TSynPropertyEditGutterPartList }
 
-function TSynPropertyEditGutterPartList.ClassList: TStringList;
+class function TSynPropertyEditGutterPartList.ClassList: TStringList;
 begin
   Result := KnownSynGutterPartClasses;
 end;
