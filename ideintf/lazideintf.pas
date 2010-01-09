@@ -212,8 +212,8 @@ type
                             Flags: TProjectBuildFlags): TModalResult; virtual; abstract;
 
     // configs
-    function GetPrimaryConfigPath: String; virtual; abstract;
-    function GetSecondaryConfigPath: String; virtual; abstract;
+    class function GetPrimaryConfigPath: String; virtual; abstract;
+    class function GetSecondaryConfigPath: String; virtual; abstract;
     procedure CopySecondaryConfigFile(const AFilename: String); virtual; abstract;
     procedure DoOpenIDEOptions(AEditor: TAbstractIDEOptionsEditorClass = nil;
       ACaption: String = '';

@@ -183,8 +183,8 @@ type
     procedure FindInFilesPerDialog(AProject: TProject); virtual; abstract;
     procedure FindInFiles(AProject: TProject; const FindText: string); virtual; abstract;
 
-    function GetPrimaryConfigPath: String; override;
-    function GetSecondaryConfigPath: String; override;
+    class function GetPrimaryConfigPath: String; override;
+    class function GetSecondaryConfigPath: String; override;
     procedure CopySecondaryConfigFile(const AFilename: String); override;
     function GetRemoteControlFilename: string;
 
@@ -375,12 +375,12 @@ begin
   UpdateCaption;
 end;
 
-function TMainIDEInterface.GetPrimaryConfigPath: String;
+class function TMainIDEInterface.GetPrimaryConfigPath: String;
 begin
   Result:=LazConf.GetPrimaryConfigPath;
 end;
 
-function TMainIDEInterface.GetSecondaryConfigPath: String;
+class function TMainIDEInterface.GetSecondaryConfigPath: String;
 begin
   Result:=LazConf.GetSecondaryConfigPath;
 end;
