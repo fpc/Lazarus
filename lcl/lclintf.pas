@@ -52,7 +52,7 @@ uses
   {$IFDEF Windows}Windows, ShellApi, {$ENDIF}
   {$IFDEF Darwin}MacOSAll, {$ENDIF}
   Types, Math, Classes, SysUtils, LCLType, LCLProc, GraphType, InterfaceBase,
-  LResources, FileUtil, UTF8Process;
+  LResources, FileUtil, UTF8Process, Maps, LMessages;
 
 {$ifdef Trace}
   {$ASSERTIONS ON}
@@ -98,11 +98,59 @@ function OpenURL(AURL: String): Boolean;
 
 implementation
 
+type
+  { TTimerID }
+
+  TTimerID = class
+    procedure TimerNotify;
+  end;
+
+  PTimerInfo = ^TTimerInfo;
+  TTimerInfo = record
+    Wnd: HWND;
+    IDEvent: UINT_PTR;
+    TimerProc: TTimerProc;
+    Handle: THandle;
+  end;
+
 var
+  MTimerMap: TMap = nil;   // hWnd + nIDEvent -> ID
+  MTimerInfo: TMap = nil;  // ID -> TTimerInfo
+  MTimerSeq: Cardinal;
+
   FPredefinedClipboardFormats:
     array[TPredefinedClipboardFormat] of TClipboardFormat;
   LowerCaseChars: array[char] of char;
   UpperCaseChars: array[char] of char;
+
+
+  { TTimerMap }
+
+procedure TTimerID.TimerNotify;
+var
+  Info: PTimerInfo;
+  ID: Cardinal;
+begin
+  if MTimerInfo = nil then Exit;
+
+  // this is a bit of a hack.
+  // to pass the ID if the timer, it is passed as an cast to self
+  // So there isn't realy an instance of TTimerID
+  ID := PtrUInt(Self);
+  Info := MTimerInfo.GetDataPtr(ID);
+  if Info = nil then Exit;
+
+  if Info^.TimerProc = nil
+  then begin
+    // send message
+    PostMessage(Info^.Wnd, LM_TIMER, Info^.IDEvent, 0);
+  end
+  else begin
+    // a timerproc was passed
+    Info^.TimerProc(Info^.Wnd, LM_TIMER, Info^.IDEvent, GetTickCount);
+  end;
+end;
+
 
 {$IFNDEF WINDOWS}
 function GetTickCount: DWord;
@@ -314,4 +362,7 @@ end;
 initialization
   InternalInit;
 
+finalization
+  FreeAndNil(MTimerMap);
+  FreeAndNil(MTimerInfo);
 end.

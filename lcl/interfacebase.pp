@@ -79,6 +79,9 @@ type
     lcDragDockStartOnTitleClick // ability to start drag/dock events on title bar click
   );
 
+type
+  TWSTimerProc = procedure of object;
+
   { TWidgetSet }
 
   TWidgetSet = class(TObject)
@@ -117,7 +120,7 @@ type
     function  IsHelpKey(Key: Word; Shift: TShiftState): Boolean; virtual;
 
     // create and destroy
-    function CreateTimer(Interval: integer; TimerFunc: TFNTimerProc): THandle; virtual; abstract;
+    function CreateTimer(Interval: integer; TimerProc: TWSTimerProc): THandle; virtual; abstract;
     function DestroyTimer(TimerHandle: THandle): boolean; virtual; abstract;
     function AppHandle: Thandle; virtual;
 

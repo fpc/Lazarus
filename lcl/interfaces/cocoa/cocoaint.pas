@@ -47,9 +47,9 @@ type
   { TCocoaTimerObject }
 
   TCocoaTimerObject=objcclass(NSObject)
-    func : TFNTimerProc;
+    func : TWSTimerProc;
     procedure timerEvent; message 'timerEvent';
-    class function initWithFunc(afunc: TFNTimerProc): TCocoaTimerObject; message 'initWithFunc:';
+    class function initWithFunc(afunc: TWSTimerProc): TCocoaTimerObject; message 'initWithFunc:';
   end;
 
   { TCocoaAppDelegate }
@@ -84,7 +84,7 @@ type
     procedure AppBringToFront; override;
     procedure AppSetTitle(const ATitle: string); override;
 
-    function CreateTimer(Interval: integer; TimerFunc: TFNTimerProc): THandle; override;
+    function CreateTimer(Interval: integer; TimerFunc: TWSTimerProc): THandle; override;
     function DestroyTimer(TimerHandle: THandle): boolean; override;
     function AppHandle: THandle; override;
 
@@ -281,7 +281,7 @@ begin
     NSApp.dockTile.setBadgeLabel(NSStringUtf8(ATitle));
 end;
 
-function TCocoaWidgetSet.CreateTimer(Interval: integer; TimerFunc: TFNTimerProc): THandle;
+function TCocoaWidgetSet.CreateTimer(Interval: integer; TimerFunc: TWSTimerProc): THandle;
 var
   timer : NSTimer;
   user  : TCocoaTimerObject;
@@ -387,7 +387,7 @@ begin
   if Assigned(@func) then func;
 end;
 
-class function TCocoaTimerObject.initWithFunc(afunc: TFNTimerProc): TCocoaTimerObject;
+class function TCocoaTimerObject.initWithFunc(afunc: TWSTimerProc): TCocoaTimerObject;
 begin
   Result:=alloc;
   Result.func:=afunc;

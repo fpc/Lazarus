@@ -107,7 +107,7 @@ type
   PWinCETimerInfo = ^TWinCETimerinfo;
   TWinCETimerInfo = record
     TimerID: UINT;         // the windows timer ID for this timer
-    TimerFunc: TFNTimerProc; // owner function to handle timer
+    TimerFunc: TWSTimerProc; // owner function to handle timer
   end;
 
 {$ifdef WinCE}

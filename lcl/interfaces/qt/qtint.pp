@@ -114,7 +114,7 @@ type
     procedure SetDesigning(AComponent: TComponent); override;
 
     // create and destroy
-    function CreateTimer(Interval: integer; TimerFunc: TFNTimerProc): THandle; override;
+    function CreateTimer(Interval: integer; TimerFunc: TWSTimerProc): THandle; override;
     function DestroyTimer(TimerHandle: THandle): boolean; override;
 
     // device contexts

@@ -116,7 +116,7 @@ type
     function  IsHelpKey(Key: Word; Shift: TShiftState): Boolean; override;
 
     // create and destroy
-    function CreateTimer(Interval: integer; TimerFunc: TFNTimerProc) : THandle; override;
+    function CreateTimer(Interval: integer; TimerFunc: TWSTimerProc) : THandle; override;
     function DestroyTimer(TimerHandle: THandle) : boolean; override;
     function PrepareUserEvent(Handle: HWND; Msg: Cardinal; wParam: WParam;
       lParam: LParam; out Target: EventTargetRef): EventRef;

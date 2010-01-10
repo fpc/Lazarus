@@ -33,7 +33,7 @@ uses
   // Free Pascal
   Classes, SysUtils, Types,
   // LCL
-  LCLType, LCLIntf, Menus, LCLProc, Graphics, ClipBrd, ExtCtrls;
+  LCLType, LCLIntf, Menus, LCLProc, Graphics, ClipBrd, ExtCtrls, Interfacebase;
 
 type
   // forward declarations
@@ -596,11 +596,11 @@ type
   TQtTimer = class(TQtObject)
   private
     FTimerHook: QTimer_hookH;
-    FCallbackFunc: TFNTimerProc;
+    FCallbackFunc: TWSTimerProc;
     FId: Integer;
     FAppObject: QObjectH;
   public
-    constructor CreateTimer(Interval: integer; const TimerFunc: TFNTimerProc; App: QObjectH); virtual;
+    constructor CreateTimer(Interval: integer; const TimerFunc: TWSTimerProc; App: QObjectH); virtual;
     destructor Destroy; override;
     procedure AttachEvents; override;
     procedure DetachEvents; override;
@@ -3690,7 +3690,7 @@ end;
   Returns: Nothing
  ------------------------------------------------------------------------------}
 constructor TQtTimer.CreateTimer(Interval: integer;
-  const TimerFunc: TFNTimerProc; App: QObjectH);
+  const TimerFunc: TWSTimerProc; App: QObjectH);
 begin
   inherited Create;
   FDeleteLater := True;

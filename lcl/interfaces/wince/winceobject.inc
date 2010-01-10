@@ -452,7 +452,7 @@ end;
   Design: A timer which calls TimerCallBackProc, is created.
     The TimerCallBackProc calls the TimerFunc.
  ------------------------------------------------------------------------------}
-function TWinCEWidgetSet.CreateTimer(Interval: integer; TimerFunc: TFNTimerProc) : THandle;
+function TWinCEWidgetSet.CreateTimer(Interval: integer; TimerFunc: TWSTimerProc) : THandle;
 var
   TimerInfo: PWinCETimerInfo;
 begin

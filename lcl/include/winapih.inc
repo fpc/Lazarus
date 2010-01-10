@@ -174,6 +174,8 @@ function IsWindowEnabled(handle: HWND): boolean; {$IFDEF IF_BASE_MEMBER}virtual;
 function IsWindowVisible(handle: HWND): boolean; {$IFDEF IF_BASE_MEMBER}virtual;{$ENDIF}
 function IsZoomed(handle: HWND): boolean; {$IFDEF IF_BASE_MEMBER}virtual;{$ENDIF}
 
+//function KillTimer --> independent
+
 procedure LeaveCriticalSection(var CritSection: TCriticalSection); {$IFDEF IF_BASE_MEMBER}virtual;{$ENDIF}
 function LineTo(DC: HDC; X, Y: Integer): Boolean; {$IFDEF IF_BASE_MEMBER}virtual;{$ENDIF}
 
@@ -237,6 +239,7 @@ function SetStretchBltMode(DC: HDC; StretchMode: Integer): Integer; {$IFDEF IF_B
 function SetSysColors(cElements: Integer; const lpaElements; const lpaRgbValues): Boolean; {$IFDEF IF_BASE_MEMBER}virtual;{$ENDIF}
 function SetTextCharacterExtra(_hdc : hdc; nCharExtra : Integer):Integer; {$IFDEF IF_BASE_MEMBER}virtual;{$ENDIF}
 function SetTextColor(DC: HDC; Color: TColorRef): TColorRef; {$IFDEF IF_BASE_MEMBER}virtual;{$ENDIF}
+//function SetTimer --> independent
 function SetWindowLong(Handle: HWND; Idx: Integer; NewLong : PtrInt): PtrInt;{$IFDEF IF_BASE_MEMBER}virtual;{$ENDIF}
 function SetViewPortExtEx(DC: HDC; XExtent, YExtent : Integer; OldSize: PSize): Boolean; {$IFDEF IF_BASE_MEMBER}virtual;{$ENDIF}
 function SetViewPortOrgEx(DC: HDC; NewX, NewY: Integer; OldPoint: PPoint): Boolean; {$IFDEF IF_BASE_MEMBER}virtual;{$ENDIF}
@@ -298,6 +301,8 @@ function IntersectRect(var DestRect: TRect; const SrcRect1, SrcRect2: TRect): Bo
 function IsCharAlphaNumeric(c : Char) : Boolean;
 function IsRectEmpty(const ARect: TRect): Boolean;
 
+function KillTimer(Wnd: HWND; uIDEvent: UINT_PTR): BOOL;
+
 function MakeWParam(l, h: Word): WPARAM; inline;
 function MakeLParam(l, h: Word): LPARAM; inline;
 function MakeLResult(l, h: Word): LRESULT; inline;
@@ -310,10 +315,11 @@ function PointToSmallPoint(const P : TPoint) : TSmallPoint; inline;
 function RGB(R, G, B : Byte) : TColorRef; inline;
 
 function ScrollWindow(hWnd: HWND; XAmount, YAmount: Integer; Rect, ClipRect: PRect): Boolean; inline;
-function SetRect(Var ARect : TRect; xLeft,yTop,xRight,yBottom : Integer) : Boolean;
+function SetRect(var ARect : TRect; xLeft,yTop,xRight,yBottom : Integer) : Boolean;
 function SetRectEmpty(var ARect: TRect): Boolean;
 function SetScrollPos(Handle: HWND; nBar, nPos: Integer; bRedraw: Boolean): Integer;
 function SetScrollRange(Handle: HWND; nBar, nMinPos, nMaxPos: Integer; bRedraw: Boolean): Boolean;
+function SetTimer(Wnd: HWND; nIDEvent: UINT_PTR; uElapse: UINT;  lpTimerFunc: TTimerProc): UINT_PTR;
 function SmallPointToPoint(const P : TSmallPoint) : Tpoint;
 
 function UnionRect(var DestRect: TRect; const SrcRect1, SrcRect2: TRect): Boolean; //pbd

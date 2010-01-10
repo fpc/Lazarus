@@ -1484,17 +1484,17 @@ end;
   Design: A callback to the TTimer class is implemented.
  ------------------------------------------------------------------------------}
 function TGtkWidgetSet.CreateTimer(Interval: integer;
-  TimerFunc: TFNTimerProc) : THandle;
+  TimerProc: TWSTimerProc) : THandle;
 var
   TimerInfo: PGtkITimerinfo;
 begin
-  if ((Interval < 1) or (not Assigned(TimerFunc)))
+  if ((Interval < 1) or (not Assigned(TimerProc)))
   then
     Result := 0
   else begin
     New(TimerInfo);
     FillByte(TimerInfo^,SizeOf(TGtkITimerinfo),0);
-    TimerInfo^.TimerFunc := TimerFunc;
+    TimerInfo^.TimerFunc := TimerProc;
     {$IFDEF VerboseTimer}
     DebugLn(['TGtkWidgetSet.CreateTimer Interval=',dbgs(Interval)]);
     {$ENDIF}
@@ -1502,7 +1502,7 @@ begin
     if Result = 0 then
       Dispose(TimerInfo)
     else begin
-      TimerInfo^.TimerFunc := TimerFunc;
+      TimerInfo^.TimerFunc := TimerProc;
       TimerInfo^.TimerHandle:=Result;
       FTimerData.Add(TimerInfo);
     end;

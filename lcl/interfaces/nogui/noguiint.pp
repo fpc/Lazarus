@@ -61,7 +61,7 @@ type
     destructor Destroy; override;
 
     // create and destroy
-    function CreateTimer(Interval: integer; TimerFunc: TFNTimerProc) : THandle; override;
+    function CreateTimer(Interval: integer; TimerFunc: TWSTimerProc) : THandle; override;
     function DestroyTimer(TimerHandle: THandle) : boolean; override;
     procedure DestroyLCLComponent(Sender: TObject);virtual;
   public
@@ -137,7 +137,7 @@ begin
   inherited Destroy;
 end;
 
-function TNoGUIWidgetSet.CreateTimer(Interval: integer; TimerFunc: TFNTimerProc
+function TNoGUIWidgetSet.CreateTimer(Interval: integer; TimerFunc: TWSTimerProc
   ): THandle;
 begin
   Result:=0;

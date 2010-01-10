@@ -1273,6 +1273,41 @@ begin
 end;
 
 {------------------------------------------------------------------------------
+  Function: KillTimer
+  Params: hWnd:
+          uIDEvent:
+  Returns:
+
+ ------------------------------------------------------------------------------}
+function KillTimer(Wnd: HWND; uIDEvent: UINT_PTR): BOOL;
+var
+  MapID: record
+    case Boolean of
+      True: (nIDEvent: UINT_PTR; Wnd: HWND);
+      False: (filler: array[1..2] of Pointer);
+  end;
+  ID: Cardinal;
+  InfoPtr: PTimerInfo;
+begin
+  if MTimerMap = nil then Exit(False);
+  if MTimerInfo = nil then Exit(False);
+
+  // make sure all is zero
+  FillByte(MapID, SizeOf(MapID), 0);
+  MapID.Wnd := Wnd;
+  MapID.nIDEvent := uIdEvent;
+
+  if not MTimerMap.GetData(MapID, ID) then Exit(False);
+
+  InfoPtr := MTimerInfo.GetDataPtr(ID);
+  if InfoPtr = nil then Exit(False);
+
+  Result := Widgetset.DestroyTimer(InfoPtr^.Handle);
+  MTimerInfo.Delete(ID);
+  MTimerMap.Delete(MapID);
+end;
+
+{------------------------------------------------------------------------------
   Function: MakeLParam
   Params:
   Returns:
@@ -1448,6 +1483,76 @@ begin
   Info.nMAx := nMaxPos;
   SetScrollInfo(Handle, nBar, Info, bRedraw);
   Result := True;
+end;
+
+{------------------------------------------------------------------------------
+  Function: SetTimer
+  Params: hWnd:
+          nIDEvent:
+          uElapse:
+          lpTimerFunc:
+  Returns:
+
+ ------------------------------------------------------------------------------}
+function SetTimer(Wnd: HWND; nIDEvent: UINT_PTR; uElapse: UINT;  lpTimerFunc: TTimerProc): UINT_PTR;
+var
+  MapID: record
+    case Boolean of
+      True: (nIDEvent: UINT_PTR; Wnd: HWND);
+      False: (filler: array[1..2] of Pointer);
+  end;
+  ID: Cardinal;
+  Info: TTimerInfo;
+  InfoPtr: PTimerInfo;
+  Existing: Boolean;
+begin
+  if MTimerMap = nil
+  then MTimerMap := TMap.Create({$ifdef CPU32}itu8{$else}itu16{$endif}, SizeOf(Cardinal));
+  if MTimerInfo = nil
+  then MTimerInfo := TMap.Create(itu4, SizeOf(TTimerInfo));
+
+  // make sure all is zero
+  FillByte(MapID, SizeOf(MapID), 0);
+  MapID.Wnd := Wnd;
+  MapID.nIDEvent := nIdEvent;
+
+  Existing := MTimerMap.GetData(MapID, ID);
+  if Existing
+  then begin
+    InfoPtr := MTimerInfo.GetDataPtr(ID);
+    if InfoPtr = nil
+    then Existing := False
+    else Widgetset.DestroyTimer(InfoPtr^.Handle);
+  end;
+
+  if not Existing
+  then begin
+    // new id
+    Inc(MTimerSeq);
+    ID := MTimerSeq;
+    Info.Wnd := Wnd;
+    // for null windows we create an ID else the ID passed is used
+    if Wnd = 0
+    then Info.IDEvent := ID
+    else Info.IDEvent := nIdEvent;
+    MapID.nIDEvent := Info.IDEvent;
+    MTimerMap.Add(MapID, ID);
+    InfoPtr := @Info;
+  end;
+
+  InfoPtr^.TimerProc := lpTimerFunc;
+  InfoPtr^.Handle := WidgetSet.CreateTimer(uElapse, @TTimerID(PtrUInt(ID)).TimerNotify);
+
+  if not Existing
+  then MTimerInfo.Add(ID, Info); // add after all data is set
+
+  if InfoPtr^.Handle <> 0
+  then Exit(ID); // success
+
+  // cleanup
+  MTimerInfo.Delete(ID);
+  MTimerMap.Delete(MapID);
+  Result := 0;
 end;
 
 {------------------------------------------------------------------------------

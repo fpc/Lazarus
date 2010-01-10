@@ -556,7 +556,7 @@ begin
   inherited Create;
   FTerminating := False;
 
-  FTimerMap := TMap.Create(its4, SizeOf(TFNTimerProc));
+  FTimerMap := TMap.Create(its4, SizeOf(TWSTimerProc));
   FCurrentCursor := 0;
   FMainMenu := 0;
   FCaptureWidget := 0;
@@ -1217,7 +1217,7 @@ end;
  ------------------------------------------------------------------------------}
 procedure TimerCallback(inTimer: EventLoopTimerRef; inUserData: UnivPtr);
 var
-  TimerFunc: TFNTimerProc;
+  TimerFunc: TWSTimerProc;
 begin
   {$IFDEF VerboseTimer}
     DebugLn('TimerCallback');
@@ -1242,7 +1242,7 @@ end;
 
   Creates new timer with specified interval and callback function
  ------------------------------------------------------------------------------}
-function TCarbonWidgetSet.CreateTimer(Interval: integer; TimerFunc: TFNTimerProc): THandle;
+function TCarbonWidgetSet.CreateTimer(Interval: integer; TimerFunc: TWSTimerProc): THandle;
 var
   Timer: EventLoopTimerRef;
 begin

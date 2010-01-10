@@ -220,7 +220,7 @@ type
   PGtkITimerInfo = ^TGtkITimerinfo;
   TGtkITimerInfo = record
     TimerHandle: guint;        // the gtk handle for this timer
-    TimerFunc  : TFNTimerProc; // owner function to handle timer
+    TimerFunc  : TWSTimerProc; // owner function to handle timer
   end;
 
 var

@@ -30,7 +30,7 @@ unit Win32Def;
 interface
 
 uses
-  Windows, Classes, LCLType;
+  Windows, Classes, LCLType, Interfacebase;
 
 const
   // it is not good to use WM_USER since many programs use it.
@@ -41,7 +41,7 @@ type
   PWin32TimerInfo = ^TWin32Timerinfo;
   TWin32TimerInfo = record
     TimerID: UINT;         // the windows timer ID for this timer
-    TimerFunc: TFNTimerProc; // owner function to handle timer
+    TimerFunc: TWSTimerProc; // owner function to handle timer
   end;
 
 var

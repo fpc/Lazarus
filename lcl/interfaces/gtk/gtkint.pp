@@ -286,7 +286,7 @@ type
                              ConvertAmpersandsToUnderScores: Boolean) : PChar;
 
     // create and destroy
-    function CreateTimer(Interval: integer; TimerFunc: TFNTimerProc) : THandle; override;
+    function CreateTimer(Interval: integer; TimerProc: TWSTimerProc) : THandle; override;
     function DestroyTimer(TimerHandle: THandle) : boolean; override;
     procedure DestroyLCLComponent(Sender: TObject);virtual;
 

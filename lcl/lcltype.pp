@@ -67,6 +67,7 @@ type
   TUTF8Char = String[7];
 {$ENDIF USE_UTF8BIDI_LCL}
   UINT = LongWord;
+  UINT_PTR = PtrUInt;
 
   TTranslateString = type String;
 
@@ -2398,9 +2399,20 @@ type
 
 
 //------------------------------------------------------------------------------
-// prototype for timer callback
+//timer
 type
-  TFNTimerProc = procedure of object;
+  TTimerProc = procedure(hWnd: HWND; uMsg: UINT; idEvent: UINT_PTR; dwTime: DWORD); stdcall;
+
+  TLMTimer = record
+    Msg: Cardinal;
+    TimerID: LongWord;
+    TimerProc: TFarProc;
+    Result: LRESULT;
+  end;
+
+  // delphi
+  TFNTimerProc = TFarProc;
+
 
 //------------------------------------------------------------------------------
 // clipboard

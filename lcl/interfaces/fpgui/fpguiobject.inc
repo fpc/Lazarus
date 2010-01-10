@@ -23,11 +23,11 @@ type
   private
     FLCLTimer: TTimer;
     FTimer: TfpgTimer;
-    FCallback: TFNTimerProc;
+    FCallback: TWSTimerProc;
   protected
     procedure FPGTimer(Sender: TObject);
   public
-    constructor Create(AInterval: Integer; ACallbackFunc: TFNTimerProc);
+    constructor Create(AInterval: Integer; ACallbackFunc: TWSTimerProc);
     destructor  Destroy; override;
 
     property Timer : TfpgTimer read FTimer;
@@ -41,7 +41,7 @@ begin
     FCallback;
 end;
 
-constructor TFPGUITimer.Create(AInterval: Integer; ACallbackFunc: TFNTimerProc);
+constructor TFPGUITimer.Create(AInterval: Integer; ACallbackFunc: TWSTimerProc);
 begin
   FTimer := TfpgTimer.Create(AInterval);
   FTimer.OnTimer:=@FPGTimer;
@@ -91,7 +91,7 @@ end;
 
   Creates a new timer and sets the callback event.
  ------------------------------------------------------------------------------}
-function TFpGuiWidgetSet.CreateTimer(Interval: integer; TimerFunc: TFNTimerProc): THandle;
+function TFpGuiWidgetSet.CreateTimer(Interval: integer; TimerFunc: TWSTimerProc): THandle;
 var
   Timer: TFPGUITimer;
 begin
