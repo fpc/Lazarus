@@ -5362,18 +5362,45 @@ end;
 
 {------------------------------------------------------------------------------
   Method:  WindowFromPoint
-  Params:  Point -
-  Returns:
+  Params:  TPoint
+  Returns: The return value is a handle to the window that contains the param
+  point.
+  If no window exists at the given point, the return value is 0.
+  If the point is over a static text control,
+  the return value is a handle to the window under the static text control.
  ------------------------------------------------------------------------------}
 function TQtWidgetSet.WindowFromPoint(Point: TPoint): HWND;
 var
   Widget: QWidgetH;
+  AForm: TCustomForm;
 begin
-  Widget := QApplication_topLevelAt(Point.x, Point.y);
+  Widget := QApplication_widgetAt(Point.x, Point.y);
   if Widget <> nil then
-    Result := HWND(QtObjectFromWidgetH(Widget))
-  else
-    Result := 0;
+  begin
+    Result := HWND(QtObjectFromWidgetH(Widget));
+    if (Result <> 0) and not
+     (TQtWidget(Result) is TQtMainWindow) and
+     (TQtWidget(Result).LCLObject <> nil) then
+    begin
+      AForm := GetParentForm(TQtWidget(Result).LCLObject);
+      if AForm <> nil then
+        Result := AForm.Handle;
+    end else
+    begin
+      Widget := QApplication_topLevelAt(Point.x, Point.y);
+      if Widget <> nil then
+        Result := HWND(QtObjectFromWidgetH(Widget))
+      else
+        Result := 0;
+    end;
+  end else
+  begin
+    Widget := QApplication_topLevelAt(Point.x, Point.y);
+    if Widget <> nil then
+      Result := HWND(QtObjectFromWidgetH(Widget))
+    else
+      Result := 0;
+  end;
 end;
 
 //##apiwiz##eps##   // Do not remove, no wizard declaration after this line
