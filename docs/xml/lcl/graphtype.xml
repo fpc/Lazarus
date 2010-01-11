@@ -77,8 +77,8 @@
       </element>
       <!-- enumeration type Visibility: default -->
       <element name="TRawImageColorFormat">
-        <short/>
-        <descr/>
+        <short>A raw image can contain RGBA or monochrome pixels.</short>
+        <descr>ricfNone indicates an uninitialized image.</descr>
         <seealso/>
       </element>
       <!-- enumeration value Visibility: default -->
@@ -91,7 +91,7 @@
       </element>
       <!-- enumeration type Visibility: default -->
       <element name="TRawImageByteOrder">
-        <short/>
+        <short>The LSB/MSB-first byte order of pixel data.</short>
         <descr/>
         <seealso/>
       </element>
@@ -105,71 +105,77 @@
       </element>
       <!-- enumeration type Visibility: default -->
       <element name="TRawImageBitOrder">
-        <short/>
+        <short>The first pixel in a raw image line can be the left or right pixel of the displaye image.</short>
         <descr/>
         <seealso/>
       </element>
       <!-- enumeration value Visibility: default -->
       <element name="TRawImageBitOrder.riboBitsInOrder">
-        <short/>
+        <short>Bit 0 represents first pixel[?]</short>
       </element>
       <!-- enumeration value Visibility: default -->
       <element name="TRawImageBitOrder.riboReversedBits">
-        <short/>
+        <short>Bit 0 represents highest pixel[?]</short>
       </element>
       <!-- enumeration type Visibility: default -->
       <element name="TRawImageLineEnd">
-        <short/>
+        <short>The alignment of raw image scanlines.</short>
         <descr/>
         <seealso/>
       </element>
       <!-- enumeration value Visibility: default -->
       <element name="TRawImageLineEnd.rileTight">
-        <short/>
+        <short>Scanlines can begin inside a byte.</short>
       </element>
       <!-- enumeration value Visibility: default -->
       <element name="TRawImageLineEnd.rileByteBoundary">
-        <short/>
+        <short>Scanlines start at a byte boundary.</short>
       </element>
       <!-- enumeration value Visibility: default -->
       <element name="TRawImageLineEnd.rileWordBoundary">
-        <short/>
+        <short>Scanlines start at a 16 bit boundary.</short>
       </element>
       <!-- enumeration value Visibility: default -->
       <element name="TRawImageLineEnd.rileDWordBoundary">
-        <short/>
+        <short>Scanlines start at a 32 bit (DWORD) boundary.</short>
       </element>
       <!-- enumeration value Visibility: default -->
       <element name="TRawImageLineEnd.rileQWordBoundary">
-        <short/>
+        <short>Scanlines start at a 64 bit (QWORD) boundary.</short>
       </element>
       <!-- enumeration type Visibility: default -->
       <element name="TRawImageLineOrder">
-        <short/>
+        <short>The first stored line of pixels can represent the logical top or bottom of the displayed image.</short>
         <descr/>
         <seealso/>
       </element>
       <!-- enumeration value Visibility: default -->
       <element name="TRawImageLineOrder.riloTopToBottom">
-        <short/>
+        <short>First scanline at the top</short>
       </element>
       <!-- enumeration value Visibility: default -->
       <element name="TRawImageLineOrder.riloBottomToTop">
-        <short/>
+        <short>First scanline at the bottom</short>
       </element>
       <!-- record type Visibility: default -->
       <element name="TRawImageDescription">
-        <short>
-          <var>TRawImageDescription</var> - a descriptor record for Raw Images</short>
-        <descr>Note: not all devices/images have all parts at any time. But if a part can be applied to the device/image, the 'Description' describes its structure.
-</descr>
-        <seealso/>
+        <short>Descriptor object for the image format of devices and raw (uncompressed) image data</short>
+        <descr>This effectivley is a record with some attached methods. More related procedures exist outside the object. [where?]
+
+The object describes the presence and exact storage of the RGBA image and mask pixels, of a device or image. The color information is stored in aligned scanlines.
+
+Note: palettes, BitOrder and ByteOrder seem not to be implemented yet. The meaning of the PaletteXXX values and of BitOrder is undefined, so far.
+
+xxxBitsPerPixel and xxxPrecisionMask applies to color data. For masked images, the pixels and the mask are two different arrays, containing different elements.</descr>
+        <seealso>
+          <link id="TRawImage"/>
+        </seealso>
       </element>
       <!-- variable Visibility: default -->
       <element name="TRawImageDescription.Format">
-        <short>
-          <var>Format</var> - whether RGB+/- Alpha or greyscale, or uninitialised</short>
-        <descr/>
+        <short>An initialized image can contain color (RGBA) or monochrome pixels.</short>
+        <descr>
+          <var>ricfNone</var> indicates an uninitialized image.</descr>
         <seealso/>
       </element>
       <!-- variable Visibility: default -->
@@ -180,50 +186,46 @@
       </element>
       <!-- variable Visibility: default -->
       <element name="TRawImageDescription.Depth">
-        <short>
-          <var>Depth</var> - used bits per pixel</short>
-        <descr/>
+        <short>Number of used bits per pixel</short>
+        <descr>The color and pixel storage can be subject to alignment, so that the logical color Depth can be less than the physical BitsPerPixel.
+
+[What if a palette is used?]</descr>
         <seealso/>
       </element>
       <!-- variable Visibility: default -->
       <element name="TRawImageDescription.Width">
-        <short>
-          <var>Width</var> of the image</short>
+        <short>Width of the image in pixels</short>
         <descr/>
         <seealso/>
       </element>
       <!-- variable Visibility: default -->
       <element name="TRawImageDescription.Height">
-        <short>
-          <var>Height</var> of the image</short>
+        <short>Height of the image in pixels.</short>
         <descr/>
         <seealso/>
       </element>
       <!-- variable Visibility: default -->
       <element name="TRawImageDescription.PaletteColorCount">
-        <short>
-          <var>PaletteColorCount</var> - entries in color palette. 0 when no palette.</short>
+        <short>Number of entries in the color palette. 0 when no palette is present.</short>
         <descr/>
         <seealso/>
       </element>
       <!-- variable Visibility: default -->
       <element name="TRawImageDescription.BitOrder">
-        <short>
-          <var>BitOrder</var> - whether bit 0 or bit 7 is stored first</short>
+        <short>[unusable by definition]</short>
         <descr/>
         <seealso/>
       </element>
       <!-- variable Visibility: default -->
       <element name="TRawImageDescription.ByteOrder">
-        <short>
-          <var>ByteOrder</var> - whether Most Significant Byte (MSB) or Least SB is stored first</short>
+        <short>The LSB/MSB-first byte order of color data.</short>
         <descr/>
         <seealso/>
+        <errors>[Not yet implemented]</errors>
       </element>
       <!-- variable Visibility: default -->
       <element name="TRawImageDescription.LineOrder">
-        <short>
-          <var>LineOrder</var> - whether line 0 represents the top or the bottom line</short>
+        <short>The first stored line of pixels can represent the logical top or bottom of the displayed image.</short>
         <descr/>
         <seealso/>
       </element>
@@ -235,71 +237,62 @@
       </element>
       <!-- variable Visibility: default -->
       <element name="TRawImageDescription.BitsPerPixel">
-        <short>Bits stored per pixel</short>
+        <short>Number of bits stored per pixel</short>
         <descr>
           <var>BitsPerPixel</var> can be greater than the logical (used) <var>Depth</var>.</descr>
         <seealso/>
       </element>
       <!-- variable Visibility: default -->
       <element name="TRawImageDescription.LineEnd">
-        <short>
-          <var>LineEnd</var> - whether lines end at Byte, Word, Double or Quad Word (etc) boundary, or there is no gap at the end of a line</short>
+        <short>Alignment of the scanlines.</short>
         <descr/>
         <seealso/>
       </element>
       <!-- variable Visibility: default -->
       <element name="TRawImageDescription.RedPrec">
-        <short>
-          <var>RedPrec</var> - number of bits of precision for red</short>
+        <short>Bits per pixel in the Red channel</short>
         <descr/>
         <seealso/>
       </element>
       <!-- variable Visibility: default -->
       <element name="TRawImageDescription.RedShift">
-        <short>
-          <var>RedShift</var> number of bits to shift red (least to most significant)</short>
+        <short>Bit offset of the Red channel in color data.</short>
         <descr/>
         <seealso/>
       </element>
       <!-- variable Visibility: default -->
       <element name="TRawImageDescription.GreenPrec">
-        <short>
-          <var>GreenPrec</var> - number of bits of precision for green</short>
+        <short>Bits per pixel in the Green channel</short>
         <descr/>
         <seealso/>
       </element>
       <!-- variable Visibility: default -->
       <element name="TRawImageDescription.GreenShift">
-        <short>
-          <var>GreenShift</var> number of bits to shift green (least to most significant)</short>
+        <short>Bit offset of the Green channel in color data.</short>
         <descr/>
         <seealso/>
       </element>
       <!-- variable Visibility: default -->
       <element name="TRawImageDescription.BluePrec">
-        <short>
-          <var>BluePrec</var> - number of bits of precision for blue</short>
+        <short>Bits per pixel in the Blue channel</short>
         <descr/>
         <seealso/>
       </element>
       <!-- variable Visibility: default -->
       <element name="TRawImageDescription.BlueShift">
-        <short>
-          <var>BlueShift</var> number of bits to shift blue (least to most significant)</short>
+        <short>Bit offset of the Blue channel in color data.</short>
         <descr/>
         <seealso/>
       </element>
       <!-- variable Visibility: default -->
       <element name="TRawImageDescription.AlphaPrec">
-        <short>
-          <var>AlphaPrec</var> - number of bits of precision for alpha</short>
+        <short>Bits per pixel in the Alpha channel</short>
         <descr/>
         <seealso/>
       </element>
       <!-- variable Visibility: default -->
       <element name="TRawImageDescription.AlphaShift">
-        <short>
-          <var>AlphaShift</var> number of bits to shift alpha (least to most significant)</short>
+        <short>Bit offset of the Alpha channel in color data.</short>
         <descr/>
         <seealso/>
       </element>
@@ -335,17 +328,15 @@
       </element>
       <!-- pointer type Visibility: default -->
       <element name="PRawImageDescription">
-        <short>
-          <var>PRawImageDescription</var> - pointer to <var>TRawImageDescription</var>
+        <short>Pointer to <link id="TRawImageDescription"/>
         </short>
         <descr/>
         <seealso/>
       </element>
       <!-- record type Visibility: default -->
       <element name="TRawImage">
-        <short>
-          <var>TRawImage</var> a Raw Image (such as a digital photograph before compression)</short>
-        <descr/>
+        <short>An uncompressed graphics image (bitmap)</short>
+        <descr>This object hold the pixels, mask and color palette of the image, as well as a detailed <link id="TRawImageDescription">description</link> of the storage format of these parts.</descr>
         <seealso/>
       </element>
       <!-- variable Visibility: default -->
@@ -407,9 +398,8 @@
       </element>
       <!-- record type Visibility: default -->
       <element name="TRawImagePosition">
-        <short>
-          <var>TRawImagePosition</var> - record describing the position of a Raw Image</short>
-        <descr/>
+        <short>Record describing a position in Raw Image data</short>
+        <descr>Byte is the byte offset, Bit the bit number/offset in that byte.</descr>
         <seealso/>
       </element>
       <!-- variable Visibility: default -->
@@ -775,53 +765,46 @@
         <seealso/>
       </element>
       <element name="TRawImageDescription.MaskBitsPerPixel">
-        <short>
-          <var>MaskBitsPerPixel</var> - bits per mask pixel, usually 1, 0 when no mask</short>
-        <descr>
-          <p>Values are only valid, if there is a mask (MaskBitsPerPixel &gt; 0)</p>
-          <p>Masks are always separate with a depth of 1 bpp. One pixel can occupy one byte at most</p>
-          <p>A value of 1 means that pixel is masked; a value of 0 means the pixel value is shown </p>
-        </descr>
+        <short>Bits per mask pixel, 0 when no mask is present.</short>
+        <descr>A pixel Mask (currently) has a logical depth of 1 bit per pixel, but a pixel can occupy an entire byte[?]
+
+As opposed to the Alpha (transparency) channel, a Mask is stored in its own array. [of bits or bytes?]
+
+A Mask value of 1 means that the pixel is masked (transparent); a value of 0 means the pixel value is shown (opaque).</descr>
       </element>
       <element name="TRawImageDescription.MaskShift">
-        <short>
-          <var>MaskShift</var> - the shift (=position) of the mask bit</short>
+        <short>The bit offset of the mask bit [if stored in a byte?]</short>
       </element>
       <element name="TRawImageDescription.MaskLineEnd">
-        <short>
-          <var>MaskLineEnd</var> - how the line is to be ended</short>
+        <short>Alignment of Mask lines.</short>
       </element>
       <element name="TRawImageDescription.MaskBitOrder">
-        <short>
-          <var>MaskBitOrder</var> - bit order to use for the mask</short>
+        <short>Bit order of the Mask.</short>
       </element>
       <element name="TRawImageDescription.PaletteBitsPerIndex">
-        <short>
-          <var>PaletteBitsPerIndex</var> - bits per palette index, this can be larger than the colors used</short>
+        <short>Bits per palette index, stored in the pixel data[?]</short>
+        <descr>When a palette is used, [I suppose that] the color description fields apply to the palette colors, while pixel data contains the palette index. Then Depth applies to the size of the palette colors, and the pixel data is described by PaletteBitsPerIndex and PaletteShift[?]</descr>
+        <errors>[palettes are not yet implemented]</errors>
       </element>
       <element name="TRawImageDescription.PaletteShift">
-        <short>
-          <var>PaletteShift</var> - bitshift. Direction: from least to most significant</short>
+        <short>[useless by definition]</short>
       </element>
       <element name="TRawImageDescription.PaletteLineEnd">
-        <short>
-          <var>PaletteLineEnd</var> - how lines are ended in the palette</short>
+        <short>Alignment of [what?]</short>
+        <descr>The wording suggests that the PaletteXYZ fields apply to the pixel data (palette indices), not to the palette itself. A palette is not organized in lines...</descr>
       </element>
       <element name="TRawImageDescription.PaletteBitOrder">
-        <short>
-          <var>PaletteBitOrder</var> - bit order for the palette</short>
+        <short>Bit order of the palette indices[?]</short>
       </element>
       <element name="TRawImageDescription.PaletteByteOrder">
-        <short>
-          <var>PaletteByteOrder</var> - byte order for the palette</short>
+        <short>Byte order of the palette indices[?]</short>
       </element>
       <element name="TRawImageDescription.Init">
-        <short>
-          <var>Init</var> - initialise the image descriptor. Don't use a contructor here, it will break compatibility with a record</short>
+        <short>Initialize the image descriptor to all zeroes.</short>
+        <descr>A constructor cannot be used here, it would break compatibility with a record.</descr>
       </element>
       <element name="TRawImageDescription.Init_BPP24_B8G8R8_BIO_TTB">
-        <short>
-          <var>Init_BPP24_B8G8R8_BIO_TTB</var> - initiator for specified format</short>
+        <short>Init for an unmasked 24 bit RGB image (LSB Blue).</short>
         <descr>
           <p>Init_BPP24_B8G8R8_BIO_TTB - initiator for specified format</p>
           <pre>{ pf24bit:
@@ -835,8 +818,7 @@
         </descr>
       </element>
       <element name="TRawImageDescription.Init_BPP24_B8G8R8_M1_BIO_TTB">
-        <short>
-          <var>Init_BPP24_B8G8R8_M1_BIO_TTB </var>- initiator for specfied format</short>
+        <short>Init for a masked 24 bit RGB image (LSB Blue)</short>
         <descr>
           <p>Init_BPP24_B8G8R8_M1_BIO_TTB - initiator for specfied format</p>
           <pre>{ pf24bit:
@@ -851,8 +833,7 @@
         </descr>
       </element>
       <element name="TRawImageDescription.Init_BPP32_B8G8R8_BIO_TTB">
-        <short>
-          <var>Init_BPP32_B8G8R8_BIO_TTB</var> - initiator for specified format</short>
+        <short>Init for an unmasked 32 bit RGB image (LSB blue)</short>
         <descr>
           <p>
             <var>Init_BPP32_B8G8R8_BIO_TTB</var> - initiator for specified format</p>
@@ -869,8 +850,7 @@
         </descr>
       </element>
       <element name="TRawImageDescription.Init_BPP32_B8G8R8_M1_BIO_TTB">
-        <short>
-          <var>Init_BPP32_B8G8R8_M1_BIO_TTB</var> - initiator for specified format</short>
+        <short>Init for a masked 32 bit RGB image (LSB blue)</short>
         <descr>
           <p>
             <var>Init_BPP32_B8G8R8_M1_BIO_TTB</var> - initiator for specified format</p>
@@ -888,8 +868,7 @@
         </descr>
       </element>
       <element name="TRawImageDescription.Init_BPP32_B8G8R8A8_BIO_TTB">
-        <short>
-          <var>Init_BPP32_B8G8R8A8_BIO_TTB</var> - initiator for specified format</short>
+        <short>Init for an unmasked 32 bit RGBA image (LSB blue)</short>
         <descr>
           <p>
             <var>Init_BPP32_B8G8R8A8_BIO_TTB</var> - initiator for specified format</p>
@@ -907,8 +886,7 @@
         </descr>
       </element>
       <element name="TRawImageDescription.Init_BPP32_B8G8R8A8_M1_BIO_TTB">
-        <short>
-          <var>Init_BPP32_B8G8R8A8_M1_BIO_TTB</var> - initiator for specified format</short>
+        <short>Init for a masked 32 bit RGBA image (LSB blue)</short>
         <descr>
           <p>
             <var>Init_BPP32_B8G8R8A8_M1_BIO_TTB</var> - initiator for specified format</p>
@@ -926,24 +904,22 @@
         </descr>
       </element>
       <element name="TRawImageDescription.GetDescriptionFromMask">
-        <short>
-          <var>GetDescriptionFromMask</var> - returns an image descriptor obtained from the mask</short>
+        <short>Returns an monochrome image descriptor constructed from the Mask</short>
       </element>
       <element name="TRawImageDescription.GetDescriptionFromAlpha">
-        <short>
-          <var>GetDescriptionFromAlpha</var> - returns an image descriptor obtained from the Alpha</short>
+        <short>Returns an monochrome image descriptor constructed from the Alpha channel</short>
       </element>
       <element name="TRawImageDescription.BytesPerLine">
-        <short>The number of <var>BytesPerLine</var>. Returns a pointer</short>
+        <short>The number of bytes per scanline.</short>
       </element>
       <element name="TRawImageDescription.BitsPerLine">
-        <short>The number of <var>BitsPerLine</var>. Returns a pointer</short>
+        <short>The number of bits per scanline.</short>
       </element>
       <element name="TRawImageDescription.MaskBytesPerLine">
-        <short>The number of <var>MaskBytesPerLine</var>. Returns a pointer</short>
+        <short>The number of bytes per Mask scanline.</short>
       </element>
       <element name="TRawImageDescription.MaskBitsPerLine">
-        <short>The number of <var>MaskBitsPerLine</var>. Returns a pointer</short>
+        <short>The number of bits per Mask scanline.</short>
       </element>
       <element name="TRawImageDescription.AsString">
         <short>
@@ -1038,6 +1014,12 @@
       <element name="CopyImageData">
         <short>
           <var>CopyImageData</var> - copies data from <var>ASource</var> to <var>ADestination</var>, returning True if successful</short>
+      </element>
+      <element name="TRawImageLineEnd.rileDQWordBoundary">
+        <short>Scanlines start at a 128 bit boundary.</short>
+      </element>
+      <element name="TRawImageQueryFlag">
+        <short>Image formats supported by a device, or present in image data[?]</short>
       </element>
     </module>
     <!-- GraphType -->

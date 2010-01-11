@@ -14551,7 +14551,7 @@ the comparision is case sensitive.
       <!-- function Visibility: protected -->
       <element name="TCustomTreeView.CanCollapse">
         <short>
-          <var>CanCollapse</var> returns True if a given  TreeNode is able to be collapsed</short>
+          <var>CanCollapse</var> returns True if a given TreeNode is able to be collapsed</short>
         <descr/>
         <errors/>
         <seealso/>
@@ -15979,9 +15979,14 @@ the comparision is case sensitive.
       <!-- property Visibility: public -->
       <element name="TCustomTreeView.TopItem">
         <short>
-          <var>TopItem</var> - the first node on the list</short>
-        <descr/>
-        <seealso/>
+          <var>TopItem</var> - the first visible node of the tree</short>
+        <descr>
+          <p>Use <var>TopItem</var> to get the topmost visible node. It is usually needed when tree view contains many nodes and scroll bar is requred to display them all. If you need the first node of the tree regardless of visibility use <var>Items</var>[0]</p>
+        </descr>
+        <seealso>
+          <link id="#lcl.ComCtrls.TCustomListview.Items">TCustomTreeView.Items</link>
+          <link id="#lcl.ComCtrls.TCustomListview.TCustomTreeView.GetNodeAtY">TCustomTreeView.GetNodeAtY</link>
+        </seealso>
       </element>
       <!-- property Visibility: public -->
       <element name="TCustomTreeView.TreeLineColor">
