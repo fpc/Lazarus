@@ -114,6 +114,7 @@ const
     'lrs',
     'res'
   );
+
 function StrToResourceType(const s: string): TResourceType;
 
 implementation
@@ -493,8 +494,8 @@ begin
     SetDeleteValue(Path+'VersionInfo/CurrentMinorRevNr/Value', VersionInfo.MinorRevNr,0);
     SetDeleteValue(Path+'VersionInfo/CurrentBuildNr/Value', VersionInfo.BuildNr,0);
     SetDeleteValue(Path+'VersionInfo/ProjectVersion/Value', VersionInfo.ProductVersionString,'1.0.0.0');
-    SetDeleteValue(Path+'VersionInfo/Language/Value', VersionInfo.HexLang,'0409');
-    SetDeleteValue(Path+'VersionInfo/CharSet/Value', VersionInfo.HexCharSet,'04E4');
+    SetDeleteValue(Path+'VersionInfo/Language/Value', VersionInfo.HexLang,DefaultLanguage);
+    SetDeleteValue(Path+'VersionInfo/CharSet/Value', VersionInfo.HexCharSet,DefaultCharset);
     SetDeleteValue(Path+'VersionInfo/Comments/Value', VersionInfo.CommentsString,'');
     SetDeleteValue(Path+'VersionInfo/CompanyName/Value', VersionInfo.CompanyString,'');
     SetDeleteValue(Path+'VersionInfo/FileDescription/Value', VersionInfo.DescriptionString,'');
@@ -523,8 +524,8 @@ begin
     VersionInfo.MinorRevNr := GetValue(Path+'VersionInfo/CurrentMinorRevNr/Value', 0);
     VersionInfo.BuildNr := GetValue(Path+'VersionInfo/CurrentBuildNr/Value', 0);
     VersionInfo.ProductVersionString := GetValue(Path+'VersionInfo/ProjectVersion/Value', '1.0.0.0');
-    VersionInfo.HexLang := GetValue(Path+'VersionInfo/Language/Value', '0409');
-    VersionInfo.HexCharSet := GetValue(Path+'VersionInfo/CharSet/Value', '04E4');
+    VersionInfo.HexLang := GetValue(Path+'VersionInfo/Language/Value', DefaultLanguage);
+    VersionInfo.HexCharSet := GetValue(Path+'VersionInfo/CharSet/Value', DefaultCharset);
     VersionInfo.CommentsString := LineBreaksToSystemLineBreaks(GetValue(Path+'VersionInfo/Comments/Value', ''));
     VersionInfo.CompanyString := LineBreaksToSystemLineBreaks(GetValue(Path+'VersionInfo/CompanyName/Value', ''));
     VersionInfo.DescriptionString := LineBreaksToSystemLineBreaks(GetValue(Path+'VersionInfo/FileDescription/Value', ''));

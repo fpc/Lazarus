@@ -116,6 +116,10 @@ function MSHexLanguages: TStringList;
 function MSCharacterSets: TStringList;
 function MSHexCharacterSets: TStringList;
 
+const
+  DefaultLanguage  = '0409';
+  DefaultCharSet   = '04E4';
+
 implementation
 
 var
@@ -275,6 +279,8 @@ var
   ARes: TVersionResource;
   st: TVersionStringTable;
   ti: TVerTranslationInfo;
+  lang: String;
+  charset: String;
 begin
   Result := True;
   if UseVersionInfo then
@@ -284,7 +290,12 @@ begin
     ARes.FixedInfo.FileVersion := FVersion;
     ARes.FixedInfo.ProductVersion := ExtractProductVersion;
 
-    st := TVersionStringTable.Create(HexLang + HexCharSet);
+    lang:=HexLang;
+    if lang='' then lang:=DefaultLanguage;
+    charset:=HexCharSet;
+    if charset='' then charset:=DefaultCharSet;
+
+    st := TVersionStringTable.Create(lang + charset);
     st.Add('Comments', Utf8ToAnsi(CommentsString));
     st.Add('CompanyName', Utf8ToAnsi(CompanyString));
     st.Add('FileDescription', Utf8ToAnsi(DescriptionString));
@@ -297,8 +308,8 @@ begin
     st.Add('ProductVersion', StringReplace(Utf8ToAnsi(ProductVersionString), ',', '.', [rfReplaceAll]));
     ARes.StringFileInfo.Add(st);
 
-    ti.language := StrToInt('$'+HexLang);
-    ti.codepage := StrToInt('$'+HexCharSet);
+    ti.language := StrToInt('$'+lang);
+    ti.codepage := StrToInt('$'+charset);
     ARes.VarFileInfo.Add(ti);
     AResources.AddSystemResource(ARes);
   end;
