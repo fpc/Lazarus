@@ -3504,7 +3504,7 @@ begin
     QtKey_F35: Result := VK_UNKNOWN;
     QtKey_Super_L: Result := VK_LWIN;
     QtKey_Super_R: Result := VK_RWIN;
-    QtKey_Menu: Result := VK_MENU;
+    QtKey_Menu: Result := VK_APPS;
     QtKey_Hyper_L,
     QtKey_Hyper_R: Result := VK_UNKNOWN;
     QtKey_Help: Result := VK_HELP;
