@@ -303,7 +303,6 @@ function OpenURL(AURL: string): Boolean;
 var
   cf: CFStringRef;
   url: CFURLRef;
-  w : WideString;
 begin
   if AURL = '' then
     Exit(False);

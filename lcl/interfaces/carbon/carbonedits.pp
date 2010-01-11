@@ -509,13 +509,15 @@ end;
 function TCarbonControlWithEdit.SetText(const S: String): Boolean;
 var
   CFString: CFStringRef;
+  Res     : Boolean;
 begin
   Result := False;
   if GetEditPart < 0 then Exit;
   
   CreateCFString(S, CFString);
-  // S is not valid UTF8 string, creating an empty string to erase the content
-  if not Assigned(CFString) then
+  Res:=Assigned(CFString);
+  if not Res then
+    // S is not valid UTF8 string, creating an empty string to erase the content
     CreateCFString('', CFString);
 
   try
@@ -524,7 +526,7 @@ begin
         SizeOf(CFStringRef), @CFString),
       Self, SSetText, SSetData) then Exit;
       
-    Result := True;
+    Result := Res;
   finally
     FreeCFString(CFString);
   end;
