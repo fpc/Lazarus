@@ -510,6 +510,7 @@ function TCarbonControlWithEdit.SetText(const S: String): Boolean;
 var
   CFString: CFStringRef;
   Res     : Boolean;
+  utf8  : String;
 begin
   Result := False;
   if GetEditPart < 0 then Exit;
@@ -517,8 +518,14 @@ begin
   CreateCFString(S, CFString);
   Res:=Assigned(CFString);
   if not Res then
-    // S is not valid UTF8 string, creating an empty string to erase the content
-    CreateCFString('', CFString);
+  begin
+    // the string contains utf8 invalid characters. trying to convert it to utf8 first
+    utf8:=AnsiToUtf8(S);
+    CreateCFString(utf8, CFString);
+    Res:=Assigned(CFString);
+    // if CFString cannot be created even for the converted string, clear the content and return False
+    if not Res then CreateCFString('', CFString);
+  end;
 
   try
     if OSError(
