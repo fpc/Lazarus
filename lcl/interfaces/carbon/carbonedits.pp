@@ -514,6 +514,10 @@ begin
   if GetEditPart < 0 then Exit;
   
   CreateCFString(S, CFString);
+  // S is not valid UTF8 string, creating an empty string to erase the content
+  if not Assigned(CFString) then
+    CreateCFString('', CFString);
+
   try
     if OSError(
       SetControlData(ControlRef(Widget), GetEditPart, kControlEditTextCFStringTag,
