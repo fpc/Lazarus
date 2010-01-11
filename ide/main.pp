@@ -4219,8 +4219,10 @@ begin
       OnSaveIDEOptions:=@Self.OnSaveIDEOptions;
       ReadAll;
     end;
-    if IDEOptionsDialog.ShowModal = mrOk then
+    if IDEOptionsDialog.ShowModal = mrOk then begin
       IDEOptionsDialog.WriteAll;
+      SourceNotebook.ReloadEditorOptions;
+    end;
   finally
     IDEOptionsDialog.Free;
   end;
