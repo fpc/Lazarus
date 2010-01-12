@@ -4948,9 +4948,9 @@ begin
   DiskLineEnding:=StringReplace(StringReplace(DiskLineEnding,#13,'CR',[rfReplaceAll]),#10,'LF',[rfReplaceAll]);
   //DebugLn(['TSourceNotebook.UpdateEncodingMenuItems ',Encoding]);
   List:=TStringList.Create;
-  List.add('LF');
+  List.add('LF (Unix)');
   List.add('CR');
-  List.add('CRLF');
+  List.add('CRLF (DOS/Win)');
   for i:=0 to List.Count-1 do begin
     CurName:='LineEnding'+IntToStr(i);
     CurLineEnding:=List[i];
