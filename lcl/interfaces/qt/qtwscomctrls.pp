@@ -162,7 +162,8 @@ type
 
   TQtWSProgressBar = class(TWSProgressBar)
   protected
-    class procedure SetRangeStyle(AProgressBar: TQtProgressBar; AStyle: TProgressBarStyle; AMin, AMax: Integer);
+    class procedure SetRangeStyle(AProgressBar: TQtProgressBar;
+      AStyle: TProgressBarStyle; AMin, AMax: Integer; const AIsDesign: Boolean);
   published
     class function CreateHandle(const AWinControl: TWinControl; const AParams: TCreateParams): TLCLIntfHandle; override;
     class procedure ApplyChanges(const AProgressBar: TCustomProgressBar); override;
@@ -385,7 +386,7 @@ end;
 { TQtWSProgressBar }
 
 class procedure TQtWSProgressBar.SetRangeStyle(AProgressBar: TQtProgressBar;
-  AStyle: TProgressBarStyle; AMin, AMax: Integer);
+  AStyle: TProgressBarStyle; AMin, AMax: Integer; const AIsDesign: Boolean);
 begin
   if AStyle = pbstNormal then
   begin
@@ -395,7 +396,7 @@ begin
       AProgressBar.setRange(AMin, AMax)
   end
   else
-    AProgressBar.setRange(0, 0);
+    AProgressBar.setRange(0, Integer(AIsDesign));
 end;
 
 class function TQtWSProgressBar.CreateHandle(const AWinControl: TWinControl; const AParams: TCreateParams): TLCLIntfHandle;
@@ -441,7 +442,9 @@ begin
   QtProgressBar.setTextVisible(AProgressBar.BarShowText);
 
   // The position, minumum and maximum values
-  SetRangeStyle(QtProgressBar, AProgressBar.Style, AProgressBar.Min, AProgressBar.Max);
+  SetRangeStyle(QtProgressBar, AProgressBar.Style,
+    AProgressBar.Min, AProgressBar.Max,
+    csDesigning in AProgressBar.ComponentState);
   QtProgressBar.setValue(AProgressBar.Position);
 end;
 
@@ -459,7 +462,8 @@ begin
     Exit;
   QProgressBar := TQtProgressBar(AProgressBar.Handle);
   QProgressBar.reset;
-  SetRangeStyle(QProgressBar, NewStyle, AProgressBar.Min, AProgressBar.Max);
+  SetRangeStyle(QProgressBar, NewStyle, AProgressBar.Min, AProgressBar.Max,
+    csDesigning in AProgressBar.ComponentState);
   if NewStyle = pbstNormal then
     QProgressBar.setValue(AProgressBar.Position);
 end;
