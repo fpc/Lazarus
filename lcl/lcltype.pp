@@ -1966,10 +1966,6 @@ const
   RT_GROUP_CURSOR = Windows.RT_GROUP_CURSOR;
   RT_GROUP_ICON = Windows.RT_GROUP_ICON;
   RT_VERSION = Windows.RT_VERSION;
-  RT_ANICURSOR = Windows.RT_ANICURSOR;
-  RT_ANIICON = Windows.RT_ANIICON;
-  RT_HTML = Windows.RT_HTML;
-  RT_MANIFEST = Windows.RT_MANIFEST;
 {$else}
   RT_CURSOR = TResourceType(1);
   RT_BITMAP = TResourceType(2);
@@ -1985,12 +1981,20 @@ const
   RT_GROUP_CURSOR = TResourceType(12);
   RT_GROUP_ICON = TResourceType(14);
   RT_VERSION = TResourceType(16);
+{$endif}
+
+  // The following resource types are not available in Windows CE
+{$ifdef mswindows}
+  RT_ANICURSOR = Windows.RT_ANICURSOR;
+  RT_ANIICON = Windows.RT_ANIICON;
+  RT_HTML = Windows.RT_HTML;
+  RT_MANIFEST = Windows.RT_MANIFEST;
+{$else}
   RT_ANICURSOR = TResourceType(21);
   RT_ANIICON = TResourceType(22);
   RT_HTML = TResourceType(23);
   RT_MANIFEST = TResourceType(24);
 {$endif}
-
 
 type
   TFarProc = Pointer;

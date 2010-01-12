@@ -30,7 +30,7 @@ unit WinCEDef;
 interface
 
 uses
-  Windows, CTypes, Classes, LCLType;
+  Windows, CTypes, Classes, LCLType, Interfacebase;
 
 const
 // Used by TCalendar
