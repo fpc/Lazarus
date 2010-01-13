@@ -30,10 +30,6 @@ interface
 {$ifdef Trace}
 {$ASSERTIONS ON}
 {$endif}
-{$IFNDEF VER2_2}
-  {$DEFINE OverrideClipping}
-{$ENDIF}
-
 
 uses
   SysUtils, Math, Types, Classes, FPCAdds,
@@ -1030,8 +1026,8 @@ type
   protected
     function GetClipRect: TRect; override;
     procedure SetClipRect(const ARect: TRect); override;
-    function GetClipping: Boolean; {$ifdef OverrideClipping}override;{$endif}
-    procedure SetClipping(const AValue: boolean); {$ifdef OverrideClipping}override;{$endif}
+    function GetClipping: Boolean; override;
+    procedure SetClipping(const AValue: boolean); override;
     function GetPixel(X,Y: Integer): TColor; virtual;
     procedure CreateBrush; virtual;
     procedure CreateFont; virtual;
@@ -1124,9 +1120,6 @@ type
     function HandleAllocated: boolean; virtual;
     function GetUpdatedHandle(ReqState: TCanvasState): HDC; virtual;
   public
-  {$ifndef OverrideClipping}
-    property Clipping : boolean read GetClipping write SetClipping;
-  {$endif}
     property Pixels[X, Y: Integer]: TColor read GetPixel write SetPixel;
     property Handle: HDC read GetHandle write SetHandle;
     property TextStyle: TTextStyle read FTextStyle write FTextStyle;
