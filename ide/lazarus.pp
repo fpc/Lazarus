@@ -36,10 +36,6 @@ program Lazarus;
 
 {$I ide.inc}
 
-{$IFDEF WINDOWS}
-  {$R lazarus.rc}
-{$ENDIF}
-
 {off $DEFINE IDE_MEM_CHECK}
 
 uses
@@ -79,6 +75,7 @@ uses
   MainBase, compiler_conditionals_options;
 
 {$I revision.inc}
+{$R lazarus.res}
 
 begin
   {$IFDEF IDE_MEM_CHECK}CheckHeapWrtMemCnt('lazarus.pp: begin');{$ENDIF}

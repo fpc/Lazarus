@@ -14,6 +14,7 @@
       <MainUnit Value="0"/>
       <TargetFileExt Value=""/>
       <Title Value="Lazarus"/>
+      <ResourceType Value="res"/>
       <Icon Value="0"/>
       <UseXPManifest Value="True"/>
     </General>
