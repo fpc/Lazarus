@@ -32,7 +32,7 @@ unit fieldslist;
 interface
 
 uses
-  Classes, SysUtils, LResources, Forms, Controls, Graphics, Dialogs, ComCtrls,
+  Classes, SysUtils, Forms, Controls, Graphics, Dialogs, ComCtrls,
   Buttons, DB, StdCtrls, ObjInspStrConsts, ComponentEditors, PropEdits;
 
 type
@@ -59,6 +59,8 @@ var
   FieldsListFrm: TFieldsListFrm;
 
 implementation
+
+{$R *.lfm}
 
 { TFieldsListFrm }
 
@@ -200,9 +202,6 @@ begin
   end;
   RefreshFieldsList;
 end;
-
-initialization
-  {$I fieldslist.lrs}
 
 end.
 

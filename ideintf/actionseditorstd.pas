@@ -31,7 +31,7 @@ unit ActionsEditorStd;
 interface
 
 uses
-  Classes, SysUtils, LResources, Forms, Controls, Graphics, Dialogs, StdCtrls,
+  Classes, SysUtils, Forms, Controls, Graphics, Dialogs, StdCtrls,
   ComCtrls, Buttons, ActnList, StdActns, DBActns, LCLType, Contnrs,
   LCLProc, ActionsEditor, ObjInspStrConsts, ExtCtrls, ButtonPanel;
 
@@ -59,6 +59,8 @@ type
   end;
 
 implementation
+
+{$R *.lfm}
 
 { TFormActStandard }
 
@@ -199,7 +201,6 @@ begin
 end;
 
 initialization
-  {$I actionseditorstd.lrs}
   CreateDlgStdActions:=@CreateFormActStandard;
 
 end.

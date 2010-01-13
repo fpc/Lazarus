@@ -24,7 +24,7 @@ unit TreeViewPropEdit;
 interface
 
 uses
-  Classes, SysUtils, LResources, Forms, Controls, Graphics, Dialogs, Buttons,
+  Classes, SysUtils, Forms, Controls, Graphics, Dialogs, Buttons,
   PropEdits, Componenteditors, StdCtrls, ComCtrls, ObjInspStrConsts, ExtCtrls;
 
 type
@@ -89,6 +89,8 @@ type
   end;
 
 implementation
+
+{$R *.lfm}
 
 function EditTreeView(ATreeView: TTreeView):boolean;
 var
@@ -280,11 +282,7 @@ begin
 end;
 
 initialization
-  {$I treeviewpropedit.lrs}
-
   RegisterPropertyEditor(ClassTypeInfo(TTreeNodes), TTreeView, 'Items', TTreeViewItemsProperty);
   RegisterComponentEditor(TTreeView,TTreeViewComponentEditor);
-  
-  
 end.
 

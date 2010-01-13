@@ -24,7 +24,7 @@ unit MaskPropEdit;
 interface
 
 uses
-  Classes, SysUtils, MaskUtils, LResources, Forms, Controls, Graphics, Dialogs,
+  Classes, SysUtils, MaskUtils, Forms, Controls, Graphics, Dialogs,
   StrUtils, StdCtrls, Buttons, ExtCtrls, FileUtil, MaskEdit, LazIDEIntf,
   PropEdits, ComponentEditors, ObjInspStrConsts, ButtonPanel;
 
@@ -86,6 +86,8 @@ type
   end;
 
 implementation
+
+{$R *.lfm}
 
 procedure ParseMaskLine(Line: String; out Caption, Example, Mask: String);
 begin
@@ -380,7 +382,6 @@ begin
 end;
 
 initialization
-  {$I maskpropedit.lrs}
   RegisterPropertyEditor(TypeInfo(string), TCustomMaskEdit, 'EditMask',
                          TEditMaskProperty);
   RegisterComponentEditor(TCustomMaskEdit, TMaskEditEditor);

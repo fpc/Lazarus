@@ -19,7 +19,7 @@ unit fieldseditor;
 interface
 
 uses
-  Classes, SysUtils, LResources, TypInfo, LCLProc, Forms,
+  Classes, SysUtils, TypInfo, LCLProc, Forms,
   Controls, Menus, Graphics, Dialogs, ComCtrls,
   db, ActnList, StdCtrls, ObjInspStrConsts, ComponentEditors,
   PropEdits, LCLType, NewField, FieldsList, ComponentReg;
@@ -106,6 +106,8 @@ type
   end;
 
 implementation
+
+{$R *.lfm}
 
 { TDSFieldsEditorFrm }
 
@@ -485,6 +487,5 @@ end;
 
 
 initialization
-  {$I fieldseditor.lrs}
   RegisterComponentEditor(TDataset, TFieldsComponentEditor);
 end.

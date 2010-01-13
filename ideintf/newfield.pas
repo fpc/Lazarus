@@ -21,7 +21,7 @@ interface
 
 uses
   Classes, Math, SysUtils, DBConst, LCLIntf, Graphics, Controls, Forms, Dialogs,
-  ExtCtrls, StdCtrls, Buttons, DB, LResources, ObjInspStrConsts,
+  ExtCtrls, StdCtrls, Buttons, DB, ObjInspStrConsts,
   ComponentEditors, PropEdits, TypInfo;
 
 type
@@ -86,7 +86,7 @@ var
 
 implementation
 
-
+{$R *.lfm}
 
 procedure SplitFieldsList(FldList: string; AList: TStrings);
 const
@@ -370,8 +370,5 @@ destructor TNewFieldFrm.Destroy;
 begin
   inherited Destroy;
 end;
-
-initialization
-  {$i newfield.lrs}
 
 end.

@@ -17,7 +17,7 @@ unit CheckListboxEditorDlg;
 interface
 
 uses
-  Classes, SysUtils, LResources, Forms, Controls, Graphics, Dialogs, CheckLst,
+  Classes, SysUtils, Forms, Controls, Graphics, Dialogs, CheckLst,
   ExtCtrls, Buttons, ComCtrls, ButtonPanel, IDEImagesIntf, ObjInspStrConsts,
   LCLType;
 
@@ -57,6 +57,8 @@ type
 procedure AssignCheckList(dstCheck, srcCheck: TCheckListBox);
 
 implementation
+
+{$R *.lfm}
 
 procedure AssignCheckList(dstCheck, srcCheck: TCheckListBox);
 var
@@ -191,9 +193,6 @@ begin
   tbUp.Enabled := (FCheck.ItemIndex <> -1) and (FCheck.ItemIndex > 0);
   tbDown.Enabled := (FCheck.ItemIndex <> -1) and (FCheck.ItemIndex < FCheck.Count - 1);
 end;
-
-initialization
-  {$I checklistboxeditordlg.lrs}
 
 end.
 

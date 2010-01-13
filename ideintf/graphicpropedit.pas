@@ -23,7 +23,7 @@ unit GraphicPropEdit;
 interface
 
 uses
-  Classes, SysUtils, LResources, Forms, Controls, Graphics, Dialogs, StdCtrls,
+  Classes, SysUtils, Forms, Controls, Graphics, Dialogs, StdCtrls,
   ExtCtrls, Buttons, ButtonPanel, ExtDlgs,
   IDEDialogs, ObjInspStrConsts;
 
@@ -60,6 +60,8 @@ var
   GraphicPropertyEditorForm: TGraphicPropertyEditorForm;
 
 implementation
+
+{$R *.lfm}
 
 { TGraphicPropertyEditorForm }
 
@@ -132,9 +134,6 @@ begin
   if FModified = AValue then Exit;
   FModified := AValue;
 end;
-
-initialization
-  {$I graphicpropedit.lrs}
 
 end.
 

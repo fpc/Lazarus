@@ -19,7 +19,7 @@ unit frmSelectProps;
 interface
 
 uses
-  Classes, SysUtils, LCLProc, LResources, Forms, Controls, Graphics, Dialogs,
+  Classes, SysUtils, LCLProc, Forms, Controls, Graphics, Dialogs,
   StdCtrls, ObjInspStrConsts, IDEWindowIntf, Buttons, ExtCtrls, TypInfo,
   RTTIUtils;
 
@@ -74,6 +74,8 @@ var
   SelectPropertiesForm: TSelectPropertiesForm;
 
 implementation
+
+{$R *.lfm}
 
 { TSelectPropertiesForm }
 
@@ -284,9 +286,6 @@ begin
     end;
   ShowProperties(FSelectedComponent);
 end;
-
-initialization
-  {$I frmselectprops.lrs}
 
 end.
 

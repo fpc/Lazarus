@@ -33,7 +33,7 @@ unit ListViewPropEdit;
 interface
 
 uses
-  Classes, SysUtils, Forms, Controls, Graphics, Dialogs, LResources, ComCtrls,
+  Classes, SysUtils, Forms, Controls, Graphics, Dialogs, ComCtrls,
   StdCtrls, Buttons, ExtCtrls, Menus, PropEdits, ComponentEditors, LCLProc,
   ObjInspStrConsts;
 
@@ -92,6 +92,7 @@ type
   
 implementation
 
+{$R *.lfm}
 
 function EditListView(AListView: TListView): Boolean;
 var
@@ -342,8 +343,6 @@ begin
 end;
 
 initialization
-  {$I listviewpropedit.lrs}
-  
   //Register TListViewItemsPropertyEditor
   RegisterPropertyEditor(ClassTypeInfo(TListItems), TListView, 'Items',
     TListViewItemsPropertyEditor);

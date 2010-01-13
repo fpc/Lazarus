@@ -49,8 +49,10 @@ type
 
 implementation
 
+{$R *.lfm}
+
 uses
-  Controls, Dialogs, IDEImagesIntf, LResources, ObjInspStrConsts, PropEdits;
+  Controls, Dialogs, IDEImagesIntf, ObjInspStrConsts, PropEdits;
 
 procedure TCollectionPropertyEditorForm.FormCreate(Sender: TObject);
 begin
@@ -332,9 +334,6 @@ procedure TCollectionPropertyEditorForm.Modified;
 begin
   GlobalDesignHook.Modified(Self);
 end;
-
-initialization
-{$I collectionpropeditform.lrs}
 
 end.
 

@@ -33,7 +33,7 @@ unit ImageListEditor;
 interface
 
 uses
-  Classes, SysUtils, Forms, Controls, Graphics, Dialogs, LResources, ComCtrls,
+  Classes, SysUtils, Forms, Controls, Graphics, Dialogs, ComCtrls,
   StdCtrls, Buttons, ExtCtrls, Menus, LCLProc, ColorBox, ExtDlgs,
   IDEDialogs, PropEdits, ComponentEditors, ObjInspStrConsts, ButtonPanel;
 
@@ -110,6 +110,7 @@ type
 
 implementation
 
+{$R *.lfm}
 
 function EditImageList(AImageList: TImageList): Boolean;
 var
@@ -605,8 +606,6 @@ begin
 end;
 
 initialization
-  {$I imagelisteditor.lrs}
-  
   //Register a component editor for TImageList
   RegisterComponentEditor(TImageList,TImageListComponentEditor);
 end.

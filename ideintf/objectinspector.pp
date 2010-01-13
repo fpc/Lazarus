@@ -776,6 +776,8 @@ const
 
 implementation
 
+{$R *.lfm}
+
 uses
   math;
 
@@ -5252,7 +5254,6 @@ begin
 end;
 
 initialization
-  {$I objectinspector.lrs}
   {$I objectinspector_img.lrs}
   
 finalization

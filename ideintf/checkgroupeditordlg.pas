@@ -17,7 +17,7 @@ unit CheckGroupEditorDlg;
 interface
 
 uses
-  Classes, SysUtils, LResources, Forms, Controls, Graphics, Dialogs, ExtCtrls,
+  Classes, SysUtils, Forms, Controls, Graphics, Dialogs, ExtCtrls,
   StdCtrls, Buttons, Menus, ComCtrls,
   ObjInspStrConsts, IDEImagesIntf, ButtonPanel;
 
@@ -67,6 +67,8 @@ type
 procedure AssignCheckGroup(dstCheck, srcCheck: TCheckGroup);
 
 implementation
+
+{$R *.lfm}
 
 const
   NormalColor = clBtnFace;
@@ -270,9 +272,6 @@ begin
     Change;
   end;
 end;
-
-initialization
-  {$I checkgroupeditordlg.lrs}
 
 end.
 

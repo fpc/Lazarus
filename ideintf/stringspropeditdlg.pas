@@ -22,7 +22,7 @@ unit StringsPropEditDlg;
 interface
 
 uses
-  Classes, SysUtils, LResources, Forms, Controls, Buttons, Dialogs, StdCtrls,
+  Classes, SysUtils, Forms, Controls, Buttons, Dialogs, StdCtrls,
   TextTools, ObjInspStrConsts, ExtCtrls, ButtonPanel;
   
 type
@@ -44,6 +44,8 @@ type
 
 
 implementation
+
+{$R *.lfm}
 
 { TStringsPropEditorFrm }
 
@@ -100,9 +102,6 @@ procedure TStringsPropEditorFrm.AddButtons;
 begin
   //
 end;
-
-initialization
-  {$I stringspropeditdlg.lrs}
 
 end.
 

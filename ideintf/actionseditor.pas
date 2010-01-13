@@ -34,7 +34,7 @@ unit ActionsEditor;
 interface
 
 uses
-  Classes, SysUtils, LResources, LCLProc, Forms, Controls, Dialogs,
+  Classes, SysUtils, LCLProc, Forms, Controls, Dialogs,
   ActnList, ExtCtrls, ComCtrls, Buttons, StdCtrls, ObjInspStrConsts,
   ComponentEditors, PropEdits, DBActns, StdActns, LCLIntf, LCLType,
   Graphics, Menus, contnrs;
@@ -250,6 +250,8 @@ function CreateAction(TheOwner: TComponent;
                       ActionClass: TBasicActionClass): TBasicAction;
 
 implementation
+
+{$R *.lfm}
 
 procedure RegisterActions(const ACategory: string;
   const AClasses: array of TBasicActionClass; AResource: TComponentClass);
@@ -1277,7 +1279,6 @@ begin
 end;
 
 initialization
-  {$I actionseditor.lrs}
   NotifyActionListChange := nil;
 
   RegisteredActions := TRegisteredActionCategories.Create;

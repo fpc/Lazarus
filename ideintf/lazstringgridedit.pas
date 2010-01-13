@@ -17,7 +17,7 @@ unit LazStringGridEdit;
 interface
 
 uses
-  Classes, SysUtils, LResources, Forms, Controls, Graphics, Dialogs,
+  Classes, SysUtils, Forms, Controls, Graphics, Dialogs,
   Arrow, StdCtrls, Buttons, Grids, ExtCtrls,
   ObjInspStrConsts;
 
@@ -62,6 +62,8 @@ type
   end;
 
 implementation
+
+{$R *.lfm}
 
 procedure AssignGrid(Dest, Src: TStringGrid; Full: Boolean);
 var
@@ -202,9 +204,6 @@ begin
     FModified := True;
   end;
 end;
-
-initialization
-  {$I lazstringgridedit.lrs}
 
 end.
 
