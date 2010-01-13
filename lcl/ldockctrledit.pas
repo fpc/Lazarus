@@ -93,6 +93,8 @@ type
 
 implementation
 
+{$R *.lfm}
+
 { TLazDockControlEditorDlg }
 
 procedure TLazDockControlEditorDlg.FormCreate(Sender: TObject);
@@ -223,7 +225,6 @@ begin
 end;
 
 initialization
-  {$I ldockctrledit.lrs}
   {$I lcl_dock_to_images.lrs}
 
 end.

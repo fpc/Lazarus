@@ -5,8 +5,7 @@ unit LCLClipboardUnit;
 interface
 
 uses
-  Classes, SysUtils, LResources, Forms, Controls, Graphics, Dialogs, Buttons,
-  ClipBrd;
+  Classes, SysUtils, Forms, Controls, Graphics, Dialogs, Buttons, ClipBrd;
 
 type
 
@@ -26,6 +25,8 @@ var
 
 implementation
 
+{$R *.lfm}
+
 { TForm1 }
 
 procedure TForm1.GetTargetsButtonClick(Sender: TObject);
@@ -36,9 +37,6 @@ begin
   s:=PrimarySelection.AsText;
   writeln('TForm1.GetTargetsButtonClick PrimarySelection="',s,'"');
 end;
-
-initialization
-  {$I lclclipboardunit.lrs}
 
 end.
 

@@ -33,7 +33,7 @@ unit ReplaceDlgUnit;
 interface
 
 uses
-  Classes, SysUtils, LResources, Forms, Controls, Graphics, Dialogs, StdCtrls,
+  Classes, SysUtils, Forms, Controls, Graphics, Dialogs, StdCtrls,
   Buttons, FindDlgUnit, ExtCtrls;
 
 type
@@ -63,10 +63,9 @@ type
 
 implementation
 
-{ TReplaceDialogForm }
+{$R *.lfm}
 
-initialization
-  {$I replacedlgunit.lrs}
+{ TReplaceDialogForm }
 
 end.
 

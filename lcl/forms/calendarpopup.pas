@@ -26,7 +26,7 @@ unit CalendarPopup;
 interface
 
 uses
-  Classes, SysUtils, LCLProc, LResources, Forms, Controls, Graphics, Dialogs,
+  Classes, SysUtils, LCLProc, Forms, Controls, Graphics, Dialogs,
   Calendar, LCLType;
   
 type
@@ -54,6 +54,8 @@ procedure ShowCalendarPopup(const Position: TPoint; ADate: TDateTime;
                             OnReturnDate: TReturnDateEvent; OnShowHide: TNotifyEvent = nil);
 
 implementation
+
+{$R *.lfm}
 
 procedure ShowCalendarPopup(const Position: TPoint; ADate: TDateTime;
                             OnReturnDate: TReturnDateEvent; OnShowHide: TNotifyEvent = nil);
@@ -152,8 +154,5 @@ begin
   Canvas.Pen.Style := psSolid;
   Canvas.Rectangle(0, 0, Width-1, Height-1);
 end;
-
-initialization
-  {$I calendarpopup.lrs}
 
 end.

@@ -33,7 +33,7 @@ unit FindDlgUnit;
 interface
 
 uses
-  Classes, SysUtils, LResources, Forms, Controls, Graphics, Dialogs, StdCtrls,
+  Classes, SysUtils, Forms, Controls, Graphics, Dialogs, StdCtrls,
   Buttons, ExtCtrls;
 
 type
@@ -58,6 +58,8 @@ type
 
 implementation
 
+{$R *.lfm}
+
 { TFindDialogForm }
 
 procedure TFindDialogForm.EditFindChange(Sender: TObject);
@@ -70,8 +72,5 @@ begin
   EditFindChange(nil);
 end;
 
-
-initialization
-  {$I finddlgunit.lrs}
 end.
 
