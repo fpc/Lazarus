@@ -824,11 +824,11 @@ begin
       with TBasicChartSeries(seriesInZOrder[i]) do begin
         if not Active then continue;
         OffsetDrawArea(ZPosition, Depth);
-        Canvas.ClipRect := FClipRect;
-        Canvas.Clipping := true;
+        ACanvas.ClipRect := FClipRect;
+        ACanvas.Clipping := true;
         Draw(ACanvas);
         OffsetDrawArea(-ZPosition, -Depth);
-        Canvas.Clipping := false;
+        ACanvas.Clipping := false;
       end;
   finally
     seriesInZOrder.Free;
