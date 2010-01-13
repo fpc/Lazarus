@@ -538,6 +538,9 @@ procedure Register;
 
 implementation
 
+{$R forms/finddlgunit.lfm}
+{$R forms/replacedlgunit.lfm}
+
 uses 
   Math, WSDialogs;
 
@@ -701,8 +704,6 @@ initialization
   Forms.MessageBoxFunction:=@ShowMessageBox;
   InterfaceBase.InputDialogFunction:=@ShowInputDialog;
   InterfaceBase.PromptDialogFunction:=@ShowPromptDialog;
-  {$I forms/finddlgunit.lrs}
-  {$I forms/replacedlgunit.lrs}
   {$I dialog_icons.lrs}
 
 finalization
