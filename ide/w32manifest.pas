@@ -90,13 +90,16 @@ var
   RName, RType: TResourceDesc;
 begin
   Result := True;
-  RType := TResourceDesc.Create(RT_MANIFEST);
-  RName := TResourceDesc.Create(1);
-  Res := TGenericResource.Create(RType, RName);
-  RType.Free; //no longer needed
-  RName.Free;
-  Res.RawData.Write(sManifestFileData[1], Length(sManifestFileData));
-  AResources.AddSystemResource(Res);
+  if UseManifest then
+  begin
+    RType := TResourceDesc.Create(RT_MANIFEST);
+    RName := TResourceDesc.Create(1);
+    Res := TGenericResource.Create(RType, RName);
+    RType.Free; //no longer needed
+    RName.Free;
+    Res.RawData.Write(sManifestFileData[1], Length(sManifestFileData));
+    AResources.AddSystemResource(Res);
+  end;
 end;
 
 end.
