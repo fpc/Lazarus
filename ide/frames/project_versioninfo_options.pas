@@ -39,7 +39,7 @@ type
     procedure AdditionalInfoButtonClick(Sender: TObject);
     procedure UseVersionInfoCheckBoxChange(Sender: TObject);
   private
-    FProject: TProject;
+    FVersionInfo: TProjectVersionInfo;
     procedure EnableVersionInfo(UseVersionInfo: boolean);
   public
     function GetTitle: string; override;
@@ -60,7 +60,7 @@ end;
 
 procedure TProjectVersionInfoOptionsFrame.AdditionalInfoButtonClick(Sender: TObject);
 begin
-  ShowVersionInfoAdditionailInfoForm(FProject.Resources.VersionInfo);
+  ShowVersionInfoAdditionailInfoForm(FVersionInfo);
 end;
 
 procedure TProjectVersionInfoOptionsFrame.EnableVersionInfo(UseVersionInfo: boolean);
@@ -96,47 +96,43 @@ end;
 
 procedure TProjectVersionInfoOptionsFrame.ReadSettings(AOptions: TAbstractIDEOptions);
 begin
-  FProject := AOptions as TProject;
-  with FProject do
-  begin
-    UseVersionInfoCheckBox.Checked := Resources.VersionInfo.UseVersionInfo;
-    VersionSpinEdit.Value := Resources.VersionInfo.VersionNr;
-    MajorRevisionSpinEdit.Value := Resources.VersionInfo.MajorRevNr;
-    MinorRevisionSpinEdit.Value := Resources.VersionInfo.MinorRevNr;
-    BuildSpinEdit.Value := Resources.VersionInfo.BuildNr;
+  FVersionInfo := TProjectVersionInfo((AOptions as TProject).Resources[TProjectVersionInfo]);
 
-    EnableVersionInfo(Resources.VersionInfo.UseVersionInfo);
+  UseVersionInfoCheckBox.Checked := FVersionInfo.UseVersionInfo;
+  VersionSpinEdit.Value := FVersionInfo.VersionNr;
+  MajorRevisionSpinEdit.Value := FVersionInfo.MajorRevNr;
+  MinorRevisionSpinEdit.Value := FVersionInfo.MinorRevNr;
+  BuildSpinEdit.Value := FVersionInfo.BuildNr;
 
-    if Resources.VersionInfo.AutoIncrementBuild then
-      AutomaticallyIncreaseBuildCheckBox.Checked := True;
-    LanguageSelectionComboBox.Items.Assign(MSLanguages);
-    LanguageSelectionComboBox.ItemIndex :=
-      MSHexLanguages.IndexOf(Resources.VersionInfo.HexLang);
-    LanguageSelectionComboBox.Sorted := True;
-    CharacterSetComboBox.Items.Assign(MSCharacterSets);
-    CharacterSetComboBox.ItemIndex :=
-      MSHexCharacterSets.IndexOf(Resources.VersionInfo.HexCharSet);
-    CharacterSetComboBox.Sorted := True;
-    DescriptionEdit.Text := Resources.VersionInfo.DescriptionString;
-    CopyrightEdit.Text := Resources.VersionInfo.CopyrightString;
-  end;
+  EnableVersionInfo(FVersionInfo.UseVersionInfo);
+
+  if FVersionInfo.AutoIncrementBuild then
+    AutomaticallyIncreaseBuildCheckBox.Checked := True;
+  LanguageSelectionComboBox.Items.Assign(MSLanguages);
+  LanguageSelectionComboBox.ItemIndex := MSHexLanguages.IndexOf(FVersionInfo.HexLang);
+  LanguageSelectionComboBox.Sorted := True;
+  CharacterSetComboBox.Items.Assign(MSCharacterSets);
+  CharacterSetComboBox.ItemIndex := MSHexCharacterSets.IndexOf(FVersionInfo.HexCharSet);
+  CharacterSetComboBox.Sorted := True;
+  DescriptionEdit.Text := FVersionInfo.DescriptionString;
+  CopyrightEdit.Text := FVersionInfo.CopyrightString;
 end;
 
 procedure TProjectVersionInfoOptionsFrame.WriteSettings(AOptions: TAbstractIDEOptions);
+var
+  VersionInfo: TProjectVersionInfo;
 begin
-  with AOptions as TProject do
-  begin
-    Resources.VersionInfo.UseVersionInfo := UseVersionInfoCheckBox.Checked;
-    Resources.VersionInfo.AutoIncrementBuild := AutomaticallyIncreaseBuildCheckBox.Checked;
-    Resources.VersionInfo.VersionNr := VersionSpinEdit.Value;
-    Resources.VersionInfo.MajorRevNr := MajorRevisionSpinEdit.Value;
-    Resources.VersionInfo.MinorRevNr := MinorRevisionSpinEdit.Value;
-    Resources.VersionInfo.BuildNr := BuildSpinEdit.Value;
-    Resources.VersionInfo.DescriptionString := DescriptionEdit.Text;
-    Resources.VersionInfo.CopyrightString := CopyrightEdit.Text;
-    Resources.VersionInfo.HexLang := MSLanguageToHex(LanguageSelectionComboBox.Text);
-    Resources.VersionInfo.HexCharSet := MSCharacterSetToHex(CharacterSetComboBox.Text);
-  end;
+  VersionInfo := TProjectVersionInfo((AOptions as TProject).Resources[TProjectVersionInfo]);
+  VersionInfo.UseVersionInfo := UseVersionInfoCheckBox.Checked;
+  VersionInfo.AutoIncrementBuild := AutomaticallyIncreaseBuildCheckBox.Checked;
+  VersionInfo.VersionNr := VersionSpinEdit.Value;
+  VersionInfo.MajorRevNr := MajorRevisionSpinEdit.Value;
+  VersionInfo.MinorRevNr := MinorRevisionSpinEdit.Value;
+  VersionInfo.BuildNr := BuildSpinEdit.Value;
+  VersionInfo.DescriptionString := DescriptionEdit.Text;
+  VersionInfo.CopyrightString := CopyrightEdit.Text;
+  VersionInfo.HexLang := MSLanguageToHex(LanguageSelectionComboBox.Text);
+  VersionInfo.HexCharSet := MSCharacterSetToHex(CharacterSetComboBox.Text);
 end;
 
 class function TProjectVersionInfoOptionsFrame.SupportedOptionsClass: TAbstractIDEOptionsClass;

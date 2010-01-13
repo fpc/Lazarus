@@ -33,10 +33,14 @@ type
 
     procedure DoBeforeBuild(AResources: TAbstractProjectResources; SaveToTestDir: boolean); virtual;
     function UpdateResources(AResources: TAbstractProjectResources; const MainFilename: string): Boolean; virtual; abstract;
+    procedure WriteToProjectFile(AConfig: {TXMLConfig}TObject; Path: String); virtual; abstract;
+    procedure ReadFromProjectFile(AConfig: {TXMLConfig}TObject; Path: String); virtual; abstract;
 
     property Modified: boolean read FModified write SetModified;
     property OnModified: TNotifyEvent read FOnModified write FOnModified;
   end;
+
+  TAbstractProjectResourceClass = class of TAbstractProjectResource;
 
   { TAbstractProjectResources }
 
@@ -47,6 +51,8 @@ type
   protected
     FMessages: TStringList;
     procedure SetResourceType(const AValue: TResourceType); virtual;
+    function GetProjectResource(AIndex: TAbstractProjectResourceClass): TAbstractProjectResource; virtual; abstract;
+    class function GetRegisteredResources: TList;
   public
     constructor Create(AProject: TLazProject); virtual;
     destructor Destroy; override;
@@ -58,9 +64,22 @@ type
     property Messages: TStringList read FMessages;
     property Project: TLazProject read FProject;
     property ResourceType: TResourceType read FResourceType write SetResourceType;
+    property Resource[AIndex: TAbstractProjectResourceClass]: TAbstractProjectResource read GetProjectResource; default;
   end;
 
+  procedure RegisterProjectResource(AResource: TAbstractProjectResourceClass);
+
 implementation
+
+var
+  FRegisteredProjectResources: TList = nil;
+
+procedure RegisterProjectResource(AResource: TAbstractProjectResourceClass);
+begin
+  if FRegisteredProjectResources = nil then
+    FRegisteredProjectResources := TList.Create;
+  FRegisteredProjectResources.Add(AResource);
+end;
 
 { TAbstractProjectResource }
 
@@ -89,6 +108,11 @@ begin
   FResourceType := AValue;
 end;
 
+class function TAbstractProjectResources.GetRegisteredResources: TList;
+begin
+  Result := FRegisteredProjectResources;
+end;
+
 constructor TAbstractProjectResources.Create(AProject: TLazProject);
 begin
   FProject:=AProject;
@@ -101,4 +125,6 @@ begin
   inherited Destroy;
 end;
 
+finalization
+  FRegisteredProjectResources.Free;
 end.

@@ -38,7 +38,7 @@ interface
 
 uses
   Classes, SysUtils, FileUtil, Process, LCLProc, Controls, Forms,
-  CodeToolManager, CodeCache, LazConf, DialogProcs, LResources,
+  CodeToolManager, CodeCache, LazConf, Laz_XMLCfg, DialogProcs, LResources,
   ProjectResourcesIntf, resource;
    
 type
@@ -49,7 +49,10 @@ type
     FUseManifest: boolean;
     procedure SetUseManifest(const AValue: boolean);
   public
+    constructor Create; override;
     function UpdateResources(AResources: TAbstractProjectResources; const MainFilename: string): Boolean; override;
+    procedure WriteToProjectFile(AConfig: {TXMLConfig}TObject; Path: String); override;
+    procedure ReadFromProjectFile(AConfig: {TXMLConfig}TObject; Path: String); override;
 
     property UseManifest: boolean read FUseManifest write SetUseManifest;
   end;
@@ -83,6 +86,12 @@ begin
   Modified := True;
 end;
 
+constructor TProjectXPManifest.Create;
+begin
+  inherited Create;
+  UseManifest := True;
+end;
+
 function TProjectXPManifest.UpdateResources(AResources: TAbstractProjectResources;
   const MainFilename: string): Boolean;
 var
@@ -101,6 +110,19 @@ begin
     AResources.AddSystemResource(Res);
   end;
 end;
+
+procedure TProjectXPManifest.WriteToProjectFile(AConfig: TObject; Path: String);
+begin
+  TXMLConfig(AConfig).SetDeleteValue(Path+'General/UseXPManifest/Value', UseManifest, False);
+end;
+
+procedure TProjectXPManifest.ReadFromProjectFile(AConfig: TObject; Path: String);
+begin
+  UseManifest := TXMLConfig(AConfig).GetValue(Path+'General/UseXPManifest/Value', False);
+end;
+
+initialization
+  RegisterProjectResource(TProjectXPManifest);
 
 end.
 

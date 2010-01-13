@@ -35,7 +35,7 @@ interface
 
 uses
   Classes, SysUtils, FileUtil, Process, LCLProc, Controls, Forms,
-  CodeToolManager, LazConf, LResources, resource, groupiconresource,
+  CodeToolManager, LazConf, Laz_XMLCfg, LResources, resource, groupiconresource,
   ProjectIntf, ProjectResourcesIntf;
    
 type
@@ -59,6 +59,9 @@ type
 
     function UpdateResources(AResources: TAbstractProjectResources;
                              const MainFilename: string): Boolean; override;
+    procedure WriteToProjectFile(AConfig: {TXMLConfig}TObject; Path: String); override;
+    procedure ReadFromProjectFile(AConfig: {TXMLConfig}TObject; Path: String); override;
+
     function CreateIconFile: Boolean;
 
     property IconData: TIconData read FData write SetIconData;
@@ -132,6 +135,20 @@ begin
   end;
 
   AResources.AddSystemResource(ARes);
+end;
+
+procedure TProjectIcon.WriteToProjectFile(AConfig: TObject; Path: String);
+begin
+  TXMLConfig(AConfig).SetDeleteValue(Path+'General/Icon/Value', BoolToStr(IsEmpty), '-1');
+end;
+
+procedure TProjectIcon.ReadFromProjectFile(AConfig: TObject; Path: String);
+begin
+  with TXMLConfig(AConfig) do
+  begin
+    IcoFileName := ChangeFileExt(FileName, '.ico');
+    IsEmpty := StrToBoolDef(GetValue(Path+'General/Icon/Value', '-1'), False);
+  end;
 end;
 
 function TProjectIcon.CreateIconFile: Boolean;
@@ -220,6 +237,9 @@ function TProjectIcon.GetIsEmpry: Boolean;
 begin
   Result := FData = nil;
 end;
+
+initialization
+  RegisterProjectResource(TProjectIcon);
 
 end.
 

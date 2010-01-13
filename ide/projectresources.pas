@@ -37,11 +37,10 @@ unit ProjectResources;
 interface
 
 uses
-  Classes, SysUtils, Controls, LCLProc, LResources, FileUtil, Laz_XMLCfg,
+  Classes, SysUtils, Contnrs, Controls, LCLProc, LResources, FileUtil, Laz_XMLCfg,
   Dialogs, ProjectIntf, ProjectResourcesIntf, LazarusIDEStrConsts, AvgLvlTree,
-  KeywordFuncLists, BasicCodeTools,
-  W32VersionInfo, W32Manifest, ProjectIcon, IDEProcs, DialogProcs,
-  CodeToolManager, CodeCache, resource, reswriter;
+  KeywordFuncLists, BasicCodeTools, IDEProcs, DialogProcs, CodeToolManager,
+  CodeCache, resource, reswriter;
 
 type
   { TProjectResources }
@@ -53,6 +52,7 @@ type
     FInModified: Boolean;
     FLrsIncludeAllowed: Boolean;
 
+    FResources: TObjectList;
     FSystemResources: TResources;
     FLazarusResources: TStringList;
 
@@ -61,21 +61,19 @@ type
     LastResFilename: String;
     LastLrsFileName: String;
 
-    FVersionInfo: TProjectVersionInfo;
-    FXPManifest: TProjectXPManifest;
-    FProjectIcon: TProjectIcon;
-
     procedure SetFileNames(const MainFileName, TestDir: String);
     procedure SetModified(const AValue: Boolean);
-    procedure EmbeddedObjectModified(Sender: TObject);
     function Update: Boolean;
     function UpdateMainSourceFile(const AFileName: string): Boolean;
     procedure UpdateFlagLrsIncludeAllowed(const AFileName: string);
     function Save(SaveToTestDir: string): Boolean;
     procedure UpdateCodeBuffers;
     procedure DeleteLastCodeBuffers;
+
+    procedure OnResourceModified(Sender: TObject);
   protected
     procedure SetResourceType(const AValue: TResourceType); override;
+    function GetProjectResource(AIndex: TAbstractProjectResourceClass): TAbstractProjectResource; override;
   public
     constructor Create(AProject: TLazProject); override;
     destructor Destroy; override;
@@ -96,10 +94,6 @@ type
 
     procedure WriteToProjectFile(AConfig: TXMLConfig; Path: String);
     procedure ReadFromProjectFile(AConfig: TXMLConfig; Path: String);
-
-    property VersionInfo: TProjectVersionInfo read FVersionInfo;
-    property XPManifest: TProjectXPManifest read FXPManifest;
-    property ProjectIcon: TProjectIcon read FProjectIcon;
 
     property Modified: Boolean read FModified write SetModified;
     property OnModified: TNotifyEvent read FOnModified write FOnModified;
@@ -321,6 +315,8 @@ begin
 end;
 
 procedure TProjectResources.SetModified(const AValue: Boolean);
+var
+  i: integer;
 begin
   if FInModified then
     Exit;
@@ -330,9 +326,8 @@ begin
     FModified := AValue;
     if not FModified then
     begin
-      VersionInfo.Modified := False;
-      XPManifest.Modified := False;
-      ProjectIcon.Modified := False;
+      for i := 0 to FResources.Count - 1 do
+        TAbstractProjectResource(FResources[i]).Modified := False;
     end;
     if Assigned(FOnModified) then
       OnModified(Self);
@@ -341,31 +336,28 @@ begin
 end;
 
 function TProjectResources.Update: Boolean;
+var
+  i: integer;
 begin
   Clear;
-  // handle versioninfo
-  Result := VersionInfo.UpdateResources(Self, resFileName);
-  if not Result then
-    Exit;
-
-  // handle manifest
-  Result := XPManifest.UpdateResources(Self, resFileName);
-  if not Result then
-    Exit;
-
-  // handle project icon
-  Result := ProjectIcon.UpdateResources(Self, resFileName);
+  for i := 0 to FResources.Count - 1 do
+  begin
+    Result := TAbstractProjectResource(FResources[i]).UpdateResources(Self, resFileName);
+    if not Result then
+      Exit;
+  end;
 end;
 
-procedure TProjectResources.EmbeddedObjectModified(Sender: TObject);
+procedure TProjectResources.OnResourceModified(Sender: TObject);
 begin
-  Modified :=
-    VersionInfo.Modified or
-    XPManifest.Modified or
-    ProjectIcon.Modified;
+  Modified := Modified or TAbstractProjectResource(Sender).Modified;
 end;
 
 constructor TProjectResources.Create(AProject: TLazProject);
+var
+  i: integer;
+  L: TList;
+  R: TAbstractProjectResource;
 begin
   inherited Create(AProject);
 
@@ -375,25 +367,21 @@ begin
   FSystemResources := TResources.Create;
   FLazarusResources := TStringList.Create;
 
-  FVersionInfo := TProjectVersionInfo.Create;
-  FVersionInfo.OnModified := @EmbeddedObjectModified;
-
-  FXPManifest := TProjectXPManifest.Create;
-  FXPManifest.UseManifest := True;
-  FXPManifest.OnModified := @EmbeddedObjectModified;
-
-  FProjectIcon := TProjectIcon.Create;
-  FProjectIcon.OnModified := @EmbeddedObjectModified;
+  FResources := TObjectList.Create;
+  L := GetRegisteredResources;
+  for i := 0 to L.Count - 1 do
+  begin
+    R := TAbstractProjectResourceClass(L[i]).Create;
+    R.OnModified := @OnResourceModified;
+    FResources.Add(R);
+  end;
 end;
 
 destructor TProjectResources.Destroy;
 begin
   DeleteResourceBuffers;
 
-  FreeAndNil(FVersionInfo);
-  FreeAndNil(FXPManifest);
-  FreeAndNil(FProjectIcon);
-
+  FreeAndNil(FResources);
   FreeAndNil(FSystemResources);
   FreeAndNil(FLazarusResources);
 
@@ -419,11 +407,25 @@ begin
   end;
 end;
 
-procedure TProjectResources.DoBeforeBuild(SaveToTestDir: boolean);
+function TProjectResources.GetProjectResource(AIndex: TAbstractProjectResourceClass): TAbstractProjectResource;
+var
+  i: integer;
 begin
-  VersionInfo.DoBeforeBuild(Self,SaveToTestDir);
-  XPManifest.DoBeforeBuild(Self,SaveToTestDir);
-  ProjectIcon.DoBeforeBuild(Self,SaveToTestDir);
+  for i := 0 to FResources.Count - 1 do
+  begin
+    Result := TAbstractProjectResource(FResources[i]);
+    if Result.InheritsFrom(AIndex) then
+      Exit;
+  end;
+  Result := nil;
+end;
+
+procedure TProjectResources.DoBeforeBuild(SaveToTestDir: boolean);
+var
+  i: integer;
+begin
+  for i := 0 to FResources.Count - 1 do
+    TAbstractProjectResource(FResources[i]).DoBeforeBuild(Self,SaveToTestDir);
 end;
 
 procedure TProjectResources.Clear;
@@ -480,61 +482,21 @@ begin
 end;
 
 procedure TProjectResources.WriteToProjectFile(AConfig: TXMLConfig; Path: String);
+var
+  i: integer;
 begin
-  // todo: further split by classes
-  with AConfig do
-  begin
-    SetDeleteValue(Path+'General/ResourceType/Value', ResourceTypeNames[ResourceType], ResourceTypeNames[rtLRS]);
-    SetDeleteValue(Path+'General/Icon/Value', BoolToStr(ProjectIcon.IsEmpty), '-1');
-    SetDeleteValue(Path+'General/UseXPManifest/Value', XPManifest.UseManifest, False);
-    SetDeleteValue(Path+'VersionInfo/UseVersionInfo/Value', VersionInfo.UseVersionInfo,false);
-    SetDeleteValue(Path+'VersionInfo/AutoIncrementBuild/Value', VersionInfo.AutoIncrementBuild,false);
-    SetDeleteValue(Path+'VersionInfo/CurrentVersionNr/Value', VersionInfo.VersionNr,0);
-    SetDeleteValue(Path+'VersionInfo/CurrentMajorRevNr/Value', VersionInfo.MajorRevNr,0);
-    SetDeleteValue(Path+'VersionInfo/CurrentMinorRevNr/Value', VersionInfo.MinorRevNr,0);
-    SetDeleteValue(Path+'VersionInfo/CurrentBuildNr/Value', VersionInfo.BuildNr,0);
-    SetDeleteValue(Path+'VersionInfo/ProjectVersion/Value', VersionInfo.ProductVersionString,'1.0.0.0');
-    SetDeleteValue(Path+'VersionInfo/Language/Value', VersionInfo.HexLang,DefaultLanguage);
-    SetDeleteValue(Path+'VersionInfo/CharSet/Value', VersionInfo.HexCharSet,DefaultCharset);
-    SetDeleteValue(Path+'VersionInfo/Comments/Value', VersionInfo.CommentsString,'');
-    SetDeleteValue(Path+'VersionInfo/CompanyName/Value', VersionInfo.CompanyString,'');
-    SetDeleteValue(Path+'VersionInfo/FileDescription/Value', VersionInfo.DescriptionString,'');
-    SetDeleteValue(Path+'VersionInfo/InternalName/Value', VersionInfo.InternalNameString,'');
-    SetDeleteValue(Path+'VersionInfo/LegalCopyright/Value', VersionInfo.CopyrightString,'');
-    SetDeleteValue(Path+'VersionInfo/LegalTrademarks/Value', VersionInfo.TrademarksString,'');
-    SetDeleteValue(Path+'VersionInfo/OriginalFilename/Value', VersionInfo.OriginalFilenameString,'');
-    SetDeleteValue(Path+'VersionInfo/ProductName/Value', VersionInfo.ProdNameString,'');
-  end;
+  AConfig.SetDeleteValue(Path+'General/ResourceType/Value', ResourceTypeNames[ResourceType], ResourceTypeNames[rtLRS]);
+  for i := 0 to FResources.Count - 1 do
+    TAbstractProjectResource(FResources[i]).WriteToProjectFile(AConfig, Path);
 end;
 
 procedure TProjectResources.ReadFromProjectFile(AConfig: TXMLConfig; Path: String);
+var
+  i: integer;
 begin
-  // todo: further split by classes
-  with AConfig do
-  begin
-    ProjectIcon.IcoFileName := ChangeFileExt(FileName, '.ico');
-
-    ResourceType := StrToResourceType(GetValue(Path+'General/ResourceType/Value', ResourceTypeNames[rtLRS]));
-    ProjectIcon.IsEmpty := StrToBoolDef(GetValue(Path+'General/Icon/Value', '-1'), False);
-    XPManifest.UseManifest := GetValue(Path+'General/UseXPManifest/Value', False);
-    VersionInfo.UseVersionInfo := GetValue(Path+'VersionInfo/UseVersionInfo/Value', False);
-    VersionInfo.AutoIncrementBuild := GetValue(Path+'VersionInfo/AutoIncrementBuild/Value', False);
-    VersionInfo.VersionNr := GetValue(Path+'VersionInfo/CurrentVersionNr/Value', 0);
-    VersionInfo.MajorRevNr := GetValue(Path+'VersionInfo/CurrentMajorRevNr/Value', 0);
-    VersionInfo.MinorRevNr := GetValue(Path+'VersionInfo/CurrentMinorRevNr/Value', 0);
-    VersionInfo.BuildNr := GetValue(Path+'VersionInfo/CurrentBuildNr/Value', 0);
-    VersionInfo.ProductVersionString := GetValue(Path+'VersionInfo/ProjectVersion/Value', '1.0.0.0');
-    VersionInfo.HexLang := GetValue(Path+'VersionInfo/Language/Value', DefaultLanguage);
-    VersionInfo.HexCharSet := GetValue(Path+'VersionInfo/CharSet/Value', DefaultCharset);
-    VersionInfo.CommentsString := LineBreaksToSystemLineBreaks(GetValue(Path+'VersionInfo/Comments/Value', ''));
-    VersionInfo.CompanyString := LineBreaksToSystemLineBreaks(GetValue(Path+'VersionInfo/CompanyName/Value', ''));
-    VersionInfo.DescriptionString := LineBreaksToSystemLineBreaks(GetValue(Path+'VersionInfo/FileDescription/Value', ''));
-    VersionInfo.InternalNameString := LineBreaksToSystemLineBreaks(GetValue(Path+'VersionInfo/InternalName/Value', ''));
-    VersionInfo.CopyrightString := LineBreaksToSystemLineBreaks(GetValue(Path+'VersionInfo/LegalCopyright/Value', ''));
-    VersionInfo.TrademarksString := LineBreaksToSystemLineBreaks(GetValue(Path+'VersionInfo/LegalTrademarks/Value', ''));
-    VersionInfo.OriginalFilenameString := GetValue(Path+'VersionInfo/OriginalFilename/Value', '');
-    VersionInfo.ProdNameString := LineBreaksToSystemLineBreaks(GetValue(Path+'VersionInfo/ProductName/Value', ''));
-  end;
+  ResourceType := StrToResourceType(AConfig.GetValue(Path+'General/ResourceType/Value', ResourceTypeNames[rtLRS]));
+  for i := 0 to FResources.Count - 1 do
+    TAbstractProjectResource(FResources[i]).ReadFromProjectFile(AConfig, Path);
 end;
 
 function TProjectResources.UpdateMainSourceFile(const AFileName: string): Boolean;

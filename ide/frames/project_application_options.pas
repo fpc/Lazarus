@@ -7,7 +7,8 @@ interface
 uses
   Classes, SysUtils, FileUtil, LResources, Forms, Controls, Graphics, Dialogs,
   ExtCtrls, StdCtrls, Buttons, ComCtrls, ExtDlgs, Math, LCLType, IDEOptionsIntf,
-  Project, LazarusIDEStrConsts, EnvironmentOpts, ApplicationBundle;
+  Project, LazarusIDEStrConsts, EnvironmentOpts, ApplicationBundle, ProjectIcon,
+  W32Manifest;
 
 type
 
@@ -199,8 +200,8 @@ begin
     TitleEdit.Text := Title;
     TargetFileEdit.Text := TargetFilename;
     UseAppBundleCheckBox.Checked := UseAppBundle;
-    UseXPManifestCheckBox.Checked := Resources.XPManifest.UseManifest;
-    AStream := Resources.ProjectIcon.GetStream;
+    UseXPManifestCheckBox.Checked := TProjectXPManifest(Resources[TProjectXPManifest]).UseManifest;
+    AStream := TProjectIcon(Resources[TProjectIcon]).GetStream;
     try
       SetIconFromStream(AStream);
     finally
@@ -218,18 +219,17 @@ begin
     Title := TitleEdit.Text;
     AStream := GetIconAsStream;
     try
-      Resources.ProjectIcon.SetStream(AStream);
+      TProjectIcon(Resources[TProjectIcon]).SetStream(AStream);
     finally
       AStream.Free;
     end;
     TargetFilename := TargetFileEdit.Text;
     UseAppBundle := UseAppBundleCheckBox.Checked;
-    Resources.XPManifest.UseManifest := UseXPManifestCheckBox.Checked;
+    TProjectXPManifest(Resources[TProjectXPManifest]).UseManifest := UseXPManifestCheckBox.Checked;
   end;
 end;
 
-class function TProjectApplicationOptionsFrame.SupportedOptionsClass:
-TAbstractIDEOptionsClass;
+class function TProjectApplicationOptionsFrame.SupportedOptionsClass: TAbstractIDEOptionsClass;
 begin
   Result := TProject;
 end;
