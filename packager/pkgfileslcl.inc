@@ -106,6 +106,7 @@ AddFile('widgetset/wsmaskedit.pp','WSMaskEdit',pftUnit,[],cpBase);
 AddFile('widgetset/wsmenus.pp','WSMenus',pftUnit,[],cpBase);
 AddFile('widgetset/wspairsplitter.pp','WSPairSplitter',pftUnit,[],cpBase);
 AddFile('widgetset/wsproc.pp','WSProc',pftUnit,[],cpBase);
+AddFile('widgetset/wsreferences.pp','WSReferences',pftUnit,[],cpBase);
 AddFile('widgetset/wsspin.pp','WSSpin',pftUnit,[],cpBase);
 AddFile('widgetset/wsstdctrls.pp','WSStdCtrls',pftUnit,[],cpBase);
 AddFile('widgetset/wstoolwin.pp','WSToolwin',pftUnit,[],cpBase);
