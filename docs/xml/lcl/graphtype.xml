@@ -336,7 +336,9 @@ xxxBitsPerPixel and xxxPrecisionMask applies to color data. For masked images, t
       <!-- record type Visibility: default -->
       <element name="TRawImage">
         <short>An uncompressed graphics image (bitmap)</short>
-        <descr>This object hold the pixels, mask and color palette of the image, as well as a detailed <link id="TRawImageDescription">description</link> of the storage format of these parts.</descr>
+        <descr>This object hold the pixels, mask and color palette of the image, as well as a detailed <link id="TRawImageDescription">description</link> of the storage format of these parts.
+
+This object currently is subject to refactoring, don't use it in application code.</descr>
         <seealso/>
       </element>
       <!-- variable Visibility: default -->
@@ -922,12 +924,10 @@ A Mask value of 1 means that the pixel is masked (transparent); a value of 0 mea
         <short>The number of bits per Mask scanline.</short>
       </element>
       <element name="TRawImageDescription.AsString">
-        <short>
-          <var>AsString</var> - returns the image as a string</short>
+        <short>The image descriptor as a string.</short>
       </element>
       <element name="TRawImageDescription.IsEqual">
-        <short>
-          <var>IsEqual</var> - compares th ecurrent descriptor with another, and returns True if they are equal</short>
+        <short>Compares with the given description, returns True if it's equal.</short>
       </element>
       <element name="TRawImage.Init">
         <short>
@@ -938,8 +938,7 @@ A Mask value of 1 means that the pixel is masked (transparent); a value of 0 mea
           <var>CreateData</var> - method to create the data for the record</short>
       </element>
       <element name="TRawImage.FreeData">
-        <short>
-          <var>FreeData</var> - releases data that had previously been locked or made unavailable</short>
+        <short>Destroys the allocated Data, Mask and Palette arrays.</short>
       </element>
       <element name="TRawImage.ReleaseData">
         <short>
@@ -958,16 +957,14 @@ A Mask value of 1 means that the pixel is masked (transparent); a value of 0 mea
           <var>ReadBits</var> - reads the bit values for the raw image data at a given position</short>
       </element>
       <element name="TRawImage.ReadChannels">
-        <short>
-          <var>ReadChannels</var> - reads the (R, G, B, Alpha) channel values at a given position in the raw data</short>
+        <short>Reads the R, G, B and Alpha channel values at a given position in pixel data.</short>
       </element>
       <element name="TRawImage.ReadMask">
-        <short>
-          <var>ReadMask</var> - reads the Mask data at the given position in the raw image</short>
+        <short>Read the Mask value at the given position in the image data. Returns AMask=True if the pixel is transparent.</short>
+        <descr>The position in the Mask data typically differs from the position in the color data.</descr>
       </element>
       <element name="TRawImage.WriteBits">
-        <short>
-          <var>WriteBits</var> - writes the specified bit values at the nominated position in the data</short>
+        <short>Writes ABits into Data at the given position.</short>
       </element>
       <element name="TRawImage.WriteChannels">
         <short>
@@ -1020,6 +1017,25 @@ A Mask value of 1 means that the pixel is masked (transparent); a value of 0 mea
       </element>
       <element name="TRawImageQueryFlag">
         <short>Image formats supported by a device, or present in image data[?]</short>
+      </element>
+      <element name="RawImage_ReadBits">
+        <short>Read color bits.</short>
+        <descr>AData is the pointer to the pixel data.
+APosition is the position of a pixel within AData.
+ABitsPerPixel is the size of a stored pixel.
+APrec and AShift select the field (color channel or palette index).
+
+The bits are extracted into the low order bits of the result (ABits).</descr>
+        <seealso>
+          <link id="RawImage_WriteBits"/>
+        </seealso>
+      </element>
+      <element name="RawImage_WriteBits">
+        <short>Write color or mask data, from the high bits of ABits.</short>
+        <errors>ReadBits returns the value in the low order bits</errors>
+        <seealso>
+          <link id="RawImage_ReadBits"/>
+        </seealso>
       </element>
     </module>
     <!-- GraphType -->

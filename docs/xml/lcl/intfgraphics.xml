@@ -165,11 +165,10 @@
       </element>
       <!-- object Visibility: default -->
       <element name="TLazIntfImage">
-        <short>
-          <var>TLazIntfImage</var> - This descendant of <var>TFPCustomImage </var>stores its image data as raw images and is therefore able to interchange images directly with the LCL interfaces.</short>
+        <short>Represents a graphical image.</short>
         <descr>
-          <p>
-            <var>TLazIntfImage</var> -  This descendant of <var>TFPCustomImage</var> stores its image data as raw images and is therefore able to interchange images directly with the LCL interfaces.</p>
+          <p>This descendant of <var>TFPCustomImage</var> stores the image data as TRawImage, and is therefore able to interchange images directly with the LCL interfaces.</p>
+          <p>A large number of the protected methods (GetColorxxxxxx and SetColorxxxxxx) deal with direct interface to the operating system at the pixel level</p>
           <pre>Usage examples:
 
     1. Loading a .xpm file into a TBitmap:
@@ -227,7 +226,6 @@
       end;
     }
  </pre>
-          <p>A large number of the protected methods (GetColorxxxxxx and SetColorxxxxxx) deal with direct interface to the operating system at the pixel level</p>
         </descr>
         <errors/>
         <seealso/>
@@ -2212,6 +2210,9 @@
       <element name="TLazReaderIconDIB">
         <short>
           <var>TLazReaderIconDIB</var> -  this is a <var>FPImage</var> reader for a single DIB from an icon file</short>
+      </element>
+      <element name="TLazIntfImage.GetDataLineStart">
+        <short>Returns an pointer to the scanline raw data.</short>
       </element>
     </module>
     <!-- IntfGraphics -->

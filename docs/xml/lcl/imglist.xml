@@ -180,8 +180,7 @@
       </element>
       <!-- object Visibility: default -->
       <element name="TCustomImageList">
-        <short>
-          <var>TCustomImageList</var>  - base class for <var>TImageList</var> (not the same as a <var>TBitmap</var> collection)</short>
+        <short>Base class for TImageList (not the same as a <var>TBitmap</var> collection)</short>
         <descr>An ImageList contains images (bitmaps or icons) of the same Width and Height, accessible by index. The images are stored in one big (wide) bitmap, whose width is Width*Count. When an image of a different Width or Height is inserted, the previous contents of the list are discarded!
 
 It's okay, however, to insert an imagelist-like bitmap, that contains multiple bitmaps of the same Width and Height as used by the ImageList. This allows to insert e.g. other (compatible) ImageLists, or bitmaps for multiple states of essentially the same image (button pressed, released and disabled).

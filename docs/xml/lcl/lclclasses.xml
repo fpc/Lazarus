@@ -95,20 +95,23 @@
         </seealso>
       </element>
       <element name="TLCLReferenceComponent">
-        <short>
-          <var>TLCLReferenceComponent</var> - A base class for all components having a handle</short>
+        <short>Base class for all components having a handle.</short>
+        <descr>Apart from the OS/window manager specific window Handle, LCL components can include a Reference to an widgetset specific object.
+
+Application use is restricted to sending messages to a windowed control, using its window Handle.
+</descr>
       </element>
       <element name="TLCLReferenceComponent.Destroy">
-        <short>
-          <var>Destroy</var> the reference, then perform inherited <var>Destroy</var>
-        </short>
+        <short>Destroys the Reference, prior to calling the inherited destructor.</short>
         <seealso>
           <link id="#LCL.LCLClasses.TLCLComponent.Destroy">TLCLComponent.Destroy</link>
         </seealso>
       </element>
       <element name="TLCLReferenceComponent.Handle">
-        <short>
-          <var>Handle</var> a handle (sort of pointer or reference) allocated by the operating system to this component</short>
+        <short>Get the Handle of this component.</short>
+        <descr>The Handle is  sort of pointer or reference, allocated by the operating system or widgetset to this component.
+
+A window handle can be used for sending messages to the component.[?]</descr>
       </element>
       <element name="TLCLReferenceComponent.HandleAllocated">
         <short>

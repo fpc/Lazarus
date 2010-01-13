@@ -11,8 +11,15 @@
           <var>TFPPalette</var> - FreePascal Palette definition: base for LCL TPalette etc</short>
       </element>
       <element name="TFPCustomImage">
-        <short>
-          <var>TFPCustomImage</var> - FreePascal base definition for all Image classes</short>
+        <short>Abstract FreePascal base class for all Image classes</short>
+        <descr>
+          <link id="#LCL.intfgraphics.TLazIntfImage">TLazIntfImage</link> is an LCL implementation of this class.
+
+TFPCustomImage only provides an image size and a palette, and methods to load, store and Assigne store images.
+The data storage and handling must be added in derived classes, by overriding the virtual (abstract) methods.</descr>
+        <seealso>
+          <link id="#LCL.intfgraphics.TLazIntfImage">TLazIntfImage</link>
+        </seealso>
       </element>
       <element name="TFPMemoryImage"/>
       <element name="TFPCustomImageHandler">
@@ -65,14 +72,18 @@
       </element>
       <element name="TFPPalette.Create">
         <short>
-          <var>Create</var> - constructor for <var>TFPPalette</var>: calls inherited <var>Create</var> then finds how much memory to allocate for the specified number of colours</short>
+          <var>Create</var> - constructor for 
+          <var>TFPPalette</var>: calls inherited 
+          <var>Create</var> then finds how much memory to allocate for the specified number of colours</short>
         <seealso>
           <link id="#rtl.System.TObject.Create">TObject.Create</link>
         </seealso>
       </element>
       <element name="TFPPalette.Destroy">
         <short>
-          <var>Destroy</var> - destructor for <var>TFPPalette</var>: frees memory then calls inherited <var>Destroy</var>
+          <var>Destroy</var> - destructor for 
+          <var>TFPPalette</var>: frees memory then calls inherited 
+          <var>Destroy</var>
         </short>
         <seealso>
           <link id="#rtl.System.TObject.Destroy">TObject.Destroy</link>
@@ -84,11 +95,13 @@
       </element>
       <element name="TFPPalette.Copy">
         <short>
-          <var>Copy</var> from the source (<var>APalette</var>) to the current Palette</short>
+          <var>Copy</var> from the source (
+          <var>APalette</var>) to the current Palette</short>
       </element>
       <element name="TFPPalette.Merge">
         <short>
-          <var>Merge</var> the contents of another palette (<var>pal</var>) with the current palette</short>
+          <var>Merge</var> the contents of another palette (
+          <var>pal</var>) with the current palette</short>
       </element>
       <element name="TFPPalette.IndexOf">
         <short>
@@ -110,16 +123,20 @@
           <var>Count</var> - the total number of entries for colours in the palette</short>
       </element>
       <element name="TFPCustomImage.SetInternalColor">
-        <short>
-          <var>SetInternalColor</var> - specify the internal colour (using TFPColor format)</short>
+        <short>Set RGBA pixel color.</short>
+        <descr>This is a virtual method, that translates the RGBA color into an palette index, which then is stored in the pixel data.
+
+Storage of true RGBA colors (not using a palette) has to be implemented in derived classes.</descr>
       </element>
       <element name="TFPCustomImage.GetInternalColor">
-        <short>
-          <var>GetInternalColor</var> - finds the internal colour from local store</short>
+        <short>Get RGBA pixel color.</short>
+        <descr>This is a virtual method, reading the RGBA color from the palette.
+
+When true RGBA colors are stored, this must be reflected in a derived class.</descr>
       </element>
       <element name="TFPCustomImage.SetInternalPixel">
-        <short>
-          <var>SetInternalPixel</var> - specifies the integer Color of a pixel located at the given coordinates</short>
+        <short>Set the internal color representation of a pixel.</short>
+        <descr>This is an abstract method, expecting color information as an palette index by default, or RGBA data encoded as an Integer value.</descr>
       </element>
       <element name="TFPCustomImage.GetInternalPixel">
         <short>
@@ -146,20 +163,24 @@
       </element>
       <element name="TFPCustomImage.create">
         <short>
-          <var>Create</var> - constructor for <var>TFPCustomImage</var>: calls inherited <var>Create</var> then initialises position and size, makes a stringlist</short>
+          <var>Create</var> - constructor for 
+          <var>TFPCustomImage</var>: calls inherited 
+          <var>Create</var> then initialises position and size, makes a stringlist</short>
         <seealso>
           <link id="#rtl.System.TObject.Create">TObject.Create</link>
         </seealso>
       </element>
       <element name="TFPCustomImage.destroy">
         <short>
-          <var>Destroy</var> - destructor for <var>TFPCustomImage</var>: frees the Palette then calls inherited <var>Destroy</var>
+          <var>Destroy</var> - destructor for 
+          <var>TFPCustomImage</var>: frees the Palette then calls inherited 
+          <var>Destroy</var>
         </short>
         <seealso>
           <link id="#rtl.Classes.TPersistent.Destroy">TPersistent.Destroy</link>
         </seealso>
       </element>
-      <element name="TFPCustomImage.Assign" link="#rtl.Classes.TPersistent.Assign"/>
+      <element link="#rtl.Classes.TPersistent.Assign" name="TFPCustomImage.Assign"/>
       <element name="TFPCustomImage.LoadFromStream">
         <short>
           <var>LoadFromStream</var> loads data from the specified stream, optionally using the specified reader</short>
@@ -204,8 +225,7 @@
           <var>Extra</var> - Info unrelated with the image representation</short>
       </element>
       <element name="TFPCustomImage.ExtraValue">
-        <short>
-          <var>ExtraValue</var> - additional information stored with the image</short>
+        <short>Additional information stored with the image</short>
       </element>
       <element name="TFPCustomImage.ExtraKey">
         <short>
@@ -225,7 +245,8 @@
       </element>
       <element name="TFPCustomImageClass">
         <short>
-          <var>TFPCustomImageClass</var> - class of <var>TFPCustomImage</var>
+          <var>TFPCustomImageClass</var> - class of 
+          <var>TFPCustomImage</var>
         </short>
       </element>
       <element name="PFPIntegerArray">
@@ -236,11 +257,11 @@
         <short>
           <var>TFPIntegerArray</var> - definition of integer array for use in images</short>
       </element>
-      <element name="TFPMemoryImage.SetInternalPixel" link="#fcl.FPimage.TFPCustomImage.SetInternalPixel"/>
-      <element name="TFPMemoryImage.GetInternalPixel" link="#fcl.FPimage.TFPCustomImage.GetInternalPixel"/>
-      <element name="TFPMemoryImage.create" link="#fcl.FPimage.TFPCustomImage.create"/>
-      <element name="TFPMemoryImage.destroy" link="#fcl.FPimage.TFPCustomImage.destroy"/>
-      <element name="TFPMemoryImage.SetSize" link="#fcl.FPimage.TFPCustomImage.SetSize"/>
+      <element link="#fcl.FPimage.TFPCustomImage.SetInternalPixel" name="TFPMemoryImage.SetInternalPixel"/>
+      <element link="#fcl.FPimage.TFPCustomImage.GetInternalPixel" name="TFPMemoryImage.GetInternalPixel"/>
+      <element link="#fcl.FPimage.TFPCustomImage.create" name="TFPMemoryImage.create"/>
+      <element link="#fcl.FPimage.TFPCustomImage.destroy" name="TFPMemoryImage.destroy"/>
+      <element link="#fcl.FPimage.TFPCustomImage.SetSize" name="TFPMemoryImage.SetSize"/>
       <element name="TFPCustomImageHandler.Progress">
         <short>
           <var>Progress</var> - method for displaying the progress of a drawing or painting action</short>
@@ -264,7 +285,7 @@
         <short>
           <var>TheImage</var> which is being read or written</short>
       </element>
-      <element name="TFPCustomImageHandler.Create" link="#rtl.System.TObject.Create"/>
+      <element link="#rtl.System.TObject.Create" name="TFPCustomImageHandler.Create"/>
       <element name="TFPCustomImageHandler.OnProgress">
         <short>
           <var>OnProgress</var> event handler for showing progress of drawing or painting</short>
@@ -277,7 +298,7 @@
         <short>
           <var>InternalCheck</var> - performs check on validity of stream, returns True if OK</short>
       </element>
-      <element name="TFPCustomImageReader.Create" link="#rtl.System.TObject.Create"/>
+      <element link="#rtl.System.TObject.Create" name="TFPCustomImageReader.Create"/>
       <element name="TFPCustomImageReader.ImageRead">
         <short>
           <var>ImageRead</var> read specified image from nominated stream; returns the image</short>
@@ -292,7 +313,8 @@
       </element>
       <element name="TFPCustomImageReaderClass">
         <short>
-          <var>TFPCustomImageReaderClass</var> - class of <var>TFPCustomImageReader</var>
+          <var>TFPCustomImageReaderClass</var> - class of 
+          <var>TFPCustomImageReader</var>
         </short>
       </element>
       <element name="TFPCustomImageWriter.InternalWrite">
@@ -305,7 +327,8 @@
       </element>
       <element name="TFPCustomImageWriterClass">
         <short>
-          <var>TFPCustomImageWriterClass</var> - class of <var>TFPCustomImageWriter</var>
+          <var>TFPCustomImageWriterClass</var> - class of 
+          <var>TFPCustomImageWriter</var>
         </short>
       </element>
       <element name="TIHData">
@@ -318,14 +341,18 @@
       </element>
       <element name="TImageHandlersManager.Create">
         <short>
-          <var>Create</var> - constructor fro <var>TImageHandlersManager</var>: calls inherited <var>Create</var> then constructs list of handlers</short>
+          <var>Create</var> - constructor fro 
+          <var>TImageHandlersManager</var>: calls inherited 
+          <var>Create</var> then constructs list of handlers</short>
         <seealso>
           <link id="#rtl.System.TObject.Create">TObject.Create</link>
         </seealso>
       </element>
       <element name="TImageHandlersManager.Destroy">
         <short>
-          <var>Destroy</var> - destructor for <var>TImageHandlersManager</var>: frees the list of handlers then calls inherited <var>Destroy</var>
+          <var>Destroy</var> - destructor for 
+          <var>TImageHandlersManager</var>: frees the list of handlers then calls inherited 
+          <var>Destroy</var>
         </short>
         <seealso>
           <link id="#rtl.System.TObject.Destroy">TObject.Destroy</link>
@@ -364,11 +391,13 @@
       </element>
       <element name="TFPColor">
         <short>
-          <var>TFPColor</var> - record type used as an internal representation for a colour: a <var>TColor</var> has been decomposed into its component Red, Green, Blue and Alpha parts, to allow easy manipulation of each</short>
+          <var>TFPColor</var> - record type used as an internal representation for a colour: a 
+          <var>TColor</var> has been decomposed into its component Red, Green, Blue and Alpha parts, to allow easy manipulation of each</short>
       </element>
       <element name="PFPColor">
         <short>
-          <var>PFPColor</var> - pointer to a <var>TFPColor</var>
+          <var>PFPColor</var> - pointer to a 
+          <var>TFPColor</var>
         </short>
       </element>
     </module>
