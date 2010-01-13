@@ -1,4 +1,10 @@
 object CollectionPropertyEditorForm: TCollectionPropertyEditorForm
+  Left = 220
+  Height = 300
+  Top = 220
+  Width = 190
+  HorzScrollBar.Page = 189
+  VertScrollBar.Page = 299
   ActiveControl = CollectionListBox
   BorderStyle = bsSizeToolWin
   Caption = 'CollectionPropertyEditorForm'
@@ -8,72 +14,59 @@ object CollectionPropertyEditorForm: TCollectionPropertyEditorForm
   Constraints.MinWidth = 190
   OnCreate = FormCreate
   OnDestroy = FormDestroy
-  PixelsPerInch = 96
   Position = poDefaultPosOnly
-  HorzScrollBar.Page = 189
-  VertScrollBar.Page = 299
-  Left = 290
-  Height = 300
-  Top = 153
-  Width = 190
+  LCLVersion = '0.9.29'
   object ToolBar1: TToolBar
+    Left = 0
+    Height = 42
+    Top = 0
+    Width = 190
     AutoSize = True
     ButtonHeight = 40
     ButtonWidth = 44
     Caption = 'ToolBar1'
-    Flat = True
-    Height = 42
     ShowCaptions = True
     TabOrder = 0
-    Height = 42
-    Width = 190
     object AddButton: TToolButton
+      Left = 1
+      Top = 2
       Caption = 'Add'
       OnClick = AddButtonClick
-      Height = 40
-      Top = 2
-      Width = 44
     end
     object DeleteButton: TToolButton
+      Left = 45
+      Top = 2
       Caption = 'Delete'
       OnClick = DeleteButtonClick
-      Left = 45
-      Height = 40
-      Top = 2
-      Width = 44
     end
     object ToolButton3: TToolButton
+      Left = 89
+      Top = 2
+      Width = 10
       Caption = 'ToolButton3'
       Style = tbsSeparator
-      Width = 10
-      Left = 89
-      Height = 40
-      Top = 2
-      Width = 10
     end
     object MoveUpButton: TToolButton
+      Left = 99
+      Top = 2
       Caption = 'Up'
       OnClick = MoveUpButtonClick
-      Left = 99
-      Height = 40
-      Top = 2
-      Width = 44
     end
     object MoveDownButton: TToolButton
+      Left = 143
+      Top = 2
       Caption = 'Down'
       OnClick = MoveDownButtonClick
-      Left = 143
-      Height = 40
-      Top = 2
-      Width = 44
     end
   end
   object CollectionListBox: TListBox
-    Align = alClient
-    OnClick = CollectionListBoxClick
-    TabOrder = 1
+    Left = 0
     Height = 258
     Top = 42
     Width = 190
+    Align = alClient
+    ItemHeight = 0
+    OnClick = CollectionListBoxClick
+    TabOrder = 1
   end
 end

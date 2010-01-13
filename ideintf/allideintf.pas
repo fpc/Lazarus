@@ -23,6 +23,7 @@ uses
   ActionsEditor,
   ActionsEditorStd,
   BaseIDEIntf,
+  CollectionPropEditForm,
   ComponentEditors,
   ComponentReg,
   ComponentTreeView,

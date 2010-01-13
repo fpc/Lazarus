@@ -3707,6 +3707,7 @@ ideintf/checklistboxeditordlg.lrs svneol=native#text/pascal
 ideintf/checklistboxeditordlg.pas svneol=native#text/plain
 ideintf/collectionpropeditform.lfm svneol=native#text/plain
 ideintf/collectionpropeditform.lrs svneol=native#text/pascal
+ideintf/collectionpropeditform.pas svneol=native#text/plain
 ideintf/columndlg.pp svneol=native#text/pascal
 ideintf/componenteditors.pas svneol=native#text/pascal
 ideintf/componentreg.pas svneol=native#text/pascal
