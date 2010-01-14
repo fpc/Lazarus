@@ -38,7 +38,7 @@ unit InstallPkgSetDlg;
 interface
 
 uses
-  Classes, SysUtils, LCLProc, LResources, Forms, Controls, Graphics, Dialogs,
+  Classes, SysUtils, LCLProc, Forms, Controls, Graphics, Dialogs,
   KeywordFuncLists, StdCtrls, Buttons, FileUtil, ExtCtrls,
   AVL_Tree, Laz_XMLCfg,
   LazarusIDEStrConsts, EnvironmentOpts, InputHistory, LazConf, IDEProcs,
@@ -122,6 +122,8 @@ function ShowEditInstallPkgsDialog(OldInstalledPackages: TPkgDependency;
   var RebuildIDE: boolean): TModalResult;
 
 implementation
+
+{$R *.lfm}
 
 function ShowEditInstallPkgsDialog(OldInstalledPackages: TPkgDependency;
   CheckInstallPackageList: TOnCheckInstallPackageList;
@@ -773,9 +775,6 @@ begin
     Result.Add(NewPackageID);
   end;
 end;
-
-initialization
-  {$I installpkgsetdlg.lrs}
 
 end.
 

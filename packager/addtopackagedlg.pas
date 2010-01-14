@@ -38,7 +38,7 @@ unit AddToPackageDlg;
 interface
 
 uses
-  Math, Classes, SysUtils, LResources, LCLType, Forms, Controls, Buttons,
+  Math, Classes, SysUtils, LCLType, Forms, Controls, Buttons,
   StdCtrls, ExtCtrls, Dialogs, FileUtil, ComCtrls, AVL_Tree, LCLProc,
   NewItemIntf, ProjectIntf,
   LazarusIDEStrConsts, IDEWindowIntf, InputHistory, CodeToolManager, IDEDefs,
@@ -206,6 +206,7 @@ function CheckAddingPkgDependency(LazPackage: TLazPackage;
 
 implementation
 
+{$R *.lfm}
 
 function ShowAddToPackageDlg(Pkg: TLazPackage; var Params: TAddToPkgResult;
   OnGetIDEFileInfo: TGetIDEFileStateEvent;
@@ -1335,9 +1336,6 @@ begin
   FreeThenNil(Next);
   inherited Destroy;
 end;
-
-initialization
-  {$I addtopackagedlg.lrs}
 
 end.
 

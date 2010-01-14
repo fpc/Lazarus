@@ -40,7 +40,7 @@ interface
 
 uses
   Classes, SysUtils, Forms, Controls, Buttons, ComCtrls, StdCtrls,
-  FileCtrl, LResources, Dialogs, LCLProc, IDEContextHelpEdit,
+  FileCtrl, Dialogs, LCLProc, IDEContextHelpEdit,
   PackageDefs, LazarusIDEStrConsts, IDEWindowIntf, PackageSystem, ExtCtrls;
 
 type
@@ -71,6 +71,8 @@ type
 function ShowOpenInstalledPkgDlg(var OpenPackage: TLazPackage): TModalResult;
 
 implementation
+
+{$R *.lfm}
 
 function ShowOpenInstalledPkgDlg(var OpenPackage: TLazPackage): TModalResult;
 var
@@ -223,9 +225,6 @@ begin
   if LI=nil then exit;
   Result:=TLazPackage(LI.Data);
 end;
-
-initialization
-  {$I openinstalledpkgdlg.lrs}
 
 end.
 

@@ -38,7 +38,7 @@ unit PkgGraphExplorer;
 interface
 
 uses
-  Classes, SysUtils, LCLProc, LResources, Forms, Controls, Buttons, ComCtrls,
+  Classes, SysUtils, LCLProc, Forms, Controls, Buttons, ComCtrls,
   StdCtrls, Menus, Dialogs, Graphics, FileCtrl,
   AVL_Tree,
   IDECommands,
@@ -121,11 +121,14 @@ type
   end;
   
 var
-  PackageGraphExplorer: TPkgGraphExplorerDlg;
+  PackageGraphExplorer: TPkgGraphExplorerDlg = nil;
 
 implementation
 
-uses Math, IDEImagesIntf;
+{$R *.lfm}
+
+uses 
+  Math, IDEImagesIntf;
 
 { TPkgGraphExplorerDlg }
 procedure TPkgGraphExplorerDlg.PkgGraphExplorerShow(Sender: TObject);
@@ -628,10 +631,6 @@ begin
   PkgTreeView.Selected:=LastNode;
   PkgTreeView.EndUpdate;
 end;
-
-initialization
-  PackageGraphExplorer:=nil;
-  {$I pkggraphexplorer.lrs}
 
 end.
 

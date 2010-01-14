@@ -38,7 +38,7 @@ unit PkgOptionsDlg;
 interface
 
 uses
-  Classes, SysUtils, FileUtil, LCLProc, Forms, Controls, Buttons, LResources,
+  Classes, SysUtils, FileUtil, LCLProc, Forms, Controls, Buttons, 
   ExtCtrls, StdCtrls, Spin, Dialogs, PathEditorDlg, IDEProcs, IDEWindowIntf,
   IDEDialogs, MacroIntf,
   LazarusIDEStrConsts,
@@ -146,8 +146,10 @@ var
 
 implementation
 
+{$R *.lfm}
 
-uses Math;
+uses 
+  Math;
 
 function ShowPackageOptionsDlg(APackage: TLazPackage): TModalResult;
 var
@@ -628,9 +630,6 @@ destructor TPackageOptionsDialog.Destroy;
 begin
   inherited Destroy;
 end;
-
-initialization
-  {$I pkgoptionsdlg.lrs}
 
 end.
 

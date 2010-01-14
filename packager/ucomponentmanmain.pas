@@ -28,7 +28,7 @@ unit UComponentManMain;
 interface
 
 uses
-  Classes, SysUtils, Forms, Controls, Graphics, Dialogs, LResources, StdCtrls,
+  Classes, SysUtils, Forms, Controls, Graphics, Dialogs, StdCtrls,
   Buttons, FileUtil, IDEProcs, UFrmAddComponent;
   
 Type
@@ -87,6 +87,8 @@ type
 function ShowConfigureCustomComponentDlg(const LazarusDir: string): TModalResult;
 
 implementation
+
+{$R *.lfm}
 
 function ShowConfigureCustomComponentDlg(
   const LazarusDir: string): TModalResult;
@@ -522,9 +524,6 @@ begin
   if FLazPath=AValue then exit;
   FLazPath:=AValue;
 end;
-
-initialization
-  {$I ucomponentmanmain.lrs}
 
 end.
 

@@ -39,7 +39,7 @@ unit AddFileToAPackageDlg;
 interface
 
 uses
-  Classes, SysUtils, LResources, Forms, Controls, Buttons, ExtCtrls, StdCtrls,
+  Classes, SysUtils, Forms, Controls, Buttons, ExtCtrls, StdCtrls,
   LazarusIDEStrConsts, Dialogs, AVL_Tree, FileUtil, IDEProcs, IDEWindowIntf,
   ComponentReg, PackageDefs, PackageSystem, IDEContextHelpEdit, ButtonPanel;
 
@@ -92,6 +92,7 @@ function ShowAddFileToAPackageDlg(const Filename, AUnitName: string;
 
 implementation
 
+{$R *.lfm}
 
 function ShowAddFileToAPackageDlg(const Filename, AUnitName: string;
   HasRegisterProc: boolean): TModalResult;
@@ -371,8 +372,5 @@ begin
     PackagesComboBox.Text:='';
   sl.Free;
 end;
-
-initialization
-  {$I addfiletoapackagedlg.lrs}
 
 end.

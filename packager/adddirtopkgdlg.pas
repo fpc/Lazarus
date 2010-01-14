@@ -5,7 +5,7 @@ unit AddDirToPkgDlg;
 interface
 
 uses
-  Classes, SysUtils, LCLProc, LResources, Forms, Controls, Graphics, Dialogs,
+  Classes, SysUtils, LCLProc, Forms, Controls, Graphics, Dialogs,
   StdCtrls, ExtCtrls, ButtonPanel,
   SynRegExpr, FileUtil,
   // IDE
@@ -53,6 +53,8 @@ function ShowAddDirToPkgDialog(APackage: TLazPackage;
   out Files: TStrings): TModalResult;
 
 implementation
+
+{$R *.lfm}
 
 function ShowAddDirToPkgDialog(APackage: TLazPackage;
   out Files: TStrings): TModalResult;
@@ -256,9 +258,6 @@ begin
   end;
   Result:=true;
 end;
-
-initialization
-  {$I adddirtopkgdlg.lrs}
 
 end.
 

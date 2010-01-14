@@ -37,7 +37,7 @@ unit PkgLinksDlg;
 interface
 
 uses
-  Classes, SysUtils, LResources, Forms, Controls, Graphics, Dialogs, StdCtrls,
+  Classes, SysUtils, Forms, Controls, Graphics, Dialogs, StdCtrls,
   Buttons, Grids, AVL_Tree,
   FileProcs,
   LazarusIDEStrConsts, PackageDefs, PackageLinks;
@@ -79,6 +79,8 @@ type
 function ShowPackageLinks: TModalResult;
 
 implementation
+
+{$R *.lfm}
 
 function ShowPackageLinks: TModalResult;
 var
@@ -217,9 +219,6 @@ begin
     FileDate:=Link.FileDate;
   end;
 end;
-
-initialization
-  {$I pkglinksdlg.lrs}
 
 end.
 

@@ -27,7 +27,7 @@ unit UFrmAddComponent;
 interface
 
 uses
-  Classes, SysUtils, Forms, Controls, Graphics, Dialogs, LResources, StdCtrls,
+  Classes, SysUtils, Forms, Controls, Graphics, Dialogs, StdCtrls,
   Buttons;
 
 type
@@ -42,13 +42,11 @@ type
   end; 
 
 var
-  FrmAddComponent: TFrmAddComponent;
+  FrmAddComponent: TFrmAddComponent = nil;
 
 implementation
 
-initialization
-  FrmAddComponent:=nil;
-  {$I ufrmaddcomponent.lrs}
+{$R *.lfm}
 
 end.
 

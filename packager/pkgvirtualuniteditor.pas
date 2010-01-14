@@ -38,7 +38,7 @@ unit PkgVirtualUnitEditor;
 interface
 
 uses
-  Classes, SysUtils, LResources, Forms, Controls, Graphics, Dialogs, Buttons,
+  Classes, SysUtils, Forms, Controls, Graphics, Dialogs, Buttons,
   StdCtrls, FileUtil, LazarusIDEStrConsts, PackageDefs;
 
 type
@@ -64,6 +64,8 @@ type
 function ShowEditVirtualPackageDialog(PkgFile: TPkgFile): TModalResult;
 
 implementation
+
+{$R *.lfm}
 
 function ShowEditVirtualPackageDialog(PkgFile: TPkgFile): TModalResult;
 var
@@ -150,9 +152,6 @@ begin
     UnitnameEdit.Text:=PkgFile.Unit_Name;
   end;
 end;
-
-initialization
-  {$I pkgvirtualuniteditor.lrs}
 
 end.
 
