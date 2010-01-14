@@ -16,14 +16,14 @@ object Form1: TForm1
     AxisList = <    
       item
         Alignment = calLeft
-        Offset = 0
-        Scale = 1
         Title.Font.Orientation = 900
+        Transformation.Offset = 0
+        Transformation.Scale = 1
       end    
       item
         Alignment = calBottom
-        Offset = 0
-        Scale = 1
+        Transformation.Offset = 0
+        Transformation.Scale = 1
       end>
     ExpandPercentage = 10
     Extent.YMin = -6

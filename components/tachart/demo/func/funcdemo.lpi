@@ -4,11 +4,14 @@
     <PathDelim Value="\"/>
     <Version Value="7"/>
     <General>
+      <Flags>
+        <LRSInOutputDirectory Value="False"/>
+      </Flags>
       <SessionStorage Value="InProjectDir"/>
       <MainUnit Value="0"/>
       <TargetFileExt Value=".exe"/>
       <Title Value="TAChart function series demo"/>
-      <UseXPManifest Value="True"/>
+      <ResourceType Value="res"/>
     </General>
     <VersionInfo>
       <ProjectVersion Value=""/>

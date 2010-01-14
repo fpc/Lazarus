@@ -5,8 +5,7 @@ unit main;
 interface
 
 uses
-  Classes, StdCtrls, SysUtils, FileUtil, LResources, Forms, Controls, Graphics,
-  Dialogs, TAGraph, TASeries, TASources;
+  Classes, StdCtrls, Forms, Graphics, TAGraph, TASeries, TASources;
 
 type
 
@@ -36,6 +35,8 @@ implementation
 
 uses
   TAChartUtils;
+
+{$R *.lfm}
 
 { TForm1 }
 
@@ -79,9 +80,6 @@ begin
   AItem.X := AIndex - ASource.PointsNumber / 2;
   AItem.Y := Cos(AItem.X);
 end;
-
-initialization
-  {$I main.lrs}
 
 end.
 
