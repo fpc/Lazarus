@@ -17,18 +17,18 @@ object Form1: TForm1
       item
         Alignment = calLeft
         Grid.Color = clGray
-        Offset = 0
-        Scale = 1
         Title.Font.Height = -11
         Title.Font.Name = 'MS Sans Serif'
+        Transformation.Offset = 0
+        Transformation.Scale = 1
       end    
       item
         Alignment = calBottom
         Grid.Color = clGray
-        Offset = 0
-        Scale = 1
         Title.Font.Height = -11
         Title.Font.Name = 'MS Sans Serif'
+        Transformation.Offset = 0
+        Transformation.Scale = 1
       end>
     Foot.Brush.Color = clBtnFace
     Foot.Font.Color = clRed

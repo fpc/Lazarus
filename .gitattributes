@@ -2070,7 +2070,6 @@ components/tachart/demo/axis/main.pas svneol=native#text/pascal
 components/tachart/demo/basic/demo.lpi svneol=native#text/plain
 components/tachart/demo/basic/demo.lpr svneol=native#text/plain
 components/tachart/demo/basic/unit1.lfm svneol=native#text/plain
-components/tachart/demo/basic/unit1.lrs svneol=native#text/pascal
 components/tachart/demo/basic/unit1.pas svneol=native#text/plain
 components/tachart/demo/chartsource/chartsourcedemo.lpi svneol=native#text/plain
 components/tachart/demo/chartsource/chartsourcedemo.lpr svneol=native#text/plain

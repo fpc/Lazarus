@@ -5,7 +5,7 @@ unit unit1;
 interface
 
 uses
-  Classes, SysUtils, LResources, Forms, Controls, Graphics, Dialogs, ExtCtrls,
+  SysUtils, Forms, Graphics, ExtCtrls,
   TAGraph, TASeries, Buttons, StdCtrls, Spin;
 
 type
@@ -76,6 +76,8 @@ var
   Form1: TForm1; 
 
 implementation
+
+{$R *.lfm}
 
 uses
   TAChartUtils;
@@ -270,9 +272,6 @@ begin
   FPie.Marks.LinkPen.Width := 2;
   Chart1.AddSeries(FPie);
 end;
-
-initialization
-  {$I unit1.lrs}
 
 end.
 
