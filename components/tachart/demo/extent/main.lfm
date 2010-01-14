@@ -17,15 +17,15 @@ object Form1: TForm1
       item
         Alignment = calLeft
         Grid.Visible = False
-        Offset = 0
-        Scale = 1
         Title.Font.Orientation = 900
+        Transformation.Offset = 0
+        Transformation.Scale = 1
       end    
       item
         Alignment = calBottom
         Grid.Visible = False
-        Offset = 0
-        Scale = 1
+        Transformation.Offset = 0
+        Transformation.Scale = 1
       end>
     Extent.XMin = -1.7
     Extent.YMin = -1.7

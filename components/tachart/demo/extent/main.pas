@@ -5,8 +5,7 @@ unit main;
 interface
 
 uses
-  Classes, ExtCtrls, Spin, StdCtrls, SysUtils, FileUtil, LResources, Forms,
-  Controls, Graphics, Dialogs, TAGraph, TASeries, TASources;
+  ExtCtrls, Spin, StdCtrls, Forms, TAGraph, TASeries, TASources;
 
 type
 
@@ -33,6 +32,8 @@ var
   Form1: TForm1; 
 
 implementation
+
+{$R *.lfm}
 
 { TForm1 }
 
@@ -64,9 +65,6 @@ begin
     YMax := fseBounds.Value;
   end;
 end;
-
-initialization
-  {$I main.lrs}
 
 end.
 
