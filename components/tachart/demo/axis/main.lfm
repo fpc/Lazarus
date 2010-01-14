@@ -16,44 +16,45 @@ object Form1: TForm1
     AxisList = <    
       item
         Alignment = calLeft
-        Offset = 0
-        Scale = 1
         TickColor = clRed
         Title.Caption = 'Left'
         Title.Font.Orientation = 900
         Title.Visible = True
+        Transformation.Logarithmic = True
+        Transformation.Offset = 0
+        Transformation.Scale = 1
       end    
       item
         Alignment = calRight
-        Offset = 1
-        Scale = 2
         Title.Caption = 'Right 1'
         Title.Font.Orientation = 900
         Title.Visible = True
+        Transformation.Offset = 0
+        Transformation.Scale = 1
       end    
       item
         Alignment = calBottom
-        Offset = 0
-        Scale = 1
         Title.Caption = 'Bottom'
         Title.Distance = 0
         Title.Visible = True
+        Transformation.Offset = 0
+        Transformation.Scale = 1
       end    
       item
         Alignment = calRight
         Grid.Visible = False
-        Offset = 0
-        Scale = -1
         TickColor = clAqua
         Title.Caption = 'Right 2'
         Title.Visible = True
+        Transformation.Offset = 0
+        Transformation.Scale = 1
       end    
       item
         Alignment = calTop
         Inverted = True
-        Offset = 0
-        Scale = 1
         Title.Caption = 'Top'
+        Transformation.Offset = 0
+        Transformation.Scale = 1
       end>
     Foot.Brush.Color = clBtnFace
     Foot.Font.Color = clBlue
@@ -65,6 +66,7 @@ object Form1: TForm1
     Align = alClient
     ParentColor = False
     object Chart1LineSeries1: TLineSeries
+      AxisIndexY = 0
       SeriesColor = clBlack
       Source = RandomChartSource1
     end
@@ -74,7 +76,7 @@ object Form1: TForm1
     RandSeed = 99566593
     XMax = 20
     XMin = 10
-    YMax = 2
+    YMax = 20
     YMin = 1
     left = 216
     top = 108

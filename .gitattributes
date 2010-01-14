@@ -2064,7 +2064,6 @@ components/tachart/demo/3d/zdemo.lpr svneol=native#text/plain
 components/tachart/demo/axis/axisdemo.lpi svneol=native#text/plain
 components/tachart/demo/axis/axisdemo.lpr svneol=native#text/pascal
 components/tachart/demo/axis/main.lfm svneol=native#text/plain
-components/tachart/demo/axis/main.lrs svneol=native#text/plain
 components/tachart/demo/axis/main.pas svneol=native#text/pascal
 components/tachart/demo/basic/demo.lpi svneol=native#text/plain
 components/tachart/demo/basic/demo.lpr svneol=native#text/plain

@@ -5,8 +5,7 @@ unit Main;
 interface
 
 uses
-  Classes, SysUtils, FileUtil, LResources, Forms, Controls, Graphics, Dialogs,
-  TAGraph, TASeries, TASources;
+  Forms, TAGraph, TASeries, TASources;
 
 type
 
@@ -24,6 +23,8 @@ var
 
 implementation
 
+{$R *.lfm}
+
 { TForm1 }
 
 procedure TForm1.TChartAxisList1MarkToText(var AText: String; AMark: Double);
@@ -31,9 +32,6 @@ begin
   if AMark < 15 then
     AText := '*' + AText + '*';
 end;
-
-initialization
-  {$I main.lrs}
 
 end.
 
