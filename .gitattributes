@@ -2076,7 +2076,6 @@ components/tachart/demo/chartsource/main.pas svneol=native#text/pascal
 components/tachart/demo/db/dbdemo.lpi svneol=native#text/plain
 components/tachart/demo/db/dbdemo.lpr svneol=native#text/pascal
 components/tachart/demo/db/main.lfm svneol=native#text/plain
-components/tachart/demo/db/main.lrs svneol=native#text/pascal
 components/tachart/demo/db/main.pas svneol=native#text/pascal
 components/tachart/demo/dragdrop/dragdropdemo.lpi svneol=native#text/plain
 components/tachart/demo/dragdrop/dragdropdemo.lpr svneol=native#text/plain

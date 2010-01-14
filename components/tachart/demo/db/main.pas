@@ -5,8 +5,7 @@ unit Main;
 interface
 
 uses
-  Classes, ComCtrls, db, DBGrids, memds, SysUtils, FileUtil,
-  LResources, Forms, Controls, Graphics, Dialogs, TADbSource, TAGraph, TASeries;
+  ComCtrls, db, DBGrids, memds, Forms, TADbSource, TAGraph, TASeries;
 
 type
 
@@ -30,15 +29,14 @@ var
 
 implementation
 
+{$R *.lfm}
+
 { TForm1 }
 
 procedure TForm1.tbCopyClick(Sender: TObject);
 begin
   Chart1BarSeries1.ListSource.CopyForm(DbChartSource1);
 end;
-
-initialization
-  {$I main.lrs}
 
 end.
 
