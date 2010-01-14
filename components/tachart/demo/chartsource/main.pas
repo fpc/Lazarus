@@ -5,8 +5,7 @@ unit Main;
 interface
 
 uses
-  Classes, ExtCtrls, StdCtrls, SysUtils, FileUtil, LResources, Forms, Controls,
-  Graphics, Dialogs, TAGraph, TASeries, TASources;
+  ExtCtrls, StdCtrls, Forms, TAGraph, TASeries, TASources;
 
 type
 
@@ -30,8 +29,7 @@ var
 
 implementation
 
-initialization
-  {$I main.lrs}
+{$R *.lfm}
 
 end.
 

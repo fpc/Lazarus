@@ -6,7 +6,7 @@ object Form1: TForm1
   Caption = 'Form1'
   ClientHeight = 385
   ClientWidth = 559
-  LCLVersion = '0.9.27'
+  LCLVersion = '0.9.29'
   object Memo1: TMemo
     Left = 0
     Height = 48
@@ -24,11 +24,20 @@ object Form1: TForm1
     Height = 337
     Top = 48
     Width = 266
-    BottomAxis.Grid.Style = psDot
+    AxisList = <    
+      item
+        Alignment = calLeft
+        Title.Font.Orientation = 900
+        Transformation.Offset = 0
+        Transformation.Scale = 1
+      end    
+      item
+        Alignment = calBottom
+        Transformation.Offset = 0
+        Transformation.Scale = 1
+      end>
     Foot.Brush.Color = clBtnFace
     Foot.Font.Color = clBlue
-    LeftAxis.Grid.Style = psDot
-    LeftAxis.Title.Angle = 90
     Title.Brush.Color = clBtnFace
     Title.Font.Color = clBlue
     Title.Text.Strings = (
@@ -43,6 +52,7 @@ object Form1: TForm1
     end
     object Chart1LineSeries1: TLineSeries
       ZPosition = 1
+      LinePen.Color = clBlue
       Pointer.Brush.Color = clBlue
       SeriesColor = clBlue
       ShowPoints = True
@@ -54,11 +64,20 @@ object Form1: TForm1
     Height = 337
     Top = 48
     Width = 288
-    BottomAxis.Grid.Style = psDot
+    AxisList = <    
+      item
+        Alignment = calLeft
+        Title.Font.Orientation = 900
+        Transformation.Offset = 0
+        Transformation.Scale = 1
+      end    
+      item
+        Alignment = calBottom
+        Transformation.Offset = 0
+        Transformation.Scale = 1
+      end>
     Foot.Brush.Color = clBtnFace
     Foot.Font.Color = clBlue
-    LeftAxis.Grid.Style = psDot
-    LeftAxis.Title.Angle = 90
     Title.Brush.Color = clBtnFace
     Title.Font.Color = clBlue
     Title.Text.Strings = (
@@ -67,14 +86,15 @@ object Form1: TForm1
     Align = alClient
     ParentColor = False
     object Chart2LineSeries1: TLineSeries
+      LinePen.Color = clRed
       Pointer.Brush.Color = clRed
       SeriesColor = clRed
       ShowPoints = True
       Source = RandomChartSource1
     end
     object Chart2AreaSeries1: TAreaSeries
-      AreaLinesPen.Color = clMaroon
       AreaBrush.Color = clBlue
+      AreaLinesPen.Color = clMaroon
       SeriesColor = clBlue
       Source = ListChartSource1
     end
