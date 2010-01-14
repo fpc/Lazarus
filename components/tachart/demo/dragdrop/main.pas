@@ -34,6 +34,8 @@ var
 
 implementation
 
+{$R *.lfm}
+
 uses
   TAChartUtils;
 
@@ -102,9 +104,6 @@ begin
   FDragIndex := -1;
   FNearestIndex := -1;
 end;
-
-initialization
-  {$I main.lrs}
 
 end.
 

@@ -2080,7 +2080,6 @@ components/tachart/demo/db/main.pas svneol=native#text/pascal
 components/tachart/demo/dragdrop/dragdropdemo.lpi svneol=native#text/plain
 components/tachart/demo/dragdrop/dragdropdemo.lpr svneol=native#text/plain
 components/tachart/demo/dragdrop/main.lfm svneol=native#text/plain
-components/tachart/demo/dragdrop/main.lrs svneol=native#text/pascal
 components/tachart/demo/dragdrop/main.pas svneol=native#text/pascal
 components/tachart/demo/extent/extentdemo.lpi svneol=native#text/plain
 components/tachart/demo/extent/extentdemo.lpr svneol=native#text/plain
