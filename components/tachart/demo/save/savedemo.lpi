@@ -6,12 +6,13 @@
     <General>
       <Flags>
         <SaveClosedFiles Value="False"/>
+        <LRSInOutputDirectory Value="False"/>
       </Flags>
       <SessionStorage Value="InProjectDir"/>
       <MainUnit Value="0"/>
       <TargetFileExt Value=".exe"/>
       <Title Value="Saving chart as image demo"/>
-      <UseXPManifest Value="True"/>
+      <ResourceType Value="res"/>
     </General>
     <VersionInfo>
       <ProjectVersion Value=""/>

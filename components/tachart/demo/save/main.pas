@@ -5,8 +5,7 @@ unit main;
 interface
 
 uses
-  Classes, SysUtils, FileUtil, LResources, Forms, Controls, Graphics, Dialogs,
-  ComCtrls, TAGraph, TASeries;
+  SysUtils, Forms, Graphics, Dialogs, ComCtrls, TAGraph, TASeries;
 
 type
 
@@ -36,6 +35,8 @@ var
   Form1: TForm1; 
 
 implementation
+
+{$R *.lfm}
 
 { TForm1 }
 
@@ -84,9 +85,6 @@ procedure TForm1.tbSaveAsPNGClick(Sender: TObject);
 begin
   Chart1.SaveToFile(TPortableNetworkGraphic, GetFileName('png'));
 end;
-
-initialization
-  {$I main.lrs}
 
 end.
 

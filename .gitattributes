@@ -2094,7 +2094,6 @@ components/tachart/demo/legend/legenddemo.lpr svneol=native#text/pascal
 components/tachart/demo/legend/main.lfm svneol=native#text/plain
 components/tachart/demo/legend/main.pas svneol=native#text/pascal
 components/tachart/demo/save/main.lfm svneol=native#text/plain
-components/tachart/demo/save/main.lrs svneol=native#text/pascal
 components/tachart/demo/save/main.pas svneol=native#text/plain
 components/tachart/demo/save/savedemo.lpi svneol=native#text/plain
 components/tachart/demo/save/savedemo.lpr svneol=native#text/plain
