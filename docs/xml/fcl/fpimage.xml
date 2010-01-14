@@ -7,16 +7,20 @@
           <var>TFPMemoryImage</var> - FreePascal base class for an image held in memory</short>
       </element>
       <element name="TFPPalette">
-        <short>
-          <var>TFPPalette</var> - FreePascal Palette definition: base for LCL TPalette etc</short>
+        <short>FreePascal color palette class; base for LCL TPalette etc.</short>
+        <descr>[entire review 2010-13-01 DoDi]</descr>
       </element>
       <element name="TFPCustomImage">
-        <short>Abstract FreePascal base class for all Image classes</short>
+        <short>Abstract FreePascal base class for all image classes.</short>
         <descr>
           <link id="#LCL.intfgraphics.TLazIntfImage">TLazIntfImage</link> is an LCL implementation of this class.
 
-TFPCustomImage only provides an image size and a palette, and methods to load, store and Assigne store images.
-The data storage and handling must be added in derived classes, by overriding the virtual (abstract) methods.</descr>
+TFPCustomImage only provides an image size and a palette, and methods to load, store and Assign images.
+The data storage and handling must be added in derived classes, by overriding the virtual (abstract) methods.
+
+It also provides Extra image attributes (a TStringList).
+
+[entire review 2010-14-01 DoDi]</descr>
         <seealso>
           <link id="#LCL.intfgraphics.TLazIntfImage">TLazIntfImage</link>
         </seealso>
@@ -47,201 +51,193 @@ The data storage and handling must be added in derived classes, by overriding th
           <var>FCapacity</var> - local variable to hold total capacity of array</short>
       </element>
       <element name="TFPPalette.SetCount">
-        <short>
-          <var>SetCount</var> - specify the number of colours in the palette</short>
+        <short>Set the number of colors in the palette.</short>
       </element>
       <element name="TFPPalette.GetCount">
-        <short>
-          <var>GetCount</var> - returns the number of colours in the palette</short>
+        <short>Get the number of used palette entries.</short>
       </element>
       <element name="TFPPalette.SetColor">
-        <short>
-          <var>SetColor</var> - specifies the value of colour to be associated with the specified index</short>
+        <short>Set the color of the specified palette entry.</short>
       </element>
       <element name="TFPPalette.GetColor">
-        <short>
-          <var>GetColor</var> - returns the colour value for the specified index</short>
+        <short>Get the color of the specified palette entry.</short>
       </element>
       <element name="TFPPalette.CheckIndex">
-        <short>
-          <var>CheckIndex</var> - checks validity of supplied index</short>
+        <short>Perform an bounds check of the supplied index.</short>
+        <errors>FPImageException when the index is out of bounds (not 0 </errors>
       </element>
       <element name="TFPPalette.EnlargeData">
-        <short>
-          <var>EnlargeData</var> - makes room in the array for more data</short>
+        <short>Makes room in the array for more palette entries.</short>
       </element>
       <element name="TFPPalette.Create">
-        <short>
-          <var>Create</var> - constructor for 
-          <var>TFPPalette</var>: calls inherited 
-          <var>Create</var> then finds how much memory to allocate for the specified number of colours</short>
+        <short>Creates a palette with ACount color entries.</short>
         <seealso>
           <link id="#rtl.System.TObject.Create">TObject.Create</link>
         </seealso>
       </element>
       <element name="TFPPalette.Destroy">
-        <short>
-          <var>Destroy</var> - destructor for 
-          <var>TFPPalette</var>: frees memory then calls inherited 
-          <var>Destroy</var>
-        </short>
+        <short>Destroys this instance.</short>
         <seealso>
           <link id="#rtl.System.TObject.Destroy">TObject.Destroy</link>
         </seealso>
       </element>
       <element name="TFPPalette.Build">
-        <short>
-          <var>Build</var> an Image</short>
+        <short>Builds the palette from an Image.</short>
+        <descr>All pixels in the image are inspected and their unique color values are added to the palette; duplicates are ignored.</descr>
       </element>
       <element name="TFPPalette.Copy">
-        <short>
-          <var>Copy</var> from the source (
-          <var>APalette</var>) to the current Palette</short>
+        <short>Replace the color table by a copy of APalette.</short>
+        <seealso>
+          <link id="TFPPalette.Merge"/>
+        </seealso>
       </element>
       <element name="TFPPalette.Merge">
-        <short>
-          <var>Merge</var> the contents of another palette (
-          <var>pal</var>) with the current palette</short>
+        <short>Merge the contents of the given palette into the current palette.</short>
+        <seealso>
+          <link id="TFPPalette.Copy"/>
+        </seealso>
       </element>
       <element name="TFPPalette.IndexOf">
-        <short>
-          <var>IndexOf</var> - returns the index value for the specified colour</short>
+        <short>Returns the palette index of the given color.</short>
       </element>
       <element name="TFPPalette.Add">
-        <short>
-          <var>Add</var> the specified colour to the palette and return the number of entries</short>
+        <short>Add the given color to the palette, and return its palette index.</short>
+        <descr>Duplicate colors are ignored, and the index of the already existing color entry is returned.</descr>
       </element>
       <element name="TFPPalette.Clear">
-        <short>
-          <var>Clear</var> - empties the palette</short>
+        <short>Empties the palette.</short>
       </element>
       <element name="TFPPalette.Color">
         <short>The current <var>Color</var> from the palette</short>
       </element>
       <element name="TFPPalette.Count">
-        <short>
-          <var>Count</var> - the total number of entries for colours in the palette</short>
+        <short>Get or set the number of used palette entries.</short>
       </element>
       <element name="TFPCustomImage.SetInternalColor">
         <short>Set RGBA pixel color.</short>
-        <descr>This is a virtual method, that translates the RGBA color into an palette index, which then is stored in the pixel data.
+        <descr>This is a virtual method, that translates the RGBA color into the internal pixel format.
 
-Storage of true RGBA colors (not using a palette) has to be implemented in derived classes.</descr>
+The default implementation converts the RGBA Value into an palette index, which then is stored in the pixel data.
+
+Storage of true RGBA or monochrome colors (not using a palette) has to be implemented in derived classes.</descr>
       </element>
       <element name="TFPCustomImage.GetInternalColor">
         <short>Get RGBA pixel color.</short>
-        <descr>This is a virtual method, reading the RGBA color from the palette.
+        <descr>This is a virtual method that extracts the internal color representation into a TFPColor, shifting and expanding bits into a TFPColor.
 
-When true RGBA colors are stored, this must be reflected in a derived class.</descr>
+The default implementation obtains the RGBA color from the palette. When true RGBA or monochrome colors are stored as pixel data, this must be handled in derived classes.</descr>
       </element>
       <element name="TFPCustomImage.SetInternalPixel">
-        <short>Set the internal color representation of a pixel.</short>
-        <descr>This is an abstract method, expecting color information as an palette index by default, or RGBA data encoded as an Integer value.</descr>
+        <short>Set the color of a pixel, in its internal encoding.</short>
+        <descr>This is an abstract method, expecting color information as an palette index by default, or monochrome or RGBA data encoded as an Integer value.
+
+The color Value must be encoded in the format of the actual image, as defined in its TRawImageDescription.
+
+Applications should use SetInternalColor instead, which converts the given RGBA value into the proper internal encoding.</descr>
       </element>
       <element name="TFPCustomImage.GetInternalPixel">
-        <short>
-          <var>GetInternalPixel</var> - returns the integer Color of the specified pixel</short>
+        <short>Returns the internal (encoded) color value of the specified pixel.</short>
+        <descr>For RGBA colors returns the internal (encoded) representation of the color.
+For monochrome or palette based images the intensitiy or palette index is returned.</descr>
       </element>
       <element name="TFPCustomImage.SetUsePalette">
-        <short>
-          <var>SetUsePalette</var> - specifies whether a palette is to be used in painting the Image</short>
+        <short>Specifies whether a color palette is to be used.</short>
+        <descr>Creates an empty palette if required.</descr>
       </element>
       <element name="TFPCustomImage.Progress">
-        <short>
-          <var>Progress</var> - method for displaying the progress of a drawing or painting action</short>
-        <descr>
-          <p>
-            <var>Progress</var> - method for displaying the progress of a drawing or painting action</p>
-          <p>Sender: calling routine</p>
-          <p>Stage: Starting, Running or Ending</p>
-          <p>PercentDone: how much has been accomplished</p>
-          <p>RedrawNow: whether to refresh the Image</p>
-          <p>R: the rectangle in which drawing progress is being monitored</p>
-          <p>Msg: a message to show in the progress display</p>
-          <p>Continue: whether to keep on drawing</p>
-        </descr>
+        <short>Notifies an OnProgress handler.</short>
       </element>
       <element name="TFPCustomImage.create">
-        <short>
-          <var>Create</var> - constructor for 
-          <var>TFPCustomImage</var>: calls inherited 
-          <var>Create</var> then initialises position and size, makes a stringlist</short>
+        <short>Initializes for an image of the given size in pixels.</short>
         <seealso>
           <link id="#rtl.System.TObject.Create">TObject.Create</link>
         </seealso>
       </element>
       <element name="TFPCustomImage.destroy">
-        <short>
-          <var>Destroy</var> - destructor for 
-          <var>TFPCustomImage</var>: frees the Palette then calls inherited 
-          <var>Destroy</var>
-        </short>
+        <short>Frees the palette.</short>
         <seealso>
           <link id="#rtl.Classes.TPersistent.Destroy">TPersistent.Destroy</link>
         </seealso>
       </element>
       <element link="#rtl.Classes.TPersistent.Assign" name="TFPCustomImage.Assign"/>
       <element name="TFPCustomImage.LoadFromStream">
-        <short>
-          <var>LoadFromStream</var> loads data from the specified stream, optionally using the specified reader</short>
+        <short>Loads an image from a stream, optionally using an specific reader.</short>
+        <descr>An overloaded version allows to specify an custom image reader.
+Otherwise the registered image readers are tried.</descr>
       </element>
       <element name="TFPCustomImage.LoadFromFile">
-        <short>
-          <var>LoadFromFile</var> - reads data from the specified file, optionally using the specified reader</short>
+        <short>Loads an image from an file, optionally using an specific reader.</short>
+        <seealso>
+          <link id="TFPCustomImage.LoadFromStream"/>
+        </seealso>
       </element>
       <element name="TFPCustomImage.SaveToStream">
-        <short>
-          <var>SaveToStream</var> - writes the data to the specified stream, using the specified writer</short>
+        <short>Saves the image in an stream, using the specified writer.</short>
       </element>
       <element name="TFPCustomImage.SaveToFile">
-        <short>
-          <var>SaveToFile</var> - writes image data to the specifed file, using the specified writer</short>
+        <short>Saves the image in an file, optionally using the specified writer.</short>
+        <descr>If no writer is specified, a registered writer is selected based on the file extension.</descr>
       </element>
       <element name="TFPCustomImage.SetSize">
-        <short>
-          <var>SetSize</var> - specify the size of the Image</short>
+        <short>Set the size of the image in pixels.</short>
+        <descr>Override to perform further actions, like allocating memory.
+
+This method also is called when the Width or Height is changed.</descr>
       </element>
       <element name="TFPCustomImage.Height">
-        <short>The <var>Height</var> of the image</short>
+        <short>Height of the image in pixels.</short>
       </element>
       <element name="TFPCustomImage.Width">
-        <short>The <var>Width</var> of the image</short>
+        <short>Width of the image in pixels.</short>
       </element>
       <element name="TFPCustomImage.Colors">
-        <short>The <var>Colors</var> to be used at the nominated position</short>
+        <short>The RGBA color of the specified pixel.</short>
+        <errors>FPImageException</errors>
+        <seealso>
+          <link id="TFPCustomImage.Pixels"/>
+        </seealso>
       </element>
       <element name="TFPCustomImage.UsePalette">
-        <short>
-          <var>UsePalette</var> - Use of palette for colors</short>
+        <short>Usage of a color palette (read/write).</short>
       </element>
       <element name="TFPCustomImage.Palette">
-        <short>The <var>Palette</var> to be used in painting the Image</short>
+        <short>The color palette in use; Nil if no palette is used.</short>
       </element>
       <element name="TFPCustomImage.Pixels">
-        <short>The <var>Pixels</var> (integer value) found at the specified location</short>
+        <short>The internal color value of a pixel.</short>
+        <errors>FPImageException</errors>
+        <seealso>
+          <link id="TFPCustomImage.Colors"/>
+        </seealso>
+        <descr>For RGBA colors the value is the internal (encoded) representation of the color.
+For monochrome or palette based images, the value is the intensitiy or palette index.
+
+This property is useful when working with monochrome or palette based images. Otherwise <link id="TFPCustomImage.Colors"/> should be used to get or set the decoded RGBA color values.</descr>
       </element>
       <element name="TFPCustomImage.Extra">
-        <short>
-          <var>Extra</var> - Info unrelated with the image representation</short>
+        <short>Additional information, not related to the internal image representation.</short>
+        <descr>Additional image attributes, organized as a list of strings accessible by name or <link id="TFPCustomImage.ExtraValue">index</link>.
+
+[Missing is a direct reference to the underlying TStringList, for e.g. retrieving the list index of an entry]</descr>
       </element>
       <element name="TFPCustomImage.ExtraValue">
-        <short>Additional information stored with the image</short>
+        <short>Image attribute values (strings) by index.</short>
+        <descr>Attribute strings also can be accessed by <link id="TFPCustomImage.Extra">name</link>.</descr>
       </element>
       <element name="TFPCustomImage.ExtraKey">
-        <short>
-          <var>ExtraKey</var> - an additional key stored with the image</short>
+        <short>Image attribute names by index.</short>
       </element>
       <element name="TFPCustomImage.RemoveExtra">
-        <short>
-          <var>RemoveExtra</var> - ge rid of the ExtraKey</short>
+        <short>Removes the named image attribute.</short>
       </element>
       <element name="TFPCustomImage.ExtraCount">
-        <short>
-          <var>ExtraCount</var> - the number of additional (non-image) items stored with the Image</short>
+        <short>Returns the number of additional image attributes.</short>
+        <seealso>
+          <link id="TFPCustomImage.Extra"/>
+        </seealso>
       </element>
       <element name="TFPCustomImage.OnProgress">
-        <short>
-          <var>OnProgress</var> - event handler for displaying progress of the painting process</short>
+        <short>Handler for Progress events.</short>
       </element>
       <element name="TFPCustomImageClass">
         <short>
@@ -390,15 +386,57 @@ When true RGBA colors are stored, this must be reflected in a derived class.</de
         <short>A list of <var>TypeNames</var> to be used with the handler files</short>
       </element>
       <element name="TFPColor">
-        <short>
-          <var>TFPColor</var> - record type used as an internal representation for a colour: a 
-          <var>TColor</var> has been decomposed into its component Red, Green, Blue and Alpha parts, to allow easy manipulation of each</short>
+        <short>RGBA color information.</short>
+        <descr>This compatible RGBA color representation allows for easy access and manipulation of colors. Concrete images instead will use other (compressed) encodings, which are not suited for direct manipulation.
+
+The TFPColor record contains the Red, Green, Blue and Alpha channel values as left adjusted 16 bit words, with increasing intensity from 0 to $FFFF. Alpha=0 indicates transparent pixels.The internal representation uses the high order bits of these values, as specified by the color Depth of the image description.</descr>
+        <seealso>
+          <link id="TFPColor"/>
+        </seealso>
       </element>
       <element name="PFPColor">
         <short>
           <var>PFPColor</var> - pointer to a 
           <var>TFPColor</var>
         </short>
+      </element>
+      <element name="TFPCustomImage.SetHeight">
+        <short>Set the image Height in pixels.</short>
+        <descr>Calls SetSize, to allow for adjustments of the overall (data) size.</descr>
+      </element>
+      <element name="TFPCustomImage.SetWidth">
+        <short>Set the image Width in pixels.</short>
+        <descr>Calls SetSize, to allow for adjustments of the overall (data) size.</descr>
+      </element>
+      <element name="TFPImgProgressStage">
+        <short>State of processing (psStarting, psRunning, psEnding).</short>
+        <seealso>TFPImgProgressStage</seealso>
+      </element>
+      <element name="TProgressStage">
+        <short>State of processing (psStarting, psRunning, psEnding).</short>
+      </element>
+      <element name="TFPCustomImage.GetPixel">
+        <short>Returns the internal (encoded) color value of the specified pixel.</short>
+        <errors>FPImageException</errors>
+      </element>
+      <element name="TFPCustomImage.CheckIndex">
+        <short>Bounds check of pixel coordinates.</short>
+        <errors>FPImageException</errors>
+      </element>
+      <element name="TFPImgProgressEvent">
+        <short>Image processing progress event.</short>
+        <seealso>
+          <link id="TFPCustomImage.OnProgress"/>
+        </seealso>
+        <descr>
+          <p>Sender: the image object</p>
+          <p>Stage: Starting, Running or Ending</p>
+          <p>PercentDone: how much has been accomplished</p>
+          <p>RedrawNow: whether to refresh the Image</p>
+          <p>R: the rectangle in which drawing progress is being monitored</p>
+          <p>Msg: a message to show in the progress display</p>
+          <p>Continue: set Continue to False to abort image processing</p>
+        </descr>
       </element>
     </module>
   </package>
