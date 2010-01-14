@@ -25,7 +25,7 @@ unit editor_codetools_options;
 interface
 
 uses
-  Classes, LResources, StdCtrls, ComCtrls, Graphics,
+  Classes, StdCtrls, ComCtrls, Graphics,
   EditorOptions, LazarusIDEStrConsts, IDEOptionsIntf, Spin, ExtCtrls,
   SynEditMarkupBracket, editor_color_options, editor_general_options,
   SynEdit, LCLType;
@@ -80,6 +80,8 @@ type
   end;
 
 implementation
+
+{$R *.lfm}
 
 { TEditorCodetoolsOptionsFrame }
 
@@ -242,7 +244,6 @@ begin
 end;
 
 initialization
-  {$I editor_codetools_options.lrs}
   RegisterIDEOptionsEditor(GroupEditor, TEditorCodetoolsOptionsFrame, EdtOptionsCodetools);
 end.
 

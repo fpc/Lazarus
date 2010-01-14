@@ -25,7 +25,7 @@ unit codetools_codecreation_options;
 interface
 
 uses
-  Classes, SysUtils, FileUtil, LResources, Forms, ExtCtrls, StdCtrls,
+  Classes, SysUtils, FileUtil, Forms, ExtCtrls, StdCtrls,
   SourceChanger, CodeToolsOptions, LazarusIDEStrConsts, IDEOptionsIntf;
 
 type
@@ -46,6 +46,8 @@ type
   end;
 
 implementation
+
+{$R *.lfm}
 
 { TCodetoolsCodeCreationOptionsFrame }
 
@@ -141,7 +143,6 @@ begin
 end;
 
 initialization
-  {$I codetools_codecreation_options.lrs}
   RegisterIDEOptionsEditor(GroupCodetools, TCodetoolsCodeCreationOptionsFrame, CdtOptionsCodeCreation);
 end.
 

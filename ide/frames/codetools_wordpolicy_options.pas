@@ -25,7 +25,7 @@ unit codetools_wordpolicy_options;
 interface
 
 uses
-  Classes, SysUtils, FileUtil, LResources, Forms, ExtCtrls,
+  Classes, SysUtils, FileUtil, Forms, ExtCtrls,
   SourceChanger, CodeToolsOptions, LazarusIDEStrConsts, IDEOptionsIntf;
 
 type
@@ -46,6 +46,8 @@ type
   end;
 
 implementation
+
+{$R *.lfm}
 
 { TCodetoolsWordPolicyOptionsFrame }
 
@@ -138,7 +140,6 @@ begin
 end;
 
 initialization
-  {$I codetools_wordpolicy_options.lrs}
   RegisterIDEOptionsEditor(GroupCodetools, TCodetoolsWordPolicyOptionsFrame, CdtOptionsWords);
 end.
 

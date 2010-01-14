@@ -25,7 +25,7 @@ unit codeexplorer_categories_options;
 interface
 
 uses
-  Classes, SysUtils, FileUtil, LResources, Forms, ExtCtrls,
+  Classes, SysUtils, FileUtil, Forms, ExtCtrls,
   IDEOptionsIntf, LazarusIDEStrConsts, CodeExplOpts;
 
 type
@@ -43,6 +43,8 @@ type
   end;
 
 implementation
+
+{$R *.lfm}
 
 { TCodeExplorerCategoriesOptionsFrame }
 
@@ -91,7 +93,6 @@ begin
 end;
 
 initialization
-  {$I codeexplorer_categories_options.lrs}
   RegisterIDEOptionsEditor(GroupCodeExplorer, TCodeExplorerCategoriesOptionsFrame, cdeOptionsCategories);
 
 end.

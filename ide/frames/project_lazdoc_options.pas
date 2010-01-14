@@ -5,7 +5,7 @@ unit project_lazdoc_options;
 interface
 
 uses
-  Classes, SysUtils, FileUtil, LResources, Forms, Controls, Graphics, Dialogs,
+  Classes, SysUtils, FileUtil, Forms, Controls, Graphics, Dialogs,
   StdCtrls, Buttons, Project, IDEOptionsIntf, LazarusIDEStrConsts, IDEProcs;
 
 type
@@ -33,6 +33,8 @@ type
   end;
 
 implementation
+
+{$R *.lfm}
 
 { TProjectLazDocOptionsFrame }
 
@@ -87,7 +89,6 @@ begin
 end;
 
 initialization
-  {$I project_lazdoc_options.lrs}
   RegisterIDEOptionsEditor(GroupProject, TProjectLazDocOptionsFrame, ProjectOptionsLazDoc);
 
 end.

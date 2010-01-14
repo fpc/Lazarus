@@ -25,7 +25,7 @@ unit Backup_Options;
 interface
 
 uses
-  Classes, SysUtils, FileUtil, LResources, Forms, StdCtrls, ExtCtrls,
+  Classes, SysUtils, FileUtil, Forms, StdCtrls, ExtCtrls,
   EnvironmentOpts, LazarusIDEStrConsts, IDEProcs, IDEOptionsIntf;
 
 type
@@ -61,6 +61,8 @@ type
   end;
 
 implementation
+
+{$R *.lfm}
 
 { TBackupOptionsFrame }
 
@@ -297,7 +299,6 @@ begin
 end;
 
 initialization
-  {$I backup_options.lrs}
   RegisterIDEOptionsEditor(GroupEnvironment, TBackupOptionsFrame, EnvOptionsBackup);
 end.
 

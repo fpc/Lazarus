@@ -5,7 +5,7 @@ unit compiler_compilation_options;
 interface
 
 uses
-  Classes, SysUtils, FileUtil, LResources, Forms, Controls, Graphics, Dialogs,
+  Classes, SysUtils, FileUtil, Forms, Controls, Graphics, Dialogs,
   StdCtrls, IDEOptionsIntf, Project, CompilerOptions, LazarusIDEStrConsts,
   ProjectIntf, PackageDefs;
 
@@ -53,6 +53,8 @@ type
   end;
 
 implementation
+
+{$R *.lfm}
 
 { TCompilerCompilationOptionsFrame }
 
@@ -251,7 +253,6 @@ begin
 end;
 
 initialization
-  {$I compiler_compilation_options.lrs}
   RegisterIDEOptionsEditor(GroupCompiler, TCompilerCompilationOptionsFrame,
     CompilerOptionsCompilation);
 

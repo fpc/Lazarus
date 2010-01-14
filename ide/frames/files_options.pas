@@ -25,7 +25,7 @@ unit files_options;
 interface
 
 uses
-  Classes, SysUtils, FileUtil, LResources, Forms, StdCtrls, Dialogs, Controls,
+  Classes, SysUtils, FileUtil, Forms, StdCtrls, Dialogs, Controls,
   EnvironmentOpts, MacroIntf, LazarusIDEStrConsts, InputHistory, LazConf,
   IDEProcs, IDEOptionsIntf;
 
@@ -76,6 +76,8 @@ type
   end;
 
 implementation
+
+{$R *.lfm}
 
 { TFilesOptionsFrame }
 
@@ -358,7 +360,6 @@ begin
 end;
 
 initialization
-  {$I files_options.lrs}
   RegisterIDEOptionsEditor(GroupEnvironment, TFilesOptionsFrame, EnvOptionsFiles);
 end.
 

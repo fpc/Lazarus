@@ -25,7 +25,7 @@ unit desktop_options;
 interface
 
 uses
-  Classes, SysUtils, FileUtil, LResources, Forms, StdCtrls, Dialogs, LCLProc,
+  Classes, SysUtils, FileUtil, Forms, StdCtrls, Dialogs, LCLProc,
   ExtCtrls, EnvironmentOpts, LazarusIDEStrConsts, IDETranslations, InputHistory,
   IDEProcs, IDEOptionsIntf;
 
@@ -92,6 +92,8 @@ type
   end;
 
 implementation
+
+{$R *.lfm}
 
 { TDesktopOptionsFrame }
 
@@ -354,7 +356,6 @@ begin
 end;
 
 initialization
-  {$I desktop_options.lrs}
   RegisterIDEOptionsEditor(GroupEnvironment, TDesktopOptionsFrame, EnvOptionsDesktop);
 end.
 

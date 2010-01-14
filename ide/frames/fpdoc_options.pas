@@ -25,7 +25,7 @@ unit fpdoc_options;
 interface
 
 uses
-  Classes, SysUtils, FileUtil, LResources, Forms, Dialogs, StdCtrls,
+  Classes, SysUtils, FileUtil, Forms, Dialogs, StdCtrls,
   EnvironmentOpts, LazarusIDEStrConsts, IDEProcs, IDEOptionsIntf;
 
 type
@@ -53,6 +53,8 @@ type
   end;
 
 implementation
+
+{$R *.lfm}
 
 { TFpDocOptionsFrame }
 
@@ -105,7 +107,6 @@ begin
 end;
 
 initialization
-  {$I fpdoc_options.lrs}
   RegisterIDEOptionsEditor(GroupEnvironment, TFpDocOptionsFrame, EnvOptionsFpDoc);
 end.
 

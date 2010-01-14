@@ -5,7 +5,7 @@ unit help_general_options;
 interface
 
 uses
-  Classes, SysUtils, FileUtil, LResources, Forms, Controls, StdCtrls, ExtCtrls,
+  Classes, SysUtils, FileUtil, Forms, Controls, StdCtrls, ExtCtrls,
   IDEOptionsIntf, HelpOptions, IDEDialogs, LazarusIDEStrConsts, EnvironmentOpts,
   ObjectInspector, LazHelpIntf;
 
@@ -51,6 +51,8 @@ type
   end;
 
 implementation
+
+{$R *.lfm}
 
 { THelpGeneralOptionsFrame }
 
@@ -217,7 +219,6 @@ begin
 end;
 
 initialization
-  {$I help_general_options.lrs}
   RegisterIDEOptionsEditor(GroupHelp, THelpGeneralOptionsFrame, HlpOptionsGeneral);
 
 end.

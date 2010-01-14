@@ -5,7 +5,7 @@ unit compiler_parsing_options;
 interface
 
 uses
-  Classes, SysUtils, FileUtil, LResources, Forms, Controls, Graphics, Dialogs,
+  Classes, SysUtils, FileUtil, Forms, Controls, Graphics, Dialogs,
   StdCtrls, ExtCtrls, IDEOptionsIntf, Project, CompilerOptions, LinkScanner,
   LazarusIDEStrConsts;
 
@@ -27,6 +27,8 @@ type
   end;
 
 implementation
+
+{$R *.lfm}
 
 function SyntaxModeToCaption(const Mode: string): string;
 begin
@@ -164,7 +166,6 @@ begin
 end;
 
 initialization
-  {$I compiler_parsing_options.lrs}
   RegisterIDEOptionsEditor(GroupCompiler, TCompilerParsingOptionsFrame,
     CompilerOptionsParsing);
 

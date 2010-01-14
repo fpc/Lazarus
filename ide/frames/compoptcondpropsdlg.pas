@@ -24,7 +24,7 @@ unit CompOptCondPropsDlg;
 interface
 
 uses
-  Classes, SysUtils, FileUtil, LResources, Forms, Controls, Graphics, Dialogs,
+  Classes, SysUtils, FileUtil, Forms, Controls, Graphics, Dialogs,
   ButtonPanel, StdCtrls,
   ProjectIntf,
   LazarusIDEStrConsts;
@@ -76,6 +76,8 @@ function EditCompOptCondProperties(Node: TCompOptCondNode;
   const AllowedValueTypes: TCOCValueTypes): TModalResult;
 
 implementation
+
+{$R *.lfm}
 
 function EditCompOptCondProperties(Node: TCompOptCondNode;
   const AllowedValueTypes: TCOCValueTypes): TModalResult;
@@ -265,9 +267,6 @@ begin
   FValueType:=AValue;
   UpdateValueControls;
 end;
-
-initialization
-  {$I compoptcondpropsdlg.lrs}
 
 end.
 

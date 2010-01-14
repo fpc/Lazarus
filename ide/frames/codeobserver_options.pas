@@ -25,7 +25,7 @@ unit codeobserver_options;
 interface
 
 uses
-  Classes, Graphics, SysUtils, FileUtil, LResources, Forms,
+  Classes, Graphics, SysUtils, FileUtil, Forms,
   IDEOptionsIntf, LazarusIDEStrConsts, CodeExplOpts, ExtCtrls, Spin, StdCtrls;
 
 type
@@ -61,6 +61,8 @@ type
   end;
 
 implementation
+
+{$R *.lfm}
 
 const
   GroupCategories: array [TCEObserverCategoryGroup] of TCEObserverCategories = (
@@ -210,7 +212,6 @@ begin
 end;
 
 initialization
-  {$I codeobserver_options.lrs}
   RegisterIDEOptionsEditor(GroupCodeExplorer, TCodeObserverOptionsFrame, cdeOptionsFigures);
 
 end.

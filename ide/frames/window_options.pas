@@ -25,7 +25,7 @@ unit window_options;
 interface
 
 uses
-  Classes, SysUtils, FileUtil, LResources, Forms, Controls, StdCtrls, ExtCtrls,
+  Classes, SysUtils, FileUtil, Forms, Controls, StdCtrls, ExtCtrls,
   Spin, EnvironmentOpts, LazarusIDEStrConsts, IDEOptionDefs, ObjectInspector,
   IDEOptionsIntf;
 
@@ -78,6 +78,8 @@ type
   end;
 
 implementation
+
+{$R *.lfm}
 
 { TWindowOptionsFrame }
 
@@ -320,7 +322,6 @@ begin
 end;
 
 initialization
-  {$I window_options.lrs}
   RegisterIDEOptionsEditor(GroupEnvironment, TWindowOptionsFrame, EnvOptionsWindow);
 end.
 

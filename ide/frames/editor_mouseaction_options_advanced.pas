@@ -25,7 +25,7 @@ unit editor_mouseaction_options_advanced;
 interface
 
 uses
-  LResources, EditorOptions, LazarusIDEStrConsts, IDEOptionsIntf, sysutils,
+  EditorOptions, LazarusIDEStrConsts, IDEOptionsIntf, sysutils,
   StdCtrls, ExtCtrls, Classes, Controls, LCLProc, Grids, ComCtrls, Dialogs,
   SynEditMouseCmds, MouseActionDialog, math, KeyMapping, IDEImagesIntf;
 
@@ -122,6 +122,8 @@ var
   MMoveName: Array [Boolean] of String;
 
 implementation
+
+{$R *.lfm}
 
 const
   MinGridColSize = 25;
@@ -772,7 +774,6 @@ begin
 end;
 
 initialization
-  {$I editor_mouseaction_options_advanced.lrs}
   RegisterIDEOptionsEditor(GroupEditor, TEditorMouseOptionsAdvFrame,
                            EdtOptionsMouseAdv, EdtOptionsMouse);
 end.

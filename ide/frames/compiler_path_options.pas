@@ -5,7 +5,7 @@ unit compiler_path_options;
 interface
 
 uses
-  Classes, SysUtils, FileUtil, LResources, Forms, Controls, Graphics, Dialogs,
+  Classes, SysUtils, FileUtil, Forms, Controls, Graphics, Dialogs,
   Buttons, StdCtrls, LCLType, InterfaceBase, IDEOptionsIntf, Project,
   CompilerOptions, LazarusIDEStrConsts, PathEditorDlg, LazConf, IDEProcs,
   CheckCompilerOpts, MacroIntf, ShowCompilerOpts, MainIntf;
@@ -61,6 +61,8 @@ type
   end;
 
 implementation
+
+{$R *.lfm}
 
 { TCompilerPathOptionsFrame }
 
@@ -598,7 +600,6 @@ begin
 end;
 
 initialization
-  {$I compiler_path_options.lrs}
   RegisterIDEOptionsEditor(GroupCompiler, TCompilerPathOptionsFrame,
     CompilerOptionsSearchPaths);
 

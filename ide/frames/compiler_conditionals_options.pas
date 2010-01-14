@@ -24,7 +24,7 @@ unit compiler_conditionals_options;
 interface
 
 uses
-  Classes, SysUtils, FileUtil, LResources, Forms, StdCtrls, ExtCtrls,
+  Classes, SysUtils, FileUtil, Forms, StdCtrls, ExtCtrls,
   Compiler_CondTree, Compiler_BuildVar_Options;
 
 type
@@ -45,8 +45,7 @@ type
 
 implementation
 
-initialization
-  {$I compiler_conditionals_options.lrs}
+{$R *.lfm}
 
 end.
 

@@ -25,7 +25,7 @@ unit editor_keymapping_options;
 interface
 
 uses
-  Classes, SysUtils, FileUtil, LResources, Forms, StdCtrls, ComCtrls, Controls,
+  Classes, SysUtils, FileUtil, Forms, StdCtrls, ComCtrls, Controls,
   Dialogs, LCLType, LCLProc,
   EditorOptions, LazarusIDEStrConsts, IDEOptionsIntf, IDEImagesIntf,
   editor_general_options,
@@ -75,6 +75,8 @@ type
 
 implementation
 
+{$R *.lfm}
+
 var
   imgKeyCategory, imgKeyItem: Integer;
 
@@ -90,32 +92,29 @@ type
 constructor TKeyMapErrorsForm.Create(AnOwner: TComponent);
 begin
   inherited Create(AnOwner);
-  if LazarusResources.Find(ClassName) = Nil then
+  SetBounds((Screen.Width - 410) div 2, (Screen.Height - 260) div 2, 400, 250);
+  Caption := dlgKeyMappingErrors;
+
+  ListBox := TListBox.Create(Self);
+  with ListBox do
   begin
-    SetBounds((Screen.Width - 410) div 2, (Screen.Height - 260) div 2, 400, 250);
-    Caption := dlgKeyMappingErrors;
-
-    ListBox := TListBox.Create(Self);
-    with ListBox do
-    begin
-      Name := 'ListBox';
-      Align:=alTop;
-      Parent := Self;
-    end;
-
-    BackButton := TButton.Create(Self);
-    with BackButton do
-    begin
-      Name := 'BackButton';
-      AutoSize:=true;
-      Anchors:=[akBottom];
-      Parent := Self;
-      AnchorParallel(akBottom,6,Self);
-      Caption := dlgEdBack;
-      OnClick := @BackButtonClick;
-    end;
-    ListBox.AnchorToNeighbour(akBottom,6,BackButton);
+    Name := 'ListBox';
+    Align:=alTop;
+    Parent := Self;
   end;
+
+  BackButton := TButton.Create(Self);
+  with BackButton do
+  begin
+    Name := 'BackButton';
+    AutoSize:=true;
+    Anchors:=[akBottom];
+    Parent := Self;
+    AnchorParallel(akBottom,6,Self);
+    Caption := dlgEdBack;
+    OnClick := @BackButtonClick;
+  end;
+  ListBox.AnchorToNeighbour(akBottom,6,BackButton);
 end;
 
 procedure TKeyMapErrorsForm.BackButtonClick(Sender: TObject);
@@ -437,7 +436,6 @@ begin
 end;
 
 initialization
-  {$I editor_keymapping_options.lrs}
   RegisterIDEOptionsEditor(GroupEditor, TEditorKeymappingOptionsFrame, EdtOptionsKeys);
 end.
 

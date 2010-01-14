@@ -25,7 +25,7 @@ unit codetools_identifiercompletion_options;
 interface
 
 uses
-  Classes, SysUtils, FileUtil, LResources, Forms, StdCtrls,
+  Classes, SysUtils, FileUtil, Forms, StdCtrls,
   CodeToolsOptions, LazarusIDEStrConsts, IDEOptionsIntf;
 
 type
@@ -48,6 +48,8 @@ type
   end;
 
 implementation
+
+{$R *.lfm}
 
 { TCodetoolsIndentifierComplietionOptionsFrame }
 
@@ -95,7 +97,6 @@ begin
 end;
 
 initialization
-  {$I codetools_identifiercompletion_options.lrs}
   RegisterIDEOptionsEditor(GroupCodetools, TCodetoolsIndentifierComplietionOptionsFrame, CdtOptionsIdentCompletion);
 end.
 

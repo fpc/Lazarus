@@ -25,7 +25,7 @@ unit editor_general_misc_options;
 interface
 
 uses
-  LResources, LCLProc, StdCtrls, SynEdit, ExtCtrls, EditorOptions,
+  LCLProc, StdCtrls, SynEdit, ExtCtrls, EditorOptions,
   LazarusIDEStrConsts, IDEProcs, IDEOptionsIntf, editor_general_options,
   SynEditTextTrimmer;
 
@@ -49,6 +49,8 @@ type
   end;
 
 implementation
+
+{$R *.lfm}
 
 { TEditorGeneralMiscOptionsFrame }
 
@@ -177,7 +179,6 @@ begin
 end;
 
 initialization
-  {$I editor_general_misc_options.lrs}
   RegisterIDEOptionsEditor(GroupEditor, TEditorGeneralMiscOptionsFrame, EdtOptionsGeneralMisc, EdtOptionsGeneral);
 end.
 

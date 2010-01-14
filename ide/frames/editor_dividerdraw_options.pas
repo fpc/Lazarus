@@ -25,7 +25,7 @@ unit editor_dividerdraw_options;
 interface
 
 uses
-  Classes, SysUtils, LResources, StdCtrls, ExtCtrls, Graphics,
+  Classes, SysUtils, StdCtrls, ExtCtrls, Graphics,
   LCLType, EditorOptions, LazarusIDEStrConsts, IDEOptionsIntf,
   SynEditHighlighter, Spin, ColorBox, CheckLst;
 
@@ -79,6 +79,8 @@ type
   end;
 
 implementation
+
+{$R *.lfm}
 
 { TEditorDividerDrawOptionsFrame }
 
@@ -313,7 +315,6 @@ begin
 end;
 
 initialization
-  {$I editor_dividerdraw_options.lrs}
   RegisterIDEOptionsEditor(GroupEditor, TEditorDividerDrawOptionsFrame,
                            EdtOptionsDrawDivider);
 end.

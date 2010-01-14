@@ -25,7 +25,7 @@ unit formed_options;
 interface
 
 uses
-  Classes, SysUtils, FileUtil, Graphics, LResources, Forms, StdCtrls, Dialogs, Spin,
+  Classes, SysUtils, FileUtil, Graphics, Forms, StdCtrls, Dialogs, Spin,
   ColorBox, EnvironmentOpts, LazarusIDEStrConsts, IDEProcs, IDEOptionsIntf;
 
 type
@@ -81,6 +81,8 @@ type
   end;
 
 implementation
+
+{$R *.lfm}
 
 { TFormEditorOptionsFrame }
 
@@ -246,7 +248,6 @@ begin
 end;
 
 initialization
-  {$I formed_options.lrs}
   RegisterIDEOptionsEditor(GroupEnvironment, TFormEditorOptionsFrame, EnvOptionsFormEd);
 end.
 

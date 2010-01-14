@@ -5,7 +5,7 @@ unit project_save_options;
 interface
 
 uses
-  Classes, SysUtils, FileUtil, LResources, Forms, Controls, Graphics, Dialogs,
+  Classes, SysUtils, FileUtil, Forms, Controls, Graphics, Dialogs,
   StdCtrls, ExtCtrls, Project, IDEOptionsIntf, ProjectIntf, LCLProc,
   LazarusIDEStrConsts, IDEProcs;
 
@@ -28,6 +28,8 @@ type
   end;
 
 implementation
+
+{$R *.lfm}
 
 function ProjectSessionStorageToLocalizedName(s: TProjectSessionStorage): string;
 begin
@@ -105,7 +107,6 @@ begin
 end;
 
 initialization
-  {$I project_save_options.lrs}
   RegisterIDEOptionsEditor(GroupProject, TProjectSaveOptionsFrame, ProjectOptionsSave);
 
 end.

@@ -25,7 +25,7 @@ unit naming_options;
 interface
 
 uses
-  Classes, SysUtils, FileUtil, LResources, Forms, ExtCtrls, StdCtrls,
+  Classes, SysUtils, FileUtil, Forms, ExtCtrls, StdCtrls,
   EnvironmentOpts, LazarusIDEStrConsts, IDEOptionsIntf;
 
 type
@@ -48,6 +48,8 @@ type
   end;
 
 implementation
+
+{$R *.lfm}
 
 { TNamingOptionsFrame }
 
@@ -156,7 +158,6 @@ begin
 end;
 
 initialization
-  {$I naming_options.lrs}
   RegisterIDEOptionsEditor(GroupEnvironment, TNamingOptionsFrame, EnvOptionsNaming);
 end.
 

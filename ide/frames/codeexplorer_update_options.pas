@@ -25,7 +25,7 @@ unit codeexplorer_update_options;
 interface
 
 uses
-  Classes, SysUtils, FileUtil, LResources, Forms, ExtCtrls, StdCtrls,
+  Classes, SysUtils, FileUtil, Forms, ExtCtrls, StdCtrls,
   IDEOptionsIntf, LazarusIDEStrConsts, CodeExplOpts;
 
 type
@@ -47,6 +47,8 @@ type
   end;
 
 implementation
+
+{$R *.lfm}
 
 { TCodeExplorerUpdateOptionsFrame }
 
@@ -124,7 +126,6 @@ begin
 end;
 
 initialization
-  {$I codeexplorer_update_options.lrs}
   RegisterIDEOptionsEditor(GroupCodeExplorer, TCodeExplorerUpdateOptionsFrame, cdeOptionsUpdate);
 
 end.

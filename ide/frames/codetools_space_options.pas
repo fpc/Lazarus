@@ -25,7 +25,7 @@ unit codetools_space_options;
 interface
 
 uses
-  Classes, SysUtils, LResources, Forms, StdCtrls, SynEdit,
+  Classes, SysUtils, Forms, StdCtrls, SynEdit,
   SourceChanger, IDEOptionsIntf, EditorOptions, atom_checkboxes_options;
 
 type
@@ -57,6 +57,8 @@ type
   end;
 
 implementation
+
+{$R *.lfm}
 
 uses
   CodeToolsOptions, LazarusIDEStrConsts;
@@ -196,7 +198,6 @@ begin
 end;
 
 initialization
-  {$I codetools_space_options.lrs}
   RegisterIDEOptionsEditor(GroupCodetools, TCodetoolsSpaceOptionsFrame, CdtOptionsSpace);
 end.
 

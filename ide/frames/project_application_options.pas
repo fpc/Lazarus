@@ -5,7 +5,7 @@ unit project_application_options;
 interface
 
 uses
-  Classes, SysUtils, FileUtil, LResources, Forms, Controls, Graphics, Dialogs,
+  Classes, SysUtils, FileUtil, Forms, Controls, Graphics, Dialogs,
   ExtCtrls, StdCtrls, Buttons, ComCtrls, ExtDlgs, Math, LCLType, IDEOptionsIntf,
   Project, LazarusIDEStrConsts, EnvironmentOpts, ApplicationBundle, ProjectIcon,
   W32Manifest;
@@ -53,6 +53,8 @@ type
   end;
 
 implementation
+
+{$R *.lfm}
 
 function CreateProjectApplicationBundle(AProject: TProject): boolean;
 var
@@ -235,7 +237,6 @@ begin
 end;
 
 initialization
-  {$I project_application_options.lrs}
   RegisterIDEOptionsEditor(GroupProject, TProjectApplicationOptionsFrame, ProjectOptionsApplication);
 
 end.

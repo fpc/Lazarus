@@ -5,7 +5,7 @@ unit compiler_inherited_options;
 interface
 
 uses
-  Classes, SysUtils, FileUtil, LResources, Forms, Controls, Graphics, Dialogs,
+  Classes, SysUtils, FileUtil, Forms, Controls, Graphics, Dialogs,
   StdCtrls, ComCtrls, ExtCtrls, IDEOptionsIntf, Project, CompilerOptions,
   LazarusIDEStrConsts, IDEImagesIntf, IDEProcs;
 
@@ -36,6 +36,8 @@ type
   end;
 
 implementation
+
+{$R *.lfm}
 
 type
   TInheritedNodeData = record
@@ -237,7 +239,6 @@ begin
 end;
 
 initialization
-  {$I compiler_inherited_options.lrs}
   RegisterIDEOptionsEditor(GroupCompiler, TCompilerInheritedOptionsFrame,
     CompilerOptionsInherited);
 

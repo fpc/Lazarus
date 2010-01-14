@@ -5,7 +5,7 @@ unit compiler_linking_options;
 interface
 
 uses
-  Classes, SysUtils, FileUtil, LResources, Forms, Controls, Graphics, Dialogs,
+  Classes, SysUtils, FileUtil, Forms, Controls, Graphics, Dialogs,
   StdCtrls, IDEOptionsIntf, Project, CompilerOptions, LazarusIDEStrConsts;
 
 type
@@ -38,6 +38,9 @@ type
   end;
 
 implementation
+
+{$R *.lfm}
+
 
 { TCompilerLinkingOptionsFrame }
 
@@ -126,7 +129,6 @@ begin
 end;
 
 initialization
-  {$I compiler_linking_options.lrs}
   RegisterIDEOptionsEditor(GroupCompiler, TCompilerLinkingOptionsFrame,
     CompilerOptionsLinking);
 

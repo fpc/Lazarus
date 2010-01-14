@@ -25,7 +25,7 @@ unit BuildModesEditor;
 interface
 
 uses
-  Math, Classes, SysUtils, LCLProc, Controls, FileUtil, LResources, Forms,
+  Math, Classes, SysUtils, LCLProc, Controls, FileUtil, Forms,
   Grids, Graphics, Menus, ComCtrls, Dialogs, AvgLvlTree, DefineTemplates,
   StdCtrls, GraphMath, ExtCtrls, Buttons,
   ProjectIntf, IDEImagesIntf, IDEOptionsIntf,
@@ -135,6 +135,8 @@ function BuildModeFlagTypeCaptions(f: TBuildModeFlagType): string;
 function CaptionToBuildModeFlagType(s: string): TBuildModeFlagType;
 
 implementation
+
+{$R *.lfm}
 
 function BuildModeFlagTypeCaptions(f: TBuildModeFlagType): string;
 begin
@@ -1094,7 +1096,6 @@ begin
 end;
 
 initialization
-  {$I buildmodeseditor.lrs}
   RegisterIDEOptionsEditor(GroupCompiler, TBuildModesEditorFrame,
     CompilerOptionsBuildModes);
 

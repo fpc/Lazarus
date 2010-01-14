@@ -25,7 +25,7 @@ unit codetools_general_options;
 interface
 
 uses
-  Classes, SysUtils, FileUtil, LResources, Forms, Controls, StdCtrls, Buttons,
+  Classes, SysUtils, FileUtil, Forms, Controls, StdCtrls, Buttons,
   Dialogs,
   IDEDialogs, PathEditorDlg,
   CodeToolsOptions, LazarusIDEStrConsts, IDEOptionsIntf;
@@ -65,6 +65,8 @@ type
   end;
 
 implementation
+
+{$R *.lfm}
 
 { TCodetoolsGeneralOptionsFrame }
 
@@ -198,7 +200,6 @@ begin
 end;
 
 initialization
-  {$I codetools_general_options.lrs}
   RegisterIDEOptionsEditor(GroupCodetools, TCodetoolsGeneralOptionsFrame, CdtOptionsGeneral);
 end.
 

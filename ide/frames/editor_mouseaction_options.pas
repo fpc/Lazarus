@@ -25,7 +25,7 @@ unit editor_mouseaction_options;
 interface
 
 uses
-  LResources, EditorOptions, LazarusIDEStrConsts, IDEOptionsIntf, SynEdit,
+  EditorOptions, LazarusIDEStrConsts, IDEOptionsIntf, SynEdit,
   StdCtrls, ExtCtrls, Classes, LCLProc, editor_mouseaction_options_advanced;
 
 type
@@ -95,6 +95,8 @@ type
   end;
 
 implementation
+
+{$R *.lfm}
 
 { TEditorMouseOptionsFrame }
 
@@ -287,7 +289,6 @@ begin
 end;
 
 initialization
-  {$I editor_mouseaction_options.lrs}
   RegisterIDEOptionsEditor(GroupEditor, TEditorMouseOptionsFrame, EdtOptionsMouse);
 end.
 

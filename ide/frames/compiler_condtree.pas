@@ -24,7 +24,7 @@ unit Compiler_CondTree;
 interface
 
 uses
-  Classes, SysUtils, LCLProc, FileProcs, Controls, LResources, Forms, ComCtrls,
+  Classes, SysUtils, LCLProc, FileProcs, Controls, Forms, ComCtrls,
   Menus, Dialogs,
   ProjectIntf, IDEImagesIntf,
   LazarusIDEStrConsts, CompOptsModes, CompOptCondPropsDlg;
@@ -105,6 +105,8 @@ type
   end;
 
 implementation
+
+{$R *.lfm}
 
 { TCompOptsCondTreeFrame }
 
@@ -611,9 +613,6 @@ begin
     TVNode.Expanded:=true;
   ConsistencyCheck;
 end;
-
-initialization
-  {$I compiler_condtree.lrs}
 
 end.
 

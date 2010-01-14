@@ -5,7 +5,7 @@ unit project_forms_options;
 interface
 
 uses
-  Classes, SysUtils, FileUtil, LResources, Forms, Controls, Graphics, Dialogs,
+  Classes, SysUtils, FileUtil, Forms, Controls, Graphics, Dialogs,
   StdCtrls, Buttons, IDEOptionsIntf, PackageDefs, ProjectIntf, Project,
   LazarusIDEStrConsts, CodeToolManager;
 
@@ -41,6 +41,8 @@ type
   end;
 
 implementation
+
+{$R *.lfm}
 
 { TProjectFormsOptionsFrame }
 
@@ -275,7 +277,6 @@ begin
 end;
 
 initialization
-  {$I project_forms_options.lrs}
   RegisterIDEOptionsEditor(GroupProject, TProjectFormsOptionsFrame, ProjectOptionsForms);
 
 end.

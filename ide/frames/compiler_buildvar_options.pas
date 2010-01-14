@@ -24,7 +24,7 @@ unit Compiler_BuildVar_Options;
 interface
 
 uses
-  Classes, SysUtils, LCLProc, FileUtil, Controls, LResources, Forms, StdCtrls,
+  Classes, SysUtils, LCLProc, FileUtil, Controls, Forms, StdCtrls,
   Grids, Buttons, ExtCtrls, Dialogs, ComCtrls, Menus, AvgLvlTree,
   IDEImagesIntf, ProjectIntf, CompilerOptions,
   Compiler_CondTree, LazarusIDEStrConsts, CompOptsModes;
@@ -81,6 +81,8 @@ type
   end;
 
 implementation
+
+{$R *.lfm}
 
 { TCompOptBuildVarsFrame }
 
@@ -455,9 +457,6 @@ begin
   FreeAndNil(FEditors);
   inherited Destroy;
 end;
-
-initialization
-  {$I compiler_buildvar_options.lrs}
 
 end.
 

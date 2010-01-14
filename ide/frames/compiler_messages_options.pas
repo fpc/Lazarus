@@ -5,7 +5,7 @@ unit compiler_messages_options;
 interface
 
 uses
-  Classes, SysUtils, FileUtil, LResources, Forms, StdCtrls, CheckLst,
+  Classes, SysUtils, FileUtil, Forms, StdCtrls, CheckLst,
   Dialogs,
   IDEOptionsIntf, Project,
   LazarusIDEStrConsts,
@@ -41,6 +41,8 @@ type
   end;
 
 implementation
+
+{$R *.lfm}
 
 { TCompilerMessagesOptionsFrame }
 
@@ -178,7 +180,6 @@ begin
 end;
 
 initialization
-  {$I compiler_messages_options.lrs}
   RegisterIDEOptionsEditor(GroupCompiler, TCompilerMessagesOptionsFrame, CompilerOptionsMessages);
 
 end.

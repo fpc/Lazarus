@@ -25,7 +25,7 @@ unit editor_general_options;
 interface
 
 uses
-  Classes, SysUtils, LResources, LCLProc, LCLType,
+  Classes, SysUtils, LCLProc, LCLType,
   StdCtrls, SynEdit, Controls, ExtCtrls,
   EditorOptions, LazarusIDEStrConsts, IDEProcs, IDEOptionsIntf, SynBeautifier;
 
@@ -116,6 +116,8 @@ type
   end;
 
 implementation
+
+{$R *.lfm}
 
 { TEditorGeneralOptionsFrame }
 
@@ -492,7 +494,6 @@ begin
 end;
 
 initialization
-  {$I editor_general_options.lrs}
   RegisterIDEOptionsEditor(GroupEditor, TEditorGeneralOptionsFrame, EdtOptionsGeneral);
 end.
 

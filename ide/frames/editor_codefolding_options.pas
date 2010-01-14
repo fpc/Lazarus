@@ -25,7 +25,7 @@ unit editor_codefolding_options;
 interface
 
 uses
-  Classes, SysUtils, FileUtil, LResources, Forms, StdCtrls, ExtCtrls, Graphics,
+  Classes, SysUtils, FileUtil, Forms, StdCtrls, ExtCtrls, Graphics,
   LCLType, EditorOptions, LazarusIDEStrConsts, IDEOptionsIntf, Controls,
   SynEditHighlighter, SynEditHighlighterFoldBase, Spin, ComCtrls, ColorBox, CheckLst, Buttons;
 
@@ -64,6 +64,8 @@ type
   end;
 
 implementation
+
+{$R *.lfm}
 
 { TEditorCodefoldingOptionsFrame }
 
@@ -205,7 +207,6 @@ begin
 end;
 
 initialization
-  {$I editor_codefolding_options.lrs}
   RegisterIDEOptionsEditor(GroupEditor, TEditorCodefoldingOptionsFrame, EdtOptionsCodeFolding);
 end.
 

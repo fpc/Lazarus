@@ -5,7 +5,7 @@ unit project_misc_options;
 interface
 
 uses
-  Classes, SysUtils, FileUtil, LResources, Forms, Controls, Graphics, Dialogs,
+  Classes, SysUtils, FileUtil, Forms, Controls, Graphics, Dialogs,
   ExtCtrls, StdCtrls, ProjectIntf, Project, IDEOptionsIntf, LazarusIDEStrConsts;
 
 type
@@ -35,6 +35,8 @@ type
   end;
 
 implementation
+
+{$R *.lfm}
 
 { TProjectMiscOptionsFrame }
 
@@ -116,7 +118,6 @@ begin
 end;
 
 initialization
-  {$I project_misc_options.lrs}
   RegisterIDEOptionsEditor(GroupProject, TProjectMiscOptionsFrame, ProjectOptionsMisc);
 
 end.

@@ -25,7 +25,7 @@ unit editor_display_options;
 interface
 
 uses
-  Classes, SysUtils, LResources, Graphics, Dialogs, StdCtrls,
+  Classes, SysUtils, Graphics, Dialogs, StdCtrls,
   Spin, LCLType, SynEdit, SynEditMouseCmds, EditorOptions, LazarusIDEStrConsts,
   IDEOptionsIntf, editor_general_options, editor_color_options, IDEProcs,
   SynGutterLineNumber, SynGutter;
@@ -83,6 +83,8 @@ type
   end;
 
 implementation
+
+{$R *.lfm}
 
 procedure TEditorDisplayOptionsFrame.FontDialogApplyClicked(Sender: TObject);
 var
@@ -353,7 +355,6 @@ begin
 end;
 
 initialization
-  {$I editor_display_options.lrs}
   RegisterIDEOptionsEditor(GroupEditor, TEditorDisplayOptionsFrame, EdtOptionsDisplay);
 end.
 

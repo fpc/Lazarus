@@ -25,7 +25,7 @@ unit OI_options;
 interface
 
 uses
-  Classes, SysUtils, FileUtil, LResources, Forms, StdCtrls, Dialogs, Spin, LCLProc,
+  Classes, SysUtils, FileUtil, Forms, StdCtrls, Dialogs, Spin, LCLProc,
   ObjectInspector, LazarusIDEStrConsts, EnvironmentOpts, IDEOptionsIntf,
   ColorBox, Graphics;
 
@@ -99,6 +99,8 @@ type
   end; 
 
 implementation
+
+{$R *.lfm}
 
 const
   DefaultOISettings: TSpeedOISettings = (
@@ -309,7 +311,6 @@ begin
 end;
 
 initialization
-  {$I oi_options.lrs}
   RegisterIDEOptionsEditor(GroupEnvironment, TOIOptionsFrame, EnvOptionsOI);
 end.
 

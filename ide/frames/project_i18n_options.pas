@@ -5,7 +5,7 @@ unit project_i18n_options;
 interface
 
 uses
-  Classes, SysUtils, FileUtil, LResources, Forms, Controls, Graphics, Dialogs,
+  Classes, SysUtils, FileUtil, Forms, Controls, Graphics, Dialogs,
   StdCtrls, Project, IDEOptionsIntf, LazarusIDEStrConsts, IDEDialogs;
 
 type
@@ -32,6 +32,8 @@ type
   end;
 
 implementation
+
+{$R *.lfm}
 
 { TProjectI18NOptionsFrame }
 
@@ -102,7 +104,6 @@ begin
 end;
 
 initialization
-  {$I project_i18n_options.lrs}
   RegisterIDEOptionsEditor(GroupProject, TProjectI18NOptionsFrame, ProjectOptionsI18N);
 
 end.

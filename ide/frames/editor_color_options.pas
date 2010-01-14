@@ -25,7 +25,7 @@ unit editor_color_options;
 interface
 
 uses
-  Classes, LResources, StdCtrls, SynEdit, LCLIntf,
+  Classes, StdCtrls, SynEdit, LCLIntf,
   SynGutterCodeFolding, SynGutterLineNumber, SynGutterChanges, SynEditMouseCmds,
   ExtCtrls, Graphics, LCLProc, SynEditMiscClasses, LCLType, Controls,
   EditorOptions, LazarusIDEStrConsts, IDEOptionsIntf, editor_general_options,
@@ -135,6 +135,8 @@ type
   end;
 
 implementation
+
+{$R *.lfm}
 
 const
   COLOR_NODE_PREFIX = ' abc  ';
@@ -1285,6 +1287,5 @@ begin
 end;
 
 initialization
-  {$I editor_color_options.lrs}
   RegisterIDEOptionsEditor(GroupEditor, TEditorColorOptionsFrame, EdtOptionsColors);
 end.
