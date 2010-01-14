@@ -5,7 +5,7 @@ unit main;
 interface
 
 uses
-  Classes, SysUtils, FileUtil, LResources, Forms, Controls, Graphics, Dialogs,
+  Forms,
   TAGraph, TASeries, TASources;
 
 type
@@ -26,8 +26,7 @@ var
 
 implementation
 
-initialization
-  {$I main.lrs}
+{$R *.lfm}
 
 end.
 
