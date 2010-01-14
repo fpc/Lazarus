@@ -31,7 +31,7 @@ interface
 
 uses
   { delphi }
-  Classes, Controls, LResources, Forms, StdCtrls,
+  Classes, Controls, Forms, StdCtrls,
   IDEOptionsIntf;
 
 type
@@ -55,6 +55,8 @@ type
   end;
 
 implementation
+
+{$R *.lfm}
 
 uses 
   JcfHelp, JcfSettings;
@@ -111,6 +113,5 @@ begin
 end;
 
 initialization
-  {$I frNotIdentifierCapsSettings.lrs}
   RegisterIDEOptionsEditor(JCFOptionsGroup, TfNotIdentifierCapsSettings, JCFOptionNotIdentifiers, JCFOptionObjectPascal);
 end.

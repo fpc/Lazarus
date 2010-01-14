@@ -31,7 +31,7 @@ interface
 
 uses
   { delphi }
-  SysUtils, Classes, Controls, LResources, Forms, StdCtrls, Graphics,
+  SysUtils, Classes, Controls, Forms, StdCtrls, Graphics,
   { lazarus }
   IDEOptionsIntf;
 
@@ -56,6 +56,8 @@ type
   end;
 
 implementation
+
+{$R *.lfm}
 
 uses
   { local }
@@ -149,6 +151,5 @@ begin
 end;
 
 initialization
-  {$I frFiles.lrs}
   RegisterIDEOptionsEditor(JCFOptionsGroup, TfFiles, JCFOptionFormatFile);
 end.

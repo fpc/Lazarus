@@ -30,7 +30,7 @@ See http://www.gnu.org/licenses/gpl.html
 interface
 
 uses
-  Messages, SysUtils, Variants, Classes, Graphics, Controls, LResources, Forms,
+  Messages, SysUtils, Variants, Classes, Graphics, Controls, Forms,
   Dialogs, StdCtrls, ExtCtrls, Spin,
   { local}
   IDEOptionsIntf;
@@ -62,6 +62,8 @@ type
   end;
 
 implementation
+
+{$R *.lfm}
 
 uses
   { jcf }
@@ -123,6 +125,5 @@ begin
 end;
 
 initialization
-  {$I frAsm.lrs}
   RegisterIDEOptionsEditor(JCFOptionsGroup, TfAsm, JCFOptionAsm, JCFOptionClarify);
 end.

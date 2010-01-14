@@ -31,7 +31,7 @@ interface
 
 uses
   { delphi }
-  Classes, Controls, Forms, LResources, StdCtrls, Spin,
+  Classes, Controls, Forms, StdCtrls, Spin,
   IDEOptionsIntf;
 
 type
@@ -69,6 +69,8 @@ type
   end;
 
 implementation
+
+{$R *.lfm}
 
 uses
   JcfHelp, JcfSettings, SetIndent;
@@ -167,6 +169,5 @@ begin
 end;
 
 initialization
-  {$I frClarifyIndent.lrs}
   RegisterIDEOptionsEditor(JCFOptionsGroup, TfClarifyIndent, JCFOptionIndentation, JCFOptionClarify);
 end.

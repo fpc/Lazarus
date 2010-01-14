@@ -29,7 +29,7 @@ See http://www.gnu.org/licenses/gpl.html
 interface
 
 uses
-  Classes, Controls, LResources, Forms, StdCtrls,
+  Classes, Controls, Forms, StdCtrls,
   IDEOptionsIntf;
 
 type
@@ -52,6 +52,8 @@ type
   end;
 
 implementation
+
+{$R *.lfm}
 
 uses
   JcfSettings;
@@ -106,6 +108,5 @@ begin
 end;
 
 initialization
-  {$I frUnitCaps.lrs}
   RegisterIDEOptionsEditor(JCFOptionsGroup, TfrUnitNameCaps, JCFOptionUnitName, JCFOptionObjectPascal);
 end.

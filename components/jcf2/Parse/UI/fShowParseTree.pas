@@ -90,11 +90,12 @@ implementation
 
 {$ifndef FPC}
   {$R *.dfm}
+{$else}
+  {$R *.lfm}
 {$endif}
 
 uses
-  SourceToken, Tokens, JcfHelp, JcfFontSetFunctions
-  {$ifdef fpc}, LResources{$endif};
+  SourceToken, Tokens, JcfHelp, JcfFontSetFunctions;
 
 procedure ShowParseTree(const pcRoot: TParseTreeNode);
 var
@@ -328,10 +329,5 @@ begin
     end;
 {$endif}
 end;
-
-initialization
-{$ifdef fpc}
-  {$I fShowParseTree.lrs}
-{$endif}
 
 end.

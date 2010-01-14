@@ -30,7 +30,7 @@ interface
 
 uses
   { delphi }
-  Classes, Controls, LResources, Forms, StdCtrls, Spin,
+  Classes, Controls, Forms, StdCtrls, Spin,
   { local}
   IDEOptionsIntf;
 
@@ -64,6 +64,8 @@ type
   end;
 
 implementation
+
+{$R *.lfm}
 
 uses
   { delphi }
@@ -131,6 +133,5 @@ begin
 end;
 
 initialization
-  {$I frBlankLines.lrs}
   RegisterIDEOptionsEditor(JCFOptionsGroup, TfBlankLines, JCFOptionBlankLines, JCFOptionClarify);
 end.

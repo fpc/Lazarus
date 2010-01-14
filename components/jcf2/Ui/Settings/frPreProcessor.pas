@@ -31,7 +31,7 @@ interface
 { preprocessor symbols }
 
 uses
-  Classes, Controls, LResources, Forms, StdCtrls,
+  Classes, Controls, Forms, StdCtrls,
   IDEOptionsIntf;
 
 type
@@ -56,6 +56,8 @@ type
   end;
 
 implementation
+
+{$R *.lfm}
 
 uses 
   JcfHelp, JcfSettings;
@@ -124,6 +126,5 @@ begin
 end;
 
 initialization
-  {$I frPreProcessor.lrs}
   RegisterIDEOptionsEditor(JCFOptionsGroup, TfPreProcessor, JCFOptionPreProcessor);
 end.

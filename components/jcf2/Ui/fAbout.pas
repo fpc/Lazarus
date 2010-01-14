@@ -60,6 +60,8 @@ implementation
 
 {$ifndef FPC}
   {$R *.dfm}
+{$else}
+  {$R *.lfm}
 {$endif}
 
 uses
@@ -67,7 +69,7 @@ uses
   {$ifndef fpc}
     Windows, ShellAPI, URLMon,
   {$else}
-    LResources, LCLIntf,
+    LCLIntf,
   {$endif}
   { local }
   JcfVersionConsts, JcfHelp, JcfFontSetFunctions, JcfStringUtils;
@@ -158,10 +160,5 @@ begin
   TLabel(Sender).Font.Color := clWindowText;
   TLabel(Sender).Font.Style := [];
 end;
-
-{$ifdef fpc}
-initialization
-  {$I fAbout.lrs}
-{$endif}
 
 end.

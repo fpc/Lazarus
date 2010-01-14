@@ -31,7 +31,7 @@ interface
 
 uses
   { delphi }
-  Classes, Controls, LResources, Forms, StdCtrls, Spin,
+  Classes, Controls, Forms, StdCtrls, Spin,
   { local}
   IDEOptionsIntf;
 
@@ -74,6 +74,8 @@ type
   end;
 
 implementation
+
+{$R *.lfm}
 
 uses
   JcfSettings, JcfHelp, SetAlign;
@@ -178,6 +180,5 @@ begin
 end;
 
 initialization
-  {$I frClarifyAlign.lrs}
   RegisterIDEOptionsEditor(JCFOptionsGroup, TfClarifyAlign, JCFOptionAlign, JCFOptionClarify);
 end.

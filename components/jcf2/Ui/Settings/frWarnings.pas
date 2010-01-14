@@ -31,7 +31,7 @@ interface
 
 uses
   { delphi }
-  StdCtrls, Classes, Controls, LResources, Forms,
+  StdCtrls, Classes, Controls, Forms,
   { local }
   IDEOptionsIntf;
 
@@ -56,6 +56,8 @@ type
   end;
 
 implementation
+
+{$R *.lfm}
 
 uses
   JcfHelp, JcfSettings;
@@ -113,6 +115,5 @@ begin
 end;
 
 initialization
-  {$I frWarnings.lrs}
   RegisterIDEOptionsEditor(JCFOptionsGroup, TfWarnings, JCFOptionWarnings, JCFOptionClarify);
 end.
