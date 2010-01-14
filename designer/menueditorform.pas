@@ -37,7 +37,7 @@ interface
 
 uses
   Classes, SysUtils, TypInfo, LCLProc, Forms, Controls, Graphics, Dialogs,
-  LResources, StdCtrls, Buttons, ExtCtrls, DesignerMenu, Menus, GraphType,
+  StdCtrls, Buttons, ExtCtrls, DesignerMenu, Menus, GraphType,
   ComponentEditors, LazarusIDEStrConsts, PropEdits;
 
 type
@@ -104,6 +104,8 @@ procedure ShowMenuEditor(AMenu: TMenu);
 
 
 implementation
+
+{$R *.lfm}
 
 procedure ShowMenuEditor(AMenu: TMenu);
 begin
@@ -317,8 +319,6 @@ begin
 end;
 
 initialization
-  {$I menueditorform.lrs}
-
   InitMenuEditorGlobals;
 
 end.

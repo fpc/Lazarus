@@ -25,7 +25,7 @@ unit AskCompNameDlg;
 interface
 
 uses
-  Classes, SysUtils, LCLProc, FileUtil, LResources, Forms, Controls, Graphics,
+  Classes, SysUtils, LCLProc, FileUtil, Forms, Controls, Graphics,
   Dialogs, StdCtrls, PropEdits, LazarusIDEStrConsts;
 
 type
@@ -57,6 +57,8 @@ function ShowComponentNameDialog(LookupRoot: TComponent; NewComponent: TComponen
   var NewName: string): TModalResult;
 
 implementation
+
+{$R *.lfm}
 
 function ShowComponentNameDialog(LookupRoot: TComponent; NewComponent: TComponent;
   var NewName: string): TModalResult;
@@ -161,9 +163,6 @@ begin
   ErrorMsg:='';
   Result:=true;
 end;
-
-initialization
-  {$I askcompnamedlg.lrs}
 
 end.
 

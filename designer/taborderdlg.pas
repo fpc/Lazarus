@@ -32,7 +32,7 @@ unit TabOrderDlg;
 interface
 
 uses
-  Classes, SysUtils, LResources, LCLProc, Forms, Controls, Graphics, Dialogs,
+  Classes, SysUtils, LCLProc, Forms, Controls, Graphics, Dialogs,
   Buttons, ComCtrls, StdCtrls, Arrow, LazarusIDEStrConsts, ButtonPanel;
 
 type
@@ -68,6 +68,8 @@ type
 function ShowTabOrderDialog(LookupRoot: TComponent): TModalresult;
 
 implementation
+
+{$R *.lfm}
 
 function ShowTabOrderDialog(LookupRoot: TComponent): TModalresult;
 var
@@ -236,8 +238,5 @@ begin
   end;
   ItemTreeview.EndUpdate;
 end;
-
-initialization
-  {$I taborderdlg.lrs}
 
 end.

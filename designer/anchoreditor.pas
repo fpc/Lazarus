@@ -35,7 +35,7 @@ unit AnchorEditor;
 interface
 
 uses
-  Classes, SysUtils, LCLProc, LResources, Forms, Controls, Graphics, Dialogs,
+  Classes, SysUtils, LCLProc, Forms, Controls, Graphics, Dialogs,
   StdCtrls, Buttons, Spin,
   IDECommands, PropEdits,
   LazarusIDEStrConsts, EnvironmentOpts, IDEOptionDefs;
@@ -178,7 +178,10 @@ var
 
 implementation
 
-uses math;
+{$R *.lfm}
+
+uses 
+  math;
 { TAnchorDesigner }
 
 procedure TAnchorDesigner.AnchorDesignerCreate(Sender: TObject);
@@ -1024,7 +1027,6 @@ end;
 initialization
   RegisterPropertyEditor(TypeInfo(TAnchors), TControl, 'Anchors',
     TAnchorPropertyEditor);
-  {$I anchoreditor.lrs}
 
 end.
 

@@ -85,6 +85,7 @@ function ChangePersistentClass(ADesigner: TIDesigner;
 
 implementation
 
+{$R *.lfm}
 
 function ShowChangeClassDialog(ADesigner: TIDesigner;
   APersistent: TPersistent): TModalResult;
@@ -491,9 +492,6 @@ begin
   // clean up
   List.Free;
 end;
-
-initialization
-  {$I changeclassdialog.lrs}
 
 end.
 

@@ -30,7 +30,7 @@ unit AlignCompsDlg;
 interface
 
 uses
-  Classes, LCLIntf, Forms, Controls, Buttons, ExtCtrls, LResources,
+  Classes, LCLIntf, Forms, Controls, Buttons, ExtCtrls, 
   LazarusIDEStrConsts, ButtonPanel, StdCtrls;
 
 type
@@ -47,6 +47,8 @@ type
 function ShowAlignComponentsDialog(var HorizAlignID, VertAlignID: integer): TModalResult;
 
 implementation
+
+{$R *.lfm}
 
 function ShowAlignComponentsDialog(var HorizAlignID, VertAlignID: integer): TModalResult;
 var
@@ -109,8 +111,5 @@ begin
     end;
   end;
 end;
-
-initialization
-  {$I aligncompsdlg.lrs}
 
 end.

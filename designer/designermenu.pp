@@ -36,7 +36,7 @@ unit DesignerMenu;
 interface
 
 uses
-  Classes, SysUtils, LResources, LCLProc, Forms, Controls, Menus, Graphics,
+  Classes, SysUtils, LCLProc, Forms, Controls, Menus, Graphics,
   GraphType, Buttons, StdCtrls, ExtCtrls, ComponentEditors, LazConf, ComCtrls,
   Arrow, ButtonPanel, Laz_XMLCfg, LazarusIDEStrConsts, PropEdits, IDEProcs;
 
@@ -186,6 +186,8 @@ type
   
 
 implementation
+
+{$R *.lfm}
 
 const
   DESIGNER_MENU_ITEM_HEIGHT=20;
@@ -2220,8 +2222,5 @@ begin
     Dec(subitem_level);
   end;
 end;
-
-initialization
-  {$I designermenu.lrs}
 
 end.

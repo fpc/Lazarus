@@ -31,7 +31,7 @@ interface
 
 uses
   Classes, SysUtils, LCLIntf, Forms, Controls, Buttons, ExtCtrls, StdCtrls,
-  LResources, ButtonPanel;
+  ButtonPanel;
 
 type
   { TSizeComponentsDialog }
@@ -51,7 +51,11 @@ function ShowSizeComponentsDialog(var HorizSizingID, FixedWidth,
   VertSizingID, FixedHeight: integer): TModalResult;
 
 implementation
-uses LazarusIDEStrConsts;
+
+{$R *.lfm}
+
+uses 
+  LazarusIDEStrConsts;
 
 function ShowSizeComponentsDialog(var HorizSizingID, FixedWidth,
   VertSizingID, FixedHeight: integer): TModalResult;
@@ -116,8 +120,5 @@ begin
   WidthEdit.Text:='';
   HeightEdit.Text:='';
 end;
-
-initialization
-  {$i sizecompsdlg.lrs}
 
 end.

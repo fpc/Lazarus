@@ -31,7 +31,7 @@ interface
 
 uses
   Classes, SysUtils, LCLIntf, LCLProc, Forms, Controls, Buttons, StdCtrls,
-  ExtCtrls, LResources, LazarusIDEStrConsts, ButtonPanel;
+  ExtCtrls, LazarusIDEStrConsts, ButtonPanel;
 
 type
 
@@ -49,6 +49,8 @@ type
 function ShowScaleComponentsDialog(var ScaleInPercent: integer): TModalResult;
 
 implementation
+
+{$R *.lfm}
 
 function ShowScaleComponentsDialog(var ScaleInPercent: integer): TModalResult;
 var
@@ -75,8 +77,5 @@ begin
   ScaleLabel.Caption := lisScalingFactor;
   PercentLabel.Caption := '%';
 end;
-
-initialization
-  {$I scalecompsdlg.lrs}
 
 end.
