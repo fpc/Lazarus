@@ -28,7 +28,7 @@ unit TASeriesEditor;
 interface
 
 uses
-  Classes, SysUtils, LResources, Forms, Controls, Graphics, Dialogs,
+  Classes, SysUtils, Forms, Controls, Graphics, Dialogs,
   PropEdits, ComponentEditors, StdCtrls, Menus,
   TAGraph;
 
@@ -98,6 +98,8 @@ resourcestring
   sesSeriesEditorTitle = 'Edit series';
 
 implementation
+
+{$R *.lfm}
 
 procedure Register;
 begin
@@ -379,9 +381,6 @@ procedure TSeriesEditorForm.SeriesListBoxClick(Sender: TObject);
 begin
   SelectionChanged;
 end;
-
-initialization
-  {$I taserieseditor.lrs}
 
 end.
 

@@ -9,11 +9,14 @@ object SeriesEditorForm: TSeriesEditorForm
   Menu = MainMenu1
   OnClose = FormClose
   OnDestroy = FormDestroy
-  LCLVersion = '0.9.27'
+  LCLVersion = '0.9.29'
   object SeriesListBox: TListBox
+    Left = 0
     Height = 340
+    Top = 0
     Width = 325
     Align = alClient
+    ItemHeight = 0
     MultiSelect = True
     OnClick = SeriesListBoxClick
     TabOrder = 0
