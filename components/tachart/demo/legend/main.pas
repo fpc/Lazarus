@@ -5,8 +5,7 @@ unit main;
 interface
 
 uses
-  Classes, ComCtrls, ExtCtrls, Spin, StdCtrls, SysUtils, FileUtil, LResources,
-  Forms, Controls, Graphics, Dialogs, TAGraph, TASeries, TASources;
+  ExtCtrls, Spin, StdCtrls, Forms, TAGraph, TASeries, TASources;
 
 type
 
@@ -40,6 +39,8 @@ var
   Form1: TForm1; 
 
 implementation
+
+{$R *.lfm}
 
 uses
   TALegend;
@@ -76,9 +77,6 @@ procedure TForm1.seSymbolWidthChange(Sender: TObject);
 begin
   Chart1.Legend.SymbolWidth := seSymbolWidth.Value;
 end;
-
-initialization
-  {$I main.lrs}
 
 end.
 
