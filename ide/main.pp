@@ -3829,8 +3829,15 @@ Begin
 end;
 
 Procedure TMainIDE.mnuRunProjectClicked(Sender: TObject);
+var
+  SrcEdit: TSourceEditor;
+  AnUnitInfo: TUnitInfo;
 begin
-  DoRunProject;
+  GetCurrentUnit(SrcEdit,AnUnitInfo);
+  if (AnUnitInfo<>nil) and AnUnitInfo.RunFileIfActive then
+    DoRunFile
+  else
+    DoRunProject;
 end;
 
 Procedure TMainIDE.mnuPauseProjectClicked(Sender: TObject);
