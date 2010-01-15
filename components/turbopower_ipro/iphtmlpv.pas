@@ -108,7 +108,7 @@ uses
 {$IFNDEF IP_LAZARUS}
 {$R *.DFM}
 {$ELSE}
-{$R *.LFM}
+{$R *.lfm}
 {$ENDIF}
 
 const
