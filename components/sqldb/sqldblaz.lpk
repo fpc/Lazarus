@@ -19,7 +19,7 @@
     <License Value="Modified LGPL
 "/>
     <Version Major="1" Release="1"/>
-    <Files Count="5">
+    <Files Count="4">
       <Item1>
         <Filename Value="registersqldb.pas"/>
         <HasRegisterProc Value="True"/>
@@ -36,13 +36,9 @@
         <Type Value="LFM"/>
       </Item3>
       <Item4>
-        <Filename Value="sqlstringspropertyeditordlg.lrs"/>
-        <Type Value="LRS"/>
-      </Item4>
-      <Item5>
         <Filename Value="sqlstringspropertyeditordlg.pas"/>
         <UnitName Value="SQLStringsPropertyEditorDlg"/>
-      </Item5>
+      </Item4>
     </Files>
     <i18n>
       <EnableI18N Value="True"/>

@@ -5,7 +5,7 @@ unit SQLStringsPropertyEditorDlg;
 interface
 
 uses
-  Classes, SysUtils, FileUtil, LResources, Forms, Controls, Graphics, Dialogs,
+  Classes, SysUtils, FileUtil, Forms, Controls, Graphics, Dialogs,
   SynEdit, ButtonPanel, SynHighlighterSQL, ComCtrls, SQLDb, db, DBGrids,
   SrcEditorIntf;
 
@@ -50,6 +50,8 @@ type
   end; 
 
 implementation
+
+{$R *.lfm}
 
 resourcestring
   SSQLTabCaption    = 'SQL Code';
@@ -141,9 +143,6 @@ begin
   if(SaveDialog.Execute)then
     SQLEditor.Lines.SaveToFile(UTF8ToSys(SaveDialog.FileName));
 end;
-
-initialization
-  {$I sqlstringspropertyeditordlg.lrs}
 
 end.
 
