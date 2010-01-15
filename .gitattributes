@@ -1503,7 +1503,6 @@ components/macfiles/macosfiles.pas svneol=native#text/plain
 components/memds/Makefile svneol=native#text/plain
 components/memds/Makefile.fpc svneol=native#text/plain
 components/memds/frmselectdataset.lfm svneol=native#text/plain
-components/memds/frmselectdataset.lrs svneol=native#text/pascal
 components/memds/frmselectdataset.pp svneol=native#text/pascal
 components/memds/languages/frmselectdataset.de.po svneol=native#text/plain
 components/memds/languages/frmselectdataset.es.po svneol=native#text/plain

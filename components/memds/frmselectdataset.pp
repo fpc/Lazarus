@@ -2,7 +2,7 @@
 {
  *****************************************************************************
  *                                                                           *
- *  See the file COPYING.modifiedLGPL.txt, included in this distribution,        *
+ *  See the file COPYING.modifiedLGPL.txt, included in this distribution,    *
  *  for details about the copyright.                                         *
  *                                                                           *
  *  This program is distributed in the hope that it will be useful,          *
@@ -63,6 +63,7 @@ procedure Register;
 
 implementation
 
+{$R *.lfm}
 
 procedure RegisterUnitMemDS;
 begin
@@ -171,7 +172,6 @@ begin
 end;
 
 initialization
-  {$i frmselectdataset.lrs}
   {$i memdsicons.lrs}
 
 end.
