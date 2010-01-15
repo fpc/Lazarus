@@ -36,7 +36,7 @@ unit LocalsDlg;
 interface
 
 uses
-  LResources, SysUtils, Classes, Graphics, Controls, Forms, Dialogs,
+  SysUtils, Classes, Graphics, Controls, Forms, Dialogs,
   ComCtrls, Debugger, DebuggerDlg;
 
 type
@@ -59,6 +59,9 @@ type
 
 
 implementation
+
+{$R *.lfm}
+
 uses
   LazarusIDEStrConsts;
   
@@ -173,9 +176,6 @@ procedure TLocalsDlg.DoEndUpdate;
 begin
   lvLocals.EndUpdate;
 end;
-
-initialization
-  {$I localsdlg.lrs}
 
 end.
 

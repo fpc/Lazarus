@@ -5,7 +5,7 @@ unit AssemblerDlg;
 interface
 
 uses
-  Classes, SysUtils, FileUtil, LResources, Forms, Controls, Graphics, Dialogs,
+  Classes, SysUtils, FileUtil, Forms, Controls, Graphics, Dialogs,
   ComCtrls, StdCtrls, Grids, ExtCtrls, LclType, LCLIntf, DebuggerDlg, Debugger,
   EditorOptions, Maps, Math;
 
@@ -68,6 +68,9 @@ type
   end;
 
 implementation
+
+{$R *.lfm}
+
 uses
   LazarusIDEStrConsts;
 
@@ -589,11 +592,6 @@ begin
     end;
   end;
 end;
-
-
-
-initialization
-  {$I assemblerdlg.lrs}
 
 end.
 

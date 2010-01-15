@@ -25,7 +25,7 @@ unit debugger_eventlog_options;
 interface
 
 uses
-  Classes, SysUtils, FileUtil, LResources, Forms, StdCtrls, Spin,
+  Classes, SysUtils, FileUtil, Forms, StdCtrls, Spin,
   LazarusIDEStrConsts, IDEOptionsIntf;
 
 type
@@ -56,6 +56,8 @@ type
   end;
 
 implementation
+
+{$R *.lfm}
 
 { TDebuggerEventLogOptionsFrame }
 
@@ -97,7 +99,6 @@ begin
 end;
 
 initialization
-  {$I debugger_eventlog_options.lrs}
   RegisterIDEOptionsEditor(GroupDebugger, TDebuggerEventLogOptionsFrame, DbgOptionsEventLog);
 end.
 

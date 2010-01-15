@@ -5,7 +5,7 @@ unit BreakPropertyDlg;
 interface
 
 uses
-  Classes, SysUtils, FileUtil, LResources, Forms, Controls, Graphics, Dialogs,
+  Classes, SysUtils, FileUtil, Forms, Controls, Graphics, Dialogs,
   ExtCtrls, StdCtrls, Buttons, DebuggerDlg, Debugger, ButtonPanel, EditBtn,
   BaseDebugManager, IDEContextHelpEdit, LazarusIDEStrConsts;
 
@@ -56,6 +56,8 @@ type
   end;
 
 implementation
+
+{$R *.lfm}
 
 { TBreakPropertyDlg }
 
@@ -180,9 +182,6 @@ begin
   FBreakpointsNotification := nil;
   inherited Destroy;
 end;
-
-initialization
-  {$I breakpropertydlg.lrs}
 
 end.
 

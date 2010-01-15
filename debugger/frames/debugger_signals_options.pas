@@ -25,7 +25,7 @@ unit debugger_signals_options;
 interface
 
 uses
-  Classes, SysUtils, FileUtil, LResources, Forms, StdCtrls, Menus,
+  Classes, SysUtils, FileUtil, Forms, StdCtrls, Menus,
   ComCtrls, Buttons,
   LazarusIDEStrConsts, IDEOptionsIntf, Debugger, BaseDebugManager;
 type
@@ -54,6 +54,9 @@ type
   end;
 
 implementation
+
+{$R *.lfm}
+
 const
   HANDLEDBY_CAPTION: array [Boolean] of String = ('Program', 'Debugger');
   RESUME_CAPTION: array[Boolean] of String = ('Unhandled', 'Handled');
@@ -114,7 +117,6 @@ begin
 end;
 
 initialization
-  {$I debugger_signals_options.lrs}
   RegisterIDEOptionsEditor(GroupDebugger, TDebuggerSignalsOptions, DbgOptionsSignals);
 end.
 

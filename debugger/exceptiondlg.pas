@@ -28,7 +28,7 @@ unit ExceptionDlg;
 interface
 
 uses
-  Classes, SysUtils, FileUtil, LResources, Forms, Controls, Graphics, Dialogs,
+  Classes, SysUtils, FileUtil, Forms, Controls, Graphics, Dialogs,
   ButtonPanel, StdCtrls, Buttons, LazarusIDEStrConsts;
 
 type
@@ -50,6 +50,8 @@ type
 function ExecuteExceptionDialog(AMessage: String; out IgnoreException: Boolean): TModalResult;
 
 implementation
+
+{$R *.lfm}
 
 function ExecuteExceptionDialog(AMessage: String; out IgnoreException: Boolean): TModalResult;
 var
@@ -83,9 +85,6 @@ begin
   Result := ShowModal;
   IgnoreException := cbIgnoreExceptionType.Checked;
 end;
-
-initialization
-  {$I exceptiondlg.lrs}
 
 end.
 

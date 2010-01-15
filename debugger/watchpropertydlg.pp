@@ -39,7 +39,7 @@ unit WatchPropertyDlg;
 interface
 
 uses
-  Classes, SysUtils, Forms, Controls, Graphics, Dialogs, LResources, StdCtrls,
+  Classes, SysUtils, Forms, Controls, Graphics, Dialogs, StdCtrls,
   Buttons, Extctrls, Menus,
   IDEContextHelpEdit, Debugger, BaseDebugManager, ButtonPanel;
 
@@ -68,6 +68,9 @@ type
   end;
   
 implementation
+
+{$R *.lfm}
+
 uses
   LazarusIDEStrConsts;
   
@@ -138,11 +141,6 @@ destructor TWatchPropertyDlg.destroy;
 begin
   inherited;
 end;
-
-initialization
-{$I watchpropertydlg.lrs}
-
-
 
 end.
 

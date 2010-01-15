@@ -28,7 +28,7 @@ unit InspectDlg;
 interface
 
 uses
-  Classes, SysUtils, TypInfo, FileUtil, LResources, Forms, Controls, Graphics,
+  Classes, SysUtils, TypInfo, FileUtil, Forms, Controls, Graphics,
   Dialogs, ComCtrls, ObjectInspector, PropEdits, Debugger, DebuggerDlg, BaseDebugManager,
   LazarusIDEStrConsts, IDEWindowIntf, LCLProc, LCLType, Grids, StdCtrls;
 
@@ -84,6 +84,8 @@ type
   end;
 
 implementation
+
+{$R *.lfm}
 
 { TIDEInspectDlg }
 
@@ -418,9 +420,6 @@ procedure TOIDBGGrid.BuildPropertyList(OnlyIfNeeded: boolean);
 begin
 
 end;
-
-initialization
-  {$I inspectdlg.lrs}
 
 end.
 

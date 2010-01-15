@@ -37,7 +37,7 @@ unit EvaluateDlg;
 interface
 
 uses
-  Classes, SysUtils, LResources, LCLType, Forms, Controls, Graphics, Dialogs,
+  Classes, SysUtils, LCLType, Forms, Controls, Graphics, Dialogs,
   ComCtrls, StdCtrls, DebuggerDlg, BaseDebugManager, IDEWindowIntf, InputHistory,debugger;
 
 type
@@ -77,6 +77,9 @@ type
   end;
 
 implementation
+
+{$R *.lfm}
+
 uses
   IDEImagesIntf, LazarusIDEStrConsts;
 
@@ -189,9 +192,6 @@ begin
   if DebugBoss.Watches.Find(S) = nil
   then DebugBoss.Watches.Add(S);
 end;
-
-initialization
-  {$I evaluatedlg.lrs}
 
 end.
 

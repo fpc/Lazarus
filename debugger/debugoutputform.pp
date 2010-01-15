@@ -34,7 +34,7 @@ unit DebugOutputForm;
 interface
 
 uses
-  Classes, Graphics, Controls, Forms, Dialogs, LResources, Clipbrd,
+  Classes, Graphics, Controls, Forms, Dialogs, Clipbrd,
   Buttons, StdCtrls, Menus, DebuggerDlg;
 
 type
@@ -61,7 +61,11 @@ type
   end;
 
 implementation
-uses LazarusIDEStrConsts;
+
+{$R *.lfm}
+
+uses 
+  LazarusIDEStrConsts;
 
 procedure TDbgOutputForm.AddText(const AText: String);
 begin
@@ -115,8 +119,5 @@ procedure TDbgOutputForm.popCopyAllClick(Sender: TObject);
 begin
   Clipboard.AsText := txtOutput.Text;
 end;
-
-initialization
-  {$I debugoutputform.lrs}
 
 end.

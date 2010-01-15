@@ -36,7 +36,7 @@ unit RegistersDlg;
 interface
 
 uses
-  LResources, SysUtils, Classes, Graphics, Controls, Forms, Dialogs,
+  SysUtils, Classes, Graphics, Controls, Forms, Dialogs,
   ComCtrls, Debugger, DebuggerDlg;
 
 type
@@ -63,6 +63,9 @@ type
 
 
 implementation
+
+{$R *.lfm}
+
 uses
   LazarusIDEStrConsts;
   
@@ -180,9 +183,6 @@ procedure TRegistersDlg.DoEndUpdate;
 begin
   lvRegisters.EndUpdate;
 end;
-
-initialization
-  {$I registersdlg.lrs}
 
 end.
 

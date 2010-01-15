@@ -36,7 +36,7 @@ unit CallStackDlg;
 interface
 
 uses
-  LResources, SysUtils, Classes, Graphics, Controls, Forms, Dialogs,
+  SysUtils, Classes, Graphics, Controls, Forms, Dialogs,
   ComCtrls, Debugger, DebuggerDlg, Menus, ClipBrd, ExtCtrls, StdCtrls, Spin,
   ActnList, MainBase, IDEImagesIntf, IDECommands;
 
@@ -132,6 +132,8 @@ type
 
 
 implementation
+
+{$R *.lfm}
 
 uses
   BaseDebugManager, LCLProc, LazarusIDEStrConsts;
@@ -639,9 +641,6 @@ begin
   
 
 end;
-
-initialization
-  {$I callstackdlg.lrs}
 
 end.
 

@@ -38,7 +38,7 @@ unit WatchesDlg;
 interface
 
 uses
-  Classes, SysUtils, LCLProc, Forms, Controls, Graphics, Dialogs, LResources,
+  Classes, SysUtils, LCLProc, Forms, Controls, Graphics, Dialogs,
   StdCtrls, Buttons, Menus, ComCtrls, LCLType,
   LazarusIDEStrConsts, Debugger, DebuggerDlg, BaseDebugManager;
 
@@ -94,6 +94,7 @@ type
 
 implementation
 
+{$R *.lfm}
 
 { TWatchesDlg }
 
@@ -362,9 +363,6 @@ procedure TWatchesDlg.WatchRemove(const ASender: TIDEWatches; const AWatch: TIDE
 begin
   lvWatches.Items.FindData(AWatch).Free;
 end;
-
-initialization
-  {$I watchesdlg.lrs}
 
 end.
 

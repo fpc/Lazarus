@@ -38,7 +38,7 @@ unit BreakPointsDlg;
 interface
 
 uses
-  Classes, SysUtils, Forms, Controls, Graphics, Dialogs, LResources, StdCtrls,
+  Classes, SysUtils, Forms, Controls, Graphics, Dialogs, StdCtrls,
   Buttons, Menus, ComCtrls, IDEProcs, Debugger, DebuggerDlg, lclType, MainBase;
 
 type
@@ -122,8 +122,12 @@ function GetBreakPointActionsDescription(ABreakpoint: TBaseBreakpoint): string;
 
 
 implementation
+
+{$R *.lfm}
+
 uses
   LazarusIDEStrConsts, BaseDebugManager;
+
 function GetBreakPointStateDescription(ABreakpoint: TBaseBreakpoint): string;
 const
   //                 enabled  valid
@@ -645,10 +649,6 @@ begin
 
   DebugBoss.ShowBreakPointProperties(CurBreakPoint);
 end;
-
-
-initialization
-  {$I breakpointsdlg.lrs}
 
 end.
 

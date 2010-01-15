@@ -25,7 +25,7 @@ unit debugger_language_exceptions_options;
 interface
 
 uses
-  Classes, SysUtils, FileUtil, LResources, Forms, Controls, StdCtrls, CheckLst,
+  Classes, SysUtils, FileUtil, Forms, Controls, StdCtrls, CheckLst,
   Buttons, Dialogs,
   LazarusIDEStrConsts, IDEOptionsIntf, Debugger, BaseDebugManager;
 
@@ -57,6 +57,8 @@ type
   end;
 
 implementation
+
+{$R *.lfm}
 
 { TDebuggerLanguageExceptionsOptions }
 
@@ -197,7 +199,6 @@ begin
 end;
 
 initialization
-  {$I debugger_language_exceptions_options.lrs}
   RegisterIDEOptionsEditor(GroupDebugger, TDebuggerLanguageExceptionsOptions, DbgOptionsLanguageExceptions);
 end.
 

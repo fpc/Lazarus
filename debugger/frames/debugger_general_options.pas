@@ -25,7 +25,7 @@ unit debugger_general_options;
 interface
 
 uses
-  Classes, SysUtils, TypInfo, FileUtil, LResources, Forms, Controls, StdCtrls,
+  Classes, SysUtils, TypInfo, FileUtil, Forms, Controls, StdCtrls,
   ExtCtrls, Buttons, Dialogs, LCLProc,
   PropEdits, ObjectInspector,
   LazarusIDEStrConsts, IDEOptionsIntf, PathEditorDlg, InputHistory, IDEProcs,
@@ -70,6 +70,8 @@ type
   end;
 
 implementation
+
+{$R *.lfm}
 
 { TDebuggerGeneralOptionsFrame }
 
@@ -315,7 +317,6 @@ begin
 end;
 
 initialization
-  {$I debugger_general_options.lrs}
   RegisterIDEOptionsEditor(GroupDebugger, TDebuggerGeneralOptionsFrame, DbgOptionsGeneral);
 end.
 
