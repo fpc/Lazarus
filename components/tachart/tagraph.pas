@@ -912,6 +912,8 @@ begin
 end;
 
 procedure TChart.MouseUp(Button: TMouseButton; Shift: TShiftState; X, Y: Integer);
+var
+  oldIsZoomed: Boolean;
 begin
   if not FIsMouseDown then begin
     inherited;
@@ -924,20 +926,21 @@ begin
 
   FIsMouseDown := false;
 
-  with FSelectionRect do begin
+  oldIsZoomed := FIsZoomed;
+  with FSelectionRect do
     FIsZoomed := (Left < Right) and (Top < Bottom);
-    if FIsZoomed then
-      with FZoomExtent do begin
-        a := ImageToGraph(TopLeft);
-        b := ImageToGraph(BottomRight);
-        if a.X > b.X then
-          Exchange(a.X, b.X);
-        if a.Y > b.Y then
-          Exchange(a.Y, b.Y);
-      end;
-  end;
+  if FIsZoomed then
+    with FZoomExtent do begin
+      a := ImageToGraph(FSelectionRect.TopLeft);
+      b := ImageToGraph(FSelectionRect.BottomRight);
+      if a.X > b.X then
+        Exchange(a.X, b.X);
+      if a.Y > b.Y then
+        Exchange(a.Y, b.Y);
+    end;
 
-  Invalidate;
+  if FIsZoomed or oldIsZoomed then
+    Invalidate;
 end;
 
 procedure TChart.DoDrawReticule(
