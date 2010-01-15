@@ -2012,7 +2012,6 @@ components/synedit/synpluginsyncroedit.pp svneol=native#text/pascal
 components/synedit/synpluginsyncronizededitbase.pp svneol=native#text/pascal
 components/synedit/synplugintemplateedit.pp svneol=native#text/pascal
 components/synedit/synpropertyeditobjectlist.lfm svneol=native#text/plain
-components/synedit/synpropertyeditobjectlist.lrs svneol=native#text/pascal
 components/synedit/synpropertyeditobjectlist.pas svneol=native#text/plain
 components/synedit/synregexpr.pas svneol=native#text/pascal
 components/synedit/syntextdrawer.pp svneol=native#text/pascal

@@ -25,7 +25,7 @@ interface
 uses
   Classes, SysUtils, LCLProc,
   SynGutterBase, SynEditMiscClasses,
-  LResources, PropEdits, Forms, StdCtrls, ComCtrls, Dialogs,
+  PropEdits, Forms, StdCtrls, ComCtrls, Dialogs,
   ObjInspStrConsts, Controls, IDEImagesIntf, typinfo, FormEditingIntf;
 
 type
@@ -95,6 +95,8 @@ type
 
   procedure RegisterGutterPartClass(AClass: TSynGutterPartBaseClass; AName: String);
 implementation
+
+{$R *.lfm}
 
 const
   SynObjectPartListForm: TSynObjectPartListPropertyEditorForm = nil;
@@ -477,8 +479,6 @@ begin
 end;
 
 initialization
-  {$I synpropertyeditobjectlist.lrs}
-
   if KnownSynGutterPartClasses = nil then
     KnownSynGutterPartClasses := TStringList.Create;
 
