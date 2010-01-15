@@ -31,7 +31,7 @@ unit ChgEncodingDlg;
 interface
 
 uses
-  Classes, SysUtils, LCLProc, FileProcs, LResources, Forms, Controls, Graphics,
+  Classes, SysUtils, LCLProc, FileProcs, Forms, Controls, Graphics,
   Dialogs, LConvEncoding, ExtCtrls, StdCtrls, ComCtrls,
   IDEWindowIntf, SynRegExpr, SrcEditorIntf,
   CodeCache, CodeToolsStructs, CodeToolManager, AVL_Tree,
@@ -75,6 +75,8 @@ type
 function ShowConvertEncodingDlg: TModalResult;
 
 implementation
+
+{$R *.lfm}
 
 function ShowConvertEncodingDlg: TModalResult;
 var
@@ -372,9 +374,6 @@ begin
     Files.Free;
   end;
 end;
-
-initialization
-  {$I chgencodingdlg.lrs}
 
 end.
 

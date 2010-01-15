@@ -108,6 +108,7 @@ function ExpandDelphiSearchPath(const SearchPath: string;
 
 implementation
 
+{$R *.lfm}
 
 function CheckDelphiFileExt(const Filename: string): TModalResult;
 begin
@@ -805,9 +806,6 @@ begin
     Paths.Free;
   end;
 end;
-
-initialization
-  {$I delphiunit2laz.lrs}
 
 end.
 

@@ -1,6 +1,0 @@
-LazarusResources.Add('TDelphi2LazarusDialog','FORMDATA',[
-  'TPF0'#21'TDelphi2LazarusDialog'#20'Delphi2LazarusDialog'#7'Caption'#6#10'Rep'
-  +'air LFM'#12'ClientHeight'#3'U'#1#11'ClientWidth'#3#154#1#18'HorzScrollBar.P'
-  +'age'#3#155#1#18'VertScrollBar.Page'#3'V'#1#4'Left'#3'p'#1#6'Height'#3'U'#1#3
-  +'Top'#3#200#0#5'Width'#3#154#1#0#0
-]);
