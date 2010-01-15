@@ -21,7 +21,7 @@
     <License Value="Modified LGPL as per the FCL license
 "/>
     <Version Major="1"/>
-    <Files Count="8">
+    <Files Count="6">
       <Item1>
         <Filename Value="projecttemplates.pp"/>
         <UnitName Value="ProjectTemplates"/>
@@ -36,26 +36,18 @@
         <Type Value="LFM"/>
       </Item3>
       <Item4>
-        <Filename Value="frmtemplatevariables.lrs"/>
-        <Type Value="LRS"/>
-      </Item4>
-      <Item5>
         <Filename Value="frmtemplatevariables.pas"/>
         <UnitName Value="frmTemplateVariables"/>
-      </Item5>
-      <Item6>
+      </Item4>
+      <Item5>
         <Filename Value="frmtemplatesettings.lfm"/>
         <Type Value="LFM"/>
-      </Item6>
-      <Item7>
-        <Filename Value="frmtemplatesettings.lrs"/>
-        <Type Value="LRS"/>
-      </Item7>
-      <Item8>
+      </Item5>
+      <Item6>
         <Filename Value="frmtemplatesettings.pas"/>
         <AddToUsesPkgSection Value="False"/>
         <UnitName Value="frmtemplatesettings"/>
-      </Item8>
+      </Item6>
     </Files>
     <i18n>
       <EnableI18N Value="True"/>

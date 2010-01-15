@@ -5,7 +5,7 @@ unit frmTemplateVariables;
 interface
 
 uses
-  Classes, SysUtils, LResources, Forms, Controls, Graphics, Dialogs, ExtCtrls,
+  Classes, SysUtils, Forms, Controls, Graphics, Dialogs, ExtCtrls,
   Grids, ProjectTemplates, Buttons, StdCtrls, EditBtn;
 
 type
@@ -44,6 +44,8 @@ var
   ProjectVariablesForm: TProjectVariablesForm;
 
 implementation
+
+{$R *.lfm}
 
 ResourceString
   SVariable    = 'Variable';
@@ -116,9 +118,6 @@ function TProjectVariablesForm.GetProjectName: String;
 begin
   Result:=EProjectName.Text;
 end;
-
-initialization
-  {$I frmtemplatevariables.lrs}
 
 end.
 

@@ -5,7 +5,7 @@ unit frmtemplatesettings;
 interface
 
 uses
-  Classes, SysUtils, LResources, Forms, Controls, Graphics, Dialogs, StdCtrls,
+  Classes, SysUtils, Forms, Controls, Graphics, Dialogs, StdCtrls,
   Buttons, EditBtn, ProjectTemplates;
 
 type
@@ -32,6 +32,8 @@ var
 
 implementation
 
+{$R *.lfm}
+
 { TTemplateSettingsForm }
 
 procedure TTemplateSettingsForm.BOKClick(Sender: TObject);
@@ -46,9 +48,6 @@ begin
   FTemplates:=AValue;
   DEtemplates.Directory:=Ftemplates.TemplateDir;
 end;
-
-initialization
-  {$I frmtemplatesettings.lrs}
 
 end.
 
