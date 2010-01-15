@@ -5,7 +5,7 @@ unit testcaseopts;
 interface
 
 uses
-  Classes, SysUtils, LResources, Forms, Controls, Graphics, Dialogs, StdCtrls,
+  Classes, SysUtils, Forms, Controls, Graphics, Dialogs, StdCtrls,
   ExtCtrls, Buttons;
 
 type
@@ -31,15 +31,14 @@ type
 
 implementation
 
+{$R *.lfm}
+
 { TTestCaseOptionsForm }
 
 procedure TTestCaseOptionsForm.btnAcceptClick(Sender: TObject);
 begin
   Close;
 end;
-
-initialization
-  {$I testcaseopts.lrs}
 
 end.
 

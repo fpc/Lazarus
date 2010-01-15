@@ -28,7 +28,7 @@ unit GuiTestRunner;
 interface
 
 uses
-  Classes, SysUtils, FileUtil, LResources, Forms, Controls, Graphics, Dialogs,
+  Classes, SysUtils, FileUtil, Forms, Controls, Graphics, Dialogs,
   ExtCtrls, Buttons, ComCtrls, ActnList, Menus, Clipbrd, StdCtrls,
   testdecorator, xmltestreport,
   fpcunit, testregistry, SynEdit, SynHighlighterXML;
@@ -137,6 +137,8 @@ var
 
 
 implementation
+
+{$R *.lfm}
 
 uses
   xmlwrite
@@ -654,9 +656,6 @@ procedure TGUITestRunner.EndTestSuite(ATestSuite: TTestSuite);
 begin
   // do nothing
 end;
-
-initialization
-  {$I guitestrunner.lrs}
 
 end.
 
