@@ -40,7 +40,7 @@ interface
 
 uses
   Classes, SysUtils, AVL_Tree,
-  LCLProc, LResources, LCLType, ClipBrd, Controls, Dialogs, FileUtil, Forms,
+  LCLProc, LCLType, ClipBrd, Controls, Dialogs, FileUtil, Forms,
   Menus, ExtCtrls, StdCtrls, ComCtrls, LDockCtrl, Graphics,
   CodeToolManager,
   IDEImagesIntf, IDEExternToolIntf, IDECommands, MenuIntf, IDEMsgIntf, LazIDEIntf,
@@ -199,6 +199,8 @@ procedure RegisterStandardMessagesViewMenuItems;
 function MessageLinesAsText(ListOfTLazMessageLine: TFPList): string;
 
 implementation
+
+{$R *.lfm}
 
 const
   SeparatorLine = '---------------------------------------------';
@@ -1327,9 +1329,5 @@ procedure TLazMessageLine.UpdateSourcePosition;
 begin
   GetSourcePosition(FFilename, FLineNumber, FColumn);
 end;
-
-initialization
-  MessagesView := nil;
-  {$I msgview.lrs}
 
 end.

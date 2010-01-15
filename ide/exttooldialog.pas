@@ -40,7 +40,7 @@ uses
   MemCheck,
   {$ENDIF}
   Classes, SysUtils, Process, AsyncProcess, LCLType, LCLProc, Controls, Forms,
-  Buttons, StdCtrls, ComCtrls, Dialogs, LResources, ExtCtrls,
+  Buttons, StdCtrls, ComCtrls, Dialogs, ExtCtrls,
   LazConfigStorage, FileUtil, UTF8Process,
   IDEExternToolIntf, IDEImagesIntf,
   ExtToolEditDlg, IDECommands, KeyMapping, TransferMacros, IDEProcs,
@@ -138,6 +138,8 @@ function ShowExtToolDialog(ExtToolList: TExternalToolList;
   TransferMacros: TTransferMacroList):TModalResult;
 
 implementation
+
+{$R *.lfm}
 
 uses
   IDEContextHelpEdit;
@@ -655,8 +657,5 @@ procedure TExternalToolDialog.ListboxClick(Sender: TObject);
 begin
   EnableButtons;
 end;
-
-initialization
-  {$I exttooldialog.lrs}
 
 end.

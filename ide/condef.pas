@@ -96,8 +96,10 @@ function AddConditional(Text: string; IsPascal: Boolean):string;
 
 implementation
 
+{$R *.lfm}
+
 uses
-  LResources, LCLType, LazConf;
+  LCLType, LazConf;
 
 function ShowConDefDlg: string;
 var
@@ -370,6 +372,4 @@ begin
   end;
 end;
 
-initialization
-  {$I condef.lrs}
 end.

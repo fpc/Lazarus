@@ -5,7 +5,7 @@ unit ShowDeletingFilesDlg;
 interface
 
 uses
-  Classes, SysUtils, FileUtil, LResources, Forms, Controls, Graphics, Dialogs,
+  Classes, SysUtils, FileUtil, Forms, Controls, Graphics, Dialogs,
   StdCtrls, ButtonPanel, LazarusIDEStrConsts, CheckLst;
 
 type
@@ -26,6 +26,8 @@ type
 
 implementation
 
+{$R *.lfm}
+
 { TShowDeletingFilesDialog }
 
 procedure TShowDeletingFilesDialog.FormCreate(Sender: TObject);
@@ -43,9 +45,6 @@ begin
   for i := 0 to FileList.Count - 1 do
     FileList.Checked[i] := UnCheckAll.Checked;
 end;
-
-initialization
-  {$I showdeletingfilesdlg.lrs}
 
 end.
 

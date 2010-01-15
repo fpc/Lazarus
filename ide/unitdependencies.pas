@@ -45,7 +45,7 @@ uses
   MemCheck,
   {$ENDIF}
   Classes, SysUtils, Controls, Forms, Dialogs, Buttons, ComCtrls, StdCtrls,
-  Graphics, LCLType, FileUtil, LResources, LCLProc,
+  Graphics, LCLType, FileUtil, LCLProc,
   CodeToolManager, CodeCache,
   IDECommands, IDEImagesIntf,
   EnvironmentOpts, IDEOptionDefs, LazarusIDEStrConsts, InputHistory;
@@ -209,6 +209,8 @@ var
   UnitDependenciesView: TUnitDependenciesView = nil;
 
 implementation
+
+{$R *.lfm}
 
 type
   { TExpandedUnitNodeState
@@ -878,9 +880,6 @@ procedure TExpandedUnitNodeState.AssignTo(ANode: TUnitNode);
 begin
   AssignToRecursive(FPaths,ANode);
 end;
-
-initialization
-  {$I unitdependencies.lrs}
 
 end.
 

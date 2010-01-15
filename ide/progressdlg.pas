@@ -30,7 +30,7 @@ unit ProgressDlg;
 interface
 
 uses
-  Classes, SysUtils, LResources, Forms, Controls, Graphics, Dialogs, Buttons,
+  Classes, SysUtils, Forms, Controls, Graphics, Dialogs, Buttons,
   StdCtrls, ComCtrls, LazarusIDEStrConsts;
 
 type
@@ -55,6 +55,8 @@ function ShowProgress(const SomeText: string;
                       Step, MaxStep: integer): boolean;
 
 implementation
+
+{$R *.lfm}
 
 type
 
@@ -152,9 +154,6 @@ begin
   end;
 end;
 
-initialization
-  {$I progressdlg.lrs}
-  
 finalization
   FreeAndNil(ProgressWait);
 

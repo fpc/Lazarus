@@ -31,7 +31,7 @@ unit NewProjectDlg;
 interface
 
 uses
-  Classes, SysUtils, Forms, Graphics, Controls, LResources, Project, Buttons,
+  Classes, SysUtils, Forms, Graphics, Controls, Project, Buttons,
   StdCtrls, ProjectIntf, ExtCtrls, LazarusIDEStrConsts, IDEContextHelpEdit,
   ButtonPanel;
 
@@ -60,6 +60,8 @@ type
 function ChooseNewProject(var ProjectDesc: TProjectDescriptor): TModalResult;
 
 implementation
+
+{$R *.lfm}
 
 function ChooseNewProject(var ProjectDesc: TProjectDescriptor):TModalResult;
 var
@@ -143,9 +145,6 @@ procedure TNewProjectDialog.ListBoxSelectionChange(Sender: TObject;
 begin
   FillHelpLabel;
 end;
-
-initialization
-  {$I newprojectdlg.lrs}
 
 end.
 

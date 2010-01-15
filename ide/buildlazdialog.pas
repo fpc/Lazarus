@@ -43,7 +43,7 @@ interface
 uses
   Classes, SysUtils, LCLProc, LConvEncoding, Forms, Controls, LCLType, LCLIntf,
   Graphics, GraphType, StdCtrls, ExtCtrls, Buttons, FileUtil, Dialogs, Types,
-  LResources,  Laz_XMLCfg, InterfaceBase, Themes, ComCtrls,
+  Laz_XMLCfg, InterfaceBase, Themes, ComCtrls,
   LazarusIDEStrConsts, TransferMacros, LazConf, IDEProcs, DialogProcs,
   IDEWindowIntf, IDEMsgIntf, InputHistory, ExtToolDialog, ExtToolEditDlg,
   EnvironmentOpts,
@@ -268,6 +268,8 @@ function GetMakeIDEConfigFilename: string;
 function GetTranslatedMakeModes(MakeMode: TMakeMode): string;
 
 implementation
+
+{$R *.lfm}
 
 uses
   IDEImagesIntf;
@@ -1630,9 +1632,6 @@ begin
   else
     Result:='.ppu';
 end;
-
-initialization
-  {$I buildlazdialog.lrs}
 
 end.
 

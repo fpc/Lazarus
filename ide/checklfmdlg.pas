@@ -106,6 +106,8 @@ procedure ClearDanglingEvents(ListOfPInstancePropInfo: TFPList);
 
 implementation
 
+{$R *.lfm}
+
 type
   TLFMChangeEntry = class
   public
@@ -733,9 +735,6 @@ begin
     CurError:=CurError.NextError;
   end;
 end;
-
-initialization
-  {$I checklfmdlg.lrs}
 
 end.
 

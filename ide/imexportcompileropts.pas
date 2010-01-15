@@ -32,7 +32,7 @@ unit ImExportCompilerOpts;
 interface
 
 uses
-  Classes, SysUtils, LResources, Forms, Controls, Graphics, Dialogs, StdCtrls,
+  Classes, SysUtils, Forms, Controls, Graphics, Dialogs, StdCtrls,
   Buttons, IDEProcs, FileUtil, Laz_XMLCfg, LCLType,
   LazarusIDEStrConsts, InputHistory, CompilerOptions, CompilerOptionsDlg;
 
@@ -91,6 +91,7 @@ function ReadIntFromXMLConfig(const Filename, Path: string;
 
 implementation
 
+{$R *.lfm}
 
 function ShowImExportCompilerOptionsDialog(
   CompOpts: TBaseCompilerOptions; var Filename: string): TImExportCompOptsResult;
@@ -379,9 +380,6 @@ begin
   ImExportResult:=iecorExport;
   ModalResult:=mrOk;
 end;
-
-initialization
-  {$I imexportcompileropts.lrs}
 
 end.
 

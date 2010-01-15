@@ -38,7 +38,7 @@ unit ProjectInspector;
 interface
 
 uses
-  Classes, SysUtils, LCLProc, AvgLvlTree, LResources, Forms, Controls, Buttons,
+  Classes, SysUtils, LCLProc, AvgLvlTree, Forms, Controls, Buttons,
   LDockCtrl, ComCtrls, StdCtrls, Menus, Dialogs, Graphics, FileUtil,
   LazIDEIntf, IDECommands,
   LazarusIDEStrConsts, IDEProcs, IDEOptionDefs, EnvironmentOpts,
@@ -156,6 +156,9 @@ var
 
 
 implementation
+
+{$R *.lfm}
+
 uses
   IDEImagesIntf;
 
@@ -811,10 +814,6 @@ begin
   UpdateRemovedRequiredPackages;
   ItemsTreeView.EndUpdate;
 end;
-
-
-initialization
-  {$I projectinspector.lrs}
 
 end.
 

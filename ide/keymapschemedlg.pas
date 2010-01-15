@@ -31,7 +31,7 @@ unit KeymapSchemeDlg;
 interface
 
 uses
-  Classes, SysUtils, LResources, Forms, Controls, Graphics, Dialogs, StdCtrls,
+  Classes, SysUtils, Forms, Controls, Graphics, Dialogs, StdCtrls,
   ExtCtrls, Buttons, KeyMapping, LazarusIDEStrConsts, ButtonPanel;
 
 type
@@ -55,7 +55,10 @@ function ShowChooseKeySchemeDialog(var NewScheme: string): TModalResult;
 
 implementation
 
-uses IDEContextHelpEdit;
+{$R *.lfm}
+
+uses 
+  IDEContextHelpEdit;
 
 function ShowChooseKeySchemeDialog(var NewScheme: string): TModalResult;
 var
@@ -120,9 +123,6 @@ begin
   end;
   SchemeRadiogroup.ItemIndex:=ord(kms);
 end;
-
-initialization
-  {$I keymapschemedlg.lrs}
 
 end.
 

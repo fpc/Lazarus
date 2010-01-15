@@ -40,7 +40,7 @@ unit NewDialog;
 interface
 
 uses
-  Buttons, SysUtils, Classes, LCLProc, LResources,ComCtrls, Controls, Dialogs,
+  Buttons, SysUtils, Classes, LCLProc, ComCtrls, Controls, Dialogs,
   Forms, StdCtrls, ExtCtrls, FileProcs,
   IDEWindowIntf, IDEImagesIntf, NewItemIntf, PackageIntf, ProjectIntf,
   LazIDEIntf,
@@ -149,6 +149,8 @@ function ShowNewIDEItemDialog(var NewItem: TNewIDEItemTemplate): TModalResult;
 
 implementation
 
+
+{$R *.lfm}
 
 function ShowNewIDEItemDialog(var NewItem: TNewIDEItemTemplate): TModalResult;
 var
@@ -577,8 +579,5 @@ function TNewLazIDEItemCategoryInheritedItem.Description: string;
 begin
   Result := lisChooseOneOfTheseItemsToInheritFromAnExistingOne;
 end;
-
-initialization
-  {$I newdialog.lrs}
 
 end.

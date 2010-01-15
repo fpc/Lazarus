@@ -25,7 +25,7 @@ unit CheckCompilerOpts;
 interface
 
 uses
-  Classes, SysUtils, LCLProc,  LResources, Forms, Controls, Graphics, Dialogs,
+  Classes, SysUtils, LCLProc, Forms, Controls, Graphics, Dialogs,
   FileUtil, Clipbrd, StdCtrls, Buttons, Process, AsyncProcess, Menus, ExtCtrls,
   UTF8Process, ButtonPanel,
   // codetools
@@ -132,6 +132,7 @@ function SpecialCharsToStr(const HasChars: TCCOSpecialChars): string;
 
 implementation
 
+{$R *.lfm}
 
 procedure FindSpecialCharsInPath(const Path: string; out
   HasChars: TCCOSpecialChars);
@@ -1178,9 +1179,6 @@ begin
   else         Add(lisCCOErrorMsg+Msg,'',false,-1);
   end;
 end;
-
-initialization
-  {$I checkcompileropts.lrs}
 
 end.
 

@@ -30,7 +30,7 @@ unit FindOverloadsDlg;
 interface
 
 uses
-  Classes, SysUtils, LCLProc,FileUtil, LResources, Forms, Controls, Graphics,
+  Classes, SysUtils, LCLProc,FileUtil, Forms, Controls, Graphics,
   Dialogs, ExtCtrls, StdCtrls, Buttons, ButtonPanel, ComCtrls, AvgLvlTree,
   // codetools
   FindDeclarationTool, PascalParserTool, CodeTree, CodeCache, CodeAtom,
@@ -141,6 +141,8 @@ function CompareFOWFiles(File1, File2: TFOWFile): integer;
 function CompareFilenameWithFOWFile(FilenameAnsiString, FOWFile: Pointer): integer;
 
 implementation
+
+{$R *.lfm}
 
 function ShowFindOverloadsDialog: TModalResult;
 var
@@ -562,9 +564,6 @@ begin
   FScanFiles.Clear;
   Graph.ComputeShortestPaths;
 end;
-
-initialization
-  {$I findoverloadsdlg.lrs}
 
 end.
 

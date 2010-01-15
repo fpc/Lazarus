@@ -31,7 +31,7 @@ unit MsgViewEditor;
 interface
 
 uses
-  Classes, SysUtils, LResources, Forms, Controls, Graphics, Dialogs, StdCtrls,
+  Classes, SysUtils, Forms, Controls, Graphics, Dialogs, StdCtrls,
   Buttons, ComCtrls, LazarusIDEStrConsts;
 
 type
@@ -82,6 +82,8 @@ var
 
 implementation
 
+{$R *.lfm}
+
 { TMsgViewEditorDlg }
 
 procedure TMsgViewEditorDlg.MsgViewEditorDlgCreate(Sender: TObject);
@@ -130,9 +132,6 @@ procedure TMessageFilterRules.SetItems(Index: integer;
 begin
   inherited Items[Index]:=AValue;
 end;
-
-initialization
-  {$I msgvieweditor.lrs}
 
 end.
 

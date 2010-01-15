@@ -28,7 +28,7 @@ unit ProjectWizardDlg;
 interface
 
 uses
-  Classes, SysUtils, LResources, Forms, Controls, Graphics, Dialogs, Buttons,
+  Classes, SysUtils, Forms, Controls, Graphics, Dialogs, Buttons,
   LazarusIDEStrConsts, EnvironmentOpts, StdCtrls;
 
 type
@@ -63,6 +63,8 @@ type
 function ShowProjectWizardDlg(out ARecentProject: String): TProjectWizardSelectionType;
 
 implementation
+
+{$R *.lfm}
 
 { TProjectWizardDialog }
 
@@ -121,9 +123,6 @@ procedure TProjectWizardDialog.btnOpenRecentClick(Sender: TObject);
 begin
   FResult := tpws_openRecent;
 end;
-
-initialization
-  {$I projectwizarddlg.lrs}
 
 end.
 

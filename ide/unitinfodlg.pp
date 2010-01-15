@@ -79,7 +79,7 @@ function ShowUnitInfoDlg(const AnUnitName, AType: string;
 
 implementation
 
-uses LResources;
+{$R *.lfm}
 
 function ShowUnitInfoDlg(const AnUnitName, AType: string;
   IsPartOfProject: boolean; SizeInBytes, LineCount: integer;
@@ -163,7 +163,4 @@ begin
   Result:=OutIncludedBy.Caption;
 end;
 
-initialization
-  {$I unitinfodlg.lrs}
-  
 end.

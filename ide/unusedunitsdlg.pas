@@ -32,8 +32,7 @@ unit UnusedUnitsDlg;
 interface
 
 uses
-  Classes, LCLProc, LResources, Forms, Controls, ComCtrls, StdCtrls, ExtCtrls,
-  Buttons,
+  Classes, LCLProc, Forms, Controls, ComCtrls, StdCtrls, ExtCtrls, Buttons,
   SrcEditorIntf, LazIDEIntf, IDEImagesIntf,
   CodeCache, CodeToolManager,
   LazarusIDEStrConsts;
@@ -72,6 +71,8 @@ type
 function ShowUnusedUnitsDialog: TModalResult;
 
 implementation
+
+{$R *.lfm}
 
 function ShowUnusedUnitsDialog: TModalResult;
 var
@@ -254,9 +255,6 @@ begin
     TVNode:=TVNode.GetNext;
   end;
 end;
-
-initialization
-  {$I unusedunitsdlg.lrs}
 
 end.
 

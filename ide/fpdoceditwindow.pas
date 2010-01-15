@@ -200,6 +200,8 @@ procedure DoShowFPDocEditor;
 
 implementation
 
+{$R *.lfm}
+
 { TFPDocEditor }
 
 procedure DoShowFPDocEditor;
@@ -1346,8 +1348,6 @@ begin
 end;
 
 initialization
-  // first include the lfm
-  {$I fpdoceditwindow.lrs}
   // then the items
   {$I lazdoc.lrs}
 

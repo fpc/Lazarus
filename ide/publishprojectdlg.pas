@@ -37,7 +37,7 @@ unit PublishProjectDlg;
 interface
 
 uses
-  Classes, SysUtils, FileUtil, Forms, Controls, Graphics, LResources, Buttons,
+  Classes, SysUtils, FileUtil, Forms, Controls, Graphics, Buttons,
   StdCtrls, Dialogs, LCLType,
   IDEWindowIntf,
   ProjectDefs, PackageDefs, PublishModule, IDEOptionDefs, InputHistory,
@@ -99,6 +99,7 @@ function ShowPublishProjectDialog(
 
 implementation
 
+{$R *.lfm}
 
 function ShowPublishProjectDialog(
   PublishOptions: TPublishModuleOptions): TModalResult;
@@ -366,9 +367,6 @@ begin
       SaveClosedEditorFilesInfoCheckbox.Checked;
   end;
 end;
-
-initialization
-  {$I publishprojectdlg.lrs}
 
 end.
 

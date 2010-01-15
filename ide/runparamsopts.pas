@@ -48,7 +48,7 @@ uses
   MemCheck,
   {$ENDIF}
   Classes, SysUtils, LCLProc, Controls, Forms, Buttons, StdCtrls, ComCtrls,
-  Dialogs, ExtCtrls, LResources, Laz_XMLCfg,
+  Dialogs, ExtCtrls, Laz_XMLCfg,
   BaseIDEIntf, IDEContextHelpEdit,
   IDEProcs, SysVarUserOverrideDlg, InputHistory, LazarusIDEStrConsts, FileUtil,
   ButtonPanel;
@@ -173,6 +173,7 @@ function ShowRunParamsOptsDlg(RunParamsOptions: TRunParamsOptions): TModalResult
 
 implementation
 
+{$R *.lfm}
 
 const
   DefaultLauncherApplication =
@@ -677,8 +678,5 @@ procedure TRunParamsOptsDlg.FillUserOverridesListView;
 begin
   FillListView(UserOverridesListView, Options.UserOverrides);
 end;
-
-initialization
-  {$I runparamsopts.lrs}
 
 end.

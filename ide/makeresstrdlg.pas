@@ -41,7 +41,7 @@ interface
 
 uses
   Classes, SysUtils, LCLProc, Forms, Controls, Buttons, ComCtrls, StdCtrls,
-  Dialogs, LResources, LazarusIDEStrConsts, IDEWindowIntf, CodeToolManager,
+  Dialogs, LazarusIDEStrConsts, IDEWindowIntf, CodeToolManager,
   CodeAtom, CodeToolsStructs, CodeCache, SynHighlighterPas, SynEdit,
   EditorOptions, InputHistory, MiscOptions, ExtCtrls, IDEContextHelpEdit;
 
@@ -138,6 +138,8 @@ function ShowMakeResStrDialog(
   var InsertPolicy: TResourcestringInsertPolicy): TModalResult;
 
 implementation
+
+{$R *.lfm}
 
 uses
   Math;
@@ -652,9 +654,6 @@ begin
   MiscellaneousOptions.MakeResourceStringInsertPolicy:=InsertPolicy;
   MiscellaneousOptions.Save;
 end;
-
-initialization
-  {$i makeresstrdlg.lrs}
 
 end.
 

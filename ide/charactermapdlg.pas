@@ -37,7 +37,7 @@ unit CharacterMapDlg;
 interface
 
 uses
-  Classes, SysUtils, LResources, Forms, Controls, Graphics, Dialogs, Buttons,
+  Classes, SysUtils, Forms, Controls, Graphics, Dialogs, Buttons,
   StdCtrls, LCLType, LCLProc, LCLUnicodeData, GraphType, LazarusIDEStrConsts, EditorOptions,
   EnvironmentOpts, Grids, IDEContextHelpEdit, ButtonPanel, ComCtrls;
 
@@ -82,6 +82,8 @@ var
   CharacterMapDialog: TCharacterMapDialog;
 
 implementation
+
+{$R *.lfm}
 
 procedure ShowCharacterMap(AOnInsertChar: TOnInsertCharacterEvent);
 begin
@@ -240,10 +242,6 @@ begin
     end;
   end;
 end;
-
-
-initialization
-  {$I charactermapdlg.lrs}
 
 end.
 

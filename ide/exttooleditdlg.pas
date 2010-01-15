@@ -44,7 +44,7 @@ uses
   {$ENDIF}
   Classes, SysUtils, FileUtil,
   LCLType, Controls, Forms, Buttons, StdCtrls, ComCtrls,
-  Dialogs, LResources, ExtCtrls, LCLProc, ButtonPanel,
+  Dialogs, ExtCtrls, LCLProc, ButtonPanel,
   IDEMsgIntf, IDEExternToolIntf,
   PropEdits, KeyMapShortCutDlg, TransferMacros, LazarusIDEStrConsts,
   EditMsgScannersDlg;
@@ -120,6 +120,8 @@ function ShowExtToolOptionDlg(TransferMacroList: TTransferMacroList;
   ExternalToolOptions: TExternalToolOptions):TModalResult;
   
 implementation
+
+{$R *.lfm}
 
 uses
   IDEContextHelpEdit;
@@ -385,8 +387,5 @@ begin
   fShift:=[];
   inherited Clear;
 end;
-
-initialization
-  {$I exttooleditdlg.lrs}
 
 end.

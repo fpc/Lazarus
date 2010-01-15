@@ -30,7 +30,7 @@ unit CleanDirDlg;
 interface
 
 uses
-  Classes, SysUtils, LResources, Forms, Controls, Graphics, Dialogs, Buttons,
+  Classes, SysUtils, Forms, Controls, Graphics, Dialogs, Buttons,
   StdCtrls, FileUtil, LCLProc, Laz_XMLCfg, SynRegExpr, IDEContextHelpEdit,
   LazarusIDEStrConsts, LazConf, IDEProcs, TransferMacros, InputHistory,
   ButtonPanel, ShowDeletingFilesDlg;
@@ -73,6 +73,8 @@ function ShowCleanDirectoryDialog(const DefaultDirectory: string;
   Macros: TTransferMacroList): TModalResult;
 
 implementation
+
+{$R *.lfm}
 
 const
   CleanDirXMLFilename = 'cleandirectorydialog.xml';
@@ -430,9 +432,6 @@ procedure TCleanDirectoryDialog.AddDirectory(const Directory: string);
 begin
   AddToRecentList(Directory,DirCombobox.Items,20);
 end;
-
-initialization
-  {$I cleandirdlg.lrs}
 
 end.
 

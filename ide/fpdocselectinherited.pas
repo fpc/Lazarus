@@ -25,7 +25,7 @@ unit FPDocSelectInherited;
 interface
 
 uses
-  Classes, SysUtils, LResources, Forms, Controls, Graphics, Dialogs, StdCtrls,
+  Classes, SysUtils, Forms, Controls, Graphics, Dialogs, StdCtrls,
   Buttons, LazarusIdeStrConsts, ButtonPanel;
 
 type
@@ -40,15 +40,14 @@ type
 
 implementation
 
+{$R *.lfm}
+
 { TFPDocSelectInheritedDlg }
 
 procedure TFPDocSelectInheritedDlg.FormCreate(Sender: TObject);
 begin
   Caption:=rsSelectAnInheritedEntry;
 end;
-
-initialization
-  {$I fpdocselectinherited.lrs}
 
 end.
 

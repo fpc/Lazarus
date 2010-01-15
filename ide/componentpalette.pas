@@ -651,7 +651,6 @@ begin
 end;
 
 initialization
-
 {$I ../images/components_images.lrs}
 
 end.

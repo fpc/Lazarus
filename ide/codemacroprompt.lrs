@@ -1,6 +1,0 @@
-LazarusResources.Add('TCodeMacroPromptDlg','FORMDATA',[
-  'TPF0'#19'TCodeMacroPromptDlg'#18'CodeMacroPromptDlg'#7'Caption'#6#18'CodeMac'
-  +'roPromptDlg'#12'ClientHeight'#3','#1#11'ClientWidth'#3#144#1#13'PixelsPerIn'
-  +'ch'#2'p'#18'HorzScrollBar.Page'#3#143#1#18'VertScrollBar.Page'#3'+'#1#4'Lef'
-  +'t'#3'"'#1#6'Height'#3','#1#3'Top'#3#163#0#5'Width'#3#144#1#0#0
-]);

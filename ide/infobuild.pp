@@ -30,7 +30,7 @@ unit InfoBuild;
 interface
 
 uses
-  Classes, SysUtils, LResources, Forms, Controls, Graphics, Dialogs, Buttons,
+  Classes, SysUtils, Forms, Controls, Graphics, Dialogs, Buttons,
   LCLProc, ExtCtrls, StdCtrls, ExtDlgs, LazIDEIntf, LazarusIDEStrConsts;
 
 type
@@ -98,6 +98,8 @@ var
   CompileProgress: TCompileProgressClass = TCompileProgress;
 
 implementation
+
+{$R *.lfm}
 
 var
   MCompileInfoDlg: TCompileInfoDlg;
@@ -284,9 +286,6 @@ begin
   if MCompileInfoDlg = nil then Exit;
   MCompileInfoDlg.Show;
 end;
-
-initialization
-  {$I infobuild.lrs}
 
 end.
 

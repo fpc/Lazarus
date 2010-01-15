@@ -34,7 +34,7 @@ interface
 
 uses
   Classes, SysUtils, LCLProc, Forms, Controls, Buttons, StdCtrls,
-  LResources, SynEdit, LCLType, ComCtrls, ExtCtrls,
+  SynEdit, LCLType, ComCtrls, ExtCtrls,
   FileProcs, CodeToolManager, CodeCache, Laz_XMLCfg, Laz_XMLWrite,
   Project, DiffPatch, LazarusIDEStrConsts, EnvironmentOpts, EditorOptions,
   PackageDefs;
@@ -86,6 +86,7 @@ function ShowDiskDiffsDialog(AnUnitList, APackageList: TFPList): TModalResult;
 
 implementation
 
+{$R *.lfm}
 
 var
   DiskDiffsDlg: TDiskDiffsDlg = nil;
@@ -353,9 +354,6 @@ begin
   FCachedDiffs.Free;
   inherited Destroy;
 end;
-
-initialization
-  {$I diskdiffsdialog.lrs}
 
 end.
 

@@ -5,7 +5,7 @@ unit MouseActionDialog;
 interface
 
 uses
-  Classes, LResources, Forms, Controls, ExtCtrls, StdCtrls, ButtonPanel, Spin,
+  Classes, Forms, Controls, ExtCtrls, StdCtrls, ButtonPanel, Spin,
   SynEditMouseCmds, LazarusIDEStrConsts, KeyMapping, IDECommands;
 
 var
@@ -53,6 +53,8 @@ type
   function KeyMapIndexOfCommand(AKeyMap: TKeyCommandRelationList; ACmd: Word) : Integer;
 
 implementation
+
+{$R *.lfm}
 
 const
   BtnToIndex: array [mbLeft..mbExtra2] of Integer = (0, 1, 2, 3, 4);
@@ -241,9 +243,6 @@ begin
   else
     MAct.Option := 0;
 end;
-
-initialization
-  {$I mouseactiondialog.lrs}
 
 end.
 

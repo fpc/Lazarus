@@ -24,7 +24,7 @@ interface
 
 uses
   Classes, SysUtils, LCLProc, LCLIntf, Controls, StdCtrls, Forms, Buttons,
-  ExtCtrls, LResources, FileUtil, LazarusIDEStrConsts, Dialogs, SynEditTypes,
+  ExtCtrls, FileUtil, LazarusIDEStrConsts, Dialogs, SynEditTypes,
   IDEDialogs, IDEWindowIntf, InputHistory, IDEContextHelpEdit, ButtonPanel;
 
 type
@@ -73,10 +73,12 @@ type
   end;
 
 
-var FindInFilesDialog: TLazFindInFilesDialog;
-
+var 
+  FindInFilesDialog: TLazFindInFilesDialog = nil;
 
 implementation
+
+{$R *.lfm}
 
 { TLazFindInFilesDialog }
 
@@ -246,10 +248,6 @@ begin
   else
     ButtonPanel1.OKButton.Caption := lisBtnFind;
 end;
-
-initialization
-  {$I findinfilesdlg.lrs}
-  FindInFilesDialog := nil;
 
 end.
 

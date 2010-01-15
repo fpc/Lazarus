@@ -30,7 +30,7 @@ unit FindRenameIdentifier;
 interface
 
 uses
-  Classes, SysUtils, LCLProc, LResources, Forms, Controls, Graphics, Dialogs,
+  Classes, SysUtils, LCLProc, Forms, Controls, Graphics, Dialogs,
   StdCtrls, Buttons, ExtCtrls, AvgLvlTree,
   // codetools
   Laz_Dom, AVL_Tree, CodeTree, CodeAtom, CodeCache, CodeToolManager,
@@ -112,6 +112,8 @@ function GatherReferencesInFPDocFile(
   
 
 implementation
+
+{$R *.lfm}
 
 procedure CleanUpFileList(Files: TStringList);
 var
@@ -672,9 +674,6 @@ begin
     end;
   end;
 end;
-
-initialization
-  {$I findrenameidentifier.lrs}
 
 end.
 

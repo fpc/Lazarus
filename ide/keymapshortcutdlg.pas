@@ -31,7 +31,7 @@ unit KeyMapShortCutDlg;
 interface
 
 uses
-  Classes, SysUtils, LResources, LCLProc, Forms, Controls, Graphics, Dialogs,
+  Classes, SysUtils, LCLProc, Forms, Controls, Graphics, Dialogs,
   ExtCtrls, StdCtrls, LCLType,
   PropEdits, IDECommands, IDEWindowIntf,
   KeyMapping, LazarusIDEStrConsts, Buttons, ButtonPanel;
@@ -87,6 +87,8 @@ function ShowKeyMappingGrabForm(out Key: TIDEShortCut;
   AllowSequence: boolean = false): TModalResult;
 
 implementation
+
+{$R *.lfm}
 
 function ShowKeyMappingEditForm(Index: integer;
   AKeyCommandRelationList: TKeyCommandRelationList): TModalResult;
@@ -397,9 +399,6 @@ begin
   SecondaryShortCut:=CurRelation.ShortcutB;
   Caption:=srkmCommand+' "'+CurRelation.LocalizedName+'"';
 end;
-
-initialization
-  {$I keymapshortcutdlg.lrs}
 
 end.
 

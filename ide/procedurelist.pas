@@ -37,7 +37,7 @@ unit ProcedureList;
 
 interface
 uses
-  Classes, SysUtils, LResources, Forms,
+  Classes, SysUtils, Forms,
   Controls, Graphics, Dialogs, ComCtrls,
   ExtCtrls, StdCtrls, CodeTree, CodeToolManager,
   CodeAtom, IDEImagesIntf;
@@ -101,6 +101,8 @@ type
 procedure ExecuteProcedureList(Sender: TObject);
 
 implementation
+
+{$R *.lfm}
 
 uses
   MenuIntf
@@ -612,9 +614,5 @@ begin
       LV.Selected.MakeVisible(True);
   end;
 end;
-
-
-initialization
-  {$I procedurelist.lrs}
 
 end.

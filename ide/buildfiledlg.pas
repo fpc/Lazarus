@@ -5,7 +5,7 @@ unit BuildFileDlg;
 interface
 
 uses
-  Classes, SysUtils, LCLProc, LResources, LCLType, Forms, Controls, Graphics,
+  Classes, SysUtils, LCLProc, LCLType, Forms, Controls, Graphics,
   Dialogs, Buttons, ExtCtrls, StdCtrls, BasicCodeTools, FileUtil, IDEProcs,
   InputHistory, LazarusIDEStrConsts, EnvironmentOpts, TransferMacros,
   IDEContextHelpEdit, ButtonPanel;
@@ -173,6 +173,8 @@ function GetIDEDirRunFlagStrFromFlags(Flags: TIDEDirRunFlags): string;
   
 
 implementation
+
+{$R *.lfm}
 
 procedure AddFlagStr(var FlagStr: string; const FlagName: string;
   Value: boolean);
@@ -818,7 +820,6 @@ begin
 end;
 
 initialization
-  {$I buildfiledlg.lrs}
   IDEDirectiveSpecialChars:='{}*%';
 
 end.

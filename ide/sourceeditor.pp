@@ -968,6 +968,8 @@ procedure RegisterStandardSourceEditorMenuItems;
 
 implementation
 
+{$R *.lfm}
+
 var
   Highlighters: array[TLazSyntaxHighlighter] of TSynCustomHighlighter;
   // aCompletion:
@@ -7577,8 +7579,7 @@ end;
 
 initialization
   InternalInit;
-  {$I sourceeditor.lrs}
-{$I ../images/bookmark.lrs}
+  {$I ../images/bookmark.lrs}
 
 finalization
   InternalFinal;

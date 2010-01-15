@@ -30,7 +30,7 @@ unit FPDocSelectLink;
 interface
 
 uses
-  Classes, SysUtils, LCLProc, LResources, Forms, Controls, Graphics, Dialogs,
+  Classes, SysUtils, LCLProc, Forms, Controls, Graphics, Dialogs,
   ExtCtrls, StdCtrls, ButtonPanel, FileUtil, LCLType, AvgLvlTree,
   PackageIntf, ProjectIntf,
   CodeHelp, LazarusIDEStrConsts, PackageSystem, PackageDefs, Laz_DOM;
@@ -146,6 +146,8 @@ function CompareFPDocLinkCompletionItem(Data1, Data2: Pointer): integer;
 function ComparePathWithFPDocLinkCompletionItem(AnsiString1, Data2: Pointer): integer;
 
 implementation
+
+{$R *.lfm}
 
 function ShowFPDocLinkEditorDialog(SrcFilename: string;
   StartFPDocFile: TLazFPDocFile; out Link, LinkTitle: string): TModalResult;
@@ -703,9 +705,6 @@ begin
   Text:=AText;
   Description:=ADescription;
 end;
-
-initialization
-  {$I fpdocselectlink.lrs}
 
 end.
 

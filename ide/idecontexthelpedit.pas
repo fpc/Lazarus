@@ -30,7 +30,7 @@ unit IDEContextHelpEdit;
 interface
 
 uses
-  Classes, SysUtils, LCLProc, LResources, Forms, Controls, Graphics, Dialogs,
+  Classes, SysUtils, LCLProc, Forms, Controls, Graphics, Dialogs,
   Buttons, ButtonPanel, StdCtrls, ComCtrls,
   // IDEIntf
   IDEWindowIntf, LazHelpIntf,
@@ -100,6 +100,8 @@ function ShowContextHelpEditor(Sender: TObject): TModalResult;
 procedure ShowContextHelpForIDE(Sender: TObject);
 
 implementation
+
+{$R *.lfm}
 
 function ShowContextHelpEditor(Sender: TObject): TModalResult;
 begin
@@ -418,9 +420,6 @@ begin
   UpdateWindowControlsGroupBoxCaption;
   FillControlsTreeView;
 end;
-
-initialization
-  {$I idecontexthelpedit.lrs}
 
 end.
 

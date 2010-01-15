@@ -29,7 +29,7 @@ interface
 
 uses
   Classes, SysUtils, Forms, Controls, SynEdit, Buttons, StdCtrls, Dialogs,
-  LResources, FileUtil, ButtonPanel, MacroIntf,
+  FileUtil, ButtonPanel, MacroIntf,
   LazarusIDEStrConsts, EditorOptions;
 
 type
@@ -94,7 +94,10 @@ function PathEditorDialog: TPathEditorDialog;
 
 implementation
 
-uses Math;
+{$R *.lfm}
+
+uses 
+  Math;
 
 var PathEditor: TPathEditorDialog;
 
@@ -352,9 +355,6 @@ procedure TPathEditorButton.DoOnPathEditorExecuted;
 begin
   if Assigned(OnExecuted) then OnExecuted(Self);
 end;
-
-initialization
-  {$I patheditordlg.lrs}
 
 end.
 

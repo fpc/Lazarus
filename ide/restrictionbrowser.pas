@@ -30,7 +30,7 @@ unit RestrictionBrowser;
 interface
 
 uses
-  Classes, SysUtils, InterfaceBase, LCLProc, LResources, Contnrs, Forms, Controls, Graphics,
+  Classes, SysUtils, InterfaceBase, LCLProc, Contnrs, Forms, Controls, Graphics,
   Dialogs, StdCtrls, ComCtrls, Masks, ExtCtrls, Buttons,
   IDEImagesIntf, ObjectInspector,
   CompatibilityRestrictions, IDEOptionDefs, LazarusIDEStrConsts,
@@ -62,6 +62,8 @@ var
   RestrictionBrowserView: TRestrictionBrowserView = nil;
 
 implementation
+
+{$R *.lfm}
 
 { TRestrictionBrowserView }
 
@@ -296,9 +298,6 @@ begin
     UpdateIssueList;
   end;
 end;
-
-initialization
-  {$I restrictionbrowser.lrs}
 
 end.
 

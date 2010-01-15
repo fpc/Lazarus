@@ -29,8 +29,7 @@ unit ToDoDlg;
 interface
 
 uses
-  Classes, SysUtils, LResources, Forms, Controls, Graphics, Dialogs, StdCtrls,
-  ExtCtrls,
+  Classes, SysUtils, Forms, Controls, Graphics, Dialogs, StdCtrls, ExtCtrls,
   TodoList, LazarusIDEStrConsts, Buttons, ButtonPanel;
 
 type
@@ -59,6 +58,8 @@ function ExecuteTodoDialog: TTodoItem;
 
 
 implementation
+
+{$R *.lfm}
 
 { TTodoDialog }
 
@@ -99,9 +100,6 @@ begin
   end;
   aTodoDialog.Free;
 end;
-
-initialization
-  {$I tododlg.lrs}
 
 end.
 

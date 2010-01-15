@@ -35,7 +35,7 @@ unit EncloseSelectionDlg;
 interface
 
 uses
-  Classes, SysUtils, LResources, Forms, Controls, Graphics, Dialogs, Buttons,
+  Classes, SysUtils, Forms, Controls, Graphics, Dialogs, Buttons,
   ExtCtrls, BasicCodeTools, CodeToolManager, SourceChanger,
   LazarusIDEStrConsts, LazConf, IDEProcs, ButtonPanel;
 
@@ -75,6 +75,7 @@ procedure EncloseTextSelection(const Template: string; Source: TStrings;
 
 implementation
 
+{$R *.lfm}
 
 function EncloseSelectionTypeDescription(TheType: TEncloseSelectionType
   ): string;
@@ -425,9 +426,6 @@ begin
       exit;
   RaiseException('TEncloseSelectionDialog.GetEncloseType');
 end;
-
-initialization
-  {$I encloseselectiondlg.lrs}
 
 end.
 

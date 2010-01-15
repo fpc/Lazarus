@@ -37,7 +37,7 @@ unit SearchResultView;
 interface
 
 uses
-  Classes, SysUtils, LCLProc, LResources, Forms, Controls, Graphics, Dialogs,
+  Classes, SysUtils, LCLProc, Forms, Controls, Graphics, Dialogs,
   ComCtrls, ExtCtrls, StdCtrls, Buttons, LCLType, LCLIntf,
   IDEOptionDefs, LazarusIDEStrConsts, EnvironmentOpts, EditorOptions, InputHistory,
   IDEProcs, FindInFilesDlg, Project, MainIntf;
@@ -203,6 +203,8 @@ var
   SearchResultsView: TSearchResultsView;
 
 implementation
+
+{$R *.lfm}
 
 { TSearchResultsView }
 
@@ -1257,9 +1259,6 @@ begin
   FreeAndNil(FNextInThisLine);
   inherited Destroy;
 end;
-
-initialization
-  {$I searchresultview.lrs}
 
 end.
 

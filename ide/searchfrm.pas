@@ -32,7 +32,7 @@ interface
 
 uses
   // LCL
-  Classes, SysUtils, LCLProc, LResources, LCLType, LCLIntf, Forms, Controls,
+  Classes, SysUtils, LCLProc, LCLType, LCLIntf, Forms, Controls,
   Graphics, Dialogs, ExtCtrls, StdCtrls, Buttons, FileUtil,
   // synedit, codetools
   SynEditSearch, SynRegExpr, SourceLog, KeywordFuncLists, BasicCodeTools,
@@ -123,6 +123,7 @@ function SearchInLine(const SearchStr: string; SrcLog: TSourceLog;
 
 implementation
 
+{$R *.lfm}
 
 const
   WordBreakChars = [#0..#31,'.', ',', ';', ':', '"', '''', '!', '?', '[', ']',
@@ -888,9 +889,6 @@ begin
     Result:= fPad + copy(FileName,FoundAt+1,Length(FileName));
   end;
 end;//PadAndShorten
-
-initialization
-  {$I searchfrm.lrs}
 
 end.
 

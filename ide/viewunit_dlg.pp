@@ -39,7 +39,7 @@ unit ViewUnit_Dlg;
 interface
 
 uses
-  SysUtils, Classes, Math, Controls, Forms, Dialogs, LResources, Buttons, StdCtrls,
+  SysUtils, Classes, Math, Controls, Forms, Dialogs, Buttons, StdCtrls,
   LazarusIdeStrConsts, LCLType, LCLIntf, LMessages, IDEWindowIntf, IDEContextHelpEdit,
   ExtCtrls, ButtonPanel;
 
@@ -80,6 +80,8 @@ function ShowViewUnitsDlg(Entries: TStringList; MultiSelect: boolean;
   // Entries is a list of TViewUnitsEntry(s)
 
 implementation
+
+{$R *.lfm}
 
 function ShowViewUnitsDlg(Entries: TStringList; MultiSelect: boolean;
   const Caption: string): TModalResult;
@@ -251,10 +253,6 @@ begin
   Edit.SelectAll;
   Edit.SetFocus;
 end;
-
-
-initialization
- {$I viewunit_dlg.lrs}
 
 end.
 

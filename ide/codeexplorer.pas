@@ -39,7 +39,7 @@ interface
 
 uses
   // FCL+LCL
-  Classes, SysUtils, LCLProc, LCLType, LResources, Forms, Controls, Graphics,
+  Classes, SysUtils, LCLProc, LCLType, Forms, Controls, Graphics,
   Dialogs, Buttons, ComCtrls, Menus, LDockCtrl, AvgLvlTree, StdCtrls, ExtCtrls,
   // CodeTools
   BasicCodeTools, CustomCodeTool, CodeToolManager, CodeAtom, CodeCache,
@@ -274,7 +274,7 @@ const
   CodeObserverMaxNodes = 50;
 
 var
-  CodeExplorerView: TCodeExplorerView;
+  CodeExplorerView: TCodeExplorerView = nil;
   CEJumpToIDEMenuCommand: TIDEMenuCommand;
   CERefreshIDEMenuCommand: TIDEMenuCommand;
   CEDockingIDEMenuCommand: TIDEMenuCommand;
@@ -284,6 +284,7 @@ procedure RegisterStandardCodeExplorerMenuItems;
 
 implementation
 
+{$R *.lfm}
 
 type
   TViewNodeData = class
@@ -2233,10 +2234,6 @@ begin
   else
     Result:=cositNone;
 end;
-
-initialization
-  {$I codeexplorer.lrs}
-  CodeExplorerView:=nil;
 
 end.
 

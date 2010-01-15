@@ -31,7 +31,7 @@ unit CodeMacroPrompt;
 interface
 
 uses
-  Classes, SysUtils, LCLProc, LResources, Forms, Controls, Graphics, Dialogs,
+  Classes, SysUtils, LCLProc, Forms, Controls, Graphics, Dialogs,
   SynEditAutoComplete, SynPluginTemplateEdit, SynPluginSyncronizedEditBase, SynEdit,
   MacroIntf, LazIDEIntf, SrcEditorIntf;
 
@@ -104,6 +104,8 @@ function ExecuteCodeTemplate(SrcEdit: TSourceEditorInterface;
   IndentToTokenStart: boolean): boolean;
 
 implementation
+
+{$R *.lfm}
 
 const
   MaxLevel = 10; // prevent cycling
@@ -478,9 +480,6 @@ begin
   Result := TLazSynPluginSyncronizedEditCell.Create;
   Add(Result);
 end;
-
-initialization
-  {$I codemacroprompt.lrs}
 
 end.
 

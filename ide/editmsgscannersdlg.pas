@@ -27,7 +27,7 @@ unit EditMsgScannersDlg;
 interface
 
 uses
-  Classes, SysUtils, LCLProc, LResources, Forms, Controls, Graphics, Dialogs,
+  Classes, SysUtils, LCLProc, Forms, Controls, Graphics, Dialogs,
   ButtonPanel, StdCtrls, ExtCtrls, Buttons, LazarusIDEStrConsts,
   IDEMsgIntf;
 
@@ -66,6 +66,7 @@ function ShowEditMsgScannersDialog(const Title: string;
 
 implementation
 
+{$R *.lfm}
 
 function ShowEditMsgScannersDialog(const Title: string;
   Scanners: TStrings): TModalResult;
@@ -207,9 +208,6 @@ begin
     dec(Result);
   end;
 end;
-
-initialization
-  {$I editmsgscannersdlg.lrs}
 
 end.
 

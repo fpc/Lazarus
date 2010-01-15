@@ -33,7 +33,7 @@ unit AbstractsMethodsDlg;
 interface
 
 uses
-  Classes, SysUtils, LCLProc, LResources, Forms, Controls, Graphics, Dialogs,
+  Classes, SysUtils, LCLProc, Forms, Controls, Graphics, Dialogs,
   CheckLst, StdCtrls, ExtCtrls, Buttons,
   CodeAtom, CodeTree, PascalParserTool, CodeCache, CodeToolManager,
   LazIDEIntf, SrcEditorIntf,
@@ -88,6 +88,8 @@ type
 function ShowAbstractMethodsDialog: TModalResult;
 
 implementation
+
+{$R *.lfm}
 
 function ShowAbstractMethodsDialog: TModalResult;
 var
@@ -390,9 +392,6 @@ begin
   
   UpdateButtons;
 end;
-
-initialization
-  {$I abstractsmethodsdlg.lrs}
 
 end.
 

@@ -30,7 +30,7 @@ unit CodeMacroSelect;
 interface
 
 uses
-  Classes, SysUtils, LResources, Forms, Controls, Graphics, Dialogs, StdCtrls,
+  Classes, SysUtils, Forms, Controls, Graphics, Dialogs, StdCtrls,
   Buttons, SrcEditorIntf, IDEWindowIntf,
   InputHistory , LazarusIDEStrConsts, ButtonPanel;
 
@@ -60,6 +60,8 @@ type
 function ShowCodeMacroSelectDialog(var Parameter: string): TIDECodeMacro;
 
 implementation
+
+{$R *.lfm}
 
 function ShowCodeMacroSelectDialog(var Parameter: string): TIDECodeMacro;
 var
@@ -132,9 +134,6 @@ begin
     EndUpdate;
   end;
 end;
-
-initialization
-  {$I codemacroselect.lrs}
 
 end.
 

@@ -62,7 +62,7 @@ interface
 
 uses
   // FCL, LCL
-  Classes, SysUtils, LCLProc, Forms, Controls, Graphics, Dialogs, LResources,
+  Classes, SysUtils, LCLProc, Forms, Controls, Graphics, Dialogs, 
   StrUtils, ExtCtrls, ComCtrls, Menus, Buttons, GraphType, ActnList, AvgLvlTree,
   StdCtrls, LCLIntf, LCLType,
   // Codetools
@@ -189,6 +189,8 @@ function GetToDoComment(const Src: string;
                        out MagicStartPos, TextStartPos, TextEndPos: integer): boolean;
 
 implementation
+
+{$R *.lfm}
 
 function CompareTLScannedFiles(Data1, Data2: Pointer): integer;
 begin
@@ -885,8 +887,5 @@ begin
   fItems.Add(Item);
 end;
 
-initialization
-  {$i todolist.lrs}
-  
 end.
 

@@ -30,7 +30,7 @@ unit MultiReplaceDlg;
 interface
 
 uses
-  Classes, SysUtils, LResources, Forms, Controls, Graphics, Dialogs, Buttons,
+  Classes, SysUtils, Forms, Controls, Graphics, Dialogs, Buttons,
   StdCtrls, ExtCtrls, ComCtrls;
 
 type
@@ -58,8 +58,7 @@ var
 
 implementation
 
-initialization
-  {$I multireplacedlg.lrs}
+{$R *.lfm}
 
 end.
 

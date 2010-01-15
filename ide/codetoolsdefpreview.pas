@@ -6,7 +6,7 @@ interface
 
 uses
   Classes, SysUtils, Math,
-  LCLProc, LResources, Forms, Controls, Graphics, Dialogs,
+  LCLProc, Forms, Controls, Graphics, Dialogs,
   StdCtrls, Buttons, ComCtrls, ExtCtrls, FileUtil, AVGLvlTree,
   SynEdit, DefineTemplates, ExprEval, IDEWindowIntf, EditorOptions,
   LazarusIDEStrConsts, InputHistory, CodeToolsOptions, ButtonPanel,
@@ -81,6 +81,8 @@ function CompareNodeValues(Data1, Data2: Pointer): Integer;
 function CompareNodeAndNodeValues(Node, NodeValues: Pointer): Integer;
 
 implementation
+
+{$R *.lfm}
 
 function ShowCodeToolsDefinesValuesDialog(ADefineTree: TDefineTree;
   const InitialDirectory: string): TModalresult;
@@ -424,9 +426,6 @@ procedure TCodeToolsDefinesDialog.DirectoryComboboxCHANGE(Sender: TObject);
 begin
   UpdateValues;
 end;
-
-initialization
-  {$I codetoolsdefpreview.lrs}
 
 end.
 

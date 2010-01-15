@@ -25,7 +25,7 @@ unit JumpHistoryView;
 interface
 
 uses
-  Classes, SysUtils, LResources, Forms, Controls, StdCtrls, Menus, LCLProc,
+  Classes, SysUtils, Forms, Controls, StdCtrls, Menus, LCLProc,
   CodeToolManager, CodeCache,
   IDEOptionDefs, EnvironmentOpts, IDEProcs, LazarusIDEStrConsts,
   Project, ProjectDefs;
@@ -63,6 +63,8 @@ var
   JumpHistoryViewWin : TJumpHistoryViewWin = nil;
 
 implementation
+
+{$R *.lfm}
 
 const
   MaxTextLen = 80;
@@ -173,9 +175,4 @@ begin
   InitDisplay;
 end;
 
-
-initialization
-  {$I jumphistoryview.lrs}
-
 end.
-

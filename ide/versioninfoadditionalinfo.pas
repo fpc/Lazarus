@@ -37,7 +37,7 @@ unit VersionInfoAdditionalInfo;
 interface
 
 uses
-  Classes, SysUtils, LResources, Forms, Controls, Graphics, Dialogs, Buttons,
+  Classes, SysUtils, Forms, Controls, Graphics, Dialogs, Buttons,
   StdCtrls, ExtCtrls, W32VersionInfo, LazarusIDEStrConsts, ButtonPanel;
 
 type
@@ -73,6 +73,7 @@ function ShowVersionInfoAdditionailInfoForm(LocalVersionInfo: TProjectVersionInf
 
 implementation
 
+{$R *.lfm}
 
 function ShowVersionInfoAdditionailInfoForm(LocalVersionInfo: TProjectVersionInfo) : TModalResult;
 
@@ -119,9 +120,6 @@ begin
    ProductNameLabel.Caption:= lisProductName;
    ProductVersionLabel.Caption:= lisProductVersion;
 end;
-
-initialization
-  {$I versioninfoadditionalinfo.lrs}
 
 end.
 

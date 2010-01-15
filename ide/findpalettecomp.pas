@@ -38,7 +38,7 @@ unit FindPaletteComp;
 interface
 
 uses
-  Classes, SysUtils, LCLProc, LResources, Forms, Controls, Graphics, Dialogs,
+  Classes, SysUtils, LCLProc, Forms, Controls, Graphics, Dialogs,
   StdCtrls, Buttons, FormEditingIntf, db,
   LazarusIDEStrConsts, ComponentReg, PackageDefs, ExtCtrls, ButtonPanel;
 
@@ -69,6 +69,8 @@ function ShowFindPaletteComponentDlg(
   out AComponent: TRegisteredComponent): TModalResult;
 
 implementation
+
+{$R *.lfm}
 
 function ShowFindPaletteComponentDlg(out AComponent: TRegisteredComponent
   ): TModalResult;
@@ -189,9 +191,6 @@ begin
     i:=0;
   Result:=TRegisteredComponent(fSelectedComponents[i]);
 end;
-
-initialization
-  {$I findpalettecomp.lrs}
 
 end.
 

@@ -40,7 +40,7 @@ unit ComponentList;
 interface
 
 uses
-  Classes, SysUtils, LCLProc, LResources, Forms, Controls, Graphics, Dialogs,
+  Classes, SysUtils, LCLProc, Forms, Controls, Graphics, Dialogs,
   StdCtrls, Buttons, FormEditingIntf, LazarusIDEStrConsts, ExtCtrls, ComCtrls,
   ComponentPalette, ComponentReg, PackageDefs, ExtDlgs, FormEditor, PropEdits,
   LCLType, Menus, ButtonPanel, IDEWindowIntf;
@@ -93,6 +93,7 @@ var
 
 implementation
 
+{$R *.lfm}
 
 { TComponentListForm }
 
@@ -380,9 +381,6 @@ procedure TComponentListForm.Timer1Timer(Sender: TObject);
 begin
   UpdateComponentSelection(nil);
 end;
-
-initialization
-  {$I componentlist.lrs}
 
 end.
 

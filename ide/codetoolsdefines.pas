@@ -45,7 +45,7 @@ interface
 
 uses
   Classes, SysUtils, Math, LCLIntf, Forms, Controls, Buttons, StdCtrls,
-  ComCtrls,  LCLType, ExtCtrls, Menus, LResources, LCLProc, Graphics, Dialogs,
+  ComCtrls,  LCLType, ExtCtrls, Menus, LCLProc, Graphics, Dialogs,
   SynEdit,
   CodeToolManager, DefineTemplates,
   IDEWindowIntf, IDEImagesIntf,
@@ -254,6 +254,7 @@ function ShowCodeToolsDefinesEditor(ACodeToolBoss: TCodeToolManager;
 
 implementation
 
+{$R *.lfm}
 
 type
   TWinControlClass = class of TWinControl;
@@ -1505,9 +1506,6 @@ begin
   FDefineTree.Free;
   inherited Destroy;
 end;
-
-initialization
-  {$I codetoolsdefines.lrs}
 
 end.
 

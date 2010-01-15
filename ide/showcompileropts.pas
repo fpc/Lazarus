@@ -35,7 +35,7 @@ unit ShowCompilerOpts;
 interface
 
 uses
-  Classes, SysUtils, LResources, Forms, Controls, Graphics, Dialogs, Buttons,
+  Classes, SysUtils, Forms, Controls, Graphics, Dialogs, Buttons,
   StdCtrls, LazarusIDEStrConsts, CompilerOptions;
 
 type
@@ -61,6 +61,8 @@ function ShowCompilerOptionsDialog(Owner: TComponent;
   CompilerOpts: TBaseCompilerOptions): TModalResult;
 
 implementation
+
+{$R *.lfm}
 
 function ShowCompilerOptionsDialog(Owner: TComponent;
   CompilerOpts: TBaseCompilerOptions): TModalResult;
@@ -107,9 +109,6 @@ begin
   CurOptions := CompilerOpts.MakeOptionsString(nil,Flags);
   CmdLineMemo.Lines.Text:=CurOptions;
 end;
-
-initialization
-  {$I showcompileropts.lrs}
 
 end.
 

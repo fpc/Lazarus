@@ -5,7 +5,7 @@ unit GotoFrm;
 interface
 
 uses
-  Classes, SysUtils, FileUtil, LResources, Forms, Controls, Graphics, Dialogs,
+  Classes, SysUtils, FileUtil, Forms, Controls, Graphics, Dialogs,
   StdCtrls, ExtCtrls, Buttons, LazarusIDEStrConsts, LCLType, ButtonPanel;
 
 type
@@ -22,6 +22,8 @@ type
   end;
 
 implementation
+
+{$R *.lfm}
 
 { TfrmGoto }
 
@@ -40,9 +42,6 @@ begin
   Edit1.SetFocus;
   inherited DoShow;
 end;
-
-initialization
-  {$I gotofrm.lrs}
 
 end.
 

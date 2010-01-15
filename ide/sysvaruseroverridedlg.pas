@@ -37,7 +37,7 @@ uses
   MemCheck,
   {$ENDIF}
   Classes, SysUtils, Controls, Forms, Buttons, StdCtrls, ComCtrls, Dialogs,
-  LazarusIDEStrConsts, LResources, ButtonPanel;
+  LazarusIDEStrConsts, ButtonPanel;
 
 type
   { TSysVarUserOverrideDialog }
@@ -57,6 +57,8 @@ type
 function ShowSysVarUserOverrideDialog(var Variable, Value: string): TModalResult;
 
 implementation
+
+{$R *.lfm}
 
 function ShowSysVarUserOverrideDialog(var Variable, Value: string): TModalResult;
 var SysVarUserOverrideDialog: TSysVarUserOverrideDialog;
@@ -105,9 +107,6 @@ begin
   VariableLabel.Caption:=lisCodeToolsDefsVariable;
   ValueLabel.Caption:=lisValue;
 end;
-
-initialization
-  {$I sysvaruseroverridedlg.lrs}
 
 end.
 

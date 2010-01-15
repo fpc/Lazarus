@@ -32,7 +32,7 @@ unit ExtractProcDlg;
 interface
 
 uses
-  Classes, SysUtils, LCLProc, AVL_Tree, LResources, Forms, Controls, Graphics,
+  Classes, SysUtils, LCLProc, AVL_Tree, Forms, Controls, Graphics,
   Dialogs, ExtCtrls, Buttons, StdCtrls,
   BasicCodeTools, CodeTree, CodeAtom, CodeCache, CodeToolManager,
   ExtractProcTool,
@@ -89,6 +89,8 @@ function ShowExtractProcDialog(Code: TCodeBuffer;
   var NewX, NewY, NewTopLine: integer): TModalResult;
 
 implementation
+
+{$R *.lfm}
 
 function ShowExtractProcDialog(Code: TCodeBuffer;
   const BlockBegin, BlockEnd: TPoint;
@@ -371,9 +373,6 @@ begin
     AVLNode:=Variables.FindSuccessor(AVLNode);
   end;
 end;
-
-initialization
-  {$I extractprocdlg.lrs}
 
 end.
 

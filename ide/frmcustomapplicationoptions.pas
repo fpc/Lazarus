@@ -37,7 +37,7 @@ unit frmCustomApplicationOptions;
 interface
 
 uses
-  Classes, SysUtils, LResources, Forms, Controls, Graphics, Dialogs, StdCtrls,
+  Classes, SysUtils, Forms, Controls, Graphics, Dialogs, StdCtrls,
   ExtCtrls, Buttons,
   LazarusIDEStrConsts;
 
@@ -75,6 +75,8 @@ var
   CustomApplicationOptionsForm: TCustomApplicationOptionsForm;
 
 implementation
+
+{$R *.lfm}
 
 { TCustomApplicationOptionsForm }
 
@@ -126,9 +128,6 @@ function TCustomApplicationOptionsForm.GetTitle: String;
 begin
   Result:=ETitle.Text;
 end;
-
-initialization
-  {$I frmcustomapplicationoptions.lrs}
 
 end.
 

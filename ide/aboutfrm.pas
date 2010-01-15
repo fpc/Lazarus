@@ -113,6 +113,8 @@ function GetLazarusVersionString : string;
 
 implementation
 
+{$R *.lfm}
+
 function ShowAboutForm: TModalResult;
 var
   AboutForm: TAboutForm;
@@ -425,7 +427,6 @@ begin
 end;
 
 initialization
-  {$I aboutfrm.lrs}
   {$I lazarus_about_logo.lrs}
 
 end.

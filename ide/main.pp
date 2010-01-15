@@ -16398,9 +16398,7 @@ initialization
   {$IFDEF IDE_MEM_CHECK}CheckHeapWrtMemCnt('main.pp: initialization');{$ENDIF}
   {$I ../images/laz_images.lrs}
   // we have a bundle icon, don't use low quality standard icon
-  {$IFNDEF Darwin}{$I ../images/mainicon.lrs}{$ENDIF}
   ShowSplashScreen:=true;
-
 end.
 
 

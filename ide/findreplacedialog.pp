@@ -9,7 +9,7 @@
 
  *****************************************************************************
  *                                                                           *
- *  See the file COPYING.modifiedLGPL.txt, included in this distribution,        *
+ *  See the file COPYING.modifiedLGPL.txt, included in this distribution,    *
  *  for details about the copyright.                                         *
  *                                                                           *
  *  This program is distributed in the hope that it will be useful,          *
@@ -39,7 +39,7 @@ interface
 
 uses
   Classes, Math, SysUtils, LCLProc, LCLType, Controls, StdCtrls, Forms, Buttons,
-  ExtCtrls, LResources, Dialogs, Graphics,
+  ExtCtrls, Dialogs, Graphics,
   SynEditTypes, SynRegExpr, SynEdit,
   IDEImagesIntf, IDEWindowIntf,
   LazarusIdeStrConsts, IDEContextHelpEdit;
@@ -126,6 +126,7 @@ var
 
 implementation
 
+{$R *.lfm}
 
 { TLazFindReplaceDialog }
 
@@ -457,8 +458,5 @@ begin
     AComboBox.ItemIndex:=AComboBox.Items.IndexOf(AText);
   end;
 end;
-
-initialization
-  {$I findreplacedialog.lrs}
 
 end.

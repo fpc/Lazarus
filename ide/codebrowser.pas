@@ -379,6 +379,8 @@ procedure CreateCodeBrowser;
 
 implementation
 
+{$R *.lfm}
+
 const
   ProgressGetScopeStart=0;
   ProgressGetScopeSize=10;
@@ -3159,9 +3161,6 @@ begin
     CodeBrowserView.ShowOnTop;
   end;
 end;
-
-initialization
-  {$I codebrowser.lrs}
 
 end.
 

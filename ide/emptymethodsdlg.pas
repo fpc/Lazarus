@@ -32,7 +32,7 @@ unit EmptyMethodsDlg;
 interface
 
 uses
-  Classes, SysUtils, TypInfo, LCLProc, LResources, Forms, Controls, Graphics,
+  Classes, SysUtils, TypInfo, LCLProc, Forms, Controls, Graphics,
   Dialogs, ExtCtrls, StdCtrls, ButtonPanel, SynEdit, SynHighlighterPas,
   CodeToolsStructs, CodeAtom, CodeCache, CodeToolManager, PascalParserTool,
   CodeTree,
@@ -83,6 +83,7 @@ function RemoveEmptyMethods(Code: TCodeBuffer; AClassName: string;
 
 implementation
 
+{$R *.lfm}
 
 function ShowEmptyMethodsDialog: TModalResult;
 var
@@ -399,9 +400,6 @@ procedure TEmptyMethodsDialog.AllButtonClick(Sender: TObject);
 begin
   Sections:=AllPascalClassSections;
 end;
-
-initialization
-  {$I emptymethodsdlg.lrs}
 
 end.
 

@@ -205,6 +205,8 @@ procedure RegisterStandardCodeTemplatesMenuItems;
 
 implementation
 
+{$R *.lfm}
+
 function ShowCodeTemplateDialog: TModalResult;
 var
   CodeTemplateDialog: TCodeTemplateDialog;
@@ -1363,8 +1365,5 @@ begin
   while FindByName(Result)<>nil do
     Result:=CreateNextIdentifier(Result);
 end;
-
-initialization
-  {$I codetemplatesdlg.lrs}
 
 end.

@@ -40,7 +40,7 @@ interface
 
 uses
   Forms, Classes, Math, LCLProc, SysUtils, InterfaceBase,
-  ComCtrls, Buttons, StdCtrls, ExtCtrls, Graphics, LResources, FileUtil,
+  ComCtrls, Buttons, StdCtrls, ExtCtrls, Graphics, FileUtil,
   Dialogs, Controls, GraphType, LCLType,
   LinkScanner,
   MacroIntf, ProjectIntf, IDEWindowIntf, IDEContextHelpEdit, MainIntf,
@@ -307,6 +307,8 @@ function CheckCompileReasons(Reason: TCompileReason;
   Options: TProjectCompilerOptions; Quiet: boolean): TModalResult; // check if Reason is handled at least once
 
 implementation
+
+{$R *.lfm}
 
 type
   TInheritedNodeData = record
@@ -2021,8 +2023,5 @@ function TfrmCompilerOptions.GetUseAsDefault: Boolean;
 begin
   Result := chkUseAsDefault.Checked;
 end;
-
-initialization
-  {$I compileroptionsdlg.lrs}
 
 end.

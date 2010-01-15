@@ -30,7 +30,7 @@ unit IdeOptionsDlg;
 interface
 
 uses
-  Classes, SysUtils, Controls, Forms, LResources, ComCtrls, LCLProc, LCLType,
+  Classes, SysUtils, Controls, Forms, ComCtrls, LCLProc, LCLType,
   Buttons, ButtonPanel,
   EnvironmentOpts, LazarusIDEStrConsts, IDEWindowIntf, IDEOptionsIntf,
   EditorOptions, IDECommands;
@@ -82,6 +82,8 @@ type
   end;
 
 implementation
+
+{$R *.lfm}
 
 uses
   IDEContextHelpEdit;
@@ -489,9 +491,6 @@ begin
   else
     Result := nil;
 end;
-
-initialization
-  {$I ideoptionsdlg.lrs}
 
 end.
 

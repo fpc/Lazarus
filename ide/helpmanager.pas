@@ -35,7 +35,7 @@ interface
 uses
   // FCL+LCL
   Classes, SysUtils, AVL_Tree, LCLProc, LCLIntf, LCLType, Forms, Controls, Buttons,
-  StdCtrls, Dialogs, ExtCtrls, LResources, FileUtil, Graphics,
+  StdCtrls, Dialogs, ExtCtrls, FileUtil, Graphics,
   // CodeTools
   BasicCodeTools, CodeToolManager, CodeAtom, CodeCache, CustomCodeTool, CodeTree,
   PascalParserTool, FindDeclarationTool,
@@ -220,6 +220,8 @@ var
   HelpBoss: TBaseHelpManager = nil;
   
 implementation
+
+{$R *.lfm}
 
 function LazCreateIDEHTMLControl(Owner: TComponent;
   var Provider: TAbstractIDEHTMLProvider): TControl;
@@ -1337,9 +1339,6 @@ begin
   if ACodeTool=nil then ;
   Result:=ConvertCodePosToPascalHelpContext(@CodePos);
 end;
-
-initialization
-  {$i helpmanager.lrs}
 
 end.
 

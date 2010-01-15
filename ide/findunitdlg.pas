@@ -34,7 +34,7 @@ unit FindUnitDlg;
 interface
 
 uses
-  Classes, SysUtils, LCLProc, Forms, Controls, Dialogs, LResources, ExtCtrls,
+  Classes, SysUtils, LCLProc, Forms, Controls, Dialogs, ExtCtrls,
   StdCtrls, ComCtrls, FileUtil, AvgLvlTree,
   // codetools
   Laz_XMLCfg, CodeCache, CodeToolManager,
@@ -125,6 +125,8 @@ type
 procedure InitFindUnitQuickFixItems;
 
 implementation
+
+{$R *.lfm}
 
 procedure InitFindUnitQuickFixItems;
 begin
@@ -596,9 +598,6 @@ constructor TQuickFixMissingUnitRemoveFromUses.Create(aDlg: TFindUnitDialog);
 begin
   Caption:='Remove unit from uses clause';
 end;
-
-initialization
-  {$I findunitdlg.lrs}
 
 end.
 

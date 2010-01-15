@@ -41,7 +41,7 @@ interface
 
 uses
   Classes, SysUtils, Math, Forms, Controls, Buttons, StdCtrls, FileUtil,
-  LResources, LazarusIDEStrConsts, EditorOptions, IDEWindowIntf, LCLType,
+  LazarusIDEStrConsts, EditorOptions, IDEWindowIntf, LCLType,
   InputHistory, DiffPatch, ExtCtrls, Dialogs, SynEdit, IDEContextHelpEdit;
 
 type
@@ -149,6 +149,8 @@ const
   IgnoreTrailingSpacesCheckBox = 6;
 
 implementation
+
+{$R *.lfm}
 
 function ShowDiffDialog(Files: TDiffFiles; Text1Index: integer;
   OnGetDiffFile: TOnGetDiffFile;
@@ -514,9 +516,6 @@ begin
   Result:=Count-1;
   while (Result>=0) and (Items[Result].Name<>Name) do dec(Result);
 end;
-
-initialization
-  {$I diffdialog.lrs}
 
 end.
 

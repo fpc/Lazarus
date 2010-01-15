@@ -63,6 +63,8 @@ var
 
 implementation
 
+{$R *.lfm}
+
 const
   VersionPos: TPoint = (X:397; Y:281);
   VersionStyle: TTextStyle =
@@ -118,7 +120,6 @@ begin
 end;
 
 initialization
-  {$I splash.lrs}
   {$I ../images/splash_logo.lrs}
 
 end.
