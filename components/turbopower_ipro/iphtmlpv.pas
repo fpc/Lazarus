@@ -40,7 +40,6 @@ uses
   GraphType,
   LCLIntf,
   Buttons,
-  LResources,
   {$ELSE}
   Windows,
   {$ENDIF}
@@ -108,6 +107,8 @@ uses
 
 {$IFNDEF IP_LAZARUS}
 {$R *.DFM}
+{$ELSE}
+{$R *.LFM}
 {$ENDIF}
 
 const
@@ -336,10 +337,5 @@ procedure TIpHTMLPreview.FormResize(Sender: TObject);
 begin
   SetZoom(Zoom); {force recalc of preview sizes}
 end;
-
-{$IFDEF IP_LAZARUS}
-initialization
-  {$I iphtmlpv.lrs}
-{$ENDIF}
 
 end.
