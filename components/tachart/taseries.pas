@@ -969,10 +969,8 @@ begin
   for i := 0 to Count - 2 do begin
     a := GetGraphPoint(i);
     b := GetGraphPoint(i + 1);
-    if a.X > b.X then begin
-      Exchange(a.X, b.X);
-      Exchange(a.Y, b.Y);
-    end;
+    if a.X > b.X then
+      Exchange(a, b);
     if (a.X > ext.b.X) or (b.X < ext.a.X) then continue;
     if Stairs then begin
       if InvertedStairs then
