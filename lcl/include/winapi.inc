@@ -1000,12 +1000,15 @@ end;
   Returns:
 
  ------------------------------------------------------------------------------}
-function CharLowerBuff(pStr : PChar; Len : Integer): Integer;
+function CharLowerBuff(pStr: PChar; Len: Integer): Integer;
 begin
-  // your code here
-  //TODO:WINAPI call CHARLOWERBUFF
-  DebugLn('TODO: WINAPI call CHARLOWERBUFF');
-  Result := -1;
+  Result := len;
+  while len > 0 do
+  begin
+    pStr^ := LowerCaseChars[pStr^];
+    inc(pStr);
+    dec(len);
+  end;
 end;
 
 {------------------------------------------------------------------------------
