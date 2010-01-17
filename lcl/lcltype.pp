@@ -151,8 +151,20 @@ var
 
 const
   INVALID_HANDLE_VALUE  = 0;
-  MaxByte               = 255;
 
+  MAXBYTE  = Byte($FF);
+  MAXWORD  = Word($FFFF);
+  MAXDWORD = DWord($FFFFFFFF);
+
+  MINCHAR  = $80;
+  MAXCHAR  = $7F;
+  MINSHORT = $8000;
+  MAXSHORT = $7FFF;
+  MINLONG  = DWord($80000000);
+  MAXLONG  = $7FFFFFFF;
+
+
+const
 //==============================================
 // Binary raster operations
 //==============================================
@@ -653,13 +665,44 @@ const
   SW_INVALIDATE = 2;
   SW_SCROLLCHILDREN = 1;
 
-{owner drawn constants}
-  ODT_MENU = 1;
-  ODT_LISTBOX = 2;
+//==============================================
+// owner drawn constants
+//==============================================
+  //CtlType
+  //winuser.h
+  ODT_MENU     = 1;
+  ODT_LISTBOX  = 2;
   ODT_COMBOBOX = 3;
-  ODT_BUTTON = 4;
-  ODT_STATIC = 5;
+  ODT_BUTTON   = 4;
+  ODT_STATIC   = 5;
+  //commctrl.h
+  ODT_HEADER   = 100;
+  ODT_TAB      = 101;
+  ODT_LISTVIEW = 102;
 
+  //itemAction
+  ODA_DRAWENTIRE = 1;
+  ODA_SELECT     = 2;
+  ODA_FOCUS      = 4;
+
+  //itemState
+  ODS_SELECTED     = $0001;
+  ODS_GRAYED       = $0002;
+  ODS_DISABLED     = $0004;
+  ODS_CHECKED      = $0008;
+  ODS_FOCUS        = $0010;
+  ODS_DEFAULT      = $0020;
+  ODS_HOTLIGHT     = $0040;
+  ODS_INACTIVE     = $0080;
+  ODS_NOACCEL      = $0100;
+  ODS_NOFOCUSRECT  = $0200;
+  ODS_COMBOBOXEDIT = $1000;
+
+
+
+//==============================================
+// GetWindowLong() constants
+//==============================================
   GWL_WNDPROC = -4;
   GWL_HINSTANCE = -6;
   GWL_HWNDPARENT = -8;
@@ -776,7 +819,9 @@ const
   Move_Default = 0;
   Move_SourceIsInterface = 128; // this is flag. Can be combined with the above
 
-{ Window Styles }
+//==============================================
+// Window Styles
+//==============================================
   WS_OVERLAPPED = 0;
   WS_POPUP = DWORD($80000000);
   WS_CHILD = DWORD($40000000);
@@ -837,14 +882,21 @@ const
   WS_EX_OVERLAPPEDWINDOW = (WS_EX_WINDOWEDGE or WS_EX_CLIENTEDGE);
   WS_EX_PALETTEWINDOW = (WS_EX_WINDOWEDGE or WS_EX_TOOLWINDOW or WS_EX_TOPMOST);
 
+  { Button styles }
+  BS_OWNERDRAW = $000B;
+
 const
-  { SetWindowPos Flags }
+//==============================================
+// SetWindowPos Flags
+//==============================================
   HWND_TOP = 0;
   HWND_BOTTOM = 1;
   HWND_TOPMOST = HWND(-1);
   HWND_NOTOPMOST = HWND(-2);
 
-  { ShowWindow() Commands }
+//==============================================
+// ShowWindow() Commands
+//==============================================
   SW_HIDE           = 0;
   SW_SHOWNORMAL     = 1;
   SW_NORMAL         = 1;
@@ -859,6 +911,23 @@ const
   SW_RESTORE        = 9;
   SW_SHOWDEFAULT    = 10;
   SW_MAX            = 10;
+
+//==============================================
+// Redrawindow() flags
+//==============================================
+  RDW_INVALIDATE      = $0001;
+  RDW_INTERNALPAINT   = $0002;
+  RDW_ERASE           = $0004;
+  RDW_VALIDATE        = $0008;
+  RDW_NOINTERNALPAINT = $0010;
+  RDW_NOERASE         = $0020;
+  RDW_NOCHILDREN      = $0040;
+  RDW_ALLCHILDREN     = $0080;
+  RDW_UPDATENOW       = $0100;
+  RDW_ERASENOW        = $0200;
+  RDW_FRAME           = $0400;
+  RDW_NOFRAME         = $0800;
+
 
 const
   { DIB color table identifiers }
@@ -1432,14 +1501,15 @@ const
 // Mapping modes for SetMapMode/GetMapMode
 //==============================================
 
-  MM_TEXT = 1;
-  MM_LOMETRIC = 2;
-  MM_HIMETRIC = 3;
+  MM_TEXT        = 1;
+  MM_LOMETRIC    = 2;
+  MM_HIMETRIC    = 3;
+  MM_LOENGLISH   = 4;
+  MM_HIENGLISH   = 5;
+  MM_TWIPS       = 6;
+  MM_ISOTROPIC   = 7;
   MM_ANISOTROPIC = 8;
-  MM_LOENGLISH = 4;
-  MM_HIENGLISH = 5;
-  MM_TWIPS = 6;
-  MM_ISOTROPIC = 7;
+
 
 //==============================================
 // API system Color constants  pbd
@@ -1623,6 +1693,26 @@ const
   idDialogInfo = idDialogBase + 3;
   idDialogConfirm = idDialogBase + 4;
   idDialogShield = idDialogBase + 5;
+
+
+//==============================================
+// Devicecontext object types
+//==============================================
+  OBJ_PEN         = 1;
+  OBJ_BRUSH       = 2;
+  OBJ_DC          = 3;
+  OBJ_METADC      = 4;
+  OBJ_PAL         = 5;
+  OBJ_FONT        = 6;
+  OBJ_BITMAP      = 7;
+  OBJ_REGION      = 8;
+  OBJ_METAFILE    = 9;
+  OBJ_MEMDC       = 10;
+  OBJ_EXTPEN      = 11;
+  OBJ_ENHMETADC   = 12;
+  OBJ_ENHMETAFILE = 13;
+  OBJ_COLORSPACE  = 14;
+
 
 //==============================================
 // SystemMetrics constants
@@ -1914,8 +2004,9 @@ const
   NUMRESERVED   = 106; { Number of reserved entries in palette    }
 
 
-  { Text Alignment Options }
-
+//==============================================
+// Text Alignment Options
+//==============================================
   TA_NOUPDATECP = 0;
   TA_UPDATECP   = 1;
   TA_LEFT       = 0;
@@ -1927,12 +2018,17 @@ const
   TA_RTLREADING = $100;
   TA_MASK       = (TA_BASELINE+TA_CENTER+TA_UPDATECP+TA_RTLREADING);
 
-  { PolyFill() Modes }
+//==============================================
+// PolyFill() Modes
+//==============================================
   ALTERNATE     = 1;
   WINDING       = 2;
   POLYFILL_LAST = 2;
 
-  { StretchBlt() Modes }
+//==============================================
+// StretchBlt() Modes
+//==============================================
+
   BLACKONWHITE      = 1;
   WHITEONBLACK      = 2;
   COLORONCOLOR      = 3;
@@ -1943,7 +2039,9 @@ const
 
   CBM_INIT = 4;     { initialize bitmap  }
   
-{ Predefined Resource Types }
+//==============================================
+// Predefined Resource Types
+//==============================================
 type
   {$ifdef UNICODE}
   TResourceType = PWideChar;
@@ -1995,6 +2093,33 @@ const
   RT_HTML = TResourceType(23);
   RT_MANIFEST = TResourceType(24);
 {$endif}
+
+//==============================================
+// Load/CopyImage constants
+//==============================================
+const
+  // types
+  IMAGE_BITMAP      = 0;
+  IMAGE_ICON        = 1;
+  IMAGE_CURSOR      = 2;
+  IMAGE_ENHMETAFILE = 3;
+
+  // loadflags
+  LR_DEFAULTCOLOR     = $0000;
+  LR_MONOCHROME       = $0001;
+  LR_COLOR            = $0002;
+  LR_COPYRETURNORG    = $0004;
+  LR_COPYDELETEORG    = $0008;
+  LR_LOADFROMFILE     = $0010;
+  LR_LOADTRANSPARENT  = $0020;
+  LR_DEFAULTSIZE      = $0040;
+  LR_VGACOLOR         = $0080;
+  LR_LOADMAP3DCOLORS  = $1000;
+  LR_CREATEDIBSECTION = $2000;
+  LR_COPYFROMRESOURCE = $4000;
+  LR_SHARED           = $8000;
+
+
 
 type
   TFarProc = Pointer;
