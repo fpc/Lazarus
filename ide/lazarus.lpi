@@ -15,9 +15,13 @@
       <TargetFileExt Value=""/>
       <Title Value="Lazarus"/>
       <ResourceType Value="res"/>
-      <Icon Value="0"/>
       <UseXPManifest Value="True"/>
+      <Icon Value="0"/>
     </General>
+    <VersionInfo>
+      <Language Value="0403"/>
+      <CharSet Value="04E2"/>
+    </VersionInfo>
     <PublishOptions>
       <Version Value="2"/>
       <IncludeFileFilter Value="*.(pas|pp|inc|lfm|lpr|lrs|lpi|lpk|sh|xml)"/>

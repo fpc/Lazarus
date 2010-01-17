@@ -395,6 +395,7 @@ begin
   for i := 0 to L.Count - 1 do
   begin
     R := TAbstractProjectResourceClass(L[i]).Create;
+    R.Modified := False;
     R.OnModified := @OnResourceModified;
     FResources.Add(R);
   end;
