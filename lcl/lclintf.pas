@@ -77,8 +77,6 @@ function IndexToOverlayMask(iOverlay: UINT): UINT; inline;
 function PredefinedClipboardFormat(
   AFormat: TPredefinedClipboardFormat): TClipboardFormat;
 
-function CharLower(c: char): char; inline;
-function CharUpper(c: char): char; inline;
 
 function MsgKeyDataToShiftState(KeyData: Longint): TShiftState;
 
@@ -217,16 +215,6 @@ begin
     FPredefinedClipboardFormats[AFormat]:=
       ClipboardRegisterFormat(PredefinedClipboardMimeTypes[AFormat]);
   Result:=FPredefinedClipboardFormats[AFormat];
-end;
-
-function CharLower(c: char): char; inline;
-begin
-  Result:=LowerCaseChars[c];
-end;
-
-function CharUpper(c: char): char; inline;
-begin
-  Result:=UpperCaseChars[c];
 end;
 
 function MsgKeyDataToShiftState(KeyData: Longint): TShiftState;

@@ -46,7 +46,9 @@ function BitBlt(DestDC: HDC; X, Y, Width, Height: Integer; SrcDC: HDC; XSrc, YSr
 
 function CallNextHookEx(hhk : HHOOK; ncode : Integer; WParam: WParam; LParam: LParam) : Integer; {$IFDEF IF_BASE_MEMBER}virtual;{$ENDIF}
 function CallWindowProc(lpPrevWndFunc : TFarProc; Handle : HWND; Msg : UINT; WParam: WParam; LParam: LParam): Integer; {$IFDEF IF_BASE_MEMBER}virtual;{$ENDIF}
+//function CharLower --> independent
 //function CharLowerBuff --> independent
+//function CharUpper --> independent
 function ClientToScreen(Handle : HWND; var P : TPoint) : Boolean; {$IFDEF IF_BASE_MEMBER}virtual;{$ENDIF}
 function CombineRgn(Dest, Src1, Src2 : HRGN; fnCombineMode : Longint) : Longint; {$IFDEF IF_BASE_MEMBER}virtual;{$ENDIF}
 function CreateBitmap(Width, Height: Integer; Planes, BitCount: Longint; BitmapBits: Pointer): HBITMAP; {$IFDEF IF_BASE_MEMBER}virtual;{$ENDIF}
@@ -276,7 +278,9 @@ function WindowFromPoint(Point : TPoint) : HWND; {$IFDEF IF_BASE_MEMBER}virtual;
 function AdjustWindowRectEx(Var Rect: TRect; Style1: Word; MenuExist : Boolean;
   Style2 : Word) : Boolean;
 
+function CharLower(c: char): char; inline;
 function CharLowerBuff(pStr : PChar; Len : Integer): Integer;
+function CharUpper(c: char): char; inline;
 function CopyRect(var DestRect: TRect; const SrcRect: TRect): Boolean;
 function CreateEllipticRgnIndirect(const ARect: TRect): HRGN;
 function CreateFont(Height, Width, Escapement, Orientation, Weight: Integer;

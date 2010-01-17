@@ -983,6 +983,17 @@ begin
 end;
 
 {------------------------------------------------------------------------------
+  Function: CharLower
+  Params:
+  Returns:
+
+ ------------------------------------------------------------------------------}
+function CharLower(c: char): char; inline;
+begin
+  Result := LowerCaseChars[c];
+end;
+
+{------------------------------------------------------------------------------
   Function: CharLowerBuff
   Params: pStr:
           Len:
@@ -997,6 +1008,16 @@ begin
   Result := -1;
 end;
 
+{------------------------------------------------------------------------------
+  Function: CharUpper
+  Params:
+  Returns:
+
+ ------------------------------------------------------------------------------}
+function CharUpper(c: char): char; inline;
+begin
+  Result := UpperCaseChars[c];
+end;
 
 {------------------------------------------------------------------------------
   Function: CopyRect  pbd
