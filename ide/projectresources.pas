@@ -40,7 +40,8 @@ uses
   Classes, SysUtils, Contnrs, Controls, LCLProc, LResources, FileUtil, Laz_XMLCfg,
   Dialogs, ProjectIntf, ProjectResourcesIntf, LazarusIDEStrConsts, AvgLvlTree,
   KeywordFuncLists, BasicCodeTools, IDEProcs, DialogProcs, CodeToolManager,
-  CodeCache, resource, reswriter;
+  CodeCache, resource, reswriter,
+  W32Manifest,W32VersionInfo,ProjectIcon;
 
 type
   { TProjectResources }
@@ -61,6 +62,9 @@ type
     LastResFilename: String;
     LastLrsFileName: String;
 
+    function GetProjectIcon: TProjectIcon;
+    function GetVersionInfo: TProjectVersionInfo;
+    function GetXPManifest: TProjectXPManifest;
     procedure SetFileNames(const MainFileName, TestDir: String);
     procedure SetModified(const AValue: Boolean);
     function Update: Boolean;
@@ -97,6 +101,10 @@ type
 
     property Modified: Boolean read FModified write SetModified;
     property OnModified: TNotifyEvent read FOnModified write FOnModified;
+
+    property XPManifest: TProjectXPManifest read GetXPManifest;
+    property VersionInfo: TProjectVersionInfo read GetVersionInfo;
+    property ProjectIcon: TProjectIcon read GetProjectIcon;
   end;
 
 procedure ParseResourceType(const Src: string; NestedComments: boolean;
@@ -303,6 +311,21 @@ begin
     resFileName := TestDir + ExtractFileNameOnly(MainFileName) + '.res';
     lrsFileName := TestDir + ExtractFileNameOnly(MainFileName) + '.lrs';
   end;
+end;
+
+function TProjectResources.GetProjectIcon: TProjectIcon;
+begin
+  Result := TProjectIcon(GetProjectResource(TProjectIcon));
+end;
+
+function TProjectResources.GetVersionInfo: TProjectVersionInfo;
+begin
+  Result := TProjectVersionInfo(GetProjectResource(TProjectVersionInfo));
+end;
+
+function TProjectResources.GetXPManifest: TProjectXPManifest;
+begin
+  Result := TProjectXPManifest(GetProjectResource(TProjectXPManifest));
 end;
 
 procedure TProjectResources.SetResourceType(const AValue: TResourceType);
