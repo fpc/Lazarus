@@ -30,7 +30,7 @@ interface
 uses
   Classes, SysUtils, TypInfo, LCLProc, AvgLvlTree, Dialogs, Controls, ComCtrls,
   ExtCtrls, LResources,
-  ObjInspStrConsts, PropEdits;
+  ObjInspStrConsts, PropEdits, PropEditUtils;
   
 type
   { TComponentTreeView }

@@ -42,7 +42,8 @@ uses
   InterfaceBase, Forms, Controls, GraphType, Graphics, Dialogs, ExtCtrls, Menus,
   ClipBrd, TypInfo,
   // IDEIntf
-  IDEDialogs, PropEdits, ComponentEditors, MenuIntf, IDEImagesIntf, FormEditingIntf,
+  IDEDialogs, PropEdits, PropEditUtils, ComponentEditors, MenuIntf, IDEImagesIntf,
+  FormEditingIntf,
   // IDE
   LazarusIDEStrConsts, EnvironmentOpts, IDECommands, ComponentReg,
   NonControlDesigner, FrameDesigner, AlignCompsDlg, SizeCompsDlg, ScaleCompsDlg,

@@ -27,7 +27,8 @@ interface
 uses
   Classes, SysUtils, LResources, TypInfo, LCLProc, Forms, Controls, Menus,
   ExtCtrls, CustomTimer, StdCtrls, Graphics, Grids, CheckLst, Buttons, ComCtrls, Dialogs,
-  LazStringGridEdit, CheckListboxEditorDlg, CheckGroupEditorDlg, GraphType, PropEdits,
+  LazStringGridEdit, CheckListboxEditorDlg, CheckGroupEditorDlg, GraphType,
+  PropEdits, PropEditUtils,
   ObjInspStrConsts;
 
 type

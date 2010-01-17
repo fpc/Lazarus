@@ -43,7 +43,7 @@ uses
   AVL_Tree, LCLMemManager,
   LCLProc, Graphics, Controls, Forms, Menus, Dialogs,
   // IDEIntf
-  PropEdits, ObjectInspector, IDECommands, FormEditingIntf,
+  PropEdits, PropEditUtils, ObjectInspector, IDECommands, FormEditingIntf,
   // IDE
   LazarusIDEStrConsts, Project, JITForms, MainIntf,
   CustomNonFormDesigner, NonControlDesigner, FrameDesigner,

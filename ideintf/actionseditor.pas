@@ -36,8 +36,8 @@ interface
 uses
   Classes, SysUtils, LCLProc, Forms, Controls, Dialogs,
   ActnList, ExtCtrls, ComCtrls, Buttons, StdCtrls, ObjInspStrConsts,
-  ComponentEditors, PropEdits, DBActns, StdActns, LCLIntf, LCLType,
-  Graphics, Menus, contnrs;
+  ComponentEditors, PropEdits, PropEditUtils, DBActns, StdActns, LCLIntf,
+  LCLType, Graphics, Menus, contnrs;
 
 type
   TActStdPropItem = class;

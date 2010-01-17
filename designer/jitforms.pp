@@ -44,7 +44,7 @@ uses
   {$ENDIF}
   Classes, SysUtils, AvgLvlTree, TypInfo, LCLProc, LResources, Forms, Controls,
   LCLMemManager, LCLIntf, Dialogs,
-  PropEdits, IDEProcs,
+  PropEditUtils, IDEProcs,
   BasePkgManager;
 
 type

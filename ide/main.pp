@@ -70,7 +70,8 @@ uses
   // synedit
   SynEditKeyCmds, SynBeautifier,
   // IDE interface
-  AllIDEIntf, BaseIDEIntf, ObjectInspector, PropEdits, MacroIntf, IDECommands,
+  AllIDEIntf, BaseIDEIntf, ObjectInspector, PropEdits, PropEditUtils,
+  MacroIntf, IDECommands,
   SrcEditorIntf, NewItemIntf, IDEExternToolIntf, IDEMsgIntf,
   PackageIntf, ProjectIntf, MenuIntf, LazIDEIntf, IDEDialogs,
   IDEOptionsIntf, IDEImagesIntf,

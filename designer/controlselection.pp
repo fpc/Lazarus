@@ -38,7 +38,7 @@ interface
 
 uses
   Classes, SysUtils, Math, LCLIntf, LCLType, LCLProc, Controls, Forms,
-  GraphType, Graphics, Menus, EnvironmentOpts, PropEdits,
+  GraphType, Graphics, Menus, EnvironmentOpts, PropEditUtils,
   FormEditingIntf, NonControlDesigner, DesignerProcs;
 
 type

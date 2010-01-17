@@ -52,7 +52,7 @@ implementation
 {$R *.lfm}
 
 uses
-  Controls, Dialogs, IDEImagesIntf, ObjInspStrConsts, PropEdits;
+  Controls, Dialogs, IDEImagesIntf, ObjInspStrConsts, PropEdits, PropEditUtils;
 
 procedure TCollectionPropertyEditorForm.FormCreate(Sender: TObject);
 begin

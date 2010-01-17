@@ -25,7 +25,7 @@ interface
 uses
   Classes, SysUtils, LCLProc,
   SynGutterBase, SynEditMiscClasses,
-  PropEdits, Forms, StdCtrls, ComCtrls, Dialogs,
+  PropEdits, PropEditUtils, Forms, StdCtrls, ComCtrls, Dialogs,
   ObjInspStrConsts, Controls, IDEImagesIntf, typinfo, FormEditingIntf;
 
 type

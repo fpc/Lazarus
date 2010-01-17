@@ -22,7 +22,7 @@ interface
 uses
   Classes, Math, SysUtils, DBConst, LCLIntf, Graphics, Controls, Forms, Dialogs,
   ExtCtrls, StdCtrls, Buttons, DB, ObjInspStrConsts,
-  ComponentEditors, PropEdits, TypInfo;
+  ComponentEditors, PropEdits, PropEditUtils, TypInfo;
 
 type
 

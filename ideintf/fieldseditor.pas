@@ -22,7 +22,7 @@ uses
   Classes, SysUtils, TypInfo, LCLProc, Forms,
   Controls, Menus, Graphics, Dialogs, ComCtrls,
   db, ActnList, StdCtrls, ObjInspStrConsts, ComponentEditors,
-  PropEdits, LCLType, NewField, FieldsList, ComponentReg;
+  PropEdits, PropEditUtils, LCLType, NewField, FieldsList, ComponentReg;
 
 type
 
