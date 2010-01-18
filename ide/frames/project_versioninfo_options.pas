@@ -97,6 +97,8 @@ begin
 end;
 
 procedure TProjectVersionInfoOptionsFrame.ReadSettings(AOptions: TAbstractIDEOptions);
+  var
+    i : integer;
 begin
   FVersionInfo := TProjectVersionInfo((AOptions as TProject).Resources[TProjectVersionInfo]);
 
@@ -110,12 +112,19 @@ begin
 
   if FVersionInfo.AutoIncrementBuild then
     AutomaticallyIncreaseBuildCheckBox.Checked := True;
+  // ComboBox.sort does not change ItemIndex.[Windows]
   LanguageSelectionComboBox.Items.Assign(MSLanguages);
-  LanguageSelectionComboBox.ItemIndex := MSHexLanguages.IndexOf(FVersionInfo.HexLang);
   LanguageSelectionComboBox.Sorted := True;
+  i := MSHexLanguages.IndexOf(FVersionInfo.HexLang);
+  if i >= 0 then
+   i := LanguageSelectionComboBox.Items.IndexOf(MSLanguages[i]);
+  LanguageSelectionComboBox.ItemIndex := i;
   CharacterSetComboBox.Items.Assign(MSCharacterSets);
-  CharacterSetComboBox.ItemIndex := MSHexCharacterSets.IndexOf(FVersionInfo.HexCharSet);
   CharacterSetComboBox.Sorted := True;
+  i := MSHexCharacterSets.IndexOf(FVersionInfo.HexCharSet);
+  if i >= 0 then
+    i := CharacterSetComboBox.Items.IndexOf(MSCharacterSets[i]);
+  CharacterSetComboBox.ItemIndex := i;
   DescriptionEdit.Text := FVersionInfo.DescriptionString;
   CopyrightEdit.Text := FVersionInfo.CopyrightString;
 end;
