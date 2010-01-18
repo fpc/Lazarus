@@ -4950,12 +4950,14 @@ begin
   DiskLineEnding:=StringReplace(StringReplace(DiskLineEnding,#13,'CR',[rfReplaceAll]),#10,'LF',[rfReplaceAll]);
   //DebugLn(['TSourceNotebook.UpdateEncodingMenuItems ',Encoding]);
   List:=TStringList.Create;
-  List.add('LF (Unix)');
+  List.add('LF');
   List.add('CR');
-  List.add('CRLF (DOS/Win)');
+  List.add('CRLF');
   for i:=0 to List.Count-1 do begin
     CurName:='LineEnding'+IntToStr(i);
     CurLineEnding:=List[i];
+    // warning! captions are later used as replacment for actuall LineEndings.
+    // This is note good practice to mix data and user interface.
     CurCaption:=CurLineEnding;
     if SrcEditSubMenuLineEnding.Count=i then begin
       // add new item
