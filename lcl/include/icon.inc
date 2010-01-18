@@ -642,13 +642,10 @@ begin
 end;
 
 procedure TCustomIcon.LoadFromResourceName(Instance: THandle; const ResName: String);
-{$IFDEF FPC_HAS_WINLIKERESOURCES}
 var
   ResType: TResourceType;
   ResHandle: TFPResourceHandle;
-{$ENDIF}
 begin
-{$IFDEF FPC_HAS_WINLIKERESOURCES}
   ResType := GetResourceType;
   if ResType = nil then Exit;
 
@@ -656,17 +653,13 @@ begin
   if ResHandle = 0 then
     raise EResNotFound.Create(ResName); // todo: valid exception
   LoadFromResourceHandle(Instance, ResHandle);
-{$ENDIF}
 end;
 
 procedure TCustomIcon.LoadFromResourceID(Instance: THandle; ResID: Integer);
-{$IFDEF FPC_HAS_WINLIKERESOURCES}
 var
   ResType: TResourceType;
   ResHandle: TFPResourceHandle;
-{$ENDIF}
 begin
-  {$IFDEF FPC_HAS_WINLIKERESOURCES}
   ResType := GetResourceType;
   if ResType = nil then Exit;
 
@@ -674,15 +667,13 @@ begin
   if ResHandle = 0 then
     raise EResNotFound.Create(''); // todo: valid exception
   LoadFromResourceHandle(Instance, ResHandle);
-  {$ENDIF}
 end;
 
-{$IFDEF FPC_HAS_WINLIKERESOURCES}
 procedure TCustomIcon.LoadFromResourceHandle(Instance: THandle; ResHandle: TFPResourceHandle);
 var
   GlobalHandle: TFPResourceHGlobal;
   Dir: ^TGrpIconDir;
-  DirEntry: TGrpIconDirEntry;
+  DirEntry: ^TGrpIconDirEntry;
   IconEntry: TIconDirEntry;
   i, offset: integer;
   Stream: TMemoryStream;
@@ -702,23 +693,26 @@ begin
     Stream.Write(Dir^, SizeOf(TIconHeader));
     // write icon entries headers
     offset := Stream.Position + SizeOf(IconEntry) * LEtoN(Dir^.idCount);
+    DirEntry := @Dir^.idEntries[0];
     for i := 0 to LEtoN(Dir^.idCount) - 1 do
     begin
-      DirEntry := Dir^.idEntries[i];
-      Move(DirEntry, IconEntry, SizeOf(DirEntry));
+      Move(DirEntry^, IconEntry, SizeOf(DirEntry^));
       IconEntry.dwImageOffset := NtoLE(offset);
       inc(offset, LEtoN(IconEntry.dwBytesInRes));
       Stream.Write(IconEntry, SizeOf(IconEntry));
+      Inc(DirEntry);
     end;
     // write icons data
+    DirEntry := @Dir^.idEntries[0];
     for i := 0 to LEtoN(Dir^.idCount) - 1 do
     begin
-      IconStream := TResourceStream.CreateFromID(Instance, LEtoN(Dir^.idEntries[i].nID), RT_ICON);
+      IconStream := TResourceStream.CreateFromID(Instance, LEtoN(DirEntry^.nID), RT_ICON);
       try
         Stream.CopyFrom(IconStream, IconStream.Size);
       finally
         IconStream.Free;
       end;
+      Inc(DirEntry);
     end;
     Stream.Position := 0;
     ReadData(Stream);
@@ -728,7 +722,6 @@ begin
     FreeResource(GlobalHandle);
   end;
 end;
-{$ENDIF}
 
 function TCustomIcon.MaskHandleAllocated: boolean;
 begin

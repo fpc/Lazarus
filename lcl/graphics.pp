@@ -1602,9 +1602,7 @@ type
     function LazarusResourceTypeValid(const ResourceType: string): boolean; override;
     procedure LoadFromResourceName(Instance: THandle; const ResName: String); override;
     procedure LoadFromResourceID(Instance: THandle; ResID: Integer); override;
-    {$IFDEF FPC_HAS_WINLIKERESOURCES}
     procedure LoadFromResourceHandle(Instance: THandle; ResHandle: TFPResourceHandle);
-    {$ENDIF}
     function BitmapHandleAllocated: boolean; override;
     function MaskHandleAllocated: boolean; override;
     function PaletteAllocated: boolean; override;
