@@ -20,7 +20,8 @@ unit SrcEditorIntf;
 interface
 
 uses
-  Classes, SysUtils, LCLProc, FileUtil, Forms, Controls, ProjectIntf;
+  Classes, SysUtils, LCLProc, FileUtil, LCLType, Forms, Controls, Graphics,
+  ProjectIntf;
   
 type
   TSrcEditSearchOption = (
@@ -137,15 +138,42 @@ type
     property Modified: Boolean read GetModified write SetModified;
   end;
 
+  { TSourceEditorCompletionPlugin }
+
+  TSourceEditorCompletionPlugin = class(TComponent)
+  public
+    procedure Init(SrcEdit: TSourceEditorInterface; JumpToError: boolean;
+                   var Handled, Abort: boolean; var Prefix: string;
+                   var BoxX, BoxY: integer); virtual; abstract; // check if this plugin is responsible
+    function Collect(List: TStrings): boolean; virtual; abstract; // collect values
+    procedure Cancel; virtual; abstract; // completion was cancelled
+    procedure Complete(var Value: string; SourceValue: string;
+                       var SourceStart, SourceEnd: TPoint;
+                       KeyChar: TUTF8Char; Shift: TShiftState); virtual; abstract; // execute completion
+
+    procedure IndexChanged(Position: integer); virtual; abstract;
+    procedure PrefixChanged(const NewPrefix: string; var NewIndex: integer;
+                            var s: TStrings); virtual; abstract;
+    procedure CompletePrefix(var Prefix: string); virtual; abstract;
+
+    function HasCustomPaint: boolean; virtual;
+    procedure PaintItem(const AKey: string; ACanvas: TCanvas;
+                 X, Y: integer; ItemSelected: boolean; Index: integer); virtual;
+    function MeasureItem(const AKey: string; ACanvas: TCanvas;
+                         ItemSelected: boolean; Index: integer): TPoint; virtual;
+  end;
+
   { TSourceEditorWindowInterface }
 
   TSourceEditorWindowInterface = class(TForm)
   protected
-    function GetItems(Index: integer): TSourceEditorInterface; virtual; abstract;
-  protected
+    FActiveCompletionPlugin: TSourceEditorCompletionPlugin;
     function GetActiveEditor: TSourceEditorInterface; virtual; abstract;
-    procedure SetActiveEditor(const AValue: TSourceEditorInterface); virtual; abstract;
     function GetCompletionBoxPosition: integer; virtual; abstract;
+    function GetCompletionPlugins(Index: integer
+      ): TSourceEditorCompletionPlugin; virtual; abstract;
+    function GetItems(Index: integer): TSourceEditorInterface; virtual; abstract;
+    procedure SetActiveEditor(const AValue: TSourceEditorInterface); virtual; abstract;
   public
     function SourceEditorIntfWithFilename(
                                 const Filename: string): TSourceEditorInterface;
@@ -159,12 +187,18 @@ type
     procedure ClearErrorLines; virtual; abstract;
 
     property CompletionBoxPosition: integer read GetCompletionBoxPosition;
+    procedure DeactivateCompletionForm; virtual; abstract;
+    property ActiveCompletionPlugin: TSourceEditorCompletionPlugin read FActiveCompletionPlugin;
+    function CompletionPluginCount: integer; virtual; abstract;
+    property CompletionPlugins[Index: integer]: TSourceEditorCompletionPlugin
+                 read GetCompletionPlugins;
+    procedure RegisterCompletionPlugin(Plugin: TSourceEditorCompletionPlugin); virtual; abstract;
+    procedure UnregisterCompletionPlugin(Plugin: TSourceEditorCompletionPlugin); virtual; abstract;
   end;
   
   
 var
   SourceEditorWindow: TSourceEditorWindowInterface = nil;// set by the IDE
-
 
 type
 
@@ -416,6 +450,26 @@ procedure TIDESearchInTextProgress.SetAbort(const AValue: boolean);
 begin
   if FAbort=AValue then exit;
   fAbort:=AValue;
+end;
+
+{ TSourceEditorCompletionPlugin }
+
+function TSourceEditorCompletionPlugin.HasCustomPaint: boolean;
+begin
+  Result:=false;
+end;
+
+procedure TSourceEditorCompletionPlugin.PaintItem(const AKey: string;
+  ACanvas: TCanvas; X, Y: integer; ItemSelected: boolean; Index: integer);
+begin
+  // this is called if HasCustomPaint returns true
+end;
+
+function TSourceEditorCompletionPlugin.MeasureItem(const AKey: string;
+  ACanvas: TCanvas; ItemSelected: boolean; Index: integer): TPoint;
+begin
+  // this is called if HasCustomPaint returns true
+  Result:=Point(0,0);
 end;
 
 end.

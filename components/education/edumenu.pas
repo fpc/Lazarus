@@ -108,14 +108,12 @@ procedure TEduMenuFrame.MenusTreeViewMouseDown(Sender: TObject;
 var
   Node: TTreeNode;
   Hit: THitTests;
-  Path: String;
 begin
   if Button<>mbLeft then exit;
   Node:=MenusTreeView.GetNodeAt(X,Y);
   if (Node=nil) then exit;
   Hit:=MenusTreeView.GetHitTestInfoAt(X,Y);
   if [htOnIcon,htOnStateIcon]*Hit<>[] then begin
-    Path:=TVNodeToIDEMenuPath(Node);
     if Node.StateIndex=HideImgID then
       Node.StateIndex:=ShowImgID
     else

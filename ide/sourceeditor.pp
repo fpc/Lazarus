@@ -221,7 +221,7 @@ type
     procedure SetExecutionLine(NewLine: integer);
     procedure OnCodeBufferChanged(Sender: TSourceLog;
       SrcLogEntry: TSourceLogEntry);
-    procedure StartIdentCompletion(JumpToError: boolean);
+    procedure StartIdentCompletionBox(JumpToError: boolean);
 
     procedure LinesInserted(sender: TObject; FirstLine, Count: Integer);
     procedure LinesDeleted(sender: TObject; FirstLine, Count: Integer);
@@ -625,6 +625,7 @@ type
   protected
     ccSelection: String;
     States: TSourceNotebookStates;
+    fCompletionPlugins: TFPList;
     // hintwindow stuff
     FHintWindow: THintWindow;
     FMouseHintTimer: TIdleTimer;
@@ -633,7 +634,11 @@ type
     function CreateNotebook: Boolean;
     function NewSE(Pagenum: Integer): TSourceEditor;
     procedure EditorChanged(Sender: TObject);
+    procedure Notification(AComponent: TComponent; Operation: TOperation);
+           override;
 
+    function GetCompletionPlugins(Index: integer): TSourceEditorCompletionPlugin; override;
+    procedure FreeCompletionPlugins;
     procedure ccExecute(Sender: TObject);
     procedure ccCancel(Sender: TObject);
     procedure ccComplete(var Value: string; SourceValue: string;
@@ -650,8 +655,9 @@ type
     procedure OnSynCompletionKeyPress(Sender: TObject; var Key: Char);
     procedure OnSynCompletionUTF8KeyPress(Sender: TObject; var UTF8Key: TUTF8Char);
     procedure OnSynCompletionPositionChanged(Sender: TObject);
-    procedure DeactivateCompletionForm;
-    function InitIdentCompletion(S: TStrings): boolean;
+    function StartIdentCompletionBox(SrcEdit: TSourceEditor; JumpToError: boolean;
+                               var s: string; var BoxX, BoxY: integer): boolean;
+    function InitIdentCompletionValues(S: TStrings): boolean;
 
     procedure EditorMouseMove(Sender: TObject; Shift: TShiftstate;
                               X,Y: Integer);
@@ -839,6 +845,10 @@ type
     procedure OnWordCompletionGetSource(
                                     var Source: TStrings; SourceIndex: integer);
     procedure OnSourceCompletionTimer(Sender: TObject);
+    procedure DeactivateCompletionForm; override;
+    function CompletionPluginCount: integer; override;
+    procedure RegisterCompletionPlugin(Plugin: TSourceEditorCompletionPlugin); override;
+    procedure UnregisterCompletionPlugin(Plugin: TSourceEditorCompletionPlugin); override;
 
     procedure FindReplaceDlgKey(Sender: TObject; var Key: Word;
                        Shift: TShiftState; FindDlgComponent: TFindDlgComponent);
@@ -850,6 +860,7 @@ type
     property PageIndex: Integer read GetPageIndex write SetPageIndex;
     property PageCount: Integer read GetPageCount;
     property NotebookPages: TStrings read GetNotebookPages;
+
   public
     property OnAddJumpPoint: TOnAddJumpPoint
                                      read FOnAddJumpPoint write FOnAddJumpPoint;
@@ -1710,7 +1721,7 @@ Begin
     FindHelpForSourceAtCursor;
 
   ecIdentCompletion :
-    StartIdentCompletion(true);
+    StartIdentCompletionBox(true);
 
   ecShowCodeContext :
     SourceNotebook.StartShowCodeContext(true);
@@ -2776,7 +2787,7 @@ begin
   end;
 end;
 
-procedure TSourceEditor.StartIdentCompletion(JumpToError: boolean);
+procedure TSourceEditor.StartIdentCompletionBox(JumpToError: boolean);
 var
   I: Integer;
   P: TPoint;
@@ -2784,7 +2795,7 @@ var
   LogCaret: TPoint;
 begin
   {$IFDEF VerboseIDECompletionBox}
-  debugln(['TSourceEditor.StartIdentCompletion JumpToError: ',JumpToError]);
+  debugln(['TSourceEditor.StartIdentCompletionBox JumpToError: ',JumpToError]);
   {$ENDIF}
   if (FEditor.ReadOnly) or (CurrentCompletionType<>ctNone) then exit;
   SourceNotebook.fIdentCompletionJumpToError:=JumpToError;
@@ -2792,6 +2803,8 @@ begin
   CurrentCompletionType:=ctIdentCompletion;
   TextS := FEditor.LineText;
   LogCaret:=FEditor.LogicalCaretXY;
+  aCompletion.Editor:=FEditor;
+  aCompletion.TheForm.Font := FEditor.Font;
   i := LogCaret.X - 1;
   if i > length(TextS) then
     TextS2 := ''
@@ -2805,11 +2818,13 @@ begin
     P.X:=Max(0,Min(P.X,ClientWidth-aCompletion.Width));
     P := ClientToScreen(p);
   end;
-  aCompletion.Editor:=FEditor;
-  aCompletion.TheForm.Font := FEditor.Font;
+  if not SourceNotebook.StartIdentCompletionBox(Self,JumpToError,TextS2,
+    P.X,P.Y)
+  then exit;
+
   aCompletion.Execute(TextS2,P.X,P.Y);
   {$IFDEF VerboseIDECompletionBox}
-  debugln(['TSourceEditor.StartIdentCompletion END aCompletion.TheForm.Visible=',aCompletion.TheForm.Visible]);
+  debugln(['TSourceEditor.StartIdentCompletionBox END aCompletion.TheForm.Visible=',aCompletion.TheForm.Visible]);
   {$ENDIF}
 end;
 
@@ -3537,6 +3552,7 @@ begin
   Caption := locWndSrcEditor;
   KeyPreview:=true;
   FProcessingCommand := false;
+  fCompletionPlugins:=TFPList.Create;
 
   SourceEditorWindow:=Self;
 
@@ -3623,6 +3639,7 @@ var
   i: integer;
 begin
   FProcessingCommand:=false;
+  FreeCompletionPlugins;
   for i:=FSourceEditorList.Count-1 downto 0 do
     Editors[i].Free;
   if Notebook<>nil then begin
@@ -3715,6 +3732,7 @@ function TSourceNotebook.OnSynCompletionPaintItem(const AKey: string;
   Index: integer): boolean;
 var
   MaxX: Integer;
+  t: TCompletionType;
 begin
   with ACanvas do begin
     if (aCompletion<>nil) and (aCompletion.Editor<>nil) then
@@ -3730,8 +3748,18 @@ begin
       Font.Color:=FActiveEditSelectedFGColor;
   end;
   MaxX:=aCompletion.TheForm.ClientWidth;
+  t:=CurrentCompletionType;
+  if ActiveCompletionPlugin<>nil then
+  begin
+    if ActiveCompletionPlugin.HasCustomPaint then
+    begin
+      ActiveCompletionPlugin.PaintItem(AKey,ACanvas,X,Y,ItemSelected,Index);
+    end else begin
+      t:=ctWordCompletion;
+    end;
+  end;
   PaintCompletionItem(AKey,ACanvas,X,Y,MaxX,ItemSelected,Index,aCompletion,
-                      CurrentCompletionType,aCompletion.Editor.Highlighter);
+                      t,aCompletion.Editor.Highlighter);
   Result:=true;
 end;
 
@@ -3739,6 +3767,7 @@ function TSourceNotebook.OnSynCompletionMeasureItem(const AKey: string;
   ACanvas: TCanvas; ItemSelected: boolean; Index: integer): TPoint;
 var
   MaxX: Integer;
+  t: TCompletionType;
 begin
   with ACanvas do begin
     if (aCompletion<>nil) and (aCompletion.Editor<>nil) then
@@ -3754,8 +3783,18 @@ begin
       Font.Color:=FActiveEditSelectedFGColor;
   end;
   MaxX := Screen.Width-20;
+  t:=CurrentCompletionType;
+  if ActiveCompletionPlugin<>nil then
+  begin
+    if ActiveCompletionPlugin.HasCustomPaint then
+    begin
+      ActiveCompletionPlugin.MeasureItem(AKey,ACanvas,ItemSelected,Index);
+    end else begin
+      t:=ctWordCompletion;
+    end;
+  end;
   Result := PaintCompletionItem(AKey,ACanvas,0,0,MaxX,ItemSelected,Index,
-                                aCompletion,CurrentCompletionType,nil,True);
+                                aCompletion,t,nil,True);
   if CurCompletionControl<>nil then
     Result.Y:=CurCompletionControl.FontHeight;
 end;
@@ -3831,7 +3870,7 @@ procedure TSourceNotebook.OnSourceCompletionTimer(Sender: TObject);
     end;
 
     // invoke identifier completion
-    SrcEdit.StartIdentCompletion(false);
+    SrcEdit.StartIdentCompletionBox(false);
     Result:=true;
   end;
 
@@ -3905,14 +3944,25 @@ procedure TSourceNotebook.OnSynCompletionSearchPosition(var APosition:integer);
 var
   i,x:integer;
   CurStr,s:Ansistring;
-  SL:TStringList;
+  SL: TStrings;
   ItemCnt: Integer;
 begin
   if CurCompletionControl=nil then exit;
   case CurrentCompletionType of
 
     ctIdentCompletion:
+      if ActiveCompletionPlugin<>nil then
       begin
+        // let plugin rebuild completion list
+        SL:=TStringList.Create;
+        try
+          ActiveCompletionPlugin.PrefixChanged(CurCompletionControl.CurrentString,
+            APosition,sl);
+          CurCompletionControl.ItemList:=SL;
+        finally
+          SL.Free;
+        end;
+      end else begin
         // rebuild completion list
         APosition:=0;
         CurStr:=CurCompletionControl.CurrentString;
@@ -3980,7 +4030,10 @@ begin
   case CurrentCompletionType of
 
   ctIdentCompletion:
+    if ActiveCompletionPlugin<>nil then
     begin
+      ActiveCompletionPlugin.CompletePrefix(NewPrefix);
+    end else begin
       NewPrefix:=CodeToolBoss.IdentifierList.CompletePrefix(OldPrefix);
     end;
 
@@ -4087,6 +4140,8 @@ end;
 
 procedure TSourceNotebook.OnSynCompletionPositionChanged(Sender: TObject);
 begin
+  if ActiveCompletionPlugin<>nil then
+    ActiveCompletionPlugin.IndexChanged(CurCompletionControl.Position);
   if SrcEditHintWindow<>nil then
     SrcEditHintWindow.UpdateHints;
 end;
@@ -4097,6 +4152,11 @@ var
   OldCompletionControl: TSynCompletion;
 begin
   if CurCompletionControl=nil then exit;
+
+  if ActiveCompletionPlugin<>nil then begin
+    ActiveCompletionPlugin.Cancel;
+    FActiveCompletionPlugin:=nil;
+  end;
 
   // clear the IdentifierList (otherwise it would try to update everytime
   // the codetools are used)
@@ -4114,7 +4174,32 @@ begin
   end;
 end;
 
-function TSourceNotebook.InitIdentCompletion(S: TStrings): boolean;
+function TSourceNotebook.StartIdentCompletionBox(SrcEdit: TSourceEditor;
+  JumpToError: boolean; var s: string; var BoxX, BoxY: integer): boolean;
+var
+  i: Integer;
+  Plugin: TSourceEditorCompletionPlugin;
+  Handled: Boolean;
+  Cancel: Boolean;
+begin
+  for i:=0 to CompletionPluginCount-1 do begin
+    Plugin:=CompletionPlugins[i];
+    Handled:=false;
+    Cancel:=false;
+    Plugin.Init(SrcEdit,JumpToError,Handled,Cancel,s,BoxX,BoxY);
+    if Cancel then begin
+      DeactivateCompletionForm;
+      exit(false);
+    end;
+    if Handled then begin
+      FActiveCompletionPlugin:=Plugin;
+      exit(true);
+    end;
+  end;
+  Result:=true;
+end;
+
+function TSourceNotebook.InitIdentCompletionValues(S: TStrings): boolean;
 var
   i: integer;
   Handled: boolean;
@@ -4124,7 +4209,11 @@ var
 begin
   Result:=false;
   Prefix := CurCompletionControl.CurrentString;
-  if Assigned(OnInitIdentCompletion) then begin
+  if ActiveCompletionPlugin<>nil then
+  begin
+    Result:=ActiveCompletionPlugin.Collect(S);
+  end else if Assigned(OnInitIdentCompletion) then
+  begin
     OnInitIdentCompletion(Self,fIdentCompletionJumpToError,Handled,Abort);
     if Handled then begin
       if Abort then exit;
@@ -4194,7 +4283,12 @@ Begin
   case CurrentCompletionType of
 
     ctIdentCompletion:
+      if ActiveCompletionPlugin<>nil then
       begin
+        ActiveCompletionPlugin.Complete(Value,SourceValue,
+           SourceStart,SourceEnd,KeyChar,Shift);
+        FActiveCompletionPlugin:=nil;
+      end else begin
         // add to history
         CodeToolBoss.IdentifierHistory.Add(
           CodeToolBoss.IdentifierList.FilteredItems[aCompletion.Position]);
@@ -4295,7 +4389,7 @@ Begin
     CurEdit:=GetActiveSE.EditorComponent;
     case CurrentCompletionType of
      ctIdentCompletion:
-       if not InitIdentCompletion(S) then begin
+       if not InitIdentCompletionValues(S) then begin
          CurCompletionControl.ItemList.Clear;
          exit;
        end;
@@ -4339,7 +4433,8 @@ Begin
       // ' TextSelectedColor=',DbgS(TextSelectedColor),
       // '');
     end;
-    if CurrentCompletionType=ctIdentCompletion then
+    if (CurrentCompletionType=ctIdentCompletion) and (ActiveCompletionPlugin=nil)
+    then
       StartShowCodeHelp
     else if SrcEditHintWindow<>nil then
       SrcEditHintWindow.HelpEnabled:=false;
@@ -5073,6 +5168,52 @@ Begin
   if Assigned(OnEditorChanged) then
     OnEditorChanged(Sender);
 End;
+
+procedure TSourceNotebook.Notification(AComponent: TComponent;
+  Operation: TOperation);
+begin
+  inherited Notification(AComponent, Operation);
+  if Operation=opRemove then
+  begin
+    fCompletionPlugins.Remove(AComponent);
+    if FActiveCompletionPlugin=AComponent then
+      FActiveCompletionPlugin:=nil;
+  end;
+end;
+
+function TSourceNotebook.CompletionPluginCount: integer;
+begin
+  Result:=fCompletionPlugins.Count;
+end;
+
+procedure TSourceNotebook.RegisterCompletionPlugin(
+  Plugin: TSourceEditorCompletionPlugin);
+begin
+  fCompletionPlugins.Add(Plugin);
+  Plugin.FreeNotification(Self);
+end;
+
+procedure TSourceNotebook.UnregisterCompletionPlugin(
+  Plugin: TSourceEditorCompletionPlugin);
+begin
+  Plugin.RemoveFreeNotification(Self);
+  fCompletionPlugins.Remove(Plugin);
+end;
+
+function TSourceNotebook.GetCompletionPlugins(Index: integer
+  ): TSourceEditorCompletionPlugin;
+begin
+  Result:=TSourceEditorCompletionPlugin(fCompletionPlugins[Index]);
+end;
+
+procedure TSourceNotebook.FreeCompletionPlugins;
+var
+  i: Integer;
+begin
+  for i:=fCompletionPlugins.Count-1 downto 0 do
+    CompletionPlugins[i].Free;
+  fCompletionPlugins.Clear;
+end;
 
 function TSourceNotebook.NewSE(PageNum: Integer): TSourceEditor;
 begin
