@@ -113,7 +113,7 @@ begin
 
   FProcess := TDBGProcess.Create(nil);
   try
-    FProcess.CommandLine := UTF8ToSys(FileName + ' ' + Arguments);
+    FProcess.CommandLine := UTF8ToSys('"'+FileName + '" ' + Arguments);
     FProcess.CurrentDirectory := UTF8ToSys(WorkingDir);
     FProcess.Environment.Assign(Environment);
     if ShowConsole
