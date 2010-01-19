@@ -1584,18 +1584,18 @@ end;
 
 function TQtWidgetSet.ExtSelectClipRGN(dc: hdc; rgn : hrgn; Mode : Longint) : Integer;
 var
-  Clip,
+  Clip: HRGN = 0;
   Tmp : hRGN;
-  X, Y : Longint;
   DCOrigin: TPoint;
-  QtWidget: TQtWidget;
+  QtWidget: TQtWidget = nil;
   QtDC: TQtDeviceContext;
+  QtRgn: TQtRegion;
+  R: TRect;
 begin
-  // copied from gtk winapi
   {$ifdef VerboseQtWinAPI}
-    WriteLn('[WinAPI TQtWidgetSet.ExtSelectClipRGN] possible wrong implementation !');
+    WriteLn('[WinAPI TQtWidgetSet.ExtSelectClipRGN]');
   {$endif}
-  If not IsValidDC(DC) then
+  if not IsValidDC(DC) then
   begin
     Result := ERROR;
     exit;
@@ -1604,9 +1604,11 @@ begin
 
   QtDC := TQtDeviceContext(DC);
 
-  QtWidget := QtObjectFromWidgetH(TQtDeviceContext(DC).Parent);
+  if Assigned(QtDC.Parent) then
+    QtWidget := QtObjectFromWidgetH(QtDC.Parent);
 
-  if Assigned(QtWidget) and (QtWidget.PaintData.ClipRegion = nil) then
+  if Assigned(QtWidget) or
+    (not Assigned(QtWidget) and Assigned(QtDC.vImage)) then
   begin
     // there is no clipping region in the DC
     Case Mode of
@@ -1616,21 +1618,29 @@ begin
       RGN_AND,
       RGN_DIFF:
         begin
-          // get existing clip
-          X := -1;
-          Y := -1;
-          if QtDC.Parent <> nil then
+          // as MSDN says only RGN_COPY allows NULL RGN param.
+          if not IsValidGDIObject(RGN) then
           begin
-            X := QWidget_width(QtDC.Parent);
-            Y := QWidget_height(QtDC.Parent);
+            Result := ERROR;
+            exit;
+          end;
+          // get existing clip
+          QtRgn := QtDC.getClipRegion;
+
+          if (QtRgn = nil) or (QtRgn.GetRegionType = NULLREGION) then
+          begin
+            Result := SelectClipRGN(DC, RGN);
+            exit;
+          end else
+          begin
+            // get transformation
+            GetWindowOrgEx(DC, @DCOrigin);
+            R := QtRgn.getBoundingRect;
+            Clip := CreateRectRGN(0, 0, R.Right - R.Left, R.Bottom - R.Top);
+            if (DCOrigin.X <> 0) or (DCOrigin.Y <> 0) then
+              QRegion_translate(TQtRegion(Clip).Widget, -DCOrigin.X, -DCOrigin.Y);
           end;
 
-          GetDeviceSize(DC, DCOrigin);
-
-          if (X = -1) and (Y = -1) then
-            Clip := CreateRectRGN(-DCOrigin.X,-DCOrigin.Y,DCOrigin.X,DCOrigin.Y)
-          else
-            Clip := CreateRectRGN(-DCOrigin.X,-DCOrigin.Y,X-DCOrigin.X,Y-DCOrigin.Y);
           // create target clip
           Tmp := CreateEmptyRegion;
           // combine
@@ -1644,7 +1654,7 @@ begin
       end;
   end
   else
-    Result := inherited ExtSelectClipRGN(dc, rgn, mode);
+    Result := inherited ExtSelectClipRGN(DC, RGN, Mode);
 end;
 
 {------------------------------------------------------------------------------
