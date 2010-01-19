@@ -51,6 +51,17 @@ begin
   Result := nil;
 end;
 
+
+{------------------------------------------------------------------------------
+  Function: CreateEmptyRegion
+  Params:
+  Returns: valid empty region
+ ------------------------------------------------------------------------------}
+function TQtWidgetSet.CreateEmptyRegion: hRGN;
+begin
+  Result:= HRGN(TQtRegion.Create(True));
+end;
+
 {------------------------------------------------------------------------------
   Function: CreateStandardCursor
   Params:
