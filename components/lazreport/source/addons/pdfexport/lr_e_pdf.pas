@@ -238,9 +238,6 @@ end;
 
 procedure TfrTNPDFExportFilter.ShowShape(View: TfrShapeView; x, y, h, w: integer
   );
-var
-  Canvas: TPDFCanvas;
-  PRRect: TPRRect;
 
   function CreateShape(ShapeClass: TPRShapeClass): TPRShape;
   begin
@@ -257,13 +254,17 @@ var
   end;
 
 begin
-  Canvas := PDF.GetPdfDoc.Canvas;
   case View.ShapeType of
     frstRectangle:
       CreateShape(TPRRect);
 
     frstEllipse:
       CreateShape(TPREllipse);
+
+    frstRoundRect:
+      with TPRRect(CreateShape(TPRRect)) do begin
+        Radius := -1.0;
+      end;
 
     frstTriangle:
       with TPRPolygon(CreateShape(TPRPolygon)) do begin
@@ -310,9 +311,6 @@ begin
           ShowBarCode(TfrBarCodeView(View), nx, ny, ndy, ndx)
       else if View is TfrPictureView then
           ShowPicture(TfrPictureView(View), nx, ny, ndy, ndx);
-          //   For debugging only
-          //    else if not View is  TfrMemoView then
-          //        MessageDlg(View.ClassName, mtWarning, [mbOK], 0);
 
       if (View.Frames<>[]) and not (View is TfrBarCodeView) then
          ShowFrame(View, nx, ny, ndy, ndx);
