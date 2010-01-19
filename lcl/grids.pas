@@ -729,6 +729,7 @@ type
     function  IsAltColorStored: boolean;
     function  IsColumnsStored: boolean;
     function  IsPushCellActive: boolean;
+    procedure LoadColumns(cfg: TXMLConfig; Version: integer);
     function  LoadResBitmapImage(const ResName: string): TBitmap;
     procedure OnTitleFontChanged(Sender: TObject);
     procedure ReadColumns(Reader: TReader);
@@ -736,6 +737,7 @@ type
     procedure ReadRowHeights(Reader: TReader);
     procedure ResetHotCell;
     procedure ResetPushedCell(ResetColRow: boolean=True);
+    procedure SaveColumns(cfg: TXMLConfig; Version: integer);
     function  ScrollToCell(const aCol,aRow: Integer): Boolean;
     function  ScrollGrid(Relative:Boolean; DCol,DRow: Integer): TPoint;
     procedure SetCol(AValue: Integer);
@@ -1675,6 +1677,22 @@ begin
   end;
 end;
 {$endif}
+
+procedure CfgSetFontValue(cfg: TXMLConfig; AKey:string; AFont: TFont);
+begin
+  cfg.SetValue(AKey + '/name/value', AFont.Name);
+  cfg.SetValue(AKey + '/size/value', AFont.Size);
+  cfg.SetValue(AKey + '/color/value', ColorToString(AFont.Color));
+  cfg.SetValue(AKey + '/style/value', Integer(AFont.Style));
+end;
+
+procedure CfgGetFontValue(cfg: TXMLConfig; AKey:string; AFont: TFont);
+begin
+  AFont.Name := cfg.GetValue(AKey + '/name/value', 'default');
+  AFont.Size := cfg.GetValue(AKey + '/size/value', 0);
+  AFont.Color:= StringToColor(cfg.GetValue(AKey + '/color/value', 'clWindowText'));
+  AFont.Style:= TFontStyles(cfg.GetValue(AKey + '/style/value', 0));
+end;
 
 procedure DrawRubberRect(Canvas: TCanvas; aRect: TRect; Color: TColor);
   procedure DrawVertLine(X1,Y1,Y2: integer);
@@ -7059,6 +7077,44 @@ begin
   //
 end;
 
+procedure TCustomGrid.SaveColumns(cfg: TXMLConfig; Version: integer);
+var
+  Path,cPath: string;
+  i: Integer;
+  c: TGridColumn;
+begin
+  Path := 'grid/design/columns/';
+  cfg.SetValue(Path + 'columnsenabled', True);
+  cfg.SetValue(Path + 'columncount', columns.Count);
+  for i := 0 to columns.Count - 1 do begin
+    c := Columns[i];
+    cPath := Path + 'column' + IntToStr(i);
+    cfg.setValue(cPath + '/index/value', c.Index);
+    if c.IsWidthStored then
+      cfg.setValue(cPath + '/width/value', c.Width);
+    if c.IsAlignmentStored then
+      cfg.setValue(cPath + '/alignment/value', ord(c.Alignment));
+    if c.IsLayoutStored then
+      cfg.setValue(cPath + '/layout/value', ord(c.Layout));
+    cfg.setValue(cPath + '/buttonstyle/value', ord(c.ButtonStyle));
+    if c.IsColorStored then
+      cfg.setValue(cPath + '/color/value', colortostring(c.Color));
+    if c.IsValueCheckedStored then
+      cfg.setValue(cPath + '/valuechecked/value', c.ValueChecked);
+    if c.IsValueUncheckedStored then
+      cfg.setValue(cPath + '/valueunchecked/value', c.ValueUnChecked);
+    if c.PickList.Count>0 then
+      cfg.SetValue(cPath + '/picklist/value', c.PickList.CommaText);
+    if c.IsSizePriorityStored then
+      cfg.SetValue(cPath + '/sizepriority', c.SizePriority);
+    if not c.IsDefaultFont then
+      CfgSetFontValue(cfg, cPath + '/font', c.Font);
+    cfg.setValue(cPath + '/title/caption/value', c.Title.Caption);
+    if not c.Title.IsDefaultFont then
+      CfgSetFontValue(cfg, cPath + '/title/font', c.Title.Font);
+  end;
+end;
+
 procedure TCustomGrid.SaveContent(cfg: TXMLConfig);
 var
   i,j,k: Integer;
@@ -7073,20 +7129,25 @@ begin
     Cfg.SetValue('grid/design/fixedcols', FixedCols);
     Cfg.SetValue('grid/design/fixedrows', Fixedrows);
     Cfg.SetValue('grid/design/defaultcolwidth', DefaultColWidth);
-    Cfg.SetValue('grid/design/defaultRowHeight',DefaultRowHeight);
+    Cfg.SetValue('grid/design/defaultrowheight',DefaultRowHeight);
 
-    j:=0;
-    For i:=0 to ColCount-1 do begin
-      k:=integer(PtrUInt(FCols[i]));
-      if (k>=0)and(k<>DefaultColWidth) then begin
-        inc(j);
-        cfg.SetValue('grid/design/columns/columncount',j);
-        cfg.SetValue('grid/design/columns/column'+IntToStr(j)+'/index', i);
-        cfg.SetValue('grid/design/columns/column'+IntToStr(j)+'/width', k);
+    if Columns.Enabled then
+      saveColumns(cfg, GRIDFILEVERSION)
+    else begin
+      j:=0;
+      for i:=0 to ColCount-1 do begin
+        k:=integer(PtrUInt(FCols[i]));
+        if (k>=0)and(k<>DefaultColWidth) then begin
+          inc(j);
+          cfg.SetValue('grid/design/columns/columncount',j);
+          cfg.SetValue('grid/design/columns/column'+IntToStr(j)+'/index', i);
+          cfg.SetValue('grid/design/columns/column'+IntToStr(j)+'/width', k);
+        end;
       end;
     end;
+
     j:=0;
-    For i:=0 to RowCount-1 do begin
+    for i:=0 to RowCount-1 do begin
       k:=integer(PtrUInt(FRows[i]));
       if (k>=0)and(k<>DefaultRowHeight) then begin
         inc(j);
@@ -7095,7 +7156,6 @@ begin
         cfg.SetValue('grid/design/rows/row'+IntToStr(j)+'/height',k);
       end;
     end;
-
 
     Path:='grid/design/options/';
     Cfg.SetValue(Path+'goFixedVertLine/value', goFixedVertLine in options);
@@ -7134,13 +7194,63 @@ begin
   end;
 end;
 
+procedure TCustomGrid.LoadColumns(cfg: TXMLConfig; Version: integer);
+var
+  i, k: integer;
+  path, cPath, s: string;
+  c: TGridColumn;
+begin
+  Path := 'grid/design/columns/';
+  k := cfg.getValue(Path + 'columncount', 0);
+  for i := 0 to k - 1 do
+    Columns.Add;
+  for i := 0 to k - 1 do begin
+    c := Columns[i];
+    cPath := Path + 'column' + IntToStr(i);
+    c.index := cfg.getValue(cPath + '/index/value', i);
+    s := cfg.GetValue(cPath + '/width/value', '');
+    if s<>'' then
+      c.Width := StrToIntDef(s, 64);
+    s := cfg.getValue(cPath + '/alignment/value', '');
+    if s<>'' then
+      c.Alignment := TAlignment(StrToIntDef(s, 0));
+    s := cfg.GetValue(cPath + '/layout/value', '');
+    if s<>'' then
+      c.Layout := TTextLayout(StrToIntDef(s, 0));
+    s := cfg.getValue(cPath + '/buttonstyle/value', '0');
+    c.ButtonStyle := TColumnButtonStyle(StrToInt(s));
+    s := cfg.getValue(cPath + '/color/value', '');
+    if s<>'' then
+      c.Color := StringToColor(s);
+    s := cfg.getValue(cPath + '/valuechecked/value', '');
+    if s<>'' then
+      c.ValueChecked := s;
+    s := cfg.getValue(cPath + '/valueunchecked/value', '');
+    if s<>'' then
+      c.ValueUnChecked := s;
+    s := cfg.GetValue(cPath + '/picklist/value', '');
+    if s<>'' then
+      c.PickList.CommaText := s;
+    s := cfg.GetValue(cPath + '/sizepriority/value', '');
+    if s<>'' then
+      c.SizePriority := StrToIntDef(s, 0);
+    s := cfg.GetValue(cPath + '/font/name/value', '');
+    if s<>'' then
+      cfgGetFontValue(cfg, cPath + '/font', c.Font);
+    c.Title.Caption := cfg.getValue(cPath + '/title/caption/value', 'title ' + IntToStr(i));
+    s := cfg.GetValue(cPath + '/title/font/name/value', '');
+    if s<>'' then
+      cfgGetFontValue(cfg, cPath + '/title/font', c.Title.Font);
+  end;
+end;
+
 
 procedure TCustomGrid.LoadContent(cfg: TXMLConfig; Version: Integer);
 var
   CreateSaved: Boolean;
   Opt: TGridOptions;
   i,j,k: Integer;
-  path: string;
+  Path: string;
 
     procedure GetValue(optStr:string; aOpt:TGridOption);
     begin
@@ -7152,26 +7262,35 @@ begin
     CreateSaved:=Cfg.GetValue('grid/saveoptions/create', false);
     if CreateSaved then begin
       Clear;
+      Columns.Clear;
       FixedCols:=0;
       FixedRows:=0;
-      ColCount:=Cfg.GetValue('grid/design/columncount', 5);
+
+      if cfg.getValue('grid/design/columns/columnsenabled', False) then
+        LoadColumns(cfg, version)
+      else
+        ColCount := Cfg.GetValue('grid/design/columncount', 5);
+
       RowCount:=Cfg.GetValue('grid/design/rowcount', 5);
       FixedCols:=Cfg.GetValue('grid/design/fixedcols', 1);
       FixedRows:=Cfg.GetValue('grid/design/fixedrows', 1);
       DefaultRowheight:=Cfg.GetValue('grid/design/defaultrowheight', DEFROWHEIGHT);
       DefaultColWidth:=Cfg.getValue('grid/design/defaultcolwidth', DEFCOLWIDTH);
 
-      Path:='grid/design/columns/';
-      k:=cfg.getValue(Path+'columncount',0);
-      For i:=1 to k do begin
-        j:=cfg.getValue(Path+'column'+IntToStr(i)+'/index',-1);
-        if (j>=0)and(j<=ColCount-1) then begin
-          ColWidths[j]:=cfg.getValue(Path+'column'+IntToStr(i)+'/width',-1);
+      if not Columns.Enabled then begin
+        Path:='grid/design/columns/';
+        k:=cfg.getValue(Path+'columncount',0);
+        for i:=1 to k do begin
+          j:=cfg.getValue(Path+'column'+IntToStr(i)+'/index',-1);
+          if (j>=0)and(j<=ColCount-1) then begin
+            ColWidths[j]:=cfg.getValue(Path+'column'+IntToStr(i)+'/width',-1);
+          end;
         end;
       end;
+
       Path:='grid/design/rows/';
       k:=cfg.getValue(Path+'rowcount',0);
-      For i:=1 to k do begin
+      for i:=1 to k do begin
         j:=cfg.getValue(Path+'row'+IntToStr(i)+'/index',-1);
         if (j>=0)and(j<=ColCount-1) then begin
           RowHeights[j]:=cfg.getValue(Path+'row'+IntToStr(i)+'/height',-1);
