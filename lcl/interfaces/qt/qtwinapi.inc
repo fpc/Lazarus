@@ -4262,61 +4262,41 @@ end;
  ------------------------------------------------------------------------------}
 function TQtWidgetSet.SelectClipRGN(DC: hDC; RGN: HRGN): Longint;
 var
-  ARegion: QRegionH;
+  AIsPolyRegion: boolean = False;
+  QtDC: TQtDeviceContext;
   {$IFNDEF UNIX}
   EmptyRegion: QRegionH;
   {$ENDIF}
-  Painter: QPainterH;
-  R: TRect;
-  AIsPolyRegion: boolean = False;
 begin
   Result := ERROR;
   if IsValidDC(DC) then
   begin
-    Painter := TQtDeviceContext(DC).Widget;
-    if RGN <> 0 then
+    QtDC := TQtDeviceContext(DC);
+    if IsValidGDIObject(RGN) then
     begin
       AIsPolyRegion := TQtRegion(Rgn).IsPolyRegion;
-      QPainter_setClipRegion(Painter, TQtRegion(Rgn).Widget);
-      if AIsPolyRegion then
-      begin
-        Result := COMPLEXREGION;
-        exit;
-      end;
+
+      if AIsPolyRegion or (TQtRegion(Rgn).numRects > 1) then
+        Result := COMPLEXREGION
+      else
+        Result := SIMPLEREGION;
+
+      QtDC.setClipRegion(TQtRegion(Rgn).Widget);
     end else
     begin
       {$IFDEF UNIX}
       {looks like a qt bug, this helps to mac & linux}
-      QPainter_setClipping(Painter, False);
+      QtDC.setClipping(False);
       {$ELSE}
       EmptyRegion := QRegion_create;
       try
-        QPainter_setClipRegion(Painter, EmptyRegion, QtNoClip);
+        QtDC.setClipRegion(EmptyRegion, QtNoClip);
       finally
         QRegion_destroy(EmptyRegion);
       end;
       {$ENDIF}
-    end;
-    if TQtDeviceContext(DC).getClipping then
-    begin
-      ARegion := QRegion_Create;
-      try
-        QPainter_ClipRegion(Painter, ARegion);
-        if QRegion_isEmpty(ARegion) then
-          Result := NULLREGION
-        else
-        begin
-          QRegion_boundingRect(ARegion, @R);
-          if QRegion_contains(ARegion, PRect(@R)) then
-            Result := SIMPLEREGION
-          else
-            Result := COMPLEXREGION;
-        end;
-      finally
-        QRegion_Destroy(ARegion);
-      end;
-    end else
       Result := NULLREGION;
+    end;
   end;
 end;
 
