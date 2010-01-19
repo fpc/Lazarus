@@ -27,8 +27,7 @@ It also provides Extra image attributes (a TStringList).
       </element>
       <element name="TFPMemoryImage"/>
       <element name="TFPCustomImageHandler">
-        <short>
-          <var>TFPCustomImageHandler</var> FreePascal base class for handling images</short>
+        <short>Base class for image handlers.</short>
       </element>
       <element name="TFPCustomImageReader">
         <short>
@@ -240,14 +239,10 @@ This property is useful when working with monochrome or palette based images. Ot
         <short>Handler for Progress events.</short>
       </element>
       <element name="TFPCustomImageClass">
-        <short>
-          <var>TFPCustomImageClass</var> - class of 
-          <var>TFPCustomImage</var>
-        </short>
+        <short>Class of <link id="TFPCustomImage"/>.</short>
       </element>
       <element name="PFPIntegerArray">
-        <short>
-          <var>PFPIntegerArray</var> - pointer to an integer array</short>
+        <short>Pointer to <link id="TFPIntegerArray"/>.</short>
       </element>
       <element name="TFPIntegerArray">
         <short>
@@ -260,31 +255,18 @@ This property is useful when working with monochrome or palette based images. Ot
       <element link="#fcl.FPimage.TFPCustomImage.SetSize" name="TFPMemoryImage.SetSize"/>
       <element name="TFPCustomImageHandler.Progress">
         <short>
-          <var>Progress</var> - method for displaying the progress of a drawing or painting action</short>
-        <descr>
-          <p>
-            <var>Progress</var> - method for displaying the progress of a drawing or painting action</p>
-          <p>Sender: calling routine</p>
-          <p>Stage: Starting, Running or Ending</p>
-          <p>PercentDone: how much has been accomplished</p>
-          <p>RedrawNow: whether to refresh the Image</p>
-          <p>R: the rectangle in which drawing progress is being monitored</p>
-          <p>Msg: a message to show in the progress display</p>
-          <p>Continue: whether to keep on drawing</p>
-        </descr>
+          <printshort id="TFPImgProgressEvent"/>
+        </short>
       </element>
       <element name="TFPCustomImageHandler.TheStream">
-        <short>
-          <var>TheStream</var> from or to which the image is being read or written</short>
+        <short>The stream containing the image.</short>
       </element>
       <element name="TFPCustomImageHandler.TheImage">
-        <short>
-          <var>TheImage</var> which is being read or written</short>
+        <short>The image being read or written.</short>
       </element>
       <element link="#rtl.System.TObject.Create" name="TFPCustomImageHandler.Create"/>
       <element name="TFPCustomImageHandler.OnProgress">
-        <short>
-          <var>OnProgress</var> event handler for showing progress of drawing or painting</short>
+        <short>Progress event handler.</short>
       </element>
       <element name="TFPCustomImageReader.InternalRead">
         <short>
@@ -310,6 +292,7 @@ This property is useful when working with monochrome or palette based images. Ot
       <element name="TFPCustomImageReaderClass">
         <short>
           <var>TFPCustomImageReaderClass</var> - class of 
+          
           <var>TFPCustomImageReader</var>
         </short>
       </element>
@@ -324,6 +307,7 @@ This property is useful when working with monochrome or palette based images. Ot
       <element name="TFPCustomImageWriterClass">
         <short>
           <var>TFPCustomImageWriterClass</var> - class of 
+          
           <var>TFPCustomImageWriter</var>
         </short>
       </element>
@@ -338,7 +322,9 @@ This property is useful when working with monochrome or palette based images. Ot
       <element name="TImageHandlersManager.Create">
         <short>
           <var>Create</var> - constructor fro 
+          
           <var>TImageHandlersManager</var>: calls inherited 
+          
           <var>Create</var> then constructs list of handlers</short>
         <seealso>
           <link id="#rtl.System.TObject.Create">TObject.Create</link>
@@ -347,7 +333,9 @@ This property is useful when working with monochrome or palette based images. Ot
       <element name="TImageHandlersManager.Destroy">
         <short>
           <var>Destroy</var> - destructor for 
+          
           <var>TImageHandlersManager</var>: frees the list of handlers then calls inherited 
+          
           <var>Destroy</var>
         </short>
         <seealso>
@@ -395,10 +383,7 @@ The TFPColor record contains the Red, Green, Blue and Alpha channel values as le
         </seealso>
       </element>
       <element name="PFPColor">
-        <short>
-          <var>PFPColor</var> - pointer to a 
-          <var>TFPColor</var>
-        </short>
+        <short>Pointer to <link id="TFPColor"/>.</short>
       </element>
       <element name="TFPCustomImage.SetHeight">
         <short>Set the image Height in pixels.</short>
