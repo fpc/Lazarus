@@ -514,6 +514,7 @@ type
     property TabOrder;
     property TabStop;
     property TitleFont;
+    property TitleImageList;
     property TitleStyle;
     property UseXORFeatures;
     property Visible;
