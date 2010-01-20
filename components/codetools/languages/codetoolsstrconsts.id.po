@@ -226,6 +226,14 @@ msgstr "direktori komponen dalam %s tidak ada atau merupakan dangling symlink"
 msgid "a directory component in %s is not a directory"
 msgstr "direktori komponen dalam %s bukan sebuah direktori"
 
+#: codetoolsstrconsts.ctsdispidparameterexpectedbutatomfound
+msgid "dispid parameter expected, but %s found"
+msgstr ""
+
+#: codetoolsstrconsts.ctsdispidspecifierredefined
+msgid "dispid specifier redefined"
+msgstr ""
+
 #: codetoolsstrconsts.ctsdoceditordirectory
 msgid "Doc Editor Directory"
 msgstr "Direktori Editor Doc"

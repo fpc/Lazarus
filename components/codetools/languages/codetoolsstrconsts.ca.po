@@ -225,6 +225,14 @@ msgstr "No existeix un component del directori a %s, o és un enllaç simbòlic 
 msgid "a directory component in %s is not a directory"
 msgstr "un directori dels components a %s no és un directori"
 
+#: codetoolsstrconsts.ctsdispidparameterexpectedbutatomfound
+msgid "dispid parameter expected, but %s found"
+msgstr ""
+
+#: codetoolsstrconsts.ctsdispidspecifierredefined
+msgid "dispid specifier redefined"
+msgstr ""
+
 #: codetoolsstrconsts.ctsdoceditordirectory
 msgid "Doc Editor Directory"
 msgstr "Directori de l'editor de documents"

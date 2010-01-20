@@ -228,6 +228,14 @@ msgstr "%s esantis aplanko komponentas neegzistuoja arba jis yra betikslis simbo
 msgid "a directory component in %s is not a directory"
 msgstr "%s esantis aplanko komponentas nėra aplankas"
 
+#: codetoolsstrconsts.ctsdispidparameterexpectedbutatomfound
+msgid "dispid parameter expected, but %s found"
+msgstr ""
+
+#: codetoolsstrconsts.ctsdispidspecifierredefined
+msgid "dispid specifier redefined"
+msgstr ""
+
 #: codetoolsstrconsts.ctsdoceditordirectory
 msgid "Doc Editor Directory"
 msgstr "Dokumentacijos rengyklės aplankas"

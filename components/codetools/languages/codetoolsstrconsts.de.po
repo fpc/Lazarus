@@ -228,6 +228,14 @@ msgstr "ein Verzeichniseintrag in %s ist nicht vorhanden oder es ist ein toter S
 msgid "a directory component in %s is not a directory"
 msgstr "ein Verzeichniseintrag in %s ist kein Verzeichnis"
 
+#: codetoolsstrconsts.ctsdispidparameterexpectedbutatomfound
+msgid "dispid parameter expected, but %s found"
+msgstr ""
+
+#: codetoolsstrconsts.ctsdispidspecifierredefined
+msgid "dispid specifier redefined"
+msgstr ""
+
 #: codetoolsstrconsts.ctsdoceditordirectory
 msgid "Doc Editor Directory"
 msgstr "Doc-Editor-Verzeichnis"

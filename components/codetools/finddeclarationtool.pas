@@ -6324,7 +6324,6 @@ var
       // ToDo: check if identifier in 'Protected' section
 
     end;
-    ResolveBaseTypeOfIdentifier;
   end;
 
   procedure ResolvePoint;
@@ -6345,6 +6344,7 @@ var
       MoveCursorToCleanPos(CurAtom.StartPos);
       RaiseIllegalQualifierFound;
     end;
+    ResolveBaseTypeOfIdentifier;
     if (ExprType.Context.Node.Desc in AllUsableSourceTypes) then begin
       // identifier in front of the point is a unit name
       {$IFDEF ShowExprEval}
@@ -6420,6 +6420,7 @@ var
       ReadNextAtom;
       RaiseIllegalQualifierFound;
     end;
+    ResolveBaseTypeOfIdentifier;
     if (ExprType.Desc=xtPointer) then exit;
     if (ExprType.Context.Node<>StartContext.Node) then begin
       // left side of expression has defined a special context
@@ -6490,7 +6491,6 @@ var
       exit;
     end;
     
-    //debugln('ResolveEdgedBracketOpen A ',ExprType.Context.Node.DescAsString);
     case ExprType.Context.Node.Desc of
 
     ctnOpenArrayType,ctnRangedArrayType:
@@ -6695,7 +6695,7 @@ begin
   StartContext.Node:=Params.ContextNode;
   StartContext.Tool:=Self;
   {$IFDEF ShowExprEval}
-  DebugLn('[TFindDeclarationTool.FindExpressionTypeOfVariable]',
+  DebugLn('[TFindDeclarationTool.FindExpressionTypeOfTerm]',
     ' Flags=[',FindDeclarationFlagsAsString(Params.Flags),']',
     ' StartContext=',StartContext.Node.DescAsString,'=',dbgstr(copy(StartContext.Tool.Src,StartContext.Node.StartPos,15))
   );
@@ -6703,14 +6703,14 @@ begin
 
   if not InitAtomQueue then exit;
   {$IFDEF ShowExprEval}
-  DebugLn(['TFindDeclarationTool.FindExpressionTypeOfVariable Expression="',copy(Src,StartPos,EndPos-StartPos),'"']);
+  DebugLn(['TFindDeclarationTool.FindExpressionTypeOfTerm Expression="',copy(Src,StartPos,EndPos-StartPos),'"']);
   {$ENDIF}
   ExprType.Desc:=xtContext;
   ExprType.SubDesc:=xtNone;
   ExprType.Context:=StartContext;
   repeat
     {$IFDEF ShowExprEval}
-    DebugLn('  FindExpressionTypeOfVariable CurAtomType=',
+    DebugLn('  FindExpressionTypeOfTerm CurAtomType=',
       VariableAtomTypeNames[CurAtomType],' CurAtom="',GetAtom(CurAtom),'"',
       ' ExprType=',ExprTypeToString(ExprType));
     {$ENDIF}
@@ -6731,7 +6731,7 @@ begin
     Result:=Result.Context.Tool.ConvertNodeToExpressionType(
                  Result.Context.Node,Params);
   {$IFDEF ShowExprEval}
-  DebugLn('  FindExpressionTypeOfVariable Result=',ExprTypeToString(Result));
+  DebugLn('  FindExpressionTypeOfTerm Result=',ExprTypeToString(Result));
   {$ENDIF}
 end;
 

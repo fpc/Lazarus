@@ -229,6 +229,14 @@ msgstr "część ścieżki w %s nie istnieje lub jest popsutym dowiązaniem symb
 msgid "a directory component in %s is not a directory"
 msgstr "część ścieżki w %s nie jest katalogiem"
 
+#: codetoolsstrconsts.ctsdispidparameterexpectedbutatomfound
+msgid "dispid parameter expected, but %s found"
+msgstr ""
+
+#: codetoolsstrconsts.ctsdispidspecifierredefined
+msgid "dispid specifier redefined"
+msgstr ""
+
 #: codetoolsstrconsts.ctsdoceditordirectory
 msgid "Doc Editor Directory"
 msgstr "Katalog edytora dokumentacji"

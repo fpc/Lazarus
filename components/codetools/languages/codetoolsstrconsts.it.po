@@ -224,6 +224,14 @@ msgstr "un componente directory in %s non esiste o è un collegamento simbolico 
 msgid "a directory component in %s is not a directory"
 msgstr "una directory componente in %s non è una directory"
 
+#: codetoolsstrconsts.ctsdispidparameterexpectedbutatomfound
+msgid "dispid parameter expected, but %s found"
+msgstr ""
+
+#: codetoolsstrconsts.ctsdispidspecifierredefined
+msgid "dispid specifier redefined"
+msgstr ""
+
 #: codetoolsstrconsts.ctsdoceditordirectory
 msgid "Doc Editor Directory"
 msgstr "Directory di documentazione editor"

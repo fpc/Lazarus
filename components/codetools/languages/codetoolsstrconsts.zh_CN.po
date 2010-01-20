@@ -228,6 +228,14 @@ msgstr "a directory component in %s does not exist or is a dangling symlink"
 msgid "a directory component in %s is not a directory"
 msgstr "组件目录 %s 不是一个目录"
 
+#: codetoolsstrconsts.ctsdispidparameterexpectedbutatomfound
+msgid "dispid parameter expected, but %s found"
+msgstr ""
+
+#: codetoolsstrconsts.ctsdispidspecifierredefined
+msgid "dispid specifier redefined"
+msgstr ""
+
 #: codetoolsstrconsts.ctsdoceditordirectory
 msgid "Doc Editor Directory"
 msgstr "Doc 编辑器目录"
