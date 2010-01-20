@@ -391,13 +391,14 @@ begin
   // find first variable/method/GUID
   FCompletingStartNode:=FCodeCompleteClassNode.FirstChild;
   while FCompletingStartNode<>nil do begin
-    if FCompletingStartNode.Desc in AllClassSections then
-      FCompletingStartNode:=FCompletingStartNode.Next
-    else if FCompletingStartNode.Desc in (AllIdentifierDefinitions
-      +[ctnProperty,ctnProcedure])
-    then
-      break
-    else
+    if (FCompletingStartNode.Desc in AllClassSections)
+    and (FCompletingStartNode.FirstChild<>nil)
+    and (FCompletingStartNode.FirstChild.Desc in (AllIdentifierDefinitions
+      +[ctnProperty,ctnProcedure,ctnClassGUID]))
+    then begin
+      FCompletingStartNode:=FCompletingStartNode.FirstChild;
+      break;
+    end else
       FCompletingStartNode:=FCompletingStartNode.NextBrother;
   end;
 end;
