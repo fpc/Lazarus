@@ -1497,7 +1497,7 @@ begin
       Add('destructor');
     end;
 
-  ctnClassInterface,ctnObjCProtocol,ctnCPPClass:
+  ctnClassInterface,ctnDispinterface,ctnObjCProtocol,ctnCPPClass:
     begin
       Add('procedure');
       Add('function');

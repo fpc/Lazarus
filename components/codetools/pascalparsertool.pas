@@ -3568,6 +3568,9 @@ begin
   if UpAtomIs('INTERFACE') then
     IntfDesc:=ctnClassInterface
   else
+  if UpAtomIs('DISPINTERFACE') then
+    IntfDesc:=ctnDispinterface
+  else
     IntfDesc:=ctnObjCProtocol;
   if ChildCreated then begin
     CreateChildNode;
@@ -4658,7 +4661,7 @@ procedure TPascalParserTool.BuildSubTree(ANode: TCodeTreeNode);
 begin
   if ANode=nil then exit;
   case ANode.Desc of
-  ctnClass,ctnClassInterface,ctnObject,
+  ctnClass,ctnClassInterface,ctnDispinterface,ctnObject,
   ctnObjCClass,ctnObjCCategory,ctnObjCProtocol,ctnCPPClass:
     BuildSubTreeForClass(ANode);
   ctnProcedure,ctnProcedureHead:

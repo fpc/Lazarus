@@ -4623,7 +4623,7 @@ function TCodeCompletionCodeTool.BuildUnitDefinitionGraph(out
         end;
       end;
 
-    ctnRecordType, ctnClassInterface, ctnClass, ctnObject,
+    ctnRecordType, ctnClassInterface, ctnDispinterface, ctnClass, ctnObject,
     ctnObjCClass, ctnObjCCategory, ctnObjCProtocol, ctnCPPClass:
       begin
         ChildNode:=SubNode.FirstChild;

@@ -6614,7 +6614,7 @@ begin
   Node:=Tree.Root;
   while Node<>nil do begin
     case Node.Desc of
-    ctnClass,ctnClassInterface,ctnObject,
+    ctnClass,ctnClassInterface,ctnDispinterface,ctnObject,
     ctnObjCClass,ctnObjCCategory,ctnObjCProtocol,ctnCPPClass:
       BuildSubTreeForClass(Node);
     ctnProcedure,ctnProcedureHead:

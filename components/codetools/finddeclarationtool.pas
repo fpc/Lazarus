@@ -2110,7 +2110,7 @@ begin
           TypeNode:=NewTool.FindTypeNodeOfDefinition(NewNode);
           if TypeNode<>nil then begin
             case TypeNode.Desc of
-            ctnIdentifier, ctnClass, ctnClassInterface, ctnObject,
+            ctnIdentifier, ctnClass, ctnClassInterface, ctnDispinterface, ctnObject,
             ctnObjCClass, ctnObjCCategory, ctnObjCProtocol, ctnCPPClass:
               begin
                 NewTool.MoveCursorToNodeStart(TypeNode);
@@ -2871,7 +2871,7 @@ var
           // of the prior node
           ;
 
-        ctnClass, ctnClassInterface, ctnObject,
+        ctnClass, ctnClassInterface, ctnDispinterface, ctnObject,
         ctnObjCClass, ctnObjCCategory, ctnObjCProtocol, ctnCPPClass,
         ctnRecordType, ctnRecordCase:
           // do not search again in this node, go on ...
@@ -2981,7 +2981,7 @@ begin
         ctnClassPublic, ctnClassPrivate, ctnClassProtected, ctnClassPublished,
         ctnClassTypePublished,ctnClassTypePublic,ctnClassTypeProtected,ctnClassTypePrivate,
         ctnClassVarPublished,ctnClassVarPublic,ctnClassVarProtected,ctnClassVarPrivate,
-        ctnClass, ctnClassInterface, ctnObject,
+        ctnClass, ctnClassInterface, ctnDispinterface, ctnObject,
         ctnObjCClass, ctnObjCCategory, ctnObjCProtocol, ctnCPPClass,
         ctnRecordType, ctnRecordVariant,
         ctnParameterList:
@@ -6516,7 +6516,7 @@ var
       ExprType.Context:=ExprType.Context.Tool.FindBaseTypeOfNode(Params,
                                               ExprType.Context.Node.FirstChild);
 
-    ctnClass, ctnClassInterface, ctnObject,
+    ctnClass, ctnClassInterface, ctnDispinterface, ctnObject,
     ctnObjCClass, ctnObjCCategory, ctnObjCProtocol, ctnCPPClass,
     ctnProperty, ctnGlobalProperty:
       begin
@@ -8029,7 +8029,7 @@ begin
           // same context type
           case ExprNode.Desc of
           
-          ctnClass,ctnClassInterface, ctnObject,
+          ctnClass, ctnClassInterface, ctnDispinterface, ctnObject,
           ctnObjCClass, ctnObjCCategory, ctnObjCProtocol, ctnCPPClass:
             // check, if ExpressionType.Context is descend of TargetContext
             if ContextIsDescendOf(ExpressionType.Context,
@@ -9563,7 +9563,7 @@ begin
             Result:=GetIdentifier(@FindContext.Tool.Src[ANode.StartPos]);
           end;
 
-        ctnClass, ctnClassInterface, ctnObject,
+        ctnClass, ctnClassInterface, ctnDispinterface, ctnObject,
         ctnObjCClass, ctnObjCCategory, ctnObjCProtocol, ctnCPPClass:
           if (FindContext.Node.Parent<>nil)
           and (FindContext.Node.Parent.Desc in [ctnTypeDefinition,ctnGenericType])
