@@ -305,6 +305,9 @@ type
     procedure(sender: TObject; aCol, aRow: Integer;
               const OldValue: string; var NewValue: String) of object;
 
+  TToggledCheckboxEvent = procedure(sender: TObject;
+                                    aState: TCheckboxState) of object;
+
   { TVirtualGrid }
 
   TVirtualGrid=class
@@ -619,6 +622,7 @@ type
     FCol,FRow, FFixedCols, FFixedRows: Integer;
     FOnEditButtonClick: TNotifyEvent;
     FOnPickListSelect: TNotifyEvent;
+    FOnCheckboxToggled: TToggledCheckboxEvent;
     FOnPrepareCanvas: TOnPrepareCanvasEvent;
     FOnSelectEditor: TSelectEditorEvent;
     FOnValidateEntry: TValidateEntryEvent;
@@ -1013,6 +1017,7 @@ type
     property VisibleRowCount: Integer read GetVisibleRowCount stored false;
 
     property OnBeforeSelection: TOnSelectEvent read FOnBeforeSelection write FOnBeforeSelection;
+    property OnCheckboxToggled: TToggledcheckboxEvent read FOnCheckboxToggled write FOnCheckboxToggled;
     property OnCompareCells: TOnCompareCells read FOnCompareCells write FOnCompareCells;
     property OnPrepareCanvas: TOnPrepareCanvasEvent read FOnPrepareCanvas write FOnPrepareCanvas;
     property OnDrawCell: TOnDrawCell read FOnDrawCell write FOnDrawCell;
@@ -1302,6 +1307,7 @@ type
     property VisibleRowCount;
 
     property OnBeforeSelection;
+    property OnCheckboxToggled;
     property OnClick;
     property OnColRowDeleted;
     property OnColRowExchanged;
@@ -1495,6 +1501,7 @@ type
 
     property OnBeforeSelection;
     property OnChangeBounds;
+    property OnCheckboxToggled;
     property OnClick;
     property OnColRowDeleted;
     property OnColRowExchanged;
@@ -8394,6 +8401,9 @@ begin
       AState := cbChecked;
 
     SetCheckboxState(Col, Row, AState);
+
+    if Assigned(OnCheckboxToggled) then
+      OnCheckboxToggled(self, AState);
   end;
 end;
 
