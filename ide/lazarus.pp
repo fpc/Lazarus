@@ -72,7 +72,7 @@ uses
       SQLDBLaz, DBFLaz,
     {$ENDIF}
   {$ENDIF}
-  MainBase, compiler_conditionals_options;
+  MainBase;
 
 {$I revision.inc}
 {$R lazarus.res}
