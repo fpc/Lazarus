@@ -6157,22 +6157,26 @@ var
   var BehindFuncAtomType: TVariableAtomType;
   begin
     if IsIdentEndOfVar=iieovUnknown then begin
-      MoveCursorToCleanPos(CurAtom.EndPos);
-      ReadNextAtom;
-      if AtomIsChar('(') then begin
-        ReadTilBracketClose(true);
+      if CurAtom.Flag=cafWord then begin
+        MoveCursorToCleanPos(CurAtom.EndPos);
         ReadNextAtom;
-      end;
-      if CurPos.StartPos<EndPos then begin
-        BehindFuncAtomType:=GetCurrentAtomType;
-        if (BehindFuncAtomType in [vatPoint,vatUP,
-          vatEdgedBracketOpen,vatRoundBracketOpen])
-        then
-          IsIdentEndOfVar:=iieovNo
-        else
+        if AtomIsChar('(') then begin
+          ReadTilBracketClose(true);
+          ReadNextAtom;
+        end;
+        if CurPos.StartPos<EndPos then begin
+          BehindFuncAtomType:=GetCurrentAtomType;
+          if (BehindFuncAtomType in [vatPoint,vatUP,
+            vatEdgedBracketOpen,vatRoundBracketOpen])
+          then
+            IsIdentEndOfVar:=iieovNo
+          else
+            IsIdentEndOfVar:=iieovYes;
+        end else begin
           IsIdentEndOfVar:=iieovYes;
+        end;
       end else begin
-        IsIdentEndOfVar:=iieovYes;
+        IsIdentEndOfVar:=iieovNo
       end;
     end;
     Result:=(IsIdentEndOfVar=iieovYes);
@@ -6187,6 +6191,7 @@ var
   var
     ProcNode, FuncResultNode: TCodeTreeNode;
   begin
+    //DebugLn(['ResolveBaseTypeOfIdentifier ',ExprType.Context.Node<>nil]);
     if (ExprType.Context.Node<>nil) then begin
       // check if at the end of the variable
       if IsIdentifierEndOfVariable and (fdfFindVariable in StartFlags) then
@@ -6196,10 +6201,13 @@ var
       // find base type
       Exclude(Params.Flags,fdfFunctionResult);
       {$IFDEF ShowExprEval}
-      DebugLn('  ResolveBaseTypeOfIdentifier ExprType=',ExprTypeToString(ExprType));
+      DebugLn('  ResolveBaseTypeOfIdentifier BEFORE ExprType=',ExprTypeToString(ExprType));
       {$ENDIF}
       ExprType:=ExprType.Context.Tool.ConvertNodeToExpressionType(
                                                   ExprType.Context.Node,Params);
+      {$IFDEF ShowExprEval}
+      DebugLn('  ResolveBaseTypeOfIdentifier AFTER ExprType=',ExprTypeToString(ExprType));
+      {$ENDIF}
       if (ExprType.Desc=xtContext)
       and (ExprType.Context.Node.Desc in [ctnProcedure,ctnProcedureHead]) then
       begin
