@@ -456,6 +456,8 @@ end;
 
 class procedure TGtk2WSProgressBar.SetPosition(
   const AProgressBar: TCustomProgressBar; const NewPosition: integer);
+var
+  fraction:gdouble;
 begin
   if not WSCheckHandleAllocated(AProgressBar, 'TGtk2WSProgressBar.SetPosition') then
     Exit;
@@ -464,9 +466,12 @@ begin
   // 0.0 and 1.0, and we calculate that with:
   // (Pos - Min) / (Max - Min)
   // regardless if any of them is negative the result is correct
-  gtk_progress_bar_set_fraction(PGtkProgressBar(AProgressBar.Handle),
-    (NewPosition - AProgressBar.Min) /
-    (AProgressBar.Max - AProgressBar.Min));
+  if ((AProgressBar.Max - AProgressBar.Min) <> 0) then
+    fraction:=(NewPosition - AProgressBar.Min) / (AProgressBar.Max - AProgressBar.Min)
+  else
+    fraction:=0;
+
+  gtk_progress_bar_set_fraction(PGtkProgressBar(AProgressBar.Handle), fraction);
 
   UpdateProgressBarText(AProgressBar);
 end;
