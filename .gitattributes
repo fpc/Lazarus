@@ -582,6 +582,7 @@ components/codetools/resourcecodetool.pas svneol=native#text/pascal
 components/codetools/sourcechanger.pas svneol=native#text/pascal
 components/codetools/sourcelog.pas svneol=native#text/pascal
 components/codetools/stdcodetools.pas svneol=native#text/pascal
+components/compilers/c/examples/test.c svneol=native#text/plain
 components/compilers/c/lazc.lpk svneol=native#text/plain
 components/compilers/c/lazc.pas svneol=native#text/plain
 components/compilers/c/lazcstrconsts.pas svneol=native#text/plain
