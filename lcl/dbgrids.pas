@@ -298,6 +298,7 @@ type
     FKeyBookmark: TBookmarkStr;
     FKeySign: Integer;
     procedure EmptyGrid;
+    function GetColumns: TDBGridColumns;
     function GetCurrentColumn: TColumn;
     function GetCurrentField: TField;
     function GetDataSource: TDataSource;
@@ -315,6 +316,7 @@ type
     procedure OnNewDataSet(aDataSet: TDataset);
     procedure OnDataSetScrolled(aDataSet:TDataSet; Distance: Integer);
     procedure OnUpdateData(aDataSet: TDataSet);
+    procedure SetColumns(const AValue: TDBGridColumns);
     //procedure ReadColumns(Reader: TReader);
     //procedure SetColumns(const AValue: TDBGridColumns);
     procedure SetCurrentField(const AValue: TField);
@@ -422,6 +424,7 @@ type
     procedure WMVScroll(var Message : TLMVScroll); message LM_VScroll;
     procedure WndProc(var TheMessage : TLMessage); override;
 
+    property Columns: TDBGridColumns read GetColumns write SetColumns;
     property GridStatus: TDBGridStatus read FGridStatus write FGridStatus;
     property DataSource: TDataSource read GetDataSource write SetDataSource;
     property Options: TDBGridOptions read FOptions write SetOptions default
@@ -733,6 +736,11 @@ begin
     ColWidths[0]:=12;
 end;
 
+function TCustomDBGrid.GetColumns: TDBGridColumns;
+begin
+  result := TDBGridColumns( inherited Columns );
+end;
+
 procedure TCustomDBGrid.InvalidateSizes;
 begin
   GridFlags := GridFlags + [gfVisualChange];
@@ -873,6 +881,12 @@ procedure TCustomDBGrid.OnUpdateData(aDataSet: TDataSet);
 begin
   UpdateData;
 end;
+
+procedure TCustomDBGrid.SetColumns(const AValue: TDBGridColumns);
+begin
+  inherited Columns := TGridColumns(AValue);
+end;
+
 {
 procedure TCustomDBGrid.ReadColumns(Reader: TReader);
 begin
