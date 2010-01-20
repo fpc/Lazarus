@@ -1113,6 +1113,7 @@ begin
     Add('IMPLEMENTS',{$ifdef FPC}@{$endif}AllwaysTrue);
     Add('DEFAULT',{$ifdef FPC}@{$endif}AllwaysTrue);
     Add('NODEFAULT',{$ifdef FPC}@{$endif}AllwaysTrue);
+    Add('DISPID',{$ifdef FPC}@{$endif}AllwaysTrue);
   end;
   
   WordIsBlockKeyWord:=TKeyWordFunctionList.Create;

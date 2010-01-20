@@ -5077,6 +5077,7 @@ function TCodeCompletionCodeTool.CompleteProperty(
    property X: integer index 1 read GetCoords write SetCoords stored IsStored;
    property C: char read GetC stored False default 'A';
    property Col8: ICol8 read FCol8 write FCol8 implements ICol8, IColor;
+   property Visible: WordBool readonly dispid 401;
 
    property specifiers without parameters:
      ;nodefault, ;default
@@ -5103,7 +5104,9 @@ type
                ppDefaultWord,// 'default'  (the default value keyword,
                              //             not the default property)
                ppDefault,    // default constant
-               ppNoDefaultWord// 'nodefault'
+               ppNoDefaultWord,// 'nodefault'
+               ppDispidWord, // 'dispid'
+               ppDispid      // dispid constant
                );
 
 var
@@ -5232,6 +5235,23 @@ var AccessParam, AccessParamPrefix, CleanAccessFunc, AccessFunc,
       PartIsAtom[ppIndex]:=false;
     end;
   end;
+
+  procedure ReadDispidSpecifier;
+  begin
+    if UpAtomIs('DISPID') then begin
+      if Parts[ppDispidWord].StartPos>=1 then
+        RaiseException(ctsDispidSpecifierRedefined);
+      Parts[ppDispidWord]:=CurPos;
+      ReadNextAtom;
+      if WordIsPropertySpecifier.DoItCaseInsensitive(Src,CurPos.StartPos,
+        CurPos.EndPos-CurPos.StartPos) then
+        RaiseExceptionFmt(ctsDispidParameterExpectedButAtomFound,[GetAtom]);
+      Parts[ppDispid].StartPos:=CurPos.StartPos;
+      ReadConstant(true,false,[]);
+      Parts[ppDispid].EndPos:=LastAtoms.GetValueAt(0).EndPos;
+      PartIsAtom[ppDispid]:=false;
+    end;
+  end;
   
   procedure ReadReadSpecifier;
   begin
@@ -5242,7 +5262,7 @@ var AccessParam, AccessParamPrefix, CleanAccessFunc, AccessFunc,
   begin
     if UpAtomIs('WRITE') then ReadSimpleSpec(ppWriteWord,ppWrite);
   end;
-  
+
   procedure ReadOptionalSpecifiers;
   begin
     while (CurPos.StartPos<PropNode.EndPos) do begin
@@ -5276,7 +5296,7 @@ var AccessParam, AccessParamPrefix, CleanAccessFunc, AccessFunc,
             RaiseExceptionFmt(ctsIndexParameterExpectedButAtomFound,[GetAtom]);
           ReadNextAtom;
         end;
-      end else
+      end else 
         RaiseExceptionFmt(ctsStrExpectedButAtomFound,[';',GetAtom]);
     end;
   end;
@@ -5640,10 +5660,16 @@ begin
   
   ReadPropertyType;
   // parse specifiers
-  ReadIndexSpecifier;
-  ReadReadSpecifier;
-  ReadWriteSpecifier;
-  ReadOptionalSpecifiers;
+  if CodeCompleteClassNode.Desc <> ctnDispinterface then begin
+    ReadIndexSpecifier;
+    ReadReadSpecifier;
+    ReadWriteSpecifier;
+    ReadOptionalSpecifiers;
+  end else begin
+    if UpAtomIs('READONLY') or UpAtomIs('WRITEONLY') then
+      ReadNextAtom;
+    ReadDispidSpecifier;
+  end;
   PropType:=copy(Src,Parts[ppType].StartPos,
                  Parts[ppType].EndPos-Parts[ppType].StartPos);
   if Parts[ppUnitType].StartPos>0 then
@@ -5652,9 +5678,11 @@ begin
                
   // complete property
   BeautifyCodeOpts:=ASourceChangeCache.BeautifyCodeOptions;
-  CompleteReadSpecifier;
-  CompleteWriteSpecifier;
-  CompleteStoredSpecifier;
+  if CodeCompleteClassNode.Desc <> ctnDispinterface then begin
+    CompleteReadSpecifier;
+    CompleteWriteSpecifier;
+    CompleteStoredSpecifier;
+  end;
   CompleteSemicolon;
   
   Result:=true;

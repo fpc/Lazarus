@@ -2020,10 +2020,13 @@ function TPascalParserTool.KeyWordFuncClassProperty: boolean;
    property X: integer index 1 read GetCoords write SetCoords stored IsStored; deprecated;
    property Col8: ICol8 read FCol8 write FCol8 implements ICol8, IColor;
    property Value: Integer read FCurrent; enumerator Current;
+   property Visible: WordBool readonly dispid 401;
 
    property specifiers before semicolon:
      index <id or number>, read <id>, write <id>, stored <id>, default <constant>,
      implements <id>[,<id>...], nodefault
+   for dispinterfaces:
+     dispid <number>, readonly, writeonly
    property modifiers after semicolon:
      default, deprecated, enumerator <id>
 }

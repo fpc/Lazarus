@@ -151,6 +151,8 @@ ResourceString
   ctsDefaultParameterExpectedButAtomFound = 'default parameter expected, but %s found';
   ctsNodefaultSpecifierDefinedTwice = 'nodefault specifier defined twice';
   ctsImplementationNodeNotFound = 'implementation node not found';
+  ctsDispidSpecifierRedefined = 'dispid specifier redefined';
+  ctsDispidParameterExpectedButAtomFound = 'dispid parameter expected, but %s found';
   ctsClassNodeWithoutParentNode = 'class node without parent node';
   ctsTypeSectionOfClassNotFound = 'type section of class not found';
   ctsUnableToCompleteProperty = 'unable to complete property';
