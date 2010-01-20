@@ -6354,11 +6354,11 @@ var
       ReadNextAtom;
       RaiseIdentExpected;
     end;
+    ResolveBaseTypeOfIdentifier;
     if (ExprType.Context.Node=nil) then begin
       MoveCursorToCleanPos(CurAtom.StartPos);
       RaiseIllegalQualifierFound;
     end;
-    ResolveBaseTypeOfIdentifier;
     if (ExprType.Context.Node.Desc in AllUsableSourceTypes) then begin
       // identifier in front of the point is a unit name
       {$IFDEF ShowExprEval}
