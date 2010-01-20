@@ -803,7 +803,7 @@ end;
 
 function GetCompiledTargetOS: string;
 begin
-  Result:=lowerCase({$I %FPCTARGETCPU%});
+  Result:=lowerCase({$I %FPCTARGETOS%});
 end;
 
 function GetDefaultCompilerFilename: string;
