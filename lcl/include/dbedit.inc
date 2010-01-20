@@ -163,7 +163,7 @@ end;
 procedure TDBEdit.KeyPress(var Key: char);
   function CanAcceptKey: boolean;
   begin
-    Result := Field.IsValidChar(Key) and
+    Result := (Field<>nil) and Field.IsValidChar(Key) and
               (Field.DataType<>ftAutoInc);
   end;
 var
