@@ -248,7 +248,9 @@ type
     xtQWord,       // qword
     xtBoolean,     // boolean
     xtByteBool,    // bytebool
+    xtWordBool,    // wordbool
     xtLongBool,    // longbool
+    xtQWordBool,   // qwordbool
     xtString,      // string
     xtAnsiString,  // ansistring
     xtShortString, // shortstring
@@ -293,7 +295,9 @@ const
     'QWord',
     'Boolean',
     'ByteBool',
+    'WordBool',
     'LongBool',
+    'QWordBool',
     'String',
     'AnsiString',
     'ShortString',
@@ -324,7 +328,7 @@ const
   xtAllIntegerTypes = [xtInt64, xtQWord, xtConstOrdInteger, xtLongint,
                        xtLongWord, xtWord, xtCardinal, xtSmallInt, xtShortInt,
                        xtByte];
-  xtAllBooleanTypes = [xtBoolean, xtByteBool, xtLongBool];
+  xtAllBooleanTypes = [xtBoolean, xtByteBool, xtWordBool, xtLongBool,xtQWordBool];
   xtAllRealTypes = [xtReal, xtConstReal, xtSingle, xtDouble, xtExtended,
                     xtCurrency, xtComp];
   xtAllStringTypes = [xtConstString, xtShortString, xtString, xtAnsiString];
@@ -977,8 +981,12 @@ begin
     Result:=xtBoolean
   else if CompareIdentifiers(Identifier,'BYTEBOOL')=0 then
     Result:=xtByteBool
+  else if CompareIdentifiers(Identifier,'WORDBOOL')=0 then
+    Result:=xtWordBool
   else if CompareIdentifiers(Identifier,'LONGBOOL')=0 then
     Result:=xtLongBool
+  else if CompareIdentifiers(Identifier,'QWORDBOOL')=0 then
+    Result:=xtQWordBool
   else if CompareIdentifiers(Identifier,'CHAR')=0 then
     Result:=xtChar
   else if CompareIdentifiers(Identifier,'WIDECHAR')=0 then
@@ -5048,7 +5056,7 @@ function TFindDeclarationTool.FindExpressionResultType(
 - the type of a subrange is the type of the first constant/enum/number/char
 - predefined types:
     ordinal:
-      int64, cardinal, QWord, boolean, bytebool, longbool, char
+      int64, cardinal, QWord, boolean, bytebool, wordbool, qwordbool, longbool, char
       
     real:
       real, single, double, extended, comp, currency
@@ -8971,7 +8979,9 @@ begin
     xtQWord,
     xtBoolean,
     xtByteBool,
+    xtWordBool,
     xtLongBool,
+    xtQWordBool,
     xtPointer,
     xtFile,
     xtText,
@@ -9623,7 +9633,9 @@ begin
         xtQWord,
         xtBoolean,
         xtByteBool,
+        xtWordBool,
         xtLongBool,
+        xtQWordBool,
         xtString,
         xtAnsiString,
         xtShortString,
@@ -9653,7 +9665,9 @@ begin
 
     xtBoolean,
     xtByteBool,
-    xtLongBool:
+    xtWordBool,
+    xtLongBool,
+    xtQWordBool:
       Result:=ExpressionTypeDescNames[xtBoolean];
 
     xtString,

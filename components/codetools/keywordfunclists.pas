@@ -1422,6 +1422,8 @@ begin
     Add('ANSISTRING' ,{$ifdef FPC}@{$endif}AllwaysTrue);
     Add('BOOLEAN'    ,{$ifdef FPC}@{$endif}AllwaysTrue);
     Add('BYTEBOOL'   ,{$ifdef FPC}@{$endif}AllwaysTrue);
+    Add('WORDBOOL'   ,{$ifdef FPC}@{$endif}AllwaysTrue);
+    Add('QWORDBOOL'  ,{$ifdef FPC}@{$endif}AllwaysTrue);
     Add('CARDINAL'   ,{$ifdef FPC}@{$endif}AllwaysTrue);
     Add('CHAR'       ,{$ifdef FPC}@{$endif}AllwaysTrue);
     Add('COMP'       ,{$ifdef FPC}@{$endif}AllwaysTrue);
@@ -1460,6 +1462,7 @@ begin
   with WordIsPredefinedDelphiIdentifier do begin
     Add('ANSISTRING' ,{$ifdef FPC}@{$endif}AllwaysTrue);
     Add('BOOLEAN'    ,{$ifdef FPC}@{$endif}AllwaysTrue);
+    Add('WORDBOOL'   ,{$ifdef FPC}@{$endif}AllwaysTrue);
     Add('CARDINAL'   ,{$ifdef FPC}@{$endif}AllwaysTrue);
     Add('CHAR'       ,{$ifdef FPC}@{$endif}AllwaysTrue);
     Add('COMP'       ,{$ifdef FPC}@{$endif}AllwaysTrue);

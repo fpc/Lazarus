@@ -1272,7 +1272,9 @@ begin
   AddBaseType('QWord');
   AddBaseType('Boolean');
   AddBaseType('ByteBool');
+  AddBaseType('WordBool');
   AddBaseType('LongBool');
+  AddBaseType('QWordBool');
   AddBaseType('String');
   AddBaseType('AnsiString');
   AddBaseType('ShortString');
@@ -2353,7 +2355,7 @@ begin
 
     case ExprType.Desc of
 
-    xtBoolean,xtByteBool,xtLongBool:
+    xtBoolean,xtByteBool,xtWordBool,xtLongBool,xtQWordBool:
       begin
         List.Add('True');
         List.Add('False');
