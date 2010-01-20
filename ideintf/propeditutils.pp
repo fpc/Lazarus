@@ -20,8 +20,6 @@ uses
   Classes, LCLProc, SysUtils, TypInfo;
 
 type
-  TGetStringProc = procedure(const s:ansistring) of object;
-
   {
     The TPersistentSelectionList is simply a list of TPersistent references.
     It will never create or free any object. It is used by the property

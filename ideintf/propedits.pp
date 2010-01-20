@@ -47,7 +47,7 @@ const
 type
 
   TPersistentSelectionList = PropEditUtils.TPersistentSelectionList;
-  TGetStringProc = PropEditUtils.TGetStringProc;
+  TGetStringProc = Classes.TGetStrProc;
 
 { TPropertyEditor
   Edits a property of a component, or list of components, selected into the
