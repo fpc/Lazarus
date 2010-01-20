@@ -3656,6 +3656,7 @@ begin
   FreeThenNil(FMouseHintTimer);
   FreeThenNil(FHintWindow);
   SourceEditorWindow:=nil;
+  FreeAndNil(fCompletionPlugins);
 
   inherited Destroy;
   if SourceNotebook=Self then
@@ -5175,7 +5176,8 @@ begin
   inherited Notification(AComponent, Operation);
   if Operation=opRemove then
   begin
-    fCompletionPlugins.Remove(AComponent);
+    if Assigned(fCompletionPlugins) then
+      fCompletionPlugins.Remove(AComponent);
     if FActiveCompletionPlugin=AComponent then
       FActiveCompletionPlugin:=nil;
   end;
