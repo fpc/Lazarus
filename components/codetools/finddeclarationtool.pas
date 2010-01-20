@@ -6197,6 +6197,12 @@ var
       if IsIdentifierEndOfVariable and (fdfFindVariable in StartFlags) then
         // the variable is wanted, not its type
         exit;
+      if (ExprType.Context.Node.Desc=ctnProperty)
+      and ExprType.Context.Tool.PropertyNodeHasParamList(ExprType.Context.Node)
+      then begin
+        // the parameter list is resolved with the [] operators
+        exit;
+      end;
 
       // find base type
       Exclude(Params.Flags,fdfFunctionResult);
@@ -6488,6 +6494,8 @@ var
       ReadNextAtom;
       RaiseIllegalQualifierFound;
     end;
+    ResolveBaseTypeOfIdentifier;
+
     if ExprType.Desc in xtAllStringTypes then begin
       ExprType.Desc:=xtChar;
       ExprType.Context.Node:=nil;
@@ -6498,7 +6506,8 @@ var
       ExprType.Context.Node:=nil;
       exit;
     end;
-    
+
+    //DebugLn(['ResolveEdgedBracketOpen ',ExprTypeToString(ExprType)]);
     case ExprType.Context.Node.Desc of
 
     ctnOpenArrayType,ctnRangedArrayType:
