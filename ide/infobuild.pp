@@ -30,7 +30,7 @@ unit InfoBuild;
 interface
 
 uses
-  Classes, SysUtils, Forms, Controls, Graphics, Dialogs, Buttons,
+  Classes, SysUtils, Forms, Controls, Graphics, Dialogs, Buttons, LCLType,
   LCLProc, ExtCtrls, StdCtrls, ExtDlgs, LazIDEIntf, LazarusIDEStrConsts;
 
 type
@@ -64,6 +64,7 @@ type
     PnlTitle : TPanel;
     procedure BCloseClick(Sender: TObject);
     procedure FormCreate(Sender: TObject);
+    procedure FormKeyDown(Sender: TObject; var Key: Word; Shift: TShiftState);
   private
     NHints    : Integer;
     NWarnings : Integer;
@@ -144,6 +145,12 @@ begin
   SetStatus('');
 end;
 
+procedure TCompileInfoDlg.FormKeyDown(Sender: TObject; var Key: Word;
+  Shift: TShiftState);
+begin
+  if Key = VK_ESCAPE then
+    BCloseClick(Sender);
+end;
 
 procedure TCompileInfoDlg.SetProjectName(const Sname : String);
 begin

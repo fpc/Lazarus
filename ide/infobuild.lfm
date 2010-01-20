@@ -14,7 +14,9 @@ object CompileInfoDlg: TCompileInfoDlg
   ClientHeight = 200
   ClientWidth = 386
   FormStyle = fsStayOnTop
+  KeyPreview = True
   OnCreate = FormCreate
+  OnKeyDown = FormKeyDown
   Position = poScreenCenter
   LCLVersion = '0.9.29'
   object PnlTitle: TPanel
@@ -93,6 +95,7 @@ object CompileInfoDlg: TCompileInfoDlg
       Width = 75
       Anchors = [akTop]
       AutoSize = True
+      Cancel = True
       Caption = '&OK'
       Constraints.MinHeight = 23
       Constraints.MinWidth = 75
