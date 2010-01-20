@@ -63,7 +63,7 @@ type
     procedure Edit; override;
     function GetAttributes: TPropertyAttributes; override;
     function OrdValueToVisualValue(OrdValue: longint): string; override;
-    procedure GetValues(Proc: TGetStringProc); override;
+    procedure GetValues(Proc: TGetStrProc); override;
     procedure SetValue(const NewValue: ansistring); override;
     procedure ListMeasureWidth(const CurValue: ansistring; Index: integer;
       ACanvas: TCanvas; var AWidth: Integer);  override;
@@ -118,7 +118,7 @@ type
   TFontNamePropertyEditor = class(TStringPropertyEditor)
   public
     function GetAttributes: TPropertyAttributes; override;
-    procedure GetValues(Proc: TGetStringProc); override;
+    procedure GetValues(Proc: TGetStrProc); override;
   end;
 
 { TFontCharsetPropertyEditor
@@ -129,7 +129,7 @@ type
   public
     function GetAttributes: TPropertyAttributes; override;
     function OrdValueToVisualValue(OrdValue: longint): string; override;
-    procedure GetValues(Proc: TGetStringProc); override;
+    procedure GetValues(Proc: TGetStrProc); override;
     procedure SetValue(const NewValue: ansistring); override;
   end;
 
@@ -141,7 +141,7 @@ type
     function GetImageList: TCustomImageList; virtual;
   public
     function GetAttributes: TPropertyAttributes; override;
-    procedure GetValues(Proc: TGetStringProc); override;
+    procedure GetValues(Proc: TGetStrProc); override;
     procedure ListMeasureHeight(const AValue: ansistring; Index:integer;
       ACanvas:TCanvas; var AHeight: Integer); override;
     procedure ListDrawValue(const CurValue: ansistring; Index:integer;
@@ -310,7 +310,7 @@ begin
   Result := ColorToString(TColor(OrdValue));
 end;
 
-procedure TColorPropertyEditor.GetValues(Proc: TGetStringProc);
+procedure TColorPropertyEditor.GetValues(Proc: TGetStrProc);
 begin
   GetColorValues(Proc);
 end;
@@ -426,7 +426,7 @@ begin
   Result := [paMultiSelect, paValueList, paRevertable];
 end;
 
-procedure TFontNamePropertyEditor.GetValues(Proc: TGetStringProc);
+procedure TFontNamePropertyEditor.GetValues(Proc: TGetStrProc);
 var
   I: Integer;
 begin
@@ -447,7 +447,7 @@ begin
   Result := CharsetToString(OrdValue);
 end;
 
-procedure TFontCharsetPropertyEditor.GetValues(Proc: TGetStringProc);
+procedure TFontCharsetPropertyEditor.GetValues(Proc: TGetStrProc);
 begin
   proc(CharsetToString(ANSI_CHARSET));
   proc(CharsetToString(DEFAULT_CHARSET));
@@ -697,7 +697,7 @@ begin
     Result := Result + [paHasDefaultValue];
 end;
 
-procedure TImageIndexPropertyEditor.GetValues(Proc: TGetStringProc);
+procedure TImageIndexPropertyEditor.GetValues(Proc: TGetStrProc);
 var
   Images: TCustomImageList;
   I: Integer;

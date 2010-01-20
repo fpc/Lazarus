@@ -47,6 +47,7 @@ const
 type
 
   TPersistentSelectionList = PropEditUtils.TPersistentSelectionList;
+  // For backwards compatibility only. Use TGetStrProc directly.
   TGetStringProc = Classes.TGetStrProc;
 
 { TPropertyEditor
@@ -335,7 +336,7 @@ type
     function GetHint(HintType: TPropEditHint; x, y: integer): string; virtual;
     function GetDefaultValue: ansistring; virtual;
     function GetVisualValue: ansistring;
-    procedure GetValues(Proc: TGetStringProc); virtual;
+    procedure GetValues(Proc: TGetStrProc); virtual;
     procedure Initialize; virtual;
     procedure Revert; virtual;
     procedure SetValue(const NewValue: ansistring); virtual;
@@ -429,7 +430,7 @@ type
   public
     function GetAttributes: TPropertyAttributes; override;
     function OrdValueToVisualValue(OrdValue: longint): string; override;
-    procedure GetValues(Proc: TGetStringProc); override;
+    procedure GetValues(Proc: TGetStrProc); override;
     procedure SetValue(const NewValue: ansistring); override;
   end;
 
@@ -441,7 +442,7 @@ type
   TBoolPropertyEditor = class(TEnumPropertyEditor)
   public
     function OrdValueToVisualValue(OrdValue: longint): string; override;
-    procedure GetValues(Proc: TGetStringProc); override;
+    procedure GetValues(Proc: TGetStrProc); override;
     procedure SetValue(const NewValue: ansistring); override;
   end;
 
@@ -527,7 +528,7 @@ type
     function GetAttributes: TPropertyAttributes; override;
     function GetName: shortstring; override;
     function GetValue: ansistring; override;
-    procedure GetValues(Proc: TGetStringProc); override;
+    procedure GetValues(Proc: TGetStrProc); override;
     procedure SetValue(const NewValue: ansistring); override;
     function IsNotDefaultValue: boolean; override;
    end;
@@ -579,7 +580,7 @@ type
     function GetAttributes: TPropertyAttributes; override;
     function GetEditLimit: Integer; override;
     function GetValue: ansistring; override;
-    procedure GetValues(Proc: TGetStringProc); override;
+    procedure GetValues(Proc: TGetStrProc); override;
     procedure SetValue(const NewValue: ansistring); override;
     function GetFormMethodName: shortstring; virtual;
     function GetTrimmedEventName: shortstring;
@@ -605,7 +606,7 @@ type
     function GetAttributes: TPropertyAttributes; override;
     function GetEditLimit: Integer; override;
     function GetValue: AnsiString; override;
-    procedure GetValues(Proc: TGetStringProc); override;
+    procedure GetValues(Proc: TGetStrProc); override;
     procedure SetValue(const NewValue: ansistring); override;
   end;
 
@@ -705,7 +706,7 @@ type
   public
     function GetAttributes: TPropertyAttributes; override;
     function OrdValueToVisualValue(OrdValue: longint): string; override;
-    procedure GetValues(Proc: TGetStringProc); override;
+    procedure GetValues(Proc: TGetStrProc); override;
     procedure SetValue(const NewValue:ansistring); override;
   end;
 
@@ -776,7 +777,7 @@ type
   public
     function GetAttributes: TPropertyAttributes; override;
     function OrdValueToVisualValue(OrdValue: longint): string; override;
-    procedure GetValues(Proc: TGetStringProc); override;
+    procedure GetValues(Proc: TGetStrProc); override;
     procedure SetValue(const NewValue: ansistring); override;
   end;
   
@@ -866,7 +867,7 @@ type
     function GetName:shortstring; override;
     procedure GetProperties(Proc: TGetPropEditProc); override;
     function GetValue: ansistring; override;
-    procedure GetValues(Proc: TGetStringProc); override;
+    procedure GetValues(Proc: TGetStrProc); override;
     procedure SetValue(const NewValue: ansistring); override;
     property List: TListPropertyEditor read FList;
     property TheIndex: integer read FIndex;
@@ -913,7 +914,7 @@ type
     function GetElementValue(
       Element: TListElementPropertyEditor): ansistring; virtual;
     procedure GetElementValues(Element: TListElementPropertyEditor;
-      Proc: TGetStringProc); virtual;
+      Proc: TGetStrProc); virtual;
     procedure SetElementValue(Element: TListElementPropertyEditor;
       NewValue: ansistring); virtual;
   public
@@ -949,7 +950,7 @@ type
     function GetElementValue(
       Element: TListElementPropertyEditor): ansistring; override;
     procedure GetElementValues(Element: TListElementPropertyEditor;
-      Proc: TGetStringProc); override;
+      Proc: TGetStrProc); override;
     procedure SetElementValue(Element: TListElementPropertyEditor;
       NewValue: ansistring); override;
   public
@@ -1097,7 +1098,7 @@ type
       APersistent: TPersistent; const APropertyPath: string): TMethod of object;
   TPropHookGetMethodName = function(const Method: TMethod;
                                     CheckOwner: TObject): String of object;
-  TPropHookGetMethods = procedure(TypeData:PTypeData; Proc:TGetStringProc) of object;
+  TPropHookGetMethods = procedure(TypeData: PTypeData; Proc: TGetStrProc) of object;
   TPropHookMethodExists = function(const Name: String; TypeData: PTypeData;
                  var MethodIsCompatible,MethodIsPublished,IdentIsMethod: boolean
                  ):boolean of object;
@@ -1110,7 +1111,7 @@ type
   TPropHookGetComponent = function(const ComponentPath: String):TComponent of object;
   TPropHookGetComponentName = function(AComponent: TComponent):ShortString of object;
   TPropHookGetComponentNames = procedure(TypeData: PTypeData;
-                                         Proc: TGetStringProc) of object;
+                                         Proc: TGetStrProc) of object;
   TPropHookGetRootClassName = function:ShortString of object;
   TPropHookBeforeAddPersistent = function(Sender: TObject;
                                          APersistentClass: TPersistentClass;
@@ -1130,7 +1131,7 @@ type
   TPropHookGetObject = function(const Name:ShortString):TPersistent of object;
   TPropHookGetObjectName = function(Instance:TPersistent):ShortString of object;
   TPropHookGetObjectNames = procedure(TypeData:PTypeData;
-                                      Proc:TGetStringProc) of object;
+                                      Proc: TGetStrProc) of object;
   TPropHookObjectPropertyChanged = procedure(Sender: TObject;
                                              NewObject: TPersistent) of object;
   // modifing
@@ -1202,7 +1203,7 @@ type
                           APersistent: TPersistent;
                           const APropertyPath: string): TMethod;
     function GetMethodName(const Method: TMethod; PropOwner: TObject): String;
-    procedure GetMethods(TypeData: PTypeData; Proc: TGetStringProc);
+    procedure GetMethods(TypeData: PTypeData; Proc: TGetStrProc);
     function MethodExists(const Name: String; TypeData: PTypeData;
       var MethodIsCompatible,MethodIsPublished,IdentIsMethod: boolean):boolean;
     procedure RenameMethod(const CurName, NewName: String);
@@ -1213,7 +1214,7 @@ type
     // components
     function GetComponent(const ComponentPath: string): TComponent;
     function GetComponentName(AComponent: TComponent): ShortString;
-    procedure GetComponentNames(TypeData: PTypeData; const Proc: TGetStringProc);
+    procedure GetComponentNames(TypeData: PTypeData; const Proc: TGetStrProc);
     function GetRootClassName: ShortString;
     function BeforeAddPersistent(Sender: TObject;
                                  APersistentClass: TPersistentClass;
@@ -1229,7 +1230,7 @@ type
     // persistent objects
     function GetObject(const Name: ShortString): TPersistent;
     function GetObjectName(Instance: TPersistent): ShortString;
-    procedure GetObjectNames(TypeData: PTypeData; const Proc: TGetStringProc);
+    procedure GetObjectNames(TypeData: PTypeData; const Proc: TGetStrProc);
     procedure ObjectReferenceChanged(Sender: TObject; NewObject: TPersistent);
     // modifing
     procedure Modified(Sender: TObject);
@@ -2549,7 +2550,7 @@ begin
     Result:='';
 end;
 
-procedure TPropertyEditor.GetValues(Proc:TGetStringProc);
+procedure TPropertyEditor.GetValues(Proc:TGetStrProc);
 begin
 end;
 
@@ -3031,7 +3032,7 @@ begin
   Result := GetEnumName(GetPropType, L);
 end;
 
-procedure TEnumPropertyEditor.GetValues(Proc: TGetStringProc);
+procedure TEnumPropertyEditor.GetValues(Proc: TGetStrProc);
 var
   I: Integer;
   EnumType: PTypeInfo;
@@ -3067,7 +3068,7 @@ begin
     Result := 'True';
 end;
 
-procedure TBoolPropertyEditor.GetValues(Proc: TGetStringProc);
+procedure TBoolPropertyEditor.GetValues(Proc: TGetStrProc);
 begin
   Proc('False');
   Proc('True');
@@ -3292,7 +3293,7 @@ begin
   Result := BooleanIdents[FElement in S];
 end;
 
-procedure TSetElementPropertyEditor.GetValues(Proc: TGetStringProc);
+procedure TSetElementPropertyEditor.GetValues(Proc: TGetStrProc);
 begin
   Proc(BooleanIdents[False]);
   Proc(BooleanIdents[True]);
@@ -3394,7 +3395,7 @@ begin
   Result:=List.GetElementValue(Self);
 end;
 
-procedure TListElementPropertyEditor.GetValues(Proc: TGetStringProc);
+procedure TListElementPropertyEditor.GetValues(Proc: TGetStrProc);
 begin
   List.GetElementValues(Self,Proc);
 end;
@@ -3562,7 +3563,7 @@ begin
 end;
 
 procedure TListPropertyEditor.GetElementValues(
-  Element: TListElementPropertyEditor; Proc: TGetStringProc);
+  Element: TListElementPropertyEditor; Proc: TGetStrProc);
 begin
 
 end;
@@ -3667,7 +3668,7 @@ begin
 end;
 
 procedure TCollectionPropertyEditor.GetElementValues(
-  Element: TListElementPropertyEditor; Proc: TGetStringProc);
+  Element: TListElementPropertyEditor; Proc: TGetStrProc);
 begin
   inherited GetElementValues(Element, Proc);
 end;
@@ -3937,7 +3938,7 @@ begin
   Result:=PropertyHook.GetMethodName(GetMethodValue,GetComponent(0));
 end;
 
-procedure TMethodPropertyEditor.GetValues(Proc: TGetStringProc);
+procedure TMethodPropertyEditor.GetValues(Proc: TGetStrProc);
 begin
   //DebugLn('### TMethodPropertyEditor.GetValues');
   Proc(oisNone);
@@ -4122,7 +4123,7 @@ begin
     Result := inherited GetValue;
 end;
 
-procedure TPersistentPropertyEditor.GetValues(Proc: TGetStringProc);
+procedure TPersistentPropertyEditor.GetValues(Proc: TGetStrProc);
 begin
   Proc(oisNone);
   if Assigned(PropertyHook) then
@@ -4448,7 +4449,7 @@ begin
   end;
 end;
 
-procedure TModalResultPropertyEditor.GetValues(Proc: TGetStringProc);
+procedure TModalResultPropertyEditor.GetValues(Proc: TGetStrProc);
 var
   I: Integer;
 begin
@@ -4784,7 +4785,7 @@ begin
   Result := CursorToString(TCursor(OrdValue));
 end;
 
-procedure TCursorPropertyEditor.GetValues(Proc: TGetStringProc);
+procedure TCursorPropertyEditor.GetValues(Proc: TGetStrProc);
 begin
   GetCursorValues(Proc);
 end;
@@ -5096,8 +5097,7 @@ begin
   end;
 end;
 
-procedure TPropertyEditorHook.GetMethods(TypeData:PTypeData;
-  Proc:TGetStringProc);
+procedure TPropertyEditorHook.GetMethods(TypeData: PTypeData; Proc: TGetStrProc);
 var
   i: Integer;
 begin
@@ -5224,8 +5224,8 @@ begin
   end;
 end;
 
-procedure TPropertyEditorHook.GetComponentNames(TypeData:PTypeData;
-  const Proc:TGetStringProc);
+procedure TPropertyEditorHook.GetComponentNames(TypeData: PTypeData;
+  const Proc: TGetStrProc);
   
   procedure TraverseComponents(Root: TComponent);
   var
@@ -5444,7 +5444,7 @@ begin
 end;
 
 procedure TPropertyEditorHook.GetObjectNames(TypeData: PTypeData;
-  const Proc: TGetStringProc);
+  const Proc: TGetStrProc);
 var
   i: Integer;
 begin

@@ -67,7 +67,7 @@ type
     { Private declarations }
     LinkDataSet: TDataSet;
     FDesigner: TComponentEditorDesigner;
-    AddLookupDatasetProc: TGetStringProc;
+    AddLookupDatasetProc: TGetStrProc;
     function CreateField(fType: TFieldType; FName: string): TField;
     procedure SetButtons;
     procedure UpdateResultFields;
