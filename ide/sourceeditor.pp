@@ -222,6 +222,7 @@ type
     procedure OnCodeBufferChanged(Sender: TSourceLog;
       SrcLogEntry: TSourceLogEntry);
     procedure StartIdentCompletionBox(JumpToError: boolean);
+    procedure StartWordCompletionBox(JumpToError: boolean);
 
     procedure LinesInserted(sender: TObject; FirstLine, Count: Integer);
     procedure LinesDeleted(sender: TObject; FirstLine, Count: Integer);
@@ -656,7 +657,8 @@ type
     procedure OnSynCompletionUTF8KeyPress(Sender: TObject; var UTF8Key: TUTF8Char);
     procedure OnSynCompletionPositionChanged(Sender: TObject);
     function StartIdentCompletionBox(SrcEdit: TSourceEditor; JumpToError: boolean;
-                               var s: string; var BoxX, BoxY: integer): boolean;
+                               var s: string; var BoxX, BoxY: integer;
+                               var UseWordCompletion: boolean): boolean;
     function InitIdentCompletionValues(S: TStrings): boolean;
 
     procedure EditorMouseMove(Sender: TObject; Shift: TShiftstate;
@@ -1706,11 +1708,7 @@ Procedure TSourceEditor.ProcessUserCommand(Sender: TObject;
 // these are the keys above ecUserFirst
 // define all extra keys here, that should not be handled by synedit
 var
-  I: Integer;
-  P: TPoint;
-  Texts, Texts2: String;
   Handled: boolean;
-  LogCaret: TPoint;
 Begin
   //debugln('TSourceEditor.ProcessUserCommand A ',dbgs(Command));
   Handled:=true;
@@ -1727,27 +1725,7 @@ Begin
     SourceNotebook.StartShowCodeContext(true);
 
   ecWordCompletion :
-    if not TCustomSynEdit(Sender).ReadOnly then begin
-      SourceNotebook.CreateCompletionForm;
-      CurrentCompletionType:=ctWordCompletion;
-      TextS := FEditor.LineText;
-      LogCaret:=FEditor.LogicalCaretXY;
-      i := LogCaret.X - 1;
-      if i > length(TextS) then
-        TextS2 := ''
-      else begin
-        while (i > 0) and (TextS[i] in ['a'..'z','A'..'Z','0'..'9','_']) do
-          dec(i);
-        TextS2 := Trim(copy(TextS, i + 1, LogCaret.X - i - 1));
-      end;
-      with TCustomSynEdit(Sender) do begin
-        P := Point(CaretXPix - length(TextS2)*CharWidth,CaretYPix + LineHeight + 1);
-        P.X:=Max(0,Min(P.X,ClientWidth-aCompletion.Width));
-        P := ClientToScreen(p);
-      end;
-      aCompletion.Editor:=TCustomSynEdit(Sender);
-      aCompletion.Execute(TextS2,P.X,P.Y);
-    end;
+    StartWordCompletionBox(true);
 
   ecFind:
     StartFindAndReplace(false);
@@ -2793,6 +2771,7 @@ var
   P: TPoint;
   TextS, TextS2: String;
   LogCaret: TPoint;
+  UseWordCompletion: Boolean;
 begin
   {$IFDEF VerboseIDECompletionBox}
   debugln(['TSourceEditor.StartIdentCompletionBox JumpToError: ',JumpToError]);
@@ -2818,14 +2797,48 @@ begin
     P.X:=Max(0,Min(P.X,ClientWidth-aCompletion.Width));
     P := ClientToScreen(p);
   end;
+  UseWordCompletion:=false;
   if not SourceNotebook.StartIdentCompletionBox(Self,JumpToError,TextS2,
-    P.X,P.Y)
+    P.X,P.Y,UseWordCompletion)
   then exit;
+  if UseWordCompletion then
+    CurrentCompletionType:=ctWordCompletion;
 
   aCompletion.Execute(TextS2,P.X,P.Y);
   {$IFDEF VerboseIDECompletionBox}
   debugln(['TSourceEditor.StartIdentCompletionBox END aCompletion.TheForm.Visible=',aCompletion.TheForm.Visible]);
   {$ENDIF}
+end;
+
+procedure TSourceEditor.StartWordCompletionBox(JumpToError: boolean);
+var
+  TextS: String;
+  LogCaret: TPoint;
+  i: Integer;
+  TextS2: String;
+  P: TPoint;
+begin
+  if (FEditor.ReadOnly) or (CurrentCompletionType<>ctNone) then exit;
+  SourceNotebook.CreateCompletionForm;
+  CurrentCompletionType:=ctWordCompletion;
+  TextS := FEditor.LineText;
+  LogCaret:=FEditor.LogicalCaretXY;
+  aCompletion.Editor:=FEditor;
+  aCompletion.TheForm.Font := FEditor.Font;
+  i := LogCaret.X - 1;
+  if i > length(TextS) then
+    TextS2 := ''
+  else begin
+    while (i > 0) and (TextS[i] in ['a'..'z','A'..'Z','0'..'9','_']) do
+      dec(i);
+    TextS2 := Trim(copy(TextS, i + 1, LogCaret.X - i - 1));
+  end;
+  with FEditor do begin
+    P := Point(CaretXPix - length(TextS2)*CharWidth,CaretYPix + LineHeight + 1);
+    P.X:=Max(0,Min(P.X,ClientWidth-aCompletion.Width));
+    P := ClientToScreen(p);
+  end;
+  aCompletion.Execute(TextS2,P.X,P.Y);
 end;
 
 procedure TSourceEditor.IncreaseIgnoreCodeBufferLock;
@@ -4176,7 +4189,8 @@ begin
 end;
 
 function TSourceNotebook.StartIdentCompletionBox(SrcEdit: TSourceEditor;
-  JumpToError: boolean; var s: string; var BoxX, BoxY: integer): boolean;
+  JumpToError: boolean; var s: string; var BoxX, BoxY: integer;
+  var UseWordCompletion: boolean): boolean;
 var
   i: Integer;
   Plugin: TSourceEditorCompletionPlugin;
@@ -4197,6 +4211,9 @@ begin
       exit(true);
     end;
   end;
+
+  if not (SrcEdit.SyntaxHighlighterType in [lshFreePascal, lshDelphi]) then
+    UseWordCompletion:=true;
   Result:=true;
 end;
 
