@@ -107,7 +107,10 @@ end;
 
 procedure TIDEOptionsDialog.HelpButtonClick(Sender: TObject);
 begin
-  ShowContextHelpForIDE(Self);
+  if PrevEditor<>nil then
+    ShowContextHelpForIDE(PrevEditor)
+  else
+    ShowContextHelpForIDE(Self);
 end;
 
 procedure TIDEOptionsDialog.CategoryTreeChange(Sender: TObject;
