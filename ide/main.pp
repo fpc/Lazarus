@@ -432,7 +432,7 @@ type
     procedure OIOnUpdateRestricted(Sender: TObject);
     function OnPropHookGetMethodName(const Method: TMethod;
                                      PropOwner: TObject): String;
-    procedure OnPropHookGetMethods(TypeData: PTypeData; Proc:TGetStringProc);
+    procedure OnPropHookGetMethods(TypeData: PTypeData; Proc:TGetStrProc);
     function OnPropHookMethodExists(const AMethodName: String;
                                     TypeData: PTypeData;
                                     var MethodIsCompatible, MethodIsPublished,
@@ -457,7 +457,7 @@ type
     procedure OnPropHookAddDependency(const AClass: TClass;
                                       const AnUnitName: shortstring);
     procedure OnPropHookGetComponentNames(TypeData: PTypeData;
-                                          Proc: TGetStringProc);
+                                          Proc: TGetStrProc);
     function OnPropHookGetComponent(const ComponentPath: String): TComponent;
 
     // designer events
@@ -1606,9 +1606,9 @@ begin
   {$ENDIF}
 end;
 
-procedure TMainIDE.OnPropHookGetMethods(TypeData:PTypeData;
-  Proc:TGetStringProc);
-var ActiveSrcEdit: TSourceEditor;
+procedure TMainIDE.OnPropHookGetMethods(TypeData: PTypeData; Proc: TGetStrProc);
+var 
+  ActiveSrcEdit: TSourceEditor;
   ActiveUnitInfo: TUnitInfo;
 begin
   if not BeginCodeTool(ActiveSrcEdit,ActiveUnitInfo,[ctfSwitchToFormSource])
@@ -15849,7 +15849,7 @@ begin
 end;
 
 procedure TMainIDE.OnPropHookGetComponentNames(TypeData: PTypeData;
-  Proc: TGetStringProc);
+  Proc: TGetStrProc);
 begin
   PkgBoss.IterateComponentNames(GlobalDesignHook.LookupRoot,TypeData,Proc);
 end;

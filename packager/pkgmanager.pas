@@ -307,7 +307,7 @@ type
     // components
     function GetUsableComponentUnits(CurRoot: TPersistent): TFPList; override; // list of TUnitInfo
     procedure IterateComponentNames(CurRoot: TPersistent; TypeData: PTypeData;
-                                    Proc: TGetStringProc); override;
+                                    Proc: TGetStrProc); override;
     function FindUsableComponent(CurRoot: TPersistent;
                         const ComponentPath: string): TComponent; override;
     function FindReferencedRootComponent(CurRoot: TPersistent; 
@@ -4053,7 +4053,7 @@ begin
 end;
 
 procedure TPkgManager.IterateComponentNames(CurRoot: TPersistent;
-  TypeData: PTypeData; Proc: TGetStringProc);
+  TypeData: PTypeData; Proc: TGetStrProc);
 
   procedure CheckComponent(aRoot: TComponent);
   var

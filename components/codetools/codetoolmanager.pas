@@ -53,7 +53,6 @@ type
   TCodeTool = TEventsCodeTool;
   TDirectivesTool = TCompilerDirectivesTree;
 
-  TGetStringProc = procedure(const s: string) of object;
   TOnBeforeApplyCTChanges = procedure(Manager: TCodeToolManager;
                                     var Abort: boolean) of object;
   TOnAfterApplyCTChanges = procedure(Manager: TCodeToolManager) of object;
@@ -672,7 +671,7 @@ type
     // functions for events in the object inspector
     function GetCompatiblePublishedMethods(Code: TCodeBuffer;
           const AClassName: string; TypeData: PTypeData;
-          Proc: TGetStringProc): boolean;
+          Proc: TGetStrProc): boolean;
     function PublishedMethodExists(Code:TCodeBuffer; const AClassName,
           AMethodName: string; TypeData: PTypeData;
           out MethodIsCompatible, MethodIsPublished, IdentIsMethod: boolean
@@ -3109,7 +3108,7 @@ begin
 end;
 
 function TCodeToolManager.GetCompatiblePublishedMethods(Code: TCodeBuffer;
-  const AClassName: string; TypeData: PTypeData; Proc: TGetStringProc): boolean;
+  const AClassName: string; TypeData: PTypeData; Proc: TGetStrProc): boolean;
 begin
   {$IFDEF CTDEBUG}
   DebugLn('TCodeToolManager.GetCompatiblePublishedMethods A ',Code.Filename,' Classname=',AClassname);

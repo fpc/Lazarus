@@ -45,7 +45,7 @@ uses
   MemCheck,
 {$ENDIF}
   TypInfo, Classes, SysUtils, Forms, FileUtil, LCLProc,
-  PropEdits, LazIDEIntf, PackageIntf, MenuIntf,
+  LazIDEIntf, PackageIntf, MenuIntf,
   LazarusIDEStrConsts, EnvironmentOpts,
   PackageDefs, PackageSystem, ComponentReg, CompilerOptions, Project;
 
@@ -147,7 +147,7 @@ type
     // components
     function GetUsableComponentUnits(CurRoot: TPersistent): TFPList; virtual; abstract; // list of TUnitInfo
     procedure IterateComponentNames(CurRoot: TPersistent; TypeData: PTypeData;
-                                    Proc: TGetStringProc); virtual; abstract;
+                                    Proc: TGetStrProc); virtual; abstract;
     function FindUsableComponent(CurRoot: TPersistent;
                   const ComponentPath: string): TComponent; virtual; abstract;
     function FindReferencedRootComponent(CurRoot: TPersistent; 

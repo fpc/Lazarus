@@ -49,8 +49,6 @@ uses
   SourceChanger, FindDeclarationTool, ExtractProcTool;
 
 type
-  TECTGetStringProc = procedure(const s: string) of object;
-  
   { TEventsCodeTool }
 
   TEventsCodeTool = class(TExtractProcTool)
@@ -68,9 +66,9 @@ type
         SourceChangeCache: TSourceChangeCache): boolean;
   
     function GetCompatiblePublishedMethods(const UpperClassName: string;
-        TypeData: PTypeData; Proc: TECTGetStringProc): boolean;
+        TypeData: PTypeData; Proc: TGetStrProc): boolean;
     function GetCompatiblePublishedMethods(ClassNode: TCodeTreeNode;
-        TypeData: PTypeData; Proc: TECTGetStringProc): boolean;
+        TypeData: PTypeData; Proc: TGetStrProc): boolean;
     function PublishedMethodExists(const UpperClassName,
         UpperMethodName: string; TypeData: PTypeData;
         out MethodIsCompatible, MethodIsPublished, IdentIsMethod: boolean
@@ -247,7 +245,7 @@ end;
 
 function TEventsCodeTool.GetCompatiblePublishedMethods(
   const UpperClassName: string; TypeData: PTypeData;
-  Proc: TECTGetStringProc): boolean;
+  Proc: TGetStrProc): boolean;
 var ClassNode: TCodeTreeNode;
 begin
   Result:=false;
@@ -271,7 +269,7 @@ end;
 
 function TEventsCodeTool.GetCompatiblePublishedMethods(
   ClassNode: TCodeTreeNode; TypeData: PTypeData;
-  Proc: TECTGetStringProc): boolean;
+  Proc: TGetStrProc): boolean;
 var
   Params: TFindDeclarationParams;
   CompListSize: integer;
