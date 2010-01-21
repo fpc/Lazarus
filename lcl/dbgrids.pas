@@ -2882,7 +2882,7 @@ begin
             S := '(blob)';
         end else
           S := '';
-        DrawCellText(0, DataCol, Rect, State, S);
+        DrawCellText(DataCol, 0, Rect, State, S);
       end;
 
     end;
