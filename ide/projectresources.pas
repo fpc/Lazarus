@@ -170,6 +170,7 @@ begin
         if (PointPos<>nil) and (d-PointPos=4) and (PointPos[1]='l') and
            (PointPos[2]='r') and (PointPos[3]='s') then
         begin
+          //DebugLn(['ParseResourceType ',copy(Src,p,PointPos-@Src[p]+3)]);
           // using include directive with lrs file
           HasLRSIncludeDirective := True;
         end;
@@ -262,6 +263,8 @@ begin
   ParseResourceType(Code.Source,
     CodeToolBoss.GetNestedCommentsFlagForFile(Code.Filename),
     Item.HasLRSIncludeDirective, Item.HasRDirective);
+  HasLRSIncludeDirective := Item.HasLRSIncludeDirective;
+  HasRDirective := Item.HasRDirective;
 end;
 
 var
@@ -274,6 +277,7 @@ begin
   if ResourceTypesCache = nil then
     ResourceTypesCache := TResourceTypesCache.Create;
   ResourceTypesCache.Parse(Code, HasLRSIncludeDirective, HasRDirective);
+  DebugLn(['GuessResourceType ',Code.Filename,' HasLRS=',HasLRSIncludeDirective,' HasR=',HasRDirective]);
   if HasLRSIncludeDirective then
   begin
     Typ := rtLRS;

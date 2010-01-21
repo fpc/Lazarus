@@ -1123,7 +1123,6 @@ begin
   if FileExistsUTF8(LRSFilename)
   and (FileAgeUTF8(LFMFilename)<=FileAgeUTF8(LRSFilename))
   then exit;
-  debugln('TBuildManager.UpdateLRSFromLFM ',LRSFilename,' LFMAge=',dbgs(FileAgeUTF8(LFMFilename)),' LRSAge=',dbgs(FileAgeUTF8(LRSFilename)));
   // the .lrs file does not exist, or is older than the .lfm file
   // -> update .lrs file
   Dir:=ExtractFilePath(LRSFilename);
