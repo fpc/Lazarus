@@ -1095,9 +1095,10 @@ begin
   Grid.RebuildGrid;
 end;
 
+{$IFDEF EnableBuildModes}
 initialization
   RegisterIDEOptionsEditor(GroupCompiler, TBuildModesEditorFrame,
     CompilerOptionsBuildModes);
-
+{$ENDIF}
 end.
 
