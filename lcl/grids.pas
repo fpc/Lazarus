@@ -305,7 +305,7 @@ type
     procedure(sender: TObject; aCol, aRow: Integer;
               const OldValue: string; var NewValue: String) of object;
 
-  TToggledCheckboxEvent = procedure(sender: TObject;
+  TToggledCheckboxEvent = procedure(sender: TObject; aCol, aRow: Integer;
                                     aState: TCheckboxState) of object;
 
   { TVirtualGrid }
@@ -8403,7 +8403,7 @@ begin
     SetCheckboxState(Col, Row, AState);
 
     if Assigned(OnCheckboxToggled) then
-      OnCheckboxToggled(self, AState);
+      OnCheckboxToggled(self, Col, Row, AState);
   end;
 end;
 
