@@ -789,7 +789,7 @@ type
                                Flags: TOpenFlags): TModalResult; override;
     function DoPublishProject(Flags: TSaveFlags;
                               ShowDialog: boolean): TModalResult; override;
-    function DoImExportCompilerOptions(Sender: TObject): TModalResult; override;
+    function DoImExportCompilerOptions(Sender: TObject; out ImportExportResult: TImportExportOptionsResult): TModalResult; override;
     function DoShowProjectInspector: TModalResult; override;
     function DoAddActiveUnitToProject: TModalResult;
     function DoRemoveFromProjectDialog: TModalResult;
@@ -9611,11 +9611,10 @@ begin
                           MainBuildBoss.GetProjectPublishDir);
 end;
 
-function TMainIDE.DoImExportCompilerOptions(Sender: TObject): TModalResult;
+function TMainIDE.DoImExportCompilerOptions(Sender: TObject; out ImportExportResult: TImportExportOptionsResult): TModalResult;
 var
   CompOptsDialog: TfrmCompilerOptions;
   Options: TCompilerOptions;
-  ImExportResult: TImExportCompOptsResult;
   Filename: string;
 begin
   Result := mrOk;
@@ -9632,13 +9631,12 @@ begin
   end
   else
     RaiseException('TMainIDE.OnCompilerOptionsImExport');
-  ImExportResult := ShowImExportCompilerOptionsDialog(Options, Filename);
-  if (ImExportResult = iecorCancel) or (Filename='') then Exit;
-  if ImExportResult = iecorImport then
-    Result := DoImportCompilerOptions(CompOptsDialog, Options, Filename)
-  else
-  if ImExportResult = iecorExport then
-    Result := DoExportCompilerOptions(CompOptsDialog, Options, Filename);
+  ImportExportResult := ShowImExportCompilerOptionsDialog(Options, Filename);
+  if Filename='' then Exit(mrCancel);
+  case ImportExportResult of
+    ieorImport: Result := DoImportCompilerOptions(CompOptsDialog, Options, Filename);
+    ieorExport: Result := DoExportCompilerOptions(CompOptsDialog, Options, Filename);
+  end;
 end;
 
 function TMainIDE.DoShowProjectInspector: TModalResult;

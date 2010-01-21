@@ -111,6 +111,14 @@ type
     );
   TCodeToolsFlags = set of TCodeToolsFlag;
 
+  // import/export compiler options result
+  TImportExportOptionsResult = (
+    ieorCancel,
+    ieorImport,
+    ieorExport
+    );
+
+
   { TMainIDEInterface }
 
   TMainIDEInterface = class(TLazIDEInterface)
@@ -151,7 +159,7 @@ type
         const AFilename: string): TModalResult; virtual; abstract;
 
     function DoShowProjectInspector: TModalResult; virtual; abstract;
-    function DoImExportCompilerOptions(Sender: TObject): TModalResult; virtual; abstract;
+    function DoImExportCompilerOptions(Sender: TObject; out ImportExportResult: TImportExportOptionsResult): TModalResult; virtual; abstract;
 
     function PrepareForCompile: TModalResult; virtual; abstract; // stop things that interfere with compilation, like debugging
     function DoSaveBuildIDEConfigs(Flags: TBuildLazarusFlags): TModalResult; virtual; abstract;

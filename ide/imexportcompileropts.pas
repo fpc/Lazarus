@@ -33,16 +33,10 @@ interface
 
 uses
   Classes, SysUtils, Forms, Controls, Graphics, Dialogs, StdCtrls,
-  Buttons, IDEProcs, FileUtil, Laz_XMLCfg, LCLType,
+  Buttons, IDEProcs, FileUtil, Laz_XMLCfg, LCLType, MainIntf,
   LazarusIDEStrConsts, InputHistory, CompilerOptions, CompilerOptionsDlg;
 
 type
-  TImExportCompOptsResult = (
-    iecorCancel,
-    iecorImport,
-    iecorExport
-    );
-
   { TImExportCompOptsDlg }
 
   TImExportCompOptsDlg = class(TForm)
@@ -64,22 +58,22 @@ type
     procedure SaveToRecentButtonCLICK(Sender: TObject);
   private
     FFilename: string;
-    FImExportResult: TImExportCompOptsResult;
+    FImExportResult: TImportExportOptionsResult;
     procedure LoadRecentList;
     procedure SaveRecentList;
     procedure UpdateRecentButtons;
     procedure SetFilename(const AValue: string);
-    procedure SetImExportResult(const AValue: TImExportCompOptsResult);
+    procedure SetImExportResult(const AValue: TImportExportOptionsResult);
     procedure DoOpenFile(const AFilename: string);
     procedure DoSaveFile(const AFilename: string);
   public
-    property ImExportResult: TImExportCompOptsResult read FImExportResult
-                                                     write SetImExportResult;
+    property ImExportResult: TImportExportOptionsResult read FImExportResult
+                                                        write SetImExportResult;
     property Filename: string read FFilename write SetFilename;
   end;
 
 function ShowImExportCompilerOptionsDialog(
-  CompOpts: TBaseCompilerOptions; var Filename: string): TImExportCompOptsResult;
+  CompOpts: TBaseCompilerOptions; var Filename: string): TImportExportOptionsResult;
 
 function DoImportCompilerOptions(CompOptsDialog: TfrmCompilerOptions;
   CompilerOpts: TBaseCompilerOptions; const Filename: string): TModalResult;
@@ -94,15 +88,16 @@ implementation
 {$R *.lfm}
 
 function ShowImExportCompilerOptionsDialog(
-  CompOpts: TBaseCompilerOptions; var Filename: string): TImExportCompOptsResult;
+  CompOpts: TBaseCompilerOptions; var Filename: string): TImportExportOptionsResult;
 var
   ImExportCompOptsDlg: TImExportCompOptsDlg;
 begin
-  Result:=iecorCancel;
-  ImExportCompOptsDlg:=TImExportCompOptsDlg.Create(nil);
-  if ImExportCompOptsDlg.ShowModal=mrOk then begin
-    Result:=ImExportCompOptsDlg.ImExportResult;
-    Filename:=ImExportCompOptsDlg.Filename;
+  Result := ieorCancel;
+  ImExportCompOptsDlg := TImExportCompOptsDlg.Create(nil);
+  if ImExportCompOptsDlg.ShowModal = mrOk then
+  begin
+    Result := ImExportCompOptsDlg.ImExportResult;
+    Filename := ImExportCompOptsDlg.Filename;
   end;
   ImExportCompOptsDlg.Free;
 end;
@@ -114,11 +109,12 @@ var
   FreeCompilerOpts: Boolean;
   Path: String;
 begin
-  Result:=mrCancel;
+  Result := mrOk;
   try
     XMLConfig:=TXMLConfig.Create(Filename);
   except
-    on E: Exception do begin
+    on E: Exception do
+    begin
       Result:=MessageDlg(lisIECOErrorLoadingXml,
         Format(lisIECOErrorLoadingXmlFile, ['"', Filename, '"', #13, E.Message]
           ), mtError, [mbCancel], 0);
@@ -149,13 +145,14 @@ var
   Path: String;
 begin
   FreeCompilerOpts:=false;
-  if (CompOptsDialog<>nil) then begin
+  if (CompOptsDialog<>nil) then
+  begin
     CompilerOpts:=TBaseCompilerOptions.Create(nil);
     FreeCompilerOpts:=true;
     CompOptsDialog.SaveFormToOptions(ccomlNone,CompilerOpts);
   end;
   try
-    Result:=mrCancel;
+    Result:=mrOk;
     try
       InvalidateFileStateCache;
       XMLConfig:=TXMLConfig.Create(Filename);
@@ -167,7 +164,8 @@ begin
         XMLConfig.Free;
       end;
     except
-      on E: Exception do begin
+      on E: Exception do
+      begin
         Result:=MessageDlg(lisIECOErrorAccessingXml,
           Format(lisIECOErrorAccessingXmlFile, ['"', Filename, '"', #13,
             E.Message]), mtError, [mbCancel], 0);
@@ -223,7 +221,7 @@ end;
 
 procedure TImExportCompOptsDlg.ImExportCompOptsDlgCREATE(Sender: TObject);
 begin
-  ImExportResult:=iecorCancel;
+  ImExportResult:=ieorCancel;
   
   Caption:=lisIECOOpenOrLoadCompilerOptions;
   OpenRecentGroupbox.Caption:=lisIECORecentFiles;
@@ -350,7 +348,7 @@ begin
 end;
 
 procedure TImExportCompOptsDlg.SetImExportResult(
-  const AValue: TImExportCompOptsResult);
+  const AValue: TImportExportOptionsResult);
 begin
   if FImExportResult=AValue then exit;
   FImExportResult:=AValue;
@@ -359,9 +357,9 @@ end;
 procedure TImExportCompOptsDlg.DoOpenFile(const AFilename: string);
 begin
   if DirPathExists(AFilename) then exit;
-  Filename:=AFilename;
-  ImExportResult:=iecorImport;
-  ModalResult:=mrOk;
+  Filename := AFilename;
+  ImExportResult := ieorImport;
+  ModalResult := mrOk;
 end;
 
 procedure TImExportCompOptsDlg.DoSaveFile(const AFilename: string);
@@ -377,8 +375,8 @@ begin
       mtConfirmation,[mbYes,mbCancel],0);
     if MsgResult<>mrYes then exit;
   end;
-  ImExportResult:=iecorExport;
-  ModalResult:=mrOk;
+  ImExportResult := ieorExport;
+  ModalResult := mrOk;
 end;
 
 end.

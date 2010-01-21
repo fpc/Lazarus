@@ -595,8 +595,10 @@ begin
 end;
 
 procedure TfrmCompilerOptions.ButtonLoadSaveClick(Sender: TObject);
+var
+  ImExpCompilerOptionsResult: TImportExportOptionsResult;
 begin
-  MainIDEInterface.DoImExportCompilerOptions(Self);
+  MainIDEInterface.DoImExportCompilerOptions(Self, ImExpCompilerOptionsResult);
 end;
 
 {------------------------------------------------------------------------------
