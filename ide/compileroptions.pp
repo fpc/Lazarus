@@ -2897,7 +2897,7 @@ begin
   fCMacros := false;
   fInitConst := false;
   fStaticKeyword := false;
-  fUseAnsiStr := false;
+  fUseAnsiStr := true;
 
   // code generation
   fSmartLinkUnit := false;
