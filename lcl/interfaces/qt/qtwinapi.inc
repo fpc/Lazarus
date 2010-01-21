@@ -1517,18 +1517,13 @@ begin
     QtDC.setClipRegion(Region);
     QtDC.setClipping(True);
 
-    if QRegion_isEmpty(Region)
-    then
+    if QRegion_isEmpty(Region) then
       Result := NULLREGION
     else
-    begin
-      QRegion_boundingRect(Region, @R);
-      if QRegion_contains(Region, PRect(@R))
-      then
-        Result := SIMPLEREGION
-      else
-        Result := COMPLEXREGION;
-    end;
+    if QRegion_numRects(Region) = 1 then
+      Result := SIMPLEREGION
+    else
+      Result := COMPLEXREGION;
   finally
     QRegion_destroy(Region);
     QRegion_destroy(ExRegion);
@@ -4272,11 +4267,8 @@ end;
  ------------------------------------------------------------------------------}
 function TQtWidgetSet.SelectClipRGN(DC: hDC; RGN: HRGN): Longint;
 var
-  AIsPolyRegion: boolean = False;
   QtDC: TQtDeviceContext;
-  {$IFNDEF UNIX}
   EmptyRegion: QRegionH;
-  {$ENDIF}
 begin
   Result := ERROR;
   if IsValidDC(DC) then
@@ -4284,27 +4276,16 @@ begin
     QtDC := TQtDeviceContext(DC);
     if IsValidGDIObject(RGN) then
     begin
-      AIsPolyRegion := TQtRegion(Rgn).IsPolyRegion;
-
-      if AIsPolyRegion or (TQtRegion(Rgn).numRects > 1) then
-        Result := COMPLEXREGION
-      else
-        Result := SIMPLEREGION;
-
+      Result := TQtRegion(Rgn).GetRegionType;
       QtDC.setClipRegion(TQtRegion(Rgn).Widget);
     end else
     begin
-      {$IFDEF UNIX}
-      {looks like a qt bug, this helps to mac & linux}
-      QtDC.setClipping(False);
-      {$ELSE}
       EmptyRegion := QRegion_create;
       try
         QtDC.setClipRegion(EmptyRegion, QtNoClip);
       finally
         QRegion_destroy(EmptyRegion);
       end;
-      {$ENDIF}
       Result := NULLREGION;
     end;
   end;

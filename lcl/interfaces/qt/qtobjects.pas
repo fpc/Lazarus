@@ -376,6 +376,7 @@ type
     procedure setRegion(ARegion: TQtRegion);
     procedure drawImage(targetRect: PRect; image: QImageH; sourceRect: PRect;
       mask: QImageH; maskRect: PRect; flags: QtImageConversionFlags = QtAutoColor);
+    function PaintEngine: QPaintEngineH;
     procedure rotate(a: Double);
     procedure setRenderHint(AHint: QPainterRenderHint; AValue: Boolean);
     procedure save;
@@ -1730,11 +1731,10 @@ begin
       Result := NULLREGION
     else
     begin
-      R := getBoundingRect;
-      if QRegion_contains(Widget, PRect(@R)) then
-        Result := SIMPLEREGION
+      if IsPolyRegion or (QRegion_numRects(Widget) > 1) then
+        Result := COMPLEXREGION
       else
-        Result := COMPLEXREGION;
+        Result := SIMPLEREGION;
     end;
   except
     Result := ERROR;
@@ -2742,8 +2742,7 @@ begin
       Result := NULLREGION
     else
     begin
-      QRegion_boundingRect(ARegion, @R);
-      if QRegion_contains(ARegion, PRect(@R)) then
+      if QRegion_numRects(ARegion) = 1 then
         Result := SIMPLEREGION
       else
         Result := COMPLEXREGION;
@@ -2788,7 +2787,12 @@ end;
 procedure TQtDeviceContext.setClipRegion(ARegion: QRegionH;
   AOperation: QtClipOperation = QtReplaceClip);
 begin
-  QPainter_SetClipRegion(Widget, ARegion, AOperation);
+  {with QPaintEngine11 QtNoClip & empty region makes disaster}
+  if (AOperation = QtNoClip) and QRegion_isEmpty(ARegion)
+     and (QPaintEngine_type(PaintEngine) = QPaintEngineX11) then
+    setClipping(False)
+  else
+    QPainter_SetClipRegion(Widget, ARegion, AOperation);
 end;
 
 {------------------------------------------------------------------------------
@@ -2867,6 +2871,11 @@ begin
     end else
       QPainter_drawImage(Widget, PRect(@LocalRect), image, sourceRect, flags);
   end;
+end;
+
+function TQtDeviceContext.PaintEngine: QPaintEngineH;
+begin
+  Result := QPainter_paintEngine(Widget);
 end;
 
 {------------------------------------------------------------------------------
