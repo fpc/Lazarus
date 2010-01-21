@@ -2862,11 +2862,16 @@ procedure TCustomDBGrid.DefaultDrawColumnCell(const Rect: TRect;
 var
   S: string;
   F: TField;
+  DataRow: Integer;
 begin
 
   F := Column.Field;
 
   DataCol := GridColumnFromColumnIndex(DataCol);
+  if FDataLink.Active then
+    DataRow := FixedRows + FDataLink.ActiveRecord
+  else
+    DataRow := 0;
 
   if DataCol>=FirstGridColumn then
     case ColumnEditorStyle(DataCol, F) of
@@ -2882,7 +2887,7 @@ begin
             S := '(blob)';
         end else
           S := '';
-        DrawCellText(DataCol, 0, Rect, State, S);
+        DrawCellText(DataCol, DataRow, Rect, State, S);
       end;
 
     end;
