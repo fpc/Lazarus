@@ -353,7 +353,7 @@ type
     function getCompositionMode: QPainterCompositionMode;
     procedure setCompositionMode(mode: QPainterCompositionMode);
     procedure getPenPos(retval: PPoint);
-    function getWorldMatrix: QMatrixH;
+    function getWorldTransform: QTransformH;
     procedure setBrushOrigin(x, y: Integer);
     procedure setPenPos(x, y: Integer);
 
@@ -2491,9 +2491,9 @@ begin
   retval^.y := FPenPos.y;
 end;
 
-function TQtDeviceContext.getWorldMatrix: QMatrixH;
+function TQtDeviceContext.getWorldTransform: QTransformH;
 begin
-  Result := QPainter_worldMatrix(Widget);
+  Result := QPainter_worldTransform(Widget);
 end;
 
 procedure TQtDeviceContext.setPenPos(x, y: Integer);

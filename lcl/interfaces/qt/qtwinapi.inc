@@ -1149,8 +1149,8 @@ function TQtWidgetSet.DPtoLP(DC: HDC; var Points; Count: Integer): BOOL;
 var
   P: PPoint;
   QtPoint: TQtPoint;
-  Matrix: QMatrixH;
-  MatrixInv: QMatrixH;
+  Matrix: QTransformH;
+  MatrixInv: QTransformH;
   QtDC: TQtDeviceContext;
   Inverted: Boolean;
 begin
@@ -1166,19 +1166,19 @@ begin
 
   QtDC := TQtDeviceContext(DC);
 
-  Matrix := QMatrix_create;
-  MatrixInv := QMatrix_create;
-  QPainter_combinedMatrix(QtDC.Widget, Matrix);
+  Matrix := QTransform_create;
+  MatrixInv := QTransform_create;
+  QPainter_combinedTransform(QtDC.Widget, Matrix);
   P := @Points;
   try
     while Count > 0 do
     begin
       Dec(Count);
-      Inverted := QMatrix_isInvertible(Matrix);
-      QMatrix_inverted(Matrix, MatrixInv, @Inverted);
+      Inverted := QTransform_isInvertible(Matrix);
+      QTransform_inverted(Matrix, MatrixInv, @Inverted);
       QtPoint.X := P^.X;
       QtPoint.Y := P^.Y;
-      QMatrix_map(MatrixInv, @QtPoint, @QtPoint);
+      QTransform_map(MatrixInv, @QtPoint, @QtPoint);
       P^.X := QtPoint.X;
       P^.Y := QtPoint.Y;
       Inc(P);
@@ -1186,8 +1186,8 @@ begin
 
     Result := True;
   finally
-    QMatrix_destroy(MatrixInv);
-    QMatrix_destroy(Matrix);
+    QTransform_destroy(MatrixInv);
+    QTransform_destroy(Matrix);
   end;
 end;
 
@@ -2139,7 +2139,7 @@ function TQtWidgetSet.GetDCOriginRelativeToWindow(PaintDC: HDC;
   WindowHandle: HWND; var OriginDiff: TPoint): boolean;
 var
   QtDC: TQtDeviceContext absolute PaintDC;
-  Matrix: QMatrixH;
+  Matrix: QTransformH;
   P: TPoint;
 begin
   {$ifdef VerboseQtWinAPI}
@@ -2148,15 +2148,15 @@ begin
   Result := IsValidDC(PaintDC);
   if not Result then
     exit;
-  Matrix := QPainter_Matrix(QtDC.Widget);
+  Matrix := QPainter_transform(QtDC.Widget);
   OriginDiff := Point(0, 0);
   P := Point(0, 0);
   if WindowHandle <> 0 then
     P := TQtWidget(WindowHandle).getClientOffset;
   if Matrix <> nil then
   begin
-    OriginDiff.X := Round(QMatrix_Dx(Matrix)) - P.X;
-    OriginDiff.Y := Round(QMatrix_Dy(Matrix)) - P.Y;
+    OriginDiff.X := Round(QTransform_Dx(Matrix)) - P.X;
+    OriginDiff.Y := Round(QTransform_Dy(Matrix)) - P.Y;
   end;
 end;
 
@@ -3446,7 +3446,7 @@ end;
  ------------------------------------------------------------------------------}
 function TQtWidgetSet.GetWindowOrgEx(dc: hdc; P: PPoint): Integer;
 var
-  Matrix: QMatrixH;
+  Matrix: QTransformH;
 begin
   {$ifdef VerboseQtWinAPI}
     WriteLn('Trace: > [WinAPI GetWindowOrgEx]');
@@ -3460,11 +3460,11 @@ begin
     exit;
   end;
 
-  Matrix := QPainter_Matrix(TQtDeviceContext(DC).Widget);
+  Matrix := QPainter_transform(TQtDeviceContext(DC).Widget);
   if Matrix <> nil then
   begin
-    P^.X := -Trunc(QMatrix_Dx(Matrix));
-    P^.Y := -Trunc(QMatrix_Dy(Matrix));
+    P^.X := -Trunc(QTransform_Dx(Matrix));
+    P^.Y := -Trunc(QTransform_Dy(Matrix));
     result := 1;
   end;
   {$ifdef VerboseQtWinAPI}
@@ -5149,7 +5149,7 @@ var
   SrcWidthOrig, SrcHeightOrig: Integer;
   Image, TmpImage, QMask, TmpMask: QImageH;
   TmpPixmap: QPixmapH;
-  SrcMatrix: QMatrixH;
+  SrcMatrix: QTransformH;
   dx, dy: integer;
 begin
   {$ifdef VerboseQtWinAPI}
@@ -5165,7 +5165,7 @@ begin
 
   Result := False;
 
-  SrcMatrix := QPainter_Matrix(SrcQDC.Widget);
+  SrcMatrix := QPainter_transform(SrcQDC.Widget);
   if SrcQDC.vImage = nil then
   begin
     if SrcQDC.Parent <> nil then
@@ -5184,7 +5184,7 @@ begin
     Image := SrcQDC.vImage.Handle;
   SrcWidthOrig := QImage_width(Image);
   SrcHeightOrig := QImage_height(Image);
-  QMatrix_map(SrcMatrix, XSrc, YSrc, @XSrc, @YSrc);
+  QTransform_map(SrcMatrix, XSrc, YSrc, @XSrc, @YSrc);
   // our map can have some transformations
   if XSrc < 0 then // we cannot draw from negative coord, so we will draw from zero with shift
   begin
