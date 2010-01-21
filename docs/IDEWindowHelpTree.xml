@@ -1,7 +1,7 @@
 <?xml version="1.0"?>
 <CONFIG Name="IDE windows and dialogs" Path="IDE_Window:_" ChildCount="58">
   <Node1 Name="TObjectInspector" Path="Object_Inspector" HasHelp="True"/>
-  <Node2 Name="TfrmCompilerOptions" Path="Compiler_Options" HasHelp="True" ChildCount="1">
+  <Node2 Name="TfrmCompilerOptions" Path="Compiler_Options" HasHelp="True" IsRoot="True" ChildCount="1">
     <Node1 Name="MainNotebook" ChildCount="7">
       <Node1 Name="PathsPage" Path="#Paths" HasHelp="True"/>
       <Node2 Name="ParsingPage" Path="#Parsing" HasHelp="True"/>
