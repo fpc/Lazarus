@@ -83,7 +83,7 @@ const
   TargetOSMacroName        = ExternalMacroStart+'TargetOS';
   TargetCPUMacroName       = ExternalMacroStart+'TargetCPU';
 
-  DefinePathMacro          = '$('+DefinePathMacroName+')';
+  DefinePathMacro          = '$('+DefinePathMacroName+')'; // the path of the define template
   UnitPathMacro            = '$('+UnitPathMacroName+')';
   IncludePathMacro         = '$('+IncludePathMacroName+')';
   SrcPathMacro             = '$('+SrcPathMacroName+')';
@@ -3746,8 +3746,7 @@ var
   IFTempl: TDefineTemplate;
   FCLBaseDir: TDefineTemplate;
   FCLBaseSrcDir: TDefineTemplate;
-  PackagesBaseDir: TDefineTemplate;
-  LibasyncDir: TDefineTemplate;
+  PackagesFCLAsyncDir: TDefineTemplate;
   PackagesExtraDir: TDefineTemplate;
   PkgExtraGraphDir: TDefineTemplate;
   PkgExtraAMunitsDir: TDefineTemplate;
@@ -3948,18 +3947,15 @@ begin
       +';'+IncPathMacro)
       ,da_DefineRecurse));
 
-    // packages/base
-    PackagesBaseDir:=TDefineTemplate.Create('base','base','','base',da_Directory);
-    PackagesDir.AddChild(PackagesBaseDir);
+    // packages/fcl-async
+    PackagesFCLAsyncDir:=TDefineTemplate.Create('fcl-async','fcl-async','','fcl-async',da_Directory);
+    PackagesDir.AddChild(PackagesFCLAsyncDir);
 
-    // packages/base/libasync
-    LibasyncDir:=TDefineTemplate.Create('libasync','libasync','','libasync',
-                                        da_Directory);
-    PackagesBaseDir.AddChild(LibasyncDir);
-    LibasyncDir.AddChild(TDefineTemplate.Create('Include Path',
-      Format(ctsIncludeDirectoriesPlusDirs,['packages/base/libasync']),
+    // packages/fcl-async/src
+    PackagesFCLAsyncDir.AddChild(TDefineTemplate.Create('Include Path',
+      Format(ctsIncludeDirectoriesPlusDirs,['packages/fcl-async/src']),
       ExternalMacroStart+'IncPath',
-      d(   DefinePathMacro+'/'
+      d(   DefinePathMacro+'/src/'
       +';'+IncPathMacro)
       ,da_DefineRecurse));
 
