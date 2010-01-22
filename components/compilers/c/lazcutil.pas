@@ -165,6 +165,7 @@ end;
 
 destructor TCSrcEditCompletion.Destroy;
 begin
+  if Self=CSrcEditCompletion then CSrcEditCompletion:=nil;
   FreeAndNil(FFilteredList);
   FreeAndNil(FList);
   inherited Destroy;
