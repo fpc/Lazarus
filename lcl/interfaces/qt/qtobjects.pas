@@ -2519,7 +2519,6 @@ begin
     begin
       if vFont.Widget <> nil then
         QFont_destroy(vFont.Widget);
-      QFont_create(QPainter_font(Widget));
     end;
     Result := vFont;
   end
