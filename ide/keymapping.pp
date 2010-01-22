@@ -135,7 +135,7 @@ type
     function FindIDECommand(ACommand:word): TIDECommand; override;
     function FindByCommand(ACommand:word): TKeyCommandRelation;
     function FindCategoryByName(const CategoryName: string): TIDECommandCategory; override;
-    function FindCommandByName(const CommandName: string): TKeyCommandRelation;
+    function FindCommandByName(const CommandName: string): TIDECommand; override;
     function TranslateKey(Key: word; Shift: TShiftState;
       IDEWindowClass: TCustomFormClass; UseLastKey: boolean = true): word;
     function IndexOf(ARelation: TKeyCommandRelation): integer;
@@ -3374,7 +3374,7 @@ begin
   // add/assign keys
   for i:=0 to List.Count-1 do begin
     OtherRelation:=List.Relations[i];
-    OurRelation:=FindCommandByName(OtherRelation.Name);
+    OurRelation:=TKeyCommandRelation(FindCommandByName(OtherRelation.Name));
     if OurRelation<>nil then begin
       // assign
       OurRelation.Assign(OtherRelation);
@@ -3524,7 +3524,7 @@ begin
 end;
 
 function TKeyCommandRelationList.FindCommandByName(const CommandName: string
-  ): TKeyCommandRelation;
+  ): TIDECommand;
 var i: integer;
 begin
   for i:=0 to RelationCount-1 do
