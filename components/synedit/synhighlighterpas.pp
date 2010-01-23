@@ -1721,7 +1721,17 @@ end;
 
 function TSynPasSyn.Func129: TtkTokenKind;
 begin
-  if KeyComp('Dispinterface') then Result := tkKey else Result := tkIdentifier;
+  if KeyComp('Dispinterface') then
+  begin
+    Result := tkKey;
+    if (rsAfterEqual in fRange) and (PasCodeFoldRange.BracketNestLevel = 0) then
+    begin
+      fRange := fRange + [rsAtClass];
+      StartPascalCodeFoldBlock(cfbtClass);
+    end;
+  end
+  else
+    Result := tkIdentifier;
 end;
 
 function TSynPasSyn.Func130: TtkTokenKind;
