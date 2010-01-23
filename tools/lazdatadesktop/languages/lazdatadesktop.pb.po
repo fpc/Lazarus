@@ -11,31 +11,31 @@ msgstr ""
 
 #: lazdatadeskstr.eoaddterminator
 msgid "Add terminator"
-msgstr ""
+msgstr "Adicionar terminador"
 
 #: lazdatadeskstr.eoandtermsinbrackets
 msgid "Put brackets around AND Terms"
-msgstr ""
+msgstr "Colocar parênteses em torno de termos \"AND\""
 
 #: lazdatadeskstr.eolinefeedafterandterm
 msgid "Linefeed after AND terms"
-msgstr ""
+msgstr "Avanço de linha após termos \"AND\""
 
 #: lazdatadeskstr.eolinefeedafterfield
 msgid "Linefeed after each field"
-msgstr ""
+msgstr "Avanço de linha após cada campo"
 
 #: lazdatadeskstr.eoquotefieldnames
 msgid "Quote field names"
-msgstr ""
+msgstr "Quotar nomes campos"
 
 #: lazdatadeskstr.eoskipforeignkeys
 msgid "Skip foreign keys"
-msgstr ""
+msgstr "Saltar chaves estrangeiras"
 
 #: lazdatadeskstr.eouseoldinwhereparams
 msgid "Use OLD prefix in where parameters"
-msgstr ""
+msgstr "Usar prefixo \"OLD\" em parâmetros \"where\""
 
 #: lazdatadeskstr.sclose
 msgid "Close result"

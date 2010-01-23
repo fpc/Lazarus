@@ -227,11 +227,11 @@ msgstr "um diretório de componente em %s não é um diretório"
 
 #: codetoolsstrconsts.ctsdispidparameterexpectedbutatomfound
 msgid "dispid parameter expected, but %s found"
-msgstr ""
+msgstr "esperado parâmetro \"dispid\", mas %s encontrado"
 
 #: codetoolsstrconsts.ctsdispidspecifierredefined
 msgid "dispid specifier redefined"
-msgstr ""
+msgstr "especificador \"dispid\" redefinido"
 
 #: codetoolsstrconsts.ctsdoceditordirectory
 msgid "Doc Editor Directory"
@@ -745,7 +745,7 @@ msgstr "tipo identificador"
 
 #: codetoolsstrconsts.ctstypeisonlyallowedingenericsendofclassnotfound
 msgid "type is only allowed in generics, end of class not found"
-msgstr ""
+msgstr "tipo é permitido apenas em genéricos, fim de classe não encontrado"
 
 #: codetoolsstrconsts.ctstypesectionofclassnotfound
 msgid "type section of class not found"
@@ -825,7 +825,7 @@ msgstr "Diretório de Utilitários"
 
 #: codetoolsstrconsts.ctsvarisonlyallowedingenericsendofclassnotfound
 msgid "var is only allowed in generics, end of class not found"
-msgstr ""
+msgstr "\"var\" é permitido apenas em genéricos, fim de classe não encontrado"
 
 #: codetoolsstrconsts.ctswidgetdirectory
 msgid "Widget Directory"
