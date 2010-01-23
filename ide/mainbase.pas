@@ -623,7 +623,6 @@ begin
 
     CreateMenuItem(ParentMI,itmProjectInspector,'itmProjectInspector',lisMenuProjectInspector,'menu_project_inspector');
     CreateMenuItem(ParentMI,itmProjectOptions,'itmProjectOptions',lisMenuProjectOptions,'menu_project_options');
-    CreateMenuItem(ParentMI,itmProjectCompilerOptions,'itmProjectCompilerOptions',lisMenuCompilerOptions,'menu_compiler_options');
 
     CreateMenuSeparatorSection(mnuProject,itmProjectAddRemoveSection,'itmProjectAddRemoveSection');
     ParentMI:=itmProjectAddRemoveSection;
@@ -939,7 +938,6 @@ begin
     itmProjectPublish.Command:=GetCommand(ecPublishProject);
     itmProjectInspector.Command:=GetCommand(ecProjectInspector);
     itmProjectOptions.Command:=GetCommand(ecProjectOptions);
-    itmProjectCompilerOptions.Command:=GetCommand(ecCompilerOptions);
     itmProjectAddTo.Command:=GetCommand(ecAddCurUnitToProj);
     itmProjectRemoveFrom.Command:=GetCommand(ecRemoveFromProj);
     itmProjectViewSource.Command:=GetCommand(ecViewProjectSource);

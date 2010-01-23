@@ -540,7 +540,6 @@ begin
   ecRunToCursor: SetResult(VK_F4,[],VK_UNKNOWN,[]);
   ecStopProgram: SetResult(VK_F2,[SSCtrl],VK_UNKNOWN,[]);
   ecRemoveBreakPoint: SetResult(VK_UNKNOWN,[],VK_UNKNOWN,[]);
-  ecCompilerOptions: SetResult(VK_UNKNOWN,[],VK_UNKNOWN,[]);
   ecRunParameters: SetResult(VK_UNKNOWN,[],VK_UNKNOWN,[]);
   ecBuildFile: SetResult(VK_UNKNOWN,[],VK_UNKNOWN,[]);
   ecRunFile: SetResult(VK_UNKNOWN,[],VK_UNKNOWN,[]);
@@ -961,7 +960,6 @@ begin
   ecRunToCursor: SetResult(VK_F4,[],VK_UNKNOWN,[],VK_UNKNOWN,[],VK_UNKNOWN,[]);
   ecStopProgram: SetResult(VK_UNKNOWN,[],VK_UNKNOWN,[],VK_UNKNOWN,[],VK_UNKNOWN,[]);
   ecRemoveBreakPoint: SetResult(VK_UNKNOWN,[],VK_UNKNOWN,[],VK_UNKNOWN,[],VK_UNKNOWN,[]);
-  ecCompilerOptions: SetResult(VK_UNKNOWN,[],VK_UNKNOWN,[],VK_UNKNOWN,[],VK_UNKNOWN,[]);
   ecRunParameters: SetResult(VK_UNKNOWN,[],VK_UNKNOWN,[],VK_UNKNOWN,[],VK_UNKNOWN,[]);
   ecBuildFile: SetResult(VK_UNKNOWN,[],VK_UNKNOWN,[],VK_UNKNOWN,[],VK_UNKNOWN,[]);
   ecRunFile: SetResult(VK_UNKNOWN,[],VK_UNKNOWN,[],VK_UNKNOWN,[],VK_UNKNOWN,[]);
@@ -1564,7 +1562,6 @@ begin
   ecRunToCursor: SetResult(VK_UNKNOWN,[],VK_UNKNOWN,[]);
   ecStopProgram: SetResult(VK_RETURN,[ssShift,ssMeta],VK_UNKNOWN,[]);
   ecRemoveBreakPoint: SetResult(VK_UNKNOWN,[],VK_UNKNOWN,[]);
-  ecCompilerOptions: SetResult(VK_UNKNOWN,[],VK_UNKNOWN,[]);
   ecRunParameters: SetResult(VK_UNKNOWN,[],VK_UNKNOWN,[]);
   ecBuildFile: SetResult(VK_UNKNOWN,[],VK_UNKNOWN,[]);
   ecRunFile: SetResult(VK_UNKNOWN,[],VK_UNKNOWN,[]);
@@ -1727,7 +1724,6 @@ begin
   ecRunToCursor: SetResult(VK_F4,[],VK_F4,[ssMeta]);
   ecStopProgram: SetResult(VK_F2,[ssCtrl],VK_F2,[ssCtrl,ssMeta]);
   ecRemoveBreakPoint: SetResult(VK_UNKNOWN,[],VK_UNKNOWN,[]);
-  ecCompilerOptions: SetResult(VK_UNKNOWN,[],VK_UNKNOWN,[]);
   ecRunParameters: SetResult(VK_UNKNOWN,[],VK_UNKNOWN,[]);
   ecBuildFile: SetResult(VK_UNKNOWN,[],VK_UNKNOWN,[]);
   ecRunFile: SetResult(VK_UNKNOWN,[],VK_UNKNOWN,[]);
@@ -2081,7 +2077,6 @@ begin
     ecStopProgram             : Result:= srkmecStopProgram;
     ecResetDebugger           : Result:= srkmecResetDebugger;
     ecRunParameters           : Result:= srkmecRunParameters;
-    ecCompilerOptions         : Result:= srkmecCompilerOptions;
     ecBuildFile               : Result:= srkmecBuildFile;
     ecRunFile                 : Result:= srkmecRunFile;
     ecConfigBuildFile         : Result:= srkmecConfigBuildFile;
@@ -2771,7 +2766,6 @@ begin
   AddDefault(C, 'Run to cursor', lisMenuRunToCursor, ecRunToCursor);
   AddDefault(C, 'Stop program', lisKMStopProgram, ecStopProgram);
   AddDefault(C, 'Reset debugger', lisMenuResetDebugger, ecResetDebugger);
-  AddDefault(C, 'Compiler options', lisKMCompilerOptions, ecCompilerOptions);
   AddDefault(C, 'Run parameters', dlgRunParameters, ecRunParameters);
   AddDefault(C, 'Build File', lisMenuBuildFile, ecBuildFile);
   AddDefault(C, 'Run File', lisMenuRunFile, ecRunFile);

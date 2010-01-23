@@ -236,7 +236,7 @@ type
       //itmProjectWindowSection: TIDEMenuSection;
         itmProjectInspector: TIDEMenuCommand;
         itmProjectOptions: TIDEMenuCommand;
-        itmProjectCompilerOptions: TIDEMenuCommand;
+        //itmProjectCompilerOptions: TIDEMenuCommand;
       //itmProjectAddRemoveSection: TIDEMenuSection;
         itmProjectAddTo: TIDEMenuCommand;
         itmProjectRemoveFrom: TIDEMenuCommand;

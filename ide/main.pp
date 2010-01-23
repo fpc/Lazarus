@@ -285,7 +285,6 @@ type
     procedure mnuRemoveFromProjectClicked(Sender: TObject);
     procedure mnuViewProjectSourceClicked(Sender: TObject);
     procedure mnuProjectOptionsClicked(Sender: TObject);
-    procedure mnuProjectCompilerSettingsClicked(Sender: TObject);
 
     // run menu
     procedure mnuBuildProjectClicked(Sender: TObject);
@@ -2397,7 +2396,6 @@ begin
     itmProjectPublish.OnClick := @mnuPublishProjectClicked;
     itmProjectInspector.OnClick := @mnuProjectInspectorClicked;
     itmProjectOptions.OnClick := @mnuProjectOptionsClicked;
-    itmProjectCompilerOptions.OnClick := @mnuProjectCompilerSettingsClicked;
     itmProjectAddTo.OnClick := @mnuAddToProjectClicked;
     itmProjectRemoveFrom.OnClick := @mnuRemoveFromProjectClicked;
     itmProjectViewSource.OnClick := @mnuViewProjectSourceClicked;
@@ -3864,36 +3862,6 @@ end;
 Procedure TMainIDE.mnuStopProjectClicked(Sender: TObject);
 begin
   DebugBoss.DoStopProject;
-end;
-
-procedure TMainIDE.mnuProjectCompilerSettingsClicked(Sender: TObject);
-var
-  frmCompilerOptions: TfrmCompilerOptions;
-  NewCaption: String;
-begin
-  frmCompilerOptions:=TfrmCompilerOptions.Create(nil);
-  try
-    Project1.UpdateExecutableType;
-    NewCaption:=Project1.Title;
-    if NewCaption='' then
-      NewCaption:=ExtractFilenameOnly(Project1.ProjectInfoFile);
-    frmCompilerOptions.Caption:=Format(lisCompilerOptionsForProject, [NewCaption
-      ]);
-    frmCompilerOptions.CompilerOpts:=Project1.CompilerOptions;
-    frmCompilerOptions.LoadOptionsToForm;
-    if frmCompilerOptions.ShowModal=mrOk then begin
-      MainBuildBoss.RescanCompilerDefines(true,true);
-      Project1.DefineTemplates.AllChanged;
-      IncreaseCompilerParseStamp;
-      UpdateHighlighters; // because of FPC/Delphi mode
-      if frmCompilerOptions.UseAsDefault then begin
-        // save to primary config directory
-        Project1.CompilerOptions.SaveCompilerOptions(false);
-      end;
-    end;
-  finally
-    frmCompilerOptions.Free;
-  end;
 end;
 
 procedure TMainIDE.mnuBuildFileClicked(Sender: TObject);

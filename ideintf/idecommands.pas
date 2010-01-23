@@ -262,7 +262,7 @@ const
 
   // option commmands
   ecRunParameters           = ecFirstLazarus + 800;
-  ecCompilerOptions         = ecFirstLazarus + 801;
+  ecReserved0               = ecFirstLazarus + 801; // reserved
   ecExtToolSettings         = ecFirstLazarus + 802;
   ecConfigBuildLazarus      = ecFirstLazarus + 803;
   ecEnvironmentOptions      = ecFirstLazarus + 804;
