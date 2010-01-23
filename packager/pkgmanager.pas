@@ -413,7 +413,7 @@ procedure TPkgManager.MainIDEitmPkgEditInstallPkgsClick(Sender: TObject);
       if OldDependency<>nil then begin
         // stay installed
         if CurDependency.AsString<>OldDependency.AsString then
-          s:=s+'|'+ctsKeep+'|'+OldDependency.AsString;
+          s:=s+'|'+lisKeep+'|'+OldDependency.AsString;
       end else
         // newly installed
         s:=s+'|'+lisNew;

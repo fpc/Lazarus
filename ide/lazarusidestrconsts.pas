@@ -1153,7 +1153,7 @@ resourcestring
   lisOld = 'old';
   lisNew = 'new';
   lisRemove = 'remove';
-  ctsKeep = 'keep';
+  lisKeep = 'keep';
   lisConfirmNewPackageSetForTheIDE = 'Confirm new package set for the IDE';
   lisConfirmPackageNewPackage = 'New package';
   lisConfirmPackageOldPackage = 'Old package';
