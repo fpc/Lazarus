@@ -4756,7 +4756,10 @@ begin
   {$endif}
   FHasPaint := True;
   Result := QGroupBox_create();
-  FCentralWidget := QWidget_create(Result, 0);
+  FCentralWidget := QStackedWidget_create(Result);
+  {we set QtNoFocus by default, since we don't want
+  FCentralWidget grabs focus on mouse click}
+  QWidget_setFocusPolicy(FCentralWidget, QtNoFocus);
 
   Layout := QVBoxLayout_create(Result);
   QLayout_addWidget(Layout, FCentralWidget);
