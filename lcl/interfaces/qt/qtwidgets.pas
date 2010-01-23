@@ -1192,6 +1192,8 @@ type
   { TQtDialog }
   
   TQtDialog = class(TQtWidget)
+  private
+    FDialogEventHook: QObject_hookH;
   protected
     FDialog: TCommonDialog;
     function CreateWidget(parent: QWidgetH; f: QtWindowFlags):QWidgetH; virtual; overload;
@@ -1202,6 +1204,7 @@ type
     function DeliverMessage(var Msg): LRESULT; override;
     function SlotClose: Boolean; cdecl; override;
   public
+    function EventFilter(Sender: QObjectH; Event: QEventH): Boolean; cdecl; override;
     function exec: Integer;
     procedure setSizeGripEnabled(const AEnabled: Boolean);
   end;
@@ -8786,6 +8789,13 @@ constructor TQtDialog.Create(ADialog: TCommonDialog; parent: QWidgetH; f: QtWind
 begin
   WidgetColorRole := QPaletteWindow;
   TextColorRole := QPaletteWindowText;
+  FOwner := nil;
+  FCentralWidget := nil;
+  FOwnWidget := True;
+  FProps := nil;
+  LCLObject := nil;
+  FKeysToEat := [];
+  FHasPaint := False;
   FDialog := ADialog;
   Widget := CreateWidget(parent, f);
 end;
@@ -8793,10 +8803,13 @@ end;
 procedure TQtDialog.AttachEvents;
 begin
   inherited AttachEvents;
+  FDialogEventHook := QObject_hook_create(Widget);
+  QObject_hook_hook_events(FDialogEventHook, @EventFilter);
 end;
 
 procedure TQtDialog.DetachEvents;
 begin
+  QObject_hook_destroy(FDialogEventHook);
   inherited DetachEvents;
 end;
 
@@ -8820,9 +8833,34 @@ begin
   FDialog.DoCanClose(Result);
 end;
 
+function TQtDialog.EventFilter(Sender: QObjectH; Event: QEventH): Boolean;
+  cdecl;
+begin
+  {we'll need it later. QDialog uses it's own eventLoop !}
+  Result := False;
+  QEvent_accept(Event);
+  if LCLObject <> nil then
+    Result := inherited EventFilter(Sender, Event);
+end;
+
 function TQtDialog.exec: Integer;
 begin
+  {$IFDEF QT_DIALOGS_USE_QT_LOOP}
   Result := QDialog_exec(QDialogH(Widget));
+  {$ELSE}
+  if QWidget_testAttribute(Widget, QtWA_DeleteOnClose) then
+    Result := QDialog_exec(QDialogH(Widget))
+  else
+  begin
+    QWidget_setWindowModality(Widget ,QtApplicationModal);
+    QWidget_show(Widget);
+    repeat
+      QCoreApplication_processEvents();
+      Application.Idle(true);
+    until not QWidget_isVisible(Widget) or Application.Terminated;
+    Result := QDialog_result(QDialogH(Widget));
+  end;
+  {$ENDIF}
 end;
 
 procedure TQtDialog.setSizeGripEnabled(const AEnabled: Boolean);
@@ -10393,7 +10431,16 @@ var
   QResult: QMessageBoxStandardButton;
 begin
   Result := QMessageBoxNoButton;
+  {$IFDEF QTDIALOGS_USES_QT_LOOP}
   QDialog_exec(QMessageBoxH(Widget));
+  {$ELSE}
+  QMessageBox_setWindowModality(QMessageBoxH(Widget), QtApplicationModal);
+  QWidget_show(Widget);
+  repeat
+    QCoreApplication_processEvents();
+    Application.Idle(true);
+  until not QWidget_isVisible(Widget) or Application.Terminated;
+  {$ENDIF}
   ABtn := QPushButtonH(QMessageBox_clickedButton(QMessageBoxH(Widget)));
   if ABtn <> nil then
   begin
