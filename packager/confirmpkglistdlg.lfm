@@ -1,0 +1,71 @@
+object ConfirmPackageListDialog: TConfirmPackageListDialog
+  Left = 342
+  Height = 240
+  Top = 152
+  Width = 450
+  ActiveControl = PackagesGrid
+  Caption = 'ConfirmPackageListDialog'
+  ClientHeight = 240
+  ClientWidth = 450
+  Position = poScreenCenter
+  LCLVersion = '0.9.29'
+  object PackagesGrid: TStringGrid
+    Left = 6
+    Height = 190
+    Top = 6
+    Width = 438
+    Align = alClient
+    AutoEdit = False
+    BorderSpacing.Around = 6
+    ColCount = 3
+    FixedCols = 0
+    Options = [goFixedVertLine, goFixedHorzLine, goVertLine, goHorzLine, goRangeSelect, goColSizing, goRowSelect, goColSpanning, goSmoothScroll]
+    TabOrder = 0
+  end
+  object BtnPanel: TPanel
+    Left = 0
+    Height = 38
+    Top = 202
+    Width = 450
+    Align = alBottom
+    BevelOuter = bvNone
+    ClientHeight = 38
+    ClientWidth = 450
+    TabOrder = 1
+    object CancelButton: TBitBtn
+      AnchorSideRight.Side = asrBottom
+      AnchorSideBottom.Side = asrBottom
+      Left = 366
+      Height = 26
+      Top = 6
+      Width = 78
+      Align = alRight
+      AutoSize = True
+      BorderSpacing.Around = 6
+      Caption = 'Cancel'
+      Constraints.MinWidth = 75
+      Kind = bkCancel
+      ModalResult = 2
+      NumGlyphs = 0
+      TabOrder = 0
+    end
+    object OkButton: TBitBtn
+      AnchorSideRight.Side = asrBottom
+      AnchorSideBottom.Side = asrBottom
+      Left = 285
+      Height = 26
+      Top = 6
+      Width = 75
+      Align = alRight
+      AutoSize = True
+      BorderSpacing.Around = 6
+      Caption = '&OK'
+      Constraints.MinWidth = 75
+      Default = True
+      Kind = bkOK
+      ModalResult = 1
+      NumGlyphs = 0
+      TabOrder = 1
+    end
+  end
+end

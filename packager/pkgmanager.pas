@@ -61,6 +61,7 @@ uses
   TransferMacros, MsgView, BuildLazDialog, NewDialog, IDEDialogs, TodoList,
   ProjectInspector, ComponentPalette, SourceEditor, AddFileToAPackageDlg,
   LazarusPackageIntf, PublishProjectDlg, PkgLinksDlg, InstallPkgSetDlg,
+  ConfirmPkgListDlg,
   // bosses
   BaseBuildManager, BasePkgManager,
   MainBar, MainIntf, MainBase;
@@ -395,30 +396,28 @@ end;
 
 procedure TPkgManager.MainIDEitmPkgEditInstallPkgsClick(Sender: TObject);
 
-  function CreateChangeReport(OldDependencyList,
-    NewDependencyList: TPkgDependency): string;
+  procedure CreateChangeReport(
+    OldDependencyList, NewDependencyList: TPkgDependency; Report: TStrings);
   var
     CurDependency: TPkgDependency;
     OldDependency: TPkgDependency;
     NewDependency: TPkgDependency;
+    s: String;
   begin
-    Result:='';
-
     // list all packages, that will be installed
     CurDependency:=NewDependencyList;
     while CurDependency<>nil do begin
-      Result:=Result+CurDependency.AsString;
+      s:=CurDependency.AsString;
       OldDependency:=FindDependencyByNameInList(OldDependencyList,pdlRequires,
                                                 CurDependency.PackageName);
       if OldDependency<>nil then begin
         // stay installed
         if CurDependency.AsString<>OldDependency.AsString then
-          Result:=Result+' ('+lisOld+': '+OldDependency.AsString+')';
-      end else begin
+          s:=s+'|'+ctsKeep+'|'+OldDependency.AsString;
+      end else
         // newly installed
-        Result:=Result+' ('+lisNew+')';
-      end;
-      Result:=Result+#13;
+        s:=s+'|'+lisNew;
+      Report.Add(s);
       CurDependency:=CurDependency.NextRequiresDependency;
     end;
 
@@ -427,10 +426,9 @@ procedure TPkgManager.MainIDEitmPkgEditInstallPkgsClick(Sender: TObject);
     while CurDependency<>nil do begin
       NewDependency:=FindDependencyByNameInList(NewDependencyList,pdlRequires,
                                                 CurDependency.PackageName);
-      if NewDependency=nil then begin
+      if NewDependency=nil then
         // this package will be removed
-        Result:=Result+CurDependency.AsString+' ('+lisRemove+')'#13;
-      end;
+        Report.Add('|'+lisRemove+'|'+CurDependency.AsString);
       CurDependency:=CurDependency.NextRequiresDependency;
     end;
   end;
@@ -441,7 +439,7 @@ var
   NewFirstAutoInstallDependency: TPkgDependency;
   BuildIDEFlags: TBuildLazarusFlags;
   ok: boolean;
-  Report: String;
+  Report: TStringList;
   PkgList: TFPList;
   RequiredPackage: TLazPackage;
   i: Integer;
@@ -468,11 +466,15 @@ begin
 
     // tell the user, which packages will stay, which will be removed and
     // which will be newly installed
-    Report:=CreateChangeReport(PackageGraph.FirstAutoInstallDependency,
-                               NewFirstAutoInstallDependency);
-    if IDEMessageDialog(lisConfirmNewPackageSetForTheIDE,
-      Format(lisThisWillHappenContinue, [#13#13, Report, #13]), mtConfirmation,
-        [mbYes, mbNo])<>mrYes then exit;
+    try
+      Report:=TStringList.Create;
+      CreateChangeReport(
+        PackageGraph.FirstAutoInstallDependency,NewFirstAutoInstallDependency,
+        Report);
+      if not ConfirmPackageList(Report) then exit;
+    finally
+      Report.Free;
+    end;
 
     // try to commit changes -> replace install list
     PackageGraph.BeginUpdate(true);

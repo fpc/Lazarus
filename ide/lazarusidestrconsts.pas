@@ -1153,8 +1153,11 @@ resourcestring
   lisOld = 'old';
   lisNew = 'new';
   lisRemove = 'remove';
+  ctsKeep = 'keep';
   lisConfirmNewPackageSetForTheIDE = 'Confirm new package set for the IDE';
-  lisThisWillHappenContinue = 'This will happen:%s%s%sContinue?';
+  lisConfirmPackageNewPackage = 'New package';
+  lisConfirmPackageOldPackage = 'Old package';
+  lisConfirmPackageAction = 'Action';
   lisSaveFileAs = 'Save file as';
   lisOpenExistingFile = 'Open existing file';
   lisLazarusUnit = 'Lazarus unit';
