@@ -1807,20 +1807,6 @@ begin
   if LCLObject <> nil then
   begin
     case QEvent_type(Event) of
-      QEventWindowActivate: SlotActivateWindow(True);
-      QEventWindowDeactivate: SlotActivateWindow(False);
-      QEventShowToParent:
-      begin
-        if (Self is TQtMainWindow) and (TQtMainWindow(Self).IsMdiChild) then
-        begin
-          if not TCustomForm(LCLObject).Active then
-          begin
-            SlotActivateWindow(True);
-            Result := True;
-            QEvent_ignore(Event);
-          end;
-        end;
-      end;
       QEventShow: SlotShow(True);
       QEventHide: SlotShow(False);
       QEventClose:
@@ -4262,6 +4248,7 @@ begin
       if p <> nil then
         QMdiArea_setBackground(MdiAreaHandle, QPalette_background(P));
       QWidget_setParent(MdiAreaHandle, FCentralWidget);
+      QMdiArea_setActivationOrder(MdiAreaHandle, QMdiAreaActivationHistoryOrder);
     end
     else
     begin
@@ -4391,6 +4378,21 @@ begin
 
   BeginEventProcessing;
   case QEvent_type(Event) of
+    QEventWindowActivate: SlotActivateWindow(True);
+    QEventWindowDeactivate: SlotActivateWindow(False);
+    QEventShowToParent:
+    begin
+      if (Self is TQtMainWindow) and (TQtMainWindow(Self).IsMdiChild) then
+      begin
+        if not TCustomForm(LCLObject).Active then
+        begin
+          SlotActivateWindow(True);
+          Result := True;
+          QEvent_ignore(Event);
+        end;
+      end;
+    end;
+
     QEventWindowStateChange:
     begin
       if IsMainForm then
