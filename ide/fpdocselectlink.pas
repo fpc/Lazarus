@@ -165,7 +165,7 @@ begin
       LinkTitle:=FPDocLinkEditorDlg.LinkTitle;
     end;
   finally
-    FPDocLinkEditorDlg.Free;
+    FPDocLinkEditorDlg.Release;
   end;
 end;
 

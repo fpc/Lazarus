@@ -1,7 +1,7 @@
 object FPDocEditor: TFPDocEditor
-  Left = 2054
+  Left = 284
   Height = 126
-  Top = 761
+  Top = 355
   Width = 753
   Caption = 'FPDoc editor'
   ClientHeight = 126
@@ -16,24 +16,24 @@ object FPDocEditor: TFPDocEditor
     Height = 126
     Top = 0
     Width = 690
-    ActivePage = TopicSheet
+    ActivePage = ShortTabSheet
     Align = alClient
-    TabIndex = 6
+    TabIndex = 0
     TabOrder = 0
     TabPosition = tpBottom
     OnChange = PageControlChange
     OnPageChanged = PageControlChange
     object ShortTabSheet: TTabSheet
       Caption = 'ShortTabSheet'
-      ClientHeight = 98
-      ClientWidth = 682
+      ClientHeight = 87
+      ClientWidth = 684
       object LinkLabel: TLabel
         AnchorSideTop.Control = LinkEdit
         AnchorSideTop.Side = asrCenter
         Left = 6
-        Height = 16
-        Top = 28
-        Width = 51
+        Height = 18
+        Top = 26
+        Width = 59
         BorderSpacing.Top = 6
         Caption = 'LinkLabel'
         ParentColor = False
@@ -43,9 +43,9 @@ object FPDocEditor: TFPDocEditor
         AnchorSideTop.Control = ShortEdit
         AnchorSideTop.Side = asrCenter
         Left = 6
-        Height = 16
-        Top = 3
-        Width = 57
+        Height = 18
+        Top = 2
+        Width = 68
         BorderSpacing.Left = 6
         Caption = 'ShortLabel'
         ParentColor = False
@@ -55,10 +55,10 @@ object FPDocEditor: TFPDocEditor
         AnchorSideLeft.Side = asrBottom
         AnchorSideRight.Control = ShortTabSheet
         AnchorSideRight.Side = asrBottom
-        Left = 69
-        Height = 23
+        Left = 80
+        Height = 22
         Top = 0
-        Width = 611
+        Width = 602
         Anchors = [akTop, akLeft, akRight]
         AutoSelect = False
         BorderSpacing.Left = 6
@@ -72,9 +72,9 @@ object FPDocEditor: TFPDocEditor
         AnchorSideTop.Control = LinkEdit
         AnchorSideTop.Side = asrBottom
         Left = 6
-        Height = 25
-        Top = 54
-        Width = 96
+        Height = 20
+        Top = 52
+        Width = 107
         AutoSize = True
         BorderSpacing.Around = 6
         Caption = 'CreateButton'
@@ -88,10 +88,10 @@ object FPDocEditor: TFPDocEditor
         AnchorSideTop.Side = asrBottom
         AnchorSideRight.Control = ShortTabSheet
         AnchorSideRight.Side = asrBottom
-        Left = 63
-        Height = 23
-        Top = 25
-        Width = 617
+        Left = 71
+        Height = 22
+        Top = 24
+        Width = 611
         Anchors = [akTop, akLeft, akRight]
         AutoSelect = False
         BorderSpacing.Left = 6
@@ -178,13 +178,13 @@ object FPDocEditor: TFPDocEditor
     end
     object DescrTabSheet: TTabSheet
       Caption = 'DescrTabSheet'
-      ClientHeight = 98
-      ClientWidth = 682
+      ClientHeight = 87
+      ClientWidth = 684
       object DescrMemo: TMemo
         Left = 0
-        Height = 94
+        Height = 83
         Top = 0
-        Width = 680
+        Width = 682
         Align = alClient
         BorderSpacing.Right = 2
         BorderSpacing.Bottom = 4
@@ -270,17 +270,17 @@ object FPDocEditor: TFPDocEditor
     end
     object TopicSheet: TTabSheet
       Caption = 'Topics'
-      ClientHeight = 98
-      ClientWidth = 682
+      ClientHeight = 87
+      ClientWidth = 684
       object Panel1: TPanel
-        Left = 512
-        Height = 98
+        Left = 514
+        Height = 87
         Top = 0
         Width = 170
         Align = alRight
         BorderSpacing.Left = 5
         BevelOuter = bvNone
-        ClientHeight = 98
+        ClientHeight = 87
         ClientWidth = 170
         TabOrder = 0
         object Panel2: TPanel
@@ -295,10 +295,10 @@ object FPDocEditor: TFPDocEditor
           ClientWidth = 170
           TabOrder = 0
           object NewTopicButton: TButton
-            Left = 120
+            Left = 100
             Height = 25
             Top = 0
-            Width = 50
+            Width = 70
             Align = alRight
             AutoSize = True
             Caption = 'New'
@@ -309,7 +309,7 @@ object FPDocEditor: TFPDocEditor
             Left = 0
             Height = 25
             Top = 0
-            Width = 115
+            Width = 95
             Align = alClient
             BorderSpacing.Right = 5
             OnEnter = TopicControlEnter
@@ -318,7 +318,7 @@ object FPDocEditor: TFPDocEditor
         end
         object TopicListBox: TListBox
           Left = 0
-          Height = 68
+          Height = 57
           Top = 30
           Width = 170
           Align = alClient
@@ -331,19 +331,19 @@ object FPDocEditor: TFPDocEditor
       end
       object Panel3: TPanel
         Left = 0
-        Height = 98
+        Height = 87
         Top = 0
-        Width = 507
+        Width = 509
         Align = alClient
         BevelOuter = bvNone
-        ClientHeight = 98
-        ClientWidth = 507
+        ClientHeight = 87
+        ClientWidth = 509
         TabOrder = 1
         object TopicShort: TEdit
           Left = 0
-          Height = 23
+          Height = 22
           Top = 0
-          Width = 507
+          Width = 509
           Align = alTop
           AutoSelect = False
           OnChange = TopicDescrChange
@@ -352,9 +352,9 @@ object FPDocEditor: TFPDocEditor
         end
         object TopicDescr: TMemo
           Left = 0
-          Height = 70
-          Top = 28
-          Width = 507
+          Height = 60
+          Top = 27
+          Width = 509
           Align = alClient
           BorderSpacing.Top = 5
           OnChange = TopicDescrChange

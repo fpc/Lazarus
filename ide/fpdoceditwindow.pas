@@ -214,6 +214,7 @@ begin
   if not FPDocEditor.Visible then
     FPDocEditor.UpdateButtons;
   FPDocEditor.Show;
+  FPDocEditor.MakeFullyVisible;
 end;
 
 function TFPDocEditor.GetFirstElement: TDOMNode;
@@ -1017,7 +1018,7 @@ var
   NewSrcFilename: String;
 begin
   // save the current changes to documentation
-  Save;
+  Save(true);
   // check if visible
   if not Visible then exit;
   
@@ -1125,6 +1126,7 @@ begin
   if FModified=AValue then exit;
   FModified:=AValue;
   SaveButton.Enabled:=FModified;
+  //debugln(['TFPDocEditor.SetModified New=',FModified]);
 end;
 
 function TFPDocEditor.WriteNode(Element: TCodeHelpElement;
