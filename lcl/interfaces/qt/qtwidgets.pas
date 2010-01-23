@@ -4382,7 +4382,7 @@ begin
     QEventWindowDeactivate: SlotActivateWindow(False);
     QEventShowToParent:
     begin
-      if (Self is TQtMainWindow) and (TQtMainWindow(Self).IsMdiChild) then
+      if IsMdiChild then
       begin
         if not TCustomForm(LCLObject).Active then
         begin
