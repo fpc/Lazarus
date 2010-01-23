@@ -4379,6 +4379,10 @@ end;
  ------------------------------------------------------------------------------}
 function TQtMainWindow.EventFilter(Sender: QObjectH; Event: QEventH): Boolean;
   cdecl;
+var
+  AStateEvent: QWindowStateChangeEventH;
+  AState: QtWindowStates;
+  AOldState: QtWindowStates;
 begin
   Result := False;
   QEvent_accept(Event);
@@ -4387,7 +4391,23 @@ begin
 
   BeginEventProcessing;
   case QEvent_type(Event) of
-    QEventWindowStateChange: SlotWindowStateChange;
+    QEventWindowStateChange:
+    begin
+      if IsMainForm then
+      begin
+        AStateEvent := QWindowStateChangeEventH(Event);
+        AState := getWindowState;
+        AOldState := QWindowStateChangeEvent_oldState(AStateEvent);
+        if AState and QtWindowMinimized <> 0 then
+          Application.IntfAppMinimize
+        else
+        if (AOldState and QtWindowMinimized <> 0) or
+          (AOldState and QtWindowMaximized <> 0) or
+          (AOldState and qt4.QtWindowFullScreen <> 0) then
+          Application.IntfAppRestore;
+      end;
+      SlotWindowStateChange;
+    end;
     QEventDrop,
     QEventDragMove,
     QEventDragEnter:
