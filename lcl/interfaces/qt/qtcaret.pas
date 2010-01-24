@@ -62,7 +62,7 @@ type
     procedure DrawCaret; virtual;
     function CreateColorPixmap(Color: PtrUInt): QPixmapH;
     procedure SetWidget(AWidget: TQtWidget);
-    procedure UpdateCaret;
+    procedure UpdateCaret(const AForceUpdate: Boolean = False);
   public
     constructor Create(AOwner: TComponent); override;
     destructor Destroy; override;
@@ -259,6 +259,7 @@ begin
   InitializeCriticalSection(FCritSect);
 
   FOldRect := Rect(0, 0, 1, 1);
+  FPos := QtPoint(0, 0);
   
   FTimer := TTimer.Create(self);
   FTimer.Enabled := False;
@@ -355,16 +356,19 @@ begin
     FTimer.Enabled := False;
     FVisibleState := FWidget.Context = 0;
     if RespondToFocus then
-      UpdateCaret;
+      UpdateCaret(True);
   end else
   begin
     if FWidget.Context = 0 then
     begin
-      FTimer.Enabled := False;
       FVisibleState := True;
+      FTimer.Enabled := False;
+      UpdateCaret;
     end else
+    begin
       if not FTimer.Enabled then
         FTimer.Enabled := True;
+    end;
   end;
 end;
 
@@ -438,23 +442,31 @@ begin
     FWidget.HasCaret := True;
 end;
 
-procedure TEmulatedCaret.UpdateCaret;
+procedure TEmulatedCaret.UpdateCaret(const AForceUpdate: Boolean = False);
 var
   R: TRect;
 begin
-  if (FWidget <> nil) then
+  if (FWidget <> nil) and (FWidget.Widget <> nil) then
   begin
+    if FPos.X < 0 then
+      FPos.X := 0;
+    if FPos.Y < 0 then
+      FPos.Y := 0;
     R.Left := FPos.x;
     R.Top := FPos.y;
     R.Right := R.Left + FWidth + 2;
     R.Bottom := R.Top + FHeight + 2;
-    if (FWidget.Context = 0) and (FWidget.Widget <> nil) then
+    if (FWidget.Context = 0) then
     begin
       if not EqualRect(FOldRect, R) then
         FWidget.Update(@FOldRect);
       FWidget.Update(@R);
+      FOldRect := R;
+    end else
+    begin
+      if AForceUpdate and not FVisible and not FTimer.Enabled then
+        FTimer.Enabled := True;
     end;
-    FOldRect := R;
   end;
 end;
 
