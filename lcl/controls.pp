@@ -2377,6 +2377,7 @@ function IsColorDefault(AControl: TControl): Boolean;
 
 function BidiFlipAlignment(Alignment: TAlignment; Flip: Boolean = True): TAlignment;
 function BidiFlipRect(const Rect: TRect; const ParentRect: TRect; const Flip: Boolean): TRect;
+procedure ChangeBiDiModeAlignment(var Alignment: TAlignment);
 
 function DbgS(a: TAnchorKind): string; overload;
 function DbgS(Anchors: TAnchors): string; overload;
@@ -2509,6 +2510,14 @@ begin
     W := Result.Right - Result.Left;
     Result.Left := ParentRect.Right - (Result.Left - ParentRect.Left) - W;
     Result.Right := Result.Left + W;
+  end;
+end;
+
+procedure ChangeBiDiModeAlignment(var Alignment: TAlignment);
+begin
+  case Alignment of
+    taLeftJustify: Alignment := taRightJustify;
+    taRightJustify: Alignment := taLeftJustify;
   end;
 end;
 
