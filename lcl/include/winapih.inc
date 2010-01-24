@@ -162,6 +162,7 @@ function GradientFill(DC: HDC; Vertices: PTriVertex; NumVertices : Longint;
 
 function HideCaret(hWnd: HWND): Boolean; {$IFDEF IF_BASE_MEMBER}virtual;{$ENDIF}
 
+//function IndexToOverlayMask --> independent
 //function InflateRect --> independent
 procedure InitializeCriticalSection(var CritSection: TCriticalSection); {$IFDEF IF_BASE_MEMBER}virtual;{$ENDIF}
 function IntersectClipRect(dc: hdc; Left, Top, Right,Bottom: Integer): Integer; {$IFDEF IF_BASE_MEMBER}virtual;{$ENDIF}
@@ -181,6 +182,9 @@ function IsZoomed(handle: HWND): boolean; {$IFDEF IF_BASE_MEMBER}virtual;{$ENDIF
 procedure LeaveCriticalSection(var CritSection: TCriticalSection); {$IFDEF IF_BASE_MEMBER}virtual;{$ENDIF}
 function LineTo(DC: HDC; X, Y: Integer): Boolean; {$IFDEF IF_BASE_MEMBER}virtual;{$ENDIF}
 
+//function MakeLong --> independent
+//function MakeROP4 --> independent
+//function MakeWord --> independent
 function MaskBlt(DestDC: HDC; X, Y, Width, Height: Integer; SrcDC: HDC; XSrc, YSrc: Integer; Mask: HBITMAP; XMask, YMask: Integer; Rop: DWORD): Boolean; {$IFDEF IF_BASE_MEMBER}virtual;{$ENDIF}
 function MaskBlt(DestDC: HDC; X, Y, Width, Height: Integer; SrcDC: HDC; XSrc, YSrc: Integer; Mask: HBITMAP; XMask, YMask: Integer): Boolean; {$IFDEF IF_BASE_MEMBER}virtual;{$ENDIF}
 function MessageBox(hWnd: HWND; lpText, lpCaption: PChar; uType: Cardinal): integer; {$IFDEF IF_BASE_MEMBER}virtual;{$ENDIF}
@@ -300,6 +304,7 @@ function GetBValue(RGB : DWORD) : BYTE; inline;
 procedure GetRGBValues(RGB : DWORD; var R, G, B: Byte); inline;
 procedure GetRGBIntValues(RGB : DWORD; var R, G, B: integer); inline;
 
+function IndexToOverlayMask(iOverlay: UINT): UINT; inline;
 function InflateRect(var ARect: TRect; dx, dy: Integer): Boolean;
 function IntersectRect(var DestRect: TRect; const SrcRect1, SrcRect2: TRect): Boolean;
 function IsCharAlphaNumeric(c : Char) : Boolean;
@@ -307,6 +312,9 @@ function IsRectEmpty(const ARect: TRect): Boolean;
 
 function KillTimer(Wnd: HWND; uIDEvent: UINT_PTR): BOOL;
 
+function MakeLong(A,B: Word): DWORD; inline;
+function MakeROP4(fore, back: DWORD): DWORD;inline;
+function MakeWord(A,B: Byte): Word; inline;
 function MakeWParam(l, h: Word): WPARAM; inline;
 function MakeLParam(l, h: Word): LPARAM; inline;
 function MakeLResult(l, h: Word): LRESULT; inline;

@@ -1207,6 +1207,18 @@ begin
 end;
 
 {------------------------------------------------------------------------------
+  Function: IndexToOverlayMask
+  Params: iOverlay:
+  Returns:
+
+ ------------------------------------------------------------------------------}
+function IndexToOverlayMask(iOverlay: UINT): UINT; inline;
+begin
+  Result := iOverlay shl 8;
+end;
+
+
+{------------------------------------------------------------------------------
   Function: InflateRect
   Params:   ARect: points to structure that increases or decreases in size.
             dx   : amount to increase the rectangle width.
@@ -1332,6 +1344,19 @@ begin
 end;
 
 {------------------------------------------------------------------------------
+  Function: MakeLong
+  Params: A:
+          B:
+  Returns:
+
+ ------------------------------------------------------------------------------}
+function MakeLong(A, B: Word): DWORD; inline;
+begin
+  Result := A or B shl 16;
+end;
+
+
+{------------------------------------------------------------------------------
   Function: MakeLParam
   Params:
   Returns:
@@ -1352,6 +1377,31 @@ function MakeLResult(l, h: Word): LRESULT; inline;
 begin
   Result := MakeLong(l, h);
 end;
+
+{------------------------------------------------------------------------------
+  Function: MakeROP4
+  Params: fore:
+          back:
+  Returns:
+
+ ------------------------------------------------------------------------------}
+function MakeRop4(fore,back: DWORD): DWORD; inline;
+begin
+  Result := ((back shl 8) and $FF000000) or fore;
+end;
+
+{------------------------------------------------------------------------------
+  Function: MakeWord
+  Params: A:
+          B:
+  Returns:
+
+ ------------------------------------------------------------------------------}
+function MakeWord(A, B: Byte): Word; inline;
+begin
+  Result := A or B shl 8;
+end;
+
 
 {------------------------------------------------------------------------------
   Function: MakeWParam

@@ -64,16 +64,6 @@ uses
 // All interface communication (Our additions)
 {$I lclintfh.inc}
 
-//-------------------------
-// Some MACROs
-//-------------------------
-function MakeLong(A,B: Word): LongInt; inline;
-function MakeWord(A,B: Byte): Word; inline;
-function MakeRop4(fore,back: DWORD): DWORD; inline;
-function IndexToOverlayMask(iOverlay: UINT): UINT; inline;
-
-//-------------------------
-
 function PredefinedClipboardFormat(
   AFormat: TPredefinedClipboardFormat): TClipboardFormat;
 
@@ -188,25 +178,6 @@ begin
 end;
 {$ENDIF}
 
-function MakeLong(A,B : Word) : LongInt; inline;
-begin
-  Result := A or B shl 16;
-end;
-
-function MakeWord(A,B : Byte) : Word; inline;
-begin
-  Result := A or B shl 8;
-end;
-
-function MakeRop4(fore,back: DWORD): DWORD; inline;
-begin
-  Result := ((back shl 8) and $FF000000) or fore;
-end;
-
-function IndexToOverlayMask(iOverlay: UINT): UINT; inline;
-begin
-  Result := iOverlay shl 8;
-end;
 
 function PredefinedClipboardFormat(AFormat: TPredefinedClipboardFormat
   ): TClipboardFormat;
