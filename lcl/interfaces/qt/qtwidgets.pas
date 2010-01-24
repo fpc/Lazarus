@@ -6094,7 +6094,6 @@ end;
 procedure TQtTabWidget.setCurrentWidget(APage: TQtWidget);
 begin
   QTabWidget_setCurrentWidget(QTabWidgetH(Widget), APage.Widget);
-  APage.setFocus;
 end;
 
 {------------------------------------------------------------------------------
@@ -6120,7 +6119,10 @@ var
 begin
   if LCLObject = nil then
     Exit;
-    
+
+  if InUpdate then
+    exit;
+
   FillChar(Msg, SizeOf(Msg), 0);
   Msg.Msg := LM_NOTIFY;
   FillChar(Hdr, SizeOf(Hdr), 0);

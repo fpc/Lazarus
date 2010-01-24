@@ -329,10 +329,17 @@ begin
   Page := TQtPage(AChild.Handle);
   TabWidget := TQtTabWidget(ANotebook.Handle);
   AIndex := ANoteBook.IndexOf(AChild);
+
+  TabWidget.BeginUpdate;
   TabWidget.setUpdatesEnabled(false);
   TabWidget.removeTab(AIndex);
   TabWidget.insertTab(NewIndex, Page.Widget, Page.getIcon, Page.getText);
   TabWidget.setUpdatesEnabled(true);
+  TabWidget.EndUpdate;
+
+  if TabWidget.getCurrentIndex <> NewIndex then
+    TabWidget.setCurrentWidget(Page);
+
 end;
 
 class procedure TQtWSCustomNotebook.RemovePage(const ANotebook: TCustomNotebook;
