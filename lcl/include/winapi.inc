@@ -378,6 +378,11 @@ begin
   Result := WidgetSet.GetDeviceCaps(DC, Index);
 end;
 
+function GetDoubleClickTime: UINT;
+begin
+  Result := WidgetSet.GetDoubleClickTime;
+end;
+
 
 function GetFocus: HWND;
 begin
@@ -714,6 +719,11 @@ end;
 function RectVisible(dc : hdc; const ARect: TRect) : Boolean;
 begin
   Result := WidgetSet.RectVisible(dc,ARect);
+end;
+
+function RedrawWindow(Wnd: HWND; lprcUpdate: PRECT; hrgnUpdate: HRGN; flags: UINT): Boolean;
+begin
+  Result := WidgetSet.RedrawWindow(Wnd, lprcUpdate, hrgnUpdate, flags);
 end;
 
 function ReleaseCapture:  Boolean;
@@ -1639,6 +1649,62 @@ function SmallPointtoPoint(const P : TSmallPoint) : Tpoint;
 Begin
   Result.X := P.X;
   Result.Y := P.Y;
+end;
+
+{------------------------------------------------------------------------------
+  Function: SubtractRect
+  Params: lprcDst:
+          lprcSrc1:
+          lprcSrc2:
+  Returns:
+
+  The resulting rectangle is the bounding box of the geometric difference
+ ------------------------------------------------------------------------------}
+function SubtractRect(out lprcDst: TRect; const lprcSrc1, lprcSrc2: TRect): Boolean;
+var
+  L,R,T,B: Boolean;
+begin
+  // check overlapping edges
+  L := lprcSrc2.Left <= lprcSrc1.Left;
+  R := lprcSrc2.Right >= lprcSrc1.Right;
+  T := lprcSrc2.Top <= lprcSrc1.Top;
+  B := lprcSrc2.Bottom >= lprcSrc1.Bottom;
+
+  // assume no change
+  lprcDst := lprcSrc1;
+
+  if L and R
+  then begin
+    // left and right overlap, so there is somthing to substract from top or bottom
+    if T
+    then begin
+      if B
+      then begin
+        // empty rect;
+        lprcDst.Right := lprcSrc1.Left;
+        lprcDst.Bottom := lprcSrc1.Top;
+        Exit(False);
+      end;
+      lprcDst.Top := lprcSrc2.Bottom;
+      Exit(True);
+    end;
+
+    if B
+    then lprcDst.Bottom := lprcSrc2.Top;
+    Exit(True);
+  end;
+
+  if T and B
+  then begin
+    // top and bottom overlap, so there is somthing to substract from either left or right
+    if L
+    then lprcDst.Left := lprcSrc2.Right
+    else
+      if R
+      then lprcDst.Right := lprcSrc2.Left;
+  end;
+
+  Result := True;
 end;
 
 {------------------------------------------------------------------------------

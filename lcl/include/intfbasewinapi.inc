@@ -959,6 +959,12 @@ begin
   Result := 0;
 end;
 
+function TWidgetSet.GetDoubleClickTime: UINT;
+begin
+  // use windows default
+  Result := 500;
+end;
+
 function TWidgetSet.GetFocus: HWND;
 begin
   Result := 0;
@@ -1349,6 +1355,16 @@ begin
     DeleteObject(RectRgn);
   end;
   DeleteObject(ClipRGN);
+end;
+
+function TWidgetSet.RedrawWindow(Wnd: HWND; lprcUpdate: PRECT; hrgnUpdate: HRGN; flags: UINT): Boolean;
+begin
+  // check if validate flag is set, we have no default for it.
+  if RDW_VALIDATE and flags <> 0 then Exit(False);
+
+  if hrgnUpdate = 0
+  then Result := InvalidateRect(Wnd, lprcUpdate, RDW_ERASE and flags <> 0)
+  else Result := InvalidateRgn(Wnd, hrgnUpdate, RDW_ERASE and flags <> 0)
 end;
 
 function TWidgetSet.ReleaseCapture : Boolean;

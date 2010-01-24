@@ -2224,6 +2224,17 @@ begin
 end;
 
 {------------------------------------------------------------------------------
+  Function: GetDoubleClickTime
+  Params: none
+  Returns:
+
+ ------------------------------------------------------------------------------}
+function TQtWidgetSet.GetDoubleClickTime: UINT;
+begin
+  Result := QApplication_doubleClickInterval;
+end;
+
+{------------------------------------------------------------------------------
   Function: GetFocus
   Params:  None
   Returns: Nothing
@@ -4084,6 +4095,39 @@ begin
         QRegion_destroy(Region);
       end;
     end;
+  end;
+end;
+
+{------------------------------------------------------------------------------
+  Function: RedrawWindow
+  Params: Wnd:
+          lprcUpdate:
+          hrgnUpdate:
+          flags:
+  Returns:
+
+ ------------------------------------------------------------------------------}
+function TQtWidgetSet.RedrawWindow(Wnd: HWND; lprcUpdate: PRECT; hrgnUpdate: HRGN; flags: UINT): Boolean;
+var
+  QtWidget: TQtWidget absolute Wnd;
+  Region: TQtRegion absolute hrgnUpdate;
+begin
+  if (lprcUpdate = nil) and (hrgnUpdate = 0)
+  then begin
+    if Wnd = 0
+    then begin
+      // redraw desktop
+      Exit(False);
+    end;
+    QWidget_update(QtWidget.Widget);
+    Exit(True);
+  end;
+
+  if Region = nil
+  then Result := InvalidateRect(Wnd, lprcUpdate, False)
+  else begin
+    QWidget_update(QtWidget.Widget, Region.Widget);
+    Result := True;
   end;
 end;
 

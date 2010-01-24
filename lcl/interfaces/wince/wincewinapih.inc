@@ -119,6 +119,7 @@ function GetDCOriginRelativeToWindow(PaintDC: HDC; WindowHandle: HWND; var Origi
 {function GetDesignerDC(WindowHandle: HWND): HDC; override;}
 function GetDeviceCaps(DC: HDC; Index: Integer): Integer; override;
 //function GetDIBits(DC: HDC; Bitmap: HBitmap; StartScan, NumScans: UINT; Bits: Pointer; var BitInfo: BitmapInfo; Usage: UINT): Integer; override;
+function GetDoubleClickTime: UINT; override;
 function GetFocus: HWND; override;
 function GetForegroundWindow: HWND; override;
 //function GetFontLanguageInfo(DC: HDC): DWord; override;
@@ -175,6 +176,7 @@ function RadialChord(DC: HDC; x,y,width,height,sx,sy,ex,ey : Integer): Boolean; 
 function RealizePalette(DC: HDC): Cardinal; override;}
 function Rectangle(DC: HDC; X1, Y1, X2, Y2: Integer): Boolean; override;
 function RectVisible(dc : hdc; const ARect: TRect) : Boolean; override;
+function RedrawWindow(Wnd: HWND; lprcUpdate: PRECT; hrgnUpdate: HRGN; flags: UINT): Boolean; override;
 {function RegroupMenuItem(hndMenu: HMENU; GroupIndex: integer): Boolean; override;}
 function ReleaseCapture : Boolean; override;
 function ReleaseDC(Window: HWND; DC: HDC): Integer; override;

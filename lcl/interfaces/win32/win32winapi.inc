@@ -1874,6 +1874,17 @@ begin
 end;
 
 {------------------------------------------------------------------------------
+  Function: GetDoubleClickTime
+  Params: none
+  Returns:
+
+ ------------------------------------------------------------------------------}
+function TWin32WidgetSet.GetDoubleClickTime: UINT;
+begin
+  Result := Windows.GetDoubleClickTime;
+end;
+
+{------------------------------------------------------------------------------
   Method:  GetFocus
   Params:  none
   Returns: The handle of the window with focus
@@ -2799,7 +2810,21 @@ end;
 
 function TWin32WidgetSet.RectVisible(dc : hdc; const ARect: TRect) : Boolean;
 begin
-  Result := Boolean(Windows.RectVisible(DC, LPRECT(@ARect)^));
+  Result := Windows.RectVisible(DC, LPRECT(@ARect)^);
+end;
+
+{------------------------------------------------------------------------------
+  Function: RedrawWindow
+  Params: Wnd:
+          lprcUpdate:
+          hrgnUpdate:
+          flags:
+  Returns:
+
+ ------------------------------------------------------------------------------}
+function TWin32WidgetSet.RedrawWindow(Wnd: HWND; lprcUpdate: PRECT; hrgnUpdate: HRGN; flags: UINT): Boolean;
+begin
+  Result := Windows.RedrawWindow(Wnd,lprcUpdate,hrgnUpdate,flags);
 end;
 
 {------------------------------------------------------------------------------

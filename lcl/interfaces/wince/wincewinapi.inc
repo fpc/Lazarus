@@ -1586,6 +1586,17 @@ begin
   Result := Windows.CreateDIBSection(DC, Windows.PBitmapInfo(@p2)^,  p3, p4, p5, p6)
 end;
 
+{------------------------------------------------------------------------------
+  Function: GetDoubleClickTime
+  Params: none
+  Returns:
+
+ ------------------------------------------------------------------------------}
+function TWinceWidgetSet.GetDoubleClickTime: UINT;
+begin
+  Result := Windows.GetDoubleClickTime;
+end;
+
 
 {------------------------------------------------------------------------------
   Method:  GetFocus
@@ -1791,6 +1802,20 @@ end;
 function TWinCEWidgetSet.GetTextColor(DC: HDC): TColorRef;
 begin
   Result := Windows.GetTextColor(DC);
+end;
+
+{------------------------------------------------------------------------------
+  Function: RedrawWindow
+  Params: Wnd:
+          lprcUpdate:
+          hrgnUpdate:
+          flags:
+  Returns:
+
+ ------------------------------------------------------------------------------}
+function TWinceWidgetSet.RedrawWindow(Wnd: HWND; lprcUpdate: PRECT; hrgnUpdate: HRGN; flags: UINT): Boolean;
+begin
+  Result := Windows.RedrawWindow(Wnd,lprcUpdate,hrgnUpdate,flags);
 end;
 
 function TWinCEWidgetSet.UpdateWindow(Handle: HWND): Boolean;
