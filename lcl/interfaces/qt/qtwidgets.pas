@@ -8867,7 +8867,7 @@ end;
 
 function TQtDialog.exec: Integer;
 begin
-  {$IFDEF QT_DIALOGS_USE_QT_LOOP}
+  {$IF DEFINED(DARWIN) OR DEFINED(QT_DIALOGS_USE_QT_LOOP)}
   Result := QDialog_exec(QDialogH(Widget));
   {$ELSE}
   if QWidget_testAttribute(Widget, QtWA_DeleteOnClose) then
