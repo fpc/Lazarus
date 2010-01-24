@@ -6094,6 +6094,7 @@ end;
 procedure TQtTabWidget.setCurrentWidget(APage: TQtWidget);
 begin
   QTabWidget_setCurrentWidget(QTabWidgetH(Widget), APage.Widget);
+  APage.setFocus;
 end;
 
 {------------------------------------------------------------------------------
