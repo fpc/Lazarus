@@ -8480,7 +8480,11 @@ end;
 procedure TQtMenu.DoPopupClose;
 begin
   if FMenuItem.Menu is TPopupMenu then
-    TPopupMenu(FMenuItem.Menu).Close;
+  begin
+    if Assigned(TPopupMenu(FMenuItem.Menu).OnClose) then
+      TPopupMenu(FMenuItem.Menu).OnClose(FMenuItem.Menu);
+    Menus.ActivePopupMenu := nil;
+  end;
 end;
 
 procedure TQtMenu.SlotDestroy; cdecl;
