@@ -6163,12 +6163,22 @@ end;
 function TQtTabWidget.tabAt(APoint: TPoint): Integer;
 var
   AQtPoint: TQtPoint;
+  R: TRect;
 begin
   if (APoint.Y < 0) or (APoint.X < 0) then
   begin
+    {some themes (eg. MacOSX) moves tab buttons
+     into the middle of parent, so we must
+     take it's geometry into account.}
+    R := TabBar.getGeometry;
     QWidget_pos(getStackWidget, @AQtPoint);
     AQtPoint.x := AQtPoint.x + APoint.x;
     AQtPoint.y := AQtPoint.y + APoint.y;
+
+    if R.Left <> 0 then
+      dec(AQtPoint.x, R.Left);
+    if R.Top <> 0 then
+      dec(AQtPoint.y, R.Top);
   end else
     AQtPoint := QtPoint(APoint.x, APoint.y);
   Result := QTabBar_tabAt(QTabBarH(TabBar.Widget), @AQtPoint);
