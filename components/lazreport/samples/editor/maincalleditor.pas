@@ -239,12 +239,15 @@ end;
 
 procedure TfrmMain.accCompositeExecute(Sender: TObject);
 var
-  r: pointer;
+  i: Integer;
+  r: TFrReport;
 begin
   // force reload of reports in case modified reports
   // were modified in designer at run-time
-  for r in Composite.Reports do
-    TfrReport(r).LoadFromFile(TfrReport(r).FileName);
+  for i := 0 to Composite.Reports.Count-1 do begin
+    r := TfrReport(Composite.Reports[i]);
+    r.LoadFromFile(r.FileName);
+  end;
   Composite.ShowReport;
 end;
 
@@ -332,7 +335,6 @@ const
   rptarr:array[0..1] of string[10] = ('rpta.lrf','rptb.lrf');
 var
   i: integer;
-  s: string;
   r: TfrReport;
 begin
 
@@ -352,9 +354,9 @@ begin
   if FileExistsUTF8(ExtractFilePath(ParamStrUTF8(0))+'salida.lrf') then
     OpenReport(ExtractFilePath(ParamStrUTF8(0))+'salida.lrf');
 
-  for s in rptarr do begin
+  for i:=Low(rptArr) to High(rptArr) do begin
     r := TfrReport.Create(self);
-    r.LoadFromFile(s);
+    r.LoadFromFile(rptArr[i]);
     Composite.Reports.Add(r);
   end;
 end;

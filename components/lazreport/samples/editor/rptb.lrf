@@ -14,7 +14,7 @@
     <Pages>
       <PrintToDefault Value="False"/>
       <DoublePass Value="True"/>
-      <SelectedPrinter Value="LaserJet1100"/>
+      <SelectedPrinter Value="Microsoft Office Document Image Writer"/>
       <PageCount Value="1"/>
       <Page1>
         <Name Value="Page1"/>
@@ -31,7 +31,7 @@
         </Margins>
         <Orientation Value="poPortrait"/>
         <UseMargins Value="True"/>
-        <PrintToPrevPage Value="True"/>
+        <PrintToPrevPage Value="False"/>
         <ColCount Value="1"/>
         <ColGap Value="0"/>
         <LayoutOrder Value="loColumns"/>
@@ -179,7 +179,7 @@
           <Data>
             <Format Value="556"/>
             <FormatStr Value=""/>
-            <Memo Value="Composite Report Test, Report B&#xA;"/>
+            <Memo Value="Composite Report Test, Report B&#xD;&#xA;"/>
             <Script Value=""/>
           </Data>
           <Font>
@@ -222,7 +222,7 @@
           <Data>
             <Format Value="556"/>
             <FormatStr Value=""/>
-            <Memo Value="Page header, Report B&#xA;"/>
+            <Memo Value="Page header, Report B&#xD;&#xA;"/>
             <Script Value=""/>
           </Data>
           <Font>
@@ -265,7 +265,7 @@
           <Data>
             <Format Value="556"/>
             <FormatStr Value=""/>
-            <Memo Value="Page Footer, Report B&#xA;"/>
+            <Memo Value="Page Footer, Report B&#xD;&#xA;"/>
             <Script Value=""/>
           </Data>
           <Font>
@@ -308,7 +308,7 @@
           <Data>
             <Format Value="556"/>
             <FormatStr Value=""/>
-            <Memo Value="Master Header, Report B&#xA;"/>
+            <Memo Value="Master Header, Report B&#xD;&#xA;"/>
             <Script Value=""/>
           </Data>
           <Font>
@@ -351,7 +351,7 @@
           <Data>
             <Format Value="556"/>
             <FormatStr Value=""/>
-            <Memo Value="Line [LINE#], Line Through [LINETHROUGH#], Current [CURRENT#], Report B&#xA;"/>
+            <Memo Value="Line [LINE#], Line Through [LINETHROUGH#], Current [CURRENT#], Report B&#xD;&#xA;"/>
             <Script Value=""/>
           </Data>
           <Font>
@@ -394,7 +394,7 @@
           <Data>
             <Format Value="556"/>
             <FormatStr Value=""/>
-            <Memo Value="Master Footer, Report B&#xA;"/>
+            <Memo Value="Master Footer, Report B&#xD;&#xA;"/>
             <Script Value=""/>
           </Data>
           <Font>
@@ -437,7 +437,7 @@
           <Data>
             <Format Value="556"/>
             <FormatStr Value=""/>
-            <Memo Value="Page [PAGE#] of [TOTALPAGES]&#xA;"/>
+            <Memo Value="Page [PAGE#] of [TOTALPAGES]&#xD;&#xA;"/>
             <Script Value=""/>
           </Data>
           <Font>

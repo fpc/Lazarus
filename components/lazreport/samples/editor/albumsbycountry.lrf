@@ -14,7 +14,7 @@
     <Pages>
       <PrintToDefault Value="False"/>
       <DoublePass Value="False"/>
-      <SelectedPrinter Value="LaserJet1100"/>
+      <SelectedPrinter Value="Microsoft Office Document Image Writer"/>
       <PageCount Value="1"/>
       <Page1>
         <Name Value="Page1"/>
@@ -35,7 +35,7 @@
         <ColCount Value="1"/>
         <ColGap Value="0"/>
         <LayoutOrder Value="loColumns"/>
-        <ObjectCount Value="25"/>
+        <ObjectCount Value="22"/>
         <Object1>
           <Name Value="GroupHeader1"/>
           <ClassName Value="TfrBandView"/>
@@ -45,7 +45,7 @@
           <Size>
             <Left Value="0"/>
             <Top Value="68"/>
-            <Width Value="773"/>
+            <Width Value="753"/>
             <Height Value="32"/>
           </Size>
           <Flags Value="112"/>
@@ -65,7 +65,7 @@
           <Size>
             <Left Value="0"/>
             <Top Value="192"/>
-            <Width Value="773"/>
+            <Width Value="753"/>
             <Height Value="17"/>
           </Size>
           <Flags Value="48"/>
@@ -85,7 +85,7 @@
           <Size>
             <Left Value="0"/>
             <Top Value="304"/>
-            <Width Value="773"/>
+            <Width Value="753"/>
             <Height Value="60"/>
           </Size>
           <Flags Value="48"/>
@@ -105,7 +105,7 @@
           <Size>
             <Left Value="0"/>
             <Top Value="128"/>
-            <Width Value="773"/>
+            <Width Value="753"/>
             <Height Value="28"/>
           </Size>
           <Flags Value="48"/>
@@ -139,7 +139,7 @@
           <Data>
             <Format Value="558"/>
             <FormatStr Value=""/>
-            <Memo Value="[Dbf1.&quot;COUNTRY&quot;]&#xA;"/>
+            <Memo Value="[Dbf1.&quot;COUNTRY&quot;]&#xD;&#xA;"/>
             <Script Value=""/>
           </Data>
           <Font>
@@ -182,7 +182,7 @@
           <Data>
             <Format Value="558"/>
             <FormatStr Value=""/>
-            <Memo Value="[Dbf1.&quot;AUTHOR&quot;]&#xA;"/>
+            <Memo Value="[Dbf1.&quot;AUTHOR&quot;]&#xD;&#xA;"/>
             <Script Value=""/>
           </Data>
           <Font>
@@ -225,7 +225,7 @@
           <Data>
             <Format Value="558"/>
             <FormatStr Value=""/>
-            <Memo Value="[Dbf1.&quot;TITLE&quot;]&#xA;"/>
+            <Memo Value="[Dbf1.&quot;TITLE&quot;]&#xD;&#xA;"/>
             <Script Value=""/>
           </Data>
           <Font>
@@ -268,7 +268,7 @@
           <Data>
             <Format Value="558"/>
             <FormatStr Value=""/>
-            <Memo Value="[Dbf1.&quot;COMPANY&quot;]&#xA;"/>
+            <Memo Value="[Dbf1.&quot;COMPANY&quot;]&#xD;&#xA;"/>
             <Script Value=""/>
           </Data>
           <Font>
@@ -311,7 +311,7 @@
           <Data>
             <Format Value="558"/>
             <FormatStr Value=""/>
-            <Memo Value="[Dbf1.&quot;YEAR&quot;]&#xA;"/>
+            <Memo Value="[Dbf1.&quot;YEAR&quot;]&#xD;&#xA;"/>
             <Script Value=""/>
           </Data>
           <Font>
@@ -354,7 +354,7 @@
           <Data>
             <Format Value="558"/>
             <FormatStr Value=""/>
-            <Memo Value="[COUNT(MasterData1)] Albums -> $[SUM([Dbf1.&quot;PRICE&quot;]*[Dbf1.&quot;QTY&quot;], masterdata1) #N#,###.00]&#xA;&#x9;&#xA;"/>
+            <Memo Value="[COUNT(MasterData1)] Albums -> $[SUM([Dbf1.&quot;PRICE&quot;]*[Dbf1.&quot;QTY&quot;], masterdata1) #N#,###.00]&#xD;&#xA;&#x9;&#xD;&#xA;"/>
             <Script Value=""/>
           </Data>
           <Font>
@@ -397,7 +397,7 @@
           <Data>
             <Format Value="558"/>
             <FormatStr Value=""/>
-            <Memo Value="[Dbf1.&quot;QTY&quot;]&#xA;"/>
+            <Memo Value="[Dbf1.&quot;QTY&quot;]&#xD;&#xA;"/>
             <Script Value=""/>
           </Data>
           <Font>
@@ -440,7 +440,7 @@
           <Data>
             <Format Value="17039918"/>
             <FormatStr Value="$#,###.00"/>
-            <Memo Value="[Dbf1.&quot;PRICE&quot;]&#xA;"/>
+            <Memo Value="[Dbf1.&quot;PRICE&quot;]&#xD;&#xA;"/>
             <Script Value=""/>
           </Data>
           <Font>
@@ -502,7 +502,7 @@
           <Data>
             <Format Value="17039918"/>
             <FormatStr Value="$#,###.00"/>
-            <Memo Value="[[Dbf1.&quot;QTY&quot;]*[Dbf1.&quot;PRICE&quot;]]&#xA;"/>
+            <Memo Value="[[Dbf1.&quot;QTY&quot;]*[Dbf1.&quot;PRICE&quot;]]&#xD;&#xA;"/>
             <Script Value=""/>
           </Data>
           <Font>
@@ -545,7 +545,7 @@
           <Data>
             <Format Value="558"/>
             <FormatStr Value=""/>
-            <Memo Value="Year&#xA;"/>
+            <Memo Value="Year&#xD;&#xA;"/>
             <Script Value=""/>
           </Data>
           <Font>
@@ -588,7 +588,7 @@
           <Data>
             <Format Value="558"/>
             <FormatStr Value=""/>
-            <Memo Value="Author&#xA;"/>
+            <Memo Value="Author&#xD;&#xA;"/>
             <Script Value=""/>
           </Data>
           <Font>
@@ -631,7 +631,7 @@
           <Data>
             <Format Value="558"/>
             <FormatStr Value=""/>
-            <Memo Value="Title&#xA;"/>
+            <Memo Value="Title&#xD;&#xA;"/>
             <Script Value=""/>
           </Data>
           <Font>
@@ -674,7 +674,7 @@
           <Data>
             <Format Value="558"/>
             <FormatStr Value=""/>
-            <Memo Value="Company&#xA;"/>
+            <Memo Value="Company&#xD;&#xA;"/>
             <Script Value=""/>
           </Data>
           <Font>
@@ -717,7 +717,7 @@
           <Data>
             <Format Value="558"/>
             <FormatStr Value=""/>
-            <Memo Value="Qty&#xA;"/>
+            <Memo Value="Qty&#xD;&#xA;"/>
             <Script Value=""/>
           </Data>
           <Font>
@@ -760,7 +760,7 @@
           <Data>
             <Format Value="558"/>
             <FormatStr Value=""/>
-            <Memo Value="Price&#xA;"/>
+            <Memo Value="Price&#xD;&#xA;"/>
             <Script Value=""/>
           </Data>
           <Font>
@@ -803,7 +803,7 @@
           <Data>
             <Format Value="558"/>
             <FormatStr Value=""/>
-            <Memo Value="Subtotal&#xA;"/>
+            <Memo Value="Subtotal&#xD;&#xA;"/>
             <Script Value=""/>
           </Data>
           <Font>
@@ -842,135 +842,6 @@
             <FrameWidth Value="1"/>
           </Frames>
         </Object22>
-        <Object23>
-          <Name Value="Memo17"/>
-          <ClassName Value="TfrMemoView"/>
-          <Visible Value="1"/>
-          <Typ Value="gtMemo"/>
-          <StreamMode Value="0"/>
-          <Size>
-            <Left Value="192"/>
-            <Top Value="336"/>
-            <Width Value="36"/>
-            <Height Value="18"/>
-          </Size>
-          <Flags Value="3"/>
-          <FillColor Value="clFuchsia"/>
-          <Frames>
-            <FrameColor Value="clBlack"/>
-            <FrameStyle Value="frsSolid"/>
-            <FrameWidth Value="1"/>
-            <FrameBorders Value=""/>
-          </Frames>
-          <Data>
-            <Format Value="556"/>
-            <FormatStr Value=""/>
-            <Memo Value="[SUM([Dbf1.&quot;QTY&quot;], masterdata1)]&#xA;"/>
-            <Script Value=""/>
-          </Data>
-          <Font>
-            <Name Value="helvetica [urw]"/>
-            <Size Value="10"/>
-            <Color Value="clBlack"/>
-            <Charset Value="0"/>
-            <Style Value=""/>
-          </Font>
-          <Highlight>
-            <FontStyle Value="2"/>
-            <FontColor Value="clBlack"/>
-            <FillColor Value="clWhite"/>
-            <HighlightStr Value=""/>
-          </Highlight>
-          <Alignment Value="taLeftJustify"/>
-          <Layout Value="tlTop"/>
-          <Angle Value="0"/>
-        </Object23>
-        <Object24>
-          <Name Value="Memo18"/>
-          <ClassName Value="TfrMemoView"/>
-          <Visible Value="1"/>
-          <Typ Value="gtMemo"/>
-          <StreamMode Value="0"/>
-          <Size>
-            <Left Value="244"/>
-            <Top Value="336"/>
-            <Width Value="36"/>
-            <Height Value="18"/>
-          </Size>
-          <Flags Value="3"/>
-          <FillColor Value="clFuchsia"/>
-          <Frames>
-            <FrameColor Value="clBlack"/>
-            <FrameStyle Value="frsSolid"/>
-            <FrameWidth Value="1"/>
-            <FrameBorders Value=""/>
-          </Frames>
-          <Data>
-            <Format Value="556"/>
-            <FormatStr Value=""/>
-            <Memo Value="[SUM([Dbf1.&quot;PRICE&quot;], masterdata1)]&#xA;"/>
-            <Script Value=""/>
-          </Data>
-          <Font>
-            <Name Value="helvetica [urw]"/>
-            <Size Value="10"/>
-            <Color Value="clBlack"/>
-            <Charset Value="0"/>
-            <Style Value=""/>
-          </Font>
-          <Highlight>
-            <FontStyle Value="2"/>
-            <FontColor Value="clBlack"/>
-            <FillColor Value="clWhite"/>
-            <HighlightStr Value=""/>
-          </Highlight>
-          <Alignment Value="taLeftJustify"/>
-          <Layout Value="tlTop"/>
-          <Angle Value="0"/>
-        </Object24>
-        <Object25>
-          <Name Value="Memo19"/>
-          <ClassName Value="TfrMemoView"/>
-          <Visible Value="1"/>
-          <Typ Value="gtMemo"/>
-          <StreamMode Value="0"/>
-          <Size>
-            <Left Value="296"/>
-            <Top Value="336"/>
-            <Width Value="68"/>
-            <Height Value="18"/>
-          </Size>
-          <Flags Value="3"/>
-          <FillColor Value="clFuchsia"/>
-          <Frames>
-            <FrameColor Value="clBlack"/>
-            <FrameStyle Value="frsSolid"/>
-            <FrameWidth Value="1"/>
-            <FrameBorders Value=""/>
-          </Frames>
-          <Data>
-            <Format Value="556"/>
-            <FormatStr Value=""/>
-            <Memo Value="[SUM([Dbf1.&quot;QTY&quot;], masterdata1)+SUM([Dbf1.&quot;PRICE&quot;], masterdata1)]&#xA;"/>
-            <Script Value=""/>
-          </Data>
-          <Font>
-            <Name Value="helvetica [urw]"/>
-            <Size Value="10"/>
-            <Color Value="clBlack"/>
-            <Charset Value="0"/>
-            <Style Value=""/>
-          </Font>
-          <Highlight>
-            <FontStyle Value="2"/>
-            <FontColor Value="clBlack"/>
-            <FillColor Value="clWhite"/>
-            <HighlightStr Value=""/>
-          </Highlight>
-          <Alignment Value="taLeftJustify"/>
-          <Layout Value="tlTop"/>
-          <Angle Value="0"/>
-        </Object25>
       </Page1>
       <FVal>
         <Count Value="0"/>
