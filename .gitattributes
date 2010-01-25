@@ -1272,6 +1272,8 @@ components/lazreport/samples/editor/maincalleditor.lfm svneol=native#text/plain
 components/lazreport/samples/editor/maincalleditor.lrs svneol=native#text/pascal
 components/lazreport/samples/editor/maincalleditor.pas svneol=native#text/pascal
 components/lazreport/samples/editor/readme.txt svneol=native#text/plain
+components/lazreport/samples/editor/rpta.lrf svneol=LF#text/xml eol=lf
+components/lazreport/samples/editor/rptb.lrf svneol=LF#text/xml eol=lf
 components/lazreport/samples/editor/salida.lrf svneol=native#text/xml
 components/lazreport/samples/editor/testpage.lrf svneol=LF#text/xml eol=lf
 components/lazreport/samples/editor/thumbnails.lrf svneol=LF#text/xml eol=lf

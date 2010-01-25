@@ -49,6 +49,7 @@ type
     accExportToCSV: TAction;
     accThumbnails: TAction;
     accExportToDbg: TAction;
+    accComposite: TAction;
     ActionList1: TActionList;
     ApplicationProperties1: TApplicationProperties;
     btnCallEditor: TButton;
@@ -58,12 +59,14 @@ type
     Button4: TButton;
     btnOpenReport: TButton;
     btnImageList: TButton;
+    Button5: TButton;
     comboIndex: TComboBox;
     Datasource1: TDatasource;
     Dbf1: TDbf;
     dbGrid1: TdbGrid;
     frBarCodeObject1: TfrBarCodeObject;
     frCheckBoxObject1: TfrCheckBoxObject;
+    Composite: TfrCompositeReport;
     frCSVExport1: TfrCSVExport;
     frDBDataSet1: TfrDBDataSet;
     frRoundRectObject1: TfrRoundRectObject;
@@ -77,6 +80,8 @@ type
     MenuItem11: TMenuItem;
     MenuItem12: TMenuItem;
     MenuItem13: TMenuItem;
+    MenuItem14: TMenuItem;
+    MenuItem15: TMenuItem;
     MenuItem2: TMenuItem;
     MenuItem3: TMenuItem;
     MenuItem4: TMenuItem;
@@ -89,6 +94,7 @@ type
     PG: TfrPrintGrid;
     sbar: TStatusBar;
     TheReport: TfrReport;
+    procedure accCompositeExecute(Sender: TObject);
     procedure accExportToCSVExecute(Sender: TObject);
     procedure accExportToDbgExecute(Sender: TObject);
     procedure accExportToHtmlExecute(Sender: TObject);
@@ -231,6 +237,17 @@ begin
     ShowMessage(cerPrepareFailed);
 end;
 
+procedure TfrmMain.accCompositeExecute(Sender: TObject);
+var
+  r: pointer;
+begin
+  // force reload of reports in case modified reports
+  // were modified in designer at run-time
+  for r in Composite.Reports do
+    TfrReport(r).LoadFromFile(TfrReport(r).FileName);
+  Composite.ShowReport;
+end;
+
 procedure TfrmMain.accExportToDbgExecute(Sender: TObject);
 begin
   if TheReport.PrepareReport then begin
@@ -311,8 +328,12 @@ begin
 end;
 
 procedure TfrmMain.frmMainCreate(Sender: TObject);
+const
+  rptarr:array[0..1] of string[10] = ('rpta.lrf','rptb.lrf');
 var
   i: integer;
+  s: string;
+  r: TfrReport;
 begin
 
   UpdateAppTranslation;
@@ -330,6 +351,12 @@ begin
   
   if FileExistsUTF8(ExtractFilePath(ParamStrUTF8(0))+'salida.lrf') then
     OpenReport(ExtractFilePath(ParamStrUTF8(0))+'salida.lrf');
+
+  for s in rptarr do begin
+    r := TfrReport.Create(self);
+    r.LoadFromFile(s);
+    Composite.Reports.Add(r);
+  end;
 end;
 
 procedure TfrmMain.TheReportBeginDoc;

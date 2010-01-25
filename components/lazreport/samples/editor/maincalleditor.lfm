@@ -13,16 +13,16 @@ object frmMain: TfrmMain
   LCLVersion = '0.9.29'
   object lblIndex: TLabel
     Left = 12
-    Height = 23
+    Height = 26
     Top = 44
-    Width = 10
+    Width = 13
     ParentColor = False
   end
   object lblExpr: TLabel
     Left = 235
-    Height = 23
+    Height = 26
     Top = 44
-    Width = 10
+    Width = 13
     ParentColor = False
   end
   object btnCallEditor: TButton
@@ -42,6 +42,7 @@ object frmMain: TfrmMain
     Align = alBottom
     Anchors = [akTop, akLeft, akRight, akBottom]
     Color = clWhite
+    Columns = <>
     DataSource = Datasource1
     Options = [dgEditing, dgTitles, dgIndicator, dgColumnResize, dgColLines, dgRowLines, dgTabs, dgAlwaysShowSelection, dgConfirmDelete, dgCancelOnExit]
     TabOrder = 5
@@ -118,7 +119,16 @@ object frmMain: TfrmMain
     Top = 36
     Width = 75
     Action = accThumbnails
+    DragMode = dmAutomatic
     TabOrder = 9
+  end
+  object Button5: TButton
+    Left = 391
+    Height = 25
+    Top = 36
+    Width = 83
+    Action = accComposite
+    TabOrder = 10
   end
   object TheReport: TfrReport
     Dataset = frDBDataSet1
@@ -191,6 +201,14 @@ object frmMain: TfrmMain
       object MenuItem8: TMenuItem
         Action = accPrintGrid
         OnClick = accPrintGridExecute
+      end
+      object MenuItem14: TMenuItem
+        Action = accThumbnails
+        OnClick = accThumbnailsExecute
+      end
+      object MenuItem15: TMenuItem
+        Action = accComposite
+        OnClick = accCompositeExecute
       end
     end
     object MenuItem9: TMenuItem
@@ -282,6 +300,11 @@ object frmMain: TfrmMain
       Caption = 'Export Debug'
       OnExecute = accExportToDbgExecute
     end
+    object accComposite: TAction
+      Category = 'Sample Reports'
+      Caption = 'Composite'
+      OnExecute = accCompositeExecute
+    end
   end
   object OpenDialog1: TOpenDialog
     Filter = 'LazReport Files|*.lrf|FreeReport Files|*.frf|All Files|*.*'
@@ -313,5 +336,15 @@ object frmMain: TfrmMain
   object frCheckBoxObject1: TfrCheckBoxObject
     left = 272
     top = 312
+  end
+  object Composite: TfrCompositeReport
+    InitialZoom = pzDefault
+    PreviewButtons = [pbZoom, pbLoad, pbSave, pbPrint, pbFind, pbHelp, pbExit]
+    DataType = dtDataSet
+    left = 400
+    top = 84
+    ReportForm = {
+      19000000
+    }
   end
 end

@@ -4,13 +4,66 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 
+#: maincalleditor.ceractivereport
+msgid "Active report: %s"
+msgstr ""
+
+#: maincalleditor.cerappcaption
+msgctxt "maincalleditor.cerappcaption"
+msgid "LazReport Test Suite"
+msgstr ""
+
 #: maincalleditor.cereditreport
 msgctxt "maincalleditor.cereditreport"
 msgid "Edit Report"
 msgstr ""
 
+#: maincalleditor.cerhintcloseapp
+msgid "Close application"
+msgstr ""
+
+#: maincalleditor.cerhinteditreport
+msgid "Edit active report"
+msgstr ""
+
+#: maincalleditor.cerhintnewreport
+msgid "Create and edit a empty report"
+msgstr ""
+
+#: maincalleditor.cerhintopenreport
+msgid "Open an existing report"
+msgstr ""
+
+#: maincalleditor.cerhintprevgrid
+msgid "Print preview current DbGrid content"
+msgstr ""
+
+#: maincalleditor.cerhintprevreport
+msgid "Preview active report"
+msgstr ""
+
+#: maincalleditor.cerhintprnreport
+msgid "Print directly the active report (i.e. without preview)"
+msgstr ""
+
+#: maincalleditor.cerhintthumbnails
+msgid "This Action will Load and Preview a thumbnails Report"
+msgstr ""
+
+#: maincalleditor.cerindex
+msgid "Index"
+msgstr ""
+
+#: maincalleditor.cerindexfields
+msgid "Index Fields: %s"
+msgstr ""
+
 #: maincalleditor.cernewreport
 msgid "New report"
+msgstr ""
+
+#: maincalleditor.cernone
+msgid "none"
 msgstr ""
 
 #: maincalleditor.cernotimplemented
@@ -19,6 +72,10 @@ msgstr ""
 
 #: maincalleditor.ceropenreport
 msgid "Open report"
+msgstr ""
+
+#: maincalleditor.ceropenreportfirst
+msgid "Open report first"
 msgstr ""
 
 #: maincalleditor.cerpreparefailed
@@ -37,8 +94,17 @@ msgstr ""
 msgid "Print report"
 msgstr ""
 
+#: maincalleditor.certhumbnails
+msgctxt "maincalleditor.certhumbnails"
+msgid "Thumbnails"
+msgstr ""
+
 #: TFRMMAIN.ACCCLOSE.CAPTION
 msgid "Close"
+msgstr ""
+
+#: TFRMMAIN.ACCCOMPOSITE.CAPTION
+msgid "Composite"
 msgstr ""
 
 #: TFRMMAIN.ACCEDITREPORT.CAPTION
