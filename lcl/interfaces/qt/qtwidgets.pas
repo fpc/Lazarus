@@ -322,6 +322,7 @@ type
   protected
     function CreateWidget(const AParams: TCreateParams):QWidgetH; override;
   public
+    procedure setFocusPolicy(const APolicy: QtFocusPolicy); override;
     procedure setFrameStyle(p1: Integer);
     procedure setFrameShape(p1: QFrameShape);
     procedure setFrameShadow(p1: QFrameShadow);
@@ -4821,13 +4822,11 @@ begin
 end;
 
 procedure TQtGroupBox.setFocusPolicy(const APolicy: QtFocusPolicy);
-var
-  NewPolicy: QtFocusPolicy;
 begin
-  NewPolicy := APolicy;
   if Assigned(LCLObject) and not LCLObject.TabStop then
-    NewPolicy := QtNoFocus;
-  inherited setFocusPolicy(NewPolicy);
+    inherited setFocusPolicy(QtNoFocus)
+  else
+    inherited setFocusPolicy(APolicy);
 end;
 
 { TQtFrame }
@@ -4842,6 +4841,14 @@ begin
   Result := QFrame_create();
   QWidget_setAutoFillBackground(Result, True);
   QWidget_setAttribute(Result, QtWA_NoMousePropagation);
+end;
+
+procedure TQtFrame.setFocusPolicy(const APolicy: QtFocusPolicy);
+begin
+  if Assigned(LCLObject) and not LCLObject.TabStop then
+    inherited setFocusPolicy(QtNoFocus)
+  else
+    inherited setFocusPolicy(APolicy);
 end;
 
 {------------------------------------------------------------------------------
