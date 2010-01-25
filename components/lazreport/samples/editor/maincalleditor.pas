@@ -359,6 +359,7 @@ begin
     r.LoadFromFile(rptArr[i]);
     Composite.Reports.Add(r);
   end;
+  Composite.DoublePass:=true;
 end;
 
 procedure TfrmMain.TheReportBeginDoc;
