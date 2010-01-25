@@ -9,7 +9,7 @@ uses
   Dialogs,
   IDEOptionsIntf, Project,
   LazarusIDEStrConsts,
-  CompilerOptions;
+  CompilerOptions, IDEMsgIntf;
 
 type
 
@@ -83,18 +83,9 @@ var
   topidx  : Integer;
   m : TCompilerMessageConfig;
 
-
-  function IntToStrLen(idx, strlen: integer): string;
-  var
-    s : string;
-  begin
-    Result := IntToStr(idx);
-    if length(Result) < strlen then  begin
-      SetLength(s, strlen - length(Result));
-      FillChar(s[1], length(s), '0');
-      Result := s + Result;
-    end;
-  end;
+const
+  //todo: should be translated
+  MsgTypeStr : array [TFPCErrorType] of String = ('-','H','N','W','E','F','P');
 
 begin
   topidx := chklistCompMsg.TopIndex;
@@ -103,7 +94,7 @@ begin
     if chkUseMsgFile.Checked and FileExistsUTF8(editMsgFileName.Caption) and (editMsgFileName.Caption <> '') then begin
       try
         // FPC messages file is expected to be UTF8 encoded, no matter for the current code page is
-        TempMessages.LoadMsgFile(editMsgFileName.Caption, true);
+        TempMessages.LoadMsgFile(editMsgFileName.Caption);
       except
         TempMessages.SetDefault;
       end;
@@ -112,10 +103,14 @@ begin
 
     chklistCompMsg.Clear;
     chklistCompMsg.Items.Clear;
-    for i := 0 to TempMessages.Count - 1 do begin
+    for i := 0 to TempMessages.Count - 1 do
+    begin
       m := TempMessages.Msg[i];
-      j := chklistCompMsg.Items.AddObject( Format('(%s) %s', [m.MsgType, m.GetUserText]), m);
-      chklistCompMsg.Checked[j] := not m.Ignored;
+      if m.MsgType in [etNote, etHint, etWarning] then
+      begin
+        j := chklistCompMsg.Items.AddObject( Format('(%s) %s', [MsgTypeStr[m.MsgType], m.GetUserText]), m);
+        chklistCompMsg.Checked[j] := not m.Ignored;
+      end;
     end;
 
   finally

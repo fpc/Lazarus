@@ -489,9 +489,8 @@ type
     MsgIndex : integer;
     MsgText  : String;
     Ignored  : Boolean;
-    MsgType  : Char;
+    MsgType  : TFPCErrorType;
     constructor Create(AOwner: TCompilerMessagesList); 
-    function GetFileText: string;
     function GetUserText: string; overload;
     function GetUserText(const ReplaceParams: array of string): string; overload; 
   end;
@@ -503,7 +502,6 @@ type
     fItems      : TFPList; 
     fHash       : array of array of TCompilerMessageConfig;  
   protected
-    fHidden       : TStringList; 
     fUsedMsgFile  : string; 
     fUpdating     : Integer; 
     FErrorNames   : array [TFPCErrorType] of string;
@@ -532,9 +530,9 @@ type
     procedure BeginUpdate; virtual; 
     procedure EndUpdate; virtual; 
 
-    function LoadMsgFile(const FileName: string; isFileUnicode: Boolean = false): Boolean; virtual;
+    function LoadMsgFile(const FileName: string): Boolean; virtual;
 
-    function Add(AMsgIndex: Integer; AMsgChar: Char; const AMsgText: string; AIgnored: Boolean=false): TCompilerMessageConfig; virtual;
+    function Add(AMsgIndex: Integer; AMsgType: TFPCErrorType; const AMsgText: string; AIgnored: Boolean=false): TCompilerMessageConfig; virtual;
 
     procedure SetDefault(KeepIgnored: Boolean=true); virtual;
     function GetParams(MsgIndex: Integer; var prms: array of string; var PrmCount: Integer): Integer; virtual;
@@ -4444,13 +4442,11 @@ constructor TCompilerMessagesList.Create;
 begin
   inherited Create; 
   fItems := TFPList.Create; 
-  fHidden := TStringList.Create;
 end;
 
 destructor TCompilerMessagesList.Destroy;
 begin
   Clear; 
-  fHidden.Free; 
   fItems.Free; 
   inherited Destroy;
 end;
@@ -4460,7 +4456,6 @@ var
   i : integer;
   obj : TCompilerMessageConfig;
 begin
-  fHidden.Clear; 
   for i := 0 to fItems.Count - 1 do begin
     obj := TCompilerMessageConfig(fItems[i]);
     if Assigned(obj) then obj.Free;
@@ -4479,7 +4474,6 @@ begin
   try
     Clear;
     fUsedMsgFile := Src.fUsedMsgFile; 
-    fHidden.Assign(Src.fHidden); 
     for i := 0 to Src.Count - 1 do begin
       with Src.Msg[i]do begin
         m := TCompilerMessageConfig.Create(Self);
@@ -4507,7 +4501,7 @@ begin
   dec(fUpdating); 
 end;
 
-function TCompilerMessagesList.LoadMsgFile(const FileName: string; isFileUnicode: Boolean): Boolean;
+function TCompilerMessagesList.LoadMsgFile(const FileName: string): Boolean;
 
   function IsMsgLine(const s: string; var msgIdx: Integer; var msgType, msgText: string; 
    var isMultiLine: Boolean): Boolean;
@@ -4554,11 +4548,21 @@ function TCompilerMessagesList.LoadMsgFile(const FileName: string; isFileUnicode
     else Result := s; 
   end; 
 
-  function EncodeString(const s: string): string;
+  function StrToErrType(const msgtype: String): TFPCErrorType;
   begin
-    if isFileUnicode then Result := s
-    else Result := AnsiToUtf8(s); 
-  end; 
+    if length(msgtype)<>1 then
+      Result:=etNone
+    else
+      case UpperCase(msgtype)[1] of
+        'W':Result:=etWarning;
+        'H':Result:=etHint;
+        'N':Result:=etNote;
+        'F':Result:=etFatal;
+        'E':Result:=etError;
+      else
+        Result:=etNone;
+      end;
+  end;
 
 var
   temp    : TStringList; 
@@ -4589,41 +4593,38 @@ begin
       temp.LoadFromFile(FileName); 
       i := 0;
       while i < temp.Count do begin
-        if IsMsgLine(EncodeString(temp[i]), midx, mtype, mtext, isMln) then begin
+        if IsMsgLine(temp[i], midx, mtype, mtext, isMln) then begin
           if isMln then begin
             lst := false; 
-            fHidden.Add(temp[i]); 
             while (i < temp.Count) and (not lst) do begin
               inc(i); 
-              GetNextMultiLine(temp[i], lst); 
-              fHidden.Add(temp[i]); 
+              mtext:=mtext+#10+GetNextMultiLine(temp[i], lst);
             end; 
-          end else begin
-            if (length(mtype) = 1) and (UpperCase(mtype)[1] in ['H','N','W']) then 
-              Add(midx, mtype[1], mtext, b[midx])
-            else begin
-              case midx of
-                idxFatal: err := etFatal;
-                idxError: err := etError;  
-                idxWarning: err := etWarning;
-                idxNote: err := etNote;
-                idxHint: err := etHint;
-              else
-                err := etNone;
-              end;
-              if err <> etNone then begin
-                mtext := Trim(mtext);
-                if (length(mtext)>1) and (mtext[length(mtext)]=':') then
-                  FErrorNames[err]:=Copy(mtext, 1, length(mtext)-1)
-                else
-                  FErrorNames[err]:=mtext;
-              end;
-              fHidden.Add(temp[i]); 
+          end;
+
+          Add(midx, StrToErrType(mtype), mtext, b[midx]);
+
+          if (midx >= idxFatal) and (midx<= idxHint) then begin
+            case midx of
+              idxFatal: err := etFatal;
+              idxError: err := etError;
+              idxWarning: err := etWarning;
+              idxNote: err := etNote;
+              idxHint: err := etHint;
+            else
+              err := etNone;
             end;
-            inc(i); 
-          end; 
-        end else 
-          inc(i) 
+            if err <> etNone then begin
+              mtext := Trim(mtext);
+              if (length(mtext)>1) and (mtext[length(mtext)]=':') then
+                FErrorNames[err]:=Copy(mtext, 1, length(mtext)-1)
+              else
+                FErrorNames[err]:=mtext;
+            end;
+          end;
+
+        end;
+        inc(i);
       end; 
       Result := true; 
       fUsedMsgFile := FileName;    
@@ -4658,7 +4659,7 @@ begin
 end; 
 
 function TCompilerMessagesList.Add(AMsgIndex: Integer;
-  AMsgChar: Char; const AMsgText: string; AIgnored: Boolean): TCompilerMessageConfig;
+  AMsgType: TFPCErrorType; const AMsgText: string; AIgnored: Boolean): TCompilerMessageConfig;
 var
   msgconf : TCompilerMessageConfig;
   prm   : array of string;
@@ -4671,7 +4672,7 @@ begin
     fItems.Add(msgconf);
     AddHash(msgconf); 
   end; 
-  msgconf.MsgType := AMsgChar;
+  msgconf.MsgType := AMsgType;
   msgconf.MsgText := AMsgText; //ReplaceParamsArray(ACompilerMsg, ReplaceParams);
   msgconf.Ignored := AIgnored;
   SetLength(prm, MaxMsgParams); 
@@ -4736,130 +4737,130 @@ begin
     Clear; 
     for err := low(TFPCErrorType) to High(TFPCErrorType) do
       FErrorNames[err]:=FPCErrorTypeNames[err];
-      
-    Add(03005,'W','Procedure type "$1" ignored'); 
-    Add(03011,'W','Relocatable DLL or executable $1 debug info does not work, disabled.'); 
-    Add(03012,'W','To allow debugging for win32 code you need to disable relocation with -WN option'); 
-    Add(03018,'W','Constructor should be public');
-    Add(03019,'W','Destructor should be public'); 
-    Add(03020,'N','Class should have one destructor only');
-    Add(03023,'N','The object "$1" has no VMT');
-    Add(03031,'N','Values in enumeration types have to be ascending');
-    Add(03036,'W','range check error while evaluating constants');
-    Add(03042,'W','use extended syntax of NEW and DISPOSE for instances of objects');
-    Add(03043,'W','use of NEW or DISPOSE for untyped pointers is meaningless');
-    Add(03057,'W','An inherited method is hidden by "$1"');
-    Add(03060,'W','Stored property directive is not yet implemented');
-    Add(03094,'W','Unknown procedure directive had to be ignored: "$1"');
-    Add(03100,'W','Virtual methods are used without a constructor in "$1"');
-    Add(03123,'W','"$1" not yet supported inside inline procedure/function');
-    Add(03124,'W','Inlining disabled');
-    Add(03126,'H','may be pointer dereference is missing');
-    Add(03141,'W','string "$1" is longer than "$2"');
-    Add(03149,'W','Don'#39't load OBJPAS unit manually, use \{\$mode objfpc\} or \{\$mode delphi\} instead');
-    Add(03168,'W','Procedure named "$1" not found that is suitable for implementing the $2.$3');
-    Add(03175,'W','Some fields coming before "$1" weren'#39't initialized');
-    Add(03177,'W','Some fields coming after "$1" weren'#39't initialized');
-    Add(03182,'W','Overriding calling convention "$1" with "$2"');
-    Add(03186,'W','Use of unsupported feature!');
-    Add(03187,'H','C arrays are passed by reference');
-    Add(03189,'H','Type "$1" redefinition');
-    Add(03190,'W','cdecl'#39'ared functions have no high parameter');
-    Add(03191,'W','cdecl'#39'ared functions do not support open strings');
-    Add(03195,'W','Calling convention directive ignored: "$1"');
-    Add(03211,'W','Implicit uses of Variants unit');
-    Add(03218,'W','Overridden methods must have a related return type. This code may crash, it depends on a Delphi parser bug ("$2" is overridden by "$1" which has another return type)');
-    Add(03226,'W','Don'#39't load LINEINFO unit manually, Use the -gl compiler switch instead');
-    Add(03237,'W','Register list is ignored for pure assembler routines');
+
+    Add(03005,etWarning,'Procedure type "$1" ignored');
+    Add(03011,etWarning,'Relocatable DLL or executable $1 debug info does not work, disabled.');
+    Add(03012,etWarning,'To allow debugging for win32 code you need to disable relocation with -WN option');
+    Add(03018,etWarning,'Constructor should be public');
+    Add(03019,etWarning,'Destructor should be public');
+    Add(03020,etNote,'Class should have one destructor only');
+    Add(03023,etNote,'The object "$1" has no VMT');
+    Add(03031,etNote,'Values in enumeration types have to be ascending');
+    Add(03036,etWarning,'range check error while evaluating constants');
+    Add(03042,etWarning,'use extended syntax of NEW and DISPOSE for instances of objects');
+    Add(03043,etWarning,'use of NEW or DISPOSE for untyped pointers is meaningless');
+    Add(03057,etWarning,'An inherited method is hidden by "$1"');
+    Add(03060,etWarning,'Stored property directive is not yet implemented');
+    Add(03094,etWarning,'Unknown procedure directive had to be ignored: "$1"');
+    Add(03100,etWarning,'Virtual methods are used without a constructor in "$1"');
+    Add(03123,etWarning,'"$1" not yet supported inside inline procedure/function');
+    Add(03124,etWarning,'Inlining disabled');
+    Add(03126,etHint,'may be pointer dereference is missing');
+    Add(03141,etWarning,'string "$1" is longer than "$2"');
+    Add(03149,etWarning,'Don'#39't load OBJPAS unit manually, use \{\$mode objfpc\} or \{\$mode delphi\} instead');
+    Add(03168,etWarning,'Procedure named "$1" not found that is suitable for implementing the $2.$3');
+    Add(03175,etWarning,'Some fields coming before "$1" weren'#39't initialized');
+    Add(03177,etWarning,'Some fields coming after "$1" weren'#39't initialized');
+    Add(03182,etWarning,'Overriding calling convention "$1" with "$2"');
+    Add(03186,etWarning,'Use of unsupported feature!');
+    Add(03187,etHint,'C arrays are passed by reference');
+    Add(03189,etHint,'Type "$1" redefinition');
+    Add(03190,etWarning,'cdecl'#39'ared functions have no high parameter');
+    Add(03191,etWarning,'cdecl'#39'ared functions do not support open strings');
+    Add(03195,etWarning,'Calling convention directive ignored: "$1"');
+    Add(03211,etWarning,'Implicit uses of Variants unit');
+    Add(03218,etWarning,'Overridden methods must have a related return type. This code may crash, it depends on a Delphi parser bug ("$2" is overridden by "$1" which has another return type)');
+    Add(03226,etWarning,'Don'#39't load LINEINFO unit manually, Use the -gl compiler switch instead');
+    Add(03237,etWarning,'Register list is ignored for pure assembler routines');
   
-    Add(04014,'W','Automatic type conversion from floating type to COMP which is an integer type');
-    Add(04015,'H','use DIV instead to get an integer result');
-    Add(04022,'W','lo/hi(dword/qword) returns the upper/lower word/dword');
-    Add(04035,'W','Mixing signed expressions and longwords gives a 64bit result');
-    Add(04036,'W','Mixing signed expressions and cardinals here may cause a range check error');
-    Add(04040,'W','Class types "$1" and "$2" are not related');
-    Add(04043,'W','String literal has more characters than short string length');
-    Add(04044,'W','Comparison is always false due to range of values');
-    Add(04045,'W','Comparison is always true due to range of values');
-    Add(04046,'W','Constructing a class "$1" with abstract method "$2"');
-    Add(04047,'H','The left operand of the IN operator should be byte sized');
-    Add(04048,'W','Type size mismatch, possible loss of data / range check error');
-    Add(04049,'H','Type size mismatch, possible loss of data / range check error');
-    Add(04055,'H','Conversion between ordinals and pointers is not portable');
-    Add(04056,'W','Conversion between ordinals and pointers is not portable');   
-    Add(04059,'W','Converting constant real value to double for C variable argument, add explicit typecast to prevent this.');
-    Add(04066,'W','Arithmetic "$1" on untyped pointer is unportable to {$T+}, suggest typecast');
-    Add(04079,'H','Converting the operands to "$1" before doing the add could prevent overflow errors.');
-    Add(04080,'H','Converting the operands to "$1" before doing the subtract could prevent overflow errors.');
-    Add(04081,'H','Converting the operands to "$1" before doing the multiply could prevent overflow errors.'); 
-    Add(04082,'W','Converting pointers to signed integers may result in wrong comparison results and range errors, use an unsigned type instead.');
+    Add(04014,etWarning,'Automatic type conversion from floating type to COMP which is an integer type');
+    Add(04015,etHint,'use DIV instead to get an integer result');
+    Add(04022,etWarning,'lo/hi(dword/qword) returns the upper/lower word/dword');
+    Add(04035,etWarning,'Mixing signed expressions and longwords gives a 64bit result');
+    Add(04036,etWarning,'Mixing signed expressions and cardinals here may cause a range check error');
+    Add(04040,etWarning,'Class types "$1" and "$2" are not related');
+    Add(04043,etWarning,'String literal has more characters than short string length');
+    Add(04044,etWarning,'Comparison is always false due to range of values');
+    Add(04045,etWarning,'Comparison is always true due to range of values');
+    Add(04046,etWarning,'Constructing a class "$1" with abstract method "$2"');
+    Add(04047,etHint,'The left operand of the IN operator should be byte sized');
+    Add(04048,etWarning,'Type size mismatch, possible loss of data / range check error');
+    Add(04049,etHint,'Type size mismatch, possible loss of data / range check error');
+    Add(04055,etHint,'Conversion between ordinals and pointers is not portable');
+    Add(04056,etWarning,'Conversion between ordinals and pointers is not portable');
+    Add(04059,etWarning,'Converting constant real value to double for C variable argument, add explicit typecast to prevent this.');
+    Add(04066,etWarning,'Arithmetic "$1" on untyped pointer is unportable to {$T+}, suggest typecast');
+    Add(04079,etHint,'Converting the operands to "$1" before doing the add could prevent overflow errors.');
+    Add(04080,etHint,'Converting the operands to "$1" before doing the subtract could prevent overflow errors.');
+    Add(04081,etHint,'Converting the operands to "$1" before doing the multiply could prevent overflow errors.');
+    Add(04082,etWarning,'Converting pointers to signed integers may result in wrong comparison results and range errors, use an unsigned type instead.');
   
-    Add(05003,'H','Identifier already defined in $1 at line $2');
-    Add(05014,'W','Label not defined "$1"');
-    Add(05023,'H','Unit "$1" not used in $2');
-    Add(05024,'H','Parameter "$1" not used');
-    Add(05025,'N','Local variable "$1" not used');
-    Add(05026,'H','Value parameter "$1" is assigned but never used');
-    Add(05027,'N','Local variable "$1" is assigned but never used');
-    Add(05028,'H','Local $1 "$2" is not used');
-    Add(05029,'N','Private field "$1.$2" is never used');
-    Add(05030,'N','Private field "$1.$2" is assigned but never used');
-    Add(05031,'N','Private method "$1.$2" never used');
-    Add(05033,'W','Function result does not seem to be set');
-    Add(05034,'W','Type "$1" is not aligned correctly in current record for C');
-    Add(05036,'W','Local variable "$1" does not seem to be initialized');
-    Add(05037,'W','Variable "$1" does not seem to be initialized');
-    Add(05039,'H','Found declaration: $1');
-    Add(05043,'W','Symbol "$1" is deprecated');
-    Add(05044,'W','Symbol "$1" is not portable');
-    Add(05055,'W','Symbol "$1" is not implemented');
-    Add(05057,'H','Local variable "$1" does not seem to be initialized');
-    Add(05058,'H','Variable "$1" does not seem to be initialized');
-    Add(05059,'W','Function result variable does not seem to initialized');
-    Add(05060,'H','Function result variable does not seem to be initialized'); 
-    Add(05061,'W','Variable "$1" read but nowhere assigned');
-    Add(05062,'H','Found abstract method: $1');
-    Add(05063,'W','Symbol "$1" is experimental');
-    Add(05064,'W','Forward declaration "$1" not resolved, assumed external');
+    Add(05003,etHint,'Identifier already defined in $1 at line $2');
+    Add(05014,etWarning,'Label not defined "$1"');
+    Add(05023,etHint,'Unit "$1" not used in $2');
+    Add(05024,etHint,'Parameter "$1" not used');
+    Add(05025,etNote,'Local variable "$1" not used');
+    Add(05026,etHint,'Value parameter "$1" is assigned but never used');
+    Add(05027,etNote,'Local variable "$1" is assigned but never used');
+    Add(05028,etHint,'Local $1 "$2" is not used');
+    Add(05029,etNote,'Private field "$1.$2" is never used');
+    Add(05030,etNote,'Private field "$1.$2" is assigned but never used');
+    Add(05031,etNote,'Private method "$1.$2" never used');
+    Add(05033,etWarning,'Function result does not seem to be set');
+    Add(05034,etWarning,'Type "$1" is not aligned correctly in current record for C');
+    Add(05036,etWarning,'Local variable "$1" does not seem to be initialized');
+    Add(05037,etWarning,'Variable "$1" does not seem to be initialized');
+    Add(05039,etHint,'Found declaration: $1');
+    Add(05043,etWarning,'Symbol "$1" is deprecated');
+    Add(05044,etWarning,'Symbol "$1" is not portable');
+    Add(05055,etWarning,'Symbol "$1" is not implemented');
+    Add(05057,etHint,'Local variable "$1" does not seem to be initialized');
+    Add(05058,etHint,'Variable "$1" does not seem to be initialized');
+    Add(05059,etWarning,'Function result variable does not seem to initialized');
+    Add(05060,etHint,'Function result variable does not seem to be initialized');
+    Add(05061,etWarning,'Variable "$1" read but nowhere assigned');
+    Add(05062,etHint,'Found abstract method: $1');
+    Add(05063,etWarning,'Symbol "$1" is experimental');
+    Add(05064,etWarning,'Forward declaration "$1" not resolved, assumed external');
   
-    Add(06016,'W','Possible illegal call of constructor or destructor');
-    Add(06017,'N','Inefficient code');
-    Add(06018,'W','unreachable code');
-    Add(06041,'W','Parameters size exceeds limit for certain cpu'#39's');
-    Add(06042,'W','Local variable size exceed limit for certain cpu'#39's');
-    Add(06048,'H','Inherited call to abstract method ignored');
+    Add(06016,etWarning,'Possible illegal call of constructor or destructor');
+    Add(06017,etNote,'Inefficient code');
+    Add(06018,etWarning,'unreachable code');
+    Add(06041,etWarning,'Parameters size exceeds limit for certain cpu'#39's');
+    Add(06042,etWarning,'Local variable size exceed limit for certain cpu'#39's');
+    Add(06048,etHint,'Inherited call to abstract method ignored');
   
-    Add(07018,'W','Possible error in object field handling');
-    Add(07023,'W','@CODE and @DATA not supported');
-    Add(07029,'W','Fwait can cause emulation problems with emu387');
-    Add(07030,'W','$1 without operand translated into $1P');
-    Add(07031,'W','ENTER instruction is not supported by Linux kernel');
-    Add(07032,'W','Calling an overload function in assembler');
-    Add(07039,'H','$1 translated to $2');
-    Add(07040,'W','$1 is associated to an overloaded function');
-    Add(07043,'W','Procedures can'#39't return any value in asm code');
-    Add(07046,'W','Size suffix and destination or source size do not match');
-    Add(07052,'W','constant with symbol $1 for address which is not on a pointer');
-    Add(07058,'W','NEAR ignored');
-    Add(07059,'W','FAR ignored');
-    Add(07066,'W','Modulo not supported');
-    Add(07072,'W','Identifier $1 supposed external');
-    Add(07079,'W','32bit constant created for address');
-    Add(07080,'N','.align is target specific, use .balign or .p2align');
-    //Add(07086,'W','"$1" without operand translated into "$1 %st,%st(1)"');
-    //Add(07087,'W','"$1 %st(n)" translated into "$1 %st,%st(n)"');
-    //Add(07088,'W','"$1 %st(n)" translated into "$1 %st(n),%st"');
-    Add(07093,'W','ALIGN not supported');
-    Add(07098,'W','No size specified and unable to determine the size of the operands, using DWORD as default');
-    Add(07101,'W','No size specified and unable to determine the size of the operands, using BYTE as default');
-    Add(07102,'W','Use of +offset(%ebp) for parameters invalid here');
-    Add(07103,'W','Use of +offset(%ebp) is not compatible with regcall convention');
-    Add(07104,'W','Use of -offset(%ebp) is not recommended for local variable access');
-    Add(07105,'W','Use of -offset(%esp), access may cause a crash or value may be lost');
+    Add(07018,etWarning,'Possible error in object field handling');
+    Add(07023,etWarning,'@CODE and @DATA not supported');
+    Add(07029,etWarning,'Fwait can cause emulation problems with emu387');
+    Add(07030,etWarning,'$1 without operand translated into $1P');
+    Add(07031,etWarning,'ENTER instruction is not supported by Linux kernel');
+    Add(07032,etWarning,'Calling an overload function in assembler');
+    Add(07039,etHint,'$1 translated to $2');
+    Add(07040,etWarning,'$1 is associated to an overloaded function');
+    Add(07043,etWarning,'Procedures can'#39't return any value in asm code');
+    Add(07046,etWarning,'Size suffix and destination or source size do not match');
+    Add(07052,etWarning,'constant with symbol $1 for address which is not on a pointer');
+    Add(07058,etWarning,'NEAR ignored');
+    Add(07059,etWarning,'FAR ignored');
+    Add(07066,etWarning,'Modulo not supported');
+    Add(07072,etWarning,'Identifier $1 supposed external');
+    Add(07079,etWarning,'32bit constant created for address');
+    Add(07080,etNote,'.align is target specific, use .balign or .p2align');
+    //Add(07086,etWarning,'"$1" without operand translated into "$1 %st,%st(1)"');
+    //Add(07087,etWarning,'"$1 %st(n)" translated into "$1 %st,%st(n)"');
+    //Add(07088,etWarning,'"$1 %st(n)" translated into "$1 %st(n),%st"');
+    Add(07093,etWarning,'ALIGN not supported');
+    Add(07098,etWarning,'No size specified and unable to determine the size of the operands, using DWORD as default');
+    Add(07101,etWarning,'No size specified and unable to determine the size of the operands, using BYTE as default');
+    Add(07102,etWarning,'Use of +offset(%ebp) for parameters invalid here');
+    Add(07103,etWarning,'Use of +offset(%ebp) is not compatible with regcall convention');
+    Add(07104,etWarning,'Use of -offset(%ebp) is not recommended for local variable access');
+    Add(07105,etWarning,'Use of -offset(%esp), access may cause a crash or value may be lost');
   
-    Add(09000,'W','Source operating system redefined');
-    Add(09011,'W','Object $1 not found, Linking may fail !');
-    Add(09012,'W','Library $1 not found, Linking may fail !');
+    Add(09000,etWarning,'Source operating system redefined');
+    Add(09011,etWarning,'Object $1 not found, Linking may fail !');
+    Add(09012,etWarning,'Library $1 not found, Linking may fail !');
   finally
     EndUpdate; 
     if KeepIgnored then
@@ -4920,11 +4921,6 @@ end;
 constructor TCompilerMessageConfig.Create(AOwner: TCompilerMessagesList); 
 begin
   fOwner:=AOwner; 
-end;
-
-function TCompilerMessageConfig.GetFileText: string;
-begin
-  Result := IntToStrLen(MsgIndex, 5)+'_'+MsgType+'_'+MsgText;
 end;
 
 function TCompilerMessageConfig.GetUserText(const ReplaceParams: array of string): string;
