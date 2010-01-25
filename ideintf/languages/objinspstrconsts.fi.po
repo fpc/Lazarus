@@ -19,7 +19,7 @@ msgstr ""
 
 #: objinspstrconsts.cactionlisteditordeleteactionhint
 msgid "Delete Action"
-msgstr ""
+msgstr "Poista toiminto"
 
 #: objinspstrconsts.cactionlisteditordialogcategory
 msgid "Dialog"
@@ -42,28 +42,28 @@ msgstr ""
 #: objinspstrconsts.cactionlisteditormovedownaction
 msgctxt "objinspstrconsts.cactionlisteditormovedownaction"
 msgid "Move Down"
-msgstr ""
+msgstr "Siirrä alaspäin"
 
 #: objinspstrconsts.cactionlisteditormoveupaction
 msgctxt "objinspstrconsts.cactionlisteditormoveupaction"
 msgid "Move Up"
-msgstr ""
+msgstr "Siirrä ylöspäin"
 
 #: objinspstrconsts.cactionlisteditornewaction
 msgid "New Action"
-msgstr ""
+msgstr "Uusi toiminto (Action)"
 
 #: objinspstrconsts.cactionlisteditornewstdaction
 msgid "New Standard Action"
-msgstr ""
+msgstr "Uusi perustoiminto (Standard Action)"
 
 #: objinspstrconsts.cactionlisteditorpaneldescrriptions
 msgid "Panel Descriptions"
-msgstr ""
+msgstr "Luettelon määrittelytekstien näyttäminen"
 
 #: objinspstrconsts.cactionlisteditorpaneltoolbar
 msgid "Toolbar"
-msgstr ""
+msgstr "Painikepalkin näyttäminen"
 
 #: objinspstrconsts.cactionlisteditorsearchcategory
 msgid "Search"
@@ -75,11 +75,11 @@ msgstr ""
 
 #: objinspstrconsts.cgcheckduplicate
 msgid "On Add, Check for Duplicate in Items"
-msgstr ""
+msgstr "Lisätessä tarkistetaan on jo samanniminen kohta olemassa "
 
 #: objinspstrconsts.cgcheckduplicatemsg
 msgid "The \"%s\" Item is already listed. Add it anyway?"
-msgstr ""
+msgstr "Valintakohta \"%s\" on jo listassa. Lisätäänkö se kuitenkin?"
 
 #: objinspstrconsts.cgcheckgroupeditor
 msgid "CheckGroup Editor"
@@ -87,7 +87,7 @@ msgstr "CheckGroup:n muokkain"
 
 #: objinspstrconsts.cgcolumns
 msgid "Columns:"
-msgstr ""
+msgstr "Sarakkeita (Columns):"
 
 #: objinspstrconsts.cgdisable
 msgid "Popup to disable/enable items"
@@ -103,7 +103,7 @@ msgstr ""
 
 #: objinspstrconsts.clbdeletehint
 msgid "Delete the Item"
-msgstr ""
+msgstr "Poista kohta"
 
 #: objinspstrconsts.clbdeletequest
 msgid "Delete the Item %d \"%s\"?"
@@ -286,13 +286,13 @@ msgstr "Toiminto"
 
 #: objinspstrconsts.oisactionlistcomponenteditor
 msgid "Action&List Editor..."
-msgstr ""
+msgstr "Toimintolistan (ActionList) muokkain..."
 
 #: objinspstrconsts.oisactionlisteditor
 #, fuzzy
 #| msgid "Action List Editor"
 msgid "ActionList Editor"
-msgstr "Toimintolistan muokkain"
+msgstr "Toimintolistan (ActionList) muokkain"
 
 #: objinspstrconsts.oisaddcollectionitem
 msgid "&Add Item"
@@ -1150,7 +1150,7 @@ msgstr ""
 
 #: objinspstrconsts.sccsiledtadd
 msgid "Add..."
-msgstr ""
+msgstr "Lisää ..."
 
 #: objinspstrconsts.sccsiledtadjustment
 msgid "Adjustment"
@@ -1163,11 +1163,11 @@ msgstr ""
 
 #: objinspstrconsts.sccsiledtcaption
 msgid "ImageList Editor"
-msgstr ""
+msgstr "ImageList:n editori"
 
 #: objinspstrconsts.sccsiledtcenter
 msgid "Center"
-msgstr ""
+msgstr "Keskitä"
 
 #: objinspstrconsts.sccsiledtclear
 msgctxt "objinspstrconsts.sccsiledtclear"
@@ -1185,50 +1185,50 @@ msgstr "Poista"
 
 #: objinspstrconsts.sccsiledtgrplcaption
 msgid "Images"
-msgstr ""
+msgstr "Kuvat"
 
 #: objinspstrconsts.sccsiledtgrprcaption
 msgid "Selected Image"
-msgstr ""
+msgstr "Valittu kuva"
 
 #: objinspstrconsts.sccsiledtmovedown
 msgctxt "objinspstrconsts.sccsiledtmovedown"
 msgid "Move Down"
-msgstr ""
+msgstr "Siirrä alaspäin"
 
 #: objinspstrconsts.sccsiledtmoveup
 msgctxt "objinspstrconsts.sccsiledtmoveup"
 msgid "Move Up"
-msgstr ""
+msgstr "Siirrä ylöspäin"
 
 #: objinspstrconsts.sccsiledtnone
 msgid "None"
-msgstr ""
+msgstr "Ei mitään"
 
 #: objinspstrconsts.sccsiledtopendialog
 msgid "Add Images"
-msgstr ""
+msgstr "Lisää Kuvat"
 
 #: objinspstrconsts.sccsiledtransparentcolor
 msgid "Transparent Color:"
-msgstr ""
+msgstr "Läpinäkyvä väri:"
 
 #: objinspstrconsts.sccsiledtsave
 msgctxt "objinspstrconsts.sccsiledtsave"
 msgid "Save..."
-msgstr ""
+msgstr "Tallenna..."
 
 #: objinspstrconsts.sccsiledtsaveall
 msgid "Save All..."
-msgstr ""
+msgstr "Tallenna kaikki..."
 
 #: objinspstrconsts.sccsiledtsavedialog
 msgid "Save Image"
-msgstr ""
+msgstr "Tallenna kuva"
 
 #: objinspstrconsts.sccsiledtstretch
 msgid "Stretch"
-msgstr ""
+msgstr "Sovita kokoon"
 
 #: objinspstrconsts.sccslvcoledt
 msgid "Edit Columns ..."
