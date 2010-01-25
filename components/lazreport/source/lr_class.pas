@@ -9428,9 +9428,9 @@ begin
         end
         else if AggrBand.Visible then
         begin
-          val := Copy(AggrBand.Values.Values[VarName], 2, 255);
+          val := StrToFloat(Copy(AggrBand.Values.Values[VarName], 2, 255));
           if dk = dkAvg then
-            val := FloatToStr(StrToFloat(val) / AggrBand.Count);
+            val := val / AggrBand.Count;
           Exit;
         end;
       end;
