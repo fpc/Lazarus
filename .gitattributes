@@ -1264,6 +1264,7 @@ components/lazreport/samples/editor/db/disco.dbf -text
 components/lazreport/samples/editor/db/disco.mdx -text
 components/lazreport/samples/editor/languages/calleditorwithpkg.de.po svneol=native#text/plain
 components/lazreport/samples/editor/languages/calleditorwithpkg.es.po svneol=native#text/plain
+components/lazreport/samples/editor/languages/calleditorwithpkg.fr.po svneol=native#text/plain
 components/lazreport/samples/editor/languages/calleditorwithpkg.lt.po svneol=native#text/plain
 components/lazreport/samples/editor/languages/calleditorwithpkg.pb.po svneol=native#text/plain
 components/lazreport/samples/editor/languages/calleditorwithpkg.po svneol=native#text/plain
