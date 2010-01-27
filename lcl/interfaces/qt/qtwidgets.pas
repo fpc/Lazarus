@@ -8495,9 +8495,13 @@ procedure TQtMenu.DoPopupClose;
 begin
   if FMenuItem.Menu is TPopupMenu then
   begin
+    {$IFDEF DARWIN}
     if Assigned(TPopupMenu(FMenuItem.Menu).OnClose) then
       TPopupMenu(FMenuItem.Menu).OnClose(FMenuItem.Menu);
     Menus.ActivePopupMenu := nil;
+    {$ELSE}
+    TPopupMenu(FMenuItem.Menu).Close;
+    {$ENDIF}
   end;
 end;
 
