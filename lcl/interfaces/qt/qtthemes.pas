@@ -296,12 +296,14 @@ begin
   if IsPushed(Details) then
     Result := Result or QStyleState_Sunken;
 
+  if IsMixed(Details) then
+    Result := Result or QStyleState_NoChange
+  else
   if IsChecked(Details) then
     Result := Result or QStyleState_On
   else
-  if IsMixed(Details) then
-    Result := Result or QStyleState_NoChange;
-    
+    Result := Result or QStyleState_Off;
+
   // specific states
   {when toolbar = flat, toolbar buttons should be flat too.}
   if (Details.Element = teToolBar) and
