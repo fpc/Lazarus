@@ -85,7 +85,8 @@ type
     class procedure SetIcon(const AForm: TCustomForm; const Small, Big: HICON); override;
     class procedure SetShowInTaskbar(const AForm: TCustomForm; const AValue: TShowInTaskbar); override;
     class procedure ShowModal(const ACustomForm: TCustomForm); override;
-    class procedure SetAlphaBlend(const ACustomForm: TCustomForm; Alpha: single); override;
+    class procedure SetAlphaBlend(const ACustomForm: TCustomForm; const AlphaBlend: Boolean;
+      const Alpha: Byte); override;
   end;
 
   { TWin32WSForm }
@@ -483,23 +484,26 @@ begin
   BringWindowToTop(ACustomForm.Handle);
 end;
 
-class procedure TWin32WSCustomForm.SetAlphaBlend(const ACustomForm: TCustomForm; Alpha: single);
+class procedure TWin32WSCustomForm.SetAlphaBlend(const ACustomForm: TCustomForm;
+  const AlphaBlend: Boolean; const Alpha: Byte);
 var
-  style : LongWord;
+  Style: DWord;
 begin
   if not WSCheckHandleAllocated(ACustomForm, 'SetAlphaBlend') then
     Exit;
 
-  if Alpha<0 then Alpha:=0
-  else if Alpha>1 then Alpha:=1;
-  style:=GetWindowLong(ACustomForm.Handle,GWL_EXSTYLE);
-  if Alpha<1 then
+  Style := GetWindowLong(ACustomForm.Handle, GWL_EXSTYLE);
+
+  if AlphaBlend then
   begin
-    if (style and WS_EX_LAYERED) = 0 then SetWindowLong(ACustomForm.Handle, GWL_EXSTYLE, style or WS_EX_LAYERED);
-    Win32Extra.SetLayeredWindowAttributes(ACustomForm.Handle, 0, Round(Alpha*255), LWA_ALPHA);
+    if (Style and WS_EX_LAYERED) = 0 then
+      SetWindowLong(ACustomForm.Handle, GWL_EXSTYLE, Style or WS_EX_LAYERED);
+    Win32Extra.SetLayeredWindowAttributes(ACustomForm.Handle, 0, Alpha, LWA_ALPHA);
   end
-  else begin
-    SetWindowLong(ACustomForm.Handle, GWL_EXSTYLE, style and not WS_EX_LAYERED);
+  else
+  begin
+    if (Style and WS_EX_LAYERED) <> 0 then
+      SetWindowLong(ACustomForm.Handle, GWL_EXSTYLE, Style and not WS_EX_LAYERED);
     RedrawWindow(ACustomForm.Handle, nil, 0, RDW_ERASE or RDW_INVALIDATE or RDW_FRAME or RDW_ALLCHILDREN);
   end;
 end;

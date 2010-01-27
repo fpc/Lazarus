@@ -390,6 +390,8 @@ type
     FActiveControl: TWinControl;
     FActiveDefaultControl: TControl;
     FAllowDropFiles: Boolean;
+    FAlphaBlend: Boolean;
+    FAlphaBlendValue: Byte;
     FBorderIcons: TBorderIcons;
     FDefaultControl: TControl;
     FCancelControl: TControl;
@@ -440,6 +442,8 @@ type
     procedure SetActiveControl(AWinControl: TWinControl);
     procedure SetActiveDefaultControl(AControl: TControl);
     procedure SetAllowDropFiles(const AValue: Boolean);
+    procedure SetAlphaBlend(const AValue: Boolean);
+    procedure SetAlphaBlendValue(const AValue: Byte);
     procedure SetBorderIcons(NewIcons: TBorderIcons);
     procedure SetFormBorderStyle(NewStyle: TFormBorderStyle);
     procedure SetCancelControl(NewControl: TControl);
@@ -582,6 +586,8 @@ type
     property ActiveControl: TWinControl read FActiveControl write SetActiveControl;
     property ActiveDefaultControl: TControl read FActiveDefaultControl write SetActiveDefaultControl;
     property AllowDropFiles: Boolean read FAllowDropFiles write SetAllowDropFiles default False;
+    property AlphaBlend: Boolean read FAlphaBlend write SetAlphaBlend;
+    property AlphaBlendValue: Byte read FAlphaBlendValue write SetAlphaBlendValue;
     property AutoScroll stored IsAutoScrollStored;
     property BorderIcons: TBorderIcons read FBorderIcons write SetBorderIcons
       default [biSystemMenu, biMinimize, biMaximize];
@@ -654,6 +660,8 @@ type
     property ActiveControl;
     property Align;
     property AllowDropFiles;
+    property AlphaBlend default False;
+    property AlphaBlendValue default 255;
     property AutoScroll;
     property AutoSize;
     property BiDiMode;

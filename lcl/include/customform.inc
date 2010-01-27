@@ -1491,6 +1491,24 @@ begin
     TWSCustomFormClass(WidgetSetClass).SetAllowDropFiles(Self, AValue);
 end;
 
+procedure TCustomForm.SetAlphaBlend(const AValue: Boolean);
+begin
+  if FAlphaBlend = AValue then
+    Exit;
+  FAlphaBlend := AValue;
+  if not (csDesigning in ComponentState) and HandleAllocated then
+    TWSCustomFormClass(WidgetSetClass).SetAlphaBlend(Self, AlphaBlend, AlphaBlendValue);
+end;
+
+procedure TCustomForm.SetAlphaBlendValue(const AValue: Byte);
+begin
+  if FAlphaBlendValue = AValue then
+    Exit;
+  FAlphaBlendValue := AValue;
+  if not (csDesigning in ComponentState) and HandleAllocated then
+    TWSCustomFormClass(WidgetSetClass).SetAlphaBlend(Self, AlphaBlend, AlphaBlendValue);
+end;
+
 {------------------------------------------------------------------------------
        TCustomForm SetFormStyle
 ------------------------------------------------------------------------------}
@@ -1592,6 +1610,8 @@ begin
   FBorderIcons := [biSystemMenu, biMinimize, biMaximize];
   FDefaultMonitor := dmActiveForm;
   FShowInTaskbar := stDefault;
+  FAlphaBlend := False;
+  FAlphaBlendValue := 255;
   // set border style before handle is allocated
   if not (fsBorderStyleChanged in FFormState) then
     FFormBorderStyle:= bsSizeable;

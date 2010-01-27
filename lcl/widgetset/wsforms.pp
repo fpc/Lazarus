@@ -91,7 +91,8 @@ type
     class procedure SetShowInTaskbar(const AForm: TCustomForm; const AValue: TShowInTaskbar); virtual;
     class procedure SetZPosition(const AWinControl: TWinControl; const APosition: TWSZPosition); virtual;
     class procedure ShowModal(const ACustomForm: TCustomForm); virtual;
-    class procedure SetAlphaBlend(const ACustomForm: TCustomForm; AlphaValue: single); virtual;
+    class procedure SetAlphaBlend(const ACustomForm: TCustomForm; const AlphaBlend: Boolean;
+      const Alpha: Byte); virtual;
   end;
   TWSCustomFormClass = class of TWSCustomForm;
 
@@ -180,7 +181,8 @@ class procedure TWSCustomForm.ShowModal(const ACustomForm: TCustomForm);
 begin
 end;
 
-class procedure TWSCustomForm.SetAlphaBlend(const ACustomForm: TCustomForm; AlphaValue: single);
+class procedure TWSCustomForm.SetAlphaBlend(const ACustomForm: TCustomForm;
+  const AlphaBlend: Boolean; const Alpha: Byte);
 begin
 end;
 

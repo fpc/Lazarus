@@ -620,7 +620,7 @@ begin
 
     p := GetProcAddress(user32handle, 'SetLayeredWindowAttributes');
     if p <> nil
-    then Pointer(SetLayout) := p;
+    then Pointer(SetLayeredWindowAttributes) := p;
   end;
 
   // Defaults
