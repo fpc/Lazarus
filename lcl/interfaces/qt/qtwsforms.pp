@@ -87,6 +87,8 @@ type
     class procedure SetShowInTaskbar(const AForm: TCustomForm; const AValue: TShowInTaskbar); override;
     class procedure ShowModal(const ACustomForm: TCustomForm); override;
     class procedure SetBorderIcons(const AForm: TCustomForm; const ABorderIcons: TBorderIcons); override;
+    class procedure SetAlphaBlend(const ACustomForm: TCustomForm;
+       const AlphaBlend: Boolean; const Alpha: Byte); override;
   end;
 
   { TQtWSForm }
@@ -284,6 +286,15 @@ class procedure TQtWSCustomForm.SetBorderIcons(const AForm: TCustomForm;
   const ABorderIcons: TBorderIcons);
 begin
   UpdateWindowFlags(TQtMainWindow(AForm.Handle), AForm.BorderStyle, ABorderIcons, AForm.FormStyle);
+end;
+
+class procedure TQtWSCustomForm.SetAlphaBlend(const ACustomForm: TCustomForm;
+  const AlphaBlend: Boolean; const Alpha: Byte);
+begin
+  if AlphaBlend then
+    TQtMainWindow(ACustomForm.Handle).setWindowOpacity(Alpha / 255)
+  else
+    TQtMainWindow(ACustomForm.Handle).setWindowOpacity(1);
 end;
 
 {------------------------------------------------------------------------------

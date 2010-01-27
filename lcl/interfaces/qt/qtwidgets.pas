@@ -230,6 +230,7 @@ type
     procedure setWindowFlags(_type: QtWindowFlags);
     procedure setWindowIcon(AIcon: QIconH);
     procedure setWindowModality(windowModality: QtWindowModality);
+    procedure setWindowOpacity(opacity: double);
     procedure setWidth(p1: Integer);
     procedure setHeight(p1: Integer);
     procedure setUpdatesEnabled(const AEnabled: Boolean);
@@ -3349,6 +3350,11 @@ end;
 procedure TQtWidget.setWindowModality(windowModality: QtWindowModality);
 begin
   QWidget_setWindowModality(Widget, windowModality);
+end;
+
+procedure TQtWidget.setWindowOpacity(opacity: double);
+begin
+  QWidget_setWindowOpacity(Widget, opacity);
 end;
 
 procedure TQtWidget.setParent(parent: QWidgetH);
