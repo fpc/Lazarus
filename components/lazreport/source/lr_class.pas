@@ -9379,7 +9379,7 @@ begin
         dkAvg: d := avg;
         dkCount: d := count;
       end;
-      val := FloatToStr(d);
+      val := d;
     end
     else if DataSet = nil then
     begin
