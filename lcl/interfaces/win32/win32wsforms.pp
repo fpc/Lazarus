@@ -85,7 +85,7 @@ type
     class procedure SetIcon(const AForm: TCustomForm; const Small, Big: HICON); override;
     class procedure SetShowInTaskbar(const AForm: TCustomForm; const AValue: TShowInTaskbar); override;
     class procedure ShowModal(const ACustomForm: TCustomForm); override;
-    class procedure SetAlphaBlend(const ACustomForm: TCustomForm; AlphaValue: single); override;
+    class procedure SetAlphaBlend(const ACustomForm: TCustomForm; Alpha: single); override;
   end;
 
   { TWin32WSForm }
@@ -483,28 +483,24 @@ begin
   BringWindowToTop(ACustomForm.Handle);
 end;
 
-var
-  SetLayeredWindowAttributes_ : function (HWND:hwnd;crKey :COLORREF;bAlpha : byte;dwFlags : DWORD):WINBOOL; stdcall = nil; // external 'user32' name 'SetLayeredWindowAttributes';
-
-class procedure TWin32WSCustomForm.SetAlphaBlend(const ACustomForm: TCustomForm; AlphaValue: single);
+class procedure TWin32WSCustomForm.SetAlphaBlend(const ACustomForm: TCustomForm; Alpha: single);
 var
   style : LongWord;
 begin
-  if not Assigned(SetLayeredWindowAttributes_) then
-    Pointer(SetLayeredWindowAttributes_):=GetProcAddress(GetModuleHandle('user32.dll'), 'SetLayeredWindowAttributes');
-  if not Assigned(SetLayeredWindowAttributes_) then Exit;
+  if not WSCheckHandleAllocated(ACustomForm, 'SetAlphaBlend') then
+    Exit;
 
   if Alpha<0 then Alpha:=0
   else if Alpha>1 then Alpha:=1;
-  style:=GetWindowLong(AForm.Handle,GWL_EXSTYLE);
+  style:=GetWindowLong(ACustomForm.Handle,GWL_EXSTYLE);
   if Alpha<1 then
   begin
-    if (style and WS_EX_LAYERED) = 0 then SetWindowLong(AForm.Handle, GWL_EXSTYLE, style or WS_EX_LAYERED);
-    SetLayeredWindowAttributes_(AForm.Handle, 0, Round(Alpha*255), LWA_ALPHA);
+    if (style and WS_EX_LAYERED) = 0 then SetWindowLong(ACustomForm.Handle, GWL_EXSTYLE, style or WS_EX_LAYERED);
+    Win32Extra.SetLayeredWindowAttributes(ACustomForm.Handle, 0, Round(Alpha*255), LWA_ALPHA);
   end
   else begin
-    SetWindowLong(AForm.Handle, GWL_EXSTYLE, style and not WS_EX_LAYERED);
-    RedrawWindow(AForm.Handle, nil, 0, RDW_ERASE or RDW_INVALIDATE or RDW_FRAME or RDW_ALLCHILDREN);
+    SetWindowLong(ACustomForm.Handle, GWL_EXSTYLE, style and not WS_EX_LAYERED);
+    RedrawWindow(ACustomForm.Handle, nil, 0, RDW_ERASE or RDW_INVALIDATE or RDW_FRAME or RDW_ALLCHILDREN);
   end;
 end;
 

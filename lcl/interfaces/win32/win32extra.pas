@@ -79,6 +79,7 @@ var
   GetMenuBarInfo: function(hwnd: HWND; idObject: LONG; idItem: LONG; pmbi: PMENUBARINFO): BOOL; stdcall;
   GetWindowInfo: function(hwnd: HWND; pwi: PWINDOWINFO): BOOL; stdcall;
   SetLayout: function(dc: HDC; l: DWord): DWord; stdcall;
+  SetLayeredWindowAttributes: function (HWND:hwnd;crKey :COLORREF;bAlpha : byte;dwFlags : DWORD):WINBOOL; stdcall;
 
 const
   // ComCtlVersions
@@ -545,6 +546,11 @@ begin
   Result := GDI_ERROR;
 end;
 
+function _SetLayeredWindowAttributes(HWND:hwnd;crKey :COLORREF;bAlpha : byte;dwFlags : DWORD):WINBOOL; stdcall;
+begin
+  Result := False;
+end;
+
 const
   msimg32lib = 'msimg32.dll';
   user32lib = 'user32.dll';
@@ -595,6 +601,7 @@ begin
   Pointer(GetComboboxInfo) := @_GetComboboxInfo;
   Pointer(GetMenuBarInfo) := @_GetMenuBarInfo;
   Pointer(GetWindowInfo) := @_GetWindowInfo;
+  Pointer(SetLayeredWindowAttributes) := @_SetLayeredWindowAttributes;
 
   user32handle := LoadLibrary(user32lib);
   if user32handle <> 0 then
@@ -610,6 +617,10 @@ begin
     p := GetProcAddress(user32handle, 'GetWindowInfo');
     if p <> nil 
     then Pointer(GetWindowInfo) := p;
+
+    p := GetProcAddress(user32handle, 'SetLayeredWindowAttributes');
+    if p <> nil
+    then Pointer(SetLayout) := p;
   end;
 
   // Defaults
@@ -633,6 +644,7 @@ begin
     if p <> nil 
     then Pointer(SetLayout) := p;
   end;
+
 end;
 
 procedure Finalize;
