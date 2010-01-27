@@ -330,6 +330,8 @@ begin
        ( not (csDesigning in lForm.ComponentState) and
         (lForm.ShowInTaskBar = stAlways)) then
       FlagsEx := FlagsEx or WS_EX_APPWINDOW;
+    if lForm.AlphaBlend then
+      FlagsEx := FlagsEx or WS_EX_LAYERED;
   end;
   SetStdBiDiModeParams(AWinControl, Params);
   // create window
