@@ -16,10 +16,11 @@
 }
 
 uses
+  dynlibs,
   {$ifdef HasX}
   xlib, x,
   {$endif}
-  glib2, gdk2pixbuf, gdk2, gtk2,
+  glib2, gdk2pixbuf, gdk2, gtk2, gtk2ext,
   {$ifdef HasGdk2X}
   gdk2x,
   {$endif}
@@ -193,6 +194,9 @@ procedure gtk_file_chooser_set_do_overwrite_confirmation(chooser:PGtkFileChooser
 {$ifdef GTK_2_10}
 function gdk_screen_is_composited(screen: PGdkScreen): gboolean; cdecl; external gdklib;
 {$endif}
+
+var
+  gtk_window_set_opacity: procedure(window: PGtkWindow; opacity: gdouble); cdecl;
 
 {$ifdef ver2_2}
 {$ifdef darwin}

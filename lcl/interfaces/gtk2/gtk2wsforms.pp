@@ -74,7 +74,8 @@ type
   published
     class function CreateHandle(const AWinControl: TWinControl; const AParams: TCreateParams): TLCLIntfHandle; override;
     class procedure SetIcon(const AForm: TCustomForm; const Small, Big: HICON); override;
-
+    class procedure SetAlphaBlend(const ACustomForm: TCustomForm;
+       const AlphaBlend: Boolean; const Alpha: Byte); override;
 {    class function GetDefaultClientRect(const AWinControl: TWinControl;
              const aLeft, aTop, aWidth, aHeight: integer; var aClientRect: TRect
              ): boolean; override;
@@ -241,6 +242,18 @@ begin
   gtk_window_set_icon_list(PGtkWindow(AForm.Handle), List);
   if List <> nil
   then  g_list_free(List);
+end;
+
+class procedure TGtk2WSCustomForm.SetAlphaBlend(const ACustomForm: TCustomForm;
+  const AlphaBlend: Boolean; const Alpha: Byte);
+begin
+  if not WSCheckHandleAllocated(ACustomForm, 'SetAlphaBlend') then
+    Exit;
+  if Assigned(gtk_window_set_opacity) then
+    if AlphaBlend then
+      gtk_window_set_opacity(PGtkWindow(ACustomForm.Handle), Alpha / 255)
+    else
+      gtk_window_set_opacity(PGtkWindow(ACustomForm.Handle), 1);
 end;
 
 {class function TGtk2WSCustomForm.GetDefaultClientRect(

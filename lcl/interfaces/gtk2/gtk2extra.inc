@@ -5,7 +5,7 @@
  *                                                                           *
  *  This file is part of the Lazarus Component Library (LCL)                 *
  *                                                                           *
- *  See the file COPYING.modifiedLGPL.txt, included in this distribution,        *
+ *  See the file COPYING.modifiedLGPL.txt, included in this distribution,    *
  *  for details about the copyright.                                         *
  *                                                                           *
  *  This program is distributed in the hope that it will be useful,          *
@@ -52,3 +52,22 @@ begin
   gdk_draw_pixmap(Dest, GC, Src, XSrc, YSrc, DestX, DestY, Width, Height);
 end;
 {$endif}
+
+var
+  gtkhandle: tlibhandle;
+  libIter: Integer;
+
+initialization
+  for libIter := High(GtkLibNames) downto Low(GtkLibNames) do
+  begin
+    gtkhandle := LoadLibrary(GtkLibNames[libIter]);
+    if gtkhandle <> 0 then
+    begin
+      pointer(gtk_window_set_opacity):=GetProcAddress(gtkhandle,'gtk_window_set_opacity');
+      break;
+    end;
+  end;
+
+finalization
+  if gtkhandle <> 0 then
+    FreeLibrary(gtkhandle);
