@@ -80,7 +80,7 @@ type
     class procedure SetBorderIcons(const AForm: TCustomForm; const ABorderIcons: TBorderIcons); override;
     class procedure SetFormBorderStyle(const AForm: TCustomForm; const AFormBorderStyle: TFormBorderStyle); override;
 
-    class procedure SetAlphaBlend(const ACustomForm: TCustomForm; AlphaValue: single); override;
+    class procedure SetAlphaBlend(const ACustomForm: TCustomForm; const AlphaBlend: Boolean; const Alpha: Byte); override;
   end;
 
   { TCarbonWSForm }
@@ -221,13 +221,13 @@ begin
   TCarbonWindow(AForm.Handle).SetFormBorderStyle(AFormBorderStyle);
 end;
 
-class procedure TCarbonWSCustomForm.SetAlphaBlend(const ACustomForm: TCustomForm; AlphaValue: single);
+class procedure TCarbonWSCustomForm.SetAlphaBlend(const ACustomForm: TCustomForm; const AlphaBlend: Boolean; const Alpha: Byte);
+var
+  v : single;
 begin
   if not CheckHandle(ACustomForm, Self, 'SetFormBorderStyle') then Exit;
-
-  if AlphaValue<0 then AlphaValue:=0
-  else if AlphaValue>1 then AlphaValue:=1;
-  SetWindowAlpha( TCarbonWindow(ACustomForm.Handle).Window, AlphaValue);
+  if not AlphaBlend then v:=1 else v:=Alpha/255;
+  SetWindowAlpha( TCarbonWindow(ACustomForm.Handle).Window, v);
 end;
 
 { TCarbonWSHintWindow }
