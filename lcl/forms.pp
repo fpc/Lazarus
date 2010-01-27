@@ -500,6 +500,7 @@ type
     function HandleCreateException: Boolean; virtual;
     function HandleDestroyException: Boolean; virtual;
     function HandleShowHideException: Boolean; virtual;
+    procedure InitializeWnd; override;
     procedure Loaded; override;
     procedure ChildHandlesCreated; override;
     procedure Notification(AComponent: TComponent; Operation : TOperation);override;

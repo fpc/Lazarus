@@ -874,6 +874,18 @@ begin
     Application.HandleException(Self);
 end;
 
+procedure TCustomForm.InitializeWnd;
+begin
+  if not (csDesigning in ComponentState) then
+  begin
+    // set alpha value
+    TWSCustomFormClass(WidgetSetClass).SetAlphaBlend(Self, AlphaBlend, AlphaBlendValue);
+    // set allow drop files
+    TWSCustomFormClass(WidgetSetClass).SetAllowDropFiles(Self, FAllowDropFiles);
+  end;
+  inherited InitializeWnd;
+end;
+
 {------------------------------------------------------------------------------
   Method: TCustomForm.PaintWindow
   Params:   none
@@ -2105,9 +2117,7 @@ begin
       LCLIntf.SetFocus(FActiveControl.Handle);
     end;
   end;
-  
-  // set allow drop files
-  TWSCustomFormClass(WidgetSetClass).SetAllowDropFiles(Self, FAllowDropFiles);
+
   // update icon
   Perform(CM_ICONCHANGED, 0, 0);
   //DebugLn('TCustomForm.CreateWnd END ',ClassName);
