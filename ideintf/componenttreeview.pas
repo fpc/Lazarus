@@ -490,6 +490,8 @@ end;
 
 procedure TComponentTreeView.DoModified;
 begin
+  if Assigned(PropertyEditorHook) then
+    PropertyEditorHook.RefreshPropertyValues;
   if Assigned(FOnModified) then
     OnModified(Self);
 end;

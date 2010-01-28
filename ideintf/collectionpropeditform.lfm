@@ -1,7 +1,7 @@
 object CollectionPropertyEditorForm: TCollectionPropertyEditorForm
-  Left = 220
+  Left = 176
   Height = 300
-  Top = 220
+  Top = 232
   Width = 190
   HorzScrollBar.Page = 189
   VertScrollBar.Page = 299
@@ -42,18 +42,18 @@ object CollectionPropertyEditorForm: TCollectionPropertyEditorForm
     object ToolButton3: TToolButton
       Left = 89
       Top = 2
-      Width = 10
+      Width = 3
       Caption = 'ToolButton3'
-      Style = tbsSeparator
+      Style = tbsDivider
     end
     object MoveUpButton: TToolButton
-      Left = 99
+      Left = 92
       Top = 2
       Caption = 'Up'
       OnClick = MoveUpButtonClick
     end
     object MoveDownButton: TToolButton
-      Left = 143
+      Left = 136
       Top = 2
       Caption = 'Down'
       OnClick = MoveDownButtonClick
