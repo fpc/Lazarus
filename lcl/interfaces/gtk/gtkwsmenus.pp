@@ -363,17 +363,27 @@ end;
 
 { TGtkWSPopupMenu }
 procedure GtkWS_Popup(menu: PGtkMenu; X, Y: pgint;
-  {$IFDEF GTK2} ForceInScreen: pgboolean; {$ENDIF}
+  {$IFDEF GTK2} push_in: pgboolean; {$ENDIF}
   WidgetInfo: PWidgetInfo); cdecl;
 var
   Requisition: TGtkRequisition;
   Alignment: TPopupAlignment;
+  ScreenHeight: gint;
 begin
   X^ := PPoint(WidgetInfo^.UserData)^.X;
   Y^ := PPoint(WidgetInfo^.UserData)^.Y;
 
   if WidgetInfo^.LCLObject is TPopupMenu then
   begin
+    // make menu to fit the screen vertically
+    gtk_widget_size_request(PGtkWidget(menu), @Requisition);
+    ScreenHeight := gdk_screen_height();
+    if Y^ + Requisition.height > ScreenHeight then
+    begin
+      Y^ := ScreenHeight - Requisition.height;
+      if Y^ < 0 then Y^ := 0;
+    end;
+
     // get actual alignment
     Alignment := TPopupMenu(WidgetInfo^.LCLObject).Alignment;
     if TPopupMenu(WidgetInfo^.LCLObject).IsRightToLeft then
@@ -386,22 +396,10 @@ begin
     end;
 
     case Alignment of
-      paCenter:
-        begin
-          gtk_widget_size_request(PGtkWidget(menu), @Requisition);
-          X^ := X^ - Requisition.width div 2;
-        end;
-      paRight:
-        begin
-          gtk_widget_size_request(PGtkWidget(menu), @Requisition);
-          X^ := X^ - Requisition.width;
-        end;
+      paCenter: X^ := X^ - Requisition.width div 2;
+      paRight: X^ := X^ - Requisition.width;
     end;
   end;
-
-  {$IFDEF GTK2}
-  ForceInScreen^ := True;
-  {$ENDIF}
 end;
 
 function gtkWSPopupDelayedClose(Data: Pointer): gboolean; cdecl;
