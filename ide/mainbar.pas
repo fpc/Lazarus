@@ -252,6 +252,7 @@ type
       //itmRunnning: TIDEMenuSection;
         itmRunMenuRun: TIDEMenuCommand;
         itmRunMenuPause: TIDEMenuCommand;
+        itmRunMenuShowExecutionPoint: TIDEMenuCommand;
         itmRunMenuStepInto: TIDEMenuCommand;
         itmRunMenuStepOver: TIDEMenuCommand;
         itmRunMenuRunToCursor: TIDEMenuCommand;

@@ -293,6 +293,7 @@ type
     procedure mnuAbortBuildProjectClicked(Sender: TObject);
     procedure mnuRunProjectClicked(Sender: TObject);
     procedure mnuPauseProjectClicked(Sender: TObject);
+    procedure mnuShowExecutionPointClicked(Sender: TObject);
     procedure mnuStepIntoProjectClicked(Sender: TObject);
     procedure mnuStepOverProjectClicked(Sender: TObject);
     procedure mnuRunToCursorProjectClicked(Sender: TObject);
@@ -2413,6 +2414,8 @@ begin
     itmRunMenuRun.OnClick := @mnuRunProjectClicked;
     itmRunMenuPause.Enabled := False;
     itmRunMenuPause.OnClick := @mnuPauseProjectClicked;
+    itmRunMenuShowExecutionPoint.Enabled := False;
+    itmRunMenuShowExecutionPoint.OnClick := @mnuShowExecutionPointClicked;
     itmRunMenuStepInto.OnClick := @mnuStepIntoProjectClicked;
     itmRunMenuStepOver.OnClick := @mnuStepOverProjectClicked;
     itmRunMenuRunToCursor.OnClick := @mnuRunToCursorProjectClicked;
@@ -3842,6 +3845,11 @@ end;
 Procedure TMainIDE.mnuPauseProjectClicked(Sender: TObject);
 begin
   DebugBoss.DoPauseProject;
+end;
+
+Procedure TMainIDE.mnuShowExecutionPointClicked(Sender: TObject);
+begin
+  DebugBoss.DoShowExecutionPoint;
 end;
 
 Procedure TMainIDE.mnuStepIntoProjectClicked(Sender: TObject);

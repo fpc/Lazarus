@@ -331,6 +331,7 @@ resourcestring
     +'empty for file path)';
   lisBFRunCommand = 'Run Command';
   lisMenuPause = 'Pause';
+  lisMenuShowExecutionPoint = 'Show execution point';
   lisMenuStepInto = 'Step into';
   lisMenuStepOver = 'Step over';
   lisMenuRunToCursor = 'Run to cursor';
@@ -2370,6 +2371,7 @@ resourcestring
   srkmecAbortBuild                = 'abort build';
   srkmecRun                       = 'run program';
   srkmecPause                     = 'pause program';
+  srkmecShowExecutionPoint        = 'show execution point';
   srkmecStopProgram               = 'stop program';
   srkmecResetDebugger             = 'reset debugger';
   srkmecToggleBreakPoint          = 'toggle break point';

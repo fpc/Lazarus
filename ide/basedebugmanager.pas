@@ -102,6 +102,7 @@ type
     function InitDebugger: Boolean; virtual; abstract;
     
     function DoPauseProject: TModalResult; virtual; abstract;
+    function DoShowExecutionPoint: TModalResult; virtual; abstract;
     function DoStepIntoProject: TModalResult; virtual; abstract;
     function DoStepOverProject: TModalResult; virtual; abstract;
     function DoRunToCursor: TModalResult; virtual; abstract;

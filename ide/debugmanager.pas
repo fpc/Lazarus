@@ -160,6 +160,7 @@ type
     function InitDebugger: Boolean; override;
 
     function DoPauseProject: TModalResult; override;
+    function DoShowExecutionPoint: TModalResult; override;
     function DoStepIntoProject: TModalResult; override;
     function DoStepOverProject: TModalResult; override;
     function DoRunToCursor: TModalResult; override;
@@ -1978,6 +1979,7 @@ begin
     PauseSpeedButton.Enabled := (not DebuggerInvalid)
                                 and (dcPause in FDebugger.Commands);
     itmRunMenuPause.Enabled := PauseSpeedButton.Enabled;
+    itmRunMenuShowExecutionPoint.Enabled := (not DebuggerInvalid) and (FDebugger.State = dsPause);
     StepIntoSpeedButton.Enabled := DebuggerInvalid
             or (dcStepInto in FDebugger.Commands) or (FDebugger.State = dsIdle);
     itmRunMenuStepInto.Enabled := StepIntoSpeedButton.Enabled;
@@ -2299,6 +2301,20 @@ begin
   or (FDebugger = nil) or Destroying
   then Exit;
   FDebugger.Pause;
+  Result := mrOk;
+end;
+
+function TDebugManager.DoShowExecutionPoint: TModalResult;
+var
+  DummyLocation: TDBGLocationRec;
+begin
+  Result := mrCancel;
+  if (MainIDE.ToolStatus <> itDebugger)
+  or (FDebugger = nil) or Destroying
+  then Exit;
+
+  DummyLocation.SrcLine := 0;
+  DebuggerCurrentLine(FDebugger, DummyLocation);
   Result := mrOk;
 end;
 

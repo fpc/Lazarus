@@ -231,6 +231,7 @@ const
   ecInspect                 = ecFirstLazarus + 415;
   ecEvaluate                = ecFirstLazarus + 416;
   ecAddWatch                = ecFirstLazarus + 417;
+  ecShowExecutionPoint      = ecFirstLazarus + 418;
 
   // project menu
   ecNewProject              = ecFirstLazarus + 500;
