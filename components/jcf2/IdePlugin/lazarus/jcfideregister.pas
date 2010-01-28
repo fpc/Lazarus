@@ -100,8 +100,8 @@ begin
 
   // settings
   SubSection := RegisterIDEMenuSection(fcMainMenu, FORMAT_MENU_SECTION1);
-  RegisterIDEMenuCommand(SubSection, FORMAT_REG_SETTINGS_MENU_NAME, FORMAT_REG_SETTINGS_MENU,
-    lcJCFIDE.DoRegistrySettings);
+  //RegisterIDEMenuCommand(SubSection, FORMAT_REG_SETTINGS_MENU_NAME, FORMAT_REG_SETTINGS_MENU,
+  //  lcJCFIDE.DoRegistrySettings);
   RegisterIDEMenuCommand(SubSection, FORMAT_SETTINGS_MENU_NAME, FORMAT_SETTINGS_MENU,
     lcJCFIDE.DoFormatSettings);
 
