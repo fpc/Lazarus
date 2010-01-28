@@ -50,6 +50,7 @@ Eugene Kryukov
 Evgen A. Palamarchuck
 Fabrizio Fellini
 Felipe Monteiro de Carvalho
+Flavio Etrusco
 Florian Koeberle
 Francisco Manuel
 Gerard Visent
