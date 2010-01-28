@@ -41,7 +41,7 @@ uses
   // IDE
   PropEdits, IDEDialogs, ComponentReg, PackageIntf, IDEWindowIntf,
   CustomFormEditor, LazarusIDEStrConsts, OutputFilter, IDEProcs, IDEOptionDefs,
-  EditorOptions, ExtCtrls;
+  EditorOptions, ExtCtrls, JITForms, PropEditUtils;
 
 type
 
@@ -424,8 +424,9 @@ var
   p: PInstancePropInfo;
   i: Integer;
   CurMethod: TMethod;
+  JitMethod: TJITMethod;
+  LookupRoot: TPersistent;
   CurMethodName: String;
-  PropName: String;
   s: String;
   MsgResult: TModalResult;
 begin
@@ -448,14 +449,24 @@ begin
     // show the user the list of dangling events
     //debugln('RemoveDanglingEvents Dangling Events: Count=',dbgs(ListOfPInstancePropInfo.Count));
     s:='';
-    for i:=0 to ListOfPInstancePropInfo.Count-1 do begin
-      p:=PInstancePropInfo(ListOfPInstancePropInfo[i]);
-      PropName:=p^.PropInfo^.Name;
-      CurMethod:=GetMethodProp(p^.Instance,p^.PropInfo);
-      CurMethodName:=GlobalDesignHook.GetMethodName(CurMethod,nil);
-      s:=s+DbgSName(p^.Instance)+' '+PropName+'='+CurMethodName+#13;
+    for i := 0 to ListOfPInstancePropInfo.Count-1 do
+    begin
+      p := PInstancePropInfo(ListOfPInstancePropInfo[i]);
+      CurMethod := GetMethodProp(p^.Instance, p^.PropInfo);
+      LookupRoot := GetLookupRootForComponent(TComponent(p^.Instance));
+      if IsJITMethod(CurMethod) then
+      begin
+        JitMethod := TJITMethod(CurMethod.Data);
+        if JitMethod.TheClass <> LookupRoot.ClassType then
+          Continue;
+      end;
+      CurMethodName := GlobalDesignHook.GetMethodName(CurMethod, p^.Instance);
+      s := s + DbgSName(p^.Instance) + ' ' + p^.PropInfo^.Name + '=' + CurMethodName + #13;
     end;
     //debugln('RemoveDanglingEvents ',s);
+
+    if s = '' then
+      Exit(mrOk);
 
     MsgResult:=QuestionDlg(lisMissingEvents,
       Format(lisTheFollowingMethodsUsedByAreNotInTheSourceRemoveTh, [DbgSName(
