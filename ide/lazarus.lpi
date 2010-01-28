@@ -19,8 +19,8 @@
       <Icon Value="0"/>
     </General>
     <VersionInfo>
-      <Language Value="0403"/>
-      <CharSet Value="04E2"/>
+      <Language Value="0421"/>
+      <CharSet Value="03A4"/>
     </VersionInfo>
     <PublishOptions>
       <Version Value="2"/>
@@ -48,7 +48,7 @@
         <PackageName Value="SynEdit"/>
       </Item4>
     </RequiredPackages>
-    <Units Count="69">
+    <Units Count="70">
       <Unit0>
         <Filename Value="lazarus.pp"/>
         <IsPartOfProject Value="True"/>
@@ -524,6 +524,11 @@
         <ResourceBaseClass Value="Frame"/>
         <UnitName Value="compiler_conditionals_options"/>
       </Unit68>
+      <Unit69>
+        <Filename Value="debugmanager.pas"/>
+        <IsPartOfProject Value="True"/>
+        <UnitName Value="DebugManager"/>
+      </Unit69>
     </Units>
   </ProjectOptions>
   <CompilerOptions>
@@ -550,4 +555,14 @@
     </Other>
     <CompileReasons Compile="False" Build="False" Run="False"/>
   </CompilerOptions>
+  <Debugging>
+    <Exceptions Count="2">
+      <Item1>
+        <Name Value="ECodeToolError"/>
+      </Item1>
+      <Item2>
+        <Name Value="EReadError"/>
+      </Item2>
+    </Exceptions>
+  </Debugging>
 </CONFIG>
