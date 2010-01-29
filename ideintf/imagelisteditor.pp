@@ -160,13 +160,20 @@ begin
   Result.Transparent := True;
 end;
 
-function CreateGlyphSplit(Src: TBitmap; Width, Height: Integer; SrcSplitIndex: Integer): TBitmap;
+function CreateGlyphSplit(Src: TBitmap; Width, Height: Integer;
+  SrcSplitIndex: Integer; VerticalSplit: Boolean): TBitmap;
+var
+  SrcRect: TRect;
 begin
   Result := TBitmap.Create;
   Result.Width := Width;
   Result.Height := Height;
-  Result.Canvas.CopyRect( Rect(0, 0, Width, Height),
-    Src.Canvas, Bounds(SrcSplitIndex * Width, 0, Width, Height) );
+  if VerticalSplit then
+    SrcRect := Bounds(0, SrcSplitIndex * Height, Width, Height)
+  else
+    SrcRect := Bounds(SrcSplitIndex * Width, 0, Width, Height);
+  Result.Canvas.CopyRect(Rect(0, 0, Width, Height),
+    Src.Canvas, SrcRect);
   Result.TransparentColor := Src.TransparentColor;
   Result.TransparentMode := Src.TransparentMode;
   Result.Transparent := True;    
@@ -513,6 +520,7 @@ var
   v_PartCount: Integer;
   c_Part: Integer;
   v_CompositeBmp: TBitmap;
+  VerticalSplit: Boolean;
 begin
   SaveDialog.InitialDir := ExtractFileDir(FileName);
   Bmp := nil;
@@ -531,14 +539,21 @@ begin
   begin
     if not Bmp.Empty then
     begin
-      if (Bmp.Height = ImageList.Height)
+      if (((Bmp.Height = ImageList.Height)
         and (Bmp.Width > ImageList.Width)
-        and (Bmp.Width mod ImageList.Width = 0)
+        and (Bmp.Width mod ImageList.Width = 0))
+        or ((Bmp.Width = ImageList.Width)
+        and (Bmp.Height > ImageList.Height)
+        and (Bmp.Height mod ImageList.Height = 0)))
         and (IDEQuestionDialog(Caption +' - '+ btnAdd.Caption,
                             s_SuggestSplitImage, mtConfirmation,
                             [mrYes, s_AddAsSingle, mrYes, s_SplitImage]) = mrYes)
       then begin
-        v_PartCount := Bmp.Width div ImageList.Width;
+        VerticalSplit := Bmp.Width = ImageList.Width;
+        if VerticalSplit then
+          v_PartCount := Bmp.Height div ImageList.Height
+        else
+          v_PartCount := Bmp.Width div ImageList.Width;
         v_CompositeBmp := Bmp;
         Bmp := nil;
       end
@@ -550,7 +565,8 @@ begin
       for c_Part := 0 to v_PartCount -1 do
       begin
         if Assigned(v_CompositeBmp) then
-          Bmp := CreateGlyphSplit(v_CompositeBmp, ImageList.Width, ImageList.Height, c_Part);
+          Bmp := CreateGlyphSplit(v_CompositeBmp, ImageList.Width, ImageList.Height,
+            c_Part, VerticalSplit);
 
         Glyph := CreateGlyph(Bmp, ImageList.Width, ImageList.Height, gaNone, clDefault);
         I := ImageList.Add(Glyph, nil);
