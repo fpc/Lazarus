@@ -92,6 +92,7 @@ type
     FPosition: Integer;
     FRange: Integer;
     FSmooth: Boolean;
+    FTracking: Boolean;
     FVisible: Boolean;
     FOldScrollInfo: TScrollInfo;
     FOldScrollInfoValid: Boolean;
@@ -119,6 +120,7 @@ type
     procedure SetRange(const AValue: Integer); virtual;
     procedure SetSize(const AValue: integer); virtual;
     procedure SetSmooth(const AValue: Boolean); virtual;
+    procedure SetTracking(const AValue: Boolean);
     procedure SetVisible(const AValue: Boolean); virtual;
     procedure UpdateScrollBar; virtual;
     procedure InvalidateScrollInfo;
@@ -141,6 +143,7 @@ type
     property Smooth: Boolean read GetSmooth write SetSmooth default False;
     property Position: Integer read GetPosition write SetPosition default 0;
     property Range: Integer read GetRange write SetRange stored IsRangeStored default 0;
+    property Tracking: Boolean read FTracking write SetTracking default False;
     property Visible: Boolean read GetVisible write SetVisible default True;
   end;
 

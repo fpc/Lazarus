@@ -22,6 +22,12 @@ const
     SB_VERT
   );
 
+  TrackToPolicyMap: array[Boolean] of integer =
+  (
+   SB_POLICY_DISCONTINUOUS,
+   SB_POLICY_CONTINUOUS
+  );
+
 procedure TControlScrollBar.SetPosition(const Value: Integer);
 var
   OldPosition, MaxPos: Integer;
@@ -298,6 +304,10 @@ begin
       FOldScrollInfo := ScrollInfo;
       FOldScrollInfoValid := True;
       SetScrollInfo(FControl.Handle, IntfBarKind[Kind], ScrollInfo, FVisible);
+      // update policy too
+      ScrollInfo.fMask := SIF_UPDATEPOLICY;
+      ScrollInfo.nTrackPos := TrackToPolicyMap[FTracking];
+      SetScrollInfo(ControlHandle, IntfBarKind[Kind], ScrollInfo, FVisible);
     end;
     NewVisible := Visible and (ScrollInfo.nMax - ScrollInfo.nPage > 0);
     ShowScrollBar(FControl.Handle, IntfBarKind[Kind], NewVisible);
@@ -355,8 +365,11 @@ begin
       Dec(NewPos, FPage);
     SB_PAGEDOWN:
       Inc(NewPos, FPage);
-    SB_THUMBPOSITION, SB_THUMBTRACK:
+    SB_THUMBPOSITION:
       NewPos := Message.Pos;
+    SB_THUMBTRACK:
+      if Tracking then
+        NewPos := Message.Pos;
     SB_TOP:
       NewPos := 0;
     SB_BOTTOM:
@@ -419,6 +432,21 @@ begin
   Result := not GetAutoScroll;
 end;
 
+procedure TControlScrollBar.SetTracking(const AValue: Boolean);
+var
+  ScrollInfo: TScrollInfo;
+begin
+  if FTracking = AValue then Exit;
+  FTracking := AValue;
+  if not HandleAllocated then
+    Exit;
+  FillChar(ScrollInfo,SizeOf(ScrollInfo), 0);
+  ScrollInfo.cbSize := SizeOf(ScrollInfo);
+  ScrollInfo.fMask := SIF_UPDATEPOLICY;
+  ScrollInfo.nTrackPos := TrackToPolicyMap[FTracking];
+  SetScrollInfo(ControlHandle, IntfBarKind[Kind], ScrollInfo, FVisible);
+end;
+
 function TControlScrollBar.ControlHandle: HWnd;
 begin
   Result := FControl.Handle;
@@ -435,6 +463,7 @@ begin
   FPosition := 0;
   FRange := 0;
   FSmooth := False;
+  FTracking := False;
   FVisible := True;
 end;
 

@@ -5134,7 +5134,7 @@ begin
     LMScroll.Msg := LM_VSCROLL;
 
   LMScroll.Pos := p1;
-  LMScroll.ScrollCode := SIF_POS; { SIF_TRACKPOS }
+  LMScroll.ScrollCode := SIF_TRACKPOS;
 
   if not InUpdate then
     DeliverMessage(LMScroll);

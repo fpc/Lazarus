@@ -1499,7 +1499,6 @@ var
   Region: QRegionH;
   ExRegion: QRegionH;
   QtDC: TQtDeviceContext absolute dc;
-  R: TRect;
 begin
   {$ifdef VerboseQtWinAPI}
     WriteLn('[WinAPI ExcludeClipRect]');
@@ -4945,6 +4944,9 @@ var
         ScrollBar.EndUpdate;
       end;
     end;
+
+    if (ScrollInfo.FMask and SIF_UPDATEPOLICY) <> 0 then
+      ScrollBar.setTracking(ScrollInfo.nTrackPos <> SB_POLICY_DISCONTINUOUS);
 
     if (ScrollInfo.FMask and SIF_TRACKPOS) <> 0 then
     begin
