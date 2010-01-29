@@ -96,7 +96,7 @@ type
 
 implementation
 
-{.$r win32wsextdlgs.rc}
+{$R *.res}
 
 function OpenPictureDialogCallBack(hWnd: Handle; uMsg: UINT; wParam: WPARAM;
   lParam: LPARAM): UINT; stdcall;
