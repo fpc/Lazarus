@@ -274,15 +274,20 @@ begin
   Parent := HIViewGetSuperview(Widget);
   if not Assigned(Parent) then Exit;
 
-  v := HIViewGetFirstSubview(Parent);
-  while Assigned(v) do begin
-    if (v <> Widget) then begin
-      ctrl := GetCarbonControl(v);
-      if ctrl is TCarbonRadioButton then
-        TCarbonRadioButton(ctrl).SetState(kControlCheckBoxUncheckedValue);
-    end;
 
-    v := HIViewGetNextView(v);
+  if RetrieveState<>kControlCheckBoxUncheckedValue then
+  begin
+    v := HIViewGetFirstSubview(Parent);
+    while Assigned(v) do
+    begin
+      if (v <> Widget) then
+      begin
+        ctrl := GetCarbonControl(v);
+        if ctrl is TCarbonRadioButton then
+          TCarbonRadioButton(ctrl).SetState(kControlCheckBoxUncheckedValue);
+      end;
+      v := HIViewGetNextView(v);
+    end;
   end;
   inherited;
 end;
