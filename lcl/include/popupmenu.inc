@@ -59,6 +59,7 @@ end;
 
 destructor TPopupMenu.Destroy;
 begin
+  DestroyHandle;
   Close;
   inherited Destroy;
 end;
@@ -80,15 +81,14 @@ begin
   if Items.Count=0 then exit;
   ActivePopupMenu:=Self;
   Items.InitiateActions;
-  HandleNeeded;
+  DestroyHandle;
+  CreateHandle;
   if Assigned(OnMenuPopupHandler) then OnMenuPopupHandler(Self);
   TWSPopupMenuClass(WidgetSetClass).Popup(Self, X, Y);
 end;
 
 procedure TPopupMenu.Close;
 begin
-  if HandleAllocated then
-    FItems.DestroyHandle;
   if ActivePopupMenu = Self then
   begin
     DoClose;
