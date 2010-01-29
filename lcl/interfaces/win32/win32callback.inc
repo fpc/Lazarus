@@ -2050,6 +2050,9 @@ begin
     end;
     WM_NCLBUTTONDOWN:
     begin
+      LMessage.Msg := Msg;
+      LMessage.WParam := WParam;
+      LMessage.LParam := LParam;
       NotifyUserInput := True;
       Assert(False, 'Trace:WindowProc - Got WM_NCLBUTTONDOWN');
 
@@ -2070,6 +2073,9 @@ begin
     end;
     WM_NCMOUSEMOVE, WM_NCMOUSELEAVE:
     begin
+      LMessage.Msg := Msg;
+      LMessage.WParam := WParam;
+      LMessage.LParam := LParam;
       NotifyUserInput := True;
       Application.DoBeforeMouseMessage(nil);
     end;
