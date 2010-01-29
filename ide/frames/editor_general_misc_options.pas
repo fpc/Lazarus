@@ -90,15 +90,15 @@ begin
   begin
     with EditorOptionsGroupBox do
     begin
-      Checked[Items.IndexOf(lisShowSpecialCharacters)] := eoShowSpecialChars in SynEditOptions;
-      Checked[Items.IndexOf(dlgTrimTrailingSpaces)] := eoTrimTrailingSpaces in SynEditOptions;
-      Checked[Items.IndexOf(dlgCloseButtonsNotebook)] := ShowTabCloseButtons;
+      Checked[0] := eoShowSpecialChars in SynEditOptions;
+      Checked[1] := eoTrimTrailingSpaces in SynEditOptions;
+      Checked[2] := ShowTabCloseButtons;
       //Checked[Items.IndexOf(dlgShowGutterHints)] := ShowGutterHints;
-      Checked[Items.IndexOf(dlgFindTextatCursor)] := FindTextAtCursor;
-      Checked[Items.IndexOf(dlgCopyWordAtCursorOnCopyNone)] := CopyWordAtCursorOnCopyNone;
-      Checked[Items.IndexOf(dlgCopyPasteKeepFolds)] := eoFoldedCopyPaste in SynEditOptions2;
+      Checked[3] := FindTextAtCursor;
+      Checked[4] := CopyWordAtCursorOnCopyNone;
+      Checked[5] := eoFoldedCopyPaste in SynEditOptions2;
     end;
-    EditorTrimSpaceTypeCheckBox.ItemIndex :=  ord(TrimSpaceType);
+    EditorTrimSpaceTypeCheckBox.ItemIndex := ord(TrimSpaceType);
   end;
 end;
 
@@ -112,30 +112,20 @@ procedure TEditorGeneralMiscOptionsFrame.WriteSettings(AOptions: TAbstractIDEOpt
       TEditorOptions(AOptions).SynEditOptions := TEditorOptions(AOptions).SynEditOptions - [AnOption];
   end;
 
-  procedure UpdateOption(const CheckBoxName: String; AnOption: TSynEditorOption);
-  var
-    i: integer;
-  begin
-    i := EditorOptionsGroupBox.Items.IndexOf(CheckBoxName);
-    UpdateOptionFromBool(EditorOptionsGroupBox.Checked[i], AnOption);
-  end;
-
 begin
   with AOptions as TEditorOptions do
   begin
-    UpdateOption(lisShowSpecialCharacters, eoShowSpecialChars);
-    UpdateOption(dlgTrimTrailingSpaces, eoTrimTrailingSpaces);
-    ShowTabCloseButtons := CheckGroupItemChecked(EditorOptionsGroupBox, dlgCloseButtonsNotebook);
-    CopyWordAtCursorOnCopyNone := CheckGroupItemChecked(EditorOptionsGroupBox, dlgCopyWordAtCursorOnCopyNone);
+    UpdateOptionFromBool(EditorOptionsGroupBox.Checked[0], eoShowSpecialChars);
+    UpdateOptionFromBool(EditorOptionsGroupBox.Checked[1], eoTrimTrailingSpaces);
+    ShowTabCloseButtons := EditorOptionsGroupBox.Checked[2];
     //ShowGutterHints := CheckGroupItemChecked(EditorOptionsGroupBox, dlgShowGutterHints);
-    FindTextAtCursor := CheckGroupItemChecked(EditorOptionsGroupBox, dlgFindTextatCursor);
-    TrimSpaceType := TSynEditStringTrimmingType(EditorTrimSpaceTypeCheckBox.ItemIndex);
-    if EditorOptionsGroupBox.Checked[EditorOptionsGroupBox.Items.IndexOf
-                                     (dlgCopyPasteKeepFolds)]
-    then
+    FindTextAtCursor := EditorOptionsGroupBox.Checked[3];
+    CopyWordAtCursorOnCopyNone := EditorOptionsGroupBox.Checked[4];
+    if EditorOptionsGroupBox.Checked[5] then
       SynEditOptions2 := SynEditOptions2 + [eoFoldedCopyPaste]
     else
       SynEditOptions2 := SynEditOptions2 - [eoFoldedCopyPaste];
+    TrimSpaceType := TSynEditStringTrimmingType(EditorTrimSpaceTypeCheckBox.ItemIndex);
   end;
 end;
 

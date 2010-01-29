@@ -3,7 +3,6 @@ inherited EditorGeneralMiscOptionsFrame: TEditorGeneralMiscOptionsFrame
   Width = 459
   ClientHeight = 186
   ClientWidth = 459
-  TabOrder = 0
   Visible = False
   DesignLeft = 138
   DesignTop = 138
@@ -13,9 +12,9 @@ inherited EditorGeneralMiscOptionsFrame: TEditorGeneralMiscOptionsFrame
     AnchorSideTop.Control = EditorTrimSpaceTypeCheckBox
     AnchorSideTop.Side = asrCenter
     Left = 156
-    Height = 16
-    Top = 160
-    Width = 142
+    Height = 14
+    Top = 161
+    Width = 127
     BorderSpacing.Left = 6
     Caption = 'EditorTrimSpaceTypeLabel'
     ParentColor = False
@@ -45,7 +44,6 @@ inherited EditorGeneralMiscOptionsFrame: TEditorGeneralMiscOptionsFrame
     ChildSizing.ControlsPerLine = 1
     ColumnLayout = clVerticalThenHorizontal
     Columns = 2
-    Ctl3D = False
     OnItemClick = EditorOptionsGroupBoxItemClick
     TabOrder = 0
   end
@@ -57,11 +55,8 @@ inherited EditorGeneralMiscOptionsFrame: TEditorGeneralMiscOptionsFrame
     Height = 21
     Top = 158
     Width = 150
-    AutoComplete = False
     BorderSpacing.Top = 6
-    Ctl3D = False
     ItemHeight = 13
-    ItemWidth = 0
     Style = csDropDownList
     TabOrder = 1
   end
