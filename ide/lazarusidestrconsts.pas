@@ -1046,6 +1046,7 @@ resourcestring
   dlgShowEdrHints = 'Show editor hints';
   dlgrightClickSelects = 'Right Click selects';
   lisOpenDesignerOnOpenUnit = 'Open designer on open unit';
+  dlgCheckPackagesOnFormCreate = 'Check packages on form create';
   dlgGrabberColor = 'Grabber color';
   dlgMarkerColor = 'Marker color';
   lisFEPaintDesignerItemsOnIdle = 'Reduce designer painting';

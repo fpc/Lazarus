@@ -42,6 +42,7 @@ type
   { TFormEditorOptionsFrame }
 
   TFormEditorOptionsFrame = class(TAbstractIDEOptionsEditor)
+    CheckPackagesOnFormCreateCheckBox: TCheckBox;
     OpenDesignerOnOpenUnitCheckBox: TCheckBox;
     ColorBox: TColorBox;
     ColorsListBox: TColorListBox;
@@ -115,6 +116,7 @@ procedure TFormEditorOptionsFrame.Setup(ADialog: TAbstractOptionsEditorDialog);
     ShowEditorHintsCheckBox.Caption:=dlgShowEdrHints;
     OpenDesignerOnOpenUnitCheckBox.Caption:=lisOpenDesignerOnOpenUnit;
     RightClickSelectsCheckBox.Caption:=dlgRightClickSelects;
+    CheckPackagesOnFormCreateCheckBox.Caption:=dlgCheckPackagesOnFormCreate;
 
     with DesignerPaintLazyCheckBox do
     begin
@@ -162,6 +164,7 @@ begin
     ShowComponentCaptionsCheckBox.Checked := ShowComponentCaptions;
     ShowEditorHintsCheckBox.Checked := ShowEditorHints;
     OpenDesignerOnOpenUnitCheckBox.Checked := AutoCreateFormsOnOpen;
+    CheckPackagesOnFormCreateCheckBox.Checked := CheckPackagesOnFormCreate;
     RightClickSelectsCheckBox.Checked := RightClickSelects;
     RubberbandSelectsGrandChildsCheckBox.Checked := RubberbandSelectsGrandChilds;
     DesignerPaintLazyCheckBox.Checked := DesignerPaintLazy;
@@ -193,6 +196,7 @@ begin
     ShowComponentCaptions := ShowComponentCaptionsCheckBox.Checked;
     ShowEditorHints := ShowEditorHintsCheckBox.Checked;
     AutoCreateFormsOnOpen := OpenDesignerOnOpenUnitCheckBox.Checked;
+    CheckPackagesOnFormCreate := CheckPackagesOnFormCreateCheckBox.Checked;
     RightClickSelects := RightClickSelectsCheckBox.Checked;
     RubberbandSelectsGrandChilds := RubberbandSelectsGrandChildsCheckBox.Checked;
     DesignerPaintLazy := DesignerPaintLazyCheckBox.Checked;

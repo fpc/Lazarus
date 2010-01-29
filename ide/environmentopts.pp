@@ -188,6 +188,7 @@ type
     FRubberbandSelectionColor: TColor;
     FRubberbandCreationColor: TColor;
     FRubberbandSelectsGrandChilds: boolean;
+    FCheckPackagesOnFormCreate: boolean;
 
     // object inspector
     FObjectInspectorOptions: TOIOptions;
@@ -355,6 +356,8 @@ type
                                       write FShowEditorHints;
     property AutoCreateFormsOnOpen: boolean read FAutoCreateFormsOnOpen
                                             write FAutoCreateFormsOnOpen;
+    property CheckPackagesOnFormCreate: boolean read FCheckPackagesOnFormCreate
+                                                write FCheckPackagesOnFormCreate;
     property RightClickSelects: boolean read FRightClickSelects
                                         write FRightClickSelects;
     property GrabberColor: TColor read FGrabberColor write FGrabberColor;
@@ -660,6 +663,7 @@ begin
   FShowComponentCaptions:=false;
   FShowEditorHints:=true;
   FAutoCreateFormsOnOpen:=true;
+  FCheckPackagesOnFormCreate:=true;
   FRightClickSelects:=true;
   FGrabberColor:=clBlack;
   FMarkerColor:=clDkGray;
@@ -920,6 +924,8 @@ begin
        Path+'FormEditor/ShowEditorHints',true);
     FAutoCreateFormsOnOpen:=XMLConfig.GetValue(
        Path+'FormEditor/AutoCreateFormsOnOpen',true);
+    FCheckPackagesOnFormCreate:=XMLConfig.GetValue(
+       Path+'FormEditor/CheckPackagesOnFormCreate',true);
     FRightClickSelects:=XMLConfig.GetValue(
        Path+'FormEditor/RightClickSelects',true);
     FGrabberColor:=XMLConfig.GetValue(
@@ -1179,6 +1185,8 @@ begin
        Path+'FormEditor/ShowEditorHints',FShowEditorHints,true);
     XMLConfig.SetDeleteValue(
        Path+'FormEditor/AutoCreateFormsOnOpen',FAutoCreateFormsOnOpen,true);
+    XMLConfig.SetDeleteValue(
+       Path+'FormEditor/CheckPackagesOnFormCreate',FCheckPackagesOnFormCreate,true);
     XMLConfig.SetDeleteValue(
        Path+'FormEditor/RightClickSelects',FRightClickSelects,true);
     XMLConfig.SetDeleteValue(

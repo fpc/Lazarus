@@ -15,14 +15,14 @@ inherited FormEditorOptionsFrame: TFormEditorOptionsFrame
     AnchorSideRight.Control = Owner
     AnchorSideRight.Side = asrBottom
     Left = 232
-    Height = 169
+    Height = 141
     Top = 0
     Width = 537
     Anchors = [akTop, akLeft, akRight]
     AutoSize = True
     BorderSpacing.Left = 6
     Caption = 'GridGroupBox'
-    ClientHeight = 150
+    ClientHeight = 123
     ClientWidth = 533
     TabOrder = 0
     object GridSizeXLabel: TLabel
@@ -30,9 +30,9 @@ inherited FormEditorOptionsFrame: TFormEditorOptionsFrame
       AnchorSideTop.Control = GridSizeXSpinEdit
       AnchorSideTop.Side = asrCenter
       Left = 6
-      Height = 18
-      Top = 88
-      Width = 96
+      Height = 14
+      Top = 72
+      Width = 70
       BorderSpacing.Around = 6
       Caption = 'GridSizeXLabel'
       ParentColor = False
@@ -42,9 +42,9 @@ inherited FormEditorOptionsFrame: TFormEditorOptionsFrame
       AnchorSideTop.Control = GridSizeYSpinEdit
       AnchorSideTop.Side = asrCenter
       Left = 6
-      Height = 18
-      Top = 121
-      Width = 95
+      Height = 14
+      Top = 99
+      Width = 70
       BorderSpacing.Around = 6
       Caption = 'GridSizeYLabel'
       ParentColor = False
@@ -56,9 +56,9 @@ inherited FormEditorOptionsFrame: TFormEditorOptionsFrame
       AnchorSideRight.Control = GridGroupBox
       AnchorSideRight.Side = asrBottom
       Left = 6
-      Height = 22
-      Top = 56
-      Width = 159
+      Height = 17
+      Top = 46
+      Width = 120
       BorderSpacing.Left = 6
       BorderSpacing.Top = 3
       BorderSpacing.Right = 6
@@ -69,9 +69,9 @@ inherited FormEditorOptionsFrame: TFormEditorOptionsFrame
       AnchorSideLeft.Control = GridGroupBox
       AnchorSideTop.Control = GridGroupBox
       Left = 6
-      Height = 22
+      Height = 17
       Top = 6
-      Width = 147
+      Width = 110
       BorderSpacing.Left = 6
       BorderSpacing.Top = 6
       Caption = 'ShowGridCheckBox'
@@ -82,9 +82,9 @@ inherited FormEditorOptionsFrame: TFormEditorOptionsFrame
       AnchorSideTop.Control = ShowGridCheckBox
       AnchorSideTop.Side = asrBottom
       Left = 6
-      Height = 22
-      Top = 31
-      Width = 204
+      Height = 17
+      Top = 26
+      Width = 152
       BorderSpacing.Left = 6
       BorderSpacing.Top = 3
       Caption = 'ShowBorderSpaceCheckBox'
@@ -95,9 +95,9 @@ inherited FormEditorOptionsFrame: TFormEditorOptionsFrame
       AnchorSideLeft.Side = asrBottom
       AnchorSideTop.Control = SnapToGridCheckBox
       AnchorSideTop.Side = asrBottom
-      Left = 108
-      Height = 27
-      Top = 84
+      Left = 82
+      Height = 21
+      Top = 69
       Width = 64
       BorderSpacing.Around = 6
       MaxValue = 128
@@ -112,9 +112,9 @@ inherited FormEditorOptionsFrame: TFormEditorOptionsFrame
       AnchorSideLeft.Side = asrBottom
       AnchorSideTop.Control = GridSizeXSpinEdit
       AnchorSideTop.Side = asrBottom
-      Left = 107
-      Height = 27
-      Top = 117
+      Left = 82
+      Height = 21
+      Top = 96
       Width = 64
       BorderSpacing.Around = 6
       MaxValue = 128
@@ -134,14 +134,14 @@ inherited FormEditorOptionsFrame: TFormEditorOptionsFrame
     AnchorSideBottom.Control = Owner
     AnchorSideBottom.Side = asrBottom
     Left = 0
-    Height = 203
-    Top = 253
+    Height = 187
+    Top = 214
     Width = 769
     Anchors = [akTop, akLeft, akRight]
     AutoSize = True
     BorderSpacing.Top = 6
     Caption = 'FormEditMiscGroupBox'
-    ClientHeight = 184
+    ClientHeight = 169
     ClientWidth = 765
     TabOrder = 1
     object ShowComponentCaptionsCheckBox: TCheckBox
@@ -151,9 +151,9 @@ inherited FormEditorOptionsFrame: TFormEditorOptionsFrame
       AnchorSideRight.Control = FormEditMiscGroupBox
       AnchorSideRight.Side = asrBottom
       Left = 6
-      Height = 22
-      Top = 31
-      Width = 252
+      Height = 17
+      Top = 26
+      Width = 188
       BorderSpacing.Left = 6
       BorderSpacing.Top = 3
       BorderSpacing.Right = 6
@@ -167,9 +167,9 @@ inherited FormEditorOptionsFrame: TFormEditorOptionsFrame
       AnchorSideRight.Control = FormEditMiscGroupBox
       AnchorSideRight.Side = asrBottom
       Left = 6
-      Height = 22
-      Top = 56
-      Width = 191
+      Height = 17
+      Top = 46
+      Width = 143
       BorderSpacing.Left = 6
       BorderSpacing.Top = 3
       BorderSpacing.Right = 6
@@ -183,9 +183,9 @@ inherited FormEditorOptionsFrame: TFormEditorOptionsFrame
       AnchorSideRight.Control = FormEditMiscGroupBox
       AnchorSideRight.Side = asrBottom
       Left = 6
-      Height = 22
-      Top = 81
-      Width = 256
+      Height = 17
+      Top = 66
+      Width = 192
       BorderSpacing.Left = 6
       BorderSpacing.Top = 3
       BorderSpacing.Right = 6
@@ -199,9 +199,9 @@ inherited FormEditorOptionsFrame: TFormEditorOptionsFrame
       AnchorSideRight.Control = FormEditMiscGroupBox
       AnchorSideRight.Side = asrBottom
       Left = 6
-      Height = 22
-      Top = 106
-      Width = 195
+      Height = 17
+      Top = 86
+      Width = 145
       BorderSpacing.Left = 6
       BorderSpacing.Top = 3
       Caption = 'RightClickSelectsCheckBox'
@@ -214,9 +214,9 @@ inherited FormEditorOptionsFrame: TFormEditorOptionsFrame
       AnchorSideRight.Control = FormEditMiscGroupBox
       AnchorSideRight.Side = asrBottom
       Left = 6
-      Height = 22
-      Top = 131
-      Width = 204
+      Height = 17
+      Top = 106
+      Width = 153
       BorderSpacing.Left = 6
       BorderSpacing.Top = 3
       Caption = 'DesignerPaintLazyCheckBox'
@@ -229,12 +229,12 @@ inherited FormEditorOptionsFrame: TFormEditorOptionsFrame
       AnchorSideTop.Control = DesignerPaintLazyCheckBox
       AnchorSideTop.Side = asrBottom
       Left = 6
-      Height = 22
-      Top = 156
-      Width = 244
+      Height = 17
+      Top = 126
+      Width = 180
       BorderSpacing.Left = 6
       BorderSpacing.Top = 3
-      BorderSpacing.Bottom = 6
+      BorderSpacing.Bottom = 3
       Caption = 'CreateCompFocusNameCheckBox'
       ParentShowHint = False
       ShowHint = True
@@ -246,7 +246,7 @@ inherited FormEditorOptionsFrame: TFormEditorOptionsFrame
       AnchorSideRight.Control = FormEditMiscGroupBox
       AnchorSideRight.Side = asrBottom
       Left = 6
-      Height = 22
+      Height = 17
       Top = 6
       Width = 759
       Anchors = [akTop, akLeft, akRight]
@@ -254,6 +254,20 @@ inherited FormEditorOptionsFrame: TFormEditorOptionsFrame
       BorderSpacing.Top = 6
       Caption = 'RubberbandSelectsGrandChildsCheckBox'
       TabOrder = 6
+    end
+    object CheckPackagesOnFormCreateCheckBox: TCheckBox
+      AnchorSideLeft.Control = FormEditMiscGroupBox
+      AnchorSideTop.Control = CreateCompFocusNameCheckBox
+      AnchorSideTop.Side = asrBottom
+      Left = 6
+      Height = 17
+      Top = 146
+      Width = 210
+      BorderSpacing.Left = 6
+      BorderSpacing.Top = 3
+      BorderSpacing.Bottom = 6
+      Caption = 'CheckPackagesOnFormCreateCheckBox'
+      TabOrder = 7
     end
   end
   object GuideLinesGroupBox: TGroupBox[2]
@@ -265,15 +279,15 @@ inherited FormEditorOptionsFrame: TFormEditorOptionsFrame
     AnchorSideRight.Side = asrBottom
     AnchorSideBottom.Side = asrBottom
     Left = 232
-    Height = 72
-    Top = 175
+    Height = 61
+    Top = 147
     Width = 537
     Anchors = [akTop, akLeft, akRight]
     AutoSize = True
     BorderSpacing.Left = 6
     BorderSpacing.Top = 6
     Caption = 'GuideLinesGroupBox'
-    ClientHeight = 53
+    ClientHeight = 43
     ClientWidth = 533
     TabOrder = 2
     object ShowGuideLinesCheckBox: TCheckBox
@@ -281,7 +295,7 @@ inherited FormEditorOptionsFrame: TFormEditorOptionsFrame
       AnchorSideRight.Control = GuideLinesGroupBox
       AnchorSideRight.Side = asrBottom
       Left = 6
-      Height = 22
+      Height = 17
       Top = 0
       Width = 521
       Anchors = [akTop, akLeft, akRight]
@@ -298,8 +312,8 @@ inherited FormEditorOptionsFrame: TFormEditorOptionsFrame
       AnchorSideRight.Control = GuideLinesGroupBox
       AnchorSideRight.Side = asrBottom
       Left = 6
-      Height = 22
-      Top = 25
+      Height = 17
+      Top = 20
       Width = 521
       Anchors = [akTop, akLeft, akRight]
       BorderSpacing.Left = 6
@@ -318,12 +332,12 @@ inherited FormEditorOptionsFrame: TFormEditorOptionsFrame
     AnchorSideBottom.Control = GuideLinesGroupBox
     AnchorSideBottom.Side = asrBottom
     Left = 0
-    Height = 247
+    Height = 208
     Top = 0
     Width = 226
     Anchors = [akTop, akLeft, akBottom]
     Caption = 'DesignerColorsGroupBox'
-    ClientHeight = 228
+    ClientHeight = 190
     ClientWidth = 222
     TabOrder = 3
     object ColorsListBox: TColorListBox
@@ -331,7 +345,7 @@ inherited FormEditorOptionsFrame: TFormEditorOptionsFrame
       AnchorSideTop.Control = DesignerColorsGroupBox
       AnchorSideBottom.Control = ColorBox
       Left = 6
-      Height = 179
+      Height = 150
       Top = 6
       Width = 210
       Style = [cbCustomColors]
@@ -341,7 +355,6 @@ inherited FormEditorOptionsFrame: TFormEditorOptionsFrame
       ItemHeight = 0
       OnSelectionChange = ColorsListBoxSelectionChange
       TabOrder = 0
-      TopIndex = -1
     end
     object ColorBox: TColorBox
       AnchorSideLeft.Control = DesignerColorsGroupBox
@@ -352,8 +365,8 @@ inherited FormEditorOptionsFrame: TFormEditorOptionsFrame
       AnchorSideBottom.Control = DesignerColorsGroupBox
       AnchorSideBottom.Side = asrBottom
       Left = 6
-      Height = 31
-      Top = 191
+      Height = 22
+      Top = 162
       Width = 210
       Style = [cbStandardColors, cbExtendedColors, cbSystemColors, cbCustomColor, cbPrettyNames]
       Anchors = [akLeft, akBottom]
