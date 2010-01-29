@@ -4618,12 +4618,15 @@ begin
           // change file
           SrcEdit.CodeBuffer.DiskEncoding:=NewEncoding;
           SrcEdit.CodeBuffer.Modified:=true;
+          // set override
+          InputHistories.FileEncodings[SrcEdit.CodeBuffer.Filename]:=NewEncoding;
           DebugLn(['TSourceNotebook.EncodingClicked Change file to ',SrcEdit.CodeBuffer.DiskEncoding]);
           if (not SrcEdit.CodeBuffer.IsVirtual)
           and (LazarusIDE.DoSaveEditorFile(SrcEdit.PageIndex,[])<>mrOk) then begin
             DebugLn(['TSourceNotebook.EncodingClicked LazarusIDE.DoSaveEditorFile failed']);
           end;
         end else if CurResult=mrOK then begin
+          // reopen with another encoding
           if SrcEdit.Modified then begin
             if IDEQuestionDialog(lisAbandonChanges,
               Format(lisAllYourModificationsToWillBeLostAndTheFileReopened, [
