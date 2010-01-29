@@ -1823,8 +1823,7 @@ procedure TApplication.RemoveAllHandlersOfObject(AnObject: TObject);
 var
   HandlerType: TApplicationHandlerType;
 begin
-  for HandlerType:=Low(TApplicationHandlerType) to High(TApplicationHandlerType)
-  do
+  for HandlerType:=Low(TApplicationHandlerType) to High(TApplicationHandlerType) do
     FApplicationHandlers[HandlerType].RemoveAllMethodsOfObject(AnObject);
 end;
 
