@@ -17,7 +17,8 @@ uses
   Laz_XMLStreaming, Laz_XMLWrite, LFMTrees, LinkScanner, MethodJumpTool, 
   MultiKeyWordListTool, NonPascalCodeTools, PascalParserTool, 
   PascalReaderTool, PPUCodeTools, PPUGraph, PPUParser, ResourceCodeTool, 
-  SourceChanger, SourceLog, StdCodeTools, LazarusPackageIntf;
+  SourceChanger, SourceLog, StdCodeTools, OtherIdentifierTree, 
+  LazarusPackageIntf;
 
 implementation
 

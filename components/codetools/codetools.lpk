@@ -26,7 +26,7 @@
     <License Value="GPL-2
 "/>
     <Version Major="1" Release="1"/>
-    <Files Count="55">
+    <Files Count="56">
       <Item1>
         <Filename Value="Makefile"/>
         <Type Value="Text"/>
@@ -248,6 +248,10 @@
         <Filename Value="stdcodetools.pas"/>
         <UnitName Value="StdCodeTools"/>
       </Item55>
+      <Item56>
+        <Filename Value="otheridentifiertree.pas"/>
+        <UnitName Value="Unit1"/>
+      </Item56>
     </Files>
     <i18n>
       <EnableI18N Value="True"/>
