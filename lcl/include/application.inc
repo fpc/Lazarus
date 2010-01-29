@@ -102,6 +102,7 @@ begin
   FShowButtonGlyphs := sbgAlways;
   FShowMenuGlyphs := sbgAlways;
   FMainForm := nil;
+  FModalLevel := 0;
   FMouseControl := nil;
   FHintColor := DefHintColor;
   FHintPause := DefHintPause;
@@ -284,6 +285,28 @@ procedure TApplication.Minimize;
 begin
   //debugln('TApplication.Minimize');
   WidgetSet.AppMinimize;
+end;
+
+procedure TApplication.ModalStarted;
+begin
+  inc(FModalLevel);
+  if (FModalLevel = 1) then
+  begin
+    if Assigned(FOnModalBegin) then
+      FOnModalBegin(Self);
+    FApplicationHandlers[ahtModalBegin].CallNotifyEvents(Self);
+  end;
+end;
+
+procedure TApplication.ModalFinished;
+begin
+  dec(FModalLevel);
+  if (FModalLevel = 0) then
+  begin
+    if Assigned(FOnModalEnd) then
+      FOnModalEnd(Self);
+    FApplicationHandlers[ahtModalEnd].CallNotifyEvents(Self);
+  end;
 end;
 
 {------------------------------------------------------------------------------
@@ -1718,6 +1741,28 @@ end;
 procedure TApplication.RemoveOnMinimizeHandler(Handler: TNotifyEvent);
 begin
   RemoveHandler(ahtMinimize,TMethod(Handler));
+end;
+
+procedure TApplication.AddOnModalBeginHandler(Handler: TNotifyEvent;
+  AsLast: Boolean);
+begin
+  AddHandler(ahtModalBegin,TMethod(Handler),AsLast);
+end;
+
+procedure TApplication.RemoveOnModalBeginHandler(Handler: TNotifyEvent);
+begin
+  RemoveHandler(ahtModalBegin,TMethod(Handler));
+end;
+
+procedure TApplication.AddOnModalEndHandler(Handler: TNotifyEvent;
+  AsLast: Boolean);
+begin
+  AddHandler(ahtModalEnd,TMethod(Handler),AsLast);
+end;
+
+procedure TApplication.RemoveOnModalEndHandler(Handler: TNotifyEvent);
+begin
+  RemoveHandler(ahtModalEnd,TMethod(Handler));
 end;
 
 procedure TApplication.AddOnRestoreHandler(Handler: TNotifyEvent;

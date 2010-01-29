@@ -1074,6 +1074,8 @@ type
     ahtEndSession,
     ahtQueryEndSession,
     ahtMinimize,
+    ahtModalBegin,
+    ahtModalEnd,
     ahtRestore,
     ahtDropFiles,
     ahtHelp,
@@ -1133,6 +1135,9 @@ type
     FHintWindow: THintWindow;
     FIcon: TIcon;
     FBigIconHandle: HICON;
+    FModalLevel: Integer;
+    FOnModalBegin: TNotifyEvent;
+    FOnModalEnd: TNotifyEvent;
     FShowButtonGlyphs: TApplicationShowGlyphs;
     FShowMenuGlyphs: TApplicationShowGlyphs;
     FSmallIconHandle: HICON;
@@ -1256,6 +1261,8 @@ type
     procedure Initialize; override;
     function MessageBox(Text, Caption: PChar; Flags: Longint): Integer;
     procedure Minimize;
+    procedure ModalStarted;
+    procedure ModalFinished;
     procedure Restore;
     procedure Notification(AComponent: TComponent; Operation: TOperation); override;
     procedure ProcessMessages;
@@ -1296,6 +1303,10 @@ type
     procedure RemoveOnQueryEndSessionHandler(Handler: TQueryEndSessionEvent);
     procedure AddOnMinimizeHandler(Handler: TNotifyEvent; AsLast: Boolean=true);
     procedure RemoveOnMinimizeHandler(Handler: TNotifyEvent);
+    procedure AddOnModalBeginHandler(Handler: TNotifyEvent; AsLast: Boolean=true);
+    procedure RemoveOnModalBeginHandler(Handler: TNotifyEvent);
+    procedure AddOnModalEndHandler(Handler: TNotifyEvent; AsLast: Boolean=true);
+    procedure RemoveOnModalEndHandler(Handler: TNotifyEvent);
     procedure AddOnRestoreHandler(Handler: TNotifyEvent; AsLast: Boolean=true);
     procedure RemoveOnRestoreHandler(Handler: TNotifyEvent);
     procedure AddOnDropFilesHandler(Handler: TDropFilesEvent; AsLast: Boolean=true);
@@ -1346,6 +1357,7 @@ type
     property Icon: TIcon read FIcon write SetIcon;
     property Navigation: TApplicationNavigationOptions read FNavigation write SetNavigation;
     property MainForm: TForm read FMainForm;
+    property ModalLevel: Integer read FModalLevel;
     property MouseControl: TControl read FMouseControl;
     property OnActionExecute: TActionEvent read FOnActionExecute write FOnActionExecute;
     property OnActionUpdate: TActionEvent read FOnActionUpdate write FOnActionUpdate;
@@ -1356,6 +1368,8 @@ type
     property OnEndSession: TNotifyEvent read FOnEndSession write FOnEndSession;
     property OnQueryEndSession: TQueryEndSessionEvent read FOnQueryEndSession write FOnQueryEndSession;
     property OnMinimize: TNotifyEvent read FOnMinimize write FOnMinimize;
+    property OnModalBegin: TNotifyEvent read FOnModalBegin write FOnModalBegin;
+    property OnModalEnd: TNotifyEvent read FOnModalEnd write FOnModalEnd;
     property OnRestore: TNotifyEvent read FOnRestore write FOnRestore;
     property OnDropFiles: TDropFilesEvent read FOnDropFiles write FOnDropFiles;
     property OnHelp: THelpEvent read FOnHelp write FOnHelp;
@@ -1392,6 +1406,8 @@ type
     FHintShortCuts: Boolean;
     FHintShortPause: Integer;
     FOnDropFiles: TDropFilesEvent;
+    FOnModalBegin: TNotifyEvent;
+    FOnModalEnd: TNotifyEvent;
     FShowButtonGlyphs: TApplicationShowGlyphs;
     FShowHint: Boolean;
     FShowMainForm: Boolean;
@@ -1430,6 +1446,8 @@ type
     procedure SetOnEndSession(const AValue : TNotifyEvent);
     procedure SetOnQueryEndSession(const AValue : TQueryEndSessionEvent);
     procedure SetOnMinimize(const AValue : TNotifyEvent);
+    procedure SetOnModalBegin(const AValue: TNotifyEvent);
+    procedure SetOnModalEnd(const AValue: TNotifyEvent);
     procedure SetOnRestore(const AValue : TNotifyEvent);
     procedure SetOnDropFiles(const AValue: TDropFilesEvent);
     procedure SetOnHelp(const AValue : THelpEvent);
@@ -1461,6 +1479,8 @@ type
     property OnEndSession : TNotifyEvent read FOnEndSession write SetOnEndSession;
     property OnQueryEndSession : TQueryEndSessionEvent read FOnQueryEndSession write SetOnQueryEndSession;
     property OnMinimize : TNotifyEvent read FOnMinimize write SetOnMinimize;
+    property OnModalBegin: TNotifyEvent read FOnModalBegin write SetOnModalBegin;
+    property OnModalEnd: TNotifyEvent read FOnModalEnd write SetOnModalEnd;
     property OnRestore : TNotifyEvent read FOnRestore write SetOnRestore;
     property OnDropFiles: TDropFilesEvent read FOnDropFiles write SetOnDropFiles;
     property OnHelp: THelpEvent read FOnHelp write SetOnHelp;

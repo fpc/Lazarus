@@ -2347,73 +2347,78 @@ begin
     SendMessage(GetCapture, LM_CANCELMODE, 0, 0);
   ReleaseCapture;
 
-  Include(FFormState, fsModal);
-  ActiveWindow := GetActiveWindow;
-  SavedFocusState := SaveFocusState;
-  Screen.FSaveFocusedList.Insert(0, Screen.FFocusedForm);
-  Screen.FFocusedForm := Self;
-  Screen.MoveFormToFocusFront(Self);
-  Screen.MoveFormToZFront(Self);
-  ModalResult := 0;
-
+  Application.ModalStarted;
   try
-    if WidgetSet.GetLCLCapability(lcModalWindow) = LCL_CAPABILITY_NO then
-      DisabledList := Screen.DisableForms(Self)
-    else
-      DisabledList := nil;
-    Show;
-    try
-      TWSCustomFormClass(WidgetSetClass).ShowModal(Self);
-      repeat
-        { Delphi calls Application.HandleMessage
-          But HandleMessage processes all pending events and then calls idle,
-          which will wait for new messages. Under Win32 there is always a next
-          message, so it works there. The LCL is OS independent, and so it uses
-          a better way: }
-        try
-          WidgetSet.AppProcessMessages; // process all events
-        except
-          if Application.CaptureExceptions then
-            Application.HandleException(Self)
-          else
-            raise;
-        end;
-        if Application.Terminated then
-          ModalResult := mrCancel;
-        if ModalResult <> 0 then
-        begin
-          CloseModal;
-          if ModalResult<>0 then break;
-        end;
-        Application.Idle(true);
-      until False;
+    Include(FFormState, fsModal);
+    ActiveWindow := GetActiveWindow;
+    SavedFocusState := SaveFocusState;
+    Screen.FSaveFocusedList.Insert(0, Screen.FFocusedForm);
+    Screen.FFocusedForm := Self;
+    Screen.MoveFormToFocusFront(Self);
+    Screen.MoveFormToZFront(Self);
+    ModalResult := 0;
 
-      Result := ModalResult;
-      if HandleAllocated and (GetActiveWindow <> Handle) then
-        ActiveWindow := 0;
+    try
+      if WidgetSet.GetLCLCapability(lcModalWindow) = LCL_CAPABILITY_NO then
+        DisabledList := Screen.DisableForms(Self)
+      else
+        DisabledList := nil;
+      Show;
+      try
+        TWSCustomFormClass(WidgetSetClass).ShowModal(Self);
+        repeat
+          { Delphi calls Application.HandleMessage
+            But HandleMessage processes all pending events and then calls idle,
+            which will wait for new messages. Under Win32 there is always a next
+            message, so it works there. The LCL is OS independent, and so it uses
+            a better way: }
+          try
+            WidgetSet.AppProcessMessages; // process all events
+          except
+            if Application.CaptureExceptions then
+              Application.HandleException(Self)
+            else
+              raise;
+          end;
+          if Application.Terminated then
+            ModalResult := mrCancel;
+          if ModalResult <> 0 then
+          begin
+            CloseModal;
+            if ModalResult<>0 then break;
+          end;
+          Application.Idle(true);
+        until False;
+
+        Result := ModalResult;
+        if HandleAllocated and (GetActiveWindow <> Handle) then
+          ActiveWindow := 0;
+      finally
+        Screen.EnableForms(DisabledList);
+        { guarantee execution of widgetset CloseModal }
+        TWSCustomFormClass(WidgetSetClass).CloseModal(Self);
+        Hide;
+        // free handles to save resources and to reduce overhead in the interfaces
+        // for bookkeeping changing between Show and ShowModal.
+        // (e.g.: the gtk interface creates some specials on ShowModal, so the
+        //  combination ShowModal, Close, Show makes problems.)
+        DestroyHandle;
+      end;
     finally
-      Screen.EnableForms(DisabledList);
-      { guarantee execution of widgetset CloseModal }
-      TWSCustomFormClass(WidgetSetClass).CloseModal(Self);
-      Hide;
-      // free handles to save resources and to reduce overhead in the interfaces
-      // for bookkeeping changing between Show and ShowModal.
-      // (e.g.: the gtk interface creates some specials on ShowModal, so the
-      //  combination ShowModal, Close, Show makes problems.)
-      DestroyHandle;
+      if Screen.FSaveFocusedList.Count > 0 then
+      begin
+        Screen.FFocusedForm := TCustomForm(Screen.FSaveFocusedList.First);
+        Screen.FSaveFocusedList.Remove(Screen.FFocusedForm);
+      end
+      else
+        Screen.FFocusedForm := nil;
+      RestoreFocusState(SavedFocusState);
+      if ActiveWindow <> 0 then
+        SetActiveWindow(ActiveWindow);
+      Exclude(FFormState, fsModal);
     end;
   finally
-    if Screen.FSaveFocusedList.Count > 0 then
-    begin
-      Screen.FFocusedForm := TCustomForm(Screen.FSaveFocusedList.First);
-      Screen.FSaveFocusedList.Remove(Screen.FFocusedForm);
-    end
-    else
-      Screen.FFocusedForm := nil;
-    Exclude(FFormState, fsModal);
-    RestoreFocusState(SavedFocusState);
-    if ActiveWindow <> 0 then
-      SetActiveWindow(ActiveWindow);
+    Application.ModalFinished;
   end;
 end;
 

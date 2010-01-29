@@ -17,6 +17,28 @@
  *****************************************************************************
 }
 
+procedure TApplicationProperties.SetOnModalBegin(const AValue: TNotifyEvent);
+begin
+  if (TMethod(FOnModalBegin).Data = TMethod(AValue).Data) and
+     (TMethod(FOnModalBegin).Code = TMethod(AValue).Code) then Exit;
+  if not (csDesigning in ComponentState) and Assigned(FOnModalBegin) then
+    Application.RemoveOnModalBeginHandler(FOnModalBegin);
+  FOnModalBegin := AValue;
+  if not (csDesigning in ComponentState) and Assigned(FOnModalBegin) then
+    Application.AddOnModalBeginHandler(FOnModalBegin);
+end;
+
+procedure TApplicationProperties.SetOnModalEnd(const AValue: TNotifyEvent);
+begin
+  if (TMethod(FOnModalEnd).Data = TMethod(AValue).Data) and
+     (TMethod(FOnModalEnd).Code = TMethod(AValue).Code) then Exit;
+  if not (csDesigning in ComponentState) and Assigned(FOnModalEnd) then
+    Application.RemoveOnModalEndHandler(FOnModalEnd);
+  FOnModalEnd := AValue;
+  if not (csDesigning in ComponentState) and Assigned(FOnModalEnd) then
+    Application.AddOnModalEndHandler(FOnModalEnd);
+end;
+
 procedure TApplicationProperties.SetCaptureExceptions(const AValue : boolean);
 begin
   FCaptureExceptions := AValue;
