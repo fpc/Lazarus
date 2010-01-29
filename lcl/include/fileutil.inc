@@ -253,6 +253,11 @@ begin
   Result:=SysToUTF8(SysUtils.GetAppConfigDir(Global));
 end;
 
+function GetAppConfigFileUTF8(Global: Boolean; SubDir: boolean): string;
+begin
+  Result:=SysToUTF8(SysUtils.GetAppConfigFile(Global,SubDir));
+end;
+
 function SysErrorMessageUTF8(ErrorCode: Integer): String;
 begin
   Result:=SysToUTF8(SysUtils.SysErrorMessage(ErrorCode));
