@@ -443,6 +443,9 @@ begin
   FLastConvertDelphiProject:=XMLConfig.GetValue(Path+'Conversion/Delphi/Project','');
   FLastConvertDelphiPackage:=XMLConfig.GetValue(Path+'Conversion/Delphi/Package','');
   FLastConvertDelphiUnit:=XMLConfig.GetValue(Path+'Conversion/Delphi/Unit','');
+
+  // encodings
+  LoadStringToStringTree(XMLConfig,fFileEncodings,Path+'FileEncodings/');
 end;
 
 procedure TInputHistories.SaveToXMLConfig(XMLConfig: TXMLConfig;
@@ -498,6 +501,8 @@ begin
                            FLastConvertDelphiPackage,'');
   XMLConfig.SetDeleteValue(Path+'Conversion/Delphi/Unit',
                            FLastConvertDelphiUnit,'');
+  // encodings
+  SaveStringToStringTree(XMLConfig,fFileEncodings,Path+'FileEncodings/');
 end;
 
 procedure TInputHistories.SetLazarusDefaultFilename;
