@@ -228,13 +228,19 @@ begin
   Movement:=NewLineLen-OldLineLen;
   NewEndPos:=OldEndPos+Movement;
   // move text behind
-  MoveLen:=length(FText)-OldEndPos;
-  if (Movement<>0) and (MoveLen>0) then begin
-    SetLength(FText,length(FText)+Movement);
-    System.Move(FText[OldEndPos],FText[NewEndPos],MoveLen);
-    for i:=Index+1 to FLineCount-1 do begin
-      inc(FLineRanges[i].StartPos,Movement);
-      inc(FLineRanges[i].EndPos,Movement);
+  MoveLen := Length(FText) - OldEndPos + 1;
+  if (Movement<>0) and (MoveLen>0) then
+  begin
+    if Movement > 0 then
+      SetLength(FText, Length(FText) + Movement);
+    System.Move(FText[OldEndPos], FText[NewEndPos], MoveLen);
+    if Movement < 0 then
+      SetLength(FText, Length(FText) + Movement);
+
+    for i := Index + 1 to FLineCount - 1 do
+    begin
+      inc(FLineRanges[i].StartPos, Movement);
+      inc(FLineRanges[i].EndPos, Movement);
     end;
   end;
   FLineRanges[Index].EndPos:=NewEndPos;
