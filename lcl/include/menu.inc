@@ -256,7 +256,9 @@ function TMenu.IsShortcut(var Message: TLMKey): boolean;
     begin
       Item.InitiateActions;
       Item.Click;
-    end;
+    end
+    else
+      FShortcutHandled := False;
   end;
 
 var
