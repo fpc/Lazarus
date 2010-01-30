@@ -319,6 +319,11 @@ begin
   FOnUserInput := nil;
   FOnEndSession := nil;
   FOnQueryEndSession := nil;
+  FOnMinimize := nil;
+  FOnModalBegin := nil;
+  FOnModalEnd := nil;
+  FOnRestore := nil;
+  FOnDropFiles := nil;
 end;
 
 destructor TApplicationProperties.Destroy;
@@ -331,6 +336,8 @@ begin
     Application.RemoveOnEndSessionHandler(FOnEndSession);
     Application.RemoveOnQueryEndSessionHandler(FOnQueryEndSession);
     Application.RemoveOnMinimizeHandler(FOnMinimize);
+    Application.RemoveOnModalBeginHandler(FOnModalBegin);
+    Application.RemoveOnModalEndHandler(FOnModalEnd);
     Application.RemoveOnRestoreHandler(FOnRestore);
     Application.RemoveOnDropFilesHandler(FOnDropFiles);
     Application.RemoveOnHelpHandler(FOnHelp);
