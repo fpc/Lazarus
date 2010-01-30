@@ -36,7 +36,7 @@ uses
   { rtl }
   SysUtils, Classes,
   { lcl }
-  LCLType;
+  LCLType, FileUtil, LResources;
 
 procedure Register;
 
@@ -44,9 +44,9 @@ implementation
 
 uses
   { lazarus }
-  MenuIntf, IdeCommands,
+  LazIDEIntf, MenuIntf, IdeCommands,
   { local }
-  JcfIdeMain;
+  JcfIdeMain, JcfRegistrySettings;
 
 const
   FORMAT_MENU_NAME     = 'jcfJEDICodeFormat';
@@ -70,8 +70,40 @@ resourcestring
   FORMAT_ABOUT_MENU = '&About';
   FORMAT_CATEGORY = 'JEDI Code Format';
 
+const
+  DefaultJCFOptsFile = 'jcfsettings.cfg';
+
 var
   lcJCFIDE: TJcfIdeMain;
+  JCFOptsFile: String;
+
+function IDEGetDefaultSettingsFileName: String;
+begin
+  Result := JCFOptsFile;
+end;
+
+procedure SetLazarusDefaultFileName;
+var
+  R: TLResource;
+  S: TFileStream;
+begin
+  JCFOptsFile := SetDirSeparators(LazarusIDE.GetPrimaryConfigPath + '/' + DefaultJCFOptsFile);
+  LazarusIDE.CopySecondaryConfigFile(DefaultJCFOptsFile);
+  if not FileExistsUTF8(JCFOptsFile) then
+  begin
+    // create default
+    R := LazarusResources.Find('JCFSettings', 'CFG');
+    if (R <> nil) and (R.Value <> '') then
+    begin
+      S := TFileStream.Create(UTF8ToSys(JCFOptsFile), fmCreate);
+      try
+        S.Write(R.Value[1], Length(R.Value));
+      finally
+        S.Free;
+      end;
+    end;
+  end;
+end;
 
 procedure Register;
 var
@@ -80,6 +112,9 @@ var
   fcMainMenu, SubSection: TIDEMenuSection;
   CmdFormatFile: TIDECommand;
 begin
+  SetLazarusDefaultFileName;
+  GetDefaultSettingsFileName := IDEGetDefaultSettingsFileName;
+
   Cat := IDECommandList.CreateCategory(nil, FORMAT_CATEGORY_NAME,
     FORMAT_CATEGORY, IDECmdScopeSrcEditOnly);
   // Ctrl + D ?
@@ -113,6 +148,7 @@ end;
 
 
 initialization
+  {$I jcfsettings.lpi}
   lcJCFIDE := TJcfIdeMain.Create;
 
 finalization

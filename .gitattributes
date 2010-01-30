@@ -3,7 +3,6 @@
 /COPYING.LGPL.txt svneol=native#text/plain
 /COPYING.modifiedLGPL.txt -text svneol=unset#application/octet-stream
 /COPYING.txt svneol=native#text/plain
-/JCFSettings.cfg svneol=native#text/xml
 /README.txt svneol=native#text/plain
 components/README.txt svneol=native#text/plain
 components/aggpas/Agg2DDemo.dpr svneol=native#text/plain
@@ -945,6 +944,7 @@ components/jcf2/IdePlugin/lazarus/jcfidelazarus.lpk svneol=native#text/plain
 components/jcf2/IdePlugin/lazarus/jcfidelazarus.pas svneol=native#text/pascal
 components/jcf2/IdePlugin/lazarus/jcfidemain.pas svneol=native#text/pascal
 components/jcf2/IdePlugin/lazarus/jcfideregister.pas svneol=native#text/pascal
+components/jcf2/IdePlugin/lazarus/jcfsettings.lpi svneol=native#text/plain
 components/jcf2/Include/JcfGlobal.inc svneol=native#text/plain
 components/jcf2/JCF.ico -text svneol=unset#image/ico
 components/jcf2/JCFAllD11.bpg svneol=native#text/plain

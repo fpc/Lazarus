@@ -184,6 +184,9 @@ type
 
 function GetRegSettings: TJCFRegistrySettings;
 
+var
+  GetDefaultSettingsFileName: function: String;
+
 implementation
 
 uses
@@ -231,7 +234,7 @@ const
   - read from the settings file if it exists, else use the registry
   - always write to the file
  }
-function GetDefaultSettingsFileName: string;
+function DefGetDefaultSettingsFileName: string;
 begin
   Result := IncludeTrailingPathDelimiter(GetApplicationFolder) + 'JCFSettings.cfg';
 end;
@@ -638,6 +641,7 @@ begin
 end;
 
 initialization
+  GetDefaultSettingsFileName := DefGetDefaultSettingsFileName;
 
 finalization
   FreeAndNil(mcRegistrySettings);
