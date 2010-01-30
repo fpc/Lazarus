@@ -3624,8 +3624,7 @@ begin
       lNode := lNode.GetNextExpanded
     else if Items.Count > 0 then
       lNode := FTreeNodes.GetFirstNode;
-    if lNode <> nil then
-      Key:=VK_UNKNOWN;
+    Key:=VK_UNKNOWN;
   end;
 
   VK_UP:
@@ -3634,8 +3633,7 @@ begin
       lNode := lNode.GetPrevExpanded
     else if Items.Count > 0 then
       lNode := Items.GetLastExpandedSubNode;
-    if lNode <> nil then
-      Key:=VK_UNKNOWN;
+    Key:=VK_UNKNOWN;
   end;
 
   VK_LEFT:
@@ -3644,8 +3642,8 @@ begin
       if lNode.Expanded then
         lNode.Expanded := False
       else
-        if lNode.Parent <> nil then
-          lNode := lNode.Parent;
+      if lNode.Parent <> nil then
+        lNode := lNode.Parent;
     end;
 
   VK_RIGHT:
