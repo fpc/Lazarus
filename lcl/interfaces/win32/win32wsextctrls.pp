@@ -662,6 +662,9 @@ begin
     SendMessage(ANoteBook.Handle, TCM_SETIMAGELIST, 0, AImageList.Reference._Handle)
   else
     SendMessage(ANoteBook.Handle, TCM_SETIMAGELIST, 0, 0);
+  // if you set big images like 32x32 then tabs will be big too => you need to
+  // readjust the size of pages
+  AdjustSizeNotebookPages(ANotebook);
 end;
 
 class procedure TWin32WSCustomNotebook.SetPageIndex(const ANotebook: TCustomNotebook; const AIndex: integer);
