@@ -505,7 +505,7 @@ begin
   FDown := Value;
   
   if (Style=tbsCheck) and FDown and Grouped then begin
-    DebugLn('TToolButton.SetDown B ');
+    //DebugLn('TToolButton.SetDown B ');
     // uncheck all other in the group
     GetGroupBounds(StartIndex,EndIndex);
     if StartIndex>=0 then begin
