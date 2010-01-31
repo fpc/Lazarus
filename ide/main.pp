@@ -1136,8 +1136,8 @@ begin
   SetParamOptions(SkipAutoLoadingLastProject, StartedByStartLazarus, EnableRemoteControl, ShowSplashScreen);
 
   DebugLn('TMainIDE.ParseCmdLineOptions:');
-  Debugln('  PrimaryConfigPath="',GetPrimaryConfigPath,'"');
-  Debugln('  SecondaryConfigPath="',GetSecondaryConfigPath,'"');
+  Debugln('  PrimaryConfigPath="',UTF8ToConsole(GetPrimaryConfigPath),'"');
+  Debugln('  SecondaryConfigPath="',UTF8ToConsole(GetSecondaryConfigPath),'"');
 end;
 
 procedure TMainIDE.LoadGlobalOptions;
