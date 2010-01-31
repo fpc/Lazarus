@@ -122,7 +122,7 @@ var
   MappedXY: TPoint;
   MessE : TLMMouseEvent;
 begin
-  Result := CallBackDefaultReturn;
+  Result := False;
 
   AWinControl:=TWinControl(Data);
   EventXY:=Point(TruncToInt(Event^.X),TruncToInt(Event^.Y));
@@ -149,8 +149,8 @@ begin
 
   // send the message directly to the LCL
   NotifyApplicationUserInput(MessE.Msg);
-  if DeliverMessage(AWinControl, MessE)<>0 then
-    Result:=not Result; // message handled by LCL, stop processing
+  if DeliverMessage(AWinControl, MessE) <> 0 then
+    Result := True; // message handled by LCL, stop processing
 end;
 
 procedure GTKStyleChangedAfter(Widget: PGtkWidget; previous_style : PGTKStyle;

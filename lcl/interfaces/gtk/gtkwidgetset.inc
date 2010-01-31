@@ -3531,7 +3531,7 @@ begin
                                  @gtkMouseBtnPressAfter, GDK_BUTTON_PRESS_MASK);
         {$IFDEF Gtk2}
         ConnectSenderSignal(gMouse, 'scroll-event', @gtkMouseWheelCB,
-                            GDK_SCROLL_MASK);
+                            GDK_BUTTON_PRESS_MASK);
         {$ENDIF}
       end;
     end;
