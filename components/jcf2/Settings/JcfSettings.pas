@@ -169,7 +169,7 @@ implementation
 
 uses
   { delphi }
-  {$IFNDEF FPC}Windows,{$ENDIF} SysUtils, Dialogs,
+  {$IFNDEF FPC}Windows,{$ELSE}FileUtil,{$ENDIF} SysUtils, Dialogs,
   { local }
   JcfStringUtils,
   JcfSetBase,
@@ -282,12 +282,16 @@ var
   lsText: string;
   lcFile: TSettingsInputString;
 begin
-  if FileExists(psFileName) then
+  if {$ifdef FPC}FileExistsUTF8(psFileName){$else}FileExists(psFileName){$endif} then
   begin
     // debug ShowMessage('Reading settings from file ' + lsSettingsFileName);
 
     // now we know the file exists - try get settings from it
+    {$ifdef FPC}
+    lsText := string(FileToString(UTF8ToSys(psFileName)));
+    {$else}
     lsText := string(FileToString(psFileName));
+    {$endif}
     lcFile := TSettingsInputString.Create(lsText);
     try
       FromStream(lcFile);
@@ -335,7 +339,11 @@ begin
   if lcReg.FormatConfigFileName = '' then
     exit;
 
+  {$ifdef FPC}
+  if FileExistsUTF8(lcReg.FormatConfigFileName) and FileIsReadOnlyUTF8(lcReg.FormatConfigFileName) then
+  {$else}
   if FileExists(lcReg.FormatConfigFileName) and FileIsReadOnly(lcReg.FormatConfigFileName) then
+  {$endif}
   begin
     { fail quietly? }
     if lcReg.FormatFileWriteOption = eAlwaysWrite then
@@ -347,7 +355,11 @@ begin
 
   try
     // use the Settings file name
+    {$ifdef FPC}
+    lcFile := TSettingsStreamOutput.Create(UTF8ToSys(GetRegSettings.FormatConfigFileName));
+    {$else}
     lcFile := TSettingsStreamOutput.Create(GetRegSettings.FormatConfigFileName);
+    {$endif}
     try
       ToStream(lcFile);
 
