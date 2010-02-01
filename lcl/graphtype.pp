@@ -1311,7 +1311,7 @@ procedure TRawImage.ExtractRect(const ARect: TRect; out ADst: TRawImage);
     LineOrder := Description.LineOrder;
 
     //DebugLn'ExtractRawImageDataRect data=',DbgS(DestData),' Size=',DestDataSize);
-    if SrcWidth = DstWidth
+    if (SrcWidth = DstWidth) and (ARect.Top = 0)
     then begin
       if LineOrder = riloTopToBottom
       then // copy whole source from beginning
