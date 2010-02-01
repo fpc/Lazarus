@@ -5636,10 +5636,8 @@ var
     FGCache.TLRowOff:=0;
     SelectActive:=Sh;
     if MoveNextSelectable(Rel, aCol, aRow) then
-    begin
-      Key := 0;
       Click;
-    end;
+    Key := 0; { Flag key as handled, even if selected cell did not move }
   end;
 begin
   {$ifdef dbgGrid}DebugLn('Grid.KeyDown INIT Key=',IntToStr(Key));{$endif}
