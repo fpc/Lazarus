@@ -236,6 +236,14 @@ type
   TCreateDlgStdActions = procedure(AOwner: TComponent; ResultActProc: TResultActProc;
                                    out Form: TForm);
 
+  { TActionCategoryProperty }
+
+  TActionCategoryProperty = class(TStringPropertyEditor)
+  public
+    function  GetAttributes: TPropertyAttributes; override;
+    procedure GetValues(Proc: TGetStrProc); override;
+  end;
+
 var
   RegisteredActions: TRegisteredActionCategories = nil;
   NotifyActionListChange: TNotifyActionListChange = nil;
@@ -248,6 +256,7 @@ procedure UnRegisterActions(const Classes: array of TBasicActionClass);
 procedure EnumActions(Proc: TEnumActionProc; Info: Pointer);
 function CreateAction(TheOwner: TComponent;
                       ActionClass: TBasicActionClass): TBasicAction;
+
 
 implementation
 
@@ -1278,6 +1287,41 @@ begin
     TDataSetInsert, TDataSetPost], nil);
 end;
 
+{ TActionCategoryProperty }
+
+function TActionCategoryProperty.GetAttributes: TPropertyAttributes;
+begin
+  Result:=inherited GetAttributes + [paValueList, paSortList];
+end;
+
+procedure TActionCategoryProperty.GetValues(Proc: TGetStrProc);
+var
+  I: Integer;
+  Values: TStringList;
+  Act:TContainedAction;
+  ActLst:TCustomActionList;
+  S:string;
+begin
+  ActLst:=nil;
+  Act:=GetComponent(0) as TContainedAction;
+  if Assigned(Act) then
+    ActLst:=Act.ActionList;
+  if not Assigned(ActLst) then exit;
+  Values := TStringList.Create;
+  try
+    for i:=0 to ActLst.ActionCount-1 do
+    begin
+      S:=ActLst.Actions[i].Category;
+      if Values.IndexOf(S)<0 then
+        Values.Add(S);
+    end;
+    for i := 0 to Values.Count - 1 do
+      Proc(Values[I]);
+  finally
+    Values.Free;
+  end;
+end;
+
 initialization
   NotifyActionListChange := nil;
 
@@ -1289,6 +1333,7 @@ initialization
   
   RegisterComponentEditor(TActionList,TActionListComponentEditor);
   RegisterStandardActions;
+  RegisterPropertyEditor(TypeInfo(string), TContainedAction, 'Category', TActionCategoryProperty);
 
 finalization
   RegisteredActions.Free;
