@@ -3644,6 +3644,7 @@ begin
       else
       if lNode.Parent <> nil then
         lNode := lNode.Parent;
+      Key:=VK_UNKNOWN;
     end;
 
   VK_RIGHT:
@@ -3653,6 +3654,7 @@ begin
         lNode := lNode.GetNextExpanded
       else
         lNode.Expanded := True;
+      Key:=VK_UNKNOWN;
     end;
     
   VK_ADD:
