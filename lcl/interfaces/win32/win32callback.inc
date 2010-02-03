@@ -605,22 +605,6 @@ var
     end;
   end;
 
-  procedure DestroyFloatSpinEditBuddy(SpinEditHandle: HWND);
-  var
-    Buddy: HWND;
-  begin
-    Buddy := SendMessage(SpinEditHandle, UDM_GETBUDDY, 0, 0);
-    DestroyWindow(Buddy);
-  end;
-
-  procedure EnableFloatSpinEditBuddy(SpinEditHandle: HWND; Enable: boolean);
-  var
-    Buddy: HWND;
-  begin
-    Buddy := SendMessage(SpinEditHandle, UDM_GETBUDDY, 0, 0);
-    Windows.EnableWindow(Buddy, Enable);
-  end;
-  
   procedure EnableChildWindows(WinControl: TWinControl; Enable: boolean);
   var
     i: integer;
@@ -1579,8 +1563,6 @@ begin
       Assert(False, 'Trace:WindowProc - Got WM_DESTROY');
       if lWinControl is TCheckListBox then
         TWin32CheckListBoxStrings.DeleteItemRecords(Window);
-      if lWinControl is TCustomFloatSpinEdit then
-        DestroyFloatSpinEditBuddy(Window);
       if lWinControl is TCustomComboBox then
         DisposeComboEditWindowInfo(TCustomComboBox(lWinControl));
       if WindowInfo^.Overlay<>HWND(nil) then
@@ -1676,8 +1658,6 @@ begin
       if Assigned(lWinControl) and not (lWinControl is TCustomForm) then
         EnableChildWindows(lWinControl, WParam<>0);
 
-      if (lWinControl is TCustomFloatSpinEdit) then
-        EnableFloatSpinEditBuddy(Window, WParam<>0);
       // ugly hack to give bitbtns a nice look
       // When no theming active, the internal image needs to be
       // recreated when the enabled state is changed

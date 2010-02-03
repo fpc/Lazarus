@@ -88,16 +88,32 @@ function SpinWindowProc(Window: HWnd; Msg: UInt; WParam: Windows.WParam;
 var
   BuddyWindow: HWND;
 begin
+  // before generic window proc
+  case Msg of
+    WM_DESTROY:
+    begin
+      BuddyWindow := GetBuddyWindow(Window);
+      DestroyWindow(BuddyWindow);
+    end;
+    WM_ENABLE:
+    begin
+      BuddyWindow := GetBuddyWindow(Window);
+      Windows.EnableWindow(BuddyWindow, WParam <> 0);
+    end;
+  end;
   Result := WindowProc(Window, Msg, WParam, LParam);
-  if Msg = WM_SETFOCUS then
-  begin
-    BuddyWindow := GetBuddyWindow(Window);
-    Windows.SetFocus(BuddyWindow);
-    // don't select text in edit, if user clicked on the up down and the edit
-    // was already focused
-    if HWND(WPARAM)<>BuddyWindow then ;
-      // for LCL controls this is done in win32callback.inc
-      Windows.SendMessage(BuddyWindow, EM_SETSEL, 0, -1);
+  // after generic window proc
+  case Msg of
+    WM_SETFOCUS:
+    begin
+      BuddyWindow := GetBuddyWindow(Window);
+      Windows.SetFocus(BuddyWindow);
+      // don't select text in edit, if user clicked on the up down and the edit
+      // was already focused
+      if HWND(WPARAM)<>BuddyWindow then ;
+        // for LCL controls this is done in win32callback.inc
+        Windows.SendMessage(BuddyWindow, EM_SETSEL, 0, -1);
+    end;
   end;
 end;
 
