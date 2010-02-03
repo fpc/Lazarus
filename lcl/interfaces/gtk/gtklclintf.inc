@@ -354,7 +354,7 @@ begin
         end;
 
         TmpPixBuf := gdk_pixbuf_new_from_data(Data, GDK_COLORSPACE_RGB, True, 8, ImgWidth, ImgHeight, RowStride, nil, nil);
-        // we need to copy our pixbuf into new to allow free data
+        // we need to copy our pixbuf into a new one to allow data deallocation
         Pixbuf := gdk_pixbuf_copy(TmpPixBuf);
         gdk_pixbuf_unref(TmpPixBuf);
         GdiObject^.GDIBitmapType := gbPixbuf;
