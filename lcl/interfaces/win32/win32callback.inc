@@ -860,18 +860,6 @@ var
     Result := WindowInfo^.isComboEdit and (ComboBoxHandleSizeWindow = Windows.GetParent(Window));
   end;
 
-  procedure HandleSpinEditChange(ASpinEdit: TCustomFloatSpinEdit);
-  var
-    lWindowInfo: PWin32WindowInfo;
-  begin
-    lWindowInfo := GetWin32WindowInfo(ASpinEdit.Handle);
-    if lWindowInfo = @DefaultWindowInfo then exit;
-
-    lWindowInfo^.spinValue := ASpinEdit.StrToValue(ASpinEdit.Text);
-    
-    LMessage.Msg := CM_TEXTCHANGED;
-  end;
-
   procedure HandleSpinEditDeltaPos(AUpDownMsg: PNMUpDown);
   var
     SpinEdit: TCustomFloatSpinEdit;
@@ -1463,10 +1451,7 @@ begin
           end
           else
           case HIWORD(WParam) of
-            EN_CHANGE:
-              if (lWinControl is TCustomFloatSpinEdit) then
-                HandleSpinEditChange(TCustomFloatSpinEdit(lWinControl))
-              else LMessage.Msg := CM_TEXTCHANGED;
+            EN_CHANGE: LMessage.Msg := CM_TEXTCHANGED;
           end;
         end
         else if (lWinControl is TCustomListBox) then
@@ -1498,8 +1483,7 @@ begin
       end;
 
       // no specific message found? try send a general msg
-      if (LMessage.Msg = LM_NULL) and (lWinControl <> nil) then
-        lWinControl.Perform(CN_COMMAND, WParam, LParam);
+      lWinControl.Perform(CN_COMMAND, WParam, LParam);
     end;
 
     WM_CTLCOLORMSGBOX..WM_CTLCOLORSTATIC:

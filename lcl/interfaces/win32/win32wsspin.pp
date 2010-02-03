@@ -35,7 +35,7 @@ uses
 // uncomment only when needed for registration
 ////////////////////////////////////////////////////
   CommCtrl, Windows, Win32Extra,
-  Spin, Controls, StdCtrls, LCLType, LCLProc,
+  Spin, Controls, StdCtrls, LCLType, LCLProc, LMessages,
 ////////////////////////////////////////////////////
   WSSpin, WSLCLClasses,
   Win32Int, Win32Proc, Win32WSStdCtrls, Win32WSControls;
@@ -50,6 +50,8 @@ type
           var Left, Top, Width, Height: integer; var SuppressMove: boolean); override;
     class function  CreateHandle(const AWinControl: TWinControl;
           const AParams: TCreateParams): HWND; override;
+    class procedure DefaultWndHandler(const AWinControl: TWinControl;
+                       var AMessage); override;
     class procedure GetPreferredSize(const AWinControl: TWinControl;
           var PreferredWidth, PreferredHeight: integer;
           WithThemeSpace: Boolean); override;
@@ -197,6 +199,26 @@ begin
   // TODO: should move to widget specific SetProp method
   SetProp(Params.Buddy, 'WinControl', PtrUInt(AWinControl));
   Result := Params.Window;
+end;
+
+class procedure TWin32WSCustomFloatSpinEdit.DefaultWndHandler(const AWinControl: TWinControl; var AMessage);
+var
+  lWindowInfo: PWin32WindowInfo;
+begin
+  case TLMessage(AMessage).Msg of
+    CN_COMMAND:
+    begin
+      if HIWORD(TLMessage(AMessage).WParam) = EN_CHANGE then
+      begin
+        lWindowInfo := GetWin32WindowInfo(AWinControl.Handle);
+        if lWindowInfo <> @DefaultWindowInfo then
+        begin
+          lWindowInfo^.spinValue := TSpinEdit(lWindowInfo^.WinControl).StrToValue(TSpinEdit(lWindowInfo^.WinControl).Text);
+        end;
+      end;
+    end;
+  end;
+  inherited DefaultWndHandler(AWinControl,AMessage);
 end;
 
 class procedure TWin32WSCustomFloatSpinEdit.GetPreferredSize(
