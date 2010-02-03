@@ -1806,18 +1806,11 @@ begin
 end;
 
 destructor TPkgManager.Destroy;
-var
-  Dependency: TPkgDependency;
 begin
   if IDEComponentPalette<>nil then
     TComponentPalette(IDEComponentPalette).Notebook:=nil;
   FreeThenNil(LazPackageDescriptors);
-  while PackageGraph.FirstAutoInstallDependency<>nil do begin
-    Dependency:=PackageGraph.FirstAutoInstallDependency;
-    Dependency.RequiredPackage:=nil;
-    Dependency.RemoveFromList(PackageGraph.FirstAutoInstallDependency,pdlRequires);
-    Dependency.Free;
-  end;
+  PackageGraph.FreeAutoInstallDependencies;
   FreeThenNil(PackageGraphExplorer);
   FreeThenNil(PackageEditors);
   FreeThenNil(PackageGraph);

@@ -299,6 +299,7 @@ type
                  var InheritedOptionStrings: TInheritedCompOptsStrings): string;
     function SaveAutoInstallConfig: TModalResult;// for the uses section
     function IsStaticBasePackage(PackageName: string): boolean;
+    procedure FreeAutoInstallDependencies;
   public
     // registration
     procedure RegisterUnitHandler(const TheUnitName: string;
@@ -1961,6 +1962,19 @@ begin
        or (PackageName='synedit')
        or (PackageName='ideintf')
        or (PackageName='codetools');
+end;
+
+procedure TLazPackageGraph.FreeAutoInstallDependencies;
+var
+  Dependency: TPkgDependency;
+begin
+  while Assigned(PackageGraph.FirstAutoInstallDependency) do
+  begin
+    Dependency:=PackageGraph.FirstAutoInstallDependency;
+    Dependency.RequiredPackage:=nil;
+    Dependency.RemoveFromList(PackageGraph.FirstAutoInstallDependency,pdlRequires);
+    Dependency.Free;
+  end;
 end;
 
 procedure TLazPackageGraph.ClosePackage(APackage: TLazPackage);

@@ -961,7 +961,12 @@ destructor TLazBuildApplication.Destroy;
 begin
   CloseProject(Project1);
 
-  FreeThenNil(PackageGraph);
+  if Assigned(PackageGraph) then
+  begin
+    PackageGraph.FreeAutoInstallDependencies;
+    FreeThenNil(PackageGraph);
+  end;
+
   FreeThenNil(PkgLinks);
   FreeThenNil(TheCompiler);
   FreeThenNil(TheOutputFilter);
