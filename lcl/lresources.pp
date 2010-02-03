@@ -40,9 +40,7 @@ uses
   FPCAdds, TypInfo, DynQueue, LCLType, LCLProc, LCLStrConsts, LazConfigStorage;
 
 {$DEFINE UseLRS}
-{$IFDEF FPC_HAS_WINLIKERESOURCES}
-  {$DEFINE UseRES}
-{$ENDIF}
+{$DEFINE UseRES}
 
 const
   LRSComment =  // do not translate this!
@@ -3023,7 +3021,7 @@ function InitLazResourceComponent(Instance: TComponent;
     {$ifdef UseRES}
     if Stream = nil then
     begin
-      FPResource := FindResource(HInstance, PChar(ResName), RT_RCDATA);
+      FPResource := FindResource(HInstance, PChar(ResName), PChar(RT_RCDATA));
       if FPResource <> 0 then
         Stream := TLazarusResourceStream.CreateFromHandle(HInstance, FPResource);
     end;

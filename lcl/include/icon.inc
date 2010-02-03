@@ -649,7 +649,7 @@ begin
   ResType := GetResourceType;
   if ResType = nil then Exit;
 
-  ResHandle := FindResource(Instance, PChar(ResName), ResType);
+  ResHandle := FindResource(Instance, PChar(ResName), PChar(ResType));
   if ResHandle = 0 then
     raise EResNotFound.Create(ResName); // todo: valid exception
   LoadFromResourceHandle(Instance, ResHandle);
@@ -663,7 +663,7 @@ begin
   ResType := GetResourceType;
   if ResType = nil then Exit;
 
-  ResHandle := FindResource(Instance, PChar(ResID), ResType);
+  ResHandle := FindResource(Instance, PChar(ResID), PChar(ResType));
   if ResHandle = 0 then
     raise EResNotFound.Create(''); // todo: valid exception
   LoadFromResourceHandle(Instance, ResHandle);
