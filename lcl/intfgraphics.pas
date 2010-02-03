@@ -475,6 +475,7 @@ type
     FLineBuf: PByte;             // Buffer for 1 scanline. Can be Byte, Word, TColorRGB or TColorRGBA
     FUpdateDescription: Boolean; // If set, update rawimagedescription
     FContinue: Boolean;          // for progress support
+    FIgnoreAlpha: Boolean;       // if alpha-channel is declared but does not exists (all values = 0)
 
     function BitfieldsToFPColor(const AColor: Cardinal): TFPcolor;
     function RGBToFPColor(const AColor: TColorRGBA): TFPcolor;
@@ -4957,7 +4958,11 @@ begin
               TheImage.colors[Column,Row] := BitfieldsToFPColor(PCardinal(@PColorRGB(LineBuf)[Column])^);
           32:
             for Column := 0 to TheImage.Width - 1 do
-              TheImage.colors[Column,Row] := BitfieldsToFPColor(PCardinal(@PColorRGBA(LineBuf)[Column])^);
+            begin
+              Color := BitfieldsToFPColor(PCardinal(@PColorRGBA(LineBuf)[Column])^);
+              TheImage.colors[Column,Row] := Color;
+              FIgnoreAlpha := FIgnoreAlpha and (Color.alpha = alphaTransparent);
+            end;
         end;
       end
       else begin
@@ -4970,7 +4975,11 @@ begin
               TheImage.colors[Column,Row] := RGBToFPColor(PColorRGB(LineBuf)[Column]);
           32:
             for Column := 0 to TheImage.Width - 1 do
-              TheImage.colors[Column,Row] := RGBToFPColor(PColorRGBA(LineBuf)[Column]);
+            begin
+              Color := RGBToFPColor(PColorRGBA(LineBuf)[Column]);
+              TheImage.colors[Column,Row] := Color;
+              FIgnoreAlpha := FIgnoreAlpha and (Color.alpha = alphaTransparent);
+            end;
         end;
       end;
     end;
@@ -5024,6 +5033,7 @@ begin
              Color := BitfieldsToFPColor(PCardinal(@PColorRGBA(LineBuf)[Column])^);
              FImage.colors[Column,Row] := Color;
              FImage.Masked[Column,Row] := Color = FMaskColor;
+             FIgnoreAlpha := FIgnoreAlpha and (Color.alpha = alphaTransparent);
            end;
         end;
       end
@@ -5049,6 +5059,7 @@ begin
              Color := RGBToFPColor(PColorRGBA(LineBuf)[Column]);
              FImage.colors[Column,Row] := Color;
              FImage.Masked[Column,Row] := Color = FMaskColor;
+             FIgnoreAlpha := FIgnoreAlpha and (Color.alpha = alphaTransparent);
            end;
         end;
       end;
@@ -5074,6 +5085,7 @@ begin
   FContinue := True;
   Progress(psStarting, 0, False, Rect(0,0,0,0), '', FContinue);
   FImage := TheImage as TLazIntfImage;
+  FIgnoreAlpha := True;
   InternalReadHead;
   
   if FUpdateDescription
@@ -5086,6 +5098,11 @@ begin
   end;
 
   InternalReadBody;
+
+  // if there is no alpha in real (all alpha values = 0) then update the description
+  if FUpdateDescription and FIgnoreAlpha and (Depth = 32) then
+    FImage.DataDescription.AlphaPrec := 0;
+
   Progress(psEnding, 100, false, Rect(0,0,0,0), '', FContinue);
 end;
 
