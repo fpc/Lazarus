@@ -91,7 +91,7 @@ type
     procedure LoadFromImageList(AImageList: TImageList);
     procedure SaveToImageList;
 
-    procedure AddImageToList(FileName: String);
+    procedure AddImageToList(const FileName: String);
   end;
 
   //Editor call by Lazarus with 1 verbe only
@@ -109,6 +109,9 @@ type
 
 
 implementation
+
+uses
+  Math, GraphType;
 
 {$R *.lfm}
 
@@ -161,22 +164,27 @@ begin
 end;
 
 function CreateGlyphSplit(Src: TBitmap; Width, Height: Integer;
-  SrcSplitIndex: Integer; VerticalSplit: Boolean): TBitmap;
+  RowIndex, ColIndex: Integer): TBitmap;
 var
   SrcRect: TRect;
+  SrcRawImage, DstRawImage: TRawImage;
 begin
+  // Ensure that the returned Bitmap is not bigger than Src
+  Width := Min(Width, Src.Width);
+  Height := Min(Height, Src.Height);
+  SrcRect := Bounds(ColIndex * Width, RowIndex * Height, Width, Height);
+  // copy raw image, instead of using Canvas functions to preserve transparency
+  SrcRawImage := Src.RawImage;
+  DstRawImage.Init;
+  DstRawImage.Description := SrcRawImage.Description;
+  DstRawImage.Description.Width := Width;
+  DstRawImage.Description.Height := Height;
+  SrcRawImage.ExtractRect(SrcRect, DstRawImage);
   Result := TBitmap.Create;
-  Result.Width := Width;
-  Result.Height := Height;
-  if VerticalSplit then
-    SrcRect := Bounds(0, SrcSplitIndex * Height, Width, Height)
-  else
-    SrcRect := Bounds(SrcSplitIndex * Width, 0, Width, Height);
-  Result.Canvas.CopyRect(Rect(0, 0, Width, Height),
-    Src.Canvas, SrcRect);
   Result.TransparentColor := Src.TransparentColor;
   Result.TransparentMode := Src.TransparentMode;
-  Result.Transparent := True;    
+  Result.Transparent := True;
+  Result.LoadFromRawImage(DstRawImage, True);
 end;
 
 { TImageListEditorDlg }
@@ -510,81 +518,76 @@ begin
   FModified := True;
 end;
 
-procedure TImageListEditorDlg.AddImageToList(FileName: String);
+procedure TImageListEditorDlg.AddImageToList(const FileName: String);
 var
-  I: Integer;
-  Glyph, Bmp: TBitmap;
+  SrcBmp: TBitmap;
   Picture: TPicture;
-  P: PGlyphInfo;
   Node: TTreeNode;
-  v_PartCount: Integer;
-  c_Part: Integer;
-  v_CompositeBmp: TBitmap;
-  VerticalSplit: Boolean;
+  P: PGlyphInfo;
+  I: Integer;
+  ImagesPerColumn: Integer;
+  ImagesPerRow: Integer;
+  iRow: Integer;
+  iCol: Integer;
 begin
   SaveDialog.InitialDir := ExtractFileDir(FileName);
-  Bmp := nil;
+  SrcBmp := nil;
   
   Picture := TPicture.Create;
   try
     Picture.LoadFromFile(FileName);
-    
-    Bmp := TBitmap.Create;
-    Bmp.Assign(Picture.Graphic);
+    SrcBmp := TBitmap.Create;
+    SrcBmp.Assign(Picture.Graphic);
   finally
     Picture.Free;
   end;
 
-  if Assigned(Bmp) then
+  if Assigned(SrcBmp) then
   begin
-    if not Bmp.Empty then
+    if not SrcBmp.Empty then
     begin
-      if (((Bmp.Height = ImageList.Height)
-        and (Bmp.Width > ImageList.Width)
-        and (Bmp.Width mod ImageList.Width = 0))
-        or ((Bmp.Width = ImageList.Width)
-        and (Bmp.Height > ImageList.Height)
-        and (Bmp.Height mod ImageList.Height = 0)))
-        and (IDEQuestionDialog(Caption +' - '+ btnAdd.Caption,
-                            s_SuggestSplitImage, mtConfirmation,
-                            [mrYes, s_AddAsSingle, mrYes, s_SplitImage]) = mrYes)
-      then begin
-        VerticalSplit := Bmp.Width = ImageList.Width;
-        if VerticalSplit then
-          v_PartCount := Bmp.Height div ImageList.Height
-        else
-          v_PartCount := Bmp.Width div ImageList.Width;
-        v_CompositeBmp := Bmp;
-        Bmp := nil;
-      end
-      else begin
-        v_PartCount := 1;
-        v_CompositeBmp := nil;
-      end;
-
-      for c_Part := 0 to v_PartCount -1 do
+      //If the height and with of SrcBmp is an exact factor of ImageList height and width
+      //the image can be split into smaller images
+      if (SrcBmp.Height mod ImageList.Height = 0)
+        and (SrcBmp.Width mod ImageList.Width = 0) then
       begin
-        if Assigned(v_CompositeBmp) then
-          Bmp := CreateGlyphSplit(v_CompositeBmp, ImageList.Width, ImageList.Height,
-            c_Part, VerticalSplit);
-
-        Glyph := CreateGlyph(Bmp, ImageList.Width, ImageList.Height, gaNone, clDefault);
-        I := ImageList.Add(Glyph, nil);
-        Glyph.Free;
-
-        New(P);
-        P^.Bitmap := Bmp;
-        P^.Adjustment := gaNone;
-        P^.TransparentColor := clDefault;
-
-        Node := TreeView.Items.AddObject(nil, IntToStr(I), P);
-        Node.ImageIndex := I;
-        Node.SelectedIndex := I;
-        TreeView.Selected := Node;
+        ImagesPerColumn := SrcBmp.Height div ImageList.Height;
+        ImagesPerRow := SrcBmp.Width div ImageList.Width;
+      end
+      else
+      begin
+        ImagesPerColumn := 1;
+        ImagesPerRow := 1;
       end;
-      v_CompositeBmp.Free;
-    end
-    else Bmp.Free;
+      //Ask the user if wants to split the source image
+      if ((ImagesPerRow > 1) or (ImagesPerColumn > 1))
+        and (IDEQuestionDialog(Caption +' - '+ btnAdd.Caption,
+              s_SuggestSplitImage, mtConfirmation,
+              [mrNo, s_AddAsSingle, mrYes, s_SplitImage]) <> mrYes) then
+      begin
+        //"Add as single" was choosen
+        ImagesPerColumn := 1;
+        ImagesPerRow := 1;
+      end;
+      //Split image or copy the first image list width/height image data if the file
+      //is bigger than image list width/height but the user choosen "add as single"
+      for iRow := 0 to ImagesPerColumn - 1 do
+        for iCol := 0 to ImagesPerRow - 1 do
+        begin
+          New(P);
+          P^.Bitmap := CreateGlyphSplit(SrcBmp, ImageList.Width, ImageList.Height,
+            iRow, iCol);
+          P^.Adjustment := gaNone;
+          P^.TransparentColor := clDefault;
+
+          I := ImageList.Add(P^.Bitmap, nil);
+          Node := TreeView.Items.AddObject(nil, IntToStr(I), P);
+          Node.ImageIndex := I;
+          Node.SelectedIndex := I;
+          TreeView.Selected := Node;
+        end;
+      SrcBmp.Free;
+    end;
   end;
 end;
 
