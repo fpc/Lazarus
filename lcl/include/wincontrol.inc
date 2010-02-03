@@ -3508,7 +3508,7 @@ end;
 
 procedure TWinControl.DefaultHandler(var AMessage);
 begin
-  CallDefaultWndHandler(Self,AMessage);
+  TWSWinControlClass(WidgetSetClass).DefaultWndHandler(Self, AMessage);
 end;
 
 
