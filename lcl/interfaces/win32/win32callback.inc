@@ -2069,7 +2069,9 @@ begin
           end;
         end;
       end;
-
+      // I see no other way to prevent crash at moment. This message calls WM_CLOSE
+      // which frees our form and we get a destructed lWinControl
+      lWinControl := nil;
     end;
     WM_NCMOUSEMOVE, WM_NCMOUSELEAVE:
     begin
