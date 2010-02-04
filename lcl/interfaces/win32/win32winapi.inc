@@ -2251,7 +2251,7 @@ var
 begin
   Result := False;
   WindowInfo := GetWin32WindowInfo(Handle);
-  if (WindowInfo^.WinControl is TCustomFloatSpinEdit) then
+  if WindowInfo^.askBuddyCoords then
     Handle := Windows.SendMessage(Handle, UDM_GETBUDDY, 0, 0);
 
   if IsIconic(Handle) and GetWindowPlacement(Handle, @WindowPlacement) then
@@ -2299,8 +2299,8 @@ var
     BuddyWP: WINDOWPLACEMENT;
   begin
     BuddyHandle := Windows.SendMessage(Handle, UDM_GETBUDDY, 0, 0);
-    if (BuddyHandle<>HWND(nil)) and Windows.GetWindowPlacement(BuddyHandle, BuddyWP)
-      then Width := WP.rcNormalPosition.Right - BuddyWP.rcNormalPosition.Left;
+    if (BuddyHandle<>HWND(nil)) and Windows.GetWindowPlacement(BuddyHandle, BuddyWP) then
+      Width := WP.rcNormalPosition.Right - BuddyWP.rcNormalPosition.Left;
   end;
 
   procedure ExcludeCaption; inline;
@@ -2382,7 +2382,7 @@ begin
 
   ExcludeCaption;
 
-  if (WindowInfo^.WinControl is TCustomFloatSpinEdit) then
+  if WindowInfo^.askBuddyCoords then
     AdjustForBuddySize;
 end;
 

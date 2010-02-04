@@ -194,7 +194,8 @@ begin
   // init buddy
   Params.SubClassWndProc := @SpinBuddyWindowProc;
   WindowCreateInitBuddy(AWinControl, Params);
-  Params.BuddyWindowInfo^.isChildEdit := true;
+  Params.BuddyWindowInfo^.isChildEdit := True;
+  Params.WindowInfo^.askBuddyCoords := True;
   // make possible LCL Wincontrol identification by Buddy handle
   // TODO: should move to widget specific SetProp method
   SetProp(Params.Buddy, 'WinControl', PtrUInt(AWinControl));
