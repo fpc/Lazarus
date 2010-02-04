@@ -344,6 +344,8 @@ type
     procedure setScrollStyle(AScrollStyle: TScrollStyle);
     procedure DestroyNotify(AWidget: TQtWidget); override;
     destructor Destroy; override;
+    procedure Update(ARect: PRect = nil); override;
+    procedure Repaint(ARect: PRect = nil); override;
   end;
 
   { TQtCustomControl }
@@ -374,8 +376,6 @@ type
     procedure setCursor(const ACursor: QCursorH); override;
     procedure setViewport(const AViewPort: QWidgetH);
     procedure setVisible(visible: Boolean); override;
-    procedure Update(ARect: PRect = nil); override;
-    procedure Repaint(ARect: PRect = nil); override;
     procedure viewportNeeded;
     procedure viewportDelete;
   end;
@@ -897,8 +897,6 @@ type
     procedure setSelectionBehavior(ABehavior: QAbstractItemViewSelectionBehavior);
     property OwnerDrawn: Boolean read GetOwnerDrawn write SetOwnerDrawn;
   public
-    procedure Update(ARect: PRect = nil); override;
-    procedure Repaint(ARect: PRect = nil); override;
     procedure ItemDelegateSizeHint(option: QStyleOptionViewItemH; index: QModelIndexH; Size: PSize); cdecl; virtual;
     procedure ItemDelegatePaint(painter: QPainterH; option: QStyleOptionViewItemH; index: QModelIndexH); cdecl; virtual;
   end;
@@ -6431,7 +6429,7 @@ begin
       if Item <> nil then
       begin
         QListWidget_visualItemRect(QListWidgetH(FDropList.Widget), @R, item);
-        QWidget_update(QAbstractScrollArea_viewport(QAbstractScrollAreaH(FDropList.Widget)), @R);
+        FDropList.Update(@R);
       end;
     end;
   end else
@@ -7338,7 +7336,7 @@ begin
     if OwnerDrawn then
     begin
       QListWidget_visualItemRect(QListWidgetH(Widget), @R, item);
-      QWidget_update(QAbstractScrollArea_viewport(QAbstractScrollAreaH(Widget)), @R);
+      Update(@R);
     end;
   end else
     insertItem(AIndex, @Str);
@@ -7392,9 +7390,9 @@ begin
   if OwnerDrawn then
   begin
     QListWidget_visualItemRect(QListWidgetH(Widget), @R, Item1);
-    QWidget_update(QAbstractScrollArea_viewport(QAbstractScrollAreaH(Widget)), @R);
+    Update(@R);
     QListWidget_visualItemRect(QListWidgetH(Widget), @R, Item2);
-    QWidget_update(QAbstractScrollArea_viewport(QAbstractScrollAreaH(Widget)), @R);
+    Update(@R);
   end;
 end;
 
@@ -9077,6 +9075,32 @@ begin
   inherited Destroy;
 end;
 
+procedure TQtAbstractScrollArea.Update(ARect: PRect);
+var
+  P: TPoint;
+begin
+  if ARect <> nil then
+  begin
+    P := getClientOffset;
+    OffsetRect(ARect^, -P.X , -P.Y);
+    QWidget_update(QAbstractScrollArea_viewport(QAbstractItemViewH(Widget)), ARect);
+  end else
+    QWidget_update(QAbstractScrollArea_viewport(QAbstractItemViewH(Widget)));
+end;
+
+procedure TQtAbstractScrollArea.Repaint(ARect: PRect);
+var
+  P: TPoint;
+begin
+  if ARect <> nil then
+  begin
+    P := getClientOffset;
+    OffsetRect(ARect^, -P.X , -P.Y);
+    QWidget_repaint(QAbstractScrollArea_viewport(QAbstractItemViewH(Widget)), ARect);
+  end else
+    QWidget_repaint(QAbstractScrollArea_viewport(QAbstractItemViewH(Widget)));
+end;
+
 { TQtCustomControl }
 
 {------------------------------------------------------------------------------
@@ -9250,32 +9274,6 @@ begin
   inherited setVisible(visible);
   if FViewPortWidget <> nil then
     FViewPortWidget.setVisible(visible);
-end;
-
-procedure TQtCustomControl.Update(ARect: PRect);
-var
-  P: TPoint;
-begin
-  if ARect <> nil then
-  begin
-    P := getClientOffset;
-    OffsetRect(ARect^, -P.X , -P.Y);
-    QWidget_update(viewport.Widget, ARect);
-  end else
-    QWidget_update(viewport.Widget);
-end;
-
-procedure TQtCustomControl.Repaint(ARect: PRect);
-var
-  P: TPoint;
-begin
-  if ARect <> nil then
-  begin
-    P := getClientOffset;
-    OffsetRect(ARect^, -P.X , -P.Y);
-    QWidget_repaint(viewport.Widget, ARect);
-  end else
-    QWidget_repaint(viewport.Widget);
 end;
 
 {------------------------------------------------------------------------------
@@ -9886,32 +9884,6 @@ procedure TQtAbstractItemView.setSelectionBehavior(
   ABehavior: QAbstractItemViewSelectionBehavior);
 begin
   QAbstractItemView_setSelectionBehavior(QAbstractItemViewH(Widget), ABehavior);
-end;
-
-procedure TQtAbstractItemView.Update(ARect: PRect);
-var
-  P: TPoint;
-begin
-  if ARect <> nil then
-  begin
-    P := getClientOffset;
-    OffsetRect(ARect^, -P.X , -P.Y);
-    QWidget_update(QAbstractScrollArea_viewport(QAbstractItemViewH(Widget)), ARect);
-  end else
-    QWidget_update(QAbstractScrollArea_viewport(QAbstractItemViewH(Widget)));
-end;
-
-procedure TQtAbstractItemView.Repaint(ARect: PRect);
-var
-  P: TPoint;
-begin
-  if ARect <> nil then
-  begin
-    P := getClientOffset;
-    OffsetRect(ARect^, -P.X , -P.Y);
-    QWidget_repaint(QAbstractScrollArea_viewport(QAbstractItemViewH(Widget)), ARect);
-  end else
-    QWidget_repaint(QAbstractScrollArea_viewport(QAbstractItemViewH(Widget)));
 end;
 
 procedure TQtAbstractItemView.ItemDelegateSizeHint(
