@@ -72,7 +72,7 @@ type
   TWSControl = class(TWSLCLComponent)
   published
     class procedure AddControl(const AControl: TControl); virtual;
-    class procedure GetConstraints(const AControl: TControl; const AConstraints: TObject); virtual;
+    class function GetConstraints(const AControl: TControl; const AConstraints: TObject): Boolean; virtual;
   end;
 
   TWSControlClass = class of TWSControl;
@@ -155,9 +155,9 @@ class procedure TWSControl.AddControl(const AControl: TControl);
 begin
 end;
 
-class procedure TWSControl.GetConstraints(const AControl: TControl; const AConstraints: TObject);
+class function TWSControl.GetConstraints(const AControl: TControl; const AConstraints: TObject): Boolean;
 begin
-  WidgetSet.GetControlConstraints(AConstraints);
+  Result := WidgetSet.GetControlConstraints(AConstraints);
 end;
 
 { TWSWinControl }
