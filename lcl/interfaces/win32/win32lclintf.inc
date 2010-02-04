@@ -399,12 +399,7 @@ begin
     MaxWidth := 0;
     MaxHeight := 0;
 
-    if SizeConstraints.Control is TCustomCalendar then
-    begin
-      FixedHeight := true;
-      FixedWidth := true;
-    end
-    else if SizeConstraints.Control is TCustomComboBox then
+    if SizeConstraints.Control is TCustomComboBox then
     begin
       // win32 combo (but not csSimple) has fixed height
       FixedHeight := TCustomComboBox(SizeConstraints.Control).Style <> csSimple;

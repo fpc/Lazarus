@@ -249,7 +249,7 @@ uses
   Win32WSStdCtrls,
   Win32Themes,
 ////////////////////////////////////////////////////
-  Calendar, Win32Extra, LclProc, LCLMessageGlue;
+  Win32Extra, LclProc, LCLMessageGlue;
 
 type
   TMouseDownFocusStatus = (mfNone, mfFocusSense, mfFocusChanged);

@@ -48,6 +48,8 @@ type
           const AParams: TCreateParams): HWND; override;
     class procedure AdaptBounds(const AWinControl: TWinControl;
           var Left, Top, Width, Height: integer; var SuppressMove: boolean); override;
+    class function GetConstraints(const AControl: TControl;
+       const AConstraints: TObject): Boolean; override;
     class function  GetDateTime(const ACalendar: TCustomCalendar): TDateTime; override;
     class function HitTest(const ACalendar: TCustomCalendar; const APoint: TPoint): TCalendarPart; override;
     class procedure SetDateTime(const ACalendar: TCustomCalendar; const ADateTime: TDateTime); override;
@@ -106,6 +108,24 @@ begin
     TodayWidth := Windows.SendMessage(WinHandle, MCM_GETMAXTODAYWIDTH, 0, 0);
     if Width < TodayWidth then
       Width := TodayWidth;
+  end;
+end;
+
+class function TWin32WSCustomCalendar.GetConstraints(const AControl: TControl;
+  const AConstraints: TObject): Boolean;
+var
+  SizeConstraints: TSizeConstraints absolute AConstraints;
+  SizeRect: TRect;
+  Height, Width: Integer;
+begin
+  Result := True;
+
+  if (AConstraints is TSizeConstraints) and TWinControl(AControl).HandleAllocated then
+  begin
+    Windows.GetWindowRect(TWinControl(AControl).Handle, @SizeRect);
+    Height := SizeRect.Bottom - SizeRect.Top;
+    Width := SizeRect.Right - SizeRect.Left;
+    SizeConstraints.SetInterfaceConstraints(Width, Height, Width, Height);
   end;
 end;
 
