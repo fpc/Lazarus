@@ -15,7 +15,7 @@
  *                                                                           *
  *  This file is part of the Lazarus Component Library (LCL)                 *
  *                                                                           *
- *  See the file COPYING.modifiedLGPL.txt, included in this distribution,        *
+ *  See the file COPYING.modifiedLGPL.txt, included in this distribution,    *
  *  for details about the copyright.                                         *
  *                                                                           *
  *  This program is distributed in the hope that it will be useful,          *
@@ -464,26 +464,6 @@ begin
   else
     Result := Windows.LoadCursorW(0, LclCursorToWin32CursorMap[ACursor]);
   end;
-end;
-
-procedure TWinCEWidgetSet.DrawArrow(Arrow: TComponent; Canvas: TPersistent);
-const
-    { up, down, left, right }
-  ArrowTypeToState: array[TArrowType] of dword = (DFCS_SCROLLUP, DFCS_SCROLLDOWN,
-    DFCS_SCROLLLEFT, DFCS_SCROLLRIGHT);
-var
-  drawRect: Windows.RECT;
-  canvasHandle: HDC;
-begin
-  drawRect := TControl(Arrow).ClientRect;
-  canvasHandle := TCanvas(Canvas).Handle;
-  Windows.FillRect(canvasHandle, drawRect, GetSysColorBrush(COLOR_BTNFACE or SYS_COLOR_INDEX_FLAG));
-  dec(drawRect.Left, 2);
-  dec(drawRect.Top, 2);
-  inc(drawRect.Right, 2);
-  inc(drawRect.Bottom, 2);
-  Windows.DrawFrameControl(TCanvas(Canvas).Handle, @drawRect,
-	DFC_SCROLL, ArrowTypeToState[TArrow(Arrow).ArrowType]);
 end;
 
 {------------------------------------------------------------------------------

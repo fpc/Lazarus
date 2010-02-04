@@ -33,7 +33,7 @@ uses
 // To get as little as posible circles,
 // uncomment only when needed for registration
 ////////////////////////////////////////////////////
-  Arrow,
+  Windows, Arrow, Graphics,
 ////////////////////////////////////////////////////
   WSArrow, WSLCLClasses;
 
@@ -45,6 +45,7 @@ type
   published
     class procedure SetType(const AArrow: TArrow; const AArrowType: TArrowType; 
       const AShadowType: TShadowType); override;
+    class procedure DrawArrow(const AArrow: TArrow; const ACanvas: TCanvas); override;
   end;
 
 
@@ -56,6 +57,26 @@ class procedure TWin32WSArrow.SetType(const AArrow: TArrow; const AArrowType: TA
   const AShadowType: TShadowType);
 begin
   // TODO: implement me!
+end;
+
+class procedure TWin32WSArrow.DrawArrow(const AArrow: TArrow;
+  const ACanvas: TCanvas);
+const
+    { up, down, left, right }
+  ArrowTypeToState: array[TArrowType] of dword = (DFCS_SCROLLUP, DFCS_SCROLLDOWN,
+    DFCS_SCROLLLEFT, DFCS_SCROLLRIGHT);
+var
+  drawRect: Windows.RECT;
+  canvasHandle: HDC;
+begin
+  drawRect := AArrow.ClientRect;
+  canvasHandle := ACanvas.Handle;
+  Windows.FillRect(canvasHandle, drawRect, GetSysColorBrush(COLOR_BTNFACE));
+  dec(drawRect.Left, 2);
+  dec(drawRect.Top, 2);
+  inc(drawRect.Right, 2);
+  inc(drawRect.Bottom, 2);
+  Windows.DrawFrameControl(canvasHandle, drawRect, DFC_SCROLL, ArrowTypeToState[AArrow.ArrowType]);
 end;
 
 end.

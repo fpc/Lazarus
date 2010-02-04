@@ -57,7 +57,6 @@ type
     class function GetControlClassDefaultSize: TPoint; override;
   public
     constructor Create(AOwner: TComponent); override;
-    destructor Destroy; override;
     procedure Loaded; override;
     procedure InitializeWnd; override;
   published
@@ -102,11 +101,6 @@ begin
   SetInitialBounds(0,0,GetControlClassDefaultSize.X,GetControlClassDefaultSize.Y);
 end;
 
-destructor TArrow.Destroy;
-begin
-  inherited;
-end;
-
 procedure TArrow.Loaded;
 begin
   inherited Loaded;
@@ -115,7 +109,7 @@ end;
 
 procedure TArrow.Paint;
 begin
-  WidgetSet.DrawArrow(Self, Canvas);
+  TWSArrowClass(WidgetSetClass).DrawArrow(Self, Canvas);
   inherited Paint;
 end;
 

@@ -123,11 +123,6 @@ begin
   WidgetSet.DeallocateHWnd(Wnd);
 end;
 
-procedure DrawArrow(Arrow: TComponent; Canvas: TPersistent);
-begin
-  WidgetSet.DrawArrow(Arrow, Canvas);
-end;
-
 procedure DrawDefaultDockImage(AOldRect, ANewRect: TRect; AOperation: TDockImageOperation);
 begin
   WidgetSet.DrawDefaultDockImage(AOldRect, ANewRect, AOperation);

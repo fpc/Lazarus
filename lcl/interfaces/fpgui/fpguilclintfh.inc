@@ -38,7 +38,6 @@ function AllocateHWnd(Method: TLCLWndMethod): HWND; override;
 function CreateStandardCursor(ACursor: SmallInt): hCursor; override;
 
 procedure DeallocateHWnd(Wnd: HWND); override;
-procedure DrawArrow(Arrow: TComponent; Canvas: TPersistent); override;
 procedure DrawDefaultDockImage(AOldRect, ANewRect: TRect; AOperation: TDockImageOperation); override;
 
 function ExtUTF8Out(DC: HDC; X, Y: Integer; Options: Longint; Rect: PRect;

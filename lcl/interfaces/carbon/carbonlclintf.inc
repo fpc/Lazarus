@@ -58,64 +58,6 @@ begin
 end;
 
 {------------------------------------------------------------------------------
-  Method:  DrawArrow
-  Params:  Arrow  - LCL arrow
-           Canvas - LCL canvas
-
-  Draws the arrow on the specified canvas
- ------------------------------------------------------------------------------}
-procedure TCarbonWidgetSet.DrawArrow(Arrow: TComponent; Canvas: TPersistent);
-var
-  ArrowCanvas: TCanvas;
-  P: Array [0..2] of TPoint;
-  R: TRect;
-  S: Integer;
-begin
-  {$IFDEF VerboseLCLIntf}
-    DebugLn('TCarbonWidgetSet.DrawArrow Arrow: ' + DbgS(Arrow));
-  {$ENDIF}
-  
-  R := TControl(Arrow).ClientRect;
-  InflateRect(R, -1, -1);
-  // arrow bounds are square
-  S := Min(R.Right - R.Left, R.Bottom - R.Top);
-  R := Bounds((R.Left + R.Right - S) div 2, (R.Top + R.Bottom - S) div 2, S, S);
-
-  ArrowCanvas := TCanvas(Canvas);
-  ArrowCanvas.Brush.Color := clBlack;
-  ArrowCanvas.Pen.Color := clBlack;
-  
-  case Ord(TArrow(Arrow).ArrowType) of
-    0: // up
-      begin
-        P[0] := Classes.Point(R.Left, R.Bottom);
-        P[1] := Classes.Point((R.Left + R.Right) div 2, R.Top);
-        P[2] := R.BottomRight;
-      end;
-    1: // down
-      begin
-        P[0] := R.TopLeft;
-        P[1] := Classes.Point(R.Right, R.Top);
-        P[2] := Classes.Point((R.Left + R.Right) div 2, R.Bottom);
-      end;
-    2: // left
-      begin
-        P[0] := R.BottomRight;
-        P[1] := Classes.Point(R.Left, (R.Top + R.Bottom) div 2);
-        P[2] := Classes.Point(R.Right, R.Top);
-      end;
-    3: // right
-      begin
-        P[0] := R.TopLeft;
-        P[1] := Classes.Point(R.Right, (R.Top + R.Bottom) div 2);
-        P[2] := Classes.Point(R.Left, R.Bottom);
-      end;
-  end;
-  
-  ArrowCanvas.Polygon(P);
-end;
-
-{------------------------------------------------------------------------------
   Method:  DrawGrid
   Params:  DC     - Handle to device context
            R      - Grid rectangle

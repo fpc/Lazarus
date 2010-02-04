@@ -126,10 +126,6 @@ begin
 
 end;
 
-procedure TWidgetSet.DrawArrow(Arrow: TComponent; Canvas: TPersistent);
-begin
-end;
-
 procedure TWidgetSet.DrawDefaultDockImage(AOldRect, ANewRect: TRect; AOperation: TDockImageOperation);
 
   procedure DefaultDockImage(ARect: TRect);

@@ -16,7 +16,7 @@
  *                                                                           *
  *  This file is part of the Lazarus Component Library (LCL)                 *
  *                                                                           *
- *  See the file COPYING.modifiedLGPL.txt, included in this distribution,        *
+ *  See the file COPYING.modifiedLGPL.txt, included in this distribution,    *
  *  for details about the copyright.                                         *
  *                                                                           *
  *  This program is distributed in the hope that it will be useful,          *
@@ -36,8 +36,6 @@ function AddProcessEventHandler(AHandle: THandle;
   AEventHandler: TChildExitEvent; AData: PtrInt): PProcessEventHandler; override;
   
 function CreateStandardCursor(ACursor: SmallInt): hCursor; override;
-
-procedure DrawArrow(Arrow: TComponent; Canvas: TPersistent); override;
 
 function GetAcceleratorString(const AVKey: Byte; const AShiftState: TShiftState): String; override;
 function GetControlConstraints(Constraints: TObject): boolean; override;
