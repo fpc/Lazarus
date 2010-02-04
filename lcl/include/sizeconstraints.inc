@@ -46,7 +46,7 @@ end;
  ------------------------------------------------------------------------------}
 procedure TSizeConstraints.UpdateInterfaceConstraints;
 begin
-  GetControlConstraints(Self);
+  TWSControlClass(Control.WidgetSetClass).GetConstraints(Control, Self);
 end;
 
 {------------------------------------------------------------------------------
