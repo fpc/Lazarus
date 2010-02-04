@@ -8501,8 +8501,9 @@ begin
   if FTitleStyle<>tsNative then
     DrawColumnText(aCol,aRow,aRect,aState);
 
-  if (goFixedRowNumbering in Options) and (FixedCols >= 1) and (aCol = 0) then
-    DrawCellAutonumbering(aCol, aRow, aRect, IntToStr(aRow));
+  if (goFixedRowNumbering in Options) and (FixedCols >= 1) and
+     (aCol = 0) and (aRow >= FixedRows) then
+    DrawCellAutonumbering(aCol, aRow, aRect, IntToStr(aRow-FixedRows+1));
 end;
 
 { TCustomStringGrid }
