@@ -9083,9 +9083,9 @@ begin
   begin
     P := getClientOffset;
     OffsetRect(ARect^, -P.X , -P.Y);
-    QWidget_update(QAbstractScrollArea_viewport(QAbstractItemViewH(Widget)), ARect);
+    QWidget_update(QAbstractScrollArea_viewport(QAbstractScrollAreaH(Widget)), ARect);
   end else
-    QWidget_update(QAbstractScrollArea_viewport(QAbstractItemViewH(Widget)));
+    QWidget_update(QAbstractScrollArea_viewport(QAbstractScrollAreaH(Widget)));
 end;
 
 procedure TQtAbstractScrollArea.Repaint(ARect: PRect);
@@ -9096,9 +9096,9 @@ begin
   begin
     P := getClientOffset;
     OffsetRect(ARect^, -P.X , -P.Y);
-    QWidget_repaint(QAbstractScrollArea_viewport(QAbstractItemViewH(Widget)), ARect);
+    QWidget_repaint(QAbstractScrollArea_viewport(QAbstractScrollAreaH(Widget)), ARect);
   end else
-    QWidget_repaint(QAbstractScrollArea_viewport(QAbstractItemViewH(Widget)));
+    QWidget_repaint(QAbstractScrollArea_viewport(QAbstractScrollAreaH(Widget)));
 end;
 
 { TQtCustomControl }
