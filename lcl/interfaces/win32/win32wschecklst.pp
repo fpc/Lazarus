@@ -33,7 +33,8 @@ uses
 // To get as little as posible circles,
 // uncomment only when needed for registration
 ////////////////////////////////////////////////////
-  Windows, Classes, Controls, CheckLst, StdCtrls, LCLType, LMessages, LCLMessageGlue,
+  Windows, Classes, Controls, CheckLst, StdCtrls, Themes, Graphics, LCLType,
+  LMessages, LCLMessageGlue,
 ////////////////////////////////////////////////////
   WSCheckLst, WSLCLClasses, Win32Int, Win32Proc, Win32WSControls, Win32WSStdCtrls;
 
@@ -45,6 +46,8 @@ type
   published
     class function CreateHandle(const AWinControl: TWinControl;
        const AParams: TCreateParams): TLCLIntfHandle; override;
+    class procedure DefaultWndHandler(const AWinControl: TWinControl;
+       var AMessage); override;
     class function GetStrings(const ACustomListBox: TCustomListBox): TStrings; override;
     class function GetItemEnabled(const ACheckListBox: TCustomCheckListBox;
       const AIndex: integer): Boolean; override;
@@ -97,8 +100,17 @@ var
   end;
 
 begin
+  // move checlistbox specific code here
+
+  case Msg of
+    WM_DESTROY:
+    begin
+      TWin32CheckListBoxStrings.DeleteItemRecords(Window);
+    end;
+  end;
+
   Result := WindowProc(Window, Msg, WParam, LParam);
-  // move groupbox specific code here
+
   case Msg of
     WM_LBUTTONDOWN, WM_LBUTTONDBLCLK:
     begin
@@ -121,6 +133,116 @@ begin
   // listbox is not a transparent control -> no need for parentpainting
   Params.WindowInfo^.needParentPaint := False;
   Result := Params.Window;
+end;
+
+class procedure TWin32WSCustomCheckListBox.DefaultWndHandler(
+  const AWinControl: TWinControl; var AMessage);
+
+  procedure DrawCheckListBoxItem(CheckListBox: TCheckListBox; Data: PDrawItemStruct);
+  const
+    ThemeStateMap: array[TCheckBoxState, Boolean] of TThemedButton =
+    (
+     {cbUnchecked} (tbCheckBoxUncheckedDisabled, tbCheckBoxUncheckedNormal),
+     {cbChecked  } (tbCheckBoxCheckedDisabled, tbCheckBoxCheckedNormal),
+     {cbGrayed   } (tbCheckBoxMixedDisabled, tbCheckBoxMixedNormal)
+    );
+  var
+    Enabled, Selected: Boolean;
+    lgBrush: Windows.LOGBRUSH;
+    Brush: HBRUSH;
+    ARect, TextRect: Windows.Rect;
+    Details: TThemedElementDetails;
+    OldColor: COLORREF;
+    OldBackColor: COLORREF;
+  {$ifdef WindowsUnicodeSupport}
+    AnsiBuffer: string;
+    WideBuffer: widestring;
+  {$endif}
+  begin
+    Selected := (Data^.itemState and ODS_SELECTED) > 0;
+    Enabled := CheckListBox.Enabled and CheckListBox.ItemEnabled[Data^.itemID];
+
+    ARect := Data^.rcItem;
+    TextRect := ARect;
+    TextRect.Left := TextRect.Left + TextRect.Bottom - TextRect.Top + 4;
+
+    // fill the background
+    if Selected then
+      lgBrush.lbColor := Windows.GetSysColor(COLOR_HIGHLIGHT)
+    else
+      lgBrush.lbColor := ColorToRGB(CheckListBox.Color);
+    lgBrush.lbStyle := BS_SOLID;
+    Brush := CreateBrushIndirect(lgBrush);
+    Windows.FillRect(Data^._HDC, TextRect, Brush);
+    DeleteObject(Brush);
+
+    // draw checkbox
+    ARect.Right := ARect.Left + ARect.Bottom - ARect.Top;
+
+    Details := ThemeServices.GetElementDetails(ThemeStateMap[CheckListBox.State[Data^.ItemID], Enabled]);
+    ThemeServices.DrawElement(Data^._HDC, Details, ARect);
+
+    // draw text
+    TextRect.Left := TextRect.Left + 2;
+    OldBackColor := Windows.SetBkColor(Data^._HDC, lgBrush.lbColor);
+    if not Enabled then
+      OldColor := Windows.SetTextColor(Data^._HDC, Windows.GetSysColor(COLOR_GRAYTEXT))
+    else
+    if Selected then
+      OldColor := Windows.SetTextColor(Data^._HDC, Windows.GetSysColor(COLOR_HIGHLIGHTTEXT))
+    else
+      OldColor := Windows.SetTextColor(Data^._HDC, ColorToRGB(CheckListBox.Font.Color));
+  {$ifdef WindowsUnicodeSupport}
+    if UnicodeEnabledOS then
+    begin
+      WideBuffer := UTF8ToUTF16(CheckListBox.Items[Data^.ItemID]);
+      Windows.DrawTextW(Data^._HDC, PWideChar(WideBuffer), -1,
+       TextRect, DT_SINGLELINE or DT_VCENTER or DT_NOPREFIX);
+    end
+    else
+    begin
+      AnsiBuffer := Utf8ToAnsi(CheckListBox.Items[Data^.ItemID]);
+      Windows.DrawText(Data^._HDC, PChar(AnsiBuffer), -1,
+       TextRect, DT_SINGLELINE or DT_VCENTER or DT_NOPREFIX);
+    end;
+  {$else}
+    Windows.DrawText(Data^._HDC, PChar(CheckListBox.Items[Data^.ItemID]), -1,
+      TextRect, DT_SINGLELINE or DT_VCENTER or DT_NOPREFIX);
+  {$endif}
+    if Enabled and ((Data^.itemState and ODS_FOCUS) > 0) and CheckListBox.Focused then
+    begin
+      TextRect.Left := TextRect.Left - 2;
+      DrawFocusRect(Data^._HDC, TextRect);
+    end;
+    // restore old colors
+    Windows.SetTextColor(Data^._HDC, OldColor);
+    Windows.SetBkColor(Data^._HDC, OldBackColor);
+  end;
+
+begin
+  case TLMessage(AMessage).Msg of
+    LM_DRAWITEM:
+    begin
+      with TLMDrawItems(AMessage) do
+      begin
+        // ItemID not UINT(-1)
+        if DrawItemStruct^.ItemID <> DWORD($FFFFFFFF) then
+          DrawCheckListBoxItem(TCheckListBox(AWinControl), DrawItemStruct);
+      end;
+    end;
+
+    LM_MEASUREITEM:
+    begin
+      with TLMMeasureItem(AMessage).MeasureItemStruct^ do
+      begin
+        itemHeight := TCustomListBox(AWinControl).ItemHeight;
+        if TCustomListBox(AWinControl).Style = lbOwnerDrawVariable then
+          TCustomListBox(AWinControl).MeasureItem(Integer(itemID), integer(itemHeight));
+      end;
+    end;
+  end;
+
+  inherited DefaultWndHandler(AWinControl, AMessage);
 end;
 
 class function  TWin32WSCustomCheckListBox.GetStrings(const ACustomListBox: TCustomListBox): TStrings;

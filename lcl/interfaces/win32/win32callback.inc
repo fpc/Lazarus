@@ -1525,8 +1525,6 @@ begin
     WM_DESTROY:
     begin
       Assert(False, 'Trace:WindowProc - Got WM_DESTROY');
-      if lWinControl is TCheckListBox then
-        TWin32CheckListBoxStrings.DeleteItemRecords(Window);
       if lWinControl is TCustomComboBox then
         DisposeComboEditWindowInfo(TCustomComboBox(lWinControl));
       if WindowInfo^.Overlay<>HWND(nil) then
