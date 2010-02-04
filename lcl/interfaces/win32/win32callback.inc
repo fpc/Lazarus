@@ -860,26 +860,6 @@ var
     Result := WindowInfo^.isComboEdit and (ComboBoxHandleSizeWindow = Windows.GetParent(Window));
   end;
 
-  procedure HandleSpinEditDeltaPos(AUpDownMsg: PNMUpDown);
-  var
-    SpinEdit: TCustomFloatSpinEdit;
-    spinHandle: HWND;
-    newValue: Double;
-  begin
-    SpinEdit := TCustomFloatSpinEdit(WindowInfo^.WinControl);
-
-    if not SpinEdit.ReadOnly then
-    begin
-      NewValue := SpinEdit.GetLimitedValue(
-        WindowInfo^.spinValue + AUpDownMsg^.iDelta * SpinEdit.Increment);
-      WindowInfo^.spinValue := NewValue;
-
-      spinHandle := AUpDownMsg^.hdr.hwndFrom;
-      UpdateFloatSpinEditText(SpinEdit, NewValue);
-      Windows.SendMessage(spinHandle, UDM_SETPOS32, 0, 500);
-    end;
-  end;
-
   procedure SetMinMaxInfo(var MinMaxInfo: TMINMAXINFO);
     procedure SetWin32SizePoint(AWidth, AHeight: integer; var pt: TPoint);
     var
@@ -2057,11 +2037,6 @@ begin
           LMessage.Msg := LM_CHANGED;
           if WindowInfo^.WinControl <> nil then
             lWinControl := WindowInfo^.WinControl;
-        end;
-        UDN_DELTAPOS:
-        begin
-          if WindowInfo^.WinControl <> nil then
-            HandleSpinEditDeltaPos(PNMUpDown(LParam));
         end;
         NM_CLICK, NM_RCLICK:
         begin

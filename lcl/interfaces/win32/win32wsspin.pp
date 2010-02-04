@@ -204,21 +204,44 @@ end;
 class procedure TWin32WSCustomFloatSpinEdit.DefaultWndHandler(const AWinControl: TWinControl; var AMessage);
 var
   lWindowInfo: PWin32WindowInfo;
+  Message: TLMessage absolute AMessage;
+  NewValue: Double;
+  SpinEdit: TCustomFloatSpinEdit;
+  UpDownMsg: PNMUPDOWN;
 begin
-  case TLMessage(AMessage).Msg of
+  case Message.Msg of
     CN_COMMAND:
     begin
-      if HIWORD(TLMessage(AMessage).WParam) = EN_CHANGE then
+      if HIWORD(Message.WParam) = EN_CHANGE then
       begin
         lWindowInfo := GetWin32WindowInfo(AWinControl.Handle);
         if lWindowInfo <> @DefaultWindowInfo then
         begin
-          lWindowInfo^.spinValue := TSpinEdit(lWindowInfo^.WinControl).StrToValue(TSpinEdit(lWindowInfo^.WinControl).Text);
+          SpinEdit := TCustomFloatSpinEdit(lWindowInfo^.WinControl);
+          lWindowInfo^.spinValue := SpinEdit.StrToValue(SpinEdit.Text);
+        end;
+      end;
+    end;
+    CN_NOTIFY:
+    begin
+      if PNMHdr(Message.LParam)^.code = UDN_DELTAPOS then
+      begin
+        UpDownMsg := PNMUPDOWN(Message.LParam);
+        lWindowInfo := GetWin32WindowInfo(UpDownMsg^.hdr.hwndFrom);
+        SpinEdit := TCustomFloatSpinEdit(lWindowInfo^.WinControl);
+        if not SpinEdit.ReadOnly then
+        begin
+          NewValue := SpinEdit.GetLimitedValue(
+            lWindowInfo^.spinValue + UpDownMsg^.iDelta * SpinEdit.Increment);
+          lWindowInfo^.spinValue := NewValue;
+
+          UpdateFloatSpinEditText(SpinEdit, NewValue);
+          Windows.SendMessage(UpDownMsg^.hdr.hwndFrom, UDM_SETPOS32, 0, 500);
         end;
       end;
     end;
   end;
-  inherited DefaultWndHandler(AWinControl,AMessage);
+  inherited DefaultWndHandler(AWinControl, AMessage);
 end;
 
 class procedure TWin32WSCustomFloatSpinEdit.GetPreferredSize(
