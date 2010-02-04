@@ -6767,8 +6767,8 @@ end;
  ------------------------------------------------------------------------------}
 procedure TWInControl.WMNotify(var Message: TLMNotify);
 begin
-  if not DoControlMsg(Message.NMHdr^.hwndfrom,Message) then exit;
-  //Inherited;
+  if not DoControlMsg(Message.NMHdr^.hwndfrom, Message) then
+    inherited;
 end;
 
 {------------------------------------------------------------------------------
