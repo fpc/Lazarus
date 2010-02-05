@@ -40,6 +40,9 @@ begin
   FItems.Count:=ACount;
   if WSUpdateAllowed then 
     WSSetItemsCount(FItems.Count);
+  // reset ownerdata 
+  if (FOwner.FOwnerDataItem.Index>=ACount) then 
+    FOwner.FOwnerDataItem.SetDataIndex(-1); 
 end;
 
 {------------------------------------------------------------------------------}
