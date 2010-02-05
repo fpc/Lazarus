@@ -105,6 +105,7 @@ type
   procedure RegisterSavePictureDialog;
   procedure RegisterCalculatorDialog;
   procedure RegisterCalculatorForm;
+  function RegisterCalculatorPanel: Boolean;
   //procedure RegisterCalendarDialogForm;
   procedure RegisterCalendarDialog;
 
@@ -176,6 +177,17 @@ begin
 //  if not WSRegisterCalculatorForm then
 //    RegisterWSComponent(TCalculatorForm, TWSCalculatorForm);
   Done := True;
+end;
+
+function RegisterCalculatorPanel: Boolean;
+const
+  Done: Boolean = False;
+begin
+  Result := False;
+  if Done then exit;
+  // WSRegisterCalculatorPanel;
+  Done := True;
+  Result := True;
 end;
 
 (*procedure RegisterCalendarDialogForm;

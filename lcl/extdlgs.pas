@@ -601,6 +601,7 @@ type
   protected
     procedure ErrorBeep;
     procedure TextChange; virtual;
+    class procedure WSRegisterClass; override;
   public
     constructor CreateLayout(AOwner: TComponent; ALayout: TCalculatorLayout);
     procedure CalcKeyPress(Sender: TObject; var Key: char);
@@ -701,6 +702,15 @@ begin
     TLabel(FControl).Caption:=FText;
   if Assigned(FOnTextChange) then
     FOnTextChange(Self);
+end;
+
+class procedure TCalculatorPanel.WSRegisterClass;
+begin
+  inherited WSRegisterClass;
+  if RegisterCalculatorPanel then
+  begin
+    {$i lcl_calc_images.lrs}
+  end;
 end;
 
 procedure TCalculatorPanel.ErrorBeep;
@@ -1317,9 +1327,5 @@ begin
   Result:=DF.ShowModal=mrOK;
   FreeAndNil(DF);
 end;
-
-
-initialization
-{$i extdlgs.lrs}
 
 end.
