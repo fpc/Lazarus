@@ -839,7 +839,7 @@ end;
 
 procedure TSynEditSelection.SetSelText(const Value : string);
 begin
-  SetSelTextPrimitive(smNormal, PChar(Value));
+  SetSelTextPrimitive(FActiveSelectionMode, PChar(Value));
 end;
 
 procedure TSynEditSelection.DoCaretChanged(Sender: TObject);

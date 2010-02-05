@@ -1906,17 +1906,21 @@ end;
   Turns current text selection uppercase.
 -------------------------------------------------------------------------------}
 procedure TSourceEditor.UpperCaseSelection;
-var OldBlockBegin, OldBlockEnd: TPoint;
+var
+  OldBlockBegin, OldBlockEnd: TPoint;
+  OldMode: TSynSelectionMode;
 begin
   if ReadOnly then exit;
   if not EditorComponent.SelAvail then exit;
   OldBlockBegin:=FEditor.BlockBegin;
   OldBlockEnd:=FEditor.BlockEnd;
+  OldMode:=FEditor.SelectionMode;
   FEditor.BeginUpdate;
   FEditor.BeginUndoBlock;
   FEditor.SelText:=UpperCase(EditorComponent.SelText);
   FEditor.BlockBegin:=OldBlockBegin;
   FEditor.BlockEnd:=OldBlockEnd;
+  FEditor.SelectionMode := OldMode;
   FEditor.EndUndoBlock;
   FEditor.EndUpdate;
 end;
@@ -1927,17 +1931,21 @@ end;
   Turns current text selection lowercase.
 -------------------------------------------------------------------------------}
 procedure TSourceEditor.LowerCaseSelection;
-var OldBlockBegin, OldBlockEnd: TPoint;
+var
+  OldBlockBegin, OldBlockEnd: TPoint;
+  OldMode: TSynSelectionMode;
 begin
   if ReadOnly then exit;
   if not EditorComponent.SelAvail then exit;
   OldBlockBegin:=FEditor.BlockBegin;
   OldBlockEnd:=FEditor.BlockEnd;
+  OldMode:=FEditor.SelectionMode;
   FEditor.BeginUpdate;
   FEditor.BeginUndoBlock;
   FEditor.SelText:=LowerCase(EditorComponent.SelText);
   FEditor.BlockBegin:=OldBlockBegin;
   FEditor.BlockEnd:=OldBlockEnd;
+  FEditor.SelectionMode := OldMode;
   FEditor.EndUndoBlock;
   FEditor.EndUpdate;
 end;
@@ -1948,13 +1956,15 @@ end;
   Convert all tabs into spaces in current text selection.
 -------------------------------------------------------------------------------}
 procedure TSourceEditor.TabsToSpacesInSelection;
-var 
+var
   OldBlockBegin, OldBlockEnd: TPoint;
+  OldMode: TSynSelectionMode;
 begin
   if ReadOnly then exit;
   if not EditorComponent.SelAvail then exit;
   OldBlockBegin:=FEditor.BlockBegin;
   OldBlockEnd:=FEditor.BlockEnd;
+  OldMode:=FEditor.SelectionMode;
   FEditor.BeginUpdate;
   FEditor.BeginUndoBlock;
   // ToDo: replace step by step to keep bookmarks and breakpoints
@@ -1962,6 +1972,7 @@ begin
                                 EditorComponent.TabWidth,FEditor.UseUTF8);
   FEditor.BlockBegin:=OldBlockBegin;
   FEditor.BlockEnd:=OldBlockEnd;
+  FEditor.SelectionMode := OldMode;
   FEditor.EndUndoBlock;
   FEditor.EndUpdate;
 end;
