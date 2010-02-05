@@ -35,9 +35,9 @@ uses
 // To get as little as posible circles,
 // uncomment only when needed for registration
 ////////////////////////////////////////////////////
-  Windows, LCLType, LCLProc, Controls, Grids, Win32Proc,
+  Windows, LCLType, LCLProc, Controls, Win32Proc,
 ////////////////////////////////////////////////////
-  WSGrids, WSLCLClasses;
+  WSGrids;
 
 type
   { TWin32WSCustomGrid }
