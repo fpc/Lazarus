@@ -644,25 +644,14 @@ var
 
   procedure HandleScrollMessage(LMsg: integer);
   var
-    ScrollbarHandle: HWND;
     ScrollInfo: TScrollInfo;
   begin
-    ScrollbarHandle := HWND(LParam);
-    if ScrollbarHandle<>0 then
-      lWinControl := GetWin32WindowInfo(ScrollbarHandle)^.WinControl;
-    if lWinControl is TCustomTrackBar then
-    begin
-      LMessage.Msg := LM_CHANGED;
-      exit;
-    end;
-
-    PLMsg:=@LMScroll;
     with LMScroll do
     begin
       Msg := LMsg;
       ScrollCode := LOWORD(WParam);
       SmallPos := 0;
-      ScrollBar := ScrollbarHandle;
+      ScrollBar := HWND(LParam);
       Pos := 0;
     end;
 
@@ -708,10 +697,10 @@ var
       ScrollInfo.nPos := HIWORD(WParam);
     end;
 
-    if ScrollbarHandle <> 0
+    if LParam <> 0
     then begin
       // The message is send by a scrollbar
-      GetScrollInfo(ScrollbarHandle, SB_CTL, ScrollInfo);
+      GetScrollInfo(HWND(LParam), SB_CTL, ScrollInfo);
     end
     else begin
       // The message is send by a window's standard scrollbar
@@ -1256,7 +1245,7 @@ begin
         if Assigned(ChildWindowInfo^.ParentMsgHandler) then
         begin
           if ChildWindowInfo^.ParentMsgHandler(lWinControl,
-            Window, WM_COMMAND, WParam, LParam, LMessage.Result, WinProcess) then Exit;
+            Window, WM_COMMAND, WParam, LParam, LMessage.Result, WinProcess) then Exit(LMessage.Result);
         end;
 
         // TToggleBox is a TCustomCheckBox too, but we don't want to handle
@@ -1566,8 +1555,21 @@ begin
     WM_HELP:
       if Window = Win32WidgetSet.AppHandle then
         Application.HelpCommand(0, LParam);
-    WM_HSCROLL:
-      HandleScrollMessage(LM_HSCROLL);
+    WM_HSCROLL,
+    WM_VSCROLL:
+    begin
+      PLMsg := @LMScroll;
+      if LParam <> 0 then
+      begin
+        ChildWindowInfo := GetWin32WindowInfo(HWND(LParam));
+        if Assigned(ChildWindowInfo^.ParentMsgHandler) then
+        begin
+          if ChildWindowInfo^.ParentMsgHandler(ChildWindowInfo^.WinControl,
+            Window, Msg, WParam, LParam, PLMsg^.Result, WinProcess) then Exit(PLMsg^.Result);
+        end;
+      end;
+      HandleScrollMessage(Msg);
+    end;
     WM_KEYDOWN:
     begin
       NotifyUserInput := True;
@@ -1904,7 +1906,7 @@ begin
       if Assigned(WindowInfo) and Assigned(WindowInfo^.ParentMsgHandler) then
       begin
         if WindowInfo^.ParentMsgHandler(WindowInfo^.WinControl,
-          Window, WM_NOTIFY, WParam, LParam, LMNotify.Result, WinProcess) then Exit;
+          Window, WM_NOTIFY, WParam, LParam, LMNotify.Result, WinProcess) then Exit(LMNotify.Result);
       end;
       case PNMHdr(LParam)^.code of
         MCN_SELCHANGE:
@@ -2110,8 +2112,6 @@ begin
       LMessage.WParam := WParam;
       LMessage.LParam := LParam;
     end;
-    WM_VSCROLL:
-      HandleScrollMessage(LM_VSCROLL);
     WM_WINDOWPOSCHANGED:
     begin
       with TLMWindowPosMsg(LMessage) Do

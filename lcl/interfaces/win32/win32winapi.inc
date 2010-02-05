@@ -239,11 +239,6 @@ begin
     begin
       TLMessage(Message).Result := CallDefaultWindowProc(Handle, WM_GETDLGCODE, 0, 0);
     end;
-
-    CN_NOTIFY:
-      with TLMessage(Message) do
-        if (Sender is TCustomTrackBar) then
-            Result := SendMessage(Handle, Msg, WParam, LParam);
   else
     if TLMessage(Message).Msg >= WM_USER then
       with TLMessage(Message) do
