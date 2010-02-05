@@ -538,7 +538,7 @@
     </Target>
     <SearchPaths>
       <IncludeFiles Value="include/"/>
-      <OtherUnitFiles Value="frames/;../converter/;../debugger/;../debugger/frames/;../packager/;../packager/frames/;../designer/"/>
+      <OtherUnitFiles Value="frames/;../converter/;../debugger/;../debugger/frames/;../packager/;../designer/"/>
       <UnitOutputDirectory Value="$(LazarusDir)/units/$(TargetCPU)-$(TargetOS)"/>
     </SearchPaths>
     <Parsing>
