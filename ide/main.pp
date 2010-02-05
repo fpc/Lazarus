@@ -15506,8 +15506,8 @@ begin
         ATypeInfo,false,GetClassUnitName(APersistent.ClassType),APropertyPath,
         OverrideMethodName);
     {$IFDEF IDE_DEBUG}
-    writeln('');
-    writeln('[TMainIDE.OnPropHookCreateMethod] ************2 ',r,' ',AMethodName);
+    debugln('');
+    debugln('[TMainIDE.OnPropHookCreateMethod] ************2 ',r,' ',AMethodName);
     {$ENDIF}
     ApplyCodeToolChanges;
     if r then begin

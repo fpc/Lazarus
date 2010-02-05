@@ -277,7 +277,7 @@ begin
   if ResourceTypesCache = nil then
     ResourceTypesCache := TResourceTypesCache.Create;
   ResourceTypesCache.Parse(Code, HasLRSIncludeDirective, HasRDirective);
-  DebugLn(['GuessResourceType ',Code.Filename,' HasLRS=',HasLRSIncludeDirective,' HasR=',HasRDirective]);
+  //DebugLn(['GuessResourceType ',Code.Filename,' HasLRS=',HasLRSIncludeDirective,' HasR=',HasRDirective]);
   if HasLRSIncludeDirective then
   begin
     Typ := rtLRS;
