@@ -2364,10 +2364,6 @@ begin
     if (OldValue=0)and(NewValue>=0) then begin
       FTopLeft.X:=FFixedCols;
       if RowCount=0 then begin
-        if Columns.Enabled then
-          FFixedRows := 1
-        else
-          FFixedRows := 0;
         FTopLeft.Y:=FFixedRows;
         //DebugLn('TCustomGrid.AdjustCount A ',DbgSName(Self),' FTopLeft=',dbgs(FTopLeft));
         AddDel(FRows, 1);
