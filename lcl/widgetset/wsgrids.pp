@@ -59,7 +59,7 @@ type
 
   { WidgetSetRegistration }
 
-  procedure RegisterCustomGrid;
+  function RegisterCustomGrid: Boolean;
 
 implementation
 uses
@@ -82,14 +82,16 @@ end;
 
 { WidgetSetRegistration }
 
-procedure RegisterCustomGrid;
+function RegisterCustomGrid: Boolean;
 const
   Done: Boolean = False;
 begin
+  Result := False;
   if Done then exit;
   if not WSRegisterCustomGrid then
     RegisterWSComponent(TCustomGrid, TWSCustomGrid);
   Done := True;
+  Result := True;
 end;
 
 end.

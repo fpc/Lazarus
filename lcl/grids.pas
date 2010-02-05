@@ -3872,7 +3872,10 @@ end;
 class procedure TCustomGrid.WSRegisterClass;
 begin
   inherited WSRegisterClass;
-  RegisterCustomGrid;
+  if RegisterCustomGrid then
+  begin
+    {$I lcl_dbgrid_images.lrs}
+  end;
 end;
 
 
@@ -10417,8 +10420,5 @@ begin
     'Property streamed in by older compliler', '');
   inherited WSRegisterClass;
 end;
-
-initialization
-{$I lcl_dbgrid_images.lrs}
 
 end.
