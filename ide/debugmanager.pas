@@ -2017,16 +2017,17 @@ end;
 procedure TDebugManager.LoadProjectSpecificInfo(XMLConfig: TXMLConfig;
   Merge: boolean);
 begin
-  if Merge then begin
-    // keep it simple: just load from the session and don't merge
+  if not Merge then
+  begin
+    FExceptions.LoadFromXMLConfig(XMLConfig,'Debugging/'+XMLExceptionsNode+'/');
   end;
+  // keep it simple: just load from the session and don't merge
   FBreakPointGroups.LoadFromXMLConfig(XMLConfig,
                                      'Debugging/'+XMLBreakPointGroupsNode+'/');
   FBreakPoints.LoadFromXMLConfig(XMLConfig,'Debugging/'+XMLBreakPointsNode+'/',
                                  @Project1.LongenFilename,
                                  @FBreakPointGroups.GetGroupByName);
   FWatches.LoadFromXMLConfig(XMLConfig,'Debugging/'+XMLWatchesNode+'/');
-  FExceptions.LoadFromXMLConfig(XMLConfig,'Debugging/'+XMLExceptionsNode+'/');
 end;
 
 {------------------------------------------------------------------------------
