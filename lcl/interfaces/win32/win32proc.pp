@@ -37,6 +37,10 @@ const
 Type
   TEventType = (etNotify, etKey, etKeyPress, etMouseWheel, etMouseUpDown);
 
+  TParentMsgHandlerProc = function(const AWinControl: TWinControl; Window: HWnd;
+      Msg: UInt; WParam: Windows.WParam; LParam: Windows.LParam;
+      var MsgResult: Windows.LResult; var WinProcess: Boolean): Boolean;
+
   PWin32WindowInfo = ^TWin32WindowInfo;
   TWin32WindowInfo = record
     AccelGroup: HACCEL;
@@ -44,6 +48,7 @@ Type
     Overlay: HWND;            // overlay, transparent window on top, used by designer
     PopupMenu: TPopupMenu;
     DefWndProc: WNDPROC;
+    ParentMsgHandler: TParentMsgHandlerProc;
     ParentPanel: HWND;        // if non-zero, winxp groupbox parent window hack
     WinControl: TWinControl;
     PWinControl: TWinControl; // control to paint for

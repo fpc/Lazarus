@@ -21,7 +21,6 @@
 {$ENDIF}
 type
   TWinControlAccess = class(TWinControl);
-  TCustomListViewAccess = class(TCustomListView);
 {*************************************************************}
 {            callback routines                                }
 {*************************************************************}
@@ -886,140 +885,6 @@ var
     end;
   end;
 
-  type
-    PNMLVOwnerData = PLVDISPINFO;
-  
-  procedure HandleListViewOwnerData(ALV: TCustomListViewAccess);
-  var
-    DataInfo: PNMLVOwnerData; // absolute NMHdr;
-    txt: String;
-    LVInfo: PWin32WindowInfo;
-    idx: Integer;
-    listitem: TListItem;
-  begin
-    LVInfo:= GetWin32WindowInfo(ALV.Handle);
-    if not Assigned(LVInfo) then Exit;
-    DataInfo := PNMLVOwnerData(NMHdr);
-    if not Assigned(DataInfo) or (not ALV.OwnerData) then Exit;
-    
-    listitem := ALV.Items[DataInfo^.item.iItem];
-    if not Assigned(listitem) then Exit;
-    
-    if DataInfo^.item.iSubItem = 0 then
-    begin
-      txt := listitem.Caption;
-      DataInfo^.item.mask := DataInfo^.item.mask or LVIF_IMAGE;
-      DataInfo^.item.iImage := listitem.ImageIndex;      
-    end
-    else 
-    begin
-      idx := DataInfo^.item.iSubItem - 1;
-      if idx < listitem.SubItems.Count then 
-        txt := listitem.SubItems[idx] 
-      else
-        txt := '';      
-    end;
-    
-    if txt <> '' then 
-    begin
-      if DataInfo^.hdr.code = UInt(LVN_GETDISPINFOA) then
-      begin
-        LVInfo^.DispInfoTextA[LVInfo^.DispInfoIndex]:=UTF8Decode(txt);
-        DataInfo^.item.pszText := @(LVInfo^.DispInfoTextA[LVInfo^.DispInfoIndex][1]);
-      end
-      else
-      begin
-        LVInfo^.DispInfoTextW[LVInfo^.DispInfoIndex]:=UTF8Decode(txt);
-        DataInfo^.item.pszText := @(LVInfo^.DispInfoTextW[LVInfo^.DispInfoIndex][1]);
-      end;
-      inc(LVInfo^.DispInfoIndex);
-      if LVInfo^.DispInfoIndex=LV_DISP_INFO_COUNT then LVInfo^.DispInfoIndex:=0;
-    end else
-      DataInfo^.item.pszText := nil;
-  end;
-  
-  procedure HandleListViewCustomDraw(ALV: TCustomListViewAccess);
-    function ConvState(const State: uint): TCustomDrawState;
-    begin
-      Result := [];
-      if state and CDIS_CHECKED <> 0 then Include(Result, cdsChecked);
-      if state and CDIS_DEFAULT <> 0 then Include(Result, cdsDefault);
-      if state and CDIS_DISABLED <> 0 then Include(Result, cdsDisabled);
-      if state and CDIS_FOCUS <> 0 then Include(Result, cdsFocused);
-      if state and CDIS_GRAYED <> 0 then Include(Result, cdsGrayed);
-      if state and CDIS_HOT <> 0 then Include(Result, cdsHot);
-      if state and CDIS_INDETERMINATE <> 0 then Include(Result, cdsIndeterminate);
-      if state and CDIS_MARKED <> 0 then Include(Result, cdsMarked);
-      if state and CDIS_SELECTED <> 0 then Include(Result, cdsSelected);
-    end;
-
-  const
-    CDRFRESULT: array[TCustomDrawResultFlag] of Integer = (
-      CDRF_SKIPDEFAULT,
-      CDRF_NOTIFYPOSTPAINT,
-      CDRF_NOTIFYITEMDRAW,
-      CDRF_NOTIFYSUBITEMDRAW,
-      CDRF_NOTIFYPOSTERASE,
-      CDRF_NOTIFYITEMERASE
-    );
-  var
-    DrawInfo: PNMLVCustomDraw absolute NMHdr;
-    Stage: TCustomDrawStage;
-    DrawResult: TCustomDrawResult;
-    ResultFlag: TCustomDrawResultFlag;
-    OldDC: HDC;
-  begin
-    lmNotify.result := CDRF_DODEFAULT;
-    WinProcess := False;
-    if not ALV.IsCustomDrawn(dtControl, cdPrePaint) then
-      exit;
-
-    case DrawInfo^.nmcd.dwDrawStage and $7 of //Get drawing state
-      CDDS_PREPAINT:  Stage := cdPrePaint;
-      CDDS_POSTPAINT: Stage := cdPostPaint;
-      CDDS_PREERASE:  Stage := cdPreErase;
-      CDDS_POSTERASE: Stage := cdPostErase;
-    else
-      Exit;
-    end;
-
-    OldDC := ALV.Canvas.Handle;
-    ALV.Canvas.Handle := DrawInfo^.nmcd.hdc;
-    ALV.Canvas.Font.Assign(ALV.Font);
-    ALV.Canvas.Brush.Assign(ALV.Brush);
-
-    if DrawInfo^.nmcd.dwDrawStage and CDDS_SUBITEM <> 0 then
-    begin
-      // subitem 0 is handled by dtItem
-      if DrawInfo^.iSubItem = 0 then Exit;
-      DrawResult := ALV.IntfCustomDraw(dtSubItem, Stage,
-        DrawInfo^.nmcd.dwItemSpec, DrawInfo^.iSubItem,
-        ConvState(DrawInfo^.nmcd.uItemState), nil);
-    end
-    else
-    if DrawInfo^.nmcd.dwDrawStage and CDDS_ITEM <> 0 then
-      DrawResult := ALV.IntfCustomDraw(dtItem, Stage, DrawInfo^.nmcd.dwItemSpec,
-        -1, ConvState(DrawInfo^.nmcd.uItemState), nil)
-    else
-      DrawResult := ALV.IntfCustomDraw(dtControl, Stage, -1, -1, [], @DrawInfo^.nmcd.rc); //Whole control
-
-    if DrawResult <> [] then
-      lmNotify.result := 0;
-
-    if not (cdrSkipDefault in DrawResult) then
-    begin
-      DrawInfo^.clrText := ColorToRGB(ALV.Canvas.Font.Color);
-      DrawInfo^.clrTextBk := ColorToRGB(ALV.Canvas.Brush.Color);
-    end;
-    ALV.Canvas.Handle := OldDC;
-
-    for ResultFlag := Low(ResultFlag) to High(ResultFlag) do
-    begin
-      if ResultFlag in DrawResult
-      then lmNotify.result := lmNotify.result or CDRFRESULT[ResultFlag];
-    end;
-  end;
-
   procedure HandleBitBtnCustomDraw(ABitBtn: TCustomBitBtn);
   var
     DrawInfo: PNMCustomDraw absolute NMHdr;
@@ -1382,10 +1247,17 @@ begin
         end;
       end
       else begin
-        lWinControl := GetWin32WindowInfo(HWND(LParam))^.WinControl;
+        ChildWindowInfo := GetWin32WindowInfo(HWND(LParam));
+        lWinControl := ChildWindowInfo^.WinControl;
         // buddy controls use 'awincontrol' to designate associated wincontrol
         if lWinControl = nil then
-          lWinControl := GetWin32WindowInfo(HWND(LParam))^.AWinControl;
+          lWinControl := ChildWindowInfo^.AWinControl;
+
+        if Assigned(ChildWindowInfo^.ParentMsgHandler) then
+        begin
+          if ChildWindowInfo^.ParentMsgHandler(lWinControl,
+            Window, WM_COMMAND, WParam, LParam, LMessage.Result, WinProcess) then Exit;
+        end;
 
         // TToggleBox is a TCustomCheckBox too, but we don't want to handle
         // state changes of TToggleBox ourselfves
@@ -2029,43 +1901,17 @@ begin
 {$ifdef MSG_DEBUG}
       DebugLn([MessageStackDepth, 'Notify code: ', PNMHdr(LParam)^.code]);
 {$endif}
+      if Assigned(WindowInfo) and Assigned(WindowInfo^.ParentMsgHandler) then
+      begin
+        if WindowInfo^.ParentMsgHandler(WindowInfo^.WinControl,
+          Window, WM_NOTIFY, WParam, LParam, LMNotify.Result, WinProcess) then Exit;
+      end;
       case PNMHdr(LParam)^.code of
         MCN_SELCHANGE:
         begin
           LMessage.Msg := LM_CHANGED;
           if WindowInfo^.WinControl <> nil then
             lWinControl := WindowInfo^.WinControl;
-        end;
-        NM_CLICK, NM_RCLICK:
-        begin
-          // A listview doesn't get a WM_LBUTTONUP, WM_RBUTTONUP message,
-          // because it keeps the message in its own event loop,
-          // see msdn article about "Default List-View Message Processing"
-          // therefore we take this notification and create a
-          // LM_LBUTTONUP, LM_RBUTTONUP message out of it
-          if (WindowInfo^.WinControl <> nil) and
-            (WindowInfo^.WinControl is TCustomListView) then
-          begin
-            WinProcess := False;
-            lWinControl := WindowInfo^.WinControl;
-            PLMsg:=@LMMouse;
-            with LMMouse Do
-            begin
-              if PNMHdr(LParam)^.code = NM_CLICK then
-                Msg := LM_LBUTTONUP
-              else
-                Msg := LM_RBUTTONUP;
-              Pos := GetClientCursorPos(PNMHdr(LParam)^.hwndFrom);
-              Keys := 0;  // I don't know how to get this information
-              Result := 0;
-              // to make correct event sequence in LCL we should postpone this message
-              // since we are here after call of CallDefaultWindowProc
-              
-              // TODO: prevent getting more than one Up, Down message by LCL
-              PostMessage(PNMHdr(LParam)^.hwndFrom, Msg, 0, MakeLParam(Pos.x, Pos.y));
-              Exit;
-            end;
-          end;
         end;
       else
         PLMsg:=@LMNotify;
@@ -2078,17 +1924,8 @@ begin
             case code of
               TCN_SELCHANGE:
                 idFrom := ShowHideTabPage(HWndFrom, True);
-              LVN_GETDISPINFOA, LVN_GETDISPINFOW: 
-              begin
-                if WindowInfo^.WinControl is TCustomListView then
-                  HandleListViewOwnerData(TCustomListViewAccess(WindowInfo^.WinControl))
-                //WinProcess := false;
-              end;
               NM_CUSTOMDRAW:
               begin
-                if WindowInfo^.WinControl is TCustomListView then
-                  HandleListViewCustomDraw(TCustomListViewAccess(WindowInfo^.WinControl))
-                else
                 if WindowInfo^.WinControl is TCustomBitBtn then
                   HandleBitBtnCustomDraw(TCustomBitBtn(WindowInfo^.WinControl))
                 else
