@@ -2361,10 +2361,7 @@ begin
     WM_NCPAINT:
     begin
       if (lWinControl <> nil) and TWin32ThemeServices(ThemeServices).ThemesEnabled and
-         not (lWinControl is TCustomForm) and
-         ((lWinControl is TCustomControl) or
-          ((lWinControl is TCustomStaticText) and (TCustomStaticText(lWinControl).BorderStyle = sbsSingle))
-         ) then
+         not (lWinControl is TCustomForm) and (lWinControl is TCustomControl) then
       begin
         TWin32ThemeServices(ThemeServices).PaintBorder(lWinControl, True);
         LMessage.Result := 0;

@@ -39,7 +39,7 @@ uses
 ////////////////////////////////////////////////////
   WSControls, WSStdCtrls, WSLCLClasses, WSProc, Windows, LCLType, LCLProc,
   InterfaceBase, LMessages, LCLMessageGlue,
-  Win32Int, Win32Proc, Win32WSControls, Win32Extra;
+  Win32Int, Win32Proc, Win32WSControls, Win32Extra, Win32Themes;
 
 type
 
@@ -212,7 +212,7 @@ type
 
   TWin32WSCustomStaticText = class(TWSCustomStaticText)
   published
-    class function  CreateHandle(const AWinControl: TWinControl;
+    class function CreateHandle(const AWinControl: TWinControl;
           const AParams: TCreateParams): HWND; override;
     class procedure GetPreferredSize(const AWinControl: TWinControl;
           var PreferredWidth, PreferredHeight: integer;
@@ -1377,6 +1377,30 @@ end;
 
 { TWin32WSCustomStaticText }
 
+function StaticTextWndProc(Window: HWnd; Msg: UInt; WParam: Windows.WParam;
+    LParam: Windows.LParam): LResult; stdcall;
+var
+  WindowInfo: PWin32WindowInfo;
+begin
+  // move groupbox specific code here
+  case Msg of
+    WM_NCPAINT:
+    begin
+      WindowInfo := GetWin32WindowInfo(Window);
+      if Assigned(WindowInfo) and
+         TWin32ThemeServices(ThemeServices).ThemesEnabled and
+         (GetWindowLong(Window, GWL_EXSTYLE) and WS_EX_CLIENTEDGE <> 0) then
+      begin
+        TWin32ThemeServices(ThemeServices).PaintBorder(WindowInfo^.WinControl, True);
+        Result := 0;
+      end;
+    end;
+    else
+      Result := WindowProc(Window, Msg, WParam, LParam);
+  end;
+end;
+
+
 function CalcStaticTextFlags(
    const AAlignment: TAlignment;
    const ABorder: TStaticBorderStyle;
@@ -1410,6 +1434,7 @@ begin
       Flags := Flags and not WS_BORDER; // under XP WS_BORDER is not themed and there are some problems with redraw
       FlagsEx := FlagsEx or WS_EX_CLIENTEDGE; // this is themed-border
     end;
+    SubClassWndProc := @StaticTextWndProc;
   end;
   // create window
   FinishCreateWindow(AWinControl, Params, false);
