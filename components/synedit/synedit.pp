@@ -246,6 +246,8 @@ type
   TSynEditorOptions2 = set of TSynEditorOption2;
 
 const
+  // MouseAction related options will have no effect (as default), unless they
+  // are also updated in the Constructor of the MouseAction-class
   SYNEDIT_DEFAULT_OPTIONS = [
     eoAutoIndent,
     eoScrollPastEol,
@@ -254,7 +256,7 @@ const
     eoTrimTrailingSpaces,
     eoGroupUndo,
     eoBracketHighlight
-    ];
+  ];
 
   // Those will be prevented from being set => so evtl they may be removed
   SYNEDIT_UNIMPLEMENTED_OPTIONS = [
@@ -548,7 +550,9 @@ type
     procedure SetMaxUndo(const Value: Integer);
     procedure SetModified(Value: boolean);
     procedure SetOptions(Value: TSynEditorOptions);
+    procedure UpdateOptions;
     procedure SetOptions2(const Value: TSynEditorOptions2);
+    procedure UpdateOptions2;
     procedure SetOverwriteCaret(const Value: TSynEditCaretType);
     procedure SetRightEdge(Value: Integer);
     procedure SetRightEdgeColor(Value: TColor);
@@ -1664,11 +1668,9 @@ begin
   // find / replace
   fTSearch := TSynEditSearch.Create;
   fOptions := SYNEDIT_DEFAULT_OPTIONS;
-  FTrimmedLinesView.Enabled := eoTrimTrailingSpaces in fOptions;
-  FCaret.AllowPastEOL := (eoScrollPastEol in fOptions);
-  {$IFDEF SYN_LAZARUS}
   fOptions2 := SYNEDIT_DEFAULT_OPTIONS2;
-  {$ENDIF}
+  UpdateOptions;
+  UpdateOptions2;
   fScrollTimer := TTimer.Create(Self);
   fScrollTimer.Enabled := False;
   fScrollTimer.Interval := 100;
@@ -6924,9 +6926,7 @@ begin
   if (Value <> fOptions) then begin
     ChangedOptions:=(fOptions-Value)+(Value-fOptions);
     fOptions := Value;
-    FTrimmedLinesView.Enabled := eoTrimTrailingSpaces in fOptions;
-    FCaret.AllowPastEOL := (eoScrollPastEol in fOptions);
-    FCaret.KeepCaretX := (eoKeepCaretX in fOptions);
+    UpdateOptions;
     if not (eoScrollPastEol in Options) then
       LeftChar := LeftChar;
     if (eoScrollPastEol in Options) or (eoScrollPastEof in Options) then begin
@@ -6942,9 +6942,6 @@ begin
     end;
     if (eoShowSpecialChars in ChangedOptions) and HandleAllocated then
       Invalidate;
-    if (eoNoSelection in ChangedOptions) then
-      FBlockSelection.Enabled := not(eoNoSelection in fOptions);
-    fUndoList.GroupUndo := eoGroupUndo in fOptions;
 
     (* Deal with deprecated values
        Those are all controlled by mouse-actions.
@@ -7017,6 +7014,15 @@ begin
   end;
 end;
 
+procedure TCustomSynEdit.UpdateOptions;
+begin
+  FTrimmedLinesView.Enabled := eoTrimTrailingSpaces in fOptions;
+  FCaret.AllowPastEOL := (eoScrollPastEol in fOptions);
+  FCaret.KeepCaretX := (eoKeepCaretX in fOptions);
+  FBlockSelection.Enabled := not(eoNoSelection in fOptions);
+  FUndoList.GroupUndo := eoGroupUndo in fOptions;
+end;
+
 procedure TCustomSynEdit.SetOptions2(const Value: TSynEditorOptions2);
 var
   ChangedOptions: TSynEditorOptions2;
@@ -7024,14 +7030,18 @@ begin
   if (Value <> fOptions2) then begin
     ChangedOptions:=(fOptions2 - Value) + (Value - fOptions2);
     fOptions2 := Value;
+    UpdateOptions2;
     if eoAlwaysVisibleCaret in fOptions2 then
       MoveCaretToVisibleArea;
-    if eoPersistentBlock in ChangedOptions then
-      FBlockSelection.Persistent := eoPersistentBlock in fOptions2;
-    FCaret.SkipTabs := (eoCaretSkipTab in fOptions2);
     if (eoAutoHideCursor in ChangedOptions) and not(eoAutoHideCursor in fOptions2) then
       UpdateCursor;
   end;
+end;
+
+procedure TCustomSynEdit.UpdateOptions2;
+begin
+  FBlockSelection.Persistent := eoPersistentBlock in fOptions2;
+  FCaret.SkipTabs := (eoCaretSkipTab in fOptions2);
 end;
 
 procedure TCustomSynEdit.SetOptionFlag(Flag: TSynEditorOption; Value: boolean);
