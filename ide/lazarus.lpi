@@ -544,6 +544,7 @@
     <Parsing>
       <SyntaxOptions>
         <CStyleOperator Value="False"/>
+        <UseAnsiStrings Value="True"/>
       </SyntaxOptions>
     </Parsing>
     <Other>
@@ -555,14 +556,4 @@
     </Other>
     <CompileReasons Compile="False" Build="False" Run="False"/>
   </CompilerOptions>
-  <Debugging>
-    <Exceptions Count="2">
-      <Item1>
-        <Name Value="ECodeToolError"/>
-      </Item1>
-      <Item2>
-        <Name Value="EReadError"/>
-      </Item2>
-    </Exceptions>
-  </Debugging>
 </CONFIG>
