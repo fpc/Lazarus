@@ -9437,19 +9437,15 @@ end;
 function TQtCalendar.calViewportEventFilter(Sender: QObjectH; Event: QEventH
   ): Boolean; cdecl;
 begin
-  {we install only mouse events on QCalendar viewport}
+  {we install only mouse dblclick event on QCalendar viewport,
+   since inside signalActivated we don't know is it signalled from
+   dblclick or by pressing return key.}
   Result := False;
   QEvent_accept(Event);
   if (LCLObject <> nil) then
   begin
     case QEvent_type(Event) of
-      QEventMouseButtonPress,
-      QEventMouseButtonRelease: SlotMouse(Sender, Event);
-      QEventMouseButtonDblClick:
-      begin
-        FMouseDoubleClicked := True;
-        SlotMouse(Sender, Event);
-      end;
+      QEventMouseButtonDblClick: FMouseDoubleClicked := True;
     end;
   end;
 end;
@@ -9511,23 +9507,14 @@ procedure TQtCalendar.SignalActivated(ADate: QDateH); cdecl;
 var
   y,m,d: Integer;
   Msg: TLMMouse;
-  Event: QKeyEventH;
+  AKeyEvent: QKeyEventH;
+  AMouseEvent: QMouseEventH;
+  APos: TQtPoint;
+  AGlobalPos: TQtPoint;
 begin
   {$IFDEF VerboseQt}
   writeln('TQtCalendar.signalActivated ');
   {$ENDIF}
-
-  {avoid OnAcceptDate() to trigger twice if doubleclicked
-   via FMouseDoubleClicked, also send Key events when item
-   activated (only Key_Return & Key_Enter activates)}
-  if not FMouseDoubleClicked then
-  begin
-    Event := QKeyEvent_create(QEventKeyPress, QtKey_Return, QtNoModifier);
-    QCoreApplication_postEvent(Widget, Event);
-    Event := QKeyEvent_create(QEventKeyRelease, QtKey_Return, QtNoModifier);
-    QCoreApplication_postEvent(Widget, Event);
-  end else
-    FMouseDoubleClicked := False;
 
   FillChar(Msg, SizeOf(Msg), #0);
   Msg.Msg := LM_DAYCHANGED;
@@ -9536,6 +9523,35 @@ begin
   d := QDate_day(ADate);
   if (y <> aYear) or (m <> aMonth) or (d <> aDay) then
     DeliverMessage(Msg);
+  aYear := y;
+  aMonth := m;
+  aDay := d;
+
+  {avoid OnAcceptDate() to trigger twice if doubleclicked
+   via FMouseDoubleClicked, also send dummy Key events to LCL when item
+   activated (only QtKey_Return activates)}
+  if not FMouseDoubleClicked then
+  begin
+    AKeyEvent := QKeyEvent_create(QEventKeyPress, QtKey_Return, QtNoModifier);
+    SlotKey(Widget, AKeyEvent);
+    QEvent_destroy(AKeyEvent);
+    AKeyEvent := QKeyEvent_create(QEventKeyRelease, QtKey_Return, QtNoModifier);
+    SlotKey(Widget, AKeyEvent);
+    QEvent_destroy(AKeyEvent);
+  end else
+  begin
+    FMouseDoubleClicked := False;
+    if QWidget_underMouse(Widget) then
+    begin
+      QCursor_pos(@AGlobalPos);
+      QWidget_mapFromGlobal(Widget, @APos, @AGlobalPos);
+      AMouseEvent := QMouseEvent_create(QEventMouseButtonDblClick, @APos,
+        @AGlobalPos, QtLeftButton, QtLeftButton,
+        QApplication_keyboardModifiers());
+      SlotMouse(Widget, AMouseEvent);
+      QMouseEvent_destroy(AMouseEvent);
+    end;
+  end;
 end;
 
 {------------------------------------------------------------------------------
@@ -9548,6 +9564,9 @@ procedure TQtCalendar.SignalClicked(ADate: QDateH); cdecl;
 var
   Msg: TLMessage;
   y, m, d: Integer;
+  AEvent: QMouseEventH;
+  APos: TQtPoint;
+  AGlobalPos: TQtPoint;
 begin
   {$IFDEF VerboseQt}
   writeln('TQtCalendar.signalClicked');
@@ -9559,6 +9578,26 @@ begin
   d := QDate_day(ADate);
   if (y <> aYear) or (m <> aMonth) or (d <> aDay) then
     DeliverMessage(Msg);
+
+  aYear := y;
+  aMonth := m;
+  aDay := d;
+
+  if QWidget_underMouse(Widget) then
+  begin
+    {we create dummy event for LCL, and call directly SlotMouse() - no need
+    to send it via event loop}
+    QCursor_pos(@AGlobalPos);
+    QWidget_mapFromGlobal(Widget, @APos, @AGlobalPos);
+    AEvent := QMouseEvent_create(QEventMouseButtonPress, @APos, @AGlobalPos,
+      QtLeftButton, QtLeftButton, QApplication_keyboardModifiers());
+    SlotMouse(Widget, AEvent);
+    QMouseEvent_destroy(AEvent);
+    AEvent := QMouseEvent_create(QEventMouseButtonRelease, @APos, @AGlobalPos,
+      QtLeftButton, QtLeftButton, QApplication_keyboardModifiers());
+    SlotMouse(Widget, AEvent);
+    QMouseEvent_destroy(AEvent);
+  end;
 end;
 
 {------------------------------------------------------------------------------
