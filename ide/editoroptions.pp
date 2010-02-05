@@ -851,6 +851,7 @@ type
     // general options
     fFindTextAtCursor: Boolean;
     fShowTabCloseButtons: Boolean;
+    fShowTabNumbers: Boolean;
     fSynEditOptions: TSynEditorOptions;
     fSynEditOptions2: TSynEditorOptions2;
     fUndoAfterSave: Boolean;
@@ -981,6 +982,7 @@ type
       read fSynEditOptions2 write fSynEditOptions2 default SynEditDefaultOptions2;
     property ShowTabCloseButtons: Boolean
       read fShowTabCloseButtons write fShowTabCloseButtons;
+    property ShowTabNumbers: Boolean read fShowTabNumbers write fShowTabNumbers;
     property UndoAfterSave: Boolean read fUndoAfterSave
       write fUndoAfterSave default True;
     property FindTextAtCursor: Boolean
@@ -2628,6 +2630,8 @@ begin
     fShowTabCloseButtons :=
       XMLConfig.GetValue(
       'EditorOptions/General/Editor/ShowTabCloseButtons', True);
+    fShowTabNumbers :=
+      XMLConfig.GetValue('EditorOptions/General/Editor/ShowTabNumbers', False);
     FCopyWordAtCursorOnCopyNone :=
       XMLConfig.GetValue(
       'EditorOptions/General/Editor/CopyWordAtCursorOnCopyNone', True);
@@ -2868,6 +2872,8 @@ begin
 
     XMLConfig.SetDeleteValue('EditorOptions/General/Editor/ShowTabCloseButtons'
       , fShowTabCloseButtons, True);
+    XMLConfig.SetDeleteValue('EditorOptions/General/Editor/ShowTabNumbers'
+      , fShowTabNumbers, False);
     XMLConfig.SetDeleteValue(
       'EditorOptions/General/Editor/CopyWordAtCursorOnCopyNone',
       FCopyWordAtCursorOnCopyNone, True);

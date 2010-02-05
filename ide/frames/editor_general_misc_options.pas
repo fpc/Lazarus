@@ -63,6 +63,9 @@ procedure TEditorGeneralMiscOptionsFrame.Setup(ADialog: TAbstractOptionsEditorDi
 begin
   FDialog := ADialog;
   EditorOptionsGroupBox.Caption := dlgEditorOptions;
+  // Warning:
+  // Only append new items at the end of list.
+  // since revision 23597 the order of boxes is hardcoded in Read/WriteSettings
   with EditorOptionsGroupBox do
   begin
     // visual effects
@@ -76,6 +79,7 @@ begin
     Items.Add(dlgFindTextatCursor);
     Items.Add(dlgCopyWordAtCursorOnCopyNone);
     Items.Add(dlgCopyPasteKeepFolds);
+    Items.Add(dlgTabNumbersNotebook);
   end;
   EditorTrimSpaceTypeCheckBox.Items.Add(dlgTrimSpaceTypeLeaveLine);
   EditorTrimSpaceTypeCheckBox.Items.Add(dlgTrimSpaceTypeEditLine);
@@ -97,6 +101,7 @@ begin
       Checked[3] := FindTextAtCursor;
       Checked[4] := CopyWordAtCursorOnCopyNone;
       Checked[5] := eoFoldedCopyPaste in SynEditOptions2;
+      Checked[6] := ShowTabNumbers;
     end;
     EditorTrimSpaceTypeCheckBox.ItemIndex := ord(TrimSpaceType);
   end;
@@ -125,6 +130,7 @@ begin
       SynEditOptions2 := SynEditOptions2 + [eoFoldedCopyPaste]
     else
       SynEditOptions2 := SynEditOptions2 - [eoFoldedCopyPaste];
+    ShowTabNumbers := EditorOptionsGroupBox.Checked[6];
     TrimSpaceType := TSynEditStringTrimmingType(EditorTrimSpaceTypeCheckBox.ItemIndex);
   end;
 end;

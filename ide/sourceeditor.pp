@@ -611,6 +611,7 @@ type
     procedure UpdateActiveEditColors(AEditor: TSynEdit);
     procedure SetIncrementalSearchStr(const AValue: string);
     procedure IncrementalSearch(ANext, ABackward: Boolean);
+    procedure UpdatePageNames;
 
     // macros
     function MacroFuncCol(const s:string; const Data: PtrInt;
@@ -2909,7 +2910,11 @@ var
   NewPageName: String;
 begin
   p:=SourceNotebook.FindPageWithEditor(Self);
-  NewPageName:=FPageName;
+  if EditorOpts.ShowTabNumbers and (p < 10) then
+    // Number pages 1, ..., 9, 0 -- according to Alt+N hotkeys.
+    NewPageName:=Format('%s:%d', [FPageName, (p+1) mod 10])
+  else
+    NewPageName:=FPageName;
   if Modified then NewPageName:='*'+NewPageName;
   if SourceNotebook.NoteBook.Pages[p]<>NewPageName then
     SourceNotebook.NoteBook.Pages[p]:=NewPageName;
@@ -5102,6 +5107,14 @@ begin
   List.Free;
 end;
 
+procedure TSourceNotebook.UpdatePageNames;
+var
+  i: Integer;
+begin
+  for i:=0 to Notebook.PageCount-1 do
+    FindSourceEditorWithPageIndex(i).UpdatePageName;
+end;
+
 procedure TSourceNotebook.UpdateEncodingMenuItems;
 var
   List: TStringList;
@@ -5617,6 +5630,7 @@ begin
   if Assigned(OnMovingPage) then
     OnMovingPage(Self,OldPageIndex,NewPageIndex);
   NoteBook.Pages.Move(OldPageIndex,NewPageIndex);
+  UpdatePageNames;
 end;
 
 procedure TSourceNotebook.MoveEditorLeft(CurrentPageIndex: integer);
@@ -6627,6 +6641,7 @@ Begin
   writeln('[TSourceNotebook.NewFile] D ');
   {$ENDIF}
   Result.PageName:=FindUniquePageName(NewShortName, FindPageWithEditor(Result));
+  UpdatePageNames;
   if FocusIt then FocusEditor;
   {$IFDEF IDE_DEBUG}
   writeln('[TSourceNotebook.NewFile] end');
@@ -6665,6 +6680,7 @@ begin
     Notebook.Pages.Delete(APageIndex);
     //writeln('TSourceNotebook.CloseFile D  APageIndex=',APageIndex,' PageCount=',PageCount,' NoteBook.APageIndex=',Notebook.APageIndex);
     UpdateStatusBar;
+    UpdatePageNames;
     // set focus to new editor
     TempEditor:=FindSourceEditorWithPageIndex(PageIndex);
     if (TempEditor <> nil) then
@@ -7146,6 +7162,7 @@ Begin
 
   Exclude(States,snWarnedFont);
   CheckFont;
+  UpdatePageNames;
 end;
 
 procedure TSourceNotebook.ReloadHighlighters;

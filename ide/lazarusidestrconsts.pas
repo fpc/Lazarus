@@ -1191,6 +1191,7 @@ resourcestring
   dlgScrollPastEndLine = 'Caret past end of line';
   lisShowSpecialCharacters = 'Show special characters';
   dlgCloseButtonsNotebook = 'Show close buttons in notebook';
+  dlgTabNumbersNotebook = 'Show tab numbers in notebook';
   dlgShowScrollHint = 'Show scroll hint';
   dlgShowGutterHints = 'Show gutter hints';
   dlgSmartTabs = 'Smart tabs';
