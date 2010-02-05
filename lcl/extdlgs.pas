@@ -464,20 +464,7 @@ const
     (X: 52; Y: 98), (X: 29; Y: 98), (X: 6; Y: 98), (X: -1; Y: -1),
     (X: -1; Y: -1), (X: -1; Y: -1), (X: -1; Y: -1),
     (X: -1; Y: -1), (X: -1; Y: -1)));
-  BtnSizes: array[TCalculatorLayout,1..2] of Integer =
-    ((36,22),(21,21));
-  PanelSizes: array[TCalculatorLayout,1..2] of Integer =
-    ((129,140),(124,98));
   ResultKeys = [#13, '=', '%'];
-  BtnGlyphs: array[TCalculatorLayout,cbSgn..cbCancel] of String =
-   (('btncalcpmin','','','btncalcmul','btncalcmin','btncalcplus', '',
-     '','','','','','','','','', 'btncalcok', 'btncalccancel'),
-    ('btncalcpmin','','','btncalcmul','btncalcmin','btncalcplus', '',
-     '','','','','','','','','', 'btncalcok', 'btncalccancel')
-   );
-  BtnCaptions: array[cbSgn..cbMC] of String =
-   ('±', ',', '/', '*', '-', '+', 'sqrt', '%', '1/x', '=', '<-', 'C',
-    'MP','MS','MR','MC');
 
 { ---------------------------------------------------------------------
   Auxiliary
@@ -542,7 +529,12 @@ end;
 
 function CreateCalcBtn(AParent: TWinControl; AKind: TCalcBtnKind;
   AOnClick: TNotifyEvent; ALayout: TCalculatorLayout): TCalcButton;
-
+const
+  BtnSizes: array[TCalculatorLayout,1..2] of Integer =
+    ((36,22),(21,21));
+  BtnCaptions: array[cbSgn..cbMC] of String =
+   ('±', ',', '/', '*', '-', '+', 'sqrt', '%', '1/x', '=', '<-', 'C',
+    'MP','MS','MR','MC');
 begin
   Result:=TCalcButton.CreateKind(AParent, AKind);
   with Result do
@@ -621,6 +613,15 @@ type
   end;
 
 constructor TCalculatorPanel.CreateLayout(AOwner: TComponent; ALayout: TCalculatorLayout);
+const
+  PanelSizes: array[TCalculatorLayout,1..2] of Integer =
+    ((129,140),(124,98));
+  BtnGlyphs: array[TCalculatorLayout,cbSgn..cbCancel] of String =
+   (('btncalcpmin','','','btncalcmul','btncalcmin','btncalcplus', '',
+     '','','','','','','','','', 'btncalcok', 'btncalccancel'),
+    ('btncalcpmin','','','btncalcmul','btncalcmin','btncalcplus', '',
+     '','','','','','','','','', 'btncalcok', 'btncalccancel')
+   );
 var
   I: TCalcBtnKind;
   Bitmap: TCustomBitmap;
