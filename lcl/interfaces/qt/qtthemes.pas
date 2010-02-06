@@ -34,7 +34,8 @@ type
         (ControlElement: QStyleControlElement);
       qdvComplexControl:
         (ComplexControl: QStyleComplexControl;
-         SubControls: QStyleSubControls);
+         SubControls: QStyleSubControls;
+         Features: Cardinal);
       qdvStandardPixmap:
         (StandardPixmap: QStyleStandardPixmap);
   end;
@@ -150,7 +151,6 @@ begin
 
       ARect := R;
       Element := GetDrawElement(Details);
-
       case Element.DrawVariant of
         qdvNone:
           inherited DrawElement(DC, Details, R, ClipRect);
@@ -188,12 +188,18 @@ begin
         qdvComplexControl:
         begin
           case Element.ComplexControl of
-            QStyleCC_ToolButton: opt := QStyleOptionToolButton_create();
+            QStyleCC_ToolButton:
+            begin
+              opt := QStyleOptionToolButton_create();
+              QStyleOptionToolButton_setFeatures(QStyleOptionToolButtonH(opt),
+                Element.Features);
+            end;
 
             QStyleCC_TitleBar, QStyleCC_MdiControls:
             begin
               opt := QStyleOptionTitleBar_create();
-              QStyleOptionTitleBar_setTitleBarFlags(QStyleOptionTitleBarH(opt), QtWindow or QtWindowSystemMenuHint);
+              QStyleOptionTitleBar_setTitleBarFlags(QStyleOptionTitleBarH(opt),
+                QtWindow or QtWindowSystemMenuHint);
               // workaround: qt has own minds about position of requested part -
               // but we need a way to draw it at our position
               Context.translate(ARect.Left, ARect.Top);
@@ -206,14 +212,18 @@ begin
               QStyleOptionSlider_setMaximum(QStyleOptionSliderH(opt), 100);
             end;
           else
-            opt := QStyleOptionComplex_create(LongInt(QStyleOptionVersion), LongInt(QStyleOptionSO_Default));
+            opt := QStyleOptionComplex_create(LongInt(QStyleOptionVersion),
+              LongInt(QStyleOptionSO_Default));
           end;
 
-          QStyleOptionComplex_setSubControls(QStyleOptionComplexH(opt), Element.SubControls);
+          if Element.SubControls > QStyleSC_None then
+            QStyleOptionComplex_setSubControls(QStyleOptionComplexH(opt),
+              Element.SubControls);
 
           QStyleOption_setState(opt, GetControlState(Details));
           QStyleOption_setRect(opt, @ARect);
-          QStyle_drawComplexControl(Style, Element.ComplexControl, QStyleOptionComplexH(opt), Context.Widget);
+          QStyle_drawComplexControl(Style, Element.ComplexControl,
+            QStyleOptionComplexH(opt), Context.Widget);
           QStyleOption_Destroy(opt);
         end;
         qdvPrimitive:
@@ -227,18 +237,6 @@ begin
             QStylePE_PanelTipLabel:
               begin
                 opt := QStyleOptionFrame_create();
-              end;
-            QStylePE_IndicatorButtonDropDown:
-              begin
-                opt := QStyleOptionToolButton_create();
-                QStyleOptionToolButton_setArrowType(QStyleOptionToolButtonH(opt),
-                  QtDownArrow);
-                QStyleOption_setState(opt, GetControlState(Details));
-                QStyleOption_setRect(opt, @ARect);
-                QStyle_drawComplexControl(Style, QStyleCC_ToolButton,
-                  QStyleOptionToolButtonH(opt), Context.Widget);
-                QStyleOption_Destroy(opt);
-                exit;
               end;
               QStylePE_IndicatorBranch:
               begin
@@ -499,8 +497,10 @@ begin
             end;
           TP_SPLITBUTTONDROPDOWN:
             begin
-              Result.DrawVariant := qdvPrimitive;
-              Result.PrimitiveElement := QStylePE_IndicatorButtonDropDown;
+              Result.DrawVariant := qdvComplexControl;
+              Result.ComplexControl := QStyleCC_ToolButton;
+              Result.SubControls := QStyleSC_None;
+              Result.Features := QStyleOptionToolButtonMenuButtonPopup;
             end;
           TP_SEPARATOR,
           TP_SEPARATORVERT:
