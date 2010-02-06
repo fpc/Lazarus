@@ -213,6 +213,18 @@ begin
               begin
                 opt := QStyleOptionFrame_create();
               end;
+            QStylePE_IndicatorButtonDropDown:
+              begin
+                opt := QStyleOptionToolButton_create();
+                QStyleOptionToolButton_setArrowType(QStyleOptionToolButtonH(opt),
+                  QtDownArrow);
+                QStyleOption_setState(opt, GetControlState(Details));
+                QStyleOption_setRect(opt, @ARect);
+                QStyle_drawComplexControl(Style, QStyleCC_ToolButton,
+                  QStyleOptionToolButtonH(opt), Context.Widget);
+                QStyleOption_Destroy(opt);
+                exit;
+              end;
             else
               opt := QStyleOption_create(Integer(QStyleOptionVersion), Integer(QStyleOptionSO_Default));
           end;
