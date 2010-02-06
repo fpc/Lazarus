@@ -220,7 +220,7 @@ var
       if Node.Data <> nil then
         with TAbstractIDEOptionsEditor(Node.Data) do
           if ((ClassTypeForCompare = nil) and (SupportedOptionsClass = nil)) or
-             ClassTypeForCompare.InheritsFrom(SupportedOptionsClass) then
+             ((SupportedOptionsClass <> nil) and ClassTypeForCompare.InheritsFrom(SupportedOptionsClass)) then
             WriteSettings(AOptions);
       Traverse(Node.GetFirstChild);
       Traverse(Node.GetNextSibling);
