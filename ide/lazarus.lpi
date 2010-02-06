@@ -556,4 +556,14 @@
     </Other>
     <CompileReasons Compile="False" Build="False" Run="False"/>
   </CompilerOptions>
+  <Debugging>
+    <Exceptions Count="2">
+      <Item1>
+        <Name Value="EAbort"/>
+      </Item1>
+      <Item2>
+        <Name Value="ECodetoolError"/>
+      </Item2>
+    </Exceptions>
+  </Debugging>
 </CONFIG>
