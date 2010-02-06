@@ -116,6 +116,10 @@ var
   Features: QStyleOptionButtonButtonFeatures;
   Position: QStyleOptionHeaderSectionPosition;
   Palette: QPaletteH;
+  AColor: TQColor;
+  ABrush: QBrushH;
+  W: QWidgetH;
+  AViewportPaint: Boolean = false;
 begin
   if (Context <> nil) then
   begin
@@ -123,8 +127,16 @@ begin
     try
       if Context.Parent <> nil then
       begin
-        Palette := QWidget_palette(Context.Parent);
-        QPainter_setBackground(Context.Widget, QPalette_background(Palette));
+        W := QWidget_parentWidget(Context.Parent);
+        if (W <> nil) and QObject_inherits(W,'QAbstractScrollArea') then
+        begin
+          {do not set any palette on QAbstractScrollArea viewport ! }
+          AViewportPaint := True;
+        end else
+        begin
+          Palette := QWidget_palette(Context.Parent);
+          QPainter_setBackground(Context.Widget, QPalette_background(Palette));
+        end;
       end else
       begin
         Palette := QPalette_create();
@@ -132,10 +144,13 @@ begin
         QPainter_setBackground(Context.Widget, QPalette_background(Palette));
         QPalette_destroy(Palette);
       end;
+
       if HasTransparentParts(Details) then
         QPainter_setBackgroundMode(Context.Widget, QtTransparentMode);
+
       ARect := R;
       Element := GetDrawElement(Details);
+
       case Element.DrawVariant of
         qdvNone:
           inherited DrawElement(DC, Details, R, ClipRect);
@@ -224,6 +239,30 @@ begin
                   QStyleOptionToolButtonH(opt), Context.Widget);
                 QStyleOption_Destroy(opt);
                 exit;
+              end;
+              QStylePE_IndicatorBranch:
+              begin
+                opt := QStyleOption_create(Integer(QStyleOptionVersion),
+                  Integer(QStyleOptionSO_Default));
+                if AViewPortPaint then
+                begin
+                  {we must reinitialize QPainter brush from opt since
+                  it isn't property initialised, also we must fillrect
+                  because dots are visible inside branch}
+                  QStyleOption_initFrom(opt, Context.Parent);
+                  Palette := QPalette_create();
+                  QStyleOption_palette(opt, Palette);
+                  Context.FillRect(ARect.Left, ARect.Top,
+                    ARect.Right - ARect.Left,
+                    ARect.Bottom - ARect.Top);
+                  AColor := QPalette_color(Palette, QPaletteBackground)^;
+                  ABrush := QBrush_create(QPainter_brush(Context.Widget));
+                  QBrush_setColor(ABrush, @AColor);
+                  QBrush_setStyle(ABrush, QtNoBrush);
+                  QPainter_setBrush(Context.Widget, ABrush);
+                  QPalette_destroy(Palette);
+                  QBrush_destroy(ABrush);
+                end;
               end;
             else
               opt := QStyleOption_create(Integer(QStyleOptionVersion), Integer(QStyleOptionSO_Default));
@@ -555,7 +594,7 @@ begin
         if Details.Part = TVP_GLYPH then
         begin
           Result.DrawVariant := qdvPrimitive;
-          Result.PrimitiveElement := QStylePE_IndicatorBranch
+          Result.PrimitiveElement := QStylePE_IndicatorBranch;
         end;
       end;
     teToolTip:
