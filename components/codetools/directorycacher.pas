@@ -983,10 +983,15 @@ begin
     end else begin
       // not found in cache -> search in complete source path
 
-      SrcPath:=Strings[ctdcsCompleteSrcPath];
-
-      // search in search path
-      Result:=FindUnitSourceInCleanSearchPath(AUnitName,SrcPath,AnyCase);
+      if Directory='' then begin
+        // virtual directory => search virtual unit
+        Result:=Pool.FindVirtualUnit(AUnitName);
+      end;
+      if Result='' then begin
+        // search in search path
+        SrcPath:=Strings[ctdcsCompleteSrcPath];
+        Result:=FindUnitSourceInCleanSearchPath(AUnitName,SrcPath,AnyCase);
+      end;
       if Result='' then begin
         // search in unit links
         {$IFDEF ShowTriedUnits}
@@ -1236,10 +1241,28 @@ end;
 function TCTDirectoryCachePool.FindVirtualUnit(const AUnitName: string): string;
 var
   e: TCTPascalExtType;
+  CurUnitName:String;
 begin
+  // search normal
   for e:=Low(CTPascalExtension) to High(CTPascalExtension) do begin
     if CTPascalExtension[e]='' then continue;
     Result:=FindVirtualFile(AUnitName+CTPascalExtension[e]);
+    if Result<>'' then exit;
+  end;
+  // search lowercase
+  CurUnitName:=lowercase(AUnitName);
+  if CurUnitName<>AUnitName then begin
+    for e:=Low(CTPascalExtension) to High(CTPascalExtension) do begin
+      if CTPascalExtension[e]='' then continue;
+      Result:=FindVirtualFile(CurUnitName+CTPascalExtension[e]);
+      if Result<>'' then exit;
+    end;
+  end;
+  // search uppercase
+  CurUnitName:=uppercase(AUnitName);
+  for e:=Low(CTPascalExtension) to High(CTPascalExtension) do begin
+    if CTPascalExtension[e]='' then continue;
+    Result:=FindVirtualFile(CurUnitName+uppercase(CTPascalExtension[e]));
     if Result<>'' then exit;
   end;
   Result:='';

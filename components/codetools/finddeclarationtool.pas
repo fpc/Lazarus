@@ -1603,24 +1603,26 @@ begin
   NewContext:=CleanFindContext;
   //DebugLn('TFindDeclarationTool.FindDeclarationOfPropertyPath PropertyPath="',PropertyPath,'"');
   if PropertyPath='' then exit;
-  BuildTree(false);
-
-  // first search the class/variable in the interface
-  StartPos:=1;
-  Identifier:=GetNextIdentifier;
-  if Identifier='' then exit;
-  Context.Tool:=Self;
-  Context.Node:=FindDeclarationNodeInInterface(Identifier,true);
-  if Context.Node=nil then begin
-    //DebugLn(['TFindDeclarationTool.FindDeclarationOfPropertyPath Identifier not found in interface ',Identifier]);
-    exit;
-  end;
-  Params:=TFindDeclarationParams.Create;
   ActivateGlobalWriteLock;
+  Params:=TFindDeclarationParams.Create;
   try
+    BuildTree(false);
+
+    //DebugLn(['TFindDeclarationTool.FindDeclarationOfPropertyPath ',Src]);
+
+    // first search the class/variable in the interface
+    StartPos:=1;
+    Identifier:=GetNextIdentifier;
+    if Identifier='' then exit;
+    Context.Tool:=Self;
+    Context.Node:=FindDeclarationNodeInInterface(Identifier,true);
+    if Context.Node=nil then begin
+      DebugLn(['TFindDeclarationTool.FindDeclarationOfPropertyPath Identifier not found in interface ',Identifier]);
+      exit;
+    end;
     Context:=FindBaseTypeOfNode(Params,Context.Node);
     if Context.Node=nil then begin
-      //DebugLn(['TFindDeclarationTool.FindDeclarationOfPropertyPath context not found']);
+      DebugLn(['TFindDeclarationTool.FindDeclarationOfPropertyPath context not found']);
       exit;
     end;
     // then search the properties
@@ -1988,9 +1990,10 @@ begin
   begin
     RaiseException('TFindDeclarationTool.FindUnitSource Invalid Data');
   end;
-  
+
   NewUnitName:=AnUnitName;
   NewInFilename:=AnUnitInFilename;
+
   AFilename:=DirectoryCache.FindUnitSourceInCompletePath(
                                                NewUnitName,NewInFilename,false);
   Result:=TCodeBuffer(Scanner.OnLoadSource(Self,AFilename,true));

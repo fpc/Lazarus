@@ -734,21 +734,27 @@ function TEventsCodeTool.CreateMethod(ClassNode: TCodeTreeNode;
   end;
 
   function FindPropertyType(out FindContext: TFindContext): boolean;
+  var
+    Tool: TFindDeclarationTool;
   begin
     Result:=false;
     if APropertyPath<>'' then begin
       // find unit of property
+      Tool:=nil;
+      FindContext:=CleanFindContext;
       if APropertyUnitName='' then begin
-        FindContext.Tool:=Self;
+        Tool:=Self;
       end else begin
-        FindContext.Tool:=FindCodeToolForUsedUnit(APropertyUnitName,'',true);
-        if FindContext.Tool=nil then
+        Tool:=FindCodeToolForUsedUnit(APropertyUnitName,'',true);
+        if Tool=nil then
           raise Exception.Create('failed to get codetool for unit '+APropertyUnitName);
       end;
       // find property with type
-      if not FindContext.Tool.FindDeclarationOfPropertyPath(
-        APropertyPath,FindContext,true)
-      then exit;
+      if not Tool.FindDeclarationOfPropertyPath(APropertyPath,FindContext,true)
+      then begin
+        DebugLn(['FindPropertyType FindDeclarationOfPropertyPath failed: ',Tool.MainFilename,' APropertyPath=',APropertyPath]);
+        exit;
+      end;
       if FindContext.Node.Desc<>ctnProperty then
         FindContext.Tool.RaiseException(
           APropertyPath+' is not a property.'
@@ -775,9 +781,9 @@ begin
   try
     if (ClassNode=nil) or (ClassNode.Desc<>ctnClass) or (AMethodName='')
     or (ATypeInfo=nil) or (SourceChangeCache=nil) or (Scanner=nil) then exit;
-    {$IFDEF CTDEBUG}
+    { $IFDEF CTDEBUG}
     DebugLn(['[TEventsCodeTool.CreateMethod] A AMethodName="',AMethodName,'" in "',MainFilename,'" UseTypeInfoForParameters=',UseTypeInfoForParameters]);
-    {$ENDIF}
+    { $ENDIF}
     // initialize class for code completion
     CodeCompleteClassNode:=ClassNode;
     CodeCompleteSrcChgCache:=SourceChangeCache;
@@ -798,9 +804,9 @@ begin
                          [phpWithoutClassName, phpWithoutName, phpInUpperCase]);
     end;
     if not ProcExistsInCodeCompleteClass(CleanMethodDefinition) then begin
-      {$IFDEF CTDEBUG}
+      { $IFDEF CTDEBUG}
       DebugLn('[TEventsCodeTool.CreateMethod] insert method definition to class');
-      {$ENDIF}
+      { $ENDIF}
       // insert method definition into class
       InsertCall:='';
       if UseTypeInfoForParameters then begin
@@ -829,9 +835,9 @@ begin
                      phpWithoutParamTypes]));
         end;
       end;
-      {$IFDEF CTDEBUG}
+      { $IFDEF CTDEBUG}
       DebugLn('[TEventsCodeTool.CreateMethod] MethodDefinition="',MethodDefinition,'"');
-      {$ENDIF}
+      { $ENDIF}
       if Section in [pcsPublished,pcsPublic] then
         NewSection:=ncpPublishedProcs
       else
@@ -856,9 +862,9 @@ begin
       AddClassInsertion(CleanMethodDefinition, MethodDefinition, AMethodName,
                         NewSection,nil,ProcBody);
     end;
-    {$IFDEF CTDEBUG}
+    { $IFDEF CTDEBUG}
     DebugLn('[TEventsCodeTool.CreateMethod] invoke class completion');
-    {$ENDIF}
+    { $ENDIF}
     if not InsertAllNewClassParts then
       RaiseException(ctsErrorDuringInsertingNewClassParts);
     if not CreateMissingProcBodies then
@@ -869,9 +875,9 @@ begin
     // apply the changes
     if not SourceChangeCache.Apply then
       RaiseException(ctsUnableToApplyChanges);
-    {$IFDEF CTDEBUG}
+    { $IFDEF CTDEBUG}
     DebugLn('[TEventsCodeTool.CreateMethod] END');
-    {$ENDIF}
+    { $ENDIF}
     Result:=true;
   finally
     FreeClassInsertionList;
