@@ -290,6 +290,13 @@ begin
 
   if FOffset = -1 then
     FOffset := FBuffer.Height;
+
+  with FBuffer.Canvas do
+  begin
+    Brush.Color := clWhite;
+    Brush.Style := bsSolid;
+    FillRect(0, 0, Width, Height);
+  end;
 end;
 
 procedure TScrollingText.DrawScrollingText(Sender: TObject);
