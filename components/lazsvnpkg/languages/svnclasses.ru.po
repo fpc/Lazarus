@@ -1,0 +1,167 @@
+msgid ""
+msgstr "Content-Type: text/plain; charset=UTF-8"
+
+#: svnclasses.rsaction
+msgid "Action"
+msgstr "Действие"
+
+#: svnclasses.rsadded
+msgid "Added"
+msgstr "Добавлено"
+
+#: svnclasses.rsauthor
+msgid "Author"
+msgstr "Автор"
+
+#: svnclasses.rscommit
+msgid "Commit"
+msgstr ""
+
+#: svnclasses.rscommitrevision
+msgid "Commit revision"
+msgstr "Commit ревизия"
+
+#: svnclasses.rsconflict
+msgid "Conflict"
+msgstr "Конфликт"
+
+#: svnclasses.rscopyfrompath
+msgid "Copy from path"
+msgstr "Копия из заплатки"
+
+#: svnclasses.rsdate
+msgid "Date"
+msgstr "Дата"
+
+#: svnclasses.rsdelete
+msgid "Delete"
+msgstr "Удалить"
+
+#: svnclasses.rsdeleted
+msgid "Deleted"
+msgstr "Удалено"
+
+#: svnclasses.rsdiffactivefile
+msgid "Diff active file"
+msgstr "Diff активного файла"
+
+#: svnclasses.rsedit
+msgid "Edit"
+msgstr "Изменить"
+
+#: svnclasses.rsextension
+msgid "Extension"
+msgstr "Расширение"
+
+#: svnclasses.rsfilestatus
+msgid "File status"
+msgstr "Статус файла"
+
+#: svnclasses.rsindexoutofboundsd
+msgid "Index out of bounds (%d)"
+msgstr "Индекс за границами (%d)"
+
+#: svnclasses.rslazarussvncommit
+msgid "LazarusSVN Commit"
+msgstr "LazarusSVN - Подтвердить"
+
+#: svnclasses.rslazarussvndiff
+msgid "%s - LazarusSVN Diff..."
+msgstr "%s - LazarusSVN различия..."
+
+#: svnclasses.rslazarussvnlog
+msgid "%s - LazarusSVN Log..."
+msgstr "%s - LazarusSVN протокол..."
+
+#: svnclasses.rslazarussvnupdate
+msgid "%s - LazarusSVN Update..."
+msgstr "%s - LazarusSVN обновление..."
+
+#: svnclasses.rsmerged
+msgid "Merged"
+msgstr ""
+
+#: svnclasses.rsmessage
+msgid "Message"
+msgstr "Сообщение"
+
+#: svnclasses.rsnoauthor
+msgid "(no author)"
+msgstr "(без имени)"
+
+#: svnclasses.rspath
+msgid "Path"
+msgstr "Путь"
+
+#: svnclasses.rsprojectfilename
+msgid "Project filename"
+msgstr "Имя проекта"
+
+#: svnclasses.rsprojectisactive
+msgid "Project is active"
+msgstr "Проект активен"
+
+#: svnclasses.rsprojectisnotactiveinsvnsettingspleaseactivatefirst
+msgid "Project is not active in SVN settings, please activate first."
+msgstr "Проект не активирован в настройках SVN, пожалуста сначала активируйте"
+
+#: svnclasses.rsprojectname
+msgid "Project name"
+msgstr "Имя проекта"
+
+#: svnclasses.rsprojectoptions
+msgid "Project options"
+msgstr "Параметры проекта"
+
+#: svnclasses.rspropertystatus
+msgid "Property status"
+msgstr "Статус свойства"
+
+#: svnclasses.rsrepositorypath
+msgid "Repository path"
+msgstr "Путь репозитария"
+
+#: svnclasses.rsrevert
+msgid "Revert"
+msgstr "Возврат"
+
+#: svnclasses.rsrevision
+msgid "Revision"
+msgstr "Ревизия"
+
+#: svnclasses.rssave
+msgid "Save"
+msgstr "Сохранить"
+
+#: svnclasses.rssettings
+msgid "Settings"
+msgstr "Параметры"
+
+#: svnclasses.rsshowdiff
+msgid "Show diff"
+msgstr "Показать различия"
+
+#: svnclasses.rsshowdiffcountrev
+msgid "Show last X commits"
+msgstr "Показать последние X подтверждений"
+
+#: svnclasses.rsshowlog
+msgid "Show log"
+msgstr "Показать протокол"
+
+#: svnclasses.rssourcefiledoesnotbelongtotheprojectpleaseaddfirst
+msgid "Source file does not belong to the project. Please add first."
+msgstr "Исходный файл не включен в проект. Пожалуста добавьте его сначала."
+
+#: svnclasses.rssvntools
+msgid "SVN tools"
+msgstr "Инструменты SVN"
+
+#: svnclasses.rsupdate
+msgid "Update"
+msgstr "Обновить"
+
+#: svnclasses.rsupdated
+msgid "Updated"
+msgstr "Обновлено"
+

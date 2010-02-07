@@ -104,6 +104,10 @@
         <UnitName Value="SVNAddProjectForm"/>
       </Item20>
     </Files>
+    <i18n>
+      <EnableI18N Value="True"/>
+      <OutDir Value="languages"/>
+    </i18n>
     <Type Value="DesignTime"/>
     <RequiredPkgs Count="5">
       <Item1>

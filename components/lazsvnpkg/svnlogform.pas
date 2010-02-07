@@ -296,6 +296,7 @@ begin
   ImageList.AddLazarusResource('menu_svn_diff');
 
   mnuShowDiff.Caption := rsShowDiff;
+  Label1.Caption:=rsShowDiffCountRev;
 end;
 
 procedure TSVNLogFrm.FormDestroy(Sender: TObject);

@@ -1,0 +1,167 @@
+msgid ""
+msgstr "Content-Type: text/plain; charset=UTF-8"
+
+#: svnclasses.rsaction
+msgid "Action"
+msgstr ""
+
+#: svnclasses.rsadded
+msgid "Added"
+msgstr ""
+
+#: svnclasses.rsauthor
+msgid "Author"
+msgstr ""
+
+#: svnclasses.rscommit
+msgid "Commit"
+msgstr ""
+
+#: svnclasses.rscommitrevision
+msgid "Commit revision"
+msgstr ""
+
+#: svnclasses.rsconflict
+msgid "Conflict"
+msgstr ""
+
+#: svnclasses.rscopyfrompath
+msgid "Copy from path"
+msgstr ""
+
+#: svnclasses.rsdate
+msgid "Date"
+msgstr ""
+
+#: svnclasses.rsdelete
+msgid "Delete"
+msgstr ""
+
+#: svnclasses.rsdeleted
+msgid "Deleted"
+msgstr ""
+
+#: svnclasses.rsdiffactivefile
+msgid "Diff active file"
+msgstr ""
+
+#: svnclasses.rsedit
+msgid "Edit"
+msgstr ""
+
+#: svnclasses.rsextension
+msgid "Extension"
+msgstr ""
+
+#: svnclasses.rsfilestatus
+msgid "File status"
+msgstr ""
+
+#: svnclasses.rsindexoutofboundsd
+msgid "Index out of bounds (%d)"
+msgstr ""
+
+#: svnclasses.rslazarussvncommit
+msgid "LazarusSVN Commit"
+msgstr ""
+
+#: svnclasses.rslazarussvndiff
+msgid "%s - LazarusSVN Diff..."
+msgstr ""
+
+#: svnclasses.rslazarussvnlog
+msgid "%s - LazarusSVN Log..."
+msgstr ""
+
+#: svnclasses.rslazarussvnupdate
+msgid "%s - LazarusSVN Update..."
+msgstr ""
+
+#: svnclasses.rsmerged
+msgid "Merged"
+msgstr ""
+
+#: svnclasses.rsmessage
+msgid "Message"
+msgstr ""
+
+#: svnclasses.rsnoauthor
+msgid "(no author)"
+msgstr ""
+
+#: svnclasses.rspath
+msgid "Path"
+msgstr ""
+
+#: svnclasses.rsprojectfilename
+msgid "Project filename"
+msgstr ""
+
+#: svnclasses.rsprojectisactive
+msgid "Project is active"
+msgstr ""
+
+#: svnclasses.rsprojectisnotactiveinsvnsettingspleaseactivatefirst
+msgid "Project is not active in SVN settings, please activate first."
+msgstr ""
+
+#: svnclasses.rsprojectname
+msgid "Project name"
+msgstr ""
+
+#: svnclasses.rsprojectoptions
+msgid "Project options"
+msgstr ""
+
+#: svnclasses.rspropertystatus
+msgid "Property status"
+msgstr ""
+
+#: svnclasses.rsrepositorypath
+msgid "Repository path"
+msgstr ""
+
+#: svnclasses.rsrevert
+msgid "Revert"
+msgstr ""
+
+#: svnclasses.rsrevision
+msgid "Revision"
+msgstr ""
+
+#: svnclasses.rssave
+msgid "Save"
+msgstr ""
+
+#: svnclasses.rssettings
+msgid "Settings"
+msgstr ""
+
+#: svnclasses.rsshowdiff
+msgid "Show diff"
+msgstr ""
+
+#: svnclasses.rsshowdiffcountrev
+msgid "Show last X commits"
+msgstr ""
+
+#: svnclasses.rsshowlog
+msgid "Show log"
+msgstr ""
+
+#: svnclasses.rssourcefiledoesnotbelongtotheprojectpleaseaddfirst
+msgid "Source file does not belong to the project. Please add first."
+msgstr ""
+
+#: svnclasses.rssvntools
+msgid "SVN tools"
+msgstr ""
+
+#: svnclasses.rsupdate
+msgid "Update"
+msgstr ""
+
+#: svnclasses.rsupdated
+msgid "Updated"
+msgstr ""
+

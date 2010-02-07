@@ -88,6 +88,7 @@ begin
   ProjectLabel.Caption := rsProjectFilename;
   RepositoryLabel.Caption := rsRepositoryPath;
   ActiveCheckBox.Caption:=rsProjectIsActive;
+  Caption:=rsProjectOptions;
 end;
 
 procedure TSVNAddProjectFrm.RepositoryButtonClick(Sender: TObject);

@@ -55,6 +55,7 @@ resourcestring
   rsProjectIsNotActiveInSVNSettingsPleaseActivateFirst = 'Project is not '
     +'active in SVN settings, please activate first.';
   rsProjectName = 'Project name';
+  rsProjectOptions = 'Project options';
   rsPropertyStatus = 'Property status';
   rsRepositoryPath = 'Repository path';
   rsRevert = 'Revert';
@@ -62,6 +63,7 @@ resourcestring
   rsSave = 'Save';
   rsSettings = 'Settings';
   rsShowDiff = 'Show diff';
+  rsShowDiffCountRev = 'Show last X commits';
   rsShowLog = 'Show log';
   rsSourceFileDoesNotBelongToTheProjectPleaseAddFirst = 'Source file does not '
     +'belong to the project. Please add first.';
