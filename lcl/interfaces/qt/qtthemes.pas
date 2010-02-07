@@ -356,7 +356,7 @@ begin
   // specific states
   {when toolbar = flat, toolbar buttons should be flat too.}
   if (Details.Element = teToolBar) and
-     (Details.State = TS_NORMAL) then
+     (Details.State in [TS_NORMAL, TS_DISABLED]) then
     Result := QStyleState_AutoRaise;
 
   // define orientations
