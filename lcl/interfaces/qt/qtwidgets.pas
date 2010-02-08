@@ -7302,7 +7302,7 @@ var
   Item: QListWidgetItemH;
 begin
   Item := QListWidgetItem_create(AText, nil, 0);
-  if LCLObject is TCustomCheckListBox then
+  if Checkable then
     QListWidgetItem_setCheckState(Item, QtUnChecked);
   QListWidget_insertItem(QListWidgetH(Widget), AIndex, Item);
 end;
