@@ -45,6 +45,8 @@ type
 
   TQtWSCustomCheckListBox = class(TWSCustomCheckListBox)
   published
+    class function CreateHandle(const AWinControl: TWinControl;
+     const AParams: TCreateParams): TLCLIntfHandle; override;
     class function GetItemEnabled(const ACheckListBox: TCustomCheckListBox;
       const AIndex: integer): Boolean; override;
     class function GetState(const ACheckListBox: TCustomCheckListBox;
@@ -72,6 +74,37 @@ const
 {QtPartiallyChecked} cbGrayed,
 {QtChecked         } cbChecked
   );
+
+class function TQtWSCustomCheckListBox.CreateHandle(
+  const AWinControl: TWinControl; const AParams: TCreateParams
+  ): TLCLIntfHandle;
+var
+  QtListWidget: TQtListWidget;
+  SelMode: QAbstractItemViewSelectionMode;
+begin
+  QtListWidget := TQtListWidget.Create(AWinControl, AParams);
+
+  QtListWidget.Checkable := True;
+
+  if TCheckListBox(AWinControl).MultiSelect then
+    if TCheckListBox(AWinControl).ExtendedSelect then
+      SelMode := QAbstractItemViewExtendedSelection
+    else
+      SelMode := QAbstractItemViewMultiSelection
+  else
+    SelMode := QAbstractItemViewSingleSelection;
+
+  QtListWidget.setSelectionMode(SelMode);
+
+  QtListWidget.AttachEvents;
+
+  // create our FList helper
+  QtListWidget.FList := TQtListStrings.Create(QtListWidget);
+
+  QtListWidget.OwnerDrawn := TCheckListBox(AWinControl).Style in [lbOwnerDrawFixed, lbOwnerDrawVariable];
+
+  Result := TLCLIntfHandle(QtListWidget);
+end;
 
 class function TQtWSCustomCheckListBox.GetItemEnabled(
   const ACheckListBox: TCustomCheckListBox; const AIndex: integer): Boolean;

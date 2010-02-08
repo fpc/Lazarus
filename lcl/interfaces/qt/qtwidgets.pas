@@ -911,6 +911,7 @@ type
 
   TQtListWidget = class(TQtListView)
   private
+    FCheckable: boolean;
     FCurrentItemChangeHook: QListWidget_hookH;
     FSelectionChangeHook: QListWidget_hookH;
     FItemClickedHook: QListWidget_hookH;
@@ -940,6 +941,7 @@ type
     procedure scrollToItem(row: integer; hint: QAbstractItemViewScrollHint);
     procedure removeItem(AIndex: Integer);
     procedure exchangeItems(AIndex1, AIndex2: Integer);
+    property Checkable: boolean read FCheckable write FCheckable;
   end;
   
   { TQtHeaderView }
@@ -7061,6 +7063,7 @@ end;
 
 function TQtListWidget.CreateWidget(const AParams: TCreateParams): QWidgetH;
 begin
+  FCheckable := False;
   FDontPassSelChange := False;
   Result := QListWidget_create();
   QWidget_setAttribute(Result, QtWA_NoMousePropagation);
@@ -7125,7 +7128,7 @@ begin
       QEventMouseButtonRelease,
       QEventMouseButtonDblClick:
       begin
-        if (LCLObject.ClassType = TCheckListBox) and
+        if (Checkable) and
           (QEvent_type(Event) <> QEventMouseButtonDblClick) and
           (QMouseEvent_button(QMouseEventH(Event)) = QtLeftButton) then
         begin
@@ -7212,7 +7215,7 @@ begin
   {$ifdef VerboseQt}
     WriteLn('TQtListWidget.signalItemClicked');
   {$endif}
-  if LCLObject.ClassType = TCheckListBox then
+  if Checkable then
   begin
     FillChar(Msg, SizeOf(Msg), #0);
     Msg.Msg := LM_CHANGED;
