@@ -12,7 +12,7 @@ object ImageListEditorDlg: TImageListEditorDlg
   OnCreate = FormCreate
   OnDestroy = FormDestroy
   Position = poScreenCenter
-  LCLVersion = '0.9.27'
+  LCLVersion = '0.9.29'
   object GroupBoxR: TGroupBox
     AnchorSideTop.Control = Owner
     AnchorSideRight.Control = Owner
@@ -95,11 +95,9 @@ object ImageListEditorDlg: TImageListEditorDlg
       Top = 231
       Width = 96
       Selected = clFuchsia
-      Style = [cbStandardColors, cbExtendedColors, cbCustomColor, cbPrettyNames]
-      AutoComplete = False
+      Style = [cbStandardColors, cbExtendedColors, cbIncludeDefault, cbCustomColor, cbPrettyNames]
       Enabled = False
       ItemHeight = 16
-      ItemWidth = 0
       OnChange = ColorBoxTransparentClick
       TabOrder = 2
     end
@@ -154,7 +152,6 @@ object ImageListEditorDlg: TImageListEditorDlg
       Anchors = [akTop, akLeft, akRight]
       BorderSpacing.Around = 6
       Caption = 'Add...'
-      Default = True
       OnClick = BtnAddClick
       TabOrder = 1
     end

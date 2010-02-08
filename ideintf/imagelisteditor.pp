@@ -148,9 +148,9 @@ begin
     Result.Canvas.FillRect(Bounds(0, 0, Width, Height));
 
     case Adjustment of
-    gaStretch: Result.Canvas.StretchDraw(Bounds(0, 0, Width, Height), B);
-    gaCrop: Result.Canvas.Draw(0, 0, B);
-    gaCenter: Result.Canvas.Draw((Width - B.Width) div 2, (Height - B.Height) div 2, B);
+      gaStretch: Result.Canvas.StretchDraw(Bounds(0, 0, Width, Height), B);
+      gaCrop: Result.Canvas.Draw(0, 0, B);
+      gaCenter: Result.Canvas.Draw((Width - B.Width) div 2, (Height - B.Height) div 2, B);
     end;
   end;
   if TransparentColor = clDefault then
