@@ -23,6 +23,7 @@
 unit Win32WSCheckLst;
 
 {$mode objfpc}{$H+}
+{$i win32defines.inc}
 
 interface
 
@@ -33,7 +34,7 @@ uses
 // To get as little as posible circles,
 // uncomment only when needed for registration
 ////////////////////////////////////////////////////
-  Windows, Classes, Controls, CheckLst, StdCtrls, Themes, Graphics, LCLType,
+  Windows, Classes, Controls, CheckLst, StdCtrls, Themes, Graphics, LCLType, LCLProc,
   LMessages, LCLMessageGlue,
 ////////////////////////////////////////////////////
   WSCheckLst, WSLCLClasses, Win32Int, Win32Proc, Win32WSControls, Win32WSStdCtrls;
