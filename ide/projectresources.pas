@@ -387,6 +387,7 @@ var
   R: TAbstractProjectResource;
 begin
   inherited Create(AProject);
+  inherited SetResourceType(rtRes); // set fpc resources by default
 
   FInModified := False;
   FLrsIncludeAllowed := False;

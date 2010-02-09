@@ -115,7 +115,8 @@ end;
 
 constructor TAbstractProjectResources.Create(AProject: TLazProject);
 begin
-  FProject:=AProject;
+  inherited Create;
+  FProject := AProject;
   FMessages := TStringList.Create;
 end;
 
