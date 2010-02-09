@@ -3043,7 +3043,11 @@ begin
     'R': if CompareIdentifiers(p,'PROGRAM')=0 then exit(DoSourceTypeToken);
     'A': if CompareIdentifiers(p,'PACKAGE')=0 then exit(DoSourceTypeToken);
     end;
-  'U': if CompareIdentifiers(p,'UNIT')=0 then exit(DoSourceTypeToken);
+  'U':
+    case UpChars[p[1]] of
+    'N': if CompareIdentifiers(p,'UNIT')=0 then exit(DoSourceTypeToken);
+    'S': if CompareIdentifiers(p,'USES')=0 then exit(DoUsesToken);
+    end;
   end;
   Result:=false;
 end;
@@ -3076,9 +3080,6 @@ begin
   if ord(ScannedRange)>=ord(lsrInterfaceStart) then exit(false);
   ScannedRange:=lsrInterfaceStart;
   Result:=true;
-  if ScannedRange=ScanTill then exit;
-  ReadNextToken;
-  if IsUsesToken then Result:=DoUsesToken;
 end;
 
 function TLinkScanner.DoFinalizationToken: boolean;
@@ -3101,7 +3102,9 @@ begin
   if ord(ScannedRange)<=ord(lsrInterfaceStart) then
     ScannedRange:=lsrMainUsesSectionStart
   else if ScannedRange=lsrImplementationStart then
-    ScannedRange:=lsrImplementationUsesSectionStart;
+    ScannedRange:=lsrImplementationUsesSectionStart
+  else
+    exit(false);
   repeat
     // read unit name
     ReadNextToken;
@@ -3140,9 +3143,6 @@ begin
   if ord(ScannedRange)>=ord(lsrImplementationStart) then exit(false);
   ScannedRange:=lsrImplementationStart;
   Result:=true;
-  if ScannedRange=ScanTill then exit;
-  ReadNextToken;
-  if IsUsesToken then Result:=DoUsesToken;
 end;
 
 procedure TLinkScanner.SkipTillEndifElse(SkippingUntil: TLSSkippingDirective);
