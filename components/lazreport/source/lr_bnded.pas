@@ -17,7 +17,7 @@ interface
 uses
   Classes, SysUtils, LResources,
   Forms, Controls, Graphics, Dialogs,
-  Buttons, StdCtrls,
+  Buttons, StdCtrls, ButtonPanel,
 
   LR_Class;
 
@@ -26,8 +26,7 @@ type
   { TfrBandEditorForm }
 
   TfrBandEditorForm = class(TForm)
-    Button1: TButton;
-    Button2: TButton;
+    ButtonPanel1: TButtonPanel;
     GB1: TGroupBox;
     Label2: TLabel;
     CB1: TComboBox;
@@ -95,8 +94,6 @@ begin
   Caption := sBandEditorFormCapt;
   GB1.Caption := sBandEditorFormDataSrc;
   Label2.Caption := sBandEditorFormRecCount;
-  Button1.Caption := sOk;
-  Button2.Caption := sCancel;
 end;
 
 procedure TfrBandEditorForm.CB1Click(Sender: TObject);

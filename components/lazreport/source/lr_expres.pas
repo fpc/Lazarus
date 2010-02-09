@@ -5,7 +5,8 @@ unit lr_expres;
 interface
 
 uses
-  Classes, SysUtils, LResources, Forms, Controls, Graphics, Dialogs, StdCtrls, Buttons, ExtCtrls, SynEdit;
+  Classes, SysUtils, LResources, Forms, Controls, Graphics, Dialogs, StdCtrls,
+  Buttons, ExtCtrls, ButtonPanel, SynEdit;
 
 type
 
@@ -15,8 +16,6 @@ type
     BitBtn1: TBitBtn;
     BitBtn2: TBitBtn;
     BitBtn3: TBitBtn;
-    BitBtn4: TBitBtn;
-    BitBtn5: TBitBtn;
     Button1: TButton;
     Button10: TButton;
     Button11: TButton;
@@ -30,11 +29,11 @@ type
     Button7: TButton;
     Button8: TButton;
     Button9: TButton;
+    ButtonPanel1: TButtonPanel;
     GroupBox1: TGroupBox;
     Label1: TLabel;
     Panel1: TPanel;
     Memo1: TSynEdit;
-    Panel2: TPanel;
     procedure BitBtn1Click(Sender: TObject);
     procedure BitBtn2Click(Sender: TObject);
     procedure BitBtn3Click(Sender: TObject);

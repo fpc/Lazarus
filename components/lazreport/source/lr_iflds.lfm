@@ -1,66 +1,85 @@
 object frInsertFieldsForm: TfrInsertFieldsForm
   Left = 352
-  Height = 222
+  Height = 347
   Top = 210
-  Width = 334
+  Width = 438
+  ActiveControl = HorzRB
   BorderStyle = bsDialog
   Caption = 'Insert fields'
-  ClientHeight = 222
-  ClientWidth = 334
-  Font.Height = -11
-  Font.Name = 'MS Sans Serif'
+  ClientHeight = 347
+  ClientWidth = 438
   OnCreate = FormCreate
   OnShow = FormShow
   Position = poScreenCenter
-  LCLVersion = '0.9.27'
+  LCLVersion = '0.9.29'
   object Label1: TLabel
-    Left = 4
-    Height = 14
-    Top = 4
-    Width = 87
+    AnchorSideLeft.Control = Owner
+    AnchorSideTop.Control = Owner
+    Left = 6
+    Height = 18
+    Top = 6
+    Width = 135
+    BorderSpacing.Around = 6
     Caption = '&Available datasets'
     FocusControl = DatasetCB
     ParentColor = False
   end
   object FieldsL: TListBox
-    Left = 4
-    Height = 173
-    Top = 44
-    Width = 145
+    AnchorSideLeft.Control = Owner
+    AnchorSideTop.Control = DatasetCB
+    AnchorSideTop.Side = asrBottom
+    AnchorSideRight.Control = GroupBox1
+    AnchorSideBottom.Control = ButtonPanel1
+    Left = 6
+    Height = 228
+    Top = 67
+    Width = 247
     HelpContext = 106
+    Anchors = [akTop, akLeft, akRight, akBottom]
+    BorderSpacing.Around = 6
     ClickOnSelChange = False
     ItemHeight = 0
     MultiSelect = True
     TabOrder = 0
+    TopIndex = -1
   end
   object DatasetCB: TComboBox
-    Left = 4
-    Height = 21
-    Top = 20
-    Width = 145
+    AnchorSideLeft.Control = Owner
+    AnchorSideTop.Control = Label1
+    AnchorSideTop.Side = asrBottom
+    AnchorSideRight.Control = GroupBox1
+    Left = 6
+    Height = 31
+    Top = 30
+    Width = 247
     HelpContext = 97
-    AutoComplete = False
-    ItemHeight = 13
-    ItemWidth = 0
+    Anchors = [akTop, akLeft, akRight]
+    BorderSpacing.Around = 6
+    ItemHeight = 0
     OnChange = DatasetCBChange
     Sorted = True
     Style = csDropDownList
     TabOrder = 1
   end
   object GroupBox1: TGroupBox
-    Left = 156
+    AnchorSideTop.Control = Owner
+    AnchorSideRight.Control = Owner
+    AnchorSideRight.Side = asrBottom
+    Left = 259
     Height = 65
-    Top = 15
+    Top = 6
     Width = 173
+    Anchors = [akTop, akRight]
+    BorderSpacing.Around = 6
     Caption = 'Placement'
-    ClientHeight = 47
-    ClientWidth = 169
+    ClientHeight = 44
+    ClientWidth = 165
     TabOrder = 2
     object HorzRB: TRadioButton
       Left = 8
-      Height = 17
+      Height = 19
       Top = 5
-      Width = 65
+      Width = 89
       HelpContext = 115
       AllowGrayed = True
       Caption = '&Horizontal'
@@ -70,9 +89,9 @@ object frInsertFieldsForm: TfrInsertFieldsForm
     end
     object VertRB: TRadioButton
       Left = 8
-      Height = 17
+      Height = 19
       Top = 25
-      Width = 53
+      Width = 69
       HelpContext = 122
       AllowGrayed = True
       Caption = '&Vertical'
@@ -80,52 +99,51 @@ object frInsertFieldsForm: TfrInsertFieldsForm
       TabStop = False
     end
   end
-  object Button1: TButton
-    Left = 172
-    Height = 25
-    Top = 192
-    Width = 75
-    HelpContext = 40
-    Caption = 'Ok'
-    Default = True
-    ModalResult = 1
-    TabOrder = 3
-  end
-  object Button2: TButton
-    Left = 252
-    Height = 25
-    Top = 192
-    Width = 75
-    HelpContext = 50
-    Cancel = True
-    Caption = 'Cancel'
-    ModalResult = 2
-    TabOrder = 4
-  end
   object GroupBox2: TGroupBox
-    Left = 156
+    AnchorSideTop.Control = GroupBox1
+    AnchorSideTop.Side = asrBottom
+    AnchorSideRight.Control = Owner
+    AnchorSideRight.Side = asrBottom
+    Left = 259
     Height = 60
-    Top = 85
+    Top = 77
     Width = 173
-    ClientHeight = 42
-    ClientWidth = 169
-    TabOrder = 5
+    Anchors = [akTop, akRight]
+    BorderSpacing.Around = 6
+    ClientHeight = 52
+    ClientWidth = 165
+    TabOrder = 3
     object HeaderCB: TCheckBox
-      Left = 8
-      Height = 17
-      Top = 0
-      Width = 94
+      AnchorSideLeft.Control = GroupBox2
+      AnchorSideTop.Control = GroupBox2
+      Left = 6
+      Height = 19
+      Top = 6
+      Width = 131
       HelpContext = 132
+      BorderSpacing.Around = 6
       Caption = '&Include headers'
       TabOrder = 0
     end
     object BandCB: TCheckBox
-      Left = 8
-      Height = 17
-      Top = 22
-      Width = 85
+      AnchorSideLeft.Control = GroupBox2
+      AnchorSideTop.Control = HeaderCB
+      AnchorSideTop.Side = asrBottom
+      Left = 6
+      Height = 19
+      Top = 31
+      Width = 117
+      BorderSpacing.Around = 6
       Caption = 'Include &bands'
       TabOrder = 1
     end
+  end
+  object ButtonPanel1: TButtonPanel
+    Left = 6
+    Height = 40
+    Top = 301
+    Width = 426
+    TabOrder = 4
+    ShowButtons = [pbOK, pbCancel, pbHelp]
   end
 end

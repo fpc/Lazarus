@@ -1,16 +1,19 @@
-{ Ceci est un fichier ressource généré automatiquement par Lazarus }
+{ This is an automatically generated lazarus resource file }
 
 LazarusResources.Add('TfrProgressForm','FORMDATA',[
   'TPF0'#15'TfrProgressForm'#14'frProgressForm'#4'Left'#3#235#0#6'Height'#2'j'#3
   +'Top'#3#137#0#5'Width'#3#22#1#13'ActiveControl'#7#7'Button1'#11'BorderStyle'
   +#7#8'bsDialog'#7'Caption'#6#14'frProgressForm'#12'ClientHeight'#2'j'#11'Clie'
-  +'ntWidth'#3#22#1#11'Font.Height'#2#245#9'Font.Name'#6#13'MS Sans Serif'#8'On'
-  +'Create'#7#10'FormCreate'#8'Position'#7#14'poScreenCenter'#10'LCLVersion'#6#6
-  +'0.9.27'#0#6'TLabel'#6'Label1'#4'Left'#2#20#6'Height'#2#16#3'Top'#2' '#5'Wid'
-  +'th'#2#9#9'Alignment'#7#8'taCenter'#7'Caption'#6#1'1'#11'ParentColor'#8#0#0#7
-  +'TButton'#7'Button1'#4'Left'#2'd'#6'Height'#2#25#3'Top'#2'D'#5'Width'#2'K'#25
-  +'BorderSpacing.InnerBorder'#2#4#6'Cancel'#9#7'Caption'#6#6'Cancel'#11'ModalR'
-  +'esult'#2#2#7'OnClick'#7#12'Button1Click'#8'TabOrder'#2#0#0#0#6'TTimer'#6'Ti'
-  +'mer1'#7'Enabled'#8#8'Interval'#2#10#7'OnTimer'#7#11'Timer1Timer'#4'left'#3
-  +#224#0#3'top'#2#24#0#0#0
+  +'ntWidth'#3#22#1#8'OnCreate'#7#10'FormCreate'#8'Position'#7#14'poScreenCente'
+  +'r'#10'LCLVersion'#6#6'0.9.29'#0#6'TLabel'#6'Label1'#4'Left'#2#20#6'Height'#2
+  +#18#3'Top'#2' '#5'Width'#2#10#9'Alignment'#7#8'taCenter'#7'Caption'#6#1'1'#11
+  +'ParentColor'#8#0#0#7'TButton'#7'Button1'#22'AnchorSideLeft.Control'#7#5'Own'
+  +'er'#19'AnchorSideLeft.Side'#7#9'asrCenter'#21'AnchorSideTop.Control'#7#5'Ow'
+  +'ner'#24'AnchorSideBottom.Control'#7#5'Owner'#21'AnchorSideBottom.Side'#7#9
+  +'asrBottom'#4'Left'#2'j'#6'Height'#2'%'#3'Top'#2'?'#5'Width'#2'C'#7'Anchors'
+  +#11#6'akLeft'#8'akBottom'#0#8'AutoSize'#9#20'BorderSpacing.Bottom'#2#6#25'Bo'
+  +'rderSpacing.InnerBorder'#2#4#6'Cancel'#9#7'Caption'#6#6'Cancel'#11'ModalRes'
+  +'ult'#2#2#7'OnClick'#7#12'Button1Click'#8'TabOrder'#2#0#0#0#6'TTimer'#6'Time'
+  +'r1'#7'Enabled'#8#8'Interval'#2#10#7'OnTimer'#7#11'Timer1Timer'#4'left'#3#224
+  +#0#3'top'#2#24#0#0#0
 ]);

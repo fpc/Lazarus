@@ -17,20 +17,22 @@ interface
 uses
   Classes, SysUtils, LResources,
   Forms, Controls, Graphics, Dialogs,
-  Buttons, StdCtrls,
+  Buttons, StdCtrls, ButtonPanel,
 
   LR_DBRel;
 
 type
+
+  { TfrInsertFieldsForm }
+
   TfrInsertFieldsForm = class(TForm)
+    ButtonPanel1: TButtonPanel;
     FieldsL: TListBox;
     DatasetCB: TComboBox;
     Label1: TLabel;
     GroupBox1: TGroupBox;
     HorzRB: TRadioButton;
     VertRB: TRadioButton;
-    Button1: TButton;
-    Button2: TButton;
     GroupBox2: TGroupBox;
     HeaderCB: TCheckBox;
     BandCB: TCheckBox;
@@ -86,8 +88,6 @@ begin
   VertRB.Caption := sInsertFieldsFormVert;
   HeaderCB.Caption := sInsertFieldsFormHeader;
   BandCB.Caption := sInsertFieldsFormBand;
-  Button1.Caption := sOk;
-  Button2.Caption := sCancel;
 end;
 
 INITIALIZATION

@@ -17,14 +17,17 @@ interface
 uses
   Classes, SysUtils, LResources,
   Forms, Controls, Graphics, Dialogs,
-  Buttons, StdCtrls,ExtCtrls,
+  Buttons, StdCtrls,ExtCtrls, ButtonPanel,
 
   LR_Const;
 
 type
+
+  { TfrAboutForm }
+
   TfrAboutForm = class(TForm)
+    ButtonPanel1: TButtonPanel;
     Label1: TLabel;
-    Button1: TButton;
     Bevel1: TBevel;
     Label2: TLabel;
     Label3: TLabel;
@@ -46,8 +49,6 @@ implementation
 procedure TfrAboutForm.FormCreate(Sender: TObject);
 begin
   Caption := sAboutFormCapt;
-  Button1.Caption := sOk;
-//  Label2.Caption := Label2.Caption + ' build 2';
 end;
 
 INITIALIZATION

@@ -1,18 +1,22 @@
-object frShapeForm: TfrShapeForm
-  BorderStyle = bsDialog
-  Caption = 'Shape'
-  ClientHeight = 94
-  ClientWidth = 277
-  OnCreate = FormCreate
-  PixelsPerInch = 75
+inherited frShapeForm: TfrShapeForm
+  Left = 344
+  Height = 143
+  Top = 163
+  Width = 367
   HorzScrollBar.Page = 276
   VertScrollBar.Page = 93
-  Left = 200
-  Height = 94
-  Top = 108
-  Width = 277
-  object Image1: TImage
-    BorderSpacing.OnChange = nil
+  ActiveControl = ButtonPanel1
+  BorderStyle = bsDialog
+  Caption = 'Shape'
+  ClientHeight = 143
+  ClientWidth = 367
+  OnCreate = FormCreate
+  Position = poScreenCenter
+  object Image1: TImage[0]
+    Left = 32
+    Height = 16
+    Top = 64
+    Width = 16
     Picture.Data = {
       07544269746D6170F6000000424DF60000000000000076000000280000001000
       0000100000000100040000000000800000000000000000000000100000000000
@@ -26,53 +30,45 @@ object frShapeForm: TfrShapeForm
     }
     Transparent = True
     Visible = False
-    Left = 32
-    Height = 16
-    Top = 64
-    Width = 16
   end
-  object GroupBox1: TGroupBox
-    BorderSpacing.OnChange = nil
+  object GroupBox1: TGroupBox[1]
+    AnchorSideLeft.Control = Owner
+    AnchorSideTop.Control = Owner
+    AnchorSideRight.Control = Owner
+    AnchorSideRight.Side = asrBottom
+    Left = 6
+    Height = 64
+    Top = 6
+    Width = 355
+    Anchors = [akTop, akLeft, akRight]
+    AutoSize = True
+    BorderSpacing.Around = 6
     Caption = ' Shape kind '
-    ClientHeight = 36
-    ClientWidth = 256
-    ParentColor = True
+    ClientHeight = 43
+    ClientWidth = 347
     TabOrder = 0
-    Left = 8
-    Height = 53
-    Top = 8
-    Width = 260
     object CB1: TComboBox
-      BorderSpacing.OnChange = nil
-      MaxLength = 0
+      AnchorSideLeft.Control = GroupBox1
+      AnchorSideTop.Control = GroupBox1
+      AnchorSideRight.Control = GroupBox1
+      AnchorSideRight.Side = asrBottom
+      Left = 6
+      Height = 31
+      Top = 6
+      Width = 335
+      Anchors = [akTop, akLeft, akRight]
+      BorderSpacing.Around = 6
+      ItemHeight = 0
       Style = csDropDownList
       TabOrder = 0
-      Left = 50
-      Height = 21
-      Top = 1
-      Width = 197
     end
   end
-  object Button1: TButton
-    BorderSpacing.OnChange = nil
-    Caption = 'Ok'
-    Default = True
-    ModalResult = 1
+  object ButtonPanel1: TButtonPanel[2]
+    Left = 6
+    Height = 40
+    Top = 97
+    Width = 355
     TabOrder = 1
-    Left = 64
-    Height = 25
-    Top = 63
-    Width = 75
-  end
-  object Button2: TButton
-    BorderSpacing.OnChange = nil
-    Cancel = True
-    Caption = 'Cancel'
-    ModalResult = 2
-    TabOrder = 2
-    Left = 144
-    Height = 25
-    Top = 64
-    Width = 75
+    ShowButtons = [pbOK, pbCancel, pbHelp]
   end
 end

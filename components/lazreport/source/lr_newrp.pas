@@ -17,16 +17,18 @@ interface
 uses
   Classes, SysUtils, FileUtil, LResources,
   Forms, Controls, Graphics, Dialogs,
-  Buttons, StdCtrls,ExtCtrls,
+  Buttons, StdCtrls,ExtCtrls, Chart, ButtonPanel,
   LR_Const;
 
 type
+
+  { TfrTemplForm }
+
   TfrTemplForm = class(TForm)
+    ButtonPanel1: TButtonPanel;
     GroupBox1: TGroupBox;
     Memo1: TMemo;
     Image1: TImage;
-    Button1: TButton;
-    Button2: TButton;
     LB1: TListBox;
     procedure FormActivate(Sender: TObject);
     procedure ListBox1Click(Sender: TObject);
@@ -71,13 +73,13 @@ begin
   FindCloseUTF8(SearchRec);
   Memo1.Lines.Clear;
   Image1.Picture.Clear;
-  Button1.Enabled := False;
+  ButtonPanel1.OKButton.Enabled := False;
 end;
 
 procedure TfrTemplForm.ListBox1Click(Sender: TObject);
 begin
-  Button1.Enabled := LB1.ItemIndex <> -1;
-  if Button1.Enabled then
+  ButtonPanel1.OKButton.Enabled := LB1.ItemIndex <> -1;
+  if ButtonPanel1.OKButton.Enabled then
   begin
     CurReport.LoadTemplate(Path + LB1.Items[LB1.ItemIndex] + '.frt',
       Memo1.Lines, Image1.Picture.Bitmap,False);
@@ -86,7 +88,7 @@ end;
 
 procedure TfrTemplForm.LB1DblClick(Sender: TObject);
 begin
-  if Button1.Enabled then ModalResult := mrOk;
+  if ButtonPanel1.OKButton.Enabled then ModalResult := mrOk;
 end;
 
 procedure TfrTemplForm.FormDeactivate(Sender: TObject);
@@ -99,8 +101,6 @@ procedure TfrTemplForm.FormCreate(Sender: TObject);
 begin
   Caption := sTemplFormNewRp;
   GroupBox1.Caption := sTemplFormDesc;
-  Button1.Caption := sOk;
-  Button2.Caption := sCancel;
 end;
 
 initialization

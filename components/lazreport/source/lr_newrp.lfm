@@ -1,27 +1,32 @@
 object frTemplForm: TfrTemplForm
-  Left = 330
-  Height = 265
-  Top = 191
-  Width = 460
+  Left = 354
+  Height = 284
+  Top = 207
+  Width = 462
   HorzScrollBar.Page = 459
   VertScrollBar.Page = 264
+  ActiveControl = Memo1
   BorderStyle = bsDialog
   Caption = 'New report'
-  ClientHeight = 265
-  ClientWidth = 460
-  Font.Height = -11
-  Font.Name = 'MS Sans Serif'
+  ClientHeight = 284
+  ClientWidth = 462
   OnActivate = FormActivate
   OnCreate = FormCreate
   OnDeactivate = FormDeactivate
   Position = poScreenCenter
+  LCLVersion = '0.9.29'
   object GroupBox1: TGroupBox
-    Left = 246
-    Height = 221
-    Top = 4
+    AnchorSideTop.Control = Owner
+    AnchorSideRight.Control = Owner
+    AnchorSideRight.Side = asrBottom
+    AnchorSideBottom.Control = ButtonPanel1
+    Left = 253
+    Height = 232
+    Top = 0
     Width = 209
+    Anchors = [akTop, akRight, akBottom]
     Caption = 'Description'
-    ClientHeight = 203
+    ClientHeight = 228
     ClientWidth = 205
     TabOrder = 0
     object Image1: TImage
@@ -43,38 +48,31 @@ object frTemplForm: TfrTemplForm
       TabStop = False
     end
   end
-  object Button1: TButton
-    Left = 300
-    Height = 25
-    Top = 236
-    Width = 75
-    HelpContext = 40
-    Caption = 'Ok'
-    Default = True
-    ModalResult = 1
-    TabOrder = 1
-  end
-  object Button2: TButton
-    Left = 380
-    Height = 25
-    Top = 236
-    Width = 75
-    HelpContext = 50
-    Cancel = True
-    Caption = 'Cancel'
-    ModalResult = 2
-    TabOrder = 2
-  end
   object LB1: TListBox
-    Left = 4
-    Height = 217
-    Top = 8
-    Width = 233
+    AnchorSideLeft.Control = Owner
+    AnchorSideTop.Control = Owner
+    AnchorSideRight.Control = GroupBox1
+    AnchorSideBottom.Control = ButtonPanel1
+    Left = 6
+    Height = 226
+    Top = 6
+    Width = 241
     HelpContext = 65
+    Anchors = [akTop, akLeft, akRight, akBottom]
+    BorderSpacing.Around = 6
     ClickOnSelChange = False
-    ItemHeight = 13
+    ItemHeight = 0
     OnClick = ListBox1Click
     OnDblClick = LB1DblClick
-    TabOrder = 3
+    TabOrder = 1
+    TopIndex = -1
+  end
+  object ButtonPanel1: TButtonPanel
+    Left = 6
+    Height = 40
+    Top = 238
+    Width = 450
+    TabOrder = 2
+    ShowButtons = [pbOK, pbCancel, pbHelp]
   end
 end

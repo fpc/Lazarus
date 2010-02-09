@@ -19,7 +19,7 @@ uses
   Graphics,GraphType, Controls, Forms, Dialogs,Buttons,
   StdCtrls,
 
-  LCLType,LR_Class, ExtCtrls;
+  LCLType,LR_Class, ExtCtrls, ButtonPanel;
 
 
 type
@@ -59,11 +59,12 @@ type
     property ShapeType : TfrShapeType Read fShapeType write fShapeType;
   end;
 
+  { TfrShapeForm }
+
   TfrShapeForm = class(TfrObjEditorForm)
+    ButtonPanel1: TButtonPanel;
     GroupBox1: TGroupBox;
     CB1: TComboBox;
-    Button1: TButton;
-    Button2: TButton;
     Image1: TImage;
     procedure FormCreate(Sender: TObject);
   private
@@ -208,8 +209,6 @@ procedure TfrShapeForm.FormCreate(Sender: TObject);
 begin
   Caption := sShapeFormCaption;
   GroupBox1.Caption := sShapeFormKind;
-  Button1.Caption := sOk;
-  Button2.Caption := sCancel;
 end;
 
 { TfrShapeObject }

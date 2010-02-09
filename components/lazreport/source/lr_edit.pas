@@ -34,7 +34,6 @@ type
     CB3: TCheckBox;
     Label1: TLabel;
     M1: TMemo;
-    Panel1: TPanel;
     Panel2: TPanel;
     Button1: TButton;
     Button2: TButton;

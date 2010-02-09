@@ -1,53 +1,52 @@
 object frDesOptionsForm: TfrDesOptionsForm
   Left = 309
-  Height = 327
+  Height = 347
   Top = 177
-  Width = 364
-  ActiveControl = CB1
+  Width = 394
+  ActiveControl = PageControl1
   BorderStyle = bsDialog
   Caption = 'Options'
-  ClientHeight = 327
-  ClientWidth = 364
-  Font.Height = -11
-  Font.Name = 'MS Sans Serif'
+  ClientHeight = 347
+  ClientWidth = 394
   OnCreate = FormCreate
   Position = poScreenCenter
-  LCLVersion = '0.9.27'
+  LCLVersion = '0.9.29'
   object PageControl1: TPageControl
-    Left = 8
-    Height = 284
-    Top = 4
-    Width = 349
+    Left = 0
+    Height = 295
+    Top = 0
+    Width = 394
     ActivePage = Tab1
+    Align = alClient
     TabIndex = 0
     TabOrder = 0
     object Tab1: TTabSheet
       Caption = 'Designer'
-      ClientHeight = 258
-      ClientWidth = 341
+      ClientHeight = 264
+      ClientWidth = 390
       object GroupBox1: TGroupBox
         Left = 4
         Height = 65
         Top = 4
         Width = 177
         Caption = 'Grid'
-        ClientHeight = 47
-        ClientWidth = 173
+        ClientHeight = 44
+        ClientWidth = 169
         TabOrder = 0
         object CB1: TCheckBox
           Left = 8
-          Height = 17
+          Height = 19
           Top = 4
-          Width = 65
+          Width = 88
           HelpContext = 66
           Caption = '&Show grid'
           TabOrder = 0
         end
         object CB2: TCheckBox
           Left = 8
-          Height = 17
+          Height = 19
           Top = 24
-          Width = 73
+          Width = 101
           HelpContext = 75
           Caption = 'Align to &grid'
           TabOrder = 1
@@ -57,16 +56,16 @@ object frDesOptionsForm: TfrDesOptionsForm
         Left = 188
         Height = 65
         Top = 4
-        Width = 149
+        Width = 194
         Caption = 'Object moving'
-        ClientHeight = 47
-        ClientWidth = 145
+        ClientHeight = 44
+        ClientWidth = 186
         TabOrder = 1
         object RB4: TRadioButton
           Left = 8
-          Height = 17
+          Height = 19
           Top = 4
-          Width = 49
+          Width = 64
           HelpContext = 84
           AllowGrayed = True
           Caption = 'S&hape'
@@ -76,9 +75,9 @@ object frDesOptionsForm: TfrDesOptionsForm
         end
         object RB5: TRadioButton
           Left = 8
-          Height = 17
+          Height = 19
           Top = 24
-          Width = 60
+          Width = 84
           HelpContext = 94
           AllowGrayed = True
           Caption = '&Contents'
@@ -90,16 +89,16 @@ object frDesOptionsForm: TfrDesOptionsForm
         Left = 188
         Height = 85
         Top = 74
-        Width = 149
+        Width = 194
         Caption = 'Report units'
-        ClientHeight = 67
-        ClientWidth = 145
+        ClientHeight = 64
+        ClientWidth = 186
         TabOrder = 2
         object RB6: TRadioButton
           Left = 8
-          Height = 17
+          Height = 19
           Top = 3
-          Width = 45
+          Width = 59
           HelpContext = 102
           AllowGrayed = True
           Caption = '&Pixels'
@@ -109,9 +108,9 @@ object frDesOptionsForm: TfrDesOptionsForm
         end
         object RB7: TRadioButton
           Left = 8
-          Height = 17
+          Height = 19
           Top = 23
-          Width = 36
+          Width = 44
           HelpContext = 112
           AllowGrayed = True
           Caption = '&MM'
@@ -120,9 +119,9 @@ object frDesOptionsForm: TfrDesOptionsForm
         end
         object RB8: TRadioButton
           Left = 8
-          Height = 17
+          Height = 19
           Top = 43
-          Width = 50
+          Width = 66
           HelpContext = 121
           AllowGrayed = True
           Caption = '&Inches'
@@ -136,14 +135,14 @@ object frDesOptionsForm: TfrDesOptionsForm
         Top = 74
         Width = 177
         Caption = 'Grid size'
-        ClientHeight = 67
-        ClientWidth = 173
+        ClientHeight = 64
+        ClientWidth = 169
         TabOrder = 3
         object RB1: TRadioButton
           Left = 8
-          Height = 17
+          Height = 19
           Top = 3
-          Width = 53
+          Width = 72
           HelpContext = 131
           AllowGrayed = True
           Caption = '&4 pixels'
@@ -153,9 +152,9 @@ object frDesOptionsForm: TfrDesOptionsForm
         end
         object RB2: TRadioButton
           Left = 8
-          Height = 17
+          Height = 19
           Top = 23
-          Width = 53
+          Width = 72
           HelpContext = 141
           AllowGrayed = True
           Caption = '&8 pixels'
@@ -164,9 +163,9 @@ object frDesOptionsForm: TfrDesOptionsForm
         end
         object RB3: TRadioButton
           Left = 8
-          Height = 17
+          Height = 19
           Top = 43
-          Width = 90
+          Width = 130
           HelpContext = 151
           AllowGrayed = True
           Caption = '&18 pixels (5mm)'
@@ -178,62 +177,46 @@ object frDesOptionsForm: TfrDesOptionsForm
         Left = 4
         Height = 85
         Top = 166
-        Width = 333
+        Width = 381
         Caption = 'Other'
-        ClientHeight = 67
-        ClientWidth = 329
+        ClientHeight = 64
+        ClientWidth = 373
         TabOrder = 4
         object CB3: TCheckBox
           Left = 8
-          Height = 17
+          Height = 19
           Top = 2
-          Width = 92
+          Width = 132
           HelpContext = 161
           Caption = 'Colored &buttons'
           TabOrder = 0
         end
         object CB4: TCheckBox
           Left = 8
-          Height = 17
+          Height = 19
           Top = 22
-          Width = 102
+          Width = 145
           HelpContext = 171
           Caption = '&Editing after insert'
           TabOrder = 1
         end
         object CB5: TCheckBox
           Left = 8
-          Height = 17
+          Height = 19
           Top = 44
-          Width = 96
+          Width = 134
           Caption = 'Show band &titles'
           TabOrder = 2
         end
       end
     end
   end
-  object Button1: TButton
-    Left = 176
-    Height = 25
-    Top = 292
-    Width = 75
-    HelpContext = 40
-    BorderSpacing.InnerBorder = 4
-    Caption = 'Ok'
-    Default = True
-    ModalResult = 1
+  object ButtonPanel1: TButtonPanel
+    Left = 6
+    Height = 40
+    Top = 301
+    Width = 382
     TabOrder = 1
-  end
-  object Button2: TButton
-    Left = 264
-    Height = 25
-    Top = 292
-    Width = 75
-    HelpContext = 50
-    BorderSpacing.InnerBorder = 4
-    Cancel = True
-    Caption = 'Cancel'
-    ModalResult = 2
-    TabOrder = 2
+    ShowButtons = [pbOK, pbCancel, pbHelp]
   end
 end

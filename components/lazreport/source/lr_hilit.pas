@@ -17,18 +17,20 @@ interface
 uses
   Classes, SysUtils, LResources,
   Forms, Controls, Graphics, Dialogs,
-  Buttons, StdCtrls,
+  Buttons, StdCtrls, ButtonPanel,
   LR_Const;
 
 type
+
+  { TfrHilightForm }
+
   TfrHilightForm = class(TForm)
+    ButtonPanel1: TButtonPanel;
     GroupBox1: TGroupBox;
     GroupBox2: TGroupBox;
     CB1: TCheckBox;
     CB2: TCheckBox;
     CB3: TCheckBox;
-    Button3: TButton;
-    Button4: TButton;
     ColorDialog1: TColorDialog;
     SpeedButton1: TSpeedButton;
     SpeedButton2: TSpeedButton;
@@ -104,8 +106,6 @@ begin
   SpeedButton2.Caption := sHilightFormColor2;
   RB1.Caption := sHilightFormTransp;
   RB2.Caption := sHilightFormOther;
-  Button3.Caption := sOk;
-  Button4.Caption := sCancel;
 end;
 
 initialization

@@ -8,25 +8,31 @@ object frProgressForm: TfrProgressForm
   Caption = 'frProgressForm'
   ClientHeight = 106
   ClientWidth = 278
-  Font.Height = -11
-  Font.Name = 'MS Sans Serif'
   OnCreate = FormCreate
   Position = poScreenCenter
-  LCLVersion = '0.9.27'
+  LCLVersion = '0.9.29'
   object Label1: TLabel
     Left = 20
-    Height = 16
+    Height = 18
     Top = 32
-    Width = 9
+    Width = 10
     Alignment = taCenter
     Caption = '1'
     ParentColor = False
   end
   object Button1: TButton
-    Left = 100
-    Height = 25
-    Top = 68
-    Width = 75
+    AnchorSideLeft.Control = Owner
+    AnchorSideLeft.Side = asrCenter
+    AnchorSideTop.Control = Owner
+    AnchorSideBottom.Control = Owner
+    AnchorSideBottom.Side = asrBottom
+    Left = 106
+    Height = 37
+    Top = 63
+    Width = 67
+    Anchors = [akLeft, akBottom]
+    AutoSize = True
+    BorderSpacing.Bottom = 6
     BorderSpacing.InnerBorder = 4
     Cancel = True
     Caption = 'Cancel'

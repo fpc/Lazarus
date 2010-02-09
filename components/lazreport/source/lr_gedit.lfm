@@ -5,14 +5,15 @@ object frGEditorForm: TfrGEditorForm
   Width = 346
   HorzScrollBar.Page = 345
   VertScrollBar.Page = 266
+  ActiveControl = Button3
   BorderStyle = bsDialog
   Caption = 'Picture'
   ClientHeight = 267
   ClientWidth = 346
   Font.Color = clBlack
-  Font.Name = 'MS Sans Serif'
   OnCreate = FormCreate
   Position = poScreenCenter
+  LCLVersion = '0.9.29'
   object Bevel1: TBevel
     Left = 4
     Height = 241
@@ -26,13 +27,12 @@ object frGEditorForm: TfrGEditorForm
     Top = 12
     Width = 237
     Stretch = True
-    Transparent = False
   end
   object CB1: TCheckBox
     Left = 256
     Height = 19
     Top = 232
-    Width = 60
+    Width = 70
     HelpContext = 82
     AllowGrayed = True
     Caption = '&Stretch'

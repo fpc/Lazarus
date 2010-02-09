@@ -40,7 +40,7 @@ uses
   Graphics, Controls, Forms, Dialogs,Buttons,
   StdCtrls, Menus, Barcode,
   
-  LCLType,LR_Class, ExtCtrls;
+  LCLType,LR_Class, ExtCtrls, ButtonPanel;
 
 
 {.$DEFINE BC_1_25} //For Barcode version 1.25 actually in debug
@@ -109,8 +109,7 @@ type
   { TfrBarCodeForm }
 
   TfrBarCodeForm = class(TfrObjEditorForm)
-    bCancel: TButton;
-    bOk: TButton;
+    ButtonPanel1: TButtonPanel;
     edZoom: TEdit;
     labZoom: TLabel;
     M1: TEdit;
@@ -129,6 +128,7 @@ type
     RB2: TRadioButton;
     RB3: TRadioButton;
     RB4: TRadioButton;
+    procedure FormClose(Sender: TObject; var CloseAction: TCloseAction);
     procedure FormCreate(Sender: TObject);
     procedure VarBtnClick(Sender: TObject);
     procedure DBBtnClick(Sender: TObject);
@@ -496,8 +496,13 @@ begin
   VarBtn.Hint := sBarCodeFormVar;
   GroupBox2.Caption := sBarCodeFormRotate;
   labZoom.Caption:=sBarCodeZoom;
-  bOk.Caption := sOk;
-  bCancel.Caption := sCancel;
+end;
+
+procedure TfrBarCodeForm.FormClose(Sender: TObject;
+  var CloseAction: TCloseAction);
+begin
+  if ModalResult = mrOk then
+    bOkClick(nil);
 end;
 
 procedure TfrBarCodeForm.FormActivate(Sender: TObject);

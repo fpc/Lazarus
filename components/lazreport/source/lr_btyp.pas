@@ -17,15 +17,17 @@ interface
 uses
   Classes, SysUtils, LResources,
   Forms, Controls, Graphics, Dialogs,
-  Buttons, StdCtrls,
+  Buttons, StdCtrls, ButtonPanel,
 
   LR_Class,LR_Const;
 
 type
+
+  { TfrBandTypesForm }
+
   TfrBandTypesForm = class(TForm)
-    Button1: TButton;
+    ButtonPanel1: TButtonPanel;
     GB1: TGroupBox;
-    Button2: TButton;
     procedure FormCreate(Sender: TObject);
   private
     { Private declarations }
@@ -84,8 +86,6 @@ begin
   
   Caption := sBandTypesFormCapt;
   GB1.Caption := sBandTypesFormBType;
-  Button1.Caption := sOk;
-  Button2.Caption := sCancel;
 end;
 
 procedure TfrBandTypesForm.bClick(Sender: TObject);

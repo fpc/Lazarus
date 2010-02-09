@@ -1,71 +1,72 @@
-{ Ceci est un fichier ressource généré automatiquement par Lazarus }
+{ This is an automatically generated lazarus resource file }
 
 LazarusResources.Add('TfrAboutForm','FORMDATA',[
-  'TPF0'#12'TfrAboutForm'#11'frAboutForm'#4'Left'#3#155#1#6'Height'#3#150#0#3'T'
-  +'op'#3'"'#1#5'Width'#3#23#1#18'HorzScrollBar.Page'#3#22#1#18'VertScrollBar.P'
-  +'age'#3#149#0#11'BorderStyle'#7#8'bsDialog'#7'Caption'#6#5'About'#12'ClientH'
-  +'eight'#3#150#0#11'ClientWidth'#3#23#1#10'Font.Color'#7#7'clBlack'#11'Font.H'
-  +'eight'#2#245#9'Font.Name'#6#5'Arial'#8'OnCreate'#7#10'FormCreate'#8'Positio'
-  +'n'#7#14'poScreenCenter'#0#6'TBevel'#6'Bevel2'#4'Left'#2#4#6'Height'#2'q'#3
-  +'Top'#2#4#5'Width'#3#13#1#5'Shape'#7#7'bsFrame'#0#0#6'TBevel'#6'Bevel1'#4'Le'
-  +'ft'#2#16#6'Height'#2'9'#3'Top'#2#16#5'Width'#2'9'#5'Shape'#7#7'bsFrame'#0#0
-  +#6'TImage'#6'Image1'#4'Left'#2#20#6'Height'#2'2'#3'Top'#2#20#5'Width'#2'2'#8
-  +'AutoSize'#9#12'Picture.Data'#10#250#5#0#0#7'TBitmap'#238#5#0#0'BM'#238#5#0#0
-  +#0#0#0#0'v'#0#0#0'('#0#0#0'2'#0#0#0'2'#0#0#0#1#0#4#0#0#0#0#0'x'#5#0#0#0#0#0#0
-  +#0#0#0#0#16#0#0#0#0#0#0#0#0#0#0#0#0#0#128#0#0#128#0#0#0#128#128#0#128#0#0#0
-  +#128#0#128#0#128#128#0#0#192#192#192#0#128#128#128#0#0#0#255#0#0#255#0#0#0
-  +#255#255#0#255#0#0#0#255#0#255#0#255#255#0#0#255#255#255#0'wwwwwwwwwwwwwwwww'
-  +'wwwwwwww'#0#0#0'wwwwwwwwwwwwwwwwwwwwwwwww'#0#0#0'wwwwwwwwwwwwwwwwwwwwwwwww'
-  +#0#0#0'wwwwwwwwwwwwwwwwwwwwwwwww'#0#0#0'wwwwwwwwwwwwwwwwwwwwwwwww'#0#0#0'www'
-  +'wwwwwwwwwwwwwwwwwwwwww'#0#0#0'wwwwwwwwwwwwwwwwwwwwwwwww'#0#0#0'wwwwwwwww'
-  +#231'wwwwwwwwww'#238'wwww'#0#0#0'wwwwwwwww'#238#231'wwwwwwww'#238#238'wwww'#0
-  +#0#0'wwwwwwwww~'#231'wwwwww~'#238#238#238'wwww'#0#0#0'wwwwwwwww~'#238'wwwww~'
-  +#238#238#238#238'wwww'#0#0#0'wwwwwwwwww'#238'wwww~'#238#238#238#238#238'wwww'
-  +#0#0#0'w'#255'wwwwwwww'#238#231'ww~'#238#238#238#238#238'wwwww'#0#0#0'w'#255
-  +#247'wwwwwww~'#238'w~'#238#238#238#238#238'wwwwww'#0#0#0'w'#255#255#247'wwww'
-  +'ww~'#238'~'#238#238#238#238#238'wwwwwww'#0#0#0'w'#255#255'wwwwwww'#238#238
-  +#238#238#238#231'wwwwwwww'#0#0#0'ww'#255#255#247'wwwww'#238#238#238#238#238
-  +#231'wwwwwwwww'#0#0#0'ww'#255#255'wwwww'#238#238#238#238'wwwwwwwwwww'#0#0#0
-  +'www'#255#255#247'wwww~'#238#238#238#231'wwwwwwwwww'#0#0#0'wwww'#255'wwwww'
-  +#238#238#238#238#238#238'wwwwwwww'#0#0#0'wwwww'#255#247'wwwww~'#238#238#238
-  +#238#238#238'wwwwww'#0#0#0'wwwww'#255'wwwwww'#238'w'#238#238#238#238#238#231
-  +'wwww'#0#0#0'wwwww'#255#247'wwwww~'#231'ww~'#238#238#238#238'www'#0#0#0'www'
-  +'www'#255#247'wwwwww'#238'wwww'#238#238#238#231'ww'#0#0#0'ww'#255#255#255
-  +#255#255'wwwwww'#238#231'wwww~'#238#238'ww'#0#0#0'ww'#255#255#255#255#255
-  +#255#255#247'www~'#231'wwwww~'#238#231'w'#0#0#0'ww'#255#255#255#255#255#255
-  +#255#255'wwww'#238'wwwwww'#238#231'w'#0#0#0'www'#255#255#255#255#255#255#255
-  +#247'www'#238#231'wwwww'#238#231'w'#0#0#0'wwwww'#255#255#255#255#255#238#238
-  +#238'w~'#238'wwww~'#238#231'w'#0#0#0'wwwwwwww'#255'~'#238#238#238#231'~'#238
+  'TPF0'#12'TfrAboutForm'#11'frAboutForm'#4'Left'#3#155#1#6'Height'#3#174#0#3'T'
+  +'op'#3'"'#1#5'Width'#3#29#1#18'HorzScrollBar.Page'#3#22#1#18'VertScrollBar.P'
+  +'age'#3#149#0#13'ActiveControl'#7#12'ButtonPanel1'#11'BorderStyle'#7#8'bsDia'
+  +'log'#7'Caption'#6#5'About'#12'ClientHeight'#3#174#0#11'ClientWidth'#3#29#1
+  +#10'Font.Color'#7#7'clBlack'#8'OnCreate'#7#10'FormCreate'#8'Position'#7#14'p'
+  +'oScreenCenter'#10'LCLVersion'#6#6'0.9.29'#0#6'TBevel'#6'Bevel2'#4'Left'#2#0
+  +#6'Height'#2'z'#3'Top'#2#0#5'Width'#3#29#1#5'Align'#7#8'alClient'#5'Shape'#7
+  +#7'bsFrame'#0#0#6'TBevel'#6'Bevel1'#4'Left'#2#16#6'Height'#2'9'#3'Top'#2#16#5
+  +'Width'#2'9'#5'Shape'#7#7'bsFrame'#0#0#6'TImage'#6'Image1'#4'Left'#2#20#6'He'
+  +'ight'#2'2'#3'Top'#2#20#5'Width'#2'2'#8'AutoSize'#9#12'Picture.Data'#10#250#5
+  +#0#0#7'TBitmap'#238#5#0#0'BM'#238#5#0#0#0#0#0#0'v'#0#0#0'('#0#0#0'2'#0#0#0'2'
+  +#0#0#0#1#0#4#0#0#0#0#0'x'#5#0#0#0#0#0#0#0#0#0#0#16#0#0#0#0#0#0#0#0#0#0#0#0#0
+  +#128#0#0#128#0#0#0#128#128#0#128#0#0#0#128#0#128#0#128#128#0#0#192#192#192#0
+  +#128#128#128#0#0#0#255#0#0#255#0#0#0#255#255#0#255#0#0#0#255#0#255#0#255#255
+  +#0#0#255#255#255#0'wwwwwwwwwwwwwwwwwwwwwwwww'#0#0#0'wwwwwwwwwwwwwwwwwwwwwwww'
+  +'w'#0#0#0'wwwwwwwwwwwwwwwwwwwwwwwww'#0#0#0'wwwwwwwwwwwwwwwwwwwwwwwww'#0#0#0
+  +'wwwwwwwwwwwwwwwwwwwwwwwww'#0#0#0'wwwwwwwwwwwwwwwwwwwwwwwww'#0#0#0'wwwwwwwww'
+  +'wwwwwwwwwwwwwwww'#0#0#0'wwwwwwwww'#231'wwwwwwwwww'#238'wwww'#0#0#0'wwwwwwww'
+  +'w'#238#231'wwwwwwww'#238#238'wwww'#0#0#0'wwwwwwwww~'#231'wwwwww~'#238#238
+  +#238'wwww'#0#0#0'wwwwwwwww~'#238'wwwww~'#238#238#238#238'wwww'#0#0#0'wwwwwww'
+  +'www'#238'wwww~'#238#238#238#238#238'wwww'#0#0#0'w'#255'wwwwwwww'#238#231'ww'
+  +'~'#238#238#238#238#238'wwwww'#0#0#0'w'#255#247'wwwwwww~'#238'w~'#238#238#238
+  +#238#238'wwwwww'#0#0#0'w'#255#255#247'wwwwww~'#238'~'#238#238#238#238#238'ww'
+  +'wwwww'#0#0#0'w'#127#255#255'wwwwwww'#238#238#238#238#238#231'wwwwwwww'#0#0#0
+  +'ww'#255#255#247'wwwww'#238#238#238#238#238#231'wwwwwwwww'#0#0#0'ww'#127#255
+  +#255'wwwww'#238#238#238#238'wwwwwwwwwww'#0#0#0'www'#255#255#247'wwww~'#238
+  +#238#238#231'wwwwwwwwww'#0#0#0'wwww'#127#255'wwwww'#238#238#238#238#238#238
+  +'wwwwwwww'#0#0#0'wwwww'#255#247'wwwww~'#238#238#238#238#238#238'wwwwww'#0#0#0
+  +'wwwww'#127#255'wwwwww'#238'w'#238#238#238#238#238#231'wwww'#0#0#0'wwwww'#127
+  +#255#247'wwwww~'#231'ww~'#238#238#238#238'www'#0#0#0'wwwwww'#255#247'wwwwww'
+  +#238'wwww'#238#238#238#231'ww'#0#0#0'ww'#127#255#255#255#255#255'wwwwww'#238
+  +#231'wwww~'#238#238'ww'#0#0#0'ww'#127#255#255#255#255#255#255#255#247'www~'
+  +#231'wwwww~'#238#231'w'#0#0#0'ww'#127#255#255#255#255#255#255#255#255'wwww'
+  +#238'wwwwww'#238#231'w'#0#0#0'www'#127#255#255#255#255#255#255#255#247'www'
+  +#238#231'wwwww'#238#231'w'#0#0#0'wwwww'#127#255#255#255#255#255#238#238#238
+  +'w~'#238'wwww~'#238#231'w'#0#0#0'wwwwwwww'#127#255'~'#238#238#238#231'~'#238
   +#238#238#238#238#238#238#231'w'#0#0#0'wwwwwwwww'#255'~'#238#238#238#238#238
   +#238#238#238#238#238#238#238#231'w'#0#0#0'wwwwwwwww'#255#247#238#238#238#238
-  +#238#238#238#238#238#238#238#238'ww'#0#0#0'wwwwwwwww'#255'w'#238#238#238#238
-  +#238#238#238#238#238#238'www'#0#0#0'wwwwwwwwww'#255'ww~'#238#238#238#238#238
-  +#238#231'wwww'#0#0#0'wwwwwwwwww'#247'wwwwwwwwwwwww'#0#0#0'www'#255#255#255
-  +#255'www'#255'wwwwwwwwwwwww'#0#0#0'www'#255#255#255'wwwww'#255#247'wwwwwwww'
-  +'wwww'#0#0#0'www'#255#255#255#247'www'#247'wwwwwwwwwwww'#0#0#0'www'#255
-  +#255#255#255#255#255'w'#255'wwwwwwwwwwww'#0#0#0'wwww'#255#255#255#255#255
-  +#255#255#255#255#255#255#255#247'wwwwwwww'#0#0#0'wwww'#255#255#255#255#255
-  +#255#255#255#255#255#255#255#247'wwwwwww'#0#0#0'wwwww'#255#255#255#255#255
-  +#255#255#255#255#255#255#247'wwwwwww'#0#0#0'wwwwwww'#255#255#255#255#255#255
-  +#255#255#255#255#255'wwwwwww'#0#0#0'wwwwwwwww'#255#255#255#255#255#255#255
-  +#255#255'wwwwwww'#0#0#0'wwwwwwwwwwwwwwwwwwwwwwwww'#0#0#0'wwwwwwwwwwwwwwwwwww'
-  +'wwwwww'#0#0#0'wwwwwwwwwwwwwwwwwwwwwwwww'#0#0#0'wwwwwwwwwwwwwwwwwwwwwwwww'#0
-  +#0#0'wwwwwwwwwwwwwwwwwwwwwwwww'#0#0#0'wwwwwwwwwwwwwwwwwwwwwwwww'#0#0#0#0#0#6
-  +'TLabel'#6'Label1'#4'Left'#2'h'#6'Height'#2#14#3'Top'#2#16#5'Width'#2'A'#9'A'
-  +'lignment'#7#8'taCenter'#7'Caption'#6#10'FreeReport'#10'Font.Color'#7#7'clBl'
-  +'ack'#11'Font.Height'#2#245#9'Font.Name'#6#13'MS Sans Serif'#10'Font.Style'
-  +#11#6'fsBold'#0#11'ParentColor'#8#0#0#6'TLabel'#6'Label2'#4'Left'#2'h'#6'Hei'
-  +'ght'#2#14#3'Top'#2' '#5'Width'#2'<'#9'Alignment'#7#8'taCenter'#7'Caption'#6
-  +#12'Version 2.32'#10'Font.Color'#7#7'clBlack'#11'Font.Height'#2#245#9'Font.N'
-  +'ame'#6#13'MS Sans Serif'#11'ParentColor'#8#0#0#6'TLabel'#6'Label3'#4'Left'#2
-  +'X'#6'Height'#2#14#3'Top'#2'@'#5'Width'#2'u'#9'Alignment'#7#8'taCenter'#7'Ca'
-  +'ption'#6#23'Copyright ('#169') 1998-2002'#10'Font.Color'#7#7'clBlack'#11'Fo'
-  +'nt.Height'#2#245#9'Font.Name'#6#13'MS Sans Serif'#11'ParentColor'#8#0#0#6'T'
-  +'Label'#6'Label4'#4'Left'#2'X'#6'Height'#2#14#3'Top'#2'0'#5'Width'#2'W'#9'Al'
-  +'ignment'#7#8'taCenter'#7'Caption'#6#16'by Tzyganenko A.'#10'Font.Color'#7#7
-  +'clBlack'#11'Font.Height'#2#245#9'Font.Name'#6#13'MS Sans Serif'#11'ParentCo'
-  +'lor'#8#0#0#7'TButton'#7'Button1'#4'Left'#3#198#0#6'Height'#2#25#3'Top'#2'x'
-  ,#5'Width'#2'K'#7'Caption'#6#2'Ok'#7'Default'#9#10'Font.Color'#7#7'clBlack'#11
-  +'Font.Height'#2#245#9'Font.Name'#6#13'MS Sans Serif'#11'ModalResult'#2#1#8'T'
-  +'abOrder'#2#0#0#0#0
+  +#238#238#238#238#238#238#238#238'ww'#0#0#0'wwwwwwwww'#127#255'w'#238#238#238
+  +#238#238#238#238#238#238#238'www'#0#0#0'wwwwwwwwww'#255'ww~'#238#238#238#238
+  +#238#238#231'wwww'#0#0#0'wwwwwwwwww'#127#247'wwwwwwwwwwwww'#0#0#0'www'#255
+  +#255#255#255'www'#127#255'wwwwwwwwwwwww'#0#0#0'www'#255#255#255'wwwww'#255
+  +#247'wwwwwwwwwwww'#0#0#0'www'#127#255#255#255#247'www'#127#247'wwwwwwwwwwww'
+  +#0#0#0'www'#127#255#255#255#255#255#255'w'#127#255'wwwwwwwwwwww'#0#0#0'wwww'
+  +#255#255#255#255#255#255#255#255#255#255#255#255#247'wwwwwwww'#0#0#0'wwww'
+  +#127#255#255#255#255#255#255#255#255#255#255#255#255#247'wwwwwww'#0#0#0'wwww'
+  +'w'#127#255#255#255#255#255#255#255#255#255#255#255#247'wwwwwww'#0#0#0'wwwww'
+  +'ww'#255#255#255#255#255#255#255#255#255#255#255'wwwwwww'#0#0#0'wwwwwwwww'
+  +#255#255#255#255#255#255#255#255#255'wwwwwww'#0#0#0'wwwwwwwwwwwwwwwwwwwwwwww'
+  +'w'#0#0#0'wwwwwwwwwwwwwwwwwwwwwwwww'#0#0#0'wwwwwwwwwwwwwwwwwwwwwwwww'#0#0#0
+  +'wwwwwwwwwwwwwwwwwwwwwwwww'#0#0#0'wwwwwwwwwwwwwwwwwwwwwwwww'#0#0#0'wwwwwwwww'
+  +'wwwwwwwwwwwwwwww'#0#0#0#0#0#6'TLabel'#6'Label1'#4'Left'#2'h'#6'Height'#2#15
+  +#3'Top'#2#16#5'Width'#2'G'#9'Alignment'#7#8'taCenter'#7'Caption'#6#10'FreeRe'
+  +'port'#10'Font.Color'#7#7'clBlack'#11'Font.Height'#2#245#9'Font.Name'#6#13'M'
+  +'S Sans Serif'#10'Font.Style'#11#6'fsBold'#0#11'ParentColor'#8#10'ParentFont'
+  +#8#0#0#6'TLabel'#6'Label2'#4'Left'#2'h'#6'Height'#2#15#3'Top'#2' '#5'Width'#2
+  +'H'#9'Alignment'#7#8'taCenter'#7'Caption'#6#12'Version 2.32'#10'Font.Color'#7
+  +#7'clBlack'#11'Font.Height'#2#245#9'Font.Name'#6#13'MS Sans Serif'#11'Parent'
+  +'Color'#8#10'ParentFont'#8#0#0#6'TLabel'#6'Label3'#4'Left'#2'X'#6'Height'#2
+  +#15#3'Top'#2'@'#5'Width'#3#142#0#9'Alignment'#7#8'taCenter'#7'Caption'#6#24
+  +'Copyright ('#194#169') 1998-2002'#10'Font.Color'#7#7'clBlack'#11'Font.Heigh'
+  +'t'#2#245#9'Font.Name'#6#13'MS Sans Serif'#11'ParentColor'#8#10'ParentFont'#8
+  +#0#0#6'TLabel'#6'Label4'#4'Left'#2'X'#6'Height'#2#15#3'Top'#2'0'#5'Width'#2
+  +'c'#9'Alignment'#7#8'taCenter'#7'Caption'#6#16'by Tzyganenko A.'#10'Font.Col'
+  ,'or'#7#7'clBlack'#11'Font.Height'#2#245#9'Font.Name'#6#13'MS Sans Serif'#11
+  +'ParentColor'#8#10'ParentFont'#8#0#0#12'TButtonPanel'#12'ButtonPanel1'#4'Lef'
+  +'t'#2#6#6'Height'#2'('#3'Top'#3#128#0#5'Width'#3#17#1#8'TabOrder'#2#0#11'Sho'
+  +'wButtons'#11#7'pbClose'#6'pbHelp'#0#0#0#0
 ]);

@@ -17,11 +17,15 @@ interface
 uses
   Classes, SysUtils, LResources,
   Forms, Controls, Graphics, Dialogs,
-  Buttons, StdCtrls,ComCtrls,
+  Buttons, StdCtrls,ComCtrls, ButtonPanel,
   LR_Const;
 
 type
+
+  { TfrDesOptionsForm }
+
   TfrDesOptionsForm = class(TForm)
+    ButtonPanel1: TButtonPanel;
     PageControl1: TPageControl;
     Tab1: TTabSheet;
     GroupBox1: TGroupBox;
@@ -38,8 +42,6 @@ type
     RB1: TRadioButton;
     RB2: TRadioButton;
     RB3: TRadioButton;
-    Button1: TButton;
-    Button2: TButton;
     GroupBox5: TGroupBox;
     CB3: TCheckBox;
     CB4: TCheckBox;
@@ -76,8 +78,6 @@ begin
   RB6.Caption := sDesOptionsFormPix;
   RB7.Caption := sDesOptionsFormmm;
   RB8.Caption := sDesOptionsFormInch;
-  Button1.Caption := sOk;
-  Button2.Caption := sCancel;
 end;
 
 initialization

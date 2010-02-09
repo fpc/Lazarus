@@ -17,13 +17,14 @@ interface
 uses
   Classes, SysUtils, LResources,
   Forms, Controls, Graphics, Dialogs,
-  Buttons, StdCtrls,ExtCtrls,LR_Class;
+  Buttons, StdCtrls,ExtCtrls, ButtonPanel,LR_Class;
 
 type
 
   { TfrFmtForm }
 
   TfrFmtForm = class(TForm)
+    ButtonPanel1: TButtonPanel;
     GroupBox2: TGroupBox;
     ComboBox1: TComboBox;
     ComboBox2: TComboBox;
@@ -31,14 +32,11 @@ type
     Label5: TLabel;
     Label6: TLabel;
     SplEdit: TEdit;
-    Button1: TButton;
-    Button2: TButton;
     Panel2: TPanel;
     Edit1: TEdit;
     Label1: TLabel;
     Edit3: TEdit;
     procedure ComboBox2Select(Sender: TObject);
-    procedure FormActivate(Sender: TObject);
     procedure ComboBox1Change(Sender: TObject);
     procedure SplEditEnter(Sender: TObject);
     procedure ShowPanel1;
@@ -67,10 +65,6 @@ implementation
 uses LR_Const;
 
 {$WARNINGS OFF}
-procedure TfrFmtForm.FormActivate(Sender: TObject);
-begin
-end;
-
 procedure TfrFmtForm.ComboBox2Select(Sender: TObject);
 begin
   ShowPanel2;
@@ -156,8 +150,6 @@ begin
   Label5.Caption := sFmtFormDeciD;
   Label6.Caption := sFmtFormFrac;
   Label1.Caption := sFmtFormFrmt;
-  Button1.Caption := sOk;
-  Button2.Caption := sCancel;
   SplEdit.Text := DecimalSeparator;
 end;
 

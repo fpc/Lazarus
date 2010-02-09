@@ -1,49 +1,33 @@
 object frBandTypesForm: TfrBandTypesForm
   Left = 426
-  Height = 358
+  Height = 361
   Top = 172
-  Width = 336
+  Width = 377
   HorzScrollBar.Page = 335
   VertScrollBar.Page = 357
-  BorderStyle = bsDialog
+  ActiveControl = ButtonPanel1
   Caption = 'Insert new band'
-  ClientHeight = 358
-  ClientWidth = 336
-  Font.Height = -11
-  Font.Name = 'MS Sans Serif'
+  ClientHeight = 361
+  ClientWidth = 377
   OnCreate = FormCreate
   Position = poScreenCenter
-  object Button1: TButton
-    Left = 174
-    Height = 25
-    Top = 329
-    Width = 75
-    HelpContext = 40
-    Anchors = [akRight, akBottom]
-    Caption = 'Ok'
-    Default = True
-    ModalResult = 1
+  LCLVersion = '0.9.29'
+  object GB1: TGroupBox
+    Left = 0
+    Height = 309
+    Top = 0
+    Width = 377
+    HelpContext = 89
+    Align = alClient
+    Caption = 'Band type'
     TabOrder = 0
   end
-  object GB1: TGroupBox
-    Left = 4
-    Height = 324
-    Top = 4
-    Width = 324
-    HelpContext = 89
-    Caption = 'Band type'
+  object ButtonPanel1: TButtonPanel
+    Left = 6
+    Height = 40
+    Top = 315
+    Width = 365
     TabOrder = 1
-  end
-  object Button2: TButton
-    Left = 254
-    Height = 25
-    Top = 329
-    Width = 75
-    HelpContext = 50
-    Anchors = [akRight, akBottom]
-    Cancel = True
-    Caption = 'Cancel'
-    ModalResult = 2
-    TabOrder = 2
+    ShowButtons = [pbOK, pbCancel, pbHelp]
   end
 end
