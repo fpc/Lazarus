@@ -42,6 +42,7 @@ unit LinkScanner;
 // debugging
 { $DEFINE ShowUpdateCleanedSrc}
 { $DEFINE VerboseIncludeSearch}
+{ $DEFINE VerboseUpdateNeeded}
 
 interface
 
@@ -1099,7 +1100,7 @@ begin
     // input is the same as last time -> output is the same
     // -> if there was an error and it was in a needed range, raise it again
     if LastErrorIsValid then begin
-      // the error is happened in ScannedRange
+      // the error has happened in ScannedRange
       if ord(ScannedRange)>ord(Range) then begin
         // error was not in needed range
       end else if (ScannedRange=Range)
@@ -1188,8 +1189,9 @@ begin
         if TokenType=lsttWord then
           ParseKeyWord(TokenStart,SrcPos-TokenStart,LastTokenType);
 
-        //DebugLn('TLinkScanner.Scan G "',copy(Src,TokenStart,SrcPos-TokenStart),'"');
+        //writeln('TLinkScanner.Scan G "',copy(Src,TokenStart,SrcPos-TokenStart),'" LastTokenType=',LastTokenType,' TokenType=',TokenType);
         if (LastTokenType=lsttEnd) and (TokenType=lsttPoint) then begin
+          //DebugLn(['TLinkScanner.Scan END. ',MainFilename]);
           ScannedRange:=lsrEnd;
           break;
         end;
@@ -1525,7 +1527,12 @@ begin
   end;
   
   // check if ScanRange has increased
-  if ord(Range)>ord(ScannedRange) then exit;
+  if (ord(Range)>ord(ScannedRange)) and (not LastErrorIsValid) then begin
+    {$IFDEF VerboseUpdateNeeded}
+    DebugLn(['TLinkScanner.UpdateNeeded because range increased Range=',ord(Range),' ScannedRange=',ord(ScannedRange)]);
+    {$ENDIF}
+    exit;
+  end;
 
   // check if any input has changed ...
   FForceUpdateNeeded:=true;
@@ -1536,7 +1543,12 @@ begin
       SrcChange:=PSourceChangeStep(FSourceChangeSteps[i]);
       SrcLog:=FOnGetSource(Self,SrcChange^.Code);
       //debugln(['TLinkScanner.UpdateNeeded ',ExtractFilename(MainFilename),' i=',i,' File=',FOnGetFileName(Self,SrcLog),' Last=',SrcChange^.ChangeStep,' Now=',SrcLog.ChangeStep]);
-      if SrcChange^.ChangeStep<>SrcLog.ChangeStep then exit;
+      if SrcChange^.ChangeStep<>SrcLog.ChangeStep then begin
+        {$IFDEF VerboseUpdateNeeded}
+        DebugLn(['TLinkScanner.UpdateNeeded because file changed: ',OnGetFileName(Self,SrcLog),' MainFilename=',MainFilename]);
+        {$ENDIF}
+        exit;
+      end;
     end;
     if CheckFilesOnDisk and Assigned(FOnCheckFileOnDisk) then begin
       // if files changed on disk, reload them
@@ -1554,13 +1566,22 @@ begin
     NewInitValues:=FOnGetInitValues(Code,NewInitValuesChangeStep);
     if (NewInitValues<>nil)
     and (NewInitValuesChangeStep<>FInitValuesChangeStep)
-    and (not FInitValues.Equals(NewInitValues)) then
+    and (not FInitValues.Equals(NewInitValues)) then begin
+      {$IFDEF VerboseUpdateNeeded}
+      DebugLn(['TLinkScanner.UpdateNeeded because InitValues changed ',MainFilename]);
+      {$ENDIF}
       exit;
+    end;
   end;
   
   // check missing include files
-  if MissingIncludeFilesNeedsUpdate then exit;
-  
+  if MissingIncludeFilesNeedsUpdate then begin
+    {$IFDEF VerboseUpdateNeeded}
+    DebugLn(['TLinkScanner.UpdateNeeded because MissingIncludeFilesNeedsUpdate']);
+    {$ENDIF}
+    exit;
+  end;
+
   // no update needed :)
   FForceUpdateNeeded:=false;
   //DebugLn('TLinkScanner.UpdateNeeded END');
@@ -3002,6 +3023,7 @@ var
 begin
   if StartPos>SrcLen then exit(false);
   p:=@Src[StartPos];
+  //writeln('TLinkScanner.ParseKeyWord ',copy(Src,StartPos,WordLen));
   case UpChars[p^] of
   'E': if CompareIdentifiers(p,'END')=0 then exit(DoEndToken);
   'F': if CompareIdentifiers(p,'FINALIZATION')=0 then exit(DoFinalizationToken);

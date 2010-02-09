@@ -382,14 +382,14 @@ begin
   FreeClassInsertionList;
   FJumpToProcName:='';
   FCodeCompleteClassNode:=AClassNode;
-  if FCodeCompleteClassNode=nil then begin
+  if CodeCompleteClassNode=nil then begin
     FCompletingStartNode:=nil;
     exit;
   end;
   ClearIgnoreErrorAfter;
-  BuildSubTreeForClass(FCodeCompleteClassNode);
+  BuildSubTreeForClass(CodeCompleteClassNode);
   // find first variable/method/GUID
-  FCompletingStartNode:=FCodeCompleteClassNode.FirstChild;
+  FCompletingStartNode:=CodeCompleteClassNode.FirstChild;
   while FCompletingStartNode<>nil do begin
     if (FCompletingStartNode.Desc in AllClassSections)
     and (FCompletingStartNode.FirstChild<>nil)
@@ -505,7 +505,7 @@ begin
   {$IFDEF CTDEBUG}
   DebugLn('[TCodeCompletionCodeTool.AddClassInsertion] CleanDef="',CleanDef,'" Def="',Def,'" Identifiername="',Identifiername,'" Body="',Body,'"');
   {$ENDIF}
-  if FCodeCompleteClassNode.Desc in AllClassInterfaces then begin
+  if CodeCompleteClassNode.Desc in AllClassInterfaces then begin
     // a class interface has no section -> put them all into 'public'
     if TheType in NewClassPartProcs then
       TheType:=ncpPublicProcs
@@ -1168,10 +1168,10 @@ begin
     {$IFDEF CTDEBUG}
     DebugLn('TCodeCompletionCodeTool.CompleteCode Complete Properties ... ');
     {$ENDIF}
-    if FCodeCompleteClassNode.Desc in AllClassObjects then
-      SectionNode:=FCodeCompleteClassNode.FirstChild
+    if CodeCompleteClassNode.Desc in AllClassObjects then
+      SectionNode:=CodeCompleteClassNode.FirstChild
     else
-      SectionNode:=FCodeCompleteClassNode;
+      SectionNode:=CodeCompleteClassNode;
     while SectionNode<>nil do begin
       ANode:=SectionNode.FirstChild;
       while ANode<>nil do begin
@@ -1182,7 +1182,7 @@ begin
         end;
         ANode:=ANode.NextBrother;
       end;
-      if SectionNode=FCodeCompleteClassNode then break;
+      if SectionNode=CodeCompleteClassNode then break;
       SectionNode:=SectionNode.NextBrother;
     end;
 
@@ -4805,7 +4805,7 @@ var
       end;
       ClassProcs:=GatherProcNodes(FCompletingStartNode,
          [phpInUpperCase,phpAddClassName],
-         ExtractClassName(FCodeCompleteClassNode,true));
+         ExtractClassName(CodeCompleteClassNode,true));
     end;
   end;
   
@@ -4821,7 +4821,7 @@ begin
     CursorNode:=FindDeepestNodeAtPos(CleanCursorPos,true);
     CodeCompleteClassNode:=FindClassNode(CursorNode);
   end;
-  if FCodeCompleteClassNode=nil then begin
+  if CodeCompleteClassNode=nil then begin
     DebugLn(['TCodeCompletionCodeTool.FindEmptyMethods no class at ',DbgsCXY(CursorPos)]);
     exit;
   end;
@@ -4829,10 +4829,10 @@ begin
   ClassProcs:=nil;
   try
     // gather body nodes
-    TypeSectionNode:=FCodeCompleteClassNode.GetNodeOfType(ctnTypeSection);
+    TypeSectionNode:=CodeCompleteClassNode.GetNodeOfType(ctnTypeSection);
     ProcBodyNodes:=GatherProcNodes(TypeSectionNode,
                         [phpInUpperCase,phpIgnoreForwards,phpOnlyWithClassname],
-                         ExtractClassName(FCodeCompleteClassNode,true));
+                         ExtractClassName(CodeCompleteClassNode,true));
     // collect all emtpy bodies
     AVLNode:=ProcBodyNodes.FindLowest;
     while AVLNode<>nil do begin
@@ -5319,7 +5319,7 @@ var AccessParam, AccessParamPrefix, CleanAccessFunc, AccessFunc,
       if (Parts[ppParamList].StartPos>0) or (Parts[ppIndexWord].StartPos>0)
       or (SysUtils.CompareText(AccessParamPrefix,
               LeftStr(AccessParam,length(AccessParamPrefix)))=0)
-      or (FCodeCompleteClassNode.Desc in AllClassInterfaces) then
+      or (CodeCompleteClassNode.Desc in AllClassInterfaces) then
       begin
         // create the default read identifier for a function
         AccessParam:=AccessParamPrefix+copy(Src,Parts[ppName].StartPos,
@@ -5376,14 +5376,14 @@ var AccessParam, AccessParamPrefix, CleanAccessFunc, AccessFunc,
 
     // check if read access variable exists
     if (Parts[ppParamList].StartPos<1) and (Parts[ppIndexWord].StartPos<1)
-    and (FCodeCompleteClassNode.Desc in AllClassObjects)
+    and (CodeCompleteClassNode.Desc in AllClassObjects)
     and VarExistsInCodeCompleteClass(UpperCaseStr(AccessParam)) then exit;
 
     // complete read access specifier
     if (Parts[ppParamList].StartPos>0) or (Parts[ppIndexWord].StartPos>0)
     or (SysUtils.CompareText(AccessParamPrefix,
             LeftStr(AccessParam,length(AccessParamPrefix)))=0)
-    or (FCodeCompleteClassNode.Desc in AllClassInterfaces) then
+    or (CodeCompleteClassNode.Desc in AllClassInterfaces) then
     begin
       // the read identifier is a function
       {$IFDEF CTDEBUG}
@@ -5506,14 +5506,14 @@ var AccessParam, AccessParamPrefix, CleanAccessFunc, AccessFunc,
 
     // check if write variable exists
     if (Parts[ppParamList].StartPos<1) and (Parts[ppIndexWord].StartPos<1)
-    and (FCodeCompleteClassNode.Desc in AllClassObjects)
+    and (CodeCompleteClassNode.Desc in AllClassObjects)
     and VarExistsInCodeCompleteClass(UpperCaseStr(AccessParam)) then exit;
 
     // complete class
     if (Parts[ppParamList].StartPos>0) or (Parts[ppIndexWord].StartPos>0)
     or (SysUtils.CompareText(AccessParamPrefix,
             LeftStr(AccessParam,length(AccessParamPrefix)))=0)
-    or (FCodeCompleteClassNode.Desc in AllClassInterfaces) then
+    or (CodeCompleteClassNode.Desc in AllClassInterfaces) then
     begin
       // add insert demand for function
       // build function code
@@ -5706,7 +5706,7 @@ begin
       ClassSectionNode:=nil;
       if Visibility=pcsPublished then begin
         // insert into first published section
-        ClassSectionNode:=FCodeCompleteClassNode.FirstChild;
+        ClassSectionNode:=CodeCompleteClassNode.FirstChild;
         while not (ClassSectionNode.Desc in AllClassSections) do
           ClassSectionNode:=ClassSectionNode.NextBrother;
         // the first class section is always a published section, even if there
@@ -5720,25 +5720,25 @@ begin
           ClassSectionNode:=ClassSectionNode.NextBrother;
       end else if ANodeExt.Node<>nil then begin
         // search a section of the same Visibility in front of the node
-        if FCodeCompleteClassNode.Desc in AllClassObjects then
+        if CodeCompleteClassNode.Desc in AllClassObjects then
         begin
           ClassSectionNode:=ANodeExt.Node.Parent.PriorBrother;
           while (ClassSectionNode<>nil)
           and (ClassSectionNode.Desc<>ClassSectionNodeType[Visibility]) do
             ClassSectionNode:=ClassSectionNode.PriorBrother;
         end else begin
-          ClassSectionNode:=FCodeCompleteClassNode;
+          ClassSectionNode:=CodeCompleteClassNode;
         end;
       end else begin
         // search a section of the same Visibility
-        if FCodeCompleteClassNode.Desc in AllClassObjects then
+        if CodeCompleteClassNode.Desc in AllClassObjects then
         begin
-          ClassSectionNode:=FCodeCompleteClassNode.FirstChild;
+          ClassSectionNode:=CodeCompleteClassNode.FirstChild;
           while (ClassSectionNode<>nil)
           and (ClassSectionNode.Desc<>ClassSectionNodeType[Visibility]) do
             ClassSectionNode:=ClassSectionNode.NextBrother;
         end else begin
-          ClassSectionNode:=FCodeCompleteClassNode;
+          ClassSectionNode:=CodeCompleteClassNode;
         end;
       end;
       if ClassSectionNode=nil then begin
@@ -5957,10 +5957,10 @@ var
 
   function GetFirstVisibilitySectionNode: TCodeTreeNode;
   begin
-    if FCodeCompleteClassNode.Desc in AllClassInterfaces then
-      Result:=FCodeCompleteClassNode
+    if CodeCompleteClassNode.Desc in AllClassInterfaces then
+      Result:=CodeCompleteClassNode
     else begin
-      Result:=FCodeCompleteClassNode.FirstChild;
+      Result:=CodeCompleteClassNode.FirstChild;
       while not (Result.Desc in AllClassBaseSections) do
         Result:=Result.NextBrother;
     end;
@@ -5976,7 +5976,7 @@ var
   begin
     NewClassSectionInsertPos[Visibility]:=-1;
     NewClassSectionIndent[Visibility]:=0;
-    if FCodeCompleteClassNode.Desc in AllClassInterfaces then begin
+    if CodeCompleteClassNode.Desc in AllClassInterfaces then begin
       // a class interface has no sections
       exit;
     end;
@@ -5989,13 +5989,13 @@ var
     // search a Visibility section in front of topmost position node
     if TopMostPositionNode<>nil then begin
       SectionNode:=TopMostPositionNode;
-      while (SectionNode<>nil) and (SectionNode.Parent<>FCodeCompleteClassNode)
+      while (SectionNode<>nil) and (SectionNode.Parent<>CodeCompleteClassNode)
       do
         SectionNode:=SectionNode.Parent;
       if SectionNode<>nil then
         SectionNode:=SectionNode.PriorBrother;
     end else
-      SectionNode:=FCodeCompleteClassNode.LastChild;
+      SectionNode:=CodeCompleteClassNode.LastChild;
     while (SectionNode<>nil)
     and (SectionNode.Desc<>ClassSectionNodeType[Visibility]) do
       SectionNode:=SectionNode.PriorBrother;
@@ -6037,13 +6037,13 @@ var
       case Visibility of
       pcsProtected:
         // insert after last private section
-        ANode:=FindLastClassSection(FCodeCompleteClassNode,ctnClassPrivate);
+        ANode:=FindLastClassSection(CodeCompleteClassNode,ctnClassPrivate);
       pcsPublic:
         begin
           // insert after last private, protected section
-          ANode:=FindClassSection(FCodeCompleteClassNode,ctnClassProtected);
+          ANode:=FindClassSection(CodeCompleteClassNode,ctnClassProtected);
           if ANode=nil then
-            ANode:=FindClassSection(FCodeCompleteClassNode,ctnClassPrivate);
+            ANode:=FindClassSection(CodeCompleteClassNode,ctnClassPrivate);
         end;
       end;
       if ANode=nil then begin
@@ -6118,7 +6118,7 @@ begin
   ClassIdentifierNode:=
                    ClassNode.GetNodeOfTypes([ctnTypeDefinition,ctnGenericType]);
   if ClassIdentifierNode=nil then begin
-    DebugLn('TCodeCompletionCodeTool.InsertClassHeaderComment WARNING: class without name');
+    DebugLn('TCodeCompletionCodeTool.InsertClassHeaderComment WARNING: class without name', ClassNode.DescAsString);
     exit;
   end;
   if not CleanPosToCaret(ClassIdentifierNode.StartPos,StartPos) then exit;
@@ -6415,11 +6415,11 @@ var
   
   procedure GatherExistingClassProcBodies;
   begin
-    TypeSectionNode:=FCodeCompleteClassNode.GetNodeOfType(ctnTypeSection);
+    TypeSectionNode:=CodeCompleteClassNode.GetNodeOfType(ctnTypeSection);
     ClassProcs:=nil;
     ProcBodyNodes:=GatherProcNodes(TypeSectionNode,
                         [phpInUpperCase,phpIgnoreForwards,phpOnlyWithClassname],
-                         ExtractClassName(FCodeCompleteClassNode,true));
+                         ExtractClassName(CodeCompleteClassNode,true));
   end;
   
   procedure FindTopMostAndBottomMostProcBodies;
@@ -6585,7 +6585,7 @@ var
   begin
     InsertPos:=0;
     Indent:=0;
-    if NodeHasParentOfType(FCodeCompleteClassNode,ctnInterface) then begin
+    if NodeHasParentOfType(CodeCompleteClassNode,ctnInterface) then begin
       // class is in interface section
       // -> insert at the end of the implementation section
       ImplementationNode:=FindImplementationNode;
@@ -6602,7 +6602,7 @@ var
     end else begin
       // class is not in interface section
       // -> insert at the end of the type section
-      ANode:=FCodeCompleteClassNode.GetNodeOfTypes(
+      ANode:=CodeCompleteClassNode.GetNodeOfTypes(
                                             [ctnTypeDefinition,ctnGenericType]);
       if ANode=nil then
         RaiseException(ctsClassNodeWithoutParentNode);
@@ -6644,10 +6644,10 @@ var
   Indent: integer;
   ProcsCopied: boolean;
 begin
-  {$IFDEF CTDEBUG}
+  { $IFDEF CTDEBUG}
   DebugLn('TCodeCompletionCodeTool.CreateMissingProcBodies Gather existing method bodies ... ');
-  {$ENDIF}
-  if FCodeCompleteClassNode.Desc in AllClassInterfaces then begin
+  { $ENDIF}
+  if CodeCompleteClassNode.Desc in AllClassInterfaces then begin
     // interfaces have no implementations
     exit(true);
   end;
@@ -6660,15 +6660,15 @@ begin
     // find topmost and bottommost proc body
     FindTopMostAndBottomMostProcBodies;
 
-    {$IFDEF CTDEBUG}
+    { $IFDEF CTDEBUG}
     DebugLn('TCodeCompletionCodeTool.CreateMissingProcBodies Gather existing method declarations ... ');
-    {$ENDIF}
-    TheClassName:=ExtractClassName(FCodeCompleteClassNode,false);
+    { $ENDIF}
+    TheClassName:=ExtractClassName(CodeCompleteClassNode,false);
 
     // gather existing proc definitions in the class
     ClassProcs:=GatherProcNodes(FCompletingStartNode,
        [phpInUpperCase,phpAddClassName],
-       ExtractClassName(FCodeCompleteClassNode,true));
+       ExtractClassName(CodeCompleteClassNode,true));
 
     // check for double defined methods in ClassProcs
     CheckForDoubleDefinedMethods;
@@ -6726,9 +6726,9 @@ begin
     // search for missing proc bodies
     if (ProcBodyNodes.Count=0) then begin
       // there were no old proc bodies of the class -> start class
-      {$IFDEF CTDEBUG}
+      { $IFDEF CTDEBUG}
       DebugLn('TCodeCompletionCodeTool.CreateMissingProcBodies Starting class in implementation ');
-      {$ENDIF}
+      { $ENDIF}
       FindInsertPointForNewClass(InsertPos,Indent);
       InsertClassMethodsComment(InsertPos,Indent);
 
@@ -6856,7 +6856,7 @@ var
 begin
   Result:=false;
   
-  CurClassName:=ExtractClassName(FCodeCompleteClassNode,false);
+  CurClassName:=ExtractClassName(CodeCompleteClassNode,false);
 
   // apply the changes and jump to first new proc body
   if not CleanPosToCodePos(CleanPos,OldCodePos) then
@@ -6886,9 +6886,9 @@ begin
       CursorNode:=CursorNode.Parent;
     end;
     FCodeCompleteClassNode:=FindClassNode(CursorNode,CurClassName,true,false);
-    if FCodeCompleteClassNode=nil then
+    if CodeCompleteClassNode=nil then
       RaiseException('oops, I lost your class');
-    ANode:=FCodeCompleteClassNode.GetNodeOfTypes(
+    ANode:=CodeCompleteClassNode.GetNodeOfTypes(
                                             [ctnTypeDefinition,ctnGenericType]);
     if ANode=nil then
       RaiseException(ctsClassNodeWithoutParentNode);
