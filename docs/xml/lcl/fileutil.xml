@@ -304,8 +304,12 @@
             
             <var>FileName</var>
           </p>
-          <p><var>No function in Windows systems</var></p>
-          <p><var>On Unix-like systems, finds the linked file and returns its full path and filename, or (if <var>ExceptionOnError</var> has been set True) an Exception is raised with appropriate error message</var></p>
+          <p>
+            <var>No function in Windows systems</var>
+          </p>
+          <p>
+            <var>On Unix-like systems, finds the linked file and returns its full path and filename, or (if <var>ExceptionOnError</var> has been set True) an Exception is raised with appropriate error message</var>
+          </p>
         </descr>
         <errors>If an error is encountered on trying to read the link, provided <var>ExceptionOnError</var> has been set True an Exception is raised with appropriate error message. Otherwise an error results in the return of an empty string.</errors>
       </element>
@@ -608,12 +612,7 @@
       <!-- function Visibility: default -->
       <element name="CreateRelativePath">
         <short>
-          <var>CreateRelativePath</var> - given an absolute path and a 
-          
-          
-          
-          
-          <var>BaseDirectory,</var> create a search path relative to the current directory</short>
+          <var>CreateRelativePath</var> - given an absolute file path and a<var>BaseDirectory,</var> create a file path relative to the given base directory</short>
         <descr>
           <p>
             <var>CreateRelativePath</var> - given an absolute path and a 
@@ -1165,7 +1164,9 @@
         <descr>
           <p>
             <var>GetTempFilename</var> - finds a suitable name for a temporary file</p>
-          <p><var>Uses <var>Prefix</var> plus an integer to generate a file with extension '.tmp' in the specified <var>Directory</var>; if it already exists, increments the integer until it finds a name that is not already used</var></p>
+          <p>
+            <var>Uses <var>Prefix</var> plus an integer to generate a file with extension '.tmp' in the specified <var>Directory</var>; if it already exists, increments the integer until it finds a name that is not already used</var>
+          </p>
         </descr>
       </element>
       <!-- function result Visibility: default -->
