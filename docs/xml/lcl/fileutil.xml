@@ -616,7 +616,13 @@
         <descr>
           <p>
             <var>CreateRelativePath</var> - given an absolute path and a <var>BaseDirectory,</var> create a file path relative to the given base directory</p>
-          <p>The returned string includes the correct number of dots and double dots to signify relativity to the current directory (eg ../../or ..\..\ etc)</p>
+          <p>The returned string includes the correct number of dots and double dots to signify relativity to the current directory (eg ../../or ..\..\ etc). The inverse operation is to create an absolute file path:
+</p>
+          <code>RelPath:=CreateRelativePath(AbsPath,BaseDir);
+if FilenameIsAbsolute(RelPath) then
+  NewAbsPath:=RelPath
+else
+  NewAbsPath:=AppendPathDelim(BaseDir)+RelPath;</code>
         </descr>
         <errors>If <var>BaseDirectory</var> is empty, functions exits and returns with <var>Result</var> equal to <var>Filename</var>; if <var>Filename</var> is empty, function exits with empty <var>Result</var>
         </errors>
