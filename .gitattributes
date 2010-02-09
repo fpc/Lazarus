@@ -1457,6 +1457,7 @@ components/lazsvnpkg/images/menu_svn_commit.png -text
 components/lazsvnpkg/images/menu_svn_diff.png -text
 components/lazsvnpkg/images/menu_svn_log.png -text
 components/lazsvnpkg/images/menu_svn_update.png -text
+components/lazsvnpkg/languages/svnclasses.de.po svneol=native#text/plain
 components/lazsvnpkg/languages/svnclasses.po svneol=native#text/plain
 components/lazsvnpkg/languages/svnclasses.ru.po svneol=native#text/plain
 components/lazsvnpkg/lazsvnintf.pas svneol=native#text/plain
