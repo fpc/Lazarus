@@ -5,7 +5,7 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "POT-Creation-Date: \n"
-"PO-Revision-Date: 2009-11-15 20:38+0300\n"
+"PO-Revision-Date: 2010-02-09 00:46+0300\n"
 "Language-Team: \n"
 "MIME-Version: 1.0\n"
 
@@ -43,7 +43,7 @@ msgstr "бинарный оператор"
 
 #: codetoolsstrconsts.ctsbracketcloseexpectedbutatomfound
 msgid "bracket close expected, but %s found"
-msgstr "ожидается закрывающая скобка, найдено %s"
+msgstr "ожидается закрывающая скобка, но найдено %s"
 
 #: codetoolsstrconsts.ctsbracketnotfound
 msgid "bracket %s not found"
@@ -51,7 +51,7 @@ msgstr "скобка %s не найдена"
 
 #: codetoolsstrconsts.ctsbracketopenexpectedbutatomfound
 msgid "bracket open expected, but %s found"
-msgstr "ожидается открывающая скобка, найдено %s"
+msgstr "ожидается открывающая скобка, но найдено %s"
 
 #: codetoolsstrconsts.ctscircleindefinitions
 msgid "circle in definitions"
@@ -227,11 +227,11 @@ msgstr "компонент каталога в %s не является ката
 
 #: codetoolsstrconsts.ctsdispidparameterexpectedbutatomfound
 msgid "dispid parameter expected, but %s found"
-msgstr ""
+msgstr "ожидается параметр dispid, но найдено %s"
 
 #: codetoolsstrconsts.ctsdispidspecifierredefined
 msgid "dispid specifier redefined"
-msgstr ""
+msgstr "описатель dispid переопределён"
 
 #: codetoolsstrconsts.ctsdoceditordirectory
 msgid "Doc Editor Directory"
@@ -745,7 +745,7 @@ msgstr "идентификатор типа"
 
 #: codetoolsstrconsts.ctstypeisonlyallowedingenericsendofclassnotfound
 msgid "type is only allowed in generics, end of class not found"
-msgstr ""
+msgstr "секция type разрешена только в обобщённых описаниях, конец класса не найден"
 
 #: codetoolsstrconsts.ctstypesectionofclassnotfound
 msgid "type section of class not found"
@@ -825,7 +825,7 @@ msgstr "Каталоги утилит"
 
 #: codetoolsstrconsts.ctsvarisonlyallowedingenericsendofclassnotfound
 msgid "var is only allowed in generics, end of class not found"
-msgstr ""
+msgstr "секция var разрешена только в обобщённых описаниях, конец класса не найден"
 
 #: codetoolsstrconsts.ctswidgetdirectory
 msgid "Widget Directory"

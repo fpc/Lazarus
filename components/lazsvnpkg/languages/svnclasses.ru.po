@@ -1,167 +1,175 @@
 msgid ""
-msgstr "Content-Type: text/plain; charset=UTF-8"
+msgstr ""
+"Content-Type: text/plain; charset=UTF-8\n"
+"Project-Id-Version: \n"
+"POT-Creation-Date: \n"
+"PO-Revision-Date: \n"
+"Last-Translator: Maxim Ganetsky <maxkill@mail.ru>\n"
+"Language-Team: \n"
+"MIME-Version: 1.0\n"
+"Content-Transfer-Encoding: 8bit\n"
 
 #: svnclasses.rsaction
 msgid "Action"
-msgstr "Действие"
+msgstr "Р”РµР№СЃС‚РІРёРµ"
 
 #: svnclasses.rsadded
 msgid "Added"
-msgstr "Добавлено"
+msgstr "Р”РѕР±Р°РІР»РµРЅРѕ"
 
 #: svnclasses.rsauthor
 msgid "Author"
-msgstr "Автор"
+msgstr "РђРІС‚РѕСЂ"
 
 #: svnclasses.rscommit
 msgid "Commit"
-msgstr ""
+msgstr "Р¤РёРєСЃРёСЂРѕРІР°С‚СЊ"
 
 #: svnclasses.rscommitrevision
 msgid "Commit revision"
-msgstr "Commit ревизия"
+msgstr "Р РµРІРёР·РёСЏ СЃ РёР·РјРµРЅРµРЅРёСЏРјРё"
 
 #: svnclasses.rsconflict
 msgid "Conflict"
-msgstr "Конфликт"
+msgstr "РљРѕРЅС„Р»РёРєС‚"
 
 #: svnclasses.rscopyfrompath
 msgid "Copy from path"
-msgstr "Копия из заплатки"
+msgstr "РљРѕРїРёСЏ РёР· РїСѓС‚Рё"
 
 #: svnclasses.rsdate
 msgid "Date"
-msgstr "Дата"
+msgstr "Р”Р°С‚Р°"
 
 #: svnclasses.rsdelete
 msgid "Delete"
-msgstr "Удалить"
+msgstr "РЈРґР°Р»РёС‚СЊ"
 
 #: svnclasses.rsdeleted
 msgid "Deleted"
-msgstr "Удалено"
+msgstr "РЈРґР°Р»РµРЅРѕ"
 
 #: svnclasses.rsdiffactivefile
 msgid "Diff active file"
-msgstr "Diff активного файла"
+msgstr "Р Р°Р·РЅРёС†Р° Diff С‚РµРєСѓС‰РµРіРѕ С„Р°Р№Р»Р°"
 
 #: svnclasses.rsedit
 msgid "Edit"
-msgstr "Изменить"
+msgstr "Р РµРґР°РєС‚РёСЂРѕРІР°С‚СЊ"
 
 #: svnclasses.rsextension
 msgid "Extension"
-msgstr "Расширение"
+msgstr "Р Р°СЃС€РёСЂРµРЅРёРµ"
 
 #: svnclasses.rsfilestatus
 msgid "File status"
-msgstr "Статус файла"
+msgstr "РЎС‚Р°С‚СѓСЃ С„Р°Р№Р»Р°"
 
 #: svnclasses.rsindexoutofboundsd
 msgid "Index out of bounds (%d)"
-msgstr "Индекс за границами (%d)"
+msgstr "РРЅРґРµРєСЃ Р·Р° РіСЂР°РЅРёС†Р°РјРё РґРёР°РїР°Р·РѕРЅР° (%d)"
 
 #: svnclasses.rslazarussvncommit
 msgid "LazarusSVN Commit"
-msgstr "LazarusSVN - Подтвердить"
+msgstr "Р¤РёРєСЃР°С†РёСЏ РёР·РјРµРЅРµРЅРёР№ / LazarusSVN"
 
 #: svnclasses.rslazarussvndiff
 msgid "%s - LazarusSVN Diff..."
-msgstr "%s - LazarusSVN различия..."
+msgstr "%s - СЂР°Р·РЅРёС†Р° Diff / LazarusSVN"
 
 #: svnclasses.rslazarussvnlog
 msgid "%s - LazarusSVN Log..."
-msgstr "%s - LazarusSVN протокол..."
+msgstr "%s - Р¶СѓСЂРЅР°Р» / LazarusSVN"
 
 #: svnclasses.rslazarussvnupdate
 msgid "%s - LazarusSVN Update..."
-msgstr "%s - LazarusSVN обновление..."
+msgstr "%s - РѕР±РЅРѕРІР»РµРЅРёРµ / LazarusSVN"
 
 #: svnclasses.rsmerged
 msgid "Merged"
-msgstr ""
+msgstr "РЎР»РёС‚Рѕ"
 
 #: svnclasses.rsmessage
 msgid "Message"
-msgstr "Сообщение"
+msgstr "РЎРѕРѕР±С‰РµРЅРёРµ"
 
 #: svnclasses.rsnoauthor
 msgid "(no author)"
-msgstr "(без имени)"
+msgstr "(РЅРµС‚)"
 
 #: svnclasses.rspath
 msgid "Path"
-msgstr "Путь"
+msgstr "РџСѓС‚СЊ"
 
 #: svnclasses.rsprojectfilename
 msgid "Project filename"
-msgstr "Имя проекта"
+msgstr "РРјСЏ С„Р°Р№Р»Р° РїСЂРѕРµРєС‚Р°"
 
 #: svnclasses.rsprojectisactive
 msgid "Project is active"
-msgstr "Проект активен"
+msgstr "РџСЂРѕРµРєС‚ Р°РєС‚РёРІРµРЅ"
 
 #: svnclasses.rsprojectisnotactiveinsvnsettingspleaseactivatefirst
 msgid "Project is not active in SVN settings, please activate first."
-msgstr "Проект не активирован в настройках SVN, пожалуста сначала активируйте"
+msgstr "РџСЂРѕРµРєС‚ РЅРµР°РєС‚РёРІРµРЅ. РЎРЅР°С‡Р°Р»Р° Р°РєС‚РёРІРёСЂСѓР№С‚Рµ РµРіРѕ РІ РґРёР°Р»РѕРіРµ РЅР°СЃС‚СЂРѕР№РєРё РїР°СЂР°РјРµС‚СЂРѕРІ SVN."
 
 #: svnclasses.rsprojectname
 msgid "Project name"
-msgstr "Имя проекта"
+msgstr "РРјСЏ РїСЂРѕРµРєС‚Р°"
 
 #: svnclasses.rsprojectoptions
 msgid "Project options"
-msgstr "Параметры проекта"
+msgstr "РџР°СЂР°РјРµС‚СЂС‹ РїСЂРѕРµРєС‚Р°"
 
 #: svnclasses.rspropertystatus
 msgid "Property status"
-msgstr "Статус свойства"
+msgstr "РЎС‚Р°С‚СѓСЃ СЃРІРѕР№СЃС‚РІР°"
 
 #: svnclasses.rsrepositorypath
 msgid "Repository path"
-msgstr "Путь репозитария"
+msgstr "РџСѓС‚СЊ Рє СЂРµРїРѕР·РёС‚Р°СЂРёСЋ"
 
 #: svnclasses.rsrevert
 msgid "Revert"
-msgstr "Возврат"
+msgstr "РЈР±СЂР°С‚СЊ РёР·РјРµРЅРµРЅРёСЏ"
 
 #: svnclasses.rsrevision
 msgid "Revision"
-msgstr "Ревизия"
+msgstr "Р РµРІРёР·РёСЏ"
 
 #: svnclasses.rssave
 msgid "Save"
-msgstr "Сохранить"
+msgstr "РЎРѕС…СЂР°РЅРёС‚СЊ"
 
 #: svnclasses.rssettings
 msgid "Settings"
-msgstr "Параметры"
+msgstr "РџР°СЂР°РјРµС‚СЂС‹"
 
 #: svnclasses.rsshowdiff
 msgid "Show diff"
-msgstr "Показать различия"
+msgstr "РџРѕРєР°Р·Р°С‚СЊ СЂР°Р·РЅРёС†Сѓ Diff"
 
 #: svnclasses.rsshowdiffcountrev
 msgid "Show last X commits"
-msgstr "Показать последние X подтверждений"
+msgstr "РџРѕРєР°Р·Р°С‚СЊ РїРѕСЃР»РµРґРЅРёРµ X СЂРµРІРёР·РёР№"
 
 #: svnclasses.rsshowlog
 msgid "Show log"
-msgstr "Показать протокол"
+msgstr "РџРѕРєР°Р·Р°С‚СЊ Р¶СѓСЂРЅР°Р»"
 
 #: svnclasses.rssourcefiledoesnotbelongtotheprojectpleaseaddfirst
 msgid "Source file does not belong to the project. Please add first."
-msgstr "Исходный файл не включен в проект. Пожалуста добавьте его сначала."
+msgstr "Р¤Р°Р№Р» РёСЃС…РѕРґРЅРѕРіРѕ РєРѕРґР° РЅРµ РІРєР»СЋС‡С‘РЅ РІ РїСЂРѕРµРєС‚. Р”РѕР±Р°РІСЊС‚Рµ РµРіРѕ СЃРЅР°С‡Р°Р»Р°."
 
 #: svnclasses.rssvntools
 msgid "SVN tools"
-msgstr "Инструменты SVN"
+msgstr "РЎСЂРµРґСЃС‚РІР° SVN"
 
 #: svnclasses.rsupdate
 msgid "Update"
-msgstr "Обновить"
+msgstr "РћР±РЅРѕРІРёС‚СЊ"
 
 #: svnclasses.rsupdated
 msgid "Updated"
-msgstr "Обновлено"
+msgstr "РћР±РЅРѕРІР»РµРЅРѕ"
 
