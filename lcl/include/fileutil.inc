@@ -1257,11 +1257,11 @@ begin
   end;
 end;
 
-function CreateRelativePath(const Filename, BaseDirectory: string): string;
+function CreateRelativePath(const Filename, BaseDirectory: string;
+  UsePointDirectory: boolean): string;
 var
   FileNameLength: Integer;
   BaseDirLen: Integer;
-  MinLen: Integer;
   SamePos: Integer;
   UpDirCount: Integer;
   BaseDirPos: Integer;
@@ -1295,41 +1295,59 @@ begin
   {$ENDIF}
 
   FileNameLength:=length(CmpFilename);
-  if CmpFilename[FileNameLength]=PathDelim then
+  while (FileNameLength>0) and (CmpFilename[FileNameLength]=PathDelim) do
     dec(FileNameLength);
   BaseDirLen:=length(CmpBaseDirectory);
-  if CmpBaseDirectory[BaseDirLen]=PathDelim then
+  while (BaseDirLen>0) and (CmpBaseDirectory[BaseDirLen]=PathDelim) do
     dec(BaseDirLen);
   if BaseDirLen=0 then exit;
 
+  //WriteLn('CreateRelativePath START ',copy(CmpBaseDirectory,1,BaseDirLen),' ',copy(CmpFilename,1,FileNameLength));
+
   // count shared directories
-  MinLen:=FileNameLength;
-  if MinLen>BaseDirLen then MinLen:=BaseDirLen;
   p:=1;
   DirCount:=0;
-  while (p<=MinLen) and (CmpFileName[p]=CmpBaseDirectory[p]) do
+  BaseDirPos:=p;
+  while (p<=FileNameLength) and (BaseDirPos<=BaseDirLen)
+  and (CmpFileName[p]=CmpBaseDirectory[BaseDirPos]) do
   begin
     if CmpFilename[p]=PathDelim then
+    begin
       inc(DirCount);
-    inc(p);
+      repeat
+        inc(p);
+      until (p>FileNameLength) or (CmpFilename[p]<>PathDelim);
+      repeat
+        inc(BaseDirPos);
+      until (BaseDirPos>BaseDirLen) or (CmpBaseDirectory[BaseDirPos]<>PathDelim);
+    end else begin
+      inc(p);
+      inc(BaseDirPos);
+    end;
   end;
-  if ((p>BaseDirLen) or (CmpBaseDirectory[p]=PathDelim))
+  if ((BaseDirPos>BaseDirLen) or (CmpBaseDirectory[BaseDirPos]=PathDelim))
   and ((p>FileNameLength) or (CmpFilename[p]=PathDelim)) then
+  begin
     inc(DirCount);
+    inc(BaseDirPos);
+  end;
   if DirCount=0 then exit;
   if FilenameIsAbsolute(BaseDirectory) and (DirCount=1) then exit;
 
   // calculate needed up directories
-  BaseDirLen:=length(BaseDirectory);
-  UpDirCount:=-DirCount;
-  BaseDirPos:=1;
-  while (BaseDirPos<=BaseDirLen) do begin
-    if (BaseDirectory[BaseDirPos]=PathDelim) then
-      inc(UpDirCount);
-    inc(BaseDirPos);
-  end;
-  if (BaseDirLen>0) and (BaseDirectory[BaseDirLen]<>PathDelim) then
+  UpDirCount:=0;
+  if (BaseDirPos<=BaseDirLen) and (CmpBaseDirectory[BaseDirPos]<>PathDelim) then
     inc(UpDirCount);
+  while (BaseDirPos<=BaseDirLen) do begin
+    if (CmpBaseDirectory[BaseDirPos]=PathDelim) then
+    begin
+      inc(UpDirCount);
+      repeat
+        inc(BaseDirPos);
+      until (BaseDirPos>BaseDirLen) or (CmpBaseDirectory[BaseDirPos]<>PathDelim);
+    end else
+      inc(BaseDirPos);
+  end;
 
   // create relative filename
   SamePos:=1;
@@ -1337,13 +1355,14 @@ begin
   FileNameLength:=length(Filename);
   while (SamePos<=FileNameLength) do begin
     if (Filename[SamePos]=PathDelim) then begin
-      inc(p);
-      if p>=DirCount then begin
+      repeat
         inc(SamePos);
+      until (SamePos>FileNameLength) or (Filename[SamePos]<>PathDelim);
+      inc(p);
+      if p>=DirCount then
         break;
-      end;
-    end;
-    inc(SamePos);
+    end else
+      inc(SamePos);
   end;
   FileNameRestLen:=FileNameLength-SamePos+1;
   //writeln('DirCount=',DirCount,' UpDirCount=',UpDirCount,' FileNameRestLen=',FileNameRestLen,' SamePos=',SamePos);
@@ -1357,6 +1376,9 @@ begin
   end;
   if FileNameRestLen>0 then
     System.Move(Filename[SamePos],Result[ResultPos],FileNameRestLen);
+
+  if UsePointDirectory and (Result='') and (Filename<>'') then
+    Result:='.'; // Filename is the BaseDirectory
 end;
 
 {------------------------------------------------------------------------------

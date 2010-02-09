@@ -153,7 +153,7 @@ begin
           // the node has an URL => use only the path
           TheBaseURL:=NewNode.URL;
           //debugln('A TheBaseURL=',TheBaseURL);
-          if (HelpDatabases<>nil) then
+          if (IDEMacros<>nil) then
             IDEMacros.SubstituteMacros(TheBaseURL);
           //debugln('B TheBaseURL=',TheBaseURL);
           TheBaseURL:=ExtractURLDirectory(TheBaseURL);
