@@ -38,7 +38,7 @@ unit BreakPointsDlg;
 interface
 
 uses
-  Classes, SysUtils, Forms, Controls, Graphics, Dialogs, StdCtrls,
+  Classes, SysUtils, FileUtil, Forms, Controls, Graphics, Dialogs, StdCtrls,
   Buttons, Menus, ComCtrls, IDEProcs, Debugger, DebuggerDlg, lclType, MainBase;
 
 type
