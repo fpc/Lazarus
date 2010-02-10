@@ -1088,16 +1088,21 @@ begin
     end;
   end;
   if (fChain=nil) or (fChain.Count=0) then begin
-    if (FCurrentTopic <> '') and (DFile <> nil) then CodeHelpBoss.SaveFPDocFile(DFile)
-    else DebugLn(['TFPDocEditor.Save failed: no chain']);
+    if (FCurrentTopic <> '') and (DFile <> nil) then
+      CodeHelpBoss.SaveFPDocFile(DFile)
+    else if Visible then
+      DebugLn(['TFPDocEditor.Save failed: no chain']);
     exit;
   end;
   if not fChain.IsValid then begin
-    if (FCurrentTopic <> '') and (DFile <> nil) then CodeHelpBoss.SaveFPDocFile(DFile)
-    else DebugLn(['TFPDocEditor.Save failed: chain not valid']);
+    if (FCurrentTopic <> '') and (DFile <> nil) then
+      CodeHelpBoss.SaveFPDocFile(DFile)
+    else if Visible then
+      DebugLn(['TFPDocEditor.Save failed: chain not valid']);
     exit;
   end;
-  if (fChain[0].FPDocFile = nil) and (DFile <> nil) then CodeHelpBoss.SaveFPDocFile(DFile)
+  if (fChain[0].FPDocFile = nil) and (DFile <> nil) then
+    CodeHelpBoss.SaveFPDocFile(DFile)
   else begin
     Values:=GetGUIValues;
     if not WriteNode(fChain[0],Values,true) then begin
