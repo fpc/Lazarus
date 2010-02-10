@@ -19,7 +19,7 @@ unit ButtonPanel;
 interface
 
 uses
-  Types, SysUtils, Classes, Controls, ExtCtrls, Buttons, Forms, GraphType,
+  Types, SysUtils, Classes, Controls, ExtCtrls, StdCtrls, Buttons, Forms, GraphType,
   Graphics, LMessages, LCLStrConsts, Themes;
 
 type

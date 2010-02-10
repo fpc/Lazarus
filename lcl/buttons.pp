@@ -67,11 +67,6 @@ type
   }
   TNumGlyphs = 1..5;
 
-  {Some type aliases, because TButton is now in StdCtrls,
-   but was in this unit in Lazarus 0.9.22 and earlier}
-  TCustomButton = StdCtrls.TCustomButton;
-  TButton = StdCtrls.TButton;
-
   { TButtonGlyph }
   TGlyphTransparencyMode = (
     gtmGlyph,       // transparency is defined by the glyph itself (bitbtn)
