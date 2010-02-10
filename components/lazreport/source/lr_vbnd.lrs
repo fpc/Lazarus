@@ -1,29 +1,41 @@
-{ Ceci est un fichier ressource généré automatiquement par Lazarus }
+{ This is an automatically generated lazarus resource file }
 
 LazarusResources.Add('TfrVBandEditorForm','FORMDATA',[
-  'TPF0'#18'TfrVBandEditorForm'#17'frVBandEditorForm'#4'Left'#3'8'#1#6'Height'#2
-  +'~'#3'Top'#3#210#0#5'Width'#3#143#1#18'HorzScrollBar.Page'#3#142#1#18'VertSc'
-  +'rollBar.Page'#2'}'#11'BorderStyle'#7#8'bsDialog'#7'Caption'#6#17'Band data '
-  +'sources'#12'ClientHeight'#2'~'#11'ClientWidth'#3#143#1#11'Font.Height'#2#245
-  +#9'Font.Name'#6#13'MS Sans Serif'#8'OnCreate'#7#10'FormCreate'#8'Position'#7
-  +#14'poScreenCenter'#0#7'TButton'#7'Button1'#4'Left'#3#236#0#6'Height'#2#25#3
-  +'Top'#2'`'#5'Width'#2'K'#11'HelpContext'#2'('#7'Caption'#6#2'Ok'#7'Default'#9
-  +#11'ModalResult'#2#1#8'TabOrder'#2#0#0#0#7'TButton'#7'Button2'#4'Left'#3'<'#1
-  +#6'Height'#2#25#3'Top'#2'`'#5'Width'#2'K'#11'HelpContext'#2'2'#6'Cancel'#9#7
-  +'Caption'#6#6'Cancel'#11'ModalResult'#2#2#8'TabOrder'#2#1#0#0#9'TGroupBox'#9
-  +'GroupBox1'#4'Left'#2#4#6'Height'#2'u'#3'Top'#2#4#5'Width'#3#185#0#7'Caption'
-  +#6#5'Bands'#12'ClientHeight'#2'c'#11'ClientWidth'#3#181#0#8'TabOrder'#2#2#0#8
-  +'TListBox'#3'LB1'#4'Left'#2#5#6'Height'#2']'#5'Width'#3#169#0#11'HelpContext'
-  +#2'i'#16'ClickOnSelChange'#8#10'ItemHeight'#2#13#7'OnClick'#7#8'LB1Click'#8
-  +'TabOrder'#2#0#0#0#0#9'TGroupBox'#9'GroupBox2'#4'Left'#3#196#0#6'Height'#2'Q'
-  +#3'Top'#2#4#5'Width'#3#197#0#7'Caption'#6#11'Data source'#12'ClientHeight'#2
-  +'?'#11'ClientWidth'#3#193#0#8'TabOrder'#2#3#0#6'TLabel'#6'Label1'#4'Left'#2#4
-  +#6'Height'#2#13#3'Top'#2')'#5'Width'#2'P'#7'Caption'#6#13'&Record count'#12
-  +'FocusControl'#7#5'Edit1'#11'ParentColor'#8#0#0#9'TComboBox'#3'CB1'#4'Left'#2
-  +#4#6'Height'#2#21#3'Top'#2#5#5'Width'#3#181#0#11'HelpContext'#2'X'#16'AutoCo'
-  +'mpleteText'#11#22'cbactEndOfLineComplete'#20'cbactSearchAscending'#0#10'Ite'
-  +'mHeight'#2#13#9'MaxLength'#2#0#8'OnChange'#7#8'CB1Click'#6'OnExit'#7#7'CB1E'
-  +'xit'#5'Style'#7#14'csDropDownList'#8'TabOrder'#2#0#0#0#5'TEdit'#5'Edit1'#4
-  +'Left'#3#128#0#6'Height'#2#21#3'Top'#2'%'#5'Width'#2'9'#11'HelpContext'#2'_'
-  +#6'OnExit'#7#7'CB1Exit'#8'TabOrder'#2#1#4'Text'#6#1'1'#0#0#0#0
+  'TPF0'#18'TfrVBandEditorForm'#17'frVBandEditorForm'#4'Left'#3#3#2#6'Height'#3
+  +#195#0#3'Top'#3#30#1#5'Width'#3#221#1#18'HorzScrollBar.Page'#3#142#1#18'Vert'
+  +'ScrollBar.Page'#2'}'#13'ActiveControl'#7#11'edtRecCount'#7'Caption'#6#17'Ba'
+  +'nd data sources'#12'ClientHeight'#3#195#0#11'ClientWidth'#3#221#1#8'OnCreat'
+  +'e'#7#10'FormCreate'#8'Position'#7#14'poScreenCenter'#10'LCLVersion'#6#6'0.9'
+  +'.29'#0#9'TGroupBox'#9'GroupBox1'#22'AnchorSideLeft.Control'#7#5'Owner'#21'A'
+  +'nchorSideTop.Control'#7#5'Owner'#23'AnchorSideRight.Control'#7#9'GroupBox2'
+  +#24'AnchorSideBottom.Control'#7#12'ButtonPanel1'#4'Left'#2#6#6'Height'#3#137
+  +#0#3'Top'#2#6#5'Width'#3#251#0#7'Anchors'#11#5'akTop'#6'akLeft'#7'akRight'#8
+  +'akBottom'#0#20'BorderSpacing.Around'#2#6#7'Caption'#6#5'Bands'#12'ClientHei'
+  +'ght'#2't'#11'ClientWidth'#3#243#0#8'TabOrder'#2#0#0#8'TListBox'#3'LB1'#4'Le'
+  +'ft'#2#0#6'Height'#2't'#3'Top'#2#0#5'Width'#3#243#0#11'HelpContext'#2'i'#5'A'
+  +'lign'#7#8'alClient'#16'ClickOnSelChange'#8#10'ItemHeight'#2#0#7'OnClick'#7#8
+  +'LB1Click'#8'TabOrder'#2#0#8'TopIndex'#2#255#0#0#0#9'TGroupBox'#9'GroupBox2'
+  +#21'AnchorSideTop.Control'#7#5'Owner'#23'AnchorSideRight.Control'#7#5'Owner'
+  +#20'AnchorSideRight.Side'#7#9'asrBottom'#4'Left'#3#7#1#6'Height'#2'a'#3'Top'
+  +#2#0#5'Width'#3#214#0#7'Anchors'#11#5'akTop'#7'akRight'#0#8'AutoSize'#9#7'Ca'
+  +'ption'#6#11'Data source'#12'ClientHeight'#2'L'#11'ClientWidth'#3#206#0#8'Ta'
+  +'bOrder'#2#1#0#6'TLabel'#6'Label1'#22'AnchorSideLeft.Control'#7#9'GroupBox2'
+  +#21'AnchorSideTop.Control'#7#3'CB1'#18'AnchorSideTop.Side'#7#9'asrBottom'#24
+  +'AnchorSideBottom.Control'#7#11'edtRecCount'#21'AnchorSideBottom.Side'#7#9'a'
+  +'srBottom'#4'Left'#2#6#6'Height'#2#18#3'Top'#2'4'#5'Width'#2'j'#7'Anchors'#11
+  +#6'akLeft'#8'akBottom'#0#18'BorderSpacing.Left'#2#6#7'Caption'#6#13'&Record '
+  +'count'#11'ParentColor'#8#0#0#9'TComboBox'#3'CB1'#22'AnchorSideLeft.Control'
+  +#7#9'GroupBox2'#21'AnchorSideTop.Control'#7#9'GroupBox2'#4'Left'#2#6#6'Heigh'
+  +'t'#2#31#3'Top'#2#6#5'Width'#3#194#0#11'HelpContext'#2'X'#20'BorderSpacing.A'
+  +'round'#2#6#10'ItemHeight'#2#0#8'OnChange'#7#8'CB1Click'#6'OnExit'#7#7'CB1Ex'
+  +'it'#5'Style'#7#14'csDropDownList'#8'TabOrder'#2#0#0#0#9'TSpinEdit'#11'edtRe'
+  +'cCount'#22'AnchorSideLeft.Control'#7#6'Label1'#19'AnchorSideLeft.Side'#7#9
+  +'asrBottom'#21'AnchorSideTop.Control'#7#3'CB1'#18'AnchorSideTop.Side'#7#9'as'
+  +'rBottom'#23'AnchorSideRight.Control'#7#9'GroupBox2'#20'AnchorSideRight.Side'
+  +#7#9'asrBottom'#4'Left'#2'v'#6'Height'#2#27#3'Top'#2'+'#5'Width'#2'R'#11'Hel'
+  +'pContext'#2'_'#7'Anchors'#11#5'akTop'#6'akLeft'#7'akRight'#0#20'BorderSpaci'
+  +'ng.Around'#2#6#6'OnExit'#7#7'CB1Exit'#8'TabOrder'#2#1#5'Value'#2#1#0#0#0#12
+  +'TButtonPanel'#12'ButtonPanel1'#4'Left'#2#6#6'Height'#2'('#3'Top'#3#149#0#5
+  +'Width'#3#209#1#8'TabOrder'#2#2#11'ShowButtons'#11#4'pbOK'#8'pbCancel'#6'pbH'
+  +'elp'#0#0#0#0
 ]);

@@ -15,20 +15,19 @@ interface
 {$I LR_Vers.inc}
 
 uses
-  Classes, SysUtils, LResources,
-  Forms, Controls, Graphics, Dialogs,
-  Buttons, StdCtrls,ClipBrd,ExtCtrls,
-
-  LR_Const;
+  Classes, SysUtils, LResources, Forms, Controls, Graphics, Dialogs, Buttons,
+  StdCtrls,ClipBrd,ExtCtrls, ButtonPanel, LR_Const;
 
 type
+
+  { TfrTemplNewForm }
+
   TfrTemplNewForm = class(TForm)
+    ButtonPanel1: TButtonPanel;
     GroupBox2: TGroupBox;
     Panel1: TPanel;
     Image1: TImage;
     Button1: TButton;
-    Button2: TButton;
-    Button3: TButton;
     OpenDialog1: TOpenDialog;
     Memo1: TMemo;
     Label1: TLabel;
@@ -63,12 +62,10 @@ end;
 
 procedure TfrTemplNewForm.FormCreate(Sender: TObject);
 begin
-  Caption := LoadStr(frRes + 320);
-  Label1.Caption := LoadStr(frRes + 321);
-  GroupBox2.Caption := LoadStr(frRes + 322);
-  Button1.Caption := LoadStr(frRes + 323);
-  Button2.Caption := sOk;
-  Button3.Caption := sCancel;
+  Caption := sNewTemplate;
+  Label1.Caption := sTemplFormDesc;
+  GroupBox2.Caption := sGEditorFormCapt;
+  Button1.Caption := sGEditorFormLoad;
 end;
 
 initialization

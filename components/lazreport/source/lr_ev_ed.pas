@@ -15,24 +15,23 @@ interface
 {$I LR_Vers.inc}
 
 uses
-  Classes, SysUtils, LResources,
-  Forms, Controls, Graphics, Dialogs,
-  Buttons, StdCtrls,ExtCtrls,
-
-  LR_Class;
+  Classes, SysUtils, LResources, Forms, Controls, Graphics, Dialogs, Buttons,
+  StdCtrls,ExtCtrls, ButtonPanel, LR_Class;
 
 type
+
+  { TfrEvForm }
+
   TfrEvForm = class(TForm)
+    ButtonPanel1: TButtonPanel;
     VarCombo: TComboBox;
     VarList: TListBox;
     ValCombo: TComboBox;
     ValList: TListBox;
     Label1: TLabel;
     Label2: TLabel;
-    Button1: TButton;
     Edit1: TEdit;
     Label3: TLabel;
-    Button2: TButton;
     Button3: TButton;
     SB1: TSpeedButton;
     SB2: TSpeedButton;
@@ -443,8 +442,18 @@ begin
   SB1.Hint := sEvFormCopy;
   SB2.Hint := sEvFormPaste;
   Button3.Caption := sEvFormVars;
-  Button1.Caption := sOk;
-  Button2.Caption := sCancel;
+
+  Button3.Parent:=ButtonPanel1;
+  SB1.Parent:=ButtonPanel1;
+  SB2.Parent:=ButtonPanel1;
+  Button3.AnchorSide[akLeft].Control:=ButtonPanel1.HelpButton;
+  Button3.AnchorSide[akTop].Control:=ButtonPanel1.HelpButton;
+  Button3.AnchorSide[akBottom].Control:=ButtonPanel1.HelpButton;
+
+  SB1.AnchorSide[akTop].Control:=ButtonPanel1.HelpButton;
+  SB1.AnchorSide[akBottom].Control:=ButtonPanel1.HelpButton;
+  SB2.AnchorSide[akTop].Control:=ButtonPanel1.HelpButton;
+  SB2.AnchorSide[akBottom].Control:=ButtonPanel1.HelpButton;
 end;
 
 

@@ -1,7 +1,7 @@
 inherited frDesignerForm: TfrDesignerForm
-  Left = 57
+  Left = 462
   Height = 434
-  Top = 112
+  Top = 217
   Width = 695
   HorzScrollBar.Page = 694
   HorzScrollBar.Range = 304

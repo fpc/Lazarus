@@ -17,7 +17,7 @@ interface
 uses
   Classes, SysUtils, LResources,
   Forms, Controls, Graphics, Dialogs,
-  Buttons, StdCtrls,Variants,
+  Buttons, StdCtrls, ButtonPanel, Spin,Variants,
 
   LR_Class, LR_Intrp;
 
@@ -26,13 +26,12 @@ type
   { TfrVBandEditorForm }
 
   TfrVBandEditorForm = class(TForm)
-    Button1: TButton;
-    Button2: TButton;
+    ButtonPanel1: TButtonPanel;
+    edtRecCount: TSpinEdit;
     GroupBox1: TGroupBox;
     GroupBox2: TGroupBox;
     Label1: TLabel;
     CB1: TComboBox;
-    Edit1: TEdit;
     LB1: TListBox;
     procedure FormCreate(Sender: TObject);
     procedure CB1Click(Sender: TObject);
@@ -134,13 +133,11 @@ begin
   GroupBox1.Caption := sVBandEditorFormBnd;
   GroupBox2.Caption := sVBandEditorFormDataSource;
   Label1.Caption := sVBandEditorFormRecordCount;
-  Button1.Caption := sOk;
-  Button2.Caption := sCancel;
 end;
 
 procedure TfrVBandEditorForm.CB1Click(Sender: TObject);
 begin
-  frEnableControls([Label1, Edit1], CB1.ItemIndex = 1);
+  frEnableControls([Label1, edtRecCount], CB1.ItemIndex = 1);
 end;
 
 procedure TfrVBandEditorForm.LB1Click(Sender: TObject);
@@ -154,7 +151,7 @@ begin
   if (s <> '') and (s[1] in ['1'..'9']) then
   begin
     i := 1;
-    Edit1.Text := s;
+    edtRecCount.Text := s;
   end
   else
   begin
@@ -173,7 +170,7 @@ begin
   s := LB1.Items[LB1.ItemIndex];
   s := Copy(s, 1, Pos(':', s) - 1);
   if CB1.ItemIndex = 1 then
-    List[s] := Edit1.Text
+    List[s] := edtRecCount.Text
   else
     List[s] := CB1.Items[CB1.ItemIndex];
 end;

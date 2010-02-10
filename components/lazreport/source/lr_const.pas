@@ -144,7 +144,8 @@ resourcestring
 
 //--- TemplForm resources -----------------------------------------------------
   sTemplFormNewRp = 'New report';
-  sTemplFormDesc = 'Description';
+  sTemplFormDesc  = 'Description';
+  sNewTemplate    = 'New template';
 
 //--- GEditorForm resources ---------------------------------------------------
   sGEditorFormCapt = 'Picture';

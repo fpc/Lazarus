@@ -1371,6 +1371,10 @@ msgstr "Matemáticas"
 msgid "MM"
 msgstr ""
 
+#: lr_const.snewtemplate
+msgid "New template"
+msgstr ""
+
 #: lr_const.sno
 msgid "No"
 msgstr ""
