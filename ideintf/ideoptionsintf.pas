@@ -138,7 +138,7 @@ type
   TAbstractOptionsEditorDialog = class(TForm)
   public
     function AddButton: TBitBtn; virtual; abstract;
-    function AddControl(AControlClass: TControlClass): TControl; virtual; abstract;
+    function AddControl(AControlClass: TControlClass): TControl; virtual; abstract; reintroduce;
     function FindEditor(AEditor: TAbstractIDEOptionsEditorClass): TAbstractIDEOptionsEditor; virtual; abstract;
     procedure OpenEditor(AEditor: TAbstractIDEOptionsEditorClass); virtual; abstract;
   end;
