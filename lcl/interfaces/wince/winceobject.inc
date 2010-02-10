@@ -288,6 +288,11 @@ var
   retVal, index: dword;
   pHandles: Windows.LPHANDLE;
 begin
+{$ifdef DEBUG_AppProcessMessages}
+  DbgAppendToFile(ExtractFilePath(ParamStr(0)) + '1.log',
+    Format(':> [AppProcessMessages] WaitHandleCount=%d',
+    [FWaitHandleCount]));
+{$endif}
   repeat
 {$ifdef DEBUG_ASYNCEVENTS}
     if Length(FWaitHandles) > 0 then
@@ -299,8 +304,15 @@ begin
     else
       pHandles := nil;
 
-    retVal := Windows.MsgWaitForMultipleObjects(FWaitHandleCount,
-      pHandles, False, 0, QS_ALLINPUT);
+//    retVal := Windows.MsgWaitForMultipleObjects(FWaitHandleCount,
+//      pHandles, False, 0, QS_ALLINPUT);
+    retVal := Windows.MsgWaitForMultipleObjects(0,
+      nil, False, 0, QS_ALLINPUT);
+
+    {$ifdef DEBUG_AppProcessMessages}
+      DbgAppendToFile(ExtractFilePath(ParamStr(0)) + '1.log',
+        Format(': MsgWaitForMultipleObjects retval=%d', [retval]));
+    {$endif}
 
     //roozbeh:added
     if FWaitHandleCount = 0 then
@@ -339,6 +351,10 @@ begin
       break;
     end;
   until false;
+  {$ifdef DEBUG_AppProcessMessages}
+    DbgAppendToFile(ExtractFilePath(ParamStr(0)) + '1.log',
+      ':< [AppProcessMessages]');
+  {$endif}
 end;
 
 procedure TWinCEWidgetSet.CheckPipeEvents;
