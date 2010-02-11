@@ -813,7 +813,7 @@ type
     function DoShowToDoList: TModalResult;
     function DoTestCompilerSettings(
                             TheCompilerOptions: TCompilerOptions): TModalResult;
-    function CheckMainSrcLCLInterfaces: TModalResult;
+    function CheckMainSrcLCLInterfaces(Silent: boolean): TModalResult;
     function QuitIDE: boolean;
 
     // edit menu
@@ -9229,7 +9229,7 @@ begin
 
   if DoCheckFilesOnDisk(true) in [mrCancel,mrAbort] then exit;
 
-  if CheckMainSrcLCLInterfaces<>mrOk then exit;
+  if CheckMainSrcLCLInterfaces(sfQuietUnitCheck in Flags)<>mrOk then exit;
 
   // if this is a virtual project then save first the project info file
   // to get a project directory
@@ -10063,7 +10063,7 @@ begin
   end;
 end;
 
-function TMainIDE.CheckMainSrcLCLInterfaces: TModalResult;
+function TMainIDE.CheckMainSrcLCLInterfaces(Silent: boolean): TModalResult;
 var
   MainUnitInfo: TUnitInfo;
   MainUsesSection,ImplementationUsesSection: TStrings;
@@ -10093,14 +10093,17 @@ begin
       exit;
     // project uses lcl unit Forms, but not unit interfaces
     // this will result in strange linker error
-    MsgResult:=IDEQuestionDialog(lisCCOWarningCaption,
-      Format(lisTheProjectDoesNotUseTheLCLUnitInterfacesButItSeems, [#13])
-      , mtWarning, [mrYes, lisAddUnitInterfaces, mrNo, dlgIgnoreVerb,
-                  mrNoToAll, lisAlwaysIgnore, mrCancel]);
-    case MsgResult of
-    mrNo: exit;
-    mrNoToAll: begin Project1.SkipCheckLCLInterfaces:=true; exit; end;
-    mrCancel: exit(mrCancel);
+    if not Silent then
+    begin
+      MsgResult:=IDEQuestionDialog(lisCCOWarningCaption,
+        Format(lisTheProjectDoesNotUseTheLCLUnitInterfacesButItSeems, [#13])
+        , mtWarning, [mrYes, lisAddUnitInterfaces, mrNo, dlgIgnoreVerb,
+                    mrNoToAll, lisAlwaysIgnore, mrCancel]);
+      case MsgResult of
+        mrNo: exit;
+        mrNoToAll: begin Project1.SkipCheckLCLInterfaces:=true; exit; end;
+        mrCancel: exit(mrCancel);
+      end;
     end;
     CodeToolBoss.AddUnitToMainUsesSection(MainUnitInfo.Source,'Interfaces','');
   finally

@@ -321,7 +321,8 @@ begin
 
     // save project
     debugln('FindAllDelphiProjectUnits Saving project ...');
-    Result:=LazarusIDE.DoSaveProject([]);
+    // Add interfaces unit silently, no question dialogs.
+    Result:=LazarusIDE.DoSaveProject([sfQuietUnitCheck]);
     if Result<>mrOk then begin
       DebugLn('FindAllDelphiProjectUnits failed saving project');
       exit;

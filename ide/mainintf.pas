@@ -231,7 +231,8 @@ const
      'sfSaveNonProjectFiles',
      'sfDoNotSaveVirtualFiles',
      'sfCanAbort',
-     'sfSaveMainSourceAs'
+     'sfSaveMainSourceAs',
+     'sfQuietUnitCheck'
     );
 
 function OpenFlagsToString(Flags: TOpenFlags): string;
