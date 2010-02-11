@@ -703,15 +703,6 @@ begin
   Result:=CheckFilenameForLCLPaths(LazarusUnitFilename);
   if Result<>mrOk then exit;
 
-  // fix or comment missing units
-  DebugLn('ConvertDelphiToLazarusUnit FixMissingUnits');
-  Result:=FixMissingUnits(LazarusUnitFilename,cdtlufIsSubProc in Flags,true);
-  if Result=mrAbort then exit;
-  if (Result<>mrOk) then begin
-    Result:=JumpToCodetoolErrorAndAskToAbort(cdtlufIsSubProc in Flags);
-    exit;
-  end;
-
   // add {$mode delphi} directive
   // remove windows unit and add LResources, LCLIntf
   // remove {$R *.dfm} or {$R *.xfm} directive
@@ -723,6 +714,15 @@ begin
   if not IfNotOkJumpToCodetoolErrorAndAskToAbort(Result=mrOk,
                                                 cdtlufIsSubProc in Flags,Result)
   then exit;
+
+  // fix or comment missing units
+  DebugLn('ConvertDelphiToLazarusUnit FixMissingUnits');
+  Result:=FixMissingUnits(LazarusUnitFilename,cdtlufIsSubProc in Flags,true);
+  if Result=mrAbort then exit;
+  if (Result<>mrOk) then begin
+    Result:=JumpToCodetoolErrorAndAskToAbort(cdtlufIsSubProc in Flags);
+    exit;
+  end;
 
   if cdtlufCheckLFM in Flags then begin
     // check the LFM file and the pascal unit
