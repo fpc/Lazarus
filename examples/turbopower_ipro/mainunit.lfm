@@ -10,8 +10,9 @@ object MainForm: TMainForm
   ClientHeight = 327
   ClientWidth = 569
   OnCreate = MainFormCreate
-  LCLVersion = '0.9.25'
+  LCLVersion = '0.9.29'
   object IpHtmlPanel1: TIpHtmlPanel
+    Left = 0
     Height = 285
     Top = 42
     Width = 569
@@ -19,14 +20,18 @@ object MainForm: TMainForm
     FixedTypeface = 'Courier New'
     DefaultTypeFace = 'default'
     DefaultFontSize = 12
+    FlagErrors = False
     PrintSettings.MarginLeft = 0.5
     PrintSettings.MarginTop = 0.5
     PrintSettings.MarginRight = 0.5
     PrintSettings.MarginBottom = 0.5
+    TabOrder = 1
     OnHotClick = IpHtmlPanel1HotClick
   end
   object Panel1: TPanel
+    Left = 0
     Height = 42
+    Top = 0
     Width = 569
     Align = alTop
     ClientHeight = 42
@@ -43,7 +48,7 @@ object MainForm: TMainForm
       TabOrder = 0
     end
     object Button1: TButton
-      Left = 183
+      Left = 192
       Height = 25
       Top = 8
       Width = 75
@@ -56,7 +61,7 @@ object MainForm: TMainForm
   object OpenDialog1: TOpenDialog
     Filter = 'Web Pages|*.html;*.htm'
     FilterIndex = 0
-    left = 26
-    top = 93
+    left = 24
+    top = 120
   end
 end

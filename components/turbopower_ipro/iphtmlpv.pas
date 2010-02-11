@@ -118,7 +118,6 @@ const
 procedure TIpHTMLPreview.FormShow(Sender: TObject);
 begin
   Zoom := 100;
-  ResizeCanvas;
   RenderPage(CurPage);
 end;
 
@@ -260,6 +259,7 @@ end;
 procedure TIpHTMLPreview.FormCreate(Sender: TObject);
 begin
   ZoomCombo.ItemIndex := 4;
+  FZoom := 100;
   Scratch := TBitmap.Create;
   Scratch.Width := SCRATCH_WIDTH;
   Scratch.Height := SCRATCH_HEIGHT;
@@ -335,7 +335,8 @@ end;
 
 procedure TIpHTMLPreview.FormResize(Sender: TObject);
 begin
-  SetZoom(Zoom); {force recalc of preview sizes}
+  if OwnerPanel<>nil then
+    SetZoom(Zoom); {force recalc of preview sizes}
 end;
 
 end.

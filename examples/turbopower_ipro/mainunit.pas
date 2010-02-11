@@ -2,7 +2,7 @@ unit MainUnit;
 
 {$mode objfpc}{$H+}
 
-{.$define UsePreview}
+{$define UsePreview}
 
 interface
 
@@ -43,6 +43,8 @@ var
   MainForm: TMainForm;
 
 implementation
+
+{$R *.lfm}
 
 { TMainForm }
 
@@ -128,7 +130,6 @@ begin
 end;
 
 initialization
-  {$I mainunit.lrs}
   {$I defaultimage.lrs}
 
 end.

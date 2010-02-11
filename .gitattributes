@@ -3133,7 +3133,6 @@ examples/turbopower_ipro/defaultimage.lrs svneol=native#text/pascal
 examples/turbopower_ipro/defaultimage.xpm -text svneol=native#image/x-pixmap
 examples/turbopower_ipro/index.html svneol=native#text/html
 examples/turbopower_ipro/mainunit.lfm svneol=native#text/plain
-examples/turbopower_ipro/mainunit.lrs svneol=native#text/pascal
 examples/turbopower_ipro/mainunit.pas svneol=native#text/pascal
 examples/turbopower_ipro/readme.txt svneol=native#text/plain
 examples/turbopower_ipro/simplepage2.html svneol=native#text/html
