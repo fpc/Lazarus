@@ -1445,7 +1445,7 @@ begin
         ResourceFilename:=TrimFilename(ExtractFilenameOnly(Filename)+DefaultResFileExt);
         Result:='initialization'+LE+'  {$I '+ResourceFilename+'}'+LE+LE;
       end;
-    rtRes: Result := LE+'{$R *.lfm}'+LE+LE;
+    rtRes: Result := '{$R *.lfm}'+LE+LE;
   end;
 end;
 
