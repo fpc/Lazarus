@@ -954,6 +954,7 @@ procedure TLinkScanner.ReadNextToken;
 var
   c1: char;
   c2: char;
+  MacroID: LongInt;
 begin
   //DebugLn(' TLinkScanner.ReadNextToken SrcPos=',SrcPos,' SrcLen=',SrcLen,' "',copy(Src,SrcPos,5),'"');
   {$IFOPT R+}{$DEFINE RangeChecking}{$ENDIF}
@@ -997,9 +998,12 @@ begin
         and (IsIdentChar[Src[SrcPos]]) do
           inc(SrcPos);
         TokenType:=lsttWord;
-        if FMacrosOn and Values.IsIdentifierDefined(@Src[TokenStart]) then begin
-          // macro
-
+        if FMacrosOn then begin
+          MacroID:=IndexOfMacro(@Src[TokenStart],false);
+          if MacroID>=0 then begin
+            // macro
+            //DebugLn(['TLinkScanner.ReadNextToken ',MacroID]);
+          end;
         end;
       end;
     '''','#':
