@@ -339,6 +339,7 @@ type
   public
     function horizontalScrollBar: TQtScrollBar;
     function verticalScrollBar: TQtScrollBar;
+    procedure setFocusPolicy(const APolicy: QtFocusPolicy); override;
     procedure setHorizontalScrollBar(AScrollBar: TQtScrollBar);
     procedure setVerticalScrollBar(AScrollBar: TQtScrollBar);
     procedure setScrollStyle(AScrollStyle: TScrollStyle);
@@ -8977,6 +8978,11 @@ begin
     FVScrollbar.AttachEvents;
   end;
   Result := FVScrollBar;
+end;
+
+procedure TQtAbstractScrollArea.setFocusPolicy(const APolicy: QtFocusPolicy);
+begin
+  QWidget_setFocusPolicy(Widget, APolicy);
 end;
 
 {------------------------------------------------------------------------------
