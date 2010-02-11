@@ -88,12 +88,14 @@ type
     Next: PSourceLink;
   end;
 
-  TSourceLinkMakro = record
+  TSourceLinkMacro = record
     Name: PChar;
     Code: Pointer;
+    Src: string;
+    SrcFilename: string;
     StartPos, EndPos: integer;
   end;
-  PSourceLinkMakro = ^TSourceLinkMakro;
+  PSourceLinkMacro = ^TSourceLinkMacro;
 
   { TSourceChangeStep is used to save the ChangeStep of every used file
     A ChangeStep is switching to or from an include file }
@@ -282,7 +284,7 @@ type
     FCompilerMode: TCompilerMode;
     FCompilerModeSwitch: TCompilerModeSwitch;
     FPascalCompiler: TPascalCompiler;
-    FMacros: PSourceLinkMakro;
+    FMacros: PSourceLinkMacro;
     FMacroCount, fMacroCapacity: integer;
     procedure SetCompilerMode(const AValue: TCompilerMode);
     procedure SetCompilerModeSwitch(const AValue: TCompilerModeSwitch);
@@ -330,6 +332,7 @@ type
                             ValueStart, ValueEnd: integer);
     procedure ClearMacros;
     function IndexOfMacro(MacroName: PChar; InsertPos: boolean): integer;
+    procedure AddMacroSource(MacroID: integer);
   protected
     // error: the error is in range Succ(ScannedRange)
     LastErrorMessage: string;
@@ -690,7 +693,6 @@ begin
   FSourceChangeSteps:=TFPList.Create;
   FMainCode:=nil;
   FMainSourceFilename:='';
-  //BuildDirectiveFuncList;
   FIncludeStack:=TFPList.Create;
   FPascalCompiler:=pcFPC;
   FNestedComments:=true;
@@ -1001,8 +1003,7 @@ begin
         if FMacrosOn then begin
           MacroID:=IndexOfMacro(@Src[TokenStart],false);
           if MacroID>=0 then begin
-            // macro
-            //DebugLn(['TLinkScanner.ReadNextToken ',MacroID]);
+            AddMacroSource(MacroID);
           end;
         end;
       end;
@@ -1346,21 +1347,17 @@ end;
 
 procedure TLinkScanner.UpdateCleanedSource(SourcePos: integer);
 // add new parsed code to cleaned source string
-var AddLen, i: integer;
+var AddLen: integer;
 begin
   if SourcePos=LastCleanSrcPos then exit;
   if SourcePos>SrcLen then SourcePos:=SrcLen;
   AddLen:=SourcePos-LastCleanSrcPos;
   if AddLen>length(FCleanedSrc)-CleanedLen then begin
-    // expand cleaned source string by at least OldLen+1024
-    i:=length(FCleanedSrc)+1024;
-    if AddLen<i then AddLen:=i;
-    SetLength(FCleanedSrc,length(FCleanedSrc)+AddLen);
+    // expand cleaned source string by at least 1024
+    SetLength(FCleanedSrc,length(FCleanedSrc)+SrcLen+1024);
   end;
-  for i:=LastCleanSrcPos+1 to SourcePos do begin
-    inc(CleanedLen);
-    FCleanedSrc[CleanedLen]:=Src[i];
-  end;
+  System.Move(Src[LastCleanSrcPos+1],FCleanedSrc[CleanedLen+1],AddLen);
+  inc(CleanedLen,AddLen);
   {$IFDEF ShowUpdateCleanedSrc}
   DebugLn('TLinkScanner.UpdateCleanedSource A ',
     DbgS(LastCleanSrcPos),'-',DbgS(SourcePos),'="',
@@ -3047,27 +3044,44 @@ procedure TLinkScanner.AddMacroValue(MacroName: PChar; ValueStart,
   ValueEnd: integer);
 var
   i: LongInt;
+  Macro: PSourceLinkMacro;
 begin
   i:=IndexOfMacro(MacroName,false);
   if i<0 then begin
     // insert new macro
     i:=IndexOfMacro(MacroName,true);
-    fMacroCapacity:=fMacroCapacity*2;
-    if fMacroCapacity<4 then fMacroCapacity:=4;
-    ReAllocMem(FMacros,SizeOf(TSourceLinkMakro)*fMacroCapacity);
+    if FMacroCount=fMacroCapacity then begin
+      fMacroCapacity:=fMacroCapacity*2;
+      if fMacroCapacity<4 then fMacroCapacity:=4;
+      ReAllocMem(FMacros,SizeOf(TSourceLinkMacro)*fMacroCapacity);
+    end;
     if i<FMacroCount then
-      System.Move(FMacros[i],FMacros[i+1],SizeOf(TSourceLinkMakro)*(FMacroCount-i));
+      System.Move(FMacros[i],FMacros[i+1],
+                  SizeOf(TSourceLinkMacro)*(FMacroCount-i));
+    FillByte(FMacros[i],SizeOf(TSourceLinkMacro),0);
     inc(FMacroCount);
   end;
-  FMacros[i].Name:=MacroName;
-  FMacros[i].Code:=Code;
-  FMacros[i].StartPos:=ValueStart;
-  FMacros[i].EndPos:=ValueEnd;
-  //WriteLn('TLinkScanner.AddMacroValue ',GetIdentifier(MacroName),' ',copy(Src,ValueStart,ValueEnd-ValueStart));
+  Macro:=@FMacros[i];
+  Macro^.Name:=MacroName;
+  Macro^.Code:=Code;
+  Macro^.Src:=Src;
+  Macro^.SrcFilename:=SrcFilename;
+  Macro^.StartPos:=ValueStart;
+  Macro^.EndPos:=ValueEnd;
+  //DebugLn(['TLinkScanner.AddMacroValue ',GetIdentifier(MacroName),' ',copy(Src,ValueStart,ValueEnd-ValueStart)]);
 end;
 
 procedure TLinkScanner.ClearMacros;
+var
+  i: Integer;
 begin
+  for i:=0 to FMacroCount-1 do begin
+    with FMacros[i] do begin
+      //DebugLn(['TLinkScanner.ClearMacros ',GetIdentifier(Name),' ',SrcFilename]);
+      Src:='';
+      SrcFilename:='';
+    end;
+  end;
   ReAllocMem(FMacros,0);
   FMacroCount:=0;
   fMacroCapacity:=0;
@@ -3102,6 +3116,44 @@ begin
   end else begin
     Result:=-1;
   end;
+end;
+
+procedure TLinkScanner.AddMacroSource(MacroID: integer);
+var
+  Macro: PSourceLinkMacro;
+  OldCode: Pointer;
+  OldSrc: String;
+  OldSrcFilename: String;
+begin
+  Macro:=@FMacros[MacroID];
+  //DebugLn(['TLinkScanner.AddMacroSource ID=',MacroID,' ',GetIdentifier(Macro^.Name)]);
+  // update cleaned source
+  UpdateCleanedSource(TokenStart-1);
+  // store old code pos
+  OldCode:=Code;
+  OldSrc:=Src;
+  OldSrcFilename:=SrcFilename;
+  //DebugLn(['TLinkScanner.AddMacroSource BEFORE CleanedSrc=',dbgstr(copy(FCleanedSrc,CleanedLen-19,20))]);
+  // add macro source
+  AddLink(CleanedLen+1,Macro^.StartPos,Macro^.Code);
+  Code:=Macro^.Code;
+  Src:=Macro^.Src;
+  SrcLen:=length(Src);
+  SrcFilename:=Macro^.SrcFilename;
+  LastCleanSrcPos:=Macro^.StartPos-1;
+  UpdateCleanedSource(Macro^.EndPos-1);
+  //DebugLn(['TLinkScanner.AddMacroSource MACRO CleanedSrc=',dbgstr(copy(FCleanedSrc,CleanedLen-19,20))]);
+  // restore code pos
+  Code:=OldCode;
+  Src:=OldSrc;
+  SrcLen:=length(Src);
+  SrcFilename:=OldSrcFilename;
+  LastCleanSrcPos:=SrcPos-1;
+  AddLink(CleanedLen+1,SrcPos,Code);
+  // clear token type
+  TokenType:=lsttNone;
+  // SrcPos was not touched and still stands behind the macro name
+  //DebugLn(['TLinkScanner.AddMacroSource END Token=',copy(Src,TokenStart,SrcPos-TokenStart)]);
 end;
 
 function TLinkScanner.ReturnFromIncludeFile: boolean;
@@ -3635,8 +3687,8 @@ end;
 
 function TLinkScanner.MainFilename: string;
 begin
-  if Assigned(OnGetFileName) and (Code<>nil) then
-    Result:=OnGetFileName(Self,Code)
+  if Assigned(OnGetFileName) and (FMainCode<>nil) then
+    Result:=OnGetFileName(Self,FMainCode)
   else
     Result:='';
 end;

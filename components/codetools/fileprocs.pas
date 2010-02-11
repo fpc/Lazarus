@@ -214,7 +214,7 @@ type
   end;
 
 var
-  FileStateCache: TFileStateCache;
+  FileStateCache: TFileStateCache = nil;
 
 function FileExistsCached(const Filename: string): boolean;
 function DirPathExistsCached(const Filename: string): boolean;
