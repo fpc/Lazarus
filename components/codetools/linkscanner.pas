@@ -88,6 +88,13 @@ type
     Next: PSourceLink;
   end;
 
+  TSourceLinkMakro = record
+    Name: PChar;
+    Code: Pointer;
+    StartPos, EndPos: integer;
+  end;
+  PSourceLinkMakro = ^TSourceLinkMakro;
+
   { TSourceChangeStep is used to save the ChangeStep of every used file
     A ChangeStep is switching to or from an include file }
   PSourceChangeStep = ^TSourceChangeStep;
@@ -275,6 +282,8 @@ type
     FCompilerMode: TCompilerMode;
     FCompilerModeSwitch: TCompilerModeSwitch;
     FPascalCompiler: TPascalCompiler;
+    FMacros: PSourceLinkMakro;
+    FMacroCount: integer;
     procedure SetCompilerMode(const AValue: TCompilerMode);
     procedure SetCompilerModeSwitch(const AValue: TCompilerModeSwitch);
     procedure SkipTillEndifElse(SkippingUntil: TLSSkippingDirective);
@@ -316,6 +325,11 @@ type
     function GetIncludeFileIsMissing: boolean;
     function MissingIncludeFilesNeedsUpdate: boolean;
     procedure ClearMissingIncludeFiles;
+
+    procedure AddMacroValue(MacroName: PChar;
+                            ValueStart, ValueEnd: integer);
+    procedure ClearMacros;
+    function IndexOfMacro(MacroName: PChar; InsertPos: boolean): integer;
   protected
     // error: the error is in range Succ(ScannedRange)
     LastErrorMessage: string;
@@ -649,6 +663,7 @@ var i: integer;
   PLink: PSourceLink;
   PStamp: PSourceChangeStep;
 begin
+  ClearMacros;
   ClearLastError;
   ClearMissingIncludeFiles;
   for i:=0 to FIncludeStack.Count-1 do begin
@@ -2614,14 +2629,17 @@ end;
 function TLinkScanner.DefineDirective: boolean;
 // {$define name} or {$define name:=value}
 var VariableName, NewValue: string;
+  NamePos: LongInt;
 begin
   SkipSpace;
+  NamePos:=SrcPos;
   VariableName:=ReadUpperIdentifier;
   if (VariableName<>'') then begin
     SkipSpace;
     if FMacrosOn and (SrcPos<SrcLen)
     and (Src[SrcPos]=':') and (Src[SrcPos+1]='=')
     then begin
+      // makro => store the value
       inc(SrcPos,2);
       SkipSpace;
       NewValue:=copy(Src,SrcPos,CommentInnerEndPos-SrcPos);
@@ -2630,7 +2648,9 @@ begin
       else if CompareIdentifiers(PChar(NewValue),'true')=0 then
         NewValue:='1';
       Values.Variables[VariableName]:=NewValue;
+      AddMacroValue(@Src[NamePos],SrcPos,CommentInnerEndPos);
     end else begin
+      // flag
       Values.Variables[VariableName]:='1';
     end;
   end;
@@ -3017,6 +3037,49 @@ end;
 procedure TLinkScanner.ClearMissingIncludeFiles;
 begin
   FreeAndNil(FMissingIncludeFiles);
+end;
+
+procedure TLinkScanner.AddMacroValue(MacroName: PChar; ValueStart,
+  ValueEnd: integer);
+begin
+
+end;
+
+procedure TLinkScanner.ClearMacros;
+begin
+  ReAllocMem(FMacros,0);
+  FMacroCount:=0;
+end;
+
+function TLinkScanner.IndexOfMacro(MacroName: PChar; InsertPos: boolean): integer;
+var
+  l: Integer;
+  r: Integer;
+  m: Integer;
+  cmp: LongInt;
+begin
+  l:=0;
+  r:=FMacroCount-1;
+  m:=0;
+  cmp:=0;
+  while l<=r do begin
+    m:=(l+r) div 2;
+    cmp:=CompareIdentifierPtrs(MacroName,FMacros[m].Name);
+    if cmp<0 then
+      r:=m-1
+    else if cmp>0 then
+      l:=m+1
+    else begin
+      Result:=m;
+      exit;
+    end;
+  end;
+  if InsertPos then begin
+    if cmp>0 then inc(m);
+    Result:=m;
+  end else begin
+    Result:=-1;
+  end;
 end;
 
 function TLinkScanner.ReturnFromIncludeFile: boolean;
