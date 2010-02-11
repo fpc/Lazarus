@@ -594,19 +594,25 @@ var
   i: Integer;
   lMessage: TLMessage;
 begin
-  inherited;
+  inherited CMBiDiModeChanged(Message);
   // send CM_PARENTBIDIMODECHANGED to all components owned by the form
   // this is needed for menus
   lMessage.msg := CM_PARENTBIDIMODECHANGED;
   lMessage.wParam := 0;
   lMessage.lParam := 0;
   lMessage.Result := 0;
-  for i := 0 to ComponentCount - 1 do
-  begin
-    // all TControl descendants have this notification in TWinControl.CMBidiModeChanged
-    if Components[i] is TControl then
-      Continue;
-    Components[i].Dispatch(lMessage);
+  DisableAlign;
+  try
+    DoChildSizingChange(Self);
+    for i := 0 to ComponentCount - 1 do
+    begin
+      // all TControl descendants have this notification in TWinControl.CMBidiModeChanged
+      if Components[i] is TControl then
+        Continue;
+      Components[i].Dispatch(lMessage);
+    end;
+  finally
+    EnableAlign;
   end;
 end;
 
