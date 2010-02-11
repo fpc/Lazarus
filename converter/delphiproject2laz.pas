@@ -762,7 +762,9 @@ begin
   AProject:=Project1;
   if FileExistsUTF8(LPIFilename) then begin
     // there is already a lazarus project -> open it, if not already open
-    if CompareFilenames(AProject.ProjectInfoFile,LPIFilename)<>0 then begin
+    if (AProject=nil) or
+       (CompareFilenames(AProject.ProjectInfoFile,LPIFilename)<>0) then
+    begin
       DebugLn('CreateDelphiToLazarusProject open "',LPIFilename,'"');
       Result:=LazarusIDE.DoOpenProjectFile(LPIFilename,[]);
       AProject:=Project1;
