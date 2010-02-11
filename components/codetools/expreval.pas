@@ -114,8 +114,8 @@ type
        read GetVariables write SetVariables;  default;
     property Count: integer read FCount;
     procedure Undefine(const Name: string);
-    function IsDefined(const Name: string): boolean;
-    function IsIdentifierDefined(Identifier: PChar): boolean;
+    function IsDefined(const Name: string): boolean; inline;
+    function IsIdentifierDefined(Identifier: PChar): boolean; inline;
     function Equals(AnExpressionEvaluator: TExpressionEvaluator): boolean; reintroduce;
     procedure Assign(SourceExpressionEvaluator: TExpressionEvaluator);
     procedure AssignTo(SL: TStringList);

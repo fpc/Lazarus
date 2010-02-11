@@ -300,6 +300,7 @@ type
     function ShortSwitchDirective: boolean;
     function ReadNextSwitchDirective: boolean;
     function LongSwitchDirective: boolean;
+    function MacroDirective: boolean;
     function ModeDirective: boolean;
     function ModeSwitchDirective: boolean;
     function ThreadingDirective: boolean;
@@ -981,6 +982,10 @@ begin
         and (IsIdentChar[Src[SrcPos]]) do
           inc(SrcPos);
         TokenType:=lsttWord;
+        if FMacrosOn and Values.IsIdentifierDefined(@Src[TokenStart]) then begin
+          // macro
+
+        end;
       end;
     '''','#':
       begin
@@ -2201,7 +2206,8 @@ begin
         else if CompareIdentifiers(p,'LONGSTRINGS')=0 then Result:=true;
       'M':
         if CompareIdentifiers(p,'MODE')=0 then Result:=ModeDirective
-        else if CompareIdentifiers(p,'MODESWITCH')=0 then Result:=ModeSwitchDirective;
+        else if CompareIdentifiers(p,'MODESWITCH')=0 then Result:=ModeSwitchDirective
+        else if CompareIdentifiers(p,'MACRO')=0 then Result:=MacroDirective;
       'O':
         if CompareIdentifiers(p,'OPENSTRINGS')=0 then Result:=true
         else if CompareIdentifiers(p,'OVERFLOWCHECKS')=0 then Result:=true;
@@ -2283,6 +2289,24 @@ begin
         [copy(Src,ValStart,SrcPos-ValStart),FDirectiveName]);
   end;
   Result:=ReadNextSwitchDirective;
+end;
+
+function TLinkScanner.MacroDirective: boolean;
+var
+  ValStart: LongInt;
+begin
+  SkipSpace;
+  ValStart:=SrcPos;
+  while (SrcPos<=SrcLen) and (IsWordChar[Src[SrcPos]]) do
+    inc(SrcPos);
+  if CompareUpToken('ON',Src,ValStart,SrcPos) then
+    FMacrosOn:=true
+  else if CompareUpToken('OFF',Src,ValStart,SrcPos) then
+    FMacrosOn:=false
+  else
+    RaiseExceptionFmt(ctsInvalidFlagValueForDirective,
+        [copy(Src,ValStart,SrcPos-ValStart),FDirectiveName]);
+  Result:=true;
 end;
 
 function TLinkScanner.ModeDirective: boolean;
