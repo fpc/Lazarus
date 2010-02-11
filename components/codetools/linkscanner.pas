@@ -283,7 +283,7 @@ type
     FCompilerModeSwitch: TCompilerModeSwitch;
     FPascalCompiler: TPascalCompiler;
     FMacros: PSourceLinkMakro;
-    FMacroCount: integer;
+    FMacroCount, fMacroCapacity: integer;
     procedure SetCompilerMode(const AValue: TCompilerMode);
     procedure SetCompilerModeSwitch(const AValue: TCompilerModeSwitch);
     procedure SkipTillEndifElse(SkippingUntil: TLSSkippingDirective);
@@ -3041,14 +3041,32 @@ end;
 
 procedure TLinkScanner.AddMacroValue(MacroName: PChar; ValueStart,
   ValueEnd: integer);
+var
+  i: LongInt;
 begin
-
+  i:=IndexOfMacro(MacroName,false);
+  if i<0 then begin
+    // insert new macro
+    i:=IndexOfMacro(MacroName,true);
+    fMacroCapacity:=fMacroCapacity*2;
+    if fMacroCapacity<4 then fMacroCapacity:=4;
+    ReAllocMem(FMacros,SizeOf(TSourceLinkMakro)*fMacroCapacity);
+    if i<FMacroCount then
+      System.Move(FMacros[i],FMacros[i+1],SizeOf(TSourceLinkMakro)*(FMacroCount-i));
+    inc(FMacroCount);
+  end;
+  FMacros[i].Name:=MacroName;
+  FMacros[i].Code:=Code;
+  FMacros[i].StartPos:=ValueStart;
+  FMacros[i].EndPos:=ValueEnd;
+  //WriteLn('TLinkScanner.AddMacroValue ',GetIdentifier(MacroName),' ',copy(Src,ValueStart,ValueEnd-ValueStart));
 end;
 
 procedure TLinkScanner.ClearMacros;
 begin
   ReAllocMem(FMacros,0);
   FMacroCount:=0;
+  fMacroCapacity:=0;
 end;
 
 function TLinkScanner.IndexOfMacro(MacroName: PChar; InsertPos: boolean): integer;
