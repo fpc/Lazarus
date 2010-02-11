@@ -66,6 +66,7 @@ type
     cdtlufRenameLowercase, // rename the unit lowercase
     cdtlufIsSubProc, // this is part of a big conversion -> add Abort button to all questions
     cdtlufCheckLFM,  // check and fix LFM
+    cdtlufIgnoreUsedUnits, // skip steps that require loading used units
     cdtlufDoNotSetDelphiMode, // do not set delphi mode for project directories
     cdtlufCanAbort   // show 'Cancel all' button in error messages using mrAbort
     );
@@ -347,7 +348,7 @@ function ConvertAllDelphiProjectUnits(AProject: TProject;
   begin
     // convert all units
     i:=0;
-    while i<AProject.UnitCount do begin
+    while i<AProject.UnitCount do begin // use while as the converter can add/remove units
       CurUnitInfo:=AProject.Units[i];
       if CurUnitInfo.IsPartOfProject then begin
         Result:=ConvertDelphiToLazarusUnit(CurUnitInfo.Filename,
@@ -371,10 +372,13 @@ function ConvertAllDelphiProjectUnits(AProject: TProject;
   end;
   
 begin
-  // first convert all units
-  Result:=Convert(Flags-[cdtlufCheckLFM]);
+  // first do some basic conversions on every unit
+  // some conversions like the lfm conversion requires other units, so skip them
+  // now and do that on a second run
+  Result:=Convert(Flags+[cdtlufIgnoreUsedUnits]);
   if Result<>mrOk then exit;
-  // now the units can be parsed
+  // now the unit interdependencies can be checked
+  // now convert the lfm files
   if cdtlufCheckLFM in Flags then begin
     // fix the .lfm files
     Result:=Convert(Flags);
@@ -605,7 +609,7 @@ function ConvertAllDelphiPackageUnits(APackage: TLazPackage;
   begin
     // convert all units
     i:=0;
-    while i<APackage.FileCount do begin
+    while i<APackage.FileCount do begin // use while as the conversion can add/remove units
       PkgFile:=APackage.Files[i];
       Result:=ConvertDelphiToLazarusUnit(PkgFile.Filename,
                                          CurFlags+[cdtlufIsSubProc]);
@@ -627,10 +631,13 @@ function ConvertAllDelphiPackageUnits(APackage: TLazPackage;
   end;
 
 begin
-  // first convert all units
-  Result:=Convert(Flags-[cdtlufCheckLFM]);
+  // first do some basic conversions on every unit
+  // some conversions like the lfm conversion requires other units, so skip them
+  // now and do that on a second run
+  Result:=Convert(Flags+[cdtlufIgnoreUsedUnits]);
   if Result<>mrOk then exit;
-  // now the units can be parsed
+  // now the unit interdependencies can be checked
+  // now convert the lfm files
   if cdtlufCheckLFM in Flags then begin
     // fix the .lfm files
     Result:=Convert(Flags);
@@ -649,7 +656,7 @@ var
   LFMFilename: String;
 begin
   // check file and directory
-  DebugLn('ConvertDelphiToLazarusUnit A ',DelphiFilename,' FixLFM=',dbgs(cdtlufCheckLFM in Flags));
+  DebugLn('ConvertDelphiToLazarusUnit A ',DelphiFilename,' FixLFM=',dbgs(cdtlufCheckLFM in Flags),' IgnoreUsedUnits=',dbgs(cdtlufIgnoreUsedUnits in Flags));
   Result:=CheckFileIsWritable(DelphiFilename,[mbAbort]);
   if Result<>mrOk then exit;
 
@@ -724,7 +731,8 @@ begin
     exit;
   end;
 
-  if cdtlufCheckLFM in Flags then begin
+  if (cdtlufCheckLFM in Flags) and (not (cdtlufIgnoreUsedUnits in Flags)) then
+  begin
     // check the LFM file and the pascal unit
     DebugLn('ConvertDelphiToLazarusUnit Check new .lfm and .pas file');
     Result:=LoadUnitAndLFMFile(LazarusUnitFilename,UnitCode,LFMCode,HasDFMFile,true);
