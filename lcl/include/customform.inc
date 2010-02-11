@@ -603,7 +603,10 @@ begin
   lMessage.Result := 0;
   DisableAlign;
   try
-    DoChildSizingChange(Self);
+    if Parent<>nil then
+      Parent.ReAlign
+    else
+      AdjustSize;
     for i := 0 to ComponentCount - 1 do
     begin
       // all TControl descendants have this notification in TWinControl.CMBidiModeChanged
