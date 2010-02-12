@@ -70,9 +70,9 @@ var
 begin
   with PackagesGrid do begin
     RowCount := AChangesReport.Count + 1;
-    Cells[0, 0] := 'Install package';
-    Cells[1, 0] := 'State';
-    Cells[2, 0] := lisConfirmPackageOldPackage;
+    Cells[0, 0] := lisConfirmPackageNewPackageSet;
+    Cells[1, 0] := lisConfirmPackageAction;
+    Cells[2, 0] := lisConfirmPackageOldPackageSet;
     d := RowCount * DefaultRowHeight + GridLineWidth - Height;
   end;
   // Auto-grow dialog up to 3/4 of the screen height.
@@ -80,6 +80,7 @@ begin
   Height := Height + d;
   Caption := lisConfirmNewPackageSetForTheIDE;
   OkButton.Caption := lisContinue;
+  CancelButton.Caption := lisCancel;
 
   for i := 1 to AChangesReport.Count do begin
     s := AChangesReport[i - 1];

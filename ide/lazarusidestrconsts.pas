@@ -964,6 +964,7 @@ resourcestring
   lisPEUnitnameAndFilenameDoNotMatchExampleUnit1PasAndUni = 'Unitname and '
     +'Filename do not match.%sExample: unit1.pas and Unit1';
   lisOk = '&OK';
+  lisCancel = 'Cancel';
   lisCMParameter = 'Parameter';
   lisCTPleaseSelectAMacro = 'please select a macro';
   lisA2PCreateNewFile = 'Create new file';
@@ -1157,8 +1158,8 @@ resourcestring
   lisRemove = 'remove';
   lisKeep = 'keep';
   lisConfirmNewPackageSetForTheIDE = 'Confirm new package set for the IDE';
-  lisConfirmPackageNewPackage = 'New package';
-  lisConfirmPackageOldPackage = 'Old package';
+  lisConfirmPackageNewPackageSet = 'New package set';
+  lisConfirmPackageOldPackageSet = 'Old package set';
   lisConfirmPackageAction = 'Action';
   lisSaveFileAs = 'Save file as';
   lisOpenExistingFile = 'Open existing file';
