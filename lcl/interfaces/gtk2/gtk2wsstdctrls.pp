@@ -477,16 +477,6 @@ var
   WidgetInfo: PWidgetInfo;
   Selection: PGtkTreeSelection;
   Path: PGtkTreePath;
-
-  procedure ClearCursor; inline;
-  begin
-    if gtk_tree_row_reference_valid(PGtkTreeView(Widget)^.priv^.cursor) then
-    begin
-      gtk_tree_row_reference_free(PGtkTreeView(Widget)^.priv^.cursor);
-      PGtkTreeView(Widget)^.priv^.cursor := nil;
-    end;
-  end;
-  
 begin
   if not WSCheckHandleAllocated(ACustomListBox, 'SetItemIndex') then
     Exit;
@@ -512,7 +502,9 @@ begin
   end
   else
   begin
-    ClearCursor;
+    Path := gtk_tree_path_new_from_indices(0, -1);
+    if PGtkTreeView(Widget)^.priv^.tree <> nil then
+      gtk_tree_view_set_cursor(PGtkTreeView(Widget), Path, nil, False);
     gtk_tree_selection_unselect_all(Selection);
   end;
 
