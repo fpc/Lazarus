@@ -9036,6 +9036,7 @@ var
   Layout: PgtkLayout;
   Scroll: PGTKWidget;
   IsScrollWindow: Boolean;
+  IsScrollbarVis: boolean;
 begin
   Result := 0;
   if (Handle = 0) then exit;
@@ -9154,7 +9155,8 @@ begin
   end;
   
 
-  if Adjustment = nil then exit;
+  if Adjustment = nil then
+    exit;
 
   if (ScrollInfo.fMask and SIF_RANGE) <> 0
   then begin
@@ -9178,6 +9180,21 @@ begin
                               Adjustment^.upper-Max(Adjustment^.page_size-1,0));
   end;
 
+  // check if scrollbar should be hidden
+  IsScrollbarVis := true;
+  if ((ScrollInfo.fMask and (SIF_RANGE or SIF_PAGE)) <> 0) and
+     ((SBStyle=SB_HORZ) or (SBStyle=SB_VERT))
+  then begin
+    if (Adjustment^.lower >= (Adjustment^.upper-Max(adjustment^.page_size-1,0)))
+    then begin
+      if (ScrollInfo.fMask and SIF_DISABLENOSCROLL) = 0 then
+        IsScrollbarVis := false
+      else
+        ;// scrollbar should look disabled (no thumbbar and grayed appareance)
+         // maybe not possible in gtk
+    end;
+  end;
+
   Result := Round(Adjustment^.value);
 
   {DebugLn('');
@@ -9197,8 +9214,10 @@ begin
     if IsScrollWindow
     then begin
       case SBStyle of
-        SB_HORZ: gtk_object_set(PGTKObject(Scroll),'hscrollbar_policy',[POLICY[bRedraw],nil]);
-        SB_VERT: gtk_object_set(PGTKObject(Scroll),'vscrollbar_policy',[POLICY[bRedraw],nil]);
+        SB_HORZ:
+          gtk_object_set(PGTKObject(Scroll),'hscrollbar_policy',[POLICY[IsScrollbarVis],nil]);
+        SB_VERT:
+          gtk_object_set(PGTKObject(Scroll),'vscrollbar_policy',[POLICY[IsScrollbarVis],nil]);
       end;
     end
     else
