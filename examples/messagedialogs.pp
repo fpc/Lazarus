@@ -32,7 +32,7 @@ Program MessagDialogs;
 
 {$mode objfpc}{$H+}
 
-uses Interfaces, Classes, Forms, Dialogs, Buttons;
+uses Interfaces, Classes, Forms, Dialogs, Buttons, StdCtrls;
      
 type
    TMainForm = class(TForm)

@@ -39,7 +39,7 @@ program Trackbar;
 {$mode objfpc}{$H+}
 
 uses
-  Interfaces, Classes, Forms, Buttons, Menus, ComCtrls,
+  Interfaces, Classes, Forms, Buttons, StdCtrls, Menus, ComCtrls,
   SysUtils, Controls;
 
 type
