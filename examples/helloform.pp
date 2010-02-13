@@ -25,7 +25,7 @@ unit HelloForm;
 
 interface
 
-uses SysUtils, Classes, Forms, Buttons;
+uses SysUtils, Classes, Forms, Buttons, StdCtrls;
 
 type
    THello = class(TForm)
