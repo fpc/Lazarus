@@ -71,6 +71,7 @@ type
   private
     FBlockListBoxChange: boolean;
     procedure FocusEdit;
+    procedure SearchList(StartIndex: Integer = -1);
   public
     constructor Create(TheOwner: TComponent); override;
   end;
@@ -115,15 +116,15 @@ begin
   end;
 end;
 
-function SearchItem(Items: TStrings; Text: String): Integer;
+function SearchItem(Items: TStrings; Text: String; StartIndex: Integer = -1): Integer;
 var
   i: integer;
 begin
   // Items can be unsorted => use simple traverse
   Result := -1;
   Text := LowerCase(Text);
-  for i := 0 to Items.Count - 1 do
-    if Pos(Text, LowerCase(Items[i])) = 1 then
+  for i := StartIndex +1 to Items.Count - 1 do
+    if Pos(Text, LowerCase(Items[i])) >= 1 then
     begin
       Result := i;
       break;
@@ -192,27 +193,17 @@ begin
     VK_NEXT: MoveItemIndex(PageCount);
     VK_PRIOR: MoveItemIndex(-PageCount);
     VK_RETURN: OKButtonClick(nil);
+    VK_RIGHT: SearchList(ListBox.ItemIndex);
   end;
 end;
 
 procedure TViewUnitDialog.EditChange(Sender: TObject);
-var
-  Index: Integer;
 begin
   // the change was initiated by the listbox,
   // so don't make any changes to the listbox
   if FBlockListBoxChange then exit;
   
-  Index := SearchItem(ListBox.Items, Edit.Text);
-  ListBox.ItemIndex := Index;
-  ListBox.MakeCurrentVisible;
-
-  if ListBox.MultiSelect then
-  begin
-    ListBox.ClearSelection;
-    if Index <> -1 then
-      ListBox.Selected[Index] := True;
-  end;
+  SearchList();
 end;
 
 procedure TViewUnitDialog.EditEnter(Sender: TObject);
@@ -252,6 +243,23 @@ procedure TViewUnitDialog.FocusEdit;
 begin
   Edit.SelectAll;
   Edit.SetFocus;
+end;
+
+procedure TViewUnitDialog.SearchList(StartIndex: Integer);
+var
+  Index: Integer;
+begin
+  Index := SearchItem(ListBox.Items, Edit.Text, StartIndex);
+  if Index >= 0 then
+  begin
+    ListBox.ItemIndex := Index;
+    ListBox.MakeCurrentVisible;
+    if ListBox.MultiSelect then
+    begin
+      ListBox.ClearSelection;
+      ListBox.Selected[Index] := True;
+    end;
+  end;
 end;
 
 end.
