@@ -146,9 +146,6 @@ type
 
   PHKEY = ^HKEY;
 
-var
-  hInstance: HINST;
-
 const
   INVALID_HANDLE_VALUE  = 0;
 
