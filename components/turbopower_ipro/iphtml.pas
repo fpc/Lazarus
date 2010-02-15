@@ -60,6 +60,7 @@ uses
   LCLMemManager,
   Translations,
   FileUtil,
+  LConvEncoding,
   {$ELSE}
   Windows,
   {$ENDIF}
@@ -2647,6 +2648,8 @@ type
     FMarginWidth: Integer;
     {$IFDEF IP_LAZARUS}
     FCSS: TCSSGlobalProps;
+    FDocCharset: string;
+    FHasBOM: boolean;
     {$ENDIF}
   protected
     CharStream : TStream;
@@ -4061,6 +4064,7 @@ var
   Index2: Integer;
   Size1: Integer;
   Found: Boolean;
+
 begin {'Complete boolean eval' must be off}
   Result := ' ';
   Size1 := Length(S);
@@ -4068,9 +4072,13 @@ begin {'Complete boolean eval' must be off}
   if (S[1] in ['$', '0'..'9']) then
   begin
     Val(S, Index1, Error);
-    if (Error = 0) and (Index1 >= 32) and (Index1 <= 255) then
-      if onUtf8 then Result := SysToUTF8(Chr(Index1))
-      else Result := Chr(Index1);
+    if (Error = 0) then
+    begin
+      if not OnUTF8 and (Index1 >= 32) and (Index1 <= 255) then
+        Result := Chr(Index1)
+      else
+        Result := UnicodeToUTF8(Index1);
+    end;
   end else
   begin
     Index1 := 0;
@@ -5314,6 +5322,10 @@ procedure TIpHtml.AddWord(Value: string;
 var
   P : Integer;
 begin
+  {$IFDEF IP_LAZARUS}
+  if FDocCharset<>'' then
+    Value := ConvertEncoding(Value, FDocCharset, 'UTF-8');
+  {$ENDIF}
   Value:= EscapeToAnsi(Value);
   P := CharPos(ShyChar, Value);
   if P = 0 then
@@ -6154,11 +6166,30 @@ begin
 end;
 
 procedure TIpHtml.ParseMeta;
+{$IFDEF IP_LAZARUS}
+var
+  i,j: Integer;
+{$ENDIF}
 begin
   with TIpHtmlNodeMETA.Create(Parent) do begin
     HttpEquiv := FindAttribute(htmlAttrHTTP_EQUIV);
     Name := FindAttribute(htmlAttrNAME);
     Content := FindAttribute(htmlAttrCONTENT);
+    {$IFDEF IP_LAZARUS}
+    if not FHasBOM then begin
+      j := pos('charset=', lowercase(Content));
+      if j>0 then begin
+        j := j+8;
+        i := j;
+        while (j<=Length(Content)) do begin
+          if Content[j] in [' ',';','"',','] then
+            break;
+          inc(j);
+        end;
+        fDocCharset := copy(content, i, j-i);
+      end;
+    end;
+    {$ENDIF}
     Scheme := FindAttribute(htmlAttrSCHEME);
   end;
   NextToken;
@@ -6210,6 +6241,10 @@ begin
 end;
 
 procedure TIpHtml.ParseHead(Parent : TIpHtmlNode);
+{$IFDEF IP_LAZARUS}
+var
+  Lst: TStringList;
+{$ENDIF}
 begin
   {lead token is optional}
   if CurToken = IpHtmlTagHEAD then begin
@@ -6218,6 +6253,13 @@ begin
     if CurToken = IpHtmlTagHEADend then
       NextToken;
   end;
+  {$IFDEF IP_LAZARUS}
+  Lst := TStringList.Create;
+  GetSupportedEncodings(Lst);
+  if Lst.IndexOf(FDocCharset)=0 then
+    FDocCharset := '';
+  Lst.Free;
+  {$ENDIF}
 end;
 
 procedure TIpHtml.ParseFont(Parent : TIpHtmlNode;
@@ -8292,12 +8334,44 @@ begin
 end;
 
 procedure TIpHtml.Parse;
+{$IFDEF IP_LAZARUS}
+var
+  ch1,ch2,ch3: AnsiChar;
+{$ENDIF}
 begin
   Getmem(TokenStringBuf, 65536);                                       {!!.01}
   try                                                                  {!!.01}
     CharSP := 0;
     ListLevel := 0;
     StartPos := CharStream.Position;
+    {$IFDEF IP_LAZARUS}
+    FDocCharset := 'ISO-8859-1';
+    FHasBOM := false;
+    Ch1 := GetChar;
+    Ch2 := GetChar;
+    if (Ch1=#$FE) and (Ch2=#$FF) then begin
+      FDocCharset := 'UCS-2BE';
+      raise Exception.CreateFmt('%s document encoding not supported!',[FDocCharset]);
+    end else
+    if (Ch1=#$FF) and (ch2=#$FE) then begin
+      FDocCharset := 'UCS-2LE';
+      raise Exception.CreateFmt('%s document encoding not supported!',[FDocCharset]);
+    end else
+    if (Ch1=#$EF) and (ch2=#$BB) then begin
+      Ch3 := GetChar;
+      if Ch3=#$BF then begin
+        FDocCharset := 'UTF-8';
+        FHasBOM := true;
+      end else begin
+        PutChar(Ch3);
+        PutChar(Ch2);
+        PutChar(Ch1);
+      end;
+    end else begin
+      PutChar(Ch2);
+      PutChar(Ch1);
+    end;
+    {$ENDIF}
     repeat
       NextToken;
     until CurToken in [IpHtmlTagHtml, IpHtmlTagFRAMESET, IpHtmlTagEOF];
