@@ -727,7 +727,10 @@ begin
     // deselect all items first
     Windows.SendMessage(Handle, LB_SETSEL, Windows.WParam(false), -1);
     if AIndex >= 0 then
+    begin
       Windows.SendMessage(Handle, LB_SETSEL, Windows.WParam(true), Windows.LParam(AIndex));
+      Windows.SendMessage(Handle, LB_SETCARETINDEX, Windows.WParam(AIndex), 0);
+    end;
   end else
     Windows.SendMessage(Handle, LB_SETCURSEL, Windows.WParam(AIndex), 0);
 end;
