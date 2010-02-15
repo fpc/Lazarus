@@ -1510,10 +1510,12 @@ begin
 end;
 
 procedure TLResourceList.Sort;
+{$IFNDEF DisableChecks}
 var
   i: Integer;
   r1: TLResource;
   r2: TLResource;
+{$ENDIF}
 begin
   if FSortedCount = FList.Count then
     exit;
@@ -1524,15 +1526,15 @@ begin
   Merge(FList, FMergeList, 0, FSortedCount, FList.Count - 1);
   FSortedCount := FList.Count;
   // check for doubles
+  {$IFNDEF DisableChecks}
   for i:=0 to FList.Count-2 do
   begin
     r1:=TLResource(FList[i]);
     r2:=TLResource(FList[i+1]);
-    {$IFNDEF DisableChecks}
     if (AnsiCompareText(r1.Name,r2.Name)=0) and (r1.ValueType=r2.ValueType) then
       DebugLn(['TLResourceList.Sort ',i,' DUPLICATE RESOURCE FOUND: ',r1.Name,':',r1.ValueType]);
-    {$ENDIF}
   end;
+  {$ENDIF}
 end;
 
 procedure TLResourceList.MergeSort(List, MergeList: TList; Pos1, Pos2: integer);

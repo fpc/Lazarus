@@ -194,10 +194,12 @@ const
     'assdfUncomputable',
     'assdfValid'
     );}
+  {$IFNDEF DisableChecks}
   AutoSizeSideDistDirectionNames: array[TAutoSizeSideDistDirection] of shortstring = (
     'assddLeftTop',
     'assddRightBottom'
     );
+  {$ENDIF}
 
 function CompareAutoSizeCtrlDatas(Data1, Data2: Pointer): integer;
 var
