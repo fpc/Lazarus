@@ -37,7 +37,7 @@ uses
   // Free Pascal
   Classes, SysUtils, Types,
   // Widgetset
-  CarbonDef, CarbonGDIObjects,
+  CarbonDef, CarbonGDIObjects, CarbonInt,
   // LCL
   LCLType, LCLIntf, LCLProc, Graphics, ExtCtrls, Forms;
 
@@ -57,6 +57,7 @@ type
     FVisibleState: Boolean;
     FRespondToFocus: Boolean;
     FCaretCS: System.PRTLCriticalSection;
+    FWidgetSetReleased: Boolean;
     procedure SetPos(const Value: TPoint);
     procedure UpdateCall(Data: PtrInt);
   protected
@@ -94,6 +95,8 @@ procedure SetCarbonCaretRespondToFocus(Value: Boolean);
 function DestroyCaret: Boolean;
 procedure DrawCaret;
 procedure DestroyGlobalCaret;
+//todo: make a better solution for the Widgetset released before GlobalCaret
+procedure CaretWidgetSetReleased;
 
 implementation
 
@@ -298,7 +301,7 @@ end;
 
 function TEmulatedCaret.DestroyCaret: Boolean;
 begin
-  FTimer.Enabled := False;
+  if FTimer<>nil then FTimer.Enabled := False;
   FVisible := False;
   FVisibleRealized := False;
   FVisibleState := False;
@@ -420,7 +423,7 @@ procedure TEmulatedCaret.UpdateCaret;
 var
   R: TRect;
 begin
-  if (FWidget = nil) then Exit;
+  if (FWidget = nil) or FWidgetSetReleased then Exit;
   if FWidget.Painting then Exit;
   if not IsValid then Exit;
 
@@ -442,8 +445,16 @@ begin
   UpdateCaret;
 end;
 
-finalization
+procedure CaretWidgetSetReleased;
+begin
+  if Assigned(GlobalCaret) then begin
+    GlobalCaret.fTimer.Free;
+    GlobalCaret.fTimer:=nil;
+    GlobalCaret.FWidgetSetReleased:=True;
+  end;
+end;
 
+finalization
   DestroyGlobalCaret;
 
 

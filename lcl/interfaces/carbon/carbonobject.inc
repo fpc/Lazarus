@@ -579,6 +579,8 @@ end;
  ------------------------------------------------------------------------------}
 destructor TCarbonWidgetSet.Destroy;
 begin
+  CaretWidgetSetReleased;
+
   FreeAndNil(FTimerMap);
   DisposeAEEventHandlerUPP(FOpenEventHandlerUPP);
   DisposeAEEventHandlerUPP(FQuitEventHandlerUPP);
