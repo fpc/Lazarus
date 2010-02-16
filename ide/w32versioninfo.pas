@@ -51,11 +51,13 @@ type
     function GetValues(Key: string): string;
     procedure SetValues(Key: string; const AValue: string);
   protected
-    function KeyToIndex(const aKey: String): Integer;
     procedure DoModified;
+    function KeyToIndex(const aKey: String): Integer;
   public
     constructor Create(const aName: string); reintroduce;
     procedure Add(const aKey, aValue: string); reintroduce;
+    procedure AddDefault;
+    procedure AddRequired;
     procedure Clear; reintroduce;
     procedure Delete(const aIndex: integer); overload; reintroduce;
     procedure Delete(const aKey: string); overload; reintroduce;
@@ -433,6 +435,7 @@ begin
       StringTable.Clear;
       for i := 0 to Node.Attributes.Count - 1 do
         StringTable[Node.Attributes[i].NodeName] := Node.Attributes[i].NodeValue;
+      StringTable.AddRequired;
     end
     else
     begin
@@ -598,6 +601,22 @@ begin
   DoModified;
 end;
 
+procedure TProjectVersionStringTable.AddDefault;
+begin
+  Add('Comments', '');
+  Add('CompanyName', '');
+  Add('FileDescription', '');
+  Add('FileVersion', '');
+  Add('InternalName', '');
+  Add('LegalCopyright', '');
+  Add('LegalTrademarks', '');
+  Add('OriginalFilename', '');
+  // - PrivateBuild
+  Add('ProductName', '');
+  Add('ProductVersion', '');
+  // - SpecialBuild
+end;
+
 function TProjectVersionStringTable.KeyToIndex(const aKey: String): Integer;
 var
   i : integer;
@@ -617,25 +636,32 @@ end;
 constructor TProjectVersionStringTable.Create(const aName: string);
 begin
   inherited Create(aName);
-
-  Add('Comments', '');
-  Add('CompanyName', '');
-  Add('FileDescription', '');
-  Add('FileVersion', '');
-  Add('InternalName', '');
-  Add('LegalCopyright', '');
-  Add('LegalTrademarks', '');
-  Add('OriginalFilename', '');
-  // - PrivateBuild
-  Add('ProductName', '');
-  Add('ProductVersion', '');
-  // - SpecialBuild
+  AddDefault;
 end;
 
 procedure TProjectVersionStringTable.Add(const aKey, aValue: string);
 begin
   inherited Add(aKey, aValue);
   DoModified;
+end;
+
+procedure TProjectVersionStringTable.AddRequired;
+const
+  RequiredFields: array[0..6] of String = (
+    'CompanyName',
+    'FileDescription',
+    'FileVersion',
+    'InternalName',
+    'OriginalFilename',
+    'ProductName',
+    'ProductVersion'
+  );
+var
+  i: Integer;
+begin
+  for i := Low(RequiredFields) to High(RequiredFields) do
+    if KeyToIndex(RequiredFields[i]) = -1 then
+      Add(RequiredFields[i], '');
 end;
 
 procedure TProjectVersionStringTable.Clear;
