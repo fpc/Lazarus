@@ -92,9 +92,9 @@ type
     property AutoIncrementBuild: boolean read FAutoIncrementBuild
       write SetAutoIncrementBuild;
 
-    property VersionNr: integer index 0 read GetVersion write SetVersion;
-    property MajorRevNr: integer index 1 read GetVersion write SetVersion;
-    property MinorRevNr: integer index 2 read GetVersion write SetVersion;
+    property MajorVersionNr: integer index 0 read GetVersion write SetVersion;
+    property MinorVersionNr: integer index 1 read GetVersion write SetVersion;
+    property RevisionNr: integer index 2 read GetVersion write SetVersion;
     property BuildNr: integer index 3 read GetVersion write SetVersion;
 
     property HexLang: string read FHexLang write SetHexLang;
@@ -369,8 +369,8 @@ begin
     st.Add('Comments', Utf8ToAnsi(CommentsString));
     st.Add('CompanyName', Utf8ToAnsi(CompanyString));
     st.Add('FileDescription', Utf8ToAnsi(DescriptionString));
-    st.Add('FileVersion', IntToStr(VersionNr) + '.' + IntToStr(MajorRevNr) +
-      '.' + IntToStr(MinorRevNr) + '.' + IntToStr(BuildNr));
+    st.Add('FileVersion', IntToStr(MajorVersionNr) + '.' + IntToStr(MinorVersionNr) +
+      '.' + IntToStr(RevisionNr) + '.' + IntToStr(BuildNr));
     st.Add('InternalName', Utf8ToAnsi(InternalNameString));
     st.Add('LegalCopyright', Utf8ToAnsi(CopyrightString));
     st.Add('LegalTrademarks', Utf8ToAnsi(TrademarksString));
@@ -394,10 +394,10 @@ begin
     SetDeleteValue(Path + 'VersionInfo/UseVersionInfo/Value', UseVersionInfo, False);
     SetDeleteValue(Path + 'VersionInfo/AutoIncrementBuild/Value',
       AutoIncrementBuild, False);
-    SetDeleteValue(Path + 'VersionInfo/CurrentVersionNr/Value', VersionNr, 0);
-    SetDeleteValue(Path + 'VersionInfo/CurrentMajorRevNr/Value', MajorRevNr, 0);
-    SetDeleteValue(Path + 'VersionInfo/CurrentMinorRevNr/Value', MinorRevNr, 0);
-    SetDeleteValue(Path + 'VersionInfo/CurrentBuildNr/Value', BuildNr, 0);
+    SetDeleteValue(Path + 'VersionInfo/MajorVersionNr/Value', MajorVersionNr, 0);
+    SetDeleteValue(Path + 'VersionInfo/MinorVersionNr/Value', MinorVersionNr, 0);
+    SetDeleteValue(Path + 'VersionInfo/RevisionNr/Value', RevisionNr, 0);
+    SetDeleteValue(Path + 'VersionInfo/BuildNr/Value', BuildNr, 0);
     SetDeleteValue(Path + 'VersionInfo/ProjectVersion/Value', ProductVersionString, '1.0.0.0');
     SetDeleteValue(Path + 'VersionInfo/Language/Value', HexLang, DefaultLanguage);
     SetDeleteValue(Path + 'VersionInfo/CharSet/Value', HexCharSet, DefaultCharset);
@@ -418,10 +418,16 @@ begin
   begin
     UseVersionInfo := GetValue(Path + 'VersionInfo/UseVersionInfo/Value', False);
     AutoIncrementBuild := GetValue(Path + 'VersionInfo/AutoIncrementBuild/Value', False);
-    VersionNr := GetValue(Path + 'VersionInfo/CurrentVersionNr/Value', 0);
-    MajorRevNr := GetValue(Path + 'VersionInfo/CurrentMajorRevNr/Value', 0);
-    MinorRevNr := GetValue(Path + 'VersionInfo/CurrentMinorRevNr/Value', 0);
-    BuildNr := GetValue(Path + 'VersionInfo/CurrentBuildNr/Value', 0);
+
+    MajorVersionNr := GetValue(Path + 'VersionInfo/CurrentVersionNr/Value',
+      GetValue(Path + 'VersionInfo/MajorVersionNr/Value', 0));
+    MinorVersionNr := GetValue(Path + 'VersionInfo/CurrentMajorRevNr/Value',
+      GetValue(Path + 'VersionInfo/MinorVersionNr/Value', 0));
+    RevisionNr := GetValue(Path + 'VersionInfo/CurrentMinorRevNr/Value',
+      GetValue(Path + 'VersionInfo/RevisionNr/Value', 0));
+    BuildNr := GetValue(Path + 'VersionInfo/CurrentBuildNr/Value',
+      GetValue(Path + 'VersionInfo/BuildNr/Value', 0));
+
     ProductVersionString := GetValue(Path + 'VersionInfo/ProjectVersion/Value', '1.0.0.0');
     HexLang := GetValue(Path + 'VersionInfo/Language/Value', DefaultLanguage);
     HexCharSet := GetValue(Path + 'VersionInfo/CharSet/Value', DefaultCharset);

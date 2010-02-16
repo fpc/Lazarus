@@ -1797,10 +1797,10 @@ resourcestring
   rsPOOutputDirectory = 'PO Output Directory:';
   rsIncludeVersionInfoInExecutable = 'Include Version Info in executable';
   rsVersionNumbering = 'Version numbering';
-  rsVersion = 'Version:';
-  rsMajorRevision = 'Major revision:';
-  rsMinorRevision = 'Minor revision:';
-  rsBuild = 'Build:';
+  rsMajorVersion = '&Major version:';
+  rsMinorVersion = 'Mi&nor version:';
+  rsRevision = '&Revision:';
+  rsBuild = '&Build:';
   rsAutomaticallyIncreaseBuildNumber = 'Automatically increase build number';
   rsLanguageOptions = 'Language options';
   rsLanguageSelection = 'Language selection:';

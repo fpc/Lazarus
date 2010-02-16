@@ -27,15 +27,15 @@ type
     LanguageSelectionComboBox: TComboBox;
     LanguageSelectionLabel: TLabel;
     LanguageSettingsGroupBox: TGroupBox;
-    MajorRevisionLabel: TLabel;
-    MajorRevisionSpinEdit: TSpinEdit;
-    MinorRevisionLabel: TLabel;
-    MinorRevisionSpinEdit: TSpinEdit;
+    MinorVersionLabel: TLabel;
+    MinorVersionSpinEdit: TSpinEdit;
+    RevisionLabel: TLabel;
+    RevisionSpinEdit: TSpinEdit;
     OtherInfoGroupBox: TGroupBox;
     UseVersionInfoCheckBox: TCheckBox;
     VersionInfoGroupBox: TGroupBox;
-    VersionLabel: TLabel;
-    VersionSpinEdit: TSpinEdit;
+    MajorVersionLabel: TLabel;
+    MajorVersionSpinEdit: TSpinEdit;
     procedure AdditionalInfoButtonClick(Sender: TObject);
     procedure UseVersionInfoCheckBoxChange(Sender: TObject);
   private
@@ -81,9 +81,9 @@ procedure TProjectVersionInfoOptionsFrame.Setup(ADialog: TAbstractOptionsEditorD
 begin
   UseVersionInfoCheckBox.Caption := rsIncludeVersionInfoInExecutable;
   VersionInfoGroupBox.Caption := rsVersionNumbering;
-  VersionLabel.Caption := rsVersion;
-  MajorRevisionLabel.Caption := rsMajorRevision;
-  MinorRevisionLabel.Caption := rsMinorRevision;
+  MajorVersionLabel.Caption := rsMajorVersion;
+  MinorVersionLabel.Caption := rsMinorVersion;
+  RevisionLabel.Caption := rsRevision;
   BuildLabel.Caption := rsBuild;
   AutomaticallyIncreaseBuildCheckBox.Caption := rsAutomaticallyIncreaseBuildNumber;
   LanguageSettingsGroupBox.Caption := rsLanguageOptions;
@@ -103,9 +103,9 @@ begin
   FVersionInfo := TProjectVersionInfo((AOptions as TProject).Resources[TProjectVersionInfo]);
 
   UseVersionInfoCheckBox.Checked := FVersionInfo.UseVersionInfo;
-  VersionSpinEdit.Value := FVersionInfo.VersionNr;
-  MajorRevisionSpinEdit.Value := FVersionInfo.MajorRevNr;
-  MinorRevisionSpinEdit.Value := FVersionInfo.MinorRevNr;
+  MajorVersionSpinEdit.Value := FVersionInfo.MajorVersionNr;
+  MinorVersionSpinEdit.Value := FVersionInfo.MinorVersionNr;
+  RevisionSpinEdit.Value := FVersionInfo.RevisionNr;
   BuildSpinEdit.Value := FVersionInfo.BuildNr;
 
   EnableVersionInfo(FVersionInfo.UseVersionInfo);
@@ -136,9 +136,9 @@ begin
   VersionInfo := TProjectVersionInfo((AOptions as TProject).Resources[TProjectVersionInfo]);
   VersionInfo.UseVersionInfo := UseVersionInfoCheckBox.Checked;
   VersionInfo.AutoIncrementBuild := AutomaticallyIncreaseBuildCheckBox.Checked;
-  VersionInfo.VersionNr := VersionSpinEdit.Value;
-  VersionInfo.MajorRevNr := MajorRevisionSpinEdit.Value;
-  VersionInfo.MinorRevNr := MinorRevisionSpinEdit.Value;
+  VersionInfo.MajorVersionNr := MajorVersionSpinEdit.Value;
+  VersionInfo.MinorVersionNr := MinorVersionSpinEdit.Value;
+  VersionInfo.RevisionNr := RevisionSpinEdit.Value;
   VersionInfo.BuildNr := BuildSpinEdit.Value;
   VersionInfo.DescriptionString := DescriptionEdit.Text;
   VersionInfo.CopyrightString := CopyrightEdit.Text;
