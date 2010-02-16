@@ -2187,7 +2187,7 @@ const
   END_VAR_SECTION: TTokenTypeSet =
     [ttVar, ttThreadVar, ttConst, ttLabel, ttResourceString, ttType,
     ttBegin, ttEnd, ttImplementation, ttInitialization,
-    ttProcedure, ttFunction, ttConstructor, ttDestructor, ttClass, ttAsm];
+    ttProcedure, ttFunction, ttOperator, ttConstructor, ttDestructor, ttClass, ttAsm];
 var
   leEndVarSection: TTokenTypeSet;
 begin
@@ -2201,7 +2201,7 @@ begin
   // VarSection -> VAR (VarDecl ';')...
   Recognise([ttVar, ttThreadvar]);
 
-  // can be enpty
+  // can be empty
   while not (fcTokenList.FirstSolidTokenType in leEndVarSection) do
   begin
     RecogniseVarDecl;
