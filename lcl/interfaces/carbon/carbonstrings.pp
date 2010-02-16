@@ -68,6 +68,7 @@ type
     procedure Clear; override;
     procedure Delete(Index: Integer); override;
     procedure Sort; override;
+    procedure Exchange(Index1, Index2: Integer); override;
   public
     property Owner: TCarbonListBox read FOwner;
   end;
@@ -297,6 +298,16 @@ begin
   inherited Sort;
 
   FOwner.UpdateItems;
+end;
+
+procedure TCarbonListBoxStrings.Exchange(Index1, Index2: Integer);
+begin
+  inherited Exchange(Index1, Index2);
+  if Assigned(FOwner) then
+  begin
+    FOwner.UpdateItem(Index1);
+    FOwner.UpdateItem(Index2);
+  end;
 end;
 
 { TCarbonMemoStrings }
