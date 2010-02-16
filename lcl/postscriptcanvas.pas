@@ -165,6 +165,7 @@ Type
                       const Style: TGraphicsBevelCut); override;
     procedure Pie(EllipseX1,EllipseY1,EllipseX2,EllipseY2,
                   StartX,StartY,EndX,EndY: Integer); override;
+    procedure SetPixel(X,Y: Integer; Value: TColor); override;
     procedure TextRect(ARect: TRect; X, Y: integer; const Text: string;
                        const Style: TTextStyle); override;
 
@@ -1944,7 +1945,7 @@ begin
   UpdateFont;
 
   FPSUnicode.Font:=MappedFontName;
-  FPSUnicode.FontSize:=Font.Size;
+  FPSUnicode.FontSize:=Abs(Font.Size);
   FPSUnicode.FontStyle:=FontStyleToInt(Font.Style);
 
   //The Y origin for ps text it's Left bottom corner
@@ -1988,8 +1989,8 @@ begin
   Result.cY := 0;
   if Text='' then Exit;
   RequiredState([csHandleValid, csFontValid]);
-  Result.cY:=round((Font.Size/72)*YDPI); // points to inches and then to pixels
-
+  Result.cY:=round((Abs(Font.Size)/72)*YDPI); // points to inches and then to pixels
+  // Abs is not right - should also take internal leading into account
   FontName:=MappedFontName;
   IndexFont:=0; //By default, use Courier metrics
   for i:=0 to High(cFontPSMetrics) do
@@ -2007,7 +2008,7 @@ begin
     if (c in [#32..#255]) then
       Inc(Result.cX,cFontPSMetrics[IndexFont].Widths[Ord(c)]);
   end;
-  Result.cX:=Round(Result.cX*(Font.Size/72)*0.001*XDPI);
+  Result.cX:=Round(Result.cX*Abs(Font.Size/72)*0.001*XDPI);
 end;
 
 //Draw an Picture
@@ -2149,6 +2150,11 @@ procedure TPostScriptPrinterCanvas.Pie(EllipseX1, EllipseY1, EllipseX2,
   EllipseY2, StartX, StartY, EndX, EndY: Integer);
 begin
 //Not implemented
+end;
+
+procedure TPostScriptPrinterCanvas.SetPixel(X, Y: Integer; Value: TColor);
+begin
+  //Not implemented
 end;
 
 procedure TPostScriptPrinterCanvas.TextRect(ARect: TRect; X, Y: integer;
