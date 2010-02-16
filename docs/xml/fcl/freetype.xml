@@ -1,0 +1,885 @@
+<?xml version="1.0"?>
+<fpdoc-descriptions>
+  <package name="lazde">
+    <!--
+  ====================================================================
+    freetype
+  ====================================================================
+-->
+    <module name="freetype">
+      <short/>
+      <descr/>
+      <!-- class Visibility: default -->
+      <element name="FreeTypeException">
+        <short/>
+        <descr/>
+        <errors/>
+        <seealso/>
+      </element>
+      <!-- enumeration type Visibility: default -->
+      <element name="TBitmapType">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+      <!-- enumeration value Visibility: default -->
+      <element name="TBitmapType.btBlackWhite">
+        <short/>
+      </element>
+      <!-- enumeration value Visibility: default -->
+      <element name="TBitmapType.bt256Gray">
+        <short/>
+      </element>
+      <!-- record type Visibility: default -->
+      <element name="TFontBitmap">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+      <!-- variable Visibility: default -->
+      <element name="TFontBitmap.height">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+      <!-- variable Visibility: default -->
+      <element name="TFontBitmap.width">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+      <!-- variable Visibility: default -->
+      <element name="TFontBitmap.pitch">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+      <!-- variable Visibility: default -->
+      <element name="TFontBitmap.x">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+      <!-- variable Visibility: default -->
+      <element name="TFontBitmap.y">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+      <!-- variable Visibility: default -->
+      <element name="TFontBitmap.advanceX">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+      <!-- variable Visibility: default -->
+      <element name="TFontBitmap.advanceY">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+      <!-- variable Visibility: default -->
+      <element name="TFontBitmap.data">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+      <!-- pointer type Visibility: default -->
+      <element name="PFontBitmap">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+      <!-- class Visibility: default -->
+      <element name="TStringBitMaps">
+        <short/>
+        <descr/>
+        <errors/>
+        <seealso/>
+      </element>
+      <!-- variable Visibility: private -->
+      <element name="TStringBitMaps.FList">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+      <!-- variable Visibility: private -->
+      <element name="TStringBitMaps.FBounds">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+      <!-- variable Visibility: private -->
+      <element name="TStringBitMaps.FText">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+      <!-- variable Visibility: private -->
+      <element name="TStringBitMaps.FMode">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+      <!-- function Visibility: private -->
+      <element name="TStringBitMaps.GetCount">
+        <short/>
+        <descr/>
+        <errors/>
+        <seealso/>
+      </element>
+      <!-- function result Visibility: default -->
+      <element name="TStringBitMaps.GetCount.Result">
+        <short/>
+      </element>
+      <!-- function Visibility: private -->
+      <element name="TStringBitMaps.GetBitmap">
+        <short/>
+        <descr/>
+        <errors/>
+        <seealso/>
+      </element>
+      <!-- function result Visibility: default -->
+      <element name="TStringBitMaps.GetBitmap.Result">
+        <short/>
+      </element>
+      <!-- argument Visibility: default -->
+      <element name="TStringBitMaps.GetBitmap.index">
+        <short/>
+      </element>
+      <!-- procedure Visibility: private -->
+      <element name="TStringBitMaps.CalculateGlobals">
+        <short/>
+        <descr/>
+        <errors/>
+        <seealso/>
+      </element>
+      <!-- constructor Visibility: public -->
+      <element name="TStringBitMaps.Create">
+        <short/>
+        <descr/>
+        <errors/>
+        <seealso/>
+      </element>
+      <!-- argument Visibility: default -->
+      <element name="TStringBitMaps.Create.ACount">
+        <short/>
+      </element>
+      <!-- destructor Visibility: public -->
+      <element name="TStringBitMaps.destroy">
+        <short/>
+        <descr/>
+        <errors/>
+        <seealso/>
+      </element>
+      <!-- procedure Visibility: public -->
+      <element name="TStringBitMaps.GetBoundRect">
+        <short/>
+        <descr/>
+        <errors/>
+        <seealso/>
+      </element>
+      <!-- argument Visibility: default -->
+      <element name="TStringBitMaps.GetBoundRect.aRect">
+        <short/>
+      </element>
+      <!-- property Visibility: public -->
+      <element name="TStringBitMaps.Text">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+      <!-- property Visibility: public -->
+      <element name="TStringBitMaps.Mode">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+      <!-- property Visibility: public -->
+      <element name="TStringBitMaps.Count">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+      <!-- property Visibility: public -->
+      <element name="TStringBitMaps.Bitmaps">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+      <!-- argument Visibility: default -->
+      <element name="TStringBitMaps.Bitmaps.index">
+        <short/>
+      </element>
+      <!-- class Visibility: default -->
+      <element name="TFontManager">
+        <short/>
+        <descr/>
+        <errors/>
+        <seealso/>
+      </element>
+      <!-- pointer type Visibility: default -->
+      <element name="PMgrGlyph">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+      <!-- record type Visibility: default -->
+      <element name="TMgrGlyph">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+      <!-- variable Visibility: default -->
+      <element name="TMgrGlyph.Character">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+      <!-- variable Visibility: default -->
+      <element name="TMgrGlyph.GlyphIndex">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+      <!-- variable Visibility: default -->
+      <element name="TMgrGlyph.Glyph">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+      <!-- pointer type Visibility: default -->
+      <element name="PMgrSize">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+      <!-- record type Visibility: default -->
+      <element name="TMgrSize">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+      <!-- variable Visibility: default -->
+      <element name="TMgrSize.Resolution">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+      <!-- variable Visibility: default -->
+      <element name="TMgrSize.Size">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+      <!-- variable Visibility: default -->
+      <element name="TMgrSize.Glyphs">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+      <!-- class Visibility: default -->
+      <element name="TMgrFont">
+        <short/>
+        <descr/>
+        <errors/>
+        <seealso/>
+      </element>
+      <!-- variable Visibility: private -->
+      <element name="TMgrFont.Mgr">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+      <!-- variable Visibility: private -->
+      <element name="TMgrFont.Font">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+      <!-- variable Visibility: private -->
+      <element name="TMgrFont.FSizes">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+      <!-- variable Visibility: private -->
+      <element name="TMgrFont.Filename">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+      <!-- variable Visibility: private -->
+      <element name="TMgrFont.LastSize">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+      <!-- procedure Visibility: private -->
+      <element name="TMgrFont.FreeGlyphs">
+        <short/>
+        <descr/>
+        <errors/>
+        <seealso/>
+      </element>
+      <!-- constructor Visibility: public -->
+      <element name="TMgrFont.Create">
+        <short/>
+        <descr/>
+        <errors/>
+        <seealso/>
+      </element>
+      <!-- argument Visibility: default -->
+      <element name="TMgrFont.Create.aMgr">
+        <short/>
+      </element>
+      <!-- argument Visibility: default -->
+      <element name="TMgrFont.Create.afilename">
+        <short/>
+      </element>
+      <!-- argument Visibility: default -->
+      <element name="TMgrFont.Create.anindex">
+        <short/>
+      </element>
+      <!-- destructor Visibility: public -->
+      <element name="TMgrFont.destroy">
+        <short/>
+        <descr/>
+        <errors/>
+        <seealso/>
+      </element>
+      <!-- variable Visibility: private -->
+      <element name="TFontManager.FTLib">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+      <!-- variable Visibility: private -->
+      <element name="TFontManager.FList">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+      <!-- variable Visibility: private -->
+      <element name="TFontManager.FPaths">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+      <!-- variable Visibility: private -->
+      <element name="TFontManager.FExtention">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+      <!-- variable Visibility: private -->
+      <element name="TFontManager.FResolution">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+      <!-- variable Visibility: private -->
+      <element name="TFontManager.CurFont">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+      <!-- variable Visibility: private -->
+      <element name="TFontManager.CurSize">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+      <!-- variable Visibility: private -->
+      <element name="TFontManager.CurRenderMode">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+      <!-- variable Visibility: private -->
+      <element name="TFontManager.UseKerning">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+      <!-- function Visibility: private -->
+      <element name="TFontManager.GetSearchPath">
+        <short/>
+        <descr/>
+        <errors/>
+        <seealso/>
+      </element>
+      <!-- function result Visibility: default -->
+      <element name="TFontManager.GetSearchPath.Result">
+        <short/>
+      </element>
+      <!-- procedure Visibility: private -->
+      <element name="TFontManager.SetSearchPath">
+        <short/>
+        <descr/>
+        <errors/>
+        <seealso/>
+      </element>
+      <!-- argument Visibility: default -->
+      <element name="TFontManager.SetSearchPath.AValue">
+        <short/>
+      </element>
+      <!-- procedure Visibility: private -->
+      <element name="TFontManager.SetExtention">
+        <short/>
+        <descr/>
+        <errors/>
+        <seealso/>
+      </element>
+      <!-- argument Visibility: default -->
+      <element name="TFontManager.SetExtention.AValue">
+        <short/>
+      </element>
+      <!-- function Visibility: protected -->
+      <element name="TFontManager.GetFontId">
+        <short/>
+        <descr/>
+        <errors/>
+        <seealso/>
+      </element>
+      <!-- function result Visibility: default -->
+      <element name="TFontManager.GetFontId.Result">
+        <short/>
+      </element>
+      <!-- argument Visibility: default -->
+      <element name="TFontManager.GetFontId.afilename">
+        <short/>
+      </element>
+      <!-- argument Visibility: default -->
+      <element name="TFontManager.GetFontId.anindex">
+        <short/>
+      </element>
+      <!-- function Visibility: protected -->
+      <element name="TFontManager.CreateFont">
+        <short/>
+        <descr/>
+        <errors/>
+        <seealso/>
+      </element>
+      <!-- function result Visibility: default -->
+      <element name="TFontManager.CreateFont.Result">
+        <short/>
+      </element>
+      <!-- argument Visibility: default -->
+      <element name="TFontManager.CreateFont.afilename">
+        <short/>
+      </element>
+      <!-- argument Visibility: default -->
+      <element name="TFontManager.CreateFont.anindex">
+        <short/>
+      </element>
+      <!-- function Visibility: protected -->
+      <element name="TFontManager.SearchFont">
+        <short/>
+        <descr/>
+        <errors/>
+        <seealso/>
+      </element>
+      <!-- function result Visibility: default -->
+      <element name="TFontManager.SearchFont.Result">
+        <short/>
+      </element>
+      <!-- argument Visibility: default -->
+      <element name="TFontManager.SearchFont.afilename">
+        <short/>
+      </element>
+      <!-- function Visibility: protected -->
+      <element name="TFontManager.GetFont">
+        <short/>
+        <descr/>
+        <errors/>
+        <seealso/>
+      </element>
+      <!-- function result Visibility: default -->
+      <element name="TFontManager.GetFont.Result">
+        <short/>
+      </element>
+      <!-- argument Visibility: default -->
+      <element name="TFontManager.GetFont.FontID">
+        <short/>
+      </element>
+      <!-- procedure Visibility: protected -->
+      <element name="TFontManager.GetSize">
+        <short/>
+        <descr/>
+        <errors/>
+        <seealso/>
+      </element>
+      <!-- argument Visibility: default -->
+      <element name="TFontManager.GetSize.aSize">
+        <short/>
+      </element>
+      <!-- argument Visibility: default -->
+      <element name="TFontManager.GetSize.aResolution">
+        <short/>
+      </element>
+      <!-- function Visibility: protected -->
+      <element name="TFontManager.CreateSize">
+        <short/>
+        <descr/>
+        <errors/>
+        <seealso/>
+      </element>
+      <!-- function result Visibility: default -->
+      <element name="TFontManager.CreateSize.Result">
+        <short/>
+      </element>
+      <!-- argument Visibility: default -->
+      <element name="TFontManager.CreateSize.aSize">
+        <short/>
+      </element>
+      <!-- argument Visibility: default -->
+      <element name="TFontManager.CreateSize.aResolution">
+        <short/>
+      </element>
+      <!-- procedure Visibility: protected -->
+      <element name="TFontManager.SetPixelSize">
+        <short/>
+        <descr/>
+        <errors/>
+        <seealso/>
+      </element>
+      <!-- argument Visibility: default -->
+      <element name="TFontManager.SetPixelSize.aSize">
+        <short/>
+      </element>
+      <!-- argument Visibility: default -->
+      <element name="TFontManager.SetPixelSize.aResolution">
+        <short/>
+      </element>
+      <!-- function Visibility: protected -->
+      <element name="TFontManager.GetGlyph">
+        <short/>
+        <descr/>
+        <errors/>
+        <seealso/>
+      </element>
+      <!-- function result Visibility: default -->
+      <element name="TFontManager.GetGlyph.Result">
+        <short/>
+      </element>
+      <!-- argument Visibility: default -->
+      <element name="TFontManager.GetGlyph.c">
+        <short/>
+      </element>
+      <!-- function Visibility: protected -->
+      <element name="TFontManager.CreateGlyph">
+        <short/>
+        <descr/>
+        <errors/>
+        <seealso/>
+      </element>
+      <!-- function result Visibility: default -->
+      <element name="TFontManager.CreateGlyph.Result">
+        <short/>
+      </element>
+      <!-- argument Visibility: default -->
+      <element name="TFontManager.CreateGlyph.c">
+        <short/>
+      </element>
+      <!-- procedure Visibility: protected -->
+      <element name="TFontManager.MakeTransformation">
+        <short/>
+        <descr/>
+        <errors/>
+        <seealso/>
+      </element>
+      <!-- argument Visibility: default -->
+      <element name="TFontManager.MakeTransformation.angle">
+        <short/>
+      </element>
+      <!-- argument Visibility: default -->
+      <element name="TFontManager.MakeTransformation.Transformation">
+        <short/>
+      </element>
+      <!-- procedure Visibility: protected -->
+      <element name="TFontManager.InitMakeString">
+        <short/>
+        <descr/>
+        <errors/>
+        <seealso/>
+      </element>
+      <!-- argument Visibility: default -->
+      <element name="TFontManager.InitMakeString.FontID">
+        <short/>
+      </element>
+      <!-- argument Visibility: default -->
+      <element name="TFontManager.InitMakeString.Size">
+        <short/>
+      </element>
+      <!-- function Visibility: protected -->
+      <element name="TFontManager.MakeString">
+        <short/>
+        <descr/>
+        <errors/>
+        <seealso/>
+      </element>
+      <!-- function result Visibility: default -->
+      <element name="TFontManager.MakeString.Result">
+        <short/>
+      </element>
+      <!-- argument Visibility: default -->
+      <element name="TFontManager.MakeString.FontId">
+        <short/>
+      </element>
+      <!-- argument Visibility: default -->
+      <element name="TFontManager.MakeString.Text">
+        <short/>
+      </element>
+      <!-- argument Visibility: default -->
+      <element name="TFontManager.MakeString.size">
+        <short/>
+      </element>
+      <!-- argument Visibility: default -->
+      <element name="TFontManager.MakeString.angle">
+        <short/>
+      </element>
+      <!-- constructor Visibility: public -->
+      <element name="TFontManager.Create">
+        <short/>
+        <descr/>
+        <errors/>
+        <seealso/>
+      </element>
+      <!-- destructor Visibility: public -->
+      <element name="TFontManager.destroy">
+        <short/>
+        <descr/>
+        <errors/>
+        <seealso/>
+      </element>
+      <!-- function Visibility: public -->
+      <element name="TFontManager.RequestFont">
+        <short/>
+        <descr/>
+        <errors/>
+        <seealso/>
+      </element>
+      <!-- function result Visibility: default -->
+      <element name="TFontManager.RequestFont.Result">
+        <short/>
+      </element>
+      <!-- argument Visibility: default -->
+      <element name="TFontManager.RequestFont.afilename">
+        <short/>
+      </element>
+      <!-- argument Visibility: default -->
+      <element name="TFontManager.RequestFont.anindex">
+        <short/>
+      </element>
+      <!-- function Visibility: public -->
+      <element name="TFontManager.GetFreeTypeFont">
+        <short/>
+        <descr/>
+        <errors/>
+        <seealso/>
+      </element>
+      <!-- function result Visibility: default -->
+      <element name="TFontManager.GetFreeTypeFont.Result">
+        <short/>
+      </element>
+      <!-- argument Visibility: default -->
+      <element name="TFontManager.GetFreeTypeFont.aFontID">
+        <short/>
+      </element>
+      <!-- function Visibility: public -->
+      <element name="TFontManager.GetString">
+        <short/>
+        <descr/>
+        <errors/>
+        <seealso/>
+      </element>
+      <!-- function result Visibility: default -->
+      <element name="TFontManager.GetString.Result">
+        <short/>
+      </element>
+      <!-- argument Visibility: default -->
+      <element name="TFontManager.GetString.FontId">
+        <short/>
+      </element>
+      <!-- argument Visibility: default -->
+      <element name="TFontManager.GetString.Text">
+        <short/>
+      </element>
+      <!-- argument Visibility: default -->
+      <element name="TFontManager.GetString.size">
+        <short/>
+      </element>
+      <!-- argument Visibility: default -->
+      <element name="TFontManager.GetString.angle">
+        <short/>
+      </element>
+      <!-- function Visibility: public -->
+      <element name="TFontManager.GetStringGray">
+        <short/>
+        <descr/>
+        <errors/>
+        <seealso/>
+      </element>
+      <!-- function result Visibility: default -->
+      <element name="TFontManager.GetStringGray.Result">
+        <short/>
+      </element>
+      <!-- argument Visibility: default -->
+      <element name="TFontManager.GetStringGray.FontId">
+        <short/>
+      </element>
+      <!-- argument Visibility: default -->
+      <element name="TFontManager.GetStringGray.Text">
+        <short/>
+      </element>
+      <!-- argument Visibility: default -->
+      <element name="TFontManager.GetStringGray.size">
+        <short/>
+      </element>
+      <!-- argument Visibility: default -->
+      <element name="TFontManager.GetStringGray.angle">
+        <short/>
+      </element>
+      <!-- property Visibility: public -->
+      <element name="TFontManager.SearchPath">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+      <!-- property Visibility: public -->
+      <element name="TFontManager.DefaultExtention">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+      <!-- property Visibility: public -->
+      <element name="TFontManager.Resolution">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+      <!-- constant Visibility: default -->
+      <element name="sErrErrorsInCleanup">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+      <!-- constant Visibility: default -->
+      <element name="sErrFontFileNotFound">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+      <!-- constant Visibility: default -->
+      <element name="sErrFreeType">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+      <!-- constant Visibility: default -->
+      <element name="sInitializing">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+      <!-- constant Visibility: default -->
+      <element name="sDestroying">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+      <!-- constant Visibility: default -->
+      <element name="sErrErrorInCleanup">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+      <!-- constant Visibility: default -->
+      <element name="sErrSetPixelSize">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+      <!-- constant Visibility: default -->
+      <element name="sErrSetCharSize">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+      <!-- constant Visibility: default -->
+      <element name="sErrLoadingGlyph">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+      <!-- constant Visibility: default -->
+      <element name="sErrKerning">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+      <!-- constant Visibility: default -->
+      <element name="sErrMakingString1">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+      <!-- constant Visibility: default -->
+      <element name="sErrMakingString2">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+      <!-- constant Visibility: default -->
+      <element name="sErrMakingString3">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+      <!-- constant Visibility: default -->
+      <element name="sErrMakingString4">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+      <!-- constant Visibility: default -->
+      <element name="sErrLoadFont">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+      <!-- constant Visibility: default -->
+      <element name="sErrInitializing">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+      <!-- constant Visibility: default -->
+      <element name="sErrDestroying">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+      <!-- constant Visibility: default -->
+      <element name="DefaultFontExtention">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+      <!-- constant Visibility: default -->
+      <element name="DefaultSearchPath">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+      <!-- constant Visibility: default -->
+      <element name="DefaultResolution">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+    </module>
+    <!-- freetype -->
+  </package>
+</fpdoc-descriptions>

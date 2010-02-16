@@ -1,0 +1,111 @@
+<?xml version="1.0"?>
+<fpdoc-descriptions>
+  <package name="lazde">
+    <!--
+  ====================================================================
+    FPWriteJPEG
+  ====================================================================
+-->
+    <module name="FPWriteJPEG">
+      <short/>
+      <descr/>
+      <!-- range type Visibility: default -->
+      <element name="TFPJPEGCompressionQuality">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+      <!-- class Visibility: default -->
+      <element name="TFPWriterJPEG">
+        <short/>
+        <descr/>
+        <errors/>
+        <seealso/>
+      </element>
+      <!-- variable Visibility: private -->
+      <element name="TFPWriterJPEG.FGrayscale">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+      <!-- variable Visibility: private -->
+      <element name="TFPWriterJPEG.FInfo">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+      <!-- variable Visibility: private -->
+      <element name="TFPWriterJPEG.FError">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+      <!-- variable Visibility: private -->
+      <element name="TFPWriterJPEG.FProgressiveEncoding">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+      <!-- variable Visibility: private -->
+      <element name="TFPWriterJPEG.FQuality">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+      <!-- variable Visibility: private -->
+      <element name="TFPWriterJPEG.FProgressMgr">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+      <!-- procedure Visibility: protected -->
+      <element name="TFPWriterJPEG.InternalWrite">
+        <short/>
+        <descr/>
+        <errors/>
+        <seealso/>
+      </element>
+      <!-- argument Visibility: default -->
+      <element name="TFPWriterJPEG.InternalWrite.Str">
+        <short/>
+      </element>
+      <!-- argument Visibility: default -->
+      <element name="TFPWriterJPEG.InternalWrite.Img">
+        <short/>
+      </element>
+      <!-- constructor Visibility: public -->
+      <element name="TFPWriterJPEG.Create">
+        <short/>
+        <descr/>
+        <errors/>
+        <seealso/>
+      </element>
+      <!-- destructor Visibility: public -->
+      <element name="TFPWriterJPEG.Destroy">
+        <short/>
+        <descr/>
+        <errors/>
+        <seealso/>
+      </element>
+      <!-- property Visibility: public -->
+      <element name="TFPWriterJPEG.CompressionQuality">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+      <!-- property Visibility: public -->
+      <element name="TFPWriterJPEG.ProgressiveEncoding">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+      <!-- property Visibility: public -->
+      <element name="TFPWriterJPEG.GrayScale">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+    </module>
+    <!-- FPWriteJPEG -->
+  </package>
+</fpdoc-descriptions>

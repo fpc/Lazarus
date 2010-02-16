@@ -1,0 +1,631 @@
+<?xml version="1.0"?>
+<fpdoc-descriptions>
+  <package name="lazde">
+    <!--
+  ====================================================================
+    Ellipses
+  ====================================================================
+-->
+    <module name="Ellipses">
+      <short/>
+      <descr/>
+      <!-- procedure Visibility: default -->
+      <element name="DrawSolidEllipse">
+        <short/>
+        <descr/>
+        <errors/>
+        <seealso/>
+      </element>
+      <!-- argument Visibility: default -->
+      <element name="DrawSolidEllipse.Canv">
+        <short/>
+      </element>
+      <!-- argument Visibility: default -->
+      <element name="DrawSolidEllipse.Bounds">
+        <short/>
+      </element>
+      <!-- argument Visibility: default -->
+      <element name="DrawSolidEllipse.c">
+        <short/>
+      </element>
+      <!-- argument Visibility: default -->
+      <element name="DrawSolidEllipse.Width">
+        <short/>
+      </element>
+      <!-- procedure Visibility: default -->
+      <element name="DrawPatternEllipse">
+        <short/>
+        <descr/>
+        <errors/>
+        <seealso/>
+      </element>
+      <!-- argument Visibility: default -->
+      <element name="DrawPatternEllipse.Canv">
+        <short/>
+      </element>
+      <!-- argument Visibility: default -->
+      <element name="DrawPatternEllipse.Bounds">
+        <short/>
+      </element>
+      <!-- argument Visibility: default -->
+      <element name="DrawPatternEllipse.Pattern">
+        <short/>
+      </element>
+      <!-- argument Visibility: default -->
+      <element name="DrawPatternEllipse.c">
+        <short/>
+      </element>
+      <!-- procedure Visibility: default -->
+      <element name="FillEllipseColor">
+        <short/>
+        <descr/>
+        <errors/>
+        <seealso/>
+      </element>
+      <!-- argument Visibility: default -->
+      <element name="FillEllipseColor.Canv">
+        <short/>
+      </element>
+      <!-- argument Visibility: default -->
+      <element name="FillEllipseColor.Bounds">
+        <short/>
+      </element>
+      <!-- argument Visibility: default -->
+      <element name="FillEllipseColor.c">
+        <short/>
+      </element>
+      <!-- procedure Visibility: default -->
+      <element name="FillEllipsePattern">
+        <short/>
+        <descr/>
+        <errors/>
+        <seealso/>
+      </element>
+      <!-- argument Visibility: default -->
+      <element name="FillEllipsePattern.Canv">
+        <short/>
+      </element>
+      <!-- argument Visibility: default -->
+      <element name="FillEllipsePattern.Bounds">
+        <short/>
+      </element>
+      <!-- argument Visibility: default -->
+      <element name="FillEllipsePattern.Pattern">
+        <short/>
+      </element>
+      <!-- argument Visibility: default -->
+      <element name="FillEllipsePattern.c">
+        <short/>
+      </element>
+      <!-- procedure Visibility: default -->
+      <element name="FillEllipseHashHorizontal">
+        <short/>
+        <descr/>
+        <errors/>
+        <seealso/>
+      </element>
+      <!-- argument Visibility: default -->
+      <element name="FillEllipseHashHorizontal.Canv">
+        <short/>
+      </element>
+      <!-- argument Visibility: default -->
+      <element name="FillEllipseHashHorizontal.Bounds">
+        <short/>
+      </element>
+      <!-- argument Visibility: default -->
+      <element name="FillEllipseHashHorizontal.width">
+        <short/>
+      </element>
+      <!-- argument Visibility: default -->
+      <element name="FillEllipseHashHorizontal.c">
+        <short/>
+      </element>
+      <!-- procedure Visibility: default -->
+      <element name="FillEllipseHashVertical">
+        <short/>
+        <descr/>
+        <errors/>
+        <seealso/>
+      </element>
+      <!-- argument Visibility: default -->
+      <element name="FillEllipseHashVertical.Canv">
+        <short/>
+      </element>
+      <!-- argument Visibility: default -->
+      <element name="FillEllipseHashVertical.Bounds">
+        <short/>
+      </element>
+      <!-- argument Visibility: default -->
+      <element name="FillEllipseHashVertical.width">
+        <short/>
+      </element>
+      <!-- argument Visibility: default -->
+      <element name="FillEllipseHashVertical.c">
+        <short/>
+      </element>
+      <!-- procedure Visibility: default -->
+      <element name="FillEllipseHashDiagonal">
+        <short/>
+        <descr/>
+        <errors/>
+        <seealso/>
+      </element>
+      <!-- argument Visibility: default -->
+      <element name="FillEllipseHashDiagonal.Canv">
+        <short/>
+      </element>
+      <!-- argument Visibility: default -->
+      <element name="FillEllipseHashDiagonal.Bounds">
+        <short/>
+      </element>
+      <!-- argument Visibility: default -->
+      <element name="FillEllipseHashDiagonal.width">
+        <short/>
+      </element>
+      <!-- argument Visibility: default -->
+      <element name="FillEllipseHashDiagonal.c">
+        <short/>
+      </element>
+      <!-- procedure Visibility: default -->
+      <element name="FillEllipseHashBackDiagonal">
+        <short/>
+        <descr/>
+        <errors/>
+        <seealso/>
+      </element>
+      <!-- argument Visibility: default -->
+      <element name="FillEllipseHashBackDiagonal.Canv">
+        <short/>
+      </element>
+      <!-- argument Visibility: default -->
+      <element name="FillEllipseHashBackDiagonal.Bounds">
+        <short/>
+      </element>
+      <!-- argument Visibility: default -->
+      <element name="FillEllipseHashBackDiagonal.width">
+        <short/>
+      </element>
+      <!-- argument Visibility: default -->
+      <element name="FillEllipseHashBackDiagonal.c">
+        <short/>
+      </element>
+      <!-- procedure Visibility: default -->
+      <element name="FillEllipseHashDiagCross">
+        <short/>
+        <descr/>
+        <errors/>
+        <seealso/>
+      </element>
+      <!-- argument Visibility: default -->
+      <element name="FillEllipseHashDiagCross.Canv">
+        <short/>
+      </element>
+      <!-- argument Visibility: default -->
+      <element name="FillEllipseHashDiagCross.Bounds">
+        <short/>
+      </element>
+      <!-- argument Visibility: default -->
+      <element name="FillEllipseHashDiagCross.width">
+        <short/>
+      </element>
+      <!-- argument Visibility: default -->
+      <element name="FillEllipseHashDiagCross.c">
+        <short/>
+      </element>
+      <!-- procedure Visibility: default -->
+      <element name="FillEllipseHashCross">
+        <short/>
+        <descr/>
+        <errors/>
+        <seealso/>
+      </element>
+      <!-- argument Visibility: default -->
+      <element name="FillEllipseHashCross.Canv">
+        <short/>
+      </element>
+      <!-- argument Visibility: default -->
+      <element name="FillEllipseHashCross.Bounds">
+        <short/>
+      </element>
+      <!-- argument Visibility: default -->
+      <element name="FillEllipseHashCross.width">
+        <short/>
+      </element>
+      <!-- argument Visibility: default -->
+      <element name="FillEllipseHashCross.c">
+        <short/>
+      </element>
+      <!-- procedure Visibility: default -->
+      <element name="FillEllipseImage">
+        <short/>
+        <descr/>
+        <errors/>
+        <seealso/>
+      </element>
+      <!-- argument Visibility: default -->
+      <element name="FillEllipseImage.Canv">
+        <short/>
+      </element>
+      <!-- argument Visibility: default -->
+      <element name="FillEllipseImage.Bounds">
+        <short/>
+      </element>
+      <!-- argument Visibility: default -->
+      <element name="FillEllipseImage.Image">
+        <short/>
+      </element>
+      <!-- procedure Visibility: default -->
+      <element name="FillEllipseImageRel">
+        <short/>
+        <descr/>
+        <errors/>
+        <seealso/>
+      </element>
+      <!-- argument Visibility: default -->
+      <element name="FillEllipseImageRel.Canv">
+        <short/>
+      </element>
+      <!-- argument Visibility: default -->
+      <element name="FillEllipseImageRel.Bounds">
+        <short/>
+      </element>
+      <!-- argument Visibility: default -->
+      <element name="FillEllipseImageRel.Image">
+        <short/>
+      </element>
+      <!-- pointer type Visibility: default -->
+      <element name="PEllipseInfoData">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+      <!-- record type Visibility: default -->
+      <element name="TEllipseInfoData">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+      <!-- variable Visibility: default -->
+      <element name="TEllipseInfoData.x">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+      <!-- variable Visibility: default -->
+      <element name="TEllipseInfoData.ytopmax">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+      <!-- variable Visibility: default -->
+      <element name="TEllipseInfoData.ytopmin">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+      <!-- variable Visibility: default -->
+      <element name="TEllipseInfoData.ybotmax">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+      <!-- variable Visibility: default -->
+      <element name="TEllipseInfoData.ybotmin">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+      <!-- variable Visibility: default -->
+      <element name="TEllipseInfoData.OnlyTop">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+      <!-- class Visibility: default -->
+      <element name="TEllipseInfo">
+        <short/>
+        <descr/>
+        <errors/>
+        <seealso/>
+      </element>
+      <!-- variable Visibility: private -->
+      <element name="TEllipseInfo.fcx">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+      <!-- variable Visibility: private -->
+      <element name="TEllipseInfo.fcy">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+      <!-- variable Visibility: private -->
+      <element name="TEllipseInfo.frx">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+      <!-- variable Visibility: private -->
+      <element name="TEllipseInfo.fry">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+      <!-- variable Visibility: private -->
+      <element name="TEllipseInfo.fa1">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+      <!-- variable Visibility: private -->
+      <element name="TEllipseInfo.fa2">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+      <!-- variable Visibility: private -->
+      <element name="TEllipseInfo.frot">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+      <!-- variable Visibility: private -->
+      <element name="TEllipseInfo.fx1">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+      <!-- variable Visibility: private -->
+      <element name="TEllipseInfo.fy1">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+      <!-- variable Visibility: private -->
+      <element name="TEllipseInfo.fx2">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+      <!-- variable Visibility: private -->
+      <element name="TEllipseInfo.fy2">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+      <!-- variable Visibility: private -->
+      <element name="TEllipseInfo.InfoList">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+      <!-- procedure Visibility: private -->
+      <element name="TEllipseInfo.FreeList">
+        <short/>
+        <descr/>
+        <errors/>
+        <seealso/>
+      </element>
+      <!-- procedure Visibility: private -->
+      <element name="TEllipseInfo.ClearList">
+        <short/>
+        <descr/>
+        <errors/>
+        <seealso/>
+      </element>
+      <!-- function Visibility: private -->
+      <element name="TEllipseInfo.FindXIndex">
+        <short/>
+        <descr/>
+        <errors/>
+        <seealso/>
+      </element>
+      <!-- function result Visibility: default -->
+      <element name="TEllipseInfo.FindXIndex.Result">
+        <short/>
+      </element>
+      <!-- argument Visibility: default -->
+      <element name="TEllipseInfo.FindXIndex.x">
+        <short/>
+      </element>
+      <!-- procedure Visibility: private -->
+      <element name="TEllipseInfo.PrepareCalculation">
+        <short/>
+        <descr/>
+        <errors/>
+        <seealso/>
+      </element>
+      <!-- argument Visibility: default -->
+      <element name="TEllipseInfo.PrepareCalculation.np">
+        <short/>
+      </element>
+      <!-- argument Visibility: default -->
+      <element name="TEllipseInfo.PrepareCalculation.delta">
+        <short/>
+      </element>
+      <!-- function Visibility: private -->
+      <element name="TEllipseInfo.NewInfoRec">
+        <short/>
+        <descr/>
+        <errors/>
+        <seealso/>
+      </element>
+      <!-- function result Visibility: default -->
+      <element name="TEllipseInfo.NewInfoRec.Result">
+        <short/>
+      </element>
+      <!-- argument Visibility: default -->
+      <element name="TEllipseInfo.NewInfoRec.anX">
+        <short/>
+      </element>
+      <!-- procedure Visibility: private -->
+      <element name="TEllipseInfo.CalculateCircular">
+        <short/>
+        <descr/>
+        <errors/>
+        <seealso/>
+      </element>
+      <!-- argument Visibility: default -->
+      <element name="TEllipseInfo.CalculateCircular.b">
+        <short/>
+      </element>
+      <!-- argument Visibility: default -->
+      <element name="TEllipseInfo.CalculateCircular.x">
+        <short/>
+      </element>
+      <!-- argument Visibility: default -->
+      <element name="TEllipseInfo.CalculateCircular.y">
+        <short/>
+      </element>
+      <!-- argument Visibility: default -->
+      <element name="TEllipseInfo.CalculateCircular.rx">
+        <short/>
+      </element>
+      <!-- argument Visibility: default -->
+      <element name="TEllipseInfo.CalculateCircular.ry">
+        <short/>
+      </element>
+      <!-- constructor Visibility: public -->
+      <element name="TEllipseInfo.create">
+        <short/>
+        <descr/>
+        <errors/>
+        <seealso/>
+      </element>
+      <!-- destructor Visibility: public -->
+      <element name="TEllipseInfo.destroy">
+        <short/>
+        <descr/>
+        <errors/>
+        <seealso/>
+      </element>
+      <!-- function Visibility: public -->
+      <element name="TEllipseInfo.GetInfoForX">
+        <short/>
+        <descr/>
+        <errors/>
+        <seealso/>
+      </element>
+      <!-- function result Visibility: default -->
+      <element name="TEllipseInfo.GetInfoForX.Result">
+        <short/>
+      </element>
+      <!-- argument Visibility: default -->
+      <element name="TEllipseInfo.GetInfoForX.x">
+        <short/>
+      </element>
+      <!-- argument Visibility: default -->
+      <element name="TEllipseInfo.GetInfoForX.ytopmax">
+        <short/>
+      </element>
+      <!-- argument Visibility: default -->
+      <element name="TEllipseInfo.GetInfoForX.ytopmin">
+        <short/>
+      </element>
+      <!-- argument Visibility: default -->
+      <element name="TEllipseInfo.GetInfoForX.ybotmax">
+        <short/>
+      </element>
+      <!-- argument Visibility: default -->
+      <element name="TEllipseInfo.GetInfoForX.ybotmin">
+        <short/>
+      </element>
+      <!-- argument Visibility: default -->
+      <element name="TEllipseInfo.GetInfoForX.Info">
+        <short/>
+      </element>
+      <!-- procedure Visibility: public -->
+      <element name="TEllipseInfo.GatherEllipseInfo">
+        <short/>
+        <descr/>
+        <errors/>
+        <seealso/>
+      </element>
+      <!-- argument Visibility: default -->
+      <element name="TEllipseInfo.GatherEllipseInfo.bounds">
+        <short/>
+      </element>
+      <!-- procedure Visibility: public -->
+      <element name="TEllipseInfo.GatherArcInfo">
+        <short/>
+        <descr/>
+        <errors/>
+        <seealso/>
+      </element>
+      <!-- argument Visibility: default -->
+      <element name="TEllipseInfo.GatherArcInfo.bounds">
+        <short/>
+      </element>
+      <!-- argument Visibility: default -->
+      <element name="TEllipseInfo.GatherArcInfo.alpha1">
+        <short/>
+      </element>
+      <!-- argument Visibility: default -->
+      <element name="TEllipseInfo.GatherArcInfo.alpha2">
+        <short/>
+      </element>
+      <!-- property Visibility: public -->
+      <element name="TEllipseInfo.cx">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+      <!-- property Visibility: public -->
+      <element name="TEllipseInfo.cy">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+      <!-- property Visibility: public -->
+      <element name="TEllipseInfo.rhor">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+      <!-- property Visibility: public -->
+      <element name="TEllipseInfo.rver">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+      <!-- property Visibility: public -->
+      <element name="TEllipseInfo.a1">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+      <!-- property Visibility: public -->
+      <element name="TEllipseInfo.x1">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+      <!-- property Visibility: public -->
+      <element name="TEllipseInfo.y1">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+      <!-- property Visibility: public -->
+      <element name="TEllipseInfo.a2">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+      <!-- property Visibility: public -->
+      <element name="TEllipseInfo.x2">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+      <!-- property Visibility: public -->
+      <element name="TEllipseInfo.y2">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+    </module>
+    <!-- Ellipses -->
+  </package>
+</fpdoc-descriptions>

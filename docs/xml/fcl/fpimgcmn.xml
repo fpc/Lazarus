@@ -1,0 +1,53 @@
+<?xml version="1.0"?>
+<fpdoc-descriptions>
+  <package name="lazde">
+    <!--
+  ====================================================================
+    FPImgCmn
+  ====================================================================
+-->
+    <module name="FPImgCmn">
+      <short/>
+      <descr/>
+      <!-- function Visibility: default -->
+      <element name="Swap">
+        <short/>
+        <descr/>
+        <errors/>
+        <seealso/>
+      </element>
+      <!-- function result Visibility: default -->
+      <element name="Swap.Result">
+        <short/>
+      </element>
+      <!-- argument Visibility: default -->
+      <element name="Swap.This">
+        <short/>
+      </element>
+      <!-- function Visibility: default -->
+      <element name="CalculateCRC">
+        <short/>
+        <descr/>
+        <errors/>
+        <seealso/>
+      </element>
+      <!-- function result Visibility: default -->
+      <element name="CalculateCRC.Result">
+        <short/>
+      </element>
+      <!-- argument Visibility: default -->
+      <element name="CalculateCRC.data">
+        <short/>
+      </element>
+      <!-- argument Visibility: default -->
+      <element name="CalculateCRC.alength">
+        <short/>
+      </element>
+      <!-- argument Visibility: default -->
+      <element name="CalculateCRC.CRC">
+        <short/>
+      </element>
+    </module>
+    <!-- FPImgCmn -->
+  </package>
+</fpdoc-descriptions>

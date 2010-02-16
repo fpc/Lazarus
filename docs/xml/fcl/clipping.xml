@@ -1,0 +1,123 @@
+<?xml version="1.0"?>
+<fpdoc-descriptions>
+  <package name="lazde">
+    <!--
+  ====================================================================
+    Clipping
+  ====================================================================
+-->
+    <module name="Clipping">
+      <short/>
+      <descr/>
+      <!-- procedure Visibility: default -->
+      <element name="SortRect">
+        <short/>
+        <descr/>
+        <errors/>
+        <seealso/>
+      </element>
+      <!-- argument Visibility: default -->
+      <element name="SortRect.rect">
+        <short/>
+      </element>
+      <!-- argument Visibility: default -->
+      <element name="SortRect.left">
+        <short/>
+      </element>
+      <!-- argument Visibility: default -->
+      <element name="SortRect.top">
+        <short/>
+      </element>
+      <!-- argument Visibility: default -->
+      <element name="SortRect.right">
+        <short/>
+      </element>
+      <!-- argument Visibility: default -->
+      <element name="SortRect.bottom">
+        <short/>
+      </element>
+      <!-- function Visibility: default -->
+      <element name="PointInside">
+        <short/>
+        <descr/>
+        <errors/>
+        <seealso/>
+      </element>
+      <!-- function result Visibility: default -->
+      <element name="PointInside.Result">
+        <short/>
+      </element>
+      <!-- argument Visibility: default -->
+      <element name="PointInside.x">
+        <short/>
+      </element>
+      <!-- argument Visibility: default -->
+      <element name="PointInside.y">
+        <short/>
+      </element>
+      <!-- argument Visibility: default -->
+      <element name="PointInside.bounds">
+        <short/>
+      </element>
+      <!-- procedure Visibility: default -->
+      <element name="CheckRectClipping">
+        <short/>
+        <descr/>
+        <errors/>
+        <seealso/>
+      </element>
+      <!-- argument Visibility: default -->
+      <element name="CheckRectClipping.ClipRect">
+        <short/>
+      </element>
+      <!-- argument Visibility: default -->
+      <element name="CheckRectClipping.Rect">
+        <short/>
+      </element>
+      <!-- argument Visibility: default -->
+      <element name="CheckRectClipping.x1">
+        <short/>
+      </element>
+      <!-- argument Visibility: default -->
+      <element name="CheckRectClipping.y1">
+        <short/>
+      </element>
+      <!-- argument Visibility: default -->
+      <element name="CheckRectClipping.x2">
+        <short/>
+      </element>
+      <!-- argument Visibility: default -->
+      <element name="CheckRectClipping.y2">
+        <short/>
+      </element>
+      <!-- procedure Visibility: default -->
+      <element name="CheckLineClipping">
+        <short/>
+        <descr/>
+        <errors/>
+        <seealso/>
+      </element>
+      <!-- argument Visibility: default -->
+      <element name="CheckLineClipping.ClipRect">
+        <short/>
+      </element>
+      <!-- argument Visibility: default -->
+      <element name="CheckLineClipping.x1">
+        <short/>
+      </element>
+      <!-- argument Visibility: default -->
+      <element name="CheckLineClipping.y1">
+        <short/>
+      </element>
+      <!-- argument Visibility: default -->
+      <element name="CheckLineClipping.x2">
+        <short/>
+      </element>
+      <!-- argument Visibility: default -->
+      <element name="CheckLineClipping.y2">
+        <short/>
+      </element>
+    </module>
+    <!-- Clipping -->
+  </package>
+</fpdoc-descriptions>

@@ -1,0 +1,234 @@
+<?xml version="1.0"?>
+<fpdoc-descriptions>
+  <package name="lazde">
+    <!--
+  ====================================================================
+    FPReadTGA
+  ====================================================================
+-->
+    <module name="FPReadTGA">
+      <short/>
+      <descr/>
+      <!-- constant Visibility: default -->
+      <element name="TARGA_EMPTY_IMAGE">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+      <!-- constant Visibility: default -->
+      <element name="TARGA_INDEXED_IMAGE">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+      <!-- constant Visibility: default -->
+      <element name="TARGA_TRUECOLOR_IMAGE">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+      <!-- constant Visibility: default -->
+      <element name="TARGA_GRAY_IMAGE">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+      <!-- class Visibility: default -->
+      <element name="TFPReaderTarga">
+        <short/>
+        <descr/>
+        <errors/>
+        <seealso/>
+      </element>
+      <!-- procedure Visibility: private -->
+      <element name="TFPReaderTarga.FreeBuffers">
+        <short/>
+        <descr/>
+        <errors/>
+        <seealso/>
+      </element>
+      <!-- variable Visibility: protected -->
+      <element name="TFPReaderTarga.Header">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+      <!-- variable Visibility: protected -->
+      <element name="TFPReaderTarga.AlphaBits">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+      <!-- variable Visibility: protected -->
+      <element name="TFPReaderTarga.Identification">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+      <!-- variable Visibility: protected -->
+      <element name="TFPReaderTarga.Compressed">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+      <!-- variable Visibility: protected -->
+      <element name="TFPReaderTarga.BottomUp">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+      <!-- variable Visibility: protected -->
+      <element name="TFPReaderTarga.BytesPerPixel">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+      <!-- variable Visibility: protected -->
+      <element name="TFPReaderTarga.FPalette">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+      <!-- variable Visibility: protected -->
+      <element name="TFPReaderTarga.FScanLine">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+      <!-- variable Visibility: protected -->
+      <element name="TFPReaderTarga.FLineSize">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+      <!-- variable Visibility: protected -->
+      <element name="TFPReaderTarga.FPaletteSize">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+      <!-- variable Visibility: protected -->
+      <element name="TFPReaderTarga.FBlockCount">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+      <!-- variable Visibility: protected -->
+      <element name="TFPReaderTarga.FPixelCount">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+      <!-- variable Visibility: protected -->
+      <element name="TFPReaderTarga.FLastPixel">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+      <!-- procedure Visibility: protected -->
+      <element name="TFPReaderTarga.AnalyzeHeader">
+        <short/>
+        <descr/>
+        <errors/>
+        <seealso/>
+      </element>
+      <!-- argument Visibility: default -->
+      <element name="TFPReaderTarga.AnalyzeHeader.Img">
+        <short/>
+      </element>
+      <!-- procedure Visibility: protected -->
+      <element name="TFPReaderTarga.CreateGrayPalette">
+        <short/>
+        <descr/>
+        <errors/>
+        <seealso/>
+      </element>
+      <!-- procedure Visibility: protected -->
+      <element name="TFPReaderTarga.ReadPalette">
+        <short/>
+        <descr/>
+        <errors/>
+        <seealso/>
+      </element>
+      <!-- argument Visibility: default -->
+      <element name="TFPReaderTarga.ReadPalette.Stream">
+        <short/>
+      </element>
+      <!-- procedure Visibility: protected -->
+      <element name="TFPReaderTarga.ReadScanLine">
+        <short/>
+        <descr/>
+        <errors/>
+        <seealso/>
+      </element>
+      <!-- argument Visibility: default -->
+      <element name="TFPReaderTarga.ReadScanLine.Row">
+        <short/>
+      </element>
+      <!-- argument Visibility: default -->
+      <element name="TFPReaderTarga.ReadScanLine.Stream">
+        <short/>
+      </element>
+      <!-- procedure Visibility: protected -->
+      <element name="TFPReaderTarga.WriteScanLine">
+        <short/>
+        <descr/>
+        <errors/>
+        <seealso/>
+      </element>
+      <!-- argument Visibility: default -->
+      <element name="TFPReaderTarga.WriteScanLine.Row">
+        <short/>
+      </element>
+      <!-- argument Visibility: default -->
+      <element name="TFPReaderTarga.WriteScanLine.Img">
+        <short/>
+      </element>
+      <!-- procedure Visibility: protected -->
+      <element name="TFPReaderTarga.InternalRead">
+        <short/>
+        <descr/>
+        <errors/>
+        <seealso/>
+      </element>
+      <!-- argument Visibility: default -->
+      <element name="TFPReaderTarga.InternalRead.Stream">
+        <short/>
+      </element>
+      <!-- argument Visibility: default -->
+      <element name="TFPReaderTarga.InternalRead.Img">
+        <short/>
+      </element>
+      <!-- function Visibility: protected -->
+      <element name="TFPReaderTarga.InternalCheck">
+        <short/>
+        <descr/>
+        <errors/>
+        <seealso/>
+      </element>
+      <!-- function result Visibility: default -->
+      <element name="TFPReaderTarga.InternalCheck.Result">
+        <short/>
+      </element>
+      <!-- argument Visibility: default -->
+      <element name="TFPReaderTarga.InternalCheck.Stream">
+        <short/>
+      </element>
+      <!-- constructor Visibility: public -->
+      <element name="TFPReaderTarga.Create">
+        <short/>
+        <descr/>
+        <errors/>
+        <seealso/>
+      </element>
+      <!-- destructor Visibility: public -->
+      <element name="TFPReaderTarga.Destroy">
+        <short/>
+        <descr/>
+        <errors/>
+        <seealso/>
+      </element>
+    </module>
+    <!-- FPReadTGA -->
+  </package>
+</fpdoc-descriptions>

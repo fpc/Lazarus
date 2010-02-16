@@ -1,0 +1,706 @@
+<?xml version="1.0"?>
+<fpdoc-descriptions>
+  <package name="lazde">
+    <!--
+  ====================================================================
+    FPWritePNG
+  ====================================================================
+-->
+    <module name="FPWritePNG">
+      <short/>
+      <descr/>
+      <!-- function type Visibility: default -->
+      <element name="TGetPixelFunc">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+      <!-- function result Visibility: default -->
+      <element name="TGetPixelFunc.Result">
+        <short/>
+      </element>
+      <!-- argument Visibility: default -->
+      <element name="TGetPixelFunc.x">
+        <short/>
+      </element>
+      <!-- argument Visibility: default -->
+      <element name="TGetPixelFunc.y">
+        <short/>
+      </element>
+      <!-- function type Visibility: default -->
+      <element name="TColorFormatFunction">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+      <!-- function result Visibility: default -->
+      <element name="TColorFormatFunction.Result">
+        <short/>
+      </element>
+      <!-- argument Visibility: default -->
+      <element name="TColorFormatFunction.color">
+        <short/>
+      </element>
+      <!-- class Visibility: default -->
+      <element name="TFPWriterPNG">
+        <short/>
+        <descr/>
+        <errors/>
+        <seealso/>
+      </element>
+      <!-- variable Visibility: private -->
+      <element name="TFPWriterPNG.FUsetRNS">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+      <!-- variable Visibility: private -->
+      <element name="TFPWriterPNG.FCompressedText">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+      <!-- variable Visibility: private -->
+      <element name="TFPWriterPNG.FWordSized">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+      <!-- variable Visibility: private -->
+      <element name="TFPWriterPNG.FIndexed">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+      <!-- variable Visibility: private -->
+      <element name="TFPWriterPNG.FUseAlpha">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+      <!-- variable Visibility: private -->
+      <element name="TFPWriterPNG.FGrayScale">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+      <!-- variable Visibility: private -->
+      <element name="TFPWriterPNG.FByteWidth">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+      <!-- variable Visibility: private -->
+      <element name="TFPWriterPNG.FChunk">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+      <!-- variable Visibility: private -->
+      <element name="TFPWriterPNG.CFmt">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+      <!-- variable Visibility: private -->
+      <element name="TFPWriterPNG.FFmtColor">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+      <!-- variable Visibility: private -->
+      <element name="TFPWriterPNG.FTransparentColor">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+      <!-- variable Visibility: private -->
+      <element name="TFPWriterPNG.FSwitchLine">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+      <!-- variable Visibility: private -->
+      <element name="TFPWriterPNG.FCurrentLine">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+      <!-- variable Visibility: private -->
+      <element name="TFPWriterPNG.FPreviousLine">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+      <!-- variable Visibility: private -->
+      <element name="TFPWriterPNG.FPalette">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+      <!-- variable Visibility: private -->
+      <element name="TFPWriterPNG.FHeader">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+      <!-- variable Visibility: private -->
+      <element name="TFPWriterPNG.FGetPixel">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+      <!-- variable Visibility: private -->
+      <element name="TFPWriterPNG.FDatalineLength">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+      <!-- variable Visibility: private -->
+      <element name="TFPWriterPNG.ZData">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+      <!-- variable Visibility: private -->
+      <element name="TFPWriterPNG.Compressor">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+      <!-- procedure Visibility: private -->
+      <element name="TFPWriterPNG.WriteChunk">
+        <short/>
+        <descr/>
+        <errors/>
+        <seealso/>
+      </element>
+      <!-- function Visibility: private -->
+      <element name="TFPWriterPNG.GetColorPixel">
+        <short/>
+        <descr/>
+        <errors/>
+        <seealso/>
+      </element>
+      <!-- function result Visibility: default -->
+      <element name="TFPWriterPNG.GetColorPixel.Result">
+        <short/>
+      </element>
+      <!-- argument Visibility: default -->
+      <element name="TFPWriterPNG.GetColorPixel.x">
+        <short/>
+      </element>
+      <!-- argument Visibility: default -->
+      <element name="TFPWriterPNG.GetColorPixel.y">
+        <short/>
+      </element>
+      <!-- function Visibility: private -->
+      <element name="TFPWriterPNG.GetPalettePixel">
+        <short/>
+        <descr/>
+        <errors/>
+        <seealso/>
+      </element>
+      <!-- function result Visibility: default -->
+      <element name="TFPWriterPNG.GetPalettePixel.Result">
+        <short/>
+      </element>
+      <!-- argument Visibility: default -->
+      <element name="TFPWriterPNG.GetPalettePixel.x">
+        <short/>
+      </element>
+      <!-- argument Visibility: default -->
+      <element name="TFPWriterPNG.GetPalettePixel.y">
+        <short/>
+      </element>
+      <!-- function Visibility: private -->
+      <element name="TFPWriterPNG.GetColPalPixel">
+        <short/>
+        <descr/>
+        <errors/>
+        <seealso/>
+      </element>
+      <!-- function result Visibility: default -->
+      <element name="TFPWriterPNG.GetColPalPixel.Result">
+        <short/>
+      </element>
+      <!-- argument Visibility: default -->
+      <element name="TFPWriterPNG.GetColPalPixel.x">
+        <short/>
+      </element>
+      <!-- argument Visibility: default -->
+      <element name="TFPWriterPNG.GetColPalPixel.y">
+        <short/>
+      </element>
+      <!-- procedure Visibility: private -->
+      <element name="TFPWriterPNG.InitWriteIDAT">
+        <short/>
+        <descr/>
+        <errors/>
+        <seealso/>
+      </element>
+      <!-- procedure Visibility: private -->
+      <element name="TFPWriterPNG.Gatherdata">
+        <short/>
+        <descr/>
+        <errors/>
+        <seealso/>
+      </element>
+      <!-- procedure Visibility: private -->
+      <element name="TFPWriterPNG.WriteCompressedData">
+        <short/>
+        <descr/>
+        <errors/>
+        <seealso/>
+      </element>
+      <!-- procedure Visibility: private -->
+      <element name="TFPWriterPNG.FinalWriteIDAT">
+        <short/>
+        <descr/>
+        <errors/>
+        <seealso/>
+      </element>
+      <!-- property Visibility: protected -->
+      <element name="TFPWriterPNG.Header">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+      <!-- procedure Visibility: protected -->
+      <element name="TFPWriterPNG.InternalWrite">
+        <short/>
+        <descr/>
+        <errors/>
+        <seealso/>
+      </element>
+      <!-- argument Visibility: default -->
+      <element name="TFPWriterPNG.InternalWrite.Str">
+        <short/>
+      </element>
+      <!-- argument Visibility: default -->
+      <element name="TFPWriterPNG.InternalWrite.Img">
+        <short/>
+      </element>
+      <!-- procedure Visibility: protected -->
+      <element name="TFPWriterPNG.WriteIHDR">
+        <short/>
+        <descr/>
+        <errors/>
+        <seealso/>
+      </element>
+      <!-- procedure Visibility: protected -->
+      <element name="TFPWriterPNG.WritePLTE">
+        <short/>
+        <descr/>
+        <errors/>
+        <seealso/>
+      </element>
+      <!-- procedure Visibility: protected -->
+      <element name="TFPWriterPNG.WritetRNS">
+        <short/>
+        <descr/>
+        <errors/>
+        <seealso/>
+      </element>
+      <!-- procedure Visibility: protected -->
+      <element name="TFPWriterPNG.WriteIDAT">
+        <short/>
+        <descr/>
+        <errors/>
+        <seealso/>
+      </element>
+      <!-- procedure Visibility: protected -->
+      <element name="TFPWriterPNG.WriteTexts">
+        <short/>
+        <descr/>
+        <errors/>
+        <seealso/>
+      </element>
+      <!-- procedure Visibility: protected -->
+      <element name="TFPWriterPNG.WriteIEND">
+        <short/>
+        <descr/>
+        <errors/>
+        <seealso/>
+      </element>
+      <!-- function Visibility: protected -->
+      <element name="TFPWriterPNG.CurrentLine">
+        <short/>
+        <descr/>
+        <errors/>
+        <seealso/>
+      </element>
+      <!-- function result Visibility: default -->
+      <element name="TFPWriterPNG.CurrentLine.Result">
+        <short/>
+      </element>
+      <!-- argument Visibility: default -->
+      <element name="TFPWriterPNG.CurrentLine.x">
+        <short/>
+      </element>
+      <!-- function Visibility: protected -->
+      <element name="TFPWriterPNG.PrevSample">
+        <short/>
+        <descr/>
+        <errors/>
+        <seealso/>
+      </element>
+      <!-- function result Visibility: default -->
+      <element name="TFPWriterPNG.PrevSample.Result">
+        <short/>
+      </element>
+      <!-- argument Visibility: default -->
+      <element name="TFPWriterPNG.PrevSample.x">
+        <short/>
+      </element>
+      <!-- function Visibility: protected -->
+      <element name="TFPWriterPNG.PreviousLine">
+        <short/>
+        <descr/>
+        <errors/>
+        <seealso/>
+      </element>
+      <!-- function result Visibility: default -->
+      <element name="TFPWriterPNG.PreviousLine.Result">
+        <short/>
+      </element>
+      <!-- argument Visibility: default -->
+      <element name="TFPWriterPNG.PreviousLine.x">
+        <short/>
+      </element>
+      <!-- function Visibility: protected -->
+      <element name="TFPWriterPNG.PrevLinePrevSample">
+        <short/>
+        <descr/>
+        <errors/>
+        <seealso/>
+      </element>
+      <!-- function result Visibility: default -->
+      <element name="TFPWriterPNG.PrevLinePrevSample.Result">
+        <short/>
+      </element>
+      <!-- argument Visibility: default -->
+      <element name="TFPWriterPNG.PrevLinePrevSample.x">
+        <short/>
+      </element>
+      <!-- function Visibility: protected -->
+      <element name="TFPWriterPNG.DoFilter">
+        <short/>
+        <descr/>
+        <errors/>
+        <seealso/>
+      </element>
+      <!-- function result Visibility: default -->
+      <element name="TFPWriterPNG.DoFilter.Result">
+        <short/>
+      </element>
+      <!-- argument Visibility: default -->
+      <element name="TFPWriterPNG.DoFilter.LineFilter">
+        <short/>
+      </element>
+      <!-- argument Visibility: default -->
+      <element name="TFPWriterPNG.DoFilter.index">
+        <short/>
+      </element>
+      <!-- argument Visibility: default -->
+      <element name="TFPWriterPNG.DoFilter.b">
+        <short/>
+      </element>
+      <!-- procedure Visibility: protected -->
+      <element name="TFPWriterPNG.SetChunkLength">
+        <short/>
+        <descr/>
+        <errors/>
+        <seealso/>
+      </element>
+      <!-- argument Visibility: default -->
+      <element name="TFPWriterPNG.SetChunkLength.aValue">
+        <short/>
+      </element>
+      <!-- procedure Visibility: protected -->
+      <element name="TFPWriterPNG.SetChunkType">
+        <short/>
+        <descr/>
+        <errors/>
+        <seealso/>
+      </element>
+      <!-- argument Visibility: default -->
+      <element name="TFPWriterPNG.SetChunkType.ct">
+        <short/>
+      </element>
+      <!-- function Visibility: protected -->
+      <element name="TFPWriterPNG.DecideGetPixel">
+        <short/>
+        <descr/>
+        <errors/>
+        <seealso/>
+      </element>
+      <!-- function result Visibility: default -->
+      <element name="TFPWriterPNG.DecideGetPixel.Result">
+        <short/>
+      </element>
+      <!-- procedure Visibility: protected -->
+      <element name="TFPWriterPNG.DetermineHeader">
+        <short/>
+        <descr/>
+        <errors/>
+        <seealso/>
+      </element>
+      <!-- argument Visibility: default -->
+      <element name="TFPWriterPNG.DetermineHeader.AHeader">
+        <short/>
+      </element>
+      <!-- function Visibility: protected -->
+      <element name="TFPWriterPNG.DetermineFilter">
+        <short/>
+        <descr/>
+        <errors/>
+        <seealso/>
+      </element>
+      <!-- function result Visibility: default -->
+      <element name="TFPWriterPNG.DetermineFilter.Result">
+        <short/>
+      </element>
+      <!-- argument Visibility: default -->
+      <element name="TFPWriterPNG.DetermineFilter.Current">
+        <short/>
+      </element>
+      <!-- argument Visibility: default -->
+      <element name="TFPWriterPNG.DetermineFilter.Previous">
+        <short/>
+      </element>
+      <!-- argument Visibility: default -->
+      <element name="TFPWriterPNG.DetermineFilter.linelength">
+        <short/>
+      </element>
+      <!-- procedure Visibility: protected -->
+      <element name="TFPWriterPNG.FillScanLine">
+        <short/>
+        <descr/>
+        <errors/>
+        <seealso/>
+      </element>
+      <!-- argument Visibility: default -->
+      <element name="TFPWriterPNG.FillScanLine.y">
+        <short/>
+      </element>
+      <!-- argument Visibility: default -->
+      <element name="TFPWriterPNG.FillScanLine.ScanLine">
+        <short/>
+      </element>
+      <!-- function Visibility: protected -->
+      <element name="TFPWriterPNG.ColorDataGrayB">
+        <short/>
+        <descr/>
+        <errors/>
+        <seealso/>
+      </element>
+      <!-- function result Visibility: default -->
+      <element name="TFPWriterPNG.ColorDataGrayB.Result">
+        <short/>
+      </element>
+      <!-- argument Visibility: default -->
+      <element name="TFPWriterPNG.ColorDataGrayB.color">
+        <short/>
+      </element>
+      <!-- function Visibility: protected -->
+      <element name="TFPWriterPNG.ColorDataColorB">
+        <short/>
+        <descr/>
+        <errors/>
+        <seealso/>
+      </element>
+      <!-- function result Visibility: default -->
+      <element name="TFPWriterPNG.ColorDataColorB.Result">
+        <short/>
+      </element>
+      <!-- argument Visibility: default -->
+      <element name="TFPWriterPNG.ColorDataColorB.color">
+        <short/>
+      </element>
+      <!-- function Visibility: protected -->
+      <element name="TFPWriterPNG.ColorDataGrayW">
+        <short/>
+        <descr/>
+        <errors/>
+        <seealso/>
+      </element>
+      <!-- function result Visibility: default -->
+      <element name="TFPWriterPNG.ColorDataGrayW.Result">
+        <short/>
+      </element>
+      <!-- argument Visibility: default -->
+      <element name="TFPWriterPNG.ColorDataGrayW.color">
+        <short/>
+      </element>
+      <!-- function Visibility: protected -->
+      <element name="TFPWriterPNG.ColorDataColorW">
+        <short/>
+        <descr/>
+        <errors/>
+        <seealso/>
+      </element>
+      <!-- function result Visibility: default -->
+      <element name="TFPWriterPNG.ColorDataColorW.Result">
+        <short/>
+      </element>
+      <!-- argument Visibility: default -->
+      <element name="TFPWriterPNG.ColorDataColorW.color">
+        <short/>
+      </element>
+      <!-- function Visibility: protected -->
+      <element name="TFPWriterPNG.ColorDataGrayAB">
+        <short/>
+        <descr/>
+        <errors/>
+        <seealso/>
+      </element>
+      <!-- function result Visibility: default -->
+      <element name="TFPWriterPNG.ColorDataGrayAB.Result">
+        <short/>
+      </element>
+      <!-- argument Visibility: default -->
+      <element name="TFPWriterPNG.ColorDataGrayAB.color">
+        <short/>
+      </element>
+      <!-- function Visibility: protected -->
+      <element name="TFPWriterPNG.ColorDataColorAB">
+        <short/>
+        <descr/>
+        <errors/>
+        <seealso/>
+      </element>
+      <!-- function result Visibility: default -->
+      <element name="TFPWriterPNG.ColorDataColorAB.Result">
+        <short/>
+      </element>
+      <!-- argument Visibility: default -->
+      <element name="TFPWriterPNG.ColorDataColorAB.color">
+        <short/>
+      </element>
+      <!-- function Visibility: protected -->
+      <element name="TFPWriterPNG.ColorDataGrayAW">
+        <short/>
+        <descr/>
+        <errors/>
+        <seealso/>
+      </element>
+      <!-- function result Visibility: default -->
+      <element name="TFPWriterPNG.ColorDataGrayAW.Result">
+        <short/>
+      </element>
+      <!-- argument Visibility: default -->
+      <element name="TFPWriterPNG.ColorDataGrayAW.color">
+        <short/>
+      </element>
+      <!-- function Visibility: protected -->
+      <element name="TFPWriterPNG.ColorDataColorAW">
+        <short/>
+        <descr/>
+        <errors/>
+        <seealso/>
+      </element>
+      <!-- function result Visibility: default -->
+      <element name="TFPWriterPNG.ColorDataColorAW.Result">
+        <short/>
+      </element>
+      <!-- argument Visibility: default -->
+      <element name="TFPWriterPNG.ColorDataColorAW.color">
+        <short/>
+      </element>
+      <!-- property Visibility: protected -->
+      <element name="TFPWriterPNG.ChunkDataBuffer">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+      <!-- property Visibility: protected -->
+      <element name="TFPWriterPNG.UsetRNS">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+      <!-- property Visibility: protected -->
+      <element name="TFPWriterPNG.SingleTransparentColor">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+      <!-- property Visibility: protected -->
+      <element name="TFPWriterPNG.ThePalette">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+      <!-- property Visibility: protected -->
+      <element name="TFPWriterPNG.ColorFormat">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+      <!-- property Visibility: protected -->
+      <element name="TFPWriterPNG.ColorFormatFunc">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+      <!-- property Visibility: protected -->
+      <element name="TFPWriterPNG.byteWidth">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+      <!-- property Visibility: protected -->
+      <element name="TFPWriterPNG.DatalineLength">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+      <!-- constructor Visibility: public -->
+      <element name="TFPWriterPNG.create">
+        <short/>
+        <descr/>
+        <errors/>
+        <seealso/>
+      </element>
+      <!-- destructor Visibility: public -->
+      <element name="TFPWriterPNG.destroy">
+        <short/>
+        <descr/>
+        <errors/>
+        <seealso/>
+      </element>
+      <!-- property Visibility: public -->
+      <element name="TFPWriterPNG.GrayScale">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+      <!-- property Visibility: public -->
+      <element name="TFPWriterPNG.Indexed">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+      <!-- property Visibility: public -->
+      <element name="TFPWriterPNG.CompressedText">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+      <!-- property Visibility: public -->
+      <element name="TFPWriterPNG.WordSized">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+      <!-- property Visibility: public -->
+      <element name="TFPWriterPNG.UseAlpha">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+    </module>
+    <!-- FPWritePNG -->
+  </package>
+</fpdoc-descriptions>

@@ -1,0 +1,453 @@
+<?xml version="1.0"?>
+<fpdoc-descriptions>
+  <package name="lazde">
+    <!--
+  ====================================================================
+    FPWriteTiff
+  ====================================================================
+-->
+    <module name="FPWriteTiff">
+      <short/>
+      <descr/>
+      <!-- class Visibility: default -->
+      <element name="TTiffWriteEntry">
+        <short/>
+        <descr/>
+        <errors/>
+        <seealso/>
+      </element>
+      <!-- variable Visibility: public -->
+      <element name="TTiffWriteEntry.Tag">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+      <!-- variable Visibility: public -->
+      <element name="TTiffWriteEntry.EntryType">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+      <!-- variable Visibility: public -->
+      <element name="TTiffWriteEntry.Count">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+      <!-- variable Visibility: public -->
+      <element name="TTiffWriteEntry.Data">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+      <!-- variable Visibility: public -->
+      <element name="TTiffWriteEntry.DataPos">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+      <!-- variable Visibility: public -->
+      <element name="TTiffWriteEntry.Bytes">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+      <!-- destructor Visibility: public -->
+      <element name="TTiffWriteEntry.Destroy">
+        <short/>
+        <descr/>
+        <errors/>
+        <seealso/>
+      </element>
+      <!-- record type Visibility: default -->
+      <element name="TTiffWriteStrip">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+      <!-- variable Visibility: default -->
+      <element name="TTiffWriteStrip.Data">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+      <!-- variable Visibility: default -->
+      <element name="TTiffWriteStrip.Bytes">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+      <!-- pointer type Visibility: default -->
+      <element name="PTiffWriteStrip">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+      <!-- class Visibility: default -->
+      <element name="TTiffWriteStripOffsets">
+        <short/>
+        <descr/>
+        <errors/>
+        <seealso/>
+      </element>
+      <!-- variable Visibility: public -->
+      <element name="TTiffWriteStripOffsets.Strips">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+      <!-- variable Visibility: public -->
+      <element name="TTiffWriteStripOffsets.StripByteCounts">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+      <!-- constructor Visibility: public -->
+      <element name="TTiffWriteStripOffsets.Create">
+        <short/>
+        <descr/>
+        <errors/>
+        <seealso/>
+      </element>
+      <!-- destructor Visibility: public -->
+      <element name="TTiffWriteStripOffsets.Destroy">
+        <short/>
+        <descr/>
+        <errors/>
+        <seealso/>
+      </element>
+      <!-- procedure Visibility: public -->
+      <element name="TTiffWriteStripOffsets.SetCount">
+        <short/>
+        <descr/>
+        <errors/>
+        <seealso/>
+      </element>
+      <!-- argument Visibility: default -->
+      <element name="TTiffWriteStripOffsets.SetCount.NewCount">
+        <short/>
+      </element>
+      <!-- class Visibility: default -->
+      <element name="TFPWriterTiff">
+        <short/>
+        <descr/>
+        <errors/>
+        <seealso/>
+      </element>
+      <!-- variable Visibility: private -->
+      <element name="TFPWriterTiff.FSaveCMYKAsRGB">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+      <!-- variable Visibility: private -->
+      <element name="TFPWriterTiff.fStartPos">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+      <!-- variable Visibility: private -->
+      <element name="TFPWriterTiff.FEntries">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+      <!-- variable Visibility: private -->
+      <element name="TFPWriterTiff.fStream">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+      <!-- variable Visibility: private -->
+      <element name="TFPWriterTiff.fPosition">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+      <!-- procedure Visibility: private -->
+      <element name="TFPWriterTiff.ClearEntries">
+        <short/>
+        <descr/>
+        <errors/>
+        <seealso/>
+      </element>
+      <!-- procedure Visibility: private -->
+      <element name="TFPWriterTiff.WriteTiff">
+        <short/>
+        <descr/>
+        <errors/>
+        <seealso/>
+      </element>
+      <!-- procedure Visibility: private -->
+      <element name="TFPWriterTiff.WriteHeader">
+        <short/>
+        <descr/>
+        <errors/>
+        <seealso/>
+      </element>
+      <!-- procedure Visibility: private -->
+      <element name="TFPWriterTiff.WriteIDFs">
+        <short/>
+        <descr/>
+        <errors/>
+        <seealso/>
+      </element>
+      <!-- procedure Visibility: private -->
+      <element name="TFPWriterTiff.WriteEntry">
+        <short/>
+        <descr/>
+        <errors/>
+        <seealso/>
+      </element>
+      <!-- argument Visibility: default -->
+      <element name="TFPWriterTiff.WriteEntry.Entry">
+        <short/>
+      </element>
+      <!-- procedure Visibility: private -->
+      <element name="TFPWriterTiff.WriteData">
+        <short/>
+        <descr/>
+        <errors/>
+        <seealso/>
+      </element>
+      <!-- procedure Visibility: private -->
+      <element name="TFPWriterTiff.WriteEntryData">
+        <short/>
+        <descr/>
+        <errors/>
+        <seealso/>
+      </element>
+      <!-- argument Visibility: default -->
+      <element name="TFPWriterTiff.WriteEntryData.Entry">
+        <short/>
+      </element>
+      <!-- procedure Visibility: private -->
+      <element name="TFPWriterTiff.WriteBuf">
+        <short/>
+        <descr/>
+        <errors/>
+        <seealso/>
+      </element>
+      <!-- argument Visibility: default -->
+      <element name="TFPWriterTiff.WriteBuf.Buf">
+        <short/>
+      </element>
+      <!-- argument Visibility: default -->
+      <element name="TFPWriterTiff.WriteBuf.Count">
+        <short/>
+      </element>
+      <!-- procedure Visibility: private -->
+      <element name="TFPWriterTiff.WriteWord">
+        <short/>
+        <descr/>
+        <errors/>
+        <seealso/>
+      </element>
+      <!-- argument Visibility: default -->
+      <element name="TFPWriterTiff.WriteWord.w">
+        <short/>
+      </element>
+      <!-- procedure Visibility: private -->
+      <element name="TFPWriterTiff.WriteDWord">
+        <short/>
+        <descr/>
+        <errors/>
+        <seealso/>
+      </element>
+      <!-- argument Visibility: default -->
+      <element name="TFPWriterTiff.WriteDWord.d">
+        <short/>
+      </element>
+      <!-- procedure Visibility: protected -->
+      <element name="TFPWriterTiff.InternalWrite">
+        <short/>
+        <descr/>
+        <errors/>
+        <seealso/>
+      </element>
+      <!-- argument Visibility: default -->
+      <element name="TFPWriterTiff.InternalWrite.Stream">
+        <short/>
+      </element>
+      <!-- argument Visibility: default -->
+      <element name="TFPWriterTiff.InternalWrite.Img">
+        <short/>
+      </element>
+      <!-- procedure Visibility: protected -->
+      <element name="TFPWriterTiff.AddEntryString">
+        <short/>
+        <descr/>
+        <errors/>
+        <seealso/>
+      </element>
+      <!-- argument Visibility: default -->
+      <element name="TFPWriterTiff.AddEntryString.Tag">
+        <short/>
+      </element>
+      <!-- argument Visibility: default -->
+      <element name="TFPWriterTiff.AddEntryString.s">
+        <short/>
+      </element>
+      <!-- procedure Visibility: protected -->
+      <element name="TFPWriterTiff.AddEntryShort">
+        <short/>
+        <descr/>
+        <errors/>
+        <seealso/>
+      </element>
+      <!-- argument Visibility: default -->
+      <element name="TFPWriterTiff.AddEntryShort.Tag">
+        <short/>
+      </element>
+      <!-- argument Visibility: default -->
+      <element name="TFPWriterTiff.AddEntryShort.Value">
+        <short/>
+      </element>
+      <!-- procedure Visibility: protected -->
+      <element name="TFPWriterTiff.AddEntryLong">
+        <short/>
+        <descr/>
+        <errors/>
+        <seealso/>
+      </element>
+      <!-- argument Visibility: default -->
+      <element name="TFPWriterTiff.AddEntryLong.Tag">
+        <short/>
+      </element>
+      <!-- argument Visibility: default -->
+      <element name="TFPWriterTiff.AddEntryLong.Value">
+        <short/>
+      </element>
+      <!-- procedure Visibility: protected -->
+      <element name="TFPWriterTiff.AddEntryRational">
+        <short/>
+        <descr/>
+        <errors/>
+        <seealso/>
+      </element>
+      <!-- argument Visibility: default -->
+      <element name="TFPWriterTiff.AddEntryRational.Tag">
+        <short/>
+      </element>
+      <!-- argument Visibility: default -->
+      <element name="TFPWriterTiff.AddEntryRational.Value">
+        <short/>
+      </element>
+      <!-- procedure Visibility: protected -->
+      <element name="TFPWriterTiff.AddEntry">
+        <short/>
+        <descr/>
+        <errors/>
+        <seealso/>
+      </element>
+      <!-- argument Visibility: default -->
+      <element name="TFPWriterTiff.AddEntry.Tag">
+        <short/>
+      </element>
+      <!-- argument Visibility: default -->
+      <element name="TFPWriterTiff.AddEntry.EntryType">
+        <short/>
+      </element>
+      <!-- argument Visibility: default -->
+      <element name="TFPWriterTiff.AddEntry.EntryCount">
+        <short/>
+      </element>
+      <!-- argument Visibility: default -->
+      <element name="TFPWriterTiff.AddEntry.Data">
+        <short/>
+      </element>
+      <!-- argument Visibility: default -->
+      <element name="TFPWriterTiff.AddEntry.Bytes">
+        <short/>
+      </element>
+      <!-- argument Visibility: default -->
+      <element name="TFPWriterTiff.AddEntry.CopyData">
+        <short/>
+      </element>
+      <!-- argument Visibility: default -->
+      <element name="TFPWriterTiff.AddEntry.Entry">
+        <short/>
+      </element>
+      <!-- procedure Visibility: protected -->
+      <element name="TFPWriterTiff.TiffError">
+        <short/>
+        <descr/>
+        <errors/>
+        <seealso/>
+      </element>
+      <!-- argument Visibility: default -->
+      <element name="TFPWriterTiff.TiffError.Msg">
+        <short/>
+      </element>
+      <!-- constructor Visibility: public -->
+      <element name="TFPWriterTiff.Create">
+        <short/>
+        <descr/>
+        <errors/>
+        <seealso/>
+      </element>
+      <!-- destructor Visibility: public -->
+      <element name="TFPWriterTiff.Destroy">
+        <short/>
+        <descr/>
+        <errors/>
+        <seealso/>
+      </element>
+      <!-- procedure Visibility: public -->
+      <element name="TFPWriterTiff.Clear">
+        <short/>
+        <descr/>
+        <errors/>
+        <seealso/>
+      </element>
+      <!-- procedure Visibility: public -->
+      <element name="TFPWriterTiff.AddImage">
+        <short/>
+        <descr/>
+        <errors/>
+        <seealso/>
+      </element>
+      <!-- argument Visibility: default -->
+      <element name="TFPWriterTiff.AddImage.Img">
+        <short/>
+      </element>
+      <!-- procedure Visibility: public -->
+      <element name="TFPWriterTiff.SaveToStream">
+        <short/>
+        <descr/>
+        <errors/>
+        <seealso/>
+      </element>
+      <!-- argument Visibility: default -->
+      <element name="TFPWriterTiff.SaveToStream.Stream">
+        <short/>
+      </element>
+      <!-- property Visibility: public -->
+      <element name="TFPWriterTiff.SaveCMYKAsRGB">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+      <!-- function Visibility: default -->
+      <element name="CompareTiffWriteEntries">
+        <short/>
+        <descr/>
+        <errors/>
+        <seealso/>
+      </element>
+      <!-- function result Visibility: default -->
+      <element name="CompareTiffWriteEntries.Result">
+        <short/>
+      </element>
+      <!-- argument Visibility: default -->
+      <element name="CompareTiffWriteEntries.Entry1">
+        <short/>
+      </element>
+      <!-- argument Visibility: default -->
+      <element name="CompareTiffWriteEntries.Entry2">
+        <short/>
+      </element>
+    </module>
+    <!-- FPWriteTiff -->
+  </package>
+</fpdoc-descriptions>

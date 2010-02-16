@@ -1,0 +1,559 @@
+<?xml version="1.0"?>
+<fpdoc-descriptions>
+  <package name="lazde">
+    <!--
+  ====================================================================
+    PixTools
+  ====================================================================
+-->
+    <module name="PixTools">
+      <short/>
+      <descr/>
+      <!-- procedure Visibility: default -->
+      <element name="DrawSolidLine">
+        <short/>
+        <descr/>
+        <errors/>
+        <seealso/>
+      </element>
+      <!-- argument Visibility: default -->
+      <element name="DrawSolidLine.Canv">
+        <short/>
+      </element>
+      <!-- argument Visibility: default -->
+      <element name="DrawSolidLine.x1">
+        <short/>
+      </element>
+      <!-- argument Visibility: default -->
+      <element name="DrawSolidLine.y1">
+        <short/>
+      </element>
+      <!-- argument Visibility: default -->
+      <element name="DrawSolidLine.x2">
+        <short/>
+      </element>
+      <!-- argument Visibility: default -->
+      <element name="DrawSolidLine.y2">
+        <short/>
+      </element>
+      <!-- argument Visibility: default -->
+      <element name="DrawSolidLine.color">
+        <short/>
+      </element>
+      <!-- procedure Visibility: default -->
+      <element name="DrawPatternLine">
+        <short/>
+        <descr/>
+        <errors/>
+        <seealso/>
+      </element>
+      <!-- argument Visibility: default -->
+      <element name="DrawPatternLine.Canv">
+        <short/>
+      </element>
+      <!-- argument Visibility: default -->
+      <element name="DrawPatternLine.x1">
+        <short/>
+      </element>
+      <!-- argument Visibility: default -->
+      <element name="DrawPatternLine.y1">
+        <short/>
+      </element>
+      <!-- argument Visibility: default -->
+      <element name="DrawPatternLine.x2">
+        <short/>
+      </element>
+      <!-- argument Visibility: default -->
+      <element name="DrawPatternLine.y2">
+        <short/>
+      </element>
+      <!-- argument Visibility: default -->
+      <element name="DrawPatternLine.Pattern">
+        <short/>
+      </element>
+      <!-- argument Visibility: default -->
+      <element name="DrawPatternLine.color">
+        <short/>
+      </element>
+      <!-- procedure Visibility: default -->
+      <element name="FillRectangleColor">
+        <short/>
+        <descr/>
+        <errors/>
+        <seealso/>
+      </element>
+      <!-- argument Visibility: default -->
+      <element name="FillRectangleColor.Canv">
+        <short/>
+      </element>
+      <!-- argument Visibility: default -->
+      <element name="FillRectangleColor.x1">
+        <short/>
+      </element>
+      <!-- argument Visibility: default -->
+      <element name="FillRectangleColor.y1">
+        <short/>
+      </element>
+      <!-- argument Visibility: default -->
+      <element name="FillRectangleColor.x2">
+        <short/>
+      </element>
+      <!-- argument Visibility: default -->
+      <element name="FillRectangleColor.y2">
+        <short/>
+      </element>
+      <!-- argument Visibility: default -->
+      <element name="FillRectangleColor.color">
+        <short/>
+      </element>
+      <!-- procedure Visibility: default -->
+      <element name="FillRectanglePattern">
+        <short/>
+        <descr/>
+        <errors/>
+        <seealso/>
+      </element>
+      <!-- argument Visibility: default -->
+      <element name="FillRectanglePattern.Canv">
+        <short/>
+      </element>
+      <!-- argument Visibility: default -->
+      <element name="FillRectanglePattern.x1">
+        <short/>
+      </element>
+      <!-- argument Visibility: default -->
+      <element name="FillRectanglePattern.y1">
+        <short/>
+      </element>
+      <!-- argument Visibility: default -->
+      <element name="FillRectanglePattern.x2">
+        <short/>
+      </element>
+      <!-- argument Visibility: default -->
+      <element name="FillRectanglePattern.y2">
+        <short/>
+      </element>
+      <!-- argument Visibility: default -->
+      <element name="FillRectanglePattern.pattern">
+        <short/>
+      </element>
+      <!-- argument Visibility: default -->
+      <element name="FillRectanglePattern.color">
+        <short/>
+      </element>
+      <!-- procedure Visibility: default -->
+      <element name="FillRectangleHashHorizontal">
+        <short/>
+        <descr/>
+        <errors/>
+        <seealso/>
+      </element>
+      <!-- argument Visibility: default -->
+      <element name="FillRectangleHashHorizontal.Canv">
+        <short/>
+      </element>
+      <!-- argument Visibility: default -->
+      <element name="FillRectangleHashHorizontal.rect">
+        <short/>
+      </element>
+      <!-- argument Visibility: default -->
+      <element name="FillRectangleHashHorizontal.width">
+        <short/>
+      </element>
+      <!-- argument Visibility: default -->
+      <element name="FillRectangleHashHorizontal.c">
+        <short/>
+      </element>
+      <!-- procedure Visibility: default -->
+      <element name="FillRectangleHashVertical">
+        <short/>
+        <descr/>
+        <errors/>
+        <seealso/>
+      </element>
+      <!-- argument Visibility: default -->
+      <element name="FillRectangleHashVertical.Canv">
+        <short/>
+      </element>
+      <!-- argument Visibility: default -->
+      <element name="FillRectangleHashVertical.rect">
+        <short/>
+      </element>
+      <!-- argument Visibility: default -->
+      <element name="FillRectangleHashVertical.width">
+        <short/>
+      </element>
+      <!-- argument Visibility: default -->
+      <element name="FillRectangleHashVertical.c">
+        <short/>
+      </element>
+      <!-- procedure Visibility: default -->
+      <element name="FillRectangleHashDiagonal">
+        <short/>
+        <descr/>
+        <errors/>
+        <seealso/>
+      </element>
+      <!-- argument Visibility: default -->
+      <element name="FillRectangleHashDiagonal.Canv">
+        <short/>
+      </element>
+      <!-- argument Visibility: default -->
+      <element name="FillRectangleHashDiagonal.rect">
+        <short/>
+      </element>
+      <!-- argument Visibility: default -->
+      <element name="FillRectangleHashDiagonal.width">
+        <short/>
+      </element>
+      <!-- argument Visibility: default -->
+      <element name="FillRectangleHashDiagonal.c">
+        <short/>
+      </element>
+      <!-- procedure Visibility: default -->
+      <element name="FillRectangleHashBackDiagonal">
+        <short/>
+        <descr/>
+        <errors/>
+        <seealso/>
+      </element>
+      <!-- argument Visibility: default -->
+      <element name="FillRectangleHashBackDiagonal.Canv">
+        <short/>
+      </element>
+      <!-- argument Visibility: default -->
+      <element name="FillRectangleHashBackDiagonal.rect">
+        <short/>
+      </element>
+      <!-- argument Visibility: default -->
+      <element name="FillRectangleHashBackDiagonal.width">
+        <short/>
+      </element>
+      <!-- argument Visibility: default -->
+      <element name="FillRectangleHashBackDiagonal.c">
+        <short/>
+      </element>
+      <!-- procedure Visibility: default -->
+      <element name="FillFloodColor">
+        <short/>
+        <descr/>
+        <errors/>
+        <seealso/>
+      </element>
+      <!-- argument Visibility: default -->
+      <element name="FillFloodColor.Canv">
+        <short/>
+      </element>
+      <!-- argument Visibility: default -->
+      <element name="FillFloodColor.x">
+        <short/>
+      </element>
+      <!-- argument Visibility: default -->
+      <element name="FillFloodColor.y">
+        <short/>
+      </element>
+      <!-- argument Visibility: default -->
+      <element name="FillFloodColor.color">
+        <short/>
+      </element>
+      <!-- procedure Visibility: default -->
+      <element name="FillFloodPattern">
+        <short/>
+        <descr/>
+        <errors/>
+        <seealso/>
+      </element>
+      <!-- argument Visibility: default -->
+      <element name="FillFloodPattern.Canv">
+        <short/>
+      </element>
+      <!-- argument Visibility: default -->
+      <element name="FillFloodPattern.x">
+        <short/>
+      </element>
+      <!-- argument Visibility: default -->
+      <element name="FillFloodPattern.y">
+        <short/>
+      </element>
+      <!-- argument Visibility: default -->
+      <element name="FillFloodPattern.pattern">
+        <short/>
+      </element>
+      <!-- argument Visibility: default -->
+      <element name="FillFloodPattern.color">
+        <short/>
+      </element>
+      <!-- procedure Visibility: default -->
+      <element name="FillFloodHashHorizontal">
+        <short/>
+        <descr/>
+        <errors/>
+        <seealso/>
+      </element>
+      <!-- argument Visibility: default -->
+      <element name="FillFloodHashHorizontal.Canv">
+        <short/>
+      </element>
+      <!-- argument Visibility: default -->
+      <element name="FillFloodHashHorizontal.x">
+        <short/>
+      </element>
+      <!-- argument Visibility: default -->
+      <element name="FillFloodHashHorizontal.y">
+        <short/>
+      </element>
+      <!-- argument Visibility: default -->
+      <element name="FillFloodHashHorizontal.width">
+        <short/>
+      </element>
+      <!-- argument Visibility: default -->
+      <element name="FillFloodHashHorizontal.c">
+        <short/>
+      </element>
+      <!-- procedure Visibility: default -->
+      <element name="FillFloodHashVertical">
+        <short/>
+        <descr/>
+        <errors/>
+        <seealso/>
+      </element>
+      <!-- argument Visibility: default -->
+      <element name="FillFloodHashVertical.Canv">
+        <short/>
+      </element>
+      <!-- argument Visibility: default -->
+      <element name="FillFloodHashVertical.x">
+        <short/>
+      </element>
+      <!-- argument Visibility: default -->
+      <element name="FillFloodHashVertical.y">
+        <short/>
+      </element>
+      <!-- argument Visibility: default -->
+      <element name="FillFloodHashVertical.width">
+        <short/>
+      </element>
+      <!-- argument Visibility: default -->
+      <element name="FillFloodHashVertical.c">
+        <short/>
+      </element>
+      <!-- procedure Visibility: default -->
+      <element name="FillFloodHashDiagonal">
+        <short/>
+        <descr/>
+        <errors/>
+        <seealso/>
+      </element>
+      <!-- argument Visibility: default -->
+      <element name="FillFloodHashDiagonal.Canv">
+        <short/>
+      </element>
+      <!-- argument Visibility: default -->
+      <element name="FillFloodHashDiagonal.x">
+        <short/>
+      </element>
+      <!-- argument Visibility: default -->
+      <element name="FillFloodHashDiagonal.y">
+        <short/>
+      </element>
+      <!-- argument Visibility: default -->
+      <element name="FillFloodHashDiagonal.width">
+        <short/>
+      </element>
+      <!-- argument Visibility: default -->
+      <element name="FillFloodHashDiagonal.c">
+        <short/>
+      </element>
+      <!-- procedure Visibility: default -->
+      <element name="FillFloodHashBackDiagonal">
+        <short/>
+        <descr/>
+        <errors/>
+        <seealso/>
+      </element>
+      <!-- argument Visibility: default -->
+      <element name="FillFloodHashBackDiagonal.Canv">
+        <short/>
+      </element>
+      <!-- argument Visibility: default -->
+      <element name="FillFloodHashBackDiagonal.x">
+        <short/>
+      </element>
+      <!-- argument Visibility: default -->
+      <element name="FillFloodHashBackDiagonal.y">
+        <short/>
+      </element>
+      <!-- argument Visibility: default -->
+      <element name="FillFloodHashBackDiagonal.width">
+        <short/>
+      </element>
+      <!-- argument Visibility: default -->
+      <element name="FillFloodHashBackDiagonal.c">
+        <short/>
+      </element>
+      <!-- procedure Visibility: default -->
+      <element name="FillFloodHashDiagCross">
+        <short/>
+        <descr/>
+        <errors/>
+        <seealso/>
+      </element>
+      <!-- argument Visibility: default -->
+      <element name="FillFloodHashDiagCross.Canv">
+        <short/>
+      </element>
+      <!-- argument Visibility: default -->
+      <element name="FillFloodHashDiagCross.x">
+        <short/>
+      </element>
+      <!-- argument Visibility: default -->
+      <element name="FillFloodHashDiagCross.y">
+        <short/>
+      </element>
+      <!-- argument Visibility: default -->
+      <element name="FillFloodHashDiagCross.width">
+        <short/>
+      </element>
+      <!-- argument Visibility: default -->
+      <element name="FillFloodHashDiagCross.c">
+        <short/>
+      </element>
+      <!-- procedure Visibility: default -->
+      <element name="FillFloodHashCross">
+        <short/>
+        <descr/>
+        <errors/>
+        <seealso/>
+      </element>
+      <!-- argument Visibility: default -->
+      <element name="FillFloodHashCross.Canv">
+        <short/>
+      </element>
+      <!-- argument Visibility: default -->
+      <element name="FillFloodHashCross.x">
+        <short/>
+      </element>
+      <!-- argument Visibility: default -->
+      <element name="FillFloodHashCross.y">
+        <short/>
+      </element>
+      <!-- argument Visibility: default -->
+      <element name="FillFloodHashCross.width">
+        <short/>
+      </element>
+      <!-- argument Visibility: default -->
+      <element name="FillFloodHashCross.c">
+        <short/>
+      </element>
+      <!-- procedure Visibility: default -->
+      <element name="FillRectangleImage">
+        <short/>
+        <descr/>
+        <errors/>
+        <seealso/>
+      </element>
+      <!-- argument Visibility: default -->
+      <element name="FillRectangleImage.Canv">
+        <short/>
+      </element>
+      <!-- argument Visibility: default -->
+      <element name="FillRectangleImage.x1">
+        <short/>
+      </element>
+      <!-- argument Visibility: default -->
+      <element name="FillRectangleImage.y1">
+        <short/>
+      </element>
+      <!-- argument Visibility: default -->
+      <element name="FillRectangleImage.x2">
+        <short/>
+      </element>
+      <!-- argument Visibility: default -->
+      <element name="FillRectangleImage.y2">
+        <short/>
+      </element>
+      <!-- argument Visibility: default -->
+      <element name="FillRectangleImage.Image">
+        <short/>
+      </element>
+      <!-- procedure Visibility: default -->
+      <element name="FillRectangleImageRel">
+        <short/>
+        <descr/>
+        <errors/>
+        <seealso/>
+      </element>
+      <!-- argument Visibility: default -->
+      <element name="FillRectangleImageRel.Canv">
+        <short/>
+      </element>
+      <!-- argument Visibility: default -->
+      <element name="FillRectangleImageRel.x1">
+        <short/>
+      </element>
+      <!-- argument Visibility: default -->
+      <element name="FillRectangleImageRel.y1">
+        <short/>
+      </element>
+      <!-- argument Visibility: default -->
+      <element name="FillRectangleImageRel.x2">
+        <short/>
+      </element>
+      <!-- argument Visibility: default -->
+      <element name="FillRectangleImageRel.y2">
+        <short/>
+      </element>
+      <!-- argument Visibility: default -->
+      <element name="FillRectangleImageRel.Image">
+        <short/>
+      </element>
+      <!-- procedure Visibility: default -->
+      <element name="FillFloodImage">
+        <short/>
+        <descr/>
+        <errors/>
+        <seealso/>
+      </element>
+      <!-- argument Visibility: default -->
+      <element name="FillFloodImage.Canv">
+        <short/>
+      </element>
+      <!-- argument Visibility: default -->
+      <element name="FillFloodImage.x">
+        <short/>
+      </element>
+      <!-- argument Visibility: default -->
+      <element name="FillFloodImage.y">
+        <short/>
+      </element>
+      <!-- argument Visibility: default -->
+      <element name="FillFloodImage.Image">
+        <short/>
+      </element>
+      <!-- procedure Visibility: default -->
+      <element name="FillFloodImageRel">
+        <short/>
+        <descr/>
+        <errors/>
+        <seealso/>
+      </element>
+      <!-- argument Visibility: default -->
+      <element name="FillFloodImageRel.Canv">
+        <short/>
+      </element>
+      <!-- argument Visibility: default -->
+      <element name="FillFloodImageRel.x">
+        <short/>
+      </element>
+      <!-- argument Visibility: default -->
+      <element name="FillFloodImageRel.y">
+        <short/>
+      </element>
+      <!-- argument Visibility: default -->
+      <element name="FillFloodImageRel.Image">
+        <short/>
+      </element>
+    </module>
+    <!-- PixTools -->
+  </package>
+</fpdoc-descriptions>

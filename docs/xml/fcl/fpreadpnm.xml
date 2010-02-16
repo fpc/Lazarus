@@ -1,0 +1,135 @@
+<?xml version="1.0"?>
+<fpdoc-descriptions>
+  <package name="lazde">
+    <!--
+  ====================================================================
+    FPReadPNM
+  ====================================================================
+-->
+    <module name="FPReadPNM">
+      <short/>
+      <descr/>
+      <!-- class Visibility: default -->
+      <element name="TFPReaderPNM">
+        <short/>
+        <descr/>
+        <errors/>
+        <seealso/>
+      </element>
+      <!-- variable Visibility: private -->
+      <element name="TFPReaderPNM.FBitMapType">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+      <!-- variable Visibility: private -->
+      <element name="TFPReaderPNM.FWidth">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+      <!-- variable Visibility: private -->
+      <element name="TFPReaderPNM.FHeight">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+      <!-- variable Visibility: protected -->
+      <element name="TFPReaderPNM.FMaxVal">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+      <!-- variable Visibility: protected -->
+      <element name="TFPReaderPNM.FBitPP">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+      <!-- variable Visibility: protected -->
+      <element name="TFPReaderPNM.FScanLineSize">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+      <!-- variable Visibility: protected -->
+      <element name="TFPReaderPNM.FScanLine">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+      <!-- procedure Visibility: protected -->
+      <element name="TFPReaderPNM.ReadHeader">
+        <short/>
+        <descr/>
+        <errors/>
+        <seealso/>
+      </element>
+      <!-- argument Visibility: default -->
+      <element name="TFPReaderPNM.ReadHeader.Stream">
+        <short/>
+      </element>
+      <!-- function Visibility: protected -->
+      <element name="TFPReaderPNM.InternalCheck">
+        <short/>
+        <descr/>
+        <errors/>
+        <seealso/>
+      </element>
+      <!-- function result Visibility: default -->
+      <element name="TFPReaderPNM.InternalCheck.Result">
+        <short/>
+      </element>
+      <!-- argument Visibility: default -->
+      <element name="TFPReaderPNM.InternalCheck.Stream">
+        <short/>
+      </element>
+      <!-- procedure Visibility: protected -->
+      <element name="TFPReaderPNM.InternalRead">
+        <short/>
+        <descr/>
+        <errors/>
+        <seealso/>
+      </element>
+      <!-- argument Visibility: default -->
+      <element name="TFPReaderPNM.InternalRead.Stream">
+        <short/>
+      </element>
+      <!-- argument Visibility: default -->
+      <element name="TFPReaderPNM.InternalRead.Img">
+        <short/>
+      </element>
+      <!-- procedure Visibility: protected -->
+      <element name="TFPReaderPNM.ReadScanLine">
+        <short/>
+        <descr/>
+        <errors/>
+        <seealso/>
+      </element>
+      <!-- argument Visibility: default -->
+      <element name="TFPReaderPNM.ReadScanLine.Row">
+        <short/>
+      </element>
+      <!-- argument Visibility: default -->
+      <element name="TFPReaderPNM.ReadScanLine.Stream">
+        <short/>
+      </element>
+      <!-- procedure Visibility: protected -->
+      <element name="TFPReaderPNM.WriteScanLine">
+        <short/>
+        <descr/>
+        <errors/>
+        <seealso/>
+      </element>
+      <!-- argument Visibility: default -->
+      <element name="TFPReaderPNM.WriteScanLine.Row">
+        <short/>
+      </element>
+      <!-- argument Visibility: default -->
+      <element name="TFPReaderPNM.WriteScanLine.Img">
+        <short/>
+      </element>
+    </module>
+    <!-- FPReadPNM -->
+  </package>
+</fpdoc-descriptions>

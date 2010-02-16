@@ -1,0 +1,159 @@
+<?xml version="1.0"?>
+<fpdoc-descriptions>
+  <package name="lazde">
+    <!--
+  ====================================================================
+    FPReadXPM
+  ====================================================================
+-->
+    <module name="FPReadXPM">
+      <short/>
+      <descr/>
+      <!-- class Visibility: default -->
+      <element name="TFPReaderXPM">
+        <short/>
+        <descr/>
+        <errors/>
+        <seealso/>
+      </element>
+      <!-- variable Visibility: private -->
+      <element name="TFPReaderXPM.width">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+      <!-- variable Visibility: private -->
+      <element name="TFPReaderXPM.height">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+      <!-- variable Visibility: private -->
+      <element name="TFPReaderXPM.ncols">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+      <!-- variable Visibility: private -->
+      <element name="TFPReaderXPM.cpp">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+      <!-- variable Visibility: private -->
+      <element name="TFPReaderXPM.xhot">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+      <!-- variable Visibility: private -->
+      <element name="TFPReaderXPM.yhot">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+      <!-- variable Visibility: private -->
+      <element name="TFPReaderXPM.xpmext">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+      <!-- variable Visibility: private -->
+      <element name="TFPReaderXPM.palette">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+      <!-- function Visibility: private -->
+      <element name="TFPReaderXPM.HexToColor">
+        <short/>
+        <descr/>
+        <errors/>
+        <seealso/>
+      </element>
+      <!-- function result Visibility: default -->
+      <element name="TFPReaderXPM.HexToColor.Result">
+        <short/>
+      </element>
+      <!-- argument Visibility: default -->
+      <element name="TFPReaderXPM.HexToColor.s">
+        <short/>
+      </element>
+      <!-- function Visibility: private -->
+      <element name="TFPReaderXPM.NameToColor">
+        <short/>
+        <descr/>
+        <errors/>
+        <seealso/>
+      </element>
+      <!-- function result Visibility: default -->
+      <element name="TFPReaderXPM.NameToColor.Result">
+        <short/>
+      </element>
+      <!-- argument Visibility: default -->
+      <element name="TFPReaderXPM.NameToColor.s">
+        <short/>
+      </element>
+      <!-- function Visibility: private -->
+      <element name="TFPReaderXPM.DiminishWhiteSpace">
+        <short/>
+        <descr/>
+        <errors/>
+        <seealso/>
+      </element>
+      <!-- function result Visibility: default -->
+      <element name="TFPReaderXPM.DiminishWhiteSpace.Result">
+        <short/>
+      </element>
+      <!-- argument Visibility: default -->
+      <element name="TFPReaderXPM.DiminishWhiteSpace.s">
+        <short/>
+      </element>
+      <!-- procedure Visibility: protected -->
+      <element name="TFPReaderXPM.InternalRead">
+        <short/>
+        <descr/>
+        <errors/>
+        <seealso/>
+      </element>
+      <!-- argument Visibility: default -->
+      <element name="TFPReaderXPM.InternalRead.Str">
+        <short/>
+      </element>
+      <!-- argument Visibility: default -->
+      <element name="TFPReaderXPM.InternalRead.Img">
+        <short/>
+      </element>
+      <!-- function Visibility: protected -->
+      <element name="TFPReaderXPM.InternalCheck">
+        <short/>
+        <descr/>
+        <errors/>
+        <seealso/>
+      </element>
+      <!-- function result Visibility: default -->
+      <element name="TFPReaderXPM.InternalCheck.Result">
+        <short/>
+      </element>
+      <!-- argument Visibility: default -->
+      <element name="TFPReaderXPM.InternalCheck.Str">
+        <short/>
+      </element>
+      <!-- constructor Visibility: public -->
+      <element name="TFPReaderXPM.Create">
+        <short/>
+        <descr/>
+        <errors/>
+        <seealso/>
+      </element>
+      <!-- destructor Visibility: public -->
+      <element name="TFPReaderXPM.Destroy">
+        <short/>
+        <descr/>
+        <errors/>
+        <seealso/>
+      </element>
+    </module>
+    <!-- FPReadXPM -->
+  </package>
+</fpdoc-descriptions>

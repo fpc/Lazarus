@@ -1,0 +1,305 @@
+<?xml version="1.0"?>
+<fpdoc-descriptions>
+  <package name="lazde">
+    <!--
+  ====================================================================
+    FPReadBMP
+  ====================================================================
+-->
+    <module name="FPReadBMP">
+      <short/>
+      <descr/>
+      <!-- class Visibility: default -->
+      <element name="TFPReaderBMP">
+        <short/>
+        <descr/>
+        <errors/>
+        <seealso/>
+      </element>
+      <!-- variable Visibility: private -->
+      <element name="TFPReaderBMP.DeltaX">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+      <!-- variable Visibility: private -->
+      <element name="TFPReaderBMP.DeltaY">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+      <!-- variable Visibility: private -->
+      <element name="TFPReaderBMP.TopDown">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+      <!-- variable Visibility: private -->
+      <element name="TFPReaderBMP.continue">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+      <!-- variable Visibility: private -->
+      <element name="TFPReaderBMP.percent">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+      <!-- variable Visibility: private -->
+      <element name="TFPReaderBMP.percentinterval">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+      <!-- variable Visibility: private -->
+      <element name="TFPReaderBMP.percentacc">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+      <!-- variable Visibility: private -->
+      <element name="TFPReaderBMP.Rect">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+      <!-- procedure Visibility: private -->
+      <element name="TFPReaderBMP.FreeBufs">
+        <short/>
+        <descr/>
+        <errors/>
+        <seealso/>
+      </element>
+      <!-- variable Visibility: protected -->
+      <element name="TFPReaderBMP.ReadSize">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+      <!-- variable Visibility: protected -->
+      <element name="TFPReaderBMP.BFI">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+      <!-- variable Visibility: protected -->
+      <element name="TFPReaderBMP.FPalette">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+      <!-- variable Visibility: protected -->
+      <element name="TFPReaderBMP.LineBuf">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+      <!-- variable Visibility: protected -->
+      <element name="TFPReaderBMP.RedMask">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+      <!-- variable Visibility: protected -->
+      <element name="TFPReaderBMP.GreenMask">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+      <!-- variable Visibility: protected -->
+      <element name="TFPReaderBMP.BlueMask">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+      <!-- variable Visibility: protected -->
+      <element name="TFPReaderBMP.RedShift">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+      <!-- variable Visibility: protected -->
+      <element name="TFPReaderBMP.GreenShift">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+      <!-- variable Visibility: protected -->
+      <element name="TFPReaderBMP.BlueShift">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+      <!-- procedure Visibility: protected -->
+      <element name="TFPReaderBMP.SetupRead">
+        <short/>
+        <descr/>
+        <errors/>
+        <seealso/>
+      </element>
+      <!-- argument Visibility: default -->
+      <element name="TFPReaderBMP.SetupRead.nPalette">
+        <short/>
+      </element>
+      <!-- argument Visibility: default -->
+      <element name="TFPReaderBMP.SetupRead.nRowBits">
+        <short/>
+      </element>
+      <!-- argument Visibility: default -->
+      <element name="TFPReaderBMP.SetupRead.Stream">
+        <short/>
+      </element>
+      <!-- function Visibility: protected -->
+      <element name="TFPReaderBMP.CountBits">
+        <short/>
+        <descr/>
+        <errors/>
+        <seealso/>
+      </element>
+      <!-- function result Visibility: default -->
+      <element name="TFPReaderBMP.CountBits.Result">
+        <short/>
+      </element>
+      <!-- argument Visibility: default -->
+      <element name="TFPReaderBMP.CountBits.Value">
+        <short/>
+      </element>
+      <!-- function Visibility: protected -->
+      <element name="TFPReaderBMP.ShiftCount">
+        <short/>
+        <descr/>
+        <errors/>
+        <seealso/>
+      </element>
+      <!-- function result Visibility: default -->
+      <element name="TFPReaderBMP.ShiftCount.Result">
+        <short/>
+      </element>
+      <!-- argument Visibility: default -->
+      <element name="TFPReaderBMP.ShiftCount.Mask">
+        <short/>
+      </element>
+      <!-- function Visibility: protected -->
+      <element name="TFPReaderBMP.ExpandColor">
+        <short/>
+        <descr/>
+        <errors/>
+        <seealso/>
+      </element>
+      <!-- function result Visibility: default -->
+      <element name="TFPReaderBMP.ExpandColor.Result">
+        <short/>
+      </element>
+      <!-- argument Visibility: default -->
+      <element name="TFPReaderBMP.ExpandColor.value">
+        <short/>
+      </element>
+      <!-- procedure Visibility: protected -->
+      <element name="TFPReaderBMP.ExpandRLE8ScanLine">
+        <short/>
+        <descr/>
+        <errors/>
+        <seealso/>
+      </element>
+      <!-- argument Visibility: default -->
+      <element name="TFPReaderBMP.ExpandRLE8ScanLine.Row">
+        <short/>
+      </element>
+      <!-- argument Visibility: default -->
+      <element name="TFPReaderBMP.ExpandRLE8ScanLine.Stream">
+        <short/>
+      </element>
+      <!-- procedure Visibility: protected -->
+      <element name="TFPReaderBMP.ExpandRLE4ScanLine">
+        <short/>
+        <descr/>
+        <errors/>
+        <seealso/>
+      </element>
+      <!-- argument Visibility: default -->
+      <element name="TFPReaderBMP.ExpandRLE4ScanLine.Row">
+        <short/>
+      </element>
+      <!-- argument Visibility: default -->
+      <element name="TFPReaderBMP.ExpandRLE4ScanLine.Stream">
+        <short/>
+      </element>
+      <!-- procedure Visibility: protected -->
+      <element name="TFPReaderBMP.ReadScanLine">
+        <short/>
+        <descr/>
+        <errors/>
+        <seealso/>
+      </element>
+      <!-- argument Visibility: default -->
+      <element name="TFPReaderBMP.ReadScanLine.Row">
+        <short/>
+      </element>
+      <!-- argument Visibility: default -->
+      <element name="TFPReaderBMP.ReadScanLine.Stream">
+        <short/>
+      </element>
+      <!-- procedure Visibility: protected -->
+      <element name="TFPReaderBMP.WriteScanLine">
+        <short/>
+        <descr/>
+        <errors/>
+        <seealso/>
+      </element>
+      <!-- argument Visibility: default -->
+      <element name="TFPReaderBMP.WriteScanLine.Row">
+        <short/>
+      </element>
+      <!-- argument Visibility: default -->
+      <element name="TFPReaderBMP.WriteScanLine.Img">
+        <short/>
+      </element>
+      <!-- procedure Visibility: protected -->
+      <element name="TFPReaderBMP.InternalRead">
+        <short/>
+        <descr/>
+        <errors/>
+        <seealso/>
+      </element>
+      <!-- argument Visibility: default -->
+      <element name="TFPReaderBMP.InternalRead.Stream">
+        <short/>
+      </element>
+      <!-- argument Visibility: default -->
+      <element name="TFPReaderBMP.InternalRead.Img">
+        <short/>
+      </element>
+      <!-- function Visibility: protected -->
+      <element name="TFPReaderBMP.InternalCheck">
+        <short/>
+        <descr/>
+        <errors/>
+        <seealso/>
+      </element>
+      <!-- function result Visibility: default -->
+      <element name="TFPReaderBMP.InternalCheck.Result">
+        <short/>
+      </element>
+      <!-- argument Visibility: default -->
+      <element name="TFPReaderBMP.InternalCheck.Stream">
+        <short/>
+      </element>
+      <!-- constructor Visibility: public -->
+      <element name="TFPReaderBMP.Create">
+        <short/>
+        <descr/>
+        <errors/>
+        <seealso/>
+      </element>
+      <!-- destructor Visibility: public -->
+      <element name="TFPReaderBMP.Destroy">
+        <short/>
+        <descr/>
+        <errors/>
+        <seealso/>
+      </element>
+    </module>
+    <!-- FPReadBMP -->
+  </package>
+</fpdoc-descriptions>

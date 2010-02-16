@@ -1,0 +1,87 @@
+<?xml version="1.0"?>
+<fpdoc-descriptions>
+  <package name="lazde">
+    <!--
+  ====================================================================
+    FPWritePCX
+  ====================================================================
+-->
+    <module name="FPWritePCX">
+      <short/>
+      <descr/>
+      <!-- class Visibility: default -->
+      <element name="TFPWriterPCX">
+        <short/>
+        <descr/>
+        <errors/>
+        <seealso/>
+      </element>
+      <!-- variable Visibility: private -->
+      <element name="TFPWriterPCX.FCompressed">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+      <!-- function Visibility: protected -->
+      <element name="TFPWriterPCX.SaveHeader">
+        <short/>
+        <descr/>
+        <errors/>
+        <seealso/>
+      </element>
+      <!-- function result Visibility: default -->
+      <element name="TFPWriterPCX.SaveHeader.Result">
+        <short/>
+      </element>
+      <!-- argument Visibility: default -->
+      <element name="TFPWriterPCX.SaveHeader.Stream">
+        <short/>
+      </element>
+      <!-- argument Visibility: default -->
+      <element name="TFPWriterPCX.SaveHeader.Img">
+        <short/>
+      </element>
+      <!-- procedure Visibility: protected -->
+      <element name="TFPWriterPCX.InternalWrite">
+        <short/>
+        <descr/>
+        <errors/>
+        <seealso/>
+      </element>
+      <!-- argument Visibility: default -->
+      <element name="TFPWriterPCX.InternalWrite.Stream">
+        <short/>
+      </element>
+      <!-- argument Visibility: default -->
+      <element name="TFPWriterPCX.InternalWrite.Img">
+        <short/>
+      </element>
+      <!-- procedure Visibility: protected -->
+      <element name="TFPWriterPCX.writeline">
+        <short/>
+        <descr/>
+        <errors/>
+        <seealso/>
+      </element>
+      <!-- argument Visibility: default -->
+      <element name="TFPWriterPCX.writeline.Stream">
+        <short/>
+      </element>
+      <!-- argument Visibility: default -->
+      <element name="TFPWriterPCX.writeline.buffer">
+        <short/>
+      </element>
+      <!-- argument Visibility: default -->
+      <element name="TFPWriterPCX.writeline.bytes">
+        <short/>
+      </element>
+      <!-- property Visibility: public -->
+      <element name="TFPWriterPCX.Compressed">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+    </module>
+    <!-- FPWritePCX -->
+  </package>
+</fpdoc-descriptions>

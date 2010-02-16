@@ -1,0 +1,444 @@
+<?xml version="1.0"?>
+<fpdoc-descriptions>
+  <package name="lazde">
+    <!--
+  ====================================================================
+    extinterpolation
+  ====================================================================
+-->
+    <module name="extinterpolation">
+      <short/>
+      <descr/>
+      <!-- class Visibility: default -->
+      <element name="TBlackmanInterpolation">
+        <short/>
+        <descr/>
+        <errors/>
+        <seealso/>
+      </element>
+      <!-- function Visibility: protected -->
+      <element name="TBlackmanInterpolation.Filter">
+        <short/>
+        <descr/>
+        <errors/>
+        <seealso/>
+      </element>
+      <!-- function result Visibility: default -->
+      <element name="TBlackmanInterpolation.Filter.Result">
+        <short/>
+      </element>
+      <!-- argument Visibility: default -->
+      <element name="TBlackmanInterpolation.Filter.x">
+        <short/>
+      </element>
+      <!-- function Visibility: protected -->
+      <element name="TBlackmanInterpolation.MaxSupport">
+        <short/>
+        <descr/>
+        <errors/>
+        <seealso/>
+      </element>
+      <!-- function result Visibility: default -->
+      <element name="TBlackmanInterpolation.MaxSupport.Result">
+        <short/>
+      </element>
+      <!-- class Visibility: default -->
+      <element name="TBlackmanSincInterpolation">
+        <short/>
+        <descr/>
+        <errors/>
+        <seealso/>
+      </element>
+      <!-- function Visibility: protected -->
+      <element name="TBlackmanSincInterpolation.Filter">
+        <short/>
+        <descr/>
+        <errors/>
+        <seealso/>
+      </element>
+      <!-- function result Visibility: default -->
+      <element name="TBlackmanSincInterpolation.Filter.Result">
+        <short/>
+      </element>
+      <!-- argument Visibility: default -->
+      <element name="TBlackmanSincInterpolation.Filter.x">
+        <short/>
+      </element>
+      <!-- function Visibility: protected -->
+      <element name="TBlackmanSincInterpolation.MaxSupport">
+        <short/>
+        <descr/>
+        <errors/>
+        <seealso/>
+      </element>
+      <!-- function result Visibility: default -->
+      <element name="TBlackmanSincInterpolation.MaxSupport.Result">
+        <short/>
+      </element>
+      <!-- class Visibility: default -->
+      <element name="TBlackmanBesselInterpolation">
+        <short/>
+        <descr/>
+        <errors/>
+        <seealso/>
+      </element>
+      <!-- function Visibility: protected -->
+      <element name="TBlackmanBesselInterpolation.Filter">
+        <short/>
+        <descr/>
+        <errors/>
+        <seealso/>
+      </element>
+      <!-- function result Visibility: default -->
+      <element name="TBlackmanBesselInterpolation.Filter.Result">
+        <short/>
+      </element>
+      <!-- argument Visibility: default -->
+      <element name="TBlackmanBesselInterpolation.Filter.x">
+        <short/>
+      </element>
+      <!-- function Visibility: protected -->
+      <element name="TBlackmanBesselInterpolation.MaxSupport">
+        <short/>
+        <descr/>
+        <errors/>
+        <seealso/>
+      </element>
+      <!-- function result Visibility: default -->
+      <element name="TBlackmanBesselInterpolation.MaxSupport.Result">
+        <short/>
+      </element>
+      <!-- class Visibility: default -->
+      <element name="TGaussianInterpolation">
+        <short/>
+        <descr/>
+        <errors/>
+        <seealso/>
+      </element>
+      <!-- function Visibility: protected -->
+      <element name="TGaussianInterpolation.Filter">
+        <short/>
+        <descr/>
+        <errors/>
+        <seealso/>
+      </element>
+      <!-- function result Visibility: default -->
+      <element name="TGaussianInterpolation.Filter.Result">
+        <short/>
+      </element>
+      <!-- argument Visibility: default -->
+      <element name="TGaussianInterpolation.Filter.x">
+        <short/>
+      </element>
+      <!-- function Visibility: protected -->
+      <element name="TGaussianInterpolation.MaxSupport">
+        <short/>
+        <descr/>
+        <errors/>
+        <seealso/>
+      </element>
+      <!-- function result Visibility: default -->
+      <element name="TGaussianInterpolation.MaxSupport.Result">
+        <short/>
+      </element>
+      <!-- class Visibility: default -->
+      <element name="TBoxInterpolation">
+        <short/>
+        <descr/>
+        <errors/>
+        <seealso/>
+      </element>
+      <!-- function Visibility: protected -->
+      <element name="TBoxInterpolation.Filter">
+        <short/>
+        <descr/>
+        <errors/>
+        <seealso/>
+      </element>
+      <!-- function result Visibility: default -->
+      <element name="TBoxInterpolation.Filter.Result">
+        <short/>
+      </element>
+      <!-- argument Visibility: default -->
+      <element name="TBoxInterpolation.Filter.x">
+        <short/>
+      </element>
+      <!-- function Visibility: protected -->
+      <element name="TBoxInterpolation.MaxSupport">
+        <short/>
+        <descr/>
+        <errors/>
+        <seealso/>
+      </element>
+      <!-- function result Visibility: default -->
+      <element name="TBoxInterpolation.MaxSupport.Result">
+        <short/>
+      </element>
+      <!-- class Visibility: default -->
+      <element name="THermiteInterpolation">
+        <short/>
+        <descr/>
+        <errors/>
+        <seealso/>
+      </element>
+      <!-- function Visibility: protected -->
+      <element name="THermiteInterpolation.Filter">
+        <short/>
+        <descr/>
+        <errors/>
+        <seealso/>
+      </element>
+      <!-- function result Visibility: default -->
+      <element name="THermiteInterpolation.Filter.Result">
+        <short/>
+      </element>
+      <!-- argument Visibility: default -->
+      <element name="THermiteInterpolation.Filter.x">
+        <short/>
+      </element>
+      <!-- function Visibility: protected -->
+      <element name="THermiteInterpolation.MaxSupport">
+        <short/>
+        <descr/>
+        <errors/>
+        <seealso/>
+      </element>
+      <!-- function result Visibility: default -->
+      <element name="THermiteInterpolation.MaxSupport.Result">
+        <short/>
+      </element>
+      <!-- class Visibility: default -->
+      <element name="TLanczosInterpolation">
+        <short/>
+        <descr/>
+        <errors/>
+        <seealso/>
+      </element>
+      <!-- function Visibility: protected -->
+      <element name="TLanczosInterpolation.Filter">
+        <short/>
+        <descr/>
+        <errors/>
+        <seealso/>
+      </element>
+      <!-- function result Visibility: default -->
+      <element name="TLanczosInterpolation.Filter.Result">
+        <short/>
+      </element>
+      <!-- argument Visibility: default -->
+      <element name="TLanczosInterpolation.Filter.x">
+        <short/>
+      </element>
+      <!-- function Visibility: protected -->
+      <element name="TLanczosInterpolation.MaxSupport">
+        <short/>
+        <descr/>
+        <errors/>
+        <seealso/>
+      </element>
+      <!-- function result Visibility: default -->
+      <element name="TLanczosInterpolation.MaxSupport.Result">
+        <short/>
+      </element>
+      <!-- class Visibility: default -->
+      <element name="TQuadraticInterpolation">
+        <short/>
+        <descr/>
+        <errors/>
+        <seealso/>
+      </element>
+      <!-- function Visibility: protected -->
+      <element name="TQuadraticInterpolation.Filter">
+        <short/>
+        <descr/>
+        <errors/>
+        <seealso/>
+      </element>
+      <!-- function result Visibility: default -->
+      <element name="TQuadraticInterpolation.Filter.Result">
+        <short/>
+      </element>
+      <!-- argument Visibility: default -->
+      <element name="TQuadraticInterpolation.Filter.x">
+        <short/>
+      </element>
+      <!-- function Visibility: protected -->
+      <element name="TQuadraticInterpolation.MaxSupport">
+        <short/>
+        <descr/>
+        <errors/>
+        <seealso/>
+      </element>
+      <!-- function result Visibility: default -->
+      <element name="TQuadraticInterpolation.MaxSupport.Result">
+        <short/>
+      </element>
+      <!-- class Visibility: default -->
+      <element name="TCubicInterpolation">
+        <short/>
+        <descr/>
+        <errors/>
+        <seealso/>
+      </element>
+      <!-- function Visibility: protected -->
+      <element name="TCubicInterpolation.Filter">
+        <short/>
+        <descr/>
+        <errors/>
+        <seealso/>
+      </element>
+      <!-- function result Visibility: default -->
+      <element name="TCubicInterpolation.Filter.Result">
+        <short/>
+      </element>
+      <!-- argument Visibility: default -->
+      <element name="TCubicInterpolation.Filter.x">
+        <short/>
+      </element>
+      <!-- function Visibility: protected -->
+      <element name="TCubicInterpolation.MaxSupport">
+        <short/>
+        <descr/>
+        <errors/>
+        <seealso/>
+      </element>
+      <!-- function result Visibility: default -->
+      <element name="TCubicInterpolation.MaxSupport.Result">
+        <short/>
+      </element>
+      <!-- class Visibility: default -->
+      <element name="TCatromInterpolation">
+        <short/>
+        <descr/>
+        <errors/>
+        <seealso/>
+      </element>
+      <!-- function Visibility: protected -->
+      <element name="TCatromInterpolation.Filter">
+        <short/>
+        <descr/>
+        <errors/>
+        <seealso/>
+      </element>
+      <!-- function result Visibility: default -->
+      <element name="TCatromInterpolation.Filter.Result">
+        <short/>
+      </element>
+      <!-- argument Visibility: default -->
+      <element name="TCatromInterpolation.Filter.x">
+        <short/>
+      </element>
+      <!-- function Visibility: protected -->
+      <element name="TCatromInterpolation.MaxSupport">
+        <short/>
+        <descr/>
+        <errors/>
+        <seealso/>
+      </element>
+      <!-- function result Visibility: default -->
+      <element name="TCatromInterpolation.MaxSupport.Result">
+        <short/>
+      </element>
+      <!-- class Visibility: default -->
+      <element name="TBilineairInterpolation">
+        <short/>
+        <descr/>
+        <errors/>
+        <seealso/>
+      </element>
+      <!-- function Visibility: protected -->
+      <element name="TBilineairInterpolation.Filter">
+        <short/>
+        <descr/>
+        <errors/>
+        <seealso/>
+      </element>
+      <!-- function result Visibility: default -->
+      <element name="TBilineairInterpolation.Filter.Result">
+        <short/>
+      </element>
+      <!-- argument Visibility: default -->
+      <element name="TBilineairInterpolation.Filter.x">
+        <short/>
+      </element>
+      <!-- function Visibility: protected -->
+      <element name="TBilineairInterpolation.MaxSupport">
+        <short/>
+        <descr/>
+        <errors/>
+        <seealso/>
+      </element>
+      <!-- function result Visibility: default -->
+      <element name="TBilineairInterpolation.MaxSupport.Result">
+        <short/>
+      </element>
+      <!-- class Visibility: default -->
+      <element name="THanningInterpolation">
+        <short/>
+        <descr/>
+        <errors/>
+        <seealso/>
+      </element>
+      <!-- function Visibility: protected -->
+      <element name="THanningInterpolation.Filter">
+        <short/>
+        <descr/>
+        <errors/>
+        <seealso/>
+      </element>
+      <!-- function result Visibility: default -->
+      <element name="THanningInterpolation.Filter.Result">
+        <short/>
+      </element>
+      <!-- argument Visibility: default -->
+      <element name="THanningInterpolation.Filter.x">
+        <short/>
+      </element>
+      <!-- function Visibility: protected -->
+      <element name="THanningInterpolation.MaxSupport">
+        <short/>
+        <descr/>
+        <errors/>
+        <seealso/>
+      </element>
+      <!-- function result Visibility: default -->
+      <element name="THanningInterpolation.MaxSupport.Result">
+        <short/>
+      </element>
+      <!-- class Visibility: default -->
+      <element name="THammingInterpolation">
+        <short/>
+        <descr/>
+        <errors/>
+        <seealso/>
+      </element>
+      <!-- function Visibility: protected -->
+      <element name="THammingInterpolation.Filter">
+        <short/>
+        <descr/>
+        <errors/>
+        <seealso/>
+      </element>
+      <!-- function result Visibility: default -->
+      <element name="THammingInterpolation.Filter.Result">
+        <short/>
+      </element>
+      <!-- argument Visibility: default -->
+      <element name="THammingInterpolation.Filter.x">
+        <short/>
+      </element>
+      <!-- function Visibility: protected -->
+      <element name="THammingInterpolation.MaxSupport">
+        <short/>
+        <descr/>
+        <errors/>
+        <seealso/>
+      </element>
+      <!-- function result Visibility: default -->
+      <element name="THammingInterpolation.MaxSupport.Result">
+        <short/>
+      </element>
+    </module>
+    <!-- extinterpolation -->
+  </package>
+</fpdoc-descriptions>

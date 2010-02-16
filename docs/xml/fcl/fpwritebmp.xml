@@ -1,0 +1,290 @@
+<?xml version="1.0"?>
+<fpdoc-descriptions>
+  <package name="lazde">
+    <!--
+  ====================================================================
+    FPWriteBMP
+  ====================================================================
+-->
+    <module name="FPWriteBMP">
+      <short/>
+      <descr/>
+      <!-- class Visibility: default -->
+      <element name="TFPWriterBMP">
+        <short/>
+        <descr/>
+        <errors/>
+        <seealso/>
+      </element>
+      <!-- variable Visibility: private -->
+      <element name="TFPWriterBMP.StartPosition">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+      <!-- variable Visibility: private -->
+      <element name="TFPWriterBMP.FBpp">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+      <!-- variable Visibility: private -->
+      <element name="TFPWriterBMP.FRLECompress">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+      <!-- variable Visibility: private -->
+      <element name="TFPWriterBMP.BFH">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+      <!-- variable Visibility: private -->
+      <element name="TFPWriterBMP.BFI">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+      <!-- variable Visibility: private -->
+      <element name="TFPWriterBMP.Colinfo">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+      <!-- procedure Visibility: private -->
+      <element name="TFPWriterBMP.SetColorSize">
+        <short/>
+        <descr/>
+        <errors/>
+        <seealso/>
+      </element>
+      <!-- argument Visibility: default -->
+      <element name="TFPWriterBMP.SetColorSize.AValue">
+        <short/>
+      </element>
+      <!-- function Visibility: private -->
+      <element name="TFPWriterBMP.GetColorSize">
+        <short/>
+        <descr/>
+        <errors/>
+        <seealso/>
+      </element>
+      <!-- function result Visibility: default -->
+      <element name="TFPWriterBMP.GetColorSize.Result">
+        <short/>
+      </element>
+      <!-- procedure Visibility: private -->
+      <element name="TFPWriterBMP.SetBpp">
+        <short/>
+        <descr/>
+        <errors/>
+        <seealso/>
+      </element>
+      <!-- argument Visibility: default -->
+      <element name="TFPWriterBMP.SetBpp.abpp">
+        <short/>
+      </element>
+      <!-- procedure Visibility: private -->
+      <element name="TFPWriterBMP.FillColorMap">
+        <short/>
+        <descr/>
+        <errors/>
+        <seealso/>
+      </element>
+      <!-- argument Visibility: default -->
+      <element name="TFPWriterBMP.FillColorMap.Img">
+        <short/>
+      </element>
+      <!-- procedure Visibility: private -->
+      <element name="TFPWriterBMP.Setup16bpp">
+        <short/>
+        <descr/>
+        <errors/>
+        <seealso/>
+      </element>
+      <!-- function Visibility: private -->
+      <element name="TFPWriterBMP.PackWord555">
+        <short/>
+        <descr/>
+        <errors/>
+        <seealso/>
+      </element>
+      <!-- function result Visibility: default -->
+      <element name="TFPWriterBMP.PackWord555.Result">
+        <short/>
+      </element>
+      <!-- argument Visibility: default -->
+      <element name="TFPWriterBMP.PackWord555.col">
+        <short/>
+      </element>
+      <!-- function Visibility: private -->
+      <element name="TFPWriterBMP.PackWord565">
+        <short/>
+        <descr/>
+        <errors/>
+        <seealso/>
+      </element>
+      <!-- function result Visibility: default -->
+      <element name="TFPWriterBMP.PackWord565.Result">
+        <short/>
+      </element>
+      <!-- argument Visibility: default -->
+      <element name="TFPWriterBMP.PackWord565.col">
+        <short/>
+      </element>
+      <!-- function Visibility: private -->
+      <element name="TFPWriterBMP.Pack4bpp">
+        <short/>
+        <descr/>
+        <errors/>
+        <seealso/>
+      </element>
+      <!-- function result Visibility: default -->
+      <element name="TFPWriterBMP.Pack4bpp.Result">
+        <short/>
+      </element>
+      <!-- argument Visibility: default -->
+      <element name="TFPWriterBMP.Pack4bpp.img">
+        <short/>
+      </element>
+      <!-- argument Visibility: default -->
+      <element name="TFPWriterBMP.Pack4bpp.Col">
+        <short/>
+      </element>
+      <!-- argument Visibility: default -->
+      <element name="TFPWriterBMP.Pack4bpp.Row">
+        <short/>
+      </element>
+      <!-- function Visibility: private -->
+      <element name="TFPWriterBMP.Pack1bpp">
+        <short/>
+        <descr/>
+        <errors/>
+        <seealso/>
+      </element>
+      <!-- function result Visibility: default -->
+      <element name="TFPWriterBMP.Pack1bpp.Result">
+        <short/>
+      </element>
+      <!-- argument Visibility: default -->
+      <element name="TFPWriterBMP.Pack1bpp.img">
+        <short/>
+      </element>
+      <!-- argument Visibility: default -->
+      <element name="TFPWriterBMP.Pack1bpp.Col">
+        <short/>
+      </element>
+      <!-- argument Visibility: default -->
+      <element name="TFPWriterBMP.Pack1bpp.Row">
+        <short/>
+      </element>
+      <!-- procedure Visibility: private -->
+      <element name="TFPWriterBMP.CompressScanLineRLE8">
+        <short/>
+        <descr/>
+        <errors/>
+        <seealso/>
+      </element>
+      <!-- argument Visibility: default -->
+      <element name="TFPWriterBMP.CompressScanLineRLE8.ALine">
+        <short/>
+      </element>
+      <!-- argument Visibility: default -->
+      <element name="TFPWriterBMP.CompressScanLineRLE8.Row">
+        <short/>
+      </element>
+      <!-- argument Visibility: default -->
+      <element name="TFPWriterBMP.CompressScanLineRLE8.Width">
+        <short/>
+      </element>
+      <!-- argument Visibility: default -->
+      <element name="TFPWriterBMP.CompressScanLineRLE8.Stream">
+        <short/>
+      </element>
+      <!-- procedure Visibility: private -->
+      <element name="TFPWriterBMP.CompressScanLineRLE4">
+        <short/>
+        <descr/>
+        <errors/>
+        <seealso/>
+      </element>
+      <!-- argument Visibility: default -->
+      <element name="TFPWriterBMP.CompressScanLineRLE4.ALine">
+        <short/>
+      </element>
+      <!-- argument Visibility: default -->
+      <element name="TFPWriterBMP.CompressScanLineRLE4.Row">
+        <short/>
+      </element>
+      <!-- argument Visibility: default -->
+      <element name="TFPWriterBMP.CompressScanLineRLE4.Width">
+        <short/>
+      </element>
+      <!-- argument Visibility: default -->
+      <element name="TFPWriterBMP.CompressScanLineRLE4.Stream">
+        <short/>
+      </element>
+      <!-- function Visibility: protected -->
+      <element name="TFPWriterBMP.SaveHeader">
+        <short/>
+        <descr/>
+        <errors/>
+        <seealso/>
+      </element>
+      <!-- function result Visibility: default -->
+      <element name="TFPWriterBMP.SaveHeader.Result">
+        <short/>
+      </element>
+      <!-- argument Visibility: default -->
+      <element name="TFPWriterBMP.SaveHeader.Stream">
+        <short/>
+      </element>
+      <!-- argument Visibility: default -->
+      <element name="TFPWriterBMP.SaveHeader.Img">
+        <short/>
+      </element>
+      <!-- procedure Visibility: protected -->
+      <element name="TFPWriterBMP.InternalWrite">
+        <short/>
+        <descr/>
+        <errors/>
+        <seealso/>
+      </element>
+      <!-- argument Visibility: default -->
+      <element name="TFPWriterBMP.InternalWrite.Stream">
+        <short/>
+      </element>
+      <!-- argument Visibility: default -->
+      <element name="TFPWriterBMP.InternalWrite.Img">
+        <short/>
+      </element>
+      <!-- constructor Visibility: public -->
+      <element name="TFPWriterBMP.Create">
+        <short/>
+        <descr/>
+        <errors/>
+        <seealso/>
+      </element>
+      <!-- property Visibility: public -->
+      <element name="TFPWriterBMP.BitsPerPixel">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+      <!-- property Visibility: public -->
+      <element name="TFPWriterBMP.RLECompress">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+      <!-- property Visibility: public -->
+      <element name="TFPWriterBMP.BytesPerPixel">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+    </module>
+    <!-- FPWriteBMP -->
+  </package>
+</fpdoc-descriptions>

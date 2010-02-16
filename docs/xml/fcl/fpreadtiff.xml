@@ -1,0 +1,470 @@
+<?xml version="1.0"?>
+<fpdoc-descriptions>
+  <package name="lazde">
+    <!--
+  ====================================================================
+    FPReadTiff
+  ====================================================================
+-->
+    <module name="FPReadTiff">
+      <short/>
+      <descr/>
+      <!-- class Visibility: default -->
+      <element name="TFPReaderTiff">
+        <short/>
+        <descr/>
+        <errors/>
+        <seealso/>
+      </element>
+      <!-- procedure type Visibility: default -->
+      <element name="TTiffCreateCompatibleImgEvent">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+      <!-- argument Visibility: default -->
+      <element name="TTiffCreateCompatibleImgEvent.Sender">
+        <short/>
+      </element>
+      <!-- argument Visibility: default -->
+      <element name="TTiffCreateCompatibleImgEvent.NewImage">
+        <short/>
+      </element>
+      <!-- variable Visibility: private -->
+      <element name="TFPReaderTiff.FOnCreateImage">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+      <!-- variable Visibility: private -->
+      <element name="TFPReaderTiff.FReverserEndian">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+      <!-- variable Visibility: private -->
+      <element name="TFPReaderTiff.IDF">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+      <!-- variable Visibility: private -->
+      <element name="TFPReaderTiff.fIFDStarts">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+      <!-- variable Visibility: private -->
+      <element name="TFPReaderTiff.FReverseEndian">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+      <!-- variable Visibility: private -->
+      <element name="TFPReaderTiff.fStartPos">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+      <!-- variable Visibility: private -->
+      <element name="TFPReaderTiff.s">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+      <!-- procedure Visibility: private -->
+      <element name="TFPReaderTiff.TiffError">
+        <short/>
+        <descr/>
+        <errors/>
+        <seealso/>
+      </element>
+      <!-- argument Visibility: default -->
+      <element name="TFPReaderTiff.TiffError.Msg">
+        <short/>
+      </element>
+      <!-- procedure Visibility: private -->
+      <element name="TFPReaderTiff.SetStreamPos">
+        <short/>
+        <descr/>
+        <errors/>
+        <seealso/>
+      </element>
+      <!-- argument Visibility: default -->
+      <element name="TFPReaderTiff.SetStreamPos.p">
+        <short/>
+      </element>
+      <!-- function Visibility: private -->
+      <element name="TFPReaderTiff.ReadTiffHeader">
+        <short/>
+        <descr/>
+        <errors/>
+        <seealso/>
+      </element>
+      <!-- function result Visibility: default -->
+      <element name="TFPReaderTiff.ReadTiffHeader.Result">
+        <short/>
+      </element>
+      <!-- argument Visibility: default -->
+      <element name="TFPReaderTiff.ReadTiffHeader.QuickTest">
+        <short/>
+      </element>
+      <!-- argument Visibility: default -->
+      <element name="TFPReaderTiff.ReadTiffHeader.IFD">
+        <short/>
+      </element>
+      <!-- function Visibility: private -->
+      <element name="TFPReaderTiff.ReadIFD">
+        <short/>
+        <descr/>
+        <errors/>
+        <seealso/>
+      </element>
+      <!-- function result Visibility: default -->
+      <element name="TFPReaderTiff.ReadIFD.Result">
+        <short/>
+      </element>
+      <!-- argument Visibility: default -->
+      <element name="TFPReaderTiff.ReadIFD.Start">
+        <short/>
+      </element>
+      <!-- procedure Visibility: private -->
+      <element name="TFPReaderTiff.ReadDirectoryEntry">
+        <short/>
+        <descr/>
+        <errors/>
+        <seealso/>
+      </element>
+      <!-- argument Visibility: default -->
+      <element name="TFPReaderTiff.ReadDirectoryEntry.EntryTag">
+        <short/>
+      </element>
+      <!-- function Visibility: private -->
+      <element name="TFPReaderTiff.ReadEntryUnsigned">
+        <short/>
+        <descr/>
+        <errors/>
+        <seealso/>
+      </element>
+      <!-- function result Visibility: default -->
+      <element name="TFPReaderTiff.ReadEntryUnsigned.Result">
+        <short/>
+      </element>
+      <!-- function Visibility: private -->
+      <element name="TFPReaderTiff.ReadEntrySigned">
+        <short/>
+        <descr/>
+        <errors/>
+        <seealso/>
+      </element>
+      <!-- function result Visibility: default -->
+      <element name="TFPReaderTiff.ReadEntrySigned.Result">
+        <short/>
+      </element>
+      <!-- function Visibility: private -->
+      <element name="TFPReaderTiff.ReadEntryRational">
+        <short/>
+        <descr/>
+        <errors/>
+        <seealso/>
+      </element>
+      <!-- function result Visibility: default -->
+      <element name="TFPReaderTiff.ReadEntryRational.Result">
+        <short/>
+      </element>
+      <!-- function Visibility: private -->
+      <element name="TFPReaderTiff.ReadEntryString">
+        <short/>
+        <descr/>
+        <errors/>
+        <seealso/>
+      </element>
+      <!-- function result Visibility: default -->
+      <element name="TFPReaderTiff.ReadEntryString.Result">
+        <short/>
+      </element>
+      <!-- function Visibility: private -->
+      <element name="TFPReaderTiff.ReadByte">
+        <short/>
+        <descr/>
+        <errors/>
+        <seealso/>
+      </element>
+      <!-- function result Visibility: default -->
+      <element name="TFPReaderTiff.ReadByte.Result">
+        <short/>
+      </element>
+      <!-- function Visibility: private -->
+      <element name="TFPReaderTiff.ReadWord">
+        <short/>
+        <descr/>
+        <errors/>
+        <seealso/>
+      </element>
+      <!-- function result Visibility: default -->
+      <element name="TFPReaderTiff.ReadWord.Result">
+        <short/>
+      </element>
+      <!-- function Visibility: private -->
+      <element name="TFPReaderTiff.ReadDWord">
+        <short/>
+        <descr/>
+        <errors/>
+        <seealso/>
+      </element>
+      <!-- function result Visibility: default -->
+      <element name="TFPReaderTiff.ReadDWord.Result">
+        <short/>
+      </element>
+      <!-- procedure Visibility: private -->
+      <element name="TFPReaderTiff.ReadValues">
+        <short/>
+        <descr/>
+        <errors/>
+        <seealso/>
+      </element>
+      <!-- argument Visibility: default -->
+      <element name="TFPReaderTiff.ReadValues.StreamPos">
+        <short/>
+      </element>
+      <!-- argument Visibility: default -->
+      <element name="TFPReaderTiff.ReadValues.EntryType">
+        <short/>
+      </element>
+      <!-- argument Visibility: default -->
+      <element name="TFPReaderTiff.ReadValues.EntryCount">
+        <short/>
+      </element>
+      <!-- argument Visibility: default -->
+      <element name="TFPReaderTiff.ReadValues.Buffer">
+        <short/>
+      </element>
+      <!-- argument Visibility: default -->
+      <element name="TFPReaderTiff.ReadValues.ByteCount">
+        <short/>
+      </element>
+      <!-- procedure Visibility: private -->
+      <element name="TFPReaderTiff.ReadShortOrLongValues">
+        <short/>
+        <descr/>
+        <errors/>
+        <seealso/>
+      </element>
+      <!-- argument Visibility: default -->
+      <element name="TFPReaderTiff.ReadShortOrLongValues.StreamPos">
+        <short/>
+      </element>
+      <!-- argument Visibility: default -->
+      <element name="TFPReaderTiff.ReadShortOrLongValues.Buffer">
+        <short/>
+      </element>
+      <!-- argument Visibility: default -->
+      <element name="TFPReaderTiff.ReadShortOrLongValues.Count">
+        <short/>
+      </element>
+      <!-- procedure Visibility: private -->
+      <element name="TFPReaderTiff.ReadShortValues">
+        <short/>
+        <descr/>
+        <errors/>
+        <seealso/>
+      </element>
+      <!-- argument Visibility: default -->
+      <element name="TFPReaderTiff.ReadShortValues.StreamPos">
+        <short/>
+      </element>
+      <!-- argument Visibility: default -->
+      <element name="TFPReaderTiff.ReadShortValues.Buffer">
+        <short/>
+      </element>
+      <!-- argument Visibility: default -->
+      <element name="TFPReaderTiff.ReadShortValues.Count">
+        <short/>
+      </element>
+      <!-- procedure Visibility: private -->
+      <element name="TFPReaderTiff.ReadImage">
+        <short/>
+        <descr/>
+        <errors/>
+        <seealso/>
+      </element>
+      <!-- argument Visibility: default -->
+      <element name="TFPReaderTiff.ReadImage.Index">
+        <short/>
+      </element>
+      <!-- procedure Visibility: private -->
+      <element name="TFPReaderTiff.ReadImgValue">
+        <short/>
+        <descr/>
+        <errors/>
+        <seealso/>
+      </element>
+      <!-- argument Visibility: default -->
+      <element name="TFPReaderTiff.ReadImgValue.BitCount">
+        <short/>
+      </element>
+      <!-- argument Visibility: default -->
+      <element name="TFPReaderTiff.ReadImgValue.Run">
+        <short/>
+      </element>
+      <!-- argument Visibility: default -->
+      <element name="TFPReaderTiff.ReadImgValue.x">
+        <short/>
+      </element>
+      <!-- argument Visibility: default -->
+      <element name="TFPReaderTiff.ReadImgValue.Predictor">
+        <short/>
+      </element>
+      <!-- argument Visibility: default -->
+      <element name="TFPReaderTiff.ReadImgValue.LastValue">
+        <short/>
+      </element>
+      <!-- argument Visibility: default -->
+      <element name="TFPReaderTiff.ReadImgValue.Value">
+        <short/>
+      </element>
+      <!-- function Visibility: private -->
+      <element name="TFPReaderTiff.FixEndian">
+        <short/>
+        <descr/>
+        <errors/>
+        <seealso/>
+      </element>
+      <!-- function result Visibility: default -->
+      <element name="TFPReaderTiff.FixEndian.Result">
+        <short/>
+      </element>
+      <!-- argument Visibility: default -->
+      <element name="TFPReaderTiff.FixEndian.w">
+        <short/>
+      </element>
+      <!-- argument Visibility: default -->
+      <element name="TFPReaderTiff.FixEndian.d">
+        <short/>
+      </element>
+      <!-- procedure Visibility: private -->
+      <element name="TFPReaderTiff.DecompressPackBits">
+        <short/>
+        <descr/>
+        <errors/>
+        <seealso/>
+      </element>
+      <!-- argument Visibility: default -->
+      <element name="TFPReaderTiff.DecompressPackBits.Buffer">
+        <short/>
+      </element>
+      <!-- argument Visibility: default -->
+      <element name="TFPReaderTiff.DecompressPackBits.Count">
+        <short/>
+      </element>
+      <!-- procedure Visibility: private -->
+      <element name="TFPReaderTiff.DecompressLZW">
+        <short/>
+        <descr/>
+        <errors/>
+        <seealso/>
+      </element>
+      <!-- argument Visibility: default -->
+      <element name="TFPReaderTiff.DecompressLZW.Buffer">
+        <short/>
+      </element>
+      <!-- argument Visibility: default -->
+      <element name="TFPReaderTiff.DecompressLZW.Count">
+        <short/>
+      </element>
+      <!-- procedure Visibility: protected -->
+      <element name="TFPReaderTiff.InternalRead">
+        <short/>
+        <descr/>
+        <errors/>
+        <seealso/>
+      </element>
+      <!-- argument Visibility: default -->
+      <element name="TFPReaderTiff.InternalRead.Str">
+        <short/>
+      </element>
+      <!-- argument Visibility: default -->
+      <element name="TFPReaderTiff.InternalRead.AnImage">
+        <short/>
+      </element>
+      <!-- function Visibility: protected -->
+      <element name="TFPReaderTiff.InternalCheck">
+        <short/>
+        <descr/>
+        <errors/>
+        <seealso/>
+      </element>
+      <!-- function result Visibility: default -->
+      <element name="TFPReaderTiff.InternalCheck.Result">
+        <short/>
+      </element>
+      <!-- argument Visibility: default -->
+      <element name="TFPReaderTiff.InternalCheck.Str">
+        <short/>
+      </element>
+      <!-- variable Visibility: public -->
+      <element name="TFPReaderTiff.FirstImg">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+      <!-- constructor Visibility: public -->
+      <element name="TFPReaderTiff.Create">
+        <short/>
+        <descr/>
+        <errors/>
+        <seealso/>
+      </element>
+      <!-- destructor Visibility: public -->
+      <element name="TFPReaderTiff.Destroy">
+        <short/>
+        <descr/>
+        <errors/>
+        <seealso/>
+      </element>
+      <!-- procedure Visibility: public -->
+      <element name="TFPReaderTiff.Clear">
+        <short/>
+        <descr/>
+        <errors/>
+        <seealso/>
+      </element>
+      <!-- procedure Visibility: public -->
+      <element name="TFPReaderTiff.LoadFromStream">
+        <short/>
+        <descr/>
+        <errors/>
+        <seealso/>
+      </element>
+      <!-- argument Visibility: default -->
+      <element name="TFPReaderTiff.LoadFromStream.aStream">
+        <short/>
+      </element>
+      <!-- property Visibility: public -->
+      <element name="TFPReaderTiff.StartPos">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+      <!-- property Visibility: public -->
+      <element name="TFPReaderTiff.ReverserEndian">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+      <!-- property Visibility: public -->
+      <element name="TFPReaderTiff.TheStream">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+      <!-- property Visibility: public -->
+      <element name="TFPReaderTiff.OnCreateImage">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+    </module>
+    <!-- FPReadTiff -->
+  </package>
+</fpdoc-descriptions>

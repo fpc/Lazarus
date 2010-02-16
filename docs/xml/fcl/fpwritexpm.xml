@@ -1,0 +1,106 @@
+<?xml version="1.0"?>
+<fpdoc-descriptions>
+  <package name="lazde">
+    <!--
+  ====================================================================
+    FPWriteXPM
+  ====================================================================
+-->
+    <module name="FPWriteXPM">
+      <short/>
+      <descr/>
+      <!-- class Visibility: default -->
+      <element name="TFPWriterXPM">
+        <short/>
+        <descr/>
+        <errors/>
+        <seealso/>
+      </element>
+      <!-- variable Visibility: private -->
+      <element name="TFPWriterXPM.FPalChars">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+      <!-- variable Visibility: private -->
+      <element name="TFPWriterXPM.FColorFormat">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+      <!-- variable Visibility: private -->
+      <element name="TFPWriterXPM.FColorShift">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+      <!-- variable Visibility: private -->
+      <element name="TFPWriterXPM.FColorSize">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+      <!-- procedure Visibility: private -->
+      <element name="TFPWriterXPM.SetColorSize">
+        <short/>
+        <descr/>
+        <errors/>
+        <seealso/>
+      </element>
+      <!-- argument Visibility: default -->
+      <element name="TFPWriterXPM.SetColorSize.AValue">
+        <short/>
+      </element>
+      <!-- function Visibility: private -->
+      <element name="TFPWriterXPM.ColorToHex">
+        <short/>
+        <descr/>
+        <errors/>
+        <seealso/>
+      </element>
+      <!-- function result Visibility: default -->
+      <element name="TFPWriterXPM.ColorToHex.Result">
+        <short/>
+      </element>
+      <!-- argument Visibility: default -->
+      <element name="TFPWriterXPM.ColorToHex.c">
+        <short/>
+      </element>
+      <!-- procedure Visibility: protected -->
+      <element name="TFPWriterXPM.InternalWrite">
+        <short/>
+        <descr/>
+        <errors/>
+        <seealso/>
+      </element>
+      <!-- argument Visibility: default -->
+      <element name="TFPWriterXPM.InternalWrite.Str">
+        <short/>
+      </element>
+      <!-- argument Visibility: default -->
+      <element name="TFPWriterXPM.InternalWrite.Img">
+        <short/>
+      </element>
+      <!-- constructor Visibility: public -->
+      <element name="TFPWriterXPM.Create">
+        <short/>
+        <descr/>
+        <errors/>
+        <seealso/>
+      </element>
+      <!-- property Visibility: public -->
+      <element name="TFPWriterXPM.PalChars">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+      <!-- property Visibility: public -->
+      <element name="TFPWriterXPM.ColorCharSize">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+    </module>
+    <!-- FPWriteXPM -->
+  </package>
+</fpdoc-descriptions>

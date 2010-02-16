@@ -1,0 +1,56 @@
+<?xml version="1.0"?>
+<fpdoc-descriptions>
+  <package name="lazde">
+    <!--
+  ====================================================================
+    FPWriteTGA
+  ====================================================================
+-->
+    <module name="FPWriteTGA">
+      <short/>
+      <descr/>
+      <!-- class Visibility: default -->
+      <element name="TFPWriterTarga">
+        <short/>
+        <descr/>
+        <errors/>
+        <seealso/>
+      </element>
+      <!-- function Visibility: protected -->
+      <element name="TFPWriterTarga.SaveHeader">
+        <short/>
+        <descr/>
+        <errors/>
+        <seealso/>
+      </element>
+      <!-- function result Visibility: default -->
+      <element name="TFPWriterTarga.SaveHeader.Result">
+        <short/>
+      </element>
+      <!-- argument Visibility: default -->
+      <element name="TFPWriterTarga.SaveHeader.Stream">
+        <short/>
+      </element>
+      <!-- argument Visibility: default -->
+      <element name="TFPWriterTarga.SaveHeader.Img">
+        <short/>
+      </element>
+      <!-- procedure Visibility: protected -->
+      <element name="TFPWriterTarga.InternalWrite">
+        <short/>
+        <descr/>
+        <errors/>
+        <seealso/>
+      </element>
+      <!-- argument Visibility: default -->
+      <element name="TFPWriterTarga.InternalWrite.Stream">
+        <short/>
+      </element>
+      <!-- argument Visibility: default -->
+      <element name="TFPWriterTarga.InternalWrite.Img">
+        <short/>
+      </element>
+    </module>
+    <!-- FPWriteTGA -->
+  </package>
+</fpdoc-descriptions>

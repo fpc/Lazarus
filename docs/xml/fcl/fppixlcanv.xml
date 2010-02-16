@@ -1,0 +1,294 @@
+<?xml version="1.0"?>
+<fpdoc-descriptions>
+  <package name="lazde">
+    <!--
+  ====================================================================
+    FPPixlCanv
+  ====================================================================
+-->
+    <module name="FPPixlCanv">
+      <short/>
+      <descr/>
+      <!-- class Visibility: default -->
+      <element name="PixelCanvasException">
+        <short/>
+        <descr/>
+        <errors/>
+        <seealso/>
+      </element>
+      <!-- class Visibility: default -->
+      <element name="TFPPixelCanvas">
+        <short/>
+        <descr/>
+        <errors/>
+        <seealso/>
+      </element>
+      <!-- variable Visibility: private -->
+      <element name="TFPPixelCanvas.FHashWidth">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+      <!-- variable Visibility: private -->
+      <element name="TFPPixelCanvas.FRelativeBI">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+      <!-- function Visibility: protected -->
+      <element name="TFPPixelCanvas.DoCreateDefaultFont">
+        <short/>
+        <descr/>
+        <errors/>
+        <seealso/>
+      </element>
+      <!-- function result Visibility: default -->
+      <element name="TFPPixelCanvas.DoCreateDefaultFont.Result">
+        <short/>
+      </element>
+      <!-- function Visibility: protected -->
+      <element name="TFPPixelCanvas.DoCreateDefaultPen">
+        <short/>
+        <descr/>
+        <errors/>
+        <seealso/>
+      </element>
+      <!-- function result Visibility: default -->
+      <element name="TFPPixelCanvas.DoCreateDefaultPen.Result">
+        <short/>
+      </element>
+      <!-- function Visibility: protected -->
+      <element name="TFPPixelCanvas.DoCreateDefaultBrush">
+        <short/>
+        <descr/>
+        <errors/>
+        <seealso/>
+      </element>
+      <!-- function result Visibility: default -->
+      <element name="TFPPixelCanvas.DoCreateDefaultBrush.Result">
+        <short/>
+      </element>
+      <!-- procedure Visibility: protected -->
+      <element name="TFPPixelCanvas.DoTextOut">
+        <short/>
+        <descr/>
+        <errors/>
+        <seealso/>
+      </element>
+      <!-- argument Visibility: default -->
+      <element name="TFPPixelCanvas.DoTextOut.x">
+        <short/>
+      </element>
+      <!-- argument Visibility: default -->
+      <element name="TFPPixelCanvas.DoTextOut.y">
+        <short/>
+      </element>
+      <!-- argument Visibility: default -->
+      <element name="TFPPixelCanvas.DoTextOut.text">
+        <short/>
+      </element>
+      <!-- procedure Visibility: protected -->
+      <element name="TFPPixelCanvas.DoGetTextSize">
+        <short/>
+        <descr/>
+        <errors/>
+        <seealso/>
+      </element>
+      <!-- argument Visibility: default -->
+      <element name="TFPPixelCanvas.DoGetTextSize.text">
+        <short/>
+      </element>
+      <!-- argument Visibility: default -->
+      <element name="TFPPixelCanvas.DoGetTextSize.w">
+        <short/>
+      </element>
+      <!-- argument Visibility: default -->
+      <element name="TFPPixelCanvas.DoGetTextSize.h">
+        <short/>
+      </element>
+      <!-- function Visibility: protected -->
+      <element name="TFPPixelCanvas.DoGetTextHeight">
+        <short/>
+        <descr/>
+        <errors/>
+        <seealso/>
+      </element>
+      <!-- function result Visibility: default -->
+      <element name="TFPPixelCanvas.DoGetTextHeight.Result">
+        <short/>
+      </element>
+      <!-- argument Visibility: default -->
+      <element name="TFPPixelCanvas.DoGetTextHeight.text">
+        <short/>
+      </element>
+      <!-- function Visibility: protected -->
+      <element name="TFPPixelCanvas.DoGetTextWidth">
+        <short/>
+        <descr/>
+        <errors/>
+        <seealso/>
+      </element>
+      <!-- function result Visibility: default -->
+      <element name="TFPPixelCanvas.DoGetTextWidth.Result">
+        <short/>
+      </element>
+      <!-- argument Visibility: default -->
+      <element name="TFPPixelCanvas.DoGetTextWidth.text">
+        <short/>
+      </element>
+      <!-- procedure Visibility: protected -->
+      <element name="TFPPixelCanvas.DoRectangle">
+        <short/>
+        <descr/>
+        <errors/>
+        <seealso/>
+      </element>
+      <!-- argument Visibility: default -->
+      <element name="TFPPixelCanvas.DoRectangle.Bounds">
+        <short/>
+      </element>
+      <!-- procedure Visibility: protected -->
+      <element name="TFPPixelCanvas.DoRectangleFill">
+        <short/>
+        <descr/>
+        <errors/>
+        <seealso/>
+      </element>
+      <!-- argument Visibility: default -->
+      <element name="TFPPixelCanvas.DoRectangleFill.Bounds">
+        <short/>
+      </element>
+      <!-- procedure Visibility: protected -->
+      <element name="TFPPixelCanvas.DoEllipseFill">
+        <short/>
+        <descr/>
+        <errors/>
+        <seealso/>
+      </element>
+      <!-- argument Visibility: default -->
+      <element name="TFPPixelCanvas.DoEllipseFill.Bounds">
+        <short/>
+      </element>
+      <!-- procedure Visibility: protected -->
+      <element name="TFPPixelCanvas.DoEllipse">
+        <short/>
+        <descr/>
+        <errors/>
+        <seealso/>
+      </element>
+      <!-- argument Visibility: default -->
+      <element name="TFPPixelCanvas.DoEllipse.Bounds">
+        <short/>
+      </element>
+      <!-- procedure Visibility: protected -->
+      <element name="TFPPixelCanvas.DoPolygonFill">
+        <short/>
+        <descr/>
+        <errors/>
+        <seealso/>
+      </element>
+      <!-- argument Visibility: default -->
+      <element name="TFPPixelCanvas.DoPolygonFill.points">
+        <short/>
+      </element>
+      <!-- procedure Visibility: protected -->
+      <element name="TFPPixelCanvas.DoPolygon">
+        <short/>
+        <descr/>
+        <errors/>
+        <seealso/>
+      </element>
+      <!-- argument Visibility: default -->
+      <element name="TFPPixelCanvas.DoPolygon.points">
+        <short/>
+      </element>
+      <!-- procedure Visibility: protected -->
+      <element name="TFPPixelCanvas.DoPolyline">
+        <short/>
+        <descr/>
+        <errors/>
+        <seealso/>
+      </element>
+      <!-- argument Visibility: default -->
+      <element name="TFPPixelCanvas.DoPolyline.points">
+        <short/>
+      </element>
+      <!-- procedure Visibility: protected -->
+      <element name="TFPPixelCanvas.DoFloodFill">
+        <short/>
+        <descr/>
+        <errors/>
+        <seealso/>
+      </element>
+      <!-- argument Visibility: default -->
+      <element name="TFPPixelCanvas.DoFloodFill.x">
+        <short/>
+      </element>
+      <!-- argument Visibility: default -->
+      <element name="TFPPixelCanvas.DoFloodFill.y">
+        <short/>
+      </element>
+      <!-- procedure Visibility: protected -->
+      <element name="TFPPixelCanvas.DoLine">
+        <short/>
+        <descr/>
+        <errors/>
+        <seealso/>
+      </element>
+      <!-- argument Visibility: default -->
+      <element name="TFPPixelCanvas.DoLine.x1">
+        <short/>
+      </element>
+      <!-- argument Visibility: default -->
+      <element name="TFPPixelCanvas.DoLine.y1">
+        <short/>
+      </element>
+      <!-- argument Visibility: default -->
+      <element name="TFPPixelCanvas.DoLine.x2">
+        <short/>
+      </element>
+      <!-- argument Visibility: default -->
+      <element name="TFPPixelCanvas.DoLine.y2">
+        <short/>
+      </element>
+      <!-- constructor Visibility: public -->
+      <element name="TFPPixelCanvas.create">
+        <short/>
+        <descr/>
+        <errors/>
+        <seealso/>
+      </element>
+      <!-- property Visibility: public -->
+      <element name="TFPPixelCanvas.HashWidth">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+      <!-- property Visibility: public -->
+      <element name="TFPPixelCanvas.RelativeBrushImage">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+      <!-- constant Visibility: default -->
+      <element name="PenPatterns">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+      <!-- constant Visibility: default -->
+      <element name="sErrNoImage">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+      <!-- constant Visibility: default -->
+      <element name="sErrNotAvailable">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+    </module>
+    <!-- FPPixlCanv -->
+  </package>
+</fpdoc-descriptions>

@@ -1,0 +1,54 @@
+<?xml version="1.0"?>
+<fpdoc-descriptions>
+  <package name="lazde">
+    <!--
+  ====================================================================
+    FPWritePNM
+  ====================================================================
+-->
+    <module name="FPWritePNM">
+      <short/>
+      <descr/>
+      <!-- class Visibility: default -->
+      <element name="TFPWriterPNM">
+        <short/>
+        <descr/>
+        <errors/>
+        <seealso/>
+      </element>
+      <!-- variable Visibility: private -->
+      <element name="TFPWriterPNM.BitMapType">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+      <!-- procedure Visibility: protected -->
+      <element name="TFPWriterPNM.InternalWrite">
+        <short/>
+        <descr/>
+        <errors/>
+        <seealso/>
+      </element>
+      <!-- argument Visibility: default -->
+      <element name="TFPWriterPNM.InternalWrite.Stream">
+        <short/>
+      </element>
+      <!-- argument Visibility: default -->
+      <element name="TFPWriterPNM.InternalWrite.Img">
+        <short/>
+      </element>
+      <!-- constructor Visibility: public -->
+      <element name="TFPWriterPNM.Create">
+        <short/>
+        <descr/>
+        <errors/>
+        <seealso/>
+      </element>
+      <!-- argument Visibility: default -->
+      <element name="TFPWriterPNM.Create.aBitMapType">
+        <short/>
+      </element>
+    </module>
+    <!-- FPWritePNM -->
+  </package>
+</fpdoc-descriptions>

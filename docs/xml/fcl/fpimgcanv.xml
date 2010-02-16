@@ -1,0 +1,134 @@
+<?xml version="1.0"?>
+<fpdoc-descriptions>
+  <package name="lazde">
+    <!--
+  ====================================================================
+    FPImgCanv
+  ====================================================================
+-->
+    <module name="FPImgCanv">
+      <short/>
+      <descr/>
+      <!-- class Visibility: default -->
+      <element name="TFPImageCanvas">
+        <short/>
+        <descr/>
+        <errors/>
+        <seealso/>
+      </element>
+      <!-- variable Visibility: private -->
+      <element name="TFPImageCanvas.FImage">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+      <!-- procedure Visibility: protected -->
+      <element name="TFPImageCanvas.SetColor">
+        <short/>
+        <descr/>
+        <errors/>
+        <seealso/>
+      </element>
+      <!-- argument Visibility: default -->
+      <element name="TFPImageCanvas.SetColor.x">
+        <short/>
+      </element>
+      <!-- argument Visibility: default -->
+      <element name="TFPImageCanvas.SetColor.y">
+        <short/>
+      </element>
+      <!-- argument Visibility: default -->
+      <element name="TFPImageCanvas.SetColor.AValue">
+        <short/>
+      </element>
+      <!-- function Visibility: protected -->
+      <element name="TFPImageCanvas.GetColor">
+        <short/>
+        <descr/>
+        <errors/>
+        <seealso/>
+      </element>
+      <!-- function result Visibility: default -->
+      <element name="TFPImageCanvas.GetColor.Result">
+        <short/>
+      </element>
+      <!-- argument Visibility: default -->
+      <element name="TFPImageCanvas.GetColor.x">
+        <short/>
+      </element>
+      <!-- argument Visibility: default -->
+      <element name="TFPImageCanvas.GetColor.y">
+        <short/>
+      </element>
+      <!-- procedure Visibility: protected -->
+      <element name="TFPImageCanvas.SetHeight">
+        <short/>
+        <descr/>
+        <errors/>
+        <seealso/>
+      </element>
+      <!-- argument Visibility: default -->
+      <element name="TFPImageCanvas.SetHeight.AValue">
+        <short/>
+      </element>
+      <!-- function Visibility: protected -->
+      <element name="TFPImageCanvas.GetHeight">
+        <short/>
+        <descr/>
+        <errors/>
+        <seealso/>
+      </element>
+      <!-- function result Visibility: default -->
+      <element name="TFPImageCanvas.GetHeight.Result">
+        <short/>
+      </element>
+      <!-- procedure Visibility: protected -->
+      <element name="TFPImageCanvas.SetWidth">
+        <short/>
+        <descr/>
+        <errors/>
+        <seealso/>
+      </element>
+      <!-- argument Visibility: default -->
+      <element name="TFPImageCanvas.SetWidth.AValue">
+        <short/>
+      </element>
+      <!-- function Visibility: protected -->
+      <element name="TFPImageCanvas.GetWidth">
+        <short/>
+        <descr/>
+        <errors/>
+        <seealso/>
+      </element>
+      <!-- function result Visibility: default -->
+      <element name="TFPImageCanvas.GetWidth.Result">
+        <short/>
+      </element>
+      <!-- constructor Visibility: public -->
+      <element name="TFPImageCanvas.create">
+        <short/>
+        <descr/>
+        <errors/>
+        <seealso/>
+      </element>
+      <!-- argument Visibility: default -->
+      <element name="TFPImageCanvas.create.AnImage">
+        <short/>
+      </element>
+      <!-- destructor Visibility: public -->
+      <element name="TFPImageCanvas.destroy">
+        <short/>
+        <descr/>
+        <errors/>
+        <seealso/>
+      </element>
+      <!-- property Visibility: public -->
+      <element name="TFPImageCanvas.Image">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+    </module>
+    <!-- FPImgCanv -->
+  </package>
+</fpdoc-descriptions>

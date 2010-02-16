@@ -1,0 +1,372 @@
+<?xml version="1.0"?>
+<fpdoc-descriptions>
+  <package name="lazde">
+    <!--
+  ====================================================================
+    ftfont
+  ====================================================================
+-->
+    <module name="ftfont">
+      <short/>
+      <descr/>
+      <!-- class Visibility: default -->
+      <element name="FreeTypeFontException">
+        <short/>
+        <descr/>
+        <errors/>
+        <seealso/>
+      </element>
+      <!-- class Visibility: default -->
+      <element name="TFreeTypeFont">
+        <short/>
+        <descr/>
+        <errors/>
+        <seealso/>
+      </element>
+      <!-- variable Visibility: private -->
+      <element name="TFreeTypeFont.FResolution">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+      <!-- variable Visibility: private -->
+      <element name="TFreeTypeFont.FAntiAliased">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+      <!-- variable Visibility: private -->
+      <element name="TFreeTypeFont.FLastText">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+      <!-- variable Visibility: private -->
+      <element name="TFreeTypeFont.FIndex">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+      <!-- variable Visibility: private -->
+      <element name="TFreeTypeFont.FFontID">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+      <!-- variable Visibility: private -->
+      <element name="TFreeTypeFont.FFace">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+      <!-- variable Visibility: private -->
+      <element name="TFreeTypeFont.FAngle">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+      <!-- procedure Visibility: private -->
+      <element name="TFreeTypeFont.DrawChar">
+        <short/>
+        <descr/>
+        <errors/>
+        <seealso/>
+      </element>
+      <!-- argument Visibility: default -->
+      <element name="TFreeTypeFont.DrawChar.x">
+        <short/>
+      </element>
+      <!-- argument Visibility: default -->
+      <element name="TFreeTypeFont.DrawChar.y">
+        <short/>
+      </element>
+      <!-- argument Visibility: default -->
+      <element name="TFreeTypeFont.DrawChar.data">
+        <short/>
+      </element>
+      <!-- argument Visibility: default -->
+      <element name="TFreeTypeFont.DrawChar.pitch">
+        <short/>
+      </element>
+      <!-- argument Visibility: default -->
+      <element name="TFreeTypeFont.DrawChar.width">
+        <short/>
+      </element>
+      <!-- argument Visibility: default -->
+      <element name="TFreeTypeFont.DrawChar.height">
+        <short/>
+      </element>
+      <!-- procedure Visibility: private -->
+      <element name="TFreeTypeFont.DrawCharBW">
+        <short/>
+        <descr/>
+        <errors/>
+        <seealso/>
+      </element>
+      <!-- argument Visibility: default -->
+      <element name="TFreeTypeFont.DrawCharBW.x">
+        <short/>
+      </element>
+      <!-- argument Visibility: default -->
+      <element name="TFreeTypeFont.DrawCharBW.y">
+        <short/>
+      </element>
+      <!-- argument Visibility: default -->
+      <element name="TFreeTypeFont.DrawCharBW.data">
+        <short/>
+      </element>
+      <!-- argument Visibility: default -->
+      <element name="TFreeTypeFont.DrawCharBW.pitch">
+        <short/>
+      </element>
+      <!-- argument Visibility: default -->
+      <element name="TFreeTypeFont.DrawCharBW.width">
+        <short/>
+      </element>
+      <!-- argument Visibility: default -->
+      <element name="TFreeTypeFont.DrawCharBW.height">
+        <short/>
+      </element>
+      <!-- procedure Visibility: private -->
+      <element name="TFreeTypeFont.ClearLastText">
+        <short/>
+        <descr/>
+        <errors/>
+        <seealso/>
+      </element>
+      <!-- procedure Visibility: protected -->
+      <element name="TFreeTypeFont.SetName">
+        <short/>
+        <descr/>
+        <errors/>
+        <seealso/>
+      </element>
+      <!-- argument Visibility: default -->
+      <element name="TFreeTypeFont.SetName.AValue">
+        <short/>
+      </element>
+      <!-- procedure Visibility: protected -->
+      <element name="TFreeTypeFont.SetIndex">
+        <short/>
+        <descr/>
+        <errors/>
+        <seealso/>
+      </element>
+      <!-- argument Visibility: default -->
+      <element name="TFreeTypeFont.SetIndex.AValue">
+        <short/>
+      </element>
+      <!-- procedure Visibility: protected -->
+      <element name="TFreeTypeFont.SetSize">
+        <short/>
+        <descr/>
+        <errors/>
+        <seealso/>
+      </element>
+      <!-- argument Visibility: default -->
+      <element name="TFreeTypeFont.SetSize.AValue">
+        <short/>
+      </element>
+      <!-- function Visibility: protected -->
+      <element name="TFreeTypeFont.GetFlags">
+        <short/>
+        <descr/>
+        <errors/>
+        <seealso/>
+      </element>
+      <!-- function result Visibility: default -->
+      <element name="TFreeTypeFont.GetFlags.Result">
+        <short/>
+      </element>
+      <!-- argument Visibility: default -->
+      <element name="TFreeTypeFont.GetFlags.index">
+        <short/>
+      </element>
+      <!-- procedure Visibility: protected -->
+      <element name="TFreeTypeFont.SetFlags">
+        <short/>
+        <descr/>
+        <errors/>
+        <seealso/>
+      </element>
+      <!-- argument Visibility: default -->
+      <element name="TFreeTypeFont.SetFlags.index">
+        <short/>
+      </element>
+      <!-- argument Visibility: default -->
+      <element name="TFreeTypeFont.SetFlags.AValue">
+        <short/>
+      </element>
+      <!-- procedure Visibility: protected -->
+      <element name="TFreeTypeFont.DoAllocateResources">
+        <short/>
+        <descr/>
+        <errors/>
+        <seealso/>
+      </element>
+      <!-- procedure Visibility: protected -->
+      <element name="TFreeTypeFont.DoDeAllocateResources">
+        <short/>
+        <descr/>
+        <errors/>
+        <seealso/>
+      </element>
+      <!-- procedure Visibility: protected -->
+      <element name="TFreeTypeFont.DoCopyProps">
+        <short/>
+        <descr/>
+        <errors/>
+        <seealso/>
+      </element>
+      <!-- argument Visibility: default -->
+      <element name="TFreeTypeFont.DoCopyProps.From">
+        <short/>
+      </element>
+      <!-- procedure Visibility: protected -->
+      <element name="TFreeTypeFont.DoDrawText">
+        <short/>
+        <descr/>
+        <errors/>
+        <seealso/>
+      </element>
+      <!-- argument Visibility: default -->
+      <element name="TFreeTypeFont.DoDrawText.atx">
+        <short/>
+      </element>
+      <!-- argument Visibility: default -->
+      <element name="TFreeTypeFont.DoDrawText.aty">
+        <short/>
+      </element>
+      <!-- argument Visibility: default -->
+      <element name="TFreeTypeFont.DoDrawText.atext">
+        <short/>
+      </element>
+      <!-- procedure Visibility: protected -->
+      <element name="TFreeTypeFont.DoGetTextSize">
+        <short/>
+        <descr/>
+        <errors/>
+        <seealso/>
+      </element>
+      <!-- argument Visibility: default -->
+      <element name="TFreeTypeFont.DoGetTextSize.text">
+        <short/>
+      </element>
+      <!-- argument Visibility: default -->
+      <element name="TFreeTypeFont.DoGetTextSize.w">
+        <short/>
+      </element>
+      <!-- argument Visibility: default -->
+      <element name="TFreeTypeFont.DoGetTextSize.h">
+        <short/>
+      </element>
+      <!-- function Visibility: protected -->
+      <element name="TFreeTypeFont.DoGetTextHeight">
+        <short/>
+        <descr/>
+        <errors/>
+        <seealso/>
+      </element>
+      <!-- function result Visibility: default -->
+      <element name="TFreeTypeFont.DoGetTextHeight.Result">
+        <short/>
+      </element>
+      <!-- argument Visibility: default -->
+      <element name="TFreeTypeFont.DoGetTextHeight.text">
+        <short/>
+      </element>
+      <!-- function Visibility: protected -->
+      <element name="TFreeTypeFont.DoGetTextWidth">
+        <short/>
+        <descr/>
+        <errors/>
+        <seealso/>
+      </element>
+      <!-- function result Visibility: default -->
+      <element name="TFreeTypeFont.DoGetTextWidth.Result">
+        <short/>
+      </element>
+      <!-- argument Visibility: default -->
+      <element name="TFreeTypeFont.DoGetTextWidth.text">
+        <short/>
+      </element>
+      <!-- procedure Visibility: protected -->
+      <element name="TFreeTypeFont.GetText">
+        <short/>
+        <descr/>
+        <errors/>
+        <seealso/>
+      </element>
+      <!-- argument Visibility: default -->
+      <element name="TFreeTypeFont.GetText.aText">
+        <short/>
+      </element>
+      <!-- procedure Visibility: protected -->
+      <element name="TFreeTypeFont.GetFace">
+        <short/>
+        <descr/>
+        <errors/>
+        <seealso/>
+      </element>
+      <!-- constructor Visibility: public -->
+      <element name="TFreeTypeFont.create">
+        <short/>
+        <descr/>
+        <errors/>
+        <seealso/>
+      </element>
+      <!-- destructor Visibility: public -->
+      <element name="TFreeTypeFont.Destroy">
+        <short/>
+        <descr/>
+        <errors/>
+        <seealso/>
+      </element>
+      <!-- property Visibility: public -->
+      <element name="TFreeTypeFont.FontIndex">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+      <!-- property Visibility: public -->
+      <element name="TFreeTypeFont.Resolution">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+      <!-- property Visibility: public -->
+      <element name="TFreeTypeFont.AntiAliased">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+      <!-- property Visibility: public -->
+      <element name="TFreeTypeFont.Angle">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+      <!-- variable Visibility: default -->
+      <element name="FontMgr">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+      <!-- procedure Visibility: default -->
+      <element name="InitEngine">
+        <short/>
+        <descr/>
+        <errors/>
+        <seealso/>
+      </element>
+      <!-- procedure Visibility: default -->
+      <element name="DoneEngine">
+        <short/>
+        <descr/>
+        <errors/>
+        <seealso/>
+      </element>
+    </module>
+    <!-- ftfont -->
+  </package>
+</fpdoc-descriptions>

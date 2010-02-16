@@ -1,0 +1,534 @@
+<?xml version="1.0"?>
+<fpdoc-descriptions>
+  <package name="lazde">
+    <!--
+  ====================================================================
+    FPDitherer
+  ====================================================================
+-->
+    <module name="FPDitherer">
+      <short/>
+      <descr/>
+      <!-- class Visibility: default -->
+      <element name="FPDithererException">
+        <short/>
+        <descr/>
+        <errors/>
+        <seealso/>
+      </element>
+      <!-- procedure type Visibility: default -->
+      <element name="TFPDithererProgressEvent">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+      <!-- argument Visibility: default -->
+      <element name="TFPDithererProgressEvent.Sender">
+        <short/>
+      </element>
+      <!-- argument Visibility: default -->
+      <element name="TFPDithererProgressEvent.Stage">
+        <short/>
+      </element>
+      <!-- argument Visibility: default -->
+      <element name="TFPDithererProgressEvent.PercentDone">
+        <short/>
+      </element>
+      <!-- argument Visibility: default -->
+      <element name="TFPDithererProgressEvent.Msg">
+        <short/>
+      </element>
+      <!-- argument Visibility: default -->
+      <element name="TFPDithererProgressEvent.Continue">
+        <short/>
+      </element>
+      <!-- class Visibility: default -->
+      <element name="TFPBaseDitherer">
+        <short/>
+        <descr/>
+        <errors/>
+        <seealso/>
+      </element>
+      <!-- variable Visibility: private -->
+      <element name="TFPBaseDitherer.FPalette">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+      <!-- variable Visibility: private -->
+      <element name="TFPBaseDitherer.FOnProgress">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+      <!-- procedure Visibility: private -->
+      <element name="TFPBaseDitherer.QuickSort">
+        <short/>
+        <descr/>
+        <errors/>
+        <seealso/>
+      </element>
+      <!-- argument Visibility: default -->
+      <element name="TFPBaseDitherer.QuickSort.l">
+        <short/>
+      </element>
+      <!-- argument Visibility: default -->
+      <element name="TFPBaseDitherer.QuickSort.r">
+        <short/>
+      </element>
+      <!-- variable Visibility: protected -->
+      <element name="TFPBaseDitherer.FImage">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+      <!-- variable Visibility: protected -->
+      <element name="TFPBaseDitherer.FHashMap">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+      <!-- variable Visibility: protected -->
+      <element name="TFPBaseDitherer.FSorted">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+      <!-- variable Visibility: protected -->
+      <element name="TFPBaseDitherer.FUseHash">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+      <!-- variable Visibility: protected -->
+      <element name="TFPBaseDitherer.FUseAlpha">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+      <!-- function Visibility: protected -->
+      <element name="TFPBaseDitherer.ColorCompare">
+        <short/>
+        <descr/>
+        <errors/>
+        <seealso/>
+      </element>
+      <!-- function result Visibility: default -->
+      <element name="TFPBaseDitherer.ColorCompare.Result">
+        <short/>
+      </element>
+      <!-- argument Visibility: default -->
+      <element name="TFPBaseDitherer.ColorCompare.c1">
+        <short/>
+      </element>
+      <!-- argument Visibility: default -->
+      <element name="TFPBaseDitherer.ColorCompare.c2">
+        <short/>
+      </element>
+      <!-- function Visibility: protected -->
+      <element name="TFPBaseDitherer.GetColorDinst">
+        <short/>
+        <descr/>
+        <errors/>
+        <seealso/>
+      </element>
+      <!-- function result Visibility: default -->
+      <element name="TFPBaseDitherer.GetColorDinst.Result">
+        <short/>
+      </element>
+      <!-- argument Visibility: default -->
+      <element name="TFPBaseDitherer.GetColorDinst.c1">
+        <short/>
+      </element>
+      <!-- argument Visibility: default -->
+      <element name="TFPBaseDitherer.GetColorDinst.c2">
+        <short/>
+      </element>
+      <!-- function Visibility: protected -->
+      <element name="TFPBaseDitherer.SubtractColorInt">
+        <short/>
+        <descr/>
+        <errors/>
+        <seealso/>
+      </element>
+      <!-- function result Visibility: default -->
+      <element name="TFPBaseDitherer.SubtractColorInt.Result">
+        <short/>
+      </element>
+      <!-- argument Visibility: default -->
+      <element name="TFPBaseDitherer.SubtractColorInt.c1">
+        <short/>
+      </element>
+      <!-- argument Visibility: default -->
+      <element name="TFPBaseDitherer.SubtractColorInt.c2">
+        <short/>
+      </element>
+      <!-- function Visibility: protected -->
+      <element name="TFPBaseDitherer.SubtractColor">
+        <short/>
+        <descr/>
+        <errors/>
+        <seealso/>
+      </element>
+      <!-- function result Visibility: default -->
+      <element name="TFPBaseDitherer.SubtractColor.Result">
+        <short/>
+      </element>
+      <!-- argument Visibility: default -->
+      <element name="TFPBaseDitherer.SubtractColor.c1">
+        <short/>
+      </element>
+      <!-- argument Visibility: default -->
+      <element name="TFPBaseDitherer.SubtractColor.c2">
+        <short/>
+      </element>
+      <!-- procedure Visibility: protected -->
+      <element name="TFPBaseDitherer.InternalDither">
+        <short/>
+        <descr/>
+        <errors/>
+        <seealso/>
+      </element>
+      <!-- argument Visibility: default -->
+      <element name="TFPBaseDitherer.InternalDither.Source">
+        <short/>
+      </element>
+      <!-- argument Visibility: default -->
+      <element name="TFPBaseDitherer.InternalDither.Dest">
+        <short/>
+      </element>
+      <!-- function Visibility: protected -->
+      <element name="TFPBaseDitherer.FindBestColor">
+        <short/>
+        <descr/>
+        <errors/>
+        <seealso/>
+      </element>
+      <!-- function result Visibility: default -->
+      <element name="TFPBaseDitherer.FindBestColor.Result">
+        <short/>
+      </element>
+      <!-- argument Visibility: default -->
+      <element name="TFPBaseDitherer.FindBestColor.OrigColor">
+        <short/>
+      </element>
+      <!-- argument Visibility: default -->
+      <element name="TFPBaseDitherer.FindBestColor.PalIndex">
+        <short/>
+      </element>
+      <!-- procedure Visibility: protected -->
+      <element name="TFPBaseDitherer.Progress">
+        <short/>
+        <descr/>
+        <errors/>
+        <seealso/>
+      </element>
+      <!-- argument Visibility: default -->
+      <element name="TFPBaseDitherer.Progress.Sender">
+        <short/>
+      </element>
+      <!-- argument Visibility: default -->
+      <element name="TFPBaseDitherer.Progress.Stage">
+        <short/>
+      </element>
+      <!-- argument Visibility: default -->
+      <element name="TFPBaseDitherer.Progress.PercentDone">
+        <short/>
+      </element>
+      <!-- argument Visibility: default -->
+      <element name="TFPBaseDitherer.Progress.Msg">
+        <short/>
+      </element>
+      <!-- argument Visibility: default -->
+      <element name="TFPBaseDitherer.Progress.Continue">
+        <short/>
+      </element>
+      <!-- procedure Visibility: protected -->
+      <element name="TFPBaseDitherer.SetUseHash">
+        <short/>
+        <descr/>
+        <errors/>
+        <seealso/>
+      </element>
+      <!-- argument Visibility: default -->
+      <element name="TFPBaseDitherer.SetUseHash.Value">
+        <short/>
+      </element>
+      <!-- procedure Visibility: protected -->
+      <element name="TFPBaseDitherer.SetSorted">
+        <short/>
+        <descr/>
+        <errors/>
+        <seealso/>
+      </element>
+      <!-- argument Visibility: default -->
+      <element name="TFPBaseDitherer.SetSorted.Value">
+        <short/>
+      </element>
+      <!-- property Visibility: public -->
+      <element name="TFPBaseDitherer.OnProgress">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+      <!-- property Visibility: public -->
+      <element name="TFPBaseDitherer.Palette">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+      <!-- property Visibility: public -->
+      <element name="TFPBaseDitherer.PaletteSorted">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+      <!-- property Visibility: public -->
+      <element name="TFPBaseDitherer.UseHashMap">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+      <!-- property Visibility: public -->
+      <element name="TFPBaseDitherer.UseAlpha">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+      <!-- procedure Visibility: public -->
+      <element name="TFPBaseDitherer.Dither">
+        <short/>
+        <descr/>
+        <errors/>
+        <seealso/>
+      </element>
+      <!-- argument Visibility: default -->
+      <element name="TFPBaseDitherer.Dither.Source">
+        <short/>
+      </element>
+      <!-- argument Visibility: default -->
+      <element name="TFPBaseDitherer.Dither.Dest">
+        <short/>
+      </element>
+      <!-- procedure Visibility: public -->
+      <element name="TFPBaseDitherer.SortPalette">
+        <short/>
+        <descr/>
+        <errors/>
+        <seealso/>
+      </element>
+      <!-- constructor Visibility: public -->
+      <element name="TFPBaseDitherer.Create">
+        <short/>
+        <descr/>
+        <errors/>
+        <seealso/>
+      </element>
+      <!-- argument Visibility: default -->
+      <element name="TFPBaseDitherer.Create.ThePalette">
+        <short/>
+      </element>
+      <!-- destructor Visibility: public -->
+      <element name="TFPBaseDitherer.Destroy">
+        <short/>
+        <descr/>
+        <errors/>
+        <seealso/>
+      </element>
+      <!-- pointer type Visibility: default -->
+      <element name="PFPPixelReal">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+      <!-- record type Visibility: default -->
+      <element name="TFPPixelReal">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+      <!-- variable Visibility: default -->
+      <element name="TFPPixelReal.a">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+      <!-- variable Visibility: default -->
+      <element name="TFPPixelReal.r">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+      <!-- variable Visibility: default -->
+      <element name="TFPPixelReal.g">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+      <!-- variable Visibility: default -->
+      <element name="TFPPixelReal.b">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+      <!-- pointer type Visibility: default -->
+      <element name="PFSPixelLine">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+      <!-- record type Visibility: default -->
+      <element name="TFSPixelLine">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+      <!-- variable Visibility: default -->
+      <element name="TFSPixelLine.pixels">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+      <!-- variable Visibility: default -->
+      <element name="TFSPixelLine.Next">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+      <!-- class Visibility: default -->
+      <element name="TFPFloydSteinbergDitherer">
+        <short/>
+        <descr/>
+        <errors/>
+        <seealso/>
+      </element>
+      <!-- variable Visibility: private -->
+      <element name="TFPFloydSteinbergDitherer.Lines">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+      <!-- function Visibility: private -->
+      <element name="TFPFloydSteinbergDitherer.Color2Real">
+        <short/>
+        <descr/>
+        <errors/>
+        <seealso/>
+      </element>
+      <!-- function result Visibility: default -->
+      <element name="TFPFloydSteinbergDitherer.Color2Real.Result">
+        <short/>
+      </element>
+      <!-- argument Visibility: default -->
+      <element name="TFPFloydSteinbergDitherer.Color2Real.c">
+        <short/>
+      </element>
+      <!-- function Visibility: private -->
+      <element name="TFPFloydSteinbergDitherer.Real2Color">
+        <short/>
+        <descr/>
+        <errors/>
+        <seealso/>
+      </element>
+      <!-- function result Visibility: default -->
+      <element name="TFPFloydSteinbergDitherer.Real2Color.Result">
+        <short/>
+      </element>
+      <!-- argument Visibility: default -->
+      <element name="TFPFloydSteinbergDitherer.Real2Color.r">
+        <short/>
+      </element>
+      <!-- procedure Visibility: private -->
+      <element name="TFPFloydSteinbergDitherer.CreatePixelLine">
+        <short/>
+        <descr/>
+        <errors/>
+        <seealso/>
+      </element>
+      <!-- argument Visibility: default -->
+      <element name="TFPFloydSteinbergDitherer.CreatePixelLine.line">
+        <short/>
+      </element>
+      <!-- argument Visibility: default -->
+      <element name="TFPFloydSteinbergDitherer.CreatePixelLine.row">
+        <short/>
+      </element>
+      <!-- function Visibility: private -->
+      <element name="TFPFloydSteinbergDitherer.GetError">
+        <short/>
+        <descr/>
+        <errors/>
+        <seealso/>
+      </element>
+      <!-- function result Visibility: default -->
+      <element name="TFPFloydSteinbergDitherer.GetError.Result">
+        <short/>
+      </element>
+      <!-- argument Visibility: default -->
+      <element name="TFPFloydSteinbergDitherer.GetError.c1">
+        <short/>
+      </element>
+      <!-- argument Visibility: default -->
+      <element name="TFPFloydSteinbergDitherer.GetError.c2">
+        <short/>
+      </element>
+      <!-- procedure Visibility: private -->
+      <element name="TFPFloydSteinbergDitherer.DistributeErrors">
+        <short/>
+        <descr/>
+        <errors/>
+        <seealso/>
+      </element>
+      <!-- argument Visibility: default -->
+      <element name="TFPFloydSteinbergDitherer.DistributeErrors.line">
+        <short/>
+      </element>
+      <!-- argument Visibility: default -->
+      <element name="TFPFloydSteinbergDitherer.DistributeErrors.row">
+        <short/>
+      </element>
+      <!-- argument Visibility: default -->
+      <element name="TFPFloydSteinbergDitherer.DistributeErrors.Img">
+        <short/>
+      </element>
+      <!-- procedure Visibility: private -->
+      <element name="TFPFloydSteinbergDitherer.DeleteAllPixelLines">
+        <short/>
+        <descr/>
+        <errors/>
+        <seealso/>
+      </element>
+      <!-- argument Visibility: default -->
+      <element name="TFPFloydSteinbergDitherer.DeleteAllPixelLines.line">
+        <short/>
+      </element>
+      <!-- procedure Visibility: protected -->
+      <element name="TFPFloydSteinbergDitherer.InternalDither">
+        <short/>
+        <descr/>
+        <errors/>
+        <seealso/>
+      </element>
+      <!-- argument Visibility: default -->
+      <element name="TFPFloydSteinbergDitherer.InternalDither.Source">
+        <short/>
+      </element>
+      <!-- argument Visibility: default -->
+      <element name="TFPFloydSteinbergDitherer.InternalDither.Dest">
+        <short/>
+      </element>
+      <!-- constructor Visibility: public -->
+      <element name="TFPFloydSteinbergDitherer.Create">
+        <short/>
+        <descr/>
+        <errors/>
+        <seealso/>
+      </element>
+      <!-- argument Visibility: default -->
+      <element name="TFPFloydSteinbergDitherer.Create.ThePalette">
+        <short/>
+      </element>
+    </module>
+    <!-- FPDitherer -->
+  </package>
+</fpdoc-descriptions>

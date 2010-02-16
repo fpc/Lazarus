@@ -1,0 +1,316 @@
+<?xml version="1.0"?>
+<fpdoc-descriptions>
+  <package name="lazde">
+    <!--
+  ====================================================================
+    PNGcomn
+  ====================================================================
+-->
+    <module name="PNGcomn">
+      <short/>
+      <descr/>
+      <!-- class Visibility: default -->
+      <element name="PNGImageException">
+        <short/>
+        <descr/>
+        <errors/>
+        <seealso/>
+      </element>
+      <!-- enumeration type Visibility: default -->
+      <element name="TChunkTypes">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+      <!-- enumeration value Visibility: default -->
+      <element name="TChunkTypes.ctIHDR">
+        <short/>
+      </element>
+      <!-- enumeration value Visibility: default -->
+      <element name="TChunkTypes.ctcHRM">
+        <short/>
+      </element>
+      <!-- enumeration value Visibility: default -->
+      <element name="TChunkTypes.ctgAMA">
+        <short/>
+      </element>
+      <!-- enumeration value Visibility: default -->
+      <element name="TChunkTypes.ctsBIT">
+        <short/>
+      </element>
+      <!-- enumeration value Visibility: default -->
+      <element name="TChunkTypes.ctPLTE">
+        <short/>
+      </element>
+      <!-- enumeration value Visibility: default -->
+      <element name="TChunkTypes.ctbKGD">
+        <short/>
+      </element>
+      <!-- enumeration value Visibility: default -->
+      <element name="TChunkTypes.cthIST">
+        <short/>
+      </element>
+      <!-- enumeration value Visibility: default -->
+      <element name="TChunkTypes.cttRNS">
+        <short/>
+      </element>
+      <!-- enumeration value Visibility: default -->
+      <element name="TChunkTypes.ctoFFs">
+        <short/>
+      </element>
+      <!-- enumeration value Visibility: default -->
+      <element name="TChunkTypes.ctpHYs">
+        <short/>
+      </element>
+      <!-- enumeration value Visibility: default -->
+      <element name="TChunkTypes.ctIDAT">
+        <short/>
+      </element>
+      <!-- enumeration value Visibility: default -->
+      <element name="TChunkTypes.cttIME">
+        <short/>
+      </element>
+      <!-- enumeration value Visibility: default -->
+      <element name="TChunkTypes.ctsCAL">
+        <short/>
+      </element>
+      <!-- enumeration value Visibility: default -->
+      <element name="TChunkTypes.cttEXt">
+        <short/>
+      </element>
+      <!-- enumeration value Visibility: default -->
+      <element name="TChunkTypes.ctzTXt">
+        <short/>
+      </element>
+      <!-- enumeration value Visibility: default -->
+      <element name="TChunkTypes.ctIEND">
+        <short/>
+      </element>
+      <!-- enumeration value Visibility: default -->
+      <element name="TChunkTypes.ctsRGB">
+        <short/>
+      </element>
+      <!-- enumeration value Visibility: default -->
+      <element name="TChunkTypes.ctiCCP">
+        <short/>
+      </element>
+      <!-- enumeration value Visibility: default -->
+      <element name="TChunkTypes.ctiTXt">
+        <short/>
+      </element>
+      <!-- enumeration value Visibility: default -->
+      <element name="TChunkTypes.ctsPLT">
+        <short/>
+      </element>
+      <!-- enumeration value Visibility: default -->
+      <element name="TChunkTypes.ctUnknown">
+        <short/>
+      </element>
+      <!-- array type Visibility: default -->
+      <element name="EightLong">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+      <!-- array type Visibility: default -->
+      <element name="TChunkCode">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+      <!-- record type Visibility: default -->
+      <element name="TChunk">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+      <!-- variable Visibility: default -->
+      <element name="TChunk.acapacity">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+      <!-- variable Visibility: default -->
+      <element name="TChunk.alength">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+      <!-- variable Visibility: default -->
+      <element name="TChunk.CRC">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+      <!-- variable Visibility: default -->
+      <element name="TChunk.ReadType">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+      <!-- variable Visibility: default -->
+      <element name="TChunk.data">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+      <!-- variable Visibility: default -->
+      <element name="TChunk.aType">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+      <!-- record type Visibility: default -->
+      <element name="TChunkHeader">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+      <!-- variable Visibility: default -->
+      <element name="TChunkHeader.CLength">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+      <!-- variable Visibility: default -->
+      <element name="TChunkHeader.CType">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+      <!-- record type Visibility: default -->
+      <element name="THeaderChunk">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+      <!-- variable Visibility: default -->
+      <element name="THeaderChunk.Width">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+      <!-- variable Visibility: default -->
+      <element name="THeaderChunk.height">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+      <!-- variable Visibility: default -->
+      <element name="THeaderChunk.BitDepth">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+      <!-- variable Visibility: default -->
+      <element name="THeaderChunk.ColorType">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+      <!-- variable Visibility: default -->
+      <element name="THeaderChunk.Compression">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+      <!-- variable Visibility: default -->
+      <element name="THeaderChunk.Filter">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+      <!-- variable Visibility: default -->
+      <element name="THeaderChunk.Interlace">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+      <!-- constant Visibility: default -->
+      <element name="Signature">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+      <!-- constant Visibility: default -->
+      <element name="MaxChunkLength">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+      <!-- constant Visibility: default -->
+      <element name="All1Bits">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+      <!-- constant Visibility: default -->
+      <element name="ChunkTypes">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+      <!-- constant Visibility: default -->
+      <element name="ChunkAncillary">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+      <!-- constant Visibility: default -->
+      <element name="ChunkPrivate">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+      <!-- constant Visibility: default -->
+      <element name="ChunkReserved">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+      <!-- constant Visibility: default -->
+      <element name="ChunkSafeCopy">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+      <!-- constant Visibility: default -->
+      <element name="StartRow">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+      <!-- constant Visibility: default -->
+      <element name="StartCol">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+      <!-- constant Visibility: default -->
+      <element name="RowInc">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+      <!-- constant Visibility: default -->
+      <element name="ColInc">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+      <!-- constant Visibility: default -->
+      <element name="BlockHght">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+      <!-- constant Visibility: default -->
+      <element name="BlockWdth">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+    </module>
+    <!-- PNGcomn -->
+  </package>
+</fpdoc-descriptions>

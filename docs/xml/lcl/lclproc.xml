@@ -694,7 +694,7 @@
 
 The default debug output is the console.
 
-This can be overriden by passing the --debug-log=&lt;myfile.txt&gt; parameter on the command line of the application. Then the output is written to &lt;myfile.txt&gt;        </descr>
+This can be overriden by passing the --debug-log=&lt;myfile.txt&gt; parameter on the command line of the application. Then the output is written to &lt;myfile.txt&gt;</descr>
         <errors/>
         <seealso/>
       </element>
@@ -1767,8 +1767,16 @@ This can be overriden by passing the --debug-log=&lt;myfile.txt&gt; parameter on
       </element>
       <!-- function Visibility: default -->
       <element name="DbgS">
-        <short/>
-        <descr>"Converts a pointer to a hexidecimal string."</descr>
+        <short>Formats debug output for various variable types (overloaded).</short>
+        <descr>boolean: "True" or "False".
+[format as DefinitionList!]
+pointer: hexidecimal address.
+TRect, TPoint: shows the x/y coordinates.
+TComponentState: set.
+TObject: Name:ClassName.
+TClass: ClassName.
+string, WideString: chars &gt; #126 are translated into #nn (#nnnn) format.
+</descr>
         <errors>""</errors>
         <seealso/>
       </element>

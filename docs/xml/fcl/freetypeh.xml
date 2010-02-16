@@ -1,0 +1,1682 @@
+<?xml version="1.0"?>
+<fpdoc-descriptions>
+  <package name="lazde">
+    <!--
+  ====================================================================
+    freetypeh
+  ====================================================================
+-->
+    <module name="freetypeh">
+      <short/>
+      <descr/>
+      <!-- constant Visibility: default -->
+      <element name="freetypedll">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+      <!-- array type Visibility: default -->
+      <element name="FT_Encoding">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+      <!-- constant Visibility: default -->
+      <element name="FT_FACE_FLAG_SCALABLE">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+      <!-- constant Visibility: default -->
+      <element name="FT_FACE_FLAG_FIXED_SIZES">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+      <!-- constant Visibility: default -->
+      <element name="FT_FACE_FLAG_FIXED_WIDTH">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+      <!-- constant Visibility: default -->
+      <element name="FT_FACE_FLAG_SFNT">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+      <!-- constant Visibility: default -->
+      <element name="FT_FACE_FLAG_HORIZONTAL">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+      <!-- constant Visibility: default -->
+      <element name="FT_FACE_FLAG_VERTICAL">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+      <!-- constant Visibility: default -->
+      <element name="FT_FACE_FLAG_KERNING">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+      <!-- constant Visibility: default -->
+      <element name="FT_FACE_FLAG_FAST_GLYPHS">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+      <!-- constant Visibility: default -->
+      <element name="FT_FACE_FLAG_MULTIPLE_MASTERS">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+      <!-- constant Visibility: default -->
+      <element name="FT_FACE_FLAG_GLYPH_NAMES">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+      <!-- constant Visibility: default -->
+      <element name="FT_FACE_FLAG_EXTERNAL_STREAM">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+      <!-- constant Visibility: default -->
+      <element name="FT_STYLE_FLAG_ITALIC">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+      <!-- constant Visibility: default -->
+      <element name="FT_STYLE_FLAG_BOLD">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+      <!-- constant Visibility: default -->
+      <element name="FT_LOAD_DEFAULT">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+      <!-- constant Visibility: default -->
+      <element name="FT_LOAD_NO_SCALE">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+      <!-- constant Visibility: default -->
+      <element name="FT_LOAD_NO_HINTING">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+      <!-- constant Visibility: default -->
+      <element name="FT_LOAD_RENDER">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+      <!-- constant Visibility: default -->
+      <element name="FT_LOAD_NO_BITMAP">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+      <!-- constant Visibility: default -->
+      <element name="FT_LOAD_VERTICAL_LAYOUT">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+      <!-- constant Visibility: default -->
+      <element name="FT_LOAD_FORCE_AUTOHINT">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+      <!-- constant Visibility: default -->
+      <element name="FT_LOAD_CROP_BITMAP">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+      <!-- constant Visibility: default -->
+      <element name="FT_LOAD_PEDANTIC">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+      <!-- constant Visibility: default -->
+      <element name="FT_LOAD_IGNORE_GLOBAL_ADVANCE_WIDTH">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+      <!-- constant Visibility: default -->
+      <element name="FT_LOAD_NO_RECURSE">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+      <!-- constant Visibility: default -->
+      <element name="FT_LOAD_IGNORE_TRANSFORM">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+      <!-- constant Visibility: default -->
+      <element name="FT_LOAD_MONOCHROME">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+      <!-- constant Visibility: default -->
+      <element name="FT_LOAD_LINEAR_DESIGN">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+      <!-- constant Visibility: default -->
+      <element name="ft_glyph_format_none">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+      <!-- constant Visibility: default -->
+      <element name="ft_glyph_format_composite">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+      <!-- constant Visibility: default -->
+      <element name="ft_glyph_format_bitmap">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+      <!-- constant Visibility: default -->
+      <element name="ft_glyph_format_outline">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+      <!-- constant Visibility: default -->
+      <element name="ft_glyph_format_plotter">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+      <!-- constant Visibility: default -->
+      <element name="FT_ENCODING_MS_SYMBOL">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+      <!-- constant Visibility: default -->
+      <element name="FT_ENCODING_UNICODE">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+      <!-- constant Visibility: default -->
+      <element name="FT_ENCODING_MS_SJIS">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+      <!-- constant Visibility: default -->
+      <element name="FT_ENCODING_MS_GB2312">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+      <!-- constant Visibility: default -->
+      <element name="FT_ENCODING_MS_BIG5">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+      <!-- constant Visibility: default -->
+      <element name="FT_ENCODING_MS_WANSUNG">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+      <!-- constant Visibility: default -->
+      <element name="FT_ENCODING_MS_JOHAB">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+      <!-- constant Visibility: default -->
+      <element name="FT_ENCODING_ADOBE_STANDARD">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+      <!-- constant Visibility: default -->
+      <element name="FT_ENCODING_ADOBE_EXPERT">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+      <!-- constant Visibility: default -->
+      <element name="FT_ENCODING_ADOBE_CUSTOM">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+      <!-- constant Visibility: default -->
+      <element name="FT_ENCODING_ADOBE_LATIN_1">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+      <!-- constant Visibility: default -->
+      <element name="FT_ENCODING_OLD_LATIN_2">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+      <!-- constant Visibility: default -->
+      <element name="FT_ENCODING_APPLE_ROMAN">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+      <!-- constant Visibility: default -->
+      <element name="ft_glyph_bbox_unscaled">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+      <!-- constant Visibility: default -->
+      <element name="ft_glyph_bbox_subpixels">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+      <!-- constant Visibility: default -->
+      <element name="ft_glyph_bbox_gridfit">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+      <!-- constant Visibility: default -->
+      <element name="ft_glyph_bbox_truncate">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+      <!-- constant Visibility: default -->
+      <element name="ft_glyph_bbox_pixels">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+      <!-- constant Visibility: default -->
+      <element name="FT_KERNING_DEFAULT">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+      <!-- constant Visibility: default -->
+      <element name="FT_KERNING_UNFITTED">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+      <!-- constant Visibility: default -->
+      <element name="FT_KERNING_UNSCALED">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+      <!-- alias type Visibility: default -->
+      <element name="FT_Bool">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+      <!-- alias type Visibility: default -->
+      <element name="FT_FWord">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+      <!-- alias type Visibility: default -->
+      <element name="FT_UFWord">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+      <!-- alias type Visibility: default -->
+      <element name="FT_Char">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+      <!-- alias type Visibility: default -->
+      <element name="FT_Byte">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+      <!-- alias type Visibility: default -->
+      <element name="FT_String">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+      <!-- alias type Visibility: default -->
+      <element name="FT_Short">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+      <!-- alias type Visibility: default -->
+      <element name="FT_UShort">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+      <!-- alias type Visibility: default -->
+      <element name="FT_Int">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+      <!-- alias type Visibility: default -->
+      <element name="FT_UInt">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+      <!-- alias type Visibility: default -->
+      <element name="FT_Long">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+      <!-- alias type Visibility: default -->
+      <element name="FT_ULong">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+      <!-- alias type Visibility: default -->
+      <element name="FT_Pos">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+      <!-- alias type Visibility: default -->
+      <element name="FT_F2Dot14">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+      <!-- alias type Visibility: default -->
+      <element name="FT_F26Dot6">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+      <!-- alias type Visibility: default -->
+      <element name="FT_Fixed">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+      <!-- alias type Visibility: default -->
+      <element name="FT_Error">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+      <!-- alias type Visibility: default -->
+      <element name="FT_Pointer">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+      <!-- enumeration type Visibility: default -->
+      <element name="FT_Render_Mode">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+      <!-- enumeration value Visibility: default -->
+      <element name="FT_Render_Mode.FT_RENDER_MODE_NORMAL">
+        <short/>
+      </element>
+      <!-- enumeration value Visibility: default -->
+      <element name="FT_Render_Mode.FT_RENDER_MODE_LIGHT">
+        <short/>
+      </element>
+      <!-- enumeration value Visibility: default -->
+      <element name="FT_Render_Mode.FT_RENDER_MODE_MONO">
+        <short/>
+      </element>
+      <!-- enumeration value Visibility: default -->
+      <element name="FT_Render_Mode.FT_RENDER_MODE_LCD">
+        <short/>
+      </element>
+      <!-- enumeration value Visibility: default -->
+      <element name="FT_Render_Mode.FT_RENDER_MODE_LCD_V">
+        <short/>
+      </element>
+      <!-- enumeration value Visibility: default -->
+      <element name="FT_Render_Mode.FT_RENDER_MODE_MAX">
+        <short/>
+      </element>
+      <!-- record type Visibility: default -->
+      <element name="FT_UnitVector_">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+      <!-- variable Visibility: default -->
+      <element name="FT_UnitVector_.x">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+      <!-- variable Visibility: default -->
+      <element name="FT_UnitVector_.y">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+      <!-- alias type Visibility: default -->
+      <element name="FT_UnitVector">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+      <!-- record type Visibility: default -->
+      <element name="FT_Matrix">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+      <!-- variable Visibility: default -->
+      <element name="FT_Matrix.xx">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+      <!-- variable Visibility: default -->
+      <element name="FT_Matrix.xy">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+      <!-- variable Visibility: default -->
+      <element name="FT_Matrix.yx">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+      <!-- variable Visibility: default -->
+      <element name="FT_Matrix.yy">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+      <!-- pointer type Visibility: default -->
+      <element name="PFT_Matrix">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+      <!-- record type Visibility: default -->
+      <element name="FT_Data">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+      <!-- variable Visibility: default -->
+      <element name="FT_Data.pointer">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+      <!-- variable Visibility: default -->
+      <element name="FT_Data.length">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+      <!-- procedure type Visibility: default -->
+      <element name="FT_Generic_Finalizer">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+      <!-- argument Visibility: default -->
+      <element name="FT_Generic_Finalizer.AnObject">
+        <short/>
+      </element>
+      <!-- record type Visibility: default -->
+      <element name="FT_Generic">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+      <!-- variable Visibility: default -->
+      <element name="FT_Generic.data">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+      <!-- variable Visibility: default -->
+      <element name="FT_Generic.finalizer">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+      <!-- record type Visibility: default -->
+      <element name="FT_Glyph_Metrics">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+      <!-- variable Visibility: default -->
+      <element name="FT_Glyph_Metrics.width">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+      <!-- variable Visibility: default -->
+      <element name="FT_Glyph_Metrics.height">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+      <!-- variable Visibility: default -->
+      <element name="FT_Glyph_Metrics.horiBearingX">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+      <!-- variable Visibility: default -->
+      <element name="FT_Glyph_Metrics.horiBearingY">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+      <!-- variable Visibility: default -->
+      <element name="FT_Glyph_Metrics.horiAdvance">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+      <!-- variable Visibility: default -->
+      <element name="FT_Glyph_Metrics.vertBearingX">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+      <!-- variable Visibility: default -->
+      <element name="FT_Glyph_Metrics.vertBearingY">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+      <!-- variable Visibility: default -->
+      <element name="FT_Glyph_Metrics.vertAdvance">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+      <!-- record type Visibility: default -->
+      <element name="FT_Bitmap_Size">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+      <!-- variable Visibility: default -->
+      <element name="FT_Bitmap_Size.height">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+      <!-- variable Visibility: default -->
+      <element name="FT_Bitmap_Size.width">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+      <!-- array type Visibility: default -->
+      <element name="AFT_Bitmap_Size">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+      <!-- pointer type Visibility: default -->
+      <element name="PFT_Bitmap_Size">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+      <!-- record type Visibility: default -->
+      <element name="FT_Vector">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+      <!-- variable Visibility: default -->
+      <element name="FT_Vector.x">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+      <!-- variable Visibility: default -->
+      <element name="FT_Vector.y">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+      <!-- pointer type Visibility: default -->
+      <element name="PFT_Vector">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+      <!-- record type Visibility: default -->
+      <element name="FT_BBox">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+      <!-- variable Visibility: default -->
+      <element name="FT_BBox.xMin">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+      <!-- variable Visibility: default -->
+      <element name="FT_BBox.yMin">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+      <!-- variable Visibility: default -->
+      <element name="FT_BBox.xMax">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+      <!-- variable Visibility: default -->
+      <element name="FT_BBox.yMax">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+      <!-- pointer type Visibility: default -->
+      <element name="PFT_BBox">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+      <!-- record type Visibility: default -->
+      <element name="FT_Bitmap">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+      <!-- variable Visibility: default -->
+      <element name="FT_Bitmap.rows">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+      <!-- variable Visibility: default -->
+      <element name="FT_Bitmap.width">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+      <!-- variable Visibility: default -->
+      <element name="FT_Bitmap.pitch">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+      <!-- variable Visibility: default -->
+      <element name="FT_Bitmap.buffer">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+      <!-- variable Visibility: default -->
+      <element name="FT_Bitmap.num_grays">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+      <!-- variable Visibility: default -->
+      <element name="FT_Bitmap.pixel_mode">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+      <!-- variable Visibility: default -->
+      <element name="FT_Bitmap.palette_mode">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+      <!-- variable Visibility: default -->
+      <element name="FT_Bitmap.palette">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+      <!-- record type Visibility: default -->
+      <element name="FT_Outline">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+      <!-- variable Visibility: default -->
+      <element name="FT_Outline.n_contours">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+      <!-- variable Visibility: default -->
+      <element name="FT_Outline.n_points">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+      <!-- variable Visibility: default -->
+      <element name="FT_Outline.points">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+      <!-- variable Visibility: default -->
+      <element name="FT_Outline.tags">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+      <!-- variable Visibility: default -->
+      <element name="FT_Outline.contours">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+      <!-- variable Visibility: default -->
+      <element name="FT_Outline.flags">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+      <!-- record type Visibility: default -->
+      <element name="FT_Size_Metrics">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+      <!-- variable Visibility: default -->
+      <element name="FT_Size_Metrics.x_ppem">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+      <!-- variable Visibility: default -->
+      <element name="FT_Size_Metrics.y_ppem">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+      <!-- variable Visibility: default -->
+      <element name="FT_Size_Metrics.x_scale">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+      <!-- variable Visibility: default -->
+      <element name="FT_Size_Metrics.y_scale">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+      <!-- variable Visibility: default -->
+      <element name="FT_Size_Metrics.ascender">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+      <!-- variable Visibility: default -->
+      <element name="FT_Size_Metrics.descender">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+      <!-- variable Visibility: default -->
+      <element name="FT_Size_Metrics.height">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+      <!-- variable Visibility: default -->
+      <element name="FT_Size_Metrics.max_advance">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+      <!-- pointer type Visibility: default -->
+      <element name="PFT_Library">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+      <!-- pointer type Visibility: default -->
+      <element name="PFT_Face">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+      <!-- pointer type Visibility: default -->
+      <element name="PFT_Charmap">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+      <!-- pointer type Visibility: default -->
+      <element name="PPFT_Charmap">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+      <!-- pointer type Visibility: default -->
+      <element name="PFT_GlyphSlot">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+      <!-- pointer type Visibility: default -->
+      <element name="PFT_Subglyph">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+      <!-- pointer type Visibility: default -->
+      <element name="PFT_Size">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+      <!-- pointer type Visibility: default -->
+      <element name="PFT_Glyph">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+      <!-- pointer type Visibility: default -->
+      <element name="PFT_BitmapGlyph">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+      <!-- pointer type Visibility: default -->
+      <element name="PFT_OutlineGlyph">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+      <!-- record type Visibility: default -->
+      <element name="TFT_Library">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+      <!-- record type Visibility: default -->
+      <element name="TFT_Charmap">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+      <!-- variable Visibility: default -->
+      <element name="TFT_Charmap.face">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+      <!-- variable Visibility: default -->
+      <element name="TFT_Charmap.encoding">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+      <!-- variable Visibility: default -->
+      <element name="TFT_Charmap.platform_id">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+      <!-- variable Visibility: default -->
+      <element name="TFT_Charmap.encoding_id">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+      <!-- record type Visibility: default -->
+      <element name="TFT_Size">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+      <!-- variable Visibility: default -->
+      <element name="TFT_Size.face">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+      <!-- variable Visibility: default -->
+      <element name="TFT_Size.generic">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+      <!-- variable Visibility: default -->
+      <element name="TFT_Size.metrics">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+      <!-- record type Visibility: default -->
+      <element name="TFT_Subglyph">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+      <!-- record type Visibility: default -->
+      <element name="TFT_GlyphSlot">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+      <!-- variable Visibility: default -->
+      <element name="TFT_GlyphSlot.alibrary">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+      <!-- variable Visibility: default -->
+      <element name="TFT_GlyphSlot.face">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+      <!-- variable Visibility: default -->
+      <element name="TFT_GlyphSlot.next">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+      <!-- variable Visibility: default -->
+      <element name="TFT_GlyphSlot.flags">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+      <!-- variable Visibility: default -->
+      <element name="TFT_GlyphSlot.generic">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+      <!-- variable Visibility: default -->
+      <element name="TFT_GlyphSlot.metrics">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+      <!-- variable Visibility: default -->
+      <element name="TFT_GlyphSlot.linearHoriAdvance">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+      <!-- variable Visibility: default -->
+      <element name="TFT_GlyphSlot.linearVertAdvance">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+      <!-- variable Visibility: default -->
+      <element name="TFT_GlyphSlot.advance">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+      <!-- variable Visibility: default -->
+      <element name="TFT_GlyphSlot.format">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+      <!-- variable Visibility: default -->
+      <element name="TFT_GlyphSlot.bitmap">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+      <!-- variable Visibility: default -->
+      <element name="TFT_GlyphSlot.bitmap_left">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+      <!-- variable Visibility: default -->
+      <element name="TFT_GlyphSlot.bitmap_top">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+      <!-- variable Visibility: default -->
+      <element name="TFT_GlyphSlot.outline">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+      <!-- variable Visibility: default -->
+      <element name="TFT_GlyphSlot.num_subglyphs">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+      <!-- variable Visibility: default -->
+      <element name="TFT_GlyphSlot.subglyphs">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+      <!-- variable Visibility: default -->
+      <element name="TFT_GlyphSlot.control_data">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+      <!-- variable Visibility: default -->
+      <element name="TFT_GlyphSlot.control_len">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+      <!-- variable Visibility: default -->
+      <element name="TFT_GlyphSlot.other">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+      <!-- record type Visibility: default -->
+      <element name="TFT_Face">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+      <!-- variable Visibility: default -->
+      <element name="TFT_Face.num_faces">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+      <!-- variable Visibility: default -->
+      <element name="TFT_Face.face_index">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+      <!-- variable Visibility: default -->
+      <element name="TFT_Face.face_flags">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+      <!-- variable Visibility: default -->
+      <element name="TFT_Face.style_flags">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+      <!-- variable Visibility: default -->
+      <element name="TFT_Face.num_glyphs">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+      <!-- variable Visibility: default -->
+      <element name="TFT_Face.family_name">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+      <!-- variable Visibility: default -->
+      <element name="TFT_Face.style_name">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+      <!-- variable Visibility: default -->
+      <element name="TFT_Face.num_fixed_sizes">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+      <!-- variable Visibility: default -->
+      <element name="TFT_Face.available_sizes">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+      <!-- variable Visibility: default -->
+      <element name="TFT_Face.num_charmaps">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+      <!-- variable Visibility: default -->
+      <element name="TFT_Face.charmaps">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+      <!-- variable Visibility: default -->
+      <element name="TFT_Face.generic">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+      <!-- variable Visibility: default -->
+      <element name="TFT_Face.bbox">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+      <!-- variable Visibility: default -->
+      <element name="TFT_Face.units_per_EM">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+      <!-- variable Visibility: default -->
+      <element name="TFT_Face.ascender">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+      <!-- variable Visibility: default -->
+      <element name="TFT_Face.descender">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+      <!-- variable Visibility: default -->
+      <element name="TFT_Face.height">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+      <!-- variable Visibility: default -->
+      <element name="TFT_Face.max_advance_width">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+      <!-- variable Visibility: default -->
+      <element name="TFT_Face.max_advance_height">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+      <!-- variable Visibility: default -->
+      <element name="TFT_Face.underline_position">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+      <!-- variable Visibility: default -->
+      <element name="TFT_Face.underline_thickness">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+      <!-- variable Visibility: default -->
+      <element name="TFT_Face.glyph">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+      <!-- variable Visibility: default -->
+      <element name="TFT_Face.size">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+      <!-- variable Visibility: default -->
+      <element name="TFT_Face.charmap">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+      <!-- record type Visibility: default -->
+      <element name="TFT_Glyph">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+      <!-- variable Visibility: default -->
+      <element name="TFT_Glyph.FTlibrary">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+      <!-- variable Visibility: default -->
+      <element name="TFT_Glyph.clazz">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+      <!-- variable Visibility: default -->
+      <element name="TFT_Glyph.aFormat">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+      <!-- variable Visibility: default -->
+      <element name="TFT_Glyph.advance">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+      <!-- record type Visibility: default -->
+      <element name="TFT_BitmapGlyph">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+      <!-- variable Visibility: default -->
+      <element name="TFT_BitmapGlyph.root">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+      <!-- variable Visibility: default -->
+      <element name="TFT_BitmapGlyph.left">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+      <!-- variable Visibility: default -->
+      <element name="TFT_BitmapGlyph.top">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+      <!-- variable Visibility: default -->
+      <element name="TFT_BitmapGlyph.bitmap">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+      <!-- record type Visibility: default -->
+      <element name="TFT_OutlineGlyph">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+      <!-- variable Visibility: default -->
+      <element name="TFT_OutlineGlyph.root">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+      <!-- variable Visibility: default -->
+      <element name="TFT_OutlineGlyph.outline">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+      <!-- function Visibility: default -->
+      <element name="FT_Init_FreeType">
+        <short/>
+        <descr/>
+        <errors/>
+        <seealso/>
+      </element>
+      <!-- function result Visibility: default -->
+      <element name="FT_Init_FreeType.Result">
+        <short/>
+      </element>
+      <!-- argument Visibility: default -->
+      <element name="FT_Init_FreeType.alibrary">
+        <short/>
+      </element>
+      <!-- function Visibility: default -->
+      <element name="FT_Done_FreeType">
+        <short/>
+        <descr/>
+        <errors/>
+        <seealso/>
+      </element>
+      <!-- function result Visibility: default -->
+      <element name="FT_Done_FreeType.Result">
+        <short/>
+      </element>
+      <!-- argument Visibility: default -->
+      <element name="FT_Done_FreeType.alibrary">
+        <short/>
+      </element>
+      <!-- procedure Visibility: default -->
+      <element name="FT_Library_Version">
+        <short/>
+        <descr/>
+        <errors/>
+        <seealso/>
+      </element>
+      <!-- argument Visibility: default -->
+      <element name="FT_Library_Version.alibrary">
+        <short/>
+      </element>
+      <!-- argument Visibility: default -->
+      <element name="FT_Library_Version.amajor">
+        <short/>
+      </element>
+      <!-- argument Visibility: default -->
+      <element name="FT_Library_Version.aminor">
+        <short/>
+      </element>
+      <!-- argument Visibility: default -->
+      <element name="FT_Library_Version.apatch">
+        <short/>
+      </element>
+      <!-- function Visibility: default -->
+      <element name="FT_New_Face">
+        <short/>
+        <descr/>
+        <errors/>
+        <seealso/>
+      </element>
+      <!-- function result Visibility: default -->
+      <element name="FT_New_Face.Result">
+        <short/>
+      </element>
+      <!-- argument Visibility: default -->
+      <element name="FT_New_Face.alibrary">
+        <short/>
+      </element>
+      <!-- argument Visibility: default -->
+      <element name="FT_New_Face.filepathname">
+        <short/>
+      </element>
+      <!-- argument Visibility: default -->
+      <element name="FT_New_Face.face_index">
+        <short/>
+      </element>
+      <!-- argument Visibility: default -->
+      <element name="FT_New_Face.aface">
+        <short/>
+      </element>
+      <!-- function Visibility: default -->
+      <element name="FT_Set_Pixel_Sizes">
+        <short/>
+        <descr/>
+        <errors/>
+        <seealso/>
+      </element>
+      <!-- function result Visibility: default -->
+      <element name="FT_Set_Pixel_Sizes.Result">
+        <short/>
+      </element>
+      <!-- argument Visibility: default -->
+      <element name="FT_Set_Pixel_Sizes.face">
+        <short/>
+      </element>
+      <!-- argument Visibility: default -->
+      <element name="FT_Set_Pixel_Sizes.pixel_width">
+        <short/>
+      </element>
+      <!-- argument Visibility: default -->
+      <element name="FT_Set_Pixel_Sizes.pixel_height">
+        <short/>
+      </element>
+      <!-- function Visibility: default -->
+      <element name="FT_Set_Char_Size">
+        <short/>
+        <descr/>
+        <errors/>
+        <seealso/>
+      </element>
+      <!-- function result Visibility: default -->
+      <element name="FT_Set_Char_Size.Result">
+        <short/>
+      </element>
+      <!-- argument Visibility: default -->
+      <element name="FT_Set_Char_Size.face">
+        <short/>
+      </element>
+      <!-- argument Visibility: default -->
+      <element name="FT_Set_Char_Size.char_width">
+        <short/>
+      </element>
+      <!-- argument Visibility: default -->
+      <element name="FT_Set_Char_Size.char_height">
+        <short/>
+      </element>
+      <!-- argument Visibility: default -->
+      <element name="FT_Set_Char_Size.horz_res">
+        <short/>
+      </element>
+      <!-- argument Visibility: default -->
+      <element name="FT_Set_Char_Size.vert_res">
+        <short/>
+      </element>
+      <!-- function Visibility: default -->
+      <element name="FT_Get_Char_Index">
+        <short/>
+        <descr/>
+        <errors/>
+        <seealso/>
+      </element>
+      <!-- function result Visibility: default -->
+      <element name="FT_Get_Char_Index.Result">
+        <short/>
+      </element>
+      <!-- argument Visibility: default -->
+      <element name="FT_Get_Char_Index.face">
+        <short/>
+      </element>
+      <!-- argument Visibility: default -->
+      <element name="FT_Get_Char_Index.charcode">
+        <short/>
+      </element>
+      <!-- function Visibility: default -->
+      <element name="FT_Load_Glyph">
+        <short/>
+        <descr/>
+        <errors/>
+        <seealso/>
+      </element>
+      <!-- function result Visibility: default -->
+      <element name="FT_Load_Glyph.Result">
+        <short/>
+      </element>
+      <!-- argument Visibility: default -->
+      <element name="FT_Load_Glyph.face">
+        <short/>
+      </element>
+      <!-- argument Visibility: default -->
+      <element name="FT_Load_Glyph.glyph_index">
+        <short/>
+      </element>
+      <!-- argument Visibility: default -->
+      <element name="FT_Load_Glyph.load_flags">
+        <short/>
+      </element>
+      <!-- function Visibility: default -->
+      <element name="FT_Get_Kerning">
+        <short/>
+        <descr/>
+        <errors/>
+        <seealso/>
+      </element>
+      <!-- function result Visibility: default -->
+      <element name="FT_Get_Kerning.Result">
+        <short/>
+      </element>
+      <!-- argument Visibility: default -->
+      <element name="FT_Get_Kerning.face">
+        <short/>
+      </element>
+      <!-- argument Visibility: default -->
+      <element name="FT_Get_Kerning.left_glyph">
+        <short/>
+      </element>
+      <!-- argument Visibility: default -->
+      <element name="FT_Get_Kerning.right_glyph">
+        <short/>
+      </element>
+      <!-- argument Visibility: default -->
+      <element name="FT_Get_Kerning.kern_mode">
+        <short/>
+      </element>
+      <!-- argument Visibility: default -->
+      <element name="FT_Get_Kerning.akerning">
+        <short/>
+      </element>
+      <!-- function Visibility: default -->
+      <element name="FT_Get_Glyph">
+        <short/>
+        <descr/>
+        <errors/>
+        <seealso/>
+      </element>
+      <!-- function result Visibility: default -->
+      <element name="FT_Get_Glyph.Result">
+        <short/>
+      </element>
+      <!-- argument Visibility: default -->
+      <element name="FT_Get_Glyph.slot">
+        <short/>
+      </element>
+      <!-- argument Visibility: default -->
+      <element name="FT_Get_Glyph.aglyph">
+        <short/>
+      </element>
+      <!-- function Visibility: default -->
+      <element name="FT_Glyph_Transform">
+        <short/>
+        <descr/>
+        <errors/>
+        <seealso/>
+      </element>
+      <!-- function result Visibility: default -->
+      <element name="FT_Glyph_Transform.Result">
+        <short/>
+      </element>
+      <!-- argument Visibility: default -->
+      <element name="FT_Glyph_Transform.glyph">
+        <short/>
+      </element>
+      <!-- argument Visibility: default -->
+      <element name="FT_Glyph_Transform.matrix">
+        <short/>
+      </element>
+      <!-- argument Visibility: default -->
+      <element name="FT_Glyph_Transform.delta">
+        <short/>
+      </element>
+      <!-- function Visibility: default -->
+      <element name="FT_Glyph_Copy">
+        <short/>
+        <descr/>
+        <errors/>
+        <seealso/>
+      </element>
+      <!-- function result Visibility: default -->
+      <element name="FT_Glyph_Copy.Result">
+        <short/>
+      </element>
+      <!-- argument Visibility: default -->
+      <element name="FT_Glyph_Copy.source">
+        <short/>
+      </element>
+      <!-- argument Visibility: default -->
+      <element name="FT_Glyph_Copy.target">
+        <short/>
+      </element>
+      <!-- procedure Visibility: default -->
+      <element name="FT_Glyph_Get_CBox">
+        <short/>
+        <descr/>
+        <errors/>
+        <seealso/>
+      </element>
+      <!-- argument Visibility: default -->
+      <element name="FT_Glyph_Get_CBox.glyph">
+        <short/>
+      </element>
+      <!-- argument Visibility: default -->
+      <element name="FT_Glyph_Get_CBox.bbox_mode">
+        <short/>
+      </element>
+      <!-- argument Visibility: default -->
+      <element name="FT_Glyph_Get_CBox.acbox">
+        <short/>
+      </element>
+      <!-- function Visibility: default -->
+      <element name="FT_Glyph_To_Bitmap">
+        <short/>
+        <descr/>
+        <errors/>
+        <seealso/>
+      </element>
+      <!-- function result Visibility: default -->
+      <element name="FT_Glyph_To_Bitmap.Result">
+        <short/>
+      </element>
+      <!-- argument Visibility: default -->
+      <element name="FT_Glyph_To_Bitmap.the_glyph">
+        <short/>
+      </element>
+      <!-- argument Visibility: default -->
+      <element name="FT_Glyph_To_Bitmap.render_mode">
+        <short/>
+      </element>
+      <!-- argument Visibility: default -->
+      <element name="FT_Glyph_To_Bitmap.origin">
+        <short/>
+      </element>
+      <!-- argument Visibility: default -->
+      <element name="FT_Glyph_To_Bitmap.destroy">
+        <short/>
+      </element>
+      <!-- procedure Visibility: default -->
+      <element name="FT_Done_Glyph">
+        <short/>
+        <descr/>
+        <errors/>
+        <seealso/>
+      </element>
+      <!-- argument Visibility: default -->
+      <element name="FT_Done_Glyph.glyph">
+        <short/>
+      </element>
+    </module>
+    <!-- freetypeh -->
+  </package>
+</fpdoc-descriptions>

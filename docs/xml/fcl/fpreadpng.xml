@@ -1,0 +1,760 @@
+<?xml version="1.0"?>
+<fpdoc-descriptions>
+  <package name="lazde">
+    <!--
+  ====================================================================
+    FPReadPNG
+  ====================================================================
+-->
+    <module name="FPReadPNG">
+      <short/>
+      <descr/>
+      <!-- procedure type Visibility: default -->
+      <element name="TSetPixelProc">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+      <!-- argument Visibility: default -->
+      <element name="TSetPixelProc.x">
+        <short/>
+      </element>
+      <!-- argument Visibility: default -->
+      <element name="TSetPixelProc.y">
+        <short/>
+      </element>
+      <!-- argument Visibility: default -->
+      <element name="TSetPixelProc.CD">
+        <short/>
+      </element>
+      <!-- function type Visibility: default -->
+      <element name="TConvertColorProc">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+      <!-- function result Visibility: default -->
+      <element name="TConvertColorProc.Result">
+        <short/>
+      </element>
+      <!-- argument Visibility: default -->
+      <element name="TConvertColorProc.CD">
+        <short/>
+      </element>
+      <!-- class Visibility: default -->
+      <element name="TFPReaderPNG">
+        <short/>
+        <descr/>
+        <errors/>
+        <seealso/>
+      </element>
+      <!-- variable Visibility: private -->
+      <element name="TFPReaderPNG.Chunk">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+      <!-- variable Visibility: private -->
+      <element name="TFPReaderPNG.FHeader">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+      <!-- variable Visibility: private -->
+      <element name="TFPReaderPNG.ZData">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+      <!-- variable Visibility: private -->
+      <element name="TFPReaderPNG.Decompress">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+      <!-- variable Visibility: private -->
+      <element name="TFPReaderPNG.FPltte">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+      <!-- variable Visibility: private -->
+      <element name="TFPReaderPNG.FCountScanlines">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+      <!-- variable Visibility: private -->
+      <element name="TFPReaderPNG.FScanLineLength">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+      <!-- variable Visibility: private -->
+      <element name="TFPReaderPNG.FCurrentPass">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+      <!-- variable Visibility: private -->
+      <element name="TFPReaderPNG.ByteWidth">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+      <!-- variable Visibility: private -->
+      <element name="TFPReaderPNG.BitsUsed">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+      <!-- variable Visibility: private -->
+      <element name="TFPReaderPNG.BitShift">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+      <!-- variable Visibility: private -->
+      <element name="TFPReaderPNG.CountBitsUsed">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+      <!-- variable Visibility: private -->
+      <element name="TFPReaderPNG.StartX">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+      <!-- variable Visibility: private -->
+      <element name="TFPReaderPNG.StartY">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+      <!-- variable Visibility: private -->
+      <element name="TFPReaderPNG.DeltaX">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+      <!-- variable Visibility: private -->
+      <element name="TFPReaderPNG.DeltaY">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+      <!-- variable Visibility: private -->
+      <element name="TFPReaderPNG.StartPass">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+      <!-- variable Visibility: private -->
+      <element name="TFPReaderPNG.EndPass">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+      <!-- variable Visibility: private -->
+      <element name="TFPReaderPNG.FSwitchLine">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+      <!-- variable Visibility: private -->
+      <element name="TFPReaderPNG.FCurrentLine">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+      <!-- variable Visibility: private -->
+      <element name="TFPReaderPNG.FPreviousLine">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+      <!-- variable Visibility: private -->
+      <element name="TFPReaderPNG.FPalette">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+      <!-- variable Visibility: private -->
+      <element name="TFPReaderPNG.FSetPixel">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+      <!-- variable Visibility: private -->
+      <element name="TFPReaderPNG.FConvertColor">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+      <!-- procedure Visibility: private -->
+      <element name="TFPReaderPNG.ReadChunk">
+        <short/>
+        <descr/>
+        <errors/>
+        <seealso/>
+      </element>
+      <!-- procedure Visibility: private -->
+      <element name="TFPReaderPNG.HandleData">
+        <short/>
+        <descr/>
+        <errors/>
+        <seealso/>
+      </element>
+      <!-- procedure Visibility: private -->
+      <element name="TFPReaderPNG.HandleUnknown">
+        <short/>
+        <descr/>
+        <errors/>
+        <seealso/>
+      </element>
+      <!-- function Visibility: private -->
+      <element name="TFPReaderPNG.ColorGray1">
+        <short/>
+        <descr/>
+        <errors/>
+        <seealso/>
+      </element>
+      <!-- function result Visibility: default -->
+      <element name="TFPReaderPNG.ColorGray1.Result">
+        <short/>
+      </element>
+      <!-- argument Visibility: default -->
+      <element name="TFPReaderPNG.ColorGray1.CD">
+        <short/>
+      </element>
+      <!-- function Visibility: private -->
+      <element name="TFPReaderPNG.ColorGray2">
+        <short/>
+        <descr/>
+        <errors/>
+        <seealso/>
+      </element>
+      <!-- function result Visibility: default -->
+      <element name="TFPReaderPNG.ColorGray2.Result">
+        <short/>
+      </element>
+      <!-- argument Visibility: default -->
+      <element name="TFPReaderPNG.ColorGray2.CD">
+        <short/>
+      </element>
+      <!-- function Visibility: private -->
+      <element name="TFPReaderPNG.ColorGray4">
+        <short/>
+        <descr/>
+        <errors/>
+        <seealso/>
+      </element>
+      <!-- function result Visibility: default -->
+      <element name="TFPReaderPNG.ColorGray4.Result">
+        <short/>
+      </element>
+      <!-- argument Visibility: default -->
+      <element name="TFPReaderPNG.ColorGray4.CD">
+        <short/>
+      </element>
+      <!-- function Visibility: private -->
+      <element name="TFPReaderPNG.ColorGray8">
+        <short/>
+        <descr/>
+        <errors/>
+        <seealso/>
+      </element>
+      <!-- function result Visibility: default -->
+      <element name="TFPReaderPNG.ColorGray8.Result">
+        <short/>
+      </element>
+      <!-- argument Visibility: default -->
+      <element name="TFPReaderPNG.ColorGray8.CD">
+        <short/>
+      </element>
+      <!-- function Visibility: private -->
+      <element name="TFPReaderPNG.ColorGray16">
+        <short/>
+        <descr/>
+        <errors/>
+        <seealso/>
+      </element>
+      <!-- function result Visibility: default -->
+      <element name="TFPReaderPNG.ColorGray16.Result">
+        <short/>
+      </element>
+      <!-- argument Visibility: default -->
+      <element name="TFPReaderPNG.ColorGray16.CD">
+        <short/>
+      </element>
+      <!-- function Visibility: private -->
+      <element name="TFPReaderPNG.ColorGrayAlpha8">
+        <short/>
+        <descr/>
+        <errors/>
+        <seealso/>
+      </element>
+      <!-- function result Visibility: default -->
+      <element name="TFPReaderPNG.ColorGrayAlpha8.Result">
+        <short/>
+      </element>
+      <!-- argument Visibility: default -->
+      <element name="TFPReaderPNG.ColorGrayAlpha8.CD">
+        <short/>
+      </element>
+      <!-- function Visibility: private -->
+      <element name="TFPReaderPNG.ColorGrayAlpha16">
+        <short/>
+        <descr/>
+        <errors/>
+        <seealso/>
+      </element>
+      <!-- function result Visibility: default -->
+      <element name="TFPReaderPNG.ColorGrayAlpha16.Result">
+        <short/>
+      </element>
+      <!-- argument Visibility: default -->
+      <element name="TFPReaderPNG.ColorGrayAlpha16.CD">
+        <short/>
+      </element>
+      <!-- function Visibility: private -->
+      <element name="TFPReaderPNG.ColorColor8">
+        <short/>
+        <descr/>
+        <errors/>
+        <seealso/>
+      </element>
+      <!-- function result Visibility: default -->
+      <element name="TFPReaderPNG.ColorColor8.Result">
+        <short/>
+      </element>
+      <!-- argument Visibility: default -->
+      <element name="TFPReaderPNG.ColorColor8.CD">
+        <short/>
+      </element>
+      <!-- function Visibility: private -->
+      <element name="TFPReaderPNG.ColorColor16">
+        <short/>
+        <descr/>
+        <errors/>
+        <seealso/>
+      </element>
+      <!-- function result Visibility: default -->
+      <element name="TFPReaderPNG.ColorColor16.Result">
+        <short/>
+      </element>
+      <!-- argument Visibility: default -->
+      <element name="TFPReaderPNG.ColorColor16.CD">
+        <short/>
+      </element>
+      <!-- function Visibility: private -->
+      <element name="TFPReaderPNG.ColorColorAlpha8">
+        <short/>
+        <descr/>
+        <errors/>
+        <seealso/>
+      </element>
+      <!-- function result Visibility: default -->
+      <element name="TFPReaderPNG.ColorColorAlpha8.Result">
+        <short/>
+      </element>
+      <!-- argument Visibility: default -->
+      <element name="TFPReaderPNG.ColorColorAlpha8.CD">
+        <short/>
+      </element>
+      <!-- function Visibility: private -->
+      <element name="TFPReaderPNG.ColorColorAlpha16">
+        <short/>
+        <descr/>
+        <errors/>
+        <seealso/>
+      </element>
+      <!-- function result Visibility: default -->
+      <element name="TFPReaderPNG.ColorColorAlpha16.Result">
+        <short/>
+      </element>
+      <!-- argument Visibility: default -->
+      <element name="TFPReaderPNG.ColorColorAlpha16.CD">
+        <short/>
+      </element>
+      <!-- variable Visibility: protected -->
+      <element name="TFPReaderPNG.UseTransparent">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+      <!-- variable Visibility: protected -->
+      <element name="TFPReaderPNG.EndOfFile">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+      <!-- variable Visibility: protected -->
+      <element name="TFPReaderPNG.TransparentDataValue">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+      <!-- variable Visibility: protected -->
+      <element name="TFPReaderPNG.UsingBitGroup">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+      <!-- variable Visibility: protected -->
+      <element name="TFPReaderPNG.DataIndex">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+      <!-- variable Visibility: protected -->
+      <element name="TFPReaderPNG.DataBytes">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+      <!-- function Visibility: protected -->
+      <element name="TFPReaderPNG.CurrentLine">
+        <short/>
+        <descr/>
+        <errors/>
+        <seealso/>
+      </element>
+      <!-- function result Visibility: default -->
+      <element name="TFPReaderPNG.CurrentLine.Result">
+        <short/>
+      </element>
+      <!-- argument Visibility: default -->
+      <element name="TFPReaderPNG.CurrentLine.x">
+        <short/>
+      </element>
+      <!-- function Visibility: protected -->
+      <element name="TFPReaderPNG.PrevSample">
+        <short/>
+        <descr/>
+        <errors/>
+        <seealso/>
+      </element>
+      <!-- function result Visibility: default -->
+      <element name="TFPReaderPNG.PrevSample.Result">
+        <short/>
+      </element>
+      <!-- argument Visibility: default -->
+      <element name="TFPReaderPNG.PrevSample.x">
+        <short/>
+      </element>
+      <!-- function Visibility: protected -->
+      <element name="TFPReaderPNG.PreviousLine">
+        <short/>
+        <descr/>
+        <errors/>
+        <seealso/>
+      </element>
+      <!-- function result Visibility: default -->
+      <element name="TFPReaderPNG.PreviousLine.Result">
+        <short/>
+      </element>
+      <!-- argument Visibility: default -->
+      <element name="TFPReaderPNG.PreviousLine.x">
+        <short/>
+      </element>
+      <!-- function Visibility: protected -->
+      <element name="TFPReaderPNG.PrevLinePrevSample">
+        <short/>
+        <descr/>
+        <errors/>
+        <seealso/>
+      </element>
+      <!-- function result Visibility: default -->
+      <element name="TFPReaderPNG.PrevLinePrevSample.Result">
+        <short/>
+      </element>
+      <!-- argument Visibility: default -->
+      <element name="TFPReaderPNG.PrevLinePrevSample.x">
+        <short/>
+      </element>
+      <!-- procedure Visibility: protected -->
+      <element name="TFPReaderPNG.HandleChunk">
+        <short/>
+        <descr/>
+        <errors/>
+        <seealso/>
+      </element>
+      <!-- procedure Visibility: protected -->
+      <element name="TFPReaderPNG.HandlePalette">
+        <short/>
+        <descr/>
+        <errors/>
+        <seealso/>
+      </element>
+      <!-- procedure Visibility: protected -->
+      <element name="TFPReaderPNG.HandleAlpha">
+        <short/>
+        <descr/>
+        <errors/>
+        <seealso/>
+      </element>
+      <!-- function Visibility: protected -->
+      <element name="TFPReaderPNG.CalcX">
+        <short/>
+        <descr/>
+        <errors/>
+        <seealso/>
+      </element>
+      <!-- function result Visibility: default -->
+      <element name="TFPReaderPNG.CalcX.Result">
+        <short/>
+      </element>
+      <!-- argument Visibility: default -->
+      <element name="TFPReaderPNG.CalcX.relX">
+        <short/>
+      </element>
+      <!-- function Visibility: protected -->
+      <element name="TFPReaderPNG.CalcY">
+        <short/>
+        <descr/>
+        <errors/>
+        <seealso/>
+      </element>
+      <!-- function result Visibility: default -->
+      <element name="TFPReaderPNG.CalcY.Result">
+        <short/>
+      </element>
+      <!-- argument Visibility: default -->
+      <element name="TFPReaderPNG.CalcY.relY">
+        <short/>
+      </element>
+      <!-- function Visibility: protected -->
+      <element name="TFPReaderPNG.CalcColor">
+        <short/>
+        <descr/>
+        <errors/>
+        <seealso/>
+      </element>
+      <!-- function result Visibility: default -->
+      <element name="TFPReaderPNG.CalcColor.Result">
+        <short/>
+      </element>
+      <!-- procedure Visibility: protected -->
+      <element name="TFPReaderPNG.HandleScanLine">
+        <short/>
+        <descr/>
+        <errors/>
+        <seealso/>
+      </element>
+      <!-- argument Visibility: default -->
+      <element name="TFPReaderPNG.HandleScanLine.y">
+        <short/>
+      </element>
+      <!-- argument Visibility: default -->
+      <element name="TFPReaderPNG.HandleScanLine.ScanLine">
+        <short/>
+      </element>
+      <!-- procedure Visibility: protected -->
+      <element name="TFPReaderPNG.DoDecompress">
+        <short/>
+        <descr/>
+        <errors/>
+        <seealso/>
+      </element>
+      <!-- function Visibility: protected -->
+      <element name="TFPReaderPNG.DoFilter">
+        <short/>
+        <descr/>
+        <errors/>
+        <seealso/>
+      </element>
+      <!-- function result Visibility: default -->
+      <element name="TFPReaderPNG.DoFilter.Result">
+        <short/>
+      </element>
+      <!-- argument Visibility: default -->
+      <element name="TFPReaderPNG.DoFilter.LineFilter">
+        <short/>
+      </element>
+      <!-- argument Visibility: default -->
+      <element name="TFPReaderPNG.DoFilter.index">
+        <short/>
+      </element>
+      <!-- argument Visibility: default -->
+      <element name="TFPReaderPNG.DoFilter.b">
+        <short/>
+      </element>
+      <!-- procedure Visibility: protected -->
+      <element name="TFPReaderPNG.SetPalettePixel">
+        <short/>
+        <descr/>
+        <errors/>
+        <seealso/>
+      </element>
+      <!-- argument Visibility: default -->
+      <element name="TFPReaderPNG.SetPalettePixel.x">
+        <short/>
+      </element>
+      <!-- argument Visibility: default -->
+      <element name="TFPReaderPNG.SetPalettePixel.y">
+        <short/>
+      </element>
+      <!-- argument Visibility: default -->
+      <element name="TFPReaderPNG.SetPalettePixel.CD">
+        <short/>
+      </element>
+      <!-- procedure Visibility: protected -->
+      <element name="TFPReaderPNG.SetPalColPixel">
+        <short/>
+        <descr/>
+        <errors/>
+        <seealso/>
+      </element>
+      <!-- argument Visibility: default -->
+      <element name="TFPReaderPNG.SetPalColPixel.x">
+        <short/>
+      </element>
+      <!-- argument Visibility: default -->
+      <element name="TFPReaderPNG.SetPalColPixel.y">
+        <short/>
+      </element>
+      <!-- argument Visibility: default -->
+      <element name="TFPReaderPNG.SetPalColPixel.CD">
+        <short/>
+      </element>
+      <!-- procedure Visibility: protected -->
+      <element name="TFPReaderPNG.SetColorPixel">
+        <short/>
+        <descr/>
+        <errors/>
+        <seealso/>
+      </element>
+      <!-- argument Visibility: default -->
+      <element name="TFPReaderPNG.SetColorPixel.x">
+        <short/>
+      </element>
+      <!-- argument Visibility: default -->
+      <element name="TFPReaderPNG.SetColorPixel.y">
+        <short/>
+      </element>
+      <!-- argument Visibility: default -->
+      <element name="TFPReaderPNG.SetColorPixel.CD">
+        <short/>
+      </element>
+      <!-- procedure Visibility: protected -->
+      <element name="TFPReaderPNG.SetColorTrPixel">
+        <short/>
+        <descr/>
+        <errors/>
+        <seealso/>
+      </element>
+      <!-- argument Visibility: default -->
+      <element name="TFPReaderPNG.SetColorTrPixel.x">
+        <short/>
+      </element>
+      <!-- argument Visibility: default -->
+      <element name="TFPReaderPNG.SetColorTrPixel.y">
+        <short/>
+      </element>
+      <!-- argument Visibility: default -->
+      <element name="TFPReaderPNG.SetColorTrPixel.CD">
+        <short/>
+      </element>
+      <!-- function Visibility: protected -->
+      <element name="TFPReaderPNG.DecideSetPixel">
+        <short/>
+        <descr/>
+        <errors/>
+        <seealso/>
+      </element>
+      <!-- function result Visibility: default -->
+      <element name="TFPReaderPNG.DecideSetPixel.Result">
+        <short/>
+      </element>
+      <!-- procedure Visibility: protected -->
+      <element name="TFPReaderPNG.InternalRead">
+        <short/>
+        <descr/>
+        <errors/>
+        <seealso/>
+      </element>
+      <!-- argument Visibility: default -->
+      <element name="TFPReaderPNG.InternalRead.Str">
+        <short/>
+      </element>
+      <!-- argument Visibility: default -->
+      <element name="TFPReaderPNG.InternalRead.Img">
+        <short/>
+      </element>
+      <!-- function Visibility: protected -->
+      <element name="TFPReaderPNG.InternalCheck">
+        <short/>
+        <descr/>
+        <errors/>
+        <seealso/>
+      </element>
+      <!-- function result Visibility: default -->
+      <element name="TFPReaderPNG.InternalCheck.Result">
+        <short/>
+      </element>
+      <!-- argument Visibility: default -->
+      <element name="TFPReaderPNG.InternalCheck.Str">
+        <short/>
+      </element>
+      <!-- property Visibility: protected -->
+      <element name="TFPReaderPNG.ConvertColor">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+      <!-- property Visibility: protected -->
+      <element name="TFPReaderPNG.CurrentPass">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+      <!-- property Visibility: protected -->
+      <element name="TFPReaderPNG.Pltte">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+      <!-- property Visibility: protected -->
+      <element name="TFPReaderPNG.ThePalette">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+      <!-- property Visibility: protected -->
+      <element name="TFPReaderPNG.Header">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+      <!-- property Visibility: protected -->
+      <element name="TFPReaderPNG.CountScanlines">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+      <!-- property Visibility: protected -->
+      <element name="TFPReaderPNG.ScanLineLength">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+      <!-- constructor Visibility: public -->
+      <element name="TFPReaderPNG.create">
+        <short/>
+        <descr/>
+        <errors/>
+        <seealso/>
+      </element>
+      <!-- destructor Visibility: public -->
+      <element name="TFPReaderPNG.destroy">
+        <short/>
+        <descr/>
+        <errors/>
+        <seealso/>
+      </element>
+    </module>
+    <!-- FPReadPNG -->
+  </package>
+</fpdoc-descriptions>
