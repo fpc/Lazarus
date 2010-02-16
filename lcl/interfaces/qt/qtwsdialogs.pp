@@ -405,6 +405,7 @@ begin
     ReturnList := QStringList_create;
     try
       QtFileDialog.selectedFiles(ReturnList);
+      FileDialog.Files.Clear;
       for i := 0 to QStringList_size(ReturnList) - 1 do
       begin
         QStringList_at(ReturnList, @ReturnText, i);
@@ -436,7 +437,7 @@ begin
         QFileDialog_getOpenFileNames(ReturnList,
           QWidget_parentWidget(QtFileDialog.Widget), @SaveTitle, @saveFileName,
           @saveFilter, @selectedFilter, Flags);
-
+        FileDialog.Files.Clear;
         for i := 0 to QStringList_size(ReturnList) - 1 do
         begin
           QStringList_at(ReturnList, @ReturnText, i);
@@ -467,6 +468,7 @@ begin
     ReturnList := QStringList_create;
     try
       QtFileDialog.selectedFiles(ReturnList);
+      FileDialog.Files.Clear;
       for i := 0 to QStringList_size(ReturnList) - 1 do
       begin
         QStringList_at(ReturnList, @ReturnText, i);
@@ -568,6 +570,7 @@ begin
   ReturnList := QStringList_create;
   try
     QtFileDialog.selectedFiles(ReturnList);
+    FileDialog.Files.Clear;
     for i := 0 to QStringList_size(ReturnList) - 1 do
     begin
       QStringList_at(ReturnList, @ReturnText, i);
