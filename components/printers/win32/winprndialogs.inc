@@ -53,7 +53,7 @@ begin
     FillChar(lpp,SizeOf(lpp),0);
     with lpp do begin
       lStructSize:=SizeOf(lpp);
-      hInstance:=HInstance;
+      hInstance:=System.HInstance;
       lpfnPageSetupHook := @PrintHookProc;
       Flags := PSD_MARGINS or PSD_ENABLEPAGESETUPHOOK;
       hWndOwner:=Widgetset.AppHandle;
@@ -128,7 +128,7 @@ begin
     with lpp do
     begin
       lStructSize:=SizeOf(lpp);
-      hInstance:=HInstance;
+      hInstance:=System.HInstance;
       lpfnSetupHook := @PrintHookProc;
       Flags:= PD_PRINTSETUP or PD_RETURNDC or PD_ENABLESETUPHOOK;
       hWndOwner:=Widgetset.AppHandle;
@@ -200,7 +200,7 @@ begin
     with lpp do
     begin
       lStructSize:=SizeOf(lpp);
-      hInstance:=HInstance;
+      hInstance:=System.HInstance;
       lpfnPrintHook := @PrintHookProc;
       lpfnSetupHook := @PrintHookProc;
       Flags := PD_ENABLEPRINTHOOK or PD_ENABLESETUPHOOK;
