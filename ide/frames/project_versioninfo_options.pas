@@ -80,6 +80,8 @@ begin
   LanguageSelectionLabel.Caption := rsLanguageSelection;
   CharacterSetLabel.Caption := rsCharacterSet;
   OtherInfoGroupBox.Caption := rsOtherInfo;
+  StringInfo.Cells[0, 0] := rsKey;
+  StringInfo.Cells[0, 1] := rsValue;
 end;
 
 procedure TProjectVersionInfoOptionsFrame.ReadSettings(AOptions: TAbstractIDEOptions);

@@ -1806,6 +1806,8 @@ resourcestring
   rsLanguageSelection = 'Language selection:';
   rsCharacterSet = 'Character set:';
   rsOtherInfo = 'Other info';
+  rsKey = 'Key';
+  rsValue = 'Value';
   dlgPOSaveSession = 'Session';
   dlgApplicationSettings = 'Application Settings';
   dlgPOTitle = 'Title:';

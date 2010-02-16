@@ -239,6 +239,7 @@ inherited ProjectVersionInfoOptionsFrame: TProjectVersionInfoOptionsFrame
       ColCount = 2
       Columns = <      
         item
+          Color = clWindow
           MinSize = 50
           ReadOnly = True
           Title.Caption = 'Key'
