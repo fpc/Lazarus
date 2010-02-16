@@ -492,6 +492,10 @@ msgstr ""
 msgid "Check consistency"
 msgstr ""
 
+#: lazarusidestrconsts.dlgcheckpackagesonformcreate
+msgid "Check packages on form create"
+msgstr ""
+
 #: lazarusidestrconsts.dlgchscodetempl
 msgid "Choose code template file (*.dci)"
 msgstr ""
@@ -747,7 +751,7 @@ msgid "Unit Style:"
 msgstr ""
 
 #: lazarusidestrconsts.dlgcouseasdefault
-msgid "Use these settings as default for new projects"
+msgid "Use these compiler options as default for new projects"
 msgstr ""
 
 #: lazarusidestrconsts.dlgcovalgrind
@@ -2152,6 +2156,10 @@ msgstr ""
 msgid "Project Options"
 msgstr ""
 
+#: lazarusidestrconsts.dlgprojectoptionsfor
+msgid "Options for Project: %s"
+msgstr ""
+
 #: lazarusidestrconsts.dlgprojfiles
 msgid "Project files"
 msgstr ""
@@ -2495,6 +2503,10 @@ msgstr "Sintaks opsies"
 msgid "Tab indents blocks"
 msgstr ""
 
+#: lazarusidestrconsts.dlgtabnumbersnotebook
+msgid "Show tab numbers in notebook"
+msgstr ""
+
 #: lazarusidestrconsts.dlgtabstospaces
 msgid "Tabs to spaces"
 msgstr "Kepe na spasies"
@@ -2779,6 +2791,10 @@ msgstr ""
 
 #: lazarusidestrconsts.gldhighlightbothsidesofcursor
 msgid "On Both Sides"
+msgstr ""
+
+#: lazarusidestrconsts.lis0no1drawdividerlinesonlyfortoplevel2drawlinesforfi
+msgid "0 = no, 1 = draw divider lines only for top level, 2 = draw lines for first two levels, ..."
 msgstr ""
 
 #: lazarusidestrconsts.lisa2paddfile
@@ -3135,10 +3151,6 @@ msgstr ""
 
 #: lazarusidestrconsts.lisadditionalcompileroptionsinheritedfrompackages
 msgid "Additional compiler options inherited from packages"
-msgstr ""
-
-#: lazarusidestrconsts.lisadditionalinformation
-msgid "Additional Information"
 msgstr ""
 
 #: lazarusidestrconsts.lisaddnewset
@@ -3567,9 +3579,18 @@ msgstr "Bou nuwe projek"
 msgid "Build Number"
 msgstr "Bou Nommer"
 
+#: lazarusidestrconsts.lisbuildvariables
+msgid "Build variables"
+msgstr ""
+
 #: lazarusidestrconsts.liscallingtocreatemakefilefromfailed
 msgid "Calling %s to create Makefile from %s failed."
 msgstr ""
+
+#: lazarusidestrconsts.liscancel
+msgctxt "lazarusidestrconsts.liscancel"
+msgid "Cancel"
+msgstr "Kanselleer"
 
 #: lazarusidestrconsts.liscancelloadingthiscomponent
 msgid "Cancel loading this component"
@@ -4877,14 +4898,6 @@ msgstr ""
 msgid "Command line parameters of program"
 msgstr ""
 
-#: lazarusidestrconsts.liscomments
-msgid "Comments:"
-msgstr ""
-
-#: lazarusidestrconsts.liscompany
-msgid "Company:"
-msgstr ""
-
 #: lazarusidestrconsts.liscompileidewithoutlinking
 msgid "Compile IDE (without linking)"
 msgstr "Vertaleer IDE (sonder inskakeling)"
@@ -4986,6 +4999,19 @@ msgstr ""
 
 #: lazarusidestrconsts.lisconfirmnewpackagesetfortheide
 msgid "Confirm new package set for the IDE"
+msgstr ""
+
+#: lazarusidestrconsts.lisconfirmpackageaction
+msgctxt "lazarusidestrconsts.lisconfirmpackageaction"
+msgid "Action"
+msgstr ""
+
+#: lazarusidestrconsts.lisconfirmpackagenewpackageset
+msgid "New package set"
+msgstr ""
+
+#: lazarusidestrconsts.lisconfirmpackageoldpackageset
+msgid "Old package set"
 msgstr ""
 
 #: lazarusidestrconsts.lisconsoleapplication
@@ -5819,6 +5845,7 @@ msgid "Insert"
 msgstr "Insit"
 
 #: lazarusidestrconsts.lisedtexttoolkey
+msgctxt "lazarusidestrconsts.lisedtexttoolkey"
 msgid "Key"
 msgstr "Sleutel"
 
@@ -7006,10 +7033,6 @@ msgstr ""
 msgid "Install selection"
 msgstr ""
 
-#: lazarusidestrconsts.lisinternalname
-msgid "Internal Name:"
-msgstr ""
-
 #: lazarusidestrconsts.lisinvalidbuildvarthebuildvarmustbeapascalidentifie
 msgid "Invalid build variable %s%s%s. The build variable must be a pascal identifier."
 msgstr ""
@@ -7104,6 +7127,10 @@ msgstr ""
 
 #: lazarusidestrconsts.lisjitform
 msgid "JIT Form"
+msgstr ""
+
+#: lazarusidestrconsts.liskeep
+msgid "keep"
 msgstr ""
 
 #: lazarusidestrconsts.liskeepname
@@ -7922,10 +7949,6 @@ msgstr ""
 
 #: lazarusidestrconsts.lisleftspaceequally
 msgid "Left space equally"
-msgstr ""
-
-#: lazarusidestrconsts.lislegaltrademarks
-msgid "Legal Trademarks:"
 msgstr ""
 
 #: lazarusidestrconsts.lislevels
@@ -8809,6 +8832,10 @@ msgstr "Kies woord"
 msgid "Set a free bookmark"
 msgstr ""
 
+#: lazarusidestrconsts.lismenushowexecutionpoint
+msgid "Show execution point"
+msgstr ""
+
 #: lazarusidestrconsts.lismenusortselection
 msgid "Sort selection ..."
 msgstr "Sorteer seleksie"
@@ -9563,10 +9590,6 @@ msgstr ""
 
 #: lazarusidestrconsts.lisor
 msgid "or"
-msgstr ""
-
-#: lazarusidestrconsts.lisoriginalfilename
-msgid "Original File Name:"
 msgstr ""
 
 #: lazarusidestrconsts.lisoverridelanguage
@@ -10924,14 +10947,6 @@ msgstr ""
 msgid "Procedure with interface"
 msgstr ""
 
-#: lazarusidestrconsts.lisproductname
-msgid "Product Name:"
-msgstr "Produk Naam:"
-
-#: lazarusidestrconsts.lisproductversion
-msgid "Product Version:"
-msgstr "Produk Weergawe:"
-
 #: lazarusidestrconsts.lisprogram
 msgctxt "lazarusidestrconsts.lisprogram"
 msgid "Program"
@@ -11372,10 +11387,6 @@ msgstr ""
 msgid "Rescan"
 msgstr ""
 
-#: lazarusidestrconsts.lisresourcefilecomment
-msgid "This is an automatically generated lazarus resource file"
-msgstr ""
-
 #: lazarusidestrconsts.lisresourceloaderror
 msgid "Resource load error"
 msgstr ""
@@ -11587,6 +11598,10 @@ msgstr ""
 
 #: lazarusidestrconsts.lisselectdfmfiles
 msgid "Select Delphi form files (*.dfm)"
+msgstr ""
+
+#: lazarusidestrconsts.lisselected
+msgid "Selected"
 msgstr ""
 
 #: lazarusidestrconsts.lisselectedbottomneighbour
@@ -12313,10 +12328,6 @@ msgstr ""
 
 #: lazarusidestrconsts.listhisstatementcannotbeextractedpleaseselectsomecode
 msgid "This statement can not be extracted.%sPlease select some code to extract a new procedure/method."
-msgstr ""
-
-#: lazarusidestrconsts.listhiswillhappencontinue
-msgid "This will happen:%s%s%sContinue?"
 msgstr ""
 
 #: lazarusidestrconsts.listitle
@@ -13161,10 +13172,6 @@ msgstr ""
 msgid "Add Inverse"
 msgstr ""
 
-#: lazarusidestrconsts.rsadditionalinfo
-msgid "Additional info"
-msgstr ""
-
 #: lazarusidestrconsts.rsautomaticallyincreasebuildnumber
 msgid "Automatically increase build number"
 msgstr ""
@@ -13174,7 +13181,7 @@ msgid "Available scanners"
 msgstr ""
 
 #: lazarusidestrconsts.rsbuild
-msgid "Build:"
+msgid "&Build:"
 msgstr ""
 
 #: lazarusidestrconsts.rscharacterset
@@ -13187,10 +13194,6 @@ msgstr ""
 
 #: lazarusidestrconsts.rsconditionaldefines
 msgid "Conditional defines"
-msgstr ""
-
-#: lazarusidestrconsts.rscopyright
-msgid "Copyright:"
 msgstr ""
 
 #: lazarusidestrconsts.rscreatenewdefine
@@ -13265,6 +13268,11 @@ msgstr ""
 #: lazarusidestrconsts.rsiwpusewindowmanagersetting
 msgid "Use windowmanager setting"
 msgstr ""
+
+#: lazarusidestrconsts.rskey
+msgctxt "lazarusidestrconsts.rskey"
+msgid "Key"
+msgstr "Sleutel"
 
 #: lazarusidestrconsts.rslanguageafrikaans
 msgid "Afrikaans"
@@ -13362,12 +13370,12 @@ msgstr ""
 msgid "Ukrainian"
 msgstr ""
 
-#: lazarusidestrconsts.rsmajorrevision
-msgid "Major revision:"
+#: lazarusidestrconsts.rsmajorversion
+msgid "&Major version:"
 msgstr ""
 
-#: lazarusidestrconsts.rsminorrevision
-msgid "Minor revision:"
+#: lazarusidestrconsts.rsminorversion
+msgid "Mi&nor version:"
 msgstr ""
 
 #: lazarusidestrconsts.rsok
@@ -13390,6 +13398,10 @@ msgstr ""
 msgid "Reset filter"
 msgstr ""
 
+#: lazarusidestrconsts.rsrevision
+msgid "&Revision:"
+msgstr ""
+
 #: lazarusidestrconsts.rsscanners
 msgid "Scanners"
 msgstr ""
@@ -13402,9 +13414,10 @@ msgstr ""
 msgid "Start a new search"
 msgstr ""
 
-#: lazarusidestrconsts.rsversion
-msgid "Version:"
-msgstr ""
+#: lazarusidestrconsts.rsvalue
+msgctxt "lazarusidestrconsts.rsvalue"
+msgid "Value"
+msgstr "Waarde"
 
 #: lazarusidestrconsts.rsversionnumbering
 msgid "Version numbering"
@@ -14208,6 +14221,10 @@ msgstr ""
 
 #: lazarusidestrconsts.srkmecshowcodecontext
 msgid "Show code context"
+msgstr ""
+
+#: lazarusidestrconsts.srkmecshowexecutionpoint
+msgid "show execution point"
 msgstr ""
 
 #: lazarusidestrconsts.srkmecstopprogram

@@ -490,6 +490,10 @@ msgstr ""
 msgid "Check consistency"
 msgstr ""
 
+#: lazarusidestrconsts.dlgcheckpackagesonformcreate
+msgid "Check packages on form create"
+msgstr ""
+
 #: lazarusidestrconsts.dlgchscodetempl
 msgid "Choose code template file (*.dci)"
 msgstr ""
@@ -745,7 +749,7 @@ msgid "Unit Style:"
 msgstr ""
 
 #: lazarusidestrconsts.dlgcouseasdefault
-msgid "Use these settings as default for new projects"
+msgid "Use these compiler options as default for new projects"
 msgstr ""
 
 #: lazarusidestrconsts.dlgcovalgrind
@@ -2148,6 +2152,10 @@ msgstr ""
 msgid "Project Options"
 msgstr ""
 
+#: lazarusidestrconsts.dlgprojectoptionsfor
+msgid "Options for Project: %s"
+msgstr ""
+
 #: lazarusidestrconsts.dlgprojfiles
 msgid "Project files"
 msgstr ""
@@ -2491,6 +2499,10 @@ msgstr ""
 msgid "Tab indents blocks"
 msgstr ""
 
+#: lazarusidestrconsts.dlgtabnumbersnotebook
+msgid "Show tab numbers in notebook"
+msgstr ""
+
 #: lazarusidestrconsts.dlgtabstospaces
 msgid "Tabs to spaces"
 msgstr ""
@@ -2773,6 +2785,10 @@ msgstr ""
 
 #: lazarusidestrconsts.gldhighlightbothsidesofcursor
 msgid "On Both Sides"
+msgstr ""
+
+#: lazarusidestrconsts.lis0no1drawdividerlinesonlyfortoplevel2drawlinesforfi
+msgid "0 = no, 1 = draw divider lines only for top level, 2 = draw lines for first two levels, ..."
 msgstr ""
 
 #: lazarusidestrconsts.lisa2paddfile
@@ -3130,10 +3146,6 @@ msgstr ""
 #: lazarusidestrconsts.lisadditionalcompileroptionsinheritedfrompackages
 msgid "Additional compiler options inherited from packages"
 msgstr "Paketlerden miras alınan ilave derleyici seçenekleri"
-
-#: lazarusidestrconsts.lisadditionalinformation
-msgid "Additional Information"
-msgstr ""
 
 #: lazarusidestrconsts.lisaddnewset
 msgid "Add new set"
@@ -3561,9 +3573,18 @@ msgstr "Yeni projeyi inşa et"
 msgid "Build Number"
 msgstr ""
 
+#: lazarusidestrconsts.lisbuildvariables
+msgid "Build variables"
+msgstr ""
+
 #: lazarusidestrconsts.liscallingtocreatemakefilefromfailed
 msgid "Calling %s to create Makefile from %s failed."
 msgstr ""
+
+#: lazarusidestrconsts.liscancel
+msgctxt "lazarusidestrconsts.liscancel"
+msgid "Cancel"
+msgstr "İptal"
 
 #: lazarusidestrconsts.liscancelloadingthiscomponent
 msgid "Cancel loading this component"
@@ -4871,14 +4892,6 @@ msgstr "Modül yayımlama sonrasındaki komut"
 msgid "Command line parameters of program"
 msgstr "Programın komut satırı parametreleri"
 
-#: lazarusidestrconsts.liscomments
-msgid "Comments:"
-msgstr ""
-
-#: lazarusidestrconsts.liscompany
-msgid "Company:"
-msgstr ""
-
 #: lazarusidestrconsts.liscompileidewithoutlinking
 msgid "Compile IDE (without linking)"
 msgstr ""
@@ -4978,6 +4991,19 @@ msgstr ""
 
 #: lazarusidestrconsts.lisconfirmnewpackagesetfortheide
 msgid "Confirm new package set for the IDE"
+msgstr ""
+
+#: lazarusidestrconsts.lisconfirmpackageaction
+msgctxt "lazarusidestrconsts.lisconfirmpackageaction"
+msgid "Action"
+msgstr "Eylem"
+
+#: lazarusidestrconsts.lisconfirmpackagenewpackageset
+msgid "New package set"
+msgstr ""
+
+#: lazarusidestrconsts.lisconfirmpackageoldpackageset
+msgid "Old package set"
 msgstr ""
 
 #: lazarusidestrconsts.lisconsoleapplication
@@ -5811,6 +5837,7 @@ msgid "Insert"
 msgstr ""
 
 #: lazarusidestrconsts.lisedtexttoolkey
+msgctxt "lazarusidestrconsts.lisedtexttoolkey"
 msgid "Key"
 msgstr ""
 
@@ -6998,10 +7025,6 @@ msgstr ""
 msgid "Install selection"
 msgstr ""
 
-#: lazarusidestrconsts.lisinternalname
-msgid "Internal Name:"
-msgstr ""
-
 #: lazarusidestrconsts.lisinvalidbuildvarthebuildvarmustbeapascalidentifie
 msgid "Invalid build variable %s%s%s. The build variable must be a pascal identifier."
 msgstr ""
@@ -7096,6 +7119,10 @@ msgstr ""
 
 #: lazarusidestrconsts.lisjitform
 msgid "JIT Form"
+msgstr ""
+
+#: lazarusidestrconsts.liskeep
+msgid "keep"
 msgstr ""
 
 #: lazarusidestrconsts.liskeepname
@@ -7914,10 +7941,6 @@ msgstr ""
 
 #: lazarusidestrconsts.lisleftspaceequally
 msgid "Left space equally"
-msgstr ""
-
-#: lazarusidestrconsts.lislegaltrademarks
-msgid "Legal Trademarks:"
 msgstr ""
 
 #: lazarusidestrconsts.lislevels
@@ -8808,6 +8831,10 @@ msgstr "Sözcük seç"
 msgid "Set a free bookmark"
 msgstr "Serbest bir yer imi belirle"
 
+#: lazarusidestrconsts.lismenushowexecutionpoint
+msgid "Show execution point"
+msgstr ""
+
 #: lazarusidestrconsts.lismenusortselection
 msgid "Sort selection ..."
 msgstr "Seçimi sırala ..."
@@ -9575,10 +9602,6 @@ msgstr "%s adlı proje açılsın mı?"
 #: lazarusidestrconsts.lisor
 msgid "or"
 msgstr "ya da"
-
-#: lazarusidestrconsts.lisoriginalfilename
-msgid "Original File Name:"
-msgstr ""
 
 #: lazarusidestrconsts.lisoverridelanguage
 msgid "Override language. For example --language=de. For possible values see files in the languages directory."
@@ -10935,14 +10958,6 @@ msgstr ""
 msgid "Procedure with interface"
 msgstr ""
 
-#: lazarusidestrconsts.lisproductname
-msgid "Product Name:"
-msgstr ""
-
-#: lazarusidestrconsts.lisproductversion
-msgid "Product Version:"
-msgstr ""
-
 #: lazarusidestrconsts.lisprogram
 msgctxt "lazarusidestrconsts.lisprogram"
 msgid "Program"
@@ -11385,10 +11400,6 @@ msgstr ""
 msgid "Rescan"
 msgstr ""
 
-#: lazarusidestrconsts.lisresourcefilecomment
-msgid "This is an automatically generated lazarus resource file"
-msgstr "Bu, otomatik olarak üretilmiş bir lazarus kaynak dosyasıdır"
-
 #: lazarusidestrconsts.lisresourceloaderror
 msgid "Resource load error"
 msgstr "Kaynak yükleme hatası"
@@ -11601,6 +11612,10 @@ msgstr ""
 #: lazarusidestrconsts.lisselectdfmfiles
 msgid "Select Delphi form files (*.dfm)"
 msgstr "Delphi form dosyaları (*.dfm) seç"
+
+#: lazarusidestrconsts.lisselected
+msgid "Selected"
+msgstr ""
 
 #: lazarusidestrconsts.lisselectedbottomneighbour
 msgid "(selected bottom neighbour)"
@@ -12326,10 +12341,6 @@ msgstr ""
 
 #: lazarusidestrconsts.listhisstatementcannotbeextractedpleaseselectsomecode
 msgid "This statement can not be extracted.%sPlease select some code to extract a new procedure/method."
-msgstr ""
-
-#: lazarusidestrconsts.listhiswillhappencontinue
-msgid "This will happen:%s%s%sContinue?"
 msgstr ""
 
 #: lazarusidestrconsts.listitle
@@ -13176,10 +13187,6 @@ msgstr ""
 msgid "Add Inverse"
 msgstr "Ters Ekle"
 
-#: lazarusidestrconsts.rsadditionalinfo
-msgid "Additional info"
-msgstr "İlave bilgi"
-
 #: lazarusidestrconsts.rsautomaticallyincreasebuildnumber
 msgid "Automatically increase build number"
 msgstr "İnşa numarasını otomatik arttır"
@@ -13189,7 +13196,7 @@ msgid "Available scanners"
 msgstr ""
 
 #: lazarusidestrconsts.rsbuild
-msgid "Build:"
+msgid "&Build:"
 msgstr ""
 
 #: lazarusidestrconsts.rscharacterset
@@ -13202,10 +13209,6 @@ msgstr ""
 
 #: lazarusidestrconsts.rsconditionaldefines
 msgid "Conditional defines"
-msgstr ""
-
-#: lazarusidestrconsts.rscopyright
-msgid "Copyright:"
 msgstr ""
 
 #: lazarusidestrconsts.rscreatenewdefine
@@ -13279,6 +13282,11 @@ msgstr ""
 
 #: lazarusidestrconsts.rsiwpusewindowmanagersetting
 msgid "Use windowmanager setting"
+msgstr ""
+
+#: lazarusidestrconsts.rskey
+msgctxt "lazarusidestrconsts.rskey"
+msgid "Key"
 msgstr ""
 
 #: lazarusidestrconsts.rslanguageafrikaans
@@ -13377,12 +13385,12 @@ msgstr ""
 msgid "Ukrainian"
 msgstr ""
 
-#: lazarusidestrconsts.rsmajorrevision
-msgid "Major revision:"
+#: lazarusidestrconsts.rsmajorversion
+msgid "&Major version:"
 msgstr ""
 
-#: lazarusidestrconsts.rsminorrevision
-msgid "Minor revision:"
+#: lazarusidestrconsts.rsminorversion
+msgid "Mi&nor version:"
 msgstr ""
 
 #: lazarusidestrconsts.rsok
@@ -13405,6 +13413,10 @@ msgstr "Kaldır"
 msgid "Reset filter"
 msgstr ""
 
+#: lazarusidestrconsts.rsrevision
+msgid "&Revision:"
+msgstr ""
+
 #: lazarusidestrconsts.rsscanners
 msgid "Scanners"
 msgstr ""
@@ -13417,8 +13429,9 @@ msgstr ""
 msgid "Start a new search"
 msgstr ""
 
-#: lazarusidestrconsts.rsversion
-msgid "Version:"
+#: lazarusidestrconsts.rsvalue
+msgctxt "lazarusidestrconsts.rsvalue"
+msgid "Value"
 msgstr ""
 
 #: lazarusidestrconsts.rsversionnumbering
@@ -14223,6 +14236,10 @@ msgstr ""
 
 #: lazarusidestrconsts.srkmecshowcodecontext
 msgid "Show code context"
+msgstr ""
+
+#: lazarusidestrconsts.srkmecshowexecutionpoint
+msgid "show execution point"
 msgstr ""
 
 #: lazarusidestrconsts.srkmecstopprogram

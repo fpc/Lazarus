@@ -491,6 +491,10 @@ msgstr "Pascalファイル名を自動的に小文字へリネームして保存
 msgid "Check consistency"
 msgstr "整合性をチェック"
 
+#: lazarusidestrconsts.dlgcheckpackagesonformcreate
+msgid "Check packages on form create"
+msgstr ""
+
 #: lazarusidestrconsts.dlgchscodetempl
 msgid "Choose code template file (*.dci)"
 msgstr "コードテンプテートファイル(*.dpi)を選択してください"
@@ -748,7 +752,9 @@ msgid "Unit Style:"
 msgstr "ユニットスタイル"
 
 #: lazarusidestrconsts.dlgcouseasdefault
-msgid "Use these settings as default for new projects"
+#, fuzzy
+#| msgid "Use these settings as default for new projects"
+msgid "Use these compiler options as default for new projects"
 msgstr "新しいプロジェクトのデフォルト(既定値)として、これらの設定を使う"
 
 #: lazarusidestrconsts.dlgcovalgrind
@@ -2157,6 +2163,10 @@ msgstr "テーマを使用可能とするためマニフェストファイルを
 msgid "Project Options"
 msgstr "プロジェクトオプション"
 
+#: lazarusidestrconsts.dlgprojectoptionsfor
+msgid "Options for Project: %s"
+msgstr ""
+
 #: lazarusidestrconsts.dlgprojfiles
 msgid "Project files"
 msgstr "プロジェクトファイル"
@@ -2508,6 +2518,10 @@ msgstr "構文オプション"
 msgid "Tab indents blocks"
 msgstr "タブインデントブロック"
 
+#: lazarusidestrconsts.dlgtabnumbersnotebook
+msgid "Show tab numbers in notebook"
+msgstr ""
+
 #: lazarusidestrconsts.dlgtabstospaces
 msgid "Tabs to spaces"
 msgstr "タブをスペースへ"
@@ -2806,6 +2820,10 @@ msgstr "Z 順序"
 
 #: lazarusidestrconsts.gldhighlightbothsidesofcursor
 msgid "On Both Sides"
+msgstr ""
+
+#: lazarusidestrconsts.lis0no1drawdividerlinesonlyfortoplevel2drawlinesforfi
+msgid "0 = no, 1 = draw divider lines only for top level, 2 = draw lines for first two levels, ..."
 msgstr ""
 
 #: lazarusidestrconsts.lisa2paddfile
@@ -3163,10 +3181,6 @@ msgstr "ディレクトリのファイルを追加"
 #: lazarusidestrconsts.lisadditionalcompileroptionsinheritedfrompackages
 msgid "Additional compiler options inherited from packages"
 msgstr "パッケージから継承されたその他のコンパイラオプション"
-
-#: lazarusidestrconsts.lisadditionalinformation
-msgid "Additional Information"
-msgstr "追加情報"
 
 #: lazarusidestrconsts.lisaddnewset
 msgid "Add new set"
@@ -3594,9 +3608,18 @@ msgstr "新規プロジェクトを構築"
 msgid "Build Number"
 msgstr "構築番号"
 
+#: lazarusidestrconsts.lisbuildvariables
+msgid "Build variables"
+msgstr ""
+
 #: lazarusidestrconsts.liscallingtocreatemakefilefromfailed
 msgid "Calling %s to create Makefile from %s failed."
 msgstr "%sの呼び出し(%sからMakefileを作成するための)に失敗しました。"
+
+#: lazarusidestrconsts.liscancel
+msgctxt "lazarusidestrconsts.liscancel"
+msgid "Cancel"
+msgstr "取消"
 
 #: lazarusidestrconsts.liscancelloadingthiscomponent
 msgid "Cancel loading this component"
@@ -4906,14 +4929,6 @@ msgstr "モジュールの発行後のコマンド"
 msgid "Command line parameters of program"
 msgstr "プログラムのコマンドライン引数"
 
-#: lazarusidestrconsts.liscomments
-msgid "Comments:"
-msgstr "コメント："
-
-#: lazarusidestrconsts.liscompany
-msgid "Company:"
-msgstr "会社："
-
 #: lazarusidestrconsts.liscompileidewithoutlinking
 msgid "Compile IDE (without linking)"
 msgstr "リンクしないでIDEをコンパイル"
@@ -5016,6 +5031,19 @@ msgstr "本当にLazarusを再構築しますか？"
 #: lazarusidestrconsts.lisconfirmnewpackagesetfortheide
 msgid "Confirm new package set for the IDE"
 msgstr "IDEにセットされた新しいパッケージを確認"
+
+#: lazarusidestrconsts.lisconfirmpackageaction
+msgctxt "lazarusidestrconsts.lisconfirmpackageaction"
+msgid "Action"
+msgstr "アクション"
+
+#: lazarusidestrconsts.lisconfirmpackagenewpackageset
+msgid "New package set"
+msgstr ""
+
+#: lazarusidestrconsts.lisconfirmpackageoldpackageset
+msgid "Old package set"
+msgstr ""
 
 #: lazarusidestrconsts.lisconsoleapplication
 msgid "Console application"
@@ -5848,6 +5876,7 @@ msgid "Insert"
 msgstr "挿入"
 
 #: lazarusidestrconsts.lisedtexttoolkey
+msgctxt "lazarusidestrconsts.lisedtexttoolkey"
 msgid "Key"
 msgstr "キー"
 
@@ -7035,10 +7064,6 @@ msgstr "インストールしたパッケージ"
 msgid "Install selection"
 msgstr "選択対象をインストール"
 
-#: lazarusidestrconsts.lisinternalname
-msgid "Internal Name:"
-msgstr "内部名称："
-
 #: lazarusidestrconsts.lisinvalidbuildvarthebuildvarmustbeapascalidentifie
 msgid "Invalid build variable %s%s%s. The build variable must be a pascal identifier."
 msgstr "無効なビルド変数です %s%s%s。ビルド変数は、パスカル識別子でなければいけません。"
@@ -7134,6 +7159,10 @@ msgstr "%sは%sです、%s循環参照は許されません。"
 #: lazarusidestrconsts.lisjitform
 msgid "JIT Form"
 msgstr "JITフォーム"
+
+#: lazarusidestrconsts.liskeep
+msgid "keep"
+msgstr ""
 
 #: lazarusidestrconsts.liskeepname
 msgid "Keep name"
@@ -7952,10 +7981,6 @@ msgstr "左側"
 #: lazarusidestrconsts.lisleftspaceequally
 msgid "Left space equally"
 msgstr "左側の間隔を均等に"
-
-#: lazarusidestrconsts.lislegaltrademarks
-msgid "Legal Trademarks:"
-msgstr "法的商標："
 
 #: lazarusidestrconsts.lislevels
 msgid "Levels"
@@ -8845,6 +8870,10 @@ msgstr "単語を選択"
 msgid "Set a free bookmark"
 msgstr "自由なブックマークをつける"
 
+#: lazarusidestrconsts.lismenushowexecutionpoint
+msgid "Show execution point"
+msgstr ""
+
 #: lazarusidestrconsts.lismenusortselection
 msgid "Sort selection ..."
 msgstr "選択部分をソートする ..."
@@ -9610,10 +9639,6 @@ msgstr "プロジェクト %s を開きますか？"
 #: lazarusidestrconsts.lisor
 msgid "or"
 msgstr ""
-
-#: lazarusidestrconsts.lisoriginalfilename
-msgid "Original File Name:"
-msgstr "もとのファイル名："
 
 #: lazarusidestrconsts.lisoverridelanguage
 msgid "Override language. For example --language=de. For possible values see files in the languages directory."
@@ -10970,14 +10995,6 @@ msgstr "手続き"
 msgid "Procedure with interface"
 msgstr "宣言部をもつ手続き"
 
-#: lazarusidestrconsts.lisproductname
-msgid "Product Name:"
-msgstr "製品名："
-
-#: lazarusidestrconsts.lisproductversion
-msgid "Product Version:"
-msgstr "製品バージョン："
-
 #: lazarusidestrconsts.lisprogram
 msgctxt "lazarusidestrconsts.lisprogram"
 msgid "Program"
@@ -11420,10 +11437,6 @@ msgstr "FPC バージョン2.4 以上が必要です。Delphiリソースに似�
 msgid "Rescan"
 msgstr "最スキャン"
 
-#: lazarusidestrconsts.lisresourcefilecomment
-msgid "This is an automatically generated lazarus resource file"
-msgstr "これは自動的に生成されたlazarusリソースファイルです。"
-
 #: lazarusidestrconsts.lisresourceloaderror
 msgid "Resource load error"
 msgstr "リソースの読み込みに失敗"
@@ -11636,6 +11649,10 @@ msgstr "ノードを選択"
 #: lazarusidestrconsts.lisselectdfmfiles
 msgid "Select Delphi form files (*.dfm)"
 msgstr "Delphiフォームファイル (*.dfm)を選択"
+
+#: lazarusidestrconsts.lisselected
+msgid "Selected"
+msgstr ""
 
 #: lazarusidestrconsts.lisselectedbottomneighbour
 msgid "(selected bottom neighbour)"
@@ -12362,10 +12379,6 @@ msgstr "このLazarus構築オプションセットは、このインストー�
 #: lazarusidestrconsts.listhisstatementcannotbeextractedpleaseselectsomecode
 msgid "This statement can not be extracted.%sPlease select some code to extract a new procedure/method."
 msgstr "この文は抽出できません。%s新しい手続き/メソッドを抽出するためにコードの一部を選択してください。"
-
-#: lazarusidestrconsts.listhiswillhappencontinue
-msgid "This will happen:%s%s%sContinue?"
-msgstr "%s%s%sが起こりそうです。続けますか？"
 
 #: lazarusidestrconsts.listitle
 msgid "&Title"
@@ -13211,10 +13224,6 @@ msgstr "usesセクションにパッケージユニットを追加"
 msgid "Add Inverse"
 msgstr "逆を追加"
 
-#: lazarusidestrconsts.rsadditionalinfo
-msgid "Additional info"
-msgstr "追加情報"
-
 #: lazarusidestrconsts.rsautomaticallyincreasebuildnumber
 msgid "Automatically increase build number"
 msgstr "ビルド番号を自動的に増やす"
@@ -13224,7 +13233,9 @@ msgid "Available scanners"
 msgstr "利用できるスキャナ"
 
 #: lazarusidestrconsts.rsbuild
-msgid "Build:"
+#, fuzzy
+#| msgid "Build:"
+msgid "&Build:"
 msgstr "構築"
 
 #: lazarusidestrconsts.rscharacterset
@@ -13238,10 +13249,6 @@ msgstr "現在のページを閉じる"
 #: lazarusidestrconsts.rsconditionaldefines
 msgid "Conditional defines"
 msgstr "条件定義"
-
-#: lazarusidestrconsts.rscopyright
-msgid "Copyright:"
-msgstr "著作権"
 
 #: lazarusidestrconsts.rscreatenewdefine
 msgid "Create new define"
@@ -13315,6 +13322,11 @@ msgstr "ウィンドウサイズを復元"
 #: lazarusidestrconsts.rsiwpusewindowmanagersetting
 msgid "Use windowmanager setting"
 msgstr "ウィンドウマネージャーの設定を使う"
+
+#: lazarusidestrconsts.rskey
+msgctxt "lazarusidestrconsts.rskey"
+msgid "Key"
+msgstr "キー"
 
 #: lazarusidestrconsts.rslanguageafrikaans
 msgid "Afrikaans"
@@ -13412,13 +13424,13 @@ msgstr "トルコ語"
 msgid "Ukrainian"
 msgstr "ウクライナ語"
 
-#: lazarusidestrconsts.rsmajorrevision
-msgid "Major revision:"
-msgstr "大幅修正"
+#: lazarusidestrconsts.rsmajorversion
+msgid "&Major version:"
+msgstr ""
 
-#: lazarusidestrconsts.rsminorrevision
-msgid "Minor revision:"
-msgstr "小幅な修正"
+#: lazarusidestrconsts.rsminorversion
+msgid "Mi&nor version:"
+msgstr ""
 
 #: lazarusidestrconsts.rsok
 msgid "ok"
@@ -13440,6 +13452,10 @@ msgstr "消去(&R)"
 msgid "Reset filter"
 msgstr "フィルタをリセット"
 
+#: lazarusidestrconsts.rsrevision
+msgid "&Revision:"
+msgstr ""
+
 #: lazarusidestrconsts.rsscanners
 msgid "Scanners"
 msgstr "スキャナ"
@@ -13452,9 +13468,10 @@ msgstr "継承されたエントリを選択"
 msgid "Start a new search"
 msgstr "新しい検索を開始"
 
-#: lazarusidestrconsts.rsversion
-msgid "Version:"
-msgstr "バージョン:"
+#: lazarusidestrconsts.rsvalue
+msgctxt "lazarusidestrconsts.rsvalue"
+msgid "Value"
+msgstr "値"
 
 #: lazarusidestrconsts.rsversionnumbering
 msgid "Version numbering"
@@ -14259,6 +14276,10 @@ msgstr "抽象メソッドを表示"
 #: lazarusidestrconsts.srkmecshowcodecontext
 msgid "Show code context"
 msgstr "コードの内容を表示"
+
+#: lazarusidestrconsts.srkmecshowexecutionpoint
+msgid "show execution point"
+msgstr ""
 
 #: lazarusidestrconsts.srkmecstopprogram
 msgid "stop program"

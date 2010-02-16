@@ -493,6 +493,10 @@ msgstr "Enregistrer sous - renommer les fichiers pascal en minuscules"
 msgid "Check consistency"
 msgstr "Vérifier la cohérence"
 
+#: lazarusidestrconsts.dlgcheckpackagesonformcreate
+msgid "Check packages on form create"
+msgstr ""
+
 #: lazarusidestrconsts.dlgchscodetempl
 msgid "Choose code template file (*.dci)"
 msgstr "Choisissez le fichier de modèle de code (*.dci)"
@@ -749,7 +753,7 @@ msgid "Unit Style:"
 msgstr "Style de l'unité"
 
 #: lazarusidestrconsts.dlgcouseasdefault
-msgid "Use these settings as default for new projects"
+msgid "Use these compiler options as default for new projects"
 msgstr ""
 
 #: lazarusidestrconsts.dlgcovalgrind
@@ -2161,6 +2165,10 @@ msgstr "Utiliser le fichier manifeste pour activer les thèmes (Windows seulemen
 msgid "Project Options"
 msgstr "Options du projet"
 
+#: lazarusidestrconsts.dlgprojectoptionsfor
+msgid "Options for Project: %s"
+msgstr ""
+
 #: lazarusidestrconsts.dlgprojfiles
 msgid "Project files"
 msgstr "Fichiers projet"
@@ -2512,6 +2520,10 @@ msgstr "Options des syntaxes"
 msgid "Tab indents blocks"
 msgstr "Tabulation indente les blocs"
 
+#: lazarusidestrconsts.dlgtabnumbersnotebook
+msgid "Show tab numbers in notebook"
+msgstr ""
+
 #: lazarusidestrconsts.dlgtabstospaces
 msgid "Tabs to spaces"
 msgstr "Tabulations en espaces"
@@ -2804,6 +2816,10 @@ msgstr ""
 #: lazarusidestrconsts.gldhighlightbothsidesofcursor
 msgid "On Both Sides"
 msgstr "Des deux côtés"
+
+#: lazarusidestrconsts.lis0no1drawdividerlinesonlyfortoplevel2drawlinesforfi
+msgid "0 = no, 1 = draw divider lines only for top level, 2 = draw lines for first two levels, ..."
+msgstr ""
 
 #: lazarusidestrconsts.lisa2paddfile
 msgid "Add File"
@@ -3160,10 +3176,6 @@ msgstr "Ajouter fichiers du répertoire"
 #: lazarusidestrconsts.lisadditionalcompileroptionsinheritedfrompackages
 msgid "Additional compiler options inherited from packages"
 msgstr "Options de compilation additionnelles héritées des paquets"
-
-#: lazarusidestrconsts.lisadditionalinformation
-msgid "Additional Information"
-msgstr "Informations supplémentaires"
 
 #: lazarusidestrconsts.lisaddnewset
 msgid "Add new set"
@@ -3591,9 +3603,18 @@ msgstr "Construire un nouveau projet"
 msgid "Build Number"
 msgstr "Numéro de construction"
 
+#: lazarusidestrconsts.lisbuildvariables
+msgid "Build variables"
+msgstr ""
+
 #: lazarusidestrconsts.liscallingtocreatemakefilefromfailed
 msgid "Calling %s to create Makefile from %s failed."
 msgstr "L'appel de %s pour créer le Makefile depuis %s a échoué."
+
+#: lazarusidestrconsts.liscancel
+msgctxt "lazarusidestrconsts.liscancel"
+msgid "Cancel"
+msgstr "Annuler"
 
 #: lazarusidestrconsts.liscancelloadingthiscomponent
 msgid "Cancel loading this component"
@@ -4902,14 +4923,6 @@ msgstr "Commande après publication du module"
 msgid "Command line parameters of program"
 msgstr "Paramètres d'éxécution du programme"
 
-#: lazarusidestrconsts.liscomments
-msgid "Comments:"
-msgstr "Commentaires :"
-
-#: lazarusidestrconsts.liscompany
-msgid "Company:"
-msgstr "Société :"
-
 #: lazarusidestrconsts.liscompileidewithoutlinking
 msgid "Compile IDE (without linking)"
 msgstr "Compiler l'EDI (sans assemblage)"
@@ -5011,6 +5024,19 @@ msgstr "Voulez-vous reconstruire Lazarus ?"
 #: lazarusidestrconsts.lisconfirmnewpackagesetfortheide
 msgid "Confirm new package set for the IDE"
 msgstr "Confirmez le nouvel ensemble de paquets pour l'EDI"
+
+#: lazarusidestrconsts.lisconfirmpackageaction
+msgctxt "lazarusidestrconsts.lisconfirmpackageaction"
+msgid "Action"
+msgstr "Action"
+
+#: lazarusidestrconsts.lisconfirmpackagenewpackageset
+msgid "New package set"
+msgstr ""
+
+#: lazarusidestrconsts.lisconfirmpackageoldpackageset
+msgid "Old package set"
+msgstr ""
 
 #: lazarusidestrconsts.lisconsoleapplication
 msgid "Console application"
@@ -5843,6 +5869,7 @@ msgid "Insert"
 msgstr "Insérer"
 
 #: lazarusidestrconsts.lisedtexttoolkey
+msgctxt "lazarusidestrconsts.lisedtexttoolkey"
 msgid "Key"
 msgstr "Touche"
 
@@ -7030,10 +7057,6 @@ msgstr "Paquets installés"
 msgid "Install selection"
 msgstr "Installer la sélection"
 
-#: lazarusidestrconsts.lisinternalname
-msgid "Internal Name:"
-msgstr "Nom interne :"
-
 #: lazarusidestrconsts.lisinvalidbuildvarthebuildvarmustbeapascalidentifie
 msgid "Invalid build variable %s%s%s. The build variable must be a pascal identifier."
 msgstr ""
@@ -7129,6 +7152,10 @@ msgstr "%s est %s.%s Ce cercle de dépendance n'est pas autorisé."
 #: lazarusidestrconsts.lisjitform
 msgid "JIT Form"
 msgstr "Fiche JIT"
+
+#: lazarusidestrconsts.liskeep
+msgid "keep"
+msgstr ""
 
 #: lazarusidestrconsts.liskeepname
 msgid "Keep name"
@@ -7947,10 +7974,6 @@ msgstr "Côtés gauches"
 #: lazarusidestrconsts.lisleftspaceequally
 msgid "Left space equally"
 msgstr "Espacement gauche égal"
-
-#: lazarusidestrconsts.lislegaltrademarks
-msgid "Legal Trademarks:"
-msgstr "Marques de commerce:"
 
 #: lazarusidestrconsts.lislevels
 msgid "Levels"
@@ -8834,6 +8857,10 @@ msgstr "Sélectionner un mot"
 msgid "Set a free bookmark"
 msgstr "Mettre un signet libre"
 
+#: lazarusidestrconsts.lismenushowexecutionpoint
+msgid "Show execution point"
+msgstr ""
+
 #: lazarusidestrconsts.lismenusortselection
 msgid "Sort selection ..."
 msgstr "Trier la sélection ..."
@@ -9595,10 +9622,6 @@ msgstr "Ouvrir le projet %s?"
 #: lazarusidestrconsts.lisor
 msgid "or"
 msgstr "ou"
-
-#: lazarusidestrconsts.lisoriginalfilename
-msgid "Original File Name:"
-msgstr "Nom de fichier d'origine :"
 
 #: lazarusidestrconsts.lisoverridelanguage
 msgid "Override language. For example --language=de. For possible values see files in the languages directory."
@@ -10955,14 +10978,6 @@ msgstr "Procédure"
 msgid "Procedure with interface"
 msgstr "Procédure avec interface"
 
-#: lazarusidestrconsts.lisproductname
-msgid "Product Name:"
-msgstr "Nom du produit :"
-
-#: lazarusidestrconsts.lisproductversion
-msgid "Product Version:"
-msgstr "Version du produit :"
-
 #: lazarusidestrconsts.lisprogram
 msgctxt "lazarusidestrconsts.lisprogram"
 msgid "Program"
@@ -11404,10 +11419,6 @@ msgstr ""
 msgid "Rescan"
 msgstr ""
 
-#: lazarusidestrconsts.lisresourcefilecomment
-msgid "This is an automatically generated lazarus resource file"
-msgstr "Ceci est un fichier ressource généré automatiquement par Lazarus"
-
 #: lazarusidestrconsts.lisresourceloaderror
 msgid "Resource load error"
 msgstr "Erreur de lecture de ressource"
@@ -11620,6 +11631,10 @@ msgstr "Choisir un noeud"
 #: lazarusidestrconsts.lisselectdfmfiles
 msgid "Select Delphi form files (*.dfm)"
 msgstr "Sélectionner les fiches Delphi (*.dfm)"
+
+#: lazarusidestrconsts.lisselected
+msgid "Selected"
+msgstr ""
 
 #: lazarusidestrconsts.lisselectedbottomneighbour
 msgid "(selected bottom neighbour)"
@@ -12346,10 +12361,6 @@ msgstr ""
 #: lazarusidestrconsts.listhisstatementcannotbeextractedpleaseselectsomecode
 msgid "This statement can not be extracted.%sPlease select some code to extract a new procedure/method."
 msgstr "Cette sélection ne peut pas être extraite.%sVeuillez sélectionner du code pour en extraire une nouvelle procédure/méthode."
-
-#: lazarusidestrconsts.listhiswillhappencontinue
-msgid "This will happen:%s%s%sContinue?"
-msgstr "Ceci va arriver : %s%s%s Continuer ?"
 
 #: lazarusidestrconsts.listitle
 msgid "&Title"
@@ -13195,10 +13206,6 @@ msgstr "Ajouter l'unité du paquet à la section Uses"
 msgid "Add Inverse"
 msgstr "Ajouter inverse"
 
-#: lazarusidestrconsts.rsadditionalinfo
-msgid "Additional info"
-msgstr "Informations additionnelles"
-
 #: lazarusidestrconsts.rsautomaticallyincreasebuildnumber
 msgid "Automatically increase build number"
 msgstr "Incrémenter automatiquement le numéro de construction"
@@ -13208,7 +13215,9 @@ msgid "Available scanners"
 msgstr "Scanners disponible"
 
 #: lazarusidestrconsts.rsbuild
-msgid "Build:"
+#, fuzzy
+#| msgid "Build:"
+msgid "&Build:"
 msgstr "Construction :"
 
 #: lazarusidestrconsts.rscharacterset
@@ -13222,10 +13231,6 @@ msgstr "Fermer la page en cours"
 #: lazarusidestrconsts.rsconditionaldefines
 msgid "Conditional defines"
 msgstr "Définitions conditionnelles"
-
-#: lazarusidestrconsts.rscopyright
-msgid "Copyright:"
-msgstr "Copyright :"
 
 #: lazarusidestrconsts.rscreatenewdefine
 msgid "Create new define"
@@ -13300,6 +13305,11 @@ msgstr "Restaurer la taille de la fenêtre"
 #: lazarusidestrconsts.rsiwpusewindowmanagersetting
 msgid "Use windowmanager setting"
 msgstr "Utiliser le gestionnaire de fenêtres"
+
+#: lazarusidestrconsts.rskey
+msgctxt "lazarusidestrconsts.rskey"
+msgid "Key"
+msgstr "Touche"
 
 #: lazarusidestrconsts.rslanguageafrikaans
 msgid "Afrikaans"
@@ -13397,13 +13407,13 @@ msgstr "Turque"
 msgid "Ukrainian"
 msgstr "Ukrainien "
 
-#: lazarusidestrconsts.rsmajorrevision
-msgid "Major revision:"
-msgstr "Révision Majeur :"
+#: lazarusidestrconsts.rsmajorversion
+msgid "&Major version:"
+msgstr ""
 
-#: lazarusidestrconsts.rsminorrevision
-msgid "Minor revision:"
-msgstr "Révision mineure :"
+#: lazarusidestrconsts.rsminorversion
+msgid "Mi&nor version:"
+msgstr ""
 
 #: lazarusidestrconsts.rsok
 msgid "ok"
@@ -13425,6 +13435,10 @@ msgstr "&Retirer"
 msgid "Reset filter"
 msgstr "Réinitialiser le filtre"
 
+#: lazarusidestrconsts.rsrevision
+msgid "&Revision:"
+msgstr ""
+
 #: lazarusidestrconsts.rsscanners
 msgid "Scanners"
 msgstr "Scanners"
@@ -13437,9 +13451,10 @@ msgstr "Sélectionnez une entrée hérité"
 msgid "Start a new search"
 msgstr "Démarrer une nouvelle recherche"
 
-#: lazarusidestrconsts.rsversion
-msgid "Version:"
-msgstr "Version :"
+#: lazarusidestrconsts.rsvalue
+msgctxt "lazarusidestrconsts.rsvalue"
+msgid "Value"
+msgstr "Valeur"
 
 #: lazarusidestrconsts.rsversionnumbering
 msgid "Version numbering"
@@ -14245,6 +14260,10 @@ msgstr "Afficher les méthodes abstraites"
 #: lazarusidestrconsts.srkmecshowcodecontext
 msgid "Show code context"
 msgstr "Afficher le contexte de code"
+
+#: lazarusidestrconsts.srkmecshowexecutionpoint
+msgid "show execution point"
+msgstr ""
 
 #: lazarusidestrconsts.srkmecstopprogram
 msgid "stop program"

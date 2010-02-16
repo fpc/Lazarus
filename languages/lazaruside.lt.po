@@ -495,6 +495,10 @@ msgstr "Paskalio failus išsaugant kitaip, automatiškai pervadinti mažosiomis 
 msgid "Check consistency"
 msgstr "Tikrinti darną"
 
+#: lazarusidestrconsts.dlgcheckpackagesonformcreate
+msgid "Check packages on form create"
+msgstr ""
+
 #: lazarusidestrconsts.dlgchscodetempl
 msgid "Choose code template file (*.dci)"
 msgstr "Rinkitės kodo šablono failą (*.dci)"
@@ -751,7 +755,7 @@ msgid "Unit Style:"
 msgstr "Modulio stilius:"
 
 #: lazarusidestrconsts.dlgcouseasdefault
-msgid "Use these settings as default for new projects"
+msgid "Use these compiler options as default for new projects"
 msgstr ""
 
 #: lazarusidestrconsts.dlgcovalgrind
@@ -2161,6 +2165,10 @@ msgstr "Naudoti manifest failą temų įgalinimui (tik dėl Windows)"
 msgid "Project Options"
 msgstr "Projekto parinktys"
 
+#: lazarusidestrconsts.dlgprojectoptionsfor
+msgid "Options for Project: %s"
+msgstr ""
+
 #: lazarusidestrconsts.dlgprojfiles
 msgid "Project files"
 msgstr "Projekto failai"
@@ -2512,6 +2520,10 @@ msgstr "Sintaksės parinktys"
 msgid "Tab indents blocks"
 msgstr "Tabuliatorius įtraukia blokus"
 
+#: lazarusidestrconsts.dlgtabnumbersnotebook
+msgid "Show tab numbers in notebook"
+msgstr ""
+
 #: lazarusidestrconsts.dlgtabstospaces
 msgid "Tabs to spaces"
 msgstr "Vietoj tabuliatoriaus - tarpo simboliai"
@@ -2804,6 +2816,10 @@ msgstr "Z eilė"
 #: lazarusidestrconsts.gldhighlightbothsidesofcursor
 msgid "On Both Sides"
 msgstr "Abiejose pusėse"
+
+#: lazarusidestrconsts.lis0no1drawdividerlinesonlyfortoplevel2drawlinesforfi
+msgid "0 = no, 1 = draw divider lines only for top level, 2 = draw lines for first two levels, ..."
+msgstr ""
 
 #: lazarusidestrconsts.lisa2paddfile
 msgid "Add File"
@@ -3160,10 +3176,6 @@ msgstr "Pridėti aplanko failus"
 #: lazarusidestrconsts.lisadditionalcompileroptionsinheritedfrompackages
 msgid "Additional compiler options inherited from packages"
 msgstr "Papildomi iš paketų paveldėtos kompiliatoriaus parinktys"
-
-#: lazarusidestrconsts.lisadditionalinformation
-msgid "Additional Information"
-msgstr "Papildoma informacija"
 
 #: lazarusidestrconsts.lisaddnewset
 msgid "Add new set"
@@ -3597,9 +3609,18 @@ msgstr "Daryti naująjį projektą"
 msgid "Build Number"
 msgstr "Darymo numeris"
 
+#: lazarusidestrconsts.lisbuildvariables
+msgid "Build variables"
+msgstr ""
+
 #: lazarusidestrconsts.liscallingtocreatemakefilefromfailed
 msgid "Calling %s to create Makefile from %s failed."
 msgstr "Besikreipiant į %s, kad pagal %s būtų sukurtas Makefile, įvyko klaida."
+
+#: lazarusidestrconsts.liscancel
+msgctxt "lazarusidestrconsts.liscancel"
+msgid "Cancel"
+msgstr "Atsisakyti"
 
 #: lazarusidestrconsts.liscancelloadingthiscomponent
 msgid "Cancel loading this component"
@@ -4908,14 +4929,6 @@ msgstr "Komanda po modulio paskelbimo"
 msgid "Command line parameters of program"
 msgstr "Programos komandinės eilutės parametrai"
 
-#: lazarusidestrconsts.liscomments
-msgid "Comments:"
-msgstr "Komentarai:"
-
-#: lazarusidestrconsts.liscompany
-msgid "Company:"
-msgstr "Kompanija:"
-
 #: lazarusidestrconsts.liscompileidewithoutlinking
 msgid "Compile IDE (without linking)"
 msgstr "Kompiliuoti IKA (nesaistant)"
@@ -5017,6 +5030,19 @@ msgstr "Ar Lazarus daryti iš naujo?"
 #: lazarusidestrconsts.lisconfirmnewpackagesetfortheide
 msgid "Confirm new package set for the IDE"
 msgstr "IKA paketų sąrašo patvirtinimas"
+
+#: lazarusidestrconsts.lisconfirmpackageaction
+msgctxt "lazarusidestrconsts.lisconfirmpackageaction"
+msgid "Action"
+msgstr "Veiksmas"
+
+#: lazarusidestrconsts.lisconfirmpackagenewpackageset
+msgid "New package set"
+msgstr ""
+
+#: lazarusidestrconsts.lisconfirmpackageoldpackageset
+msgid "Old package set"
+msgstr ""
 
 #: lazarusidestrconsts.lisconsoleapplication
 msgid "Console application"
@@ -5849,6 +5875,7 @@ msgid "Insert"
 msgstr "Insert"
 
 #: lazarusidestrconsts.lisedtexttoolkey
+msgctxt "lazarusidestrconsts.lisedtexttoolkey"
 msgid "Key"
 msgstr "Klavišas"
 
@@ -7036,10 +7063,6 @@ msgstr "Įdiegti paketai"
 msgid "Install selection"
 msgstr "Įdiegti pažymėtą"
 
-#: lazarusidestrconsts.lisinternalname
-msgid "Internal Name:"
-msgstr "Vidinis pavadinimas:"
-
 #: lazarusidestrconsts.lisinvalidbuildvarthebuildvarmustbeapascalidentifie
 msgid "Invalid build variable %s%s%s. The build variable must be a pascal identifier."
 msgstr ""
@@ -7135,6 +7158,10 @@ msgstr "%s yra %s.%sŠis priklausomybių ratas nėra leidžiamas."
 #: lazarusidestrconsts.lisjitform
 msgid "JIT Form"
 msgstr "JITForm"
+
+#: lazarusidestrconsts.liskeep
+msgid "keep"
+msgstr ""
 
 #: lazarusidestrconsts.liskeepname
 msgid "Keep name"
@@ -7957,10 +7984,6 @@ msgstr "Sutapdinti kairiuosius kraštus"
 #: lazarusidestrconsts.lisleftspaceequally
 msgid "Left space equally"
 msgstr "Tolygiai rikiuoti pagal kairiuosius kraštus"
-
-#: lazarusidestrconsts.lislegaltrademarks
-msgid "Legal Trademarks:"
-msgstr "Teisėti prekės ženklai:"
 
 #: lazarusidestrconsts.lislevels
 msgid "Levels"
@@ -8844,6 +8867,10 @@ msgstr "Pažymėti žodį"
 msgid "Set a free bookmark"
 msgstr "Padėti laisvą žymę"
 
+#: lazarusidestrconsts.lismenushowexecutionpoint
+msgid "Show execution point"
+msgstr ""
+
 #: lazarusidestrconsts.lismenusortselection
 msgid "Sort selection ..."
 msgstr "Rūšiuoti pažymėtą…"
@@ -9605,10 +9632,6 @@ msgstr "Atverti projektą %s?"
 #: lazarusidestrconsts.lisor
 msgid "or"
 msgstr "arba"
-
-#: lazarusidestrconsts.lisoriginalfilename
-msgid "Original File Name:"
-msgstr "Pradinis failo pavadinimas:"
 
 #: lazarusidestrconsts.lisoverridelanguage
 msgid "Override language. For example --language=de. For possible values see files in the languages directory."
@@ -10965,14 +10988,6 @@ msgstr "Procedūra"
 msgid "Procedure with interface"
 msgstr "Procedūra su interfeisu"
 
-#: lazarusidestrconsts.lisproductname
-msgid "Product Name:"
-msgstr "Gaminio pavadinimas:"
-
-#: lazarusidestrconsts.lisproductversion
-msgid "Product Version:"
-msgstr "Gaminio versija:"
-
 #: lazarusidestrconsts.lisprogram
 msgctxt "lazarusidestrconsts.lisprogram"
 msgid "Program"
@@ -11415,10 +11430,6 @@ msgstr ""
 msgid "Rescan"
 msgstr ""
 
-#: lazarusidestrconsts.lisresourcefilecomment
-msgid "This is an automatically generated lazarus resource file"
-msgstr "Tai automatiškai sugeneruotas Lazarus išteklių failas"
-
 #: lazarusidestrconsts.lisresourceloaderror
 msgid "Resource load error"
 msgstr "Klaida įkeliant išteklius"
@@ -11635,6 +11646,10 @@ msgstr "Pažymėkit mazgą"
 #: lazarusidestrconsts.lisselectdfmfiles
 msgid "Select Delphi form files (*.dfm)"
 msgstr "Nurodykite Delphi formos failus (*.dfm)"
+
+#: lazarusidestrconsts.lisselected
+msgid "Selected"
+msgstr ""
 
 #: lazarusidestrconsts.lisselectedbottomneighbour
 msgid "(selected bottom neighbour)"
@@ -12364,10 +12379,6 @@ msgstr ""
 #: lazarusidestrconsts.listhisstatementcannotbeextractedpleaseselectsomecode
 msgid "This statement can not be extracted.%sPlease select some code to extract a new procedure/method."
 msgstr "Sakinį ištraukti neis.%sPrieš ištraukiant naują procedūrą/metodą pažymėkite kažkiek kodo."
-
-#: lazarusidestrconsts.listhiswillhappencontinue
-msgid "This will happen:%s%s%sContinue?"
-msgstr "Bus daroma:%s%s%sTęsti?"
 
 #: lazarusidestrconsts.listitle
 msgid "&Title"
@@ -13217,10 +13228,6 @@ msgstr "Paketo modulį įtraukti į naudojamų modulių sąrašą"
 msgid "Add Inverse"
 msgstr "Pridėti atvirkščiai"
 
-#: lazarusidestrconsts.rsadditionalinfo
-msgid "Additional info"
-msgstr "Papildoma informacija"
-
 #: lazarusidestrconsts.rsautomaticallyincreasebuildnumber
 msgid "Automatically increase build number"
 msgstr "Automatiškai didinti darymo numerį"
@@ -13230,7 +13237,9 @@ msgid "Available scanners"
 msgstr "Esami skeneriai"
 
 #: lazarusidestrconsts.rsbuild
-msgid "Build:"
+#, fuzzy
+#| msgid "Build:"
+msgid "&Build:"
 msgstr "Darymas:"
 
 #: lazarusidestrconsts.rscharacterset
@@ -13244,10 +13253,6 @@ msgstr "Užverti veikiamąjį lapą"
 #: lazarusidestrconsts.rsconditionaldefines
 msgid "Conditional defines"
 msgstr "Sąlyginės apibrėžtys"
-
-#: lazarusidestrconsts.rscopyright
-msgid "Copyright:"
-msgstr "Autorinė teisė:"
 
 #: lazarusidestrconsts.rscreatenewdefine
 msgid "Create new define"
@@ -13322,6 +13327,11 @@ msgstr "Atstatyti lango dydį"
 #: lazarusidestrconsts.rsiwpusewindowmanagersetting
 msgid "Use windowmanager setting"
 msgstr "Naudoti langų tvarkytuvės nuostatas"
+
+#: lazarusidestrconsts.rskey
+msgctxt "lazarusidestrconsts.rskey"
+msgid "Key"
+msgstr "Klavišas"
 
 #: lazarusidestrconsts.rslanguageafrikaans
 msgid "Afrikaans"
@@ -13419,13 +13429,13 @@ msgstr "Turkų"
 msgid "Ukrainian"
 msgstr "Ukrainiečių"
 
-#: lazarusidestrconsts.rsmajorrevision
-msgid "Major revision:"
-msgstr "Didysis poversijis:"
+#: lazarusidestrconsts.rsmajorversion
+msgid "&Major version:"
+msgstr ""
 
-#: lazarusidestrconsts.rsminorrevision
-msgid "Minor revision:"
-msgstr "Mažasis poversijis:"
+#: lazarusidestrconsts.rsminorversion
+msgid "Mi&nor version:"
+msgstr ""
 
 #: lazarusidestrconsts.rsok
 msgid "ok"
@@ -13447,6 +13457,10 @@ msgstr "&Pašalinti"
 msgid "Reset filter"
 msgstr "Atstatyti filtrą"
 
+#: lazarusidestrconsts.rsrevision
+msgid "&Revision:"
+msgstr ""
+
 #: lazarusidestrconsts.rsscanners
 msgid "Scanners"
 msgstr "Skeneriai"
@@ -13459,9 +13473,10 @@ msgstr "Pažymėti paveldėtą įrašą"
 msgid "Start a new search"
 msgstr "Pradėti naują paiešką"
 
-#: lazarusidestrconsts.rsversion
-msgid "Version:"
-msgstr "Versija:"
+#: lazarusidestrconsts.rsvalue
+msgctxt "lazarusidestrconsts.rsvalue"
+msgid "Value"
+msgstr "Vertė"
 
 #: lazarusidestrconsts.rsversionnumbering
 msgid "Version numbering"
@@ -14267,6 +14282,10 @@ msgstr "Rodyti abstrakčius metodus"
 #: lazarusidestrconsts.srkmecshowcodecontext
 msgid "Show code context"
 msgstr "Rodyti kodo turinį"
+
+#: lazarusidestrconsts.srkmecshowexecutionpoint
+msgid "show execution point"
+msgstr ""
 
 #: lazarusidestrconsts.srkmecstopprogram
 msgid "stop program"

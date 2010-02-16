@@ -491,6 +491,10 @@ msgstr ""
 msgid "Check consistency"
 msgstr "בדוק אחידות"
 
+#: lazarusidestrconsts.dlgcheckpackagesonformcreate
+msgid "Check packages on form create"
+msgstr ""
+
 #: lazarusidestrconsts.dlgchscodetempl
 msgid "Choose code template file (*.dci)"
 msgstr "בחר קובץ תבנית לקוד (*.dci)"
@@ -746,7 +750,7 @@ msgid "Unit Style:"
 msgstr ""
 
 #: lazarusidestrconsts.dlgcouseasdefault
-msgid "Use these settings as default for new projects"
+msgid "Use these compiler options as default for new projects"
 msgstr ""
 
 #: lazarusidestrconsts.dlgcovalgrind
@@ -2153,6 +2157,10 @@ msgstr ""
 msgid "Project Options"
 msgstr "אפשרויות פרויקט"
 
+#: lazarusidestrconsts.dlgprojectoptionsfor
+msgid "Options for Project: %s"
+msgstr ""
+
 #: lazarusidestrconsts.dlgprojfiles
 msgid "Project files"
 msgstr "קבצי הפרויקט"
@@ -2500,6 +2508,10 @@ msgstr ""
 msgid "Tab indents blocks"
 msgstr ""
 
+#: lazarusidestrconsts.dlgtabnumbersnotebook
+msgid "Show tab numbers in notebook"
+msgstr ""
+
 #: lazarusidestrconsts.dlgtabstospaces
 msgid "Tabs to spaces"
 msgstr ""
@@ -2782,6 +2794,10 @@ msgstr ""
 
 #: lazarusidestrconsts.gldhighlightbothsidesofcursor
 msgid "On Both Sides"
+msgstr ""
+
+#: lazarusidestrconsts.lis0no1drawdividerlinesonlyfortoplevel2drawlinesforfi
+msgid "0 = no, 1 = draw divider lines only for top level, 2 = draw lines for first two levels, ..."
 msgstr ""
 
 #: lazarusidestrconsts.lisa2paddfile
@@ -3139,10 +3155,6 @@ msgstr "הוסף קבצים של ספרייה"
 #: lazarusidestrconsts.lisadditionalcompileroptionsinheritedfrompackages
 msgid "Additional compiler options inherited from packages"
 msgstr "אפשרויות מהדר נוספות נלקחות מחבילות"
-
-#: lazarusidestrconsts.lisadditionalinformation
-msgid "Additional Information"
-msgstr "מידע נוסף"
 
 #: lazarusidestrconsts.lisaddnewset
 msgid "Add new set"
@@ -3570,9 +3582,18 @@ msgstr "בנה פרויקט חדש"
 msgid "Build Number"
 msgstr ""
 
+#: lazarusidestrconsts.lisbuildvariables
+msgid "Build variables"
+msgstr ""
+
 #: lazarusidestrconsts.liscallingtocreatemakefilefromfailed
 msgid "Calling %s to create Makefile from %s failed."
 msgstr ""
+
+#: lazarusidestrconsts.liscancel
+msgctxt "lazarusidestrconsts.liscancel"
+msgid "Cancel"
+msgstr "בטל"
 
 #: lazarusidestrconsts.liscancelloadingthiscomponent
 msgid "Cancel loading this component"
@@ -4882,14 +4903,6 @@ msgstr ""
 msgid "Command line parameters of program"
 msgstr "פרמטרים של שורת הפקודה של התוכנה"
 
-#: lazarusidestrconsts.liscomments
-msgid "Comments:"
-msgstr "הערות:"
-
-#: lazarusidestrconsts.liscompany
-msgid "Company:"
-msgstr "חברה:"
-
 #: lazarusidestrconsts.liscompileidewithoutlinking
 msgid "Compile IDE (without linking)"
 msgstr "הדר מהדר (ללא קישור)"
@@ -4990,6 +5003,19 @@ msgstr ""
 #: lazarusidestrconsts.lisconfirmnewpackagesetfortheide
 msgid "Confirm new package set for the IDE"
 msgstr "אשר חבילה חדשה עבור הIDE"
+
+#: lazarusidestrconsts.lisconfirmpackageaction
+msgctxt "lazarusidestrconsts.lisconfirmpackageaction"
+msgid "Action"
+msgstr "פעולה"
+
+#: lazarusidestrconsts.lisconfirmpackagenewpackageset
+msgid "New package set"
+msgstr ""
+
+#: lazarusidestrconsts.lisconfirmpackageoldpackageset
+msgid "Old package set"
+msgstr ""
 
 #: lazarusidestrconsts.lisconsoleapplication
 msgid "Console application"
@@ -5822,6 +5848,7 @@ msgid "Insert"
 msgstr ""
 
 #: lazarusidestrconsts.lisedtexttoolkey
+msgctxt "lazarusidestrconsts.lisedtexttoolkey"
 msgid "Key"
 msgstr ""
 
@@ -7009,10 +7036,6 @@ msgstr ""
 msgid "Install selection"
 msgstr ""
 
-#: lazarusidestrconsts.lisinternalname
-msgid "Internal Name:"
-msgstr ""
-
 #: lazarusidestrconsts.lisinvalidbuildvarthebuildvarmustbeapascalidentifie
 msgid "Invalid build variable %s%s%s. The build variable must be a pascal identifier."
 msgstr ""
@@ -7107,6 +7130,10 @@ msgstr ""
 
 #: lazarusidestrconsts.lisjitform
 msgid "JIT Form"
+msgstr ""
+
+#: lazarusidestrconsts.liskeep
+msgid "keep"
 msgstr ""
 
 #: lazarusidestrconsts.liskeepname
@@ -7925,10 +7952,6 @@ msgstr ""
 
 #: lazarusidestrconsts.lisleftspaceequally
 msgid "Left space equally"
-msgstr ""
-
-#: lazarusidestrconsts.lislegaltrademarks
-msgid "Legal Trademarks:"
 msgstr ""
 
 #: lazarusidestrconsts.lislevels
@@ -8819,6 +8842,10 @@ msgstr ""
 msgid "Set a free bookmark"
 msgstr ""
 
+#: lazarusidestrconsts.lismenushowexecutionpoint
+msgid "Show execution point"
+msgstr ""
+
 #: lazarusidestrconsts.lismenusortselection
 msgid "Sort selection ..."
 msgstr ""
@@ -9586,10 +9613,6 @@ msgstr "האם לפתוח את הפרויקט %s?"
 #: lazarusidestrconsts.lisor
 msgid "or"
 msgstr "או"
-
-#: lazarusidestrconsts.lisoriginalfilename
-msgid "Original File Name:"
-msgstr ""
 
 #: lazarusidestrconsts.lisoverridelanguage
 msgid "Override language. For example --language=de. For possible values see files in the languages directory."
@@ -10946,14 +10969,6 @@ msgstr "פרוצדורה"
 msgid "Procedure with interface"
 msgstr "פרוצדורות עם ממשקים"
 
-#: lazarusidestrconsts.lisproductname
-msgid "Product Name:"
-msgstr "שם מוצר:"
-
-#: lazarusidestrconsts.lisproductversion
-msgid "Product Version:"
-msgstr "גרסת מוצר:"
-
 #: lazarusidestrconsts.lisprogram
 msgctxt "lazarusidestrconsts.lisprogram"
 msgid "Program"
@@ -11396,10 +11411,6 @@ msgstr ""
 msgid "Rescan"
 msgstr ""
 
-#: lazarusidestrconsts.lisresourcefilecomment
-msgid "This is an automatically generated lazarus resource file"
-msgstr ""
-
 #: lazarusidestrconsts.lisresourceloaderror
 msgid "Resource load error"
 msgstr ""
@@ -11611,6 +11622,10 @@ msgstr "בחר מצב"
 
 #: lazarusidestrconsts.lisselectdfmfiles
 msgid "Select Delphi form files (*.dfm)"
+msgstr ""
+
+#: lazarusidestrconsts.lisselected
+msgid "Selected"
 msgstr ""
 
 #: lazarusidestrconsts.lisselectedbottomneighbour
@@ -12337,10 +12352,6 @@ msgstr ""
 
 #: lazarusidestrconsts.listhisstatementcannotbeextractedpleaseselectsomecode
 msgid "This statement can not be extracted.%sPlease select some code to extract a new procedure/method."
-msgstr ""
-
-#: lazarusidestrconsts.listhiswillhappencontinue
-msgid "This will happen:%s%s%sContinue?"
 msgstr ""
 
 #: lazarusidestrconsts.listitle
@@ -13185,10 +13196,6 @@ msgstr "הוסף את יחידת החבילה לחלק ה uses"
 msgid "Add Inverse"
 msgstr "הוסף הפוך"
 
-#: lazarusidestrconsts.rsadditionalinfo
-msgid "Additional info"
-msgstr "מידע נוסף"
-
 #: lazarusidestrconsts.rsautomaticallyincreasebuildnumber
 msgid "Automatically increase build number"
 msgstr ""
@@ -13198,7 +13205,9 @@ msgid "Available scanners"
 msgstr "סורקים קיימים"
 
 #: lazarusidestrconsts.rsbuild
-msgid "Build:"
+#, fuzzy
+#| msgid "Build:"
+msgid "&Build:"
 msgstr "בנה:"
 
 #: lazarusidestrconsts.rscharacterset
@@ -13212,10 +13221,6 @@ msgstr ""
 #: lazarusidestrconsts.rsconditionaldefines
 msgid "Conditional defines"
 msgstr ""
-
-#: lazarusidestrconsts.rscopyright
-msgid "Copyright:"
-msgstr "זכויות יוצרים:"
 
 #: lazarusidestrconsts.rscreatenewdefine
 msgid "Create new define"
@@ -13288,6 +13293,11 @@ msgstr ""
 
 #: lazarusidestrconsts.rsiwpusewindowmanagersetting
 msgid "Use windowmanager setting"
+msgstr ""
+
+#: lazarusidestrconsts.rskey
+msgctxt "lazarusidestrconsts.rskey"
+msgid "Key"
 msgstr ""
 
 #: lazarusidestrconsts.rslanguageafrikaans
@@ -13386,12 +13396,12 @@ msgstr "טורקית"
 msgid "Ukrainian"
 msgstr "אוקראינית"
 
-#: lazarusidestrconsts.rsmajorrevision
-msgid "Major revision:"
+#: lazarusidestrconsts.rsmajorversion
+msgid "&Major version:"
 msgstr ""
 
-#: lazarusidestrconsts.rsminorrevision
-msgid "Minor revision:"
+#: lazarusidestrconsts.rsminorversion
+msgid "Mi&nor version:"
 msgstr ""
 
 #: lazarusidestrconsts.rsok
@@ -13414,6 +13424,10 @@ msgstr "הסר (&R)"
 msgid "Reset filter"
 msgstr ""
 
+#: lazarusidestrconsts.rsrevision
+msgid "&Revision:"
+msgstr ""
+
 #: lazarusidestrconsts.rsscanners
 msgid "Scanners"
 msgstr "סורקים"
@@ -13426,9 +13440,10 @@ msgstr ""
 msgid "Start a new search"
 msgstr ""
 
-#: lazarusidestrconsts.rsversion
-msgid "Version:"
-msgstr "גרסה:"
+#: lazarusidestrconsts.rsvalue
+msgctxt "lazarusidestrconsts.rsvalue"
+msgid "Value"
+msgstr "ערך"
 
 #: lazarusidestrconsts.rsversionnumbering
 msgid "Version numbering"
@@ -14232,6 +14247,10 @@ msgstr ""
 
 #: lazarusidestrconsts.srkmecshowcodecontext
 msgid "Show code context"
+msgstr ""
+
+#: lazarusidestrconsts.srkmecshowexecutionpoint
+msgid "show execution point"
 msgstr ""
 
 #: lazarusidestrconsts.srkmecstopprogram

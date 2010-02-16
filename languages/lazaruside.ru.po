@@ -3178,10 +3178,6 @@ msgstr "Добавить файлы каталога"
 msgid "Additional compiler options inherited from packages"
 msgstr "Дополнительные параметры компилятора, унаследованные от пакетов"
 
-#: lazarusidestrconsts.lisadditionalinformation
-msgid "Additional Information"
-msgstr "Дополнительная информация"
-
 #: lazarusidestrconsts.lisaddnewset
 msgid "Add new set"
 msgstr "Добавить новый набор"
@@ -3615,6 +3611,11 @@ msgstr "Переменные сборки"
 #: lazarusidestrconsts.liscallingtocreatemakefilefromfailed
 msgid "Calling %s to create Makefile from %s failed."
 msgstr "Вызов %s для создания Makefile из %s не удался."
+
+#: lazarusidestrconsts.liscancel
+msgctxt "lazarusidestrconsts.liscancel"
+msgid "Cancel"
+msgstr "Отмена"
 
 #: lazarusidestrconsts.liscancelloadingthiscomponent
 msgid "Cancel loading this component"
@@ -4921,14 +4922,6 @@ msgstr "Команда после установки модуля"
 msgid "Command line parameters of program"
 msgstr "Параметры командной строки программы"
 
-#: lazarusidestrconsts.liscomments
-msgid "Comments:"
-msgstr "Комментарии:"
-
-#: lazarusidestrconsts.liscompany
-msgid "Company:"
-msgstr "Компания:"
-
 #: lazarusidestrconsts.liscompileidewithoutlinking
 msgid "Compile IDE (without linking)"
 msgstr "Компиляция IDE (без сборки)"
@@ -5036,14 +5029,13 @@ msgctxt "lazarusidestrconsts.lisconfirmpackageaction"
 msgid "Action"
 msgstr "Действие"
 
-#: lazarusidestrconsts.lisconfirmpackagenewpackage
-msgctxt "lazarusidestrconsts.lisconfirmpackagenewpackage"
-msgid "New package"
-msgstr "Новый пакет"
+#: lazarusidestrconsts.lisconfirmpackagenewpackageset
+msgid "New package set"
+msgstr ""
 
-#: lazarusidestrconsts.lisconfirmpackageoldpackage
-msgid "Old package"
-msgstr "Старый пакет"
+#: lazarusidestrconsts.lisconfirmpackageoldpackageset
+msgid "Old package set"
+msgstr ""
 
 #: lazarusidestrconsts.lisconsoleapplication
 msgid "Console application"
@@ -5876,6 +5868,7 @@ msgid "Insert"
 msgstr "Вставить"
 
 #: lazarusidestrconsts.lisedtexttoolkey
+msgctxt "lazarusidestrconsts.lisedtexttoolkey"
 msgid "Key"
 msgstr "Клавиша"
 
@@ -7063,10 +7056,6 @@ msgstr "Установленные пакеты"
 msgid "Install selection"
 msgstr "Установить выбранное"
 
-#: lazarusidestrconsts.lisinternalname
-msgid "Internal Name:"
-msgstr "Внутреннее имя:"
-
 #: lazarusidestrconsts.lisinvalidbuildvarthebuildvarmustbeapascalidentifie
 msgid "Invalid build variable %s%s%s. The build variable must be a pascal identifier."
 msgstr "Неверная переменная сборки %s%s%s. Она должна являться идентификатором Паскаля."
@@ -7985,10 +7974,6 @@ msgstr "Левые края"
 #: lazarusidestrconsts.lisleftspaceequally
 msgid "Left space equally"
 msgstr "Равномерно по левым краям"
-
-#: lazarusidestrconsts.lislegaltrademarks
-msgid "Legal Trademarks:"
-msgstr "Торговые марки:"
 
 #: lazarusidestrconsts.lislevels
 msgid "Levels"
@@ -9637,10 +9622,6 @@ msgstr "Открыть проект %s?"
 msgid "or"
 msgstr "или"
 
-#: lazarusidestrconsts.lisoriginalfilename
-msgid "Original File Name:"
-msgstr "Первое имя файла:"
-
 #: lazarusidestrconsts.lisoverridelanguage
 msgid "Override language. For example --language=de. For possible values see files in the languages directory."
 msgstr "Переопределить язык. Например, --language=de. Возможные значения смотрите в каталоге languages."
@@ -10995,14 +10976,6 @@ msgstr "Процедура"
 #: lazarusidestrconsts.lisprocedurewithinterface
 msgid "Procedure with interface"
 msgstr "Процедура с интерфейсом"
-
-#: lazarusidestrconsts.lisproductname
-msgid "Product Name:"
-msgstr "Имя продукта:"
-
-#: lazarusidestrconsts.lisproductversion
-msgid "Product Version:"
-msgstr "Версия продукта:"
 
 #: lazarusidestrconsts.lisprogram
 msgctxt "lazarusidestrconsts.lisprogram"
@@ -13234,10 +13207,6 @@ msgstr "Добавлять модуль пакета в секцию uses"
 msgid "Add Inverse"
 msgstr "Добавить инверсию"
 
-#: lazarusidestrconsts.rsadditionalinfo
-msgid "Additional info"
-msgstr "Дополнительно"
-
 #: lazarusidestrconsts.rsautomaticallyincreasebuildnumber
 msgid "Automatically increase build number"
 msgstr "Автоматически наращивать номер сборки"
@@ -13247,7 +13216,9 @@ msgid "Available scanners"
 msgstr "Доступные лексические анализаторы"
 
 #: lazarusidestrconsts.rsbuild
-msgid "Build:"
+#, fuzzy
+#| msgid "Build:"
+msgid "&Build:"
 msgstr "Сборка:"
 
 #: lazarusidestrconsts.rscharacterset
@@ -13261,10 +13232,6 @@ msgstr "Закрыть текущую страницу"
 #: lazarusidestrconsts.rsconditionaldefines
 msgid "Conditional defines"
 msgstr "Условные определения"
-
-#: lazarusidestrconsts.rscopyright
-msgid "Copyright:"
-msgstr "Копирайт:"
 
 #: lazarusidestrconsts.rscreatenewdefine
 msgid "Create new define"
@@ -13339,6 +13306,11 @@ msgstr "Восстановить размер окна"
 #: lazarusidestrconsts.rsiwpusewindowmanagersetting
 msgid "Use windowmanager setting"
 msgstr "Взять параметры оконного менеджера"
+
+#: lazarusidestrconsts.rskey
+msgctxt "lazarusidestrconsts.rskey"
+msgid "Key"
+msgstr "Клавиша"
 
 #: lazarusidestrconsts.rslanguageafrikaans
 msgid "Afrikaans"
@@ -13436,13 +13408,13 @@ msgstr "Турецкий"
 msgid "Ukrainian"
 msgstr "Украинский"
 
-#: lazarusidestrconsts.rsmajorrevision
-msgid "Major revision:"
-msgstr "Старшая рев.:"
+#: lazarusidestrconsts.rsmajorversion
+msgid "&Major version:"
+msgstr ""
 
-#: lazarusidestrconsts.rsminorrevision
-msgid "Minor revision:"
-msgstr "Младшая рев.:"
+#: lazarusidestrconsts.rsminorversion
+msgid "Mi&nor version:"
+msgstr ""
 
 #: lazarusidestrconsts.rsok
 msgid "ok"
@@ -13464,6 +13436,10 @@ msgstr "&Удалить"
 msgid "Reset filter"
 msgstr "Сбросить фильтр"
 
+#: lazarusidestrconsts.rsrevision
+msgid "&Revision:"
+msgstr ""
+
 #: lazarusidestrconsts.rsscanners
 msgid "Scanners"
 msgstr "Лексические анализаторы"
@@ -13476,9 +13452,10 @@ msgstr "Выбрать унаследованный элемент"
 msgid "Start a new search"
 msgstr "Начать новый поиск"
 
-#: lazarusidestrconsts.rsversion
-msgid "Version:"
-msgstr "Версия:"
+#: lazarusidestrconsts.rsvalue
+msgctxt "lazarusidestrconsts.rsvalue"
+msgid "Value"
+msgstr "Значение"
 
 #: lazarusidestrconsts.rsversionnumbering
 msgid "Version numbering"

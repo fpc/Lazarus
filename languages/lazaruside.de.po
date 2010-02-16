@@ -493,6 +493,10 @@ msgstr "Speichern unter (Pascaldateien in Kleinbuchstaben)"
 msgid "Check consistency"
 msgstr "Konsistenz prüfen"
 
+#: lazarusidestrconsts.dlgcheckpackagesonformcreate
+msgid "Check packages on form create"
+msgstr ""
+
 #: lazarusidestrconsts.dlgchscodetempl
 msgid "Choose code template file (*.dci)"
 msgstr "Auswahl der Code-Vorlagendatei (*.dci)"
@@ -749,7 +753,9 @@ msgid "Unit Style:"
 msgstr "Unit-Stil:"
 
 #: lazarusidestrconsts.dlgcouseasdefault
-msgid "Use these settings as default for new projects"
+#, fuzzy
+#| msgid "Use these settings as default for new projects"
+msgid "Use these compiler options as default for new projects"
 msgstr "Diese Einstellungen als Vorgabe für neue Projekte verwenden"
 
 #: lazarusidestrconsts.dlgcovalgrind
@@ -2164,6 +2170,10 @@ msgstr "Themen mit Manifest-Datei einschalten (nur in Windows)"
 msgid "Project Options"
 msgstr "Projekteinstellungen"
 
+#: lazarusidestrconsts.dlgprojectoptionsfor
+msgid "Options for Project: %s"
+msgstr ""
+
 #: lazarusidestrconsts.dlgprojfiles
 msgid "Project files"
 msgstr "Projektdateien"
@@ -2515,6 +2525,10 @@ msgstr "Syntaxeinstellungen"
 msgid "Tab indents blocks"
 msgstr "Tab rückt ganze Blöcke ein"
 
+#: lazarusidestrconsts.dlgtabnumbersnotebook
+msgid "Show tab numbers in notebook"
+msgstr ""
+
 #: lazarusidestrconsts.dlgtabstospaces
 msgid "Tabs to spaces"
 msgstr "Tabulatoren in Leerzeichen umwandeln"
@@ -2815,6 +2829,10 @@ msgstr ""
 #: lazarusidestrconsts.gldhighlightbothsidesofcursor
 msgid "On Both Sides"
 msgstr "Auf beiden Seiten"
+
+#: lazarusidestrconsts.lis0no1drawdividerlinesonlyfortoplevel2drawlinesforfi
+msgid "0 = no, 1 = draw divider lines only for top level, 2 = draw lines for first two levels, ..."
+msgstr ""
 
 #: lazarusidestrconsts.lisa2paddfile
 msgid "Add File"
@@ -3171,10 +3189,6 @@ msgstr "Dateien des Verzeichnisses zufügen"
 #: lazarusidestrconsts.lisadditionalcompileroptionsinheritedfrompackages
 msgid "Additional compiler options inherited from packages"
 msgstr "Von anderen Packages übernommene zusätzliche Compilereinstellungen"
-
-#: lazarusidestrconsts.lisadditionalinformation
-msgid "Additional Information"
-msgstr "Zusätzliche Information"
 
 #: lazarusidestrconsts.lisaddnewset
 msgid "Add new set"
@@ -3602,9 +3616,18 @@ msgstr "Neues Projekt kompilieren"
 msgid "Build Number"
 msgstr "Kompiliernummer"
 
+#: lazarusidestrconsts.lisbuildvariables
+msgid "Build variables"
+msgstr ""
+
 #: lazarusidestrconsts.liscallingtocreatemakefilefromfailed
 msgid "Calling %s to create Makefile from %s failed."
 msgstr "Der Aufruf von %s um die Makedatei von %s anzulegen schlug fehl."
+
+#: lazarusidestrconsts.liscancel
+msgctxt "lazarusidestrconsts.liscancel"
+msgid "Cancel"
+msgstr "Abbrechen"
 
 #: lazarusidestrconsts.liscancelloadingthiscomponent
 msgid "Cancel loading this component"
@@ -4914,14 +4937,6 @@ msgstr "Auszuführender Befehl nach Veröffentlichung"
 msgid "Command line parameters of program"
 msgstr "Kommandozeilenparameter des Programms"
 
-#: lazarusidestrconsts.liscomments
-msgid "Comments:"
-msgstr "Kommentare"
-
-#: lazarusidestrconsts.liscompany
-msgid "Company:"
-msgstr "Firma:"
-
 #: lazarusidestrconsts.liscompileidewithoutlinking
 msgid "Compile IDE (without linking)"
 msgstr "IDE kompilieren (ohne Linken)"
@@ -5023,6 +5038,19 @@ msgstr "Wollen Sie Lazarus neu kompilieren?"
 #: lazarusidestrconsts.lisconfirmnewpackagesetfortheide
 msgid "Confirm new package set for the IDE"
 msgstr "Bestätigen Sie das neue Package-Set für die IDE"
+
+#: lazarusidestrconsts.lisconfirmpackageaction
+msgctxt "lazarusidestrconsts.lisconfirmpackageaction"
+msgid "Action"
+msgstr "Aktion"
+
+#: lazarusidestrconsts.lisconfirmpackagenewpackageset
+msgid "New package set"
+msgstr ""
+
+#: lazarusidestrconsts.lisconfirmpackageoldpackageset
+msgid "Old package set"
+msgstr ""
 
 #: lazarusidestrconsts.lisconsoleapplication
 msgid "Console application"
@@ -5855,6 +5883,7 @@ msgid "Insert"
 msgstr "Einfügen"
 
 #: lazarusidestrconsts.lisedtexttoolkey
+msgctxt "lazarusidestrconsts.lisedtexttoolkey"
 msgid "Key"
 msgstr "Taste"
 
@@ -7042,10 +7071,6 @@ msgstr "Installierte Packages"
 msgid "Install selection"
 msgstr "Auswahl installieren"
 
-#: lazarusidestrconsts.lisinternalname
-msgid "Internal Name:"
-msgstr "Interner Name:"
-
 #: lazarusidestrconsts.lisinvalidbuildvarthebuildvarmustbeapascalidentifie
 msgid "Invalid build variable %s%s%s. The build variable must be a pascal identifier."
 msgstr "Ungültige Build-Variable %s%s%s. Die Build-Variable muß ein Pascal-Bezeichner sein."
@@ -7141,6 +7166,10 @@ msgstr "%s ist ein %s.%sDiese zirkuläre Abhängigkeit ist nicht erlaubt"
 #: lazarusidestrconsts.lisjitform
 msgid "JIT Form"
 msgstr "JIT-Form"
+
+#: lazarusidestrconsts.liskeep
+msgid "keep"
+msgstr ""
 
 #: lazarusidestrconsts.liskeepname
 msgid "Keep name"
@@ -7959,10 +7988,6 @@ msgstr "Linke Seiten"
 #: lazarusidestrconsts.lisleftspaceequally
 msgid "Left space equally"
 msgstr "Linker Abstand gleich"
-
-#: lazarusidestrconsts.lislegaltrademarks
-msgid "Legal Trademarks:"
-msgstr "Handelsmarken:"
 
 #: lazarusidestrconsts.lislevels
 msgid "Levels"
@@ -8846,6 +8871,10 @@ msgstr "Wort auswählen"
 msgid "Set a free bookmark"
 msgstr "Freies Lesezeichen setzen"
 
+#: lazarusidestrconsts.lismenushowexecutionpoint
+msgid "Show execution point"
+msgstr ""
+
 #: lazarusidestrconsts.lismenusortselection
 msgid "Sort selection ..."
 msgstr "Auswahl sortieren ..."
@@ -9607,10 +9636,6 @@ msgstr "Projekt %s öffnen?"
 #: lazarusidestrconsts.lisor
 msgid "or"
 msgstr "oder"
-
-#: lazarusidestrconsts.lisoriginalfilename
-msgid "Original File Name:"
-msgstr "Originaldateiname:"
 
 #: lazarusidestrconsts.lisoverridelanguage
 msgid "Override language. For example --language=de. For possible values see files in the languages directory."
@@ -10967,14 +10992,6 @@ msgstr "Prozedur"
 msgid "Procedure with interface"
 msgstr "Prozedur mit Schnittstelle"
 
-#: lazarusidestrconsts.lisproductname
-msgid "Product Name:"
-msgstr "Produktname:"
-
-#: lazarusidestrconsts.lisproductversion
-msgid "Product Version:"
-msgstr "Produktversion:"
-
 #: lazarusidestrconsts.lisprogram
 msgctxt "lazarusidestrconsts.lisprogram"
 msgid "Program"
@@ -11417,10 +11434,6 @@ msgstr "Benötigt FPC 2.4 oder höher. Wie Delphi-Ressourcen"
 msgid "Rescan"
 msgstr ""
 
-#: lazarusidestrconsts.lisresourcefilecomment
-msgid "This is an automatically generated lazarus resource file"
-msgstr "Das ist eine automatisch erzeugte Lazarus-Ressourcendatei"
-
 #: lazarusidestrconsts.lisresourceloaderror
 msgid "Resource load error"
 msgstr "Ressourcen-Ladefehler"
@@ -11633,6 +11646,10 @@ msgstr "Eintrag wählen"
 #: lazarusidestrconsts.lisselectdfmfiles
 msgid "Select Delphi form files (*.dfm)"
 msgstr "Delphi-Formulardatei (+.dfm) auswählen"
+
+#: lazarusidestrconsts.lisselected
+msgid "Selected"
+msgstr ""
 
 #: lazarusidestrconsts.lisselectedbottomneighbour
 msgid "(selected bottom neighbour)"
@@ -12359,10 +12376,6 @@ msgstr ""
 #: lazarusidestrconsts.listhisstatementcannotbeextractedpleaseselectsomecode
 msgid "This statement can not be extracted.%sPlease select some code to extract a new procedure/method."
 msgstr "Diese Anweisung kann nicht extrahiert werden.%sBitte wählen Sie etwas Code, um eine neue Prozedur/Methode zu extrahieren."
-
-#: lazarusidestrconsts.listhiswillhappencontinue
-msgid "This will happen:%s%s%sContinue?"
-msgstr "Es wird folgendes passieren:%s%s%sFortfahren?"
 
 #: lazarusidestrconsts.listitle
 msgid "&Title"
@@ -13208,10 +13221,6 @@ msgstr "Package-Unit zur Uses-Sektion zufügen"
 msgid "Add Inverse"
 msgstr "Umgekehrt zufügen"
 
-#: lazarusidestrconsts.rsadditionalinfo
-msgid "Additional info"
-msgstr "Zusatzinfo"
-
 #: lazarusidestrconsts.rsautomaticallyincreasebuildnumber
 msgid "Automatically increase build number"
 msgstr "Kompiliernummer automatisch erhöhen"
@@ -13221,7 +13230,9 @@ msgid "Available scanners"
 msgstr "Verfügbare Scanner"
 
 #: lazarusidestrconsts.rsbuild
-msgid "Build:"
+#, fuzzy
+#| msgid "Build:"
+msgid "&Build:"
 msgstr "Kompilieren:"
 
 #: lazarusidestrconsts.rscharacterset
@@ -13235,10 +13246,6 @@ msgstr "Aktuelle Seite schließen"
 #: lazarusidestrconsts.rsconditionaldefines
 msgid "Conditional defines"
 msgstr "Compilerschalter"
-
-#: lazarusidestrconsts.rscopyright
-msgid "Copyright:"
-msgstr "Copyright:"
 
 #: lazarusidestrconsts.rscreatenewdefine
 msgid "Create new define"
@@ -13314,6 +13321,11 @@ msgstr "Fenstergröße wiederherstellen"
 #: lazarusidestrconsts.rsiwpusewindowmanagersetting
 msgid "Use windowmanager setting"
 msgstr "Angabe des Windowmanagers verwenden"
+
+#: lazarusidestrconsts.rskey
+msgctxt "lazarusidestrconsts.rskey"
+msgid "Key"
+msgstr "Taste"
 
 #: lazarusidestrconsts.rslanguageafrikaans
 msgid "Afrikaans"
@@ -13411,13 +13423,13 @@ msgstr "Türkisch"
 msgid "Ukrainian"
 msgstr "Ukrainisch"
 
-#: lazarusidestrconsts.rsmajorrevision
-msgid "Major revision:"
-msgstr "Hauptversion:"
+#: lazarusidestrconsts.rsmajorversion
+msgid "&Major version:"
+msgstr ""
 
-#: lazarusidestrconsts.rsminorrevision
-msgid "Minor revision:"
-msgstr "Unterversion:"
+#: lazarusidestrconsts.rsminorversion
+msgid "Mi&nor version:"
+msgstr ""
 
 #: lazarusidestrconsts.rsok
 msgid "ok"
@@ -13439,6 +13451,10 @@ msgstr "&Löschen"
 msgid "Reset filter"
 msgstr "Filter zurücksetzen"
 
+#: lazarusidestrconsts.rsrevision
+msgid "&Revision:"
+msgstr ""
+
 #: lazarusidestrconsts.rsscanners
 msgid "Scanners"
 msgstr "Scanner"
@@ -13451,9 +13467,10 @@ msgstr "Abgeleiteten Eintrag auswählen"
 msgid "Start a new search"
 msgstr "Neue Suche beginnen"
 
-#: lazarusidestrconsts.rsversion
-msgid "Version:"
-msgstr "Version:"
+#: lazarusidestrconsts.rsvalue
+msgctxt "lazarusidestrconsts.rsvalue"
+msgid "Value"
+msgstr "Wert"
 
 #: lazarusidestrconsts.rsversionnumbering
 msgid "Version numbering"
@@ -14261,6 +14278,10 @@ msgstr "Abstrakte Methoden anzeigen"
 msgid "Show code context"
 msgstr "Code-Context anzeigen"
 
+#: lazarusidestrconsts.srkmecshowexecutionpoint
+msgid "show execution point"
+msgstr ""
+
 #: lazarusidestrconsts.srkmecstopprogram
 msgid "stop program"
 msgstr "Programm anhalten"
@@ -14615,7 +14636,8 @@ msgstr "&Suche Deklaration"
 msgid "Find Identifier References"
 msgstr "Bezeichnerreferenzen suchen"
 
-#: lazarusidestrconsts.udmgotobookmark
+#: lazarusidestrconsts.uemgotobookmark
+msgctxt "lazarusidestrconsts.uemgotobookmark"
 msgid "&Goto Bookmark"
 msgstr "&Gehe zum Lesezeichen"
 

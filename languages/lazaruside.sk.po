@@ -495,6 +495,10 @@ msgstr "Uložiť ako - automaticky na malé písmená"
 msgid "Check consistency"
 msgstr "Skontrolovať správnosť"
 
+#: lazarusidestrconsts.dlgcheckpackagesonformcreate
+msgid "Check packages on form create"
+msgstr ""
+
 #: lazarusidestrconsts.dlgchscodetempl
 msgid "Choose code template file (*.dci)"
 msgstr "Zvoľte súbor šablón kódu (*.dci)"
@@ -752,7 +756,7 @@ msgid "Unit Style:"
 msgstr "Štýl jednotky:"
 
 #: lazarusidestrconsts.dlgcouseasdefault
-msgid "Use these settings as default for new projects"
+msgid "Use these compiler options as default for new projects"
 msgstr ""
 
 #: lazarusidestrconsts.dlgcovalgrind
@@ -2161,6 +2165,10 @@ msgstr "Použiť súbor manifestu, pre zapnutie tém (len Windows)"
 msgid "Project Options"
 msgstr "Voľby projektu"
 
+#: lazarusidestrconsts.dlgprojectoptionsfor
+msgid "Options for Project: %s"
+msgstr ""
+
 #: lazarusidestrconsts.dlgprojfiles
 msgid "Project files"
 msgstr "Súbory projektu"
@@ -2512,6 +2520,10 @@ msgstr "Voľby syntaxe"
 msgid "Tab indents blocks"
 msgstr "Tabulátor odsadzuje blok"
 
+#: lazarusidestrconsts.dlgtabnumbersnotebook
+msgid "Show tab numbers in notebook"
+msgstr ""
+
 #: lazarusidestrconsts.dlgtabstospaces
 msgid "Tabs to spaces"
 msgstr "Tabulátory na medzery"
@@ -2810,6 +2822,10 @@ msgstr ""
 
 #: lazarusidestrconsts.gldhighlightbothsidesofcursor
 msgid "On Both Sides"
+msgstr ""
+
+#: lazarusidestrconsts.lis0no1drawdividerlinesonlyfortoplevel2drawlinesforfi
+msgid "0 = no, 1 = draw divider lines only for top level, 2 = draw lines for first two levels, ..."
 msgstr ""
 
 #: lazarusidestrconsts.lisa2paddfile
@@ -3167,10 +3183,6 @@ msgstr "Pridať súbory adresára"
 #: lazarusidestrconsts.lisadditionalcompileroptionsinheritedfrompackages
 msgid "Additional compiler options inherited from packages"
 msgstr "Ďalšie voľby prekladača, zdedené z balíčkov"
-
-#: lazarusidestrconsts.lisadditionalinformation
-msgid "Additional Information"
-msgstr "Ďalšie informácie"
 
 #: lazarusidestrconsts.lisaddnewset
 msgid "Add new set"
@@ -3598,9 +3610,18 @@ msgstr "Vybudovať nový projekt"
 msgid "Build Number"
 msgstr "Číslo vybudovania"
 
+#: lazarusidestrconsts.lisbuildvariables
+msgid "Build variables"
+msgstr ""
+
 #: lazarusidestrconsts.liscallingtocreatemakefilefromfailed
 msgid "Calling %s to create Makefile from %s failed."
 msgstr "Volanie %s na vytvorenie Makefile z %s zlyhalo."
+
+#: lazarusidestrconsts.liscancel
+msgctxt "lazarusidestrconsts.liscancel"
+msgid "Cancel"
+msgstr "Zrušiť"
 
 #: lazarusidestrconsts.liscancelloadingthiscomponent
 msgid "Cancel loading this component"
@@ -4910,14 +4931,6 @@ msgstr "Príkaz po publikovaní modulu"
 msgid "Command line parameters of program"
 msgstr "Parametre príkazového riadka programu"
 
-#: lazarusidestrconsts.liscomments
-msgid "Comments:"
-msgstr "Komentáre:"
-
-#: lazarusidestrconsts.liscompany
-msgid "Company:"
-msgstr "Spoločnosť:"
-
 #: lazarusidestrconsts.liscompileidewithoutlinking
 msgid "Compile IDE (without linking)"
 msgstr "Preložiť IDE (bez linkovania)"
@@ -5020,6 +5033,19 @@ msgstr "Chcete prebudovať Lazarus?"
 #: lazarusidestrconsts.lisconfirmnewpackagesetfortheide
 msgid "Confirm new package set for the IDE"
 msgstr "Potvrdiť nastavenia nového balíčka pre IDE"
+
+#: lazarusidestrconsts.lisconfirmpackageaction
+msgctxt "lazarusidestrconsts.lisconfirmpackageaction"
+msgid "Action"
+msgstr "Akcia"
+
+#: lazarusidestrconsts.lisconfirmpackagenewpackageset
+msgid "New package set"
+msgstr ""
+
+#: lazarusidestrconsts.lisconfirmpackageoldpackageset
+msgid "Old package set"
+msgstr ""
 
 #: lazarusidestrconsts.lisconsoleapplication
 msgid "Console application"
@@ -5852,6 +5878,7 @@ msgid "Insert"
 msgstr "Vložiť"
 
 #: lazarusidestrconsts.lisedtexttoolkey
+msgctxt "lazarusidestrconsts.lisedtexttoolkey"
 msgid "Key"
 msgstr "Kláves"
 
@@ -7039,10 +7066,6 @@ msgstr "Nainštalované balíčky"
 msgid "Install selection"
 msgstr "Nainštalovať výber"
 
-#: lazarusidestrconsts.lisinternalname
-msgid "Internal Name:"
-msgstr "Interné meno:"
-
 #: lazarusidestrconsts.lisinvalidbuildvarthebuildvarmustbeapascalidentifie
 msgid "Invalid build variable %s%s%s. The build variable must be a pascal identifier."
 msgstr ""
@@ -7138,6 +7161,10 @@ msgstr "%s je %s.%sTakáto kruhová závislosť nie je dovolená."
 #: lazarusidestrconsts.lisjitform
 msgid "JIT Form"
 msgstr "JIT Formulár"
+
+#: lazarusidestrconsts.liskeep
+msgid "keep"
+msgstr ""
 
 #: lazarusidestrconsts.liskeepname
 msgid "Keep name"
@@ -7956,10 +7983,6 @@ msgstr "Ľavé strany"
 #: lazarusidestrconsts.lisleftspaceequally
 msgid "Left space equally"
 msgstr "Rovnaká ľavá vzdialenosť"
-
-#: lazarusidestrconsts.lislegaltrademarks
-msgid "Legal Trademarks:"
-msgstr "Ochranná známka:"
 
 #: lazarusidestrconsts.lislevels
 msgid "Levels"
@@ -8849,6 +8872,10 @@ msgstr "Vybrať slovo"
 msgid "Set a free bookmark"
 msgstr "Nastav voľnú záložku"
 
+#: lazarusidestrconsts.lismenushowexecutionpoint
+msgid "Show execution point"
+msgstr ""
+
 #: lazarusidestrconsts.lismenusortselection
 msgid "Sort selection ..."
 msgstr "Zoradiť výber ..."
@@ -9616,10 +9643,6 @@ msgstr "Otvoriť projekt %s?"
 #: lazarusidestrconsts.lisor
 msgid "or"
 msgstr "alebo"
-
-#: lazarusidestrconsts.lisoriginalfilename
-msgid "Original File Name:"
-msgstr "Pôvodné meno súboru:"
 
 #: lazarusidestrconsts.lisoverridelanguage
 msgid "Override language. For example --language=de. For possible values see files in the languages directory."
@@ -10976,14 +10999,6 @@ msgstr "Procedúra"
 msgid "Procedure with interface"
 msgstr "Procedúra s rozhraním"
 
-#: lazarusidestrconsts.lisproductname
-msgid "Product Name:"
-msgstr "Názov produktu:"
-
-#: lazarusidestrconsts.lisproductversion
-msgid "Product Version:"
-msgstr "Verzia produktu:"
-
 #: lazarusidestrconsts.lisprogram
 msgctxt "lazarusidestrconsts.lisprogram"
 msgid "Program"
@@ -11426,10 +11441,6 @@ msgstr ""
 msgid "Rescan"
 msgstr ""
 
-#: lazarusidestrconsts.lisresourcefilecomment
-msgid "This is an automatically generated lazarus resource file"
-msgstr "Toto je automaticky generovaný súbor zdrojov Lazarus"
-
 #: lazarusidestrconsts.lisresourceloaderror
 msgid "Resource load error"
 msgstr "Chyba načítania resource"
@@ -11642,6 +11653,10 @@ msgstr "Zvoľte uzol"
 #: lazarusidestrconsts.lisselectdfmfiles
 msgid "Select Delphi form files (*.dfm)"
 msgstr "Zvoľte súbory formulárov Delphi (*.dfm)"
+
+#: lazarusidestrconsts.lisselected
+msgid "Selected"
+msgstr ""
 
 #: lazarusidestrconsts.lisselectedbottomneighbour
 msgid "(selected bottom neighbour)"
@@ -12368,10 +12383,6 @@ msgstr ""
 #: lazarusidestrconsts.listhisstatementcannotbeextractedpleaseselectsomecode
 msgid "This statement can not be extracted.%sPlease select some code to extract a new procedure/method."
 msgstr "Tento príkaz nemôže byť vytiahnutý.%sProsím vyberte nejaký kód pre vytiahnutie procedúry/metódy."
-
-#: lazarusidestrconsts.listhiswillhappencontinue
-msgid "This will happen:%s%s%sContinue?"
-msgstr "Toto nastane:%s%s%sPokračovať?"
 
 #: lazarusidestrconsts.listitle
 msgid "&Title"
@@ -13217,10 +13228,6 @@ msgstr "Pridať jednotku balíčka do sekcie uses"
 msgid "Add Inverse"
 msgstr "Pridať obrátene"
 
-#: lazarusidestrconsts.rsadditionalinfo
-msgid "Additional info"
-msgstr "Ďalšie informácie"
-
 #: lazarusidestrconsts.rsautomaticallyincreasebuildnumber
 msgid "Automatically increase build number"
 msgstr "Automaticky zvyšovať číslo vybudovania"
@@ -13230,7 +13237,9 @@ msgid "Available scanners"
 msgstr "Dostupné skenery"
 
 #: lazarusidestrconsts.rsbuild
-msgid "Build:"
+#, fuzzy
+#| msgid "Build:"
+msgid "&Build:"
 msgstr "Vybudovať:"
 
 #: lazarusidestrconsts.rscharacterset
@@ -13244,10 +13253,6 @@ msgstr "zatvoriť túto stránku"
 #: lazarusidestrconsts.rsconditionaldefines
 msgid "Conditional defines"
 msgstr "Podmienené definície"
-
-#: lazarusidestrconsts.rscopyright
-msgid "Copyright:"
-msgstr "Autorské práva:"
 
 #: lazarusidestrconsts.rscreatenewdefine
 msgid "Create new define"
@@ -13323,6 +13328,11 @@ msgstr "Obnoviť veľkosť okna"
 #: lazarusidestrconsts.rsiwpusewindowmanagersetting
 msgid "Use windowmanager setting"
 msgstr "Použi nastavenia správcu okien"
+
+#: lazarusidestrconsts.rskey
+msgctxt "lazarusidestrconsts.rskey"
+msgid "Key"
+msgstr "Kláves"
 
 #: lazarusidestrconsts.rslanguageafrikaans
 msgid "Afrikaans"
@@ -13420,13 +13430,13 @@ msgstr "Turecky"
 msgid "Ukrainian"
 msgstr "Ukrajinsky"
 
-#: lazarusidestrconsts.rsmajorrevision
-msgid "Major revision:"
-msgstr "Hlavná rev.:"
+#: lazarusidestrconsts.rsmajorversion
+msgid "&Major version:"
+msgstr ""
 
-#: lazarusidestrconsts.rsminorrevision
-msgid "Minor revision:"
-msgstr "Nižšia rev."
+#: lazarusidestrconsts.rsminorversion
+msgid "Mi&nor version:"
+msgstr ""
 
 #: lazarusidestrconsts.rsok
 msgid "ok"
@@ -13448,6 +13458,10 @@ msgstr "&Odstrániť"
 msgid "Reset filter"
 msgstr "Vymazať filter"
 
+#: lazarusidestrconsts.rsrevision
+msgid "&Revision:"
+msgstr ""
+
 #: lazarusidestrconsts.rsscanners
 msgid "Scanners"
 msgstr "Skenery"
@@ -13460,9 +13474,10 @@ msgstr "Vybrať zdedenú položku"
 msgid "Start a new search"
 msgstr "Začať nové hľadanie"
 
-#: lazarusidestrconsts.rsversion
-msgid "Version:"
-msgstr "Verzia:"
+#: lazarusidestrconsts.rsvalue
+msgctxt "lazarusidestrconsts.rsvalue"
+msgid "Value"
+msgstr "Hodnota"
 
 #: lazarusidestrconsts.rsversionnumbering
 msgid "Version numbering"
@@ -14267,6 +14282,10 @@ msgstr "Zobraziť abstraktné metódy"
 #: lazarusidestrconsts.srkmecshowcodecontext
 msgid "Show code context"
 msgstr "Zobraziť kontext kódu"
+
+#: lazarusidestrconsts.srkmecshowexecutionpoint
+msgid "show execution point"
+msgstr ""
 
 #: lazarusidestrconsts.srkmecstopprogram
 msgid "stop program"
