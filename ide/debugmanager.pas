@@ -163,6 +163,7 @@ type
     function DoShowExecutionPoint: TModalResult; override;
     function DoStepIntoProject: TModalResult; override;
     function DoStepOverProject: TModalResult; override;
+    function DoStepOutProject: TModalResult; override;
     function DoRunToCursor: TModalResult; override;
     function DoStopProject: TModalResult; override;
     procedure DoToggleCallStack; override;
@@ -1986,6 +1987,9 @@ begin
     StepOverSpeedButton.Enabled := DebuggerInvalid or
               (dcStepOver in FDebugger.Commands)  or (FDebugger.State = dsIdle);
     itmRunMenuStepOver.Enabled := StepOverSpeedButton.Enabled;
+    StepOutSpeedButton.Enabled := DebuggerInvalid or
+              (dcStepOut in FDebugger.Commands)  or (FDebugger.State = dsIdle);
+    itmRunMenuStepOut.Enabled := StepOutSpeedButton.Enabled;
 
     itmRunMenuRunToCursor.Enabled := DebuggerInvalid
                                      or (dcRunTo in FDebugger.Commands);
@@ -2347,6 +2351,20 @@ begin
   Result := mrOk;
 end;
 
+function TDebugManager.DoStepOutProject: TModalResult;
+begin
+  if (MainIDE.DoInitProjectRun <> mrOK)
+  or (MainIDE.ToolStatus <> itDebugger)
+  or (FDebugger = nil) or Destroying
+  then begin
+    Result := mrAbort;
+    Exit;
+  end;
+
+  FDebugger.StepOut;
+  Result := mrOk;
+end;
+
 function TDebugManager.DoStopProject: TModalResult;
 begin
   Result := mrCancel;
@@ -2375,6 +2393,7 @@ begin
     ecPause:             DoPauseProject;
     ecStepInto:          DoStepIntoProject;
     ecStepOver:          DoStepOverProject;
+    ecStepOut:           DoStepOutProject;
     ecRunToCursor:       DoRunToCursor;
     ecStopProgram:       DoStopProject;
     ecResetDebugger:     ResetDebugger;

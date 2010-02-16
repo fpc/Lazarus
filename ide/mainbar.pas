@@ -71,6 +71,7 @@ type
       StopSpeedButton      : TToolButton;
       StepIntoSpeedButton  : TToolButton;
       StepOverSpeedButton  : TToolButton;
+      StepOutSpeedButton   : TToolButton;
 
     NewUnitFormPopupMenu : TPopupMenu;
       NewUFSetDefaultMenuItem: TMenuItem;
@@ -255,6 +256,7 @@ type
         itmRunMenuShowExecutionPoint: TIDEMenuCommand;
         itmRunMenuStepInto: TIDEMenuCommand;
         itmRunMenuStepOver: TIDEMenuCommand;
+        itmRunMenuStepOut: TIDEMenuCommand;
         itmRunMenuRunToCursor: TIDEMenuCommand;
         itmRunMenuStop: TIDEMenuCommand;
         itmRunMenuRunParameters: TIDEMenuCommand;

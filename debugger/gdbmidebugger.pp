@@ -143,6 +143,7 @@ type
     function  GDBStop: Boolean;
     function  GDBStepOver: Boolean;
     function  GDBStepInto: Boolean;
+    function  GDBStepOut: Boolean;
     function  GDBRunTo(const ASource: String; const ALine: Integer): Boolean;
     function  GDBJumpTo(const ASource: String; const ALine: Integer): Boolean;
     function  GDBDisassemble(AAddr: TDbgPtr; ABackward: Boolean; out ANextAddr: TDbgPtr;
@@ -2791,6 +2792,22 @@ begin
   end;
 end;
 
+function TGDBMIDebugger.GDBStepOut: Boolean;
+begin
+  Result := False;
+  case State of
+    dsStop: begin
+      Result := StartDebugging('');
+    end;
+    dsPause: begin
+      Result := ExecuteCommand('-exec-finish', [cfExternal]);
+    end;
+    dsIdle: begin
+      DebugLn('[WARNING] Debugger: Unable to step out in idle state');
+    end;
+  end;
+end;
+
 function TGDBMIDebugger.GDBStepOver: Boolean;
 begin
   Result := False;
@@ -3068,7 +3085,7 @@ end;
 
 function TGDBMIDebugger.GetSupportedCommands: TDBGCommands;
 begin
-  Result := [dcRun, dcPause, dcStop, dcStepOver, dcStepInto, dcRunTo, dcJumpto,
+  Result := [dcRun, dcPause, dcStop, dcStepOver, dcStepInto, dcStepOut, dcRunTo, dcJumpto,
              dcBreak, dcWatch, dcLocal, dcEvaluate, dcModify, dcEnvironment,
              dcSetStackFrame, dcDisassemble];
 end;
@@ -3782,6 +3799,7 @@ begin
     dcStop:        Result := GDBStop;
     dcStepOver:    Result := GDBStepOver;
     dcStepInto:    Result := GDBStepInto;
+    dcStepOut:     Result := GDBStepOut;
     dcRunTo:       Result := GDBRunTo(String(AParams[0].VAnsiString), AParams[1].VInteger);
     dcJumpto:      Result := GDBJumpTo(String(AParams[0].VAnsiString), AParams[1].VInteger);
     dcEvaluate:    Result := GDBEvaluate(String(AParams[0].VAnsiString), String(AParams[1].VPointer^),TGDBType(AParams[2].VPointer^));

@@ -334,6 +334,7 @@ resourcestring
   lisMenuShowExecutionPoint = 'Show execution point';
   lisMenuStepInto = 'Step into';
   lisMenuStepOver = 'Step over';
+  lisMenuStepOut = 'Step out';
   lisMenuRunToCursor = 'Run to cursor';
   lisKMStopProgram = 'Stop program';
   lisMenuStop = 'Stop';
@@ -815,7 +816,8 @@ resourcestring
   lisHintStop = 'Stop';
   lisHintStepInto = 'Step Into';
   lisHintStepOver = 'Step Over';
-  
+  lisHintStepOut  = 'Run until function returns';
+
   lisGPLNotice =
     '<description>'
    +'%s'

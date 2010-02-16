@@ -296,6 +296,7 @@ type
     procedure mnuShowExecutionPointClicked(Sender: TObject);
     procedure mnuStepIntoProjectClicked(Sender: TObject);
     procedure mnuStepOverProjectClicked(Sender: TObject);
+    procedure mnuStepOutProjectClicked(Sender: TObject);
     procedure mnuRunToCursorProjectClicked(Sender: TObject);
     procedure mnuStopProjectClicked(Sender: TObject);
     procedure mnuRunParametersClicked(Sender: TObject);
@@ -1757,6 +1758,7 @@ begin
   MainIDEBar.StopSpeedButton     := CreateButton(MainIDEBar.tbViewDebug, 'StopSpeedButton'    , 'menu_stop'                 , @mnuStopProjectClicked, lisHintStop);
   MainIDEBar.StepIntoSpeedButton := CreateButton(MainIDEBar.tbViewDebug, 'StepIntoSpeedButton', 'menu_stepinto'             , @mnuStepIntoProjectClicked, lisHintStepInto);
   MainIDEBar.StepOverSpeedButton := CreateButton(MainIDEBar.tbViewDebug, 'StepOverpeedButton' , 'menu_stepover'             , @mnuStepOverProjectClicked, lisHintStepOver);
+  MainIDEBar.StepOutSpeedButton  := CreateButton(MainIDEBar.tbViewDebug, 'StepOutSpeedButton' , 'menu_stepout'              , @mnuStepOutProjectClicked, lisHintStepOut);
 
   MainIDEBar.CreatePopupMenus(OwningComponent);
 
@@ -2418,6 +2420,7 @@ begin
     itmRunMenuShowExecutionPoint.OnClick := @mnuShowExecutionPointClicked;
     itmRunMenuStepInto.OnClick := @mnuStepIntoProjectClicked;
     itmRunMenuStepOver.OnClick := @mnuStepOverProjectClicked;
+    itmRunMenuStepOut.OnClick := @mnuStepOutProjectClicked;
     itmRunMenuRunToCursor.OnClick := @mnuRunToCursorProjectClicked;
     itmRunMenuStop.Enabled := False;
     itmRunMenuStop.OnClick := @mnuStopProjectClicked;
@@ -3860,6 +3863,11 @@ end;
 Procedure TMainIDE.mnuStepOverProjectClicked(Sender: TObject);
 begin
   DebugBoss.DoStepOverProject;
+end;
+
+procedure TMainIDE.mnuStepOutProjectClicked(Sender: TObject);
+begin
+  DebugBoss.DoStepOutProject;
 end;
 
 Procedure TMainIDE.mnuRunToCursorProjectClicked(Sender: TObject);

@@ -655,6 +655,7 @@ begin
     CreateMenuItem(ParentMI,itmRunMenuShowExecutionPoint,'itmRunMenuShowExecutionPoint',lisMenuShowExecutionPoint,'debugger_show_execution_point');
     CreateMenuItem(ParentMI,itmRunMenuStepInto,'itmRunMenuStepInto',lisMenuStepInto,'menu_stepinto');
     CreateMenuItem(ParentMI,itmRunMenuStepOver,'itmRunMenuStepOver',lisMenuStepOver,'menu_stepover');
+    CreateMenuItem(ParentMI,itmRunMenuStepOut,'itmRunMenuStepOut',lisMenuStepOut,'menu_stepout');
     CreateMenuItem(ParentMI,itmRunMenuRunToCursor,'itmRunMenuRunToCursor',lisMenuRunToCursor,'menu_run_cursor');
     CreateMenuItem(ParentMI,itmRunMenuStop,'itmRunMenuStop',lisMenuStop,'menu_stop');
     CreateMenuItem(ParentMI,itmRunMenuRunParameters,'itmRunMenuRunParameters',lisMenuRunParameters, 'menu_run_parameters');
@@ -952,6 +953,7 @@ begin
     itmRunMenuPause.Command:=GetCommand(ecPause);
     itmRunMenuStepInto.Command:=GetCommand(ecStepInto);
     itmRunMenuStepOver.Command:=GetCommand(ecStepOver);
+    itmRunMenuStepOut.Command:=GetCommand(ecStepOut);
     itmRunMenuRunToCursor.Command:=GetCommand(ecRunToCursor);
     itmRunMenuStop.Command:=GetCommand(ecStopProgram);
     itmRunMenuResetDebugger.Command:=GetCommand(ecResetDebugger);

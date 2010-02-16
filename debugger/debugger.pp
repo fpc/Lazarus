@@ -57,6 +57,7 @@ type
     dcStop,
     dcStepOver,
     dcStepInto,
+    dcStepOut,
     dcRunTo,
     dcJumpto,
     dcBreak,
@@ -1323,6 +1324,7 @@ type
     procedure Stop;                                  // quit debugging
     procedure StepOver;
     procedure StepInto;
+    procedure StepOut;
     procedure RunTo(const ASource: String; const ALine: Integer);                // Executes til a certain point
     procedure JumpTo(const ASource: String; const ALine: Integer);               // No execute, only set exec point
     function  Evaluate(const AExpression: String; var AResult: String;
@@ -1370,6 +1372,7 @@ const
     'Stop',
     'StepOver',
     'StepInto',
+    'StepOut',
     'RunTo',
     'Jumpto',
     'Break',
@@ -1415,9 +1418,9 @@ const
   COMMANDMAP: array[TDBGState] of TDBGCommands = (
   {dsNone } [],
   {dsIdle } [dcEnvironment],
-  {dsStop } [dcRun, dcStepOver, dcStepInto, dcRunTo, dcJumpto, dcBreak, dcWatch,
+  {dsStop } [dcRun, dcStepOver, dcStepInto, dcStepOut, dcRunTo, dcJumpto, dcBreak, dcWatch,
              dcEvaluate, dcEnvironment],
-  {dsPause} [dcRun, dcStop, dcStepOver, dcStepInto, dcRunTo, dcJumpto, dcBreak,
+  {dsPause} [dcRun, dcStop, dcStepOver, dcStepInto, dcStepOut, dcRunTo, dcJumpto, dcBreak,
              dcWatch, dcLocal, dcEvaluate, dcModify, dcEnvironment, dcSetStackFrame,
              dcDisassemble],
   {dsInit } [],
@@ -1892,6 +1895,12 @@ procedure TDebugger.StepInto;
 begin
   if ReqCmd(dcStepInto, []) then exit;
   DebugLn('TDebugger.StepInto Class=',ClassName,' failed.');
+end;
+
+procedure TDebugger.StepOut;
+begin
+  if ReqCmd(dcStepOut, []) then exit;
+  DebugLn('TDebugger.StepOut Class=', ClassName, ' failed.');
 end;
 
 procedure TDebugger.StepOver;

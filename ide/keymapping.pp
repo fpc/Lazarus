@@ -538,6 +538,7 @@ begin
   ecShowExecutionPoint: SetResult(VK_UNKNOWN,[],VK_UNKNOWN,[]);
   ecStepInto: SetResult(VK_F7,[],VK_UNKNOWN,[]);
   ecStepOver: SetResult(VK_F8,[],VK_UNKNOWN,[]);
+  ecStepOut: SetResult(VK_F8,[ssShift],VK_UNKNOWN,[]);
   ecRunToCursor: SetResult(VK_F4,[],VK_UNKNOWN,[]);
   ecStopProgram: SetResult(VK_F2,[SSCtrl],VK_UNKNOWN,[]);
   ecRemoveBreakPoint: SetResult(VK_UNKNOWN,[],VK_UNKNOWN,[]);
@@ -959,6 +960,7 @@ begin
   ecShowExecutionPoint: SetResult(VK_UNKNOWN,[],VK_UNKNOWN,[],VK_UNKNOWN,[],VK_UNKNOWN,[]);
   ecStepInto: SetResult(VK_F7,[],VK_UNKNOWN,[],VK_UNKNOWN,[],VK_UNKNOWN,[]);
   ecStepOver: SetResult(VK_F8,[],VK_UNKNOWN,[],VK_UNKNOWN,[],VK_UNKNOWN,[]);
+  ecStepOut: SetResult(VK_F8,[ssShift],VK_UNKNOWN,[],VK_UNKNOWN,[],VK_UNKNOWN,[]);
   ecRunToCursor: SetResult(VK_F4,[],VK_UNKNOWN,[],VK_UNKNOWN,[],VK_UNKNOWN,[]);
   ecStopProgram: SetResult(VK_UNKNOWN,[],VK_UNKNOWN,[],VK_UNKNOWN,[],VK_UNKNOWN,[]);
   ecRemoveBreakPoint: SetResult(VK_UNKNOWN,[],VK_UNKNOWN,[],VK_UNKNOWN,[],VK_UNKNOWN,[]);
@@ -1562,6 +1564,7 @@ begin
   ecShowExecutionPoint: SetResult(VK_UNKNOWN,[],VK_UNKNOWN,[]);
   ecStepInto: SetResult(VK_R,[ssMeta,ssAlt],VK_UNKNOWN,[]);
   ecStepOver: SetResult(VK_R,[ssMeta,ssShift],VK_UNKNOWN,[]);
+  ecStepOut: SetResult(VK_T,[ssMeta,ssShift],VK_UNKNOWN,[]);
   ecRunToCursor: SetResult(VK_UNKNOWN,[],VK_UNKNOWN,[]);
   ecStopProgram: SetResult(VK_RETURN,[ssShift,ssMeta],VK_UNKNOWN,[]);
   ecRemoveBreakPoint: SetResult(VK_UNKNOWN,[],VK_UNKNOWN,[]);
@@ -1725,6 +1728,7 @@ begin
   ecShowExecutionPoint: SetResult(VK_UNKNOWN,[],VK_UNKNOWN,[]);
   ecStepInto: SetResult(VK_F7,[],VK_F7,[ssMeta]);
   ecStepOver: SetResult(VK_F8,[],VK_F8,[ssMeta]);
+  ecStepOut: SetResult(VK_F8,[],VK_F8,[ssShift,ssMeta]);
   ecRunToCursor: SetResult(VK_F4,[],VK_F4,[ssMeta]);
   ecStopProgram: SetResult(VK_F2,[ssCtrl],VK_F2,[ssCtrl,ssMeta]);
   ecRemoveBreakPoint: SetResult(VK_UNKNOWN,[],VK_UNKNOWN,[]);
@@ -2078,6 +2082,7 @@ begin
     ecShowExecutionPoint      : Result:= srkmecShowExecutionPoint;
     ecStepInto                : Result:= lisMenuStepInto;
     ecStepOver                : Result:= lisMenuStepOver;
+    ecStepOut                 : Result:= lisMenuStepOut;
     ecRunToCursor             : Result:= lisMenuRunToCursor;
     ecStopProgram             : Result:= srkmecStopProgram;
     ecResetDebugger           : Result:= srkmecResetDebugger;
@@ -2769,6 +2774,7 @@ begin
   AddDefault(C, 'Show execution point', lisMenuShowExecutionPoint, ecShowExecutionPoint);
   AddDefault(C, 'Step into', lisMenuStepInto, ecStepInto);
   AddDefault(C, 'Step over', lisMenuStepOver, ecStepOver);
+  AddDefault(C, 'Step out', lisMenuStepOut, ecStepOut);
   AddDefault(C, 'Run to cursor', lisMenuRunToCursor, ecRunToCursor);
   AddDefault(C, 'Stop program', lisKMStopProgram, ecStopProgram);
   AddDefault(C, 'Reset debugger', lisMenuResetDebugger, ecResetDebugger);

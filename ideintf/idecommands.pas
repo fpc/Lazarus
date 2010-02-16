@@ -232,6 +232,7 @@ const
   ecEvaluate                = ecFirstLazarus + 416;
   ecAddWatch                = ecFirstLazarus + 417;
   ecShowExecutionPoint      = ecFirstLazarus + 418;
+  ecStepOut                 = ecFirstLazarus + 419;
 
   // project menu
   ecNewProject              = ecFirstLazarus + 500;
