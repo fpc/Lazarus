@@ -110,10 +110,10 @@ begin
   end;
 end;
 
-function InGlobalTypeOrVarSection(const pt: TSourceToken): Boolean;
+function InGlobalTypeOrVarOrConstSection(const pt: TSourceToken): Boolean;
 begin
   // are we in a type or var section?
-  if not pt.HasParentNode([nTypeSection, nVarSection]) then
+  if not pt.HasParentNode([nTypeSection, nVarSection, nConstSection]) then
   begin
     Result := False;
     exit;
@@ -632,7 +632,7 @@ begin
   begin
     if pt.HasParentNode([nLibrary, nProgram]) and (liIndentCount >= 1) then
     begin
-      if not pt.HasParentNode([nExports, nUses]) and (not InGlobalTypeOrVarSection(pt)) then
+      if not pt.HasParentNode([nExports, nUses]) and (not InGlobalTypeOrVarOrConstSection(pt)) then
       begin
         if pt.HasParentNode([nCompoundStatement]) and not pt.HasParentNode([nDeclSection]) then
         begin
