@@ -219,86 +219,45 @@ inherited ProjectVersionInfoOptionsFrame: TProjectVersionInfoOptionsFrame
     AnchorSideTop.Side = asrBottom
     AnchorSideRight.Side = asrBottom
     Left = 0
-    Height = 107
+    Height = 161
     Top = 203
     Width = 594
-    Align = alTop
+    Align = alClient
     AutoSize = True
     BorderSpacing.Top = 6
     Caption = 'Other Info'
-    ClientHeight = 89
+    ClientHeight = 143
     ClientWidth = 590
     TabOrder = 3
-    object DescriptionLabel: TLabel
-      AnchorSideTop.Control = DescriptionEdit
-      AnchorSideTop.Side = asrCenter
+    object StringInfo: TStringGrid
       Left = 6
-      Height = 14
-      Top = 9
-      Width = 58
-      BorderSpacing.Left = 6
-      Caption = 'Description:'
-      ParentColor = False
-    end
-    object CopyrightLabel: TLabel
-      AnchorSideLeft.Control = DescriptionLabel
-      AnchorSideTop.Control = CopyrightEdit
-      AnchorSideTop.Side = asrCenter
-      Left = 6
-      Height = 14
-      Top = 36
-      Width = 52
-      Caption = 'Copyright:'
-      ParentColor = False
-    end
-    object DescriptionEdit: TEdit
-      AnchorSideLeft.Control = DescriptionLabel
-      AnchorSideLeft.Side = asrBottom
-      AnchorSideTop.Control = OtherInfoGroupBox
-      AnchorSideRight.Control = OtherInfoGroupBox
-      AnchorSideRight.Side = asrBottom
-      Left = 74
-      Height = 21
+      Height = 131
       Top = 6
-      Width = 510
-      Anchors = [akTop, akLeft, akRight]
-      BorderSpacing.Left = 10
-      BorderSpacing.Top = 6
-      BorderSpacing.Right = 6
-      TabOrder = 0
-    end
-    object CopyrightEdit: TEdit
-      AnchorSideLeft.Control = DescriptionEdit
-      AnchorSideTop.Control = DescriptionEdit
-      AnchorSideTop.Side = asrBottom
-      AnchorSideRight.Control = OtherInfoGroupBox
-      AnchorSideRight.Side = asrBottom
-      Left = 74
-      Height = 21
-      Top = 33
-      Width = 510
-      Anchors = [akTop, akLeft, akRight]
-      BorderSpacing.Top = 6
-      BorderSpacing.Right = 6
-      TabOrder = 1
-    end
-    object AdditionalInfoButton: TBitBtn
-      AnchorSideTop.Control = CopyrightEdit
-      AnchorSideTop.Side = asrBottom
-      AnchorSideRight.Control = OtherInfoGroupBox
-      AnchorSideRight.Side = asrBottom
-      AnchorSideBottom.Side = asrBottom
-      Left = 488
-      Height = 23
-      Top = 60
-      Width = 96
-      Anchors = [akTop, akRight]
-      AutoSize = True
+      Width = 578
+      Align = alClient
       BorderSpacing.Around = 6
-      Caption = 'Additional Info'
-      NumGlyphs = 0
-      OnClick = AdditionalInfoButtonClick
-      TabOrder = 2
+      ColCount = 2
+      Columns = <      
+        item
+          MinSize = 50
+          ReadOnly = True
+          Title.Caption = 'Key'
+          Width = 150
+        end      
+        item
+          MinSize = 100
+          MaxSize = 400
+          Title.Caption = 'Value'
+          Width = 300
+        end>
+      FixedCols = 0
+      Options = [goFixedVertLine, goFixedHorzLine, goVertLine, goHorzLine, goColSizing, goEditing, goAlwaysShowEditor, goSmoothScroll]
+      TabOrder = 0
+      TitleStyle = tsNative
+      ColWidths = (
+        150
+        300
+      )
     end
   end
 end

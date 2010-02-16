@@ -1806,8 +1806,6 @@ resourcestring
   rsLanguageSelection = 'Language selection:';
   rsCharacterSet = 'Character set:';
   rsOtherInfo = 'Other info';
-  rsCopyright = 'Copyright:';
-  rsAdditionalInfo = 'Additional info';
   dlgPOSaveSession = 'Session';
   dlgApplicationSettings = 'Application Settings';
   dlgPOTitle = 'Title:';
@@ -4419,15 +4417,6 @@ resourcestring
   lisFilterSets = 'Filter Sets';
   lisMessagesEditor = 'Messages Editor';
 
-  // Additional Information dialog (VersionInfoAdditinalInfo.pas)
-  lisComments = 'Comments:';
-  lisAdditionalInformation = 'Additional Information';
-  lisCompany = 'Company:';
-  lisInternalName = 'Internal Name:';
-  lisLegalTrademarks = 'Legal Trademarks:';
-  lisOriginalFileName = 'Original File Name:';
-  lisProductName = 'Product Name:';
-  lisProductVersion = 'Product Version:';
   lisSetDefault = 'Set default';
   lisSelectedLeftNeighbour = '(selected left neighbour)';
   lisSelectedRightNeighbour = '(selected right neighbour)';

@@ -6,24 +6,19 @@ interface
 
 uses
   Classes, SysUtils, FileUtil, Forms, Controls, Graphics, Dialogs,
-  StdCtrls, Spin, Buttons, Project, IDEOptionsIntf, LazarusIDEStrConsts,
-  W32VersionInfo, VersionInfoAdditionalInfo;
+  StdCtrls, Spin, Buttons, Grids, Project, IDEOptionsIntf, LazarusIDEStrConsts,
+  W32VersionInfo;
 
 type
 
   { TProjectVersionInfoOptionsFrame }
 
   TProjectVersionInfoOptionsFrame = class(TAbstractIDEOptionsEditor)
-    AdditionalInfoButton: TBitBtn;
     AutomaticallyIncreaseBuildCheckBox: TCheckBox;
     BuildLabel: TLabel;
     BuildSpinEdit: TSpinEdit;
     CharacterSetComboBox: TComboBox;
     CharacterSetLabel: TLabel;
-    CopyrightEdit: TEdit;
-    CopyrightLabel: TLabel;
-    DescriptionEdit: TEdit;
-    DescriptionLabel: TLabel;
     LanguageSelectionComboBox: TComboBox;
     LanguageSelectionLabel: TLabel;
     LanguageSettingsGroupBox: TGroupBox;
@@ -32,11 +27,11 @@ type
     RevisionLabel: TLabel;
     RevisionSpinEdit: TSpinEdit;
     OtherInfoGroupBox: TGroupBox;
+    StringInfo: TStringGrid;
     UseVersionInfoCheckBox: TCheckBox;
     VersionInfoGroupBox: TGroupBox;
     MajorVersionLabel: TLabel;
     MajorVersionSpinEdit: TSpinEdit;
-    procedure AdditionalInfoButtonClick(Sender: TObject);
     procedure UseVersionInfoCheckBoxChange(Sender: TObject);
   private
     FVersionInfo: TProjectVersionInfo;
@@ -58,11 +53,6 @@ implementation
 procedure TProjectVersionInfoOptionsFrame.UseVersionInfoCheckBoxChange(Sender: TObject);
 begin
   EnableVersionInfo(UseVersionInfoCheckBox.Checked);
-end;
-
-procedure TProjectVersionInfoOptionsFrame.AdditionalInfoButtonClick(Sender: TObject);
-begin
-  ShowVersionInfoAdditionailInfoForm(FVersionInfo);
 end;
 
 procedure TProjectVersionInfoOptionsFrame.EnableVersionInfo(UseVersionInfo: boolean);
@@ -90,15 +80,11 @@ begin
   LanguageSelectionLabel.Caption := rsLanguageSelection;
   CharacterSetLabel.Caption := rsCharacterSet;
   OtherInfoGroupBox.Caption := rsOtherInfo;
-  DescriptionLabel.Caption := lisCodeToolsDefsDescription;
-  CopyrightLabel.Caption := rsCopyright;
-  AdditionalInfoButton.Caption := rsAdditionalInfo;
-  AdditionalInfoButton.LoadGlyphFromLazarusResource('laz_add');
 end;
 
 procedure TProjectVersionInfoOptionsFrame.ReadSettings(AOptions: TAbstractIDEOptions);
-  var
-    i : integer;
+var
+  i: integer;
 begin
   FVersionInfo := TProjectVersionInfo((AOptions as TProject).Resources[TProjectVersionInfo]);
 
@@ -125,13 +111,20 @@ begin
   if i >= 0 then
     i := CharacterSetComboBox.Items.IndexOf(MSCharacterSets[i]);
   CharacterSetComboBox.ItemIndex := i;
-  DescriptionEdit.Text := FVersionInfo.DescriptionString;
-  CopyrightEdit.Text := FVersionInfo.CopyrightString;
+
+  // read string info
+  StringInfo.RowCount := FVersionInfo.StringTable.Count + 1;
+  for i := 0 to FVersionInfo.StringTable.Count - 1 do
+  begin
+    StringInfo.Cells[0, i + 1] := FVersionInfo.StringTable.Keys[i];
+    StringInfo.Cells[1, i + 1] := FVersionInfo.StringTable.ValuesByIndex[i];
+  end;
 end;
 
 procedure TProjectVersionInfoOptionsFrame.WriteSettings(AOptions: TAbstractIDEOptions);
 var
   VersionInfo: TProjectVersionInfo;
+  i: integer;
 begin
   VersionInfo := TProjectVersionInfo((AOptions as TProject).Resources[TProjectVersionInfo]);
   VersionInfo.UseVersionInfo := UseVersionInfoCheckBox.Checked;
@@ -140,10 +133,12 @@ begin
   VersionInfo.MinorVersionNr := MinorVersionSpinEdit.Value;
   VersionInfo.RevisionNr := RevisionSpinEdit.Value;
   VersionInfo.BuildNr := BuildSpinEdit.Value;
-  VersionInfo.DescriptionString := DescriptionEdit.Text;
-  VersionInfo.CopyrightString := CopyrightEdit.Text;
   VersionInfo.HexLang := MSLanguageToHex(LanguageSelectionComboBox.Text);
   VersionInfo.HexCharSet := MSCharacterSetToHex(CharacterSetComboBox.Text);
+  // write string info
+  VersionInfo.StringTable.Clear;
+  for i := 1 to StringInfo.RowCount - 1 do
+    VersionInfo.StringTable[StringInfo.Cells[0, i]] := StringInfo.Cells[1, i];
 end;
 
 class function TProjectVersionInfoOptionsFrame.SupportedOptionsClass: TAbstractIDEOptionsClass;

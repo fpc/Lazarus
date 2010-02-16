@@ -38,26 +38,40 @@ interface
 
 uses
   Classes, SysUtils, Process, LCLProc, Controls, Forms, FileUtil,
-  CodeToolManager, LazConf, Laz_XMLCfg, IDEProcs, ProjectResourcesIntf,
+  CodeToolManager, LazConf, Laz_XMLCfg, Laz_DOM, IDEProcs, ProjectResourcesIntf,
   resource, versionresource, versiontypes;
 
 type
+
+  { TProjectVersionStringTable }
+
+  TProjectVersionStringTable = class(TVersionStringTable)
+  private
+    FOnModified: TNotifyEvent;
+    function GetValues(Key: string): string;
+    procedure SetValues(Key: string; const AValue: string);
+  protected
+    function KeyToIndex(const aKey: String): Integer;
+    procedure DoModified;
+  public
+    constructor Create(const aName: string); reintroduce;
+    procedure Add(const aKey, aValue: string); reintroduce;
+    procedure Clear; reintroduce;
+    procedure Delete(const aIndex: integer); overload; reintroduce;
+    procedure Delete(const aKey: string); overload; reintroduce;
+    function IsRequired(const aKey: string): Boolean;
+    property Values[Key: string]: string read GetValues write SetValues; default;
+    property OnModified: TNotifyEvent read FOnModified write FOnModified;
+  end;
+
   { TProjectVersionInfo }
 
   TProjectVersionInfo = class(TAbstractProjectResource)
   private
     FAutoIncrementBuild: boolean;
-    FCommentsString: string;
-    FCompanyString: string;
-    FCopyrightString: string;
-    FDescriptionString: string;
     FHexCharSet: string;
     FHexLang: string;
-    FInternalNameString: string;
-    FOriginalFilenameString: string;
-    FProdNameString: string;
-    FProductVersionString: string;
-    FTrademarksString: string;
+    FStringTable: TProjectVersionStringTable;
     FUseVersionInfo: boolean;
     FVersion: TFileProductVersion;
     function GetCharSets: TStringList;
@@ -66,21 +80,17 @@ type
     function GetLanguages: TStringList;
     function GetVersion(AIndex: integer): integer;
     procedure SetAutoIncrementBuild(const AValue: boolean);
-    procedure SetCommentsString(const AValue: string);
-    procedure SetCompanyString(const AValue: string);
-    procedure SetCopyrightString(const AValue: string);
-    procedure SetDescriptionString(const AValue: string);
     procedure SetHexCharSet(const AValue: string);
     procedure SetHexLang(const AValue: string);
-    procedure SetInternalNameString(const AValue: string);
-    procedure SetOriginalFilenameString(const AValue: string);
-    procedure SetProdNameString(const AValue: string);
-    procedure SetProductVersionString(const AValue: string);
-    procedure SetTrademarksString(const AValue: string);
     procedure SetUseVersionInfo(const AValue: boolean);
     procedure SetVersion(AIndex: integer; const AValue: integer);
     function ExtractProductVersion: TFileProductVersion;
+    function BuildFileVersionString: String;
+    procedure DoModified(Sender: TObject);
   public
+    constructor Create; override;
+    destructor Destroy; override;
+
     procedure DoBeforeBuild(AResources: TAbstractProjectResources;
       SaveToTestDir: boolean); override;
     function UpdateResources(AResources: TAbstractProjectResources;
@@ -89,8 +99,7 @@ type
     procedure ReadFromProjectFile(AConfig: {TXMLConfig}TObject; Path: string); override;
 
     property UseVersionInfo: boolean read FUseVersionInfo write SetUseVersionInfo;
-    property AutoIncrementBuild: boolean read FAutoIncrementBuild
-      write SetAutoIncrementBuild;
+    property AutoIncrementBuild: boolean read FAutoIncrementBuild write SetAutoIncrementBuild;
 
     property MajorVersionNr: integer index 0 read GetVersion write SetVersion;
     property MinorVersionNr: integer index 1 read GetVersion write SetVersion;
@@ -99,19 +108,9 @@ type
 
     property HexLang: string read FHexLang write SetHexLang;
     property HexCharSet: string read FHexCharSet write SetHexCharSet;
-    property DescriptionString: string read FDescriptionString
-      write SetDescriptionString;
-    property CopyrightString: string read FCopyrightString write SetCopyrightString;
-    property CommentsString: string read FCommentsString write SetCommentsString;
-    property CompanyString: string read FCompanyString write SetCompanyString;
-    property InternalNameString: string read FInternalNameString
-      write SetInternalNameString;
-    property TrademarksString: string read FTrademarksString write SetTrademarksString;
-    property OriginalFilenameString: string
-      read FOriginalFilenameString write SetOriginalFilenameString;
-    property ProdNameString: string read FProdNameString write SetProdNameString;
-    property ProductVersionString: string read FProductVersionString
-      write SetProductVersionString;
+
+    // string info
+    property StringTable: TProjectVersionStringTable read FStringTable;
   end;
 
 function MSLanguageToHex(const s: string): string;
@@ -348,6 +347,7 @@ var
   ti: TVerTranslationInfo;
   lang: string;
   charset: string;
+  i: integer;
 begin
   Result := True;
   if UseVersionInfo then
@@ -365,19 +365,12 @@ begin
     if charset = '' then
       charset := DefaultCharSet;
 
+    // set FileVersion from version numbers
+    FStringTable['FileVersion'] := BuildFileVersionString;
+
     st := TVersionStringTable.Create(lang + charset);
-    st.Add('Comments', Utf8ToAnsi(CommentsString));
-    st.Add('CompanyName', Utf8ToAnsi(CompanyString));
-    st.Add('FileDescription', Utf8ToAnsi(DescriptionString));
-    st.Add('FileVersion', IntToStr(MajorVersionNr) + '.' + IntToStr(MinorVersionNr) +
-      '.' + IntToStr(RevisionNr) + '.' + IntToStr(BuildNr));
-    st.Add('InternalName', Utf8ToAnsi(InternalNameString));
-    st.Add('LegalCopyright', Utf8ToAnsi(CopyrightString));
-    st.Add('LegalTrademarks', Utf8ToAnsi(TrademarksString));
-    st.Add('OriginalFilename', Utf8ToAnsi(OriginalFilenameString));
-    st.Add('ProductName', Utf8ToAnsi(ProdNameString));
-    st.Add('ProductVersion', StringReplace(Utf8ToAnsi(ProductVersionString),
-      ',', '.', [rfReplaceAll]));
+    for i := 0 to FStringTable.Count - 1 do
+      st.Add(Utf8ToAnsi(FStringTable.Keys[i]), Utf8ToAnsi(FStringTable.ValuesByIndex[i]));
     ARes.StringFileInfo.Add(st);
 
     ti.language := StrToInt('$' + lang);
@@ -388,6 +381,8 @@ begin
 end;
 
 procedure TProjectVersionInfo.WriteToProjectFile(AConfig: TObject; Path: string);
+var
+  i: integer;
 begin
   with TXMLConfig(AConfig) do
   begin
@@ -398,21 +393,21 @@ begin
     SetDeleteValue(Path + 'VersionInfo/MinorVersionNr/Value', MinorVersionNr, 0);
     SetDeleteValue(Path + 'VersionInfo/RevisionNr/Value', RevisionNr, 0);
     SetDeleteValue(Path + 'VersionInfo/BuildNr/Value', BuildNr, 0);
-    SetDeleteValue(Path + 'VersionInfo/ProjectVersion/Value', ProductVersionString, '1.0.0.0');
     SetDeleteValue(Path + 'VersionInfo/Language/Value', HexLang, DefaultLanguage);
     SetDeleteValue(Path + 'VersionInfo/CharSet/Value', HexCharSet, DefaultCharset);
-    SetDeleteValue(Path + 'VersionInfo/Comments/Value', CommentsString, '');
-    SetDeleteValue(Path + 'VersionInfo/CompanyName/Value', CompanyString, '');
-    SetDeleteValue(Path + 'VersionInfo/FileDescription/Value', DescriptionString, '');
-    SetDeleteValue(Path + 'VersionInfo/InternalName/Value', InternalNameString, '');
-    SetDeleteValue(Path + 'VersionInfo/LegalCopyright/Value', CopyrightString, '');
-    SetDeleteValue(Path + 'VersionInfo/LegalTrademarks/Value', TrademarksString, '');
-    SetDeleteValue(Path + 'VersionInfo/OriginalFilename/Value', OriginalFilenameString, '');
-    SetDeleteValue(Path + 'VersionInfo/ProductName/Value', ProdNameString, '');
+
+    // write string info
+    DeletePath(Path + 'VersionInfo/StringTable');
+    for i := 0 to StringTable.Count - 1 do
+      SetValue(Path + 'VersionInfo/StringTable/' + StringTable.Keys[i],
+        StringTable.ValuesByIndex[i]);
   end;
 end;
 
 procedure TProjectVersionInfo.ReadFromProjectFile(AConfig: TObject; Path: string);
+var
+  i: integer;
+  Node: TDomNode;
 begin
   with TXMLConfig(AConfig) do
   begin
@@ -428,17 +423,31 @@ begin
     BuildNr := GetValue(Path + 'VersionInfo/CurrentBuildNr/Value',
       GetValue(Path + 'VersionInfo/BuildNr/Value', 0));
 
-    ProductVersionString := GetValue(Path + 'VersionInfo/ProjectVersion/Value', '1.0.0.0');
     HexLang := GetValue(Path + 'VersionInfo/Language/Value', DefaultLanguage);
     HexCharSet := GetValue(Path + 'VersionInfo/CharSet/Value', DefaultCharset);
-    CommentsString := LineBreaksToSystemLineBreaks(GetValue(Path + 'VersionInfo/Comments/Value', ''));
-    CompanyString := LineBreaksToSystemLineBreaks(GetValue(Path + 'VersionInfo/CompanyName/Value', ''));
-    DescriptionString := LineBreaksToSystemLineBreaks(GetValue(Path + 'VersionInfo/FileDescription/Value', ''));
-    InternalNameString := LineBreaksToSystemLineBreaks(GetValue(Path + 'VersionInfo/InternalName/Value', ''));
-    CopyrightString := LineBreaksToSystemLineBreaks(GetValue(Path + 'VersionInfo/LegalCopyright/Value', ''));
-    TrademarksString := LineBreaksToSystemLineBreaks(GetValue(Path + 'VersionInfo/LegalTrademarks/Value', ''));
-    OriginalFilenameString := GetValue(Path + 'VersionInfo/OriginalFilename/Value', '');
-    ProdNameString := LineBreaksToSystemLineBreaks(GetValue(Path + 'VersionInfo/ProductName/Value', ''));
+
+    // read string info
+    Node := FindNode(Path + 'VersionInfo/StringTable', False);
+    if Assigned(Node) then
+    begin
+      StringTable.Clear;
+      for i := 0 to Node.Attributes.Count - 1 do
+        StringTable[Node.Attributes[i].NodeName] := Node.Attributes[i].NodeValue;
+    end
+    else
+    begin
+      // read old info
+      StringTable['Comments'] := GetValue(Path + 'VersionInfo/Comments/Value', '');
+      StringTable['CompanyName'] := GetValue(Path + 'VersionInfo/CompanyName/Value', '');
+      StringTable['FileDescription'] := GetValue(Path + 'VersionInfo/FileDescription/Value', '');
+      StringTable['FileVersion'] := BuildFileVersionString;
+      StringTable['InternalName'] := GetValue(Path + 'VersionInfo/InternalName/Value', '');
+      StringTable['LegalCopyright'] := GetValue(Path + 'VersionInfo/LegalCopyright/Value', '');
+      StringTable['LegalTrademarks'] := GetValue(Path + 'VersionInfo/LegalTrademarks/Value', '');
+      StringTable['OriginalFilename'] := GetValue(Path + 'VersionInfo/OriginalFilename/Value', '');
+      StringTable['ProductName'] := GetValue(Path + 'VersionInfo/ProductName/Value', '');
+      StringTable['ProductVersion'] := GetValue(Path + 'VersionInfo/ProjectVersion/Value', BuildFileVersionString);
+    end;
   end;
 end;
 
@@ -479,38 +488,6 @@ begin
   Modified := True;
 end;
 
-procedure TProjectVersionInfo.SetCommentsString(const AValue: string);
-begin
-  if FCommentsString = AValue then
-    exit;
-  FCommentsString := AValue;
-  Modified := True;
-end;
-
-procedure TProjectVersionInfo.SetCompanyString(const AValue: string);
-begin
-  if FCompanyString = AValue then
-    exit;
-  FCompanyString := AValue;
-  Modified := True;
-end;
-
-procedure TProjectVersionInfo.SetCopyrightString(const AValue: string);
-begin
-  if FCopyrightString = AValue then
-    exit;
-  FCopyrightString := AValue;
-  Modified := True;
-end;
-
-procedure TProjectVersionInfo.SetDescriptionString(const AValue: string);
-begin
-  if FDescriptionString = AValue then
-    exit;
-  FDescriptionString := AValue;
-  Modified := True;
-end;
-
 procedure TProjectVersionInfo.SetHexCharSet(const AValue: string);
 begin
   if FHexCharSet = AValue then
@@ -524,49 +501,6 @@ begin
   if FHexLang = AValue then
     exit;
   FHexLang := AValue;
-  Modified := True;
-end;
-
-procedure TProjectVersionInfo.SetInternalNameString(const AValue: string);
-begin
-  if FInternalNameString = AValue then
-    exit;
-  FInternalNameString := AValue;
-  Modified := True;
-end;
-
-procedure TProjectVersionInfo.SetOriginalFilenameString(const AValue: string);
-begin
-  if FOriginalFilenameString = AValue then
-    exit;
-  FOriginalFilenameString := AValue;
-  Modified := True;
-end;
-
-procedure TProjectVersionInfo.SetProdNameString(const AValue: string);
-begin
-  if FProdNameString = AValue then
-    exit;
-  FProdNameString := AValue;
-  Modified := True;
-end;
-
-procedure TProjectVersionInfo.SetProductVersionString(const AValue: string);
-var
-  NewValue: string;
-begin
-  NewValue := StringReplace(AValue, ',', '.', [rfReplaceAll]);
-  if FProductVersionString = NewValue then
-    exit;
-  FProductVersionString := NewValue;
-  Modified := True;
-end;
-
-procedure TProjectVersionInfo.SetTrademarksString(const AValue: string);
-begin
-  if FTrademarksString = AValue then
-    exit;
-  FTrademarksString := AValue;
   Modified := True;
 end;
 
@@ -591,7 +525,7 @@ var
   S, Part: string;
   i, p: integer;
 begin
-  S := ProductVersionString;
+  S := StringTable['ProductVersion'];
   for i := 0 to 3 do
   begin
     p := Pos('.', S);
@@ -609,11 +543,138 @@ begin
   end;
 end;
 
+function TProjectVersionInfo.BuildFileVersionString: String;
+begin
+  Result := Format('%d.%d.%d.%d', [MajorVersionNr, MinorVersionNr, RevisionNr, BuildNr]);
+end;
+
+procedure TProjectVersionInfo.DoModified(Sender: TObject);
+begin
+  Modified := True;
+end;
+
+constructor TProjectVersionInfo.Create;
+begin
+  inherited Create;
+  FStringTable := TProjectVersionStringTable.Create('00000000');
+  FStringTable.OnModified := @DoModified;
+end;
+
+destructor TProjectVersionInfo.Destroy;
+begin
+  FStringTable.Free;
+  inherited Destroy;
+end;
+
 procedure TProjectVersionInfo.DoBeforeBuild(AResources: TAbstractProjectResources;
   SaveToTestDir: boolean);
 begin
   if AutoIncrementBuild then // project indicate to use autoincrementbuild
     BuildNr := BuildNr + 1;
+end;
+
+{ TProjectVersionStringTable }
+
+function TProjectVersionStringTable.GetValues(Key: string): string;
+var
+  idx: Integer;
+begin
+  idx := KeyToIndex(Key);
+  if idx = -1 then
+    Result := ''
+  else
+    Result := ValuesByIndex[idx];
+end;
+
+procedure TProjectVersionStringTable.SetValues(Key: string; const AValue: string);
+var
+  idx: Integer;
+begin
+  idx := KeyToIndex(Key);
+  if idx = -1 then
+    Add(Key, AValue)
+  else
+    ValuesByIndex[idx] := AValue;
+  DoModified;
+end;
+
+function TProjectVersionStringTable.KeyToIndex(const aKey: String): Integer;
+var
+  i : integer;
+begin
+  for i := 0 to Count - 1 do
+    if Keys[i] = aKey then
+      exit(i);
+  Result := -1;
+end;
+
+procedure TProjectVersionStringTable.DoModified;
+begin
+  if Assigned(OnModified) then
+    OnModified(Self);
+end;
+
+constructor TProjectVersionStringTable.Create(const aName: string);
+begin
+  inherited Create(aName);
+
+  Add('Comments', '');
+  Add('CompanyName', '');
+  Add('FileDescription', '');
+  Add('FileVersion', '');
+  Add('InternalName', '');
+  Add('LegalCopyright', '');
+  Add('LegalTrademarks', '');
+  Add('OriginalFilename', '');
+  // - PrivateBuild
+  Add('ProductName', '');
+  Add('ProductVersion', '');
+  // - SpecialBuild
+end;
+
+procedure TProjectVersionStringTable.Add(const aKey, aValue: string);
+begin
+  inherited Add(aKey, aValue);
+  DoModified;
+end;
+
+procedure TProjectVersionStringTable.Clear;
+begin
+  if Count > 0 then
+  begin
+    inherited Clear;
+    DoModified;
+  end;
+end;
+
+procedure TProjectVersionStringTable.Delete(const aIndex: integer);
+begin
+  if not IsRequired(Keys[aIndex]) then
+  begin
+    inherited Delete(aIndex);
+    DoModified;
+  end;
+end;
+
+procedure TProjectVersionStringTable.Delete(const aKey: string);
+begin
+  if not IsRequired(aKey) then
+  begin
+    inherited Delete(aKey);
+    DoModified;
+  end;
+end;
+
+function TProjectVersionStringTable.IsRequired(const aKey: string): Boolean;
+begin
+  Result :=
+    (aKey = 'CompanyName') or
+    (aKey = 'FileDescription') or
+    (aKey = 'FileVersion') or
+    (aKey = 'InternalName') or
+    (aKey = 'OriginalFilename') or
+    (aKey = 'ProductName') or
+    (aKey = 'ProductVersion');
 end;
 
 initialization
