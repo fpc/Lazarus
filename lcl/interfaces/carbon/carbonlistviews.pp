@@ -916,14 +916,17 @@ begin
 end;
 
 procedure TCarbonDataBrowser.UpdateItems;
+var
+  i : Integer;
 begin
-  // removes all and adds new count of items starting with index 1
+  {// removes all and adds new count of items starting with index 1
   OSError(RemoveDataBrowserItems(Widget, kDataBrowserNoItem, 0, nil, kDataBrowserItemNoProperty),
     Self, 'UpdateItems', 'RemoveDataBrowserItems');
 
   if GetItemsCount <> 0 then
     OSError(AddDataBrowserItems(Widget, kDataBrowserNoItem, GetItemsCount, nil, kDataBrowserItemNoProperty),
-      Self, 'UpdateItems', 'AddDataBrowserItems');
+      Self, 'UpdateItems', 'AddDataBrowserItems');}
+  for i:=0 to GetItemsCount-1 do UpdateItem(i);
 
   CheckNeedsScrollBars;
 end;
@@ -1467,10 +1470,15 @@ begin
 end;
 
 procedure TCarbonDataBrowser.InsertItem(AIndex: Integer);
+var
+  Item  : DataBrowserItemID;
+  i     : Integer;
 begin
+  Item := GetItemsCount+1;
   FItemsCheck.Insert(AIndex, Pointer(False));
-
-  UpdateItems;
+  OSError( AddDataBrowserItems(Widget, kDataBrowserNoItem, 1, @Item, kDataBrowserItemNoProperty),
+    Self, 'InsertItem', 'AddDataBrowserItems');
+  for i := AIndex to GetItemsCount-1 do UpdateItem(i);
 end;
 
 procedure TCarbonDataBrowser.UpdateItem(AIndex: Integer);
@@ -1478,7 +1486,6 @@ var
   Item: DataBrowserItemID;
 begin
   Item := AIndex + 1;
-  
   OSError(UpdateDataBrowserItems(Widget, kDataBrowserNoItem, 1, @Item,
       kDataBrowserItemNoProperty, kDataBrowserNoItem),
     Self, 'UpdateItem', 'UpdateDataBrowserItems');

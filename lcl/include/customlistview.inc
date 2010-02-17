@@ -183,7 +183,8 @@ var
   n: Integer;
 begin
   nm := PNMListView(AMessage.NMHdr);
-  if nm^.iItem>=Items.Count then exit;
+  // ignore any notifications while initializing items
+  if (nm^.iItem>=Items.Count) or not (lisfWSItemsCreated in FListItems.Flags) then exit;
   //remark: NMHdr^.code is normally unhanged by the win32 interface, so the others
   //        maps there codes to the of win32
   case AMessage.NMHdr^.code of 
@@ -230,7 +231,6 @@ begin
     end;
     LVN_ITEMCHANGED: begin
       Item := Items[nm^.iItem];
-      if not (lisfWSItemsCreated in FListItems.Flags) then Exit;
       //DebugLn('TCustomListView.CNNotify Count=',dbgs(Items.Count),' nm^.iItem=',dbgs(nm^.iItem),' destroying=',dbgs(lifDestroying in Item.FFlags));
       if (Item <> nil) and (not OwnerData) and (lifDestroying in Item.FFlags) then begin
         if Item=FFocused then
