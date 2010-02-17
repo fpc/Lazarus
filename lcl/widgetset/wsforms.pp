@@ -82,17 +82,19 @@ type
   published
     class procedure CloseModal(const ACustomForm: TCustomForm); virtual;
     class procedure SetAllowDropFiles(const AForm: TCustomForm; AValue: Boolean); virtual;
+    class procedure SetAlphaBlend(const ACustomForm: TCustomForm; const AlphaBlend: Boolean;
+      const Alpha: Byte); virtual;
     class procedure SetBorderIcons(const AForm: TCustomForm;
         const ABorderIcons: TBorderIcons); virtual;
     class procedure SetFormBorderStyle(const AForm: TCustomForm;
                              const AFormBorderStyle: TFormBorderStyle); virtual;
     class procedure SetFormStyle(const AForm: TCustomform; const AFormStyle: TFormStyle); virtual;
     class procedure SetIcon(const AForm: TCustomForm; const Small, Big: HICON); virtual;
+    class procedure ShowModal(const ACustomForm: TCustomForm); virtual;
+    class procedure SetPopupParent(const ACustomForm: TCustomForm;
+      const APopupMode: TPopupMode; const APopupParent: TCustomForm); virtual;
     class procedure SetShowInTaskbar(const AForm: TCustomForm; const AValue: TShowInTaskbar); virtual;
     class procedure SetZPosition(const AWinControl: TWinControl; const APosition: TWSZPosition); virtual;
-    class procedure ShowModal(const ACustomForm: TCustomForm); virtual;
-    class procedure SetAlphaBlend(const ACustomForm: TCustomForm; const AlphaBlend: Boolean;
-      const Alpha: Byte); virtual;
   end;
   TWSCustomFormClass = class of TWSCustomForm;
 
@@ -178,6 +180,11 @@ begin
 end;
    
 class procedure TWSCustomForm.ShowModal(const ACustomForm: TCustomForm);
+begin
+end;
+
+class procedure TWSCustomForm.SetPopupParent(const ACustomForm: TCustomForm;
+  const APopupMode: TPopupMode; const APopupParent: TCustomForm);
 begin
 end;
 

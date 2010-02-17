@@ -153,7 +153,12 @@ begin
         if (FActionLists <> nil) and (AComponent is TCustomActionList) then
           DoRemoveActionList(TCustomActionList(AComponent))
         else
-        if AComponent = Menu then Menu := nil;
+        if AComponent = Menu then
+          Menu := nil
+        else
+        if AComponent = PopupParent then
+          PopupParent := nil;
+
         if FActiveControl=AComponent then
         begin
           {$IFDEF VerboseFocus}
@@ -243,13 +248,33 @@ begin
   FIcon.Assign(AValue);
 end;
 
-{------------------------------------------------------------------------------
-  procedure TCustomForm.SetModalResult(const AValue: TModalResult);
- ------------------------------------------------------------------------------}
-procedure TCustomForm.SetModalResult(const AValue: TModalResult);
+procedure TCustomForm.SetPopupMode(const AValue: TPopupMode);
 begin
-  if FModalResult=AValue then exit;
-  FModalResult:=AValue;
+  if FPopupMode <> AValue then
+  begin
+    FPopupMode := AValue;
+    if FPopupMode = pmAuto then
+      PopupParent := nil;
+    if not (csDesigning in ComponentState) and HandleAllocated then
+      TWSCustomFormClass(WidgetSetClass).SetPopupParent(Self, PopupMode, PopupParent);
+  end;
+end;
+
+procedure TCustomForm.SetPopupParent(const AValue: TCustomForm);
+begin
+  if FPopupParent <> AValue then
+  begin
+    if FPopupParent <> nil then
+      FPopupParent.RemoveFreeNotification(Self);
+    FPopupParent := AValue;
+    if FPopupParent <> nil then
+    begin
+      FPopupParent.FreeNotification(Self);
+      FPopupMode := pmExplicit;
+    end;
+    if not (csDesigning in ComponentState) and HandleAllocated then
+      TWSCustomFormClass(WidgetSetClass).SetPopupParent(Self, PopupMode, PopupParent);
+  end;
 end;
 
 {------------------------------------------------------------------------------
@@ -1630,6 +1655,7 @@ begin
   {$ENDIF}
   FBorderIcons := [biSystemMenu, biMinimize, biMaximize];
   FDefaultMonitor := dmActiveForm;
+  FPopupMode := pmNone;
   FShowInTaskbar := stDefault;
   FAlphaBlend := False;
   FAlphaBlendValue := 255;

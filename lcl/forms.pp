@@ -379,7 +379,17 @@ type
     fhtCreate
     );
 
-  TShowInTaskbar = (stDefault, stAlways, stNever);
+  TShowInTaskbar = (
+    stDefault,  // use default rules for showing taskbar item
+    stAlways,   // always show taskbar item for the form
+    stNever     // never show taskbar item for the form
+  );
+
+  TPopupMode = (
+    pmNone,     // default behavior - popup to mainform/taskbar window
+    pmAuto,     // popup to active form and same as pmNone if no active form
+    pmExplicit  // popup to PopupParent and same as pmNone if not exists
+  );
 
   TCloseEvent = procedure(Sender: TObject; var CloseAction: TCloseAction) of object;
   TCloseQueryEvent = procedure(Sender : TObject; var CanClose : boolean) of object;
@@ -405,6 +415,8 @@ type
     FFormHandlers: array[TFormHandlerType] of TMethodList;
     FHelpFile: string;
     FIcon: TIcon;
+    FPopupMode: TPopupMode;
+    FPopupParent: TCustomForm;
     FSmallIconHandle: HICON;
     FBigIconHandle: HICON;
     FKeyPreview: Boolean;
@@ -455,7 +467,8 @@ type
     procedure SetFormStyle(Value : TFormStyle);
     procedure SetIcon(AValue: TIcon);
     procedure SetMenu(Value: TMainMenu);
-    procedure SetModalResult(const AValue: TModalResult);
+    procedure SetPopupMode(const AValue: TPopupMode);
+    procedure SetPopupParent(const AValue: TCustomForm);
     procedure SetPosition(Value : TPosition);
     procedure SetShowInTaskbar(Value: TShowInTaskbar);
     procedure SetWindowFocus;
@@ -611,8 +624,11 @@ type
     property Icon: TIcon read FIcon write SetIcon stored IsIconStored;
     property KeyPreview: Boolean read FKeyPreview write FKeyPreview default False;
     property Menu : TMainMenu read FMenu write SetMenu;
-    property ModalResult : TModalResult read FModalResult write SetModalResult;
+    property ModalResult : TModalResult read FModalResult write FModalResult;
     property Monitor: TMonitor read GetMonitor;
+    property PopupMode: TPopupMode read FPopupMode write SetPopupMode default pmNone;
+    property PopupParent: TCustomForm read FPopupParent write SetPopupParent;
+
     property OnActivate: TNotifyEvent read FOnActivate write FOnActivate;
     property OnClose: TCloseEvent read FOnClose write FOnClose stored IsForm;
     property OnCloseQuery : TCloseQueryEvent
@@ -731,6 +747,8 @@ type
     property ParentFont;
     property PixelsPerInch;
     property PopupMenu;
+    property PopupMode;
+    property PopupParent;
     property Position;
     property SessionProperties;
     property ShowHint;
@@ -1891,6 +1909,3 @@ finalization
   FreeThenNil(Screen);
 
 end.
-
-
-

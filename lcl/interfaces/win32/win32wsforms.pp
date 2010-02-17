@@ -83,6 +83,8 @@ type
                              const AFormBorderStyle: TFormBorderStyle); override;
     class procedure SetFormStyle(const AForm: TCustomform; const AFormStyle: TFormStyle); override;
     class procedure SetIcon(const AForm: TCustomForm; const Small, Big: HICON); override;
+    class procedure SetPopupParent(const ACustomForm: TCustomForm;
+       const APopupMode: TPopupMode; const APopupParent: TCustomForm); override;
     class procedure SetShowInTaskbar(const AForm: TCustomForm; const AValue: TShowInTaskbar); override;
     class procedure ShowModal(const ACustomForm: TCustomForm); override;
     class procedure SetAlphaBlend(const ACustomForm: TCustomForm; const AlphaBlend: Boolean;
@@ -292,7 +294,7 @@ class function TWin32WSCustomForm.CreateHandle(const AWinControl: TWinControl;
   const AParams: TCreateParams): HWND;
 var
   Params: TCreateWindowExParams;
-  lForm: TCustomForm;
+  lForm: TCustomForm absolute AWinControl;
   Bounds: TRect;
 begin
   // general initialization of Params
@@ -300,7 +302,17 @@ begin
   // customization of Params
   with Params do
   begin
-    lForm := TCustomForm(AWinControl);
+    // define Parent according to PopupMode and PopupParent
+    if not (csDesigning in lForm.ComponentState) and (Application.MainForm <> lForm) then
+      case lForm.PopupMode of
+        pmNone:;
+        pmAuto:
+          if (Screen.ActiveForm <> nil) then
+            Parent := Screen.ActiveForm.Handle;
+        pmExplicit:
+          if (lForm.PopupParent <> nil) then
+            Parent := lForm.PopupParent.Handle;
+      end;
     CalcFormWindowFlags(lForm, Flags, FlagsEx);
     pClassName := @ClsName[0];
     WindowTitle := StrCaption;
@@ -445,6 +457,13 @@ begin
   // for some reason sometimes frame does not invalidate itself. lets ask it to invalidate always
   Windows.RedrawWindow(Wnd, nil, 0,
     RDW_INVALIDATE or RDW_FRAME or RDW_NOCHILDREN or RDW_ERASE);
+end;
+
+class procedure TWin32WSCustomForm.SetPopupParent(const ACustomForm: TCustomForm;
+  const APopupMode: TPopupMode; const APopupParent: TCustomForm);
+begin
+  // changing parent is not possible without handle recreation
+  RecreateWnd(ACustomForm);
 end;
 
 class procedure TWin32WSCustomForm.SetShowInTaskbar(const AForm: TCustomForm;
