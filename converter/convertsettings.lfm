@@ -1,0 +1,180 @@
+object ConvertSettingsForm: TConvertSettingsForm
+  Left = 319
+  Height = 350
+  Top = 122
+  Width = 558
+  Caption = 'Convert Delphi unit, project or package '
+  ClientHeight = 350
+  ClientWidth = 558
+  Constraints.MinHeight = 350
+  OnCreate = FormCreate
+  OnDestroy = FormDestroy
+  LCLVersion = '0.9.29'
+  object MissingStuffGroupBox: TGroupBox
+    AnchorSideTop.Control = SettingsGroupBox
+    AnchorSideTop.Side = asrBottom
+    Left = 0
+    Height = 161
+    Top = 131
+    Width = 558
+    Anchors = [akTop, akLeft, akRight, akBottom]
+    BorderSpacing.Top = 3
+    Caption = 'Missing Properties and Components'
+    ClientHeight = 139
+    ClientWidth = 548
+    TabOrder = 0
+    object MissingComponentCheckBox: TCheckBox
+      Left = 11
+      Height = 23
+      Top = 28
+      Width = 326
+      Caption = 'Automatic conversion of missing components (ToDo...)'
+      Enabled = False
+      TabOrder = 0
+      Visible = False
+    end
+    object MissingPropertyCheckBox: TCheckBox
+      Left = 11
+      Height = 23
+      Top = 10
+      Width = 297
+      Caption = 'Automatic removal of missing properties (ToDo...)'
+      Enabled = False
+      TabOrder = 1
+    end
+    object MissingStuffLabel: TLabel
+      Left = 11
+      Height = 16
+      Top = 65
+      Width = 417
+      Caption = 'If unchecked, there will be interactive dialogs for editing / accepting changes.'
+      ParentColor = False
+    end
+    object ReplacementCompsButton: TBitBtn
+      Left = 11
+      Height = 30
+      Top = 97
+      Width = 272
+      Caption = 'Replacement components (ToDo...)'
+      Enabled = False
+      OnClick = ReplacementCompsButtonClick
+      TabOrder = 2
+    end
+  end
+  object SettingsGroupBox: TGroupBox
+    Left = 0
+    Height = 128
+    Top = 0
+    Width = 558
+    Anchors = [akTop, akLeft, akRight]
+    Caption = 'Conversion Settings'
+    ClientHeight = 106
+    ClientWidth = 548
+    TabOrder = 1
+    object BackupCheckBox: TCheckBox
+      Left = 11
+      Height = 23
+      Top = 39
+      Width = 189
+      Caption = 'Make backup of changed files'
+      Checked = True
+      State = cbChecked
+      TabOrder = 0
+    end
+    object DelphiCompatibleCheckBox: TCheckBox
+      Left = 11
+      Height = 23
+      Top = 71
+      Width = 264
+      Caption = 'Try to keep files Delphi compatible (ToDo...)'
+      Enabled = False
+      TabOrder = 1
+    end
+    object MainPathEdit: TLabeledEdit
+      Left = 35
+      Height = 17
+      Top = 15
+      Width = 477
+      Anchors = [akTop, akLeft, akRight]
+      BorderStyle = bsNone
+      Color = clBtnFace
+      EditLabel.AnchorSideLeft.Control = MainPathEdit
+      EditLabel.AnchorSideTop.Control = MainPathEdit
+      EditLabel.AnchorSideTop.Side = asrCenter
+      EditLabel.AnchorSideRight.Control = MainPathEdit
+      EditLabel.AnchorSideBottom.Control = MainPathEdit
+      EditLabel.Left = 35
+      EditLabel.Height = 16
+      EditLabel.Top = -1
+      EditLabel.Width = 55
+      EditLabel.Caption = 'Main Path'
+      EditLabel.ParentColor = False
+      LabelSpacing = 0
+      ReadOnly = True
+      TabOrder = 2
+    end
+  end
+  object BtnPanel: TPanel
+    Left = 0
+    Height = 48
+    Top = 302
+    Width = 558
+    Align = alBottom
+    AutoSize = True
+    BevelOuter = bvNone
+    ClientHeight = 48
+    ClientWidth = 558
+    TabOrder = 2
+    object HelpButton: TBitBtn
+      AnchorSideBottom.Side = asrBottom
+      Left = 6
+      Height = 36
+      Top = 6
+      Width = 75
+      Align = alLeft
+      AutoSize = True
+      BorderSpacing.Around = 6
+      Constraints.MinHeight = 25
+      Constraints.MinWidth = 75
+      Kind = bkHelp
+      NumGlyphs = 0
+      TabOrder = 0
+    end
+    object btnOK: TBitBtn
+      AnchorSideBottom.Side = asrBottom
+      Left = 390
+      Height = 36
+      Top = 6
+      Width = 75
+      Align = alRight
+      AutoSize = True
+      BorderSpacing.Around = 6
+      Caption = '&OK'
+      Constraints.MinHeight = 25
+      Constraints.MinWidth = 75
+      Kind = bkOK
+      NumGlyphs = 0
+      OnClick = btnOKClick
+      TabOrder = 1
+    end
+    object btnCancel: TBitBtn
+      AnchorSideRight.Side = asrBottom
+      AnchorSideBottom.Side = asrBottom
+      Left = 471
+      Height = 36
+      Top = 6
+      Width = 81
+      Align = alRight
+      AutoSize = True
+      BorderSpacing.Around = 6
+      Cancel = True
+      Caption = 'Cancel'
+      Constraints.MinHeight = 25
+      Constraints.MinWidth = 75
+      Kind = bkCancel
+      ModalResult = 2
+      NumGlyphs = 0
+      TabOrder = 2
+    end
+  end
+end
