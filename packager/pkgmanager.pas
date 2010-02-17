@@ -4055,13 +4055,15 @@ procedure TPkgManager.IterateComponentNames(CurRoot: TPersistent;
     i: integer;
     CurName: String;
   begin
-    if aRoot=nil then exit;
+    if aRoot = nil then exit;
+    if (aRoot <> CurRoot) and (aRoot is TypeData^.ClassType) then
+      Proc(aRoot.Name);
     for i := 0 to aRoot.ComponentCount - 1 do
       if (aRoot.Components[i] is TypeData^.ClassType) then
       begin
-        CurName:=aRoot.Components[i].Name;
-        if aRoot<>CurRoot then
-          CurName:=aRoot.Name+'.'+CurName;
+        CurName := aRoot.Components[i].Name;
+        if aRoot <> CurRoot then
+          CurName := aRoot.Name + '.' + CurName;
         Proc(CurName);
       end;
   end;
@@ -4072,10 +4074,10 @@ var
 begin
   if not (CurRoot is TComponent) then exit;
   CheckComponent(TComponent(CurRoot));
-  UnitList:=GetUsableComponentUnits(CurRoot);
-  if UnitList=nil then exit;
+  UnitList := GetUsableComponentUnits(CurRoot);
+  if UnitList = nil then exit;
   try
-    for i:=0 to UnitList.Count-1 do
+    for i := 0 to UnitList.Count - 1 do
       CheckComponent(TUnitInfo(UnitList[i]).Component);
   finally
     UnitList.Free;
@@ -4118,11 +4120,19 @@ function TPkgManager.FindUsableComponent(CurRoot: TPersistent;
   var
     i: integer;
   begin
-    if aRoot=nil then exit;
-    if (SysUtils.CompareText(RootName,aRoot.Name)<>0) then exit;
+    if aRoot = nil then exit;
+    if (SysUtils.CompareText(RootName, aRoot.Name) <> 0) then exit;
+
+    if SubPath = '' then
+    begin
+      Result := aRoot;
+      Exit;
+    end;
+
     for i := 0 to aRoot.ComponentCount - 1 do
-      if SysUtils.CompareText(aRoot.Components[i].Name,SubPath)=0 then begin
-        Result:=aRoot.Components[i];
+      if SysUtils.CompareText(aRoot.Components[i].Name, SubPath) = 0 then
+      begin
+        Result := aRoot.Components[i];
         exit;
       end;
   end;
@@ -4134,26 +4144,33 @@ var
   RootName: String;
   i: Integer;
 begin
-  Result:=nil;
+  Result := nil;
   if not (CurRoot is TComponent) then exit;
-  SubPath:=ComponentPath;
-  p:=System.Pos('.',SubPath);
-  if p<1 then
-    RootName:=''
+  SubPath := ComponentPath;
+  p := System.Pos('.',SubPath);
+  if p < 1 then
+    RootName := ''
   else begin
-    RootName:=copy(ComponentPath,1,p-1);
-    SubPath:=copy(SubPath,p+1,length(SubPath));
+    RootName := copy(ComponentPath, 1, p - 1);
+    SubPath := copy(SubPath, p + 1, length(SubPath));
   end;
-  if (RootName='') or (SysUtils.CompareText(RootName,TComponent(CurRoot).Name)=0)
-  then
-    CheckComponent(TComponent(CurRoot).Name,SubPath,TComponent(CurRoot));
-  if p<1 then exit;
-  UnitList:=GetUsableComponentUnits(CurRoot);
-  if UnitList=nil then exit;
+  if (RootName = '') or (SysUtils.CompareText(RootName, TComponent(CurRoot).Name) = 0) then
+    CheckComponent(TComponent(CurRoot).Name, SubPath, TComponent(CurRoot));
+  if (p < 1) then
+    if Result = nil then
+    begin
+      RootName := SubPath;
+      SubPath := '';
+    end
+    else
+      exit;
+  UnitList := GetUsableComponentUnits(CurRoot);
+  if UnitList = nil then exit;
   try
-    for i:=0 to UnitList.Count-1 do begin
-      CheckComponent(RootName,SubPath,TUnitInfo(UnitList[i]).Component);
-      if Result<>nil then exit;
+    for i := 0 to UnitList.Count-1 do
+    begin
+      CheckComponent(RootName, SubPath, TUnitInfo(UnitList[i]).Component);
+      if Result <> nil then exit;
     end;
   finally
     UnitList.Free;
