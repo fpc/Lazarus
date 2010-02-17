@@ -185,6 +185,8 @@ begin
   FCacheItem.WSUpdateText;
   FCacheItem.WSUpdateImages;
   FCacheItem.WSUpdateChecked;
+  if not (lisfWSItemsCreated in FFlags) then
+    FCacheItem.WSSetState;
   FCacheItem.WSUpdateState;
 end;
 

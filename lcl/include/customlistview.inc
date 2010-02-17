@@ -230,6 +230,7 @@ begin
     end;
     LVN_ITEMCHANGED: begin
       Item := Items[nm^.iItem];
+      if not (lisfWSItemsCreated in FListItems.Flags) then Exit;
       //DebugLn('TCustomListView.CNNotify Count=',dbgs(Items.Count),' nm^.iItem=',dbgs(nm^.iItem),' destroying=',dbgs(lifDestroying in Item.FFlags));
       if (Item <> nil) and (not OwnerData) and (lifDestroying in Item.FFlags) then begin
         if Item=FFocused then

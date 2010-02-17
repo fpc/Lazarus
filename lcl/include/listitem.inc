@@ -458,6 +458,18 @@ begin
   end;
 end;
 
+procedure TListItem.WSSetState;
+var
+  AState: TListItemState;
+  LV: TCustomListView;
+  idx: Integer;
+begin
+  LV := FOwner.FOwner;
+  idx := GetIndex;
+  for AState := Low(TListItemState) to High(TListItemState) do
+    TWSCustomListViewClass(LV.WidgetSetClass).ItemSetState(LV, idx, Self, AState, AState in FStates);
+end;
+
 {------------------------------------------------------------------------------}
 {   TListItem IntfUpdateAllowed                                                }
 {------------------------------------------------------------------------------}

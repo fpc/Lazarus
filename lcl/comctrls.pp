@@ -720,6 +720,7 @@ type
     procedure WSUpdateText;
     procedure WSUpdateImages;
     procedure WSUpdateChecked;
+    procedure WSSetState;
     procedure WSUpdateState;
 
     procedure SetChecked(AValue: Boolean);
