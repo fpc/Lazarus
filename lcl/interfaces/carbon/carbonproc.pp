@@ -509,21 +509,23 @@ function CarbonFontIDToFontName(ID: ATSUFontID): String;
 var
   NameLength: LongWord;
   FontName: UTF8String;
+  res: Integer;
 const
   SName = 'CarbonFontIDToFontName';
 begin
   Result := '';
+  NameLength:=1024;
   
   // retrieve font name length
-  if OSError(ATSUFindFontName(ID, kFontFamilyName, kFontMacintoshPlatform,
-    kFontRomanScript, kFontEnglishLanguage, NameLength, nil,
+  if OSError(ATSUFindFontName(ID, kFontFamilyName, kFontNoPlatformCode,
+    kFontNoScriptCode, kFontNoLanguageCode, NameLength, nil,
     @NameLength, nil), SName, 'ATSUFindFontName', 'Length') then Exit;
 
   SetLength(FontName, NameLength);
 
   // retrieve font name
-  if OSError(ATSUFindFontName(ID, kFontFamilyName, kFontMacintoshPlatform,
-    kFontRomanScript, kFontEnglishLanguage, NameLength,
+  if OSError(ATSUFindFontName(ID, kFontFamilyName, kFontNoPlatformCode,
+    kFontNoScriptCode, kFontNoLanguageCode, NameLength,
     @FontName[1], @NameLength, nil), SName, 'ATSUFindFontName', 'Name') then Exit;
     
   Result := FontName;
