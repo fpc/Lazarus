@@ -1463,10 +1463,17 @@ begin
 end;
 
 procedure TCarbonDataBrowser.DeleteItem(AIndex: Integer);
+var
+  Item  : DataBrowserItemID;
+  i     : Integer;
 begin
+  Item:=GetItemsCount;
   FItemsCheck.Delete(AIndex);
-  
-  UpdateItems;
+
+  OSError( RemoveDataBrowserItems(Widget, kDataBrowserNoItem, 1, @Item, kDataBrowserItemNoProperty),
+    Self, 'DeleteItem', 'RemoveDataBrowserItems');
+
+  for i:=AIndex to GetItemsCount - 1 do UpdateItem(i);
 end;
 
 procedure TCarbonDataBrowser.InsertItem(AIndex: Integer);
