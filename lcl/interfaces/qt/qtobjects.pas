@@ -2818,6 +2818,7 @@ procedure TQtDeviceContext.drawImage(targetRect: PRect;
       mask: QImageH; maskRect: PRect; flags: QtImageConversionFlags = QtAutoColor);
 var
   LocalRect: TRect;
+  R: TRect;
   APixmap, ATemp: QPixmapH;
   AMask: QBitmapH;
   ScaledImage: QImageH;
@@ -2826,6 +2827,17 @@ begin
   Write('TQtDeviceContext.drawImage() ');
   {$endif}
   LocalRect := targetRect^;
+  R := getClipRegion.getBoundingRect;
+  {cannot draw on empty rect - no bounding rect}
+  if IsRectEmpty(R) then
+    exit;
+
+  {if clip region is smaller than target rect then
+   target rect should be clip rect}
+  if ((R.Right - R.Left) < (LocalRect.Right - LocalRect.Left)) and
+    ((R.Bottom - R.Top) < (LocalRect.Bottom - LocalRect.Top)) then
+    LocalRect := R;
+
   if mask <> nil then
   begin
     // TODO: check maskRect
@@ -2856,7 +2868,6 @@ begin
      results with RGB32 images on Linux and Win32 if DstRect <> sourceRect.
      Explanation: Look at #11713 linux & win screenshoots.
      Note: This is slower operation than QImage_scaled() we used before.}
-
     if not EqualRect(LocalRect, sourceRect^) and
       (QImage_format(Image) = QImageFormat_RGB32) then
     begin
