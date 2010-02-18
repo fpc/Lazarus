@@ -3308,6 +3308,8 @@ var
   ClipArea: Trect;
 
   procedure DoDrawCell;
+  var
+    Rgn: HRGN;
   begin
     with FGCache do begin
       if (aCol=HotCell.x) and (aRow=HotCell.y) and not IsPushCellActive() then begin
@@ -3318,7 +3320,12 @@ var
         Include(gds, gdPushed);
        end;
     end;
+
+    Rgn := CreateRectRgn(R.Left, R.Top, R.Right, R.Bottom);
+    SelectClipRgn(Canvas.Handle, Rgn);
     DrawCell(aCol, aRow, R, gds);
+    SelectClipRgn(Canvas.Handle, 0);
+    DeleteObject(Rgn);
   end;
 
 begin
