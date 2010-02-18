@@ -82,6 +82,8 @@ type
     function ConvertFormFile: TModalResult;
     function ConvertDfmToLfm(const LfmFilename: string): TModalResult;
     function MissingUnitToMsg(MissingUnit: string): string;
+    function CommentAutomatically(MissingUnits: TStrings): integer;
+    function AskUnitPathFromUser(MissingUnits: TStrings): TModalResult;
     function FixMissingUnits(IsSubProc, ShowAbort: boolean): TModalResult;
   protected
   public
@@ -114,6 +116,7 @@ type
     fDelphiPSuffix: string;            // '.dpr' or '.dpk'
     fCachedUnitNames: THashedStringList;
     fSettings: TConvertSettings;
+    fAllMissingUnits: TStringList;
     function ConvertSub: TModalResult;
     procedure CleanUpCompilerOptionsSearchPaths(Options: TBaseCompilerOptions);
     procedure SetCompilerModeForDefineTempl(DefTempl: TDefineTemplate);
@@ -122,7 +125,9 @@ type
     function ReadDelphiConfigFiles: TModalResult;
     function ExtractOptionsFromDOF(const DOFFilename: string): TModalResult;
     function ExtractOptionsFromCFG(const CFGFilename: string): TModalResult;
+    function LocateMissingUnits(MissingUnits: TStrings): integer;
     procedure CacheUnitsInPath(const APath, ABasePath: string);
+    procedure CacheUnitsInPath(const APath: string);
     function GetCachedUnitPath(const AUnitName: string): string;
   protected
     function CreateInstance: TModalResult; virtual; abstract;
@@ -452,8 +457,10 @@ begin
   fOrigUnitFilename:=AFilename;
   fFlags:=AFlags;
   fLazFileExt:='';
-  if fOwnerConverter=nil then
-    fSettings:=TConvertSettings.Create('Convert Delphi Unit')
+  if fOwnerConverter=nil then begin
+    fSettings:=TConvertSettings.Create('Convert Delphi Unit');
+    fSettings.MainFilename:=fOrigUnitFilename;
+  end
   else
     fSettings:=fOwnerConverter.fSettings;
   fUnitInfo:=nil;
@@ -471,7 +478,6 @@ end;
 function TConvertDelphiUnit.Convert: TModalResult;
 begin
   IDEMessagesWindow.Clear;
-  fSettings.MainFilename:=fOrigUnitFilename;
   Result:=fSettings.RunForm;
   if Result=mrOK then begin
     Result:=CopyAndLoadFile;
@@ -568,10 +574,11 @@ begin
     if Result<>mrOk then exit;
   end;
 
-  // check LCL path
-  Result:=CheckFilenameForLCLPaths(fLazUnitFilename);
-  if Result<>mrOk then exit;
-
+  // check LCL path only for projects/packages.
+  if Assigned(fOwnerConverter) then begin
+    Result:=CheckFilenameForLCLPaths(fLazUnitFilename);
+    if Result<>mrOk then exit;
+  end;
   // add {$mode delphi} directive
   // remove windows unit and add LResources, LCLIntf
   // remove {$R *.dfm} or {$R *.xfm} directive
@@ -580,6 +587,8 @@ begin
   // add {$i unit.lrs} directive
   // TODO: fix delphi ambiguousities like incomplete proc implementation headers
   MainResFilename:=ChangeFileExt(fLazUnitFilename, '.res');
+  if fLazUnitFilename='/Extra/SW/LazConvertTests/deled/trunk/Forms/frmMainForm.pas' then
+    Result:=mrOk;
   if not CodeToolBoss.ConvertDelphiToLazarusSource(fUnitCode,
     {FileExistsUTF8(MainResFilename),} LrsFilename<>'')
   then begin
@@ -691,78 +700,83 @@ begin
           +'Can''t find unit '+MissingUnit;
 end;
 
-function TConvertDelphiUnit.FixMissingUnits(IsSubProc, ShowAbort: boolean): TModalResult;
+function TConvertDelphiUnit.CommentAutomatically(MissingUnits: TStrings): integer;
+// Comment automatically unit names that were commented in other files.
+// Return the number of missing units still left.
 var
-  MissingUnits: TStrings;
-
-  // Return the number of missing units still left.
-  function FindMissingUnitsInPath(APath: string): integer;
-  var
-    i: Integer;
-    sUnitPath: string;
-  begin
-    if Assigned(fOwnerConverter) then begin
-      fOwnerConverter.CacheUnitsInPath(APath, fOwnerConverter.fSettings.MainPath);
-      for i:=MissingUnits.Count-1 downto 0 do begin
-        sUnitPath:=fOwnerConverter.GetCachedUnitPath(MissingUnits[i]);
-        if sUnitPath<>'' then begin
-          // Add unit path to project's settings.
-          with fOwnerConverter.CompOpts do
-            OtherUnitFiles:=MergeSearchPaths(OtherUnitFiles,sUnitPath);
-          // No more missing, delete from list.
-          MissingUnits.Delete(i);
-        end;
+  AutoUnits: TStringList;
+  i, x: Integer;
+  s: string;
+begin
+  AutoUnits:=TStringList.Create;
+  try
+    for i:=MissingUnits.Count-1 downto 0 do begin
+      s:=MissingUnits[i];
+      if fOwnerConverter.fAllMissingUnits.Find(s, x) then begin
+        AutoUnits.Append(s);
+        MissingUnits.Delete(i);
       end;
     end;
+    if AutoUnits.Count>0 then
+      if not CodeToolBoss.CommentUnitsInUsesSections(fUnitCode,AutoUnits) then
+        IDEMessagesWindow.AddMsg('Error="'+CodeToolBoss.ErrorMessage+'"','',-1);
     Result:=MissingUnits.Count;
+  finally
+    AutoUnits.Free;
   end;
+end;
 
-  function AskUnitPathFromUser: TModalResult;
-  var
-    CTResult, TryAgain: Boolean;
-    UnitDirDialog: TSelectDirectoryDialog;
-    PrevMiss: LongInt;
-  begin
-    // ask user what to do
+function TConvertDelphiUnit.AskUnitPathFromUser(MissingUnits: TStrings): TModalResult;
+var
+  TryAgain: Boolean;
+  UnitDirDialog: TSelectDirectoryDialog;
+  PrevMiss: LongInt;
+begin
+  // ask user what to do
+  repeat
     TryAgain:=False;
-    repeat
-      Result:=AskMissingUnits(MissingUnits, ExtractFileName(fLazUnitFilename));
-      case Result of
-        // Means: comment out.
-        mrOK: begin
-          // comment missing units
-          CTResult:=CodeToolBoss.CommentUnitsInUsesSections(fUnitCode,MissingUnits);
-          if not CTResult then
-            IDEMessagesWindow.AddMsg('Error="'+CodeToolBoss.ErrorMessage+'"','',-1);
-        end;
-        // Means: Search for unit path.
-        mrYes: begin
-          UnitDirDialog:=TSelectDirectoryDialog.Create(nil);
-          try
-            UnitDirDialog.InitialDir:=fOwnerConverter.fSettings.MainPath;
-            UnitDirDialog.Title:='All sub-directories will be scanned for unit files';
-            if UnitDirDialog.Execute then begin
-              PrevMiss:=MissingUnits.Count;
-              // Add the new path to project if missing units are found.
-              TryAgain:=FindMissingUnitsInPath(UnitDirDialog.Filename)>0;
-              if TryAgain and (PrevMiss<>MissingUnits.Count) then
-                ShowMessage('Some units were found but not all.');
-            end;
-          finally
-            UnitDirDialog.Free;
-          end;
-          Result:=mrOK;        // Caller will check for Result<>mrOK
-        end;
-        // User wants to abort.
-        mrAbort: Exit;
+    Result:=AskMissingUnits(MissingUnits, ExtractFileName(fLazUnitFilename));
+    case Result of
+      // mrOK means: comment out.
+      mrOK: begin
+        // These units will be commented automatically in this project/package.
+        if Assigned(fOwnerConverter) then
+          fOwnerConverter.fAllMissingUnits.AddStrings(MissingUnits);
+        // comment missing units
+        if not CodeToolBoss.CommentUnitsInUsesSections(fUnitCode,MissingUnits) then
+          IDEMessagesWindow.AddMsg('Error="'+CodeToolBoss.ErrorMessage+'"','',-1);
       end;
-    until not TryAgain;
-  end;
+      // mrYes means: Search for unit path.
+      mrYes: begin
+        UnitDirDialog:=TSelectDirectoryDialog.Create(nil);
+        try
+          UnitDirDialog.InitialDir:=fSettings.MainPath;
+          UnitDirDialog.Title:='All sub-directories will be scanned for unit files';
+          if UnitDirDialog.Execute and Assigned(fOwnerConverter) then begin
+            PrevMiss:=MissingUnits.Count;
+            // Add the new path to project if missing units are found.
+            fOwnerConverter.CacheUnitsInPath(UnitDirDialog.Filename);
+            TryAgain:=fOwnerConverter.LocateMissingUnits(MissingUnits)>0;
+            if TryAgain and (PrevMiss<>MissingUnits.Count) then
+              ShowMessage('Some units were found but not all.');
+          end;
+        finally
+          UnitDirDialog.Free;
+        end;
+        Result:=mrOK;        // Caller will check for Result<>mrOK
+      end;
+      // User wants to abort.
+      mrAbort: Exit;
+    end;
+  until not TryAgain;
+end;
 
+function TConvertDelphiUnit.FixMissingUnits(IsSubProc, ShowAbort: boolean): TModalResult;
 var
   CTResult: Boolean;
   i: Integer;
   Msg: string;
+  MissingUnits: TStrings;
   CodePos: PCodeXYPosition;
   MissingIncludeFilesCodeXYPos: TFPList;
 begin
@@ -800,13 +814,16 @@ begin
     // no missing units -> good
     if (MissingUnits=nil) or (MissingUnits.Count=0) then exit;
 
-    // Try to find from subdirectories first, one level above project path.
-    if FindMissingUnitsInPath(
-            TrimFilename(fOwnerConverter.fSettings.MainPath+'../'))=0 then exit;
+    if Assigned(fOwnerConverter) then begin
+      // Try to find from subdirectories above project path first.
+      if fOwnerConverter.LocateMissingUnits(MissingUnits)=0 then exit;
+      // Comment out automatically units that were commented in other files.
+      if CommentAutomatically(MissingUnits)=0 then exit;
+    end;
 
     // Interactive dialog for searching unit.
-    Result:=AskUnitPathFromUser;
-    if Result=mrAbort then exit;  // mrOK and mrYes are fine.
+    Result:=AskUnitPathFromUser(MissingUnits);
+    if Result<>mrOK then exit;
 
     // add error messages, so the user can click on them
     for i:=0 to MissingUnits.Count-1 do
@@ -836,10 +853,16 @@ begin
   fOrigPFilename:=AFilename;
   fCachedUnitNames:=THashedStringList.Create;
   fSettings:=TConvertSettings.Create('Convert Delphi '+ADescription);
+  fSettings.MainFilename:=fOrigPFilename;
+  fAllMissingUnits:=TStringList.Create;
+  fAllMissingUnits.Sorted:=true;
+  // Scan unit files one level above project path. Used later for missing units.
+  CacheUnitsInPath(TrimFilename(fSettings.MainPath+'../'), fSettings.MainPath);
 end;
 
 destructor TConvertDelphiPBase.Destroy;
 begin
+  fAllMissingUnits.Free;
   fCachedUnitNames.Free;
   inherited Destroy;
 end;
@@ -848,7 +871,6 @@ end;
 function TConvertDelphiPBase.Convert: TModalResult;
 begin
   IDEMessagesWindow.Clear;
-  fSettings.MainFilename:=fOrigPFilename;
   // Get settings from user.
   Result:=fSettings.RunForm;
   if Result=mrOK then begin
@@ -1117,7 +1139,29 @@ begin
   Options.SrcPath:=CleanProjectSearchPath(Options.SrcPath);
 end;
 
+function TConvertDelphiPBase.LocateMissingUnits(MissingUnits: TStrings): integer;
+// Locate unit names in earlier cached list and remove them from MissingUnits.
+// Return the number of missing units still left.
+var
+  i: Integer;
+  sUnitPath: string;
+begin
+  for i:=MissingUnits.Count-1 downto 0 do begin
+    sUnitPath:=GetCachedUnitPath(MissingUnits[i]);
+    if sUnitPath<>'' then begin
+      // Add unit path to project's settings.
+      with CompOpts do
+        OtherUnitFiles:=MergeSearchPaths(OtherUnitFiles,sUnitPath);
+      // No more missing, delete from list.
+      MissingUnits.Delete(i);
+    end;
+  end;
+  Result:=MissingUnits.Count;
+end;
+
 procedure TConvertDelphiPBase.CacheUnitsInPath(const APath, ABasePath: string);
+// Search all pascal units in APath and save them in fCachedUnitNames
+//  with a path relative to ABasePath.
 var
   PasFileList: TStringList;
   i: Integer;
@@ -1133,6 +1177,12 @@ begin
     if (SubPath<>'') and (sUnitName<>'') then
       fCachedUnitNames.Values[sUnitName]:=SubPath;
   end;
+end;
+
+procedure TConvertDelphiPBase.CacheUnitsInPath(const APath: string);
+// Same as above but uses fSettings.MainPath as base path.
+begin
+  CacheUnitsInPath(APath, fSettings.MainPath);
 end;
 
 function TConvertDelphiPBase.GetCachedUnitPath(const AUnitName: string): string;

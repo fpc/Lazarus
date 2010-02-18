@@ -18,10 +18,11 @@
  *                                                                         *
  ***************************************************************************
 
-  Author: Mattias Gaertner / Juha Manninen
+  Author: Juha Manninen
   
   Abstract:
-    Functions to convert delphi units to lcl units.
+    A form asking what the user about what to do with missing units
+    in uses section. Used by ConvertDelphi unit.
 }
 unit MissingUnitsUnit;
 
