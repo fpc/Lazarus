@@ -1,7 +1,7 @@
 object ConvertSettingsForm: TConvertSettingsForm
-  Left = 319
+  Left = 265
   Height = 350
-  Top = 122
+  Top = 248
   Width = 558
   Caption = 'Convert Delphi unit, project or package '
   ClientHeight = 350

@@ -51,7 +51,6 @@ type
 
   TConvertUnitFlag = (
     cdtlufRenameLowercase, // rename the unit lowercase
-    cdtlufIsSubProc, // this is part of a big conversion -> add Abort button to all questions
     cdtlufCanAbort   // show 'Cancel all' button in error messages using mrAbort
   );
   TConvertUnitFlags = set of TConvertUnitFlag;
@@ -84,7 +83,7 @@ type
     function MissingUnitToMsg(MissingUnit: string): string;
     function CommentAutomatically(MissingUnits: TStrings): integer;
     function AskUnitPathFromUser(MissingUnits: TStrings): TModalResult;
-    function FixMissingUnits(IsSubProc, ShowAbort: boolean): TModalResult;
+    function FixMissingUnits(ShowAbort: boolean): TModalResult;
   protected
   public
     constructor Create(AOwnerConverter: TConvertDelphiPBase; const AFilename: string;
@@ -587,16 +586,15 @@ begin
   // add {$i unit.lrs} directive
   // TODO: fix delphi ambiguousities like incomplete proc implementation headers
   MainResFilename:=ChangeFileExt(fLazUnitFilename, '.res');
-  if fLazUnitFilename='/Extra/SW/LazConvertTests/deled/trunk/Forms/frmMainForm.pas' then
-    Result:=mrOk;
+  Result:=mrOk;
   if not CodeToolBoss.ConvertDelphiToLazarusSource(fUnitCode,
-    {FileExistsUTF8(MainResFilename),} LrsFilename<>'')
-  then begin
-    Result:=mrCancel;
-    exit;
+                  {FileExistsUTF8(MainResFilename),} LrsFilename<>'') then begin
+    Result:=JumpToCodetoolErrorAndAskToAbort(Assigned(fOwnerConverter));
+    if Result=mrAbort then exit;
   end;
+
   // Fix or comment missing units, FixMissingUnits shows error messages.
-  Result:=FixMissingUnits(cdtlufIsSubProc in fFlags,true);
+  Result:=FixMissingUnits(true);
 end;
 
 function TConvertDelphiUnit.ConvertFormFile: TModalResult;
@@ -771,7 +769,7 @@ begin
   until not TryAgain;
 end;
 
-function TConvertDelphiUnit.FixMissingUnits(IsSubProc, ShowAbort: boolean): TModalResult;
+function TConvertDelphiUnit.FixMissingUnits(ShowAbort: boolean): TModalResult;
 var
   CTResult: Boolean;
   i: Integer;
@@ -856,8 +854,8 @@ begin
   fSettings.MainFilename:=fOrigPFilename;
   fAllMissingUnits:=TStringList.Create;
   fAllMissingUnits.Sorted:=true;
-  // Scan unit files one level above project path. Used later for missing units.
-  CacheUnitsInPath(TrimFilename(fSettings.MainPath+'../'), fSettings.MainPath);
+  // Scan unit files a level above project path. Used later for missing units.
+  CacheUnitsInPath(TrimFilename(fSettings.MainPath+'../'));
 end;
 
 destructor TConvertDelphiPBase.Destroy;
@@ -1172,10 +1170,9 @@ begin
     PasFile:=PasFileList[i];
     RelPath:=FileUtil.CreateRelativePath(PasFile, ABasePath);
     SubPath:=ExtractFilePath(RelPath);
-    sUnitName:=ExtractFileName(RelPath);
-    sUnitName:=ExtractFileNameWithoutExt(sUnitName);
+    sUnitName:=ExtractFileNameOnly(RelPath);
     if (SubPath<>'') and (sUnitName<>'') then
-      fCachedUnitNames.Values[sUnitName]:=SubPath;
+      fCachedUnitNames.Values[UpperCase(sUnitName)]:=SubPath;
   end;
 end;
 
@@ -1187,7 +1184,7 @@ end;
 
 function TConvertDelphiPBase.GetCachedUnitPath(const AUnitName: string): string;
 begin
-  Result:=fCachedUnitNames.Values[AUnitName];
+  Result:=fCachedUnitNames.Values[UpperCase(AUnitName)];
 end;
 
 function TConvertDelphiPBase.CreateMainSourceFile: TModalResult;
@@ -1252,7 +1249,7 @@ var
   MainUnitInfo: TUnitInfo;
 begin
   // Converter for main LPR file.
-  fMainUnitConverter:=TConvertDelphiUnit.Create(Self,fOrigPFilename,[cdtlufIsSubProc]);
+  fMainUnitConverter:=TConvertDelphiUnit.Create(Self,fOrigPFilename,[]);
   fMainUnitConverter.LazFileExt:=LprExt;
   fMainUnitConverter.CopyAndLoadFile;
   if LazProject.MainUnitInfo=nil then begin
@@ -1401,7 +1398,7 @@ begin
       // Main LPR file was converted earlier.
       if CurUnitInfo.IsPartOfProject and (CurUnitInfo<>LazProject.MainUnitInfo) then
       begin
-        Converter:=TConvertDelphiUnit.Create(Self, CurUnitInfo.Filename, [cdtlufIsSubProc]);
+        Converter:=TConvertDelphiUnit.Create(Self, CurUnitInfo.Filename, []);
         Converter.fUnitInfo:=CurUnitInfo;
         ConvUnits.Add(Converter);
         Result:=Converter.CopyAndLoadFile;
@@ -1550,7 +1547,7 @@ begin
     // convert all units and fix .lfm files
     for i:=0 to LazPackage.FileCount-1 do begin
       PkgFile:=LazPackage.Files[i];
-      Converter:=TConvertDelphiUnit.Create(Self, PkgFile.Filename, [cdtlufIsSubProc]);
+      Converter:=TConvertDelphiUnit.Create(Self, PkgFile.Filename, []);
       ConvUnits.Add(Converter);
       Result:=Converter.CopyAndLoadFile;
       Result:=Converter.CheckFailed(Result);
