@@ -2828,13 +2828,11 @@ begin
   {$endif}
   LocalRect := targetRect^;
   R := getClipRegion.getBoundingRect;
-  {cannot draw on empty rect - no bounding rect}
-  if IsRectEmpty(R) then
-    exit;
 
   {if clip region is smaller than target rect then
    target rect should be clip rect}
-  if ((R.Right - R.Left) < (LocalRect.Right - LocalRect.Left)) and
+  if not IsRectEmpty(R) and
+    ((R.Right - R.Left) < (LocalRect.Right - LocalRect.Left)) and
     ((R.Bottom - R.Top) < (LocalRect.Bottom - LocalRect.Top)) then
     LocalRect := R;
 
