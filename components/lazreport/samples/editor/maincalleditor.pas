@@ -136,6 +136,8 @@ implementation
 
 uses gettext,translations;
 
+{$R *.lfm}
+
 resourcestring
   cerOpenReport     = 'Open report';
   cerNewReport      = 'New report';
@@ -160,7 +162,9 @@ resourcestring
   cerAppCaption     = 'LazReport Test Suite';
   cerHintThumbnails = 'This Action will Load and Preview a thumbnails Report';
   cerThumbnails     = 'Thumbnails';
-  
+  cerHintComposite  = 'This Action will Load and Preview a composite Report';
+  cerComposite      = 'Composite';
+
 
 { TfrmMain }
 
@@ -186,6 +190,9 @@ begin
 
   accThumbnails.Hint := cerHintThumbnails;
   accThumbnails.Caption := cerThumbnails;
+
+  accComposite.Hint := cerHintComposite;
+  accComposite.Caption := cerComposite;
 end;
 
 procedure TfrmMain.ApplicationProperties1ShowHint(var HintStr: string;
@@ -438,9 +445,6 @@ begin
 end;
 
 initialization
-  {$I maincalleditor.lrs}
   TranslateResStrings;
-  
-
 end.
 

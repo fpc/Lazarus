@@ -18,6 +18,11 @@ msgctxt "maincalleditor.cerappcaption"
 msgid "LazReport Test Suite"
 msgstr "Acompanhamento Teste LazReport"
 
+#: maincalleditor.cercomposite
+msgctxt "maincalleditor.cercomposite"
+msgid "Composite"
+msgstr ""
+
 #: maincalleditor.cereditreport
 msgctxt "maincalleditor.cereditreport"
 msgid "Edit Report"
@@ -25,6 +30,10 @@ msgstr "Editar Relatório"
 
 #: maincalleditor.cerhintcloseapp
 msgid "Close application"
+msgstr ""
+
+#: maincalleditor.cerhintcomposite
+msgid "This Action will Load and Preview a composite Report"
 msgstr ""
 
 #: maincalleditor.cerhinteditreport
@@ -56,6 +65,7 @@ msgid "This Action will Load and Preview a thumbnails Report"
 msgstr ""
 
 #: maincalleditor.cerindex
+msgctxt "maincalleditor.cerindex"
 msgid "Index"
 msgstr ""
 
@@ -109,6 +119,7 @@ msgid "Close"
 msgstr "Fechar"
 
 #: TFRMMAIN.ACCCOMPOSITE.CAPTION
+msgctxt "TFRMMAIN.ACCCOMPOSITE.CAPTION"
 msgid "Composite"
 msgstr ""
 
@@ -162,6 +173,15 @@ msgstr "Miniaturas"
 msgctxt "TFRMMAIN.CAPTION"
 msgid "LazReport Test Suite"
 msgstr "Acompanhamento Teste LazReport"
+
+#: TFRMMAIN.LBLEXPR.CAPTION
+msgid "Expression"
+msgstr ""
+
+#: TFRMMAIN.LBLINDEX.CAPTION
+msgctxt "TFRMMAIN.LBLINDEX.CAPTION"
+msgid "Index"
+msgstr ""
 
 #: TFRMMAIN.MENUITEM1.CAPTION
 msgid "Files"

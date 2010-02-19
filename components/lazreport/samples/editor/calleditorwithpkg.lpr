@@ -4,8 +4,12 @@ program calleditorwithpkg;
 
 uses
   Interfaces, // this includes the LCL widgetset
-  Forms
-  { add your units here }, maincalleditor, lazreportpdfexport, lazreport;
+  Forms,
+  maincalleditor,
+  lazreportpdfexport,
+  lazreport;
+
+{$R calleditorwithpkg.res}
 
 begin
   Application.Title:='LazReport Designer';

@@ -18,6 +18,11 @@ msgctxt "maincalleditor.cerappcaption"
 msgid "LazReport Test Suite"
 msgstr "Suite de tests LazReport "
 
+#: maincalleditor.cercomposite
+msgctxt "maincalleditor.cercomposite"
+msgid "Composite"
+msgstr ""
+
 #: maincalleditor.cereditreport
 msgctxt "maincalleditor.cereditreport"
 msgid "Edit Report"
@@ -26,6 +31,10 @@ msgstr "Edite Rapport"
 #: maincalleditor.cerhintcloseapp
 msgid "Close application"
 msgstr "Fermer l'application"
+
+#: maincalleditor.cerhintcomposite
+msgid "This Action will Load and Preview a composite Report"
+msgstr ""
 
 #: maincalleditor.cerhinteditreport
 msgid "Edit active report"
@@ -56,6 +65,7 @@ msgid "This Action will Load and Preview a thumbnails Report"
 msgstr "Cette action va charger et donner l'aperçu d'un rapport sous forme de vignettes"
 
 #: maincalleditor.cerindex
+msgctxt "maincalleditor.cerindex"
 msgid "Index"
 msgstr "Index"
 
@@ -110,6 +120,7 @@ msgid "Close"
 msgstr "Quitter"
 
 #: TFRMMAIN.ACCCOMPOSITE.CAPTION
+msgctxt "TFRMMAIN.ACCCOMPOSITE.CAPTION"
 msgid "Composite"
 msgstr ""
 
@@ -166,6 +177,15 @@ msgstr "Vignettes"
 msgctxt "TFRMMAIN.CAPTION"
 msgid "LazReport Test Suite"
 msgstr "Suite de tests LazReport "
+
+#: TFRMMAIN.LBLEXPR.CAPTION
+msgid "Expression"
+msgstr ""
+
+#: TFRMMAIN.LBLINDEX.CAPTION
+msgctxt "TFRMMAIN.LBLINDEX.CAPTION"
+msgid "Index"
+msgstr "Index"
 
 #: TFRMMAIN.MENUITEM1.CAPTION
 msgctxt "TFRMMAIN.MENUITEM1.CAPTION"
