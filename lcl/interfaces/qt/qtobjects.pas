@@ -2818,7 +2818,6 @@ procedure TQtDeviceContext.drawImage(targetRect: PRect;
       mask: QImageH; maskRect: PRect; flags: QtImageConversionFlags = QtAutoColor);
 var
   LocalRect: TRect;
-  R: TRect;
   APixmap, ATemp: QPixmapH;
   AMask: QBitmapH;
   ScaledImage: QImageH;
@@ -2827,14 +2826,6 @@ begin
   Write('TQtDeviceContext.drawImage() ');
   {$endif}
   LocalRect := targetRect^;
-  R := getClipRegion.getBoundingRect;
-
-  {if clip region is smaller than target rect then
-   target rect should be clip rect}
-  if not IsRectEmpty(R) and
-    ((R.Right - R.Left) < (LocalRect.Right - LocalRect.Left)) and
-    ((R.Bottom - R.Top) < (LocalRect.Bottom - LocalRect.Top)) then
-    LocalRect := R;
 
   if mask <> nil then
   begin
