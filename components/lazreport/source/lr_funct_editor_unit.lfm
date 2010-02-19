@@ -13,26 +13,31 @@ object LR_FunctEditorForm: TLR_FunctEditorForm
   OnClose = FormClose
   OnCreate = FormCreate
   Position = poDesktopCenter
-  LCLVersion = '0.9.25'
+  LCLVersion = '0.9.29'
   object ListBox1: TListBox
-    Height = 216
+    Left = 0
+    Height = 188
+    Top = 0
     Width = 181
     Align = alLeft
+    ItemHeight = 0
     OnClick = ListBox1Click
     TabOrder = 0
+    TopIndex = -1
   end
   object Panel1: TPanel
-    Height = 64
-    Top = 216
+    Left = 0
+    Height = 92
+    Top = 188
     Width = 420
     Align = alBottom
     BevelOuter = bvLowered
-    ClientHeight = 64
+    ClientHeight = 92
     ClientWidth = 420
     TabOrder = 1
     object Label1: TLabel
       Left = 1
-      Height = 14
+      Height = 16
       Top = 1
       Width = 418
       Align = alTop
@@ -43,8 +48,8 @@ object LR_FunctEditorForm: TLR_FunctEditorForm
     end
     object Label2: TLabel
       Left = 1
-      Height = 48
-      Top = 15
+      Height = 74
+      Top = 17
       Width = 418
       Align = alClient
       Caption = 'Label2'
@@ -56,19 +61,24 @@ object LR_FunctEditorForm: TLR_FunctEditorForm
   end
   object Splitter1: TSplitter
     Left = 181
-    Height = 216
+    Height = 188
+    Top = 0
     Width = 5
   end
   object ListBox2: TListBox
     Left = 186
-    Height = 216
+    Height = 188
+    Top = 0
     Width = 234
     Align = alClient
+    ItemHeight = 0
     OnClick = ListBox2Click
     OnDblClick = ListBox2DblClick
     TabOrder = 2
+    TopIndex = -1
   end
   object Panel2: TPanel
+    Left = 0
     Height = 40
     Top = 280
     Width = 420

@@ -722,6 +722,21 @@ resourcestring
   SDescriptionMESSAGEBOX = 'MESSAGEBOX(<Text>, <Title>, <Buttons>)/'+
     'Shows standard dialog window with title, text and buttons.';
 
+  SDescriptionCOPY = 'COPY(<String>, <Position>, <Length>)/'+
+    'Returns <Length> characters from <String> starting at <Position>.';
+
+  SDescriptionSTR = 'STR(<Value>)/'+
+    'Converts the given (numeric) <Value> in string.';
+
+  SDescriptionINT = 'INT(<Value>)/'+
+    'Returns the integer part of floating point <Value>.';
+
+  SDescriptionROUND = 'ROUND(<Value>)/'+
+    'Rounds the floating point <Value> to nearest integer number.';
+
+  SDescriptionFRAC = 'FRAC(<Value>)/'+
+    'Returns the fractional part of floating point <Value>.';
+
 const
   frRes = 53000;
 

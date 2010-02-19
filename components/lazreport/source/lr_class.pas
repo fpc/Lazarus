@@ -15,7 +15,7 @@ interface
 {$I LR_Vers.inc}
 
 uses
-  SysUtils, Classes, Controls, FileUtil,
+  SysUtils, Classes, MaskUtils, Controls, FileUtil,
   Forms, ComCtrls, Dialogs, Menus,
   Variants, DB,Graphics,Printers,osPrinters,XMLConf,
   LCLType,LCLIntf,TypInfo,LCLProc, SysUtilsAdds,
@@ -1064,8 +1064,11 @@ type
   { TfrFunctionLibrary }
 
   TfrFunctionLibrary = class(TObject)
+  private
+    List, Extra: TStringList;
+    function GetCount: integer;
+    function GetDescription(AIndex: Integer): TfrFunctionDescription;
   public
-    List: TStringList;
     constructor Create; virtual;
     destructor Destroy; override;
     function OnFunction(const FName: String; p1, p2, p3: Variant;
@@ -1073,7 +1076,10 @@ type
     procedure DoFunction(FNo: Integer; p1, p2, p3: Variant; var val: Variant);
       virtual; abstract;
     procedure UpdateDescriptions; virtual;
+    procedure Add(const funName:string; IsExtra:boolean=false);
     procedure AddFunctionDesc(const funName, funGroup, funDescription:string);
+    property FunctionCount:integer read GetCount;
+    property Description[AIndex:Integer]:TfrFunctionDescription read GetDescription;
   end;
 
   TfrCompressor = class(TObject)
@@ -9129,26 +9135,50 @@ begin
 // abstract method
 end;
 
+function TfrFunctionLibrary.GetCount: integer;
+begin
+  result := List.Count + Extra.Count;
+end;
+
+function TfrFunctionLibrary.GetDescription(AIndex: Integer
+  ): TfrFunctionDescription;
+begin
+  result := nil;
+  if (AIndex>=0) and (AIndex<FunctionCount) then
+  begin
+    if AIndex<List.Count then
+      result := TfrFunctionDescription(List.Objects[AIndex])
+    else
+      result := TfrFunctionDescription(Extra.Objects[AIndex-List.Count]);
+  end;
+end;
 
 {----------------------------------------------------------------------------}
 constructor TfrFunctionLibrary.Create;
 begin
   inherited Create;
   List := TStringList.Create;
+  Extra:= TStringList.Create;
   //List.Sorted := True;
 end;
 
 destructor TfrFunctionLibrary.Destroy;
-var
-  i:integer;
+  procedure FreeList(AList:TStringList);
+  var
+    i:integer;
+  begin
+    for i:=0 to AList.Count-1 do
+      if Assigned(AList.Objects[i]) then
+      begin
+        AList.Objects[i].Free;
+        AList.Objects[i]:=nil;
+      end;
+    AList.Free;
+  end;
+
 begin
-  for i:=0 to List.Count-1 do
-    if Assigned(List.Objects[i]) then
-    begin
-      List.Objects[i].Free;
-      List.Objects[i]:=nil;
-    end;
-  List.Free;
+  FreeList(List);
+  FreeList(Extra);
   inherited Destroy;
 end;
 
@@ -9171,19 +9201,37 @@ procedure TfrFunctionLibrary.UpdateDescriptions;
 begin
 end;
 
+procedure TfrFunctionLibrary.Add(const funName: string; IsExtra:boolean=false);
+begin
+  if IsExtra then
+    Extra.Add(funName)
+  else
+    List.Add(FunName);
+end;
+
 procedure TfrFunctionLibrary.AddFunctionDesc(const funName, funGroup,
   funDescription: string);
 var
   i: Integer;
+
+  procedure AddDesc(AList:TStringList);
+  begin
+    if not Assigned(AList.Objects[i]) then
+      AList.Objects[i]:=TfrFunctionDescription.Create;
+    TfrFunctionDescription(AList.Objects[i]).funName:=funName;
+    TfrFunctionDescription(AList.Objects[i]).funGroup:=funGroup;
+    TfrFunctionDescription(AList.Objects[i]).funDescription:=funDescription;
+  end;
+
 begin
   if List.Find(funName, i) then
+    AddDesc(List)
+  else
   begin
-    if not Assigned(List.Objects[i]) then
-      List.Objects[i]:=TfrFunctionDescription.Create;
-    TfrFunctionDescription(List.Objects[i]).funName:=funName;
-    TfrFunctionDescription(List.Objects[i]).funGroup:=funGroup;
-    TfrFunctionDescription(List.Objects[i]).funDescription:=funDescription;
-  end
+    i := Extra.IndexOf(funName);
+    if i>=0 then
+      AddDesc(Extra);
+  end;
 end;
 
 
@@ -9191,32 +9239,36 @@ end;
 constructor TfrStdFunctionLibrary.Create;
 begin
   inherited Create;
-  with List do
-  begin
-    Add('AVG');               {0}
-    Add('COUNT');             {1}
-    Add('DAYOF');             {2}
-    Add('FORMATDATETIME');    {3}
-    Add('FORMATFLOAT');       {4}
-    Add('FORMATTEXT');        {5}
-    Add('INPUT');             {6}
-    Add('LENGTH');            {7}
-    Add('LOWERCASE');         {8}
-    Add('MAX');               {9}
-    Add('MAXNUM');            {10}
-    Add('MESSAGEBOX');        {11}
-    Add('MIN');               {12}
-    Add('MINNUM');            {13}
-    Add('MONTHOF');           {14}
-    Add('NAMECASE');          {15}
-    Add('POS');               {16}
-    Add('STRTODATE');         {17}
-    Add('STRTOTIME');         {18}
-    Add('SUM');               {19}
-    Add('TRIM');              {20}
-    Add('UPPERCASE');         {21}
-    Add('YEAROF');            {22}
-  end;
+  Add('AVG');               {0}
+  Add('COUNT');             {1}
+  Add('DAYOF');             {2}
+  Add('FORMATDATETIME');    {3}
+  Add('FORMATFLOAT');       {4}
+  Add('FORMATTEXT');        {5}
+  Add('INPUT');             {6}
+  Add('LENGTH');            {7}
+  Add('LOWERCASE');         {8}
+  Add('MAX');               {9}
+  Add('MAXNUM');            {10}
+  Add('MESSAGEBOX');        {11}
+  Add('MIN');               {12}
+  Add('MINNUM');            {13}
+  Add('MONTHOF');           {14}
+  Add('NAMECASE');          {15}
+  Add('POS');               {16}
+  Add('STRTODATE');         {17}
+  Add('STRTOTIME');         {18}
+  Add('SUM');               {19}
+  Add('TRIM');              {20}
+  Add('UPPERCASE');         {21}
+  Add('YEAROF');            {22}
+  // internal functions/operators
+  Add('COPY', true);
+  Add('STR', true);
+  Add('INT', true);
+  Add('ROUND', true);
+  Add('FRAC', true);
+  Add('MOD', true);
 end;
 
 procedure TfrStdFunctionLibrary.UpdateDescriptions;
@@ -9242,13 +9294,17 @@ begin
   AddFunctionDesc('TRIM', SStringCategory, SDescriptionTRIM);
   AddFunctionDesc('UPPERCASE', SStringCategory, SDescriptionUPPERCASE);
   AddFunctionDesc('POS', SStringCategory, SDescriptionPOS);
+  AddFunctionDesc('COPY', SStringCategory, SDescriptionCOPY);
+  AddFunctionDesc('STR', SStringCategory, SDescriptionSTR);
 
   AddFunctionDesc('INPUT', SOtherCategory, SDescriptionINPUT);
   AddFunctionDesc('MESSAGEBOX', SOtherCategory, SDescriptionMESSAGEBOX);
 
   AddFunctionDesc('MAXNUM', SMathCategory, SDescriptionMAXNUM);
   AddFunctionDesc('MINNUM', SMathCategory, SDescriptionMINNUM);
-
+  AddFunctionDesc('INT', SMathCategory, SDescriptionINT);
+  AddFunctionDesc('ROUND', SMathCategory, SDescriptionROUND);
+  AddFunctionDesc('FRAC', SMathCategory, SDescriptionFRAC);
 end;
 
 procedure TfrStdFunctionLibrary.DoFunction(FNo: Integer; p1, p2, p3: Variant;
@@ -9271,7 +9327,7 @@ begin
     2: val := DayOf(frParser.Calc(p1));                       //Add('DAYOF');             {2}
     3: val := FormatDateTime(frParser.Calc(p1), frParser.Calc(p2)); //Add('FORMATDATETIME');    {3}
     4: val := FormatFloat(frParser.Calc(p1), frParser.Calc(p2)); //Add('FORMATFLOAT');       {4}
-//    5: val := FormatMaskText(frParser.Calc(p1) + ';0; ', frParser.Calc(p2));  //Add('FORMATTEXT');        {5}
+    5: val := FormatMaskText(frParser.Calc(p1) + ';0; ', frParser.Calc(p2));  //Add('FORMATTEXT');        {5}
     6:begin                                                   //Add('INPUT');             {6}
         s1 := InputBox('', frParser.Calc(p1), frParser.Calc(p2));
         val := s1;

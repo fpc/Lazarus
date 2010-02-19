@@ -266,6 +266,10 @@ msgstr "Numatytas spausdintuvas"
 msgid "AVG(<Expression> [,BandName [,1]])/Calculates the average of <Expression> for [BandName] row given. If [1] parameter is used, calculates average for non-visible rows too."
 msgstr "AVG(<Reiškinys> [,JuostosPavadinimas [,1]])/Duotai [JuostosPavadinimas] eilutei apskaičiuoja <Reiškinys> vidurkį. Jei nurodytas [1] parametras, tai vidurkis skaičiuojamas ir nematomoms eilutėms."
 
+#: lr_const.sdescriptioncopy
+msgid "COPY(<String>, <Position>, <Length>)/Returns <Length> characters from <String> starting at <Position>."
+msgstr ""
+
 #: lr_const.sdescriptioncount
 msgid "COUNT(<BandName>)/Returns count of data-rows given in the <BandName>. "
 msgstr "COUNT(<JuostosPavadinimas>)/Grąžina duotame <JuostosPavadinimas> esančių duomenų eilučių kiekį."
@@ -286,9 +290,17 @@ msgstr "FORMATFLOAT(<Formatas>, <Skaičius>)/Pagal <Formatas> nurodytą kaukę, 
 msgid "FORMATTEXT(<Mask>, <String>)/Applies <Mask> to given <String> and returns formatted string."
 msgstr "FORMATTEXT(<Kaukė>, <Tekstas>)/Grąžina pagal duotą <Kaukė> kaukę formatuotą <Tekstas> tekstą."
 
+#: lr_const.sdescriptionfrac
+msgid "FRAC(<Value>)/Returns the fractional part of floating point <Value>."
+msgstr ""
+
 #: lr_const.sdescriptioninput
 msgid "INPUT(<Caption> [,Default])/Shows dialog window with headstring <Caption> and edit box. If [Default] parameter is set, puts this string in edit box. After user clicks OK, returns input string."
 msgstr "INPUT(<Antraštė> [,Numatyta])/Rodo dialogo langą, kuriame būna <Antraštė> tekstas bei įvesties langelis. Jei nurodytas [,Numatyta] parametras, tai šio parametro tekstas įrašomas į įvesties langelį. Naudotojui paspaudus „Tinka“, grąžina įvesties langelyje esantį tekstą."
+
+#: lr_const.sdescriptionint
+msgid "INT(<Value>)/Returns the integer part of floating point <Value>."
+msgstr ""
 
 #: lr_const.sdescriptionlength
 msgid "LENGTH(<String>)/Returns length of <String>."
@@ -329,6 +341,14 @@ msgstr "NAMECASE(<Tekstas>)/Pirmąją <Tekstas> raidę padaro didžiąją, o lik
 #: lr_const.sdescriptionpos
 msgid "POS(<SubString>, <String>)/Returns position of substring in given string."
 msgstr "POS(<Potekstis>, <Tekstas>)/Grąžina <Potekstis> poziciją duotame <Tekstas>."
+
+#: lr_const.sdescriptionround
+msgid "ROUND(<Value>)/Rounds the floating point <Value> to nearest integer number."
+msgstr ""
+
+#: lr_const.sdescriptionstr
+msgid "STR(<Value>)/Converts the given (numeric) <Value> in string."
+msgstr ""
 
 #: lr_const.sdescriptionstrtodate
 msgid "STRTODATE(<String>)/Converts <String> to date."

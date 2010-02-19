@@ -264,6 +264,10 @@ msgstr "Impressora padrão"
 msgid "AVG(<Expression> [,BandName [,1]])/Calculates the average of <Expression> for [BandName] row given. If [1] parameter is used, calculates average for non-visible rows too."
 msgstr "AVG(<Expressão> [,NomeBanda [,1]])/Calcula a média de <Expressão> pela linha dada por [NomeBanda]. Se o parâmetro [1] for usado, calcula também a média das linhas não-visíveis."
 
+#: lr_const.sdescriptioncopy
+msgid "COPY(<String>, <Position>, <Length>)/Returns <Length> characters from <String> starting at <Position>."
+msgstr ""
+
 #: lr_const.sdescriptioncount
 msgid "COUNT(<BandName>)/Returns count of data-rows given in the <BandName>. "
 msgstr "COUNT(<NomeBanda>)/Retorna a contagem de linhas de uma <NomeBanda> dada."
@@ -284,9 +288,17 @@ msgstr "FORMATFLOAT(<Fmt>, <Numérico>)/Converte um valor <Numérico> para um st
 msgid "FORMATTEXT(<Mask>, <String>)/Applies <Mask> to given <String> and returns formatted string."
 msgstr "FORMATTEXT(<Máscara>, <String>)/Aplica <Máscara> para uma dada <String> e a retorna formatada."
 
+#: lr_const.sdescriptionfrac
+msgid "FRAC(<Value>)/Returns the fractional part of floating point <Value>."
+msgstr ""
+
 #: lr_const.sdescriptioninput
 msgid "INPUT(<Caption> [,Default])/Shows dialog window with headstring <Caption> and edit box. If [Default] parameter is set, puts this string in edit box. After user clicks OK, returns input string."
 msgstr "INPUT(<Título> [,Padrão])/Mostra janela de diálogo com cabeçalho <Título> e caixa texto. Se o parâmetro [Padrão] for informado, coloca-o na caixa de texto. Após o usuário clicar OK, retorna a string digitada."
+
+#: lr_const.sdescriptionint
+msgid "INT(<Value>)/Returns the integer part of floating point <Value>."
+msgstr ""
 
 #: lr_const.sdescriptionlength
 msgid "LENGTH(<String>)/Returns length of <String>."
@@ -327,6 +339,14 @@ msgstr "NAMECASE(<String>)/Converte os caracteres da <String> para minúsculas, 
 #: lr_const.sdescriptionpos
 msgid "POS(<SubString>, <String>)/Returns position of substring in given string."
 msgstr "POS(<SubString>, <String>)/Retorna a posição da <SubString> para uma dada <String>."
+
+#: lr_const.sdescriptionround
+msgid "ROUND(<Value>)/Rounds the floating point <Value> to nearest integer number."
+msgstr ""
+
+#: lr_const.sdescriptionstr
+msgid "STR(<Value>)/Converts the given (numeric) <Value> in string."
+msgstr ""
 
 #: lr_const.sdescriptionstrtodate
 msgid "STRTODATE(<String>)/Converts <String> to date."

@@ -45,11 +45,11 @@ begin
   for i:=0 to frFunctionsCount-1 do
   begin
     F:=frFunctions[i].FunctionLibrary;
-    for j:=0 to F.List.Count-1 do
+    for j:=0 to F.FunctionCount-1 do
     begin
-      if Assigned(F.List.Objects[j]) then
+      FD := F.Description[j];
+      if Assigned(FD) then
       begin
-        FD:=TfrFunctionDescription(F.List.Objects[j]);
         if ListBox1.Items.IndexOf(FD.funGroup)=-1 then
           ListBox1.Items.Add(FD.funGroup);
       end
@@ -87,11 +87,11 @@ begin
     for i:=0 to frFunctionsCount-1 do
     begin
       F:=frFunctions[i].FunctionLibrary;
-      for j:=0 to F.List.Count-1 do
+      for j:=0 to F.FunctionCount-1 do
       begin
-        if Assigned(F.List.Objects[j]) then
+        FD := F.Description[j];
+        if Assigned(FD) then
         begin
-          FD:=TfrFunctionDescription(F.List.Objects[j]);
           if FD.funGroup = GrpName then
           begin
             ListBox2.Items.Add(FD.funName);

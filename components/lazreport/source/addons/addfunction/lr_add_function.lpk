@@ -1,17 +1,14 @@
 <?xml version="1.0"?>
 <CONFIG>
-  <Package Version="2">
+  <Package Version="3">
     <PathDelim Value="\"/>
     <Name Value="lr_add_function"/>
     <CompilerOptions>
-      <Version Value="5"/>
+      <Version Value="8"/>
       <PathDelim Value="\"/>
       <SearchPaths>
-        <UnitOutputDirectory Value="lib\$(TargetCPU)-$(TargetOS)\"/>
+        <UnitOutputDirectory Value="lib\$(TargetCPU)-$(TargetOS)"/>
       </SearchPaths>
-      <CodeGeneration>
-        <Generate Value="Faster"/>
-      </CodeGeneration>
       <Other>
         <CompilerPath Value="$(CompPath)"/>
       </Other>
@@ -19,7 +16,7 @@
     <Version Major="1"/>
     <Files Count="6">
       <Item1>
-        <Filename Value="lraddfunctionlibrary.pas"/>
+        <Filename Value="lrAddFunctionLibrary.pas"/>
         <HasRegisterProc Value="True"/>
         <UnitName Value="lrAddFunctionLibrary"/>
       </Item1>

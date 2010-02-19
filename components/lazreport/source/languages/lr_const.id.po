@@ -264,6 +264,10 @@ msgstr "Printer standar"
 msgid "AVG(<Expression> [,BandName [,1]])/Calculates the average of <Expression> for [BandName] row given. If [1] parameter is used, calculates average for non-visible rows too."
 msgstr "AVG(<Expression> [,BandName [,1]])/Menghitung rata-rata <Expression> untuk [BandName] dari baris yang diberikan. Jika parameter [1] dipakai, menghitung rata-rata untuk baris yang tidak terlihat juga."
 
+#: lr_const.sdescriptioncopy
+msgid "COPY(<String>, <Position>, <Length>)/Returns <Length> characters from <String> starting at <Position>."
+msgstr ""
+
 #: lr_const.sdescriptioncount
 msgid "COUNT(<BandName>)/Returns count of data-rows given in the <BandName>. "
 msgstr "COUNT(<BandName>)/Mengembalikan jumlah baris-data yang diberikan dalam <BandName>. "
@@ -284,9 +288,17 @@ msgstr "FORMATFLOAT(<Fmt>, <Numeric>)/Mengubah nilai <Numeric> ke string menggun
 msgid "FORMATTEXT(<Mask>, <String>)/Applies <Mask> to given <String> and returns formatted string."
 msgstr "FORMATTEXT(<Mask>, <String>)/Menerapkan <Mask> ke <String> dan mengembalikan string yang dibentuk."
 
+#: lr_const.sdescriptionfrac
+msgid "FRAC(<Value>)/Returns the fractional part of floating point <Value>."
+msgstr ""
+
 #: lr_const.sdescriptioninput
 msgid "INPUT(<Caption> [,Default])/Shows dialog window with headstring <Caption> and edit box. If [Default] parameter is set, puts this string in edit box. After user clicks OK, returns input string."
 msgstr "INPUT(<Caption> [,Default])/Menampilkan jendela dialog dengan headstring <Caption> dan kotak edit. Jika parameter [Default] disetel, menaruh string ini dalam kotak edit. Setelah pengguna mengklik OK, mengembalikan string input."
+
+#: lr_const.sdescriptionint
+msgid "INT(<Value>)/Returns the integer part of floating point <Value>."
+msgstr ""
 
 #: lr_const.sdescriptionlength
 msgid "LENGTH(<String>)/Returns length of <String>."
@@ -327,6 +339,14 @@ msgstr "NAMECASE(<String>)/Mengubah simbol <String> ke huruf kecil, dan simbol p
 #: lr_const.sdescriptionpos
 msgid "POS(<SubString>, <String>)/Returns position of substring in given string."
 msgstr "POS(<SubString>, <String>)/Mengembalikan posisi substring dari string yang diberikan."
+
+#: lr_const.sdescriptionround
+msgid "ROUND(<Value>)/Rounds the floating point <Value> to nearest integer number."
+msgstr ""
+
+#: lr_const.sdescriptionstr
+msgid "STR(<Value>)/Converts the given (numeric) <Value> in string."
+msgstr ""
 
 #: lr_const.sdescriptionstrtodate
 msgid "STRTODATE(<String>)/Converts <String> to date."
