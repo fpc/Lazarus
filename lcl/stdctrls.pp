@@ -898,6 +898,7 @@ type
     property BidiMode;
     property BorderSpacing;
     property BorderStyle;
+    property CharCase;
     property Color;
     property Constraints;
     property DragCursor;

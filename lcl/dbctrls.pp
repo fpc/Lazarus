@@ -833,6 +833,7 @@ Type
     property AutoDisplay: Boolean read FAutoDisplay write SetAutoDisplay default True;
     property BorderSpacing;
     property BorderStyle;
+    property CharCase;
     property Color;
     property DataField: string read GetDataField write SetDataField;
     property DataSource: TDataSource read GetDataSource write SetDataSource;
