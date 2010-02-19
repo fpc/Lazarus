@@ -453,8 +453,13 @@ type
   private
     LayoutWidget: QBoxLayoutH;
     FCWEventHook: QObject_hookH;
+    FShowOnTaskBar: Boolean;
+    FPopupMode: TPopupMode;
+    FPopupParent: QWidgetH;
   protected
     function CreateWidget(const AParams: TCreateParams):QWidgetH; override;
+    procedure ChangeParent(NewParent: QWidgetH);
+    procedure UpdateParent;
   public
     IsMainForm: Boolean;
     MDIAreaHandle: QMDIAreaH;
@@ -472,6 +477,7 @@ type
     procedure setAcceptDropFiles(AValue: Boolean);
     procedure slotWindowStateChange; cdecl;
     procedure setShowInTaskBar(AValue: Boolean);
+    procedure setPopupParent(APopupMode: TPopupMode; NewParent: QWidgetH);
   public
     procedure AttachEvents; override;
     procedure DetachEvents; override;
@@ -4228,6 +4234,9 @@ begin
     WriteLn('TQtMainWindow.CreateWidget Name: ', LCLObject.Name);
   {$endif}
   FHasPaint := True;
+  FPopupMode := pmNone;
+  FPopupParent := nil;
+
   IsMainForm := False;
 
   w := QApplication_activeWindow;
@@ -4320,6 +4329,43 @@ begin
   end;
 
   QWidget_setAttribute(Result, QtWA_NoMousePropagation);
+end;
+
+procedure TQtMainWindow.ChangeParent(NewParent: QWidgetH);
+var
+  Flags: QtWindowFlags;
+  Visible: Boolean;
+begin
+  if NewParent <> Widget then
+  begin
+    Visible := getVisible;
+    Flags := windowFlags;
+    setParent(NewParent);
+    setWindowFlags(Flags);
+    setVisible(Visible);
+  end;
+end;
+
+procedure TQtMainWindow.UpdateParent;
+var
+  NewParent: QWidgetH;
+begin
+  NewParent := nil;
+  case FPopupMode of
+    pmNone: ;// no popup parent
+    pmAuto:
+      // active form is parent
+      if Screen.ActiveForm <> nil then
+        NewParent := TQtWidget(Screen.ActiveForm).Widget;
+    pmExplicit:
+      // parent is FPopupParent
+      if FPopupParent <> nil then
+        NewParent := FPopupParent;
+  end;
+  if (NewParent = nil) and not FShowOnTaskBar and not IsMainForm then
+    NewParent := TQtMainWindow(Application.MainForm.Handle).Widget;
+
+  ChangeParent(NewParent);
 end;
 
 {------------------------------------------------------------------------------
@@ -4484,31 +4530,16 @@ begin
 end;
 
 procedure TQtMainWindow.setShowInTaskBar(AValue: Boolean);
-var
-  w: QWidgetH;
-  Flags: QtWindowFlags;
-  Visible: Boolean;
 begin
-  if not AValue then
-  begin
-    w := TQtMainWindow(Application.MainForm.Handle).Widget;
-    if w <> Widget then
-    begin
-      Visible := getVisible;
-      Flags := windowFlags;
-      setParent(w);
-      setWindowFlags(Flags);
-      setVisible(Visible);
-    end;
-  end
-  else
-  begin
-    Visible := getVisible;
-    Flags := windowFlags;
-    setParent(nil);
-    setWindowFlags(Flags);
-    setVisible(Visible);
-  end;
+  FShowOnTaskBar := AValue;
+  UpdateParent;
+end;
+
+procedure TQtMainWindow.setPopupParent(APopupMode: TPopupMode; NewParent: QWidgetH);
+begin
+  FPopupMode := APopupMode;
+  FPopupParent := NewParent;
+  UpdateParent;
 end;
 
 procedure TQtMainWindow.AttachEvents;

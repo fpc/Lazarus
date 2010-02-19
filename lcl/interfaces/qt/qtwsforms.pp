@@ -84,6 +84,8 @@ type
     class procedure SetFormBorderStyle(const AForm: TCustomForm; const AFormBorderStyle: TFormBorderStyle); override;
     class procedure SetFormStyle(const AForm: TCustomform; const AFormStyle: TFormStyle); override;
     class procedure SetIcon(const AForm: TCustomForm; const Small, Big: HICON); override;
+    class procedure SetPopupParent(const ACustomForm: TCustomForm;
+       const APopupMode: TPopupMode; const APopupParent: TCustomForm); override;
     class procedure SetShowInTaskbar(const AForm: TCustomForm; const AValue: TShowInTaskbar); override;
     class procedure ShowModal(const ACustomForm: TCustomForm); override;
     class procedure SetBorderIcons(const AForm: TCustomForm; const ABorderIcons: TBorderIcons); override;
@@ -133,6 +135,7 @@ class function TQtWSCustomForm.CreateHandle(const AWinControl: TWinControl;
 var
   QtMainWindow: TQtMainWindow;
   Str: WideString;
+  PopupParent: QWidgetH;
 begin
   {$ifdef VerboseQt}
     WriteLn('[TQtWSCustomForm.CreateHandle] Height: ', IntToStr(AWinControl.Height),
@@ -158,17 +161,25 @@ begin
       TCustomForm(AWinControl).BorderIcons, TCustomForm(AWinControl).FormStyle);
   end;
 
-  if (TCustomForm(AWinControl).ShowInTaskBar in [stDefault, stNever]) and not
-     (TCustomForm(AWinControl).FormStyle in [fsMDIChild]) and 
-     {QtTool have not minimize button !}
-     {$ifdef linux}
-     not (TCustomForm(AWinControl).BorderStyle in [bsSizeToolWin, bsToolWindow]) and
-     {$endif}
+  if not (TCustomForm(AWinControl).FormStyle in [fsMDIChild]) and
      (Application <> nil) and
      (Application.MainForm <> nil) and
      (Application.MainForm.HandleAllocated) and
      (Application.MainForm <> AWinControl) then
-    QtMainWindow.setShowInTaskBar(False);
+  begin
+    if TCustomForm(AWinControl).ShowInTaskBar in [stDefault, stNever]
+       {$ifdef linux}
+       {QtTool have not minimize button !}
+       and not (TCustomForm(AWinControl).BorderStyle in [bsSizeToolWin, bsToolWindow])
+       {$endif} then
+      QtMainWindow.setShowInTaskBar(False);
+
+    if Assigned(TCustomForm(AWinControl).PopupParent) then
+      PopupParent := TQtWidget(TCustomForm(AWinControl).PopupParent.Handle).Widget
+    else
+      PopupParent := nil;
+    QtMainWindow.setPopupParent(TCustomForm(AWinControl).PopupMode, PopupParent);
+  end;
 
   // Sets Various Events
   QtMainWindow.AttachEvents;
@@ -239,6 +250,18 @@ begin
     TQtWidget(AForm.Handle).setWindowIcon(Icon.Handle)
   else
     TQtWidget(AForm.Handle).setWindowIcon(nil);
+end;
+
+class procedure TQtWSCustomForm.SetPopupParent(const ACustomForm: TCustomForm;
+  const APopupMode: TPopupMode; const APopupParent: TCustomForm);
+var
+  PopupParent: QWidgetH;
+begin
+  if Assigned(APopupParent) then
+    PopupParent := TQtWidget(APopupParent.Handle).Widget
+  else
+    PopupParent := nil;
+  TQtMainWindow(ACustomForm.Handle).setPopupParent(APopupMode, PopupParent);
 end;
 
 {------------------------------------------------------------------------------
