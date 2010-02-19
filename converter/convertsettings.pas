@@ -87,13 +87,14 @@ type
 
   TConvertSettingsForm = class(TForm)
     BackupCheckBox: TCheckBox;
+    MainPathEdit: TLabeledEdit;
+    ResourceRadioGroup: TRadioGroup;
     ReplacementCompsButton: TBitBtn;
     btnCancel: TBitBtn;
     btnOK: TBitBtn;
     BtnPanel: TPanel;
     DelphiCompatibleCheckBox: TCheckBox;
     HelpButton: TBitBtn;
-    MainPathEdit: TLabeledEdit;
     SettingsGroupBox: TGroupBox;
     MissingStuffGroupBox: TGroupBox;
     MissingStuffLabel: TLabel;

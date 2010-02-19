@@ -1,12 +1,12 @@
 object ConvertSettingsForm: TConvertSettingsForm
-  Left = 265
-  Height = 350
-  Top = 248
-  Width = 558
+  Left = 298
+  Height = 387
+  Top = 199
+  Width = 581
   Caption = 'Convert Delphi unit, project or package '
-  ClientHeight = 350
-  ClientWidth = 558
-  Constraints.MinHeight = 350
+  ClientHeight = 387
+  ClientWidth = 581
+  Constraints.MinHeight = 380
   OnCreate = FormCreate
   OnDestroy = FormDestroy
   LCLVersion = '0.9.29'
@@ -14,14 +14,14 @@ object ConvertSettingsForm: TConvertSettingsForm
     AnchorSideTop.Control = SettingsGroupBox
     AnchorSideTop.Side = asrBottom
     Left = 0
-    Height = 161
-    Top = 131
-    Width = 558
+    Height = 151
+    Top = 163
+    Width = 581
     Anchors = [akTop, akLeft, akRight, akBottom]
     BorderSpacing.Top = 3
     Caption = 'Missing Properties and Components'
-    ClientHeight = 139
-    ClientWidth = 548
+    ClientHeight = 129
+    ClientWidth = 571
     TabOrder = 0
     object MissingComponentCheckBox: TCheckBox
       Left = 11
@@ -63,18 +63,18 @@ object ConvertSettingsForm: TConvertSettingsForm
   end
   object SettingsGroupBox: TGroupBox
     Left = 0
-    Height = 128
-    Top = 0
-    Width = 558
+    Height = 112
+    Top = 48
+    Width = 581
     Anchors = [akTop, akLeft, akRight]
     Caption = 'Conversion Settings'
-    ClientHeight = 106
-    ClientWidth = 548
+    ClientHeight = 90
+    ClientWidth = 571
     TabOrder = 1
     object BackupCheckBox: TCheckBox
       Left = 11
       Height = 23
-      Top = 39
+      Top = 15
       Width = 189
       Caption = 'Make backup of changed files'
       Checked = True
@@ -84,46 +84,47 @@ object ConvertSettingsForm: TConvertSettingsForm
     object DelphiCompatibleCheckBox: TCheckBox
       Left = 11
       Height = 23
-      Top = 71
+      Top = 47
       Width = 264
       Caption = 'Try to keep files Delphi compatible (ToDo...)'
       Enabled = False
       TabOrder = 1
     end
-    object MainPathEdit: TLabeledEdit
-      Left = 35
-      Height = 17
-      Top = 15
-      Width = 477
-      Anchors = [akTop, akLeft, akRight]
-      BorderStyle = bsNone
-      Color = clBtnFace
-      EditLabel.AnchorSideLeft.Control = MainPathEdit
-      EditLabel.AnchorSideTop.Control = MainPathEdit
-      EditLabel.AnchorSideTop.Side = asrCenter
-      EditLabel.AnchorSideRight.Control = MainPathEdit
-      EditLabel.AnchorSideBottom.Control = MainPathEdit
-      EditLabel.Left = 35
-      EditLabel.Height = 16
-      EditLabel.Top = -1
-      EditLabel.Width = 55
-      EditLabel.Caption = 'Main Path'
-      EditLabel.ParentColor = False
-      LabelSpacing = 0
-      ReadOnly = True
+    object ResourceRadioGroup: TRadioGroup
+      Left = 363
+      Height = 88
+      Top = -1
+      Width = 185
+      AutoFill = True
+      Caption = 'Resource type (ToDo...)'
+      ChildSizing.LeftRightSpacing = 6
+      ChildSizing.TopBottomSpacing = 6
+      ChildSizing.EnlargeHorizontal = crsHomogenousChildResize
+      ChildSizing.EnlargeVertical = crsHomogenousChildResize
+      ChildSizing.ShrinkHorizontal = crsScaleChilds
+      ChildSizing.ShrinkVertical = crsScaleChilds
+      ChildSizing.Layout = cclLeftToRightThenTopToBottom
+      ChildSizing.ControlsPerLine = 1
+      ClientHeight = 66
+      ClientWidth = 175
+      ItemIndex = 0
+      Items.Strings = (
+        'FPC resource'
+        'lrs include file'
+      )
       TabOrder = 2
     end
   end
   object BtnPanel: TPanel
     Left = 0
     Height = 48
-    Top = 302
-    Width = 558
+    Top = 339
+    Width = 581
     Align = alBottom
     AutoSize = True
     BevelOuter = bvNone
     ClientHeight = 48
-    ClientWidth = 558
+    ClientWidth = 581
     TabOrder = 2
     object HelpButton: TBitBtn
       AnchorSideBottom.Side = asrBottom
@@ -142,7 +143,7 @@ object ConvertSettingsForm: TConvertSettingsForm
     end
     object btnOK: TBitBtn
       AnchorSideBottom.Side = asrBottom
-      Left = 390
+      Left = 413
       Height = 36
       Top = 6
       Width = 75
@@ -160,7 +161,7 @@ object ConvertSettingsForm: TConvertSettingsForm
     object btnCancel: TBitBtn
       AnchorSideRight.Side = asrBottom
       AnchorSideBottom.Side = asrBottom
-      Left = 471
+      Left = 494
       Height = 36
       Top = 6
       Width = 81
@@ -176,5 +177,29 @@ object ConvertSettingsForm: TConvertSettingsForm
       NumGlyphs = 0
       TabOrder = 2
     end
+  end
+  object MainPathEdit: TLabeledEdit
+    Left = 80
+    Height = 17
+    Top = 15
+    Width = 473
+    Anchors = [akTop, akLeft, akRight]
+    BorderStyle = bsNone
+    Color = clBtnFace
+    EditLabel.AnchorSideLeft.Control = MainPathEdit
+    EditLabel.AnchorSideTop.Control = MainPathEdit
+    EditLabel.AnchorSideTop.Side = asrCenter
+    EditLabel.AnchorSideRight.Control = MainPathEdit
+    EditLabel.AnchorSideBottom.Control = MainPathEdit
+    EditLabel.Left = 25
+    EditLabel.Height = 16
+    EditLabel.Top = 15
+    EditLabel.Width = 55
+    EditLabel.Caption = 'Main Path'
+    EditLabel.ParentColor = False
+    LabelPosition = lpLeft
+    LabelSpacing = 0
+    ReadOnly = True
+    TabOrder = 3
   end
 end
