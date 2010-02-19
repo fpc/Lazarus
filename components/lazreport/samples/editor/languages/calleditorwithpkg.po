@@ -46,6 +46,10 @@ msgstr ""
 msgid "Print directly the active report (i.e. without preview)"
 msgstr ""
 
+#: maincalleditor.cerhintthumbnails
+msgid "This Action will Load and Preview a thumbnails Report"
+msgstr ""
+
 #: maincalleditor.cerindex
 msgid "Index"
 msgstr ""
@@ -88,6 +92,11 @@ msgstr ""
 
 #: maincalleditor.cerprintreport
 msgid "Print report"
+msgstr ""
+
+#: maincalleditor.certhumbnails
+msgctxt "maincalleditor.certhumbnails"
+msgid "Thumbnails"
 msgstr ""
 
 #: TFRMMAIN.ACCCLOSE.CAPTION

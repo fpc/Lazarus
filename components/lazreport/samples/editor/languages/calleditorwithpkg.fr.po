@@ -51,6 +51,10 @@ msgstr "Aperçu Rapport Actif"
 msgid "Print directly the active report (i.e. without preview)"
 msgstr "Imprime directement le rapport actif (c.a.d. sans aperçu)"
 
+#: maincalleditor.cerhintthumbnails
+msgid "This Action will Load and Preview a thumbnails Report"
+msgstr "Cette action va charger et donner l'aperçu d'un rapport sous forme de vignettes"
+
 #: maincalleditor.cerindex
 msgid "Index"
 msgstr "Index"
@@ -94,6 +98,11 @@ msgstr "Aperçu DBGrid"
 #: maincalleditor.cerprintreport
 msgid "Print report"
 msgstr "Imprime Rapport"
+
+#: maincalleditor.certhumbnails
+msgctxt "maincalleditor.certhumbnails"
+msgid "Thumbnails"
+msgstr "Vignettes"
 
 #: TFRMMAIN.ACCCLOSE.CAPTION
 msgctxt "TFRMMAIN.ACCCLOSE.CAPTION"
