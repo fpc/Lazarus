@@ -139,6 +139,7 @@ var
   WindowType: TGtkWindowType;
   ACustomForm: TCustomForm;
   AResizable: gint;
+  PopupParent: TCustomForm;
 begin
   // Start of old CreateForm method
 
@@ -154,9 +155,18 @@ begin
   else
     ABorderStyle:=bsNone;
 
+  case ACustomForm.PopupMode of
+    pmNone:
+      PopupParent := nil;
+    pmAuto:
+      PopupParent := Screen.ActiveForm;
+    pmExplicit:
+      PopupParent := ACustomForm.PopupParent;
+  end;
+
   // Maps the border style
   WindowType := FormStyleMap[ABorderStyle];
-  if (ABorderStyle=bsNone) and (ACustomForm.FormStyle in fsAllStayOnTop) then
+  if (ABorderStyle = bsNone) and (ACustomForm.FormStyle in fsAllStayOnTop) then
     WindowType := GTK_WINDOW_POPUP;
   if (csDesigning in ACustomForm.ComponentState) then
     WindowType := GTK_WINDOW_TOPLEVEL;
@@ -178,6 +188,9 @@ begin
 
     // Sets the title
     gtk_window_set_title(PGtkWindow(P), AParams.Caption);
+
+    if PopupParent <> nil then
+      gtk_window_set_transient_for(PGtkWindow(P), PGtkWindow(PopupParent.Handle));
 
     // the clipboard needs a widget
     if (ClipboardWidget = nil) then

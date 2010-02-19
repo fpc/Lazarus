@@ -85,6 +85,8 @@ type
     class procedure SetBorderIcons(const AForm: TCustomForm;
                                    const ABorderIcons: TBorderIcons); override;
     class procedure SetColor(const AWinControl: TWinControl); override;
+    class procedure SetPopupParent(const ACustomForm: TCustomForm;
+       const APopupMode: TPopupMode; const APopupParent: TCustomForm); override;
   end;
 
   { TGtkWSForm }
@@ -282,6 +284,7 @@ var
   WindowType: TGtkWindowType;
   ACustomForm: TCustomForm;
   AResizable: gint;
+  PopupParent: TCustomForm;
 begin
   // Start of old CreateForm method
 
@@ -296,6 +299,15 @@ begin
   end
   else
     ABorderStyle:=bsNone;
+
+  case ACustomForm.PopupMode of
+    pmNone:
+      PopupParent := nil;
+    pmAuto:
+      PopupParent := Screen.ActiveForm;
+    pmExplicit:
+      PopupParent := ACustomForm.PopupParent;
+  end;
 
   // Maps the border style
   WindowType := FormStyleMap[ABorderStyle];
@@ -323,6 +335,9 @@ begin
 
     // Sets the title
     gtk_window_set_title(PGtkWindow(P), AParams.Caption);
+
+    if PopupParent <> nil then
+      gtk_window_set_transient_for(PGtkWindow(P), PGtkWindow(PopupParent.Handle));
 
     // the clipboard needs a widget
     if (ClipboardWidget = nil) then
@@ -452,6 +467,27 @@ end;
 class procedure TGtkWSCustomForm.SetColor(const AWinControl: TWinControl);
 begin
   TGtkWSWinControl.SetColor(AWinControl);
+end;
+
+class procedure TGtkWSCustomForm.SetPopupParent(const ACustomForm: TCustomForm;
+  const APopupMode: TPopupMode; const APopupParent: TCustomForm);
+var
+  PopupParent: TCustomForm;
+begin
+  if not WSCheckHandleAllocated(ACustomForm, 'SetPopupParent') then Exit;
+
+  case APopupMode of
+    pmNone:
+      PopupParent := nil;
+    pmAuto:
+      PopupParent := Screen.ActiveForm;
+    pmExplicit:
+      PopupParent := APopupParent;
+  end;
+  if PopupParent <> nil then
+    gtk_window_set_transient_for(PGtkWindow(ACustomForm.Handle), PGtkWindow(PopupParent.Handle))
+  else
+    gtk_window_set_transient_for(PGtkWindow(ACustomForm.Handle), nil);
 end;
 
 { TGtkWSHintWindow }
