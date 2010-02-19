@@ -181,6 +181,8 @@ uses
  lazdeopts, lazdemsg, inifiles, frmmakeskel, frmOptions, frmNewNode,
  frmLink, frmTable, frmAbout, frmBuild;
 
+{$R *.lfm}
+
 { Fixes & additions to LCL}
 
 Const
@@ -237,7 +239,6 @@ end;
 
 procedure TMainForm.AOpenExecute(Sender: TObject);
 begin
-  if Sender=nil then ;
   With ODMain do
     If Execute then
       OpenFile(FileName);
@@ -905,9 +906,6 @@ begin
     if Components[i] is TToolButton then
       TToolButton(Components[i]).ShowHint:=ShowHelpHints;
 end;
-
-initialization
-  {$I frmmain.lrs}
 
 end.
 

@@ -1,55 +1,50 @@
 object NewNodeForm: TNewNodeForm
-  ActiveControl = ENodeName
-  Caption = 'Create new node'
-  ClientHeight = 69
-  ClientWidth = 394
-  PixelsPerInch = 90
-  Position = poScreenCenter
+  Left = 390
+  Height = 120
+  Top = 205
+  Width = 408
   HorzScrollBar.Page = 395
   VertScrollBar.Page = 70
-  Left = 390
-  Height = 69
-  Top = 205
-  Width = 394
+  Caption = 'Create new node'
+  ClientHeight = 120
+  ClientWidth = 408
+  Position = poScreenCenter
+  LCLVersion = '0.9.29'
   object ENodeName: TEdit
+    AnchorSideLeft.Control = LENodeName
+    AnchorSideTop.Control = LENodeName
+    AnchorSideTop.Side = asrBottom
+    AnchorSideRight.Control = Owner
+    AnchorSideRight.Side = asrBottom
+    Left = 12
+    Height = 29
+    Top = 30
+    Width = 390
     Anchors = [akTop, akLeft, akRight]
+    BorderSpacing.Around = 6
     TabOrder = 0
     Text = 'ENodeName'
-    Left = 88
-    Height = 23
-    Top = 8
-    Width = 216
-  end
-  object BOK: TButton
-    Anchors = [akTop, akRight]
-    Caption = '&OK'
-    Default = True
-    ModalResult = 1
-    TabOrder = 1
-    Left = 312
-    Height = 25
-    Top = 6
-    Width = 75
-  end
-  object BCancel: TButton
-    Anchors = [akTop, akRight]
-    Cancel = True
-    Caption = '&Cancel'
-    ModalResult = 2
-    TabOrder = 2
-    Left = 312
-    Height = 25
-    Top = 40
-    Width = 75
   end
   object LENodeName: TLabel
+    AnchorSideLeft.Control = Owner
+    AnchorSideTop.Control = Owner
+    Left = 6
+    Height = 18
+    Top = 6
+    Width = 93
     Alignment = taRightJustify
-    Caption = '&Node name'
+    BorderSpacing.Around = 6
+    Caption = 'Node &name'
     FocusControl = ENodeName
     Layout = tlCenter
-    Left = 8
-    Height = 23
-    Top = 8
-    Width = 73
+    ParentColor = False
+  end
+  object ButtonPanel1: TButtonPanel
+    Left = 6
+    Height = 40
+    Top = 74
+    Width = 396
+    TabOrder = 1
+    ShowButtons = [pbOK, pbCancel, pbHelp]
   end
 end

@@ -84,6 +84,8 @@ Type
     Function MakeBackup(FN : String) : Boolean;
     Procedure DisplayDocument;
     Procedure ElementChanged(Sender: TObject);
+  protected
+    procedure SetParent(NewParent: TWinControl); override;
   Public
     Constructor Create(AOwner : TComponent); override;
     Function  FirstPackage : TDomElement;
@@ -133,12 +135,15 @@ begin
   FPackages.OnSelectModule:=@ModuleSelected;
   FPackages.OnSelectPackage:=@PackageSelected;
   FPackages.OnSelectTopic:=@TopicSelected;
+
   FSplitter:=TSplitter.Create(Self);
-  FSPlitter.parent:=Self;
+  FSPlitter.Parent:=Self;
   FSplitter.Align:=alLeft;
+  FSplitter.Width:=5;
+
   FElement:=TElementEditor.Create(Self);
   FElement.Parent:=Self;
-  Felement.Align:=AlClient;
+  FElement.Align:=AlClient;
   FElement.OnGetElementList:=@GetELementList;
   FElement.OnGetInitialDir:=@GetInitialDir;
   FElement.OnChange:=@ElementChanged;
@@ -228,6 +233,14 @@ begin
   if Sender=nil then ;
   TPackageEditor(FPackages).UpdateSelectedNodeStatus;
 end;
+
+procedure TEditorPage.SetParent(NewParent: TWinControl);
+begin
+  inherited SetParent(NewParent);
+  if Assigned(NewParent) then
+    FSplitter.Width:=5;
+end;
+
 
 
 Procedure TEditorPage.ElementSelected(Node : TDomElement) ;

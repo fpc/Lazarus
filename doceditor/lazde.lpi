@@ -9,10 +9,15 @@
       <SessionStorage Value="InIDEConfig"/>
       <MainUnit Value="0"/>
       <TargetFileExt Value=""/>
+      <ResourceType Value="res"/>
       <UseXPManifest Value="True"/>
     </General>
+    <i18n>
+      <EnableI18N Value="True"/>
+      <OutDir Value="languages"/>
+    </i18n>
     <VersionInfo>
-      <ProjectVersion Value=""/>
+      <StringTable Comments="" CompanyName="" FileDescription="" FileVersion="0.0.0.0" InternalName="" LegalCopyright="" LegalTrademarks="" OriginalFilename="" ProductName="" ProductVersion=""/>
     </VersionInfo>
     <PublishOptions>
       <Version Value="2"/>
@@ -30,7 +35,7 @@
         <PackageName Value="LCL"/>
       </Item1>
     </RequiredPackages>
-    <Units Count="18">
+    <Units Count="17">
       <Unit0>
         <Filename Value="lazde.lpr"/>
         <IsPartOfProject Value="True"/>
@@ -41,117 +46,121 @@
         <UnitName Value="ElEditor"/>
       </Unit1>
       <Unit2>
-        <Filename Value="fmmakeskel.pp"/>
-        <IsPartOfProject Value="True"/>
-        <ComponentName Value="MakeSkelForm"/>
-        <HasResources Value="True"/>
-        <ResourceBaseClass Value="Form"/>
-        <UnitName Value="fmMakeskel"/>
-      </Unit2>
-      <Unit3>
         <Filename Value="fpdeutil.pp"/>
         <IsPartOfProject Value="True"/>
         <UnitName Value="FPDEUtil"/>
-      </Unit3>
-      <Unit4>
+      </Unit2>
+      <Unit3>
         <Filename Value="frmabout.pp"/>
         <IsPartOfProject Value="True"/>
+        <ComponentName Value="AboutForm"/>
         <HasResources Value="True"/>
-        <UnitName Value="frmabout"/>
-      </Unit4>
-      <Unit5>
+        <ResourceBaseClass Value="Form"/>
+        <UnitName Value="FrmAbout"/>
+      </Unit3>
+      <Unit4>
         <Filename Value="frmbuild.pp"/>
         <IsPartOfProject Value="True"/>
         <ComponentName Value="BuildForm"/>
         <HasResources Value="True"/>
         <ResourceBaseClass Value="Form"/>
         <UnitName Value="frmBuild"/>
-      </Unit5>
-      <Unit6>
+      </Unit4>
+      <Unit5>
         <Filename Value="frmexample.pp"/>
         <IsPartOfProject Value="True"/>
         <ComponentName Value="ExampleForm"/>
         <HasResources Value="True"/>
         <ResourceBaseClass Value="Form"/>
         <UnitName Value="FrmExample"/>
-      </Unit6>
-      <Unit7>
+      </Unit5>
+      <Unit6>
         <Filename Value="frmlink.pp"/>
         <IsPartOfProject Value="True"/>
         <ComponentName Value="LinkForm"/>
         <HasResources Value="True"/>
         <ResourceBaseClass Value="Form"/>
         <UnitName Value="FrmLink"/>
-      </Unit7>
-      <Unit8>
+      </Unit6>
+      <Unit7>
         <Filename Value="frmmain.pp"/>
         <IsPartOfProject Value="True"/>
         <ComponentName Value="MainForm"/>
         <HasResources Value="True"/>
         <ResourceBaseClass Value="Form"/>
         <UnitName Value="FrmMain"/>
-      </Unit8>
-      <Unit9>
+      </Unit7>
+      <Unit8>
         <Filename Value="frmmakeskel.pp"/>
         <IsPartOfProject Value="True"/>
         <ComponentName Value="MakeSkelForm"/>
         <HasResources Value="True"/>
         <ResourceBaseClass Value="Form"/>
         <UnitName Value="FrmMakeSkel"/>
-      </Unit9>
-      <Unit10>
+      </Unit8>
+      <Unit9>
         <Filename Value="frmnewnode.pp"/>
         <IsPartOfProject Value="True"/>
         <ComponentName Value="NewNodeForm"/>
         <HasResources Value="True"/>
+        <ResourceBaseClass Value="Form"/>
         <UnitName Value="frmNewNode"/>
-      </Unit10>
-      <Unit11>
+      </Unit9>
+      <Unit10>
         <Filename Value="frmoptions.pp"/>
         <IsPartOfProject Value="True"/>
         <ComponentName Value="OptionsForm"/>
         <HasResources Value="True"/>
+        <ResourceBaseClass Value="Form"/>
         <UnitName Value="frmOptions"/>
-      </Unit11>
-      <Unit12>
+      </Unit10>
+      <Unit11>
         <Filename Value="frmsource.pas"/>
         <IsPartOfProject Value="True"/>
         <ComponentName Value="SourceForm"/>
         <HasResources Value="True"/>
+        <ResourceBaseClass Value="Form"/>
         <UnitName Value="frmSource"/>
-      </Unit12>
-      <Unit13>
+      </Unit11>
+      <Unit12>
         <Filename Value="frmtable.pp"/>
         <IsPartOfProject Value="True"/>
         <ComponentName Value="TableForm"/>
         <HasResources Value="True"/>
         <ResourceBaseClass Value="Form"/>
         <UnitName Value="frmTable"/>
-      </Unit13>
-      <Unit14>
+      </Unit12>
+      <Unit13>
         <Filename Value="lazdemsg.pp"/>
         <IsPartOfProject Value="True"/>
         <UnitName Value="LazDEMsg"/>
-      </Unit14>
-      <Unit15>
+      </Unit13>
+      <Unit14>
         <Filename Value="lazdeopts.pp"/>
         <IsPartOfProject Value="True"/>
         <UnitName Value="LazDEOpts"/>
-      </Unit15>
-      <Unit16>
+      </Unit14>
+      <Unit15>
         <Filename Value="pgeditor.pp"/>
         <IsPartOfProject Value="True"/>
         <UnitName Value="pgEditor"/>
-      </Unit16>
-      <Unit17>
+      </Unit15>
+      <Unit16>
         <Filename Value="pkeditor.pp"/>
         <IsPartOfProject Value="True"/>
         <UnitName Value="PkEditor"/>
-      </Unit17>
+      </Unit16>
     </Units>
   </ProjectOptions>
   <CompilerOptions>
     <Version Value="8"/>
+    <Target>
+      <Filename Value="lazde"/>
+    </Target>
+    <SearchPaths>
+      <IncludeFiles Value="$(ProjOutDir)/"/>
+      <UnitOutputDirectory Value="units/$(TargetCPU)-$(TargetOS)"/>
+    </SearchPaths>
     <Other>
       <ConfigFile>
         <StopAfterErrCount Value="10"/>

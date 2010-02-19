@@ -1,66 +1,55 @@
 object ExampleForm: TExampleForm
-  Caption = 'Example file'
-  ClientHeight = 85
-  ClientWidth = 404
-  OnCloseQuery = ExampleFormCloseQuery
-  PixelsPerInch = 75
+  Left = 387
+  Height = 136
+  Top = 311
+  Width = 432
   HorzScrollBar.Page = 403
   VertScrollBar.Page = 84
-  Left = 387
-  Height = 85
-  Top = 311
-  Width = 404
+  ActiveControl = EFileName
+  Caption = 'Example file'
+  ClientHeight = 136
+  ClientWidth = 432
+  OnCloseQuery = ExampleFormCloseQuery
+  LCLVersion = '0.9.29'
   object LEFileName: TLabel
-    BorderSpacing.OnChange = nil
+    AnchorSideLeft.Control = Owner
+    AnchorSideTop.Control = Owner
+    Left = 6
+    Height = 18
+    Top = 6
+    Width = 74
+    BorderSpacing.Around = 6
     Caption = '&Filename'
+    Color = clBtnFace
     FocusControl = EFileName
     Layout = tlCenter
-    ParentColor = True
-    AnchorSideTop.Control = EFileName
-    AnchorSideTop.Side = asrCenter
-    Left = 12
-    Height = 12
-    Top = 21
-    Width = 60
-  end
-  object BOK: TButton
-    Anchors = [akTop, akRight]
-    BorderSpacing.OnChange = nil
-    Caption = '&OK'
-    Default = True
-    ModalResult = 1
-    TabOrder = 0
-    Left = 312
-    Height = 26
-    Top = 14
-    Width = 79
-  end
-  object BCancel: TButton
-    Anchors = [akTop, akRight]
-    BorderSpacing.OnChange = nil
-    Cancel = True
-    Caption = '&Cancel'
-    ModalResult = 2
-    TabOrder = 1
-    Left = 312
-    Height = 26
-    Top = 48
-    Width = 79
+    Transparent = False
   end
   object EFileName: TFileNameEdit
+    AnchorSideLeft.Control = LEFileName
+    AnchorSideTop.Control = LEFileName
+    AnchorSideTop.Side = asrBottom
+    Left = 6
+    Height = 29
+    Top = 30
+    Width = 394
     DialogTitle = 'Select an example file'
+    DialogOptions = []
     Filter = 'Pascal files|*.pp;*.pas|All files|*.*'
+    FilterIndex = 0
+    HideDirectories = False
     ButtonWidth = 23
     NumGlyphs = 1
     Anchors = [akTop, akLeft, akRight]
-    BorderSpacing.OnChange = nil
-    TabOrder = 2
-    Anchors = [akTop, akLeft, akRight]
-    BorderSpacing.OnChange = nil
-    TabOrder = 2
-    Left = 80
-    Height = 23
-    Top = 16
-    Width = 196
+    MaxLength = 0
+    TabOrder = 0
+  end
+  object ButtonPanel1: TButtonPanel
+    Left = 6
+    Height = 40
+    Top = 90
+    Width = 420
+    TabOrder = 1
+    ShowButtons = [pbOK, pbCancel, pbHelp]
   end
 end

@@ -28,15 +28,14 @@ interface
 
 uses
   Classes, SysUtils, LResources, Forms, Controls, Graphics, Dialogs, Buttons,
-  StdCtrls, EditBtn;
+  StdCtrls, EditBtn, ButtonPanel;
 
 type
 
   { TSourceForm }
 
   TSourceForm = class(TForm)
-    BOK: TButton;
-    BCancel: TButton;
+    ButtonPanel1: TButtonPanel;
     EOptions: TEdit;
     FESource: TFileNameEdit;
     LFESource: TLabel;
@@ -57,6 +56,8 @@ var
   SourceForm: TSourceForm;
 
 implementation
+
+{$R *.lfm}
 
 { TSourceForm }
 
@@ -80,8 +81,6 @@ begin
   FESource.Text:=AValue;
 end;
 
-initialization
-  {$I frmsource.lrs}
 
 end.
 

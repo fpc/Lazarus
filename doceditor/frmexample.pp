@@ -28,15 +28,14 @@ interface
 
 uses
   Classes, SysUtils, FileUtil, LResources, Forms, Controls, Graphics, Dialogs,
-  Buttons, EditBtn, StdCtrls;
+  Buttons, EditBtn, StdCtrls, ButtonPanel;
 
 type
 
   { TExampleForm }
 
   TExampleForm = class(TForm)
-    BOK: TButton;
-    BCancel: TButton;
+    ButtonPanel1: TButtonPanel;
     EFileName: TFileNameEdit;
     LEFileName: TLabel;
     procedure ExampleFormCloseQuery(Sender: TObject; var CanClose: boolean);
@@ -58,8 +57,7 @@ var
 
 implementation
 
-{ TExampleForm }
-
+{$R *.lfm}
 
 { TExampleForm }
 
@@ -116,9 +114,6 @@ begin
   Result := false;
   ShowMessage('Invalid file or path');
 end;
-
-initialization
-  {$I frmexample.lrs}
 
 end.
 

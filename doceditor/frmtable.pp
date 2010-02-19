@@ -28,15 +28,14 @@ interface
 
 uses
   Classes, SysUtils, LResources, Forms, Controls, Graphics, Dialogs, Buttons,
-  StdCtrls, Spin;
+  StdCtrls, Spin, ButtonPanel;
 
 type
 
   { TTableForm }
 
   TTableForm = class(TForm)
-    BOK: TButton;
-    BCancel: TButton;
+    ButtonPanel1: TButtonPanel;
     CBUseHeaderRow: TCheckBox;
     LSERows: TLabel;
     LSEColumns: TLabel;
@@ -53,8 +52,7 @@ var
 
 implementation
 
-initialization
-  {$I frmtable.lrs}
+{$R *.lfm}
 
 end.
 

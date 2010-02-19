@@ -28,14 +28,13 @@ interface
 
 uses
   Classes, SysUtils, LResources, Forms, Controls, Graphics, Dialogs, StdCtrls,
-  Buttons;
+  Buttons, ButtonPanel;
 
 type
   { TNewNodeForm }
 
   TNewNodeForm = class(TForm)
-    BOK: TButton;
-    BCancel: TButton;
+    ButtonPanel1: TButtonPanel;
     ENodeName: TEdit;
     LENodeName: TLabel;
   private
@@ -49,8 +48,7 @@ var
 
 implementation
 
-initialization
-  {$I frmnewnode.lrs}
+{$R *.lfm}
 
 end.
 

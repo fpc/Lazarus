@@ -157,6 +157,8 @@ implementation
 
 uses Inifiles,frmSource,lazdeopts;
 
+{$R *.lfm}
+
 Const
   // Do not localize !!
   SGlobal      = 'Global';
@@ -729,9 +731,6 @@ begin
     end;
 end;
 
-
-initialization
-  {$I frmbuild.lrs}
 
 end.
 

@@ -1,0 +1,902 @@
+msgid ""
+msgstr "Content-Type: text/plain; charset=UTF-8"
+
+#: frmbuild.sadddescriptionfile
+msgid "Select a new description file"
+msgstr "Выберите новый файл описания"
+
+#: frmbuild.sbuildok
+msgid "Documentation successfully built."
+msgstr "Документация успешно скомпилированна"
+
+#: frmbuild.seditdescriptionfile
+msgid "Change description file"
+msgstr "Изменить файл описания"
+
+#: frmbuild.serrfpdoc
+msgid "Building failed with exit code %d. Please check log."
+msgstr "Компиляция прервана с кодом завешения %d. Пожалуста, проверьте протокол."
+
+#: frmbuild.sselectoutputdirectory
+msgid "Select output directory"
+msgstr "Укажите каталог вывода"
+
+#: frmbuild.sselectoutputfile
+msgid "Select output file name"
+msgstr "Укажите имя выходного файла"
+
+#: frmbuild.susingcommand
+msgid "Building docs using command: "
+msgstr "Компиляция документации с использованием команды:"
+
+#: lazdemsg.sabouttext
+msgid ""
+"fpdoc editor 1.0\n"
+"(c) 2002 Michael Van Canneyt\n"
+"See http://www.freepascal.org/\n"
+msgstr ""
+
+#: lazdemsg.scancel
+msgid " Cancel "
+msgstr "Отмена"
+
+#: lazdemsg.scodeexample
+msgid "Example code File"
+msgstr ""
+
+#: lazdemsg.sdataforelement
+msgid "Documentation for element \"%s\":"
+msgstr ""
+
+#: lazdemsg.sdeleteelement
+msgid "Are you sure you want to delete element \"%s\" ?"
+msgstr ""
+
+#: lazdemsg.sdeletemodule
+msgid "Are you sure you want to delete module \"%s\" ?"
+msgstr ""
+
+#: lazdemsg.sdeletepackage
+msgid "Are you sure you want to delete package \"%s\" ?"
+msgstr ""
+
+#: lazdemsg.sdeletetopic
+msgid "Are you sure you want to delete topic \"%s\" ?"
+msgstr ""
+
+#: lazdemsg.sdescription
+msgid "Description"
+msgstr ""
+
+#: lazdemsg.serrnomoduleforelement
+msgid "No module found to insert element \"%s\""
+msgstr ""
+
+#: lazdemsg.serrnonodeforelement
+msgid "No node found for element \"%s\""
+msgstr ""
+
+#: lazdemsg.serrnonodeformodule
+msgid "No node found for module \"%s\""
+msgstr ""
+
+#: lazdemsg.serrnonodeforpackage
+msgid "No node found for package \"%s\""
+msgstr ""
+
+#: lazdemsg.serrnonodefortopic
+msgid "No parent node found to insert topic \"%s\""
+msgstr ""
+
+#: lazdemsg.serrnopackageformodule
+msgid "No package found to insert module \"%s\""
+msgstr ""
+
+#: lazdemsg.serrors
+msgid "Errors"
+msgstr ""
+
+#: lazdemsg.serrunknowndomelement
+msgid "Unknwon DOM element as parent for selected element: \"%s\""
+msgstr ""
+
+#: lazdemsg.sfilemodified
+msgid "Document \"%s\" was modified, would you like to save it?"
+msgstr ""
+
+#: lazdemsg.sfilestructure
+msgid "Documentation structure"
+msgstr ""
+
+#: lazdemsg.sfiletemplate
+msgid "template.xml"
+msgstr ""
+
+#: lazdemsg.sforfile
+msgid " in file "
+msgstr ""
+
+#: lazdemsg.sformodule
+msgid " in module "
+msgstr ""
+
+#: lazdemsg.sforpackage
+msgid " in package "
+msgstr ""
+
+#: lazdemsg.sfortopic
+msgid " in topic"
+msgstr ""
+
+#: lazdemsg.sfpde
+msgid "Free Pascal documentation editor"
+msgstr ""
+
+#: lazdemsg.shintfilenew
+msgid "New file"
+msgstr ""
+
+#: lazdemsg.shintfileopen
+msgid "Open file"
+msgstr ""
+
+#: lazdemsg.shintfilesave
+msgid "Save file"
+msgstr ""
+
+#: lazdemsg.shintfilesaveas
+msgid "Save file as"
+msgstr ""
+
+#: lazdemsg.shintinsertelement
+msgid "New element"
+msgstr ""
+
+#: lazdemsg.shintinsertlink
+msgctxt "lazdemsg.shintinsertlink"
+msgid "Insert link"
+msgstr ""
+
+#: lazdemsg.shintinsertmodule
+msgid "New module"
+msgstr ""
+
+#: lazdemsg.shintinsertpackage
+msgid "New package"
+msgstr ""
+
+#: lazdemsg.shintinsertprintshortlink
+msgid "Insert a short description link"
+msgstr ""
+
+#: lazdemsg.shintinserttable
+msgctxt "lazdemsg.shintinserttable"
+msgid "Insert table"
+msgstr ""
+
+#: lazdemsg.shintinserttopic
+msgid "New topic"
+msgstr ""
+
+#: lazdemsg.shinttoolbaradd
+msgid "Add"
+msgstr ""
+
+#: lazdemsg.shinttoolbardelete
+msgctxt "lazdemsg.shinttoolbardelete"
+msgid "Delete"
+msgstr ""
+
+#: lazdemsg.shinttoolbaredit
+msgid "Edit"
+msgstr ""
+
+#: lazdemsg.shmenuextraoptions
+msgid "Show options dialog"
+msgstr ""
+
+#: lazdemsg.shmenuhelpabout
+msgid "About this program"
+msgstr ""
+
+#: lazdemsg.sinsertlink
+msgctxt "lazdemsg.sinsertlink"
+msgid "Insert link"
+msgstr ""
+
+#: lazdemsg.sinsertprintshortlink
+msgid "Insert short description link"
+msgstr ""
+
+#: lazdemsg.sinserttable
+msgctxt "lazdemsg.sinserttable"
+msgid "Insert table"
+msgstr ""
+
+#: lazdemsg.slinktarget
+msgid "Link target"
+msgstr ""
+
+#: lazdemsg.slinktext
+msgid "Link text"
+msgstr ""
+
+#: lazdemsg.smakeskelfromsource
+msgid "Make new document from source file"
+msgstr ""
+
+#: lazdemsg.smarkselection
+msgid "Mark selection %s"
+msgstr ""
+
+#: lazdemsg.smenuclose
+msgid "_Close"
+msgstr ""
+
+#: lazdemsg.smenucollapseall
+msgid "Collapse All"
+msgstr ""
+
+#: lazdemsg.smenudelete
+msgctxt "lazdemsg.smenudelete"
+msgid "Delete"
+msgstr ""
+
+#: lazdemsg.smenuexit
+msgid "E_xit"
+msgstr ""
+
+#: lazdemsg.smenuexpandall
+msgid "Expand All"
+msgstr ""
+
+#: lazdemsg.smenuextra
+msgid "Extra"
+msgstr ""
+
+#: lazdemsg.smenuextraoptions
+msgctxt "lazdemsg.smenuextraoptions"
+msgid "Options"
+msgstr ""
+
+#: lazdemsg.smenufile
+msgid "File"
+msgstr ""
+
+#: lazdemsg.smenuformat
+msgid "Format"
+msgstr ""
+
+#: lazdemsg.smenuformatbold
+msgid "_Bold"
+msgstr ""
+
+#: lazdemsg.smenuformatcode
+msgid "_Code"
+msgstr ""
+
+#: lazdemsg.smenuformatfile
+msgid "_File"
+msgstr ""
+
+#: lazdemsg.smenuformatitalics
+msgid "_Italic"
+msgstr ""
+
+#: lazdemsg.smenuformatparagraph
+msgid "_Paragraph"
+msgstr ""
+
+#: lazdemsg.smenuformatremark
+msgid "_Remark"
+msgstr ""
+
+#: lazdemsg.smenuformatunderline
+msgid "_Underline"
+msgstr ""
+
+#: lazdemsg.smenuformatvariable
+msgid "_Variable"
+msgstr ""
+
+#: lazdemsg.smenuhelp
+msgid "Help"
+msgstr ""
+
+#: lazdemsg.smenuhelpabout
+msgid "About"
+msgstr ""
+
+#: lazdemsg.smenuinsert
+msgid "Insert"
+msgstr ""
+
+#: lazdemsg.smenuinsertelement
+msgid "_Element"
+msgstr ""
+
+#: lazdemsg.smenuinsertlink
+msgid "_Link"
+msgstr ""
+
+#: lazdemsg.smenuinsertmodule
+msgid "_Module"
+msgstr ""
+
+#: lazdemsg.smenuinsertpackage
+msgid "_Package"
+msgstr ""
+
+#: lazdemsg.smenuinserttable
+msgid "_Table"
+msgstr ""
+
+#: lazdemsg.smenuinserttopic
+msgid "T_opic"
+msgstr ""
+
+#: lazdemsg.smenunew
+msgid "_New"
+msgstr ""
+
+#: lazdemsg.smenunewfromsource
+msgid "New from so_urce"
+msgstr ""
+
+#: lazdemsg.smenuopen
+msgid "_Open"
+msgstr ""
+
+#: lazdemsg.smenurecent
+msgid "_Recent"
+msgstr ""
+
+#: lazdemsg.smenurename
+msgid "Rename"
+msgstr ""
+
+#: lazdemsg.smenusave
+msgid "_Save"
+msgstr ""
+
+#: lazdemsg.smenusaveas
+msgid "Save _as"
+msgstr ""
+
+#: lazdemsg.smoduleelements
+msgid "Elements for selected node"
+msgstr ""
+
+#: lazdemsg.sname
+msgid "Name"
+msgstr ""
+
+#: lazdemsg.snew
+msgid "New"
+msgstr ""
+
+#: lazdemsg.snewdocument
+msgid "New document"
+msgstr ""
+
+#: lazdemsg.snoelement
+msgid "No element selected"
+msgstr ""
+
+#: lazdemsg.sok
+msgid " OK "
+msgstr ""
+
+#: lazdemsg.sopenfiletitle
+msgid "Select file to open"
+msgstr ""
+
+#: lazdemsg.soptbackupextension
+msgid "Backup file extension"
+msgstr ""
+
+#: lazdemsg.soptconfirmdelete
+msgid "Confirm node deletion"
+msgstr ""
+
+#: lazdemsg.soptcreatebackup
+msgid "Backup existing files"
+msgstr ""
+
+#: lazdemsg.soptdefaultextension
+msgid "Default extension for new files"
+msgstr ""
+
+#: lazdemsg.soptmaxrecentused
+msgid "Items in MRU list"
+msgstr ""
+
+#: lazdemsg.soptskipemptynodes
+msgid "Do not create empty nodes"
+msgstr ""
+
+#: lazdemsg.spackages
+msgid "Packages"
+msgstr ""
+
+#: lazdemsg.srenameelement
+msgid "Rename element"
+msgstr ""
+
+#: lazdemsg.srenamemodule
+msgid "Rename module"
+msgstr ""
+
+#: lazdemsg.srenamepackage
+msgid "Rename package"
+msgstr ""
+
+#: lazdemsg.srenametopic
+msgid "Rename topic"
+msgstr ""
+
+#: lazdemsg.ssavefiletitle
+msgid "Enter filename to save to"
+msgstr ""
+
+#: lazdemsg.sseealso
+msgid "See Also"
+msgstr ""
+
+#: lazdemsg.sshortdescription
+msgid "Short"
+msgstr ""
+
+#: lazdemsg.sskelerrorwithfile
+msgid "makeskel reported an error (%d). Try to load produced file anyway ?"
+msgstr ""
+
+#: lazdemsg.sskelerrorwithoutfile
+msgid "makeskel reported an error (%d) and produced no file."
+msgstr ""
+
+#: lazdemsg.stablecols
+msgid "Columns"
+msgstr ""
+
+#: lazdemsg.stableheader
+msgid "Use header row"
+msgstr ""
+
+#: lazdemsg.stablerows
+msgid "Rows"
+msgstr ""
+
+#: TABOUTFORM.CAPTION
+msgid "About this application"
+msgstr ""
+
+#: TABOUTFORM.LCOPYRIGHT1.CAPTION
+msgid "This application is (c) by  Michael Van Canneyt and the Lazarus team"
+msgstr ""
+
+#: TABOUTFORM.LCOPYRIGHT2.CAPTION
+msgid "It is released under the terms of the  GENERAL PUBLIC LICENSE:"
+msgstr ""
+
+#: TABOUTFORM.LTHISAPPLICATION.CAPTION
+msgid "Lazarus Documentation Editor"
+msgstr ""
+
+#: TEXAMPLEFORM.CAPTION
+msgid "Example file"
+msgstr ""
+
+#: TEXAMPLEFORM.LEFILENAME.CAPTION
+msgid "&Filename"
+msgstr ""
+
+#: TLINKFORM.CAPTION
+msgid "LinkForm"
+msgstr ""
+
+#: TLINKFORM.LELINKTEXT.CAPTION
+msgid "LELinkText"
+msgstr ""
+
+#: TLINKFORM.LLINKTARGET.CAPTION
+msgid "&Link target"
+msgstr ""
+
+#: TMAINFORM.ACLOSE.CAPTION
+msgid "&Close"
+msgstr ""
+
+#: TMAINFORM.ACLOSE.HINT
+msgid "Close current file"
+msgstr ""
+
+#: TMAINFORM.AEXIT.CAPTION
+msgid "&Quit"
+msgstr ""
+
+#: TMAINFORM.AEXIT.HINT
+msgid "Exit from the program"
+msgstr ""
+
+#: TMAINFORM.AEXTRABUILD.CAPTION
+msgid "&Build"
+msgstr ""
+
+#: TMAINFORM.AEXTRAOPTIONS.CAPTION
+msgid "&Options"
+msgstr ""
+
+#: TMAINFORM.AEXTRAOPTIONS.HINT
+msgid "Set program options"
+msgstr ""
+
+#: TMAINFORM.AFORMATBOLD.CAPTION
+msgid "&Bold"
+msgstr ""
+
+#: TMAINFORM.AFORMATBOLD.HINT
+msgid "Format selection bold"
+msgstr ""
+
+#: TMAINFORM.AFORMATCODE.CAPTION
+msgid "&Code"
+msgstr ""
+
+#: TMAINFORM.AFORMATCODE.HINT
+msgid "Format selection as code"
+msgstr ""
+
+#: TMAINFORM.AFORMATFILE.CAPTION
+msgctxt "TMAINFORM.AFORMATFILE.CAPTION"
+msgid "&File"
+msgstr ""
+
+#: TMAINFORM.AFORMATFILE.HINT
+msgid "Format selection as file"
+msgstr ""
+
+#: TMAINFORM.AFORMATITALIC.CAPTION
+msgid "&Italic"
+msgstr ""
+
+#: TMAINFORM.AFORMATITALIC.HINT
+msgid "Format selection italic"
+msgstr ""
+
+#: TMAINFORM.AFORMATPARAGRAPH.CAPTION
+msgid "&Paragraph"
+msgstr ""
+
+#: TMAINFORM.AFORMATPARAGRAPH.HINT
+msgid "Format selection as paragraph"
+msgstr ""
+
+#: TMAINFORM.AFORMATREMARK.CAPTION
+msgid "&Remark"
+msgstr ""
+
+#: TMAINFORM.AFORMATREMARK.HINT
+msgid "Format selection as remark"
+msgstr ""
+
+#: TMAINFORM.AFORMATUNDERLINE.CAPTION
+msgid "&Underline"
+msgstr ""
+
+#: TMAINFORM.AFORMATUNDERLINE.HINT
+msgid "Format selection underline"
+msgstr ""
+
+#: TMAINFORM.AFORMATVARIABLE.CAPTION
+msgid "&Variable"
+msgstr ""
+
+#: TMAINFORM.AFORMATVARIABLE.HINT
+msgid "Format selection as variable"
+msgstr ""
+
+#: TMAINFORM.AHELPABOUT.CAPTION
+msgid "&About..."
+msgstr ""
+
+#: TMAINFORM.AHELPABOUT.HINT
+msgid "About this program..."
+msgstr ""
+
+#: TMAINFORM.AINSERTELEMENT.CAPTION
+msgid "&Element"
+msgstr ""
+
+#: TMAINFORM.AINSERTELEMENT.HINT
+msgid "Insert a new element"
+msgstr ""
+
+#: TMAINFORM.AINSERTLINK.CAPTION
+msgid "&Link"
+msgstr ""
+
+#: TMAINFORM.AINSERTLINK.HINT
+msgid "Insert a new link"
+msgstr ""
+
+#: TMAINFORM.AINSERTMODULE.CAPTION
+msgid "&Module"
+msgstr ""
+
+#: TMAINFORM.AINSERTMODULE.HINT
+msgid "Insert a new module"
+msgstr ""
+
+#: TMAINFORM.AINSERTPACKAGE.CAPTION
+msgid "Package"
+msgstr ""
+
+#: TMAINFORM.AINSERTPACKAGE.HINT
+msgid "Insert a new package"
+msgstr ""
+
+#: TMAINFORM.AINSERTPRINTSHORT.CAPTION
+msgid "Insert short desc link"
+msgstr ""
+
+#: TMAINFORM.AINSERTPRINTSHORT.HINT
+msgid "Insert a Short Description link"
+msgstr ""
+
+#: TMAINFORM.AINSERTTABLE.CAPTION
+msgid "T&able"
+msgstr ""
+
+#: TMAINFORM.AINSERTTABLE.HINT
+msgid "Insert a new table"
+msgstr ""
+
+#: TMAINFORM.AINSERTTOPIC.CAPTION
+msgid "&Topic"
+msgstr ""
+
+#: TMAINFORM.AINSERTTOPIC.HINT
+msgid "Insert a new topic"
+msgstr ""
+
+#: TMAINFORM.ANEW.CAPTION
+msgid "&New"
+msgstr ""
+
+#: TMAINFORM.ANEW.HINT
+msgid "Create a new documentation file"
+msgstr ""
+
+#: TMAINFORM.ANEWFROMFILE.CAPTION
+msgid "New from fi&le"
+msgstr ""
+
+#: TMAINFORM.ANEWFROMFILE.HINT
+msgid "Create new documentation file from source"
+msgstr ""
+
+#: TMAINFORM.AOPEN.CAPTION
+msgid "&Open"
+msgstr ""
+
+#: TMAINFORM.AOPEN.HINT
+msgid "Open an existing documentation file"
+msgstr ""
+
+#: TMAINFORM.ASAVE.CAPTION
+msgid "&Save"
+msgstr ""
+
+#: TMAINFORM.ASAVE.HINT
+msgid "Save the current file"
+msgstr ""
+
+#: TMAINFORM.ASAVEAS.CAPTION
+msgid "Save &as"
+msgstr ""
+
+#: TMAINFORM.ASAVEAS.HINT
+msgid "Save the current file with a new name"
+msgstr ""
+
+#: TMAINFORM.CAPTION
+msgid "MainForm"
+msgstr ""
+
+#: TMAINFORM.MENUITEM2.CAPTION
+msgctxt "TMAINFORM.MENUITEM2.CAPTION"
+msgid "-"
+msgstr ""
+
+#: TMAINFORM.MFILE.CAPTION
+msgctxt "TMAINFORM.MFILE.CAPTION"
+msgid "&File"
+msgstr ""
+
+#: TMAINFORM.MIEXTRA.CAPTION
+msgid "&Extra"
+msgstr ""
+
+#: TMAINFORM.MIHELP.CAPTION
+msgid "&Help"
+msgstr ""
+
+#: TMAINFORM.MIINSERT.CAPTION
+msgid "&Insert"
+msgstr ""
+
+#: TMAINFORM.MIRECENT.CAPTION
+msgid "&Recent"
+msgstr ""
+
+#: TMAINFORM.MISEPARATE.CAPTION
+msgctxt "TMAINFORM.MISEPARATE.CAPTION"
+msgid "-"
+msgstr ""
+
+#: TMAINFORM.QUICKLINK.CAPTION
+msgid "&Quick Link"
+msgstr ""
+
+#: TMAINFORM.TBMAIN.CAPTION
+msgid "TBMain"
+msgstr ""
+
+#: TMAINFORM.TOOLBUTTON1.CAPTION
+msgid "ToolButton1"
+msgstr ""
+
+#: TMAINFORM.TOOLBUTTON13.CAPTION
+msgid "ToolButton13"
+msgstr ""
+
+#: TMAINFORM.TOOLBUTTON5.CAPTION
+msgid "ToolButton5"
+msgstr ""
+
+#: TMAKESKELFORM.CAPTION
+msgid "Create new file from pascal source"
+msgstr ""
+
+#: TMAKESKELFORM.CBDISABLEARGUMENTS.CAPTION
+msgid "No &arguments sections"
+msgstr ""
+
+#: TMAKESKELFORM.CBDISABLEERRORS.CAPTION
+msgid "No &errors sections"
+msgstr ""
+
+#: TMAKESKELFORM.CBDISABLEPRIVATE.CAPTION
+msgid "No pr&ivate methods"
+msgstr ""
+
+#: TMAKESKELFORM.CBDISABLEPROTECTED.CAPTION
+msgid "No &protected methods"
+msgstr ""
+
+#: TMAKESKELFORM.CBDISABLERESULTS.CAPTION
+msgid "No &results sections"
+msgstr ""
+
+#: TMAKESKELFORM.CBDISABLESEEALSO.CAPTION
+msgid "No &seealso sections"
+msgstr ""
+
+#: TMAKESKELFORM.EPACKAGE.TEXT
+msgid "<package name>"
+msgstr ""
+
+#: TMAKESKELFORM.LABEL1.CAPTION
+msgid "I&nput file"
+msgstr ""
+
+#: TMAKESKELFORM.LABEL2.CAPTION
+msgid "O&utput file"
+msgstr ""
+
+#: TMAKESKELFORM.LABEL3.CAPTION
+msgid "E&xtra options"
+msgstr ""
+
+#: TMAKESKELFORM.LEPACKAGE.CAPTION
+msgid "Pac&kage name"
+msgstr ""
+
+#: TNEWNODEFORM.CAPTION
+msgid "Create new node"
+msgstr ""
+
+#: TNEWNODEFORM.ENODENAME.TEXT
+msgid "ENodeName"
+msgstr ""
+
+#: TNEWNODEFORM.LENODENAME.CAPTION
+msgid "Node &name"
+msgstr ""
+
+#: TOPTIONSFORM.CAPTION
+msgctxt "TOPTIONSFORM.CAPTION"
+msgid "Options"
+msgstr ""
+
+#: TOPTIONSFORM.CBCONFIRMDELETE.CAPTION
+msgid "C&onfirm deletes"
+msgstr ""
+
+#: TOPTIONSFORM.CBCREATEBACKUP.CAPTION
+msgid "Create &backups"
+msgstr ""
+
+#: TOPTIONSFORM.CBREOPENLAST.CAPTION
+msgid "Reopen last file on startup"
+msgstr ""
+
+#: TOPTIONSFORM.CBSHOWHINTS.CAPTION
+msgid "Show Hints"
+msgstr "Отображать подсказки"
+
+#: TOPTIONSFORM.CBSKIPEMPTYNODES.CAPTION
+msgid "&Skip empty nodes when saving"
+msgstr ""
+
+#: TOPTIONSFORM.CBSTARTMAXIMIZED.CAPTION
+msgid "Start maximized"
+msgstr ""
+
+#: TOPTIONSFORM.LEBACKUPEXTENSION.CAPTION
+msgid "Backup extension"
+msgstr "Архивной расширение"
+
+#: TOPTIONSFORM.LEDEFAULTEXTENSION.CAPTION
+msgid "Default extension"
+msgstr "Расширение по умолчанию"
+
+#: TOPTIONSFORM.LEMAXMRU.CAPTION
+msgid "Max. recent used"
+msgstr ""
+
+#: TOPTIONSFORM.LFEFPDOC.CAPTION
+msgid "fpdoc program"
+msgstr ""
+
+#: TOPTIONSFORM.LFEMAKESKEL.CAPTION
+msgid "makeskel program"
+msgstr ""
+
+#: TOPTIONSFORM.TABDESKTOP.CAPTION
+msgid "Desktop"
+msgstr ""
+
+#: TOPTIONSFORM.TABGENERAL.CAPTION
+msgid "General"
+msgstr "Общее"
+
+#: TSOURCEFORM.CAPTION
+msgid "Source file properties"
+msgstr "Свойства исходного файла"
+
+#: TSOURCEFORM.LEOPTIONS.CAPTION
+msgid "Op&tions"
+msgstr "Параметры"
+
+#: TSOURCEFORM.LFESOURCE.CAPTION
+msgid "&Source"
+msgstr "Исходник"
+
+#: TTABLEFORM.CAPTION
+msgid "Insert new table"
+msgstr "Вставить новую таблицу"
+
+#: TTABLEFORM.CBUSEHEADERROW.CAPTION
+msgid "Use &header row"
+msgstr "Использовать заголовочные колонки"
+
+#: TTABLEFORM.LSECOLUMNS.CAPTION
+msgid "Co&lumns"
+msgstr "Колонки"
+
+#: TTABLEFORM.LSEROWS.CAPTION
+msgid "&Rows"
+msgstr "Строки"
+

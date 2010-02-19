@@ -3,12 +3,12 @@ program lazde;
 {$mode objfpc}{$H+}
 
 uses
-  interfaces, // this includes the LCL widgetset
-  forms, frmmain, frmOptions, frmNewNode, frmmakeskel,
+  Interfaces, // this includes the LCL widgetset
+  Forms, FrmMain, frmOptions, frmNewNode, frmmakeskel,
   frmLink, frmTable, frmabout, pkeditor, eleditor, fpdeutil, frmexample,
-  frmbuild, fmmakeskel, frmsource, lazdemsg, lazdeopts, pgeditor;
+  frmbuild, frmsource, lazdemsg, lazdeopts, pgeditor;
 
-{$IFDEF WINDOWS}{$R lazde.rc}{$ENDIF}
+{$R lazde.res}
 
 begin
   Application.Initialize;

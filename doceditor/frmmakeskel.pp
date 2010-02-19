@@ -28,21 +28,20 @@ interface
 
 uses
   Classes, SysUtils, LResources, Forms, Controls, Graphics, Dialogs, Buttons,
-  StdCtrls, EditBtn;
+  StdCtrls, EditBtn, ButtonPanel, ExtCtrls;
 
 type
 
   { TMakeSkelForm }
 
   TMakeSkelForm = class(TForm)
-    BOK: TButton;
-    BCancel: TButton;
-    CBDisableResults: TCheckBox;
+    ButtonPanel1: TButtonPanel;
     CBDisableArguments: TCheckBox;
-    CBDisableSeeAlso: TCheckBox;
-    CBDisableProtected: TCheckBox;
-    CBDisablePrivate: TCheckBox;
     CBDisableErrors: TCheckBox;
+    CBDisablePrivate: TCheckBox;
+    CBDisableProtected: TCheckBox;
+    CBDisableResults: TCheckBox;
+    CBDisableSeeAlso: TCheckBox;
     EAdditionalOptions: TEdit;
     EPackage: TEdit;
     FEinputFile: TFileNameEdit;
@@ -51,6 +50,8 @@ type
     Label2: TLabel;
     Label3: TLabel;
     LEPackage: TLabel;
+    Panel1: TGroupBox;
+    Panel2: TGroupBox;
     procedure CheckEnabled(Sender: TObject);
   private
     { private declarations }
@@ -63,15 +64,14 @@ var
 
 implementation
 
+{$R *.lfm}
+
 { TMakeSkelForm }
 
 procedure TMakeSkelForm.CheckEnabled(Sender: TObject);
 begin
   if Sender=nil then ;
 end;
-
-initialization
-  {$I frmmakeskel.lrs}
 
 end.
 

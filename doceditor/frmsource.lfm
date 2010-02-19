@@ -1,82 +1,80 @@
 object SourceForm: TSourceForm
-  Caption = 'Source file properties'
-  ClientHeight = 85
-  ClientWidth = 396
-  PixelsPerInch = 90
+  Left = 327
+  Height = 180
+  Top = 260
+  Width = 456
   HorzScrollBar.Page = 395
   VertScrollBar.Page = 84
-  Left = 327
-  Height = 85
-  Top = 260
-  Width = 396
+  ActiveControl = FESource
+  Caption = 'Source file properties'
+  ClientHeight = 180
+  ClientWidth = 456
+  LCLVersion = '0.9.29'
   object LFESource: TLabel
+    AnchorSideLeft.Control = Owner
+    AnchorSideTop.Control = Owner
+    Left = 6
+    Height = 18
+    Top = 6
+    Width = 62
     Alignment = taRightJustify
-    BorderSpacing.OnChange = nil
+    BorderSpacing.Around = 6
     Caption = '&Source'
-    Color = clNone
     FocusControl = FESource
     Layout = tlCenter
-    Left = 6
-    Height = 23
-    Top = 8
-    Width = 65
+    ParentColor = False
   end
   object LEOptions: TLabel
+    AnchorSideLeft.Control = Owner
+    AnchorSideTop.Control = FESource
+    AnchorSideTop.Side = asrBottom
+    Left = 6
+    Height = 18
+    Top = 65
+    Width = 67
     Alignment = taRightJustify
-    BorderSpacing.OnChange = nil
+    BorderSpacing.Around = 6
     Caption = 'Op&tions'
-    Color = clNone
     FocusControl = EOptions
     Layout = tlCenter
-    Left = 6
-    Height = 23
-    Top = 40
-    Width = 65
-  end
-  object BOK: TButton
-    Anchors = [akTop, akRight]
-    BorderSpacing.OnChange = nil
-    Caption = '&OK'
-    Default = True
-    ModalResult = 1
-    TabOrder = 0
-    Left = 312
-    Height = 25
-    Top = 8
-    Width = 75
-  end
-  object BCancel: TButton
-    Anchors = [akTop, akRight]
-    BorderSpacing.OnChange = nil
-    Cancel = True
-    Caption = '&Cancel'
-    TabOrder = 1
-    Left = 312
-    Height = 25
-    Top = 40
-    Width = 75
+    ParentColor = False
   end
   object FESource: TFileNameEdit
+    AnchorSideLeft.Control = LFESource
+    AnchorSideTop.Control = LFESource
+    AnchorSideTop.Side = asrBottom
+    Left = 6
+    Height = 29
+    Top = 30
+    Width = 417
+    DialogOptions = []
+    FilterIndex = 0
+    HideDirectories = False
     ButtonWidth = 23
     NumGlyphs = 1
     Anchors = [akTop, akLeft, akRight]
-    BorderSpacing.OnChange = nil
-    TabOrder = 2
-    Anchors = [akTop, akLeft, akRight]
-    BorderSpacing.OnChange = nil
-    TabOrder = 2
-    Left = 75
-    Height = 23
-    Top = 8
-    Width = 208
+    MaxLength = 0
+    TabOrder = 0
   end
   object EOptions: TEdit
+    AnchorSideLeft.Control = LEOptions
+    AnchorSideTop.Control = LEOptions
+    AnchorSideTop.Side = asrBottom
+    AnchorSideRight.Control = Owner
+    AnchorSideRight.Side = asrBottom
+    Left = 6
+    Height = 29
+    Top = 89
+    Width = 450
     Anchors = [akTop, akLeft, akRight]
-    BorderSpacing.OnChange = nil
-    TabOrder = 3
-    Left = 75
-    Height = 23
-    Top = 40
-    Width = 229
+    TabOrder = 1
+  end
+  object ButtonPanel1: TButtonPanel
+    Left = 6
+    Height = 40
+    Top = 134
+    Width = 444
+    TabOrder = 2
+    ShowButtons = [pbOK, pbCancel, pbHelp]
   end
 end

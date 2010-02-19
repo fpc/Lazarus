@@ -28,14 +28,13 @@ interface
 
 uses
   Classes, SysUtils, LResources, Forms, Controls, Graphics, Dialogs, StdCtrls,
-  Buttons;
+  Buttons, ButtonPanel;
 
 type
   { TLinkForm }
 
   TLinkForm = class(TForm)
-    BOK: TButton;
-    BCancel: TButton;
+    ButtonPanel1: TButtonPanel;
     CBTarget: TComboBox;
     ELinkText: TEdit;
     LLinkTarget: TLabel;
@@ -51,8 +50,7 @@ var
 
 implementation
 
-initialization
-  {$I frmlink.lrs}
+{$R *.lfm}
 
 end.
 

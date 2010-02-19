@@ -28,14 +28,14 @@ interface
 
 uses
   Classes, SysUtils, LResources, Forms, Controls, Graphics, Dialogs, Buttons,
-  StdCtrls;
+  StdCtrls, ButtonPanel;
 
 type
 
   { TAboutForm }
 
   TAboutForm = class(TForm)
-    Button1: TButton;
+    ButtonPanel1: TButtonPanel;
     LThisApplication: TLabel;
     LCopyRight1: TLabel;
     LCopyRight2: TLabel;
@@ -51,8 +51,7 @@ var
 
 implementation
 
-initialization
-  {$I frmabout.lrs}
+{$R *.lfm}
 
 end.
 

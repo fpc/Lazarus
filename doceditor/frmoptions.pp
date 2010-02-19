@@ -28,15 +28,14 @@ interface
 
 uses
   Classes, SysUtils, LResources, Forms, Controls, Graphics, Dialogs, StdCtrls,
-  Buttons, Spin, EditBtn, ExtCtrls, ComCtrls;
+  Buttons, Spin, EditBtn, ExtCtrls, ComCtrls, ButtonPanel;
 
 type
 
   { TOptionsForm }
 
   TOptionsForm = class(TForm)
-    BOK: TButton;
-    BCancel: TButton;
+    ButtonPanel1: TButtonPanel;
     CBConfirmDelete: TCheckBox;
     CBCreateBackup: TCheckBox;
     CBSkipEmptyNodes: TCheckBox;
@@ -53,11 +52,10 @@ type
     LEBackupExtension: TLabel;
     LEMaxMRU: TLabel;
     PageControl1: TPageControl;
-    Panel1: TPanel;
     SEMaxRecentUsed: TSpinEdit;
     tabGeneral: TTabSheet;
     tabDesktop: TTabSheet;
-    procedure BOKClick(Sender: TObject);
+    procedure FormClose(Sender: TObject; var CloseAction: TCloseAction);
     procedure OptionsFormShow(Sender: TObject);
   private
     { private declarations }
@@ -74,18 +72,20 @@ implementation
 
 uses LazDEOpts;
 
+{$R *.lfm}
+
 { TOptionsForm }
 
 procedure TOptionsForm.OptionsFormShow(Sender: TObject);
 begin
-  if Sender=nil then ;
   OptionsToForm;
 end;
 
-procedure TOptionsForm.BOKClick(Sender: TObject);
+procedure TOptionsForm.FormClose(Sender: TObject; var CloseAction: TCloseAction
+  );
 begin
-  if Sender=nil then ;
-  FormToOptions;
+  if ModalResult = mrOk then
+    FormToOptions;
 end;
 
 procedure TOptionsForm.optionstoform;
@@ -118,9 +118,6 @@ begin
   ReopenLast := CBReopenLast.Checked;
   SaveOptions;
 end;
-
-initialization
-  {$I frmoptions.lrs}
 
 end.
 
