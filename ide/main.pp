@@ -101,7 +101,7 @@ uses
   CodeToolsDefines, DiffDialog, DiskDiffsDialog, UnitInfoDlg, EditorOptions,
   SourceEditProcs, MsgQuickFixes, ViewUnit_dlg,
   // converter
-  ChgEncodingDlg, DelphiUnit2Laz, DelphiProject2Laz, LazXMLForms,
+  ChgEncodingDlg, ConvertDelphi, LazXMLForms,
   // rest of the ide
   Splash, IDEDefs, LazarusIDEStrConsts, LazConf, MsgView, SearchResultView,
   CodeTemplatesDlg, CodeBrowser, FindUnitDlg, IdeOptionsDlg,
@@ -3976,6 +3976,7 @@ begin
   try
     InputHistories.ApplyFileDialogSettings(OpenDialog);
     OpenDialog.Title:=lisChooseDelphiUnit;
+    OpenDialog.Filter:=lisDelphiUnit+' (*.pas)|*.pas|'+dlgAllFiles+' ('+GetAllFilesMask+')|' + GetAllFilesMask;
     OpenDialog.Options:=OpenDialog.Options+[ofAllowMultiSelect];
     if InputHistories.LastConvertDelphiUnit<>'' then begin
       OpenDialog.InitialDir:=
@@ -4050,7 +4051,7 @@ begin
   try
     InputHistories.ApplyFileDialogSettings(OpenDialog);
     OpenDialog.Title:=lisChooseDelphiPackage;
-    OpenDialog.Filter:=lisDelphiProject+' (*.dpk)|*.dpk|'+dlgAllFiles+' ('+GetAllFilesMask+')|' + GetAllFilesMask;
+    OpenDialog.Filter:=lisDelphiPackage+' (*.dpk)|*.dpk|'+dlgAllFiles+' ('+GetAllFilesMask+')|' + GetAllFilesMask;
     if InputHistories.LastConvertDelphiPackage<>'' then begin
       OpenDialog.InitialDir:=
                        ExtractFilePath(InputHistories.LastConvertDelphiPackage);
@@ -11202,13 +11203,16 @@ function TMainIDE.DoConvertDelphiUnit(const DelphiFilename: string;
   CanAbort: boolean): TModalResult;
 var
   OldChange: Boolean;
+  Converter: TConvertDelphiUnit;
 begin
   InputHistories.LastConvertDelphiUnit:=DelphiFilename;
   OldChange:=OpenEditorsOnCodeToolChange;
   OpenEditorsOnCodeToolChange:=true;
+  Converter := TConvertDelphiUnit.Create(nil, DelphiFilename, []);
   try
-    Result:=DelphiProject2Laz.ConvertDelphiToLazarusUnit(DelphiFilename,[]);
+    Result:=Converter.Convert;
   finally
+    Converter.Free;
     OpenEditorsOnCodeToolChange:=OldChange;
   end;
 end;
@@ -11217,13 +11221,16 @@ function TMainIDE.DoConvertDelphiProject(const DelphiFilename: string
   ): TModalResult;
 var
   OldChange: Boolean;
+  Converter: TConvertDelphiProject;
 begin
   InputHistories.LastConvertDelphiProject:=DelphiFilename;
   OldChange:=OpenEditorsOnCodeToolChange;
   OpenEditorsOnCodeToolChange:=true;
+  Converter := TConvertDelphiProject.Create(DelphiFilename);
   try
-    Result:=DelphiProject2Laz.ConvertDelphiToLazarusProject(DelphiFilename);
+    Result:=Converter.Convert;
   finally
+    Converter.Free;
     OpenEditorsOnCodeToolChange:=OldChange;
   end;
 end;
@@ -11232,13 +11239,16 @@ function TMainIDE.DoConvertDelphiPackage(const DelphiFilename: string
   ): TModalResult;
 var
   OldChange: Boolean;
+  Converter: TConvertDelphiPackage;
 begin
   InputHistories.LastConvertDelphiPackage:=DelphiFilename;
   OldChange:=OpenEditorsOnCodeToolChange;
   OpenEditorsOnCodeToolChange:=true;
+  Converter := TConvertDelphiPackage.Create(DelphiFilename);
   try
-    Result:=DelphiProject2Laz.ConvertDelphiToLazarusPackage(DelphiFilename);
+    Result:=Converter.Convert;
   finally
+    Converter.Free;
     OpenEditorsOnCodeToolChange:=OldChange;
   end;
 end;

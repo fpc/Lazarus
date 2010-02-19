@@ -422,23 +422,25 @@ resourcestring
   lisChooseDelphiUnit = 'Choose Delphi unit (*.pas)';
   lisChooseDelphiProject = 'Choose Delphi project (*.dpr)';
   lisChooseDelphiPackage = 'Choose Delphi package (*.dpk)';
+  lisDelphiUnit = 'Delphi unit';
   lisDelphiProject = 'Delphi project';
+  lisDelphiPackage = 'Delphi package';
   lisUnableToReadFileError = 'Unable to read file %s%s%s%sError: %s';
   lisFormatError = 'Format error';
   lisLFMFileCorrupt = 'LFM file corrupt';
-  lisUnableToFindAValidClassnameIn = 'Unable to find a valid classname in %s%'
-    +'s%s';
+  lisUnableToFindAValidClassnameIn = 'Unable to find a valid classname in %s%s%s';
   lisUnableToConvertFileError = 'Unable to convert file %s%s%s%sError: %s';
   lisUnableToWriteFileError = 'Unable to write file %s%s%s%sError: %s';
   lisErrorCreatingLrs = 'Error creating lrs';
-  lisLFMFileNotFound = 'LFM file not found';
-  lisTheFollowingUnitsWereNotFound1EitherTheseUnitsAreN = 'The following '
-    +'units were not found:%s%s%s%s1) Either these units are not in the unit '
-    +'path, then you can abort now, fix the unit path and try again.%s'
-    +'2) Or you can ignore the missing units and comment them out.';
-  lisUnitNotFound = 'Unit not found';
-  lisUnitsNotFound2 = 'Units not found';
-  lisUnitLFMFile = 'Unit: %s%sLFM file: %s';
+  lisMissingUnitsComment = 'Comment Out';
+  lisMissingUnitsSearch = 'Search Unit Path';
+  lisTheseUnitsWereNotFound = 'These units were not found:';
+  lisMissingUnitsChoices = 'Your choices are:';
+  lisMissingUnitsInfo1 = '1) Comment out the missing units (ignore them).';
+  lisMissingUnitsInfo2 = '2) Select a unit path which will be added to project settings.';
+  lisMissingUnitsInfo3 = '3) Abort now, fix the unit path or install packages and try again.';
+  lisUnitNotFound = 'A unit not found in';
+  lisUnitsNotFound2 = 'Units not found in';
   lisUnableToConvertLfmToLrsAndWriteLrsFile = 'Unable to convert lfm to lrs '
     +'and write lrs file.';
   lisNotADelphiProject = 'Not a Delphi project';
