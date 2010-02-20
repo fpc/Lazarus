@@ -46,14 +46,14 @@ type
     btnNewProject: TBitBtn;
     btnConvertProject: TBitBtn;
     btnCloseIDE: TBitBtn;
-    btnOpenRecent: TBitBtn;
     btnOpenProject: TBitBtn;
     cbRecentProjects: TComboBox;
+    gbRecent: TGroupBox;
     procedure btnCloseIDEClick(Sender: TObject);
     procedure btnConvertProjectClick(Sender: TObject);
     procedure btnNewProjectClick(Sender: TObject);
     procedure btnOpenProjectClick(Sender: TObject);
-    procedure btnOpenRecentClick(Sender: TObject);
+    procedure cbRecentProjectsSelect(Sender: TObject);
   private
     FResult: TProjectWizardSelectionType;
   public
@@ -65,8 +65,6 @@ function ShowProjectWizardDlg(out ARecentProject: String): TProjectWizardSelecti
 implementation
 
 {$R *.lfm}
-
-{ TProjectWizardDialog }
 
 function ShowProjectWizardDlg(out ARecentProject: String): TProjectWizardSelectionType;
 var
@@ -80,11 +78,11 @@ begin
     btnNewProject.caption:=lisPWNewProject;
     btnOpenProject.caption:=lisPWOpenProject;
     btnConvertProject.caption:=lisPWConvertProject;
-    cbRecentProjects.text:=lisPWRecentProjects;
-    btnOpenRecent.caption:=lisPWOpenRecentProject;
+    gbRecent.Caption:=lisPWOpenRecentProject;
     btnCloseIDE.caption:=lisQuitLazarus;
     btnNewProject.LoadGlyphFromLazarusResource('item_project');
     btnOpenProject.LoadGlyphFromLazarusResource('menu_project_open');
+    btnConvertProject.LoadGlyphFromLazarusResource('laz_wand');
     btnCloseIDE.LoadGlyphFromLazarusResource('menu_exit');
     cbRecentProjects.Items.AddStrings(EnvironmentOptions.RecentProjectFiles);
   end;
@@ -98,6 +96,8 @@ begin
     ProjectWizardDialog.free;
   end;
 end;
+
+{ TProjectWizardDialog }
 
 procedure TProjectWizardDialog.btnNewProjectClick(Sender: TObject);
 begin
@@ -119,9 +119,11 @@ begin
   FResult := tpws_open;
 end;
 
-procedure TProjectWizardDialog.btnOpenRecentClick(Sender: TObject);
+procedure TProjectWizardDialog.cbRecentProjectsSelect(Sender: TObject);
 begin
   FResult := tpws_openRecent;
+  if (Sender as TComboBox).Text<>'' then
+    ModalResult:=mrOK;  // Exit dialog if something is selected.
 end;
 
 end.
