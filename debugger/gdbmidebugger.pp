@@ -84,7 +84,8 @@ type
   );
 
   TGDBMIDebuggerFlags = set of (
-    dfImplicidTypes    // Debugger supports implicit types (^Type)
+    dfImplicidTypes,    // Debugger supports implicit types (^Type)
+    dfForceBreak        // Debugger supports insertion of not yet known brekpoints
   );
 
   TGDBMIRTLCallingConvention = (ccDefault, ccRegCall, ccStdCall);
@@ -4035,7 +4036,7 @@ var
   R: TGDBMIExecResult;
   FileType, EntryPoint: String;
   List: TGDBMINameValueList;
-  TargetPIDPart: String;
+  TargetPIDPart, S: String;
   TempInstalled, CanContinue: Boolean;
 begin
   if not (State in [dsStop])
@@ -4129,6 +4130,17 @@ begin
     ExecuteCommand('-break-insert -t *%u', [FMainAddr], [cfIgnoreError], R);
     TempInstalled := R.State <> dsError;
   end;
+
+  // detect if we can insert a not yet known break
+  ExecuteCommand('-break-insert -f foo', [cfIgnoreError], R);
+  if R.State <> dsError
+  then begin
+    Include(FDebuggerFlags, dfForceBreak);
+    List := TGDBMINameValueList.Create(R, ['bkpt']);
+    ExecuteCommand('-break-delete ' + List.Values['number'], [cfIgnoreError]);
+    List.Free;
+  end
+  else Exclude(FDebuggerFlags, dfForceBreak);
 
   FTargetPID := 0;
 
@@ -4249,7 +4261,11 @@ begin
 
   if Debugger.State = dsRun
   then TGDBMIDebugger(Debugger).GDBPause(True);
-  TGDBMIDebugger(Debugger).ExecuteCommand('-break-insert %s:%d',
+
+  if dfForceBreak in TGDBMIDebugger(Debugger).FDebuggerFlags
+  then TGDBMIDebugger(Debugger).ExecuteCommand('-break-insert -f %s:%d',
+    [ExtractFileName(Source), Line], [cfIgnoreError], @SetBreakPointCallback, 0)
+  else TGDBMIDebugger(Debugger).ExecuteCommand('-break-insert %s:%d',
     [ExtractFileName(Source), Line], [cfIgnoreError], @SetBreakPointCallback, 0);
 
 end;
