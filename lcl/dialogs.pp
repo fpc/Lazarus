@@ -470,7 +470,7 @@ type
     constructor Create(TheOwner: TComponent); override;
   public
     property Collate: Boolean read FCollate write FCollate default False;
-    property Copies: Integer read FCopies write FCopies default 0;
+    property Copies: Integer read FCopies write FCopies default 1;
     property FromPage: Integer read FFromPage write FFromPage default 0;
     property MinPage: Integer read FMinPage write FMinPage default 0;
     property MaxPage: Integer read FMaxPage write FMaxPage default 0;
@@ -698,6 +698,7 @@ constructor TCustomPrintDialog.Create(TheOwner: TComponent);
 begin
   inherited Create(TheOwner);
   FPrintRange:=prAllPages;
+  FCopies:=1;
 end;
 
 initialization
