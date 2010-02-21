@@ -1020,21 +1020,14 @@ end;
   Method:  TCarbonControl.GetMousePos
   Returns: The position of mouse cursor in local coordinates
  ------------------------------------------------------------------------------}
-function TCarbonControl.GetMousePos: TPoint;
+function TCarbonControl.GetWindowRelativePos(winX, winY: Integer): TPoint;
 var
-  P: MacOSAll.Point;
   MousePoint: HIPoint;
-  R: MacOSAll.Rect;
 const
   SName = 'GetMousePos';
 begin
-  GetGlobalMouse(P);
-  
-  OSError(GetWindowBounds(GetTopParentWindow, kWindowStructureRgn, R),
-    Self, SName, SGetWindowBounds);
-  MousePoint.X := P.h - R.left;
-  MousePoint.Y := P.v - R.top;
-  
+  MousePoint.X := winX;
+  MousePoint.Y := winY;
   OSError(HIViewConvertPoint(MousePoint, nil, Content), Self, SName, SViewConvert);
   Result.X := Trunc(MousePoint.X);
   Result.Y := Trunc(MousePoint.Y);

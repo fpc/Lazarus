@@ -77,7 +77,7 @@ type
     procedure AddToWidget(AParent: TCarbonWidget); override;
     function GetTopParentWindow: WindowRef; override;
     function GetThemeDrawState: ThemeDrawState;
-    function GetMousePos: TPoint; override;
+    function GetWindowRelativePos(winX, winY: Integer): TPoint; override;
     function GetClientRect(var ARect: TRect): Boolean; override;
     function GetPreferredSize: TPoint; override;
     procedure Invalidate(Rect: PRect = nil); override;
@@ -155,6 +155,8 @@ type
   protected
     procedure CreateWidget(const AParams: TCreateParams); override;
     function GetForceEmbedInScrollView: Boolean; override;
+  public
+    function GetWindowRelativePos(winX, winY: Integer): TPoint; override;
   end;
 
   { TCarbonWindow }
@@ -178,7 +180,7 @@ type
     function GetPreferredSize: TPoint; override;
 
     procedure AddToWidget(AParent: TCarbonWidget); override;
-    function GetMousePos: TPoint; override;
+    function GetWindowRelativePos(winX, winY: Integer): TPoint; override;
     function GetTopParentWindow: WindowRef; override;
     function GetClientRect(var ARect: TRect): Boolean; override;
     procedure Invalidate(Rect: PRect = nil); override;
@@ -1081,6 +1083,18 @@ end;
 function TCarbonScrollingWinControl.GetForceEmbedInScrollView: Boolean;
 begin
   Result := True;
+end;
+
+function TCarbonScrollingWinControl.GetWindowRelativePos(winX, winY: Integer): TPoint;
+var
+  r : TRect;
+  sz : HISize;
+  org : HIPoint;
+begin
+  Result:=inherited GetWindowRelativePos(winX, winY);
+  GetInfo(sz, sz, sz, org);
+  dec(Result.X, Trunc(org.x));
+  dec(Result.Y, Trunc(org.y));
 end;
 
 { TCarbonGroupBox }

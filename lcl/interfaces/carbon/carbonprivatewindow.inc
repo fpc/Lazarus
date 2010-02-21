@@ -92,10 +92,7 @@ const
       GetEventParameter(AEvent, kEventParamWindowMouseLocation, typeHIPoint, nil,
         SizeOf(MousePoint), nil, @MousePoint),
       SName, SGetEvent, 'kEventParamWindowMouseLocation') then Exit;
-    
-    OSError(HIViewConvertPoint(MousePoint, nil, Widget.Content), SName, SViewConvert);
-    Result.X := Trunc(MousePoint.X);
-    Result.Y := Trunc(MousePoint.Y);
+    Result:=Widget.GetWindowRelativePos(Trunc(MousePoint.X), Trunc(MousePoint.Y));
   end;
 
   function GetMouseWheelDelta: Integer;
@@ -151,6 +148,7 @@ const
     if (MouseButton < Low(MSGKIND[1])) or (MouseButton > High(MSGKIND[1])) then Exit;
     Msg^.Msg := MSGKIND[ClickCount, MouseButton];
     //debugln('HandleMouseDownEvent CliCount=',dbgs(ClickCount),' MouseButton=',dbgs(MouseButton),' Pos=',dbgs(MousePoint));
+
 
     Msg^.XPos := MousePoint.X;                         
     Msg^.YPos := MousePoint.Y;
@@ -1304,21 +1302,19 @@ end;
   Method:  TCarbonWindow.GetMousePos
   Returns: The position of mouse cursor in local coordinates
  ------------------------------------------------------------------------------}
-function TCarbonWindow.GetMousePos: TPoint;
+function TCarbonWindow.GetWindowRelativePos(winX, winY: Integer): TPoint;
 var
-  P: MacOSAll.Point;
   R: MacOSAll.Rect;
 begin
-  GetGlobalMouse(P);
-
   if Assigned(fWindowRef) then
+  begin
     OSError(GetWindowBounds(fWindowRef, kWindowContentRgn, R),
-      Self, 'GetMousePos', SGetWindowBounds)
+      Self, 'GetMousePos', SGetWindowBounds);
+    Result.X := winX - R.left;
+    Result.Y := winY - R.Top;
+  end
   else
-    Result := inherited GetMousePos;
-
-  Result.X := P.h - R.left;
-  Result.Y := P.v - R.Top;
+    Result := inherited GetWindowRelativePos(winX, winY);
 end;
 
 {------------------------------------------------------------------------------

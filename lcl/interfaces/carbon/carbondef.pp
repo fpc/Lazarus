@@ -93,7 +93,8 @@ type
     procedure AddToWidget(AParent: TCarbonWidget); virtual; abstract;
     function GetClientRect(var ARect: TRect): Boolean; virtual; abstract;
     function GetPreferredSize: TPoint; virtual;
-    function GetMousePos: TPoint; virtual; abstract;
+    function GetWindowRelativePos(winX, winY: Integer): TPoint; virtual; abstract;
+    function GetMousePos: TPoint;
     function GetTopParentWindow: WindowRef; virtual; abstract;
     procedure Invalidate(Rect: PRect = nil); virtual; abstract;
     procedure InvalidateRgn(AShape: HISHapeRef);
@@ -610,6 +611,7 @@ begin
   Result := true;
 end;
 
+
 {------------------------------------------------------------------------------
   Method:  TCarbonWidget.Create
   Params:  AObject - LCL conrol
@@ -673,6 +675,24 @@ function TCarbonWidget.GetPreferredSize: TPoint;
 begin
   Result.X := 0;
   Result.Y := 0;
+end;
+
+{------------------------------------------------------------------------------
+  Method:  TCarbonWidget.GetPreferredSize
+  Returns: The current mouse position relative to the widgetset left-top pos
+ ------------------------------------------------------------------------------}
+function TCarbonWidget.GetMousePos: TPoint;
+var
+  P: MacOSAll.Point;
+  R: MacOSAll.Rect;
+const
+  SName = 'GetMousePos';
+begin
+  GetGlobalMouse(P);
+
+  OSError(GetWindowBounds(GetTopParentWindow, kWindowStructureRgn, R),
+    Self, SName, SGetWindowBounds);
+  Result:=GetWindowRelativePos(P.h - R.left, P.v - R.top);
 end;
 
 {------------------------------------------------------------------------------
