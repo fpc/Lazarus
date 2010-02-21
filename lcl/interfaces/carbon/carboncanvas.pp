@@ -1412,8 +1412,10 @@ var
   SubImage, SubMask: Boolean;
   Bitmap: TCarbonBitmap;
   LayRect, DstRect: CGRect;
+  ImgRect: CGRect;
   LayerContext: CGContextRef;
   Layer: CGLayerRef;
+  UseLayer: Boolean;
 begin
   Result := False;
   
@@ -1448,8 +1450,13 @@ begin
   if SubImage then
     Image := Bitmap.CreateSubImage(Bounds(XSrc, YSrc, SrcWidth, SrcHeight));
 
+
+  UseLayer:=Assigned(MskImage)
+            or (CGImageGetWidth(Image)<>SrcWidth)
+            or (CGImageGetHeight(Image)<>SrcHeight);
+
   try
-    if MskImage = nil then
+    if not UseLayer then
     begin
       // Normal drawing
       Result := DrawCGImage(X, Y, Width, Height, Image);
@@ -1460,14 +1467,29 @@ begin
       // todo find a way to mask "hard" when stretching, now some soft remains are visible
       LayRect := CGRectMake(0, 0, SrcWidth, SrcHeight);
       Layer := CGLayerCreateWithContext(SrcDC.CGContext, LayRect.size, nil);
+
+      // the sub-image is out of edges
+      if (CGImageGetWidth(Image)<>SrcWidth) or (CGImageGetHeight(Image)<>SrcHeight) then
+      begin
+        with ImgRect do
+          if XSrc<0 then origin.x:=SrcWidth-CGImageGetWidth(Image) else origin.x:=0;
+        with ImgRect do
+          if YSrc<0 then origin.y:=0 else origin.y:=SrcHeight-CGImageGetHeight(Image);
+
+        ImgRect.size.width:=CGImageGetWidth(Image);
+        ImgRect.size.height:=CGImageGetHeight(Image);
+      end
+      else
+        ImgRect:=LayRect;
+
       try
         LayerContext := CGLayerGetContext(Layer);
         CGContextScaleCTM(LayerContext, 1, -1);
         CGContextTranslateCTM(LayerContext, 0, -SrcHeight);
 
         SetCGFillping(LayerContext, Width, Height);
-        CGContextClipToMask(LayerContext, LayRect, MskImage);
-        CGContextDrawImage(LayerContext, LayRect, Image);
+        if SubMask then CGContextClipToMask(LayerContext, ImgRect, MskImage);
+        CGContextDrawImage(LayerContext, ImgRect, Image);
 
         CGContextDrawLayerInRect(CGContext, DstRect, Layer);
         
