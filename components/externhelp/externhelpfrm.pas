@@ -7,7 +7,7 @@ interface
 uses
   Classes, SysUtils, LCLProc, FileUtil, LResources, Forms, Controls, Graphics,
   Dialogs, LazConfigStorage, ComCtrls, Buttons, StdCtrls, ExtCtrls,
-  IDEOptionsIntf, LazIDEIntf, BaseIDEIntf;
+  PackageIntf, MacroIntf, IDEOptionsIntf, LazIDEIntf, BaseIDEIntf;
 
 var
   ExternHelpOptionID: integer = 2000;
@@ -51,6 +51,7 @@ type
     procedure MoveChild(FromPos, ToPos: integer);
     procedure RemoveChild(Index: integer);
     procedure DeleteChild(Index: integer);
+    procedure DeleteChild(Child: TExternHelpItem);
     function IndexOf(Child: TExternHelpItem): integer;
     function IsEqual(Item: TExternHelpItem; WithName: boolean): boolean;
     procedure Assign(Src: TExternHelpItem; WithName: boolean);
@@ -122,6 +123,9 @@ type
     StoreLabel: TLabel;
     URLEdit: TEdit;
     URLLabel: TLabel;
+    procedure AddSpeedButtonClick(Sender: TObject);
+    procedure DeleteSpeedButtonClick(Sender: TObject);
+    procedure FilenameEditEditingDone(Sender: TObject);
     procedure ItemsTreeViewEdited(Sender: TObject; Node: TTreeNode;
       var S: string);
     procedure ItemsTreeViewEditing(Sender: TObject; Node: TTreeNode;
@@ -129,12 +133,16 @@ type
     procedure ItemsTreeViewSelectionChanged(Sender: TObject);
     procedure NameEditChange(Sender: TObject);
     procedure NameEditEditingDone(Sender: TObject);
+    procedure URLEditEditingDone(Sender: TObject);
   private
     FOptions: TExternHelpOptions;
     procedure FillItemsTreeView;
     procedure NameChanged(TVNode: TTreeNode; var NewName: string;
       UpdateTree, UpdateEdit: boolean);
     procedure SelectionChanged;
+    function FindTVNode(NodeText: string): TTreeNode;
+    function CreateUniqueName(Prefix: string): string;
+    procedure FillStoreInCombobox;
   public
     constructor Create(TheOwner: TComponent); override;
     destructor Destroy; override;
@@ -175,6 +183,7 @@ constructor TExternHelpOptions.Create;
 begin
   RootItem:=TExternHelpRootItem.Create;
   RootItem.Owner:=Self;
+  Filename:='externhelp.xml';
 end;
 
 destructor TExternHelpOptions.Destroy;
@@ -278,6 +287,78 @@ begin
   NameChanged(Node,S,false,true);
 end;
 
+procedure TExternHelpGeneralOptsFrame.FilenameEditEditingDone(Sender: TObject);
+var
+  s: String;
+  TVNode: TTreeNode;
+  Item: TExternHelpItem;
+  Msg: String;
+  Filename: String;
+begin
+  s:=FilenameEdit.Text;
+  TVNode:=ItemsTreeView.Selected;
+  if (TVNode=nil) or (not (TObject(TVNode.Data) is TExternHelpItem)) then exit;
+  Item:=TExternHelpItem(TVNode.Data);
+  s:=Trim(s);
+  if s<>Item.Filename then begin
+    Filename:=s;
+    DoDirSeparators(Filename);
+    IDEMacros.SubstituteMacros(Filename);
+    Msg:='';
+    if (Filename<>'') and (Filename[length(Filename)]=PathDelim) then begin
+      if not DirPathExists(Filename) then
+        Msg:='Directory not found: '+Filename;
+    end else begin
+      if not FileExistsUTF8(Filename) then
+        Msg:='File not found: '+Filename;
+    end;
+    if Msg<>'' then begin
+      MessageDlg('Warning',Msg,mtWarning,[mbIgnore],0);
+    end;
+    Item.Filename:=s;
+  end;
+end;
+
+procedure TExternHelpGeneralOptsFrame.AddSpeedButtonClick(Sender: TObject);
+var
+  SelTVNode: TTreeNode;
+  Item: TExternHelpItem;
+  TVNode: TTreeNode;
+  SelItem: TExternHelpItem;
+begin
+  SelTVNode:=ItemsTreeView.Selected;
+  Item:=TExternHelpItem.Create;
+  Item.Name:=CreateUniqueName('Item');
+  if TObject(SelTVNode.Data) is TExternHelpItem then begin
+    // init with values of selected node
+    SelItem:=TExternHelpItem(SelTVNode.Data);
+    Item.Filename:=SelItem.Filename;
+    Item.URL:=SelItem.URL;
+    Item.StoreIn:=SelItem.StoreIn;
+  end;
+  TVNode:=ItemsTreeView.Items.AddObject(SelTVNode,Item.Name,Item);
+  ItemsTreeView.Selected:=TVNode;
+end;
+
+procedure TExternHelpGeneralOptsFrame.DeleteSpeedButtonClick(Sender: TObject);
+var
+  SelTVNode: TTreeNode;
+  Item: TExternHelpItem;
+begin
+  SelTVNode:=ItemsTreeView.Selected;
+  if (SelTVNode=nil) or (not (TObject(SelTVNode.Data) is TExternHelpItem)) then exit;
+  Item:=TExternHelpItem(SelTVNode.Data);
+  // select next
+  if SelTVNode.GetNext<>nil then
+    ItemsTreeView.Selected:=SelTVNode.GetNext
+  else
+    ItemsTreeView.Selected:=SelTVNode.GetPrev;
+  // delete in treeview
+  SelTVNode.Free;
+  // delete in Options
+  Item.Free;
+end;
+
 procedure TExternHelpGeneralOptsFrame.ItemsTreeViewEditing(Sender: TObject;
   Node: TTreeNode; var AllowEdit: Boolean);
 begin
@@ -304,6 +385,22 @@ var
 begin
   S:=NameEdit.Text;
   NameChanged(ItemsTreeView.Selected,S,true,true);
+end;
+
+procedure TExternHelpGeneralOptsFrame.URLEditEditingDone(Sender: TObject);
+var
+  s: String;
+  TVNode: TTreeNode;
+  Item: TExternHelpItem;
+begin
+  s:=URLEdit.Text;
+  TVNode:=ItemsTreeView.Selected;
+  if (TVNode=nil) or (not (TObject(TVNode.Data) is TExternHelpItem)) then exit;
+  Item:=TExternHelpItem(TVNode.Data);
+  s:=Trim(s);
+  if s<>Item.URL then begin
+    Item.URL:=s;
+  end;
 end;
 
 procedure TExternHelpGeneralOptsFrame.FillItemsTreeView;
@@ -362,7 +459,7 @@ begin
     FilenameEdit.Text:=Item.Filename;
     URLEdit.Enabled:=true;
     URLEdit.Text:=Item.URL;
-    StoreComboBox.Enabled:=true;
+    StoreComboBox.Enabled:=Item.Parent=Options.RootItem;
     StoreComboBox.Text:=Item.StoreIn;
   end else begin
     NameEdit.Enabled:=false;
@@ -373,6 +470,38 @@ begin
     URLEdit.Text:='';
     StoreComboBox.Enabled:=false;
     StoreComboBox.Text:='';
+  end;
+end;
+
+function TExternHelpGeneralOptsFrame.FindTVNode(NodeText: string): TTreeNode;
+begin
+  Result:=ItemsTreeView.Items.GetFirstNode;
+  while (Result<>nil) and (SysUtils.CompareText(Result.Text,NodeText)<>0) do
+    Result:=Result.GetNext;
+end;
+
+function TExternHelpGeneralOptsFrame.CreateUniqueName(Prefix: string): string;
+var
+  i: Integer;
+begin
+  i:=0;
+  repeat
+    inc(i);
+    Result:=Prefix+IntToStr(i);
+  until FindTVNode(Result)=nil;
+end;
+
+procedure TExternHelpGeneralOptsFrame.FillStoreInCombobox;
+var
+  sl: TStringList;
+begin
+  sl:=TStringList.Create;
+  try
+    sl.Sort;
+    sl.Insert(0,'My settings');
+    StoreComboBox.Items.Assign(sl);
+  finally
+    sl.Free;
   end;
 end;
 
@@ -478,6 +607,8 @@ end;
 
 destructor TExternHelpItem.Destroy;
 begin
+  if Parent<>nil then
+    Parent.RemoveChild(Parent.IndexOf(Self));
   Clear;
   FreeAndNil(fChilds);
   inherited Destroy;
@@ -486,9 +617,14 @@ end;
 procedure TExternHelpItem.Clear;
 var
   i: Integer;
+  Child: TExternHelpItem;
 begin
   if (ChildCount=0) and (URL='') and (Filename='') and (StoreIn='') then exit;
-  for i:=fChilds.Count-1 downto 0 do TObject(fChilds).Free;
+  for i:=fChilds.Count-1 downto 0 do begin
+    Child:=Childs[i];
+    Child.Parent:=nil;
+    Child.Free;
+  end;
   fChilds.Clear;
   fURL:='';
   FFilename:='';
@@ -500,22 +636,31 @@ procedure TExternHelpItem.AddChild(Item: TExternHelpItem);
 begin
   Item.Parent:=Self;
   fChilds.Add(Item);
+  IncreaseChangeStep;
 end;
 
 procedure TExternHelpItem.MoveChild(FromPos, ToPos: integer);
 begin
+  if FromPos=ToPos then exit;
   fChilds.Move(FromPos,ToPos);
+  IncreaseChangeStep;
 end;
 
 procedure TExternHelpItem.RemoveChild(Index: integer);
 begin
+  Childs[Index].Parent:=nil;
   fChilds.Delete(Index);
+  IncreaseChangeStep;
 end;
 
 procedure TExternHelpItem.DeleteChild(Index: integer);
 begin
-  TObject(fChilds[Index]).Free;
-  fChilds.Delete(Index);
+  Childs[Index].Free;
+end;
+
+procedure TExternHelpItem.DeleteChild(Child: TExternHelpItem);
+begin
+  Child.Free;
 end;
 
 function TExternHelpItem.IndexOf(Child: TExternHelpItem): integer;

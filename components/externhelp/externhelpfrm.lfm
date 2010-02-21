@@ -39,6 +39,7 @@ inherited ExternHelpGeneralOptsFrame: TExternHelpGeneralOptsFrame
     BorderSpacing.Around = 6
     Color = clBtnFace
     NumGlyphs = 0
+    OnClick = AddSpeedButtonClick
     ShowHint = True
     ParentShowHint = False
   end
@@ -52,6 +53,7 @@ inherited ExternHelpGeneralOptsFrame: TExternHelpGeneralOptsFrame
     Width = 23
     Color = clBtnFace
     NumGlyphs = 0
+    OnClick = DeleteSpeedButtonClick
     ShowHint = True
     ParentShowHint = False
   end
@@ -107,6 +109,7 @@ inherited ExternHelpGeneralOptsFrame: TExternHelpGeneralOptsFrame
     Top = 93
     Width = 237
     Anchors = [akTop, akLeft, akRight]
+    OnEditingDone = FilenameEditEditingDone
     TabOrder = 2
     Text = 'FilenameEdit'
   end
@@ -134,6 +137,7 @@ inherited ExternHelpGeneralOptsFrame: TExternHelpGeneralOptsFrame
     Width = 260
     Anchors = [akTop, akLeft, akRight]
     BorderSpacing.Right = 6
+    OnEditingDone = URLEditEditingDone
     TabOrder = 3
     Text = 'URLEdit'
   end
