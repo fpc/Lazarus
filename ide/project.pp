@@ -5878,7 +5878,7 @@ end;
 function TUnitComponentDependency.SetUsedByPropPath(const UsedByPropPath,
   RequiresPropPath: string): TUCDComponentProperty;
 begin
-  DebugLn(['TUnitComponentDependency.SetUsedByPropPath ',UsedByPropPath,'=',RequiresPropPath]);
+  //DebugLn(['TUnitComponentDependency.SetUsedByPropPath ',UsedByPropPath,'=',RequiresPropPath]);
   if (not (ucdtOldProperty in FTypes)) then
     raise Exception.Create('TUnitComponentDependency.SetUsedByPropPath inconsistency');
   Result:=FindUsedByPropPath(UsedByPropPath);

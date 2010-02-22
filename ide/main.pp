@@ -9359,7 +9359,8 @@ function TMainIDE.DoOpenProjectFile(AFileName: string;
   Flags: TOpenFlags): TModalResult;
 var
   Ext,AText,ACaption: string;
-  LowestEditorIndex,LowestUnitIndex,LastEditorIndex,i: integer;
+  LowestUnitInfo: TUnitInfo;
+  LowestEditorIndex,LastEditorIndex,i: integer;
   NewBuf: TCodeBuffer;
   LastDesigner: TDesigner;
   AnUnitInfo: TUnitInfo;
@@ -9478,11 +9479,11 @@ begin
     // restore files
     repeat
       // find the unit which was loaded last time and has the lowest editor index
-      // of all not opened units
-      LowestUnitIndex:=-1;
+      // of all not yet opened units
+      LowestUnitInfo:=nil;
       LowestEditorIndex:=-1;
-      for i:=0 to Project1.UnitCount-1 do begin
-        AnUnitInfo:=Project1.Units[i];
+      AnUnitInfo:=Project1.FirstUnitWithEditorIndex;
+      while AnUnitInfo<>nil do begin
         if (AnUnitInfo.Loaded)
         and (SourceNotebook.FindSourceEditorWithFilename(AnUnitInfo.Filename)=nil)
         then begin
@@ -9491,14 +9492,15 @@ begin
                or (LowestEditorIndex<0)) then
           begin
             LowestEditorIndex:=AnUnitInfo.EditorIndex;
-            LowestUnitIndex:=i;
+            LowestUnitInfo:=AnUnitInfo;
           end;
         end;
+        AnUnitInfo:=AnUnitInfo.NextUnitWithEditorIndex;
       end;
-      if LowestEditorIndex<0 then break;
+      if LowestUnitInfo=nil then break;
 
       // reopen file
-      AnUnitInfo:=Project1.Units[LowestUnitIndex];
+      AnUnitInfo:=LowestUnitInfo;
       if (not AnUnitInfo.IsPartOfProject)
       and (not FileExistsCached(AnUnitInfo.Filename)) then begin
         // this file does not exist, but is not important => silently ignore
