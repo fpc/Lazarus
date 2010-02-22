@@ -172,7 +172,6 @@ object frmMain: TfrmMain
     Anchors = [akTop, akRight]
     AutoSize = True
     BorderSpacing.Around = 6
-    DragMode = dmAutomatic
     TabOrder = 9
   end
   object Button5: TButton
