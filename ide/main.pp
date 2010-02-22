@@ -9733,6 +9733,10 @@ var
   ActiveUnitInfo: TUnitInfo;
   s, ShortUnitName: string;
   DependencyAdded: boolean;
+  Owners: TFPList;
+  i: Integer;
+  APackage: TLazPackage;
+  MsgResult: TModalResult;
 begin
   Result:=mrCancel;
   if not BeginCodeTool(ActiveSourceEditor,ActiveUnitInfo,[]) then exit;
@@ -9757,37 +9761,66 @@ begin
     MessageDlg(Format(
       lisUnableToAddToProjectBecauseThereIsAlreadyAUnitWith, [s]),
       mtInformation, [mbOk], 0);
-  end else begin
-    if FilenameIsPascalUnit(ActiveUnitInfo.Filename)
-    and (EnvironmentOptions.CharcaseFileAction<>ccfaIgnore) then
-    begin
-      // ask user to apply naming conventions
-      Result:=DoRenameUnitLowerCase(ActiveUnitInfo,true);
-      if Result=mrIgnore then Result:=mrOk;
-      if Result<>mrOk then begin
-        debugln('TMainIDE.DoAddActiveUnitToProject A DoRenameUnitLowerCase failed ',ActiveUnitInfo.Filename);
-        exit;
+    exit;
+  end;
+
+  Owners:=PkgBoss.GetPossibleOwnersOfUnit(ActiveUnitInfo.Filename,[]);
+  try
+    if (Owners<>nil) then begin
+      for i:=0 to Owners.Count-1 do begin
+        if TObject(Owners[i]) is TLazPackage then begin
+          APackage:=TLazPackage(Owners[i]);
+          MsgResult:=IDEQuestionDialog(lisAddPackageRequirement,
+            Format(lisTheUnitBelongsToPackage, [APackage.IDAsString]),
+            mtConfirmation, [mrYes, lisAddPackageToProject2,
+                            mrIgnore, lisAddUnitNotRecommended,
+                            mrCancel],'');
+          case MsgResult of
+            mrYes:
+              begin
+                PkgBoss.AddProjectDependency(Project1,APackage);
+                exit;
+              end;
+            mrIgnore: ;
+          else
+            exit;
+          end;
+        end;
       end;
     end;
+  finally
+    Owners.Free;
+  end;
 
-    if MessageDlg(Format(lisAddToProject, [s]), mtConfirmation, [mbYes,
-      mbCancel], 0) in [mrOk,mrYes]
-    then begin
-      CheckUnitDirIsInSearchPath(ActiveUnitInfo,true,DependencyAdded);
-      if not DependencyAdded then begin
-        ActiveUnitInfo.IsPartOfProject:=true;
-        Project1.Modified:=true;
-        if (FilenameIsPascalUnit(ActiveUnitInfo.Filename))
-        and (pfMainUnitHasUsesSectionForAllUnits in Project1.Flags)
-        then begin
-          ActiveUnitInfo.ReadUnitNameFromSource(false);
-          ShortUnitName:=ActiveUnitInfo.CreateUnitName;
-          if (ShortUnitName<>'') then begin
-            if CodeToolBoss.AddUnitToMainUsesSection(
-              Project1.MainUnitInfo.Source,ShortUnitName,'')
-            then
-              Project1.MainUnitInfo.Modified:=true;
-          end;
+  if FilenameIsPascalUnit(ActiveUnitInfo.Filename)
+  and (EnvironmentOptions.CharcaseFileAction<>ccfaIgnore) then
+  begin
+    // ask user to apply naming conventions
+    Result:=DoRenameUnitLowerCase(ActiveUnitInfo,true);
+    if Result=mrIgnore then Result:=mrOk;
+    if Result<>mrOk then begin
+      debugln('TMainIDE.DoAddActiveUnitToProject A DoRenameUnitLowerCase failed ',ActiveUnitInfo.Filename);
+      exit;
+    end;
+  end;
+
+  if MessageDlg(Format(lisAddToProject, [s]), mtConfirmation, [mbYes,
+    mbCancel], 0) in [mrOk,mrYes]
+  then begin
+    CheckUnitDirIsInSearchPath(ActiveUnitInfo,false,DependencyAdded);
+    if not DependencyAdded then begin
+      ActiveUnitInfo.IsPartOfProject:=true;
+      Project1.Modified:=true;
+      if (FilenameIsPascalUnit(ActiveUnitInfo.Filename))
+      and (pfMainUnitHasUsesSectionForAllUnits in Project1.Flags)
+      then begin
+        ActiveUnitInfo.ReadUnitNameFromSource(false);
+        ShortUnitName:=ActiveUnitInfo.CreateUnitName;
+        if (ShortUnitName<>'') then begin
+          if CodeToolBoss.AddUnitToMainUsesSection(
+            Project1.MainUnitInfo.Source,ShortUnitName,'')
+          then
+            Project1.MainUnitInfo.Modified:=true;
         end;
       end;
     end;

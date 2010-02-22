@@ -4583,6 +4583,9 @@ resourcestring
   lisImitateIndentationOfCurrentUnitProjectOrPackage = 'Imitate indentation '
     +'of current unit, project or package';
   lisAddPackageRequirement = 'Add package requirement?';
+  lisTheUnitBelongsToPackage = 'The unit belongs to package %s.';
+  lisAddPackageToProject2 = 'Add package to project';
+  lisAddUnitNotRecommended = 'Add unit (not recommended)';
   lisAddPackageToProject = 'Add package %s to project?';
   lisOnBreakLineIEReturnOrEnterKey = 'On break line (i.e. return or enter key)';
   lisOnPasteFromClipboard = 'On paste from clipboard';
