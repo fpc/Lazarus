@@ -495,7 +495,6 @@ type
     procedure BookmarkGotoNext(GoForward: boolean);
     procedure BookMarkGotoClicked(Sender: TObject);
     procedure BookMarkSet(Value: Integer; Toggle: boolean = false);
-    procedure BookMarkSetFree;// set a free bookmark
     procedure BookMarkToggleClicked(Sender: TObject);
     procedure BookmarkSetFreeClicked(Sender: TObject);
     procedure EditorPropertiesClicked(Sender: TObject);
@@ -533,6 +532,7 @@ type
     procedure SrcEditMenuAnotherViewClicked(Sender: TObject);
     {$ENDIF}
   public
+    procedure BookMarkSetFree;// set a free bookmark
     procedure BookMarkNextClicked(Sender: TObject);
     procedure BookMarkPrevClicked(Sender: TObject);
     procedure DeleteBreakpointClicked(Sender: TObject);

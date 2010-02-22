@@ -251,6 +251,7 @@ type
     procedure mnuOpenFileAtCursorClicked(Sender: TObject);
     procedure mnuGotoIncludeDirectiveClicked(Sender: TObject);
     procedure mnuSearchProcedureList(Sender: TObject);
+    procedure mnuSetFreeBookmark(Sender: TObject);
 
     // view menu
     procedure mnuViewInspectorClicked(Sender: TObject);
@@ -2357,6 +2358,7 @@ begin
     itmSearchRenameIdentifier.OnClick:=@mnuSearchRenameIdentifierClicked;
     itmGotoIncludeDirective.OnClick:=@mnuGotoIncludeDirectiveClicked;
     itmSearchProcedureList.OnClick := @mnuSearchProcedureList;
+    itmSetFreeBookmark.OnClick := @mnuSetFreeBookmark;
   end;
 end;
 
@@ -2684,6 +2686,11 @@ end;
 procedure TMainIDE.mnuSearchProcedureList(Sender: TObject);
 begin
   ProcedureList.ExecuteProcedureList(Sender);
+end;
+
+procedure TMainIDE.mnuSetFreeBookmark(Sender: TObject);
+begin
+  SourceNotebook.BookMarkSetFree;
 end;
 
 procedure TMainIDE.mnuSaveClicked(Sender: TObject);
