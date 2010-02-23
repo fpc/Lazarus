@@ -64,8 +64,8 @@ LazBuildDir=$TmpDir/lazarus_build
 LazDeb=$CurDir/lazarus_${LazVersion}-${LazRelease}_$Arch.deb
 DebianSrcDir=$CurDir/debian_lazarus
 EtcSrcDir=$CurDir/linux
-LazDestDir=$LazBuildDir/usr/share/lazarus
-LazDestDirInstalled=/usr/share/lazarus
+LazDestDir=$LazBuildDir/usr/share/lazarus/${LazVersion}
+LazDestDirInstalled=/usr/share/lazarus/${LazVersion}
  
 FPCVersion=$($ppcbin -v | grep version| sed 's/.*\([0-9]\+\.[0-9]\+\.[0-9]\+\).*/\1/') 
 ChangeLogDate=`date --rfc-822`
@@ -84,9 +84,9 @@ rm -rf $LazBuildDir
 
 # Unpack lazarus source
 echo "unpacking $SrcTGZ ..."
-mkdir -p $LazBuildDir/usr/share/
-cd $LazBuildDir/usr/share/
-tar xzf $CurDir/$SrcTGZ
+mkdir -p $LazDestDir
+cd $LazDestDir
+tar xzf $CurDir/$SrcTGZ --strip 1
 cd -
 
 # compile
@@ -156,7 +156,7 @@ cat $LazDestDir/install/man/man1/startlazarus.1 | gzip > $LazBuildDir/usr/share/
 mkdir -p $LazBuildDir/etc/lazarus
 cp $EtcSrcDir/editoroptions.xml $LazBuildDir/etc/lazarus/
 cat $EtcSrcDir/environmentoptions.xml | \
-  sed -e "s#/usr/lib/lazarus/#$LazDestDirInstalled/#" \
+  sed -e "s#/usr/lib/lazarus/%LazarusVersion%#$LazDestDirInstalled/#" \
   > $LazBuildDir/etc/lazarus/environmentoptions.xml
 chmod 644 $LazBuildDir/etc/lazarus/*.xml
 
