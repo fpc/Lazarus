@@ -1393,7 +1393,7 @@ msgstr "MM"
 
 #: lr_const.snewtemplate
 msgid "New template"
-msgstr ""
+msgstr "Novo modelo"
 
 #: lr_const.sno
 msgid "No"

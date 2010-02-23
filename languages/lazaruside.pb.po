@@ -506,7 +506,7 @@ msgstr "Verificar consistência"
 
 #: lazarusidestrconsts.dlgcheckpackagesonformcreate
 msgid "Check packages on form create"
-msgstr ""
+msgstr "Verificar pacotes na criação formulário"
 
 #: lazarusidestrconsts.dlgchscodetempl
 msgid "Choose code template file (*.dci)"
@@ -2176,7 +2176,7 @@ msgstr "Opções de Projeto"
 
 #: lazarusidestrconsts.dlgprojectoptionsfor
 msgid "Options for Project: %s"
-msgstr ""
+msgstr "Opções do Projeto: %s"
 
 #: lazarusidestrconsts.dlgprojfiles
 msgid "Project files"
@@ -2527,7 +2527,7 @@ msgstr "Tabulações recuam blocos"
 
 #: lazarusidestrconsts.dlgtabnumbersnotebook
 msgid "Show tab numbers in notebook"
-msgstr ""
+msgstr "Mostrar números abas no \"notebook\""
 
 #: lazarusidestrconsts.dlgtabstospaces
 msgid "Tabs to spaces"
@@ -2822,7 +2822,7 @@ msgstr "Em ambos os lados"
 
 #: lazarusidestrconsts.lis0no1drawdividerlinesonlyfortoplevel2drawlinesforfi
 msgid "0 = no, 1 = draw divider lines only for top level, 2 = draw lines for first two levels, ..."
-msgstr ""
+msgstr "0 = não, 1 = desenha linhas divisórias apenas para níveis altos, 2 = desenha linhas primeiros dois níveis, ..."
 
 #: lazarusidestrconsts.lisa2paddfile
 msgid "Add File"
@@ -3608,7 +3608,7 @@ msgstr "Número da construção"
 
 #: lazarusidestrconsts.lisbuildvariables
 msgid "Build variables"
-msgstr ""
+msgstr "Variáveis construção"
 
 #: lazarusidestrconsts.liscallingtocreatemakefilefromfailed
 msgid "Calling %s to create Makefile from %s failed."
@@ -5035,11 +5035,11 @@ msgstr "Ação"
 
 #: lazarusidestrconsts.lisconfirmpackagenewpackageset
 msgid "New package set"
-msgstr ""
+msgstr "Novo conjunto pacote"
 
 #: lazarusidestrconsts.lisconfirmpackageoldpackageset
 msgid "Old package set"
-msgstr ""
+msgstr "Antigo conjunto pacote"
 
 #: lazarusidestrconsts.lisconsoleapplication
 msgid "Console application"
@@ -7158,7 +7158,7 @@ msgstr "Formulário \"JIT\""
 
 #: lazarusidestrconsts.liskeep
 msgid "keep"
-msgstr ""
+msgstr "mantém"
 
 #: lazarusidestrconsts.liskeepname
 msgid "Keep name"
@@ -8862,7 +8862,7 @@ msgstr "Ajustar um marcador livre"
 
 #: lazarusidestrconsts.lismenushowexecutionpoint
 msgid "Show execution point"
-msgstr ""
+msgstr "Mostrar ponto execução"
 
 #: lazarusidestrconsts.lismenusortselection
 msgid "Sort selection ..."
@@ -11636,7 +11636,7 @@ msgstr "Selecionar arquivos de formulários Delphi (*.dfm)"
 
 #: lazarusidestrconsts.lisselected
 msgid "Selected"
-msgstr ""
+msgstr "Selecionado"
 
 #: lazarusidestrconsts.lisselectedbottomneighbour
 #, fuzzy
@@ -13416,11 +13416,11 @@ msgstr "Ucraniano"
 
 #: lazarusidestrconsts.rsmajorversion
 msgid "&Major version:"
-msgstr ""
+msgstr "Versão &Maior:"
 
 #: lazarusidestrconsts.rsminorversion
 msgid "Mi&nor version:"
-msgstr ""
+msgstr "Versão Me&nor:"
 
 #: lazarusidestrconsts.rsok
 msgid "ok"
@@ -13444,7 +13444,7 @@ msgstr "Reiniciar filtro"
 
 #: lazarusidestrconsts.rsrevision
 msgid "&Revision:"
-msgstr ""
+msgstr "&Revisão:"
 
 #: lazarusidestrconsts.rsscanners
 msgid "Scanners"
@@ -14269,7 +14269,7 @@ msgstr "Mostrar contexto código"
 
 #: lazarusidestrconsts.srkmecshowexecutionpoint
 msgid "show execution point"
-msgstr ""
+msgstr "mostrar ponto execução"
 
 #: lazarusidestrconsts.srkmecstopprogram
 msgid "stop program"

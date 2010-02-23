@@ -11,7 +11,7 @@ msgstr ""
 
 #: maincalleditor.ceractivereport
 msgid "Active report: %s"
-msgstr ""
+msgstr "Relatório ativo: %S"
 
 #: maincalleditor.cerappcaption
 msgctxt "maincalleditor.cerappcaption"
@@ -79,7 +79,7 @@ msgstr "Novo relatório"
 
 #: maincalleditor.cernone
 msgid "none"
-msgstr ""
+msgstr "nenhum"
 
 #: maincalleditor.cernotimplemented
 msgid "This feature is not yet implemented!"
@@ -91,7 +91,7 @@ msgstr "Abrir relatório"
 
 #: maincalleditor.ceropenreportfirst
 msgid "Open report first"
-msgstr ""
+msgstr "Abrir relatório primeiro"
 
 #: maincalleditor.cerpreparefailed
 msgid "PrepareReport Failed!"
@@ -121,7 +121,7 @@ msgstr "Fechar"
 #: TFRMMAIN.ACCCOMPOSITE.CAPTION
 msgctxt "TFRMMAIN.ACCCOMPOSITE.CAPTION"
 msgid "Composite"
-msgstr ""
+msgstr "Composto"
 
 #: TFRMMAIN.ACCEDITREPORT.CAPTION
 msgctxt "TFRMMAIN.ACCEDITREPORT.CAPTION"
