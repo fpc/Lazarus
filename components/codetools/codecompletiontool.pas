@@ -378,6 +378,8 @@ end;
 
 procedure TCodeCompletionCodeTool.SetCodeCompleteClassNode(
   const AClassNode: TCodeTreeNode);
+const
+  Identifiers = AllIdentifierDefinitions+[ctnProperty,ctnProcedure,ctnClassGUID];
 begin
   FreeClassInsertionList;
   FJumpToProcName:='';
@@ -391,11 +393,11 @@ begin
   // find first variable/method/GUID
   FCompletingStartNode:=CodeCompleteClassNode.FirstChild;
   while FCompletingStartNode<>nil do begin
-    if (FCompletingStartNode.Desc in AllClassSections)
+    if (FCompletingStartNode.Desc in Identifiers) then begin
+      break;
+    end else if (FCompletingStartNode.Desc in AllClassSections)
     and (FCompletingStartNode.FirstChild<>nil)
-    and (FCompletingStartNode.FirstChild.Desc in (AllIdentifierDefinitions
-      +[ctnProperty,ctnProcedure,ctnClassGUID]))
-    then begin
+    and (FCompletingStartNode.FirstChild.Desc in Identifiers) then begin
       FCompletingStartNode:=FCompletingStartNode.FirstChild;
       break;
     end else
@@ -451,7 +453,7 @@ var
   Pos1: Integer;
   Pos2: Integer;
 begin
-  DebugLn(['TCodeCompletionCodeTool.CheckWholeUnitParsed ',EndOfSourceFound,' LastErrorMessage="',LastErrorMessage,'" LastErrorCurPos=',dbgs(LastErrorCurPos)]);
+  //DebugLn(['TCodeCompletionCodeTool.CheckWholeUnitParsed ',EndOfSourceFound,' LastErrorMessage="',LastErrorMessage,'" LastErrorCurPos=',dbgs(LastErrorCurPos)]);
   if EndOfSourceFound then exit;
   Pos1:=0;
   Pos2:=0;
@@ -6644,9 +6646,9 @@ var
   Indent: integer;
   ProcsCopied: boolean;
 begin
-  { $IFDEF CTDEBUG}
+  {$IFDEF CTDEBUG}
   DebugLn('TCodeCompletionCodeTool.CreateMissingProcBodies Gather existing method bodies ... ');
-  { $ENDIF}
+  {$ENDIF}
   if CodeCompleteClassNode.Desc in AllClassInterfaces then begin
     // interfaces have no implementations
     exit(true);
@@ -6660,9 +6662,9 @@ begin
     // find topmost and bottommost proc body
     FindTopMostAndBottomMostProcBodies;
 
-    { $IFDEF CTDEBUG}
+    {$IFDEF CTDEBUG}
     DebugLn('TCodeCompletionCodeTool.CreateMissingProcBodies Gather existing method declarations ... ');
-    { $ENDIF}
+    {$ENDIF}
     TheClassName:=ExtractClassName(CodeCompleteClassNode,false);
 
     // gather existing proc definitions in the class
@@ -6726,9 +6728,9 @@ begin
     // search for missing proc bodies
     if (ProcBodyNodes.Count=0) then begin
       // there were no old proc bodies of the class -> start class
-      { $IFDEF CTDEBUG}
+      {$IFDEF CTDEBUG}
       DebugLn('TCodeCompletionCodeTool.CreateMissingProcBodies Starting class in implementation ');
-      { $ENDIF}
+      {$ENDIF}
       FindInsertPointForNewClass(InsertPos,Indent);
       InsertClassMethodsComment(InsertPos,Indent);
 
