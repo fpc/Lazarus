@@ -36,13 +36,14 @@ uses
   Classes, SysUtils, LCLProc, Forms, Controls, Dialogs, FileProcs, LResources,
   FileUtil, IniFiles, contnrs,
   // codetools
-  DefineTemplates, CodeAtom, CodeCache, CodeToolManager, LinkScanner,
+  CodeToolManager, DefineTemplates, CodeAtom, CodeCache, LinkScanner,
   // IDEIntf
   ComponentReg, IDEMsgIntf, MainIntf, LazIDEIntf, PackageIntf, ProjectIntf,
   // IDE
   IDEProcs, MissingUnitsUnit, Project, DialogProcs, CheckLFMDlg,
   EditorOptions, CompilerOptions, PackageDefs, PackageSystem,
-  PackageEditor, BasePkgManager, LazarusIDEStrConsts, ConvertSettings;
+  PackageEditor, BasePkgManager, LazarusIDEStrConsts,
+  ConvertSettings, ConvCodeTool;
 
 const
   SettingDelphiModeTemplName = 'Setting Delphi Mode';
@@ -531,7 +532,7 @@ var
   DfmFilename: string;     // Delphi .DFM file name.
   LfmFilename: string;     // Lazarus .LFM file name.
   LrsFilename: string;     // Resource file name.
-  MainResFilename: string; // *.RES
+  ConvTool: TConvDelphiCodeTool;
 begin
   fLfmCode:=nil;
   LrsFilename:='';
@@ -585,14 +586,15 @@ begin
   // add initialization
   // add {$i unit.lrs} directive
   // TODO: fix delphi ambiguousities like incomplete proc implementation headers
-  MainResFilename:=ChangeFileExt(fLazUnitFilename, '.res');
-  Result:=mrOk;
-  if not CodeToolBoss.ConvertDelphiToLazarusSource(fUnitCode,
-                  {FileExistsUTF8(MainResFilename),} LrsFilename<>'') then begin
-    Result:=JumpToCodetoolErrorAndAskToAbort(Assigned(fOwnerConverter));
+  ConvTool:=TConvDelphiCodeTool.Create(fUnitCode, Assigned(fOwnerConverter),
+      FileExistsUTF8(ChangeFileExt(fLazUnitFilename, '.res')),
+      LrsFilename<>'');
+  try
+    Result:=ConvTool.Convert;
     if Result=mrAbort then exit;
+  finally
+    ConvTool.Free;
   end;
-
   // Fix or comment missing units, FixMissingUnits shows error messages.
   Result:=FixMissingUnits(true);
 end;
