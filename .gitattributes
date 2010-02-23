@@ -2206,6 +2206,7 @@ components/turbopower_ipro/turbopoweripro.lpk svneol=native#text/pascal
 components/turbopower_ipro/turbopoweripro.pas svneol=native#text/plain
 converter/chgencodingdlg.lfm svneol=native#text/plain
 converter/chgencodingdlg.pas svneol=native#text/plain
+converter/convcodetool.pas svneol=native#text/plain
 converter/convertdelphi.pas svneol=native#text/plain
 converter/convertsettings.lfm svneol=native#text/plain
 converter/convertsettings.pas svneol=native#text/plain
