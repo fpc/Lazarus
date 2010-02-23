@@ -5,8 +5,8 @@ msgstr ""
 "Content-Transfer-Encoding: 8bit\n"
 "Project-Id-Version: \n"
 "POT-Creation-Date: \n"
-"PO-Revision-Date: 2009-09-02 13:42-0600\n"
-"Last-Translator: Jesus Reyes Aguilar <jesusrmx@yahoo.com.mx>\n"
+"PO-Revision-Date: 2010-02-17 16:34+0100\n"
+"Last-Translator: javivf <javivf@gmail.com>\n"
 "Language-Team: \n"
 
 #: lr_const.saboutformcapt
@@ -528,7 +528,7 @@ msgstr "Versión"
 
 #: lr_const.sduplicatedobjectname
 msgid "An object named \"%s\" already exists"
-msgstr ""
+msgstr "Ya existe un objeto llamado \"%s\""
 
 #: lr_const.seditorformbig
 msgid "&Big font"
@@ -549,7 +549,7 @@ msgstr "&Formato"
 
 #: lr_const.seditorformfunction
 msgid "Function"
-msgstr ""
+msgstr "Función"
 
 #: lr_const.seditorformmemo
 msgctxt "lr_const.seditorformmemo"
@@ -690,7 +690,7 @@ msgstr "Fuente..."
 #: lr_const.sformat11
 msgctxt "lr_const.sformat11"
 msgid "[None]"
-msgstr ""
+msgstr "[Ninguno]"
 
 #: lr_const.sformat21
 msgid "1234,5"
@@ -1393,7 +1393,7 @@ msgstr ""
 
 #: lr_const.snewtemplate
 msgid "New template"
-msgstr ""
+msgstr "Nueva plantilla"
 
 #: lr_const.sno
 msgid "No"

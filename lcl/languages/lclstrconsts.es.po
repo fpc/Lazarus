@@ -1,7 +1,7 @@
 msgid ""
 msgstr ""
 "Last-Translator: javivf <javivf@gmail.com>\n"
-"PO-Revision-Date: 2009-09-03 15:57+0100\n"
+"PO-Revision-Date: 2010-02-17 16:31+0100\n"
 "Language-Team: \n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
@@ -250,7 +250,7 @@ msgstr "Un control no puede tenerse a si mismo como pariente"
 
 #: lclstrconsts.rsactivebordercolorcaption
 msgid "Active Border"
-msgstr ""
+msgstr "Borde Activo"
 
 #: lclstrconsts.rsactivecaptioncolorcaption
 msgid "Active Caption"
@@ -262,7 +262,7 @@ msgstr "Todos los archivos (%s)|%s|%s"
 
 #: lclstrconsts.rsappworkspacecolorcaption
 msgid "Application Workspace"
-msgstr ""
+msgstr "Espacio de trabajo de la Aplicación"
 
 #: lclstrconsts.rsaquacolorcaption
 msgid "Aqua"
@@ -701,11 +701,11 @@ msgstr "Icono"
 
 #: lclstrconsts.rsiconimageempty
 msgid "Icon image cannot be empty"
-msgstr ""
+msgstr "La imagen del Icono no puede estar vacia"
 
 #: lclstrconsts.rsiconimageformat
 msgid "Icon image must have the same format"
-msgstr ""
+msgstr "La imagen del Icono debe tener el mismo formato"
 
 #: lclstrconsts.rsiconimageformatchange
 msgid "Cannot change format of icon image"
@@ -713,7 +713,7 @@ msgstr "No se puede cambiar el formato del icono"
 
 #: lclstrconsts.rsiconimagesize
 msgid "Icon image must have the same size"
-msgstr ""
+msgstr "La imagen del Icono debe tener el mismo tamaño"
 
 #: lclstrconsts.rsiconimagesizechange
 msgid "Cannot change size of icon image"
@@ -721,11 +721,11 @@ msgstr "No se puede cambiar el tamaño del icono"
 
 #: lclstrconsts.rsiconnocurrent
 msgid "Icon has no current image"
-msgstr ""
+msgstr "El Icono no tiene imagen actual"
 
 #: lclstrconsts.rsinactivebordercolorcaption
 msgid "Inactive Border"
-msgstr ""
+msgstr "Borde Inactivo"
 
 #: lclstrconsts.rsinactivecaptioncolorcaption
 msgctxt "lclstrconsts.rsinactivecaptioncolorcaption"
@@ -873,7 +873,7 @@ msgstr ""
 
 #: lclstrconsts.rsmenubarcolorcaption
 msgid "Menu Bar"
-msgstr ""
+msgstr "Barra de Menu"
 
 #: lclstrconsts.rsmenucolorcaption
 msgctxt "lclstrconsts.rsmenucolorcaption"
@@ -886,7 +886,7 @@ msgstr ""
 
 #: lclstrconsts.rsmenutextcolorcaption
 msgid "Menu Text"
-msgstr ""
+msgstr "Texto de Menu"
 
 #: lclstrconsts.rsmodified
 msgid "  modified "
@@ -1128,7 +1128,7 @@ msgstr ""
 
 #: lclstrconsts.rswindowtextcolorcaption
 msgid "Window Text"
-msgstr ""
+msgstr "Texto de Ventana"
 
 #: lclstrconsts.rsyellowcolorcaption
 msgid "Yellow"
@@ -1208,11 +1208,11 @@ msgstr ""
 
 #: lclstrconsts.sparunterminatedbinvalue
 msgid "Unterminated byte value"
-msgstr ""
+msgstr "Valor byte no finalizado"
 
 #: lclstrconsts.sparunterminatedstring
 msgid "Unterminated string"
-msgstr ""
+msgstr "Cadena de texto no finalizada"
 
 #: lclstrconsts.sparwrongtokensymbol
 msgid "Wrong token symbol: %s expected but %s found"

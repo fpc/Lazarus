@@ -4,7 +4,7 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Last-Translator: javivf <javivf@gmail.com>\n"
-"PO-Revision-Date: 2009-09-03 16:06+0100\n"
+"PO-Revision-Date: 2010-02-17 16:20+0100\n"
 "Project-Id-Version: \n"
 "POT-Creation-Date: \n"
 "Language-Team: \n"
@@ -133,10 +133,9 @@ msgid "Check dataset settings"
 msgstr "Comprobar opciones de dataset"
 
 #: objinspstrconsts.fesfetitle
-#, fuzzy
 #| msgid "Edit Fields"
 msgid "Edit Fields..."
-msgstr "Editar campos"
+msgstr "Editar campos..."
 
 #: objinspstrconsts.fesfltitle
 msgid "FieldDefs"
@@ -303,15 +302,15 @@ msgstr "Editor de Lista de Acción"
 
 #: objinspstrconsts.oisaddcollectionitem
 msgid "&Add Item"
-msgstr ""
+msgstr "&Añadir Elemento"
 
 #: objinspstrconsts.oisaddfields
 msgid "&Add fields"
-msgstr ""
+msgstr "&Añadir campos"
 
 #: objinspstrconsts.oisaddfieldsfromfielddefs
 msgid "Add fields from FieldDefs"
-msgstr ""
+msgstr "Añadir campos desde FieldDefs"
 
 #: objinspstrconsts.oisaddtofavorites
 msgid "Add to Favorites"
@@ -388,11 +387,10 @@ msgid "Confirm delete"
 msgstr "Confirmar borrado"
 
 #: objinspstrconsts.oiscopycomponents
-#, fuzzy
 #| msgid "Copy components"
 msgctxt "objinspstrconsts.oiscopycomponents"
 msgid "&Copy"
-msgstr "Copiar componentes"
+msgstr "&Copiar componentes"
 
 #: objinspstrconsts.oiscreateanewpascalunit
 msgid "Create a new pascal unit."
@@ -404,14 +402,13 @@ msgstr "Crear evento por defecto"
 
 #: objinspstrconsts.oiscreatenewfieldandadditatcurrentposition
 msgid "Create new field and add it at current position"
-msgstr ""
+msgstr "Crear nuevo campo y añadirlo en la posición actual"
 
 #: objinspstrconsts.oiscutcomponents
-#, fuzzy
 #| msgid "Cut components"
 msgctxt "objinspstrconsts.oiscutcomponents"
 msgid "Cu&t"
-msgstr "Cortar componentes"
+msgstr "Cor&tar componentes"
 
 #: objinspstrconsts.oisdelete
 msgctxt "objinspstrconsts.oisdelete"
@@ -431,7 +428,7 @@ msgstr "¿Borrar elemento %s%s%s?"
 
 #: objinspstrconsts.oisdeleteselectedfields
 msgid "Delete selected field(s)"
-msgstr ""
+msgstr "Borrar campo(s) seleccionados"
 
 #: objinspstrconsts.oisdlinesdchars
 msgid "%d lines, %d chars"
@@ -447,7 +444,7 @@ msgstr "Error"
 
 #: objinspstrconsts.oiserrordeletingaction
 msgid "Error deleting action"
-msgstr ""
+msgstr "Error al borrar la acción"
 
 #: objinspstrconsts.oiserrorloadingimage
 msgid "Error loading image"
@@ -459,7 +456,7 @@ msgstr "Error cargando imagen %s%s%s:%s%s"
 
 #: objinspstrconsts.oiserrorwhiledeletingaction
 msgid "Error while deleting action:%s%s"
-msgstr ""
+msgstr "Error mientras se borraba la acción:%s%s"
 
 #: objinspstrconsts.oisevents
 msgid "Events"
@@ -539,15 +536,15 @@ msgstr "Método"
 
 #: objinspstrconsts.oismovedown
 msgid "Move &Down"
-msgstr ""
+msgstr "Mover Abajo"
 
 #: objinspstrconsts.oismoveup
 msgid "Move &Up"
-msgstr ""
+msgstr "Mover Arriba"
 
 #: objinspstrconsts.oisnew
 msgid "&New"
-msgstr ""
+msgstr "&Nuevo"
 
 #: objinspstrconsts.oisnone
 msgid "(none)"
@@ -591,18 +588,17 @@ msgstr ""
 
 #: objinspstrconsts.oisordermovetoback
 msgid "Move to Back"
-msgstr ""
+msgstr "Mover Atras"
 
 #: objinspstrconsts.oisordermovetofront
 msgid "Move to Front"
-msgstr ""
+msgstr "Mover al Frente"
 
 #: objinspstrconsts.oispastecomponents
-#, fuzzy
 #| msgid "Paste components"
 msgctxt "objinspstrconsts.oispastecomponents"
 msgid "&Paste"
-msgstr "Pegar componentes"
+msgstr "&Pegar componentes"
 
 #: objinspstrconsts.oispeopenimagefile
 msgid "Open image file"
@@ -658,7 +654,7 @@ msgstr "Seleccionar un archivo"
 
 #: objinspstrconsts.oisselectall
 msgid "&Select all"
-msgstr ""
+msgstr "&Selecciona todo"
 
 #: objinspstrconsts.oisselectshortcut
 msgid "Select short cut"
@@ -997,15 +993,15 @@ msgstr "Probar entrada"
 
 #: objinspstrconsts.oistheidentifierisnotamethodpresscanceltoundopressign
 msgid "The identifier %s%s%s is not a method.%sPress Cancel to undo,%spress Ignore to force it."
-msgstr ""
+msgstr "El identificador %s%s% no es un método.%sPresiona Cancelar para deshacer,%Presiona Ignorar para forzar."
 
 #: objinspstrconsts.oisthemethodisincompatibletothiseventpresscanceltound
 msgid "The method %s%s%s is incompatible to this event (%s).%sPress Cancel to undo,%spress Ignore to force it."
-msgstr ""
+msgstr "El método %s%s%s no es compatible con este evento (%s).%sPresiona Cancelar para deshacer,%s presiona Ignorar para forzar."
 
 #: objinspstrconsts.oisthemethodisnotpublishedpresscanceltoundopressignor
 msgid "The method %s%s%s is not published.%sPress Cancel to undo,%spress Ignore to force it."
-msgstr ""
+msgstr "el método %s%s%s no es público.%sPresiona Cancelar para deshacer,%s presiona Ignorar para forzar."
 
 #: objinspstrconsts.oisunabletochangeparentofcontroltonewparent
 msgid "Unable to change parent of control %s%s%s to new parent %s%s%s.%s%s"
@@ -1023,7 +1019,7 @@ msgstr "Desconocido"
 
 #: objinspstrconsts.oisunselectall
 msgid "&Unselect all"
-msgstr ""
+msgstr "Deselecciona todo"
 
 #: objinspstrconsts.oisvalue
 msgid "Value:"
@@ -1047,19 +1043,19 @@ msgstr "Palabra"
 
 #: objinspstrconsts.oiszorder
 msgid "Z-order"
-msgstr ""
+msgstr "Orden-Z"
 
 #: objinspstrconsts.pefilter
 msgid "Filter"
-msgstr ""
+msgstr "Filtro"
 
 #: objinspstrconsts.pefiltereditor
 msgid "Filter editor"
-msgstr ""
+msgstr "Editor del Filtro"
 
 #: objinspstrconsts.pefiltername
 msgid "Filter name"
-msgstr ""
+msgstr "Nombre del Filtro"
 
 #: objinspstrconsts.pirscustomoptions
 msgid "Custom options"
@@ -1284,12 +1280,12 @@ msgstr "Leyenda:"
 #: objinspstrconsts.sccslvedtlabelimageindex
 msgctxt "objinspstrconsts.sccslvedtlabelimageindex"
 msgid "Image Index:"
-msgstr ""
+msgstr "Indice Imagen:"
 
 #: objinspstrconsts.sccslvedtlabelstateindex
 msgctxt "objinspstrconsts.sccslvedtlabelstateindex"
 msgid "State Index:"
-msgstr ""
+msgstr "Estado Indice:"
 
 #: objinspstrconsts.sccslvedtnewitem
 msgctxt "objinspstrconsts.sccslvedtnewitem"
@@ -1307,7 +1303,7 @@ msgstr ""
 
 #: objinspstrconsts.sccssbeditpanels
 msgid "Panels Editor ..."
-msgstr ""
+msgstr "Editor de Paneles"
 
 #: objinspstrconsts.sccssgedt
 msgid "Edit StringGrid..."
@@ -1586,7 +1582,7 @@ msgstr "ninguno"
 
 #: objinspstrconsts.srvk_numlock
 msgid "Numlock"
-msgstr ""
+msgstr "Bloq Num"
 
 #: objinspstrconsts.srvk_numpad
 msgid "Numpad %d"
@@ -1611,7 +1607,7 @@ msgstr ""
 
 #: objinspstrconsts.srvk_return
 msgid "Return"
-msgstr ""
+msgstr "Retorno"
 
 #: objinspstrconsts.srvk_right
 msgctxt "objinspstrconsts.srvk_right"
@@ -1640,15 +1636,15 @@ msgstr ""
 
 #: objinspstrconsts.srvk_space
 msgid "Space key"
-msgstr ""
+msgstr "Barra espaciadora"
 
 #: objinspstrconsts.srvk_super
 msgid "Super"
-msgstr ""
+msgstr "Mayúsculas"
 
 #: objinspstrconsts.srvk_tab
 msgid "Tab"
-msgstr ""
+msgstr "Tabulador"
 
 #: objinspstrconsts.srvk_unknown
 msgctxt "objinspstrconsts.srvk_unknown"
