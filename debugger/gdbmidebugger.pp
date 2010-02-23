@@ -4036,7 +4036,7 @@ var
   R: TGDBMIExecResult;
   FileType, EntryPoint: String;
   List: TGDBMINameValueList;
-  TargetPIDPart, S: String;
+  TargetPIDPart: String;
   TempInstalled, CanContinue: Boolean;
 begin
   if not (State in [dsStop])
