@@ -3941,21 +3941,16 @@ begin
   Result:=false;
   if SourceChangeCache=nil then exit;
   SourceChangeCache.MainScanner:=Scanner;
-  SourceChangeCache.BeginUpdate;
-  try
-    DebugLn('ConvertDelphiToLazarusSource AddModeDelphiDirective');
-    if not AddModeDelphiDirective then exit;
-    DebugLn('ConvertDelphiToLazarusSource RemoveDFMResourceDirective');
-    if not RemoveDFMResourceDirective then exit;
-    DebugLn('ConvertDelphiToLazarusSource AddLRSIncludeDirective');
-    if not AddLRSIncludeDirective then exit;
-    DebugLn('ConvertDelphiToLazarusSource ConvertUsedUnits');
-    if not ConvertUsedUnits then exit;
-    DebugLn('ConvertDelphiToLazarusSource Apply');
-    if not SourceChangeCache.Apply then exit;
-  finally
-    SourceChangeCache.EndUpdate;
-  end;
+  DebugLn('ConvertDelphiToLazarusSource AddModeDelphiDirective');
+  if not AddModeDelphiDirective then exit;
+  DebugLn('ConvertDelphiToLazarusSource RemoveDFMResourceDirective');
+  if not RemoveDFMResourceDirective then exit;
+  DebugLn('ConvertDelphiToLazarusSource AddLRSIncludeDirective');
+  if not AddLRSIncludeDirective then exit;
+  DebugLn('ConvertDelphiToLazarusSource ConvertUsedUnits');
+  if not ConvertUsedUnits then exit;
+  DebugLn('ConvertDelphiToLazarusSource Apply');
+  if not SourceChangeCache.Apply then exit;
   DebugLn('ConvertDelphiToLazarusSource END');
   Result:=true;
 end;
