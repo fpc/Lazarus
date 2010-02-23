@@ -136,6 +136,7 @@ begin
   if Options is TProjectCompilerOptions then
     with TProjectCompilerOptions(Options) do
     begin
+      chkCreateMakefile.Enabled:=false;
       lblRunIfCompiler.Visible := True;
       chkCompilerCompile.AnchorToNeighbour(akLeft, 30, lblRunIfCompiler);
       chkCompilerCompile.Checked := crCompile in CompileReasons;
@@ -149,6 +150,7 @@ begin
     end
   else if Options is TPkgCompilerOptions then
   begin
+    chkCreateMakefile.Enabled:=true;
     lblRunIfCompiler.Visible := False;
     chkCompilerCompile.AnchorParallel(akTop, 6, chkCompilerCompile.Parent);
     chkCompilerCompile.AnchorParallel(akLeft, 6, chkCompilerCompile.Parent);
