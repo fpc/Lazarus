@@ -3321,11 +3321,15 @@ var
        end;
     end;
 
-    Rgn := CreateRectRgn(R.Left, R.Top, R.Right, R.Bottom);
-    SelectClipRgn(Canvas.Handle, Rgn);
-    DrawCell(aCol, aRow, R, gds);
-    SelectClipRgn(Canvas.Handle, 0);
-    DeleteObject(Rgn);
+    Canvas.SaveHandleState;
+    try
+      Rgn := CreateRectRgn(R.Left, R.Top, R.Right, R.Bottom);
+      SelectClipRgn(Canvas.Handle, Rgn);
+      DrawCell(aCol, aRow, R, gds);
+      DeleteObject(Rgn);
+    finally
+      Canvas.RestoreHandleState;
+    end;
   end;
 
 begin
