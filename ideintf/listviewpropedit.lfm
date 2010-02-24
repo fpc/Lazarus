@@ -1,122 +1,46 @@
 object ListViewItemsEditorForm: TListViewItemsEditorForm
   Left = 293
-  Height = 246
+  Height = 300
   Top = 179
-  Width = 510
-  ActiveControl = BtnOK
+  Width = 525
+  ActiveControl = BtnNewItem
   BorderIcons = [biSystemMenu, biHelp]
   Caption = 'ListView Items Editor'
-  ClientHeight = 246
-  ClientWidth = 510
+  ClientHeight = 300
+  ClientWidth = 525
   Constraints.MinHeight = 200
   Constraints.MinWidth = 400
   OnCreate = FormCreate
   Position = poScreenCenter
   LCLVersion = '0.9.29'
-  object BtnOK: TBitBtn
-    AnchorSideRight.Control = BtnCancel
-    AnchorSideBottom.Control = Owner
-    AnchorSideBottom.Side = asrBottom
-    Left = 180
-    Height = 26
-    Top = 214
-    Width = 75
-    Anchors = [akRight, akBottom]
-    AutoSize = True
-    BorderSpacing.Around = 6
-    Caption = '&OK'
-    Constraints.MinHeight = 25
-    Constraints.MinWidth = 75
-    Kind = bkOK
-    ModalResult = 1
-    NumGlyphs = 0
-    TabOrder = 0
-  end
-  object BtnCancel: TBitBtn
-    AnchorSideRight.Control = BtnApply
-    AnchorSideBottom.Control = Owner
-    AnchorSideBottom.Side = asrBottom
-    Left = 261
-    Height = 26
-    Top = 214
-    Width = 81
-    Anchors = [akRight, akBottom]
-    AutoSize = True
-    BorderSpacing.Around = 6
-    Cancel = True
-    Caption = 'Cancel'
-    Constraints.MinHeight = 25
-    Constraints.MinWidth = 75
-    Kind = bkCancel
-    ModalResult = 2
-    NumGlyphs = 0
-    TabOrder = 1
-  end
-  object BtnApply: TBitBtn
-    AnchorSideRight.Control = BtnHelp
-    AnchorSideBottom.Control = Owner
-    AnchorSideBottom.Side = asrBottom
-    Left = 348
-    Height = 25
-    Top = 215
-    Width = 75
-    Anchors = [akRight, akBottom]
-    AutoSize = True
-    BorderSpacing.Around = 6
-    Caption = '&Apply'
-    Constraints.MinHeight = 25
-    Constraints.MinWidth = 75
-    NumGlyphs = 0
-    OnClick = btnApplyClick
-    TabOrder = 2
-  end
-  object BtnHelp: TBitBtn
-    AnchorSideRight.Control = Owner
-    AnchorSideRight.Side = asrBottom
-    AnchorSideBottom.Control = Owner
-    AnchorSideBottom.Side = asrBottom
-    Left = 429
-    Height = 26
-    Top = 214
-    Width = 75
-    Anchors = [akRight, akBottom]
-    AutoSize = True
-    BorderSpacing.Around = 6
-    Caption = '&Help'
-    Constraints.MinHeight = 25
-    Constraints.MinWidth = 75
-    Kind = bkHelp
-    NumGlyphs = 0
-    TabOrder = 3
-  end
   object GroupBox1: TGroupBox
     AnchorSideLeft.Control = Owner
     AnchorSideTop.Control = Owner
-    AnchorSideBottom.Control = BtnOK
+    AnchorSideBottom.Control = BtnPanel
     Left = 6
-    Height = 202
+    Height = 247
     Top = 6
     Width = 295
     Anchors = [akTop, akLeft, akBottom]
     BorderSpacing.Around = 6
     Caption = 'Items'
-    ClientHeight = 184
+    ClientHeight = 228
     ClientWidth = 291
-    TabOrder = 4
+    TabOrder = 0
     object TreeView1: TTreeView
       AnchorSideLeft.Control = GroupBox1
       AnchorSideTop.Control = GroupBox1
       AnchorSideBottom.Control = GroupBox1
       AnchorSideBottom.Side = asrBottom
       Left = 5
-      Height = 174
+      Height = 218
       Top = 5
       Width = 160
       Anchors = [akTop, akLeft, akRight, akBottom]
       BorderSpacing.Left = 5
       BorderSpacing.Top = 5
       BorderSpacing.Bottom = 5
-      DefaultItemHeight = 17
+      DefaultItemHeight = 19
       HideSelection = False
       ReadOnly = True
       TabOrder = 0
@@ -182,24 +106,24 @@ object ListViewItemsEditorForm: TListViewItemsEditorForm
     AnchorSideTop.Control = Owner
     AnchorSideRight.Control = Owner
     AnchorSideRight.Side = asrBottom
-    AnchorSideBottom.Control = BtnOK
+    AnchorSideBottom.Control = BtnPanel
     Left = 307
-    Height = 202
+    Height = 247
     Top = 6
-    Width = 197
+    Width = 212
     Anchors = [akTop, akLeft, akRight, akBottom]
     BorderSpacing.Around = 6
     Caption = 'Item Properties'
-    ClientHeight = 184
-    ClientWidth = 193
-    TabOrder = 5
+    ClientHeight = 228
+    ClientWidth = 208
+    TabOrder = 1
     object LabelCaption: TLabel
       AnchorSideLeft.Control = GroupBox2
       AnchorSideTop.Control = GroupBox2
       Left = 6
-      Height = 16
+      Height = 18
       Top = 6
-      Width = 46
+      Width = 55
       BorderSpacing.Left = 6
       BorderSpacing.Top = 6
       Caption = 'Caption:'
@@ -211,9 +135,9 @@ object ListViewItemsEditorForm: TListViewItemsEditorForm
       AnchorSideTop.Control = edtText
       AnchorSideTop.Side = asrBottom
       Left = 6
-      Height = 16
-      Top = 53
-      Width = 68
+      Height = 18
+      Top = 59
+      Width = 86
       BorderSpacing.Top = 6
       Caption = 'Image Index:'
       FocusControl = edtIndexImg
@@ -224,9 +148,9 @@ object ListViewItemsEditorForm: TListViewItemsEditorForm
       AnchorSideTop.Control = edtIndexImg
       AnchorSideTop.Side = asrBottom
       Left = 6
-      Height = 16
-      Top = 100
-      Width = 61
+      Height = 18
+      Top = 112
+      Width = 79
       BorderSpacing.Top = 6
       Caption = 'State Index:'
       FocusControl = edtIndexState
@@ -239,9 +163,9 @@ object ListViewItemsEditorForm: TListViewItemsEditorForm
       AnchorSideRight.Control = GroupBox2
       AnchorSideRight.Side = asrBottom
       Left = 6
-      Height = 23
-      Top = 24
-      Width = 182
+      Height = 27
+      Top = 26
+      Width = 197
       Anchors = [akTop, akLeft, akRight]
       BorderSpacing.Top = 2
       BorderSpacing.Right = 5
@@ -253,8 +177,8 @@ object ListViewItemsEditorForm: TListViewItemsEditorForm
       AnchorSideTop.Control = LabelImageIndex
       AnchorSideTop.Side = asrBottom
       Left = 6
-      Height = 23
-      Top = 71
+      Height = 27
+      Top = 79
       Width = 48
       BorderSpacing.Top = 2
       OnEditingDone = edtIndexStateEditingDone
@@ -265,12 +189,88 @@ object ListViewItemsEditorForm: TListViewItemsEditorForm
       AnchorSideTop.Control = LabelStateIndex
       AnchorSideTop.Side = asrBottom
       Left = 6
-      Height = 23
-      Top = 118
+      Height = 27
+      Top = 132
       Width = 48
       BorderSpacing.Top = 2
       OnEditingDone = edtIndexStateEditingDone
       TabOrder = 2
+    end
+  end
+  object BtnPanel: TPanel
+    Left = 0
+    Height = 41
+    Top = 259
+    Width = 525
+    Align = alBottom
+    AutoSize = True
+    BevelOuter = bvNone
+    ClientHeight = 41
+    ClientWidth = 525
+    TabOrder = 2
+    object BtnHelp: TBitBtn
+      AnchorSideRight.Side = asrBottom
+      AnchorSideBottom.Side = asrBottom
+      Left = 6
+      Height = 29
+      Top = 6
+      Width = 75
+      Align = alLeft
+      AutoSize = True
+      BorderSpacing.Around = 6
+      Caption = '&Help'
+      Constraints.MinWidth = 75
+      Kind = bkHelp
+      NumGlyphs = 0
+      TabOrder = 0
+    end
+    object BtnOK: TBitBtn
+      AnchorSideBottom.Side = asrBottom
+      Left = 282
+      Height = 29
+      Top = 6
+      Width = 75
+      Align = alRight
+      AutoSize = True
+      BorderSpacing.Around = 6
+      Caption = '&OK'
+      Constraints.MinWidth = 75
+      Kind = bkOK
+      ModalResult = 1
+      NumGlyphs = 0
+      TabOrder = 1
+    end
+    object BtnCancel: TBitBtn
+      AnchorSideBottom.Side = asrBottom
+      Left = 363
+      Height = 29
+      Top = 6
+      Width = 75
+      Align = alRight
+      AutoSize = True
+      BorderSpacing.Around = 6
+      Cancel = True
+      Caption = 'Cancel'
+      Constraints.MinWidth = 75
+      Kind = bkCancel
+      ModalResult = 2
+      NumGlyphs = 0
+      TabOrder = 2
+    end
+    object BtnApply: TBitBtn
+      AnchorSideBottom.Side = asrBottom
+      Left = 444
+      Height = 29
+      Top = 6
+      Width = 75
+      Align = alRight
+      AutoSize = True
+      BorderSpacing.Around = 6
+      Caption = '&Apply'
+      Constraints.MinWidth = 75
+      NumGlyphs = 0
+      OnClick = btnApplyClick
+      TabOrder = 3
     end
   end
 end

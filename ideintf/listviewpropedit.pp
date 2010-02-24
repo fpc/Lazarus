@@ -56,6 +56,7 @@ type
     LabelCaption: TLabel;
     LabelImageIndex: TLabel;
     LabelStateIndex: TLabel;
+    BtnPanel: TPanel;
     TreeView1: TTreeView;
     procedure BtnNewItemClick(Sender: TObject);
     procedure Edit1Change(Sender: TObject);
