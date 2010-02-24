@@ -31,7 +31,7 @@ type
 var
   // will be set by the IDE
   DefaultConfigClass: TConfigStorageClass = nil;
-  GetIDEConfigStorage: TGetIDEConfigStorage = nil;
+  GetIDEConfigStorage: TGetIDEConfigStorage = nil; // load errors: raises exceptions
 
 function EnvironmentAsStringList: TStringList;
 procedure AssignEnvironmentTo(DestStrings, Overrides: TStrings);

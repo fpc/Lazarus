@@ -13,6 +13,7 @@ implementation
 
 procedure Register; 
 begin
+  RegisterUnit('ExternHelpFrm', @ExternHelpFrm.Register); 
 end; 
 
 initialization

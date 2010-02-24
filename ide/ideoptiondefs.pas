@@ -298,7 +298,7 @@ function CreateNiceWindowPosition(Width, Height: integer): TRect;
 function NonModalIDEFormIDToEnum(const FormID: string): TNonModalIDEWindow;
 
 function GetLazIDEConfigStorage(const Filename: string; LoadFromDisk: Boolean
-                                ): TConfigStorage;
+                                ): TConfigStorage; // load errors: raises exceptions
 
 implementation
 
