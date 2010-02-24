@@ -39,7 +39,7 @@ unit SourceChanger;
 
 interface
 
-{off $DEFINE CTDEBUG}
+{$DEFINE CTDEBUG}
 
 uses
   Classes, SysUtils, FileProcs, CodeToolsStrConsts, CodeCache, BasicCodeTools,

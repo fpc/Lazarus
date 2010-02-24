@@ -75,15 +75,17 @@ begin
   try
     fSrcCache.BeginUpdate;
     try
+      // these changes can be applied together without rescan
       if not AddModeDelphiDirective then exit;
       if not RemoveDFMResourceDirective then exit;
       if not LowerCaseMainResourceDirective then exit;
       if not AddLRSIncludeDirective then exit;
-      if not ConvertUsedUnits then exit;
       if not fSrcCache.Apply then exit;
     finally
       fSrcCache.EndUpdate;
     end;
+    if not ConvertUsedUnits then exit;
+    if not fSrcCache.Apply then exit;
     Result:=mrOK;
   except
     Result:=JumpToCodetoolErrorAndAskToAbort(fAsk);
@@ -130,12 +132,15 @@ begin
     begin
       exit;
     end;
+    if not fSrcCache.Apply then exit;
   end;
   if fAddLRSCode then
+  begin
     if not fCodeTool.AddUnitToMainUsesSection('LResources','',fSrcCache) then
     begin
       exit;
     end;
+  end;
   if not fCodeTool.RemoveUnitFromAllUsesSections('VARIANTS',fSrcCache) then
   begin
     exit;
