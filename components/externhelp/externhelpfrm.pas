@@ -194,20 +194,13 @@ implementation
 {$R *.lfm}
 
 procedure Register;
-var
-  Config: TConfigStorage;
 begin
   ExternHelpOptions:=TExternHelpOptions.Create;
   ExternHelpOptionID:=RegisterIDEOptionsGroup(ExternHelpOptionID,TExternHelpOptions)^.Index;
   ExternHelpOptionGeneralID:=RegisterIDEOptionsEditor(ExternHelpOptionID,
       TExternHelpGeneralOptsFrame,ExternHelpOptionGeneralID)^.Index;
   try
-    Config:=GetIDEConfigStorage(ExternHelpOptions.Filename,true);
-    try
-      ExternHelpOptions.Load(Config);
-    finally
-      Config.Free;
-    end;
+    ExternHelpOptions.Load;
   except
     on E: Exception do begin
       DebugLn(['Error reading externhelp options ',ExternHelpOptions.Filename,': ',E.Message]);
@@ -380,7 +373,9 @@ begin
     Item.Filename:=SelItem.Filename;
     Item.URL:=SelItem.URL;
     Item.StoreIn:=SelItem.StoreIn;
-  end;
+    SelItem.Parent.AddChild(Item);
+  end else
+    Options.RootItem.AddChild(Item);
   TVNode:=ItemsTreeView.Items.AddObject(SelTVNode,Item.Name,Item);
   ItemsTreeView.Selected:=TVNode;
 end;
@@ -599,21 +594,17 @@ end;
 procedure TExternHelpGeneralOptsFrame.WriteSettings(AOptions: TAbstractIDEOptions);
 var
   Opts: TExternHelpOptions;
-  Config: TConfigStorage;
 begin
   if AOptions is TExternHelpOptions then begin
     Opts:=TExternHelpOptions(AOptions);
+    DebugLn(['TExternHelpGeneralOptsFrame.WriteSettings AAA1 Options.RootItem.ChildCount=',Options.RootItem.ChildCount]);
     if not Opts.IsEqual(Options) then
     begin
+      DebugLn(['TExternHelpGeneralOptsFrame.WriteSettings AAA2 ']);
       Opts.Assign(Options);
       try
-        Config:=GetIDEConfigStorage(Opts.Filename,false);
-        try
-          Opts.Save(Config);
-          Config.WriteToDisk;
-        finally
-          Config.Free;
-        end;
+        DebugLn(['TExternHelpGeneralOptsFrame.WriteSettings AAA3 ',Opts.RootItem.ChildCount]);
+        Opts.Save;
       except
         on E: Exception do begin
           DebugLn(['TExternHelpGeneralOptsFrame.WriteSettings unable to write file ',Opts.Filename,': ',E.Message]);
