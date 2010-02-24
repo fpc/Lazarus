@@ -102,6 +102,7 @@ var
   AResource: TStream;
   AName: TResourceDesc;
   ARes: TGroupIconResource;
+  ItemStream: TStream;
 begin
   Result := True;
 
@@ -128,11 +129,23 @@ begin
   ARes := TGroupIconResource.Create(nil, AName); //type is always RT_GROUP_ICON
   aName.Free; //not needed anymore
   AResource := GetStream;
-  try
-    ARes.ItemData.CopyFrom(AResource, AResource.Size);
-  finally
-    AResource.Free;
-  end;
+  if AResource<>nil then
+    try
+      ItemStream:=nil;
+      try
+        ItemStream:=ARes.ItemData;
+      except
+        on E: Exception do begin
+          DebugLn(['TProjectIcon.UpdateResources bug in fcl: ',E.Message]);
+        end;
+      end;
+      if ItemStream<>nil then
+        ItemStream.CopyFrom(AResource, AResource.Size);
+    finally
+      AResource.Free;
+    end
+  else
+    ARes.ItemData.Size:=0;
 
   AResources.AddSystemResource(ARes);
 end;
