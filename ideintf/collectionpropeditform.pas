@@ -8,7 +8,7 @@ uses
   Classes, SysUtils, Forms, ComCtrls, StdCtrls;
 
 type
-  { TCollectionPropertyEditor }
+  { TCollectionPropertyEditorForm }
 
   TCollectionPropertyEditorForm = class(TForm)
     CollectionListBox: TListBox;
@@ -221,8 +221,8 @@ end;
 procedure TCollectionPropertyEditorForm.PersistentDeleting(APersistent: TPersistent);
 var
   OldCollection: TCollection;
+  AIndex, I: Integer;
 begin
-  //debugln('TCollectionPropertyEditorForm.PersistentDeleting A APersistent=',dbgsName(APersistent),' OwnerPersistent=',dbgsName(OwnerPersistent));
   if APersistent = OwnerPersistent then
   begin
     OldCollection := Collection;
@@ -232,6 +232,22 @@ begin
       GlobalDesignHook.LookupRoot := nil;
 
     Hide;
+  end
+  else
+  if Assigned(Collection) and (APersistent is TCollectionItem) and
+    (TCollectionItem(APersistent).Collection = Collection) then
+  begin
+    // persistent is still alive
+    AIndex := CollectionListBox.ItemIndex;
+    CollectionListBox.Items.BeginUpdate;
+    CollectionListBox.Items.Delete(TCollectionItem(APersistent).Index);
+    for I := TCollectionItem(APersistent).Index to CollectionListBox.Items.Count - 1 do
+      CollectionListBox.Items[I] := IntToStr(I) + ' - ' + Collection.Items[I + 1].DisplayName;
+    CollectionListBox.Items.EndUpdate;
+    if AIndex < CollectionListBox.Items.Count then
+      CollectionListBox.ItemIndex := AIndex
+    else
+      CollectionListBox.ItemIndex := CollectionListBox.Items.Count - 1;
   end;
 end;
 
