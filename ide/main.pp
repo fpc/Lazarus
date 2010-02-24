@@ -797,7 +797,7 @@ type
     function DoRemoveFromProjectDialog: TModalResult;
     function DoWarnAmbiguousFiles: TModalResult;
     procedure DoUpdateProjectResourceInfo;
-    function DoSaveForBuild: TModalResult; override;
+    function DoSaveForBuild(AReason: TCompileReason): TModalResult; override;
     function DoCheckIfProjectNeedsCompilation(AProject: TProject;
                     const CompilerFilename, CompilerParams, SrcFilename: string;
                     out NeedBuildAllFlag: boolean): TModalResult;
@@ -9930,7 +9930,7 @@ begin
   end;
 end;
 
-function TMainIDE.DoSaveForBuild: TModalResult;
+function TMainIDE.DoSaveForBuild(AReason: TCompileReason): TModalResult;
 begin
   Result:=mrCancel;
   if not (ToolStatus in [itNone,itDebugger]) then begin
@@ -9954,7 +9954,7 @@ begin
     Result:=DoSaveAll([sfCheckAmbiguousFiles])
   else
     Result:=DoSaveProjectToTestDirectory([sfSaveNonProjectFiles]);
-  Project1.Resources.DoBeforeBuild(Project1.IsVirtual);
+  Project1.Resources.DoBeforeBuild(AReason, Project1.IsVirtual);
   Project1.UpdateExecutableType;
   if Result<>mrOk then begin
     {$IFDEF VerboseSaveForBuild}
@@ -10217,7 +10217,7 @@ begin
   MessagesView.BeginBlock;
 
   try
-    Result:=DoSaveForBuild;
+    Result:=DoSaveForBuild(AReason);
     if Result<>mrOk then exit;
 
     if (Project1.Resources.ResourceType=rtRes) then begin

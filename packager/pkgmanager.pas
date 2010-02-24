@@ -2705,7 +2705,7 @@ begin
   
   // save all open files
   if not (pcfDoNotSaveEditorFiles in Flags) then begin
-    Result:=MainIDE.DoSaveForBuild;
+    Result:=MainIDE.DoSaveForBuild(crCompile);
     if Result<>mrOk then exit;
   end;
 
@@ -2749,7 +2749,7 @@ begin
   DebugLn('TPkgManager.DoCompilePackage  ',APackage.IDAsString,' Flags=',PkgCompileFlagsToString(Flags));
   {$ENDIF}
   if not (pcfDoNotSaveEditorFiles in Flags) then begin
-    Result:=MainIDE.DoSaveForBuild;
+    Result:=MainIDE.DoSaveForBuild(crCompile);
     if Result<>mrOk then exit;
   end;
   
@@ -3863,7 +3863,7 @@ begin
 
     // save all open files
     if not (pcfDoNotSaveEditorFiles in Flags) then begin
-      Result:=MainIDE.DoSaveForBuild;
+      Result:=MainIDE.DoSaveForBuild(crCompile);
       if Result<>mrOk then exit;
     end;
     

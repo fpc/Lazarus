@@ -38,8 +38,8 @@ interface
 
 uses
   Classes, SysUtils, Process, LCLProc, Controls, Forms, FileUtil,
-  CodeToolManager, LazConf, Laz_XMLCfg, Laz_DOM, IDEProcs, ProjectResourcesIntf,
-  resource, versionresource, versiontypes;
+  CodeToolManager, LazConf, Laz_XMLCfg, Laz_DOM, IDEProcs, ProjectIntf,
+  ProjectResourcesIntf, resource, versionresource, versiontypes;
 
 type
 
@@ -94,7 +94,7 @@ type
     destructor Destroy; override;
 
     procedure DoBeforeBuild(AResources: TAbstractProjectResources;
-      SaveToTestDir: boolean); override;
+      AReason: TCompileReason; SaveToTestDir: boolean); override;
     function UpdateResources(AResources: TAbstractProjectResources;
       const MainFilename: string): boolean; override;
     procedure WriteToProjectFile(AConfig: {TXMLConfig}TObject; Path: string); override;
@@ -570,9 +570,9 @@ begin
 end;
 
 procedure TProjectVersionInfo.DoBeforeBuild(AResources: TAbstractProjectResources;
-  SaveToTestDir: boolean);
+  AReason: TCompileReason; SaveToTestDir: boolean);
 begin
-  if AutoIncrementBuild then // project indicate to use autoincrementbuild
+  if (AReason = crBuild) and AutoIncrementBuild then // project indicate to use autoincrementbuild
     BuildNr := BuildNr + 1;
 end;
 

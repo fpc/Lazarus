@@ -85,7 +85,7 @@ type
     procedure AddSystemResource(AResource: TAbstractResource); override;
     procedure AddLazarusResource(AResource: TStream; const AResourceName, AResourceType: String); override;
 
-    procedure DoBeforeBuild(SaveToTestDir: boolean);
+    procedure DoBeforeBuild(AReason: TCompileReason; SaveToTestDir: boolean);
     procedure Clear;
     function Regenerate(const MainFileName: String;
                         UpdateSource, PerformSave: boolean;
@@ -449,12 +449,12 @@ begin
   Result := nil;
 end;
 
-procedure TProjectResources.DoBeforeBuild(SaveToTestDir: boolean);
+procedure TProjectResources.DoBeforeBuild(AReason: TCompileReason; SaveToTestDir: boolean);
 var
   i: integer;
 begin
   for i := 0 to FResources.Count - 1 do
-    TAbstractProjectResource(FResources[i]).DoBeforeBuild(Self,SaveToTestDir);
+    TAbstractProjectResource(FResources[i]).DoBeforeBuild(Self, AReason, SaveToTestDir);
 end;
 
 procedure TProjectResources.Clear;

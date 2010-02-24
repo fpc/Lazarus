@@ -164,7 +164,7 @@ type
     function PrepareForCompile: TModalResult; virtual; abstract; // stop things that interfere with compilation, like debugging
     function DoSaveBuildIDEConfigs(Flags: TBuildLazarusFlags): TModalResult; virtual; abstract;
     function DoBuildLazarus(Flags: TBuildLazarusFlags): TModalResult; virtual; abstract;
-    function DoSaveForBuild: TModalResult; virtual; abstract;
+    function DoSaveForBuild(AReason: TCompileReason): TModalResult; virtual; abstract;
     function DoPublishModule(Options: TPublishModuleOptions;
                              const SrcDirectory, DestDirectory: string
                              ): TModalResult; virtual; abstract;
