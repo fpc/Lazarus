@@ -37,7 +37,7 @@ type
     procedure RefreshPropertyValues;
   public
     procedure FillCollectionListBox;
-    procedure SelectInObjectInspector(UnselectAll: Boolean);
+    procedure SelectInObjectInspector(ForceUpdate, UnselectAll: Boolean);
     procedure SetCollection(NewCollection: TCollection;
                     NewOwnerPersistent: TPersistent; const NewPropName: String);
     procedure Modified;
@@ -86,7 +86,7 @@ begin
   CollectionListBox.ItemIndex := I + 1;
 
   FillCollectionListBox;
-  SelectInObjectInspector(False);
+  SelectInObjectInspector(True, False);
   Modified;
 end;
 
@@ -103,7 +103,7 @@ begin
   CollectionListBox.ItemIndex := I - 1;
 
   FillCollectionListBox;
-  SelectInObjectInspector(False);
+  SelectInObjectInspector(True, False);
   Modified;
 end;
 
@@ -115,7 +115,7 @@ begin
   FillCollectionListBox;
   if CollectionListBox.Items.Count > 0 then
     CollectionListBox.ItemIndex := CollectionListBox.Items.Count - 1;
-  SelectInObjectInspector(False);
+  SelectInObjectInspector(True, False);
   UpdateButtons;
   UpdateCaption;
   Modified;
@@ -125,7 +125,7 @@ procedure TCollectionPropertyEditorForm.CollectionListBoxClick(Sender: TObject);
 begin
   UpdateButtons;
   UpdateCaption;
-  SelectInObjectInspector(False);
+  SelectInObjectInspector(False, False);
 end;
 
 procedure TCollectionPropertyEditorForm.DeleteButtonClick(Sender: TObject);
@@ -161,7 +161,7 @@ begin
       if NewItemIndex > I then Dec(NewItemIndex);
       //debugln('TCollectionPropertyEditorForm.DeleteClick A NewItemIndex=',dbgs(NewItemIndex),' ItemIndex=',dbgs(CollectionListBox.ItemIndex),' CollectionListBox.Items.Count=',dbgs(CollectionListBox.Items.Count),' Collection.Count=',dbgs(Collection.Count));
       // unselect all items in OI (collections can act strange on delete)
-      SelectInObjectInspector(True);
+      SelectInObjectInspector(True, True);
       // now delete
       Collection.Items[I].Free;
       // update listbox after whatever happened
@@ -170,7 +170,7 @@ begin
       if NewItemIndex < CollectionListBox.Items.Count then
       begin
         CollectionListBox.ItemIndex := NewItemIndex;
-        SelectInObjectInspector(False);
+        SelectInObjectInspector(False, False);
       end;
       //debugln('TCollectionPropertyEditorForm.DeleteClick B');
       Modified;
@@ -280,7 +280,7 @@ begin
   end;
 end;
 
-procedure TCollectionPropertyEditorForm.SelectInObjectInspector(UnselectAll: Boolean);
+procedure TCollectionPropertyEditorForm.SelectInObjectInspector(ForceUpdate, UnselectAll: Boolean);
 var
   I: Integer;
   NewSelection: TPersistentSelectionList;
@@ -288,6 +288,7 @@ begin
   if Collection = nil then Exit;
   // select in OI
   NewSelection := TPersistentSelectionList.Create;
+  NewSelection.ForceUpdate := ForceUpdate;
   try
     if not UnselectAll then
     begin

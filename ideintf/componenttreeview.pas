@@ -658,11 +658,11 @@ procedure TComponentTreeView.UpdateComponentNodesValues;
 
   procedure UpdateComponentNode(ANode: TTreeNode);
   var
-    AComponent: TComponent;
+    APersistent: TPersistent;
   begin
-    if ANode=nil then exit;
-    AComponent:=TComponent(ANode.Data);
-    ANode.Text:=CreateNodeCaption(AComponent);
+    if ANode = nil then Exit;
+    APersistent := TPersistent(ANode.Data);
+    ANode.Text := CreateNodeCaption(APersistent);
     UpdateComponentNode(ANode.GetFirstChild);
     UpdateComponentNode(ANode.GetNextSibling);
   end;

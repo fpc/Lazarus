@@ -687,6 +687,8 @@ type
     procedure DoComponentEditorVerbMenuItemClick(Sender: TObject);
     procedure DoCollectionAddItem(Sender: TObject);
     procedure DoZOrderItemClick(Sender: TObject);
+  private
+    FInSelection: Boolean;
   protected
     function PersistentToString(APersistent: TPersistent): string;
     procedure AddPersistentToList(APersistent: TPersistent; List: TStrings);
@@ -3800,6 +3802,7 @@ constructor TObjectInspectorDlg.Create(AnOwner: TComponent);
 begin
   inherited Create(AnOwner);
   FPropertyEditorHook:=nil;
+  FInSelection := False;
   FSelection:=TPersistentSelectionList.Create;
   FAutoShow := True;
   FUpdatingAvailComboBox:=false;
@@ -4135,15 +4138,18 @@ end;
 
 procedure TObjectInspectorDlg.SetSelection(const ASelection: TPersistentSelectionList);
 begin
-  if not ASelection.ForceUpdate and FSelection.IsEqual(ASelection) then
+  if not Assigned(ASelection) or FInSelection or (not ASelection.ForceUpdate and FSelection.IsEqual(ASelection)) then
     Exit;
-  //if (FSelection.Count=1) and (FSelection[0] is TCollectionItem)
-  //and (ASelection.Count=0) then RaiseGDBException('');
-  FSelection.Assign(ASelection);
-  SetAvailComboBoxText;
-  RefreshSelection;
-  if Assigned(FOnSelectPersistentsInOI) then
-    FOnSelectPersistentsInOI(Self);
+  FInSelection := True;
+  try
+    FSelection.Assign(ASelection);
+    SetAvailComboBoxText;
+    RefreshSelection;
+    if Assigned(FOnSelectPersistentsInOI) then
+      FOnSelectPersistentsInOI(Self);
+  finally
+    FInSelection := False;
+  end;
 end;
 
 procedure TObjectInspectorDlg.RefreshSelection;
@@ -4506,21 +4512,15 @@ begin
   end;
 end;
 
-procedure TObjectInspectorDlg.HookGetSelection(
-  const ASelection: TPersistentSelectionList);
+procedure TObjectInspectorDlg.HookGetSelection(const ASelection: TPersistentSelectionList);
 begin
   if ASelection=nil then exit;
   ASelection.Assign(FSelection);
 end;
 
-procedure TObjectInspectorDlg.HookSetSelection(
-  const ASelection: TPersistentSelectionList);
+procedure TObjectInspectorDlg.HookSetSelection(const ASelection: TPersistentSelectionList);
 begin
-  if ASelection=nil then exit;
-  if FSelection.IsEqual(ASelection) then exit;
-  Selection:=ASelection;
-  if Assigned(FOnSelectPersistentsInOI) then
-    FOnSelectPersistentsInOI(Self);
+  Selection := ASelection;
 end;
 
 procedure TObjectInspectorDlg.SetShowComponentTree(const AValue: boolean);
