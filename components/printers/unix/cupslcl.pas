@@ -32,6 +32,9 @@ begin
 
   combo.Tag:=-1;
   combo.Enabled:=false;
+
+  if THackCUPSPrinter(Printer).CupsPPD=nil then
+    exit;
   if Option=nil then
   begin
     if OptionStr='' then

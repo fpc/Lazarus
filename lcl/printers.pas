@@ -120,6 +120,11 @@ type
     WorkRect     : TRect;
   end;
 
+  TPaperItem = record
+    PaperName: string[40];
+    PaperRect: TPaperRect;
+  end;
+
   { TPaperSize }
 
   TPaperSize = Class(TObject)
@@ -139,11 +144,19 @@ type
     function GetSupportedPapers: TStrings;
     procedure SetPaperName(const AName: string);
     function PaperRectOfName(const AName: string) : TPaperRect;
-  protected
+  private
+    fInternalPapers    : array of TPaperItem;
+    fDefaultPapers     : boolean;
+    fDefaultPaperIndex : Integer;
+    procedure CreateInternalPapers;
+    procedure FillDefaultPapers;
+    function GetDefaultPaperRect(const AName: string; var APaperRect:TPaperRect): Integer;
+    function IndexOfDefaultPaper(const AName: string): Integer;
   public
     constructor Create(aOwner : TPrinter); overload;
     destructor Destroy; override;
 
+    property DefaultPapers   : boolean read fDefaultPapers;
     property Width           : Integer read GetPhysPaperWidth;
     property Height          : Integer read GetPhysPaperHeight;
     property PaperName       : string read GetPaperName write SetPaperName;
@@ -526,9 +539,7 @@ end;
 
 function TPrinter.GetOrientation: TPrinterOrientation;
 begin
-  Result:=poPortrait;
-  if Printers.Count>0 then
-    Result:=DoGetOrientation;
+  Result:=DoGetOrientation;
 end;
 
 // Returns the height in points (pixels) of printable area
@@ -608,8 +619,7 @@ end;
 procedure TPrinter.SetOrientation(const AValue: TPrinterOrientation);
 begin
   CheckPrinting(False);
-  if Printers.Count>0 then
-    DoSetOrientation(aValue);
+  DoSetOrientation(aValue);
 end;
 
 //Set the selected printer
@@ -645,7 +655,7 @@ end;
 //If not Printer selected, Select the default printer
 procedure TPrinter.SelectCurrentPrinterOrDefault;
 begin
-  if fPrinterIndex<0 then
+  if (fPrinterIndex<0) and (Printers.Count>0) then
     PrinterIndex:=0;
 end;
 
@@ -810,9 +820,76 @@ end;
 
 { TPaperSize }
 
+procedure TPaperSize.CreateInternalPapers;
+  procedure add(AnIndex:Integer; aname:string; aPhysRect,aWrkRect:TRect);
+  begin
+    with fInternalPapers[AnIndex] do begin
+      PaperName := aName;
+      PaperRect.PhysicalRect := aPhysRect;
+      PaperRect.WorkRect := aWrkRect;
+    end;
+  end;
+  function PRRect(const ALeft,ATop,ARight,ABottom: Integer): TRect;
+  begin
+    Result.Left := ALeft;
+    Result.Top := ATop;
+    Result.Right  := round(ARight * FOwnedPrinter.XDPI / 72);
+    Result.Bottom := round(ABottom * FOwnedPrinter.XDPI / 72);
+  end;
+begin
+  if Length(fInternalPapers)=0 then
+  begin
+    SetLength(fInternalPapers, 3);
+    add(0, 'Letter',    PRRect(0, 0, 612,  792 ), PRRect(0,   0,   612, 792 ));
+    add(1, 'A4',        PRRect(0, 0, 595,  892 ), PRRect(0,   0,   595, 892 ));
+    add(2, 'Legal',     PRRect(0, 0, 612,  1008), PRRect(0,   0,   612, 1008));
+  end;
+end;
+
+procedure TPaperSize.FillDefaultPapers;
+var
+  i: Integer;
+begin
+  FSupportedPapers.Clear;
+  CreateInternalPapers;
+  for i:=0 to Length(FInternalPapers)-1 do
+    FSupportedPapers.Add(FInternalPapers[i].PaperName);
+  FDefaultPaperIndex := 0;
+  FDefaultPapers := true;
+end;
+
 function TPaperSize.GetDefaultPaperName: string;
 begin
-  Result:=fOwnedPrinter.DoGetDefaultPaperName;
+  if fDefaultPapers then
+    Result := FSupportedPapers[0]
+  else
+    Result := fOwnedPrinter.DoGetDefaultPaperName;
+end;
+
+function TPaperSize.GetDefaultPaperRect(const AName: string;
+  var APaperRect:TPaperRect): Integer;
+begin
+  Result := IndexOfDefaultPaper(AName);
+  if Result>=0 then
+  with FInternalPapers[Result].PaperRect do begin
+    if FOwnedPrinter.Orientation in [poPortrait, poReversePortrait] then
+    begin
+      APaperRect.PhysicalRect := PhysicalRect;
+      APaperRect.WorkRect     := WorkRect;
+    end else
+    begin
+      APaperRect.PhysicalRect.Left   := 0;
+      APaperRect.PhysicalRect.Top    := 0;
+      APaperRect.PhysicalRect.Right  := PhysicalRect.Bottom;
+      APaperRect.Physicalrect.Bottom := PhysicalRect.Right;
+
+      APaperRect.WorkRect.Left   := WorkRect.Top;
+      APaperRect.WorkRect.Top    := PhysicalRect.Right-WorkRect.Right;
+      APaperRect.WorkRect.Right  := WorkRect.Bottom;
+      APaperRect.WorkRect.Bottom := PhysicalRect.Right-Workrect.Left;
+    end;
+  end;
+
 end;
 
 function TPaperSize.GetPhysPaperHeight: Integer;
@@ -822,7 +899,11 @@ end;
 
 function TPaperSize.GetPaperName: string;
 begin
-  Result:=fOwnedPrinter.DoGetPaperName;
+  if fDefaultPapers then
+    Result := SupportedPapers[FDefaultPaperIndex]
+  else
+    Result := fOwnedPrinter.DoGetPaperName;
+
   if Result='' then
     Result:=DefaultPaperName;
 end;
@@ -839,18 +920,35 @@ end;
 
 function TPaperSize.GetSupportedPapers: TStrings;
 begin
-  if (fOwnedPrinter.Printers.Count>0) and
-     ((fSupportedPapers.Count=0)
-       or (fLastPrinterIndex<>fOwnedPrinter.PrinterIndex)) then
+  if (fSupportedPapers.Count=0) or
+     (fLastPrinterIndex<>fOwnedPrinter.PrinterIndex) then
   begin
     fOwnedPrinter.SelectCurrentPrinterOrDefault;
     
     fSupportedPapers.Clear;
+    fDefaultPapers := false;
     //DebugLn(['TPaperSize.GetSupportedPapers ',dbgsName(fOwnedPrinter),' ',dbgsName(Printer),' ',fOwnedPrinter=Printer]);
     fOwnedPrinter.DoEnumPapers(fSupportedPapers);
+
+    if fSupportedPapers.Count=0 then
+      FillDefaultPapers;
+
     fLastPrinterIndex:=fOwnedPrinter.PrinterIndex;
   end;
   Result:=fSupportedPapers;
+end;
+
+function TPaperSize.IndexOfDefaultPaper(const AName: string): Integer;
+var
+  i: Integer;
+begin
+  Result := -1;
+  for i:=0 to Length(fInternalPapers)-1 do
+    if CompareText(fInternalPapers[i].PaperName, AName)=0 then
+    begin
+      Result := i;
+      break;
+    end;
 end;
 
 procedure TPaperSize.SetPaperName(const AName: string);
@@ -858,7 +956,12 @@ begin
   if SupportedPapers.IndexOf(aName)<>-1 then
   begin
     if aName<>PaperName then
-      fOwnedPrinter.DoSetPaperName(aName)
+    begin
+      if fDefaultPapers then
+        FDefaultPaperIndex := IndexOfDefaultPaper(AName)
+      else
+        FOwnedPrinter.DoSetPaperName(aName)
+    end;
   end
   else
     raise EPrinter.Create(Format('Paper "%s" not supported !',[aName]));
@@ -873,16 +976,17 @@ begin
 
   if SupportedPapers.IndexOf(AName)<>-1 then
   begin
-    Margins:=fOwnedPrinter.DoGetPaperRect(aName,TmpPaperRect);
+
+    if fDefaultPapers then
+      Margins := GetDefaultPaperRect(AName, TmpPaperRect)
+    else
+      Margins := fOwnedPrinter.DoGetPaperRect(aName,TmpPaperRect);
+
     if Margins>=0 then
-    begin
-      Result := TmpPaperRect;
-    end
-    else raise EPrinter.Create(Format('The paper "%s" has no defined rectangle ! ',[aName]));
-  {end else if (AName='') and (SupportedPapers.Count=0) then begin
-    DebugLn(['WARNING: TPaperSize.PaperRectOfName: printer has no paper rect. Using 1000,1000']);
-    Result.PhysicalRect:=Rect(0,0,1000,1000);
-    Result.WorkRect:=Result.PhysicalRect;}
+      Result := TmpPaperRect
+    else
+      raise EPrinter.Create(Format('The paper "%s" has no defined rectangle ! ',[aName]));
+
   end
   else raise EPrinter.Create(Format('Paper "%s" not supported !',[aName]));
 end;

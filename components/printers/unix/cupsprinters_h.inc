@@ -67,14 +67,7 @@ type
     cpsResolutionValid
     );
   TCUPSPrinterStates = set of TCUPSPrinterState;
-  
-  TPaperItem = record
-    PaperName: string[40];
-    PhysicalRect: TRect;
-    WorkRect: TRect;
-    WinCode: Integer;
-  end;
-  
+
   { TCUPSPrinter }
 
   TCUPSPrinter = Class(TPrinter)
@@ -103,14 +96,7 @@ type
      procedure DoCupsConnect;
 
   private
-     fPapers: array of TPaperItem;
      fCupsPapersCount: Integer;
-     fCurrentPaper: Integer;
-     procedure CreatePapers;
-     function  IndexOfPaper(aPaperName: string): integer;
-     function  InternalGetDefPaperName: string;
-     function  InternalGetCurPaperName: string;
-     procedure InternalGetPaperRect(aPaperName:string; var PaperRect:TPaperRect);
      function  CupsPapersListValid: boolean;
      function  InternalGetResolution(ForX: boolean): Integer;
      {$IFDEF DebugCUPS}

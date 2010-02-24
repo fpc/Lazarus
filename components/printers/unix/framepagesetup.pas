@@ -113,8 +113,7 @@ begin
     Canvas.Rectangle(R);
 
     // hard margins
-    Canvas.Pen.Color := RGBToColor(255,127,127);
-    Canvas.Brush.Color :=  RGBToColor(255,127,127);
+    Canvas.Pen.Color := RGBToColor(255,204,204);
     DrawMargin(0, FHardMargins.Left  );
     DrawMargin(1, FHardMargins.Top   );
     DrawMargin(2, FHardMargins.Right );
@@ -135,7 +134,12 @@ end;
 
 procedure TframePageSetup.cbPaperChange(Sender: TObject);
 begin
-  Printer.PaperSize.PaperName := GetCupsComboKeyValue(cbPaper);
+  if Printer.PaperSize.DefaultPapers then
+  begin
+    if cbPaper.ItemIndex>=0 then
+      Printer.PaperSize.PaperName := cbPaper.Items[cbPaper.ItemIndex];
+  end else
+    Printer.PaperSize.PaperName := GetCupsComboKeyValue(cbPaper);
   UpdatePageSize;
 end;
 
@@ -227,7 +231,16 @@ begin
   end;
 
   if [psoMargins,psoPapers]*FOptions<>[] then
+  begin
     SetupCupsCombo(cbPaper, nil, 'PageSize');
+    if (cbPaper.Items.Count=0) then
+    begin
+      // no cups printer papers, use default ones
+      cbPaper.Items := Printer.PaperSize.SupportedPapers;
+      cbPaper.ItemIndex:= cbPaper.Items.IndexOf(Printer.PaperSize.PaperName);
+      cbPaper.Enabled:=true;
+    end;
+  end;
 
   if psoPapers in FOptions then
     SetupCupsCOmbo(cbSource, nil, 'InputSlot')
@@ -255,9 +268,13 @@ begin
     // find the tallest paper
     FHeightTallest := 0;
     j := -1;
+    if cbPaper.Enabled then
     for i:=0 to cbPaper.Items.Count-1 do
     begin
-      R := Printer.PaperSize.PaperRectOf[GetCupsComboKeyValue(cbPaper, i)];
+      if Printer.PaperSize.DefaultPapers then
+        R := Printer.PaperSize.PaperRectOf[cbPaper.Items[i]]
+      else
+        R := Printer.PaperSize.PaperRectOf[GetCupsComboKeyValue(cbPaper, i)];
       with R.PhysicalRect do
       if FHeightTallest<(Bottom-Top) then
       begin
