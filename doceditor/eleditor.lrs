@@ -1,0 +1,7 @@
+{ This is an automatically generated lazarus resource file }
+
+LazarusResources.Add('TCustomElementEditorNew','FORMDATA',[
+  'TPF0'#23'TCustomElementEditorNew'#22'CustomElementEditorNew'#4'Left'#2#0#6'H'
+  +'eight'#3#240#0#3'Top'#2#0#5'Width'#3'@'#1#8'TabOrder'#2#0#10'DesignLeft'#3
+  +#231#1#9'DesignTop'#3'2'#1#0#0
+]);

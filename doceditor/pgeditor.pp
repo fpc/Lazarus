@@ -54,6 +54,11 @@ interface
 uses SysUtils,Classes,dom,xmlread,xmlwrite,Forms,Controls,FileUtil,extctrls,
      comctrls,Dialogs,menus,pkeditor,eleditor,fpdeutil;
 
+type
+  TEditorPageNew = class(TFrame)
+
+  end;
+
 Type
 
   { TEditorPage }
@@ -87,7 +92,7 @@ Type
   protected
     procedure SetParent(NewParent: TWinControl); override;
   Public
-    Constructor Create(AOwner : TComponent); override;
+    constructor Create(AOwner : TComponent); override;
     Function  FirstPackage : TDomElement;
     Function  FirstModule(APackage : TDomElement) : TDomElement;
     Procedure LoadFromFile(FN : String);
@@ -120,14 +125,15 @@ implementation
 
 uses frmnewnode,lazdeopts,lazdemsg;
 
+{$R *.lfm}
+
 { ---------------------------------------------------------------------
   TPageEditor
   ---------------------------------------------------------------------}
 
-Constructor TEditorPage.Create(AOwner : TComponent);
-
+constructor TEditorPage.Create(AOwner : TComponent);
 begin
-  Inherited;
+  inherited;
   FPackages:=TPackageEditor.Create(Self);
   FPackages.Parent:=Self;
   FPackages.Align:=alLeft;

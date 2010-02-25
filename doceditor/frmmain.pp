@@ -63,6 +63,7 @@ type
     AClose: TAction;
     ALMain: TActionList;
     ILMain: TImageList;
+    ILElements: TImageList;
     LIBuild: TMenuItem;
     MenuItem1: TMenuItem;
     QuickLink: TMenuItem;
@@ -252,16 +253,15 @@ end;
 
 procedure TMainForm.AExtraBuildExecute(Sender: TObject);
 begin
-  if Sender=nil then ;
-  With TBuildForm.Create(Self) do
-    Try
-      FileName := FRecentBuildSettingsFile;
-      OnGetList:=@Self.GetCurrentFiles;
-      ShowModal;
-      FRecentBuildSettingsFile := FileName;
-    Finally
-      Free;
-    end;
+  with TBuildForm.Create(Self) do
+  try
+    FileName := FRecentBuildSettingsFile;
+    OnGetList:=@Self.GetCurrentFiles;
+    ShowModal;
+    FRecentBuildSettingsFile := FileName;
+  finally
+    Free;
+  end;
 end;
 
 procedure TMainForm.ACloseExecute(Sender: TObject);

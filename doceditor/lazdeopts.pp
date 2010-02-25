@@ -52,8 +52,9 @@ Procedure SaveOptions;
 Function  GetOptionFileName : String;
 
 Implementation
+uses gettext, translations;
 
-Const
+const
   DefFilename         = 'fpde.ini';
   SecPrefs            = 'Preferences';
   KeySkipEmptyNodes   = 'SkipEmptyNodes';
@@ -139,6 +140,15 @@ begin
     end;
 end;
 
+procedure TranslateResStrings;
+var
+  Lang, FallbackLang: String;
+begin
+  GetLanguageIDs(Lang,FallbackLang); // in unit gettext
+  TranslateUnitResourceStrings('LazDEMsg','languages/lazde.%s.po', Lang,FallbackLang);
+  TranslateUnitResourceStrings('frmBuild','languages/lazde.%s.po', Lang,FallbackLang);
+end;
+
 Initialization
   SkipEmptyNodes   := True;
   ConfirmDelete    := True;
@@ -151,4 +161,6 @@ Initialization
   CmdMakeSkel      := 'makeskel';
   cmdfpdoc         := 'fpdoc';
   ShowHelpHints    := true;
+
+  TranslateResStrings;
 end.

@@ -1,13 +1,68 @@
 msgid ""
 msgstr "Content-Type: text/plain; charset=UTF-8"
 
+#: frmbuild.sadd
+msgctxt "frmbuild.sadd"
+msgid "&Add"
+msgstr "Добавить"
+
+#: frmbuild.saddall
+msgctxt "frmbuild.saddall"
+msgid "Add All"
+msgstr "Добавить всё"
+
 #: frmbuild.sadddescriptionfile
 msgid "Select a new description file"
 msgstr "Выберите новый файл описания"
 
+#: frmbuild.sbuild
+msgctxt "frmbuild.sbuild"
+msgid "&Build"
+msgstr "&Собрать"
+
+#: frmbuild.sbuilddocumentation
+msgctxt "frmbuild.sbuilddocumentation"
+msgid "Build documentation"
+msgstr "Компиляция документации"
+
 #: frmbuild.sbuildok
 msgid "Documentation successfully built."
 msgstr "Документация успешно скомпилированна"
+
+#: frmbuild.sbuildoutput
+msgctxt "frmbuild.sbuildoutput"
+msgid "Build output"
+msgstr "Протокол сборки"
+
+#: frmbuild.sclose
+msgctxt "frmbuild.sclose"
+msgid "&Close"
+msgstr "&Закрыть"
+
+#: frmbuild.scpu
+msgctxt "frmbuild.scpu"
+msgid "CPU"
+msgstr "Целевой процессор"
+
+#: frmbuild.screatecontentfile
+msgctxt "frmbuild.screatecontentfile"
+msgid "Create cont&ent file"
+msgstr "Создать файл оглавления"
+
+#: frmbuild.sdelete
+msgctxt "frmbuild.sdelete"
+msgid "&Delete"
+msgstr "Удалить"
+
+#: frmbuild.sdescription
+msgctxt "frmbuild.sdescription"
+msgid "Description"
+msgstr "Описание"
+
+#: frmbuild.sedit
+msgctxt "frmbuild.sedit"
+msgid "&Edit"
+msgstr "Изменить"
 
 #: frmbuild.seditdescriptionfile
 msgid "Change description file"
@@ -17,6 +72,46 @@ msgstr "Изменить файл описания"
 msgid "Building failed with exit code %d. Please check log."
 msgstr "Компиляция прервана с кодом завешения %d. Пожалуста, проверьте протокол."
 
+#: frmbuild.sformat
+msgctxt "frmbuild.sformat"
+msgid "&Format"
+msgstr "&Формат"
+
+#: frmbuild.shideprotectedmethods
+msgctxt "frmbuild.shideprotectedmethods"
+msgid "&Hide protected methods"
+msgstr "Прятать защищённые методы"
+
+#: frmbuild.simportcontentfile
+msgctxt "frmbuild.simportcontentfile"
+msgid "Import content file"
+msgstr "Импортировать файл оглавления"
+
+#: frmbuild.sload
+msgctxt "frmbuild.sload"
+msgid "&Load"
+msgstr "&Загрузить"
+
+#: frmbuild.sotheroptions
+msgctxt "frmbuild.sotheroptions"
+msgid "Other options"
+msgstr "Прочии опции"
+
+#: frmbuild.soutput
+msgctxt "frmbuild.soutput"
+msgid "&Output"
+msgstr "&Вывод"
+
+#: frmbuild.spackage
+msgctxt "frmbuild.spackage"
+msgid "&Package"
+msgstr "&Пакет"
+
+#: frmbuild.ssave
+msgctxt "frmbuild.ssave"
+msgid "&Save"
+msgstr "&Сохранить"
+
 #: frmbuild.sselectoutputdirectory
 msgid "Select output directory"
 msgstr "Укажите каталог вывода"
@@ -25,9 +120,29 @@ msgstr "Укажите каталог вывода"
 msgid "Select output file name"
 msgstr "Укажите имя выходного файла"
 
+#: frmbuild.sshowprivatemethods
+msgctxt "frmbuild.sshowprivatemethods"
+msgid "Show p&rivate methods"
+msgstr "Отображать приватные методы"
+
+#: frmbuild.ssourcescapt
+msgctxt "frmbuild.ssourcescapt"
+msgid "Sources"
+msgstr "Исходники"
+
+#: frmbuild.stargetos
+msgctxt "frmbuild.stargetos"
+msgid "Target OS"
+msgstr "Целевая ОС"
+
 #: frmbuild.susingcommand
 msgid "Building docs using command: "
 msgstr "Компиляция документации с использованием команды:"
+
+#: frmbuild.swarnifnodocumentationnodefound
+msgctxt "frmbuild.swarnifnodocumentationnodefound"
+msgid "Warn if no documentation node found"
+msgstr "Предупреждать, если нет узлов документации"
 
 #: lazdemsg.sabouttext
 msgid ""
@@ -42,71 +157,72 @@ msgstr "Отмена"
 
 #: lazdemsg.scodeexample
 msgid "Example code File"
-msgstr ""
+msgstr "Файл с примером кода"
 
 #: lazdemsg.sdataforelement
 msgid "Documentation for element \"%s\":"
-msgstr ""
+msgstr "Документация для элемента \"%s\":"
 
 #: lazdemsg.sdeleteelement
 msgid "Are you sure you want to delete element \"%s\" ?"
-msgstr ""
+msgstr "Вы уверены в удалении элемента \"%s\"?"
 
 #: lazdemsg.sdeletemodule
 msgid "Are you sure you want to delete module \"%s\" ?"
-msgstr ""
+msgstr "Вы уверены в удалении модуля \"%s\"?"
 
 #: lazdemsg.sdeletepackage
 msgid "Are you sure you want to delete package \"%s\" ?"
-msgstr ""
+msgstr "Вы уверены в удалении пакета \"%s\"?"
 
 #: lazdemsg.sdeletetopic
 msgid "Are you sure you want to delete topic \"%s\" ?"
-msgstr ""
+msgstr "Вы уверены в удалении раздела \"%s\"?"
 
 #: lazdemsg.sdescription
+msgctxt "lazdemsg.sdescription"
 msgid "Description"
-msgstr ""
+msgstr "Описание"
 
 #: lazdemsg.serrnomoduleforelement
 msgid "No module found to insert element \"%s\""
-msgstr ""
+msgstr "Не найден модуль для вставки элемента \"%s\""
 
 #: lazdemsg.serrnonodeforelement
 msgid "No node found for element \"%s\""
-msgstr ""
+msgstr "Не найден узел для вставки элемента \"%s\""
 
 #: lazdemsg.serrnonodeformodule
 msgid "No node found for module \"%s\""
-msgstr ""
+msgstr "Не найден узел для модуля \"%s\""
 
 #: lazdemsg.serrnonodeforpackage
 msgid "No node found for package \"%s\""
-msgstr ""
+msgstr "Не найден узел для пакета \"%s\""
 
 #: lazdemsg.serrnonodefortopic
 msgid "No parent node found to insert topic \"%s\""
-msgstr ""
+msgstr "Не родительского узла для вставки раздела \"%s\""
 
 #: lazdemsg.serrnopackageformodule
 msgid "No package found to insert module \"%s\""
-msgstr ""
+msgstr "Не найден пакет для вставки модуля"
 
 #: lazdemsg.serrors
 msgid "Errors"
-msgstr ""
+msgstr "Ошибки"
 
 #: lazdemsg.serrunknowndomelement
 msgid "Unknwon DOM element as parent for selected element: \"%s\""
-msgstr ""
+msgstr "Не известный элемент DOM для выбранного элемента: \"%s\""
 
 #: lazdemsg.sfilemodified
 msgid "Document \"%s\" was modified, would you like to save it?"
-msgstr ""
+msgstr "Документ \"%s\" изменён, вы хотите сохранить его?"
 
 #: lazdemsg.sfilestructure
 msgid "Documentation structure"
-msgstr ""
+msgstr "Структура документа"
 
 #: lazdemsg.sfiletemplate
 msgid "template.xml"
@@ -365,19 +481,19 @@ msgstr ""
 
 #: lazdemsg.smoduleelements
 msgid "Elements for selected node"
-msgstr ""
+msgstr "Элементы для выбранного узла"
 
 #: lazdemsg.sname
 msgid "Name"
-msgstr ""
+msgstr "Имя"
 
 #: lazdemsg.snew
 msgid "New"
-msgstr ""
+msgstr "Новый"
 
 #: lazdemsg.snewdocument
 msgid "New document"
-msgstr ""
+msgstr "Новый документ"
 
 #: lazdemsg.snoelement
 msgid "No element selected"
@@ -483,6 +599,140 @@ msgstr ""
 msgid "Lazarus Documentation Editor"
 msgstr ""
 
+#: TBUILDFORM.ABUILD.CAPTION
+msgctxt "TBUILDFORM.ABUILD.CAPTION"
+msgid "&Build"
+msgstr "&Собрать"
+
+#: TBUILDFORM.ADESCRADD.CAPTION
+msgctxt "TBUILDFORM.ADESCRADD.CAPTION"
+msgid "&Add"
+msgstr "Добавить"
+
+#: TBUILDFORM.ADESCRADDALL.CAPTION
+msgctxt "TBUILDFORM.ADESCRADDALL.CAPTION"
+msgid "Add All"
+msgstr "Добавить всё"
+
+#: TBUILDFORM.ADESCRDELETE.CAPTION
+msgctxt "TBUILDFORM.ADESCRDELETE.CAPTION"
+msgid "&Delete"
+msgstr "Удалить"
+
+#: TBUILDFORM.ADESCREDIT.CAPTION
+msgctxt "TBUILDFORM.ADESCREDIT.CAPTION"
+msgid "&Edit"
+msgstr "Изменить"
+
+#: TBUILDFORM.ALOAD.CAPTION
+msgctxt "TBUILDFORM.ALOAD.CAPTION"
+msgid "&Load"
+msgstr "&Загрузить"
+
+#: TBUILDFORM.ASAVE.CAPTION
+msgctxt "TBUILDFORM.ASAVE.CAPTION"
+msgid "&Save"
+msgstr "&Сохранить"
+
+#: TBUILDFORM.ASOURCEADD.CAPTION
+msgctxt "TBUILDFORM.ASOURCEADD.CAPTION"
+msgid "&Add"
+msgstr "Добавить"
+
+#: TBUILDFORM.ASOURCEDELETE.CAPTION
+msgctxt "TBUILDFORM.ASOURCEDELETE.CAPTION"
+msgid "&Delete"
+msgstr "Удалить"
+
+#: TBUILDFORM.ASOURCEEDIT.CAPTION
+msgctxt "TBUILDFORM.ASOURCEEDIT.CAPTION"
+msgid "&Edit"
+msgstr "Изменить"
+
+#: TBUILDFORM.BCLOSE.CAPTION
+msgctxt "TBUILDFORM.BCLOSE.CAPTION"
+msgid "&Close"
+msgstr "&Закрыть"
+
+#: TBUILDFORM.CAPTION
+msgctxt "TBUILDFORM.CAPTION"
+msgid "Build documentation"
+msgstr "Компиляция документации"
+
+#: TBUILDFORM.CBCONTENT.CAPTION
+msgctxt "TBUILDFORM.CBCONTENT.CAPTION"
+msgid "Create cont&ent file"
+msgstr "Создать файл оглавления"
+
+#: TBUILDFORM.CBFORMAT.TEXT
+msgid "html"
+msgstr ""
+
+#: TBUILDFORM.CBHIDEPROTECTED.CAPTION
+msgctxt "TBUILDFORM.CBHIDEPROTECTED.CAPTION"
+msgid "&Hide protected methods"
+msgstr "Прятать защищённые методы"
+
+#: TBUILDFORM.CBSHOWPRIVATE.CAPTION
+msgctxt "TBUILDFORM.CBSHOWPRIVATE.CAPTION"
+msgid "Show p&rivate methods"
+msgstr "Отображать приватные методы"
+
+#: TBUILDFORM.CBWARNNONODE.CAPTION
+msgctxt "TBUILDFORM.CBWARNNONODE.CAPTION"
+msgid "Warn if no documentation node found"
+msgstr "Предупреждать, если нет узлов документации"
+
+#: TBUILDFORM.LABEL1.CAPTION
+msgctxt "TBUILDFORM.LABEL1.CAPTION"
+msgid "&Output"
+msgstr "&Вывод"
+
+#: TBUILDFORM.LABEL2.CAPTION
+msgctxt "TBUILDFORM.LABEL2.CAPTION"
+msgid "Import content file"
+msgstr "Импортировать файл оглавления"
+
+#: TBUILDFORM.LABEL3.CAPTION
+msgctxt "TBUILDFORM.LABEL3.CAPTION"
+msgid "Target OS"
+msgstr "Целевая ОС"
+
+#: TBUILDFORM.LCBFORMAT.CAPTION
+msgctxt "TBUILDFORM.LCBFORMAT.CAPTION"
+msgid "&Format"
+msgstr "&Формат"
+
+#: TBUILDFORM.LCBPACKAGE.CAPTION
+msgctxt "TBUILDFORM.LCBPACKAGE.CAPTION"
+msgid "&Package"
+msgstr "&Пакет"
+
+#: TBUILDFORM.LTARGETCPU.CAPTION
+msgctxt "TBUILDFORM.LTARGETCPU.CAPTION"
+msgid "CPU"
+msgstr "Целевой процессор"
+
+#: TBUILDFORM.TSBUILD.CAPTION
+msgctxt "TBUILDFORM.TSBUILD.CAPTION"
+msgid "Build output"
+msgstr "Протокол сборки"
+
+#: TBUILDFORM.TSDESCRIPTION.CAPTION
+msgctxt "TBUILDFORM.TSDESCRIPTION.CAPTION"
+msgid "Description"
+msgstr "Описание"
+
+#: TBUILDFORM.TSOTHER.CAPTION
+msgctxt "TBUILDFORM.TSOTHER.CAPTION"
+msgid "Other options"
+msgstr "Прочии опции"
+
+#: TBUILDFORM.TSSOURCES.CAPTION
+msgctxt "TBUILDFORM.TSSOURCES.CAPTION"
+msgid "Sources"
+msgstr "Исходники"
+
 #: TEXAMPLEFORM.CAPTION
 msgid "Example file"
 msgstr ""
@@ -504,8 +754,9 @@ msgid "&Link target"
 msgstr ""
 
 #: TMAINFORM.ACLOSE.CAPTION
+msgctxt "TMAINFORM.ACLOSE.CAPTION"
 msgid "&Close"
-msgstr ""
+msgstr "&Закрыть"
 
 #: TMAINFORM.ACLOSE.HINT
 msgid "Close current file"
@@ -520,8 +771,9 @@ msgid "Exit from the program"
 msgstr ""
 
 #: TMAINFORM.AEXTRABUILD.CAPTION
+msgctxt "TMAINFORM.AEXTRABUILD.CAPTION"
 msgid "&Build"
-msgstr ""
+msgstr "&Собрать"
 
 #: TMAINFORM.AEXTRAOPTIONS.CAPTION
 msgid "&Options"
@@ -685,8 +937,9 @@ msgid "Open an existing documentation file"
 msgstr ""
 
 #: TMAINFORM.ASAVE.CAPTION
+msgctxt "TMAINFORM.ASAVE.CAPTION"
 msgid "&Save"
-msgstr ""
+msgstr "&Сохранить"
 
 #: TMAINFORM.ASAVE.HINT
 msgid "Save the current file"

@@ -1,136 +1,148 @@
 object OptionsForm: TOptionsForm
   Left = 350
-  Height = 352
+  Height = 367
   Top = 262
-  Width = 486
+  Width = 526
   HorzScrollBar.Page = 397
   VertScrollBar.Page = 336
   ActiveControl = PageControl1
   BorderStyle = bsDialog
   Caption = 'Options'
-  ClientHeight = 352
-  ClientWidth = 486
+  ClientHeight = 367
+  ClientWidth = 526
   OnClose = FormClose
   OnShow = OptionsFormShow
   LCLVersion = '0.9.29'
   object PageControl1: TPageControl
     Left = 0
-    Height = 300
+    Height = 315
     Top = 0
-    Width = 486
+    Width = 526
     ActivePage = tabGeneral
     Align = alClient
     TabIndex = 0
     TabOrder = 0
     object tabGeneral: TTabSheet
       Caption = 'General'
-      ClientHeight = 269
-      ClientWidth = 482
+      ClientHeight = 284
+      ClientWidth = 522
       object LEBackupExtension: TLabel
-        Left = 6
+        AnchorSideLeft.Control = LEDefaultExtension
+        AnchorSideLeft.Side = asrBottom
+        AnchorSideTop.Control = GroupBox1
+        AnchorSideTop.Side = asrBottom
+        Left = 158
         Height = 18
-        Top = 130
+        Top = 101
         Width = 125
         Alignment = taRightJustify
+        BorderSpacing.Left = 24
+        BorderSpacing.Around = 6
         Caption = 'Backup extension'
         FocusControl = EBackupExtension
         Layout = tlCenter
         ParentColor = False
       end
       object LEMaxMRU: TLabel
-        Left = 6
+        AnchorSideLeft.Control = LEBackupExtension
+        AnchorSideLeft.Side = asrBottom
+        AnchorSideTop.Control = GroupBox1
+        AnchorSideTop.Side = asrBottom
+        Left = 313
         Height = 18
-        Top = 153
+        Top = 101
         Width = 120
         Alignment = taRightJustify
+        BorderSpacing.Left = 24
+        BorderSpacing.Around = 6
         Caption = 'Max. recent used'
         Layout = tlCenter
         ParentColor = False
       end
       object LEDefaultExtension: TLabel
+        AnchorSideLeft.Control = tabGeneral
+        AnchorSideTop.Control = GroupBox1
+        AnchorSideTop.Side = asrBottom
         Left = 6
         Height = 18
-        Top = 104
+        Top = 101
         Width = 122
         Alignment = taRightJustify
+        BorderSpacing.Around = 6
         Caption = 'Default extension'
         Layout = tlCenter
         ParentColor = False
       end
       object LFEMakeskel: TLabel
+        AnchorSideLeft.Control = tabGeneral
+        AnchorSideTop.Control = EDefaultExtension
+        AnchorSideTop.Side = asrBottom
         Left = 6
         Height = 18
-        Top = 186
+        Top = 160
         Width = 129
         Alignment = taRightJustify
+        BorderSpacing.Around = 6
         Caption = 'makeskel program'
         FocusControl = FEMakeSkel
         Layout = tlCenter
         ParentColor = False
       end
       object LFEfpdoc: TLabel
+        AnchorSideLeft.Control = tabGeneral
+        AnchorSideTop.Control = FEMakeSkel
+        AnchorSideTop.Side = asrBottom
         Left = 6
         Height = 18
-        Top = 220
+        Top = 219
         Width = 102
         Alignment = taRightJustify
+        BorderSpacing.Around = 6
         Caption = 'fpdoc program'
         Layout = tlCenter
         ParentColor = False
       end
-      object CBConfirmDelete: TCheckBox
-        Left = 6
-        Height = 19
-        Top = 6
-        Width = 131
-        AllowGrayed = True
-        Caption = 'C&onfirm deletes'
+      object EBackupExtension: TEdit
+        AnchorSideLeft.Control = LEBackupExtension
+        AnchorSideTop.Control = LEBackupExtension
+        AnchorSideTop.Side = asrBottom
+        Left = 164
+        Height = 29
+        Top = 125
+        Width = 119
+        BorderSpacing.Around = 6
         TabOrder = 0
       end
-      object CBCreateBackup: TCheckBox
-        Left = 6
-        Height = 19
-        Top = 34
-        Width = 129
-        AllowGrayed = True
-        Caption = 'Create &backups'
+      object SEMaxRecentUsed: TSpinEdit
+        AnchorSideLeft.Control = LEMaxMRU
+        AnchorSideTop.Control = LEMaxMRU
+        AnchorSideTop.Side = asrBottom
+        Left = 319
+        Height = 27
+        Top = 125
+        Width = 116
+        BorderSpacing.Around = 6
         TabOrder = 1
       end
-      object CBSkipEmptyNodes: TCheckBox
-        Left = 6
-        Height = 19
-        Top = 66
-        Width = 234
-        AllowGrayed = True
-        Caption = '&Skip empty nodes when saving'
-        TabOrder = 2
-      end
-      object EBackupExtension: TEdit
-        Left = 120
+      object EDefaultExtension: TEdit
+        AnchorSideLeft.Control = LEDefaultExtension
+        AnchorSideTop.Control = LEDefaultExtension
+        AnchorSideTop.Side = asrBottom
+        Left = 12
         Height = 29
-        Top = 130
-        Width = 80
-        TabOrder = 3
-      end
-      object SEMaxRecentUsed: TSpinEdit
-        Left = 120
-        Height = 27
-        Top = 154
-        Width = 81
+        Top = 125
+        Width = 116
+        BorderSpacing.Around = 6
         TabOrder = 4
       end
-      object EDefaultExtension: TEdit
-        Left = 120
-        Height = 29
-        Top = 104
-        Width = 80
-        TabOrder = 7
-      end
       object FEMakeSkel: TFileNameEdit
-        Left = 120
+        AnchorSideLeft.Control = LFEMakeskel
+        AnchorSideTop.Control = LFEMakeskel
+        AnchorSideTop.Side = asrBottom
+        Left = 12
         Height = 29
-        Top = 186
-        Width = 336
+        Top = 184
+        Width = 484
         DialogTitle = 'Select skeleton generator'
         DialogOptions = []
         FilterIndex = 0
@@ -138,14 +150,19 @@ object OptionsForm: TOptionsForm
         ButtonWidth = 23
         NumGlyphs = 1
         Anchors = [akTop, akLeft, akRight]
+        BorderSpacing.Left = 6
+        BorderSpacing.Top = 6
         MaxLength = 0
-        TabOrder = 5
+        TabOrder = 2
       end
       object FEfpdoc: TFileNameEdit
-        Left = 120
+        AnchorSideLeft.Control = LFEfpdoc
+        AnchorSideTop.Control = LFEfpdoc
+        AnchorSideTop.Side = asrBottom
+        Left = 12
         Height = 29
-        Top = 212
-        Width = 336
+        Top = 243
+        Width = 484
         DialogTitle = 'Select documentation generator'
         DialogOptions = []
         FilterIndex = 0
@@ -153,35 +170,119 @@ object OptionsForm: TOptionsForm
         ButtonWidth = 23
         NumGlyphs = 1
         Anchors = [akTop, akLeft, akRight]
+        BorderSpacing.Left = 6
+        BorderSpacing.Top = 6
         MaxLength = 0
-        TabOrder = 6
+        TabOrder = 3
       end
-      object CBStartMaximized: TCheckBox
-        Left = 200
-        Height = 19
+      object GroupBox1: TGroupBox
+        AnchorSideLeft.Control = tabGeneral
+        AnchorSideTop.Control = tabGeneral
+        Left = 6
+        Height = 89
         Top = 6
-        Width = 129
-        Caption = 'Start maximized'
-        TabOrder = 8
+        Width = 254
+        AutoSize = True
+        BorderSpacing.Around = 6
+        ClientHeight = 81
+        ClientWidth = 246
+        TabOrder = 5
+        object CBSkipEmptyNodes: TCheckBox
+          AnchorSideLeft.Control = GroupBox1
+          AnchorSideTop.Control = CBCreateBackup
+          AnchorSideTop.Side = asrBottom
+          Left = 6
+          Height = 19
+          Top = 56
+          Width = 234
+          AllowGrayed = True
+          BorderSpacing.Around = 6
+          Caption = '&Skip empty nodes when saving'
+          TabOrder = 0
+        end
+        object CBCreateBackup: TCheckBox
+          AnchorSideLeft.Control = GroupBox1
+          AnchorSideTop.Control = CBConfirmDelete
+          AnchorSideTop.Side = asrBottom
+          Left = 6
+          Height = 19
+          Top = 31
+          Width = 129
+          AllowGrayed = True
+          BorderSpacing.Around = 6
+          Caption = 'Create &backups'
+          TabOrder = 1
+        end
+        object CBConfirmDelete: TCheckBox
+          AnchorSideLeft.Control = GroupBox1
+          AnchorSideTop.Control = GroupBox1
+          Left = 6
+          Height = 19
+          Top = 6
+          Width = 131
+          AllowGrayed = True
+          BorderSpacing.Around = 6
+          Caption = 'C&onfirm deletes'
+          TabOrder = 2
+        end
       end
-      object CBReopenLast: TCheckBox
-        Left = 200
-        Height = 19
-        Top = 34
-        Width = 202
-        Caption = 'Reopen last file on startup'
-        TabOrder = 9
+      object GroupBox2: TGroupBox
+        AnchorSideLeft.Control = GroupBox1
+        AnchorSideLeft.Side = asrBottom
+        AnchorSideTop.Control = tabGeneral
+        AnchorSideRight.Control = tabGeneral
+        AnchorSideRight.Side = asrBottom
+        AnchorSideBottom.Control = GroupBox1
+        AnchorSideBottom.Side = asrBottom
+        Left = 266
+        Height = 89
+        Top = 6
+        Width = 250
+        Anchors = [akTop, akLeft, akRight, akBottom]
+        AutoSize = True
+        BorderSpacing.Left = 6
+        BorderSpacing.Top = 6
+        BorderSpacing.Right = 6
+        ClientHeight = 81
+        ClientWidth = 242
+        TabOrder = 6
+        object CBReopenLast: TCheckBox
+          AnchorSideLeft.Control = GroupBox2
+          AnchorSideTop.Control = CBStartMaximized
+          AnchorSideTop.Side = asrBottom
+          Left = 6
+          Height = 19
+          Top = 31
+          Width = 202
+          BorderSpacing.Around = 6
+          Caption = 'Reopen last file on startup'
+          TabOrder = 0
+        end
+        object CBStartMaximized: TCheckBox
+          AnchorSideLeft.Control = GroupBox2
+          AnchorSideTop.Control = GroupBox2
+          Left = 6
+          Height = 19
+          Top = 6
+          Width = 129
+          BorderSpacing.Around = 6
+          Caption = 'Start maximized'
+          TabOrder = 1
+        end
       end
     end
     object tabDesktop: TTabSheet
       Caption = 'Desktop'
-      ClientHeight = 269
-      ClientWidth = 482
+      ClientHeight = 284
+      ClientWidth = 522
       object CBShowHints: TCheckBox
+        AnchorSideLeft.Control = tabDesktop
+        AnchorSideTop.Control = tabDesktop
         Left = 14
         Height = 19
         Top = 12
         Width = 97
+        BorderSpacing.Around = 6
         Caption = 'Show Hints'
         TabOrder = 0
       end
@@ -190,8 +291,8 @@ object OptionsForm: TOptionsForm
   object ButtonPanel1: TButtonPanel
     Left = 6
     Height = 40
-    Top = 306
-    Width = 474
+    Top = 321
+    Width = 514
     TabOrder = 1
     ShowButtons = [pbOK, pbCancel, pbHelp]
   end

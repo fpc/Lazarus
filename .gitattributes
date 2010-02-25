@@ -2333,6 +2333,8 @@ designer/sizecompsdlg.lfm svneol=native#text/plain
 designer/sizecompsdlg.pp svneol=native#text/pascal
 designer/taborderdlg.lfm svneol=native#text/plain
 designer/taborderdlg.pas svneol=native#text/pascal
+doceditor/eleditor.lfm svneol=native#text/plain
+doceditor/eleditor.lrs svneol=native#text/plain
 doceditor/eleditor.pp svneol=native#text/pascal
 doceditor/eleditor.xml svneol=native#text/xml
 doceditor/fpdeutil.pp svneol=native#text/pascal
@@ -2397,11 +2399,13 @@ doceditor/images/treenode_add24.bmp -text
 doceditor/images/underline_blue24.bmp -text
 doceditor/languages/lazde.po svneol=native#text/plain
 doceditor/languages/lazde.ru.po svneol=native#text/plain
+doceditor/lazde.ico -text svneol=unset#image/ico
 doceditor/lazde.lpi svneol=native#text/plain
 doceditor/lazde.lpr svneol=native#text/pascal
 doceditor/lazde.res -text
 doceditor/lazdemsg.pp svneol=native#text/pascal
 doceditor/lazdeopts.pp svneol=native#text/pascal
+doceditor/pgeditor.lfm svneol=native#text/plain
 doceditor/pgeditor.pp svneol=native#text/pascal
 doceditor/pkedit.pp svneol=native#text/pascal
 doceditor/pkeditor.pp svneol=native#text/pascal

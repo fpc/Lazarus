@@ -81,6 +81,8 @@ type
     MLog: TMemo;
     ODSettings: TOpenDialog;
     ODDescription: TOpenDialog;
+    Panel1: TPanel;
+    Compiller: TProcessUTF8;
     PSources: TPanel;
     PBDescr: TPanel;
     PCOptions: TPageControl;
@@ -112,6 +114,7 @@ type
     procedure BuildFormCreate(Sender: TObject);
     procedure BuildFormDestroy(Sender: TObject);
     procedure EOutputButtonClick(Sender: TObject);
+    procedure FormResize(Sender: TObject);
   private
     FFileName: String;
     OldBuf: String;
@@ -121,7 +124,7 @@ type
     Procedure SaveOptions(Const AFileName : String);
     Procedure LoadOptions(Const AFileName : String);
     procedure SetFileName(const AValue: String);
-    procedure AddToLog(S : String);
+    procedure AddToLog(const S : String);
     procedure AppendBufToLog(Buf : PChar; BufSize : Integer);
     Function BuildCommandLine : String ;
     procedure BuildDocs;
@@ -155,7 +158,7 @@ var
 
 implementation
 
-uses Inifiles,frmSource,lazdeopts;
+uses IniFiles, frmSource, lazdeopts;
 
 {$R *.lfm}
 
@@ -192,9 +195,33 @@ resourcestring
   SEditDescriptionFile   = 'Change description file';
   SSelectOutputFile      = 'Select output file name';
   SSelectOutputDirectory = 'Select output directory';
-  SUsingCommand = 'Building docs using command: ';
-  SErrFPDoc     = 'Building failed with exit code %d. Please check log.';
-  SBuildOK      = 'Documentation successfully built.';
+  SUsingCommand          = 'Building docs using command: ';
+  SErrFPDoc              = 'Building failed with exit code %d. Please check log.';
+  SBuildOK               = 'Documentation successfully built.';
+  sBuildDocumentation    = 'Build documentation';
+  sPackage               = '&Package';
+  sFormat                = '&Format';
+  sOutput                = '&Output';
+  sCreateContentFile     = 'Create cont&ent file';
+  sBuild                 = '&Build';
+  sLoad                  = '&Load';
+  sSave                  = '&Save';
+  sClose                 = '&Close';
+  sAdd                   = '&Add';
+  sDelete                = '&Delete';
+  sEdit                  = '&Edit';
+  sAddAll                = 'Add All';
+  sDescription           = 'Description';
+  sSourcesCapt           = 'Sources';
+  sOtherOptions          = 'Other options';
+  sBuildOutput           = 'Build output';
+  sHideProtectedMethods  = '&Hide protected methods';
+  sImportContentFile     = 'Import content file';
+  sTargetOS              = 'Target OS';
+  sCPU                   = 'CPU';
+  sShowPrivateMethods    = 'Show p&rivate methods';
+  sWarnIfNoDocumentationNodeFound = 'Warn if no documentation node found';
+
   
 { TBuildForm }
 
@@ -348,20 +375,49 @@ end;
 
 procedure TBuildForm.BCloseClick(Sender: TObject);
 begin
-  if Sender=nil then ;
   Close;
 end;
 
 procedure TBuildForm.BuildFormCloseQuery(Sender: TObject; var CanClose: boolean);
 begin
-  if Sender=nil then ;
   CanClose:=True; // Check here for modifications.
 end;
 
 procedure TBuildForm.BuildFormCreate(Sender: TObject);
 begin
-  if Sender=nil then ;
   FOptions:=TStringList.Create;
+  //i18n
+  Caption:=sBuildDocumentation;
+  LCBPackage.Caption:=sPackage;
+  LCBFormat.Caption:=sFormat;
+  Label1.Caption:=sOutput;
+  CBContent.Caption:=sCreateContentFile;
+  BBuild.Caption:=sBuild;
+  BLoad.Caption:=sLoad;
+  BSave.Caption:=sSave;
+  BClose.Caption:=sClose;
+
+  BAddDescription.Caption:=sAdd;//'&Add';
+  BDeleteDescription.Caption:=sDelete; //'&Delete';
+  BEditDescription.Caption:=sEdit;//'&Edit';
+  BAddAll.Caption:=sAddAll;//'Add All';
+
+  BSourceAdd.Caption:=sAdd;
+  BSourceDelete.Caption:=sDelete;
+  BSourceEdit.Caption:=sEdit;
+
+  TSDescription.Caption:=sDescription;//'Description';
+  TSSources.Caption:=sSourcesCapt;//'Sources';
+  TSOther.Caption:=sOtherOptions;//'Other options';
+  TSBuild.Caption:=sBuildOutput;//'Build output';
+
+  CBHideProtected.Caption:=sHideProtectedMethods;//'&Hide protected methods';
+  Label2.Caption:=sImportContentFile;//'Import content file';
+  Label3.Caption:=sTargetOS; //'Target OS';
+  LTargetCPU.Caption:=sCPU;  //'CPU';
+  CBShowPrivate.Caption:=sShowPrivateMethods;//'Show p&rivate methods';
+  CBWarnNoNode.Caption:=sWarnIfNoDocumentationNodeFound;//'Warn if no documentation node found';
+
 end;
 
 procedure TBuildForm.BuildFormDestroy(Sender: TObject);
@@ -372,7 +428,6 @@ end;
 
 procedure TBuildForm.EOutputButtonClick(Sender: TObject);
 begin
-  if Sender=nil then ;
   if (lowercase(cbFormat.text)='html') then
     With TSelectDirectoryDialog.Create(Self) do
       begin
@@ -390,6 +445,11 @@ begin
        If Execute then
          EOutput.Text:=FileName
        end
+end;
+
+procedure TBuildForm.FormResize(Sender: TObject);
+begin
+  EOutput.Width:= Panel1.Left - EOutput.ButtonWidth - 12;
 end;
 
 { ---------------------------------------------------------------------
@@ -632,8 +692,7 @@ begin
   Result:=SGSources.Row-1;
 end;
 
-procedure TBuildForm.AddToLog(S : String);
-
+procedure TBuildForm.AddToLog(const S : String);
 begin
   MLog.Lines.Add(S);
 end;
@@ -659,11 +718,9 @@ begin
 end;
 
 Function TBuildForm.BuildCommandLine : String ;
-
-Var
+var
   I : Integer;
   FN,O : String;
-
 begin
   Result:=cmdFPDoc;
   Result:=Result+' --package='+CBPackage.Text;
@@ -685,13 +742,14 @@ begin
     Result:=Result+' --cputarget='+ETargetCPU.Text;
   For I:=1 to DescrFileCount do
     Result:=Result+' --descr='+DescrFile(I-1);
-  For I:=1 to SourceFileCount do
-    begin
+
+  for i:=1 to SourceFileCount do
+  begin
     GetSourceOptions(I-1,FN,O);
-    If (O<>'') then
+    if (O<>'') then
       FN:=FN+' '+O;
-    Result:=Result+' --input="'+FN+'"';
-    end;
+    Result:=Result+' --input='+FN+'';
+  end;
 end;
 
 
@@ -700,35 +758,36 @@ procedure TBuildForm.BuildDocs;
 Const
   BufSize = 1024;
 
-Var
+var
   Buf : Array[0..BufSize] of char;
   Cmd : String;
-  R : Integer;
-  
+  R, E : Integer;
 begin
   PCOptions.ActivePage:=TSBuild;
+  MLog.Lines.Clear;
+
   OldBuf:='';
   Buf[BufSize]:=#0;
-  With TProcessUTF8.Create(Self) do
-    begin
-    Cmd:=BuildCommandLine;
-    CommandLine:=Cmd;
-    AddToLog(SUsingCommand+Cmd);
-    Options:=[poUsePipes,poNoConsole,poStderrToOutPut];
-    Execute;
-    r:=Output.Read(Buf,BufSize);
-    While (r>0) do
-      begin
-      AppendBufToLog(@Buf,R);
-      r:=Output.Read(Buf,BufSize);
-      end;
-    If (OldBuf<>'') then
-      AddToLog(OldBuf);
-    If ExitCode<>0 then
-      MessageDLG(Format(SErrfpdoc,[ExitCode]),mtError,[mbOK],0)
-    else
-      AddToLog(SBuildOK);
-    end;
+
+  Cmd:=BuildCommandLine;
+  Compiller.CommandLine:=Cmd;
+  AddToLog(SUsingCommand);
+  AddToLog(Cmd);
+  Compiller.Execute;
+  R:=Compiller.Output.Read(Buf,BufSize);
+  while (R>0) do
+  begin
+    AppendBufToLog(@Buf,R);
+    R:=Compiller.Output.Read(Buf,BufSize);
+  end;
+  If (OldBuf<>'') then
+    AddToLog(OldBuf);
+
+  E:=Compiller.ExitStatus;
+  If E <> 0 then
+    MessageDLG(Format(SErrfpdoc,[E]),mtError,[mbOK],0)
+  else
+    AddToLog(SBuildOK);
 end;
 
 

@@ -46,6 +46,8 @@ type
     EDefaultExtension: TEdit;
     FEMakeSkel: TFileNameEdit;
     FEfpdoc: TFileNameEdit;
+    GroupBox1: TGroupBox;
+    GroupBox2: TGroupBox;
     LFEMakeskel: TLabel;
     LFEfpdoc: TLabel;
     LEDefaultExtension: TLabel;

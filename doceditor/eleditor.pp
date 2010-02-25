@@ -30,6 +30,11 @@ uses SysUtils, Classes, DOM, xmlread, xmlwrite, Forms, Controls, ExtCtrls,
      ComCtrls, StdCtrls, Dialogs, Menus, fpdeutil, Lazdemsg, Lazdeopts,
      GraphType, ActnList, LResources;
 
+type
+  TCustomElementEditorNew = class(TFrame)
+
+  end;
+
 Type
 
   { TCustomElementEditor }
@@ -101,7 +106,7 @@ Type
     BAddSeeAlso,
     BEditSeeAlso,
     BDeleteSeeAlso : TToolButton;
-    ILElements : TImageList;
+    //ILElements : TImageList;
     FSeeAlso,
     FExamples : TListBox;
     FCurrentEditable : TWinControl;
@@ -118,7 +123,7 @@ Type
     Function EditLink(Var Value : String) : Boolean;
   Public
     Constructor Create (AOwner : TComponent); override;
-    Destructor destroy; override;
+    Destructor Destroy; override;
     Procedure Refresh;override;
     Function GetCurrentSelection : String; override;
     Procedure SetElement (Value : TDomElement);override;
@@ -134,10 +139,11 @@ Type
     procedure InsertPrintShortLink(pLinkTarget: string); override;
   end;
 
-
 implementation
 
-uses frmexample,frmLink, StrUtils;
+uses frmexample, frmLink, StrUtils, LCLProc, FrmMain;
+
+{$R *.lfm}
 
 { TCustomElementEditor }
 
@@ -186,27 +192,29 @@ begin
   LockOnChange;
   Inherited;
   FExampleNodes:=TList.create;
-  ILElements:=TImageList.Create(Self);
+{  ILElements:=TImageList.Create(Self);
   ILElements.Height:=22;
   ILElements.Width:=22;
   ILElements.AddLazarusResource('Insert_16N');
   ILElements.AddLazarusResource('Edit_16N');
-  ILElements.AddLazarusResource('Delete_16N');
+  ILElements.AddLazarusResource('Delete_16N');}
+
   P0:=TPanel.Create(Self);
-  With P0 do
-    begin
+  with P0 do
+  begin
     Parent:=Self;
     Align:=alTop;
-    Height:=75;
+    Height:=85;
     BevelOuter:=bvNone;
-    end;
+    AutoSize:=true;
+  end;
   FLabel:=TLabel.Create(Self);
   With FLabel do
-    begin
+  begin
     parent:=P0;
     Caption:='<New element>';
     Align:=alTop;
-    end;
+  end;
   L:=TLabel.Create(self);
   With L do
     begin
@@ -217,22 +225,24 @@ begin
     end;
   FShortEntry:=TEdit.Create(Self);
   With FShortEntry do
-    begin
+  begin
     Parent:=P0;
     Top := 35;
     Align:=alTop;
     height:=24;
     OnEnter:=@OnEnterControl;
     OnChange:=@OnTextModified;
-    end;
+  end;
   // Description
   L:=TLabel.Create(self);
   With L do
-    begin
-    Parent:=P0;
-    Align:=alBottom;
+  begin
+//    Parent:=P0;
+    Parent:=Self;
+    Align:=alTop;
     Caption:=SDescription;
-    end;
+  end;
+
   FDescrMemo:=TMemo.Create(Self);
   With FDescrMemo do
     begin
@@ -311,13 +321,14 @@ begin
     end;
   TBSeeAlso:=TToolbar.Create(Self);
   With TBSeeAlso do
-    begin
+  begin
     PArent:=P4;
     Align:=alRight;
     Width:=100;
     Transparent := True;
-    Images:=ILElements;
-    end;
+    Images:=MainForm.ILElements; //ILElements;
+  end;
+
   BAddSeeAlso:=TToolButton.Create(Self);
   With BAddSeeAlso do
     begin
@@ -375,13 +386,14 @@ begin
     end;
   TBExamples:=TToolbar.Create(Self);
   With TBExamples do
-    begin
+  begin
     PArent:=P4;
     Align:=alRight;
     Width:=100;
     Transparent := True;
-    Images:=ILElements;
-    end;
+    Images:=MainForm.ILElements;//ILElements;
+  end;
+
   BAddExample:=TToolButton.Create(Self);
   With BAddExample do
     begin
@@ -666,21 +678,22 @@ begin
           and ((TagType<>ttTable) or (FCurrentEditable is TMemo));
 end;
 
-Procedure TElementEditor.InsertTag (tagName : String);
-
-Var
+procedure TElementEditor.InsertTag (tagName : String);
+var
   S : String;
-
+  SS:integer;
 begin
   If Assigned(CurrentEditable) and (CurrentEditable is TCustomEdit) then
-    With TCustomEdit(CurrentEditable)do
-      begin
+    with TCustomEdit(CurrentEditable)do
+    begin
       S:=SelText;
+      SS:=SelStart;
       S:=Format('<%s>%s</%s>',[TagName,S,TagName]);
       Seltext:=S;
-      SelLength:=Length(S);
+      SelStart:=SS;
+      SelLength:=UTF8Length(S);
       Modified:=True;
-      end;
+    end;
 end;
 
 Procedure TElementEditor.InsertTag(TagType : TTagType);

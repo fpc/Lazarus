@@ -11,6 +11,7 @@
       <TargetFileExt Value=""/>
       <ResourceType Value="res"/>
       <UseXPManifest Value="True"/>
+      <Icon Value="0"/>
     </General>
     <i18n>
       <EnableI18N Value="True"/>
@@ -43,6 +44,9 @@
       <Unit1>
         <Filename Value="eleditor.pp"/>
         <IsPartOfProject Value="True"/>
+        <ComponentName Value="CustomElementEditorNew"/>
+        <HasResources Value="True"/>
+        <ResourceBaseClass Value="Frame"/>
         <UnitName Value="ElEditor"/>
       </Unit1>
       <Unit2>
@@ -143,11 +147,16 @@
       <Unit15>
         <Filename Value="pgeditor.pp"/>
         <IsPartOfProject Value="True"/>
+        <ComponentName Value="EditorPageNew"/>
+        <HasResources Value="True"/>
+        <ResourceBaseClass Value="Frame"/>
         <UnitName Value="pgEditor"/>
       </Unit15>
       <Unit16>
         <Filename Value="pkeditor.pp"/>
         <IsPartOfProject Value="True"/>
+        <HasResources Value="True"/>
+        <ResourceBaseClass Value="Frame"/>
         <UnitName Value="PkEditor"/>
       </Unit16>
     </Units>

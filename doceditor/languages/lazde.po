@@ -1,12 +1,67 @@
 msgid ""
 msgstr "Content-Type: text/plain; charset=UTF-8"
 
+#: frmbuild.sadd
+msgctxt "frmbuild.sadd"
+msgid "&Add"
+msgstr ""
+
+#: frmbuild.saddall
+msgctxt "frmbuild.saddall"
+msgid "Add All"
+msgstr ""
+
 #: frmbuild.sadddescriptionfile
 msgid "Select a new description file"
 msgstr ""
 
+#: frmbuild.sbuild
+msgctxt "frmbuild.sbuild"
+msgid "&Build"
+msgstr ""
+
+#: frmbuild.sbuilddocumentation
+msgctxt "frmbuild.sbuilddocumentation"
+msgid "Build documentation"
+msgstr ""
+
 #: frmbuild.sbuildok
 msgid "Documentation successfully built."
+msgstr ""
+
+#: frmbuild.sbuildoutput
+msgctxt "frmbuild.sbuildoutput"
+msgid "Build output"
+msgstr ""
+
+#: frmbuild.sclose
+msgctxt "frmbuild.sclose"
+msgid "&Close"
+msgstr ""
+
+#: frmbuild.scpu
+msgctxt "frmbuild.scpu"
+msgid "CPU"
+msgstr ""
+
+#: frmbuild.screatecontentfile
+msgctxt "frmbuild.screatecontentfile"
+msgid "Create cont&ent file"
+msgstr ""
+
+#: frmbuild.sdelete
+msgctxt "frmbuild.sdelete"
+msgid "&Delete"
+msgstr ""
+
+#: frmbuild.sdescription
+msgctxt "frmbuild.sdescription"
+msgid "Description"
+msgstr ""
+
+#: frmbuild.sedit
+msgctxt "frmbuild.sedit"
+msgid "&Edit"
 msgstr ""
 
 #: frmbuild.seditdescriptionfile
@@ -17,6 +72,46 @@ msgstr ""
 msgid "Building failed with exit code %d. Please check log."
 msgstr ""
 
+#: frmbuild.sformat
+msgctxt "frmbuild.sformat"
+msgid "&Format"
+msgstr ""
+
+#: frmbuild.shideprotectedmethods
+msgctxt "frmbuild.shideprotectedmethods"
+msgid "&Hide protected methods"
+msgstr ""
+
+#: frmbuild.simportcontentfile
+msgctxt "frmbuild.simportcontentfile"
+msgid "Import content file"
+msgstr ""
+
+#: frmbuild.sload
+msgctxt "frmbuild.sload"
+msgid "&Load"
+msgstr ""
+
+#: frmbuild.sotheroptions
+msgctxt "frmbuild.sotheroptions"
+msgid "Other options"
+msgstr ""
+
+#: frmbuild.soutput
+msgctxt "frmbuild.soutput"
+msgid "&Output"
+msgstr ""
+
+#: frmbuild.spackage
+msgctxt "frmbuild.spackage"
+msgid "&Package"
+msgstr ""
+
+#: frmbuild.ssave
+msgctxt "frmbuild.ssave"
+msgid "&Save"
+msgstr ""
+
 #: frmbuild.sselectoutputdirectory
 msgid "Select output directory"
 msgstr ""
@@ -25,8 +120,28 @@ msgstr ""
 msgid "Select output file name"
 msgstr ""
 
+#: frmbuild.sshowprivatemethods
+msgctxt "frmbuild.sshowprivatemethods"
+msgid "Show p&rivate methods"
+msgstr ""
+
+#: frmbuild.ssourcescapt
+msgctxt "frmbuild.ssourcescapt"
+msgid "Sources"
+msgstr ""
+
+#: frmbuild.stargetos
+msgctxt "frmbuild.stargetos"
+msgid "Target OS"
+msgstr ""
+
 #: frmbuild.susingcommand
 msgid "Building docs using command: "
+msgstr ""
+
+#: frmbuild.swarnifnodocumentationnodefound
+msgctxt "frmbuild.swarnifnodocumentationnodefound"
+msgid "Warn if no documentation node found"
 msgstr ""
 
 #: lazdemsg.sabouttext
@@ -65,6 +180,7 @@ msgid "Are you sure you want to delete topic \"%s\" ?"
 msgstr ""
 
 #: lazdemsg.sdescription
+msgctxt "lazdemsg.sdescription"
 msgid "Description"
 msgstr ""
 
@@ -483,6 +599,140 @@ msgstr ""
 msgid "Lazarus Documentation Editor"
 msgstr ""
 
+#: TBUILDFORM.ABUILD.CAPTION
+msgctxt "TBUILDFORM.ABUILD.CAPTION"
+msgid "&Build"
+msgstr ""
+
+#: TBUILDFORM.ADESCRADD.CAPTION
+msgctxt "TBUILDFORM.ADESCRADD.CAPTION"
+msgid "&Add"
+msgstr ""
+
+#: TBUILDFORM.ADESCRADDALL.CAPTION
+msgctxt "TBUILDFORM.ADESCRADDALL.CAPTION"
+msgid "Add All"
+msgstr ""
+
+#: TBUILDFORM.ADESCRDELETE.CAPTION
+msgctxt "TBUILDFORM.ADESCRDELETE.CAPTION"
+msgid "&Delete"
+msgstr ""
+
+#: TBUILDFORM.ADESCREDIT.CAPTION
+msgctxt "TBUILDFORM.ADESCREDIT.CAPTION"
+msgid "&Edit"
+msgstr ""
+
+#: TBUILDFORM.ALOAD.CAPTION
+msgctxt "TBUILDFORM.ALOAD.CAPTION"
+msgid "&Load"
+msgstr ""
+
+#: TBUILDFORM.ASAVE.CAPTION
+msgctxt "TBUILDFORM.ASAVE.CAPTION"
+msgid "&Save"
+msgstr ""
+
+#: TBUILDFORM.ASOURCEADD.CAPTION
+msgctxt "TBUILDFORM.ASOURCEADD.CAPTION"
+msgid "&Add"
+msgstr ""
+
+#: TBUILDFORM.ASOURCEDELETE.CAPTION
+msgctxt "TBUILDFORM.ASOURCEDELETE.CAPTION"
+msgid "&Delete"
+msgstr ""
+
+#: TBUILDFORM.ASOURCEEDIT.CAPTION
+msgctxt "TBUILDFORM.ASOURCEEDIT.CAPTION"
+msgid "&Edit"
+msgstr ""
+
+#: TBUILDFORM.BCLOSE.CAPTION
+msgctxt "TBUILDFORM.BCLOSE.CAPTION"
+msgid "&Close"
+msgstr ""
+
+#: TBUILDFORM.CAPTION
+msgctxt "TBUILDFORM.CAPTION"
+msgid "Build documentation"
+msgstr ""
+
+#: TBUILDFORM.CBCONTENT.CAPTION
+msgctxt "TBUILDFORM.CBCONTENT.CAPTION"
+msgid "Create cont&ent file"
+msgstr ""
+
+#: TBUILDFORM.CBFORMAT.TEXT
+msgid "html"
+msgstr ""
+
+#: TBUILDFORM.CBHIDEPROTECTED.CAPTION
+msgctxt "TBUILDFORM.CBHIDEPROTECTED.CAPTION"
+msgid "&Hide protected methods"
+msgstr ""
+
+#: TBUILDFORM.CBSHOWPRIVATE.CAPTION
+msgctxt "TBUILDFORM.CBSHOWPRIVATE.CAPTION"
+msgid "Show p&rivate methods"
+msgstr ""
+
+#: TBUILDFORM.CBWARNNONODE.CAPTION
+msgctxt "TBUILDFORM.CBWARNNONODE.CAPTION"
+msgid "Warn if no documentation node found"
+msgstr ""
+
+#: TBUILDFORM.LABEL1.CAPTION
+msgctxt "TBUILDFORM.LABEL1.CAPTION"
+msgid "&Output"
+msgstr ""
+
+#: TBUILDFORM.LABEL2.CAPTION
+msgctxt "TBUILDFORM.LABEL2.CAPTION"
+msgid "Import content file"
+msgstr ""
+
+#: TBUILDFORM.LABEL3.CAPTION
+msgctxt "TBUILDFORM.LABEL3.CAPTION"
+msgid "Target OS"
+msgstr ""
+
+#: TBUILDFORM.LCBFORMAT.CAPTION
+msgctxt "TBUILDFORM.LCBFORMAT.CAPTION"
+msgid "&Format"
+msgstr ""
+
+#: TBUILDFORM.LCBPACKAGE.CAPTION
+msgctxt "TBUILDFORM.LCBPACKAGE.CAPTION"
+msgid "&Package"
+msgstr ""
+
+#: TBUILDFORM.LTARGETCPU.CAPTION
+msgctxt "TBUILDFORM.LTARGETCPU.CAPTION"
+msgid "CPU"
+msgstr ""
+
+#: TBUILDFORM.TSBUILD.CAPTION
+msgctxt "TBUILDFORM.TSBUILD.CAPTION"
+msgid "Build output"
+msgstr ""
+
+#: TBUILDFORM.TSDESCRIPTION.CAPTION
+msgctxt "TBUILDFORM.TSDESCRIPTION.CAPTION"
+msgid "Description"
+msgstr ""
+
+#: TBUILDFORM.TSOTHER.CAPTION
+msgctxt "TBUILDFORM.TSOTHER.CAPTION"
+msgid "Other options"
+msgstr ""
+
+#: TBUILDFORM.TSSOURCES.CAPTION
+msgctxt "TBUILDFORM.TSSOURCES.CAPTION"
+msgid "Sources"
+msgstr ""
+
 #: TEXAMPLEFORM.CAPTION
 msgid "Example file"
 msgstr ""
@@ -504,6 +754,7 @@ msgid "&Link target"
 msgstr ""
 
 #: TMAINFORM.ACLOSE.CAPTION
+msgctxt "TMAINFORM.ACLOSE.CAPTION"
 msgid "&Close"
 msgstr ""
 
@@ -520,6 +771,7 @@ msgid "Exit from the program"
 msgstr ""
 
 #: TMAINFORM.AEXTRABUILD.CAPTION
+msgctxt "TMAINFORM.AEXTRABUILD.CAPTION"
 msgid "&Build"
 msgstr ""
 
@@ -685,6 +937,7 @@ msgid "Open an existing documentation file"
 msgstr ""
 
 #: TMAINFORM.ASAVE.CAPTION
+msgctxt "TMAINFORM.ASAVE.CAPTION"
 msgid "&Save"
 msgstr ""
 
