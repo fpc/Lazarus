@@ -206,6 +206,7 @@ inherited ExternHelpGeneralOptsFrame: TExternHelpGeneralOptsFrame
     AutoSize = True
     BorderSpacing.Right = 6
     Caption = 'Browse'
+    OnClick = FileBrowseButtonClick
     ParentShowHint = False
     ShowHint = True
     TabOrder = 7

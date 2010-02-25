@@ -37,7 +37,7 @@ interface
 uses
   Classes, SysUtils, LCLProc, FileUtil, LResources, Forms, Controls, Graphics,
   Dialogs, LazConfigStorage, ComCtrls, Buttons, StdCtrls, ExtCtrls,
-  PackageIntf, MacroIntf, IDEOptionsIntf, LazIDEIntf, BaseIDEIntf;
+  PackageIntf, MacroIntf, IDEOptionsIntf, LazIDEIntf, BaseIDEIntf, IDEDialogs;
 
 const
   ExternHelpConfigVersion = 1;
@@ -59,6 +59,7 @@ resourcestring
   ehrsMacrofy = 'Macrofy';
   ehrsReplaceCommonDirectoriesWithMacros = 'Replace common directories with '
     +'macros';
+  ehrsChooseAPascalUnit = 'Choose a pascal unit';
 
 type
 
@@ -163,6 +164,7 @@ type
     URLLabel: TLabel;
     procedure AddSpeedButtonClick(Sender: TObject);
     procedure DeleteSpeedButtonClick(Sender: TObject);
+    procedure FileBrowseButtonClick(Sender: TObject);
     procedure FileMacrofyButtonClick(Sender: TObject);
     procedure FilenameEditEditingDone(Sender: TObject);
     procedure ItemsTreeViewEdited(Sender: TObject; Node: TTreeNode;
@@ -458,9 +460,37 @@ begin
   Item.Free;
 end;
 
-procedure TExternHelpGeneralOptsFrame.FileMacrofyButtonClick(Sender: TObject);
+procedure TExternHelpGeneralOptsFrame.FileBrowseButtonClick(Sender: TObject);
+var
+  OpenDialog: TOpenDialog;
+  Filename: String;
+  SelTVNode: TTreeNode;
+  Item: TExternHelpItem;
 begin
+  OpenDialog:=TOpenDialog.Create(nil);
+  try
+    InitIDEFileDialog(OpenDialog);
+    OpenDialog.Title:=ehrsChooseAPascalUnit;
+    if not OpenDialog.Execute then exit;
+    Filename:=Macrofy(TrimFilename(OpenDialog.FileName));
+    FilenameEdit.Text:=Filename;
+    SelTVNode:=ItemsTreeView.Selected;
+    if (SelTVNode<>nil) and (TObject(SelTVNode.Data) is TExternHelpItem) then
+    begin
+      Item:=TExternHelpItem(SelTVNode.Data);
+      Item.Filename:=Filename;
+    end;
+  finally
+    OpenDialog.Free;
+  end;
+end;
 
+procedure TExternHelpGeneralOptsFrame.FileMacrofyButtonClick(Sender: TObject);
+var
+  Filename: String;
+begin
+  Filename:=TrimFilename(FilenameEdit.Text);
+  FilenameEdit.Text:=Macrofy(Filename);
 end;
 
 procedure TExternHelpGeneralOptsFrame.ItemsTreeViewEditing(Sender: TObject;
@@ -620,15 +650,11 @@ function TExternHelpGeneralOptsFrame.Macrofy(Filename: string): string;
     or (Value[1]='$') then
       exit;
     Value:=ChompPathDelim(Value);
-    if CompareFilenames(s,Value)=0 then begin
-      // whole filename is the macro path
-      s:=PathMacro;
-      exit;
-    end;
-    Value:=AppendPathDelim(Value);
-    if CompareFilenames(copy(s,1,length(Value)),Value)=0 then begin
+    if (CompareFilenames(copy(s,1,length(Value)),Value)=0)
+    and ((length(s)<=length(Value)) or (s[length(Value)+1]=PathDelim)) then
+    begin
       // filename is a file in the macro path
-      s:=Value+copy(s,length(Value)+1,length(s));
+      s:=PathMacro+copy(s,length(Value)+1,length(s));
       exit;
     end;
   end;
