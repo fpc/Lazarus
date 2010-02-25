@@ -87,6 +87,7 @@ type
      fCachePaperRectName: string;
      fCachePaperRect: TPaperRect;
      fCachePaperRectResult: Integer;
+     fCupsDefaultPaper: string;
      FBeginDocCount: Integer;
      fRawModeStream: TMemoryStream;
      FOutputFilename: string;

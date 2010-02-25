@@ -827,12 +827,33 @@ begin
 end;
 
 procedure TCUPSPrinter.DoEnumPapers(Lst: TStrings);
+var
+  choice: Pppd_choice_t;
+  Option: Pppd_option_t;
+  c: Integer;
 begin
   //DebugLn(['TCUPSPrinter.DoEnumPapers ',dbgsName(Self)]);
-  inherited DoEnumPapers(Lst);
-  
-  GetEnumAttributeString('media-supported',Lst);
-  
+
+  //TODO: note that we are returning here the list of paper "keys"
+  //      not the human readable paper names. Modify cups support
+  //      to return human readable paper names.
+
+  Lst.Clear;
+  FCupsDefaultPaper := '';
+  if CupsPPD<>nil then
+  begin
+    Option := ppdFindOption(CupsPPD, PChar('PageSize'));
+    Choice := Option^.choices;
+    fCupsDefaultPaper := Choice^.choice;
+    c := 0;
+    while (Choice<>nil) and (c<Option^.num_choices) do
+    begin
+      lst.AddObject(Choice^.Choice, TObject(Choice));
+      inc(choice);
+      inc(c);
+    end;
+  end;
+
   fCupsPapersCount := lst.Count;
 end;
 
@@ -977,11 +998,14 @@ end;
 function TCUPSPrinter.DoGetDefaultPaperName: string;
 begin
   if not (cpsDefaultPaperNameValid in FStates) then begin
-    fCachedGetDefaultPaperName:=inherited DoGetDefaultPaperName;
+    fCachedGetDefaultPaperName:='';
     if not CupsPapersListValid then
       FCachedGetDefaultPaperName:=PaperSize.DefaultPaperName
     else begin
-      fCachedGetDefaultPaperName:=
+      if FCupsDefaultPaper<>'' then
+        fCachedGetDefaultPaperName:= FCupsDefaultPaper
+      else
+        fCachedGetDefaultPaperName:=
                  GetAttributeString('media-default',fCachedGetDefaultPaperName);
       {$IFDEF UseCache}
       Include(FStates,cpsDefaultPaperNameValid);
