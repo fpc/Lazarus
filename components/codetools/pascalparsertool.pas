@@ -2122,65 +2122,67 @@ function TPascalParserTool.KeyWordFuncSection: boolean;
   end;
 
 begin
-  case CurSection of
-   ctnInterface, ctnProgram, ctnPackage, ctnLibrary, ctnUnit:
-    begin
-      if not ((CurSection=ctnInterface) and UpAtomIs('IMPLEMENTATION')) then
-        RaiseUnexpectedKeyWord;
-      // close interface section node
-      CurNode.EndPos:=CurPos.StartPos;
-      EndChildNode;
-      ImplementationSectionFound:=true;
-      // start implementation section node
-      CreateChildNode;
-      CurNode.Desc:=ctnImplementation;
-      CurSection:=ctnImplementation;
-      ReadNextAtom;
-      if UpAtomIs('USES') then
-        ReadUsesSection(true);
-      UndoReadNextAtom;
-      Result:=true;
-    end;
-   ctnImplementation:
-    begin
-      if not (UpAtomIs('INITIALIZATION') or UpAtomIs('FINALIZATION')) then
-        RaiseUnexpectedKeyWord;
-      // close implementation section node
-      CurNode.EndPos:=CurPos.StartPos;
-      EndChildNode;
-      // start initialization / finalization section node
-      CreateChildNode;
-      if UpAtomIs('INITIALIZATION') then begin
-        CurNode.Desc:=ctnInitialization;
-      end else
-        CurNode.Desc:=ctnFinalization;
-      CurSection:=CurNode.Desc;
-      repeat
-        ReadNextAtom;
-        if (CurSection=ctnInitialization) and UpAtomIs('FINALIZATION') then
-        begin
-          CurNode.EndPos:=CurPos.EndPos;
-          EndChildNode;
-          CreateChildNode;
-          CurNode.Desc:=ctnFinalization;
-          CurSection:=CurNode.Desc;
-        end else if EndKeyWordFuncList.DoItCaseInsensitive(Src,CurPos.StartPos,
-          CurPos.EndPos-CurPos.StartPos) then
-        begin
-          ReadTilBlockEnd(false,false);
-        end else if CurPos.Flag=cafEND then begin
-          Result:=KeyWordFuncEndPoint;
-          break;
-        end;
-      until (CurPos.StartPos>SrcLen);
-      Result:=true;
-    end;
-  else
-    begin
+  if UpAtomIs('IMPLEMENTATION') then begin
+    if not (CurSection in [ctnInterface,ctnUnit,ctnLibrary,ctnPackage]) then
       RaiseUnexpectedSectionKeyWord;
-      Result:=false;
-    end;
+    // close section node
+    CurNode.EndPos:=CurPos.StartPos;
+    EndChildNode;
+    ImplementationSectionFound:=true;
+    // start implementation section node
+    CreateChildNode;
+    CurNode.Desc:=ctnImplementation;
+    CurSection:=ctnImplementation;
+    ReadNextAtom;
+    if UpAtomIs('USES') then
+      ReadUsesSection(true);
+    UndoReadNextAtom;
+    Result:=true;
+  end else if (UpAtomIs('INITIALIZATION') or UpAtomIs('FINALIZATION')) then
+  begin
+    if UpAtomIs('INITIALIZATION')
+    and (not CurSection in [ctnInterface,ctnImplementation,
+                            ctnUnit,ctnLibrary,ctnPackage])
+    then
+      RaiseUnexpectedSectionKeyWord;
+    if UpAtomIs('FINALIZATION')
+    and (not CurSection in [ctnInterface,ctnImplementation,ctnInitialization,
+                            ctnUnit,ctnLibrary,ctnPackage])
+    then
+      RaiseUnexpectedSectionKeyWord;
+    // close section node
+    CurNode.EndPos:=CurPos.StartPos;
+    EndChildNode;
+    // start initialization / finalization section node
+    CreateChildNode;
+    if UpAtomIs('INITIALIZATION') then begin
+      CurNode.Desc:=ctnInitialization;
+    end else
+      CurNode.Desc:=ctnFinalization;
+    CurSection:=CurNode.Desc;
+    repeat
+      ReadNextAtom;
+      if (CurSection=ctnInitialization) and UpAtomIs('FINALIZATION') then
+      begin
+        CurNode.EndPos:=CurPos.EndPos;
+        EndChildNode;
+        CreateChildNode;
+        CurNode.Desc:=ctnFinalization;
+        CurSection:=CurNode.Desc;
+      end else if EndKeyWordFuncList.DoItCaseInsensitive(Src,CurPos.StartPos,
+        CurPos.EndPos-CurPos.StartPos) then
+      begin
+        ReadTilBlockEnd(false,false);
+      end else if CurPos.Flag=cafEND then begin
+        Result:=KeyWordFuncEndPoint;
+        break;
+      end;
+    until (CurPos.StartPos>SrcLen);
+    Result:=true;
+  end else begin
+    RaiseUnexpectedSectionKeyWord;
   end;
+  Result:=true;
 end;
 
 function TPascalParserTool.KeyWordFuncEndPoint: boolean;
