@@ -46,6 +46,7 @@ type
     // Actual user settings.
     fBackupFiles: boolean;
     fKeepDelphiCompatible: boolean;
+    fFormFileRename: boolean;
     fAutoMissingProperties: boolean;
     fAutoMissingComponents: boolean;
     function GetBackupPath: String;
@@ -78,6 +79,7 @@ type
 
     property BackupFiles: boolean read fBackupFiles;
     property KeepDelphiCompatible: boolean read fKeepDelphiCompatible;
+    property FormFileRename: boolean read fFormFileRename;
     property AutoMissingProperties: boolean read fAutoMissingProperties;
     property AutoMissingComponents: boolean read fAutoMissingComponents;
   end;
@@ -87,8 +89,8 @@ type
 
   TConvertSettingsForm = class(TForm)
     BackupCheckBox: TCheckBox;
+    FormFileRenameCheckBox: TCheckBox;
     MainPathEdit: TLabeledEdit;
-    ResourceRadioGroup: TRadioGroup;
     ReplacementCompsButton: TBitBtn;
     btnCancel: TBitBtn;
     btnOK: TBitBtn;
@@ -101,6 +103,7 @@ type
     MissingComponentCheckBox: TCheckBox;
     MissingPropertyCheckBox: TCheckBox;
     procedure btnOKClick(Sender: TObject);
+    procedure DelphiCompatibleCheckBoxChange(Sender: TObject);
     procedure ReplacementCompsButtonClick(Sender: TObject);
     procedure FormCreate(Sender: TObject);
     procedure FormDestroy(Sender: TObject);
@@ -145,14 +148,16 @@ begin
     // Settings --> UI.
     BackupCheckBox.Checked          :=fBackupFiles;
     DelphiCompatibleCheckBox.Checked:=fKeepDelphiCompatible;
+    FormFileRenameCheckBox.Checked  :=fFormFileRename;
     MissingPropertyCheckBox.Checked :=fAutoMissingProperties;
     MissingComponentCheckBox.Checked:=fAutoMissingComponents;
 }
     Result:=ShowModal;
     if Result=mrOK then begin
       // UI --> Settings.
-      fBackupFiles:=BackupCheckBox.Checked;
-      fKeepDelphiCompatible:=DelphiCompatibleCheckBox.Checked;
+      fBackupFiles          :=BackupCheckBox.Checked;
+      fKeepDelphiCompatible :=DelphiCompatibleCheckBox.Checked;
+      fFormFileRename       :=FormFileRenameCheckBox.Checked;
       fAutoMissingProperties:=MissingPropertyCheckBox.Checked;
       fAutoMissingComponents:=MissingComponentCheckBox.Checked;
       // ToDo: Save to XML.
@@ -265,6 +270,17 @@ end;
 procedure TConvertSettingsForm.btnOKClick(Sender: TObject);
 begin
   ModalResult:=mrOk;
+end;
+
+procedure TConvertSettingsForm.DelphiCompatibleCheckBoxChange(Sender: TObject);
+// Delphi compatibility doesn't allow renaming the form file.
+var
+  b: Boolean;
+begin
+  b:=(Sender as TCheckBox).Checked;
+  if b then
+    FormFileRenameCheckBox.Checked:=false;
+  FormFileRenameCheckBox.Enabled:=not b;
 end;
 
 procedure TConvertSettingsForm.ReplacementCompsButtonClick(Sender: TObject);

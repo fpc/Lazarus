@@ -26,7 +26,7 @@ type
     fSrcCache: TSourceChangeCache;
     fScanner: TLinkScanner;
     fAsk: Boolean;
-    fAddLRSCode: boolean;
+    fFormFileRename: boolean;
     fLowerCaseRes: boolean;
     // List of units to remove.
     fUnitsToRemove: TStringList;
@@ -37,14 +37,11 @@ type
     // List of units to be commented.
     fUnitsToComment: TStringList;
     function AddModeDelphiDirective: boolean;
-    function RemoveDFMResourceDirective: boolean;
-    function LowerCaseMainResourceDirective: boolean;
-    function AddLRSIncludeDirective: boolean;
+    function RenameResourceDirectives: boolean;
     function RemoveUnits: boolean;
     function RenameUnits: boolean;
     function AddUnits: boolean;
     function CommentOutUnits: boolean;
-//    function ConvertUsedUnits: boolean;
     function HandleCodetoolError: TModalResult;
   public
     constructor Create(Code: TCodeBuffer);
@@ -52,7 +49,7 @@ type
     function Convert: TModalResult;
   public
     property Ask: Boolean read fAsk write fAsk;
-    property AddLRSCode: boolean read fAddLRSCode write fAddLRSCode;
+    property FormFileRename: boolean read fFormFileRename write fFormFileRename;
     property LowerCaseRes: boolean read fLowerCaseRes write fLowerCaseRes;
     property UnitsToRemove: TStringList read fUnitsToRemove write fUnitsToRemove;
     property UnitsToRename: TStringToStringTree read fUnitsToRename write fUnitsToRename;
@@ -70,7 +67,7 @@ begin
   // Default values for vars.
   fAsk:=true;
   fLowerCaseRes:=false;
-  fAddLRSCode:=false;
+  fFormFileRename:=false;
   fUnitsToComment:=nil;
   fUnitsToRename:=nil;
   // Initialize codetools. (Copied from TCodeToolManager.)
@@ -126,9 +123,7 @@ begin
     try
       // these changes can be applied together without rescan
       if not AddModeDelphiDirective then exit;
-      if not RemoveDFMResourceDirective then exit;
-      if not LowerCaseMainResourceDirective then exit;
-      if not AddLRSIncludeDirective then exit;
+      if not RenameResourceDirectives then exit;
       if not fSrcCache.Apply then exit;
     finally
       fSrcCache.EndUpdate;
@@ -165,7 +160,6 @@ begin
       ReadNextAtom; // semicolon
       InsertPos:=CurPos.EndPos;
       fSrcCache.Replace(gtEmptyLine,gtEmptyLine,InsertPos,InsertPos,'{$MODE Delphi}');
-//      if not fSrcCache.Apply then exit;
     end;
     // changing mode requires rescan
     BuildTree(false);
@@ -173,13 +167,13 @@ begin
   Result:=true;
 end;
 
-function TConvDelphiCodeTool.RemoveDFMResourceDirective: boolean;
-// remove {$R *.dfm} or {$R *.xfm} directive
+function TConvDelphiCodeTool.RenameResourceDirectives: boolean;
+// rename {$R *.dfm} directive to {$R *.lfm}, or lowercase it.
+// lowercase {$R *.RES} to {$R *.res}
 var
   ParamPos: Integer;
   ACleanPos: Integer;
-  StartPos: Integer;
-  s: String;
+  Key, LowKey, NewKey: String;
 begin
   Result:=false;
   // find $R directive
@@ -188,93 +182,33 @@ begin
     repeat
       ACleanPos:=FindNextCompilerDirectiveWithName(Src,ACleanPos,'R',
         fScanner.NestedComments,ParamPos);
-      if (ACleanPos<1) or (ACleanPos>SrcLen) or (ParamPos>SrcLen) then break;
-      s:=UpperCaseStr(copy(Src,ParamPos,6));
-      if (Src[ACleanPos]='{')
-      and ((s='*.DFM}') or (s='*.XFM}'))
+      if (ACleanPos<1) or (ACleanPos>SrcLen) or (ParamPos>SrcLen-6) then break;
+      NewKey:='';
+      if (Src[ACleanPos]='{') and
+         (Src[ParamPos]='*') and (Src[ParamPos+1]='.') and
+         (Src[ParamPos+5]='}')
       then begin
-        StartPos:=FindLineEndOrCodeInFrontOfPosition(ACleanPos,true);
-        if not fSrcCache.Replace(gtNone,gtNone,StartPos,ParamPos+6,'')
-        then exit;
-        break;
+        Key:=copy(Src,ParamPos+2,3);
+        LowKey:=LowerCase(Key);
+
+        // Form file resource rename or lowercase:
+        if (LowKey='dfm') or (LowKey='xfm') then begin
+          if fFormFileRename then
+            NewKey:='lfm'
+          else if Key<>LowKey then
+            NewKey:=LowKey;
+        end
+
+        // lowercase {$R *.RES} to {$R *.res}
+        else if (Key='RES') and fLowerCaseRes then
+          NewKey:=LowKey;
+
+        // Now change code.
+        if NewKey<>'' then
+          if not fSrcCache.Replace(gtNone,gtNone,ParamPos+2,ParamPos+5,NewKey) then exit;
       end;
       ACleanPos:=FindCommentEnd(Src,ACleanPos,fScanner.NestedComments);
     until false;
-  Result:=true;
-end;
-
-function TConvDelphiCodeTool.LowerCaseMainResourceDirective: boolean;
-// convert {$R *.RES} to {$R *.res}
-var
-  ParamPos: Integer;
-  ACleanPos: Integer;
-  s: String;
-begin
-  if fLowerCaseRes then begin
-    Result:=false;
-    // find $R directive
-    ACleanPos:=1;
-    with fCodeTool do
-      repeat
-        ACleanPos:=FindNextCompilerDirectiveWithName(Src,ACleanPos,'R',
-          fScanner.NestedComments,ParamPos);
-        if (ACleanPos<1) or (ACleanPos>SrcLen) or (ParamPos>SrcLen) then break;
-        s:=copy(Src,ParamPos,6);
-        if (Src[ACleanPos]='{') and (s='*.RES}')
-        then begin
-          if not fSrcCache.Replace(gtNone,gtNone,ParamPos+2,ParamPos+5,'res') then exit;
-          break;
-        end;
-        ACleanPos:=FindCommentEnd(Src,ACleanPos,fScanner.NestedComments);
-      until false;
-  end;
-  Result:=true;
-end;
-
-function TConvDelphiCodeTool.AddLRSIncludeDirective: boolean;
-// add initialization and {$i unit.lrs} include directive
-var
-  FirstInclude: TCodeBuffer;
-  LRSFilename: String;
-  InitializationNode: TCodeTreeNode;
-  ImplementationNode: TCodeTreeNode;
-  NewCode: String;
-  InsertPos: Integer;
-  LinkIndex: Integer;
-begin
-  Result:=false;
-  if fAddLRSCode then begin
-    LRSFilename:=ExtractFilenameOnly(fCodeTool.MainFilename)+'.lrs';
-    LinkIndex:=-1;
-    FirstInclude:=fCodeTool.FindNextIncludeInInitialization(LinkIndex);
-    if (FirstInclude<>nil)
-    and (CompareFilenames(FirstInclude.Filename,LRSFilename)=0) then begin
-      // already there
-      Result:=true;
-      exit;
-    end;
-    if fCodeTool.Tree.Root.Desc=ctnUnit then begin
-      InitializationNode:=fCodeTool.FindInitializationNode;
-      NewCode:=GetIndentStr(fSrcCache.BeautifyCodeOptions.Indent)
-               +'{$i '+LRSFilename+'}';
-      if InitializationNode=nil then begin
-        // add also an initialization section
-        ImplementationNode:=fCodeTool.FindImplementationNode;
-        InsertPos:=ImplementationNode.EndPos;
-        NewCode:=fSrcCache.BeautifyCodeOptions.BeautifyKeyWord('initialization')
-                 +fSrcCache.BeautifyCodeOptions.LineEnd+NewCode;
-        if not fSrcCache.Replace(gtEmptyLine,gtEmptyLine,
-                                 InsertPos,InsertPos,NewCode) then exit;
-      end else begin
-        InsertPos:=InitializationNode.StartPos+length('initialization');
-        if not fSrcCache.Replace(gtNewLine,gtNewLine,
-                                 InsertPos,InsertPos,NewCode) then exit;
-      end;
-    end else begin
-      // only Units supported yet
-      exit;
-    end;
-  end;
   Result:=true;
 end;
 

@@ -552,7 +552,6 @@ function TConvertDelphiUnit.ConvertUnitFile: TModalResult;
 var
   DfmFilename: string;     // Delphi .DFM file name.
   LfmFilename: string;     // Lazarus .LFM file name.
-  LrsFilename: string;     // Resource file name.
   ConvTool: TConvDelphiCodeTool;
 begin
   fUnitsToRemove:=TStringList.Create;
@@ -562,38 +561,33 @@ begin
   ConvTool:=TConvDelphiCodeTool.Create(fUnitCode);
   try
     fLfmCode:=nil;
-    LrsFilename:='';
-    // rename files (.pas,.dfm) lowercase. TODO: rename files in project
-    LfmFilename:=fSettings.DelphiToLazFilename(fOrigUnitFilename, '.lfm',
-                                               cdtlufRenameLowercase in fFlags);
     // Get DFM file name and close it in editor.
     DfmFilename:=GetDfmFileName;
     if DfmFilename<>'' then begin
       Result:=LazarusIDE.DoCloseEditorFile(DfmFilename,[cfSaveFirst]);
       if Result<>mrOk then exit;
-      if FileExistsUTF8(LfmFilename) then begin
-        if (FileAgeUTF8(LfmFilename)>=FileAgeUTF8(DfmFilename)) then begin
-          // .lfm is not older than .dfm -> keep .lfm (it could be the same file)
-        end else begin
-          // .lfm is older than .dfm -> remove .lfm
-          DeleteFileUTF8(LfmFilename);
+    end;
+    if fSettings.FormFileRename then begin
+      // rename files (.pas,.dfm) lowercase. TODO: rename files in project
+      LfmFilename:=fSettings.DelphiToLazFilename(fOrigUnitFilename, '.lfm',
+                                               cdtlufRenameLowercase in fFlags);
+      if DfmFilename<>'' then begin
+        if FileExistsUTF8(LfmFilename) then
+          if (FileAgeUTF8(LfmFilename)<FileAgeUTF8(DfmFilename)) then
+            DeleteFileUTF8(LfmFilename); // .lfm is older than .dfm -> remove .lfm
+        if not FileExistsUTF8(LfmFilename) then begin
+          // TODO: update project
+          Result:=fSettings.RenameFile(DfmFilename,LfmFilename);
+          if Result<>mrOK then exit;
         end;
       end;
-      if not FileExistsUTF8(LfmFilename) then begin
-        // TODO: update project
-        Result:=fSettings.RenameFile(DfmFilename,LfmFilename);
-        if Result<>mrOK then exit;
-      end;
-    end;
+    end
+    else
+      LfmFilename:=DfmFilename;
     // convert .dfm file to .lfm file (without context type checking)
     if FileExistsUTF8(LfmFilename) then begin
       IDEMessagesWindow.AddMsg('Converting DFM to LFM file '+LfmFilename,'',-1);
       Result:=ConvertDfmToLfm(LfmFilename);
-      if Result<>mrOk then exit;
-      // create empty .lrs file
-      LrsFilename:=ChangeFileExt(fLazUnitFilename,'.lrs');
-      IDEMessagesWindow.AddMsg('Creating resource file '+LrsFilename,'',-1);
-      Result:=CreateEmptyFile(LrsFilename,[mbAbort,mbRetry]);
       if Result<>mrOk then exit;
       // Read form file code in.
       Result:=LoadCodeBuffer(fLfmCode,LfmFilename,
@@ -616,20 +610,19 @@ begin
 
     // Some units to remove, rename and add.
     fUnitsToRename['WINDOWS']:='LCLIntf';
-    if LrsFilename<>'' then
+    if DfmFilename<>'' then
       fUnitsToAdd.Append('LResources');
     fUnitsToRemove.Append('VARIANTS');
 
     // Do the actual code conversion.
     ConvTool.Ask:=Assigned(fOwnerConverter);
     ConvTool.LowerCaseRes:=FileExistsUTF8(ChangeFileExt(fLazUnitFilename, '.res'));
-    ConvTool.AddLRSCode:=LrsFilename<>'';
+    ConvTool.FormFileRename:=fSettings.FormFileRename and (DfmFilename<>'');
     ConvTool.UnitsToRemove:=fUnitsToRemove;
     ConvTool.UnitsToRename:=fUnitsToRename;
     ConvTool.UnitsToAdd:=fUnitsToAdd;
     ConvTool.UnitsToComment:=fUnitsToComment;
     Result:=ConvTool.Convert;
-//    if Result=mrAbort then exit;
   finally
     ConvTool.Free;
     fUnitsToComment.Free;
@@ -642,25 +635,15 @@ end;
 function TConvertDelphiUnit.ConvertFormFile: TModalResult;
 begin
   // check the LFM file and the pascal unit, updates fUnitCode and fLfmCode.
-  if (fLfmCode<>nil)
-  and (RepairLFMBuffer(fUnitCode,fLfmCode,@IDEMessagesWindow.AddMsg,true,true)<>mrOk)
-  then begin
-    LazarusIDE.DoJumpToCompilerMessage(-1,true);
-    exit(mrAbort);
-  end;
-
   if fLfmCode<>nil then begin
+    if RepairLFMBuffer(fUnitCode,fLfmCode,@IDEMessagesWindow.AddMsg,true,true)<>mrOk
+    then begin
+      LazarusIDE.DoJumpToCompilerMessage(-1,true);
+      exit(mrAbort);
+    end;
     // save LFM file
     Result:=SaveCodeBufferToFile(fLfmCode,fLfmCode.Filename);
     if Result<>mrOk then exit;
-
-    // convert lfm to lrs
-    if not LFMtoLRSfile(fLfmCode.Filename) then begin
-      Result:=MessageDlg(lisErrorCreatingLrs,
-        lisUnableToConvertLfmToLrsAndWriteLrsFile,
-        mtError,[mbCancel],0);
-      exit;
-    end;
   end;
   Result:=mrOk;
 end;
