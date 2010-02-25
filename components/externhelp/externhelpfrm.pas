@@ -39,6 +39,8 @@ uses
   Dialogs, LazConfigStorage, ComCtrls, Buttons, StdCtrls, ExtCtrls,
   PackageIntf, MacroIntf, IDEOptionsIntf, LazIDEIntf, BaseIDEIntf;
 
+const
+  ExternHelpConfigVersion = 1;
 var
   ExternHelpOptionID: integer = 2000;
   ExternHelpOptionGeneralID: integer = 100;
@@ -117,6 +119,7 @@ type
     RootItem: TExternHelpRootItem;
     constructor Create;
     destructor Destroy; override;
+    procedure Clear;
     class function GetGroupCaption: string; override;
     class function GetInstance: TAbstractIDEOptions; override;
     function Load(Config: TConfigStorage): TModalResult; virtual;
@@ -229,6 +232,11 @@ begin
   inherited Destroy;
 end;
 
+procedure TExternHelpOptions.Clear;
+begin
+  RootItem.Clear;
+end;
+
 class function TExternHelpOptions.GetGroupCaption: string;
 begin
   Result:=ehrsGroupTitle;
@@ -240,13 +248,54 @@ begin
 end;
 
 function TExternHelpOptions.Load(Config: TConfigStorage): TModalResult;
+
+  procedure LoadNode(Path: string; Node: TExternHelpItem);
+  var
+    i, NewCount: Integer;
+    NewItem: TExternHelpItem;
+  begin
+    Node.Name:=Config.GetValue(Path+'Name','');
+    Node.Filename:=Config.GetValue(Path+'Filename/Value','');
+    Node.URL:=Config.GetValue(Path+'URL/Value','');
+    Node.StoreIn:=Config.GetValue(Path+'Store/Where','');
+    NewCount:=Config.GetValue(Path+'ChildCount',0);
+    for i:=1 to NewCount do begin
+      NewItem:=TExternHelpItem.Create;
+      Node.AddChild(NewItem);
+      LoadNode(Path+'Item'+IntToStr(i)+'/',NewItem);
+    end;
+  end;
+
+var
+  Path: String;
 begin
   Result:=mrOk;
+  Clear;
+  Path:='ExternHelp/';
+  LoadNode(Path+'Items/',RootItem);
 end;
 
 function TExternHelpOptions.Save(Config: TConfigStorage): TModalResult;
+
+  procedure SaveNode(Path: string; Node: TExternHelpItem);
+  var
+    i: Integer;
+  begin
+    Config.SetDeleteValue(Path+'Name',Node.Name,'');
+    Config.SetDeleteValue(Path+'Filename/Value',Node.Filename,'');
+    Config.SetDeleteValue(Path+'URL/Value',Node.URL,'');
+    Config.SetDeleteValue(Path+'Store/Where',Node.StoreIn,'');
+    Config.SetDeleteValue(Path+'ChildCount',Node.ChildCount,0);
+    for i:=1 to Node.ChildCount do
+      SaveNode(Path+'Item'+IntToStr(i)+'/',Node.Childs[i-1]);
+  end;
+
+var
+  Path: String;
 begin
   Result:=mrOk;
+  Path:='ExternHelp/';
+  SaveNode(Path+'Items/',RootItem);
 end;
 
 function TExternHelpOptions.LoadFromFile(Filename: string): TModalResult;
@@ -268,6 +317,9 @@ begin
   Config:=GetIDEConfigStorage(Filename,false);
   try
     Result:=Save(Config);
+    DebugLn(['TExternHelpOptions.SaveToFile ',Filename,' ',Config.GetFilename]);
+    Config.WriteToDisk;
+    DebugLn(['TExternHelpOptions.SaveToFile exists=',FileExistsUTF8(GetFullFilename)]);
   finally
     Config.Free;
   end;
@@ -597,13 +649,10 @@ var
 begin
   if AOptions is TExternHelpOptions then begin
     Opts:=TExternHelpOptions(AOptions);
-    DebugLn(['TExternHelpGeneralOptsFrame.WriteSettings AAA1 Options.RootItem.ChildCount=',Options.RootItem.ChildCount]);
     if not Opts.IsEqual(Options) then
     begin
-      DebugLn(['TExternHelpGeneralOptsFrame.WriteSettings AAA2 ']);
       Opts.Assign(Options);
       try
-        DebugLn(['TExternHelpGeneralOptsFrame.WriteSettings AAA3 ',Opts.RootItem.ChildCount]);
         Opts.Save;
       except
         on E: Exception do begin
