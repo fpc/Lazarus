@@ -6,17 +6,18 @@ interface
 
 uses
   // LCL+FCL
-  Classes, SysUtils, FileProcs, Forms, Controls, DialogProcs,
-    // TypInfo, CodeToolsStrConsts, AVL_Tree, LFMTrees,
+  Classes, SysUtils, FileProcs, Forms, Controls, DialogProcs, Dialogs,
+  // IDE
+  LazarusIDEStrConsts, LazIDEIntf,
   // codetools
-  CodeToolManager, StdCodeTools, CodeTree, CodeAtom, //IdentCompletionTool,
+  CodeToolManager, StdCodeTools, CodeTree, CodeAtom,
   FindDeclarationTool, PascalReaderTool, PascalParserTool,
   CodeBeautifier, ExprEval, KeywordFuncLists, BasicCodeTools, LinkScanner,
   CodeCache, SourceChanger, CustomCodeTool, CodeToolsStructs, EventCodeTool;
 
 type
 
-  { TConvCodeTool }
+  { TConvDelphiCodeTool }
 
   TConvDelphiCodeTool = class // (TStandardCodeTool)
   private
@@ -26,36 +27,58 @@ type
     fScanner: TLinkScanner;
     fAsk: Boolean;
     fAddLRSCode: boolean;
-    fMakeLowerCaseRes: boolean;
+    fLowerCaseRes: boolean;
+    // List of units to remove.
+    fUnitsToRemove: TStringList;
+    // Units to rename. Map of unit name -> real unit name.
+    fUnitsToRename: TStringToStringTree;
+    // List of units to add.
+    fUnitsToAdd: TStringList;
+    // List of units to be commented.
+    fUnitsToComment: TStringList;
     function AddModeDelphiDirective: boolean;
-    function ConvertUsedUnits: boolean;
     function RemoveDFMResourceDirective: boolean;
     function LowerCaseMainResourceDirective: boolean;
     function AddLRSIncludeDirective: boolean;
-
+    function RemoveUnits: boolean;
+    function RenameUnits: boolean;
+    function AddUnits: boolean;
+    function CommentOutUnits: boolean;
+//    function ConvertUsedUnits: boolean;
+    function HandleCodetoolError: TModalResult;
   public
-    constructor Create(Code: TCodeBuffer; Ask, MakeLowerCaseRes, AddLRSCode: boolean);
+    constructor Create(Code: TCodeBuffer);
     destructor Destroy; override;
     function Convert: TModalResult;
+  public
+    property Ask: Boolean read fAsk write fAsk;
+    property AddLRSCode: boolean read fAddLRSCode write fAddLRSCode;
+    property LowerCaseRes: boolean read fLowerCaseRes write fLowerCaseRes;
+    property UnitsToRemove: TStringList read fUnitsToRemove write fUnitsToRemove;
+    property UnitsToRename: TStringToStringTree read fUnitsToRename write fUnitsToRename;
+    property UnitsToAdd: TStringList read fUnitsToAdd write fUnitsToAdd;
+    property UnitsToComment: TStringList read fUnitsToComment write fUnitsToComment;
   end;
 
 implementation
 
 { TConvDelphiCodeTool }
 
-constructor TConvDelphiCodeTool.Create(Code: TCodeBuffer;
-                                 Ask, MakeLowerCaseRes, AddLRSCode: boolean);
+constructor TConvDelphiCodeTool.Create(Code: TCodeBuffer);
 begin
   fCode:=Code;
-  fAsk:=Ask;
-  fMakeLowerCaseRes:=MakeLowerCaseRes;
-  fAddLRSCode:=AddLRSCode;
+  // Default values for vars.
+  fAsk:=true;
+  fLowerCaseRes:=false;
+  fAddLRSCode:=false;
+  fUnitsToComment:=nil;
+  fUnitsToRename:=nil;
   // Initialize codetools. (Copied from TCodeToolManager.)
   if not CodeToolBoss.InitCurCodeTool(Code) then exit;
   try
     fCodeTool:=CodeToolBoss.CurCodeTool;
     fSrcCache:=CodeToolBoss.SourceChangeCache;
-    if fSrcCache=nil then exit;
+//    if fSrcCache=nil then exit;
     fScanner:=fCodeTool.Scanner;
     fSrcCache.MainScanner:=fScanner;
   except
@@ -69,7 +92,33 @@ begin
   inherited Destroy;
 end;
 
+function TConvDelphiCodeTool.HandleCodetoolError: TModalResult;
+// returns mrOk or mrAbort
+const
+  CodetoolsFoundError='The codetools found an error in unit %s:%s%s%s';
+var
+  ErrMsg: String;
+begin
+  ErrMsg:=CodeToolBoss.ErrorMessage;
+  LazarusIDE.DoJumpToCodeToolBossError;
+  if fAsk then begin
+    Result:=QuestionDlg(lisCCOErrorCaption,
+      Format(CodetoolsFoundError, [ExtractFileName(fCode.Filename), #13, ErrMsg, #13]),
+      mtWarning, [mrIgnore, lisIgnoreAndContinue, mrAbort], 0);
+    if Result=mrIgnore then Result:=mrOK;
+  end else begin
+    Result:=mrOK;
+  end;
+end;
+
 function TConvDelphiCodeTool.Convert: TModalResult;
+// add {$mode delphi} directive
+// remove windows unit and add LResources, LCLIntf
+// remove {$R *.dfm} or {$R *.xfm} directive
+// Change {$R *.RES} to {$R *.res} if needed
+// add initialization
+// add {$i unit.lrs} directive
+// TODO: fix delphi ambiguousities like incomplete proc implementation headers
 begin
   Result:=mrCancel;
   try
@@ -84,11 +133,18 @@ begin
     finally
       fSrcCache.EndUpdate;
     end;
-    if not ConvertUsedUnits then exit;
+    if not RemoveUnits then exit;
+    if not RenameUnits then exit;
+    if not AddUnits then exit;
+    if not CommentOutUnits then exit;
+    if not fCodeTool.FixUsedUnitCase(fSrcCache) then exit;
     if not fSrcCache.Apply then exit;
     Result:=mrOK;
   except
-    Result:=JumpToCodetoolErrorAndAskToAbort(fAsk);
+    on e: Exception do begin
+      CodeToolBoss.HandleException(e);
+      Result:=HandleCodetoolError;
+    end;
   end;
 end;
 
@@ -108,46 +164,11 @@ begin
       ReadNextAtom; // name
       ReadNextAtom; // semicolon
       InsertPos:=CurPos.EndPos;
-      fSrcCache.Replace(gtEmptyLine,gtEmptyLine,InsertPos,InsertPos,
-        '{$MODE Delphi}');
-      if not fSrcCache.Apply then exit;
+      fSrcCache.Replace(gtEmptyLine,gtEmptyLine,InsertPos,InsertPos,'{$MODE Delphi}');
+//      if not fSrcCache.Apply then exit;
     end;
     // changing mode requires rescan
     BuildTree(false);
-  end;
-  Result:=true;
-end;
-
-function TConvDelphiCodeTool.ConvertUsedUnits: boolean;
-// replace unit 'Windows' with 'LCLIntf' and add 'LResources'
-// rename 'in' filenames to case sensitive filename
-var
-  NamePos, InPos: TAtomPosition;
-begin
-  Result:=false;
-  if fCodeTool.FindUnitInAllUsesSections('WINDOWS',NamePos,InPos)
-  and (InPos.StartPos<1) then begin
-    if not fSrcCache.Replace(gtNone,gtNone,
-                         NamePos.StartPos,NamePos.EndPos,'LCLIntf') then
-    begin
-      exit;
-    end;
-    if not fSrcCache.Apply then exit;
-  end;
-  if fAddLRSCode then
-  begin
-    if not fCodeTool.AddUnitToMainUsesSection('LResources','',fSrcCache) then
-    begin
-      exit;
-    end;
-  end;
-  if not fCodeTool.RemoveUnitFromAllUsesSections('VARIANTS',fSrcCache) then
-  begin
-    exit;
-  end;
-  if not fCodeTool.FixUsedUnitCase(fSrcCache) then
-  begin
-    exit;
   end;
   Result:=true;
 end;
@@ -189,7 +210,7 @@ var
   ACleanPos: Integer;
   s: String;
 begin
-  if fMakeLowerCaseRes then begin
+  if fLowerCaseRes then begin
     Result:=false;
     // find $R directive
     ACleanPos:=1;
@@ -254,6 +275,54 @@ begin
       exit;
     end;
   end;
+  Result:=true;
+end;
+
+function TConvDelphiCodeTool.RemoveUnits: boolean;
+// Remove units
+var
+  i: Integer;
+begin
+  Result:=false;
+  if Assigned(fUnitsToRemove) then begin
+    for i := 0 to fUnitsToRemove.Count-1 do
+      if not fCodeTool.RemoveUnitFromAllUsesSections(fUnitsToRemove[i], fSrcCache) then
+        exit;
+  end;
+  Result:=true;
+end;
+
+function TConvDelphiCodeTool.RenameUnits: boolean;
+// Rename units
+begin
+  Result:=false;
+  if Assigned(fUnitsToRename) then
+    if not fCodeTool.ReplaceUsedUnits(fUnitsToRename, fSrcCache) then
+      exit;
+  Result:=true;
+end;
+
+function TConvDelphiCodeTool.AddUnits: boolean;
+// Add units
+var
+  i: Integer;
+begin
+  Result:=false;
+  if Assigned(fUnitsToAdd) then
+    for i := 0 to fUnitsToAdd.Count-1 do
+    if not fCodeTool.AddUnitToMainUsesSection(fUnitsToAdd[i],'',fSrcCache) then
+      exit;
+  Result:=true;
+end;
+
+function TConvDelphiCodeTool.CommentOutUnits: boolean;
+// Comment out missing units
+begin
+  Result:=false;
+  if Assigned(fUnitsToComment) and (fUnitsToComment.Count>0) then
+    if not fCodeTool.CommentUnitsInUsesSections(fUnitsToComment, fSrcCache) then
+      exit;
+//      IDEMessagesWindow.AddMsg('Error="'+CodeToolBoss.ErrorMessage+'"','',-1);
   Result:=true;
 end;
 
