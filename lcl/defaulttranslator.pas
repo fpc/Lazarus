@@ -31,7 +31,8 @@ localization found.
 interface
 
 uses
-  Classes, SysUtils, LResources, GetText, Controls, typinfo, FileUtil, LCLProc;
+  Classes, SysUtils, LResources, GetText, Controls, typinfo, FileUtil, LCLProc,
+  Translations;
 
 type
   TDefaultTranslator = class(TAbstractTranslator)
@@ -39,6 +40,16 @@ type
     FMOFile: TMOFile;
   public
     constructor Create(MOFileName: string);
+    destructor Destroy; override;
+    procedure TranslateStringProperty(Sender: TObject; const Instance: TPersistent;
+      PropInfo: PPropInfo; var Content: string); override;
+  end;
+
+  TPOTranslator = class(TAbstractTranslator)
+  private
+    FPOFile: TPOFile;
+  public
+    constructor Create(POFileName: string);
     destructor Destroy; override;
     procedure TranslateStringProperty(Sender: TObject; const Instance: TPersistent;
       PropInfo: PPropInfo; var Content: string); override;
@@ -52,12 +63,12 @@ uses
 type
   TPersistentAccess = class(TPersistent);
 
-function FindLocaleFileName: string;
+function FindLocaleFileName(LCExt: string): string;
 var
   Lang, T: string;
   i: integer;
 
-  function GetLocaleFileName(const LangID: string): string;
+  function GetLocaleFileName(const LangID, LCExt: string): string;
   var
     LangShortID: string;
   begin
@@ -65,30 +76,30 @@ var
     begin
       //ParamStrUTF8(0) is said not to work properly in linux, but I've tested it
       Result := ExtractFilePath(ParamStrUTF8(0)) + LangID +
-        DirectorySeparator + ChangeFileExt(ExtractFileName(ParamStrUTF8(0)), '.mo');
+        DirectorySeparator + ChangeFileExt(ExtractFileName(ParamStrUTF8(0)), LCExt);
       if FileExistsUTF8(Result) then
         exit;
 
       Result := ExtractFilePath(ParamStrUTF8(0)) + 'languages' + DirectorySeparator + LangID +
-        DirectorySeparator + ChangeFileExt(ExtractFileName(ParamStrUTF8(0)), '.mo');
+        DirectorySeparator + ChangeFileExt(ExtractFileName(ParamStrUTF8(0)), LCExt);
       if FileExistsUTF8(Result) then
         exit;
 
       Result := ExtractFilePath(ParamStrUTF8(0)) + 'locale' + DirectorySeparator
-        + LangID + DirectorySeparator + ChangeFileExt(ExtractFileName(ParamStrUTF8(0)), '.mo');
+        + LangID + DirectorySeparator + ChangeFileExt(ExtractFileName(ParamStrUTF8(0)), LCExt);
       if FileExistsUTF8(Result) then
         exit;
 
       Result := ExtractFilePath(ParamStrUTF8(0)) + 'locale' + DirectorySeparator
         + LangID + DirectorySeparator + 'LC_MESSAGES' + DirectorySeparator +
-        ChangeFileExt(ExtractFileName(ParamStrUTF8(0)), '.mo');
+        ChangeFileExt(ExtractFileName(ParamStrUTF8(0)), LCExt);
       if FileExistsUTF8(Result) then
         exit;
 
       {$IFDEF UNIX}
       //In unix-like systems we can try to search for global locale
       Result := '/usr/share/locale/' + LangID + '/LC_MESSAGES/' +
-        ChangeFileExt(ExtractFileName(ParamStrUTF8(0)), '.mo');
+        ChangeFileExt(ExtractFileName(ParamStrUTF8(0)), LCExt);
       if FileExistsUTF8(Result) then
         exit;
       {$ENDIF}
@@ -96,43 +107,42 @@ var
       LangShortID := copy(LangID, 1, 2);
       //At first, check all was checked
       Result := ExtractFilePath(ParamStrUTF8(0)) + LangShortID +
-        DirectorySeparator + ChangeFileExt(ExtractFileName(ParamStrUTF8(0)), '.mo');
+        DirectorySeparator + ChangeFileExt(ExtractFileName(ParamStrUTF8(0)), LCExt);
       if FileExistsUTF8(Result) then
         exit;
 
       Result := ExtractFilePath(ParamStrUTF8(0)) + 'languages' + DirectorySeparator +
         LangShortID + DirectorySeparator + ChangeFileExt(
-        ExtractFileName(ParamStrUTF8(0)), '.mo');
+        ExtractFileName(ParamStrUTF8(0)), LCExt);
       if FileExistsUTF8(Result) then
         exit;
 
       Result := ExtractFilePath(ParamStrUTF8(0)) + 'locale' + DirectorySeparator
         + LangShortID + DirectorySeparator + ChangeFileExt(
-        ExtractFileName(ParamStrUTF8(0)), '.mo');
+        ExtractFileName(ParamStrUTF8(0)), LCExt);
       if FileExistsUTF8(Result) then
         exit;
 
       Result := ExtractFilePath(ParamStrUTF8(0)) + 'locale' + DirectorySeparator
         + LangID + DirectorySeparator + 'LC_MESSAGES' + DirectorySeparator +
-        ChangeFileExt(ExtractFileName(ParamStrUTF8(0)), '.mo');
+        ChangeFileExt(ExtractFileName(ParamStrUTF8(0)), LCExt);
       if FileExistsUTF8(Result) then
         exit;
 
       //Full language in file name - this will be default for the project
       //We need more carefull handling, as it MAY result in incorrect filename
       try
-        Result := ExtractFilePath(ParamStrUTF8(0)) + ChangeFileExt(
-          ExtractFileName(ParamStrUTF8(0)), '.' + LangID) + '.mo';
+        Result := ExtractFilePath(ParamStrUTF8(0)) + ChangeFileExt(ExtractFileName(ParamStrUTF8(0)), '.' + LangID) + LCExt;
         if FileExistsUTF8(Result) then
           exit;
         //Common location (like in Lazarus)
         Result := ExtractFilePath(ParamStrUTF8(0)) + 'locale' + DirectorySeparator +
-          ChangeFileExt(ExtractFileName(ParamStrUTF8(0)), '.' + LangID) + '.mo';
+          ChangeFileExt(ExtractFileName(ParamStrUTF8(0)), '.' + LangID) + LCExt;
         if FileExistsUTF8(Result) then
           exit;
 
         Result := ExtractFilePath(ParamStrUTF8(0)) + 'languages' +
-          DirectorySeparator + ChangeFileExt(ExtractFileName(ParamStrUTF8(0)), '.' + LangID) + '.mo';
+          DirectorySeparator + ChangeFileExt(ExtractFileName(ParamStrUTF8(0)), '.' + LangID) + LCExt;
         if FileExistsUTF8(Result) then
           exit;
       except
@@ -140,22 +150,22 @@ var
       end;
       {$IFDEF UNIX}
       Result := '/usr/share/locale/' + LangShortID + '/LC_MESSAGES/' +
-        ChangeFileExt(ExtractFileName(ParamStrUTF8(0)), '.mo');
+        ChangeFileExt(ExtractFileName(ParamStrUTF8(0)), LCExt);
       if FileExistsUTF8(Result) then
         exit;
       {$ENDIF}
       Result := ExtractFilePath(ParamStrUTF8(0)) + ChangeFileExt(
-        ExtractFileName(ParamStrUTF8(0)), '.' + LangShortID) + '.mo';
+        ExtractFileName(ParamStrUTF8(0)), '.' + LangShortID) + LCExt;
       if FileExistsUTF8(Result) then
         exit;
 
       Result := ExtractFilePath(ParamStrUTF8(0)) + 'locale' + DirectorySeparator +
-        ChangeFileExt(ExtractFileName(ParamStrUTF8(0)), '.' + LangShortID) + '.mo';
+        ChangeFileExt(ExtractFileName(ParamStrUTF8(0)), '.' + LangShortID) + LCExt;
       if FileExistsUTF8(Result) then
         exit;
 
       Result := ExtractFilePath(ParamStrUTF8(0)) + 'languages' + DirectorySeparator +
-        ChangeFileExt(ExtractFileName(ParamStrUTF8(0)), '.' + LangShortID) + '.mo';
+        ChangeFileExt(ExtractFileName(ParamStrUTF8(0)), '.' + LangShortID) + LCExt;
       if FileExistsUTF8(Result) then
         exit;
     end;
@@ -177,11 +187,11 @@ begin
   if Lang = '' then
     LCLGetLanguageIDs(Lang, T);
 
-  Result := GetLocaleFileName(Lang);
+  Result := GetLocaleFileName(Lang, LCExt);
   if Result <> '' then
     Exit;
 
-  Result := ChangeFileExt(ParamStrUTF8(0), '.mo');
+  Result := ChangeFileExt(ParamStrUTF8(0), LCExt);
   if FileExistsUTF8(Result) then
     exit;
 
@@ -252,42 +262,126 @@ begin
     Content := s;
 end;
 
+{ TDefaultTranslator }
+
+constructor TPOTranslator.Create(POFileName: string);
+begin
+  inherited Create;
+  FPOFile := TPOFile.Create(UTF8ToSys(POFileName));
+end;
+
+destructor TPOTranslator.Destroy;
+begin
+  FPOFile.Free;
+  //If someone will use this class incorrectly, it can be destroyed
+  //before Reader destroying. It is a very bad thing, but in THIS situation
+  //in this case is impossible. May be, in future we can overcome this difficulty
+  inherited Destroy;
+end;
+
+procedure TPOTranslator.TranslateStringProperty(Sender: TObject;
+  const Instance: TPersistent; PropInfo: PPropInfo; var Content: string);
+var
+  s: string;
+  Section: string;
+  Tmp: TPersistent;
+  Component: TComponent;
+begin
+  if not Assigned(FPOFile) then
+    exit;
+  if not Assigned(PropInfo) then
+    exit;
+  if (UpperCase(PropInfo^.PropType^.Name) <> 'TTRANSLATESTRING') then
+    exit;
+  // do not translate at design time
+  // get the component
+  Tmp := Instance;
+  while Assigned(Tmp) and not (Tmp is TComponent) do
+    Tmp := TPersistentAccess(Tmp).GetOwner;
+  if not Assigned(Tmp) then
+    exit;
+  Component := Tmp as TComponent;
+  if (csDesigning in Component.ComponentState) then
+    exit;
+
+  s := FPOFile.Translate(Content, Content);
+  if s = '' then
+  begin
+    if not (Sender is TReader) then
+      Exit;
+    if Component = TReader(Sender).Root then
+      Section := UpperCase(Component.ClassName)
+    else
+    if Component.Owner = TReader(Sender).Root then
+      Section := UpperCase(Component.Owner.ClassName + '.' + Instance.GetNamePath)
+    else
+      Exit;
+    Section := Section + '.' + UpperCase(PropInfo^.Name);
+    s := FPOFile.Translate(Section + #4 + Content, Section + #4 + Content);
+  end;
+  if s <> '' then
+    Content := s;
+end;
+
 var
   Dot1: integer;
   LCLPath: string;
+  LocalTranslator: TAbstractTranslator;
 
 initialization
   //It is safe to place code here as no form is initialized before unit
   //initialization made
-  //We are to search for all
+
+  LocalTranslator := nil;
+  // search first po translation resources
   try
-    lcfn := FindLocaleFileName;
-    {$IFNDEF DisableChecks}
-    DebugLn(lcfn);
-    {$ENDIF}
-  except
-    lcfn := '';
-  end;
+     lcfn := FindLocaleFileName('.po');
+     if lcfn <> '' then
+     begin
+       LCLPath := ExtractFileName(lcfn);
+       Dot1 := pos('.', LCLPath);
+       if Dot1 > 1 then
+       begin
+         Delete(LCLPath, 1, Dot1 - 1);
+         LCLPath := ExtractFilePath(lcfn) + 'lclstrconsts' + LCLPath;
+         TranslateUnitResourceStrings('LCLStrConsts', LCLPath);
+       end;
+       LocalTranslator := TPOTranslator.Create(lcfn);
+     end;
+   except
+     lcfn := '';
+   end;
 
-  if lcfn <> '' then
+  if lcfn='' then
   begin
-    TranslateResourceStrings(UTF8ToSys(lcfn));
-    LCLPath := ExtractFileName(lcfn);
-    Dot1 := pos('.', LCLPath);
-    if Dot1 > 1 then
-    begin
-      Delete(LCLPath, 1, Dot1 - 1);
-      LCLPath := ExtractFilePath(lcfn) + 'lcl' + LCLPath;
-      if FileExistsUTF8(LCLPath) then
-        TranslateResourceStrings(UTF8ToSys(LCLPath));
+    // try now with MO traslation resources
+    try
+      lcfn := FindLocaleFileName('.mo');
+      if lcfn <> '' then
+      begin
+        TranslateResourceStrings(UTF8ToSys(lcfn));
+        LCLPath := ExtractFileName(lcfn);
+        Dot1 := pos('.', LCLPath);
+        if Dot1 > 1 then
+        begin
+          Delete(LCLPath, 1, Dot1 - 1);
+          LCLPath := ExtractFilePath(lcfn) + 'lcl' + LCLPath;
+          if FileExistsUTF8(LCLPath) then
+            TranslateResourceStrings(UTF8ToSys(LCLPath));
+        end;
+        LocalTranslator := TDefaultTranslator.Create(lcfn);
+      end;
+    except
+      lcfn := '';
     end;
-
-    LRSTranslator := TDefaultTranslator.Create(lcfn);
-
   end;
+
+  if LocalTranslator<>nil then
+    LRSTranslator := LocalTranslator;
 
 finalization
-  LRSTranslator.Free;
+  LocalTranslator.Free;
+
 end.
 {
 No revision (not in LOG)
