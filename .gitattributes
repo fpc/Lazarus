@@ -2999,6 +2999,17 @@ examples/lazintfimage/fadein1.lpr svneol=native#text/pascal
 examples/lazintfimage/mainunit1.lfm svneol=native#text/plain
 examples/lazintfimage/mainunit1.lrs svneol=native#text/pascal
 examples/lazintfimage/mainunit1.pas svneol=native#text/pascal
+examples/lazresexploer/ResExploer.ico -text svneol=unset#image/ico
+examples/lazresexploer/ResExploer.lpi svneol=native#text/plain
+examples/lazresexploer/ResExploer.lpr svneol=native#text/plain
+examples/lazresexploer/ResExploer.res -text
+examples/lazresexploer/languages/ResExploer.po svneol=native#text/plain
+examples/lazresexploer/languages/ResExploer.ru.po svneol=native#text/plain
+examples/lazresexploer/reaboutunit.lfm svneol=native#text/plain
+examples/lazresexploer/reaboutunit.pas svneol=native#text/plain
+examples/lazresexploer/reconstsunit.pas svneol=native#text/plain
+examples/lazresexploer/remainunit.lfm svneol=native#text/plain
+examples/lazresexploer/remainunit.pas svneol=native#text/plain
 examples/lclversion/lclversionexample.lpi svneol=native#text/plain
 examples/lclversion/lclversionexample.lpr svneol=native#text/plain
 examples/lclversion/unit1.lfm svneol=native#text/plain

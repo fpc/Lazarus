@@ -1,0 +1,199 @@
+msgid ""
+msgstr "Content-Type: text/plain; charset=UTF-8"
+
+#: reconstsunit.sabout
+msgctxt "reconstsunit.sabout"
+msgid "About..."
+msgstr "О программе..."
+
+#: reconstsunit.sbuilddate
+msgid "Build date : "
+msgstr "Дата сборки : "
+
+#: reconstsunit.scarbonwidgetset
+msgid "Carbon widget set"
+msgstr ""
+
+#: reconstsunit.sexit
+msgctxt "reconstsunit.sexit"
+msgid "Exit"
+msgstr "Закрыть"
+
+#: reconstsunit.sfile
+msgctxt "reconstsunit.sfile"
+msgid "File"
+msgstr "Файл"
+
+#: reconstsunit.sfpcversion
+msgid "FPC version : "
+msgstr "Версия FPC : "
+
+#: reconstsunit.sfpguiwidgetset
+msgid "FpGUI widget set"
+msgstr ""
+
+#: reconstsunit.sgtk2widgetset
+msgid "GTK 2 widget set"
+msgstr ""
+
+#: reconstsunit.sgtkwidgetset
+msgid "GTK widget set"
+msgstr ""
+
+#: reconstsunit.shelp
+msgctxt "reconstsunit.shelp"
+msgid "Help"
+msgstr "Справка"
+
+#: reconstsunit.simage
+msgctxt "reconstsunit.simage"
+msgid "Image"
+msgstr "Изображение"
+
+#: reconstsunit.slclversion
+msgid "LCL Version: "
+msgstr "Версия LCL : "
+
+#: reconstsunit.slicense
+msgid "This program is free software under GNU GPL 2 license, see COPYING file"
+msgstr "Эта свободная программа и распространяется по лицензией GPL 2. (см. файл COPYING)"
+
+#: reconstsunit.sopen
+msgctxt "reconstsunit.sopen"
+msgid "Open..."
+msgstr "Открыть..."
+
+#: reconstsunit.sotherguiwidgetset
+msgid "Other gui"
+msgstr ""
+
+#: reconstsunit.sqtwidgetset
+msgid "QT widget set"
+msgstr ""
+
+#: reconstsunit.sresourceexplorer
+msgid "Resource explorer"
+msgstr "Обзор ресурсов"
+
+#: reconstsunit.ssaveresource
+msgctxt "reconstsunit.ssaveresource"
+msgid "Save resource..."
+msgstr "Сохранить ресурс..."
+
+#: reconstsunit.sstrings
+msgid "Strings"
+msgstr "Строки"
+
+#: reconstsunit.stargetcpu
+msgid "Target CPU : "
+msgstr "Целевой процессор : "
+
+#: reconstsunit.stargetos
+msgid "Target OS : "
+msgstr "Целевая ОС : "
+
+#: reconstsunit.swin32_64widgetset
+msgid "Win32/Win64 widget set"
+msgstr ""
+
+#: reconstsunit.swincewidgetset
+msgid "WinCE widget set"
+msgstr ""
+
+#: TREABOUTFORM.CAPTION
+msgid "reAboutForm"
+msgstr ""
+
+#: TREABOUTFORM.LABEL2.CAPTION
+msgid "by Lagunov A.A. (alexs)"
+msgstr ""
+
+#: TREABOUTFORM.LBLAPPNAME.CAPTION
+msgctxt "TREABOUTFORM.LBLAPPNAME.CAPTION"
+msgid "App name"
+msgstr ""
+
+#: TREABOUTFORM.LBLBUILDDATE.CAPTION
+msgid "Build date :"
+msgstr ""
+
+#: TREABOUTFORM.LBLFPCVERSION.CAPTION
+msgid "FPC Version :"
+msgstr ""
+
+#: TREABOUTFORM.LBLLCLVERSION.CAPTION
+msgid "LCL Version :"
+msgstr ""
+
+#: TREABOUTFORM.LBLLICENSE.CAPTION
+msgctxt "TREABOUTFORM.LBLLICENSE.CAPTION"
+msgid "App name"
+msgstr ""
+
+#: TREABOUTFORM.LBLTARGCPU.CAPTION
+msgid "Target CPU :"
+msgstr ""
+
+#: TREABOUTFORM.LBLTARGETOS.CAPTION
+msgid "Target OS :"
+msgstr ""
+
+#: TREABOUTFORM.LBLWIDGETNAME.CAPTION
+msgid "Widget Name"
+msgstr ""
+
+#: TREMAINFORM.CAPTION
+msgid "reMainForm"
+msgstr ""
+
+#: TREMAINFORM.FILEEXIT.CAPTION
+msgctxt "TREMAINFORM.FILEEXIT.CAPTION"
+msgid "Exit"
+msgstr "Закрыть"
+
+#: TREMAINFORM.FILEOPEN.CAPTION
+msgctxt "TREMAINFORM.FILEOPEN.CAPTION"
+msgid "Open..."
+msgstr "Открыть..."
+
+#: TREMAINFORM.FILESAVE.CAPTION
+msgctxt "TREMAINFORM.FILESAVE.CAPTION"
+msgid "Save resource..."
+msgstr "Сохранить ресурс..."
+
+#: TREMAINFORM.HLPABOUT.CAPTION
+msgctxt "TREMAINFORM.HLPABOUT.CAPTION"
+msgid "About..."
+msgstr "О программе..."
+
+#: TREMAINFORM.MENUITEM1.CAPTION
+msgctxt "TREMAINFORM.MENUITEM1.CAPTION"
+msgid "File"
+msgstr "Файл"
+
+#: TREMAINFORM.MENUITEM2.CAPTION
+msgctxt "TREMAINFORM.MENUITEM2.CAPTION"
+msgid "Help"
+msgstr "Справка"
+
+#: TREMAINFORM.MENUITEM5.CAPTION
+msgid "-"
+msgstr ""
+
+#: TREMAINFORM.TABIMAGE.CAPTION
+msgctxt "TREMAINFORM.TABIMAGE.CAPTION"
+msgid "Image"
+msgstr "Изображение"
+
+#: TREMAINFORM.TABSTRING.CAPTION
+msgid "String"
+msgstr ""
+
+#: TREMAINFORM.TOOLBAR1.CAPTION
+msgid "ToolBar1"
+msgstr ""
+
+#: TREMAINFORM.TOOLBUTTON3.CAPTION
+msgid "ToolButton3"
+msgstr ""
+
