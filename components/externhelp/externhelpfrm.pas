@@ -55,6 +55,10 @@ resourcestring
   ehrsDeleteItem = 'Delete item';
   ehrsBrowseForPath = 'Browse for path';
   ehrsGeneral = 'General';
+  ehrsBrowse = 'Browse';
+  ehrsMacrofy = 'Macrofy';
+  ehrsReplaceCommonDirectoriesWithMacros = 'Replace common directories with '
+    +'macros';
 
 type
 
@@ -130,7 +134,7 @@ type
     function Save: TModalResult; virtual;
     function GetFullFilename: string;
     function IsEqual(Src: TExternHelpOptions): boolean;
-    procedure Assign(Src: TExternHelpOptions);
+    procedure Assign(Src: TExternHelpOptions); reintroduce;
     procedure IncreaseChangeStep;
     property Filename: string read FFilename write SetFilename;
     property ChangeStep: integer read FChangeStep;
@@ -143,8 +147,9 @@ type
 
   TExternHelpGeneralOptsFrame = class(TAbstractIDEOptionsEditor)
     AddSpeedButton: TSpeedButton;
+    FileMacrofyButton: TButton;
     DeleteSpeedButton: TSpeedButton;
-    FileBrowseSpeedButton: TSpeedButton;
+    FileBrowseButton: TButton;
     FilenameEdit: TEdit;
     FilenameLabel: TLabel;
     HelpBitBtn: TBitBtn;
@@ -158,6 +163,7 @@ type
     URLLabel: TLabel;
     procedure AddSpeedButtonClick(Sender: TObject);
     procedure DeleteSpeedButtonClick(Sender: TObject);
+    procedure FileMacrofyButtonClick(Sender: TObject);
     procedure FilenameEditEditingDone(Sender: TObject);
     procedure ItemsTreeViewEdited(Sender: TObject; Node: TTreeNode;
       var S: string);
@@ -176,6 +182,7 @@ type
     function FindTVNode(NodeText: string): TTreeNode;
     function CreateUniqueName(Prefix: string): string;
     procedure FillStoreInCombobox;
+    function Macrofy(Filename: string): string;
   public
     constructor Create(TheOwner: TComponent); override;
     destructor Destroy; override;
@@ -388,7 +395,7 @@ begin
   TVNode:=ItemsTreeView.Selected;
   if (TVNode=nil) or (not (TObject(TVNode.Data) is TExternHelpItem)) then exit;
   Item:=TExternHelpItem(TVNode.Data);
-  s:=Trim(s);
+  s:=TrimFilename(s);
   if s<>Item.Filename then begin
     Filename:=s;
     DoDirSeparators(Filename);
@@ -449,6 +456,11 @@ begin
   SelTVNode.Free;
   // delete in Options
   Item.Free;
+end;
+
+procedure TExternHelpGeneralOptsFrame.FileMacrofyButtonClick(Sender: TObject);
+begin
+
 end;
 
 procedure TExternHelpGeneralOptsFrame.ItemsTreeViewEditing(Sender: TObject;
@@ -597,6 +609,36 @@ begin
   end;
 end;
 
+function TExternHelpGeneralOptsFrame.Macrofy(Filename: string): string;
+
+  procedure CheckPath(PathMacro: string; var s: string);
+  var
+    Value: String;
+  begin
+    Value:=PathMacro;
+    if (not IDEMacros.SubstituteMacros(Value)) or (Value='')
+    or (Value[1]='$') then
+      exit;
+    Value:=ChompPathDelim(Value);
+    if CompareFilenames(s,Value)=0 then begin
+      // whole filename is the macro path
+      s:=PathMacro;
+      exit;
+    end;
+    Value:=AppendPathDelim(Value);
+    if CompareFilenames(copy(s,1,length(Value)),Value)=0 then begin
+      // filename is a file in the macro path
+      s:=Value+copy(s,length(Value)+1,length(s));
+      exit;
+    end;
+  end;
+
+begin
+  Result:=Filename;
+  CheckPath('$(FPCSrcDir)',Result);
+  CheckPath('$(LazarusDir)',Result);
+end;
+
 constructor TExternHelpGeneralOptsFrame.Create(TheOwner: TComponent);
 begin
   inherited Create(TheOwner);
@@ -635,7 +677,10 @@ begin
   HelpBitBtn.Caption:=ehrsHelp;
   AddSpeedButton.Hint:=ehrsAddNewItem;
   DeleteSpeedButton.Hint:=ehrsDeleteItem;
-  FileBrowseSpeedButton.Hint:=ehrsBrowseForPath;
+  FileBrowseButton.Caption:=ehrsBrowse;
+  FileBrowseButton.Hint:=ehrsBrowseForPath;
+  FileMacrofyButton.Caption:=ehrsMacrofy;
+  FileMacrofyButton.Hint:=ehrsReplaceCommonDirectoriesWithMacros;
 end;
 
 class function TExternHelpGeneralOptsFrame.SupportedOptionsClass: TAbstractIDEOptionsClass;
