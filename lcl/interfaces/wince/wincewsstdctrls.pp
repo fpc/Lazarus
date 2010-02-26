@@ -386,12 +386,10 @@ begin
   case Msg of
     WM_ERASEBKGND, WM_NCPAINT, WM_PAINT, WM_CTLCOLORMSGBOX..WM_CTLCOLORSTATIC:
     begin
-    Result := CallDefaultWindowProc(Window, Msg, WParam, LParam);
-//      Result := WindowProc(Window, Msg, WParam, LParam);
+      Result := WindowProc(Window, Msg, WParam, LParam);
     end;
   else
-      Result := WindowProc(Window, Msg, WParam, LParam);
-//    Result := CallDefaultWindowProc(Window, Msg, WParam, LParam);
+    Result := CallDefaultWindowProc(Window, Msg, WParam, LParam);
   end;
 end;
 
