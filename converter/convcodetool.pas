@@ -24,10 +24,11 @@ type
     fCodeTool: TEventsCodeTool;
     fCode: TCodeBuffer;
     fSrcCache: TSourceChangeCache;
-    fScanner: TLinkScanner;
     fAsk: Boolean;
+    fHasFormFile: boolean;
     fFormFileRename: boolean;
     fLowerCaseRes: boolean;
+    fKeepDelphiCompat: boolean;
     // List of units to remove.
     fUnitsToRemove: TStringList;
     // Units to rename. Map of unit name -> real unit name.
@@ -36,6 +37,7 @@ type
     fUnitsToAdd: TStringList;
     // List of units to be commented.
     fUnitsToComment: TStringList;
+    function AddDelphiAndLCLSections: boolean;
     function AddModeDelphiDirective: boolean;
     function RenameResourceDirectives: boolean;
     function RemoveUnits: boolean;
@@ -50,7 +52,9 @@ type
   public
     property Ask: Boolean read fAsk write fAsk;
     property FormFileRename: boolean read fFormFileRename write fFormFileRename;
+    property HasFormFile: boolean read fHasFormFile write fHasFormFile;
     property LowerCaseRes: boolean read fLowerCaseRes write fLowerCaseRes;
+    property KeepDelphiCompat: boolean read fKeepDelphiCompat write fKeepDelphiCompat;
     property UnitsToRemove: TStringList read fUnitsToRemove write fUnitsToRemove;
     property UnitsToRename: TStringToStringTree read fUnitsToRename write fUnitsToRename;
     property UnitsToAdd: TStringList read fUnitsToAdd write fUnitsToAdd;
@@ -68,16 +72,15 @@ begin
   fAsk:=true;
   fLowerCaseRes:=false;
   fFormFileRename:=false;
+  fKeepDelphiCompat:=false;
   fUnitsToComment:=nil;
   fUnitsToRename:=nil;
   // Initialize codetools. (Copied from TCodeToolManager.)
-  if not CodeToolBoss.InitCurCodeTool(Code) then exit;
+  if not CodeToolBoss.InitCurCodeTool(fCode) then exit;
   try
     fCodeTool:=CodeToolBoss.CurCodeTool;
     fSrcCache:=CodeToolBoss.SourceChangeCache;
-//    if fSrcCache=nil then exit;
-    fScanner:=fCodeTool.Scanner;
-    fSrcCache.MainScanner:=fScanner;
+    fSrcCache.MainScanner:=fCodeTool.Scanner;
   except
     on e: Exception do
       CodeToolBoss.HandleException(e);
@@ -128,6 +131,8 @@ begin
     finally
       fSrcCache.EndUpdate;
     end;
+    // This adds units to add, remove and rename if Delphi compat is not required.
+    if not AddDelphiAndLCLSections then exit;
     if not RemoveUnits then exit;
     if not RenameUnits then exit;
     if not AddUnits then exit;
@@ -143,10 +148,73 @@ begin
   end;
 end;
 
+function TConvDelphiCodeTool.AddDelphiAndLCLSections: boolean;
+var
+  WinOnlyUnits: TStringList;  // Windows and LCL specific units.
+  LclOnlyUnits: TStringList;
+  UsesNode: TCodeTreeNode;
+  Junk: TAtomPosition;
+  IsWinUnit: Boolean;
+  s, nl: string;
+  InsPos, i: Integer;
+begin
+  Result:=false;
+  WinOnlyUnits:=TStringList.Create;
+  LclOnlyUnits:=TStringList.Create;
+  try
+  fCodeTool.BuildTree(true);
+  fSrcCache.MainScanner:=fCodeTool.Scanner;
+  UsesNode:=fCodeTool.FindMainUsesSection;
+  if UsesNode<>nil then begin
+    if fKeepDelphiCompat then begin
+      fCodeTool.MoveCursorToUsesStart(UsesNode);
+      InsPos:=fCodeTool.CurPos.StartPos;
+      // Make separate sections for LCL and Windows units.
+      // MakePasX adds for LCL also: LMessages, LclType, Interfaces
+      if fCodeTool.FindUnitInUsesSection(UsesNode,'WINDOWS',Junk,Junk) then begin
+        WinOnlyUnits.Append('Windows');
+        LclOnlyUnits.Append('LCLIntf');
+        fCodeTool.RemoveUnitFromUsesSection(UsesNode, 'WINDOWS', fSrcCache);
+      end;
+      if fCodeTool.FindUnitInUsesSection(UsesNode,'VARIANTS',Junk,Junk) then
+        WinOnlyUnits.Append('Variants');
+      if fHasFormFile then
+        LclOnlyUnits.Append('LResources');
+      if (LclOnlyUnits.Count>0) or (WinOnlyUnits.Count>0) then begin
+        // Add Windows and LCL sections for output.
+        nl:=fSrcCache.BeautifyCodeOptions.LineEnd;
+        s:='{$IFDEF LCL}'+nl+'  ';
+        for i:=0 to LclOnlyUnits.Count-1 do
+          s:=s+LclOnlyUnits[i]+', ';
+        s:=s+nl+'{$ELSE}'+nl+'  ';
+        for i:=0 to WinOnlyUnits.Count-1 do
+          s:=s+WinOnlyUnits[i]+', ';
+        s:=s+nl+'{$ENDIF}';
+        // Now add the lines using codetools.
+        if not fSrcCache.Replace(gtEmptyLine,gtNewLine,InsPos,InsPos,s) then exit;
+      end;
+    end
+    else begin
+      // One way conversion: just add, replace and remove units.
+      if IsWinUnit then
+        fUnitsToRename['WINDOWS']:='LCLIntf';
+      if fHasFormFile then
+        fUnitsToAdd.Append('LResources');
+      fUnitsToRemove.Append('VARIANTS');
+    end;
+  end;
+  Result:=true;
+  finally
+    LclOnlyUnits.Free;
+    WinOnlyUnits.Free;
+  end;
+end;
+
 function TConvDelphiCodeTool.AddModeDelphiDirective: boolean;
 var
   ModeDirectivePos: integer;
   InsertPos: Integer;
+  nl: String;
 begin
   Result:=false;
   with fCodeTool do begin
@@ -159,7 +227,13 @@ begin
       ReadNextAtom; // name
       ReadNextAtom; // semicolon
       InsertPos:=CurPos.EndPos;
-      fSrcCache.Replace(gtEmptyLine,gtEmptyLine,InsertPos,InsertPos,'{$MODE Delphi}');
+      nl:=fSrcCache.BeautifyCodeOptions.LineEnd;
+      if fKeepDelphiCompat then
+        fSrcCache.Replace(gtEmptyLine,gtEmptyLine,InsertPos,InsertPos,
+          '{$IFDEF LCL}'+nl+'  {$MODE Delphi}'+nl+'{$ENDIF}')
+      else
+        fSrcCache.Replace(gtEmptyLine,gtEmptyLine,InsertPos,InsertPos,
+          '{$MODE Delphi}');
     end;
     // changing mode requires rescan
     BuildTree(false);
@@ -181,7 +255,7 @@ begin
   with fCodeTool do
     repeat
       ACleanPos:=FindNextCompilerDirectiveWithName(Src,ACleanPos,'R',
-        fScanner.NestedComments,ParamPos);
+        fCodeTool.Scanner.NestedComments,ParamPos);
       if (ACleanPos<1) or (ACleanPos>SrcLen) or (ParamPos>SrcLen-6) then break;
       NewKey:='';
       if (Src[ACleanPos]='{') and
@@ -207,7 +281,7 @@ begin
         if NewKey<>'' then
           if not fSrcCache.Replace(gtNone,gtNone,ParamPos+2,ParamPos+5,NewKey) then exit;
       end;
-      ACleanPos:=FindCommentEnd(Src,ACleanPos,fScanner.NestedComments);
+      ACleanPos:=FindCommentEnd(Src,ACleanPos,fCodeTool.Scanner.NestedComments);
     until false;
   Result:=true;
 end;

@@ -608,16 +608,12 @@ begin
     Result:=FixMissingUnits;
     if Result<>mrOk then exit;
 
-    // Some units to remove, rename and add.
-    fUnitsToRename['WINDOWS']:='LCLIntf';
-    if DfmFilename<>'' then
-      fUnitsToAdd.Append('LResources');
-    fUnitsToRemove.Append('VARIANTS');
-
     // Do the actual code conversion.
     ConvTool.Ask:=Assigned(fOwnerConverter);
     ConvTool.LowerCaseRes:=FileExistsUTF8(ChangeFileExt(fLazUnitFilename, '.res'));
+    ConvTool.HasFormFile:=DfmFilename<>'';
     ConvTool.FormFileRename:=fSettings.FormFileRename and (DfmFilename<>'');
+    ConvTool.KeepDelphiCompat:=fSettings.KeepDelphiCompatible;
     ConvTool.UnitsToRemove:=fUnitsToRemove;
     ConvTool.UnitsToRename:=fUnitsToRename;
     ConvTool.UnitsToAdd:=fUnitsToAdd;
