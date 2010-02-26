@@ -852,20 +852,25 @@ var
   ip: PInteger;
   len: LongInt;
 begin
+  Result := false;
   Clear;
-  Result := AClipboard.GetFormat(ClipboardFormatId, FMemStream);
+  FTextP := nil;
   // Check for embedded text
-  FTextP := GetTagPointer(synClipTagText);
-  if FTextP <> nil then begin
-    len := GetTagLen(synClipTagText);
-    if len > 0 then
-      (FTextP + len - 1)^ := #0
-    else
-      FTextP := nil;
+  if AClipboard.HasFormat(ClipboardFormatId) then begin
+    Result := AClipboard.GetFormat(ClipboardFormatId, FMemStream);
+    FTextP := GetTagPointer(synClipTagText);
+    if FTextP <> nil then begin
+      len := GetTagLen(synClipTagText);
+      if len > 0 then
+        (FTextP + len - 1)^ := #0
+      else
+        FTextP := nil;
+    end;
   end;
   // Normal text
   if (FTextP = nil) and AClipboard.HasFormat(CF_TEXT) then begin
-    FText:= AClipboard.AsText;
+    Result := true;
+    FText := AClipboard.AsText;
     if FText <> '' then begin
       FTextP := @FText[1];
       ip := GetTagPointer(synClipTagExtText);
