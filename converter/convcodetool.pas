@@ -154,7 +154,7 @@ var
   LclOnlyUnits: TStringList;
   UsesNode: TCodeTreeNode;
   Junk: TAtomPosition;
-  IsWinUnit: Boolean;
+  IsWinUnit, IsVariantUnit: Boolean;
   s, nl: string;
   InsPos, i: Integer;
 begin
@@ -166,17 +166,20 @@ begin
   fSrcCache.MainScanner:=fCodeTool.Scanner;
   UsesNode:=fCodeTool.FindMainUsesSection;
   if UsesNode<>nil then begin
+    fCodeTool.MoveCursorToUsesStart(UsesNode);
+    InsPos:=fCodeTool.CurPos.StartPos;
+    IsWinUnit:=fCodeTool.FindUnitInUsesSection(UsesNode,'WINDOWS',Junk,Junk);
+    IsVariantUnit:=fCodeTool.FindUnitInUsesSection(UsesNode,'VARIANTS',Junk,Junk);
     if fKeepDelphiCompat then begin
-      fCodeTool.MoveCursorToUsesStart(UsesNode);
-      InsPos:=fCodeTool.CurPos.StartPos;
       // Make separate sections for LCL and Windows units.
-      // MakePasX adds for LCL also: LMessages, LclType, Interfaces
-      if fCodeTool.FindUnitInUsesSection(UsesNode,'WINDOWS',Junk,Junk) then begin
+      if IsWinUnit then begin
         WinOnlyUnits.Append('Windows');
         LclOnlyUnits.Append('LCLIntf');
+        LclOnlyUnits.Append('LCLType');
+        LclOnlyUnits.Append('LMessages');
         fCodeTool.RemoveUnitFromUsesSection(UsesNode, 'WINDOWS', fSrcCache);
       end;
-      if fCodeTool.FindUnitInUsesSection(UsesNode,'VARIANTS',Junk,Junk) then
+      if IsVariantUnit then
         WinOnlyUnits.Append('Variants');
       if fHasFormFile then
         LclOnlyUnits.Append('LResources');
@@ -196,11 +199,16 @@ begin
     end
     else begin
       // One way conversion: just add, replace and remove units.
-      if IsWinUnit then
-        fUnitsToRename['WINDOWS']:='LCLIntf';
+      if IsWinUnit then begin
+        fUnitsToRemove.Append('WINDOWS');
+        fUnitsToAdd.Append('LCLIntf');
+        fUnitsToAdd.Append('LCLType');
+        fUnitsToAdd.Append('LMessages');
+      end;
+      if IsVariantUnit then
+        fUnitsToRemove.Append('VARIANTS');
       if fHasFormFile then
         fUnitsToAdd.Append('LResources');
-      fUnitsToRemove.Append('VARIANTS');
     end;
   end;
   Result:=true;
