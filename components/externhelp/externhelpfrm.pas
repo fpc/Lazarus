@@ -167,16 +167,24 @@ type
     procedure FileBrowseButtonClick(Sender: TObject);
     procedure FileMacrofyButtonClick(Sender: TObject);
     procedure FilenameEditEditingDone(Sender: TObject);
+    procedure ItemsTreeViewDragOver(Sender, Source: TObject; X, Y: Integer;
+      State: TDragState; var Accept: Boolean);
     procedure ItemsTreeViewEdited(Sender: TObject; Node: TTreeNode;
       var S: string);
     procedure ItemsTreeViewEditing(Sender: TObject; Node: TTreeNode;
       var AllowEdit: Boolean);
+    procedure ItemsTreeViewEndDrag(Sender, Target: TObject; X, Y: Integer);
+    procedure ItemsTreeViewMouseMove(Sender: TObject; Shift: TShiftState; X,
+      Y: Integer);
     procedure ItemsTreeViewSelectionChanged(Sender: TObject);
+    procedure ItemsTreeViewStartDrag(Sender: TObject;
+      var DragObject: TDragObject);
     procedure NameEditChange(Sender: TObject);
     procedure NameEditEditingDone(Sender: TObject);
     procedure URLEditEditingDone(Sender: TObject);
   private
     FOptions: TExternHelpOptions;
+    FDragNode: TTreeNode;
     procedure FillItemsTreeView;
     procedure NameChanged(TVNode: TTreeNode; var NewName: string;
       UpdateTree, UpdateEdit: boolean);
@@ -417,6 +425,25 @@ begin
   end;
 end;
 
+procedure TExternHelpGeneralOptsFrame.ItemsTreeViewDragOver(Sender,
+  Source: TObject; X, Y: Integer; State: TDragState; var Accept: Boolean);
+var
+  TVNode: TTreeNode;
+  InsertType: TTreeViewInsertMarkType;
+begin
+  if (Source<>ItemsTreeView) or (FDragNode=nil) then begin
+    Accept:=false;
+    exit;
+  end;
+  ItemsTreeView.GetInsertMarkAt(X,Y,TVNode,InsertType);
+  if (TVNode<>nil) then
+    if (TVNode=FDragNode) or TVNode.HasAsParent(FDragNode)
+    or FDragNode.HasAsParent(TVNode) then begin
+      Accept:=false;
+      exit;
+    end;
+end;
+
 procedure TExternHelpGeneralOptsFrame.AddSpeedButtonClick(Sender: TObject);
 var
   SelTVNode: TTreeNode;
@@ -499,10 +526,51 @@ begin
 
 end;
 
+procedure TExternHelpGeneralOptsFrame.ItemsTreeViewEndDrag(Sender,
+  Target: TObject; X, Y: Integer);
+begin
+  FDragNode:=nil;
+  ItemsTreeView.Options:=ItemsTreeView.Options-[tvoAutoInsertMark];
+end;
+
+procedure TExternHelpGeneralOptsFrame.ItemsTreeViewMouseMove(Sender: TObject;
+  Shift: TShiftState; X, Y: Integer);
+var
+  TVNode: TTreeNode;
+begin
+  if not (ssLeft in Shift) then begin
+    // no left mouse button => stop showing insert mark
+    ItemsTreeView.Options:=ItemsTreeView.Options-[tvoAutoInsertMark];
+    FDragNode:=nil;
+    DebugLn(['TExternHelpGeneralOptsFrame.ItemsTreeViewMouseMove no left']);
+  end else if (not ItemsTreeView.Dragging) then begin
+    // left mouse button is presses and not yet dragging => start dragging
+    TVNode:=ItemsTreeView.GetNodeAt(X,Y);
+    if (TVNode<>nil) then begin
+      // a node to drag => start dragging
+      FDragNode:=TVNode;
+      ItemsTreeView.BeginDrag(true);
+      ItemsTreeView.Options:=ItemsTreeView.Options-[tvoAutoInsertMark];
+      DebugLn(['TExternHelpGeneralOptsFrame.ItemsTreeViewMouseMove START']);
+    end else begin
+      // no node to drag
+      ItemsTreeView.Options:=ItemsTreeView.Options-[tvoAutoInsertMark];
+      FDragNode:=nil;
+      DebugLn(['TExternHelpGeneralOptsFrame.ItemsTreeViewMouseMove no node']);
+    end;
+  end;
+end;
+
 procedure TExternHelpGeneralOptsFrame.ItemsTreeViewSelectionChanged(
   Sender: TObject);
 begin
   SelectionChanged;
+end;
+
+procedure TExternHelpGeneralOptsFrame.ItemsTreeViewStartDrag(Sender: TObject;
+  var DragObject: TDragObject);
+begin
+  ItemsTreeView.Options:=ItemsTreeView.Options+[tvoAutoInsertMark];
 end;
 
 procedure TExternHelpGeneralOptsFrame.NameEditChange(Sender: TObject);

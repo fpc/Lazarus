@@ -23,9 +23,13 @@ inherited ExternHelpGeneralOptsFrame: TExternHelpGeneralOptsFrame
     ParentShowHint = False
     ShowHint = True
     TabOrder = 0
+    OnDragOver = ItemsTreeViewDragOver
     OnEdited = ItemsTreeViewEdited
     OnEditing = ItemsTreeViewEditing
+    OnEndDrag = ItemsTreeViewEndDrag
+    OnMouseMove = ItemsTreeViewMouseMove
     OnSelectionChanged = ItemsTreeViewSelectionChanged
+    OnStartDrag = ItemsTreeViewStartDrag
   end
   object AddSpeedButton: TSpeedButton[1]
     AnchorSideLeft.Control = Owner
