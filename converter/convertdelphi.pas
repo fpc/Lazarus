@@ -41,7 +41,7 @@ uses
   // IDEIntf
   ComponentReg, IDEMsgIntf, MainIntf, LazIDEIntf, PackageIntf, ProjectIntf,
   // IDE
-  IDEProcs, MissingUnitsUnit, Project, DialogProcs, CheckLFMDlg,
+  IDEProcs, MissingUnits, Project, DialogProcs, CheckLFMDlg,
   EditorOptions, CompilerOptions, PackageDefs, PackageSystem,
   PackageEditor, BasePkgManager, LazarusIDEStrConsts,
   ConvertSettings, ConvCodeTool;
@@ -613,7 +613,7 @@ begin
     ConvTool.LowerCaseRes:=FileExistsUTF8(ChangeFileExt(fLazUnitFilename, '.res'));
     ConvTool.HasFormFile:=DfmFilename<>'';
     ConvTool.FormFileRename:=fSettings.FormFileRename and (DfmFilename<>'');
-    ConvTool.KeepDelphiCompat:=fSettings.KeepDelphiCompatible;
+    ConvTool.Target:=fSettings.Target;
     ConvTool.UnitsToRemove:=fUnitsToRemove;
     ConvTool.UnitsToRename:=fUnitsToRename;
     ConvTool.UnitsToAdd:=fUnitsToAdd;

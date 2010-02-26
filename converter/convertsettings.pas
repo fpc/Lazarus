@@ -30,10 +30,12 @@ unit ConvertSettings;
 interface
 
 uses
-  Classes, SysUtils, FileUtil, LResources, Forms, Controls, Graphics, Dialogs,
+  Classes, SysUtils, FileUtil, Forms, Controls, Graphics, Dialogs,
   StdCtrls, EditBtn, Buttons, ExtCtrls, DialogProcs;
 
 type
+
+  TConvertTarget = (ctLazarus, ctLazarusWin, ctLazarusAndDelphi);
 
   { TConvertSettings }
 
@@ -45,7 +47,7 @@ type
     fMainPath: String;
     // Actual user settings.
     fBackupFiles: boolean;
-    fKeepDelphiCompatible: boolean;
+    fTarget: TConvertTarget;
     fFormFileRename: boolean;
     fAutoMissingProperties: boolean;
     fAutoMissingComponents: boolean;
@@ -78,7 +80,7 @@ type
     property BackupPath: String read GetBackupPath;
 
     property BackupFiles: boolean read fBackupFiles;
-    property KeepDelphiCompatible: boolean read fKeepDelphiCompatible;
+    property Target: TConvertTarget read fTarget;
     property FormFileRename: boolean read fFormFileRename;
     property AutoMissingProperties: boolean read fAutoMissingProperties;
     property AutoMissingComponents: boolean read fAutoMissingComponents;
@@ -91,6 +93,7 @@ type
     BackupCheckBox: TCheckBox;
     FormFileRenameCheckBox: TCheckBox;
     MainPathEdit: TLabeledEdit;
+    TargetRadioGroup: TRadioGroup;
     ReplacementCompsButton: TBitBtn;
     btnCancel: TBitBtn;
     btnOK: TBitBtn;
@@ -147,7 +150,7 @@ begin
     // ToDo: Load from XML.
     // Settings --> UI.
     BackupCheckBox.Checked          :=fBackupFiles;
-    DelphiCompatibleCheckBox.Checked:=fKeepDelphiCompatible;
+    TargetRadioGroup.ItemIndex      :=integer(fTarget);
     FormFileRenameCheckBox.Checked  :=fFormFileRename;
     MissingPropertyCheckBox.Checked :=fAutoMissingProperties;
     MissingComponentCheckBox.Checked:=fAutoMissingComponents;
@@ -156,7 +159,7 @@ begin
     if Result=mrOK then begin
       // UI --> Settings.
       fBackupFiles          :=BackupCheckBox.Checked;
-      fKeepDelphiCompatible :=DelphiCompatibleCheckBox.Checked;
+      fTarget               :=TConvertTarget(TargetRadioGroup.ItemIndex);
       fFormFileRename       :=FormFileRenameCheckBox.Checked;
       fAutoMissingProperties:=MissingPropertyCheckBox.Checked;
       fAutoMissingComponents:=MissingComponentCheckBox.Checked;

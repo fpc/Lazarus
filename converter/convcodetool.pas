@@ -13,7 +13,8 @@ uses
   CodeToolManager, StdCodeTools, CodeTree, CodeAtom,
   FindDeclarationTool, PascalReaderTool, PascalParserTool,
   CodeBeautifier, ExprEval, KeywordFuncLists, BasicCodeTools, LinkScanner,
-  CodeCache, SourceChanger, CustomCodeTool, CodeToolsStructs, EventCodeTool;
+  CodeCache, SourceChanger, CustomCodeTool, CodeToolsStructs, EventCodeTool,
+  ConvertSettings;
 
 type
 
@@ -28,7 +29,7 @@ type
     fHasFormFile: boolean;
     fFormFileRename: boolean;
     fLowerCaseRes: boolean;
-    fKeepDelphiCompat: boolean;
+    fTarget: TConvertTarget;
     // List of units to remove.
     fUnitsToRemove: TStringList;
     // Units to rename. Map of unit name -> real unit name.
@@ -54,7 +55,7 @@ type
     property FormFileRename: boolean read fFormFileRename write fFormFileRename;
     property HasFormFile: boolean read fHasFormFile write fHasFormFile;
     property LowerCaseRes: boolean read fLowerCaseRes write fLowerCaseRes;
-    property KeepDelphiCompat: boolean read fKeepDelphiCompat write fKeepDelphiCompat;
+    property Target: TConvertTarget read fTarget write fTarget;
     property UnitsToRemove: TStringList read fUnitsToRemove write fUnitsToRemove;
     property UnitsToRename: TStringToStringTree read fUnitsToRename write fUnitsToRename;
     property UnitsToAdd: TStringList read fUnitsToAdd write fUnitsToAdd;
@@ -72,7 +73,7 @@ begin
   fAsk:=true;
   fLowerCaseRes:=false;
   fFormFileRename:=false;
-  fKeepDelphiCompat:=false;
+  fTarget:=ctLazarus;
   fUnitsToComment:=nil;
   fUnitsToRename:=nil;
   // Initialize codetools. (Copied from TCodeToolManager.)
@@ -113,11 +114,8 @@ end;
 
 function TConvDelphiCodeTool.Convert: TModalResult;
 // add {$mode delphi} directive
-// remove windows unit and add LResources, LCLIntf
 // remove {$R *.dfm} or {$R *.xfm} directive
 // Change {$R *.RES} to {$R *.res} if needed
-// add initialization
-// add {$i unit.lrs} directive
 // TODO: fix delphi ambiguousities like incomplete proc implementation headers
 begin
   Result:=mrCancel;
@@ -149,6 +147,7 @@ begin
 end;
 
 function TConvDelphiCodeTool.AddDelphiAndLCLSections: boolean;
+// add, remove and rename units for desired target.
 var
   WinOnlyUnits: TStringList;  // Windows and LCL specific units.
   LclOnlyUnits: TStringList;
@@ -170,45 +169,46 @@ begin
     InsPos:=fCodeTool.CurPos.StartPos;
     IsWinUnit:=fCodeTool.FindUnitInUsesSection(UsesNode,'WINDOWS',Junk,Junk);
     IsVariantUnit:=fCodeTool.FindUnitInUsesSection(UsesNode,'VARIANTS',Junk,Junk);
-    if fKeepDelphiCompat then begin
-      // Make separate sections for LCL and Windows units.
-      if IsWinUnit then begin
-        WinOnlyUnits.Append('Windows');
-        LclOnlyUnits.Append('LCLIntf');
-        LclOnlyUnits.Append('LCLType');
-        LclOnlyUnits.Append('LMessages');
-        fCodeTool.RemoveUnitFromUsesSection(UsesNode, 'WINDOWS', fSrcCache);
-      end;
-      if IsVariantUnit then
-        WinOnlyUnits.Append('Variants');
-      if fHasFormFile then
-        LclOnlyUnits.Append('LResources');
-      if (LclOnlyUnits.Count>0) or (WinOnlyUnits.Count>0) then begin
-        // Add Windows and LCL sections for output.
-        nl:=fSrcCache.BeautifyCodeOptions.LineEnd;
-        s:='{$IFDEF LCL}'+nl+'  ';
-        for i:=0 to LclOnlyUnits.Count-1 do
-          s:=s+LclOnlyUnits[i]+', ';
-        s:=s+nl+'{$ELSE}'+nl+'  ';
-        for i:=0 to WinOnlyUnits.Count-1 do
-          s:=s+WinOnlyUnits[i]+', ';
-        s:=s+nl+'{$ENDIF}';
-        // Now add the lines using codetools.
-        if not fSrcCache.Replace(gtEmptyLine,gtNewLine,InsPos,InsPos,s) then exit;
-      end;
-    end
-    else begin
-      // One way conversion: just add, replace and remove units.
-      if IsWinUnit then begin
-        fUnitsToRemove.Append('WINDOWS');
-        fUnitsToAdd.Append('LCLIntf');
-        fUnitsToAdd.Append('LCLType');
-        fUnitsToAdd.Append('LMessages');
-      end;
-      if IsVariantUnit then
-        fUnitsToRemove.Append('VARIANTS');
-      if fHasFormFile then
-        fUnitsToAdd.Append('LResources');
+    case fTarget of
+      ctLazarus: begin
+        // One way conversion: just add, replace and remove units.
+        if IsWinUnit then begin
+          fUnitsToRemove.Append('WINDOWS');
+          fUnitsToAdd.Append('LCLIntf');
+          fUnitsToAdd.Append('LCLType');
+          fUnitsToAdd.Append('LMessages');
+        end;
+        if IsVariantUnit then
+          fUnitsToRemove.Append('VARIANTS');
+       end;
+      ctLazarusWin: begin
+        // Don't do anything. Delphi units work for Lazarus under Windows.
+       end;
+      ctLazarusAndDelphi: begin
+        // Make separate sections for LCL and Windows units.
+        if IsWinUnit then begin
+          WinOnlyUnits.Append('Windows');
+          LclOnlyUnits.Append('LCLIntf');
+          LclOnlyUnits.Append('LCLType');
+          LclOnlyUnits.Append('LMessages');
+          fCodeTool.RemoveUnitFromUsesSection(UsesNode, 'WINDOWS', fSrcCache);
+        end;
+        if IsVariantUnit then
+          WinOnlyUnits.Append('Variants');
+        if (LclOnlyUnits.Count>0) or (WinOnlyUnits.Count>0) then begin
+          // Add Windows and LCL sections for output.
+          nl:=fSrcCache.BeautifyCodeOptions.LineEnd;
+          s:='{$IFDEF LCL}'+nl+'  ';
+          for i:=0 to LclOnlyUnits.Count-1 do
+            s:=s+LclOnlyUnits[i]+', ';
+          s:=s+nl+'{$ELSE}'+nl+'  ';
+          for i:=0 to WinOnlyUnits.Count-1 do
+            s:=s+WinOnlyUnits[i]+', ';
+          s:=s+nl+'{$ENDIF}';
+          // Now add the lines using codetools.
+          if not fSrcCache.Replace(gtEmptyLine,gtNewLine,InsPos,InsPos,s) then exit;
+        end;
+       end;
     end;
   end;
   Result:=true;
@@ -236,7 +236,7 @@ begin
       ReadNextAtom; // semicolon
       InsertPos:=CurPos.EndPos;
       nl:=fSrcCache.BeautifyCodeOptions.LineEnd;
-      if fKeepDelphiCompat then
+      if fTarget=ctLazarusAndDelphi then
         fSrcCache.Replace(gtEmptyLine,gtEmptyLine,InsertPos,InsertPos,
           '{$IFDEF LCL}'+nl+'  {$MODE Delphi}'+nl+'{$ENDIF}')
       else
