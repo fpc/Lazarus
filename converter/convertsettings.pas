@@ -98,7 +98,6 @@ type
     btnCancel: TBitBtn;
     btnOK: TBitBtn;
     BtnPanel: TPanel;
-    DelphiCompatibleCheckBox: TCheckBox;
     HelpButton: TBitBtn;
     SettingsGroupBox: TGroupBox;
     MissingStuffGroupBox: TGroupBox;
@@ -106,10 +105,10 @@ type
     MissingComponentCheckBox: TCheckBox;
     MissingPropertyCheckBox: TCheckBox;
     procedure btnOKClick(Sender: TObject);
-    procedure DelphiCompatibleCheckBoxChange(Sender: TObject);
     procedure ReplacementCompsButtonClick(Sender: TObject);
     procedure FormCreate(Sender: TObject);
     procedure FormDestroy(Sender: TObject);
+    procedure TargetRadioGroupClick(Sender: TObject);
   private
   public
 
@@ -270,25 +269,25 @@ begin
   ;
 end;
 
-procedure TConvertSettingsForm.btnOKClick(Sender: TObject);
-begin
-  ModalResult:=mrOk;
-end;
-
-procedure TConvertSettingsForm.DelphiCompatibleCheckBoxChange(Sender: TObject);
+procedure TConvertSettingsForm.TargetRadioGroupClick(Sender: TObject);
 // Delphi compatibility doesn't allow renaming the form file.
 var
-  b: Boolean;
+  Trg: TConvertTarget;
 begin
-  b:=(Sender as TCheckBox).Checked;
-  if b then
+  Trg:=TConvertTarget((Sender as TRadioGroup).ItemIndex);
+  if Trg=ctLazarusAndDelphi then
     FormFileRenameCheckBox.Checked:=false;
-  FormFileRenameCheckBox.Enabled:=not b;
+  FormFileRenameCheckBox.Enabled:=Trg<>ctLazarusAndDelphi;
 end;
 
 procedure TConvertSettingsForm.ReplacementCompsButtonClick(Sender: TObject);
 begin
   ShowMessage('Sorry, not implemented yet!');
+end;
+
+procedure TConvertSettingsForm.btnOKClick(Sender: TObject);
+begin
+  ModalResult:=mrOk;
 end;
 
 

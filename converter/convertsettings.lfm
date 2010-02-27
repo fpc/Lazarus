@@ -1,5 +1,5 @@
 object ConvertSettingsForm: TConvertSettingsForm
-  Left = 209
+  Left = 283
   Height = 400
   Top = 111
   Width = 581
@@ -73,37 +73,24 @@ object ConvertSettingsForm: TConvertSettingsForm
     object BackupCheckBox: TCheckBox
       Left = 291
       Height = 23
-      Top = 11
+      Top = 27
       Width = 189
       Caption = 'Make backup of changed files'
       Checked = True
       State = cbChecked
       TabOrder = 0
     end
-    object DelphiCompatibleCheckBox: TCheckBox
-      AnchorSideTop.Control = BackupCheckBox
-      Left = 347
-      Height = 23
-      Top = 107
-      Width = 215
-      Anchors = [akLeft]
-      BorderSpacing.Top = 29
-      Caption = 'Try to keep files Delphi compatible'
-      OnChange = DelphiCompatibleCheckBoxChange
-      TabOrder = 1
-      Visible = False
-    end
     object FormFileRenameCheckBox: TCheckBox
       AnchorSideTop.Control = BackupCheckBox
       Left = 291
       Height = 23
-      Top = 40
+      Top = 56
       Width = 185
       BorderSpacing.Top = 29
       Caption = 'Rename form file .dfm to .lfm'
       Checked = True
       State = cbChecked
-      TabOrder = 2
+      TabOrder = 1
     end
     object TargetRadioGroup: TRadioGroup
       Left = 3
@@ -128,7 +115,8 @@ object ConvertSettingsForm: TConvertSettingsForm
         'Lazarus/LCL for Windows only'
         'Both Lazarus/LCL and Delphi'
       )
-      TabOrder = 3
+      OnClick = TargetRadioGroupClick
+      TabOrder = 2
     end
   end
   object BtnPanel: TPanel
@@ -207,14 +195,14 @@ object ConvertSettingsForm: TConvertSettingsForm
     EditLabel.AnchorSideTop.Side = asrCenter
     EditLabel.AnchorSideRight.Control = MainPathEdit
     EditLabel.AnchorSideBottom.Control = MainPathEdit
-    EditLabel.Left = 25
+    EditLabel.Left = 15
     EditLabel.Height = 16
     EditLabel.Top = 15
-    EditLabel.Width = 55
-    EditLabel.Caption = 'Main Path'
+    EditLabel.Width = 58
+    EditLabel.Caption = 'Main Path:'
     EditLabel.ParentColor = False
     LabelPosition = lpLeft
-    LabelSpacing = 0
+    LabelSpacing = 7
     ReadOnly = True
     TabOrder = 3
   end
