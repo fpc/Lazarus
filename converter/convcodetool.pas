@@ -193,8 +193,10 @@ begin
           LclOnlyUnits.Append('LMessages');
           fCodeTool.RemoveUnitFromUsesSection(UsesNode, 'WINDOWS', fSrcCache);
         end;
-        if IsVariantUnit then
+        if IsVariantUnit then begin
           WinOnlyUnits.Append('Variants');
+          fCodeTool.RemoveUnitFromUsesSection(UsesNode, 'VARIANTS', fSrcCache);
+        end;
         if (LclOnlyUnits.Count>0) or (WinOnlyUnits.Count>0) then begin
           // Add Windows and LCL sections for output.
           nl:=fSrcCache.BeautifyCodeOptions.LineEnd;
