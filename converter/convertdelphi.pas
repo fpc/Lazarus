@@ -41,10 +41,10 @@ uses
   // IDEIntf
   ComponentReg, IDEMsgIntf, MainIntf, LazIDEIntf, PackageIntf, ProjectIntf,
   // IDE
-  IDEProcs, MissingUnits, Project, DialogProcs, CheckLFMDlg,
+  IDEProcs, MissingUnits, Project, DialogProcs, //CheckLFMDlg,
   EditorOptions, CompilerOptions, PackageDefs, PackageSystem,
   PackageEditor, BasePkgManager, LazarusIDEStrConsts,
-  ConvertSettings, ConvCodeTool;
+  ConvertSettings, ConvCodeTool, MissingPropertiesDlg;
 
 const
   SettingDelphiModeTemplName = 'Setting Delphi Mode';
@@ -629,13 +629,20 @@ begin
 end;
 
 function TConvertDelphiUnit.ConvertFormFile: TModalResult;
+var
+  LfmFixer: TLfmFixer;
 begin
   // check the LFM file and the pascal unit, updates fUnitCode and fLfmCode.
   if fLfmCode<>nil then begin
-    if RepairLFMBuffer(fUnitCode,fLfmCode,@IDEMessagesWindow.AddMsg,true,true)<>mrOk
-    then begin
-      LazarusIDE.DoJumpToCompilerMessage(-1,true);
-      exit(mrAbort);
+    LfmFixer:=TLfmFixer.Create(fUnitCode,fLfmCode,@IDEMessagesWindow.AddMsg);
+    try
+//      if RepairLFMBuffer(...,true,true)<>mrOk
+      if LfmFixer.Repair<>mrOk then begin
+        LazarusIDE.DoJumpToCompilerMessage(-1,true);
+        exit(mrAbort);
+      end;
+    finally
+      LfmFixer.Free;
     end;
     // save LFM file
     Result:=SaveCodeBufferToFile(fLfmCode,fLfmCode.Filename);

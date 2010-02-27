@@ -173,10 +173,10 @@ begin
       ctLazarus: begin
         // One way conversion: just add, replace and remove units.
         if IsWinUnit then begin
-          fUnitsToRemove.Append('WINDOWS');
           fUnitsToAdd.Append('LCLIntf');
           fUnitsToAdd.Append('LCLType');
           fUnitsToAdd.Append('LMessages');
+          fUnitsToRemove.Append('WINDOWS');
         end;
         if IsVariantUnit then
           fUnitsToRemove.Append('VARIANTS');

@@ -31,7 +31,7 @@ interface
 
 uses
   Classes, SysUtils, FileUtil, Forms, Controls, Graphics, Dialogs,
-  StdCtrls, EditBtn, Buttons, ExtCtrls, DialogProcs;
+  StdCtrls, EditBtn, Buttons, ExtCtrls, DialogProcs, CodeToolsStructs;
 
 type
 
@@ -51,6 +51,8 @@ type
     fFormFileRename: boolean;
     fAutoMissingProperties: boolean;
     fAutoMissingComponents: boolean;
+    // Replacement properties for Delphi properties.
+    fReplacementProperties : TStringToStringTree;
     function GetBackupPath: String;
     procedure SetMainFilename(const AValue: String);
   public
@@ -110,7 +112,10 @@ type
     procedure FormDestroy(Sender: TObject);
     procedure TargetRadioGroupClick(Sender: TObject);
   private
+    fSettings: TConvertSettings;
   public
+    constructor Create(AOwner: TComponent; ASettings: TConvertSettings);
+    destructor Destroy; override;
 
   end; 
 
@@ -129,10 +134,12 @@ begin
   fTitle:=ATitle;
   fMainFilename:='';
   fMainPath:='';
+  fReplacementProperties:=TStringToStringTree.Create(false);
 end;
 
 destructor TConvertSettings.Destroy;
 begin
+  fReplacementProperties.Free;
   inherited Destroy;
 end;
 
@@ -140,7 +147,7 @@ function TConvertSettings.RunForm: TModalResult;
 var
   SettingsForm: TConvertSettingsForm;
 begin
-  SettingsForm:=TConvertSettingsForm.Create(nil);
+  SettingsForm:=TConvertSettingsForm.Create(nil, Self);
   with SettingsForm do
   try
     Caption:=fTitle;
@@ -259,6 +266,17 @@ end;
 
 { TConvertSettingsForm }
 
+constructor TConvertSettingsForm.Create(AOwner: TComponent; ASettings: TConvertSettings);
+begin
+  inherited Create(AOwner);
+  fSettings:=ASettings;
+end;
+
+destructor TConvertSettingsForm.Destroy;
+begin
+  inherited Destroy;
+end;
+
 procedure TConvertSettingsForm.FormCreate(Sender: TObject);
 begin
   MainPathEdit.Text:='';
@@ -282,7 +300,7 @@ end;
 
 procedure TConvertSettingsForm.ReplacementCompsButtonClick(Sender: TObject);
 begin
-  ShowMessage('Sorry, not implemented yet!');
+  //ShowMessage('Sorry, not implemented yet!');
 end;
 
 procedure TConvertSettingsForm.btnOKClick(Sender: TObject);
