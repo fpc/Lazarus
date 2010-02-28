@@ -592,7 +592,7 @@ begin
     {$IFDEF windows}
       Set8087CW($133F);
     {$ELSE}
-      SetExceptionMask(GetExceptionMask + [exZeroDivide]);
+      SetExceptionMask(GetExceptionMask + [exZeroDivide,exInvalidOp]);
     {$ENDIF}
   {$ENDIF}
   {$ifend}
