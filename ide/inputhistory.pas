@@ -36,7 +36,7 @@ interface
 
 uses
   Classes, SysUtils, FileUtil, DiffPatch, IDEProcs, AvgLvlTree,
-  Laz_XMLCfg, LazConf, Dialogs, LCLProc;
+  SynEditTypes, Laz_XMLCfg, LazConf, Dialogs, LCLProc;
 
 {$ifdef Windows}
 {$define CaseInsensitiveFilenames}
@@ -168,7 +168,7 @@ type
     fifReplaceAll // replace without asking user
     );
   TLazFindInFileSearchOptions = set of TLazFindInFileSearchOption;
-  
+
   TInputHistories = class
   private
     FDiffFlags: TTextDiffFlags;
@@ -181,6 +181,7 @@ type
     FFindHistory: TStringList;
     FFindInFilesSearchOptions: TLazFindInFileSearchOptions;
     FFindAutoComplete: boolean;
+    FFindOptions: TSynSearchOptions;
     FLastConvertDelphiPackage: string;
     FLastConvertDelphiProject: string;
     FLastConvertDelphiUnit: string;
@@ -246,6 +247,7 @@ type
                                                  write FFindInFilesPathHistory;
     property FindInFilesMaskHistory: TStringList read FFindInFilesMaskHistory
                                                  write FFindInFilesMaskHistory;
+    property FindOptions: TSynSearchOptions read FFindOptions write FFindOptions;
     property FindInFilesSearchOptions: TLazFindInFileSearchOptions
                read FFindInFilesSearchOptions write FFindInFilesSearchOptions;
     property FindAutoComplete: boolean read FFindAutoComplete
@@ -285,6 +287,20 @@ type
   end;
 
 const
+  LazFindSearchOptionsDefault = [];
+  LazFindSearchOptionNames: array[TSynSearchOption] of string = (
+    'MatchCase',
+    'WholeWord',
+    'Backwards',
+    'EntireScope',
+    'SelectedOnly',
+    'Replace',
+    'ReplaceAll',
+    'Prompt',
+    'SearchInReplacement',
+    'RegExpr',
+    'RegExprMultiLine'
+    );
   LazFindInFileSearchOptionsDefault = [fifSearchOpen];
   LazFindInFileSearchOptionNames: array[TLazFindInFileSearchOption] of string =(
     'MatchCase',
@@ -332,6 +348,7 @@ begin
   FFindInFilesPathHistory:=TStringList.Create;
   FFindInFilesMaskHistory:=TStringList.Create;
   FFindInFilesSearchOptions:=LazFindInFileSearchOptionsDefault;
+  FFindOptions:=LazFindSearchOptionsDefault;
 
   // unit dependencies
   FUnitDependenciesHistory:=TStringList.Create;
@@ -392,6 +409,7 @@ procedure TInputHistories.LoadFromXMLConfig(XMLConfig: TXMLConfig;
 var
   DiffFlag: TTextDiffFlag;
   FIFOption: TLazFindInFileSearchOption;
+  FindOption: TSynSearchOption;
 begin
   // Find- and replace-history
   FMaxFindHistory:=XMLConfig.GetValue(Path+'Find/History/Max',FMaxFindHistory);
@@ -403,13 +421,24 @@ begin
   LoadRecentList(XMLConfig,FFindInFilesMaskHistory,Path+
                                             'FindInFiles/History/Masks/');
   FFindInFilesSearchOptions:=[];
-  for FIFOption:=Low(TLazFindInFileSearchOption)
-  to High(TLazFindInFileSearchOption) do begin
+  for FIFOption:=Low(TLazFindInFileSearchOption) to
+    High(TLazFindInFileSearchOption)
+  do begin
     if XMLConfig.GetValue(
       Path+'FindInFiles/Options/'+LazFindInFileSearchOptionNames[FIFOption],
       FIFOption in LazFindInFileSearchOptionsDefault)
     then
       Include(FFindInFilesSearchOptions,FIFOption);
+  end;
+
+  FFindOptions:=[];
+  for FindOption:=Low(FFindOptions) to High(FFindOptions)
+  do begin
+    if XMLConfig.GetValue(
+      Path+'Find/Options/'+LazFindSearchOptionNames[FindOption],
+      FindOption in LazFindSearchOptionsDefault)
+    then
+      Include(FFindOptions,FindOption);
   end;
 
   // unit dependencies
@@ -453,6 +482,7 @@ procedure TInputHistories.SaveToXMLConfig(XMLConfig: TXMLConfig;
 var
   DiffFlag: TTextDiffFlag;
   FIFOption: TLazFindInFileSearchOption;
+  FindOption: TSynSearchOption;
 begin
   // Find- and replace-history
   XMLConfig.SetDeleteValue(Path+'Find/History/Max',FMaxFindHistory,20);
@@ -469,6 +499,12 @@ begin
       Path+'FindInFiles/Options/'+LazFindInFileSearchOptionNames[FIFOption],
       FIFOption in FindInFilesSearchOptions,
       FIFOption in LazFindInFileSearchOptionsDefault);
+  end;
+  for FindOption:=Low(FFindOptions) to High(FFindOptions) do begin
+    XMLConfig.SetDeleteValue(
+      Path+'Find/Options/'+LazFindSearchOptionNames[FindOption],
+      FindOption in FindOptions,
+      FindOption in LazFindSearchOptionsDefault);
   end;
 
   // unit dependencies
