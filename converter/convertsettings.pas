@@ -114,9 +114,8 @@ type
   private
     fSettings: TConvertSettings;
   public
-    constructor Create(AOwner: TComponent; ASettings: TConvertSettings);
+    constructor Create(AOwner: TComponent; ASettings: TConvertSettings); reintroduce;
     destructor Destroy; override;
-
   end; 
 
 var
