@@ -53,6 +53,7 @@ procedure TCarbonCalendar.CreateWidget(const AParams: TCreateParams);
 begin
   if OSError(CalendarViewCreate(GetTopParentWindow, ParamsToCarbonRect(AParams), Widget),
        Self, 'CreateWidget', 'CalendarViewCreate') then RaiseCreateWidgetError(LCLObject);
+  inherited;
 end;
 
 procedure TCarbonCalendar.SetDateTime(const aDate: TDateTime);
