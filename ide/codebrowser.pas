@@ -763,6 +763,9 @@ begin
   sl.Insert(0,IDEDescription);
   sl.Insert(1,ProjectDescription);
   ScopeComboBox.Items.Assign(sl);
+  i:=sl.IndexOf(ScopeComboBox.Text);
+  if i>=0 then
+    ScopeComboBox.ItemIndex:=i;
   sl.Free;
 end;
 
@@ -2763,11 +2766,15 @@ function TCodeBrowserView.SetScopeToCurUnitOwner(UseFCLAsDefault,
   WithRequiredPackages: boolean): boolean;
 var
   NewScope: String;
+  i: LongInt;
 begin
   Result:=false;
   NewScope:=GetScopeToCurUnitOwner(UseFCLAsDefault);
   if NewScope='' then exit;
   ScopeComboBox.Text:=NewScope;
+  i:=ScopeComboBox.Items.IndexOf(NewScope);
+  if i>=0 then
+    ScopeComboBox.ItemIndex:=i;
   ScopeWithRequiredPackagesCheckBox.Checked:=WithRequiredPackages;
   InvalidateStage(cbwsGetScopeOptions);
 end;
