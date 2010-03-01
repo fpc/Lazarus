@@ -415,7 +415,10 @@ Var Flags          : DWORD;
     PDev           : TPrinterDevice;
     TmpDevMode     : PDeviceMode;
 begin
-
+  {$IFDEF NOPRINTERS}
+  Lst.Clear;
+  exit;
+  {$ENDIF}
   DefaultPrinter := GetDefaultPrinter;
 
   Flags:=PRINTER_ENUM_CONNECTIONS or PRINTER_ENUM_LOCAL;
@@ -818,14 +821,17 @@ procedure TWinPrinter.AdvancedProperties;
 var
   PDev: TPrinterDevice;
 begin
-  PDev:=TPrinterDevice(Printers.Objects[PrinterIndex]);
-  DocumentProperties(
-    Widgetset.AppHandle,
-    FPrinterHandle,
-    pchar(PDev.Name),
-    Pdev.DevMode, Pdev.DevMode,
-    DM_OUT_BUFFER or DM_IN_BUFFER or DM_IN_PROMPT);
-  //PrinterProperties(Widgetset.AppHandle,fPrinterHandle)
+  if Printers.Count>0 then
+  begin
+    PDev:=TPrinterDevice(Printers.Objects[PrinterIndex]);
+    DocumentProperties(
+      Widgetset.AppHandle,
+      FPrinterHandle,
+      pchar(PDev.Name),
+      Pdev.DevMode, Pdev.DevMode,
+      DM_OUT_BUFFER or DM_IN_BUFFER or DM_IN_PROMPT);
+    //PrinterProperties(Widgetset.AppHandle,fPrinterHandle)
+  end;
 end;
 
 initialization
