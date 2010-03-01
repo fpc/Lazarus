@@ -61,7 +61,7 @@ implementation
 
 uses
   { local }
-  JcfFileUtils, JcfRegistrySettings, JcfSettings;
+  JcfFileUtils, JcfRegistrySettings, JcfSettings, jcfuiconsts;
 
 procedure TfFiles.ReadSettings(AOptions: TAbstractIDEOptions);
 var
@@ -69,32 +69,33 @@ var
 begin
   { from the registry, about the file }
   lcSet := GetRegSettings;
-  lblFormatFileName.Caption := 'Format file is ' + lcSet.FormatConfigFileName;
+  lblFormatFileName.Caption := Format(lisFrFilesFormatFileIs, [lcSet.FormatConfigFileName]);
   //lblFormatFileName.Caption := PathCompactPath(lblFormatFileName.Canvas.Handle, 'Format file is ' + lcSet.FormatConfigFileName, 450, cpCenter);
 
   if not FileExists(lcSet.FormatConfigFileName) then
   begin
-    lblStatus.Caption := 'File not found';
+    lblStatus.Caption := lisFrFilesFileNotFound;
   end
   else
   begin
     if FileIsReadOnly(lcSet.FormatConfigFileName) then
     begin
-      lblStatus.Caption     := 'File is read only';
+      lblStatus.Caption     := lisFrFilesFileISReadOnly;
       mDescription.ReadOnly := True;
       mDescription.ParentColor := True;
     end
     else
     begin
-      lblStatus.Caption     := 'File is writable';
+      lblStatus.Caption     := lisFrFilesFileIsWritable;
       mDescription.ReadOnly := False;
     end;
 
     { from the file, about itself}
-    lblDate.Caption    := 'Date file written: ' +
-      FormatDateTime(ShortDateFormat + ' ' + ShortTimeFormat,
-      FormatSettings.WriteDateTime);
-    lblVersion.Caption := 'Version that wrote this file: ' + FormatSettings.WriteVersion;
+    lblDate.Caption := Format(lisFrFilesDateFileWritten,
+      [FormatDateTime(ShortDateFormat + ' ' + ShortTimeFormat,
+      FormatSettings.WriteDateTime)]);
+    lblVersion.Caption := Format(lisFrFilesVersionThatWroteThisFile, [FormatSettings.WriteVersion]);
+    lblDescription.Caption := lisFrFilesDescription;
     mDescription.Text  := FormatSettings.Description;
 
   end;
@@ -137,7 +138,7 @@ end;
 
 function TfFiles.GetTitle: String;
 begin
-  Result := 'Format File';
+  Result := lisFrFilesFormatFile;
 end;
 
 procedure TfFiles.Setup(ADialog: TAbstractOptionsEditorDialog);

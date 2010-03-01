@@ -1,5 +1,7 @@
-{ This file was automatically created by Lazarus. do not edit ! 
-  This source is only used to compile and install the package.
+{ Этот файл был автоматически создан Lazarus. Н�
+  � редактировать!
+  Исходный код используется только для комп�
+    �ляции и установки пакета.
  }
 
 unit jcfidelazarus; 
@@ -40,7 +42,7 @@ uses
   frClarifyCaseBlocks, frComments, frWarnings, frReservedCapsSettings, 
   frAnyCapsSettings, frIdentifierCapsSettings, frNotIdentifierCapsSettings, 
   frUnitCaps, frReplace, frUses, frTransform, frAsm, frPreProcessor, 
-  LazarusPackageIntf;
+  jcfuiconsts, LazarusPackageIntf;
 
 implementation
 
