@@ -1385,7 +1385,6 @@ begin
   if (ExprType.Desc=xtContext)
   and (ExprType.Context.Tool<>nil) then
     MissingUnit:=GetUnitForUsesSection(ExprType.Context.Tool);
-
   Result:=AddVariable(CursorNode,CleanCursorPos,OldTopLine,GetAtom(VarNameAtom),
                       NewType,MissingUnit,NewPos,NewTopLine,SourceChangeCache);
 end;

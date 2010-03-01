@@ -6984,9 +6984,22 @@ begin
     MoveCursorToCleanPos(CurPos.EndPos);
   end
   else if AtomIsChar('@') then begin
-    // a simple pointer or an PChar or an event
-    MoveCursorToCleanPos(CurPos.EndPos);
-    Result:=ReadOperandTypeAtCursor(Params);
+    // a simple pointer or a PChar or an event
+    ReadNextAtom;
+    if CurPos.Flag=cafWord then begin
+      SubStartPos:=CurPos.StartPos;
+      EndPos:=FindEndOfTerm(SubStartPos,false,true);
+      if EndPos>MaxEndPos then
+        EndPos:=MaxEndPos;
+      OldFlags:=Params.Flags;
+      Params.Flags:=(Params.Flags*fdfGlobals)-[fdfFunctionResult];
+      Result:=FindExpressionTypeOfTerm(SubStartPos,EndPos,Params,true);
+      Params.Flags:=OldFlags;
+      MoveCursorToCleanPos(EndPos);
+    end else begin
+      MoveCursorToCleanPos(CurPos.StartPos);
+      Result:=ReadOperandTypeAtCursor(Params);
+    end;
     if (Result.Desc=xtContext)
     or ((Result.Context.Node<>nil) and (Result.Context.Node.Desc=ctnProcedure))
     then begin
