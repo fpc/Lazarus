@@ -254,4 +254,20 @@ object SearchResultsView: TSearchResultsView
       0000000000000000000000000000
     }
   end
+  object popList: TPopupMenu
+    left = 190
+    top = 133
+    object mniCopyItem: TMenuItem
+      Caption = 'Copy Item'
+      OnClick = mniCopyItemClick
+    end
+    object mniCopyAll: TMenuItem
+      Caption = 'Copy All'
+      OnClick = mniCopyAllClick
+    end
+    object mniCopySelected: TMenuItem
+      Caption = 'Copy Selected'
+      OnClick = mniCopySelectedClick
+    end
+  end
 end

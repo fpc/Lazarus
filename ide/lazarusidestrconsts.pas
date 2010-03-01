@@ -280,6 +280,9 @@ resourcestring
   lisCopyAllMessagesToClipboard = 'Copy all messages to clipboard';
   lisCopyAllAndHiddenMessagesToClipboard = 'Copy all and hidden messages '
                                            +'to clipboard';
+  lisCopyItemToClipboard = 'Copy item to clipboard';
+  lisCopySelectedItemToClipboard = 'Copy selected items to clipboard';
+  lisCopyAllItemsToClipboard = 'Copy all items to clipboard';
   lisSaveAllMessagesToFile = 'Save all messages to file';
   lisMVDocking = 'Docking';
   lisMenuViewSearchResults = 'Search Results';

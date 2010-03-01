@@ -38,9 +38,9 @@ interface
 
 uses
   Classes, SysUtils, LCLProc, Forms, Controls, Graphics, Dialogs,
-  ComCtrls, ExtCtrls, StdCtrls, Buttons, LCLType, LCLIntf,
+  ComCtrls, ExtCtrls, StdCtrls, Buttons, LCLType, LCLIntf, Menus,
   IDEOptionDefs, LazarusIDEStrConsts, EnvironmentOpts, EditorOptions, InputHistory,
-  IDEProcs, FindInFilesDlg, Project, MainIntf;
+  IDEProcs, FindInFilesDlg, Project, MainIntf, Clipbrd;
 
 type
   { TLazSearchMatchPos }
@@ -129,6 +129,10 @@ type
   { TSearchResultsView }
 
   TSearchResultsView = class(TForm)
+    mniCopySelected: TMenuItem;
+    mniCopyAll: TMenuItem;
+    mniCopyItem: TMenuItem;
+    popList: TPopupMenu;
     SearchInListEdit: TEdit;
     ImageList: TImageList;
     ResultsNoteBook: TNotebook;
@@ -142,6 +146,9 @@ type
     procedure ClosePageButtonClick(Sender: TObject);
     procedure Form1Create(Sender: TObject);
     procedure FormKeyDown(Sender: TObject; var Key: Word; Shift: TShiftState);
+    procedure mniCopyAllClick(Sender: TObject);
+    procedure mniCopyItemClick(Sender: TObject);
+    procedure mniCopySelectedClick(Sender: TObject);
     procedure TreeViewKeyDown(Sender: TObject; var Key: Word; Shift: TShiftState);
     procedure ResultsNoteBookClosetabclicked(Sender: TObject);
     procedure SearchAgainButtonClick(Sender: TObject);
@@ -225,6 +232,22 @@ begin
   Result := True;
 end;
   
+function GetTreeSelectedItemsAsText(ATreeView: TCustomTreeView): string;
+var
+  sl: TStringList;
+  node: TTreeNode;
+begin
+  sl:=TStringList.Create;
+  node := ATreeView.GetFirstMultiSelected;
+  while assigned(node) do
+  begin
+    sl.Add(node.Text);
+    node := node.GetNextMultiSelected;
+  end;
+  Result:=sl.Text;
+  sl.Free;
+end;
+
 procedure TSearchResultsView.Form1Create(Sender: TObject);
 var
   ALayout: TIDEWindowLayout;
@@ -251,6 +274,10 @@ begin
   fOnSelectionChanged:= nil;
   ShowHint:= True;
   fMouseOverIndex:= -1;
+
+  mniCopyItem.Caption := lisCopyItemToClipboard;
+  mniCopySelected.Caption := lisCopySelectedItemToClipboard;
+  mniCopyAll.Caption := lisCopyAllItemsToClipboard;
 end;//Create
 
 procedure TSearchResultsView.FormKeyDown(Sender: TObject; var Key: Word; 
@@ -261,6 +288,32 @@ begin
     Key := VK_UNKNOWN;
     Close;
   end;  
+end;
+
+procedure TSearchResultsView.mniCopyAllClick(Sender: TObject);
+var
+  sl: TStrings;
+begin
+  sl := (popList.PopupComponent as TLazSearchResultTV).ItemsAsStrings;
+  Clipboard.AsText := sl.Text;
+  sl.Free;
+end;
+
+procedure TSearchResultsView.mniCopyItemClick(Sender: TObject);
+var
+  tv: TCustomTreeView;
+  node: TTreeNode;
+begin
+  tv := popList.PopupComponent as TCustomTreeView;
+  with tv.ScreenToClient(popList.PopupPoint) do
+    node := tv.GetNodeAt(X, Y);
+  if node <> nil then
+    Clipboard.AsText := node.Text;
+end;
+
+procedure TSearchResultsView.mniCopySelectedClick(Sender: TObject);
+begin
+  Clipboard.AsText := GetTreeSelectedItemsAsText(popList.PopupComponent as TCustomTreeView);
 end;
 
 procedure TSearchResultsView.ClosePageButtonClick(Sender: TObject);
@@ -770,6 +823,8 @@ begin
             OnMouseWheel:= @LazTVMouseWheel;
             ShowHint:= true;
             RowSelect := True;
+            Options := Options + [tvoAllowMultiselect];
+            PopupMenu := popList;
             NewTreeView.Canvas.Brush.Color:= clWhite;
           end;//with
         end;//if
