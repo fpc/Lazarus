@@ -984,9 +984,10 @@ begin
       Filename:=copy(Msg,1,FilenameEndPos);
       if FilenameIsAbsolute(Filename) then begin
         AbsFilename:=Filename;
+        CurrentMessageParts.Values['Filename']:=AbsFilename;
       end else begin
         AbsFilename:=TrimFilename(fCurrentDirectory+Filename);
-        if not FileExistsUTF8(AbsFilename) then begin
+        if not FileExistsCached(AbsFilename) then begin
           AbsFilename:='';
         end;
       end;

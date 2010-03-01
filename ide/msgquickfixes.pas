@@ -143,9 +143,9 @@ begin
 
   Filename:=Msg.Parts.Values['Filename'];
   TestDir:=LazarusIDE.GetTestBuildDirectory;
-  if (TestDir<>'') or (FileIsInDirectory(Filename,TestDir)) then
-    Filename:=ExtractFileName(Filename);
-  if not FilenameIsAbsolute(Filename) then
+  if (TestDir<>'') and (FileIsInDirectory(Filename,TestDir)) then
+    Filename:=ExtractFileName(Filename)
+  else if not FilenameIsAbsolute(Filename) then
     Filename:=AppendPathDelim(Msg.Directory)+Filename;
   //DebugLn('GetMsgLineFilename Filename=',Filename,' ',Msg.Parts.Text);
 
@@ -530,12 +530,13 @@ var
   NewX, NewY, NewTopLine: integer;
 begin
   if Step=imqfoMenuItem then begin
-    DebugLn(['TQuickFixIdentifierNotFoundAddLocal.Execute ']);
+    DebugLn(['TQuickFixIdentifierNotFoundAddLocal.Execute Dir=',Msg.Directory,' Msg=',Msg.Msg]);
     // get source position
     // (FPC reports position right after the unknown identifier
     //  for example right after FilenameIsAbsolute)
     if not GetMsgLineFilename(Msg,CodeBuf) then exit;
     Msg.GetSourcePosition(Filename,Caret.Y,Caret.X);
+
     if not LazarusIDE.BeginCodeTools then begin
       DebugLn(['TQuickFixIdentifierNotFoundAddLocal.Execute failed because IDE busy']);
       exit;

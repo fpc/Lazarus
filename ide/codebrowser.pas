@@ -3133,7 +3133,7 @@ var
   Caret: TPoint;
 begin
   if Step=imqfoMenuItem then begin
-    DebugLn(['TQuickFixIdentifierNotFound_Search.Execute ']);
+    DebugLn(['TQuickFixIdentifierNotFound_Search.Execute Dir=',Msg.Directory,' Msg=',Msg.Msg,' Filename=',Msg.Parts.Values['Filename']]);
     // get source position
     // (FPC reports position right after the unknown identifier
     //  for example right after FilenameIsAbsolute)
