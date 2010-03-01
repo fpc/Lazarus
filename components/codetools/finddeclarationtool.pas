@@ -6360,6 +6360,7 @@ var
     ResolveBaseTypeOfIdentifier;
     if (ExprType.Context.Node=nil) then begin
       MoveCursorToCleanPos(CurAtom.StartPos);
+      ReadNextAtom;
       RaiseIllegalQualifierFound;
     end;
     if (ExprType.Context.Node.Desc in AllUsableSourceTypes) then begin
