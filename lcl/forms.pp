@@ -1695,6 +1695,7 @@ begin
   if Keys and MK_XBUTTON1 <> 0 then Include(Result, ssExtra1);
   if Keys and MK_XBUTTON2 <> 0 then Include(Result, ssExtra2);
   if GetKeyState(VK_MENU) < 0 then Include(Result, ssAlt);
+  if (GetKeyState(VK_LWIN) < 0) or (GetKeyState(VK_RWIN) < 0) then Include(Result, ssMeta);
 end;
 
 function KeyDataToShiftState(KeyData: Longint): TShiftState;
