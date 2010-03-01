@@ -459,7 +459,7 @@ end;
 
 function GetWindowDebugReport(AWindow: PGDKWindow): string;
 var
-  p: Pgpointer;
+  p: gpointer;
   Widget: PGtkWidget;
   WindowType: TGdkWindowType;
   Width: Integer;
@@ -469,52 +469,51 @@ var
   {$endif}
   TypeAsStr: String;
 begin
-  Result:=DbgS(AWindow);
-  if AWindow=nil then exit;
+  Result := DbgS(AWindow);
+  if AWindow = nil then Exit;
   
   // window type
-  WindowType:=gdk_window_get_type(AWindow);
+  WindowType := gdk_window_get_type(AWindow);
   case WindowType of
-  GDK_WINDOW_ROOT: TypeAsStr:='Root';
-  GDK_WINDOW_TOPLEVEL: TypeAsStr:='TopLvl';
-  GDK_WINDOW_CHILD: TypeAsStr:='Child';
-  GDK_WINDOW_DIALOG: TypeAsStr:='Dialog';
-  GDK_WINDOW_TEMP: TypeAsStr:='Temp';
-  {$ifdef gtk1}
-  GDK_WINDOW_PIXMAP: TypeAsStr:='Pixmap';
-  {$endif gtk1}
-  GDK_WINDOW_FOREIGN: TypeAsStr:='Foreign';
-  else TypeAsStr:='Unknown';
+    GDK_WINDOW_ROOT: TypeAsStr := 'Root';
+    GDK_WINDOW_TOPLEVEL: TypeAsStr := 'TopLvl';
+    GDK_WINDOW_CHILD: TypeAsStr := 'Child';
+    GDK_WINDOW_DIALOG: TypeAsStr := 'Dialog';
+    GDK_WINDOW_TEMP: TypeAsStr := 'Temp';
+    {$ifdef gtk1}
+    GDK_WINDOW_PIXMAP: TypeAsStr := 'Pixmap';
+    {$endif gtk1}
+    GDK_WINDOW_FOREIGN: TypeAsStr := 'Foreign';
+  else
+    TypeAsStr := 'Unknown';
   end;
-  Result:=Result+' Type='+TypeAsStr;
+  Result:=Result + ' Type=' + TypeAsStr;
   
   DebugLn(Result);
   // user data
-  if WindowType in [GDK_WINDOW_ROOT,GDK_WINDOW_TOPLEVEL,GDK_WINDOW_CHILD,
-    GDK_WINDOW_DIALOG]
-  then begin
-    p:=nil;
-    gdk_window_get_user_data(AWindow,p);
-    if GtkWidgetIsA(PGTKWidget(p),gtk_widget_get_type) then begin
-      Widget:=PGTKWidget(p);
-      Result:=Result+'<Widget['+GetWidgetDebugReport(Widget)+']>';
-    end else begin
-      Result:=Result+'<UserData='+DbgS(p)+']>';
-    end;
+  if WindowType in [GDK_WINDOW_ROOT,GDK_WINDOW_TOPLEVEL,GDK_WINDOW_CHILD, GDK_WINDOW_DIALOG] then
+  begin
+    p := nil;
+    gdk_window_get_user_data(AWindow, @p);
+    if GtkWidgetIsA(PGTKWidget(p), gtk_widget_get_type) then
+    begin
+      Widget := PGTKWidget(p);
+      Result := Result + '<Widget[' + GetWidgetDebugReport(Widget) + ']>';
+    end
+    else
+      Result := Result + '<UserData=' + DbgS(p) + ']>';
   end;
 
   // size
-  gdk_window_get_size(AWindow,@Width,@Height);
-  Result:=Result+' Size='+IntToStr(Width)+'x'+IntToStr(Height);
+  gdk_window_get_size(AWindow, @Width, @Height);
+  Result := Result + ' Size=' + IntToStr(Width) + 'x' + IntToStr(Height);
 
   {$ifdef gtk1}
   // visual
-  Visual:=gdk_window_get_visual(AWindow);
-  if Visual<>nil then begin
-    if WindowType in [GDK_WINDOW_PIXMAP] then begin
-      Result:=Result+' Depth='+IntToStr(Visual^.bits_per_rgb);
-    end;
-  end;
+  Visual := gdk_window_get_visual(AWindow);
+  if Visual <> nil then
+    if WindowType in [GDK_WINDOW_PIXMAP] then
+      Result := Result + ' Depth=' + IntToStr(Visual^.bits_per_rgb);
   {$endif gtk1}
 end;
 

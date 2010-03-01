@@ -2687,8 +2687,8 @@ var
     end;
     
     {$IFDEF VerboseStretchCopyArea}
-    DebugLn('SrcDevBitmapToDrawable SrcPixmap=[',GetWindowDebugReport(SrcPixmap),']',
-      ' MaskPixmap=[',GetWindowDebugReport(MaskPixmap),']');
+    DebugLn('SrcDevBitmapToDrawable SrcPixmap=[',GetWindowDebugReport(SrcDrawable),']',
+      ' MaskPixmap=[',GetWindowDebugReport(MskBitmap),']');
     {$ENDIF}
 
     if (MskBitmap = nil) and (not SizeChange) and (ROP=SRCCOPY)
