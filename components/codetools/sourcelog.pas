@@ -623,7 +623,9 @@ begin
 end;
 
 procedure TSourceLog.BuildLineRanges;
-var p,line:integer;
+var
+  p,line:integer;
+  Cap: Integer;
 begin
   {$IFOPT R+}{$DEFINE RangeChecking}{$ENDIF}
   {$R-}
@@ -633,46 +635,37 @@ begin
     FreeMem(FLineRanges);
     FLineRanges:=nil;
   end;
-  // count line ends
+  // build line range list
   FLineCount:=0;
+  if FSource='' then exit;
+  Cap:=100;
+  GetMem(FLineRanges,Cap*SizeOf(TLineRange));
   p:=1;
+  line:=0;
+  FLineRanges[line].StartPos:=1;
   while (p<=fSrcLen) do begin
     if (not (FSource[p] in [#10,#13])) then begin
       inc(p);
     end else begin
       // new line
-      inc(FLineCount);
+      FLineRanges[line].EndPos:=p;
+      inc(line);
+      if line>=Cap then begin
+        Cap:=Cap*2;
+        ReAllocMem(FLineRanges,Cap*SizeOf(TLineRange));
+      end;
       inc(p);
-      if (p<=fSrcLen) and (FSource[p] in [#10,#13]) 
+      if (p<=fSrcLen) and (FSource[p] in [#10,#13])
       and (FSource[p]<>FSource[p-1]) then
         inc(p);
+      FLineRanges[line].StartPos:=p;
     end;
   end;
-  if (FSource<>'') and (not (FSource[fSrcLen] in [#10,#13])) then 
+  FLineRanges[line].EndPos:=fSrcLen+1;
+  FLineCount:=line;
+  if not (FSource[FSrcLen] in [#10,#13]) then
     inc(FLineCount);
-  // build line range list
-  if FLineCount>0 then begin
-    GetMem(FLineRanges,FLineCount*SizeOf(TLineRange));
-    p:=1;
-    line:=0;
-    FLineRanges[line].StartPos:=1;
-    FLineRanges[FLineCount-1].EndPos:=fSrcLen+1;
-    while (p<=fSrcLen) do begin
-      if (not (FSource[p] in [#10,#13])) then begin
-        inc(p);
-      end else begin
-        // new line
-        FLineRanges[line].EndPos:=p;
-        inc(line);
-        inc(p);
-        if (p<=fSrcLen) and (FSource[p] in [#10,#13]) 
-        and (FSource[p]<>FSource[p-1]) then
-          inc(p);
-        if line<FLineCount then
-          FLineRanges[line].StartPos:=p;
-      end;
-    end;
-  end;
+  ReAllocMem(FLineRanges,FLineCount*SizeOf(TLineRange));
   //DebugLn('[TSourceLog.BuildLineRanges] END ',FLineCount);
   {$IFDEF RangeChecking}{$R+}{$ENDIF}
 end;
