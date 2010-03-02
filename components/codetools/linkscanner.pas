@@ -125,7 +125,32 @@ type
   TCommentStyle = (CommentNone, CommentTP, CommentOldTP, CommentDelphi);
 
   TCompilerMode = (cmFPC, cmDELPHI, cmGPC, cmTP, cmOBJFPC, cmMacPas);
-  TCompilerModeSwitch = (cmsDefault, cmsObjectiveC1);
+  TCompilerModeSwitch = (
+    cmsDefault,          
+    cmsClass,               
+    cmsObjpas,              
+    cmsResult,              
+    cmsString_pchar,        
+    cmsCvar_support,        
+    cmsNested_comment,      
+    cmsTp_procvar,          
+    cmsMac_procvar,         
+    cmsRepeat_forward,      
+    cmsPointer_2_procedure,                                 
+    cmsAutoderef,           
+    cmsInitfinal,           
+    cmsAdd_pointer,         
+    cmsDefault_ansistring,  
+    cmsOut,                 
+    cmsDefault_para,        
+    cmsHintdirective,       
+    cmsDuplicate_names,     
+    cmsProperty,            
+    cmsDefault_inline,      
+    cmsExcept,              
+    cmsObjectiveC1
+    );
+
   TPascalCompiler = (pcFPC, pcDelphi);
   
   TLSSkippingDirective = (
@@ -489,9 +514,15 @@ const
   CompilerModeNames: array[TCompilerMode] of shortstring=(
         'FPC', 'DELPHI', 'GPC', 'TP', 'OBJFPC', 'MACPAS'
      );
+
   CompilerModeSwitchNames: array[TCompilerModeSwitch] of shortstring=(
-        'Default', 'ObjectiveC1'
-     );
+        'Default', 'CLASS', 'OBJPAS', 'RESULT', 'PCHARTOSTRING', 'CVAR',
+        'NESTEDCOMMENTS', 'CLASSICPROCVARS', 'MACPROCVARS', 'REPEATFORWARD',
+        'POINTERTOPROCVAR', 'AUTODEREF', 'INITFINAL', 'POINTERARITHMETICS',
+        'ANSISTRINGS', 'OUT', 'DEFAULTPARAMETERS', 'HINTDIRECTIVE',
+        'DUPLICATELOCALS', 'PROPERTIES', 'ALLOWINLINE', 'EXCEPTIONS',
+        'OBJECTIVEC1');
+
   PascalCompilerNames: array[TPascalCompiler] of shortstring=(
         'FPC', 'DELPHI'
      );
@@ -2365,16 +2396,21 @@ function TLinkScanner.ModeSwitchDirective: boolean;
 // $MODESWITCH objectivec1
 var
   ValStart: LongInt;
+  ModeSwitch: TCompilerModeSwitch;
 begin
   SkipSpace;
   ValStart:=SrcPos;
   while (SrcPos<=SrcLen) and (IsIdentChar[Src[SrcPos]]) do
     inc(SrcPos);
-  if CompareUpToken('OBJECTIVEC1',Src,ValStart,SrcPos) then begin
-    CompilerModeSwitch:=cmsObjectiveC1;
-  end else
+  Result:=false;
+  for ModeSwitch := Succ(Low(ModeSwitch)) to High(ModeSwitch) do
+    if CompareUpToken(CompilerModeSwitchNames[ModeSwitch],Src,ValStart,SrcPos) then begin
+      Result:=true;
+      CompilerModeSwitch:=ModeSwitch;
+      break;
+    end;
+  if not Result then
     RaiseExceptionFmt(ctsInvalidModeSwitch,[copy(Src,ValStart,SrcPos-ValStart)]);
-  Result:=true;
 end;
 
 function TLinkScanner.ThreadingDirective: boolean;
