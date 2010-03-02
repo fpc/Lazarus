@@ -63,6 +63,8 @@ type
     AddLinkToInheritedButton: TButton;
     BoldFormatButton: TSpeedButton;
     BrowseExampleButton: TButton;
+    ShortPanel: TPanel;
+    ShortEdit2: TEdit;
     TopicShort: TEdit;
     TopicDescr: TMemo;
     Panel3: TPanel;
@@ -527,6 +529,7 @@ end;
 procedure TFPDocEditor.ShortEditChange(Sender: TObject);
 begin
   SaveButton.Enabled:=ShortEdit.Text<>FOldVisualValues[fpdiShort];
+  ShortEdit2.Text := ShortEdit.Text;
 end;
 
 procedure TFPDocEditor.ShortEditEditingDone(Sender: TObject);
