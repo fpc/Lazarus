@@ -1178,6 +1178,8 @@ var
   NewItem: TIdentifierListItem;
   ProcNode: TCodeTreeNode;
 begin
+  if not (ilcfStartOfOperand in CurrentIdentifierList.ContextFlags) then exit;
+
   if Context.Node.Desc in AllPascalStatements then begin
     // see fpc/compiler/psystem.pp
     AddCompilerProcedure('Assert','Condition:Boolean;const Message:String');
@@ -1290,6 +1292,8 @@ begin
     AddBaseType('Text');
   end;
   AddBaseConstant('Nil');
+  AddBaseConstant('True');
+  AddBaseConstant('False');
 end;
 
 procedure TIdentCompletionTool.GatherUsefulIdentifiers(CleanPos: integer;
