@@ -3869,7 +3869,6 @@ begin
   ASynEdit.Gutter.LineNumberPart(0).ShowOnlyLineNumbersMultiplesOf :=
     fShowOnlyLineNumbersMultiplesOf;
 
-  //ASynEdit.Gutter.AutoSize:= fShowLineNumbers;
   ASynEdit.Gutter.CodeFoldPart.Visible := FUseCodeFolding;
   if not FUseCodeFolding then
     ASynEdit.UnfoldAll;
