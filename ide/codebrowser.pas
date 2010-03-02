@@ -754,19 +754,21 @@ var
   sl: TStringList;
   i: Integer;
 begin
-  sl:=TStringList.Create;
-  if PackageGraph<>nil then begin
-    for i:=0 to PackageGraph.Count-1 do
-      sl.Add(PackageGraph.Packages[i].Name);
+  if ScopeComboBox.Items.Count=0 then begin
+    sl:=TStringList.Create;
+    try
+      if PackageGraph<>nil then begin
+        for i:=0 to PackageGraph.Count-1 do
+          sl.Add(PackageGraph.Packages[i].Name);
+      end;
+      sl.Sort;
+      sl.Insert(0,IDEDescription);
+      sl.Insert(1,ProjectDescription);
+      ScopeComboBox.Items.Assign(sl);
+    finally
+      sl.Free;
+    end;
   end;
-  sl.Sort;
-  sl.Insert(0,IDEDescription);
-  sl.Insert(1,ProjectDescription);
-  ScopeComboBox.Items.Assign(sl);
-  i:=sl.IndexOf(ScopeComboBox.Text);
-  if i>=0 then
-    ScopeComboBox.ItemIndex:=i;
-  sl.Free;
 end;
 
 procedure TCodeBrowserView.InitImageList;
@@ -2771,6 +2773,7 @@ begin
   Result:=false;
   NewScope:=GetScopeToCurUnitOwner(UseFCLAsDefault);
   if NewScope='' then exit;
+  FillScopeComboBox;
   ScopeComboBox.Text:=NewScope;
   i:=ScopeComboBox.Items.IndexOf(NewScope);
   if i>=0 then
