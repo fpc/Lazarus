@@ -3923,7 +3923,7 @@ begin
       while (j >= 0) and not (SimilarEdit.Plugin[j] is TSynPluginTemplateEdit) do
         dec(j);
     end;
-    if j>=0 then begin
+    if (SimilarEdit <> nil) and (j >= 0) then begin
       TSynPluginTemplateEdit(ASynEdit.Plugin[i]).Keystrokes.Assign(
                                 TSynPluginTemplateEdit(SimilarEdit.Plugin[j]).KeyStrokes);
       TSynPluginTemplateEdit(ASynEdit.Plugin[i]).KeystrokesOffCell.Assign(
