@@ -936,7 +936,7 @@ type
 
     procedure GetHighlighterSettings(Syn: TSrcIDEHighlighter); // read highlight settings from config file
     procedure SetHighlighterSettings(Syn: TSrcIDEHighlighter); // write highlight settings to config file
-    procedure GetSynEditSettings(ASynEdit: TSynEdit); // read synedit settings from config file
+    procedure GetSynEditSettings(ASynEdit: TSynEdit; SimilarEdit: TSynEdit = nil); // read synedit settings from config file
     procedure SetSynEditSettings(ASynEdit: TSynEdit); // write synedit settings to file
     procedure GetSynEditPreviewSettings(APreviewEditor: TObject);
     procedure AddSpecialHilightAttribsToHighlighter(Syn: TSrcIDEHighlighter);
@@ -3847,11 +3847,14 @@ begin
     ASynEdit.Font.Quality := fqDefault;
 end;
 
-procedure TEditorOptions.GetSynEditSettings(ASynEdit: TSynEdit);
+procedure TEditorOptions.GetSynEditSettings(ASynEdit: TSynEdit;
+  SimilarEdit: TSynEdit);
 // read synedit settings from config file
+// if SimilarEdit is given it is used for speed up
 var
   MarkCaret: TSynEditMarkupHighlightAllCaret;
   i: Integer;
+  j: Integer;
 begin
   // general options
   ASynEdit.Options := fSynEditOptions;
@@ -3906,15 +3909,30 @@ begin
     MarkCaret.Trim := FMarkupCurWordTrim;
   end;
 
-  KeyMap.AssignTo(ASynEdit.KeyStrokes, TSourceEditorWindowInterface);
+  if SimilarEdit<>nil then
+    ASynEdit.KeyStrokes.Assign(SimilarEdit.Keystrokes)
+  else
+    KeyMap.AssignTo(ASynEdit.KeyStrokes, TSourceEditorWindowInterface);
   i := ASynEdit.PluginCount - 1;
-  while (i >= 0) and not(ASynEdit.Plugin[i] is TSynPluginTemplateEdit) do
+  while (i >= 0) and not (ASynEdit.Plugin[i] is TSynPluginTemplateEdit) do
     dec(i);
   if i >= 0 then begin
-    KeyMap.AssignTo(TSynPluginTemplateEdit(ASynEdit.Plugin[i]).Keystrokes, TLazSynPluginTemplateEditForm);
-    KeyMap.AssignTo(TSynPluginTemplateEdit(ASynEdit.Plugin[i]).KeystrokesOffCell, TLazSynPluginTemplateEditFormOff);
+    if SimilarEdit<>nil then
+    begin
+      j := SimilarEdit.PluginCount - 1;
+      while (j >= 0) and not (SimilarEdit.Plugin[j] is TSynPluginTemplateEdit) do
+        dec(j);
+    end;
+    if j>=0 then begin
+      TSynPluginTemplateEdit(ASynEdit.Plugin[i]).Keystrokes.Assign(
+                                TSynPluginTemplateEdit(SimilarEdit.Plugin[j]).KeyStrokes);
+      TSynPluginTemplateEdit(ASynEdit.Plugin[i]).KeystrokesOffCell.Assign(
+            TSynPluginTemplateEdit(SimilarEdit.Plugin[j]).KeystrokesOffCell);
+    end else begin
+      KeyMap.AssignTo(TSynPluginTemplateEdit(ASynEdit.Plugin[i]).Keystrokes, TLazSynPluginTemplateEditForm);
+      KeyMap.AssignTo(TSynPluginTemplateEdit(ASynEdit.Plugin[i]).KeystrokesOffCell, TLazSynPluginTemplateEditFormOff);
+    end;
   end;
-
 
   ASynEdit.MouseActions.Assign(MouseMap);
   ASynEdit.MouseSelActions.Assign(MouseSelMap);

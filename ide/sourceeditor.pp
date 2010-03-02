@@ -2516,21 +2516,28 @@ begin
 end;
 
 Function TSourceEditor.RefreshEditorSettings: Boolean;
-{$IFDEF SynDualView}
 var
-  s: TComponent;
+  SimilarEditor: TSynEdit;
+  {$IFDEF SynDualView}
   i: Integer;
-{$ENDIF}
+  s: TComponent;
+  {$ENDIF}
 Begin
   Result:=true;
   SetSyntaxHighlighterType(fSyntaxHighlighterType);
-  EditorOpts.GetSynEditSettings(FEditor);
+
+  // try to copy settings from an editor to the left
+  SimilarEditor:=nil;
+  if (SourceNotebook.EditorCount>0) and (SourceNotebook.Editors[0]<>Self) then
+    SimilarEditor:=SourceNotebook.Editors[0].EditorComponent;
+  EditorOpts.GetSynEditSettings(FEditor,SimilarEditor);
+
   SourceNotebook.UpdateActiveEditColors(FEditor);
   {$IFDEF SynDualView}
   for i := 0 to FOtherViewList.Count - 1 do begin
     s := TForm(FOtherViewList[i]).FindComponent('s');
     if s <> nil then begin
-      EditorOpts.GetSynEditSettings(TSynEdit(s));
+      EditorOpts.GetSynEditSettings(TSynEdit(s),FEditor);
       TSynEdit(s).Highlighter := Highlighters[fSyntaxHighlighterType]
     end;
   end;
@@ -6851,7 +6858,7 @@ begin
   bmp := CreateBitmapFromLazarusResource('tsynsyncroedit');
   SyncroEdit.GutterGlyph.Assign(bmp);
   bmp.Free;
-  EditorOpts.GetSynEditSettings(s);
+  EditorOpts.GetSynEditSettings(s,ASrcEdit.EditorComponent);
 
   f.show;
   ASrcEdit.OtherViewList.Add(f);
