@@ -326,9 +326,12 @@ begin
   if SkipDependencies then
     Include(Flags,pcfDoNotCompileDependencies);
 
-  APackage.CompilerOptions.TargetOS:=OSOverride;
-  APackage.CompilerOptions.TargetCPU:=CPUOverride;
-  APackage.CompilerOptions.LCLWidgetType:=WidgetSetOverride;
+  if (Length(OSOverride) <> 0) then
+    APackage.CompilerOptions.TargetOS:=OSOverride;
+  if (Length(CPUOverride) <> 0) then
+    APackage.CompilerOptions.TargetCPU:=CPUOverride;
+  if (Length(WidgetSetOverride) <> 0) then
+    APackage.CompilerOptions.LCLWidgetType:=WidgetSetOverride;
 
   CompilePackage(APackage,Flags);
   
@@ -389,8 +392,10 @@ begin
 
   LoadMiscellaneousOptions;
   BuildLazOptions:=MiscellaneousOptions.BuildLazOpts;
-  BuildLazOptions.TargetOS:=OSOverride;
-  BuildLazOptions.TargetCPU:=CPUOverride;
+  if (Length(OSOverride) <> 0) then
+    BuildLazOptions.TargetOS:=OSOverride;
+  if (Length(CPUOverride) <> 0) then
+    BuildLazOptions.TargetCPU:=CPUOverride;
   if WidgetSetOverride<>'' then
     BuildLazOptions.TargetPlatform:=DirNameToLCLPlatform(WidgetSetOverride)
   else
@@ -602,10 +607,13 @@ begin
   
   if Project1.MainUnitInfo=nil then
     Error(ErrorBuildFailed,'project has no main unit');
-    
-  Project1.CompilerOptions.TargetOS:=OSOverride;
-  Project1.CompilerOptions.TargetCPU:=CPUOverride;
-  Project1.CompilerOptions.LCLWidgetType:=WidgetSetOverride;
+
+  if (Length(OSOverride) <> 0) then
+    Project1.CompilerOptions.TargetOS:=OSOverride;
+  if (Length(CPUOverride) <> 0) then
+    Project1.CompilerOptions.TargetCPU:=CPUOverride;
+  if (Length(WidgetSetOverride) <> 0) then
+    Project1.CompilerOptions.LCLWidgetType:=WidgetSetOverride;
 
   if not SkipDependencies then begin
     // compile required packages
