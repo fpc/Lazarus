@@ -4005,7 +4005,8 @@ begin
       end;
       AddPackage(BrokenPackage);
       DebugLn('TLazPackageGraph.OpenInstalledDependency ',BrokenPackage.IDAsString,' ',dbgs(ord(BrokenPackage.AutoInstall)));
-      if not Quiet then begin
+      if (not Quiet) and DirPathExistsCached(PkgLinks.GetGlobalLinkDirectory)
+      then begin
         // tell the user
         CurResult:=QuestionDlg(lisPkgSysPackageFileNotFound,
           Format(lisPkgSysThePackageIsInstalledButNoValidPackageFileWasFound, ['"',
