@@ -1234,6 +1234,18 @@ function TFullyAutomaticBeautifier.FindStackPosForBlockCloseAtPos(
       begin
       |end;
 }
+
+  function StackTopType: TFABBlockType;
+  var
+    i: Integer;
+  begin
+    i:=Stack.Top+FindStackPosForBlockCloseAtPos;
+    if (i>=0) and (i<=Stack.Top) then
+      Result:=Stack.Stack[i].Typ
+    else
+      Result:=bbtNone;
+  end;
+
   procedure EndBlock(aCount: integer = 1);
   begin
     dec(FindStackPosForBlockCloseAtPos,aCount);
@@ -1242,38 +1254,45 @@ function TFullyAutomaticBeautifier.FindStackPosForBlockCloseAtPos(
 
   procedure EndIdentifierSectionAndProc;
   begin
-    if Stack.TopType=bbtDefinition then
+    if StackTopType=bbtDefinition then
       EndBlock;
-    if Stack.TopType in bbtAllIdentifierSections then
+    if StackTopType in bbtAllIdentifierSections then
       EndBlock;
   end;
 
   procedure StartProcedure;
   begin
-    if Stack.TopType=bbtDefinition then
+    if StackTopType=bbtDefinition then
       EndBlock;
-    if Stack.TopType in bbtAllIdentifierSections then
+    if StackTopType in bbtAllIdentifierSections then
       EndBlock;
   end;
 
   function IsMethodDeclaration: boolean;
+  var
+    i: Integer;
   begin
-    Result:=(Stack.TopType in bbtAllProcedures)
-      and (Stack.Top>0) and (Stack.Stack[Stack.Top-1].Typ=bbtClassSection);
+    i:=Stack.Top+FindStackPosForBlockCloseAtPos;
+    Result:=(StackTopType in bbtAllProcedures)
+      and (i>0)
+      and (Stack.Stack[i-1].Typ=bbtClassSection);
   end;
 
   procedure EndClassSection;
   begin
-    if Stack.TopType=bbtClassSection then
+    if StackTopType=bbtClassSection then
       EndBlock
     else if IsMethodDeclaration then
       EndBlock(2);
   end;
 
   procedure EndBigSection;
+  var
+    i: Integer;
   begin
-    if Stack.Top>=0 then
-      EndBlock(Stack.Top+1);
+    i:=Stack.Top+FindStackPosForBlockCloseAtPos;
+    if i>=0 then
+      EndBlock(i+1);
   end;
 
   procedure EndTopMostBlock(BlockTyp: TFABBlockType);
@@ -1314,11 +1333,11 @@ begin
   case UpChars[r^] of
   'B':
     if CompareIdentifiers('BEGIN',r)=0 then begin
-      if Stack.TopType=bbtDefinition then
+      if StackTopType=bbtDefinition then
         EndBlock;
-      if Stack.TopType in bbtAllIdentifierSections then
+      if StackTopType in bbtAllIdentifierSections then
         EndBlock;
-      case Stack.TopType of
+      case StackTopType of
       bbtIfThen:
         begin
           TopType:=bbtIfBegin;
@@ -1333,7 +1352,7 @@ begin
     case UpChars[r[1]] of
     'L': // EL
       if CompareIdentifiers('ELSE',r)=0 then begin
-        case Stack.TopType of
+        case StackTopType of
         bbtCaseOf,bbtCaseColon:
           EndBlock;
         bbtIfThen:
@@ -1341,7 +1360,7 @@ begin
         bbtStatement:
           begin
             EndBlock;
-            if Stack.TopType in [bbtIfThen] then
+            if StackTopType in [bbtIfThen] then
               EndBlock;
           end;
         end;
@@ -1349,14 +1368,14 @@ begin
     'N': // EN
       if CompareIdentifiers('END',r)=0 then begin
         // if statements can be closed by end without semicolon
-        while Stack.TopType in [bbtIf,bbtIfThen,bbtIfElse] do
+        while StackTopType in [bbtIf,bbtIfThen,bbtIfElse] do
           EndBlock;
         if IsMethodDeclaration then
           EndBlock;
-        if Stack.TopType=bbtClassSection then
+        if StackTopType=bbtClassSection then
           EndBlock;
 
-        case Stack.TopType of
+        case StackTopType of
         bbtMainBegin,bbtFreeBegin,
         bbtRecord,bbtClass,bbtClassInterface,bbtTry,bbtFinally,bbtExcept,
         bbtCase,bbtCaseBegin,bbtIfBegin:
@@ -1364,7 +1383,7 @@ begin
         bbtCaseOf,bbtCaseColon,bbtCaseElse:
           begin
             EndBlock;
-            if Stack.TopType=bbtCase then
+            if StackTopType=bbtCase then
               EndBlock;
           end;
         bbtProcedureBegin:
@@ -1375,7 +1394,7 @@ begin
       end;
     'X': // EX
       if CompareIdentifiers('EXCEPT',r)=0 then begin
-        if Stack.TopType=bbtTry then
+        if StackTopType=bbtTry then
           EndBlock;
       end;
     end;
@@ -1385,7 +1404,7 @@ begin
       if CompareIdentifiers('FINALIZATION',r)=0 then begin
         EndBigSection;
       end else if CompareIdentifiers('FINALLY',r)=0 then begin
-        if Stack.TopType=bbtTry then
+        if StackTopType=bbtTry then
           EndBlock;
       end;
     end;
