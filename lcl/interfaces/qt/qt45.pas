@@ -19,6 +19,10 @@ const
   QtIntf = 'libqt4intf.dll';
 {$ENDIF}
 
+{$IFDEF HAIKU}
+  QtIntf = 'libqt4intf.so.5';
+{$ENDIF}
+
 // Set qtopia yourself if using QTOPIA with QVFB on i386
 // ppc386 -dQTOPIA
 {$IFDEF CPUARM}
