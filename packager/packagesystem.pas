@@ -1158,18 +1158,21 @@ begin
     // check unit file
     FRegistrationFile:=FRegistrationPackage.FindUnit(FRegistrationUnitName,true);
     if FRegistrationFile=nil then begin
-      FRegistrationFile:=
-        FRegistrationPackage.FindUnit(FRegistrationUnitName,false);
-      if FRegistrationFile=nil then begin
-        RegistrationError(Format(lisPkgSysUnitNotFound, ['"',
-          FRegistrationUnitName, '"']));
-      end else begin
-        if not (pffReportedAsRemoved in FRegistrationFile.Flags) then begin
-          RegistrationError(
-            Format(lisPkgSysUnitWasRemovedFromPackage, ['"',
-              FRegistrationUnitName, '"']));
-          FRegistrationFile.Flags:=
-                                 FRegistrationFile.Flags+[pffReportedAsRemoved];
+      if not (FRegistrationPackage.Missing) then begin
+        // lpk exists, but file is missing => warn
+        FRegistrationFile:=
+          FRegistrationPackage.FindUnit(FRegistrationUnitName,false);
+        if FRegistrationFile=nil then begin
+          RegistrationError(Format(lisPkgSysUnitNotFound, ['"',
+            FRegistrationUnitName, '"']));
+        end else begin
+          if not (pffReportedAsRemoved in FRegistrationFile.Flags) then begin
+            RegistrationError(
+              Format(lisPkgSysUnitWasRemovedFromPackage, ['"',
+                FRegistrationUnitName, '"']));
+            FRegistrationFile.Flags:=
+                                   FRegistrationFile.Flags+[pffReportedAsRemoved];
+          end;
         end;
       end;
       exit;
