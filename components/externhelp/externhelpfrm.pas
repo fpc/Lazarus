@@ -540,9 +540,10 @@ var
 begin
   if not (ssLeft in Shift) then begin
     // no left mouse button => stop showing insert mark
+    if tvoAutoInsertMark in ItemsTreeView.Options then
+      DebugLn(['TExternHelpGeneralOptsFrame.ItemsTreeViewMouseMove no left']);
     ItemsTreeView.Options:=ItemsTreeView.Options-[tvoAutoInsertMark];
     FDragNode:=nil;
-    DebugLn(['TExternHelpGeneralOptsFrame.ItemsTreeViewMouseMove no left']);
   end else if (not ItemsTreeView.Dragging) then begin
     // left mouse button is presses and not yet dragging => start dragging
     TVNode:=ItemsTreeView.GetNodeAt(X,Y);

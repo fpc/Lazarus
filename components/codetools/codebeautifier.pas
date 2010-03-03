@@ -1239,7 +1239,7 @@ function TFullyAutomaticBeautifier.FindStackPosForBlockCloseAtPos(
   var
     i: Integer;
   begin
-    i:=Stack.Top+FindStackPosForBlockCloseAtPos;
+    i:=FindStackPosForBlockCloseAtPos;
     if (i>=0) and (i<=Stack.Top) then
       Result:=Stack.Stack[i].Typ
     else
@@ -1272,7 +1272,7 @@ function TFullyAutomaticBeautifier.FindStackPosForBlockCloseAtPos(
   var
     i: Integer;
   begin
-    i:=Stack.Top+FindStackPosForBlockCloseAtPos;
+    i:=FindStackPosForBlockCloseAtPos;
     Result:=(StackTopType in bbtAllProcedures)
       and (i>0)
       and (Stack.Stack[i-1].Typ=bbtClassSection);
@@ -1290,7 +1290,7 @@ function TFullyAutomaticBeautifier.FindStackPosForBlockCloseAtPos(
   var
     i: Integer;
   begin
-    i:=Stack.Top+FindStackPosForBlockCloseAtPos;
+    i:=FindStackPosForBlockCloseAtPos;
     if i>=0 then
       EndBlock(i+1);
   end;
