@@ -176,9 +176,6 @@ type
   protected
     procedure Clean(ACanvas: TCanvas; ARect: TRect);
     procedure DisplaySeries(ACanvas: TCanvas);
-    procedure DoDrawReticule(
-      ASeriesIndex, AIndex: Integer; const AImg: TPoint;
-      const AData: TDoublePoint); virtual;
     procedure DrawAxis(ACanvas: TCanvas);
     procedure DrawTitleFoot(ACanvas: TCanvas);
     procedure MouseDown(
@@ -871,7 +868,7 @@ procedure TChart.MouseMove(Shift: TShiftState; X, Y: Integer);
     DIST_FUNCS: array [TReticuleMode] of TPointDistFunc = (
       nil, @PointDistX, @PointDistY, @PointDist);
   var
-    i, pointIndex: Integer;
+    i, pointIndex, bestSeries: Integer;
     value: TDoublePoint;
     newRetPos, bestRetPos: TPoint;
     d, minDist: Double;
@@ -886,16 +883,17 @@ procedure TChart.MouseMove(Shift: TShiftState; X, Y: Integer);
          d := DIST_FUNCS[FReticuleMode](APoint, newRetPos);
          if d < minDist then begin
            bestRetPos := newRetPos;
+           bestSeries := i;
            minDist := d;
          end;
       end;
-      if (minDist < Infinity) and (bestRetPos <> FReticulePos) then begin
-        DoDrawReticule(i, pointIndex, bestRetPos, value);
-        DrawReticule(Canvas);
-        FReticulePos := bestRetPos;
-        DrawReticule(Canvas);
-        exit;
-      end;
+    if (minDist < Infinity) and (bestRetPos <> FReticulePos) then begin
+      DrawReticule(Canvas);
+      FReticulePos := bestRetPos;
+      DrawReticule(Canvas);
+      if Assigned(FOnDrawReticule) then
+        FOnDrawReticule(Self, bestSeries, pointIndex, bestRetPos, value);
+    end;
   end;
 
 var
@@ -941,13 +939,6 @@ begin
 
   if FIsZoomed or oldIsZoomed then
     Invalidate;
-end;
-
-procedure TChart.DoDrawReticule(
-  ASeriesIndex, AIndex: Integer; const AImg: TPoint; const AData: TDoublePoint);
-begin
-  if Assigned(FOnDrawReticule) then
-    FOnDrawReticule(Self, ASeriesIndex, AIndex, AImg, AData);
 end;
 
 procedure TChart.SetLegend(Value: TChartLegend);
