@@ -5,7 +5,7 @@ unit main;
 interface
 
 uses
-  Forms,
+  ExtCtrls, Forms, Spin, StdCtrls,
   TAGraph, TASeries, TASources;
 
 type
@@ -17,8 +17,13 @@ type
     Chart1BarSeries1: TBarSeries;
     Chart1BarSeries2: TBarSeries;
     Chart1LineSeries1: TLineSeries;
+    lblDepth: TLabel;
+    pnControls: TPanel;
     RandomChartSource1: TRandomChartSource;
     RandomChartSource2: TRandomChartSource;
+    seDepth: TSpinEdit;
+    procedure FormShow(Sender: TObject);
+    procedure seDepthChange(Sender: TObject);
   end;
 
 var
@@ -27,6 +32,25 @@ var
 implementation
 
 {$R *.lfm}
+
+uses
+  Math;
+
+{ TForm1 }
+
+procedure TForm1.FormShow(Sender: TObject);
+begin
+  seDepth.Value := Chart1.Depth;
+end;
+
+procedure TForm1.seDepthChange(Sender: TObject);
+var
+  i: Integer;
+begin
+  Chart1.Depth := seDepth.Value;
+  for i := 0 to Chart1.SeriesCount - 1 do
+    Chart1.Series[i].Depth := Min(seDepth.Value, 10);
+end;
 
 end.
 

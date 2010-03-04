@@ -1,16 +1,17 @@
 object Form1: TForm1
   Left = 318
-  Height = 300
+  Height = 347
   Top = 150
   Width = 560
   Caption = 'Form1'
-  ClientHeight = 300
+  ClientHeight = 347
   ClientWidth = 560
+  OnShow = FormShow
   Position = poScreenCenter
   LCLVersion = '0.9.29'
   object Chart1: TChart
     Left = 0
-    Height = 300
+    Height = 297
     Top = 0
     Width = 560
     AxisList = <    
@@ -60,6 +61,32 @@ object Form1: TForm1
       LinePen.Color = clBlue
       SeriesColor = clBlue
       Source = RandomChartSource1
+    end
+  end
+  object pnControls: TPanel
+    Left = 0
+    Height = 50
+    Top = 297
+    Width = 560
+    Align = alBottom
+    ClientHeight = 50
+    ClientWidth = 560
+    TabOrder = 1
+    object seDepth: TSpinEdit
+      Left = 52
+      Height = 21
+      Top = 7
+      Width = 74
+      OnChange = seDepthChange
+      TabOrder = 0
+    end
+    object lblDepth: TLabel
+      Left = 4
+      Height = 14
+      Top = 7
+      Width = 34
+      Caption = 'Depth:'
+      ParentColor = False
     end
   end
   object RandomChartSource1: TRandomChartSource
