@@ -808,7 +808,7 @@ procedure TChart.DisplaySeries(ACanvas: TCanvas);
   end;
 
 var
-  i: Integer;
+  i, d: Integer;
   seriesInZOrder: TFPList;
 begin
   if SeriesCount = 0 then exit;
@@ -818,14 +818,15 @@ begin
     seriesInZOrder.Assign(FSeries.FList);
     seriesInZOrder.Sort(@CompareZPosition);
 
+    d := Depth;
     for i := 0 to SeriesCount - 1 do
       with TBasicChartSeries(seriesInZOrder[i]) do begin
         if not Active then continue;
-        OffsetDrawArea(ZPosition, Depth);
+        OffsetDrawArea(Min(ZPosition, d), Min(Depth, d));
         ACanvas.ClipRect := FClipRect;
         ACanvas.Clipping := true;
         Draw(ACanvas);
-        OffsetDrawArea(-ZPosition, -Depth);
+        OffsetDrawArea(-Min(ZPosition, d), -Min(Depth, d));
         ACanvas.Clipping := false;
       end;
   finally
