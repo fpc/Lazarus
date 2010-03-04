@@ -154,7 +154,6 @@ type
     function GetChartWidth: Integer;
     function GetMargins(ACanvas: TCanvas): TRect;
     function GetSeriesCount: Integer;
-    function GetSeriesInZOrder: TFPList;
     procedure PrepareXorPen;
 
     procedure SetAxis(AIndex: Integer; AValue: TChartAxis);
@@ -814,8 +813,11 @@ var
 begin
   if SeriesCount = 0 then exit;
 
-  seriesInZOrder := GetSeriesInZOrder;
+  seriesInZOrder := TFPList.Create;
   try
+    seriesInZOrder.Assign(FSeries.FList);
+    seriesInZOrder.Sort(@CompareZPosition);
+
     for i := 0 to SeriesCount - 1 do
       with TBasicChartSeries(seriesInZOrder[i]) do begin
         if not Active then continue;
@@ -1023,18 +1025,6 @@ end;
 function TChart.GetSeriesCount: Integer;
 begin
   Result := FSeries.FList.Count;
-end;
-
-function TChart.GetSeriesInZOrder: TFPList;
-begin
-  Result := TFPList.Create;
-  try
-    Result.Assign(FSeries.FList);
-    Result.Sort(@CompareZPosition);
-  except
-    Result.Free;
-    raise;
-  end;
 end;
 
 procedure TChart.UpdateExtent;
