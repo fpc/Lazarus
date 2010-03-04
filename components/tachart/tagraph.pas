@@ -39,7 +39,7 @@ type
 
   TDrawReticuleEvent = procedure(
     ASender: TChart; ASeriesIndex, AIndex: Integer;
-    const AImg: TPoint; const AData: TDoublePoint) of object;
+    const AData: TDoublePoint) of object;
 
   { TBasicChartSeries }
 
@@ -55,6 +55,7 @@ type
     procedure AfterAdd; virtual;
     procedure AfterDraw; virtual;
     procedure BeforeDraw; virtual;
+    procedure GetBounds(out ABounds: TDoubleRect); virtual; abstract;
     procedure GetLegendItems(AItems: TChartLegendItems); virtual; abstract;
     function GetNearestPoint(
       ADistFunc: TPointDistFunc; const APoint: TPoint;
@@ -64,7 +65,6 @@ type
     procedure SetDepth(AValue: TChartDistance); virtual; abstract;
     procedure SetShowInLegend(AValue: Boolean); virtual; abstract;
     procedure SetZPosition(AValue: TChartDistance); virtual; abstract;
-    procedure GetBounds(out ABounds: TDoubleRect); virtual; abstract;
     procedure UpdateMargins(ACanvas: TCanvas; var AMargins: TRect); virtual;
 
   protected
@@ -229,6 +229,7 @@ type
     property ChartWidth: Integer read GetChartWidth;
     property ClipRect: TRect read FClipRect;
     property CurrentExtent: TDoubleRect read FCurrentExtent;
+    property ReticulePos: TPoint read FReticulePos;
     property SeriesCount: Integer read GetSeriesCount;
     property XGraphMax: Double read FCurrentExtent.b.X;
     property XGraphMin: Double read FCurrentExtent.a.X;
@@ -892,7 +893,7 @@ procedure TChart.MouseMove(Shift: TShiftState; X, Y: Integer);
       FReticulePos := bestRetPos;
       DrawReticule(Canvas);
       if Assigned(FOnDrawReticule) then
-        FOnDrawReticule(Self, bestSeries, pointIndex, bestRetPos, value);
+        FOnDrawReticule(Self, bestSeries, pointIndex, value);
     end;
   end;
 
