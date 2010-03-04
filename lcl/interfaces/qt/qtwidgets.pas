@@ -2439,6 +2439,10 @@ begin
   if not CanSendLCLMessage then
     exit;
 
+  if (LCLObject <> nil) and
+    (not (csDesigning in LCLObject.ComponentState) and not getEnabled) then
+    exit;
+
   // idea of multi click implementation is taken from gtk
 
   FillChar(Msg, SizeOf(Msg), #0);
