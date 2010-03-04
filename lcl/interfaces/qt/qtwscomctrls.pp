@@ -900,21 +900,6 @@ begin
     Exit;
   QtTreeWidget := TQtTreeWidget(ALV.Handle);
   QtTreeWidget.takeTopLevelItem(AIndex);
-
-  {$note FIXME workaround issue #9746, TQtWSCustomListView.ItemDelete}
-  {workaround for ListOutOfBounds in some cases. Described with issue #9746}
-  QtItem := QtTreeWidget.currentItem;
-
-  if QtItem <> nil then
-  begin
-    Item := ALV.Selected;
-    if Assigned(Item) then
-    begin
-      if Item.Index <> QtTreeWidget.indexOfTopLevelItem(QtItem) then
-        TListView(ALV).Items[QtTreeWidget.indexOfTopLevelItem(QtItem)].Selected := True;
-    end;
-  end;
-
 end;
 
 {------------------------------------------------------------------------------
@@ -989,7 +974,6 @@ begin
       lisFocused: AIsSet := TWI = QtTreeWidget.currentItem;
       lisSelected: AIsSet := QTreeWidgetItem_isSelected(TWI);
     end;
-
   Result := True;
 
 end;
