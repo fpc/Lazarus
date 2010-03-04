@@ -478,7 +478,6 @@ begin
   Canvas.Pen.Style := psSolid;
   Canvas.Pen.Mode := pmXor;
   Canvas.Pen.Color := clWhite;
-  Canvas.Pen.Style := psSolid;
   Canvas.Pen.Width := 1;
 end;
 
@@ -648,7 +647,6 @@ end;
 procedure TChart.SetReticuleMode(const AValue: TReticuleMode);
 begin
   if FReticuleMode = AValue then exit;
-  DrawReticule(Canvas);
   FReticuleMode := AValue;
   Invalidate;
 end;
@@ -918,7 +916,6 @@ begin
     inherited;
     exit;
   end;
-  FReticulePos := Point(X, Y);
 
   PrepareXorPen;
   Canvas.Rectangle(FSelectionRect);
@@ -938,8 +935,11 @@ begin
         Exchange(a.Y, b.Y);
     end;
 
-  if FIsZoomed or oldIsZoomed then
+  if FIsZoomed or oldIsZoomed then begin
+    // Hide reticule -- it will be drawn again in the next MouseMove.
+    FReticulePos := Point(-1, -1);
     Invalidate;
+  end;
 end;
 
 procedure TChart.SetLegend(Value: TChartLegend);
