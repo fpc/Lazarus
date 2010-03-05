@@ -22,19 +22,9 @@ unit registersqldb;
 {$DEFINE HASMYSQL4CONNECTION}
 {$DEFINE HASORACLECONNECTION}
 {$DEFINE HASPQCONNECTION}
-{$ENDIF}
-
-{ SQLITE }
-{$IFNDEF WIN64}
-{$IFNDEF VER2_2_0}
 {$DEFINE HASSQLITE3CONNECTION}
 {$ENDIF}
-{$ENDIF}
 
-{ SQLSCRIPT }
-{$IFNDEF VER2_2_0}
-{$DEFINE HASSQLSCRIPT}
-{$ENDIF}
 interface
 
 uses
@@ -48,10 +38,10 @@ uses
 {$IFDEF HASMYSQL4CONNECTION}
   mysql40conn, mysql41conn,
 {$ENDIF}
+  mysql50conn,
 {$IFDEF HASSQLITE3CONNECTION}
   sqlite3conn,
 {$ENDIF}
-  mysql50conn,
   propedits,
   sqlstringspropertyeditordlg,
   controls,
@@ -84,10 +74,8 @@ procedure RegisterUnitSQLdb;
 begin
   RegisterComponents('SQLdb',[TSQLQuery,
                               TSQLTransaction,
-{$IFDEF HASSQLSCRIPT}
                               TSQLScript,
                               TSQLConnector,
-{$ENDIF}
 {$IFDEF HASPQCONNECTION}
                               TPQConnection,
 {$ENDIF}
@@ -99,10 +87,10 @@ begin
                               TMySQL40Connection,
                               TMySQL41Connection,
 {$ENDIF}
+                              TMySQL50Connection,
 {$IFDEF HASSQLITE3CONNECTION}
                               TSQLite3Connection,
 {$ENDIF}
-                              TMySQL50Connection,
                               TIBConnection]);
 end;
 
