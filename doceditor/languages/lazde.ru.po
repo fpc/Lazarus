@@ -1,212 +1,128 @@
 msgid ""
-msgstr "Content-Type: text/plain; charset=UTF-8"
+msgstr ""
+"Content-Type: text/plain; charset=UTF-8\n"
+"Project-Id-Version: \n"
+"POT-Creation-Date: \n"
+"PO-Revision-Date: \n"
+"Last-Translator: Maxim Ganetsky <maxkill@mail.ru>\n"
+"Language-Team: \n"
+"MIME-Version: 1.0\n"
+"Content-Transfer-Encoding: 8bit\n"
 
-#: frmbuild.sadd
-msgctxt "frmbuild.sadd"
+#: lazdemsg.sadd
+msgctxt "lazdemsg.sadd"
 msgid "&Add"
-msgstr "Добавить"
+msgstr "&Добавить"
 
-#: frmbuild.saddall
-msgctxt "frmbuild.saddall"
+#: lazdemsg.saddall
+msgctxt "lazdemsg.saddall"
 msgid "Add All"
-msgstr "Добавить всё"
+msgstr "Добавить все"
 
-#: frmbuild.sadddescriptionfile
+#: lazdemsg.sadddescriptionfile
+msgctxt "lazdemsg.sadddescriptionfile"
 msgid "Select a new description file"
 msgstr "Выберите новый файл описания"
 
-#: frmbuild.sbuild
-msgctxt "frmbuild.sbuild"
+#: lazdemsg.sbuild
+msgctxt "lazdemsg.sbuild"
 msgid "&Build"
 msgstr "&Собрать"
 
-#: frmbuild.sbuilddocumentation
-msgctxt "frmbuild.sbuilddocumentation"
+#: lazdemsg.sbuilddocumentation
+msgctxt "lazdemsg.sbuilddocumentation"
 msgid "Build documentation"
-msgstr "Компиляция документации"
+msgstr "Сборка документации"
 
-#: frmbuild.sbuildok
+#: lazdemsg.sbuildok
+msgctxt "lazdemsg.sbuildok"
 msgid "Documentation successfully built."
-msgstr "Документация успешно скомпилированна"
+msgstr "Документация успешно собрана."
 
-#: frmbuild.sbuildoutput
-msgctxt "frmbuild.sbuildoutput"
+#: lazdemsg.sbuildoutput
+msgctxt "lazdemsg.sbuildoutput"
 msgid "Build output"
-msgstr "Протокол сборки"
+msgstr "Вывод сборки"
 
-#: frmbuild.sclose
-msgctxt "frmbuild.sclose"
+#: lazdemsg.sclose
+msgctxt "lazdemsg.sclose"
 msgid "&Close"
 msgstr "&Закрыть"
 
-#: frmbuild.scpu
-msgctxt "frmbuild.scpu"
-msgid "CPU"
-msgstr "Целевой процессор"
-
-#: frmbuild.screatecontentfile
-msgctxt "frmbuild.screatecontentfile"
-msgid "Create cont&ent file"
-msgstr "Создать файл оглавления"
-
-#: frmbuild.sdelete
-msgctxt "frmbuild.sdelete"
-msgid "&Delete"
-msgstr "Удалить"
-
-#: frmbuild.sdescription
-msgctxt "frmbuild.sdescription"
-msgid "Description"
-msgstr "Описание"
-
-#: frmbuild.sedit
-msgctxt "frmbuild.sedit"
-msgid "&Edit"
-msgstr "Изменить"
-
-#: frmbuild.seditdescriptionfile
-msgid "Change description file"
-msgstr "Изменить файл описания"
-
-#: frmbuild.serrfpdoc
-msgid "Building failed with exit code %d. Please check log."
-msgstr "Компиляция прервана с кодом завешения %d. Пожалуста, проверьте протокол."
-
-#: frmbuild.sformat
-msgctxt "frmbuild.sformat"
-msgid "&Format"
-msgstr "&Формат"
-
-#: frmbuild.shideprotectedmethods
-msgctxt "frmbuild.shideprotectedmethods"
-msgid "&Hide protected methods"
-msgstr "Прятать защищённые методы"
-
-#: frmbuild.simportcontentfile
-msgctxt "frmbuild.simportcontentfile"
-msgid "Import content file"
-msgstr "Импортировать файл оглавления"
-
-#: frmbuild.sload
-msgctxt "frmbuild.sload"
-msgid "&Load"
-msgstr "&Загрузить"
-
-#: frmbuild.sotheroptions
-msgctxt "frmbuild.sotheroptions"
-msgid "Other options"
-msgstr "Прочии опции"
-
-#: frmbuild.soutput
-msgctxt "frmbuild.soutput"
-msgid "&Output"
-msgstr "&Вывод"
-
-#: frmbuild.spackage
-msgctxt "frmbuild.spackage"
-msgid "&Package"
-msgstr "&Пакет"
-
-#: frmbuild.ssave
-msgctxt "frmbuild.ssave"
-msgid "&Save"
-msgstr "&Сохранить"
-
-#: frmbuild.sselectoutputdirectory
-msgid "Select output directory"
-msgstr "Укажите каталог вывода"
-
-#: frmbuild.sselectoutputfile
-msgid "Select output file name"
-msgstr "Укажите имя выходного файла"
-
-#: frmbuild.sshowprivatemethods
-msgctxt "frmbuild.sshowprivatemethods"
-msgid "Show p&rivate methods"
-msgstr "Отображать приватные методы"
-
-#: frmbuild.ssourcescapt
-msgctxt "frmbuild.ssourcescapt"
-msgid "Sources"
-msgstr "Исходники"
-
-#: frmbuild.stargetos
-msgctxt "frmbuild.stargetos"
-msgid "Target OS"
-msgstr "Целевая ОС"
-
-#: frmbuild.susingcommand
-msgid "Building docs using command: "
-msgstr "Компиляция документации с использованием команды:"
-
-#: frmbuild.swarnifnodocumentationnodefound
-msgctxt "frmbuild.swarnifnodocumentationnodefound"
-msgid "Warn if no documentation node found"
-msgstr "Предупреждать, если нет узлов документации"
-
-#: lazdemsg.sabouttext
-msgid ""
-"fpdoc editor 1.0\n"
-"(c) 2002 Michael Van Canneyt\n"
-"See http://www.freepascal.org/\n"
-msgstr ""
-
-#: lazdemsg.scancel
-msgid " Cancel "
-msgstr "Отмена"
-
 #: lazdemsg.scodeexample
 msgid "Example code File"
-msgstr "Файл с примером кода"
+msgstr "Файл образца кода"
+
+#: lazdemsg.scpu
+msgctxt "lazdemsg.scpu"
+msgid "CPU"
+msgstr "Процессор"
+
+#: lazdemsg.screatecontentfile
+msgctxt "lazdemsg.screatecontentfile"
+msgid "Create cont&ent file"
+msgstr "Создать файл содержимого"
 
 #: lazdemsg.sdataforelement
 msgid "Documentation for element \"%s\":"
 msgstr "Документация для элемента \"%s\":"
 
-#: lazdemsg.sdeleteelement
-msgid "Are you sure you want to delete element \"%s\" ?"
-msgstr "Вы уверены в удалении элемента \"%s\"?"
+#: lazdemsg.sdelete
+msgctxt "lazdemsg.sdelete"
+msgid "&Delete"
+msgstr "&Удалить"
 
 #: lazdemsg.sdeletemodule
 msgid "Are you sure you want to delete module \"%s\" ?"
-msgstr "Вы уверены в удалении модуля \"%s\"?"
+msgstr "Вы действительно хотите удалить модуль \"%s\"?"
 
 #: lazdemsg.sdeletepackage
 msgid "Are you sure you want to delete package \"%s\" ?"
-msgstr "Вы уверены в удалении пакета \"%s\"?"
+msgstr "Вы действительно хотите удалить пакет \"%s\"?"
 
 #: lazdemsg.sdeletetopic
 msgid "Are you sure you want to delete topic \"%s\" ?"
-msgstr "Вы уверены в удалении раздела \"%s\"?"
+msgstr "Вы действительно хотите удалить тему \"%s\"?"
 
 #: lazdemsg.sdescription
 msgctxt "lazdemsg.sdescription"
 msgid "Description"
 msgstr "Описание"
 
+#: lazdemsg.sedit
+msgctxt "lazdemsg.sedit"
+msgid "&Edit"
+msgstr "&Редактировать"
+
+#: lazdemsg.seditdescriptionfile
+msgctxt "lazdemsg.seditdescriptionfile"
+msgid "Change description file"
+msgstr "Изменить файл описания"
+
+#: lazdemsg.serrfpdoc
+msgctxt "lazdemsg.serrfpdoc"
+msgid "Building failed with exit code %d. Please check log."
+msgstr "Сборка не удалась (код %d). Проверьте журнал."
+
 #: lazdemsg.serrnomoduleforelement
 msgid "No module found to insert element \"%s\""
-msgstr "Не найден модуль для вставки элемента \"%s\""
-
-#: lazdemsg.serrnonodeforelement
-msgid "No node found for element \"%s\""
-msgstr "Не найден узел для вставки элемента \"%s\""
+msgstr "Модуль для вставки элемента \"%s\" не найден"
 
 #: lazdemsg.serrnonodeformodule
 msgid "No node found for module \"%s\""
-msgstr "Не найден узел для модуля \"%s\""
+msgstr "Узел для модуля \"%s\" не найден"
 
 #: lazdemsg.serrnonodeforpackage
 msgid "No node found for package \"%s\""
-msgstr "Не найден узел для пакета \"%s\""
+msgstr "Узел для пакета \"%s\" не найден"
 
 #: lazdemsg.serrnonodefortopic
 msgid "No parent node found to insert topic \"%s\""
-msgstr "Не родительского узла для вставки раздела \"%s\""
+msgstr "Узел-родитель для вставки темы \"%s\" не найден"
 
 #: lazdemsg.serrnopackageformodule
 msgid "No package found to insert module \"%s\""
-msgstr "Не найден пакет для вставки модуля"
+msgstr "Пакет для вставки модуля \"%s\" не найден"
 
 #: lazdemsg.serrors
 msgid "Errors"
@@ -214,278 +130,207 @@ msgstr "Ошибки"
 
 #: lazdemsg.serrunknowndomelement
 msgid "Unknwon DOM element as parent for selected element: \"%s\""
-msgstr "Не известный элемент DOM для выбранного элемента: \"%s\""
+msgstr "У выбранного элемента \"%s\" родителем является неизвестный элемент DOM"
 
 #: lazdemsg.sfilemodified
 msgid "Document \"%s\" was modified, would you like to save it?"
-msgstr "Документ \"%s\" изменён, вы хотите сохранить его?"
+msgstr "Документ \"%s\" был изменён. Хотите сохранить его?"
 
 #: lazdemsg.sfilestructure
 msgid "Documentation structure"
-msgstr "Структура документа"
+msgstr "Структура документации"
 
 #: lazdemsg.sfiletemplate
 msgid "template.xml"
-msgstr ""
+msgstr "template.xml"
 
 #: lazdemsg.sforfile
 msgid " in file "
-msgstr ""
+msgstr " в файле"
+
+#: lazdemsg.sformat
+msgctxt "lazdemsg.sformat"
+msgid "&Format"
+msgstr "&Формат"
 
 #: lazdemsg.sformodule
 msgid " in module "
-msgstr ""
+msgstr " в модуле"
 
 #: lazdemsg.sforpackage
 msgid " in package "
-msgstr ""
+msgstr " в пакете"
 
 #: lazdemsg.sfortopic
 msgid " in topic"
-msgstr ""
+msgstr " в теме"
 
-#: lazdemsg.sfpde
-msgid "Free Pascal documentation editor"
-msgstr ""
-
-#: lazdemsg.shintfilenew
-msgid "New file"
-msgstr ""
-
-#: lazdemsg.shintfileopen
-msgid "Open file"
-msgstr ""
-
-#: lazdemsg.shintfilesave
-msgid "Save file"
-msgstr ""
-
-#: lazdemsg.shintfilesaveas
-msgid "Save file as"
-msgstr ""
-
-#: lazdemsg.shintinsertelement
-msgid "New element"
-msgstr ""
-
-#: lazdemsg.shintinsertlink
-msgctxt "lazdemsg.shintinsertlink"
-msgid "Insert link"
-msgstr ""
-
-#: lazdemsg.shintinsertmodule
-msgid "New module"
-msgstr ""
-
-#: lazdemsg.shintinsertpackage
-msgid "New package"
-msgstr ""
-
-#: lazdemsg.shintinsertprintshortlink
-msgid "Insert a short description link"
-msgstr ""
-
-#: lazdemsg.shintinserttable
-msgctxt "lazdemsg.shintinserttable"
-msgid "Insert table"
-msgstr ""
-
-#: lazdemsg.shintinserttopic
-msgid "New topic"
-msgstr ""
+#: lazdemsg.shideprotectedmethods
+msgctxt "lazdemsg.shideprotectedmethods"
+msgid "&Hide protected methods"
+msgstr "Скрывать &protected-методы"
 
 #: lazdemsg.shinttoolbaradd
 msgid "Add"
-msgstr ""
+msgstr "Добавить"
 
 #: lazdemsg.shinttoolbardelete
 msgctxt "lazdemsg.shinttoolbardelete"
 msgid "Delete"
-msgstr ""
+msgstr "Удалить"
 
 #: lazdemsg.shinttoolbaredit
 msgid "Edit"
-msgstr ""
+msgstr "Редактировать"
 
-#: lazdemsg.shmenuextraoptions
-msgid "Show options dialog"
-msgstr ""
-
-#: lazdemsg.shmenuhelpabout
-msgid "About this program"
-msgstr ""
+#: lazdemsg.simportcontentfile
+msgctxt "lazdemsg.simportcontentfile"
+msgid "Import content file"
+msgstr "Импортировать файл содержимого"
 
 #: lazdemsg.sinsertlink
 msgctxt "lazdemsg.sinsertlink"
 msgid "Insert link"
-msgstr ""
+msgstr "Вставить ссылку"
 
 #: lazdemsg.sinsertprintshortlink
 msgid "Insert short description link"
-msgstr ""
+msgstr "Вставить ссылку на краткое описание"
 
 #: lazdemsg.sinserttable
 msgctxt "lazdemsg.sinserttable"
 msgid "Insert table"
-msgstr ""
+msgstr "Вставить таблицу"
 
-#: lazdemsg.slinktarget
-msgid "Link target"
-msgstr ""
-
-#: lazdemsg.slinktext
-msgid "Link text"
-msgstr ""
+#: lazdemsg.sload
+msgctxt "lazdemsg.sload"
+msgid "&Load"
+msgstr "З&агрузить"
 
 #: lazdemsg.smakeskelfromsource
 msgid "Make new document from source file"
-msgstr ""
+msgstr "Сгенерировать новый документ из файла исходного кода"
 
 #: lazdemsg.smarkselection
 msgid "Mark selection %s"
-msgstr ""
-
-#: lazdemsg.smenuclose
-msgid "_Close"
-msgstr ""
+msgstr "Отметить выделенное: %s"
 
 #: lazdemsg.smenucollapseall
 msgid "Collapse All"
-msgstr ""
+msgstr "Свернуть все"
 
 #: lazdemsg.smenudelete
 msgctxt "lazdemsg.smenudelete"
 msgid "Delete"
-msgstr ""
-
-#: lazdemsg.smenuexit
-msgid "E_xit"
-msgstr ""
+msgstr "Удалить"
 
 #: lazdemsg.smenuexpandall
 msgid "Expand All"
-msgstr ""
+msgstr "Развернуть все"
 
 #: lazdemsg.smenuextra
-msgid "Extra"
-msgstr ""
+msgid "&Extra"
+msgstr "С&ервис"
+
+#: lazdemsg.smenuextrabuild
+msgctxt "lazdemsg.smenuextrabuild"
+msgid "&Build"
+msgstr "&Сборка"
 
 #: lazdemsg.smenuextraoptions
-msgctxt "lazdemsg.smenuextraoptions"
-msgid "Options"
-msgstr ""
+msgid "&Options"
+msgstr "&Параметры"
 
 #: lazdemsg.smenufile
-msgid "File"
-msgstr ""
+msgid "&File"
+msgstr "&Файл"
 
-#: lazdemsg.smenuformat
-msgid "Format"
-msgstr ""
+#: lazdemsg.smenufileclose
+msgctxt "lazdemsg.smenufileclose"
+msgid "&Close"
+msgstr "&Закрыть"
 
-#: lazdemsg.smenuformatbold
-msgid "_Bold"
-msgstr ""
+#: lazdemsg.smenufilenew
+msgid "&New"
+msgstr "&Новый"
 
-#: lazdemsg.smenuformatcode
-msgid "_Code"
-msgstr ""
+#: lazdemsg.smenufilenewfromfile
+msgid "New from fi&le"
+msgstr "Новый из &файла"
 
-#: lazdemsg.smenuformatfile
-msgid "_File"
-msgstr ""
+#: lazdemsg.smenufileopen
+msgid "&Open"
+msgstr "&Открыть"
 
-#: lazdemsg.smenuformatitalics
-msgid "_Italic"
-msgstr ""
+#: lazdemsg.smenufilequit
+msgid "&Quit"
+msgstr "В&ыход"
 
-#: lazdemsg.smenuformatparagraph
-msgid "_Paragraph"
-msgstr ""
+#: lazdemsg.smenufilerecent
+msgid "&Recent"
+msgstr "Не&давний"
 
-#: lazdemsg.smenuformatremark
-msgid "_Remark"
-msgstr ""
+#: lazdemsg.smenufilesave
+msgctxt "lazdemsg.smenufilesave"
+msgid "&Save"
+msgstr "Со&хранить"
 
-#: lazdemsg.smenuformatunderline
-msgid "_Underline"
-msgstr ""
-
-#: lazdemsg.smenuformatvariable
-msgid "_Variable"
-msgstr ""
+#: lazdemsg.smenufilesaveas
+msgid "Save &as"
+msgstr "Сохранить &как"
 
 #: lazdemsg.smenuhelp
-msgid "Help"
-msgstr ""
+msgid "&Help"
+msgstr "&Справка"
 
 #: lazdemsg.smenuhelpabout
-msgid "About"
-msgstr ""
+msgid "&About..."
+msgstr "&О программе..."
 
 #: lazdemsg.smenuinsert
-msgid "Insert"
-msgstr ""
+msgid "&Insert"
+msgstr "&Вставка"
 
 #: lazdemsg.smenuinsertelement
-msgid "_Element"
-msgstr ""
+msgid "&Element"
+msgstr "&Элемент"
 
 #: lazdemsg.smenuinsertlink
-msgid "_Link"
-msgstr ""
+msgid "&Link"
+msgstr "&Ссылка"
 
 #: lazdemsg.smenuinsertmodule
-msgid "_Module"
-msgstr ""
+msgid "&Module"
+msgstr "&Модуль"
 
 #: lazdemsg.smenuinsertpackage
-msgid "_Package"
-msgstr ""
+msgctxt "lazdemsg.smenuinsertpackage"
+msgid "&Package"
+msgstr "&Пакет"
+
+#: lazdemsg.smenuinsertquicklink
+msgid "&Quick Link"
+msgstr "&Быстрая ссылка"
+
+#: lazdemsg.smenuinsertshortdesclink
+msgid "&Short description link"
+msgstr "Ссылка на &краткое описание"
 
 #: lazdemsg.smenuinserttable
-msgid "_Table"
-msgstr ""
+msgid "&Table"
+msgstr "&Таблица"
 
 #: lazdemsg.smenuinserttopic
-msgid "T_opic"
-msgstr ""
-
-#: lazdemsg.smenunew
-msgid "_New"
-msgstr ""
-
-#: lazdemsg.smenunewfromsource
-msgid "New from so_urce"
-msgstr ""
-
-#: lazdemsg.smenuopen
-msgid "_Open"
-msgstr ""
-
-#: lazdemsg.smenurecent
-msgid "_Recent"
-msgstr ""
+msgid "T&opic"
+msgstr "Т&ема"
 
 #: lazdemsg.smenurename
 msgid "Rename"
-msgstr ""
-
-#: lazdemsg.smenusave
-msgid "_Save"
-msgstr ""
-
-#: lazdemsg.smenusaveas
-msgid "Save _as"
-msgstr ""
+msgstr "Переименовать"
 
 #: lazdemsg.smoduleelements
 msgid "Elements for selected node"
-msgstr "Элементы для выбранного узла"
-
-#: lazdemsg.sname
-msgid "Name"
-msgstr "Имя"
+msgstr "Элементы выбранного узла"
 
 #: lazdemsg.snew
 msgid "New"
@@ -495,661 +340,118 @@ msgstr "Новый"
 msgid "New document"
 msgstr "Новый документ"
 
+#: lazdemsg.snewelement
+msgid "New element"
+msgstr "Новый элемент"
+
+#: lazdemsg.snewfile
+msgid "New file"
+msgstr "Новый файл"
+
+#: lazdemsg.snewmodule
+msgid "New module"
+msgstr "Новый модуль"
+
+#: lazdemsg.snewpackage
+msgid "New package"
+msgstr "Новый пакет"
+
+#: lazdemsg.snewtopic
+msgid "New topic"
+msgstr "Новая тема"
+
 #: lazdemsg.snoelement
 msgid "No element selected"
-msgstr ""
+msgstr "Элемент не выбран"
 
-#: lazdemsg.sok
-msgid " OK "
-msgstr ""
+#: lazdemsg.sotheroptions
+msgctxt "lazdemsg.sotheroptions"
+msgid "Other options"
+msgstr "Прочие параметры"
 
-#: lazdemsg.sopenfiletitle
-msgid "Select file to open"
-msgstr ""
-
-#: lazdemsg.soptbackupextension
-msgid "Backup file extension"
-msgstr ""
-
-#: lazdemsg.soptconfirmdelete
-msgid "Confirm node deletion"
-msgstr ""
-
-#: lazdemsg.soptcreatebackup
-msgid "Backup existing files"
-msgstr ""
-
-#: lazdemsg.soptdefaultextension
-msgid "Default extension for new files"
-msgstr ""
-
-#: lazdemsg.soptmaxrecentused
-msgid "Items in MRU list"
-msgstr ""
-
-#: lazdemsg.soptskipemptynodes
-msgid "Do not create empty nodes"
-msgstr ""
-
-#: lazdemsg.spackages
-msgid "Packages"
-msgstr ""
-
-#: lazdemsg.srenameelement
-msgid "Rename element"
-msgstr ""
-
-#: lazdemsg.srenamemodule
-msgid "Rename module"
-msgstr ""
-
-#: lazdemsg.srenamepackage
-msgid "Rename package"
-msgstr ""
-
-#: lazdemsg.srenametopic
-msgid "Rename topic"
-msgstr ""
-
-#: lazdemsg.ssavefiletitle
-msgid "Enter filename to save to"
-msgstr ""
-
-#: lazdemsg.sseealso
-msgid "See Also"
-msgstr ""
-
-#: lazdemsg.sshortdescription
-msgid "Short"
-msgstr ""
-
-#: lazdemsg.sskelerrorwithfile
-msgid "makeskel reported an error (%d). Try to load produced file anyway ?"
-msgstr ""
-
-#: lazdemsg.sskelerrorwithoutfile
-msgid "makeskel reported an error (%d) and produced no file."
-msgstr ""
-
-#: lazdemsg.stablecols
-msgid "Columns"
-msgstr ""
-
-#: lazdemsg.stableheader
-msgid "Use header row"
-msgstr ""
-
-#: lazdemsg.stablerows
-msgid "Rows"
-msgstr ""
-
-#: TABOUTFORM.CAPTION
-msgid "About this application"
-msgstr ""
-
-#: TABOUTFORM.LCOPYRIGHT1.CAPTION
-msgid "This application is (c) by  Michael Van Canneyt and the Lazarus team"
-msgstr ""
-
-#: TABOUTFORM.LCOPYRIGHT2.CAPTION
-msgid "It is released under the terms of the  GENERAL PUBLIC LICENSE:"
-msgstr ""
-
-#: TABOUTFORM.LTHISAPPLICATION.CAPTION
-msgid "Lazarus Documentation Editor"
-msgstr ""
-
-#: TBUILDFORM.ABUILD.CAPTION
-msgctxt "TBUILDFORM.ABUILD.CAPTION"
-msgid "&Build"
-msgstr "&Собрать"
-
-#: TBUILDFORM.ADESCRADD.CAPTION
-msgctxt "TBUILDFORM.ADESCRADD.CAPTION"
-msgid "&Add"
-msgstr "Добавить"
-
-#: TBUILDFORM.ADESCRADDALL.CAPTION
-msgctxt "TBUILDFORM.ADESCRADDALL.CAPTION"
-msgid "Add All"
-msgstr "Добавить всё"
-
-#: TBUILDFORM.ADESCRDELETE.CAPTION
-msgctxt "TBUILDFORM.ADESCRDELETE.CAPTION"
-msgid "&Delete"
-msgstr "Удалить"
-
-#: TBUILDFORM.ADESCREDIT.CAPTION
-msgctxt "TBUILDFORM.ADESCREDIT.CAPTION"
-msgid "&Edit"
-msgstr "Изменить"
-
-#: TBUILDFORM.ALOAD.CAPTION
-msgctxt "TBUILDFORM.ALOAD.CAPTION"
-msgid "&Load"
-msgstr "&Загрузить"
-
-#: TBUILDFORM.ASAVE.CAPTION
-msgctxt "TBUILDFORM.ASAVE.CAPTION"
-msgid "&Save"
-msgstr "&Сохранить"
-
-#: TBUILDFORM.ASOURCEADD.CAPTION
-msgctxt "TBUILDFORM.ASOURCEADD.CAPTION"
-msgid "&Add"
-msgstr "Добавить"
-
-#: TBUILDFORM.ASOURCEDELETE.CAPTION
-msgctxt "TBUILDFORM.ASOURCEDELETE.CAPTION"
-msgid "&Delete"
-msgstr "Удалить"
-
-#: TBUILDFORM.ASOURCEEDIT.CAPTION
-msgctxt "TBUILDFORM.ASOURCEEDIT.CAPTION"
-msgid "&Edit"
-msgstr "Изменить"
-
-#: TBUILDFORM.BCLOSE.CAPTION
-msgctxt "TBUILDFORM.BCLOSE.CAPTION"
-msgid "&Close"
-msgstr "&Закрыть"
-
-#: TBUILDFORM.CAPTION
-msgctxt "TBUILDFORM.CAPTION"
-msgid "Build documentation"
-msgstr "Компиляция документации"
-
-#: TBUILDFORM.CBCONTENT.CAPTION
-msgctxt "TBUILDFORM.CBCONTENT.CAPTION"
-msgid "Create cont&ent file"
-msgstr "Создать файл оглавления"
-
-#: TBUILDFORM.CBFORMAT.TEXT
-msgid "html"
-msgstr ""
-
-#: TBUILDFORM.CBHIDEPROTECTED.CAPTION
-msgctxt "TBUILDFORM.CBHIDEPROTECTED.CAPTION"
-msgid "&Hide protected methods"
-msgstr "Прятать защищённые методы"
-
-#: TBUILDFORM.CBSHOWPRIVATE.CAPTION
-msgctxt "TBUILDFORM.CBSHOWPRIVATE.CAPTION"
-msgid "Show p&rivate methods"
-msgstr "Отображать приватные методы"
-
-#: TBUILDFORM.CBWARNNONODE.CAPTION
-msgctxt "TBUILDFORM.CBWARNNONODE.CAPTION"
-msgid "Warn if no documentation node found"
-msgstr "Предупреждать, если нет узлов документации"
-
-#: TBUILDFORM.LABEL1.CAPTION
-msgctxt "TBUILDFORM.LABEL1.CAPTION"
+#: lazdemsg.soutput
+msgctxt "lazdemsg.soutput"
 msgid "&Output"
 msgstr "&Вывод"
 
-#: TBUILDFORM.LABEL2.CAPTION
-msgctxt "TBUILDFORM.LABEL2.CAPTION"
-msgid "Import content file"
-msgstr "Импортировать файл оглавления"
-
-#: TBUILDFORM.LABEL3.CAPTION
-msgctxt "TBUILDFORM.LABEL3.CAPTION"
-msgid "Target OS"
-msgstr "Целевая ОС"
-
-#: TBUILDFORM.LCBFORMAT.CAPTION
-msgctxt "TBUILDFORM.LCBFORMAT.CAPTION"
-msgid "&Format"
-msgstr "&Формат"
-
-#: TBUILDFORM.LCBPACKAGE.CAPTION
-msgctxt "TBUILDFORM.LCBPACKAGE.CAPTION"
+#: lazdemsg.spackage
+msgctxt "lazdemsg.spackage"
 msgid "&Package"
 msgstr "&Пакет"
 
-#: TBUILDFORM.LTARGETCPU.CAPTION
-msgctxt "TBUILDFORM.LTARGETCPU.CAPTION"
-msgid "CPU"
-msgstr "Целевой процессор"
+#: lazdemsg.spackages
+msgid "Packages"
+msgstr "Пакеты"
 
-#: TBUILDFORM.TSBUILD.CAPTION
-msgctxt "TBUILDFORM.TSBUILD.CAPTION"
-msgid "Build output"
-msgstr "Протокол сборки"
+#: lazdemsg.srenameelement
+msgid "Rename element"
+msgstr "Переименовать элемент"
 
-#: TBUILDFORM.TSDESCRIPTION.CAPTION
-msgctxt "TBUILDFORM.TSDESCRIPTION.CAPTION"
-msgid "Description"
-msgstr "Описание"
+#: lazdemsg.srenamemodule
+msgid "Rename module"
+msgstr "Переименовать модуль"
 
-#: TBUILDFORM.TSOTHER.CAPTION
-msgctxt "TBUILDFORM.TSOTHER.CAPTION"
-msgid "Other options"
-msgstr "Прочии опции"
+#: lazdemsg.srenamepackage
+msgid "Rename package"
+msgstr "Переименовать пакет"
 
-#: TBUILDFORM.TSSOURCES.CAPTION
-msgctxt "TBUILDFORM.TSSOURCES.CAPTION"
-msgid "Sources"
-msgstr "Исходники"
+#: lazdemsg.srenametopic
+msgid "Rename topic"
+msgstr "Переименовать тему"
 
-#: TEXAMPLEFORM.CAPTION
-msgid "Example file"
-msgstr ""
-
-#: TEXAMPLEFORM.LEFILENAME.CAPTION
-msgid "&Filename"
-msgstr ""
-
-#: TLINKFORM.CAPTION
-msgid "LinkForm"
-msgstr ""
-
-#: TLINKFORM.LELINKTEXT.CAPTION
-msgid "LELinkText"
-msgstr ""
-
-#: TLINKFORM.LLINKTARGET.CAPTION
-msgid "&Link target"
-msgstr ""
-
-#: TMAINFORM.ACLOSE.CAPTION
-msgctxt "TMAINFORM.ACLOSE.CAPTION"
-msgid "&Close"
-msgstr "&Закрыть"
-
-#: TMAINFORM.ACLOSE.HINT
-msgid "Close current file"
-msgstr ""
-
-#: TMAINFORM.AEXIT.CAPTION
-msgid "&Quit"
-msgstr ""
-
-#: TMAINFORM.AEXIT.HINT
-msgid "Exit from the program"
-msgstr ""
-
-#: TMAINFORM.AEXTRABUILD.CAPTION
-msgctxt "TMAINFORM.AEXTRABUILD.CAPTION"
-msgid "&Build"
-msgstr "&Собрать"
-
-#: TMAINFORM.AEXTRAOPTIONS.CAPTION
-msgid "&Options"
-msgstr ""
-
-#: TMAINFORM.AEXTRAOPTIONS.HINT
-msgid "Set program options"
-msgstr ""
-
-#: TMAINFORM.AFORMATBOLD.CAPTION
-msgid "&Bold"
-msgstr ""
-
-#: TMAINFORM.AFORMATBOLD.HINT
-msgid "Format selection bold"
-msgstr ""
-
-#: TMAINFORM.AFORMATCODE.CAPTION
-msgid "&Code"
-msgstr ""
-
-#: TMAINFORM.AFORMATCODE.HINT
-msgid "Format selection as code"
-msgstr ""
-
-#: TMAINFORM.AFORMATFILE.CAPTION
-msgctxt "TMAINFORM.AFORMATFILE.CAPTION"
-msgid "&File"
-msgstr ""
-
-#: TMAINFORM.AFORMATFILE.HINT
-msgid "Format selection as file"
-msgstr ""
-
-#: TMAINFORM.AFORMATITALIC.CAPTION
-msgid "&Italic"
-msgstr ""
-
-#: TMAINFORM.AFORMATITALIC.HINT
-msgid "Format selection italic"
-msgstr ""
-
-#: TMAINFORM.AFORMATPARAGRAPH.CAPTION
-msgid "&Paragraph"
-msgstr ""
-
-#: TMAINFORM.AFORMATPARAGRAPH.HINT
-msgid "Format selection as paragraph"
-msgstr ""
-
-#: TMAINFORM.AFORMATREMARK.CAPTION
-msgid "&Remark"
-msgstr ""
-
-#: TMAINFORM.AFORMATREMARK.HINT
-msgid "Format selection as remark"
-msgstr ""
-
-#: TMAINFORM.AFORMATUNDERLINE.CAPTION
-msgid "&Underline"
-msgstr ""
-
-#: TMAINFORM.AFORMATUNDERLINE.HINT
-msgid "Format selection underline"
-msgstr ""
-
-#: TMAINFORM.AFORMATVARIABLE.CAPTION
-msgid "&Variable"
-msgstr ""
-
-#: TMAINFORM.AFORMATVARIABLE.HINT
-msgid "Format selection as variable"
-msgstr ""
-
-#: TMAINFORM.AHELPABOUT.CAPTION
-msgid "&About..."
-msgstr ""
-
-#: TMAINFORM.AHELPABOUT.HINT
-msgid "About this program..."
-msgstr ""
-
-#: TMAINFORM.AINSERTELEMENT.CAPTION
-msgid "&Element"
-msgstr ""
-
-#: TMAINFORM.AINSERTELEMENT.HINT
-msgid "Insert a new element"
-msgstr ""
-
-#: TMAINFORM.AINSERTLINK.CAPTION
-msgid "&Link"
-msgstr ""
-
-#: TMAINFORM.AINSERTLINK.HINT
-msgid "Insert a new link"
-msgstr ""
-
-#: TMAINFORM.AINSERTMODULE.CAPTION
-msgid "&Module"
-msgstr ""
-
-#: TMAINFORM.AINSERTMODULE.HINT
-msgid "Insert a new module"
-msgstr ""
-
-#: TMAINFORM.AINSERTPACKAGE.CAPTION
-msgid "Package"
-msgstr ""
-
-#: TMAINFORM.AINSERTPACKAGE.HINT
-msgid "Insert a new package"
-msgstr ""
-
-#: TMAINFORM.AINSERTPRINTSHORT.CAPTION
-msgid "Insert short desc link"
-msgstr ""
-
-#: TMAINFORM.AINSERTPRINTSHORT.HINT
-msgid "Insert a Short Description link"
-msgstr ""
-
-#: TMAINFORM.AINSERTTABLE.CAPTION
-msgid "T&able"
-msgstr ""
-
-#: TMAINFORM.AINSERTTABLE.HINT
-msgid "Insert a new table"
-msgstr ""
-
-#: TMAINFORM.AINSERTTOPIC.CAPTION
-msgid "&Topic"
-msgstr ""
-
-#: TMAINFORM.AINSERTTOPIC.HINT
-msgid "Insert a new topic"
-msgstr ""
-
-#: TMAINFORM.ANEW.CAPTION
-msgid "&New"
-msgstr ""
-
-#: TMAINFORM.ANEW.HINT
-msgid "Create a new documentation file"
-msgstr ""
-
-#: TMAINFORM.ANEWFROMFILE.CAPTION
-msgid "New from fi&le"
-msgstr ""
-
-#: TMAINFORM.ANEWFROMFILE.HINT
-msgid "Create new documentation file from source"
-msgstr ""
-
-#: TMAINFORM.AOPEN.CAPTION
-msgid "&Open"
-msgstr ""
-
-#: TMAINFORM.AOPEN.HINT
-msgid "Open an existing documentation file"
-msgstr ""
-
-#: TMAINFORM.ASAVE.CAPTION
-msgctxt "TMAINFORM.ASAVE.CAPTION"
+#: lazdemsg.ssave
+msgctxt "lazdemsg.ssave"
 msgid "&Save"
-msgstr "&Сохранить"
+msgstr "Со&хранить"
 
-#: TMAINFORM.ASAVE.HINT
-msgid "Save the current file"
-msgstr ""
+#: lazdemsg.sseealso
+msgid "See Also"
+msgstr "Секция \"Смотрите также\""
 
-#: TMAINFORM.ASAVEAS.CAPTION
-msgid "Save &as"
-msgstr ""
+#: lazdemsg.sselectoutputdirectory
+msgctxt "lazdemsg.sselectoutputdirectory"
+msgid "Select output directory"
+msgstr "Выберите каталог вывода"
 
-#: TMAINFORM.ASAVEAS.HINT
-msgid "Save the current file with a new name"
-msgstr ""
+#: lazdemsg.sselectoutputfile
+msgctxt "lazdemsg.sselectoutputfile"
+msgid "Select output file name"
+msgstr "Выберите имя файла вывода"
 
-#: TMAINFORM.CAPTION
-msgid "MainForm"
-msgstr ""
+#: lazdemsg.sshortdescription
+msgid "Short"
+msgstr "Краткое описание"
 
-#: TMAINFORM.MENUITEM2.CAPTION
-msgctxt "TMAINFORM.MENUITEM2.CAPTION"
-msgid "-"
-msgstr ""
+#: lazdemsg.sshowprivatemethods
+msgctxt "lazdemsg.sshowprivatemethods"
+msgid "Show p&rivate methods"
+msgstr "Показывать p&rivate-методы"
 
-#: TMAINFORM.MFILE.CAPTION
-msgctxt "TMAINFORM.MFILE.CAPTION"
-msgid "&File"
-msgstr ""
+#: lazdemsg.sskelerrorwithfile
+msgid "makeskel reported an error (%d). Try to load produced file anyway ?"
+msgstr "Makeskel сообщила об ошибке (%d). Попытаться загрузить сгенерированный файл несмотря на это?"
 
-#: TMAINFORM.MIEXTRA.CAPTION
-msgid "&Extra"
-msgstr ""
+#: lazdemsg.sskelerrorwithoutfile
+msgid "makeskel reported an error (%d) and produced no file."
+msgstr "Makeskel сообщила об ошибке (%d) и не сгенерировала файл."
 
-#: TMAINFORM.MIHELP.CAPTION
-msgid "&Help"
-msgstr ""
+#: lazdemsg.ssourcescapt
+msgctxt "lazdemsg.ssourcescapt"
+msgid "Sources"
+msgstr "Исходный код"
 
-#: TMAINFORM.MIINSERT.CAPTION
-msgid "&Insert"
-msgstr ""
+#: lazdemsg.stargetos
+msgctxt "lazdemsg.stargetos"
+msgid "Target OS"
+msgstr "Целевая ОС"
 
-#: TMAINFORM.MIRECENT.CAPTION
-msgid "&Recent"
-msgstr ""
+#: lazdemsg.susingcommand
+msgctxt "lazdemsg.susingcommand"
+msgid "Building docs using command: "
+msgstr "Сборка документации с использованием команды: "
 
-#: TMAINFORM.MISEPARATE.CAPTION
-msgctxt "TMAINFORM.MISEPARATE.CAPTION"
-msgid "-"
-msgstr ""
-
-#: TMAINFORM.QUICKLINK.CAPTION
-msgid "&Quick Link"
-msgstr ""
-
-#: TMAINFORM.TBMAIN.CAPTION
-msgid "TBMain"
-msgstr ""
-
-#: TMAINFORM.TOOLBUTTON1.CAPTION
-msgid "ToolButton1"
-msgstr ""
-
-#: TMAINFORM.TOOLBUTTON13.CAPTION
-msgid "ToolButton13"
-msgstr ""
-
-#: TMAINFORM.TOOLBUTTON5.CAPTION
-msgid "ToolButton5"
-msgstr ""
-
-#: TMAKESKELFORM.CAPTION
-msgid "Create new file from pascal source"
-msgstr ""
-
-#: TMAKESKELFORM.CBDISABLEARGUMENTS.CAPTION
-msgid "No &arguments sections"
-msgstr ""
-
-#: TMAKESKELFORM.CBDISABLEERRORS.CAPTION
-msgid "No &errors sections"
-msgstr ""
-
-#: TMAKESKELFORM.CBDISABLEPRIVATE.CAPTION
-msgid "No pr&ivate methods"
-msgstr ""
-
-#: TMAKESKELFORM.CBDISABLEPROTECTED.CAPTION
-msgid "No &protected methods"
-msgstr ""
-
-#: TMAKESKELFORM.CBDISABLERESULTS.CAPTION
-msgid "No &results sections"
-msgstr ""
-
-#: TMAKESKELFORM.CBDISABLESEEALSO.CAPTION
-msgid "No &seealso sections"
-msgstr ""
-
-#: TMAKESKELFORM.EPACKAGE.TEXT
-msgid "<package name>"
-msgstr ""
-
-#: TMAKESKELFORM.LABEL1.CAPTION
-msgid "I&nput file"
-msgstr ""
-
-#: TMAKESKELFORM.LABEL2.CAPTION
-msgid "O&utput file"
-msgstr ""
-
-#: TMAKESKELFORM.LABEL3.CAPTION
-msgid "E&xtra options"
-msgstr ""
-
-#: TMAKESKELFORM.LEPACKAGE.CAPTION
-msgid "Pac&kage name"
-msgstr ""
-
-#: TNEWNODEFORM.CAPTION
-msgid "Create new node"
-msgstr ""
-
-#: TNEWNODEFORM.ENODENAME.TEXT
-msgid "ENodeName"
-msgstr ""
-
-#: TNEWNODEFORM.LENODENAME.CAPTION
-msgid "Node &name"
-msgstr ""
-
-#: TOPTIONSFORM.CAPTION
-msgctxt "TOPTIONSFORM.CAPTION"
-msgid "Options"
-msgstr ""
-
-#: TOPTIONSFORM.CBCONFIRMDELETE.CAPTION
-msgid "C&onfirm deletes"
-msgstr ""
-
-#: TOPTIONSFORM.CBCREATEBACKUP.CAPTION
-msgid "Create &backups"
-msgstr ""
-
-#: TOPTIONSFORM.CBREOPENLAST.CAPTION
-msgid "Reopen last file on startup"
-msgstr ""
-
-#: TOPTIONSFORM.CBSHOWHINTS.CAPTION
-msgid "Show Hints"
-msgstr "Отображать подсказки"
-
-#: TOPTIONSFORM.CBSKIPEMPTYNODES.CAPTION
-msgid "&Skip empty nodes when saving"
-msgstr ""
-
-#: TOPTIONSFORM.CBSTARTMAXIMIZED.CAPTION
-msgid "Start maximized"
-msgstr ""
-
-#: TOPTIONSFORM.LEBACKUPEXTENSION.CAPTION
-msgid "Backup extension"
-msgstr "Архивной расширение"
-
-#: TOPTIONSFORM.LEDEFAULTEXTENSION.CAPTION
-msgid "Default extension"
-msgstr "Расширение по умолчанию"
-
-#: TOPTIONSFORM.LEMAXMRU.CAPTION
-msgid "Max. recent used"
-msgstr ""
-
-#: TOPTIONSFORM.LFEFPDOC.CAPTION
-msgid "fpdoc program"
-msgstr ""
-
-#: TOPTIONSFORM.LFEMAKESKEL.CAPTION
-msgid "makeskel program"
-msgstr ""
-
-#: TOPTIONSFORM.TABDESKTOP.CAPTION
-msgid "Desktop"
-msgstr ""
-
-#: TOPTIONSFORM.TABGENERAL.CAPTION
-msgid "General"
-msgstr "Общее"
-
-#: TSOURCEFORM.CAPTION
-msgid "Source file properties"
-msgstr "Свойства исходного файла"
-
-#: TSOURCEFORM.LEOPTIONS.CAPTION
-msgid "Op&tions"
-msgstr "Параметры"
-
-#: TSOURCEFORM.LFESOURCE.CAPTION
-msgid "&Source"
-msgstr "Исходник"
-
-#: TTABLEFORM.CAPTION
-msgid "Insert new table"
-msgstr "Вставить новую таблицу"
-
-#: TTABLEFORM.CBUSEHEADERROW.CAPTION
-msgid "Use &header row"
-msgstr "Использовать заголовочные колонки"
-
-#: TTABLEFORM.LSECOLUMNS.CAPTION
-msgid "Co&lumns"
-msgstr "Колонки"
-
-#: TTABLEFORM.LSEROWS.CAPTION
-msgid "&Rows"
-msgstr "Строки"
+#: lazdemsg.swarnifnodocumentationnodefound
+msgctxt "lazdemsg.swarnifnodocumentationnodefound"
+msgid "Warn if no documentation node found"
+msgstr "Предупреждать, если не найдено узла документации"
 

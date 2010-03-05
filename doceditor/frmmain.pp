@@ -189,6 +189,10 @@ uses
 Const
   mbYesNo = [mbYes, mbNo];
 
+var
+  NewNodeNames : Array[TNodeType] of String
+            = (sNewFile,sNewPackage,sNewModule,sNewElement,sNewTopic);
+
 function MessageDlg(Fmt: string; Args : Array of const; DlgType: TMsgDlgType;
             Buttons: TMsgDlgButtons; HelpCtx: Longint): Integer;
 
@@ -226,6 +230,35 @@ end;
 
 procedure TMainForm.MainFormCreate(Sender: TObject);
 begin
+  MMain.Items[0].Caption:=sMenuFile;
+  MMain.Items[0].Items[0].Caption:=SMenuFileNew;
+  MMain.Items[0].Items[1].Caption:=SMenuFileOpen;
+  MMain.Items[0].Items[2].Caption:=SMenuFileNewFromFile;
+  MMain.Items[0].Items[3].Caption:=SMenuFileSave;
+  MMain.Items[0].Items[4].Caption:=SMenuFileSaveAs;
+  MMain.Items[0].Items[6].Caption:=SMenuFileClose;
+  MMain.Items[0].Items[7].Caption:=SMenuFileRecent;
+  MMain.Items[0].Items[9].Caption:=SMenuFileQuit;
+
+  //Insert Menu
+  MMain.Items[1].Caption:=sMenuInsert;
+  MMain.Items[1].Items[0].Caption:=SMenuInsertPackage;
+  MMain.Items[1].Items[1].Caption:=SMenuInsertModule;
+  MMain.Items[1].Items[2].Caption:=SMenuInsertTopic;
+  MMain.Items[1].Items[3].Caption:=SMenuInsertElement;
+  MMain.Items[1].Items[4].Caption:=SMenuInsertLink;
+  MMain.Items[1].Items[5].Caption:=SMenuInsertTable;
+  MMain.Items[1].Items[6].Caption:=SMenuInsertShortDescLink;
+  MMain.Items[1].Items[7].Caption:=SMenuInsertQuickLink;
+
+  //Extra Menu
+  MMain.Items[2].Caption:=sMenuExtra;
+  MMain.Items[2].Items[0].Caption:=sMenuExtraOptions;
+  MMain.Items[2].Items[1].Caption:=sMenuExtraBuild;
+  //Help Menu
+  MMain.Items[3].Caption:=sMenuHelp;
+  MMain.Items[3].Items[0].Caption:=sMenuHelpAbout;
+
   if Sender=nil then ;
   FRecent:=TStringList.Create;
   LoadCommandLine;
@@ -767,7 +800,7 @@ begin
   If (CurrentEditor<>Nil) then
     With TNewNodeForm.Create(Self) do
       Try
-        S:=SNew+' '+NodeNames[nt];
+        S:=NewNodeNames[nt];
         Case nt of
           ntPackage : S:=S+SForFile+ExtractFileName(CurrentEditor.FileName);
           ntModule: If (CurrentEditor.CurrentPackage<>Nil) then

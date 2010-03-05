@@ -158,7 +158,7 @@ var
 
 implementation
 
-uses IniFiles, frmSource, lazdeopts;
+uses IniFiles, frmSource, lazdeopts, lazdemsg;
 
 {$R *.lfm}
 
@@ -189,38 +189,6 @@ Const
   DefaultTargetOS      = '';
   DefaultTargetCPU     = '';
   DefaultImport        = '';
-
-resourcestring
-  SAddDescriptionFile    = 'Select a new description file';
-  SEditDescriptionFile   = 'Change description file';
-  SSelectOutputFile      = 'Select output file name';
-  SSelectOutputDirectory = 'Select output directory';
-  SUsingCommand          = 'Building docs using command: ';
-  SErrFPDoc              = 'Building failed with exit code %d. Please check log.';
-  SBuildOK               = 'Documentation successfully built.';
-  sBuildDocumentation    = 'Build documentation';
-  sPackage               = '&Package';
-  sFormat                = '&Format';
-  sOutput                = '&Output';
-  sCreateContentFile     = 'Create cont&ent file';
-  sBuild                 = '&Build';
-  sLoad                  = '&Load';
-  sSave                  = '&Save';
-  sClose                 = '&Close';
-  sAdd                   = '&Add';
-  sDelete                = '&Delete';
-  sEdit                  = '&Edit';
-  sAddAll                = 'Add All';
-  sDescription           = 'Description';
-  sSourcesCapt           = 'Sources';
-  sOtherOptions          = 'Other options';
-  sBuildOutput           = 'Build output';
-  sHideProtectedMethods  = '&Hide protected methods';
-  sImportContentFile     = 'Import content file';
-  sTargetOS              = 'Target OS';
-  sCPU                   = 'CPU';
-  sShowPrivateMethods    = 'Show p&rivate methods';
-  sWarnIfNoDocumentationNodeFound = 'Warn if no documentation node found';
 
   
 { TBuildForm }

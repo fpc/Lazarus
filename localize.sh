@@ -46,6 +46,7 @@ RSTFILES=(
   "components/projecttemplates frmtemplatevariables"
   "components/projecttemplates idetemplateproject"
   "tools/lazdatadesktop lazdatadeskstr lazdatadesktop"
+  "doceditor lazdemsg lazde"
   "lcl lclstrconsts"
 )  
 

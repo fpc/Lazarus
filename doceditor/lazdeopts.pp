@@ -146,7 +146,6 @@ var
 begin
   GetLanguageIDs(Lang,FallbackLang); // in unit gettext
   TranslateUnitResourceStrings('LazDEMsg','languages/lazde.%s.po', Lang,FallbackLang);
-  TranslateUnitResourceStrings('frmBuild','languages/lazde.%s.po', Lang,FallbackLang);
 end;
 
 Initialization

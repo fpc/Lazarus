@@ -113,6 +113,10 @@ tools\updatepofiles %MessageComposer_RST% components\messagecomposer\languages\m
 @set LazDataDesktop_RST=tools\lazdatadesktop\lib\%ArchOS%\lazdatadeskstr.rst
 tools\updatepofiles %LazDataDesktop_RST% tools\lazdatadesktop\languages\lazdatadesktop.po
 
+@REM LazDoc
+@set LazDoc_RST=doceditor\units\%ArchOS%\lazdemsg.rst
+tools\updatepofiles %LazDoc_RST% doceditor\languages\lazde.po
+
 @REM LazReport editor sample
 @set LREditor_RST=components\lazreport\samples\editor\maincalleditor.rst
 if not exist %LREditor_RST% goto SkipLREditor
