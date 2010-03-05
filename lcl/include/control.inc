@@ -3507,9 +3507,10 @@ begin
   {$ENDIF}
     CheckNewParent(NewParent);
     if FParent <> nil then FParent.RemoveControl(Self);
-    if cfBoundsRectForNewParentValid in FControlFlags then begin
-      Exclude(FControlFlags,cfBoundsRectForNewParentValid);
-      BoundsRect:=BoundsRectForNewParent;
+    if cfBoundsRectForNewParentValid in FControlFlags then
+    begin
+      Exclude(FControlFlags, cfBoundsRectForNewParentValid);
+      BoundsRect := BoundsRectForNewParent;
     end;
     if NewParent <> nil then NewParent.InsertControl(Self);
   {$IFDEF NewAutoSize}

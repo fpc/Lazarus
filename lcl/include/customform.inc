@@ -1698,11 +1698,20 @@ begin
   inherited CreateParams(Params);
   with Params do
   begin
-    if (Parent = nil) then
+    if (Parent = nil) and (ParentWindow = 0) then
     begin
-      Style := Style and not Cardinal(WS_GROUP or WS_TABSTOP);
-      if Parent = nil then
-        Style := Style and not Cardinal(WS_CHILD);
+      // define Parent according to PopupMode and PopupParent
+      if not (csDesigning in ComponentState) and (Application.MainForm <> Self) then
+        case PopupMode of
+          pmNone:;
+          pmAuto:
+            if (Screen.ActiveForm <> nil) then
+              WndParent := Screen.ActiveForm.Handle;
+          pmExplicit:
+            if (PopupParent <> nil) then
+              WndParent := PopupParent.Handle;
+        end;
+      Style := Style and not Cardinal(WS_GROUP or WS_TABSTOP or WS_CHILD);
     end;
   end;
 end;

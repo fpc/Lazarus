@@ -3966,6 +3966,12 @@ begin
   Perform(CM_BORDERCHANGED, 0, 0);
 end;
 
+procedure TWinControl.SetParentWindow(const AValue: HWND);
+begin
+  // todo: recreate window?
+  FParentWindow := AValue;
+end;
+
 {------------------------------------------------------------------------------
   TWinControl.SetChildZPosition
 
@@ -5742,7 +5748,9 @@ begin
   and Parent.HandleAllocated
   {$ENDIF}
   then
-    Params.WndParent := Parent.Handle;
+    Params.WndParent := Parent.Handle
+  else
+    Params.WndParent :=  ParentWindow;
   Params.X := FLeft;
   Params.Y := FTop;
   Params.Width := FWidth;
@@ -6236,19 +6244,18 @@ end;
 {------------------------------------------------------------------------------
   TWinControl CreateParented
 ------------------------------------------------------------------------------}
-constructor TWinControl.CreateParented(ParentWindow: hwnd);
+constructor TWinControl.CreateParented(AParentWindow: hwnd);
 begin
-  FParentWindow := ParentWindow;
+  FParentWindow := AParentWindow;
   inherited Create(nil);
 end;
 
 {------------------------------------------------------------------------------
   TWinControl CreateParentedControl
 ------------------------------------------------------------------------------}
-class function TWinControl.CreateParentedControl(ParentWindow: hwnd): TWinControl;
+class function TWinControl.CreateParentedControl(AParentWindow: hwnd): TWinControl;
 begin
-  // ToDo
-  Result:=nil;
+  Result := CreateParented(AParentWindow);
 end;
 
 {------------------------------------------------------------------------------

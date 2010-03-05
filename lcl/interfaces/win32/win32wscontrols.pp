@@ -122,7 +122,8 @@ type
 
 // TODO: better names?
 
-procedure PrepareCreateWindow(const AWinControl: TWinControl; var Params: TCreateWindowExParams);
+procedure PrepareCreateWindow(const AWinControl: TWinControl;
+  const CreateParams: TCreateParams; var Params: TCreateWindowExParams);
 procedure FinishCreateWindow(const AWinControl: TWinControl; var Params: TCreateWindowExParams;
   const AlternateCreateWindow: boolean);
 procedure WindowCreateInitBuddy(const AWinControl: TWinControl;
@@ -138,7 +139,8 @@ uses
 
 { Global helper routines }
 
-procedure PrepareCreateWindow(const AWinControl: TWinControl; var Params: TCreateWindowExParams);
+procedure PrepareCreateWindow(const AWinControl: TWinControl;
+  const CreateParams: TCreateParams; var Params: TCreateWindowExParams);
 begin
   with Params do
   begin
@@ -149,9 +151,8 @@ begin
     Buddy := HWND(nil);
     Assert(False, 'Trace:Setting window');
 
-    if AWinControl.Parent <> nil then
-      Parent := AWinControl.Parent.Handle
-    else
+    Parent := CreateParams.WndParent;
+    if Parent = 0 then
       Parent := TWin32WidgetSet(WidgetSet).AppHandle;
 
     SubClassWndProc := @WindowProc;
@@ -302,7 +303,7 @@ var
   Params: TCreateWindowExParams;
 begin
   // general initialization of Params
-  PrepareCreateWindow(AWinControl, Params);
+  PrepareCreateWindow(AWinControl, AParams, Params);
   // customization of Params
   with Params do
   begin

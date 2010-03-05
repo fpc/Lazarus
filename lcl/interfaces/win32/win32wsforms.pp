@@ -196,7 +196,7 @@ var
   Params: TCreateWindowExParams;
 begin
   // general initialization of Params
-  PrepareCreateWindow(AWinControl, Params);
+  PrepareCreateWindow(AWinControl, AParams, Params);
   // customization of Params
   with Params do
   begin
@@ -298,21 +298,10 @@ var
   Bounds: TRect;
 begin
   // general initialization of Params
-  PrepareCreateWindow(AWinControl, Params);
+  PrepareCreateWindow(AWinControl, AParams, Params);
   // customization of Params
   with Params do
   begin
-    // define Parent according to PopupMode and PopupParent
-    if not (csDesigning in lForm.ComponentState) and (Application.MainForm <> lForm) then
-      case lForm.PopupMode of
-        pmNone:;
-        pmAuto:
-          if (Screen.ActiveForm <> nil) then
-            Parent := Screen.ActiveForm.Handle;
-        pmExplicit:
-          if (lForm.PopupParent <> nil) then
-            Parent := lForm.PopupParent.Handle;
-      end;
     CalcFormWindowFlags(lForm, Flags, FlagsEx);
     pClassName := @ClsName[0];
     WindowTitle := StrCaption;
@@ -537,7 +526,7 @@ var
   Params: TCreateWindowExParams;
 begin
   // general initialization of Params
-  PrepareCreateWindow(AWinControl, Params);
+  PrepareCreateWindow(AWinControl, AParams, Params);
   // customization of Params
   with Params do
   begin

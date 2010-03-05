@@ -1689,6 +1689,7 @@ type
     procedure SetDockSite(const NewDockSite: Boolean);
     procedure SetHandle(NewHandle: HWND);
     procedure SetBorderWidth(Value: TBorderWidth);
+    procedure SetParentWindow(const AValue: HWND);
     procedure SetTabOrder(NewTabOrder: TTabOrder);
     procedure SetTabStop(NewTabStop: Boolean);
     procedure SetUseDockManager(const AValue: Boolean);
@@ -1892,6 +1893,7 @@ type
     property OnKeyUp: TKeyEvent read FOnKeyUp write FOnKeyUp;
     property OnUnDock: TUnDockEvent read FOnUnDock write FOnUnDock;
     property OnUTF8KeyPress: TUTF8KeyPressEvent read FOnUTF8KeyPress write FOnUTF8KeyPress;
+    property ParentWindow: HWND read FParentWindow write SetParentWindow;
     property Showing: Boolean read FShowing; // handle visible
     property UseDockManager: Boolean read FUseDockManager
                                      write SetUseDockManager default False;
@@ -1922,8 +1924,8 @@ type
     procedure WriteLayoutDebugReport(const Prefix: string); override;
   public
     constructor Create(TheOwner: TComponent);override;
-    constructor CreateParented(ParentWindow: HWND);
-    class function CreateParentedControl(ParentWindow: HWND): TWinControl;
+    constructor CreateParented(AParentWindow: HWND);
+    class function CreateParentedControl(AParentWindow: HWND): TWinControl;
     destructor Destroy; override;
     procedure DockDrop(DragDockObject: TDragDockObject; X, Y: Integer); virtual;
     function CanFocus: Boolean; virtual;
