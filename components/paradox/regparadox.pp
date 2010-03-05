@@ -27,13 +27,13 @@ uses
 
 Type
   TParadoxFileNamePropertyEditor=class(TFileNamePropertyEditor)
-  protected
+  public
     function GetFilter: String; override;
     function GetInitialDirectory: string; override;
   end;
   
   TParadoxBlobFileNamePropertyEditor=class(TFileNamePropertyEditor)
-  protected
+  public
     function GetFilter: String; override;
     function GetInitialDirectory: string; override;
   end;
