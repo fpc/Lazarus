@@ -349,6 +349,7 @@ begin
             PRTLabel.FontBold := fsBold in TfrMemoView_(View).Font.Style;
             PRTLabel.FontItalic := fsItalic in TfrMemoView_(View).Font.Style;
             PRTLabel.FontColor := TfrMemoView_(View).Font.Color;
+            PRTLabel.FontUnderline := fsUnderline in TfrMemoView_(View).Font.Style;
         end;
 
     finally
