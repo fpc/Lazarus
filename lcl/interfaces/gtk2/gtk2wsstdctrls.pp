@@ -1804,17 +1804,25 @@ class function TGtk2WSCustomGroupBox.GetDefaultClientRect(
   var aClientRect: TRect): boolean;
 var
   FrameBorders: TRect;
+  Widget: PGtkWidget;
+  FixedWidget: PGtkWidget;
 begin
   Result:=false;
   //DebugLn(['TGtk2WSCustomGroupBox.GetDefaultClientRect ',DbgSName(AWinControl),' ',aWidth,'x',aHeight]);
   if AWinControl.HandleAllocated then begin
-
+    Widget:=PGtkWidget(AWinControl.Handle);
+    FixedWidget:=PGtkWidget(GetFixedWidget(Widget));
+    //DebugLn(['TGtk2WSCustomGroupBox.GetDefaultClientRect Flags=',WidgetFlagsToString(Widget),' FixedFlags=',WidgetFlagsToString(FixedWidget),' FixedSize=',FixedWidget^.allocation.width,'x',FixedWidget^.allocation.height]);
+    if not GTK_WIDGET_RC_STYLE(FixedWidget) then
+      Result:=true;
   end else begin
+    Result:=true;
+  end;
+  if Result then begin
     FrameBorders:=GetStyleGroupboxFrameBorders;
     aClientRect:=Rect(0,0,
                  Max(0,aWidth-FrameBorders.Left-FrameBorders.Right),
                  Max(0,aHeight-FrameBorders.Top-FrameBorders.Bottom));
-    Result:=true;
   end;
   //if Result then DebugLn(['TGtk2WSCustomGroupBox.GetDefaultClientRect END FrameBorders=',dbgs(FrameBorders),' aClientRect=',dbgs(aClientRect)]);
 end;
