@@ -37,7 +37,7 @@ uses
   // RTL, FCL
   Classes, SysUtils,
   // LCL
-  Controls, Graphics, LCLProc, FileUtil, LResources, Forms,
+  Controls, ExtCtrls, Graphics, LCLProc, FileUtil, LResources, Forms,
   // synedit
   SynEdit, SynEditAutoComplete, SynEditHighlighter, SynEditHighlighterFoldBase, SynEditKeyCmds,
   SynEditStrConst, SynEditMarkupBracket, SynEditMarkupHighAll, SynEditMarkupWordGroup,
@@ -852,6 +852,7 @@ type
     fFindTextAtCursor: Boolean;
     fShowTabCloseButtons: Boolean;
     fShowTabNumbers: Boolean;
+    fTabPosition: TTabPosition;
     fSynEditOptions: TSynEditorOptions;
     fSynEditOptions2: TSynEditorOptions2;
     fUndoAfterSave: Boolean;
@@ -983,6 +984,8 @@ type
     property ShowTabCloseButtons: Boolean
       read fShowTabCloseButtons write fShowTabCloseButtons;
     property ShowTabNumbers: Boolean read fShowTabNumbers write fShowTabNumbers;
+    property TabPosition: TTabPosition
+      read fTabPosition write fTabPosition default tpTop;
     property UndoAfterSave: Boolean read fUndoAfterSave
       write fUndoAfterSave default True;
     property FindTextAtCursor: Boolean
@@ -2374,6 +2377,7 @@ begin
 
   // General options
   fShowTabCloseButtons := True;
+  fTabPosition := tpTop;
   FCopyWordAtCursorOnCopyNone := True;
   FShowGutterHints := True;
   fBlockIndent := 2;
@@ -2632,6 +2636,8 @@ begin
       'EditorOptions/General/Editor/ShowTabCloseButtons', True);
     fShowTabNumbers :=
       XMLConfig.GetValue('EditorOptions/General/Editor/ShowTabNumbers', False);
+    fTabPosition := tpTop;
+    XMLConfig.ReadObject('EditorOptions/General/Editor/', self, self, 'TabPosition');
     FCopyWordAtCursorOnCopyNone :=
       XMLConfig.GetValue(
       'EditorOptions/General/Editor/CopyWordAtCursorOnCopyNone', True);
@@ -2874,6 +2880,7 @@ begin
       , fShowTabCloseButtons, True);
     XMLConfig.SetDeleteValue('EditorOptions/General/Editor/ShowTabNumbers'
       , fShowTabNumbers, False);
+    XMLConfig.WriteObject('EditorOptions/General/Editor/', self, nil, 'TabPosition');
     XMLConfig.SetDeleteValue(
       'EditorOptions/General/Editor/CopyWordAtCursorOnCopyNone',
       FCopyWordAtCursorOnCopyNone, True);

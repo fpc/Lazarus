@@ -4535,6 +4535,7 @@ Begin
             Options:=Options+[nboShowCloseButtons]
           else
             Options:=Options-[nboShowCloseButtons];
+          TabPosition := EditorOpts.TabPosition;
           OnPageChanged := @NotebookPageChanged;
           OnCloseTabClicked:=@CloseTabClicked;
           OnMouseDown:=@NotebookMouseDown;
@@ -7168,6 +7169,7 @@ Begin
       NoteBook.Options:=NoteBook.Options+[nboShowCloseButtons]
     else
       NoteBook.Options:=NoteBook.Options-[nboShowCloseButtons];
+    Notebook.TabPosition := EditorOpts.TabPosition;
   end;
 
   SourceCompletionTimer.Interval:=EditorOpts.AutoDelayInMSec;
