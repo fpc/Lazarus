@@ -3176,10 +3176,14 @@ procedure TControl.FormEndUpdated;
 // called when control is on a form and EndFormUpdate reached 0
 // it is called recursively
 begin
+  {$IFDEF NewAutoSize}
+
+  {$ELSE}
   if cfOnResizeNeeded in FControlFlags then
     Resize;
   if cfOnChangeBoundsNeeded in FControlFlags then
     CheckOnChangeBounds;
+  {$ENDIF}
 end;
 
 {------------------------------------------------------------------------------
@@ -4779,7 +4783,10 @@ begin
   if FAutoSizingLockCount=1 then
   begin
     if Parent<>nil then
+    begin
+      DebugLn(['TControl.DisableAutoSizing ',DbgSName(Self),' disable Parent=',DbgSName(Parent)]);
       Parent.DisableAutoSizing;
+    end;
   end;
   {$ELSE}
   inc(FAutoSizingLockCount);
@@ -4787,6 +4794,7 @@ begin
 end;
 
 procedure TControl.EnableAutoSizing;
+
   {$IFNDEF NewAutoSize}
   procedure AdjustSizeRecursive(AControl: TControl);
   var
@@ -4812,8 +4820,10 @@ begin
   if (FAutoSizingLockCount=0) then
   begin
     if (Parent<>nil) then
-      Parent.EnableAutoSizing
-    else
+    begin
+      DebugLn(['TControl.EnableAutoSizing ',DbgSName(Self),' enable Parent ',DbgSName(Parent)]);
+      Parent.EnableAutoSizing;
+    end else
       DoAllAutoSize;
   end;
   {$ELSE}

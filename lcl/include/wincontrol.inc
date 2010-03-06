@@ -5830,6 +5830,7 @@ begin
   if AControl.FAutoSizingLockCount>0 then
   begin
     // the AControl has disabled autosizing => disable it for the parent=self too
+    DebugLn(['TWinControl.Insert ',DbgSName(Self),' Control=',DbgSName(AControl),' disable Parent']);
     DisableAutoSizing;
   end;
   {$ENDIF}
@@ -5879,6 +5880,7 @@ begin
     begin
       // AControl has disabled autosizing and thus for its parent=Self too
       // end disable autosize for parent=self
+      DebugLn(['TWinControl.Remove ',DbgSName(Self),' Control=',DbgSName(AControl),' enable Parent']);
       EnableAutoSizing;
     end;
     {$ENDIF}

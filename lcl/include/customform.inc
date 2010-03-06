@@ -2219,7 +2219,8 @@ procedure TCustomForm.BeginFormUpdate;
 begin
   inc(FFormUpdateCount);
   {$IFDEF NewAutoSize}
-  DisableAutoSizing;
+  if FFormUpdateCount=1 then
+    DisableAutoSizing;
   {$ENDIF}
 end;
 
