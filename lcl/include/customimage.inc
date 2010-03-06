@@ -72,49 +72,6 @@ begin
   FPicture.Assign(AValue);
 end;
 
-procedure TCustomImage.DoAutoSize;
-var
-  ModifyWidth,
-  ModifyHeight : Boolean;
-  NewWidth: Integer;
-  NewHeight: Integer;
-  
-  procedure OutOfBounds;
-  begin
-    {$IFNDEF DisableChecks}
-    DebugLn('TCustomImage.DoAutoSize NewWidth=',dbgs(NewWidth),
-      ' NewHeight=',dbgs(NewHeight),
-      ' ModifyWidth='+dbgs(ModifyWidth),
-      ' Picture.Width='+dbgs(Picture.Width),
-      ' ModifyHeight='+dbgs(ModifyHeight),
-      ' Picture.Height='+dbgs(Picture.Height)+
-      '');
-    {$ENDIF}
-    RaiseGDBException('');
-  end;
-  
-begin
-  if AutoSizing then Exit;    // we shouldn't come here in the first place
-  
-  BeginAutoSizing;
-  try
-    GetPreferredSize(NewWidth, NewHeight);
-    ModifyWidth := [akLeft,akRight]*(Anchors+AnchorAlign[Align])<>[akLeft,akRight];
-    ModifyHeight := [akTop,akBottom]*(Anchors+AnchorAlign[Align])<>[akTop,akBottom];
-
-    if not ModifyWidth then NewWidth := Width;
-    if not ModifyHeight then NewHeight := Height;
-    
-    if (NewWidth>100000) or (NewHeight>100000) then
-      OutOfBounds;
-
-    if (NewWidth<>Width) or (NewHeight<>Height) then
-      SetBounds(Left, Top, NewWidth, NewHeight);
-  finally
-    EndAutoSizing;
-  end;
-end;
-
 procedure TCustomImage.SetStretch(const AValue : Boolean);
 begin
   if FStretch = AValue then exit;

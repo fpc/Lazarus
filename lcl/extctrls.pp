@@ -617,7 +617,6 @@ type
                                      PreferredHeight: integer;
                                      WithThemeSpace: Boolean); override;
     class function GetControlClassDefaultSize: TPoint; override;
-    procedure DoAutoSize; override;
     procedure Paint; override;
   public
     constructor Create(AOwner: TComponent); override;
