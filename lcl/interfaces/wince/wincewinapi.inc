@@ -2731,6 +2731,11 @@ begin
   Result := Windows.SetForegroundWindow(HWnd);
 end;
 
+function TWinCEWidgetSet.SetParent(hWndChild: HWND; hWndParent: HWND): HWND;
+begin
+  Result := Windows.SetParent(hWndChild,hWndParent);
+end;
+
 function TWinCEWidgetSet.SetMenu(AWindowHandle: HWND; AMenuHandle: HMENU): Boolean;
 {$ifndef Win32}
 var

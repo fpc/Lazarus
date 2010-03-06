@@ -3968,8 +3968,14 @@ end;
 
 procedure TWinControl.SetParentWindow(const AValue: HWND);
 begin
-  // todo: recreate window?
+  if (ParentWindow = AValue) or Assigned(Parent) then Exit;
   FParentWindow := AValue;
+  if HandleAllocated then
+    if (AValue <> 0) then
+      LCLIntf.SetParent(Handle, AValue)
+    else
+      DestroyHandle;
+  UpdateControlState
 end;
 
 {------------------------------------------------------------------------------

@@ -1555,6 +1555,11 @@ begin
   Result := False;
 end;
 
+function TWidgetSet.SetParent(hWndChild: HWND; hWndParent: HWND): HWND;
+begin
+  Result := 0;
+end;
+
 function TWidgetSet.SetProp(Handle: hwnd; Str : PChar;
   Data : Pointer) : Boolean;
 Begin

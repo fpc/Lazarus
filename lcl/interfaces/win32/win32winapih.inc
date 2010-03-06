@@ -196,6 +196,7 @@ function SetFocus(HWnd: HWND): HWND; override;
 function SetForegroundWindow(HWnd: HWND): boolean; override;
 function SetMapMode(DC: HDC; fnMapMode : Integer): Integer; override;
 function SetMenu(AWindowHandle: HWND; AMenuHandle: HMENU): Boolean; override;
+function SetParent(hWndChild: HWND; hWndParent: HWND): HWND; override;
 function SetProp(Handle: hwnd; Str: PChar; Data: Pointer): Boolean; override;
 function SetROP2(DC: HDC; Mode: Integer): Integer; override;
 function SetScrollInfo(Handle: HWND; SBStyle: Integer; ScrollInfo: TScrollInfo; BRedraw: Boolean): Integer; override;

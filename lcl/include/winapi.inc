@@ -821,6 +821,11 @@ begin
   Result := WidgetSet.SetMenu(AWindowHandle, AMenuHandle);
 end;
 
+function SetParent(hWndChild: HWND; hWndParent: HWND): HWND;
+begin
+  Result := WidgetSet.SetParent(hWndChild, hWndParent);
+end;
+
 function SetProp(Handle: hwnd; Str : PChar; Data : Pointer) : Boolean;
 begin
   Result := WidgetSet.SetProp(Handle,Str,Data);

@@ -2608,7 +2608,7 @@ function TQtWidgetSet.GetParent(Handle : HWND): HWND;
 var
   QtWidget: TQtWidget;
 begin
-	{$ifdef VerboseQtWinAPI}
+  {$ifdef VerboseQtWinAPI}
   writeln('Trace:> [WinAPI GetParent] Handle: ' + dbghex(Handle));
   {$endif}
   Result := 0;
@@ -2619,7 +2619,7 @@ begin
 
   Result := HWND(QtObjectFromWidgetH(QtWidget.getParent));
 
-	{$ifdef VerboseQtWinAPI}
+  {$ifdef VerboseQtWinAPI}
   writeln('Trace:< [WinAPI GetParent] : ' + dbghex(Result));
   {$endif}
 end;
@@ -4649,6 +4649,16 @@ begin
     else
       QtMainWindow.setMenuBar(QMenuBarH(QtMainWindow.MenuBar.Widget));
   end;
+end;
+
+function TQtWidgetSet.SetParent(hWndChild: HWND; hWndParent: HWND): HWND;
+var
+  OldVisible: Boolean;
+begin
+  Result := GetParent(hWndChild);
+  OldVisible := TQtWidget(hWndChild).getVisible;
+  TQtWidget(hWndChild).setParent(TQtWidget(hWndParent).GetContainerWidget);
+  TQtWidget(hWndChild).setVisible(OldVisible);
 end;
 
 function TQtWidgetSet.SetMapMode(DC: HDC; fnMapMode : Integer): Integer;

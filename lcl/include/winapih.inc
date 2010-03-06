@@ -236,6 +236,7 @@ function SetFocus(hWnd: HWND): HWND; {$IFDEF IF_BASE_MEMBER}virtual;{$ENDIF}
 function SetForegroundWindow(hWnd : HWND): Boolean; {$IFDEF IF_BASE_MEMBER}virtual;{$ENDIF}
 function SetMapMode(DC: HDC; fnMapMode : Integer): Integer; {$IFDEF IF_BASE_MEMBER}virtual;{$ENDIF}
 function SetMenu(AWindowHandle: HWND; AMenuHandle: HMENU): Boolean; {$IFDEF IF_BASE_MEMBER}virtual;{$ENDIF}
+function SetParent(hWndChild: HWND; hWndParent: HWND): HWND; {$IFDEF IF_BASE_MEMBER}virtual;{$ENDIF}
 function SetProp(Handle: hwnd; Str : PChar; Data : Pointer) : Boolean; {$IFDEF IF_BASE_MEMBER}virtual;{$ENDIF}
 //function SetRect --> independent
 //function SetRectEmpty --> independent

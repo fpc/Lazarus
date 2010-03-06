@@ -3058,6 +3058,11 @@ begin
   AddToChangedMenus(AWindowHandle);
 end;
 
+function TWin32WidgetSet.SetParent(hWndChild: HWND; hWndParent: HWND): HWND;
+begin
+  Result := Windows.SetParent(hWndchild, hWndParent);
+end;
+
 
 {------------------------------------------------------------------------------
   Method:  SetMapMode

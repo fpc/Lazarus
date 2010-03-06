@@ -1457,8 +1457,13 @@ begin
   // default color roles
   SetDefaultColorRoles;
   FPalette := nil;
-  // Creates the widget
+
+  // creates the widget
   Widget := CreateWidget(FParams);
+
+  // attach to parent
+  if FParams.WndParent <> 0 then
+    setParent(TQtWidget(FParams.WndParent).GetContainerWidget);
 
   // retrieve default cursor on create
   FDefaultCursor := QCursor_create();
