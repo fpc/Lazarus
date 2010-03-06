@@ -3943,12 +3943,11 @@ procedure FixedPutControl(Parent, Child : PGTKWidget; Left, Top : Longint);
   end;
 
 begin
-  //DebugLn('FixedPutControl Parent=[',GetWidgetDebugReport(Parent),']',
-  //  ' Child=[',GetWidgetDebugReport(Child),']');
-  If GTKWidgetIsA(Parent, GTK_Fixed_Get_Type) then
+  if GtkWidgetIsA(Parent, gtk_fixed_get_type) then
     gtk_fixed_put(PGtkFixed(Parent), Child, gint16(Left), gint16(Top))
-  else If GTKWidgetIsA(Parent, GTK_Layout_Get_Type) then
-    gtk_Layout_Put(PGtkLayout(Parent), Child, Left, Top)
+  else
+  if GtkWidgetIsA(Parent, gtk_layout_get_type) then
+    gtk_layout_put(PGtkLayout(Parent), Child, Left, Top)
   else
     RaiseInvalidFixedWidget;
 end;
