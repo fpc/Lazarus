@@ -114,6 +114,7 @@ type
     FScrollBars: TScrollStyle;
     FItemIndex: Integer; // focused item
     FItemsCheck: TList;
+    NotifySelectionChange: Boolean;
 
     function SetItemIndexQuiet(AIndex: Integer): Boolean;
     function GetHeaderHeight: UInt16;
@@ -1147,15 +1148,16 @@ procedure TCarbonDataBrowser.NotificationCallBack(ID: DataBrowserItemId;
 begin
   if (ID < 1) or (ID > DataBrowserItemId(GetItemsCount)) then Exit;
 
-  case AMessage of
-    kDataBrowserItemSelected:
-      SelectionChanged(ID - 1, True);
-    kDataBrowserItemDeselected:
-      SelectionChanged(ID - 1, False);
-    kDataBrowserSelectionSetChanged: // the selection order has changed
-      SelectionChanged(ID - 1, True);
-    // kDataBrowserItemDoubleClicked:;
-  end;
+  if NotifySelectionChange then
+    case AMessage of
+      kDataBrowserItemSelected:
+        SelectionChanged(ID - 1, True);
+      kDataBrowserItemDeselected:
+        SelectionChanged(ID - 1, False);
+      kDataBrowserSelectionSetChanged: // the selection order has changed
+        SelectionChanged(ID - 1, True);
+      // kDataBrowserItemDoubleClicked:;
+    end;
 
 end;
 
@@ -1204,7 +1206,7 @@ var
 begin
   if (AIndex < 0) or (AIndex >= GetItemsCount) then Exit;
   if GetItemSelected(AIndex) = ASelect then Exit;
-  
+
   //DebugLn('TCarbonDataBrowser.SelectItem Index: ' + DbgS(AIndex) + ' Select: ' + DbgS(ASelect));
   
   ID := AIndex + 1; // items in Carbon start with index 1
@@ -1468,6 +1470,12 @@ var
   i     : Integer;
 begin
   Item:=GetItemsCount;
+
+  NotifySelectionChange:=False;
+  for i:=AIndex to Item-2 do
+    SelectItem(i, IsDataBrowserItemSelected(Widget, i+2));
+  NotifySelectionChange:=True;
+
   FItemsCheck.Delete(AIndex);
 
   OSError( RemoveDataBrowserItems(Widget, kDataBrowserNoItem, 1, @Item, kDataBrowserItemNoProperty),
@@ -1480,11 +1488,25 @@ procedure TCarbonDataBrowser.InsertItem(AIndex: Integer);
 var
   Item  : DataBrowserItemID;
   i     : Integer;
+  oper  : DataBrowserSetOption;
 begin
   Item := GetItemsCount+1;
   FItemsCheck.Insert(AIndex, Pointer(False));
   OSError( AddDataBrowserItems(Widget, kDataBrowserNoItem, 1, @Item, kDataBrowserItemNoProperty),
     Self, 'InsertItem', 'AddDataBrowserItems');
+
+  NotifySelectionChange:=False;
+  for i := GetItemsCount downto AIndex+2 do begin
+    if IsDataBrowserItemSelected(Widget, i-1) then
+      oper:=kDataBrowserItemsAdd
+    else
+      oper:=kDataBrowserItemsRemove;
+    SetDataBrowserSelectedItems( Widget, 1, @i, oper);
+  end;
+  i:=AIndex+1;
+  SetDataBrowserSelectedItems( Widget, 1, @i, kDataBrowserItemsRemove);
+  NotifySelectionChange:=True;
+
   for i := AIndex to GetItemsCount-1 do UpdateItem(i);
 end;
 
