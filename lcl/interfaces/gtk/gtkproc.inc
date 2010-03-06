@@ -3463,6 +3463,7 @@ function GTKEventStateToShiftState(KeyState: Word): TShiftState;
     n: Integer;
   begin
     Result := [];
+    keys:='';
     XQueryKeyMap(gdk_display, Keys);
     for n := Low(MKeyStateMap) to High(MKeyStateMap) do
     begin
