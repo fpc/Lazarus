@@ -2002,6 +2002,30 @@ msgstr "Ei automaattista uudelleen nimeämistä"
 msgid "No Highlight"
 msgstr "Ei korostusta"
 
+#: lazarusidestrconsts.dlgnotebooktabpos
+msgid "Positoon for source-notebook tabs"
+msgstr ""
+
+#: lazarusidestrconsts.dlgnotebooktabposbottom
+msgctxt "lazarusidestrconsts.dlgnotebooktabposbottom"
+msgid "Bottom"
+msgstr ""
+
+#: lazarusidestrconsts.dlgnotebooktabposleft
+msgctxt "lazarusidestrconsts.dlgnotebooktabposleft"
+msgid "Left"
+msgstr "Vasen"
+
+#: lazarusidestrconsts.dlgnotebooktabposright
+msgctxt "lazarusidestrconsts.dlgnotebooktabposright"
+msgid "Right"
+msgstr "Oikea"
+
+#: lazarusidestrconsts.dlgnotebooktabpostop
+msgctxt "lazarusidestrconsts.dlgnotebooktabpostop"
+msgid "Top"
+msgstr ""
+
 #: lazarusidestrconsts.dlgnotsplitlineafter
 msgid "Do not split line after:"
 msgstr "Riviä ei katkaista kun sitä edellä oli:"
@@ -3180,6 +3204,10 @@ msgstr ""
 msgid "Add package %s to project?"
 msgstr ""
 
+#: lazarusidestrconsts.lisaddpackagetoproject2
+msgid "Add package to project"
+msgstr ""
+
 #: lazarusidestrconsts.lisaddparameterbrackets
 msgid "Add parameter brackets"
 msgstr ""
@@ -3194,6 +3222,10 @@ msgstr "Lisätäänkö käännösyksikkö (unit) hakupolkuun?"
 
 #: lazarusidestrconsts.lisaddunitinterfaces
 msgid "Add unit interfaces"
+msgstr ""
+
+#: lazarusidestrconsts.lisaddunitnotrecommended
+msgid "Add unit (not recommended)"
 msgstr ""
 
 #: lazarusidestrconsts.lisaddvalue
@@ -3516,6 +3548,7 @@ msgid "BorderSpace"
 msgstr ""
 
 #: lazarusidestrconsts.lisbottom
+msgctxt "lazarusidestrconsts.lisbottom"
 msgid "Bottom"
 msgstr ""
 
@@ -5088,6 +5121,10 @@ msgstr ""
 msgid "Copy all and hidden messages to clipboard"
 msgstr "Kopio kaikki kääntäjän viestit sisältäen myös piilotetut viestit leikepöydälle"
 
+#: lazarusidestrconsts.liscopyallitemstoclipboard
+msgid "Copy all items to clipboard"
+msgstr ""
+
 #: lazarusidestrconsts.liscopyallmessagestoclipboard
 msgid "Copy all messages to clipboard"
 msgstr "Kopio kaikki kääntäjän viestit leikepöydälle"
@@ -5115,6 +5152,14 @@ msgstr ""
 #: lazarusidestrconsts.liscopyingawholeformisnotimplemented
 msgid "Copying a whole form is not implemented."
 msgstr "Kokonaisen lomakkeen (form) kopioiti ei ole tuettuna."
+
+#: lazarusidestrconsts.liscopyitemtoclipboard
+msgid "Copy item to clipboard"
+msgstr ""
+
+#: lazarusidestrconsts.liscopyselecteditemtoclipboard
+msgid "Copy selected items to clipboard"
+msgstr ""
 
 #: lazarusidestrconsts.liscopyselectedmessagestoclipboard
 msgid "Copy selected messages to clipboard"
@@ -5555,8 +5600,16 @@ msgstr ""
 msgid "Delphi"
 msgstr ""
 
+#: lazarusidestrconsts.lisdelphipackage
+msgid "Delphi package"
+msgstr ""
+
 #: lazarusidestrconsts.lisdelphiproject
 msgid "Delphi project"
+msgstr ""
+
+#: lazarusidestrconsts.lisdelphiunit
+msgid "Delphi unit"
 msgstr ""
 
 #: lazarusidestrconsts.lisdesthereisalreadyanothercomponentwiththename
@@ -6682,6 +6735,10 @@ msgstr "Tallenna kaikki"
 
 #: lazarusidestrconsts.lishintstepinto
 msgid "Step Into"
+msgstr ""
+
+#: lazarusidestrconsts.lishintstepout
+msgid "Run until function returns"
 msgstr ""
 
 #: lazarusidestrconsts.lishintstepover
@@ -7976,10 +8033,6 @@ msgstr "LFM tiedosto"
 msgid "LFM file corrupt"
 msgstr ""
 
-#: lazarusidestrconsts.lislfmfilenotfound
-msgid "LFM file not found"
-msgstr ""
-
 #: lazarusidestrconsts.lislfmisok
 msgid "LFM is ok"
 msgstr ""
@@ -8864,6 +8917,10 @@ msgstr "Lajittele lohko ..."
 msgid "Step into"
 msgstr ""
 
+#: lazarusidestrconsts.lismenustepout
+msgid "Step out"
+msgstr ""
+
 #: lazarusidestrconsts.lismenustepover
 msgid "Step over"
 msgstr ""
@@ -9153,6 +9210,30 @@ msgstr ""
 #: lazarusidestrconsts.lismissingpackages
 msgid "Missing Packages"
 msgstr "Komponenttipaketti puuttuu"
+
+#: lazarusidestrconsts.lismissingunitschoices
+msgid "Your choices are:"
+msgstr ""
+
+#: lazarusidestrconsts.lismissingunitscomment
+msgid "Comment Out"
+msgstr ""
+
+#: lazarusidestrconsts.lismissingunitsinfo1
+msgid "1) Comment out the missing units (ignore them)."
+msgstr ""
+
+#: lazarusidestrconsts.lismissingunitsinfo2
+msgid "2) Select a unit path which will be added to project settings."
+msgstr ""
+
+#: lazarusidestrconsts.lismissingunitsinfo3
+msgid "3) Abort now, fix the unit path or install packages and try again."
+msgstr ""
+
+#: lazarusidestrconsts.lismissingunitssearch
+msgid "Search Unit Path"
+msgstr ""
 
 #: lazarusidestrconsts.lismodifiedlgplnotice
 msgid "<description>%sCopyright (C) <year> <name of author> <contact>%sThis library is free software; you can redistribute it and/or modify it under the terms of the GNU Library General Public License as published by the Free Software Foundation; either version 2 of the License, or (at your option) any later version with the following modification:%sAs a special exception, the copyright holders of this library give you permission to link this library with independent modules to produce an executable, regardless of the license terms of these independent modules,and to copy and distribute the resulting executable under terms of your choice, provided that you also meet, for each linked independent module, the terms and conditions of the license of that module. An independent module is a module which is not derived from or based on this library. If you modify this library, you may extend this exception to your version of the library, but you are not obligated to do so. If you do not wish to do so, delete this exception statement from your version.%sThis program is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU Library General Public License for more details. %sYou should have received a copy of the GNU Library General Public License along with this library; if not, write to the Free Software Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA."
@@ -11298,13 +11379,11 @@ msgid "Open Project"
 msgstr "Avaa Projekti"
 
 #: lazarusidestrconsts.lispwopenrecentproject
+#, fuzzy
+#| msgid "Open Recent"
 msgctxt "lazarusidestrconsts.lispwopenrecentproject"
-msgid "Open Recent"
+msgid "Open Recent Project"
 msgstr "Avaa viimeksi esillä olleista"
-
-#: lazarusidestrconsts.lispwrecentprojects
-msgid "Recent Projects"
-msgstr "Viimeksi esillä olleet projektit"
 
 #: lazarusidestrconsts.lisquickfixes
 msgid "Quick fixes"
@@ -12136,10 +12215,6 @@ msgstr "Tiedostoa %s%s%s%sei löytynyt.%sOhita-näppäimen nainallus jatkaa proj
 msgid "The following methods used by %s are not in the source%s%s%s%s%s%sRemove the dangling references?"
 msgstr "Seuraavaa metodia %s on käytetty mutta sitä ei löydy lähdekoodista%s%s%s%s%s%sPoistetaanko 'roikkuva' viittaus?"
 
-#: lazarusidestrconsts.listhefollowingunitswerenotfound1eithertheseunitsaren
-msgid "The following units were not found:%s%s%s%s1) Either these units are not in the unit path, then you can abort now, fix the unit path and try again.%s2) Or you can ignore the missing units and comment them out."
-msgstr "Seuraavia käännösyksiköitä (unit) ei löydetty:%s%s%s%s1) Joko nämä käännösyksiköt eivät olleet hakupolussa jolloin keskeytä ja korjaa  hakupolut sekä yritä uudelleen.%s2) Tai voit ohittaa puuttuvat käännösyksiköt ja kommentoida ne pois käytöstä."
-
 #: lazarusidestrconsts.listhefreepascalcompilerfilenamewasnotfounditisrecomm
 msgid "The Free Pascal compiler (filename: %s) was not found.%sIt is recommended that you install fpc."
 msgstr ""
@@ -12300,6 +12375,10 @@ msgstr ""
 msgid "These settings are stored with the project."
 msgstr ""
 
+#: lazarusidestrconsts.listheseunitswerenotfound
+msgid "These units were not found:"
+msgstr ""
+
 #: lazarusidestrconsts.listhetestdirectorycouldnotbefoundseeenvironmentopt
 msgid "The Test Directory could not be found:%s%s%s%s%s(see environment options)"
 msgstr ""
@@ -12307,6 +12386,10 @@ msgstr ""
 #: lazarusidestrconsts.listheunitalreadyexistsignorewillforcetherenaming
 msgid "The unit %s%s%s already exists.%sIgnore will force the renaming,%sCancel will cancel the saving of this source and%sAbort will abort the whole saving."
 msgstr "Käännösyksikön (unit)  %s%s%s nimeä käytetään jo projektissa.%sVoitte kaikesta huolimatta nimetä näin jolloin nimenvaihto tapahtuu,%sMahdollista on myös perua tämä tallennus tai sitten keskeyttää kaikki tallennukset."
+
+#: lazarusidestrconsts.listheunitbelongstopackage
+msgid "The unit belongs to package %s."
+msgstr ""
 
 #: lazarusidestrconsts.listheunitexiststwiceintheunitpathofthe
 msgid "The unit %s exists twice in the unit path of the %s:"
@@ -12463,6 +12546,7 @@ msgid "Toggle showing filenames with full path or with relative path"
 msgstr ""
 
 #: lazarusidestrconsts.listop
+msgctxt "lazarusidestrconsts.listop"
 msgid "Top"
 msgstr ""
 
@@ -12935,10 +13019,6 @@ msgstr ""
 msgid "%s unit %s in package %s%s"
 msgstr ""
 
-#: lazarusidestrconsts.lisunitlfmfile
-msgid "Unit: %s%sLFM file: %s"
-msgstr ""
-
 #: lazarusidestrconsts.lisunitnamealreadyexistscap
 msgid "Unitname already in project"
 msgstr "Tätä Käännösyksikön nimeä käytetään jo projektissa"
@@ -12952,7 +13032,9 @@ msgid "Unit name contains ..."
 msgstr ""
 
 #: lazarusidestrconsts.lisunitnotfound
-msgid "Unit not found"
+#, fuzzy
+#| msgid "Unit not found"
+msgid "A unit not found in"
 msgstr "Käännösyksikköä (unit) ei löydetty"
 
 #: lazarusidestrconsts.lisunitoutputdirectory
@@ -12968,7 +13050,9 @@ msgid "Unit paths"
 msgstr ""
 
 #: lazarusidestrconsts.lisunitsnotfound2
-msgid "Units not found"
+#, fuzzy
+#| msgid "Units not found"
+msgid "Units not found in"
 msgstr "Käännösyksikköjä (unit) ei löydetty"
 
 #: lazarusidestrconsts.lisunusedunits

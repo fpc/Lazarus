@@ -2007,6 +2007,30 @@ msgstr "niet automatisch hernoemen"
 msgid "No Highlight"
 msgstr ""
 
+#: lazarusidestrconsts.dlgnotebooktabpos
+msgid "Positoon for source-notebook tabs"
+msgstr ""
+
+#: lazarusidestrconsts.dlgnotebooktabposbottom
+msgctxt "lazarusidestrconsts.dlgnotebooktabposbottom"
+msgid "Bottom"
+msgstr ""
+
+#: lazarusidestrconsts.dlgnotebooktabposleft
+msgctxt "lazarusidestrconsts.dlgnotebooktabposleft"
+msgid "Left"
+msgstr "Links"
+
+#: lazarusidestrconsts.dlgnotebooktabposright
+msgctxt "lazarusidestrconsts.dlgnotebooktabposright"
+msgid "Right"
+msgstr "Rechts"
+
+#: lazarusidestrconsts.dlgnotebooktabpostop
+msgctxt "lazarusidestrconsts.dlgnotebooktabpostop"
+msgid "Top"
+msgstr ""
+
 #: lazarusidestrconsts.dlgnotsplitlineafter
 msgid "Do not split line after:"
 msgstr "Splits een regel niet na :"
@@ -3191,6 +3215,10 @@ msgstr ""
 msgid "Add package %s to project?"
 msgstr ""
 
+#: lazarusidestrconsts.lisaddpackagetoproject2
+msgid "Add package to project"
+msgstr ""
+
 #: lazarusidestrconsts.lisaddparameterbrackets
 msgid "Add parameter brackets"
 msgstr ""
@@ -3205,6 +3233,10 @@ msgstr ""
 
 #: lazarusidestrconsts.lisaddunitinterfaces
 msgid "Add unit interfaces"
+msgstr ""
+
+#: lazarusidestrconsts.lisaddunitnotrecommended
+msgid "Add unit (not recommended)"
 msgstr ""
 
 #: lazarusidestrconsts.lisaddvalue
@@ -3527,6 +3559,7 @@ msgid "BorderSpace"
 msgstr "Randruimte"
 
 #: lazarusidestrconsts.lisbottom
+msgctxt "lazarusidestrconsts.lisbottom"
 msgid "Bottom"
 msgstr ""
 
@@ -5101,6 +5134,10 @@ msgstr ""
 msgid "Copy all and hidden messages to clipboard"
 msgstr "Kopieer alle (ook verborgen) berichten naar het klembord"
 
+#: lazarusidestrconsts.liscopyallitemstoclipboard
+msgid "Copy all items to clipboard"
+msgstr ""
+
 #: lazarusidestrconsts.liscopyallmessagestoclipboard
 msgid "Copy all messages to clipboard"
 msgstr "Kopieer alle berichten naar klipbord"
@@ -5128,6 +5165,14 @@ msgstr ""
 #: lazarusidestrconsts.liscopyingawholeformisnotimplemented
 msgid "Copying a whole form is not implemented."
 msgstr "Een geheel formulier kopiëren is niet geimplementeerd."
+
+#: lazarusidestrconsts.liscopyitemtoclipboard
+msgid "Copy item to clipboard"
+msgstr ""
+
+#: lazarusidestrconsts.liscopyselecteditemtoclipboard
+msgid "Copy selected items to clipboard"
+msgstr ""
 
 #: lazarusidestrconsts.liscopyselectedmessagestoclipboard
 msgid "Copy selected messages to clipboard"
@@ -5568,9 +5613,17 @@ msgstr "Verwijderen van bestand %s%s%s mislukt."
 msgid "Delphi"
 msgstr ""
 
+#: lazarusidestrconsts.lisdelphipackage
+msgid "Delphi package"
+msgstr ""
+
 #: lazarusidestrconsts.lisdelphiproject
 msgid "Delphi project"
 msgstr "Delphi project"
+
+#: lazarusidestrconsts.lisdelphiunit
+msgid "Delphi unit"
+msgstr ""
 
 #: lazarusidestrconsts.lisdesthereisalreadyanothercomponentwiththename
 msgid "There is already another component with the name %s%s%s."
@@ -6696,6 +6749,10 @@ msgstr "Alles Opslaan"
 #: lazarusidestrconsts.lishintstepinto
 msgid "Step Into"
 msgstr "Step Into"
+
+#: lazarusidestrconsts.lishintstepout
+msgid "Run until function returns"
+msgstr ""
 
 #: lazarusidestrconsts.lishintstepover
 msgid "Step Over"
@@ -7989,10 +8046,6 @@ msgstr "LFM bestand"
 msgid "LFM file corrupt"
 msgstr "Corrupt LFM bestand"
 
-#: lazarusidestrconsts.lislfmfilenotfound
-msgid "LFM file not found"
-msgstr "LFM bestand niet gevonden"
-
 #: lazarusidestrconsts.lislfmisok
 msgid "LFM is ok"
 msgstr ""
@@ -8877,6 +8930,10 @@ msgstr "Sorteer Selectie ..."
 msgid "Step into"
 msgstr "Step Into"
 
+#: lazarusidestrconsts.lismenustepout
+msgid "Step out"
+msgstr ""
+
 #: lazarusidestrconsts.lismenustepover
 msgid "Step over"
 msgstr "Step Over"
@@ -9170,6 +9227,30 @@ msgstr ""
 #: lazarusidestrconsts.lismissingpackages
 msgid "Missing Packages"
 msgstr "Ontbrekende pakketten"
+
+#: lazarusidestrconsts.lismissingunitschoices
+msgid "Your choices are:"
+msgstr ""
+
+#: lazarusidestrconsts.lismissingunitscomment
+msgid "Comment Out"
+msgstr ""
+
+#: lazarusidestrconsts.lismissingunitsinfo1
+msgid "1) Comment out the missing units (ignore them)."
+msgstr ""
+
+#: lazarusidestrconsts.lismissingunitsinfo2
+msgid "2) Select a unit path which will be added to project settings."
+msgstr ""
+
+#: lazarusidestrconsts.lismissingunitsinfo3
+msgid "3) Abort now, fix the unit path or install packages and try again."
+msgstr ""
+
+#: lazarusidestrconsts.lismissingunitssearch
+msgid "Search Unit Path"
+msgstr ""
 
 #: lazarusidestrconsts.lismodifiedlgplnotice
 msgid "<description>%sCopyright (C) <year> <name of author> <contact>%sThis library is free software; you can redistribute it and/or modify it under the terms of the GNU Library General Public License as published by the Free Software Foundation; either version 2 of the License, or (at your option) any later version with the following modification:%sAs a special exception, the copyright holders of this library give you permission to link this library with independent modules to produce an executable, regardless of the license terms of these independent modules,and to copy and distribute the resulting executable under terms of your choice, provided that you also meet, for each linked independent module, the terms and conditions of the license of that module. An independent module is a module which is not derived from or based on this library. If you modify this library, you may extend this exception to your version of the library, but you are not obligated to do so. If you do not wish to do so, delete this exception statement from your version.%sThis program is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU Library General Public License for more details. %sYou should have received a copy of the GNU Library General Public License along with this library; if not, write to the Free Software Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA."
@@ -11319,13 +11400,11 @@ msgid "Open Project"
 msgstr ""
 
 #: lazarusidestrconsts.lispwopenrecentproject
+#, fuzzy
+#| msgid "Open Recent"
 msgctxt "lazarusidestrconsts.lispwopenrecentproject"
-msgid "Open Recent"
+msgid "Open Recent Project"
 msgstr "Open Recent"
-
-#: lazarusidestrconsts.lispwrecentprojects
-msgid "Recent Projects"
-msgstr ""
 
 #: lazarusidestrconsts.lisquickfixes
 msgid "Quick fixes"
@@ -12157,10 +12236,6 @@ msgstr "Het bestand %s%s%s%sis niet gevonden.%sIgnore gaat door met het laden,%s
 msgid "The following methods used by %s are not in the source%s%s%s%s%s%sRemove the dangling references?"
 msgstr "De volgende methoden gebruikt door %s zijn niet in de bron%s%s%s%s%s%sVerwijder deze referenties?"
 
-#: lazarusidestrconsts.listhefollowingunitswerenotfound1eithertheseunitsaren
-msgid "The following units were not found:%s%s%s%s1) Either these units are not in the unit path, then you can abort now, fix the unit path and try again.%s2) Or you can ignore the missing units and comment them out."
-msgstr "De volgende units werden niet gevonden:%s%s%s%s1) Deze units bevinden zich ofwel niet in het unit pad, u kunt dan afbreken, het pad repareren en opnieuw proberen.%s2) Of u kunt de ontbrekende units negeren."
-
 #: lazarusidestrconsts.listhefreepascalcompilerfilenamewasnotfounditisrecomm
 msgid "The Free Pascal compiler (filename: %s) was not found.%sIt is recommended that you install fpc."
 msgstr "De Free Pascal compiler (bestandsnaam: %s) niet gevonden.%sHet is raadzaam om FPC te installeren."
@@ -12321,6 +12396,10 @@ msgstr "Het root component kan niet verwijderd worden."
 msgid "These settings are stored with the project."
 msgstr ""
 
+#: lazarusidestrconsts.listheseunitswerenotfound
+msgid "These units were not found:"
+msgstr ""
+
 #: lazarusidestrconsts.listhetestdirectorycouldnotbefoundseeenvironmentopt
 msgid "The Test Directory could not be found:%s%s%s%s%s(see environment options)"
 msgstr ""
@@ -12328,6 +12407,10 @@ msgstr ""
 #: lazarusidestrconsts.listheunitalreadyexistsignorewillforcetherenaming
 msgid "The unit %s%s%s already exists.%sIgnore will force the renaming,%sCancel will cancel the saving of this source and%sAbort will abort the whole saving."
 msgstr "De unit %s%s%s bestaat al.%sNegeren forceert een hernoeming,%sAnnuleer stop het opslaan van deze source en%sAbort stopt het hele opslaan."
+
+#: lazarusidestrconsts.listheunitbelongstopackage
+msgid "The unit belongs to package %s."
+msgstr ""
 
 #: lazarusidestrconsts.listheunitexiststwiceintheunitpathofthe
 msgid "The unit %s exists twice in the unit path of the %s:"
@@ -12484,6 +12567,7 @@ msgid "Toggle showing filenames with full path or with relative path"
 msgstr ""
 
 #: lazarusidestrconsts.listop
+msgctxt "lazarusidestrconsts.listop"
 msgid "Top"
 msgstr ""
 
@@ -12956,10 +13040,6 @@ msgstr "Unit identifier bestaat al"
 msgid "%s unit %s in package %s%s"
 msgstr ""
 
-#: lazarusidestrconsts.lisunitlfmfile
-msgid "Unit: %s%sLFM file: %s"
-msgstr "Unit: %s%sLFM bestand: %s"
-
 #: lazarusidestrconsts.lisunitnamealreadyexistscap
 msgid "Unitname already in project"
 msgstr "Unitname existiert bereits im Projekt"
@@ -12973,7 +13053,9 @@ msgid "Unit name contains ..."
 msgstr "Unit naam bevat ..."
 
 #: lazarusidestrconsts.lisunitnotfound
-msgid "Unit not found"
+#, fuzzy
+#| msgid "Unit not found"
+msgid "A unit not found in"
 msgstr "Unit niet gevonden"
 
 #: lazarusidestrconsts.lisunitoutputdirectory
@@ -12989,7 +13071,9 @@ msgid "Unit paths"
 msgstr "Unit paden"
 
 #: lazarusidestrconsts.lisunitsnotfound2
-msgid "Units not found"
+#, fuzzy
+#| msgid "Units not found"
+msgid "Units not found in"
 msgstr "Units niet gevonden"
 
 #: lazarusidestrconsts.lisunusedunits

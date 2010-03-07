@@ -1999,6 +1999,30 @@ msgstr ""
 msgid "No Highlight"
 msgstr ""
 
+#: lazarusidestrconsts.dlgnotebooktabpos
+msgid "Positoon for source-notebook tabs"
+msgstr ""
+
+#: lazarusidestrconsts.dlgnotebooktabposbottom
+msgctxt "lazarusidestrconsts.dlgnotebooktabposbottom"
+msgid "Bottom"
+msgstr ""
+
+#: lazarusidestrconsts.dlgnotebooktabposleft
+msgctxt "lazarusidestrconsts.dlgnotebooktabposleft"
+msgid "Left"
+msgstr ""
+
+#: lazarusidestrconsts.dlgnotebooktabposright
+msgctxt "lazarusidestrconsts.dlgnotebooktabposright"
+msgid "Right"
+msgstr ""
+
+#: lazarusidestrconsts.dlgnotebooktabpostop
+msgctxt "lazarusidestrconsts.dlgnotebooktabpostop"
+msgid "Top"
+msgstr ""
+
 #: lazarusidestrconsts.dlgnotsplitlineafter
 msgid "Do not split line after:"
 msgstr ""
@@ -3159,6 +3183,10 @@ msgstr ""
 msgid "Add package %s to project?"
 msgstr ""
 
+#: lazarusidestrconsts.lisaddpackagetoproject2
+msgid "Add package to project"
+msgstr ""
+
 #: lazarusidestrconsts.lisaddparameterbrackets
 msgid "Add parameter brackets"
 msgstr ""
@@ -3173,6 +3201,10 @@ msgstr "Birim arama yoluna eklensin mi?"
 
 #: lazarusidestrconsts.lisaddunitinterfaces
 msgid "Add unit interfaces"
+msgstr ""
+
+#: lazarusidestrconsts.lisaddunitnotrecommended
+msgid "Add unit (not recommended)"
 msgstr ""
 
 #: lazarusidestrconsts.lisaddvalue
@@ -3495,6 +3527,7 @@ msgid "BorderSpace"
 msgstr "Çerçeve Alanı"
 
 #: lazarusidestrconsts.lisbottom
+msgctxt "lazarusidestrconsts.lisbottom"
 msgid "Bottom"
 msgstr ""
 
@@ -5067,6 +5100,10 @@ msgstr ""
 msgid "Copy all and hidden messages to clipboard"
 msgstr "Gizliler dahil tüm iletileri panoya kopyala"
 
+#: lazarusidestrconsts.liscopyallitemstoclipboard
+msgid "Copy all items to clipboard"
+msgstr ""
+
 #: lazarusidestrconsts.liscopyallmessagestoclipboard
 msgid "Copy all messages to clipboard"
 msgstr "Tüm iletileri panoya kopyala"
@@ -5093,6 +5130,14 @@ msgstr ""
 
 #: lazarusidestrconsts.liscopyingawholeformisnotimplemented
 msgid "Copying a whole form is not implemented."
+msgstr ""
+
+#: lazarusidestrconsts.liscopyitemtoclipboard
+msgid "Copy item to clipboard"
+msgstr ""
+
+#: lazarusidestrconsts.liscopyselecteditemtoclipboard
+msgid "Copy selected items to clipboard"
 msgstr ""
 
 #: lazarusidestrconsts.liscopyselectedmessagestoclipboard
@@ -5534,9 +5579,17 @@ msgstr "%s%s%s adlı dosya silinemedi"
 msgid "Delphi"
 msgstr ""
 
+#: lazarusidestrconsts.lisdelphipackage
+msgid "Delphi package"
+msgstr ""
+
 #: lazarusidestrconsts.lisdelphiproject
 msgid "Delphi project"
 msgstr "Delphi projesi"
+
+#: lazarusidestrconsts.lisdelphiunit
+msgid "Delphi unit"
+msgstr ""
 
 #: lazarusidestrconsts.lisdesthereisalreadyanothercomponentwiththename
 msgid "There is already another component with the name %s%s%s."
@@ -6662,6 +6715,10 @@ msgstr "Tümünü kaydet"
 #: lazarusidestrconsts.lishintstepinto
 msgid "Step Into"
 msgstr "İçeriyeAadım"
+
+#: lazarusidestrconsts.lishintstepout
+msgid "Run until function returns"
+msgstr ""
 
 #: lazarusidestrconsts.lishintstepover
 msgid "Step Over"
@@ -7955,10 +8012,6 @@ msgstr ""
 msgid "LFM file corrupt"
 msgstr "LFM dosyası bozuk"
 
-#: lazarusidestrconsts.lislfmfilenotfound
-msgid "LFM file not found"
-msgstr "LFM dosyası bulunamadı"
-
 #: lazarusidestrconsts.lislfmisok
 msgid "LFM is ok"
 msgstr ""
@@ -8843,6 +8896,10 @@ msgstr "Seçimi sırala ..."
 msgid "Step into"
 msgstr "İçeri adım"
 
+#: lazarusidestrconsts.lismenustepout
+msgid "Step out"
+msgstr ""
+
 #: lazarusidestrconsts.lismenustepover
 msgid "Step over"
 msgstr "Üzerinden adım"
@@ -9135,6 +9192,30 @@ msgstr ""
 
 #: lazarusidestrconsts.lismissingpackages
 msgid "Missing Packages"
+msgstr ""
+
+#: lazarusidestrconsts.lismissingunitschoices
+msgid "Your choices are:"
+msgstr ""
+
+#: lazarusidestrconsts.lismissingunitscomment
+msgid "Comment Out"
+msgstr ""
+
+#: lazarusidestrconsts.lismissingunitsinfo1
+msgid "1) Comment out the missing units (ignore them)."
+msgstr ""
+
+#: lazarusidestrconsts.lismissingunitsinfo2
+msgid "2) Select a unit path which will be added to project settings."
+msgstr ""
+
+#: lazarusidestrconsts.lismissingunitsinfo3
+msgid "3) Abort now, fix the unit path or install packages and try again."
+msgstr ""
+
+#: lazarusidestrconsts.lismissingunitssearch
+msgid "Search Unit Path"
 msgstr ""
 
 #: lazarusidestrconsts.lismodifiedlgplnotice
@@ -11286,11 +11367,7 @@ msgstr ""
 
 #: lazarusidestrconsts.lispwopenrecentproject
 msgctxt "lazarusidestrconsts.lispwopenrecentproject"
-msgid "Open Recent"
-msgstr ""
-
-#: lazarusidestrconsts.lispwrecentprojects
-msgid "Recent Projects"
+msgid "Open Recent Project"
 msgstr ""
 
 #: lazarusidestrconsts.lisquickfixes
@@ -12123,10 +12200,6 @@ msgstr "%s%s%s%s adlı dosya bulunamadı.%sYoksayarsan projenin yüklenmesine de
 msgid "The following methods used by %s are not in the source%s%s%s%s%s%sRemove the dangling references?"
 msgstr ""
 
-#: lazarusidestrconsts.listhefollowingunitswerenotfound1eithertheseunitsaren
-msgid "The following units were not found:%s%s%s%s1) Either these units are not in the unit path, then you can abort now, fix the unit path and try again.%s2) Or you can ignore the missing units and comment them out."
-msgstr "Şu birimler bulunamadı:%s%s%s%s1) Ya bu birimler birim yolu içerisinde değil, o halde şimdi işlemi durdurabilir, birim yolunu düzeltebilir ve yeniden deneyebilirsin.%s2) Ya da bulunamayan birimleri yok sayıp onları yorum satırlarına dönüştürebilirsin."
-
 #: lazarusidestrconsts.listhefreepascalcompilerfilenamewasnotfounditisrecomm
 msgid "The Free Pascal compiler (filename: %s) was not found.%sIt is recommended that you install fpc."
 msgstr ""
@@ -12287,6 +12360,10 @@ msgstr ""
 msgid "These settings are stored with the project."
 msgstr ""
 
+#: lazarusidestrconsts.listheseunitswerenotfound
+msgid "These units were not found:"
+msgstr ""
+
 #: lazarusidestrconsts.listhetestdirectorycouldnotbefoundseeenvironmentopt
 msgid "The Test Directory could not be found:%s%s%s%s%s(see environment options)"
 msgstr ""
@@ -12294,6 +12371,10 @@ msgstr ""
 #: lazarusidestrconsts.listheunitalreadyexistsignorewillforcetherenaming
 msgid "The unit %s%s%s already exists.%sIgnore will force the renaming,%sCancel will cancel the saving of this source and%sAbort will abort the whole saving."
 msgstr "%s%s%s adlı birim zaten mevcut.%sYoksayı seçersen ad değiştirme uygulanacak,%siptali seçersen bu kaynak dosyasının kaydı iptal edilecek ve durduru seçersen tüm kaydetme işlemi durdurulacak."
+
+#: lazarusidestrconsts.listheunitbelongstopackage
+msgid "The unit belongs to package %s."
+msgstr ""
 
 #: lazarusidestrconsts.listheunitexiststwiceintheunitpathofthe
 msgid "The unit %s exists twice in the unit path of the %s:"
@@ -12450,6 +12531,7 @@ msgid "Toggle showing filenames with full path or with relative path"
 msgstr ""
 
 #: lazarusidestrconsts.listop
+msgctxt "lazarusidestrconsts.listop"
 msgid "Top"
 msgstr ""
 
@@ -12922,10 +13004,6 @@ msgstr "Birim tanımlayıcısı mevcut"
 msgid "%s unit %s in package %s%s"
 msgstr "%s birim %s %s%s paketinin içinde"
 
-#: lazarusidestrconsts.lisunitlfmfile
-msgid "Unit: %s%sLFM file: %s"
-msgstr "Birim: %s%sLFM dosyası: %s"
-
 #: lazarusidestrconsts.lisunitnamealreadyexistscap
 msgid "Unitname already in project"
 msgstr "Birim adı projede zaten var"
@@ -12939,7 +13017,9 @@ msgid "Unit name contains ..."
 msgstr ""
 
 #: lazarusidestrconsts.lisunitnotfound
-msgid "Unit not found"
+#, fuzzy
+#| msgid "Unit not found"
+msgid "A unit not found in"
 msgstr "Birim bulunamadı"
 
 #: lazarusidestrconsts.lisunitoutputdirectory
@@ -12955,7 +13035,9 @@ msgid "Unit paths"
 msgstr "Birim yolları"
 
 #: lazarusidestrconsts.lisunitsnotfound2
-msgid "Units not found"
+#, fuzzy
+#| msgid "Units not found"
+msgid "Units not found in"
 msgstr "Birimler bulunamadı"
 
 #: lazarusidestrconsts.lisunusedunits

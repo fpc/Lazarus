@@ -2013,6 +2013,30 @@ msgstr "nessuna rinomina automatica"
 msgid "No Highlight"
 msgstr ""
 
+#: lazarusidestrconsts.dlgnotebooktabpos
+msgid "Positoon for source-notebook tabs"
+msgstr ""
+
+#: lazarusidestrconsts.dlgnotebooktabposbottom
+msgctxt "lazarusidestrconsts.dlgnotebooktabposbottom"
+msgid "Bottom"
+msgstr "Basso"
+
+#: lazarusidestrconsts.dlgnotebooktabposleft
+msgctxt "lazarusidestrconsts.dlgnotebooktabposleft"
+msgid "Left"
+msgstr "Sinistra"
+
+#: lazarusidestrconsts.dlgnotebooktabposright
+msgctxt "lazarusidestrconsts.dlgnotebooktabposright"
+msgid "Right"
+msgstr "Destra"
+
+#: lazarusidestrconsts.dlgnotebooktabpostop
+msgctxt "lazarusidestrconsts.dlgnotebooktabpostop"
+msgid "Top"
+msgstr "Cima"
+
 #: lazarusidestrconsts.dlgnotsplitlineafter
 msgid "Do not split line after:"
 msgstr "Non spezzare le righe dietro a:"
@@ -3203,6 +3227,10 @@ msgstr ""
 msgid "Add package %s to project?"
 msgstr ""
 
+#: lazarusidestrconsts.lisaddpackagetoproject2
+msgid "Add package to project"
+msgstr ""
+
 #: lazarusidestrconsts.lisaddparameterbrackets
 msgid "Add parameter brackets"
 msgstr ""
@@ -3217,6 +3245,10 @@ msgstr "Aggiungere al percorso di ricerca delle unit?"
 
 #: lazarusidestrconsts.lisaddunitinterfaces
 msgid "Add unit interfaces"
+msgstr ""
+
+#: lazarusidestrconsts.lisaddunitnotrecommended
+msgid "Add unit (not recommended)"
 msgstr ""
 
 #: lazarusidestrconsts.lisaddvalue
@@ -3539,6 +3571,7 @@ msgid "BorderSpace"
 msgstr "Bordi"
 
 #: lazarusidestrconsts.lisbottom
+msgctxt "lazarusidestrconsts.lisbottom"
 msgid "Bottom"
 msgstr "Basso"
 
@@ -5112,6 +5145,10 @@ msgstr "Copia tutto"
 msgid "Copy all and hidden messages to clipboard"
 msgstr "Copia tutto e i messaggi nascosti negli appunti"
 
+#: lazarusidestrconsts.liscopyallitemstoclipboard
+msgid "Copy all items to clipboard"
+msgstr ""
+
 #: lazarusidestrconsts.liscopyallmessagestoclipboard
 msgid "Copy all messages to clipboard"
 msgstr "Copia tutti i messaggi negli appunti"
@@ -5139,6 +5176,14 @@ msgstr ""
 #: lazarusidestrconsts.liscopyingawholeformisnotimplemented
 msgid "Copying a whole form is not implemented."
 msgstr "La copia di una form intera non è stata implementata."
+
+#: lazarusidestrconsts.liscopyitemtoclipboard
+msgid "Copy item to clipboard"
+msgstr ""
+
+#: lazarusidestrconsts.liscopyselecteditemtoclipboard
+msgid "Copy selected items to clipboard"
+msgstr ""
 
 #: lazarusidestrconsts.liscopyselectedmessagestoclipboard
 msgid "Copy selected messages to clipboard"
@@ -5579,9 +5624,17 @@ msgstr "Cancellazione del file %s%s%s fallita."
 msgid "Delphi"
 msgstr ""
 
+#: lazarusidestrconsts.lisdelphipackage
+msgid "Delphi package"
+msgstr ""
+
 #: lazarusidestrconsts.lisdelphiproject
 msgid "Delphi project"
 msgstr "Progetto Delphi"
+
+#: lazarusidestrconsts.lisdelphiunit
+msgid "Delphi unit"
+msgstr ""
 
 #: lazarusidestrconsts.lisdesthereisalreadyanothercomponentwiththename
 msgid "There is already another component with the name %s%s%s."
@@ -6709,6 +6762,10 @@ msgstr "Salva tutto"
 #: lazarusidestrconsts.lishintstepinto
 msgid "Step Into"
 msgstr "Passo interno"
+
+#: lazarusidestrconsts.lishintstepout
+msgid "Run until function returns"
+msgstr ""
 
 #: lazarusidestrconsts.lishintstepover
 msgid "Step Over"
@@ -8001,10 +8058,6 @@ msgstr "File LFM"
 msgid "LFM file corrupt"
 msgstr "File LFM danneggiato"
 
-#: lazarusidestrconsts.lislfmfilenotfound
-msgid "LFM file not found"
-msgstr "File LFM non trovato"
-
 #: lazarusidestrconsts.lislfmisok
 msgid "LFM is ok"
 msgstr ""
@@ -8889,6 +8942,10 @@ msgstr "Ordina selezione ..."
 msgid "Step into"
 msgstr "Passo interno"
 
+#: lazarusidestrconsts.lismenustepout
+msgid "Step out"
+msgstr ""
+
 #: lazarusidestrconsts.lismenustepover
 msgid "Step over"
 msgstr "Passo esterno"
@@ -9182,6 +9239,30 @@ msgstr ""
 #: lazarusidestrconsts.lismissingpackages
 msgid "Missing Packages"
 msgstr "Mancano pacchetti"
+
+#: lazarusidestrconsts.lismissingunitschoices
+msgid "Your choices are:"
+msgstr ""
+
+#: lazarusidestrconsts.lismissingunitscomment
+msgid "Comment Out"
+msgstr ""
+
+#: lazarusidestrconsts.lismissingunitsinfo1
+msgid "1) Comment out the missing units (ignore them)."
+msgstr ""
+
+#: lazarusidestrconsts.lismissingunitsinfo2
+msgid "2) Select a unit path which will be added to project settings."
+msgstr ""
+
+#: lazarusidestrconsts.lismissingunitsinfo3
+msgid "3) Abort now, fix the unit path or install packages and try again."
+msgstr ""
+
+#: lazarusidestrconsts.lismissingunitssearch
+msgid "Search Unit Path"
+msgstr ""
 
 #: lazarusidestrconsts.lismodifiedlgplnotice
 msgid "<description>%sCopyright (C) <year> <name of author> <contact>%sThis library is free software; you can redistribute it and/or modify it under the terms of the GNU Library General Public License as published by the Free Software Foundation; either version 2 of the License, or (at your option) any later version with the following modification:%sAs a special exception, the copyright holders of this library give you permission to link this library with independent modules to produce an executable, regardless of the license terms of these independent modules,and to copy and distribute the resulting executable under terms of your choice, provided that you also meet, for each linked independent module, the terms and conditions of the license of that module. An independent module is a module which is not derived from or based on this library. If you modify this library, you may extend this exception to your version of the library, but you are not obligated to do so. If you do not wish to do so, delete this exception statement from your version.%sThis program is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU Library General Public License for more details. %sYou should have received a copy of the GNU Library General Public License along with this library; if not, write to the Free Software Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA."
@@ -11331,13 +11412,11 @@ msgid "Open Project"
 msgstr "Apri progetto"
 
 #: lazarusidestrconsts.lispwopenrecentproject
+#, fuzzy
+#| msgid "Open Recent"
 msgctxt "lazarusidestrconsts.lispwopenrecentproject"
-msgid "Open Recent"
+msgid "Open Recent Project"
 msgstr "Apri recenti"
-
-#: lazarusidestrconsts.lispwrecentprojects
-msgid "Recent Projects"
-msgstr ""
 
 #: lazarusidestrconsts.lisquickfixes
 msgid "Quick fixes"
@@ -12169,10 +12248,6 @@ msgstr "Il file %s%s%s%snon è stato trovato.%sIgnora proseguirà nel caricament
 msgid "The following methods used by %s are not in the source%s%s%s%s%s%sRemove the dangling references?"
 msgstr ""
 
-#: lazarusidestrconsts.listhefollowingunitswerenotfound1eithertheseunitsaren
-msgid "The following units were not found:%s%s%s%s1) Either these units are not in the unit path, then you can abort now, fix the unit path and try again.%s2) Or you can ignore the missing units and comment them out."
-msgstr ""
-
 #: lazarusidestrconsts.listhefreepascalcompilerfilenamewasnotfounditisrecomm
 msgid "The Free Pascal compiler (filename: %s) was not found.%sIt is recommended that you install fpc."
 msgstr "Il compilatore Free Pascal (nome file: %s) non è stato trovato.%sSi raccomanda di installare fpc."
@@ -12333,6 +12408,10 @@ msgstr "Il componente radice non puè² essere cancellato."
 msgid "These settings are stored with the project."
 msgstr ""
 
+#: lazarusidestrconsts.listheseunitswerenotfound
+msgid "These units were not found:"
+msgstr ""
+
 #: lazarusidestrconsts.listhetestdirectorycouldnotbefoundseeenvironmentopt
 msgid "The Test Directory could not be found:%s%s%s%s%s(see environment options)"
 msgstr ""
@@ -12340,6 +12419,10 @@ msgstr ""
 #: lazarusidestrconsts.listheunitalreadyexistsignorewillforcetherenaming
 msgid "The unit %s%s%s already exists.%sIgnore will force the renaming,%sCancel will cancel the saving of this source and%sAbort will abort the whole saving."
 msgstr "La unit %s%s%s esiste già.%sIgnora forzerà il cambio nome,%sCancella cancellerà il salvataggio di questi sorgenti e%sAnnulla annullerà l'intero salvataggio."
+
+#: lazarusidestrconsts.listheunitbelongstopackage
+msgid "The unit belongs to package %s."
+msgstr ""
 
 #: lazarusidestrconsts.listheunitexiststwiceintheunitpathofthe
 msgid "The unit %s exists twice in the unit path of the %s:"
@@ -12496,6 +12579,7 @@ msgid "Toggle showing filenames with full path or with relative path"
 msgstr ""
 
 #: lazarusidestrconsts.listop
+msgctxt "lazarusidestrconsts.listop"
 msgid "Top"
 msgstr "Cima"
 
@@ -12968,10 +13052,6 @@ msgstr "Esiste l'identificatore della unit"
 msgid "%s unit %s in package %s%s"
 msgstr ""
 
-#: lazarusidestrconsts.lisunitlfmfile
-msgid "Unit: %s%sLFM file: %s"
-msgstr "Unit: %s%sFile LFM: %s"
-
 #: lazarusidestrconsts.lisunitnamealreadyexistscap
 msgid "Unitname already in project"
 msgstr "Nome unit già nel progetto"
@@ -12985,7 +13065,9 @@ msgid "Unit name contains ..."
 msgstr "Il nome della Unit contiene ..."
 
 #: lazarusidestrconsts.lisunitnotfound
-msgid "Unit not found"
+#, fuzzy
+#| msgid "Unit not found"
+msgid "A unit not found in"
 msgstr "Unit non trovata"
 
 #: lazarusidestrconsts.lisunitoutputdirectory
@@ -13001,7 +13083,9 @@ msgid "Unit paths"
 msgstr "Path di ricerca delle Unit"
 
 #: lazarusidestrconsts.lisunitsnotfound2
-msgid "Units not found"
+#, fuzzy
+#| msgid "Units not found"
+msgid "Units not found in"
 msgstr "Units non trovate"
 
 #: lazarusidestrconsts.lisunusedunits

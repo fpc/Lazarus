@@ -2010,6 +2010,30 @@ msgstr "自動的にリネームしない"
 msgid "No Highlight"
 msgstr "強調しない"
 
+#: lazarusidestrconsts.dlgnotebooktabpos
+msgid "Positoon for source-notebook tabs"
+msgstr ""
+
+#: lazarusidestrconsts.dlgnotebooktabposbottom
+msgctxt "lazarusidestrconsts.dlgnotebooktabposbottom"
+msgid "Bottom"
+msgstr "底"
+
+#: lazarusidestrconsts.dlgnotebooktabposleft
+msgctxt "lazarusidestrconsts.dlgnotebooktabposleft"
+msgid "Left"
+msgstr "左"
+
+#: lazarusidestrconsts.dlgnotebooktabposright
+msgctxt "lazarusidestrconsts.dlgnotebooktabposright"
+msgid "Right"
+msgstr "右"
+
+#: lazarusidestrconsts.dlgnotebooktabpostop
+msgctxt "lazarusidestrconsts.dlgnotebooktabpostop"
+msgid "Top"
+msgstr "上端"
+
 #: lazarusidestrconsts.dlgnotsplitlineafter
 msgid "Do not split line after:"
 msgstr "後の行を分割しない"
@@ -3194,6 +3218,10 @@ msgstr "パッケージに必要な物を追加"
 msgid "Add package %s to project?"
 msgstr "プロジェクトにパッケージ%sを追加"
 
+#: lazarusidestrconsts.lisaddpackagetoproject2
+msgid "Add package to project"
+msgstr ""
+
 #: lazarusidestrconsts.lisaddparameterbrackets
 msgid "Add parameter brackets"
 msgstr "パラメータの括弧を追加"
@@ -3208,6 +3236,10 @@ msgstr "ユニット検索パスに追加しますか？"
 
 #: lazarusidestrconsts.lisaddunitinterfaces
 msgid "Add unit interfaces"
+msgstr ""
+
+#: lazarusidestrconsts.lisaddunitnotrecommended
+msgid "Add unit (not recommended)"
 msgstr ""
 
 #: lazarusidestrconsts.lisaddvalue
@@ -3530,6 +3562,7 @@ msgid "BorderSpace"
 msgstr "境界間隔"
 
 #: lazarusidestrconsts.lisbottom
+msgctxt "lazarusidestrconsts.lisbottom"
 msgid "Bottom"
 msgstr "底"
 
@@ -5106,6 +5139,10 @@ msgstr "すべてコピー"
 msgid "Copy all and hidden messages to clipboard"
 msgstr "全てのメッセージ（隠しメッセージも）をクリップボードへコピー"
 
+#: lazarusidestrconsts.liscopyallitemstoclipboard
+msgid "Copy all items to clipboard"
+msgstr ""
+
 #: lazarusidestrconsts.liscopyallmessagestoclipboard
 msgid "Copy all messages to clipboard"
 msgstr "全てのメッセージをクリップボードへコピー"
@@ -5133,6 +5170,14 @@ msgstr "%s%s%s をクリップボードにコピー"
 #: lazarusidestrconsts.liscopyingawholeformisnotimplemented
 msgid "Copying a whole form is not implemented."
 msgstr "フォーム全体のコピーは実行されません。"
+
+#: lazarusidestrconsts.liscopyitemtoclipboard
+msgid "Copy item to clipboard"
+msgstr ""
+
+#: lazarusidestrconsts.liscopyselecteditemtoclipboard
+msgid "Copy selected items to clipboard"
+msgstr ""
 
 #: lazarusidestrconsts.liscopyselectedmessagestoclipboard
 msgid "Copy selected messages to clipboard"
@@ -5573,9 +5618,17 @@ msgstr "ファイル %s%s%sの削除に失敗"
 msgid "Delphi"
 msgstr ""
 
+#: lazarusidestrconsts.lisdelphipackage
+msgid "Delphi package"
+msgstr ""
+
 #: lazarusidestrconsts.lisdelphiproject
 msgid "Delphi project"
 msgstr "Delphiプロジェクト"
+
+#: lazarusidestrconsts.lisdelphiunit
+msgid "Delphi unit"
+msgstr ""
 
 #: lazarusidestrconsts.lisdesthereisalreadyanothercomponentwiththename
 msgid "There is already another component with the name %s%s%s."
@@ -6701,6 +6754,10 @@ msgstr "すべて保存"
 #: lazarusidestrconsts.lishintstepinto
 msgid "Step Into"
 msgstr "トレース実行"
+
+#: lazarusidestrconsts.lishintstepout
+msgid "Run until function returns"
+msgstr ""
 
 #: lazarusidestrconsts.lishintstepover
 msgid "Step Over"
@@ -7994,10 +8051,6 @@ msgstr "LFMファイル"
 msgid "LFM file corrupt"
 msgstr "LFMファイル破損"
 
-#: lazarusidestrconsts.lislfmfilenotfound
-msgid "LFM file not found"
-msgstr "LFMファイルが見つかりません"
-
 #: lazarusidestrconsts.lislfmisok
 msgid "LFM is ok"
 msgstr "LFMはOK"
@@ -8882,6 +8935,10 @@ msgstr "選択部分をソートする ..."
 msgid "Step into"
 msgstr "トレース実行"
 
+#: lazarusidestrconsts.lismenustepout
+msgid "Step out"
+msgstr ""
+
 #: lazarusidestrconsts.lismenustepover
 msgid "Step over"
 msgstr "ステップ実行"
@@ -9175,6 +9232,30 @@ msgstr "見つからない識別子"
 #: lazarusidestrconsts.lismissingpackages
 msgid "Missing Packages"
 msgstr "見つからないパッケージ"
+
+#: lazarusidestrconsts.lismissingunitschoices
+msgid "Your choices are:"
+msgstr ""
+
+#: lazarusidestrconsts.lismissingunitscomment
+msgid "Comment Out"
+msgstr ""
+
+#: lazarusidestrconsts.lismissingunitsinfo1
+msgid "1) Comment out the missing units (ignore them)."
+msgstr ""
+
+#: lazarusidestrconsts.lismissingunitsinfo2
+msgid "2) Select a unit path which will be added to project settings."
+msgstr ""
+
+#: lazarusidestrconsts.lismissingunitsinfo3
+msgid "3) Abort now, fix the unit path or install packages and try again."
+msgstr ""
+
+#: lazarusidestrconsts.lismissingunitssearch
+msgid "Search Unit Path"
+msgstr ""
 
 #: lazarusidestrconsts.lismodifiedlgplnotice
 msgid "<description>%sCopyright (C) <year> <name of author> <contact>%sThis library is free software; you can redistribute it and/or modify it under the terms of the GNU Library General Public License as published by the Free Software Foundation; either version 2 of the License, or (at your option) any later version with the following modification:%sAs a special exception, the copyright holders of this library give you permission to link this library with independent modules to produce an executable, regardless of the license terms of these independent modules,and to copy and distribute the resulting executable under terms of your choice, provided that you also meet, for each linked independent module, the terms and conditions of the license of that module. An independent module is a module which is not derived from or based on this library. If you modify this library, you may extend this exception to your version of the library, but you are not obligated to do so. If you do not wish to do so, delete this exception statement from your version.%sThis program is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU Library General Public License for more details. %sYou should have received a copy of the GNU Library General Public License along with this library; if not, write to the Free Software Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA."
@@ -11322,13 +11403,11 @@ msgid "Open Project"
 msgstr "プロジェクトを開く"
 
 #: lazarusidestrconsts.lispwopenrecentproject
+#, fuzzy
+#| msgid "Open Recent"
 msgctxt "lazarusidestrconsts.lispwopenrecentproject"
-msgid "Open Recent"
+msgid "Open Recent Project"
 msgstr "最近扱ったファイルを開く"
-
-#: lazarusidestrconsts.lispwrecentprojects
-msgid "Recent Projects"
-msgstr "最近扱ったプロジェクト"
 
 #: lazarusidestrconsts.lisquickfixes
 msgid "Quick fixes"
@@ -12160,10 +12239,6 @@ msgstr "ファイル %s%s%sは見つかりませんでした。%s[無視]を選�
 msgid "The following methods used by %s are not in the source%s%s%s%s%s%sRemove the dangling references?"
 msgstr "%sに用いられている以下のメソッドはソース%s%s%s%s%s%sにありません。その付随参照を削除しますか？"
 
-#: lazarusidestrconsts.listhefollowingunitswerenotfound1eithertheseunitsaren
-msgid "The following units were not found:%s%s%s%s1) Either these units are not in the unit path, then you can abort now, fix the unit path and try again.%s2) Or you can ignore the missing units and comment them out."
-msgstr "以下のユニットが見つかりませんでした：%s%s%s%s1)それらのユニットがユニットパスになければ、いったん中止してユニットパスを修復し、再試行してください。%s)2あるいは見つからないユニットを無視し、それらをコメントアウトしてください。"
-
 #: lazarusidestrconsts.listhefreepascalcompilerfilenamewasnotfounditisrecomm
 msgid "The Free Pascal compiler (filename: %s) was not found.%sIt is recommended that you install fpc."
 msgstr "Free Pascalコンパイラ（ファイル名：%s）が見つかりませんでした。%s fpcをインストールすることをお薦めします。"
@@ -12324,6 +12399,10 @@ msgstr "rootコンポーネントは削除できません。"
 msgid "These settings are stored with the project."
 msgstr "これらの設定は、プロジェクトに蓄えられました。"
 
+#: lazarusidestrconsts.listheseunitswerenotfound
+msgid "These units were not found:"
+msgstr ""
+
 #: lazarusidestrconsts.listhetestdirectorycouldnotbefoundseeenvironmentopt
 msgid "The Test Directory could not be found:%s%s%s%s%s(see environment options)"
 msgstr "テストフォルダが見つかりません。:%s%s%s%s%s(環境オプションを見てください)"
@@ -12331,6 +12410,10 @@ msgstr "テストフォルダが見つかりません。:%s%s%s%s%s(環境オプ
 #: lazarusidestrconsts.listheunitalreadyexistsignorewillforcetherenaming
 msgid "The unit %s%s%s already exists.%sIgnore will force the renaming,%sCancel will cancel the saving of this source and%sAbort will abort the whole saving."
 msgstr "ユニット%s%s%sは既に存在しています。%s[無視]すると強制的に名称変更します。%s[キャンセル]するとこのソースの保存をキャンセルします。%s[中止]すると全ての保存を中止します。"
+
+#: lazarusidestrconsts.listheunitbelongstopackage
+msgid "The unit belongs to package %s."
+msgstr ""
 
 #: lazarusidestrconsts.listheunitexiststwiceintheunitpathofthe
 msgid "The unit %s exists twice in the unit path of the %s:"
@@ -12487,6 +12570,7 @@ msgid "Toggle showing filenames with full path or with relative path"
 msgstr "ファイル名をフルパスで表示するか相対パスで表示するかを切り替え"
 
 #: lazarusidestrconsts.listop
+msgctxt "lazarusidestrconsts.listop"
 msgid "Top"
 msgstr "上端"
 
@@ -12959,10 +13043,6 @@ msgstr "ユニットの識別子が存在します"
 msgid "%s unit %s in package %s%s"
 msgstr "%s%sパッケージ内の%s ユニット %s"
 
-#: lazarusidestrconsts.lisunitlfmfile
-msgid "Unit: %s%sLFM file: %s"
-msgstr "ユニット: %s%sLFM ファイル: %s"
-
 #: lazarusidestrconsts.lisunitnamealreadyexistscap
 msgid "Unitname already in project"
 msgstr "ユニット名がすでにプロジェクトに存在します"
@@ -12976,7 +13056,9 @@ msgid "Unit name contains ..."
 msgstr "ユニット名が次を含みます"
 
 #: lazarusidestrconsts.lisunitnotfound
-msgid "Unit not found"
+#, fuzzy
+#| msgid "Unit not found"
+msgid "A unit not found in"
 msgstr "ユニットが見つかりません"
 
 #: lazarusidestrconsts.lisunitoutputdirectory
@@ -12992,7 +13074,9 @@ msgid "Unit paths"
 msgstr "ユニットパス"
 
 #: lazarusidestrconsts.lisunitsnotfound2
-msgid "Units not found"
+#, fuzzy
+#| msgid "Units not found"
+msgid "Units not found in"
 msgstr "ユニットが見つかりません"
 
 #: lazarusidestrconsts.lisunusedunits
