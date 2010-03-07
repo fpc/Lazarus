@@ -5598,10 +5598,10 @@ end;
  ------------------------------------------------------------------------------}
 function TGtkWidgetSet.GetParent(Handle : HWND): HWND;
 begin
-  //DebugLn('TGtkWidgetSet.GetParent ',DbgS(Handle));
-  Result:=0;
-  if Handle<>0 then
-    Result:=HWnd(PtrUInt(PGtkWidget(Handle)^.Parent));
+  if Handle <> 0 then
+    Result := HWnd(PtrUInt(PGtkWidget(Handle)^.Parent))
+  else
+    Result := 0;
 end;
 
 
@@ -8967,6 +8967,22 @@ begin
   if not IsValidDC(DC) then Exit(0);
   DevCtx.MapMode := fnMapMode;
   Result := Integer(True);
+end;
+
+function TGTKWidgetSet.SetParent(hWndChild: HWND; hWndParent: HWND): HWND;
+var
+  Fixed: PGtkWidget;
+begin
+  Result := GetParent(hWndChild);
+
+  Fixed := GetFixedWidget(PGtkWidget(hWndParent));
+  if Fixed <> nil then
+  begin
+    FixedPutControl(Fixed, PGtkWidget(hWndChild), PGtkWidget(hWndChild)^.allocation.x, PGtkWidget(hWndChild)^.allocation.y);
+    RegroupAccelerator(PGtkWidget(hWndChild));
+  end
+  else
+    gtk_widget_set_parent(PGtkWidget(hWndChild), PGtkWidget(hWndParent));
 end;
 
 {------------------------------------------------------------------------------

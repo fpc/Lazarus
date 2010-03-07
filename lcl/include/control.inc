@@ -341,26 +341,26 @@ begin
   DoConstrainedResize(ALeft, ATop, AWidth, AHeight);
 
   // check, if we are already processing this bound change
-  NewBounds:=Bounds(ALeft,ATop,AWidth,AHeight);
-  if CompareRect(@FLastChangebounds,@NewBounds) then exit;
-  FLastChangebounds:=NewBounds;
+  NewBounds := Bounds(ALeft, ATop, AWidth, AHeight);
+  if CompareRect(@FLastChangebounds, @NewBounds) then Exit;
+  FLastChangebounds := NewBounds;
 
-  OldLeft:=FLeft;
-  OldTop:=FTop;
-  OldWidth:=FWidth;
-  OldHeight:=FHeight;
+  OldLeft := FLeft;
+  OldTop := FTop;
+  OldWidth := FWidth;
+  OldHeight := FHeight;
 
   // check if something would change
   SizeChanged := (FWidth <> AWidth) or (FHeight <> AHeight);
   PosChanged := (FLeft <> ALeft) or (FTop <> ATop);
-  if (not SizeChanged) and (not PosChanged) then exit;
+  if (not SizeChanged) and (not PosChanged) then Exit;
 
   //DebugLn('TControl.ChangeBounds A ',Name,':',ClassName);
   if (not (csLoading in ComponentState))
   and (not (Self is TWinControl)) then
     InvalidateControl(IsControlVisible, False, true);
   //DebugLn('TControl.ChangeBounds B ',Name,':',ClassName);
-  DoSetBounds(ALeft,ATop,AWidth,AHeight);
+  DoSetBounds(ALeft, ATop, AWidth, AHeight);
 
   // change base bounds
   // (base bounds are the base for the automatic resizing)
@@ -418,7 +418,7 @@ begin
   if PosSizeKept then exit;
 
   // send messages, if this is the top level call
-  if FSizeLock>0 then exit;
+  if FSizeLock > 0 then exit;
 
   // invalidate
   if (csDesigning in ComponentState) and (Parent <> nil) then
@@ -470,11 +470,11 @@ begin
       ' New=',DbgS(aLeft,aTop,aWidth,aHeight),
       '']);
   {$ENDIF}
-  FLeft:= ALeft;
-  FTop:= ATop;
-  FWidth:= AWidth;
-  FHeight:= AHeight;
-  if Parent<>nil then Parent.InvalidatePreferredSize;
+  FLeft := ALeft;
+  FTop := ATop;
+  FWidth := AWidth;
+  FHeight := AHeight;
+  if Parent <> nil then Parent.InvalidatePreferredSize;
 end;
 
 {------------------------------------------------------------------------------
@@ -3371,10 +3371,11 @@ begin
   if CheckPosition(Self) then
   DebugLn('[TControl.SetLeft] ',Name,':',ClassName,' ',DbgS(Value));
   {$ENDIF}
-  if csLoading in ComponentState then begin
-    inc(FReadBounds.Right,Value-FReadBounds.Left);
-    FReadBounds.Left:=Value;
-    Include(FControlFlags,cfLeftLoaded);
+  if csLoading in ComponentState then
+  begin
+    inc(FReadBounds.Right, Value - FReadBounds.Left);
+    FReadBounds.Left := Value;
+    Include(FControlFlags, cfLeftLoaded);
   end;
   SetBounds(Value, FTop, FWidth, FHeight);
 end;
@@ -3388,10 +3389,11 @@ begin
   if CheckPosition(Self) then
   DebugLn('[TControl.SetTop] ',Name,':',ClassName,' ',Dbgs(Value));
   {$ENDIF}
-  if csLoading in ComponentState then begin
-    inc(FReadBounds.Bottom,Value-FReadBounds.Top);
-    FReadBounds.Top:=Value;
-    Include(FControlFlags,cfTopLoaded);
+  if csLoading in ComponentState then
+  begin
+    inc(FReadBounds.Bottom,Value - FReadBounds.Top);
+    FReadBounds.Top := Value;
+    Include(FControlFlags, cfTopLoaded);
   end;
   SetBounds(FLeft, Value, FWidth, FHeight);
 end;
@@ -3419,11 +3421,12 @@ begin
   if CheckPosition(Self) then
   DebugLn('[TControl.SetWidth] ',Name,':',ClassName,' ',dbgs(Value));
   {$ENDIF}
-  if csLoading in ComponentState then begin
-    FReadBounds.Right:=FReadBounds.Left+Value;
-    Include(FControlFlags,cfWidthLoaded);
+  if csLoading in ComponentState then
+  begin
+    FReadBounds.Right := FReadBounds.Left+Value;
+    Include(FControlFlags, cfWidthLoaded);
   end;
-  if [csDesigning,csDestroying,csLoading]*ComponentState=[csDesigning] then
+  if [csDesigning, csDestroying, csLoading] * ComponentState = [csDesigning] then
     CheckDesignBounds;
   SetBounds(FLeft, FTop, Max(0, Value), FHeight);
 end;
@@ -3462,11 +3465,12 @@ begin
   if CheckPosition(Self) then
   DebugLn('[TControl.SetHeight] ',Name,':',ClassName,' ',dbgs(Value));
   {$ENDIF}
-  if csLoading in ComponentState then begin
-    FReadBounds.Bottom:=FReadBounds.Top+Value;
-    Include(FControlFlags,cfHeightLoaded);
+  if csLoading in ComponentState then
+  begin
+    FReadBounds.Bottom := FReadBounds.Top + Value;
+    Include(FControlFlags, cfHeightLoaded);
   end;
-  if [csDesigning,csDestroying,csLoading]*ComponentState=[csDesigning] then
+  if [csDesigning, csDestroying, csLoading] * ComponentState = [csDesigning] then
     CheckDesignBounds;
   SetBounds(FLeft, FTop, FWidth, Max(0, Value));
 end;

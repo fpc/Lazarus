@@ -7006,7 +7006,8 @@ begin
     Include(FWinControlFlags,wcfCreatingHandle);
     try
       CreateParams(Params);
-      with Params do begin
+      with Params do
+      begin
         if (WndParent = 0) and (Style and WS_CHILD <> 0) then
         begin
           DebugLn(['TWinControl.CreateWnd ',DbgSName(Self),' Parent=',DbgSName(Parent),' ERROR WndParent=0']);
@@ -7024,7 +7025,11 @@ begin
       TWSWinControlClass(WidgetSetClass).ConstraintsChange(Self);
 
       //WriteClientRect('A');
-      if Parent <> nil then AddControl;
+      if Parent <> nil then
+        AddControl
+      else
+      if ParentWindow <> 0 then
+        LCLIntf.SetParent(FHandle, ParentWindow);
       //WriteClientRect('B');
 
       Include(FWinControlFlags, wcfInitializing);
@@ -7040,9 +7045,11 @@ begin
       //DebugLn('[TWinControl.CreateWnd] ',Name,':',ClassName,' ',Left,',',Top,',',Width,',',Height);
       //WriteClientRect('C');
 
-      if FControls <> nil then begin
-        for i := 0 to FControls.Count - 1 do begin
-          AWinControl:=TWinControl(FControls.Items[i]);
+      if FControls <> nil then
+      begin
+        for i := 0 to FControls.Count - 1 do
+        begin
+          AWinControl := TWinControl(FControls.Items[i]);
           if (AWinControl is TWinControl) and AWinControl.IsControlVisible then
             AWinControl.HandleNeeded;
         end;
@@ -7050,7 +7057,7 @@ begin
 
       ChildHandlesCreated;
     finally
-      Exclude(FWinControlFlags,wcfCreatingChildHandles);
+      Exclude(FWinControlFlags, wcfCreatingChildHandles);
     end;
 
     // size this control
@@ -7095,8 +7102,7 @@ begin
 
   //DebugLn('[TWinControl.InitializeWnd] ',Name,':',ClassName,':', FCaption,' ',dbgs(Left),',',dbgs(Top),',',dbgs(Width),',',dbgs(Height));
 
-  //First set the WinControl property.
-  //The win32 interface depends on it to determine where to send call backs.
+  // First set the WinControl property some interfaces depends on it
   SetProp(Handle,'WinControl',TWinControl(Self));
   {$IFNDEF NewAutoSize}
   DisableAlign;
@@ -7586,14 +7592,13 @@ begin
   ' Realized=',dbgs(FBoundsRealized)
   ]);
   {$ENDIF}
-  if BoundsLockCount<>0 then begin
-    //DebugLn(['TWinControl.SetBounds ',DbgSName(Self),' ignoring loop Cur=',dbgs(BoundsRect),' ',dbgs(Bounds(ALeft,ATop,AWidth,AHeight))]);
-    exit;
-  end;
-  OldBounds:=BoundsRect;
-  NewBounds:=Bounds(ALeft, ATop, AWidth, AHeight);
+  if BoundsLockCount <> 0 then
+    Exit;
+  OldBounds := BoundsRect;
+  NewBounds := Bounds(ALeft, ATop, AWidth, AHeight);
 
-  if not CompareRect(@NewBounds,@OldBounds) then begin
+  if not CompareRect(@NewBounds, @OldBounds) then
+  begin
     if [csDesigning,csDestroying,csLoading]*ComponentState=[csDesigning] then
       CheckDesignBounds;
     // LCL bounds are not up2date -> process new bounds

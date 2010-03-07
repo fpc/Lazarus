@@ -3932,7 +3932,7 @@ end;
 
   Add a childwidget onto a client area (fixed or layout widget).
 ------------------------------------------------------------------------------}
-procedure FixedPutControl(Parent, Child : PGTKWidget; Left, Top : Longint);
+procedure FixedPutControl(Parent, Child: PGTKWidget; Left, Top: Longint);
 
   procedure RaiseInvalidFixedWidget;
   begin
@@ -6804,7 +6804,8 @@ begin
   {$IFDEF Gtk2}
   // add resize request immediately
   IsTopLevelWidget:= (LCLControl is TCustomForm) and
-                     (LCLControl.Parent = nil);
+                     (LCLControl.Parent = nil) and
+                     (LCLControl.ParentWindow = 0);
   if not IsTopLevelWidget then
   begin
     SetWidgetSizeAndPosition(LCLControl);
@@ -6858,41 +6859,49 @@ begin
   {$ENDIF}
   Widget:=PGtkWidget(LCLControl.Handle);
   
-  LCLLeft:=LCLControl.Left;
-  LCLTop:=LCLControl.Top;
+  LCLLeft := LCLControl.Left;
+  LCLTop := LCLControl.Top;
 
   // move widget on the fixed widget of parent control
-  if (LCLControl.Parent<>nil) and (LCLControl.Parent.HandleAllocated) then
+  if ((LCLControl.Parent <> nil) and (LCLControl.Parent.HandleAllocated)) or
+     ((LCLControl.Parent = nil) and (LCLControl.ParentWindow <> 0)) then
   begin
-    ParentWidget:=pgtkWidget(LCLControl.Parent.Handle);
+    if LCLControl.Parent <> nil then
+      ParentWidget := PGtkWidget(LCLControl.Parent.Handle)
+    else
+      ParentWidget := PGtkWidget(LCLControl.ParentWindow);
+
     ParentFixed := GetFixedWidget(ParentWidget);
-    if GtkWidgetIsA(ParentFixed,GTK_FIXED_GET_TYPE)
-    or GtkWidgetIsA(ParentFixed,GTK_LAYOUT_GET_TYPE) then begin
+    if GtkWidgetIsA(ParentFixed,GTK_FIXED_GET_TYPE) or
+       GtkWidgetIsA(ParentFixed,GTK_LAYOUT_GET_TYPE) then
+    begin
       {$IFDEF NewAutoSize}
       DebugLn(['SetWidgetSizeAndPosition ',DbgSName(LCLControl),' ',GetWidgetClassName(ParentFixed),' Widget=',GetWidgetClassName(Widget),' Widget^.Parent=',GetWidgetClassName(Widget^.parent)]);
       {$ENDIF}
-      FixedMoveControl(ParentFixed, Widget,LCLLeft,LCLTop);
-    end else begin
-      WinWidgetInfo:=GetWidgetInfo(Widget,false);
-      if (WinWidgetInfo=nil)
-      or (not (wwiNotOnParentsClientArea in WinWidgetInfo^.Flags)) then
+      FixedMoveControl(ParentFixed, Widget, LCLLeft, LCLTop);
+    end
+    else
+    begin
+      WinWidgetInfo := GetWidgetInfo(Widget, False);
+      if (WinWidgetInfo = nil) or (not (wwiNotOnParentsClientArea in WinWidgetInfo^.Flags)) then
         WriteWarningParentWidgetNotFound;
     end;
   end;
 
   // resize widget
-  LCLWidth:=LCLControl.Width;
-  if LCLWidth<=0 then
-    LCLWidth:=1;
-  LCLHeight:=LCLControl.Height;
-  if LCLHeight<=0 then
-    LCLHeight:=1;
-  if (LCLWidth>10000) or (LCLHeight>10000) then begin
+  LCLWidth := LCLControl.Width;
+  if LCLWidth <= 0 then
+    LCLWidth := 1;
+  LCLHeight := LCLControl.Height;
+  if LCLHeight <= 0 then
+    LCLHeight := 1;
+  if (LCLWidth > 10000) or (LCLHeight > 10000) then
+  begin
     WriteBigWarning;
-    if LCLWidth>10000 then
-      LCLWidth:=10000;
-    if LCLHeight>10000 then
-      LCLHeight:=10000;
+    if LCLWidth > 10000 then
+      LCLWidth := 10000;
+    if LCLHeight > 10000 then
+      LCLHeight := 10000;
   end;
 
   {$IFDEF VerboseSizeMsg}
