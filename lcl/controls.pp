@@ -1942,7 +1942,7 @@ type
     procedure DefaultHandler(var AMessage); override;
     function  GetTextLen: Integer; override;
     procedure Invalidate; override;
-    procedure AddControl; virtual;
+    procedure AddControl; virtual; // tell widgetset
     procedure InsertControl(AControl: TControl);
     procedure InsertControl(AControl: TControl; Index: integer); virtual;
     procedure RemoveControl(AControl: TControl);

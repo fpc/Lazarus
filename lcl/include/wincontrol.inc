@@ -5749,11 +5749,7 @@ begin
   FillChar(Params, SizeOf(Params),0);
   Params.Caption := PChar(FCaption);
   Params.Style := WS_CHILD or WS_CLIPSIBLINGS;
-  if (Parent <> nil)
-  {$IFDEF NewAutoSize}
-  and Parent.HandleAllocated
-  {$ENDIF}
-  then
+  if (Parent <> nil) then
     Params.WndParent := Parent.Handle
   else
     Params.WndParent :=  ParentWindow;
@@ -6997,6 +6993,12 @@ begin
   {$ENDIF}
   DisableAutoSizing;
   try
+    {$IFDEF NewAutoSize}
+    // create parent handle before child handles
+    if Parent<>nil then
+      Parent.HandleNeeded;
+    {$ENDIF}
+
     // Control is not visible at this moment. It will be showed in UpdateShowing
     FShowing := False;
     Exclude(FWinControlFlags, wcfHandleVisible);
@@ -7006,7 +7008,10 @@ begin
       CreateParams(Params);
       with Params do begin
         if (WndParent = 0) and (Style and WS_CHILD <> 0) then
+        begin
+          DebugLn(['TWinControl.CreateWnd ',DbgSName(Self),' Parent=',DbgSName(Parent),' ERROR WndParent=0']);
           raise EInvalidOperation.CreateFmt('Control ''%s'' has no parent window', [Name]);
+        end;
       end;
 
       //DebugLn(['TWinControl.CreateWnd ',DbgSName(WidgetSetClass),' ',DbgSName(Self)]);
