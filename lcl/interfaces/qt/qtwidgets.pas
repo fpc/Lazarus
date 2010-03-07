@@ -1105,6 +1105,7 @@ type
 
   TQtMenu = class(TQtWidget)
   private
+    FActions: TFPList;
     FIcon: QIconH;
     FTriggeredHook: QAction_hookH;
     FHoveredHook: QAction_hookH;
@@ -1112,6 +1113,7 @@ type
     FActionHandle: QActionH;
     FMenuItem: TMenuItem;
     FTrackButton: QtMouseButtons;
+    procedure setActionGroups(AItem: TMenuItem);
   protected
     function CreateWidget(const APrams: TCreateParams): QWidgetH; override;
     procedure DoPopupClose;
@@ -1129,12 +1131,14 @@ type
     procedure SlotTriggered(checked: Boolean = False); cdecl;
     function EventFilter(Sender: QObjectH; Event: QEventH): Boolean; cdecl; override;
   public
-    procedure PopUp(pos: PQtPoint; at: QActionH = nil);
     function actionHandle: QActionH;
     function addMenu(AMenu: QMenuH): QActionH;
-    function insertMenu(AIndex: Integer; AMenu: QMenuH): QActionH;
-    function getVisible: Boolean; override;
+    function insertMenu(AIndex: Integer; AMenu: QMenuH; AItem: TMenuItem): QActionH;
+    function getHasSubMenu: boolean;
     function getText: WideString; override;
+    function getVisible: Boolean; override;
+    procedure PopUp(pos: PQtPoint; at: QActionH = nil);
+    procedure removeActionGroup;
     procedure setChecked(p1: Boolean);
     procedure setCheckable(p1: Boolean);
     procedure setHasSubmenu(AValue: Boolean);
@@ -8442,16 +8446,25 @@ begin
   QWidget_grabMouse(Widget);
 end;
 
-
 { TQtMenu }
 
 function TQtMenu.CreateWidget(const APrams: TCreateParams): QWidgetH;
+var
+  AGroup: TQtActionGroup;
 begin
   FTrackButton := QtNoButton;
   FIcon := nil;
   Result := QMenu_create();
   FDeleteLater := True;
-  FActionHandle := nil;;
+  FActionHandle := nil;
+  FActions := TFPList.Create;
+  AGroup := TQtActionGroup.Create(Result);
+  if FMenuItem <> nil then
+    AGroup.GroupIndex := FMenuItem.GroupIndex
+  else
+    AGroup.GroupIndex := -1;
+  AGroup.Exclusive := False;
+  FActions.Add(AGroup);
 end;
 
 procedure TQtMenu.InitializeWidget;
@@ -8472,9 +8485,20 @@ begin
 end;
 
 destructor TQtMenu.Destroy;
+var
+  i: integer;
 begin
   if FIcon <> nil then
     QIcon_destroy(FIcon);
+
+  if Assigned(FActions) then
+  begin
+    for i := 0 to FActions.Count - 1 do
+      TQtActionGroup(FActions.Items[i]).Free;
+
+    FActions.Free;
+  end;
+
   inherited Destroy;
 end;
 
@@ -8550,6 +8574,10 @@ begin
 end;
 
 function TQtMenu.actionHandle: QActionH;
+var
+  i: Integer;
+  Arr: TQActions;
+  GotItem: boolean = False;
 begin
   if FActionHandle = nil then
     FActionHandle := QMenu_menuAction(QMenuH(Widget));
@@ -8562,16 +8590,71 @@ begin
   Result := QMenu_addMenu(QMenuH(Widget), AMenu);
 end;
 
-function TQtMenu.insertMenu(AIndex: Integer; AMenu: QMenuH): QActionH;
+procedure TQtMenu.removeActionGroup;
+var
+  Action: QActionGroupH;
+begin
+  Action := QAction_actionGroup(ActionHandle);
+  if Action <> nil then
+    QActionGroup_removeAction(Action, ActionHandle);
+end;
+
+procedure TQtMenu.setActionGroups(AItem: TMenuItem);
+var
+  i: integer;
+  b: Boolean = True;
+  Group: TQtActionGroup;
+begin
+  for i := 0 to FActions.Count - 1 do
+  begin
+    Group := TQtActionGroup(FActions.Items[i]);
+    if Group.GroupIndex = AItem.GroupIndex then
+    begin
+      QAction_setEnabled(TQtMenu(AItem.Handle).actionHandle, True);
+      QAction_setVisible(TQtMenu(AItem.Handle).actionHandle, True);
+      Group.addAction(TQtMenu(AItem.Handle).actionHandle);
+      Group.Exclusive := AItem.RadioItem;
+      Group.Visible := True;
+      Group.Enabled := True;
+      b := False;
+      break;
+    end;
+  end;
+  if b then
+  begin
+    Group := TQtActionGroup.Create(Widget);
+    Group.Exclusive := AItem.RadioItem;
+    Group.GroupIndex := AItem.GroupIndex;
+    QAction_setEnabled(TQtMenu(AItem.Handle).actionHandle, True);
+    QAction_setVisible(TQtMenu(AItem.Handle).actionHandle, True);
+    Group.addAction(TQtMenu(AItem.Handle).actionHandle);
+    Group.Visible := True;
+    Group.Enabled := True;
+    FActions.Add(Group);
+  end;
+end;
+
+function TQtMenu.insertMenu(AIndex: Integer; AMenu: QMenuH; AItem: TMenuItem): QActionH;
 var
   actionBefore: QActionH;
 begin
+
   setHasSubmenu(True);
+
+  if (AItem <> nil) and not AItem.IsLine then
+    setActionGroups(AItem);
+
   actionBefore := getActionByIndex(AIndex);
+
   if actionBefore <> nil then
     Result := QMenu_insertMenu(QMenuH(Widget), actionBefore, AMenu)
   else
     Result := QMenu_addMenu(QMenuH(Widget), AMenu);
+end;
+
+function TQtMenu.getHasSubMenu: boolean;
+begin
+  Result := QAction_menu(ActionHandle) <> nil;
 end;
 
 function TQtMenu.getVisible: Boolean;
@@ -8597,13 +8680,15 @@ end;
 procedure TQtMenu.setChecked(p1: Boolean);
 begin
   setCheckable(p1);
-
   QAction_setChecked(ActionHandle, p1);
 end;
 
 procedure TQtMenu.setCheckable(p1: Boolean);
 begin
-  QAction_setCheckable(ActionHandle, p1);
+  if FMenuItem.RadioItem or FMenuItem.ShowAlwaysCheckable then
+    QAction_setCheckable(ActionHandle, True)
+  else
+    QAction_setCheckable(ActionHandle, p1);
 end;
 
 procedure TQtMenu.setHasSubmenu(AValue: Boolean);
@@ -8616,7 +8701,7 @@ end;
 
 procedure TQtMenu.setIcon(AIcon: QIconH);
 begin
-  QMenu_setIcon(QMenuH(Widget), AIcon)
+  QMenu_setIcon(QMenuH(Widget), AIcon);
 end;
 
 procedure TQtMenu.setImage(AImage: TQtImage);
@@ -8679,7 +8764,7 @@ var
 begin
   Result := False;
   QEvent_accept(Event);
-  BeginEventProcessing;
+
   case QEvent_type(Event) of
     LCLQt_PopupMenuTriggered:
       begin
@@ -8703,7 +8788,6 @@ begin
       end;
 
   end;
-  EndEventProcessing;
 end;
 
 { TQtMenuBar }
@@ -8746,10 +8830,10 @@ end;
 function TQtMenuBar.getGeometry: TRect;
 begin
   Result := inherited getGeometry;
+
+  // workaround since after attaching menu it takes 0 height
   if Result.Bottom = 0 then
-  begin
-    Result.Bottom := FHeight; // workaround since after attaching menu it takes 0 height
-  end;
+    Result.Bottom := FHeight;
 end;
 
 { TQtProgressBar }
@@ -9078,7 +9162,7 @@ begin
     end;
     ssVertical:
     begin
-     QAbstractScrollArea_setVerticalScrollBarPolicy(QAbstractScrollAreaH(Widget), QtScrollBarAlwaysOn);
+      QAbstractScrollArea_setVerticalScrollBarPolicy(QAbstractScrollAreaH(Widget), QtScrollBarAlwaysOn);
     end;
     ssBoth:
     begin
@@ -9401,9 +9485,12 @@ begin
   FViewPortWidget.setBackgroundRole(QPaletteNoRole);
   FViewPortWidget.setAutoFillBackground(False);
   FViewPortWidget.FOwner := Self;
-  FViewPortWidget.AttachEvents; // some event will be redirected to scroll area
 
-  QLCLAbstractScrollArea_override_viewportEvent(QLCLAbstractScrollAreaH(Widget), @ViewPortEventFilter);
+  // some events will be redirected to scroll area
+  FViewPortWidget.AttachEvents;
+
+  QLCLAbstractScrollArea_override_viewportEvent(QLCLAbstractScrollAreaH(Widget),
+    @ViewPortEventFilter);
 
   setViewport(FViewPortWidget.Widget);
 end;
@@ -9910,6 +9997,7 @@ begin
   QEvent_accept(Event);
   if (LCLObject <> nil) then
   begin
+    BeginEventProcessing;
     case QEvent_type(Event) of
       QEventMouseButtonPress,
       QEventMouseButtonRelease,
@@ -9922,6 +10010,7 @@ begin
         QEvent_ignore(Event);
       end;
     end;
+    EndEventProcessing;
   end;
 end;
 
@@ -10111,7 +10200,8 @@ begin
   QFileDialog_setNameFilter(QFileDialogH(Widget), @AFilter);
 end;
 
-procedure TQtFileDialog.setLabelText(const ALabel: QFileDialogDialogLabel; const AText: WideString);
+procedure TQtFileDialog.setLabelText(const ALabel: QFileDialogDialogLabel;
+  const AText: WideString);
 begin
   QFileDialog_setLabelText(QFileDialogH(Widget), ALabel, @AText);
 end;

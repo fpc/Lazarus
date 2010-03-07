@@ -103,7 +103,7 @@ begin
   else
   if Widget is TQtMenu then
     TQtMenu(Widget).insertMenu(AMenuItem.Parent.VisibleIndexOf(AMenuItem),
-      QMenuH(TQtMenu(AMenuItem.Handle).Widget));
+      QMenuH(TQtMenu(AMenuItem.Handle).Widget), AMenuItem);
 end;
 
 class function TQtWSMenuItem.CreateMenuFromMenuItem(const AMenuItem: TMenuItem): TQtMenu;
@@ -116,6 +116,7 @@ begin
   begin
     Result.setText(GetUtf8String(AMenuItem.Caption));
     Result.setEnabled(AMenuItem.Enabled);
+    Result.setCheckable(AMenuItem.RadioItem or AMenuItem.ShowAlwaysCheckable);
     Result.setChecked(AMenuItem.Checked);
     Result.setShortcut(AMenuItem.ShortCut);
     if AMenuItem.HasIcon then
@@ -311,7 +312,15 @@ begin
   if not WSCheckMenuItem(AMenuItem, 'SetRadioItem') then
     Exit;
 
-  TQtMenu(AMenuItem.Handle).setCheckable(RadioItem);
+  {$ifdef VerboseQt}
+    WriteLn('[TQtWSMenuItem.SetRadioItem] AMenuItem: ' + AMenuItem.Name +
+      ' Radio ? ',RadioItem);
+  {$endif}
+
+  if not RadioItem then
+    TQtMenu(AMenuItem.Handle).removeActionGroup;
+
+  TQtMenu(AMenuItem.Handle).setCheckable(RadioItem or AMenuItem.ShowAlwaysCheckable);
   SetCheck(AMenuItem, AMenuItem.Checked);
   
   Result := True;
@@ -369,7 +378,6 @@ begin
   else if (AMenu is TPopUpMenu) then
   begin
     Menu := TQtMenu.Create(AMenu.Items);
-    //Menu.setParent(Parent);
     Menu.AttachEvents;
   
     Result := HMENU(Menu);

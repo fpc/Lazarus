@@ -37,6 +37,7 @@ uses
 
 type
   // forward declarations
+  TQActions = Array of QActionH;
   TQtImage = class;
   TQtFontMetrics = class;
   TRop2OrCompositionSupport = (rocNotSupported, rocSupported, rocUndefined);
@@ -74,6 +75,36 @@ type
     Owner: TObject;
     FShared: Boolean;
     FSelected: Boolean;
+  end;
+
+  { TQtActionGroup }
+
+  TQtActionGroup = class(TObject)
+  private
+    FActions: TQActions;
+    FGroupIndex: integer;
+    FHandle: QActionGroupH;
+    function getEnabled: boolean;
+    function getExclusive: boolean;
+    function getVisible: boolean;
+    procedure setEnabled(const AValue: boolean);
+    procedure setExclusive(const AValue: boolean);
+    procedure setVisible(const AValue: boolean);
+  public
+    constructor Create(const AParent: QObjectH = nil);
+    destructor Destroy; override;
+    function addAction(action: QActionH): QActionH; overload;
+    function addAction(text: WideString): QActionH; overload;
+    function addAction(icon: QIconH; text: WideString): QActionH; overload;
+    procedure removeAction(action: QActionH);
+    function actions: TQActions;
+    function checkedAction: QActionH;
+    procedure setDisabled(ADisabled: Boolean);
+    property Enabled: boolean read getEnabled write setEnabled;
+    property Exclusive: boolean read getExclusive write setExclusive;
+    property GroupIndex: integer read FGroupIndex write FGroupIndex;
+    property Handle: QActionGroupH read FHandle;
+    property Visible: boolean read getVisible write setVisible;
   end;
 
   { TQtAction }
@@ -3952,6 +3983,102 @@ begin
     QPalette_setColor(FHandle, QPaletteDisabled, FTextRole, AColor);
   QWidget_setPalette(FWidget, FHandle);
   FCurrentTextColor := AColor^;
+end;
+
+{ TQtActionGroup }
+
+constructor TQtActionGroup.Create(const AParent: QObjectH);
+begin
+  FGroupIndex := 0;
+  Initialize(FActions);
+  FHandle := QActionGroup_create(AParent);
+end;
+
+destructor TQtActionGroup.Destroy;
+begin
+  if FHandle <> nil then
+    QActionGroup_destroy(FHandle);
+  Finalize(FActions);
+  FActions := nil;
+  inherited Destroy;
+end;
+
+function TQtActionGroup.getEnabled: boolean;
+begin
+  Result := QActionGroup_isEnabled(FHandle);
+end;
+
+function TQtActionGroup.getExclusive: boolean;
+begin
+  Result := QActionGroup_isExclusive(FHandle);
+end;
+
+function TQtActionGroup.getVisible: boolean;
+begin
+  Result := QActionGroup_isVisible(FHandle);
+end;
+
+procedure TQtActionGroup.setEnabled(const AValue: boolean);
+begin
+  QActionGroup_setEnabled(FHandle, AValue);
+end;
+
+procedure TQtActionGroup.setExclusive(const AValue: boolean);
+begin
+  QActionGroup_setExclusive(FHandle, AValue);
+end;
+
+procedure TQtActionGroup.setVisible(const AValue: boolean);
+begin
+  QActionGroup_setVisible(FHandle, AValue);
+end;
+
+function TQtActionGroup.addAction(action: QActionH): QActionH;
+begin
+  Result := QActionGroup_addAction(FHandle, action);
+end;
+
+function TQtActionGroup.addAction(text: WideString): QActionH;
+var
+  WStr: WideString;
+begin
+  WStr := GetUTF8String(text);
+  Result := QActionGroup_addAction(FHandle, @WStr);
+end;
+
+function TQtActionGroup.addAction(icon: QIconH; text: WideString): QActionH;
+var
+  WStr: WideString;
+begin
+  WStr := GetUTF8String(text);
+  Result := QActionGroup_addAction(FHandle, icon, @WStr);
+end;
+
+procedure TQtActionGroup.removeAction(action: QActionH);
+begin
+  QActionGroup_removeAction(FHandle, action);
+end;
+
+function TQtActionGroup.actions: TQActions;
+var
+  i: Integer;
+  Arr: TPtrIntArray;
+begin
+  QActionGroup_actions(FHandle, @Arr);
+  SetLength(FActions, length(Arr));
+  for i := 0 to High(Arr) do
+    FActions[i] := QActionH(Arr[i]);
+  Result := FActions;
+end;
+
+function TQtActionGroup.checkedAction: QActionH;
+begin
+  Result := QActionGroup_checkedAction(FHandle);
+end;
+
+procedure TQtActionGroup.setDisabled(ADisabled: Boolean);
+begin
+  QActionGroup_setDisabled(FHandle, ADisabled);
 end;
 
 end.
