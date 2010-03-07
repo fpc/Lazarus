@@ -1,0 +1,95 @@
+msgid ""
+msgstr "Content-Type: text/plain; charset=UTF-8"
+
+#: reconstsunit.sabout
+msgid "About..."
+msgstr ""
+
+#: reconstsunit.sbuilddate
+msgid "Build date : "
+msgstr ""
+
+#: reconstsunit.scarbonwidgetset
+msgid "Carbon widget set"
+msgstr ""
+
+#: reconstsunit.sexit
+msgid "Exit"
+msgstr ""
+
+#: reconstsunit.sfile
+msgid "File"
+msgstr ""
+
+#: reconstsunit.sfpcversion
+msgid "FPC version : "
+msgstr ""
+
+#: reconstsunit.sfpguiwidgetset
+msgid "FpGUI widget set"
+msgstr ""
+
+#: reconstsunit.sgtk2widgetset
+msgid "GTK 2 widget set"
+msgstr ""
+
+#: reconstsunit.sgtkwidgetset
+msgid "GTK widget set"
+msgstr ""
+
+#: reconstsunit.shelp
+msgid "Help"
+msgstr ""
+
+#: reconstsunit.simage
+msgid "Image"
+msgstr ""
+
+#: reconstsunit.slclversion
+msgid "LCL Version: "
+msgstr ""
+
+#: reconstsunit.slicense
+msgid "This program is free software under GNU GPL 2 license, see COPYING file"
+msgstr ""
+
+#: reconstsunit.sopen
+msgid "Open..."
+msgstr ""
+
+#: reconstsunit.sotherguiwidgetset
+msgid "Other gui"
+msgstr ""
+
+#: reconstsunit.sqtwidgetset
+msgid "QT widget set"
+msgstr ""
+
+#: reconstsunit.sresourceexplorer
+msgid "Resource explorer"
+msgstr ""
+
+#: reconstsunit.ssaveresource
+msgid "Save resource..."
+msgstr ""
+
+#: reconstsunit.sstrings
+msgid "Strings"
+msgstr ""
+
+#: reconstsunit.stargetcpu
+msgid "Target CPU : "
+msgstr ""
+
+#: reconstsunit.stargetos
+msgid "Target OS : "
+msgstr ""
+
+#: reconstsunit.swin32_64widgetset
+msgid "Win32/Win64 widget set"
+msgstr ""
+
+#: reconstsunit.swincewidgetset
+msgid "WinCE widget set"
+msgstr ""
+

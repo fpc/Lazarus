@@ -59,7 +59,7 @@ var
   Lang, FallbackLang: String;
 begin
   GetLanguageIDs(Lang,FallbackLang); // in unit gettext
-  TranslateUnitResourceStrings('reConstsUnit','languages'+DirectorySeparator+'ResExploer.%s.po', Lang,FallbackLang);
+  TranslateUnitResourceStrings('reConstsUnit','languages'+DirectorySeparator+'resexplorer.%s.po', Lang,FallbackLang);
 end;
 
 initialization

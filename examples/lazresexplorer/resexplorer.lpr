@@ -10,7 +10,7 @@ uses
   Forms, reMainUnit, reAboutUnit, reConstsUnit
   { you can add units after this };
 
-{$R ResExploer.res}
+{$R resexplorer.res}
 
 begin
   Application.Initialize;

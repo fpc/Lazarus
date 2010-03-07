@@ -1,0 +1,110 @@
+<?xml version="1.0"?>
+<CONFIG>
+  <ProjectOptions>
+    <Version Value="7"/>
+    <General>
+      <Flags>
+        <UseDefaultCompilerOptions Value="True"/>
+      </Flags>
+      <SessionStorage Value="InProjectDir"/>
+      <MainUnit Value="0"/>
+      <AutoCreateForms Value="False"/>
+      <TargetFileExt Value=""/>
+      <ResourceType Value="res"/>
+      <UseXPManifest Value="True"/>
+      <Icon Value="0"/>
+    </General>
+    <i18n>
+      <OutDir Value="languages"/>
+    </i18n>
+    <VersionInfo>
+      <UseVersionInfo Value="True"/>
+      <AutoIncrementBuild Value="True"/>
+      <MinorVersionNr Value="1"/>
+      <CharSet Value="04B0"/>
+      <StringTable Comments="Explore your resources in executables and resource files" CompanyName="Alexey Lagunov" FileDescription="Resource Explorer" FileVersion="0.1.0.0" InternalName="LazResExplorer" LegalCopyright="Alexey Lagunov" LegalTrademarks="No Trademarks" OriginalFilename="lazresexplorer" ProductName="Lazarus Resource Explorer" ProductVersion="0.1.0.0"/>
+    </VersionInfo>
+    <PublishOptions>
+      <Version Value="2"/>
+      <IgnoreBinaries Value="False"/>
+      <IncludeFileFilter Value="*.(pas|pp|inc|lfm|lpr|lrs|lpi|lpk|sh|xml)"/>
+      <ExcludeFileFilter Value="*.(bak|ppu|ppw|o|so);*~;backup"/>
+    </PublishOptions>
+    <RunParams>
+      <local>
+        <FormatVersion Value="1"/>
+        <CommandLineParams Value="/home/alexs/1/5/imageres.dll"/>
+        <LaunchingApplication PathPlusParams="/usr/X11R6/bin/xterm -T 'Lazarus Run Output' -e $(LazarusDir)/tools/runwait.sh $(TargetCmdLine)"/>
+      </local>
+    </RunParams>
+    <RequiredPackages Count="1">
+      <Item1>
+        <PackageName Value="LCL"/>
+      </Item1>
+    </RequiredPackages>
+    <Units Count="4">
+      <Unit0>
+        <Filename Value="resexplorer.lpr"/>
+        <IsPartOfProject Value="True"/>
+        <UnitName Value="resexplorer"/>
+      </Unit0>
+      <Unit1>
+        <Filename Value="remainunit.pas"/>
+        <IsPartOfProject Value="True"/>
+        <ComponentName Value="reMainForm"/>
+        <ResourceBaseClass Value="Form"/>
+        <UnitName Value="reMainUnit"/>
+      </Unit1>
+      <Unit2>
+        <Filename Value="reaboutunit.pas"/>
+        <IsPartOfProject Value="True"/>
+        <ComponentName Value="reAboutForm"/>
+        <ResourceBaseClass Value="Form"/>
+        <UnitName Value="reAboutUnit"/>
+      </Unit2>
+      <Unit3>
+        <Filename Value="reconstsunit.pas"/>
+        <IsPartOfProject Value="True"/>
+        <UnitName Value="reConstsUnit"/>
+      </Unit3>
+    </Units>
+  </ProjectOptions>
+  <CompilerOptions>
+    <Version Value="8"/>
+    <Target>
+      <Filename Value="resexplorer"/>
+    </Target>
+    <SearchPaths>
+      <IncludeFiles Value="$(ProjOutDir)/"/>
+      <UnitOutputDirectory Value="lib/$(TargetCPU)-$(TargetOS)"/>
+    </SearchPaths>
+    <Parsing>
+      <SyntaxOptions>
+        <UseAnsiStrings Value="True"/>
+      </SyntaxOptions>
+    </Parsing>
+    <Linking>
+      <Options>
+        <Win32>
+          <GraphicApplication Value="True"/>
+        </Win32>
+      </Options>
+    </Linking>
+    <Other>
+      <CompilerPath Value="$(CompPath)"/>
+    </Other>
+  </CompilerOptions>
+  <Debugging>
+    <Exceptions Count="3">
+      <Item1>
+        <Name Value="EAbort"/>
+      </Item1>
+      <Item2>
+        <Name Value="ECodetoolError"/>
+      </Item2>
+      <Item3>
+        <Name Value="EFOpenError"/>
+      </Item3>
+    </Exceptions>
+  </Debugging>
+</CONFIG>
