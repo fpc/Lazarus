@@ -574,7 +574,7 @@ type
     procedure UpdateModified;
     procedure UndoRedoAdded(Sender: TObject);
     procedure UnlockUndo;
-    procedure UpdateCaret;
+    procedure UpdateCaret(IgnorePaintLock: Boolean = False);
     procedure UpdateScrollBars;
     {$IFDEF SynDualView}
     function GetSharedViewEdit: TCustomSynEdit;
@@ -2470,6 +2470,10 @@ begin
       emcContextMenu:
         begin
           Handled := False;
+          if AnAction.MoveCaret and (not CaretDone) then begin
+            MoveCaret;
+            UpdateCaret(True);
+          end;
           inherited DoContextPopup(Point(AnInfo.MouseX, AnInfo.MouseY), Handled);
           if (PopupMenu <> nil) and not Handled then
             PopupMenu.PopUp;
@@ -4207,14 +4211,14 @@ begin
 end;
 {$ENDIF}
 
-procedure TCustomSynEdit.UpdateCaret;
+procedure TCustomSynEdit.UpdateCaret(IgnorePaintLock: Boolean = False);
 var
   CX, CY: Integer;
 {$IFDEF SYN_MBCSSUPPORT}
   cf: TCompositionForm;
 {$ENDIF}
 begin
-  if (PaintLock <> 0)
+  if ( (PaintLock <> 0) and not IgnorePaintLock )
   or ((not Focused) and (not (eoPersistentCaret in fOptions))) then begin
     Include(fStateFlags, sfCaretChanged);
   end else begin
