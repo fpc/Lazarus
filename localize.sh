@@ -47,6 +47,7 @@ RSTFILES=(
   "components/projecttemplates idetemplateproject"
   "tools/lazdatadesktop lazdatadeskstr lazdatadesktop"
   "doceditor lazdemsg lazde"
+  "examples/lazresexplorer reconstsunit resexplorer"
   "lcl lclstrconsts"
 )  
 

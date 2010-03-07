@@ -117,6 +117,11 @@ tools\updatepofiles %LazDataDesktop_RST% tools\lazdatadesktop\languages\lazdatad
 @set LazDoc_RST=doceditor\units\%ArchOS%\lazdemsg.rst
 tools\updatepofiles %LazDoc_RST% doceditor\languages\lazde.po
 
+@REM LazExplorer
+@set LazExplorer_RST=examples\lazresexplorer\lib\%ArchOS%\reconstsunit.rst
+tools\updatepofiles %LazExplorer_RST% examples\lazresexplorer\languages\resexplorer.po
+
+
 @REM LazReport editor sample
 @set LREditor_RST=components\lazreport\samples\editor\maincalleditor.rst
 if not exist %LREditor_RST% goto SkipLREditor
