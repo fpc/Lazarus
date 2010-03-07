@@ -56,6 +56,8 @@ type
     tbWatch: TToolButton;
     tbModify: TToolButton;
     tbEvaluate: TToolButton;
+    procedure cmbNewValueKeyDown(Sender: TObject; var Key: Word;
+      Shift: TShiftState);
     procedure FormClose(Sender: TObject; var CloseAction: TCloseAction);
     procedure FormKeyDown(Sender: TObject; var Key: Word; Shift: TShiftState);
     procedure FormShow(Sender: TObject);
@@ -64,12 +66,14 @@ type
       Shift: TShiftState);
     procedure tbEvaluateClick(Sender: TObject);
     procedure tbInspectClick(Sender: TObject);
+    procedure tbModifyClick(Sender: TObject);
     procedure tbWatchClick(Sender: TObject);
     
   private
     function GetFindText: string;
     procedure SetFindText(const NewFindText: string);
-
+    procedure Evaluate;
+    procedure Modify;
   public
     constructor Create(TheOwner: TComponent); override;
     property FindText: string read GetFindText write SetFindText;
@@ -105,13 +109,33 @@ begin
   tbEvaluate.ImageIndex := IDEImages.LoadImage(16, 'debugger_evaluate');
 end;
 
+procedure TEvaluateDlg.Evaluate;
+var
+  S, R: String;
+  DBGType: TDBGType;
+begin
+  S := cmbExpression.Text;
+  InputHistories.HistoryLists.Add(ClassName, S);
+  DBGType:=nil;
+  if DebugBoss.Evaluate(S, R, DBGType)
+  then begin
+    if cmbExpression.Items.IndexOf(S) = -1
+    then cmbExpression.Items.Insert(0, S);
+    tbModify.Enabled := True;
+  end
+  else
+    tbModify.Enabled := False;
+  FreeAndNil(DBGType);
+  txtResult.Lines.Text := R;
+end;
+
 procedure TEvaluateDlg.cmbExpressionChange(Sender: TObject);
 var
   HasExpression: Boolean;
 begin
   HasExpression := Trim(cmbExpression.Text) <> '';
   tbEvaluate.Enabled := HasExpression;
-  tbModify.Enabled := False;
+  tbModify.Enabled := HasExpression;
   tbWatch.Enabled := HasExpression;
   tbInspect.Enabled := HasExpression;
 end;
@@ -121,7 +145,7 @@ procedure TEvaluateDlg.cmbExpressionKeyDown(Sender: TObject; var Key: Word;
 begin
   if (Key = VK_RETURN) and tbEvaluate.Enabled
   then begin
-    tbEvaluate.Click;
+    Evaluate;
     Key := 0;
   end;
 end;
@@ -143,10 +167,39 @@ begin
   Result := cmbExpression.Text;
 end;
 
+procedure TEvaluateDlg.Modify;
+var
+  S, V, R: String;
+  DBGType: TDBGType;
+begin
+  S := Trim(cmbExpression.Text);
+  if S = '' then Exit;
+  V := cmbNewValue.Text;
+  if not DebugBoss.Modify(S, V) then Exit;
+
+  if cmbNewValue.Items.IndexOf(V) = -1
+  then cmbNewValue.Items.Insert(0, V);
+
+  DBGType:=nil;
+  if not DebugBoss.Evaluate(S, R, DBGType) then Exit;
+  FreeAndNil(DBGType);
+  txtResult.Lines.Text := R;
+end;
+
 procedure TEvaluateDlg.FormClose(Sender: TObject;
   var CloseAction: TCloseAction);
 begin
   IDEDialogLayoutList.SaveLayout(Self);
+end;
+
+procedure TEvaluateDlg.cmbNewValueKeyDown(Sender: TObject; var Key: Word;
+  Shift: TShiftState);
+begin
+  if (Key = VK_RETURN) and (tbModify.Enabled)
+  then begin
+    Modify;
+    Key := 0;
+  end;
 end;
 
 procedure TEvaluateDlg.FormShow(Sender: TObject);
@@ -162,26 +215,18 @@ begin
 end;
 
 procedure TEvaluateDlg.tbEvaluateClick(Sender: TObject);
-var
-  S, R: String;
-  DBGType: TDBGType;
 begin
-  S := cmbExpression.Text;
-  InputHistories.HistoryLists.Add(ClassName, S);
-  DBGType:=nil;
-  if DebugBoss.Evaluate(S, R, DBGType)
-  then begin
-    if cmbExpression.Items.IndexOf(S) = -1
-    then cmbExpression.Items.Insert(0, S);
-//    tbModify.Enabled := True;
-  end;
-  FreeAndNil(DBGType);
-  txtResult.Lines.Text := R;
+  Evaluate;
 end;
 
 procedure TEvaluateDlg.tbInspectClick(Sender: TObject);
 begin
   DebugBoss.Inspect(cmbExpression.Text);
+end;
+
+procedure TEvaluateDlg.tbModifyClick(Sender: TObject);
+begin
+  Modify;
 end;
 
 procedure TEvaluateDlg.tbWatchClick(Sender: TObject);

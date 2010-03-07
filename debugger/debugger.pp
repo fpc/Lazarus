@@ -1783,7 +1783,7 @@ end;
 
 function TDebugger.Modify(const AExpression, AValue: String): Boolean;
 begin
-  Result := False;
+  Result := ReqCmd(dcModify, [AExpression, AValue]);
 end;
 
 procedure TDebugger.Pause;

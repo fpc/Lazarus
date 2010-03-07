@@ -63,7 +63,7 @@ type
   );
 
   TGDBMIResultFlags = set of (
-    rfNoMI         // flag is set if the output is not MI fomatted
+    rfNoMI         // flag is set if the output is not MI formatted
                    // some MI functions return normal output
                    // some normal functions return MI output
   );
@@ -139,6 +139,7 @@ type
     // Implementation of external functions
     function  GDBEnvironment(const AVariable: String; const ASet: Boolean): Boolean;
     function  GDBEvaluate(const AExpression: String; var AResult: String; out ATypeInfo: TGDBType): Boolean;
+    function  GDBModify(const AExpression, ANewValue: String): Boolean;
     function  GDBRun: Boolean;
     function  GDBPause(const AInternal: Boolean): Boolean;
     function  GDBStop: Boolean;
@@ -2656,6 +2657,142 @@ begin
   AResult := FormatResult(AResult);
 end;
 
+function TGDBMIDebugger.GDBModify(const AExpression, ANewValue: String): Boolean;
+  function ConvertString(var AValue: String): Boolean;
+  var
+    R: String;
+    P: PChar;
+    InString, EndString, EndVal: Boolean;
+    CharVal: Byte;
+    n: Integer;
+    ValMode: Char;
+  begin
+    R := '"';
+    Instring := False;
+    EndString := False;
+    EndVal := False;
+    ValMode := #0;
+    CharVal := 0;
+    P := @AValue[1];
+    for n := 1 to Length(AVAlue) do
+    begin
+      if InString
+      then begin
+        case P^ of
+          '''': begin
+            InString := False;
+            EndString := True;
+          end;
+          #0..#31,
+          '"',
+          #128..#255: begin
+            R := R + '\' + OctStr(Ord(P^), 3);
+          end;
+        else
+          R := R + P^;
+        end;
+        Inc(P);
+        Continue;
+      end;
+
+
+      case P^ of
+        '''': begin
+          if EndString
+          then R := R + '\' + OctStr(Ord(''''), 3);
+          EndVal := True;
+          InString := True;
+        end;
+        '#': begin
+          if ValMode <> #0
+          then begin
+            if not (ValMode in ['h', 'd', 'o', 'b']) then Exit(False);
+            R := R + '\' + OctStr(CharVal, 3);
+          end;
+          CharVal := 0;
+          ValMode := 'D';
+        end;
+        '$', '&', '%': begin
+          if ValMode <> 'D' then Exit(False);
+          ValMode := P^;
+        end;
+      else
+        case ValMode of
+          'D', 'd': begin
+            case P^ of
+              '0'..'9': CharVal := CharVal * 10 + Ord(P^) - Ord('0');
+            else
+              Exit(False);
+            end;
+            ValMode := 'd';
+          end;
+          '$', 'h': begin
+            case P^ of
+              '0'..'9': CharVal := CharVal * 16 + Ord(P^) - Ord('0');
+              'a'..'f': CharVal := CharVal * 16 + Ord(P^) - Ord('a');
+              'A'..'F': CharVal := CharVal * 16 + Ord(P^) - Ord('A');
+            else
+              Exit(False);
+            end;
+            ValMode := 'h';
+          end;
+          '&', 'o': begin
+            case P^ of
+              '0'..'7': CharVal := CharVal * 8 + Ord(P^) - Ord('0');
+            else
+              Exit(False);
+            end;
+            ValMode := 'o';
+          end;
+          '%', 'b': begin
+            case P^ of
+              '0': CharVal := CharVal shl 1;
+              '1': CharVal := CharVal shl 1 or 1;
+            else
+              Exit(False);
+            end;
+            ValMode := 'o';
+          end;
+        else
+          Exit(False);
+        end;
+      end;
+
+      if EndVal
+      then begin
+        case Valmode of
+          #0:;
+          'h', 'd', 'o', 'b': begin
+            R := R + '\' + OctStr(CharVal, 3);
+            ValMode := #0;
+          end;
+        else
+          Exit(False);
+        end;
+        EndVal := False;
+      end;
+
+      EndString := False;
+      Inc(p);
+    end;
+    AValue := R + '"';
+    Result := True;
+  end;
+
+var
+  R: TGDBMIExecResult;
+  S: String;
+begin
+  S := Trim(ANewValue);
+  if (S <> '') and (S[1] in ['''', '#'])
+  then begin
+    if not ConvertString(S) then Exit(False);
+  end;
+
+  Result := ExecuteCommand('-gdb-set var %s := %s', [AExpression, S], [cfIgnoreError, cfExternal], R)
+        and (R.State <> dsError);
+end;
+
 function TGDBMIDebugger.GDBJumpTo(const ASource: String; const ALine: Integer): Boolean;
 begin
   Result := False;
@@ -3804,6 +3941,7 @@ begin
     dcRunTo:       Result := GDBRunTo(String(AParams[0].VAnsiString), AParams[1].VInteger);
     dcJumpto:      Result := GDBJumpTo(String(AParams[0].VAnsiString), AParams[1].VInteger);
     dcEvaluate:    Result := GDBEvaluate(String(AParams[0].VAnsiString), String(AParams[1].VPointer^),TGDBType(AParams[2].VPointer^));
+    dcModify:      Result := GDBModify(String(AParams[0].VAnsiString), String(AParams[1].VAnsiString));
     dcEnvironment: Result := GDBEnvironment(String(AParams[0].VAnsiString), AParams[1].VBoolean);
     dcDisassemble: Result := GDBDisassemble(AParams[0].VQWord^, AParams[1].VBoolean, TDbgPtr(AParams[2].VPointer^),
                                             String(AParams[3].VPointer^), String(AParams[4].VPointer^),

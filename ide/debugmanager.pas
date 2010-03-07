@@ -174,6 +174,7 @@ type
     procedure EndDebugging; override;
     function Evaluate(const AExpression: String; var AResult: String;
                      var ATypeInfo: TDBGType): Boolean; override;
+    function Modify(const AExpression, ANewValue: String): Boolean; override;
 
     procedure Inspect(const AExpression: String); override;
 
@@ -2483,6 +2484,15 @@ begin
         and (FDebugger <> nil)
         and (dcEvaluate in FDebugger.Commands)
         and FDebugger.Evaluate(AExpression, AResult, ATypeInfo)
+end;
+
+function TDebugManager.Modify(const AExpression, ANewValue: String): Boolean;
+begin
+  Result := (not Destroying)
+        and (MainIDE.ToolStatus = itDebugger)
+        and (FDebugger <> nil)
+        and (dcModify in FDebugger.Commands)
+        and FDebugger.Modify(AExpression, ANewValue)
 end;
 
 procedure TDebugManager.Inspect(const AExpression: String);
