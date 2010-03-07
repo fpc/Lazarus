@@ -1683,9 +1683,9 @@ procedure TCarbonWindow.CloseModal;
 begin
   if not Assigned(fWindowRef) then Exit; // not possible to show modal if not Window mode
 
-  if ((LCLObject as TCustomForm).Menu <> nil) and ((LCLObject as TCustomForm).Menu.HandleAllocated) and 
-     (CarbonWidgetSet.MainMenu <>  (LCLObject as TCustomForm).Menu.Handle) then
-    CarbonWidgetSet.SetMainMenuEnabled(True);
+  //if ((LCLObject as TCustomForm).Menu <> nil) and ((LCLObject as TCustomForm).Menu.HandleAllocated) and
+  //   (CarbonWidgetSet.MainMenu <>  (LCLObject as TCustomForm).Menu.Handle) then
+  CarbonWidgetSet.SetMainMenuEnabled(True);
 
   OSError(
     SetWindowModality(fWindowRef, kWindowModalityNone, nil),
@@ -1706,9 +1706,14 @@ begin
     Self, 'ShowModal', SSetModality);
 
   SelectWindow(fWindowRef);
-  if ((LCLObject as TCustomForm).Menu <> nil) and ((LCLObject as TCustomForm).Menu.HandleAllocated) and 
-     (CarbonWidgetSet.MainMenu <>  (LCLObject as TCustomForm).Menu.Handle) then
-    CarbonWidgetSet.SetMainMenuEnabled(False);
+  {if ((LCLObject as TCustomForm).Menu <> nil) and ((LCLObject as TCustomForm).Menu.HandleAllocated) and
+     (CarbonWidgetSet.MainMenu <>  (LCLObject as TCustomForm).Menu.Handle) then begin}
+
+  // Always disable the main menu, so the modal window cannot be called again
+  // if it's previously called by the menu shortcut
+  // see bug #15913
+  CarbonWidgetSet.SetMainMenuEnabled(False);
+  //end;
 end;
 
 {------------------------------------------------------------------------------
