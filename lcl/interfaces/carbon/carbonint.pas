@@ -68,6 +68,7 @@ type
     FTimerMap: TMap; // the map contains all installed timers
     FCurrentCursor: HCURSOR;
     FMainMenu: HMENU; // Main menu attached to menu bar
+    FMenuDisableCount: Integer; // The modal menu counter
     FCaptureWidget: HWND; // Captured widget (TCarbonWidget descendant)
     FFocusedWidget: HWND; // Forced Focus widgetset (TCarbonWidget descendant)
     FOpenEventHandlerUPP: AEEventHandlerUPP;
