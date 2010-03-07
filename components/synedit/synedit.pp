@@ -2361,6 +2361,12 @@ begin
     ACommand := AnAction.Command;
     AnInfo.CaretDone := False;
 
+    // Opening the context menu must not unset the block selection
+    // Therefore if a non persistent block is given, it shall ignore the caret move.
+    if (ACommand = emcContextMenu) and FBlockSelection.SelAvail and
+       not FBlockSelection.Persistent then
+      AnInfo.CaretDone := True; // Not allowed to modify AnAction
+
     // Plugins/External
     Result := FMouseActionExecHandlerList.CallExecHandlers(AnAction, AnInfo);
     // Gutter
@@ -2374,7 +2380,7 @@ begin
     end;
 
     Result := True;
-    CaretDone := False;
+    CaretDone := AnInfo.CaretDone;
     MouseCapture := False;
 
     case ACommand of
