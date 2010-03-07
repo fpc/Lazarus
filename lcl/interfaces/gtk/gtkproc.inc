@@ -6868,6 +6868,9 @@ begin
     ParentFixed := GetFixedWidget(ParentWidget);
     if GtkWidgetIsA(ParentFixed,GTK_FIXED_GET_TYPE)
     or GtkWidgetIsA(ParentFixed,GTK_LAYOUT_GET_TYPE) then begin
+      {$IFDEF NewAutoSize}
+      DebugLn(['SetWidgetSizeAndPosition ',DbgSName(LCLControl),' ',GetWidgetClassName(ParentFixed),' Widget=',GetWidgetClassName(Widget),' Widget^.Parent=',GetWidgetClassName(Widget^.parent)]);
+      {$ENDIF}
       FixedMoveControl(ParentFixed, Widget,LCLLeft,LCLTop);
     end else begin
       WinWidgetInfo:=GetWidgetInfo(Widget,false);
