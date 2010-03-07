@@ -5599,7 +5599,7 @@ end;
 function TGtkWidgetSet.GetParent(Handle : HWND): HWND;
 begin
   if Handle <> 0 then
-    Result := HWnd(PtrUInt(PGtkWidget(Handle)^.Parent))
+    Result := HWnd(PGtkWidget(Handle)^.Parent)
   else
     Result := 0;
 end;
@@ -8975,6 +8975,16 @@ var
 begin
   Result := GetParent(hWndChild);
 
+  if Result <> 0 then
+  begin
+    // unparent first
+    gtk_widget_ref(PGtkWidget(hWndChild));
+    if GTK_IS_CONTAINER(Pointer(Result)) then
+      gtk_container_remove(PGtkContainer(Result), PGtkWidget(hWndChild))
+    else
+      gtk_widget_unparent(PGtkWidget(hWndChild));
+  end;
+
   Fixed := GetFixedWidget(PGtkWidget(hWndParent));
   if Fixed <> nil then
   begin
@@ -8983,6 +8993,9 @@ begin
   end
   else
     gtk_widget_set_parent(PGtkWidget(hWndChild), PGtkWidget(hWndParent));
+
+  if Result <> 0 then
+    gtk_widget_unref(PGtkWidget(hWndChild));
 end;
 
 {------------------------------------------------------------------------------
