@@ -186,6 +186,9 @@ type
     FChangeAllowed: Boolean;           // We do not allow text changes by the OS (cut/clear via context menu)
     FInitialText  : String;            // Text set in the formdesigner (must not be handled by SetText)
     FInitialMask  : String;            // EditMask set in the formdesigner
+    FValidationFailed: Boolean;        // Flag used in DoEnter
+    FMaskIsPushed : Boolean;
+    FPushedMask   : ShortString;
 
     procedure SetMask(Value : String);
     function  GetIsMasked : Boolean;
@@ -208,14 +211,17 @@ type
     Function  IsLiteral(Ch: Char): Boolean;
     function  TextIsValid(Value: String): Boolean;
     function  CharMatchesMask(const Ch: Char; const Position: Integer): Boolean;
+    function  ClearChar(Position : Integer) : Char;
 
     procedure SetInheritedText(const Value: String); //See notes above!
-    function  ClearChar(Position : Integer) : Char;
     procedure InsertChar(Ch : Char);
     Function  CanInsertChar(Position : Integer; Var Ch : Char) : Boolean;
     procedure DeleteSelected;
     procedure DeleteChars(NextChar : Boolean);
   protected
+    function DisableMask(const NewText: String): Boolean;
+    function RestoreMask(const NewText: String): Boolean;
+
     Function  GetText : String;
     Procedure SetText(Value : String);
     function  GetEditText: string; virtual;
@@ -260,11 +266,10 @@ type
   { TMaskEdit }
 
   TMaskEdit = class(TCustomMaskEdit)
-  public
+  Public
     property IsMasked;
     property EditText;
   published
-    property Align;
     property Anchors;
     property AutoSelect;
     property AutoSize;
@@ -445,6 +450,9 @@ begin
   FTextOnEnter   := Inherited Text;
   FInitialText   := '';
   FInitialMask   := '';
+  FValidationFailed := False;
+  FMaskIsPushed := False;
+  FPushedMask := '';
 end;
 
 
@@ -467,6 +475,9 @@ begin
     FRealMask := Value;
     //Assume no FSpaceChar is defined in new mask, so first set it to DefaultBlank
     FSpaceChar := DefaultBlank;
+    FValidationFailed := False;
+    FMaskIsPushed := False;
+    FPushedMask := '';
     {
       First see if Mask is multifield and if we can extract a value for
       FMaskSave and/or FSpaceChar
@@ -682,12 +693,16 @@ End;
 // Set the cursor position and select the char in the control
 procedure TCustomMaskEdit.SetCursorPos;
 begin
-  if FCursorPos < 0 then FCursorPos := 0
-  else if FCursorPos  > Length(FMask) then FCursorPos := Length(FMask);
-  if FCursorPos + 1 > Length(FMask) then
-    SetSel(FCursorPos, FCursorPos)
-  else
-    SetSel(FCursorPos, FCursorPos + 1);
+  //no need to do this when in designmode, it actually looks silly if we do
+  if not (csDesigning in ComponentState) then
+  begin
+    if FCursorPos < 0 then FCursorPos := 0
+    else if FCursorPos  > Length(FMask) then FCursorPos := Length(FMask);
+    if FCursorPos + 1 > Length(FMask) then
+      SetSel(FCursorPos, FCursorPos)
+    else
+      SetSel(FCursorPos, FCursorPos + 1);
+  end;
 end;
 
 //Move to next char, skip any mask-literals
@@ -914,6 +929,47 @@ begin
       FChangeAllowed := False;
     end;//finally
   end;
+end;
+
+// Save current mask, then disable mask
+// This gives developers the possibility to set any text in the control _without_ messing up the control
+// Wether or not the function succeeds: NewText will be set as the new text of the control
+// No need to save FMaskSave and FTrimtype, they are only set in SetMask, which sets MaskIsPushed := False
+function TCustomMaskEdit.DisableMask(const NewText: String): Boolean;
+begin
+  if IsMasked and (not FMaskIsPushed) then
+  begin
+    FPushedMask := FMask;
+    FMaskIsPushed := True;
+    FMask := '';
+    SetMaxLength(0);
+    Result := True;
+  end
+  else
+  begin
+    Result := False;
+  end;
+  Text := NewText;
+end;
+
+// Restore a saved mask
+function TCustomMaskEdit.RestoreMask(const NewText: String): Boolean;
+begin
+  if FMaskIsPushed and (not IsMasked) then
+  begin
+    FMaskIsPushed := False;
+    SetCharCase(ecNormal);
+    FMask := FPushedMask;
+    FPushedMask := '';
+    SetMaxLength(Length(FMask));
+    FTextOnEnter := inherited Text;
+    Result := True;
+  end
+  else
+  begin
+    Result := False;
+  end;
+  Text := NewText;
 end;
 
 
@@ -1521,8 +1577,13 @@ begin
   inherited DoEnter;
   if isMasked then
   begin
+    //debugln('TCustomMaskEdit.DoEnter: FValidationFailed = ',DbgS(FValidationFailed));
     FCursorPos := GetSelStart;
-    FTextOnEnter := Inherited Text;
+    //Only save FTextOnEnter if validation did not fail in last DoExit that occurred
+    if not FValidationFailed then
+      FTextOnEnter := Inherited Text
+    else
+      FValidationFailed := False;
     Modified := False;
     if ((FCursorPos = 0) and (IsLiteral(FMask[1]))) then
       //On entering select first editable char
@@ -1536,12 +1597,28 @@ end;
 
 procedure TCustomMaskEdit.DoExit;
 begin
+  //debugln('TCustomMaskEdit.DoExit: FValidationFailed = ',DbgS(FValidationFailed));
   //First give OnExit a change to prevent a EDBEditError
   inherited DoExit;
   {$IFNDEF MASKEDIT_NOVALIDATEONEXIT}
-  if IsMasked and (FTextOnEnter <> Inherited Text) then
+  //Do not validate if FValidationFailed, or risk raising an exception while the previous exception was
+  //not handled, resulting in an application crash
+  if IsMasked and (FTextOnEnter <> Inherited Text) and (not FValidationFailed) then
   begin
-    ValidateEdit;
+    //assume failure
+    try
+      //debugln('TCustomMaskedit.DoExit: try ValidateEdit');
+      FValidationFailed := True;
+      ValidateEdit;
+      FValidationFailed := False;
+    finally
+      if FValidationFailed then
+      begin
+        //debugln('TCustomMaskedit.DoExit: Validation failed');
+        SetFocus;
+        SelectAll;
+      end;
+    end;
   end;
   {$ENDIF}
 end;
@@ -1833,10 +1910,6 @@ begin
     FMaskSave := _MaskSave;
     if not TextIsValid(S) then
     begin
-      //SetFocus does not always work, and if it works it will cause a double DoExit
-      //(because the default exception handler will steal the focus from us)
-      //and re-raise the exception, before it has been handled
-      //SetFocus;
       SetCursorPos;
       Raise EDBEditError.Create(SMaskEditNoMatch);
     end;
