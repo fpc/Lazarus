@@ -1178,7 +1178,7 @@ begin
       QTransform_inverted(Matrix, MatrixInv, @Inverted);
       QtPoint.X := P^.X;
       QtPoint.Y := P^.Y;
-      QTransform_map(MatrixInv, @QtPoint, @QtPoint);
+      QTransform_map(MatrixInv, PQtPoint(@QtPoint), PQtPoint(@QtPoint));
       P^.X := QtPoint.X;
       P^.Y := QtPoint.Y;
       Inc(P);
