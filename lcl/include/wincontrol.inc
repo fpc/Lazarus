@@ -6994,12 +6994,14 @@ begin
   DisableAutoSizing;
   try
     {$IFDEF NewAutoSize}
-    // create parent handle before child handles
-    if Parent<>nil then
+    if (Parent<>nil) and (not Parent.HandleAllocated) then
+    begin
+      // first create the parent handle
       Parent.HandleNeeded;
+      if HandleAllocated then exit;
+    end;
     {$ENDIF}
-
-    // Control is not visible at this moment. It will be showed in UpdateShowing
+    // Control is not visible at this moment. It will be shown in UpdateShowing
     FShowing := False;
     Exclude(FWinControlFlags, wcfHandleVisible);
 

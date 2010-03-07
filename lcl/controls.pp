@@ -1839,7 +1839,7 @@ type
     procedure FinalizeWnd; virtual; // gets called before the Handle is destroyed.
     procedure FixupTabList;
     procedure FontChanged(Sender: TObject); override;
-    procedure InitializeWnd; virtual; // gets called after the Handle is created and before the child handles are created
+    procedure InitializeWnd; virtual; // gets called after the Handle is created and before the missing child handles are created
     procedure Loaded; override;
     procedure FormEndUpdated; override;
     procedure MainWndProc(var Msg: TLMessage);
