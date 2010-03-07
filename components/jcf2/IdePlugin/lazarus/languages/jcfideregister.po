@@ -1,0 +1,35 @@
+msgid ""
+msgstr "Content-Type: text/plain; charset=UTF-8"
+
+#: jcfideregister.format_about_menu
+msgid "&About"
+msgstr ""
+
+#: jcfideregister.format_category
+msgid "JEDI Code Format"
+msgstr ""
+
+#: jcfideregister.format_current
+msgid "&Current Editor Window"
+msgstr ""
+
+#: jcfideregister.format_menu
+msgid "JEDI Code &Format"
+msgstr ""
+
+#: jcfideregister.format_open
+msgid "All &Open Windows"
+msgstr ""
+
+#: jcfideregister.format_project
+msgid "&All Files in Project"
+msgstr ""
+
+#: jcfideregister.format_reg_settings_menu
+msgid "&Registry Settings"
+msgstr ""
+
+#: jcfideregister.format_settings_menu
+msgid "&Format Settings"
+msgstr ""
+

@@ -1,0 +1,35 @@
+msgid ""
+msgstr "Content-Type: text/plain; charset=UTF-8"
+
+#: jcfuiconsts.lisfrfilesdatefilewritten
+msgid "Date file written: %s"
+msgstr ""
+
+#: jcfuiconsts.lisfrfilesdescription
+msgid "Description:"
+msgstr ""
+
+#: jcfuiconsts.lisfrfilesfileisreadonly
+msgid "File is read only"
+msgstr ""
+
+#: jcfuiconsts.lisfrfilesfileiswritable
+msgid "File is writable"
+msgstr ""
+
+#: jcfuiconsts.lisfrfilesfilenotfound
+msgid "File not found"
+msgstr ""
+
+#: jcfuiconsts.lisfrfilesformatfile
+msgid "Format File"
+msgstr ""
+
+#: jcfuiconsts.lisfrfilesformatfileis
+msgid "Format file is %s"
+msgstr ""
+
+#: jcfuiconsts.lisfrfilesversionthatwrotethisfile
+msgid "Version that wrote this file: %s"
+msgstr ""
+
