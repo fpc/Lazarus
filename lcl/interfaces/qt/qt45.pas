@@ -31,7 +31,7 @@ const
 {$ENDIF}
 
 {$IFDEF HAIKU}
-  QtIntf = 'libQt4Pas.so.5';
+  Qt4PasLib = 'libQt4Pas.so.5';
 {$ENDIF}
 
 // Set qtopia yourself if using QTOPIA with QVFB on i386
