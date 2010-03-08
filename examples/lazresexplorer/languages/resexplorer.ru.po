@@ -1,0 +1,110 @@
+msgid ""
+msgstr ""
+"Content-Type: text/plain; charset=UTF-8\n"
+"Project-Id-Version: \n"
+"POT-Creation-Date: \n"
+"PO-Revision-Date: \n"
+"Last-Translator: Maxim Ganetsky <maxkill@mail.ru>\n"
+"Language-Team: \n"
+"MIME-Version: 1.0\n"
+"Content-Transfer-Encoding: 8bit\n"
+
+#: reconstsunit.sabout
+msgctxt "reconstsunit.sabout"
+msgid "About..."
+msgstr "О программе..."
+
+#: reconstsunit.sbuilddate
+msgid "Build date : "
+msgstr "Дата сборки: "
+
+#: reconstsunit.scarbonwidgetset
+msgid "Carbon widget set"
+msgstr "Библиотека виджетов Carbon"
+
+#: reconstsunit.sexit
+msgctxt "reconstsunit.sexit"
+msgid "Exit"
+msgstr "Выход"
+
+#: reconstsunit.sfile
+msgctxt "reconstsunit.sfile"
+msgid "File"
+msgstr "Файл"
+
+#: reconstsunit.sfpcversion
+msgid "FPC version : "
+msgstr "Версия FPC: "
+
+#: reconstsunit.sfpguiwidgetset
+msgid "FpGUI widget set"
+msgstr "Библиотека виджетов FpGUI"
+
+#: reconstsunit.sgtk2widgetset
+msgid "GTK 2 widget set"
+msgstr "Библиотека виджетов GTK 2"
+
+#: reconstsunit.sgtkwidgetset
+msgid "GTK widget set"
+msgstr "Библиотека виджетов GTK"
+
+#: reconstsunit.shelp
+msgctxt "reconstsunit.shelp"
+msgid "Help"
+msgstr "Справка"
+
+#: reconstsunit.simage
+msgctxt "reconstsunit.simage"
+msgid "Image"
+msgstr "Изображение"
+
+#: reconstsunit.slclversion
+msgid "LCL Version: "
+msgstr "Версия LCL: "
+
+#: reconstsunit.slicense
+msgid "This program is free software under GNU GPL 2 license, see COPYING file"
+msgstr "Это свободное ПО, распространяющееся под лицензией GNU GPL версии 2 (см. файл COPYING)."
+
+#: reconstsunit.sopen
+msgctxt "reconstsunit.sopen"
+msgid "Open..."
+msgstr "Открыть..."
+
+#: reconstsunit.sotherguiwidgetset
+msgid "Other gui"
+msgstr "Другая библиотека виджетов"
+
+#: reconstsunit.sqtwidgetset
+msgid "QT widget set"
+msgstr "Библиотека виджетов Qt"
+
+#: reconstsunit.sresourceexplorer
+msgid "Resource explorer"
+msgstr "Обозреватель ресурсов"
+
+#: reconstsunit.ssaveresource
+msgctxt "reconstsunit.ssaveresource"
+msgid "Save resource..."
+msgstr "Сохранить ресурс..."
+
+#: reconstsunit.sstrings
+msgid "Strings"
+msgstr "Строки"
+
+#: reconstsunit.stargetcpu
+msgid "Target CPU : "
+msgstr "Целевой процессор: "
+
+#: reconstsunit.stargetos
+msgid "Target OS : "
+msgstr "Целевая ОС: "
+
+#: reconstsunit.swin32_64widgetset
+msgid "Win32/Win64 widget set"
+msgstr "Библиотека виджетов Win32/Win64"
+
+#: reconstsunit.swincewidgetset
+msgid "WinCE widget set"
+msgstr "Библиотека виджетов WinCE"
+

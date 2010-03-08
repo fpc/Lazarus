@@ -5,7 +5,7 @@ msgstr ""
 "Content-Type: text/plain; charset=utf-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "POT-Creation-Date: \n"
-"PO-Revision-Date: 2010-02-09 01:29+0300\n"
+"PO-Revision-Date: 2010-03-08 20:30+0300\n"
 "Language-Team: \n"
 "MIME-Version: 1.0\n"
 
@@ -2022,28 +2022,29 @@ msgid "No Highlight"
 msgstr "Не подсвечивать"
 
 #: lazarusidestrconsts.dlgnotebooktabpos
+#| msgid "Positoon for source-notebook tabs"
 msgid "Source notebook tabs position"
-msgstr ""
+msgstr "Положение заголовков вкладок редактора"
 
 #: lazarusidestrconsts.dlgnotebooktabposbottom
 msgctxt "lazarusidestrconsts.dlgnotebooktabposbottom"
 msgid "Bottom"
-msgstr "Вниз"
+msgstr "Снизу"
 
 #: lazarusidestrconsts.dlgnotebooktabposleft
 msgctxt "lazarusidestrconsts.dlgnotebooktabposleft"
 msgid "Left"
-msgstr "Левая"
+msgstr "Слева"
 
 #: lazarusidestrconsts.dlgnotebooktabposright
 msgctxt "lazarusidestrconsts.dlgnotebooktabposright"
 msgid "Right"
-msgstr "Правая"
+msgstr "Справа"
 
 #: lazarusidestrconsts.dlgnotebooktabpostop
 msgctxt "lazarusidestrconsts.dlgnotebooktabpostop"
 msgid "Top"
-msgstr "Вверх"
+msgstr "Сверху"
 
 #: lazarusidestrconsts.dlgnotsplitlineafter
 msgid "Do not split line after:"
@@ -3216,7 +3217,7 @@ msgstr "Добавить пакет %s к проекту?"
 
 #: lazarusidestrconsts.lisaddpackagetoproject2
 msgid "Add package to project"
-msgstr ""
+msgstr "Добавить пакет к проекту"
 
 #: lazarusidestrconsts.lisaddparameterbrackets
 msgid "Add parameter brackets"
@@ -3236,7 +3237,7 @@ msgstr "Добавить модуль Interfaces"
 
 #: lazarusidestrconsts.lisaddunitnotrecommended
 msgid "Add unit (not recommended)"
-msgstr ""
+msgstr "Добавить модуль (не рекомендуется)"
 
 #: lazarusidestrconsts.lisaddvalue
 msgid "Add value:"
@@ -5064,11 +5065,11 @@ msgstr "Действие"
 
 #: lazarusidestrconsts.lisconfirmpackagenewpackageset
 msgid "New package set"
-msgstr ""
+msgstr "Новый набор пакетов"
 
 #: lazarusidestrconsts.lisconfirmpackageoldpackageset
 msgid "Old package set"
-msgstr ""
+msgstr "Старый набор пакетов"
 
 #: lazarusidestrconsts.lisconsoleapplication
 msgid "Console application"
@@ -5133,7 +5134,7 @@ msgstr "Копировать все (и скрытые тоже) сообщен�
 
 #: lazarusidestrconsts.liscopyallitemstoclipboard
 msgid "Copy all items to clipboard"
-msgstr ""
+msgstr "Копировать все строки в буфер обмена"
 
 #: lazarusidestrconsts.liscopyallmessagestoclipboard
 msgid "Copy all messages to clipboard"
@@ -5165,11 +5166,11 @@ msgstr "Копирование всей формы не реализовано."
 
 #: lazarusidestrconsts.liscopyitemtoclipboard
 msgid "Copy item to clipboard"
-msgstr ""
+msgstr "Копировать строку в буфер обмена"
 
 #: lazarusidestrconsts.liscopyselecteditemtoclipboard
 msgid "Copy selected items to clipboard"
-msgstr ""
+msgstr "Копировать выделенные строки в буфер обмена"
 
 #: lazarusidestrconsts.liscopyselectedmessagestoclipboard
 msgid "Copy selected messages to clipboard"
@@ -5612,7 +5613,7 @@ msgstr "Delphi"
 
 #: lazarusidestrconsts.lisdelphipackage
 msgid "Delphi package"
-msgstr ""
+msgstr "Пакет Delphi"
 
 #: lazarusidestrconsts.lisdelphiproject
 msgid "Delphi project"
@@ -5620,7 +5621,7 @@ msgstr "Проект Delphi"
 
 #: lazarusidestrconsts.lisdelphiunit
 msgid "Delphi unit"
-msgstr ""
+msgstr "Модуль Delphi"
 
 #: lazarusidestrconsts.lisdesthereisalreadyanothercomponentwiththename
 msgid "There is already another component with the name %s%s%s."
@@ -6749,7 +6750,7 @@ msgstr "Шаг со входом"
 
 #: lazarusidestrconsts.lishintstepout
 msgid "Run until function returns"
-msgstr ""
+msgstr "Исполнять до выхода из функции"
 
 #: lazarusidestrconsts.lishintstepover
 msgid "Step Over"
@@ -8924,7 +8925,7 @@ msgstr "Шаг со входом"
 
 #: lazarusidestrconsts.lismenustepout
 msgid "Step out"
-msgstr ""
+msgstr "Шаг с выходом"
 
 #: lazarusidestrconsts.lismenustepover
 msgid "Step over"
@@ -9216,27 +9217,27 @@ msgstr "Отсутствующие пакеты"
 
 #: lazarusidestrconsts.lismissingunitschoices
 msgid "Your choices are:"
-msgstr ""
+msgstr "Вы можете:"
 
 #: lazarusidestrconsts.lismissingunitscomment
 msgid "Comment Out"
-msgstr ""
+msgstr "Закомментировать"
 
 #: lazarusidestrconsts.lismissingunitsinfo1
 msgid "1) Comment out the missing units (ignore them)."
-msgstr ""
+msgstr "1) Закомментировать отсутствующие модули (игнорировать их)."
 
 #: lazarusidestrconsts.lismissingunitsinfo2
 msgid "2) Select a unit path which will be added to project settings."
-msgstr ""
+msgstr "2) Выбрать путь к модулю, чтобы добавить его в проект."
 
 #: lazarusidestrconsts.lismissingunitsinfo3
 msgid "3) Abort now, fix the unit path or install packages and try again."
-msgstr ""
+msgstr "3) Прерваться, исправить путь к модулю либо установить пакеты, и попытаться снова."
 
 #: lazarusidestrconsts.lismissingunitssearch
 msgid "Search Unit Path"
-msgstr ""
+msgstr "Найти путь к модулю"
 
 #: lazarusidestrconsts.lismodifiedlgplnotice
 msgid "<description>%sCopyright (C) <year> <name of author> <contact>%sThis library is free software; you can redistribute it and/or modify it under the terms of the GNU Library General Public License as published by the Free Software Foundation; either version 2 of the License, or (at your option) any later version with the following modification:%sAs a special exception, the copyright holders of this library give you permission to link this library with independent modules to produce an executable, regardless of the license terms of these independent modules,and to copy and distribute the resulting executable under terms of your choice, provided that you also meet, for each linked independent module, the terms and conditions of the license of that module. An independent module is a module which is not derived from or based on this library. If you modify this library, you may extend this exception to your version of the library, but you are not obligated to do so. If you do not wish to do so, delete this exception statement from your version.%sThis program is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU Library General Public License for more details. %sYou should have received a copy of the GNU Library General Public License along with this library; if not, write to the Free Software Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA."
@@ -11384,7 +11385,6 @@ msgid "Open Project"
 msgstr "Открыть проект"
 
 #: lazarusidestrconsts.lispwopenrecentproject
-#, fuzzy
 #| msgid "Open Recent"
 msgctxt "lazarusidestrconsts.lispwopenrecentproject"
 msgid "Open Recent Project"
@@ -11688,7 +11688,7 @@ msgstr "Искать "
 
 #: lazarusidestrconsts.lissearchunit
 msgid "Search unit"
-msgstr ""
+msgstr "Поиск модуля"
 
 #: lazarusidestrconsts.lissecondaryconfigdirectorywherelazarussearchesfor
 msgid "secondary config directory, where Lazarus searches for config template files. Default is "
@@ -12389,7 +12389,7 @@ msgstr "Эти параметры хранятся в проекте."
 
 #: lazarusidestrconsts.listheseunitswerenotfound
 msgid "These units were not found:"
-msgstr ""
+msgstr "Эти модули не были найдены:"
 
 #: lazarusidestrconsts.listhetestdirectorycouldnotbefoundseeenvironmentopt
 msgid "The Test Directory could not be found:%s%s%s%s%s(see environment options)"
@@ -12401,7 +12401,7 @@ msgstr "Модуль %s%s%s уже есть. Пропуск приведёт к 
 
 #: lazarusidestrconsts.listheunitbelongstopackage
 msgid "The unit belongs to package %s."
-msgstr ""
+msgstr "Модуль принадлежит пакету %s."
 
 #: lazarusidestrconsts.listheunitexiststwiceintheunitpathofthe
 msgid "The unit %s exists twice in the unit path of the %s:"
@@ -13043,10 +13043,9 @@ msgid "Unit name contains ..."
 msgstr "Имя модуля содержит ..."
 
 #: lazarusidestrconsts.lisunitnotfound
-#, fuzzy
 #| msgid "Unit not found"
 msgid "A unit not found in"
-msgstr "Модуль не найден"
+msgstr "Модуль не найден в"
 
 #: lazarusidestrconsts.lisunitoutputdirectory
 msgid "Unit Output directory"
@@ -13061,10 +13060,9 @@ msgid "Unit paths"
 msgstr "Пути к модулям"
 
 #: lazarusidestrconsts.lisunitsnotfound2
-#, fuzzy
 #| msgid "Units not found"
 msgid "Units not found in"
-msgstr "Модули не найдены"
+msgstr "Модули не найдены в"
 
 #: lazarusidestrconsts.lisunusedunits
 msgid "Unused units"
@@ -13304,10 +13302,9 @@ msgid "Available scanners"
 msgstr "Доступные лексические анализаторы"
 
 #: lazarusidestrconsts.rsbuild
-#, fuzzy
 #| msgid "Build:"
 msgid "&Build:"
-msgstr "Сборка:"
+msgstr "С&борка:"
 
 #: lazarusidestrconsts.rscharacterset
 msgid "Character set:"
@@ -13498,11 +13495,11 @@ msgstr "Украинский"
 
 #: lazarusidestrconsts.rsmajorversion
 msgid "&Major version:"
-msgstr ""
+msgstr "&Старшая:"
 
 #: lazarusidestrconsts.rsminorversion
 msgid "Mi&nor version:"
-msgstr ""
+msgstr "&Младшая:"
 
 #: lazarusidestrconsts.rsok
 msgid "ok"
@@ -13526,7 +13523,7 @@ msgstr "Сбросить фильтр"
 
 #: lazarusidestrconsts.rsrevision
 msgid "&Revision:"
-msgstr ""
+msgstr "&Ревизия:"
 
 #: lazarusidestrconsts.rsscanners
 msgid "Scanners"

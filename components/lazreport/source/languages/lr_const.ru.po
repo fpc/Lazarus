@@ -5,7 +5,7 @@ msgstr ""
 "Content-Transfer-Encoding: 8bit\n"
 "Project-Id-Version: \n"
 "POT-Creation-Date: \n"
-"PO-Revision-Date: 2009-11-16 00:10+0300\n"
+"PO-Revision-Date: 2010-03-08 20:18+0300\n"
 "Last-Translator: Maxim Ganetsky <maxkill@mail.ru>\n"
 "Language-Team: \n"
 
@@ -266,7 +266,7 @@ msgstr "AVG(<Expression> [,BandName [,1]])/Вычисляет среднее а�
 
 #: lr_const.sdescriptioncopy
 msgid "COPY(<String>, <Position>, <Length>)/Returns <Length> characters from <String> starting at <Position>."
-msgstr ""
+msgstr "COPY(<String>, <Position>, <Length>)/Возвращает <Length> символов из строки <String>, начиная с <Position>."
 
 #: lr_const.sdescriptioncount
 msgid "COUNT(<BandName>)/Returns count of data-rows given in the <BandName>. "
@@ -290,7 +290,7 @@ msgstr "FORMATTEXT(<Mask>, <String>)/Применяет маску <Mask> к з�
 
 #: lr_const.sdescriptionfrac
 msgid "FRAC(<Value>)/Returns the fractional part of floating point <Value>."
-msgstr ""
+msgstr "FRAC(<Value>)/Возвращает дробную часть вещественного значения <Value>."
 
 #: lr_const.sdescriptioninput
 msgid "INPUT(<Caption> [,Default])/Shows dialog window with headstring <Caption> and edit box. If [Default] parameter is set, puts this string in edit box. After user clicks OK, returns input string."
@@ -298,7 +298,7 @@ msgstr "INPUT(<Caption> [,Default])/Выводит диалоговое окно
 
 #: lr_const.sdescriptionint
 msgid "INT(<Value>)/Returns the integer part of floating point <Value>."
-msgstr ""
+msgstr "INT(<Value>)/Возвращает целую часть вещественного значения <Value>."
 
 #: lr_const.sdescriptionlength
 msgid "LENGTH(<String>)/Returns length of <String>."
@@ -342,11 +342,11 @@ msgstr "POS(<SubString>, <String>)/Возвращает позицию подс�
 
 #: lr_const.sdescriptionround
 msgid "ROUND(<Value>)/Rounds the floating point <Value> to nearest integer number."
-msgstr ""
+msgstr "ROUND(<Value>)/Округляет вещественное значение <Value> до ближайшего целого числа."
 
 #: lr_const.sdescriptionstr
 msgid "STR(<Value>)/Converts the given (numeric) <Value> in string."
-msgstr ""
+msgstr "STR(<Value>)/Преобразует заданное числовое значение <Value> в строковое представление."
 
 #: lr_const.sdescriptionstrtodate
 msgid "STRTODATE(<String>)/Converts <String> to date."
@@ -1393,7 +1393,7 @@ msgstr "MM"
 
 #: lr_const.snewtemplate
 msgid "New template"
-msgstr ""
+msgstr "Новый шаблон"
 
 #: lr_const.sno
 msgid "No"

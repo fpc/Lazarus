@@ -5,7 +5,7 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "POT-Creation-Date: \n"
-"PO-Revision-Date: 2010-02-09 00:46+0300\n"
+"PO-Revision-Date: 2010-03-08 19:19+0300\n"
 "Language-Team: \n"
 "MIME-Version: 1.0\n"
 
@@ -625,11 +625,11 @@ msgstr "Каталог модулей менеджера пакетов"
 
 #: codetoolsstrconsts.ctspointhintprocstartat
 msgid ".  Hint: proc start at "
-msgstr ". Подсказка: процедура начинается в "
+msgstr ". Подсказка: начало процедуры в "
 
 #: codetoolsstrconsts.ctspointstartat
 msgid ". start at "
-msgstr ". начинается в "
+msgstr ". Начало в "
 
 #: codetoolsstrconsts.ctspositionnotinsource
 msgid "Position not in source"
