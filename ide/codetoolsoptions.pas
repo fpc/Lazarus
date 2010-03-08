@@ -319,6 +319,7 @@ end;
 
 procedure TCodeToolsOptions.DoAfterWrite;
 begin
+  inherited DoAfterWrite;
   Save;
 end;
 
