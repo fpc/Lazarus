@@ -1200,7 +1200,7 @@ resourcestring
   lisShowSpecialCharacters = 'Show special characters';
   dlgCloseButtonsNotebook = 'Show close buttons in notebook';
   dlgTabNumbersNotebook = 'Show tab numbers in notebook';
-  dlgNotebookTabPos = 'Positoon for source-notebook tabs';
+  dlgNotebookTabPos = 'Source notebook tabs position';
   dlgNotebookTabPosTop = 'Top';
   dlgNotebookTabPosBottom = 'Bottom';
   dlgNotebookTabPosLeft = 'Left';
