@@ -37,7 +37,7 @@ uses
   Classes, SysUtils, LCLProc, Forms, Controls, Dialogs, ExtCtrls,
   StdCtrls, ComCtrls, FileUtil, AvgLvlTree,
   // codetools
-  Laz_XMLCfg, CodeCache, CodeToolManager,
+  CodeToolsStrConsts, Laz_XMLCfg, CodeCache, CodeToolManager,
   // IDEIntf
   LazIDEIntf, TextTools, IDEMsgIntf, PackageIntf,
   // IDE
@@ -122,6 +122,17 @@ type
     procedure Execute(const Msg: TIDEMessageLine; Step: TIMQuickFixStep); override;
   end;
 
+  { TQuickFixIncludeNotFound_Search }
+
+  TQuickFixIncludeNotFound_Search = class(TIDEMsgQuickFixItem)
+  public
+    constructor Create;
+    function IsCodetoolsErrorIncludeFileNotFound(Msg: string;
+                                              out IncludeFile: string): boolean;
+    function IsApplicable(Line: TIDEMessageLine): boolean; override;
+    procedure Execute(const Msg: TIDEMessageLine; Step: TIMQuickFixStep); override;
+  end;
+
 procedure InitFindUnitQuickFixItems;
 
 implementation
@@ -138,7 +149,7 @@ end;
 constructor TQuickFixUnitNotFound_Search.Create;
 begin
   Name:='Search unit: Error: Can''t find unit Name';
-  Caption:='Search unit';
+  Caption:=lisSearchUnit;
   Steps:=[imqfoMenuItem];
 end;
 
@@ -149,22 +160,12 @@ const
 var
   Msg: String;
   p: integer;
-  Code: TCodeBuffer;
-  Filename: string;
-  Caret: TPoint;
 begin
   Result:=false;
   if (Line.Parts=nil) then exit;
   Msg:=Line.Msg;
   p:=System.Pos(SearchStr,Msg);
   if p<1 then exit;
-  inc(p,length(SearchStr));
-  Line.GetSourcePosition(Filename,Caret.Y,Caret.X);
-  if (Filename='') or (Caret.X<1) or (Caret.Y<1) then exit;
-  if not FilenameIsAbsolute(Filename) then
-    Filename:=Line.Directory+Filename;
-  Code:=CodeToolBoss.LoadFile(Filename,true,false);
-  if Code=nil then exit;
   Result:=true;
 end;
 
@@ -180,8 +181,6 @@ begin
   if Step=imqfoMenuItem then begin
     DebugLn(['TQuickFixUnitNotFound_Search.Execute ']);
     // get source position
-    // (FPC reports position right after the unknown identifier
-    //  for example right after FilenameIsAbsolute)
     if not GetMsgLineFilename(Msg,CodeBuf) then exit;
     Msg.GetSourcePosition(Filename,Caret.Y,Caret.X);
     if not LazarusIDE.BeginCodeTools then begin
@@ -597,6 +596,83 @@ end;
 constructor TQuickFixMissingUnitRemoveFromUses.Create(aDlg: TFindUnitDialog);
 begin
   Caption:='Remove unit from uses clause';
+end;
+
+{ TQuickFixIncludeNotFound_Search }
+
+constructor TQuickFixIncludeNotFound_Search.Create;
+begin
+  Name:='Search include file: Error: include file not found';
+  Caption:=lisSearchUnit;
+  Steps:=[imqfoMenuItem];
+end;
+
+function TQuickFixIncludeNotFound_Search.IsCodetoolsErrorIncludeFileNotFound(
+  Msg: string; out IncludeFile: string): boolean;
+var
+  SearchStr: String;
+  p: integer;
+  StartPos: LongInt;
+begin
+  IncludeFile:='';
+  // check for codetools 'include file not found'
+  SearchStr:=ctsIncludeFileNotFound;
+  p:=System.Pos('%',SearchStr);
+  if p>0 then SearchStr:=copy(SearchStr,1,p-1);
+  SearchStr:=SearchStr+': '+SearchStr; // e.g.: ': include file not found "'
+  p:=System.Pos(SearchStr,Msg);
+  if p<1 then exit(false);
+  Result:=true;
+  inc(p,length(SearchStr));
+  StartPos:=p;
+  while (p<=length(Msg)) and (Msg[p]<>'"') do inc(p);
+  IncludeFile:=copy(Msg,StartPos,p-StartPos);
+end;
+
+function TQuickFixIncludeNotFound_Search.IsApplicable(Line: TIDEMessageLine
+  ): boolean;
+var
+  Filename: string;
+begin
+  Result:=IsCodetoolsErrorIncludeFileNotFound(Line.Msg,Filename)
+          and (Filename<>'');
+end;
+
+procedure TQuickFixIncludeNotFound_Search.Execute(const Msg: TIDEMessageLine;
+  Step: TIMQuickFixStep);
+var
+  CodeBuf: TCodeBuffer;
+  Filename, IncludeFilename: string;
+  Caret: TPoint;
+  Dlg: TFindUnitDialog;
+begin
+  if Step=imqfoMenuItem then begin
+    DebugLn(['TQuickFixIncludeNotFound_Search.Execute ']);
+    // get source position
+    if not GetMsgLineFilename(Msg,CodeBuf) then exit;
+    Msg.GetSourcePosition(Filename,Caret.Y,Caret.X);
+    if not LazarusIDE.BeginCodeTools then begin
+      DebugLn(['TQuickFixIncludeNotFound_Search.Execute failed because IDE busy']);
+      exit;
+    end;
+
+    // get include file name
+    if not IsCodetoolsErrorIncludeFileNotFound(Msg.Msg,IncludeFilename) then
+    begin
+      DebugLn('TQuickFixIncludeNotFound_Search invalid message ',Msg.Msg);
+      exit;
+    end;
+    DebugLn(['TQuickFixIncludeNotFound_Search.Execute include file=',IncludeFilename]);
+
+    // show dialog
+    Dlg:=TFindUnitDialog.Create(nil);
+    try
+      Dlg.InitWithMsg(Msg,Msg.Msg,CodeBuf,IncludeFilename);
+      Dlg.ShowModal;
+    finally
+      Dlg.Free;
+    end;
+  end;
 end;
 
 end.
