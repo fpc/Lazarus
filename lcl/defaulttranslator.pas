@@ -359,13 +359,12 @@ initialization
       lcfn := FindLocaleFileName('.mo');
       if lcfn <> '' then
       begin
-        TranslateResourceStrings(UTF8ToSys(lcfn));
         LCLPath := ExtractFileName(lcfn);
         Dot1 := pos('.', LCLPath);
         if Dot1 > 1 then
         begin
           Delete(LCLPath, 1, Dot1 - 1);
-          LCLPath := ExtractFilePath(lcfn) + 'lcl' + LCLPath;
+          LCLPath := ExtractFilePath(lcfn) + 'lclstrconsts' + LCLPath;
           if FileExistsUTF8(LCLPath) then
             TranslateResourceStrings(UTF8ToSys(LCLPath));
         end;
