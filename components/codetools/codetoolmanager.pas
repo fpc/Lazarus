@@ -4916,6 +4916,7 @@ begin
     AdjustTopLineDueToComment:=Self.AdjustTopLineDueToComment;
     AddInheritedCodeToOverrideMethod:=Self.AddInheritedCodeToOverrideMethod;
     CompleteProperties:=Self.CompleteProperties;
+    SetPropertyVariablename:=Self.SetPropertyVariablename;
   end;
   Result.CheckFilesOnDisk:=FCheckFilesOnDisk;
   Result.IndentSize:=FIndentSize;
