@@ -266,10 +266,11 @@ type
   { TMaskEdit }
 
   TMaskEdit = class(TCustomMaskEdit)
-  Public
+  public
     property IsMasked;
     property EditText;
   published
+    property Align;
     property Anchors;
     property AutoSelect;
     property AutoSize;
