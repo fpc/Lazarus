@@ -2003,7 +2003,7 @@ msgid "No Highlight"
 msgstr "Ei korostusta"
 
 #: lazarusidestrconsts.dlgnotebooktabpos
-msgid "Positoon for source-notebook tabs"
+msgid "Source notebook tabs position"
 msgstr ""
 
 #: lazarusidestrconsts.dlgnotebooktabposbottom
@@ -11680,6 +11680,10 @@ msgstr ""
 #: lazarusidestrconsts.lissearchfor
 msgid "Search For "
 msgstr "Viittaukset tunnisteeseen: "
+
+#: lazarusidestrconsts.lissearchunit
+msgid "Search unit"
+msgstr ""
 
 #: lazarusidestrconsts.lissecondaryconfigdirectorywherelazarussearchesfor
 msgid "secondary config directory, where Lazarus searches for config template files. Default is "

@@ -2022,7 +2022,7 @@ msgid "No Highlight"
 msgstr "Не подсвечивать"
 
 #: lazarusidestrconsts.dlgnotebooktabpos
-msgid "Positoon for source-notebook tabs"
+msgid "Source notebook tabs position"
 msgstr ""
 
 #: lazarusidestrconsts.dlgnotebooktabposbottom
@@ -11685,6 +11685,10 @@ msgstr "Масштабный фактор:"
 #: lazarusidestrconsts.lissearchfor
 msgid "Search For "
 msgstr "Искать "
+
+#: lazarusidestrconsts.lissearchunit
+msgid "Search unit"
+msgstr ""
 
 #: lazarusidestrconsts.lissecondaryconfigdirectorywherelazarussearchesfor
 msgid "secondary config directory, where Lazarus searches for config template files. Default is "

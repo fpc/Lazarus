@@ -2000,7 +2000,7 @@ msgid "No Highlight"
 msgstr ""
 
 #: lazarusidestrconsts.dlgnotebooktabpos
-msgid "Positoon for source-notebook tabs"
+msgid "Source notebook tabs position"
 msgstr ""
 
 #: lazarusidestrconsts.dlgnotebooktabposbottom
@@ -11664,6 +11664,10 @@ msgstr ""
 
 #: lazarusidestrconsts.lissearchfor
 msgid "Search For "
+msgstr ""
+
+#: lazarusidestrconsts.lissearchunit
+msgid "Search unit"
 msgstr ""
 
 #: lazarusidestrconsts.lissecondaryconfigdirectorywherelazarussearchesfor

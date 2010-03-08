@@ -2015,7 +2015,7 @@ msgid "No Highlight"
 msgstr "不予高亮"
 
 #: lazarusidestrconsts.dlgnotebooktabpos
-msgid "Positoon for source-notebook tabs"
+msgid "Source notebook tabs position"
 msgstr ""
 
 #: lazarusidestrconsts.dlgnotebooktabposbottom
@@ -11706,6 +11706,10 @@ msgstr "缩放比例:"
 #: lazarusidestrconsts.lissearchfor
 msgid "Search For "
 msgstr "查找"
+
+#: lazarusidestrconsts.lissearchunit
+msgid "Search unit"
+msgstr ""
 
 #: lazarusidestrconsts.lissecondaryconfigdirectorywherelazarussearchesfor
 msgid "secondary config directory, where Lazarus searches for config template files. Default is "

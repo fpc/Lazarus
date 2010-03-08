@@ -2022,7 +2022,7 @@ msgid "No Highlight"
 msgstr "Sem realce"
 
 #: lazarusidestrconsts.dlgnotebooktabpos
-msgid "Positoon for source-notebook tabs"
+msgid "Source notebook tabs position"
 msgstr ""
 
 #: lazarusidestrconsts.dlgnotebooktabposbottom
@@ -11688,6 +11688,10 @@ msgstr "Fator de Escala:"
 #: lazarusidestrconsts.lissearchfor
 msgid "Search For "
 msgstr "Localizar por"
+
+#: lazarusidestrconsts.lissearchunit
+msgid "Search unit"
+msgstr ""
 
 #: lazarusidestrconsts.lissecondaryconfigdirectorywherelazarussearchesfor
 msgid "secondary config directory, where Lazarus searches for config template files. Default is "
