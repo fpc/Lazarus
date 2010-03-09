@@ -3178,6 +3178,27 @@ begin
   Result := True;
 end;
 
+{------------------------------------------------------------------------------
+  Method:  TCarbonWidgetSet.SetParent
+  Params:  hWndChild - a window we want to attach, hWndParent - a window to
+           which we want to attach
+
+  Attaches the child window to a new parent
+ ------------------------------------------------------------------------------}
+function TCarbonWidgetSet.SetParent(hWndChild: HWND; hWndParent: HWND): HWND;
+var
+  ChildWidget: TCarbonWidget absolute hWndChild;
+begin
+  if not CheckWidget(hWndChild, 'SetParent') then Exit;
+
+  if ChildWidget is TCarbonControl then
+    Result := HWnd(GetCarbonWidget(HIViewGetSuperview(TCarbonControl(ChildWidget).Widget)))
+  else
+    Result := 0;
+
+  ChildWidget.AddToWidget(TCarbonWidget(hWndParent));
+end;
+
 
 {------------------------------------------------------------------------------
   Method:  SetProp
