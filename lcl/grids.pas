@@ -1430,7 +1430,7 @@ type
       procedure Clean(CleanOptions: TGridZoneSet); overload;
       procedure Clean(aRect: TRect; CleanOptions: TGridZoneSet); overload;
       procedure Clean(StartCol,StartRow,EndCol,EndRow: integer; CleanOptions: TGridZoneSet); overload;
-      procedure CopyToClipboard;
+      procedure CopyToClipboard(AUseSelection: boolean = false);
       property Cells[ACol, ARow: Integer]: string read GetCells write SetCells;
       property Cols[index: Integer]: TStrings read GetCols write SetCols;
       property DefaultTextStyle;
@@ -9086,9 +9086,12 @@ begin
   EndUpdate;
 end;
 
-procedure TCustomStringGrid.CopyToClipboard;
+procedure TCustomStringGrid.CopyToClipboard(AUseSelection: boolean = false);
 begin
-  CopyCellRectToClipboard(Rect(0,0,ColCount-1,RowCount-1));
+  if AUseSelection then
+    doCopyToClipboard
+  else
+    CopyCellRectToClipboard(Rect(0,0,ColCount-1,RowCount-1));
 end;
 
 

@@ -12507,7 +12507,11 @@ Segunda linea de texto</descr>
       </element>
       <element name="TCustomStringGrid.CopyToClipboard">
         <short>
-          <var>CopyToClipboard</var> - copy the selected text to the clipboard</short>
+          <var>CopyToClipboard</var> - copy a range of cells to clipboard</short>
+        <descr>This method will copy a range of cells into the clipboard, the cells values are TAB separated.
+
+The range is defined based on optional <var>AUseSelection</var> parameter which is false by default and which means the range is set to the whole grid, including fixed cols/rows. If <var>AUseSelection</var> is true, the range of cells is set to current <link id="TCustomGrid.Selection"/>
+        </descr>
       </element>
       <topic name="HowToUseGrids">
         <short>How to use  <var>Grids</var> including  <var>StringGrids</var>,  <var>DrawGrids</var> and  <var>DbGrids</var>
