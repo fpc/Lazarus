@@ -1327,6 +1327,7 @@ begin
 
   DebugLn('[TMainIDE.Destroy] A ');
   {$IFDEF IDE_MEM_CHECK}CheckHeapWrtMemCnt('TMainIDE.Destroy A ');{$ENDIF}
+  MainIDEBar.DisableAutoSizing;
 
   if DebugBoss<>nil then DebugBoss.EndDebugging;
 

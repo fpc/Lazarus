@@ -3680,6 +3680,7 @@ destructor TSourceNotebook.Destroy;
 var
   i: integer;
 begin
+  DisableAutoSizing;
   FProcessingCommand:=false;
   FreeCompletionPlugins;
   for i:=FSourceEditorList.Count-1 downto 0 do
@@ -6645,17 +6646,26 @@ Begin
   {$IFDEF IDE_DEBUG}
   writeln('[TSourceNotebook.NewFile] A ');
   {$ENDIF}
-  Visible:=true;
-  Result := NewSE(-1);
-  {$IFDEF IDE_DEBUG}
-  writeln('[TSourceNotebook.NewFile] B ');
+  {$IFDEF NewAutoSize}
+  DisableAutoSizing;
+  try
   {$ENDIF}
-  Result.CodeBuffer:=ASource;
-  {$IFDEF IDE_DEBUG}
-  writeln('[TSourceNotebook.NewFile] D ');
+    Visible:=true;
+    Result := NewSE(-1);
+    {$IFDEF IDE_DEBUG}
+    writeln('[TSourceNotebook.NewFile] B ');
+    {$ENDIF}
+    Result.CodeBuffer:=ASource;
+    {$IFDEF IDE_DEBUG}
+    writeln('[TSourceNotebook.NewFile] D ');
+    {$ENDIF}
+    Result.PageName:=FindUniquePageName(NewShortName, FindPageWithEditor(Result));
+    UpdatePageNames;
+  {$IFDEF NewAutoSize}
+  finally
+    EnableAutoSizing;
+  end;
   {$ENDIF}
-  Result.PageName:=FindUniquePageName(NewShortName, FindPageWithEditor(Result));
-  UpdatePageNames;
   if FocusIt then FocusEditor;
   {$IFDEF IDE_DEBUG}
   writeln('[TSourceNotebook.NewFile] end');
@@ -6673,40 +6683,50 @@ begin
   TempEditor:=FindSourceEditorWithPageIndex(APageIndex);
   if TempEditor=nil then exit;
   //debugln(['TSourceNotebook.CloseFile ',TempEditor.FileName,' ',TempEditor.APageIndex]);
-  Visible:=true;
-  EndIncrementalFind;
-  TempEditor.Close;
-  TempEditor.Free;
-  if PageCount>1 then
-  begin
-    //writeln('TSourceNotebook.CloseFile B  APageIndex=',APageIndex,' Notebook.APageIndex=',Notebook.APageIndex);
-    // if this is the current page, switch to right APageIndex (if possible)
-    if (PageIndex = APageIndex) then
-      PageIndex := APageIndex + IfThen(APageIndex + 1 < PageCount, 1, -1);
-    if Notebook.PageIndex=APageIndex then begin
-      // make sure to select another page in the NoteBook, otherwise the
-      // widgetset will choose one and will send a message
-      Notebook.PageIndex:=Notebook.PageIndex
-        +IfThen(Notebook.PageIndex + 1 < Notebook.PageCount, 1, -1);
+  {$IFDEF NewAutoSize}
+  DisableAutoSizing;
+  try
+  {$ENDIF}
+    Visible:=true;
+    EndIncrementalFind;
+    TempEditor.Close;
+    TempEditor.Free;
+    TempEditor:=nil;
+    if PageCount>1 then
+    begin
+      //writeln('TSourceNotebook.CloseFile B  APageIndex=',APageIndex,' Notebook.APageIndex=',Notebook.APageIndex);
+      // if this is the current page, switch to right APageIndex (if possible)
+      if (PageIndex = APageIndex) then
+        PageIndex := APageIndex + IfThen(APageIndex + 1 < PageCount, 1, -1);
+      if Notebook.PageIndex=APageIndex then begin
+        // make sure to select another page in the NoteBook, otherwise the
+        // widgetset will choose one and will send a message
+        Notebook.PageIndex:=Notebook.PageIndex
+          +IfThen(Notebook.PageIndex + 1 < Notebook.PageCount, 1, -1);
+      end;
+      // delete the page
+      //writeln('TSourceNotebook.CloseFile C  APageIndex=',APageIndex,' PageCount=',PageCount,' NoteBook.APageIndex=',Notebook.APageIndex);
+      Notebook.Pages.Delete(APageIndex);
+      //writeln('TSourceNotebook.CloseFile D  APageIndex=',APageIndex,' PageCount=',PageCount,' NoteBook.APageIndex=',Notebook.APageIndex);
+      UpdateStatusBar;
+      UpdatePageNames;
+      // set focus to new editor
+      TempEditor:=FindSourceEditorWithPageIndex(PageIndex);
+    end else
+    begin
+      //writeln('TSourceNotebook.CloseFile E  APageIndex=',APageIndex);
+      Notebook.Free;
+      //writeln('TSourceNotebook.CloseFile F  APageIndex=',APageIndex);
+      Notebook:=nil;
+      Hide;
     end;
-    // delete the page
-    //writeln('TSourceNotebook.CloseFile C  APageIndex=',APageIndex,' PageCount=',PageCount,' NoteBook.APageIndex=',Notebook.APageIndex);
-    Notebook.Pages.Delete(APageIndex);
-    //writeln('TSourceNotebook.CloseFile D  APageIndex=',APageIndex,' PageCount=',PageCount,' NoteBook.APageIndex=',Notebook.APageIndex);
-    UpdateStatusBar;
-    UpdatePageNames;
-    // set focus to new editor
-    TempEditor:=FindSourceEditorWithPageIndex(PageIndex);
-    if (TempEditor <> nil) then
-      TempEditor.EditorComponent.SetFocus;
-  end else
-  begin
-    //writeln('TSourceNotebook.CloseFile E  APageIndex=',APageIndex);
-    Notebook.Free;
-    //writeln('TSourceNotebook.CloseFile F  APageIndex=',APageIndex);
-    Notebook:=nil;
-    Hide;
+  {$IFDEF NewAutoSize}
+  finally
+    EnableAutoSizing;
   end;
+  {$ENDIF}
+  if (TempEditor <> nil) then
+    TempEditor.EditorComponent.SetFocus;
   {$IFDEF IDE_DEBUG}
   writeln('TSourceNotebook.CloseFile END');
   {$ENDIF}
