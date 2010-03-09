@@ -267,7 +267,7 @@ Type
 
   { TDBText }
 
-  TDBText = class(TLabel)
+  TDBText = class(TCustomLabel)
   private
     FDataLink: TFieldDataLink;
 
@@ -285,6 +285,7 @@ Type
     procedure Loaded; override;
     procedure Notification(AComponent: TComponent;
       Operation: TOperation); override;
+    class procedure WSRegisterClass; override;
   public
     constructor Create(AOwner: TComponent); override;
     destructor Destroy; override;
@@ -294,22 +295,44 @@ Type
     property Alignment;
     property Anchors;
     property AutoSize;
-    property Caption;
+    property BidiMode;
+    property BorderSpacing;
     property Color;
+    property Constraints;
     property DataField: string read GetDataField write SetDataField;
     property DataSource: TDataSource read GetDataSource write SetDataSource;
     property DragCursor;
+    property DragKind;
     property DragMode;
+    property Enabled;
     property FocusControl;
     property Font;
     property Layout;
+    property ParentBidiMode;
+    property ParentColor;
+    property ParentFont;
+    property ParentShowHint;
+    property PopupMenu;
     property ShowAccelChar;
+    property ShowHint;
+    property Transparent;
     property Visible;
     property WordWrap;
+    property OnClick;
+    property OnDblClick;
     property OnDragDrop;
     property OnDragOver;
     property OnEndDrag;
+    property OnMouseDown;
+    property OnMouseMove;
+    property OnMouseUp;
+    property OnMouseEnter;
+    property OnMouseLeave;
+    property OnChangeBounds;
+    property OnContextPopup;
+    property OnResize;
     property OnStartDrag;
+    property OptimalFill;
   end;
 
 
@@ -360,6 +383,12 @@ Type
   protected
     procedure DataChange(Sender: TObject); override;
     procedure UpdateData(Sender: TObject); override;
+    class procedure WSRegisterClass; override;
+  public
+    // we need to overrride the write method for db aware.
+    // the Read isn't an issue since the list will be updated
+    // on data change anyway
+    property Items write SetItems;
   published
     property Align;
     property Anchors;
@@ -371,10 +400,6 @@ Type
     property DragMode;
     property ExtendedSelect;
     property ItemHeight;
-    // we need to overrride the write method for db aware.
-    // the Read isn't an issue since the list will be updated
-    // on data change anyway
-    property Items write SetItems;
     property MultiSelect;
     property OnClick;
     property OnDblClick;
@@ -821,6 +846,7 @@ Type
     procedure Change; override;
     procedure KeyPress(var Key:Char); override;
     procedure WndProc(var AMessage : TLMessage); override;
+    class procedure WSRegisterClass; override;
   public
     constructor Create(TheOwner: TComponent); override;
     destructor Destroy; override;
@@ -840,7 +866,6 @@ Type
     property DragCursor;
     property DragMode;
     property Font;
-    property Lines;
     property MaxLength;
     property OnChange;
     property OnDragDrop;
@@ -952,6 +977,7 @@ Type
     procedure PictureChanged(Sender: TObject); override;
     procedure LoadPicture; virtual;
     procedure Loaded; override;
+    class procedure WSRegisterClass; override;
   public
     constructor Create(TheOwner: TComponent); override;
     destructor Destroy; override;
@@ -977,7 +1003,6 @@ Type
     property OnMouseMove;
     property OnMouseUp;
     property OnStartDrag;
-    property Picture;
     property Proportional;
     property QuickDraw: Boolean read FQuickDraw write FQuickDraw default True;
     property ReadOnly: Boolean read GetReadOnly write SetReadOnly default False;

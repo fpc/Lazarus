@@ -215,6 +215,12 @@ begin
   inherited WndProc(AMessage);
 end;
 
+class procedure TDBMemo.WSRegisterClass;
+begin
+  inherited WSRegisterClass;
+  RegisterPropertyToSkip(TDBMemo, 'Lines', 'Removed in 0.9.29. DB control should not save/load their data from stream.', '');
+end;
+
 destructor TDBMemo.Destroy;
 begin
   FDataLink.Free;
