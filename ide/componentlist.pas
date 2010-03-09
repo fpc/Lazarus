@@ -65,8 +65,14 @@ type
     TreePallette: TTreeView;
     procedure FormShow(Sender: TObject);
     procedure ListboxComponentsDblClick(Sender: TObject);
+    procedure ListboxComponentsKeyDown(Sender: TObject; var Key: Word;
+      Shift: TShiftState);
     procedure TreeInheritanceDblClick ( Sender: TObject ) ;
+    procedure TreeInheritanceKeyDown(Sender: TObject; var Key: Word;
+      Shift: TShiftState);
     procedure TreePalletteDblClick(Sender: TObject);
+    procedure TreePalletteKeyDown(Sender: TObject; var Key: Word;
+      Shift: TShiftState);
     procedure UpdateComponentSelection(Sender: TObject);
     procedure FormKeyDown(Sender: TObject; var Key: Word; Shift: TShiftState);
     procedure PatternEditChange(Sender: TObject);
@@ -271,7 +277,7 @@ begin
   end;
 end;
 
-procedure TComponentListForm.AddSelectedComponent(AComponent: TRegisteredComponent ) ;
+procedure TComponentListForm.AddSelectedComponent(AComponent: TRegisteredComponent) ;
 //Add the DblClicked component to the current designed form
 var
   CompIntf, ParentCI: TIComponentInterface;
@@ -304,6 +310,13 @@ begin
   AddSelectedComponent(TRegisteredComponent(ListboxComponents.Items.Objects[ListboxComponents.ItemIndex]));
 end;
 
+procedure TComponentListForm.ListboxComponentsKeyDown(Sender: TObject;
+  var Key: Word; Shift: TShiftState);
+begin
+  if Key = VK_RETURN then
+    ListboxComponentsDblClick(Sender);
+end;
+
 procedure TComponentListForm.TreePalletteDblClick(Sender: TObject);
 var
   AComponent: TRegisteredComponent;
@@ -317,6 +330,13 @@ begin
   AddSelectedComponent(AComponent);
 end;
 
+procedure TComponentListForm.TreePalletteKeyDown(Sender: TObject;
+  var Key: Word; Shift: TShiftState);
+begin
+  if Key = VK_RETURN then
+    TreePalletteDblClick(Sender);
+end;
+
 procedure TComponentListForm.TreeInheritanceDblClick(Sender:TObject);
 var
   AComponent: TRegisteredComponent;
@@ -327,6 +347,13 @@ begin
   if not Assigned(AComponent)
   then exit;
   AddSelectedComponent(AComponent);
+end;
+
+procedure TComponentListForm.TreeInheritanceKeyDown(Sender: TObject;
+  var Key: Word; Shift: TShiftState);
+begin
+  if Key = VK_RETURN then
+    TreeInheritanceDblClick(Sender);
 end;
 
 procedure TComponentListForm.FormShow(Sender: TObject);
@@ -353,8 +380,6 @@ procedure TComponentListForm.Timer1Timer(Sender: TObject);
 begin
   UpdateComponentSelection(nil);
 end;
-
-
 
 initialization
   {$I componentlist.lrs}

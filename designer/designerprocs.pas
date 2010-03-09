@@ -159,19 +159,22 @@ var
   FormOrigin: TPoint;
   ParentForm: TCustomForm;
 begin
-  if Component is TControl then begin
-    ParentForm:=GetParentForm(TControl(Component));
-    if ParentForm=nil then begin
-      Result:=Point(0,0);
-    end else begin
-      Result:=TControl(Component).ClientOrigin;
-      FormOrigin:=ParentForm.ClientOrigin;
-      Result.X:=Result.X-FormOrigin.X;
-      Result.Y:=Result.Y-FormOrigin.Y;
+  if Component is TControl then
+  begin
+    ParentForm := GetParentForm(TControl(Component));
+    if ParentForm = nil then
+      Result := Point(0, 0)
+    else
+    begin
+      Result := TControl(Component).ClientOrigin;
+      FormOrigin := ParentForm.ClientOrigin;
+      Result.X := Result.X - FormOrigin.X;
+      Result.Y := Result.Y - FormOrigin.Y;
     end;
-  end else begin
-    Result.X:=LongRec(Component.DesignInfo).Lo;
-    Result.Y:=LongRec(Component.DesignInfo).Hi;
+  end else
+  begin
+    Result.X := LeftFromDesignInfo(Component.DesignInfo);
+    Result.Y := TopFromDesignInfo(Component.DesignInfo);
   end;
 end;
 

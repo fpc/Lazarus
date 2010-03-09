@@ -39,7 +39,7 @@ uses
   // FCL + LCL
   Types, Classes, SysUtils, Math, LCLProc, LCLType, LResources, LCLIntf, LMessages,
   InterfaceBase, Forms, Controls, GraphType, Graphics, Dialogs, ExtCtrls, Menus,
-  ClipBrd,
+  ClipBrd, TypInfo,
   // IDEIntf
   IDEDialogs, PropEdits, ComponentEditors, MenuIntf, IDEImagesIntf, FormEditingIntf,
   // IDE
@@ -92,6 +92,7 @@ type
     FMediator: TDesignerMediator;
     FOnActivated: TNotifyEvent;
     FOnCloseQuery: TNotifyEvent;
+    FOnShowObjectInspector: TNotifyEvent;
     FOnPersistentDeleted: TOnPersistentDeleted;
     FOnGetNonVisualCompIcon: TOnGetNonVisualCompIcon;
     FOnGetSelectedComponentClass: TOnGetSelectedComponentClass;
@@ -121,7 +122,7 @@ type
     function GetShowEditorHints: boolean;
     function GetShowGrid: boolean;
     function GetSnapToGrid: boolean;
-    Procedure HintTimer(sender : TObject);
+    procedure HintTimer(Sender : TObject);
     procedure InvalidateWithParent(AComponent: TComponent);
     procedure SetDefaultFormBounds(const AValue: TRect);
     procedure SetGridColor(const AValue: TColor);
@@ -149,10 +150,10 @@ type
     LastPaintSender: TControl;
 
     // event handlers for designed components
-    function PaintControl(Sender: TControl; TheMessage: TLMPaint):boolean;
-    function SizeControl(Sender: TControl; TheMessage: TLMSize):boolean;
-    function MoveControl(Sender: TControl; TheMessage: TLMMove):boolean;
-    procedure MouseDownOnControl(Sender: TControl; var TheMessage : TLMMouse);
+    function PaintControl(Sender: TControl; TheMessage: TLMPaint): Boolean;
+    function SizeControl(Sender: TControl; TheMessage: TLMSize): Boolean;
+    function MoveControl(Sender: TControl; TheMessage: TLMMove): Boolean;
+    procedure MouseDownOnControl(Sender: TControl; var TheMessage: TLMMouse);
     procedure MouseMoveOnControl(Sender: TControl; var TheMessage: TLMMouse);
     procedure MouseUpOnControl(Sender: TControl; var TheMessage:TLMMouse);
     procedure KeyDown(Sender: TControl; var TheMessage: TLMKEY);
@@ -171,15 +172,19 @@ type
     function GetSelectedComponentClass: TRegisteredComponent;
     procedure NudgePosition(DiffX, DiffY: Integer);
     procedure NudgeSize(DiffX, DiffY: Integer);
+    procedure NudgeSelection(DiffX, DiffY: Integer); overload;
+    procedure NudgeSelection(SelectNext: Boolean); overload;
     procedure SelectParentOfSelection;
     function DoCopySelectionToClipboard: boolean;
     function GetPasteParent: TWinControl;
+    procedure DoModified;
     function DoPasteSelectionFromClipboard(PasteFlags: TComponentPasteSelectionFlags
                                            ): boolean;
     function DoInsertFromStream(s: TStream; PasteParent: TWinControl;
                                 PasteFlags: TComponentPasteSelectionFlags): Boolean;
     procedure DoShowTabOrderEditor;
     procedure DoShowChangeClassDialog;
+    procedure DoShowObjectInspector;
     procedure DoOrderMoveSelectionToFront;
     procedure DoOrderMoveSelectionToBack;
     procedure DoOrderForwardSelectionOne;
@@ -190,6 +195,7 @@ type
     function  ComponentClassAtPos(const AClass: TComponentClass;
                                   const APos: TPoint; const UseRootAsDefault,
                                   IgnoreHidden: boolean): TComponent;
+    procedure SetTempCursor(ARoot: TWinControl; ACursor: TCursor);
 
     // popup menu
     procedure BuildPopupMenu;
@@ -318,6 +324,7 @@ type
                                        read FOnShowOptions write FOnShowOptions;
     property OnViewLFM: TNotifyEvent read FOnViewLFM write FOnViewLFM;
     property OnSaveAsXML: TNotifyEvent read FOnSaveAsXML write FOnSaveAsXML;
+    property OnShowObjectInspector: TNotifyEvent read FOnShowObjectInspector write FOnShowObjectInspector;
     property ShowGrid: boolean read GetShowGrid write SetShowGrid;
     property ShowBorderSpacing: boolean read GetShowBorderSpacing write SetShowBorderSpacing;
     property ShowEditorHints: boolean
@@ -493,7 +500,7 @@ begin
   FHintWindow.AutoHide := True;
 
   DDC:=TDesignerDeviceContext.Create;
-  LastFormCursor:=crDefault;
+  LastFormCursor := crDefault;
   DeletingPersistent:=TList.Create;
   IgnoreDeletingPersistent:=TList.Create;
 end;
@@ -566,16 +573,189 @@ begin
   Modified;
 end;
 
+function ComponentsSortByLeft(Item1, Item2: Pointer): Integer;
+var
+  Comp1: TComponent absolute Item1;
+  Comp2: TComponent absolute Item2;
+  L1, L2: Integer;
+begin
+  L1 := GetComponentLeft(Comp1);
+  L2 := GetComponentLeft(Comp2);
+  if L1 < L2 then
+    Result := -1
+  else
+  if L1 > L2 then
+    Result := 1
+  else
+    Result := 0;
+end;
+
+function ComponentsSortByTop(Item1, Item2: Pointer): Integer;
+var
+  Comp1: TComponent absolute Item1;
+  Comp2: TComponent absolute Item2;
+  T1, T2: Integer;
+begin
+  T1 := GetComponentTop(Comp1);
+  T2 := GetComponentTop(Comp2);
+  if T1 < T2 then
+    Result := -1
+  else
+  if T1 > T2 then
+    Result := 1
+  else
+    Result := 0;
+end;
+
+procedure TDesigner.NudgeSelection(DiffX, DiffY: Integer);
+const
+  Delta = 50; // radius for searching components
+var
+  List: TFPList;
+  Coord, Test: TPoint;
+  Current, AComponent: TComponent;
+  i: integer;
+begin
+  if (ControlSelection.SelectionForm <> Form) or
+     (ControlSelection.SelectionForm.ComponentCount = 0) or
+     ControlSelection.LookupRootSelected or
+     (ControlSelection.Count <> 1) then Exit;
+  if not ControlSelection[0].IsTComponent then Exit;
+
+  // create a list of components at the similar top/left
+  Current := TComponent(ControlSelection[0].Persistent);
+  AComponent := nil;
+  List := TFPList.Create;
+  try
+    Coord := GetParentFormRelativeClientOrigin(Current);
+    if DiffX <> 0 then
+    begin
+      for i := 0 to ControlSelection.SelectionForm.ComponentCount - 1 do
+      begin
+        AComponent := ControlSelection.SelectionForm.Components[i];
+        if (AComponent = Current) or ComponentIsInvisible(AComponent) then
+          Continue;
+        Test := GetParentFormRelativeClientOrigin(AComponent);
+        if (Abs(Test.Y - Coord.Y) <= Delta) and
+           (Sign(Test.X - Coord.X) = Sign(DiffX)) then
+          List.Add(AComponent);
+      end;
+      if List.Count > 0 then
+      begin
+        List.Sort(@ComponentsSortByLeft);
+        if DiffX > 0 then
+          AComponent := TComponent(List[0])
+        else
+          AComponent := TComponent(List[List.Count - 1]);
+      end
+      else
+        AComponent := nil;
+    end
+    else
+    if DiffY <> 0 then
+    begin
+      for i := 0 to ControlSelection.SelectionForm.ComponentCount - 1 do
+      begin
+        AComponent := ControlSelection.SelectionForm.Components[i];
+        if (AComponent = Current) or ComponentIsInvisible(AComponent) then
+          Continue;
+        Test := GetParentFormRelativeClientOrigin(AComponent);
+        if (Abs(Test.X - Coord.X) <= Delta) and
+           (Sign(Test.Y - Coord.Y) = Sign(DiffY)) then
+          List.Add(AComponent);
+      end;
+      if List.Count > 0 then
+      begin
+        List.Sort(@ComponentsSortByTop);
+        if DiffY > 0 then
+          AComponent := TComponent(List[0])
+        else
+          AComponent := TComponent(List[List.Count - 1]);
+      end
+      else
+        AComponent := nil;
+    end;
+  finally
+    List.Free;
+  end;
+  if AComponent <> nil then
+  begin
+    ControlSelection.AssignPersistent(AComponent);
+    Modified;
+  end;
+end;
+
+procedure TDesigner.NudgeSelection(SelectNext: Boolean);
+
+  function StepIndex(Index: Integer): Integer;
+  begin
+    Result := Index;
+    if SelectNext then
+      Inc(Result)
+    else
+      Dec(Result);
+
+    if Result >= ControlSelection.SelectionForm.ComponentCount then
+      Result := 0
+    else
+    if Result < 0 then
+      Result := ControlSelection.SelectionForm.ComponentCount - 1;
+  end;
+
+var
+  Index, StartIndex: Integer;
+  AComponent: TComponent;
+begin
+  if (ControlSelection.SelectionForm <> Form) or
+     (ControlSelection.SelectionForm.ComponentCount = 0) then Exit;
+  if (ControlSelection.Count = 1) and ControlSelection[0].IsTComponent then
+    Index := TComponent(ControlSelection[0].Persistent).ComponentIndex
+  else
+    Index := -1;
+
+  Index := StepIndex(Index);
+  StartIndex := Index;
+
+  AComponent := nil;
+  while AComponent = nil do
+  begin
+    AComponent := ControlSelection.SelectionForm.Components[Index];
+    if ComponentIsInvisible(AComponent) then
+    begin
+      AComponent := nil;
+      Index := StepIndex(Index);
+      if Index = StartIndex then
+        break;
+    end;
+  end;
+
+  if AComponent <> nil then
+  begin
+    ControlSelection.AssignPersistent(AComponent);
+    Modified;
+  end;
+end;
+
 procedure TDesigner.SelectParentOfSelection;
+
+  function ParentComponent(AComponent: TComponent): TComponent;
+  begin
+    Result := AComponent.GetParentComponent;
+    if (Result = nil) and ComponentIsIcon(AComponent) then
+      Result := AComponent.Owner;
+  end;
+
 var
   i: Integer;
 begin
-  if ControlSelection.ActiveGrabber <> nil then
+  // resizing or moving
+  if dfHasSized in FFlags then
   begin
+    ControlSelection.RestoreBounds;
     ControlSelection.ActiveGrabber := nil;
     if ControlSelection.RubberbandActive then
       ControlSelection.RubberbandActive := False;
-    LastMouseMovePos.X:=-1;
+    LastMouseMovePos.X := -1;
     Exclude(FFlags, dfHasSized);
     MouseDownComponent := nil;
     MouseDownSender := nil;
@@ -591,13 +771,15 @@ begin
     Exit;
   end;
 
-  i:=ControlSelection.Count-1;
-  while (i>=0)
-  and (   (ControlSelection[i].ParentInSelection)
-       or (not ControlSelection[i].IsTControl)
-       or (TControl(ControlSelection[i].Persistent).Parent=nil)) do dec(i);
-  if i>=0 then
-    SelectOnlyThisComponent(TControl(ControlSelection[i].Persistent).Parent);
+  // if not component moving then select parent
+  i := ControlSelection.Count - 1;
+  while (i >= 0) and
+        (ControlSelection[i].ParentInSelection or
+         not ControlSelection[i].IsTComponent or
+         (ParentComponent(TComponent(ControlSelection[i].Persistent)) = nil)) do
+    Dec(i);
+  if i >= 0 then
+    SelectOnlyThisComponent(ParentComponent(TComponent(ControlSelection[i].Persistent)));
 end;
 
 function TDesigner.CopySelectionToStream(AllComponentsStream: TStream): boolean;
@@ -772,6 +954,12 @@ begin
   if (Result=nil)
   and (FLookupRoot is TWinControl) then
     Result:=TWinControl(FLookupRoot);
+end;
+
+procedure TDesigner.DoModified;
+begin
+  if Assigned(OnModified) then
+    OnModified(Self)
 end;
 
 function TDesigner.DoPasteSelectionFromClipboard(
@@ -960,6 +1148,12 @@ begin
   if (ControlSelection.Count=1) and (not ControlSelection.LookupRootSelected)
   then
     ShowChangeClassDialog(Self,ControlSelection[0].Persistent);
+end;
+
+procedure TDesigner.DoShowObjectInspector;
+begin
+  if Assigned(FOnShowObjectInspector) then
+    OnShowObjectInspector(Self);
 end;
 
 procedure TDesigner.DoOrderMoveSelectionToFront;
@@ -1177,7 +1371,7 @@ begin
   Form.Invalidate;
 end;
 
-function TDesigner.PaintControl(Sender: TControl; TheMessage: TLMPaint):boolean;
+function TDesigner.PaintControl(Sender: TControl; TheMessage: TLMPaint): Boolean;
 var
   OldDuringPaintControl: boolean;
 begin
@@ -1223,22 +1417,18 @@ begin
     LastPaintSender:=Sender;
 
     if IsDesignerDC(Form.Handle, TheMessage.DC) then
-    begin
-      DoPaintDesignerItems;
-    end
+      DoPaintDesignerItems
     else
     begin
       // client grid
-      if (Sender is TWinControl)
-      and (csAcceptsControls in Sender.ControlStyle) then begin
+      if (Sender is TWinControl) and (csAcceptsControls in Sender.ControlStyle) then
         PaintClientGrid(TWinControl(Sender),DDC);
-      end;
 
       if (WidgetSet.GetLCLCapability(lcCanDrawOutsideOnPaint) <> 0) and 
          not EnvironmentOptions.DesignerPaintLazy then
           DoPaintDesignerItems;
     end;
-    
+   
     // clean up
     DDC.Clear;
   end;
@@ -1253,7 +1443,7 @@ begin
   Result := Lo(TheMessage.LParam) = HTCLIENT;
   if Result then
   begin
-    Form.SetTempCursor(LastFormCursor);
+    SetTempCursor(Form, LastFormCursor);
     TheMessage.Result := 1;
   end;
 end;
@@ -1262,9 +1452,9 @@ procedure TDesigner.GetMouseMsgShift(TheMessage: TLMMouse;
   var Shift: TShiftState; var Button: TMouseButton);
 begin
   Shift := [];
-  if (TheMessage.keys and MK_Shift) = MK_Shift then
+  if (TheMessage.Keys and MK_Shift) = MK_Shift then
     Include(Shift,ssShift);
-  if (TheMessage.keys and MK_Control) = MK_Control then
+  if (TheMessage.Keys and MK_Control) = MK_Control then
     Include(Shift,ssCtrl);
 
   case TheMessage.Msg of
@@ -1284,26 +1474,39 @@ begin
       Button:=mbRight;
     end;
   else
-    if (TheMessage.keys and MK_MButton)<>0 then begin
+    if (TheMessage.Keys and MK_MButton) <> 0 then
+    begin
       Include(Shift,ssMiddle);
       Button:=mbMiddle;
     end;
-    if (TheMessage.keys and MK_RButton)<>0 then begin
+    if (TheMessage.Keys and MK_RButton) <> 0 then
+    begin
       Include(Shift,ssRight);
       Button:=mbRight;
     end;
-    if (TheMessage.keys and MK_LButton)<>0 then begin
+    if (TheMessage.Keys and MK_LButton) <> 0 then
+    begin
       Include(Shift,ssLeft);
       Button:=mbLeft;
+    end;
+    if (TheMessage.Keys and MK_XBUTTON1) <> 0 then
+    begin
+      Include(Shift,ssExtra1);
+      Button:=mbExtra1;
+    end;
+    if (TheMessage.Keys and MK_XBUTTON2) <> 0 then
+    begin
+      Include(Shift,ssExtra2);
+      Button:=mbExtra2;
     end;
   end;
 
   case TheMessage.Msg of
-  LM_LBUTTONDBLCLK,LM_MBUTTONDBLCLK,LM_RBUTTONDBLCLK:
+  LM_LBUTTONDBLCLK,LM_MBUTTONDBLCLK,LM_RBUTTONDBLCLK,LM_XBUTTONDBLCLK:
     Include(Shift,ssDouble);
-  LM_LBUTTONTRIPLECLK,LM_MBUTTONTRIPLECLK,LM_RBUTTONTRIPLECLK:
+  LM_LBUTTONTRIPLECLK,LM_MBUTTONTRIPLECLK,LM_RBUTTONTRIPLECLK,LM_XBUTTONTRIPLECLK:
     Include(Shift,ssTriple);
-  LM_LBUTTONQUADCLK,LM_MBUTTONQUADCLK,LM_RBUTTONQUADCLK:
+  LM_LBUTTONQUADCLK,LM_MBUTTONQUADCLK,LM_RBUTTONQUADCLK,LM_XBUTTONQUADCLK:
     Include(Shift,ssQuad);
   end;
 end;
@@ -1333,24 +1536,26 @@ begin
   end;
 end;
 
-function TDesigner.SizeControl(Sender: TControl; TheMessage: TLMSize):boolean;
+function TDesigner.SizeControl(Sender: TControl; TheMessage: TLMSize): Boolean;
 begin
-  Result:=true;
+  Result := True;
   Sender.Dispatch(TheMessage);
-  if ControlSelection.SelectionForm=Form then begin
-    ControlSelection.CheckForLCLChanges(true);
+  if ControlSelection.SelectionForm = Form then
+  begin
+    ControlSelection.CheckForLCLChanges(True);
   end;
 end;
 
-function TDesigner.MoveControl(Sender: TControl; TheMessage: TLMMove):boolean;
+function TDesigner.MoveControl(Sender: TControl; TheMessage: TLMMove): Boolean;
 begin
-  Result:=true;
+  Result := True;
   Sender.Dispatch(TheMessage);
   //debugln('***  TDesigner.MoveControl A ',Sender.Name,':',Sender.ClassName,' ',ControlSelection.SelectionForm=Form,' ',not ControlSelection.IsResizing,' ',ControlSelection.IsSelected(Sender));
-  if ControlSelection.SelectionForm=Form then begin
-    if (not ControlSelection.CheckForLCLChanges(true))
-    and (Sender=Form)
-    and ControlSelection.LookupRootSelected then begin
+  if ControlSelection.SelectionForm = Form then
+  begin
+    if not ControlSelection.CheckForLCLChanges(True) and (Sender = Form) and
+       ControlSelection.LookupRootSelected then
+    begin
       // the selected form was moved (nothing else has changed)
       // ControlSelection does not need an update, but properties like
       // Form.Left/Top have to be updated in the OI
@@ -1372,6 +1577,8 @@ var
   Handled: Boolean;
 begin
   FHintTimer.Enabled := False;
+  FHintWindow.Visible := False;
+
   Exclude(FFLags, dfHasSized);
   SetCaptureControl(nil);
   DesignSender := GetDesignControl(Sender);
@@ -1488,7 +1695,10 @@ begin
     end;
   end else begin
     // not left button
-    ControlSelection.ActiveGrabber:=nil;
+    ControlSelection.ActiveGrabber := nil;
+    if (Button = mbRight) and EnvironmentOptions.RightClickSelects and
+       (ControlSelection.SelectionForm <> Form) then
+      ControlSelection.AssignPersistent(MouseDownComponent);
   end;
 
   if not ControlSelection.OnlyVisualComponentsSelected and ShowComponentCaptions then
@@ -1496,7 +1706,7 @@ begin
   {$IFDEF VerboseDesigner}
   DebugLn('[TDesigner.MouseDownOnControl] END');
   {$ENDIF}
-End;
+end;
 
 procedure TDesigner.MouseUpOnControl(Sender : TControl;
   var TheMessage:TLMMouse);
@@ -1706,8 +1916,10 @@ var
 
 var
   Handled: Boolean;
-Begin
+begin
   FHintTimer.Enabled := False;
+  FHintWindow.Visible := False;
+
   SetCaptureControl(nil);
 
   // check if the message is for the designed form
@@ -1779,12 +1991,13 @@ Begin
   DisableRubberBand;
 
   LastMouseMovePos.X:=-1;
+  if (not ControlSelection.OnlyVisualComponentsSelected and ShowComponentCaptions) or
+     (dfHasSized in FFlags) then
+    Form.Invalidate;
   Exclude(FFlags,dfHasSized);
 
   MouseDownComponent:=nil;
   MouseDownSender:=nil;
-  if not ControlSelection.OnlyVisualComponentsSelected and ShowComponentCaptions then
-    Form.Invalidate;
   {$IFDEF VerboseDesigner}
   DebugLn('[TDesigner.MouseLeftUpOnControl] END');
   {$ENDIF}
@@ -1804,111 +2017,114 @@ var
   DesignSender: TControl;
   Handled: Boolean;
 begin
-  GetMouseMsgShift(TheMessage,Shift,Button);
+  GetMouseMsgShift(TheMessage, Shift, Button);
 
-  if [dfShowEditorHints]*FFlags<>[] then begin
+  if [dfShowEditorHints] * FFlags <> [] then
+  begin
     FHintTimer.Enabled := False;
-
     // hide hint
-    FHintTimer.Enabled := Shift*[ssLeft,ssRight,ssMiddle]=[];
-    if FHintWindow.Visible then
+    FHintTimer.Enabled := Shift * [ssLeft, ssRight, ssMiddle] = [];
+    if not (dfHasSized in FFlags) then
       FHintWindow.Visible := False;
   end;
 
-  DesignSender:=GetDesignControl(Sender);
+  DesignSender := GetDesignControl(Sender);
   //DebugLn('TDesigner.MouseMoveOnControl Sender=',dbgsName(Sender),' ',dbgsName(DesignSender));
-  SenderParentForm:=GetParentForm(DesignSender);
-  if (SenderParentForm = nil) or (SenderParentForm <> Form) then exit;
+  SenderParentForm := GetParentForm(DesignSender);
+  if (SenderParentForm = nil) or (SenderParentForm <> Form) then Exit;
 
-  OldMouseMovePos:= LastMouseMovePos;
-  LastMouseMovePos:= GetFormRelativeMousePosition(Form);
-  if (OldMouseMovePos.X=LastMouseMovePos.X)
-  and (OldMouseMovePos.Y=LastMouseMovePos.Y) then exit;
+  OldMouseMovePos := LastMouseMovePos;
+  LastMouseMovePos := GetFormRelativeMousePosition(Form);
+  if (OldMouseMovePos.X = LastMouseMovePos.X) and (OldMouseMovePos.Y = LastMouseMovePos.Y) then
+    Exit;
 
-  if Mediator<>nil then begin
-    Handled:=false;
-    Mediator.MouseMove(Shift,LastMouseMovePos,Handled);
-    if Handled then exit;
+  if Mediator <> nil then
+  begin
+    Handled := False;
+    Mediator.MouseMove(Shift, LastMouseMovePos, Handled);
+    if Handled then Exit;
   end;
 
-  if ControlSelection.SelectionForm=Form then
-    Grabber:=ControlSelection.GrabberAtPos(
-                         LastMouseMovePos.X, LastMouseMovePos.Y)
+  if ControlSelection.SelectionForm = Form then
+    Grabber := ControlSelection.GrabberAtPos(LastMouseMovePos.X, LastMouseMovePos.Y)
   else
-    Grabber:=nil;
+    Grabber := nil;
 
-  if MouseDownComponent=nil then begin
+  if MouseDownComponent = nil then
+  begin
     if Grabber = nil then
-      ACursor:= crDefault
+      ACursor := crDefault
     else begin
-      ACursor:= Grabber.Cursor;
+      ACursor := Grabber.Cursor;
     end;
-    if ACursor<>LastFormCursor then begin
-      LastFormCursor:=ACursor;
-      Form.SetTempCursor(ACursor);
+    if ACursor <> LastFormCursor then
+    begin
+      LastFormCursor := ACursor;
+      SetTempCursor(Form, ACursor);
     end;
-
-    exit;
+    Exit;
   end;
 
-  if (ControlSelection.SelectionForm=nil)
-  or (ControlSelection.SelectionForm=Form)
-  then begin
-    if Button=mbLeft then begin
-      // left button pressed
-      if (ControlSelection.ActiveGrabber<>nil) then begin
+  if (ControlSelection.SelectionForm = nil) or (ControlSelection.SelectionForm = Form) then
+  begin
+    if Button = mbLeft then // left button pressed
+    begin
+      if (ControlSelection.ActiveGrabber <> nil) then // grabber active => resizing
+      begin
         // grabber moving -> size selection
-        if not (dfHasSized in FFlags) then begin
-          ControlSelection.SaveBounds;
-          Include(FFlags,dfHasSized);
-        end;
-        OldSnappedMousePos:=
-          ControlSelection.SnapGrabberMousePos(OldMouseMovePos);
-        CurSnappedMousePos:=
-          ControlSelection.SnapGrabberMousePos(LastMouseMovePos);
-        ControlSelection.SizeSelection(
-          CurSnappedMousePos.X-OldSnappedMousePos.X,
-          CurSnappedMousePos.Y-OldSnappedMousePos.Y);
-        if Assigned(OnModified) then OnModified(Self);
-      end else begin
-        // no grabber active
-        SelectedCompClass:=GetSelectedComponentClass;
-        if (not ControlSelection.RubberBandActive)
-        and (SelectedCompClass=nil)
-        and (Shift=[ssLeft])
-        and (ControlSelection.Count>=1)
-        and (not ControlSelection.LookupRootSelected)
-        then begin
-          // move selection
-          if not (dfHasSized in FFlags) then begin
+        if not ControlSelection.LookupRootSelected then // if not current form is selected then resize selection
+        begin
+          if not (dfHasSized in FFlags) then
+          begin
             ControlSelection.SaveBounds;
-            Include(FFlags,dfHasSized);
+            Include(FFlags, dfHasSized);
+          end;
+          OldSnappedMousePos := ControlSelection.SnapGrabberMousePos(OldMouseMovePos);
+          CurSnappedMousePos:= ControlSelection.SnapGrabberMousePos(LastMouseMovePos);
+          ControlSelection.SizeSelection(
+            CurSnappedMousePos.X - OldSnappedMousePos.X,
+            CurSnappedMousePos.Y - OldSnappedMousePos.Y);
+          DoModified;
+        end;
+      end
+      else
+      begin // no grabber active => moving
+        SelectedCompClass := GetSelectedComponentClass;
+        if (not ControlSelection.RubberBandActive) and
+           (SelectedCompClass=nil) and
+           (Shift=[ssLeft]) and
+           (ControlSelection.Count>=1) and
+           (not ControlSelection.LookupRootSelected) then
+        begin // move selection
+          if not (dfHasSized in FFlags) then
+          begin
+            ControlSelection.SaveBounds;
+            Include(FFlags, dfHasSized);
           end;
           //debugln('TDesigner.MouseMoveOnControl Move MouseDownComponent=',dbgsName(MouseDownComponent),' OldMouseMovePos=',dbgs(OldMouseMovePos),' MouseMovePos',dbgs(LastMouseMovePos),' MouseDownPos=',dbgs(MouseDownPos));
           if ControlSelection.MoveSelectionWithSnapping(
-            LastMouseMovePos.X-MouseDownPos.X,LastMouseMovePos.Y-MouseDownPos.Y)
-          then begin
-            if Assigned(OnModified) then OnModified(Self);
-          end;
+              LastMouseMovePos.X - MouseDownPos.X,
+              LastMouseMovePos.Y - MouseDownPos.Y) then
+            DoModified;
         end
         else
         begin
           // rubberband sizing (selection or creation)
-          ControlSelection.RubberBandBounds:=Rect(MouseDownPos.X,MouseDownPos.Y,
-                                                  LastMouseMovePos.X,
-                                                  LastMouseMovePos.Y);
-          if SelectedCompClass=nil then
-            ControlSelection.RubberbandType:=rbtSelection
+          ControlSelection.RubberBandBounds := Rect(MouseDownPos.X, MouseDownPos.Y,
+                                                    LastMouseMovePos.X, LastMouseMovePos.Y);
+          if SelectedCompClass = nil then
+            ControlSelection.RubberbandType := rbtSelection
           else
-            ControlSelection.RubberbandType:=rbtCreating;
-          ControlSelection.RubberBandActive:=true;
+            ControlSelection.RubberbandType := rbtCreating;
+          ControlSelection.RubberBandActive := True;
         end;
       end;
     end
-    else begin
+    else
       ControlSelection.ActiveGrabber:=nil;
-    end;
   end;
+  if [dfShowEditorHints, dfHasSized] * FFlags = [dfShowEditorHints, dfHasSized] then
+    HintTimer(Self);
 end;
 
 
@@ -1938,7 +2154,10 @@ var
     end
     else
     if (ssShift in Shift) then
-      NudgeSize(x, y);
+      NudgeSize(x, y)
+    else
+    if (Shift = []) then
+      NudgeSelection(x, y);
   end;
 
 begin
@@ -1979,13 +2198,28 @@ begin
       VK_LEFT:
         Nudge(-1,0);
 
+      VK_TAB:
+        if Shift = [ssShift] then
+          NudgeSelection(False)
+        else
+        if Shift = [] then
+          NudgeSelection(True)
+        else
+          Handled := False;
+
+      VK_RETURN:
+        if Shift = [] then
+          DoShowObjectInspector
+        else
+          Handled := False;
+
       VK_A:
         if Shift = [ssCtrl] then
           DoSelectAll
         else
           Handled := False;
       else
-        Handled:=false;
+        Handled := False;
     end;
   end;
 
@@ -2197,7 +2431,7 @@ end;
 procedure TDesigner.Modified;
 Begin
   ControlSelection.SaveBounds;
-  if Assigned(FOnModified) then FOnModified(Self);
+  DoModified;
 end;
 
 Procedure TDesigner.RemovePersistentAndChilds(APersistent: TPersistent);
@@ -2307,10 +2541,14 @@ begin
       DrawGrid(ADDC.Canvas.Handle, AWinControl.ClientRect, GridSizeX, GridSizeY);
     end;
     
-    if ShowBorderSpacing then begin
-      aDDC.Canvas.Brush.Color:=clRed;
-      for i:=0 to Count-1 do begin
-        CurControl:=AWinControl.Controls[i];
+    if ShowBorderSpacing then
+    begin
+      aDDC.Canvas.Brush.Color := clRed;
+      for i := 0 to Count - 1 do
+      begin
+        CurControl := AWinControl.Controls[i];
+        if csNoDesignSelectable in CurControl.ControlStyle then
+          Continue;
         aDDC.Canvas.FrameRect(
           CurControl.Left-CurControl.BorderSpacing.GetSpace(akLeft),
           CurControl.Top-CurControl.BorderSpacing.GetSpace(akTop),
@@ -2586,13 +2824,14 @@ end;
 procedure TDesigner.DrawNonVisualComponents(aDDC: TDesignerDeviceContext);
 var
   AComponent: TComponent;
-  Icon: TBitmap;
+  Icon, Surface: TBitmap;
   i, ItemLeft, ItemTop, ItemRight, ItemBottom: integer;
   Diff, ItemLeftTop: TPoint;
   IconRect, TextRect: TRect;
   TextSize: TSize;
   IsSelected: Boolean;
 begin
+  Surface := nil;
   for i := 0 to FLookupRoot.ComponentCount - 1 do
   begin
     AComponent := FLookupRoot.Components[i];
@@ -2611,17 +2850,20 @@ begin
 
       IsSelected := ControlSelection.IsSelected(AComponent);
       aDDC.Save;
-      with aDDC.Canvas do 
+      if Surface = nil then
       begin
-        // draw component frame
-        Pen.Width := 1;
-        IconRect := Rect(ItemLeft, ItemTop, ItemRight, ItemBottom);
-        Frame3D(IconRect, 1, bvRaised);
-        Brush.Color := clBtnFace;
-        FillRect(IconRect);
-        if NonVisualCompBorder > 1 then
-          InflateRect(IconRect, -NonVisualCompBorder + 1, -NonVisualCompBorder + 1);
+        Surface := TBitmap.Create;
+        Surface.SetSize(NonVisualCompWidth, NonVisualCompWidth);
+        Surface.Canvas.Brush.Color := clBtnFace;
+        Surface.Canvas.Pen.Width := 1;
       end;
+
+      IconRect := Rect(0, 0, NonVisualCompWidth, NonVisualCompWidth);
+      Surface.Canvas.Frame3D(IconRect, 1, bvRaised);
+      Surface.Canvas.FillRect(IconRect);
+      if NonVisualCompBorder > 1 then
+        InflateRect(IconRect, -NonVisualCompBorder + 1, -NonVisualCompBorder + 1);
+
       // draw component Name
       if ShowComponentCaptions and (((GetKeyState(VK_LBUTTON) and $80) = 0) or not IsSelected) then
       begin
@@ -2638,8 +2880,8 @@ begin
           DrawText(Icon.Canvas.Handle, PChar(AComponent.Name), -1, TextRect,
             DT_CENTER or DT_VCENTER or DT_SINGLELINE or DT_NOCLIP);
           aDDC.Canvas.Draw(
-            (IconRect.Left + IconRect.Right - TextSize.cx) div 2,
-            IconRect.Bottom + NonVisualCompBorder + 2, Icon);
+            (ItemLeft + ItemRight - TextSize.cx) div 2,
+            ItemBottom + NonVisualCompBorder + 2, Icon);
         finally
           Icon.Free;
         end;
@@ -2655,15 +2897,18 @@ begin
           inc(IconRect.Top, (NonVisualCompIconWidth - Icon.Height) div 2);
           IconRect.Right := IconRect.Left + Icon.Width;
           IconRect.Bottom := IconRect.Top + Icon.Height;
-          aDDC.Canvas.StretchDraw(IconRect, Icon);
+          Surface.Canvas.StretchDraw(IconRect, Icon);
         end;
       end;
+      aDDC.Canvas.Draw(ItemLeft, ItemTop, Surface);
       if (ControlSelection.Count > 1) and IsSelected then
         ControlSelection.DrawMarkerAt(aDDC,
           ItemLeft, ItemTop, NonVisualCompWidth, NonVisualCompWidth);
       aDDC.Restore;
     end;
   end;
+  if Surface <> nil then
+    Surface.Free;
 end;
 
 procedure TDesigner.DrawDesignerItems(OnlyIfNeeded: boolean);
@@ -2743,8 +2988,7 @@ begin
     Result:=Mediator.ComponentIsIcon(AComponent);
 end;
 
-function TDesigner.GetParentFormRelativeClientOrigin(AComponent: TComponent
-  ): TPoint;
+function TDesigner.GetParentFormRelativeClientOrigin(AComponent: TComponent): TPoint;
 var
   CurClientArea: TRect;
   ScrollOffset: TPoint;
@@ -2923,6 +3167,25 @@ begin
   if (Result = nil) and UseRootAsDefault and (FLookupRoot.InheritsFrom(AClass))
   then
     Result := LookupRoot;
+end;
+
+procedure TDesigner.SetTempCursor(ARoot: TWinControl; ACursor: TCursor);
+
+  procedure Traverse(ARoot: TWinControl);
+  var
+    i: integer;
+  begin
+    for i := 0 to ARoot.ControlCount - 1 do
+    begin
+      ARoot.Controls[i].SetTempCursor(ACursor);
+      if ARoot.Controls[i] is TWinControl then
+        Traverse(TWinControl(ARoot.Controls[i]));
+    end;
+  end;
+
+begin
+  Traverse(ARoot);
+  ARoot.SetTempCursor(ACursor);
 end;
 
 function TDesigner.WinControlAtPos(x, y: integer; UseRootAsDefault,
@@ -3206,12 +3469,84 @@ begin
   DoOrderBackSelectionOne;
 end;
 
-Procedure TDesigner.HintTimer(Sender: TObject);
+procedure TDesigner.HintTimer(Sender: TObject);
+
+  function GetComponentHintText(AComponent: TComponent): String;
+  const
+    HintNameStr = '%s: %s';
+    HintPositionStr = 'Position: %d, %d';
+    HintSizeStr = 'Size: %d x %d';
+    HintTabStr = 'TabStop: %s; TabOrder: %d';
+  var
+    AControl: TControl absolute AComponent;
+    AWinControl: TWinControl absolute AComponent;
+  begin
+    // component name and classname
+    Result := Format(HintNameStr, [AComponent.Name, AComponent.ClassName]);
+    // component position
+    Result := Result + LineEnding + Format(HintPositionStr, [GetComponentLeft(AComponent), GetComponentTop(AComponent)]);
+    if AComponent is TControl then // more info for controls
+    begin
+      // size
+      Result := Result + '; ' + Format(HintSizeStr, [AControl.Width, AControl.Height]);
+      // and TabStop, TabOrder for TWinControl
+      if (AComponent is TWinControl) and not (AComponent = Form) then
+        Result := Result + LineEnding + Format(HintTabStr, [BoolToStr(AWinControl.TabStop, True), AWinControl.TabOrder]);
+    end;
+  end;
+
+  function GetSelectionSizeHintText: String;
+  begin
+    Result := Format('%d x %d', [ControlSelection.Width, ControlSelection.Height]);
+  end;
+
+  function GetSelectionPosHintText: String;
+
+    function ParentComponent(AComponent: TComponent): TComponent;
+    begin
+      Result := AComponent.GetParentComponent;
+      if (Result = nil) and ComponentIsIcon(AComponent) then
+        Result := AComponent.Owner;
+    end;
+
+  var
+    BaseParent, TestParent: TComponent;
+    BaseFound: Boolean;
+    i: integer;
+    P: TPoint;
+  begin
+    BaseFound := ControlSelection[0].IsTComponent;
+    // search for one parent of our selection
+    if BaseFound then
+    begin
+      BaseParent := ParentComponent(TComponent(ControlSelection[0].Persistent));
+      BaseFound := BaseParent is TWinControl;
+      if BaseFound then
+      begin
+        for i := 1 to ControlSelection.Count - 1 do
+        begin
+          if ControlSelection[0].IsTComponent then
+            TestParent := ParentComponent(TComponent(ControlSelection[0].Persistent))
+          else
+            TestParent := nil;
+          if TestParent <> BaseParent then
+          begin
+            BaseFound := False;
+            Break;
+          end;
+        end;
+      end;
+    end;
+    P := Point(ControlSelection.Left, ControlSelection.Top);
+    if BaseFound then
+      P := TWinControl(BaseParent).ScreenToClient(Form.ClientToScreen(P));
+    Result := Format('%d, %d', [P.X, P.Y]);
+  end;
+
 var
-  Rect : TRect;
-  AHint : String;
-  AControl : TControl;
-  Position, ClientPos : TPoint;
+  Rect: TRect;
+  AHint: String;
+  Position, ClientPos: TPoint;
   AWinControl: TWinControl;
   AComponent: TComponent;
 begin
@@ -3219,47 +3554,45 @@ begin
   if [dfShowEditorHints]*FFlags=[] then exit;
 
   Position := Mouse.CursorPos;
-  AWinControl := FindLCLWindow(Position);
-  if not (Assigned(AWinControl)) then Exit;
-  if GetDesignerForm(AWinControl)<>Form then exit;
+  if not (dfHasSized in FFlags) then
+  begin
+    AWinControl := FindLCLWindow(Position);
+    if not (Assigned(AWinControl)) then Exit;
+    if GetDesignerForm(AWinControl) <> Form then exit;
 
-  // first search a non visual component at the position
-  ClientPos:=Form.ScreenToClient(Position);
-  AComponent:=NonVisualComponentAtPos(ClientPos.X,ClientPos.Y);
-  if AComponent=nil then begin
-    // then search a control at the position
-    AComponent := ComponentAtPos(ClientPos.X,ClientPos.Y,true,true);
-    if not Assigned(AComponent) then
-      AComponent := AWinControl;
-  end;
-  AComponent:=GetDesignedComponent(AComponent);
-  if AComponent=nil then exit;
-
-  // create a nice hint:
-
-  // component position
-  if (dfShowEditorHints in FFlags) then begin
-    // component name and classname
-    AHint := AComponent.Name+': '+AComponent.ClassName+#10;
-    if AComponent is TControl then begin
-      AControl:=TControl(AComponent);
-      AHint := AHint + 'Left: '+IntToStr(AControl.Left)
-                     + '  Top: '+IntToStr(AControl.Top)
-                + #10+ 'Width: '+IntToStr(AControl.Width)
-                     + '  Height: '+IntToStr(AControl.Height);
-    end else begin
-      AHint := AHint + 'Left: '+IntToStr(GetComponentLeft(AComponent))
-                     + '  Top: '+IntToStr(GetComponentTop(AComponent));
+    // first search a non visual component at the position
+    ClientPos := Form.ScreenToClient(Position);
+    AComponent := NonVisualComponentAtPos(ClientPos.X, ClientPos.Y);
+    if AComponent = nil then
+    begin
+      // then search a control at the position
+      AComponent := ComponentAtPos(ClientPos.X,ClientPos.Y,true,true);
+      if not Assigned(AComponent) then
+        AComponent := AWinControl;
     end;
+    AComponent := GetDesignedComponent(AComponent);
+    if AComponent = nil then exit;
+    AHint := GetComponentHintText(AComponent);
+  end
+  else
+  begin
+    // components are either resize or move
+    if (ControlSelection.LookupRoot <> Form) or (ControlSelection.Count = 0) then
+      Exit;
+
+    if ControlSelection.ActiveGrabber <> nil then
+      AHint := GetSelectionSizeHintText
+    else
+      AHint := GetSelectionPosHintText;
   end;
 
-  Rect := FHintWindow.CalcHintRect(0,AHint,nil);  //no maxwidth
-  Rect.Left := Position.X+10;
-  Rect.Top := Position.Y+5;
+  Rect := FHintWindow.CalcHintRect(0, AHint, nil);  //no maxwidth
+  Rect.Left := Position.X + 15;
+  Rect.Top := Position.Y + 15;
   Rect.Right := Rect.Left + Rect.Right;
   Rect.Bottom := Rect.Top + Rect.Bottom;
 
-  FHintWindow.ActivateHint(Rect,AHint);
+  FHintWindow.ActivateHint(Rect, AHint);
 end;
 
 procedure TDesigner.SetSnapToGrid(const AValue: boolean);

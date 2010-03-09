@@ -454,6 +454,7 @@ type
                                  AComponent: TComponent; const NewName: string);
     procedure OnDesignerViewLFM(Sender: TObject);
     procedure OnDesignerSaveAsXML(Sender: TObject);
+    procedure OnDesignerShowObjectInspector(Sender: TObject);
 
     // control selection
     procedure OnControlSelectionChanged(Sender: TObject; ForceUpdate: Boolean);
@@ -666,6 +667,7 @@ type
     procedure OnProjectGetTestDirectory(TheProject: TProject;
                                         out TestDir: string);
     procedure OnProjectChangeInfoFile(TheProject: TProject);
+    procedure OnSaveProjectUnitSessionInfo(AUnitInfo: TUnitInfo);
 
     // methods for 'save project'
     procedure GetMainUnit(var MainUnitInfo: TUnitInfo;
@@ -3160,6 +3162,7 @@ begin
     OnComponentAdded:=@OnDesignerComponentAdded;
     OnViewLFM:=@OnDesignerViewLFM;
     OnSaveAsXML:=@OnDesignerSaveAsXML;
+    OnShowObjectInspector:=@OnDesignerShowObjectInspector;
     ShowEditorHints:=EnvironmentOptions.ShowEditorHints;
     ShowComponentCaptions := EnvironmentOptions.ShowComponentCaptions;
   end;
@@ -5520,10 +5523,13 @@ begin
 end;
 
 function TMainIDE.DoLoadLFM(AnUnitInfo: TUnitInfo; LFMBuf: TCodeBuffer;
-  OpenFlags: TOpenFlags; CloseFlags: TCloseFlags
-  ): TModalResult;
+  OpenFlags: TOpenFlags; CloseFlags: TCloseFlags): TModalResult;
 const
   BufSize = 4096; // allocating mem in 4k chunks helps many mem managers
+
+  ShowCommands: array[TWindowState] of Integer =
+    (SW_SHOWNORMAL, SW_MINIMIZE, SW_SHOWMAXIMIZED);
+
 var
   TxtLFMStream, BinStream: TExtMemoryStream;
   NewComponent: TComponent;
@@ -5732,27 +5738,29 @@ begin
   {$ENDIF}
   AnUnitInfo.ComponentName:=NewComponent.Name;
   AnUnitInfo.ComponentResourceName:=AnUnitInfo.ComponentName;
-  DesignerForm:=nil;
-  if not (ofLoadHiddenResource in OpenFlags) then begin
+  DesignerForm := nil;
+  if not (ofLoadHiddenResource in OpenFlags) then
+  begin
     CreateDesignerForComponent(NewComponent);
-    DesignerForm:=FormEditor1.GetDesignerForm(NewComponent);
+    DesignerForm := FormEditor1.GetDesignerForm(NewComponent);
   end;
 
   // select the new form (object inspector, formeditor, control selection)
-  if ([ofProjectLoading,ofLoadHiddenResource]*OpenFlags=[]) then begin
-    FDisplayState:=dsForm;
-    GlobalDesignHook.LookupRoot:=NewComponent;
+  if ([ofProjectLoading,ofLoadHiddenResource] * OpenFlags=[]) then
+  begin
+    FDisplayState := dsForm;
+    GlobalDesignHook.LookupRoot := NewComponent;
     TheControlSelection.AssignPersistent(NewComponent);
   end;
 
   // show new form
-  if DesignerForm<>nil then begin
-    DesignerForm.ControlStyle:=DesignerForm.ControlStyle-[csNoDesignVisible];
+  if DesignerForm <> nil then
+  begin
+    DesignerForm.ControlStyle := DesignerForm.ControlStyle - [csNoDesignVisible];
     if NewComponent is TControl then
-      TControl(NewComponent).ControlStyle:=
-                        TControl(NewComponent).ControlStyle-[csNoDesignVisible];
-    LCLIntf.ShowWindow(DesignerForm.Handle,SW_SHOWNORMAL);
-    FLastFormActivated:=DesignerForm;
+      TControl(NewComponent).ControlStyle:= TControl(NewComponent).ControlStyle - [csNoDesignVisible];
+    LCLIntf.ShowWindow(DesignerForm.Handle, ShowCommands[AnUnitInfo.ComponentState]);
+    FLastFormActivated := DesignerForm;
   end;
 
   {$IFDEF IDE_DEBUG}
@@ -6569,8 +6577,32 @@ begin
   Result.OnFileBackup:=@MainBuildBoss.BackupFile;
   Result.OnLoadProjectInfo:=@OnLoadProjectInfoFromXMLConfig;
   Result.OnSaveProjectInfo:=@OnSaveProjectInfoToXMLConfig;
+  Result.OnSaveUnitSessionInfo:=@OnSaveProjectUnitSessionInfo;
   Result.OnGetTestDirectory:=@OnProjectGetTestDirectory;
   Result.OnChangeProjectInfoFile:=@OnProjectChangeInfoFile;
+end;
+
+procedure TMainIDE.OnSaveProjectUnitSessionInfo(AUnitInfo: TUnitInfo);
+
+  function GetWindowState(ACustomForm: TCustomForm): TWindowState;
+  begin
+    Result := wsNormal;
+    if ACustomForm.HandleAllocated then
+      if IsIconic(ACustomForm.Handle) then
+        Result := wsMinimized
+      else
+      if IsZoomed(ACustomForm.Handle) then
+        Result := wsMaximized;
+  end;
+var
+  DesignerForm: TCustomForm;
+begin
+  if (AUnitInfo.Component <> nil) then
+  begin
+    DesignerForm := FormEditor1.GetDesignerForm(AUnitInfo.Component);
+    if DesignerForm <> nil then
+      AUnitInfo.ComponentState := GetWindowState(DesignerForm);
+  end;
 end;
 
 procedure TMainIDE.OnLoadProjectInfoFromXMLConfig(TheProject: TProject;
@@ -11190,6 +11222,7 @@ procedure TMainIDE.DoBringToFrontFormOrInspector(ForceInspector: boolean);
   begin
     if ObjectInspector1=nil then exit;
     ObjectInspector1.ShowOnTop;
+    ObjectInspector1.FocusGrid;
     if FDisplayState <> high(TDisplayState) then
       FDisplayState:= Succ(FDisplayState);
   end;
@@ -13932,6 +13965,11 @@ begin
       MessageDlg('Error',E.Message,mtError,[mbCancel],0);
     end;
   end;
+end;
+
+procedure TMainIDE.OnDesignerShowObjectInspector(Sender: TObject);
+begin
+  DoBringToFrontFormOrInspector(True);
 end;
 
 Procedure TMainIDE.OnSrcNoteBookAddJumpPoint(ACaretXY: TPoint;

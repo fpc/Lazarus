@@ -11,7 +11,7 @@ object ComponentListForm: TComponentListForm
   OnKeyDown = FormKeyDown
   OnShow = FormShow
   Position = poScreenCenter
-  LCLVersion = '0.9.27'
+  LCLVersion = '0.9.29'
   object PageControl: TPageControl
     AnchorSideLeft.Control = Owner
     AnchorSideTop.Control = Panel3
@@ -20,98 +20,100 @@ object ComponentListForm: TComponentListForm
     AnchorSideRight.Side = asrBottom
     AnchorSideBottom.Control = ButtonPanel
     Left = 6
-    Height = 463
-    Top = 41
+    Height = 471
+    Top = 39
     Width = 212
-    ActivePage = TabSheetInheritance
+    ActivePage = TabSheetListBox
     Anchors = [akTop, akLeft, akRight, akBottom]
     BorderSpacing.Around = 6
-    TabIndex = 2
+    TabIndex = 0
     TabOrder = 0
     object TabSheetListBox: TTabSheet
       Caption = 'List'
-      ClientHeight = 436
-      ClientWidth = 210
+      ClientHeight = 445
+      ClientWidth = 204
       object Panel7: TPanel
         Left = 0
-        Height = 436
+        Height = 445
         Top = 0
-        Width = 210
+        Width = 204
         Align = alClient
         BevelOuter = bvNone
         BorderWidth = 5
-        ClientHeight = 436
-        ClientWidth = 210
+        ClientHeight = 445
+        ClientWidth = 204
         TabOrder = 0
         object ListboxComponents: TListBox
           Left = 5
-          Height = 426
+          Height = 435
           Top = 5
-          Width = 200
+          Width = 194
           Align = alClient
           ItemHeight = 0
           OnDblClick = ListboxComponentsDblClick
+          OnKeyDown = ListboxComponentsKeyDown
           Sorted = True
           TabOrder = 0
-          TopIndex = -1
         end
       end
     end
     object TabSheetPaletteTree: TTabSheet
       Caption = 'Palette'
-      ClientHeight = 436
-      ClientWidth = 210
+      ClientHeight = 445
+      ClientWidth = 204
       object Panel5: TPanel
         Left = 0
-        Height = 436
+        Height = 445
         Top = 0
-        Width = 210
+        Width = 204
         Align = alClient
         BevelOuter = bvNone
         BorderWidth = 5
-        ClientHeight = 436
-        ClientWidth = 210
+        ClientHeight = 445
+        ClientWidth = 204
         TabOrder = 0
         object TreePallette: TTreeView
           Left = 5
-          Height = 426
+          Height = 435
           Top = 5
-          Width = 200
+          Width = 194
           Align = alClient
-          DefaultItemHeight = 19
+          DefaultItemHeight = 15
           ReadOnly = True
           ShowLines = False
           TabOrder = 0
           OnDblClick = TreePalletteDblClick
+          OnKeyDown = TreePalletteKeyDown
           Options = [tvoAutoItemHeight, tvoHideSelection, tvoKeepCollapsedNodes, tvoReadOnly, tvoShowButtons, tvoShowRoot, tvoToolTips, tvoNoDoubleClickExpand]
         end
       end
     end
     object TabSheetInheritance: TTabSheet
       Caption = 'Inheritance'
-      ClientHeight = 436
-      ClientWidth = 210
+      ClientHeight = 445
+      ClientWidth = 204
       object Panel6: TPanel
         Left = 0
-        Height = 436
+        Height = 445
         Top = 0
-        Width = 210
+        Width = 204
         Align = alClient
         BevelOuter = bvNone
         BorderWidth = 5
-        ClientHeight = 436
-        ClientWidth = 210
+        ClientHeight = 445
+        ClientWidth = 204
         TabOrder = 0
         object TreeInheritance: TTreeView
           Left = 5
-          Height = 426
+          Height = 435
           Top = 5
-          Width = 200
+          Width = 194
           Align = alClient
-          DefaultItemHeight = 19
+          DefaultItemHeight = 15
           ReadOnly = True
           TabOrder = 0
           OnDblClick = TreeInheritanceDblClick
+          OnKeyDown = TreeInheritanceKeyDown
           Options = [tvoAutoItemHeight, tvoHideSelection, tvoKeepCollapsedNodes, tvoReadOnly, tvoShowButtons, tvoShowLines, tvoShowRoot, tvoToolTips, tvoNoDoubleClickExpand]
         end
       end
@@ -123,14 +125,14 @@ object ComponentListForm: TComponentListForm
     AnchorSideRight.Control = Owner
     AnchorSideRight.Side = asrBottom
     Left = 0
-    Height = 35
+    Height = 33
     Top = 0
     Width = 224
     Anchors = [akTop, akLeft, akRight]
     AutoSize = True
     BevelOuter = bvNone
     BorderWidth = 8
-    ClientHeight = 35
+    ClientHeight = 33
     ClientWidth = 224
     TabOrder = 1
     object LabelSearch: TLabel
@@ -151,7 +153,7 @@ object ComponentListForm: TComponentListForm
       AnchorSideRight.Control = Panel3
       AnchorSideRight.Side = asrBottom
       Left = 71
-      Height = 23
+      Height = 21
       Top = 6
       Width = 147
       Anchors = [akTop, akLeft, akRight]
@@ -162,8 +164,8 @@ object ComponentListForm: TComponentListForm
   end
   object ButtonPanel: TButtonPanel
     Left = 6
-    Height = 40
-    Top = 510
+    Height = 34
+    Top = 516
     Width = 212
     TabOrder = 2
     ShowButtons = [pbClose]

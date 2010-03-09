@@ -49,7 +49,7 @@ uses
   MemCheck,
 {$ENDIF}
   Classes, SysUtils, TypInfo, FPCAdds, LCLProc, LCLIntf, LCLType, Forms,
-  Controls, Dialogs,
+  Controls, Dialogs, InterfaceBase,
   Laz_XMLCfg, ExprEval, FileUtil, DefineTemplates, CodeToolManager, CodeCache,
   // IDEIntf
   PropEdits, ProjectIntf, MacroIntf, LazIDEIntf,
@@ -57,7 +57,7 @@ uses
   CompOptsModes, ProjectResources, LazConf, frmCustomApplicationOptions,
   LazarusIDEStrConsts, CompilerOptions,
   TransferMacros, EditorOptions, IDEProcs, RunParamsOpts, ProjectDefs,
-  FileReferenceList, EditDefineTree, PackageDefs;
+  FileReferenceList, EditDefineTree, PackageDefs, PackageSystem;
 
 type
   TUnitInfo = class;
@@ -75,6 +75,8 @@ type
   TOnProjectGetTestDirectory = procedure(TheProject: TProject;
                                          out TestDir: string) of object;
   TOnChangeProjectInfoFile = procedure(TheProject: TProject) of object;
+
+  TOnSaveUnitSessionInfoInfo = procedure(AUnitInfo: TUnitInfo) of object;
                                  
   TUnitInfoList = (
     uilPartOfProject,
@@ -167,6 +169,7 @@ type
     fBookmarks: TFileBookmarks;
     FBuildFileIfActive: boolean;
     fComponent: TComponent;
+    FComponentState: TWindowState; // state of component when we save it
     FFoldState: String;
     FResourceBaseClass: TPFComponentBaseClass;
     fComponentName: string; { classname is always T<ComponentName>
@@ -321,6 +324,7 @@ type
     property ComponentName: string read fComponentName write fComponentName;
     property ComponentResourceName: string read fComponentResourceName
                                            write fComponentResourceName;
+    property ComponentState: TWindowState read FComponentState write FComponentState;
     property ResourceBaseClass: TPFComponentBaseClass read FResourceBaseClass
                                                       write FResourceBaseClass;
     property ComponentLastBinStreamSize: TStreamSeekType
@@ -418,6 +422,7 @@ type
     procedure CreateDiff(CompOpts: TBaseCompilerOptions;
                          Tool: TCompilerDiffTool); override;
     procedure InvalidateOptions;
+    function GetEffectiveLCLWidgetType: string; override;
   public
     property OwnerProject: TProject read FOwnerProject;
     property Project: TProject read FOwnerProject;
@@ -598,6 +603,7 @@ type
     FOnGetTestDirectory: TOnProjectGetTestDirectory;
     FOnLoadProjectInfo: TOnLoadProjectInfo;
     FOnSaveProjectInfo: TOnSaveProjectInfo;
+    FOnSaveUnitSessionInfo: TOnSaveUnitSessionInfoInfo;
     fPathDelimChanged: boolean; // PathDelim in system and current config differ (see StorePathDelim and SessionStorePathDelim)
     FPOOutputDirectory: string;
     fProjectDirectory: string;
@@ -787,7 +793,7 @@ type
     procedure ReaddRemovedDependency(Dependency: TPkgDependency);
     procedure MoveRequiredDependencyUp(Dependency: TPkgDependency);
     procedure MoveRequiredDependencyDown(Dependency: TPkgDependency);
-    function Requires(APackage: TLazPackage): boolean;
+    function Requires(APackage: TLazPackage; SearchRecursively: boolean): boolean;
     procedure GetAllRequiredPackages(var List: TFPList);
     procedure AddPackageDependency(const PackageName: string); override;
     
@@ -871,6 +877,8 @@ type
                                                    write FOnLoadProjectInfo;
     property OnSaveProjectInfo: TOnSaveProjectInfo read FOnSaveProjectInfo
                                                    write FOnSaveProjectInfo;
+    property OnSaveUnitSessionInfo: TOnSaveUnitSessionInfoInfo
+      read FOnSaveUnitSessionInfo write FOnSaveUnitSessionInfo;
     property POOutputDirectory: string read FPOOutputDirectory
                                        write SetPOOutputDirectory;
     property ProjectDirectory: string read fProjectDirectory;
@@ -1126,6 +1134,7 @@ begin
   fComponent := nil;
   fComponentName := '';
   fComponentResourceName := '';
+  FComponentState := wsNormal;
   fCursorPos.X := -1;
   fCursorPos.Y := -1;
   fCustomHighlighter := false;
@@ -1190,16 +1199,20 @@ end;
  ------------------------------------------------------------------------------}
 procedure TUnitInfo.SaveToXMLConfig(XMLConfig: TXMLConfig; const Path: string;
   SaveData, SaveSession: boolean; UsePathDelim: TPathDelimSwitch);
-var AFilename:string;
+var
+  AFilename: String;
 begin
   // global data
   AFilename:=Filename;
   if Assigned(fOnLoadSaveFilename) then
-    fOnLoadSaveFilename(AFilename,false);
+    fOnLoadSaveFilename(AFilename, False);
   XMLConfig.SetValue(Path+'Filename/Value',SwitchPathDelims(AFilename,UsePathDelim));
 
   if SaveData then
     XMLConfig.SetDeleteValue(Path+'IsPartOfProject/Value',IsPartOfProject,false);
+
+  if SaveSession and Assigned(Project.OnSaveUnitSessionInfo) then
+    Project.OnSaveUnitSessionInfo(Self);
 
   // context data (project/session)
   if (IsPartOfProject and SaveData)
@@ -1216,7 +1229,9 @@ begin
   end;
 
   // session data
-  if SaveSession then begin
+  if SaveSession then 
+  begin
+    XMLConfig.SetDeleteValue(Path+'ComponentState/Value',Ord(FComponentState),0);
     XMLConfig.SetDeleteValue(Path+'CursorPos/X',fCursorPos.X,-1);
     XMLConfig.SetDeleteValue(Path+'CursorPos/Y',fCursorPos.Y,-1);
     XMLConfig.SetDeleteValue(Path+'TopLine/Value',fTopLine,-1);
@@ -1256,6 +1271,7 @@ begin
     fComponentName:=XMLConfig.GetValue(Path+'ComponentName/Value','');
     if fComponentName='' then
       fComponentName:=XMLConfig.GetValue(Path+'FormName/Value','');
+    FComponentState := TWindowState(XMLConfig.GetValue(Path+'ComponentState/Value',0));
     HasResources:=XMLConfig.GetValue(Path+'HasResources/Value',false);
     FResourceBaseClass:=StrToComponentBaseClass(
                          XMLConfig.GetValue(Path+'ResourceBaseClass/Value',''));
@@ -3714,10 +3730,15 @@ begin
   EndUpdate;
 end;
 
-function TProject.Requires(APackage: TLazPackage): boolean;
+function TProject.Requires(APackage: TLazPackage; SearchRecursively: boolean
+  ): boolean;
 begin
-  Result:=FindCompatibleDependencyInList(FFirstRequiredDependency,pdlRequires,
-                                         APackage)<>nil;
+  if SearchRecursively then
+    Result:=PackageGraph.FindDependencyRecursively(FFirstRequiredDependency,
+                                                   APackage)<>nil
+  else
+    Result:=FindCompatibleDependencyInList(FFirstRequiredDependency,pdlRequires,
+                                           APackage)<>nil;
 end;
 
 procedure TProject.GetAllRequiredPackages(var List: TFPList);
@@ -4888,6 +4909,14 @@ procedure TProjectCompilerOptions.InvalidateOptions;
 begin
   if (Project=nil) then exit;
   // TODO: propagate change to all dependant projects
+end;
+
+function TProjectCompilerOptions.GetEffectiveLCLWidgetType: string;
+begin
+  if OwnerProject.Requires(PackageGraph.LCLPackage,true) then
+    Result:=inherited GetEffectiveLCLWidgetType
+  else
+    Result:=LCLPlatformDirNames[lpNoGUI];
 end;
 
 procedure TProjectCompilerOptions.UpdateGlobals;

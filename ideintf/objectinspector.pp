@@ -703,6 +703,7 @@ type
     function GetActivePropertyRow: TOIPropertyGridRow;
     function GetCurRowDefaultValue(var DefaultStr: string): boolean;
     procedure HookRefreshPropertyValues;
+    procedure FocusGrid;
 
     property AutoShow: Boolean read FAutoShow write FAutoShow;
     property DefaultItemHeight: integer read FDefaultItemHeight
@@ -4853,6 +4854,21 @@ end;
 procedure TObjectInspectorDlg.HookRefreshPropertyValues;
 begin
   RefreshPropertyValues;
+end;
+
+procedure TObjectInspectorDlg.FocusGrid;
+var
+  Grid: TOICustomPropertyGrid;
+  Index: Integer;
+begin
+  Grid := GetActivePropertyGrid;
+  if Grid <> nil then
+  begin
+    Index := Grid.ItemIndex;
+    if Index < 0 then
+      Index := 0;
+    Grid.SetItemIndexAndFocus(Index);
+  end;
 end;
 
 function TObjectInspectorDlg.GetGridControl(Page: TObjectInspectorPage
