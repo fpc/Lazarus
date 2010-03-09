@@ -1338,7 +1338,7 @@ begin
         lWinControl := WindowInfo^.WinControl;
       {$IFDEF MSG_DEBUG}
       with PDrawItemStruct(LParam)^ do
-        writeln(format('Received WM_DRAWITEM type %d handle %x', [ctlType, hwndItem]));
+        writeln(format('Received WM_DRAWITEM type %d handle %x', [ctlType, integer(hwndItem)]));
       {$ENDIF}
 
       if ((lWinControl is TCustomListbox) and

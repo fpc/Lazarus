@@ -1423,7 +1423,7 @@ begin
         lWinControl := WindowInfo^.WinControl;
       {$IFDEF MSG_DEBUG}
       with PDrawItemStruct(LParam)^ do
-        debugln(format('Received WM_DRAWITEM type %d handle %x', [ctlType, hwndItem]));
+        debugln(format('Received WM_DRAWITEM type %d handle %x', [ctlType, integer(hwndItem)]));
       {$ENDIF}
 
       if (lWinControl<>nil) and
