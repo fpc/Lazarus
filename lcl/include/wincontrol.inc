@@ -6999,6 +6999,7 @@ begin
       // first create the parent handle
       Parent.HandleNeeded;
       if HandleAllocated then exit;
+      DebugLn(['WARNING: TWinControl.CreateWnd: parent created handles, but not ours']);
     end;
     {$ENDIF}
     // Control is not visible at this moment. It will be shown in UpdateShowing

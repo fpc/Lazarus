@@ -4838,19 +4838,13 @@ begin
 end;
 
 procedure TControl.EndAutoSizing;
-  {$IFNDEF NewAutoSize}
   procedure Error;
   begin
     RaiseGDBException('TControl.EndAutoSizing');
   end;
-  {$ENDIF}
 begin
-  {$IFDEF NewAutoSize}
-  EnableAutoSizing;
-  {$ELSE}
   if not FAutoSizingSelf then Error;
   FAutoSizingSelf := False;
-  {$ENDIF}
 end;
 
 {------------------------------------------------------------------------------
