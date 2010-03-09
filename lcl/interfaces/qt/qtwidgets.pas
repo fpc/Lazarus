@@ -6684,21 +6684,6 @@ begin
         if not FDropListVisibleInternal then
           TCustomComboBox(LCLObject).IntfGetItems;
       end;
-      QEventKeyPress,
-      QEventKeyRelease:
-      begin
-        if (QEvent_type(Event) = QEventKeyRelease) and
-        ((QKeyEvent_key(QKeyEventH(Event)) = QtKey_Return) or
-        (QKeyEvent_key(QKeyEventH(Event)) = QtKey_Enter)) and
-        (QKeyEvent_modifiers(QKeyEventH(Event)) = QtNoModifier) and
-        (FLineEdit <> nil) and (FLineEdit.hasFocus) then
-        begin
-          Str := UTF16ToUTF8(getText);
-          if TCustomComboBox(LCLObject).Items.IndexOf(Str) < 0 then
-            TCustomComboBox(LCLObject).AddItem(Str, nil);
-        end;
-      	Result := SlotKey(Sender, Event);
-      end;
       else
         Result := inherited EventFilter(Sender, Event);
     end;
