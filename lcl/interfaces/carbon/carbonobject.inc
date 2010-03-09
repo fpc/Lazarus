@@ -269,6 +269,42 @@ begin
 end;
 
 {------------------------------------------------------------------------------
+  Name:  CarbonApp_Deactivated
+  Handles application deactivation
+ ------------------------------------------------------------------------------}
+function CarbonApp_Deactivated(ANextHandler: EventHandlerCallRef;
+  AEvent: EventRef;
+  AWidget: TCarbonWidget): OSStatus; {$IFDEF darwin}mwpascal;{$ENDIF}
+begin
+  {$IFDEF VerboseAppEvent}
+    DebugLn('CarbonApp_Deactivate');
+  {$ENDIF}
+
+  Result := CallNextEventHandler(ANextHandler, AEvent);
+
+  Application.IntfAppDeactivate;
+end;
+
+{------------------------------------------------------------------------------
+  Name:  CarbonApp_Activated
+  Handles application activation
+ ------------------------------------------------------------------------------}
+function CarbonApp_Activated(ANextHandler: EventHandlerCallRef;
+  AEvent: EventRef;
+  AWidget: TCarbonWidget): OSStatus; {$IFDEF darwin}mwpascal;{$ENDIF}
+begin
+  {$IFDEF VerboseAppEvent}
+    DebugLn('CarbonApp_Activate');
+  {$ENDIF}
+
+  Result := CallNextEventHandler(ANextHandler, AEvent);
+
+  Application.IntfAppActivate;
+end;
+
+
+
+{------------------------------------------------------------------------------
   Name:  CarbonApp_Open
   Handles application open
  ------------------------------------------------------------------------------}
@@ -989,7 +1025,15 @@ begin
   TmpSpec := MakeEventSpec(kEventClassApplication, kEventAppHidden);
   InstallApplicationEventHandler(RegisterEventHandler(@CarbonApp_Hidden),
     1, @TmpSpec, nil, nil);
-    
+
+  TmpSpec := MakeEventSpec(kEventClassApplication, kEventAppDeactivated);
+  InstallApplicationEventHandler(RegisterEventHandler(@CarbonApp_Deactivated),
+    1, @TmpSpec, nil, nil);
+
+  TmpSpec := MakeEventSpec(kEventClassApplication, kEventAppActivated);
+  InstallApplicationEventHandler(RegisterEventHandler(@CarbonApp_Activated),
+    1, @TmpSpec, nil, nil);
+
   FOpenEventHandlerUPP := NewAEEventHandlerUPP(AEEventHandlerProcPtr(@CarbonApp_Open));
   FQuitEventHandlerUPP := NewAEEventHandlerUPP(AEEventHandlerProcPtr(@CarbonApp_Quit));
   OSError(
