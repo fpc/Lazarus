@@ -107,6 +107,7 @@ type
                            ): TRegisteredComponent; override;
     procedure RegisterCustomIDEComponents(
                        const RegisterProc: RegisterUnitComponentProc); override;
+    procedure ShowHideControls(Show: boolean); override;
   public
     property NoteBook: TNotebook read FNoteBook write SetNoteBook;
     property Selected: TRegisteredComponent read FSelected write SetSelected;
@@ -455,31 +456,38 @@ var
   ButtonCount: Integer;
   MaxBtnPerRow: Integer;
 begin
-  ButtonCount:=0;
-  // skip the first control (this is the selection tool (TSpeedButton))
-  for j:= 1 to Page.ControlCount-1 do begin
-    CurButton:=TSpeedbutton(Page.Controls[j]);
-    if not (CurButton is TSpeedButton) then continue;
-    inc(ButtonCount);
-  end;
+  if FNoteBook<>nil then
+    NoteBook.DisableAutoSizing;
+  try
+    ButtonCount:=0;
+    // skip the first control (this is the selection tool (TSpeedButton))
+    for j:= 1 to Page.ControlCount-1 do begin
+      CurButton:=TSpeedbutton(Page.Controls[j]);
+      if not (CurButton is TSpeedButton) then continue;
+      inc(ButtonCount);
+    end;
 
-  ButtonX:= ((ComponentPaletteBtnWidth*3) div 2) + 2;
+    ButtonX:= ((ComponentPaletteBtnWidth*3) div 2) + 2;
 
-  MaxBtnPerRow:=((Page.ClientWidth - ButtonX) div ComponentPaletteBtnWidth);
-  if MaxBtnPerRow<1 then MaxBtnPerRow:=1;
-  Rows:=((ButtonCount-1) div MaxBtnPerRow)+1;
-  //DebugLn(['TComponentPalette.ReAlignButtons ',DbgSName(Page),' PageIndex=',Page.PageIndex,' ClientRect=',dbgs(Page.ClientRect)]);
-  // automatically set optimal row count and re-position controls to use height optimally
+    MaxBtnPerRow:=((Page.ClientWidth - ButtonX) div ComponentPaletteBtnWidth);
+    if MaxBtnPerRow<1 then MaxBtnPerRow:=1;
+    Rows:=((ButtonCount-1) div MaxBtnPerRow)+1;
+    //DebugLn(['TComponentPalette.ReAlignButtons ',DbgSName(Page),' PageIndex=',Page.PageIndex,' ClientRect=',dbgs(Page.ClientRect)]);
+    // automatically set optimal row count and re-position controls to use height optimally
 
-  if Rows <= 0 then Rows:= 1; // avoid division by zero
+    if Rows <= 0 then Rows:= 1; // avoid division by zero
 
-  for j:= 1 to Page.ControlCount-1 do begin
-    CurButton:=TSpeedbutton(Page.Controls[j]);
-    if not (CurButton is TSpeedButton) then continue;
-    CurButton.SetBounds(
-      ButtonX + ((j-1) div Rows) * ComponentPaletteBtnWidth,
-      ((j-1) mod Rows) * ComponentPaletteBtnHeight,
-      CurButton.Width,CurButton.Height)
+    for j:= 1 to Page.ControlCount-1 do begin
+      CurButton:=TSpeedbutton(Page.Controls[j]);
+      if not (CurButton is TSpeedButton) then continue;
+      CurButton.SetBounds(
+        ButtonX + ((j-1) div Rows) * ComponentPaletteBtnWidth,
+        ((j-1) mod Rows) * ComponentPaletteBtnHeight,
+        CurButton.Width,CurButton.Height)
+    end;
+  finally
+    if NoteBook<>nil then
+      NoteBook.EnableAutoSizing;
   end;
 end;
 
@@ -648,6 +656,16 @@ begin
   {$IFDEF CustomIDEComps}
   CustomIDEComps.RegisterCustomComponents(RegisterProc);
   {$ENDIF}
+end;
+
+procedure TComponentPalette.ShowHideControls(Show: boolean);
+begin
+  NoteBook.DisableAutoSizing;
+  try
+    inherited ShowHideControls(Show);
+  finally
+    NoteBook.EnableAutoSizing;
+  end;
 end;
 
 initialization

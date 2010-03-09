@@ -1787,10 +1787,10 @@ begin
   // Component Notebook
   MainIDEBar.ComponentNotebook := TNotebook.Create(OwningComponent);
   with MainIDEBar.ComponentNotebook do begin
-    Parent := MainIDEBar;
     Name := 'ComponentNotebook';
     Align := alClient;
     Visible:=EnvironmentOptions.ComponentPaletteVisible;
+    Parent := MainIDEBar;
   end;
 end;
 

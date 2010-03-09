@@ -182,7 +182,7 @@ type
     function FindButton(Button: TComponent): TRegisteredComponent;
     function CreateNewClassName(const Prefix: string): string;
     function IndexOfPageComponent(AComponent: TComponent): integer;
-    procedure ShowHideControls(Show: boolean);
+    procedure ShowHideControls(Show: boolean); virtual;
     procedure IterateRegisteredClasses(Proc: TGetComponentClass);
     procedure RegisterCustomIDEComponents(
                         const RegisterProc: RegisterUnitComponentProc); virtual;
