@@ -4660,15 +4660,13 @@ var
       PageWidget:=gtk_notebook_get_nth_page(NBWidget,PageIndex)
     else
       PageWidget:=nil;
-    if (PageWidget<>nil)
+    if (PageWidget<>nil) and GTK_WIDGET_RC_STYLE(PageWidget)
     and ((PageWidget^.Allocation.Width>1) or (PageWidget^.Allocation.Height>1))
     then begin
       // get the size of the current page
       ARect.Right:=PageWidget^.Allocation.Width;
       ARect.Bottom:=PageWidget^.Allocation.Height;
-      {$IFDEF NewAutoSize}
-      DebugLn(['GetNoteBookClientRect using pagewidget: ',GetWidgetDebugReport(Widget),' ARect=',dbgs(aRect)]);
-      {$ENDIF}
+      //DebugLn(['GetNoteBookClientRect using pagewidget: ',GetWidgetDebugReport(Widget),' ARect=',dbgs(aRect)]);
     end else begin
       // use defaults
       FrameBorders:=GetStyleNotebookFrameBorders;
@@ -4677,9 +4675,7 @@ var
       ARect:=Rect(0,0,
          Max(0,AWidth-FrameBorders.Left-FrameBorders.Right),
          Max(0,aHeight-FrameBorders.Top-FrameBorders.Bottom));
-      {$IFDEF NewAutoSize}
-      DebugLn(['GetNoteBookClientRect using defaults: ',GetWidgetDebugReport(Widget),' ARect=',dbgs(aRect)]);
-      {$ENDIF}
+      //DebugLn(['GetNoteBookClientRect using defaults: ',GetWidgetDebugReport(Widget),' ARect=',dbgs(aRect)]);
     end;
   end;
 
