@@ -464,12 +464,6 @@ begin
       ' New=',DbgS(aLeft,aTop,aWidth,aHeight),
       '');
   {$ENDIF}
-  {$IFDEF NewAutoSize}
-  DebugLn(['TControl.DoSetBounds ',DbgSName(Self),
-      ' Old=',DbgS(Left,Top,Width,Height),
-      ' New=',DbgS(aLeft,aTop,aWidth,aHeight),
-      '']);
-  {$ENDIF}
   FLeft := ALeft;
   FTop := ATop;
   FWidth := AWidth;
@@ -2390,7 +2384,7 @@ procedure TControl.DoAllAutoSize;
     if AControl.AutoSizeDelayed then exit;
 
     if not (cfAutoSizeNeeded in AControl.FControlFlags) then exit;
-    DebugLn(['TControl.DoAllAutoSize.AutoSizeControl ',DbgSName(AControl),' AutoSize=',AControl.AutoSize]);
+    //DebugLn(['TControl.DoAllAutoSize.AutoSizeControl ',DbgSName(AControl),' AutoSize=',AControl.AutoSize]);
     Exclude(AControl.FControlFlags,cfAutoSizeNeeded);
     if AControl.AutoSize then
       AControl.DoAutoSize;
@@ -2407,7 +2401,6 @@ begin
   if AutoSizingAll then exit;
   fAutoSizingAll:=true;
   DebugLn(['TControl.DoAllAutoSize START ',DbgSName(Self)]);
-  DumpStack;
   try
     while (not AutoSizeDelayed)
     and (cfAutoSizeNeeded in FControlFlags) do begin
@@ -4783,12 +4776,12 @@ procedure TControl.DisableAutoSizing;
 begin
   {$IFDEF NewAutoSize}
   inc(FAutoSizingLockCount);
-  DebugLn([Space(FAutoSizingLockCount*2),'TControl.DisableAutoSizing ',DbgSName(Self),' ',FAutoSizingLockCount]);
+  //DebugLn([Space(FAutoSizingLockCount*2),'TControl.DisableAutoSizing ',DbgSName(Self),' ',FAutoSizingLockCount]);
   if FAutoSizingLockCount=1 then
   begin
     if Parent<>nil then
     begin
-      DebugLn([Space(FAutoSizingLockCount*2),'TControl.DisableAutoSizing ',DbgSName(Self),' disable Parent=',DbgSName(Parent)]);
+      //DebugLn([Space(FAutoSizingLockCount*2),'TControl.DisableAutoSizing ',DbgSName(Self),' disable Parent=',DbgSName(Parent)]);
       Parent.DisableAutoSizing;
     end;
   end;
@@ -4820,12 +4813,12 @@ begin
   if FAutoSizingLockCount<=0 then RaiseGDBException('TControl.EnableAutoSizing');
   {$IFDEF NewAutoSize}
   dec(FAutoSizingLockCount);
-  DebugLn([Space(FAutoSizingLockCount*2),'TControl.EnableAutoSizing ',DbgSName(Self),' ',FAutoSizingLockCount]);
+  //DebugLn([Space(FAutoSizingLockCount*2),'TControl.EnableAutoSizing ',DbgSName(Self),' ',FAutoSizingLockCount]);
   if (FAutoSizingLockCount=0) then
   begin
     if (Parent<>nil) then
     begin
-      DebugLn([Space(FAutoSizingLockCount*2),'TControl.EnableAutoSizing ',DbgSName(Self),' enable Parent ',DbgSName(Parent)]);
+      //DebugLn([Space(FAutoSizingLockCount*2),'TControl.EnableAutoSizing ',DbgSName(Self),' enable Parent ',DbgSName(Parent)]);
       Parent.EnableAutoSizing;
     end else
       DoAllAutoSize;

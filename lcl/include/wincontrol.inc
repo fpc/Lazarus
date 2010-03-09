@@ -3854,7 +3854,7 @@ begin
       // this often anticipates later LM_SIZE messages from the interface
       // and reduces resizes
       LCLIntf.GetWindowSize(Handle, InterfaceWidth, InterfaceHeight);
-      {$IFDEF NewAutoSize}
+      {$IFDEF VerboseNewAutoSize}
       debugln('TWinControl.GetClientRect ',DbgSName(Self),' Interface=',dbgs(InterfaceWidth),',',dbgs(InterfaceHeight),' Result=',dbgs(Result),' Bounds=',dbgs(BoundsRect));
       {$ENDIF}
       Result.Right:=Width-(InterfaceWidth-Result.Right);
@@ -4161,9 +4161,6 @@ procedure TWinControl.UpdateShowing;
     ok: Boolean;
   begin
     if FShowing = bShow then Exit;
-    {$IFDEF NewAutoSize}
-    //DumpStack;
-    {$ENDIF}
     FShowing := bShow;
     ok := false;
     try
@@ -5826,7 +5823,7 @@ begin
   if AControl.FAutoSizingLockCount>0 then
   begin
     // the AControl has disabled autosizing => disable it for the parent=self too
-    DebugLn(['TWinControl.Insert ',DbgSName(Self),' Control=',DbgSName(AControl),' disable Parent']);
+    //DebugLn(['TWinControl.Insert ',DbgSName(Self),' Control=',DbgSName(AControl),' disable Parent']);
     DisableAutoSizing;
   end;
   {$ENDIF}
@@ -5876,7 +5873,7 @@ begin
     begin
       // AControl has disabled autosizing and thus for its parent=Self too
       // end disable autosize for parent=self
-      DebugLn(['TWinControl.Remove ',DbgSName(Self),' Control=',DbgSName(AControl),' enable Parent']);
+      //DebugLn(['TWinControl.Remove ',DbgSName(Self),' Control=',DbgSName(AControl),' enable Parent']);
       EnableAutoSizing;
     end;
     {$ENDIF}
@@ -7831,7 +7828,7 @@ begin
       Include(FWinControlFlags,wcfHandleVisible)
     else
       Exclude(FWinControlFlags,wcfHandleVisible);
-    {$IFDEF NewAutoSize}
+    {$IFDEF VerboseNewAutoSize}
     DebugLn(['TWinControl.DoSendShowHideToInterface ',DbgSName(Self),' FBoundsRealized=',dbgs(FBoundsRealized),' New=',HandleObjectShouldBeVisible]);
     {$ENDIF}
     TWSWinControlClass(WidgetSetClass).ShowHide(Self);
@@ -7851,7 +7848,7 @@ var
   {$ENDIF}
 begin
   NewBounds:=Bounds(Left, Top, Width, Height);
-  {$IF defined(VerboseResizeFlicker) or defined(NewAutoSize)}
+  {$IF defined(VerboseResizeFlicker)}
   if HandleAllocated then begin
     GetWindowRelativePosition(Handle,OldBounds.Left,OldBounds.Top);
     GetWindowSize(Handle,OldBounds.Right,OldBounds.Bottom);
@@ -7867,9 +7864,6 @@ begin
                  ',h', (OldBounds.Bottom-OldBounds.Top<>NewBounds.Bottom-NewBounds.Top),
     ' CurClient=',FClientWidth,'x',FClientHeight
     ]);
-  {$ENDIF}
-  {$IFDEF NewAutoSize}
-  //DumpStack;
   {$ENDIF}
   {$IFDEF CHECK_POSITION}
   if CheckPosition(Self) then
