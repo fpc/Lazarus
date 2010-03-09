@@ -20,7 +20,8 @@ TWinCEMemoStrings = class(TStrings)
   public
     constructor Create(Handle: HWND; TheOwner: TWinControl);
     destructor Destroy; override;
-    procedure Assign(Source : TPersistent); override;
+    procedure Assign(Source: TPersistent); override;
+    procedure AddStrings(TheStrings: TStrings); override;
     procedure Clear; override;
     procedure Delete(Index : integer); override;
     procedure Insert(Index : integer; const S: string); override;
@@ -61,19 +62,21 @@ end;
 
 function TWinCEMemoStrings.Get(Index: Integer): string;
 var
-  textbuf: PWideChar;
-  fLength: Integer;
+  len: Integer;
+  WideBuffer: WideString;
 begin
-  fLength := GetLineLength(Index);
-  if fLength = 0 then Result := ''
-  else
+  len := GetLineLength(Index);
+  if len=0 then
   begin
-    textbuf := PWideChar(SysAllocStringLen(nil,fLength+1));
-    PWord(textbuf)^ := Word(fLength+1);
-    SendMessageW(fHandle, EM_GETLINE, Index, lparam(textbuf));
-    Result := UTF8Encode(WideString(textbuf));
-    SysFreeString(textbuf);
+    Result := '';
+    exit;
   end;
+
+  Setlength(WideBuffer, len);
+  PWord(@WideBuffer[1])^ := len+1;
+  len := SendMessageW(FHandle, EM_GETLINE, Index, lparam(PWideChar(WideBuffer)));
+
+  Result := UTF16ToUTF8(WideBuffer);
 end;
 
 procedure TWinCEMemoStrings.SetUpdateState(Updating: Boolean);
@@ -97,13 +100,27 @@ begin
 end;
 
 procedure TWinCEMemoStrings.Assign(Source: TPersistent);
+var
+  S: TStrings absolute Source;
 begin
   if (Source=Self) or (Source=nil) then exit;
-  if Source is TStrings then begin
-    SetText(PChar(TStrings(Source).Text));
-    exit;
-  end;
-  Inherited Assign(Source);
+
+  if Source is TStrings then
+  begin
+    // to prevent Clear and then SetText we need to use our own Assign
+    QuoteChar := S.QuoteChar;
+    Delimiter := S.Delimiter;
+    NameValueSeparator := S.NameValueSeparator;
+    TextLineBreakStyle := S.TextLineBreakStyle;
+    Text := S.Text;
+  end
+  else
+    inherited Assign(Source);
+end;
+
+procedure TWinCEMemoStrings.AddStrings(TheStrings: TStrings);
+begin
+  SetTextStr(GetTextStr + TStrings(TheStrings).Text);
 end;
 
 procedure TWinCEMemoStrings.Clear;

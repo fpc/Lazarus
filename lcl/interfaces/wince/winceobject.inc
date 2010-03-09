@@ -304,10 +304,8 @@ begin
     else
       pHandles := nil;
 
-//    retVal := Windows.MsgWaitForMultipleObjects(FWaitHandleCount,
-//      pHandles, False, 0, QS_ALLINPUT);
-    retVal := Windows.MsgWaitForMultipleObjects(0,
-      nil, False, 0, QS_ALLINPUT);
+    retVal := Windows.MsgWaitForMultipleObjects(FWaitHandleCount,
+      pHandles, False, 0, QS_ALLINPUT);
 
     {$ifdef DEBUG_AppProcessMessages}
       DbgAppendToFile(ExtractFilePath(ParamStr(0)) + '1.log',
