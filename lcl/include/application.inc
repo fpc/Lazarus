@@ -1338,21 +1338,20 @@ end;
 procedure TApplication.Activate;
 begin
   if AppActive in FFlags then exit;
-  Include(FFlags,AppActive);
+  Include(FFlags, AppActive);
   NotifyActivateHandler;
 end;
 
-procedure TApplication.Deactivate(Data: PtrInt);
+procedure TApplication.Deactivate(Force: Boolean = False);
 begin
-  if (AppDestroying in FFlags) then exit;
+  if (AppDestroying in FFlags) or (not (AppActive in FFlags)) then Exit;
 
-  if (not (AppActive in FFlags)) then exit;
-  if (FindControl(GetFocus)<>nil) then begin
-    // another control of this application has got the focus
-    exit;
+  // widgetset has passed deactivate or no control of this application has got the focus
+  if Force or not Assigned(FindControl(GetFocus)) then
+  begin
+    Exclude(FFlags, AppActive);
+    NotifyDeactivateHandler;
   end;
-  Exclude(FFlags,AppActive);
-  NotifyDeactivateHandler;
 end;
 
 {------------------------------------------------------------------------------}
@@ -1839,7 +1838,7 @@ end;
 
 procedure TApplication.IntfAppDeactivate;
 begin
-  Deactivate;
+  Deactivate(True);
 end;
 
 {------------------------------------------------------------------------------
