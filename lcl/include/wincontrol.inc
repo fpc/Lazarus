@@ -7341,18 +7341,27 @@ var
 begin
   if HandleAllocated then
   begin
-    FinalizeWnd;
+    {$IFDEF NewAutoSize}
+    DisableAutoSizing;
+    try
+    {$ENDIF}
+      FinalizeWnd;
 
-    if FControls <> nil then
-      for i := 0 to FControls.Count - 1 do
-        TControl(FControls[i]).DoOnParentHandleDestruction;
+      if FControls <> nil then
+        for i := 0 to FControls.Count - 1 do
+          TControl(FControls[i]).DoOnParentHandleDestruction;
 
-    TWSWinControlClass(WidgetSetClass).DestroyHandle(Self);
-    Handle := 0;
-    // Maybe handle is not needed at moment but later it will be created once
-    // again. To propely initialize control after we need to restore color
-    // and font. Request update.
-    FWinControlFlags := FWinControlFlags + [wcfColorChanged, wcfFontChanged];
+      TWSWinControlClass(WidgetSetClass).DestroyHandle(Self);
+      Handle := 0;
+      // Maybe handle is not needed at moment but later it will be created once
+      // again. To propely initialize control after we need to restore color
+      // and font. Request update.
+      FWinControlFlags := FWinControlFlags + [wcfColorChanged, wcfFontChanged];
+    {$IFDEF NewAutoSize}
+    finally
+      EnableAutoSizing;
+    end;
+    {$ENDIF}
   end;
 end;
 
@@ -7843,7 +7852,7 @@ end;
 procedure TWinControl.DoSendBoundsToInterface;
 var
   NewBounds: TRect;
-  {$IF defined(VerboseResizeFlicker) or defined(NewAutoSize)}
+  {$IF defined(VerboseResizeFlicker)}
   OldBounds: TRect;
   {$ENDIF}
 begin

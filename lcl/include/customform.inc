@@ -99,6 +99,9 @@ begin
   //DebugLn('[TCustomForm.Destroy] A ',Name,':',ClassName);
   if not (csDestroying in ComponentState) then GlobalNameSpace.BeginWrite;
   try
+    {$IFDEF NewAutoSize}
+    DisableAutoSizing;
+    {$ENDIF}
     FreeThenNil(FIcon);
     FreeIconHandles;
     Screen.RemoveForm(Self);
@@ -109,7 +112,10 @@ begin
     inherited Destroy;
     //DebugLn('[TCustomForm.Destroy] END ',Name,':',ClassName);
   finally
-    GlobalNameSpace.EndWrite;
+    {$IFDEF NewAutoSize}
+    if not (csDestroying in ComponentState) then
+    {$ENDIF}
+      GlobalNameSpace.EndWrite;
   end;
 end;
 
