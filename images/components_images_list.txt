@@ -6,6 +6,7 @@ components/tasyncprocess.png
 components/tbarchart.png
 components/tbevel.png
 components/tbitbtn.png
+components/tbufdataset.png
 components/tbutton.png
 components/tbuttonpanel.png
 components/tcalcedit.png

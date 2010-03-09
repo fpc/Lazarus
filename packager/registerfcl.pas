@@ -39,7 +39,7 @@ interface
 
 uses
   LazarusPackageIntf,
-  Classes, SysUtils, Process, DB, SimpleIPC, XMLCfg, EventLog;
+  Classes, SysUtils, Process, DB, BufDataset, SimpleIPC, XMLCfg, EventLog;
 
 procedure Register;
 
@@ -52,7 +52,12 @@ end;
 
 procedure RegisterDB;
 begin
-  RegisterComponents('Data Access',[TDatasource]);
+  RegisterComponents('Data Access',[TDatasource
+// Only for fpc version 2.4.1 and above
+{$IFNDEF VER2_4_0}
+                                    ,TBufDataset
+{$ENDIF}
+                                    ]);
 end;
 
 procedure RegisterSimpleIPC;
