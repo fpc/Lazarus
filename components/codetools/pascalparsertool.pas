@@ -385,7 +385,8 @@ begin
   'L':
     if CompareSrcIdentifiers('LABEL',p) then exit(KeyWordFuncTypeLabel);
   'O':
-    if CompareSrcIdentifiers('OBJECT',p) then exit(KeyWordFuncClass);
+    if CompareSrcIdentifiers('OBJECT',p)
+    or CompareSrcIdentifiers('OBJCCLASS',p) then exit(KeyWordFuncClass);
   'P':
     case UpChars[p[1]] of
     'A': if CompareSrcIdentifiers('PACKED',p) then exit(KeyWordFuncTypePacked);
@@ -682,7 +683,7 @@ begin
   try
     if ClassNode=nil then
       RaiseClassNodeNil;
-    if ClassNode.Desc<>ctnClass then
+    if not (ClassNode.Desc in [ctnClass,ctnObject,ctnObjCClass]) then
       RaiseClassDescInvalid;
     // set CursorPos after class head
     MoveCursorToNodeStart(ClassNode);
@@ -695,7 +696,9 @@ begin
     // read the "class"/"object" keyword
     ReadNextAtom;
     if UpAtomIs('PACKED') or (UpAtomIs('BITPACKED')) then ReadNextAtom;
-    if (not UpAtomIs('CLASS')) and (not UpAtomIs('OBJECT')) then
+    if not (UpAtomIs('CLASS') or UpAtomIs('OBJECT') or UpAtomIs('OBJCCLASS')
+           or UpAtomIs('INTERFACE'))
+    then
       RaiseClassKeyWordExpected;
     ReadNextAtom;
     if CurPos.Flag=cafRoundBracketOpen then
@@ -785,9 +788,7 @@ begin
       begin
         if not ReadTilBlockEnd(false,true) then RaiseEndOfSourceExpected;
       end else if UpAtomIs('WITH') then
-        ReadWithStatement(true,true)
-      else if UpAtomIs('ON') then
-        ReadOnStatement(true,true);
+        ReadWithStatement(true,true);
     until (CurPos.StartPos>=MaxPos);
     CurrentPhase:=OldPhase;
   except
@@ -1092,7 +1093,7 @@ function TPascalParserTool.KeyWordFuncClassMethod: boolean;
 var IsFunction, HasForwardModifier: boolean;
   ParseAttr: TParseProcHeadAttributes;
 begin
-  if not (CurNode.Desc in (AllClassSections+[ctnClassInterface])) then
+  if not (CurNode.Desc in (AllClassSections+AllClassInterfaces)) then
     RaiseIdentExpectedButAtomFound;
 
   HasForwardModifier:=false;
@@ -1950,7 +1951,7 @@ function TPascalParserTool.KeyWordFuncClassProperty: boolean;
   end;
 
 begin
-  if not (CurNode.Desc in (AllClassBaseSections+[ctnClassInterface])) then
+  if not (CurNode.Desc in (AllClassBaseSections+AllClassInterfaces)) then
     RaiseIdentExpectedButAtomFound;
   // create class method node
   CreateChildNode;
@@ -2324,7 +2325,8 @@ begin
         RaiseStrExpectedWithBlockStartHint('"end"');
     end else if CreateNodes and UpAtomIs('WITH') then begin
       ReadWithStatement(true,CreateNodes);
-    end else if CreateNodes and UpAtomIs('ON') then begin
+    end else if CreateNodes and UpAtomIs('ON') and (BlockType=ebtTry)
+    and (TryType=ttExcept) then begin
       ReadOnStatement(true,CreateNodes);
     end else begin
       // check for unexpected keywords
@@ -3331,6 +3333,7 @@ var
   IsForward: Boolean;
   p: PChar;
   BracketLvl: Integer;
+  ClassDesc: TCodeTreeNodeDesc;
 begin
   ContextDesc:=CurNode.Desc;
   if not (ContextDesc in [ctnTypeDefinition,ctnGenericType,
@@ -3345,10 +3348,18 @@ begin
     ClassAtomPos:=CurPos;
   end;
   // class or 'class of' start found
-  ChildCreated:=(UpAtomIs('CLASS')) or (UpAtomIs('OBJECT'));
+  if UpAtomIs('CLASS') then
+    ClassDesc:=ctnClass
+  else if UpAtomIs('OBJECT') then
+    ClassDesc:=ctnObject
+  else if UpAtomIs('OBJCCLASS') then
+    ClassDesc:=ctnObjCClass
+  else
+    ClassDesc:=ctnNone;
+  ChildCreated:=ClassDesc<>ctnNone;
   if ChildCreated then begin
     CreateChildNode;
-    CurNode.Desc:=ctnClass;
+    CurNode.Desc:=ClassDesc;
     CurNode.StartPos:=ClassAtomPos.StartPos;
   end;
   // find end of class
@@ -3378,16 +3389,18 @@ begin
     ReadNextAtom;
   end;
   if CurPos.Flag=cafSemicolon then begin
-    if ChildCreated and (CurNode.Desc=ctnClass) and IsForward then begin
-      // forward class definition found
-      CurNode.SubDesc:=CurNode.SubDesc+ctnsForwardDeclaration;
-    end else begin
-      // very short class found e.g. = class(TAncestor);
-      if ChildCreated and (CurNode.Desc=ctnClass) then
+    if ChildCreated and (ClassDesc in [ctnClass,ctnObject,ctnObjCClass]) then
+    begin
+      if IsForward then begin
+        // forward class definition found
+        CurNode.SubDesc:=CurNode.SubDesc+ctnsForwardDeclaration;
+      end else begin
+        // very short class found e.g. = class(TAncestor);
         CurNode.SubDesc:=CurNode.SubDesc+ctnsNeedJITParsing; // will not create sub nodes now
+      end;
     end;
   end else begin
-    if ChildCreated and (CurNode.Desc=ctnClass) then
+    if ChildCreated and (ClassDesc in [ctnClass,ctnObject,ctnObjCClass]) then
       CurNode.SubDesc:=CurNode.SubDesc+ctnsNeedJITParsing; // will not create sub nodes now
     // read til end or any suspicious keyword
     Level:=1;
@@ -3441,16 +3454,27 @@ begin
     if (CurPos.StartPos>SrcLen) then
       SaveRaiseException(ctsEndForClassNotFound);
   end;
-  if ChildCreated then begin
-    // close class
-    CurNode.EndPos:=CurPos.EndPos;
-    EndChildNode;
-  end;
   if CurPos.Flag=cafEND then begin
     ReadNextAtom;
     if UpAtomIs('DEPRECATED') or UpAtomIs('PLATFORM') or UpAtomIs('UNIMPLEMENTED')
     then
       ReadNextAtom;
+    if CurPos.Flag=cafSemicolon then
+      ReadNextAtom;
+    if UpAtomIs('EXTERNAL') then begin
+      ReadNextAtom;
+      if UpAtomIs('NAME') then begin
+        ReadNextAtom;
+        ReadConstant(true,false,[]);
+      end;
+    end;
+    if CurPos.Flag<>cafSemicolon then
+      UndoReadNextAtom;
+  end;
+  if ChildCreated then begin
+    // close class
+    CurNode.EndPos:=CurPos.EndPos;
+    EndChildNode;
   end;
   Result:=true;
 end;
@@ -3460,6 +3484,7 @@ function TPascalParserTool.KeyWordFuncClassInterface: boolean;
 var
   ChildCreated: boolean;
   IntfAtomPos: TAtomPosition;
+  IntfDesc: TCodeTreeNodeDesc;
 begin
   if not (CurNode.Desc in [ctnTypeDefinition,ctnGenericType]) then
     SaveRaiseExceptionFmt(ctsAnonymDefinitionsAreNotAllowed,['interface']);
@@ -3468,9 +3493,13 @@ begin
   IntfAtomPos:=CurPos;
   // class interface start found
   ChildCreated:=true; // maybe change this in future to jit parsing
+  if UpAtomIs('INTERFACE') then
+    IntfDesc:=ctnClassInterface
+  else
+    IntfDesc:=ctnObjCProtocol;
   if ChildCreated then begin
     CreateChildNode;
-    CurNode.Desc:=ctnClassInterface;
+    CurNode.Desc:=IntfDesc;
     CurNode.StartPos:=IntfAtomPos.StartPos;
   end;
   // find end of interface
@@ -3483,7 +3512,7 @@ begin
     end;
     if CurPos.Flag=cafEdgedBracketOpen then
       ReadGUID;
-    // parse till "end" of class/object
+    // parse till "end" of interface
     repeat
       if (CurPos.Flag=cafEnd) or (CurPos.StartPos>SrcLen) then break;
       if not ParseInnerClassInterface(CurPos.StartPos,CurPos.EndPos-CurPos.StartPos)
@@ -4365,7 +4394,8 @@ begin
   OldPhase:=CurrentPhase;
   CurrentPhase:=CodeToolPhaseParse;
   try
-    IsMethod:=ProcNode.HasParentOfType(ctnClass);
+    IsMethod:=ProcNode.GetNodeOfTypes(
+      [ctnClass,ctnClassInterface,ctnObject,ctnObjCClass,ctnObjCProtocol])<>nil;
     MoveCursorToNodeStart(ProcNode);
     ReadNextAtom;
     if UpAtomIs('CLASS') then
@@ -4433,7 +4463,7 @@ procedure TPascalParserTool.BuildSubTree(ANode: TCodeTreeNode);
 begin
   if ANode=nil then exit;
   case ANode.Desc of
-  ctnClass,ctnClassInterface:
+  ctnClass,ctnClassInterface,ctnObject,ctnObjCClass,ctnObjCProtocol:
     BuildSubTreeForClass(ANode);
   ctnProcedure,ctnProcedureHead:
     BuildSubTreeForProcHead(ANode);
@@ -4447,8 +4477,7 @@ function TPascalParserTool.NodeNeedsBuildSubTree(ANode: TCodeTreeNode
 begin
   Result:=false;
   if ANode=nil then exit;
-  case ANode.Desc of
-  ctnClass,ctnClassInterface,ctnProcedureHead,ctnBeginBlock:
+  if ANode.Desc in (AllClasses+[ctnProcedureHead,ctnBeginBlock]) then begin
     Result:=(ANode.SubDesc and ctnsNeedJITParsing)>0;
   end;
 end;

@@ -351,7 +351,7 @@ begin
   DebugLn('TMethodJumpingCodeTool.FindJumpPoint C ',NodeDescriptionAsString(CursorNode.Desc));
   {$ENDIF}
   // first test if in a class
-  ClassNode:=CursorNode.GetNodeOfType(ctnClass);
+  ClassNode:=CursorNode.GetNodeOfTypes([ctnClass,ctnObject,ctnObjCClass]);
   if ClassNode<>nil then begin
     // cursor is in class/object definition
     // search in all implemented class procedures for the body 
@@ -796,7 +796,7 @@ begin
             cmp:=false;
         end;
         if cmp and (phpIgnoreMethods in Attr) then begin
-          if ANode.HasParentOfType(ctnClass)
+          if (ANode.GetNodeOfTypes([ctnClass,ctnObject,ctnObjCClass])<>nil)
           or (ExtractClassNameOfProcNode(ANode)<>'')
           then
             cmp:=false;

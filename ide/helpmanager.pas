@@ -483,7 +483,7 @@ begin
           if (URLPath='index.html')
           or (URLPath='images/laztitle.jpg')
           or (URLPath='images/cheetah1.png') then begin
-            OpenFile(Result,'/home/mattias/pascal/wichtig/lazarus/docs/'+URLPath);
+            OpenFile(Result,EnvironmentOptions.LazarusDirectory+PathDelim+'docs'+PathDelim+URLPath);
           end;
         end;
       end else begin
@@ -1304,13 +1304,14 @@ begin
   BaseURL:='';
   HTMLHint:='';
   Code:=CodeToolBoss.LoadFile(ExpandedFilename,true,false);
-  if Code=nil then exit(shrHelpNotFound);
+  if (Code=nil) or (CodePos.Y<1) or (CodePos.Y>Code.LineCount)
+  or (CodePos.X<1) then
+    exit(shrHelpNotFound);
   if CodeHelpBoss.GetHTMLHint(Code,CodePos.X,CodePos.Y,
     [chhoSmartHint, chhoComplete, chhoComments],
     BaseURL,HTMLHint,CacheWasUsed)=chprSuccess
   then
     exit(shrSuccess);
-  DebugLn(['TIDEHelpManager.GetHintForSourcePosition not found']);
   Result:=shrHelpNotFound;
 end;
 

@@ -42,6 +42,7 @@ ResourceString
   // linkscanner
   ctsInvalidFlagValueForDirective = 'invalid flag value "%s" for directive %s';
   ctsInvalidMode = 'invalid mode "%s"';
+  ctsInvalidModeSwitch = 'invalid mode switch "%s"';
   ctsAwithoutB = '%s without %s';
   ctsIncludeFileNotFound = 'include file not found "%s"';
   ctsErrorInDirectiveExpression = 'error in directive expression';

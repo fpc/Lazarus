@@ -161,7 +161,7 @@ begin
   while ParentCodeNode<>nil do begin
     //DebugLn(['TDeclarationOverloadsGraph.AddContext ',ParentCodeNode.DescAsString]);
     if ParentCodeNode.Desc in
-      AllSourceTypes+[ctnClass,ctnClassInterface,ctnRecordType]
+      AllSourceTypes+AllClasses+[ctnRecordType]
     then begin
       //DebugLn(['TDeclarationOverloadsGraph.AddContext ADD parent']);
       ParentGraphNode:=AddContext(Tool,ParentCodeNode);
@@ -177,7 +177,7 @@ begin
   // add ancestors, interfaces
   if (CodeNode.Desc=ctnTypeDefinition)
   and (CodeNode.FirstChild<>nil)
-  and (CodeNode.FirstChild.Desc in [ctnClass,ctnClassInterface]) then begin
+  and (CodeNode.FirstChild.Desc in AllClasses) then begin
     //DebugLn(['TDeclarationOverloadsGraph.AddContext a class or interface']);
     // a class or class interface
     ClassNode:=CodeNode.FirstChild;
