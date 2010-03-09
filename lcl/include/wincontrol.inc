@@ -7236,7 +7236,7 @@ var
   CurControl: TWinControl;
 begin
   {$IFDEF NewAutoSize}
-  DebugLn(['TWinControl.Loaded START ',DbgSName(Self),' cfWidthLoaded=',cfWidthLoaded in FControlFlags,' cfHeightLoaded=',cfHeightLoaded in FControlFlags,' ']);
+  //DebugLn(['TWinControl.Loaded START ',DbgSName(Self),' cfWidthLoaded=',cfWidthLoaded in FControlFlags,' cfHeightLoaded=',cfHeightLoaded in FControlFlags,' ']);
   {$ELSE}
   // obsolete
   DisableAlign;
@@ -7307,11 +7307,11 @@ begin
     {$ENDIF}
   finally
     {$IFDEF NewAutoSize}
-    DebugLn(['TWinControl.Loaded enableautosizing ',DbgSName(Self),' ',dbgs(BoundsRect)]);
+    //DebugLn(['TWinControl.Loaded enableautosizing ',DbgSName(Self),' ',dbgs(BoundsRect)]);
     {$ENDIF}
     EnableAutoSizing;
     {$IFDEF NewAutoSize}
-    DebugLn(['TWinControl.Loaded END ',DbgSName(Self),' ',dbgs(BoundsRect)]);
+    //DebugLn(['TWinControl.Loaded END ',DbgSName(Self),' ',dbgs(BoundsRect)]);
     {$ELSE}
     // obsolete
     EnableAlign;
