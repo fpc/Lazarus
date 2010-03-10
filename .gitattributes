@@ -2395,6 +2395,7 @@ doceditor/images/insert_doc24.bmp -text
 doceditor/images/insert_hyperlink24.bmp -text
 doceditor/images/insert_table24.bmp -text
 doceditor/images/italic_blue24.bmp -text
+doceditor/images/mainicon.png -text svneol=unset#image/png
 doceditor/images/node_edit.xpm -text svneol=native#image/x-xpixmap
 doceditor/images/node_finished.xpm -text svneol=native#image/x-xpixmap
 doceditor/images/node_modified.xpm -text svneol=native#image/x-xpixmap

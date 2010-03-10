@@ -10,6 +10,7 @@ object AboutForm: TAboutForm
   Caption = 'About this application'
   ClientHeight = 331
   ClientWidth = 528
+  OnCreate = FormCreate
   Position = poScreenCenter
   LCLVersion = '0.9.29'
   object LThisApplication: TLabel

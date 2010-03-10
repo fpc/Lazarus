@@ -31,7 +31,12 @@ ResourceString
 { ---------------------------------------------------------------------
     Strings which appear in the program
   ---------------------------------------------------------------------}
-  
+  SAboutFormCaption = 'About this application';
+  sLazDocEditor     = 'Lazarus Documentation Editor';
+  sCopyRight1       = 'This application is (c) by  Michael Van Canneyt and the Lazarus team';
+  sCopyRight2       = 'It is released under the terms of the  GENERAL PUBLIC LICENSE:';
+
+
   SFileTemplate = 'template.xml';
   //SFPDE        = 'Free Pascal documentation editor';
   //SName        = 'Name';
@@ -143,16 +148,17 @@ ResourceString
   SMenuInsertTable       = '&Table';
   SMenuInsertShortDescLink  = '&Short description link';
   SMenuInsertQuickLink      = '&Quick Link';
+  SMenuInsertPrintShort = 'Insert short desc link';
 
-  //SMenuFormat           = 'Format';
-  //SMenuFormatBold       = '_Bold';
-  //SMenuFormatUnderLine  = '_Underline';
-  //SMenuFormatItalics    = '_Italic';
-  //SMenuformatVariable   = '_Variable';
-  //SMenuFormatRemark     = '_Remark';
-  //SMenuFormatParaGraph  = '_Paragraph';
-  //SMenuFormatCode       = '_Code';
-  //SMenuFormatFile       = '_File';
+  SMenuFormat           = 'Format';
+  SMenuFormatBold       = '&Bold';
+  SMenuFormatUnderLine  = '&Underline';
+  SMenuFormatItalics    = '&Italic';
+  SMenuFormatVariable   = '&Variable';
+  SMenuFormatRemark     = '&Remark';
+  SMenuFormatParaGraph  = '&Paragraph';
+  SMenuFormatCode       = '&Code';
+  SMenuFormatFile       = '&File';
 
   SMenuRename           = 'Rename';
   SMenuDelete           = 'Delete';
@@ -169,23 +175,34 @@ ResourceString
 { ---------------------------------------------------------------------
     Hint strings  
   ---------------------------------------------------------------------}
-  //SHintFileNew       = 'New file';
-  //SHintFileOpen      = 'Open file';
-  //SHintFileSave      = 'Save file';
-  //SHintFileSaveAs    = 'Save file as';
+  SHintFileNew         = 'New file';
+  SHintFileOpen        = 'Open file';
+  SHintFileSave        = 'Save file';
+  SHintFileSaveAs      = 'Save file as';
+  SHintMenuNewFromFile = 'New form file...';
+  SHintFileClose       = 'Close current file';
+  SHintFileExit        = 'Close doc editor';
 
-  //SHintInsertPackage = 'New package';
-  //SHintInsertModule  = 'New module';
-  //SHintInsertTopic   = 'New topic';
-  //SHintInsertElement = 'New element';
-  //SHintInsertLink    = 'Insert link';
-  //ShintInsertTable   = 'Insert table';
-  //SHintInsertPrintShortLink = 'Insert a short description link';
+  SHintFormatBold       = 'Bold';
+  SHintFormatItalics    = 'Italic';
+  SHintFormatUnderLine  = 'Underline';
+  SHintFormatRemark     = 'Remark';
+  SHintFormatVariable   = 'Variable';
+  SHintFormatCode       = 'Code';
+  SHintFormatFile       = 'File';
+
+  SHintInsertPackage = 'New package';
+  SHintInsertModule  = 'New module';
+  SHintInsertTopic   = 'New topic';
+  SHintInsertElement = 'New element';
+  SHintInsertLink    = 'Insert link';
+  ShintInsertTable   = 'Insert table';
+  SHintInsertPrintShortLink = 'Insert a short description link';
 
   SMarkSelection     = 'Mark selection %s';
 
-  //SHMenuExtraOptions = 'Show options dialog';
-  //SHMenuHelpAbout        = 'About this program';
+  SHMenuExtraOptions = 'Show options dialog';
+  SHMenuHelpAbout        = 'About this program';
 
   SHintToolbarAdd    = 'Add';
   SHintToolbarEdit   = 'Edit';
@@ -207,6 +224,7 @@ ResourceString
 
   //SSaveFileTitle = 'Enter filename to save to';
   //SOpenFileTitle = 'Select file to open';
+  sSelectSomeText        = 'Select some text';
 
 Function FormatHint(S : String) : String;
 

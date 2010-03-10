@@ -4,13 +4,28 @@ program lazde;
 
 uses
   Interfaces, // this includes the LCL widgetset
-  Forms, FrmMain, frmOptions, frmNewNode, frmmakeskel,
-  frmLink, frmTable, frmabout, pkeditor, eleditor, fpdeutil, frmexample,
-  frmbuild, frmsource, lazdemsg, lazdeopts, pgeditor;
+  Forms,
+  FrmMain,
+  frmOptions,
+  frmNewNode,
+  frmmakeskel,
+  frmLink,
+  frmTable,
+  frmabout,
+  pkeditor,
+  eleditor,
+  fpdeutil,
+  frmexample,
+  frmbuild,
+  frmsource,
+  lazdemsg,
+  lazdeopts,
+  pgeditor;
 
 {$R lazde.res}
 
 begin
+  Application.Title:='LazDocEditor';
   Application.Initialize;
   Application.CreateForm(TMainForm, MainForm);
   Application.Run;

@@ -244,8 +244,8 @@ begin
   end;
 
   FDescrMemo:=TMemo.Create(Self);
-  With FDescrMemo do
-    begin
+  with FDescrMemo do
+  begin
     Parent:=Self;
     Top := 80;
     Align:=alTop;
@@ -253,7 +253,8 @@ begin
     OnChange:=@OnTextModified;
     Height:=150;
     ScrollBars:=ssAutoBoth;
-    end;
+    PopupMenu:=MainForm.PopupMenu1;
+  end;
   FSPlit1:=TSplitter.Create(Self);
   With FSplit1 do
     begin

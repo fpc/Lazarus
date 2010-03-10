@@ -29,13 +29,14 @@ interface
 uses
   Classes, SysUtils, LCLProc, LResources, Forms, Controls, Graphics, Dialogs,
   FileUtil, Menus, ActnList, ExtCtrls, ComCtrls, pgeditor,
-  process, UTF8Process, fpdeutil;
+  process, UTF8Process, StdActns, fpdeutil;
 
 type
   TNodeType = (ntFile,ntPackage,ntModule,ntElement,ntTopic);
   { TMainForm }
 
   TMainForm = class(TForm)
+    AInsertQuickLink: TAction;
     AInsertPrintShort: TAction;
     AExtraBuild: TAction;
     AExtraOptions: TAction;
@@ -62,10 +63,35 @@ type
     ASaveAs: TAction;
     AClose: TAction;
     ALMain: TActionList;
+    EditCopy1: TEditCopy;
+    EditCut1: TEditCut;
+    EditDelete1: TEditDelete;
+    EditPaste1: TEditPaste;
+    EditSelectAll1: TEditSelectAll;
+    EditUndo1: TEditUndo;
     ILMain: TImageList;
     ILElements: TImageList;
     LIBuild: TMenuItem;
     MenuItem1: TMenuItem;
+    MenuItem10: TMenuItem;
+    MenuItem11: TMenuItem;
+    MenuItem12: TMenuItem;
+    MenuItem13: TMenuItem;
+    MenuItem14: TMenuItem;
+    MenuItem15: TMenuItem;
+    MenuItem16: TMenuItem;
+    MenuItem17: TMenuItem;
+    MenuItem18: TMenuItem;
+    MenuItem19: TMenuItem;
+    MenuItem20: TMenuItem;
+    MenuItem21: TMenuItem;
+    MenuItem4: TMenuItem;
+    MenuItem5: TMenuItem;
+    MenuItem6: TMenuItem;
+    MenuItem7: TMenuItem;
+    MenuItem8: TMenuItem;
+    MenuItem9: TMenuItem;
+    PopupMenu1: TPopupMenu;
     QuickLink: TMenuItem;
     MISeparate: TMenuItem;
     MISaveAs: TMenuItem;
@@ -146,6 +172,7 @@ type
     // Editor functions.
     procedure BuildReopenList;
     Procedure AddTorecent(FN : String);
+    procedure FormLocalization;
     Procedure OpenFile(FN : String);
     Procedure SaveEditorAs(E : TEditorPage);
     Procedure SaveEditor(E : TEditorPage);
@@ -230,36 +257,8 @@ end;
 
 procedure TMainForm.MainFormCreate(Sender: TObject);
 begin
-  MMain.Items[0].Caption:=sMenuFile;
-  MMain.Items[0].Items[0].Caption:=SMenuFileNew;
-  MMain.Items[0].Items[1].Caption:=SMenuFileOpen;
-  MMain.Items[0].Items[2].Caption:=SMenuFileNewFromFile;
-  MMain.Items[0].Items[3].Caption:=SMenuFileSave;
-  MMain.Items[0].Items[4].Caption:=SMenuFileSaveAs;
-  MMain.Items[0].Items[6].Caption:=SMenuFileClose;
-  MMain.Items[0].Items[7].Caption:=SMenuFileRecent;
-  MMain.Items[0].Items[9].Caption:=SMenuFileQuit;
-
-  //Insert Menu
-  MMain.Items[1].Caption:=sMenuInsert;
-  MMain.Items[1].Items[0].Caption:=SMenuInsertPackage;
-  MMain.Items[1].Items[1].Caption:=SMenuInsertModule;
-  MMain.Items[1].Items[2].Caption:=SMenuInsertTopic;
-  MMain.Items[1].Items[3].Caption:=SMenuInsertElement;
-  MMain.Items[1].Items[4].Caption:=SMenuInsertLink;
-  MMain.Items[1].Items[5].Caption:=SMenuInsertTable;
-  MMain.Items[1].Items[6].Caption:=SMenuInsertShortDescLink;
-  MMain.Items[1].Items[7].Caption:=SMenuInsertQuickLink;
-
-  //Extra Menu
-  MMain.Items[2].Caption:=sMenuExtra;
-  MMain.Items[2].Items[0].Caption:=sMenuExtraOptions;
-  MMain.Items[2].Items[1].Caption:=sMenuExtraBuild;
-  //Help Menu
-  MMain.Items[3].Caption:=sMenuHelp;
-  MMain.Items[3].Items[0].Caption:=sMenuHelpAbout;
-
-  if Sender=nil then ;
+  FormLocalization;
+  //
   FRecent:=TStringList.Create;
   LoadCommandLine;
   LoadOptions;
@@ -273,14 +272,12 @@ end;
 
 procedure TMainForm.AOpenExecute(Sender: TObject);
 begin
-  With ODMain do
-    If Execute then
-      OpenFile(FileName);
+  if ODMain.Execute then
+    OpenFile(ODMain.FileName);
 end;
 
 procedure TMainForm.AExitExecute(Sender: TObject);
 begin
-  if Sender=nil then ;
   Close;
 end;
 
@@ -324,17 +321,13 @@ end;
 
 procedure TMainForm.AHelpAboutExecute(Sender: TObject);
 begin
-  if Sender=nil then ;
   ShowAbout;
 end;
 
 procedure TMainForm.CanFormat(Sender: TObject);
-
 Var
   B : Boolean;
-
 begin
-  if Sender=nil then ;
   B:=(CurrentEditor<>Nil);
   If B then
     B:=CurrentEditor.CanInsertTag(TTagType((Sender as TAction).Tag));
@@ -343,17 +336,13 @@ end;
 
 procedure TMainForm.AInsertLinkExecute(Sender: TObject);
 begin
-  if Sender=nil then ;
   InsertLink;
 end;
 
 procedure TMainForm.AInsertLinkUpdate(Sender: TObject);
-
-Var
+var
   B : Boolean;
-
 begin
-  if Sender=nil then ;
   B:=(CurrentEditor<>Nil);
   If B then
     B:=CurrentEditor.CanInsertTag(ttLink);
@@ -361,18 +350,14 @@ begin
 end;
 
 procedure TMainForm.AInsertTableExecute(Sender: TObject);
-
 begin
-  if Sender=nil then ;
   InsertTable;
 end;
 
 procedure TMainForm.AInsertTableUpdate(Sender: TObject);
-Var
+var
   B : Boolean;
-
 begin
-  if Sender=nil then ;
   B:=(CurrentEditor<>Nil);
   If B then
     B:=CurrentEditor.CanInsertTag(ttTable);
@@ -382,7 +367,6 @@ end;
 
 procedure TMainForm.AInsertShortPrintLinkExecute(Sender: TObject);
 begin
-  if Sender = nil then;
   InsertPrintShortLink;
 end;
 
@@ -391,7 +375,6 @@ procedure TMainForm.AInsertShortPrintLinkUpdate(Sender: TObject);
 var
   B: Boolean;
 begin
-  if Sender = nil then;
   B := (CurrentEditor <> nil);
   if B then
     B := CurrentEditor.CanInsertTag(ttPrintShort);
@@ -401,36 +384,28 @@ end;
 
 procedure TMainForm.ANewExecute(Sender: TObject);
 begin
-  if Sender=nil then ;
   NewFile;
 end;
 
 
 procedure TMainForm.ANewFromFileExecute(Sender: TObject);
 begin
-  if Sender=nil then ;
   NewFromFile;
 end;
 
 procedure TMainForm.ASaveAsExecute(Sender: TObject);
-
 Var
   E : TEditorPage;
-
 begin
-  if Sender=nil then ;
   E:=CurrentEditor;
-  If (E<>Nil) then
+  if (E<>Nil) then
     SaveEditorAs(E);
 end;
 
 procedure TMainForm.ASaveExecute(Sender: TObject);
-
-Var
+var
   E : TEditorPage;
-
 begin
-  if Sender=nil then ;
   E:=CurrentEditor;
   If (E<>Nil) then
     SaveEditor(E);
@@ -438,14 +413,13 @@ end;
 
 procedure TMainForm.DoFormat(Sender: TObject);
 begin
-  if Sender=nil then ;
-  If Assigned(CurrentEditor) then
+  if Assigned(CurrentEditor) then
     CurrentEditor.InsertTag(TTagType((Sender as TAction).Tag));
 end;
 
 procedure TMainForm.HaveEditor(Sender: TObject);
 begin
-  (Sender as TAction).Enabled:=(CurrentEditor<>Nil);
+  (Sender as TAction).Enabled:=(CurrentEditor <> nil);
 end;
 
 procedure TMainForm.InsertStructure(Sender: TObject);
@@ -477,7 +451,7 @@ begin
     if Selection <> '' then
       CurrentEditor.InsertLink(CurrentEditor.CurrentElement['name'] + '.' + Selection, Selection)
     else
-      ShowMessage('Select some text');
+      ShowMessage(sSelectSomeText);
   end;
 end;
 
@@ -528,31 +502,103 @@ begin
   BuildReopenList;
 end;
 
-procedure TMainForm.NewFile;
+procedure TMainForm.FormLocalization;
+begin
+  //Localization
+  Caption:=sLazDocEditor;
+  //File menu
+  MFile.Caption:=SMenuFile;
+  ANew.Caption:=SMenuFileNew;
+  AOpen.Caption:=SMenuFileOpen;
+  ANewFromFile.Caption:=SMenuFileNewFromFile;
+  ASave.Caption:=SMenuFileSave;
+  ASaveAs.Caption:=SMenuFileSaveAs;
+  AClose.Caption:=SMenuFileClose;
+  AExit.Caption:=SMenuFileQuit;
+  MIRecent.Caption:=SMenuFileRecent;
 
-Const
+  ANew.Hint:=SHintFileNew;
+  AOpen.Hint:=SHintFileOpen;
+  ANewFromFile.Hint:=SHintMenuNewFromFile;
+  ASave.Hint:=SHintFileSave;
+  ASaveAs.Hint:=SHintFileSaveAs;
+  AClose.Hint:=SHintFileClose;
+  AExit.Hint:=SHintFileExit;
+
+  //Format menu
+  AFormatParagraph.Caption:=SMenuFormatParaGraph;
+  AFormatBold.Caption:=SMenuFormatBold;
+  AFormatItalic.Caption:=SMenuFormatItalics;
+  AFormatUnderline.Caption:=SMenuFormatUnderLine;
+  AFormatRemark.Caption:=SMenuFormatRemark;
+  AFormatVariable.Caption:=SMenuformatVariable;
+  AFormatCode.Caption:=SMenuFormatCode;
+  AFormatFile.Caption:=SMenuFormatFile;
+
+  AFormatBold.Hint:=SHintFormatBold;
+  AFormatItalic.Hint:=SHintFormatItalics;
+  AFormatUnderline.Hint:=SHintFormatUnderLine;
+  AFormatRemark.Hint:=SHintFormatRemark;
+  AFormatVariable.Hint:=SHintFormatVariable;
+  AFormatCode.Hint:=SHintFormatCode;
+  AFormatFile.Hint:=SHintFormatFile;
+
+  //Insert menu
+  MIInsert.Caption:=SMenuInsert;
+  AInsertPackage.Caption:=SMenuInsertPackage;
+  AInsertModule.Caption:=SMenuInsertModule;
+  AInsertElement.Caption:=SMenuInsertElement;
+  AInsertTopic.Caption:=SMenuInsertTopic;
+  AInsertLink.Caption:=SMenuInsertLink;
+  AInsertTable.Caption:=SMenuInsertTable;
+  AInsertPrintShort.Caption:=SMenuInsertShortDescLink;
+  AInsertQuickLink.Caption:=SMenuInsertQuickLink;
+
+  AInsertPackage.Hint:=SHintInsertPackage;
+  AInsertModule.Hint:=SHintInsertModule;
+  AInsertElement.Hint:=SHintInsertElement;
+  AInsertTopic.Hint:=ShintInsertTable;
+  AInsertLink.Hint:=SHintInsertLink;
+  AInsertTable.Hint:=ShintInsertTable;
+  AInsertPrintShort.Hint:=SHintInsertPrintShortLink;
+
+  //Extra menu
+  MIExtra.Caption:=SMenuExtra;
+  AExtraOptions.Caption:=SMenuExtraOptions;
+  AExtraBuild.Caption:=SMenuExtraBuild;
+  AExtraBuild.Hint:=SHMenuExtraOptions;
+
+
+  //Help menu
+  MIHelp.Caption:=SMenuHelp;
+  AHelpAbout.Caption:=sMenuHelpAbout;
+  AHelpAbout.Hint:=SHMenuHelpAbout;
+
+
+end;
+
+procedure TMainForm.NewFile;
+const
   template = '<?xml version="1.0" encoding="ISO-8859-1"?>'+LineEnding+
              '<fpdoc-descriptions>'+LineEnding+
              '</fpdoc-descriptions>'+LineEnding;
-
-Var
+var
   S : TStringStream;
-
 begin
-  With CreatePage do
-    begin
-    If FileExistsUTF8(SFileTemplate) then
+  with CreatePage do
+  begin
+    if FileExistsUTF8(SFileTemplate) then
       LoadFromFile(UTF8ToSys(SFileTemplate))
     else
-      begin
+    begin
       S:=TStringStream.Create(Template);
-      Try
+      try
         LoadFromStream(S)
       finally
         S.Free;
       end;
-      end;
     end;
+  end;
 end;
 
 procedure TMainForm.OpenFile(FN: String);
@@ -910,14 +956,13 @@ end;
 
 
 procedure TMainForm.ShowAbout;
-
 begin
-  With TAboutForm.Create(Self) do
-    Try
-      ShowModal
-    finally
-      Free;
-    end;
+  with TAboutForm.Create(Self) do
+  try
+    ShowModal
+  finally
+    Free;
+  end;
 end;
 
 procedure TMainForm.GetCurrentFiles(List: TStrings);

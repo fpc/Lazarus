@@ -142,10 +142,11 @@ end;
 
 procedure TranslateResStrings;
 var
-  Lang, FallbackLang: String;
+  Lang, FallbackLang, S: String;
 begin
   GetLanguageIDs(Lang,FallbackLang); // in unit gettext
-  TranslateUnitResourceStrings('LazDEMsg','languages/lazde.%s.po', Lang,FallbackLang);
+  S:=AppendPathDelim(AppendPathDelim(ExtractFileDir(ParamStr(0))) + 'languages');
+  TranslateUnitResourceStrings('LazDEMsg',S+'lazde.%s.po', Lang,FallbackLang);
 end;
 
 Initialization

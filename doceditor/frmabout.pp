@@ -30,6 +30,9 @@ uses
   Classes, SysUtils, LResources, Forms, Controls, Graphics, Dialogs, Buttons,
   StdCtrls, ButtonPanel;
 
+const
+  LicenseFile = 'COPYING.GPL.txt';
+
 type
 
   { TAboutForm }
@@ -40,8 +43,9 @@ type
     LCopyRight1: TLabel;
     LCopyRight2: TLabel;
     MCopyRight: TMemo;
+    procedure FormCreate(Sender: TObject);
   private
-    { private declarations }
+    procedure LoadLicense;
   public
     { public declarations }
   end; 
@@ -50,8 +54,29 @@ var
   AboutForm: TAboutForm;
 
 implementation
+uses LazDEMsg, FileUtil;
 
 {$R *.lfm}
+
+{ TAboutForm }
+
+procedure TAboutForm.FormCreate(Sender: TObject);
+begin
+  Caption:=SAboutFormCaption;
+  LThisApplication.Caption:=sLazDocEditor;
+  LCopyRight1.Caption:=sCopyRight1;
+  LCopyRight2.Caption:=sCopyRight2;
+  LoadLicense;
+end;
+
+procedure TAboutForm.LoadLicense;
+var
+  GPLFileName:string;
+begin
+  GPLFileName:=AppendPathDelim(AppendPathDelim(ExtractFileDir(ParamStr(0))) + '..')+LicenseFile;
+  if FileExists(GPLFileName) then
+    MCopyRight.Lines.LoadFromFile(GPLFileName);
+end;
 
 end.
 
