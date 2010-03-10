@@ -773,8 +773,8 @@ class function TGtk2WSCustomListView.ItemDisplayRect(
 var
   Widgets: PTVWidgets;
   ItemRect: TGdkRectangle;
-  AColumn: PGtkTreeViewColumn;
-  APath: PGtkTreePath;
+  Column: PGtkTreeViewColumn;
+  Path: PGtkTreePath;
 begin
   Result := Rect(0, 0, 0, 0);
   if not WSCheckHandleAllocated(ALV, 'ItemDisplayRect') then
@@ -785,13 +785,13 @@ begin
   begin
     if gtk_widget_realized(MainView) = False then
       exit;
-    APath := gtk_tree_path_new_from_indices(AIndex, -1);
+    Path := gtk_tree_path_new_from_indices(AIndex, -1);
     try
-      AColumn := gtk_tree_view_get_column(PGtkTreeView(MainView), ASubItem);
-      gtk_tree_view_get_cell_area(PGtkTreeView(MainView), APath, AColumn,
+      Column := gtk_tree_view_get_column(PGtkTreeView(MainView), ASubItem);
+      gtk_tree_view_get_cell_area(PGtkTreeView(MainView), Path, Column,
         @ItemRect);
     finally
-      gtk_tree_path_free(APath);
+      gtk_tree_path_free(Path);
     end;
 
     with ItemRect do
