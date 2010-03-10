@@ -733,7 +733,7 @@ msgstr "Código pequeño"
 
 #: lazarusidestrconsts.dlgcosmartlinkable
 msgid "Smart Linkable"
-msgstr "enlazado elegante"
+msgstr "Enlazable inteligente"
 
 #: lazarusidestrconsts.dlgcosources
 msgid "Other Sources (.pp/.pas files, used only by IDE not by compiler)"
@@ -1548,7 +1548,7 @@ msgstr "Estilo de enlazado:"
 
 #: lazarusidestrconsts.dlglinksmart
 msgid "Link Smart"
-msgstr "Enlazar pequeña"
+msgstr "Enlazado Inteligente"
 
 #: lazarusidestrconsts.dlglnumsbct
 msgid "Display Line Numbers in Run-time Error Backtraces"
