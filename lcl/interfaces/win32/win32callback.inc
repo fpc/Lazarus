@@ -2028,11 +2028,27 @@ begin
     begin
       HandleSetCursor;
     end;
+    CM_ACTIVATE:
+    begin
+      if (Window = Win32WidgetSet.AppHandle) then
+      begin
+        if not IsIconic(Window) and IsWindow(WindowLastFocused) then
+          SetFocus(WindowLastFocused);
+        Result := 0;
+        Exit;
+      end;
+      WinProcess := False;
+    end;
     WM_SETFOCUS:
     begin
 {$ifdef DEBUG_CARET}
       DebugLn('WM_SETFOCUS received for window ', IntToHex(Window, 8));
 {$endif}
+      // move focus to another application window but process event first
+      if (Window = Win32WidgetSet.AppHandle) then
+        PostMessage(Window, CM_ACTIVATE, 0, 0)
+      else
+        WindowLastFocused := Window;
       // handle feature mouse-click, setfocus, mouse-click -> double-click
       if (Window <> MouseDownWindow) and (MouseDownFocusStatus <> mfNone) then
       begin
