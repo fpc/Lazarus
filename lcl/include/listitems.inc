@@ -29,19 +29,19 @@ end;
 {------------------------------------------------------------------------------}
 {   TListItems GetCount                                                        }
 {------------------------------------------------------------------------------}
-function TListItems.GetCount : Integer;
+function TListItems.GetCount: Integer;
 begin
-  Result:=FItems.Count;
+  Result := FItems.Count;
 end;
 
 procedure TListItems.SetCount(const ACount: Integer); 
 begin
   if not FOwner.OwnerData then Exit;
-  FItems.Count:=ACount;
+  FItems.Count := ACount;
   if WSUpdateAllowed then 
     WSSetItemsCount(FItems.Count);
   // reset ownerdata 
-  if (FOwner.FOwnerDataItem.Index>=ACount) then 
+  if (FOwner.FOwnerDataItem.Index >= ACount) then
     FOwner.FOwnerDataItem.SetDataIndex(-1); 
 end;
 

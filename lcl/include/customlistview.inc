@@ -184,7 +184,8 @@ var
 begin
   nm := PNMListView(AMessage.NMHdr);
   // ignore any notifications while initializing items
-  if (nm^.iItem>=Items.Count) or not (lisfWSItemsCreated in FListItems.Flags) then exit;
+  if (nm^.iItem >= Items.Count) or
+     not (OwnerData or (lisfWSItemsCreated in FListItems.Flags)) then Exit;
   //remark: NMHdr^.code is normally unhanged by the win32 interface, so the others
   //        maps there codes to the of win32
   case AMessage.NMHdr^.code of 

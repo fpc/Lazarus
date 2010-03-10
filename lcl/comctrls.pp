@@ -828,7 +828,7 @@ type
     procedure WriteLazData(Stream: TStream); // write date in a 64 bits safe way
   protected
     procedure DefineProperties(Filer: TFiler); override;
-    function GetCount : Integer;
+    function GetCount: Integer;
     function GetItem(const AIndex: Integer): TListItem;
     function GetOwner: TPersistent; override;
     procedure WSCreateItems;
@@ -854,7 +854,7 @@ type
     property Flags: TListItemsFlags read FFlags;
     property Count: Integer read GetCount write SetCount;
     property Item[const AIndex: Integer]: TListItem read GetItem write SetItem; default;
-    property Owner : TCustomListView read FOwner;
+    property Owner: TCustomListView read FOwner;
   end;
 
 
