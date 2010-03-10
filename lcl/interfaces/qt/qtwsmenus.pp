@@ -109,9 +109,7 @@ end;
 class function TQtWSMenuItem.CreateMenuFromMenuItem(const AMenuItem: TMenuItem): TQtMenu;
 begin
   Result := TQtMenu.Create(AMenuItem);
-  {$IF DEFINED(USE_QT_44) or DEFINED(USE_QT_45)}
   Result.FDeleteLater := False;
-  {$ENDIF}
   Result.setSeparator(AMenuItem.IsLine);
   Result.setHasSubmenu(AMenuItem.Count > 0);
   if not AMenuItem.IsLine then

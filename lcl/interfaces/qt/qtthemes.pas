@@ -353,9 +353,7 @@ begin
     idButtonAbort: AStdPixmap := QStyleSP_DialogResetButton;
     idButtonAll: AStdPixmap := QStyleSP_DialogApplyButton;
     idButtonIgnore: AStdPixmap := QStyleSP_DialogDiscardButton;
-  {$IF DEFINED(USE_QT_44) or DEFINED(USE_QT_45)}
     idButtonRetry: AStdPixmap := QStyleSP_BrowserReload; // ?
-  {$IFEND}
     idButtonOpen: AStdPixmap := QStyleSP_DialogOpenButton;
     idButtonSave: AStdPixmap := QStyleSP_DialogSaveButton;
     idButtonShield: AStdPixmap := QStyleSP_VistaShield;

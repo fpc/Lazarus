@@ -98,12 +98,14 @@ type
 
     function GetPalette: TQtWidgetPalette;
     function GetProps(const AnIndex: String): pointer;
+    function GetStyleSheet: WideString;
     function GetWidget: QWidgetH;
     function LCLKeyToQtKey(AKey: Word): Integer;
-    function QtButtonsToLCLButtons(AButtons: QTMouseButton): PtrInt;
+    function QtButtonsToLCLButtons(AButtons: QtMouseButton): PtrInt;
     function QtKeyModifiersToKeyState(AModifiers: QtKeyboardModifiers): PtrInt;
     function QtKeyToLCLKey(AKey: Integer; AText: WideString): Word;
     procedure SetProps(const AnIndex: String; const AValue: pointer);
+    procedure SetStyleSheet(const AValue: WideString);
     procedure SetWidget(const AValue: QWidgetH);
     function ShiftStateToQtModifiers(Shift: TShiftState): QtModifier;
   protected
@@ -236,15 +238,16 @@ type
     function windowModality: QtWindowModality;
 
     property Context: HDC read GetContext;
-    property KeysToEat: TByteSet read FKeysToEat write FKeysToEat;
-    property Palette: TQtWidgetPalette read GetPalette;
-    property Props[AnIndex:String]:pointer read GetProps write SetProps;
-    property PaintData: TPaintData read FPaintData write FPaintData;
-    property Widget: QWidgetH read GetWidget write SetWidget;
     property HasCaret: Boolean read FHasCaret write SetHasCaret;
     property HasPaint: Boolean read FHasPaint write FHasPaint;
-    property WidgetColorRole: QPaletteColorRole read FWidgetColorRole write FWidgetColorRole;
+    property KeysToEat: TByteSet read FKeysToEat write FKeysToEat;
+    property StyleSheet: WideString read GetStyleSheet write SetStyleSheet;
+    property PaintData: TPaintData read FPaintData write FPaintData;
+    property Palette: TQtWidgetPalette read GetPalette;
+    property Props[AnIndex:String]:pointer read GetProps write SetProps;
     property TextColorRole: QPaletteColorRole read FTextColorRole write FTextColorRole;
+    property Widget: QWidgetH read GetWidget write SetWidget;
+    property WidgetColorRole: QPaletteColorRole read FWidgetColorRole write FWidgetColorRole;
   end;
 
   { TQtAbstractSlider , inherited by TQtScrollBar, TQtTrackBar }
@@ -423,9 +426,6 @@ type
   protected
     function CreateWidget(const AParams: TCreateParams): QWidgetH; override;
   public
-    {$IF NOT DEFINED(USE_QT_44) or NOT DEFINED(USE_QT_45)}
-    destructor Destroy; override;
-    {$ENDIF}
     procedure preferredSize(var PreferredWidth, PreferredHeight: integer; WithThemeSpace: Boolean); override;
   public
     procedure AttachEvents; override;
@@ -485,7 +485,6 @@ type
   protected
     function CreateWidget(const AParams: TCreateParams):QWidgetH; override;
   public
-    destructor Destroy; override;
     function getText: WideString; override;
     procedure setText(const W: WideString); override;
     procedure setAlignment(const AAlignment: QtAlignment);
@@ -499,9 +498,6 @@ type
   protected
     function CreateWidget(const AParams: TCreateParams):QWidgetH; override;
   public
-    {$IF NOT DEFINED(USE_QT_44) or NOT DEFINED(USE_QT_45)}
-    destructor Destroy; override;
-    {$ENDIF}
     function CheckState: QtCheckState;
     procedure setCheckState(state: QtCheckState);
   public
@@ -519,10 +515,6 @@ type
   protected
     function CreateWidget(const AParams: TCreateParams):QWidgetH; override;
   public
-    {$IF NOT DEFINED(USE_QT_44) or NOT DEFINED(USE_QT_45)}
-    destructor Destroy; override;
-    {$ENDIF}
-  public
     procedure AttachEvents; override;
     procedure DetachEvents; override;
   end;
@@ -535,12 +527,10 @@ type
   protected
     function CreateWidget(const AParams: TCreateParams):QWidgetH; override;
   public
-    {$IF NOT DEFINED(USE_QT_44) or NOT DEFINED(USE_QT_45)}
-    destructor Destroy; override;
-    {$ENDIF}
     function EventFilter(Sender: QObjectH; Event: QEventH): Boolean; cdecl; override;
     function getText: WideString; override;
     procedure setText(const W: WideString); override;
+    procedure setFocusPolicy(const APolicy: QtFocusPolicy); override;
   end;
   
   { TQtToolBar }
@@ -814,6 +804,10 @@ type
 
   TQtFloatSpinBox = class(TQtAbstractSpinBox)
   private
+    {$ifdef CPU64 and not WIN64}
+    FParentShowPassed: Integer;
+    FFixValue: Double;
+    {$endif}
     FValueChangedHook: QDoubleSpinBox_hookH;
   protected
     function CreateWidget(const AParams: TCreateParams):QWidgetH; override;
@@ -827,7 +821,9 @@ type
   public
     procedure AttachEvents; override;
     procedure DetachEvents; override;
-
+    {$ifdef CPU64 and not WIN64}
+    function EventFilter(Sender: QObjectH; Event: QEventH): Boolean; cdecl; override;
+    {$endif}
     procedure SignalValueChanged(p1: Double); cdecl;
   end;
   
@@ -907,7 +903,6 @@ type
   private
     FCurrentItemChangeHook: QListWidget_hookH;
     FSelectionChangeHook: QListWidget_hookH;
-    FItemDoubleClickedHook: QListWidget_hookH;
     FItemClickedHook: QListWidget_hookH;
     FItemTextChangedHook: QListWidget_hookH;
     FDontPassSelChange: Boolean;
@@ -918,13 +913,11 @@ type
   public
     procedure AttachEvents; override;
     procedure DetachEvents; override;
-    procedure slotMouseCheckListBox(Sender: QObjectH; Event: QEventH); cdecl;
     function itemViewViewportEventFilter(Sender: QObjectH; Event: QEventH): Boolean; cdecl; override;
 
     procedure signalCurrentItemChange(current: QListWidgetItemH; previous: QListWidgetItemH); cdecl;
-    procedure signalItemDoubleClicked(item: QListWidgetItemH); cdecl;
-    procedure signalItemClicked(item: QListWidgetItemH); cdecl;
     procedure signalItemTextChanged(ANewText: PWideString); cdecl;
+    procedure signalItemClicked(item: QListWidgetItemH) cdecl;
     procedure signalSelectionChanged(); cdecl;
     procedure ItemDelegatePaint(painter: QPainterH; option: QStyleOptionViewItemH; index: QModelIndexH); cdecl; override;
   public
@@ -961,8 +954,10 @@ type
     procedure resizeSection(ASection: Integer; ASize: Integer);
     procedure setHighlightSections(AValue: Boolean);
     procedure setDefaultSectionSize(AValue: Integer);
+    function SortIndicatorOrder: QtSortOrder;
+    procedure SetSortIndicator(const AColumn: Integer; const AOrder: QtSortOrder);
+    procedure SetSortIndicatorVisible(AVisible: Boolean);
     procedure setStretchLastSection(AValue: Boolean);
-    function sortIndicatorOrder: QtSortOrder;
     property Clickable: Boolean read getClickable write setClickable;
     property MinSectionSize: Integer read getMinSectionSize write setMinSectionSize;
   end;
@@ -990,8 +985,10 @@ type
   TQtTreeWidget = class(TQtTreeView)
   private
     FSyncingItems: Boolean;
+    FSorting: Boolean;
     FHeader: TQtHeaderView;
     FSectionClicked: QHeaderView_hookH;
+    FSortChanged: QHeaderView_hookH;
     FHeaderEventFilterHook: QObject_hookH;
     FCurrentItemChangedHook: QTreeWidget_hookH;
     FItemDoubleClickedHook: QTreeWidget_hookH;
@@ -1001,6 +998,7 @@ type
     FItemEnteredHook: QTreeWidget_hookH;
     function getColCount: Integer;
     function getHeader: TQtHeaderView;
+    function getItemCount: Integer;
     function getMaxColSize(ACol: Integer): Integer;
     function getMinColSize(ACol: Integer): Integer;
     function getSortEnabled: Boolean;
@@ -1026,6 +1024,8 @@ type
     function visualItemRect(AItem: QTreeWidgetItemH): TRect;
     function getItemVisible(AItem: QTreeWidgetItemH): Boolean;
     procedure setItemVisible(AItem: QTreeWidgetItemH; Const AVisible: Boolean);
+    procedure setItemText(AItem: QTreeWidgetItemH; const AColumn: Integer;
+      const AText: WideString; const AAlignment: QtAlignment);
     function selCount: Integer;
     function selectedItems: TPtrIntArray;
     procedure setHeaderVisible(AVisible: Boolean);
@@ -1044,8 +1044,10 @@ type
     procedure SignalitemExpanded(item: QTreeWidgetItemH) cdecl;
     procedure SignalItemCollapsed(item: QTreeWidgetItemH) cdecl;
     procedure SignalCurrentItemChanged(current: QTreeWidgetItemH; previous: QTreeWidgetItemH) cdecl;
+    procedure SignalSortIndicatorChanged(ALogicalIndex: Integer; AOrder: QtSortOrder) cdecl;
 
     property ColCount: Integer read getColCount write setColCount;
+    property ItemCount: Integer read getItemCount;
     property Header: TQtHeaderView read getHeader;
     property MaxColSize[ACol: Integer]: Integer read getMaxColSize write setMaxColSize;
     property MinColSize[ACol: Integer]: Integer read getMinColSize write setMinColSize;
@@ -1654,11 +1656,11 @@ begin
     QEventDragLeave: result:='QEventDragLeave';
     QEventDrop: result:='QEventDrop';
     QEventDragResponse: result:='QEventDragResponse';
-//    QEventChildInsertedRequest: result:='(Qt3) QEventChildAdded'; //qt3
+    //    QEventChildInsertedRequest: result:='(Qt3) QEventChildAdded'; //qt3
     QEventChildAdded: result:='QEventChildAdded';
     QEventChildPolished: result:='QEventChildPolished';
-//    QEventChildInserted: result:='(Qt3) QEventChildAdded'; // qt3
-//    QEventLayoutHint: result:='(Qt3) QEventChildAdded'; // qt3
+    //    QEventChildInserted: result:='(Qt3) QEventChildAdded'; // qt3
+    //    QEventLayoutHint: result:='(Qt3) QEventChildAdded'; // qt3
     QEventChildRemoved: result:='QEventChildRemoved';
     QEventShowWindowRequest: result:='QEventShowWindowRequest';
     QEventPolishRequest: result:='QEventPolishRequest';
@@ -1808,10 +1810,8 @@ begin
       QEventKeyRelease:
         begin
           {non-spontaneous key events are garbage in Qt >= 4.4}
-          {$IF DEFINED(USE_QT_44) or DEFINED(USE_QT_45)}
           Result := QEvent_spontaneous(Event);
           if Result then
-          {$ENDIF}
             Result := SlotKey(Sender, Event) or (LCLObject is TCustomControl);
         end;
 
@@ -1860,7 +1860,6 @@ begin
   else
     QEvent_ignore(Event);
 
-  {$IF DEFINED(USE_QT_44) or DEFINED(USE_QT_45)}
   {fixes #14544 and others when we loose our LCLObject
    after delivering message to LCL.}
   if (LCLObject = nil) and
@@ -1874,7 +1873,6 @@ begin
     Result := True;
     BeginEventProcessing;
   end;
-  {$ENDIF}
 
   EndEventProcessing;
 end;
@@ -2036,13 +2034,7 @@ begin
       FilesList := TStringList.Create;
       try
         FilesList.Text := UTF16ToUTF8(WStr);
-        {$IFDEF USE_QT_45}
         SetLength(Files, FilesList.Count);
-        {$ELSE}
-        {last member of TStringList always contains empty string
-         since QMimeData always have #13#10#0 at the end.So we cut it here.}
-        SetLength(Files, FilesList.Count - 1);
-        {$ENDIF}
         for i := 0 to High(Files) do
           Files[i] := FilesList.Strings[i];
       finally
@@ -2486,7 +2478,7 @@ begin
   DeliverMessage(Msg);
 end;
 
-function TQtWidget.QtButtonsToLCLButtons(AButtons: QTMouseButton): PtrInt;
+function TQtWidget.QtButtonsToLCLButtons(AButtons: QtMouseButton): PtrInt;
 begin
   Result := 0;
   if (QtLeftButton and AButtons) <> 0 then
@@ -3811,6 +3803,14 @@ begin
   result := nil;
 end;
 
+function TQtWidget.GetStyleSheet: WideString;
+var
+  WStr: WideString;
+begin
+  QWidget_styleSheet(Widget, @WStr);
+  Result := UTF16ToUTF8(WStr);
+end;
+
 {------------------------------------------------------------------------------
   Function: TQtWidget.GetPalette
   Params:  Nothing
@@ -3876,6 +3876,14 @@ begin
   Fprops.Objects[i] := TObject(AValue);
 end;
 
+procedure TQtWidget.SetStyleSheet(const AValue: WideString);
+var
+  WStr: WideString;
+begin
+  WStr := GetUTF8String(AValue);
+  QWidget_setStyleSheet(Widget, @WStr);
+end;
+
 procedure TQtWidget.SetWidget(const AValue: QWidgetH);
 begin
   TheObject := AValue;
@@ -3892,12 +3900,10 @@ procedure TQtWidget.DestroyWidget;
 begin
   if (Widget <> nil) and FOwnWidget then
   begin
-    {$IF DEFINED(USE_QT_44) or DEFINED(USE_QT_45)}
     if not FDeleteLater then
       QWidget_destroy(Widget)
     else
-    {$ENDIF}
-    QObject_deleteLater(Widget);
+      QObject_deleteLater(Widget);
   end;
   Widget := nil;
 end;
@@ -4073,29 +4079,6 @@ begin
   Result := QPushButton_create();
 end;
 
-{------------------------------------------------------------------------------
-  Function: TQtPushButton.Destroy
-  Params:  None
-  Returns: Nothing
- ------------------------------------------------------------------------------}
-{$IF NOT DEFINED(USE_QT_44) or NOT DEFINED(USE_QT_45)}
-destructor TQtPushButton.Destroy;
-begin
-  {$ifdef VerboseQt}
-    WriteLn('TQtPushButton.Destroy');
-  {$endif}
-
-  if Widget <> nil then
-  begin
-    DetachEvents;
-    QPushButton_destroy(QPushButtonH(Widget));
-    Widget := nil;
-  end;
-
-  inherited Destroy;
-end;
-{$ENDIF}
-
 procedure TQtPushButton.preferredSize(var PreferredWidth,
   PreferredHeight: integer; WithThemeSpace: Boolean);
 const
@@ -4149,14 +4132,11 @@ begin
 end;
 
 procedure TQtPushButton.AttachEvents;
-var
-  Method: TMethod;
 begin
   inherited AttachEvents;
   
   FClickedHook := QAbstractButton_hook_create(Widget);
-  QAbstractButton_clicked2_Event(Method) := @SlotClicked;
-  QAbstractButton_hook_hook_clicked2(FClickedHook, Method);
+  QAbstractButton_hook_hook_clicked2(FClickedHook, @SlotClicked);
 end;
 
 procedure TQtPushButton.DetachEvents;
@@ -4278,9 +4258,7 @@ begin
       
     QLayout_addWidget(LayoutWidget, FCentralWidget);
     QWidget_setLayout(Result, QLayoutH(LayoutWidget));
-    {$IF DEFINED(USE_QT_44) or DEFINED(USE_QT_45)}
     QWidget_setAttribute(Result, QtWA_DeleteOnClose);
-    {$ENDIF}
   end;
 
   QWidget_setAttribute(Result, QtWA_NoMousePropagation);
@@ -4441,16 +4419,13 @@ begin
 end;
 
 procedure TQtMainWindow.AttachEvents;
-var
-  Method: TMethod;
 begin
   inherited AttachEvents;
 
   if FCentralWidget <> nil then
   begin
     FCWEventHook := QObject_hook_create(FCentralWidget);
-    TEventFilterMethod(Method) := @CWEventFilter;
-    QObject_hook_hook_events(FCWEventHook, Method);
+    QObject_hook_hook_events(FCWEventHook, @CWEventFilter);
   end;
 end;
 
@@ -4539,27 +4514,6 @@ begin
 end;
 
 {------------------------------------------------------------------------------
-  Function: TQtStaticText.Destroy
-  Params:  None
-  Returns: Nothing
- ------------------------------------------------------------------------------}
-destructor TQtStaticText.Destroy;
-begin
-  {$ifdef VerboseQt}
-    WriteLn('TQtStaticText.Destroy');
-  {$endif}
-
-  if Widget <> nil then
-  begin
-    DetachEvents;
-    QLabel_destroy(QLabelH(Widget));
-    Widget := nil;
-  end;
-
-  inherited Destroy;
-end;
-
-{------------------------------------------------------------------------------
   Function: TQtStaticText.SetText
   Params:  None
   Returns: Nothing
@@ -4613,29 +4567,6 @@ begin
 end;
 
 {------------------------------------------------------------------------------
-  Function: TQtCheckBox.Destroy
-  Params:  None
-  Returns: Nothing
- ------------------------------------------------------------------------------}
-{$IF NOT DEFINED(USE_QT_44) or NOT DEFINED(USE_QT_45)}
-destructor TQtCheckBox.Destroy;
-begin
-  {$ifdef VerboseQt}
-    WriteLn('TQtCheckBox.Destroy');
-  {$endif}
-
-  if Widget <> nil then
-  begin
-    DetachEvents;
-    QCheckBox_destroy(QCheckBoxH(Widget));
-    Widget := nil;
-  end;
-
-  inherited Destroy;
-end;
-{$ENDIF}
-
-{------------------------------------------------------------------------------
   Function: TQtCheckBox.CheckState
   Params:  None
   Returns: Nothing
@@ -4656,13 +4587,10 @@ begin
 end;
 
 procedure TQtCheckBox.AttachEvents;
-var
-  Method: TMethod;
 begin
   inherited AttachEvents;
   FStateChangedHook := QCheckBox_hook_create(Widget);
-  QCheckBox_stateChanged_Event(Method) := @SignalStateChanged;
-  QCheckBox_hook_hook_stateChanged(FStateChangedHook, Method);
+  QCheckBox_hook_hook_stateChanged(FStateChangedHook, @SignalStateChanged);
 end;
 
 procedure TQtCheckBox.DetachEvents;
@@ -4699,38 +4627,12 @@ begin
   QWidget_hide(Result);
 end;
 
-{------------------------------------------------------------------------------
-  Function: TQtRadioButton.Destroy
-  Params:  None
-  Returns: Nothing
- ------------------------------------------------------------------------------}
-{$IF NOT DEFINED(USE_QT_44) or NOT DEFINED(USE_QT_45)}
-destructor TQtRadioButton.Destroy;
-begin
-  {$ifdef VerboseQt}
-    WriteLn('TQtRadioButton.Destroy');
-  {$endif}
-
-  if Widget <> nil then
-  begin
-    DetachEvents;
-    QRadioButton_destroy(QRadioButtonH(Widget));
-    Widget := nil;
-  end;
-
-  inherited Destroy;
-end;
-{$ENDIF}
-
 procedure TQtRadioButton.AttachEvents;
-var
-  Method: TMethod;
 begin
   inherited AttachEvents;
   FClickedHook := QAbstractButton_hook_create(Widget);
   
-  QAbstractButton_clicked_Event(Method) := @SignalClicked;
-  QAbstractButton_hook_hook_clicked(FClickedHook, Method);
+  QAbstractButton_hook_hook_clicked(FClickedHook, @SignalClicked);
 end;
 
 procedure TQtRadioButton.DetachEvents;
@@ -4819,29 +4721,6 @@ begin
   end;
 end;
 
-{------------------------------------------------------------------------------
-  Function: TQtGroupBox.Destroy
-  Params:  None
-  Returns: Nothing
- ------------------------------------------------------------------------------}
-{$IF NOT DEFINED(USE_QT_44) or NOT DEFINED(USE_QT_45)}
-destructor TQtGroupBox.Destroy;
-begin
-  {$ifdef VerboseQt}
-    WriteLn('TQtGroupBox.Destroy');
-  {$endif}
-
-  if Widget <> nil then
-  begin
-    DetachEvents;
-    QGroupBox_destroy(QGroupBoxH(Widget));
-    Widget := nil;
-  end;
-
-  inherited Destroy;
-end;
-{$ENDIF}
-
 function TQtGroupBox.getText: WideString;
 begin
   QGroupBox_title(QGroupBoxH(Widget), @Result);
@@ -4851,6 +4730,16 @@ procedure TQtGroupBox.setText(const W: WideString);
 begin
   QGroupBox_setTitle(QGroupBoxH(Widget), @W);
   setLayoutThemeMargins(QWidget_Layout(Widget), Widget);
+end;
+
+procedure TQtGroupBox.setFocusPolicy(const APolicy: QtFocusPolicy);
+var
+  NewPolicy: QtFocusPolicy;
+begin
+  NewPolicy := APolicy;
+  if Assigned(LCLObject) and not LCLObject.TabStop then
+    NewPolicy := QtNoFocus;
+  inherited setFocusPolicy(NewPolicy);
 end;
 
 { TQtFrame }
@@ -5162,8 +5051,8 @@ var
   LMScroll: TLMScroll;
 begin
   {$ifdef VerboseQt}
-  writeln('TQtAbstractSlider.SlotValueChanged() to value ',p1);
- {$endif}
+  writeln('TQtAbstractSlider.SlotValueChanged() to value ',p1,' inUpdate ',inUpdate);
+  {$endif}
  
   FillChar(LMScroll, SizeOf(LMScroll), #0);
 
@@ -5177,7 +5066,7 @@ begin
   LMScroll.Pos := p1;
   LMScroll.ScrollCode := SIF_POS;
 
-  if not SliderPressed then
+  if not SliderPressed and not InUpdate then
     DeliverMessage(LMScroll);
 end;
 
@@ -5219,24 +5108,17 @@ begin
 end;
 
 procedure TQtScrollBar.AttachEvents;
-var
-  Method: TMethod;
 begin
   inherited AttachEvents;
-  QAbstractSlider_rangeChanged_Event(Method) := @SlotRangeChanged;
-  QAbstractSlider_hook_hook_rangeChanged(FRangeChangedHook, Method);
+  QAbstractSlider_hook_hook_rangeChanged(FRangeChangedHook, @SlotRangeChanged);
 
-  QAbstractSlider_sliderMoved_Event(Method) := @SlotSliderMoved;
-  QAbstractSlider_hook_hook_sliderMoved(FSliderMovedHook, Method);
+  QAbstractSlider_hook_hook_sliderMoved(FSliderMovedHook, @SlotSliderMoved);
 
-  QAbstractSlider_sliderPressed_Event(Method) := @SlotSliderPressed;
-  QAbstractSlider_hook_hook_sliderPressed(FSliderPressedHook, Method);
+  QAbstractSlider_hook_hook_sliderPressed(FSliderPressedHook, @SlotSliderPressed);
 
-  QAbstractSlider_sliderReleased_Event(Method) := @SlotSliderReleased;
-  QAbstractSlider_hook_hook_sliderReleased(FSliderReleasedHook, Method);
+  QAbstractSlider_hook_hook_sliderReleased(FSliderReleasedHook, @SlotSliderReleased);
 
-  QAbstractSlider_valueChanged_Event(Method) := @SlotValueChanged;
-  QAbstractSlider_hook_hook_valueChanged(FValueChangedHook, Method);
+  QAbstractSlider_hook_hook_valueChanged(FValueChangedHook, @SlotValueChanged);
 end;
 
 { TQtToolBar }
@@ -5298,22 +5180,16 @@ begin
 end;
 
 procedure TQtTrackBar.AttachEvents;
-var
-  Method: TMethod;
 begin
   inherited AttachEvents;
   
-  QAbstractSlider_sliderMoved_Event(Method) := @SlotSliderMoved;
-  QAbstractSlider_hook_hook_sliderMoved(FSliderMovedHook, Method);
+  QAbstractSlider_hook_hook_sliderMoved(FSliderMovedHook, @SlotSliderMoved);
 
-  QAbstractSlider_sliderPressed_Event(Method) := @SlotSliderPressed;
-  QAbstractSlider_hook_hook_sliderPressed(FSliderPressedHook, Method);
+  QAbstractSlider_hook_hook_sliderPressed(FSliderPressedHook, @SlotSliderPressed);
 
-  QAbstractSlider_sliderReleased_Event(Method) := @SlotSliderReleased;
-  QAbstractSlider_hook_hook_sliderReleased(FSliderReleasedHook, Method);
+  QAbstractSlider_hook_hook_sliderReleased(FSliderReleasedHook, @SlotSliderReleased);
 
-  QAbstractSlider_valueChanged_Event(Method) := @SlotValueChanged;
-  QAbstractSlider_hook_hook_valueChanged(FValueChangedHook, Method);
+  QAbstractSlider_hook_hook_valueChanged(FValueChangedHook, @SlotValueChanged);
 end;
 
 procedure TQtTrackBar.SlotSliderMoved(p1: Integer); cdecl;
@@ -5431,14 +5307,11 @@ begin
 end;
 
 procedure TQtLineEdit.AttachEvents;
-var
-  Method: TMethod;
 begin
   inherited AttachEvents;
 
   FTextChanged := QLineEdit_hook_create(Widget);
-  QLineEdit_textChanged_Event(Method) := @SignalTextChanged;
-  QLineEdit_hook_hook_textChanged(FTextChanged, Method);
+  QLineEdit_hook_hook_textChanged(FTextChanged, @SignalTextChanged);
 end;
 
 procedure TQtLineEdit.DetachEvents;
@@ -5476,8 +5349,13 @@ end;
 procedure TQtLineEdit.setReadOnly(const AReadOnly: Boolean);
 begin
   QLineEdit_setReadOnly(QLineEditH(Widget), AReadOnly);
-  if AReadOnly and Assigned(LCLObject) and not (LCLObject.TabStop) then
-    setFocusPolicy(QtNoFocus);
+  if Assigned(LCLObject) then
+  begin
+    if AReadOnly and not LCLObject.TabStop then
+      setFocusPolicy(QtNoFocus)
+    else
+      setFocusPolicy(QtClickFocus);
+  end;
 end;
 
 procedure TQtLineEdit.setSelection(const AStart, ALength: Integer);
@@ -5510,11 +5388,11 @@ end;
  ------------------------------------------------------------------------------}
 procedure TQtLineEdit.SignalTextChanged(p1: PWideString); cdecl;
 var
-   Msg: TLMessage;
+  Msg: TLMessage;
 begin
-   FillChar(Msg, SizeOf(Msg), #0);
-   Msg.Msg := CM_TEXTCHANGED;
-   DeliverMessage(Msg);
+  FillChar(Msg, SizeOf(Msg), #0);
+  Msg.Msg := CM_TEXTCHANGED;
+  DeliverMessage(Msg);
 end;
 
 { TQtTextEdit }
@@ -5611,8 +5489,13 @@ end;
 procedure TQtTextEdit.setReadOnly(const AReadOnly: Boolean);
 begin
   QTextEdit_setReadOnly(QTextEditH(Widget), AReadOnly);
-  if AReadOnly and Assigned(LCLObject) and not (LCLObject.TabStop) then
-    setFocusPolicy(QtNoFocus);
+  if Assigned(LCLObject) then
+  begin
+    if AReadOnly and not LCLObject.TabStop then
+      setFocusPolicy(QtNoFocus)
+    else
+      setFocusPolicy(QtClickFocus);
+  end;
 end;
 
 procedure TQtTextEdit.setSelection(const AStart, ALength: Integer);
@@ -5678,18 +5561,14 @@ begin
 end;
 
 procedure TQtTextEdit.AttachEvents;
-var
-  Method: TMethod;
 begin
   inherited AttachEvents;
 
   FUndoAvailableHook := QTextEdit_hook_create(Widget);
-  QTextEdit_undoAvailable_Event(Method) := @SignalUndoAvailable;
-  QTextEdit_hook_hook_undoAvailable(FUndoAvailableHook, Method);
+  QTextEdit_hook_hook_undoAvailable(FUndoAvailableHook, @SignalUndoAvailable);
 
   FViewportEventHook := QObject_hook_create(QAbstractScrollArea_viewport(QTextEditH(Widget)));
-  TEventFilterMethod(Method) := @viewportEventFilter;
-  QObject_hook_hook_events(FViewportEventHook, Method);
+  QObject_hook_hook_events(FViewportEventHook, @viewportEventFilter);
 
 end;
 
@@ -5737,13 +5616,10 @@ end;
 { TQtTabBar }
 
 procedure TQtTabBar.AttachEvents;
-var
-  Method: TMethod;
 begin
   inherited AttachEvents;
   FTabBarChangedHook := QTabBar_hook_create(QTabBarH(Widget));
-  QTabBar_currentChanged_Event(Method) := @SignalTabBarCurrentChanged;
-  QTabBar_hook_hook_currentChanged(FTabBarChangedHook, Method);
+  QTabBar_hook_hook_currentChanged(FTabBarChangedHook, @SignalTabBarCurrentChanged);
 end;
 
 procedure TQtTabBar.DetachEvents;
@@ -5918,8 +5794,6 @@ begin
 end;
 
 procedure TQtTabWidget.AttachEvents;
-var
-  Method: TMethod;
 begin
   inherited AttachEvents;
 
@@ -5927,14 +5801,10 @@ begin
   TabBar;
 
   FCurrentChangedHook := QTabWidget_hook_create(Widget);
-  QTabWidget_currentChanged_Event(Method) := @SignalCurrentChanged;
-  QTabWidget_hook_hook_currentChanged(FCurrentChangedHook, Method);
+  QTabWidget_hook_hook_currentChanged(FCurrentChangedHook, @SignalCurrentChanged);
 
   FCloseRequestedHook := QTabWidget_hook_create(Widget);
-{$ifdef USE_QT_45}
-  QTabWidget_tabCloseRequested_Event(Method) := @SignalCloseRequested;
-  QTabWidget_hook_hook_tabCloseRequested(FCloseRequestedHook, Method);
-{$endif}
+  QTabWidget_hook_hook_tabCloseRequested(FCloseRequestedHook, @SignalCloseRequested);
 end;
 
 procedure TQtTabWidget.DetachEvents;
@@ -6076,9 +5946,7 @@ end;
 
 procedure TQtTabWidget.setTabsClosable(AValue: Boolean);
 begin
-{$ifdef USE_QT_45}
   QTabWidget_setTabsClosable(QTabWidgetH(Widget), AValue);
-{$endif}
 end;
 
 function TQtTabWidget.tabAt(APoint: TPoint): Integer;
@@ -6342,8 +6210,6 @@ begin
 end;
 
 procedure TQtComboBox.AttachEvents;
-var
-  Method: TMethod;
 begin
   inherited AttachEvents;
 
@@ -6352,20 +6218,16 @@ begin
   FSelectHook := QComboBox_hook_create(Widget);
 
   // OnChange event if itemindex changed by mouse or kbd
-  QComboBox_activated_Event(Method) := @SlotActivate;
-  QComboBox_hook_hook_activated(FActivateHook, Method);
+  QComboBox_hook_hook_activated(FActivateHook, @SlotActivate);
   
   // OnChange event -> fires only when text changed
-  QComboBox_editTextChanged_Event(Method) := @SlotChange;
-  QComboBox_hook_hook_editTextChanged(FChangeHook, Method);
+  QComboBox_hook_hook_editTextChanged(FChangeHook, @SlotChange);
   // OnSelect event
-  QComboBox_currentIndexChanged_Event(Method) := @SlotSelect;
-  QComboBox_hook_hook_currentIndexChanged(FSelectHook, Method);
+  QComboBox_hook_hook_currentIndexChanged(FSelectHook, @SlotSelect);
   
   // DropList events
   FDropListEventHook := QObject_hook_create(DropList.Widget);
-  TEventFilterMethod(Method) := @EventFilter;
-  QObject_hook_hook_events(FDropListEventHook, Method);
+  QObject_hook_hook_events(FDropListEventHook, @EventFilter);
 end;
 
 procedure TQtComboBox.DetachEvents;
@@ -6737,6 +6599,9 @@ begin
     QLineEdit_text(LineEdit, @Result)
   else
     Result := '';
+  {$ifdef VerboseQt}
+  WriteLn('TQtAbstractSpinBox.GetText Result=',Result);
+  {$endif}
 end;
 
 function TQtAbstractSpinBox.getTextStatic: Boolean;
@@ -6757,20 +6622,20 @@ end;
 
 procedure TQtAbstractSpinBox.setText(const W: WideString);
 begin
+  {$ifdef VerboseQt}
+  WriteLn('TQtAbstractSpinBox.SetText W=',w);
+  {$endif}
   if (LineEdit <> nil) then
     QLineEdit_setText(LineEdit, @W)
 end;
 
 procedure TQtAbstractSpinBox.AttachEvents;
-var
-  Method: TMethod;
 begin
   inherited AttachEvents;
 
   FEditingFinishedHook := QAbstractSpinBox_hook_create(Widget);
   {TODO: find out which TLMessage should be sended }
-  QAbstractSpinBox_editingFinished_Event(Method) := @SignalEditingFinished;
-  QAbstractSpinBox_hook_hook_editingFinished(FEditingFinishedHook, Method);
+  QAbstractSpinBox_hook_hook_editingFinished(FEditingFinishedHook, @SignalEditingFinished);
 end;
 
 procedure TQtAbstractSpinBox.DetachEvents;
@@ -6794,8 +6659,8 @@ begin
      press TabKey to select next control, but if we
      connect OnKeyDown and say eg. VK_RETURN: SelectNext(ActiveControl, true, true)
      then spinedit text is always selected, nothing important but looks ugly.}
-//  Msg.Msg := LM_EXIT;
-//  DeliverMessage(Msg);
+  //  Msg.Msg := LM_EXIT;
+  //  DeliverMessage(Msg);
 end;
 
 { TQtFloatSpinBox }
@@ -6805,6 +6670,10 @@ begin
   // Creates the widget
   {$ifdef VerboseQt}
     WriteLn('TQtFloatSpinBox.Create');
+  {$endif}
+  {$ifdef CPU64 and not WIN64}
+  FFixValue := 0;
+  FParentShowPassed := 0;
   {$endif}
   Result := QDoubleSpinBox_create();
 end;
@@ -6840,13 +6709,10 @@ begin
 end;
 
 procedure TQtFloatSpinBox.AttachEvents;
-var
-  Method: TMethod;
 begin
   inherited AttachEvents;
   FValueChangedHook := QDoubleSpinBox_hook_create(Widget);
-  QDoubleSpinBox_valueChanged_Event(Method) := @SignalValueChanged;
-  QDoubleSpinBox_hook_hook_valueChanged(FValueChangedHook, Method);
+  QDoubleSpinBox_hook_hook_valueChanged(FValueChangedHook, @SignalValueChanged);
 end;
 
 procedure TQtFloatSpinBox.DetachEvents;
@@ -6855,13 +6721,38 @@ begin
   inherited DetachEvents;
 end;
 
+{$ifdef CPU64 and not WIN64}
+{$note this is workaround for qt-4.5.2(3) 64bit bug when
+ QDoubleSpinBox looses it's value inside QEventShowToParent}
+function TQtFloatSpinBox.EventFilter(Sender: QObjectH; Event: QEventH
+  ): Boolean; cdecl;
+begin
+  if FParentShowPassed = 0 then
+    FFixValue := getValue;
+
+  Result := inherited EventFilter(Sender, Event);
+
+  if (FParentShowPassed = 1) and
+    (FFixValue <> getValue) then
+  begin
+    inc(FParentShowPassed);
+    setValue(FFixValue);
+  end;
+
+  if (QEvent_type(Event) = QEventShowToParent) and
+    (FParentShowPassed = 0) then
+    inc(FParentShowPassed);
+end;
+{$endif}
+
 procedure TQtFloatSpinBox.SignalValueChanged(p1: Double); cdecl;
 var
    Msg: TLMessage;
 begin
   FillChar(Msg, SizeOf(Msg), #0);
   Msg.Msg := CM_TEXTCHANGED;
-  DeliverMessage(Msg);
+  if not InUpdate then
+    DeliverMessage(Msg);
 end;
 
 { TQtSpinBox }
@@ -6901,13 +6792,10 @@ begin
 end;
 
 procedure TQtSpinBox.AttachEvents;
-var
-  Method: TMethod;
 begin
   inherited AttachEvents;
   FValueChangedHook := QSpinBox_hook_create(Widget);
-  QSpinBox_valueChanged_Event(Method) := @SignalValueChanged;
-  QSpinBox_hook_hook_valueChanged(FValueChangedHook, Method);
+  QSpinBox_hook_hook_valueChanged(FValueChangedHook, @SignalValueChanged);
 end;
 
 procedure TQtSpinBox.DetachEvents;
@@ -6922,7 +6810,8 @@ var
 begin
   FillChar(Msg, SizeOf(Msg), #0);
   Msg.Msg := CM_TEXTCHANGED;
-  DeliverMessage(Msg);
+  if not InUpdate then
+    DeliverMessage(Msg);
 end;
 
 function TQtListWidget.CreateWidget(const AParams: TCreateParams): QWidgetH;
@@ -6933,77 +6822,57 @@ begin
 end;
 
 procedure TQtListWidget.AttachEvents;
-var
-  Method: TMethod;
 begin
   inherited AttachEvents;
   
   FSelectionChangeHook := QListWidget_hook_create(Widget);
   FCurrentItemChangeHook := QListWidget_hook_create(Widget);
-  FItemDoubleClickedHook := QListWidget_hook_create(Widget);
   FItemClickedHook := QListWidget_hook_create(Widget);
   FItemTextChangedHook := QListWidget_hook_create(Widget);
 
   // OnSelectionChange event
-  QListWidget_itemSelectionChanged_Event(Method) := @signalSelectionChanged;
-  QListWidget_hook_hook_itemSelectionChanged(FSelectionChangeHook, Method);
-
-  QListWidget_currentItemChanged_Event(Method) := @signalCurrentItemChange;
-  QListWidget_hook_hook_currentItemChanged(FCurrentItemChangeHook, Method);
-
-  QListWidget_itemDoubleClicked_Event(Method) := @signalItemDoubleClicked;
-  QListWidget_hook_hook_ItemDoubleClicked(FItemDoubleClickedHook, Method);
-
-  QListWidget_itemClicked_Event(Method) := @signalItemClicked;
-  QListWidget_hook_hook_ItemClicked(FItemClickedHook, Method);
-
-  QListWidget_currentTextChanged_Event(Method) := @signalItemTextChanged;
-  QListWidget_hook_hook_currentTextChanged(FItemTextChangedHook, Method);
+  QListWidget_hook_hook_itemSelectionChanged(FSelectionChangeHook, @signalSelectionChanged);
+  QListWidget_hook_hook_currentItemChanged(FCurrentItemChangeHook, @signalCurrentItemChange);
+  QListWidget_hook_hook_itemClicked(FSelectionChangeHook, @signalItemClicked);
+  QListWidget_hook_hook_currentTextChanged(FItemTextChangedHook, @signalItemTextChanged);
 end;
 
 procedure TQtListWidget.DetachEvents;
 begin
   QListWidget_hook_destroy(FSelectionChangeHook);
   QListWidget_hook_destroy(FCurrentItemChangeHook);
-  QListWidget_hook_destroy(FItemDoubleClickedHook);
   QListWidget_hook_destroy(FItemClickedHook);
   QListWidget_hook_destroy(FItemTextChangedHook);
 
   inherited DetachEvents;
 end;
 
-procedure TQtListWidget.SlotMouseCheckListBox(Sender: QObjectH; Event: QEventH
-  ); cdecl;
-var
-  MousePos: TQtPoint;
-  x: Integer;
-  w: QListWidgetItemH;
-begin
-  if (QEvent_type(Event) = QEventMouseButtonPress) and
-    (QMouseEvent_button(QMouseEventH(Event)) = QtLeftButton) then
-  begin
-    MousePos := QMouseEvent_pos(QMouseEventH(Event))^;
-    w := QListWidget_itemAt(QListWidgetH(Widget), @MousePos);
-    if (w <> nil) and
-     ((QListWidgetItem_flags(w) and QtItemIsUserCheckable) <> 0) then
-    begin
-      x := QStyle_pixelMetric(QApplication_style(), QStylePM_IndicatorWidth,
-        nil, Widget);
-      if ((MousePos.X > 2) and (MousePos.X < (X + 2))) then
-        {we are using signalItemClicked here !}
-      else
-        SlotMouse(Sender, Event);
-    end else
-      SlotMouse(Sender, Event);
-  end else
-    SlotMouse(Sender, Event);
-end;
-
 function TQtListWidget.itemViewViewportEventFilter(Sender: QObjectH;
   Event: QEventH): Boolean; cdecl;
+var
+  Item: QListWidgetItemH;
+  MousePos: TQtPoint;
+  X: Integer;
+
+  procedure SendEventToParent;
+  var
+    AEvent: QEventH;
+    Modifiers: QtKeyboardModifiers;
+  begin
+    Modifiers := QApplication_keyboardModifiers();
+    AEvent := QMouseEvent_create(QEvent_type(Event),
+      QMouseEvent_pos(QMouseEventH(Event)),
+      QMouseEvent_globalPos(QMouseEventH(Event)),
+      QMouseEvent_button(QMouseEventH(Event)),
+      QMouseEvent_buttons(QMouseEventH(Event)),
+      Modifiers);
+    QCoreApplication_postEvent(Widget, AEvent, 1);
+  end;
+
 begin
   Result := False;
   QEvent_accept(Event);
+
   if (LCLObject <> nil) then
   begin
     case QEvent_type(Event) of
@@ -7011,10 +6880,32 @@ begin
       QEventMouseButtonRelease,
       QEventMouseButtonDblClick:
       begin
-        if (LCLObject.ClassType = TCheckListBox) then
-          SlotMouseCheckListBox(Sender, Event)
-        else
-          SlotMouse(Sender, Event);
+        if (LCLObject.ClassType = TCheckListBox) and
+          (QEvent_type(Event) <> QEventMouseButtonDblClick) and
+          (QMouseEvent_button(QMouseEventH(Event)) = QtLeftButton) then
+        begin
+          MousePos := QMouseEvent_pos(QMouseEventH(Event))^;
+          Item := QListWidget_itemAt(QListWidgetH(Widget), @MousePos);
+          if (Item <> nil) and
+            ((QListWidgetItem_flags(Item) and QtItemIsUserCheckable) <> 0) then
+          begin
+            x := QStyle_pixelMetric(QApplication_style(), QStylePM_IndicatorWidth,
+              nil, Widget);
+            if ((MousePos.X > 2) and (MousePos.X < (X + 2))) then
+              {signalItemClicked() fires !}
+            else
+              SendEventToParent;
+          end else
+            SendEventToParent;
+        end else
+          SendEventToParent;
+      end;
+      else
+      begin
+        {do not change selection if mousepressed and mouse moved}
+        Result := (QEvent_type(Event) = QEventMouseMove) and
+          hasFocus and (QApplication_mouseButtons() > 0);
+        QEvent_ignore(Event);
       end;
     end;
   end;
@@ -7056,39 +6947,6 @@ begin
     DeliverMessage(Msg);
 end;
 
-{------------------------------------------------------------------------------
-  Function: TQtListWidget.SignalItemDoubleClicked
-  Params:  None
-  Returns: Nothing
- ------------------------------------------------------------------------------}
-procedure TQtListWidget.signalItemDoubleClicked(item: QListWidgetItemH); cdecl;
-begin
-  {does nothing at this time wait more featured LCL implementation
-   eg. OnItemDoubleClick}
-end;
-
-{------------------------------------------------------------------------------
-  Function: TQtListWidget.SignalItemClicked
-  Params:  None
-  Returns: Nothing
- ------------------------------------------------------------------------------}
-procedure TQtListWidget.signalItemClicked(item: QListWidgetItemH); cdecl;
-var
-  Msg: TLMessage;
-  ItemRow: Integer;
-begin
-  {does nothing at this time wait more featured LCL implementation
-   eg. OnItemClick}
-  if LCLObject.ClassType = TCheckListBox then
-  begin
-    FillChar(Msg, SizeOf(Msg), #0);
-    Msg.Msg := LM_CHANGED;
-    ItemRow := QListWidget_row(QListWidgetH(Widget), item);
-    Msg.WParam := ItemRow;
-    DeliverMessage(Msg);
-  end;
-end;
-
 procedure TQtListWidget.signalItemTextChanged(ANewText: PWideString); cdecl;
 var
   Msg: TLMessage;
@@ -7099,6 +6957,24 @@ begin
   FillChar(Msg, SizeOf(Msg), #0);
   Msg.Msg := CM_TEXTCHANGED;
   DeliverMessage(Msg);
+end;
+
+procedure TQtListWidget.signalItemClicked(item: QListWidgetItemH)cdecl;
+var
+  Msg: TLMessage;
+  ItemRow: Integer;
+begin
+  {$ifdef VerboseQt}
+    WriteLn('TQtListWidget.signalItemClicked');
+  {$endif}
+  if LCLObject.ClassType = TCheckListBox then
+  begin
+    FillChar(Msg, SizeOf(Msg), #0);
+    Msg.Msg := LM_CHANGED;
+    ItemRow := QListWidget_row(QListWidgetH(Widget), Item);
+    Msg.WParam := ItemRow;
+    DeliverMessage(Msg);
+  end;
 end;
 
 procedure TQtListWidget.ItemDelegatePaint(painter: QPainterH;
@@ -7288,6 +7164,11 @@ begin
   Result := QHeaderView_minimumSectionSize(QHeaderViewH(Widget));
 end;
 
+function TQtHeaderView.SortIndicatorOrder: QtSortOrder;
+begin
+  Result := QHeaderView_sortIndicatorOrder(QHeaderViewH(Widget));
+end;
+
 procedure TQtHeaderView.setClickable(const AValue: Boolean);
 begin
   QHeaderView_setClickable(QHeaderViewH(Widget), AValue);
@@ -7296,6 +7177,17 @@ end;
 procedure TQtHeaderView.setMinSectionSize(const AValue: Integer);
 begin
   QHeaderView_setMinimumSectionSize(QHeaderViewH(Widget), AValue);
+end;
+
+procedure TQtHeaderView.SetSortIndicator(const AColumn: Integer;
+  const AOrder: QtSortOrder);
+begin
+  QHeaderView_setSortIndicator(QHeaderViewH(Widget), AColumn, AOrder);
+end;
+
+procedure TQtHeaderView.SetSortIndicatorVisible(AVisible: Boolean);
+begin
+  QHeaderView_setSortIndicatorShown(QHeaderViewH(Widget), AVisible);
 end;
 
 {------------------------------------------------------------------------------
@@ -7313,13 +7205,10 @@ begin
 end;
 
 procedure TQtHeaderView.AttachEvents;
-var
-  Method: TMethod;
 begin
   inherited AttachEvents;
   FSelectionClicked := QHeaderView_hook_create(Widget);
-  QHeaderView_sectionClicked_Event(Method) := @SignalSectionClicked;
-  QHeaderView_hook_hook_sectionClicked(FSelectionClicked, Method);
+  QHeaderView_hook_hook_sectionClicked(FSelectionClicked, @SignalSectionClicked);
 end;
 
 procedure TQtHeaderView.DetachEvents;
@@ -7397,11 +7286,6 @@ begin
   QHeaderView_setStretchLastSection(QHeaderViewH(Widget), AValue);
 end;
 
-function TQtHeaderView.sortIndicatorOrder: QtSortOrder;
-begin
-  Result := QHeaderView_sortIndicatorOrder(QHeaderViewH(Widget));
-end;
-
   { TQtTreeView }
 
 function TQtTreeView.getColVisible(AIndex: Integer): Boolean;
@@ -7467,6 +7351,7 @@ begin
     WriteLn('TQtTreeWidget.Create');
   {$endif}
   FSyncingItems := False;
+  FSorting := False;
   Result := QTreeWidget_create();
   FHeader := nil;
   QWidget_setAttribute(Result, QtWA_NoMousePropagation);
@@ -7490,22 +7375,27 @@ begin
 end;
 
 function TQtTreeWidget.getHeader: TQtHeaderView;
-var
-  Method: TMethod;
 begin
   {while designing TQtHeaderView is a no-no}
   if not (csDesigning in LCLObject.ComponentState) and (FHeader = nil) then
   begin
     FHeader := TQtHeaderView.CreateFrom(LCLObject, QTreeView_header(QTreeViewH(Widget)));
     FHeaderEventFilterHook := QObject_hook_create(FHeader.Widget);
-    TEventFilterMethod(Method) := @headerViewEventFilter;
-    QObject_hook_hook_events(FHeaderEventFilterHook, Method);
+    QObject_hook_hook_events(FHeaderEventFilterHook, @headerViewEventFilter);
 
     FSectionClicked := QHeaderView_hook_create(FHeader.Widget);
-    QHeaderView_sectionClicked_Event(Method) := @FHeader.SignalSectionClicked;
-    QHeaderView_hook_hook_sectionClicked(FSectionClicked, Method);
+    QHeaderView_hook_hook_sectionClicked(FSectionClicked,
+      @FHeader.SignalSectionClicked);
+    FSortChanged := QHeaderView_hook_create(FHeader.Widget);
+    QHeaderView_hook_hook_sortIndicatorChanged(FSortChanged,
+      @SignalSortIndicatorChanged);
   end;
   Result := FHeader;
+end;
+
+function TQtTreeWidget.getItemCount: Integer;
+begin
+  Result := QTreeWidget_topLevelItemCount(QTreeWidgetH(Widget));
 end;
 
 function TQtTreeWidget.getMaxColSize(ACol: Integer): Integer;
@@ -7648,6 +7538,14 @@ begin
   QTreeWidget_setItemHidden(QTreeWidgetH(Widget), AItem, not AVisible);
 end;
 
+procedure TQtTreeWidget.setItemText(AItem: QTreeWidgetItemH;
+  const AColumn: Integer; const AText: WideString; const AAlignment: QtAlignment
+  );
+begin
+  QTreeWidgetItem_setText(AItem, AColumn, @AText);
+  QTreeWidgetItem_setTextAlignment(AItem, AColumn, AAlignment);
+end;
+
 function TQtTreeWidget.selCount: Integer;
 var
   FPInts: TPtrIntArray;
@@ -7664,11 +7562,7 @@ end;
 procedure TQtTreeWidget.setHeaderVisible(AVisible: Boolean);
 begin
   if (csDesigning in LCLObject.ComponentState) then
-    {$IF DEFINED(USE_QT_44) or DEFINED(USE_QT_45)}
     QTreeView_setHeaderHidden(QTreeViewH(Widget), not AVisible)
-    {$ELSE}
-    QWidget_setVisible(QTreeView_header(QTreeViewH(Widget)), AVisible)
-    {$ENDIF}
   else
     Header.setVisible(AVisible);
 end;
@@ -7723,8 +7617,6 @@ begin
 end;
 
 procedure TQtTreeWidget.AttachEvents;
-var
-  Method: TMethod;
 begin
   inherited AttachEvents;
 
@@ -7735,23 +7627,17 @@ begin
   FItemChangedHook := QTreeWidget_hook_create(Widget);
   FItemEnteredHook := QTreeWidget_hook_create(Widget);
   
-  QTreeWidget_currentItemChanged_Event(Method) := @SignalCurrentItemChanged;
-  QTreeWidget_hook_hook_currentItemChanged(FCurrentItemChangedHook, Method);
+  QTreeWidget_hook_hook_currentItemChanged(FCurrentItemChangedHook, @SignalCurrentItemChanged);
 
-  QTreeWidget_itemDoubleClicked_Event(Method) := @SignalItemDoubleClicked;
-  QTreeWidget_hook_hook_ItemDoubleClicked(FItemDoubleClickedHook, Method);
+  QTreeWidget_hook_hook_ItemDoubleClicked(FItemDoubleClickedHook, @SignalItemDoubleClicked);
 
-  QTreeWidget_itemClicked_Event(Method) := @SignalItemClicked;
-  QTreeWidget_hook_hook_ItemClicked(FItemClickedHook, Method);
+  QTreeWidget_hook_hook_ItemClicked(FItemClickedHook, @SignalItemClicked);
 
-  QTreeWidget_itemActivated_Event(Method) := @SignalItemActivated;
-  QTreeWidget_hook_hook_ItemActivated(FItemActivatedHook, Method);
+  QTreeWidget_hook_hook_ItemActivated(FItemActivatedHook, @SignalItemActivated);
 
-  QTreeWidget_itemChanged_Event(Method) := @SignalItemChanged;
-  QTreeWidget_hook_hook_ItemChanged(FItemChangedHook, Method);
+  QTreeWidget_hook_hook_ItemChanged(FItemChangedHook, @SignalItemChanged);
 
-  QTreeWidget_itemEntered_Event(Method) := @SignalItemEntered;
-  QTreeWidget_hook_hook_ItemEntered(FItemEnteredHook, Method);
+  QTreeWidget_hook_hook_ItemEntered(FItemEnteredHook, @SignalItemEntered);
 
 end;
 
@@ -7767,6 +7653,8 @@ begin
     QObject_hook_destroy(FHeaderEventFilterHook);
   if FSectionClicked <> nil then
     QHeaderView_hook_destroy(FSectionClicked);
+  if FSortChanged <> nil then
+    QHeaderView_hook_destroy(FSortChanged);
 
   inherited DetachEvents;
 end;
@@ -8040,6 +7928,21 @@ begin
   end;
 end;
 
+procedure TQtTreeWidget.SignalSortIndicatorChanged(ALogicalIndex: Integer;
+  AOrder: QtSortOrder)cdecl;
+begin
+  if FSorting or not Assigned(LCLObject) or not
+    QHeaderView_isSortIndicatorShown(QHeaderViewH(Header.Widget)) then
+    exit;
+  FSorting := True;
+  try
+    if ALogicalIndex >= 0 then
+      sortItems(ALogicalIndex, AOrder);
+  finally
+    FSorting := False;
+  end;
+end;
+
 {TQtTableView}
 
 function TQtTableView.CreateWidget(const Params: TCreateParams): QWidgetH;
@@ -8118,9 +8021,7 @@ function TQtMenu.CreateWidget(const APrams: TCreateParams): QWidgetH;
 begin
   FIcon := nil;
   Result := QMenu_create();
-  {$IF DEFINED(USE_QT_44) or DEFINED(USE_QT_45)}
   FDeleteLater := True;
-  {$ENDIF}
   FActionHandle := nil;;
 end;
 
@@ -8149,25 +8050,19 @@ begin
 end;
 
 procedure TQtMenu.AttachEvents;
-var
-  Method: TMethod;
 begin
   FTriggeredHook := QAction_hook_create(ActionHandle);
   FHoveredHook := QAction_hook_create(ActionHandle);
   FAboutToHideHook := QMenu_hook_create(Widget);
   FEventHook := QObject_hook_create(Widget);
 
-  QAction_triggered_Event(Method) := @SlotTriggered;
-  QAction_hook_hook_triggered(FTriggeredHook, Method);
+  QAction_hook_hook_triggered(FTriggeredHook, @SlotTriggered);
 
-  QAction_hovered_Event(Method) := @SlotHovered;
-  QAction_hook_hook_hovered(FHoveredHook, Method);
+  QAction_hook_hook_hovered(FHoveredHook, @SlotHovered);
   
-  QMenu_aboutToHide_Event(Method) := @SlotAboutToHide;
-  QMenu_hook_hook_aboutToHide(FAboutToHideHook, Method);
+  QMenu_hook_hook_aboutToHide(FAboutToHideHook, @SlotAboutToHide);
 
-  TEventFilterMethod(Method) := @EventFilter;
-  QObject_hook_hook_events(FEventHook, Method);
+  QObject_hook_hook_events(FEventHook, @EventFilter);
 end;
 
 procedure TQtMenu.DetachEvents;
@@ -8201,11 +8096,7 @@ end;
 procedure TQtMenu.SlotAboutToHide; cdecl;
 begin
   if FMenuItem.Menu is TPopupMenu then
-    {$IF DEFINED(USE_QT_44) or DEFINED(USE_QT_45)}
     DoPopupClose;
-    {$ELSE}
-    QCoreApplication_postEvent(Widget, QEvent_create(LCLQt_PopupMenuClose));
-    {$ENDIF}
 end;
 
 procedure TQtMenu.DoPopupClose;
@@ -8425,14 +8316,11 @@ begin
 end;
 
 procedure TQtProgressBar.AttachEvents;
-var
-  Method: TMethod;
 begin
   inherited AttachEvents;
 
   FValueChangedHook := QProgressBar_hook_create(Widget);
-  QProgressBar_valueChanged_Event(Method) := @SignalValueChanged;
-  QProgressBar_hook_hook_valueChanged(FValueChangedHook, Method);
+  QProgressBar_hook_hook_valueChanged(FValueChangedHook, @SignalValueChanged);
 end;
 
 procedure TQtProgressBar.DetachEvents;
@@ -8975,7 +8863,7 @@ begin
   if not FFrameOnlyAroundContents then
   begin
     if (verticalScrollBar.getVisibleTo(Widget)) then
-        dec(Result.Right, verticalScrollBar.getWidth);
+      dec(Result.Right, verticalScrollBar.getWidth);
 
     if (horizontalScrollBar.getVisibleTo(Widget)) then
       dec(Result.Bottom, horizontalScrollBar.getHeight);
@@ -9010,7 +8898,6 @@ end;
 procedure TQtCustomControl.viewportNeeded;
 var
   AParams: TCreateParams;
-  Method: TMethod;
 begin
   if FViewPortWidget <> niL then
     exit;
@@ -9022,20 +8909,17 @@ begin
   FViewPortWidget.FOwner := Self;
   FViewPortWidget.AttachEvents; // some event will be redirected to scroll area
 
-  QLCLAbstractScrollArea_viewportEvent_Override(Method) := @ViewPortEventFilter;
-  QLCLAbstractScrollArea_override_viewportEvent(QLCLAbstractScrollAreaH(Widget), Method);
+  QLCLAbstractScrollArea_override_viewportEvent(QLCLAbstractScrollAreaH(Widget), @ViewPortEventFilter);
 
   setViewport(FViewPortWidget.Widget);
 end;
 
 procedure TQtCustomControl.viewportDelete;
-var
-  NilMethod: TMethod;
 begin
   if Assigned(FViewPortWidget) then
   begin
-    FillChar(NilMethod, SizeOf(NilMethod), 0);
-    QLCLAbstractScrollArea_override_viewportEvent(QLCLAbstractScrollAreaH(Widget), NilMethod);
+    QLCLAbstractScrollArea_override_viewportEvent(QLCLAbstractScrollAreaH(Widget),
+      QLCLAbstractScrollArea_viewportEvent_Override(NilMethod));
     FreeAndNil(FViewPortWidget);
   end;
 end;
@@ -9059,7 +8943,6 @@ end;
 
 procedure TQtCalendar.AttachEvents;
 var
-  Method: TMethod;
   i: integer;
   Children: TPtrIntArray;
   AnObject: QObjectH;
@@ -9071,17 +8954,13 @@ begin
   FSelectionChangedHook := QCalendarWidget_hook_create(Widget);
   FCurrentPageChangedHook := QCalendarWidget_hook_create(Widget);
   
-  QCalendarWidget_clicked_Event(Method) := @SignalClicked;
-  QCalendarWidget_hook_hook_clicked(FClickedHook, Method);
+  QCalendarWidget_hook_hook_clicked(FClickedHook, @SignalClicked);
 
-  QCalendarWidget_activated_Event(Method) := @SignalActivated;
-  QCalendarWidget_hook_hook_activated(FActivatedHook, Method);
+  QCalendarWidget_hook_hook_activated(FActivatedHook, @SignalActivated);
 
-  QCalendarWidget_selectionChanged_Event(Method) := @SignalSelectionChanged;
-  QCalendarWidget_hook_hook_selectionChanged(FSelectionChangedHook, Method);
+  QCalendarWidget_hook_hook_selectionChanged(FSelectionChangedHook, @SignalSelectionChanged);
 
-  QCalendarWidget_currentPageChanged_Event(Method) := @SignalCurrentPageChanged;
-  QCalendarWidget_hook_hook_currentPageChanged(FCurrentPageChangedHook, Method);
+  QCalendarWidget_hook_hook_currentPageChanged(FCurrentPageChangedHook, @SignalCurrentPageChanged);
 
   QObject_children(Widget, @Children);
   for i := 0 to High(Children) do
@@ -9093,8 +8972,7 @@ begin
       if QObject_inherits(AnObject,'QAbstractScrollArea') then
       begin
         FCalViewportEventHook := QObject_hook_create(QAbstractScrollArea_viewport(QAbstractScrollAreaH(AnObject)));
-        TEventFilterMethod(Method) := @calViewportEventFilter;
-        QObject_hook_hook_events(FCalViewportEventHook, Method);
+        QObject_hook_hook_events(FCalViewportEventHook, @calViewportEventFilter);
       end;
     end;
   end;
@@ -9295,20 +9173,14 @@ function TQtHintWindow.CreateWidget(const AParams: TCreateParams): QWidgetH;
 begin
   FHasPaint := True;
   Result := QWidget_create(nil, QtToolTip);
-  {$IF DEFINED(USE_QT_44) or DEFINED(USE_QT_45)}
   FDeleteLater := True;
-  {$ENDIF}
   MenuBar := nil;
 end;
 
 procedure TQtHintWindow.SetDefaultColorRoles;
 begin
- {$IF DEFINED(USE_QT_44) or DEFINED(USE_QT_45)}
   WidgetColorRole := QPaletteToolTipBase;
   TextColorRole := QPaletteToolTipText;
- {$ELSE}
- inherited SetDefaultColorRoles;
- {$ENDIF}
 end;
 
 { TQtPage }
@@ -9317,11 +9189,7 @@ function TQtPage.CreateWidget(const AParams: TCreateParams): QWidgetH;
 begin
   FHasPaint := True;
   Result := QWidget_create;
-  {$IFNDEF QTOPIA}
-  {$IFDEF LINUX}
   QWidget_setAutoFillBackground(Result, True);
-  {$ENDIF}
-  {$ENDIF}
   QWidget_setAttribute(Result, QtWA_NoMousePropagation);
 end;
 
@@ -9388,18 +9256,14 @@ begin
 end;
 
 procedure TQtAbstractItemView.SetOwnerDrawn(const AValue: Boolean);
-var
-  Method: TMethod;
 begin
   if AValue and (FNewDelegate = nil) then
   begin
     FNewDelegate := QLCLItemDelegate_create(Widget);
 
-    QLCLItemDelegate_sizeHint_Override(Method) := @ItemDelegateSizeHint;
-    QLCLItemDelegate_override_sizeHint(FNewDelegate, Method);
+    QLCLItemDelegate_override_sizeHint(FNewDelegate, @ItemDelegateSizeHint);
 
-    QLCLItemDelegate_paint_Override(Method) := @ItemDelegatePaint;
-    QLCLItemDelegate_override_Paint(FNewDelegate, Method);
+    QLCLItemDelegate_override_Paint(FNewDelegate, @ItemDelegatePaint);
 
     FOldDelegate := QAbstractItemView_itemDelegate(QAbstractItemViewH(Widget));
     QAbstractItemView_setItemDelegate(QAbstractItemViewH(Widget), FNewDelegate);
@@ -9468,8 +9332,6 @@ begin
 end;
 
 procedure TQtAbstractItemView.AttachEvents;
-var
-  Method: TMethod;
 begin
   inherited AttachEvents;
   FSignalActivated := QAbstractItemView_hook_create(Widget);
@@ -9479,27 +9341,20 @@ begin
   FSignalPressed := QAbstractItemView_hook_create(Widget);
   FSignalViewportEntered := QAbstractItemView_hook_create(Widget);
   
-  QAbstractItemView_activated_Event(Method) := @SignalActivated;
-  QAbstractItemView_hook_hook_activated(FSignalActivated, Method);
+  QAbstractItemView_hook_hook_activated(FSignalActivated, @SignalActivated);
 
-  QAbstractItemView_clicked_Event(Method) := @SignalClicked;
-  QAbstractItemView_hook_hook_clicked(FSignalClicked, Method);
+  QAbstractItemView_hook_hook_clicked(FSignalClicked, @SignalClicked);
   
-  QAbstractItemView_doubleClicked_Event(Method) := @SignalDoubleClicked;
-  QAbstractItemView_hook_hook_doubleClicked(FSignalDoubleClicked, Method);
+  QAbstractItemView_hook_hook_doubleClicked(FSignalDoubleClicked, @SignalDoubleClicked);
   
-  QAbstractItemView_entered_Event(Method) := @SignalEntered;
-  QAbstractItemView_hook_hook_entered(FSignalEntered, Method);
+  QAbstractItemView_hook_hook_entered(FSignalEntered, @SignalEntered);
 
-  QAbstractItemView_pressed_Event(Method) := @SignalPressed;
-  QAbstractItemView_hook_hook_pressed(FSignalPressed, Method);
+  QAbstractItemView_hook_hook_pressed(FSignalPressed, @SignalPressed);
 
-  QAbstractItemView_viewportEntered_Event(Method) := @SignalViewportEntered;
-  QAbstractItemView_hook_hook_viewportEntered(FSignalViewportEntered, Method);
+  QAbstractItemView_hook_hook_viewportEntered(FSignalViewportEntered, @SignalViewportEntered);
 
   FAbstractItemViewportEventHook := QObject_hook_create(QAbstractScrollArea_viewport(QAbstractScrollAreaH(Widget)));
-  TEventFilterMethod(Method) := @itemViewViewportEventFilter;
-  QObject_hook_hook_events(FAbstractItemViewportEventHook, Method);
+  QObject_hook_hook_events(FAbstractItemViewportEventHook, @itemViewViewportEventFilter);
 end;
 
 procedure TQtAbstractItemView.DetachEvents;
@@ -9526,6 +9381,13 @@ begin
       QEventMouseButtonPress,
       QEventMouseButtonRelease,
       QEventMouseButtonDblClick: SlotMouse(Sender, Event);
+      else
+      begin
+        {do not change selection if mousepressed and mouse moved}
+        Result := (QEvent_type(Event) = QEventMouseMove) and
+          hasFocus and (QApplication_mouseButtons() > 0);
+        QEvent_ignore(Event);
+      end;
     end;
   end;
 end;
@@ -9639,8 +9501,6 @@ begin
 end;
 
 procedure TQtFileDialog.AttachEvents;
-var
-  Method: TMethod;
 begin
   inherited AttachEvents;
 
@@ -9648,14 +9508,11 @@ begin
   FDirecotyEnteredHook := QFileDialog_hook_create(Widget);
   FFilterSelectedHook := QFileDialog_hook_create(Widget);
 
-  QFileDialog_filterSelected_Event(Method) := @FilterSelectedEvent;
-  QFileDialog_hook_hook_filterSelected(FFilterSelectedHook, Method);
+  QFileDialog_hook_hook_filterSelected(FFilterSelectedHook, @FilterSelectedEvent);
 
-  QFileDialog_currentChanged_Event(Method) := @CurrentChangedEvent;
-  QFileDialog_hook_hook_currentChanged(FCurrentChangedHook, Method);
+  QFileDialog_hook_hook_currentChanged(FCurrentChangedHook, @CurrentChangedEvent);
 
-  QFileDialog_directoryEntered_Event(Method) := @DirectoryEnteredEvent;
-  QFileDialog_hook_hook_directoryEntered(FDirecotyEnteredHook, Method);
+  QFileDialog_hook_hook_directoryEntered(FDirecotyEnteredHook, @DirectoryEnteredEvent);
 end;
 
 procedure TQtFileDialog.DetachEvents;
@@ -9718,11 +9575,7 @@ end;
 
 procedure TQtFileDialog.setFilter(const AFilter: WideString);
 begin
-  {$IF DEFINED(USE_QT_44) or DEFINED(USE_QT_45)}
   QFileDialog_setNameFilter(QFileDialogH(Widget), @AFilter);
-  {$ELSE}
-  QFileDialog_setFilter(QFileDialogH(Widget), @AFilter);
-  {$ENDIF}
 end;
 
 procedure TQtFileDialog.setLabelText(const ALabel: QFileDialogDialogLabel; const AText: WideString);
@@ -9737,11 +9590,7 @@ end;
 
 procedure TQtFileDialog.setSelectedFilter(const ASelFilter: WideString);
 begin
-  {$IF DEFINED(USE_QT_44) or DEFINED(USE_QT_45)}
   QFileDialog_selectNameFilter(QFileDialogH(Widget), @ASelFilter);
-  {$ELSE}
-  QFileDialog_selectFilter(QFileDialogH(Widget), @ASelFilter);
-  {$ENDIF}
 end;
 
 procedure TQtFileDialog.setViewMode(const AMode: QFileDialogViewMode);
@@ -9782,11 +9631,7 @@ end;
 
 procedure TQtFileDialog.getFilters(const retval: QStringListH);
 begin
-  {$IF DEFINED(USE_QT_44) or DEFINED(USE_QT_45)}
   QFileDialog_nameFilters(QFileDialogH(Widget), retval);
-  {$ELSE}
-  QFileDialog_filters(QFileDialogH(Widget), retval);
-  {$ENDIF}
 end;
 
 { TQtGraphicView }
@@ -10002,15 +9847,12 @@ begin
 end;
 
 procedure TQtDesignWidget.AttachEvents;
-var
-  Method: TMethod;
 begin
   inherited AttachEvents;
   if FDesignControl <> nil then
   begin
     FDesignControlEventHook := QObject_hook_create(FDesignControl);
-    TEventFilterMethod(Method) := @DesignControlEventFilter;
-    QObject_hook_hook_events(FDesignControlEventHook, Method);
+    QObject_hook_hook_events(FDesignControlEventHook, @DesignControlEventFilter);
   end;
 end;
 
@@ -10108,13 +9950,10 @@ begin
 end;
 
 procedure TQtMessageBox.AttachEvents;
-var
-  Method: TMethod;
 begin
   inherited AttachEvents;
   FMBEventHook := QObject_hook_create(Widget);
-  TEventFilterMethod(Method) := @EventFilter;
-  QObject_hook_hook_events(FMBEventHook, Method);
+  QObject_hook_hook_events(FMBEventHook, @EventFilter);
 end;
 
 procedure TQtMessageBox.DetachEvents;

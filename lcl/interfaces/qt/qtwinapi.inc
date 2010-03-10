@@ -628,6 +628,34 @@ begin
 end;
 
 {------------------------------------------------------------------------------
+  Function:  CreatePatternBrush
+  Params:  HBITMAP
+  Returns: HBRUSH
+ ------------------------------------------------------------------------------}
+
+function TQtWidgetSet.CreatePatternBrush(ABitmap: HBITMAP): HBRUSH;
+var
+  Image: QImageH;
+  QtBrush: TQtBrush;
+begin
+  {$ifdef VerboseQtWinAPI}
+    WriteLn('[WinAPI CreatePatternBrush]',' Bitmap=', dbghex(ABitmap));
+  {$endif}
+  Result := 0;
+  if ABitmap = 0 then
+    exit;
+  QtBrush := TQtBrush.Create(True);
+  Image := QImage_create(TQtImage(ABitmap).Handle);
+  try
+    QtBrush.setTextureImage(Image);
+  finally
+    QImage_destroy(Image);
+  end;
+
+  Result := HBRUSH(QtBrush);
+end;
+
+{------------------------------------------------------------------------------
   Function:  CreatePenIndirect
   Params:  none
   Returns: HPEN
@@ -640,7 +668,6 @@ var
 begin
   Result := 0;
   QtPen := TQtPen.Create(True);
-
   with LogPen do
   begin
     case lopnStyle and PS_STYLE_MASK of
@@ -1863,8 +1890,23 @@ function TQtWidgetSet.GetCapture: HWND;
 var
   w: QWidgetH;
   Widget: TQtWidget;
+  {$IFDEF MSWINDOWS}
+  AWin: HWND;
+  {$ENDIF}
 begin
+  {$IFDEF MSWINDOWS}
+  AWin := Windows.GetCapture;
+  if AWin <> 0 then
+    w := QWidget_find(AWin)
+  else
+    w := nil;
+
+  if (w = nil) and (QApplication_mouseButtons() > 0) then
+    w := QApplication_focusWidget();
+  {$ELSE}
   w := QWidget_mouseGrabber();
+  {$ENDIF}
+
   if w <> nil then
   begin
     // Capture widget can be child of complex control. In any case we should return TQtWidget as result.
@@ -2594,10 +2636,18 @@ begin
 end;
 
 function TQtWidgetSet.GetROP2(DC: HDC): Integer;
+var
+  QtDC: TQtDeviceContext absolute DC;
 begin
-  Result := 0;
-  {$ifdef VerboseQtWinAPI_MISSING_IMPLEMENTATION}
-    WriteLn('***** [WinAPI TQtWidgetSet.GetROP2] missing implementation ');
+  {$ifdef VerboseQtWinAPI}
+  writeln('> TQtWidgetSet.GetROP2() DC ',dbghex(DC));
+  {$endif}
+  Result := R2_COPYPEN;
+  if not IsValidDC(DC) then
+    exit;
+  Result := QtDC.Rop2;
+  {$ifdef VerboseQtWinAPI}
+  writeln('< TQtWidgetSet.GetROP2() DC ',dbghex(DC),' Result ',Result);
   {$endif}
 end;
 
@@ -2628,7 +2678,7 @@ begin
     ScrollBar := nil;
   if ScrollBar <> nil then
   begin
-    if BarKind in [SM_CYHSCROLL, SM_CYVSCROLL] then
+    if BarKind in [SM_CXHSCROLL, SM_CYVSCROLL] then
       Result := ScrollBar.getWidth
     else
       Result := ScrollBar.getHeight;
@@ -2857,11 +2907,7 @@ begin
   if FCachedColors[nIndex] = nil then
   begin
     case nIndex of
-      {$IF DEFINED(USE_QT_44) or DEFINED(USE_QT_45)}
       COLOR_SCROLLBAR               : Result:=GetColor(QPaletteActive,   QPaletteButton);
-      {$ELSE}
-      COLOR_SCROLLBAR               : Result:=GetColor(QPaletteActive,   QPaletteMid);
-      {$ENDIF}
       COLOR_BACKGROUND              : Result:=GetColor(QPaletteActive,   QPaletteWindow);
       COLOR_WINDOW                  : Result:=GetColor(QPaletteInActive, QPaletteBase);
       COLOR_WINDOWFRAME             : Result:=GetColor(QPaletteActive,   QPaletteShadow);
@@ -2878,13 +2924,8 @@ begin
       COLOR_BTNHIGHLIGHT            : Result:=GetColor(QPaletteActive,   QPaletteLight);
       COLOR_3DDKSHADOW              : Result:=GetColor(QPaletteActive,   QPaletteShadow);
       COLOR_3DLIGHT                 : Result:=GetColor(QPaletteActive,   QPaletteMidlight);
-      {$IF DEFINED(USE_QT_44) or DEFINED(USE_QT_45)}
       COLOR_INFOTEXT                : Result:=GetColor(QPaletteInActive,   QPaletteToolTipText);
       COLOR_INFOBK                  : Result:=GetColor(QPaletteInActive,   QPaletteToolTipBase);
-      {$ELSE}
-      COLOR_INFOTEXT                : Result:=GetClInfo(False);
-      COLOR_INFOBK                  : Result:=GetClInfo(True);
-      {$ENDIF}
       COLOR_HOTLIGHT                : Result:=GetColor(QPaletteActive,   QPaletteLight);
 
       // qt does not provide any methods to retrieve titlebar colors
@@ -4000,7 +4041,13 @@ begin
   w := TQtWidget(GetCapture);
   Result := w <> nil;
   if Result then
+  begin
+    {$IFDEF MSWINDOWS}
+    windows.ReleaseCapture;
+    {$ELSE}
     w.releaseMouse();
+    {$ENDIF}
+  end;
   {$ifdef VerboseQtWinAPI}
   WriteLn('[WinAPI ReleaseCapture] Capture = ', THandle(w));
   {$endif}
@@ -4396,7 +4443,11 @@ begin
     if Result <> 0 then
       ReleaseCapture;
     if AHandle <> 0 then
+     {$IFDEF MSWINDOWS}
+      Windows.SetCapture(AHandle);
+     {$ELSE}
       TQtWidget(AHandle).grabMouse();
+     {$ENDIF}
     {$ifdef VerboseQtWinAPI}
       WriteLn('[WinAPI SetCapture] Capture = ', Result, ' New capture = ', AHandle);
     {$endif}
@@ -4621,12 +4672,38 @@ begin
     result:=False;
 end;
 
+{------------------------------------------------------------------------------
+  Function: SetROP2
+  Params:  HDC, Raster OP mode
+  Returns: Old Raster OP mode
+
+  Please note that the bitwise raster operation modes, denoted with a
+  RasterOp prefix, are only natively supported in the X11 and
+  raster paint engines.
+  This means that the only way to utilize these modes on the Mac is
+  via a QImage.
+  The RasterOp denoted blend modes are not supported for pens and brushes
+  with alpha components. Also, turning on the QPainter::Antialiasing render
+  hint will effectively disable the RasterOp modes.
+ ------------------------------------------------------------------------------}
+function TQtWidgetSet.SetROP2(DC: HDC; Mode: Integer): Integer;
+var
+  QtDC: TQtDeviceContext absolute DC;
+begin
+  {$ifdef VerboseQtWinAPI}
+  writeln('TQtWidgetSet.SetROP2() DC ',dbghex(DC),' Mode ',Mode);
+  {$endif}
+  Result := R2_COPYPEN;
+  if not IsValidDC(DC) then
+    exit;
+  Result := QtDC.Rop2;
+  QtDC.Rop2 := Mode;
+end;
 
 {------------------------------------------------------------------------------
   Function: SetScrollInfo
   Params:  none
   Returns: The new position value
-
 
  ------------------------------------------------------------------------------}
 function TQtWidgetSet.SetScrollInfo(Handle : HWND; SBStyle : Integer;
@@ -4665,14 +4742,19 @@ var
 
     if (ScrollInfo.FMask and SIF_POS) <> 0 then
     begin
-      if (ScrollInfo.nPos < ScrollBar.getMin) then
-        ScrollInfo.nPos := ScrollBar.getMin
-      else
-      if (ScrollInfo.nPos > ScrollBar.getMax) then
-        ScrollInfo.nPos := ScrollBar.getMax;
+      ScrollBar.BeginUpdate;
+      try
+        if (ScrollInfo.nPos < ScrollBar.getMin) then
+          ScrollInfo.nPos := ScrollBar.getMin
+        else
+        if (ScrollInfo.nPos > ScrollBar.getMax) then
+          ScrollInfo.nPos := ScrollBar.getMax;
 
-      if (ScrollInfo.FMask and SIF_UPDATEPOLICY) = 0 then
-        ScrollBar.setValue(ScrollInfo.nPos);
+        if (ScrollInfo.FMask and SIF_UPDATEPOLICY) = 0 then
+          ScrollBar.setValue(ScrollInfo.nPos);
+      finally
+        ScrollBar.EndUpdate;
+      end;
     end;
 
     if (ScrollInfo.FMask and SIF_TRACKPOS) <> 0 then

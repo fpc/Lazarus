@@ -39,6 +39,7 @@ type
   // forward declarations
   TQtImage = class;
   TQtFontMetrics = class;
+  TRop2OrCompositionSupport = (rocNotSupported, rocSupported, rocUndefined);
 
   { TQtObject }
   TQtObject = class(TObject)
@@ -47,9 +48,7 @@ type
     FInEventCount: Integer;
     FReleaseInEvent: Boolean;
   public
-    {$IF DEFINED(USE_QT_44) or DEFINED(USE_QT_45)}
     FDeleteLater: Boolean;
-    {$ENDIF}
     FEventHook: QObject_hookH;
     TheObject: QObjectH;
     constructor Create; virtual; overload;
@@ -276,14 +275,22 @@ type
 
   TQtDeviceContext = class(TObject)
   private
+    FSupportRasterOps: TRop2OrCompositionSupport;
+    FSupportComposition: TRop2OrCompositionSupport;
+    FRopMode: Integer;
     FPenPos: TQtPoint;
     FOwnPainter: Boolean;
     SelFont: TQTFont;
     SelBrush: TQTBrush;
     SelPen: TQtPen;
     PenColor: TQColor;
+    function GetRop: Integer;
+    function DeviceSupportsComposition: Boolean;
+    function DeviceSupportsRasterOps: Boolean;
+    function R2ToQtRasterOp(AValue: Integer): QPainterCompositionMode;
     procedure RestorePenColor;
     procedure RestoreTextColor;
+    procedure SetRop(const AValue: Integer);
   public
     { public fields }
     Widget: QPainterH;
@@ -368,6 +375,7 @@ type
     procedure save;
     procedure restore;
     procedure translate(dx: Double; dy: Double);
+    property Rop2: Integer read GetRop write SetRop;
   end;
   
   { TQtPixmap }
@@ -678,6 +686,10 @@ const
   );
 
 const
+  Rop2CompSupported: Array[Boolean] of TRop2OrCompositionSupport =
+    (rocNotSupported, rocSupported);
+
+const
   SQTWSPrefix = 'TQTWidgetSet.';
 
 var
@@ -750,9 +762,7 @@ end;
 
 constructor TQtObject.Create;
 begin
-  {$IF DEFINED(USE_QT_44) or DEFINED(USE_QT_45)}
   FDeleteLater := False;
-  {$ENDIF}
   FEventHook := nil;
   FUpdateCount := 0;
   FInEventCount := 0;
@@ -763,17 +773,11 @@ destructor TQtObject.Destroy;
 begin
   if TheObject <> nil then
   begin
-    {$IF DEFINED(USE_QT_44) or DEFINED(USE_QT_45)}
     DetachEvents;
     if FDeleteLater then
       QObject_deleteLater(TheObject)
     else
       QObject_destroy(TheObject);
-    {$ELSE}
-    QCoreApplication_removePostedEvents(TheObject);
-    DetachEvents;
-    QObject_deleteLater(TheObject);
-    {$ENDIF}
     TheObject := nil;
   end;
   inherited Destroy;
@@ -783,21 +787,16 @@ procedure TQtObject.Release;
 begin
   if InEvent then
   begin
-    {$IF DEFINED(USE_QT_44) or DEFINED(USE_QT_45)}
     FDeleteLater := True;
-    {$ENDIF}
     FReleaseInEvent := True;
   end else
     Free;
 end;
 
 procedure TQtObject.AttachEvents;
-var
-  Method: TMethod;
 begin
   FEventHook := QObject_hook_create(TheObject);
-  TEventFilterMethod(Method) := @EventFilter;
-  QObject_hook_hook_events(FEventHook, Method);
+  QObject_hook_hook_events(FEventHook, @EventFilter);
 end;
 
 procedure TQtObject.DetachEvents;
@@ -1764,6 +1763,8 @@ begin
       Widget := QPainter_create(QWidget_to_QPaintDevice(Parent));
     end;
   end;
+
+  FRopMode := R2_COPYPEN;
   FOwnPainter := True;
   CreateObjects;
   FPenPos.X := 0;
@@ -1774,6 +1775,7 @@ constructor TQtDeviceContext.CreatePrinterContext(ADevice: QPrinterH);
 begin
   Parent := nil;
   Widget := QPainter_Create(ADevice);
+  FRopMode := R2_COPYPEN;
   FOwnPainter := True;
   CreateObjects;
   FPenPos.X := 0;
@@ -1782,6 +1784,7 @@ end;
 
 constructor TQtDeviceContext.CreateFromPainter(APainter: QPainterH);
 begin
+  FRopMode := R2_COPYPEN;
   Widget := APainter;
   Parent := nil;
   FOwnPainter := False;
@@ -1815,6 +1818,9 @@ end;
 
 procedure TQtDeviceContext.CreateObjects;
 begin
+  FSupportComposition := rocUndefined;
+  FSupportRasterOps := rocUndefined;
+
   vFont := TQtFont.Create(False);
   vFont.Owner := Self;
 
@@ -2037,6 +2043,106 @@ begin
   Result := True;
 end;
 
+function TQtDeviceContext.DeviceSupportsComposition: Boolean;
+var
+  Engine: QPaintEngineH;
+  AType: QPaintEngineType;
+begin
+
+  Result := (Widget <> nil) and QPainter_isActive(Widget);
+
+  if not Result then
+    exit;
+
+  Result := FSupportComposition = rocSupported;
+
+  if (FSupportComposition <> rocUndefined) then
+    exit;
+
+  Engine := QPainter_paintEngine(Widget);
+
+  if Engine <> nil then
+  begin
+    AType := QPaintEngine_type(Engine);
+    Result := not (AType in
+      [QPaintEngineX11, QPaintEngineWindows,
+       QPaintEngineQuickDraw, QPaintEngineCoreGraphics,
+       QPaintEngineQWindowSystem]);
+
+    FSupportComposition := Rop2CompSupported[Result];
+  end;
+end;
+
+function TQtDeviceContext.DeviceSupportsRasterOps: Boolean;
+var
+  Engine: QPaintEngineH;
+  AType: QPaintEngineType;
+begin
+
+  Result := (Widget <> nil) and QPainter_isActive(Widget);
+
+  if not Result then
+    exit;
+
+  Result := FSupportRasterOps = rocSupported;
+
+  if (FSupportRasterOps <> rocUndefined) then
+    exit;
+
+  Engine := QPainter_paintEngine(Widget);
+  if Engine <> nil then
+  begin
+    AType := QPaintEngine_type(Engine);
+    Result := not (AType in
+      [QPaintEngineQuickDraw, QPaintEngineCoreGraphics,
+       QPaintEngineQWindowSystem]);
+
+    FSupportRasterOps := Rop2CompSupported[Result];
+  end;
+end;
+
+{------------------------------------------------------------------------------
+  Function: TQtDeviceContext.R2ToQtRasterOp
+  Params:  Raster ops binary operator
+  Returns: QPainterCompositionMode
+ ------------------------------------------------------------------------------}
+function TQtDeviceContext.R2ToQtRasterOp(AValue: Integer): QPainterCompositionMode;
+begin
+  Result := QPainterCompositionMode_SourceOver;
+
+  if not DeviceSupportsRasterOps then
+    exit;
+
+  case AValue of
+
+    R2_BLACK: if DeviceSupportsComposition then
+                Result := QPainterCompositionMode_Clear;
+
+    R2_COPYPEN: Result := QPainterCompositionMode_SourceOver; // default
+    R2_MASKNOTPEN: Result := QPainterRasterOp_NotSourceAndDestination;
+    R2_MASKPEN: Result := QPainterRasterOp_SourceAndDestination;
+    R2_MASKPENNOT: Result := QPainterRasterOp_SourceAndNotDestination;
+    R2_MERGENOTPEN: Result := QPainterCompositionMode_SourceOver; // unsupported
+    R2_MERGEPEN: Result := QPainterRasterOp_SourceOrDestination;
+    R2_MERGEPENNOT: Result := QPainterCompositionMode_SourceOver; // unsupported
+
+    R2_NOP: if DeviceSupportsComposition then
+              Result := QPainterCompositionMode_Destination;
+    R2_NOT: if DeviceSupportsComposition then
+              Result := QPainterCompositionMode_SourceOut; // unsupported
+
+    R2_NOTCOPYPEN: Result := QPainterRasterOp_NotSource;
+    R2_NOTMASKPEN: Result := QPainterRasterOp_NotSourceOrNotDestination;
+    R2_NOTMERGEPEN: Result := QPainterRasterOp_NotSourceAndNotDestination;
+    R2_NOTXORPEN: Result := QPainterRasterOp_NotSourceXorDestination;
+
+    R2_WHITE: if DeviceSupportsComposition then
+                Result := QPainterCompositionMode_Screen;
+
+    R2_XORPEN: Result := QPainterRasterOp_SourceXorDestination;
+  end;
+end;
+
 {------------------------------------------------------------------------------
   Function: TQtDeviceContext.RestorePenColor
   Params:  None
@@ -2048,6 +2154,11 @@ begin
   writeln('TQtDeviceContext.RestorePenColor() ');
   {$endif}
   Qpainter_setPen(Widget, @PenColor);
+end;
+
+function TQtDeviceContext.GetRop: Integer;
+begin
+  Result := FRopMode;
 end;
 
 {------------------------------------------------------------------------------
@@ -2067,7 +2178,17 @@ begin
   QPen_color(CurPen, @PenColor);
   TxtColor := PenColor;
   ColorRefToTQColor(vTextColor, TxtColor);
-  Qpainter_setPen(Widget, @txtColor);
+  QPainter_setPen(Widget, @txtColor);
+end;
+
+procedure TQtDeviceContext.SetRop(const AValue: Integer);
+var
+  QtROPMode: QPainterCompositionMode;
+begin
+  FRopMode := AValue;
+  QtRopMode := R2ToQtRasterOp(AValue);
+  if QPainter_compositionMode(Widget) <> QtRopMode then
+    QPainter_setCompositionMode(Widget, QtROPMode);
 end;
 
 {------------------------------------------------------------------------------
@@ -2814,8 +2935,6 @@ end;
 { TQtSystemTrayIcon }
 
 constructor TQtSystemTrayIcon.Create(vIcon: QIconH);
-var
-  Method: TMethod;
 begin
   inherited Create;
 
@@ -2824,8 +2943,7 @@ begin
   else
     Handle := QSystemTrayIcon_create();
   FHook := QSystemTrayIcon_hook_create(Handle);
-  QSystemTrayIcon_activated_Event(Method) := @signalActivated;
-  QSystemTrayIcon_hook_hook_activated(FHook, Method);
+  QSystemTrayIcon_hook_hook_activated(FHook, @signalActivated);
 end;
 
 destructor TQtSystemTrayIcon.Destroy;
@@ -2993,13 +3111,10 @@ begin
 end;
 
 procedure TQtClipboard.AttachEvents;
-var
-  Method: TMethod;
 begin
   inherited AttachEvents;
   FClipDataChangedHook := QClipboard_hook_create(TheObject);
-  QClipboard_dataChanged_Event(Method) := @signalDataChanged;
-  QClipboard_hook_hook_dataChanged(FClipDataChangedHook, Method);
+  QClipboard_hook_hook_dataChanged(FClipDataChangedHook, @signalDataChanged);
 end;
 
 procedure TQtClipboard.signalDataChanged; cdecl;
@@ -3529,9 +3644,7 @@ constructor TQtTimer.CreateTimer(Interval: integer;
   const TimerFunc: TFNTimerProc; App: QObjectH);
 begin
   inherited Create;
-  {$IF DEFINED(USE_QT_44) or DEFINED(USE_QT_45)}
   FDeleteLater := True;
-  {$ENDIF}
   FAppObject := App;
 
   FCallbackFunc := TimerFunc;
@@ -3567,20 +3680,15 @@ begin
 end;
 
 procedure TQtTimer.AttachEvents;
-var
-  Method: TMethod;
 begin
   FTimerHook := QTimer_hook_create(QTimerH(TheObject));
-  QTimer_timeout_Event(Method) := @signalTimeout;
-  QTimer_hook_hook_timeout(FTimerHook, Method);
+  QTimer_hook_hook_timeout(FTimerHook, @signalTimeout);
   inherited AttachEvents;
 end;
 
 procedure TQtTimer.DetachEvents;
 begin
-  {$IF DEFINED(USE_QT_44) or DEFINED(USE_QT_45)}
   QTimer_stop(QTimerH(TheObject));
-  {$ENDIF}
   if FTimerHook <> nil then
     QTimer_hook_destroy(FTimerHook);
   inherited DetachEvents;
@@ -3727,7 +3835,7 @@ begin
   FWidgetRole := AWidgetColorRole;
   FTextRole := AWidgetTextColorRole;
   initializeSysColors;
-  {$IFDEF USE_QT_45}
+
   // ugly qt mac bug
   {$IFDEF DARWIN}
   if QWidget_backgroundRole(FWidget) <> FWidgetRole then
@@ -3736,7 +3844,7 @@ begin
     QWidget_setForegroundRole(FWidget, FTextRole);
   end;
   {$ENDIF}
-  {$ENDIF}
+
   FHandle := QPalette_create();
 end;
 

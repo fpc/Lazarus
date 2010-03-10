@@ -67,6 +67,7 @@ type
     FDockImage: QRubberBandH;
     FDragImageList: QWidgetH;
     FDragHotSpot: TPoint;
+    FDragImageLock: Boolean;
     FCachedColors: Array[0..MAX_SYS_COLORS + 1] of PLongWord;
     procedure ClearCachedColors;
     procedure SetOverrideCursor(const AValue: TObject);
@@ -132,7 +133,8 @@ type
     procedure SetQtDefaultDC(Handle: HDC); virtual;
     procedure InitStockItems; virtual;
     procedure FreeStockItems; virtual;
-    
+
+    property DragImageLock: Boolean read FDragImageLock write FDragImageLock;
     property OverrideCursor: TObject read FOverrideCursor write SetOverrideCursor;
 
     {$I qtwinapih.inc}

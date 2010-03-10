@@ -211,14 +211,14 @@ begin
   TmpFilter := AFileDialog.Filter;
   DialogFilter := AFileDialog.Filter;
   ASelectedFilter := '';
-  {$ifdef USE_QT_45}
+
   {we must remove all brackets since qt-45 doesn't like brackets
    outside filters,so our eg. Pascal source (*.pas;*.pp) | *.pas;*.pp
    becomes invalid after filters processing.}
   TmpFilter := StringReplace(TmpFilter,'(','',[rfReplaceAll]);
   TmpFilter := StringReplace(TmpFilter,')','',[rfReplaceAll]);
   DialogFilter := TmpFilter;
-  {$endif}
+
   TmpFilter := '';
 
   List := TStringList.Create;
@@ -320,12 +320,12 @@ begin
   {$ifdef darwin}
   QWidget_setWindowFlags(FileDialog.Widget, QtDialog or QtWindowSystemMenuHint or QtCustomizeWindowHint);
   {$endif}
-  {$ifdef USE_QT_45}
+
   {$note qt-4.5.0,qt-4.5.1 currently supports macosx only,
    others are non native when NOT QT_NATIVE_DIALOGS setted up.}
   QFileDialog_setOption(QFileDialogH(FileDialog.Widget),
     QFileDialogDontUseNativeDialog, False);
-  {$endif}
+
   FileDialog.AttachEvents;
   
   Result := THandle(FileDialog);
@@ -393,11 +393,10 @@ begin
       FileDialog.UserChoice := mrCancel;
     {$else}
 
-    {$ifdef USE_QT_45}
+
     QFileDialog_setOption(QFileDialogH(QtFileDialog.Widget),
       QFileDialogDontConfirmOverwrite,
       not (ofOverwritePrompt in TSaveDialog(FileDialog).Options));
-    {$endif}
 
     FileDialog.UserChoice := QtDialogCodeToModalResultMap[QDialogDialogCode(QtFileDialog.exec)];
     ReturnList := QStringList_create;
@@ -509,11 +508,9 @@ begin
     QtWindowSystemMenuHint or QtCustomizeWindowHint);
   {$endif}
 
-  {$ifdef USE_QT_45}
   {$note qt-4.5.0,qt-4.5.1 currently supports macosx only.}
   QFileDialog_setOption(QFileDialogH(FileDialog.Widget),
     QFileDialogDontUseNativeDialog, False);
-  {$endif}
 
   FileDialog.setFileMode(QFileDialogDirectoryOnly);
 
