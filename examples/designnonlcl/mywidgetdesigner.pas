@@ -153,10 +153,10 @@ procedure TMyWidgetMediator.Paint;
   procedure PaintWidget(AWidget: TMyWidget);
   var
     i: Integer;
-    DC: LongInt;
-    SavedDC: LongInt;
+    DC: HDC;
+    SavedDC: HDC;
     Child: TMyWidget;
-    SavedDC2: LongInt;
+    SavedDC2: HDC;
   begin
     with LCLForm.Canvas do begin
       // fill background
