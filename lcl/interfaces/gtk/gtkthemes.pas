@@ -74,7 +74,6 @@ type
   protected
     procedure DrawPixmap(DC: HDC; Area: PGdkRectangle; PixmapIndex: Byte); virtual;
 
-    function GdkRectFromRect(R: TRect): TGdkRectangle;
     function GetParamsCount(Details: TThemedElementDetails): Integer;
     function GetGtkStyleParams(DC: HDC; Details: TThemedElementDetails; AIndex: Integer): TGtkStyleParams; virtual;
 
@@ -172,17 +171,6 @@ begin
     end;
     if APixmapMask <> nil then
       gdk_pixmap_unref(APixmapMask);
-  end;
-end;
-
-function TGtkThemeServices.GdkRectFromRect(R: TRect): TGdkRectangle;
-begin
-  with Result, R do
-  begin
-    x := Left;
-    y := Top;
-    width := Right-Left;
-    height := Bottom-Top;
   end;
 end;
 

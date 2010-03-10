@@ -793,15 +793,7 @@ begin
     finally
       gtk_tree_path_free(Path);
     end;
-
-    with ItemRect do
-    begin
-      Result.Left := x;
-      Result.Top := y;
-      Result.Right := Width;
-      Result.Bottom := Height;
-    end;
-
+    Result := RectFromGdkRect(ItemRect);
   end;
 end;
 

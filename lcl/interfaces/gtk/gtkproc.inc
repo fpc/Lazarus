@@ -367,6 +367,27 @@ begin
   Result:=-1;
 end;
 
+function RectFromGdkRect(AGdkRect: TGdkRectangle): TRect;
+begin
+  with Result, AGdkRect do
+  begin
+    Left := x;
+    Top := y;
+    Right := Width + x;
+    Bottom := Height + y;
+  end;
+end;
+
+function GdkRectFromRect(R: TRect): TGdkRectangle;
+begin
+  with Result, R do
+  begin
+    x := Left;
+    y := Top;
+    width := Right-Left;
+    height := Bottom-Top;
+  end;
+end;
 
 {------------------------------------------------------------------------------
   function GtkWidgetIsA(Widget: PGtkWidget; AType: TGtkType): boolean;

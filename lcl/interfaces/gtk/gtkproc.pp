@@ -269,6 +269,9 @@ var
 //==============================================================================
 // functions
 
+function RectFromGdkRect(AGdkRect: TGdkRectangle): TRect;
+function GdkRectFromRect(R: TRect): TGdkRectangle;
+
 // debugging
 function GtkWidgetIsA(Widget: PGtkWidget; AType: TGtkType): boolean;
 function GetWidgetClassName(Widget: PGtkWidget): string;
