@@ -33,3 +33,48 @@ msgstr ""
 msgid "Version that wrote this file: %s"
 msgstr ""
 
+#: jcfuiconsts.lisobfsallcapitals
+msgid "ALL CAPITALS"
+msgstr ""
+
+#: jcfuiconsts.lisobfsalllowercase
+msgid "all lowercase"
+msgstr ""
+
+#: jcfuiconsts.lisobfsleavealone
+msgid "Leave alone"
+msgstr ""
+
+#: jcfuiconsts.lisobfsmixedcase
+msgid "Mixed Case"
+msgstr ""
+
+#: jcfuiconsts.lisobfsobfuscate
+msgid "Obfuscate"
+msgstr ""
+
+#: jcfuiconsts.lisobfsobfuscatemode
+msgid "&Obfuscate mode"
+msgstr ""
+
+#: jcfuiconsts.lisobfsobfuscatewordcaps
+msgid "Obfuscate word &caps"
+msgstr ""
+
+#: jcfuiconsts.lisobfsrebreaklines
+msgid "Rebreak &lines"
+msgstr ""
+
+#: jcfuiconsts.lisobfsremovecomments
+msgid "Remove c&omments"
+msgstr ""
+
+#: jcfuiconsts.lisobfsremoveindent
+msgid "Remove &indent"
+msgstr ""
+
+#: jcfuiconsts.lisobfsremovewhitespace
+msgctxt "jcfuiconsts.lisobfsremovewhitespace"
+msgid "Remove &white space"
+msgstr ""
+

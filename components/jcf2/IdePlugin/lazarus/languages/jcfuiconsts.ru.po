@@ -41,3 +41,48 @@ msgstr "Имя файла: %s"
 msgid "Version that wrote this file: %s"
 msgstr "Файл записан версией: %s"
 
+#: jcfuiconsts.lisobfsallcapitals
+msgid "ALL CAPITALS"
+msgstr "ВСЕ ПРОПИСНЫЕ"
+
+#: jcfuiconsts.lisobfsalllowercase
+msgid "all lowercase"
+msgstr "все строчные"
+
+#: jcfuiconsts.lisobfsleavealone
+msgid "Leave alone"
+msgstr "Не менять"
+
+#: jcfuiconsts.lisobfsmixedcase
+msgid "Mixed Case"
+msgstr "Смешанный Регистр"
+
+#: jcfuiconsts.lisobfsobfuscate
+msgid "Obfuscate"
+msgstr "Ухудшение читаемости кода"
+
+#: jcfuiconsts.lisobfsobfuscatemode
+msgid "&Obfuscate mode"
+msgstr "Режим &ухудшения читаемости кода"
+
+#: jcfuiconsts.lisobfsobfuscatewordcaps
+msgid "Obfuscate word &caps"
+msgstr "&Нечитаемый регистр слов"
+
+#: jcfuiconsts.lisobfsrebreaklines
+msgid "Rebreak &lines"
+msgstr "Пе&реразбивать строки"
+
+#: jcfuiconsts.lisobfsremovecomments
+msgid "Remove c&omments"
+msgstr "Удалять &комментарии"
+
+#: jcfuiconsts.lisobfsremoveindent
+msgid "Remove &indent"
+msgstr "Удалять &отступы"
+
+#: jcfuiconsts.lisobfsremovewhitespace
+msgctxt "jcfuiconsts.lisobfsremovewhitespace"
+msgid "Remove &white space"
+msgstr "Удалять &пробелы"
+
