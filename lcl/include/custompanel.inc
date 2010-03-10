@@ -94,14 +94,16 @@ var
   TS : TTextStyle;
 begin
   ARect := GetClientRect;
-  if BevelOuter <> bvNone then
-    Canvas.Frame3d(ARect, BevelWidth, BevelOuter);
+  // if BevelOuter is set then draw a frame with BevelWidth
+  if (BevelOuter <> bvNone) and (BevelWidth>0) then
+    Canvas.Frame3d(ARect, BevelWidth, BevelOuter); // Note: Frame3D inflates ARect
 
-  if BevelInner <> bvNone then 
+  // if BevelInner is set then skip the BorderWidth and draw a frame with BevelWidth
+  if (BevelInner <> bvNone) and (BevelWidth>0) then
   begin
     if BorderWidth > 0 then
       InflateRect(ARect, -BorderWidth, -BorderWidth);
-    Canvas.Frame3d(ARect, BevelWidth, BevelInner);
+    Canvas.Frame3d(ARect, BevelWidth, BevelInner); // Note: Frame3D inflates ARect
   end;
 
   if Caption <> '' then
@@ -129,17 +131,24 @@ begin
   inherited Paint;
 end;
 
-procedure TCustomPanel.AdjustClientRect(var Rect: TRect);
+procedure TCustomPanel.AdjustClientRect(var aRect: TRect);
 var
   BevelSize: Integer;
 begin
-  inherited AdjustClientRect(Rect);
-  BevelSize := BorderWidth;
-  if BevelOuter <> bvNone then
+  inherited AdjustClientRect(aRect);
+  BevelSize:=0;
+  // if BevelOuter is set then draw a frame with BevelWidth
+  if (BevelOuter <> bvNone) and (BevelWidth > 0) then
+    inc(BevelSize, BevelWidth);
+
+  // if BevelInner is set then skip the BorderWidth and draw a frame with BevelWidth
+  if (BevelInner <> bvNone) and (BevelWidth > 0) then
+  begin
+    if BorderWidth > 0 then
+      Inc(BevelSize, BorderWidth);
     Inc(BevelSize, BevelWidth);
-  if BevelInner <> bvNone then
-    Inc(BevelSize, BevelWidth);
-  InflateRect(Rect, -BevelSize, -BevelSize);
+  end;
+  InflateRect(aRect, -BevelSize, -BevelSize);
 end;
 
 class function TCustomPanel.GetControlClassDefaultSize: TPoint;

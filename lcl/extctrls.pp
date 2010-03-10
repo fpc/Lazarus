@@ -1069,7 +1069,7 @@ type
     procedure SetBevelWidth(const Value: TBevelWidth);
   protected
     class procedure WSRegisterClass; override;
-    procedure AdjustClientRect(var Rect: TRect); override;
+    procedure AdjustClientRect(var aRect: TRect); override;
     class function GetControlClassDefaultSize: TPoint; override;
     procedure CMParentColorChanged(var Message: TLMessage); message CM_PARENTCOLORCHANGED;
     function GetDefaultDockCaption: String; override;
