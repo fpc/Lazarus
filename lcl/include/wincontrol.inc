@@ -335,10 +335,7 @@ begin
           ChildData.Sides[a].Space:=Max(WinControl.ChildSizing.TopBottomSpacing,
                                         ChildData.Borders[a]);
         end;
-        if (Child.Align in [alLeft,alTop,alRight,alBottom,alClient])
-        and (a in AnchorAlign[Child.Align]) then begin
-          inc(ChildData.Sides[a].Space,AdjustedClientBorders[a]);
-        end;
+        inc(ChildData.Sides[a].Space,AdjustedClientBorders[a]);
       end else if ChildData.Sides[a].CtrlData<>nil then begin
         SiblingData:=ChildData.Sides[a].CtrlData;
         // aligned or anchored to a sibling
@@ -385,6 +382,7 @@ begin
             Max(WinControl.ChildSizing.TopBottomSpacing,
                 ChildData.Borders[a]);
         end;
+        inc(ChildData.Sides[a].Space,AdjustedClientBorders[a]);
       end;
     end;
   end;
