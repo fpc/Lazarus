@@ -1,6 +1,10 @@
 msgid ""
 msgstr "Content-Type: text/plain; charset=UTF-8"
 
+#: lazdemsg.saboutformcaption
+msgid "About this application"
+msgstr ""
+
 #: lazdemsg.sadd
 msgid "&Add"
 msgstr ""
@@ -37,6 +41,14 @@ msgstr ""
 
 #: lazdemsg.scodeexample
 msgid "Example code File"
+msgstr ""
+
+#: lazdemsg.scopyright1
+msgid "This application is (c) by  Michael Van Canneyt and the Lazarus team"
+msgstr ""
+
+#: lazdemsg.scopyright2
+msgid "It is released under the terms of the  GENERAL PUBLIC LICENSE:"
 msgstr ""
 
 #: lazdemsg.scpu
@@ -147,6 +159,97 @@ msgstr ""
 msgid "&Hide protected methods"
 msgstr ""
 
+#: lazdemsg.shintfileclose
+msgid "Close current file"
+msgstr ""
+
+#: lazdemsg.shintfileexit
+msgid "Close doc editor"
+msgstr ""
+
+#: lazdemsg.shintfilenew
+msgctxt "lazdemsg.shintfilenew"
+msgid "New file"
+msgstr ""
+
+#: lazdemsg.shintfileopen
+msgid "Open file"
+msgstr ""
+
+#: lazdemsg.shintfilesave
+msgid "Save file"
+msgstr ""
+
+#: lazdemsg.shintfilesaveas
+msgid "Save file as"
+msgstr ""
+
+#: lazdemsg.shintformatbold
+msgid "Bold"
+msgstr ""
+
+#: lazdemsg.shintformatcode
+msgid "Code"
+msgstr ""
+
+#: lazdemsg.shintformatfile
+msgid "File"
+msgstr ""
+
+#: lazdemsg.shintformatitalics
+msgid "Italic"
+msgstr ""
+
+#: lazdemsg.shintformatremark
+msgid "Remark"
+msgstr ""
+
+#: lazdemsg.shintformatunderline
+msgid "Underline"
+msgstr ""
+
+#: lazdemsg.shintformatvariable
+msgid "Variable"
+msgstr ""
+
+#: lazdemsg.shintinsertelement
+msgctxt "lazdemsg.shintinsertelement"
+msgid "New element"
+msgstr ""
+
+#: lazdemsg.shintinsertlink
+msgctxt "lazdemsg.shintinsertlink"
+msgid "Insert link"
+msgstr ""
+
+#: lazdemsg.shintinsertmodule
+msgctxt "lazdemsg.shintinsertmodule"
+msgid "New module"
+msgstr ""
+
+#: lazdemsg.shintinsertpackage
+msgctxt "lazdemsg.shintinsertpackage"
+msgid "New package"
+msgstr ""
+
+#: lazdemsg.shintinsertprintshortlink
+msgid "Insert a short description link"
+msgstr ""
+
+#: lazdemsg.shintinserttable
+msgctxt "lazdemsg.shintinserttable"
+msgid "Insert table"
+msgstr ""
+
+#: lazdemsg.shintinserttopic
+msgctxt "lazdemsg.shintinserttopic"
+msgid "New topic"
+msgstr ""
+
+#: lazdemsg.shintmenunewfromfile
+msgid "New from file..."
+msgstr ""
+
 #: lazdemsg.shinttoolbaradd
 msgid "Add"
 msgstr ""
@@ -160,11 +263,20 @@ msgstr ""
 msgid "Edit"
 msgstr ""
 
+#: lazdemsg.shmenuextraoptions
+msgid "Show options dialog"
+msgstr ""
+
+#: lazdemsg.shmenuhelpabout
+msgid "About this program"
+msgstr ""
+
 #: lazdemsg.simportcontentfile
 msgid "Import content file"
 msgstr ""
 
 #: lazdemsg.sinsertlink
+msgctxt "lazdemsg.sinsertlink"
 msgid "Insert link"
 msgstr ""
 
@@ -173,7 +285,12 @@ msgid "Insert short description link"
 msgstr ""
 
 #: lazdemsg.sinserttable
+msgctxt "lazdemsg.sinserttable"
 msgid "Insert table"
+msgstr ""
+
+#: lazdemsg.slazdoceditor
+msgid "Lazarus Documentation Editor"
 msgstr ""
 
 #: lazdemsg.sload
@@ -215,6 +332,7 @@ msgid "&Options"
 msgstr ""
 
 #: lazdemsg.smenufile
+msgctxt "lazdemsg.smenufile"
 msgid "&File"
 msgstr ""
 
@@ -252,6 +370,43 @@ msgstr ""
 msgid "Save &as"
 msgstr ""
 
+#: lazdemsg.smenuformat
+msgid "Format"
+msgstr ""
+
+#: lazdemsg.smenuformatbold
+msgid "&Bold"
+msgstr ""
+
+#: lazdemsg.smenuformatcode
+msgid "&Code"
+msgstr ""
+
+#: lazdemsg.smenuformatfile
+msgctxt "lazdemsg.smenuformatfile"
+msgid "&File"
+msgstr ""
+
+#: lazdemsg.smenuformatitalics
+msgid "&Italic"
+msgstr ""
+
+#: lazdemsg.smenuformatparagraph
+msgid "&Paragraph"
+msgstr ""
+
+#: lazdemsg.smenuformatremark
+msgid "&Remark"
+msgstr ""
+
+#: lazdemsg.smenuformatunderline
+msgid "&Underline"
+msgstr ""
+
+#: lazdemsg.smenuformatvariable
+msgid "&Variable"
+msgstr ""
+
 #: lazdemsg.smenuhelp
 msgid "&Help"
 msgstr ""
@@ -279,6 +434,10 @@ msgstr ""
 #: lazdemsg.smenuinsertpackage
 msgctxt "lazdemsg.smenuinsertpackage"
 msgid "&Package"
+msgstr ""
+
+#: lazdemsg.smenuinsertprintshort
+msgid "Insert short desc link"
 msgstr ""
 
 #: lazdemsg.smenuinsertquicklink
@@ -314,22 +473,27 @@ msgid "New document"
 msgstr ""
 
 #: lazdemsg.snewelement
+msgctxt "lazdemsg.snewelement"
 msgid "New element"
 msgstr ""
 
 #: lazdemsg.snewfile
+msgctxt "lazdemsg.snewfile"
 msgid "New file"
 msgstr ""
 
 #: lazdemsg.snewmodule
+msgctxt "lazdemsg.snewmodule"
 msgid "New module"
 msgstr ""
 
 #: lazdemsg.snewpackage
+msgctxt "lazdemsg.snewpackage"
 msgid "New package"
 msgstr ""
 
 #: lazdemsg.snewtopic
+msgctxt "lazdemsg.snewtopic"
 msgid "New topic"
 msgstr ""
 
@@ -385,6 +549,10 @@ msgstr ""
 
 #: lazdemsg.sselectoutputfile
 msgid "Select output file name"
+msgstr ""
+
+#: lazdemsg.sselectsometext
+msgid "Select some text"
 msgstr ""
 
 #: lazdemsg.sshortdescription
