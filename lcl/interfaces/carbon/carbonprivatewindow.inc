@@ -1304,14 +1304,16 @@ end;
  ------------------------------------------------------------------------------}
 function TCarbonWindow.GetWindowRelativePos(winX, winY: Integer): TPoint;
 var
-  R: MacOSAll.Rect;
+  R,G: MacOSAll.Rect;
 begin
   if Assigned(fWindowRef) then
   begin
+    OSError(GetWindowBounds(fWindowRef, kWindowStructureRgn, G),
+      Self, 'GetMousePos', SGetWindowBounds);
     OSError(GetWindowBounds(fWindowRef, kWindowContentRgn, R),
       Self, 'GetMousePos', SGetWindowBounds);
-    Result.X := winX - R.left;
-    Result.Y := winY - R.Top;
+    Result.X := winX - (R.left-G.Left);
+    Result.Y := winY - (R.Top-G.Top);
   end
   else
     Result := inherited GetWindowRelativePos(winX, winY);
