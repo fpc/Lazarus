@@ -15,6 +15,19 @@ resourcestring
   lisFrFilesDescription = 'Description:';
   lisFrFilesFormatFile = 'Format File';
 
+  //Obfuscate settings tab
+  lisObfsObfuscate = 'Obfuscate';
+  lisObfsObfuscateMode = '&Obfuscate mode';
+  lisObfsObfuscateWordCaps = 'Obfuscate word &caps';
+  lisObfsAllCapitals = 'ALL CAPITALS';
+  lisObfsAllLowerCase = 'all lowercase';
+  lisObfsMixedCase = 'Mixed Case';
+  lisObfsLeaveAlone = 'Leave alone';
+  lisObfsRemoveWhiteSpace = 'Remove &white space';
+  lisObfsRemoveComments = 'Remove c&omments';
+  lisObfsRemoveIndent = 'Remove &indent';
+  lisObfsRebreakLines = 'Rebreak &lines';
+
 implementation
 
 end.

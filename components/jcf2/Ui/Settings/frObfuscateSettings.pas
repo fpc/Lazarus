@@ -60,7 +60,7 @@ implementation
 {$R *.lfm}
 
 uses
-  JcfSettings, SettingsTypes, JcfHelp, SetObfuscate;
+  JcfSettings, SettingsTypes, JcfHelp, SetObfuscate, jcfuiconsts;
 
 { TfObfuscateSettings }
 
@@ -72,12 +72,23 @@ end;
 
 function TfObfuscateSettings.GetTitle: String;
 begin
-  Result := 'Obfuscate';
+  Result := lisObfsObfuscate;
 end;
 
 procedure TfObfuscateSettings.Setup(ADialog: TAbstractOptionsEditorDialog);
 begin
-  // nothing
+  cbEnabled.Caption := lisObfsObfuscateMode;
+
+  rgObfuscateCaps.Caption := lisObfsObfuscateWordCaps;
+  rgObfuscateCaps.Items[0] := lisObfsAllCapitals;
+  rgObfuscateCaps.Items[1] := lisObfsAllLowerCase;
+  rgObfuscateCaps.Items[2] := lisObfsMixedCase;
+  rgObfuscateCaps.Items[3] := lisObfsLeaveAlone;
+
+  cbRemoveWhiteSpace.Caption := lisObfsRemoveWhiteSpace;
+  cbRemoveComments.Caption := lisObfsRemoveComments;
+  cbRemoveIndent.Caption := lisObfsRemoveIndent;
+  cbRebreak.Caption := lisObfsRebreakLines;
 end;
 
 procedure TfObfuscateSettings.ReadSettings(AOptions: TAbstractIDEOptions);
