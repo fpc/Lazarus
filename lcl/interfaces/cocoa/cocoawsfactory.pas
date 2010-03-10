@@ -136,7 +136,8 @@ end;
 
 function RegisterCustomControl: Boolean; alias : 'WSRegisterCustomControl';
 begin
-  Result := False;
+  RegisterWSComponent(TCustomControl, TCocoaWSCustomControl);
+  Result := True;
 end;
 
 // comctrls

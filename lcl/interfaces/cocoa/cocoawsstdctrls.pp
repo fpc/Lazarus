@@ -422,8 +422,7 @@ var
   btn : NSButton;
 begin
   btn:=AllocButton(AWinControl, AParams, 0, NSRadioButton);
-  if Assigned(btn) then
-    AddViewToNSObject(btn, NSObject(AParams.WndParent), AParams.X, AParams.Y);
+  SetCreateParamsToControl(btn, AParams);
   Result:=TLCLIntfHandle(btn);
 end;
 
@@ -436,8 +435,7 @@ begin
   if TCustomEdit(AWinControl).PasswordChar=#0
     then field:=NSTextField(AllocTextField(AWinControl, AParams))
     else field:=NSTextField(AllocSecureTextField(AWinControl, AParams));
-  if Assigned(field) then
-    AddViewToNSObject(field, NSObject(AParams.WndParent), AParams.X, AParams.Y);
+  SetCreateParamsToControl(field, AParams);
   Result:=TLCLIntfHandle(field);
 end;
 

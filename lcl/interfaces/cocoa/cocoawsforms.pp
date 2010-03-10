@@ -28,14 +28,14 @@ unit CocoaWSForms;
 interface
 
 uses
-  // Libs
-  MacOSAll, CocoaAll,
+  // RTL,FCL
+  MacOSAll, CocoaAll, Classes,
   // LCL
-  Controls, {Forms, } Graphics, LCLType, LMessages, LCLProc, Classes,
+  Controls, Graphics, LCLType, LMessages, LCLProc,
   // Widgetset
   WSForms, WSLCLClasses, WSProc, LCLMessageGlue,
   // LCL Cocoa
-  CocoaPrivate, CocoaUtils, CocoaWSCommon, CocoaWSStdCtrls ;
+  CocoaPrivate, CocoaUtils, CocoaWSCommon, CocoaWSStdCtrls;
 
 type
   { TLCLWindowCallback }
@@ -206,15 +206,18 @@ const
   WinMask = NSTitledWindowMask or NSClosableWindowMask or NSMiniaturizableWindowMask or NSResizableWindowMask;
 begin
   win := TCocoaWindow(TCocoaWindow.alloc);
+
   if not Assigned(win) then begin
     Result:=0;
     Exit;
   end;
+
   win:=TCocoaWindow(win.initWithContentRect_styleMask_backing_defer(CreateParamsToNSRect(AParams), WinMask, NSBackingStoreBuffered, False));
   TCocoaWindow(win).callback:=TLCLCommonCallback.Create(win, AWinControl);
   TCocoaWindow(win).wincallback:=TLCLWindowCallback.Create(win, AWinControl);
   win.setDelegate(win);
   win.setTitle(NSStringUtf8(AWinControl.Caption));
+  win.setAcceptsMouseMovedEvents(True);
 
   Result := TLCLIntfHandle(win);
 end;

@@ -125,6 +125,10 @@ type
     procedure mouseMoved(event: NSEvent); override;
   end;
 
+  TCocoaCustomControl = objcclass(NSControl)
+    callback  : TCommonCallback;
+  end;
+
 implementation
 
 { TCocoaWindowContentView }

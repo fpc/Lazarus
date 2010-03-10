@@ -8,8 +8,8 @@ interface
 uses
   MacOSAll, CocoaAll,
   Classes,
-  Controls, {todo: remove controls?}
-  WSControls,
+  Controls,
+  WSControls, LCLType,
   CocoaPrivate, CocoaUtils, LCLMessageGlue;
 
 type
@@ -30,6 +30,8 @@ type
 
   TCocoaWSWinControl=class(TWSWinControl)
   published
+    class function CreateHandle(const AWinControl: TWinControl;
+      const AParams: TCreateParams): TLCLIntfHandle; override;
     class procedure SetText(const AWinControl: TWinControl; const AText: String); override;
     class function GetText(const AWinControl: TWinControl; var AText: String): Boolean; override;
     class function GetTextLen(const AWinControl: TWinControl; var ALength: Integer): Boolean; override;
@@ -40,7 +42,36 @@ type
   end;
 
 
+  { TCocoaWSCustomControl }
+
+  TCocoaWSCustomControl=class(TWSCustomControl)
+  published
+    class function CreateHandle(const AWinControl: TWinControl;
+      const AParams: TCreateParams): TLCLIntfHandle; override;
+  end;
+
+// Utility WS functions
+
+function AllocCustomControl(const AWinControl: TWinControl): TCocoaCustomControl;
+procedure SetCreateParamsToControl(AControl: NSControl; const AParams: TCreateParams);
+
 implementation
+
+function AllocCustomControl(const AWinControl: TWinControl): TCocoaCustomControl;
+begin
+  if not Assigned(AWinControl) then begin
+    Result:=nil;
+    Exit;
+  end;
+  Result:=TCocoaCustomControl(TCocoaCustomControl.alloc).init;
+  Result.callback:=TLCLCommonCallback.Create(Result, AWinControl);
+end;
+
+procedure SetCreateParamsToControl(AControl: NSControl; const AParams: TCreateParams);
+begin
+  if not Assigned(AControl) then Exit;
+  AddViewToNSObject(AControl, NSObject(AParams.WndParent), AParams.X, AParams.Y);
+end;
 
 { TLCLCommonCallback }
 
@@ -71,6 +102,12 @@ begin
 end;
 
 { TCocoaWSWinControl }
+
+class function TCocoaWSWinControl.CreateHandle(const AWinControl: TWinControl;
+  const AParams: TCreateParams): TLCLIntfHandle;
+begin
+  Result:=TCocoaWSCustomControl.CreateHandle(AWinControl, AParams);
+end;
 
 class procedure TCocoaWSWinControl.SetText(const AWinControl: TWinControl; const AText: String);
 var
@@ -134,6 +171,18 @@ class procedure TCocoaWSWinControl.SetBounds(const AWinControl: TWinControl;
 begin
   if (AWinControl.Handle=0) then Exit;
   SetViewFrame(NSView(AWinControl.Handle), ALeft, ATop, AWidth, AHeight);
+end;
+
+{ TCocoaWSCustomControl }
+
+class function TCocoaWSCustomControl.CreateHandle(const AWinControl: TWinControl;
+  const AParams: TCreateParams): TLCLIntfHandle;
+var
+  ctrl  : TCocoaCustomControl;
+begin
+  ctrl:=AllocCustomControl(AWinControl);
+  SetCreateParamsToControl(ctrl, AParams);
+  Result:=TLCLIntfHandle(ctrl);
 end;
 
 end.
