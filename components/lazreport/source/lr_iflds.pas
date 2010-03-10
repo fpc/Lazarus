@@ -57,7 +57,10 @@ uses LR_Class, LR_Const, LR_Utils, DB;
 procedure TfrInsertFieldsForm.FormShow(Sender: TObject);
 begin
   DataSet := nil;
-  frGetComponents(CurReport.Owner, TDataSet, DatasetCB.Items, nil);
+  if Curreport.DataType = dtDataSet then
+    frGetComponents(CurReport.Owner, TDataSet, DatasetCB.Items, nil)
+  else
+    frGetComponents(CurReport.Owner, TDataSource, DatasetCB.Items, nil);
   if DatasetCB.Items.Count > 0 then
     DatasetCB.ItemIndex := 0;
   GetFields;
