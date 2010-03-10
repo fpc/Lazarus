@@ -179,7 +179,7 @@ ResourceString
   SHintFileOpen        = 'Open file';
   SHintFileSave        = 'Save file';
   SHintFileSaveAs      = 'Save file as';
-  SHintMenuNewFromFile = 'New form file...';
+  SHintMenuNewFromFile = 'New from file...';
   SHintFileClose       = 'Close current file';
   SHintFileExit        = 'Close doc editor';
 
