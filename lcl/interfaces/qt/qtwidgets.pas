@@ -1115,7 +1115,7 @@ type
     FTrackButton: QtMouseButtons;
     procedure setActionGroups(AItem: TMenuItem);
   protected
-    function CreateWidget(const APrams: TCreateParams): QWidgetH; override;
+    function CreateWidget(const AParams: TCreateParams): QWidgetH; override;
     procedure DoPopupClose;
   public
     constructor Create(const AMenuItem: TMenuItem); overload;
@@ -1465,10 +1465,6 @@ begin
   // creates the widget
   Widget := CreateWidget(FParams);
 
-  // attach to parent
-  if FParams.WndParent <> 0 then
-    setParent(TQtWidget(FParams.WndParent).GetContainerWidget);
-
   // retrieve default cursor on create
   FDefaultCursor := QCursor_create();
   QWidget_cursor(Widget, FDefaultCursor);
@@ -1560,8 +1556,6 @@ begin
     Parent := nil;
   DeinitializeWidget;
   InitializeWidget;
-  if Parent <> nil then
-    setParent(Parent);
 end;
 
 procedure TQtWidget.DestroyNotify(AWidget: TQtWidget);
@@ -3966,9 +3960,15 @@ begin
 end;
 
 function TQtWidget.CreateWidget(const Params: TCreateParams): QWidgetH;
+var
+  Parent: QWidgetH = nil;
 begin
   FHasPaint := True;
-  Widget := QWidget_create();
+
+  if Params.WndParent <> 0 then
+    Parent := TQtWidget(Params.WndParent).GetContainerWidget;
+
+  Widget := QWidget_create(Parent);
   Result := Widget;
 end;
 
@@ -4151,8 +4151,12 @@ end;
 { TQtPushButton }
 
 function TQtPushButton.CreateWidget(const AParams: TCreateParams): QWidgetH;
+var
+  Parent: QWidgetH = nil;
 begin
-  Result := QPushButton_create();
+  if AParams.WndParent <> 0 then
+    Parent := TQtWidget(AParams.WndParent).GetContainerWidget;
+  Result := QPushButton_create(Parent);
 end;
 
 procedure TQtPushButton.preferredSize(var PreferredWidth,
@@ -4241,6 +4245,7 @@ function TQtMainWindow.CreateWidget(const AParams: TCreateParams): QWidgetH;
 var
   w: QWidgetH;
   p: QPaletteH;
+  Parent: QWidgetH = nil;
 begin
   // Creates the widget
   {$ifdef VerboseQt}
@@ -4310,11 +4315,15 @@ begin
     end
     else
     begin
+      if AParams.WndParent <> 0 then
+        Parent := TQtWidget(AParams.WndParent).GetContainerWidget;
+
       if (TCustomForm(LCLObject).FormStyle = fsSplash) and
       not (csDesigning in LCLObject.ComponentState) then
-        Result := QWidget_create(nil, QtSplashScreen)
+        Result := QWidget_create(Parent, QtSplashScreen)
       else
-        Result := QWidget_create(nil, QtWindow);
+        Result := QWidget_create(Parent, QtWindow);
+
       QWidget_setAttribute(Result, QtWA_Hover);
     end;
 
@@ -4641,13 +4650,17 @@ end;
 { TQtStaticText }
 
 function TQtStaticText.CreateWidget(const AParams: TCreateParams): QWidgetH;
+var
+  Parent: QWidgetH = nil;
 begin
   // Creates the widget
   {$ifdef VerboseQt}
     WriteLn('TQtStaticText.Create');
   {$endif}
 
-  Result := QLabel_create();
+  if AParams.WndParent <> 0 then
+    Parent := TQtWidget(AParams.WndParent).GetContainerWidget;
+  Result := QLabel_create(Parent);
 end;
 
 {------------------------------------------------------------------------------
@@ -4694,13 +4707,19 @@ end;
 { TQtCheckBox }
 
 function TQtCheckBox.CreateWidget(const AParams: TCreateParams): QWidgetH;
+var
+  Parent: QWidgetH = nil;
 begin
   // Creates the widget
   {$ifdef VerboseQt}
     WriteLn('TQtCheckBox.Create');
   {$endif}
   TextColorRole := QPaletteWindowText;
-  Result := QCheckBox_create;
+
+  if AParams.WndParent <> 0 then
+    Parent := TQtWidget(AParams.WndParent).GetContainerWidget;
+
+  Result := QCheckBox_create(Parent);
 end;
 
 {------------------------------------------------------------------------------
@@ -4753,13 +4772,17 @@ end;
 { TQtRadioButton }
 
 function TQtRadioButton.CreateWidget(const AParams: TCreateParams): QWidgetH;
+var
+  Parent: QWidgetH = nil;
 begin
   // Creates the widget
   {$ifdef VerboseQt}
     WriteLn('TQtRadioButton.Create');
   {$endif}
   TextColorRole := QPaletteWindowText;
-  Result := QRadioButton_create();
+  if AParams.WndParent <> 0 then
+    Parent := TQtWidget(AParams.WndParent).GetContainerWidget;
+  Result := QRadioButton_create(Parent);
   // hide widget by default
   QWidget_hide(Result);
 end;
@@ -4826,13 +4849,16 @@ end;
 function TQtGroupBox.CreateWidget(const AParams: TCreateParams): QWidgetH;
 var
   Layout: QBoxLayoutH;
+  Parent: QWidgetH = nil;
 begin
   // Creates the widget
   {$ifdef VerboseQt}
     WriteLn('TQtGroupBox.Create ');
   {$endif}
   FHasPaint := True;
-  Result := QGroupBox_create();
+  if AParams.WndParent <> 0 then
+    Parent := TQtWidget(AParams.WndParent).GetContainerWidget;
+  Result := QGroupBox_create(Parent);
   FCentralWidget := QStackedWidget_create(Result);
   {we set QtNoFocus by default, since we don't want
   FCentralWidget grabs focus on mouse click}
@@ -4883,13 +4909,17 @@ end;
 { TQtFrame }
 
 function TQtFrame.CreateWidget(const AParams: TCreateParams): QWidgetH;
+var
+  Parent: QWidgetH = nil;
 begin
   // Creates the widget
   {$ifdef VerboseQt}
     WriteLn('TQtFrame.Create');
   {$endif}
   FHasPaint := True;
-  Result := QFrame_create();
+  if AParams.WndParent <> 0 then
+    Parent := TQtWidget(AParams.WndParent).GetContainerWidget;
+  Result := QFrame_create(Parent);
   QWidget_setAutoFillBackground(Result, True);
   QWidget_setAttribute(Result, QtWA_NoMousePropagation);
 end;
@@ -4938,17 +4968,23 @@ end;
   Returns: Nothing
  ------------------------------------------------------------------------------}
 function TQtArrow.CreateWidget(const AParams: TCreateParams):QWidgetH;
+var
+  Parent: QWidgetH = nil;
 begin
   // Creates the widget
   {$ifdef VerboseQt}
     WriteLn('TQtArrow.Create');
   {$endif}
   FHasPaint := True;
-  Result := QFrame_create();
+  if AParams.WndParent <> 0 then
+    Parent := TQtWidget(AParams.WndParent).GetContainerWidget;
+  Result := QFrame_create(Parent);
   QWidget_setAttribute(Result, QtWA_NoMousePropagation);
 end;
 
 function TQtAbstractSlider.CreateWidget(const AParams: TCreateParams): QWidgetH;
+var
+  Parent: QWidgetH = nil;
 begin
   // Creates the widget
   {$ifdef VerboseQt}
@@ -4958,7 +4994,9 @@ begin
   FSliderPressed := False;
   FSliderReleased:= False;
 
-  Result := QAbstractSlider_create();
+  if AParams.WndParent <> 0 then
+    Parent := TQtWidget(AParams.WndParent).GetContainerWidget;
+  Result := QAbstractSlider_create(Parent);
 end;
 
 procedure TQtAbstractSlider.AttachEvents;
@@ -5323,12 +5361,16 @@ end;
 { TQtScrollBar }
 
 function TQtScrollBar.CreateWidget(const AParams: TCreateParams): QWidgetH;
+var
+  Parent: QWidgetH;
 begin
   // Creates the widget
   {$ifdef VerboseQt}
     WriteLn('TQtScrollBar.Create');
   {$endif}
-  Result := QScrollBar_create();
+  if AParams.WndParent <> 0 then
+    Parent := TQtWidget(AParams.WndParent).GetContainerWidget;
+  Result := QScrollBar_create(Parent);
   QWidget_setFocusPolicy(Result, QtNoFocus);
   QWidget_setAutoFillBackground(Result, True);
   FHasPaint := True;
@@ -5396,34 +5438,46 @@ end;
 { TQtToolBar }
 
 function TQtToolBar.CreateWidget(const AParams: TCreateParams):QWidgetH;
+var
+  Parent: QWidgetH;
 begin
   // Creates the widget
   {$ifdef VerboseQt}
     WriteLn('TQtToolBar.Create');
   {$endif}
-  Result := QToolBar_create();
+  if AParams.WndParent <> 0 then
+    Parent := TQtWidget(AParams.WndParent).GetContainerWidget;
+  Result := QToolBar_create(Parent);
 end;
 
 { TQtToolButton }
 
 function TQtToolButton.CreateWidget(const AParams: TCreateParams):QWidgetH;
+var
+  Parent: QWidgetH = nil;
 begin
   // Creates the widget
   {$ifdef VerboseQt}
     WriteLn('TQtToolButton.Create');
   {$endif}
-  Result := QToolButton_create();
+  if AParams.WndParent <> 0 then
+    Parent := TQtWidget(AParams.WndParent).GetContainerWidget;
+  Result := QToolButton_create(Parent);
 end;
 
 { TQtTrackBar }
 
 function TQtTrackBar.CreateWidget(const AParams: TCreateParams): QWidgetH;
+var
+  Parent: QWidgetH = nil;
 begin
   // Creates the widget
   {$ifdef VerboseQt}
     WriteLn('TQtTrackBar.Create');
   {$endif}
-  Result := QSlider_create();
+  if AParams.WndParent <> 0 then
+    Parent := TQtWidget(AParams.WndParent).GetContainerWidget;
+  Result := QSlider_create(Parent);
 end;
 
 function TQtTrackBar.getTickInterval: Integer;
@@ -5498,8 +5552,12 @@ end;
 { TQtLineEdit }
 
 function TQtLineEdit.CreateWidget(const AParams: TCreateParams): QWidgetH;
+var
+  Parent: QWidgetH = nil;
 begin
-  Result := QLineEdit_create();
+  if AParams.WndParent <> 0 then
+    Parent := TQtWidget(AParams.WndParent).GetContainerWidget;
+  Result := QLineEdit_create(Parent);
 end;
 
 function TQtLineEdit.getAlignment: QtAlignment;
@@ -5663,12 +5721,16 @@ end;
 { TQtTextEdit }
 
 function TQtTextEdit.CreateWidget(const AParams: TCreateParams): QWidgetH;
+var
+  Parent: QWidgetH = nil;
 begin
   // Creates the widget
   {$ifdef VerboseQt}
     WriteLn('TQtTextEdit.Create');
   {$endif}
-  Result := QTextEdit_create();
+  if AParams.WndParent <> 0 then
+    Parent := TQtWidget(AParams.WndParent).GetContainerWidget;
+  Result := QTextEdit_create(Parent);
   FKeysToEat := [];
   FUndoAvailable := False;
   {drops are handled by slotDropFiles()}
@@ -6020,12 +6082,16 @@ begin
 end;
 
 function TQtTabWidget.CreateWidget(const AParams: TCreateParams): QWidgetH;
+var
+  Parent: QWidgetH = nil;
 begin
   // Creates the widget
   {$ifdef VerboseQt}
     WriteLn('TQtTabWidget.Create');
   {$endif}
-  Result := QTabWidget_create();
+  if AParams.WndParent <> 0 then
+    Parent := TQtWidget(AParams.WndParent).GetContainerWidget;
+  Result := QTabWidget_create(Parent);
   
   {note: for some reason tabbar scroll buttons are not enabled as default option
   under mac - but under linux & win are. Qt docs says that this options is enabled
@@ -6284,13 +6350,17 @@ begin
 end;
 
 function TQtComboBox.CreateWidget(const AParams: TCreateParams): QWidgetH;
+var
+  Parent: QWidgetH = nil;
 begin
   // Creates the widget
   {$ifdef VerboseQt}
     WriteLn('TQtComboBox.Create');
   {$endif}
   FDropListVisibleInternal := False;
-  Result := QComboBox_create();
+  if AParams.WndParent <> 0 then
+    Parent := TQtWidget(AParams.WndParent).GetContainerWidget;
+  Result := QComboBox_create(Parent);
   // disable AutoCompletion. LCL has its own
   QComboBox_setAutoCompletion(QComboboxH(Result), False);
   FLineEdit := nil;
@@ -6774,12 +6844,16 @@ begin
 end;
 
 function TQtAbstractSpinBox.CreateWidget(const AParams: TCreateParams): QWidgetH;
+var
+  Parent: QWidgetH = nil;
 begin
   // Creates the widget
   {$ifdef VerboseQt}
     WriteLn('TQtAbstractSpinBox.Create');
   {$endif}
-  Result := QAbstractSpinBox_create();
+  if AParams.WndParent <> 0 then
+    Parent := TQtWidget(AParams.WndParent).GetContainerWidget;
+  Result := QAbstractSpinBox_create(Parent);
 end;
 
 function TQtAbstractSpinBox.getMaxLength: Integer;
@@ -6943,6 +7017,8 @@ end;
 { TQtFloatSpinBox }
 
 function TQtFloatSpinBox.CreateWidget(const AParams: TCreateParams): QWidgetH;
+var
+  Parent: QWidgetH = nil;
 begin
   // Creates the widget
   {$ifdef VerboseQt}
@@ -6952,7 +7028,9 @@ begin
   FFixValue := 0;
   FParentShowPassed := 0;
   {$endif}
-  Result := QDoubleSpinBox_create();
+  if AParams.WndParent <> 0 then
+    Parent := TQtWidget(AParams.WndParent).GetContainerWidget;
+  Result := QDoubleSpinBox_create(Parent);
 end;
 
 function TQtFloatSpinBox.getValue: Double;
@@ -7035,12 +7113,16 @@ end;
 { TQtSpinBox }
 
 function TQtSpinBox.CreateWidget(const AParams: TCreateParams): QWidgetH;
+var
+  Parent: QWidgetH = nil;
 begin
   // Creates the widget
   {$ifdef VerboseQt}
     WriteLn('TQtSpinBox.Create');
   {$endif}
-  Result := QSpinBox_create();
+  if AParams.WndParent <> 0 then
+    Parent := TQtWidget(AParams.WndParent).GetContainerWidget;
+  Result := QSpinBox_create(Parent);
 end;
 
 function TQtSpinBox.getValue: Double;
@@ -7092,10 +7174,14 @@ begin
 end;
 
 function TQtListWidget.CreateWidget(const AParams: TCreateParams): QWidgetH;
+var
+  Parent: QWidgetH = nil;
 begin
   FCheckable := False;
   FDontPassSelChange := False;
-  Result := QListWidget_create();
+  if AParams.WndParent <> 0 then
+    Parent := TQtWidget(AParams.WndParent).GetContainerWidget;
+  Result := QListWidget_create(Parent);
   QWidget_setAttribute(Result, QtWA_NoMousePropagation);
 end;
 
@@ -7474,12 +7560,17 @@ end;
   Returns: Widget (QHeaderViewH)
  ------------------------------------------------------------------------------}
 function TQtHeaderView.CreateWidget(const AParams: TCreateParams):QWidgetH;
+var
+  Parent: QWidgetH = nil;
 begin
   // Creates the widget
   {$ifdef VerboseQt}
     WriteLn('TQtHeaderView.Create');
   {$endif}
-  Result := QHeaderView_create(QtHorizontal);
+  if AParams.WndParent <> 0 then
+    Parent := TQtWidget(AParams.WndParent).GetContainerWidget;
+
+  Result := QHeaderView_create(QtHorizontal, Parent);
 end;
 
 procedure TQtHeaderView.AttachEvents;
@@ -7607,12 +7698,16 @@ end;
   Returns: Widget (QTreeViewH)
  ------------------------------------------------------------------------------}
 function TQtTreeView.CreateWidget(const AParams: TCreateParams):QWidgetH;
+var
+  Parent: QWidgetH = nil;
 begin
   // Creates the widget
   {$ifdef VerboseQt}
     WriteLn('TQtTreeView.Create');
   {$endif}
-  Result := QTreeView_create();
+  if AParams.WndParent <> 0 then
+    Parent := TQtWidget(AParams.WndParent).GetContainerWidget;
+  Result := QTreeView_create(Parent);
 end;
 
   { TQtTreeWidget }
@@ -7623,6 +7718,8 @@ end;
   Returns: Widget (QTreeWidgetH)
  ------------------------------------------------------------------------------}
 function TQtTreeWidget.CreateWidget(const AParams: TCreateParams):QWidgetH;
+var
+  Parent: QWidgetH = nil;
 begin
   // Creates the widget
   {$ifdef VerboseQt}
@@ -7632,7 +7729,9 @@ begin
   FOwnerData := False;
   FSyncingItems := False;
   FSorting := False;
-  Result := QTreeWidget_create();
+  if AParams.WndParent <> 0 then
+    Parent := TQtWidget(AParams.WndParent).GetContainerWidget;
+  Result := QTreeWidget_create(Parent);
   FHeader := nil;
   QWidget_setAttribute(Result, QtWA_NoMousePropagation);
 end;
@@ -8363,12 +8462,16 @@ end;
 {TQtTableView}
 
 function TQtTableView.CreateWidget(const Params: TCreateParams): QWidgetH;
+var
+  Parent: QWidgetH = nil;
 begin
   {$ifdef VerboseQt}
     WriteLn('TQtTableView.CreateWidget');
   {$endif}
   HasPaint := False;
-  Result := QTableView_create();
+  if Params.WndParent <> 0 then
+    Parent := TQtWidget(Params.WndParent).GetContainerWidget;
+  Result := QTableView_create(Parent);
   QWidget_setAutoFillBackground(Result, True);
 end;
 
@@ -8433,13 +8536,16 @@ end;
 
 { TQtMenu }
 
-function TQtMenu.CreateWidget(const APrams: TCreateParams): QWidgetH;
+function TQtMenu.CreateWidget(const AParams: TCreateParams): QWidgetH;
 var
   AGroup: TQtActionGroup;
+  Parent: QWidgetH = nil;
 begin
   FTrackButton := QtNoButton;
   FIcon := nil;
-  Result := QMenu_create();
+  if AParams.WndParent <> 0 then
+    Parent := TQtWidget(AParams.WndParent).GetContainerWidget;
+  Result := QMenu_create(Parent);
   FDeleteLater := True;
   FActionHandle := nil;
   FActions := TFPList.Create;
@@ -8824,12 +8930,16 @@ end;
 { TQtProgressBar }
 
 function TQtProgressBar.CreateWidget(const AParams: TCreateParams): QWidgetH;
+var
+  Parent: QWidgetH = nil;
 begin
   // Creates the widget
   {$ifdef VerboseQt}
     WriteLn('TQProgressBar.Create');
   {$endif}
-  Result := QProgressBar_create();
+  if AParams.WndParent <> 0 then
+    Parent := TQtWidget(AParams.WndParent).GetContainerWidget;
+  Result := QProgressBar_create(Parent);
   QWidget_setAttribute(Result, QtWA_NoMousePropagation, True);
 end;
 
@@ -8899,9 +9009,13 @@ end;
 { TQtStatusBar }
 
 function TQtStatusBar.CreateWidget(const AParams: TCreateParams): QWidgetH;
+var
+  Parent: QWidgetH = nil;
 begin
   SetLength(Panels, 0);
-  Result := QStatusBar_create();
+  if AParams.WndParent <> 0 then
+    Parent := TQtWidget(AParams.WndParent).GetContainerWidget;
+  Result := QStatusBar_create(Parent);
   QWidget_setAutoFillBackground(Result, True);
   Widget := Result;
 end;
@@ -9227,6 +9341,8 @@ end;
   Returns: Nothing
  ------------------------------------------------------------------------------}
 function TQtCustomControl.CreateWidget(const AParams: TCreateParams):QWidgetH;
+var
+  Parent: QWidgetH = nil;
 begin
   // Creates the widget
   {$ifdef VerboseQt}
@@ -9234,7 +9350,9 @@ begin
   {$endif}
   FHasPaint := True;
   FViewPortWidget := nil;
-  Result := QLCLAbstractScrollArea_create();
+  if AParams.WndParent <> 0 then
+    Parent := TQtWidget(AParams.WndParent).GetContainerWidget;
+  Result := QLCLAbstractScrollArea_create(Parent);
 
   FFrameOnlyAroundContents := QStyle_styleHint(QApplication_style(),
     QStyleSH_ScrollView_FrameOnlyAroundContents) > 0;
@@ -9498,13 +9616,17 @@ end;
   Returns: Nothing
  ------------------------------------------------------------------------------}
 function TQtCalendar.CreateWidget(const AParams: TCreateParams):QWidgetH;
+var
+  Parent: QWidgetH = nil;
 begin
   // Creates the widget
   {$ifdef VerboseQt}
     WriteLn('TQtCalendar.Create');
   {$endif}
   FMouseDoubleClicked := False;
-  Result := QCalendarWidget_create();
+  if AParams.WndParent <> 0 then
+    Parent := TQtWidget(AParams.WndParent).GetContainerWidget;
+  Result := QCalendarWidget_create(Parent);
 end;
 
 procedure TQtCalendar.AttachEvents;
@@ -9775,9 +9897,13 @@ end;
 { TQtHintWindow }
 
 function TQtHintWindow.CreateWidget(const AParams: TCreateParams): QWidgetH;
+var
+  Parent: QWidgetH = nil;
 begin
   FHasPaint := True;
-  Result := QWidget_create(nil, QtToolTip);
+  if AParams.WndParent <> 0 then
+    Parent := TQtWidget(AParams.WndParent).GetContainerWidget;
+  Result := QWidget_create(Parent, QtToolTip);
   FDeleteLater := True;
   MenuBar := nil;
 end;
@@ -9791,9 +9917,13 @@ end;
 { TQtPage }
 
 function TQtPage.CreateWidget(const AParams: TCreateParams): QWidgetH;
+var
+  Parent: QWidgetH = nil;
 begin
   FHasPaint := True;
-  Result := QWidget_create;
+  if AParams.WndParent <> 0 then
+    Parent := TQtWidget(AParams.WndParent).GetContainerWidget;
+  Result := QWidget_create(Parent);
   QWidget_setAutoFillBackground(Result, True);
   QWidget_setAttribute(Result, QtWA_NoMousePropagation);
 end;
@@ -10073,8 +10203,12 @@ end;
 { TQtRubberBand }
 
 function TQtRubberBand.CreateWidget(const AParams: TCreateParams): QWidgetH;
+var
+  Parent: QWidgetH = nil;
 begin
-  Result := QRubberBand_create(FShape);
+  if AParams.WndParent <> 0 then
+    Parent := TQtWidget(AParams.WndParent).GetContainerWidget;
+  Result := QRubberBand_create(FShape, Parent);
 end;
 
 constructor TQtRubberBand.Create(const AWinControl: TWinControl;
@@ -10245,9 +10379,13 @@ end;
 { TQtGraphicView }
 
 function TQtGraphicsView.CreateWidget(const AParams: TCreateParams): QWidgetH;
+var
+  Parent: QWidgetH = nil;
 begin
   FHasPaint := True;
-  Result := QGraphicsView_create();
+  if AParams.WndParent <> 0 then
+    Parent := TQtWidget(AParams.WndParent).GetContainerWidget;
+  Result := QGraphicsView_create(Parent);
   QWidget_setAttribute(Result, QtWA_NoMousePropagation);
 end;
 
