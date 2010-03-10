@@ -1098,6 +1098,8 @@ begin
   // compute needed MoveNonAlignedToLeft,MoveNonAlignedToTop
   if MoveNonAlignedChilds then
   begin
+    MoveNonAlignedToLeft:=Low(integer);
+    MoveNonAlignedToTop:=Low(integer);
     for i:=0 to ChildCount-1 do
     begin
       Child:=WinControl.Controls[i];
@@ -1129,6 +1131,8 @@ begin
               -ChildData.Sides[akTop].Distance[assddRightBottom]));}
       end;
     end;
+    if MoveNonAlignedToLeft=Low(integer) then MoveNonAlignedToLeft:=0;
+    if MoveNonAlignedToTop=Low(integer) then MoveNonAlignedToTop:=0;
   end;
 
   {$IFDEF VerboseAutoSizeCtrlData}
