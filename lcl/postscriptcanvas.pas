@@ -71,6 +71,9 @@ Type
     FPsUnicode     : TPSUnicode;
     FFs            : TFormatSettings;
     fSaveCount     : Integer;
+    FClipRect      : TRect;
+    FClipping      : boolean;
+    FClipSaved     : boolean;
 
     procedure psDrawRect(ARect:TRect);
     procedure WriteHeader(St : String);
@@ -100,6 +103,9 @@ Type
     
     procedure GetRGBImage(SrcGraph: TGraphic; Lst : TStringList);
     procedure PixelsToPoints(const PixX,PixY: Integer; out PtX,PtY:Single);
+    function  GetFontSize: Integer;
+    procedure RestoreClip;
+    procedure SaveClip;
   protected
     procedure CreateHandle; override;
     procedure CreateBrush; override;
@@ -113,7 +119,11 @@ Type
     procedure RegionChanging(APen: TObject); override;
     procedure RequiredState(ReqState: TCanvasState); override;
     procedure DoEllipseAndFill(const Bounds: TRect); override;
-    procedure SetClipRect(const ARect:TRect);override;
+
+    function GetClipRect: TRect; override;
+    procedure SetClipRect(const ARect: TRect); override;
+    function GetClipping: Boolean; override;
+    procedure SetClipping(const AValue: boolean); override;
     
     procedure BeginDoc; override;
     procedure EndDoc;   override;
@@ -1057,6 +1067,34 @@ begin
   PtY:=72*(PixY/YDPI);
 end;
 
+function TPostScriptPrinterCanvas.GetFontSize: Integer;
+begin
+  if Font.Size=0 then
+    Result := 12
+  else
+    Result := Font.Size;
+end;
+
+procedure TPostScriptPrinterCanvas.RestoreClip;
+begin
+  if FClipSaved then
+  begin
+    Self.WriteComment('Restoring Old clip rect');
+    Self.Write('cliprestore');
+    FClipSaved := false;
+  end;
+end;
+
+procedure TPostScriptPrinterCanvas.SaveClip;
+begin
+  Self.WriteComment('Pushing and Setting current clip rect');
+  Self.Write('clipsave');
+  psDrawRect(FClipRect);
+  Write(FBuffer);
+  Self.Write('clip');
+  FClipSaved := true;
+end;
+
 procedure TPostScriptPrinterCanvas.CreateHandle;
 begin
   SetHandle(1); // set dummy handle
@@ -1119,6 +1157,11 @@ begin
   Ellipse(Bounds.Left, Bounds.Top, Bounds.Right, Bounds.Bottom);
 end;
 
+function TPostScriptPrinterCanvas.GetClipRect: TRect;
+begin
+  Result:=FClipRect;
+end;
+
 constructor TPostScriptPrinterCanvas.Create(APrinter: TPrinter);
 begin
   inherited Create(APrinter);
@@ -1134,6 +1177,7 @@ begin
 
   Ffs.DecimalSeparator:='.';
   Ffs.ThousandSeparator:=#0;
+  FClipping := true;
 end;
 
 destructor TPostScriptPrinterCanvas.Destroy;
@@ -1471,8 +1515,6 @@ var
 begin
   RequiredState([csHandleValid]);
 
-  write('stroke');
-
   WriteComment(Format('DoMoveTo(%d,%d)',[x1,y1]));
 
   SetPosition(X1,Y1);
@@ -1494,7 +1536,7 @@ begin
   UpdateLineColor(clNone);
   UpdateLineWidth;
   UpdateLineStyle;
-  write(Format('%f %f lineto',[pp.fx,pp.fy],FFs));
+  write(Format('%f %f lineto stroke',[pp.fx,pp.fy],FFs));
   changed;
 end;
 
@@ -1945,11 +1987,11 @@ begin
   UpdateFont;
 
   FPSUnicode.Font:=MappedFontName;
-  FPSUnicode.FontSize:=Abs(Font.Size);
+  FPSUnicode.FontSize:=Abs(GetFontSize);
   FPSUnicode.FontStyle:=FontStyleToInt(Font.Style);
 
   //The Y origin for ps text it's Left bottom corner
-  pp.fy := pp.fy - abs(Font.Size); // in points
+  pp.fy := pp.fy - abs(GetFontSize); // in points
 
   saved:=false;
   
@@ -1958,7 +2000,7 @@ begin
     PenUnder:=0.5;
     if fsBold in Font.Style then
       PenUnder:=1.0;
-    PosUnder:=(Abs(Round(Font.Size/3))*-1)+2;
+    PosUnder:=(Abs(Round(GetFontSize/3))*-1)+2;
     rotate();
     Write(format('%f %f uli',[pp.fx,pp.fy],FFs));
     FPSUnicode.OutputString(MapedString(Text));
@@ -1981,7 +2023,7 @@ begin
 end;
 
 function TPostScriptPrinterCanvas.TextExtent(const Text: string): TSize;
-Var IndexFont,i : Integer;
+var IndexFont,i : Integer;
     FontName    : string;
     c: Char;
 begin
@@ -1989,7 +2031,7 @@ begin
   Result.cY := 0;
   if Text='' then Exit;
   RequiredState([csHandleValid, csFontValid]);
-  Result.cY:=round((Abs(Font.Size)/72)*YDPI); // points to inches and then to pixels
+  Result.cY:=round((Abs(GetFontSize)/72)*YDPI); // points to inches and then to pixels
   // Abs is not right - should also take internal leading into account
   FontName:=MappedFontName;
   IndexFont:=0; //By default, use Courier metrics
@@ -2008,7 +2050,7 @@ begin
     if (c in [#32..#255]) then
       Inc(Result.cX,cFontPSMetrics[IndexFont].Widths[Ord(c)]);
   end;
-  Result.cX:=Round(Result.cX*Abs(Font.Size/72)*0.001*XDPI);
+  Result.cX:=Round(Result.cX*Abs(GetFontSize/72)*0.001*XDPI);
 end;
 
 //Draw an Picture
@@ -2172,33 +2214,30 @@ end;
 
 procedure TPostScriptPrinterCanvas.SetClipRect(const ARect:TRect);
 begin
-  inherited SetClipRect(ARect);
-  if (fSaveCount>0) then // restore original clipping
+  if FClipping then
+    RestoreClip;
+
+  FClipRect := ARect;
+
+  if FClipping then
+    SaveClip;
+end;
+
+function TPostScriptPrinterCanvas.GetClipping: Boolean;
+begin
+  Result:=FClipping;
+end;
+
+procedure TPostScriptPrinterCanvas.SetClipping(const AValue: boolean);
+begin
+  if FClipping<>AValue then
   begin
-    Self.Write('grestore');
-    dec(fSaveCount);
+    if FClipping then
+      RestoreClip
+    else
+      SaveClip;
+    FClipping := AValue;
   end;
-
-  // if the rect is empty or max-possible - do not clip
-  if (IsRectEmpty(ARect) or IsMaxClip(ARect)) then
-    exit;
-
-  // save PS state and clip
-  UpdateLineWidth;
-  UpdateLineColor;
-  UpdateFillColor;
-  UpdateFont;
-  Self.Write('gsave');
-  Self.WriteComment('This is clip path');
-  inc(fSaveCount);
-  Self.WriteB('[] 0 setdash');
-  psDrawRect(ARect);
-  Self.WriteB('clip');
-  Self.WriteB('stroke');
-  Self.Write(fBuffer);
- // Self.MovetoLastpos;
-
-
 end;
 
 procedure TPostScriptPrinterCanvas.FloodFill(X, Y: Integer; FillColor: TColor;  FillStyle: TFillStyle);
