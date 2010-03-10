@@ -2403,12 +2403,14 @@ begin
   while (SrcPos<=SrcLen) and (IsIdentChar[Src[SrcPos]]) do
     inc(SrcPos);
   Result:=false;
-  for ModeSwitch := Succ(Low(ModeSwitch)) to High(ModeSwitch) do
-    if CompareUpToken(CompilerModeSwitchNames[ModeSwitch],Src,ValStart,SrcPos) then begin
+  for ModeSwitch := Succ(Low(ModeSwitch)) to High(ModeSwitch) do begin
+    if CompareUpToken(CompilerModeSwitchNames[ModeSwitch],Src,ValStart,SrcPos)
+    then begin
       Result:=true;
       CompilerModeSwitch:=ModeSwitch;
       break;
     end;
+  end;
   if not Result then
     RaiseExceptionFmt(ctsInvalidModeSwitch,[copy(Src,ValStart,SrcPos-ValStart)]);
 end;
