@@ -94,17 +94,16 @@ var
   TS : TTextStyle;
 begin
   ARect := GetClientRect;
+
   // if BevelOuter is set then draw a frame with BevelWidth
-  if (BevelOuter <> bvNone) and (BevelWidth>0) then
+  if (BevelOuter <> bvNone) and (BevelWidth > 0) then
     Canvas.Frame3d(ARect, BevelWidth, BevelOuter); // Note: Frame3D inflates ARect
 
+  InflateRect(ARect, -BorderWidth, -BorderWidth);
+
   // if BevelInner is set then skip the BorderWidth and draw a frame with BevelWidth
-  if (BevelInner <> bvNone) and (BevelWidth>0) then
-  begin
-    if BorderWidth > 0 then
-      InflateRect(ARect, -BorderWidth, -BorderWidth);
+  if (BevelInner <> bvNone) and (BevelWidth > 0) then
     Canvas.Frame3d(ARect, BevelWidth, BevelInner); // Note: Frame3D inflates ARect
-  end;
 
   if Caption <> '' then
   begin
@@ -136,18 +135,13 @@ var
   BevelSize: Integer;
 begin
   inherited AdjustClientRect(aRect);
-  BevelSize:=0;
-  // if BevelOuter is set then draw a frame with BevelWidth
-  if (BevelOuter <> bvNone) and (BevelWidth > 0) then
+
+  BevelSize := BorderWidth;
+  if (BevelOuter <> bvNone) then
+    inc(BevelSize, BevelWidth);
+  if (BevelInner <> bvNone) then
     inc(BevelSize, BevelWidth);
 
-  // if BevelInner is set then skip the BorderWidth and draw a frame with BevelWidth
-  if (BevelInner <> bvNone) and (BevelWidth > 0) then
-  begin
-    if BorderWidth > 0 then
-      Inc(BevelSize, BorderWidth);
-    Inc(BevelSize, BevelWidth);
-  end;
   InflateRect(aRect, -BevelSize, -BevelSize);
 end;
 
