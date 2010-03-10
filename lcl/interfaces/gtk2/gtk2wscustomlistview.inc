@@ -767,6 +767,44 @@ begin
   end;
 end;
 
+class function TGtk2WSCustomListView.ItemDisplayRect(
+  const ALV: TCustomListView; const AIndex, ASubItem: Integer;
+  ACode: TDisplayCode): TRect;
+var
+  Widgets: PTVWidgets;
+  ItemRect: TGdkRectangle;
+  AColumn: PGtkTreeViewColumn;
+  APath: PGtkTreePath;
+begin
+  Result := Rect(0, 0, 0, 0);
+  if not WSCheckHandleAllocated(ALV, 'ItemDisplayRect') then
+    Exit;
+
+  GetCommonTreeViewWidgets(PGtkWidget(ALV.Handle), Widgets);
+  with Widgets^ do
+  begin
+    if gtk_widget_realized(MainView) = False then
+      exit;
+    APath := gtk_tree_path_new_from_indices(AIndex, -1);
+    try
+      AColumn := gtk_tree_view_get_column(PGtkTreeView(MainView), ASubItem);
+      gtk_tree_view_get_cell_area(PGtkTreeView(MainView), APath, AColumn,
+        @ItemRect);
+    finally
+      gtk_tree_path_free(APath);
+    end;
+
+    with ItemRect do
+    begin
+      Result.Left := x;
+      Result.Top := y;
+      Result.Right := Width;
+      Result.Bottom := Height;
+    end;
+
+  end;
+end;
+
 class function TGtk2WSCustomListView.ItemGetChecked(const ALV: TCustomListView;
   const AIndex: Integer; const AItem: TListItem): Boolean;
 begin
