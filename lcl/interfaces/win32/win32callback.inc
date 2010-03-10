@@ -1562,9 +1562,10 @@ begin
       if LParam <> 0 then
       begin
         ChildWindowInfo := GetWin32WindowInfo(HWND(LParam));
+        lWinControl := ChildWindowInfo^.WinControl;
         if Assigned(ChildWindowInfo^.ParentMsgHandler) then
         begin
-          if ChildWindowInfo^.ParentMsgHandler(ChildWindowInfo^.WinControl,
+          if ChildWindowInfo^.ParentMsgHandler(lWinControl,
             Window, Msg, WParam, LParam, PLMsg^.Result, WinProcess) then Exit(PLMsg^.Result);
         end;
       end;
