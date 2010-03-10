@@ -1903,6 +1903,7 @@ begin
     height := height + 2 * ythickness;
     x := x - xthickness;
     width := width + 2 * xthickness;
+    inner_border := nil;
     gtk_widget_style_get (widget, 'inner-border', @inner_border, nil);
     if inner_border <> nil then
     begin
