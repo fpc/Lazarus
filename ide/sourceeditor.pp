@@ -6646,7 +6646,7 @@ Begin
   {$IFDEF IDE_DEBUG}
   writeln('[TSourceNotebook.NewFile] A ');
   {$ENDIF}
-  {$IFNDEF OldwAutoSize}
+  {$IFNDEF OldAutoSize}
   DisableAutoSizing;
   try
   {$ENDIF}
