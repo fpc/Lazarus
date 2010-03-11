@@ -1,6 +1,30 @@
 msgid ""
 msgstr "Content-Type: text/plain; charset=UTF-8"
 
+#: jcfuiconsts.lisclarifyclarify
+msgid "Clarify"
+msgstr ""
+
+#: jcfuiconsts.lisclarifydonotrun
+msgid "Do &not run"
+msgstr ""
+
+#: jcfuiconsts.lisclarifydorun
+msgid "Do &run"
+msgstr ""
+
+#: jcfuiconsts.lisclarifyfileextensionstoformat
+msgid "File extensions to format:"
+msgstr ""
+
+#: jcfuiconsts.lisclarifyrunonceoffs
+msgid "Run once-offs"
+msgstr ""
+
+#: jcfuiconsts.lisclarifyrunonlythese
+msgid "Run &only these"
+msgstr ""
+
 #: jcfuiconsts.lisfrfilesdatefilewritten
 msgid "Date file written: %s"
 msgstr ""

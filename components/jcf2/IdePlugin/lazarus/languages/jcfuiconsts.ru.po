@@ -9,6 +9,30 @@ msgstr ""
 "MIME-Version: 1.0\n"
 "Content-Transfer-Encoding: 8bit\n"
 
+#: jcfuiconsts.lisclarifyclarify
+msgid "Clarify"
+msgstr "Улучшение читаемости кода"
+
+#: jcfuiconsts.lisclarifydonotrun
+msgid "Do &not run"
+msgstr "&Не выполнять"
+
+#: jcfuiconsts.lisclarifydorun
+msgid "Do &run"
+msgstr "&Выполнять"
+
+#: jcfuiconsts.lisclarifyfileextensionstoformat
+msgid "File extensions to format:"
+msgstr "Расширения форматируемых файлов:"
+
+#: jcfuiconsts.lisclarifyrunonceoffs
+msgid "Run once-offs"
+msgstr "Однократные операции"
+
+#: jcfuiconsts.lisclarifyrunonlythese
+msgid "Run &only these"
+msgstr "Выполнять &только их"
+
 #: jcfuiconsts.lisfrfilesdatefilewritten
 msgid "Date file written: %s"
 msgstr "Дата записи файла: %s"
