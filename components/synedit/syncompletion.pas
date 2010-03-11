@@ -836,7 +836,6 @@ var
 begin
   inherited DoOnResize;
   if ([csLoading,csDestroying]*ComponentState<>[])
-  or (csCreating in ControlState)
   or (Bitmap=nil) or (Scroll=nil) then exit;
   OldHeight:=Bitmap.Height+2;
   OldWidth:=Bitmap.Width+Scroll.Width;

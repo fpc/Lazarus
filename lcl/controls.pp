@@ -233,7 +233,6 @@ type
     csAlignmentNeeded,
     {$ENDIF}
     csFocusing,
-    csCreating,
     csPaintCopy,
     csCustomPaint,
     csDestroyingHandle,
