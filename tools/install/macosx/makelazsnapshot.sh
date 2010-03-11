@@ -39,7 +39,7 @@ if [ ! -e "$FREEZE" ]; then
   echo "Cannot find freeze"
 fi
 
-export FPC=~/fpc/bin/fpc
+export FPC=fpc
 
 $SVN up $LAZSOURCEDIR
 cd $LAZSOURCEDIR/tools/install/macosx
