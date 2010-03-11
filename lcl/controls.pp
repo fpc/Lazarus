@@ -228,9 +228,8 @@ type
     csClicked,
     csPalette,
     csReadingState,
-    {$IFDEF NewAutoSize}
+    {$IFDEF OldAutoSize}
     // deprecated
-    {$ELSE}
     csAlignmentNeeded,
     {$ENDIF}
     csFocusing,
@@ -792,7 +791,7 @@ type
 
   { TControl }
 
-  {$IFDEF NewAutoSize}
+  {$IFNDEF OldAutoSize}
   TControlAutoSizePhase = (
     caspNone,
     caspChangingProperties,
@@ -810,11 +809,11 @@ type
                                  var Handled: Boolean) of object;
 
   TControlFlag = (
-    {$IFDEF NewAutoSize}
-    cfLoading, // set by TControl.ReadState, unset by TControl.Loaded when all on form finished loading
-    {$ELSE}
+    {$IFDEF OldAutoSize}
     // obsolete
     cfRequestAlignNeeded,
+    {$ELSE}
+    cfLoading, // set by TControl.ReadState, unset by TControl.Loaded when all on form finished loading
     {$ENDIF}
     cfAutoSizeNeeded,
     cfLeftLoaded,  // cfLeftLoaded is set, when 'Left' is set during loading.
@@ -947,7 +946,7 @@ type
     FParentFont: Boolean;
     FParentShowHint: Boolean;
     FAutoSize: Boolean;
-    {$IFDEF NewAutoSize}
+    {$IFNDEF OldAutoSize}
     fAutoSizingAll: boolean;
     {$ENDIF}
     FAutoSizingSelf: Boolean;
@@ -956,7 +955,7 @@ type
     FVisible: Boolean;
     function CaptureMouseButtonsIsStored: boolean;
     procedure DoActionChange(Sender: TObject);
-    {$IFDEF NewAutoSize}
+    {$IFNDEF OldAutoSize}
     function GetAutoSizingAll: Boolean;
     {$ENDIF}
     function GetAnchorSide(Kind: TAnchorKind): TAnchorSide;
@@ -1022,7 +1021,7 @@ type
   protected
     // sizing/aligning
     procedure DoAutoSize; virtual;
-    {$IFDEF NewAutoSize}
+    {$IFNDEF OldAutoSize}
     procedure DoAllAutoSize; virtual; // while autosize needed call DoAutoSize, used by AdjustSize and EnableAutoSizing
     {$ENDIF}
     procedure BeginAutoSizing; // set AutoSizing=true, can be used to prevent circles
@@ -1070,7 +1069,7 @@ type
     function IsClientWidthStored: boolean; virtual;
 
     property AutoSizing: Boolean read FAutoSizingSelf;// see Begin/EndAutoSizing
-    {$IFDEF NewAutoSize}
+    {$IFNDEF OldAutoSize}
     property AutoSizingAll: Boolean read GetAutoSizingAll;// set in DoAllAutoSize
     {$ENDIF}
     property AutoSizingLockCount: Integer read FAutoSizingLockCount;
@@ -1261,7 +1260,7 @@ type
   public
     // size
     procedure AdjustSize; virtual;// smart calling DoAutoSize
-    {$IFDEF NewAutoSize}
+    {$IFNDEF OldAutoSize}
     function AutoSizePhase: TControlAutoSizePhase; virtual;
     {$ENDIF}
     function AutoSizeDelayed: boolean; virtual;
@@ -1593,10 +1592,10 @@ type
     wcfClientRectNeedsUpdate,
     wcfColorChanged,
     wcfFontChanged,          // Set if font was changed before handle creation
-    {$IFDEF NewAutoSize}
-    wcfAllAutoSizing,
-    {$ELSE}
+    {$IFDEF OldAutoSize}
     wcfReAlignNeeded,
+    {$ELSE}
+    wcfAllAutoSizing,
     {$ENDIF}
     wcfAligningControls,
     wcfEraseBackground,
@@ -1667,7 +1666,7 @@ type
     FTabOrder: integer;
     FTabList: TFPList;
     // keep small variables together to save some bytes
-    {$IFNDEF NewAutoSize}
+    {$IFDEF OldAutoSize}
     FAlignLevel: Word;
     {$ENDIF}
     FTabStop: Boolean;
@@ -1715,7 +1714,7 @@ type
     function DoAlignChildControls(TheAlign: TAlign; AControl: TControl;
                      AControlList: TFPList; var ARect: TRect): Boolean; virtual;
     procedure DoChildSizingChange(Sender: TObject); virtual;
-    {$IFNDEF NewAutoSize}
+    {$IFDEF OldAutoSize}
     procedure ResizeDelayedAutoSizeChildren; virtual;
     {$ENDIF}
     procedure InvalidatePreferredChildSizes;
@@ -1731,7 +1730,7 @@ type
     procedure DoConstraintsChange(Sender: TObject); override;
     procedure DoSetBounds(ALeft, ATop, AWidth, AHeight: integer); override;
     procedure DoAutoSize; override;
-    {$IFDEF NewAutoSize}
+    {$IFNDEF OldAutoSize}
     procedure DoAllAutoSize; override;
     {$ENDIF}
     procedure CalculatePreferredSize(var PreferredWidth,
@@ -1900,7 +1899,7 @@ type
     property VisibleDockClientCount: Integer read GetVisibleDockClientCount;
   public
     // size, position, bounds
-    {$IFDEF NewAutoSize}
+    {$IFNDEF OldAutoSize}
     function AutoSizePhase: TControlAutoSizePhase; override;
     {$ENDIF}
     function AutoSizeDelayed: boolean; override;
@@ -2322,7 +2321,7 @@ const
     'alNone', 'alTop', 'alBottom', 'alLeft', 'alRight', 'alClient', 'alCustom');
   AnchorNames: array[TAnchorKind] of string = (
     'akTop', 'akLeft', 'akRight', 'akBottom');
-  {$IFDEF NewAutoSize}
+  {$IFNDEF OldAutoSize}
   AutoSizePhaseNames: array[TControlAutoSizePhase] of string = (
     'caspNone',
     'caspChangingProperties',

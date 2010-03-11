@@ -40,16 +40,7 @@
 ------------------------------------------------------------------------------}
 procedure TControl.Adjustsize;
 begin
-  {$IFDEF NewAutoSize}
-  Include(FControlFlags,cfAutoSizeNeeded);
-  if IsControlVisible then
-  begin
-    if Parent<>nil then
-      Parent.AdjustSize
-    else if not AutoSizeDelayed then
-      DoAllAutoSize;
-  end;
-  {$ELSE}
+  {$IFDEF OldAutoSize}
   //debugln(['TControl.AdjustSize START ',DbgSName(Self),' AutoSizeCanStart=',AutoSizeCanStart,' AutoSizeDelayed=',AutoSizeDelayed]);
   if (not AutoSizeCanStart) or AutoSizeDelayed then begin
     //debugln('TControl.AdjustSize AutoSizeDelayed ',DbgSName(Self));
@@ -59,6 +50,15 @@ begin
   //debugln(['TControl.AdjustSize DoAutoSize ',DbgSName(Self)]);
   DoAutoSize;
   Exclude(FControlFlags,cfAutoSizeNeeded);
+  {$ELSE}
+  Include(FControlFlags,cfAutoSizeNeeded);
+  if IsControlVisible then
+  begin
+    if Parent<>nil then
+      Parent.AdjustSize
+    else if not AutoSizeDelayed then
+      DoAllAutoSize;
+  end;
   {$ENDIF}
 end;
 
@@ -365,18 +365,7 @@ begin
   // change base bounds
   // (base bounds are the base for the automatic resizing)
   UpdateAnchorRules;
-  {$IFDEF NewAutoSize}
-  // lock size messages
-  inc(FSizeLock);
-  try
-    // notify before autosizing
-    BoundsChanged;
-    if PosSizeKept then exit;
-    AdjustSize;
-  finally
-    dec(FSizeLock);
-  end;
-  {$ELSE}
+  {$IFDEF OldAutoSize}
   // lock the base bounds while automatic resizing
   LockBaseBounds;
   // lock size messages
@@ -413,6 +402,17 @@ begin
   finally
     dec(FSizeLock);
     UnlockBaseBounds;
+  end;
+  {$ELSE}
+  // lock size messages
+  inc(FSizeLock);
+  try
+    // notify before autosizing
+    BoundsChanged;
+    if PosSizeKept then exit;
+    AdjustSize;
+  finally
+    dec(FSizeLock);
   end;
   {$ENDIF}
   if PosSizeKept then exit;
@@ -1344,7 +1344,7 @@ begin
   p:=Parent;
   while (p<>nil) do begin
     if (wcfAligningControls in p.FWinControlFlags)
-    {$IFNDEF NewAutoSize}
+    {$IFDEF OldAutoSize}
     or (p.FAlignLevel>0)
     {$ENDIF}
     then
@@ -1455,7 +1455,7 @@ begin
   Result := TControl(FAnchoredControls[Index]);
 end;
 
-{$IFDEF NewAutoSize}
+{$IFNDEF OldAutoSize}
 function TControl.GetAutoSizingAll: Boolean;
 begin
   if Parent<>nil then
@@ -2373,7 +2373,7 @@ end;
 
   Run DoAutoSize until done.
 ------------------------------------------------------------------------------}
-{$IFDEF NewAutoSize}
+{$IFNDEF OldAutoSize}
 procedure TControl.DoAllAutoSize;
 
   procedure AutoSizeControl(AControl: TControl);
@@ -2489,7 +2489,7 @@ begin
   {$ENDIF}
 end;
 
-{$IFDEF NewAutoSize}
+{$IFNDEF OldAutoSize}
 function TControl.AutoSizePhase: TControlAutoSizePhase;
 begin
   if Parent<>nil then
@@ -2510,7 +2510,7 @@ begin
   Result:=(FAutoSizingLockCount>0)
           // no autosize during loading or destruction
           or ([csLoading,csDestroying]*ComponentState<>[])
-          {$IFDEF NewAutoSize}
+          {$IFNDEF OldAutoSize}
           or (cfLoading in FControlFlags)
           {$ENDIF}
           // no autosize for invisible controls
@@ -2989,7 +2989,7 @@ end;
 
 procedure TControl.Loaded;
 
-  {$IFDEF NewAutoSize}
+  {$IFNDEF OldAutoSize}
   function FindLoadingControl(AControl: TControl): TControl;
   var
     i: Integer;
@@ -3098,7 +3098,7 @@ begin
 
   UpdateBaseBounds(true,true,true);
 
-  {$IFNDEF NewAutoSize}
+  {$IFDEF OldAutoSize}
   // obsolete
 
   // align this control and the brothers
@@ -3114,10 +3114,10 @@ begin
   FUndockWidth := Width;
   if Action <> nil then ActionChange(Action, True);
   
-  {$IFDEF NewAutoSize}
-  CheckLoading(Self);
-  {$ELSE}
+  {$IFDEF OldAutoSize}
   CheckOnChangeBounds;
+  {$ELSE}
+  CheckLoading(Self);
   {$ENDIF}
 end;
 
@@ -3160,13 +3160,13 @@ end;
 
 procedure TControl.ReadState(Reader: TReader);
 begin
-  {$IFDEF NewAutoSize}
+  {$IFNDEF OldAutoSize}
   Include(FControlFlags,cfLoading);
   DisableAutoSizing;
   try
   {$ENDIF}
     inherited ReadState(Reader);
-  {$IFDEF NewAutoSize}
+  {$IFNDEF OldAutoSize}
   finally
     EnableAutoSizing;
   end;
@@ -3177,9 +3177,7 @@ procedure TControl.FormEndUpdated;
 // called when control is on a form and EndFormUpdate reached 0
 // it is called recursively
 begin
-  {$IFDEF NewAutoSize}
-
-  {$ELSE}
+  {$IFDEF OldAutoSize}
   if cfOnResizeNeeded in FControlFlags then
     Resize;
   if cfOnChangeBoundsNeeded in FControlFlags then
@@ -3241,9 +3239,7 @@ end;
 ------------------------------------------------------------------------------}
 procedure TControl.RequestAlign;
 begin
-  {$IFDEF NewAutoSize}
-  AdjustSize;
-  {$ELSE}
+  {$IFDEF OldAutoSize}
   if (Parent = nil) or (csDestroying in ComponentState) then exit;
   if (csLoading in ComponentState) or (not Parent.HandleAllocated) then begin
     //debugln('TControl.RequestAlign csLoading or not HandleAllocated ',DbgSName(Self));
@@ -3253,6 +3249,8 @@ begin
   //debugln('TControl.RequestAlign AlignControl ',DbgSName(Self));
   Parent.AlignControl(Self);
   Exclude(FControlFlags,cfRequestAlignNeeded);
+  {$ELSE}
+  AdjustSize;
   {$ENDIF}
 end;
 
@@ -3510,7 +3508,7 @@ end;
 procedure TControl.SetParent(NewParent: TWinControl);
 begin
   if FParent = NewParent then exit;
-  {$IFDEF NewAutoSize}
+  {$IFNDEF OldAutoSize}
   DisableAutoSizing;
   try
   {$ENDIF}
@@ -3522,7 +3520,7 @@ begin
       BoundsRect := BoundsRectForNewParent;
     end;
     if NewParent <> nil then NewParent.InsertControl(Self);
-  {$IFDEF NewAutoSize}
+  {$IFNDEF OldAutoSize}
   finally
     EnableAutoSizing;
   end;
@@ -3696,7 +3694,7 @@ begin
   if FVisible <> Value then
   begin
     //DebugLn(['TControl.SetVisible ',DbgSName(Self),' NewVisible=',Value]);
-    {$IFDEF NewAutoSize}
+    {$IFNDEF OldAutoSize}
     DisableAutoSizing;
     try
     {$ENDIF}
@@ -3710,7 +3708,7 @@ begin
           AsWincontrol := TWinControl(Self)
         else
           AsWincontrol := nil;
-        {$IFDEF NewAutoSize}
+        {$IFNDEF OldAutoSize}
         InvalidatePreferredSize;
         if AsWincontrol <> nil then
           AsWincontrol.InvalidatePreferredChildSizes;
@@ -3750,7 +3748,7 @@ begin
       finally
         VisibleChanged;
       end;
-    {$IFDEF NewAutoSize}
+    {$IFNDEF OldAutoSize}
     finally
       EnableAutoSizing;
     end;
@@ -4744,7 +4742,7 @@ begin
   while AControl<>nil do begin
     Exclude(AControl.FControlFlags,cfPreferredSizeValid);
     Exclude(AControl.FControlFlags,cfPreferredMinSizeValid);
-    {$IFDEF NewAutoSize}
+    {$IFNDEF OldAutoSize}
     if not AControl.IsControlVisible then break;
     {$ENDIF}
     AControl:=AControl.Parent;
@@ -4782,7 +4780,9 @@ end;
 
 procedure TControl.DisableAutoSizing;
 begin
-  {$IFDEF NewAutoSize}
+  {$IFDEF OldAutoSize}
+  inc(FAutoSizingLockCount);
+  {$ELSE}
   inc(FAutoSizingLockCount);
   //DebugLn([Space(FAutoSizingLockCount*2),'TControl.DisableAutoSizing ',DbgSName(Self),' ',FAutoSizingLockCount]);
   if FAutoSizingLockCount=1 then
@@ -4793,14 +4793,12 @@ begin
       Parent.DisableAutoSizing;
     end;
   end;
-  {$ELSE}
-  inc(FAutoSizingLockCount);
   {$ENDIF}
 end;
 
 procedure TControl.EnableAutoSizing;
 
-  {$IFNDEF NewAutoSize}
+  {$IFDEF OldAutoSize}
   procedure AdjustSizeRecursive(AControl: TControl);
   var
     AWinControl: TWinControl;
@@ -4819,7 +4817,11 @@ procedure TControl.EnableAutoSizing;
 
 begin
   if FAutoSizingLockCount<=0 then RaiseGDBException('TControl.EnableAutoSizing');
-  {$IFDEF NewAutoSize}
+  {$IFDEF OldAutoSize}
+  dec(FAutoSizingLockCount);
+  if FAutoSizingLockCount=0 then
+    AdjustSizeRecursive(Self);
+  {$ELSE}
   dec(FAutoSizingLockCount);
   //DebugLn([Space(FAutoSizingLockCount*2),'TControl.EnableAutoSizing ',DbgSName(Self),' ',FAutoSizingLockCount]);
   if (FAutoSizingLockCount=0) then
@@ -4831,10 +4833,6 @@ begin
     end else
       DoAllAutoSize;
   end;
-  {$ELSE}
-  dec(FAutoSizingLockCount);
-  if FAutoSizingLockCount=0 then
-    AdjustSizeRecursive(Self);
   {$ENDIF}
 end;
 

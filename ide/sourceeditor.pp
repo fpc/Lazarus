@@ -6646,7 +6646,7 @@ Begin
   {$IFDEF IDE_DEBUG}
   writeln('[TSourceNotebook.NewFile] A ');
   {$ENDIF}
-  {$IFDEF NewAutoSize}
+  {$IFNDEF OldwAutoSize}
   DisableAutoSizing;
   try
   {$ENDIF}
@@ -6661,7 +6661,7 @@ Begin
     {$ENDIF}
     Result.PageName:=FindUniquePageName(NewShortName, FindPageWithEditor(Result));
     UpdatePageNames;
-  {$IFDEF NewAutoSize}
+  {$IFNDEF OldAutoSize}
   finally
     EnableAutoSizing;
   end;
@@ -6683,7 +6683,7 @@ begin
   TempEditor:=FindSourceEditorWithPageIndex(APageIndex);
   if TempEditor=nil then exit;
   //debugln(['TSourceNotebook.CloseFile ',TempEditor.FileName,' ',TempEditor.APageIndex]);
-  {$IFDEF NewAutoSize}
+  {$IFNDEF OldAutoSize}
   DisableAutoSizing;
   try
   {$ENDIF}
@@ -6720,7 +6720,7 @@ begin
       Notebook:=nil;
       Hide;
     end;
-  {$IFDEF NewAutoSize}
+  {$IFNDEF OldAutoSize}
   finally
     EnableAutoSizing;
   end;

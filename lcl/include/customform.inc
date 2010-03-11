@@ -99,7 +99,7 @@ begin
   //DebugLn('[TCustomForm.Destroy] A ',Name,':',ClassName);
   if not (csDestroying in ComponentState) then GlobalNameSpace.BeginWrite;
   try
-    {$IFDEF NewAutoSize}
+    {$IFNDEF OldAutoSize}
     DisableAutoSizing;
     {$ENDIF}
     FreeThenNil(FIcon);
@@ -112,7 +112,7 @@ begin
     inherited Destroy;
     //DebugLn('[TCustomForm.Destroy] END ',Name,':',ClassName);
   finally
-    {$IFDEF NewAutoSize}
+    {$IFNDEF OldAutoSize}
     if not (csDestroying in ComponentState) then
     {$ENDIF}
       GlobalNameSpace.EndWrite;
@@ -847,7 +847,7 @@ begin
   if FFormUpdateCount=0 then begin
     FormEndUpdated;
     Visible:=(fsVisible in FFormState);
-    {$IFDEF NewAutoSize}
+    {$IFNDEF OldAutoSize}
     EnableAutoSizing;
     {$ENDIF}
   end;
@@ -1647,7 +1647,7 @@ constructor TCustomForm.CreateNew(AOwner: TComponent; Num: Integer = 0);
 begin
   Include(FFormState,fsFirstShow);
   //DebugLn('[TCustomForm.CreateNew] Class=',Classname);
-  {$IFNDEF NewAutoSize}
+  {$IFDEF OldAutoSize}
   BeginFormUpdate;
   {$ENDIF}
   FBorderIcons := [biSystemMenu, biMinimize, biMaximize];
@@ -1681,7 +1681,7 @@ begin
   Color := clBtnFace;
   FloatingDockSiteClass := TWinControlClass(ClassType);
   Screen.AddForm(Self);
-  {$IFNDEF NewAutoSize}
+  {$IFDEF OldAutoSize}
   EndFormUpdate;
   {$ENDIF}
   FAllowDropFiles := False;
@@ -2215,7 +2215,7 @@ end;
 procedure TCustomForm.BeginFormUpdate;
 begin
   inc(FFormUpdateCount);
-  {$IFDEF NewAutoSize}
+  {$IFNDEF OldAutoSize}
   if FFormUpdateCount=1 then
     DisableAutoSizing;
   {$ENDIF}

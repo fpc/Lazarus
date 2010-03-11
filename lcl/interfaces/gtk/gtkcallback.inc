@@ -1941,9 +1941,7 @@ begin
     SaveSizeNotification(Widget);
   end;
   {$ELSE}
-    {$IFDEF NewAutoSize}
-    SendSizeNotificationToLCL(Widget);
-    {$ELSE}
+    {$IFDEF OldAutoSize}
     if GTK_WIDGET_REALIZED(Widget) then begin
       { The gtk sends the size messages after the resizing. Therefore the parent
         widget is already resized, but the parent resize message will be emitted
@@ -1955,6 +1953,8 @@ begin
       // This is the resize of an outer widget and sent to the LCL immediately.
       SendSizeNotificationToLCL(Widget);
     end;
+    {$ELSE}
+    SendSizeNotificationToLCL(Widget);
     {$ENDIF}
   {$ENDIF}
 end;

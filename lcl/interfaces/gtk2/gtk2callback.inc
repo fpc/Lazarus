@@ -170,8 +170,5 @@ begin
   }
   //debugln('style-set after ',DbgSName(TWinControl(Data)));
   //LCLObject.InvalidateClientRectCache(False);
-  {$IFNDEF NewAutoSize}
-
-  {$ENDIF}
 end;
 
