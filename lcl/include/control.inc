@@ -2401,18 +2401,24 @@ begin
   if AutoSizingAll then exit;
   fAutoSizingAll:=true;
   if not (Self is TWinControl) then exit;
+  {$IFDEF VerboseAllAutoSize}
   DebugLn(['TControl.DoAllAutoSize START ',DbgSName(Self)]);
+  {$ENDIF}
   //writeln(GetStackTrace(true));
   try
     while (not AutoSizeDelayed)
     and (cfAutoSizeNeeded in FControlFlags) do begin
+      {$IFDEF VerboseAllAutoSize}
       DebugLn(['TControl.DoAllAutoSize LOOP ',DbgSName(Self),' ',dbgs(BoundsRect)]);
+      {$ENDIF}
       AutoSizeControl(Self);
     end;
   finally
     fAutoSizingAll:=false;
   end;
+  {$IFDEF VerboseAllAutoSize}
   DebugLn(['TControl.DoAllAutoSize END ',DbgSName(Self),' ',dbgs(BoundsRect)]);
+  {$ENDIF}
 end;
 {$ENDIF}
 

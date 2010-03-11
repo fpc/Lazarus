@@ -3302,9 +3302,13 @@ var
   OldChildBounds: TRect;
 begin
   {$IFDEF NewAutoSize}
+  {$IFDEF VerboseAllAutoSize}
   debugln('TWinControl.DoAutoSize ',DbgSName(Self));
+  {$ENDIF}
   if (not AutoSizeCanStart) or (AutoSizePhase<>caspComputingBounds) then begin
+    {$IFDEF VerboseAllAutoSize}
     DebugLn(['TWinControl.DoAutoSize DELAYED AutoSizeCanStart=',AutoSizeCanStart,' AutoSizeDelayed=',AutoSizeDelayed,' AutoSizePhase=',AutoSizePhaseNames[AutoSizePhase]]);
+    {$ENDIF}
     Include(FControlFlags,cfAutoSizeNeeded);
     exit;
   end;
@@ -3401,8 +3405,8 @@ begin
       PreferredHeight:=Constraints.MinMaxHeight(Height);
 
     // set new size
-    {$IF defined(VerboseAutoSize) or defined(NewAutoSize)}
-    debugln(['DoAutoSize A ',DbgSName(Self),' Cur=',Width,'x',Height,' Prefer=',PreferredWidth,'x',PreferredHeight,' WidgetClass=',WidgetSetClass.ClassName,' Fixed=',WidthIsFixed,'x',HeightIsFixed]);
+    {$IF defined(VerboseAutoSize) or defined(VerboseAllAutoSize)}
+    debugln(['TWinControl.DoAutoSize A ',DbgSName(Self),' Cur=',Width,'x',Height,' Prefer=',PreferredWidth,'x',PreferredHeight,' WidgetClass=',WidgetSetClass.ClassName,' Fixed=',WidthIsFixed,'x',HeightIsFixed]);
     {$ENDIF}
     if (PreferredWidth<>Width) or (PreferredHeight<>Height) then begin
       // adjust Left/Top as well to reduce auto sizing overhead
@@ -3451,10 +3455,14 @@ begin
   if wcfAllAutoSizing in FWinControlFlags then exit;
   if AutoSizeDelayed then exit;
 
+  {$IFDEF VerboseAllAutoSize}
   DebugLn(['TWinControl.DoAllAutoSize START ',DbgSName(Self),' ',dbgs(BoundsRect)]);
+  {$ENDIF}
   // create needed handles
   if HandleObjectShouldBeVisible and (not HandleAllocated) then begin
+    {$IFDEF VerboseAllAutoSize}
     DebugLn(['TWinControl.DoAllAutoSize CREATE HANDLE ',DbgSName(Self)]);
+    {$ENDIF}
     HandleNeeded;
     // creating the handle called DisableAutoSizing/EnableAutoSizing
     // so after handle creation the autosizing was done
@@ -3467,19 +3475,27 @@ begin
     while (cfAutoSizeNeeded in FControlFlags)
     and (not AutoSizeDelayed) do begin
       // compute all sizes for LCL objects without touching the widgetset
+      {$IFDEF VerboseAllAutoSize}
       DebugLn(['TWinControl.DoAllAutoSize COMPUTE BOUNDS ',DbgSName(Self),' old=',dbgs(BoundsRect)]);
+      {$ENDIF}
       inherited DoAllAutoSize;
       if cfAutoSizeNeeded in FControlFlags then RaiseGDBException('');
       // send all new bounds to widgetset
+      {$IFDEF VerboseAllAutoSize}
       DebugLn(['TWinControl.DoAllAutoSize REALIZE BOUNDS ',DbgSName(Self),' lclbounds=',dbgs(BoundsRect)]);
+      {$ENDIF}
       RealizeBoundsRecursive;
       // make handles visible
       if not (cfAutoSizeNeeded in FControlFlags) then begin
+        {$IFDEF VerboseAllAutoSize}
         DebugLn(['TWinControl.DoAllAutoSize UPDATESHOWING ',DbgSName(Self),' lclbounds=',dbgs(BoundsRect)]);
+        {$ENDIF}
         UpdateShowingRecursive(Self);
       end;
     end;
+    {$IFDEF VerboseAllAutoSize}
     DebugLn(['TWinControl.DoAllAutoSize END ',DbgSName(Self),' ',dbgs(BoundsRect)]);
+    {$ENDIF}
   finally
     Exclude(FWinControlFlags,wcfAllAutoSizing);
   end;
@@ -3583,8 +3599,8 @@ begin
   if not CompareRect(@R, @FAdjustClientRectRealized) then
   begin
     // client rect changed since last AlignControl
-    {$IFDEF NewAutoSize}
-    DebugLn('UUU TWinControl.DoAdjustClientRectChange ClientRect changed ',Name,':',ClassName,
+    {$IFDEF VerboseAllAutoSize}
+    DebugLn('TWinControl.DoAdjustClientRectChange ClientRect changed ',Name,':',ClassName,
       ' Old=',Dbgs(FAdjustClientRectRealized.Right),'x',DbgS(FAdjustClientRectRealized.Bottom),
       ' New=',DbgS(r.Right),'x',DbgS(r.Bottom));
     {$ENDIF}
@@ -6632,7 +6648,7 @@ begin
   begin
     // interface widget has resized
     // -> update position and realized bounds
-    {$IFDEF NewAutoSize}
+    {$IFDEF VerboseAllAutoSize}
     DebugLn(['TWinControl.WMSize A ',dbgsname(Self),' Message=',Message.Width,',',Message.Height,
       ' BoundsRealized=',dbgs(FBoundsRealized),' FromIntf=',(Message.SizeType and Size_SourceIsInterface)>0,
       ' wcfClientRectNeedsUpdate=',wcfClientRectNeedsUpdate in FWinControlFlags]);
@@ -7703,7 +7719,7 @@ begin
     NewWidth:=Width-OldClientRect.Right+NewClientWidth;
     NewHeight:=Height-OldClientRect.Bottom+NewClientHeight;
 
-    {$IF defined(VerboseAutoSize) or defined(NewAutoSize)}
+    {$IF defined(VerboseAutoSize) or defined(VerboseAllAutoSize)}
     debugln(['TWinControl.CalculatePreferredSize ',DbgSName(Self),
       ' HandleAllocated=',HandleAllocated,
       ' Cur=',Width,'x',Height,
