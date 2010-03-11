@@ -2,7 +2,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: \n"
 "POT-Creation-Date: \n"
-"PO-Revision-Date: 2009-08-21 16:08+0100\n"
+"PO-Revision-Date: 2010-02-24 15:58+0100\n"
 "Last-Translator: Swen Heinig <swen.heinig@freenet.de>\n"
 "Language-Team: Deutsch <lazarus@miraclec.com>\n"
 "MIME-Version: 1.0\n"
@@ -295,7 +295,7 @@ msgstr "Aktion"
 
 #: objinspstrconsts.oisactionlistcomponenteditor
 msgid "Action&List Editor..."
-msgstr ""
+msgstr "Action&List-Editor..."
 
 #: objinspstrconsts.oisactionlisteditor
 #, fuzzy
@@ -433,7 +433,7 @@ msgstr "Eintrag %s%s%s löschen?"
 
 #: objinspstrconsts.oisdeleteselectedfields
 msgid "Delete selected field(s)"
-msgstr ""
+msgstr "Gewählte(s) Feld(er) löschen"
 
 #: objinspstrconsts.oisdlinesdchars
 msgid "%d lines, %d chars"
@@ -481,7 +481,7 @@ msgstr "Fließkomma"
 
 #: objinspstrconsts.oisimagelistcomponenteditor
 msgid "I&mageList Editor..."
-msgstr ""
+msgstr "I&mageList-Editor..."
 
 #: objinspstrconsts.oisincompatibleidentifier
 msgid "Incompatible Identifier"
@@ -549,7 +549,7 @@ msgstr ""
 
 #: objinspstrconsts.oisnew
 msgid "&New"
-msgstr ""
+msgstr "&Neu"
 
 #: objinspstrconsts.oisnone
 msgid "(none)"
@@ -660,7 +660,7 @@ msgstr "Datei auswählen"
 
 #: objinspstrconsts.oisselectall
 msgid "&Select all"
-msgstr ""
+msgstr "Alle au&swählen"
 
 #: objinspstrconsts.oisselectshortcut
 msgid "Select short cut"
@@ -1272,7 +1272,7 @@ msgstr "Einträge"
 #: objinspstrconsts.sccslvedtgrprcaption
 msgctxt "objinspstrconsts.sccslvedtgrprcaption"
 msgid "Item Properties"
-msgstr "Eingeschaften des Eintrags"
+msgstr "Eigenschaften des Eintrags"
 
 #: objinspstrconsts.sccslvedtitem
 msgctxt "objinspstrconsts.sccslvedtitem"
