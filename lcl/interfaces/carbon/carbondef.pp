@@ -437,7 +437,7 @@ var
   R: TRect;
 begin
   if not Resizing
-  {$IFNDEF NewAutoSize} and not (csAlignmentNeeded in LCLObject.ControlState){$ENDIF}
+  {$IFDEF OldAutoSize} and not (csAlignmentNeeded in LCLObject.ControlState){$ENDIF}
   then begin
     GetBounds(R);
     LCLObject.InvalidateClientRectCache(False);
