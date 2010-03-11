@@ -28,6 +28,14 @@ resourcestring
   lisObfsRemoveIndent = 'Remove &indent';
   lisObfsRebreakLines = 'Rebreak &lines';
 
+  //Clarify tab
+  lisClarifyClarify = 'Clarify';
+  lisClarifyFileExtensionsToFormat = 'File extensions to format:';
+  lisClarifyRunOnceOffs = 'Run once-offs';
+  lisClarifyDoNotRun = 'Do &not run';
+  lisClarifyDoRun = 'Do &run';
+  lisClarifyRunOnlyThese = 'Run &only these';
+
 implementation
 
 end.

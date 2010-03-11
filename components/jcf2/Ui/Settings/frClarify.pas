@@ -58,7 +58,7 @@ implementation
 {$R *.lfm}
 
 uses
-  JcfSettings, JcfHelp, SetClarify;
+  JcfSettings, JcfHelp, SetClarify, jcfuiconsts;
 
 constructor TfClarify.Create(AOwner: TComponent);
 begin
@@ -68,12 +68,16 @@ end;
 
 function TfClarify.GetTitle: String;
 begin
-  Result := 'Clarify';
+  Result := lisClarifyClarify;
 end;
 
 procedure TfClarify.Setup(ADialog: TAbstractOptionsEditorDialog);
 begin
-  // nothing
+  Label1.Caption := lisClarifyFileExtensionsToFormat;
+  rgRunOnceOffs.Caption := lisClarifyRunOnceOffs;
+  rgRunOnceOffs.Items[0] := lisClarifyDoNotRun;
+  rgRunOnceOffs.Items[1] := lisClarifyDoRun;
+  rgRunOnceOffs.Items[2] := lisClarifyRunOnlyThese;
 end;
 
 
