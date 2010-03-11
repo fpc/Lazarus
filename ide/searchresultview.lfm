@@ -11,12 +11,12 @@ object SearchResultsView: TSearchResultsView
   OnCreate = Form1Create
   OnKeyDown = FormKeyDown
   Position = poScreenCenter
-  LCLVersion = '0.9.27'
+  LCLVersion = '0.9.29'
   object ResultsNoteBook: TNotebook
     AnchorSideTop.Side = asrBottom
     Left = 0
-    Height = 247
-    Top = 26
+    Height = 244
+    Top = 29
     Width = 799
     Align = alClient
     OnCloseTabClicked = ResultsNoteBookClosetabclicked
@@ -26,9 +26,10 @@ object SearchResultsView: TSearchResultsView
   end
   object ToolBar: TToolBar
     Left = 0
-    Height = 26
+    Height = 29
     Top = 0
     Width = 799
+    AutoSize = True
     Caption = 'ToolBar'
     Images = ImageList
     TabOrder = 1
@@ -76,7 +77,7 @@ object SearchResultsView: TSearchResultsView
     end
     object SearchInListEdit: TEdit
       Left = 116
-      Height = 23
+      Height = 27
       Top = 2
       Width = 348
       Anchors = [akTop, akRight]
