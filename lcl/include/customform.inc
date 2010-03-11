@@ -2138,6 +2138,7 @@ begin
   Assert(False, 'Trace:[TCustomForm.CreateWnd] FMenu.HandleNeeded');
   UpdateMenu;
 
+  {$IFDEF OldAutoSize}
   // activate focus if visible
   if Visible then begin
     if (ActiveControl = nil) and (not (csDesigning in ComponentState))
@@ -2158,6 +2159,7 @@ begin
       LCLIntf.SetFocus(FActiveControl.Handle);
     end;
   end;
+  {$ENDIF}
 
   // update icon
   Perform(CM_ICONCHANGED, 0, 0);
@@ -2348,6 +2350,28 @@ begin
   inherited UpdateShowing;
   {$IFDEF CHECK_POSITION}
   DebugLn('[TCustomForm.UpdateShowing] END  ',Name,':',Classname,' Pos=',DbgS(Left),',',DbgS(Top));
+  {$ENDIF}
+  {$IFNDEF OldAutoSize}
+  // activate focus if visible
+  if Visible then begin
+    if (ActiveControl = nil) and (not (csDesigning in ComponentState))
+    and (Parent=nil) then begin
+      // automatically choose a control to focus
+      {$IFDEF VerboseFocus}
+      DebugLn('TCustomForm.CreateWnd ',DbgSName(Self),' Set ActiveControl := ',DbgSName(FindDefaultForActiveControl));
+      {$ENDIF}
+      ActiveControl := FindDefaultForActiveControl;
+    end;
+    if (Parent=nil)
+    and (FActiveControl<>nil) and FActiveControl.HandleAllocated
+    and FActiveControl.CanFocus
+    and ([csLoading,csDestroying,csDesigning]*ComponentState=[]) then begin
+      {$IFDEF VerboseFocus}
+      DebugLn('TCustomForm.CreateWnd A ',DbgSName(Self),' FActiveControl=',DbgSName(FActiveControl));
+      {$ENDIF}
+      LCLIntf.SetFocus(FActiveControl.Handle);
+    end;
+  end;
   {$ENDIF}
 end;
 
