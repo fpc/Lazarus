@@ -136,7 +136,7 @@ type
     procedure Release; override;
   public
     function CanSendLCLMessage: Boolean;
-    function CanPaintBackground: Boolean;
+    function CanPaintBackground: Boolean; virtual;
     function DeliverMessage(var Msg): LRESULT; virtual;
     function EventFilter(Sender: QObjectH; Event: QEventH): Boolean; cdecl; override;
     function getAcceptDropFiles: Boolean; virtual;
@@ -385,6 +385,7 @@ type
   
   TQtViewPort = class(TQtWidget)
   public
+    function CanPaintBackground: Boolean; override;
     function EventFilter(Sender: QObjectH; Event: QEventH): Boolean; cdecl; override;
   end;
   
@@ -408,6 +409,7 @@ type
 
   TQtAbstractButton = class(TQtWidget)
   public
+    function CanPaintBackground: Boolean; override;
     function getIconSize: TSize;
     function getText: WideString; override;
     procedure setIcon(AIcon: QIconH);
@@ -500,6 +502,7 @@ type
   protected
     function CreateWidget(const AParams: TCreateParams):QWidgetH; override;
   public
+    function CanPaintBackground: Boolean; override;
     function getText: WideString; override;
     procedure setText(const W: WideString); override;
     procedure setAlignment(const AAlignment: QtAlignment);
@@ -542,6 +545,7 @@ type
   protected
     function CreateWidget(const AParams: TCreateParams):QWidgetH; override;
   public
+    function CanPaintBackground: Boolean; override;
     function EventFilter(Sender: QObjectH; Event: QEventH): Boolean; cdecl; override;
     function getText: WideString; override;
     procedure setText(const W: WideString); override;
@@ -1638,21 +1642,11 @@ end;
  ------------------------------------------------------------------------------}
 function TQtWidget.CanPaintBackground: Boolean;
 begin
-  Result := CanSendLCLMessage and
-    (not HasPaint or
-    ((ClassType = TQtGroupBox) and
-    (LCLObject.Color <> clBtnFace) and
-    // DO NOT REMOVE ! because QGroupBox default = clBackground not clBtnFace !
-    (LCLObject.Color <> clBackground))) and
-    getEnabled and not
-    getAutoFillBackground;
-
-  if Result and (ClassType <> TQtGroupBox) then
-    Result := ((WidgetColorRole = QPaletteButton) or
-      (ClassType = TQtStaticText)) and
-      (LCLObject.Color <> clBtnFace) and
-      // DO NOT REMOVE ! QCheckBox,QRadioButton,QLabel default = clBackground  !
-      (LCLObject.Color <> clBackground);
+  {TODO: we must override this function for some classes
+   until clDefault is implemented in LCL.Then we can easy
+   ask EqualTQColor() for diff between
+   Palette.DefaultColor and current LCLObject.Color}
+  Result := False;
 end;
 
 {$IFDEF VerboseQt}
@@ -4029,6 +4023,13 @@ begin
   QAbstractButton_setText(QAbstractButtonH(Widget), @W);
 end;
 
+function TQtAbstractButton.CanPaintBackground: Boolean;
+begin
+  Result := CanSendLCLMessage and getEnabled and
+    (LCLObject.Color <> clBtnFace) and (LCLObject.Color <> clBackground);
+    // DO NOT REMOVE ! QCheckBox,QRadioButton default = clBackground  !
+end;
+
 function TQtAbstractButton.getIconSize: TSize;
 begin
   QAbstractButton_iconSize(QAbstractButtonH(Widget), @Result);
@@ -4673,6 +4674,12 @@ begin
   Result := QLabel_create(Parent);
 end;
 
+function TQtStaticText.CanPaintBackground: Boolean;
+begin
+  Result := CanSendLCLMessage and getEnabled and
+    (LCLObject.Color <> clBtnFace) and (LCLObject.Color <> clBackground);
+end;
+
 {------------------------------------------------------------------------------
   Function: TQtStaticText.SetText
   Params:  None
@@ -4885,6 +4892,13 @@ begin
   QWidget_setLayout(Result, QLayoutH(Layout));
   QWidget_setAttribute(Result, QtWA_LayoutOnEntireRect, True);
   setLayoutThemeMargins(Layout, Result);
+end;
+
+function TQtGroupBox.CanPaintBackground: Boolean;
+begin
+  Result := CanSendLCLMessage and getEnabled and
+    (LCLObject.Color <> clBtnFace) and (LCLObject.Color <> clBackground);
+    // DO NOT REMOVE ! QGroupBox default = clBackground not clBtnFace !
 end;
 
 function TQtGroupBox.EventFilter(Sender: QObjectH; Event: QEventH): Boolean;
@@ -9202,6 +9216,13 @@ begin
 end;
 
 { TQtViewPort }
+
+function TQtViewPort.CanPaintBackground: Boolean;
+begin
+  Result := CanSendLCLMessage and getEnabled and
+    (LCLObject is TScrollingWinControl) and
+    (LCLObject.Color <> clBtnFace) and (LCLObject.Color <> clBackground);
+end;
 
 function TQtViewPort.EventFilter(Sender: QObjectH; Event: QEventH): Boolean; cdecl;
 begin
