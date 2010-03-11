@@ -838,11 +838,12 @@ end;
 
 procedure TIDEHelpManager.UpdateFPCDocsHTMLDirectory;
 
-  function IsFPCDocsHTMDirectory(const Directory: string): boolean;
+  function IsFPCDocsHTMDirectory(Directory: string): boolean;
   var
     RefFilename: String;
   begin
-    if Directory='' then exit(false);
+    Result:=false;
+    if Directory='' then exit;
     RefFilename:=AppendPathDelim(TrimFilename(Directory))
                                  +'ref'+PathDelim+'ref.kwd';
     Result:=FileExistsUTF8(RefFilename);
@@ -931,7 +932,7 @@ procedure TIDEHelpManager.UpdateFPCDocsHTMLDirectory;
   end;
   
 begin
-  if IsFPCDocsHTMDirectory(HelpOpts.FPCDocsHTMLDirectory) then exit;
+  if IsFPCDocsHTMDirectory(HelpOpts.GetEffectiveFPCDocsHTMLDirectory) then exit;
   // search the docs at common places
   if SearchInCommonInstallDir then exit;
   if TryDirectoryMask('/usr/share/doc/fpdocs-*') then exit;
@@ -989,7 +990,7 @@ function TIDEHelpManager.ShowHelpForSourcePosition(const Filename: string;
     Result:=shrHelpNotFound;
     if Keyword='' then exit;
     UpdateFPCDocsHTMLDirectory;
-    RefFilename:=HelpOpts.FPCDocsHTMLDirectory;
+    RefFilename:=HelpOpts.GetEffectiveFPCDocsHTMLDirectory;
     if (RefFilename='') then exit;
     RefFilename:=AppendPathDelim(RefFilename)+'ref'+PathDelim+'ref.kwd';
     if not FileExistsUTF8(RefFilename) then begin
@@ -1012,7 +1013,7 @@ function TIDEHelpManager.ShowHelpForSourcePosition(const Filename: string;
           while (FileEndPos<=length(Line)) and (Line[FileEndPos]<>'#') do
             inc(FileEndPos);
           HTMLFilename:=copy(Line,FileStartPos,FileEndPos-FileStartPos);
-          HTMLFilename:=AppendPathDelim(HelpOpts.FPCDocsHTMLDirectory)+'ref'
+          HTMLFilename:=HelpOpts.GetEffectiveFPCDocsHTMLDirectory+'ref'
                         +PathDelim+HTMLFilename;
           Result:=ShowHelpFileOrError(HTMLFilename,
                               'FPC help for keyword "'+KeyWord+'"',

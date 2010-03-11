@@ -37,8 +37,10 @@ interface
 uses
   Classes, SysUtils, LCLProc, LResources, Forms, Controls, Graphics, Dialogs,
   FileUtil, StdCtrls, Buttons, ExtCtrls, IDEContextHelpEdit, EnvironmentOpts,
+  ButtonPanel,
   ObjectInspector, LazHelpIntf, IDEWindowIntf, IDEDialogs, Laz_XMLCfg,
-  LazConf, LazarusIDEStrConsts, IDEProcs, IDEOptionDefs, IDEOptionsIntf, ButtonPanel;
+  IDEOptionsIntf, MacroIntf,
+  LazConf, LazarusIDEStrConsts, IDEProcs, IDEOptionDefs;
 
 type
   { THelpOptions }
@@ -64,6 +66,7 @@ type
     function CreateCopy: THelpOptions;
   public
     property Filename: string read FFilename write SetFilename;
+    function GetEffectiveFPCDocsHTMLDirectory: string;
   published
     property FPCDocsHTMLDirectory: string read FFPCDocsHTMLDirectory
                                           write SetFPCDocsHTMLDirectory;
@@ -232,6 +235,13 @@ function THelpOptions.CreateCopy: THelpOptions;
 begin
   Result := THelpOptions.Create;
   Result.Assign(Self);
+end;
+
+function THelpOptions.GetEffectiveFPCDocsHTMLDirectory: string;
+begin
+  Result:=FPCDocsHTMLDirectory;
+  IDEMacros.SubstituteMacros(Result);
+  Result:=AppendURLPathDelim(Result);
 end;
 
 initialization
