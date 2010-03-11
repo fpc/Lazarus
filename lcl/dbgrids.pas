@@ -78,7 +78,7 @@ type
   TDbGridExtraOptions = set of TDbGridExtraOption;
 
   TDbGridStatusItem = (gsUpdatingData, gsAddingAutoColumns,
-                       gsRemovingAutoColumns, gsAutoSized);
+                       gsRemovingAutoColumns, gsAutoSized, gsStartEditing);
   TDbGridStatus = set of TDbGridStatusItem;
 
   TDataSetScrolledEvent =
@@ -764,13 +764,17 @@ begin
   {$Ifdef dbgDBGrid}
   DebugLn('(%s) TCustomDBDrid.OnDataSetChanged(aDataSet=%s) INIT',[name,dbgsname(ADataset)]);
   {$endif}
-  if EditorMode then
-    EditorMode := False;
-  LayoutChanged;
+  if not (gsStartEditing in FGridStatus) then begin
+    if EditorMode then
+      EditorMode := False;
+    LayoutChanged;
+  end;
   UpdateActive;
-  SelectEditor;
-  if (dgAlwaysShowEditor in Options) then
-    EditorMode := true;
+  if not (gsStartEditing in FGridStatus) then begin
+    SelectEditor;
+    if (dgAlwaysShowEditor in Options) then
+      EditorMode := true;
+  end;
   {$Ifdef dbgDBGrid}
   DebugLn('(%s) TCustomDBDrid.OnDataSetChanged(aDataSet=%s) DONE',[name,dbgsname(ADataset)]);
   {$endif}
@@ -2682,8 +2686,11 @@ begin
     AField := GetFieldFromGridColumn(Col);
     if assigned(AField) then
       Result := not AField.CanModify;
-    if not result then
+    if not result then begin
+      Include(FGridStatus, gsStartEditing);
       Result := not FDataLink.Edit;
+      Exclude(FGridStatus, gsStartEditing);
+    end;
     EditingColumn(Col, not Result);
   end;
 end;
