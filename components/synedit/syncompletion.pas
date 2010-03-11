@@ -104,6 +104,7 @@ type
     FPosition: Integer;
     FNbLinesInWindow: Integer;
     FFontHeight: integer;
+    FResizeLock: Integer;
     Scroll: TScrollBar;
     FOnValidate: TValidateEvent;
     FOnCancel: TNotifyEvent;
@@ -383,6 +384,7 @@ uses
 
 constructor TSynBaseCompletionForm.Create(AOwner: TComponent);
 begin
+  FResizeLock := 1; // prevent DoResize (on Handle Creation) do reset LinesInWindow
   {$IFDEF SYN_LAZARUS}
   inherited Create(AOwner);
   {$ELSE}
@@ -429,6 +431,7 @@ begin
   {$ELSE}
   ShowHint := False;
   {$ENDIF}
+  FResizeLock := 0;
 end;
 
 procedure TSynBaseCompletionForm.Deactivate;
@@ -837,7 +840,9 @@ begin
   or (Bitmap=nil) or (Scroll=nil) then exit;
   OldHeight:=Bitmap.Height+2;
   OldWidth:=Bitmap.Width+Scroll.Width;
-  if (OldHeight<>Height) or (OldWidth<>Width) then begin
+  if ((OldHeight<>Height) or (OldWidth<>Width)) and
+     (fFontHeight > 0) and (FResizeLock = 0) then
+  begin
     FNbLinesInWindow := (Height-2+(fFontHeight-1)) div fFontHeight;
     Invalidate;
   end;
@@ -857,11 +862,16 @@ procedure TSynBaseCompletionForm.FontChanged(Sender: TObject);
 var
   TextMetric: TTextMetric;
 begin
-  inherited;
-  FillChar(TextMetric,SizeOf(TextMetric),0);
-  GetTextMetrics(Canvas.Handle, TextMetric);
-  FFontHeight := TextMetric.tmHeight+2;
-  SetNblinesInWindow(FNbLinesInWindow);
+  inc(FResizeLock);   // prevent DoResize from recalculating NbLinesInWindow
+  try
+    inherited;
+    FillChar(TextMetric,SizeOf(TextMetric),0);
+    GetTextMetrics(Canvas.Handle, TextMetric);
+    FFontHeight := TextMetric.tmHeight+2;
+    SetNblinesInWindow(FNbLinesInWindow);
+  finally
+    dec(FResizeLock);
+  end;
 end;
 
 {$ENDIF}
@@ -878,16 +888,21 @@ end;
 procedure TSynBaseCompletionForm.SetNbLinesInWindow(
   const Value: Integer);
 begin
-  FNbLinesInWindow := Value;
-  Height := fFontHeight * NbLinesInWindow + 2;
-  {$IFNDEF SYN_LAZARUS}
-  Scroll.Top := 1;
-  Scroll.Left := ClientWidth - Scroll.Width - 1;
-  Scroll.Height := Height - 2;
-  {$ELSE}
-  Bitmap.Width := Scroll.Left;
-  Bitmap.Height := Height - 2;
-  {$ENDIF}
+  inc(FResizeLock);   // prevent DoResize from recalculating NbLinesInWindow
+  try
+    FNbLinesInWindow := Value;
+    Height := fFontHeight * NbLinesInWindow + 2;
+    {$IFNDEF SYN_LAZARUS}
+    Scroll.Top := 1;
+    Scroll.Left := ClientWidth - Scroll.Width - 1;
+    Scroll.Height := Height - 2;
+    {$ELSE}
+    Bitmap.Width := Scroll.Left;
+    Bitmap.Height := Height - 2;
+    {$ENDIF}
+  finally
+    dec(FResizeLock);
+  end;
 end;
 
 procedure TSynBaseCompletionForm.SetPosition(const Value: Integer);
