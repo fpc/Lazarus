@@ -233,6 +233,7 @@ type
     csAlignmentNeeded,
     {$ENDIF}
     csFocusing,
+    csCreating, // not used, exists for Delphi compatibility
     csPaintCopy,
     csCustomPaint,
     csDestroyingHandle,
