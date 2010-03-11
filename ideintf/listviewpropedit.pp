@@ -123,7 +123,7 @@ begin
     TreeView1.Selected := TreeView1.Items.Add(nil, S)
   else
   begin
-    if TreeView1.Selected.Level = 0 then
+    if (TreeView1.Selected=nil) or (TreeView1.Selected.Level = 0) then
       TreeView1.Selected := TreeView1.Items.AddChild(TreeView1.Selected, S)
     else
       TreeView1.Selected := TreeView1.Items.Add(TreeView1.Selected, S);
