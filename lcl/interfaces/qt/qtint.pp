@@ -154,6 +154,7 @@ type
   pTRect = ^TRect;
 
   procedure EventTrace(message : string; data : pointer);
+  function HwndFromWidgetH(const WidgetH: QWidgetH): HWND;
 
 
 const
@@ -233,6 +234,14 @@ begin
   finally
     QVariant_Destroy(V);
   end;
+end;
+
+function HwndFromWidgetH(const WidgetH: QWidgetH): HWND;
+begin
+  Result := 0;
+  if WidgetH = nil then
+    exit;
+  Result := HWND(QtObjectFromWidgetH(WidgetH));
 end;
 
 function GetFirstQtObjectFromWidgetH(WidgetH: QWidgetH): TQtWidget;
