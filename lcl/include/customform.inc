@@ -1612,13 +1612,7 @@ begin
   try
     BeginFormUpdate;
     try
-      {$IFDEF NewAutoSize}
-      DebugLn(['TCustomForm.Create START ',DbgSName(Self)]);
-      {$ENDIF}
       CreateNew(AOwner, 1);
-      {$IFDEF NewAutoSize}
-      DebugLn(['TCustomForm.Create after createnew ',DbgSName(Self)]);
-      {$ENDIF}
       //DebugLn('[TCustomForm.Create] B Class=',Classname);
       if (ClassType <> TForm) and not (csDesigning in ComponentState) then
       begin
@@ -1638,9 +1632,6 @@ begin
         end;
       end;
     finally
-      {$IFDEF NewAutoSize}
-      DebugLn(['TCustomForm.Create before EndFormUpdate ',DbgSName(Self)]);
-      {$ENDIF}
       EndFormUpdate;
     end;
   finally

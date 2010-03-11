@@ -2400,6 +2400,7 @@ begin
   if Parent<>nil then raise Exception.Create('TControl.DoAllAutoSize Parent<>nil');
   if AutoSizingAll then exit;
   fAutoSizingAll:=true;
+  if not (Self is TWinControl) then exit;
   DebugLn(['TControl.DoAllAutoSize START ',DbgSName(Self)]);
   //writeln(GetStackTrace(true));
   try

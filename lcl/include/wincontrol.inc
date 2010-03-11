@@ -3450,6 +3450,7 @@ procedure TWinControl.DoAllAutoSize;
 begin
   if wcfAllAutoSizing in FWinControlFlags then exit;
   if AutoSizeDelayed then exit;
+
   DebugLn(['TWinControl.DoAllAutoSize START ',DbgSName(Self),' ',dbgs(BoundsRect)]);
   // create needed handles
   if HandleObjectShouldBeVisible and (not HandleAllocated) then begin
@@ -6624,11 +6625,6 @@ begin
   DebugLn(['TWinControl.WMSize A ',Name,':',ClassName,' Message=',Message.Width,',',Message.Height,
     ' BoundsRealized=',dbgs(FBoundsRealized),' FromIntf=',(Message.SizeType and Size_SourceIsInterface)>0]);
   {$ENDIF}
-  {$IFDEF NewAutoSize}
-  DebugLn(['TWinControl.WMSize A ',dbgsname(Self),' Message=',Message.Width,',',Message.Height,
-    ' BoundsRealized=',dbgs(FBoundsRealized),' FromIntf=',(Message.SizeType and Size_SourceIsInterface)>0,
-    ' wcfClientRectNeedsUpdate=',wcfClientRectNeedsUpdate in FWinControlFlags]);
-  {$ENDIF}
 
   NewLeft:=Left;
   NewTop:=Top;
@@ -6636,6 +6632,11 @@ begin
   begin
     // interface widget has resized
     // -> update position and realized bounds
+    {$IFDEF NewAutoSize}
+    DebugLn(['TWinControl.WMSize A ',dbgsname(Self),' Message=',Message.Width,',',Message.Height,
+      ' BoundsRealized=',dbgs(FBoundsRealized),' FromIntf=',(Message.SizeType and Size_SourceIsInterface)>0,
+      ' wcfClientRectNeedsUpdate=',wcfClientRectNeedsUpdate in FWinControlFlags]);
+    {$ENDIF}
     NewLeft := FBoundsRealized.Left;
     NewTop := FBoundsRealized.Top;
     if HandleAllocated then
