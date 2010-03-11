@@ -166,8 +166,6 @@ begin
 
   // Maps the border style
   WindowType := FormStyleMap[ABorderStyle];
-  if (ABorderStyle = bsNone) and (ACustomForm.FormStyle in fsAllStayOnTop) then
-    WindowType := GTK_WINDOW_POPUP;
   if (csDesigning in ACustomForm.ComponentState) then
     WindowType := GTK_WINDOW_TOPLEVEL;
 
@@ -175,6 +173,9 @@ begin
   begin
     // create a floating form
     P := gtk_window_new(WindowType);
+
+    if (ABorderStyle = bsNone) and (ACustomForm.FormStyle in fsAllStayOnTop) then
+      gtk_window_set_decorated(PGtkWindow(P), False);
 
     // Sets the window as resizable or not
     // Depends on the WM supporting this
@@ -189,8 +190,13 @@ begin
     // Sets the title
     gtk_window_set_title(PGtkWindow(P), AParams.Caption);
 
-    if PopupParent <> nil then
-      gtk_window_set_transient_for(PGtkWindow(P), PGtkWindow(PopupParent.Handle));
+    if (PopupParent <> nil) then
+      gtk_window_set_transient_for(PGtkWindow(P), PGtkWindow(PopupParent.Handle))
+    else
+    if not (csDesigning in ACustomForm.ComponentState)
+      and (ACustomForm.FormStyle = fsStayOnTop)
+      and not (ACustomForm.BorderStyle in [bsNone]) then
+        gtk_window_set_keep_above(PGtkWindow(P), gboolean(True));
 
     // the clipboard needs a widget
     if (ClipboardWidget = nil) then
