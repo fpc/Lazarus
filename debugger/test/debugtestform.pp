@@ -265,8 +265,10 @@ end;
 procedure TDebugTestForm.cmdEvaluateClick(Sender: TObject);
 var
   S: String;
+  ATypeInfo: TDBGType;
 begin
-  FDebugger.Evaluate(txtEvaluate.Text, S);
+  ATypeInfo := nil;
+  FDebugger.Evaluate(txtEvaluate.Text, S, ATypeInfo);
   lblEvalResult.Caption := S;
 end;
 
@@ -288,7 +290,7 @@ end;
 
 procedure TDebugTestForm.DBGCurrent(Sender: TObject; const ALocation: TDBGLocationRec);
 begin
-  lblAdress.Caption := Format('$%p', [ALocation.Adress]);
+  lblAdress.Caption := Format('$%p', [ALocation.Address]);
   lblSource.Caption := ALocation.SrcFile;
   lblLine.Caption := IntToStr(ALocation.SrcLine);
   lblFunc.Caption := ALocation.FuncName;
