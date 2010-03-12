@@ -501,6 +501,62 @@ msgstr ""
 msgid "No element selected"
 msgstr ""
 
+#: lazdemsg.soptdlgbackupextension
+msgid "Backup extension"
+msgstr ""
+
+#: lazdemsg.soptdlgconfirmdeletes
+msgid "C&onfirm deletes"
+msgstr ""
+
+#: lazdemsg.soptdlgcreatebackups
+msgid "Create &backups"
+msgstr ""
+
+#: lazdemsg.soptdlgdefaultextension
+msgid "Default extension"
+msgstr ""
+
+#: lazdemsg.soptdlgdesktop
+msgid "Desktop"
+msgstr ""
+
+#: lazdemsg.soptdlgfpdocprogram
+msgid "fpdoc program"
+msgstr ""
+
+#: lazdemsg.soptdlggeneral
+msgid "General"
+msgstr ""
+
+#: lazdemsg.soptdlgmakeskelprogram
+msgid "makeskel program"
+msgstr ""
+
+#: lazdemsg.soptdlgmaxrecentused
+msgid "Max. recent used"
+msgstr ""
+
+#: lazdemsg.soptdlgoptions
+msgid "Options"
+msgstr ""
+
+#: lazdemsg.soptdlgreopenlastfile
+msgid "Reopen last file on startup"
+msgstr ""
+
+#: lazdemsg.soptdlgshowhints
+msgid "Show hints"
+msgstr ""
+
+#: lazdemsg.soptdlgskipemptynodes
+msgid "&Skip empty nodes when saving"
+msgstr ""
+
+#: lazdemsg.soptdlgstartmaximized
+msgid "Start maximized"
+msgstr ""
+
 #: lazdemsg.sotheroptions
 msgid "Other options"
 msgstr ""

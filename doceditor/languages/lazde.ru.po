@@ -527,6 +527,62 @@ msgstr "Новая тема"
 msgid "No element selected"
 msgstr "Элемент не выбран"
 
+#: lazdemsg.soptdlgbackupextension
+msgid "Backup extension"
+msgstr "Расширение резервной копии"
+
+#: lazdemsg.soptdlgconfirmdeletes
+msgid "C&onfirm deletes"
+msgstr "&Подтверждать удаления"
+
+#: lazdemsg.soptdlgcreatebackups
+msgid "Create &backups"
+msgstr "&Создавать резервные копии"
+
+#: lazdemsg.soptdlgdefaultextension
+msgid "Default extension"
+msgstr "Расширение по умолчанию"
+
+#: lazdemsg.soptdlgdesktop
+msgid "Desktop"
+msgstr "Рабочий стол"
+
+#: lazdemsg.soptdlgfpdocprogram
+msgid "fpdoc program"
+msgstr "Программа fpdoc"
+
+#: lazdemsg.soptdlggeneral
+msgid "General"
+msgstr "Общие"
+
+#: lazdemsg.soptdlgmakeskelprogram
+msgid "makeskel program"
+msgstr "Программа makeskel"
+
+#: lazdemsg.soptdlgmaxrecentused
+msgid "Max. recent used"
+msgstr "Количество недавних"
+
+#: lazdemsg.soptdlgoptions
+msgid "Options"
+msgstr "Параметры"
+
+#: lazdemsg.soptdlgreopenlastfile
+msgid "Reopen last file on startup"
+msgstr "Открывать последний файл при запуске"
+
+#: lazdemsg.soptdlgshowhints
+msgid "Show hints"
+msgstr "Выводить всплывающие подсказки"
+
+#: lazdemsg.soptdlgskipemptynodes
+msgid "&Skip empty nodes when saving"
+msgstr "&Не сохранять пустые узлы"
+
+#: lazdemsg.soptdlgstartmaximized
+msgid "Start maximized"
+msgstr "Запускать в развёрнутом виде"
+
 #: lazdemsg.sotheroptions
 msgctxt "lazdemsg.sotheroptions"
 msgid "Other options"
