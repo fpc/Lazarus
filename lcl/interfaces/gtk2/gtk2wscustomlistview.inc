@@ -511,10 +511,11 @@ begin
   then Exit;
 
   GetCommonTreeViewWidgets(PGtkWidget(ALV.Handle), Widgets);
-  with Widgets^ do begin
+  with Widgets^ do
+  begin
     i := AColumn.Index;
     GtkColumn := gtk_tree_view_get_column(PGtkTreeView(MainView), i);
-    Result := gtk_tree_view_column_get_width(GtkColumn);
+    Result := gtk_tree_view_column_get_fixed_width(GtkColumn);
   end;
 end;
 
@@ -726,7 +727,8 @@ begin
   then Exit;
 
   GetCommonTreeViewWidgets(PGtkWidget(ALV.Handle), Widgets);
-  with Widgets^ do begin
+  with Widgets^ do
+  begin
     GtkColumn := gtk_tree_view_get_column(PGtkTreeView(MainView), AIndex);
     gtk_tree_view_column_set_fixed_width(GtkColumn, AWidth + Ord(AWidth<1));
   end;
