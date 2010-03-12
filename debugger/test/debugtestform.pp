@@ -25,7 +25,7 @@ interface
 
 uses
   Classes, Graphics, Controls, Forms, Dialogs, LResources,
-  Buttons, StdCtrls, Debugger, DbgOutputForm, BreakpointsDlg, 
+  Buttons, StdCtrls, Debugger, DebugOutputForm, BreakpointsDlg,
   LocalsDlg, WatchesDlg, CallStackDlg;
 
 
