@@ -271,6 +271,7 @@ var
 
 function RectFromGdkRect(AGdkRect: TGdkRectangle): TRect;
 function GdkRectFromRect(R: TRect): TGdkRectangle;
+function AlignToGtkAlign(Align: TAlignment): gfloat;
 
 // debugging
 function GtkWidgetIsA(Widget: PGtkWidget; AType: TGtkType): boolean;

@@ -389,6 +389,15 @@ begin
   end;
 end;
 
+function AlignToGtkAlign(Align: TAlignment): gfloat;
+begin
+  case Align of
+    taLeftJustify : AlignToGtkAlign := 0.0;
+    taCenter      : AlignToGtkAlign := 0.5;
+    taRightJustify: AlignToGtkAlign := 1.0;
+  end;
+end;
+
 {------------------------------------------------------------------------------
   function GtkWidgetIsA(Widget: PGtkWidget; AType: TGtkType): boolean;
 
@@ -6241,6 +6250,9 @@ var
   ContextID: LongWord;
   NewShadowType: TGtkShadowType;
   NewJustification: TGtkJustification;
+  {$ifndef gtk1}
+  xalign, yalign: gfloat;
+  {$endif}
 begin
   //DebugLn('UpdateStatusBarPanel ',DbgS(StatusBar),' Index=',dbgs(Index));
   AStatusBar := StatusBar as TStatusBar;
@@ -6284,7 +6296,21 @@ begin
     // Alignment
     NewJustification := aGtkJustification[CurPanel.Alignment];
     if GTK_IS_LABEL(LabelWidget) then
+    begin
+      {$ifndef gtk1}
+        if GTK_IS_MISC(LabelWidget) then
+        begin
+        {gtk_label_set_justify() has no effect on labels containing
+         only a single line !}
+        gtk_misc_get_alignment(GTK_MISC(LabelWidget), @xalign, @yalign);
+        xalign := AlignToGtkAlign(CurPanel.Alignment);
+        gtk_misc_set_alignment(GTK_MISC(LabelWidget), xalign, yalign);
+        end else
+          gtk_label_set_justify(LabelWidget, NewJustification);
+      {$else}
       gtk_label_set_justify(LabelWidget, NewJustification);
+      {$endif}
+    end;
 
     // Bevel
 

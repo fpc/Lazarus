@@ -243,15 +243,6 @@ begin
   WidgetInfo := GetWidgetInfo(ATreeViewHandle);
   TVWidgets := PTVWidgets(WidgetInfo^.UserData);
 end;
- 
-function AlignToGtkAlign(Align: TAlignment): gfloat;
-begin
-  case Align of
-    taLeftJustify : AlignToGtkAlign := 0.0;
-    taCenter      : AlignToGtkAlign := 0.5;
-    taRightJustify: AlignToGtkAlign := 1.0;
-  end;
-end;
 
 {$I gtk2wscustomlistview.inc}
 
