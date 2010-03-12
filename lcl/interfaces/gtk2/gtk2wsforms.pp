@@ -194,8 +194,7 @@ begin
       gtk_window_set_transient_for(PGtkWindow(P), PGtkWindow(PopupParent.Handle))
     else
     if not (csDesigning in ACustomForm.ComponentState)
-      and (ACustomForm.FormStyle = fsStayOnTop)
-      and not (ACustomForm.BorderStyle in [bsNone]) then
+      and (ACustomForm.FormStyle = fsStayOnTop) then
         gtk_window_set_keep_above(PGtkWindow(P), gboolean(True));
 
     // the clipboard needs a widget
