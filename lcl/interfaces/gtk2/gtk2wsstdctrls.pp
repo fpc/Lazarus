@@ -373,6 +373,7 @@ var
   Widget: PGtkWidget;
   Path: PGtkTreePath;
   Column: PGtkTreeViewColumn;
+  Selection: PGtkTreeSelection;
 begin
   Result := -1;
   if not WSCheckHandleAllocated(ACustomListBox, 'GetItemIndex') then
@@ -381,9 +382,17 @@ begin
   if GtkWidgetIsA(Widget, gtk_tree_view_get_type) then
   begin
     gtk_tree_view_get_cursor(PGtkTreeView(Widget), Path, column);
+
     if Path <> nil then
-      Result := gtk_tree_path_get_indices(Path)^
-    else
+    begin
+      Result := gtk_tree_path_get_indices(Path)^;
+      if Result = 0 then
+      begin
+        Selection := gtk_tree_view_get_selection(PGtkTreeView(Widget));
+        if not gtk_tree_selection_path_is_selected(Selection, Path) then
+          Result := -1;
+      end;
+    end else
       Result := -1;
   end;
 end;
