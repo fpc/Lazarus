@@ -110,3 +110,127 @@ msgctxt "jcfuiconsts.lisobfsremovewhitespace"
 msgid "Remove &white space"
 msgstr "Удалять &пробелы"
 
+#: jcfuiconsts.lisspacesafteropen
+msgid "After open"
+msgstr "После открывающей"
+
+#: jcfuiconsts.lisspacesalways
+msgid "Always"
+msgstr "Добавлять всегда"
+
+#: jcfuiconsts.lisspacesbeforeend
+msgid "Before end"
+msgstr "Перед закрывающей"
+
+#: jcfuiconsts.lisspacesbeforeinexpression
+msgid "Before [ in expression"
+msgstr "Перед [ в выражении"
+
+#: jcfuiconsts.lisspacescaselabel
+msgid "Case l&abel"
+msgstr "&Меток Case"
+
+#: jcfuiconsts.lisspacesclassvariables
+msgid "&Class variables"
+msgstr "Переменных &класса"
+
+#: jcfuiconsts.lisspacesconstdeclarations
+msgid "C&onst declarations"
+msgstr "Объя&влений Const"
+
+#: jcfuiconsts.lisspacesfixspacing
+msgid "Fix &spacing"
+msgstr "Исправлять про&белы"
+
+#: jcfuiconsts.lisspacesfunctionreturntypes
+msgid "&Function return types"
+msgstr "Типов &результатов функций"
+
+#: jcfuiconsts.lisspacesinfunctioncall
+msgid "In function &call"
+msgstr "В в&ызове функции"
+
+#: jcfuiconsts.lisspacesinfunctiondeclaration
+msgid "In function &declaration"
+msgstr "В &объявлении функции"
+
+#: jcfuiconsts.lisspacesingeneric
+msgid "In &generic"
+msgstr "&Других выражений"
+
+#: jcfuiconsts.lisspacesinsertspacebeforebracket
+msgid "&Insert space before bracket"
+msgstr "Пробел перед &скобкой"
+
+#: jcfuiconsts.lisspacesinsertspaceinsidebrackets
+msgid "Insert space inside brackets"
+msgstr "Пробел между скобками"
+
+#: jcfuiconsts.lisspaceslabel
+msgid "&Label"
+msgstr "М&еток"
+
+#: jcfuiconsts.lisspacesleaveasis
+msgid "Leave as is"
+msgstr "Не изменять"
+
+#: jcfuiconsts.lisspacesmaxspacesincode
+msgid "&Max spaces in code"
+msgstr "Макс&имум пробелов подряд"
+
+#: jcfuiconsts.lisspacesmovespacestobeforecolon
+msgid "Move spaces to before colon"
+msgstr "Помещать пробелы перед двоеточием"
+
+#: jcfuiconsts.lisspacesnever
+msgid "Never"
+msgstr "Не добавлять никогда"
+
+#: jcfuiconsts.lisspacesprocedureparameters
+msgid "&Procedure parameters"
+msgstr "П&араметров процедур"
+
+#: jcfuiconsts.lisspacesrecordfields
+msgid "&Record fields"
+msgstr "Полей &записей"
+
+#: jcfuiconsts.lisspacesspacebeforeclassheritage
+msgid "Space before class &heritage"
+msgstr "Пробел перед &наследованием класса"
+
+#: jcfuiconsts.lisspacesspaces
+msgid "Spaces"
+msgstr "Пробелы"
+
+#: jcfuiconsts.lisspacesspacesaroundoperators
+msgid "Spaces around &operators"
+msgstr "Пробе&лы вокруг операторов"
+
+#: jcfuiconsts.lisspacesspacesbeforecolonin
+msgid "Spaces &before colon in"
+msgstr "&Пробелы перед двоеточием для"
+
+#: jcfuiconsts.lisspacesspacesfortab
+msgid "Spaces for tab"
+msgstr "Пробелов в ТАБ"
+
+#: jcfuiconsts.lisspacesspacespertab
+msgid "Spaces per tab"
+msgstr "Пробелов в ТАБ"
+
+#: jcfuiconsts.lisspacestabcharacters
+msgid "&Tab characters"
+msgstr "Символы &ТАБ"
+
+#: jcfuiconsts.lisspacesturnspacestotabs
+msgid "Turn spaces to tabs"
+msgstr "Заменять пробелы на ТАБ"
+
+#: jcfuiconsts.lisspacesturntabstospaces
+msgid "Turn tabs to spaces"
+msgstr "Заменять ТАБ на пробелы"
+
+#: jcfuiconsts.lisspacesvardeclarations
+msgid "&Var declarations"
+msgstr "Об&ъявлений Var"
+

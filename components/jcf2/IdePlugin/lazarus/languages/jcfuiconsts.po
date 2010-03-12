@@ -102,3 +102,127 @@ msgctxt "jcfuiconsts.lisobfsremovewhitespace"
 msgid "Remove &white space"
 msgstr ""
 
+#: jcfuiconsts.lisspacesafteropen
+msgid "After open"
+msgstr ""
+
+#: jcfuiconsts.lisspacesalways
+msgid "Always"
+msgstr ""
+
+#: jcfuiconsts.lisspacesbeforeend
+msgid "Before end"
+msgstr ""
+
+#: jcfuiconsts.lisspacesbeforeinexpression
+msgid "Before [ in expression"
+msgstr ""
+
+#: jcfuiconsts.lisspacescaselabel
+msgid "Case l&abel"
+msgstr ""
+
+#: jcfuiconsts.lisspacesclassvariables
+msgid "&Class variables"
+msgstr ""
+
+#: jcfuiconsts.lisspacesconstdeclarations
+msgid "C&onst declarations"
+msgstr ""
+
+#: jcfuiconsts.lisspacesfixspacing
+msgid "Fix &spacing"
+msgstr ""
+
+#: jcfuiconsts.lisspacesfunctionreturntypes
+msgid "&Function return types"
+msgstr ""
+
+#: jcfuiconsts.lisspacesinfunctioncall
+msgid "In function &call"
+msgstr ""
+
+#: jcfuiconsts.lisspacesinfunctiondeclaration
+msgid "In function &declaration"
+msgstr ""
+
+#: jcfuiconsts.lisspacesingeneric
+msgid "In &generic"
+msgstr ""
+
+#: jcfuiconsts.lisspacesinsertspacebeforebracket
+msgid "&Insert space before bracket"
+msgstr ""
+
+#: jcfuiconsts.lisspacesinsertspaceinsidebrackets
+msgid "Insert space inside brackets"
+msgstr ""
+
+#: jcfuiconsts.lisspaceslabel
+msgid "&Label"
+msgstr ""
+
+#: jcfuiconsts.lisspacesleaveasis
+msgid "Leave as is"
+msgstr ""
+
+#: jcfuiconsts.lisspacesmaxspacesincode
+msgid "&Max spaces in code"
+msgstr ""
+
+#: jcfuiconsts.lisspacesmovespacestobeforecolon
+msgid "Move spaces to before colon"
+msgstr ""
+
+#: jcfuiconsts.lisspacesnever
+msgid "Never"
+msgstr ""
+
+#: jcfuiconsts.lisspacesprocedureparameters
+msgid "&Procedure parameters"
+msgstr ""
+
+#: jcfuiconsts.lisspacesrecordfields
+msgid "&Record fields"
+msgstr ""
+
+#: jcfuiconsts.lisspacesspacebeforeclassheritage
+msgid "Space before class &heritage"
+msgstr ""
+
+#: jcfuiconsts.lisspacesspaces
+msgid "Spaces"
+msgstr ""
+
+#: jcfuiconsts.lisspacesspacesaroundoperators
+msgid "Spaces around &operators"
+msgstr ""
+
+#: jcfuiconsts.lisspacesspacesbeforecolonin
+msgid "Spaces &before colon in"
+msgstr ""
+
+#: jcfuiconsts.lisspacesspacesfortab
+msgid "Spaces for tab"
+msgstr ""
+
+#: jcfuiconsts.lisspacesspacespertab
+msgid "Spaces per tab"
+msgstr ""
+
+#: jcfuiconsts.lisspacestabcharacters
+msgid "&Tab characters"
+msgstr ""
+
+#: jcfuiconsts.lisspacesturnspacestotabs
+msgid "Turn spaces to tabs"
+msgstr ""
+
+#: jcfuiconsts.lisspacesturntabstospaces
+msgid "Turn tabs to spaces"
+msgstr ""
+
+#: jcfuiconsts.lisspacesvardeclarations
+msgid "&Var declarations"
+msgstr ""
+
