@@ -1230,7 +1230,7 @@ begin
   and (CompareFilenames(OldPkgFilename,NewFilename)<>0) then begin
     if IDEMessageDialog(lisPkgMangDeleteOldPackageFile,
       Format(lisPkgMangDeleteOldPackageFile2, ['"', OldPkgFilename, '"']),
-      mtConfirmation,[mbOk,mbCancel])=mrOk
+      mtConfirmation,[mbYes,mbNo])=mrYes
     then begin
       if DeleteFileUTF8(OldPkgFilename) then begin
         RemoveFromRecentList(OldPkgFilename,
