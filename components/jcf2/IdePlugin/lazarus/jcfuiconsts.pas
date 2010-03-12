@@ -36,6 +36,39 @@ resourcestring
   lisClarifyDoRun = 'Do &run';
   lisClarifyRunOnlyThese = 'Run &only these';
 
+  //Spaces tab
+  lisSpacesSpaces = 'Spaces';
+  lisSpacesFixSpacing = 'Fix &spacing';
+  lisSpacesSpaceBeforeClassHeritage = 'Space before class &heritage';
+  lisSpacesSpacesBeforeColonIn = 'Spaces &before colon in';
+  lisSpacesVarDeclarations = '&Var declarations';
+  lisSpacesConstDeclarations = 'C&onst declarations';
+  lisSpacesProcedureParameters = '&Procedure parameters';
+  lisSpacesFunctionReturnTypes = '&Function return types';
+  lisSpacesClassVariables = '&Class variables';
+  lisSpacesRecordFields = '&Record fields';
+  lisSpacesCaseLAbel = 'Case l&abel';
+  lisSpacesLabel = '&Label';
+  lisSpacesInGeneric = 'In &generic';
+  lisSpacesSpacesAroundOperators = 'Spaces around &operators';
+  lisSpacesAlways = 'Always';
+  lisSpacesLeaveAsIs = 'Leave as is';
+  lisSpacesNever = 'Never';
+  lisSpacesInsertSpaceBeforeBracket = '&Insert space before bracket';
+  lisSpacesInFunctionDeclaration = 'In function &declaration';
+  lisSpacesInFunctionCall = 'In function &call';
+  lisSpacesBeforeInExpression = 'Before [ in expression';
+  lisSpacesInsertSpaceInsideBrackets = 'Insert space inside brackets';
+  lisSpacesAfterOpen = 'After open';
+  lisSpacesBeforeEnd = 'Before end';
+  lisSpacesMoveSpacesToBeforeColon = 'Move spaces to before colon';
+  lisSpacesTabCharacters = '&Tab characters';
+  lisSpacesTurnTabsToSpaces = 'Turn tabs to spaces';
+  lisSpacesSpacesPerTab = 'Spaces per tab';
+  lisSpacesTurnSpacesToTabs = 'Turn spaces to tabs';
+  lisSpacesSpacesForTab = 'Spaces for tab';
+  lisSpacesMaxSpacesInCode = '&Max spaces in code';
+
 implementation
 
 end.

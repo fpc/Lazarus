@@ -97,7 +97,7 @@ implementation
 {$R *.lfm}
 
 uses
-  JcfHelp, JcfSettings, SetSpaces, SettingsTypes;
+  JcfHelp, JcfSettings, SetSpaces, SettingsTypes, jcfuiconsts;
 
 constructor TfClarifySpaces.Create(AOwner: TComponent);
 begin
@@ -107,12 +107,49 @@ end;
 
 function TfClarifySpaces.GetTitle: String;
 begin
-  Result := 'Spaces';
+  Result := lisSpacesSpaces;
 end;
 
 procedure TfClarifySpaces.Setup(ADialog: TAbstractOptionsEditorDialog);
 begin
-  //
+  cbFixSpacing.Caption := lisSpacesFixSpacing;
+  cbSpaceClassHeritage.Caption := lisSpacesSpaceBeforeClassHeritage;
+
+  gbColon.Caption := lisSpacesSpacesBeforeColonIn;
+  lblSpaceBeforeColonVar.Caption := lisSpacesVarDeclarations;
+  lblSpaceBeforeColonConst.Caption := lisSpacesConstDeclarations;
+  lblSpaceBeforeColonParam.Caption := lisSpacesProcedureParameters;
+  lblSpaceBeforeColonFn.Caption := lisSpacesFunctionReturnTypes;
+  lblSpacesBeforeColonClassVar.Caption := lisSpacesClassVariables;
+  lblSpacesBeforeColonRecordField.Caption := lisSpacesRecordFields;
+  lblSpacesBeforeCaseLabel.Caption := lisSpacesCaseLAbel;
+  lbSpacesBeforeLabel.Caption := lisSpacesLabel;
+  lblSpacesBeforeColonGeneric.Caption := lisSpacesInGeneric;
+
+  rgOperators.Caption := lisSpacesSpacesAroundOperators;
+  rgOperators.Items[0] := lisSpacesAlways;
+  rgOperators.Items[1] := lisSpacesLeaveAsIs;
+  rgOperators.Items[2] := lisSpacesNever;
+
+  GroupBoxInsertSpaceBeforeBracket.Caption := lisSpacesInsertSpaceBeforeBracket;
+  cbInsertSpaceBeforeBracketinFunctionDeclaration.Caption :=
+    lisSpacesInFunctionDeclaration;
+  cbInsertSpaceBeforeBracketinFunctionCall.Caption := lisSpacesInFunctionCall;
+  cbBeforeOpenSquareBracketInExpression.Caption := lisSpacesBeforeInExpression;
+
+  GroupBoxSpacesInsideBrackets.Caption := lisSpacesInsertSpaceInsideBrackets;
+  cbInsertSpaceAfterOpen.Caption := lisSpacesAfterOpen;
+  CheckBoxInsertSpaceBeforeEnd.Caption := lisSpacesBeforeEnd;
+
+  cbMoveSpacesToBeforeColon.Caption := lisSpacesMoveSpacesToBeforeColon;
+
+  gbTabs.Caption := lisSpacesTabCharacters;
+  cbTabsToSpaces.Caption := lisSpacesTurnTabsToSpaces;
+  Label1.Caption := lisSpacesSpacesPerTab;
+  cbSpacesToTabs.Caption := lisSpacesTurnSpacesToTabs;
+  Label3.Caption := lisSpacesSpacesForTab;
+
+  cbMaxSpaces.Caption := lisSpacesMaxSpacesInCode;
 end;
 
 {-------------------------------------------------------------------------------
