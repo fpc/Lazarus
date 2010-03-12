@@ -301,15 +301,16 @@ begin
 end;
 
 procedure TMainForm.AExtraOptionsExecute(Sender: TObject);
+var
+  OptionsForm: TOptionsForm;
 begin
-  if Sender=nil then ;
-  With TOptionsForm.Create(Self) do
-    Try
-      if ShowModal=mrOk then
-        ApplyOptions;
-    finally
-      Free;
-    end;
+  OptionsForm:=TOptionsForm.Create(Self);
+  try
+    if OptionsForm.ShowModal=mrOk then
+      ApplyOptions;
+  finally
+    OptionsForm.Free;
+  end;
 end;
 
 procedure TMainForm.AFormatParagraphHint(var HintStr: string;

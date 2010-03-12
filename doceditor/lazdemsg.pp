@@ -226,6 +226,22 @@ ResourceString
   //SOpenFileTitle = 'Select file to open';
   sSelectSomeText        = 'Select some text';
 
+  //Options dialog
+  sOptDlgOptions         = 'Options';
+  sOptDlgGeneral         = 'General';
+  sOptDlgDesktop         = 'Desktop';
+  sOptDlgShowHints       = 'Show hints';
+  sOptDlgConfirmDeletes  = 'C&onfirm deletes';
+  sOptDlgCreateBackups   = 'Create &backups';
+  sOptDlgSkipEmptyNodes  = '&Skip empty nodes when saving';
+  sOptDlgStartMaximized  = 'Start maximized';
+  sOptDlgReopenLastFile  = 'Reopen last file on startup';
+  sOptDlgDefaultExtension= 'Default extension';
+  sOptDlgBackupExtension = 'Backup extension';
+  sOptDlgMaxRecentUsed   = 'Max. recent used';
+  sOptDlgMakeskelProgram = 'makeskel program';
+  sOptDlgFpdocProgram    = 'fpdoc program';
+
 Function FormatHint(S : String) : String;
 
 implementation

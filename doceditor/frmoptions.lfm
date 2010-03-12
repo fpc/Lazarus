@@ -2,30 +2,31 @@ object OptionsForm: TOptionsForm
   Left = 350
   Height = 367
   Top = 262
-  Width = 526
+  Width = 548
   HorzScrollBar.Page = 397
   VertScrollBar.Page = 336
   ActiveControl = PageControl1
-  BorderStyle = bsDialog
   Caption = 'Options'
   ClientHeight = 367
-  ClientWidth = 526
+  ClientWidth = 548
   OnClose = FormClose
+  OnCreate = FormCreate
   OnShow = OptionsFormShow
+  Position = poScreenCenter
   LCLVersion = '0.9.29'
   object PageControl1: TPageControl
     Left = 0
-    Height = 315
+    Height = 313
     Top = 0
-    Width = 526
+    Width = 548
     ActivePage = tabGeneral
     Align = alClient
     TabIndex = 0
     TabOrder = 0
     object tabGeneral: TTabSheet
       Caption = 'General'
-      ClientHeight = 284
-      ClientWidth = 522
+      ClientHeight = 282
+      ClientWidth = 544
       object LEBackupExtension: TLabel
         AnchorSideLeft.Control = LEDefaultExtension
         AnchorSideLeft.Side = asrBottom
@@ -33,7 +34,7 @@ object OptionsForm: TOptionsForm
         AnchorSideTop.Side = asrBottom
         Left = 158
         Height = 18
-        Top = 101
+        Top = 106
         Width = 125
         Alignment = taRightJustify
         BorderSpacing.Left = 24
@@ -50,7 +51,7 @@ object OptionsForm: TOptionsForm
         AnchorSideTop.Side = asrBottom
         Left = 313
         Height = 18
-        Top = 101
+        Top = 106
         Width = 120
         Alignment = taRightJustify
         BorderSpacing.Left = 24
@@ -65,7 +66,7 @@ object OptionsForm: TOptionsForm
         AnchorSideTop.Side = asrBottom
         Left = 6
         Height = 18
-        Top = 101
+        Top = 106
         Width = 122
         Alignment = taRightJustify
         BorderSpacing.Around = 6
@@ -79,7 +80,7 @@ object OptionsForm: TOptionsForm
         AnchorSideTop.Side = asrBottom
         Left = 6
         Height = 18
-        Top = 160
+        Top = 163
         Width = 129
         Alignment = taRightJustify
         BorderSpacing.Around = 6
@@ -94,7 +95,7 @@ object OptionsForm: TOptionsForm
         AnchorSideTop.Side = asrBottom
         Left = 6
         Height = 18
-        Top = 219
+        Top = 220
         Width = 102
         Alignment = taRightJustify
         BorderSpacing.Around = 6
@@ -107,8 +108,8 @@ object OptionsForm: TOptionsForm
         AnchorSideTop.Control = LEBackupExtension
         AnchorSideTop.Side = asrBottom
         Left = 164
-        Height = 29
-        Top = 125
+        Height = 27
+        Top = 130
         Width = 119
         BorderSpacing.Around = 6
         TabOrder = 0
@@ -119,7 +120,7 @@ object OptionsForm: TOptionsForm
         AnchorSideTop.Side = asrBottom
         Left = 319
         Height = 27
-        Top = 125
+        Top = 130
         Width = 116
         BorderSpacing.Around = 6
         TabOrder = 1
@@ -129,8 +130,8 @@ object OptionsForm: TOptionsForm
         AnchorSideTop.Control = LEDefaultExtension
         AnchorSideTop.Side = asrBottom
         Left = 12
-        Height = 29
-        Top = 125
+        Height = 27
+        Top = 130
         Width = 116
         BorderSpacing.Around = 6
         TabOrder = 4
@@ -140,9 +141,9 @@ object OptionsForm: TOptionsForm
         AnchorSideTop.Control = LFEMakeskel
         AnchorSideTop.Side = asrBottom
         Left = 12
-        Height = 29
-        Top = 184
-        Width = 484
+        Height = 27
+        Top = 187
+        Width = 506
         DialogTitle = 'Select skeleton generator'
         DialogOptions = []
         FilterIndex = 0
@@ -160,9 +161,9 @@ object OptionsForm: TOptionsForm
         AnchorSideTop.Control = LFEfpdoc
         AnchorSideTop.Side = asrBottom
         Left = 12
-        Height = 29
-        Top = 243
-        Width = 484
+        Height = 27
+        Top = 244
+        Width = 506
         DialogTitle = 'Select documentation generator'
         DialogOptions = []
         FilterIndex = 0
@@ -179,22 +180,22 @@ object OptionsForm: TOptionsForm
         AnchorSideLeft.Control = tabGeneral
         AnchorSideTop.Control = tabGeneral
         Left = 6
-        Height = 89
+        Height = 94
         Top = 6
         Width = 254
         AutoSize = True
         BorderSpacing.Around = 6
-        ClientHeight = 81
-        ClientWidth = 246
+        ClientHeight = 90
+        ClientWidth = 250
         TabOrder = 5
         object CBSkipEmptyNodes: TCheckBox
           AnchorSideLeft.Control = GroupBox1
           AnchorSideTop.Control = CBCreateBackup
           AnchorSideTop.Side = asrBottom
           Left = 6
-          Height = 19
-          Top = 56
-          Width = 234
+          Height = 22
+          Top = 62
+          Width = 238
           AllowGrayed = True
           BorderSpacing.Around = 6
           Caption = '&Skip empty nodes when saving'
@@ -205,9 +206,9 @@ object OptionsForm: TOptionsForm
           AnchorSideTop.Control = CBConfirmDelete
           AnchorSideTop.Side = asrBottom
           Left = 6
-          Height = 19
-          Top = 31
-          Width = 129
+          Height = 22
+          Top = 34
+          Width = 133
           AllowGrayed = True
           BorderSpacing.Around = 6
           Caption = 'Create &backups'
@@ -217,9 +218,9 @@ object OptionsForm: TOptionsForm
           AnchorSideLeft.Control = GroupBox1
           AnchorSideTop.Control = GroupBox1
           Left = 6
-          Height = 19
+          Height = 22
           Top = 6
-          Width = 131
+          Width = 135
           AllowGrayed = True
           BorderSpacing.Around = 6
           Caption = 'C&onfirm deletes'
@@ -235,25 +236,25 @@ object OptionsForm: TOptionsForm
         AnchorSideBottom.Control = GroupBox1
         AnchorSideBottom.Side = asrBottom
         Left = 266
-        Height = 89
+        Height = 94
         Top = 6
-        Width = 250
+        Width = 272
         Anchors = [akTop, akLeft, akRight, akBottom]
         AutoSize = True
         BorderSpacing.Left = 6
         BorderSpacing.Top = 6
         BorderSpacing.Right = 6
-        ClientHeight = 81
-        ClientWidth = 242
+        ClientHeight = 90
+        ClientWidth = 268
         TabOrder = 6
         object CBReopenLast: TCheckBox
           AnchorSideLeft.Control = GroupBox2
           AnchorSideTop.Control = CBStartMaximized
           AnchorSideTop.Side = asrBottom
           Left = 6
-          Height = 19
-          Top = 31
-          Width = 202
+          Height = 22
+          Top = 34
+          Width = 206
           BorderSpacing.Around = 6
           Caption = 'Reopen last file on startup'
           TabOrder = 0
@@ -262,9 +263,9 @@ object OptionsForm: TOptionsForm
           AnchorSideLeft.Control = GroupBox2
           AnchorSideTop.Control = GroupBox2
           Left = 6
-          Height = 19
+          Height = 22
           Top = 6
-          Width = 129
+          Width = 133
           BorderSpacing.Around = 6
           Caption = 'Start maximized'
           TabOrder = 1
@@ -273,15 +274,15 @@ object OptionsForm: TOptionsForm
     end
     object tabDesktop: TTabSheet
       Caption = 'Desktop'
-      ClientHeight = 284
-      ClientWidth = 522
+      ClientHeight = 282
+      ClientWidth = 544
       object CBShowHints: TCheckBox
         AnchorSideLeft.Control = tabDesktop
         AnchorSideTop.Control = tabDesktop
-        Left = 14
-        Height = 19
-        Top = 12
-        Width = 97
+        Left = 6
+        Height = 22
+        Top = 6
+        Width = 101
         BorderSpacing.Around = 6
         Caption = 'Show Hints'
         TabOrder = 0
@@ -290,9 +291,9 @@ object OptionsForm: TOptionsForm
   end
   object ButtonPanel1: TButtonPanel
     Left = 6
-    Height = 40
-    Top = 321
-    Width = 514
+    Height = 42
+    Top = 319
+    Width = 536
     TabOrder = 1
     ShowButtons = [pbOK, pbCancel, pbHelp]
   end

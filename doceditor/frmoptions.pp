@@ -58,6 +58,7 @@ type
     tabGeneral: TTabSheet;
     tabDesktop: TTabSheet;
     procedure FormClose(Sender: TObject; var CloseAction: TCloseAction);
+    procedure FormCreate(Sender: TObject);
     procedure OptionsFormShow(Sender: TObject);
   private
     { private declarations }
@@ -67,12 +68,9 @@ type
     procedure FormToOptions;
   end;
 
-var
-  OptionsForm: TOptionsForm;
-
 implementation
 
-uses LazDEOpts;
+uses LazDEOpts, LazDEMsg;
 
 {$R *.lfm}
 
@@ -88,6 +86,24 @@ procedure TOptionsForm.FormClose(Sender: TObject; var CloseAction: TCloseAction
 begin
   if ModalResult = mrOk then
     FormToOptions;
+end;
+
+procedure TOptionsForm.FormCreate(Sender: TObject);
+begin
+  Caption:=sOptDlgOptions;
+  tabGeneral.Caption:=sOptDlgGeneral;
+  tabDesktop.Caption:=sOptDlgDesktop;
+  CBShowHints.Caption:=sOptDlgShowHints;
+  CBConfirmDelete.Caption:=sOptDlgConfirmDeletes;
+  CBCreateBackup.Caption:=sOptDlgCreateBackups;
+  CBSkipEmptyNodes.Caption:=sOptDlgSkipEmptyNodes;
+  CBStartMaximized.Caption:=sOptDlgStartMaximized;
+  CBReopenLast.Caption:=sOptDlgReopenLastFile;
+  LEDefaultExtension.Caption:=sOptDlgDefaultExtension;
+  LEBackupExtension.Caption:=sOptDlgBackupExtension;
+  LEMaxMRU.Caption:=sOptDlgMaxRecentUsed;
+  LFEMakeskel.Caption:=sOptDlgMakeskelProgram;
+  LFEfpdoc.Caption:=sOptDlgFpdocProgram;
 end;
 
 procedure TOptionsForm.optionstoform;
