@@ -609,6 +609,10 @@ class procedure TGtk2WSCustomListView.ColumnSetAlignment(const ALV: TCustomListV
 var
   Widgets: PTVWidgets;
   GtkColumn: PGtkTreeViewColumn;
+  Alignment: gfloat;
+  Value: TGValue;
+  renderers: PGList;
+  textrenderer: PGtkCellRenderer;
 begin
   if not WSCheckHandleAllocated(ALV, 'ColumnSetAlignment')
   then Exit;
@@ -617,10 +621,18 @@ begin
   with Widgets^ do begin
     GtkColumn := gtk_tree_view_get_column(PGtkTreeView(MainView), AIndex);
 
-    gtk_tree_view_column_set_alignment(GtkColumn, AlignToGtkAlign(AAlignment));
-  end;
-  //DebugLn(['ColSetALignment AIndex=',AIndex,' (GtkColumn=nil)=', GtkColumn=nil]);
+    renderers := gtk_tree_view_column_get_cell_renderers(GtkColumn);
+    textrenderer := PGtkCellRenderer(g_list_last(renderers)^.data);
+    g_list_free(renderers);
 
+    Alignment := AlignToGtkAlign(AAlignment);
+    Value.g_type := G_TYPE_FLOAT;
+    Value.data[0].v_float:= Alignment;
+    g_object_set_property(G_OBJECT(textrenderer), PChar('xalign'), @Value);
+
+    {now we call set alignment because it calls update over visible rows in col}
+    gtk_tree_view_column_set_alignment(GtkColumn, Alignment);
+  end;
 end;
 
 class procedure TGtk2WSCustomListView.ColumnSetAutoSize(const ALV: TCustomListView;
