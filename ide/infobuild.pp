@@ -53,9 +53,9 @@ type
     pnlLines: TPanel;
     Panel3: TPanel;
     pnlNotesErrors: TPanel;
-    pnlHintsWarnings: TPanel;
-    pnlHintsWarnings1: TPanel;
-    pnlHintsWarnings2: TPanel;
+    pnlHints: TPanel;
+    pnlWarnings: TPanel;
+    pnlNotes: TPanel;
     pnlErrors: TPanel;
     pnlInfo: TPanel;
     pnlButton: TPanel;
