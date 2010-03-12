@@ -353,17 +353,30 @@ begin
     case APosition of
       wszpBack:  begin
         // gdk_window_lower(WidgetInfo^.CoreWidget^.Window);
-        if ScrollWidget^.hscrollbar <> nil
-        then gdk_window_lower(ScrollWidget^.hscrollbar^.Window);
-        if ScrollWidget^.vscrollbar <> nil
-        then gdk_window_lower(ScrollWidget^.vscrollbar^.Window);
+        if ScrollWidget^.hscrollbar <> nil then
+        begin
+          if GDK_IS_WINDOW(ScrollWidget^.hscrollbar^.Window) then
+            gdk_window_lower(ScrollWidget^.hscrollbar^.Window);
+        end;
+
+        if ScrollWidget^.vscrollbar <> nil then
+        begin
+          if GDK_IS_WINDOW(ScrollWidget^.vscrollbar^.Window) then
+            gdk_window_lower(ScrollWidget^.vscrollbar^.Window);
+        end;
       end;
       wszpFront: begin
         // gdk_window_raise(WidgetInfo^.CoreWidget^.Window);
-        if ScrollWidget^.hscrollbar <> nil
-        then gdk_window_raise(ScrollWidget^.hscrollbar^.Window);
-        if ScrollWidget^.vscrollbar <> nil
-        then gdk_window_raise(ScrollWidget^.vscrollbar^.Window);
+        if ScrollWidget^.hscrollbar <> nil then
+        begin
+          if GDK_IS_WINDOW(ScrollWidget^.hscrollbar^.Window) then
+            gdk_window_raise(ScrollWidget^.hscrollbar^.Window);
+        end;
+        if ScrollWidget^.vscrollbar <> nil then
+        begin
+          if GDK_IS_WINDOW(ScrollWidget^.vscrollbar^.Window) then
+            gdk_window_raise(ScrollWidget^.vscrollbar^.Window);
+        end;
       end;
     end;
   end;
