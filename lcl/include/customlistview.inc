@@ -799,16 +799,18 @@ function TCustomListView.GetSelection: TListItem;
 var
   i: Integer;
 begin
-  if not (lffSelectedValid in FFlags) then begin
-    FSelected:=nil;
-    for i:=0 to Items.Count-1 do begin
-      if Items[i].Selected then begin
-        FSelected:=Items[i];
-        //DebugLn('TCustomListView.GetSelection ',dbgs(FSelected));
+  if not (lffSelectedValid in FFlags) then
+  begin
+    FSelected := nil;
+    for i := 0 to Items.Count - 1 do
+    begin
+      if Items[i].Selected then
+      begin
+        FSelected := Items[i];
         break;
       end;
     end;
-    Include(FFlags,lffSelectedValid);
+    Include(FFlags, lffSelectedValid);
   end;
   Result := FSelected;
 end;

@@ -42,7 +42,9 @@ begin
     WSSetItemsCount(FItems.Count);
   // reset ownerdata 
   if (FOwner.FOwnerDataItem.Index >= ACount) then
-    FOwner.FOwnerDataItem.SetDataIndex(-1); 
+    FOwner.FOwnerDataItem.SetDataIndex(-1);
+  // invalidate selection
+  FOwner.InvalidateSelected;
 end;
 
 {------------------------------------------------------------------------------}
