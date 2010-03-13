@@ -52,6 +52,7 @@ type
   protected
     procedure DoSaveSettings(AOptions: TAbstractIDEOptions);
   public
+    constructor Create(TheOwner: TComponent); override;
     function Check: boolean; override;
     function GetTitle: string; override;
     procedure Setup(ADialog: TAbstractOptionsEditorDialog); override;
@@ -160,11 +161,9 @@ end;
 
 procedure TCompilerPathOptionsFrame.DoLoadSave(Sender: TObject);
 var
-  OldOptions: TBaseCompilerOptions;
   Options: TBaseCompilerOptions;
   ImportExportResult: TImportExportOptionsResult;
 begin
-  OldOptions := FCompilerOpts;
   Options := TBaseCompilerOptionsClass(FCompilerOpts.ClassType).Create(FCompilerOpts.Owner);
   try
     DoSaveSettings(Options);
@@ -174,7 +173,6 @@ begin
       if Assigned(OnLoadIDEOptions) then
         OnLoadIDEOptions(Self, Options);
     end;
-    Options := OldOptions;
   finally
     Options.Free;
   end;
@@ -184,6 +182,12 @@ procedure TCompilerPathOptionsFrame.DoSaveSettings(AOptions: TAbstractIDEOptions
 begin
   if Assigned(OnSaveIDEOptions) then
     OnSaveIDEOptions(Self, AOptions);
+end;
+
+constructor TCompilerPathOptionsFrame.Create(TheOwner: TComponent);
+begin
+  inherited Create(TheOwner);
+  FCompilerOpts := nil;
 end;
 
 function TCompilerPathOptionsFrame.CheckSearchPath(const Context, ExpandedPath: string;
@@ -562,8 +566,9 @@ procedure TCompilerPathOptionsFrame.ReadSettings(AOptions: TAbstractIDEOptions);
 var
   LCLPlatform: TLCLPlatform;
 begin
-  FCompilerOpts := AOptions as TBaseCompilerOptions;
-  with FCompilerOpts do
+  if FCompilerOpts = nil then
+    FCompilerOpts := AOptions as TBaseCompilerOptions;
+  with AOptions as TBaseCompilerOptions do
   begin
     edtOtherUnits.Text := OtherUnitFiles;
     edtIncludeFiles.Text := IncludePath;

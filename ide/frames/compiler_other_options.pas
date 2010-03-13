@@ -23,6 +23,7 @@ type
   private
     FOptions: TBaseCompilerOptions;
   public
+    constructor Create(TheOwner: TComponent); override;
     function Check: Boolean; override;
     function GetTitle: string; override;
     procedure Setup(ADialog: TAbstractOptionsEditorDialog); override;
@@ -40,6 +41,12 @@ implementation
 procedure TCompilerOtherOptionsFrame.chkCustomConfigFileClick(Sender: TObject);
 begin
   edtConfigPath.Enabled := chkCustomConfigFile.Checked;
+end;
+
+constructor TCompilerOtherOptionsFrame.Create(TheOwner: TComponent);
+begin
+  inherited Create(TheOwner);
+  FOptions := nil;
 end;
 
 function TCompilerOtherOptionsFrame.Check: Boolean;
@@ -94,8 +101,9 @@ end;
 
 procedure TCompilerOtherOptionsFrame.ReadSettings(AOptions: TAbstractIDEOptions);
 begin
-  FOptions := AOptions as TBaseCompilerOptions;
-  with FOptions do
+  if FOptions = nil then
+    FOptions := AOptions as TBaseCompilerOptions;
+  with AOptions as TBaseCompilerOptions do
   begin
     chkConfigFile.Checked := not DontUseConfigFile;
     chkCustomConfigFile.Checked := CustomConfigFile;
