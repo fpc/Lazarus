@@ -29,7 +29,9 @@ msgid "Unable to find a HTML browser."
 msgstr "Nepavyko rasti HTML naršyklės."
 
 #: lclstrconsts.hhshelpnohtmlbrowserfoundpleasedefineoneinhelpconfigurehe
-msgid "No HTML Browser found.%sPlease define one in Help -> Configure Help -> Viewers"
+#, fuzzy
+#| msgid "No HTML Browser found.%sPlease define one in Help -> Configure Help -> Viewers"
+msgid "No HTML Browser found.%sPlease define one in Environment -> Options -> Help -> Help Options"
 msgstr "Nerasta HTML naršyklė.%sNurodykite kokią nors meniu „Žinynas -> Derinti žinyną -> Žiūryklės“."
 
 #: lclstrconsts.hhshelpthehelpdatabasewasunabletofindfile

@@ -27,7 +27,9 @@ msgid "Unable to find a HTML browser."
 msgstr "Tidak bisa menemukan HTML browser"
 
 #: lclstrconsts.hhshelpnohtmlbrowserfoundpleasedefineoneinhelpconfigurehe
-msgid "No HTML Browser found.%sPlease define one in Help -> Configure Help -> Viewers"
+#, fuzzy
+#| msgid "No HTML Browser found.%sPlease define one in Help -> Configure Help -> Viewers"
+msgid "No HTML Browser found.%sPlease define one in Environment -> Options -> Help -> Help Options"
 msgstr "HTML Browser tidak ditemukan.%sSilahkan definisikan dalam Bantuan -> Konfigurasi Bantuan -> Peninjau"
 
 #: lclstrconsts.hhshelpthehelpdatabasewasunabletofindfile
