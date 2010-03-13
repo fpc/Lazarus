@@ -573,7 +573,7 @@ begin
     // update {$R filename} directive
     if CodeToolBoss.FindResourceDirective(CodeBuf, 1, 1,
                                NewCode, NewX, NewY,
-                               NewTopLine, Filename, false) then
+                               NewTopLine, '*.res', false) then
     begin
       // there is a resource directive in the source
       if not HasSystemResources then
@@ -581,8 +581,7 @@ begin
         if not CodeToolBoss.RemoveDirective(NewCode, NewX, NewY, true) then
         begin
           Result := False;
-          Messages.Add(Format(lisCouldNotRemoveRFromMainSource, ['"', Filename,
-            '"']));
+          Messages.Add(Format(lisCouldNotRemoveRFromMainSource, ['"', Filename, '"']));
           debugln(['TProjectResources.UpdateMainSourceFile failed: removing resource directive']);
         end;
       end;
@@ -590,7 +589,7 @@ begin
     else
     if HasSystemResources then
     begin
-      Directive := '{$R '+Filename+'}';
+      Directive := '{$R *.res}';
       if not CodeToolBoss.AddResourceDirective(CodeBuf, Filename, false, Directive) then
       begin
         Result := False;
@@ -663,9 +662,7 @@ var
   NewX, NewY, NewTopLine: integer;
   CodeBuf, NewCode: TCodeBuffer;
 
-  Directive,
-  oldResFileName, oldLrsFileName,
-  newResFilename, newLrsFileName: String;
+  oldLrsFileName, newLrsFileName: String;
 begin
   //DebugLn(['TProjectResources.RenameDirectives CurFileName="',CurFileName,'" NewFileName="',NewFileName,'"']);
   Result := True;
@@ -678,10 +675,8 @@ begin
   LastLrsFileName := lrsFileName;
   try
     SetFileNames(CurFileName, '');
-    oldResFilename := ExtractFileName(resFileName);
     oldLrsFileName := ExtractFileName(lrsFileName);
     SetFileNames(NewFileName, '');
-    newResFilename := ExtractFileName(resFileName);
     newLrsFileName := ExtractFileName(lrsFileName);
 
     // update resources (FLazarusResources, FSystemResources, ...)
@@ -690,27 +685,6 @@ begin
       Exit;
     // update codebuffers of new .lrs and .res files
     UpdateCodeBuffers;
-
-    // update {$R filename} directive
-    if CodeToolBoss.FindResourceDirective(CodeBuf, 1, 1,
-                               NewCode, NewX, NewY,
-                               NewTopLine, oldResFileName, false) then
-    begin
-      // there is a resource directive in the source
-      if not CodeToolBoss.RemoveDirective(NewCode, NewX, NewY, true) then
-      begin
-        Result := False;
-        debugln(['TProjectResources.RenameDirectives failed: removing resource directive']);
-        Messages.Add('Could not remove "{$R '+ oldResFileName +'"} from main source!');
-      end;
-      Directive := '{$R '+ newResFileName +'}';
-      if not CodeToolBoss.AddResourceDirective(CodeBuf, newResFileName, false, Directive) then
-      begin
-        Result := False;
-        debugln(['TProjectResources.RenameDirectives failed: adding resource directive']);
-        Messages.Add('Could not add "{$R '+ newResFileName +'"} to main source!');
-      end;
-    end;
 
     // update {$I filename} directive
     if CodeToolBoss.FindIncludeDirective(CodeBuf, 1, 1,
