@@ -33,6 +33,14 @@ msgstr "Однократные операции"
 msgid "Run &only these"
 msgstr "Выполнять &только их"
 
+#: jcfuiconsts.liserrorwritingsettingsexception
+msgid "Error writing settings file %s:%s%s"
+msgstr "Ошибка при записи файла параметров %s:%s%s"
+
+#: jcfuiconsts.liserrorwritingsettingsfilereadonly
+msgid "Error writing settings file: %s is read only"
+msgstr "Ошибка при записи файла параметров: %s доступен только для чтения"
+
 #: jcfuiconsts.lisfrfilesdatefilewritten
 msgid "Date file written: %s"
 msgstr "Дата записи файла: %s"
@@ -64,6 +72,14 @@ msgstr "Имя файла: %s"
 #: jcfuiconsts.lisfrfilesversionthatwrotethisfile
 msgid "Version that wrote this file: %s"
 msgstr "Файл записан версией: %s"
+
+#: jcfuiconsts.lisjcfformatsettings
+msgid "JCF Format Settings"
+msgstr "Форматирование кода JEDI"
+
+#: jcfuiconsts.lisnosettingsfound
+msgid "No settings found"
+msgstr "Параметров не найдено"
 
 #: jcfuiconsts.lisobfsallcapitals
 msgid "ALL CAPITALS"
@@ -233,4 +249,8 @@ msgstr "Заменять ТАБ на пробелы"
 #: jcfuiconsts.lisspacesvardeclarations
 msgid "&Var declarations"
 msgstr "Об&ъявлений Var"
+
+#: jcfuiconsts.listhesettingsfiledoesnotexist
+msgid "The settings file \"%s\" does not exist.%sThe formatter will work better if it is configured to use a valid settings file"
+msgstr "Файл параметров \"%s\" не существует.%sФорматирование будет работать лучше, если его настроить для использования корректного файла параметров"
 

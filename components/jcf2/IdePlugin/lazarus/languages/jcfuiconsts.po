@@ -25,6 +25,14 @@ msgstr ""
 msgid "Run &only these"
 msgstr ""
 
+#: jcfuiconsts.liserrorwritingsettingsexception
+msgid "Error writing settings file %s:%s%s"
+msgstr ""
+
+#: jcfuiconsts.liserrorwritingsettingsfilereadonly
+msgid "Error writing settings file: %s is read only"
+msgstr ""
+
 #: jcfuiconsts.lisfrfilesdatefilewritten
 msgid "Date file written: %s"
 msgstr ""
@@ -55,6 +63,14 @@ msgstr ""
 
 #: jcfuiconsts.lisfrfilesversionthatwrotethisfile
 msgid "Version that wrote this file: %s"
+msgstr ""
+
+#: jcfuiconsts.lisjcfformatsettings
+msgid "JCF Format Settings"
+msgstr ""
+
+#: jcfuiconsts.lisnosettingsfound
+msgid "No settings found"
 msgstr ""
 
 #: jcfuiconsts.lisobfsallcapitals
@@ -224,5 +240,9 @@ msgstr ""
 
 #: jcfuiconsts.lisspacesvardeclarations
 msgid "&Var declarations"
+msgstr ""
+
+#: jcfuiconsts.listhesettingsfiledoesnotexist
+msgid "The settings file \"%s\" does not exist.%sThe formatter will work better if it is configured to use a valid settings file"
 msgstr ""
 
