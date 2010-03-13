@@ -876,6 +876,7 @@ type
     procedure GetSBVisibility(out HsbVisible,VsbVisible:boolean);virtual;
     procedure GetSBRanges(const HsbVisible,VsbVisible: boolean;
                   out HsbRange,VsbRange, HsbPage, VsbPage:Integer); virtual;
+    procedure GetSelectedState(AState: TGridDrawState; out IsSelected:boolean); virtual;
     function  GetEditMask(ACol, ARow: Longint): string; virtual;
     function  GetEditText(ACol, ARow: Longint): string; virtual;
     function  GetFixedcolor: TColor; virtual;
@@ -2999,10 +3000,7 @@ var
 begin
   if DefaultDrawing then begin
     Canvas.Pen.Mode := pmCopy;
-    IsSelected := (gdSelected in aState);
-    if IsSelected and (gdFocused in aState) then
-      IsSelected := (goDrawFocusSelected in Options) or
-            ((goRowSelect in Options) and not (goRelaxedRowSelect in Options));
+    GetSelectedState(aState, IsSelected);
     if IsSelected then begin
       Canvas.Brush.Color := SelectedColor;
       SetCanvasFont(GetColumnFont(aCol, False));
@@ -4074,6 +4072,15 @@ begin
     HsbPage := ClientWidth;
     VSbPage := ClientHeight;
   end;
+end;
+
+procedure TCustomGrid.GetSelectedState(AState: TGridDrawState; out
+  IsSelected: boolean);
+begin
+  IsSelected := (gdSelected in aState);
+  if IsSelected and (gdFocused in aState) then
+    IsSelected := (goDrawFocusSelected in Options) or
+          ((goRowSelect in Options) and not (goRelaxedRowSelect in Options));
 end;
 
 procedure TCustomGrid.UpdateSBVisibility;

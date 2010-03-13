@@ -397,6 +397,7 @@ type
     function  GetFieldFromGridColumn(Column: Integer): TField;
     function  GetGridColumnFromField(F: TField): Integer;
     function  GetIsCellSelected(aCol, aRow: Integer): boolean; override;
+    procedure GetSelectedState(AState: TGridDrawState; out IsSelected:boolean); override;
     function  GridCanModify: boolean;
     procedure GetSBVisibility(out HsbVisible,VsbVisible:boolean);override;
     procedure GetSBRanges(const HsbVisible,VsbVisible: boolean;
@@ -2437,6 +2438,14 @@ function TCustomDBGrid.GetIsCellSelected(aCol, aRow: Integer): boolean;
 begin
   Result:=inherited GetIsCellSelected(aCol, aRow) or
     FDrawingMultiSelRecord;
+end;
+
+procedure TCustomDBGrid.GetSelectedState(AState: TGridDrawState; out
+  IsSelected: boolean);
+begin
+  inherited GetSelectedState(AState, IsSelected);
+  if IsSelected and not Self.Focused and not(dgAlwaysShowSelection in Options) then
+    IsSelected := false;
 end;
 
 function TCustomDBGrid.GridCanModify: boolean;
