@@ -325,7 +325,7 @@ resourceString
   hhsHelpTheMacroSInBrowserParamsWillBeReplacedByTheURL = 'The macro %s in '
     +'BrowserParams will be replaced by the URL.';
   hhsHelpNoHTMLBrowserFoundPleaseDefineOneInHelpConfigureHe = 'No HTML '
-    +'Browser found.%sPlease define one in Help -> Configure Help -> Viewers';
+    +'Browser found.%sPlease define one in Environment -> Options -> Help -> Help Options';
   hhsHelpNoHTMLBrowserFound = 'Unable to find a HTML browser.';
   hhsHelpBrowserNotFound = 'Browser %s%s%s not found.';
   hhsHelpBrowserNotExecutable = 'Browser %s%s%s not executable.';
