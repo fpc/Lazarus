@@ -160,9 +160,11 @@ end;
 
 procedure TCompilerPathOptionsFrame.DoLoadSave(Sender: TObject);
 var
+  OldOptions: TBaseCompilerOptions;
   Options: TBaseCompilerOptions;
   ImportExportResult: TImportExportOptionsResult;
 begin
+  OldOptions := FCompilerOpts;
   Options := TBaseCompilerOptionsClass(FCompilerOpts.ClassType).Create(FCompilerOpts.Owner);
   try
     DoSaveSettings(Options);
@@ -172,6 +174,7 @@ begin
       if Assigned(OnLoadIDEOptions) then
         OnLoadIDEOptions(Self, Options);
     end;
+    Options := OldOptions;
   finally
     Options.Free;
   end;
