@@ -5,6 +5,14 @@ unit jcfuiconsts;
 interface
 
 resourcestring
+  //Settings caption and error messages
+  lisJCFFormatSettings = 'JCF Format Settings';
+  lisTheSettingsFileDoesNotExist = 'The settings file "%s" does not exist.%s'+
+    'The formatter will work better if it is configured to use a valid settings file';
+  lisErrorWritingSettingsFileReadOnly = 'Error writing settings file: %s is read only';
+  lisErrorWritingSettingsException = 'Error writing settings file %s:%s%s';
+  lisNoSettingsFound = 'No settings found';
+
   //Format File settings tab
   lisFrFilesFileIsWritable = 'File is writable';
   lisFrFilesFormatFileIs = 'Format file is %s';

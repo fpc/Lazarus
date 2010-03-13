@@ -173,7 +173,8 @@ uses
   { local }
   JcfStringUtils,
   JcfSetBase,
-  JcfRegistrySettings;
+  JcfRegistrySettings,
+  jcfuiconsts;
 
 
 constructor TFormatSettings.Create(const pbReadRegFile: boolean);
@@ -243,7 +244,7 @@ end;
 
 class function TFormatSettings.GetGroupCaption: String;
 begin
-  Result := 'JCF Format Settings';
+  Result := lisJCFFormatSettings;
 end;
 
 class function TFormatSettings.GetInstance: TAbstractIDEOptions;
@@ -303,8 +304,7 @@ begin
   begin
     if pbMustExist then
     begin
-      MessageDlg('The settings file "' + psFileName + '" does not exist.' + NativeLineBreak +
-        'The formatter will work better if it is configured to use a valid settings file',
+      MessageDlg(Format(lisTheSettingsFileDoesNotExist, [psFileName, NativeLineBreak]),
         mtError, [mbOK], 0);
       end;
   end;
@@ -347,9 +347,7 @@ begin
   begin
     { fail quietly? }
     if lcReg.FormatFileWriteOption = eAlwaysWrite then
-        MessageDlg('Error writing settings file: ' +
-          lcReg.FormatConfigFileName + ' is read only', mtError, [mbOK], 0);
-
+      MessageDlg(Format(lisErrorWritingSettingsFileReadOnly, [lcReg.FormatConfigFileName]), mtError, [mbOK], 0);
     exit;
   end;
 
@@ -373,9 +371,8 @@ begin
     begin
       if lcReg.FormatFileWriteOption = eAlwaysWrite then
       begin
-        MessageDlg('Error writing settings file ' +
-          GetRegSettings.FormatConfigFileName + NativeLineBreak + ' :' +
-          E.Message, mtError, [mbOK], 0);
+        MessageDlg(Format(lisErrorWritingSettingsException, [GetRegSettings.FormatConfigFileName, NativeLineBreak, E.Message]),
+          mtError, [mbOK], 0);
       end;
     end;
   end;
@@ -461,7 +458,7 @@ begin
   lcAllSettings := pcStream.ExtractSection(CODEFORMAT_SETTINGS_SECTION);
   if lcAllSettings = nil then
   begin
-    ShowMessage('No settings found');
+    ShowMessage(lisNoSettingsFound);
     exit;
   end;
 
