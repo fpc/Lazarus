@@ -73,7 +73,7 @@ implementation
 {$R *.lfm}
 
 uses
-  JcfHelp, JcfSettings, SetIndent;
+  JcfHelp, JcfSettings, SetIndent, jcfuiconsts;
 
 constructor TfClarifyIndent.Create(AOwner: TComponent);
 begin
@@ -83,12 +83,28 @@ end;
 
 function TfClarifyIndent.GetTitle: String;
 begin
-  Result := 'Indentation';
+  Result := lisIndentIndentation;
 end;
 
 procedure TfClarifyIndent.Setup(ADialog: TAbstractOptionsEditorDialog);
 begin
-  //;
+  Label2.Caption := lisIndentBlockIndentationSpaces;
+  gbOptions.Caption := lisIndentOptions;
+  cbIndentBeginEnd.Caption := lisIndentExtraIndentForBeginEnd;
+  cbHasFirstLevelIndent.Caption := lisIndentDifferentIndentForFirstLevel;
+  cbKeepWithInProc.Caption := lisIndentKeepSingleLineCommentsWithCodeInProcs;
+  cbKeepWithInGlobals.Caption :=
+    lisIndentKeepSingleLineCommentsWithCodeInGlobals;
+  cbKeepWithInClassDef.Caption :=
+    lisIndentKeepSingleLineCommentsWithCodeInClassDefs;
+  cbKeepWithElsewhere.Caption :=
+    lisIndentKeepSingleLineCommentsWithCodeElsewhere;
+  cbIndentIfElse.Caption := lisIndentExtraIndentForIfElseBlocks;
+  cbIndentCaseElse.Caption := lisIndentExtraIndentForCaseElseBlocks;
+  cbIndentLibraryProcs.Caption := lisIndentIndentForProceduresInLibrary;
+  cbIndentProcedureBody.Caption := lisIndentIndentForProcedureBody;
+  cbIndentNestedTypes.Caption := lisIndentIndentNestedTypes;
+  cbIndentVarAndConstInClass.Caption := lisIndentIndentVarAndConstInClass;
 end;
 
 {-------------------------------------------------------------------------------

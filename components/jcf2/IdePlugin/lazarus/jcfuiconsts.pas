@@ -77,6 +77,28 @@ resourcestring
   lisSpacesSpacesForTab = 'Spaces for tab';
   lisSpacesMaxSpacesInCode = '&Max spaces in code';
 
+  //Indentation tab
+  lisIndentIndentation = 'Indentation';
+  lisIndentBlockIndentationSpaces = 'Block indentation spaces';
+  lisIndentOptions = 'Options';
+  lisIndentExtraIndentForBeginEnd = 'Extra indent for begin/end inside '
+    +'procedures';
+  lisIndentDifferentIndentForFirstLevel = 'Different indent for first level';
+  lisIndentKeepSingleLineCommentsWithCodeInProcs = 'Keep single-line comments '
+    +'with code in procedures';
+  lisIndentKeepSingleLineCommentsWithCodeInGlobals = 'Keep single-line '
+    +'comments with code in globals';
+  lisIndentKeepSingleLineCommentsWithCodeInClassDefs = 'Keep single-line '
+    +'comments with code in class definitions';
+  lisIndentKeepSingleLineCommentsWithCodeElsewhere = 'Keep single-line '
+    +'comments with code elsewhere';
+  lisIndentExtraIndentForIfElseBlocks = 'Extra Indent for If...Else blocks';
+  lisIndentExtraIndentForCaseElseBlocks = 'Extra Indent for Case...Else blocks';
+  lisIndentIndentForProceduresInLibrary = 'Indent for procedures in library';
+  lisIndentIndentForProcedureBody = 'Indent for procedure body';
+  lisIndentIndentNestedTypes = 'Indent nested types';
+  lisIndentIndentVarAndConstInClass = 'Indent var and const in class';
+
 implementation
 
 end.
