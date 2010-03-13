@@ -73,6 +73,66 @@ msgstr "Имя файла: %s"
 msgid "Version that wrote this file: %s"
 msgstr "Файл записан версией: %s"
 
+#: jcfuiconsts.lisindentblockindentationspaces
+msgid "Block indentation spaces"
+msgstr "Отступ блока в пробелах"
+
+#: jcfuiconsts.lisindentdifferentindentforfirstlevel
+msgid "Different indent for first level"
+msgstr "Другой отступ для блоков первого уровня"
+
+#: jcfuiconsts.lisindentextraindentforbeginend
+msgid "Extra indent for begin/end inside procedures"
+msgstr "Дополнительный отступ для begin/end в процедурах"
+
+#: jcfuiconsts.lisindentextraindentforcaseelseblocks
+msgid "Extra Indent for Case...Else blocks"
+msgstr "Дополнительный отступ для блоков Case...Else"
+
+#: jcfuiconsts.lisindentextraindentforifelseblocks
+msgid "Extra Indent for If...Else blocks"
+msgstr "Дополнительный отступ для блоков If...Else"
+
+#: jcfuiconsts.lisindentindentation
+msgid "Indentation"
+msgstr "Отступы"
+
+#: jcfuiconsts.lisindentindentforprocedurebody
+msgid "Indent for procedure body"
+msgstr "Отступ для тела процедуры"
+
+#: jcfuiconsts.lisindentindentforproceduresinlibrary
+msgid "Indent for procedures in library"
+msgstr "Отступ для процедур в библиотеке"
+
+#: jcfuiconsts.lisindentindentnestedtypes
+msgid "Indent nested types"
+msgstr "Отступ для вложенных типов"
+
+#: jcfuiconsts.lisindentindentvarandconstinclass
+msgid "Indent var and const in class"
+msgstr "Отступ для секций var и const в классе"
+
+#: jcfuiconsts.lisindentkeepsinglelinecommentswithcodeelsewhere
+msgid "Keep single-line comments with code elsewhere"
+msgstr "Оставлять однострочные комментарии с кодом в прочих случаях"
+
+#: jcfuiconsts.lisindentkeepsinglelinecommentswithcodeinclassdefs
+msgid "Keep single-line comments with code in class definitions"
+msgstr "Оставлять однострочные комментарии с кодом в объявлениях классов"
+
+#: jcfuiconsts.lisindentkeepsinglelinecommentswithcodeinglobals
+msgid "Keep single-line comments with code in globals"
+msgstr "Оставлять однострочные комментарии с кодом в глобальных объявлениях"
+
+#: jcfuiconsts.lisindentkeepsinglelinecommentswithcodeinprocs
+msgid "Keep single-line comments with code in procedures"
+msgstr "Оставлять однострочные комментарии с кодом в процедурах"
+
+#: jcfuiconsts.lisindentoptions
+msgid "Options"
+msgstr "Параметры"
+
 #: jcfuiconsts.lisjcfformatsettings
 msgid "JCF Format Settings"
 msgstr "Форматирование кода JEDI"

@@ -65,6 +65,66 @@ msgstr ""
 msgid "Version that wrote this file: %s"
 msgstr ""
 
+#: jcfuiconsts.lisindentblockindentationspaces
+msgid "Block indentation spaces"
+msgstr ""
+
+#: jcfuiconsts.lisindentdifferentindentforfirstlevel
+msgid "Different indent for first level"
+msgstr ""
+
+#: jcfuiconsts.lisindentextraindentforbeginend
+msgid "Extra indent for begin/end inside procedures"
+msgstr ""
+
+#: jcfuiconsts.lisindentextraindentforcaseelseblocks
+msgid "Extra Indent for Case...Else blocks"
+msgstr ""
+
+#: jcfuiconsts.lisindentextraindentforifelseblocks
+msgid "Extra Indent for If...Else blocks"
+msgstr ""
+
+#: jcfuiconsts.lisindentindentation
+msgid "Indentation"
+msgstr ""
+
+#: jcfuiconsts.lisindentindentforprocedurebody
+msgid "Indent for procedure body"
+msgstr ""
+
+#: jcfuiconsts.lisindentindentforproceduresinlibrary
+msgid "Indent for procedures in library"
+msgstr ""
+
+#: jcfuiconsts.lisindentindentnestedtypes
+msgid "Indent nested types"
+msgstr ""
+
+#: jcfuiconsts.lisindentindentvarandconstinclass
+msgid "Indent var and const in class"
+msgstr ""
+
+#: jcfuiconsts.lisindentkeepsinglelinecommentswithcodeelsewhere
+msgid "Keep single-line comments with code elsewhere"
+msgstr ""
+
+#: jcfuiconsts.lisindentkeepsinglelinecommentswithcodeinclassdefs
+msgid "Keep single-line comments with code in class definitions"
+msgstr ""
+
+#: jcfuiconsts.lisindentkeepsinglelinecommentswithcodeinglobals
+msgid "Keep single-line comments with code in globals"
+msgstr ""
+
+#: jcfuiconsts.lisindentkeepsinglelinecommentswithcodeinprocs
+msgid "Keep single-line comments with code in procedures"
+msgstr ""
+
+#: jcfuiconsts.lisindentoptions
+msgid "Options"
+msgstr ""
+
 #: jcfuiconsts.lisjcfformatsettings
 msgid "JCF Format Settings"
 msgstr ""
