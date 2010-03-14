@@ -1281,19 +1281,19 @@ procedure TCarbonWindow.AddToWidget(AParent: TCarbonWidget);
 begin
   if Assigned(AParent) then
   begin
-    fWindowRef := nil;
     fHiddenWin := fWindowRef;
+    fWindowRef := nil;
     if IsWindowVisible(fHiddenWin) then HideWindow(fHiddenWin);
     OSError(HIViewAddSubview(AParent.Content, FScrollView), Self, 'AddToWidget', SViewAddView);
     AParent.ControlAdded;
-    SetClientAlign(fScrollView, fWinContent, false);
+    SetClientAlign(FScrollView, fWinContent, false);
   end else begin
     if IsVisible then
     begin
       ShowWindow(fHiddenWin);
       OSError(HIViewAddSubview(fWinContent, FScrollView), Self, 'AddToWidget', SViewAddView);
     end;
-    SetClientAlign(fScrollView, fWinContent, true);
+    SetClientAlign(FScrollView, fWinContent, true);
     fWindowRef := fHiddenWin;
   end;
 end;

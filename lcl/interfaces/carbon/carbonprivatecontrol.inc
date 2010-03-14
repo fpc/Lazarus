@@ -997,9 +997,13 @@ var
 begin
   Window := LCLObject.GetTopParent;
 
+  if (Window is TWinControl) and (Window.Parent = nil) and (TWinControl(Window).ParentWindow <> 0) then
+    Result := TCarbonControl(TWinControl(Window).ParentWindow).GetTopParentWindow
+  else
   if Window is TCustomForm then
     Result := TCarbonWindow((Window as TWinControl).Handle).GetTopParentWindow
-  else Result := nil;
+  else
+    Result := nil;
 end;
 
 {------------------------------------------------------------------------------
