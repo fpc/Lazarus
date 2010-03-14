@@ -7,7 +7,7 @@ object FieldsListFrm: TFieldsListFrm
   Caption = 'FieldsListFrm'
   ClientHeight = 271
   ClientWidth = 173
-  LCLVersion = '0.9.25'
+  LCLVersion = '0.9.29'
   object BitBtnOk: TBitBtn
     Left = 9
     Height = 25
@@ -36,12 +36,14 @@ object FieldsListFrm: TFieldsListFrm
     TabOrder = 1
   end
   object ListBox1: TListBox
+    Left = 0
     Height = 232
+    Top = 0
     Width = 173
     Align = alTop
     Anchors = [akTop, akLeft, akRight, akBottom]
+    ItemHeight = 0
     MultiSelect = True
     TabOrder = 2
-    TopIndex = -1
   end
 end

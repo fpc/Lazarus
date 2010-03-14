@@ -68,6 +68,7 @@ var
   NewField: TField;
   fModified: boolean;
   PreActive: boolean;
+  FieldDef: TFieldDef;
 
 function CreateFieldName(Owner:TComponent;const AName:string):string;
 var
@@ -92,21 +93,24 @@ begin
       LinkDataSet.Active := False;
       fModified := False;
       for i := 0 to ListBox1.Items.Count - 1 do 
+      begin
+        if ListBox1.Selected[i] and (LinkDataset.FindField(ListBox1.Items[i]) = nil) then
         begin
-        if ListBox1.Selected[i] And (LinkDataset.FindField(ListBox1.Items[i]) = Nil) then
-          begin
-          NewField := TFieldDef(ListBox1.Items.Objects[i]).CreateField(LinkDataset.Owner);
+          FieldDef := LinkDataset.FieldDefs.Find(ListBox1.Items[i]);
+          if FieldDef = nil then
+            Continue;
+          NewField := FieldDef.CreateField(LinkDataset.Owner);
           NewField.Name := CreateFieldName(LinkDataset.Owner, LinkDataset.Name + NewField.FieldName);
           FDesigner.PropertyEditorHook.PersistentAdded(NewField, True);
           fModified := True;
-          end;
         end;
+      end;
       if fModified then FDesigner.Modified;
-    Finally  
+    finally
       if PreActive then
         LinkDataset.Active:=True;
     end;    
-  Finally
+  finally
     LinkDataset.EnableControls;  
   end;  
 end;
@@ -115,7 +119,7 @@ procedure TFieldsListFrm.RefreshFieldsList;
 
   function CheckField(f: TFieldDef): boolean;
   begin
-    Result := Assigned(f) And (LinkDataSet.FindField(f.Name) = Nil);
+    Result := Assigned(f) and (LinkDataSet.FindField(f.Name) = nil);
   end;
   
   function FillList: integer;
@@ -124,11 +128,14 @@ procedure TFieldsListFrm.RefreshFieldsList;
     f: TFieldDef;
   begin
     Result := 0;
-    with LinkDataset do begin
-      for i := 0 to FieldDefs.Count - 1 do begin
+    with LinkDataset do
+    begin
+      for i := 0 to FieldDefs.Count - 1 do
+      begin
         f := FieldDefs.Items[i];
-        if CheckField(f) then begin
-          ListBox1.Items.AddObject(f.Name, f);
+        if CheckField(f) then
+        begin
+          ListBox1.Items.Add(f.Name);
           inc(Result);
         end;
       end;
@@ -147,10 +154,10 @@ begin
   LinkDataset.FieldDefs.Update;
   PreActive:=LinkDataset.Active;
   LinkDataset.Active := False;
-  Try
+  try
     i := FillList;
     BitBtnOk.Enabled := i > 0;
-  Finally  
+  finally
     if PreActive then
       LinkDataset.Active:=True;
   end;    
@@ -161,8 +168,10 @@ constructor TFieldsListFrm.Create(AOwner: TComponent; ADataset: TDataset;
 begin
   inherited Create(AOwner);
   LinkDataset := ADataset;
-  if Not Assigned(LinkDataset) then ShowMessage('LinkDataset = nil!')
-  else begin
+  if not Assigned(LinkDataset) then
+    ShowMessage('LinkDataset = nil!')
+  else
+  begin
     FDesigner := ADesigner;
     Caption := fesFlTitle + ' - ' + LinkDataset.Name;
   end;
