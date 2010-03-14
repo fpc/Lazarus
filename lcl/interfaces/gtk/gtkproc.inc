@@ -733,12 +733,14 @@ var
   Enable: boolean;
   Widget: PGtkWidget;
 begin
-  if (AForm.Parent<>nil) or not (AForm.HandleAllocated) then exit;
-  Widget:=PGtkWidget(AForm.Handle);
-  if Widget^.Window=nil then begin
-    // widget not yet realized
-    exit;
-  end;
+  if (AForm.Parent <> nil) or
+     (AForm.ParentWindow <> 0) or
+     not (AForm.HandleAllocated) then Exit;
+
+  Widget := PGtkWidget(AForm.Handle);
+  // if widget not yet realized then exit
+  if Widget^.Window = nil then
+    Exit;
 
   Enable := AValue <> stNever;
   {if (AValue = stDefault)
@@ -747,7 +749,7 @@ begin
     Enable := false;}
 
   //debugln('SetGtkWindowShowInTaskbar ',DbgSName(AForm),' ',dbgs(Enable));
-  SetGtkWindowShowInTaskbar(PGtkWindow(Widget),Enable);
+  SetGtkWindowShowInTaskbar(PGtkWindow(Widget), Enable);
 end;
 
 procedure SetGtkWindowShowInTaskbar(AGtkWindow: PGtkWindow; Value: boolean);

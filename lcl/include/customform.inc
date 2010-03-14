@@ -2294,7 +2294,7 @@ begin
   { If the the form is about to show, calculate its metrics }
   if Visible then
   begin
-    if Parent = nil then
+    if (Parent = nil) and (ParentWindow = 0) then
     begin
       // first make sure X and Y are assigned
       X := Left;

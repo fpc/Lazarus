@@ -1456,11 +1456,12 @@ end;
 -------------------------------------------------------------------------------}
 function TGtkWidgetSet.RecreateWnd(Sender: TObject): Integer;
 var
-  aWinControl, aParent : TWinControl;
+  aWinControl, aParent: TWinControl;
 begin
-  aWinControl:=TWinControl(Sender);
+  aWinControl := TWinControl(Sender);
   aParent := aWinControl.Parent;
-  if aParent<>nil then begin
+  if aParent <> nil then
+  begin
     // remove and insert the control
     // this will destroy and recreate all child handles
     aWinControl.Parent := nil;
@@ -4327,7 +4328,10 @@ begin
 
     gtk_widget_show(SenderWidget);
     {$IFDEF GTK2}
-    if (ACustomForm<>nil) and (ACustomForm.Parent=nil) then begin
+    if (ACustomForm <> nil) and 
+       (ACustomForm.Parent = nil) and 
+       (ACustomForm.ParentWindow = 0) then 
+    begin
       case ACustomForm.WindowState of
         wsNormal:
         begin

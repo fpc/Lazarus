@@ -8968,8 +8968,21 @@ end;
 function TGTKWidgetSet.SetParent(hWndChild: HWND; hWndParent: HWND): HWND;
 var
   Fixed: PGtkWidget;
+  LCLObject: TObject;
 begin
   Result := GetParent(hWndChild);
+
+  if Result = hWndParent then
+    Exit;
+
+  // for window we need to move it content to HBox
+  if GTK_IS_WINDOW(PGtkWidget(hWndChild)) then
+  begin
+    LCLObject := GetLCLObject(PGtkWidget(hWndChild));
+    if LCLObject <> nil then
+      Controls.RecreateWnd(TWinControl(LCLObject));
+    Exit;
+  end;
 
   if Result <> 0 then
   begin

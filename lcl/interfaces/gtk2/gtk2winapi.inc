@@ -689,11 +689,13 @@ function TGtk2WidgetSet.ShowWindow(hWnd: HWND; nCmdShow: Integer): Boolean;
 var
   GtkWindow: PGtkWindow;
 begin
-  Result:=false;
-  GtkWindow:=PGtkWindow(hWnd);
-  if GtkWindow=nil then
+  Result := False;
+  GtkWindow := PGtkWindow(hWnd);
+  if GtkWindow = nil then
     RaiseGDBException('TGtk2WidgetSet.ShowWindow  hWnd is nil');
-  if not GtkWidgetIsA(PGtkWidget(GtkWindow),GTK_TYPE_WINDOW) then begin
+
+  if not GTK_IS_WINDOW(PGtkWidget(GtkWindow)) then 
+  begin
     DebugLn(['TGtk2WidgetSet.ShowWindow ',GetWidgetDebugReport(PGTKWidget(GtkWindow))]);
     RaiseGDBException('TGtk2WidgetSet.ShowWindow  hWnd is not a gtkwindow');
   end;

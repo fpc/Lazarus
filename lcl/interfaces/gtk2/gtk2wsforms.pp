@@ -115,7 +115,7 @@ class procedure TGtk2WSCustomForm.SetCallbacks(const AWidget: PGtkWidget;
   const AWidgetInfo: PWidgetInfo);
 begin
   TGtk2WSWinControl.SetCallbacks(PGtkObject(AWidget), TComponent(AWidgetInfo^.LCLObject));
-  if (TControl(AWidgetInfo^.LCLObject).Parent = nil) then
+  if (TWinControl(AWidgetInfo^.LCLObject).Parent = nil) and (TWinControl(AWidgetInfo^.LCLObject).ParentWindow = 0) then
     with TGTK2WidgetSet(Widgetset) do
     begin
       SetCallback(LM_CONFIGUREEVENT, PGtkObject(AWidget), AWidgetInfo^.LCLObject);
@@ -139,37 +139,27 @@ var
   WindowType: TGtkWindowType;
   ACustomForm: TCustomForm;
   AResizable: gint;
-  PopupParent: TCustomForm;
 begin
   // Start of old CreateForm method
 
   ACustomForm := TCustomForm(AWinControl);
 
-  if ACustomForm.Parent = nil then
+  if (AParams.Style and WS_CHILD) = 0 then
   begin
     if csDesigning in ACustomForm.ComponentState then
-      ABorderStyle:=bsSizeable
+      ABorderStyle := bsSizeable
     else
-      ABorderStyle:=ACustomForm.BorderStyle;
+      ABorderStyle := ACustomForm.BorderStyle;
   end
   else
-    ABorderStyle:=bsNone;
-
-  case ACustomForm.PopupMode of
-    pmNone:
-      PopupParent := nil;
-    pmAuto:
-      PopupParent := Screen.ActiveForm;
-    pmExplicit:
-      PopupParent := ACustomForm.PopupParent;
-  end;
+    ABorderStyle := bsNone;
 
   // Maps the border style
   WindowType := FormStyleMap[ABorderStyle];
   if (csDesigning in ACustomForm.ComponentState) then
     WindowType := GTK_WINDOW_TOPLEVEL;
 
-  if ACustomForm.Parent = nil then
+  if (AParams.Style and WS_CHILD) = 0 then
   begin
     // create a floating form
     P := gtk_window_new(WindowType);
@@ -190,11 +180,10 @@ begin
     // Sets the title
     gtk_window_set_title(PGtkWindow(P), AParams.Caption);
 
-    if (PopupParent <> nil) then
-      gtk_window_set_transient_for(PGtkWindow(P), PGtkWindow(PopupParent.Handle))
+    if (AParams.WndParent <> 0) then
+      gtk_window_set_transient_for(PGtkWindow(P), PGtkWindow(AParams.WndParent))
     else
-    if not (csDesigning in ACustomForm.ComponentState)
-      and (ACustomForm.FormStyle = fsStayOnTop) then
+    if not (csDesigning in ACustomForm.ComponentState) and (ACustomForm.FormStyle = fsStayOnTop) then
         gtk_window_set_keep_above(PGtkWindow(P), gboolean(True));
 
     // the clipboard needs a widget
@@ -220,14 +209,12 @@ begin
 
   // main menu
   if (ACustomForm.Menu <> nil) and (ACustomForm.Menu.HandleAllocated) then
-  begin
     gtk_box_pack_start(Box, PGtkWidget(ACustomForm.Menu.Handle), False, False,0);
-  end;
 
   // End of the old CreateForm method
 
   {$IFNDEF NoStyle}
-  if (ACustomForm.Parent = nil) then
+  if (AParams.Style and WS_CHILD) = 0 then
     gtk_widget_set_app_paintable(P, True);
   {$ENDIF}
 
@@ -250,7 +237,7 @@ begin
   if not WSCheckHandleAllocated(AForm, 'SetIcon')
   then Exit;
 
-  if AForm.Parent <> nil then Exit;
+  if (AForm.Parent <> nil) or (AForm.ParentWindow <> 0) then Exit;
 
   List := nil;
   if Small <> 0 then
@@ -267,7 +254,7 @@ class procedure TGtk2WSCustomForm.SetAlphaBlend(const ACustomForm: TCustomForm;
 begin
   if not WSCheckHandleAllocated(ACustomForm, 'SetAlphaBlend') then
     Exit;
-  if Assigned(gtk_window_set_opacity) then
+  if Assigned(gtk_window_set_opacity) and GTK_IS_WINDOW(PGtkWidget(ACustomForm.Handle)) then
     if AlphaBlend then
       gtk_window_set_opacity(PGtkWindow(ACustomForm.Handle), Alpha / 255)
     else
