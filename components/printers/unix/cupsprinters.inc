@@ -844,7 +844,7 @@ begin
   begin
     Option := ppdFindOption(CupsPPD, PChar('PageSize'));
     Choice := Option^.choices;
-    fCupsDefaultPaper := Choice^.choice;
+    fCupsDefaultPaper := Option^.defchoice;
     c := 0;
     while (Choice<>nil) and (c<Option^.num_choices) do
     begin
