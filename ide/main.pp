@@ -404,8 +404,6 @@ type
                                            out Abort: boolean);
     procedure OnSrcNotebookJumpToHistoryPoint(var NewCaretXY: TPoint;
       var NewTopLine, NewPageIndex: integer; JumpAction: TJumpHistoryAction);
-    procedure OnSrcNotebookMovingPage(Sender: TObject;
-      OldPageIndex, NewPageIndex: integer);
     procedure OnSrcNotebookReadOnlyChanged(Sender: TObject);
     procedure OnSrcNotebookSaveAll(Sender: TObject);
     procedure OnSrcNotebookShowHintForSource(SrcEdit: TSourceEditor;
@@ -1907,7 +1905,6 @@ begin
   SourceNotebook.OnInsertTodoClicked := @mnuEditInsertTodo;
   SourceNotebook.OnShowCodeContext :=@OnSrcNotebookShowCodeContext;
   SourceNotebook.OnJumpToHistoryPoint := @OnSrcNotebookJumpToHistoryPoint;
-  SourceNotebook.OnMovingPage := @OnSrcNotebookMovingPage;
   SourceNotebook.OnOpenFileAtCursorClicked := @OnSrcNotebookFileOpenAtCursor;
   SourceNotebook.OnProcessUserCommand := @OnProcessIDECommand;
   SourceNotebook.OnReadOnlyChanged := @OnSrcNotebookReadOnlyChanged;
@@ -7556,14 +7553,12 @@ function TMainIDE.DoOpenFileInSourceEditor(AnUnitInfo: TUnitInfo;
   PageIndex: integer; Flags: TOpenFlags): TModalResult;
 var NewSrcEdit: TSourceEditor;
   AFilename: string;
-  NewSrcEditorCreated: boolean;
   NewCaretXY: TPoint;
   NewTopLine: LongInt;
   NewLeftChar: LongInt;
   NewErrorLine: LongInt;
   NewExecutionLine: LongInt;
   FoldState: String;
-  NewEditorIndex: LongInt;
 begin
   AFilename:=AnUnitInfo.Filename;
 
@@ -7571,7 +7566,6 @@ begin
   if not AnUnitInfo.CustomHighlighter then
     AnUnitInfo.SyntaxHighlighter:=FilenameToLazSyntaxHighlighter(AFilename);
 
-  NewSrcEditorCreated:=false;
   SourceNotebook.IncUpdateLock;
   try
     //DebugLn(['TMainIDE.DoOpenFileInSourceEditor Revert=',ofRevert in Flags,' ',AnUnitInfo.Filename,' PageIndex=',PageIndex]);
@@ -7584,7 +7578,6 @@ begin
       NewSrcEdit:=SourceNotebook.NewFile(CreateSrcEditPageName(AnUnitInfo.Unit_Name,
         AFilename,-1),AnUnitInfo.Source,false);
       NewSrcEdit.EditorComponent.BeginUpdate;
-      NewSrcEditorCreated:=true;
       MainIDEBar.itmFileClose.Enabled:=True;
       MainIDEBar.itmFileCloseAll.Enabled:=True;
       NewCaretXY:=AnUnitInfo.CursorPos;
@@ -7611,11 +7604,7 @@ begin
       //DebugLn(['TMainIDE.DoOpenFileInSourceEditor NewCaretXY=',dbgs(NewCaretXY),' NewTopLine=',NewTopLine]);
     end;
 
-    // update editor indices in project
-    NewEditorIndex := SourceNotebook.FindPageWithEditor(NewSrcEdit);
-    if (not (ofProjectLoading in Flags)) and NewSrcEditorCreated then
-      Project1.InsertEditorIndex(NewEditorIndex);
-    AnUnitInfo.EditorIndex := NewEditorIndex;
+    AnUnitInfo.EditorComponent := NewSrcEdit;
     //debugln(['TMainIDE.DoOpenFileInSourceEditor ',AnUnitInfo.Filename,' ',AnUnitInfo.EditorIndex]);
 
     // restore source editor settings
@@ -7767,8 +7756,7 @@ begin
     MainIDEBar.itmFileCloseAll.Enabled:=True;
     NewSrcEdit:=SourceNotebook.GetActiveSE;
     NewSrcEdit.SyntaxHighlighterType:=NewUnitInfo.SyntaxHighlighter;
-    Project1.InsertEditorIndex(SourceNotebook.PageIndex);
-    NewUnitInfo.EditorIndex:=SourceNotebook.PageIndex;
+    NewUnitInfo.EditorComponent := NewSrcEdit;
 
     // create component
     AncestorType:=NewFileDescriptor.ResourceClass;
@@ -8174,7 +8162,6 @@ begin
   end;
 
   // close file in project
-  Project1.CloseEditorIndex(ActiveUnitInfo.EditorIndex);
   ActiveUnitInfo.Loaded:=false;
   if ActiveUnitInfo<>Project1.MainUnitInfo then
     ActiveUnitInfo.Source:=nil;
@@ -15008,12 +14995,6 @@ function TMainIDE.OnSrcNoteBookGetIndent(Sender: TObject;
   SetIndentProc: TSynBeautifierSetIndentProc): Boolean;
 begin
   Result := False;
-end;
-
-procedure TMainIDE.OnSrcNotebookMovingPage(Sender: TObject; OldPageIndex,
-  NewPageIndex: integer);
-begin
-  Project1.MoveEditorIndex(OldPageIndex,NewPageIndex);
 end;
 
 procedure TMainIDE.OnSrcNotebookReadOnlyChanged(Sender: TObject);

@@ -39,7 +39,7 @@ interface
 uses
   Classes, SysUtils, Laz_XMLCfg,
   Forms, SynRegExpr, FileUtil, LCLProc, IDEProcs,
-  ProjectIntf, PublishModule;
+  ProjectIntf, PublishModule, SrcEditorIntf;
 
 type
   TOnLoadSaveFilename = procedure(var Filename:string; Load:boolean) of object;
@@ -163,20 +163,28 @@ type
   
   //---------------------------------------------------------------------------
   // The currently visible bookmarks of the project
+
+  { TProjectBookmark }
+
   TProjectBookmark = class
   private
     fCursorPos: TPoint;
+    FEditorComponent: TSourceEditorInterface;
     fEditorIndex: integer;
     fID: integer;
   public
     constructor Create;
-    constructor Create(X,Y, AnEditorIndex, AnID: integer);
+    constructor Create(X,Y, AnEditorIndex, AnID: integer; AEditor:TSourceEditorInterface);
     property CursorPos: TPoint read fCursorPos write fCursorPos;
     property EditorIndex: integer read fEditorIndex write fEditorIndex;
+    property EditorComponent: TSourceEditorInterface
+             read FEditorComponent write FEditorComponent;
     property ID:integer read fID write fID;
     procedure SaveToXMLConfig(XMLConfig: TXMLConfig; const Path: string);
     procedure LoadFromXMLConfig(XMLConfig: TXMLConfig; const Path: string);
   end;
+
+  { TProjectBookmarkList }
 
   TProjectBookmarkList = class
   private
@@ -192,8 +200,9 @@ type
     procedure Delete(Index:integer);
     procedure Clear;
     function Add(ABookmark: TProjectBookmark):integer;
-    function Add(X,Y,EditorID,ID: integer):integer;
+    function Add(X,Y,EditorID,ID: integer; AEditor:TSourceEditorInterface):integer;
     procedure DeleteAllWithEditorIndex(EditorIndex:integer);
+    procedure DeleteAllWithEditorComponent(AEditor:TSourceEditorInterface);
     function IndexOfID(ID:integer):integer;
     function BookmarkWithIndex(ID: integer): TProjectBookmark;
     procedure SaveToXMLConfig(XMLConfig: TXMLConfig; const Path: string);
@@ -317,12 +326,14 @@ begin
   inherited Create;
 end;
 
-constructor TProjectBookmark.Create(X,Y, AnEditorIndex, AnID: integer);
+constructor TProjectBookmark.Create(X,Y, AnEditorIndex, AnID: integer;
+  AEditor:TSourceEditorInterface);
 begin
   inherited Create;
   fCursorPos.X:=X;
   fCursorPos.Y:=Y;
   fEditorIndex:=AnEditorIndex;
+  FEditorComponent:=AEditor;
   fID:=AnID;
 end;
 
@@ -418,6 +429,17 @@ begin
   end;
 end;
 
+procedure TProjectBookmarkList.DeleteAllWithEditorComponent(
+  AEditor: TSourceEditorInterface);
+var i:integer;
+begin
+  i:=Count-1;
+  while (i>=0) do begin
+    if Items[i].EditorComponent = AEditor then Delete(i);
+    dec(i);
+  end;
+end;
+
 function TProjectBookmarkList.Add(ABookmark: TProjectBookmark):integer;
 var
   i: Integer;
@@ -427,9 +449,10 @@ begin
   Result:=fBookmarks.Add(ABookmark);
 end;
 
-function TProjectBookmarkList.Add(X, Y, EditorID, ID: integer): integer;
+function TProjectBookmarkList.Add(X, Y, EditorID, ID: integer;
+  AEditor:TSourceEditorInterface): integer;
 begin
-  Result:=Add(TProjectBookmark.Create(X,Y,EditorID,ID));
+  Result:=Add(TProjectBookmark.Create(X,Y,EditorID,ID, AEditor));
 end;
 
 procedure TProjectBookmarkList.SaveToXMLConfig(XMLConfig: TXMLConfig; 

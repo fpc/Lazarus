@@ -361,6 +361,7 @@ type
 
     // context
     function GetProjectFile: TLazProjectFile; override;
+    procedure UpdateProjectFile; override;
     function GetDesigner(LoadForm: boolean): TIDesigner; override;
 
     // notebook
@@ -612,6 +613,7 @@ type
     procedure SetIncrementalSearchStr(const AValue: string);
     procedure IncrementalSearch(ANext, ABackward: Boolean);
     procedure UpdatePageNames;
+    procedure UpdateProjectFiles;
 
     // macros
     function MacroFuncCol(const s:string; const Data: PtrInt;
@@ -3035,6 +3037,8 @@ Begin
   FEditor.Parent:=nil;
   CodeBuffer := nil;
   If Assigned(FOnAfterClose) then FOnAfterClose(Self);
+  FSourceNoteBook := nil;
+  UpdateProjectFile; // Set EditorIndex := -1
 end;
 
 procedure TSourceEditor.BeginUndoBlock;
@@ -3300,7 +3304,16 @@ end;
 
 function TSourceEditor.GetProjectFile: TLazProjectFile;
 begin
-  Result:=Project1.UnitWithEditorIndex(PageIndex);
+  Result:=Project1.UnitWithEditorComponent(Self);
+end;
+
+procedure TSourceEditor.UpdateProjectFile;
+var
+  p: TUnitInfo;
+begin
+  p :=Project1.UnitWithEditorComponent(Self);
+  if p = nil then exit;
+  p.EditorIndex := PageIndex;
 end;
 
 function TSourceEditor.GetDesigner(LoadForm: boolean): TIDesigner;
@@ -5130,6 +5143,14 @@ begin
     FindSourceEditorWithPageIndex(i).UpdatePageName;
 end;
 
+procedure TSourceNotebook.UpdateProjectFiles;
+var
+  i: Integer;
+begin
+  for i := 0 to EditorCount - 1 do
+    Editors[i].UpdateProjectFile;
+end;
+
 procedure TSourceNotebook.UpdateEncodingMenuItems;
 var
   List: TStringList;
@@ -5646,6 +5667,7 @@ begin
     OnMovingPage(Self,OldPageIndex,NewPageIndex);
   NoteBook.Pages.Move(OldPageIndex,NewPageIndex);
   UpdatePageNames;
+  UpdateProjectFiles;
 end;
 
 procedure TSourceNotebook.MoveEditorLeft(CurrentPageIndex: integer);
@@ -6661,6 +6683,7 @@ Begin
     {$ENDIF}
     Result.PageName:=FindUniquePageName(NewShortName, FindPageWithEditor(Result));
     UpdatePageNames;
+    UpdateProjectFiles;
   {$IFNDEF OldAutoSize}
   finally
     EnableAutoSizing;
@@ -6708,6 +6731,7 @@ begin
       //writeln('TSourceNotebook.CloseFile C  APageIndex=',APageIndex,' PageCount=',PageCount,' NoteBook.APageIndex=',Notebook.APageIndex);
       Notebook.Pages.Delete(APageIndex);
       //writeln('TSourceNotebook.CloseFile D  APageIndex=',APageIndex,' PageCount=',PageCount,' NoteBook.APageIndex=',Notebook.APageIndex);
+      UpdateProjectFiles;
       UpdateStatusBar;
       UpdatePageNames;
       // set focus to new editor
@@ -7208,7 +7232,7 @@ var
 begin
   for i := 0 to EditorCount-1 do begin
     ASrcEdit:=Editors[i];
-    AnUnitInfo:=Project1.UnitWithEditorIndex(ASrcEdit.PageIndex);
+    AnUnitInfo:=Project1.UnitWithEditorComponent(ASrcEdit);
     if AnUnitInfo<>nil then
       ASrcEdit.SyntaxHighlighterType:=AnUnitInfo.SyntaxHighlighter;
   end;

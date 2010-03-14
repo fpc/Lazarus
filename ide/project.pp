@@ -57,7 +57,8 @@ uses
   CompOptsModes, ProjectResources, LazConf, frmCustomApplicationOptions,
   LazarusIDEStrConsts, CompilerOptions,
   TransferMacros, EditorOptions, IDEProcs, RunParamsOpts, ProjectDefs,
-  FileReferenceList, EditDefineTree, PackageDefs, PackageSystem, IDEOptionsIntf;
+  FileReferenceList, EditDefineTree, PackageDefs, PackageSystem, IDEOptionsIntf,
+  SrcEditorIntf;
 
 type
   TUnitInfo = class;
@@ -170,6 +171,7 @@ type
     FBuildFileIfActive: boolean;
     fComponent: TComponent;
     FComponentState: TWindowState; // state of component when we save it
+    FEditorComponent: TSourceEditorInterface;
     FFoldState: String;
     FResourceBaseClass: TPFComponentBaseClass;
     fComponentName: string; { classname is always T<ComponentName>
@@ -184,7 +186,7 @@ type
     fCursorPos: TPoint;
     fCustomHighlighter: boolean; // do not change highlighter on file extension change
     FDirectives: TStrings;
-    fEditorIndex: integer;
+    FEditorIndex: integer;
     fFileName: string;
     fFileReadOnly: Boolean;
     FFirstRequiredComponent: TUnitComponentDependency;
@@ -230,6 +232,7 @@ type
     procedure SetAutoReferenceSourceDir(const AValue: boolean);
     procedure SetBuildFileIfActive(const AValue: boolean);
     procedure SetDirectives(const AValue: TStrings);
+    procedure SetEditorComponent(const AEditor: TSourceEditorInterface);
     procedure SetEditorIndex(const AValue: integer);
     procedure SetFileReadOnly(const AValue: Boolean);
     procedure SetComponent(const AValue: TComponent);
@@ -338,6 +341,8 @@ type
                                read fCustomHighlighter write fCustomHighlighter;
     property Directives: TStrings read FDirectives write SetDirectives;
     property EditorIndex: integer read fEditorIndex write SetEditorIndex;
+    property EditorComponent: TSourceEditorInterface
+             read FEditorComponent write SetEditorComponent;
     property FileReadOnly: Boolean read fFileReadOnly write SetFileReadOnly;
     property FirstRequiredComponent: TUnitComponentDependency
                                                    read FFirstRequiredComponent;
@@ -742,6 +747,7 @@ type
     function ProjectUnitWithShortFilename(const ShortFilename: string): TUnitInfo;
     function ProjectUnitWithUnitname(const AnUnitName: string): TUnitInfo;
     function UnitWithEditorIndex(Index:integer): TUnitInfo;
+    function UnitWithEditorComponent(AEditor:TSourceEditorInterface): TUnitInfo;
     function UnitWithComponent(AComponent: TComponent): TUnitInfo;
     function UnitWithComponentClass(AClass: TComponentClass): TUnitInfo;
     function UnitWithComponentClassName(const AClassName: string): TUnitInfo;
@@ -761,11 +767,6 @@ type
                         SearchFlags: TSearchIDEFileFlags): TUnitInfo;
     function FindFile(const AFilename: string;
                       SearchFlags: TProjectFileSearchFlags): TLazProjectFile; override;
-
-    // units in editor
-    procedure CloseEditorIndex(EditorIndex:integer);
-    procedure InsertEditorIndex(EditorIndex:integer);
-    procedure MoveEditorIndex(OldEditorIndex, NewEditorIndex: integer);
 
     // Application.CreateForm statements
     function AddCreateFormToProjectFile(const AClassName, AName:string):boolean;
@@ -1801,11 +1802,37 @@ begin
   FDirectives:=AValue;
 end;
 
-procedure TUnitInfo.SetEditorIndex(const AValue: integer);
+procedure TUnitInfo.SetEditorComponent(const AEditor: TSourceEditorInterface);
 begin
-  if fEditorIndex=AValue then exit;
-  fEditorIndex:=AValue;
-  UpdateList(uilWithEditorIndex,fEditorIndex>=0);
+  if FEditorComponent = AEditor then exit;
+  if AEditor = nil then
+    EditorIndex := -1;
+  FEditorComponent := AEditor;
+  UpdateList(uilWithEditorIndex, FEditorComponent <> nil);
+  if AEditor <> nil then
+    AEditor.UpdateProjectFile; // Set EditorIndex
+  SessionModified:=true;
+end;
+
+procedure TUnitInfo.SetEditorIndex(const AValue: integer);
+var
+  i: Integer;
+begin
+  if FEditorIndex = AValue then exit;
+  FEditorIndex := AValue;
+  UpdateList(uilWithEditorIndex, FEditorIndex >= 0);
+
+  i := Project1.Bookmarks.Count-1;
+  while (i >= 0) do begin
+    if Project1.Bookmarks[i].EditorComponent = EditorComponent then begin
+      if (FEditorIndex < 0) then
+        Project1.Bookmarks.Delete(i)
+      else
+        Project1.Bookmarks[i].EditorIndex := FEditorIndex;
+    end;
+    dec(i);
+  end;
+
   SessionModified:=true;
 end;
 
@@ -3171,6 +3198,16 @@ begin
   end;
 end;
 
+function TProject.UnitWithEditorComponent(AEditor: TSourceEditorInterface
+  ): TUnitInfo;
+begin
+  if AEditor = nil then exit(nil);
+  Result:=fFirst[uilWithEditorIndex];
+  while (Result<>nil) and (Result.EditorComponent<>AEditor) do begin
+    Result:=Result.fNext[uilWithEditorIndex];
+  end;
+end;
+
 function TProject.UnitIsUsed(const ShortUnitName:string):boolean;
 var NamePos, InPos: integer;
 begin
@@ -3253,100 +3290,6 @@ function TProject.IndexOf(AUnitInfo: TUnitInfo):integer;
 begin
   Result:=UnitCount-1;
   while (Result>=0) and (Units[Result]<>AUnitInfo) do dec(Result);
-end;
-
-procedure TProject.CloseEditorIndex(EditorIndex:integer);
-var i:integer;
-  AnUnitInfo, NextUnitInfo: TUnitInfo;
-begin
-  AnUnitInfo:=fFirst[uilWithEditorIndex];
-  while AnUnitInfo<>nil do begin
-    NextUnitInfo:=AnUnitInfo.fNext[uilWithEditorIndex];
-    if AnUnitInfo.EditorIndex=EditorIndex then
-      AnUnitInfo.EditorIndex:=-1
-    else if AnUnitInfo.EditorIndex>EditorIndex then
-      AnUnitInfo.EditorIndex:=AnUnitInfo.EditorIndex-1;
-    AnUnitInfo:=NextUnitInfo;
-  end;
-  i:=Bookmarks.Count-1;
-  while (i>=0) do begin
-    if (Bookmarks[i].EditorIndex=EditorIndex) then
-      Bookmarks.Delete(i)
-    else
-      Bookmarks[i].EditorIndex:=Bookmarks[i].EditorIndex-1;
-    dec(i);
-  end;
-  SessionModified:=true;
-end;
-
-procedure TProject.InsertEditorIndex(EditorIndex:integer);
-
-  function MoveIndex(OldIndex: integer): integer;
-  begin
-    Result:=OldIndex;
-    if OldIndex>=EditorIndex then
-      inc(Result);
-  end;
-
-var i:integer;
-  AnUnitInfo: TUnitInfo;
-begin
-  // move all editor index of units:
-  AnUnitInfo:=fFirst[uilWithEditorIndex];
-  while AnUnitInfo<>nil do begin
-    AnUnitInfo.EditorIndex:=MoveIndex(AnUnitInfo.EditorIndex);
-    AnUnitInfo:=AnUnitInfo.fNext[uilWithEditorIndex];
-  end;
-  // move bookmarks
-  i:=Bookmarks.Count-1;
-  while (i>=0) do begin
-    Bookmarks[i].EditorIndex:=MoveIndex(Bookmarks[i].EditorIndex);
-    dec(i);
-  end;
-  SessionModified:=true;
-end;
-
-procedure TProject.MoveEditorIndex(OldEditorIndex, NewEditorIndex: integer);
-
-  function MoveIndex(OldIndex: integer): integer;
-  begin
-    Result:=OldIndex;
-    if OldIndex=OldEditorIndex then
-      // this is the moving index
-      Result:=NewEditorIndex
-    else if OldIndex>OldEditorIndex then begin
-      // right of OldPageIndex ...
-      if OldIndex<=NewEditorIndex then
-        // .. and left of NewEditorIndex
-        // -> move left
-        Dec(Result);
-    end else begin
-      // left of OldPageIndex ...
-      if OldIndex>=NewEditorIndex then
-        // .. and right of NewEditorIndex
-        // -> move right
-        Inc(Result);
-    end;
-  end;
-
-var
-  i:integer;
-  AnUnitInfo: TUnitInfo;
-begin
-  if OldEditorIndex=NewEditorIndex then exit;
-  // move all editor index of units:
-  AnUnitInfo:=fFirst[uilWithEditorIndex];
-  while AnUnitInfo<>nil do begin
-    AnUnitInfo.EditorIndex:=MoveIndex(AnUnitInfo.EditorIndex);
-    AnUnitInfo:=AnUnitInfo.fNext[uilWithEditorIndex];
-  end;
-  // move bookmarks
-  i:=Bookmarks.Count-1;
-  while (i>=0) do begin
-    Bookmarks[i].EditorIndex:=MoveIndex(Bookmarks[i].EditorIndex);
-    dec(i);
-  end;
-  SessionModified:=true;
 end;
 
 procedure TProject.AddToOrRemoveFromEditorWithIndexList(AnUnitInfo: TUnitInfo);
@@ -3440,6 +3383,8 @@ begin
     Modified := True;
 end;
 
+(* Remove any gaps from the list of loaded EditorIndexes.
+   This could be required, if some units were not found. *)
 procedure TProject.FixEditorIndex;
 var
   List: TFPList;
@@ -3700,8 +3645,8 @@ end;
 
 procedure TProject.SetBookmark(AnUnitInfo: TUnitInfo; X, Y, ID: integer);
 begin
-  if AnUnitInfo.EditorIndex>=0 then
-    Bookmarks.Add(X,Y,AnUnitInfo.EditorIndex,ID);
+  if AnUnitInfo.EditorComponent <> nil then
+    Bookmarks.Add(X,Y,AnUnitInfo.EditorIndex,ID, AnUnitInfo.EditorComponent);
   AnUnitInfo.Bookmarks.Add(X,Y,ID);
 end;
 
@@ -3720,7 +3665,8 @@ begin
     // free
     //writeln('TProject.MergeBookmarks ',AnUnitInfo.Filename,' Y=',UnitMark.Y);
     if (ProjectMark=nil) then
-      Bookmarks.Add(UnitMark.X,UnitMark.Y,AnUnitInfo.EditorIndex,UnitMark.ID);
+      Bookmarks.Add(UnitMark.X,UnitMark.Y,AnUnitInfo.EditorIndex,UnitMark.ID,
+                    AnUnitInfo.EditorComponent);
   end;
 end;
 
