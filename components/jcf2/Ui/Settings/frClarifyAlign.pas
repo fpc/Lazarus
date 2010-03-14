@@ -78,7 +78,7 @@ implementation
 {$R *.lfm}
 
 uses
-  JcfSettings, JcfHelp, SetAlign;
+  JcfSettings, JcfHelp, SetAlign, jcfuiconsts;
 
 constructor TfClarifyAlign.Create(AOwner: TComponent);
 begin
@@ -88,12 +88,25 @@ end;
 
 function TfClarifyAlign.GetTitle: String;
 begin
-  Result := 'Align';
+  Result := lisAlignAlign;
 end;
 
 procedure TfClarifyAlign.Setup(ADialog: TAbstractOptionsEditorDialog);
 begin
-  //
+  cbInterfaceOnly.Caption := lisAlignInterfaceOnly;
+  gbWhat.Caption := lisAlignWhatToAlign;
+  cbAlignAsign.Caption := lisAlignAssign;
+  cbAlignConst.Caption := lisAlignConst;
+  cbAlignVar.Caption := lisAlignVarDeclarations;
+  cbAlignField.Caption := lisAlignClassAndRecordFields;
+  cbAlignTypedef.Caption := lisAlignTypeDefs;
+  cbAlignComment.Caption := lisAlignComments;
+
+  Label5.Caption := lisAlignMinColumn;
+  Label4.Caption := lisAlignMaxColumn;
+  Label6.Caption := lisAlignMaxVariance;
+  Label2.Caption := lisAlignMaxVarianceInterface;
+  Label1.Caption := lisAlignMaxUnaligned;
 end;
 
 

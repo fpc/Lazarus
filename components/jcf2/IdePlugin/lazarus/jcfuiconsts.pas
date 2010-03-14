@@ -113,6 +113,22 @@ resourcestring
   lisBLMaxConsecutiveBlankLinesAnywhere = 'Max consecutive blank lines anywhere';
   lisBLLinesBeforeProcedure = 'Lines before procedure';
 
+  //Align tab
+  lisAlignAlign = 'Align';
+  lisAlignInterfaceOnly = 'Interface Only';
+  lisAlignWhatToAlign = 'What to Align';
+  lisAlignAssign = 'Assign';
+  lisAlignConst = 'Const';
+  lisAlignVarDeclarations = 'Var declarations';
+  lisAlignClassAndRecordFields = 'Class and record fields';
+  lisAlignTypeDefs = 'Type defs';
+  lisAlignComments = 'Comments';
+  lisAlignMinColumn = 'Min Column';
+  lisAlignMaxColumn = 'Max Column';
+  lisAlignMaxVariance = 'Max Variance';
+  lisAlignMaxVarianceInterface = 'Max Variance Interface';
+  lisAlignMaxUnaligned = 'Max unaligned';
+
 implementation
 
 end.
