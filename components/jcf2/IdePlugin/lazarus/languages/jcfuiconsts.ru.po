@@ -9,6 +9,62 @@ msgstr ""
 "MIME-Version: 1.0\n"
 "Content-Transfer-Encoding: 8bit\n"
 
+#: jcfuiconsts.lisalignalign
+msgid "Align"
+msgstr "Выравнивание"
+
+#: jcfuiconsts.lisalignassign
+msgid "Assign"
+msgstr "Присваивания"
+
+#: jcfuiconsts.lisalignclassandrecordfields
+msgid "Class and record fields"
+msgstr "Поля классов и записей"
+
+#: jcfuiconsts.lisaligncomments
+msgid "Comments"
+msgstr "Комментарии"
+
+#: jcfuiconsts.lisalignconst
+msgid "Const"
+msgstr "Объявления констант"
+
+#: jcfuiconsts.lisaligninterfaceonly
+msgid "Interface Only"
+msgstr "Только в секции Interface"
+
+#: jcfuiconsts.lisalignmaxcolumn
+msgid "Max Column"
+msgstr "Максимальный столбец"
+
+#: jcfuiconsts.lisalignmaxunaligned
+msgid "Max unaligned"
+msgstr "Максимум невыровненности"
+
+#: jcfuiconsts.lisalignmaxvariance
+msgid "Max Variance"
+msgstr "Максимум разброса"
+
+#: jcfuiconsts.lisalignmaxvarianceinterface
+msgid "Max Variance Interface"
+msgstr "Максимум разброса (Interface)"
+
+#: jcfuiconsts.lisalignmincolumn
+msgid "Min Column"
+msgstr "Минимальный столбец"
+
+#: jcfuiconsts.lisaligntypedefs
+msgid "Type defs"
+msgstr "Объявления типов"
+
+#: jcfuiconsts.lisalignvardeclarations
+msgid "Var declarations"
+msgstr "Объявления переменных"
+
+#: jcfuiconsts.lisalignwhattoalign
+msgid "What to Align"
+msgstr "Что выравнивать"
+
 #: jcfuiconsts.lisblafterprocedureheader
 msgid "After procedure header"
 msgstr "После заголовка процедуры"

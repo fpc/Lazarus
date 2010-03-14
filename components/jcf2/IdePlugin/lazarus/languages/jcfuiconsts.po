@@ -1,6 +1,62 @@
 msgid ""
 msgstr "Content-Type: text/plain; charset=UTF-8"
 
+#: jcfuiconsts.lisalignalign
+msgid "Align"
+msgstr ""
+
+#: jcfuiconsts.lisalignassign
+msgid "Assign"
+msgstr ""
+
+#: jcfuiconsts.lisalignclassandrecordfields
+msgid "Class and record fields"
+msgstr ""
+
+#: jcfuiconsts.lisaligncomments
+msgid "Comments"
+msgstr ""
+
+#: jcfuiconsts.lisalignconst
+msgid "Const"
+msgstr ""
+
+#: jcfuiconsts.lisaligninterfaceonly
+msgid "Interface Only"
+msgstr ""
+
+#: jcfuiconsts.lisalignmaxcolumn
+msgid "Max Column"
+msgstr ""
+
+#: jcfuiconsts.lisalignmaxunaligned
+msgid "Max unaligned"
+msgstr ""
+
+#: jcfuiconsts.lisalignmaxvariance
+msgid "Max Variance"
+msgstr ""
+
+#: jcfuiconsts.lisalignmaxvarianceinterface
+msgid "Max Variance Interface"
+msgstr ""
+
+#: jcfuiconsts.lisalignmincolumn
+msgid "Min Column"
+msgstr ""
+
+#: jcfuiconsts.lisaligntypedefs
+msgid "Type defs"
+msgstr ""
+
+#: jcfuiconsts.lisalignvardeclarations
+msgid "Var declarations"
+msgstr ""
+
+#: jcfuiconsts.lisalignwhattoalign
+msgid "What to Align"
+msgstr ""
+
 #: jcfuiconsts.lisblafterprocedureheader
 msgid "After procedure header"
 msgstr ""
