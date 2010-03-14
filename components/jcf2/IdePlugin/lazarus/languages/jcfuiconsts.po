@@ -1,6 +1,46 @@
 msgid ""
 msgstr "Content-Type: text/plain; charset=UTF-8"
 
+#: jcfuiconsts.lisblafterprocedureheader
+msgid "After procedure header"
+msgstr ""
+
+#: jcfuiconsts.lisblatstartandendofbeginendblock
+msgid "At start and end of Begin...End block"
+msgstr ""
+
+#: jcfuiconsts.lisblblanklines
+msgid "Blank Lines"
+msgstr ""
+
+#: jcfuiconsts.lisblinprocedurevarsection
+msgid "In procedure var section"
+msgstr ""
+
+#: jcfuiconsts.lisbllinesbeforeprocedure
+msgid "Lines before procedure"
+msgstr ""
+
+#: jcfuiconsts.lisblmaxconsecutiveblanklinesanywhere
+msgid "Max consecutive blank lines anywhere"
+msgstr ""
+
+#: jcfuiconsts.lisblmaxconsecutiveblanklinesbeforeremoval
+msgid "Max consecutive blank lines before removal"
+msgstr ""
+
+#: jcfuiconsts.lisblnumberofreturnsaftertheunitsfinalend
+msgid "Number of returns after the unit's final End."
+msgstr ""
+
+#: jcfuiconsts.lisblremoveblanklines
+msgid "Remove blank lines"
+msgstr ""
+
+#: jcfuiconsts.lisblremoveconsecutiveblanklines
+msgid "Remove consecutive blank lines"
+msgstr ""
+
 #: jcfuiconsts.lisclarifyclarify
 msgid "Clarify"
 msgstr ""

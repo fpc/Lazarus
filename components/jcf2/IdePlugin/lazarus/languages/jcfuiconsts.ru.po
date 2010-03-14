@@ -9,6 +9,47 @@ msgstr ""
 "MIME-Version: 1.0\n"
 "Content-Transfer-Encoding: 8bit\n"
 
+#: jcfuiconsts.lisblafterprocedureheader
+msgid "After procedure header"
+msgstr "После заголовка процедуры"
+
+#: jcfuiconsts.lisblatstartandendofbeginendblock
+#| msgid "At start and end of begin...end block"
+msgid "At start and end of Begin...End block"
+msgstr "В начале и конце блока Begin...End"
+
+#: jcfuiconsts.lisblblanklines
+msgid "Blank Lines"
+msgstr "Пустые строки"
+
+#: jcfuiconsts.lisblinprocedurevarsection
+msgid "In procedure var section"
+msgstr "В секции var процедуры"
+
+#: jcfuiconsts.lisbllinesbeforeprocedure
+msgid "Lines before procedure"
+msgstr "Строк перед процедурой"
+
+#: jcfuiconsts.lisblmaxconsecutiveblanklinesanywhere
+msgid "Max consecutive blank lines anywhere"
+msgstr "Максимум последовательных пустых строк"
+
+#: jcfuiconsts.lisblmaxconsecutiveblanklinesbeforeremoval
+msgid "Max consecutive blank lines before removal"
+msgstr "Максимум последовательных пустых строк"
+
+#: jcfuiconsts.lisblnumberofreturnsaftertheunitsfinalend
+msgid "Number of returns after the unit's final End."
+msgstr "Число пустых строк после End. модуля"
+
+#: jcfuiconsts.lisblremoveblanklines
+msgid "Remove blank lines"
+msgstr "Удалять пустые строки"
+
+#: jcfuiconsts.lisblremoveconsecutiveblanklines
+msgid "Remove consecutive blank lines"
+msgstr "Удалять последовательные пустые строки"
+
 #: jcfuiconsts.lisclarifyclarify
 msgid "Clarify"
 msgstr "Улучшение читаемости кода"
