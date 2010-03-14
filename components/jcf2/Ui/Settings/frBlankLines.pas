@@ -71,7 +71,7 @@ uses
   { delphi }
   Math,
   { local }
-  JcfSettings, SetReturns, JcfHelp;
+  JcfSettings, SetReturns, JcfHelp, jcfuiconsts;
 
 constructor TfBlankLines.Create(AOwner: TComponent);
 begin
@@ -81,12 +81,21 @@ end;
 
 function TfBlankLines.GetTitle: String;
 begin
-  Result := 'Blank Lines';
+  Result := lisBLBlankLines;
 end;
 
 procedure TfBlankLines.Setup(ADialog: TAbstractOptionsEditorDialog);
 begin
-  //
+  gbRemoveBlankLines.Caption := lisBLRemoveBlankLines;
+  cbRemoveVarBlankLines.Caption := lisBLInProcedureVarSection;
+  cbRemoveBlankLinesAfterProcHeader.Caption := lisBLAfterProcedureHeader;
+  cbRemoveBlockBlankLines.Caption := lisBLAtStartAndEndOfBeginEndBlock;
+  Label4.Caption := lisBLMaxConsecutiveBlankLinesBeforeRemoval;
+
+  Label1.Caption := lisBLNumberOfReturnsAfterTheUnitsFinalEnd;
+  cbRemoveConsecutiveBlankLines.Caption := lisBLRemoveConsecutiveBlankLines;
+  Label2.Caption := lisBLMaxConsecutiveBlankLinesAnywhere;
+  Label3.Caption := lisBLLinesBeforeProcedure;
 end;
 
 procedure TfBlankLines.ReadSettings(AOptions: TAbstractIDEOptions);

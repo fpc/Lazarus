@@ -99,6 +99,20 @@ resourcestring
   lisIndentIndentNestedTypes = 'Indent nested types';
   lisIndentIndentVarAndConstInClass = 'Indent var and const in class';
 
+  //Blank lines tab
+  lisBLBlankLines = 'Blank Lines';
+  lisBLRemoveBlankLines = 'Remove blank lines';
+  lisBLInProcedureVarSection = 'In procedure var section';
+  lisBLAfterProcedureHeader = 'After procedure header';
+  lisBLAtStartAndEndOfBeginEndBlock = 'At start and end of Begin...End block';
+  lisBLMaxConsecutiveBlankLinesBeforeRemoval = 'Max consecutive blank lines '
+    +'before removal';
+  lisBLNumberOfReturnsAfterTheUnitsFinalEnd = 'Number of returns after the '
+    +'unit''s final End.';
+  lisBLRemoveConsecutiveBlankLines = 'Remove consecutive blank lines';
+  lisBLMaxConsecutiveBlankLinesAnywhere = 'Max consecutive blank lines anywhere';
+  lisBLLinesBeforeProcedure = 'Lines before procedure';
+
 implementation
 
 end.
