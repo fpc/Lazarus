@@ -37,6 +37,8 @@ type
 
   TObjectTypes = set of TObjectType;
 
+  TFileSortType = (fstNone, fstAlphabet, fstFoldersFirst);
+
   { Forward declaration of the classes }
 
   TCustomShellTreeView = class;
@@ -48,6 +50,7 @@ type
   private
     FObjectTypes: TObjectTypes;
     FShellListView: TCustomShellListView;
+    FFileSortType: TFileSortType;
     { Setters and getters }
     procedure SetShellListView(const Value: TCustomShellListView);
   protected
@@ -65,13 +68,14 @@ type
     { Methods specific to Lazarus - useful for other classes }
     class function  GetBasePath: string;
     class procedure GetFilesInDir(const ABaseDir: string;
-      AMask: string; AObjectTypes: TObjectTypes; AResult: TStrings);
+      AMask: string; AObjectTypes: TObjectTypes; AResult: TStrings; AFileSortType: TFileSortType = fstNone);
     { Other methods specific to Lazarus }
     function  GetPathFromNode(ANode: TTreeNode): string;
 
     { Properties }
     property ObjectTypes: TObjectTypes read FObjectTypes write FObjectTypes;
     property ShellListView: TCustomShellListView read FShellListView write SetShellListView;
+    property FileSortType: TFileSortType read FFileSortType write FFileSortType;
   end;
 
   { TShellTreeView }
@@ -92,6 +96,7 @@ type
     property Enabled;
     property ExpandSignType;
     property Font;
+    property FileSortType;
     //property ParentBiDiMode;
     property ParentColor default False;
     property ParentFont;
@@ -328,11 +333,52 @@ begin
   inherited Destroy;
 end;
 
+type
+  { TFileItem }
+  TFileItem = class(TObject)
+    Name: string;
+    isFolder: Boolean;
+    //more data to sort by size, date... etc
+    constructor Create(const DirInfo: TSearchRec);
+  end;
+
+{ TFileItem }
+
+constructor TFileItem.Create(const DirInfo:TSearchRec);
+begin
+  Name:=DirInfo.Name;
+  isFolder:=DirInfo.Attr and FaDirectory > 0;
+end;
+
+function FilesSortAlphabet(p1, p2: Pointer): Integer;
+var
+  f1, f2: TFileItem;
+begin
+  f1:=TFileItem(p1);
+  f2:=TFileItem(p2);
+  Result:=CompareText(f1.Name, f2.Name);
+end;
+
+function FilesSortFoldersFirst(p1,p2: Pointer): Integer;
+var
+  f1, f2: TFileItem;
+begin
+  f1:=TFileItem(p1);
+  f2:=TFileItem(p2);
+  if f1.isFolder=f2.isFolder then
+    Result:=FilesSortAlphabet(p1,p2)
+  else begin
+    if f1.isFolder then Result:=-1
+    else Result:=1;
+  end;
+
+end;
+
 { Helper routine.
   Finds all files/directories directly inside a directory.
   Does not recurse inside subdirectories. }
 class procedure TCustomShellTreeView.GetFilesInDir(const ABaseDir: string;
-  AMask: string; AObjectTypes: TObjectTypes; AResult: TStrings);
+  AMask: string; AObjectTypes: TObjectTypes; AResult: TStrings; AFileSortType: TFileSortType);
 var
   DirInfo: TSearchRec;
   FindResult: Integer;
@@ -340,9 +386,26 @@ var
   ObjectData: TObject;
   SearchStr: string;
   MaskStr: string;
+  Files: TList;
+  FileItem: TFileItem;
+  i: Integer;
+  {$if defined(windows) and not defined(wince)}
+  ErrMode : LongWord;
+  {$endif}
 begin
+  {$if defined(windows) and not defined(wince)}
+  // disables the error dialog, while enumerating not-available drives
+  // for example listing A: path, without diskette present.
+  // WARNING: Since Application.ProcessMessages is called, it might effect some operations!
+  ErrMode:=SetErrorMode(SEM_FAILCRITICALERRORS or SEM_NOALIGNMENTFAULTEXCEPT or SEM_NOGPFAULTERRORBOX or SEM_NOOPENFILEERRORBOX);
+  try
+  {$endif}
+
   if Trim(AMask) = '' then MaskStr := AllFilesMask
   else MaskStr := AMask;
+
+  if AFileSortType=fstNone then Files:=nil
+  else Files:=TList.Create;
 
   SearchStr := IncludeTrailingPathDelimiter(ABaseDir) + MaskStr;
 
@@ -372,17 +435,47 @@ begin
     else
       AddFile := AddFile and (otNonFolders in AObjectTypes);
 
-    // Mark if it is a directory (ObjectData <> nil)
-    if IsDirectory then ObjectData := AResult
-    else ObjectData := nil;
-
     // AddFile identifies if the file is valid or not
-    if AddFile then AResult.AddObject(DirInfo.Name, ObjectData);
+    if AddFile then
+    begin
+      if not Assigned(Files) then begin
+        // Mark if it is a directory (ObjectData <> nil)
+        if IsDirectory then ObjectData := AResult
+        else ObjectData := nil;
+        AResult.AddObject(DirInfo.Name, ObjectData)
+      end else
+        Files.Add ( TFileItem.Create(DirInfo));
+    end;
 
     FindResult := FindNextUTF8(DirInfo);
   end;
 
   FindCloseUTF8(DirInfo);
+
+  if Assigned(Files) then begin
+    Objectdata:=AResult;
+
+    case AFileSortType of
+      fstAlphabet:     Files.Sort(@FilesSortAlphabet);
+      fstFoldersFirst: Files.Sort(@FilesSortFoldersFirst);
+    end;
+
+    for i:=0 to Files.Count-1 do begin
+      FileItem:=TFileItem(Files[i]);
+      if FileItem.isFolder then
+        AResult.AddObject(FileItem.Name, ObjectData)
+      else
+        AResult.AddObject(FileItem.Name, nil);
+      FileItem.Free;
+    end;
+    Files.Free;
+  end;
+
+  {$if defined(windows) and not defined(wince)}
+  finally
+     SetErrorMode(ErrMode);
+  end;
+  {$endif}
 end;
 
 class function TCustomShellTreeView.GetBasePath: string;
@@ -408,7 +501,7 @@ var
 begin
   Files := TStringList.Create;
   try
-    GetFilesInDir(ANodePath, AllFilesMask, FObjectTypes, Files);
+    GetFilesInDir(ANodePath, AllFilesMask, FObjectTypes, Files, FFileSortType);
 
     Result := Files.Count > 0;
 
@@ -451,7 +544,7 @@ begin
   begin
 //    r := GetDriveType(pDrive);
 
-    NewNode := Items.AddChildObject(nil, pDrive, pDrive);
+    NewNode := Items.AddChildObject(nil, ExcludeTrailingBackslash(pDrive), pDrive);
     NewNode.HasChildren := True;
 
     Inc(pDrive, 4);
