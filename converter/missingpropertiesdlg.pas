@@ -33,21 +33,22 @@ interface
 
 uses
   // FCL+LCL
-  Classes, SysUtils, Math, TypInfo, LCLProc, Forms, Controls, LResources,
+  Classes, SysUtils, Math, LCLProc, Forms, Controls, //LResources,
   Graphics, Dialogs, Buttons, StdCtrls,
   // components
-  SynHighlighterLFM, SynEdit, BasicCodeTools, CodeCache, CodeToolManager,
-  SynEditMiscClasses, LFMTrees,
+  SynHighlighterLFM, SynEdit, SynEditMiscClasses, LFMTrees,
+  // codetools
+  BasicCodeTools, CodeCache, CodeToolManager,
   // IDE
-  PropEdits, IDEDialogs, ComponentReg, PackageIntf, IDEWindowIntf,
-  CustomFormEditor, LazarusIDEStrConsts, OutputFilter, IDEProcs, IDEOptionDefs,
-  EditorOptions, ExtCtrls, Grids, JITForms, PropEditUtils;
+  IDEDialogs, ComponentReg, PackageIntf, IDEWindowIntf, //PropEdits,
+  CustomFormEditor, LazarusIDEStrConsts, IDEProcs, OutputFilter, //IDEOptionDefs,
+  EditorOptions, ExtCtrls, Grids, ConvertSettings; //JITForms, PropEditUtils,
 
 type
 
-  { TLfmFixer }
+  { TLfmChecker }
 
-  TLfmFixer = class
+  TLfmChecker = class
   private
     fPascalBuffer: TCodeBuffer;
     fLfmBuffer: TCodeBuffer;
@@ -55,19 +56,34 @@ type
     fRootMustBeClassInIntf: boolean;
     fObjectsMustExists: boolean;
     fLfmTree: TLFMTree;
+    // References to controls in UI:
+    fLfmSynEdit: TSynEdit;
+    fErrorsListBox: TListBox;
     procedure WriteUnitError(Code: TCodeBuffer; x, Y: integer;
       const ErrorMessage: string);
     procedure WriteCodeToolsError;
     procedure WriteLFMErrors;
     function FixMissingComponentClasses: TModalResult;
     function CheckUnit: boolean;
-    function ShowRepairLFMWizard: TModalResult;
-
+    // Refactored and moved from dialog class:
+    procedure LoadLFM;
+    function RemoveAll: TModalResult;
+    procedure FindNiceNodeBounds(LFMNode: TLFMTreeNode;
+                                 var StartPos, EndPos: integer);
+    function FindListBoxError: TLFMError;
+    procedure JumpToError(LFMError: TLFMError);
+    procedure AddReplacement(LFMChangeList: TList; StartPos, EndPos: integer;
+                             const NewText: string);
+    function ApplyReplacements(LFMChangeList: TList): boolean;
+  protected
+    function ShowRepairLFMWizard: TModalResult; virtual;
   public
     constructor Create(APascalBuffer, ALfmBuffer: TCodeBuffer;
                        const AOnOutput: TOnAddFilteredLine);
     destructor Destroy; override;
     function Repair: TModalResult;
+    procedure FillErrorsListBox;
+    function AutomaticFixIsPossible: boolean;
   public
     property PascalBuffer: TCodeBuffer read fPascalBuffer;
     property LfmBuffer: TCodeBuffer read fLfmBuffer;
@@ -76,6 +92,21 @@ type
                                            write fRootMustBeClassInIntf;
     property ObjectsMustExists: boolean read fObjectsMustExists
                                        write fObjectsMustExists;
+  end;
+
+  { TLfmFixer }
+
+  TLfmFixer = class(TLfmChecker)
+  private
+    // References to controls in UI:
+    fPropReplaceGrid: TStringGrid;
+  protected
+    function ShowRepairLFMWizard: TModalResult; override;
+  public
+    constructor Create(APascalBuffer, ALfmBuffer: TCodeBuffer;
+                       const AOnOutput: TOnAddFilteredLine);
+    destructor Destroy; override;
+    function Repair: TModalResult;
   end;
 
 
@@ -96,30 +127,18 @@ type
     PropertyReplaceGrid: TStringGrid;
     SynLFMSyn1: TSynLFMSyn;
     procedure ErrorsListBoxClick(Sender: TObject);
-    procedure LFMSynEditSpecialLineMarkup(Sender: TObject; Line: integer;
-      var Special: boolean; AMarkup: TSynSelectedColor);
     procedure RemoveAllButtonClick(Sender: TObject);
-    procedure CheckLFMDialogCREATE(Sender: TObject);
     procedure ReplaceAllButtonClick(Sender: TObject);
+    procedure LFMSynEditSpecialLineMarkup(Sender: TObject;
+      Line: integer; var Special: boolean; AMarkup: TSynSelectedColor);
+    procedure CheckLFMDialogCREATE(Sender: TObject);
   private
-    fLFMSource: TCodeBuffer;
-    fLFMTree: TLFMTree;
-    procedure SetLFMSource(const AValue: TCodeBuffer);
-    procedure SetLFMTree(const AValue: TLFMTree);
+//    fLfmChecker: TLfmChecker;
+    fLfmFixer: TLfmFixer;
     procedure SetupComponents;
-    function FindListBoxError: TLFMError;
-    procedure JumpToError(LFMError: TLFMError);
-    procedure FindNiceNodeBounds(LFMNode: TLFMTreeNode;
-                                 var StartPos, EndPos: integer);
-    procedure AddReplacement(LFMChangeList: TList; StartPos, EndPos: integer;
-                             const NewText: string);
-    function ApplyReplacements(LFMChangeList: TList): boolean;
   public
-    procedure LoadLFM;
-    procedure FillErrorsListBox;
-    function AutomaticFixIsPossible: boolean;
-    property LFMTree: TLFMTree read fLFMTree write SetLFMTree;
-    property LFMSource: TCodeBuffer read fLFMSource write SetLFMSource;
+    constructor Create(AOwner: TComponent; ALfmFixer: TLfmFixer);
+    destructor Destroy; override;
   end;
 
 
@@ -134,9 +153,9 @@ type
     NewText: string;
   end;
 
-{ TLfmFixer }
+{ TLfmChecker }
 
-constructor TLfmFixer.Create(APascalBuffer, ALfmBuffer: TCodeBuffer;
+constructor TLfmChecker.Create(APascalBuffer, ALfmBuffer: TCodeBuffer;
                              const AOnOutput: TOnAddFilteredLine);
 begin
   fPascalBuffer:=APascalBuffer;
@@ -146,12 +165,35 @@ begin
   fObjectsMustExists:=true;
 end;
 
-destructor TLfmFixer.Destroy;
+destructor TLfmChecker.Destroy;
 begin
   inherited Destroy;
 end;
 
-function TLfmFixer.Repair: TModalResult;
+function TLfmChecker.ShowRepairLFMWizard: TModalResult;
+//var
+//  FixLFMDialog: TFixLFMDialog;
+begin
+  Result:=mrCancel;
+{  FixLFMDialog:=TFixLFMDialog.Create(nil, self);
+  try
+    fLfmSynEdit:=FixLFMDialog.LFMSynEdit;
+    fErrorsListBox:=FixLFMDialog.ErrorsListBox;
+    fPropReplaceGrid:=FixLFMDialog.PropertyReplaceGrid;
+    LoadLFM;
+    Result:=FixLFMDialog.ShowModal;
+  finally
+    FixLFMDialog.Free;
+  end; }
+end;
+
+procedure TLfmChecker.LoadLFM;
+begin
+  fLfmSynEdit.Lines.Text:=fLfmBuffer.Source;
+  FillErrorsListBox;
+end;
+
+function TLfmChecker.Repair: TModalResult;
 begin
   Result:=mrCancel;
   if not CheckUnit then begin
@@ -171,7 +213,7 @@ begin
   Result:=ShowRepairLFMWizard;
 end;
 
-procedure TLfmFixer.WriteUnitError(Code: TCodeBuffer; x, Y: integer;
+procedure TLfmChecker.WriteUnitError(Code: TCodeBuffer; x, Y: integer;
   const ErrorMessage: string);
 var
   Dir: String;
@@ -190,13 +232,13 @@ begin
   fOnOutput(Msg,Dir,-1,nil);
 end;
 
-procedure TLfmFixer.WriteCodeToolsError;
+procedure TLfmChecker.WriteCodeToolsError;
 begin
   WriteUnitError(CodeToolBoss.ErrorCode,CodeToolBoss.ErrorColumn,
     CodeToolBoss.ErrorLine,CodeToolBoss.ErrorMessage);
 end;
 
-procedure TLfmFixer.WriteLFMErrors;
+procedure TLfmChecker.WriteLFMErrors;
 var
   CurError: TLFMError;
   Dir: String;
@@ -217,7 +259,7 @@ begin
   end;
 end;
 
-function TLfmFixer.FixMissingComponentClasses: TModalResult;
+function TLfmChecker.FixMissingComponentClasses: TModalResult;
 // returns true, if after adding units to uses section all errors are fixed
 var
   CurError: TLFMError;
@@ -270,7 +312,7 @@ begin
   end;
 end;
 
-function TLfmFixer.CheckUnit: boolean;
+function TLfmChecker.CheckUnit: boolean;
 var
   NewCode: TCodeBuffer;
   NewX, NewY, NewTopLine: integer;
@@ -288,8 +330,7 @@ begin
   // check used units
   MissingUnits:=nil;
   try
-    if not CodeToolBoss.FindMissingUnits(fPascalBuffer,MissingUnits,false,
-      false)
+    if not CodeToolBoss.FindMissingUnits(fPascalBuffer,MissingUnits,false,false)
     then begin
       WriteCodeToolsError;
       exit;
@@ -306,28 +347,7 @@ begin
   Result:=true;
 end;
 
-function TLfmFixer.ShowRepairLFMWizard: TModalResult;
-var
-  FixLFMDialog: TFixLFMDialog;
-begin
-  Result:=mrCancel;
-  FixLFMDialog:=TFixLFMDialog.Create(nil);
-  FixLFMDialog.LFMTree:=fLfmTree;
-  FixLFMDialog.LFMSource:=fLfmBuffer;
-  FixLFMDialog.LoadLFM;
-  Result:=FixLFMDialog.ShowModal;
-  FixLFMDialog.Free;
-end;
-
-
-{ TFixLFMDialog }
-
-procedure TFixLFMDialog.ReplaceAllButtonClick(Sender: TObject);
-begin
-  ;
-end;
-
-procedure TFixLFMDialog.RemoveAllButtonClick(Sender: TObject);
+function TLfmChecker.RemoveAll: TModalResult;
 var
   CurError: TLFMError;
   DeleteNode: TLFMTreeNode;
@@ -335,10 +355,11 @@ var
   Replacements: TList;
   i: integer;
 begin
+  Result:=mrNone;
   Replacements:=TList.Create;
   try
     // automatically delete each error location
-    CurError:=LFMTree.LastError;
+    CurError:=fLfmTree.LastError;
     while CurError<>nil do begin
       DeleteNode:=CurError.FindContextNode;
       if (DeleteNode<>nil) and (DeleteNode.Parent<>nil) then begin
@@ -347,9 +368,8 @@ begin
       end;
       CurError:=CurError.PrevError;
     end;
-
     if ApplyReplacements(Replacements) then
-      ModalResult:=mrOk;
+      Result:=mrOk;
   finally
     for i := 0 to Replacements.Count - 1 do
       TObject(Replacements[i]).Free;
@@ -357,67 +377,25 @@ begin
   end;
 end;
 
-procedure TFixLFMDialog.ErrorsListBoxClick(Sender: TObject);
-begin
-  JumpToError(FindListBoxError);
-end;
-
-procedure TFixLFMDialog.LFMSynEditSpecialLineMarkup(Sender: TObject;
-  Line: integer; var Special: boolean; AMarkup: TSynSelectedColor);
+procedure TLfmChecker.FindNiceNodeBounds(LFMNode: TLFMTreeNode;
+  var StartPos, EndPos: integer);
 var
-  CurError: TLFMError;
+  Src: String;
 begin
-  CurError:=LFMTree.FindErrorAtLine(Line);
-  if CurError = nil then Exit;
-  
-  Special := True;
-  EditorOpts.SetMarkupColor(SynLFMSyn1, ahaErrorLine, AMarkup);
+  Src:=fLfmBuffer.Source;
+  StartPos:=FindLineEndOrCodeInFrontOfPosition(Src,LFMNode.StartPos,1,false,true);
+  EndPos:=FindLineEndOrCodeInFrontOfPosition(Src,LFMNode.EndPos,1,false,true);
+  EndPos:=FindLineEndOrCodeAfterPosition(Src,EndPos,length(Src),false);
 end;
 
-procedure TFixLFMDialog.CheckLFMDialogCREATE(Sender: TObject);
-begin
-  Caption:=lisFixLFMFile;
-  Position:=poScreenCenter;
-  IDEDialogLayoutList.ApplyLayout(Self,600,400);
-  SetupComponents;
-end;
-
-procedure TFixLFMDialog.SetLFMSource(const AValue: TCodeBuffer);
-begin
-  if fLFMSource=AValue then exit;
-  fLFMSource:=AValue;
-end;
-
-procedure TFixLFMDialog.SetLFMTree(const AValue: TLFMTree);
-begin
-  if fLFMTree=AValue then exit;
-  fLFMTree:=AValue;
-  RemoveAllButton.Enabled:=AutomaticFixIsPossible;
-end;
-
-procedure TFixLFMDialog.SetupComponents;
-const // Will be moved to LazarusIDEStrConsts
-  lisReplaceAllProperties = 'Replace all properties';
-begin
-  NoteLabel.Caption:=lisTheLFMLazarusFormFileContainsInvalidPropertiesThis;
-  ErrorsGroupBox.Caption:=lisErrors;
-  LFMGroupBox.Caption:=lisLFMFile;
-  RemoveAllButton.Caption:=lisRemoveAllInvalidProperties;
-  RemoveAllButton.LoadGlyphFromLazarusResource('laz_delete');
-  ReplaceAllButton.Caption:=lisReplaceAllProperties;
-  ReplaceAllButton.LoadGlyphFromLazarusResource('laz_refresh');
-  EditorOpts.GetHighlighterSettings(SynLFMSyn1);
-  EditorOpts.GetSynEditSettings(LFMSynEdit);
-end;
-
-function TFixLFMDialog.FindListBoxError: TLFMError;
+function TLfmChecker.FindListBoxError: TLFMError;
 var
   i: Integer;
 begin
   Result:=nil;
-  i:=ErrorsListBox.ItemIndex;
-  if (i<0) or (i>=ErrorsListBox.Items.Count) then exit;
-  Result:=LFMTree.FirstError;
+  i:=fErrorsListBox.ItemIndex;
+  if (i<0) or (i>=fErrorsListBox.Items.Count) then exit;
+  Result:=fLfmTree.FirstError;
   while Result<>nil do begin
     if i=0 then exit;
     Result:=Result.NextError;
@@ -425,24 +403,13 @@ begin
   end;
 end;
 
-procedure TFixLFMDialog.JumpToError(LFMError: TLFMError);
+procedure TLfmChecker.JumpToError(LFMError: TLFMError);
 begin
   if LFMError=nil then exit;
-  LFMSynEdit.CaretXY:=LFMError.Caret;
+  fLfmSynEdit.CaretXY:=LFMError.Caret;
 end;
 
-procedure TFixLFMDialog.FindNiceNodeBounds(LFMNode: TLFMTreeNode;
-  var StartPos, EndPos: integer);
-var
-  Src: String;
-begin
-  Src:=LFMSource.Source;
-  StartPos:=FindLineEndOrCodeInFrontOfPosition(Src,LFMNode.StartPos,1,false,true);
-  EndPos:=FindLineEndOrCodeInFrontOfPosition(Src,LFMNode.EndPos,1,false,true);
-  EndPos:=FindLineEndOrCodeAfterPosition(Src,EndPos,length(Src),false);
-end;
-
-procedure TFixLFMDialog.AddReplacement(LFMChangeList: TList;
+procedure TLfmChecker.AddReplacement(LFMChangeList: TList;
   StartPos, EndPos: integer; const NewText: string);
 var
   Entry: TLFMChangeEntry;
@@ -480,7 +447,7 @@ begin
       end;
     end;
   end;
-  
+
   // insert new entry
   NewEntry:=TLFMChangeEntry.Create;
   NewEntry.NewText:=NewText;
@@ -504,58 +471,52 @@ begin
   end;
 end;
 
-function TFixLFMDialog.ApplyReplacements(LFMChangeList: TList): boolean;
+function TLfmChecker.ApplyReplacements(LfmChangeList: TList): boolean;
 var
   i: Integer;
   Entry: TLFMChangeEntry;
 begin
   Result:=false;
-  for i:=LFMChangeList.Count-1 downto 0 do begin
-    Entry:=TLFMChangeEntry(LFMChangeList[i]);
+  for i:=LfmChangeList.Count-1 downto 0 do begin
+    Entry:=TLFMChangeEntry(LfmChangeList[i]);
 //    DebugLn('TCheckLFMDialog.ApplyReplacements A ',IntToStr(i),' ',
 //      IntToStr(Entry.StartPos),',',IntToStr(Entry.EndPos),
-//      ' "',copy(LFMSource.Source,Entry.StartPos,Entry.EndPos-Entry.StartPos),'" -> "',Entry.NewText,'"');
-    LFMSource.Replace(Entry.StartPos,Entry.EndPos-Entry.StartPos,Entry.NewText);
+//      ' "',copy(fLfmBuffer.Source,Entry.StartPos,Entry.EndPos-Entry.StartPos),'" -> "',Entry.NewText,'"');
+    fLfmBuffer.Replace(Entry.StartPos,Entry.EndPos-Entry.StartPos,Entry.NewText);
   end;
-  //writeln(LFMSource.Source);
+  //writeln(fLfmBuffer.Source);
   Result:=true;
 end;
 
-procedure TFixLFMDialog.LoadLFM;
-begin
-  LFMSynEdit.Lines.Text:=LFMSource.Source;
-  FillErrorsListBox;
-end;
-
-procedure TFixLFMDialog.FillErrorsListBox;
+procedure TLfmChecker.FillErrorsListBox;
 var
   CurError: TLFMError;
   Filename: String;
   Msg: String;
 begin
-  ErrorsListBox.Items.BeginUpdate;
-  ErrorsListBox.Items.Clear;
-  if LFMTree<>nil then begin
-    Filename:=ExtractFileName(LFMSource.Filename);
-    CurError:=LFMTree.FirstError;
+  fErrorsListBox.Items.BeginUpdate;
+  fErrorsListBox.Items.Clear;
+  if fLfmTree<>nil then begin
+    Filename:=ExtractFileName(fLfmBuffer.Filename);
+    CurError:=fLfmTree.FirstError;
     while CurError<>nil do begin
       Msg:=Filename
            +'('+IntToStr(CurError.Caret.Y)+','+IntToStr(CurError.Caret.X)+')'
            +' Error: '
            +CurError.ErrorMessage;
-      ErrorsListBox.Items.Add(Msg);
+      fErrorsListBox.Items.Add(Msg);
       CurError:=CurError.NextError;
     end;
   end;
-  ErrorsListBox.Items.EndUpdate;
+  fErrorsListBox.Items.EndUpdate;
 end;
 
-function TFixLFMDialog.AutomaticFixIsPossible: boolean;
+function TLfmChecker.AutomaticFixIsPossible: boolean;
 var
   CurError: TLFMError;
 begin
   Result:=true;
-  CurError:=LFMTree.FirstError;
+  CurError:=fLfmTree.FirstError;
   while CurError<>nil do begin
     if CurError.ErrorType in [lfmeNoError,lfmeIdentifierNotFound,
       lfmeObjectNameMissing,lfmeObjectIncompatible,lfmePropertyNameMissing,
@@ -571,6 +532,119 @@ begin
   end;
 end;
 
+
+{ TLfmFixer }
+
+constructor TLfmFixer.Create(APascalBuffer, ALfmBuffer: TCodeBuffer;
+  const AOnOutput: TOnAddFilteredLine);
+begin
+  inherited Create(APascalBuffer, ALfmBuffer, AOnOutput);
+
+end;
+
+destructor TLfmFixer.Destroy;
+begin
+  inherited Destroy;
+end;
+
+function TLfmFixer.ShowRepairLFMWizard: TModalResult;
+var
+  FixLFMDialog: TFixLFMDialog;
+begin
+  Result:=mrCancel;
+  FixLFMDialog:=TFixLFMDialog.Create(nil, self);
+  try
+    fLfmSynEdit:=FixLFMDialog.LFMSynEdit;
+    fErrorsListBox:=FixLFMDialog.ErrorsListBox;
+    fPropReplaceGrid:=FixLFMDialog.PropertyReplaceGrid;
+    LoadLFM;
+    Result:=FixLFMDialog.ShowModal;
+  finally
+    FixLFMDialog.Free;
+  end;
+end;
+
+function TLfmFixer.Repair: TModalResult;
+begin
+  Result:=inherited Repair;
+end;
+
+
+{ TFixLFMDialog }
+
+constructor TFixLFMDialog.Create(AOwner: TComponent; ALfmFixer: TLfmFixer);
+begin
+  inherited Create(AOwner);
+  fLfmFixer:=ALfmFixer;
+end;
+
+destructor TFixLFMDialog.Destroy;
+begin
+  inherited Destroy;
+end;
+
+procedure TFixLFMDialog.ReplaceAllButtonClick(Sender: TObject);
+begin
+  ;
+end;
+
+procedure TFixLFMDialog.RemoveAllButtonClick(Sender: TObject);
+begin
+  ModalResult:=fLfmFixer.RemoveAll;
+end;
+
+procedure TFixLFMDialog.ErrorsListBoxClick(Sender: TObject);
+begin
+  fLfmFixer.JumpToError(fLfmFixer.FindListBoxError);
+end;
+
+procedure TFixLFMDialog.LFMSynEditSpecialLineMarkup(Sender: TObject;
+  Line: integer; var Special: boolean; AMarkup: TSynSelectedColor);
+var
+  CurError: TLFMError;
+begin
+  CurError:=fLfmFixer.fLfmTree.FindErrorAtLine(Line);
+  if CurError = nil then Exit;
+  Special := True;
+  EditorOpts.SetMarkupColor(SynLFMSyn1, ahaErrorLine, AMarkup);
+end;
+
+procedure TFixLFMDialog.CheckLFMDialogCREATE(Sender: TObject);
+begin
+  Caption:=lisFixLFMFile;
+  Position:=poScreenCenter;
+  IDEDialogLayoutList.ApplyLayout(Self,600,400);
+  SetupComponents;
+end;
+
+procedure TFixLFMDialog.SetupComponents;
+const // Will be moved to LazarusIDEStrConsts
+  lisReplaceAllProperties = 'Replace all properties';
+begin
+  NoteLabel.Caption:=lisTheLFMLazarusFormFileContainsInvalidPropertiesThis;
+  ErrorsGroupBox.Caption:=lisErrors;
+  LFMGroupBox.Caption:=lisLFMFile;
+  RemoveAllButton.Caption:=lisRemoveAllInvalidProperties;
+  RemoveAllButton.LoadGlyphFromLazarusResource('laz_delete');
+  ReplaceAllButton.Caption:=lisReplaceAllProperties;
+  ReplaceAllButton.LoadGlyphFromLazarusResource('laz_refresh');
+  EditorOpts.GetHighlighterSettings(SynLFMSyn1);
+  EditorOpts.GetSynEditSettings(LFMSynEdit);
+end;
+{
+procedure TFixLFMDialog.SetLfmBuffer(const AValue: TCodeBuffer);
+begin
+  if fLFMSource=AValue then exit;
+  fLFMSource:=AValue;
+end;
+
+procedure TFixLFMDialog.SetLfmTree(const AValue: TLFMTree);
+begin
+  if fLFMTree=AValue then exit;
+  fLFMTree:=AValue;
+  RemoveAllButton.Enabled:=AutomaticFixIsPossible;
+end;
+}
 
 end.
 

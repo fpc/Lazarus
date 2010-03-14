@@ -52,7 +52,7 @@ type
     fAutoMissingProperties: boolean;
     fAutoMissingComponents: boolean;
     // Replacement properties for Delphi properties.
-    fReplacementProperties : TStringToStringTree;
+    fReplaceProps: TStringToStringTree;
     function GetBackupPath: String;
     procedure SetMainFilename(const AValue: String);
   public
@@ -86,6 +86,7 @@ type
     property FormFileRename: boolean read fFormFileRename;
     property AutoMissingProperties: boolean read fAutoMissingProperties;
     property AutoMissingComponents: boolean read fAutoMissingComponents;
+    property ReplaceProps: TStringToStringTree read fReplaceProps;
   end;
 
 
@@ -133,12 +134,18 @@ begin
   fTitle:=ATitle;
   fMainFilename:='';
   fMainPath:='';
-  fReplacementProperties:=TStringToStringTree.Create(false);
+  fReplaceProps:=TStringToStringTree.Create(false);
+  // Now hard-code some values. Later move them to a config file.
+  fReplaceProps['TFlowPanel']:='TPanel';
+  fReplaceProps['TGridPanel']:='TPanel';
+  fReplaceProps['TComboBoxEx']:='TComboBox';
+  fReplaceProps['TCoolBar']:='TPanel';
+  fReplaceProps['TDBRichEdit']:='TDBMemo';
 end;
 
 destructor TConvertSettings.Destroy;
 begin
-  fReplacementProperties.Free;
+  fReplaceProps.Free;
   inherited Destroy;
 end;
 
