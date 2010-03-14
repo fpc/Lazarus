@@ -52,8 +52,7 @@ begin
   // TODO: Options, Title
 
   if not Assigned(Printer) then Exit;
-  if Printer.Printers.Count <= 0 then Exit;
-  
+
   CarbonPrinter := Printer as TCarbonPrinter;
   //DebugLn('TPrintDialog.Execute ' + CarbonPrinter.CurrentPrinterName);
   
