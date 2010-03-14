@@ -11172,6 +11172,7 @@ end;
 
 function TMainIDE.DoCheckLFMInEditor(Quiet: boolean): TModalResult;
 var
+  LFMChecker: TLFMChecker;
   LFMSrcEdit: TSourceEditor;
   LFMUnitInfo: TUnitInfo;
   UnitFilename: String;
@@ -11225,20 +11226,24 @@ begin
   DoArrangeSourceEditorAndMessageView(false);
 
   // parse the LFM file and the pascal unit
-  if RepairLFMBuffer(PascalBuf,LFMUnitInfo.Source,@MessagesView.AddMsg,
-                     true,true)=mrOk
-  then begin
-    if not Quiet then begin
-      IDEMessageDialog(lisLFMIsOk,
-        lisClassesAndPropertiesExistValuesWereNotChecked,
-        mtInformation,[mbOk],'');
+  LFMChecker:=TLFMChecker.Create(PascalBuf,LFMUnitInfo.Source,@MessagesView.AddMsg);
+  try
+    LFMChecker.RootMustBeClassInIntf:=true;
+    LFMChecker.ObjectsMustExists:=true;
+    if LFMChecker.Repair=mrOk then begin
+      if not Quiet then begin
+        IDEMessageDialog(lisLFMIsOk,
+          lisClassesAndPropertiesExistValuesWereNotChecked,
+          mtInformation,[mbOk],'');
+      end;
+    end else begin
+      DoJumpToCompilerMessage(-1,true);
+      Result:=mrAbort;
+      exit;
     end;
-  end else begin
-    DoJumpToCompilerMessage(-1,true);
-    Result:=mrAbort;
-    exit;
+  finally
+    LFMChecker.Free;
   end;
-
   Result:=mrOk;
 end;
 
