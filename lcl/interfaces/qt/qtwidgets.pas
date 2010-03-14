@@ -817,6 +817,7 @@ type
   public
     procedure AttachEvents; override;
     procedure DetachEvents; override;
+    function EventFilter(Sender: QObjectH; Event: QEventH): Boolean; cdecl; override;
     
     procedure SignalEditingFinished; cdecl;
   end;
@@ -7048,6 +7049,23 @@ begin
   QAbstractSpinBox_hook_destroy(FEditingFinishedHook);
   
   inherited DetachEvents;
+end;
+
+function TQtAbstractSpinBox.EventFilter(Sender: QObjectH; Event: QEventH
+  ): Boolean; cdecl;
+var
+  IsDeleteKey: Boolean;
+begin
+  if (QEvent_type(Event) = QEventKeyPress) or
+     (QEvent_type(Event) = QEventKeyRelease) then
+    IsDeleteKey := (QKeyEvent_key(QKeyEventH(Event)) = QtKey_Delete) and
+      (QKeyEvent_modifiers(QKeyEventH(Event)) = QtNoModifier)
+  else
+    IsDeleteKey := False;
+  Result := inherited EventFilter(Sender, Event);
+  {we must pass delete key to qt, qabstractspinbox doesn't like what we do}
+  if IsDeleteKey then
+    Result := False;
 end;
 
 procedure TQtAbstractSpinBox.SignalEditingFinished; cdecl;
