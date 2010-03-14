@@ -355,13 +355,17 @@ begin
         // gdk_window_lower(WidgetInfo^.CoreWidget^.Window);
         if ScrollWidget^.hscrollbar <> nil then
         begin
+          {$ifndef gtk1}
           if GDK_IS_WINDOW(ScrollWidget^.hscrollbar^.Window) then
+          {$endif}
             gdk_window_lower(ScrollWidget^.hscrollbar^.Window);
         end;
 
         if ScrollWidget^.vscrollbar <> nil then
         begin
+          {$ifndef gtk1}
           if GDK_IS_WINDOW(ScrollWidget^.vscrollbar^.Window) then
+          {$endif}
             gdk_window_lower(ScrollWidget^.vscrollbar^.Window);
         end;
       end;
@@ -369,12 +373,16 @@ begin
         // gdk_window_raise(WidgetInfo^.CoreWidget^.Window);
         if ScrollWidget^.hscrollbar <> nil then
         begin
+          {$ifndef gtk1}
           if GDK_IS_WINDOW(ScrollWidget^.hscrollbar^.Window) then
+          {$endif}
             gdk_window_raise(ScrollWidget^.hscrollbar^.Window);
         end;
         if ScrollWidget^.vscrollbar <> nil then
         begin
+          {$ifndef gtk1}
           if GDK_IS_WINDOW(ScrollWidget^.vscrollbar^.Window) then
+          {$endif}
             gdk_window_raise(ScrollWidget^.vscrollbar^.Window);
         end;
       end;
