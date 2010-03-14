@@ -636,7 +636,9 @@ begin
   if fLfmCode<>nil then begin
     LfmFixer:=TLfmFixer.Create(fUnitCode,fLfmCode,@IDEMessagesWindow.AddMsg);
     try
-//      if RepairLFMBuffer(...,true,true)<>mrOk
+      LfmFixer.RootMustBeClassInIntf:=true;
+      LfmFixer.ObjectsMustExists:=true;
+//      was: if RepairLFMBuffer(...,true,true)<>mrOk
       if LfmFixer.Repair<>mrOk then begin
         LazarusIDE.DoJumpToCompilerMessage(-1,true);
         exit(mrAbort);
