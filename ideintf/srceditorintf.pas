@@ -118,6 +118,7 @@ type
 
     // context
     function GetProjectFile: TLazProjectFile; virtual; abstract;
+    procedure UpdateProjectFile; virtual; abstract;
     function GetDesigner(LoadForm: boolean): TIDesigner; virtual; abstract;
   public
     property BlockBegin: TPoint read GetBlockBegin write SetBlockBegin;
