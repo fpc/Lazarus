@@ -126,6 +126,19 @@ begin
   Result := CallBackDefaultReturn;
 end;
 
+procedure Gtk2MenuItemToggleSizeRequest(AMenuItem: PGtkMenuItem; requisition: Pgint; LCLItem: TMenuItem); cdecl;
+var
+  spacing: guint;
+begin
+  if LCLItem.HasIcon then
+  begin
+    gtk_widget_style_get(PGtkWidget(AMenuItem), 'toggle-spacing', [@spacing, nil]);
+    requisition^ := AMenuItem^.toggle_size + spacing;
+  end
+  else
+    GTK_MENU_ITEM_GET_CLASS(AMenuItem)^.toggle_size_request(AMenuItem, requisition);
+end;
+
 function Gtk2MenuItemDeselect(item: Pointer; AMenuItem: TMenuItem): GBoolean; cdecl;
 begin
   Application.Hint := '';
@@ -144,6 +157,8 @@ begin
     TGTKSignalFunc(@Gtk2MenuItemSelect), AWidgetInfo^.LCLObject);
   g_signal_connect(PGTKObject(AGtkWidget), 'deselect',
     TGTKSignalFunc(@Gtk2MenuItemDeselect), AWidgetInfo^.LCLObject);
+  g_signal_connect(PGTKObject(AGtkWidget), 'toggle-size-request',
+    TGTKSignalFunc(@Gtk2MenuItemToggleSizeRequest), AWidgetInfo^.LCLObject);
 end;
 
 class procedure TGtk2WSMenuItem.AttachMenu(const AMenuItem: TMenuItem);
