@@ -502,7 +502,6 @@ begin
   end;
 end;
 
-
 procedure DrawVistaMenuBar(const AMenuItem: TMenuItem; const AHDC: HDC; const ARect: TRect; const ASelected, ANoAccel: Boolean; const ItemAction, ItemState: UINT);
 const
   BarState: array[Boolean] of TThemedMenu =
@@ -819,40 +818,56 @@ begin
   end;
 end;
 
-function BackgroundColorMenu(const aSelected: boolean; const aIsInMenuBar: boolean): COLORREF;
+function IsFlatMenus: Boolean; inline;
 var
   IsFlatMenu: Windows.BOOL;
 begin
-  if (WindowsVersion >= wvXP) and ((SystemParametersInfo(SPI_GETFLATMENU, 0, @IsFlatMenu, 0)) and IsFlatMenu) then
+  Result := (WindowsVersion >= wvXP) and ((SystemParametersInfo(SPI_GETFLATMENU, 0, @IsFlatMenu, 0)) and IsFlatMenu);
+end;
+
+function BackgroundColorMenu(const ItemState: UINT; const aIsInMenuBar: boolean): COLORREF;
+begin
+  if IsFlatMenus then
   begin
-    if aSelected then
-      Result := GetSysColor(COLOR_MENUHILIGHT)
+    if (ItemState and (ODS_HOTLIGHT or ODS_SELECTED)) <> 0 then
+     Result := GetSysColor(COLOR_MENUHILIGHT)
     else
-    if aIsInMenuBar then
-      Result := GetSysColor(COLOR_MENUBAR)
+   if aIsInMenuBar then
+     Result := GetSysColor(COLOR_MENUBAR)
     else
       Result := GetSysColor(COLOR_MENU);
   end
   else
   begin
-    if aSelected then
-      Result := GetSysColor(COLOR_HIGHLIGHT)
-    else
+    // 3d menu bar always have standard color
     if aIsInMenuBar then
       Result := GetSysColor(COLOR_3DFACE)
+    else
+    if (ItemState and ODS_SELECTED) <> 0 then
+      Result := GetSysColor(COLOR_HIGHLIGHT)
     else
       Result := GetSysColor(COLOR_MENU);
   end;
 end;
 
-function TextColorMenu(const aSelected: boolean; const anEnabled: boolean): COLORREF;
+function TextColorMenu(const ItemState: UINT; const aIsInMenuBar: boolean; const anEnabled: boolean): COLORREF;
 begin
   if anEnabled then
   begin
-    if aSelected then
-      Result := GetSysColor(COLOR_HIGHLIGHTTEXT)
+    if IsFlatMenus then
+    begin
+      if (ItemState and (ODS_HOTLIGHT or ODS_SELECTED)) <> 0 then
+        Result := GetSysColor(COLOR_HIGHLIGHTTEXT)
+      else
+        Result := GetSysColor(COLOR_MENUTEXT);
+    end
     else
-      Result := GetSysColor(COLOR_MENUTEXT);
+    begin
+      if ((ItemState and ODS_SELECTED) <> 0) and not aIsInMenuBar then
+        Result := GetSysColor(COLOR_HIGHLIGHTTEXT)
+      else
+        Result := GetSysColor(COLOR_MENUTEXT);
+    end;
   end
   else
     Result := GetSysColor(COLOR_GRAYTEXT);
@@ -904,7 +919,8 @@ begin
   DeleteDC(hdcMem);
 end;
 
-procedure DrawMenuItemText(const AMenuItem: TMenuItem; const AHDC: HDC; ARect: TRect; const ASelected, ANoAccel: boolean);
+procedure DrawMenuItemText(const AMenuItem: TMenuItem; const AHDC: HDC;
+  ARect: TRect; const ASelected, ANoAccel: boolean; ItemState: UINT);
 var
   crText: COLORREF;
   crBkgnd: COLORREF;
@@ -922,8 +938,8 @@ var
   WideBuffer: widestring;
 {$endif WindowsUnicodeSupport}
 begin
-  crText := TextColorMenu(ASelected, AMenuItem.Enabled);
-  crBkgnd := BackgroundColorMenu(ASelected, AMenuItem.IsInMenuBar);
+  crText := TextColorMenu(ItemState, AMenuItem.IsInMenuBar, AMenuItem.Enabled);
+  crBkgnd := BackgroundColorMenu(ItemState, AMenuItem.IsInMenuBar);
   SetTextColor(AHDC, crText);
   SetBkColor(AHDC, crBkgnd);
 
@@ -945,8 +961,19 @@ begin
     etoFlags := etoFlags or ETO_RTLREADING;
     dtFlags := dtFlags or DT_RIGHT or DT_RTLREADING;
   end;
-  
+
+  // fill the menu item background
   ExtTextOut(AHDC, 0, 0, etoFlags, @ARect, PChar(''), 0, nil);
+
+  if AMenuItem.IsInMenuBar and not IsFlatMenus then
+  begin
+    if (ItemState and ODS_SELECTED) <> 0 then
+      DrawEdge(AHDC, ARect, BDR_SUNKENOUTER, BF_RECT)
+    else
+    if (ItemState and ODS_HOTLIGHT) <> 0 then
+      DrawEdge(AHDC, ARect, BDR_RAISEDINNER, BF_RECT);
+  end;
+
   TmpHeight := ARect.bottom - ARect.top;
 
 {$ifdef WindowsUnicodeSupport}
@@ -1103,7 +1130,7 @@ begin
     DrawSeparator(AHDC, ARect)
   else
   begin
-    DrawMenuItemText(AMenuItem, AHDC, ARect, ASelected, ANoAccel);
+    DrawMenuItemText(AMenuItem, AHDC, ARect, ASelected, ANoAccel, ItemState);
     if aMenuItem.HasIcon then
       DrawClassicMenuItemIcon(AMenuItem, AHDC, ARect, ASelected, AMenuItem.Checked)
     else
