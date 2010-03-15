@@ -226,7 +226,7 @@ type
     procedure setParent(parent: QWidgetH); virtual;
     procedure setText(const W: WideString); virtual;
     procedure setTextColor(const Value: PQColor); virtual;
-    procedure setVisible(visible: Boolean); virtual;
+    procedure setVisible(AVisible: Boolean); virtual;
     procedure setWindowFlags(_type: QtWindowFlags);
     procedure setWindowIcon(AIcon: QIconH);
     procedure setWindowModality(windowModality: QtWindowModality);
@@ -376,7 +376,7 @@ type
     procedure setCornerWidget(AWidget: TQtWidget);
     procedure setCursor(const ACursor: QCursorH); override;
     procedure setViewport(const AViewPort: QWidgetH);
-    procedure setVisible(visible: Boolean); override;
+    procedure setVisible(AVisible: Boolean); override;
     procedure viewportNeeded;
     procedure viewportDelete;
   end;
@@ -493,6 +493,7 @@ type
     function CreateWidget(const AParams: TCreateParams): QWidgetH; override;
   public
     procedure SetDefaultColorRoles; override;
+    procedure setVisible(AVisible: Boolean); override;
   end;
 
   { TQtStaticText }
@@ -1099,7 +1100,7 @@ type
     function getViewPort: QWidgetH;
     function getClientBounds: TRect; override;
     procedure grabMouse; override;
-    procedure setVisible(visible: Boolean); override;
+    procedure setVisible(AVisible: Boolean); override;
     function getGridStyle: QtPenStyle;
     procedure setGridStyle(ANewStyle: QtPenStyle);
   public
@@ -1152,7 +1153,7 @@ type
     procedure setSeparator(AValue: Boolean);
     procedure setShortcut(AShortcut: TShortcut);
     procedure setText(const W: WideString); override;
-    procedure setVisible(visible: Boolean); override;
+    procedure setVisible(AVisible: Boolean); override;
     property trackButton: QtMouseButton read FTrackButton write FTrackButton;
   end;
 
@@ -3348,9 +3349,9 @@ begin
   QWidget_setMinimumSize(Widget, AWidth, AHeight);
 end;
 
-procedure TQtWidget.setVisible(visible: Boolean);
+procedure TQtWidget.setVisible(AVisible: Boolean);
 begin
-  QWidget_setVisible(Widget, visible);
+  QWidget_setVisible(Widget, AVisible);
 end;
 
 function TQtWidget.windowModality: QtWindowModality;
@@ -8581,9 +8582,9 @@ begin
   Result := FHorizontalHeader;
 end;
 
-procedure TQtTableView.setVisible(visible: Boolean);
+procedure TQtTableView.setVisible(AVisible: Boolean);
 begin
-  QWidget_setVisible(Widget, visible);
+  QWidget_setVisible(Widget, AVisible);
 end;
 
 function TQtTableView.getGridStyle: QtPenStyle;
@@ -8851,9 +8852,9 @@ begin
   QAction_setText(ActionHandle, @W);
 end;
 
-procedure TQtMenu.setVisible(visible: Boolean);
+procedure TQtMenu.setVisible(AVisible: Boolean);
 begin
-  QAction_setVisible(ActionHandle, visible);
+  QAction_setVisible(ActionHandle, AVisible);
 end;
 
 procedure TQtMenu.setChecked(p1: Boolean);
@@ -9606,11 +9607,11 @@ begin
   QAbstractScrollArea_setViewport(QAbstractScrollAreaH(Widget), AViewPort);
 end;
 
-procedure TQtCustomControl.setVisible(visible: Boolean);
+procedure TQtCustomControl.setVisible(AVisible: Boolean);
 begin
-  inherited setVisible(visible);
+  inherited setVisible(AVisible);
   if FViewPortWidget <> nil then
-    FViewPortWidget.setVisible(visible);
+    FViewPortWidget.setVisible(AVisible);
 end;
 
 {------------------------------------------------------------------------------
@@ -10017,6 +10018,60 @@ procedure TQtHintWindow.SetDefaultColorRoles;
 begin
   WidgetColorRole := QPaletteToolTipBase;
   TextColorRole := QPaletteToolTipText;
+end;
+
+procedure TQtHintWindow.setVisible(AVisible: Boolean);
+const
+  ToolTipOffset = 4;
+var
+  D: TRect;
+  R: TRect;
+  P: TPoint;
+  ScreenNumber: integer;
+begin
+  if AVisible then
+  begin
+    R := getGeometry;
+    LCLIntf.GetCursorPos(P);
+
+    {we must make proper positioning of our hint if
+     hint geometry intersects current cursor pos - issue #15882}
+    if PtInRect(R, P) then
+    begin
+      if QDesktopWidget_isVirtualDesktop(QApplication_desktop()) then
+        ScreenNumber := QDesktopWidget_screenNumber(QApplication_desktop(), @P)
+      else
+        ScreenNumber := QDesktopWidget_screenNumber(QApplication_desktop(), Widget);
+
+      {$IFDEF DARWIN}
+      QDesktopWidget_availableGeometry(QApplication_desktop() ,@D, ScreenNumber);
+      {$ELSE}
+      QDesktopWidget_screenGeometry(QApplication_desktop() ,@D, ScreenNumber);
+      {$ENDIF}
+
+
+      if (P.X + getWidth > D.Right - D.Left) then
+        P.X := P.X - (ToolTipOffset + getWidth);
+
+      if (P.Y + getHeight > D.Bottom - D.Top) then
+        P.Y := P.Y - ((ToolTipOffset * 6) + getHeight);
+
+      if P.Y < D.Top then
+        P.Y := D.Top;
+
+      if (P.X + getWidth > D.Right - D.Left) then
+        P.X := D.Right - D.Left - getWidth;
+
+      if P.X < D.Left then
+        P.X := D.Left;
+
+      if P.Y + getHeight > D.Bottom - D.Top then
+        P.Y := D.Bottom - D.Top - getHeight;
+
+      move(P.X, P.Y);
+    end;
+  end;
+  inherited setVisible(AVisible);
 end;
 
 { TQtPage }
