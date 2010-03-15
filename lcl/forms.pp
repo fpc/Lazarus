@@ -710,6 +710,7 @@ type
     property OnClick;
     property OnClose;
     property OnCloseQuery;
+    property OnContextPopup;
     property OnCreate;
     property OnDblClick;
     property OnDeactivate;

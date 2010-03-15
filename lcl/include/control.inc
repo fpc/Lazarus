@@ -1773,7 +1773,6 @@ end;
 
 procedure TControl.WMContextMenu(var Message: TLMMouse);
 var
-  Control: TControl;
   TempPopupMenu: TPopupMenu;
   P2: TPoint;
   Handled: Boolean;
@@ -1788,23 +1787,15 @@ begin
     Exit;
   end;
 
-  Control := Self;
-  while Control <> nil do
+  TempPopupMenu := GetPopupMenu;
+  if (TempPopupMenu <> nil) then
   begin
-    TempPopupMenu := Control.GetPopupMenu;
-    if (TempPopupMenu <> nil) then
-    begin
-      if not TempPopupMenu.AutoPopup then Exit;
-//      SendCancelMode(nil);
-      TempPopupMenu.PopupComponent := Control;
-      //DebugLn(['TControl.WMContextMenu ',DbgSName(Self),' Message.pos=',dbgs(P2)]);
-      P2 := ClientToScreen(P2);
-      //DebugLn(['TControl.WMContextMenu ',DbgSName(Self),' P2=',dbgs(P2)]);
-      TempPopupMenu.Popup(P2.X, P2.Y);
-      Message.Result:= 1;
-      Exit;
-    end;
-    Control := Control.Parent;
+    if not TempPopupMenu.AutoPopup then Exit;
+    TempPopupMenu.PopupComponent := Self;
+    P2 := ClientToScreen(P2);
+    TempPopupMenu.Popup(P2.X, P2.Y);
+    Message.Result:= 1;
+    Exit;
   end;
 end;
 
@@ -2190,6 +2181,9 @@ end;
   Mouse event handler
  ------------------------------------------------------------------------------}
 procedure TControl.WMRButtonUp(var Message: TLMRButtonUp);
+var
+  Control: TControl;
+  P: TPoint;
 begin
   DoBeforeMouseMessage;
   if (csCaptureMouse in ControlStyle) and (mbRight in CaptureMouseButtons) then
@@ -2199,9 +2193,23 @@ begin
     {$ENDIF}
     MouseCapture := False;
   end;
-  
-  Message.Result := Perform(LM_CONTEXTMENU,TLMessage(Message).WParam,
-     TLMessage(Message).LParam);
+
+  // VCL like behavior. we need to have a child-parent recursion
+  Control := Self;
+  P := SmallPointToPoint(Message.Pos);
+  while (Control <> nil) and (Message.Result = 0) do
+  begin
+    Message.Result := Control.Perform(LM_CONTEXTMENU, TLMessage(Message).lParam, LPARAM(PointToSmallPoint(P)));
+    if Message.Result = 0 then
+    begin
+      with P, Control do
+      begin
+        X := X + Left;
+        Y := Y + Top;
+      end;
+      Control := Control.Parent;
+    end;
+  end;
   //MouseUp event is independent of return values of contextmenu
   DoMouseUp(Message, mbRight);
 end;
