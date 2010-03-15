@@ -129,14 +129,31 @@ end;
 procedure Gtk2MenuItemToggleSizeRequest(AMenuItem: PGtkMenuItem; requisition: Pgint; LCLItem: TMenuItem); cdecl;
 var
   spacing: guint;
+  IconWidth: Integer;
 begin
   if LCLItem.HasIcon then
   begin
-    gtk_widget_style_get(PGtkWidget(AMenuItem), 'toggle-spacing', [@spacing, nil]);
-    requisition^ := AMenuItem^.toggle_size + spacing;
+    IconWidth := LCLItem.GetIconSize.X;
+    if IconWidth > 0 then
+    begin
+      gtk_widget_style_get(PGtkWidget(AMenuItem), 'toggle-spacing', [@spacing, nil]);
+      requisition^ := IconWidth + spacing;
+    end
+    else
+      requisition^ := 0;
   end
   else
     GTK_MENU_ITEM_GET_CLASS(AMenuItem)^.toggle_size_request(AMenuItem, requisition);
+end;
+
+procedure Gtk2MenuItemSizeRequest(AMenuItem: PGtkMenuItem; requisition: PGtkRequisition; LCLItem: TMenuItem); cdecl;
+var
+  IconHeight: Integer;
+begin
+  GTK_WIDGET_GET_CLASS(AMenuItem)^.size_request(PGtkWidget(AMenuItem), requisition);
+  IconHeight := LCLItem.GetIconSize.Y;
+  if requisition^.height < IconHeight then
+    requisition^.height := IconHeight;
 end;
 
 function Gtk2MenuItemDeselect(item: Pointer; AMenuItem: TMenuItem): GBoolean; cdecl;
@@ -159,6 +176,8 @@ begin
     TGTKSignalFunc(@Gtk2MenuItemDeselect), AWidgetInfo^.LCLObject);
   g_signal_connect(PGTKObject(AGtkWidget), 'toggle-size-request',
     TGTKSignalFunc(@Gtk2MenuItemToggleSizeRequest), AWidgetInfo^.LCLObject);
+  g_signal_connect(PGTKObject(AGtkWidget), 'size-request',
+    TGTKSignalFunc(@Gtk2MenuItemSizeRequest), AWidgetInfo^.LCLObject);
 end;
 
 class procedure TGtk2WSMenuItem.AttachMenu(const AMenuItem: TMenuItem);
@@ -166,19 +185,6 @@ var
   //AccelKey: Integer;
   //AccelGroup: PGTKAccelGroup;
   MenuItem, ParentMenuWidget, ContainerMenu: PGtkWidget;
-
-  procedure SetContainerMenuToggleSize;
-  var MenuClass: PGtkWidgetClass;
-  begin
-    if GtkWidgetIsA(ContainerMenu,GTK_TYPE_MENU) then begin
-      MenuClass:=GTK_WIDGET_CLASS(gtk_object_get_class(ContainerMenu));
-      if OldMenuSizeRequestProc=nil then begin
-        OldMenuSizeRequestProc:=MenuClass^.size_request;
-      end;
-      MenuClass^.size_request:=@MenuSizeRequest;
-    end;
-  end;
-
 begin
   //DebugLn('TGtkWidgetSet.AttachMenu START ',AMenuItem.Name,':',AMenuItem.ClassName,' Parent=',AMenuItem.Parent.Name,':',AMenuItem.Parent.ClassName);
   with AMenuItem do
@@ -223,8 +229,6 @@ begin
       gtk_menu_insert(ContainerMenu, MenuItem, AMenuItem.MenuVisibleIndex);
     end;
 
-    SetContainerMenuToggleSize;
-
     if GtkWidgetIsA(MenuItem, GTK_TYPE_RADIO_MENU_ITEM) then
       TGtkWidgetSet(WidgetSet).RegroupMenuItem(HMENU(PtrUInt(MenuItem)), GroupIndex);
   end;
@@ -260,13 +264,6 @@ begin
     // set 'Checked'
     gtk_check_menu_item_set_active(PGtkCheckMenuItem(Widget),
       AMenuItem.Checked);
-
-    if (OldCheckMenuItemToggleSize=0) then
-    begin
-      gtk_menu_item_toggle_size_request(GTK_MENU_ITEM(Widget),
-                                        @OldCheckMenuItemToggleSize);
-      OldCheckMenuItemToggleSize := GTK_MENU_ITEM(Widget)^.toggle_size;
-    end;
 
     g_signal_connect_after(PGTKObject(Widget), 'toggled',
       TGTKSignalFunc(@Gtk2MenuItemToggled), Pointer(AMenuItem));

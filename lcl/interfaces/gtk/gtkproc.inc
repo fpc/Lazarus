@@ -5865,6 +5865,9 @@ var
   AWindow: PGdkWindow;
   IconWidth, IconHeight: integer;
   IconSize: TPoint;
+  {$IFDEF Gtk2}
+  HorizPadding, ToggleSpacing: Integer;
+  {$ENDIF}
 
   AEffect: TGraphicsDrawEffect;
   AImageList: TCustomImageList;
@@ -5901,8 +5904,21 @@ begin
     exit;
   Container := GTK_CONTAINER (MenuItem);
   BorderWidth := Container^.flag0 and bm_TGtkContainer_border_width;
+
+  {$IFDEF Gtk2}
+  gtk_widget_style_get(PGtkWidget(MenuItem),
+                       'horizontal-padding', @HorizPadding,
+                       'toggle-spacing', @ToggleSpacing,
+                       nil);
+
+  ALeft := BorderWidth +
+           gtk_widget_get_xthickness(gtk_widget_get_style(Widget)) +
+           HorizPadding +
+           ((PGtkMenuItem(MenuItem)^.toggle_size-ToggleSpacing-IconWidth) div 2);
+  {$ELSE}
   ALeft := (BorderWidth + gtk_widget_get_xthickness(gtk_widget_get_style(Widget)) + 2)
            +((PGtkMenuItem(MenuItem)^.toggle_size-IconWidth) div 2);
+  {$ENDIF}
 
   ATop := (Widget^.Allocation.Height - IconHeight) div 2;
 
@@ -6074,21 +6090,25 @@ var
 
   procedure CreateIcon;
   var
+    {$IFNDEF Gtk2}
     IconWidth, IconHeight: integer;
-    MinHeightWidget: PGtkWidget;
     IconSize: TPoint;
+    {$ENDIF}
+    MinHeightWidget: PGtkWidget;
   begin
     // the icon will be painted instead of the toggle
     // of a normal gtkcheckmenuitem
 
     if LCLMenuItem.HasIcon then
     begin
+      {$IFNDEF Gtk2}
       IconSize := LCLMenuItem.GetIconSize;
       IconWidth := IconSize.X;
       IconHeight := IconSize.Y;
       // set the toggle width
       GTK_MENU_ITEM(MenuItemWidget)^.toggle_size := guint16(IconWidth);
-      
+      {$ENDIF}
+
       GTK_MENU_ITEM(MenuItemWidget)^.flag0:=
         PGtkMenuItem(MenuItemWidget)^.flag0 or
           {$IFDEF Gtk2}
@@ -6102,11 +6122,13 @@ var
         OldCheckMenuItemDrawProc := CHECK_MENU_ITEM_CLASS(MenuItemWidget)^.draw_indicator;
       CHECK_MENU_ITEM_CLASS(MenuItemWidget)^.draw_indicator := @DrawMenuItemIcon;
 
+      {$IFNDEF Gtk2}
       // add a dummy widget for the icon height
       MinHeightWidget := gtk_label_new('');
       gtk_widget_show(MinHeightWidget);
       gtk_widget_set_usize(MinHeightWidget, 1, IconHeight);
       gtk_box_pack_start(GTK_BOX(HBoxWidget), MinHeightWidget, False, False, 0);
+      {$ENDIF}
     end
     else
       MinHeightWidget := nil;
