@@ -95,7 +95,6 @@ Type
     procedure UpdateFillColor;
     procedure UpdateFont;
     function MappedFontName: string;
-    function MapedString(const St : string):string;
     
     procedure MoveToLastPos;
     procedure SetBrushFillPattern(Lst : TStringList; SetBorder,SetFill : Boolean);
@@ -885,19 +884,6 @@ begin
   
   if Atr <> '' then
     Result:=Result+'-'+Atr;
-end;
-
-//Replace the controls chars by PostScript string
-function TPostScriptPrinterCanvas.MapedString(const St: string): string;
-begin
-  Result:=St;
-  Result:=StringReplace(Result,'\','\\',[rfReplaceAll]);
-  Result:=StringReplace(Result,'(','\(',[rfReplaceAll]);
-  Result:=StringReplace(Result,')','\)',[rfReplaceAll]);
-  Result:=StringReplace(Result,#10,'\n',[rfReplaceAll]);
-  Result:=StringReplace(Result,#13,'\r',[rfReplaceAll]);
-  Result:=StringReplace(Result,#8, '\b',[rfReplaceAll]);
-  Result:=StringReplace(Result,#9, '\t',[rfReplaceAll]);
 end;
 
 //Move pen at last pos
@@ -2003,14 +1989,14 @@ begin
     PosUnder:=(Abs(Round(GetFontSize/3))*-1)+2;
     rotate();
     Write(format('%f %f uli',[pp.fx,pp.fy],FFs));
-    FPSUnicode.OutputString(MapedString(Text));
+    FPSUnicode.OutputString(Text);
     write(Format('%.3f %d ule',[PenUnder,PosUnder],FFs));
   end
   else
   begin
     write(Format('%f %f moveto',[pp.fx,pp.fy],FFs));
     rotate();
-    FPSUnicode.OutputString(MapedString(Text));
+    FPSUnicode.OutputString(Text);
   end;
 
   if saved then

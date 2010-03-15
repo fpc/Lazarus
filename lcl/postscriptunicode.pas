@@ -316,7 +316,7 @@ var
 {$ENDIF}
   w: word;
   i, b: Integer;
-  c: byte;
+  c: char;
   SubStr,FontStr: string;
   FontIndex: Integer;
 
@@ -343,11 +343,11 @@ begin
       FontStr := SelectFont(Font, FontSize, FontStyle, b);
     end;
 
-    c := byte(w-FBlocks[b].Ini);
-    if (c<32) {or (c>128)} then
-      SubStr := SubStr + Octal(c)
+    c := Char(Byte(w-FBlocks[b].Ini));
+    if c in  [#0..#31,'(',')','\'] then
+      SubStr := SubStr + Octal(ord(c))
     else
-      SubStr := SubStr + char(c);
+      SubStr := SubStr + c;
   end;
 
   EmitSubStr;
