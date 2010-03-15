@@ -5,7 +5,7 @@ uses
 {$else}
   MacOSAll,
 {$endif}
-  Classes, SysUtils, Printers, LCLType, CarbonCanvas, CarbonPrinting;
+  Classes, SysUtils, Printers, LCLType, CarbonCanvas;
 
 type
   { TCarbonPrinterContext }

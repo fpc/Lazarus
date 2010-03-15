@@ -529,9 +529,12 @@ begin
 end;
 
 function TCarbonPrinter.GetPrinterType: TPrinterType;
+var
+  IsRemote: Boolean;
 begin
   Result := ptLocal;
-  if PMPrinterIsRemote(GetCurrentPrinter) then Result := ptNetwork
+  OSError(PMPrinterIsRemote(GetCurrentPrinter,IsRemote), Self, 'GetPrinterType', 'PMPrinterIsRemote');
+  if IsRemote then Result := ptNetwork
 end;
 
 
