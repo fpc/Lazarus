@@ -7646,7 +7646,7 @@ begin
         end;
       fmtDate:
          if f2 = 4 then
-           Result := FormatDateTime(AFormatStr, v)
+           Result := SysToUTF8(FormatDateTime(AFormatStr, v))
          else
            Result := FormatDateTime(frDateFormats[f2], v);
       fmtTime:
