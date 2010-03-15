@@ -9620,6 +9620,30 @@ begin
 end;
 
 {------------------------------------------------------------------------------
+  Function SetWindowRgn
+  Params: hWnd: HWND;  hRgn: HRGN; bRedraw: Boolean
+  Returns: 0 - fails, in other case success
+------------------------------------------------------------------------------}
+function TGtkWidgetSet.SetWindowRgn(hWnd: HWND; hRgn: HRGN; bRedraw: Boolean): longint;
+var
+  Widget: PGtkWidget;
+  Window: PGdkWindow;
+begin
+  Widget := GetFixedWidget(PGtkWidget(hWnd));
+  if Widget = nil then
+    Widget := PGtkWidget(hWnd);
+  if Widget = nil then
+    Exit(0);
+  Window := GetControlWindow(Widget);
+  if Window = nil then
+    Exit(0);
+  gdk_window_shape_combine_region(Window, PGDIObject(hRgn)^.GDIRegionObject, 0, 0);
+  if bRedraw then
+    gdk_window_invalidate_region(Window, PGDIObject(hRgn)^.GDIRegionObject, True);
+  Result := 1;
+end;
+
+{------------------------------------------------------------------------------
   Function: ShowCaret
   Params:  none
   Returns: Nothing

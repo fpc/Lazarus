@@ -205,6 +205,7 @@ function SetWindowLong(Handle: HWND; Idx: Integer; NewLong: PtrInt): PtrInt; ove
 function SetWindowOrgEx(dc : hdc; NewX, NewY : Integer; OldPoint: PPoint) : Boolean; override;
 function SetWindowPos(hWnd: HWND; hWndInsertAfter: HWND;
       X, Y, cx, cy: Integer; uFlags: UINT): Boolean;  override;
+function SetWindowRgn(hWnd: HWND; hRgn: HRGN; bRedraw: Boolean): longint; override;
 function ShowCaret(hWnd: HWND): Boolean; override;
 function ShowScrollBar(Handle: HWND; wBar: Integer; bShow: Boolean): Boolean; override;
 function ShowWindow(hWnd: HWND; nCmdShow: Integer): Boolean; override;
