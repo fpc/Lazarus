@@ -2298,6 +2298,11 @@ begin
   {$ENDIF}
 end;
 
+function TWinControl.AutoSizeCheckParent: Boolean;
+begin
+  Result := (Parent <> nil) or (ParentWindow <> 0);
+end;
+
 {------------------------------------------------------------------------------
   TWinControl AdjustClientRect
 ------------------------------------------------------------------------------}

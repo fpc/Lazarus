@@ -1849,9 +1849,9 @@ begin
   //DebugLn('TCustomForm.ShowOnTop ',Name,':',ClassName,' ',Visible,' ',HandleAllocated,' ',csDesigning in ComponentState);
 end;
 
-function TCustomForm.NeedParentForAutoSize: Boolean;
+function TCustomForm.AutoSizeCheckParent: Boolean;
 begin
-  Result := False;
+  Result := True;
 end;
 
 {------------------------------------------------------------------------------}

@@ -1264,7 +1264,7 @@ type
     function AutoSizePhase: TControlAutoSizePhase; virtual;
     {$ENDIF}
     function AutoSizeDelayed: boolean; virtual;
-    function NeedParentForAutoSize: Boolean; virtual;
+    function AutoSizeCheckParent: Boolean; virtual;
     procedure AnchorToNeighbour(Side: TAnchorKind; Space: integer;
                                 Sibling: TControl);
     procedure AnchorParallel(Side: TAnchorKind; Space: integer;
@@ -1903,6 +1903,7 @@ type
     function AutoSizePhase: TControlAutoSizePhase; override;
     {$ENDIF}
     function AutoSizeDelayed: boolean; override;
+    function AutoSizeCheckParent: Boolean; override;
     procedure BeginUpdateBounds; // disable SetBounds
     procedure EndUpdateBounds;   // enable SetBounds
     procedure LockRealizeBounds; // disable sending bounds to widgetset

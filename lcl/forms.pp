@@ -573,7 +573,7 @@ type
     procedure IntfHelp(AComponent: TComponent);
     function IsShortcut(var Message: TLMKey): boolean; virtual;
     procedure MakeFullyVisible(AMonitor: TMonitor = nil; UseWorkarea: Boolean = False);
-    function NeedParentForAutoSize: Boolean; override;
+    function AutoSizeCheckParent: Boolean; override;
     procedure Release;
     function CanFocus: Boolean; override;
     procedure SetFocus; override;

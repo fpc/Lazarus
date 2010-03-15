@@ -2517,7 +2517,7 @@ begin
           or (not IsControlVisible)
           // if there is no parent, then this control is not visible
           //  (TCustomForm will override this)
-          or (NeedParentForAutoSize and (Parent=nil))
+          or not AutoSizeCheckParent
           // if there is a parent, ask it
           or ((Parent<>nil) and Parent.AutoSizeDelayed);
   {$IFDEF VerboseCanAutoSize}
@@ -2534,9 +2534,9 @@ begin
   {$ENDIF}
 end;
 
-function TControl.NeedParentForAutoSize: Boolean;
+function TControl.AutoSizeCheckParent: Boolean;
 begin
-  Result:=true;
+  Result := Parent <> nil;
 end;
 
 {------------------------------------------------------------------------------
