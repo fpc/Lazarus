@@ -49,6 +49,7 @@ function GetTextExtentPoint(DC: HDC; Str: PChar; Count: Integer; var Size: TSize
 
 function ScrollWindowEx(hWnd: HWND; dx, dy: Integer; prcScroll, prcClip: PRect; hrgnUpdate: HRGN; prcUpdate: PRect; flags: UINT): Boolean; override;
 function SetCursorPos(X, Y: Integer): Boolean; override;
+function SetWindowRgn(hWnd: HWND; hRgn: HRGN; bRedraw: Boolean): longint; override;
 function ShowWindow(hWnd: HWND; nCmdShow: Integer): Boolean; override;
 
 function TextOut(DC: HDC; X,Y : Integer; Str : Pchar; Count: Integer) : Boolean; override;
