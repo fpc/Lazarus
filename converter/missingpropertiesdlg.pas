@@ -88,7 +88,7 @@ type
     fLfmFixer: TLFMFixer;
     procedure SetupComponents;
   public
-    constructor Create(AOwner: TComponent; ALfmFixer: TLFMFixer);
+    constructor Create(AOwner: TComponent; ALfmFixer: TLFMFixer); reintroduce;
     destructor Destroy; override;
   end;
 

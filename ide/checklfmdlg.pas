@@ -115,7 +115,7 @@ type
     fLfmChecker: TLFMChecker;
     procedure SetupComponents;
   public
-    constructor Create(AOwner: TComponent; ALfmChecker: TLFMChecker);
+    constructor Create(AOwner: TComponent; ALfmChecker: TLFMChecker); reintroduce;
     destructor Destroy; override;
   end;
 
