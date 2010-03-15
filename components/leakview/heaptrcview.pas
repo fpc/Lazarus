@@ -182,11 +182,8 @@ var
   trace  : TStackTrace;
   nd     : TTreeNode;
   hash   : TFPObjectHashTable;
-  hnode  : THTObjectNode;
-  list   : TFPObjectList;
   hashed : TStackTrace;
   s      : string;
-  cnt    : integer;
 begin
   hash := TFPObjectHashTable.Create(false);
   try
@@ -294,7 +291,6 @@ end;
 procedure THeapTrcViewForm.ChangeTreeText;
 var
   i, j    : Integer;
-  idx     : Integer;
   useRaw  : Boolean;
   nd      : TTreeNode;
   trace   : TStackTrace;
@@ -308,7 +304,6 @@ begin
       trace := TStackTrace(nd.Data);
       nd.Text := GetStackTraceText(trace, useRaw);
       for j := 0 to nd.Count - 1 do begin
-        idx := Integer(nd.Items[j].Data);
         nd.Items[j].Text := GetStackLineText(  trace.Lines[j], useRaw );
       end;
     end;
