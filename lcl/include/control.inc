@@ -1771,7 +1771,7 @@ end;
   ContextMenu event handler
  ------------------------------------------------------------------------------}
 
-procedure TControl.WMContextMenu(var Message: TLMMouse);
+procedure TControl.WMContextMenu(var Message: TLMContextMenu);
 var
   TempPopupMenu: TPopupMenu;
   P2: TPoint;
@@ -1779,11 +1779,11 @@ var
 begin
   if (csDesigning in ComponentState) or (Message.Result <> 0) then Exit;
   P2 := SmallPointToPoint(Message.Pos);
-  Handled:=False;
-  DoContextPopup(P2,Handled);
+  Handled := False;
+  DoContextPopup(P2, Handled);
   if Handled then
   begin
-    Message.Result:=1;
+    Message.Result := 1;
     Exit;
   end;
 
@@ -1794,7 +1794,7 @@ begin
     TempPopupMenu.PopupComponent := Self;
     P2 := ClientToScreen(P2);
     TempPopupMenu.Popup(P2.X, P2.Y);
-    Message.Result:= 1;
+    Message.Result := 1;
     Exit;
   end;
 end;
@@ -2184,6 +2184,7 @@ procedure TControl.WMRButtonUp(var Message: TLMRButtonUp);
 var
   Control: TControl;
   P: TPoint;
+  ContextMenuMsg: TLMContextMenu;
 begin
   DoBeforeMouseMessage;
   if (csCaptureMouse in ControlStyle) and (mbRight in CaptureMouseButtons) then
@@ -2197,9 +2198,17 @@ begin
   // VCL like behavior. we need to have a child-parent recursion
   Control := Self;
   P := SmallPointToPoint(Message.Pos);
+  if InheritsFrom(TWinControl) then
+    ContextMenuMsg.hWnd := TWinControl(Self).Handle
+  else
+  if Parent <> nil then
+    ContextMenuMsg.hWnd := Parent.Handle
+  else
+    ContextMenuMsg.hWnd := 0;
   while (Control <> nil) and (Message.Result = 0) do
   begin
-    Message.Result := Control.Perform(LM_CONTEXTMENU, TLMessage(Message).lParam, LPARAM(PointToSmallPoint(P)));
+    ContextMenuMsg.Pos := PointToSmallPoint(P);
+    Message.Result := Control.Perform(LM_CONTEXTMENU, TLMessage(ContextMenuMsg).wParam, TLMessage(ContextMenuMsg).lParam);
     if Message.Result = 0 then
     begin
       with P, Control do

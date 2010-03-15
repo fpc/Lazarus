@@ -247,6 +247,7 @@ var
   LMKey: TLMKey; // used by WM_KEYDOWN WM_KEYUP
   LMChar: TLMChar; // used by WM_CHAR
   LMMouse: TLMMouse; // used by WM_LBUTTONDBLCLK
+  LMContextMenu: TLMContextMenu;
   LMMouseMove: TLMMouseMove; // used by WM_MOUSEMOVE
   LMMouseEvent: TLMMouseEvent; // used by WM_MOUSEWHEEL
   LMMove: TLMMove; // used by WM_MOVE
@@ -2009,19 +2010,20 @@ begin
     begin
       WinProcess := false;
       NotifyUserInput := True;
-      PLMsg:=@LMMouse;
-      with LMMouse do
+      PLMsg:=@LMContextMenu;
+      with LMContextMenu do
       begin
         Msg := LM_CONTEXTMENU;
         XPos := GET_X_LPARAM(LParam);
         YPos := GET_Y_LPARAM(LParam);
+        hWnd := Window;
         //Only keyboard triggered contextmenu (Shift-F10) should be sent to LCL
         //but calling default handler is necessary. This schema avoids parent recursion
         //and also keeps default popupmenu (TMemo)
         if XPos = -1 then
           Pos := GetClientCursorPos(Window)
         else
-          lWinControl:=nil; // make sure no message is sent to the LCL
+          lWinControl := nil; // make sure no message is sent to the LCL
         Result := 0;
       end;
     end;

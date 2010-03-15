@@ -345,7 +345,7 @@ function CarbonCommon_ContextualMenuClick(ANextHandler: EventHandlerCallRef;
   AEvent: EventRef;
   AWidget: TCarbonWidget): OSStatus; {$IFDEF darwin}mwpascal;{$ENDIF}
 var
-  Msg: TLMMouse;
+  Msg: TLMContextMenu;
   P: TPoint;
 begin
   {$IFDEF VerboseCommonEvent}
@@ -355,8 +355,9 @@ begin
 
   P := AWidget.GetMousePos;
 
-  FillChar(Msg, SizeOf(TLMMouse), 0);
+  FillChar(Msg, SizeOf(TLMContextMenu), 0);
   Msg.Msg := LM_CONTEXTMENU;
+  Msg.hWnd := HWND(AWidget)
   Msg.Pos.X := P.X;
   Msg.Pos.Y := P.Y;
   

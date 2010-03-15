@@ -2842,7 +2842,7 @@ end;
 
 procedure TQtWidget.SlotContextMenu(Sender: QObjectH; Event: QEventH); cdecl;
 var
-  Msg: TLMMouse;
+  Msg: TLMContextMenu;
   Modifiers: QtKeyboardModifiers;
   MousePos: TQtPoint;
   QtEdit: IQtEdit;
@@ -2888,7 +2888,7 @@ begin
   Modifiers := QInputEvent_modifiers(QInputEventH(Event));
 
   Msg.Msg := LM_CONTEXTMENU;
-  Msg.Keys := QtKeyModifiersToKeyState(Modifiers);
+  Msg.hWnd := HWND(Self);
   Msg.XPos := SmallInt(MousePos.X);
   Msg.YPos := SmallInt(MousePos.Y);
 

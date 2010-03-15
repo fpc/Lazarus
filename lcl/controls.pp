@@ -1076,7 +1076,7 @@ type
   protected
     // protected messages
     procedure WMCancelMode(var Message: TLMessage); message LM_CANCELMODE;
-    procedure WMContextMenu(var Message: TLMMouse); message LM_CONTEXTMENU;
+    procedure WMContextMenu(var Message: TLMContextMenu); message LM_CONTEXTMENU;
 
     procedure WMLButtonDown(var Message: TLMLButtonDown); message LM_LBUTTONDOWN;
     procedure WMRButtonDown(var Message: TLMRButtonDown); message LM_RBUTTONDOWN;

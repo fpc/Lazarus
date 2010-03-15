@@ -861,6 +861,24 @@ type
     Result: LRESULT;
   end;
 
+  TLMContextMenu = record
+    Msg: Cardinal;
+    {$ifdef cpu64}
+    UnusedMsg: Cardinal;
+    {$endif}
+    hWnd: HWND;
+    case Integer of
+    0: (
+       XPos: Smallint;
+       YPos: Smallint
+       );
+    1: (
+       Pos: TSmallPoint;
+       );
+    2: (
+       Dummy: LPARAM; // needed for64 bit alignment
+       Result: LResult);
+  end;
 
 { Combo Box Notification Codes }
 
