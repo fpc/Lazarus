@@ -852,7 +852,6 @@ type
           var ActiveSourceEditor: TSourceEditor; var ActiveUnitInfo: TUnitInfo); override;
     procedure GetUnitWithPersistent(APersistent: TPersistent;
           var ActiveSourceEditor: TSourceEditor; var ActiveUnitInfo: TUnitInfo); override;
-    function GetSourceEditorForUnitInfo(AnUnitInfo: TUnitInfo): TSourceEditor; override;
     function CreateSrcEditPageName(const AnUnitName, AFilename: string;
       IgnorePageIndex: integer): string;
     function GetAncestorUnit(AnUnitInfo: TUnitInfo): TUnitInfo;
@@ -4773,7 +4772,7 @@ var
   IsPascal: Boolean;
 begin
   if AnUnitInfo<>nil then
-    SrcEdit:=GetSourceEditorForUnitInfo(AnUnitInfo)
+    SrcEdit := TSourceEditor(AnUnitInfo.EditorComponent)
   else
     SrcEdit:=nil;
   //debugln('TMainIDE.DoShowSaveFileAsDialog ',AnUnitInfo.Filename);
@@ -5363,7 +5362,7 @@ begin
     OldFilename:=AnUnitInfo.Filename;
     OldFilePath:=ExtractFilePath(OldFilename);
     OldLFMFilename:=ChangeFileExt(OldFilename,'.lfm');
-    SrcEdit:=GetSourceEditorForUnitInfo(AnUnitInfo);
+    SrcEdit := TSourceEditor(AnUnitInfo.EditorComponent);
     if NewUnitName='' then
       NewUnitName:=AnUnitInfo.Unit_Name;
     debugln(['TMainIDE.DoRenameUnit ',AnUnitInfo.Filename,' NewUnitName=',NewUnitName,' OldUnitName=',AnUnitInfo.Unit_Name,' ResourceCode=',ResourceCode<>nil,' NewFilename="',NewFilename,'"']);
@@ -5811,7 +5810,7 @@ begin
   for BookmarkID:=0 to 9 do begin
     i:=Project1.Bookmarks.IndexOfID(BookmarkID);
     if i<0 then continue;
-    if (Project1.Bookmarks[i].EditorIndex=AnUnitInfo.EditorIndex) then begin
+    if (Project1.Bookmarks[i].EditorComponent=AnUnitInfo.EditorComponent) then begin
       //writeln('TMainIDE.DoRestoreBookMarks ',BookmarkID,' ',
       //   Project1.Bookmarks[i].CursorPos.X,' ',Project1.Bookmarks[i].CursorPos.Y);
       ASrcEdit.EditorComponent.SetBookmark(BookmarkID,
@@ -7196,8 +7195,7 @@ begin
   if Project1.MainUnitID>=0 then begin
     MainUnitInfo:=Project1.MainUnitInfo;
     if MainUnitInfo.Loaded then begin
-      MainUnitSrcEdit:=SourceNoteBook.FindSourceEditorWithPageIndex(
-                                                      MainUnitInfo.EditorIndex);
+      MainUnitSrcEdit := TSourceEditor(MainUnitInfo.EditorComponent);
       if (MainUnitSrcEdit<>nil) and UpdateModified and MainUnitSrcEdit.Modified
       then begin
         MainUnitSrcEdit.UpdateCodeBuffer;
@@ -7213,9 +7211,8 @@ var
   BookmarkID, BookmarkX, BookmarkY: integer;
   ASrcEdit: TSourceEditor;
 begin
-  Project1.Bookmarks.DeleteAllWithEditorIndex(AnUnitInfo.EditorIndex);
-  ASrcEdit:=
-    SourceNoteBook.FindSourceEditorWithPageIndex(AnUnitInfo.EditorIndex);
+  Project1.Bookmarks.DeleteAllWithEditorComponent(AnUnitInfo.EditorComponent);
+  ASrcEdit := TSourceEditor(AnUnitInfo.EditorComponent);
   if ASrcEdit=nil then exit;
   AnUnitInfo.TopLine:=ASrcEdit.EditorComponent.TopLine;
   AnUnitInfo.CursorPos:=ASrcEdit.EditorComponent.CaretXY;
@@ -11467,8 +11464,7 @@ begin
     ActiveUnitInfo:=Project1.FirstUnitWithComponent;
     while ActiveUnitInfo<>nil do begin
       if ActiveUnitInfo.Component=APersistent then begin
-        ActiveSourceEditor:=SourceNoteBook.FindSourceEditorWithPageIndex(
-                                                    ActiveUnitInfo.EditorIndex);
+        ActiveSourceEditor := TSourceEditor(ActiveUnitInfo.EditorComponent);
         exit;
       end;
       ActiveUnitInfo:=ActiveUnitInfo.NextUnitWithComponent;
@@ -11476,12 +11472,6 @@ begin
   end;
   ActiveSourceEditor:=nil;
   ActiveUnitInfo:=nil;
-end;
-
-function TMainIDE.GetSourceEditorForUnitInfo(AnUnitInfo: TUnitInfo
-  ): TSourceEditor;
-begin
-  Result:=SourceNoteBook.FindSourceEditorWithPageIndex(AnUnitInfo.EditorIndex);
 end;
 
 function TMainIDE.DoLoadMemoryStreamFromFile(MemStream: TMemoryStream;
@@ -12705,7 +12695,7 @@ begin
     AnUnitInfo.Modified := True;
     if AnUnitInfo.Loaded then
     begin
-      SrcEdit := SourceNotebook.FindSourceEditorWithPageIndex(AnUnitInfo.EditorIndex);
+      SrcEdit := TSourceEditor(AnUnitInfo.EditorComponent);
       if SrcEdit <> nil then
       begin
         SrcEdit.Modified := True;

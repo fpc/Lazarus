@@ -683,7 +683,6 @@ type
     procedure RemoveFromList(AnUnitInfo: TUnitInfo; ListType: TUnitInfoList);
 
     procedure AddToOrRemoveFromAutoRevertLockedList(AnUnitInfo: TUnitInfo);
-    procedure AddToOrRemoveFromEditorWithIndexList(AnUnitInfo: TUnitInfo);
     procedure AddToOrRemoveFromComponentList(AnUnitInfo: TUnitInfo);
     procedure AddToOrRemoveFromLoadedList(AnUnitInfo: TUnitInfo);
     procedure AddToOrRemoveFromPartOfProjectList(AnUnitInfo: TUnitInfo);
@@ -2783,8 +2782,8 @@ begin
   end;
 
   // delete bookmarks of this unit
-  if OldUnitInfo.EditorIndex>=0 then
-    Bookmarks.DeleteAllWithEditorIndex(OldUnitInfo.EditorIndex);
+  if OldUnitInfo.EditorComponent <> nil then
+    Bookmarks.DeleteAllWithEditorComponent(OldUnitInfo.EditorComponent);
 
   // adjust MainUnit
   if MainUnitID>=Index then dec(fMainUnitID);
@@ -3292,15 +3291,6 @@ begin
   while (Result>=0) and (Units[Result]<>AUnitInfo) do dec(Result);
 end;
 
-procedure TProject.AddToOrRemoveFromEditorWithIndexList(AnUnitInfo: TUnitInfo);
-begin
-  if AnUnitInfo.EditorIndex<0 then begin
-    RemoveFromList(AnUnitInfo,uilWithEditorIndex);
-  end else begin
-    AddToList(AnUnitInfo,uilWithEditorIndex);
-  end;
-end;
-
 procedure TProject.AddToOrRemoveFromComponentList(AnUnitInfo: TUnitInfo);
 begin
   if AnUnitInfo.Component=nil then begin
@@ -3657,7 +3647,7 @@ var
   UnitMark: TFileBookmark;
   ProjectMark: TProjectBookmark;
 begin
-  if AnUnitInfo.EditorIndex<0 then exit;
+  if AnUnitInfo.EditorComponent = nil then exit;
   for i:=0 to AnUnitInfo.Bookmarks.Count-1 do begin
     UnitMark:=AnUnitInfo.Bookmarks[i];
     ProjectMark:=Bookmarks.BookmarkWithIndex(UnitMark.ID);
@@ -4353,7 +4343,7 @@ function TProject.JumpHistoryCheckPosition(
 var i: integer;
 begin
   i:=IndexOfFilename(APosition.Filename);
-  Result:=(i>=0) and (Units[i].EditorIndex>=0);
+  Result:=(i>=0) and (Units[i].EditorComponent <> nil);
 end;
 
 function TProject.SomethingModified(CheckData, CheckSession: boolean): boolean;
@@ -4642,7 +4632,7 @@ begin
   Result:=UnitCount-1;
   while (Result>=0) do begin
     if (pfsfOnlyEditorFiles in SearchFlags)
-    and (Units[Result].EditorIndex<0) then begin
+    and (Units[Result].EditorComponent = nil) then begin
       dec(Result);
       continue;
     end;

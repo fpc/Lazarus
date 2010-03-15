@@ -205,8 +205,8 @@ type
     procedure DeleteAllWithEditorComponent(AEditor:TSourceEditorInterface);
     function IndexOfID(ID:integer):integer;
     function BookmarkWithIndex(ID: integer): TProjectBookmark;
-    procedure SaveToXMLConfig(XMLConfig: TXMLConfig; const Path: string);
-    procedure LoadFromXMLConfig(XMLConfig: TXMLConfig; const Path: string);
+    procedure SaveToXMLConfig(XMLConfig: TXMLConfig; const Path: string); deprecated 'Does not link to Editorcomponent';
+    procedure LoadFromXMLConfig(XMLConfig: TXMLConfig; const Path: string); deprecated 'Does not link to Editorcomponent';
   end;
 
 type
