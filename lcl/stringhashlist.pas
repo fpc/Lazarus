@@ -129,7 +129,6 @@ procedure TStringHashList.Clear;
 var
   I: Integer;
 begin
-  if fCount = 0 then exit;
   for I:= 0 to fCount -1 do
     Dispose(fList[I]);
   if FList<>nil then begin
