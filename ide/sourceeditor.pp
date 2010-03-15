@@ -3024,6 +3024,8 @@ Begin
 end;
 
 Function TSourceEditor.Close: Boolean;
+var
+  p: TUnitInfo;
 Begin
   Result := True;
   If Assigned(FOnBeforeClose) then
@@ -3037,8 +3039,9 @@ Begin
   FEditor.Parent:=nil;
   CodeBuffer := nil;
   If Assigned(FOnAfterClose) then FOnAfterClose(Self);
-  FSourceNoteBook := nil;
-  UpdateProjectFile; // Set EditorIndex := -1
+  p :=Project1.UnitWithEditorComponent(Self);
+  if p <> nil then
+    p.EditorComponent := nil; // Set EditorIndex := -1
 end;
 
 procedure TSourceEditor.BeginUndoBlock;
