@@ -13,15 +13,15 @@ object HeapTrcViewForm: THeapTrcViewForm
   LCLVersion = '0.9.29'
   object lblTrcFile: TLabel
     Left = 16
-    Height = 18
+    Height = 16
     Top = 16
-    Width = 45
+    Width = 37
     Caption = '.trc file'
     ParentColor = False
   end
   object edtTrcFileName: TEdit
     Left = 72
-    Height = 22
+    Height = 23
     Top = 16
     Width = 311
     Anchors = [akTop, akLeft, akRight]
@@ -29,19 +29,19 @@ object HeapTrcViewForm: THeapTrcViewForm
   end
   object btnUpdate: TButton
     Left = 16
-    Height = 20
+    Height = 25
     Top = 54
-    Width = 70
+    Width = 64
     AutoSize = True
     Caption = 'Update'
     OnClick = btnUpdateClick
     TabOrder = 1
   end
   object chkStayOnTop: TCheckBox
-    Left = 335
-    Height = 18
+    Left = 347
+    Height = 19
     Top = 56
-    Width = 92
+    Width = 80
     Anchors = [akTop, akRight]
     Caption = 'Stay on top'
     OnChange = chkStayOnTopChange
@@ -59,10 +59,10 @@ object HeapTrcViewForm: THeapTrcViewForm
     TabOrder = 3
   end
   object chkUseRaw: TCheckBox
-    Left = 99
-    Height = 18
+    Left = 240
+    Height = 19
     Top = 56
-    Width = 107
+    Width = 92
     Caption = 'Raw leak data'
     Checked = True
     OnChange = chkUseRawChange
@@ -85,7 +85,7 @@ object HeapTrcViewForm: THeapTrcViewForm
       Top = 0
       Width = 415
       Align = alClient
-      DefaultItemHeight = 19
+      DefaultItemHeight = 17
       ReadOnly = True
       TabOrder = 0
       OnDblClick = trvTraceInfoDblClick
@@ -110,5 +110,15 @@ object HeapTrcViewForm: THeapTrcViewForm
       Align = alBottom
       ResizeAnchor = akBottom
     end
+  end
+  object btnClipboard: TButton
+    Left = 104
+    Height = 25
+    Top = 54
+    Width = 109
+    AutoSize = True
+    Caption = 'Paste Clipboard'
+    OnClick = btnClipboardClick
+    TabOrder = 6
   end
 end

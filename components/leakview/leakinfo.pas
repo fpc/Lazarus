@@ -72,6 +72,7 @@ type
   THeapTrcInfo = class(TLeakInfo)
   protected
     fTRCFile  : string;
+    fTRCText  : string;
     Trc       : TStringList;
     TrcIndex  : integer;
     fSummary  : string;
@@ -89,16 +90,23 @@ type
   public
     TraceInfo : THeapTraceInfo;
     constructor Create(const ATRCFile: string);
+    constructor CreateFromTxt(const AText: string);
     function GetLeakInfo(var LeakData: TLeakStatus; var Traces: TList): Boolean; override;
   end;
 
 function AllocHeapTraceInfo(const TrcFile: string): TLeakInfo;
+function AllocHeapTraceInfoFromText(const TrcText: string): TLeakInfo;
 
 implementation
 
 function AllocHeapTraceInfo(const TrcFile: string): TLeakInfo;
 begin
   Result := THeapTrcInfo.Create(TrcFile);
+end;
+
+function AllocHeapTraceInfoFromText(const TrcText: string): TLeakInfo;
+begin
+  Result := THeapTrcInfo.CreateFromTxt(TrcText);
 end;
 
 // heap trace parsing implementation
@@ -261,24 +269,35 @@ begin
   ClearTraceInfo(TraceInfo);
   if TrcIndex >= Trc.COunt then Exit;
   TraceInfo.ExeName := Trc[TrcIndex];
-  inc(TrcIndex);
 
-  while (TrcIndex < Trc.Count) and (not PosInTrc('Heap dump')) do
+  while (TrcIndex < Trc.Count)
+    and (not (PosInTrc('Heap dump') or  PosInTrc('Stack trace:') or PosInTrc(CallTracePrefix)) )
+  do
     inc(TrcIndex);
 
   if TrcIndex >= Trc.Count then Exit;
-  inc(TrcIndex);
 
-  with TraceInfo do begin
-    TrcNumFirstAndAfter(AllocBlocks, AllocSize, ': '); inc(TrcIndex);
-    TrcNumFirstAndAfter(FreedBlocks, FreedSize, ': '); inc(TrcIndex);
-    TrcNumFirstAndAfter(UnfreedBlocks, UnfreedSize, ': ');  inc(TrcIndex);
-    TrcNumberAfter(HeapSize, ': ');
-    TrcNumberAfter(StartupUsed, '('); inc(TrcIndex);
-    TrcNumberAfter(HeapFreed, ': '); inc(TrcIndex);
-    if PosInTrc('Should be') then begin
-      TrcNumberAfter(HeapShouldBe, ': ');
-      inc(TrcIndex);
+  if PosInTrc('Stack trace:') then begin
+    if not Assigned(traces) then Exit;
+    st := TStackTrace.Create;
+    ParseStackTrace(st); // changes TrcIndex
+    Traces.Add(st);
+    exit;
+  end;
+
+  if not PosInTrc(CallTracePrefix) then begin
+    inc(TrcIndex);
+    with TraceInfo do begin
+      TrcNumFirstAndAfter(AllocBlocks, AllocSize, ': '); inc(TrcIndex);
+      TrcNumFirstAndAfter(FreedBlocks, FreedSize, ': '); inc(TrcIndex);
+      TrcNumFirstAndAfter(UnfreedBlocks, UnfreedSize, ': ');  inc(TrcIndex);
+      TrcNumberAfter(HeapSize, ': ');
+      TrcNumberAfter(StartupUsed, '('); inc(TrcIndex);
+      TrcNumberAfter(HeapFreed, ': '); inc(TrcIndex);
+      if PosInTrc('Should be') then begin
+        TrcNumberAfter(HeapShouldBe, ': ');
+        inc(TrcIndex);
+      end;
     end;
   end;
 
@@ -298,7 +317,13 @@ end;
 constructor THeapTrcInfo.Create(const ATRCFile: string);
 begin
   fTrcFile := ATrcFile;
+  fTRCText := '';
   inherited Create;
+end;
+
+constructor THeapTrcInfo.CreateFromTxt(const AText: string);
+begin
+  fTRCText := AText;
 end;
 
 procedure THeapTrcInfo.ParseStackTrace(trace: TStackTrace);
@@ -307,16 +332,23 @@ var
   err : integer;
   hex : string;
 begin
-  i := Pos(CallTracePrefix, Trc[TrcIndex]);
-  if i <= 0 then Exit;
+  i := Pos('Stack trace:', Trc[TrcIndex]);
+  if i < 0 then begin
+    i := Pos(CallTracePrefix, Trc[TrcIndex]);
+    if i <= 0 then Exit;
 
-  trace.RawStackData := Trc[TrcIndex]; // raw stack trace data
+    trace.RawStackData := Trc[TrcIndex]; // raw stack trace data
 
-  inc(i, length(CallTracePrefix));
-  hex := ExtractHexNumberStr(Trc[TrcIndex], i);
+    inc(i, length(CallTracePrefix));
+    hex := ExtractHexNumberStr(Trc[TrcIndex], i);
 
-  Val(hex, trace.Addr, err);
-  GetNumberAfter(Trc[TrcIndex], trace.BlockSize, 'size ');
+    Val(hex, trace.Addr, err);
+    GetNumberAfter(Trc[TrcIndex], trace.BlockSize, 'size ');
+  end else begin
+    trace.RawStackData := 'Stack trace';
+    trace.Addr := 0;
+    trace.BlockSize := 0;
+  end;
 
   inc(TrcIndex);
   while (TrcIndex < Trc.Count) and (Pos(CallTracePrefix, Trc[TrcIndex]) = 0) do begin
@@ -335,12 +367,15 @@ end;
 function THeapTrcInfo.GetLeakInfo(var LeakData: TLeakStatus; var Traces: TList): Boolean;
 begin
   Result := false;
-  if not FileExistsUTF8(fTRCFile) then
+  if (not FileExistsUTF8(fTRCFile)) and (fTRCText = '') then
     Exit;
   try
     Trc := TStringList.Create;
     try
-      Trc.LoadFromFile(fTrcFile);
+      if fTRCText <> '' then
+        Trc.Text := fTRCText
+      else
+        Trc.LoadFromFile(fTrcFile);
       TrcIndex := 0;
 
       DoParseTrc(Traces);

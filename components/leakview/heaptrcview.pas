@@ -6,7 +6,7 @@ interface
 
 uses
   Classes, SysUtils, FileUtil, LResources, Forms, Controls, Graphics, Dialogs,
-  StdCtrls, ComCtrls, ExtCtrls, LeakInfo, LazIDEIntf, MenuIntf, contnrs;
+  StdCtrls, ComCtrls, ExtCtrls, LeakInfo, LazIDEIntf, MenuIntf, contnrs, Clipbrd;
 
 type
   TJumpProc = procedure (Sender: TObject; const SourceName: string; Line: integer) of object;
@@ -15,6 +15,7 @@ type
   THeapTrcViewForm = class(TForm)
     btnUpdate: TButton;
     btnBrowse: TButton;
+    btnClipboard: TButton;
     chkUseRaw: TCheckBox;
     chkStayOnTop: TCheckBox;
     edtTrcFileName: TEdit;
@@ -23,6 +24,7 @@ type
     memoSummary: TMemo;
     splitter: TSplitter;
     trvTraceInfo: TTreeView;
+    procedure btnClipboardClick(Sender: TObject);
     procedure btnUpdateClick(Sender: TObject);
     procedure btnBrowseClick(Sender: TObject);
     procedure chkStayOnTopChange(Sender: TObject);
@@ -35,7 +37,7 @@ type
     { private declarations }
     fItems  : TList;
 
-    procedure DoUpdateLeaks;
+    procedure DoUpdateLeaks(FromClip: Boolean = False);
 
     procedure ItemsToTree;
     procedure ChangeTreeText;
@@ -91,6 +93,11 @@ end;
 procedure THeapTrcViewForm.btnUpdateClick(Sender: TObject);
 begin
   DoUpdateLeaks;
+end;
+
+procedure THeapTrcViewForm.btnClipboardClick(Sender: TObject);
+begin
+  DoUpdateLeaks(True);
 end;
 
 procedure THeapTrcViewForm.btnBrowseClick(Sender: TObject);
@@ -222,18 +229,25 @@ begin
   fItems.Clear;
 end;
 
-procedure THeapTrcViewForm.DoUpdateLeaks;
+procedure THeapTrcViewForm.DoUpdateLeaks(FromClip: Boolean = False);
 var
   info  : TLeakInfo;
   data  : TLeakStatus;
+  txt: String;
 begin
   trvTraceInfo.BeginUpdate;
   try
     ClearItems;
     trvTraceInfo.Items.Clear;
-    if not FileExistsUTF8(edtTrcFileName.Text) then Exit;
+    if FromClip then begin
+      txt := Clipboard.AsText;
+      if txt = '' then exit;
+      info := AllocHeapTraceInfoFromText(txt);
+    end else begin
+      if (not FileExistsUTF8(edtTrcFileName.Text)) or FromClip then Exit;
+      info := AllocHeapTraceInfo(edtTrcFileName.Text);
+    end;
 
-    info := AllocHeapTraceInfo(edtTrcFileName.Text);
     try
       if info.GetLeakInfo(data, fItems) then ItemsToTree
       else trvTraceInfo.Items.Add(nil, 'Error while parsing trace file');
