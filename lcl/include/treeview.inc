@@ -3702,7 +3702,9 @@ begin
 
   else
     if (Key=EditKey) and (Shift=EditKeyShift) and (not ReadOnly) then
-      BeginEditing(Selected);
+      BeginEditing(Selected)
+    else
+      lNode := nil;
   end;
 
   if lNode <> nil then
@@ -4438,22 +4440,23 @@ var
   TextY: Integer;
 begin
   NodeRect := Node.DisplayRect(False);
-  if (NodeRect.Bottom<0) or (NodeRect.Top>=(ClientHeight-ScrollBarWidth)) then
+  if (NodeRect.Bottom < 0) or (NodeRect.Top >= (ClientHeight - ScrollBarWidth)) then
     Exit;
   NodeSelected := (Node.Selected) or (Node.MultiSelected);
+  Canvas.Font.Color := Font.Color;
   if Assigned(OnCustomDrawItem) or Assigned(FOnAdvancedCustomDrawItem) then
   begin
-    DrawState:=[];
+    DrawState := [];
     if NodeSelected then
-      Include(DrawState,cdsSelected);
+      Include(DrawState, cdsSelected);
     if Node.Focused then
-      Include(DrawState,cdsFocused);
+      Include(DrawState, cdsFocused);
     if Node.MultiSelected then
-      Include(DrawState,cdsMarked);
-    if not CustomDrawItem(Node,DrawState,cdPrePaint,PaintImages) then exit;
+      Include(DrawState, cdsMarked);
+    if not CustomDrawItem(Node, DrawState, cdPrePaint, PaintImages) then Exit;
   end
   else
-    PaintImages:=true;
+    PaintImages := True;
 
   VertMid:=(NodeRect.Top + NodeRect.Bottom) div 2;
   //DebugLn(['[TCustomTreeView.DoPaintNode] Node=',DbgS(Node),' Node.Text=',Node.Text,' NodeRect=',NodeRect.Left,',',NodeRect.Top,',',NodeRect.Right,',',NodeRect.Bottom,' VertMid=',VertMid]);
@@ -4523,10 +4526,7 @@ begin
         TextOut(x + 1, TextY, Node.Text);
       end
       else
-      begin
-        Font.Color := Self.Font.Color;
         TextOut(x + 1, TextY, Node.Text);
-      end;
     end;
 
     // draw separator
