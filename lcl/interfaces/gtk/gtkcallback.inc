@@ -495,7 +495,6 @@ end;
 function gtkchanged_editbox_backspace(widget: PGtkWidget;
   data: gPointer): GBoolean; cdecl;
 var
-  Mess : TLMessage;
   GStart, GEnd: gint;
   Info: PWidgetInfo;
   EntryText: PgChar;
