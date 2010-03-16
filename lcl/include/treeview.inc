@@ -3168,6 +3168,9 @@ begin
 end;
 
 procedure TCustomTreeView.UpdateMaxRight;
+const
+  LargeItemCount = 100;
+  ReservedWidth = 100;
 var
   Node: TTreeNode;
   i: integer;
@@ -3187,19 +3190,16 @@ begin
       Continue;
     end;
     inc(Cnt);
-    if (Cnt < 100) then
+    if (Cnt < LargeItemCount) then
     begin
-      i := Node.DisplayTextRight + Indent div 2;
+      i := Node.DisplayTextRight + ScrolledLeft + Indent div 2;
     end else
     begin
       // computing DisplayTextRight is too expensive when the tree
       // has hundreds of nodes
       // => use a heuristic
-      if Cnt = 100 then
-        i := Node.DisplayTextRight + 100
-      else
       if length(Node.Text) > FMaxTextLen then
-        i := Node.DisplayTextRight + 100
+        i := Node.DisplayTextRight + ScrolledLeft + ReservedWidth
       else
         i := FMaxRight;
     end;
