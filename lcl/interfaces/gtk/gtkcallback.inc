@@ -509,7 +509,7 @@ begin
     begin
       {mark as invalid event for gtkchanged_editbox, so
        it doesn't update cursor pos or we have a mess.}
-      if (gtk_major_version = 2) and (gtk_minor_version < 15) then
+      if (gtk_major_version = 2) and (gtk_minor_version < 17) then
       begin
         Info := GetWidgetInfo(Widget, False);
         include(Info^.Flags, wwiInvalidEvent);
@@ -2231,7 +2231,7 @@ begin
   EventTrace('Cut to clip', data);
   if (Widget=nil) then ;
   {$IFDEF GTK2}
-  if (gtk_major_version = 2) and (gtk_minor_version < 15) then
+  if (gtk_major_version = 2) and (gtk_minor_version < 17) then
   begin
     if (Widget <> nil) and (GTK_IS_ENTRY(Widget)) then
     begin
@@ -2264,7 +2264,7 @@ begin
   EventTrace('Paste from clip', data);
   if (Widget=nil) then ;
   {$IFDEF GTK2}
-  if (gtk_major_version = 2) and (gtk_minor_version < 15) then
+  if (gtk_major_version = 2) and (gtk_minor_version < 17) then
   begin
     if (Widget <> nil) and (GTK_IS_ENTRY(Widget)) then
     begin
