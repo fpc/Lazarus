@@ -321,7 +321,6 @@ begin
   Result := False;
   if not WSCheckHandleAllocated(AWinControl, 'GetDesignInteractive') then
     Exit;
-  Result := False;
 end;
 
 class procedure TQtWSWinControl.SetBiDiMode(const AWinControl : TWinControl;
@@ -463,9 +462,10 @@ class procedure TQtWSWinControl.SetBounds(const AWinControl: TWinControl;
 begin
   if not WSCheckHandleAllocated(AWincontrol, 'SetBounds') then
     Exit;
-
+  TQtWidget(AWinControl.Handle).BeginUpdate;
   TQtWidget(AWinControl.Handle).move(ALeft, ATop);
   TQtWidget(AWinControl.Handle).resize(AWidth, AHeight);
+  TQtWidget(AWinControl.Handle).EndUpdate;
 end;
 
 {------------------------------------------------------------------------------
@@ -481,8 +481,10 @@ class procedure TQtWSWinControl.SetPos(const AWinControl: TWinControl;
 begin
   if not WSCheckHandleAllocated(AWincontrol, 'SetPos') then
     Exit;
-    
+
+  TQtWidget(AWinControl.Handle).BeginUpdate;
   TQtWidget(AWinControl.Handle).move(ALeft, ATop);
+  TQtWidget(AWinControl.Handle).EndUpdate;
 end;
 
 {------------------------------------------------------------------------------
@@ -498,8 +500,9 @@ class procedure TQtWSWinControl.SetSize(const AWinControl: TWinControl;
 begin
   if not WSCheckHandleAllocated(AWincontrol, 'SetSize') then
     Exit;
-
+  TQtWidget(AWinControl.Handle).BeginUpdate;
   TQtWidget(AWinControl.Handle).resize(AWidth, AHeight);
+  TQtWidget(AWinControl.Handle).EndUpdate;
 end;
 
 {------------------------------------------------------------------------------

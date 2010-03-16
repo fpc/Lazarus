@@ -2668,6 +2668,10 @@ begin
     WriteLn('TQtWidget.SlotMove');
   {$endif}
 
+  // do not loop with LCL
+  if InUpdate then
+    exit;
+
   if not QEvent_spontaneous(Event) or
     (not QEvent_spontaneous(Event) and
     ((Self is TQtMainWindow) and not
@@ -2814,6 +2818,10 @@ begin
   );
 }
   if not Assigned(LCLObject) then exit;
+
+  // do not loop with LCL
+  if InUpdate then
+    exit;
   
   if (NewSize.cx <> LCLObject.Width) or (NewSize.cy <> LCLObject.Height) or
      (LCLObject.ClientRectNeedsInterfaceUpdate) then
