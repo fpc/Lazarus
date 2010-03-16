@@ -857,6 +857,7 @@ type
     function  FixedGrid: boolean;
     procedure FontChanged(Sender: TObject); override;
     procedure GetAutoFillColumnInfo(const Index: Integer; var aMin,aMax,aPriority: Integer); virtual;
+    function  GetCells(ACol, ARow: Integer): string; virtual;
     function  GetColumnAlignment(Column: Integer; ForTitle: Boolean): TAlignment;
     function  GetColumnColor(Column: Integer; ForTitle: Boolean): TColor;
     function  GetColumnFont(Column: Integer; ForTitle: Boolean): TFont;
@@ -1407,7 +1408,7 @@ type
       procedure DrawCellAutonumbering(aCol,aRow: Integer; aRect: TRect; const aValue: string); override;
       //procedure EditordoGetValue; override;
       //procedure EditordoSetValue; override;
-      function  GetCells(ACol, ARow: Integer): string; virtual;
+      function  GetCells(ACol, ARow: Integer): string; override;
       procedure GetCheckBoxState(const aCol, aRow:Integer; var aState:TCheckboxState); override;
       function  GetEditText(aCol, aRow: Integer): string; override;
       procedure LoadContent(cfg: TXMLConfig; Version: Integer); override;
@@ -6281,7 +6282,7 @@ begin
   if not (csDesigning in ComponentState) and (Editor<>nil) and Editor.Visible then begin
 
     if validate then begin
-      CurValue := GetEditText(FCol,FRow);
+      CurValue := GetCells(FCol,FRow);
       NewValue := CurValue;
       result := ValidateEntry(FCol,FRow,FEditorOldValue,NewValue);
       if (CurValue<>NewValue) then begin
@@ -6354,7 +6355,7 @@ begin
   begin
     {$ifdef dbgGrid} DebugLn('EditorShow [',Editor.ClassName,'] INIT FCol=',IntToStr(FCol),' FRow=',IntToStr(FRow));{$endif}
     FEditorMode:=True;
-    FEditorOldValue := GetEditText(FCol,FRow);
+    FEditorOldValue := GetCells(FCol,FRow);
     FEditorShowing:=True;
     doEditorShow;
     FEditorShowing:=False;
@@ -6478,7 +6479,7 @@ begin
     Msg.grid:=Self;
     Msg.Col:=FCol;
     Msg.Row:=FRow;
-    Msg.Value:=GetEditText(FCol, FRow);
+    Msg.Value:=GetCells(FCol, FRow);
     FEditor.Dispatch(Msg);
     SetEditText(Msg.Col, Msg.Row, Msg.Value);
   end;
@@ -6532,6 +6533,11 @@ begin
       APriority := 1;
   end else
     APriority := 1;
+end;
+
+function TCustomGrid.GetCells(ACol, ARow: Integer): string;
+begin
+  result := '';
 end;
 
 procedure TCustomGrid.EditorKeyDown(Sender: TObject; var Key:Word; Shift:TShiftState);
@@ -6622,11 +6628,7 @@ begin
     OnSelectEditor(Self, fCol, FRow, aEditor);
   end;
   if aEditor<>Editor then
-    begin
-    Editor:=aEditor;
-    EditorPos;
-    EditorDoSetValue;
-    end;
+    Editor := aEditor;
 end;
 
 function TCustomGrid.EditorAlwaysShown: Boolean;
@@ -7860,7 +7862,7 @@ procedure TStringCellEditor.Change;
 begin
   {$IfDef DbgGrid} DebugLn('TStringCellEditor.Change INIT text=',Text);{$ENDIF}
   inherited Change;
-  if FGrid<>nil then begin
+  if (FGrid<>nil) and Visible then begin
     FGrid.SetEditText(FCol, FRow, Text);
   end;
   {$IfDef DbgGrid} DebugLn('TStringCellEditor.Change END');{$ENDIF}
