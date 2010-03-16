@@ -150,7 +150,7 @@ var
   Code: TCodeBuffer;
   XY: TPoint;
 begin
-  SrcEdit:=SourceEditorWindow.ActiveEditor;
+  SrcEdit:=SourceEditorManagerIntf.ActiveEditor;
   if SrcEdit=nil then
     exit(mrCancel);
   Code:=TCodeBuffer(SrcEdit.CodeToolsBuffer);

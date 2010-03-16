@@ -3642,8 +3642,8 @@ begin
     exit;
   end;
 
-  if SourceEditorWindow<>nil then
-    SourceEditorWindow.ClearErrorLines;
+  if SourceEditorManagerIntf<>nil then
+    SourceEditorManagerIntf.ClearErrorLines;
 
   SplitCmdLine(Command,ProgramFilename,Params);
   if not FilenameIsAbsolute(ProgramFilename) then begin

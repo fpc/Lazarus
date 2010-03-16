@@ -96,7 +96,7 @@ var
   CodeContexts: TCodeContextInfo;
 begin
   Result := False;
-  LogCaretXY := SourceEditorWindow.ActiveEditor.CursorTextXY;
+  LogCaretXY := SourceEditorManagerIntf.ActiveEditor.CursorTextXY;
   CodeContexts := nil;
   try
     if not CodeToolBoss.FindCodeContext(Code, LogCaretXY.X, LogCaretXY.Y, CodeContexts) or
@@ -138,14 +138,14 @@ var
 begin
   if (Key=VK_ESCAPE) and (Shift=[]) then
     Hide
-  else if SourceEditorWindow<>nil then begin
-    SrcEdit:=SourceEditorWindow.ActiveEditor;
+  else if SourceEditorManagerIntf<>nil then begin
+    SrcEdit:=SourceEditorManagerIntf.ActiveEditor;
     if SrcEdit=nil then
       Hide
     else begin
       // redirect keys
       TWinControlAccess(SrcEdit.EditorControl).KeyDown(Key,Shift);
-      SetActiveWindow(SourceEditorWindow.Handle);
+      SetActiveWindow(SourceEditorManagerIntf.ActiveSourceWindow.Handle);
     end;
   end;
 end;
@@ -166,7 +166,7 @@ var
   SrcEdit: TSourceEditorInterface;
   ASynEdit: TCustomSynEdit;
 begin
-  SrcEdit:=SourceEditorWindow.ActiveEditor;
+  SrcEdit:=SourceEditorManagerIntf.ActiveEditor;
   if SrcEdit=nil then begin
     Hide;
   end else begin
@@ -220,8 +220,8 @@ begin
   NewParameterIndex:=-1;
   try
     // check Source Editor
-    if SourceEditorWindow=nil then exit;
-    SrcEdit:=SourceEditorWindow.ActiveEditor;
+    if SourceEditorManagerIntf=nil then exit;
+    SrcEdit:=SourceEditorManagerIntf.ActiveEditor;
     if (SrcEdit=nil) or (SrcEdit.CodeToolsBuffer<>ProcNameCodeXYPos.Code) then
       exit;
     if SrcEdit.TopLine<>FSourceEditorTopIndex then exit;
@@ -543,7 +543,7 @@ var
   DrawHeight: LongInt;
   ScreenXY: TPoint;
 begin
-  SrcEdit:=SourceEditorWindow.ActiveEditor;
+  SrcEdit:=SourceEditorManagerIntf.ActiveEditor;
   if SrcEdit=nil then exit;
 
   // calculate the position of the context in the source editor
@@ -560,7 +560,7 @@ begin
   FSourceEditorTopIndex:=SrcEdit.TopLine;
 
   // calculate size of hints
-  DrawWidth:=SourceEditorWindow.ClientWidth;
+  DrawWidth:=SourceEditorManagerIntf.ActiveSourceWindow.ClientWidth;
   DrawHeight:=ClientXY.Y;
   DrawHints(DrawWidth,DrawHeight,false);
   if DrawWidth<20 then DrawWidth:=20;

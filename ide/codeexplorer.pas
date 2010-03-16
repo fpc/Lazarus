@@ -529,7 +529,7 @@ begin
     Refresh(true);
     exit;
   end;
-  ExecuteIDECommand(SourceEditorWindow,ecRenameIdentifier);
+  ExecuteIDECommand(SourceEditorManagerIntf.ActiveSourceWindow, ecRenameIdentifier);
 end;
 
 procedure TCodeExplorerView.TreePopupmenuPopup(Sender: TObject);
@@ -1912,7 +1912,7 @@ begin
   DebugLn(['TCodeExplorerView.JumpToSelection AAA1']);
   if Assigned(OnJumpToCode) then
     OnJumpToCode(Self,Caret.Code.Filename,Point(Caret.X,Caret.Y),NewTopLine);
-  SrcEdit:=SourceEditorWindow.ActiveEditor;
+  SrcEdit:=SourceEditorManagerIntf.ActiveEditor;
   DebugLn(['TCodeExplorerView.JumpToSelection AAA2 ',SrcEdit.FileName,' ',dbgs(SrcEdit.CursorTextXY),' X=',Caret.X,' Y=',Caret.Y]);
   // check if jump was successful
   if (SrcEdit.CodeToolsBuffer<>CodeBuffer)
@@ -1928,7 +1928,7 @@ var
   xy: TPoint;
 begin
   Result:=false;
-  SrcEdit:=SourceEditorWindow.ActiveEditor;
+  SrcEdit:=SourceEditorManagerIntf.ActiveEditor;
   if SrcEdit=nil then exit;
   xy:=SrcEdit.CursorTextXY;
   Result:=SelectCodePosition(TCodeBuffer(SrcEdit.CodeToolsBuffer),xy.x,xy.y);

@@ -97,7 +97,7 @@ Var
 
 begin
   if Sender=nil then ;
-  E:=SourceEditorWindow.ActiveEditor;
+  E:=SourceEditorManagerIntf.ActiveEditor;
   If (E=Nil) or (Not E.SelectionAvailable) then
     Exit;
   S1:=TStringStream.Create(E.Selection);
@@ -124,7 +124,7 @@ Var
 
 begin
   if Sender=nil then ;
-  E:=SourceEditorWindow.ActiveEditor;
+  E:=SourceEditorManagerIntf.ActiveEditor;
   If (E=Nil) then
     Exit;
   S1:=TMemoryStream.Create;

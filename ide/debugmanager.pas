@@ -1360,7 +1360,7 @@ var
   SE: TSourceEditor;
   WatchVar: String;
 begin
-  SE := SourceNotebook.GetActiveSE;
+  SE := SourceEditorManager.GetActiveSE;
 
   if Assigned(SE) then
   begin
@@ -1516,24 +1516,24 @@ begin
   end;
 
   // unmark execution line
-  if (FDebugger.State <> dsPause) and (SourceNotebook <> nil)
+  if (FDebugger.State <> dsPause) and (SourceEditorManager <> nil)
   then begin
-    Editor := SourceNotebook.GetActiveSE;
+    Editor := SourceEditorManager.GetActiveSE;
     if Editor <> nil
     then Editor.ExecutionLine := -1;
   end;
 
   if ((FDebugger.State = dsPause) or
       ((FDebugger.State = dsRun) and (OldState = dsInit))
-     ) and (SourceNotebook <> nil)
+     ) and (SourceEditorManager <> nil)
   then begin
-    Editor := SourceNotebook.GetActiveSE;
+    Editor := SourceEditorManager.GetActiveSE;
     if (Editor <> nil) and not Editor.HasExecutionMarks
     then Editor.FillExecutionMarks;
   end;
 
-  if not (FDebugger.State in [dsRun, dsPause]) and (SourceNotebook <> nil) then
-    SourceNotebook.ClearExecutionMarks;
+  if not (FDebugger.State in [dsRun, dsPause]) and (SourceEditorManager <> nil) then
+    SourceEditorManager.ClearExecutionMarks;
 
   case FDebugger.State of
     dsError: begin
@@ -1633,10 +1633,10 @@ begin
   end;
 
   // clear old error and execution lines
-  if SourceNotebook <> nil
+  if SourceEditorManager <> nil
   then begin
-    SourceNotebook.ClearExecutionLines;
-    SourceNotebook.ClearErrorLines;
+    SourceEditorManager.ClearExecutionLines;
+    SourceEditorManager.ClearErrorLines;
   end;
   // jump editor to execution line
   FocusEditor := (FCurrentBreakPoint = nil) or (FCurrentBreakPoint.AutoContinueTime = 0);
@@ -1644,8 +1644,8 @@ begin
   then exit;
 
   // mark execution line
-  if SourceNotebook <> nil
-  then Editor := SourceNotebook.GetActiveSE
+  if SourceEditorManager <> nil
+  then Editor := SourceEditorManager.GetActiveSE
   else Editor := nil;
 
   if Editor <> nil
@@ -1790,10 +1790,10 @@ var
   TheDialog: TIDEInspectDlg;
 begin
   TheDialog := TIDEInspectDlg(FDialogs[ddtInspect]);
-  if SourceNotebook.GetActiveSE.SelectionAvailable then
-    TheDialog.Execute(SourceNotebook.GetActiveSE.Selection)
+  if SourceEditorManager.GetActiveSE.SelectionAvailable then
+    TheDialog.Execute(SourceEditorManager.GetActiveSE.Selection)
   else
-    TheDialog.Execute(SourceNotebook.GetActiveSE.GetOperandAtCurrentCaret);
+    TheDialog.Execute(SourceEditorManager.GetActiveSE.GetOperandAtCurrentCaret);
 end;
 
 procedure TDebugManager.InitCallStackDlg;
@@ -1810,10 +1810,10 @@ var
   TheDialog: TEvaluateDlg;
 begin
   TheDialog := TEvaluateDlg(FDialogs[ddtEvaluate]);
-  if SourceNotebook.GetActiveSE.SelectionAvailable then
-    TheDialog.FindText := SourceNotebook.GetActiveSE.Selection
+  if SourceEditorManager.GetActiveSE.SelectionAvailable then
+    TheDialog.FindText := SourceEditorManager.GetActiveSE.Selection
   else
-    TheDialog.FindText := SourceNotebook.GetActiveSE.GetOperandAtCurrentCaret;
+    TheDialog.FindText := SourceEditorManager.GetActiveSE.GetOperandAtCurrentCaret;
 end;
 
 constructor TDebugManager.Create(TheOwner: TComponent);
@@ -2066,7 +2066,7 @@ var
   CurBreakPoint: TIDEBreakPoint;
   SrcFilename: String;
 begin
-  if (AnUnitInfo.EditorIndex < 0) or Destroying then exit;
+  if (AnUnitInfo.EditorComponent = nil) or Destroying then exit;
   ASrcEdit := TSourceEditor(AnUnitInfo.EditorComponent);
   // set breakpoints for this unit
   SrcFilename:=AnUnitInfo.Filename;

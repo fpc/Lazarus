@@ -338,7 +338,7 @@ begin
   try
     LV.Items.Clear;
     { get active source editor }
-    lSrcEditor := SourceEditorWindow.ActiveEditor;
+    lSrcEditor := SourceEditorManagerIntf.ActiveEditor;
     if lSrcEditor = nil then
       Exit; //==>
     lCodeBuffer := lSrcEditor.CodeToolsBuffer as TCodeBuffer;
@@ -395,7 +395,7 @@ begin
   cbObjects.Items.Clear;
   try
     { get active source editor }
-    lSrcEditor := SourceEditorWindow.ActiveEditor;
+    lSrcEditor := SourceEditorManagerIntf.ActiveEditor;
     if lSrcEditor = nil then
       Exit; //==>
     lCodeBuffer := lSrcEditor.CodeToolsBuffer as TCodeBuffer;
@@ -541,10 +541,10 @@ end;
 
 procedure TProcedureListForm.FormCreate(Sender: TObject);
 begin
-  if SourceEditorWindow.ActiveEditor = nil then
+  if SourceEditorManagerIntf.ActiveEditor = nil then
     Exit; //==>
     
-  FMainFilename := SourceEditorWindow.ActiveEditor.Filename;
+  FMainFilename := SourceEditorManagerIntf.ActiveEditor.Filename;
   Caption := Caption + ExtractFileName(FMainFilename);
   SetupGUI;
   PopulateObjectsCombo;

@@ -161,7 +161,7 @@ begin
       exit;
     end;
     // find the source editor page
-    SrcEdit:=SourceEditorWindow.SourceEditorIntfWithFilename(Filename);
+    SrcEdit:=SourceEditorManagerIntf.SourceEditorIntfWithFilename(Filename);
     if SrcEdit=nil then begin
       DebugLn(['THideFPCHintWorker.Execute unable to find the file in the source editor of ',Filename]);
       exit;

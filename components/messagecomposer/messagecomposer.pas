@@ -148,8 +148,8 @@ var FormMessagesComposer: TFormMessagesComposer;
       BaseStart: string;
   begin
     BaseStart := EmptyStr;
-    for indx := 1 to SourceEditorWindow.ActiveEditor.CursorTextXY.x-
-                     Length(SourceEditorWindow.ActiveEditor.Selection)-1 do
+    for indx := 1 to SourceEditorManagerIntf.ActiveEditor.CursorTextXY.x-
+                     Length(SourceEditorManagerIntf.ActiveEditor.Selection)-1 do
       BaseStart := BaseStart+#32;
 
     ListSrcMessages := TStringList.Create;
@@ -168,14 +168,14 @@ var FormMessagesComposer: TFormMessagesComposer;
 
 begin
   Assert(Sender <> nil);  // removes compiler warning
-  if SourceEditorWindow.ActiveEditor = nil then exit;
+  if SourceEditorManagerIntf.ActiveEditor = nil then exit;
   FormMessagesComposer := TFormMessagesComposer.Create(nil);
   try
     FormMessagesComposer.ShowModal;
     if FormMessagesComposer.ModalResult = mrOK then  begin
       FormMessagesComposer.GetMessageForSource.Execute;
       FormatSrcMessage;
-      SourceEditorWindow.ActiveEditor.Selection := srcMessage;
+      SourceEditorManagerIntf.ActiveEditor.Selection := srcMessage;
     end;
   finally
     FormMessagesComposer.Free;

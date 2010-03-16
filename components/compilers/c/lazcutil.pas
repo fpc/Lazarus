@@ -99,7 +99,7 @@ begin
   Scanner.Name:='GCC';
   IDEMsgScanners.RegisterType(Scanner);
   CSrcEditCompletion:=TCSrcEditCompletion.Create(nil);
-  SourceEditorWindow.RegisterCompletionPlugin(CSrcEditCompletion);
+  SourceEditorManagerIntf.RegisterCompletionPlugin(CSrcEditCompletion);
 end;
 
 { TGCCMessageScanner }

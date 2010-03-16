@@ -3129,8 +3129,8 @@ begin
           PkgCompileTool.CmdLineParams:=EffectiveCompilerParams;
 
           // clear old errors
-          if SourceEditorWindow<>nil then
-            SourceEditorWindow.ClearErrorLines;
+          if SourceEditorManagerIntf<>nil then
+            SourceEditorManagerIntf.ClearErrorLines;
 
           // compile package
           Result:=RunCompilerWithOptions(PkgCompileTool,APackage.CompilerOptions);

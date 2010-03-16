@@ -103,10 +103,10 @@ begin
   FHTMLHint:='';
   
   // find current completion item
-  if (SourceEditorWindow=nil) or (CodeToolBoss=nil)
+  if (SourceEditorManagerIntf=nil) or (CodeToolBoss=nil)
   or (CodeToolBoss.IdentifierList=nil) then
     exit;
-  Position:=SourceEditorWindow.CompletionBoxPosition;
+  Position:=SourceEditorManagerIntf.CompletionBoxPosition;
   if (Position<0) or (Position>=CodeToolBoss.IdentifierList.GetFilteredCount) then
     exit;
   Item:=CodeToolBoss.IdentifierList.FilteredItems[Position];

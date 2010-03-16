@@ -51,7 +51,7 @@ begin
   if not LazarusIDE.BeginCodeTools then exit;
   
   // get active source editor
-  SrcEditor:=SourceEditorWindow.ActiveEditor;
+  SrcEditor:=SourceEditorManagerIntf.ActiveEditor;
   if SrcEditor=nil then exit;
   CodeBuffer:=SrcEditor.CodeToolsBuffer as TCodeBuffer;
   

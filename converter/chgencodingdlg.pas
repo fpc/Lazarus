@@ -191,7 +191,7 @@ begin
       Buf:=CodeToolBoss.LoadFile(Filename,true,false);
       if not Buf.ReadOnly then begin
         OldEncoding:=Buf.DiskEncoding;
-        SrcEdit:=SourceEditorWindow.SourceEditorIntfWithFilename(Filename);
+        SrcEdit:=SourceEditorManagerIntf.SourceEditorIntfWithFilename(Filename);
         HasChanged:=true;
         if SrcEdit<>nil then begin
           DebugLn(['TChgEncodingDialog.ApplyButtonClick changing in source editor: ',Filename]);

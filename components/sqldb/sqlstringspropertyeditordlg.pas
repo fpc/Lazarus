@@ -63,8 +63,8 @@ resourcestring
 constructor TSQLStringsPropertyEditorDlg.Create(AOwner: TComponent);
 begin
   inherited Create(AOwner);
-  SourceEditorWindow.GetEditorControlSettings(SQLEditor);
-  SourceEditorWindow.GetHighlighterSettings(SQLHighlighter);
+  SourceEditorManagerIntf.GetEditorControlSettings(SQLEditor);
+  SourceEditorManagerIntf.GetHighlighterSettings(SQLHighlighter);
   EditorTabSheet.Caption := SSQLTabCaption;
   ResultTabSheet.Caption := SResultTabCaption;
 end;

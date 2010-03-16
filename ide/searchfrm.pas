@@ -255,8 +255,8 @@ var
   function FileIsOpenInSourceEditor: boolean;
   begin
     if not SrcEditValid then begin
-      if (TheFileName<>'') and (SourceEditorWindow<>nil) then
-        SrcEdit:=SourceEditorWindow.SourceEditorIntfWithFilename(TheFileName)
+      if (TheFileName<>'') and (SourceEditorManagerIntf<>nil) then
+        SrcEdit:=SourceEditorManagerIntf.SourceEditorIntfWithFilename(TheFileName)
       else
         SrcEdit:=nil;
       SrcEditValid:=true;

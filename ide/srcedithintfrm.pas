@@ -124,14 +124,14 @@ var
 begin
   if (Key=VK_ESCAPE) and (Shift=[]) then
     Hide
-  else if SourceEditorWindow<>nil then begin
-    SrcEdit:=SourceEditorWindow.ActiveEditor;
+  else if SourceEditorManagerIntf<>nil then begin
+    SrcEdit:=SourceEditorManagerIntf.ActiveEditor;
     if SrcEdit=nil then
       Hide
     else begin
       // redirect keys
       TWinControlAccess(SrcEdit.EditorControl).KeyDown(Key,Shift);
-      SetActiveWindow(SourceEditorWindow.Handle);
+      SetActiveWindow(SourceEditorManagerIntf.ActiveSourceWindow.Handle);
     end;
   end;
 end;
@@ -142,7 +142,7 @@ var
   SrcEdit: TSourceEditorInterface;
   ASynEdit: TCustomSynEdit;
 begin
-  SrcEdit:=SourceEditorWindow.ActiveEditor;
+  SrcEdit:=SourceEditorManagerIntf.ActiveEditor;
   if SrcEdit=nil then begin
     Hide;
   end else begin
@@ -278,7 +278,7 @@ begin
   end else begin
     // place near the source editor caret
     CurCaret:=SrcEditCaret;
-    SrcEdit:=SourceEditorWindow.ActiveEditor;
+    SrcEdit:=SourceEditorManagerIntf.ActiveEditor;
     if CurCaret.Y<1 then
       CurCaret:=SrcEdit.CursorScreenXY;
     CurCaret:=SrcEdit.EditorControl.ClientToScreen(SrcEdit.ScreenToPixelPosition(CurCaret));
@@ -334,8 +334,8 @@ begin
   if (AnchorForm<>nil) then begin
     Result:=AnchorForm.Visible;
   end else begin
-    Result:=(SourceEditorWindow<>nil)
-        and (SourceEditorWindow.ActiveEditor<>nil);
+    Result:=(SourceEditorManagerIntf<>nil)
+        and (SourceEditorManagerIntf.ActiveEditor<>nil);
   end;
 end;
 

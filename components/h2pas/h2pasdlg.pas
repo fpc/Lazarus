@@ -716,7 +716,7 @@ procedure TH2PasDialog.OnShowSrcEditSection(Sender: TObject);
 var
   SrcEdit: TSourceEditorInterface;
 begin
-  SrcEdit:=SourceEditorWindow.ActiveEditor;
+  SrcEdit:=SourceEditorManagerIntf.ActiveEditor;
   SrcEditSection.Visible:=(SrcEdit<>nil)
                           and Converter.FileIsRelated(SrcEdit.FileName);
   //DebugLn(['TH2PasDialog.OnShowSrcEditSection ',SrcEditSection.Visible]);
@@ -729,7 +729,7 @@ var
   s: String;
 begin
   //DebugLn(['TH2PasDialog.OnAddSearchAndReplaceBeforeH2PasClick']);
-  SrcEdit:=SourceEditorWindow.ActiveEditor;
+  SrcEdit:=SourceEditorManagerIntf.ActiveEditor;
   if SrcEdit=nil then exit;
   MainPageControl.ActivePage:=PreH2PasTabSheet;
   ShowOnTop;

@@ -84,9 +84,9 @@ var
   R : TModalResult;
 
 begin
-  If Not Assigned(SourceEditorWindow) or Not Assigned(SourceEditorWindow.ActiveEditor) then
+  If Not Assigned(SourceEditorManagerIntf) or Not Assigned(SourceEditorManagerIntf.ActiveEditor) then
     Exit;
-  If (SourceEditorWindow.ActiveEditor.Selection='') then
+  If (SourceEditorManagerIntf.ActiveEditor.Selection='') then
     R:=mrYesToAll
   else
     R:=QuestionDlg(SPrintSources,SPrintWhat,mtInformation,[mrYesToAll,SPrintFile,mrYes,SPrintSelection,mrCancel],0);
@@ -95,8 +95,8 @@ begin
   L:=TStringList.Create;
   try
     case R of
-      mrYesToAll : L.Assign(SourceEditorWindow.ActiveEditor.Lines);
-      mrYes      : L.Text:=SourceEditorWindow.ActiveEditor.Selection;
+      mrYesToAll : L.Assign(SourceEditorManagerIntf.ActiveEditor.Lines);
+      mrYes      : L.Text:=SourceEditorManagerIntf.ActiveEditor.Selection;
     end;
     sp := TSourcePrinter.Create;
     try

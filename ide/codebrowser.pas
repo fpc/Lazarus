@@ -603,7 +603,7 @@ begin
                 Format(lisUseUnitInUnit, [CurUnitName, SrcEditUnitName]);
               if (Node is TCodeBrowserNode) and (Identifier<>'') then begin
                 EnableUseIdentifierInCurUnit:=true;
-                SrcEdit:=SourceEditorWindow.ActiveEditor;
+                SrcEdit:=SourceEditorManagerIntf.ActiveEditor;
                 UseIdentifierInCurUnitMenuItem.Caption:=
                   Format(lisUseIdentifierInAt, [Identifier, ExtractFilename(
                     SrcEdit.FileName), dbgs(SrcEdit.CursorScreenXY)]);
@@ -983,7 +983,7 @@ begin
   List:=TFPList.Create;
   CodeMarker:=nil;
   try
-    SrcEdit:=SourceEditorWindow.ActiveEditor;
+    SrcEdit:=SourceEditorManagerIntf.ActiveEditor;
     if SrcEdit=nil then exit;
     InsertStartPos:=SrcEdit.CursorTextXY;
     Code:=TCodeBuffer(SrcEdit.CodeToolsBuffer);
@@ -2567,7 +2567,7 @@ begin
   FileOwner:=nil;
   UnitCode:=nil;
   Result:=false;
-  SrcEdit:=SourceEditorWindow.ActiveEditor;
+  SrcEdit:=SourceEditorManagerIntf.ActiveEditor;
   if SrcEdit=nil then exit;
   Code:=CodeToolBoss.GetMainCode(TCodeBuffer(SrcEdit.CodeToolsBuffer));
   if Code=nil then exit;
@@ -2589,7 +2589,7 @@ var
   i: Integer;
 begin
   Result:=nil;
-  SrcEdit:=SourceEditorWindow.ActiveEditor;
+  SrcEdit:=SourceEditorManagerIntf.ActiveEditor;
   if SrcEdit=nil then exit;
   Owners:=PkgBoss.GetOwnersOfUnit(SrcEdit.FileName);
   try
@@ -2740,7 +2740,7 @@ begin
   Result:='';
   if UseFCLAsDefault then
     Result:=PackageGraph.FCLPackage.Name;
-  SrcEdit:=SourceEditorWindow.ActiveEditor;
+  SrcEdit:=SourceEditorManagerIntf.ActiveEditor;
   if SrcEdit=nil then exit;
   Code:=TCodeBuffer(SrcEdit.CodeToolsBuffer);
   if Code=nil then exit;

@@ -1451,7 +1451,7 @@ begin
                             'FPCDIR='+EnvironmentOptions.GetFPCSourceDirectory);
 
     // clear old errors
-    SourceNotebook.ClearErrorLines;
+    SourceEditorManager.ClearErrorLines;
 
     // compile package
     Result:=RunExternalTool(FPCMakeTool);
@@ -3288,7 +3288,7 @@ function TPkgManager.GetPackageOfCurrentSourceEditor: TPkgFile;
 var
   SrcEdit: TSourceEditor;
 begin
-  SrcEdit:=SourceNotebook.GetActiveSE;
+  SrcEdit:=SourceEditorManager.GetActiveSE;
   if SrcEdit<>nil then begin
     Result:=SearchFile(SrcEdit.Filename,[],nil);
   end else

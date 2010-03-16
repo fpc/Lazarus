@@ -169,7 +169,7 @@ begin
 
     if IsActive and (Repo <> '') then
     begin
-      SrcFile := SourceEditorWindow.ActiveEditor.FileName;
+      SrcFile := SourceEditorManagerIntf.ActiveEditor.FileName;
 
       if LazarusIDE.ActiveProject.FindFile(SrcFile, [pfsfOnlyEditorFiles]).IsPartOfProject then
         ShowSVNDiffFrm('-r PREV', '"' + SrcFile + '"')

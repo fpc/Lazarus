@@ -114,13 +114,13 @@ end;
 
 procedure TJcfIdeMain.DoFormatCurrentIDEWindow(Sender: TObject);
 begin
-  if (SourceEditorWindow = nil) or (SourceEditorWindow.ActiveEditor = nil) then
+  if (SourceEditorManagerIntf= nil) or (SourceEditorManagerIntf.ActiveEditor = nil) then
   begin
     LogIdeMessage('', 'No current window', mtInputError, -1, -1);
     exit;
   end;
 
-  ConvertEditor(SourceEditorWindow.ActiveEditor);
+  ConvertEditor(SourceEditorManagerIntf.ActiveEditor);
 end;
 
 procedure TJcfIdeMain.ConvertEditor(const pciEditor: TSourceEditorInterface);
@@ -169,15 +169,15 @@ var
 begin
   MakeEditorConverter;
 
-  if (SourceEditorWindow = nil) then
+  if (SourceEditorManagerIntf = nil) then
     Exit;
 
   ClearToolMessages;
   fcEditorConverter.BeforeConvert;
 
-  for liLoop := 0 to SourceEditorWindow.Count - 1 do
+  for liLoop := 0 to SourceEditorManagerIntf.SourceEditorCount - 1 do
   begin
-    lciEditor := SourceEditorWindow.Items[liLoop];
+    lciEditor := SourceEditorManagerIntf.SourceEditors[liLoop];
 
     // check that it's open, and a .pas or .dpr
     if (lciEditor <> nil) and (FileIsAllowedType(lciEditor.FileName)) then

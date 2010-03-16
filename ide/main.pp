@@ -3012,10 +3012,10 @@ begin
     MainIDEBar.itmHelpAboutLazarus.OnClick(Self);
 
   ecToggleBreakPoint:
-    SourceNotebook.ToggleBreakpointClicked(Self);
+    SourceEditorManager.GetActiveNotebok.ToggleBreakpointClicked(Self);
 
   ecRemoveBreakPoint:
-    SourceNotebook.DeleteBreakpointClicked(Self);
+    SourceEditorManager.GetActiveNotebok.DeleteBreakpointClicked(Self);
 
   ecProcedureList:
     mnuSearchProcedureList(self);

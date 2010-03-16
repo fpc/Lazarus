@@ -104,7 +104,7 @@ begin
 
     // get cursor position
     ErrMsg:=lisSAMCursorIsNotInAClassDeclaration;
-    SrcEdit:=SourceEditorWindow.ActiveEditor;
+    SrcEdit:=SourceEditorManagerIntf.ActiveEditor;
     if SrcEdit=nil then exit;
     Code:=TCodeBuffer(SrcEdit.CodeToolsBuffer);
     if Code=nil then exit;

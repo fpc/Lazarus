@@ -88,7 +88,7 @@ begin
         ,[ofRegularFile,ofUseCache]) = mrOk;
   if Result then
   begin
-    SrcEditor := SourceEditorWindow.ActiveEditor;
+    SrcEditor := SourceEditorManagerIntf.ActiveEditor;
     if Assigned(SrcEditor) then
       SrcEditor.EditorControl.SetFocus;
   end;
@@ -108,7 +108,7 @@ begin
   if not LazarusIDE.BeginCodeTools then
     Exit; //==>
 
-  SrcEditor := SourceEditorWindow.ActiveEditor;
+  SrcEditor := SourceEditorManagerIntf.ActiveEditor;
   if not Assigned(SrcEditor) then
     Exit; //==>
 

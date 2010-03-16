@@ -88,7 +88,7 @@ begin
   if not LazarusIDE.BeginCodeTools then exit;
 
   // get cursor position
-  SrcEdit:=SourceEditorWindow.ActiveEditor;
+  SrcEdit:=SourceEditorManagerIntf.ActiveEditor;
   if SrcEdit=nil then exit;
   Code:=TCodeBuffer(SrcEdit.CodeToolsBuffer);
   if Code=nil then exit;

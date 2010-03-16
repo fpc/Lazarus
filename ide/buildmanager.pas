@@ -1433,8 +1433,8 @@ function TBuildManager.OnRunCompilerWithOptions(
   ExtTool: TIDEExternalToolOptions; CompOptions: TBaseCompilerOptions
   ): TModalResult;
 begin
-  if SourceEditorWindow<>nil then
-    SourceEditorWindow.ClearErrorLines;
+  if SourceEditorManagerIntf<>nil then
+    SourceEditorManagerIntf.ClearErrorLines;
   Result:=EnvironmentOptions.ExternalTools.Run(ExtTool,GlobalMacroList,
                                                nil,CompOptions);
   if LazarusIDE<>nil then

@@ -141,9 +141,10 @@ procedure TEditorToolbar.InitEditorToolBar;
 var
   T: TJumpType;
 begin
-  if not Assigned(W) then
+  if not Assigned(W) and Assigned(SourceEditorManagerIntf.ActiveSourceWindow) then
   begin
-    W := SourceEditorWindow;
+    {$note Todo, hook SourceEditorManager to detect open/close forms}
+    W := SourceEditorManagerIntf.ActiveSourceWindow; // TODO: each window
     TB := nil;
     CfgButton := nil;
     CreateEditorToolBar(W, TB);
@@ -284,7 +285,7 @@ end;
 
 procedure Register;
 begin
-  if (SourceEditorWindow <> nil) then
+  if (SourceEditorManagerIntf <> nil) then
     gEditorToolbar.InitEditorToolBar;
 end;
 
