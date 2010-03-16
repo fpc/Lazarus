@@ -3319,7 +3319,7 @@ begin
   {$IFDEF VerboseAllAutoSize}
   debugln('TWinControl.DoAutoSize ',DbgSName(Self));
   {$ENDIF}
-  if (not AutoSizeCanStart) or (AutoSizePhase<>caspComputingBounds) then begin
+  if (AutoSizePhase<>caspComputingBounds) then begin
     {$IFDEF VerboseAllAutoSize}
     DebugLn(['TWinControl.DoAutoSize DELAYED AutoSizeCanStart=',AutoSizeCanStart,' AutoSizeDelayed=',AutoSizeDelayed,' AutoSizePhase=',AutoSizePhaseNames[AutoSizePhase]]);
     {$ENDIF}

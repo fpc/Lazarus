@@ -2399,8 +2399,8 @@ procedure TControl.DoAllAutoSize;
     i: Integer;
   begin
     if AControl.AutoSizeDelayed then exit;
-
     if not (cfAutoSizeNeeded in AControl.FControlFlags) then exit;
+
     //DebugLn(['TControl.DoAllAutoSize.AutoSizeControl ',DbgSName(AControl),' AutoSize=',AControl.AutoSize]);
     Exclude(AControl.FControlFlags,cfAutoSizeNeeded);
     if AControl.AutoSize then
@@ -2472,6 +2472,7 @@ begin
   end;
 end;
 
+{$IFDEF OldAutoSize}
 {------------------------------------------------------------------------------
   function TControl.AutoSizeCanStart: boolean;
   
@@ -2505,6 +2506,7 @@ begin
   end;
   {$ENDIF}
 end;
+{$ENDIF}
 
 {$IFNDEF OldAutoSize}
 function TControl.AutoSizePhase: TControlAutoSizePhase;

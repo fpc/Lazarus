@@ -560,8 +560,6 @@ end;
 procedure TCustomForm.WMPaint(var Message: TLMPaint);
 begin
   //DebugLn('[TCustomForm.WMPaint] ',Name,':',ClassName);
-  if AutoSizingLockCount = 0 then
-    Include(FFormState, fsDisableAutoSize);
   inherited WMPaint(Message);
   //DebugLn('[TCustomForm.WMPaint] END ',Name,':',ClassName);
 end;
@@ -581,6 +579,18 @@ begin
   {$IFDEF CHECK_POSITION}
   DebugLn('[TCustomForm.WMSize] ',DbgSName(Self),' Message.SizeType=',dbgs(Message.SizeType),' Message.Width=',dbgs(Message.Width),' Message.Height=',dbgs(Message.Height));
   {$ENDIF}
+
+  if (Parent=nil) and ((Message.SizeType and SIZE_SourceIsInterface)>0) then
+  begin
+    // this is a top level form (constraints depend on window manager)
+    // and the widgetset set a size
+    if (Message.Width<>Width) or (Message.Height<>Height) then
+    begin
+      // the window manager sets another size => disable autosize to prevent endless loop
+      Include(FFormState,fsDisableAutoSize);
+    end;
+  end;
+
   Assert(False, 'Trace:WMSIZE in TCustomForm');
   if not (csDesigning in ComponentState) then
   begin
@@ -1158,11 +1168,22 @@ begin
   end;
 end;
 
+procedure TCustomForm.GetPreferredSize(var PreferredWidth,
+  PreferredHeight: integer; Raw: boolean; WithThemeSpace: boolean);
+begin
+  if fsDisableAutoSize in FFormState then begin
+    PreferredWidth:=Width;
+    PreferredHeight:=Height;
+  end else begin
+    inherited GetPreferredSize(PreferredWidth, PreferredHeight, Raw,
+      WithThemeSpace);
+  end;
+end;
+
 procedure TCustomForm.DoAutoSize;
 begin
   //DebugLn(['TCustomForm.DoAutoSize ',DbgSName(Self),' ',WindowState=wsNormal,' ',fsDisableAutoSize in FFormState,' ',dbgs(BoundsRect),' ',dbgs(ClientRect)]);
-  if (WindowState=wsNormal) and (not (fsDisableAutoSize in FFormState)) then
-    inherited DoAutoSize;
+  inherited DoAutoSize;
 end;
 
 procedure TCustomForm.SetAutoSize(Value: Boolean);

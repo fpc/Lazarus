@@ -574,6 +574,9 @@ type
     function IsShortcut(var Message: TLMKey): boolean; virtual;
     procedure MakeFullyVisible(AMonitor: TMonitor = nil; UseWorkarea: Boolean = False);
     function AutoSizeCheckParent: Boolean; override;
+    procedure GetPreferredSize(var PreferredWidth, PreferredHeight: integer;
+                               Raw: boolean = false;
+                               WithThemeSpace: boolean = true); override;
     procedure Release;
     function CanFocus: Boolean; override;
     procedure SetFocus; override;

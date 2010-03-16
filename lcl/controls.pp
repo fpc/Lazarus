@@ -1026,7 +1026,9 @@ type
     {$ENDIF}
     procedure BeginAutoSizing; // set AutoSizing=true, can be used to prevent circles
     procedure EndAutoSizing;   // set AutoSizing=false
+    {$IFDEF OldAutoSize}
     function AutoSizeCanStart: boolean; virtual;
+    {$ENDIF}
     procedure AnchorSideChanged(TheAnchorSide: TAnchorSide); virtual;
     procedure ForeignAnchorSideChanged(TheAnchorSide: TAnchorSide;
                                        Operation: TAnchorSideChangeOperation); virtual;
