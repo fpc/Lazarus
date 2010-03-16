@@ -1528,14 +1528,14 @@ function TTreeNode.DisplayExpandSignRight: integer;
 begin
   Result := DisplayExpandSignLeft;
   if TreeView <> nil then
-    inc(Result,TreeView.Indent);
+    inc(Result, TreeView.Indent);
 end;
 
 function TTreeNode.DisplayIconLeft: integer;
 var
   TV: TCustomTreeView;
 begin
-  Result := DisplayExpandSignLeft;
+  Result := DisplayExpandSignRight;
   TV := TreeView;
   if (TV <> nil) then
     inc(Result, TV.Indent);
