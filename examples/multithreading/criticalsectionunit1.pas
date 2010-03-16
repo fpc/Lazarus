@@ -41,9 +41,11 @@ type
   { TMyThread }
 
   TMyThread = class(TThread)
+  private
+    FAFinished: boolean;
   public
     procedure Execute; override;
-    property Finished: boolean read FFinished write FFinished;
+    property AFinished: boolean read FAFinished write FAFinished;
   end;
 
   { TForm1 }
@@ -99,7 +101,7 @@ begin
   repeat
     AllFinished:=true;
     for i:=Low(Threads) to High(Threads) do
-      if not Threads[i].Finished then AllFinished:=false;
+      if not Threads[i].AFinished then AllFinished:=false;
   until AllFinished;
   // free the threads
   for i:=Low(Threads) to High(Threads) do
@@ -120,6 +122,7 @@ var
   CurCounter: LongInt;
   j: Integer;
 begin
+  FAFinished:=false;
   // increment the counter many times
   // Because the other threads are doing the same, it will frequently happen,
   // that 2 (or more) threads read the same number, increment it by one and
@@ -137,7 +140,7 @@ begin
         LeaveCriticalSection(Form1.CriticalSection);
     end;
   end;
-  Finished:=true;
+  FAFinished:=true;
 end;
 
 initialization

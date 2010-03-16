@@ -29,7 +29,7 @@ interface
 
 uses
   Classes, SysUtils, LResources, Forms, Controls, Graphics, Dialogs, Buttons,
-  ComCtrls, FileUtil;
+  ComCtrls, FileUtil, StdCtrls;
 
 type
 
@@ -85,7 +85,8 @@ begin
     fs:=TFileStream.Create(UTF8ToSys(Filename),fmOpenRead);
     try
       SetLength(Buffer,10);
-      while true do begin
+      while true do
+      begin
 
         // process all user events, like clicking on the button
         Application.ProcessMessages;
@@ -96,7 +97,8 @@ begin
         if Count=0 then break;
 
         // process ...
-        for i:=1 to Count do begin
+        for i:=1 to Count do
+        begin
           Last:=Now;
           repeat
           until Now-Last>(double(1)/fs.Size)/10000;
