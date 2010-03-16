@@ -445,7 +445,10 @@ type
                                       // see gtkwsmenus.pp: gtkWSPopupMenuDeactivate
     wwiDeactivating,                  // during gtk deactivate
     wwiActivating,                    // during gtk activate
-    wwiNoEraseBkgnd                   // erase background is disabled for widget
+    wwiNoEraseBkgnd,                  // erase background is disabled for widget
+    wwiInvalidEvent                   // special mark for widgetinfo
+                                      // see gtkchanged_editbox and
+                                      // gtkchanged_editbox_backspace in gtkcallback.inc
     );
   TWidgetInfoFlags = set of TWidgetInfoFlag;
   tGtkStateEnumRange = 0..31;

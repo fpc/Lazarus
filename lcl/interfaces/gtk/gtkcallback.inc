@@ -442,7 +442,11 @@ end;
 function gtkchanged_editbox( widget: PGtkWidget; data: gPointer) : GBoolean; cdecl;
 var
   Mess : TLMessage;
+  {$IFDEF GTK2}
   GStart, GEnd: gint;
+  Info: PWidgetInfo;
+  EntryText: PgChar;
+  {$ENDIF}
 begin
   Result := CallBackDefaultReturn;
 
@@ -454,20 +458,75 @@ begin
   if GTK_IS_ENTRY(Widget) then
   begin
     {cheat GtkEditable to update cursor pos in gtkEntry. issue #7243}
-    {$ifdef gtk1}
+    {$IFDEF GTK1}
+    {under gtk1 we have not text_width & backspace signal
+     so we cannot reach our goal like in gtk2 case.
+     IMHO, better to leave as bug than as partial bug
+     since pressing bkspace or delete always move
+     cursor pos to last pos (text width) or positioning
+     inside text by mouse click and then start typing
+     also makes a mess.
     GStart := PGtkOldEditable(Widget)^.selection_start_pos;
     GEnd := PGtkOldEditable(Widget)^.selection_end_pos;
-    {$else}
-    gtk_editable_get_selection_bounds(PGtkEditable(Widget), @GStart, @GEnd);
-    {$endif}
-    if GStart = GEnd then
+    if (GStart = GEnd) then
       gtk_editable_set_position(PGtkEditable(Widget), -1);
+      }
+    {$ELSE}
+    gtk_editable_get_selection_bounds(PGtkEditable(Widget), @GStart, @GEnd);
+    EntryText := gtk_entry_get_text(PGtkEntry(Widget));
+    if (GStart = GEnd) and
+      (UTF8Length(EntryText) >= PGtkEntry(Widget)^.text_length) then
+    begin
+      Info := GetWidgetInfo(Widget, False);
+      {do not update position if backspace or delete pressed}
+      if wwiInvalidEvent in Info^.Flags then
+        exclude(Info^.Flags, wwiInvalidEvent)
+      else
+        gtk_editable_set_position(PGtkEditable(Widget), GStart + 1);
+    end;
+    {$ENDIF}
   end;
-
   FillByte(Mess,SizeOf(Mess),0);
   Mess.Msg := CM_TEXTCHANGED;
   DeliverMessage(Data, Mess);
 end;
+
+{$IFDEF GTK2}
+function gtkchanged_editbox_backspace(widget: PGtkWidget;
+  data: gPointer): GBoolean; cdecl;
+var
+  Mess : TLMessage;
+  GStart, GEnd: gint;
+  Info: PWidgetInfo;
+  EntryText: PgChar;
+begin
+  Result := CallBackDefaultReturn;
+  if GTK_IS_ENTRY(Widget) then
+  begin
+    gtk_editable_get_selection_bounds(PGtkEditable(Widget), @GStart, @GEnd);
+    EntryText := gtk_entry_get_text(PGtkEntry(Widget));
+    if (GStart = GEnd) and (GStart > 0) and
+      (UTF8Length(EntryText) = PGtkEntry(Widget)^.text_length) then
+    begin
+      {mark as invalid event for gtkchanged_editbox, so
+       it doesn't update cursor pos or we have a mess.}
+      Info := GetWidgetInfo(Widget, False);
+      include(Info^.Flags, wwiInvalidEvent);
+      PGtkEntry(Widget)^.current_pos := GStart - 1;
+    end;
+  end;
+end;
+
+function gtkchanged_editbox_delete(widget: PGtkWidget;
+  AType: TGtkDeleteType; APos: gint; data: gPointer): GBoolean; cdecl;
+var
+ Info: PWidgetInfo;
+begin
+  Result := CallBackDefaultReturn;
+  Info := GetWidgetInfo(Widget, False);
+  include(Info^.Flags, wwiInvalidEvent);
+end;
+{$ENDIF}
 
 function gtkdaychanged(Widget: PGtkWidget; data: gPointer) : GBoolean; cdecl;
 var
@@ -2163,9 +2222,19 @@ end;
 function gtkCutToClip( widget: PGtkWidget; data: gPointer) : GBoolean; cdecl;
 var
   Mess : TLMessage;
+  {$IFDEF GTK2}
+  Info: PWidgetInfo;
+  {$ENDIF}
 begin
   EventTrace('Cut to clip', data);
   if (Widget=nil) then ;
+  {$IFDEF GTK2}
+  if (Widget <> nil) and (GTK_IS_ENTRY(Widget)) then
+  begin
+    Info := GetWidgetInfo(Widget, False);
+    include(Info^.Flags, wwiInvalidEvent);
+  end;
+  {$ENDIF}
   Mess.msg := LM_CUT;
   Result:= DeliverMessage(Data, Mess) = 0;
 end;
@@ -2183,9 +2252,19 @@ end;
 function gtkPasteFromClip( widget: PGtkWidget; data: gPointer) : GBoolean; cdecl;
 var
   Mess : TLMessage;
+  {$IFDEF GTK2}
+  Info: PWidgetInfo;
+  {$ENDIF}
 begin
   EventTrace('Paste from clip', data);
   if (Widget=nil) then ;
+  {$IFDEF GTK2}
+  if (Widget <> nil) and (GTK_IS_ENTRY(Widget)) then
+  begin
+    Info := GetWidgetInfo(Widget, False);
+    include(Info^.Flags, wwiInvalidEvent);
+  end;
+  {$ENDIF}
   Mess.msg := LM_PASTE;
   Result:= DeliverMessage(Data, Mess) = 0;
 end;
