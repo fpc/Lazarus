@@ -73,8 +73,7 @@ function  gEditorToolbar: TEditorToolbar;
 implementation
 
 uses
-  CodeAtom
-  ,SrcEditorIntf
+  SrcEditorIntf
   ,LazIDEIntf
   ,CustomCodeTool
   ,Dialogs
