@@ -481,9 +481,9 @@ end;
 
 function TCustomTabControl.GetImageIndex(ATabIndex: Integer): Integer;
 begin
-  Result := TabIndex;
+  Result := ATabIndex;
   if Assigned(FOnGetImageIndex) then
-    FOnGetImageIndex(Self, TabIndex, Result);
+    FOnGetImageIndex(Self, ATabIndex, Result);
 end;
 
 procedure TCustomTabControl.Loaded;
