@@ -3399,7 +3399,8 @@ begin
   end;
   if ParsedStamp[Option]<>CompilerParseStamp then begin
     if Parsing[Option] then begin
-      DebugLn('TParsedCompilerOptions.GetParsedValue Circle in Options: ',ParsedCompilerOptStringNames[Option]);
+      DebugLn('TParsedCompilerOptions.GetParsedValue Circle in Options: ',ParsedCompilerOptStringNames[Option],' Unparsed="',UnparsedValues[Option],'"');
+      RaiseException('');
       exit('');
     end;
     Parsing[Option]:=true;
@@ -3485,10 +3486,13 @@ begin
     end;
   end;
   // parse locally
+  //DebugLn(['TParsedCompilerOptions.DoParseOption local "',s,'" ...']);
   if Assigned(OnLocalSubstitute) then
     s:=OnLocalSubstitute(s,PlatformIndependent);
   // parse globally
+  //DebugLn(['TParsedCompilerOptions.DoParseOption global "',s,'" ...']);
   s:=ParseString(Self,s,PlatformIndependent);
+  //DebugLn(['TParsedCompilerOptions.DoParseOption complete "',s,'" ...']);
   // improve
   if Option=pcosBaseDir then
     // base directory (append path)

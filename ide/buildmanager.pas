@@ -1255,13 +1255,14 @@ function TBuildManager.MacroFuncFPCVer(const Param: string; const Data: PtrInt;
   var Abort: boolean): string;
 var
   FPCVersion, FPCRelease, FPCPatch: integer;
+  Def: TDefineTemplate;
 begin
   Result:={$I %FPCVERSION%};
   if CodeToolBoss<>nil then begin
-    CodeToolBoss.GetFPCVersionForDirectory('',FPCVersion,FPCRelease,FPCPatch);
-    if FPCVersion<>0 then begin
+    Def:=CodeToolBoss.DefineTree.FindDefineTemplateByName(StdDefTemplFPC,true);
+    CodeToolBoss.DefinePool.GetFPCVerFromFPCTemplate(Def,FPCVersion,FPCRelease,FPCPatch);
+    if FPCVersion<>0 then
       Result:=IntToStr(FPCVersion)+'.'+IntToStr(FPCRelease)+'.'+IntToStr(FPCPatch);
-    end;
   end;
 end;
 

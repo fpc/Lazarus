@@ -3630,7 +3630,7 @@ begin
     if Result<>mrOk then exit;
     
     // get all required packages, which will also be auto installed
-    APackage.GetAllRequiredPackages(PkgList);
+    APackage.GetAllRequiredPackages(PkgList,false);
     if PkgList=nil then PkgList:=TFPList.Create;
     
     // remove packages already marked for installation

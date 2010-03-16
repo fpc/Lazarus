@@ -52,7 +52,8 @@ type
   TTransferMacro = class;
 
   TOnSubstitution = procedure(TheMacro: TTransferMacro; const MacroName: string;
-    var s:string; const Data: PtrInt; var Handled, Abort: boolean) of object;
+    var s:string; const Data: PtrInt; var Handled, Abort: boolean;
+    Depth: integer) of object;
 
   TMacroFunction = function(const s: string; const Data: PtrInt;
                             var Abort: boolean): string of object;
@@ -100,7 +101,8 @@ type
     procedure Delete(Index: integer);
     procedure Add(NewMacro: TTransferMacro);
     function FindByName(const MacroName: string): TTransferMacro; virtual;
-    function SubstituteStr(var s: string; const Data: PtrInt = 0): boolean; virtual;
+    function SubstituteStr(var s: string; const Data: PtrInt = 0;
+      Depth: integer = 0): boolean; virtual;
     function StrHasMacros(const s: string): boolean;
     property OnSubstitution: TOnSubstitution
        read fOnSubstitution write fOnSubstitution;
@@ -256,8 +258,8 @@ begin
   //  debugln('TTransferMacroList.Add A ',NewMacro.Name);
 end;
 
-function TTransferMacroList.SubstituteStr(var s:string; const Data: PtrInt
-  ): boolean;
+function TTransferMacroList.SubstituteStr(var s:string; const Data: PtrInt;
+  Depth: integer): boolean;
 var
   MacroStart,MacroEnd: integer;
   MacroName, MacroStr, MacroParam: string;
@@ -272,6 +274,7 @@ var
   NewStringLen: Integer;
   NewStringPos: Integer;
   sLen: Integer;
+  LoopPos, LoopDepth: integer;
 
   function SearchBracketClose(Position:integer): integer;
   var BracketClose:char;
@@ -288,9 +291,16 @@ var
   end;
 
 begin
+  if Depth>10 then begin
+    Result:=false;
+    s:='(macro loop detected)'+s;
+    exit;
+  end;
   Result:=true;
   sLen:=length(s);
   MacroStart:=1;
+  LoopPos:=0;
+  LoopDepth:=1;
   repeat
     while (MacroStart<sLen) do begin
       if (s[MacroStart]<>'$') then
@@ -322,13 +332,13 @@ begin
         // Macro function -> substitute macro parameter first
         MacroParam:=copy(MacroStr,length(MacroName)+3,
                                   length(MacroStr)-length(MacroName)-3);
-        if not SubstituteStr(MacroParam,Data) then begin
+        if not SubstituteStr(MacroParam,Data,Depth+1) then begin
           Result:=false;
           exit;
         end;
         AMacro:=FindByName(MacroName);
         if Assigned(fOnSubstitution) then begin
-          fOnSubstitution(AMacro,MacroName,MacroParam,Data,Handled,Abort);
+          fOnSubstitution(AMacro,MacroName,MacroParam,Data,Handled,Abort,Depth+LoopDepth);
           if Handled then
             MacroStr:=MacroParam
           else if Abort then begin
@@ -350,7 +360,7 @@ begin
         MacroName:=copy(s,MacroStart+2,OldMacroLen-3);
         AMacro:=FindByName(MacroName);
         if Assigned(fOnSubstitution) then begin
-          fOnSubstitution(AMacro,MacroName,MacroName,Data,Handled,Abort);
+          fOnSubstitution(AMacro,MacroName,MacroName,Data,Handled,Abort,Depth+LoopDepth);
           if Handled then
             MacroStr:=MacroName
           else if Abort then begin
@@ -379,6 +389,12 @@ begin
       end;
       // replace macro with new value
       if Handled then begin
+        if MacroStart>=LoopPos then
+          LoopDepth:=1
+        else begin
+          inc(LoopDepth);
+          //DebugLn(['TTransferMacroList.SubstituteStr double macro: ',s,' Depth=',LoopDepth,' Pos=',LoopPos]);
+        end;
         NewMacroLen:=length(MacroStr);
         NewMacroEnd:=MacroStart+NewMacroLen;
         InFrontOfMacroLen:=MacroStart-1;
@@ -404,7 +420,8 @@ begin
         s:=NewString;
         sLen:=length(s);
         // continue after the replacement
-        MacroEnd:=NewMacroEnd;
+        if NewMacroEnd>LoopPos then LoopPos:=NewMacroEnd;
+        MacroEnd:=MacroStart;
       end;
     end;
     MacroStart:=MacroEnd;

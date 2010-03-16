@@ -963,7 +963,8 @@ type
     function GetTestBuildDirectory: string; override;
     procedure OnMacroSubstitution(TheMacro: TTransferMacro;
                                const MacroName: string; var s: string;
-                               const Data: PtrInt; var Handled, Abort: boolean);
+                               const Data: PtrInt; var Handled, Abort: boolean;
+                               Depth: integer);
     procedure GetIDEFileState(Sender: TObject; const AFilename: string;
       NeededFlags: TIDEFileStateFlags; out ResultFlags: TIDEFileStateFlags); override;
 
@@ -11939,7 +11940,7 @@ end;
 
 procedure TMainIDE.OnMacroSubstitution(TheMacro: TTransferMacro;
   const MacroName: string; var s:string;
-  const Data: PtrInt; var Handled, Abort: boolean);
+  const Data: PtrInt; var Handled, Abort: boolean; Depth: integer);
 var MacroLName:string;
 begin
   if TheMacro=nil then begin
@@ -12904,8 +12905,9 @@ begin
                        CreateCompilerTestPascalFilename,CompilerUnitSearchPath,
                        TargetOS,TargetProcessor,CodeToolsOpts);
     AddTemplate(ADefTempl,false,
-      'NOTE: Could not create Define Template for Free Pascal Compiler');
-    // the compiler version was updated, update the FPCSrcDir
+             'NOTE: Could not create Define Template for Free Pascal Compiler');
+
+    // the compiler version was updated, now update the FPCSrcDir
     SetupFPCSourceDirectory(InteractiveSetup);
     CodeToolBoss.GlobalValues.Variables[ExternalMacroStart+'FPCSrcDir']:=
       EnvironmentOptions.GetFPCSourceDirectory;

@@ -684,7 +684,7 @@ type
     procedure SetUserReadOnly(const AValue: boolean);
     procedure OnMacroListSubstitution(TheMacro: TTransferMacro;
       const MacroName: string; var s: string;
-      const Data: PtrInt; var Handled, Abort: boolean);
+      const Data: PtrInt; var Handled, Abort: boolean; Depth: integer);
     procedure Clear;
     procedure UpdateSourceDirectories;
     procedure SourceDirectoriesChanged(Sender: TObject);
@@ -769,7 +769,7 @@ type
     procedure MoveRequiredDependencyDown(Dependency: TPkgDependency);
     function CreateDependencyWithOwner(NewOwner: TObject): TPkgDependency;
     function Requires(APackage: TLazPackage): boolean;
-    procedure GetAllRequiredPackages(var List: TFPList);
+    procedure GetAllRequiredPackages(var List: TFPList; WithSelf: boolean);
     // components
     function IndexOfPkgComponent(PkgComponent: TPkgComponent): integer;
     function AddComponent(PkgFile: TPkgFile; const Page: string;
@@ -2167,7 +2167,7 @@ end;
 
 procedure TLazPackage.OnMacroListSubstitution(TheMacro: TTransferMacro;
   const MacroName: string; var s: string; const Data: PtrInt;
-  var Handled, Abort: boolean);
+  var Handled, Abort: boolean; Depth: integer);
 begin
   if CompareText(s,'PkgOutDir')=0 then begin
     Handled:=true;
@@ -3379,10 +3379,19 @@ begin
   Name:=NewName;
 end;
 
-procedure TLazPackage.GetAllRequiredPackages(var List: TFPList);
+procedure TLazPackage.GetAllRequiredPackages(var List: TFPList;
+  WithSelf: boolean);
 begin
   if Assigned(OnGetAllRequiredPackages) then
     OnGetAllRequiredPackages(FirstRequiredDependency,List);
+  if WithSelf then begin
+    if List=nil then List:=TFPList.Create;
+    if List.IndexOf(Self)<0 then;
+      List.Insert(0,Self);
+  end else if List<>nil then begin
+    List.Remove(Self);
+    if List.Count=0 then FreeAndNil(List);
+  end;
 end;
 
 procedure TLazPackage.GetInheritedCompilerOptions(var OptionsList: TFPList);
@@ -3390,7 +3399,7 @@ var
   PkgList: TFPList; // list of TLazPackage
 begin
   PkgList:=nil;
-  GetAllRequiredPackages(PkgList);
+  GetAllRequiredPackages(PkgList,false);
   OptionsList:=GetUsageOptionsList(PkgList);
   PkgList.Free;
 end;
