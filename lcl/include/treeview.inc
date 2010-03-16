@@ -1479,18 +1479,20 @@ end;
 function TTreeNode.DisplayRect(TextOnly: Boolean): TRect;
 begin
   FillChar(Result, SizeOf(Result), 0);
-  if TreeView<>nil then begin
-    Result.Left:=TreeView.BorderWidth;
-    Result.Top:=Top-TreeView.ScrolledTop+TreeView.BorderWidth;
-    Result.Right:=TreeView.ClientWidth-TreeView.BorderWidth;
-    Result.Bottom:=Result.Top+Height;
-    if TextOnly then begin
-      Result.Left:=DisplayTextLeft;
-      if Result.Left>Result.Right then
-        Result.Left:=Result.Right;
-      Result.Right:=DisplayTextRight;
-      if Result.Right<Result.Left then
-        Result.Right:=Result.Left;
+  if TreeView <> nil then
+  begin
+    Result.Left := TreeView.BorderWidth;
+    Result.Top := Top - TreeView.ScrolledTop + TreeView.BorderWidth;
+    Result.Right := TreeView.ClientWidth - TreeView.BorderWidth;
+    Result.Bottom := Result.Top + Height;
+    if TextOnly then
+    begin
+      Result.Left := DisplayTextLeft;
+      if Result.Left > Result.Right then
+        Result.Left := Result.Right;
+      Result.Right := DisplayTextRight;
+      if Result.Right < Result.Left then
+        Result.Right := Result.Left;
     end;
   end;
 end;
@@ -1500,10 +1502,10 @@ var
   TV: TCustomTreeView;
   l: LongInt;
 begin
-  Result:=0;
-  TV:=TreeView;
-  if TV=nil then exit;
-  l:=Level;
+  Result := 0;
+  TV := TreeView;
+  if TV = nil then Exit;
+  l := Level;
   if not (tvoShowRoot in TV.Options) then
     inc(Result, TV.Indent * (l - 1) + (TV.Indent shr 2) + TV.BorderWidth - TV.FScrolledLeft)
   else
@@ -1513,60 +1515,60 @@ end;
 function TTreeNode.DisplayExpandSignRect: TRect;
 begin
   FillChar(Result, SizeOf(Result), 0);
-  if TreeView<>nil then begin
-    Result.Left:=DisplayExpandSignLeft;
-    Result.Top:=Top;
-    Result.Right:=Result.Left+TreeView.Indent;
-    Result.Bottom:=Top+Height;
+  if TreeView <> nil then
+  begin
+    Result.Left := DisplayExpandSignLeft;
+    Result.Top := Top;
+    Result.Right := Result.Left + TreeView.Indent;
+    Result.Bottom := Top + Height;
   end;
 end;
 
 function TTreeNode.DisplayExpandSignRight: integer;
 begin
-  Result:=DisplayExpandSignLeft;
-  if TreeView<>nil then begin
+  Result := DisplayExpandSignLeft;
+  if TreeView <> nil then
     inc(Result,TreeView.Indent);
-  end;
 end;
 
 function TTreeNode.DisplayIconLeft: integer;
 var
   TV: TCustomTreeView;
 begin
-  Result:=DisplayExpandSignLeft;
-  TV:=TreeView;
-  if (TV<>nil) then
-    inc(Result,TV.Indent);
+  Result := DisplayExpandSignLeft;
+  TV := TreeView;
+  if (TV <> nil) then
+    inc(Result, TV.Indent);
 end;
 
 function TTreeNode.DisplayStateIconLeft: integer;
 var
   TV: TCustomTreeView;
 begin
-  Result:=DisplayIconLeft;
-  TV:=TreeView;
-  if (TV<>nil) and (TV.Images<>nil) then
-    inc(Result,TV.Images.Width+2);
+  Result := DisplayIconLeft;
+  TV := TreeView;
+  if (TV <> nil) and (TV.Images <> nil) then
+    inc(Result, TV.Images.Width + 2);
 end;
 
 function TTreeNode.DisplayTextLeft: integer;
 var
   TV: TCustomTreeView;
 begin
-  Result:=DisplayStateIconLeft;
-  TV:=TreeView;
-  if (TV<>nil) and (TV.StateImages<>nil) then
-    inc(Result,TV.StateImages.Width+2);
+  Result := DisplayStateIconLeft;
+  TV := TreeView;
+  if (TV <> nil) and (TV.StateImages <> nil) then
+    inc(Result, TV.StateImages.Width + 2);
 end;
 
 function TTreeNode.DisplayTextRight: integer;
 var
   TV: TCustomTreeView;
 begin
-  Result:=DisplayTextLeft;
-  TV:=TreeView;
-  if TV<>nil then
-    Inc(Result,TV.Canvas.TextWidth(Text));
+  Result := DisplayTextLeft;
+  TV := TreeView;
+  if TV <> nil then
+    Inc(Result, TV.Canvas.TextWidth(Text));
 end;
 
 function TTreeNode.AlphaSort: Boolean;
@@ -4440,10 +4442,10 @@ var
   PaintImages: boolean;
   TextY: Integer;
 begin
-  NodeRect := Node.DisplayRect(false);
+  NodeRect := Node.DisplayRect(False);
   if (NodeRect.Bottom<0) or (NodeRect.Top>=(ClientHeight-ScrollBarWidth)) then
-    exit;
-  NodeSelected:=(Node.Selected) or (Node.MultiSelected);
+    Exit;
+  NodeSelected := (Node.Selected) or (Node.MultiSelected);
   if Assigned(OnCustomDrawItem) or Assigned(FOnAdvancedCustomDrawItem) then
   begin
     DrawState:=[];
@@ -4503,7 +4505,7 @@ begin
     end;
 
     // draw state icon
-    if (StateImages<>nil) and PaintImages then
+    if (StateImages <> nil) and PaintImages then
     begin
       if (Node.StateIndex >= 0) and (Node.StateIndex < StateImages.Count) then
         StateImages.Draw(Canvas, x + 1, (NodeRect.Top + NodeRect.Bottom - StateImages.Height) div 2,
