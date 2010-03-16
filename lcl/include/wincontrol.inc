@@ -6668,6 +6668,7 @@ begin
     FBoundsRealized := NewBoundsRealized;
     InvalidatePreferredSize;
 
+    {$IFNDEF OldAutoSize}
     if AutoSizingAll then begin
       // while the LCL is creating handles the widgetset may send default bounds
       // we have not yet told the widgetset the final bounds
@@ -6678,6 +6679,7 @@ begin
       //    default values.
       exit;
     end;
+    {$ENDIF}
   end;
 
   SetBoundsKeepBase(NewLeft, NewTop, Message.Width, Message.Height, Parent <> nil);
