@@ -5,7 +5,7 @@ unit LHelpControl;
 interface
 
 uses
-  Classes, SysUtils, FileUtil, SimpleIPC, Process, UTF8Process;
+  Classes, SysUtils, FileUtil, SimpleIPC, UTF8Process;
 
 type
   TRequestType = (rtFile, rtUrl, rtContext);
