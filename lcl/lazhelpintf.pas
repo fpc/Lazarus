@@ -2250,9 +2250,10 @@ var
   ExpFilename: String;
 begin
   ExpFilename:=FFilename;
-  //DebugLn(['THelpDBISourceFile.GetFullFilename ExpFilename="',ExpFilename,'"']);
+  //DebugLn(['THelpDBISourceFile.GetFullFilename ExpFilename="',ExpFilename,'" HelpDatabases=',DbgSName(HelpDatabases)]);
   if (HelpDatabases<>nil) then
     HelpDatabases.SubstituteMacros(ExpFilename);
+  //DebugLn(['THelpDBISourceFile.GetFullFilename substituted ',ExpFilename]);
   ExpFilename:=TrimFilename(ExpFilename);
   if FilenameIsAbsolute(ExpFilename) then
     Result:=ExpFilename
