@@ -1532,13 +1532,8 @@ begin
 end;
 
 function TTreeNode.DisplayIconLeft: integer;
-var
-  TV: TCustomTreeView;
 begin
   Result := DisplayExpandSignRight;
-  TV := TreeView;
-  if (TV <> nil) then
-    inc(Result, TV.Indent);
 end;
 
 function TTreeNode.DisplayStateIconLeft: integer;
@@ -1568,7 +1563,7 @@ begin
   Result := DisplayTextLeft;
   TV := TreeView;
   if TV <> nil then
-    Inc(Result, TV.Canvas.TextWidth(Text));
+    Inc(Result, TV.Canvas.TextWidth(Text) + 1); // +1 because we draw from left + 1
 end;
 
 function TTreeNode.AlphaSort: Boolean;
@@ -3194,7 +3189,7 @@ begin
     inc(Cnt);
     if (Cnt < 100) then
     begin
-      i := Node.DisplayTextRight;
+      i := Node.DisplayTextRight + Indent div 2;
     end else
     begin
       // computing DisplayTextRight is too expensive when the tree
