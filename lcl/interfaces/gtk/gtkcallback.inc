@@ -509,8 +509,11 @@ begin
     begin
       {mark as invalid event for gtkchanged_editbox, so
        it doesn't update cursor pos or we have a mess.}
-      Info := GetWidgetInfo(Widget, False);
-      include(Info^.Flags, wwiInvalidEvent);
+      if (gtk_major_version = 2) and (gtk_minor_version < 15) then
+      begin
+        Info := GetWidgetInfo(Widget, False);
+        include(Info^.Flags, wwiInvalidEvent);
+      end;
       PGtkEntry(Widget)^.current_pos := GStart - 1;
     end;
   end;
@@ -2228,10 +2231,13 @@ begin
   EventTrace('Cut to clip', data);
   if (Widget=nil) then ;
   {$IFDEF GTK2}
-  if (Widget <> nil) and (GTK_IS_ENTRY(Widget)) then
+  if (gtk_major_version = 2) and (gtk_minor_version < 15) then
   begin
-    Info := GetWidgetInfo(Widget, False);
-    include(Info^.Flags, wwiInvalidEvent);
+    if (Widget <> nil) and (GTK_IS_ENTRY(Widget)) then
+    begin
+      Info := GetWidgetInfo(Widget, False);
+      include(Info^.Flags, wwiInvalidEvent);
+    end;
   end;
   {$ENDIF}
   Mess.msg := LM_CUT;
@@ -2258,10 +2264,13 @@ begin
   EventTrace('Paste from clip', data);
   if (Widget=nil) then ;
   {$IFDEF GTK2}
-  if (Widget <> nil) and (GTK_IS_ENTRY(Widget)) then
+  if (gtk_major_version = 2) and (gtk_minor_version < 15) then
   begin
-    Info := GetWidgetInfo(Widget, False);
-    include(Info^.Flags, wwiInvalidEvent);
+    if (Widget <> nil) and (GTK_IS_ENTRY(Widget)) then
+    begin
+      Info := GetWidgetInfo(Widget, False);
+      include(Info^.Flags, wwiInvalidEvent);
+    end;
   end;
   {$ENDIF}
   Mess.msg := LM_PASTE;
