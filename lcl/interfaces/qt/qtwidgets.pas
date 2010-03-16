@@ -10027,11 +10027,15 @@ var
   D: TRect;
   R: TRect;
   P: TPoint;
+  Pt: TQtPoint;
   ScreenNumber: integer;
+  W,H: integer;
 begin
   if AVisible then
   begin
     R := getGeometry;
+    W := R.Right - R.Left;
+    H := R.Bottom - R.Top;
     LCLIntf.GetCursorPos(P);
 
     {we must make proper positioning of our hint if
@@ -10050,25 +10054,30 @@ begin
       {$ENDIF}
 
 
-      if (P.X + getWidth > D.Right - D.Left) then
-        P.X := P.X - (ToolTipOffset + getWidth);
+      if (P.X + W > D.Right - D.Left) then
+        P.X := P.X - ((ToolTipOffset) + W);
 
-      if (P.Y + getHeight > D.Bottom - D.Top) then
-        P.Y := P.Y - ((ToolTipOffset * 6) + getHeight);
+      if (P.Y + H > D.Bottom - D.Top) then
+        P.Y := P.Y - ((ToolTipOffset * 6) + H);
 
       if P.Y < D.Top then
         P.Y := D.Top;
 
-      if (P.X + getWidth > D.Right - D.Left) then
-        P.X := D.Right - D.Left - getWidth;
+      if (P.X + W > D.Right - D.Left) then
+        P.X := D.Right - D.Left - W;
 
       if P.X < D.Left then
         P.X := D.Left;
 
-      if P.Y + getHeight > D.Bottom - D.Top then
-        P.Y := D.Bottom - D.Top - getHeight;
+      if P.Y + H > D.Bottom - D.Top then
+        P.Y := D.Bottom - D.Top - H;
 
-      move(P.X, P.Y);
+      Pt := getPos;
+
+      if (P.X >= Pt.X) and (P.X <= Pt.X + W) then
+        move(P.X + ToolTipOffset, P.Y)
+      else
+        move(P.X , P.Y);
     end;
   end;
   inherited setVisible(AVisible);
