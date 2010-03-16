@@ -1641,6 +1641,7 @@ components/printers/Makefile svneol=native#text/plain
 components/printers/Makefile.fpc svneol=native#text/plain
 components/printers/carbon/carbonprinters.inc svneol=native#text/pascal
 components/printers/carbon/carbonprinters_h.inc svneol=native#text/pascal
+components/printers/carbon/carbonprinting.pas svneol=native#text/pascal
 components/printers/carbon/carbonprndialogs.inc svneol=native#text/pascal
 components/printers/carbon/issues.xml svneol=native#text/xml
 components/printers/design/Makefile svneol=native#text/plain
