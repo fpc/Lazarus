@@ -216,6 +216,7 @@ type
     FSourceDirectoryReferenced: boolean;
     FSourceDirNeedReference: boolean;
     fLastDirectoryReferenced: string;
+    FWindowIndex: integer;
 
     function GetHasResources:boolean;
     function GetModified: boolean;
@@ -244,6 +245,7 @@ type
     procedure SetSource(ABuffer: TCodeBuffer);
     procedure SetUnitName(const NewUnitName:string);
     procedure SetUserReadOnly(const NewValue: boolean);
+    procedure SetWindowIndex(const AValue: integer);
   protected
     function GetFileName: string; override;
     procedure SetFilename(const AValue: string); override;
@@ -340,7 +342,9 @@ type
     property CustomHighlighter: boolean
                                read fCustomHighlighter write fCustomHighlighter;
     property Directives: TStrings read FDirectives write SetDirectives;
-    property EditorIndex: integer read fEditorIndex write SetEditorIndex;
+    property EditorIndex: integer read FEditorIndex write SetEditorIndex;
+    property WindowIndex: integer read FWindowIndex write SetWindowIndex;
+
     property EditorComponent: TSourceEditorInterface
              read FEditorComponent write SetEditorComponent;
     property FileReadOnly: Boolean read fFileReadOnly write SetFileReadOnly;
@@ -998,7 +1002,9 @@ end;
 
 function CompareUnitInfoWithEditorIndex(Unit1, Unit2: TUnitInfo): integer;
 begin
-  Result:=Unit1.EditorIndex-Unit2.EditorIndex;
+  Result := Unit1.WindowIndex - Unit2.WindowIndex;
+  if Result = 0 then
+    Result := Unit1.EditorIndex - Unit2.EditorIndex;
 end;
 
 {------------------------------------------------------------------------------
@@ -1154,6 +1160,8 @@ begin
   fCursorPos.Y := -1;
   fCustomHighlighter := false;
   fEditorIndex := -1;
+  FWindowIndex := -1;
+
   fFilename := '';
   fFileReadOnly := false;
   fHasResources := false;
@@ -1251,6 +1259,8 @@ begin
     XMLConfig.SetDeleteValue(Path+'CursorPos/Y',fCursorPos.Y,-1);
     XMLConfig.SetDeleteValue(Path+'TopLine/Value',fTopLine,-1);
     XMLConfig.SetDeleteValue(Path+'EditorIndex/Value',fEditorIndex,-1);
+    XMLConfig.SetDeleteValue(Path+'WindowIndex/Value',FWindowIndex,-1);
+
     XMLConfig.SetDeleteValue(Path+'UsageCount/Value',RoundToInt(fUsageCount),-1);
     FBookmarks.SaveToXMLConfig(XMLConfig,Path+'Bookmarks/');
     XMLConfig.SetDeleteValue(Path+'Loaded/Value',fLoaded,false);
@@ -1306,6 +1316,8 @@ begin
   CursorPos:=Point(XMLConfig.GetValue(Path+'CursorPos/X',-1),
                    XMLConfig.GetValue(Path+'CursorPos/Y',-1));
   EditorIndex:=XMLConfig.GetValue(Path+'EditorIndex/Value',-1);
+  WindowIndex:=XMLConfig.GetValue(Path+'WindowIndex/Value',-1);
+
 
   Loaded:=XMLConfig.GetValue(Path+'Loaded/Value',false);
   fUserReadOnly:=XMLConfig.GetValue(Path+'ReadOnly/Value',false);
@@ -1804,8 +1816,10 @@ end;
 procedure TUnitInfo.SetEditorComponent(const AEditor: TSourceEditorInterface);
 begin
   if FEditorComponent = AEditor then exit;
-  if AEditor = nil then
+  if AEditor = nil then begin
     EditorIndex := -1;
+    WindowIndex := -1;
+  end;
   FEditorComponent := AEditor;
   UpdateList(uilWithEditorIndex, FEditorComponent <> nil);
   if AEditor <> nil then
@@ -1833,6 +1847,13 @@ begin
   end;
 
   SessionModified:=true;
+end;
+
+procedure TUnitInfo.SetWindowIndex(const AValue: integer);
+begin
+  if FWindowIndex = AValue then exit;
+  FWindowIndex := AValue;
+  SessionModified := true;
 end;
 
 procedure TUnitInfo.SetFileReadOnly(const AValue: Boolean);

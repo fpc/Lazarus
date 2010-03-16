@@ -1343,7 +1343,7 @@ begin
   FreeAndNil(MessagesView);
   FreeThenNil(AnchorDesigner);
   FreeThenNil(ObjectInspector1);
-  FreeThenNil(SourceNotebook);
+  FreeThenNil(SourceEditorManagerIntf);
 
   // disconnect handlers
   Application.RemoveAllHandlersOfObject(Self);
@@ -1888,33 +1888,33 @@ end;
 
 procedure TMainIDE.SetupSourceNotebook;
 begin
-  SourceNotebook := TSourceNotebook.Create(OwningComponent);
-  SourceNotebook.OnActivate := @OnSrcNoteBookActivated;
-  SourceNotebook.OnAddJumpPoint := @OnSrcNoteBookAddJumpPoint;
-  SourceNotebook.OnCloseClicked := @OnSrcNotebookFileClose;
-  SourceNotebook.OnClickLink := @OnSrcNoteBookClickLink;
-  SourceNotebook.OnMouseLink := @OnSrcNoteBookMouseLink;
-  SourceNotebook.OnGetIndent := @OnSrcNoteBookGetIndent;
-  SourceNotebook.OnCurrentCodeBufferChanged:=@OnSrcNotebookCurCodeBufferChanged;
-  SourceNotebook.OnDeleteLastJumpPoint := @OnSrcNotebookDeleteLastJumPoint;
-  SourceNotebook.OnEditorVisibleChanged := @OnSrcNotebookEditorVisibleChanged;
-  SourceNotebook.OnEditorChanged := @OnSrcNotebookEditorChanged;
-  SourceNotebook.OnEditorPropertiesClicked := @mnuEnvEditorOptionsClicked;
-  SourceNotebook.OnFindDeclarationClicked := @OnSrcNotebookFindDeclaration;
-  SourceNotebook.OnInitIdentCompletion :=@OnSrcNotebookInitIdentCompletion;
-  SourceNotebook.OnInsertTodoClicked := @mnuEditInsertTodo;
-  SourceNotebook.OnShowCodeContext :=@OnSrcNotebookShowCodeContext;
-  SourceNotebook.OnJumpToHistoryPoint := @OnSrcNotebookJumpToHistoryPoint;
-  SourceNotebook.OnOpenFileAtCursorClicked := @OnSrcNotebookFileOpenAtCursor;
-  SourceNotebook.OnProcessUserCommand := @OnProcessIDECommand;
-  SourceNotebook.OnReadOnlyChanged := @OnSrcNotebookReadOnlyChanged;
-  SourceNotebook.OnShowHintForSource := @OnSrcNotebookShowHintForSource;
-  SourceNotebook.OnShowUnitInfo := @OnSrcNoteBookShowUnitInfo;
-  SourceNotebook.OnToggleFormUnitClicked := @OnSrcNotebookToggleFormUnit;
-  SourceNotebook.OnToggleObjectInspClicked:= @OnSrcNotebookToggleObjectInsp;
-  SourceNotebook.OnViewJumpHistory := @OnSrcNotebookViewJumpHistory;
-  SourceNotebook.OnShowSearchResultsView := @OnSrcNotebookShowSearchResultsView;
-  SourceNotebook.OnPopupMenu := @OnSrcNoteBookPopupMenu;
+  TSourceEditorManager.Create(OwningComponent);
+  SourceEditorManager.OnWindowActivate := @OnSrcNoteBookActivated;
+  SourceEditorManager.OnAddJumpPoint := @OnSrcNoteBookAddJumpPoint;
+  SourceEditorManager.OnCloseClicked := @OnSrcNotebookFileClose;
+  SourceEditorManager.OnClickLink := @OnSrcNoteBookClickLink;
+  SourceEditorManager.OnMouseLink := @OnSrcNoteBookMouseLink;
+  SourceEditorManager.OnGetIndent := @OnSrcNoteBookGetIndent;
+  SourceEditorManager.OnCurrentCodeBufferChanged:=@OnSrcNotebookCurCodeBufferChanged;
+  SourceEditorManager.OnDeleteLastJumpPoint := @OnSrcNotebookDeleteLastJumPoint;
+  SourceEditorManager.OnEditorVisibleChanged := @OnSrcNotebookEditorVisibleChanged;
+  SourceEditorManager.OnEditorChanged := @OnSrcNotebookEditorChanged;
+  SourceEditorManager.OnEditorPropertiesClicked := @mnuEnvEditorOptionsClicked;
+  SourceEditorManager.OnFindDeclarationClicked := @OnSrcNotebookFindDeclaration;
+  SourceEditorManager.OnInitIdentCompletion :=@OnSrcNotebookInitIdentCompletion;
+  SourceEditorManager.OnInsertTodoClicked := @mnuEditInsertTodo;
+  SourceEditorManager.OnShowCodeContext :=@OnSrcNotebookShowCodeContext;
+  SourceEditorManager.OnJumpToHistoryPoint := @OnSrcNotebookJumpToHistoryPoint;
+  SourceEditorManager.OnOpenFileAtCursorClicked := @OnSrcNotebookFileOpenAtCursor;
+  SourceEditorManager.OnProcessUserCommand := @OnProcessIDECommand;
+  SourceEditorManager.OnReadOnlyChanged := @OnSrcNotebookReadOnlyChanged;
+  SourceEditorManager.OnShowHintForSource := @OnSrcNotebookShowHintForSource;
+  SourceEditorManager.OnShowUnitInfo := @OnSrcNoteBookShowUnitInfo;
+  SourceEditorManager.OnToggleFormUnitClicked := @OnSrcNotebookToggleFormUnit;
+  SourceEditorManager.OnToggleObjectInspClicked:= @OnSrcNotebookToggleObjectInsp;
+  SourceEditorManager.OnViewJumpHistory := @OnSrcNotebookViewJumpHistory;
+  SourceEditorManager.OnShowSearchResultsView := @OnSrcNotebookShowSearchResultsView;
+  SourceEditorManager.OnPopupMenu := @OnSrcNoteBookPopupMenu;
   DebugBoss.ConnectSourceNotebookEvents;  
 
   // connect search menu to sourcenotebook
@@ -3918,7 +3918,7 @@ begin
     // save shortcuts to editor options
     EnvironmentOptions.ExternalTools.SaveShortCuts(EditorOpts.KeyMap);
     EditorOpts.Save;
-    SourceNotebook.ReloadEditorOptions;
+    SourceEditorManager.ReloadEditorOptions;
     UpdateCustomToolsInMenu;
   end;
 end;
@@ -4219,7 +4219,7 @@ begin
     end;
     if IDEOptionsDialog.ShowModal = mrOk then begin
       IDEOptionsDialog.WriteAll;
-      SourceNotebook.ReloadEditorOptions;
+      SourceEditorManager.ReloadEditorOptions;
     end;
   finally
     IDEOptionsDialog.Free;
@@ -4335,7 +4335,7 @@ end;
 procedure TMainIDE.DoEditorOptionsAfterWrite(Sender: TObject);
 begin
   Project1.UpdateAllSyntaxHighlighter;
-  SourceNotebook.ReloadEditorOptions;
+  SourceEditorManager.ReloadEditorOptions;
   ReloadMenuShortCuts;
 end;
 
@@ -4491,7 +4491,7 @@ end;
 procedure TMainIDE.mnuEnvCodeTemplatesClicked(Sender: TObject);
 begin
   if ShowCodeTemplateDialog=mrOk then
-    SourceNotebook.ReloadEditorOptions;
+    SourceEditorManager.ReloadEditorOptions;
 end;
 
 procedure TMainIDE.mnuEnvCodeToolsDefinesEditorClicked(Sender: TObject);
