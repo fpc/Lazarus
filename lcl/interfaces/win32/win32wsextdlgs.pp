@@ -120,7 +120,7 @@ begin
       DialogRec := POpenFileDialogRec(OpenFileName^.lCustData);
       AControl := TPreviewFileDialog(DialogRec^.Dialog).PreviewFileControl;
       // attach our child to the template window
-      SetParent(AControl.Handle, hWnd);
+      AControl.ParentWindow := hWnd;
 
       GetWindowRect(stc32Handle, ARect);
       ScreenToClient(hWnd, ARect.TopLeft);
