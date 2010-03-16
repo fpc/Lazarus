@@ -33,7 +33,7 @@
 {off $DEFINE CHECK_POSITION}
 {$IFDEF CHECK_POSITION}
 const CheckPostionClassName = 'xxTPage';
-const CheckPostionName = 'Button1';
+const CheckPostionName = 'tvList';
 const CheckPostionParentName = 'xxxEnvVarsPage';
 
 function CheckPosition(AControl: TControl): boolean;
@@ -6651,7 +6651,7 @@ begin
   if (Message.SizeType and Size_SourceIsInterface) > 0 then
   begin
     // interface widget has resized
-    // -> update position and realized bounds
+    // -> update realized position and realized bounds
     {$IFDEF VerboseAllAutoSize}
     DebugLn(['TWinControl.WMSize A ',dbgsname(Self),' Message=',Message.Width,',',Message.Height,
       ' BoundsRealized=',dbgs(FBoundsRealized),' FromIntf=',(Message.SizeType and Size_SourceIsInterface)>0,
@@ -6667,6 +6667,17 @@ begin
        (not (wcfClientRectNeedsUpdate in FWinControlFlags)) then exit;
     FBoundsRealized := NewBoundsRealized;
     InvalidatePreferredSize;
+
+    if AutoSizingAll then begin
+      // while the LCL is creating handles the widgetset may send default bounds
+      // we have not yet told the widgetset the final bounds
+      // => the InvalidatePreferredSize and the InvalidateClientRectCache
+      //    (invoked by the widgetset) may trigger a further loop in the auto
+      //    size algorithm to take care of the new bounds
+      // => do not call SetBounds, as this will set the Bounds to the widgetset
+      //    default values.
+      exit;
+    end;
   end;
 
   SetBoundsKeepBase(NewLeft, NewTop, Message.Width, Message.Height, Parent <> nil);
