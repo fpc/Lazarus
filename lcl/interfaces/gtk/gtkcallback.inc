@@ -451,16 +451,18 @@ begin
   EventTrace('changed_editbox', data);
   {$ENDIF}
 
-  {TODO: test this with gtk1}
-  {$ifdef gtk2}
   if GTK_IS_ENTRY(Widget) then
   begin
     {cheat GtkEditable to update cursor pos in gtkEntry. issue #7243}
+    {$ifdef gtk1}
+    GStart := PGtkOldEditable(Widget)^.selection_start_pos;
+    GEnd := PGtkOldEditable(Widget)^.selection_end_pos;
+    {$else}
     gtk_editable_get_selection_bounds(PGtkEditable(Widget), @GStart, @GEnd);
+    {$endif}
     if GStart = GEnd then
       gtk_editable_set_position(PGtkEditable(Widget), -1);
   end;
-  {$endif}
 
   FillByte(Mess,SizeOf(Mess),0);
   Mess.Msg := CM_TEXTCHANGED;
