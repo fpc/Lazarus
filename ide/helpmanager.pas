@@ -650,9 +650,6 @@ end;
 function TIDEHelpDatabases.SubstituteMacros(var s: string): boolean;
 begin
   Result:=IDEMacros.SubstituteMacros(s);
-  DebugLn(['TIDEHelpDatabases.SubstituteMacros AAA1 ',s,' ',Result]);
-  Result:=IDEMacros.SubstituteMacros(s);
-  DebugLn(['TIDEHelpDatabases.SubstituteMacros AAA2 ',s,' ',Result]);
 end;
 
 { TIDEHelpManager }
