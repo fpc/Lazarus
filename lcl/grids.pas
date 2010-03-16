@@ -308,6 +308,9 @@ type
   TToggledCheckboxEvent = procedure(sender: TObject; aCol, aRow: Integer;
                                     aState: TCheckboxState) of object;
 
+  THeaderSizingEvent = procedure(sender: TObject; const IsColumn: boolean;
+                                    const aIndex, aSize: Integer) of object;
+
   { TVirtualGrid }
 
   TVirtualGrid=class
@@ -886,6 +889,7 @@ type
     procedure GridMouseWheel(shift: TShiftState; Delta: Integer); virtual;
     procedure HeaderClick(IsColumn: Boolean; index: Integer); virtual;
     procedure HeaderSized(IsColumn: Boolean; index: Integer); virtual;
+    procedure HeaderSizing(const IsColumn:boolean; const AIndex,ASize:Integer); virtual;
     procedure InternalSetColCount(ACount: Integer);
     procedure InvalidateCell(aCol, aRow: Integer; Redraw: Boolean); overload;
     procedure InvalidateRange(const aRange: TRect);
@@ -1087,6 +1091,7 @@ type
     FOnGetEditMask: TGetEditEvent;
     FOnGetEditText: TGetEditEvent;
     FOnHeaderClick, FOnHeaderSized: THdrEvent;
+    FOnHeaderSizing: THeaderSizingEvent;
     FOnSelectCell: TOnSelectcellEvent;
     FOnSetCheckboxState: TSetCheckboxStateEvent;
     FOnSetEditText: TSetEditEvent;
@@ -1111,6 +1116,7 @@ type
     procedure GridMouseWheel(shift: TShiftState; Delta: Integer); override;
     procedure HeaderClick(IsColumn: Boolean; index: Integer); override;
     procedure HeaderSized(IsColumn: Boolean; index: Integer); override;
+    procedure HeaderSizing(const IsColumn:boolean; const AIndex,ASize:Integer); override;
     procedure KeyDown(var Key : Word; Shift : TShiftState); override;
     procedure NotifyColRowChange(WasInsert,IsColumn:boolean; FromIndex,ToIndex:Integer);
     function  SelectCell(aCol,aRow: Integer): boolean; override;
@@ -1233,6 +1239,7 @@ type
     property OnGetEditText: TGetEditEvent read FOnGetEditText write FOnGetEditText;
     property OnHeaderClick: THdrEvent read FOnHeaderClick write FOnHeaderClick;
     property OnHeaderSized: THdrEvent read FOnHeaderSized write FOnHeaderSized;
+    property OnHeaderSizing: THeaderSizingEvent read FOnHeaderSizing write FOnHeaderSizing;
     property OnKeyDown;
     property OnKeyPress;
     property OnKeyUp;
@@ -1331,6 +1338,7 @@ type
     property OnGetEditText;
     property OnHeaderClick;
     property OnHeaderSized;
+    property OnHeaderSizing;
     property OnKeyDown;
     property OnKeyPress;
     property OnKeyUp;
@@ -1525,6 +1533,7 @@ type
     property OnGetEditText;
     property OnHeaderClick;
     property OnHeaderSized;
+    property OnHeaderSizing;
     property OnKeyDown;
     property OnKeyPress;
     property OnKeyUp;
@@ -3096,6 +3105,11 @@ begin
   RowHeights[aRow] := aHeight;
 end;
 
+procedure TCustomGrid.HeaderSizing(const IsColumn: boolean; const AIndex,
+  ASize: Integer);
+begin
+end;
+
 
 function TCustomGrid.SelectCell(ACol, ARow: Integer): Boolean;
 begin
@@ -4528,6 +4542,7 @@ begin
       end;
     end else
       ResizeColumn(FSplitter.x, x-FSplitter.y);
+    HeaderSizing(true, FSplitter.x, x-FSplitter.y);
     exit(true);
   end else
   if (fGridState=gsNormal) and (ColCount>FixedCols) and
@@ -4588,6 +4603,7 @@ begin
       end;
     end else
       ResizeRow(FSplitter.y, y-FSplitter.x);
+    HeaderSizing(false, FSplitter.Y, y-FSplitter.x);
     Result:=True;
   end else
   if (fGridState=gsNormal) and (RowCount>FixedRows) and
@@ -8296,6 +8312,14 @@ procedure TCustomDrawGrid.HeaderSized(IsColumn: Boolean; index: Integer);
 begin
   inherited HeaderSized(IsColumn, index);
   if Assigned(OnHeaderSized) then OnHeaderSized(Self, IsColumn, index);
+end;
+
+procedure TCustomDrawGrid.HeaderSizing(const IsColumn: boolean; const AIndex,
+  ASize: Integer);
+begin
+  inherited HeaderSizing(IsColumn, AIndex, ASize);
+  if Assigned(OnHeaderSizing) then
+    OnHeaderSizing(self, IsColumn, AIndex, ASize);
 end;
 
 procedure TCustomDrawGrid.KeyDown(var Key: Word; Shift: TShiftState);
