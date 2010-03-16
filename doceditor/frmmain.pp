@@ -59,6 +59,7 @@ type
     ANew: TAction;
     ANewFromFile: TAction;
     AOpen: TAction;
+    ApplicationProperties1: TApplicationProperties;
     ASave: TAction;
     ASaveAs: TAction;
     AClose: TAction;
@@ -147,6 +148,7 @@ type
     procedure AExtraOptionsExecute(Sender: TObject);
     procedure AFormatParagraphHint(var HintStr: string; var CanShow: Boolean);
     procedure AHelpAboutExecute(Sender: TObject);
+    procedure ApplicationProperties1Hint(Sender: TObject);
     procedure CanFormat(Sender: TObject);
     procedure AInsertLinkExecute(Sender: TObject);
     procedure AInsertLinkUpdate(Sender: TObject);
@@ -222,20 +224,17 @@ var
 
 function MessageDlg(Fmt: string; Args : Array of const; DlgType: TMsgDlgType;
             Buttons: TMsgDlgButtons; HelpCtx: Longint): Integer;
-
 begin
   Result:=Dialogs.MessageDlg(Format(Fmt,Args),DlgType,Buttons,HelpCtx);
 end;
 
 function MessageDlg(Fmt: string; Args : Array of const; DlgType: TMsgDlgType;
             Buttons: TMsgDlgButtons): Integer;
-
 begin
   Result:=Dialogs.MessageDlg(Format(Fmt,Args),DlgType,Buttons,0);
 end;
 
 function MessageDlg(Msg: string; DlgType: TMsgDlgType; Buttons: TMsgDlgButtons): Integer;
-
 begin
   Result:=Dialogs.MessageDlg(Msg,DlgType,Buttons,0);
 end;
@@ -249,8 +248,7 @@ Type
     FileName : String;
   end;
 
-Procedure TMainForm.FileReopen(Sender: TObject);
-
+procedure TMainForm.FileReopen(Sender: TObject);
 begin
   OpenFile((Sender as TRecentMenuItem).FileName);
 end;
@@ -296,7 +294,6 @@ end;
 
 procedure TMainForm.ACloseExecute(Sender: TObject);
 begin
-  if Sender=nil then ;
   CloseEditor(CurrentEditor);
 end;
 
@@ -323,6 +320,11 @@ end;
 procedure TMainForm.AHelpAboutExecute(Sender: TObject);
 begin
   ShowAbout;
+end;
+
+procedure TMainForm.ApplicationProperties1Hint(Sender: TObject);
+begin
+  StatusBar1.SimpleText:=Application.Hint;
 end;
 
 procedure TMainForm.CanFormat(Sender: TObject);
@@ -424,20 +426,17 @@ begin
 end;
 
 procedure TMainForm.InsertStructure(Sender: TObject);
-
 begin
   InsertNode(TNodeType((Sender as TAction).Tag));
 end;
 
 procedure TMainForm.MainFormCloseQuery(Sender: TObject; var CanClose: boolean);
 begin
-  if Sender=nil then ;
   CanClose:=AllowClose;
 end;
 
 procedure TMainForm.MainFormDestroy(Sender: TObject);
 begin
-  if Sender=nil then ;
   SaveOptions;
   SaveRecent;
   FreeAndNil(FRecent);
@@ -447,7 +446,8 @@ procedure TMainForm.QuickLinkClick(Sender: TObject);
 var
   Selection : string;
 begin
-  if Assigned(CurrentEditor) then begin
+  if Assigned(CurrentEditor) then
+  begin
     Selection := CurrentEditor.CurrentSelection;
     if Selection <> '' then
       CurrentEditor.InsertLink(CurrentEditor.CurrentElement['name'] + '.' + Selection, Selection)
@@ -472,7 +472,6 @@ procedure TMainForm.BuildReopenList;
 
 var I : integer;
     mi : TRecentMenuItem;
-
 begin
   with MIRecent do
     begin
@@ -486,9 +485,8 @@ begin
 end;
 
 procedure TMainForm.AddTorecent(FN: String);
-Var
+var
   Index : Integer;
-
 begin
   FN:=ExpandFileNameUTF8(FN);
   With FRecent do
@@ -604,7 +602,7 @@ end;
 
 procedure TMainForm.OpenFile(FN: String);
 begin
-  IF (FN<>'') then
+  if (FN<>'') then
     begin
     If FileExistsUTF8(FN) then
       With CreatePage do
@@ -616,10 +614,8 @@ begin
 end;
 
 procedure TMainForm.SaveEditorAs(E: TEditorPage);
-
 var
   Fn : String;
-
 begin
   with SDMain do
     begin
@@ -667,9 +663,8 @@ begin
 end;
 
 procedure TMainForm.LoadCommandLine;
-Var
+var
   I : Integer;
-
 begin
   I:=1;
   While I<=ParamCount do
@@ -681,10 +676,9 @@ begin
 end;
 
 procedure TMainForm.LoadRecent;
-Var
+var
   I,Count : Integer;
   S : String;
-
 begin
   FRecent.Clear;
   With TInifile.Create(UTF8ToSys(GetoptionFileName)) do begin
@@ -700,7 +694,7 @@ begin
 end;
 
 procedure TMainForm.SaveRecent;
-Var
+var
   I : Integer;
 begin
   With TInifile.Create(UTF8ToSys(GetoptionFileName)) do
@@ -735,7 +729,6 @@ begin
 end;
 
 function TMainForm.AllowClose: Boolean;
-
 begin
   Result:=True;
   While (PCFiles.PageCount>0) and Result do
@@ -758,10 +751,8 @@ Type
 
 
 Function CreateSkeletonFile(Const S : TSkeletonData) : Boolean;
-
-Var
+var
   Cmd : String;
-
 begin
   With S do
     begin
@@ -807,11 +798,9 @@ begin
 end;
 
 Procedure TMainForm.NewFromFile;
-
-Var
+var
   SkeletonData : TSkeletonData;
   OK : Boolean;
-  
 begin
   With TMakeSkelform.Create(Self) do
     try
@@ -884,10 +873,9 @@ begin
       end;
 end;
 
-Procedure TMainForm.InsertLink;
-
+procedure TMainForm.InsertLink;
 begin
-  If Assigned(CurrentEditor) then
+  if Assigned(CurrentEditor) then
     With TLinkForm.Create(Self) do
       Try
         Caption:=SInsertLink;
@@ -906,12 +894,10 @@ begin
 end;
 
 Procedure TMainForm.InsertTable;
-
-Var
+var
   R,C : Integer;
-
 begin
-  With TTableForm.Create(Self) do
+  with TTableForm.Create(Self) do
     try
       Caption:=SInsertTable;
       SERows.Text:=IntToStr(3);
@@ -967,12 +953,10 @@ begin
 end;
 
 procedure TMainForm.GetCurrentFiles(List: TStrings);
-
-Var
+var
   I : Integer;
-
 begin
-  For I:=0 to PCFiles.PageCount-1 do
+  for I:=0 to PCFiles.PageCount-1 do
     List.Add(TEditorPage(PCFiles.Pages[i]).FileName);
 end;
 

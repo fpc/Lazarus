@@ -7,7 +7,7 @@ object MainForm: TMainForm
   VertScrollBar.Page = 523
   ActiveControl = Splitter1
   Caption = 'MainForm'
-  ClientHeight = 524
+  ClientHeight = 519
   ClientWidth = 602
   Menu = MMain
   OnCloseQuery = MainFormCloseQuery
@@ -19,6 +19,7 @@ object MainForm: TMainForm
     Height = 30
     Top = 0
     Width = 602
+    AutoSize = True
     ButtonHeight = 28
     ButtonWidth = 28
     Caption = 'TBMain'
@@ -129,20 +130,20 @@ object MainForm: TMainForm
   end
   object StatusBar1: TStatusBar
     Left = 0
-    Height = 23
-    Top = 501
+    Height = 21
+    Top = 498
     Width = 602
     Panels = <>
   end
   object Splitter1: TSplitter
     Left = 0
-    Height = 471
+    Height = 468
     Top = 30
     Width = 5
   end
   object PCFiles: TPageControl
     Left = 5
-    Height = 471
+    Height = 468
     Top = 30
     Width = 597
     Align = alClient
@@ -4136,5 +4137,10 @@ object MainForm: TMainForm
     object MenuItem20: TMenuItem
       Action = EditSelectAll1
     end
+  end
+  object ApplicationProperties1: TApplicationProperties
+    OnHint = ApplicationProperties1Hint
+    left = 312
+    top = 146
   end
 end
