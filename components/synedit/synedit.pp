@@ -4408,6 +4408,7 @@ begin
   end;
   if FHideSelection and SelAvail then
     Invalidate;
+  inherited;
 end;
 
 procedure TCustomSynEdit.WMSetFocus(var Msg: TWMSetFocus);
@@ -4420,6 +4421,7 @@ begin
   InitializeCaret;
   //if FHideSelection and SelAvail then
   //  Invalidate;
+  inherited;
   //DebugLn('[TCustomSynEdit.WMSetFocus] END');
 end;
 
