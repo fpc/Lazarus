@@ -168,7 +168,7 @@ type
 
   TSourceEditorWindowInterface = class(TForm)
   protected
-    FActiveCompletionPlugin: TSourceEditorCompletionPlugin;
+    function GetActiveCompletionPlugin: TSourceEditorCompletionPlugin; virtual; abstract;
     function GetActiveEditor: TSourceEditorInterface; virtual; abstract;
     function GetCompletionBoxPosition: integer; virtual; abstract;
     function GetCompletionPlugins(Index: integer
@@ -176,10 +176,9 @@ type
     function GetItems(Index: integer): TSourceEditorInterface; virtual; abstract;
     procedure SetActiveEditor(const AValue: TSourceEditorInterface); virtual; abstract;
   public
-    function SourceEditorIntfWithFilename(
-                                const Filename: string): TSourceEditorInterface;
-    property ActiveEditor: TSourceEditorInterface read GetActiveEditor
-                                                  write SetActiveEditor;
+    function SourceEditorIntfWithFilename(const Filename: string): TSourceEditorInterface;
+    property ActiveEditor: TSourceEditorInterface
+             read GetActiveEditor write SetActiveEditor;
     function Count: integer; virtual; abstract;
     property Items[Index: integer]: TSourceEditorInterface read GetItems; default;
     
@@ -189,17 +188,71 @@ type
 
     property CompletionBoxPosition: integer read GetCompletionBoxPosition;
     procedure DeactivateCompletionForm; virtual; abstract;
-    property ActiveCompletionPlugin: TSourceEditorCompletionPlugin read FActiveCompletionPlugin;
+    property ActiveCompletionPlugin: TSourceEditorCompletionPlugin read GetActiveCompletionPlugin;
+    // CompletionPlugin list moves to Manager
+    function CompletionPluginCount: integer; virtual; abstract;
+    property CompletionPlugins[Index: integer]: TSourceEditorCompletionPlugin
+             read GetCompletionPlugins;
+    procedure RegisterCompletionPlugin(Plugin: TSourceEditorCompletionPlugin); virtual; abstract;
+    procedure UnregisterCompletionPlugin(Plugin: TSourceEditorCompletionPlugin); virtual; abstract;
+  end;
+  
+  TSourceEditorManagerInterface = class(TComponent)
+  protected
+    function GetActiveEditor: TSourceEditorInterface; virtual; abstract;
+    function GetActiveSourceWindow: TSourceEditorWindowInterface; virtual; abstract;
+             virtual; abstract;
+    function GetSourceEditors(Index: integer): TSourceEditorInterface;
+             virtual; abstract;
+    function GetSourceWindows(Index: integer): TSourceEditorWindowInterface;
+             virtual; abstract;
+    procedure SetActiveEditor(const AValue: TSourceEditorInterface);
+              virtual; abstract;
+    procedure SetActiveSourceWindow(const AValue: TSourceEditorWindowInterface);
+              virtual; abstract;
+  public
+    // List of SourceEditorWindows
+    function SourceWindowWithEditor(const AEditor: TSourceEditorInterface): TSourceEditorWindowInterface;
+             virtual; abstract;
+    function SourceWindowCount: integer; virtual; abstract;
+    property SourceWindows[Index: integer]: TSourceEditorWindowInterface
+             read GetSourceWindows;
+    property ActiveSourceWindow: TSourceEditorWindowInterface
+             read GetActiveSourceWindow write SetActiveSourceWindow;
+    // List of SourceEditors (accross all Windows)
+    function SourceEditorIntfWithFilename(const Filename: string): TSourceEditorInterface;
+             virtual; abstract;
+    function SourceEditorCount: integer; virtual; abstract;
+    property SourceEditors[Index: integer]: TSourceEditorInterface
+             read GetSourceEditors;
+    property ActiveEditor: TSourceEditorInterface
+             read GetActiveEditor  write SetActiveEditor;
+    // Editor Preferences
+    function GetEditorControlSettings(EditControl: TControl): boolean; virtual; abstract;
+    function GetHighlighterSettings(Highlighter: TObject): boolean; virtual; abstract;
+    procedure ClearErrorLines; virtual; abstract;
+  protected
+    // Completion Plugins
+    function GetActiveCompletionPlugin: TSourceEditorCompletionPlugin; virtual; abstract;
+    function GetCompletionBoxPosition: integer; virtual; abstract;
+    function GetCompletionPlugins(Index: integer): TSourceEditorCompletionPlugin; virtual; abstract;
+  public
+    // Completion Plugins
     function CompletionPluginCount: integer; virtual; abstract;
     property CompletionPlugins[Index: integer]: TSourceEditorCompletionPlugin
                  read GetCompletionPlugins;
+    procedure DeactivateCompletionForm; virtual; abstract;
+    property ActiveCompletionPlugin: TSourceEditorCompletionPlugin read GetActiveCompletionPlugin;
+    property CompletionBoxPosition: integer read GetCompletionBoxPosition;
     procedure RegisterCompletionPlugin(Plugin: TSourceEditorCompletionPlugin); virtual; abstract;
     procedure UnregisterCompletionPlugin(Plugin: TSourceEditorCompletionPlugin); virtual; abstract;
   end;
   
   
+function SourceEditorWindow: TSourceEditorWindowInterface;           // Returns the active window
+
 var
-  SourceEditorWindow: TSourceEditorWindowInterface = nil;// set by the IDE
+  SourceEditorManagerIntf: TSourceEditorManagerInterface= nil;                      // set by the IDE
 
 type
 
@@ -346,6 +399,14 @@ var
   IDESearchInText: TIDESearchInTextFunction = nil;// set by the IDE
 
 implementation
+
+function SourceEditorWindow: TSourceEditorWindowInterface;
+begin
+  if SourceEditorManagerIntf = nil then
+    result := nil
+  else
+    Result := SourceEditorManagerIntf.ActiveSourceWindow;
+end;
 
 function RegisterCodeMacro(const Name: string; const ShortDescription,
   LongDescription: string; OnGetValueProc: TIDECodeMacroGetValueProc;
