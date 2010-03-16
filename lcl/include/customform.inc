@@ -1983,6 +1983,7 @@ begin
   if (Control <> nil) and (not (csFocusing in Control.ControlState)) then
   begin
     Control.ControlState := Control.ControlState + [csFocusing];
+    Screen.FFocusedForm := Self;
     // prevent looping
     // update ActiveControls of all parent forms
     CurControl := Control.Parent;
