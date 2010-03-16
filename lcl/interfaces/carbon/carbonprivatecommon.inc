@@ -357,7 +357,7 @@ begin
 
   FillChar(Msg, SizeOf(TLMContextMenu), 0);
   Msg.Msg := LM_CONTEXTMENU;
-  Msg.hWnd := HWND(AWidget)
+  Msg.hWnd := HWND(AWidget);
   Msg.Pos.X := P.X;
   Msg.Pos.Y := P.Y;
   
