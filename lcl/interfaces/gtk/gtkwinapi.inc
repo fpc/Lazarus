@@ -6911,7 +6911,9 @@ begin
   {$ifdef gtk1}
   Result := GDK_WINDOW_GET_MINIMIZED(PGdkWindowPrivate(PgtkWidget(GtkWindow)^.Window));
   {$else}
-  Result := gdk_window_get_state(PGtkWidget(GtkWindow)^.Window) and GDK_WINDOW_STATE_ICONIFIED <> 0;
+  Result := (PGtkWidget(GtkWindow)^.Window<>nil)
+      and (gdk_window_get_state(PGtkWidget(GtkWindow)^.Window)
+           and GDK_WINDOW_STATE_ICONIFIED <> 0);
   {$endif}
 end;
 
