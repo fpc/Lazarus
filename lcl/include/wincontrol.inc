@@ -6616,9 +6616,22 @@ begin
     NewWidth := FBoundsRealized.Right - FBoundsRealized.Left;
     NewHeight := FBoundsRealized.Bottom - FBoundsRealized.Top;
     // skip size update when window is minimized
-    if HandleAllocated and not IsIconic(Handle) then
+    if HandleAllocated and (not IsIconic(Handle)) then
       GetWindowSize(Handle, NewWidth, NewHeight);
     FBoundsRealized := Bounds(Message.XPos, Message.YPos, NewWidth, NewHeight);
+    {$IFNDEF OldAutoSize}
+    InvalidatePreferredChildSizes;
+    if AutoSizingAll then begin
+      // while the LCL is creating handles the widgetset may send default bounds
+      // we have not yet told the widgetset the final bounds
+      // => the InvalidatePreferredSize and the InvalidateClientRectCache
+      //    (invoked by the widgetset) may trigger a further loop in the auto
+      //    size algorithm to take care of the new bounds
+      // => do not call SetBounds, as this will set the Bounds to the widgetset
+      //    default values.
+      exit;
+    end;
+    {$ENDIF}
   end;
   SetBoundsKeepBase(Message.XPos, Message.YPos, NewWidth, NewHeight, Parent <> nil);
 end;
