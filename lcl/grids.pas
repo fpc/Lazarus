@@ -10035,7 +10035,10 @@ var
   i: Integer;
 begin
   {$ifdef NewCols}
-  result := Index;
+  if Index>Count-1 then
+    result := -1
+  else
+    result := Index;
   {$else}
   result := -1;
   if Index>=0 then
