@@ -1253,11 +1253,20 @@ begin
   HiddenWindowsOnRun:=TList.Create;
 
   // menu
-  SetupStandardIDEMenuItems;
-  SetupMainMenu;
-  SetupSpeedButtons;
-  SetupComponentNoteBook;
-  ConnectMainBarEvents;
+  {$IFNDEF OldAutoSize}
+  MainIDEBar.DisableAutoSizing;
+  try
+  {$ENDIF}
+    SetupStandardIDEMenuItems;
+    SetupMainMenu;
+    SetupSpeedButtons;
+    SetupComponentNoteBook;
+    ConnectMainBarEvents;
+  {$IFNDEF OldAutoSize}
+  finally
+    MainIDEBar.EnableAutoSizing;
+  end;
+  {$ENDIF}
   {$IFDEF IDE_MEM_CHECK}CheckHeapWrtMemCnt('TMainIDE.Create MENU');{$ENDIF}
 
   // create main IDE register items
