@@ -1835,15 +1835,17 @@ begin
   FEditorIndex := AValue;
   UpdateList(uilWithEditorIndex, FEditorIndex >= 0);
 
-  i := Project1.Bookmarks.Count-1;
-  while (i >= 0) do begin
-    if Project1.Bookmarks[i].EditorComponent = EditorComponent then begin
-      if (FEditorIndex < 0) then
-        Project1.Bookmarks.Delete(i)
-      else
-        Project1.Bookmarks[i].EditorIndex := FEditorIndex;
+  if assigned(Project1) and assigned(Project1.Bookmarks) then begin
+    i := Project1.Bookmarks.Count-1;
+    while (i >= 0) do begin
+      if Project1.Bookmarks[i].EditorComponent = EditorComponent then begin
+        if (FEditorIndex < 0) then
+          Project1.Bookmarks.Delete(i)
+        else
+          Project1.Bookmarks[i].EditorIndex := FEditorIndex;
+      end;
+      dec(i);
     end;
-    dec(i);
   end;
 
   SessionModified:=true;
