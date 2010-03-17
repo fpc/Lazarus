@@ -7935,7 +7935,7 @@ begin
   else
     Window := SourceWindowWithEditor(AValue);
   if Window = nil then exit;
-  FActiveWindow := TSourceNotebook(Window);
+  ActiveSourceWindow := TSourceNotebook(Window);
   Window.ActiveEditor := AValue;
 end;
 

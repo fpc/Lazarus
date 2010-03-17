@@ -14353,7 +14353,8 @@ begin
   //DebugLn(['TMainIDE.OnSrcNotebookShowHintForSource START']);
   if (SrcEdit=nil) then exit;
 
-  SourceNotebook.SetActiveSE(SrcEdit);
+  if SourceEditorManager.ActiveEditor <> SrcEdit then
+    SourceEditorManager.ActiveEditor := SrcEdit;
 
   if not BeginCodeTool(ActiveSrcEdit, ActiveUnitInfo,
     [{ctfActivateAbortMode}]) then exit;
