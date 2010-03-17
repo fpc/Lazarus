@@ -56,7 +56,9 @@ begin
   if (Parent=nil) and (not (cfAutoSizeNeeded in FControlFlags))
   and (Self is TCustomForm) then begin
     DebugLn(['TControl.Adjustsize ',DbgSName(Self)]);
-    debugln(GetStackTrace(true));
+    if Name='SearchResultsView' then begin
+      debugln(GetStackTrace(true));
+    end;
   end;
   {$ENDIF}
   Include(FControlFlags,cfAutoSizeNeeded);

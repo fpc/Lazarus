@@ -486,6 +486,7 @@ end;
 
 procedure TCustomLabel.SetBounds(aLeft, aTop, aWidth, aHeight: integer);
 begin
+  if (Left=aLeft) and (Top=aTop) and (Width=aWidth) and (Height=aHeight) then exit;
   if not FInternalSetBounds and AutoSize and WordWrap then
     InvalidatePreferredSize;
   inherited SetBounds(aLeft, aTop, aWidth, aHeight);
