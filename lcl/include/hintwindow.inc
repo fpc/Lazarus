@@ -69,8 +69,8 @@ end;
 
 procedure THintWindow.DoShowWindow;
 begin
-  if (ActiveControl = nil) and (not (csDesigning in ComponentState))
-  and (Parent=nil) then begin
+  if (ActiveControl = nil) and (not (csDesigning in ComponentState)) and (Parent=nil) then
+  begin
     // automatically choose a control to focus
     {$IFDEF VerboseFocus}
     DebugLn('THintWindow.WMShowWindow ',DbgSName(Self),' Set ActiveControl := ',DbgSName(FindDefaultForActiveControl));
