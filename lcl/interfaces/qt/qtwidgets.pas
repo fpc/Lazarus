@@ -313,7 +313,6 @@ type
   public
     function EventFilter(Sender: QObjectH; Event: QEventH): Boolean; cdecl; override;
     procedure AttachEvents; override;
-    procedure SlotSliderReleased; cdecl; override;
   end;
 
   { TQtFrame }
@@ -5243,30 +5242,14 @@ begin
 end;
 
 procedure TQtAbstractSlider.SlotSliderMoved(p1: Integer); cdecl;
-var
-  LMScroll: TLMScroll;
 begin
  {$ifdef VerboseQt}
   writeln('TQtAbstractSlider.sliderMoved() to pos=',p1);
  {$endif}
 
-  if getTracking then
-    exit;
-
-  FillChar(LMScroll, SizeOf(LMScroll), #0);
-
-  LMScroll.ScrollBar := PtrUInt(Self);
-   
-  if QAbstractSlider_orientation(QAbstractSliderH(Widget)) = QtHorizontal then
-    LMScroll.Msg := LM_HSCROLL
-  else
-    LMScroll.Msg := LM_VSCROLL;
-
-  LMScroll.Pos := p1;
-  LMScroll.ScrollCode := SIF_TRACKPOS;
-
-  if not InUpdate then
-    DeliverMessage(LMScroll);
+ // there's no need to deliver this message
+ // since ValueChanged does it's job correct, also for tracking on/off
+ // this signal must stay empty because of ttrackbar !
 end;
 
 procedure TQtAbstractSlider.SlotSliderPressed; cdecl;
@@ -5299,9 +5282,6 @@ begin
   {$ifdef VerboseQt}
   writeln('TQtAbstractSlider.SlotValueChanged() to value ',p1,' inUpdate ',inUpdate);
   {$endif}
-
-  if not getTracking then
-    exit;
 
   FillChar(LMScroll, SizeOf(LMScroll), #0);
 
@@ -5400,8 +5380,7 @@ begin
       end;
   end;
 
-  if not InUpdate then
-    DeliverMessage(LMScroll);
+  DeliverMessage(LMScroll);
 end;
 
 { TQtScrollBar }
@@ -5460,27 +5439,6 @@ begin
   QAbstractSlider_hook_hook_valueChanged(FValueChangedHook, @SlotValueChanged);
 
   QAbstractSlider_hook_hook_actionTriggered(FActionTriggeredHook, @SlotActionTriggered);
-end;
-
-procedure TQtScrollBar.SlotSliderReleased; cdecl;
-var
-  LMScroll: TLMScroll;
-begin
-  inherited SlotSliderReleased;
-  FillChar(LMScroll, SizeOf(LMScroll), #0);
-
-  LMScroll.ScrollBar := PtrUInt(Self);
-
-  if QAbstractSlider_orientation(QAbstractSliderH(Widget)) = QtHorizontal then
-    LMScroll.Msg := LM_HSCROLL
-  else
-    LMScroll.Msg := LM_VSCROLL;
-
-  LMScroll.Pos := getSliderPosition;
-  LMScroll.ScrollCode := SIF_POS;
-
-  if not InUpdate then
-    DeliverMessage(LMScroll);
 end;
 
 { TQtToolBar }

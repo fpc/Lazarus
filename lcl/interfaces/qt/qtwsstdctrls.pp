@@ -327,7 +327,9 @@ begin
   QtScrollBar.setSingleStep((AScrollBar.PageSize div 6) + 1);
   QtScrollBar.setRange(AScrollBar.Min, AScrollBar.Max);
 
+  QtScrollBar.BeginUpdate;
   QtScrollBar.setValue(AScrollBar.Position);
+  QtScrollbar.EndUpdate;
   
   case AScrollBar.Kind of
     sbHorizontal:
