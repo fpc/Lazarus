@@ -33,6 +33,7 @@ email: jesusrmx@yahoo.com.mx
 unit Grids;
 
 {$mode objfpc}{$H+}
+{$define NewCols}
 
 interface
 
@@ -425,6 +426,7 @@ type
     FPickList: TStrings;
     FMinSize, FMaxSize, FSizePriority: ^Integer;
     FValueChecked,FValueUnchecked: PChar;
+    FSettingIndex: boolean;
 
     procedure FontChanged(Sender: TObject);
     function GetAlignment: TAlignment;
@@ -486,6 +488,7 @@ type
     procedure ColumnChanged; virtual;
     procedure AllColumnsChange;
     function  CreateTitle: TGridColumnTitle; virtual;
+    procedure SetIndex(Value: Integer); override;
 
     property  IsDefaultFont: boolean read FIsDefaultFont;
   public
@@ -6763,7 +6766,11 @@ end;
 
 function TCustomGrid.GridColumnFromColumnIndex(ColumnIndex: Integer): Integer;
 begin
+  {$ifdef NewCols}
+  result := ColumnIndex;
+  {$else}
   result := Columns.VisibleIndex(ColumnIndex);
+  {$endif}
   if result>=0 then
     result := result + FixedCols;
 end;
@@ -9466,6 +9473,10 @@ end;
 
 function TGridColumn.GetWidth: Integer;
 begin
+  {$ifdef newcols}
+  if not Visible then
+    exit(0);
+  {$endif}
   if FWidth=nil then
     result := GetDefaultWidth
   else
@@ -9820,6 +9831,22 @@ begin
   result := TGridColumnTitle.Create(Self);
 end;
 
+procedure TGridColumn.SetIndex(Value: Integer);
+var
+  AGrid: TCustomGrid;
+  CurCol,DstCol: Integer;
+begin
+  AGrid := Grid;
+  if (not FSettingIndex) and (AGrid<>nil) then begin
+    FSettingIndex := true;
+    CurCol := Grid.GridColumnFromColumnIndex(Index);
+    DstCol := Grid.GridColumnFromColumnIndex(Value);
+    Grid.DoOPMoveColRow(true, CurCol, DstCol);
+    FSettingIndex := false;
+  end else
+    inherited SetIndex(Value);
+end;
+
 constructor TGridColumn.Create(ACollection: TCollection);
 begin
   inherited Create(ACollection);
@@ -9896,10 +9923,14 @@ function TGridColumns.GetVisibleCount: Integer;
 var
   i: Integer;
 begin
+  {$ifdef newcols}
+  result := Count;
+  {$else}
   result := 0;
   for i:=0 to Count-1 do
     if Items[i].Visible then
       inc(result);
+  {$endif}
 end;
 
 function TGridColumns.GetOwner: TPersistent;
@@ -10003,6 +10034,9 @@ function TGridColumns.RealIndex(Index: Integer): Integer;
 var
   i: Integer;
 begin
+  {$ifdef NewCols}
+  result := Index;
+  {$else}
   result := -1;
   if Index>=0 then
     for i:=0 to Count-1 do begin
@@ -10014,6 +10048,7 @@ begin
         end;
       end;
     end;
+  {$endif}
 end;
 
 function TGridColumns.IndexOf(Column: TGridColumn): Integer;
