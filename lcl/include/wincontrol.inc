@@ -30,7 +30,7 @@
 {off $DEFINE VerboseCanAutoSize}
 
 {off $DEFINE VerboseSizeMsg}
-{$DEFINE CHECK_POSITION}
+{off $DEFINE CHECK_POSITION}
 {$IFDEF CHECK_POSITION}
 const CheckPostionClassName = 'xxTPage';
 const CheckPostionName = 'IDEOptionsDialog';
@@ -2289,8 +2289,8 @@ begin
   //if Result then debugln('TWinControl.AutoSizeDelayed A ',DbgSName(Self),' wcfCreatingChildHandles=',dbgs(wcfCreatingChildHandles in FWinControlFlags),' csLoading=',dbgs(csLoading in ComponentState));
   {$IFDEF VerboseCanAutoSize}
   if Result {and AutoSize} then begin
-    DbgOut('TWinControl.AutoSizeDelayed Self='+DbgSName(Self)+' ');
-    if not HandleAllocated then debugln('not HandleAllocated');
+    if not HandleAllocated then
+      debugln('TWinControl.AutoSizeDelayed Self='+DbgSName(Self)+' not HandleAllocated');
   end;
   {$ENDIF}
 end;
@@ -7388,6 +7388,7 @@ var
 begin
   if HandleAllocated then
   begin
+    //DebugLn(['TWinControl.DestroyWnd ',DbgSName(Self)]);
     {$IFNDEF OldAutoSize}
     DisableAutoSizing;
     try
