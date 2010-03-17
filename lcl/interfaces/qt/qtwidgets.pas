@@ -5295,7 +5295,7 @@ begin
   LMScroll.Pos := p1;
   LMScroll.ScrollCode := SIF_POS;
 
-  if not InUpdate then
+  if not InUpdate or (getVisible and ((p1=getMin) or (p1=getMax))) then
     DeliverMessage(LMScroll);
 end;
 
