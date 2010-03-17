@@ -303,6 +303,7 @@ type
     function GetCurrentField: TField;
     function GetDataSource: TDataSource;
     function GetRecordCount: Integer;
+    function GetSelectedFieldRect: TRect;
     function GetSelectedIndex: Integer;
     function GetThumbTracking: boolean;
     procedure OnRecordChanged(Field:TField);
@@ -458,6 +459,7 @@ type
     property SelectedField: TField read GetCurrentField write SetCurrentField;
     property SelectedIndex: Integer read GetSelectedIndex write SetSelectedIndex;
     property SelectedColumn: TColumn read GetCurrentColumn;
+    property SelectedFieldRect: TRect read GetSelectedFieldRect;
     property ThumbTracking: boolean read GetThumbTracking write SetThumbTracking;
   end;
 
@@ -707,6 +709,11 @@ end;
 function TCustomDBGrid.GetRecordCount: Integer;
 begin
   result := FDataLink.DataSet.RecordCount;
+end;
+
+function TCustomDBGrid.GetSelectedFieldRect: TRect;
+begin
+  result := CellRect(Col,Row);
 end;
 
 function TCustomDBGrid.GetSelectedIndex: Integer;
