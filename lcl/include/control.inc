@@ -51,6 +51,13 @@ begin
   DoAutoSize;
   Exclude(FControlFlags,cfAutoSizeNeeded);
   {$ELSE}
+  {$IFDEF VerboseAdjustSize}
+  if (Parent=nil) and (not (cfAutoSizeNeeded in FControlFlags))
+  and (Self is TCustomForm) then begin
+    DebugLn(['TControl.Adjustsize ',DbgSName(Self)]);
+    debugln(GetStackTrace(true));
+  end;
+  {$ENDIF}
   Include(FControlFlags,cfAutoSizeNeeded);
   if IsControlVisible then
   begin
@@ -4287,39 +4294,48 @@ constructor TControl.Create(TheOwner: TComponent);
 var
   Side: TAnchorKind;
 begin
-  //if AnsiCompareText(ClassName,'TSpeedButton')=0 then
-  //  DebugLn('TControl.Create START ',Name,':',ClassName);
-  inherited Create(TheOwner);
+  {$IFNDEF OldAutoSize}
+  DisableAutoSizing;
+  try
+  {$ENDIF}
+    //if AnsiCompareText(ClassName,'TSpeedButton')=0 then
+    //  DebugLn('TControl.Create START ',Name,':',ClassName);
+    inherited Create(TheOwner);
 
-  // no csOpaque: delphi compatible, win32 themes notebook depend on it
-  // csOpaque means entire client area will be drawn 
-  // (most controls are semi-transparent)
-  FControlStyle := FControlStyle
-                 +[csCaptureMouse, csClickEvents, csSetCaption, csDoubleClicks];
-  FConstraints:= TSizeConstraints.Create(Self);
-  FBorderSpacing := CreateControlBorderSpacing;
-  for Side:=Low(FAnchorSides) to High(FAnchorSides) do
-    FAnchorSides[Side]:=TAnchorSide.Create(Self,Side);
+    // no csOpaque: delphi compatible, win32 themes notebook depend on it
+    // csOpaque means entire client area will be drawn
+    // (most controls are semi-transparent)
+    FControlStyle := FControlStyle
+                   +[csCaptureMouse, csClickEvents, csSetCaption, csDoubleClicks];
+    FConstraints:= TSizeConstraints.Create(Self);
+    FBorderSpacing := CreateControlBorderSpacing;
+    for Side:=Low(FAnchorSides) to High(FAnchorSides) do
+      FAnchorSides[Side]:=TAnchorSide.Create(Self,Side);
 
-  FAnchors := [akLeft,akTop];
-  FAlign := alNone;
-  FCaptureMouseButtons := [mbLeft];
-  FColor := clWindow;
-  FVisible := True;
-  FParentBidiMode := True;
-  FParentColor := True;
-  FParentFont := True;
-  FParentShowHint := True;
-  FWindowProc := @WndProc;
-  FCursor := crDefault;
-  FFont := TFont.Create;
-  FFont.OnChange := @FontChanged;
-  FIsControl := False;
-  FEnabled := True;
-  FHelpType := htContext;
-  FDragCursor := crDrag;
-  FFloatingDockSiteClass := TCustomDockForm;
-  //DebugLn('TControl.Create END ',Name,':',ClassName);
+    FAnchors := [akLeft,akTop];
+    FAlign := alNone;
+    FCaptureMouseButtons := [mbLeft];
+    FColor := clWindow;
+    FVisible := True;
+    FParentBidiMode := True;
+    FParentColor := True;
+    FParentFont := True;
+    FParentShowHint := True;
+    FWindowProc := @WndProc;
+    FCursor := crDefault;
+    FFont := TFont.Create;
+    FFont.OnChange := @FontChanged;
+    FIsControl := False;
+    FEnabled := True;
+    FHelpType := htContext;
+    FDragCursor := crDrag;
+    FFloatingDockSiteClass := TCustomDockForm;
+    //DebugLn('TControl.Create END ',Name,':',ClassName);
+  {$IFNDEF OldAutoSize}
+  finally
+    EnableAutoSizing;
+  end;
+  {$ENDIF}
 end;
 
 {------------------------------------------------------------------------------

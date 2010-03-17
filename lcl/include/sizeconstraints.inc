@@ -35,7 +35,6 @@ begin
   FMaxHeight:= 0;
   FMinWidth:= 0;
   FMinHeight:= 0;
-  
   UpdateInterfaceConstraints;
 end;
 
@@ -46,7 +45,10 @@ end;
  ------------------------------------------------------------------------------}
 procedure TSizeConstraints.UpdateInterfaceConstraints;
 begin
-  TWSControlClass(Control.WidgetSetClass).GetConstraints(Control, Self);
+  {$IFNDEF OldAutoSize}
+  if (Control is TWinControl) and TWinControl(Control).HandleAllocated then
+  {$ENDIF}
+    TWSControlClass(Control.WidgetSetClass).GetConstraints(Control, Self);
 end;
 
 {------------------------------------------------------------------------------
