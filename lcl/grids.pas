@@ -5003,6 +5003,9 @@ procedure TCustomGrid.doOPMoveColRow(IsColumn: Boolean; FromIndex, ToIndex: Inte
 var
   ColRow: Integer;
 begin
+  if FromIndex=ToIndex then
+    exit;
+
   CheckIndex(IsColumn, FromIndex);
   CheckIndex(IsColumn, ToIndex);
 
@@ -6767,12 +6770,14 @@ end;
 function TCustomGrid.GridColumnFromColumnIndex(ColumnIndex: Integer): Integer;
 begin
   {$ifdef NewCols}
-  result := ColumnIndex;
+  result := ColumnIndex + FirstGridColumn;
+  if Result>ColCount-1 then
+    Result := -1;
   {$else}
   result := Columns.VisibleIndex(ColumnIndex);
-  {$endif}
   if result>=0 then
     result := result + FixedCols;
+  {$endif}
 end;
 
 procedure TCustomGrid.GridMouseWheel(shift: TShiftState; Delta: Integer);
@@ -9838,13 +9843,16 @@ var
 begin
   AGrid := Grid;
   if (not FSettingIndex) and (AGrid<>nil) then begin
-    FSettingIndex := true;
     CurCol := Grid.GridColumnFromColumnIndex(Index);
     DstCol := Grid.GridColumnFromColumnIndex(Value);
-    Grid.DoOPMoveColRow(true, CurCol, DstCol);
-    FSettingIndex := false;
-  end else
-    inherited SetIndex(Value);
+    if (CurCol>=0) and (DstCol>=0) then begin
+      FSettingIndex := true;
+      Grid.DoOPMoveColRow(true, CurCol, DstCol);
+      FSettingIndex := false;
+      exit;
+    end;
+  end;
+  inherited SetIndex(Value);
 end;
 
 constructor TGridColumn.Create(ACollection: TCollection);
