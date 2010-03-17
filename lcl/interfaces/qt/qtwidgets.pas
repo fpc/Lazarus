@@ -6757,6 +6757,11 @@ function TQtComboBox.EventFilter(Sender: QObjectH; Event: QEventH): Boolean; cde
 var
   ev: QEventH;
   str: WideString;
+  R, R1: TRect;
+  ButtonRect: TRect;
+  P: TQtPoint;
+  Pt: TPoint;
+  Opt: QStyleOptionComboBoxH;
 begin
 
   Result := False;
@@ -6799,10 +6804,61 @@ begin
           QEvent_accept(Event);
         end;
       end;
-      QEventFocusIn:
+      QEventMouseButtonPress:
       begin
-        if not FDropListVisibleInternal then
-          TCustomComboBox(LCLObject).IntfGetItems;
+        if not FDropListVisibleInternal and
+          (QMouseEvent_button(QMouseEventH(Event)) = QtLeftButton) then
+        begin
+          // some themes have empty space around combo button !
+
+          P := QMouseEvent_pos(QMouseEventH(Event))^;
+
+          // our combo geometry
+          R := getGeometry;
+
+          // our combo arrow position
+          opt := QStyleOptionComboBox_create();
+          QStyle_subControlRect(QApplication_style(), @R1, QStyleCC_ComboBox,
+            opt, QStyleSC_ComboBoxArrow, QComboBoxH(Widget));
+          QStyleOptionComboBox_destroy(opt);
+
+          if R1.Left < 0 then
+            ButtonRect.Left := R.Right - R.Left - (-R1.Left)
+          else
+            ButtonRect.Left := R1.Left;
+
+          if R1.Top < 0 then
+            ButtonRect.Top := R.Bottom - R.Top - (-R1.Top)
+          else
+            ButtonRect.Top := R1.Top;
+
+          if R1.Right < 0 then
+            ButtonRect.Right := R.Right - R.Left - (-R1.Right)
+          else
+            ButtonRect.Right := R1.Right;
+
+          if R1.Bottom < 0 then
+            ButtonRect.Bottom := R.Bottom - R.Top - (-R1.Bottom)
+          else
+            ButtonRect.Bottom := R1.Bottom;
+
+          Pt := Point(P.X, P.Y);
+
+          if PtInRect(ButtonRect, Pt) then
+            TCustomComboBox(LCLObject).IntfGetItems;
+        end;
+        Result := inherited EventFilter(Sender, Event);
+      end;
+      QEventKeyPress:
+      begin
+        if (QKeyEvent_key(QKeyEventH(Event)) = QtKey_F4) or
+          ((QKeyEvent_key(QKeyEventH(Event)) = QtKey_Space) and
+            not getEditable) then
+        begin
+          if not FDropListVisibleInternal then
+            TCustomComboBox(LCLObject).IntfGetItems;
+        end;
+        Result := inherited EventFilter(Sender, Event);
       end;
       else
         Result := inherited EventFilter(Sender, Event);
