@@ -43,7 +43,15 @@ type
   TQtViewPort = class;
 
   TByteSet = set of byte;
-  
+
+  {Used to know if our widget is part of some complex widget.
+   Only for TQtWidgets created by CreateFrom & attach it's events.
+   For now only combobox added for it's lineedit but not for droplist
+   which doesn't attach it's event filter.
+   We'll need it later for TQtScrollBar and probably TQtTabWidget}
+  TChildOfComplexWidget = (ccwNone,
+                          ccwComboBox);
+
   // records
   TPaintData = record
     PaintWidget: QWidgetH;
@@ -75,6 +83,7 @@ type
 
   TQtWidget = class(TQtObject, IUnknown)
   private
+    FChildOfComplexWidget: TChildOfComplexWidget;
     FOwnWidget: Boolean;
     FProps: TStringList;
     FPaintData: TPaintData;
@@ -238,7 +247,7 @@ type
     procedure sizeHint(size: PSize);
     function windowFlags: QtWindowFlags;
     function windowModality: QtWindowModality;
-
+    property ChildOfComplexWidget: TChildOfComplexWidget read FChildOfComplexWidget write FChildOfComplexWidget;
     property Context: HDC read GetContext;
     property HasCaret: Boolean read FHasCaret write SetHasCaret;
     property HasPaint: Boolean read FHasPaint write FHasPaint;
@@ -617,6 +626,7 @@ type
   public
     procedure AttachEvents; override;
     procedure DetachEvents; override;
+    function EventFilter(Sender: QObjectH; Event: QEventH): Boolean; cdecl; override;
     procedure SignalTextChanged(p1: PWideString); cdecl;
   end;
 
@@ -1466,7 +1476,7 @@ begin
   // default color roles
   SetDefaultColorRoles;
   FPalette := nil;
-
+  ChildOfComplexWidget := ccwNone;
   // creates the widget
   Widget := CreateWidget(FParams);
 
@@ -5664,6 +5674,24 @@ begin
   inherited DetachEvents;
 end;
 
+function TQtLineEdit.EventFilter(Sender: QObjectH; Event: QEventH): Boolean;
+  cdecl;
+begin
+  if LCLObject = nil then
+    exit;
+  if (ChildOfComplexWidget = ccwComboBox) and
+    (QEvent_type(Event) = QEventPaint) and
+    (LCLObject.HandleAllocated) then
+  begin
+    Result := TQtComboBox(LCLObject.Handle).InUpdate;
+    if Result then
+      QEvent_ignore(Event)
+    else
+      Result:=inherited EventFilter(Sender, Event);
+  end else
+    Result:=inherited EventFilter(Sender, Event);
+end;
+
 procedure TQtLineEdit.setCursorPosition(const AValue: Integer);
 begin
   QLineEdit_setCursorPosition(QLineEditH(Widget), AValue);
@@ -6341,6 +6369,7 @@ begin
     begin
       FLineEdit := TQtLineEdit.CreateFrom(LCLObject, QComboBox_lineEdit(QComboBoxH(Widget)));
       QObject_disconnect(FLineEdit.Widget, '2returnPressed()', Widget, '1_q_returnPressed()');
+      FLineEdit.ChildOfComplexWidget := ccwComboBox;
       FLineEdit.AttachEvents;
     end;
   end;
@@ -6361,6 +6390,7 @@ begin
     FDropList := TQtListWidget.CreateFrom(LCLObject, QListWidget_create());
     FDropList.setAttribute(QtWA_NoMousePropagation, False);
     FDropList.OwnerDrawn := OwnerDrawn;
+    FDropList.ChildOfComplexWidget := ccwComboBox;
     QComboBox_setModel(QComboBoxH(Widget), FDropList.getModel);
     QComboBox_setView(QComboBoxH(Widget), QListWidgetH(FDropList.Widget));
   end;
@@ -8615,6 +8645,7 @@ end;
 
 procedure TQtMenu.InitializeWidget;
 begin
+  ChildOfComplexWidget := ccwNone;
   WidgetColorRole := QPaletteWindow;
   TextColorRole := QPaletteText;
   Widget := CreateWidget(FParams);
