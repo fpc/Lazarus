@@ -74,6 +74,7 @@ type
     FBars: TCollection;
     FDepth: byte;
     FLabelPosition:TPosLabel;
+    FIsPainting: Boolean;
     function GetBars: TCollection;
     function NormalizeScaleUnits(OldScale: Integer): Integer;
     procedure SetBars(const AValue: TCollection);
@@ -82,6 +83,7 @@ type
   protected
     procedure Paint; override;
     class function GetControlClassDefaultSize: TPoint; override;
+    function RealGetText: TCaption; override;
   public
     constructor Create(AOwner: TComponent); override;
     destructor Destroy; override;
@@ -263,7 +265,12 @@ var
   end;
 
 begin
-  inherited Paint;
+  FIsPainting := true;
+  try
+    inherited Paint;
+  finally
+    FIsPainting := false;
+  end;
   bx:=GetSystemMetrics(SM_CXEDGE);
   by:=GetSystemMetrics(SM_CYEDGE);
   hmax:=10;
@@ -370,6 +377,14 @@ begin
     end;
     end;
   Canvas.Pen.Style:=psSolid;
+end;
+
+function TCustomBarChart.RealGetText: TCaption;
+begin
+  if FIsPainting then
+    Result := ''
+  else
+    Result := inherited RealGetText;
 end;
 
 class function TCustomBarChart.GetControlClassDefaultSize: TPoint;
