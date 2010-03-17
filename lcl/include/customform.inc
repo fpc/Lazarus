@@ -577,7 +577,7 @@ var
   OldState: TWindowState;
 begin
   {$IFDEF CHECK_POSITION}
-  DebugLn('[TCustomForm.WMSize] ',DbgSName(Self),' Message.SizeType=',dbgs(Message.SizeType),' Message.Width=',dbgs(Message.Width),' Message.Height=',dbgs(Message.Height));
+  DebugLn(['[TCustomForm.WMSize] ',DbgSName(Self),' Message.SizeType=',Message.SizeType,' Message.Width=',Message.Width,' Message.Height=',Message.Height,' AutoSizeDelayed=',AutoSizeDelayed]);
   {$ENDIF}
 
   if (Parent=nil) and ((Message.SizeType and SIZE_SourceIsInterface)>0) then

@@ -29,8 +29,17 @@ end;
 
 procedure TScrollingWinControl.CreateWnd;
 begin
-  inherited CreateWnd;
-  UpdateScrollBars;
+  {$IFNDEF OldAutoSize}
+  DisableAutoSizing;
+  try
+  {$ENDIF}
+    inherited CreateWnd;
+    UpdateScrollBars;
+  {$IFNDEF OldAutoSize}
+  finally
+    EnableAutoSizing;
+  end;
+  {$ENDIF}
 end;
 
 function TScrollingWinControl.GetClientScrollOffset: TPoint;

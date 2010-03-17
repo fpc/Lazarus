@@ -51,6 +51,7 @@ begin
   DoAutoSize;
   Exclude(FControlFlags,cfAutoSizeNeeded);
   {$ELSE}
+
   {$IFDEF VerboseAdjustSize}
   if (Parent=nil) and (not (cfAutoSizeNeeded in FControlFlags))
   and (Self is TCustomForm) then begin
@@ -2552,8 +2553,9 @@ begin
     if FAutoSizingLockCount>0 then debugln('FAutoSizingLockCount=',dbgs(FAutoSizingLockCount))
     else if csLoading in ComponentState then debugln('csLoading')
     else if csDestroying in ComponentState then debugln('csDestroying')
-    else if not Visible then debugln('Visible')
-    else if NeedParentForAutoSize and (Parent=nil) then debugln('NeedParentForAutoSize and (Parent=nil)')
+    else if cfLoading in FControlFlags then debugln('cfLoading')
+    else if not IsControlVisible then debugln('not IsControlVisible')
+    else if not AutoSizeCheckParent then debugln('not AutoSizeCheckParent')
     else if ((Parent<>nil) and Parent.AutoSizeDelayed) then debugln('Parent.AutoSizeDelayed')
     else debugln('?');
   end;

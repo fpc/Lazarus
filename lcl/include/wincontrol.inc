@@ -30,7 +30,7 @@
 {off $DEFINE VerboseCanAutoSize}
 
 {off $DEFINE VerboseSizeMsg}
-{off $DEFINE CHECK_POSITION}
+{$DEFINE CHECK_POSITION}
 {$IFDEF CHECK_POSITION}
 const CheckPostionClassName = 'xxTPage';
 const CheckPostionName = 'IDEOptionsDialog';
@@ -2290,10 +2290,7 @@ begin
   {$IFDEF VerboseCanAutoSize}
   if Result {and AutoSize} then begin
     DbgOut('TWinControl.AutoSizeDelayed Self='+DbgSName(Self)+' ');
-    if not HandleAllocated then debugln('not HandleAllocated')
-    else if not FShowing then debugln('not FShowing')
-    else if wcfCreatingChildHandles in FWinControlFlags then debugln('wcfCreatingChildHandles')
-    else debugln('inherited AutoSizeDelayed');
+    if not HandleAllocated then debugln('not HandleAllocated');
   end;
   {$ENDIF}
 end;
@@ -7123,6 +7120,7 @@ begin
     ReAlign;
     {$ENDIF}
   finally
+    //DebugLn(['TWinControl.CreateWnd ',DbgSName(Self)]);
     EnableAutoSizing;
     {$IFDEF OldAutoSize}
     // obsolete
