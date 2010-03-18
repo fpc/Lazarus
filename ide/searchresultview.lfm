@@ -80,7 +80,6 @@ object SearchResultsView: TSearchResultsView
       Height = 27
       Top = 2
       Width = 348
-      Anchors = [akTop, akRight]
       BorderSpacing.Around = 6
       OnKeyDown = SearchInListEditKeyDown
       ParentShowHint = False

@@ -5942,7 +5942,7 @@ begin
     ASearchForm.ResultsWindow:= ListIndex;
     try
       ASearchForm.Show;
-      // update Window Menu, the OnIdle event does not occur when searching
+      // update Window Menu, the OnIdle event does not occur while searching
       MainIDEInterface.UpdateWindowMenu;
       ASearchForm.DoSearch;
     except
