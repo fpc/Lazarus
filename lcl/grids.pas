@@ -9928,8 +9928,10 @@ begin
 end;
 
 function TGridColumns.GetVisibleCount: Integer;
+{$ifNdef newcols}
 var
   i: Integer;
+{$endif}
 begin
   {$ifdef newcols}
   result := Count;
@@ -10039,8 +10041,10 @@ begin
 end;
 
 function TGridColumns.RealIndex(Index: Integer): Integer;
+{$ifNdef NewCols}
 var
   i: Integer;
+{$endif}
 begin
   {$ifdef NewCols}
   if Index>Count-1 then
