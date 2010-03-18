@@ -2700,7 +2700,7 @@ end;
 
 procedure TMainIDE.mnuSetFreeBookmark(Sender: TObject);
 begin
-  SourceNotebook.BookMarkSetFree;
+  SourceEditorManager.ActiveSourceWindow.BookMarkSetFree;
 end;
 
 procedure TMainIDE.mnuSaveClicked(Sender: TObject);
@@ -7098,7 +7098,7 @@ var
   DestFilename: String;
   SkipSavingMainSource: Boolean;
 begin
-  Project1.ActiveEditorIndexAtStart:=SourceNotebook.PageIndex;
+  Project1.ActiveWindowIndexAtStart := SourceEditorManager.ActiveSourceWindowIndex;
 
   // update source notebook page names
   UpdateSourceNames;
@@ -9555,16 +9555,12 @@ begin
       and (SourceNotebook.FindSourceEditorWithFilename(AnUnitInfo.Filename)<>nil))
       then begin
         // open source was successful (at least the source)
-        if Project1.ActiveEditorIndexAtStart=LowestEditorIndex then
-          Project1.ActiveEditorIndexAtStart:=SourceNoteBook.PageIndex;
         LastEditorIndex:=LowestEditorIndex;
       end else begin
         // failed to open entirely -> mark as unloaded, so that next time
         // it will not be tried again
         AnUnitInfo.EditorIndex:=-1;
         AnUnitInfo.Loaded:=false;
-        if Project1.ActiveEditorIndexAtStart=LowestEditorIndex then
-          Project1.ActiveEditorIndexAtStart:=-1;
       end;
     until LowestEditorIndex<0;
     Result:=mrCancel;
@@ -9573,10 +9569,16 @@ begin
     {$ENDIF}
 
     // set active editor source editor
-    if (Project1.ActiveEditorIndexAtStart>=0)
-    and (Project1.ActiveEditorIndexAtStart < SourceNoteBook.PageCount)
-    then
-      SourceNoteBook.PageIndex:=Project1.ActiveEditorIndexAtStart;
+    for i := 0 to Project1.UnitCount - 1 do begin
+      if Project1.Units[i].IsVisibleTab
+         and (SourceEditorManager.SourceWindows[Project1.Units[i].WindowIndex] <> nil)
+      then begin
+        SourceEditorManager.SourceWindows
+          [Project1.Units[i].WindowIndex].PageIndex := Project1.Units[i].EditorIndex;
+      end;
+    end;
+    SourceEditorManager.ActiveSourceWindow :=
+      SourceEditorManager.SourceWindows[Project1.ActiveWindowIndexAtStart];
 
     // select a form (object inspector, formeditor, control selection)
     if FLastFormActivated<>nil then begin
@@ -9600,7 +9602,6 @@ begin
         and (AnUnitInfo.EditorIndex>LastEditorIndex) then begin
           AnUnitInfo.Loaded:=false;
           AnUnitInfo.EditorIndex:=-1;
-          Project1.ActiveEditorIndexAtStart:=-1;
         end;
       end;
     end;

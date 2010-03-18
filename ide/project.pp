@@ -173,6 +173,7 @@ type
     FComponentState: TWindowState; // state of component when we save it
     FEditorComponent: TSourceEditorInterface;
     FFoldState: String;
+    FIsVisibleTab: Boolean;
     FResourceBaseClass: TPFComponentBaseClass;
     fComponentName: string; { classname is always T<ComponentName>
          this attribute contains the component name,
@@ -237,6 +238,7 @@ type
     procedure SetEditorIndex(const AValue: integer);
     procedure SetFileReadOnly(const AValue: Boolean);
     procedure SetComponent(const AValue: TComponent);
+    procedure SetIsVisibleTab(const AValue: Boolean);
     procedure SetLoaded(const AValue: Boolean);
     procedure SetModified(const AValue: boolean);
     procedure SetProject(const AValue: TProject);
@@ -344,7 +346,7 @@ type
     property Directives: TStrings read FDirectives write SetDirectives;
     property EditorIndex: integer read FEditorIndex write SetEditorIndex;
     property WindowIndex: integer read FWindowIndex write SetWindowIndex;
-
+    property IsVisibleTab: Boolean read FIsVisibleTab write SetIsVisibleTab;
     property EditorComponent: TSourceEditorInterface
              read FEditorComponent write SetEditorComponent;
     property FileReadOnly: Boolean read fFileReadOnly write SetFileReadOnly;
@@ -586,7 +588,7 @@ type
 
   TProject = class(TLazProject)
   private
-    fActiveEditorIndexAtStart: integer;
+    FActiveWindowIndexAtStart: integer;
     FAutoCreateForms: boolean;
     FTmpAutoCreatedForms: TStrings; // temporary, used to apply auto create forms changes
     FAutoOpenDesignerFormsDisabled: boolean;
@@ -734,7 +736,7 @@ type
                          RemoveFromUsesSection: boolean = true); override;
     procedure RemoveNonExistingFiles(RemoveFromUsesSection: boolean = true);
     function CreateProjectFile(const Filename: string): TLazProjectFile; override;
-
+    procedure UpdateVisibleUnit(AnEditor: TSourceEditorInterface; AWindowIndex: Integer);
     // search
     function IndexOf(AUnitInfo: TUnitInfo): integer;
     function IndexOfUnitWithName(const AnUnitName: string;
@@ -849,8 +851,8 @@ type
     function GetAutoCreatedFormsList: TStrings;
     property TmpAutoCreatedForms: TStrings read FTmpAutoCreatedForms write FTmpAutoCreatedForms;
   public
-    property ActiveEditorIndexAtStart: integer read fActiveEditorIndexAtStart
-                                               write fActiveEditorIndexAtStart;
+    property ActiveWindowIndexAtStart: integer read FActiveWindowIndexAtStart
+                                               write FActiveWindowIndexAtStart;
     property AutoCreateForms: boolean
                                    read FAutoCreateForms write FAutoCreateForms;
     property AutoOpenDesignerFormsDisabled: boolean
@@ -1161,7 +1163,7 @@ begin
   fCustomHighlighter := false;
   fEditorIndex := -1;
   FWindowIndex := -1;
-
+  FIsVisibleTab := False;
   fFilename := '';
   fFileReadOnly := false;
   fHasResources := false;
@@ -1260,7 +1262,7 @@ begin
     XMLConfig.SetDeleteValue(Path+'TopLine/Value',fTopLine,-1);
     XMLConfig.SetDeleteValue(Path+'EditorIndex/Value',fEditorIndex,-1);
     XMLConfig.SetDeleteValue(Path+'WindowIndex/Value',FWindowIndex,-1);
-
+    XMLConfig.SetDeleteValue(Path+'IsVisibleTab/Value',FIsVisibleTab,False);
     XMLConfig.SetDeleteValue(Path+'UsageCount/Value',RoundToInt(fUsageCount),-1);
     FBookmarks.SaveToXMLConfig(XMLConfig,Path+'Bookmarks/');
     XMLConfig.SetDeleteValue(Path+'Loaded/Value',fLoaded,false);
@@ -1317,7 +1319,10 @@ begin
                    XMLConfig.GetValue(Path+'CursorPos/Y',-1));
   EditorIndex:=XMLConfig.GetValue(Path+'EditorIndex/Value',-1);
   WindowIndex:=XMLConfig.GetValue(Path+'WindowIndex/Value',-1);
-
+  IsVisibleTab:=XMLConfig.GetValue(Path+'IsVisibleTab/Value', False);
+  // update old data
+  if (FEditorIndex >= 0) and (FWindowIndex < 0) then
+    WindowIndex := 0;
 
   Loaded:=XMLConfig.GetValue(Path+'Loaded/Value',false);
   fUserReadOnly:=XMLConfig.GetValue(Path+'ReadOnly/Value',false);
@@ -1878,6 +1883,13 @@ begin
     FResourceBaseClass:=GetComponentBaseClass(fComponent.ClassType);
 end;
 
+procedure TUnitInfo.SetIsVisibleTab(const AValue: Boolean);
+begin
+  if FIsVisibleTab = AValue then exit;
+  FIsVisibleTab := AValue;
+  SessionModified := True;
+end;
+
 procedure TUnitInfo.SetIsPartOfProject(const AValue: boolean);
 begin
   if IsPartOfProject=AValue then exit;
@@ -1963,7 +1975,7 @@ constructor TProject.Create(ProjectDescription: TProjectDescriptor);
 begin
   inherited Create(ProjectDescription);
 
-  fActiveEditorIndexAtStart := -1;
+  FActiveWindowIndexAtStart := 0;
   FSkipCheckLCLInterfaces:=false;
   FAutoCreateForms := true;
   FBookmarks := TProjectBookmarkList.Create;
@@ -2086,8 +2098,9 @@ function TProject.WriteProject(ProjectWriteFlags: TProjectWriteFlags;
 
   procedure SaveSessionInfo(aConfig: TXMLConfig; const Path: string);
   begin
-    aConfig.SetDeleteValue(Path+'General/ActiveEditorIndexAtStart/Value',
-                           ActiveEditorIndexAtStart,-1);
+    aConfig.DeleteValue(Path+'General/ActiveEditorIndexAtStart/Value');
+    aConfig.SetDeleteValue(Path+'General/ActiveWindowIndexAtStart/Value',
+                           ActiveWindowIndexAtStart,-1);
     aConfig.SetDeleteValue('SkipCheckLCLInterfaces/Value',
                            FSkipCheckLCLInterfaces,false);
 
@@ -2500,8 +2513,14 @@ var
     end;
 
     // load editor info
-    ActiveEditorIndexAtStart := xmlconfig.GetValue(
+    i := xmlconfig.GetValue(
        Path+'General/ActiveEditorIndexAtStart/Value', -1);
+    if (i >= 0) and (UnitWithEditorIndex(i) <> nil)
+       and (UnitWithEditorIndex(i).EditorIndex >= 0)
+    then
+      UnitWithEditorIndex(i).IsVisibleTab := True;
+    ActiveWindowIndexAtStart := xmlconfig.GetValue(
+       Path+'General/ActiveWindowIndexAtStart/Value', 0);
     FSkipCheckLCLInterfaces:=xmlconfig.GetValue(
        Path+'SkipCheckLCLInterfaces/Value',false);
     FJumpHistory.LoadFromXMLConfig(xmlconfig,Path+'');
@@ -2543,7 +2562,9 @@ var
     end;
     if BestUnitInfo<>nil then begin
       BestUnitInfo.EditorIndex:=0;
-      ActiveEditorIndexAtStart:=0;
+      BestUnitInfo.WindowIndex:=0;
+      BestUnitInfo.IsVisibleTab := True;
+      ActiveWindowIndexAtStart:=0;
       BestUnitInfo.Loaded:=true;
     end;
   end;
@@ -2828,6 +2849,15 @@ begin
   Result:=AnUnitInfo;
 end;
 
+procedure TProject.UpdateVisibleUnit(AnEditor: TSourceEditorInterface; AWindowIndex: Integer);
+var
+  i: Integer;
+begin
+  for i := 0 to UnitCount - 1 do
+    if Units[i].WindowIndex = AWindowIndex then
+      Units[i].IsVisibleTab := Units[i].EditorComponent = AnEditor;
+end;
+
 procedure TProject.RemoveNonExistingFiles(RemoveFromUsesSection: boolean);
 var
   i: Integer;
@@ -2867,7 +2897,7 @@ begin
   
   FRunParameterOptions.Clear;
 
-  fActiveEditorIndexAtStart := -1;
+  FActiveWindowIndexAtStart := -1;
   FSkipCheckLCLInterfaces:=false;
   FAutoOpenDesignerFormsDisabled := false;
   FBookmarks.Clear;
@@ -3403,7 +3433,8 @@ var
   List: TFPList;
   AnUnitInfo: TUnitInfo;
   i: Integer;
-  NewActiveEditorIndexAtStart: LongInt;
+  NewWindowEditorIndexAtStart: Integer;
+  CurWindow, NewWindow: Integer;
 begin
   List:=TFPList.Create;
   try
@@ -3414,16 +3445,23 @@ begin
       AnUnitInfo:=AnUnitInfo.NextUnitWithEditorIndex;
     end;
     List.Sort(TListSortCompare(@CompareUnitInfoWithEditorIndex));
-    NewActiveEditorIndexAtStart:=-1;
+    NewWindowEditorIndexAtStart:=-1;
+    if List.Count > 0 then
+      CurWindow := TUnitInfo(List[0]).WindowIndex;
+    NewWindow := 0;
     for i:=0 to List.Count-1 do
     begin
       AnUnitInfo:=TUnitInfo(List[i]);
-      if (NewActiveEditorIndexAtStart<0)
-      and (ActiveEditorIndexAtStart=AnUnitInfo.EditorIndex) then
-        NewActiveEditorIndexAtStart:=i;
-      AnUnitInfo.EditorIndex:=i;
+      if (AnUnitInfo.WindowIndex <> CurWindow) then
+        inc(NewWindow);
+      if (NewWindowEditorIndexAtStart < 0)
+         and (ActiveWindowIndexAtStart = AnUnitInfo.WindowIndex)
+      then
+        NewWindowEditorIndexAtStart := NewWindow;
+      AnUnitInfo.EditorIndex := i;
+      AnUnitInfo.WindowIndex := NewWindow;
     end;
-    ActiveEditorIndexAtStart:=NewActiveEditorIndexAtStart;
+    ActiveWindowIndexAtStart := NewWindowEditorIndexAtStart;
   finally
     List.Free;
   end;

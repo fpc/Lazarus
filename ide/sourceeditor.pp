@@ -6821,6 +6821,7 @@ Begin
       Manager.OnEditorVisibleChanged(sender);
   end;
 
+  Project1.UpdateVisibleUnit(TempEditor, Manager.IndexOfSourceWindow(self));
   CheckCurrentCodeBufferChanged;
   UpdateFPDocEditor;
 end;
