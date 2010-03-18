@@ -1710,7 +1710,7 @@ begin
   ItemList:= TGtkListStoreStringList.Create(
           gtk_combo_box_get_model(PGtkComboBox(ComboWidget)),0,ACustomComboBox);
   gtk_object_set_data(PGtkObject(ComboWidget),GtkListItemLCLListTag,ItemList);
-  ItemList.Assign(ACustomComboBox.Items);
+  // This is done in InitializeWnd: ItemList.Assign(ACustomComboBox.Items);
   if ACustomComboBox.Items is TStringList then
     ItemList.Sorted:=TStringList(ACustomComboBox.Items).Sorted;
 
