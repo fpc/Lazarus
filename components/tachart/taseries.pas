@@ -741,12 +741,7 @@ begin
     DrawBar(imageBar);
   end;
 
-  if not Marks.IsMarkLabelsVisible then exit;
-  for i := 0 to Count - 1 do begin
-    p := GetGraphPoint(i);
-    if ParentChart.IsPointInViewPort(p) then
-      DrawLabel(ACanvas, i, ParentChart.GraphToImage(p), p.Y < 0);
-  end;
+  DrawLabels(ACanvas, true);
 end;
 
 function TBarSeries.Extent: TDoubleRect;
