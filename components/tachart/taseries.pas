@@ -140,6 +140,7 @@ type
   published
     property AxisIndexX;
     property AxisIndexY;
+  published
     property AreaBrush: TBrush read FAreaBrush write SetAreaBrush;
     property AreaLinesPen: TPen read FAreaLinesPen write FAreaLinesPen;
     property Depth;
@@ -229,8 +230,8 @@ type
     procedure SetSeriesColor(AValue: TColor);
     procedure SetUseBounds(AValue: Boolean);
   protected
-    procedure GetLegendItems(AItems: TChartLegendItems); override;
     procedure GetBounds(out ABounds: TDoubleRect); override;
+    procedure GetLegendItems(AItems: TChartLegendItems); override;
   public
     constructor Create(AOwner: TComponent); override;
     destructor  Destroy; override;
@@ -270,8 +271,8 @@ type
     procedure SetPen(const AValue: TChartPen);
     procedure SetStep(AValue: TFuncSeriesStep);
   protected
-    procedure GetLegendItems(AItems: TChartLegendItems); override;
     procedure GetBounds(out ABounds: TDoubleRect); override;
+    procedure GetLegendItems(AItems: TChartLegendItems); override;
 
   public
     constructor Create(AOwner: TComponent); override;
