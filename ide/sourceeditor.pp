@@ -3494,7 +3494,8 @@ end;
 procedure TSourceEditor.Activate;
 begin
   if (FSourceNoteBook=nil) then exit;
-  FSourceNoteBook.SetActiveSE(Self);
+  if FSourceNoteBook.FUpdateLock = 0 then
+    FSourceNoteBook.SetActiveSE(Self);
 end;
 
 function TSourceEditor.PageIndex: integer;
