@@ -143,7 +143,7 @@ type
                               out ActiveUnitInfo: TUnitInfo); override;
     procedure GetCurrentUnit(out ActiveSourceEditor: TSourceEditor;
                              out ActiveUnitInfo: TUnitInfo); virtual; abstract;
-    procedure GetUnitWithPageIndex(PageIndex: integer;
+    procedure GetUnitWithPageIndex(PageIndex, WindowIndex: integer;
           var ActiveSourceEditor: TSourceEditor; var ActiveUnitInfo: TUnitInfo); virtual; abstract;
     procedure GetDesignerUnit(ADesigner: TDesigner;
           var ActiveSourceEditor: TSourceEditor; var ActiveUnitInfo: TUnitInfo); virtual; abstract;
@@ -218,11 +218,9 @@ end;
 procedure TMainIDEBase.mnuWindowSourceItemClick(Sender: TObject);
 var page: longint;
 begin
-  page:=(sender as TIDEMenuCommand).tag;
-  if (SourceNotebook = nil) or (page<0) or (page>=SourceNotebook.Count) then
-    exit;
-  SourceEditorWindow.BringToFront;
-  SourceNotebook.ActiveEditor:=SourceNotebook.Editors[page];
+  if SourceEditorManager = nil then exit;
+  page := (sender as TIDEMenuCommand).tag;
+  SourceEditorManager.ActiveEditor := TSourceEditor(PtrInt(page));
 end;
 
 procedure TMainIDEBase.OnMainBarDestroy(Sender: TObject);
@@ -1010,7 +1008,7 @@ end;
 function TMainIDEBase.DoOpenMacroFile(Sender: TObject; const AFilename: string
   ): TModalResult;
 begin
-  Result:=DoOpenEditorFile(AFilename,-1,
+  Result:=DoOpenEditorFile(AFilename,-1,-1,
                   [ofOnlyIfExists,ofAddToRecent,ofRegularFile,ofConvertMacros]);
 end;
 
@@ -1043,8 +1041,8 @@ begin
 
   WindowsList:=TFPList.Create;
   // add typical IDE windows at the start of the list
-  if (SourceNotebook<>nil) and (SourceNotebook.Visible) then
-    WindowsList.Add(SourceNotebook);
+  for i := 0 to SourceEditorManager.SourceWindowCount - 1 do
+    WindowsList.Add(SourceEditorManager.SourceWindows[i]);
   if (ObjectInspector1<>nil) and (ObjectInspector1.Visible) then
     WindowsList.Add(ObjectInspector1);
   // add special IDE windows
@@ -1074,20 +1072,21 @@ begin
 
   //create source page menuitems
 
-  if (SourceNotebook<>nil) and not (nbcPageListPopup in SourceNotebook.GetCapabilities) then
+  if (SourceEditorManager.SourceWindowCount > 0)
+     and not (nbcPageListPopup in SourceEditorManager.SourceWindows[0].GetCapabilities) then
   begin
     CurMenuItem := GetMenuItem(ItemCount);
     CurMenuItem.OnClick:=nil;
     CurMenuItem.Caption:='-';
     inc(ItemCount);
 
-    for i := 0 to SourceNotebook.EditorCount-1 do
+    for i := 0 to SourceEditorManager.SourceEditorCount - 1 do
     begin
       CurMenuItem := GetMenuItem(ItemCount);
-      CurMenuItem.Caption:=SourceNotebook.Editors[i].PageName;
-      CurMenuItem.MenuItem.Checked := SourceNotebook.ActiveEditor = SourceNotebook.Editors[i] ;
-      CurMenuItem.OnClick:=@mnuWindowSourceItemClick;
-      CurMenuItem.Tag := i;
+      CurMenuItem.Caption := SourceEditorManager.SourceEditors[i].PageName;
+      CurMenuItem.MenuItem.Checked := SourceEditorManager.ActiveEditor = SourceEditorManager.SourceEditors[i] ;
+      CurMenuItem.OnClick := @mnuWindowSourceItemClick;
+      CurMenuItem.Tag := PtrInt(Pointer(SourceEditorManager.SourceEditors[i]));
       inc(ItemCount);
     end;
   end;
@@ -1127,7 +1126,7 @@ begin
   if Immediately then begin
     FNeedUpdateHighlighters:=false;
     Project1.UpdateAllSyntaxHighlighter;
-    SourceNotebook.ReloadHighlighters;
+    SourceEditorManager.ReloadHighlighters;
   end else begin
     FNeedUpdateHighlighters:=true;
   end;

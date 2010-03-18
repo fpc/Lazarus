@@ -176,39 +176,39 @@ type
     function GetItems(Index: integer): TSourceEditorInterface; virtual; abstract;
     procedure SetActiveEditor(const AValue: TSourceEditorInterface); virtual; abstract;
   public
-    function SourceEditorIntfWithFilename(const Filename: string): TSourceEditorInterface;
+    function SourceEditorIntfWithFilename(const Filename: string): TSourceEditorInterface; deprecated;
     property ActiveEditor: TSourceEditorInterface
              read GetActiveEditor write SetActiveEditor;
     function Count: integer; virtual; abstract;
     property Items[Index: integer]: TSourceEditorInterface read GetItems; default;
     
-    function GetEditorControlSettings(EditControl: TControl): boolean; virtual; abstract;
-    function GetHighlighterSettings(Highlighter: TObject): boolean; virtual; abstract;
-    procedure ClearErrorLines; virtual; abstract;
+    function GetEditorControlSettings(EditControl: TControl): boolean; virtual; abstract; deprecated;
+    function GetHighlighterSettings(Highlighter: TObject): boolean; virtual; abstract; deprecated;
+    procedure ClearErrorLines; virtual; abstract; deprecated;
 
     property CompletionBoxPosition: integer read GetCompletionBoxPosition;
     procedure DeactivateCompletionForm; virtual; abstract;
     property ActiveCompletionPlugin: TSourceEditorCompletionPlugin read GetActiveCompletionPlugin;
     // CompletionPlugin list moves to Manager
-    function CompletionPluginCount: integer; virtual; abstract;
+    function CompletionPluginCount: integer; virtual; abstract; deprecated;
     property CompletionPlugins[Index: integer]: TSourceEditorCompletionPlugin
-             read GetCompletionPlugins;
-    procedure RegisterCompletionPlugin(Plugin: TSourceEditorCompletionPlugin); virtual; abstract;
-    procedure UnregisterCompletionPlugin(Plugin: TSourceEditorCompletionPlugin); virtual; abstract;
+             read GetCompletionPlugins; deprecated;
+    procedure RegisterCompletionPlugin(Plugin: TSourceEditorCompletionPlugin); virtual; abstract; deprecated;
+    procedure UnregisterCompletionPlugin(Plugin: TSourceEditorCompletionPlugin); virtual; abstract; deprecated;
   end;
   
   TSourceEditorManagerInterface = class(TComponent)
   protected
-    function GetActiveEditor: TSourceEditorInterface; virtual; abstract;
     function GetActiveSourceWindow: TSourceEditorWindowInterface; virtual; abstract;
              virtual; abstract;
-    function GetSourceEditors(Index: integer): TSourceEditorInterface;
+    procedure SetActiveSourceWindow(const AValue: TSourceEditorWindowInterface);
              virtual; abstract;
     function GetSourceWindows(Index: integer): TSourceEditorWindowInterface;
              virtual; abstract;
+    function GetActiveEditor: TSourceEditorInterface; virtual; abstract;
     procedure SetActiveEditor(const AValue: TSourceEditorInterface);
               virtual; abstract;
-    procedure SetActiveSourceWindow(const AValue: TSourceEditorWindowInterface);
+    function GetSourceEditors(Index: integer): TSourceEditorInterface;
               virtual; abstract;
   public
     // List of SourceEditorWindows

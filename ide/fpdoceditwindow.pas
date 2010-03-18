@@ -1028,7 +1028,7 @@ begin
   NewSrcFilename:=CleanAndExpandFilename(SrcFilename);
   if (NewSrcFilename=SourceFilename) and (CompareCaret(Caret,CaretXY)=0)
   and (fChain<>nil) and fChain.IsValid
-  and (not LazarusIDE.NeedSaveSourceEditorChangesToCodeCache(-1)) then
+  and (not LazarusIDE.NeedSaveSourceEditorChangesToCodeCache(-1, -1)) then
     exit;
 
   FCaretXY:=Caret;
@@ -1236,7 +1236,7 @@ begin
     exit;
   end;
   Exclude(FFlags,fpdefCodeCacheNeedsUpdate);
-  LazarusIDE.SaveSourceEditorChangesToCodeCache(-1);
+  LazarusIDE.SaveSourceEditorChangesToCodeCache(-1, -1);
 end;
 
 procedure TFPDocEditor.ErrorsMemoChange(Sender: TObject);

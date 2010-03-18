@@ -5497,7 +5497,7 @@ end;
 function TProjectProgramDescriptor.CreateStartFiles(AProject: TLazProject
   ): TModalResult;
 begin
-  Result:=LazarusIDE.DoOpenEditorFile(AProject.MainFile.Filename,-1,
+  Result:=LazarusIDE.DoOpenEditorFile(AProject.MainFile.Filename,-1,-1,
                                       [ofProjectLoading,ofRegularFile]);
 end;
 
@@ -5629,7 +5629,7 @@ function TProjectManualProgramDescriptor.CreateStartFiles(AProject: TLazProject
   ): TModalResult;
 begin
   if AProject.MainFile<>nil then
-    Result:=LazarusIDE.DoOpenEditorFile(AProject.MainFile.Filename,-1,
+    Result:=LazarusIDE.DoOpenEditorFile(AProject.MainFile.Filename,-1,-1,
                                         [ofProjectLoading,ofRegularFile]);
 end;
 
@@ -5698,7 +5698,7 @@ end;
 function TProjectLibraryDescriptor.CreateStartFiles(AProject: TLazProject
   ): TModalResult;
 begin
-  Result:=LazarusIDE.DoOpenEditorFile(AProject.MainFile.Filename,-1,
+  Result:=LazarusIDE.DoOpenEditorFile(AProject.MainFile.Filename,-1,-1,
                                       [ofProjectLoading,ofRegularFile]);
 end;
 
@@ -6026,7 +6026,7 @@ end;
 function TProjectConsoleApplicationDescriptor.CreateStartFiles(
   AProject: TLazProject): TModalResult;
 begin
-  Result:=LazarusIDE.DoOpenEditorFile(AProject.MainFile.Filename,-1,
+  Result:=LazarusIDE.DoOpenEditorFile(AProject.MainFile.Filename,-1,-1,
                                       [ofProjectLoading,ofRegularFile]);
 end;
 

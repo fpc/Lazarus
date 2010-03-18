@@ -1060,7 +1060,7 @@ var
       OldUnitName:=OldPkgName;
       NewUnitName:=APackage.Name;
       if (OldUnitName<>NewUnitName) then begin
-        MainIDEInterface.SaveSourceEditorChangesToCodeCache(-1);
+        MainIDEInterface.SaveSourceEditorChangesToCodeCache(-1, -1);
         if CodeToolBoss.RenameUsedUnit(
           AProject.MainUnitInfo.Source,OldUnitName,NewUnitName,'')
         then
@@ -1598,7 +1598,7 @@ begin
   // create default values
   TheUnitName:='';
   HasRegisterProc:=false;
-  MainIDE.SaveSourceEditorChangesToCodeCache(-1);
+  MainIDE.SaveSourceEditorChangesToCodeCache(-1, -1);
   CodeBuffer:=CodeToolBoss.LoadFile(ExpFilename,true,false);
   if CodeBuffer<>nil then begin
     TheUnitName:=CodeToolBoss.GetSourceName(CodeBuffer,false);
@@ -1723,7 +1723,7 @@ begin
   and (AProject.MainUnitInfo<>nil) then begin
     //debugln('TPkgManager.AddUnitToProjectMainUsesSection B ',AnUnitName);
     if (AnUnitName<>'') then begin
-      MainIDEInterface.SaveSourceEditorChangesToCodeCache(-1);
+      MainIDEInterface.SaveSourceEditorChangesToCodeCache(-1, -1);
       if CodeToolBoss.AddUnitToMainUsesSection(
         AProject.MainUnitInfo.Source,AnUnitName,AnUnitInFilename)
       then
@@ -2521,7 +2521,7 @@ begin
   if Result<>mrOk then exit;
 
   // save editor files to codetools
-  MainIDE.SaveSourceEditorChangesToCodeCache(-1);
+  MainIDE.SaveSourceEditorChangesToCodeCache(-1, -1);
 
   // save package
   if (psfSaveAs in Flags) then begin
@@ -3341,7 +3341,7 @@ begin
   if (PkgFile.FileType=pftVirtualUnit) then begin
     Filename:=FindVirtualUnitSource(PkgFile);
     if Filename<>'' then begin
-      Result:=MainIDE.DoOpenEditorFile(Filename,-1,
+      Result:=MainIDE.DoOpenEditorFile(Filename,-1,-1,
                                   [ofOnlyIfExists,ofAddToRecent,ofRegularFile]);
       exit;
     end;
@@ -3811,7 +3811,7 @@ begin
       mtError,[mbCancel]);
     exit;
   end;
-  Result:=MainIDE.DoOpenEditorFile(Filename,-1,[ofRegularFile]);
+  Result:=MainIDE.DoOpenEditorFile(Filename,-1,-1,[ofRegularFile]);
 end;
 
 function TPkgManager.DoViewPackageToDos(APackage: TLazPackage): TModalResult;
@@ -4210,7 +4210,7 @@ begin
   if (Project1.MainUnitID>=0)
   and (pfMainUnitHasUsesSectionForAllUnits in Project1.Flags)
   then begin
-    MainIDEInterface.SaveSourceEditorChangesToCodeCache(-1);
+    MainIDEInterface.SaveSourceEditorChangesToCodeCache(-1, -1);
     ShortUnitName:=ADependency.PackageName;
     //debugln('TPkgManager.OnProjectInspectorRemoveDependency B ShortUnitName="',ShortUnitName,'"');
     if (ShortUnitName<>'') then begin

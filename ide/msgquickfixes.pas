@@ -114,7 +114,7 @@ begin
   OldChange:=LazarusIDE.OpenEditorsOnCodeToolChange;
   LazarusIDE.OpenEditorsOnCodeToolChange:=true;
   try
-    LazarusIDE.SaveSourceEditorChangesToCodeCache(-1);
+    LazarusIDE.SaveSourceEditorChangesToCodeCache(-1, -1);
     if not CodeToolBoss.RemoveUnitFromAllUsesSections(CodeBuf,UnneededUnitname)
     then begin
       LazarusIDE.DoJumpToCodeToolBossError;
@@ -229,7 +229,7 @@ begin
       end;
     end;
   end;
-  LazarusIDE.SaveSourceEditorChangesToCodeCache(-1);
+  LazarusIDE.SaveSourceEditorChangesToCodeCache(-1, -1);
   if not CodeToolBoss.FindUnitInAllUsesSections(CodeBuf,MissingUnitname,
     NamePos,InPos)
   then begin

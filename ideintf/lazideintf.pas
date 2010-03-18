@@ -183,18 +183,24 @@ type
         var NewFilename: string; const NewSource: string;
         NewFlags: TNewFlags; NewOwner: TObject): TModalResult; virtual; abstract;
     function DoSaveEditorFile(PageIndex:integer;
+                              Flags: TSaveFlags): TModalResult; virtual; abstract; deprecated;
+    function DoSaveEditorFile(AEditor: TSourceEditorInterface;
         Flags: TSaveFlags): TModalResult; virtual; abstract;
     function DoCloseEditorFile(PageIndex:integer;
+                               Flags: TCloseFlags):TModalResult; virtual; abstract; deprecated;
+    function DoCloseEditorFile(AEditor: TSourceEditorInterface;
         Flags: TCloseFlags):TModalResult; virtual; abstract;
     function DoCloseEditorFile(const Filename: string;
         Flags: TCloseFlags): TModalResult; virtual; abstract;
     function DoOpenEditorFile(AFileName:string; PageIndex: integer;
-        Flags: TOpenFlags): TModalResult; virtual; abstract;
+                              Flags: TOpenFlags): TModalResult; virtual; abstract; deprecated;
+    function DoOpenEditorFile(AFileName:string; PageIndex, WindowIndex: integer;
+                              Flags: TOpenFlags): TModalResult; virtual; abstract;
     function DoOpenFileAndJumpToIdentifier(const AFilename, AnIdentifier: string;
-        PageIndex: integer; Flags: TOpenFlags): TModalResult; virtual; abstract;
+                       PageIndex: integer; Flags: TOpenFlags): TModalResult; virtual; abstract;
     function DoOpenFileAndJumpToPos(const AFilename: string;
         const CursorPosition: TPoint; TopLine: integer;
-        PageIndex: integer; Flags: TOpenFlags): TModalResult; virtual; abstract;
+                       PageIndex: integer; Flags: TOpenFlags): TModalResult; virtual; abstract;
     function DoRevertEditorFile(const Filename: string): TModalResult; virtual; abstract;
     function DoOpenComponent(const UnitFilename: string; OpenFlags: TOpenFlags;
                        CloseFlags: TCloseFlags;
@@ -229,8 +235,12 @@ type
     // codetools
     function BeginCodeTools: boolean; virtual; abstract;
     procedure DoJumpToCodeToolBossError; virtual; abstract;
-    function NeedSaveSourceEditorChangesToCodeCache(PageIndex: integer): boolean; virtual; abstract;
-    function SaveSourceEditorChangesToCodeCache(PageIndex: integer): boolean; virtual; abstract; // true if something was saved
+
+    function NeedSaveSourceEditorChangesToCodeCache(PageIndex: integer): boolean; virtual; abstract; deprecated;
+    function NeedSaveSourceEditorChangesToCodeCache(PageIndex, WindowIndex: integer): boolean; virtual; abstract;
+    function SaveSourceEditorChangesToCodeCache(PageIndex: integer): boolean; virtual; abstract; deprecated; // true if something was saved
+    function SaveSourceEditorChangesToCodeCache(PageIndex, WindowIndex: integer): boolean; virtual; abstract; // true if something was saved
+
     property OpenEditorsOnCodeToolChange: boolean read FOpenEditorsOnCodeToolChange
                                              write FOpenEditorsOnCodeToolChange;
     property SaveClosedSourcesOnCodeToolChange: boolean read FSaveClosedSourcesOnCodeToolChange

@@ -814,17 +814,14 @@ type
     property NotebookPages: TStrings read GetNotebookPages;
   end;
 
-  { TSourceEditorManager }
+  { TSourceEditorManagerBase }
+  (* Implement all Methods with the Interface types *)
 
-  TSourceEditorManager = class(TSourceEditorManagerInterface)
+  TSourceEditorManagerBase = class(TSourceEditorManagerInterface)
   private
     FActiveWindow: TSourceNotebook;
     FSourceWindowList: TFPList;
     procedure FreeSourceWindows;
-    function GetCurrentSourceWindowIndex: integer;
-    function GetSourceEditorsByPage(WindowIndex, PageIndex: integer
-      ): TSourceEditorInterface;
-    procedure SetCurrentSourceWindowIndex(const AValue: integer);
   protected
     function  GetActiveSourceWindow: TSourceEditorWindowInterface; override;
     procedure SetActiveSourceWindow(const AValue: TSourceEditorWindowInterface); override;
@@ -837,33 +834,23 @@ type
     function SourceWindowWithEditor(const AEditor: TSourceEditorInterface): TSourceEditorWindowInterface;
               override;
     function  SourceWindowCount: integer; override;
-    function  IndexOfSourceWindow(AWindow: TSourceEditorWindowInterface): integer;
-    property  CurrentSourceWindowIndex: integer read GetCurrentSourceWindowIndex write SetCurrentSourceWindowIndex;
-    function  GetActiveNotebok: TSourceNotebook;
     // Editors
     function  SourceEditorIntfWithFilename(const Filename: string): TSourceEditorInterface;
               override;
     function  SourceEditorCount: integer; override;
-    function  GetActiveSE: TSourceEditor;
     // Settings
     function  GetEditorControlSettings(EditControl: TControl): boolean; override;
     function  GetHighlighterSettings(Highlighter: TObject): boolean; override;
-    property SourceEditorsByPage[WindowIndex, PageIndex: integer]: TSourceEditorInterface
-             read GetSourceEditorsByPage;
-    // Forward to all windows
-    procedure ClearErrorLines; override;
-    procedure ClearExecutionLines;
-    procedure ClearExecutionMarks;
-    procedure ReloadEditorOptions;
-  protected
-    function  GetActiveCompletionPlugin: TSourceEditorCompletionPlugin; override;
-    function  GetCompletionBoxPosition: integer; override;
-    function  GetCompletionPlugins(Index: integer): TSourceEditorCompletionPlugin; override;
   private
     // Completion Plugins
     FCompletionPlugins: TFPList;
     procedure  FreeCompletionPlugins;
+  protected
+    function  GetActiveCompletionPlugin: TSourceEditorCompletionPlugin; override;
+    function  GetCompletionBoxPosition: integer; override;
+    function  GetCompletionPlugins(Index: integer): TSourceEditorCompletionPlugin; override;
   public
+    // Completion Plugins
     function  CompletionPluginCount: integer; override;
     procedure DeactivateCompletionForm; override;
     procedure RegisterCompletionPlugin(Plugin: TSourceEditorCompletionPlugin); override;
@@ -873,6 +860,50 @@ type
   public
     constructor Create(AOwner: TComponent); override;
     destructor Destroy; override;
+  end;
+
+  { TSourceEditorManager }
+  (* Reintroduce all Methods with the final types *)
+
+  TSourceEditorManager = class(TSourceEditorManagerBase)
+  private
+    function GetActiveSourceNotebook: TSourceNotebook;
+    function GetActiveSourceWindowIndex: integer;
+    function GetActiveSrcEditor: TSourceEditor;
+    function GetSourceEditorsByPage(WindowIndex, PageIndex: integer
+      ): TSourceEditor;
+    function GetSrcEditors(Index: integer): TSourceEditor;
+    procedure SetActiveSourceNotebook(const AValue: TSourceNotebook);
+    procedure SetActiveSourceWindowIndex(const AValue: integer);
+    function GetSourceNotebook(Index: integer): TSourceNotebook;
+    procedure SetActiveSrcEditor(const AValue: TSourceEditor);
+  public
+    // Windows
+    function  SourceWindowWithEditor(const AEditor: TSourceEditorInterface): TSourceNotebook;
+              reintroduce;
+    property  SourceWindows[Index: integer]: TSourceNotebook read GetSourceNotebook; // reintroduce
+    property  ActiveSourceWindow: TSourceNotebook
+              read GetActiveSourceNotebook write SetActiveSourceNotebook;       // reintroduce
+    function  IndexOfSourceWindow(AWindow: TSourceEditorWindowInterface): integer;
+    property  ActiveSourceWindowIndex: integer
+              read GetActiveSourceWindowIndex write SetActiveSourceWindowIndex;
+    // Editors
+    function  SourceEditorCount: integer; override;
+    function  GetActiveSE: TSourceEditor;                                       // deprecate and use ActiveEditor
+    property  ActiveEditor: TSourceEditor read GetActiveSrcEditor  write SetActiveSrcEditor; // reintroduced
+    property SourceEditors[Index: integer]: TSourceEditor read GetSrcEditors;   // reintroduced
+    property  SourceEditorsByPage[WindowIndex, PageIndex: integer]: TSourceEditor
+              read GetSourceEditorsByPage;
+   function  SourceEditorIntfWithFilename(const Filename: string): TSourceEditor; reintroduce;
+    // Forward to all windows
+    procedure ClearErrorLines; override;
+    procedure ClearExecutionLines;
+    procedure ClearExecutionMarks;
+    procedure ReloadEditorOptions;
+    procedure ReloadHighlighters;
+  public
+    constructor Create(AOwner: TComponent); override;
+    //destructor Destroy; override;
 
     function CreateNewWindow: TSourceNotebook;
   private
@@ -2651,7 +2682,8 @@ var
   NewCode: TCodeBuffer;
   NewX, NewY, NewTopLine: integer;
 begin
-  if not LazarusIDE.SaveSourceEditorChangesToCodeCache(PageIndex) then exit;
+  if not LazarusIDE.SaveSourceEditorChangesToCodeCache(PageIndex,
+    Manager.IndexOfSourceWindow(SourceNotebook)) then exit;
   XY:=FEditor.LogicalCaretXY;
   FEditor.BeginUndoBlock;
   try
@@ -4705,7 +4737,8 @@ begin
           InputHistories.FileEncodings[SrcEdit.CodeBuffer.Filename]:=NewEncoding;
           DebugLn(['TSourceNotebook.EncodingClicked Change file to ',SrcEdit.CodeBuffer.DiskEncoding]);
           if (not SrcEdit.CodeBuffer.IsVirtual)
-          and (LazarusIDE.DoSaveEditorFile(SrcEdit.PageIndex,[])<>mrOk) then begin
+          and (LazarusIDE.DoSaveEditorFile(SrcEdit, []) <> mrOk)
+          then begin
             DebugLn(['TSourceNotebook.EncodingClicked LazarusIDE.DoSaveEditorFile failed']);
           end;
         end else if CurResult=mrOK then begin
@@ -5878,42 +5911,42 @@ end;
 procedure TSourceNotebook.OnPopupMenuOpenPasFile(Sender: TObject);
 begin
   MainIDEInterface.DoOpenEditorFile(ChangeFileExt(GetActiveSE.Filename,'.pas'),
-    PageIndex+1,
+    PageIndex+1, Manager.IndexOfSourceWindow(self),
     [ofOnlyIfExists,ofAddToRecent,ofRegularFile,ofUseCache,ofDoNotLoadResource]);
 end;
 
 procedure TSourceNotebook.OnPopupMenuOpenPPFile(Sender: TObject);
 begin
   MainIDEInterface.DoOpenEditorFile(ChangeFileExt(GetActiveSE.Filename,'.pp'),
-    PageIndex+1,
+    PageIndex+1, Manager.IndexOfSourceWindow(self),
     [ofOnlyIfExists,ofAddToRecent,ofRegularFile,ofUseCache,ofDoNotLoadResource]);
 end;
 
 procedure TSourceNotebook.OnPopupMenuOpenPFile(Sender: TObject);
 begin
   MainIDEInterface.DoOpenEditorFile(ChangeFileExt(GetActiveSE.Filename,'.p'),
-    PageIndex+1,
+    PageIndex+1, Manager.IndexOfSourceWindow(self),
     [ofOnlyIfExists,ofAddToRecent,ofRegularFile,ofUseCache,ofDoNotLoadResource]);
 end;
 
 procedure TSourceNotebook.OnPopupMenuOpenLFMFile(Sender: TObject);
 begin
   MainIDEInterface.DoOpenEditorFile(ChangeFileExt(GetActiveSE.Filename,'.lfm'),
-    PageIndex+1,
+    PageIndex+1, Manager.IndexOfSourceWindow(self),
     [ofOnlyIfExists,ofAddToRecent,ofRegularFile,ofUseCache,ofDoNotLoadResource]);
 end;
 
 procedure TSourceNotebook.OnPopupMenuOpenLRSFile(Sender: TObject);
 begin
   MainIDEInterface.DoOpenEditorFile(ChangeFileExt(GetActiveSE.Filename,'.lrs'),
-    PageIndex+1,
+    PageIndex+1, Manager.IndexOfSourceWindow(self),
     [ofOnlyIfExists,ofAddToRecent,ofRegularFile,ofUseCache,ofDoNotLoadResource]);
 end;
 
 procedure TSourceNotebook.OnPopupMenuOpenSFile(Sender: TObject);
 begin
   MainIDEInterface.DoOpenEditorFile(ChangeFileExt(GetActiveSE.Filename,'.s'),
-    PageIndex+1,
+    PageIndex+1, Manager.IndexOfSourceWindow(self),
     [ofOnlyIfExists,ofAddToRecent,ofRegularFile,ofUseCache,ofDoNotLoadResource]);
 end;
 
@@ -7512,9 +7545,9 @@ begin
   end;
 end;
 
-{ TSourceEditorManager }
+{ TSourceEditorManagerBase }
 
-procedure TSourceEditorManager.FreeSourceWindows;
+procedure TSourceEditorManagerBase.FreeSourceWindows;
 var
   s: TSourceEditorWindowInterface;
 begin
@@ -7526,32 +7559,12 @@ begin
   FSourceWindowList.Clear;
 end;
 
-function TSourceEditorManager.GetCurrentSourceWindowIndex: integer;
-begin
-  Result := IndexOfSourceWindow(ActiveSourceWindow);
-end;
-
-function TSourceEditorManager.GetSourceEditorsByPage(WindowIndex,
-  PageIndex: integer): TSourceEditorInterface;
-begin
-  if SourceWindows[WindowIndex] <> nil then
-    Result := SourceWindows[WindowIndex].Items[PageIndex]
-  else
-    Result := nil;
-end;
-
-procedure TSourceEditorManager.SetCurrentSourceWindowIndex(const AValue: integer
-  );
-begin
-  ActiveSourceWindow := SourceWindows[AValue];
-end;
-
-function TSourceEditorManager.GetActiveSourceWindow: TSourceEditorWindowInterface;
+function TSourceEditorManagerBase.GetActiveSourceWindow: TSourceEditorWindowInterface;
 begin
   Result := FActiveWindow;
 end;
 
-procedure TSourceEditorManager.SetActiveSourceWindow(
+procedure TSourceEditorManagerBase.SetActiveSourceWindow(
   const AValue: TSourceEditorWindowInterface);
 begin
   if AValue = nil then exit;
@@ -7560,13 +7573,13 @@ begin
   FActiveWindow.Activate;
 end;
 
-function TSourceEditorManager.GetSourceWindows(Index: integer
+function TSourceEditorManagerBase.GetSourceWindows(Index: integer
   ): TSourceEditorWindowInterface;
 begin
   Result := TSourceEditorWindowInterface(FSourceWindowList[Index]);
 end;
 
-function TSourceEditorManager.GetActiveEditor: TSourceEditorInterface;
+function TSourceEditorManagerBase.GetActiveEditor: TSourceEditorInterface;
 begin
   If FActiveWindow <> nil then
     Result := FActiveWindow.ActiveEditor
@@ -7574,7 +7587,7 @@ begin
     Result := nil;
 end;
 
-procedure TSourceEditorManager.SetActiveEditor(
+procedure TSourceEditorManagerBase.SetActiveEditor(
   const AValue: TSourceEditorInterface);
 var
   Window: TSourceEditorWindowInterface;
@@ -7588,7 +7601,7 @@ begin
   Window.ActiveEditor := AValue;
 end;
 
-function TSourceEditorManager.GetSourceEditors(Index: integer
+function TSourceEditorManagerBase.GetSourceEditors(Index: integer
   ): TSourceEditorInterface;
 var
   i: Integer;
@@ -7602,7 +7615,7 @@ begin
     Result := nil;
 end;
 
-function TSourceEditorManager.SourceWindowWithEditor(
+function TSourceEditorManagerBase.SourceWindowWithEditor(
   const AEditor: TSourceEditorInterface): TSourceEditorWindowInterface;
 var
   i: Integer;
@@ -7616,26 +7629,12 @@ begin
   end;
 end;
 
-function TSourceEditorManager.SourceWindowCount: integer;
+function TSourceEditorManagerBase.SourceWindowCount: integer;
 begin
   Result := FSourceWindowList.Count;
 end;
 
-function TSourceEditorManager.IndexOfSourceWindow(
-  AWindow: TSourceEditorWindowInterface): integer;
-begin
-  Result := SourceWindowCount - 1;
-  while Result >= 0 do
-    if SourceWindows[Result] = AWindow then
-      exit;
-end;
-
-function TSourceEditorManager.GetActiveNotebok: TSourceNotebook;
-begin
-  Result := TSourceNotebook(ActiveSourceWindow);
-end;
-
-function TSourceEditorManager.SourceEditorIntfWithFilename(
+function TSourceEditorManagerBase.SourceEditorIntfWithFilename(
   const Filename: string): TSourceEditorInterface;
 var
   i: Integer;
@@ -7647,7 +7646,7 @@ begin
   Result:=nil;
 end;
 
-function TSourceEditorManager.SourceEditorCount: integer;
+function TSourceEditorManagerBase.SourceEditorCount: integer;
 var
   i: Integer;
 begin
@@ -7656,12 +7655,7 @@ begin
     Result := Result + SourceWindows[i].Count;
 end;
 
-function TSourceEditorManager.GetActiveSE: TSourceEditor;
-begin
-  Result := TSourceEditor(ActiveEditor);
-end;
-
-function TSourceEditorManager.GetEditorControlSettings(EditControl: TControl
+function TSourceEditorManagerBase.GetEditorControlSettings(EditControl: TControl
   ): boolean;
 begin
   Result:=true;
@@ -7673,7 +7667,7 @@ begin
   end;
 end;
 
-function TSourceEditorManager.GetHighlighterSettings(Highlighter: TObject
+function TSourceEditorManagerBase.GetHighlighterSettings(Highlighter: TObject
   ): boolean;
 begin
   Result:=true;
@@ -7685,61 +7679,7 @@ begin
   end;
 end;
 
-procedure TSourceEditorManager.ClearErrorLines;
-var
-  i: Integer;
-begin
-  for i := FSourceWindowList.Count - 1 downto 0 do
-    TSourceNotebook(SourceWindows[i]).ClearErrorLines;
-end;
-
-procedure TSourceEditorManager.ClearExecutionLines;
-var
-  i: Integer;
-begin
-  for i := FSourceWindowList.Count - 1 downto 0 do
-    TSourceNotebook(SourceWindows[i]).ClearExecutionLines;
-end;
-
-procedure TSourceEditorManager.ClearExecutionMarks;
-var
-  i: Integer;
-begin
-  for i := FSourceWindowList.Count - 1 downto 0 do
-    TSourceNotebook(SourceWindows[i]).ClearExecutionMarks;
-end;
-
-procedure TSourceEditorManager.ReloadEditorOptions;
-var
-  i: Integer;
-begin
-  for i := FSourceWindowList.Count - 1 downto 0 do
-    TSourceNotebook(SourceWindows[i]).ReloadEditorOptions;
-end;
-
-function TSourceEditorManager.GetActiveCompletionPlugin: TSourceEditorCompletionPlugin;
-begin
-  if FActiveWindow <> nil then
-    Result := FActiveWindow.GetActiveCompletionPlugin
-  else
-    Result := nil;
-end;
-
-function TSourceEditorManager.GetCompletionBoxPosition: integer;
-begin
-  if FActiveWindow <> nil then
-    Result := FActiveWindow.GetCompletionBoxPosition
-  else
-    Result := -1;
-end;
-
-function TSourceEditorManager.GetCompletionPlugins(Index: integer
-  ): TSourceEditorCompletionPlugin;
-begin
-  Result:=TSourceEditorCompletionPlugin(fCompletionPlugins[Index]);
-end;
-
-procedure TSourceEditorManager.FreeCompletionPlugins;
+procedure TSourceEditorManagerBase.FreeCompletionPlugins;
 var
   p: TSourceEditorCompletionPlugin;
 begin
@@ -7751,12 +7691,34 @@ begin
   FCompletionPlugins.Clear;
 end;
 
-function TSourceEditorManager.CompletionPluginCount: integer;
+function TSourceEditorManagerBase.GetActiveCompletionPlugin: TSourceEditorCompletionPlugin;
+begin
+  if FActiveWindow <> nil then
+    Result := FActiveWindow.GetActiveCompletionPlugin
+  else
+    Result := nil;
+end;
+
+function TSourceEditorManagerBase.GetCompletionBoxPosition: integer;
+begin
+  if FActiveWindow <> nil then
+    Result := FActiveWindow.GetCompletionBoxPosition
+  else
+    Result := -1;
+end;
+
+function TSourceEditorManagerBase.GetCompletionPlugins(Index: integer
+  ): TSourceEditorCompletionPlugin;
+begin
+  Result:=TSourceEditorCompletionPlugin(fCompletionPlugins[Index]);
+end;
+
+function TSourceEditorManagerBase.CompletionPluginCount: integer;
 begin
   Result:=fCompletionPlugins.Count;
 end;
 
-procedure TSourceEditorManager.DeactivateCompletionForm;
+procedure TSourceEditorManagerBase.DeactivateCompletionForm;
 var
   i: Integer;
 begin
@@ -7764,21 +7726,21 @@ begin
     SourceWindows[i].DeactivateCompletionForm;
 end;
 
-procedure TSourceEditorManager.RegisterCompletionPlugin(
+procedure TSourceEditorManagerBase.RegisterCompletionPlugin(
   Plugin: TSourceEditorCompletionPlugin);
 begin
   fCompletionPlugins.Add(Plugin);
   Plugin.FreeNotification(Self);
 end;
 
-procedure TSourceEditorManager.UnregisterCompletionPlugin(
+procedure TSourceEditorManagerBase.UnregisterCompletionPlugin(
   Plugin: TSourceEditorCompletionPlugin);
 begin
   Plugin.RemoveFreeNotification(Self);
   fCompletionPlugins.Remove(Plugin);
 end;
 
-procedure TSourceEditorManager.Notification(AComponent: TComponent;
+procedure TSourceEditorManagerBase.Notification(AComponent: TComponent;
   Operation: TOperation);
 var
   i: Integer;
@@ -7794,18 +7756,15 @@ begin
   end;
 end;
 
-constructor TSourceEditorManager.Create(AOwner: TComponent);
+constructor TSourceEditorManagerBase.Create(AOwner: TComponent);
 begin
   SrcEditorIntf.SourceEditorManagerIntf := Self;
   FSourceWindowList := TFPList.Create;
   FCompletionPlugins := TFPList.Create;
   inherited;
-  // Create initial Window
-  FActiveWindow := CreateNewWindow;
-  SourceNotebook := FActiveWindow;
 end;
 
-destructor TSourceEditorManager.Destroy;
+destructor TSourceEditorManagerBase.Destroy;
 begin
   FActiveWindow := nil;
   SourceNotebook := nil;
@@ -7815,6 +7774,144 @@ begin
   FreeAndNil(FCompletionPlugins);
   FreeAndNil(FSourceWindowList);
   inherited Destroy;
+end;
+
+{ TSourceEditorManager }
+
+function TSourceEditorManager.GetActiveSourceNotebook: TSourceNotebook;
+begin
+  Result := TSourceNotebook(inherited ActiveSourceWindow);
+end;
+
+function TSourceEditorManager.GetActiveSourceWindowIndex: integer;
+begin
+  Result := IndexOfSourceWindow(ActiveSourceWindow);
+end;
+
+function TSourceEditorManager.GetActiveSrcEditor: TSourceEditor;
+begin
+  Result := TSourceEditor(inherited ActiveEditor);
+end;
+
+function TSourceEditorManager.GetSourceEditorsByPage(WindowIndex,
+  PageIndex: integer): TSourceEditor;
+begin
+  if SourceWindows[WindowIndex] <> nil then
+    Result := SourceWindows[WindowIndex].FindSourceEditorWithPageIndex(PageIndex)
+  else
+    Result := nil;
+end;
+
+function TSourceEditorManager.GetSrcEditors(Index: integer): TSourceEditor;
+begin
+  Result := TSourceEditor(inherited SourceEditors[Index]);
+end;
+
+procedure TSourceEditorManager.SetActiveSourceNotebook(
+  const AValue: TSourceNotebook);
+begin
+  inherited ActiveSourceWindow := AValue;
+end;
+
+procedure TSourceEditorManager.SetActiveSourceWindowIndex(const AValue: integer
+  );
+begin
+  ActiveSourceWindow := SourceWindows[AValue];
+end;
+
+function TSourceEditorManager.GetSourceNotebook(Index: integer
+  ): TSourceNotebook;
+begin
+  Result := TSourceNotebook(inherited SourceWindows[Index]);
+end;
+
+procedure TSourceEditorManager.SetActiveSrcEditor(const AValue: TSourceEditor);
+begin
+  inherited ActiveEditor := AValue;
+end;
+
+function TSourceEditorManager.SourceWindowWithEditor(
+  const AEditor: TSourceEditorInterface): TSourceNotebook;
+begin
+  Result := TSourceNotebook(inherited SourceWindowWithEditor(AEditor));
+end;
+
+function TSourceEditorManager.IndexOfSourceWindow(
+  AWindow: TSourceEditorWindowInterface): integer;
+begin
+  Result := SourceWindowCount - 1;
+  while Result >= 0 do
+    if SourceWindows[Result] = AWindow then
+      exit;
+end;
+
+function TSourceEditorManager.SourceEditorCount: integer;
+var
+  i: Integer;
+begin
+  Result := 0;
+  for i := 0 to SourceWindowCount - 1 do
+    Result := Result + SourceWindows[i].Count;
+end;
+
+
+function TSourceEditorManager.GetActiveSE: TSourceEditor;
+begin
+  Result := TSourceEditor(ActiveEditor);
+end;
+
+function TSourceEditorManager.SourceEditorIntfWithFilename(
+  const Filename: string): TSourceEditor;
+begin
+  Result := TSourceEditor(inherited SourceEditorIntfWithFilename(Filename));
+end;
+
+procedure TSourceEditorManager.ClearErrorLines;
+var
+  i: Integer;
+begin
+  for i := FSourceWindowList.Count - 1 downto 0 do
+    SourceWindows[i].ClearErrorLines;
+end;
+
+procedure TSourceEditorManager.ClearExecutionLines;
+var
+  i: Integer;
+begin
+  for i := FSourceWindowList.Count - 1 downto 0 do
+    SourceWindows[i].ClearExecutionLines;
+end;
+
+procedure TSourceEditorManager.ClearExecutionMarks;
+var
+  i: Integer;
+begin
+  for i := FSourceWindowList.Count - 1 downto 0 do
+    SourceWindows[i].ClearExecutionMarks;
+end;
+
+procedure TSourceEditorManager.ReloadEditorOptions;
+var
+  i: Integer;
+begin
+  for i := FSourceWindowList.Count - 1 downto 0 do
+    SourceWindows[i].ReloadEditorOptions;
+end;
+
+procedure TSourceEditorManager.ReloadHighlighters;
+var
+  i: Integer;
+begin
+  for i := FSourceWindowList.Count - 1 downto 0 do
+    SourceWindows[i].ReloadHighlighters;
+end;
+
+constructor TSourceEditorManager.Create(AOwner: TComponent);
+begin
+  inherited Create(AOwner);
+  // Create initial Window
+  FActiveWindow := CreateNewWindow;
+  SourceNotebook := FActiveWindow;
 end;
 
 function TSourceEditorManager.CreateNewWindow: TSourceNotebook;

@@ -1001,7 +1001,7 @@ begin
     end;
 
     // get nice unit name
-    if not LazarusIDE.SaveSourceEditorChangesToCodeCache(-1) then begin
+    if not LazarusIDE.SaveSourceEditorChangesToCodeCache(-1, -1) then begin
       DebugLn(['TCodeBrowserView.UseUnitInSrcEditor LazarusIDE.'
         +'SaveSourceEditorChangesToCodeCache failed']);
       exit;
@@ -2637,7 +2637,7 @@ begin
   end else if NodeData is TCodeBrowserUnit then begin
     CurUnit:=TCodeBrowserUnit(NodeData);
     if CurUnit.Filename<>'' then begin
-      LazarusIDE.DoOpenEditorFile(CurUnit.Filename,-1,[ofOnlyIfExists]);
+      LazarusIDE.DoOpenEditorFile(CurUnit.Filename,-1,-1,[ofOnlyIfExists]);
     end;
   end else if NodeData is TCodeBrowserNode then begin
     Node:=TCodeBrowserNode(NodeData);

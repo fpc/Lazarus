@@ -497,7 +497,7 @@ var
 begin
   CurFile:=GetCurrentCHeaderFile;
   if CurFile<>nil then
-    LazarusIDE.DoOpenEditorFile(CurFile.Filename,-1,[]);
+    LazarusIDE.DoOpenEditorFile(CurFile.Filename,-1, -1,[]);
 end;
 
 procedure TH2PasDialog.CHeaderFilesCheckTreeViewSelectionChanged(Sender: TObject
@@ -1117,7 +1117,7 @@ begin
     DebugLn(['TH2PasDialog.Convert LazarusIDE.DoSaveProject failed']);
     exit;
   end;
-  LazarusIDE.SaveSourceEditorChangesToCodeCache(-1);
+  LazarusIDE.SaveSourceEditorChangesToCodeCache(-1,-1);
   
   Result:=Converter.Execute;
   if Result<>mrOk then begin

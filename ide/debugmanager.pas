@@ -2105,7 +2105,7 @@ var
 begin
   Filename:=ABreakpoint.Source;
   if Filename<>'' then
-    ASrcEdit:=SourceNotebook.FindSourceEditorWithFilename(ABreakpoint.Source)
+    ASrcEdit:=SourceEditorManager.SourceEditorIntfWithFilename(ABreakpoint.Source)
   else
     ASrcEdit:=nil;
 end;
@@ -2369,7 +2369,7 @@ end;
 function TDebugManager.DoStopProject: TModalResult;
 begin
   Result := mrCancel;
-  SourceNotebook.ClearExecutionLines;
+  SourceEditorManager.ClearExecutionLines;
   if (MainIDE.ToolStatus=itDebugger) and (FDebugger<>nil) and (not Destroying)
   then begin
     FDebugger.Stop;
