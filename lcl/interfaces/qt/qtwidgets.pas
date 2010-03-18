@@ -793,6 +793,9 @@ type
   
   TQtAbstractSpinBox = class(TQtWidget, IQtEdit)
   private
+    {$ifdef CPU64 and not WIN64}
+    FParentShowPassed: Integer;
+    {$endif}
     FEditingFinishedHook: QAbstractSpinBox_hookH;
     // parts
     FLineEdit: QLineEditH;
@@ -836,10 +839,7 @@ type
 
   TQtFloatSpinBox = class(TQtAbstractSpinBox)
   private
-    {$ifdef CPU64 and not WIN64}
-    FParentShowPassed: Integer;
-    FFixValue: Double;
-    {$endif}
+    FValue: Double;
     FValueChangedHook: QDoubleSpinBox_hookH;
   protected
     function CreateWidget(const AParams: TCreateParams):QWidgetH; override;
@@ -853,9 +853,6 @@ type
   public
     procedure AttachEvents; override;
     procedure DetachEvents; override;
-    {$ifdef CPU64 and not WIN64}
-    function EventFilter(Sender: QObjectH; Event: QEventH): Boolean; cdecl; override;
-    {$endif}
     procedure SignalValueChanged(p1: Double); cdecl;
   end;
   
@@ -863,6 +860,7 @@ type
 
   TQtSpinBox = class(TQtAbstractSpinBox)
   private
+    FValue: Integer;
     FValueChangedHook: QSpinBox_hookH;
   protected
     function CreateWidget(const AParams: TCreateParams):QWidgetH; override;
@@ -7119,6 +7117,21 @@ begin
   {we must pass delete key to qt, qabstractspinbox doesn't like what we do}
   if IsDeleteKey then
     Result := False;
+  {$ifdef CPU64 and not WIN64}
+  if (FParentShowPassed = 1) then
+  begin
+    if QEvent_type(Event) <> QEventPaint then
+    begin
+      inc(FParentShowPassed);
+      setValue(getValue);
+    end;
+  end;
+
+  if (QEvent_type(Event) = QEventShowToParent) and
+    (FParentShowPassed = 0) then
+    inc(FParentShowPassed);
+  {$endif}
+
 end;
 
 procedure TQtAbstractSpinBox.SignalEditingFinished; cdecl;
@@ -7150,9 +7163,9 @@ begin
     WriteLn('TQtFloatSpinBox.Create');
   {$endif}
   {$ifdef CPU64 and not WIN64}
-  FFixValue := 0;
   FParentShowPassed := 0;
   {$endif}
+  FValue := 0;
   if AParams.WndParent <> 0 then
     Parent := TQtWidget(AParams.WndParent).GetContainerWidget
   else
@@ -7162,7 +7175,7 @@ end;
 
 function TQtFloatSpinBox.getValue: Double;
 begin
-  Result := QDoubleSpinBox_value(QDoubleSpinBoxH(Widget));
+  Result := FValue;
 end;
 
 procedure TQtFloatSpinBox.setDecimals(const v: integer);
@@ -7187,7 +7200,8 @@ end;
 
 procedure TQtFloatSpinBox.setValue(const v: Double);
 begin
-  QDoubleSpinBox_setValue(QDoubleSpinBoxH(Widget), v);
+  FValue := v;
+  QDoubleSpinBox_setValue(QDoubleSpinBoxH(Widget), FValue);
 end;
 
 procedure TQtFloatSpinBox.AttachEvents;
@@ -7203,34 +7217,11 @@ begin
   inherited DetachEvents;
 end;
 
-{$ifdef CPU64 and not WIN64}
-{$note this is workaround for qt-4.5.2(3) 64bit bug when
- QDoubleSpinBox looses it's value inside QEventShowToParent}
-function TQtFloatSpinBox.EventFilter(Sender: QObjectH; Event: QEventH
-  ): Boolean; cdecl;
-begin
-  if FParentShowPassed = 0 then
-    FFixValue := getValue;
-
-  Result := inherited EventFilter(Sender, Event);
-
-  if (FParentShowPassed = 1) and
-    (FFixValue <> getValue) then
-  begin
-    inc(FParentShowPassed);
-    setValue(FFixValue);
-  end;
-
-  if (QEvent_type(Event) = QEventShowToParent) and
-    (FParentShowPassed = 0) then
-    inc(FParentShowPassed);
-end;
-{$endif}
-
 procedure TQtFloatSpinBox.SignalValueChanged(p1: Double); cdecl;
 var
    Msg: TLMessage;
 begin
+  FValue := p1;
   FillChar(Msg, SizeOf(Msg), #0);
   Msg.Msg := CM_TEXTCHANGED;
   if not InUpdate then
@@ -7247,6 +7238,9 @@ begin
   {$ifdef VerboseQt}
     WriteLn('TQtSpinBox.Create');
   {$endif}
+  {$ifdef CPU64 and not WIN64}
+  FParentShowPassed := 0;
+  {$endif}
   if AParams.WndParent <> 0 then
     Parent := TQtWidget(AParams.WndParent).GetContainerWidget
   else
@@ -7256,7 +7250,7 @@ end;
 
 function TQtSpinBox.getValue: Double;
 begin
-  Result := QSpinBox_value(QSpinBoxH(Widget));
+  Result := FValue;
 end;
 
 procedure TQtSpinBox.setMinimum(const v: Double);
@@ -7276,6 +7270,7 @@ end;
 
 procedure TQtSpinBox.setValue(const v: Double);
 begin
+  FValue := Round(v);
   QSpinBox_setValue(QSpinBoxH(Widget), round(v));
 end;
 
@@ -7296,6 +7291,7 @@ procedure TQtSpinBox.SignalValueChanged(p1: Integer); cdecl;
 var
    Msg: TLMessage;
 begin
+  FValue := p1;
   FillChar(Msg, SizeOf(Msg), #0);
   Msg.Msg := CM_TEXTCHANGED;
   if not InUpdate then
