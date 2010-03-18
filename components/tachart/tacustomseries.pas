@@ -40,6 +40,7 @@ type
     procedure SetAxisIndexY(AValue: Integer);
 
   protected
+    procedure GetGraphBounds(out ABounds: TDoubleRect); override;
     procedure SetActive(AValue: Boolean); override;
     procedure SetDepth(AValue: TChartDistance); override;
     procedure SetShowInLegend(AValue: Boolean); override;
@@ -52,6 +53,8 @@ type
     function AxisToGraphY(AY: Double): Double; override;
     function GraphToAxisX(AX: Double): Double; override;
     function GraphToAxisY(AY: Double): Double; override;
+
+    function IsRotated: Boolean;
 
   public
     constructor Create(AOwner: TComponent); override;
@@ -199,6 +202,21 @@ begin
   FAxisIndexY := DEF_AXIS_INDEX;
 end;
 
+procedure TCustomChartSeries.GetGraphBounds(out ABounds: TDoubleRect);
+begin
+  GetBounds(ABounds);
+  with ABounds do begin
+    a.X := AxisToGraphX(a.X);
+    a.Y := AxisToGraphY(a.Y);
+    b.X := AxisToGraphX(b.X);
+    b.Y := AxisToGraphY(b.Y);
+    if IsRotated then begin
+      Exchange(a.X, a.Y);
+      Exchange(b.X, b.Y);
+    end;
+  end;
+end;
+
 function TCustomChartSeries.GraphToAxisX(AX: Double): Double;
 begin
   Result := TransformationByAxis(FChart, AxisIndexX).GraphToAxis(AX)
@@ -207,6 +225,15 @@ end;
 function TCustomChartSeries.GraphToAxisY(AY: Double): Double;
 begin
   Result := TransformationByAxis(FChart, AxisIndexY).GraphToAxis(AY)
+end;
+
+function TCustomChartSeries.IsRotated: Boolean;
+const
+  VERTICAL = [calLeft, calRight];
+begin
+  Result :=
+    (AxisIndexX >= 0) and (FChart.AxisList[AxisIndexX].Alignment in VERTICAL) and
+    (AxisIndexY >= 0) and not (FChart.AxisList[AxisIndexY].Alignment in VERTICAL);
 end;
 
 procedure TCustomChartSeries.SetActive(AValue: Boolean);
@@ -387,6 +414,8 @@ begin
     Result.X := AxisToGraphX(X);
     Result.Y := AxisToGraphY(Y);
   end;
+  if IsRotated then
+    Exchange(Result.X, Result.Y);
 end;
 
 function TChartSeries.GetGraphPointX(AIndex: Integer): Double;

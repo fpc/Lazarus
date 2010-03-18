@@ -56,6 +56,7 @@ type
     procedure AfterDraw; virtual;
     procedure BeforeDraw; virtual;
     procedure GetBounds(out ABounds: TDoubleRect); virtual; abstract;
+    procedure GetGraphBounds(out ABounds: TDoubleRect); virtual; abstract;
     procedure GetLegendItems(AItems: TChartLegendItems); virtual; abstract;
     function GetNearestPoint(
       ADistFunc: TPointDistFunc; const APoint: TPoint;
@@ -1074,13 +1075,7 @@ begin
     s := Series[i];
     if not s.Active then continue;
     seriesBounds := EmptyExtent;
-    s.GetBounds(seriesBounds);
-    with seriesBounds do begin
-      a.X := s.AxisToGraphX(a.X);
-      a.Y := s.AxisToGraphY(a.Y);
-      b.X := s.AxisToGraphX(b.X);
-      b.Y := s.AxisToGraphY(b.Y);
-    end;
+    s.GetGraphBounds(seriesBounds);
     with FCurrentExtent do begin
       a.X := Min(a.X, seriesBounds.a.X);
       b.X := Max(b.X, seriesBounds.b.X);
