@@ -330,7 +330,7 @@ begin
   j := FindListener(AListener);
   if j < 0 then
     raise EListenerError.Create('Listener not found');
-  for i := j + 1 to High(FListeners) do
+  for i := j to High(FListeners) - 1 do
     FListeners[i] := FListeners[i + 1];
   SetLength(FListeners, Length(FListeners) - 1);
 end;
