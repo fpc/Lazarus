@@ -725,8 +725,11 @@ begin
   ACanvas.Brush.Assign(BarBrush);
   for i := 0 to Count - 1 do begin
     p := GetGraphPoint(i);
-    w := CalcBarWidth(p.X, i);
-    graphBar := DoubleRect(p.X - w, 0, p.X + w, p.Y);
+    w := CalcBarWidth(GetGraphPointX(i), i);
+    if IsRotated then
+      graphBar := DoubleRect(0, p.Y - w, p.X, p.Y + w)
+    else
+      graphBar := DoubleRect(p.X - w, 0, p.X + w, p.Y);
     if not RectIntersectsRect(graphBar, ext2) then continue;
 
     with imageBar do begin
