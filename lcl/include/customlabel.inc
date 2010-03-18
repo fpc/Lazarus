@@ -84,6 +84,7 @@ var
   NewWidth, NewHeight: integer;
   CurAnchors: TAnchors;
 begin
+  inherited DoAutoSize;
   //debugln('TCustomLabel.DoAutoSize ',DbgSName(Self),' AutoSizing=',dbgs(AutoSizing),' AutoSize=',dbgs(AutoSize),' Parent=',DbgSName(Parent),' csLoading=',dbgs(csLoading in ComponentState),' Parnet.HandleAllocated=',dbgs((Parent<>nil) and (Parent.HandleAllocated)));
   if OptimalFill and (not AutoSize) then
   begin
@@ -298,7 +299,9 @@ end;
 procedure TCustomLabel.Loaded;
 begin
   inherited Loaded;
+  {$IFNDEF OldAutoSize}
   AdjustSize;
+  {$ENDIF}
 end;
 
 procedure TCustomLabel.UpdateSize;

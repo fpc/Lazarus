@@ -56,8 +56,9 @@ begin
   if (Parent=nil) and (not (cfAutoSizeNeeded in FControlFlags))
   and (Self is TCustomForm) then begin
     DebugLn(['TControl.Adjustsize ',DbgSName(Self)]);
-    if Name='SearchResultsView' then begin
-      debugln(GetStackTrace(true));
+    if Name='SearchResults' then begin
+      //debugln(GetStackTrace(true));
+      DebugLn(['TControl.Adjustsize AAA1']);
     end;
   end;
   {$ENDIF}
@@ -365,7 +366,7 @@ begin
   PosChanged := (FLeft <> ALeft) or (FTop <> ATop);
   if (not SizeChanged) and (not PosChanged) then Exit;
 
-  //DebugLn('TControl.ChangeBounds A ',Name,':',ClassName);
+  //DebugLn('TControl.ChangeBounds A ',DbgSName(Self),' Old=',dbgs(BoundsRect),' New=',dbgs(NewBounds));
   if (not (csLoading in ComponentState))
   and (not (Self is TWinControl)) then
     InvalidateControl(IsControlVisible, False, true);
@@ -2392,7 +2393,9 @@ end;
 procedure TControl.DoAutoSize;
 begin
   //Handled by TWinControl, or other descendants
+  {$IFNDEF OldAutoSize}
   Exclude(FControlFlags,cfAutoSizeNeeded);
+  {$ENDIF}
 end;
 
 {------------------------------------------------------------------------------
