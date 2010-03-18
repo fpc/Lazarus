@@ -402,24 +402,24 @@ end;
 
 procedure TQtComboStrings.Put(Index: Integer; const S: string);
 begin
-  FOwner.BeginUpdate;
   inherited Put(Index, S);
+  FOwner.BeginUpdate;
   FOwner.setItemText(Index, S);
   FOwner.EndUpdate;
 end;
 
 procedure TQtComboStrings.InsertItem(Index: Integer; const S: string);
 begin
-  FOwner.BeginUpdate;
   inherited InsertItem(Index, S);
+  FOwner.BeginUpdate;
   FOwner.insertItem(Index, S);
   FOwner.EndUpdate;
 end;
 
 procedure TQtComboStrings.InsertItem(Index: Integer; const S: string; O: TObject);
 begin
-  FOwner.BeginUpdate;
   inherited InsertItem(Index, S, O);
+  FOwner.BeginUpdate;
   FOwner.insertItem(Index, S);
   FOwner.EndUpdate;
 end;
@@ -443,17 +443,21 @@ var
   C: Integer;
 begin
   C := Count;
-  FOwner.BeginUpdate;
   inherited Clear;
-  for I := C - 1 downto 0 do
-    FOwner.removeItem(I);
-  FOwner.EndUpdate;
+
+  if Assigned(FOwner.LCLObject) and
+    (FOwner.LCLObject.HandleAllocated) then
+  begin
+    FOwner.BeginUpdate;
+    FOwner.ClearItems;
+    FOwner.EndUpdate;
+  end;
 end;
 
 procedure TQtComboStrings.Delete(Index: Integer);
 begin
-  FOwner.BeginUpdate;
   inherited Delete(Index);
+  FOwner.BeginUpdate;
   FOwner.removeItem(Index);
   FOwner.EndUpdate;
 end;
@@ -462,8 +466,8 @@ procedure TQtComboStrings.Sort;
 var
   I: Integer;
 begin
-  FOwner.BeginUpdate;
   inherited Sort;
+  FOwner.BeginUpdate;
   for I := 0 to Count - 1 do
     FOwner.setItemText(I, Strings[I]);
   FOwner.EndUpdate;
@@ -473,8 +477,8 @@ procedure TQtComboStrings.Exchange(AIndex1, AIndex2: Integer);
 var
   i: Integer;
 begin
-  FOwner.BeginUpdate;
   inherited Exchange(AIndex1, AIndex2);
+  FOwner.BeginUpdate;
   for I := 0 to Count - 1 do
     FOwner.setItemText(I, Strings[I]);
   FOwner.EndUpdate;
@@ -521,8 +525,14 @@ var
 begin
   C := Count;
   inherited Clear;
-  for I := C - 1 downto 0 do
-    FOwner.removeItem(I);
+
+  if Assigned(FOwner.LCLObject) and
+    (FOwner.LCLObject.HandleAllocated) then
+  begin
+    FOwner.BeginUpdate;
+    FOwner.ClearItems;
+    FOwner.EndUpdate;
+  end;
 end;
 
 procedure TQtListStrings.Delete(Index: Integer);

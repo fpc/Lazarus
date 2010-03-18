@@ -80,6 +80,7 @@ type
     class function CreateHandle(const AWinControl: TWinControl; const AParams: TCreateParams): TLCLIntfHandle; override;
 
     class procedure CloseModal(const ACustomForm: TCustomForm); override;
+    class procedure DestroyHandle(const AWinControl: TWinControl); override;
     class procedure SetAllowDropFiles(const AForm: TCustomForm; AValue: Boolean); override;
     class procedure SetFormBorderStyle(const AForm: TCustomForm; const AFormBorderStyle: TFormBorderStyle); override;
     class procedure SetFormStyle(const AForm: TCustomform; const AFormStyle: TFormStyle); override;
@@ -205,6 +206,20 @@ end;
 class procedure TQtWSCustomForm.CloseModal(const ACustomForm: TCustomForm);
 begin
   inherited CloseModal(ACustomForm);
+end;
+
+class procedure TQtWSCustomForm.DestroyHandle(const AWinControl: TWinControl);
+var
+  w: TQtWidget;
+begin
+  w := TQtWidget(AWinControl.Handle);
+  {forms which have another widget as parent
+   eg.form inside tabpage or mdichilds
+   can segfault without hiding before release.
+   So we save our day here.}
+  if w.getVisible and (w.getParent <> nil) then
+    w.Hide;
+  w.Release;
 end;
 
 {------------------------------------------------------------------------------

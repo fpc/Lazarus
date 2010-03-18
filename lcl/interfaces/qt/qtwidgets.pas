@@ -759,6 +759,7 @@ type
   public
     FList: TStrings;
     destructor Destroy; override;
+    procedure ClearItems;
     procedure setBorder(const ABorder: Boolean);
     function currentIndex: Integer;
     function getEditable: Boolean;
@@ -952,6 +953,7 @@ type
     procedure signalSelectionChanged(); cdecl;
     procedure ItemDelegatePaint(painter: QPainterH; option: QStyleOptionViewItemH; index: QModelIndexH); cdecl; override;
   public
+    procedure ClearItems;
     function currentRow: Integer;
     function IndexAt(APoint: PQtPoint): Integer;
     procedure insertItem(AIndex: Integer; AText: String); overload;
@@ -6493,6 +6495,11 @@ begin
   inherited Destroy;
 end;
 
+procedure TQtComboBox.ClearItems;
+begin
+  QComboBox_clear(QComboBoxH(Widget));
+end;
+
 {------------------------------------------------------------------------------
   Function: TQtComboBox.currentIndex
   Params:  None
@@ -7510,6 +7517,11 @@ begin
   QPainter_restore(painter);
   
   TQtDeviceContext(DrawStruct.DC).Free;
+end;
+
+procedure TQtListWidget.ClearItems;
+begin
+  QListWidget_clear(QListWidgetH(Widget));
 end;
 
 {------------------------------------------------------------------------------
