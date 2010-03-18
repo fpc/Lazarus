@@ -689,8 +689,6 @@ type
     procedure BeginAutoFocusLock;
     procedure EndAutoFocusLock;
   public
-    FindReplaceDlgHistoryIndex: array[TFindDlgComponent] of integer;
-    FindReplaceDlgUserText: array[TFindDlgComponent] of string;
     ControlDocker: TLazControlDocker;
 
     constructor Create(AOwner: TComponent); override;
@@ -737,7 +735,6 @@ type
     procedure ToggleObjectInspClicked(Sender: TObject);
 
     // find / replace text
-    procedure InitFindDialog;
     procedure FindClicked(Sender: TObject);
     procedure FindNextClicked(Sender: TObject);
     procedure FindPreviousClicked(Sender: TObject);
@@ -807,8 +804,6 @@ type
     procedure RegisterCompletionPlugin(Plugin: TSourceEditorCompletionPlugin); override; deprecated;
     procedure UnregisterCompletionPlugin(Plugin: TSourceEditorCompletionPlugin); override; deprecated;
 
-    procedure FindReplaceDlgKey(Sender: TObject; var Key: Word;
-                       Shift: TShiftState; FindDlgComponent: TFindDlgComponent);
     procedure SetupShortCuts;
 
     function GetCapabilities: TNoteBookCapabilities;
@@ -1362,8 +1357,7 @@ var
   bSelectedTextOption: Boolean;
   DlgResult: TModalResult;
 begin
-  if SourceNotebook<>nil then
-    SourceNotebook.InitFindDialog;
+  LazFindReplaceDialog.ResetUserHistory;
   //debugln('TSourceEditor.StartFindAndReplace A LazFindReplaceDialog.FindText="',dbgstr(LazFindReplaceDialog.FindText),'"');
   if ReadOnly then Replace := False;
   NewOptions:=LazFindReplaceDialog.Options;
@@ -5493,68 +5487,6 @@ Begin
   Result := (not assigned(Notebook)) or (PageCount = 0);
 end;
 
-procedure TSourceNotebook.FindReplaceDlgKey(Sender: TObject; var Key: Word;
-  Shift: TShiftState; FindDlgComponent: TFindDlgComponent);
-var
-  HistoryList: TStringList;
-  CurText: string;
-  CurIndex: integer;
-
-  procedure SetHistoryText;
-  var s: string;
-  begin
-    if FindReplaceDlgHistoryIndex[FindDlgComponent]>=0 then
-      s:=HistoryList[FindReplaceDlgHistoryIndex[FindDlgComponent]]
-    else
-      s:=FindReplaceDlgUserText[FindDlgComponent];
-    //writeln('  SetHistoryText "',s,'"');
-    LazFindReplaceDialog.ComponentText[FindDlgComponent]:=s
-  end;
-
-  procedure FetchFocus;
-  begin
-    if Sender is TWinControl then
-      TWinControl(Sender).SetFocus;
-  end;
-
-begin
-  if FindDlgComponent=fdcText then
-    HistoryList:=InputHistories.FindHistory
-  else
-    HistoryList:=InputHistories.ReplaceHistory;
-  CurIndex:=FindReplaceDlgHistoryIndex[FindDlgComponent];
-  CurText:=LazFindReplaceDialog.ComponentText[FindDlgComponent];
-  //writeln('TSourceNotebook.FindReplaceDlgKey CurIndex=',CurIndex,' CurText="',CurText,'"');
-  if Key=VK_UP then begin
-    // go forward in history
-    if CurIndex>=0 then begin
-      if (HistoryList[CurIndex]<>CurText) then begin
-        // save user text
-        FindReplaceDlgUserText[FindDlgComponent]:=CurText;
-      end;
-      dec(FindReplaceDlgHistoryIndex[FindDlgComponent]);
-      SetHistoryText;
-    end;
-    FetchFocus;
-    Key:=VK_UNKNOWN;
-  end else if Key=VK_DOWN then begin
-    if (CurIndex<0)
-    or (HistoryList[CurIndex]<>CurText) then
-    begin
-      // save user text
-      FindReplaceDlgUserText[FindDlgComponent]:=CurText;
-    end;
-    // go back in history
-    if CurIndex<HistoryList.Count-1 then
-    begin
-      inc(FindReplaceDlgHistoryIndex[FindDlgComponent]);
-      SetHistoryText;
-    end;
-    FetchFocus;
-    Key:=VK_UNKNOWN;
-  end;
-end;
-
 procedure TSourceNotebook.SetupShortCuts;
 
   function GetCommand(ACommand: Word): TIDECommand; inline;
@@ -6686,14 +6618,6 @@ begin
   ASrcEdit.OtherViewList.Add(f);
 end;
 {$ENDIF}
-
-procedure TSourceNotebook.InitFindDialog;
-var c: TFindDlgComponent;
-begin
-  LazFindReplaceDialog.OnKey:=@FindReplaceDlgKey;
-  for c:=Low(TFindDlgComponent) to High(TFindDlgComponent) do
-    FindReplaceDlgHistoryIndex[c]:=-1;
-end;
 
 Procedure TSourceNotebook.UpdateStatusBar;
 var

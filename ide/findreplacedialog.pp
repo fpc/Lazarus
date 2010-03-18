@@ -41,8 +41,8 @@ uses
   Classes, Math, SysUtils, LCLProc, LCLType, Controls, StdCtrls, Forms, Buttons,
   ExtCtrls, Dialogs, Graphics,
   SynEditTypes, SynRegExpr, SynEdit,
-  IDEImagesIntf, IDEWindowIntf,
-  LazarusIdeStrConsts, IDEContextHelpEdit;
+  IDEImagesIntf, IDEWindowIntf, LazarusIdeStrConsts, IDEContextHelpEdit,
+  InputHistory;
 
 type
   TFindDlgComponent = (fdcText, fdcReplace);
@@ -92,6 +92,8 @@ type
     FOnKey: TOnFindDlgKey;
     fReplaceAllClickedLast: boolean;
     RegExpr: TRegExpr;
+    DlgHistoryIndex: array[TFindDlgComponent] of integer;
+    DlgUserText: array[TFindDlgComponent] of string;
     function CheckInput: boolean;
     function GetComponentText(c: TFindDlgComponent): string;
     function GetEnableAutoComplete: boolean;
@@ -109,6 +111,7 @@ type
     constructor Create(TheOwner: TComponent); override;
     destructor Destroy; override;
     procedure UpdateHints;
+    procedure ResetUserHistory;
   public
     property Options: TSynSearchOptions read GetOptions write SetOptions;
     property EnableAutoComplete: boolean read GetEnableAutoComplete
@@ -209,17 +212,81 @@ begin
     EnableAutoCompleteSpeedButton.Hint:=lisAutoCompletionOff;
 end;
 
+procedure TLazFindReplaceDialog.ResetUserHistory;
+var
+  c: TFindDlgComponent;
+begin
+  for c := Low(TFindDlgComponent) to High(TFindDlgComponent) do
+    DlgHistoryIndex[c] := -1;
+end;
+
 procedure TLazFindReplaceDialog.TextToFindComboBoxKeyDown(
   Sender: TObject; var Key:Word; Shift:TShiftState);
-var Component: TFindDlgComponent;
+var
+  Component: TFindDlgComponent;
+  HistoryList: TStringList;
+  CurText: string;
+  CurIndex: integer;
+
+  procedure SetHistoryText;
+  var s: string;
+  begin
+    if DlgHistoryIndex[Component]>=0 then
+      s := HistoryList[DlgHistoryIndex[Component]]
+    else
+      s := DlgUserText[Component];
+    //writeln('  SetHistoryText "',s,'"');
+    ComponentText[Component]:=s
+  end;
+
+  procedure FetchFocus;
+  begin
+    if Sender is TWinControl then
+      TWinControl(Sender).SetFocus;
+  end;
+
 begin
   //debugln('TLazFindReplaceDialog.TextToFindComboBoxKeyDown Key=',Key,' RETURN=',VK_RETURN,' TAB=',VK_TAB,' DOWN=',VK_DOWN,' UP=',VK_UP);
+  if Sender=TextToFindComboBox then
+    Component:=fdcText
+  else
+    Component:=fdcReplace;
+
   if Assigned(OnKey) then begin
-    if Sender=TextToFindComboBox then
-      Component:=fdcText
-    else
-      Component:=fdcReplace;
     OnKey(Sender, Key, Shift, Component);
+  end
+  else
+  begin
+    if Component=fdcText then
+      HistoryList:= InputHistories.FindHistory
+    else
+      HistoryList:= InputHistories.ReplaceHistory;
+    CurIndex := DlgHistoryIndex[Component];
+    CurText := ComponentText[Component];
+    if Key=VK_UP then begin
+      // go forward in history
+      if CurIndex >= 0 then begin
+        if (HistoryList[CurIndex] <> CurText) then
+          DlgUserText[Component] := CurText; // save user text
+        dec(DlgHistoryIndex[Component]);
+        SetHistoryText;
+      end;
+      FetchFocus;
+      Key:=VK_UNKNOWN;
+    end
+    else if Key=VK_DOWN then begin
+      // go back in history
+      if (CurIndex<0)
+      or (HistoryList[CurIndex] <> CurText) then
+        DlgUserText[Component] := CurText; // save user text
+      if CurIndex < HistoryList.Count-1 then
+      begin
+        inc(DlgHistoryIndex[Component]);
+        SetHistoryText;
+      end;
+      FetchFocus;
+      Key:=VK_UNKNOWN;
+    end;
   end;
 end;
 
