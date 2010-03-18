@@ -6630,7 +6630,14 @@ begin
     end;
     {$ENDIF}
   end;
+  {$IFDEF OldAutoSize}
   SetBoundsKeepBase(Message.XPos, Message.YPos, NewWidth, NewHeight, Parent <> nil);
+  {$ELSE}
+  if Parent<>nil then
+    SetBoundsKeepBase(Message.XPos, Message.YPos, NewWidth, NewHeight)
+  else
+    SetBounds(Message.XPos, Message.YPos, NewWidth, NewHeight);
+  {$ENDIF}
 end;
 
 {------------------------------------------------------------------------------
@@ -6692,14 +6699,18 @@ begin
     {$ENDIF}
   end;
 
-  SetBoundsKeepBase(NewLeft, NewTop, Message.Width, Message.Height, Parent <> nil);
   {$IFDEF OldAutoSize}
+  SetBoundsKeepBase(NewLeft, NewTop, Message.Width, Message.Height, Parent <> nil);
   if ClientRectNeedsInterfaceUpdate then
     DoAdjustClientRectChange;
   if ((Message.SizeType and Size_SourceIsInterface) > 0) and
      (Parent <> nil) and Parent.AutoSize then
     Parent.AdjustSize;
   {$ELSE}
+  if Parent<>nil then
+    SetBoundsKeepBase(NewLeft, NewTop, Message.Width, Message.Height)
+  else
+    SetBounds(NewLeft, NewTop, Message.Width, Message.Height);
   if ((Message.SizeType and Size_SourceIsInterface) > 0)
   and ClientRectNeedsInterfaceUpdate then
     DoAdjustClientRectChange;

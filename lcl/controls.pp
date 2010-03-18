@@ -1053,7 +1053,8 @@ type
     procedure Resize; virtual;// checks for changes and calls DoOnResize
     procedure RequestAlign; virtual;// smart calling Parent.AlignControls
     procedure UpdateAnchorRules;
-    procedure ChangeBounds(ALeft, ATop, AWidth, AHeight: integer); virtual;
+    procedure ChangeBounds(ALeft, ATop, AWidth, AHeight: integer
+                     {$IFNDEF OldAutoSize}; KeepBase: boolean{$ENDIF}); virtual;
     procedure DoSetBounds(ALeft, ATop, AWidth, AHeight: integer); virtual;
     procedure ChangeScale(Multiplier, Divider: Integer); virtual;
     function CanAutoSize(var NewWidth, NewHeight: Integer): Boolean; virtual;
@@ -1283,8 +1284,8 @@ type
     property AnchoredControls[Index: integer]: TControl read GetAnchoredControls;
     procedure SetBounds(aLeft, aTop, aWidth, aHeight: integer); virtual;
     procedure SetInitialBounds(aLeft, aTop, aWidth, aHeight: integer); virtual;
-    procedure SetBoundsKeepBase(aLeft, aTop, aWidth, aHeight: integer;
-                                Lock: boolean = true); virtual;
+    procedure SetBoundsKeepBase(aLeft, aTop, aWidth, aHeight: integer
+                                {$IFDEF OldAutoSize}; Lock: boolean = true{$ENDIF}); virtual;
     procedure GetPreferredSize(var PreferredWidth, PreferredHeight: integer;
                                Raw: boolean = false;
                                WithThemeSpace: boolean = true); virtual;
@@ -1298,8 +1299,10 @@ type
     procedure EnableAutoSizing;
     procedure UpdateBaseBounds(StoreBounds, StoreParentClientSize,
                                UseLoadedValues: boolean); virtual;
+    {$IFDEF OldAutoSize}
     procedure LockBaseBounds;
     procedure UnlockBaseBounds;
+    {$ENDIF}
     property BaseBounds: TRect read FBaseBounds;
     property ReadBounds: TRect read FReadBounds;
     procedure WriteLayoutDebugReport(const Prefix: string); virtual;

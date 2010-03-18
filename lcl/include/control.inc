@@ -324,7 +324,8 @@ end;
 {------------------------------------------------------------------------------
        TControl.ChangeBounds
 ------------------------------------------------------------------------------}
-procedure TControl.ChangeBounds(ALeft, ATop, AWidth, AHeight: integer);
+procedure TControl.ChangeBounds(ALeft, ATop, AWidth, AHeight: integer
+  {$IFNDEF OldAutoSize}; KeepBase: boolean{$ENDIF});
 var
   SizeChanged, PosChanged : boolean;
   OldLeft: Integer;
@@ -342,9 +343,10 @@ var
 
 begin
   {$IFDEF VerboseSizeMsg}
-  DebugLn('TControl.ChangeBounds A ',Name,':',ClassName,
-    ' Old='+dbgs(Left)+','+dbgs(Top)+','+dbgs(Width),',',dbgs(Height),
-    ' New='+dbgs(ALeft)+','+dbgs(ATop)+','+dbgs(AWidth),',',dbgs(AHeight));
+  DebugLn(['TControl.ChangeBounds A ',DbgSName(Self),
+    ' Old=',Left,',',Top,',',Width,',',Height,
+    ' New=',ALeft,',',ATop,',',AWidth,',',AHeight,
+    ' KeepBase=',KeepBase]);
   //if (Parent=nil) and (Left>0) and (ALeft=0) then DumpStack; // This can happen if the interface has not yet moved the window and for some reason something applies the interface coords back to the LCL
   {$ENDIF}
 
@@ -375,7 +377,11 @@ begin
 
   // change base bounds
   // (base bounds are the base for the automatic resizing)
-  UpdateAnchorRules;
+  {$IFNDEF OldAutoSize}
+  if not KeepBase then
+  {$ENDIF}
+    UpdateAnchorRules;
+
   {$IFDEF OldAutoSize}
   // lock the base bounds while automatic resizing
   LockBaseBounds;
@@ -1345,7 +1351,7 @@ begin
   //if AnsiCompareText(ClassName,'TSCROLLBAR')=0 then
   //  DebugLn('TControl.SetAlignedBounds A ',Name,':',ClassName,' ',aLeft,',',aTop,',',aWidth,',',aHeight);
 
-  SetBoundsKeepBase(aLeft, aTop, aWidth, aHeight, true);
+  SetBoundsKeepBase(aLeft, aTop, aWidth, aHeight{$IFDEF OldAutoSize}, true{$ENDIF});
 end;
 
 function TControl.IsAParentAligning: boolean;
@@ -3223,7 +3229,7 @@ end;
 ------------------------------------------------------------------------------}
 procedure TControl.SetBounds(ALeft, ATop, AWidth, AHeight: integer);
 begin
-  ChangeBounds(ALeft, ATop, AWidth, AHeight);
+  ChangeBounds(ALeft, ATop, AWidth, AHeight{$IFNDEF OldAutoSize},false{$ENDIF});
 end;
 
 {------------------------------------------------------------------------------
@@ -3331,6 +3337,7 @@ begin
   fLastAlignedBounds:=Rect(0,0,0,0);
 end;
 
+{$IFDEF OldAutoSize}
 procedure TControl.LockBaseBounds;
 begin
   inc(fBaseBoundsLock);
@@ -3341,6 +3348,7 @@ begin
   dec(fBaseBoundsLock);
   if fBaseBoundsLock<0 then RaiseGDBException('TControl.UnlockBaseBounds');
 end;
+{$ENDIF}
 
 procedure TControl.WriteLayoutDebugReport(const Prefix: string);
 var
@@ -4618,15 +4626,19 @@ begin
   SetBounds(aLeft,aTop,aWidth,aHeight);
 end;
 
-procedure TControl.SetBoundsKeepBase(aLeft, aTop, aWidth, aHeight: integer;
-  Lock: boolean);
+procedure TControl.SetBoundsKeepBase(aLeft, aTop, aWidth, aHeight: integer
+  {$IFDEF OldAutoSize}; Lock: boolean{$ENDIF});
 begin
+  {$IFDEF OldAutoSize}
   if Lock then LockBaseBounds;
   try
     SetBounds(aLeft, aTop, aWidth, aHeight);
   finally
     if Lock then UnlockBaseBounds;
   end;
+  {$ELSE}
+  ChangeBounds(aLeft, aTop, aWidth, aHeight, true);
+  {$ENDIF}
 end;
 
 {------------------------------------------------------------------------------
@@ -4918,7 +4930,14 @@ begin
   {$ENDIF}
   //Assert(False, Format('Trace:[TWinControl.WMSize] %s', [ClassName]));
 
+  {$IFDEF OldAutoSize}
   SetBoundsKeepBase(Left,Top,Message.Width,Message.Height,Parent<>nil);
+  {$ELSE}
+  if Parent<>nil then
+    SetBoundsKeepBase(Left,Top,Message.Width,Message.Height)
+  else
+    SetBounds(Left,Top,Message.Width,Message.Height);
+  {$ENDIF}
 end;
 
 {------------------------------------------------------------------------------
@@ -4936,8 +4955,16 @@ begin
   if CheckPosition(Self) then
   DebugLn('[TControl.WMMove] Name=',Name,':',ClassName,' Message.XPos=',DbgS(Message.XPos),' Message.YPos=',DbgS(Message.YPos),' OldLeft=',DbgS(Left),' OldTop=',DbgS(Top));
   {$ENDIF}
+  {$IFDEF OldAutoSize}
   { Just sync the coordinates }
   SetBoundsKeepBase(Message.XPos, Message.YPos, Width, Height,Parent<>nil);
+  {$ELSE}
+  // Just sync the coordinates
+  if Parent<>nil then
+    SetBoundsKeepBase(Message.XPos, Message.YPos, Width, Height)
+  else
+    SetBounds(Message.XPos, Message.YPos, Width, Height);
+  {$ENDIF}
 end;
 
 {------------------------------------------------------------------------------

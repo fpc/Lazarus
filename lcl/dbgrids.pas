@@ -358,7 +358,6 @@ type
     procedure BeforeMoveSelection(const DCol,DRow: Integer); override;
     procedure BeginLayout;
     procedure CellClick(const aCol,aRow: Integer); override;
-    procedure ChangeBounds(ALeft, ATop, AWidth, AHeight: integer); override;
     procedure InvalidateSizes;
     procedure ColRowMoved(IsColumn: Boolean; FromIndex,ToIndex: Integer); override;
     function  ColumnEditorStyle(aCol: Integer; F: TField): TColumnButtonStyle;
@@ -2314,11 +2313,6 @@ begin
   end;
   if Assigned(OnCellClick) then
     OnCellClick(TColumn(ColumnFromGridColumn(aCol)));
-end;
-
-procedure TCustomDBGrid.ChangeBounds(ALeft, ATop, AWidth, AHeight: integer);
-begin
-  inherited ChangeBounds(ALeft, ATop, AWidth, AHeight);
 end;
 
 procedure TCustomDBGrid.EndLayout;

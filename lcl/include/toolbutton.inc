@@ -860,7 +860,7 @@ begin
     else
       NewWidth := Width;
     NewHeight := TToolBar(AParent).ButtonHeight;
-    SetBoundsKeepBase(Left, Top, NewWidth, NewHeight, True);
+    SetBoundsKeepBase(Left, Top, NewWidth, NewHeight{$IFDEF OldAutoSize}, True{$ENDIF});
   end;
   
   // inherited
