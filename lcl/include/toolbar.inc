@@ -609,9 +609,13 @@ begin
     for i:=0 to ControlCount-1 do
     begin
       CurControl := Controls[i];
-      if CurControl.Align = alNone then
-        OrderedControls.Add(CurControl)
-      else
+      if CurControl.Align = alNone then begin
+        // set to Left,Top anchoring
+        CurControl.Anchors:=[akLeft,akTop];
+        CurControl.AnchorSide[akLeft].Control:=nil;
+        CurControl.AnchorSide[akTop].Control:=nil;
+        OrderedControls.Add(CurControl);
+      end else
         AlignedControls.Add(CurControl)
     end;
     // sort OrderedControls
