@@ -25,7 +25,8 @@ interface
 uses
   Classes, SysUtils, LCLProc, LCLIntf, Controls, StdCtrls, Forms, Buttons,
   ExtCtrls, FileUtil, LazarusIDEStrConsts, Dialogs, SynEditTypes,
-  IDEDialogs, IDEWindowIntf, InputHistory, IDEContextHelpEdit, ButtonPanel;
+  IDEDialogs, IDEWindowIntf, InputHistory, IDEContextHelpEdit, ButtonPanel,
+  SrcEditorIntf, EditorOptions, SearchFrm, Project, SynEdit, SearchResultView;
 
 type
   { TLazFindInFilesDialog }
@@ -70,13 +71,27 @@ type
     property ReplaceText: string read GetReplaceText write SetReplaceText;
     property SynSearchOptions: TSynSearchOptions read GetSynOptions
                                                  write SetSynOptions;
+    procedure LoadHistory;
+    procedure SaveHistory;
+    procedure FindInFilesPerDialog(AProject: TProject);
+    procedure InitFromLazSearch(Sender: TObject);
+    procedure FindInFiles(AProject: TProject; const AFindText: string);
   end;
 
-
-var 
-  FindInFilesDialog: TLazFindInFilesDialog = nil;
+function FindInFilesDialog: TLazFindInFilesDialog;
 
 implementation
+
+var
+  FindInFilesDialogSingleton: TLazFindInFilesDialog = nil;
+
+function FindInFilesDialog: TLazFindInFilesDialog;
+begin
+  Result := FindInFilesDialogSingleton;
+  if FindInFilesDialogSingleton <> nil then exit;
+  FindInFilesDialogSingleton := TLazFindInFilesDialog.Create(Application);
+  Result := FindInFilesDialogSingleton;
+end;
 
 {$R *.lfm}
 
@@ -247,6 +262,142 @@ begin
     ButtonPanel1.OKButton.Caption := lisBtnReplace
   else
     ButtonPanel1.OKButton.Caption := lisBtnFind;
+end;
+
+procedure TLazFindInFilesDialog.LoadHistory;
+
+  procedure AssignToComboBox(AComboBox: TComboBox; Strings: TStrings);
+  begin
+    AComboBox.Items.Assign(Strings);
+    if AComboBox.Items.Count>0 then
+      AComboBox.ItemIndex := 0;
+  end;
+
+  procedure AddFileToComboBox(AComboBox: TComboBox; const Filename: string);
+  var
+    i: Integer;
+  begin
+    if Filename='' then exit;
+    for i:=0 to AComboBox.Items.Count-1 do begin
+      if CompareFilenames(Filename,AComboBox.Items[i])=0 then begin
+        // move to front (but not top, top should be the last used directory)
+        if i>2 then
+          AComboBox.Items.Move(i,1);
+        exit;
+      end;
+    end;
+    // insert in front (but not top, top should be the last used directory)
+    if AComboBox.Items.Count>0 then
+      i:=1
+    else
+      i:=0;
+    AComboBox.Items.Insert(i,Filename);
+  end;
+
+var
+  SrcEdit: TSourceEditorInterface;
+begin
+  SrcEdit := SourceEditorManagerIntf.ActiveEditor;
+  //DebugLn('TSourceNotebook.LoadFindInFilesHistory ',dbgsName(TextToFindComboBox),' ',dbgsName(FindHistory));
+  TextToFindComboBox.Items.Assign(InputHistories.FindHistory);
+  ReplaceTextComboBox.Items.Assign(InputHistories.ReplaceHistory);
+  if not EditorOpts.FindTextAtCursor then begin
+    if TextToFindComboBox.Items.Count>0 then begin
+      //debugln('TSourceNotebook.LoadFindInFilesHistory A TextToFindComboBox.Text=',TextToFindComboBox.Text);
+      TextToFindComboBox.ItemIndex:=0;
+      TextToFindComboBox.SelectAll;
+      //debugln('TSourceNotebook.LoadFindInFilesHistory B TextToFindComboBox.Text=',TextToFindComboBox.Text);
+    end;
+  end;
+  // show last used directories and directory of current file
+  AssignToComboBox(DirectoryComboBox, InputHistories.FindInFilesPathHistory);
+  if (SrcEdit<>nil) and (FilenameIsAbsolute(SrcEdit.FileName)) then
+    AddFileToComboBox(DirectoryComboBox, ExtractFilePath(SrcEdit.FileName));
+  // show last used file masks
+  AssignToComboBox(FileMaskComboBox, InputHistories.FindInFilesMaskHistory);
+  Options := InputHistories.FindInFilesSearchOptions;
+end;
+
+procedure TLazFindInFilesDialog.SaveHistory;
+begin
+  InputHistories.AddToFindHistory(FindText);
+  InputHistories.AddToFindInFilesPathHistory(DirectoryComboBox.Text);
+  InputHistories.AddToFindInFilesMaskHistory(FileMaskComboBox.Text);
+  InputHistories.FindInFilesSearchOptions:=Options;
+  InputHistories.Save;
+end;
+
+procedure TLazFindInFilesDialog.FindInFilesPerDialog(AProject: TProject);
+var
+  TempEditor: TSourceEditorInterface;
+Begin
+  FindText:='';
+  TempEditor := SourceEditorManagerIntf.ActiveEditor;
+  if TempEditor <> nil
+  then //with TempEditor.EditorComponent do
+  begin
+    if EditorOpts.FindTextAtCursor
+    then begin
+      if TempEditor.SelectionAvailable and (TempEditor.BlockBegin.Y = TempEditor.BlockEnd.Y)
+      then FindText := TempEditor.Selection
+      else FindText := TSynEdit(TempEditor.EditorControl).GetWordAtRowCol(TempEditor.CursorTextXY);
+    end else begin
+      if InputHistories.FindHistory.Count>0 then
+        FindText:=InputHistories.FindHistory[0];
+    end;
+  end;
+
+  FindInFiles(AProject, FindText);
+end;
+
+procedure TLazFindInFilesDialog.InitFromLazSearch(Sender: TObject);
+begin
+  DirectoryComboBox.Text:= TLazSearch(Sender).SearchDirectory;
+  Options:= TLazSearch(Sender).SearchOptions;
+  FileMaskComboBox.Text:= TLazSearch(Sender).SearchMask;
+end;
+
+procedure TLazFindInFilesDialog.FindInFiles(AProject: TProject;
+  const AFindText: string);
+var
+  SearchForm:  TSearchForm;
+begin
+  LoadHistory;
+
+  // if there is no FindText, use the most recently used FindText
+  FindText:= AFindText;
+  if (FindText = '') and (InputHistories.FindHistory.Count > 0) then
+      FindText := InputHistories.FindHistory[0];
+
+  // disable replace. Find in files is often called,
+  // but almost never to replace with the same parameters
+  Options := Options-[fifReplace,fifReplaceAll];
+  if ShowModal=mrOk then
+  begin
+    SaveHistory;
+
+  SearchForm:= TSearchForm.Create(SearchResultsView);
+  with SearchForm do begin
+    SearchOptions   := self.Options;
+    SearchText      := self.FindText;
+    ReplaceText     := self.ReplaceText;
+    SearchMask      := self.FileMaskComboBox.Text;
+    SearchDirectory := self.DirectoryComboBox.Text;
+  end;
+
+    try
+      if FindText <> '' then
+      begin
+        case WhereRadioGroup.ItemIndex of
+          0: SearchForm.DoSearchProject(AProject);
+          1: SearchForm.DoSearchOpenFiles;
+          2: SearchForm.DoSearchDir;
+        end;
+      end;
+    finally
+      FreeAndNil(SearchForm);
+    end;
+  end;
 end;
 
 end.

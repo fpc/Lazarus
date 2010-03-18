@@ -37,9 +37,9 @@ uses
   // synedit, codetools
   SynEditSearch, SynRegExpr, SourceLog, KeywordFuncLists, BasicCodeTools,
   // IDEIntf
-  LazIDEIntf, SrcEditorIntf,
+  LazIDEIntf, SrcEditorIntf, MainIntf,
   // ide
-  LazarusIDEStrConsts, InputHistory, FindInFilesDlg, SearchResultView;
+  LazarusIDEStrConsts, InputHistory, SearchResultView, Project;
 
 type
 
@@ -89,6 +89,11 @@ type
     function GetOptions: TLazFindInFileSearchOptions;
     procedure SearchFile(const aFilename: string);
     procedure SetFlag(Flag: TSrcEditSearchOption; AValue: boolean);
+    procedure DoSearchAndAddToSearchResults;
+  public
+    procedure DoSearchOpenFiles;
+    procedure DoSearchDir;
+    procedure DoSearchProject(AProject: TProject);
   public
     procedure DoSearch;
     property SearchDirectory: string read fTheDirectory write fTheDirectory;
@@ -876,6 +881,89 @@ begin
     Include(fFlags,Flag)
   else
     Exclude(fFlags,Flag);
+end;
+
+procedure TSearchForm.DoSearchAndAddToSearchResults;
+var
+  ListIndex: integer;
+begin
+  ListIndex:=SearchResultsView.AddSearch(SearchText,
+                                         SearchText,
+                                         ReplaceText,
+                                         SearchDirectory,
+                                         SearchMask,
+                                         SearchOptions);
+
+  try
+    SearchResultsView.BeginUpdate(ListIndex);
+    ResultsList := SearchResultsView.Items[ListIndex];
+    SearchResultsView.Items[ListIndex].Clear;
+    ResultsWindow:= ListIndex;
+    try
+      Show;
+      // update Window Menu, the OnIdle event does not occur while searching
+      MainIDEInterface.UpdateWindowMenu;
+      DoSearch;
+    except
+      on E: ERegExpr do
+        MessageDlg(lisUEErrorInRegularExpression, E.Message,mtError,
+                   [mbCancel],0);
+    end;
+  finally
+    SearchResultsView.EndUpdate(ListIndex);
+    SearchResultsView.ShowOnTop;
+  end;
+end;
+
+procedure TSearchForm.DoSearchOpenFiles;
+var
+  i: integer;
+  TheFileList: TStringList;
+begin
+  try
+    TheFileList:= TStringList.Create;
+    for i:= 0 to SourceEditorManagerIntf.SourceEditorCount -1 do
+    begin
+      //only if file exists on disk
+      if FilenameIsAbsolute(SourceEditorManagerIntf.SourceEditors[i].FileName) and
+         FileExistsUTF8(SourceEditorManagerIntf.SourceEditors[i].FileName) then
+      begin
+         TheFileList.Add(SourceEditorManagerIntf.SourceEditors[i].FileName);
+      end;
+    end;
+    SearchFileList:= TheFileList;
+    DoSearchAndAddToSearchResults;
+  finally
+    FreeAndNil(TheFileList);
+  end;
+end;
+
+procedure TSearchForm.DoSearchDir;
+begin
+  SearchFileList:= Nil;
+  DoSearchAndAddToSearchResults;
+end;
+
+procedure TSearchForm.DoSearchProject(AProject: TProject);
+var
+  AnUnitInfo:  TUnitInfo;
+  TheFileList: TStringList;
+begin
+  try
+    TheFileList:= TStringList.Create;
+    AnUnitInfo:=AProject.FirstPartOfProject;
+    while AnUnitInfo<>nil do begin
+      //Only if file exists on disk.
+      if FilenameIsAbsolute(AnUnitInfo.FileName)
+      and FileExistsUTF8(AnUnitInfo.FileName) then
+        TheFileList.Add(AnUnitInfo.FileName);
+      AnUnitInfo:=AnUnitInfo.NextPartOfProject;
+    end;
+    SearchFileList:= TheFileList;
+    DoSearchAndAddToSearchResults;
+  finally
+    FreeAndNil(TheFileList);
+  end;
 end;
 
 function TSearchForm.PadAndShorten(FileName: string): string;

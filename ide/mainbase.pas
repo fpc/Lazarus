@@ -68,7 +68,7 @@ uses
   TransferMacros, ObjectInspector, PropEdits, IDEDefs, MsgView,
   EnvironmentOpts, EditorOptions, CompilerOptions, KeyMapping, IDEProcs,
   Debugger, IDEOptionDefs, CodeToolsDefines, Splash, Designer,
-  SourceEditor, BuildManager,
+  SourceEditor, BuildManager, FindInFilesDlg,
   MainBar, MainIntf;
 
 type
@@ -1150,12 +1150,12 @@ end;
 
 procedure TMainIDEBase.FindInFilesPerDialog(AProject: TProject);
 begin
-  SourceNotebook.FindInFilesPerDialog(AProject);
+  FindInFilesDialog.FindInFilesPerDialog(AProject);
 end;
 
 procedure TMainIDEBase.FindInFiles(AProject: TProject; const FindText: string);
 begin
-  SourceNotebook.FindInFiles(AProject, FindText);
+  FindInFilesDialog.FindInFiles(AProject, FindText);
 end;
 
 end.

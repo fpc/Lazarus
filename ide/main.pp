@@ -412,7 +412,6 @@ type
     procedure OnSrcNotebookToggleFormUnit(Sender: TObject);
     procedure OnSrcNotebookToggleObjectInsp(Sender: TObject);
     procedure OnSrcNotebookViewJumpHistory(Sender: TObject);
-    procedure OnSrcNotebookShowSearchResultsView(Sender: TObject);
     procedure OnSrcNoteBookPopupMenu(const AddMenuItemProc: TAddMenuItemProc);
 
     // ObjectInspector + PropertyEditorHook events
@@ -729,7 +728,6 @@ type
     procedure StartIDE; override;
     destructor Destroy; override;
     procedure CreateOftenUsedForms; override;
-    procedure CreateSearchResultWindow;
     procedure UpdateDefaultPascalFileExtensions;
     function DoResetToolStatus(AFlags: TResetToolFlags): boolean; override;
 
@@ -1411,15 +1409,6 @@ begin
   LazFindReplaceDialog:=TLazFindReplaceDialog.Create(nil);
 end;
 
-procedure TMainIDE.CreateSearchResultWindow;
-begin
-  if SearchResultsView<>nil then exit;
-  Application.CreateForm(TSearchResultsView, SearchResultsView);
-  with SearchResultsView do begin
-    OnSelectionChanged:= @SearchResultsViewSelectionChanged;
-  end;
-end;
-
 procedure TMainIDE.OIOnSelectPersistents(Sender: TObject);
 begin
   TheControlSelection.AssignSelection(ObjectInspector1.Selection);
@@ -1922,9 +1911,11 @@ begin
   SourceEditorManager.OnToggleFormUnitClicked := @OnSrcNotebookToggleFormUnit;
   SourceEditorManager.OnToggleObjectInspClicked:= @OnSrcNotebookToggleObjectInsp;
   SourceEditorManager.OnViewJumpHistory := @OnSrcNotebookViewJumpHistory;
-  SourceEditorManager.OnShowSearchResultsView := @OnSrcNotebookShowSearchResultsView;
   SourceEditorManager.OnPopupMenu := @OnSrcNoteBookPopupMenu;
-  DebugBoss.ConnectSourceNotebookEvents;  
+  DebugBoss.ConnectSourceNotebookEvents;
+
+  OnSearchResultsViewSelectionChanged := @SearchResultsViewSelectionChanged;
+  OnSearchAgainClicked := @FindInFilesDialog.InitFromLazSearch;
 
   // connect search menu to sourcenotebook
   MainIDEBar.itmSearchFind.OnClick := @SourceNotebook.FindClicked;
@@ -3508,7 +3499,6 @@ end;
 
 Procedure TMainIDE.mnuViewSearchResultsClick(Sender: TObject);
 Begin
-  CreateSearchResultWindow;
   SearchResultsView.ShowOnTop;
 End;
 
@@ -12156,7 +12146,6 @@ var
   SrcEdit: TSourceEditor;
 begin
   Result:=false;
-  CreateSearchResultWindow;
   if pos('(',SearchResultsView.GetSelectedText) > 0 then
   begin
     AFileName:= SearchResultsView.GetSourceFileName;
@@ -12243,7 +12232,6 @@ var
   WasVisible: boolean;
   ALayout: TIDEWindowLayout;
 begin
-  CreateSearchResultWindow;
   WasVisible := SearchResultsView.Visible;
   SearchResultsView.Visible:=true;
   ALayout:=EnvironmentOptions.IDEWindowLayoutList.
@@ -13819,7 +13807,6 @@ begin
 
     // show result
     if (not Options.Rename) or (not Rename) then begin
-      CreateSearchResultWindow;
       Result:=ShowIdentifierReferences(DeclarationUnitInfo.Source,
         DeclarationCaretXY,PascalReferences);
       if Result<>mrOk then exit;
@@ -14217,7 +14204,7 @@ function TMainIDE.DoFindInFiles: TModalResult;
 begin
   Result:=mrOk;
   DoArrangeSourceEditorAndMessageView(true);
-  SourceNotebook.FindInFilesPerDialog(Project1);
+  FindInFilesDialog.FindInFilesPerDialog(Project1);
 end;
 
 procedure TMainIDE.DoCompleteCodeAtCursor;
@@ -15017,11 +15004,6 @@ begin
     end;
   end;
   JumpHistoryViewWin.ShowOnTop;
-end;
-
-procedure TMainIDE.OnSrcNotebookShowSearchResultsView(Sender: TObject);
-begin
-  CreateSearchResultWindow;
 end;
 
 procedure TMainIDE.OnSrcNoteBookPopupMenu(

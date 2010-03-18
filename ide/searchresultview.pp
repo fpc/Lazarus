@@ -39,8 +39,8 @@ interface
 uses
   Classes, SysUtils, LCLProc, Forms, Controls, Graphics, Dialogs,
   ComCtrls, ExtCtrls, StdCtrls, Buttons, LCLType, LCLIntf, Menus,
-  IDEOptionDefs, LazarusIDEStrConsts, EnvironmentOpts, EditorOptions, InputHistory,
-  IDEProcs, FindInFilesDlg, Project, MainIntf, Clipbrd;
+  IDEOptionDefs, LazarusIDEStrConsts, EnvironmentOpts, InputHistory,
+  IDEProcs, Project, MainIntf, Clipbrd;
 
 type
   { TLazSearchMatchPos }
@@ -206,8 +206,11 @@ type
     property MaxItems: integer read FMaxItems write SetMaxItems;
   end; 
 
+function SearchResultsView: TSearchResultsView;
+
 var
-  SearchResultsView: TSearchResultsView;
+  OnSearchResultsViewSelectionChanged: TNotifyEvent = nil;
+  OnSearchAgainClicked: TNotifyEvent = nil;
 
 implementation
 
@@ -217,7 +220,9 @@ implementation
 
 const
   MaxTextLen = 80;
-  
+var
+  SearchResultsViewSingleton: TSearchResultsView = nil;
+
 function CopySearchMatchPos(var Src, Dest: TLazSearchMatchPos): Boolean;
 begin
   Result := False;
@@ -246,6 +251,15 @@ begin
   end;
   Result:=sl.Text;
   sl.Free;
+end;
+
+function SearchResultsView: TSearchResultsView;
+begin
+  Result := SearchResultsViewSingleton;
+  if SearchResultsViewSingleton <> nil then exit;
+  Application.CreateForm(TSearchResultsView, SearchResultsViewSingleton);
+  SearchResultsViewSingleton.OnSelectionChanged := OnSearchResultsViewSelectionChanged;
+  Result := SearchResultsViewSingleton;
 end;
 
 procedure TSearchResultsView.Form1Create(Sender: TObject);
@@ -727,16 +741,8 @@ begin
   end
   else begin
     SearchObj:= CurrentTV.SearchObject;
-    if Assigned(FindInFilesDialog) then
-    begin
-      with FindInFilesDialog do
-      begin
-        DirectoryComboBox.Text:= SearchObj.SearchDirectory;
-        Options:= SearchObj.SearchOptions;
-        FileMaskComboBox.Text:= SearchObj.SearchMask;
-      end;//with
-      MainIDEInterface.FindInFiles(Project1, SearchObj.SearchString);
-    end;//if
+    OnSearchAgainClicked(SearchObj);
+    MainIDEInterface.FindInFiles(Project1, SearchObj.SearchString);
   end;
 end;
 

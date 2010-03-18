@@ -41,25 +41,22 @@ uses
   MemCheck,
   {$ENDIF}
   Classes, SysUtils, Math, Controls, LCLProc, LCLType, LResources, LCLIntf,
-  FileUtil, Forms, Buttons, ComCtrls, Dialogs, StdCtrls, GraphType, Graphics,
-  Translations, ClipBrd, TypInfo, types, Extctrls, Menus, HelpIntfs,
-  LazHelpIntf, LConvEncoding, LDockCtrl,
+  FileUtil, Forms, ComCtrls, Dialogs, StdCtrls, Graphics,
+  Translations, ClipBrd, types, Extctrls, Menus, HelpIntfs, LConvEncoding, LDockCtrl,
   // codetools
   BasicCodeTools, CodeBeautifier, CodeToolManager, CodeCache, SourceLog,
   // synedit
   SynEditLines, SynEditStrConst, SynEditTypes, SynEdit, SynRegExpr,
   SynEditHighlighter, SynEditAutoComplete, SynEditKeyCmds, SynCompletion,
-  SynEditMiscClasses, SynEditMarkupHighAll, SynGutterLineNumber, SynEditMarks,
+  SynEditMiscClasses, SynEditMarkupHighAll, SynEditMarks,
   SynBeautifier, SynEditTextBase, SynPluginTemplateEdit, SynPluginSyncroEdit,
-  SynPluginSyncronizedEditBase,
-  // IDE interface
-  MacroIntf, ProjectIntf, SrcEditorIntf, MenuIntf, LazIDEIntf, PackageIntf,
-  IDEDialogs, IDEHelpIntf, IDEWindowIntf, IDEImagesIntf,
+  SynPluginSyncronizedEditBase, ProjectIntf, SrcEditorIntf, MenuIntf, LazIDEIntf, PackageIntf,
+  IDEDialogs, IDEHelpIntf, IDEImagesIntf,
   // IDE units
-  LazarusIDEStrConsts, LazConf, IDECommands, EditorOptions, KeyMapping, Project,
-  WordCompletion, FindReplaceDialog, FindInFilesDlg, IDEProcs, IDEOptionDefs,
+  LazarusIDEStrConsts, IDECommands, EditorOptions, Project,
+  WordCompletion, FindReplaceDialog, IDEProcs, IDEOptionDefs,
   MacroPromptDlg, TransferMacros, CodeContextForm, SrcEditHintFrm,
-  EnvironmentOpts, MsgView, SearchResultView, InputHistory, CodeMacroPrompt,
+  EnvironmentOpts, MsgView, InputHistory, CodeMacroPrompt,
   CodeTemplatesDlg, TodoDlg, TodoList, CodeToolsOptions,
   SortSelectionDlg, EncloseSelectionDlg, DiffDialog, ConDef, InvertAssignTool,
   SourceEditProcs, SourceMarks, CharacterMapDlg, SearchFrm,
@@ -753,20 +750,6 @@ type
     property IncrementalSearchStr: string
       read FIncrementalSearchStr write SetIncrementalSearchStr;
 
-    // FindInFiles
-    procedure FindInFilesPerDialog(AProject: TProject);
-    procedure FindInFiles(AProject: TProject; const FindText: string);
-    procedure ShowSearchResultsView;
-    function CreateFindInFilesDialog: TLazFindInFilesDialog;
-    procedure LoadFindInFilesHistory(ADialog: TLazFindInFilesDialog);
-    procedure SaveFindInFilesHistory(ADialog: TLazFindInFilesDialog);
-    procedure FIFSearchProject(AProject: TProject;
-                               ADialog: TLazFindInFilesDialog);
-    procedure FIFSearchOpenFiles(ADialog: TLazFindInFilesDialog);
-    procedure FIFSearchDir(ADialog: TLazFindInFilesDialog);
-    function FIFCreateSearchForm(ADialog:TLazFindInFilesDialog): TSearchForm;
-    procedure DoFindInFiles(ASearchForm: TSearchForm);
-
     // goto line number
     procedure GotoLineClicked(Sender: TObject);
 
@@ -919,7 +902,6 @@ type
     fOnReadOnlyChanged: TNotifyEvent;
     FOnShowCodeContext: TOnShowCodeContext;
     FOnShowHintForSource: TOnShowHintForSource;
-    FOnShowSearchResultsView: TNotifyEvent;
     FOnShowUnitInfo: TNotifyEvent;
     FOnToggleFormUnitClicked: TNotifyEvent;
     FOnToggleObjectInspClicked: TNotifyEvent;
@@ -975,8 +957,6 @@ type
                read FOnToggleObjectInspClicked write FOnToggleObjectInspClicked;
     property OnViewJumpHistory: TNotifyEvent
                                read FOnViewJumpHistory write FOnViewJumpHistory;
-    property OnShowSearchResultsView: TNotifyEvent
-                   read FOnShowSearchResultsView write FOnShowSearchResultsView;
     property OnPopupMenu: TSrcEditPopupMenuEvent read FOnPopupMenu write FOnPopupMenu;
   end;
 
@@ -5803,262 +5783,6 @@ Begin
   TempEditor:=GetActiveSe;
   if TempEditor <> nil then TempEditor.FindPrevious;
 End;
-
-function TSourceNotebook.CreateFindInFilesDialog: TLazFindInFilesDialog;
-begin
-  Result := TLazFindInFilesDialog.Create(Application);
-  LoadFindInFilesHistory(Result);
-end;
-
-procedure TSourceNotebook.LoadFindInFilesHistory(ADialog: TLazFindInFilesDialog);
-
-  procedure AssignToComboBox(AComboBox: TComboBox; Strings: TStrings);
-  begin
-    AComboBox.Items.Assign(Strings);
-    if AComboBox.Items.Count>0 then
-      AComboBox.ItemIndex := 0;
-  end;
-
-  procedure AddFileToComboBox(AComboBox: TComboBox; const Filename: string);
-  var
-    i: Integer;
-  begin
-    if Filename='' then exit;
-    for i:=0 to AComboBox.Items.Count-1 do begin
-      if CompareFilenames(Filename,AComboBox.Items[i])=0 then begin
-        // move to front (but not top, top should be the last used directory)
-        if i>2 then
-          AComboBox.Items.Move(i,1);
-        exit;
-      end;
-    end;
-    // insert in front (but not top, top should be the last used directory)
-    if AComboBox.Items.Count>0 then
-      i:=1
-    else
-      i:=0;
-    AComboBox.Items.Insert(i,Filename);
-  end;
-
-var
-  SrcEdit: TSourceEditor;
-begin
-  if not Assigned(ADialog) then exit;
-  SrcEdit:=GetActiveSE;
-  with ADialog, InputHistories do
-  begin
-    //DebugLn('TSourceNotebook.LoadFindInFilesHistory ',dbgsName(TextToFindComboBox),' ',dbgsName(FindHistory));
-    TextToFindComboBox.Items.Assign(FindHistory);
-    ReplaceTextComboBox.Items.Assign(ReplaceHistory);
-    if not EditorOpts.FindTextAtCursor then begin
-      if TextToFindComboBox.Items.Count>0 then begin
-        //debugln('TSourceNotebook.LoadFindInFilesHistory A TextToFindComboBox.Text=',TextToFindComboBox.Text);
-        TextToFindComboBox.ItemIndex:=0;
-        TextToFindComboBox.SelectAll;
-        //debugln('TSourceNotebook.LoadFindInFilesHistory B TextToFindComboBox.Text=',TextToFindComboBox.Text);
-      end;
-    end;
-    // show last used directories and directory of current file
-    AssignToComboBox(DirectoryComboBox, FindInFilesPathHistory);
-    if (SrcEdit<>nil) and (FilenameIsAbsolute(SrcEdit.FileName)) then
-      AddFileToComboBox(DirectoryComboBox, ExtractFilePath(SrcEdit.FileName));
-    // show last used file masks
-    AssignToComboBox(FileMaskComboBox, FindInFilesMaskHistory);
-    Options:=FindInFilesSearchOptions;
-  end;
-end;
-
-procedure TSourceNotebook.SaveFindInFilesHistory(ADialog: TLazFindInFilesDialog);
-begin
-  if Assigned(ADialog) then
-  begin
-    with ADialog do
-    begin
-      InputHistories.AddToFindHistory(FindText);
-      InputHistories.AddToFindInFilesPathHistory(DirectoryComboBox.Text);
-      InputHistories.AddToFindInFilesMaskHistory(FileMaskComboBox.Text);
-      InputHistories.FindInFilesSearchOptions:=Options;
-    end;
-    InputHistories.Save;
-  end;
-end;
-
-{Search All the files in a project and add the results to the SearchResultsView
- Dialog}
-procedure TSourceNotebook.FIFSearchProject(AProject: TProject;
-                                           ADialog: TLazFindInFilesDialog);
-var
-  AnUnitInfo:  TUnitInfo;
-  TheFileList: TStringList;
-  SearchForm:  TSearchForm;
-begin
-  try
-    TheFileList:= TStringList.Create;
-    AnUnitInfo:=AProject.FirstPartOfProject;
-    while AnUnitInfo<>nil do begin
-      //Only if file exists on disk.
-      if FilenameIsAbsolute(AnUnitInfo.FileName)
-      and FileExistsUTF8(AnUnitInfo.FileName) then
-        TheFileList.Add(AnUnitInfo.FileName);
-      AnUnitInfo:=AnUnitInfo.NextPartOfProject;
-    end;
-    SearchForm:= FIFCreateSearchForm(ADialog);
-    SearchForm.SearchFileList:= TheFileList;
-    DoFindInFiles(SearchForm);
-  finally
-    FreeAndNil(TheFileList);
-    FreeAndNil(SearchForm);
-  end;
-end;
-
-procedure TSourceNotebook.FIFSearchDir(ADialog: TLazFindInFilesDialog);
-var
-  SearchForm: TSearchForm;
-begin
-  try
-    SearchForm:= FIFCreateSearchForm(ADialog);
-    SearchForm.SearchFileList:= Nil;
-    DoFindInFiles(SearchForm);
-  finally
-    FreeAndNil(SearchForm);
-  end;
-end;
-
-Procedure TSourceNotebook.DoFindInFiles(ASearchForm: TSearchForm);
-var
-  ListIndex: integer;
-begin
-  ShowSearchResultsView;
-  ListIndex:=SearchResultsView.AddSearch(ASearchForm.SearchText,
-                                         ASearchForm.SearchText,
-                                         ASearchForm.ReplaceText,
-                                         ASearchForm.SearchDirectory,
-                                         ASearchForm.SearchMask,
-                                         ASearchForm.SearchOptions);
-
-  try
-    SearchResultsView.BeginUpdate(ListIndex);
-    ASearchForm.ResultsList:= SearchResultsView.Items[ListIndex];
-    SearchResultsView.Items[ListIndex].Clear;
-    ASearchForm.ResultsWindow:= ListIndex;
-    try
-      ASearchForm.Show;
-      // update Window Menu, the OnIdle event does not occur while searching
-      MainIDEInterface.UpdateWindowMenu;
-      ASearchForm.DoSearch;
-    except
-      on E: ERegExpr do
-        MessageDlg(lisUEErrorInRegularExpression, E.Message,mtError,
-                   [mbCancel],0);
-    end;
-  finally
-    SearchResultsView.EndUpdate(ListIndex);
-    SearchResultsView.ShowOnTop;
-  end;
-end;
-
-procedure TSourceNotebook.FIFSearchOpenFiles(ADialog: TLazFindInFilesDialog);
-var
-  i: integer;
-  TheFileList: TStringList;
-  SearchForm:  TSearchForm;
-begin
-  try
-    TheFileList:= TStringList.Create;
-    for i:= 0 to EditorCount -1 do
-    begin
-      //only if file exists on disk
-      if FilenameIsAbsolute(Editors[i].FileName) and
-         FileExistsUTF8(Editors[i].FileName) then
-      begin
-         TheFileList.Add(Editors[i].FileName);
-      end;//if
-    end;//for
-    SearchForm:= FIFCreateSearchForm(ADialog);
-    SearchForm.SearchFileList:= TheFileList;
-    DoFindInFiles(SearchForm);
-  finally
-    FreeAndNil(TheFileList);
-    FreeAndNil(SearchForm);
-  end;//finally
-end;//FIFSearchOpenFiles
-
-{Creates the search form and loads the options selected in the
- findinfilesdialog}
-function TSourceNotebook.FIFCreateSearchForm
-                         (ADialog: TLazFindInFilesDialog): TSearchForm;
-begin
-  result:= TSearchForm.Create(SearchResultsView);
-  with result do
-  begin
-    SearchOptions:= ADialog.Options;
-    SearchText:= ADialog.FindText;
-    ReplaceText:= ADialog.ReplaceText;
-    SearchMask:= ADialog.FileMaskComboBox.Text;
-    SearchDirectory:= ADialog.DirectoryComboBox.Text;
-  end;//with
-end;//FIFCreateSearchForm
-
-Procedure TSourceNotebook.FindInFilesPerDialog(AProject: TProject);
-var
-  TempEditor: TSourceEditor;
-  FindText: string;
-Begin
-  FindText:='';
-  TempEditor := GetActiveSE;
-  if TempEditor <> nil
-  then with TempEditor, EditorComponent do
-  begin
-    if EditorOpts.FindTextAtCursor
-    then begin
-      if SelAvail and (BlockBegin.Y = BlockEnd.Y)
-      then FindText := SelText
-      else FindText := GetWordAtRowCol(LogicalCaretXY);
-    end else begin
-      if InputHistories.FindHistory.Count>0 then
-        FindText:=InputHistories.FindHistory[0];
-    end;
-  end;
-
-  FindInFiles(AProject, FindText);
-End;
-
-procedure TSourceNotebook.FindInFiles(AProject: TProject;
-  const FindText: string);
-begin
-  if FindInFilesDialog = nil then
-    FindInFilesDialog := CreateFindInFilesDialog
-  else
-    LoadFindInFilesHistory(FindInFilesDialog);
-
-  // if there is no FindText, use the most recently used FindText
-  FindInFilesDialog.FindText:= FindText;
-  if (FindInFilesDialog.FindText='') and (InputHistories.FindHistory.Count > 0) then
-      FindInFilesDialog.FindText:=InputHistories.FindHistory[0];
-
-  // disable replace. Find in files is often called,
-  // but almost never to replace with the same parameters
-  FindInFilesDialog.Options:=
-                           FindInFilesDialog.Options-[fifReplace,fifReplaceAll];
-  if FindInFilesDialog.ShowModal=mrOk then
-  begin
-    SaveFindInFilesHistory(FindInFilesDialog);
-
-    if FindInFilesDialog.FindText <>'' then
-    begin
-      case FindInFilesDialog.WhereRadioGroup.ItemIndex of
-        0: FIFSearchProject(AProject, FindInFilesDialog);
-        1: FIFSearchOpenFiles(FindInFilesDialog);
-        2: FIFSearchDir(FindInFilesDialog);
-      end;
-    end;
-  end;
-end;
-
-procedure TSourceNotebook.ShowSearchResultsView;
-begin
-  if Assigned(Manager.OnShowSearchResultsView) then Manager.OnShowSearchResultsView(Self);
-end;
 
 procedure TSourceNotebook.GotoLineClicked(Sender: TObject);
 var
