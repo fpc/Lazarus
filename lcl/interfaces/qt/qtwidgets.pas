@@ -50,7 +50,8 @@ type
    which doesn't attach it's event filter.
    We'll need it later for TQtScrollBar and probably TQtTabWidget}
   TChildOfComplexWidget = (ccwNone,
-                          ccwComboBox);
+                          ccwComboBox,
+                          ccwTreeWidget);
 
   // records
   TPaintData = record
@@ -761,6 +762,7 @@ type
   public
     FList: TStrings;
     destructor Destroy; override;
+    procedure DestroyNotify(AWidget: TQtWidget); override;
     procedure ClearItems;
     procedure setBorder(const ABorder: Boolean);
     function currentIndex: Integer;
@@ -947,6 +949,7 @@ type
   public
     procedure AttachEvents; override;
     procedure DetachEvents; override;
+    function EventFilter(Sender: QObjectH; Event: QEventH): Boolean; cdecl; override;
     function itemViewViewportEventFilter(Sender: QObjectH; Event: QEventH): Boolean; cdecl; override;
 
     procedure signalCurrentItemChange(current: QListWidgetItemH; previous: QListWidgetItemH); cdecl;
@@ -982,6 +985,7 @@ type
   public
     procedure AttachEvents; override;
     procedure DetachEvents; override;
+    function EventFilter(Sender: QObjectH; Event: QEventH): Boolean; cdecl; override;
     procedure SignalSectionClicked(logicalIndex: Integer) cdecl;
     function getResizeMode(AIndex: Integer): QHeaderViewResizeMode;
     procedure setResizeMode(AResizeMode: QHeaderViewResizeMode); overload;
@@ -1027,7 +1031,6 @@ type
     FHeader: TQtHeaderView;
     FSectionClicked: QHeaderView_hookH;
     FSortChanged: QHeaderView_hookH;
-    FHeaderEventFilterHook: QObject_hookH;
     FCurrentItemChangedHook: QTreeWidget_hookH;
     FItemDoubleClickedHook: QTreeWidget_hookH;
     FItemClickedHook: QTreeWidget_hookH;
@@ -1050,6 +1053,7 @@ type
     function CreateWidget(const AParams: TCreateParams):QWidgetH; override;
   public
     destructor Destroy; override;
+    procedure DestroyNotify(AWidget: TQtWidget); override;
     function itemViewViewportEventFilter(Sender: QObjectH; Event: QEventH): Boolean; cdecl; override;
     procedure ClearItems;
     function currentRow: Integer;
@@ -1076,7 +1080,6 @@ type
   public
     procedure AttachEvents; override;
     procedure DetachEvents; override;
-    function headerViewEventFilter(Sender: QObjectH; Event: QEventH): Boolean; cdecl;
 
     procedure SignalItemClicked(item: QTreeWidgetItemH; column: Integer) cdecl;
     procedure SignalItemDoubleClicked(item: QTreeWidgetItemH; column: Integer) cdecl;
@@ -6382,6 +6385,7 @@ begin
     if FLineEdit = nil then
     begin
       FLineEdit := TQtLineEdit.CreateFrom(LCLObject, QComboBox_lineEdit(QComboBoxH(Widget)));
+      FLineEdit.FOwner := Self;
       QObject_disconnect(FLineEdit.Widget, '2returnPressed()', Widget, '1_q_returnPressed()');
       FLineEdit.ChildOfComplexWidget := ccwComboBox;
       FLineEdit.AttachEvents;
@@ -6402,11 +6406,13 @@ begin
   if FDropList = nil then
   begin
     FDropList := TQtListWidget.CreateFrom(LCLObject, QListWidget_create());
+    FDropList.FOwner := Self;
     FDropList.setAttribute(QtWA_NoMousePropagation, False);
     FDropList.OwnerDrawn := OwnerDrawn;
     FDropList.ChildOfComplexWidget := ccwComboBox;
     QComboBox_setModel(QComboBoxH(Widget), FDropList.getModel);
     QComboBox_setView(QComboBoxH(Widget), QListWidgetH(FDropList.Widget));
+    FDropList.AttachEvents;
   end;
   Result := FDropList;
 end;
@@ -6507,6 +6513,19 @@ begin
   FDropList.Free;
   FLineEdit.Free;
   inherited Destroy;
+end;
+
+procedure TQtComboBox.DestroyNotify(AWidget: TQtWidget);
+begin
+  if AWidget = FLineEdit then
+    FLineEdit := nil;
+  if AWidget = FDropList then
+    FDropList := nil;
+
+  if Assigned(FList) then
+    FList := nil;
+
+  inherited DestroyNotify(AWidget);
 end;
 
 procedure TQtComboBox.ClearItems;
@@ -6791,98 +6810,79 @@ begin
 
   BeginEventProcessing;
 
-  if (FDropList <> nil) and (Sender = FDropList.Widget) then
-  begin
-    case QEvent_type(Event) of
-      QEventShow: SlotDropListVisibility(True);
-      QEventHide:
+  case QEvent_type(Event) of
+    QEventHide:
+    begin
+      if getVisible then
+        SlotShow(False);
+    end;
+    QEventPaint:
+    begin
+      if FOwnerDrawn and not getEditable then
       begin
-        {we must delay SlotDropDownVisiblity according to #9574
-         so order is OnChange(if editable)->OnSelect->OnCloseUp }
-        ev := QEvent_create(QEventHideToParent);
-        QCoreApplication_postEvent(Sender, ev);
+        SlotPaintCombo(Widget, Event);
+        Result := True;
+        QEvent_accept(Event);
       end;
-      QEventHideToParent: SlotDropListVisibility(False);
+    end;
+    QEventMouseButtonPress:
+    begin
+      if not FDropListVisibleInternal and
+        (QMouseEvent_button(QMouseEventH(Event)) = QtLeftButton) then
+      begin
+        // some themes have empty space around combo button !
+
+        P := QMouseEvent_pos(QMouseEventH(Event))^;
+
+        // our combo geometry
+        R := getGeometry;
+
+        // our combo arrow position
+        opt := QStyleOptionComboBox_create();
+        QStyle_subControlRect(QApplication_style(), @R1, QStyleCC_ComboBox,
+          opt, QStyleSC_ComboBoxArrow, QComboBoxH(Widget));
+        QStyleOptionComboBox_destroy(opt);
+
+        if R1.Left < 0 then
+          ButtonRect.Left := R.Right - R.Left - (-R1.Left)
+        else
+          ButtonRect.Left := R1.Left;
+
+        if R1.Top < 0 then
+          ButtonRect.Top := R.Bottom - R.Top - (-R1.Top)
+        else
+          ButtonRect.Top := R1.Top;
+
+        if R1.Right < 0 then
+          ButtonRect.Right := R.Right - R.Left - (-R1.Right)
+        else
+          ButtonRect.Right := R1.Right;
+
+        if R1.Bottom < 0 then
+          ButtonRect.Bottom := R.Bottom - R.Top - (-R1.Bottom)
+        else
+          ButtonRect.Bottom := R1.Bottom;
+
+        Pt := Point(P.X, P.Y);
+
+        if PtInRect(ButtonRect, Pt) then
+          TCustomComboBox(LCLObject).IntfGetItems;
+      end;
+      Result := inherited EventFilter(Sender, Event);
+    end;
+    QEventKeyPress:
+    begin
+      if (QKeyEvent_key(QKeyEventH(Event)) = QtKey_F4) or
+        ((QKeyEvent_key(QKeyEventH(Event)) = QtKey_Space) and
+          not getEditable) then
+      begin
+        if not FDropListVisibleInternal then
+          TCustomComboBox(LCLObject).IntfGetItems;
+      end;
+      Result := inherited EventFilter(Sender, Event);
+    end;
     else
-      QEvent_ignore(Event);
-    end;
-  end else
-  begin
-    case QEvent_type(Event) of
-      QEventHide: 
-      begin
-        if getVisible then
-          SlotShow(False);
-      end;
-      QEventPaint:
-      begin
-        if FOwnerDrawn and not getEditable then
-        begin
-          SlotPaintCombo(Widget, Event);
-          Result := True;
-          QEvent_accept(Event);
-        end;
-      end;
-      QEventMouseButtonPress:
-      begin
-        if not FDropListVisibleInternal and
-          (QMouseEvent_button(QMouseEventH(Event)) = QtLeftButton) then
-        begin
-          // some themes have empty space around combo button !
-
-          P := QMouseEvent_pos(QMouseEventH(Event))^;
-
-          // our combo geometry
-          R := getGeometry;
-
-          // our combo arrow position
-          opt := QStyleOptionComboBox_create();
-          QStyle_subControlRect(QApplication_style(), @R1, QStyleCC_ComboBox,
-            opt, QStyleSC_ComboBoxArrow, QComboBoxH(Widget));
-          QStyleOptionComboBox_destroy(opt);
-
-          if R1.Left < 0 then
-            ButtonRect.Left := R.Right - R.Left - (-R1.Left)
-          else
-            ButtonRect.Left := R1.Left;
-
-          if R1.Top < 0 then
-            ButtonRect.Top := R.Bottom - R.Top - (-R1.Top)
-          else
-            ButtonRect.Top := R1.Top;
-
-          if R1.Right < 0 then
-            ButtonRect.Right := R.Right - R.Left - (-R1.Right)
-          else
-            ButtonRect.Right := R1.Right;
-
-          if R1.Bottom < 0 then
-            ButtonRect.Bottom := R.Bottom - R.Top - (-R1.Bottom)
-          else
-            ButtonRect.Bottom := R1.Bottom;
-
-          Pt := Point(P.X, P.Y);
-
-          if PtInRect(ButtonRect, Pt) then
-            TCustomComboBox(LCLObject).IntfGetItems;
-        end;
-        Result := inherited EventFilter(Sender, Event);
-      end;
-      QEventKeyPress:
-      begin
-        if (QKeyEvent_key(QKeyEventH(Event)) = QtKey_F4) or
-          ((QKeyEvent_key(QKeyEventH(Event)) = QtKey_Space) and
-            not getEditable) then
-        begin
-          if not FDropListVisibleInternal then
-            TCustomComboBox(LCLObject).IntfGetItems;
-        end;
-        Result := inherited EventFilter(Sender, Event);
-      end;
-      else
-        Result := inherited EventFilter(Sender, Event);
-    end;
-
+      Result := inherited EventFilter(Sender, Event);
   end;
   
   EndEventProcessing;
@@ -7359,6 +7359,34 @@ begin
   inherited DetachEvents;
 end;
 
+function TQtListWidget.EventFilter(Sender: QObjectH; Event: QEventH): Boolean;
+  cdecl;
+var
+  ev: QEventH;
+begin
+  Result := False;
+  QEvent_accept(Event);
+  if LCLObject = nil then
+    exit;
+  if (FChildOfComplexWidget = ccwComboBox) and (FOwner <> nil) then
+  begin
+    case QEvent_type(Event) of
+      QEventShow: TQtComboBox(FOwner).SlotDropListVisibility(True);
+      QEventHide:
+      begin
+        {we must delay SlotDropDownVisiblity according to #9574
+         so order is OnChange(if editable)->OnSelect->OnCloseUp }
+        ev := QEvent_create(QEventHideToParent);
+        QCoreApplication_postEvent(Sender, ev);
+      end;
+      QEventHideToParent: TQtComboBox(FOwner).SlotDropListVisibility(False);
+    else
+      QEvent_ignore(Event);
+    end;
+  end else
+    Result:=inherited EventFilter(Sender, Event);
+end;
+
 function TQtListWidget.itemViewViewportEventFilter(Sender: QObjectH;
   Event: QEventH): Boolean; cdecl;
 var
@@ -7384,6 +7412,9 @@ var
 begin
   Result := False;
   QEvent_accept(Event);
+
+  if (FChildOfComplexWidget = ccwComboBox) and (FOwner <> nil) then
+    exit;
 
   if (LCLObject <> nil) then
   begin
@@ -7741,6 +7772,23 @@ begin
   inherited DetachEvents;
 end;
 
+function TQtHeaderView.EventFilter(Sender: QObjectH; Event: QEventH): Boolean;
+  cdecl;
+begin
+  Result := False;
+  QEvent_accept(Event);
+  if (FOwner <> nil) and (LCLObject <> nil) then
+  begin
+    if (FChildOfComplexWidget = ccwTreeWidget) and
+      (QEvent_type(Event) = QEventFocusIn) then
+    begin
+      Result := True;
+      QEvent_ignore(Event);
+      QWidget_setFocus(FOwner.Widget);
+    end;
+  end;
+end;
+
 {------------------------------------------------------------------------------
   Function: TQtHeaderView.SignalSectionClicked
   Params:  None
@@ -7912,6 +7960,13 @@ begin
   inherited Destroy;
 end;
 
+procedure TQtTreeWidget.DestroyNotify(AWidget: TQtWidget);
+begin
+  if AWidget = FHeader then
+    FHeader := nil;
+  inherited DestroyNotify(AWidget);
+end;
+
 procedure TQtTreeWidget.OwnerDataNeeded(Event: QEventH);
 var
   R: TRect;
@@ -8024,15 +8079,14 @@ begin
   if not (csDesigning in LCLObject.ComponentState) and (FHeader = nil) then
   begin
     FHeader := TQtHeaderView.CreateFrom(LCLObject, QTreeView_header(QTreeViewH(Widget)));
-    FHeaderEventFilterHook := QObject_hook_create(FHeader.Widget);
-    QObject_hook_hook_events(FHeaderEventFilterHook, @headerViewEventFilter);
-
+    FHeader.FOwner := Self;
     FSectionClicked := QHeaderView_hook_create(FHeader.Widget);
     QHeaderView_hook_hook_sectionClicked(FSectionClicked,
       @FHeader.SignalSectionClicked);
     FSortChanged := QHeaderView_hook_create(FHeader.Widget);
     QHeaderView_hook_hook_sortIndicatorChanged(FSortChanged,
       @SignalSortIndicatorChanged);
+    FHeader.AttachEvents;
   end;
   Result := FHeader;
 end;
@@ -8324,29 +8378,13 @@ begin
   QTreeWidget_hook_destroy(FItemActivatedHook);
   QTreeWidget_hook_destroy(FItemChangedHook);
   QTreeWidget_hook_destroy(FItemEnteredHook);
-  if FHeaderEventFilterHook <> nil then
-    QObject_hook_destroy(FHeaderEventFilterHook);
+
   if FSectionClicked <> nil then
     QHeaderView_hook_destroy(FSectionClicked);
   if FSortChanged <> nil then
     QHeaderView_hook_destroy(FSortChanged);
 
   inherited DetachEvents;
-end;
-
-function TQtTreeWidget.headerViewEventFilter(Sender: QObjectH; Event: QEventH
-  ): Boolean; cdecl;
-begin
-  {TQtTreeWidget header event filter hook}
-  Result := False;
-  case QEvent_type(Event) of
-    QEventFocusIn:
-    begin
-      Result := True;
-      QEvent_ignore(Event);
-      QWidget_setFocus(Widget);
-    end;
-  end;
 end;
 
 {------------------------------------------------------------------------------
@@ -9352,6 +9390,7 @@ begin
   begin
     FHScrollBar := TQtScrollBar.CreateFrom(LCLObject,
       QAbstractScrollArea_horizontalScrollBar(QAbstractScrollAreaH(Widget)));
+    FHScrollBar.FOwner := Self;
     FHScrollBar.setFocusPolicy(QtNoFocus);
     FHScrollBar.AttachEvents;
   end;
@@ -9372,6 +9411,7 @@ begin
   begin
     FVScrollbar := TQtScrollBar.CreateFrom(LCLObject,
       QAbstractScrollArea_verticalScrollBar(QAbstractScrollAreaH(Widget)));;
+    FVScrollBar.FOwner := Self;
     FVScrollBar.setFocusPolicy(QtNoFocus);
     FVScrollbar.AttachEvents;
   end;
