@@ -449,8 +449,13 @@ end;
 
 function TIDEOptionsDialog.ShowModal: Integer;
 begin
-  CreateEditors;
-  DoOpenEditor;
+  DisableAutoSizing{$IFDEF DebugDisableAutoSizing}('TIDEOptionsDialog.ShowModal'){$ENDIF};
+  try
+    CreateEditors;
+    DoOpenEditor;
+  finally
+    EnableAutoSizing{$IFDEF DebugDisableAutoSizing}('TIDEOptionsDialog.ShowModal'){$ENDIF};
+  end;
   Result := inherited ShowModal;
 end;
 
