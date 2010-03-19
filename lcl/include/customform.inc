@@ -1487,6 +1487,8 @@ var
   prevWindowState: TWindowState;
 begin
   // temporarily go to normal window state to store restored bounds
+  if (FRestoredLeft=ALeft) and (FRestoredTop=ATop)
+  and (FRestoredWidth=AWidth) and (FRestoredHeight=AHeight) then exit;
   prevWindowState := WindowState;
   WindowState := wsNormal;
   SetBounds(ALeft, ATop, AWidth, AHeight);
