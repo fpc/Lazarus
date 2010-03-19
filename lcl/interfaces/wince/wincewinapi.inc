@@ -3021,73 +3021,97 @@ end;
   the destination device context.
  ------------------------------------------------------------------------------}
 function TWinCEWidgetSet.StretchMaskBlt(DestDC: HDC; X, Y, Width, Height: Integer; SrcDC: HDC; XSrc, YSrc, SrcWidth, SrcHeight: Integer; Mask: HBITMAP; XMask, YMask: Integer; Rop: DWORD): Boolean;
-  function CreatePremultipliedBitmap(AWinBmp: Windows.TBitmap; ABitmap: HBITMAP): HBITMAP;
-  var
-    SrcData: Pointer;
-    SrcPixel: PRGBAQuad absolute SrcData;
-    DstData: Pointer;
-    DstPixel: PRGBAQuad absolute DstData;
-    ByteCount: PtrUInt;
-    Info: record
-      Header: Windows.TBitmapInfoHeader;
-      Colors: array[0..3] of Cardinal; // reserve extra color for colormasks
-    end;
-  begin
-    Result := 0;
-    if not GetBitmapBytes(ABitmap, Rect(XSrc, YSrc, SrcWidth, SrcHeight), rileDWordBoundary, SrcData, ByteCount)
-    then begin
-      Exit;
-    end;
 
-    FillChar(Info.Header, SizeOf(Info.Header), 0);
+function CreatePremultipliedBitmap(AWinBmp: Windows.TBitmap; ABitmap: HBITMAP; out AAlphaBmp: HBITMAP): Boolean;
+var
+  _I : Integer;
+  Data : Pointer = nil;
+  DestData : Pointer = nil;
+  Pixel : PRGBAQuad;
+  ByteCount: PtrUInt;
+  Info: record
+    Header: Windows.TBitmapInfoHeader;
+    Colors: array[0..3] of Cardinal; // reserve extra color for colormasks
+  end;
+  HasAlpha0, HasAlphaN, HasAlpha255: Boolean;
+
+begin
+  Result := False;
+  // process only requested rectangle
+  if not GetBitmapBytes(ABitmap, Rect(XSrc, YSrc, XSrc+SrcWidth, YSrc+SrcHeight), rileDWordBoundary, Data, ByteCount) then Exit;
+
+  HasAlpha0 := False;
+  HasAlphaN := False;
+  HasAlpha255 := False;
+  Pixel := Data;
+  For _I := 1 To ByteCount shr 2 Do
+  begin
+    //Pixel^.Alpha := (Pixel^.Alpha * Alpha) div 255;
+    If Pixel^.Alpha = 255 Then
+      HasAlpha255 := True
+    else
+      If Pixel^.Alpha = 0 Then
+      begin
+        ZeroMemory(Pixel, SizeOf(TRGBAQuad));
+        HasAlpha0 := True;
+      end
+      else
+      begin
+        Pixel^.Red   := (Pixel^.Red   * Pixel^.Alpha) div 255;
+        Pixel^.Green := (Pixel^.Green * Pixel^.Alpha) div 255;
+        Pixel^.Blue  := (Pixel^.Blue  * Pixel^.Alpha) div 255;
+        HasAlphaN := True;
+      end;
+    //
+    Inc(Pixel);
+  end;
+
+  // only create bitmap when not opaque or not fully transparent
+  // (all zero alpha is unlikly for alpha bitmap, so it is probably a bitmap without alpha channel)
+  Result := HasAlphaN or (HasAlpha0 and HasAlpha255);
+  if Result then
+  begin
+    ZeroMemory(@Info.Header, SizeOf(Info.Header));
     Info.Header.biSize := SizeOf(Info.Header);
     Info.Header.biWidth := SrcWidth;
     Info.Header.biHeight := -SrcHeight;
     Info.Header.biPlanes := 1;
     Info.Header.biBitCount := 32;
     Info.Header.biSizeImage := (SrcWidth * SrcHeight) shl 2;
-    // CE only supports bitfields
-    Info.Header.biCompression := BI_BITFIELDS;
+    Info.Header.biCompression := BI_BITFIELDS; // CE only supports bitfields
     Info.Colors[0] := $FF0000; {le-red}
     Info.Colors[1] := $00FF00; {le-green}
     Info.Colors[2] := $0000FF; {le-blue}
-
-    Result := Windows.CreateDIBSection(SrcDC, Windows.PBitmapInfo(@Info)^, DIB_RGB_COLORS, DstData, 0, 0);
-    if (Result = 0) or (DstData = nil)
-    then Exit;
-
-    ByteCount := ByteCount shr 2;
-    while ByteCount > 0 do
-    begin
-      DstPixel^.Red   := (SrcPixel^.Red   * SrcPixel^.Alpha) div 255;
-      DstPixel^.Green := (SrcPixel^.Green * SrcPixel^.Alpha) div 255;
-      DstPixel^.Blue  := (SrcPixel^.Blue  * SrcPixel^.Alpha) div 255;
-      DstPixel^.Alpha :=  SrcPixel^.Alpha;
-      Inc(SrcPixel);
-      Inc(DstPixel);
-      Dec(ByteCount);
-    end;
+    AAlphaBmp := Windows.CreateDIBSection({SrcDC}0, Windows.PBitmapInfo(@Info)^, DIB_RGB_COLORS, DestData, 0, 0);
+    Result := (AAlphaBmp <> 0) and (Data <> nil) and (DestData <> nil);
+    if Result Then MoveMemory(DestData, Data, ByteCount);
   end;
+
+  if Data <> nil Then FreeMem(Data, ByteCount);
+end;
+
 var
   MaskDC, CopyDC, AlphaDC: HDC;
-  MaskObj, CopyObj, AlphaObj: HGDIOBJ;
-  PrevTextColor, PrevBkColor: COLORREF;
+  MaskObj, CopyObj, AlphaObj : HGDIOBJ;
+  PrevTextColor, PrevBkColor : COLORREF;
   WinBmp: Windows.TBitmap;
-  Bmp, CopyBmp, AlphaBmp: HBITMAP;
+  Bmp, CopyBmp, AlphaBmp : HBITMAP;
   HasAlpha: Boolean;
   Blend: TBlendFunction;
-begin
-  //DbgDumpBitmap(Mask, 'StretchMaskBlt - Mask');
 
+begin
+  Result := False;
+  //if Alpha = 0 then Exit;
   // check if the Src has an alpha channel
-  bmp := Windows.GetCurrentObject(SrcDC, OBJ_BITMAP);
+  Bmp := Windows.GetCurrentObject(SrcDC, OBJ_BITMAP);
   // get info
-  HasAlpha := (Windows.GetObject(bmp, SizeOf(WinBmp), @WinBmp) <> 0)
-          and (WinBmp.bmBitsPixel = 32);
-  if HasAlpha
-  then begin
+  HasAlpha := (Windows.GetObject(Bmp, SizeOf(WinBmp), @WinBmp) <> 0)
+          and (WinBmp.bmBitsPixel = 32)
+          and CreatePremultipliedBitmap(WinBmp, Bmp, AlphaBmp);
+
+  if HasAlpha then
+  begin
     // premultiply pixels
-    AlphaBmp := CreatePremultipliedBitmap(WinBmp, Bmp);
     AlphaDC := Windows.CreateCompatibleDC(SrcDC);
     AlphaObj := Windows.SelectObject(AlphaDC, AlphaBmp);
 
@@ -3098,33 +3122,31 @@ begin
     Blend.AlphaFormat := AC_SRC_ALPHA;
   end;
 
-  //Windows.SetStretchBltMode(DestDC, STRETCH_HALFTONE);
   Windows.SetBrushOrgEx(DestDC, 0, 0, nil);
   if Mask = 0 then
   begin
-    if HasAlpha
-    then begin
+    if HasAlpha then
+    begin
       Result := WinCEExtra.AlphaBlend(DestDC, X, Y, Width, Height, AlphaDC, 0, 0, SrcWidth, SrcHeight, Blend);
     end
-    else begin
+    else
+    begin
       if (Width = SrcWidth) and (Height = SrcHeight) then
-      begin
-        Result := Windows.BitBlt(DestDC, X, Y, Width, Height, SrcDC, XSrc, YSrc, SRCCOPY);
-      end
-      else begin
+        Result := Windows.BitBlt(DestDC, X, Y, Width, Height, SrcDC, XSrc, YSrc, SRCCOPY)
+      else
         Result := Windows.StretchBlt(DestDC, X, Y, Width, Height, SrcDC, XSrc, YSrc, SrcWidth, SrcHeight, SRCCOPY);
-      end;
     end;
   end
-  else begin
+  else
+  begin
     MaskDC := Windows.CreateCompatibleDC(DestDC);
     MaskObj := Windows.SelectObject(MaskDC, Mask);
 
     PrevTextColor := Windows.SetTextColor(DestDC, $00000000);
     PrevBkColor := Windows.SetBkColor(DestDC, $00FFFFFF);
 
-    if HasAlpha
-    then begin
+    if HasAlpha then
+    begin
       // create copy of masked destination
       CopyDC := Windows.CreateCompatibleDC(DestDC);
       CopyBmp := Windows.CreateCompatibleBitmap(DestDC, Width, Height);
@@ -3152,14 +3174,16 @@ begin
       Windows.DeleteObject(CopyBmp);
       Windows.DeleteDC(CopyDC);
     end
-    else begin
+    else
+    begin
       if (Width = SrcWidth) and (Height = SrcHeight) then
       begin
         Windows.BitBlt(DestDC, X, Y, Width, Height, SrcDC,  XSrc, YSrc, SRCINVERT);
         Windows.BitBlt(DestDC, X, Y, Width, Height, MaskDC, XSrc, YSrc, SRCAND);
         Windows.BitBlt(DestDC, X, Y, Width, Height, SrcDC,  XSrc, YSrc, SRCINVERT);
       end
-      else begin
+      else
+      begin
         Windows.StretchBlt(DestDC, X, Y, Width, Height, SrcDC,  XSrc, YSrc, SrcWidth, SrcHeight, SRCINVERT);
         Windows.StretchBlt(DestDC, X, Y, Width, Height, MaskDC, XSrc, YSrc, SrcWidth, SrcHeight, SRCAND);
         Windows.StretchBlt(DestDC, X, Y, Width, Height, SrcDC,  XSrc, YSrc, SrcWidth, SrcHeight, SRCINVERT);
@@ -3171,8 +3195,8 @@ begin
     Windows.DeleteDC(MaskDC);
   end;
 
-  if HasAlpha
-  then begin
+  if HasAlpha then
+  begin
     Windows.SelectObject(AlphaDC, AlphaObj);
     Windows.DeleteObject(AlphaBmp);
     Windows.DeleteDC(AlphaDC);
