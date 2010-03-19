@@ -9569,13 +9569,29 @@ begin
     {$ENDIF}
 
     // set active editor source editor
-    for i := 0 to Project1.UnitCount - 1 do begin
-      if Project1.Units[i].IsVisibleTab
-         and (SourceEditorManager.SourceWindows[Project1.Units[i].WindowIndex] <> nil)
-      then begin
-        SourceEditorManager.SourceWindows
-          [Project1.Units[i].WindowIndex].PageIndex := Project1.Units[i].EditorIndex;
+    for i := 0 to Project1.UnitCount - 1 do
+    begin
+      if Project1.Units[i].IsVisibleTab then
+      begin
+        if Project1.Units[i].WindowIndex>=SourceEditorManager.SourceWindowCount
+        then begin
+          // session info is invalid (buggy lps file?) => auto fix
+          Project1.Units[i].IsVisibleTab:=false;
+          Project1.Units[i].WindowIndex:=-1;
+        end;
+        if (Project1.Units[i].WindowIndex<0) then continue;
+        if (SourceEditorManager.SourceWindows[Project1.Units[i].WindowIndex] <> nil)
+        then begin
+          SourceEditorManager.SourceWindows
+            [Project1.Units[i].WindowIndex].PageIndex := Project1.Units[i].EditorIndex;
+        end;
       end;
+    end;
+    if (Project1.ActiveWindowIndexAtStart<0)
+    or (Project1.ActiveWindowIndexAtStart>=SourceEditorManager.SourceWindowCount)
+    then begin
+      // session info is invalid (buggy lps file?) => auto fix
+      Project1.ActiveWindowIndexAtStart:=0;
     end;
     SourceEditorManager.ActiveSourceWindow :=
       SourceEditorManager.SourceWindows[Project1.ActiveWindowIndexAtStart];
