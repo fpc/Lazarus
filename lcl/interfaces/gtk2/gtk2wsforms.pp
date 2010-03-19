@@ -327,6 +327,7 @@ begin
   SetMainWidget(Scrolled, Layout);
 
   Result := TLCLIntfHandle(PtrUInt(Scrolled));
+
   Set_RC_Name(AWinControl, PGtkWidget(Scrolled));
   SetCallBacks(PGtkWidget(Scrolled), WidgetInfo);
 end;

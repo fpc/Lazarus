@@ -6941,7 +6941,6 @@ begin
       ParentWidget := PGtkWidget(LCLControl.Parent.Handle)
     else
       ParentWidget := PGtkWidget(LCLControl.ParentWindow);
-
     ParentFixed := GetFixedWidget(ParentWidget);
     if GtkWidgetIsA(ParentFixed,GTK_FIXED_GET_TYPE) or
        GtkWidgetIsA(ParentFixed,GTK_LAYOUT_GET_TYPE) then
@@ -7033,6 +7032,7 @@ begin
   allocation.y:=LCLTop;
   allocation.width:=LCLWidth;
   allocation.height:=LCLHeight;
+  //DebugLn(['SetWidgetSizeAndPosition ',DbgSName(LCLControl),' LCL=',dbgs(LCLControl.BoundsRect),' allocation=',dbgs(allocation),' ',GetWidgetDebugReport(Widget)]);
   gtk_widget_size_allocate(Widget,@allocation);// Beware: this triggers callbacks
   {$ENDIF}
 end;
