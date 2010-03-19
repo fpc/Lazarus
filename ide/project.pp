@@ -58,7 +58,7 @@ uses
   LazarusIDEStrConsts, CompilerOptions,
   TransferMacros, EditorOptions, IDEProcs, RunParamsOpts, ProjectDefs,
   FileReferenceList, EditDefineTree, PackageDefs, PackageSystem, IDEOptionsIntf,
-  SrcEditorIntf;
+  SrcEditorIntf, SynEdit;
 
 type
   TUnitInfo = class;
@@ -310,6 +310,9 @@ type
     function FindAncestorUnit: TUnitInfo;
     procedure ClearUnitComponentDependencies(
                      ClearTypes: TUnitCompDependencyTypes);
+    // Bookmarks
+    function  AddBookmark(X, Y, ID: integer):integer;
+    procedure DeleteBookmark(ID: integer);
   public
     { Properties }
     // Unit lists
@@ -795,7 +798,6 @@ type
     procedure LongenFilename(var AFilename: string); override;
 
     // bookmarks
-    procedure SetBookmark(AnUnitInfo: TUnitInfo; X,Y,ID: integer);
     procedure MergeBookmarks(AnUnitInfo: TUnitInfo);
     
     // package dependencies
@@ -850,6 +852,9 @@ type
     //auto created forms
     function GetAutoCreatedFormsList: TStrings;
     property TmpAutoCreatedForms: TStrings read FTmpAutoCreatedForms write FTmpAutoCreatedForms;
+    // Bookmarks
+    function  AddBookmark(X, Y, ID: Integer; AEditor:TSourceEditorInterface):integer;
+    procedure DeleteBookmark(ID: Integer);
   public
     property ActiveWindowIndexAtStart: integer read FActiveWindowIndexAtStart
                                                write FActiveWindowIndexAtStart;
@@ -1684,6 +1689,25 @@ begin
   end;
 end;
 
+function TUnitInfo.AddBookmark(X, Y, ID: integer): integer;
+begin
+  Result := Bookmarks.Add(X, Y, ID);
+  SessionModified := True;
+  Project1.AddBookmark(X, Y, ID, EditorComponent);
+end;
+
+procedure TUnitInfo.DeleteBookmark(ID: integer);
+var
+  i: Integer;
+begin
+  i := Bookmarks.IndexOfID(ID);
+  if i >= 0 then begin
+    Bookmarks.Delete(i);
+    SessionModified := True;
+  end;
+  Project1.DeleteBookmark(ID);
+end;
+
 function TUnitInfo.ReadOnly: boolean;
 begin
   Result:=UserReadOnly or FileReadOnly;
@@ -1819,8 +1843,11 @@ begin
 end;
 
 procedure TUnitInfo.SetEditorComponent(const AEditor: TSourceEditorInterface);
+var
+  BookmarkID, i: integer;
 begin
   if FEditorComponent = AEditor then exit;
+  Project1.Bookmarks.DeleteAllWithEditorComponent(FEditorComponent);
   if AEditor = nil then begin
     EditorIndex := -1;
     WindowIndex := -1;
@@ -1829,29 +1856,29 @@ begin
   UpdateList(uilWithEditorIndex, FEditorComponent <> nil);
   if AEditor <> nil then
     AEditor.UpdateProjectFile; // Set EditorIndex
+
+  // Adjust bookmarks
+  Project1.MergeBookmarks(self);
+  for BookmarkID := 0 to 9 do begin
+    i := Project1.Bookmarks.IndexOfID(BookmarkID);
+    if (i < 0) or
+       (Project1.Bookmarks[i].EditorComponent <> EditorComponent)
+    then continue;
+    TSynEdit(EditorComponent.EditorControl).SetBookMark(BookmarkID,
+       Project1.Bookmarks[i].CursorPos.X, Project1.Bookmarks[i].CursorPos.Y);
+  end;
+
   SessionModified:=true;
 end;
 
 procedure TUnitInfo.SetEditorIndex(const AValue: integer);
-var
-  i: Integer;
 begin
   if FEditorIndex = AValue then exit;
   FEditorIndex := AValue;
   UpdateList(uilWithEditorIndex, FEditorIndex >= 0);
 
-  if assigned(Project1) and assigned(Project1.Bookmarks) then begin
-    i := Project1.Bookmarks.Count-1;
-    while (i >= 0) do begin
-      if Project1.Bookmarks[i].EditorComponent = EditorComponent then begin
-        if (FEditorIndex < 0) then
-          Project1.Bookmarks.Delete(i)
-        else
-          Project1.Bookmarks[i].EditorIndex := FEditorIndex;
-      end;
-      dec(i);
-    end;
-  end;
+  if assigned(Project1) and assigned(Project1.Bookmarks) and (FEditorIndex < 0) then
+    Project1.Bookmarks.DeleteAllWithEditorComponent(EditorComponent);
 
   SessionModified:=true;
 end;
@@ -3694,13 +3721,6 @@ begin
   fProjectInfoFileDate:=FileAgeUTF8(ProjectInfoFile);
 end;
 
-procedure TProject.SetBookmark(AnUnitInfo: TUnitInfo; X, Y, ID: integer);
-begin
-  if AnUnitInfo.EditorComponent <> nil then
-    Bookmarks.Add(X,Y,AnUnitInfo.EditorIndex,ID, AnUnitInfo.EditorComponent);
-  AnUnitInfo.Bookmarks.Add(X,Y,ID);
-end;
-
 procedure TProject.MergeBookmarks(AnUnitInfo: TUnitInfo);
 // merge the bookmarks of the unit with the bookmarks in the source editor
 var
@@ -3711,13 +3731,11 @@ begin
   if AnUnitInfo.EditorComponent = nil then exit;
   for i:=0 to AnUnitInfo.Bookmarks.Count-1 do begin
     UnitMark:=AnUnitInfo.Bookmarks[i];
-    ProjectMark:=Bookmarks.BookmarkWithIndex(UnitMark.ID);
-    // merge the bookmark into the currently existing bookmarks, if the ID is
-    // free
+    ProjectMark:=Bookmarks.BookmarkWithID(UnitMark.ID);
+    // merge the bookmark into the currently existing bookmarks, if the ID is free
     //writeln('TProject.MergeBookmarks ',AnUnitInfo.Filename,' Y=',UnitMark.Y);
-    if (ProjectMark=nil) then
-      Bookmarks.Add(UnitMark.X,UnitMark.Y,AnUnitInfo.EditorIndex,UnitMark.ID,
-                    AnUnitInfo.EditorComponent);
+    if (ProjectMark = nil) then
+      AddBookmark(UnitMark.X, UnitMark.Y, UnitMark.ID, AnUnitInfo.EditorComponent);
   end;
 end;
 
@@ -4331,6 +4349,22 @@ begin
   end
   else
     Result := nil;
+end;
+
+function TProject.AddBookmark(X, Y, ID: Integer; AEditor:TSourceEditorInterface): integer;
+begin
+  Result := Bookmarks.Add(X, Y, ID, AEditor);
+  SessionModified := true;
+end;
+
+procedure TProject.DeleteBookmark(ID: Integer);
+var
+  i: Integer;
+begin
+  i := Bookmarks.IndexOfID(ID);
+  if i < 0 then exit;
+  Bookmarks.Delete(i);
+  SessionModified := true;
 end;
 
 procedure TProject.OnUnitNameChange(AnUnitInfo: TUnitInfo;

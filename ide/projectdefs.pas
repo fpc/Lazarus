@@ -170,18 +170,14 @@ type
   private
     fCursorPos: TPoint;
     FEditorComponent: TSourceEditorInterface;
-    fEditorIndex: integer;
     fID: integer;
   public
     constructor Create;
-    constructor Create(X,Y, AnEditorIndex, AnID: integer; AEditor:TSourceEditorInterface);
+    constructor Create(X,Y, AnID: integer; AEditor:TSourceEditorInterface);
     property CursorPos: TPoint read fCursorPos write fCursorPos;
-    property EditorIndex: integer read fEditorIndex write fEditorIndex;
     property EditorComponent: TSourceEditorInterface
              read FEditorComponent write FEditorComponent;
     property ID:integer read fID write fID;
-    procedure SaveToXMLConfig(XMLConfig: TXMLConfig; const Path: string);
-    procedure LoadFromXMLConfig(XMLConfig: TXMLConfig; const Path: string);
   end;
 
   { TProjectBookmarkList }
@@ -200,13 +196,11 @@ type
     procedure Delete(Index:integer);
     procedure Clear;
     function Add(ABookmark: TProjectBookmark):integer;
-    function Add(X,Y,EditorID,ID: integer; AEditor:TSourceEditorInterface):integer;
-    procedure DeleteAllWithEditorIndex(EditorIndex:integer);
+    function Add(X, Y, ID: integer; AEditor:TSourceEditorInterface):integer;
     procedure DeleteAllWithEditorComponent(AEditor:TSourceEditorInterface);
     function IndexOfID(ID:integer):integer;
-    function BookmarkWithIndex(ID: integer): TProjectBookmark;
-    procedure SaveToXMLConfig(XMLConfig: TXMLConfig; const Path: string); deprecated;// 'Does not link to Editorcomponent';
-    procedure LoadFromXMLConfig(XMLConfig: TXMLConfig; const Path: string); deprecated;// 'Does not link to Editorcomponent';
+    function BookmarkWithID(ID: integer): TProjectBookmark;
+    function EditorComponentForBookmarkWithIndex(ID: integer): TSourceEditorInterface;
   end;
 
 type
@@ -326,35 +320,15 @@ begin
   inherited Create;
 end;
 
-constructor TProjectBookmark.Create(X,Y, AnEditorIndex, AnID: integer;
+constructor TProjectBookmark.Create(X, Y, AnID: integer;
   AEditor:TSourceEditorInterface);
 begin
   inherited Create;
   fCursorPos.X:=X;
   fCursorPos.Y:=Y;
-  fEditorIndex:=AnEditorIndex;
   FEditorComponent:=AEditor;
   fID:=AnID;
 end;
-
-procedure TProjectBookmark.SaveToXMLConfig(XMLConfig: TXMLConfig; 
-  const Path: string);
-begin
-  XMLConfig.SetValue(Path+'ID',ID);
-  XMLConfig.SetValue(Path+'CursorPosX',CursorPos.X);
-  XMLConfig.SetValue(Path+'CursorPosY',CursorPos.Y);
-  XMLConfig.SetValue(Path+'EditorIndex',EditorIndex);
-end;
-
-procedure TProjectBookmark.LoadFromXMLConfig(XMLConfig: TXMLConfig; 
-  const Path: string);
-begin
-  ID:=XMLConfig.GetValue(Path+'ID',-1);
-  CursorPos:=Point(XMLConfig.GetValue(Path+'CursorPosX',0),
-                  XMLConfig.GetValue(Path+'CursorPosY',0));
-  EditorIndex:=XMLConfig.GetValue(Path+'EditorIndex',-1);
-end;
-
 
 { TProjectBookmarkList }
 
@@ -400,7 +374,7 @@ begin
   while (Result>=0) and (Items[Result].ID<>ID) do dec(Result);
 end;
 
-function TProjectBookmarkList.BookmarkWithIndex(ID: integer
+function TProjectBookmarkList.BookmarkWithID(ID: integer
   ): TProjectBookmark;
 var
   i: Integer;
@@ -412,21 +386,22 @@ begin
     Result:=nil;
 end;
 
+function TProjectBookmarkList.EditorComponentForBookmarkWithIndex(ID: integer
+  ): TSourceEditorInterface;
+var
+  Mark: TProjectBookmark;
+begin
+  Mark := BookmarkWithID(ID);
+  if Mark <> nil then
+    Result := Mark.EditorComponent
+  else
+    Result:=nil;
+end;
+
 procedure TProjectBookmarkList.Delete(Index:integer);
 begin
   Items[Index].Free;
   fBookmarks.Delete(Index);
-end;
-
-procedure TProjectBookmarkList.DeleteAllWithEditorIndex(
-  EditorIndex:integer);
-var i:integer;
-begin
-  i:=Count-1;
-  while (i>=0) do begin
-    if Items[i].EditorIndex=EditorIndex then Delete(i);
-    dec(i);
-  end;
 end;
 
 procedure TProjectBookmarkList.DeleteAllWithEditorComponent(
@@ -449,33 +424,10 @@ begin
   Result:=fBookmarks.Add(ABookmark);
 end;
 
-function TProjectBookmarkList.Add(X, Y, EditorID, ID: integer;
+function TProjectBookmarkList.Add(X, Y, ID: integer;
   AEditor:TSourceEditorInterface): integer;
 begin
-  Result:=Add(TProjectBookmark.Create(X,Y,EditorID,ID, AEditor));
-end;
-
-procedure TProjectBookmarkList.SaveToXMLConfig(XMLConfig: TXMLConfig; 
-  const Path: string);
-var a:integer;
-begin
-  XMLConfig.SetDeleteValue(Path+'Bookmarks/Count',Count,0);
-  for a:=0 to Count-1 do
-    Items[a].SaveToXMLConfig(XMLConfig,Path+'Bookmarks/Mark'+IntToStr(a)+'/');
-end;
-
-procedure TProjectBookmarkList.LoadFromXMLConfig(XMLConfig: TXMLConfig; 
-  const Path: string);
-var a,NewCount:integer;
-  NewBookmark:TProjectBookmark;
-begin
-  Clear;
-  NewCount:=XMLConfig.GetValue(Path+'Bookmarks/Count',0);
-  for a:=0 to NewCount-1 do begin
-    NewBookmark:=TProjectBookmark.Create;
-    Add(NewBookmark);
-    NewBookmark.LoadFromXMLConfig(XMLConfig,Path+'Bookmarks/Mark'+IntToStr(a)+'/');
-  end;
+  Result:=Add(TProjectBookmark.Create(X, Y, ID, AEditor));
 end;
 
 { TProjectJumpHistoryPosition }

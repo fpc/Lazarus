@@ -659,7 +659,6 @@ type
         Flags: TOpenFlags): TModalResult;
     function DoOpenUnknownFile(const AFileName:string; Flags: TOpenFlags;
         var NewUnitInfo: TUnitInfo; var Handled: boolean): TModalResult;
-    procedure DoRestoreBookMarks(AnUnitInfo: TUnitInfo; ASrcEdit:TSourceEditor);
     function DoOpenFileInSourceEditor(AnUnitInfo: TUnitInfo;
         PageIndex, WindowIndex: integer; Flags: TOpenFlags): TModalResult;
     function DoLoadResourceFile(AnUnitInfo: TUnitInfo;
@@ -2700,7 +2699,7 @@ end;
 
 procedure TMainIDE.mnuSetFreeBookmark(Sender: TObject);
 begin
-  SourceEditorManager.ActiveSourceWindow.BookMarkSetFree;
+  SourceEditorManager.BookMarkSetFree;
 end;
 
 procedure TMainIDE.mnuSaveClicked(Sender: TObject);
@@ -5819,24 +5818,6 @@ begin
   Result:=mrOk;
 end;
 
-procedure TMainIDE.DoRestoreBookMarks(AnUnitInfo: TUnitInfo;
-  ASrcEdit: TSourceEditor);
-var
-  BookmarkID, i: integer;
-begin
-  Project1.MergeBookmarks(AnUnitInfo);
-  for BookmarkID:=0 to 9 do begin
-    i:=Project1.Bookmarks.IndexOfID(BookmarkID);
-    if i<0 then continue;
-    if (Project1.Bookmarks[i].EditorComponent=AnUnitInfo.EditorComponent) then begin
-      //writeln('TMainIDE.DoRestoreBookMarks ',BookmarkID,' ',
-      //   Project1.Bookmarks[i].CursorPos.X,' ',Project1.Bookmarks[i].CursorPos.Y);
-      ASrcEdit.EditorComponent.SetBookmark(BookmarkID,
-         Project1.Bookmarks[i].CursorPos.X,Project1.Bookmarks[i].CursorPos.Y);
-    end;
-  end;
-end;
-
 function TMainIDE.DoLoadLFM(AnUnitInfo: TUnitInfo;
   OpenFlags: TOpenFlags; CloseFlags: TCloseFlags): TModalResult;
 // if there is a .lfm file, open the resource
@@ -7226,30 +7207,19 @@ end;
 
 procedure TMainIDE.SaveSrcEditorProjectSpecificSettings(AnUnitInfo: TUnitInfo);
 var
-  BookmarkID, BookmarkX, BookmarkY: integer;
   ASrcEdit: TSourceEditor;
 begin
-  Project1.Bookmarks.DeleteAllWithEditorComponent(AnUnitInfo.EditorComponent);
   ASrcEdit := TSourceEditor(AnUnitInfo.EditorComponent);
   if ASrcEdit=nil then exit;
   AnUnitInfo.TopLine:=ASrcEdit.EditorComponent.TopLine;
   AnUnitInfo.CursorPos:=ASrcEdit.EditorComponent.CaretXY;
   AnUnitInfo.FoldState := ASrcEdit.EditorComponent.FoldState;
-  // bookmarks
-  AnUnitInfo.Bookmarks.Clear;
-  for BookmarkID:=0 to 9 do begin
-    if (ASrcEdit.EditorComponent.GetBookMark(BookmarkID,BookmarkX,BookmarkY))
-    then begin
-      Project1.SetBookmark(AnUnitInfo,BookmarkX,BookmarkY,BookmarkID);
-    end;
-  end;
 end;
 
 procedure TMainIDE.SaveSourceEditorProjectSpecificSettings;
 var
   AnUnitInfo: TUnitInfo;
 begin
-  Project1.Bookmarks.Clear;
   AnUnitInfo:=Project1.FirstUnitWithEditorIndex;
   while AnUnitInfo<>nil do begin
     if (not AnUnitInfo.Loaded) then continue;
@@ -7623,7 +7593,6 @@ begin
     //debugln(['TMainIDE.DoOpenFileInSourceEditor ',AnUnitInfo.Filename,' ',AnUnitInfo.EditorIndex]);
 
     // restore source editor settings
-    DoRestoreBookMarks(AnUnitInfo,NewSrcEdit);
     DebugBoss.DoRestoreDebuggerMarks(AnUnitInfo);
     NewSrcEdit.SyntaxHighlighterType:=AnUnitInfo.SyntaxHighlighter;
     NewSrcEdit.EditorComponent.AfterLoadFromFile;

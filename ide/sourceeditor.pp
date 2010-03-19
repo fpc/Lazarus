@@ -61,7 +61,7 @@ uses
   SortSelectionDlg, EncloseSelectionDlg, DiffDialog, ConDef, InvertAssignTool,
   SourceEditProcs, SourceMarks, CharacterMapDlg, SearchFrm,
   FPDocHints, FPDocEditWindow,
-  BaseDebugManager, Debugger, MainIntf, GotoFrm;
+  BaseDebugManager, Debugger, MainIntf, GotoFrm, ProjectDefs;
 
 type
   TSourceNotebook = class;
@@ -163,6 +163,8 @@ type
     procedure EditorPaste(Sender: TObject; var AText: String;
          var AMode: TSynSelectionMode; ALogStartPos: TPoint;
          var AnAction: TSynCopyPasteAction);
+    procedure EditorPlaceBookmark(Sender: TObject; var Mark: TSynEditMark);
+    procedure EditorClearBookmark(Sender: TObject; var Mark: TSynEditMark);
     procedure EditorEnter(Sender: TObject);
     procedure EditorActivateSyncro(Sender: TObject);
     procedure EditorDeactivateSyncro(Sender: TObject);
@@ -484,12 +486,6 @@ type
     procedure RunToClicked(Sender: TObject);
     procedure ViewCallStackClick(Sender: TObject);
     procedure AddWatchAtCursor(Sender: TObject);
-    procedure BookmarkGoTo(Index: Integer);
-    procedure BookmarkGotoNext(GoForward: boolean);
-    procedure BookMarkGotoClicked(Sender: TObject);
-    procedure BookMarkSet(Value: Integer; Toggle: boolean = false);
-    procedure BookMarkToggleClicked(Sender: TObject);
-    procedure BookmarkSetFreeClicked(Sender: TObject);
     procedure EditorPropertiesClicked(Sender: TObject);
     procedure LineEndingClicked(Sender: TObject);
     procedure EncodingClicked(Sender: TObject);
@@ -525,7 +521,6 @@ type
     procedure SrcEditMenuAnotherViewClicked(Sender: TObject);
     {$ENDIF}
   public
-    procedure BookMarkSetFree;// set a free bookmark
     procedure BookMarkNextClicked(Sender: TObject);
     procedure BookMarkPrevClicked(Sender: TObject);
     procedure DeleteBreakpointClicked(Sender: TObject);
@@ -672,7 +667,6 @@ type
        var Handled: boolean);
 
     // marks
-    function FindBookmark(BookmarkID: integer): TSourceEditor;
     function OnSourceMarksGetSourceEditor(ASynEdit: TCustomSynEdit): TObject;
     function OnSourceMarksGetFilename(ASourceEditor: TObject): string;
     procedure OnSourceMarksAction(AMark: TSourceMark; AAction: TListNotification);
@@ -776,11 +770,6 @@ type
     procedure CopyClicked(Sender: TObject);
     procedure PasteClicked(Sender: TObject);
     procedure CopyFilenameClicked(Sender: TObject);
-
-    // bookmarks
-    procedure ToggleBookmark(Value: Integer);
-    procedure SetBookmark(Value: Integer);
-    procedure GotoBookmark(Value: Integer);
 
     procedure ReloadEditorOptions;
     procedure ReloadHighlighters;
@@ -894,13 +883,22 @@ type
     property SourceEditors[Index: integer]: TSourceEditor read GetSrcEditors;   // reintroduced
     property  SourceEditorsByPage[WindowIndex, PageIndex: integer]: TSourceEditor
               read GetSourceEditorsByPage;
-   function  SourceEditorIntfWithFilename(const Filename: string): TSourceEditor; reintroduce;
+    function  SourceEditorIntfWithFilename(const Filename: string): TSourceEditor; reintroduce;
     // Forward to all windows
     procedure ClearErrorLines; override;
     procedure ClearExecutionLines;
     procedure ClearExecutionMarks;
     procedure ReloadEditorOptions;
     procedure ReloadHighlighters;
+  public
+    // Bookmarks
+    procedure BookMarkSet(Value: Integer; Toggle: boolean = false);
+    procedure BookMarkSetFree; // set a free bookmark
+    procedure BookMarkSetFreeClicked(Sender: TObject);
+    procedure BookMarkToggleClicked(Sender: TObject);
+    procedure BookMarkGoTo(Index: Integer);
+    procedure BookMarkGotoClicked(Sender: TObject);
+    procedure BookMarkGotoNext(GoForward: boolean);
   public
     constructor Create(AOwner: TComponent); override;
     //destructor Destroy; override;
@@ -1775,19 +1773,19 @@ begin
     end;
 
   ecPrevBookmark: // Note: book mark commands lower than ecUserFirst must be handled here
-     TSourceNotebook(FaOwner).BookmarkGotoNext(false);
+     Manager.BookmarkGotoNext(false);
 
   ecNextBookmark:
-    TSourceNotebook(FaOwner).BookmarkGotoNext(true);
+    Manager.BookmarkGotoNext(true);
 
   ecGotoMarker0..ecGotoMarker9:
-    TSourceNotebook(FaOwner).BookmarkGoto(Command - ecGotoMarker0);
+    Manager.BookmarkGoto(Command - ecGotoMarker0);
 
   ecSetMarker0..ecSetMarker9:
-    TSourceNotebook(FaOwner).BookmarkSet(Command - ecSetMarker0);
+    Manager.BookmarkSet(Command - ecSetMarker0);
 
   ecToggleMarker0..ecToggleMarker9:
-    TSourceNotebook(FaOwner).BookmarkSet(Command - ecToggleMarker0,true);
+    Manager.BookmarkSet(Command - ecToggleMarker0,true);
 
   end;
   //debugln('TSourceEditor.ProcessCommand B IdentCompletionTimer.AutoEnabled=',dbgs(SourceCompletionTimer.AutoEnabled));
@@ -2747,6 +2745,8 @@ Begin
       OnKeyDown := @EditorKeyDown;
       OnPaste:=@EditorPaste;
       OnEnter:=@EditorEnter;
+      OnPlaceBookmark := @EditorPlaceBookmark;
+      OnClearBookmark := @EditorClearBookmark;
       // IMPORTANT: when you change above, don't forget updating UnbindEditor
     end;
     if FCodeTemplates<>nil then
@@ -3230,6 +3230,18 @@ begin
   {$ENDIF}
 end;
 
+procedure TSourceEditor.EditorPlaceBookmark(Sender: TObject;
+  var Mark: TSynEditMark);
+begin
+  Project1.UnitWithEditorComponent(self).AddBookmark(Mark.Column, Mark.Line, Mark.BookmarkNumber);
+end;
+
+procedure TSourceEditor.EditorClearBookmark(Sender: TObject;
+  var Mark: TSynEditMark);
+begin
+  Project1.UnitWithEditorComponent(self).DeleteBookmark(Mark.BookmarkNumber);
+end;
+
 procedure TSourceEditor.EditorEnter(Sender: TObject);
 begin
   Activate;
@@ -3655,6 +3667,8 @@ begin
     OnMouseLink := nil;
     OnKeyDown := nil;
     OnEnter := nil;
+    OnPlaceBookmark := nil;
+    OnClearBookmark := nil;
   end;
   for i := 0 to EditorComponent.PluginCount - 1 do
     if EditorComponent.Plugin[i] is TSynPluginSyncronizedEditBase then begin
@@ -4845,7 +4859,8 @@ begin
     // bookmarks
     for BookMarkID:=0 to 9 do begin
       MarkDesc:=' '+IntToStr(BookMarkID);
-      MarkSrcEdit:=FindBookmark(BookMarkID);
+      MarkSrcEdit := TSourceEditor(
+        Project1.Bookmarks.EditorComponentForBookmarkWithIndex(BookMarkID));
       if (MarkSrcEdit<>nil)
       and MarkSrcEdit.EditorComponent.GetBookMark(BookMarkID,BookMarkX,BookMarkY)
       then begin
@@ -5047,11 +5062,11 @@ begin
   SrcEditMenuCopyFilename.OnClick:=@CopyFilenameClicked;
   for i:=0 to 9 do begin
     SrcEditSubMenuGotoBookmarks.FindByName('GotoBookmark'+IntToStr(i))
-                                           .OnClick:=@BookmarkGotoClicked;
+                                           .OnClick:=@Manager.BookmarkGotoClicked;
     SrcEditSubMenuToggleBookmarks.FindByName('ToggleBookmark'+IntToStr(i))
-                                            .OnClick:=@BookMarkToggleClicked;
+                                            .OnClick:=@Manager.BookMarkToggleClicked;
   end;
-  SrcEditMenuSetFreeBookmark.OnClick:=@BookMarkSetFreeClicked;
+  SrcEditMenuSetFreeBookmark.OnClick:=@Manager.BookMarkSetFreeClicked;
   SrcEditMenuNextBookmark.OnClick:=@BookMarkNextClicked;
   SrcEditMenuPrevBookmark.OnClick:=@BookMarkPrevClicked;
 
@@ -5867,29 +5882,6 @@ begin
   {$ENDIF}
 end;
 
-procedure TSourceNotebook.BookMarkToggleClicked(Sender: TObject);
-// popup menu: toggle bookmark clicked
-var
-  MenuItem: TIDEMenuItem;
-Begin
-  MenuItem := Sender as TIDEMenuItem;
-  BookMarkSet(MenuItem.SectionIndex,true);
-end;
-
-procedure TSourceNotebook.BookmarkSetFreeClicked(Sender: TObject);
-begin
-  BookMarkSetFree;
-end;
-
-Procedure TSourceNotebook.BookMarkGotoClicked(Sender: TObject);
-// popup menu goto bookmark clicked
-var
-  MenuItem: TIDEMenuItem;
-Begin
-  MenuItem := Sender as TIDEMenuItem;
-  GotoBookMark(MenuItem.SectionIndex);
-end;
-
 Procedure TSourceNotebook.ReadOnlyClicked(Sender: TObject);
 var ActEdit: TSourceEditor;
 begin
@@ -6096,12 +6088,6 @@ begin
   ControlDocker.ShowDockingEditor;
 end;
 
-{This is called from outside to toggle a bookmark}
-Procedure TSourceNotebook.ToggleBookmark(Value: Integer);
-Begin
-  BookMarkSet(Value,true);
-End;
-
 procedure TSourceNotebook.AddBreakpointClicked(Sender: TObject );
 var
   ASrcEdit: TSourceEditor;
@@ -6233,169 +6219,15 @@ begin
   ProcessParentCommand(Self,Command,AChar,nil,Handled);
 end;
 
-Procedure TSourceNotebook.BookMarkSet(Value: Integer; Toggle: boolean);
-var
-  ActEdit, AnEdit: TSourceEditor;
-  Cmd: TIDEMenuCommand;
-  OldX, OldY: integer;
-  NewXY: TPoint;
-  SetMark: Boolean;
-Begin
-  ActEdit:=GetActiveSE;
-  NewXY:=ActEdit.EditorComponent.CaretXY;
-
-  SetMark:=true;
-  AnEdit:=FindBookmark(Value);
-  if (AnEdit<>nil) and AnEdit.EditorComponent.GetBookMark(Value,OldX,OldY) then
-  begin
-    if (not Toggle) and (OldX=NewXY.X) and (OldY=NewXY.Y) then
-      exit;  // no change
-    AnEdit.EditorComponent.ClearBookMark(Value);
-    if Toggle and (OldY=NewXY.Y) then
-      SetMark:=false;
-  end;
-  if SetMark then
-    ActEdit.EditorComponent.SetBookMark(Value,NewXY.X,NewXY.Y);
-  Cmd:=SrcEditSubMenuToggleBookmarks[Value] as TIDEMenuCommand;
-  Cmd.Checked := SetMark;
-  if Project1<>nil then
-    Project1.SessionModified:=true;
-end;
-
-procedure TSourceNotebook.BookMarkSetFree;
-var
-  i: Integer;
-begin
-  for i:=0 to 9 do
-    if (FindBookmark(i)=nil) then begin
-      BookMarkSet(i);
-      exit;
-    end;
-end;
-
-{This is called from outside to set a bookmark}
-procedure TSourceNotebook.SetBookmark(Value: Integer);
-begin
-  BookMarkSet(Value);
-end;
-
-procedure TSourceNotebook.BookmarkGotoNext(GoForward: boolean);
-var
-  CurBookmarkID: Integer;
-  x: Integer;
-  y: Integer;
-  SrcEdit: TSourceEditor;
-  StartY: LongInt;
-  CurEditorComponent: TSynEdit;
-  StartEditorComponent: TSynEdit;
-  BestBookmarkID: Integer;
-  BestY: Integer;
-  CurPageIndex: Integer;
-  CurSrcEdit: TSourceEditor;
-  StartPageIndex: LongInt;
-  BetterFound: Boolean;
-  PageDistance: Integer;
-  BestPageDistance: Integer;
-begin
-  if Notebook=nil then exit;
-  SrcEdit:=GetActiveSE;
-  if SrcEdit=nil then exit;
-  // init best bookmark
-  BestBookmarkID:=-1;
-  BestY:=-1;
-  BestPageDistance:=-1;
-  // where is the cursor
-  StartPageIndex:=PageIndex;
-  StartEditorComponent:=SrcEdit.EditorComponent;
-  StartY:=StartEditorComponent.CaretY;
-  // go through all bookmarks
-  for CurPageIndex:=0 to PageCount-1 do begin
-    CurSrcEdit:=FindSourceEditorWithPageIndex(CurPageIndex);
-    CurEditorComponent:=CurSrcEdit.EditorComponent;
-    for CurBookmarkID:=0 to 9 do begin
-      if CurEditorComponent.GetBookmark(CurBookmarkID,x,y) then begin
-        if (CurPageIndex=StartPageIndex) and (y=StartY) then
-          continue;
-
-        // for GoForward=true we are searching the nearest bookmark down the
-        // current page, then the pages from left to right, starting at the
-        // current page. That means the lines above the cursor are the most
-        // far away.
-
-        // calculate the distance of pages between the current bookmark
-        // and the current page
-        PageDistance:=(StartPageIndex-CurPageIndex);
-        if GoForward then PageDistance:=-PageDistance;
-        if PageDistance<0 then
-          // for GoForward=true the pages on the left are farer than the pages
-          // on the right (and vice versus)
-          inc(PageDistance, PageCount);
-        if (PageDistance=0) then begin
-          // for GoForward=true the lines in front are farer than the pages
-          // on the left side
-          if (GoForward and (y<StartY))
-          or ((not GoForward) and (y>StartY)) then
-            inc(PageDistance, PageCount);
-        end;
-
-        BetterFound:=false;
-        if BestBookmarkID<0 then
-          BetterFound:=true
-        else if PageDistance<BestPageDistance then begin
-          BetterFound:=true;
-        end else if PageDistance=BestPageDistance then begin
-          if (GoForward and (y<BestY))
-          or ((not GoForward) and (y>BestY)) then
-            BetterFound:=true;
-        end;
-        //debugln('TSourceNotebook.BookmarkGotoNext GoForward=',dbgs(GoForward),
-        //  ' CurBookmarkID=',dbgs(CurBookmarkID),
-        //  ' PageDistance=',dbgs(PageDistance),' BestPageDistance='+dbgs(BestPageDistance),
-        //  ' y='+dbgs(y),' BestY='+dbgs(BestY),' StartY=',dbgs(StartY),
-        //  ' StartPageIndex='+dbgs(StartPageIndex),' CurPageIndex='+dbgs(CurPageIndex),
-        //  ' BetterFound='+dbgs(BetterFound));
-
-        if BetterFound then begin
-          // nearer bookmark found
-          BestBookmarkID:=CurBookmarkID;
-          BestY:=y;
-          BestPageDistance:=PageDistance;
-        end;
-      end;
-    end;
-  end;
-  if BestBookmarkID>=0 then
-    BookMarkGoto(BestBookmarkID);
-end;
-
-procedure TSourceNotebook.BookMarkGoto(Index: Integer);
-var
-  AnEditor:TSourceEditor;
-begin
-  if Notebook=nil then exit;
-  AnEditor:=FindBookmark(Index);
-  if AnEditor<>nil then begin
-    AnEditor.EditorComponent.GotoBookMark(Index);
-    AnEditor.CenterCursor;
-    PageIndex:=FindPageWithEditor(AnEditor);
-  end;
-end;
-
 procedure TSourceNotebook.BookMarkNextClicked(Sender: TObject);
 begin
-  BookmarkGotoNext(true);
+  Manager.BookmarkGotoNext(true);
 end;
 
 procedure TSourceNotebook.BookMarkPrevClicked(Sender: TObject);
 begin
-  BookmarkGotoNext(false);
+  Manager.BookmarkGotoNext(false);
 end;
-
-{This is called from outside to Go to a bookmark}
-Procedure TSourceNotebook.GoToBookmark(Value: Integer);
-begin
-  BookMarkGoTo(Value);
-End;
 
 function TSourceNotebook.NewFile(const NewShortName: String;
   ASource: TCodeBuffer; FocusIt: boolean): TSourceEditor;
@@ -6720,18 +6552,6 @@ begin
   UpdateFPDocEditor;
 End;
 
-function TSourceNotebook.FindBookmark(BookmarkID: integer): TSourceEditor;
-var i,x,y:integer;
-begin
-  for i:=0 to EditorCount-1 do begin
-    if Editors[i].EditorComponent.GetBookmark(BookMarkID,x,y) then begin
-      Result:=Editors[i];
-      exit;
-    end;
-  end;
-  Result:=nil;
-end;
-
 function TSourceNotebook.FindPageWithEditor(
   ASourceEditor: TSourceEditor):integer;
 var i:integer;
@@ -6879,7 +6699,7 @@ begin
     ToggleObjectInspClicked(Self);
 
   ecSetFreeBookmark:
-    BookMarkSetFree;
+    Manager.BookMarkSetFree;
 
   ecJumpBack:
     HistoryJump(Self,jhaBack);
@@ -7017,19 +6837,19 @@ Begin
 
     ecGotoMarker0..ecGotoMarker9:
       begin
-        BookMarkGoto(Command - ecGotoMarker0);
+        Manager.BookMarkGoto(Command - ecGotoMarker0);
         Key:=0;
       end;
 
     ecSetMarker0..ecSetMarker9:
       begin
-        BookMarkSet(Command - ecSetMarker0);
+        Manager.BookMarkSet(Command - ecSetMarker0);
         Key:=0;
       end;
 
     ecToggleMarker0..ecToggleMarker9:
       begin
-        BookMarkSet(Command - ecToggleMarker0,true);
+        Manager.BookMarkSet(Command - ecToggleMarker0,true);
         Key:=0;
       end;
 
@@ -7905,6 +7725,124 @@ var
 begin
   for i := FSourceWindowList.Count - 1 downto 0 do
     SourceWindows[i].ReloadHighlighters;
+end;
+
+procedure TSourceEditorManager.BookMarkSet(Value: Integer; Toggle: boolean);
+var
+  ActEdit, OldEdit: TSourceEditor;
+  Cmd: TIDEMenuCommand;
+  OldX, OldY: integer;
+  NewXY: TPoint;
+  SetMark: Boolean;
+Begin
+  ActEdit := ActiveEditor;
+  NewXY := ActEdit.EditorComponent.CaretXY;
+
+  SetMark:=true;
+  OldEdit := TSourceEditor(Project1.Bookmarks.EditorComponentForBookmarkWithIndex(Value));
+  if (OldEdit<>nil) and OldEdit.EditorComponent.GetBookMark(Value,OldX,OldY) then
+  begin
+    if (not Toggle) and (OldX=NewXY.X) and (OldY=NewXY.Y) then
+      exit;  // no change
+    OldEdit.EditorComponent.ClearBookMark(Value);
+    if Toggle and (OldY=NewXY.Y) then
+      SetMark:=false;
+  end;
+  if SetMark then
+    ActEdit.EditorComponent.SetBookMark(Value,NewXY.X,NewXY.Y);
+  Cmd:=SrcEditSubMenuToggleBookmarks[Value] as TIDEMenuCommand;
+  Cmd.Checked := SetMark;
+end;
+
+procedure TSourceEditorManager.BookMarkSetFree;
+var
+  i: Integer;
+begin
+  for i:=0 to 9 do
+    if (Project1.Bookmarks.BookmarkWithID(i) = nil) then begin
+      BookMarkSet(i);
+      exit;
+    end;
+end;
+
+procedure TSourceEditorManager.BookMarkSetFreeClicked(Sender: TObject);
+begin
+  BookMarkSetFree;
+end;
+
+procedure TSourceEditorManager.BookMarkToggleClicked(Sender: TObject);
+begin
+  BookMarkSet((Sender as TIDEMenuItem).SectionIndex,true);
+end;
+
+procedure TSourceEditorManager.BookMarkGoTo(Index: Integer);
+var
+  AnEditor:TSourceEditor;
+begin
+  AnEditor := TSourceEditor(Project1.Bookmarks.EditorComponentForBookmarkWithIndex(Index));
+  if AnEditor = nil then exit;
+  ActiveEditor := AnEditor;
+  AnEditor.EditorComponent.GotoBookMark(Index);
+  AnEditor.CenterCursor;
+end;
+
+procedure TSourceEditorManager.BookMarkGotoClicked(Sender: TObject);
+begin
+  BookmarkGoTo((Sender as TIDEMenuItem).SectionIndex);
+end;
+
+function CompareBookmarkEditorPos(Mark1, Mark2: TProjectBookmark): integer;
+var
+  Ed1, Ed2: TSourceEditor;
+begin
+  Ed1 := TSourceEditor(Mark1.EditorComponent);
+  Ed2 := TSourceEditor(Mark2.EditorComponent);
+  Result := SourceEditorManager.IndexOfSourceWindow(Ed1.SourceNotebook) -
+    SourceEditorManager.IndexOfSourceWindow(Ed2.SourceNotebook);
+  if Result = 0 then
+    Result := Ed1.PageIndex - Ed2.PageIndex;
+  if Result = 0 then
+    Result := Mark1.CursorPos.y - Mark2.CursorPos.y;
+  if Result = 0 then
+    Result := Mark1.CursorPos.x - Mark2.CursorPos.x;
+end;
+
+procedure TSourceEditorManager.BookMarkGotoNext(GoForward: boolean);
+var
+  SrcEdit: TSourceEditor;
+  List: TFPList;
+  i: Integer;
+  BestBookmarkID: Integer;
+  CurPos: TProjectBookmark;
+begin
+  if Project1.Bookmarks.Count = 0 then exit;
+  SrcEdit := ActiveEditor;
+  if SrcEdit = nil then exit;
+
+  i := 0;
+  if GoForward then i := MaxInt;
+  List := TFPList.Create;
+  CurPos := TProjectBookmark.Create(i, SrcEdit.EditorComponent.CaretY, -1, SrcEdit);
+  try
+    for i := 0 to Project1.Bookmarks.Count - 1 do
+      List.Add(Project1.Bookmarks[i]);
+    List.Add(CurPos);
+    List.Sort(TListSortCompare(@CompareBookmarkEditorPos));
+
+    i := List.IndexOf(CurPos);
+    if GoForward then
+      inc(i)
+    else
+      dec(i);
+    if i < 0 then i := List.Count - 1;
+    if i >= List.Count then i := 0;
+
+    BestBookmarkID := TProjectBookmark(List[i]).ID;
+  finally
+    CurPos.Free;
+    List.Free;
+  end;
+  BookMarkGoto(BestBookmarkID);
 end;
 
 constructor TSourceEditorManager.Create(AOwner: TComponent);
