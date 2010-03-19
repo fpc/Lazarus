@@ -30,14 +30,14 @@ end;
 procedure TScrollingWinControl.CreateWnd;
 begin
   {$IFNDEF OldAutoSize}
-  DisableAutoSizing;
+  DisableAutoSizing{$IFDEF DebugDisableAutoSizing}('TScrollingWinControl.CreateWnd'){$ENDIF};
   try
   {$ENDIF}
     inherited CreateWnd;
     UpdateScrollBars;
   {$IFNDEF OldAutoSize}
   finally
-    EnableAutoSizing;
+    EnableAutoSizing{$IFDEF DebugDisableAutoSizing}('TScrollingWinControl.CreateWnd'){$ENDIF};
   end;
   {$ENDIF}
 end;

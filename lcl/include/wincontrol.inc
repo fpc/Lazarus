@@ -3325,7 +3325,7 @@ begin
   end;
   {$ENDIF}
 
-  DisableAutoSizing;
+  DisableAutoSizing{$IFDEF DebugDisableAutoSizing}('TWinControl.DoAutoSize'){$ENDIF};
   {$IFDEF OldAutoSize}
   // obsolete
   DisableAlign;
@@ -3422,7 +3422,7 @@ begin
     end;
   finally
     Exclude(FControlFlags,cfAutoSizeNeeded);
-    EnableAutoSizing;
+    EnableAutoSizing{$IFDEF DebugDisableAutoSizing}('TWinControl.DoAutoSize'){$ENDIF};
     {$IFDEF OldAutoSize}
     // obsolete
     EnableAlign;
@@ -3577,7 +3577,7 @@ begin
   Inc(FAlignLevel);
   //DebugLn(['TWinControl.DisableAlign ',dbgsName(Self),' ',FAlignLevel]);
   {$ELSE}
-  DisableAutoSizing;
+  DisableAutoSizing{$IFDEF DebugDisableAutoSizing}('TWinControl.DisableAlign'){$ENDIF};
   {$ENDIF}
 end;
 
@@ -3710,7 +3710,7 @@ begin
       ReAlign;
   end;
   {$ELSE}
-  EnableAutoSizing;
+  EnableAutoSizing{$IFDEF DebugDisableAutoSizing}('TWinControl.DisableAlign'){$ENDIF};
   {$ENDIF}
 end;
 
@@ -5842,8 +5842,8 @@ begin
   if AControl.FAutoSizingLockCount>0 then
   begin
     // the AControl has disabled autosizing => disable it for the parent=self too
-    //DebugLn(['TWinControl.Insert ',DbgSName(Self),' Control=',DbgSName(AControl),' disable Parent']);
-    DisableAutoSizing;
+    //DebugLn([Space(FAutoSizingLockCount*2+2),'TWinControl.Insert ',DbgSName(Self),' Control=',DbgSName(AControl),' disable Parent']);
+    DisableAutoSizing{$IFDEF DebugDisableAutoSizing}('TControl.DisableAutoSizing'){$ENDIF};
   end;
   {$ENDIF}
 end;
@@ -5892,8 +5892,8 @@ begin
     begin
       // AControl has disabled autosizing and thus for its parent=Self too
       // end disable autosize for parent=self
-      //DebugLn(['TWinControl.Remove ',DbgSName(Self),' Control=',DbgSName(AControl),' enable Parent']);
-      EnableAutoSizing;
+      //DebugLn([Space(FAutoSizingLockCount*2),'TWinControl.Remove ',DbgSName(Self),' Control=',DbgSName(AControl),' enable Parent']);
+      EnableAutoSizing{$IFDEF DebugDisableAutoSizing}('TControl.DisableAutoSizing'){$ENDIF};
     end;
     {$ENDIF}
   end;
@@ -5998,7 +5998,7 @@ end;
 procedure TWinControl.InsertControl(AControl: TControl; Index: integer);
 begin
   {$IFNDEF OldAutoSize}
-  DisableAutoSizing;
+  DisableAutoSizing{$IFDEF DebugDisableAutoSizing}('TWinControl.InsertControl'){$ENDIF};
   try
   {$ENDIF}
     AControl.ValidateContainer(Self);
@@ -6026,7 +6026,7 @@ begin
     Perform(CM_CONTROLCHANGE, WParam(AControl), LParam(True));
   {$IFNDEF OldAutoSize}
   finally
-    EnableAutoSizing;
+    EnableAutoSizing{$IFDEF DebugDisableAutoSizing}('TWinControl.InsertControl'){$ENDIF};
   end;
   {$ENDIF}
   //debugln(['TWinControl.InsertControl ',DbgSName(Self),' ',csDesigning in ComponentState,' ',DbgSName(AControl),' ',csDesigning in AControl.ComponentState]);
@@ -6040,7 +6040,7 @@ var
   AWinControl: TWinControl;
 begin
   {$IFNDEF OldAutoSize}
-  DisableAutoSizing;
+  DisableAutoSizing{$IFDEF DebugDisableAutoSizing}('TWinControl.RemoveControl'){$ENDIF};
   try
   {$ENDIF}
     Perform(CM_CONTROLCHANGE, WParam(AControl), LParam(False));
@@ -6072,7 +6072,7 @@ begin
     end;
   {$IFNDEF OldAutoSize}
   finally
-    EnableAutoSizing;
+    EnableAutoSizing{$IFDEF DebugDisableAutoSizing}('TWinControl.RemoveControl'){$ENDIF};
   end;
   {$ENDIF}
 end;
@@ -7045,7 +7045,7 @@ begin
   // obsolete
   DisableAlign;
   {$ENDIF}
-  DisableAutoSizing;
+  DisableAutoSizing{$IFDEF DebugDisableAutoSizing}('TWinControl.CreateWnd'){$ENDIF};
   try
     {$IFNDEF OldAutoSize}
     if (Parent<>nil) and (not Parent.HandleAllocated) then
@@ -7132,7 +7132,7 @@ begin
     {$ENDIF}
   finally
     //DebugLn(['TWinControl.CreateWnd ',DbgSName(Self)]);
-    EnableAutoSizing;
+    EnableAutoSizing{$IFDEF DebugDisableAutoSizing}('TWinControl.CreateWnd'){$ENDIF};
     {$IFDEF OldAutoSize}
     // obsolete
     EnableAlign;
@@ -7165,7 +7165,7 @@ begin
   {$IFDEF OldAutoSize}
   DisableAlign;
   {$ENDIF}
-  DisableAutoSizing;
+  DisableAutoSizing{$IFDEF DebugDisableAutoSizing}('TWinControl.InitializeWnd'){$ENDIF};
   try
     {$IFDEF CHECK_POSITION}
     if CheckPosition(Self) then
@@ -7207,7 +7207,7 @@ begin
     then TWSWinControlClass(WidgetSetClass).SetCursor(Self, Screen.Cursors[crDefault])
     else TWSWinControlClass(WidgetSetClass).SetCursor(Self, Screen.Cursors[Cursor]);
   finally
-    EnableAutoSizing;
+    EnableAutoSizing{$IFDEF DebugDisableAutoSizing}('TWinControl.InitializeWnd'){$ENDIF};
     {$IFDEF OldAutoSize}
     EnableAlign;
     {$ENDIF}
@@ -7299,7 +7299,7 @@ begin
   {$ELSE}
   //DebugLn(['TWinControl.Loaded START ',DbgSName(Self),' cfWidthLoaded=',cfWidthLoaded in FControlFlags,' cfHeightLoaded=',cfHeightLoaded in FControlFlags,' ']);
   {$ENDIF}
-  DisableAutoSizing;
+  DisableAutoSizing{$IFDEF DebugDisableAutoSizing}('TWinControl.Loaded'){$ENDIF};
   try
     //DebugLn(['TWinControl.Loaded ',DbgSName(Self),' cfWidthLoaded=',cfWidthLoaded in FControlFlags,' cfHeightLoaded=',cfHeightLoaded in FControlFlags,' ']);
     if cfClientWidthLoaded in FControlFlags then
@@ -7367,7 +7367,7 @@ begin
     {$IFNDEF OldAutoSize}
     //DebugLn(['TWinControl.Loaded enableautosizing ',DbgSName(Self),' ',dbgs(BoundsRect)]);
     {$ENDIF}
-    EnableAutoSizing;
+    EnableAutoSizing{$IFDEF DebugDisableAutoSizing}('TWinControl.Loaded'){$ENDIF};
     {$IFDEF OldAutoSize}
     // obsolete
     EnableAlign;
@@ -7401,7 +7401,7 @@ begin
   begin
     //DebugLn(['TWinControl.DestroyWnd ',DbgSName(Self)]);
     {$IFNDEF OldAutoSize}
-    DisableAutoSizing;
+    DisableAutoSizing{$IFDEF DebugDisableAutoSizing}('TWinControl.DestroyWnd'){$ENDIF};
     try
     {$ENDIF}
       FinalizeWnd;
@@ -7418,7 +7418,7 @@ begin
       FWinControlFlags := FWinControlFlags + [wcfColorChanged, wcfFontChanged];
     {$IFNDEF OldAutoSize}
     finally
-      EnableAutoSizing;
+      EnableAutoSizing{$IFDEF DebugDisableAutoSizing}('TWinControl.DestroyWnd'){$ENDIF};
     end;
     {$ENDIF}
   end;
@@ -7673,7 +7673,7 @@ begin
     {$IFDEF OldAutoSize}
     LockRealizeBounds;
     {$ELSE}
-    DisableAutoSizing;
+    DisableAutoSizing{$IFDEF DebugDisableAutoSizing}('TWinControl.SetBounds'){$ENDIF};
     {$ENDIF}
     try
       {$IFDEF CHECK_POSITION}
@@ -7690,7 +7690,7 @@ begin
       {$IFDEF OldAutoSize}
       UnlockRealizeBounds;
       {$ELSE}
-      EnableAutoSizing;
+      EnableAutoSizing{$IFDEF DebugDisableAutoSizing}('TWinControl.SetBounds'){$ENDIF};
       {$ENDIF}
     end;
   end;

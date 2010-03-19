@@ -100,7 +100,7 @@ begin
   if not (csDestroying in ComponentState) then GlobalNameSpace.BeginWrite;
   try
     {$IFNDEF OldAutoSize}
-    DisableAutoSizing;
+    DisableAutoSizing{$IFDEF DebugDisableAutoSizing}('TCustomForm.Destroy'){$ENDIF};
     {$ENDIF}
     FreeThenNil(FIcon);
     FreeIconHandles;
@@ -858,7 +858,7 @@ begin
     FormEndUpdated;
     Visible:=(fsVisible in FFormState);
     {$IFNDEF OldAutoSize}
-    EnableAutoSizing;
+    EnableAutoSizing{$IFDEF DebugDisableAutoSizing}('TCustomForm.BeginFormUpdate'){$ENDIF};
     {$ENDIF}
   end;
 end;
@@ -1367,6 +1367,7 @@ var
   I: Integer;
 begin
   if (csDesigning in ComponentState) or (not Showing) then exit;
+  {$IFDEF DebugDisableAutoSizing}WriteAutoSizeReasons;{$ENDIF}
   // update this form
   InitiateAction;
   // update main menu's top-most items
@@ -2241,7 +2242,7 @@ begin
   inc(FFormUpdateCount);
   {$IFNDEF OldAutoSize}
   if FFormUpdateCount=1 then
-    DisableAutoSizing;
+    DisableAutoSizing{$IFDEF DebugDisableAutoSizing}('TCustomForm.BeginFormUpdate'){$ENDIF};
   {$ENDIF}
 end;
 

@@ -862,6 +862,9 @@ type
     FAnchorSides: array[TAnchorKind] of TAnchorSide;
     FAnchoredControls: TFPList; // list of TControl anchored to this control
     FAutoSizingLockCount: Integer; // in/decreased by DisableAutoSizing/EnableAutoSizing
+    {$IFDEF DebugDisableAutoSizing}
+    FAutoSizingLockReasons: TStrings;
+    {$ENDIF}
     FBaseBounds: TRect;
     FBaseBoundsLock: integer;
     FBaseParentClientSize: TPoint;
@@ -1295,8 +1298,11 @@ type
     procedure CNPreferredSizeChanged;
     procedure InvalidatePreferredSize; virtual;
     function GetAnchorsDependingOnParent(WithNormalAnchors: Boolean): TAnchors;
-    procedure DisableAutoSizing;
-    procedure EnableAutoSizing;
+    procedure DisableAutoSizing{$IFDEF DebugDisableAutoSizing}(const Reason: string){$ENDIF};
+    procedure EnableAutoSizing{$IFDEF DebugDisableAutoSizing}(const Reason: string){$ENDIF};
+    {$IFDEF DebugDisableAutoSizing}
+    procedure WriteAutoSizeReasons;
+    {$ENDIF}
     procedure UpdateBaseBounds(StoreBounds, StoreParentClientSize,
                                UseLoadedValues: boolean); virtual;
     {$IFDEF OldAutoSize}

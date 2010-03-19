@@ -3071,11 +3071,11 @@ procedure TControl.Loaded;
     // all components on the form finished loading
     ClearLoadingFlags(TopParent);
     // call LoadedAll
-    DisableAutoSizing;
+    DisableAutoSizing{$IFDEF DebugDisableAutoSizing}('TControl.Loaded.CheckLoading'){$ENDIF};
     try
       AControl.LoadedAll;
     finally
-      EnableAutoSizing;
+      EnableAutoSizing{$IFDEF DebugDisableAutoSizing}('TControl.Loaded.CheckLoading'){$ENDIF};
     end;
   end;
   {$ENDIF}
@@ -3201,13 +3201,13 @@ procedure TControl.ReadState(Reader: TReader);
 begin
   {$IFNDEF OldAutoSize}
   Include(FControlFlags,cfLoading);
-  DisableAutoSizing;
+  DisableAutoSizing{$IFDEF DebugDisableAutoSizing}('TControl.ReadState'){$ENDIF};
   try
   {$ENDIF}
     inherited ReadState(Reader);
   {$IFNDEF OldAutoSize}
   finally
-    EnableAutoSizing;
+    EnableAutoSizing{$IFDEF DebugDisableAutoSizing}('TControl.ReadState'){$ENDIF};
   end;
   {$ENDIF}
 end;
@@ -3550,7 +3550,7 @@ procedure TControl.SetParent(NewParent: TWinControl);
 begin
   if FParent = NewParent then exit;
   {$IFNDEF OldAutoSize}
-  DisableAutoSizing;
+  DisableAutoSizing{$IFDEF DebugDisableAutoSizing}('TControl.SetParent'){$ENDIF};
   try
   {$ENDIF}
     CheckNewParent(NewParent);
@@ -3563,7 +3563,7 @@ begin
     if NewParent <> nil then NewParent.InsertControl(Self);
   {$IFNDEF OldAutoSize}
   finally
-    EnableAutoSizing;
+    EnableAutoSizing{$IFDEF DebugDisableAutoSizing}('TControl.SetParent'){$ENDIF};
   end;
   {$ENDIF}
 end;
@@ -3736,7 +3736,7 @@ begin
   begin
     //DebugLn(['TControl.SetVisible ',DbgSName(Self),' NewVisible=',Value]);
     {$IFNDEF OldAutoSize}
-    DisableAutoSizing;
+    DisableAutoSizing{$IFDEF DebugDisableAutoSizing}('TControl.SetVisible'){$ENDIF};
     try
     {$ENDIF}
       VisibleChanging;
@@ -3791,7 +3791,7 @@ begin
       end;
     {$IFNDEF OldAutoSize}
     finally
-      EnableAutoSizing;
+      EnableAutoSizing{$IFDEF DebugDisableAutoSizing}('TControl.SetVisible'){$ENDIF};
     end;
     {$ENDIF}
   end;
@@ -4296,6 +4296,9 @@ begin
   //DebugLn('[TControl.Destroy] END ',DbgSName(Self));
   for HandlerType := Low(TControlHandlerType) to High(TControlHandlerType) do
     FreeThenNil(FControlHandlers[HandlerType]);
+  {$IFDEF DebugDisableAutoSizing}
+  FreeAndNil(FAutoSizingLockReasons);
+  {$ENDIF}
 end;
 
 {------------------------------------------------------------------------------
@@ -4310,7 +4313,7 @@ var
   Side: TAnchorKind;
 begin
   {$IFNDEF OldAutoSize}
-  DisableAutoSizing;
+  DisableAutoSizing{$IFDEF DebugDisableAutoSizing}('TControl.Create'){$ENDIF};
   try
   {$ENDIF}
     //if AnsiCompareText(ClassName,'TSpeedButton')=0 then
@@ -4348,7 +4351,7 @@ begin
     //DebugLn('TControl.Create END ',Name,':',ClassName);
   {$IFNDEF OldAutoSize}
   finally
-    EnableAutoSizing;
+    EnableAutoSizing{$IFDEF DebugDisableAutoSizing}('TControl.Create'){$ENDIF};
   end;
   {$ENDIF}
 end;
@@ -4832,25 +4835,31 @@ begin
   end;
 end;
 
-procedure TControl.DisableAutoSizing;
+procedure TControl.DisableAutoSizing
+  {$IFDEF DebugDisableAutoSizing}(const Reason: string){$ENDIF};
 begin
   {$IFDEF OldAutoSize}
   inc(FAutoSizingLockCount);
   {$ELSE}
   inc(FAutoSizingLockCount);
+  {$IFDEF DebugDisableAutoSizing}
+  if FAutoSizingLockReasons=nil then FAutoSizingLockReasons:=TStringList.Create;
+  FAutoSizingLockReasons.Add(Reason);
+  {$ENDIF}
   //DebugLn([Space(FAutoSizingLockCount*2),'TControl.DisableAutoSizing ',DbgSName(Self),' ',FAutoSizingLockCount]);
   if FAutoSizingLockCount=1 then
   begin
     if Parent<>nil then
     begin
       //DebugLn([Space(FAutoSizingLockCount*2),'TControl.DisableAutoSizing ',DbgSName(Self),' disable Parent=',DbgSName(Parent)]);
-      Parent.DisableAutoSizing;
+      Parent.DisableAutoSizing{$IFDEF DebugDisableAutoSizing}('TControl.DisableAutoSizing'){$ENDIF};
     end;
   end;
   {$ENDIF}
 end;
 
-procedure TControl.EnableAutoSizing;
+procedure TControl.EnableAutoSizing
+  {$IFDEF DebugDisableAutoSizing}(const Reason: string){$ENDIF};
 
   {$IFDEF OldAutoSize}
   procedure AdjustSizeRecursive(AControl: TControl);
@@ -4869,13 +4878,35 @@ procedure TControl.EnableAutoSizing;
   end;
   {$ENDIF}
 
+  {$IFDEF DebugDisableAutoSizing}
+  procedure CheckReason;
+  var
+    i: Integer;
+  begin
+    i:=FAutoSizingLockReasons.Count-1;
+    while i>=0 do begin
+      if FAutoSizingLockReasons[i]=Reason then begin
+        FAutoSizingLockReasons.Delete(i);
+        exit;
+      end;
+      dec(i);
+    end;
+    RaiseGDBException('TControl.EnableAutoSizing never disabled with reason: '+Reason);
+  end;
+  {$ENDIF}
+
 begin
+  {$IFDEF DebugDisableAutoSizing}
+  CheckReason;
+  {$ENDIF}
+
   if FAutoSizingLockCount<=0 then RaiseGDBException('TControl.EnableAutoSizing');
   {$IFDEF OldAutoSize}
   dec(FAutoSizingLockCount);
   if FAutoSizingLockCount=0 then
     AdjustSizeRecursive(Self);
   {$ELSE}
+
   dec(FAutoSizingLockCount);
   //DebugLn([Space(FAutoSizingLockCount*2),'TControl.EnableAutoSizing ',DbgSName(Self),' ',FAutoSizingLockCount]);
   if (FAutoSizingLockCount=0) then
@@ -4883,12 +4914,20 @@ begin
     if (Parent<>nil) then
     begin
       //DebugLn([Space(FAutoSizingLockCount*2),'TControl.EnableAutoSizing ',DbgSName(Self),' enable Parent ',DbgSName(Parent)]);
-      Parent.EnableAutoSizing;
+      Parent.EnableAutoSizing{$IFDEF DebugDisableAutoSizing}('TControl.DisableAutoSizing'){$ENDIF};
     end else
       DoAllAutoSize;
   end;
   {$ENDIF}
 end;
+
+{$IFDEF DebugDisableAutoSizing}
+procedure TControl.WriteAutoSizeReasons;
+begin
+  DebugLn(['TControl.WriteAutoSizeReasons ',DbgSName(Self)]);
+  debugln(FAutoSizingLockReasons.Text);
+end;
+{$ENDIF}
 
 procedure TControl.EndAutoSizing;
   procedure Error;

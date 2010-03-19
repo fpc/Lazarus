@@ -1262,7 +1262,7 @@ begin
 
   // menu
   {$IFNDEF OldAutoSize}
-  MainIDEBar.DisableAutoSizing;
+  MainIDEBar.DisableAutoSizing{$IFDEF DebugDisableAutoSizing}('TMainIDE.Create'){$ENDIF};
   try
   {$ENDIF}
     SetupStandardIDEMenuItems;
@@ -1272,7 +1272,7 @@ begin
     ConnectMainBarEvents;
   {$IFNDEF OldAutoSize}
   finally
-    MainIDEBar.EnableAutoSizing;
+    MainIDEBar.EnableAutoSizing{$IFDEF DebugDisableAutoSizing}('TMainIDE.Create'){$ENDIF};
   end;
   {$ENDIF}
   {$IFDEF IDE_MEM_CHECK}CheckHeapWrtMemCnt('TMainIDE.Create MENU');{$ENDIF}
@@ -1342,7 +1342,7 @@ begin
 
   DebugLn('[TMainIDE.Destroy] A ');
   {$IFDEF IDE_MEM_CHECK}CheckHeapWrtMemCnt('TMainIDE.Destroy A ');{$ENDIF}
-  MainIDEBar.DisableAutoSizing;
+  MainIDEBar.DisableAutoSizing{$IFDEF DebugDisableAutoSizing}('TMainIDE.Destroy'){$ENDIF};
 
   if DebugBoss<>nil then DebugBoss.EndDebugging;
 

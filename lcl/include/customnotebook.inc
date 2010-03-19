@@ -591,7 +591,7 @@ end;
 procedure TCustomNoteBook.AddRemovePageHandle(APage: TCustomPage);
 begin
   {$IFNDEF OldAutoSize}
-  DisableAutoSizing;
+  DisableAutoSizing{$IFDEF DebugDisableAutoSizing}('TCustomNoteBook.AddRemovePageHandle'){$ENDIF};
   try
   {$ENDIF}
     if (not (csDestroying in APage.ComponentState))
@@ -622,7 +622,7 @@ begin
     end;
   {$IFNDEF OldAutoSize}
   finally
-    EnableAutoSizing;
+    EnableAutoSizing{$IFDEF DebugDisableAutoSizing}('TCustomNoteBook.AddRemovePageHandle'){$ENDIF};
   end;
   {$ENDIF}
 end;

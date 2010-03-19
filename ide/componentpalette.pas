@@ -457,7 +457,7 @@ var
   MaxBtnPerRow: Integer;
 begin
   if FNoteBook<>nil then
-    NoteBook.DisableAutoSizing;
+    NoteBook.DisableAutoSizing{$IFDEF DebugDisableAutoSizing}('TComponentPalette.ReAlignButtons'){$ENDIF};
   try
     ButtonCount:=0;
     // skip the first control (this is the selection tool (TSpeedButton))
@@ -487,7 +487,7 @@ begin
     end;
   finally
     if NoteBook<>nil then
-      NoteBook.EnableAutoSizing;
+      NoteBook.EnableAutoSizing{$IFDEF DebugDisableAutoSizing}('TComponentPalette.ReAlignButtons'){$ENDIF};
   end;
 end;
 
@@ -660,11 +660,11 @@ end;
 
 procedure TComponentPalette.ShowHideControls(Show: boolean);
 begin
-  NoteBook.DisableAutoSizing;
+  NoteBook.DisableAutoSizing{$IFDEF DebugDisableAutoSizing}('TComponentPalette.ShowHideControls'){$ENDIF};
   try
     inherited ShowHideControls(Show);
   finally
-    NoteBook.EnableAutoSizing;
+    NoteBook.EnableAutoSizing{$IFDEF DebugDisableAutoSizing}('TComponentPalette.ShowHideControls'){$ENDIF};
   end;
 end;
 

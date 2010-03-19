@@ -3769,7 +3769,7 @@ destructor TSourceNotebook.Destroy;
 var
   i: integer;
 begin
-  DisableAutoSizing;
+  DisableAutoSizing{$IFDEF DebugDisableAutoSizing}('TSourceNotebook.Destroy'){$ENDIF};
   FProcessingCommand:=false;
   for i:=FSourceEditorList.Count-1 downto 0 do
     Editors[i].Free;
@@ -6405,7 +6405,7 @@ Begin
   writeln('[TSourceNotebook.NewFile] A ');
   {$ENDIF}
   {$IFNDEF OldAutoSize}
-  DisableAutoSizing;
+  DisableAutoSizing{$IFDEF DebugDisableAutoSizing}('TSourceNotebook.NewFile'){$ENDIF};
   try
   {$ENDIF}
     Visible:=true;
@@ -6422,7 +6422,7 @@ Begin
     UpdateProjectFiles;
   {$IFNDEF OldAutoSize}
   finally
-    EnableAutoSizing;
+    EnableAutoSizing{$IFDEF DebugDisableAutoSizing}('TSourceNotebook.NewFile'){$ENDIF};
   end;
   {$ENDIF}
   if FocusIt then FocusEditor;
@@ -6443,7 +6443,7 @@ begin
   if TempEditor=nil then exit;
   //debugln(['TSourceNotebook.CloseFile ',TempEditor.FileName,' ',TempEditor.APageIndex]);
   {$IFNDEF OldAutoSize}
-  DisableAutoSizing;
+  DisableAutoSizing{$IFDEF DebugDisableAutoSizing}('TSourceNotebook.CloseFile'){$ENDIF};
   try
   {$ENDIF}
     Visible:=true;
@@ -6482,7 +6482,7 @@ begin
     end;
   {$IFNDEF OldAutoSize}
   finally
-    EnableAutoSizing;
+    EnableAutoSizing{$IFDEF DebugDisableAutoSizing}('TSourceNotebook.CloseFile'){$ENDIF};
   end;
   {$ENDIF}
   if (TempEditor <> nil) then
