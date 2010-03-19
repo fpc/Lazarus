@@ -143,6 +143,7 @@ type
     destructor Destroy; override;
     function GetContainerWidget: QWidgetH; virtual;
     procedure Release; override;
+    procedure Destroyed; cdecl; override;
   public
     function CanSendLCLMessage: Boolean;
     function CanPaintBackground: Boolean; virtual;
@@ -699,9 +700,10 @@ type
     function CreateWidget(const AParams: TCreateParams):QWidgetH; override;
   public
     destructor Destroy; override;
+    procedure DestroyNotify(AWidget: TQtWidget); override;
     procedure AttachEvents; override;
     procedure DetachEvents; override;
-    
+
     function EventFilter(Sender: QObjectH; Event: QEventH): Boolean; cdecl; override;
     procedure SignalCurrentChanged(Index: Integer); cdecl;
     procedure SignalCloseRequested(Index: Integer); cdecl;
@@ -1628,6 +1630,12 @@ begin
   inherited Release;
 end;
 
+procedure TQtWidget.Destroyed; cdecl;
+begin
+  Widget := nil;
+  Release;
+end;
+
 {------------------------------------------------------------------------------
   Function: TQtWidget.CanSendLCLMessage
   Params:  None
@@ -2032,13 +2040,11 @@ begin
   {$ifdef VerboseQt}
     WriteLn('TQtWidget.SlotDestroy');
   {$endif}
-  Widget := nil;
-  
+
   FillChar(Msg, SizeOf(Msg), #0);
-
   Msg.Msg := LM_DESTROY;
-
   DeliverMessage(Msg);
+  Release;
 end;
 
 function TQtWidget.slotDropFiles(Sender: QObjectH; Event: QEventH): Boolean;
@@ -6084,6 +6090,7 @@ begin
     {$note TQtTabWidget.getTabBar: we can remove QLCLTabWidget, and get it like StackWidget,
      objectName is qt_tabwidget_tabbar.}
     FTabBar := TQtTabBar.CreateFrom(LCLObject, QLCLTabWidget_tabBarHandle(QTabWidgetH(Widget)));
+    FTabBar.FOwner := Self;
     FTabBar.AttachEvents;
   end;
   Result := FTabBar;
@@ -6152,6 +6159,13 @@ destructor TQtTabWidget.Destroy;
 begin
   FTabBar.Free;
   inherited Destroy;
+end;
+
+procedure TQtTabWidget.DestroyNotify(AWidget: TQtWidget);
+begin
+  if AWidget = FTabBar then
+    FTabBar := nil;
+  inherited DestroyNotify(AWidget);
 end;
 
 function TQtTabWidget.GetLCLPageIndex(AIndex: Integer): Integer;

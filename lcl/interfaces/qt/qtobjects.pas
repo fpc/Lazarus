@@ -51,6 +51,7 @@ type
   public
     FDeleteLater: Boolean;
     FEventHook: QObject_hookH;
+    FDestroyedHook: QObject_hookH;
     TheObject: QObjectH;
     constructor Create; virtual; overload;
     destructor Destroy; override;
@@ -59,6 +60,7 @@ type
     procedure AttachEvents; virtual;
     procedure DetachEvents; virtual;
     function EventFilter(Sender: QObjectH; Event: QEventH): Boolean; cdecl; virtual; abstract;
+    procedure Destroyed; cdecl; virtual;
     procedure BeginEventProcessing;
     procedure EndEventProcessing;
     function InEvent: Boolean;
@@ -835,6 +837,8 @@ procedure TQtObject.AttachEvents;
 begin
   FEventHook := QObject_hook_create(TheObject);
   QObject_hook_hook_events(FEventHook, @EventFilter);
+  FDestroyedHook := QObject_hook_create(TheObject);
+  QObject_hook_hook_destroyed(FDestroyedHook, @Destroyed);
 end;
 
 procedure TQtObject.DetachEvents;
@@ -844,6 +848,15 @@ begin
     QObject_hook_destroy(FEventHook);
     FEventHook := nil;
   end;
+  if FDestroyedHook <> nil then
+  begin
+    QObject_hook_destroy(FDestroyedHook);
+    FDestroyedHook := nil;
+  end;
+end;
+
+procedure TQtObject.Destroyed; cdecl;
+begin
 end;
 
 procedure TQtObject.BeginEventProcessing;
