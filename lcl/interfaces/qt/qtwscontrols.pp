@@ -287,9 +287,17 @@ begin
 end;
 
 class procedure TQtWSWinControl.AddControl(const AControl: TControl);
+var
+  Child: TQtWidget;
+  Parent: TQtWidget;
 begin
   if (AControl is TWinControl) and (TWinControl(AControl).HandleAllocated) then
-    TQtWidget(TWinControl(AControl).Handle).setParent(TQtWidget(AControl.Parent.Handle).GetContainerWidget);
+  begin
+    Child := TQtWidget(TWinControl(AControl).Handle);
+    Parent := TQtWidget(AControl.Parent.Handle);
+    if Child.getParent <> Parent.GetContainerWidget then
+      Child.setParent(Parent.GetContainerWidget);
+  end;
 end;
 
 class function TQtWSWinControl.GetClientBounds(const AWincontrol: TWinControl;
