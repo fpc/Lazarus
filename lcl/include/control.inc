@@ -4922,8 +4922,9 @@ begin
 end;
 
 {$IFDEF DebugDisableAutoSizing}
-procedure TControl.WriteAutoSizeReasons;
+procedure TControl.WriteAutoSizeReasons(NotIfEmpty: boolean);
 begin
+  if NotIfEmpty and (FAutoSizingLockReasons.Count=0) then exit;
   DebugLn(['TControl.WriteAutoSizeReasons ',DbgSName(Self)]);
   debugln(FAutoSizingLockReasons.Text);
 end;

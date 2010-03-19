@@ -1367,7 +1367,7 @@ var
   I: Integer;
 begin
   if (csDesigning in ComponentState) or (not Showing) then exit;
-  {$IFDEF DebugDisableAutoSizing}WriteAutoSizeReasons;{$ENDIF}
+  {$IFDEF DebugDisableAutoSizing}WriteAutoSizeReasons(true);{$ENDIF}
   // update this form
   InitiateAction;
   // update main menu's top-most items

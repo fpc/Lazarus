@@ -1301,7 +1301,7 @@ type
     procedure DisableAutoSizing{$IFDEF DebugDisableAutoSizing}(const Reason: string){$ENDIF};
     procedure EnableAutoSizing{$IFDEF DebugDisableAutoSizing}(const Reason: string){$ENDIF};
     {$IFDEF DebugDisableAutoSizing}
-    procedure WriteAutoSizeReasons;
+    procedure WriteAutoSizeReasons(NotIfEmpty: boolean);
     {$ENDIF}
     procedure UpdateBaseBounds(StoreBounds, StoreParentClientSize,
                                UseLoadedValues: boolean); virtual;
