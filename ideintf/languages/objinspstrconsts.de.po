@@ -2,8 +2,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: \n"
 "POT-Creation-Date: \n"
-"PO-Revision-Date: 2010-02-24 15:58+0100\n"
-"Last-Translator: Swen Heinig <swen.heinig@freenet.de>\n"
+"PO-Revision-Date: 2010-03-19 19:58+0100\n"
+"Last-Translator: Joerg Braun <jb@toolbox-mag.de>\n"
 "Language-Team: Deutsch <lazarus@miraclec.com>\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=utf-8\n"
@@ -187,51 +187,51 @@ msgstr "Wert setzen"
 
 #: objinspstrconsts.lisoem1
 msgid "OEM 1"
-msgstr ""
+msgstr "OEM 1"
 
 #: objinspstrconsts.lisoem2
 msgid "OEM 2"
-msgstr ""
+msgstr "OEM 2"
 
 #: objinspstrconsts.lisoem3
 msgid "OEM 3"
-msgstr ""
+msgstr "OEM 3"
 
 #: objinspstrconsts.lisoem4
 msgid "OEM 4"
-msgstr ""
+msgstr "OEM 4"
 
 #: objinspstrconsts.lisoem5
 msgid "OEM 5"
-msgstr ""
+msgstr "OEM 5"
 
 #: objinspstrconsts.lisoem6
 msgid "OEM 6"
-msgstr ""
+msgstr "OEM 6"
 
 #: objinspstrconsts.lisoem7
 msgid "OEM 7"
-msgstr ""
+msgstr "OEM 7"
 
 #: objinspstrconsts.lisoem8
 msgid "OEM 8"
-msgstr ""
+msgstr "OEM 8"
 
 #: objinspstrconsts.lisoemcomma
 msgid "OEM comma"
-msgstr ""
+msgstr "OEM-Komma"
 
 #: objinspstrconsts.lisoemminus
 msgid "OEM minus"
-msgstr ""
+msgstr "OEM-Minus"
 
 #: objinspstrconsts.lisoemperiod
 msgid "OEM period"
-msgstr ""
+msgstr "OEM-Punkt"
 
 #: objinspstrconsts.lisoemplus
 msgid "OEM plus"
-msgstr ""
+msgstr "OEM-Plus"
 
 #: objinspstrconsts.nbcesaddpage
 msgid "Add page"
@@ -305,15 +305,15 @@ msgstr "Aktionslisteneditor"
 
 #: objinspstrconsts.oisaddcollectionitem
 msgid "&Add Item"
-msgstr ""
+msgstr "Eintr&ag hinzufügen"
 
 #: objinspstrconsts.oisaddfields
 msgid "&Add fields"
-msgstr ""
+msgstr "Felder hinzufügen"
 
 #: objinspstrconsts.oisaddfieldsfromfielddefs
 msgid "Add fields from FieldDefs"
-msgstr ""
+msgstr "Felder aus Felddefs hinzufügen"
 
 #: objinspstrconsts.oisaddtofavorites
 msgid "Add to Favorites"
@@ -406,7 +406,7 @@ msgstr "Default-Ereignis erzeugen"
 
 #: objinspstrconsts.oiscreatenewfieldandadditatcurrentposition
 msgid "Create new field and add it at current position"
-msgstr ""
+msgstr "Neues Feld an aktueller Position einfügen"
 
 #: objinspstrconsts.oiscutcomponents
 #, fuzzy
@@ -449,7 +449,7 @@ msgstr "Fehler"
 
 #: objinspstrconsts.oiserrordeletingaction
 msgid "Error deleting action"
-msgstr ""
+msgstr "Fehler beim Löschen der Action"
 
 #: objinspstrconsts.oiserrorloadingimage
 msgid "Error loading image"
@@ -461,7 +461,7 @@ msgstr "Fehler beim Laden des Bilds %s%s%s:%s%s"
 
 #: objinspstrconsts.oiserrorwhiledeletingaction
 msgid "Error while deleting action:%s%s"
-msgstr ""
+msgstr "Fehler beim Löschen der Action:%s%s"
 
 #: objinspstrconsts.oisevents
 msgid "Events"
@@ -493,7 +493,7 @@ msgstr "Inkompatible Methode"
 
 #: objinspstrconsts.oisindexoutofbounds
 msgid "Index out of bounds"
-msgstr ""
+msgstr "Indexbereichsüberschreitung"
 
 #: objinspstrconsts.oisinputmask
 msgid "Input Mask:"
@@ -541,11 +541,11 @@ msgstr "Methode"
 
 #: objinspstrconsts.oismovedown
 msgid "Move &Down"
-msgstr ""
+msgstr "Nach unten"
 
 #: objinspstrconsts.oismoveup
 msgid "Move &Up"
-msgstr ""
+msgstr "Nach oben"
 
 #: objinspstrconsts.oisnew
 msgid "&New"
@@ -585,19 +585,19 @@ msgstr "Optionen"
 
 #: objinspstrconsts.oisorderbackone
 msgid "Back One"
-msgstr ""
+msgstr "Eins zurück"
 
 #: objinspstrconsts.oisorderforwardone
 msgid "Forward One"
-msgstr ""
+msgstr "Eins vor"
 
 #: objinspstrconsts.oisordermovetoback
 msgid "Move to Back"
-msgstr ""
+msgstr "Zurück"
 
 #: objinspstrconsts.oisordermovetofront
 msgid "Move to Front"
-msgstr ""
+msgstr "Nach vorn"
 
 #: objinspstrconsts.oispastecomponents
 #, fuzzy
@@ -1010,8 +1010,9 @@ msgid "The method %s%s%s is not published.%sPress Cancel to undo,%spress Ignore 
 msgstr "Die Methode %s%s%s ist nicht Published.%sAbbrechen um zurückzunehmen,%sÜbergehen um sie zu erzwingen."
 
 #: objinspstrconsts.oisunabletochangeparentofcontroltonewparent
+#, fuzzy
 msgid "Unable to change parent of control %s%s%s to new parent %s%s%s.%s%s"
-msgstr ""
+msgstr "Parent des Steuerelements %s%s%s kann nicht auf das Elternelement%s%s%s gesetzt werden.%s%s"
 
 #: objinspstrconsts.oisundo
 msgctxt "objinspstrconsts.oisundo"
@@ -1025,7 +1026,7 @@ msgstr "Unbekannt"
 
 #: objinspstrconsts.oisunselectall
 msgid "&Unselect all"
-msgstr ""
+msgstr "Alles abwählen"
 
 #: objinspstrconsts.oisvalue
 msgid "Value:"
@@ -1049,7 +1050,7 @@ msgstr "Word"
 
 #: objinspstrconsts.oiszorder
 msgid "Z-order"
-msgstr ""
+msgstr "Z-Reihenfolge"
 
 #: objinspstrconsts.pefilter
 msgid "Filter"
@@ -1065,19 +1066,19 @@ msgstr "Filter-Name"
 
 #: objinspstrconsts.pirscustomoptions
 msgid "Custom options"
-msgstr ""
+msgstr "Benutzerdefinierte Eigenschaften"
 
 #: objinspstrconsts.pirsdebugsearchpath
 msgid "Debug search path"
-msgstr ""
+msgstr "Debugsuchpfad"
 
 #: objinspstrconsts.pirsincludesearchpath
 msgid "Include search path"
-msgstr ""
+msgstr "Suchpfad einfügen"
 
 #: objinspstrconsts.pirslibrarysearchpath
 msgid "Library search path"
-msgstr ""
+msgstr "Bibliothekssuchpfad"
 
 #: objinspstrconsts.pirslinkeroptions
 msgid "Linker options"
@@ -1085,11 +1086,11 @@ msgstr "Linker-Einstellungen"
 
 #: objinspstrconsts.pirsobjectsearchpath
 msgid "Object search path"
-msgstr ""
+msgstr "Objektsuchpfad"
 
 #: objinspstrconsts.pirsresult
 msgid "Result"
-msgstr ""
+msgstr "Ergebnis"
 
 #: objinspstrconsts.pirsunit
 msgid "Unit"
@@ -1101,7 +1102,7 @@ msgstr "Unit-Suchpfad"
 
 #: objinspstrconsts.pirsunitsourcesearchpath
 msgid "Unit source search path"
-msgstr ""
+msgstr "Unitquellen-Suchpfad"
 
 #: objinspstrconsts.rscdalignment
 msgid "Alignment"

@@ -4,7 +4,7 @@ msgstr ""
 "Project-Id-Version: \n"
 "POT-Creation-Date: \n"
 "PO-Revision-Date: \n"
-"Last-Translator: Swen Heinig <swen.heinig@freenet.de>\n"
+"Last-Translator: Joerg Braun <jb@toolbox-mag.de>\n"
 "Language-Team: \n"
 "MIME-Version: 1.0\n"
 "Content-Transfer-Encoding: 8bit\n"
@@ -23,7 +23,7 @@ msgstr "Alle hinzufügen"
 
 #: lazdemsg.sadddescriptionfile
 msgid "Select a new description file"
-msgstr ""
+msgstr "Neue Beschreibungsdatei wählen"
 
 #: lazdemsg.sbuild
 msgctxt "lazdemsg.sbuild"
@@ -40,7 +40,7 @@ msgstr "Dokumentation erfolgreich erstellt."
 
 #: lazdemsg.sbuildoutput
 msgid "Build output"
-msgstr ""
+msgstr "Ausgabe erzeugen"
 
 #: lazdemsg.sclose
 msgctxt "lazdemsg.sclose"
@@ -85,7 +85,7 @@ msgstr "Wollen Sie Package \"%s\" wirklich löschen?"
 
 #: lazdemsg.sdeletetopic
 msgid "Are you sure you want to delete topic \"%s\" ?"
-msgstr ""
+msgstr "Wollen Sie den Eintrag \"%s\" wirklich löschen?"
 
 #: lazdemsg.sdescription
 msgid "Description"
@@ -97,11 +97,11 @@ msgstr "B&earbeiten"
 
 #: lazdemsg.seditdescriptionfile
 msgid "Change description file"
-msgstr ""
+msgstr "Beschreibungsdatei ändern"
 
 #: lazdemsg.serrfpdoc
 msgid "Building failed with exit code %d. Please check log."
-msgstr ""
+msgstr "Das Anlegen schlug mit dem Code %d fehl. Prüfen Sie das Protokoll."
 
 #: lazdemsg.serrnomoduleforelement
 msgid "No module found to insert element \"%s\""
@@ -109,15 +109,15 @@ msgstr "Kein Modul gefunden um Element \"%s\" einzufügen"
 
 #: lazdemsg.serrnonodeformodule
 msgid "No node found for module \"%s\""
-msgstr ""
+msgstr "Kein Knoten für das Modul \"%s\" gefunden"
 
 #: lazdemsg.serrnonodeforpackage
 msgid "No node found for package \"%s\""
-msgstr ""
+msgstr "Kein Knoten für das Package \"%s\" gefunden"
 
 #: lazdemsg.serrnonodefortopic
 msgid "No parent node found to insert topic \"%s\""
-msgstr ""
+msgstr "Kein Elternknoten für das Einfügen des Eintrags \"%s\" gefunden"
 
 #: lazdemsg.serrnopackageformodule
 msgid "No package found to insert module \"%s\""
@@ -129,7 +129,7 @@ msgstr "Fehler"
 
 #: lazdemsg.serrunknowndomelement
 msgid "Unknwon DOM element as parent for selected element: \"%s\""
-msgstr ""
+msgstr "Unbekanntes DOM-Element als Vorgänger des gewählten Elements: \"%s\""
 
 #: lazdemsg.sfilemodified
 msgid "Document \"%s\" was modified, would you like to save it?"
@@ -141,27 +141,27 @@ msgstr "Dokumentationsstruktur"
 
 #: lazdemsg.sfiletemplate
 msgid "template.xml"
-msgstr ""
+msgstr "schablone.xml"
 
 #: lazdemsg.sforfile
 msgid " in file "
-msgstr ""
+msgstr " in der Datei"
 
 #: lazdemsg.sformat
 msgid "&Format"
-msgstr ""
+msgstr "&Format"
 
 #: lazdemsg.sformodule
 msgid " in module "
-msgstr ""
+msgstr " im Modul"
 
 #: lazdemsg.sforpackage
 msgid " in package "
-msgstr ""
+msgstr " im Package"
 
 #: lazdemsg.sfortopic
 msgid " in topic"
-msgstr ""
+msgstr " im Eintrag"
 
 #: lazdemsg.shideprotectedmethods
 msgid "&Hide protected methods"
@@ -173,7 +173,7 @@ msgstr "Aktuelle Datei schließen"
 
 #: lazdemsg.shintfileexit
 msgid "Close doc editor"
-msgstr ""
+msgstr "Doc-Editor schließen"
 
 #: lazdemsg.shintfilenew
 msgctxt "lazdemsg.shintfilenew"
@@ -252,7 +252,7 @@ msgstr "Tabelle einfügen"
 #: lazdemsg.shintinserttopic
 msgctxt "lazdemsg.shintinserttopic"
 msgid "New topic"
-msgstr ""
+msgstr "Neuer Eintrag"
 
 #: lazdemsg.shintmenunewfromfile
 msgid "New from file..."
@@ -315,7 +315,7 @@ msgstr "Auswahl %s markieren"
 
 #: lazdemsg.smenucollapseall
 msgid "Collapse All"
-msgstr ""
+msgstr "Alles zusammenfalten"
 
 #: lazdemsg.smenudelete
 msgctxt "lazdemsg.smenudelete"
@@ -324,7 +324,7 @@ msgstr "Löschen"
 
 #: lazdemsg.smenuexpandall
 msgid "Expand All"
-msgstr ""
+msgstr "Alles auseinander falten"
 
 #: lazdemsg.smenuextra
 msgid "&Extra"
@@ -367,7 +367,7 @@ msgstr "Beenden"
 
 #: lazdemsg.smenufilerecent
 msgid "&Recent"
-msgstr ""
+msgstr "Zuletzt"
 
 #: lazdemsg.smenufilesave
 msgctxt "lazdemsg.smenufilesave"
@@ -450,11 +450,11 @@ msgstr ""
 
 #: lazdemsg.smenuinsertquicklink
 msgid "&Quick Link"
-msgstr ""
+msgstr "Schnelle Verknüpfung"
 
 #: lazdemsg.smenuinsertshortdesclink
 msgid "&Short description link"
-msgstr ""
+msgstr "Schnelle Beschreibungsverknüpfung"
 
 #: lazdemsg.smenuinserttable
 msgid "&Table"
@@ -462,7 +462,7 @@ msgstr "&Tabelle"
 
 #: lazdemsg.smenuinserttopic
 msgid "T&opic"
-msgstr ""
+msgstr "Eintrag"
 
 #: lazdemsg.smenurename
 msgid "Rename"
@@ -470,7 +470,7 @@ msgstr "Umbenennen"
 
 #: lazdemsg.smoduleelements
 msgid "Elements for selected node"
-msgstr ""
+msgstr "Elemente für den ausgewählten Knoten"
 
 #: lazdemsg.snew
 msgid "New"
@@ -503,7 +503,7 @@ msgstr "Neues Package"
 #: lazdemsg.snewtopic
 msgctxt "lazdemsg.snewtopic"
 msgid "New topic"
-msgstr ""
+msgstr "Neuer Eintrag"
 
 #: lazdemsg.snoelement
 msgid "No element selected"
@@ -519,7 +519,7 @@ msgstr "Löschen bestätigen"
 
 #: lazdemsg.soptdlgcreatebackups
 msgid "Create &backups"
-msgstr "&Backups erstellen"
+msgstr "&Backups anlegen"
 
 #: lazdemsg.soptdlgdefaultextension
 msgid "Default extension"
@@ -531,7 +531,7 @@ msgstr "Desktop"
 
 #: lazdemsg.soptdlgfpdocprogram
 msgid "fpdoc program"
-msgstr "fpdoc Programm"
+msgstr "fpdoc-Programm"
 
 #: lazdemsg.soptdlggeneral
 msgid "General"
@@ -559,7 +559,7 @@ msgstr "Zeige Hinweise"
 
 #: lazdemsg.soptdlgskipemptynodes
 msgid "&Skip empty nodes when saving"
-msgstr ""
+msgstr "Leere Knoten beim &speichern übergehen"
 
 #: lazdemsg.soptdlgstartmaximized
 msgid "Start maximized"
@@ -596,7 +596,7 @@ msgstr "Package umbenennen"
 
 #: lazdemsg.srenametopic
 msgid "Rename topic"
-msgstr ""
+msgstr "Eintrag auswählen"
 
 #: lazdemsg.ssave
 msgctxt "lazdemsg.ssave"
@@ -613,11 +613,11 @@ msgstr "Ausgabeverzeichnis wählen"
 
 #: lazdemsg.sselectoutputfile
 msgid "Select output file name"
-msgstr ""
+msgstr "Ausgabedateiname festlegen"
 
 #: lazdemsg.sselectsometext
 msgid "Select some text"
-msgstr ""
+msgstr "Etwas Text auswählen"
 
 #: lazdemsg.sshortdescription
 msgid "Short"
@@ -629,7 +629,7 @@ msgstr "p&rivate Methoden anzeigen"
 
 #: lazdemsg.sskelerrorwithfile
 msgid "makeskel reported an error (%d). Try to load produced file anyway ?"
-msgstr ""
+msgstr "makeskel meldete einen Fehler (%d). Trotzdem versuchen, die produzierte Datei zu laden?"
 
 #: lazdemsg.sskelerrorwithoutfile
 msgid "makeskel reported an error (%d) and produced no file."
@@ -645,9 +645,9 @@ msgstr "Ziel-OS"
 
 #: lazdemsg.susingcommand
 msgid "Building docs using command: "
-msgstr ""
+msgstr "Docs mit dem folgenden Befehl anlegen:"
 
 #: lazdemsg.swarnifnodocumentationnodefound
 msgid "Warn if no documentation node found"
-msgstr ""
+msgstr "Warnen, falls kein Dokumentationsknoten gefunden"
 

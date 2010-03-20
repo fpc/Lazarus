@@ -4,7 +4,7 @@ msgstr ""
 "Project-Id-Version: \n"
 "POT-Creation-Date: \n"
 "PO-Revision-Date: \n"
-"Last-Translator: Swen Heinig <swen.heinig@freenet.de>\n"
+"Last-Translator: Joerg Braun <jb@toolbox-mag.de>\n"
 "Language-Team: \n"
 "MIME-Version: 1.0\n"
 "Content-Transfer-Encoding: 8bit\n"
@@ -139,7 +139,7 @@ msgstr "Unbekannter Objekttyp: %d"
 
 #: lazdatadeskstr.sexecute
 msgid "Execute SQL"
-msgstr ""
+msgstr "SQL ausführen"
 
 #: lazdatadeskstr.sexport
 msgid "Export data"
@@ -151,7 +151,7 @@ msgstr "Feld"
 
 #: lazdatadeskstr.sforeignkey
 msgid "Foreign key"
-msgstr ""
+msgstr "Fremdschlüssel"
 
 #: lazdatadeskstr.shintclose
 msgid "Close query result data panel"
@@ -203,7 +203,7 @@ msgstr ""
 
 #: lazdatadeskstr.sld_actionaddforeignkey
 msgid "New Foreign Key"
-msgstr ""
+msgstr "Neuer Fremdschlüssel"
 
 #: lazdatadeskstr.sld_actionaddforeignkeyh
 msgid "Add a foreign key to the table"
@@ -211,11 +211,11 @@ msgstr ""
 
 #: lazdatadeskstr.sld_actionaddsequence
 msgid "New sequence"
-msgstr ""
+msgstr "Neue Sequenz"
 
 #: lazdatadeskstr.sld_actionaddsequenceh
 msgid "Add a sequence"
-msgstr ""
+msgstr "Sequenz hinzufügen"
 
 #: lazdatadeskstr.sld_actionclose
 msgid "&Close"
@@ -239,7 +239,7 @@ msgstr "Kopieren"
 
 #: lazdatadeskstr.sld_actioncopyconnection
 msgid "&Copy connection"
-msgstr ""
+msgstr "Verbindung kopieren"
 
 #: lazdatadeskstr.sld_actioncopyh
 msgid "Copy"
@@ -247,7 +247,7 @@ msgstr "Kopieren"
 
 #: lazdatadeskstr.sld_actioncreatecode
 msgid "Create &code"
-msgstr ""
+msgstr "Quelltext generieren"
 
 #: lazdatadeskstr.sld_actioncreatecodeh
 msgid "Create code from definition or data"
@@ -348,7 +348,7 @@ msgstr ""
 
 #: lazdatadeskstr.sld_actionopenrecentdatadict
 msgid "Open"
-msgstr ""
+msgstr "Öffnen"
 
 #: lazdatadeskstr.sld_actionopenrecentdatadicth
 msgid "Open selected recent datadictionary"
@@ -437,7 +437,7 @@ msgstr ""
 
 #: lazdatadeskstr.sld_fromconnection
 msgid "From connection"
-msgstr ""
+msgstr "Aus Verbindung"
 
 #: lazdatadeskstr.sld_generatesql
 msgid "Generate SQL"
@@ -461,11 +461,11 @@ msgstr "Ei&nzug"
 
 #: lazdatadeskstr.sld_insert
 msgid "&Insert"
-msgstr ""
+msgstr "E&infügen"
 
 #: lazdatadeskstr.sld_keyfields
 msgid "&Key fields"
-msgstr ""
+msgstr "Schlüsselfelder"
 
 #: lazdatadeskstr.sld_lazarusdatabasedesktop
 msgid "Lazarus Database Desktop"
@@ -538,27 +538,27 @@ msgstr ""
 
 #: lazdatadeskstr.sld_savefileastitle
 msgid "Save file as"
-msgstr ""
+msgstr "Datei speichern unter"
 
 #: lazdatadeskstr.sld_select
 msgid "&Select"
-msgstr ""
+msgstr "Au&swählen"
 
 #: lazdatadeskstr.sld_selectaconnectiontype
 msgid "Select a conection type"
-msgstr ""
+msgstr "Verbindungstyp auswählen"
 
 #: lazdatadeskstr.sld_selectall
 msgid "Select &all"
-msgstr ""
+msgstr "&Alles auswählen"
 
 #: lazdatadeskstr.sld_selectnone
 msgid "Select &none"
-msgstr ""
+msgstr "&Nichts auswählen"
 
 #: lazdatadeskstr.sld_selectupdateinsertfields
 msgid "Select/Update/Insert fields"
-msgstr ""
+msgstr "Felder auswählen/aktualisieren/einfügen"
 
 #: lazdatadeskstr.sld_separator
 msgid "-"
@@ -586,7 +586,7 @@ msgstr "Benutzername"
 
 #: lazdatadeskstr.sload
 msgid "Load SQL"
-msgstr ""
+msgstr "SQL laden"
 
 #: lazdatadeskstr.snamefor
 msgid "Enter a name for the new %s"
@@ -606,11 +606,11 @@ msgstr "Neue Datenbank"
 
 #: lazdatadeskstr.snewdomain
 msgid "Create new domain"
-msgstr ""
+msgstr "Neue Domain anlegen"
 
 #: lazdatadeskstr.snewdomainname
 msgid "Enter a name for the new domain:"
-msgstr ""
+msgstr "Name für die neue Domain:"
 
 #: lazdatadeskstr.snewfield
 msgid "Create new field in table %s"
@@ -622,15 +622,15 @@ msgstr "Geben Sie einen Namen für das neue Feld ein:"
 
 #: lazdatadeskstr.snewforeignkey
 msgid "Create new foreign key in table %s"
-msgstr ""
+msgstr "Neuen Fremdschlüssel in Tabelle %s anlegen"
 
 #: lazdatadeskstr.snewforeignkeyname
 msgid "Enter a name for the new foreign key:"
-msgstr ""
+msgstr "Name des Fremdschlüssels:"
 
 #: lazdatadeskstr.snewindex
 msgid "Create new index on table %s"
-msgstr ""
+msgstr "Neuen Index auf Tabelle %s anlegen"
 
 #: lazdatadeskstr.snewindexname
 msgid "Enter a name for the new index:"
@@ -638,19 +638,19 @@ msgstr "Geben Sie einen Namen für den neuen Index ein:"
 
 #: lazdatadeskstr.snewobject
 msgid "Create new %s"
-msgstr ""
+msgstr "Neuen %s anlegen"
 
 #: lazdatadeskstr.snewsequence
 msgid "Create new sequence"
-msgstr ""
+msgstr "Neue Sequenz anlegen"
 
 #: lazdatadeskstr.snewsequencename
 msgid "Enter a name for the new sequence:"
-msgstr ""
+msgstr "Name der neuen Sequenz:"
 
 #: lazdatadeskstr.snewtable
 msgid "Create new table"
-msgstr ""
+msgstr "Neue Tabelle anlegen"
 
 #: lazdatadeskstr.snewtablename
 msgid "Enter a name for the new table:"
@@ -658,7 +658,7 @@ msgstr "Geben Sie einen Namen für die neue Tabelle ein:"
 
 #: lazdatadeskstr.snext
 msgid "Next"
-msgstr ""
+msgstr "Weiter"
 
 #: lazdatadeskstr.snodedatabase
 msgctxt "lazdatadeskstr.snodedatabase"
@@ -671,7 +671,7 @@ msgstr ""
 
 #: lazdatadeskstr.snodedomains
 msgid "Domains"
-msgstr ""
+msgstr "Domänen"
 
 #: lazdatadeskstr.snodefields
 msgctxt "lazdatadeskstr.snodefields"
@@ -680,7 +680,7 @@ msgstr "Felder"
 
 #: lazdatadeskstr.snodeforeignkeys
 msgid "Foreign keys"
-msgstr ""
+msgstr "Fremdschlüssel"
 
 #: lazdatadeskstr.snodeindexes
 msgid "Indexes"
@@ -696,7 +696,7 @@ msgstr "Indexoptionen:"
 
 #: lazdatadeskstr.snodesequences
 msgid "Sequences"
-msgstr ""
+msgstr "Sequenzen"
 
 #: lazdatadeskstr.snodetabledata
 msgid "Table Data"
@@ -716,7 +716,7 @@ msgstr "Parameter"
 
 #: lazdatadeskstr.sprevious
 msgid "Previous"
-msgstr ""
+msgstr "Zurück"
 
 #: lazdatadeskstr.squery
 msgid "Run query"
@@ -728,7 +728,7 @@ msgstr ""
 
 #: lazdatadeskstr.ssave
 msgid "Save SQL"
-msgstr ""
+msgstr "SQL speichern"
 
 #: lazdatadeskstr.ssavedata
 msgid "Save changes"
@@ -740,11 +740,11 @@ msgstr "Wählen Sie ein Verzeichnis mit DBF Dateien"
 
 #: lazdatadeskstr.sselectedobject
 msgid "Selected object"
-msgstr ""
+msgstr "Ausgewähltes Objekt"
 
 #: lazdatadeskstr.ssequence
 msgid "Sequence"
-msgstr ""
+msgstr "Sequenz"
 
 #: lazdatadeskstr.ssqlfilters
 msgid "SQL files|*.sql|All files|*.*"

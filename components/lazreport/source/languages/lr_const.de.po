@@ -1,7 +1,7 @@
 msgid ""
 msgstr ""
-"Last-Translator: Swen Heinig <swen.heinig@freenet.de>\n"
-"PO-Revision-Date: 2009-09-26 00:09+0100\n"
+"Last-Translator: Joerg Braun <jb@toolbox-mag.de>\n"
+"PO-Revision-Date: 2010-03-19 20:09+0100\n"
 "Project-Id-Version: lazreport\n"
 "Language-Team: Deutsch <lazarus@miraclec.com>\n"
 "Content-Type: text/plain; charset=UTF-8\n"
@@ -277,7 +277,7 @@ msgstr "AVG(<Ausdruck> [,BandName [,1]])/Berechnet den Durchschnitt von <Ausdruc
 
 #: lr_const.sdescriptioncopy
 msgid "COPY(<String>, <Position>, <Length>)/Returns <Length> characters from <String> starting at <Position>."
-msgstr ""
+msgstr "COPY(<String>, <Position>, <Length>)/gibt <Length> Zeichen von <String> ab <Position>."
 
 #: lr_const.sdescriptioncount
 msgid "COUNT(<BandName>)/Returns count of data-rows given in the <BandName>. "
@@ -301,7 +301,7 @@ msgstr "FORMATTEXT(<Maske>, <String>)/Wendet <Maske>auf den angegebenen <String>
 
 #: lr_const.sdescriptionfrac
 msgid "FRAC(<Value>)/Returns the fractional part of floating point <Value>."
-msgstr ""
+msgstr "FRAC(<Value>)/Ergibt den Bruchanteil der Gleitkommazahl <Value>."
 
 #: lr_const.sdescriptioninput
 msgid "INPUT(<Caption> [,Default])/Shows dialog window with headstring <Caption> and edit box. If [Default] parameter is set, puts this string in edit box. After user clicks OK, returns input string."
@@ -309,7 +309,7 @@ msgstr "INPUT(<Caption> [,Default])/Zeigt ein Dialogfenster mit der Überschrift
 
 #: lr_const.sdescriptionint
 msgid "INT(<Value>)/Returns the integer part of floating point <Value>."
-msgstr ""
+msgstr "INT(<Value>)/Ergbit den ganzzahligen Teil der Gleitkommazahl <Value>."
 
 #: lr_const.sdescriptionlength
 msgid "LENGTH(<String>)/Returns length of <String>."
@@ -353,11 +353,11 @@ msgstr "POS(<SubString>, <String>)/Liefert die Position des Substrings im angege
 
 #: lr_const.sdescriptionround
 msgid "ROUND(<Value>)/Rounds the floating point <Value> to nearest integer number."
-msgstr ""
+msgstr "ROUND(<Value>)/Runden die Gleitkommazahl <Value> in die nächstliegende ganze Zahl."
 
 #: lr_const.sdescriptionstr
 msgid "STR(<Value>)/Converts the given (numeric) <Value> in string."
-msgstr ""
+msgstr "STR(<Value>)/Wandelt den angegebenen (Zahlen-) <Value> in einen String."
 
 #: lr_const.sdescriptionstrtodate
 msgid "STRTODATE(<String>)/Converts <String> to date."
@@ -539,7 +539,7 @@ msgstr "Version"
 
 #: lr_const.sduplicatedobjectname
 msgid "An object named \"%s\" already exists"
-msgstr ""
+msgstr "Es gibt bereits ein Objekt mit dem Namen \"%s\""
 
 #: lr_const.seditorformbig
 msgid "&Big font"
@@ -560,7 +560,7 @@ msgstr "&Format"
 
 #: lr_const.seditorformfunction
 msgid "Function"
-msgstr ""
+msgstr "Funktion"
 
 #: lr_const.seditorformmemo
 msgctxt "lr_const.seditorformmemo"
@@ -1396,7 +1396,7 @@ msgstr "LazReport-Formular"
 
 #: lr_const.smathcategory
 msgid "Math"
-msgstr ""
+msgstr "Mathem."
 
 #: lr_const.smm
 msgid "MM"
@@ -1404,7 +1404,7 @@ msgstr "mm"
 
 #: lr_const.snewtemplate
 msgid "New template"
-msgstr ""
+msgstr "Neue Schablone"
 
 #: lr_const.sno
 msgid "No"

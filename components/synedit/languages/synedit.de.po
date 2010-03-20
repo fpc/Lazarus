@@ -2,8 +2,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: \n"
 "POT-Creation-Date: \n"
-"PO-Revision-Date: 2009-09-27 18:15+0100\n"
-"Last-Translator: Swen Heinig <swen.heinig@freenet.de>\n"
+"PO-Revision-Date: 2010-03-19 20:05+0100\n"
+"Last-Translator: Joerg Braun <jb@toolbox-mag.de>\n"
 "Language-Team: \n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
@@ -19,11 +19,11 @@ msgstr "Assembler"
 
 #: syneditstrconst.syns_attrattributename
 msgid "Attribute Name"
-msgstr ""
+msgstr "Attribut-Name"
 
 #: syneditstrconst.syns_attrattributevalue
 msgid "Attribute Value"
-msgstr ""
+msgstr "Attribut-Wert"
 
 #: syneditstrconst.syns_attrblock
 msgid "Block"
@@ -43,7 +43,7 @@ msgstr "Zeichen"
 
 #: syneditstrconst.syns_attrclass
 msgid "Class"
-msgstr ""
+msgstr "Klasse"
 
 #: syneditstrconst.syns_attrcomment
 msgid "Comment"
@@ -51,7 +51,7 @@ msgstr "Kommentar"
 
 #: syneditstrconst.syns_attrcondition
 msgid "Condition"
-msgstr ""
+msgstr "Bedingung"
 
 #: syneditstrconst.syns_attrdatatype
 msgid "Data type"
@@ -59,7 +59,7 @@ msgstr "Datentyp"
 
 #: syneditstrconst.syns_attrdefaultpackage
 msgid "Default packages"
-msgstr ""
+msgstr "Default-Packages"
 
 #: syneditstrconst.syns_attrdir
 msgid "Direction"
@@ -79,7 +79,7 @@ msgstr "Dokumentation"
 
 #: syneditstrconst.syns_attrelementname
 msgid "Element Name"
-msgstr ""
+msgstr "Elementname"
 
 #: syneditstrconst.syns_attrembedsql
 msgid "Embedded SQL"
@@ -99,11 +99,11 @@ msgstr ""
 
 #: syneditstrconst.syns_attrevent
 msgid "Event"
-msgstr ""
+msgstr "Ereignis"
 
 #: syneditstrconst.syns_attrexception
 msgid "Exception"
-msgstr ""
+msgstr "Ausnahme"
 
 #: syneditstrconst.syns_attrfloat
 msgid "Float"
@@ -123,7 +123,7 @@ msgstr "Hexadezimal"
 
 #: syneditstrconst.syns_attricon
 msgid "Icon reference"
-msgstr ""
+msgstr "Icon-Verweis"
 
 #: syneditstrconst.syns_attridentifier
 msgid "Identifier"
@@ -143,7 +143,7 @@ msgstr "Indirekt"
 
 #: syneditstrconst.syns_attrinternalfunction
 msgid "Internal function"
-msgstr ""
+msgstr "Interne Funktion"
 
 #: syneditstrconst.syns_attrinvalidsymbol
 msgid "Invalid symbol"
@@ -151,11 +151,11 @@ msgstr "Ungültiges Symbol"
 
 #: syneditstrconst.syns_attrkey
 msgid "Key"
-msgstr ""
+msgstr "Schlüssel"
 
 #: syneditstrconst.syns_attrlabel
 msgid "Label"
-msgstr ""
+msgstr "Marke"
 
 #: syneditstrconst.syns_attrmacro
 msgid "Macro"
@@ -163,11 +163,11 @@ msgstr "Makro"
 
 #: syneditstrconst.syns_attrmarker
 msgid "Marker"
-msgstr ""
+msgstr "Markierung"
 
 #: syneditstrconst.syns_attrmathmode
 msgid "Math Mode"
-msgstr ""
+msgstr "Mathematischer Modus"
 
 #: syneditstrconst.syns_attrmessage
 msgid "Message"
@@ -195,15 +195,15 @@ msgstr "Null"
 
 #: syneditstrconst.syns_attrnumber
 msgid "Number"
-msgstr ""
+msgstr "Zahl"
 
 #: syneditstrconst.syns_attroctal
 msgid "Octal"
-msgstr ""
+msgstr "Oktal"
 
 #: syneditstrconst.syns_attroperator
 msgid "Operator"
-msgstr ""
+msgstr "Operator"
 
 #: syneditstrconst.syns_attrplsql
 msgid "Reserved word (PL/SQL)"
@@ -211,7 +211,7 @@ msgstr "Reserviertes Wort (PL/SQL)"
 
 #: syneditstrconst.syns_attrpragma
 msgid "Pragma"
-msgstr ""
+msgstr "Pragma"
 
 #: syneditstrconst.syns_attrpreprocessor
 msgid "Preprocessor"
@@ -223,7 +223,7 @@ msgstr ""
 
 #: syneditstrconst.syns_attrqualifier
 msgid "Qualifier"
-msgstr ""
+msgstr "Bezeichner"
 
 #: syneditstrconst.syns_attrregister
 msgid "Register"
@@ -275,7 +275,7 @@ msgstr "Leerzeichen"
 
 #: syneditstrconst.syns_attrspecialvariable
 msgid "Special variable"
-msgstr ""
+msgstr "Spezialvariable"
 
 #: syneditstrconst.syns_attrsqlkey
 msgid "SQL keyword"
@@ -291,7 +291,7 @@ msgstr "Eckige Klammer"
 
 #: syneditstrconst.syns_attrstring
 msgid "String"
-msgstr ""
+msgstr "Zeichenkette"
 
 #: syneditstrconst.syns_attrsymbol
 msgid "Symbol"
@@ -303,7 +303,7 @@ msgstr "Syntaxfehler"
 
 #: syneditstrconst.syns_attrsystem
 msgid "System functions and variables"
-msgstr ""
+msgstr "Systemfunktionen und -variablen"
 
 #: syneditstrconst.syns_attrsystemvalue
 msgid "System value"
@@ -311,7 +311,7 @@ msgstr "Systemwert"
 
 #: syneditstrconst.syns_attrtablename
 msgid "Table Name"
-msgstr ""
+msgstr "Tabellenname"
 
 #: syneditstrconst.syns_attrterminator
 msgid "Terminator"
@@ -327,7 +327,7 @@ msgstr "Text"
 
 #: syneditstrconst.syns_attrtextmathmode
 msgid "Text in Math Mode"
-msgstr ""
+msgstr "Text im mathem. Modus"
 
 #: syneditstrconst.syns_attrunknownword
 msgid "Unknown word"
@@ -335,11 +335,11 @@ msgstr "Unbekanntes Wort"
 
 #: syneditstrconst.syns_attruser
 msgid "User functions and variables"
-msgstr ""
+msgstr "User-Funktionen und -Variablen"
 
 #: syneditstrconst.syns_attruserfunction
 msgid "User functions"
-msgstr ""
+msgstr "User-Funktionen"
 
 #: syneditstrconst.syns_attrvalue
 msgid "Value"
@@ -351,7 +351,7 @@ msgstr "Variable"
 
 #: syneditstrconst.syns_attrwhitespace
 msgid "Whitespace"
-msgstr ""
+msgstr "Trenn-/Leerzeichen"
 
 #: syneditstrconst.syns_duplicateshortcutmsg
 #, fuzzy
@@ -385,7 +385,7 @@ msgstr "Code entfalten"
 
 #: syneditstrconst.syns_emccodefoldexpand_opt
 msgid "Nodes,One,All"
-msgstr ""
+msgstr "Knoten,Einer,Alle"
 
 #: syneditstrconst.syns_emccontextmenu
 msgid "Popup Menu"
@@ -393,7 +393,7 @@ msgstr "Kontextmenü"
 
 #: syneditstrconst.syns_emcmouselink
 msgid "Source Link"
-msgstr ""
+msgstr "Quell-Link"
 
 #: syneditstrconst.syns_emcmouselink_opt
 msgid "Underline,yes, no"

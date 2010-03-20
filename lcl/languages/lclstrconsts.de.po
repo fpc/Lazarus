@@ -4,7 +4,7 @@ msgstr ""
 "Content-Transfer-Encoding: 8bit\n"
 "Project-Id-Version: \n"
 "POT-Creation-Date: \n"
-"PO-Revision-Date: 2009-04-30 20:23+0100\n"
+"PO-Revision-Date: 2010-03-19 20:00+0100\n"
 "Last-Translator: Joerg Braun <jb@toolbox-mag.de>\n"
 "Language-Team: Deutsch <lazarus@miraclec.com>\n"
 "MIME-Version: 1.0\n"
@@ -393,7 +393,7 @@ msgstr "Bearbeiten"
 
 #: lclstrconsts.rsentirescope
 msgid "Search entire file"
-msgstr ""
+msgstr "Gesamte Datei durchsuchen"
 
 #: lclstrconsts.rserror
 msgctxt "lclstrconsts.rserror"
@@ -850,7 +850,7 @@ msgstr "&Ok"
 
 #: lclstrconsts.rsmbopen
 msgid "&Open"
-msgstr ""
+msgstr "Öffnen"
 
 #: lclstrconsts.rsmbretry
 msgid "&Retry"
@@ -858,11 +858,11 @@ msgstr "&Wiederholen"
 
 #: lclstrconsts.rsmbsave
 msgid "&Save"
-msgstr ""
+msgstr "&Speichern"
 
 #: lclstrconsts.rsmbunlock
 msgid "&Unlock"
-msgstr ""
+msgstr "Freigeben"
 
 #: lclstrconsts.rsmbyes
 msgid "&Yes"
@@ -903,7 +903,7 @@ msgstr "\"Geldgrün\""
 
 #: lclstrconsts.rsmtauthentication
 msgid "Authentication"
-msgstr ""
+msgstr "Authentifikation"
 
 #: lclstrconsts.rsmtconfirmation
 msgid "Confirmation"

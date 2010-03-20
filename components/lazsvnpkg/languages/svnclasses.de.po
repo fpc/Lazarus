@@ -4,7 +4,7 @@ msgstr ""
 "Project-Id-Version: \n"
 "POT-Creation-Date: \n"
 "PO-Revision-Date: \n"
-"Last-Translator: Swen Heinig <swen.heinig@freenet.de>\n"
+"Last-Translator: Joerg Braun <jb@toolbox-mag.de>\n"
 "Language-Team: \n"
 "MIME-Version: 1.0\n"
 "Content-Transfer-Encoding: 8bit\n"
@@ -55,7 +55,7 @@ msgstr "Vergleiche aktive Datei"
 
 #: svnclasses.rsedit
 msgid "Edit"
-msgstr ""
+msgstr "Bearbeiten"
 
 #: svnclasses.rsextension
 msgid "Extension"
@@ -67,7 +67,7 @@ msgstr "Dateistatus"
 
 #: svnclasses.rsindexoutofboundsd
 msgid "Index out of bounds (%d)"
-msgstr ""
+msgstr "Index außerhalb der Grenzen (%d)"
 
 #: svnclasses.rslazarussvncommit
 msgid "LazarusSVN Commit"
@@ -131,7 +131,7 @@ msgstr "Repository-Pfad"
 
 #: svnclasses.rsrevert
 msgid "Revert"
-msgstr ""
+msgstr "Umkehren"
 
 #: svnclasses.rsrevision
 msgid "Revision"

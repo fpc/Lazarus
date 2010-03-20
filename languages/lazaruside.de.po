@@ -2,7 +2,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: \n"
 "POT-Creation-Date: \n"
-"PO-Revision-Date: 2010-03-19 19:23+0100\n"
+"PO-Revision-Date: 2010-03-20 18:08+0100\n"
 "Last-Translator: Joerg Braun <jb@toolbox-mag.de>\n"
 "Language-Team: Deutsch <lazarus@miraclec.com>\n"
 "MIME-Version: 1.0\n"
@@ -160,11 +160,11 @@ msgstr "Zeile"
 
 #: lazarusidestrconsts.dlgaddhiattrgroupsyncroedit
 msgid "Syncron Edit"
-msgstr ""
+msgstr "Synchronbearbeitung"
 
 #: lazarusidestrconsts.dlgaddhiattrgrouptemplateedit
 msgid "Template Edit"
-msgstr "Template-Bearbeitung"
+msgstr "Schablonenbearbeitung"
 
 #: lazarusidestrconsts.dlgaddhiattrgrouptext
 msgctxt "lazarusidestrconsts.dlgaddhiattrgrouptext"
@@ -172,8 +172,9 @@ msgid "Text"
 msgstr "Text"
 
 #: lazarusidestrconsts.dlgaddhiattrgutterseparator
+#, fuzzy
 msgid "Gutter Separator"
-msgstr ""
+msgstr "Randtrenner"
 
 #: lazarusidestrconsts.dlgaddhiattrhighlightall
 msgid "Incremental others"
@@ -204,8 +205,9 @@ msgid "Modified line"
 msgstr "Geänderte Zeile"
 
 #: lazarusidestrconsts.dlgaddhiattrmouselink
+#, fuzzy
 msgid "Mouse link"
-msgstr ""
+msgstr "Maus-Link"
 
 #: lazarusidestrconsts.dlgaddhiattrsyncroeditarea
 msgid "Selected Area"
@@ -364,11 +366,11 @@ msgstr "Methode einrücken"
 
 #: lazarusidestrconsts.dlgblockindenttypecopy
 msgid "Space/tab as prev Line"
-msgstr ""
+msgstr "Leerz./Tab als vorherige Zeile"
 
 #: lazarusidestrconsts.dlgblockindenttypepos
 msgid "Position only"
-msgstr "Nur Position"
+msgstr "nur Position"
 
 #: lazarusidestrconsts.dlgblockindenttypespace
 msgid "Spaces"
@@ -1003,7 +1005,7 @@ msgstr "Editoreigenschaften"
 
 #: lazarusidestrconsts.dlgedmisc
 msgid "Misc"
-msgstr "Diverses"
+msgstr "Verschiedenes"
 
 #: lazarusidestrconsts.dlgednoerr
 msgid "No errors in key mapping found."
@@ -1047,7 +1049,7 @@ msgstr "Hinweis: Projektdateien sind alle Dateien im Projektverzeichnis"
 
 #: lazarusidestrconsts.dlgenvbckup
 msgid "Backup"
-msgstr "Sicherung"
+msgstr "Backup"
 
 #: lazarusidestrconsts.dlgenvcolors
 msgctxt "lazarusidestrconsts.dlgenvcolors"
@@ -1414,7 +1416,7 @@ msgstr "Hintanzeige für unbenutzte Parameter \"Sender\""
 
 #: lazarusidestrconsts.dlghintsunused
 msgid "Show Hints for unused units in main source"
-msgstr "Hinweise auf überflüssige Units im Hauptquelltext"
+msgstr "Hinweis a. überflüssige Units im Hauptquelltext"
 
 #: lazarusidestrconsts.dlghomekeyjumpstoneareststart
 msgid "Home key jumps to nearest start"
@@ -1543,7 +1545,7 @@ msgstr "Stufe 0 (keine weiteren Optimierungen)"
 
 #: lazarusidestrconsts.dlglinesplitting
 msgid "Line Splitting"
-msgstr "Zeilenaufteilung"
+msgstr "Zeilentrennung"
 
 #: lazarusidestrconsts.dlglinklibraries
 msgid "Link Style:"
@@ -1814,8 +1816,9 @@ msgid "Capture"
 msgstr ""
 
 #: lazarusidestrconsts.dlgmouseoptcaretmove
+#, fuzzy
 msgid "Move Caret (extra)"
-msgstr ""
+msgstr "Caret bewegen (extra)"
 
 #: lazarusidestrconsts.dlgmouseoptcheckupdown
 msgid "Act on Mouse up"
@@ -1833,7 +1836,7 @@ msgstr "Klick"
 
 #: lazarusidestrconsts.dlgmouseoptdlgtitle
 msgid "Edit Mouse"
-msgstr ""
+msgstr "Mausbearbeitung"
 
 #: lazarusidestrconsts.dlgmouseopterrordup
 msgid "Duplicate Entry"
@@ -1841,7 +1844,7 @@ msgstr "Doppelter Eintrag"
 
 #: lazarusidestrconsts.dlgmouseopterrorduptext
 msgid "This entry conflicts with an existing entry"
-msgstr ""
+msgstr "Der Eintrag kollidiert mit einem bereits vorhandenen"
 
 #: lazarusidestrconsts.dlgmouseoptheadalt
 msgctxt "lazarusidestrconsts.dlgmouseoptheadalt"
@@ -1906,11 +1909,11 @@ msgstr "Maus"
 
 #: lazarusidestrconsts.dlgmouseoptionsadv
 msgid "Advanced"
-msgstr "Fortgeschritten"
+msgstr "Erweitert"
 
 #: lazarusidestrconsts.dlgmouseoptionsyncommand
 msgid "IDE-Command"
-msgstr "IDE-Kommando"
+msgstr "IDE-Befehl"
 
 #: lazarusidestrconsts.dlgmouseoptmodalt
 msgctxt "lazarusidestrconsts.dlgmouseoptmodalt"
@@ -1986,7 +1989,7 @@ msgstr ""
 
 #: lazarusidestrconsts.dlgmouseoptotheracttoggle
 msgid "Filter Mod-Keys"
-msgstr ""
+msgstr "Mod-Tasten filtern"
 
 #: lazarusidestrconsts.dlgmouseoptpriorlabel
 msgctxt "lazarusidestrconsts.dlgmouseoptpriorlabel"
@@ -2060,7 +2063,7 @@ msgstr "Höhe des Eintrags"
 #: lazarusidestrconsts.dlgoimiscellaneous
 msgctxt "lazarusidestrconsts.dlgoimiscellaneous"
 msgid "Miscellaneous"
-msgstr "Diverses"
+msgstr "Verschiedenes"
 
 #: lazarusidestrconsts.dlgoioptions
 msgctxt "lazarusidestrconsts.dlgoioptions"
@@ -2073,11 +2076,11 @@ msgstr "Schnellumstellung"
 
 #: lazarusidestrconsts.dlgoiusedefaultdelphisettings
 msgid "Use default Delphi settings"
-msgstr "Die Delphi-Voreinstellungen gelten"
+msgstr "Es gelten die Voreinstellungen von Delphi"
 
 #: lazarusidestrconsts.dlgoiusedefaultlazarussettings
 msgid "Use default Lazarus settings"
-msgstr "Die Lazarus-Voreinstellungen gelten"
+msgstr "Es gelten die Voreinstellungen von Lazarus"
 
 #: lazarusidestrconsts.dlgoptimiz
 msgid "Optimizations:"
@@ -2097,7 +2100,7 @@ msgstr "Package-Graph"
 
 #: lazarusidestrconsts.dlgpalhints
 msgid "Hints for component palette"
-msgstr "Anmerkungen für die Komponentenpalette"
+msgstr "Hinweise für die Komponentenpalette"
 
 #: lazarusidestrconsts.dlgpasext
 msgid "Default pascal extension"
@@ -2159,7 +2162,7 @@ msgstr "Symbol laden"
 #: lazarusidestrconsts.dlgpomisc
 msgctxt "lazarusidestrconsts.dlgpomisc"
 msgid "Miscellaneous"
-msgstr "Diverses"
+msgstr "Verschiedenes"
 
 #: lazarusidestrconsts.dlgpooutputsettings
 msgid "Output Settings"
@@ -2219,7 +2222,7 @@ msgstr "Zuletzt geladenes Projekt beim Start öffnen"
 
 #: lazarusidestrconsts.dlgqshowborderspacing
 msgid "Show border spacing"
-msgstr "Abstand am Rand"
+msgstr "Abstand vom Rand"
 
 #: lazarusidestrconsts.dlgqshowcompiledialog
 msgid "Show compile dialog"
@@ -2231,7 +2234,7 @@ msgstr "Gitter anzeigen"
 
 #: lazarusidestrconsts.dlgqsnaptogrid
 msgid "Snap to grid"
-msgstr "Ans Gitter kleben"
+msgstr "Am Gitter ausrichten"
 
 #: lazarusidestrconsts.dlgreferencecolor
 msgid "Reference"
@@ -2534,7 +2537,7 @@ msgstr "Schlüsselwort  \"Static\" in Objekten"
 
 #: lazarusidestrconsts.dlgstopafternrerr
 msgid "Stop after number of errors:"
-msgstr "Abbruch nach Anzahl Fehler:"
+msgstr "Abbruch nach Fehlerzahl:"
 
 #: lazarusidestrconsts.dlgsubpropcolor
 msgid "SubProperties"
@@ -2640,7 +2643,7 @@ msgstr "Unsichere Optimierungen"
 
 #: lazarusidestrconsts.dlgundoaftersave
 msgid "Undo after save"
-msgstr "Rückgängig nach dem Speichern"
+msgstr "Rücknahme auch nach dem Speichern"
 
 #: lazarusidestrconsts.dlgundogroupoptions
 #| msgid "Undo options:"
@@ -3448,7 +3451,7 @@ msgstr "Nach Dateinamen für neue Datei fragen"
 
 #: lazarusidestrconsts.lisasknameoncreate
 msgid "Ask name on create"
-msgstr "Namen beim Erzeugen erfragen"
+msgstr "Komponentennamen beim Neuanlegen abfragen"
 
 #: lazarusidestrconsts.lisautocompletionoff
 msgid "Auto completion: off"
@@ -3649,8 +3652,9 @@ msgid "Build Number"
 msgstr "Kompiliernummer"
 
 #: lazarusidestrconsts.lisbuildvariables
+#, fuzzy
 msgid "Build variables"
-msgstr ""
+msgstr "Build-Variablen"
 
 #: lazarusidestrconsts.liscallingtocreatemakefilefromfailed
 msgid "Calling %s to create Makefile from %s failed."
@@ -3957,7 +3961,7 @@ msgstr "Nur im Kategorien-Modus verwendet"
 
 #: lazarusidestrconsts.lisceoonidle
 msgid "On idle"
-msgstr "im Leerlauf"
+msgstr "Im Leerlauf"
 
 #: lazarusidestrconsts.lisceorefreshautomatically
 msgid "Refresh automatically"
@@ -3987,7 +3991,7 @@ msgstr "Properties"
 
 #: lazarusidestrconsts.liscepublishedpropertywithoutdefault
 msgid "Published properties without default"
-msgstr "Published-Eigenschaften ohne Voreinstellung"
+msgstr "Published-Eigensch. ohne Voreinstell."
 
 #: lazarusidestrconsts.lisceshowcodeobserver
 msgid "Show observerations about"
@@ -4000,7 +4004,7 @@ msgstr "Stil"
 
 #: lazarusidestrconsts.liscetodos
 msgid "ToDos"
-msgstr "ToDos"
+msgstr "Zu Erledigendes"
 
 #: lazarusidestrconsts.liscetypes
 msgid "Types"
@@ -4447,7 +4451,7 @@ msgstr "Suche nach unbenannten Zeichenkonstanten"
 
 #: lazarusidestrconsts.liscodeobserver
 msgid "Code Observer"
-msgstr "Code Observer"
+msgstr "Codeüberwacher (Code Observer)"
 
 #: lazarusidestrconsts.liscodeobsignoreeconstants
 msgctxt "lazarusidestrconsts.liscodeobsignoreeconstants"
@@ -5403,7 +5407,7 @@ msgstr "Haltepunkt"
 
 #: lazarusidestrconsts.lisdebugoptionsfrmclearlogonrun
 msgid "Clear log on run"
-msgstr "Log beim Start löschen"
+msgstr "Protokoll beim Start löschen"
 
 #: lazarusidestrconsts.lisdebugoptionsfrmdebuggergeneraloptions
 msgid "Debugger general options"
@@ -6248,7 +6252,7 @@ msgstr "Beispiele:%sBezeichner%sTMyEnum.Enum%sUnitname.Bezeichner%s#PackageName.
 
 #: lazarusidestrconsts.lisexceptiondialog
 msgid "Debugger Exception Notification"
-msgstr ""
+msgstr "Debuggerausnahmen-Nachricht"
 
 #: lazarusidestrconsts.lisexcludefilter
 msgid "Exclude Filter"
@@ -6367,7 +6371,7 @@ msgstr "Laden des Status des Faltens fehlgeschlagen"
 
 #: lazarusidestrconsts.lisfepaintdesigneritemsonidle
 msgid "Reduce designer painting"
-msgstr "Neuzeichnen des Designers verringern"
+msgstr "Designer möglichst selten neu zeichnen"
 
 #: lazarusidestrconsts.lisfepaintdesigneritemsonidlereduceoverheadforslowcompu
 msgid "Paint designer items only on idle (reduce overhead for slow computers)"
@@ -6933,7 +6937,7 @@ msgstr "Übergehen, TForm als Vorfahr verwenden"
 
 #: lazarusidestrconsts.lisimitateindentationofcurrentunitprojectorpackage
 msgid "Imitate indentation of current unit, project or package"
-msgstr ""
+msgstr "Einrückung der aktuellen Unit, des Projekts oder des Packages übernehmen"
 
 #: lazarusidestrconsts.lisimplementationcommentforclass
 msgid "Implementation comment for class"
@@ -7068,11 +7072,11 @@ msgstr "Name der aktuellen Prozedur eintragen"
 
 #: lazarusidestrconsts.lisinsertprintshorttag
 msgid "Insert PrintShort tag"
-msgstr ""
+msgstr "Druckkürzel eintragen"
 
 #: lazarusidestrconsts.lisinsertprintshorttag2
 msgid "Insert printshort tag"
-msgstr ""
+msgstr "Druckkürzel eintragen"
 
 #: lazarusidestrconsts.lisinsertprocedurehead
 msgid "insert procedure head"
@@ -7205,7 +7209,7 @@ msgstr "Ungültige Auswahl"
 
 #: lazarusidestrconsts.lisisagroupasettingcanonlybeaddedtonormalbuildmodes
 msgid "%s is a group. A setting can only be added to normal build modes."
-msgstr ""
+msgstr "%s ist eine Gruppe. Eine Einstellung kann nur normalen Kompiliermodi zugefügt werden."
 
 #: lazarusidestrconsts.lisisalreadypartoftheproject
 msgid "%s is already part of the Project."
@@ -7773,10 +7777,6 @@ msgstr "Lazarus Verzeichnis"
 msgid "Lazarus directory not found"
 msgstr "Lazarus-Verzeichnis nicht gefunden"
 
-#: lazarusidestrconsts.lislazarusdiroverride
-msgid "directory, to be used as a basedirectory"
-msgstr ""
-
 #: lazarusidestrconsts.lislazaruseditorv
 msgid "Lazarus IDE v%s"
 msgstr "Lazarus IDE v%s"
@@ -8098,8 +8098,9 @@ msgid "Link target"
 msgstr "Link-Ziel"
 
 #: lazarusidestrconsts.lislistofallcasevalues
+#, fuzzy
 msgid "list of all case values"
-msgstr ""
+msgstr "Liste alle Case-Werte"
 
 #: lazarusidestrconsts.lisloadingfailed
 msgid "Loading %s failed."
@@ -8604,7 +8605,7 @@ msgstr "Block einrücken"
 
 #: lazarusidestrconsts.lismenuinsertchangelogentry
 msgid "ChangeLog entry"
-msgstr "ChangeLog-Eintrag"
+msgstr "Eintrag für Änderungsprotokoll"
 
 #: lazarusidestrconsts.lismenuinsertcharacter
 msgid "Insert from Character Map"
@@ -9183,7 +9184,7 @@ msgstr "Quelltexteditor"
 #: lazarusidestrconsts.lismenuviewtodolist
 msgctxt "lazarusidestrconsts.lismenuviewtodolist"
 msgid "ToDo List"
-msgstr "ToDo-Liste"
+msgstr "Liste des zu Erledigenden"
 
 #: lazarusidestrconsts.lismenuviewtoggleformunit
 msgid "Toggle form/unit view"
@@ -10300,7 +10301,7 @@ msgstr "Unitname und Dateiname passen nicht zusammen.%sBeispiel: unit1.pas und U
 
 #: lazarusidestrconsts.lispeviewtodolist
 msgid "View ToDo list"
-msgstr "ToDo-Liste ansehen"
+msgstr "Liste des zu Erledigenden ansehen"
 
 #: lazarusidestrconsts.lispkgdefscompiledsrcpathaddition
 msgid "CompiledSrcPath addition"
@@ -11033,7 +11034,7 @@ msgstr "Im IDE-Konfigurationsverzeichnis speichern"
 
 #: lazarusidestrconsts.lisposaveinlpifil
 msgid "Save in .lpi file"
-msgstr "In .lpi-Datei sichern"
+msgstr "In lpi-Datei speichern"
 
 #: lazarusidestrconsts.lisposaveinlpsfileinprojectdirectory
 msgid "Save in .lps file in project directory"
@@ -11410,8 +11411,9 @@ msgid "Open Recent Project"
 msgstr "Wieder öffnen"
 
 #: lazarusidestrconsts.lisquickfixes
+#, fuzzy
 msgid "Quick fixes"
-msgstr ""
+msgstr "Schnelle Fixes"
 
 #: lazarusidestrconsts.lisquitlazarus
 msgid "Quit Lazarus"
@@ -11513,8 +11515,9 @@ msgid "Requires FPC 2.4 or above. Like Delphi resources"
 msgstr "Benötigt FPC 2.4 oder höher. Wie Delphi-Ressourcen"
 
 #: lazarusidestrconsts.lisrescan
+#, fuzzy
 msgid "Rescan"
-msgstr ""
+msgstr "Neuscan"
 
 #: lazarusidestrconsts.lisresourceloaderror
 msgid "Resource load error"
@@ -11855,7 +11858,7 @@ msgstr "Das Laden des letzten Projekts übergehen"
 
 #: lazarusidestrconsts.lissmallerratherthanfaster
 msgid "smaller rather than faster"
-msgstr "lieber kleiner als schneller"
+msgstr "Lieber kleiner als schneller"
 
 #: lazarusidestrconsts.lissmatches
 msgid "Matches"
@@ -13309,7 +13312,7 @@ msgstr "Quelltexteditor"
 
 #: lazarusidestrconsts.podaddpackageunittousessection
 msgid "Add package unit to uses section"
-msgstr "Package-Unit zur Uses-Sektion zufügen"
+msgstr "Package-Unit zum Uses-Abschnitt zufügen"
 
 #: lazarusidestrconsts.rsaddinverse
 msgid "Add Inverse"
@@ -13644,23 +13647,23 @@ msgstr "Editorbefehle"
 
 #: lazarusidestrconsts.srkmcatsyncroedit
 msgid "Syncron Editing"
-msgstr ""
+msgstr "Synchronbearbeitung"
 
 #: lazarusidestrconsts.srkmcatsyncroeditoff
 msgid "Syncron Editing (not in Cell)"
-msgstr ""
+msgstr "Synchronbearbeitung (nicht in Zelle)"
 
 #: lazarusidestrconsts.srkmcatsyncroeditsel
 msgid "Syncron Editing (while selecting)"
-msgstr ""
+msgstr "Synchronbearbeitung (bei der Auswahl)"
 
 #: lazarusidestrconsts.srkmcattemplateedit
 msgid "Template Editing"
-msgstr "Template-Bearbeitung"
+msgstr "Schablonenbearbeitung"
 
 #: lazarusidestrconsts.srkmcattemplateeditoff
 msgid "Template Editing (not in Cell)"
-msgstr "Template-Bearbeitung (nicht in Zelle)"
+msgstr "Schablonenbearbeitung (nicht in Zelle)"
 
 #: lazarusidestrconsts.srkmcattoolmenu
 msgid "Tools menu commands"
@@ -14028,7 +14031,7 @@ msgstr "Ime-String"
 
 #: lazarusidestrconsts.srkmecinsertchangelogentry
 msgid "Insert ChangeLog entry"
-msgstr "ChangeLog-Eintrag einfügen"
+msgstr "Eintrag für Änderungsprotokoll einfügen"
 
 #: lazarusidestrconsts.srkmecinsertcharacter
 msgid "Insert from Charactermap"
@@ -14052,7 +14055,7 @@ msgstr "CVS-Schlüsselwort für die ID einfügen"
 
 #: lazarusidestrconsts.srkmecinsertcvslog
 msgid "Insert CVS keyword Log"
-msgstr "CVS-Schlüsselwort für das Log einfügen"
+msgstr "CVS-Schlüsselwort für das Protokoll  einfügen"
 
 #: lazarusidestrconsts.srkmecinsertcvsname
 msgid "Insert CVS keyword Name"
@@ -14397,7 +14400,7 @@ msgstr "Zelle wählen"
 #: lazarusidestrconsts.srkmecsynpsyncroedescape
 msgctxt "lazarusidestrconsts.srkmecsynpsyncroedescape"
 msgid "Escape"
-msgstr ""
+msgstr "Abbrechen"
 
 #: lazarusidestrconsts.srkmecsynpsyncroednextcell
 msgctxt "lazarusidestrconsts.srkmecsynpsyncroednextcell"
@@ -14421,7 +14424,7 @@ msgstr "Vorherige Zelle (alle ausgewählt)"
 
 #: lazarusidestrconsts.srkmecsynpsyncroedstart
 msgid "Start Syncro edit"
-msgstr ""
+msgstr "Synchonbearbeitung beginnen"
 
 #: lazarusidestrconsts.srkmecsynptmpledcellend
 msgctxt "lazarusidestrconsts.srkmecsynptmpledcellend"
@@ -14440,11 +14443,11 @@ msgstr "Zelle wählen"
 #: lazarusidestrconsts.srkmecsynptmpledescape
 msgctxt "lazarusidestrconsts.srkmecsynptmpledescape"
 msgid "Escape"
-msgstr ""
+msgstr "Abbrechen"
 
 #: lazarusidestrconsts.srkmecsynptmpledfinish
 msgid "Finish"
-msgstr ""
+msgstr "Beenden"
 
 #: lazarusidestrconsts.srkmecsynptmplednextcell
 msgctxt "lazarusidestrconsts.srkmecsynptmplednextcell"
@@ -14661,7 +14664,7 @@ msgstr "\" ist schreibgeschützt."
 
 #: lazarusidestrconsts.uemaddwatchatcursor
 msgid "Add &Watch At Cursor"
-msgstr "Überwachung am Cursor &hinzufügen"
+msgstr "Überwachung an Cursorpos. &hinzufügen"
 
 #: lazarusidestrconsts.uembookmarkn
 msgid "Bookmark"
@@ -14715,7 +14718,7 @@ msgstr "Kodieren"
 
 #: lazarusidestrconsts.uemevaluatemodify
 msgid "&Evaluate/Modify..."
-msgstr ""
+msgstr "Üb&erprüfen/Ändern"
 
 #: lazarusidestrconsts.uemextractproc
 msgctxt "lazarusidestrconsts.uemextractproc"
@@ -14745,7 +14748,7 @@ msgstr "Todo einfügen"
 
 #: lazarusidestrconsts.ueminspect
 msgid "&Inspect..."
-msgstr ""
+msgstr "Prüfen..."
 
 #: lazarusidestrconsts.ueminvertassignment
 msgid "Invert Assignment"

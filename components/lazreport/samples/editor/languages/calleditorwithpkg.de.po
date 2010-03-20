@@ -2,7 +2,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: \n"
 "POT-Creation-Date: \n"
-"PO-Revision-Date: 2009-02-04 12:43+0100\n"
+"PO-Revision-Date: 2010-03-19 20:33+0100\n"
 "Last-Translator: Joerg Braun <jb@toolbox-mag.de>\n"
 "Language-Team: Deutsch <lazarus@miraclec.com>\n"
 "MIME-Version: 1.0\n"
@@ -14,7 +14,7 @@ msgstr ""
 
 #: maincalleditor.ceractivereport
 msgid "Active report: %s"
-msgstr ""
+msgstr "Aktiver Report: %s"
 
 #: maincalleditor.cerappcaption
 msgctxt "maincalleditor.cerappcaption"
@@ -24,7 +24,7 @@ msgstr "Testen des LazReport-Editors"
 #: maincalleditor.cercomposite
 msgctxt "maincalleditor.cercomposite"
 msgid "Composite"
-msgstr ""
+msgstr "Zusammengesetzt"
 
 #: maincalleditor.cereditreport
 msgctxt "maincalleditor.cereditreport"
@@ -33,23 +33,23 @@ msgstr "Report bearbeiten"
 
 #: maincalleditor.cerhintcloseapp
 msgid "Close application"
-msgstr ""
+msgstr "Anwendung schließen"
 
 #: maincalleditor.cerhintcomposite
 msgid "This Action will Load and Preview a composite Report"
-msgstr ""
+msgstr "Diese Aktion lädt einen zusammengesetzten Report und zeigt ihn an"
 
 #: maincalleditor.cerhinteditreport
 msgid "Edit active report"
-msgstr ""
+msgstr "Aktiven Report bearbeiten"
 
 #: maincalleditor.cerhintnewreport
 msgid "Create and edit a empty report"
-msgstr ""
+msgstr "Neuen Report anlegen und bearbeiten"
 
 #: maincalleditor.cerhintopenreport
 msgid "Open an existing report"
-msgstr ""
+msgstr "Vorhandenen Report öffnen"
 
 #: maincalleditor.cerhintprevgrid
 msgid "Print preview current DbGrid content"
@@ -57,24 +57,24 @@ msgstr ""
 
 #: maincalleditor.cerhintprevreport
 msgid "Preview active report"
-msgstr ""
+msgstr "Vorschau des aktiven Reports"
 
 #: maincalleditor.cerhintprnreport
 msgid "Print directly the active report (i.e. without preview)"
-msgstr ""
+msgstr "Aktiven Report (ohne Vorschau) direkt drucken"
 
 #: maincalleditor.cerhintthumbnails
 msgid "This Action will Load and Preview a thumbnails Report"
-msgstr ""
+msgstr "Diese Aktion lädt Thumbnail-Report und zeigt ihn an"
 
 #: maincalleditor.cerindex
 msgctxt "maincalleditor.cerindex"
 msgid "Index"
-msgstr ""
+msgstr "Index"
 
 #: maincalleditor.cerindexfields
 msgid "Index Fields: %s"
-msgstr ""
+msgstr "Index-Felder: %s"
 
 #: maincalleditor.cernewreport
 msgid "New report"
@@ -82,7 +82,7 @@ msgstr "Neuer Report"
 
 #: maincalleditor.cernone
 msgid "none"
-msgstr ""
+msgstr "keiner"
 
 #: maincalleditor.cernotimplemented
 msgid "This feature is not yet implemented!"
@@ -94,7 +94,7 @@ msgstr "Report öffnen"
 
 #: maincalleditor.ceropenreportfirst
 msgid "Open report first"
-msgstr ""
+msgstr "Report muß zuerst geöffnet werden"
 
 #: maincalleditor.cerpreparefailed
 msgid "PrepareReport Failed!"
@@ -124,7 +124,7 @@ msgstr "Schließen"
 #: TFRMMAIN.ACCCOMPOSITE.CAPTION
 msgctxt "TFRMMAIN.ACCCOMPOSITE.CAPTION"
 msgid "Composite"
-msgstr ""
+msgstr "Zusammengesetzt"
 
 #: TFRMMAIN.ACCEDITREPORT.CAPTION
 msgctxt "TFRMMAIN.ACCEDITREPORT.CAPTION"
@@ -137,7 +137,7 @@ msgstr "Nach CSV exportieren"
 
 #: TFRMMAIN.ACCEXPORTTODBG.CAPTION
 msgid "Export Debug"
-msgstr ""
+msgstr "Debug-Export"
 
 #: TFRMMAIN.ACCEXPORTTOHTML.CAPTION
 msgid "Export to html"
@@ -179,12 +179,12 @@ msgstr "Testen des LazReport-Editors"
 
 #: TFRMMAIN.LBLEXPR.CAPTION
 msgid "Expression"
-msgstr ""
+msgstr "Ausdruck"
 
 #: TFRMMAIN.LBLINDEX.CAPTION
 msgctxt "TFRMMAIN.LBLINDEX.CAPTION"
 msgid "Index"
-msgstr ""
+msgstr "Index"
 
 #: TFRMMAIN.MENUITEM1.CAPTION
 msgid "Files"
