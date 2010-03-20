@@ -140,6 +140,24 @@ resourcestring
   lisLBUsuallyUnlessThereIsNoAcceptablePlaceToBreak = '&Usually, unless there '
     +'is no acceptable place to break';
 
+  //Returns tab
+  lisReturnsReturns = 'Returns';
+  lisReturnsRemoveReturns = 'Remove returns';
+  lisReturnsInMiscBadPlaces = 'In misc. bad places';
+  lisReturnsInProperties = 'In properties';
+  lisReturnsInProcedureDefinitions = 'In procedure definitions';
+  lisReturnsInVariableDeclarations = 'In variable declarations';
+  lisReturnsInExpressions = 'In expressions';
+  lisReturnsInsertReturns = 'Insert returns';
+  lisReturnsInMiscGoodPlaces = 'In misc. good places';
+  lisReturnsOneUsesClauseItemPerLine = 'One uses clause item per line';
+  lisReturnsAfterUses = 'After uses';
+  lisReturnsReturnChars = 'Return chars';
+  lisReturnsLeaveAsIs = 'Leave as is';
+  lisReturnsConvertToCarriageReturn = 'Convert to Carriage Return (UNIX)';
+  lisReturnsConvertToCarriageReturnLinefeed = 'Convert to Carriage Return + '
+    +'Linefeed (DOS/Windows)';
+
 implementation
 
 end.

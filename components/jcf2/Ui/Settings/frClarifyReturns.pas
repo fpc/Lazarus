@@ -66,7 +66,7 @@ implementation
 {$R *.lfm}
 
 uses
-  SettingsTypes, JcfSettings, SetReturns, JcfHelp;
+  SettingsTypes, JcfSettings, SetReturns, JcfHelp, jcfuiconsts;
 
 
 constructor TfClarifyReturns.Create(AOwner: TComponent);
@@ -77,12 +77,27 @@ end;
 
 function TfClarifyReturns.GetTitle: String;
 begin
-  Result := 'Returns';
+  Result := lisReturnsReturns;
 end;
 
 procedure TfClarifyReturns.Setup(ADialog: TAbstractOptionsEditorDialog);
 begin
-  //
+  gbRemoveReturns.Caption := lisReturnsRemoveReturns;
+  cbRemoveReturns.Caption := lisReturnsInMiscBadPlaces;
+  cbRemovePropertyReturns.Caption := lisReturnsInProperties;
+  cbRemoveProcDefReturns.Caption := lisReturnsInProcedureDefinitions;
+  cbRemoveVarReturns.Caption := lisReturnsInVariableDeclarations;
+  cbRemoveExprReturns.Caption := lisReturnsInExpressions;
+
+  gbInsert.Caption := lisReturnsInsertReturns;
+  cbInsertReturns.Caption := lisReturnsInMiscGoodPlaces;
+  cbUsesClauseOnePerLine.Caption := lisReturnsOneUsesClauseItemPerLine;
+  cbBreakAfterUses.Caption := lisReturnsAfterUses;
+
+  rgReturnChars.Caption := lisReturnsReturnChars;
+  rgReturnChars.Items[0] := lisReturnsLeaveAsIs;
+  rgReturnChars.Items[1] := lisReturnsConvertToCarriageReturn;
+  rgReturnChars.Items[2] := lisReturnsConvertToCarriageReturnLinefeed;
 end;
 
 {-------------------------------------------------------------------------------
