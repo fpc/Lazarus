@@ -1961,7 +1961,10 @@ begin
   if LCLObject is TCustomForm then
   begin
     FIsActivated := TCustomForm(LCLObject).Active;
-    if vActivate = FIsActivated then
+    {do not send activate if form is already activated,
+     also do not send activate if TCustomForm.Parent is assigned
+     since it's form embedded into another control or form}
+    if (vActivate = FIsActivated) or (LCLObject.Parent <> nil) then
       exit;
   end;
 
