@@ -51,7 +51,9 @@ type
     procedure DrawLabel(
       ACanvas: TCanvas; AIndex: Integer; const ADataPoint: TPoint;
       ADown: Boolean);
-    procedure DrawLabels(ACanvas: TCanvas; ADrawDown: Boolean);
+    procedure DrawLabels(ACanvas: TCanvas);
+    function GetLabelDirection(
+      const AGraphPoint: TDoublePoint): Boolean; virtual;
     function GetNearestPoint(
       ADistFunc: TPointDistFunc; const APoint: TPoint;
       out AIndex: Integer; out AImg: TPoint; out AValue: TDoublePoint): Boolean;
@@ -130,6 +132,8 @@ type
     procedure SetSeriesColor(AValue: TColor);
     procedure SetStairs(Value: Boolean);
   protected
+    function GetLabelDirection(
+      const AGraphPoint: TDoublePoint): Boolean; override;
     procedure GetLegendItems(AItems: TChartLegendItems); override;
     function GetSeriesColor: TColor; override;
   public
@@ -390,7 +394,7 @@ begin
         DrawLine(ZeroDoublePoint, GetGraphPoint(i));
   end;
 
-  DrawLabels(ACanvas, true);
+  DrawLabels(ACanvas);
 
   if FShowPoints then
     for i := 0 to Count - 1 do begin
@@ -584,7 +588,7 @@ begin
   Marks.DrawLabel(ACanvas, labelRect, labelText);
 end;
 
-procedure TBasicPointSeries.DrawLabels(ACanvas: TCanvas; ADrawDown: Boolean);
+procedure TBasicPointSeries.DrawLabels(ACanvas: TCanvas);
 var
   g: TDoublePoint;
   i: Integer;
@@ -594,8 +598,14 @@ begin
     g := GetGraphPoint(i);
     with ParentChart do
       if IsPointInViewPort(g) then
-        DrawLabel(ACanvas, i, GraphToImage(g), ADrawDown and (g.Y < 0));
+        DrawLabel(ACanvas, i, GraphToImage(g), GetLabelDirection(g));
   end;
+end;
+
+function TBasicPointSeries.GetLabelDirection(
+  const AGraphPoint: TDoublePoint): Boolean;
+begin
+  Result := AGraphPoint.Y < 0;
 end;
 
 function TBasicPointSeries.GetNearestPoint(
@@ -633,7 +643,6 @@ const
 var
   h: Integer;
 begin
-  if not Marks.IsMarkLabelsVisible then exit;
   h := ACanvas.TextHeight(SOME_DIGIT) + Marks.Distance + 2 * MARKS_MARGIN_Y + 4;
   AMargins.Top := Max(AMargins.Top, h);
   AMargins.Bottom := Max(AMargins.Bottom, h);
@@ -738,7 +747,7 @@ begin
     DrawBar(imageBar);
   end;
 
-  DrawLabels(ACanvas, true);
+  DrawLabels(ACanvas);
 end;
 
 function TBarSeries.Extent: TDoubleRect;
@@ -993,7 +1002,14 @@ begin
       end;
     end;
   end;
-  DrawLabels(ACanvas, false);
+  DrawLabels(ACanvas);
+end;
+
+function TAreaSeries.GetLabelDirection(
+  const AGraphPoint: TDoublePoint): Boolean;
+begin
+  Unused(AGraphPoint);
+  Result := false;
 end;
 
 procedure TAreaSeries.GetLegendItems(AItems: TChartLegendItems);
