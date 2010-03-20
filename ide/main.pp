@@ -1127,9 +1127,14 @@ begin
     AddHelp([LanguageOpt]);
     AddHelp([BreakString(space+lisOverrideLanguage,75, 22)]);
     AddHelp(['']);
+    AddHelp([LazarusDirOpt,'<directory>']);
+    AddHelp([BreakString(space+lisLazarusDirOverride, 75, 22)]);
+    AddHelp(['']);
     AddHelp([lisCmdLineLCLInterfaceSpecificOptions]);
     AddHelp(['']);
     AddHelp([GetCmdLineParamDescForInterface]);
+    AddHelp(['']);
+   
     WriteHelp(AHelp.Text);
     AHelp.Free;
     exit;
@@ -1164,6 +1169,13 @@ begin
         Application.GetOptionValue('language'));
       EnvironmentOptions.LanguageID := Application.GetOptionValue('language');
     end;
+    if Application.HasOption('lazarusdir') then
+    begin
+      debugln('TMainIDE.LoadGlobalOptions overriding Lazarusdir with command line: ',
+        Application.GetOptionValue('lazarusdir'));
+      EnvironmentOptions.Lazarusdirectory:= Application.GetOptionValue('lazarusdir');
+    end;
+
     TranslateResourceStrings(EnvironmentOptions.LazarusDirectory,
                              EnvironmentOptions.LanguageID);
 

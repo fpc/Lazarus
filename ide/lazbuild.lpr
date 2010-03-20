@@ -52,6 +52,7 @@ type
     FBuildIDEOptions: string;
     FBuildRecursive: boolean;
     fCompilerOverride: String;
+    fLazarusDirOverride : String;
     fCPUOverride: String;
     fOSOverride: String;
     FSkipDependencies: boolean;
@@ -137,6 +138,7 @@ type
     property OSOverride: String read fOSOverride write fOSOverride;
     property CPUOverride: String read fCPUOverride write fCPUOverride;
     property CompilerOverride: String read fCompilerOverride write fCompilerOverride;
+    property LazarusDirOverride: String read fLazarusDirOverride write fLazarusDirOverride;
   end;
 
 var
@@ -785,6 +787,8 @@ begin
     ExternalTools.OnFreeOutputFilter:=@OnExtToolFreeOutputFilter;
     if CompilerOverride<>'' then
       CompilerFilename:=CompilerOverride;
+    if LazarusDirOverride<>'' then
+      LazarusDirectory:=Lazarusdiroverride;
   end;
 end;
 
@@ -1055,6 +1059,7 @@ begin
     LongOptions.Add('os:');
     LongOptions.Add('cpu:');
     LongOptions.Add('compiler:');
+    LongOptions.Add('lazarusdir:');
     ErrorMsg:=RepairedCheckOptions('lBrd',LongOptions,Options,NonOptions);
     if ErrorMsg<>'' then begin
       writeln(ErrorMsg);
@@ -1116,6 +1121,9 @@ begin
     // compiler
     if HasOption('compiler') then
       CompilerOverride := GetOptionValue('compiler');
+
+    if HasOption('lazarusdir') then
+      LazarusDirOverride := GetOptionValue('lazarusdir');
 
   finally
     Options.Free;

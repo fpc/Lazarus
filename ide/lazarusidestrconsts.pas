@@ -51,6 +51,7 @@ const
   EnableRemoteControlOpt='--remote-control';
   DebugLogOpt='--debug-log=';
   LanguageOpt='--language=';
+  LazarusDirOpt ='--lazarusdir=';
 
 resourcestring
   lisErrInvalidOption = 'Invalid option at position %d: "%s"';
@@ -82,6 +83,7 @@ resourcestring
   lisFileWhereDebugOutputIsWritten =
     'file, where debug output is written to. If it is '+
     'not specified, debug output is written to the console.';
+  lisLazarusDirOverride = 'directory, to be used as a basedirectory'; 
 
   // component palette
   lisSelectionTool = 'Selection tool';
