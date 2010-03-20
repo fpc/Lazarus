@@ -58,7 +58,7 @@ implementation
 {$R *.lfm}
 
 uses 
-  JcfSettings, SetReturns, JcfHelp;
+  JcfSettings, SetReturns, JcfHelp, jcfuiconsts;
 
 
 constructor TfClarifyLongLineBreaker.Create(AOwner: TComponent);
@@ -69,12 +69,17 @@ end;
 
 function TfClarifyLongLineBreaker.GetTitle: String;
 begin
-  Result := 'Line Breaking';
+  Result := lisLBLineBreaking;
 end;
 
 procedure TfClarifyLongLineBreaker.Setup(ADialog: TAbstractOptionsEditorDialog);
 begin
-  //
+  Label3.Caption := lisLBMaxLineLength;
+  rgRebreakLongLines.Caption := lisLBBreakLinesThatAreLongerThanMaxLineLength;
+  rgRebreakLongLines.Items[0] := lisLBNever;
+  rgRebreakLongLines.Items[1] := lisLBSometimesIfAGoodPlaceToBreakIsFound;
+  rgRebreakLongLines.Items[2] :=
+    lisLBUsuallyUnlessThereIsNoAcceptablePlaceToBreak;
 end;
 
 {-------------------------------------------------------------------------------

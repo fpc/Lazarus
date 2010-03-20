@@ -129,6 +129,17 @@ resourcestring
   lisAlignMaxVarianceInterface = 'Max Variance Interface';
   lisAlignMaxUnaligned = 'Max unaligned';
 
+  //Line Breaking tab
+  lisLBLineBreaking = 'Line Breaking';
+  lisLBMaxLineLength = 'Max line length';
+  lisLBBreakLinesThatAreLongerThanMaxLineLength = '&Break lines that are '
+    +'longer than max line length';
+  lisLBNever = '&Never';
+  lisLBSometimesIfAGoodPlaceToBreakIsFound = '&Sometimes, if a good place to '
+    +'break is found';
+  lisLBUsuallyUnlessThereIsNoAcceptablePlaceToBreak = '&Usually, unless there '
+    +'is no acceptable place to break';
+
 implementation
 
 end.

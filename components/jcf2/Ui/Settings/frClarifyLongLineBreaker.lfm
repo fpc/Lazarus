@@ -12,10 +12,15 @@ inherited fClarifyLongLineBreaker: TfClarifyLongLineBreaker
     ParentColor = False
   end
   object edtMaxLineLength: TSpinEdit[1]
+    AnchorSideLeft.Control = Label3
+    AnchorSideLeft.Side = asrBottom
+    AnchorSideTop.Control = Label3
+    AnchorSideTop.Side = asrCenter
     Left = 116
     Height = 21
     Top = 3
     Width = 49
+    BorderSpacing.Left = 6
     MaxValue = 999
     TabOrder = 0
   end
