@@ -99,7 +99,7 @@ begin
   QtListWidget.AttachEvents;
 
   // create our FList helper
-  QtListWidget.FList := TQtListStrings.Create(QtListWidget);
+  QtListWidget.FList := TQtListStrings.Create(AWinControl, QtListWidget);
 
   QtListWidget.OwnerDrawn := TCheckListBox(AWinControl).Style in [lbOwnerDrawFixed, lbOwnerDrawVariable];
 

@@ -374,7 +374,7 @@ begin
   QtListWidget.AttachEvents;
   
   // create our FList helper
-  QtListWidget.FList := TQtListStrings.Create(QtListWidget);
+  QtListWidget.FList := TQtListStrings.Create(AWinControl, QtListWidget);
 
   QtListWidget.OwnerDrawn := TCustomListBox(AWinControl).Style in [lbOwnerDrawFixed, lbOwnerDrawVariable];
 
@@ -434,7 +434,7 @@ var
 begin
   ListWidget := TQtListWidget(ACustomListBox.Handle);
   if not Assigned(ListWidget.FList) then
-    ListWidget.FList := TQtListStrings.Create(ListWidget);
+    ListWidget.FList := TQtListStrings.Create(ACustomListBox, ListWidget);
 
   Result := ListWidget.FList;
 end;
@@ -1133,7 +1133,7 @@ begin
   QtComboBox.OwnerDrawn := TCustomComboBox(AWinControl).Style in [csOwnerDrawFixed, csOwnerDrawVariable];
 
   // create our FList helper
-  QtComboBox.FList := TQtComboStrings.Create(QtComboBox);
+  QtComboBox.FList := TQtComboStrings.Create(AWinControl, QtComboBox);
   QtComboBox.setMaxVisibleItems(TCustomComboBox(AWinControl).DropDownCount);
 
   Result := TLCLIntfHandle(QtComboBox);
@@ -1336,7 +1336,7 @@ begin
   if not Assigned(ComboBox.FList) then
   begin
     ComboBox.BeginUpdate;
-    ComboBox.FList := TQtComboStrings.Create(ComboBox);
+    ComboBox.FList := TQtComboStrings.Create(ACustomComboBox, ComboBox);
     ComboBox.EndUpdate;
   end;
   Result := ComboBox.FList;

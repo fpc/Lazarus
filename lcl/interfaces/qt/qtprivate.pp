@@ -44,13 +44,14 @@ type
 
   TQtComboStrings = class(TStringList)
   private
+    FWinControl: TWinControl;
     FOwner: TQtComboBox;
   protected
     procedure Put(Index: Integer; const S: string); override;
     procedure InsertItem(Index: Integer; const S: string); override;
     procedure InsertItem(Index: Integer; const S: string; O: TObject); override;
   public
-    constructor Create(AOwner: TQtComboBox);
+    constructor Create(AWinControl: TWinControl; AOwner: TQtComboBox);
     procedure Assign(Source: TPersistent); override;
     procedure Clear; override;
     procedure Delete(Index: Integer); override;
@@ -65,13 +66,14 @@ type
 
   TQtListStrings = class(TStringList)
   private
+    FWinControl: TWinControl;
     FOwner: TQtListWidget;
   protected
     procedure Put(Index: Integer; const S: string); override;
     procedure InsertItem(Index: Integer; const S: string); override;
     procedure InsertItem(Index: Integer; const S: string; O: TObject); override;
   public
-    constructor Create(AOwner: TQtListWidget);
+    constructor Create(AWinControl: TWinControl; AOwner: TQtListWidget);
     procedure Assign(Source: TPersistent); override;
     procedure Clear; override;
     procedure Delete(Index: Integer); override;
@@ -424,17 +426,22 @@ begin
   FOwner.EndUpdate;
 end;
 
-constructor TQtComboStrings.Create(AOwner: TQtComboBox);
+constructor TQtComboStrings.Create(AWinControl: TWinControl;
+    AOwner: TQtComboBox);
 begin
   inherited Create;
+  FWinControl := AWinControl;
   FOwner := AOwner;
 end;
 
 procedure TQtComboStrings.Assign(Source: TPersistent);
 begin
-  FOwner.BeginUpdate;
-  inherited Assign(Source);
-  FOwner.EndUpdate;
+  if Assigned(FWinControl) and (FWinControl.HandleAllocated) then
+  begin
+    FOwner.BeginUpdate;
+    inherited Assign(Source);
+    FOwner.EndUpdate;
+  end;
 end;
 
 procedure TQtComboStrings.Clear;
@@ -445,8 +452,7 @@ begin
   C := Count;
   inherited Clear;
 
-  if Assigned(FOwner.LCLObject) and
-    (FOwner.LCLObject.HandleAllocated) then
+  if Assigned(FWinControl) and (FWinControl.HandleAllocated) then
   begin
     FOwner.BeginUpdate;
     FOwner.ClearItems;
@@ -457,9 +463,12 @@ end;
 procedure TQtComboStrings.Delete(Index: Integer);
 begin
   inherited Delete(Index);
-  FOwner.BeginUpdate;
-  FOwner.removeItem(Index);
-  FOwner.EndUpdate;
+  if Assigned(FWinControl) and (FWinControl.HandleAllocated) then
+  begin
+    FOwner.BeginUpdate;
+    FOwner.removeItem(Index);
+    FOwner.EndUpdate;
+  end;
 end;
 
 procedure TQtComboStrings.Sort;
@@ -467,10 +476,13 @@ var
   I: Integer;
 begin
   inherited Sort;
-  FOwner.BeginUpdate;
-  for I := 0 to Count - 1 do
-    FOwner.setItemText(I, Strings[I]);
-  FOwner.EndUpdate;
+  if Assigned(FWinControl) and (FWinControl.HandleAllocated) then
+  begin
+    FOwner.BeginUpdate;
+    for I := 0 to Count - 1 do
+      FOwner.setItemText(I, Strings[I]);
+    FOwner.EndUpdate;
+  end;
 end;
 
 procedure TQtComboStrings.Exchange(AIndex1, AIndex2: Integer);
@@ -478,10 +490,13 @@ var
   i: Integer;
 begin
   inherited Exchange(AIndex1, AIndex2);
-  FOwner.BeginUpdate;
-  for I := 0 to Count - 1 do
-    FOwner.setItemText(I, Strings[I]);
-  FOwner.EndUpdate;
+  if Assigned(FWinControl) and (FWinControl.HandleAllocated) then
+  begin
+    FOwner.BeginUpdate;
+    for I := 0 to Count - 1 do
+      FOwner.setItemText(I, Strings[I]);
+    FOwner.EndUpdate;
+  end;
 end;
 
 { TQtListStrings }
@@ -489,33 +504,40 @@ end;
 procedure TQtListStrings.Put(Index: Integer; const S: string);
 begin
   inherited Put(Index, S);
-  FOwner.setItemText(Index, S);
+  if Assigned(FWinControl) and (FWinControl.HandleAllocated) then
+    FOwner.setItemText(Index, S);
 end;
 
 procedure TQtListStrings.InsertItem(Index: Integer; const S: string);
 begin
   inherited InsertItem(Index, S);
-  FOwner.insertItem(Index, S);
+  if Assigned(FWinControl) and (FWinControl.HandleAllocated) then
+    FOwner.insertItem(Index, S);
 end;
 
 procedure TQtListStrings.InsertItem(Index: Integer; const S: string; O: TObject);
 begin
   inherited InsertItem(Index, S, O);
-
-  FOwner.insertItem(Index, S);
+  if Assigned(FWinControl) and (FWinControl.HandleAllocated) then
+    FOwner.insertItem(Index, S);
 end;
 
-constructor TQtListStrings.Create(AOwner: TQtListWidget);
+constructor TQtListStrings.Create(AWinControl: TWinControl;
+  AOwner: TQtListWidget);
 begin
   inherited Create;
+  FWinControl := AWinControl;
   FOwner := AOwner;
 end;
 
 procedure TQtListStrings.Assign(Source: TPersistent);
 begin
-  FOwner.BeginUpdate;
-  inherited Assign(Source);
-  FOwner.EndUpdate;
+  if Assigned(FWinControl) and (FWinControl.HandleAllocated) then
+  begin
+    FOwner.BeginUpdate;
+    inherited Assign(Source);
+    FOwner.EndUpdate;
+  end;
 end;
 
 procedure TQtListStrings.Clear;
@@ -526,8 +548,7 @@ begin
   C := Count;
   inherited Clear;
 
-  if Assigned(FOwner.LCLObject) and
-    (FOwner.LCLObject.HandleAllocated) then
+  if Assigned(FWinControl) and (FWinControl.HandleAllocated) then
   begin
     FOwner.BeginUpdate;
     FOwner.ClearItems;
@@ -538,8 +559,8 @@ end;
 procedure TQtListStrings.Delete(Index: Integer);
 begin
   inherited Delete(Index);
-
-  FOwner.removeItem(Index);
+  if Assigned(FWinControl) and (FWinControl.HandleAllocated) then
+    FOwner.removeItem(Index);
 end;
 
 procedure TQtListStrings.Sort;
@@ -547,15 +568,18 @@ var
   I: Integer;
 begin
   inherited Sort;
-
-  for I := 0 to Count - 1 do
-    FOwner.setItemText(I, Strings[I]);
+  if Assigned(FWinControl) and (FWinControl.HandleAllocated) then
+  begin
+    for I := 0 to Count - 1 do
+      FOwner.setItemText(I, Strings[I]);
+  end;
 end;
 
 procedure TQtListStrings.Exchange(AIndex1, AIndex2: Integer);
 begin
   inherited Exchange(AIndex1, AIndex2);
-  FOwner.exchangeItems(AIndex1, AIndex2);
+  if Assigned(FWinControl) and (FWinControl.HandleAllocated) then
+    FOwner.exchangeItems(AIndex1, AIndex2);
 end;
 
 end.
