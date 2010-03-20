@@ -4814,6 +4814,62 @@ begin
 end;
 
 {------------------------------------------------------------------------------
+  Method:  SetWindowPos
+  Params: HWnd            - handle of window
+          HWndInsertAfter - placement-order handle
+          X               - horizontal position
+          Y               - vertical position
+          CX              - width
+          CY              - height
+          UFlags          - window-positioning flags
+  Returns: If the function succeeds
+
+  Changes the size, position, and Z order of a child, pop-up, or top-level
+  window.
+ ------------------------------------------------------------------------------}
+function TQtWidgetSet.SetWindowPos(hWnd: HWND; hWndInsertAfter: HWND; X, Y, cx,
+  cy: Integer; uFlags: UINT): Boolean;
+var
+  DisableUpdates: boolean;
+begin
+  {$ifdef VerboseQtWinAPI}
+    WriteLn('[WinAPI SetWindowPos] Handle: ', dbghex(hWnd),
+      ' hWndInsertAfter: ',dbghex(hWnd));
+  {$endif}
+  Result := hWnd <> 0;
+  if not Result then
+    exit;
+
+  DisableUpdates := (SWP_NOREDRAW and uFlags) <> 0;
+  if DisableUpdates then
+    TQtWidget(Hwnd).setUpdatesEnabled(False);
+  try
+    if (SWP_NOMOVE and uFlags) = 0 then
+      TQtWidget(Hwnd).move(X, Y);
+
+    if (SWP_NOSIZE and uFlags) = 0 then
+      TQtWidget(Hwnd).resize(CX, CY);
+
+    if (SWP_NOZORDER and uFlags) = 0 then
+    begin
+      case hWndInsertAfter of
+        HWND_TOP:
+          begin
+            TQtWidget(hWnd).raiseWidget;
+            if (SWP_NOACTIVATE and uFlags) = 0 then
+              TQtWidget(hWnd).Activate;
+          end;
+        HWND_BOTTOM: TQtWidget(hWnd).lowerWidget;
+        {TODO: HWND_TOPMOST ,HWND_NOTOPMOST}
+      end;
+    end;
+  finally
+    if DisableUpdates then
+      TQtWidget(Hwnd).setUpdatesEnabled(True);
+  end;
+end;
+
+{------------------------------------------------------------------------------
   Method:  SetWindowRgn
   Params:  hWnd    - handle of the widget
            hRgn    - handle of the region

@@ -194,6 +194,8 @@ function SetViewPortExtEx(DC: HDC; XExtent, YExtent : Integer; OldSize: PSize): 
 function SetViewPortOrgEx(DC: HDC; NewX, NewY: Integer; OldPoint: PPoint): Boolean; override;
 function SetWindowExtEx(DC: HDC; XExtent, YExtent: Integer; OldSize: PSize): Boolean; override;
 function SetWindowOrgEx(DC : HDC; NewX, NewY : Integer; OldPoint: PPoint) : Boolean; override;
+function SetWindowPos(hWnd: HWND; hWndInsertAfter: HWND;
+       X, Y, cx, cy: Integer; uFlags: UINT): Boolean;  override;
 function SetWindowRgn(hWnd: HWND; hRgn: HRGN; bRedraw: Boolean):longint; override;
 function ShowCaret(hWnd: HWND): Boolean; override;
 function ShowScrollBar(Handle: HWND; wBar: Integer; bShow: Boolean): Boolean; override;
