@@ -144,6 +144,8 @@ type
     procedure DrawLabel(
       ACanvas: TCanvas; const ALabelRect: TRect; const AText: String);
     function IsMarkLabelsVisible: Boolean;
+    function MeasureLabel(
+      ACanvas: TCanvas; const AText: String; ADown: Boolean): TRect;
   published
     // If false, labels may overlap axises and legend.
     property Clipped: Boolean read FClipped write SetClipped default true;
@@ -242,6 +244,9 @@ type
   end;
 
 implementation
+
+uses
+  Types;
 
 { TChartPen }
 
@@ -437,6 +442,22 @@ end;
 function TChartMarks.IsMarkLabelsVisible: Boolean;
 begin
   Result := Visible and (Style <> smsNone) and (Format <> '');
+end;
+
+function TChartMarks.MeasureLabel(
+  ACanvas: TCanvas; const AText: String; ADown: Boolean): TRect;
+var
+  labelSize: TSize;
+begin
+  ACanvas.Font.Assign(LabelFont);
+  labelSize := ACanvas.TextExtent(AText);
+  Result.Left := - labelSize.cx div 2;
+  if ADown then
+    Result.Top := Distance
+  else
+    Result.Top := - Distance - labelSize.cy;
+  Result.BottomRight := Result.TopLeft + labelSize;
+  InflateRect(Result, MARKS_MARGIN_X, MARKS_MARGIN_Y);
 end;
 
 procedure TChartMarks.SetClipped(const AValue: Boolean);

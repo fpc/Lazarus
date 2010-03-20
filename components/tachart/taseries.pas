@@ -560,19 +560,12 @@ var
   labelRect: TRect;
   dummy: TRect = (Left: 0; Top: 0; Right: 0; Bottom: 0);
   labelText: String;
-  labelSize: TSize;
 begin
   labelText := FormattedMark(AIndex);
   if labelText = '' then exit;
 
-  labelSize := ACanvas.TextExtent(labelText);
-  labelRect.Left := ADataPoint.X - labelSize.cx div 2;
-  if ADown then
-    labelRect.Top := ADataPoint.Y + Marks.Distance
-  else
-    labelRect.Top := ADataPoint.Y - Marks.Distance - labelSize.cy;
-  labelRect.BottomRight := labelRect.TopLeft + labelSize;
-  InflateRect(labelRect, MARKS_MARGIN_X, MARKS_MARGIN_Y);
+  labelRect := Marks.MeasureLabel(ACanvas, labelText, ADown);
+  OffsetRect(labelRect, ADataPoint.X, ADataPoint.Y);
   if
     not IsRectEmpty(FPrevLabelRect) and
     IntersectRect(dummy, labelRect, FPrevLabelRect)
