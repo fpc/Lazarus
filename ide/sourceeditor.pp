@@ -3244,7 +3244,10 @@ end;
 
 procedure TSourceEditor.EditorEnter(Sender: TObject);
 begin
-  Activate;
+  if (FSourceNoteBook.FUpdateLock = 0) and
+    (FSourceNoteBook.PageIndex = PageIndex)
+  then
+    Activate;
 end;
 
 procedure TSourceEditor.EditorActivateSyncro(Sender: TObject);
