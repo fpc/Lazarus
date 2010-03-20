@@ -15,11 +15,10 @@ interface
 {$I LR_Vers.inc}
 
 uses
-  SysUtils, Classes, MaskUtils, Controls, FileUtil,
-  Forms, ComCtrls, Dialogs, Menus,
-  Variants, DB,Graphics,Printers,osPrinters,XMLConf,
-  LCLType,LCLIntf,TypInfo,LCLProc, SysUtilsAdds,
-  LR_View, LR_Pars, LR_Intrp, LR_DSet, LR_DBSet, LR_DBRel, LR_Const;
+  SysUtils, Classes, MaskUtils, Controls, FileUtil, Forms, ComCtrls, Dialogs,
+  Menus, Variants, DB, Graphics, Printers, osPrinters, XMLConf, LCLType, LCLIntf,
+  TypInfo, LCLProc,{$IFDEF UNIX}SysUtilsAdds,{$ENDIF} LR_View, LR_Pars, LR_Intrp,
+  LR_DSet, LR_DBSet, LR_DBRel, LR_Const;
 
 const
 // object flags
@@ -2453,7 +2452,6 @@ type
 const
   gl:string='ÀÅ¨ÈÎÓÛÝÞßàåèîóûýþ';
   r_sogl:string='ÚÜúü';
-  spaces: set of Char = [' ', '.', ',', '-'];
 
 function BreakWord(s: string): TWordBreaks;
 
@@ -2702,9 +2700,6 @@ begin
   else
     OutMemo;
 end;
-
-var
-  DxArray: Array[0..2047] of Integer;
 
 procedure TfrMemoView.ShowMemo;
 var
@@ -4247,7 +4242,10 @@ begin
     // todo: TBlobField.AssignTo is not implemented yet
     s := TDataset(FDataset).CreateBlobStream(TField(b),bmRead);
     if s.Size = 0 then
-      Picture.Clear
+      begin
+        Picture.Clear;
+        s.Free;
+      end
     else
     begin
       try
@@ -8893,7 +8891,7 @@ end;
 
 function TfrReport.FindObject(const aName: String): TfrObject;
 var
-  i, j: Integer;
+  i: Integer;
 begin
   Result := nil;
   for i := 0 to Pages.Count - 1 do
@@ -9008,7 +9006,6 @@ function TfrExportFilter.AddData(x, y: Integer; view: TfrView):pointer;
 var
   p: PfrTextRec;
   s: string;
-  i: Integer;
 begin
   result := nil;
 
@@ -9806,7 +9803,6 @@ begin
 end;
 
 procedure TfrObject.SetName(const AValue: string);
-var i   : Integer;
 begin
   if fName=AValue then exit;
 
@@ -10061,7 +10057,6 @@ begin
 end;
 
 procedure TfrPageDialog.InitReport;
-var i : Integer;
 begin
   //inherited InitReport;
   fHasVisibleControls:=False;
