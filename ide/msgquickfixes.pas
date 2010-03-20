@@ -114,7 +114,7 @@ begin
   OldChange:=LazarusIDE.OpenEditorsOnCodeToolChange;
   LazarusIDE.OpenEditorsOnCodeToolChange:=true;
   try
-    LazarusIDE.SaveSourceEditorChangesToCodeCache(-1, -1);
+    LazarusIDE.SaveSourceEditorChangesToCodeCache(nil);
     if not CodeToolBoss.RemoveUnitFromAllUsesSections(CodeBuf,UnneededUnitname)
     then begin
       LazarusIDE.DoJumpToCodeToolBossError;
@@ -229,7 +229,7 @@ begin
       end;
     end;
   end;
-  LazarusIDE.SaveSourceEditorChangesToCodeCache(-1, -1);
+  LazarusIDE.SaveSourceEditorChangesToCodeCache(nil);
   if not CodeToolBoss.FindUnitInAllUsesSections(CodeBuf,MissingUnitname,
     NamePos,InPos)
   then begin
@@ -366,7 +366,7 @@ procedure TQuickFixLinkerUndefinedReference.Execute(const Msg: TIDEMessageLine;
       exit;
     end;
     LazarusIDE.DoOpenFileAndJumpToPos(NewCode.Filename,Point(NewX,NewY),
-                                      NewTopLine,-1,[]);
+                                      NewTopLine,-1,-1,[]);
   end;
   
 begin
@@ -458,7 +458,7 @@ begin
     DebugLn(['TQuickFixClassWithAbstractMethods.Execute Declaration at ',NewCode.Filename,' ',NewX,',',NewY]);
 
     if LazarusIDE.DoOpenFileAndJumpToPos(NewCode.Filename,
-      Point(NewX,NewY),NewTopLine,-1,[])<>mrOk
+      Point(NewX,NewY),NewTopLine,-1,-1,[])<>mrOk
     then begin
       DebugLn(['TQuickFixClassWithAbstractMethods.Execute failed opening ',NewCode.Filename]);
       exit;

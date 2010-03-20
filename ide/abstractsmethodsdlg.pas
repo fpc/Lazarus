@@ -279,7 +279,7 @@ begin
     end;
     
     LazarusIDE.DoOpenFileAndJumpToPos(NewCode.Filename,Point(NewX,NewY),
-                                      NewTopLine,-1,[]);
+                                      NewTopLine,-1,-1,[]);
   finally
     CodeToolBoss.FreeListOfPCodeXYPosition(NewList);
   end;

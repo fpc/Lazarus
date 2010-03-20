@@ -168,7 +168,7 @@ function ParseCode(CodeBuf: TCodeBuffer; out ACodeTool: TCodeTool): boolean;
 // commits any editor changes to the codetools, parses the unit
 // and if there is a syntax error, tells the IDE jump to it
 begin
-  LazarusIDE.SaveSourceEditorChangesToCodeCache(-1);
+  LazarusIDE.SaveSourceEditorChangesToCodeCache(nil);
   if not CodeToolBoss.Explore(CodeBuf,ACodeTool,false) then begin
     LazarusIDE.DoJumpToCodeToolBossError;
     Result:=false;

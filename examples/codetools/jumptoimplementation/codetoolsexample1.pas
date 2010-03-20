@@ -73,7 +73,7 @@ begin
           then begin
             // jump
             if LazarusIDE.DoOpenFileAndJumpToPos(NewCodePos.Code.Filename,
-                      Point(NewCodePos.X,NewCodePos.Y),NewTopLine,-1,
+                      Point(NewCodePos.X,NewCodePos.Y),NewTopLine,-1,-1,
                       [ofRegularFile,ofUseCache])=mrOk
             then
               Ok:=true;

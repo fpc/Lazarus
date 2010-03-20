@@ -379,7 +379,7 @@ type
     // SourceNotebook events
     procedure OnSrcNoteBookActivated(Sender: TObject);
     procedure OnSrcNoteBookAddJumpPoint(ACaretXY: TPoint; ATopLine: integer;
-      APageIndex: integer; DeleteForwardHistory: boolean);
+      AEditor: TSourceEditor; DeleteForwardHistory: boolean);
     procedure OnSrcNoteBookClickLink(Sender: TObject;
       Button: TMouseButton; Shift: TShiftstate; X, Y: Integer);
     procedure OnSrcNoteBookMouseLink(
@@ -403,7 +403,7 @@ type
     procedure OnSrcNotebookShowCodeContext(JumpToError: boolean;
                                            out Abort: boolean);
     procedure OnSrcNotebookJumpToHistoryPoint(var NewCaretXY: TPoint;
-      var NewTopLine, NewPageIndex: integer; JumpAction: TJumpHistoryAction);
+      var NewTopLine: integer; var DestEditor: TSourceEditor; JumpAction: TJumpHistoryAction);
     procedure OnSrcNotebookReadOnlyChanged(Sender: TObject);
     procedure OnSrcNotebookSaveAll(Sender: TObject);
     procedure OnSrcNotebookShowHintForSource(SrcEdit: TSourceEditor;
@@ -735,28 +735,41 @@ type
         var NewFilename: string; const NewSource: string;
         NewFlags: TNewFlags; NewOwner: TObject): TModalResult; override;
     function DoNewOther: TModalResult;
+
     function DoSaveEditorFile(PageIndex:integer;
-                              Flags: TSaveFlags): TModalResult; override; deprecated;
+                              Flags: TSaveFlags): TModalResult; override;
+                              deprecated {$IFDEF VER2_5}'use method with EditorObject'{$ENDIF};   // deprecated in 0.9.29 March 2010
     function DoSaveEditorFile(AEditor: TSourceEditorInterface;
-        Flags: TSaveFlags): TModalResult; override;
+                              Flags: TSaveFlags): TModalResult; override;
+
     function DoCloseEditorFile(PageIndex:integer;
-                               Flags: TCloseFlags):TModalResult; override; //deprecated;
+                               Flags: TCloseFlags):TModalResult; override;
+                               deprecated {$IFDEF VER2_5}'use method with EditorObject'{$ENDIF};   // deprecated in 0.9.29 March 2010
     function DoCloseEditorFile(AEditor: TSourceEditorInterface;
-        Flags: TCloseFlags):TModalResult; override;
+                               Flags: TCloseFlags):TModalResult; override;
     function DoCloseEditorFile(const Filename: string;
-        Flags: TCloseFlags): TModalResult; override;
+                               Flags: TCloseFlags): TModalResult; override;
+
 
     function DoOpenEditorFile(AFileName: string; PageIndex: integer;
-                              Flags: TOpenFlags): TModalResult; override; //deprecated;
+                              Flags: TOpenFlags): TModalResult; override;
+                              deprecated {$IFDEF VER2_5}'use method with WindowIndex'{$ENDIF};   // deprecated in 0.9.29 March 2010
     function DoOpenEditorFile(AFileName:string; PageIndex, WindowIndex: integer;
                               Flags: TOpenFlags): TModalResult; override;
 
     function DoOpenFileAtCursor(Sender: TObject): TModalResult;
     function DoOpenFileAndJumpToIdentifier(const AFilename, AnIdentifier: string;
         PageIndex: integer; Flags: TOpenFlags): TModalResult; override;
+        deprecated {$IFDEF VER2_5}'use method with WindowIndex'{$ENDIF};   // deprecated in 0.9.29 March 2010
+    function DoOpenFileAndJumpToIdentifier(const AFilename, AnIdentifier: string;
+        PageIndex, WindowIndex: integer; Flags: TOpenFlags): TModalResult; override;
     function DoOpenFileAndJumpToPos(const AFilename: string;
         const CursorPosition: TPoint; TopLine: integer;
         PageIndex: integer; Flags: TOpenFlags): TModalResult; override;
+        deprecated {$IFDEF VER2_5}'use method with WindowIndex'{$ENDIF};   // deprecated in 0.9.29 March 2010
+    function DoOpenFileAndJumpToPos(const AFilename: string;
+        const CursorPosition: TPoint; TopLine: integer;
+        PageIndex, WindowIndex: integer; Flags: TOpenFlags): TModalResult; override;
     function DoRevertEditorFile(const Filename: string): TModalResult; override;
     function DoOpenComponent(const UnitFilename: string; OpenFlags: TOpenFlags;
                              CloseFlags: TCloseFlags;
@@ -843,6 +856,7 @@ type
                              out ActiveUnitInfo: TUnitInfo); override;
     procedure GetUnitWithPageIndex(PageIndex, WindowIndex: integer;
           var ActiveSourceEditor: TSourceEditor; var ActiveUnitInfo: TUnitInfo); override;
+          deprecated; // deprecated in 0.9.29 March 2010
     procedure GetDesignerUnit(ADesigner: TDesigner;
           var ActiveSourceEditor: TSourceEditor; var ActiveUnitInfo: TUnitInfo); override;
     function GetDesignerWithProjectFile(AFile: TLazProjectFile;
@@ -858,7 +872,7 @@ type
     procedure GetUnitWithPersistent(APersistent: TPersistent;
           var ActiveSourceEditor: TSourceEditor; var ActiveUnitInfo: TUnitInfo); override;
     function CreateSrcEditPageName(const AnUnitName, AFilename: string;
-      IgnorePageIndex: integer): string;
+      IgnoreEditor: TSourceEditor): string;
     function GetAncestorUnit(AnUnitInfo: TUnitInfo): TUnitInfo;
     function GetAncestorLookupRoot(AnUnitInfo: TUnitInfo): TComponent;
     procedure UpdateSaveMenuItemsAndButtons(UpdateSaveAll: boolean);
@@ -914,10 +928,12 @@ type
                         AddJumpPoint: boolean; FocusEditor: Boolean = True; MarkLine: Boolean = False): TModalResult; override;
     procedure DoJumpToCodeToolBossError; override;
     procedure UpdateSourceNames;
-    function NeedSaveSourceEditorChangesToCodeCache(PageIndex: integer): boolean; override; deprecated;
-    function NeedSaveSourceEditorChangesToCodeCache(PageIndex, WindowIndex: integer): boolean; override;
-    function SaveSourceEditorChangesToCodeCache(PageIndex: integer): boolean; override; deprecated;
-    function SaveSourceEditorChangesToCodeCache(PageIndex, WindowIndex: integer): boolean; override;
+    function NeedSaveSourceEditorChangesToCodeCache(PageIndex: integer): boolean; override;
+        deprecated {$IFDEF VER2_5}'use method with EditorObject'{$ENDIF};   // deprecated in 0.9.29 March 2010
+    function NeedSaveSourceEditorChangesToCodeCache(AEditor: TSourceEditorInterface): boolean; override;
+    function SaveSourceEditorChangesToCodeCache(PageIndex: integer): boolean; override;
+        deprecated {$IFDEF VER2_5}'use method with EditorObject'{$ENDIF};   // deprecated in 0.9.29 March 2010
+    function SaveSourceEditorChangesToCodeCache(AEditor: TSourceEditorInterface): boolean; override;
     procedure ApplyCodeToolChanges;
     procedure DoJumpToProcedureSection;
     procedure DoFindDeclarationAtCursor;
@@ -1510,7 +1526,7 @@ begin
   if Sender is TObjectInspectorDlg then begin
     AnInspector:=TObjectInspectorDlg(Sender);
     if FindDeclarationOfOIProperty(AnInspector,nil,Code,Caret,NewTopLine) then
-      DoOpenFileAndJumpToPos(Code.Filename,Caret,NewTopLine,-1,[]);
+      DoOpenFileAndJumpToPos(Code.Filename,Caret,NewTopLine,-1,-1,[]);
   end;
 end;
 
@@ -1939,25 +1955,25 @@ begin
   OnSearchAgainClicked := @FindInFilesDialog.InitFromLazSearch;
 
   // connect search menu to sourcenotebook
-  MainIDEBar.itmSearchFind.OnClick := @SourceNotebook.FindClicked;
-  MainIDEBar.itmSearchFindNext.OnClick := @SourceNotebook.FindNextClicked;
-  MainIDEBar.itmSearchFindPrevious.OnClick := @SourceNotebook.FindPreviousClicked;
+  MainIDEBar.itmSearchFind.OnClick := @SourceEditorManager.FindClicked;
+  MainIDEBar.itmSearchFindNext.OnClick := @SourceEditorManager.FindNextClicked;
+  MainIDEBar.itmSearchFindPrevious.OnClick := @SourceEditorManager.FindPreviousClicked;
   MainIDEBar.itmSearchFindInFiles.OnClick := @mnuSearchFindInFiles;
-  MainIDEBar.itmSearchReplace.OnClick := @SourceNotebook.ReplaceClicked;
-  MainIDEBar.itmIncrementalFind.OnClick := @SourceNotebook.IncrementalFindClicked;
-  MainIDEBar.itmGotoLine.OnClick := @SourceNotebook.GotoLineClicked;
-  MainIDEBar.itmJumpBack.OnClick := @SourceNotebook.JumpBackClicked;
-  MainIDEBar.itmJumpForward.OnClick := @SourceNotebook.JumpForwardClicked;
-  MainIDEBar.itmAddJumpPoint.OnClick := @SourceNotebook.AddJumpPointClicked;
-  MainIDEBar.itmJumpHistory.OnClick := @SourceNotebook.ViewJumpHistoryClicked;
-  MainIDEBar.itmJumpToNextBookmark.OnClick := @SourceNotebook.BookMarkNextClicked;
-  MainIDEBar.itmJumpToPrevBookmark.OnClick := @SourceNotebook.BookMarkPrevClicked;
+  MainIDEBar.itmSearchReplace.OnClick := @SourceEditorManager.ReplaceClicked;
+  MainIDEBar.itmIncrementalFind.OnClick := @SourceEditorManager.IncrementalFindClicked;
+  MainIDEBar.itmGotoLine.OnClick := @SourceEditorManager.GotoLineClicked;
+  MainIDEBar.itmJumpBack.OnClick := @SourceEditorManager.JumpBackClicked;
+  MainIDEBar.itmJumpForward.OnClick := @SourceEditorManager.JumpForwardClicked;
+  MainIDEBar.itmAddJumpPoint.OnClick := @SourceEditorManager.AddJumpPointClicked;
+  MainIDEBar.itmJumpHistory.OnClick := @SourceEditorManager.ViewJumpHistoryClicked;
+  MainIDEBar.itmJumpToNextBookmark.OnClick := @SourceEditorManager.BookMarkNextClicked;
+  MainIDEBar.itmJumpToPrevBookmark.OnClick := @SourceEditorManager.BookMarkPrevClicked;
   MainIDEBar.itmFindBlockStart.OnClick:=@mnuSearchFindBlockStart;
   MainIDEBar.itmFindBlockOtherEnd.OnClick:=@mnuSearchFindBlockOtherEnd;
   MainIDEBar.itmFindDeclaration.OnClick:=@mnuSearchFindDeclaration;
   MainIDEBar.itmOpenFileAtCursor.OnClick:=@mnuOpenFileAtCursorClicked;
 
-  SourceNotebook.InitMacros(GlobalMacroList);
+  SourceEditorManager.InitMacros(GlobalMacroList);
 end;
 
 procedure TMainIDE.SetupTransferMacros;
@@ -2504,7 +2520,7 @@ end;
 procedure TMainIDE.LoadMenuShortCuts;
 begin
   inherited LoadMenuShortCuts;
-  SourceNotebook.SetupShortCuts;
+  SourceEditorManager.SetupShortCuts;
   DebugBoss.SetupMainBarShortCuts;
 end;
 
@@ -2722,7 +2738,7 @@ end;
 
 procedure TMainIDE.mnuSaveAsClicked(Sender: TObject);
 begin
-  if SourceNoteBook.PageIndex < 0 then exit;
+  if SourceEditorManager.ActiveEditor = nil then exit;
   DoSaveEditorFile(SourceEditorManager.ActiveEditor, [sfSaveAs, sfCheckAmbiguousFiles]);
 end;
 
@@ -2789,7 +2805,7 @@ begin
       i:=ActiveSrcNoteBook.PageCount-1;
       if i=PageIndex then dec(i);
       if i<0 then break;
-      if DoCloseEditorFile(i,[cfSaveFirst])<>mrOk then exit;
+      if DoCloseEditorFile(ActiveSrcNoteBook.FindSourceEditorWithPageIndex(i),[cfSaveFirst])<>mrOk then exit;
       if i<PageIndex then PageIndex:=i;
     until false;
   end else
@@ -3475,7 +3491,7 @@ end;
 
 procedure TMainIDE.mnuViewSourceEditorClicked(Sender: TObject);
 begin
-  SourceNotebook.ShowOnTop;
+  SourceEditorManager.ShowActiveWindowOnTop(False);
 end;
 
 {------------------------------------------------------------------------------}
@@ -3685,10 +3701,10 @@ begin
   while (Project1 = nil) do
   begin
     case ShowProjectWizardDlg(ARecentProject) of
-      tpws_new:
-        mnuNewProjectClicked(Sender);
-      tpws_open:
-        mnuOpenProjectClicked(Sender);
+    tpws_new:
+      mnuNewProjectClicked(Sender);
+    tpws_open:
+      mnuOpenProjectClicked(Sender);
       tpws_openRecent:
         begin
           ARecentProject := ExpandFileNameUTF8(ARecentProject);
@@ -3701,10 +3717,10 @@ begin
               AddRecentProjectFileToEnvironment(ARecentProject);
           end;
         end;
-      tpws_convert:
-        mnuToolConvertDelphiProjectClicked(Sender);
-      tpws_closeIDE:
-        if QuitIDE then exit;
+    tpws_convert:
+      mnuToolConvertDelphiProjectClicked(Sender);
+    tpws_closeIDE:
+      if QuitIDE then exit;
     end;
   end;
 end;
@@ -4196,7 +4212,7 @@ begin
 end;
 
 function TMainIDE.CreateSrcEditPageName(const AnUnitName, AFilename: string;
-  IgnorePageIndex: integer): string;
+  IgnoreEditor: TSourceEditor): string;
 begin
   Result:=AnUnitName;
   if Result='' then
@@ -4205,7 +4221,7 @@ begin
     Result:=ExtractFileNameOnly(Result)
   else
     Result:=ExtractFileName(Result);
-  Result:=SourceNoteBook.FindUniquePageName(Result,IgnorePageIndex);
+  Result:=SourceEditorManager.FindUniquePageName(Result,IgnoreEditor);
 end;
 
 procedure TMainIDE.OnLoadIDEOptions(Sender: TObject; AOptions: TAbstractIDEOptions);
@@ -7556,14 +7572,20 @@ var NewSrcEdit: TSourceEditor;
   NewErrorLine: LongInt;
   NewExecutionLine: LongInt;
   FoldState: String;
+  SrcNotebook: TSourceNotebook;
 begin
   AFilename:=AnUnitInfo.Filename;
+  { $note Todo:remap window index in all unit infos}
+  if (WindowIndex < 0) or (WindowIndex >= SourceEditorManager.SourceWindowCount) then
+    SrcNotebook := SourceEditorManager.ActiveOrNewSourceWindow
+  else
+    SrcNotebook := SourceEditorManager.SourceWindows[WindowIndex];
 
   // get syntax highlighter type
   if not AnUnitInfo.CustomHighlighter then
     AnUnitInfo.SyntaxHighlighter:=FilenameToLazSyntaxHighlighter(AFilename);
 
-  SourceNotebook.IncUpdateLock;
+  SrcNotebook.IncUpdateLock;
   try
     //DebugLn(['TMainIDE.DoOpenFileInSourceEditor Revert=',ofRevert in Flags,' ',AnUnitInfo.Filename,' PageIndex=',PageIndex]);
     if (not (ofRevert in Flags)) or (PageIndex<0) then begin
@@ -7572,8 +7594,8 @@ begin
       // update marks and cursor positions in Project1, so that merging the old
       // settings during restoration will work
       SaveSourceEditorProjectSpecificSettings;
-      NewSrcEdit:=SourceNotebook.NewFile(CreateSrcEditPageName(AnUnitInfo.Unit_Name,
-        AFilename,-1),AnUnitInfo.Source,false);
+      NewSrcEdit:=SrcNotebook.NewFile(CreateSrcEditPageName(AnUnitInfo.Unit_Name,
+        AFilename, nil),AnUnitInfo.Source,false);
       NewSrcEdit.EditorComponent.BeginUpdate;
       MainIDEBar.itmFileClose.Enabled:=True;
       MainIDEBar.itmFileCloseAll.Enabled:=True;
@@ -7626,13 +7648,16 @@ begin
     NewSrcEdit.EditorComponent.EndUpdate;
     AnUnitInfo.Loaded:=true;
   finally
-    SourceNotebook.DecUpdateLock;
+    SrcNotebook.DecUpdateLock;
   end;
 
   // update statusbar and focus editor
-  if (not (ofProjectLoading in Flags)) then
-    SourceNotebook.FocusEditor;
-  SourceNoteBook.UpdateStatusBar;
+  if (not (ofProjectLoading in Flags)) then begin
+    SrcNotebook.ShowOnTop;
+    SrcNotebook.FocusEditor;
+  end;
+  SrcNoteBook.UpdateStatusBar;
+  SrcNotebook.BringToFront;
 
   Result:=mrOk;
 end;
@@ -7661,10 +7686,11 @@ var
   AProject: TProject;
   LRSFilename: String;
   ResType: TResourceType;
+  SrcNoteBook: TSourceNotebook;
 begin
   //debugln('TMainIDE.DoNewEditorFile A NewFilename=',NewFilename);
   // empty NewFilename is ok, it will be auto generated
-  SaveSourceEditorChangesToCodeCache(-1, -1);
+  SaveSourceEditorChangesToCodeCache(nil);
 
   // convert macros in filename
   if nfConvertMacros in NewFlags then begin
@@ -7745,12 +7771,13 @@ begin
 
   if nfOpenInEditor in NewFlags then begin
     // open a new sourceeditor
-    SourceNotebook.NewFile(CreateSrcEditPageName(NewUnitInfo.Unit_Name,
-                                                 NewUnitInfo.Filename,-1),
+    SrcNoteBook := SourceEditorManager.ActiveOrNewSourceWindow;
+    SrcNoteBook.NewFile(CreateSrcEditPageName(NewUnitInfo.Unit_Name,
+                                              NewUnitInfo.Filename, nil),
                            NewUnitInfo.Source,true);
     MainIDEBar.itmFileClose.Enabled:=True;
     MainIDEBar.itmFileCloseAll.Enabled:=True;
-    NewSrcEdit:=SourceNotebook.GetActiveSE;
+    NewSrcEdit := SrcNoteBook.GetActiveSE;
     NewSrcEdit.SyntaxHighlighterType:=NewUnitInfo.SyntaxHighlighter;
     NewUnitInfo.EditorComponent := NewSrcEdit;
 
@@ -7925,7 +7952,7 @@ begin
 
   // update codetools cache and collect Modified flags
   if not (sfProjectSaving in Flags) then
-    SaveSourceEditorChangesToCodeCache(-1, -1);
+    SaveSourceEditorChangesToCodeCache(nil);
 
   // if this is a new unit then a simple Save becomes a SaveAs
   if (not (sfSaveToTestDir in Flags)) and (AnUnitInfo.IsVirtual) then
@@ -8057,7 +8084,7 @@ begin
     AEditor.Modified:=false;
     UpdateSaveMenuItemsAndButtons(not (sfProjectSaving in Flags));
   end;
-  SourceNoteBook.UpdateStatusBar;
+  TSourceEditor(AEditor).SourceNotebook.UpdateStatusBar;
 
   // fix all references
   NewUnitName:='';
@@ -8129,7 +8156,7 @@ begin
   if AnUnitInfo=nil then begin
     // we need to close the page anyway or else we might enter a loop
     DebugLn('TMainIDE.DoCloseEditorFile INCONSISTENCY: NO AnUnitInfo');
-    SourceNoteBook.CloseFile(AnUnitInfo.EditorIndex);
+    SourceEditorManager.CloseFile(AnUnitInfo.EditorComponent);
     Result:=mrOk;
     exit;
   end;
@@ -8179,8 +8206,8 @@ begin
   CloseUnitComponent(AnUnitInfo,[]);
 
   // close source editor
-  SourceNoteBook.CloseFile(AnUnitInfo.EditorIndex);
-  MainIDEBar.itmFileClose.Enabled:=SourceNoteBook.PageCount > 0;
+  SourceEditorManager.CloseFile(AnUnitInfo.EditorComponent);
+  MainIDEBar.itmFileClose.Enabled:=SourceEditorManager.SourceEditorCount > 0;
   MainIDEBar.itmFileCloseAll.Enabled:=MainIDEBar.itmFileClose.Enabled;
 
   // free sources
@@ -8509,10 +8536,10 @@ begin
   MainUnitInfo:=Project1.MainUnitInfo;
 
   // check if main unit is already open in source editor
-  if (MainUnitInfo.EditorIndex>=0) and (not (ofProjectLoading in Flags)) then
+  if (MainUnitInfo.EditorComponent <> nil) and (not (ofProjectLoading in Flags)) then
   begin
     // already loaded -> switch to source editor
-    SourceNotebook.PageIndex:=MainUnitInfo.EditorIndex;
+    SourceEditorManager.ActiveEditor := TSourceEditor(MainUnitInfo.EditorComponent);
     Result:=mrOk;
     exit;
   end;
@@ -8682,7 +8709,7 @@ begin
           AnUnitInfo := Project1.Units[TViewUnitsEntry(UnitList.Objects[i]).ID];
           if AnUnitInfo.EditorIndex >= 0 then
           begin
-            SourceNoteBook.PageIndex := AnUnitInfo.EditorIndex;
+            SourceEditorManager.ActiveEditor := TSourceEditor(AnUnitInfo.EditorComponent);
           end else
           begin
             if Project1.MainUnitInfo = AnUnitInfo then
@@ -8701,7 +8728,7 @@ begin
       end;  { for }
       if (AnUnitInfo <> nil) and (not OnlyForms) then
       begin
-        SourceNotebook.ShowOnTop;
+        SourceEditorManager.ShowActiveWindowOnTop(False);
       end;
     end;  { if ShowViewUnitDlg... }
   finally
@@ -8815,7 +8842,7 @@ end;
 
 procedure TMainIDE.DoShowFPDocEditor;
 begin
-  SourceNotebook.ShowFPDocEditor;
+  SourceEditorManager.ShowFPDocEditor;
 end;
 
 function TMainIDE.CreateNewUniqueFilename(const Prefix, Ext: string;
@@ -9079,13 +9106,21 @@ end;
 
 function TMainIDE.DoOpenFileAndJumpToIdentifier(const AFilename,
   AnIdentifier: string; PageIndex: integer; Flags: TOpenFlags): TModalResult;
+begin
+  Result := DoOpenFileAndJumpToIdentifier(AFilename, AnIdentifier, PageIndex,
+    SourceEditorManager.ActiveSourceWindowIndex, Flags);
+end;
+
+function TMainIDE.DoOpenFileAndJumpToIdentifier(const AFilename,
+  AnIdentifier: string; PageIndex, WindowIndex: integer; Flags: TOpenFlags
+  ): TModalResult;
 var
   ActiveUnitInfo: TUnitInfo;
   ActiveSrcEdit: TSourceEditor;
   NewSource: TCodeBuffer;
   NewX, NewY, NewTopLine: integer;
 begin
-  Result:=DoOpenEditorFile(AFilename, PageIndex, Flags);
+  Result:=DoOpenEditorFile(AFilename, PageIndex, WindowIndex, Flags);
   if Result<>mrOk then exit;
   Result:=mrCancel;
   if not BeginCodeTool(ActiveSrcEdit,ActiveUnitInfo,[]) then exit;
@@ -9102,12 +9137,20 @@ end;
 function TMainIDE.DoOpenFileAndJumpToPos(const AFilename: string;
   const CursorPosition: TPoint; TopLine: integer; PageIndex: integer;
   Flags: TOpenFlags): TModalResult;
+begin
+  Result := DoOpenFileAndJumpToPos(AFilename, CursorPosition, TopLine, PageIndex,
+    SourceEditorManager.ActiveSourceWindowIndex, Flags);
+end;
+
+function TMainIDE.DoOpenFileAndJumpToPos(const AFilename: string;
+  const CursorPosition: TPoint; TopLine: integer; PageIndex,
+  WindowIndex: integer; Flags: TOpenFlags): TModalResult;
 var
   ActiveUnitInfo, OldActiveUnitInfo: TUnitInfo;
   ActiveSrcEdit, OldActiveSrcEdit: TSourceEditor;
 begin
   GetCurrentUnit(OldActiveSrcEdit,OldActiveUnitInfo);
-  Result:=DoOpenEditorFile(AFilename, PageIndex, Flags);
+  Result:=DoOpenEditorFile(AFilename, PageIndex, WindowIndex, Flags);
   if Result<>mrOk then exit;
   GetCurrentUnit(ActiveSrcEdit,ActiveUnitInfo);
   if ActiveUnitInfo<>nil then begin
@@ -9249,7 +9292,7 @@ begin
     exit;
   end;
 
-  SaveSourceEditorChangesToCodeCache(-1, -1);
+  SaveSourceEditorChangesToCodeCache(nil);
 
   {$IFDEF IDE_DEBUG}
   DebugLn('TMainIDE.DoSaveProject A SaveAs=',dbgs(sfSaveAs in Flags),' SaveToTestDir=',dbgs(sfSaveToTestDir in Flags),' ProjectInfoFile=',Project1.ProjectInfoFile);
@@ -9462,7 +9505,7 @@ begin
   Project1:=CreateProjectObject(ProjectDescriptorProgram,
                                 ProjectDescriptorProgram);
   LastEditorIndex:=-1;
-  SourceNoteBook.IncUpdateLock;
+  SourceEditorManager.IncUpdateLock;
   try
     Project1.BeginUpdate(true);
     try
@@ -9504,7 +9547,7 @@ begin
       AnUnitInfo:=Project1.FirstUnitWithEditorIndex;
       while AnUnitInfo<>nil do begin
         if (AnUnitInfo.Loaded)
-        and (SourceNotebook.FindSourceEditorWithFilename(AnUnitInfo.Filename)=nil)
+        and (SourceEditorManager.SourceEditorIntfWithFilename(AnUnitInfo.Filename)=nil)
         then begin
           if (AnUnitInfo.EditorIndex>LastEditorIndex)
           and ((AnUnitInfo.EditorIndex<LowestEditorIndex)
@@ -9533,7 +9576,7 @@ begin
         end;
       end;
       if ((AnUnitInfo.Filename<>'')
-      and (SourceNotebook.FindSourceEditorWithFilename(AnUnitInfo.Filename)<>nil))
+      and (SourceEditorManager.SourceEditorIntfWithFilename(AnUnitInfo.Filename)<>nil))
       then begin
         // open source was successful (at least the source)
         LastEditorIndex:=LowestEditorIndex;
@@ -9574,8 +9617,11 @@ begin
       // session info is invalid (buggy lps file?) => auto fix
       Project1.ActiveWindowIndexAtStart:=0;
     end;
-    SourceEditorManager.ActiveSourceWindow :=
-      SourceEditorManager.SourceWindows[Project1.ActiveWindowIndexAtStart];
+    if (Project1.ActiveWindowIndexAtStart >= 0) and
+       (Project1.ActiveWindowIndexAtStart < SourceEditorManager.SourceWindowCount)
+    then
+      SourceEditorManager.ActiveSourceWindow :=
+        SourceEditorManager.SourceWindows[Project1.ActiveWindowIndexAtStart];
 
     // select a form (object inspector, formeditor, control selection)
     if FLastFormActivated<>nil then begin
@@ -9590,7 +9636,7 @@ begin
     IDEProtocolOpts.LastProjectLoadingCrashed := False;
     Result:=mrOk;
   finally
-    SourceNoteBook.DecUpdateLock;
+    SourceEditorManager.DecUpdateLock;
     if (Result<>mrOk) and (Project1<>nil) then begin
       // mark all files, that are left to open as unloaded:
       for i:=0 to Project1.UnitCount-1 do begin
@@ -10555,7 +10601,7 @@ function TMainIDE.SomethingOfProjectIsModified: boolean;
 begin
   Result:=(Project1<>nil)
       and (Project1.SomethingModified(true,true)
-           or SourceNotebook.SomethingModified);
+           or SourceEditorManager.SomethingModified);
 end;
 
 function TMainIDE.DoSaveAll(Flags: TSaveFlags): TModalResult;
@@ -11243,7 +11289,7 @@ begin
     exit;
   end;
   // load the pascal unit
-  SaveSourceEditorChangesToCodeCache(-1, -1);
+  SaveSourceEditorChangesToCodeCache(nil);
   Result:=LoadCodeBuffer(PascalBuf,UnitFilename,[],false);
   if Result<>mrOk then exit;
 
@@ -11412,7 +11458,7 @@ begin
   GetCurrentUnit(ActiveSrcEdit,ActiveUnitInfo);
   if (ActiveUnitInfo=nil) or (ActiveUnitInfo.Source=nil)
   or (ActiveSrcEdit=nil) then exit;
-  SaveSourceEditorChangesToCodeCache(-1, -1);
+  SaveSourceEditorChangesToCodeCache(nil);
   CodeToolBoss.VisibleEditorLines:=ActiveSrcEdit.EditorComponent.LinesInWindow;
   if CodeToolBoss.CheckSyntax(ActiveUnitInfo.Source,NewCode,NewX,NewY,
     NewTopLine,ErrorMsg) then
@@ -11432,10 +11478,11 @@ end;
 procedure TMainIDE.GetCurrentUnit(out ActiveSourceEditor:TSourceEditor;
   out ActiveUnitInfo:TUnitInfo);
 begin
-  GetUnitWithPageIndex(
-     SourceEditorManager.ActiveSourceWindow.PageIndex,
-     SourceEditorManager.ActiveSourceWindowIndex, ActiveSourceEditor,
-     ActiveUnitInfo);
+  ActiveSourceEditor := SourceEditorManager.ActiveEditor;
+  if ActiveSourceEditor=nil then
+    ActiveUnitInfo:=nil
+  else
+    ActiveUnitInfo := Project1.UnitWithEditorComponent(ActiveSourceEditor);
 end;
 
 procedure TMainIDE.GetUnitWithPageIndex(PageIndex, WindowIndex:integer;
@@ -11849,7 +11896,7 @@ var
 begin
   // hide hints
   Application.HideHint;
-  SourceNotebook.HideHint;
+  SourceEditorManager.HideHint;
 
   // hide designer forms
   HideUnmodifiedDesigners;
@@ -11971,16 +12018,16 @@ procedure TMainIDE.DoShowSourceOfActiveDesignerForm;
 var
   ActiveUnitInfo: TUnitInfo;
 begin
-  if SourceNoteBook.PageCount = 0 then exit;
+  if SourceEditorManager.SourceEditorCount = 0 then exit;
   if FLastFormActivated <> nil then begin
     ActiveUnitInfo:= Project1.UnitWithComponent(
                              TDesigner(FLastFormActivated.Designer).LookupRoot);
-    if (ActiveUnitInfo <> nil) and (ActiveUnitInfo.EditorIndex >= 0) then
+    if (ActiveUnitInfo <> nil) and (ActiveUnitInfo.EditorComponent <> nil) then
     begin
-      SourceNotebook.PageIndex:= ActiveUnitInfo.EditorIndex;
+      SourceEditorManager.ActiveEditor := TSourceEditor(ActiveUnitInfo.EditorComponent);
     end;
   end;
-  SourceEditorManager.ActiveSourceWindow.ShowOnTop;
+  SourceEditorManager.ShowActiveWindowOnTop(False);
   FDisplayState:= dsSource;
 end;
 
@@ -12000,7 +12047,7 @@ begin
   MacroLName:=lowercase(MacroName);
   Handled:=true;
   if MacroLName='save' then begin
-    if (SourceNoteBook<>nil) and (SourceNoteBook.PageCount > 0) then
+    if (SourceEditorManager<>nil) and (SourceEditorManager.SourceEditorCount > 0) then
       Abort:=(DoSaveEditorFile(SourceEditorManager.ActiveEditor,
         [sfCheckAmbiguousFiles]) <> mrOk);
     s:='';
@@ -12108,17 +12155,15 @@ begin
       Result:=(DoOpenEditorFile(SearchedFilename,-1,-1,OpenFlags)=mrOk);
       if Result then begin
         // set caret position
-        SourceNotebook.AddJumpPointClicked(Self);
+        SourceEditorManager.AddJumpPointClicked(Self);
         SrcEdit:=SourceEditorManager.ActiveEditor;
         if LogCaretXY.Y>SrcEdit.EditorComponent.Lines.Count then
           LogCaretXY.Y:=SrcEdit.EditorComponent.Lines.Count;
         TopLine:=LogCaretXY.Y-(SrcEdit.EditorComponent.LinesInWindow div 2);
         if TopLine<1 then TopLine:=1;
         if FocusEditor then begin
-          //SourceNotebook.BringToFront;
           MessagesView.ShowOnTop;
-          SourceEditorManager.ActiveSourceWindow.ShowOnTop;
-          SourceEditorManager.ActiveSourceWindow.FocusEditor;
+          SourceEditorManager.ShowActiveWindowOnTop(True);
         end;
         SrcEdit.EditorComponent.LogicalCaretXY:=LogCaretXY;
         SrcEdit.EditorComponent.TopLine:=TopLine;
@@ -12210,17 +12255,15 @@ begin
       Result:=(DoOpenEditorFile(SearchedFilename,-1,-1,OpenFlags)=mrOk);
       if Result then begin
         // set caret position
-        SourceNotebook.AddJumpPointClicked(Self);
+        SourceEditorManager.AddJumpPointClicked(Self);
         SrcEdit:=SourceEditorManager.ActiveEditor;
         if LogCaretXY.Y>SrcEdit.EditorComponent.Lines.Count then
           LogCaretXY.Y:=SrcEdit.EditorComponent.Lines.Count;
         TopLine:=LogCaretXY.Y-(SrcEdit.EditorComponent.LinesInWindow div 2);
         if TopLine<1 then TopLine:=1;
         if FocusEditor then begin
-          //SourceNotebook.BringToFront;
           SearchResultsView.ShowOnTop;
-          SourceEditorManager.ActiveSourceWindow.ShowOnTop;
-          SourceEditorManager.ActiveSourceWindow.FocusEditor;
+          SourceEditorManager.ShowActiveWindowOnTop(True);
         end;
         SrcEdit.EditorComponent.LogicalCaretXY:=LogCaretXY;
         SrcEdit.EditorComponent.TopLine:=TopLine;
@@ -12266,7 +12309,7 @@ begin
 
     // the sourcenotebook is more interesting than the messages
     // TODO: don't do this when messages content intersect the editor content
-    SourceNotebook.ShowOnTop;
+    SourceEditorManager.ShowActiveWindowOnTop(False);
   end;
 
   //set the event here for the selectionchanged event
@@ -12286,7 +12329,7 @@ begin
   ALayout.Apply;
   if not WasVisible then
     // the sourcenotebook is more interesting than the messages
-    SourceNotebook.ShowOnTop;
+    SourceEditorManager.ShowActiveWindowOnTop(False);
 
   //set the event here for the selectionchanged event
   if not assigned(SearchresultsView.OnSelectionChanged) then
@@ -12294,20 +12337,24 @@ begin
 end;
 
 procedure TMainIDE.DoArrangeSourceEditorAndMessageView(PutOnTop: boolean);
+var
+  SrcNoteBook: TSourceNotebook;
 begin
   DoShowMessagesView;
+  if SourceEditorManager.SourceWindowCount = 0 then exit;
+  SrcNoteBook := SourceEditorManager.SourceWindows[0];
 
   if (iwpDefault = EnvironmentOptions.IDEWindowLayoutList.ItemByEnum(
                                         nmiwSourceNoteBookName).WindowPlacement)
-  and ((SourceNotebook.Top + SourceNotebook.Height) > MessagesView.Top)
+  and ((SrcNoteBook.Top + SrcNoteBook.Height) > MessagesView.Top)
   and (MessagesView.Parent = nil) then
-    SourceNotebook.Height := Max(50,Min(SourceNotebook.Height,
-       MessagesView.Top-SourceNotebook.Top));
+    SrcNoteBook.Height := Max(50,Min(SrcNoteBook.Height,
+       MessagesView.Top-SrcNoteBook.Top));
   if PutOnTop then
   begin
     if MessagesView.Parent = nil then
       MessagesView.ShowOnTop;
-    SourceNotebook.ShowOnTop;
+    SourceEditorManager.ShowActiveWindowOnTop(False);
   end;
 end;
 
@@ -12717,7 +12764,7 @@ begin
       MarkUnitsModifiedUsingSubComponent(TComponent(APersistent));
 
     // remember cursor position
-    SourceNotebook.AddJumpPointClicked(Self);
+    SourceEditorManager.AddJumpPointClicked(Self);
 
     // remove component definition from owner source
     OwnerClassName:=CurDesigner.LookupRoot.ClassName;
@@ -12744,7 +12791,7 @@ begin
       if SrcEdit <> nil then
       begin
         SrcEdit.Modified := True;
-        SourceNotebook.UpdateStatusBar;
+        SrcEdit.SourceNotebook.UpdateStatusBar;
         {$IFDEF VerboseDesignerModified}
         DumpStack;
         {$ENDIF}
@@ -12798,7 +12845,7 @@ end;
 
 procedure TMainIDE.UnitDependenciesViewAccessingSources(Sender: TObject);
 begin
-  SaveSourceEditorChangesToCodeCache(-1, -1);
+  SaveSourceEditorChangesToCodeCache(nil);
 end;
 
 function TMainIDE.UnitDependenciesViewGetProjectMainFilename(Sender: TObject
@@ -13079,7 +13126,7 @@ begin
     end;
   end;
   // lock all editors
-  SourceNoteBook.LockAllEditorsInSourceChangeCache;
+  SourceEditorManager.LockAllEditorsInSourceChangeCache;
 end;
 
 procedure TMainIDE.OnAfterCodeToolBossApplyChanges(Manager: TCodeToolManager);
@@ -13104,7 +13151,7 @@ begin
       if MsgResult=mrAbort then break;
     end;
   end;
-  SourceNoteBook.UnlockAllEditorsInSourceChangeCache;
+  SourceEditorManager.UnlockAllEditorsInSourceChangeCache;
 end;
 
 function TMainIDE.OnCodeToolBossSearchUsedUnit(const SrcFilename: string;
@@ -13349,40 +13396,38 @@ end;
 
 function TMainIDE.SaveSourceEditorChangesToCodeCache(PageIndex: integer): boolean;
 begin
-  Result := SaveSourceEditorChangesToCodeCache(PageIndex,
-    SourceEditorManager.ActiveSourceWindowIndex);
+  Result := SaveSourceEditorChangesToCodeCache(
+    SourceEditorManager.ActiveSourceWindow.FindSourceEditorWithPageIndex(PageIndex));
 end;
 
-function TMainIDE.SaveSourceEditorChangesToCodeCache(PageIndex,
-  WindowIndex: integer): boolean;
+function TMainIDE.SaveSourceEditorChangesToCodeCache(AEditor: TSourceEditorInterface): boolean;
 // save all open sources to code tools cache
-var i,j: integer;
 
-  procedure SaveChanges(APageIndex, AWindowIndex: integer);
+  procedure SaveChanges(SaveEditor: TSourceEditorInterface);
   var
-    SrcEdit: TSourceEditor;
     AnUnitInfo: TUnitInfo;
   begin
-    GetUnitWithPageIndex(APageIndex, AWindowIndex,SrcEdit,AnUnitInfo);
-    if (SrcEdit<>nil) and (AnUnitInfo<>nil) then
+    AnUnitInfo := Project1.UnitWithEditorComponent(SaveEditor);
+    if (AnUnitInfo<>nil) then
     begin
       SaveSourceEditorChangesToCodeCache:=true;
-      if SrcEdit.NeedsUpdateCodeBuffer then
+      if SaveEditor.NeedsUpdateCodeBuffer then
       begin
-        SrcEdit.UpdateCodeBuffer;
+        SaveEditor.UpdateCodeBuffer;
         AnUnitInfo.Modified:=true;
       end;
     end;
   end;
 
+var
+  i: integer;
 begin
   Result:=false;
-  if PageIndex<0 then begin
-    for i:=0 to SourceEditorManager.SourceWindowCount - 1 do
-      for j:=0 to SourceEditorManager.SourceWindows[i].PageCount - 1 do
-        SaveChanges(j, i);
+  if AEditor = nil then begin
+    for i:=0 to SourceEditorManager.SourceEditorCount - 1 do
+      SaveChanges(SourceEditorManager.SourceEditors[i]);
   end else begin
-    SaveChanges(PageIndex, WindowIndex);
+    SaveChanges(AEditor);
   end;
 end;
 
@@ -13405,7 +13450,7 @@ begin
     debugln('TMainIDE.BeginCodeTool impossible ',dbgs(ord(ToolStatus)));
     exit;
   end;
-  if (not (ctfSourceEditorNotNeeded in Flags)) and (SourceNoteBook.PageCount=0)
+  if (not (ctfSourceEditorNotNeeded in Flags)) and (SourceEditorManager.SourceEditorCount=0)
   then begin
     DebugLn('TMainIDE.BeginCodeTool no editor');
     exit;
@@ -13422,7 +13467,7 @@ begin
   and ((ActiveSrcEdit=nil) or (ActiveUnitInfo=nil)) then exit;
 
   // init codetools
-  SaveSourceEditorChangesToCodeCache(-1, -1);
+  SaveSourceEditorChangesToCodeCache(nil);
   if ActiveSrcEdit<>nil then begin
     CodeToolBoss.VisibleEditorLines:=ActiveSrcEdit.EditorComponent.LinesInWindow;
     CodeToolBoss.TabWidth:=ActiveSrcEdit.EditorComponent.TabWidth;
@@ -13472,7 +13517,7 @@ begin
     if (NewSource<>ActiveUnitInfo.Source)
     or (ActiveSrcEdit.EditorComponent.CaretX<>NewX)
     or (ActiveSrcEdit.EditorComponent.CaretY<>NewY) then
-      SourceNotebook.AddJumpPointClicked(Self);
+      SourceEditorManager.AddJumpPointClicked(Self);
   end;
 
   if (ActiveUnitInfo = nil) or (NewSource<>ActiveUnitInfo.Source)
@@ -13503,11 +13548,8 @@ begin
   if MarkLine then
     NewSrcEdit.ErrorLine := NewY;
 
-  if FocusEditor
-  then begin
-  SourceEditorManager.ActiveSourceWindow.ShowOnTop;
-  SourceEditorManager.ActiveSourceWindow.FocusEditor;
-  end;
+  if FocusEditor then
+    SourceEditorManager.ShowActiveWindowOnTop(True);
   UpdateSourceNames;
   Result:=mrOk;
 end;
@@ -13521,12 +13563,14 @@ end;
 -------------------------------------------------------------------------------}
 procedure TMainIDE.UpdateSourceNames;
 var
-  PageIndex: integer;
+  i: integer;
   AnUnitInfo: TUnitInfo;
   SourceName, PageName: string;
+  AEditor: TSourceEditor;
 begin
-  for PageIndex:=0 to SourceNotebook.PageCount-1 do begin
-    AnUnitInfo:=Project1.UnitWithEditorIndex(PageIndex);
+  for i:=0 to SourceEditorManager.SourceEditorCount-1 do begin
+    AEditor := SourceEditorManager.SourceEditors[i];
+    AnUnitInfo := Project1.UnitWithEditorComponent(AEditor);
     if AnUnitInfo=nil then continue;
     if FilenameIsPascalUnit(AnUnitInfo.Filename) then begin
       SourceName:=CodeToolBoss.GetCachedSourceName(AnUnitInfo.Source);
@@ -13534,30 +13578,29 @@ begin
         AnUnitInfo.ReadUnitNameFromSource(true);
     end else
       SourceName:='';
-    PageName:=CreateSrcEditPageName(SourceName,AnUnitInfo.Filename,PageIndex);
-    SourceNotebook.FindSourceEditorWithPageIndex(PageIndex).PageName:=PageName;
+    PageName:=CreateSrcEditPageName(SourceName, AnUnitInfo.Filename, AEditor);
+    AEditor.PageName := PageName;
   end;
 end;
 
 function TMainIDE.NeedSaveSourceEditorChangesToCodeCache(PageIndex: integer
   ): boolean;
 begin
-  Result := NeedSaveSourceEditorChangesToCodeCache(PageIndex,
-    SourceEditorManager.ActiveSourceWindowIndex);
+  Result := NeedSaveSourceEditorChangesToCodeCache(
+    SourceEditorManager.ActiveSourceWindow.FindSourceEditorWithPageIndex(PageIndex));
 end;
 
-function TMainIDE.NeedSaveSourceEditorChangesToCodeCache(PageIndex,
-  WindowIndex: integer): boolean;
+function TMainIDE.NeedSaveSourceEditorChangesToCodeCache(AEditor: TSourceEditorInterface): boolean;
 // check if any open source needs to be saved to code tools cache
-var i, j: integer;
+var
+  i: integer;
 
-  function NeedSave(APageIndex, AWindowIndex: integer): boolean;
+  function NeedSave(SaveEditor: TSourceEditorInterface): boolean;
   var
-    SrcEdit: TSourceEditor;
     AnUnitInfo: TUnitInfo;
   begin
-    GetUnitWithPageIndex(APageIndex, AWindowIndex,SrcEdit,AnUnitInfo);
-    if (SrcEdit<>nil) and (AnUnitInfo<>nil) and SrcEdit.NeedsUpdateCodeBuffer then
+    AnUnitInfo := Project1.UnitWithEditorComponent(SaveEditor);
+    if (AnUnitInfo<>nil) and SaveEditor.NeedsUpdateCodeBuffer then
       Result:=true
     else
       Result:=false;
@@ -13565,12 +13608,11 @@ var i, j: integer;
 
 begin
   Result:=true;
-  if PageIndex<0 then begin
-    for i:=0 to SourceEditorManager.SourceWindowCount - 1 do
-      for j:=0 to SourceEditorManager.SourceWindows[i].PageCount - 1 do
-        if NeedSave(j, i) then exit;
+  if AEditor = nil then begin
+    for i := 0 to SourceEditorManager.SourceEditorCount - 1 do
+      if NeedSave(SourceEditorManager.SourceEditors[i]) then exit;
   end else begin
-    if NeedSave(PageIndex, WindowIndex) then exit;
+    if NeedSave(AEditor) then exit;
   end;
   Result:=false;
 end;
@@ -13640,7 +13682,7 @@ begin
     ErrorCaret:=Point(CodeToolBoss.ErrorColumn,CodeToolBoss.ErrorLine);
     ErrorFilename:=CodeToolBoss.ErrorCode.Filename;
     ErrorTopLine:=CodeToolBoss.ErrorTopLine;
-    SourceNotebook.AddJumpPointClicked(Self);
+    SourceEditorManager.AddJumpPointClicked(Self);
     OpenFlags:=[ofOnlyIfExists,ofUseCache];
     if CodeToolBoss.ErrorCode.IsVirtual then
       Include(OpenFlags,ofVirtualFile);
@@ -13648,13 +13690,12 @@ begin
     then begin
       ActiveSrcEdit:=SourceEditorManager.ActiveEditor;
       MessagesView.ShowOnTop;
-      SourceEditorManager.ActiveSourceWindow.ShowOnTop;
       with ActiveSrcEdit.EditorComponent do begin
         LogicalCaretXY:=ErrorCaret;
         if ErrorTopLine>0 then
           TopLine:=ErrorTopLine;
       end;
-      SourceEditorManager.ActiveSourceWindow.FocusEditor;
+      SourceEditorManager.ShowActiveWindowOnTop(True);
       SourceEditorManager.ClearErrorLines;
       ActiveSrcEdit.ErrorLine:=ErrorCaret.Y;
     end;
@@ -14241,20 +14282,16 @@ var
   ActiveUnitInfo: TUnitInfo;
   OpenDiffInEditor: boolean;
   DiffText: string;
-  Files: TDiffFiles;
   NewDiffFilename: String;
 begin
   Result:=mrCancel;
   GetCurrentUnit(ActiveSrcEdit,ActiveUnitInfo);
   if ActiveSrcEdit=nil then exit;
 
-  Files:=SourceNoteBook.GetDiffFiles;
-  Result:=ShowDiffDialog(Files,ActiveSrcEdit.PageIndex,
-                         @SourceNotebook.GetSourceText,
+  Result:=ShowDiffDialog(ActiveSrcEdit.PageIndex,
                          OpenDiffInEditor,DiffText);
-  Files.Free;
   if OpenDiffInEditor then begin
-    NewDiffFilename:=CreateSrcEditPageName('','diff.txt',-1);
+    NewDiffFilename:=CreateSrcEditPageName('','diff.txt', nil);
     Result:=DoNewEditorFile(FileDescriptorText,NewDiffFilename,DiffText,
                             [nfOpenInEditor]);
     GetCurrentUnit(ActiveSrcEdit,ActiveUnitInfo);
@@ -14356,19 +14393,18 @@ end;
 
 procedure TMainIDE.JumpHistoryViewSelectionChanged(sender : TObject);
 begin
-  SourceNotebook.HistoryJump(self, jhaViewWindow);
-  SourceNoteBook.ShowOnTop;
-  SourceNotebook.FocusEditor;
+  SourceEditorManager.HistoryJump(self, jhaViewWindow);
+  SourceEditorManager.ShowActiveWindowOnTop(True);
 end;
 
 Procedure TMainIDE.OnSrcNotebookEditorVisibleChanged(Sender: TObject);
 var
   ActiveUnitInfo: TUnitInfo;
 begin
-  if SourceNotebook.PageCount = 0 then Exit;
+  if SourceEditorManager.SourceEditorCount = 0 then Exit;
 
   ActiveUnitInfo :=
-    Project1.UnitWithEditorIndex(SourceNotebook.PageIndex);
+    Project1.UnitWithEditorComponent(SourceEditorManager.ActiveEditor);
   if ActiveUnitInfo = nil then Exit;
 
   UpdateSaveMenuItemsAndButtons(false);
@@ -14381,13 +14417,13 @@ end;
 //this is fired when the editor is focused, changed, ?.  Anything that causes the status change
 procedure TMainIDE.OnSrcNotebookEditorChanged(Sender: TObject);
 begin
-  if SourceNotebook.PageCount = 0 then Exit;
+  if SourceEditorManager.SourceEditorCount = 0 then Exit;
   UpdateSaveMenuItemsAndButtons(false);
 end;
 
 procedure TMainIDE.OnSrcNotebookCurCodeBufferChanged(Sender: TObject);
 begin
-  if SourceNotebook.PageCount = 0 then Exit;
+  if SourceEditorManager.SourceEditorCount = 0 then Exit;
   if CodeExplorerView<>nil then CodeExplorerView.CurrentCodeBufferChanged;
 end;
 
@@ -14811,8 +14847,8 @@ begin
   GetDesignerUnit(ADesigner,ASrcEdit,AnUnitInfo);
   debugln('TMainIDE.OnDesignerViewLFM ',AnUnitInfo.Filename);
   OnDesignerCloseQuery(Sender);
-  DoOpenEditorFile(ChangeFileExt(AnUnitInfo.Filename,'.lfm'),
-                   AnUnitInfo.EditorIndex+1,[]);
+  DoOpenEditorFile(ChangeFileExt(AnUnitInfo.Filename, '.lfm'),
+                   AnUnitInfo.EditorIndex+1, AnUnitInfo.WindowIndex, []);
 end;
 
 procedure TMainIDE.OnDesignerSaveAsXML(Sender: TObject);
@@ -14883,7 +14919,7 @@ begin
 end;
 
 Procedure TMainIDE.OnSrcNoteBookAddJumpPoint(ACaretXY: TPoint;
-  ATopLine: integer; APageIndex: integer; DeleteForwardHistory: boolean);
+  ATopLine: integer; AEditor: TSourceEditor; DeleteForwardHistory: boolean);
 {off $DEFINE VerboseJumpHistory}
 var
   ActiveUnitInfo: TUnitInfo;
@@ -14893,7 +14929,7 @@ begin
   writeln('');
   writeln('[TMainIDE.OnSrcNoteBookAddJumpPoint] A Line=',ACaretXY.Y,' Col=',ACaretXY.X,' DeleteForwardHistory=',DeleteForwardHistory,' Count=',Project1.JumpHistory.Count,',HistoryIndex=',Project1.JumpHistory.HistoryIndex);
   {$ENDIF}
-  ActiveUnitInfo:=Project1.UnitWithEditorIndex(APageIndex);
+  ActiveUnitInfo:=Project1.UnitWithEditorComponent(AEditor);
   if (ActiveUnitInfo=nil) then exit;
   NewJumpPoint:=TProjectJumpHistoryPosition.Create(ActiveUnitInfo.Filename,
     ACaretXY,ATopLine);
@@ -14919,7 +14955,7 @@ begin
 end;
 
 Procedure TMainIDE.OnSrcNotebookJumpToHistoryPoint(var NewCaretXY: TPoint;
-  var NewTopLine, NewPageIndex: integer;  JumpAction: TJumpHistoryAction);
+  var NewTopLine: integer; var DestEditor: TSourceEditor; JumpAction: TJumpHistoryAction);
 { How the HistoryIndex works:
 
   When the user jumps around each time an item is added to the history list
@@ -14943,7 +14979,7 @@ var DestIndex, UnitIndex: integer;
   CursorPoint, NewJumpPoint: TProjectJumpHistoryPosition;
   JumpHistory : TProjectJumpHistory;
 begin
-  NewPageIndex:=-1;
+  DestEditor := nil;
   NewCaretXY.Y:=-1;
   JumpHistory:=Project1.JumpHistory;
 
@@ -15005,7 +15041,7 @@ begin
       JumpHistory.HistoryIndex:=DestIndex;
       NewCaretXY:=DestJumpPoint.CaretXY;
       NewTopLine:=DestJumpPoint.TopLine;
-      NewPageIndex:=Project1.Units[UnitIndex].EditorIndex;
+      DestEditor:=TSourceEditor(Project1.Units[UnitIndex].EditorComponent);
       {$IFDEF VerboseJumpHistory}
       writeln('[TMainIDE.OnSrcNotebookJumpToHistoryPoint] Result Line=',NewCaretXY.Y,' Col=',NewCaretXY.X);
       {$ENDIF}
@@ -15434,7 +15470,6 @@ end;
 
 procedure TMainIDE.DoSwitchToFormSrc(ADesigner: TDesigner;
   var ActiveSourceEditor: TSourceEditor; var ActiveUnitInfo: TUnitInfo);
-var i: integer;
 begin
   ActiveSourceEditor:=nil;
   ActiveUnitInfo:=nil;
@@ -15446,13 +15481,10 @@ begin
       Project1.UnitWithComponent(TComponent(GlobalDesignHook.LookupRoot))
   else
     ActiveUnitInfo:=nil;
-  if (ActiveUnitInfo<>nil) then begin
-    i:=ActiveUnitInfo.EditorIndex;
-    if (i>=0) then begin
-      SourceNoteBook.PageIndex:=i;
-      GetCurrentUnit(ActiveSourceEditor,ActiveUnitInfo);
-      exit;
-    end;
+  if (ActiveUnitInfo<>nil) and (ActiveUnitInfo.EditorComponent <> nil) then begin
+    SourceEditorManagerIntf.ActiveEditor := ActiveUnitInfo.EditorComponent;
+    GetCurrentUnit(ActiveSourceEditor,ActiveUnitInfo);
+    exit;
   end;
 end;
 
@@ -15799,7 +15831,7 @@ begin
     then exit;
 
     // remember cursor position
-    SourceNotebook.AddJumpPointClicked(Self);
+    SourceEditorManager.AddJumpPointClicked(Self);
 
     // add needed package to required packages
     if ADesigner.LookupRoot.ComponentCount>0 then
@@ -16256,7 +16288,7 @@ begin
     //DebugLn(['TMainIDE.DoReplaceUnitUse ',Files.Text]);
 
     // commit source editor to codetools
-    SaveSourceEditorChangesToCodeCache(-1, -1);
+    SaveSourceEditorChangesToCodeCache(nil);
 
     // load or create old unit
     OldCode:=CodeToolBoss.LoadFile(OldFilename,true,false);
@@ -16328,6 +16360,7 @@ var
   DockingAllowed: Boolean;
   NewHeight: Integer;
   NewBounds: TRect;
+  SrcNoteBook: TSourceNotebook;
 begin
   if (ALayout=nil) or (ALayout.Form=nil) then exit;
   // debugln('TMainIDE.OnApplyWindowLayout ',ALayout.Form.Name,' ',ALayout.Form.Classname,' ',IDEWindowPlacementNames[ALayout.WindowPlacement],' ',ALayout.CustomCoordinatesAreValid,' ',ALayout.Left,' ',ALayout.Top,' ',ALayout.Width,' ',ALayout.Height);
@@ -16427,8 +16460,12 @@ begin
     ALayout.Form.SetBounds(200,150,400,300);
   nmiwMessagesViewName:
     begin
-      ALayout.Form.SetBounds(250,SourceNotebook.Top+SourceNotebook.Height+30,
-        Max(50,Screen.Width-300),80);
+      if SourceEditorManager.SourceWindowCount > 0 then begin
+        SrcNoteBook := SourceEditorManager.SourceWindows[0];
+        ALayout.Form.SetBounds(250,SrcNoteBook.Top+SrcNoteBook.Height+30,
+          Max(50,Screen.Width-300),80);
+      end else
+        ALayout.Form.SetBounds(250,Screen.Height - 110, Max(50,Screen.Width-300),80);
     end;
   else
     if ALayout.FormID=DefaultObjectInspectorName then begin

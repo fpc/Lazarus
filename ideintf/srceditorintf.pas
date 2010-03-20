@@ -176,27 +176,37 @@ type
     function GetItems(Index: integer): TSourceEditorInterface; virtual; abstract;
     procedure SetActiveEditor(const AValue: TSourceEditorInterface); virtual; abstract;
   public
-    function SourceEditorIntfWithFilename(const Filename: string): TSourceEditorInterface; deprecated;
+    function SourceEditorIntfWithFilename(const Filename: string): TSourceEditorInterface;
+             deprecated {$IFDEF VER2_5}'use SourceEditorManagerIntf'{$ENDIF};   // deprecated in 0.9.29 March 2010
     property ActiveEditor: TSourceEditorInterface
              read GetActiveEditor write SetActiveEditor;
     function Count: integer; virtual; abstract;
     property Items[Index: integer]: TSourceEditorInterface read GetItems; default;
     
-    function GetEditorControlSettings(EditControl: TControl): boolean; virtual; abstract; deprecated;
-    function GetHighlighterSettings(Highlighter: TObject): boolean; virtual; abstract; deprecated;
-    procedure ClearErrorLines; virtual; abstract; deprecated;
+    function GetEditorControlSettings(EditControl: TControl): boolean; virtual; abstract;
+             deprecated {$IFDEF VER2_5}'use SourceEditorManagerIntf'{$ENDIF};   // deprecated in 0.9.29 March 2010
+    function GetHighlighterSettings(Highlighter: TObject): boolean; virtual; abstract;
+             deprecated {$IFDEF VER2_5}'use SourceEditorManagerIntf'{$ENDIF};   // deprecated in 0.9.29 March 2010
+    procedure ClearErrorLines; virtual; abstract;
+             deprecated {$IFDEF VER2_5}'use SourceEditorManagerIntf'{$ENDIF};   // deprecated in 0.9.29 March 2010
 
     property CompletionBoxPosition: integer read GetCompletionBoxPosition;
     procedure DeactivateCompletionForm; virtual; abstract;
     property ActiveCompletionPlugin: TSourceEditorCompletionPlugin read GetActiveCompletionPlugin;
     // CompletionPlugin list moves to Manager
-    function CompletionPluginCount: integer; virtual; abstract; deprecated;
+    function CompletionPluginCount: integer; virtual; abstract;
+             deprecated {$IFDEF VER2_5}'use SourceEditorManagerIntf'{$ENDIF};   // deprecated in 0.9.29 March 2010
     property CompletionPlugins[Index: integer]: TSourceEditorCompletionPlugin
-             read GetCompletionPlugins; deprecated;
-    procedure RegisterCompletionPlugin(Plugin: TSourceEditorCompletionPlugin); virtual; abstract; deprecated;
-    procedure UnregisterCompletionPlugin(Plugin: TSourceEditorCompletionPlugin); virtual; abstract; deprecated;
+             read GetCompletionPlugins;
+             deprecated {$IFDEF VER2_5}'use SourceEditorManagerIntf'{$ENDIF};   // deprecated in 0.9.29 March 2010
+    procedure RegisterCompletionPlugin(Plugin: TSourceEditorCompletionPlugin); virtual; abstract;
+             deprecated {$IFDEF VER2_5}'use SourceEditorManagerIntf'{$ENDIF};   // deprecated in 0.9.29 March 2010
+    procedure UnregisterCompletionPlugin(Plugin: TSourceEditorCompletionPlugin); virtual; abstract;
+             deprecated {$IFDEF VER2_5}'use SourceEditorManagerIntf'{$ENDIF};   // deprecated in 0.9.29 March 2010
   end;
-  
+
+  TsemChangeReason = (semWindowCreate, semWindowDestroy);
+
   TSourceEditorManagerInterface = class(TComponent)
   protected
     function GetActiveSourceWindow: TSourceEditorWindowInterface; virtual; abstract;
@@ -246,10 +256,14 @@ type
     property CompletionBoxPosition: integer read GetCompletionBoxPosition;
     procedure RegisterCompletionPlugin(Plugin: TSourceEditorCompletionPlugin); virtual; abstract;
     procedure UnregisterCompletionPlugin(Plugin: TSourceEditorCompletionPlugin); virtual; abstract;
+  public
+    procedure RegisterChangeEvent(AReason: TsemChangeReason; AHandler: TNotifyEvent); virtual; abstract;
+    procedure UnRegisterChangeEvent(AReason: TsemChangeReason; AHandler: TNotifyEvent); virtual; abstract;
   end;
-  
-  
-function SourceEditorWindow: TSourceEditorWindowInterface;           // Returns the active window
+
+
+function SourceEditorWindow: TSourceEditorWindowInterface;                      // Returns the active window
+             deprecated {$IFDEF VER2_5}'use SourceEditorManagerIntf'{$ENDIF};   // deprecated in 0.9.29 March 2010
 
 var
   SourceEditorManagerIntf: TSourceEditorManagerInterface= nil;                      // set by the IDE

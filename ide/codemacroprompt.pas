@@ -415,7 +415,7 @@ begin
 
     Parser.EnableMacros := Attributes.IndexOfName(CodeTemplateEnableMacros)>=0;
     Parser.Indent := StringOfChar(' ', IndentLen);
-    LazarusIDE.SaveSourceEditorChangesToCodeCache(-1, -1);
+    LazarusIDE.SaveSourceEditorChangesToCodeCache(nil);
     if not Parser.SubstituteCodeMacros(SrcEdit) then exit;
 
     s:=AEditor.Lines[p.y-1];

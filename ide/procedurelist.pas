@@ -138,7 +138,7 @@ begin
     if frm.ModalResult = mrOK then  // we need to jump
     begin
       LazarusIDE.DoOpenFileAndJumpToPos(frm.Caret.Code.Filename,
-          Point(frm.Caret.X, frm.Caret.Y), frm.NewTopLine, -1,
+          Point(frm.Caret.X, frm.Caret.Y), frm.NewTopLine, -1,-1,
           [ofRegularFile,ofUseCache]);
     end;
   finally

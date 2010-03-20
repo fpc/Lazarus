@@ -1117,7 +1117,7 @@ begin
     DebugLn(['TH2PasDialog.Convert LazarusIDE.DoSaveProject failed']);
     exit;
   end;
-  LazarusIDE.SaveSourceEditorChangesToCodeCache(-1,-1);
+  LazarusIDE.SaveSourceEditorChangesToCodeCache(nil);
   
   Result:=Converter.Execute;
   if Result<>mrOk then begin

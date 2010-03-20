@@ -154,7 +154,7 @@ begin
     if HasDirective then exit;
     
     // open the file in the source editor
-    if LazarusIDE.DoOpenFileAndJumpToPos(Filename,Point(1,Line),-1,-1,
+    if LazarusIDE.DoOpenFileAndJumpToPos(Filename,Point(1,Line),-1,-1,-1,
       [ofOnlyIfExists,ofRegularFile,ofUseCache,ofDoNotLoadResource])<>mrOk then
     begin
       DebugLn(['THideFPCHintWorker.Execute open failed: ',Filename]);

@@ -1001,7 +1001,7 @@ begin
     end;
 
     // get nice unit name
-    if not LazarusIDE.SaveSourceEditorChangesToCodeCache(-1, -1) then begin
+    if not LazarusIDE.SaveSourceEditorChangesToCodeCache(nil) then begin
       DebugLn(['TCodeBrowserView.UseUnitInSrcEditor LazarusIDE.'
         +'SaveSourceEditorChangesToCodeCache failed']);
       exit;
@@ -2645,7 +2645,7 @@ begin
     and (Node.CodePos.Code.Filename<>'') then begin
       Node.CodePos.Code.AbsoluteToLineCol(Node.CodePos.P,Line,Column);
       LazarusIDE.DoOpenFileAndJumpToPos(Node.CodePos.Code.Filename,
-        Point(Column,Line),-1,-1,[ofOnlyIfExists]);
+        Point(Column,Line),-1,-1,-1,[ofOnlyIfExists]);
     end;
   end;
 end;
@@ -3160,7 +3160,7 @@ begin
       exit;
     end;
 
-    if LazarusIDE.DoOpenFileAndJumpToPos(Filename,Caret,-1,-1,OpnFlagsPlainFile
+    if LazarusIDE.DoOpenFileAndJumpToPos(Filename,Caret,-1,-1,-1,OpnFlagsPlainFile
       )<>mrOk
     then exit;
 

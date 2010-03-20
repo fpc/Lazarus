@@ -84,7 +84,7 @@ begin
   Result := Tool.CleanPosToCaretAndTopLine(Node.StartPos, NewCodePos,NewTopLine);
   if Result then
     Result := LazarusIDE.DoOpenFileAndJumpToPos(NewCodePos.Code.Filename
-        ,Point(NewCodePos.X,NewCodePos.Y), NewTopLine, -1
+        ,Point(NewCodePos.X,NewCodePos.Y), NewTopLine, -1,-1
         ,[ofRegularFile,ofUseCache]) = mrOk;
   if Result then
   begin

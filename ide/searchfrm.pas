@@ -362,7 +362,7 @@ var
       
       GetSrcEditPos;
       if LazarusIDE.DoOpenFileAndJumpToPos(TheFileName,SrcEditStartPos,
-             -1,-1,[ofUseCache,ofDoNotLoadResource,ofVirtualFile,ofRegularFile])
+             -1,-1,-1,[ofUseCache,ofDoNotLoadResource,ofVirtualFile,ofRegularFile])
       <>mrOk then
       begin
         DoAbort;

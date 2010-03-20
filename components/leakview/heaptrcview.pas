@@ -346,7 +346,7 @@ begin
     if nm = '' then nm := SourceFile;
   end else
     nm := SourceFile;
-  LazarusIDE.DoOpenFileAndJumpToPos(nm, Point(1, Line), -1, -1, [ofOnlyIfExists, ofRegularFile]);
+  LazarusIDE.DoOpenFileAndJumpToPos(nm, Point(1, Line), -1, -1, -1, [ofOnlyIfExists, ofRegularFile]);
 end;
 
 procedure IDEMenuClicked(Sender: TObject);

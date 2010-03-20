@@ -42,21 +42,19 @@ interface
 uses
   Classes, SysUtils, Math, Forms, Controls, Buttons, StdCtrls, FileUtil,
   LazarusIDEStrConsts, EditorOptions, IDEWindowIntf, LCLType,
-  InputHistory, DiffPatch, ExtCtrls, Dialogs, SynEdit, IDEContextHelpEdit;
+  InputHistory, DiffPatch, ExtCtrls, Dialogs, SynEdit, IDEContextHelpEdit,
+  SourceEditor;
 
 type
-  TOnGetDiffFile = procedure(TextID: integer; OnlySelection: boolean;
-                             var Source: string) of object;
-
 
   { TDiffFile }
 
   TDiffFile = class
   public
     Name: string;
-    ID: integer;
+    Editor: TSourceEditor;
     SelectionAvailable: boolean;
-    constructor Create(const NewName: string; NewID: integer;
+    constructor Create(const NewName: string; NewEditor: TSourceEditor;
       NewSelectionAvailable: boolean);
   end;
 
@@ -110,7 +108,6 @@ type
     procedure Text1ComboboxChange(Sender: TObject);
     procedure Text2ComboboxChange(Sender: TObject);
   private
-    FOnGetDiffFile: TOnGetDiffFile;
     fDiffNeedsUpdate: boolean;
     FLockCount: integer;
     procedure SetupComponents;
@@ -130,13 +127,9 @@ type
     function GetDiffOptions: TTextDiffFlags;
     procedure BeginUpdate;
     procedure EndUpdate;
-  public
-    property OnGetDiffFile: TOnGetDiffFile
-                                       read FOnGetDiffFile write FOnGetDiffFile;
   end;
   
-function ShowDiffDialog(Files: TDiffFiles; Text1Index: integer;
-  OnGetDiffFile: TOnGetDiffFile;
+function ShowDiffDialog(Text1Index: integer;
   var OpenDiffInEditor: boolean; var Diff: string): TModalResult;
 
 const
@@ -152,16 +145,23 @@ implementation
 
 {$R *.lfm}
 
-function ShowDiffDialog(Files: TDiffFiles; Text1Index: integer;
-  OnGetDiffFile: TOnGetDiffFile;
+function ShowDiffDialog(Text1Index: integer;
   var OpenDiffInEditor: boolean; var Diff: string): TModalResult;
 var
   DiffDlg: TDiffDlg;
+  Files: TDiffFiles;
+  i: Integer;
+  SrcEdit: TSourceEditor;
 begin
+  Files := TDiffFiles.Create;
+  for i:=0 to SourceEditorManager.SourceEditorCount - 1 do begin
+    SrcEdit := SourceEditorManager.SourceEditors[i]; // FindSourceEditorWithPageIndex(i);
+    Files.Add(TDiffFile.Create(SrcEdit.PageName, SrcEdit, SrcEdit.SelectionAvailable));
+  end;
+
   OpenDiffInEditor:=false;
   DiffDlg:=TDiffDlg.Create(nil);
   DiffDlg.BeginUpdate;
-  DiffDlg.OnGetDiffFile:=OnGetDiffFile;
   DiffDlg.Files:=Files;
   DiffDlg.SetText1Index(Text1Index);
   DiffDlg.Init;
@@ -175,6 +175,7 @@ begin
     Result:=mrOk;
   end;
 
+  Files.Free;
   DiffDlg.Free;
 end;
 
@@ -192,7 +193,7 @@ begin
     //only add new files
     if Text1ComboBox.Items.IndexOf(dlgOpen.FileName) = -1 then
     begin
-      Files.Add(TDiffFile.Create(dlgOpen.FileName,-1,False));
+      Files.Add(TDiffFile.Create(dlgOpen.FileName,nil,False));
       Text1ComboBox.Items.Add(dlgOpen.FileName);
       Text2ComboBox.Items.Add(dlgOpen.FileName);
     end;
@@ -302,29 +303,33 @@ begin
   if (Text1=nil) or (Text2=nil) then begin
     DiffSynEdit.Lines.Text:='';
   end else begin
-    if Text1.ID = -1 then
+    if Text1.Editor = nil then
       begin
         dat := TStringList.Create;
         dat.LoadFromFile(UTF8ToSys(Text1.Name));
         Text1Src := dat.Text;
         dat.Free;
       end
-    else
-      OnGetDiffFile(Text1.ID,
-        Text1.SelectionAvailable and Text1OnlySelectionCheckBox.Checked,
-        Text1Src);
+    else begin
+      if (Text1.SelectionAvailable and Text1OnlySelectionCheckBox.Checked) then
+        Text1Src := Text1.Editor.EditorComponent.SelText
+      else
+        Text1Src := Text1.Editor.EditorComponent.Lines.Text;
+    end;
 
-    if Text2.ID = -1 then
+    if Text2.Editor = nil then
       begin
         dat := TStringList.Create;
         dat.LoadFromFile(UTF8ToSys(Text2.Name));
         Text2Src := dat.Text;
         dat.Free;
       end
-    else
-      OnGetDiffFile(Text2.ID,
-        Text2.SelectionAvailable and Text2OnlySelectionCheckBox.Checked,
-        Text2Src);
+    else begin
+      if (Text2.SelectionAvailable and Text2OnlySelectionCheckBox.Checked) then
+        Text2Src := Text2.Editor.EditorComponent.SelText
+      else
+        Text2Src := Text2.Editor.EditorComponent.Lines.Text;
+    end;
 
     DiffTxt:=CreateTextDiff(Text1Src,Text2Src,GetDiffOptions,tdoContext);
     
@@ -477,11 +482,11 @@ end;
 
 { TDiffFile }
 
-constructor TDiffFile.Create(const NewName: string; NewID: integer;
+constructor TDiffFile.Create(const NewName: string; NewEditor: TSourceEditor;
   NewSelectionAvailable: boolean);
 begin
   Name:=NewName;
-  ID:=NewID;
+  Editor:=NewEditor;
   SelectionAvailable:=NewSelectionAvailable;
 end;
 

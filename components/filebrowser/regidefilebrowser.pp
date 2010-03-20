@@ -111,7 +111,7 @@ var
 begin
   // Set up as desired. Maybe create config settings;
   Flags := [ofOnlyIfExists, ofAddToRecent, ofUseCache];
-  LazarusIDE.DoOpenEditorFile(AFileName, 0, Flags);
+  LazarusIDE.DoOpenEditorFile(AFileName, 0, 0, Flags);
 end;
 
 procedure TFileBrowserController.DoLoadLayout(Sender: TObject);

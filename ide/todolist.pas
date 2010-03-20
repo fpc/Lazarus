@@ -559,7 +559,7 @@ begin
     if Assigned(OnOpenFile) then
       OnOpenFile(Self,CurFilename,TheLine)
     else
-      LazarusIDE.DoOpenFileAndJumpToPos(CurFilename,Point(1,TheLine),-1,-1,
+      LazarusIDE.DoOpenFileAndJumpToPos(CurFilename,Point(1,TheLine),-1,-1,-1,
         [ofOnlyIfExists,ofRegularFile,ofVirtualFile,ofDoNotLoadResource]);
   end;
 end;
@@ -619,7 +619,7 @@ begin
 
   //DebugLn(['TfrmTodo.acRefreshExecute MainSourceFilename=',MainSourceFilename]);
 
-  LazarusIDE.SaveSourceEditorChangesToCodeCache(-1,-1);
+  LazarusIDE.SaveSourceEditorChangesToCodeCache(nil);
 
   Screen.Cursor:=crHourGlass;
   Owners:=nil;

@@ -567,7 +567,7 @@ begin
       Filename:=PkgFile.Filename;
     MainIDE.DoOpenFileAndJumpToIdentifier(
       Filename,PkgComponent.ComponentClass.ClassName,
-      -1, // open page somewhere
+      -1, -1, // open page somewhere
       [ofOnlyIfExists,ofAddToRecent,ofRegularFile,ofConvertMacros]);
   end;
 end;
@@ -1060,7 +1060,7 @@ var
       OldUnitName:=OldPkgName;
       NewUnitName:=APackage.Name;
       if (OldUnitName<>NewUnitName) then begin
-        MainIDEInterface.SaveSourceEditorChangesToCodeCache(-1, -1);
+        MainIDEInterface.SaveSourceEditorChangesToCodeCache(nil);
         if CodeToolBoss.RenameUsedUnit(
           AProject.MainUnitInfo.Source,OldUnitName,NewUnitName,'')
         then
@@ -1598,7 +1598,7 @@ begin
   // create default values
   TheUnitName:='';
   HasRegisterProc:=false;
-  MainIDE.SaveSourceEditorChangesToCodeCache(-1, -1);
+  MainIDE.SaveSourceEditorChangesToCodeCache(nil);
   CodeBuffer:=CodeToolBoss.LoadFile(ExpFilename,true,false);
   if CodeBuffer<>nil then begin
     TheUnitName:=CodeToolBoss.GetSourceName(CodeBuffer,false);
@@ -1723,7 +1723,7 @@ begin
   and (AProject.MainUnitInfo<>nil) then begin
     //debugln('TPkgManager.AddUnitToProjectMainUsesSection B ',AnUnitName);
     if (AnUnitName<>'') then begin
-      MainIDEInterface.SaveSourceEditorChangesToCodeCache(-1, -1);
+      MainIDEInterface.SaveSourceEditorChangesToCodeCache(nil);
       if CodeToolBoss.AddUnitToMainUsesSection(
         AProject.MainUnitInfo.Source,AnUnitName,AnUnitInFilename)
       then
@@ -2521,7 +2521,7 @@ begin
   if Result<>mrOk then exit;
 
   // save editor files to codetools
-  MainIDE.SaveSourceEditorChangesToCodeCache(-1, -1);
+  MainIDE.SaveSourceEditorChangesToCodeCache(nil);
 
   // save package
   if (psfSaveAs in Flags) then begin
@@ -4210,7 +4210,7 @@ begin
   if (Project1.MainUnitID>=0)
   and (pfMainUnitHasUsesSectionForAllUnits in Project1.Flags)
   then begin
-    MainIDEInterface.SaveSourceEditorChangesToCodeCache(-1, -1);
+    MainIDEInterface.SaveSourceEditorChangesToCodeCache(nil);
     ShortUnitName:=ADependency.PackageName;
     //debugln('TPkgManager.OnProjectInspectorRemoveDependency B ShortUnitName="',ShortUnitName,'"');
     if (ShortUnitName<>'') then begin

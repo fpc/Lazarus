@@ -43,10 +43,11 @@ const
 
 type
 
+  { TEditorToolbar }
+
   TEditorToolbar = class(TObject)
   private
     FJumpHandler: TJumpHandler;
-    W: TForm;
     TB: TToolbar;
     PM: TPopupMenu;
     CfgButton: TToolButton;
@@ -56,6 +57,7 @@ type
   protected
     procedure   AddButton(AMenuItem: TIDEMenuItem);
     procedure   PositionAtEnd(AToolbar: TToolbar; AButton: TToolButton);
+    procedure   SourceWindowCreated(Sender: TObject);
   public
     constructor Create;
     destructor  Destroy; override;
@@ -137,25 +139,26 @@ begin
   inherited Destroy;
 end;
 
-procedure TEditorToolbar.InitEditorToolBar;
+procedure TEditorToolbar.SourceWindowCreated(Sender: TObject);
 var
   T: TJumpType;
 begin
-  if not Assigned(W) and Assigned(SourceEditorManagerIntf.ActiveSourceWindow) then
-  begin
-    {$note Todo, hook SourceEditorManager to detect open/close forms}
-    W := SourceEditorManagerIntf.ActiveSourceWindow; // TODO: each window
-    TB := nil;
-    CfgButton := nil;
-    CreateEditorToolBar(W, TB);
+  if assigned(TB) then exit; // TODO: handle multiply Windows
+  CreateEditorToolBar(TSourceEditorWindowInterface(Sender), TB);
 
-    PM := TPopupMenu.Create(W);
-    for T := Low(TJumpType) to High(TJumpType) do
-      PM.Items.Add(CreateJumpItem(T,W));
-  end;
+  PM := TPopupMenu.Create(TSourceEditorWindowInterface(Sender));
+  for T := Low(TJumpType) to High(TJumpType) do
+    PM.Items.Add(CreateJumpItem(T, TSourceEditorWindowInterface(Sender)));
 
   AddStaticItems;
   AddCustomItems;
+end;
+
+procedure TEditorToolbar.InitEditorToolBar;
+begin
+  TB := nil;
+  CfgButton := nil;
+  SourceEditorManagerIntf.RegisterChangeEvent(semWindowCreate, @SourceWindowCreated);
 end;
 
 procedure TEditorToolbar.AddButton(AMenuItem: TIDEMenuItem);
