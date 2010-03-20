@@ -9338,11 +9338,12 @@ begin
 
   // save all editor files
   for i:=0 to SourceEditorManager.SourceEditorCount-1 do begin
-    if (Project1.MainUnitID<0)
-    or (Project1.MainUnitInfo.EditorIndex<>i) then begin
+    if (Project1.MainUnitID<0) or
+       (Project1.MainUnitInfo.EditorComponent <> SourceEditorManager.SourceEditors[i])
+    then begin
       SaveFileFlags:=[sfProjectSaving]
                      +Flags*[sfCheckAmbiguousFiles];
-      AnUnitInfo:=Project1.UnitWithEditorIndex(i);
+      AnUnitInfo:=Project1.UnitWithEditorComponent(SourceEditorManager.SourceEditors[i]);
       if AnUnitInfo = nil
       then begin
         DebugLn('TMainIDE.DoSaveProject - unit not found for page %d', [i]);
