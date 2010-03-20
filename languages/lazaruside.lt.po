@@ -7766,6 +7766,10 @@ msgstr "Lazarus aplankas"
 msgid "Lazarus directory not found"
 msgstr "Nerastas Lazarus aplankas"
 
+#: lazarusidestrconsts.lislazarusdiroverride
+msgid "directory, to be used as a basedirectory"
+msgstr ""
+
 #: lazarusidestrconsts.lislazaruseditorv
 msgid "Lazarus IDE v%s"
 msgstr "Lazarus IKA v%s"

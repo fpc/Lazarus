@@ -7759,6 +7759,10 @@ msgstr "Тека Lazarus"
 msgid "Lazarus directory not found"
 msgstr "Не знайдена тека Lazarus"
 
+#: lazarusidestrconsts.lislazarusdiroverride
+msgid "directory, to be used as a basedirectory"
+msgstr ""
+
 #: lazarusidestrconsts.lislazaruseditorv
 msgid "Lazarus IDE v%s"
 msgstr ""

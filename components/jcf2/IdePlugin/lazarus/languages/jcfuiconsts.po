@@ -225,6 +225,30 @@ msgstr ""
 msgid "JCF Format Settings"
 msgstr ""
 
+#: jcfuiconsts.lislbbreaklinesthatarelongerthanmaxlinelength
+msgid "&Break lines that are longer than max line length"
+msgstr ""
+
+#: jcfuiconsts.lislblinebreaking
+msgid "Line Breaking"
+msgstr ""
+
+#: jcfuiconsts.lislbmaxlinelength
+msgid "Max line length"
+msgstr ""
+
+#: jcfuiconsts.lislbnever
+msgid "&Never"
+msgstr ""
+
+#: jcfuiconsts.lislbsometimesifagoodplacetobreakisfound
+msgid "&Sometimes, if a good place to break is found"
+msgstr ""
+
+#: jcfuiconsts.lislbusuallyunlessthereisnoacceptableplacetobreak
+msgid "&Usually, unless there is no acceptable place to break"
+msgstr ""
+
 #: jcfuiconsts.lisnosettingsfound
 msgid "No settings found"
 msgstr ""

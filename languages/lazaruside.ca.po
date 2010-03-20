@@ -7760,6 +7760,10 @@ msgstr "Directori del Lazarus"
 msgid "Lazarus directory not found"
 msgstr "No s'ha trobat el directori del Lazarus"
 
+#: lazarusidestrconsts.lislazarusdiroverride
+msgid "directory, to be used as a basedirectory"
+msgstr ""
+
 #: lazarusidestrconsts.lislazaruseditorv
 msgid "Lazarus IDE v%s"
 msgstr ""

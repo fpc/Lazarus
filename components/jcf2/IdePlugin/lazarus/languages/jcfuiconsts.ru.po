@@ -234,6 +234,30 @@ msgstr "Параметры"
 msgid "JCF Format Settings"
 msgstr "Форматирование кода JEDI"
 
+#: jcfuiconsts.lislbbreaklinesthatarelongerthanmaxlinelength
+msgid "&Break lines that are longer than max line length"
+msgstr "&Разрывать строки длиннее максимума"
+
+#: jcfuiconsts.lislblinebreaking
+msgid "Line Breaking"
+msgstr "Разрыв строк"
+
+#: jcfuiconsts.lislbmaxlinelength
+msgid "Max line length"
+msgstr "Максимум длины строки"
+
+#: jcfuiconsts.lislbnever
+msgid "&Never"
+msgstr "&Никогда"
+
+#: jcfuiconsts.lislbsometimesifagoodplacetobreakisfound
+msgid "&Sometimes, if a good place to break is found"
+msgstr "&Иногда, если найдено хорошее место разрыва"
+
+#: jcfuiconsts.lislbusuallyunlessthereisnoacceptableplacetobreak
+msgid "&Usually, unless there is no acceptable place to break"
+msgstr "&Как правило, если найдено приемлемое место разрыва"
+
 #: jcfuiconsts.lisnosettingsfound
 msgid "No settings found"
 msgstr "Параметров не найдено"
