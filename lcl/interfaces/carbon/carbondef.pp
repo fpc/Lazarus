@@ -61,6 +61,7 @@ type
   
   TCarbonWidget = class
   private
+    FEventProcCount: Integer;
     FProperties: TStringList;
     FCursor: HCURSOR;
     FHasCaret: Boolean;
@@ -75,6 +76,12 @@ type
     procedure DestroyWidget; virtual; abstract;
     function GetContent: ControlRef; virtual; abstract;
     procedure UpdateLCLClientRect;
+  public
+    FNeedFree: Boolean;
+    procedure BeginEventProc;
+    procedure EndEventProc;
+    function isEventProcessing: Boolean;
+    procedure FreeCarbonWidget;
   public
     LCLObject: TWinControl;  // LCL control which created this widget
     Context: TCarbonContext; // Carbon content area context
@@ -169,11 +176,30 @@ function CheckWidget(const Handle: HWND; const AMethodName: String; AClass: TCla
 function RegisterObjectEventHandler(AHandler: TCarbonObjectEventHandlerProc): EventHandlerUPP;
 function RegisterEventHandler(AHandler: TCarbonEventHandlerProc): EventHandlerUPP;
 
+procedure NeedFreeWidget(AWidget: TCarbonWidget);
+procedure FreePendingWidgets;
+
 implementation
 
 uses
   CarbonProc, CarbonDbgConsts, CarbonUtils, CarbonCaret;
 
+var
+  WantFreeList : TFPList;
+
+procedure NeedFreeWidget(AWidget: TCarbonWidget);
+begin
+  WantFreeList.Add(AWidget);
+end;
+
+procedure FreePendingWidgets;
+var
+  i : integer;
+begin
+  for i:=0 to WantFreeList.Count-1 do
+    TCarbonWidget(WantFreeList[i]).Free;
+  WantfreeList.Clear;
+end;
 {------------------------------------------------------------------------------
   Name:    CheckHandle
   Params:  AWinControl  - Handle of window
@@ -443,6 +469,31 @@ begin
     LCLObject.InvalidateClientRectCache(False);
     LCLSendSizeMsg(LCLObject, R.Right - R.Left, R.Bottom - R.Top, Size_SourceIsInterface);
   end;
+end;
+
+procedure TCarbonWidget.BeginEventProc;
+begin
+  inc(FEventProcCount);
+end;
+
+procedure TCarbonWidget.EndEventProc;
+begin
+  dec(FEventProcCount);
+  if (FEventProcCount=0) and FNeedFree then
+    NeedFreeWidget(Self)
+end;
+
+function TCarbonWidget.isEventProcessing: Boolean;
+begin
+  Result:=FEventProcCount>0;
+end;
+
+procedure TCarbonWidget.FreeCarbonWidget;
+begin
+  if isEventProcessing then
+    FNeedFree:=True
+  else
+    Free;
 end;
 
 {------------------------------------------------------------------------------
@@ -913,9 +964,11 @@ initialization
   LAZARUS_FOURCC := MakeFourCC('Laz ');
   WIDGETINFO_FOURCC := MakeFourCC('WInf');
   MENU_FOURCC := MakeFourCC('Menu');
+  WantFreeList:=TFPList.Create;
   
 finalization
 
   if UPPTree <> nil then FreeAndNil(UPPTree);
+  WantFreeList.Free;
 
 end.

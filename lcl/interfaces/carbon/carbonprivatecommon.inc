@@ -378,52 +378,63 @@ var
 const
   SName = 'CarbonCommon_SetFocusPart';
 begin
-  if not (AWidget is TCarbonCustomControl) or (AWidget is TCarbonWindow) then
-    Result := CallNextEventHandler(ANextHandler, AEvent);
-
-  if OSError(
-    GetEventParameter(AEvent, kEventParamControlPart, typeControlPartCode, nil,
-      SizeOf(ControlPartCode), nil, @FocusPart), SName,
-    SGetEvent, SControlPart) then Exit;
-
-  {$IFDEF VerboseCommonEvent}
-    DebugLn('CarbonCommon_SetFocusPart: ', DbgSName(AWidget.LCLObject), ' ' +
-      IntToStr(Integer(FocusPart)));
-  {$ENDIF}
-  
-  if (AWidget is TCarbonCustomControl) and not (AWidget is TCarbonWindow) then
+  if not Assigned(AWidget) then
   begin
-    OSError(HIViewGetFocusPart(AWidget.Content, CurrentFocus),
-      SName, 'HIViewGetFocusPart');
-      
-    case FocusPart of
-      kControlFocusPrevPart,
-      kControlFocusNextPart:
-        if CurrentFocus = kControlNoPart then FocusPart := kControlEditTextPart
-        else FocusPart := kControlEditTextPart;
-      kControlEditTextPart:;
-      else
-        FocusPart := kControlNoPart;
-    end;
-    
-    OSError(
-      SetEventParameter(AEvent, kEventParamControlPart, typeControlPartCode,
-        SizeOf(ControlPartCode), @FocusPart), SName, SSetEvent, SControlPart);
-        
-    Result := noErr;
+    Result := CallNextEventHandler(ANextHandler, AEvent);
+    Exit;
   end;
 
-  if FocusPart <> kControlFocusNoPart then
-  begin
-    CarbonWidgetSet.SetFocusedWidget(HWND(AWidget));
-    AWidget.FocusSet;
-    CarbonWidgetSet.SetFocusedWidget(0);
-  end
-  else
-  begin
-    if CarbonWidgetSet.GetFocusedWidget = HWND(AWidget) then
+  AWidget.BeginEventProc;
+  try
+    if not (AWidget is TCarbonCustomControl) or (AWidget is TCarbonWindow) then
+      Result := CallNextEventHandler(ANextHandler, AEvent);
+
+    if OSError(
+      GetEventParameter(AEvent, kEventParamControlPart, typeControlPartCode, nil,
+        SizeOf(ControlPartCode), nil, @FocusPart), SName,
+      SGetEvent, SControlPart) then Exit;
+
+    {$IFDEF VerboseCommonEvent}
+      DebugLn('CarbonCommon_SetFocusPart: ', DbgSName(AWidget.LCLObject), ' ' +
+        IntToStr(Integer(FocusPart)));
+    {$ENDIF}
+
+    if (AWidget is TCarbonCustomControl) and not (AWidget is TCarbonWindow) then
+    begin
+      OSError(HIViewGetFocusPart(AWidget.Content, CurrentFocus),
+        SName, 'HIViewGetFocusPart');
+
+      case FocusPart of
+        kControlFocusPrevPart,
+        kControlFocusNextPart:
+          if CurrentFocus = kControlNoPart then FocusPart := kControlEditTextPart
+          else FocusPart := kControlEditTextPart;
+        kControlEditTextPart:;
+        else
+          FocusPart := kControlNoPart;
+      end;
+
+      OSError(
+        SetEventParameter(AEvent, kEventParamControlPart, typeControlPartCode,
+          SizeOf(ControlPartCode), @FocusPart), SName, SSetEvent, SControlPart);
+
+      Result := noErr;
+    end;
+
+    if FocusPart <> kControlFocusNoPart then
+    begin
+      CarbonWidgetSet.SetFocusedWidget(HWND(AWidget));
+      AWidget.FocusSet;
       CarbonWidgetSet.SetFocusedWidget(0);
-    AWidget.FocusKilled;
+    end
+    else
+    begin
+      if CarbonWidgetSet.GetFocusedWidget = HWND(AWidget) then
+        CarbonWidgetSet.SetFocusedWidget(0);
+      AWidget.FocusKilled;
+    end;
+  finally
+    AWidget.EndEventProc;
   end;
 end;
 

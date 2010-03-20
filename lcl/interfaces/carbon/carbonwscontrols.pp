@@ -351,7 +351,7 @@ class procedure TCarbonWSWinControl.DestroyHandle(const AWinControl: TWinControl
 begin
   if not CheckHandle(AWinControl, Self, 'DestroyHandle') then Exit;
 
-  TCarbonWidget(AWinControl.Handle).Free;
+  TCarbonWidget(AWinControl.Handle).FreeCarbonWidget;
 end;
 
 {------------------------------------------------------------------------------

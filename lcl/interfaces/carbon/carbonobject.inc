@@ -529,6 +529,7 @@ begin
   CurEventClass.Chars[4] := #0;
   CurEventKind.Chars[4] := #0;
   repeat
+    FreePendingWidgets;
     if ReceiveNextEvent(0, nil, kEventDurationNoWait, True,
       Event) <> noErr then Break;
       

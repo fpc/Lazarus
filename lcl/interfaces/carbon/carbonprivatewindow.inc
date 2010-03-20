@@ -851,7 +851,7 @@ const
 
 begin
   Result := EventNotHandledErr;
-  
+
   Control := nil;
   if OSError(GetKeyboardFocus( TCarbonWindow(AWidget).fWindowRef, Control), SName,
     SGetKeyboardFocus) then Exit;
@@ -869,22 +869,28 @@ begin
   end;
   if (Widget = nil) or (Control = AWidget.Content) then Widget := AWidget;
 
-  EventKind := GetEventKind(AEvent);
-  if EventKind = kEventRawKeyModifiersChanged then
-  begin
-    if not EmulateModifiersDownUp then Exit;
-  end
-  else
-    if not TranslateMacKeyCode then
+  Widget.BeginEventProc;
+  try
+
+    EventKind := GetEventKind(AEvent);
+    if EventKind = kEventRawKeyModifiersChanged then
     begin
-      Debugln('[CarbonWindow_KeyboardProc] ***WARNING: TranslateMacKeyCode failed***');
-      Exit;
+      if not EmulateModifiersDownUp then Exit;
+    end
+    else
+      if not TranslateMacKeyCode then
+      begin
+        Debugln('[CarbonWindow_KeyboardProc] ***WARNING: TranslateMacKeyCode failed***');
+        Exit;
+      end;
+
+    case EventKind of
+      kEventRawKeyDown  : Result := HandleRawKeyDownEvent;
+      kEventRawKeyRepeat: Result := HandleRawKeyDownEvent;
+      kEventRawKeyUp    : Result := HandleRawKeyUpEvent;
     end;
-  
-  case EventKind of
-    kEventRawKeyDown  : Result := HandleRawKeyDownEvent;
-    kEventRawKeyRepeat: Result := HandleRawKeyDownEvent;
-    kEventRawKeyUp    : Result := HandleRawKeyUpEvent;
+  finally
+    Widget.EndEventProc;
   end;
 end;
 
