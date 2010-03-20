@@ -222,6 +222,7 @@ begin
   if SourceEditorManager = nil then exit;
   page := (sender as TIDEMenuCommand).tag;
   SourceEditorManager.ActiveEditor := TSourceEditor(PtrInt(page));
+  SourceEditorManager.ShowActiveWindowOnTop(True);
 end;
 
 procedure TMainIDEBase.OnMainBarDestroy(Sender: TObject);

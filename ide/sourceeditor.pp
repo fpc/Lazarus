@@ -526,7 +526,7 @@ type
     procedure ToggleBreakpointClicked(Sender: TObject);
   private
     FManager: TSourceEditorManager;
-    FUpdateLock: Integer;
+    FUpdateLock, FFocusLock: Integer;
     FPageIndex: Integer;
     fAutoFocusLock: integer;
     FCodeTemplateModul: TSynEditAutoComplete;
@@ -3260,7 +3260,9 @@ end;
 
 procedure TSourceEditor.EditorEnter(Sender: TObject);
 begin
-  if (FSourceNoteBook.FUpdateLock <> 0) then exit;
+  if (FSourceNoteBook.FUpdateLock <> 0) or
+     (FSourceNoteBook.FFocusLock <> 0)
+  then exit;
   if (FSourceNoteBook.PageIndex = PageIndex) then
     Activate
   else
@@ -3717,6 +3719,7 @@ begin
   inherited Create(AOwner);
   FManager := TSourceEditorManager(AOwner);
   FUpdateLock := 0;
+  FFocusLock := 0;
   IDESearchInText:=@SearchInText;
   Visible:=false;
   Name:=NonModalIDEWindowNames[nmiwSourceNoteBookName];
@@ -5444,8 +5447,10 @@ var
   i: integer;
 begin
   i := FindPageWithEditor(AValue as TSourceEditor);
+  inc(FFocusLock);
   if  i>= 0 then
-    PageIndex := i;{ $note avoid editorEnter}
+    PageIndex := i;
+  dec(FFocusLock);
   SourceEditorManager.ActiveSourceWindow := self;
 end;
 
@@ -7080,8 +7085,7 @@ procedure TSourceEditorManagerBase.SetActiveSourceWindow(
   const AValue: TSourceEditorWindowInterface);
 begin
   if AValue = nil then exit;
-  FActiveWindow := AValue as TSourceNotebook;
-  ShowActiveWindowOnTop(False);
+  FActiveWindow := AValue as TSourceNotebook; // Note: also set by SetActiveEditor
 end;
 
 function TSourceEditorManagerBase.GetSourceWindows(Index: integer
@@ -7108,7 +7112,7 @@ begin
   else
     Window := SourceWindowWithEditor(AValue);
   if Window = nil then exit;
-  ActiveSourceWindow := TSourceNotebook(Window);
+  FActiveWindow := TSourceNotebook(Window);
   Window.ActiveEditor := AValue;
 end;
 
@@ -7590,6 +7594,7 @@ begin
   AnEditor := TSourceEditor(Project1.Bookmarks.EditorComponentForBookmarkWithIndex(Index));
   if AnEditor = nil then exit;
   ActiveEditor := AnEditor;
+  ShowActiveWindowOnTop(True);
   AnEditor.EditorComponent.GotoBookMark(Index);
   AnEditor.CenterCursor;
 end;
@@ -7882,6 +7887,7 @@ begin
     OnJumpToHistoryPoint(NewCaretXY,NewTopLine,NewEditor,CloseAction);
     if NewEditor<>nil then begin
       ActiveEditor := NewEditor;
+      ShowActiveWindowOnTop(True);
       with NewEditor.EditorComponent do begin
         TopLine:=NewTopLine;
         LogicalCaretXY:=NewCaretXY;
@@ -7901,8 +7907,10 @@ begin
     Result.IncUpdateLock;
   FSourceWindowList.Add(Result);
   FChangeNotifyLists[semWindowCreate].CallNotifyEvents(Result);
-  if Activate then
+  if Activate then begin
     ActiveSourceWindow := Result;
+    ShowActiveWindowOnTop(False);
+  end;
 end;
 
 initialization

@@ -8540,6 +8540,7 @@ begin
   begin
     // already loaded -> switch to source editor
     SourceEditorManager.ActiveEditor := TSourceEditor(MainUnitInfo.EditorComponent);
+    SourceEditorManager.ShowActiveWindowOnTop(True);
     Result:=mrOk;
     exit;
   end;
@@ -9619,9 +9620,11 @@ begin
     end;
     if (Project1.ActiveWindowIndexAtStart >= 0) and
        (Project1.ActiveWindowIndexAtStart < SourceEditorManager.SourceWindowCount)
-    then
+    then begin
       SourceEditorManager.ActiveSourceWindow :=
         SourceEditorManager.SourceWindows[Project1.ActiveWindowIndexAtStart];
+      SourceEditorManager.ShowActiveWindowOnTop(True);
+    end;
 
     // select a form (object inspector, formeditor, control selection)
     if FLastFormActivated<>nil then begin
