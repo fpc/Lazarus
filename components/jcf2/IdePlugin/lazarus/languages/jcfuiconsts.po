@@ -298,6 +298,67 @@ msgctxt "jcfuiconsts.lisobfsremovewhitespace"
 msgid "Remove &white space"
 msgstr ""
 
+#: jcfuiconsts.lisreturnsafteruses
+msgid "After uses"
+msgstr ""
+
+#: jcfuiconsts.lisreturnsconverttocarriagereturn
+msgid "Convert to Carriage Return (UNIX)"
+msgstr ""
+
+#: jcfuiconsts.lisreturnsconverttocarriagereturnlinefeed
+msgid "Convert to Carriage Return + Linefeed (DOS/Windows)"
+msgstr ""
+
+#: jcfuiconsts.lisreturnsinexpressions
+msgid "In expressions"
+msgstr ""
+
+#: jcfuiconsts.lisreturnsinmiscbadplaces
+msgid "In misc. bad places"
+msgstr ""
+
+#: jcfuiconsts.lisreturnsinmiscgoodplaces
+msgid "In misc. good places"
+msgstr ""
+
+#: jcfuiconsts.lisreturnsinproceduredefinitions
+msgid "In procedure definitions"
+msgstr ""
+
+#: jcfuiconsts.lisreturnsinproperties
+msgid "In properties"
+msgstr ""
+
+#: jcfuiconsts.lisreturnsinsertreturns
+msgid "Insert returns"
+msgstr ""
+
+#: jcfuiconsts.lisreturnsinvariabledeclarations
+msgid "In variable declarations"
+msgstr ""
+
+#: jcfuiconsts.lisreturnsleaveasis
+msgctxt "jcfuiconsts.lisreturnsleaveasis"
+msgid "Leave as is"
+msgstr ""
+
+#: jcfuiconsts.lisreturnsoneusesclauseitemperline
+msgid "One uses clause item per line"
+msgstr ""
+
+#: jcfuiconsts.lisreturnsremovereturns
+msgid "Remove returns"
+msgstr ""
+
+#: jcfuiconsts.lisreturnsreturnchars
+msgid "Return chars"
+msgstr ""
+
+#: jcfuiconsts.lisreturnsreturns
+msgid "Returns"
+msgstr ""
+
 #: jcfuiconsts.lisspacesafteropen
 msgid "After open"
 msgstr ""
@@ -359,6 +420,7 @@ msgid "&Label"
 msgstr ""
 
 #: jcfuiconsts.lisspacesleaveasis
+msgctxt "jcfuiconsts.lisspacesleaveasis"
 msgid "Leave as is"
 msgstr ""
 

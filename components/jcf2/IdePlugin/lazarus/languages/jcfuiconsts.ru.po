@@ -100,7 +100,7 @@ msgstr "Число пустых строк после End. модуля"
 
 #: jcfuiconsts.lisblremoveblanklines
 msgid "Remove blank lines"
-msgstr "Удалять пустые строки"
+msgstr "Удаление пустых строк"
 
 #: jcfuiconsts.lisblremoveconsecutiveblanklines
 msgid "Remove consecutive blank lines"
@@ -307,6 +307,67 @@ msgctxt "jcfuiconsts.lisobfsremovewhitespace"
 msgid "Remove &white space"
 msgstr "Удалять &пробелы"
 
+#: jcfuiconsts.lisreturnsafteruses
+msgid "After uses"
+msgstr "После выражения Uses"
+
+#: jcfuiconsts.lisreturnsconverttocarriagereturn
+msgid "Convert to Carriage Return (UNIX)"
+msgstr "На возврат каретки CR (UNIX)"
+
+#: jcfuiconsts.lisreturnsconverttocarriagereturnlinefeed
+msgid "Convert to Carriage Return + Linefeed (DOS/Windows)"
+msgstr "На возврат каретки и перевод строки CR+LF (DOS/Windows)"
+
+#: jcfuiconsts.lisreturnsinexpressions
+msgid "In expressions"
+msgstr "В выражениях"
+
+#: jcfuiconsts.lisreturnsinmiscbadplaces
+msgid "In misc. bad places"
+msgstr "В ненужных местах"
+
+#: jcfuiconsts.lisreturnsinmiscgoodplaces
+msgid "In misc. good places"
+msgstr "В нужных местах"
+
+#: jcfuiconsts.lisreturnsinproceduredefinitions
+msgid "In procedure definitions"
+msgstr "В объявлениях процедур"
+
+#: jcfuiconsts.lisreturnsinproperties
+msgid "In properties"
+msgstr "В свойствах"
+
+#: jcfuiconsts.lisreturnsinsertreturns
+msgid "Insert returns"
+msgstr "Вставка символов ввода"
+
+#: jcfuiconsts.lisreturnsinvariabledeclarations
+msgid "In variable declarations"
+msgstr "В объявлениях переменных"
+
+#: jcfuiconsts.lisreturnsleaveasis
+msgctxt "jcfuiconsts.lisreturnsleaveasis"
+msgid "Leave as is"
+msgstr "Не заменять"
+
+#: jcfuiconsts.lisreturnsoneusesclauseitemperline
+msgid "One uses clause item per line"
+msgstr "После элемента выражения Uses"
+
+#: jcfuiconsts.lisreturnsremovereturns
+msgid "Remove returns"
+msgstr "Удаление символов ввода"
+
+#: jcfuiconsts.lisreturnsreturnchars
+msgid "Return chars"
+msgstr "Замена символов ввода"
+
+#: jcfuiconsts.lisreturnsreturns
+msgid "Returns"
+msgstr "Символы ввода"
+
 #: jcfuiconsts.lisspacesafteropen
 msgid "After open"
 msgstr "После открывающей"
@@ -368,6 +429,7 @@ msgid "&Label"
 msgstr "М&еток"
 
 #: jcfuiconsts.lisspacesleaveasis
+msgctxt "jcfuiconsts.lisspacesleaveasis"
 msgid "Leave as is"
 msgstr "Не изменять"
 
