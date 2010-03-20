@@ -143,6 +143,7 @@ type
 const
   soAll: TSaveOptions = [soDesign, soAttributes, soContent, soPosition];
   constRubberSpace: byte = 2;
+  constCellPadding: byte = 3;
 
 type
 
@@ -299,8 +300,9 @@ type
               aState: TGridDrawState) of object;
 
   TUserCheckBoxBitmapEvent =
-    procedure(Sender: TObject; const CheckedState: TCheckboxState;
-              ABitmap: TBitmap) of object;
+    procedure(Sender: TObject; const aCol, aRow: Integer;
+              const CheckedState: TCheckboxState;
+              var ABitmap: TBitmap) of object;
 
   TValidateEntryEvent =
     procedure(sender: TObject; aCol, aRow: Integer;
@@ -414,7 +416,6 @@ type
     FDropDownRows: Longint;
     FTitle: TGridColumnTitle;
     FWidthChanged: boolean;
-
     FAlignment: ^TAlignment;
     FColor: ^TColor;
     FLayout: ^TTextLayout;
@@ -722,7 +723,6 @@ type
     function  GetColumns: TGridColumns;
     function  GetEditorBorderStyle: TBorderStyle;
     function  GetBorderWidth: Integer;
-    function  GetImageForCheckBox(CheckBoxView: TCheckBoxState): TBitmap;
     function  GetRowCount: Integer;
     function  GetRowHeights(Arow: Integer): Integer;
     function  GetSelection: TGridRect;
@@ -840,7 +840,8 @@ type
     procedure DrawCell(aCol,aRow:Integer; aRect:TRect; aState:TGridDrawState); virtual;
     procedure DrawCellGrid(aCol,aRow: Integer; aRect: TRect; aState: TGridDrawState); virtual;
     procedure DrawCellText(aCol,aRow: Integer; aRect: TRect; aState: TGridDrawState; aText: String); virtual;
-    procedure DrawGridCheckboxBitmaps(const aRect: TRect; const aState: TCheckboxState); virtual;
+    procedure DrawGridCheckboxBitmaps(const aCol,aRow: Integer; const aRect: TRect;
+                                        const aState: TCheckboxState); virtual;
     procedure DrawColRowMoving;
     procedure DrawColumnText(aCol,aRow: Integer; aRect: TRect; aState:TGridDrawState); virtual;
     procedure DrawColumnTitleImage(var ARect: TRect; AColumnIndex: Integer);
@@ -879,6 +880,8 @@ type
     function  GetDefaultColumnTitle(Column: Integer): string; virtual;
     function  GetDefaultEditor(Column: Integer): TWinControl;
     function  GetDefaultRowHeight: integer; virtual;
+    function  GetImageForCheckBox(const aCol,aRow: Integer;
+                                  CheckBoxView: TCheckBoxState): TBitmap; virtual;
     function  GetScrollBarPosition(Which: integer): Integer;
     procedure GetSBVisibility(out HsbVisible,VsbVisible:boolean);virtual;
     procedure GetSBRanges(const HsbVisible,VsbVisible: boolean;
@@ -1359,6 +1362,7 @@ type
     property OnStartDock;
     property OnStartDrag;
     property OnTopleftChanged;
+    property OnUserCheckboxBitmap;
     property OnUTF8KeyPress;
   end;
 
@@ -1557,6 +1561,7 @@ type
     property OnStartDock;
     property OnStartDrag;
     property OnTopLeftChanged;
+    property OnUserCheckboxBitmap;
     property OnUTF8KeyPress;
     property OnValidateEntry;
   end;
@@ -3543,14 +3548,14 @@ begin
 
   with ARect do begin
 
-    dec(Right, 3);
+    dec(Right, constCellPadding);
     case Canvas.TextStyle.Alignment of
-      Classes.taLeftJustify: Inc(Left, 3);
+      Classes.taLeftJustify: Inc(Left, constCellPadding);
       Classes.taRightJustify: Dec(Right, 1);
     end;
     case Canvas.TextStyle.Layout of
-      tlTop: Inc(Top, 3);
-      tlBottom: Dec(Bottom, 3);
+      tlTop: Inc(Top, constCellPadding);
+      tlBottom: Dec(Bottom, constCellPadding);
     end;
 
     if Right<Left then
@@ -3568,8 +3573,8 @@ begin
   end;
 end;
 
-procedure TCustomGrid.DrawGridCheckboxBitmaps(const aRect: TRect;
-  const aState: TCheckboxState);
+procedure TCustomGrid.DrawGridCheckboxBitmaps(const aCol,aRow: Integer;
+  const aRect: TRect; const aState: TCheckboxState);
 const
   arrtb:array[TCheckboxState] of TThemedButton =
     (tbCheckBoxUncheckedNormal, tbCheckBoxCheckedNormal, tbCheckBoxMixedNormal);
@@ -3579,20 +3584,35 @@ var
   details: TThemedElementDetails;
   PaintRect: TRect;
   CSize: TSize;
+  bmpAlign: TAlignment;
 begin
+
+  if Columns.Enabled then
+    bmpAlign := GetColumnAlignment(aCol, false)
+  else
+    bmpAlign := taCenter;
+
   if (TitleStyle=tsNative) and not assigned(OnUserCheckboxBitmap) then begin
     Details := ThemeServices.GetElementDetails(arrtb[AState]);
     CSize := ThemeServices.GetDetailSize(Details);
     with PaintRect do begin
-      Left := Trunc((aRect.Left + aRect.Right - CSize.cx)/2);
+      case bmpAlign of
+        taCenter: Left := Trunc((aRect.Left + aRect.Right - CSize.cx)/2);
+        taLeftJustify: Left := ARect.Left + constCellPadding;
+        taRightJustify: Left := ARect.Right - CSize.Cx - constCellPadding - 1;
+      end;
       Top  := Trunc((aRect.Top + aRect.Bottom - CSize.cy)/2);
       PaintRect := Bounds(Left, Top, CSize.cx, CSize.cy);
     end;
     ThemeServices.DrawElement(Canvas.Handle, Details, PaintRect, nil);
   end else begin
-    ChkBitmap := GetImageForCheckBox(AState);
+    ChkBitmap := GetImageForCheckBox(aCol, aRow, AState);
     if ChkBitmap<>nil then begin
-      XPos := Trunc((aRect.Left+aRect.Right-ChkBitmap.Width)/2);
+      case bmpAlign of
+        taCenter: XPos := Trunc((aRect.Left+aRect.Right-ChkBitmap.Width)/2);
+        taLeftJustify: XPos := ARect.Left + constCellPadding;
+        taRightJustify: XPos := ARect.Right - ChkBitmap.Width - constCellPadding - 1;
+      end;
       YPos := Trunc((aRect.Top+aRect.Bottom-ChkBitmap.Height)/2);
       Canvas.Draw(XPos, YPos, ChkBitmap);
     end;
@@ -4286,8 +4306,8 @@ begin
     Result := 0
 end;
 
-function TCustomGrid.GetImageForCheckBox(CheckBoxView: TCheckBoxState
-  ): TBitmap;
+function TCustomGrid.GetImageForCheckBox(const aCol,aRow: Integer;
+    CheckBoxView: TCheckBoxState): TBitmap;
 begin
   if CheckboxView=cbUnchecked then
     Result := FUncheckedBitmap
@@ -4297,7 +4317,7 @@ begin
     Result := FGrayedBitmap;
 
   if Assigned(OnUserCheckboxBitmap) then
-    OnUserCheckboxBitmap(Self, CheckBoxView, Result);
+    OnUserCheckboxBitmap(Self, aCol, aRow, CheckBoxView, Result);
 end;
 
 
@@ -8207,7 +8227,7 @@ var
 begin
   AState := cbUnchecked;
   GetCheckBoxState(aCol, aRow, aState);
-  DrawGridCheckboxBitmaps(aRect, aState);
+  DrawGridCheckboxBitmaps(aCol, aRow, aRect, aState);
 end;
 
 procedure TCustomDrawGrid.CalcCellExtent(acol, aRow: Integer; var aRect: TRect);
@@ -9816,7 +9836,10 @@ end;
 
 function TGridColumn.GetDefaultAlignment: TAlignment;
 begin
-  result := taLeftJustify;
+  if ButtonStyle=cbsCheckboxColumn then
+    result := taCenter
+  else
+    result := taLeftJustify;
 end;
 
 procedure TGridColumn.ColumnChanged;

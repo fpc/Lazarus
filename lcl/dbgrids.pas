@@ -106,6 +106,10 @@ type
     procedure(sender: TObject; DataCol: Integer;
               Column: TColumn; AState: TGridDrawState) of object;
 
+  TDbGridCheckBoxBitmapEvent =
+    procedure(Sender: TObject; const CheckedState: TCheckboxState;
+              var ABitmap: TBitmap) of object;
+
 type
 
   { TBMStringList }
@@ -280,6 +284,7 @@ type
     FOnFieldEditMask: TGetDbEditMaskEvent;
     FOnTitleClick: TDBGridClickEvent;
     FOnSelectEditor: TDbGridSelEditorEvent;
+    FOnCheckboxBitmap: TDbGridCheckBoxBitmapEvent;
     FOptions: TDBGridOptions;
     FReadOnly: Boolean;
     FColEnterPending: Boolean;
@@ -396,6 +401,8 @@ type
     function  GetEditText(aCol, aRow: Longint): string; override;
     function  GetFieldFromGridColumn(Column: Integer): TField;
     function  GetGridColumnFromField(F: TField): Integer;
+    function  GetImageForCheckBox(const aCol,aRow: Integer;
+                                  CheckBoxView: TCheckBoxState): TBitmap; override;
     function  GetIsCellSelected(aCol, aRow: Integer): boolean; override;
     procedure GetSelectedState(AState: TGridDrawState; out IsSelected:boolean); override;
     function  GridCanModify: boolean;
@@ -447,6 +454,7 @@ type
     property OnPrepareCanvas: TPrepareDbGridCanvasEvent read FOnPrepareCanvas write FOnPrepareCanvas;
     property OnSelectEditor: TDbGridSelEditorEvent read FOnSelectEditor write FOnSelectEditor;
     property OnTitleClick: TDBGridClickEvent read FOnTitleClick write FOnTitleClick;
+    property OnUserCheckboxBitmap: TDbGridCheckboxBitmapEvent read FOnCheckboxBitmap write FOnCheckboxBitmap;
   public
     constructor Create(AOwner: TComponent); override;
     procedure AutoSizeColumns;
@@ -1326,6 +1334,14 @@ begin
       break;
     end;
   end;
+end;
+
+function TCustomDBGrid.GetImageForCheckBox(const aCol, aRow: Integer;
+  CheckBoxView: TCheckBoxState): TBitmap;
+begin
+  Result:=inherited GetImageForCheckBox(aCol, aRow, CheckBoxView);
+  if Assigned(OnUserCheckboxBitmap) then
+    OnUserCheckboxBitmap(Self, CheckBoxView, Result);
 end;
 
 // obtain the visible field index corresponding to the grid column index
@@ -2624,7 +2640,7 @@ begin
   else
     AState := cbGrayed;
 
-  DrawGridCheckboxBitmaps(ARect, AState);
+  DrawGridCheckboxBitmaps(aCol, Row{dummy}, ARect, AState);
 end;
 
 procedure TCustomDBGrid.DrawFixedText(aCol, aRow: Integer; aRect: TRect;
