@@ -139,7 +139,9 @@ type
   private
     FSize: Integer;
     FTitleSize: Integer;
-    function GetMarkValues(AMin, AMax: Double): TDoubleDynArray;
+    FMarkValues: TDoubleDynArray;
+    FMarkTexts: TStringDynArray;
+    procedure GetMarkValues(AMin, AMax: Double);
   private
     FAlignment: TChartAxisAlignment;
     FGrid: TChartAxisPen;
@@ -344,13 +346,12 @@ procedure TChartAxis.Draw(
   ACanvas: TCanvas; const AExtent: TDoubleRect;
   const ATransf: ICoordTransformer; var ARect: TRect);
 
-  procedure DrawXMark(AY: Integer; AMark: Double);
+  procedure DrawXMark(AY: Integer; AMark: Double; const AText: String);
   var
-    x, dy: Integer;
+    x: Integer;
     sz: TSize;
-    markText: String;
   begin
-    x := ATransf.XGraphToImage(Transformation.AxisToGraph(AMark));
+    x := ATransf.XGraphToImage(AMark);
 
     if Grid.Visible then begin
       ACanvas.Pen.Assign(Grid);
@@ -365,23 +366,20 @@ procedure TChartAxis.Draw(
     ACanvas.Pen.Mode := pmCopy;
     ACanvas.Line(x, AY - TickLength, x, AY + TickLength);
 
-    markText := MarkToText(AMark);
-    sz := Marks.MeasureLabel(ACanvas, markText);
+    sz := Marks.MeasureLabel(ACanvas, AText);
     if Alignment = calTop then
-      dy := -TickLength - 1 - sz.cy
+      AY += -TickLength - 1 - sz.cy
     else
-      dy := TickLength + 1;
-    Marks.DrawLabel(
-      ACanvas, Bounds(x - sz.cx div 2, AY + dy, sz.cx, sz.cy), markText);
+      AY += TickLength + 1;
+    Marks.DrawLabel(ACanvas, Bounds(x - sz.cx div 2, AY, sz.cx, sz.cy), AText);
   end;
 
-  procedure DrawYMark(AX: Integer; AMark: Double);
+  procedure DrawYMark(AX: Integer; AMark: Double; const AText: String);
   var
-    dx, y: Integer;
-    markText: String;
+    y: Integer;
     sz: TSize;
   begin
-    y := ATransf.YGraphToImage(Transformation.AxisToGraph(AMark));
+    y := ATransf.YGraphToImage(AMark);
 
     if Grid.Visible then begin
       ACanvas.Pen.Assign(Grid);
@@ -396,29 +394,29 @@ procedure TChartAxis.Draw(
     ACanvas.Pen.Mode := pmCopy;
     ACanvas.Line(AX - TickLength, y, AX + TickLength, y);
 
-    markText := MarkToText(AMark);
-    sz := Marks.MeasureLabel(ACanvas, markText);
+    sz := Marks.MeasureLabel(ACanvas, AText);
     if Alignment = calLeft then
-      dx := -TickLength - 1 - sz.cx
+      AX += -TickLength - 1 - sz.cx
     else
-      dx := TickLength + 1;
-    Marks.DrawLabel(
-      ACanvas, Bounds(AX + dx, y - sz.cy div 2, sz.cx, sz.cy), markText);
+      AX += TickLength + 1;
+    Marks.DrawLabel(ACanvas, Bounds(AX, y - sz.cy div 2, sz.cx, sz.cy), AText);
   end;
 
   procedure DoDraw(AMin, AMax: Double);
   var
     i, coord: Integer;
-    marks: TDoubleDynArray;
+    v: Double;
   begin
     if AMin = AMax then exit;
-    marks := GetMarkValues(AMin, AMax);
     coord := SideByAlignment(ARect, Alignment, FSize);
-    for i := 0 to High(marks) do
+    for i := 0 to High(FMarkValues) do begin
+      v := Transformation.AxisToGraph(FMarkValues[i]);
       if IsVertical then
-        DrawYMark(coord, marks[i])
+        DrawYMark(coord, v, FMarkTexts[i])
       else
-        DrawXMark(coord, marks[i]);
+        DrawXMark(coord, v, FMarkTexts[i]);
+
+    end;
   end;
 
 begin
@@ -476,7 +474,7 @@ begin
     Result += Format(CAPTION_FMT, [Title.Caption]);
 end;
 
-function TChartAxis.GetMarkValues(AMin, AMax: Double): TDoubleDynArray;
+procedure TChartAxis.GetMarkValues(AMin, AMax: Double);
 var
   i, count: Integer;
   v: Double;
@@ -486,20 +484,26 @@ begin
   if AMin > AMax then
     Exchange(AMin, AMax);
   if Marks.Source = nil then begin
-    Result := GetIntervals(AMin, AMax, Inverted);
-    exit;
-  end;
-  count := 0;
-  SetLength(Result, Marks.Source.Count);
-  for i := 0 to Marks.Source.Count - 1 do begin
-    with Marks.Source[i]^ do
-      v := IfThen(IsVertical, Y, X);
-    if InRange(v, AMin, AMax) then begin
-      Result[count] := v;
+    FMarkValues := GetIntervals(AMin, AMax, Inverted);
+    SetLength(FMarkTexts, Length(FMarkValues));
+    for i := 0 to High(FMarkValues) do
+      FMarkTexts[i] := MarkToText(FMarkValues[i]);
+  end
+  else begin
+    count := 0;
+    SetLength(FMarkValues, Marks.Source.Count);
+    SetLength(FMarkTexts, Marks.Source.Count);
+    for i := 0 to Marks.Source.Count - 1 do begin
+      with Marks.Source[i]^ do
+        v := IfThen(IsVertical, Y, X);
+      if not InRange(v, AMin, AMax) then continue;
+      FMarkValues[count] := v;
+      FMarkTexts[count] := Marks.Source.FormatItem(Marks.Format, i);
       count += 1;
     end;
+    SetLength(FMarkValues, count);
+    SetLength(FMarkTexts, count);
   end;
-  SetLength(Result, count);
 end;
 
 function TChartAxis.IsVertical: Boolean; inline;
@@ -531,13 +535,12 @@ const
   procedure CalcVertSize;
   var
     i, maxWidth: Integer;
-    markValues: TDoubleDynArray;
   begin
     if AExtent.a.Y = AExtent.b.Y then exit;
+    GetMarkValues(AExtent.a.Y, AExtent.b.Y);
     maxWidth := 0;
-    markValues := GetMarkValues(AExtent.a.Y, AExtent.b.Y);
-    for i := 0 to High(markValues) do
-      with Marks.MeasureLabel(ACanvas, MarkToText(markValues[i])) do
+    for i := 0 to High(FMarkTexts) do
+      with Marks.MeasureLabel(ACanvas, FMarkTexts[i]) do
         maxWidth := Max(cx, maxWidth);
     // CalculateTransformationCoeffs changes axis interval, so it is possibile
     // that a new mark longer then existing ones is introduced.
@@ -550,6 +553,7 @@ const
   procedure CalcHorSize;
   begin
     if AExtent.a.X = AExtent.b.X then exit;
+    GetMarkValues(AExtent.a.X, AExtent.b.X);
     FSize := Marks.MeasureLabel(ACanvas, SOME_DIGIT).cy + TickLength;
   end;
 
