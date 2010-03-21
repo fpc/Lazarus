@@ -383,7 +383,7 @@ function TListChartSourceStrings.Get(Index: Integer): string;
 begin
   with FSource[Index]^ do
     Result := Format('%g|%g|%s|%s',
-      [X, Y, IfThen(Color = clTAColor, '', '$' + IntToHex(Color, 6)), Text]);
+      [X, Y, IfThen(Color = clTAColor, '?', '$' + IntToHex(Color, 6)), Text]);
 end;
 
 function TListChartSourceStrings.GetCount: Integer;
@@ -404,7 +404,7 @@ end;
 procedure TListChartSourceStrings.Parse(
   const AString: String; ADataItem: PChartDataItem);
 var
-  p: Integer;
+  p: Integer = 1;
 
   function NextPart: String;
   begin
@@ -412,7 +412,6 @@ var
   end;
 
 begin
-  p := 1;
   with ADataItem^ do begin
     X := StrToFloatDef(NextPart, 0.0);
     Y := StrToFloatDef(NextPart, 0.0);
