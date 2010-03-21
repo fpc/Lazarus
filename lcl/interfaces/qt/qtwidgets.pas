@@ -6811,6 +6811,12 @@ begin
   if LCLObject = nil then
     exit;
 
+  if (FDropList <> nil) and (Sender = FDropList.Widget) then
+  begin
+    QEvent_ignore(Event);
+    exit;
+  end;
+
   BeginEventProcessing;
 
   case QEvent_type(Event) of
