@@ -50,9 +50,6 @@ type
   protected
     FUseReticule: Boolean;
 
-    procedure DrawLabel(
-      ACanvas: TCanvas; AIndex: Integer; const ADataPoint: TPoint;
-      ADir: TLabelDirection);
     procedure DrawLabels(ACanvas: TCanvas);
     function GetLabelDirection(AIndex: Integer): TLabelDirection; virtual;
     function GetNearestPoint(
@@ -558,43 +555,41 @@ end;
 
 { TBasicPointSeries }
 
-procedure TBasicPointSeries.DrawLabel(
-  ACanvas: TCanvas; AIndex: Integer; const ADataPoint: TPoint;
-  ADir: TLabelDirection);
-const
-  OFFSETS: array [TLabelDirection] of TPoint =
-    ((X: -1; Y: 0), (X: 0; Y: -1), (X: 1; Y: 0), (X: 0; Y: 1));
-var
-  labelRect: TRect;
-  center: TPoint;
-  dummy: TRect = (Left: 0; Top: 0; Right: 0; Bottom: 0);
-  labelText: String;
-  sz: TSize;
-begin
-  labelText := FormattedMark(AIndex);
-  if labelText = '' then exit;
-
-  sz := Marks.MeasureLabel(ACanvas, labelText);
-  center := ADataPoint;
-  center.X += OFFSETS[ADir].X * (Marks.Distance + sz.cx div 2);
-  center.Y += OFFSETS[ADir].Y * (Marks.Distance + sz.cy div 2);
-  with center do
-    labelRect := Bounds(X - sz.cx div 2, Y - sz.cy div 2, sz.cx, sz.cy);
-  if
-    not IsRectEmpty(FPrevLabelRect) and
-    IntersectRect(dummy, labelRect, FPrevLabelRect)
-  then
-    exit;
-  FPrevLabelRect := labelRect;
-
-  // Link between the label and the bar.
-  ACanvas.Pen.Assign(Marks.LinkPen);
-  ACanvas.Line(ADataPoint, center);
-
-  Marks.DrawLabel(ACanvas, labelRect, labelText);
-end;
-
 procedure TBasicPointSeries.DrawLabels(ACanvas: TCanvas);
+
+  procedure DrawLabel(
+    const AText: String; const ADataPoint: TPoint; ADir: TLabelDirection);
+  const
+    OFFSETS: array [TLabelDirection] of TPoint =
+      ((X: -1; Y: 0), (X: 0; Y: -1), (X: 1; Y: 0), (X: 0; Y: 1));
+  var
+    labelRect: TRect;
+    center: TPoint;
+    dummy: TRect = (Left: 0; Top: 0; Right: 0; Bottom: 0);
+    sz: TSize;
+  begin
+    if AText = '' then exit;
+
+    sz := Marks.MeasureLabel(ACanvas, AText);
+    center := ADataPoint;
+    center.X += OFFSETS[ADir].X * (Marks.Distance + sz.cx div 2);
+    center.Y += OFFSETS[ADir].Y * (Marks.Distance + sz.cy div 2);
+    with center do
+      labelRect := Bounds(X - sz.cx div 2, Y - sz.cy div 2, sz.cx, sz.cy);
+    if
+      not IsRectEmpty(FPrevLabelRect) and
+      IntersectRect(dummy, labelRect, FPrevLabelRect)
+    then
+      exit;
+    FPrevLabelRect := labelRect;
+
+    // Link between the label and the bar.
+    ACanvas.Pen.Assign(Marks.LinkPen);
+    ACanvas.Line(ADataPoint, center);
+
+    Marks.DrawLabel(ACanvas, labelRect, AText);
+  end;
+
 var
   g: TDoublePoint;
   i: Integer;
@@ -604,7 +599,7 @@ begin
     g := GetGraphPoint(i);
     with ParentChart do
       if IsPointInViewPort(g) then
-        DrawLabel(ACanvas, i, GraphToImage(g), GetLabelDirection(i));
+        DrawLabel(FormattedMark(i), GraphToImage(g), GetLabelDirection(i));
   end;
 end;
 
@@ -913,7 +908,7 @@ begin
     if b.y < center.y then
       b.y -= labelHeights[i];
 
-    r := Rect(b.x, b.y, b.x + labelWidths[i], b.y + labelHeights[i]);
+    r := Bounds(b.x, b.y, labelWidths[i], labelHeights[i]);
     InflateRect(r, MARKS_MARGIN_X, MARKS_MARGIN_Y);
     Marks.DrawLabel(ACanvas, r, labelTexts[i]);
   end;
