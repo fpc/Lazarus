@@ -7389,8 +7389,6 @@ begin
         QCoreApplication_postEvent(Sender, ev);
       end;
       QEventHideToParent: TQtComboBox(FOwner).SlotDropListVisibility(False);
-    else
-      QEvent_ignore(Event);
     end;
   end else
     Result:=inherited EventFilter(Sender, Event);
