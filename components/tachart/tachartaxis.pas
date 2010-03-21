@@ -24,7 +24,7 @@ interface
 
 uses
   Classes, Graphics, SysUtils, Types,
-  TATypes, TAChartUtils;
+  TAChartUtils, TASources, TATypes;
 
 type
 
@@ -71,7 +71,7 @@ type
 
   { TChartAxisTransformation }
 
-  TChartAxisTransformation = class (TPersistent)
+  TChartAxisTransformation = class(TPersistent)
   private
     FOnChanged: TNotifyEvent;
     procedure SetOnChanged(const AValue: TNotifyEvent);
@@ -86,7 +86,7 @@ type
 
   { TChartAxisLogLinearTransformation }
 
-  TChartAxisLogLinearTransformation = class (TChartAxisTransformation)
+  TChartAxisLogLinearTransformation = class(TChartAxisTransformation)
   private
     FLogarithmic: Boolean;
     FOffset: Double;
@@ -121,12 +121,16 @@ type
 
   TChartAxisMarks = class(
     specialize TGenericChartMarks<TChartAxisBrush, TChartPen, TChartAxisFramePen>)
+  private
+    FSource: TCustomChartSource;
+    procedure SetSource(const AValue: TCustomChartSource);
   public
     constructor Create(AOwner: TCustomChart);
   published
     property Frame;
     property LabelBrush;
     property LinkPen;
+    property Source: TCustomChartSource read FSource write SetSource;
   end;
 
   { TChartAxis }
@@ -135,7 +139,7 @@ type
   private
     FSize: Integer;
     FTitleSize: Integer;
-    function GetMarks(AMin, AMax: Double): TDoubleDynArray;
+    function GetMarkValues(AMin, AMax: Double): TDoubleDynArray;
   private
     FAlignment: TChartAxisAlignment;
     FGrid: TChartAxisPen;
@@ -184,6 +188,7 @@ type
     property Grid: TChartAxisPen read FGrid write SetGrid;
     // Inverts the axis scale from increasing to decreasing.
     property Inverted: boolean read FInverted write SetInverted default false;
+    property Marks: TChartAxisMarks read FMarks write SetMarks;
     property TickColor: TColor read FTickColor write SetTickColor default clBlack;
     property TickLength: Integer
       read FTickLength write SetTickLength default DEF_TICK_LENGTH;
@@ -192,7 +197,6 @@ type
       read FTransformation write SetTransformation;
     property Visible: Boolean read FVisible write SetVisible default true;
   published
-    property Marks: TChartAxisMarks read FMarks write SetMarks;
     property OnMarkToText: TChartAxisMarkToTextEvent
       read FOnMarkToText write SetOnMarkToText;
   end;
@@ -290,6 +294,13 @@ begin
   inherited Create(AOwner);
   FFrame.Style := psClear;
   FLabelBrush.Style := bsClear;
+end;
+
+procedure TChartAxisMarks.SetSource(const AValue: TCustomChartSource);
+begin
+  if FSource = AValue then exit;
+  FSource := AValue;
+  StyleChanged(Self);
 end;
 
 { TChartAxis }
@@ -401,7 +412,7 @@ procedure TChartAxis.Draw(
     marks: TDoubleDynArray;
   begin
     if AMin = AMax then exit;
-    marks := GetMarks(AMin, AMax);
+    marks := GetMarkValues(AMin, AMax);
     coord := SideByAlignment(ARect, Alignment, FSize);
     for i := 0 to High(marks) do
       if IsVertical then
@@ -465,13 +476,30 @@ begin
     Result += Format(CAPTION_FMT, [Title.Caption]);
 end;
 
-function TChartAxis.GetMarks(AMin, AMax: Double): TDoubleDynArray;
+function TChartAxis.GetMarkValues(AMin, AMax: Double): TDoubleDynArray;
+var
+  i, count: Integer;
+  v: Double;
 begin
   AMin := Transformation.GraphToAxis(AMin);
   AMax := Transformation.GraphToAxis(AMax);
   if AMin > AMax then
     Exchange(AMin, AMax);
-  Result := GetIntervals(AMin, AMax, Inverted);
+  if Marks.Source = nil then begin
+    Result := GetIntervals(AMin, AMax, Inverted);
+    exit;
+  end;
+  count := 0;
+  SetLength(Result, Marks.Source.Count);
+  for i := 0 to Marks.Source.Count - 1 do begin
+    with Marks.Source[i]^ do
+      v := IfThen(IsVertical, Y, X);
+    if InRange(v, AMin, AMax) then begin
+      Result[count] := v;
+      count += 1;
+    end;
+  end;
+  SetLength(Result, count);
 end;
 
 function TChartAxis.IsVertical: Boolean; inline;
@@ -507,7 +535,7 @@ const
   begin
     if AExtent.a.Y = AExtent.b.Y then exit;
     maxWidth := 0;
-    markValues := GetMarks(AExtent.a.Y, AExtent.b.Y);
+    markValues := GetMarkValues(AExtent.a.Y, AExtent.b.Y);
     for i := 0 to High(markValues) do
       with Marks.MeasureLabel(ACanvas, MarkToText(markValues[i])) do
         maxWidth := Max(cx, maxWidth);
