@@ -107,6 +107,28 @@ type
     property Scale: Double read FScale write SetScale;
   end;
 
+  TChartAxisBrush = class(TBrush)
+  published
+    property Style default bsClear;
+  end;
+
+  TChartAxisFramePen = class(TChartPen)
+  published
+    property Style default psClear;
+  end;
+
+  { TChartAxisMarks }
+
+  TChartAxisMarks = class(
+    specialize TGenericChartMarks<TChartAxisBrush, TChartPen, TChartAxisFramePen>)
+  public
+    constructor Create(AOwner: TCustomChart);
+  published
+    property Frame;
+    property LabelBrush;
+    property LinkPen;
+  end;
+
   { TChartAxis }
 
   TChartAxis = class(TCollectionItem)
@@ -118,7 +140,7 @@ type
     FAlignment: TChartAxisAlignment;
     FGrid: TChartAxisPen;
     FInverted: Boolean;
-    FMarks: TChartMarks;
+    FMarks: TChartAxisMarks;
     FOnMarkToText: TChartAxisMarkToTextEvent;
     FTickColor: TColor;
     FTickLength: Integer;
@@ -129,7 +151,7 @@ type
     procedure SetAlignment(AValue: TChartAxisAlignment);
     procedure SetGrid(AValue: TChartAxisPen);
     procedure SetInverted(AValue: Boolean);
-    procedure SetMarks(const AValue: TChartMarks);
+    procedure SetMarks(const AValue: TChartAxisMarks);
     procedure SetOnMarkToText(const AValue: TChartAxisMarkToTextEvent);
     procedure SetTickColor(AValue: TColor);
     procedure SetTickLength(AValue: Integer);
@@ -170,7 +192,7 @@ type
       read FTransformation write SetTransformation;
     property Visible: Boolean read FVisible write SetVisible default true;
   published
-    property Marks: TChartMarks read FMarks write SetMarks;
+    property Marks: TChartAxisMarks read FMarks write SetMarks;
     property OnMarkToText: TChartAxisMarkToTextEvent
       read FOnMarkToText write SetOnMarkToText;
   end;
@@ -261,6 +283,15 @@ begin
   StyleChanged(Self);
 end;
 
+{ TChartAxisMarks }
+
+constructor TChartAxisMarks.Create(AOwner: TCustomChart);
+begin
+  inherited Create(AOwner);
+  FFrame.Style := psClear;
+  FLabelBrush.Style := bsClear;
+end;
+
 { TChartAxis }
 
 procedure TChartAxis.Assign(Source: TPersistent);
@@ -280,7 +311,7 @@ begin
   FGrid := TChartAxisPen.Create;
   FGrid.OnChange := @StyleChanged;
   FGrid.Style := psDot;
-  FMarks := TChartMarks.Create(ACollection.Owner as TCustomChart);
+  FMarks := TChartAxisMarks.Create(ACollection.Owner as TCustomChart);
   FTickColor := clBlack;
   FTickLength := DEF_TICK_LENGTH;
   FTitle := TChartAxisTitle.Create(ACollection.Owner as TCustomChart);
@@ -552,7 +583,7 @@ begin
   StyleChanged(Self);
 end;
 
-procedure TChartAxis.SetMarks(const AValue: TChartMarks);
+procedure TChartAxis.SetMarks(const AValue: TChartAxisMarks);
 begin
   if FMarks = AValue then exit;
   FMarks := AValue;

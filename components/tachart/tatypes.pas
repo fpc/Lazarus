@@ -61,7 +61,7 @@ type
   { TChartElement }
 
   TChartElement = class(TPersistent)
-  private
+  protected
     FVisible: Boolean;
     procedure SetVisible(const AValue: Boolean);
   protected
@@ -105,6 +105,56 @@ type
     property Visible default false;
   end;
 
+  { TGenericChartMarks }
+
+  generic TGenericChartMarks<_TLabelBrush, _TLinkPen, _TFramePen> =
+    class(TChartElement)
+  protected
+    FClipped: Boolean;
+    FDistance: Integer;
+    FFormat: String;
+    FFrame: _TFramePen;
+    FLabelBrush: _TLabelBrush;
+    FLabelFont: TFont;
+    FLinkPen: _TLinkPen;
+    FStyle: TSeriesMarksStyle;
+
+    procedure SetClipped(const AValue: Boolean);
+    procedure SetDistance(const AValue: Integer);
+    procedure SetFormat(const AValue: String);
+    procedure SetFrame(const AValue: _TFramePen);
+    procedure SetLabelBrush(const AValue: _TLabelBrush);
+    procedure SetLabelFont(const AValue: TFont);
+    procedure SetLinkPen(const AValue: _TLinkPen);
+    procedure SetStyle(const AValue: TSeriesMarksStyle);
+  public
+    constructor Create(AOwner: TCustomChart);
+    destructor Destroy; override;
+
+  public
+    procedure Assign(Source: TPersistent); override;
+    procedure DrawLabel(
+      ACanvas: TCanvas; const ALabelRect: TRect; const AText: String);
+    function IsMarkLabelsVisible: Boolean;
+    function MeasureLabel(ACanvas: TCanvas; const AText: String): TSize;
+
+  public
+    property Frame: _TFramePen read FFrame write SetFrame;
+    property LabelBrush: _TLabelBrush read FLabelBrush write SetLabelBrush;
+    property LinkPen: _TLinkPen read FLinkPen write SetLinkPen;
+  published
+    // If false, labels may overlap axises and legend.
+    property Clipped: Boolean read FClipped write SetClipped default true;
+    // Distance between series point and label.
+    property Distance: Integer
+      read FDistance write SetDistance default DEF_MARKS_DISTANCE;
+    property Format: String read FFormat write SetFormat;
+    property LabelFont: TFont read FLabelFont write SetLabelFont;
+    property Style: TSeriesMarksStyle
+      read FStyle write SetStyle default smsNone;
+    property Visible default true;
+  end;
+
   TChartLinkPen = class(TChartPen)
   published
     property Color default clWhite;
@@ -117,48 +167,14 @@ type
 
   { TChartMarks }
 
-  TChartMarks = class(TChartElement)
-  private
-    FClipped: Boolean;
-    FDistance: Integer;
-    FFormat: String;
-    FFrame: TChartPen;
-    FLabelBrush: TChartLabelBrush;
-    FLabelFont: TFont;
-    FLinkPen: TChartLinkPen;
-    FStyle: TSeriesMarksStyle;
-
-    procedure SetClipped(const AValue: Boolean);
-    procedure SetDistance(const AValue: Integer);
-    procedure SetFormat(const AValue: String);
-    procedure SetFrame(const AValue: TChartPen);
-    procedure SetLabelBrush(const AValue: TChartLabelBrush);
-    procedure SetLabelFont(const AValue: TFont);
-    procedure SetLinkPen(const AValue: TChartLinkPen);
-    procedure SetStyle(const AValue: TSeriesMarksStyle);
+  TChartMarks = class(
+    specialize TGenericChartMarks<TChartLabelBrush, TChartLinkPen, TChartPen>)
   public
     constructor Create(AOwner: TCustomChart);
-    destructor Destroy; override;
-
-    procedure Assign(Source: TPersistent); override;
-    procedure DrawLabel(
-      ACanvas: TCanvas; const ALabelRect: TRect; const AText: String);
-    function IsMarkLabelsVisible: Boolean;
-    function MeasureLabel(ACanvas: TCanvas; const AText: String): TSize;
   published
-    // If false, labels may overlap axises and legend.
-    property Clipped: Boolean read FClipped write SetClipped default true;
-    // Distance between series point and label.
-    property Distance: Integer
-      read FDistance write SetDistance default DEF_MARKS_DISTANCE;
-    property Format: String read FFormat write SetFormat;
-    property Frame: TChartPen read FFrame write SetFrame;
-    property LabelBrush: TChartLabelBrush read FLabelBrush write SetLabelBrush;
-    property LabelFont: TFont read FLabelFont write SetLabelFont;
-    property LinkPen: TChartLinkPen read FLinkPen write SetLinkPen;
-    property Style: TSeriesMarksStyle
-      read FStyle write SetStyle default smsNone;
-    property Visible default true;
+    property Frame;
+    property LabelBrush;
+    property LinkPen;
   end;
 
   { TSeriesPointer }
@@ -375,13 +391,13 @@ begin
   StyleChanged(Self);
 end;
 
-{ TChartMarks }
+{ TGenericChartMarks }
 
-procedure TChartMarks.Assign(Source: TPersistent);
+procedure TGenericChartMarks.Assign(Source: TPersistent);
 begin
   inherited Assign(Source);
-  if Source is TChartMarks then
-    with TChartMarks(Source) do begin
+  if Source is Self.ClassType then
+    with TGenericChartMarks(Source) do begin
       Self.FDistance := FDistance;
       Self.FFrame.Assign(FFrame);
       Self.FFormat := FFormat;
@@ -392,22 +408,20 @@ begin
     end;
 end;
 
-constructor TChartMarks.Create(AOwner: TCustomChart);
+constructor TGenericChartMarks.Create(AOwner: TCustomChart);
 begin
   inherited Create(AOwner);
   FClipped := true;
   FDistance := DEF_MARKS_DISTANCE;
-  InitHelper(FFrame, TChartPen);
-  InitHelper(FLabelBrush, TChartLabelBrush);
-  FLabelBrush.Color := clYellow;
+  InitHelper(FFrame, _TFramePen);
+  InitHelper(FLabelBrush, _TLabelBrush);
   InitHelper(FLabelFont, TFont);
-  InitHelper(FLinkPen, TChartLinkPen);
-  FLinkPen.Color := clWhite;
+  InitHelper(FLinkPen, _TLinkPen);
   FStyle := smsNone;
   FVisible := true;
 end;
 
-destructor TChartMarks.Destroy;
+destructor TGenericChartMarks.Destroy;
 begin
   FFrame.Free;
   FLabelBrush.Free;
@@ -416,7 +430,7 @@ begin
   inherited Destroy;
 end;
 
-procedure TChartMarks.DrawLabel(
+procedure TGenericChartMarks.DrawLabel(
   ACanvas: TCanvas; const ALabelRect: TRect; const AText: String);
 var
   wasClipping: Boolean = false;
@@ -435,12 +449,13 @@ begin
     ACanvas.Clipping := true;
 end;
 
-function TChartMarks.IsMarkLabelsVisible: Boolean;
+function TGenericChartMarks.IsMarkLabelsVisible: Boolean;
 begin
   Result := Visible and (Style <> smsNone) and (Format <> '');
 end;
 
-function TChartMarks.MeasureLabel(ACanvas: TCanvas; const AText: String): TSize;
+function TGenericChartMarks.MeasureLabel(
+  ACanvas: TCanvas; const AText: String): TSize;
 begin
   ACanvas.Font.Assign(LabelFont);
   Result := ACanvas.TextExtent(AText);
@@ -448,21 +463,21 @@ begin
   Result.cy += 2 * MARKS_MARGIN_Y;
 end;
 
-procedure TChartMarks.SetClipped(const AValue: Boolean);
+procedure TGenericChartMarks.SetClipped(const AValue: Boolean);
 begin
   if FClipped = AValue then exit;
   FClipped := AValue;
   StyleChanged(Self);
 end;
 
-procedure TChartMarks.SetDistance(const AValue: Integer);
+procedure TGenericChartMarks.SetDistance(const AValue: Integer);
 begin
   if FDistance = AValue then exit;
   FDistance := AValue;
   StyleChanged(Self);
 end;
 
-procedure TChartMarks.SetFormat(const AValue: String);
+procedure TGenericChartMarks.SetFormat(const AValue: String);
 begin
   if FFormat = AValue then exit;
   FFormat := AValue;
@@ -472,41 +487,50 @@ begin
   StyleChanged(Self);
 end;
 
-procedure TChartMarks.SetFrame(const AValue: TChartPen);
+procedure TGenericChartMarks.SetFrame(const AValue: _TFramePen);
 begin
   if FFrame = AValue then exit;
   FFrame.Assign(AValue);
   StyleChanged(Self);
 end;
 
-procedure TChartMarks.SetLabelBrush(const AValue: TChartLabelBrush);
+procedure TGenericChartMarks.SetLabelBrush(const AValue: _TLabelBrush);
 begin
   if FLabelBrush = AValue then exit;
   FLabelBrush.Assign(AValue);
   StyleChanged(Self);
 end;
 
-procedure TChartMarks.SetLabelFont(const AValue: TFont);
+procedure TGenericChartMarks.SetLabelFont(const AValue: TFont);
 begin
   if FLabelFont = AValue then exit;
   FLabelFont := AValue;
   StyleChanged(Self);
 end;
 
-procedure TChartMarks.SetLinkPen(const AValue: TChartLinkPen);
+procedure TGenericChartMarks.SetLinkPen(const AValue: _TLinkPen);
 begin
   if FLinkPen = AValue then exit;
   FLinkPen := AValue;
   StyleChanged(Self);
 end;
 
-procedure TChartMarks.SetStyle(const AValue: TSeriesMarksStyle);
+procedure TGenericChartMarks.SetStyle(const AValue: TSeriesMarksStyle);
 begin
   if FStyle = AValue then exit;
   FStyle := AValue;
   if FStyle <> smsCustom then
     FFormat := SERIES_MARK_FORMATS[FStyle];
   StyleChanged(Self);
+end;
+
+{ TChartMarks }
+
+constructor TChartMarks.Create(AOwner: TCustomChart);
+begin
+  inherited Create(AOwner);
+  FLabelBrush.Color := clYellow;
+  FLinkPen.Color := clWhite;
 end;
 
 { TSeriesPointer }
