@@ -654,11 +654,6 @@ type
        var Command: TSynEditorCommand; var AChar: TUTF8Char; Data: pointer;
        var Handled: boolean);
 
-    // marks
-    function OnSourceMarksGetSourceEditor(ASynEdit: TCustomSynEdit): TObject;
-    function OnSourceMarksGetFilename(ASourceEditor: TObject): string;
-    procedure OnSourceMarksAction(AMark: TSourceMark; AAction: TListNotification);
-
     function GetActiveEditor: TSourceEditorInterface; override;
     procedure SetActiveEditor(const AValue: TSourceEditorInterface); override;
     function GetItems(Index: integer): TSourceEditorInterface; override;
@@ -743,9 +738,6 @@ type
     procedure OnCodeTemplateExecuteCompletion(
                                        ASynAutoComplete: TCustomSynAutoComplete;
                                        Index: integer);
-    procedure OnWordCompletionGetSource(
-                                    var Source: TStrings; SourceIndex: integer);
-    procedure OnSourceCompletionTimer(Sender: TObject);
     procedure DeactivateCompletionForm; override;
     function CompletionPluginCount: integer; override;
               deprecated {$IFDEF VER2_5}'use SourceEditorManager'{$ENDIF};       // deprecated in 0.9.29 March 2010
@@ -854,6 +846,7 @@ type
     property  SourceEditorsByPage[WindowIndex, PageIndex: integer]: TSourceEditor
               read GetSourceEditorsByPage;
     function  SourceEditorIntfWithFilename(const Filename: string): TSourceEditor; reintroduce;
+    function FindSourceEditorWithEditorComponent(EditorComp: TComponent): TSourceEditor; // With SynEdit
   public
     // Forward to all windows
     procedure ClearErrorLines; override;
@@ -911,7 +904,15 @@ type
     procedure CloseFile(AEditor: TSourceEditorInterface);
     // history jumping
     procedure HistoryJump(Sender: TObject; CloseAction: TJumpHistoryAction);
+  protected
+    procedure OnWordCompletionGetSource(var Source: TStrings; SourceIndex: integer);
+    procedure OnSourceCompletionTimer(Sender: TObject);
+    // marks
+    function OnSourceMarksGetSourceEditor(ASynEdit: TCustomSynEdit): TObject;
+    function OnSourceMarksGetFilename(ASourceEditor: TObject): string;
+    procedure OnSourceMarksAction(AMark: TSourceMark; AAction: TListNotification);
   public
+    constructor Create(AOwner: TComponent); override;
     function CreateNewWindow(Activate: Boolean= False): TSourceNotebook;
   private
     FOnAddJumpPoint: TOnAddJumpPoint;
@@ -3720,7 +3721,6 @@ begin
   FManager := TSourceEditorManager(AOwner);
   FUpdateLock := 0;
   FFocusLock := 0;
-  IDESearchInText:=@SearchInText;
   Visible:=false;
   Name:=NonModalIDEWindowNames[nmiwSourceNoteBookName];
   Caption := locWndSrcEditor;
@@ -3749,31 +3749,6 @@ begin
     OnExecuteCompletion:=@OnCodeTemplateExecuteCompletion;
     EndOfTokenChr:=' ()[]{},.;:"+-*^@$\<>=''';
   end;
-
-  // word completion
-  if aWordCompletion=nil then begin
-    aWordCompletion:=TWordCompletion.Create;
-    with AWordCompletion do begin
-      WordBufferCapacity:=100;
-      OnGetSource:=@OnWordCompletionGetSource;
-    end;
-  end;
-
-  // identifier completion
-  SourceCompletionTimer := TIdleTimer.Create(Self);
-  with SourceCompletionTimer do begin
-    AutoEnabled := False;
-    Enabled := false;
-    Interval := EditorOpts.AutoDelayInMSec;
-    OnTimer := @OnSourceCompletionTimer;
-  end;
-
-
-  // marks
-  SourceEditorMarks:=TSourceMarks.Create(Self);
-  SourceEditorMarks.OnGetSourceEditor:=@OnSourceMarksGetSourceEditor;
-  SourceEditorMarks.OnGetFilename:=@OnSourceMarksGetFilename;
-  SourceEditorMarks.OnAction:=@OnSourceMarksAction;
 
   // key mapping
   FKeyStrokes:=TSynEditKeyStrokes.Create(Self);
@@ -3933,105 +3908,6 @@ begin
                                 aCompletion,t,nil,True);
   if CurCompletionControl<>nil then
     Result.Y:=CurCompletionControl.FontHeight;
-end;
-
-procedure TSourceNotebook.OnWordCompletionGetSource(var Source: TStrings;
-  SourceIndex: integer);
-var TempEditor: TSourceEditor;
-  i:integer;
-begin
-  TempEditor:=GetActiveSE;
-  if SourceIndex=0 then begin
-    Source:=TempEditor.EditorComponent.Lines;
-  end else begin
-    i:=0;
-    while (i<FSourceEditorList.Count) do begin
-      if Editors[i]<>TempEditor then dec(SourceIndex);
-      if SourceIndex=0 then begin
-        Source:=Editors[i].EditorComponent.Lines;
-        exit;
-      end;
-      inc(i);
-    end;
-    Source:=nil;
-  end;
-end;
-
-procedure TSourceNotebook.OnSourceCompletionTimer(Sender: TObject);
-
-  function CheckStartIdentCompletion: boolean;
-  var
-    Line: String;
-    LogCaret: TPoint;
-    p: Integer;
-    InStringConstant: Boolean;
-    SrcEdit: TSourceEditor;
-    Token: string;
-    Attri: TSynHighlighterAttributes;
-  begin
-    Result:=false;
-    SrcEdit:=GetActiveSE;
-    if SrcEdit=nil then exit;
-    Line:=SrcEdit.FEditor.LineText;
-    LogCaret:=SrcEdit.FEditor.LogicalCaretXY;
-    //DebugLn(['CheckStartIdentCompletion Line="',Line,'" LogCaret=',dbgs(LogCaret)]);
-
-    // check if last character is a point
-    if (Line='') or (LogCaret.X<=1) or (LogCaret.X-1>length(Line))
-    or (Line[LogCaret.X-1]<>'.') then
-      exit;
-
-    // check if range operator '..'
-    if (LogCaret.X>2) and (Line[LogCaret.X-2]='.') then
-      exit; // this is a double point ..
-
-    // check if in a string constant
-    p:=1;
-    InStringConstant:=false;
-    while (p<=LogCaret.X) and (p<=length(Line)) do begin
-      if Line[p]='''' then
-        InStringConstant:=not InStringConstant;
-      inc(p);
-    end;
-    if InStringConstant then exit;
-
-    // check if in a comment
-    Token:='';
-    Attri:=nil;
-    dec(LogCaret.X);
-    if SrcEdit.EditorComponent.GetHighlighterAttriAtRowCol(LogCaret,Token,Attri)
-    and (Attri<>nil) and (Attri.Name=SYNS_AttrComment) then
-    begin
-      exit;
-    end;
-
-    // invoke identifier completion
-    SrcEdit.StartIdentCompletionBox(false);
-    Result:=true;
-  end;
-
-  function CheckTemplateCompletion: boolean;
-  begin
-    Result:=false;
-    // execute context sensitive templates
-    //FCodeTemplateModul.ExecuteCompletion(Value,GetActiveSE.EditorComponent);
-  end;
-
-var
-  TempEditor: TSourceEditor;
-begin
-  //debugln('TSourceNotebook.OnIdentCompletionTimer');
-  SourceCompletionTimer.Enabled:=false;
-  SourceCompletionTimer.AutoEnabled:=false;
-  TempEditor:=GetActiveSE;
-  if (TempEditor<>nil)
-  and (ComparePoints(TempEditor.EditorComponent.CaretXY,SourceCompletionCaretXY)=0)
-  and TempEditor.EditorComponent.Focused
-  then begin
-    if CheckStartIdentCompletion then begin
-    end else if CheckTemplateCompletion then begin
-    end;
-  end;
 end;
 
 procedure TSourceNotebook.OnCodeTemplateTokenNotFound(Sender: TObject;
@@ -4986,37 +4862,9 @@ begin
   end;
 end;
 
-function TSourceNotebook.OnSourceMarksGetFilename(ASourceEditor: TObject
-  ): string;
-begin
-  if (ASourceEditor=nil) or (not (ASourceEditor is TSourceEditor)) then
-    RaiseException('TSourceNotebook.OnSourceMarksGetFilename');
-  Result:=TSourceEditor(ASourceEditor).Filename;
-end;
-
-procedure TSourceNotebook.OnSourceMarksAction(AMark: TSourceMark;
-  AAction: TListNotification);
-var
-  Editor: TSourceEditor;
-begin
-  Editor := FindSourceEditorWithEditorComponent(AMark.SynEdit);
-  if Editor = nil then
-    Exit;
-
-  if AMark.IsBreakPoint and (Editor.FExecutionMark <> nil) and
-    (AMark.CompareEditorAndLine(Editor.FExecutionMark.SynEdit, Editor.FExecutionMark.Line) = 0) then
-    Editor.UpdateExecutionSourceMark;
-end;
-
 function TSourceNotebook.GetItems(Index: integer): TSourceEditorInterface;
 begin
   Result:=TSourceEditorInterface(FSourceEditorList[Index]);
-end;
-
-function TSourceNotebook.OnSourceMarksGetSourceEditor(ASynEdit: TCustomSynEdit
-  ): TObject;
-begin
-  Result:=FindSourceEditorWithEditorComponent(ASynEdit);
 end;
 
 Procedure TSourceNotebook.BuildPopupMenu;
@@ -6512,7 +6360,6 @@ Begin
     Notebook.TabPosition := EditorOpts.TabPosition;
   end;
 
-  SourceCompletionTimer.Interval:=EditorOpts.AutoDelayInMSec;
   FMouseHintTimer.Interval:=EditorOpts.AutoDelayInMSec;
 
   Exclude(States,snWarnedFont);
@@ -6982,6 +6829,7 @@ var h: TLazSyntaxHighlighter;
 begin
   for h:=Low(TLazSyntaxHighlighter) to High(TLazSyntaxHighlighter) do
     Highlighters[h]:=nil;
+  IDESearchInText:=@SearchInText;
 end;
 
 procedure InternalFinal;
@@ -7445,6 +7293,20 @@ begin
   Result := TSourceEditor(inherited SourceEditorIntfWithFilename(Filename));
 end;
 
+function TSourceEditorManager.FindSourceEditorWithEditorComponent(
+  EditorComp: TComponent): TSourceEditor;
+var
+  i: Integer;
+begin
+  Result := nil;
+  i := SourceWindowCount - 1;
+  while i > 0 do begin
+    Result := SourceWindows[i].FindSourceEditorWithEditorComponent(EditorComp);
+    if Result <> nil then break;
+    dec(i);
+  end;
+end;
+
 procedure TSourceEditorManager.ClearErrorLines;
 var
   i: Integer;
@@ -7475,6 +7337,7 @@ var
 begin
   for i := FSourceWindowList.Count - 1 downto 0 do
     SourceWindows[i].ReloadEditorOptions;
+  SourceCompletionTimer.Interval:=EditorOpts.AutoDelayInMSec;
 end;
 
 procedure TSourceEditorManager.ReloadHighlighters;
@@ -7900,6 +7763,161 @@ begin
       end;
     end;
   end;
+end;
+
+procedure TSourceEditorManager.OnWordCompletionGetSource(var Source: TStrings;
+  SourceIndex: integer);
+var TempEditor: TSourceEditor;
+  i:integer;
+begin
+  TempEditor:=GetActiveSE;
+  if SourceIndex=0 then begin
+    Source:=TempEditor.EditorComponent.Lines;
+  end else begin
+    i:=0;
+    while (i < SourceEditorCount) do begin
+      if SourceEditors[i] <> TempEditor then dec(SourceIndex);
+      if SourceIndex = 0 then begin
+        Source := SourceEditors[i].EditorComponent.Lines;
+        exit;
+      end;
+      inc(i);
+    end;
+    Source := nil;
+  end;
+end;
+
+procedure TSourceEditorManager.OnSourceCompletionTimer(Sender: TObject);
+
+  function CheckStartIdentCompletion: boolean;
+  var
+    Line: String;
+    LogCaret: TPoint;
+    p: Integer;
+    InStringConstant: Boolean;
+    SrcEdit: TSourceEditor;
+    Token: string;
+    Attri: TSynHighlighterAttributes;
+  begin
+    Result := false;
+    SrcEdit := ActiveEditor;
+    if SrcEdit = nil then exit;
+    Line := SrcEdit.FEditor.LineText;
+    LogCaret := SrcEdit.FEditor.LogicalCaretXY;
+    //DebugLn(['CheckStartIdentCompletion Line="',Line,'" LogCaret=',dbgs(LogCaret)]);
+
+    // check if last character is a point
+    if (Line='') or (LogCaret.X<=1) or (LogCaret.X-1>length(Line))
+    or (Line[LogCaret.X-1]<>'.') then
+      exit;
+
+    // check if range operator '..'
+    if (LogCaret.X>2) and (Line[LogCaret.X-2]='.') then
+      exit; // this is a double point ..
+
+    // check if in a string constant
+    p:=1;
+    InStringConstant:=false;
+    while (p<=LogCaret.X) and (p<=length(Line)) do begin
+      if Line[p]='''' then
+        InStringConstant:=not InStringConstant;
+      inc(p);
+    end;
+    if InStringConstant then exit;
+
+    // check if in a comment
+    Token:='';
+    Attri:=nil;
+    dec(LogCaret.X);
+    if SrcEdit.EditorComponent.GetHighlighterAttriAtRowCol(LogCaret,Token,Attri)
+    and (Attri<>nil) and (Attri.Name=SYNS_AttrComment) then
+    begin
+      exit;
+    end;
+
+    // invoke identifier completion
+    SrcEdit.StartIdentCompletionBox(false);
+    Result:=true;
+  end;
+
+  function CheckTemplateCompletion: boolean;
+  begin
+    Result:=false;
+    // execute context sensitive templates
+    //FCodeTemplateModul.ExecuteCompletion(Value,GetActiveSE.EditorComponent);
+  end;
+
+var
+  TempEditor: TSourceEditor;
+begin
+  SourceCompletionTimer.Enabled:=false;
+  SourceCompletionTimer.AutoEnabled:=false;
+  TempEditor := ActiveEditor;
+  if (TempEditor <> nil) and TempEditor.EditorComponent.Focused and
+     (ComparePoints(TempEditor.EditorComponent.CaretXY, SourceCompletionCaretXY) = 0)
+  then begin
+    if CheckStartIdentCompletion then begin
+    end
+    else if CheckTemplateCompletion then begin
+    end;
+  end;
+end;
+
+function TSourceEditorManager.OnSourceMarksGetSourceEditor(
+  ASynEdit: TCustomSynEdit): TObject;
+begin
+  Result := FindSourceEditorWithEditorComponent(ASynEdit);
+end;
+
+function TSourceEditorManager.OnSourceMarksGetFilename(ASourceEditor: TObject
+  ): string;
+begin
+  if (ASourceEditor = nil) or (not (ASourceEditor is TSourceEditor)) then
+    RaiseException('TSourceNotebook.OnSourceMarksGetFilename');
+  Result := TSourceEditor(ASourceEditor).Filename;
+end;
+
+procedure TSourceEditorManager.OnSourceMarksAction(AMark: TSourceMark;
+  AAction: TListNotification);
+var
+  Editor: TSourceEditor;
+begin
+  Editor := FindSourceEditorWithEditorComponent(AMark.SynEdit);
+  if Editor = nil then
+    Exit;
+
+  if AMark.IsBreakPoint and (Editor.FExecutionMark <> nil) and
+    (AMark.CompareEditorAndLine(Editor.FExecutionMark.SynEdit, Editor.FExecutionMark.Line) = 0) then
+    Editor.UpdateExecutionSourceMark;
+end;
+
+constructor TSourceEditorManager.Create(AOwner: TComponent);
+begin
+  inherited Create(AOwner);
+
+  // word completion
+  if aWordCompletion=nil then begin
+    aWordCompletion:=TWordCompletion.Create;
+    with AWordCompletion do begin
+      WordBufferCapacity:=100;
+      OnGetSource:=@OnWordCompletionGetSource;
+    end;
+  end;
+
+  // identifier completion
+  SourceCompletionTimer := TIdleTimer.Create(Self);
+  with SourceCompletionTimer do begin
+    AutoEnabled := False;
+    Enabled := false;
+    Interval := EditorOpts.AutoDelayInMSec;
+    OnTimer := @OnSourceCompletionTimer;
+  end;
+
+  // marks
+  SourceEditorMarks:=TSourceMarks.Create(Self);
+  SourceEditorMarks.OnGetSourceEditor:=@OnSourceMarksGetSourceEditor;
+  SourceEditorMarks.OnGetFilename:=@OnSourceMarksGetFilename;
+  SourceEditorMarks.OnAction:=@OnSourceMarksAction;
 end;
 
 function TSourceEditorManager.CreateNewWindow(Activate: Boolean= False): TSourceNotebook;
