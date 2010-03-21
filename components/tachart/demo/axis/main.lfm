@@ -1,74 +1,142 @@
 object Form1: TForm1
-  Left = 344
+  Left = 343
   Height = 304
-  Top = 182
+  Top = 184
   Width = 533
-  Caption = 'Form1'
+  Caption = 'TAChart axis demo'
   ClientHeight = 304
   ClientWidth = 533
   Position = poScreenCenter
   LCLVersion = '0.9.29'
-  object Chart1: TChart
+  object PageControl1: TPageControl
     Left = 0
     Height = 304
     Top = 0
     Width = 533
-    AxisList = <    
-      item
-        Alignment = calLeft
-        TickColor = clRed
-        Title.Caption = 'Left'
-        Title.Font.Orientation = 900
-        Title.Visible = True
-        Transformation.Logarithmic = True
-        Transformation.Offset = 0
-        Transformation.Scale = 1
-      end    
-      item
-        Alignment = calRight
-        Title.Caption = 'Right 1'
-        Title.Font.Orientation = 900
-        Title.Visible = True
-        Transformation.Offset = 0
-        Transformation.Scale = 1
-      end    
-      item
-        Alignment = calBottom
-        Title.Caption = 'Bottom'
-        Title.Distance = 0
-        Title.Visible = True
-        Transformation.Offset = 0
-        Transformation.Scale = 1
-      end    
-      item
-        Alignment = calRight
-        Grid.Visible = False
-        TickColor = clAqua
-        Title.Caption = 'Right 2'
-        Title.Visible = True
-        Transformation.Offset = 0
-        Transformation.Scale = 1
-      end    
-      item
-        Alignment = calTop
-        Inverted = True
-        Title.Caption = 'Top'
-        Transformation.Offset = 0
-        Transformation.Scale = 1
-      end>
-    Foot.Brush.Color = clBtnFace
-    Foot.Font.Color = clBlue
-    Title.Brush.Color = clBtnFace
-    Title.Font.Color = clBlue
-    Title.Text.Strings = (
-      'TAChart'
-    )
+    ActivePage = tsCustomMarks
     Align = alClient
-    ParentColor = False
-    object Chart1LineSeries1: TLineSeries
-      AxisIndexY = 0
-      SeriesColor = clBlack
-      Source = RandomChartSource1
+    TabIndex = 1
+    TabOrder = 0
+    object tsMultiAxis: TTabSheet
+      Caption = 'Mutliple'
+      ClientHeight = 278
+      ClientWidth = 525
+      object Chart1: TChart
+        Left = 0
+        Height = 278
+        Top = 0
+        Width = 525
+        AxisList = <        
+          item
+            Alignment = calLeft
+            TickColor = clRed
+            Title.Caption = 'Left'
+            Title.Font.Orientation = 900
+            Title.Visible = True
+            Transformation.Offset = 0
+            Transformation.Scale = 1
+          end        
+          item
+            Alignment = calRight
+            Title.Caption = 'Right 1'
+            Title.Font.Orientation = 900
+            Title.Visible = True
+            Transformation.Offset = 0
+            Transformation.Scale = 1
+          end        
+          item
+            Alignment = calBottom
+            Title.Caption = 'Bottom'
+            Title.Distance = 0
+            Title.Visible = True
+            Transformation.Offset = 0
+            Transformation.Scale = 1
+          end        
+          item
+            Alignment = calRight
+            Grid.Visible = False
+            TickColor = clAqua
+            Title.Caption = 'Right 2'
+            Title.Visible = True
+            Transformation.Offset = 7
+            Transformation.Scale = 2
+          end        
+          item
+            Alignment = calTop
+            Inverted = True
+            Title.Caption = 'Top'
+            Transformation.Offset = 0
+            Transformation.Scale = -1
+          end>
+        Foot.Brush.Color = clBtnFace
+        Foot.Font.Color = clBlue
+        Title.Brush.Color = clBtnFace
+        Title.Font.Color = clBlue
+        Title.Text.Strings = (
+          'TAChart'
+        )
+        Align = alClient
+        ParentColor = False
+        object Chart1LineSeries1: TLineSeries
+          AxisIndexY = 0
+          SeriesColor = clBlack
+          Source = RandomChartSource1
+        end
+      end
+    end
+    object tsCustomMarks: TTabSheet
+      Caption = 'Customized marks'
+      ClientHeight = 278
+      ClientWidth = 525
+      object ChartCustomMarks: TChart
+        Left = 0
+        Height = 278
+        Top = 0
+        Width = 525
+        AxisList = <        
+          item
+            Alignment = calLeft
+            Marks.Format = '$%0:.9g'
+            Marks.Style = smsCustom
+            Marks.Frame.Style = psSolid
+            Marks.LabelBrush.Color = clMoneyGreen
+            Marks.LabelBrush.Style = bsSolid
+            Marks.Source = ListChartSource1
+            Title.Font.Orientation = 900
+            Transformation.Offset = 0
+            Transformation.Scale = 1
+          end        
+          item
+            Alignment = calBottom
+            Grid.Visible = False
+            Marks.Format = '%2:s'
+            Marks.LabelFont.Height = -13
+            Marks.LabelFont.Style = [fsBold]
+            Marks.Style = smsLabel
+            Marks.Source = ListChartSource1
+            TickLength = 0
+            Transformation.Offset = 0
+            Transformation.Scale = 1
+          end>
+        Foot.Brush.Color = clBtnFace
+        Foot.Font.Color = clBlue
+        Title.Brush.Color = clBtnFace
+        Title.Font.Color = clBlue
+        Title.Text.Strings = (
+          'TAChart'
+        )
+        Align = alClient
+        ParentColor = False
+        object ChartCustomMarksBarSeries1: TBarSeries
+          Marks.Frame.Visible = False
+          Marks.LabelBrush.Style = bsClear
+          BarBrush.Color = clGreen
+          BarPen.Color = clLime
+          BarPen.Width = 2
+          SeriesColor = clGreen
+          Source = ListChartSource1
+        end
+      end
     end
   end
   object RandomChartSource1: TRandomChartSource
@@ -80,5 +148,17 @@ object Form1: TForm1
     YMin = 1
     left = 216
     top = 108
+  end
+  object ListChartSource1: TListChartSource
+    DataPoints.Strings = (
+      '1|19000|?|January'
+      '2|35000|?|February'
+      '3|31000|?|March'
+      '4|26000|?|April'
+      '5|37000|?|May'
+      '6|22000|?|June'
+    )
+    left = 216
+    top = 164
   end
 end

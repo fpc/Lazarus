@@ -9,8 +9,6 @@ uses
   Interfaces, // this includes the LCL widgetset
   Forms, Main, TAChartLazarusPkg;
 
-{$IFDEF WINDOWS}{$R axisdemo.rc}{$ENDIF}
-
 begin
   Application.Title := 'TAChart axis demo';
   Application.Initialize;

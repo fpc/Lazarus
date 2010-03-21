@@ -5,7 +5,7 @@ unit Main;
 interface
 
 uses
-  Forms, TAGraph, TASeries, TASources;
+  ComCtrls, Forms, TAGraph, TASeries, TASources;
 
 type
 
@@ -14,7 +14,13 @@ type
   TForm1 = class(TForm)
     Chart1: TChart;
     Chart1LineSeries1: TLineSeries;
+    ChartCustomMarks: TChart;
+    ChartCustomMarksBarSeries1: TBarSeries;
+    ListChartSource1: TListChartSource;
+    PageControl1: TPageControl;
     RandomChartSource1: TRandomChartSource;
+    tsMultiAxis: TTabSheet;
+    tsCustomMarks: TTabSheet;
     procedure TChartAxisList1MarkToText(var AText: String; AMark: Double);
   end;
 
