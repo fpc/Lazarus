@@ -354,15 +354,14 @@ procedure TChartAxis.Draw(
     ACanvas.Pen.Mode := pmCopy;
     ACanvas.Line(x, AY - TickLength, x, AY + TickLength);
 
-    //ACanvas.Brush.Assign(FGraphBrush);
-    //ACanvas.Brush.Color := Color;
     markText := MarkToText(AMark);
-    sz := ACanvas.TextExtent(markText);
+    sz := Marks.MeasureLabel(ACanvas, markText);
     if Alignment = calTop then
       dy := -TickLength - 1 - sz.cy
     else
       dy := TickLength + 1;
-    ACanvas.TextOut(x - sz.cx div 2, AY + dy, markText);
+    Marks.DrawLabel(
+      ACanvas, Bounds(x - sz.cx div 2, AY + dy, sz.cx, sz.cy), markText);
   end;
 
   procedure DrawYMark(AX: Integer; AMark: Double);
@@ -386,15 +385,14 @@ procedure TChartAxis.Draw(
     ACanvas.Pen.Mode := pmCopy;
     ACanvas.Line(AX - TickLength, y, AX + TickLength, y);
 
-    //ACanvas.Brush.Assign(FGraphBrush);
-    //ACanvas.Brush.Color := Color;
     markText := MarkToText(AMark);
-    sz := ACanvas.TextExtent(markText);
+    sz := Marks.MeasureLabel(ACanvas, markText);
     if Alignment = calLeft then
       dx := -TickLength - 1 - sz.cx
     else
       dx := TickLength + 1;
-    ACanvas.TextOut(AX + dx, y - sz.cy div 2, markText)
+    Marks.DrawLabel(
+      ACanvas, Bounds(AX + dx, y - sz.cy div 2, sz.cx, sz.cy), markText);
   end;
 
   procedure DoDraw(AMin, AMax: Double);
@@ -497,34 +495,34 @@ begin
 end;
 
 procedure TChartAxis.Measure(
-  ACanvas: TCanvas; const AExtent: TDoubleRect;
-  var AMargins: TChartAxisMargins);
+  ACanvas: TCanvas; const AExtent: TDoubleRect; var AMargins: TChartAxisMargins);
 
-var
-  digitSize: TSize;
+const
+  SOME_DIGIT = '0';
 
   procedure CalcVertSize;
   var
     i, maxWidth: Integer;
-    marks: TDoubleDynArray;
+    markValues: TDoubleDynArray;
   begin
     if AExtent.a.Y = AExtent.b.Y then exit;
     maxWidth := 0;
-    marks := GetMarks(AExtent.a.Y, AExtent.b.Y);
-    for i := 0 to High(marks) do
-      maxWidth := Max(ACanvas.TextWidth(MarkToText(marks[i])), maxWidth);
+    markValues := GetMarks(AExtent.a.Y, AExtent.b.Y);
+    for i := 0 to High(markValues) do
+      with Marks.MeasureLabel(ACanvas, MarkToText(markValues[i])) do
+        maxWidth := Max(cx, maxWidth);
     // CalculateTransformationCoeffs changes axis interval, so it is possibile
     // that a new mark longer then existing ones is introduced.
     // That will change marks width and reduce view area,
     // requiring another call to CalculateTransformationCoeffs...
     // So punt for now and just reserve space for extra digit unconditionally.
-    FSize := maxWidth + digitSize.cx + TickLength;
+    FSize := maxWidth + ACanvas.TextWidth(SOME_DIGIT) + TickLength;
   end;
 
   procedure CalcHorSize;
   begin
     if AExtent.a.X = AExtent.b.X then exit;
-    FSize := digitSize.cy + TickLength;
+    FSize := Marks.MeasureLabel(ACanvas, SOME_DIGIT).cy + TickLength;
   end;
 
   procedure CalcTitleSize;
@@ -548,14 +546,10 @@ var
     FTitleSize := d + Title.Distance;
   end;
 
-const
-  SOME_DIGIT = '0';
 begin
   FSize := 0;
   FTitleSize := 0;
   if not Visible then exit;
-  ACanvas.Font := Marks.LabelFont;
-  digitSize := ACanvas.TextExtent(SOME_DIGIT);
   if IsVertical then
     CalcVertSize
   else
