@@ -1030,8 +1030,7 @@ var
 begin
   Assert(False, 'Trace:WindowProc - Start');
   
-  LMessage.Result := 0;
-  LMessage.Msg := LM_NULL;
+  FillChar(LMessage, SizeOf(LMessage), 0);
   PLMsg := @LMessage;
   WinProcess := True;
   NotifyUserInput := False;
@@ -1120,10 +1119,14 @@ begin
         WA_ACTIVE, WA_CLICKACTIVE:
         begin
           LMessage.Msg := LM_ACTIVATE;
+          LMessage.WParam := WParam;
+          LMessage.LParam := LParam;
         end;
         WA_INACTIVE:
         begin
           LMessage.Msg := LM_DEACTIVATE;
+          LMessage.WParam := WParam;
+          LMessage.LParam := LParam;
         end;
       end;
     end;
