@@ -20,8 +20,8 @@ unit GLWin32WGLContext;
 interface
 
 uses
-  Classes, SysUtils, Windows, LCLProc, LCLType, gl, Forms, Controls,
-  Win32Int, WSLCLClasses, WSControls, Win32WSControls;
+  Classes, SysUtils, LMessages, Windows, LCLProc, LCLType, gl, Forms, Controls, 
+  Win32Int, WSLCLClasses, WSControls, Win32WSControls, Win32Proc, LCLMessageGlue;
 
 procedure LOpenGLViewport(Left, Top, Width, Height: integer);
 procedure LOpenGLSwapBuffers(Handle: HWND);
@@ -252,6 +252,32 @@ begin
   Result:=wglMakeCurrent(Info^.DC,Info^.WGLContext);
 end;
 
+function GlWindowProc(Window: HWnd; Msg: UInt; WParam: Windows.WParam;
+    LParam: Windows.LParam): LResult; stdcall;
+var
+  PaintMsg   : TLMPaint;
+  winctrl    : TWinControl;
+begin
+  case Msg of 
+    WM_ERASEBKGND: begin
+      Result:=0;
+    end;
+    WM_PAINT: begin 
+      winctrl := GetWin32WindowInfo(Window)^.WinControl;
+      if Assigned(winctrl) then begin
+        FillChar(PaintMsg, SizeOf(PaintMsg), 0);
+        PaintMsg.Msg := LM_PAINT;
+        PaintMsg.DC := WParam;
+        DeliverMessage(winctrl, PaintMsg);
+        Result:=PaintMsg.Result;
+      end else 
+        Result:=WindowProc(Window, Msg, WParam, LParam);
+    end;
+  else
+    Result:=WindowProc(Window, Msg, WParam, LParam);
+  end;
+end;
+
 function LOpenGLCreateContext(AWinControl: TWinControl;
   WSPrivate: TWSPrivateClass; SharedControl: TWinControl;
   DoubleBuffered, RGBA: boolean; const AParams: TCreateParams): HWND;
@@ -269,7 +295,7 @@ begin
   with Params do begin
     pClassName := @ClsName;
     WindowTitle := StrCaption;
-    SubClassWndProc := nil;
+    SubClassWndProc := @GlWindowProc;
   end;
   // create window
   FinishCreateWindow(AWinControl, Params, false);
