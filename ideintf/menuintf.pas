@@ -695,6 +695,10 @@ end;
 
 procedure TIDEMenuItem.ClearMenuItems;
 begin
+  if FMenuItem <> nil then begin
+    FMenuItem.OnClick := nil;
+    FMenuItem.RemoveHandlerOnDestroy(@MenuItemDestroy);
+  end;
   if AutoFreeMenuItem then begin
     FAutoFreeMenuItem:=false;
     FMenuItem.Free;
