@@ -188,7 +188,8 @@ procedure Unused(const A1, A2);
 
 procedure UpdateMinMax(AValue: Double; var AMin, AMax: Double);
 
-operator +(const A: TPoint; B: TSize): TPoint;
+operator +(const A: TPoint; B: TSize): TPoint; overload; inline;
+operator +(const A, B: TPoint): TPoint; overload; inline;
 operator =(const A, B: TMethod): Boolean;
 
 implementation
@@ -486,6 +487,12 @@ operator + (const A: TPoint; B: TSize): TPoint;
 begin
   Result.X := A.X + B.cx;
   Result.Y := A.Y + B.cy;
+end;
+
+operator + (const A, B: TPoint): TPoint;
+begin
+  Result.X := A.X + B.X;
+  Result.Y := A.Y + B.Y;
 end;
 
 operator = (const A, B: TMethod): Boolean;
