@@ -7112,7 +7112,7 @@ begin
   else
     Window := SourceWindowWithEditor(AValue);
   if Window = nil then exit;
-  FActiveWindow := TSourceNotebook(Window);
+  ActiveSourceWindow := TSourceNotebook(Window);
   Window.ActiveEditor := AValue;
 end;
 
@@ -7122,8 +7122,10 @@ var
   i: Integer;
 begin
   i := 0;
-  while (i < SourceWindowCount) and (Index >= SourceWindows[i].Count) do
+  while (i < SourceWindowCount) and (Index >= SourceWindows[i].Count) do begin
     Index := Index - SourceWindows[i].Count;
+    inc(i);
+  end;
   if (i < SourceWindowCount) then
     Result := SourceWindows[i].Items[Index]
   else
@@ -7153,9 +7155,11 @@ function TSourceEditorManagerBase.IndexOfSourceWindow(
   AWindow: TSourceEditorWindowInterface): integer;
 begin
   Result := SourceWindowCount - 1;
-  while Result >= 0 do
+  while Result >= 0 do Begin
     if SourceWindows[Result] = AWindow then
       exit;
+    dec(Result);
+  end;
 end;
 
 function TSourceEditorManagerBase.SourceEditorIntfWithFilename(
@@ -7415,8 +7419,9 @@ end;
 function TSourceEditorManager.ActiveOrNewSourceWindow: TSourceNotebook;
 begin
   Result := ActiveSourceWindow;
-  if Result = nil then
+  if Result <> nil then exit;
     Result := CreateNewWindow(True);
+  ActiveSourceWindow := nil;
 end;
 
 function TSourceEditorManager.SourceEditorCount: integer;
@@ -7872,6 +7877,7 @@ begin
       SourceWindows[i].CloseFile(j);
       break;
     end;
+    dec(i);
   end;
 end;
 
