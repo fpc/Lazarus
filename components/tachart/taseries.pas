@@ -38,6 +38,8 @@ const
 type
   EBarError = class(EChartError);
 
+  TLabelDirection = (ldLeft, ldTop, ldRight, ldBottom);
+
   { TBasicPointSeries }
 
   TBasicPointSeries = class(TChartSeries)
@@ -50,10 +52,9 @@ type
 
     procedure DrawLabel(
       ACanvas: TCanvas; AIndex: Integer; const ADataPoint: TPoint;
-      ADown: Boolean);
+      ADir: TLabelDirection);
     procedure DrawLabels(ACanvas: TCanvas);
-    function GetLabelDirection(
-      const AGraphPoint: TDoublePoint): Boolean; virtual;
+    function GetLabelDirection(AIndex: Integer): TLabelDirection; virtual;
     function GetNearestPoint(
       ADistFunc: TPointDistFunc; const APoint: TPoint;
       out AIndex: Integer; out AImg: TPoint; out AValue: TDoublePoint): Boolean;
@@ -132,8 +133,7 @@ type
     procedure SetSeriesColor(AValue: TColor);
     procedure SetStairs(Value: Boolean);
   protected
-    function GetLabelDirection(
-      const AGraphPoint: TDoublePoint): Boolean; override;
+    function GetLabelDirection(AIndex: Integer): TLabelDirection; override;
     procedure GetLegendItems(AItems: TChartLegendItems); override;
     function GetSeriesColor: TColor; override;
   public
@@ -559,9 +559,11 @@ end;
 { TBasicPointSeries }
 
 procedure TBasicPointSeries.DrawLabel(
-  ACanvas: TCanvas; AIndex: Integer; const ADataPoint: TPoint; ADown: Boolean);
+  ACanvas: TCanvas; AIndex: Integer; const ADataPoint: TPoint;
+  ADir: TLabelDirection);
 const
-  OFFSETS: array [Boolean] of TPoint = ((X: 0; Y: -1), (X: 0; Y: 1));
+  OFFSETS: array [TLabelDirection] of TPoint =
+    ((X: -1; Y: 0), (X: 0; Y: -1), (X: 1; Y: 0), (X: 0; Y: 1));
 var
   labelRect: TRect;
   center: TPoint;
@@ -573,9 +575,11 @@ begin
   if labelText = '' then exit;
 
   sz := Marks.MeasureLabel(ACanvas, labelText);
-  center := ADataPoint + OFFSETS[ADown] * (Marks.Distance + sz.cy div 2);
-  labelRect :=
-    Bounds(center.X - sz.cx div 2, center.Y - sz.cy div 2, sz.cx, sz.cy);
+  center := ADataPoint;
+  center.X += OFFSETS[ADir].X * (Marks.Distance + sz.cx div 2);
+  center.Y += OFFSETS[ADir].Y * (Marks.Distance + sz.cy div 2);
+  with center do
+    labelRect := Bounds(X - sz.cx div 2, Y - sz.cy div 2, sz.cx, sz.cy);
   if
     not IsRectEmpty(FPrevLabelRect) and
     IntersectRect(dummy, labelRect, FPrevLabelRect)
@@ -600,14 +604,16 @@ begin
     g := GetGraphPoint(i);
     with ParentChart do
       if IsPointInViewPort(g) then
-        DrawLabel(ACanvas, i, GraphToImage(g), GetLabelDirection(g));
+        DrawLabel(ACanvas, i, GraphToImage(g), GetLabelDirection(i));
   end;
 end;
 
-function TBasicPointSeries.GetLabelDirection(
-  const AGraphPoint: TDoublePoint): Boolean;
+function TBasicPointSeries.GetLabelDirection(AIndex: Integer): TLabelDirection;
+const
+  DIR: array [Boolean, Boolean] of TLabelDirection =
+    ((ldTop, ldBottom), (ldRight, ldLeft));
 begin
-  Result := AGraphPoint.Y < 0;
+  Result := DIR[IsRotated, GetGraphPointY(AIndex) < 0];
 end;
 
 function TBasicPointSeries.GetNearestPoint(
@@ -640,35 +646,27 @@ begin
 end;
 
 procedure TBasicPointSeries.UpdateMargins(ACanvas: TCanvas; var AMargins: TRect);
-
-  procedure MeasureLabel(const AText: String; ADir: Boolean);
-  const
-    LABEL_TO_BORDER = 4;
-  var
-    sz: TSize;
-    p: PInteger;
-  begin
-    if AText = '' then exit;
-    sz := Marks.MeasureLabel(ACanvas, AText);
-    if ADir then
-      p := @AMargins.Bottom
-    else
-      p := @AMargins.Top;
-    p^ := Max(p^, sz.cy + Marks.Distance + LABEL_TO_BORDER);
-  end;
-
+const
+  LABEL_TO_BORDER = 4;
 var
-  g: TDoublePoint;
-  i: Integer;
+  i, d: Integer;
+  labelText: String;
+  dir: TLabelDirection;
+  m: array [TLabelDirection] of Integer absolute AMargins;
 begin
   if not Marks.IsMarkLabelsVisible then exit;
+
   for i := 0 to Count - 1 do begin
-    g := GetGraphPoint(i);
-    with ParentChart do
-      if IsPointInViewPort(g) then begin
-        MeasureLabel(FormattedMark(i), GetLabelDirection(g));
-      end;
+    if not ParentChart.IsPointInViewPort(GetGraphPoint(i)) then continue;
+    labelText := FormattedMark(i);
+    if labelText = '' then continue;
+
+    dir := GetLabelDirection(i);
+    with Marks.MeasureLabel(ACanvas, labelText) do
+      d := IfThen(dir in [ldLeft, ldRight], cx, cy);
+    m[dir] := Max(m[dir], d + Marks.Distance + LABEL_TO_BORDER);
   end;
+
   FPrevLabelRect := Rect(0, 0, 0, 0);
 end;
 
@@ -1028,11 +1026,12 @@ begin
   DrawLabels(ACanvas);
 end;
 
-function TAreaSeries.GetLabelDirection(
-  const AGraphPoint: TDoublePoint): Boolean;
+function TAreaSeries.GetLabelDirection(AIndex: Integer): TLabelDirection;
+const
+  DIR: array [Boolean] of TLabelDirection = (ldTop, ldRight);
 begin
-  Unused(AGraphPoint);
-  Result := false;
+  Unused(AIndex);
+  Result := DIR[IsRotated];
 end;
 
 procedure TAreaSeries.GetLegendItems(AItems: TChartLegendItems);
