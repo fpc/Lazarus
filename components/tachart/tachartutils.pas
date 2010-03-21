@@ -133,15 +133,15 @@ const
   // 0-value, 1-percent, 2-label, 3-total, 4-xvalue
   SERIES_MARK_FORMATS: array [TSeriesMarksStyle] of String = (
     '', '',
-    '%0:g', // smsValue
+    '%0:.9g', // smsValue
     '%1:.2f%%', // smsPercent
     '%2:s', // smsLabel
     '%2:s %1:.2f%%', // smsLabelPercent
-    '%2:s %0:g', // smsLabelValue
+    '%2:s %0:.9g', // smsLabelValue
     '%2:s', // smsLegend: not sure what it means, left for Delphi compatibility
     '%1:.2f%% of %3:g', // smsPercentTotal
     '%1:.2f%% of %3:g', // smsLabelPercentTotal
-    '%4:g' // smsXValue
+    '%4:.9g' // smsXValue
   );
   ZeroDoublePoint: TDoublePoint = (X: 0; Y: 0);
   EmptyDoubleRect: TDoubleRect = (coords: (0, 0, 0, 0));
@@ -149,9 +149,6 @@ const
     (coords: (Infinity, Infinity, NegInfinity, NegInfinity));
   CASE_OF_TWO: array [Boolean, Boolean] of TCaseOfTwo =
     ((cotNone, cotSecond), (cotFirst, cotBoth));
-
-procedure CalculateIntervals(
-  AMin, AMax: Double; AxisScale: TAxisScale; out AStart, AStep: Double);
 
 function DoubleRect(AX1, AY1, AX2, AY2: Double): TDoubleRect; inline;
 
@@ -215,7 +212,7 @@ begin
   scale := 1.0;
   for i := Low(GOOD_STEPS) to High(GOOD_STEPS) do begin
     extentTmp := extent / GOOD_STEPS[i];
-    m := power(BASE, Round(logn(BASE, extentTmp)));
+    m := IntPower(BASE, Round(logn(BASE, extentTmp)));
     while extentTmp * m > BASE do
       m /= BASE;
     while extentTmp * m <= 1 do
@@ -353,6 +350,8 @@ begin
   m := start;
   markCount := 0;
   while true do begin
+    if Abs(m / step) < K then
+      m := 0;
     if InRange(m, AMin, AMax) then begin
       Result[markCount] := m;
       Inc(markCount);
