@@ -34,7 +34,7 @@ interface
 uses
   // FCL+LCL
   Classes, SysUtils, Math, TypInfo, LCLProc, LResources, Forms, Controls,
-  Graphics, Dialogs, Buttons, StdCtrls,
+  Graphics, Dialogs, Buttons, StdCtrls, contnrs,
   // components
   SynHighlighterLFM, SynEdit, BasicCodeTools, CodeCache, CodeToolManager,
   SynEditMiscClasses, LFMTrees,
@@ -49,8 +49,6 @@ type
 
   TLFMChecker = class
   private
-    fPascalBuffer: TCodeBuffer;
-    fLFMBuffer: TCodeBuffer;
     fOnOutput: TOnAddFilteredLine;
     fRootMustBeClassInIntf: boolean;
     fObjectsMustExists: boolean;
@@ -61,6 +59,8 @@ type
     function FixMissingComponentClasses: TModalResult;
     function CheckUnit: boolean;
   protected
+    fPascalBuffer: TCodeBuffer;
+    fLFMBuffer: TCodeBuffer;
     fLFMTree: TLFMTree;
     // References to controls in UI:
     fLFMSynEdit: TSynEdit;
@@ -71,6 +71,7 @@ type
     procedure FindNiceNodeBounds(LFMNode: TLFMTreeNode;
                                  var StartPos, EndPos: integer);
     function FindListBoxError: TLFMError;
+    procedure FillErrorsListBox;
     procedure JumpToError(LFMError: TLFMError);
     procedure AddReplacement(LFMChangeList: TList; StartPos, EndPos: integer;
                              const NewText: string);
@@ -82,7 +83,6 @@ type
                        const AOnOutput: TOnAddFilteredLine);
     destructor Destroy; override;
     function Repair: TModalResult;
-    procedure FillErrorsListBox;
     function AutomaticFixIsPossible: boolean;
   public
     property PascalBuffer: TCodeBuffer read fPascalBuffer;
@@ -560,11 +560,10 @@ var
   CurError: TLFMError;
   DeleteNode: TLFMTreeNode;
   StartPos, EndPos: integer;
-  Replacements: TList;
-  i: integer;
+  Replacements: TObjectList;
 begin
   Result:=mrNone;
-  Replacements:=TList.Create;
+  Replacements:=TObjectList.Create;
   try
     // automatically delete each error location
     CurError:=fLFMTree.LastError;
@@ -579,8 +578,6 @@ begin
     if ApplyReplacements(Replacements) then
       Result:=mrOk;
   finally
-    for i := 0 to Replacements.Count - 1 do
-      TObject(Replacements[i]).Free;
     Replacements.Free;
   end;
 end;
@@ -609,6 +606,29 @@ begin
     Result:=Result.NextError;
     dec(i);
   end;
+end;
+
+procedure TLFMChecker.FillErrorsListBox;
+var
+  CurError: TLFMError;
+  Filename: String;
+  Msg: String;
+begin
+  fErrorsListBox.Items.BeginUpdate;
+  fErrorsListBox.Items.Clear;
+  if fLFMTree<>nil then begin
+    Filename:=ExtractFileName(fLFMBuffer.Filename);
+    CurError:=fLFMTree.FirstError;
+    while CurError<>nil do begin
+      Msg:=Filename
+           +'('+IntToStr(CurError.Caret.Y)+','+IntToStr(CurError.Caret.X)+')'
+           +' Error: '
+           +CurError.ErrorMessage;
+      fErrorsListBox.Items.Add(Msg);
+      CurError:=CurError.NextError;
+    end;
+  end;
+  fErrorsListBox.Items.EndUpdate;
 end;
 
 procedure TLFMChecker.JumpToError(LFMError: TLFMError);
@@ -694,29 +714,6 @@ begin
   end;
   //writeln(fLFMBuffer.Source);
   Result:=true;
-end;
-
-procedure TLFMChecker.FillErrorsListBox;
-var
-  CurError: TLFMError;
-  Filename: String;
-  Msg: String;
-begin
-  fErrorsListBox.Items.BeginUpdate;
-  fErrorsListBox.Items.Clear;
-  if fLFMTree<>nil then begin
-    Filename:=ExtractFileName(fLFMBuffer.Filename);
-    CurError:=fLFMTree.FirstError;
-    while CurError<>nil do begin
-      Msg:=Filename
-           +'('+IntToStr(CurError.Caret.Y)+','+IntToStr(CurError.Caret.X)+')'
-           +' Error: '
-           +CurError.ErrorMessage;
-      fErrorsListBox.Items.Add(Msg);
-      CurError:=CurError.NextError;
-    end;
-  end;
-  fErrorsListBox.Items.EndUpdate;
 end;
 
 function TLFMChecker.AutomaticFixIsPossible: boolean;

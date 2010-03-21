@@ -140,6 +140,7 @@ begin
   fReplaceProps['TGridPanel']:='TPanel';
   fReplaceProps['TComboBoxEx']:='TComboBox';
   fReplaceProps['TCoolBar']:='TPanel';
+  fReplaceProps['TRichEdit']:='TMemo';
   fReplaceProps['TDBRichEdit']:='TDBMemo';
 end;
 

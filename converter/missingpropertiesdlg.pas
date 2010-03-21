@@ -34,11 +34,11 @@ interface
 uses
   // FCL+LCL
   Classes, SysUtils, Math, LCLProc, Forms, Controls,
-  Graphics, Dialogs, Buttons, StdCtrls,
+  Graphics, Dialogs, Buttons, StdCtrls, contnrs, IniFiles,
   // components
   SynHighlighterLFM, SynEdit, SynEditMiscClasses, LFMTrees,
   // codetools
-  BasicCodeTools, CodeCache, CodeToolManager,
+  BasicCodeTools, CodeCache, CodeToolManager, CodeToolsStructs,
   // IDE
   IDEDialogs, ComponentReg, PackageIntf, IDEWindowIntf,
   CustomFormEditor, LazarusIDEStrConsts, IDEProcs, OutputFilter,
@@ -50,22 +50,28 @@ type
 
   TLFMFixer = class(TLFMChecker)
   private
+    fSettings: TConvertSettings;
     // References to controls in UI:
     fPropReplaceGrid: TStringGrid;
+    function ReplaceAndRemoveAll: TModalResult;
+    // Fill StringGrid with missing properties from fLFMTree.
+    procedure FillPropReplaceList;
   protected
+    procedure LoadLFM;
     function ShowRepairLFMWizard: TModalResult; override;
   public
     constructor Create(APascalBuffer, ALFMBuffer: TCodeBuffer;
                        const AOnOutput: TOnAddFilteredLine);
     destructor Destroy; override;
     function Repair: TModalResult;
+  public
+    property Settings: TConvertSettings read fSettings write fSettings;
   end;
 
 
   { TFixLFMDialog }
 
   TFixLFMDialog = class(TForm)
-    ReplaceAllButton: TBitBtn;
     CancelButton: TBitBtn;
     ErrorsGroupBox: TGroupBox;
     ErrorsListBox: TListBox;
@@ -74,12 +80,11 @@ type
     LFMGroupBox: TGroupBox;
     LFMSynEdit: TSynEdit;
     BtnPanel: TPanel;
-    RemoveAllButton: TBitBtn;
+    ReplaceAllButton: TBitBtn;
     Splitter1: TSplitter;
     PropertyReplaceGrid: TStringGrid;
     SynLFMSyn1: TSynLFMSyn;
     procedure ErrorsListBoxClick(Sender: TObject);
-    procedure RemoveAllButtonClick(Sender: TObject);
     procedure ReplaceAllButtonClick(Sender: TObject);
     procedure LFMSynEditSpecialLineMarkup(Sender: TObject;
       Line: integer; var Special: boolean; AMarkup: TSynSelectedColor);
@@ -108,6 +113,110 @@ end;
 destructor TLFMFixer.Destroy;
 begin
   inherited Destroy;
+end;
+
+function TLFMFixer.ReplaceAndRemoveAll: TModalResult;
+var
+  CurError: TLFMError;
+  TheNode: TLFMTreeNode;
+  // Property name --> replacement name.
+  PropNameRepl: THashedStringList;
+  // List of TLFMChangeEntry objects.
+  ChgEntryRepl: TObjectList;
+  OldIdent, NewIdent: string;
+  StartPos, EndPos: integer;
+  i: Integer;
+begin
+  Result:=mrNone;
+  ChgEntryRepl:=TObjectList.Create;
+  PropNameRepl:=THashedStringList.Create;
+  try
+    // Collect (maybe edited) properties from StringGrid to PropNameRepl.
+    for i:=1 to fPropReplaceGrid.RowCount-1 do begin // Skip the fixed row.
+      OldIdent:=fPropReplaceGrid.Cells[0,i];
+      NewIdent:=fPropReplaceGrid.Cells[1,i];
+      PropNameRepl.Values[OldIdent]:=NewIdent;
+    end;
+    // Replace each missing property or delete it if there is no replacement.
+    CurError:=fLFMTree.LastError;
+    while CurError<>nil do begin
+      TheNode:=CurError.FindContextNode;
+      if (TheNode<>nil) and (TheNode.Parent<>nil) then begin
+        if CurError.IsMissingObjectType then begin
+          OldIdent:=(CurError.Node as TLFMObjectNode).TypeName;
+          StartPos:=(CurError.Node as TLFMObjectNode).TypeNamePosition;
+          EndPos:=StartPos+Length(OldIdent);
+          NewIdent:=PropNameRepl.Values[OldIdent];
+          // Keep the old class name if no replacement.
+          if NewIdent<>'' then
+            AddReplacement(ChgEntryRepl,StartPos,EndPos,NewIdent);
+        end
+        else begin
+          TheNode.FindIdentifier(StartPos,EndPos);
+          if StartPos>0 then begin
+            OldIdent:=copy(fLFMBuffer.Source,StartPos,EndPos-StartPos);
+            NewIdent:=PropNameRepl.Values[OldIdent];
+            // Delete the whole property line if no replacement.
+            if NewIdent='' then
+              FindNiceNodeBounds(TheNode,StartPos,EndPos);
+            AddReplacement(ChgEntryRepl,StartPos,EndPos,NewIdent);
+          end;
+        end;
+      end;
+      CurError:=CurError.PrevError;
+    end;
+    if ApplyReplacements(ChgEntryRepl) then
+      Result:=mrOk;
+  finally
+    PropNameRepl.Free;
+    ChgEntryRepl.Free;
+  end;
+end;
+
+procedure TLFMFixer.FillPropReplaceList;
+var
+  CurError: TLFMError;
+  SeenPropName: TStringList;
+  OldIdent, NewIdent: string;
+  i: integer;
+begin
+  SeenPropName:=TStringList.Create;
+  try
+    fPropReplaceGrid.BeginUpdate;
+    if fLFMTree<>nil then begin
+      i:=1;
+      CurError:=fLFMTree.FirstError;
+      while CurError<>nil do begin
+        if CurError.IsMissingObjectType then begin
+          OldIdent:=(CurError.Node as TLFMObjectNode).TypeName;
+        end
+        else begin
+          OldIdent:=CurError.Node.GetIdentifier;
+        end;
+        // Add only one instance of each property name.
+        if SeenPropName.IndexOf(OldIdent)<0 then begin
+          SeenPropName.Append(OldIdent);
+          NewIdent:=fSettings.ReplaceProps[OldIdent];
+          if fPropReplaceGrid.RowCount<i+1 then
+            fPropReplaceGrid.RowCount:=i+1;
+          fPropReplaceGrid.Cells[0,i]:=OldIdent;
+          fPropReplaceGrid.Cells[1,i]:=NewIdent;
+          Inc(i);
+        end;
+        CurError:=CurError.NextError;
+      end;
+    end;
+    fPropReplaceGrid.EndUpdate;
+  finally
+    SeenPropName.Free;
+  end;
+end;
+
+procedure TLFMFixer.LoadLFM;
+begin
+  inherited LoadLFM;
+  // Fill PropertyReplaceGrid
+  FillPropReplaceList;
 end;
 
 function TLFMFixer.ShowRepairLFMWizard: TModalResult;
@@ -150,18 +259,13 @@ procedure TFixLFMDialog.CheckLFMDialogCREATE(Sender: TObject);
 begin
   Caption:=lisFixLFMFile;
   Position:=poScreenCenter;
-  IDEDialogLayoutList.ApplyLayout(Self,600,400);
+//  IDEDialogLayoutList.ApplyLayout(Self,600,400);
   SetupComponents;
 end;
 
 procedure TFixLFMDialog.ReplaceAllButtonClick(Sender: TObject);
 begin
-  ;
-end;
-
-procedure TFixLFMDialog.RemoveAllButtonClick(Sender: TObject);
-begin
-  ModalResult:=fLfmFixer.RemoveAll;
+  ModalResult:=fLfmFixer.ReplaceAndRemoveAll;
 end;
 
 procedure TFixLFMDialog.ErrorsListBoxClick(Sender: TObject);
@@ -182,13 +286,14 @@ end;
 
 procedure TFixLFMDialog.SetupComponents;
 const // Will be moved to LazarusIDEStrConsts
-  lisReplaceAllProperties = 'Replace all properties';
+  lisLFMFileContainsInvalidProperties = 'The LFM (Lazarus form) '
+    +'file contains invalid properties/classes which do not exist in LCL. '
+    +'They can be replaced or removed.';
+  lisReplaceAllProperties = 'Replace and remove invalid properties';
 begin
-  NoteLabel.Caption:=lisTheLFMLazarusFormFileContainsInvalidPropertiesThis;
+  NoteLabel.Caption:=lisLFMFileContainsInvalidProperties;
   ErrorsGroupBox.Caption:=lisErrors;
   LFMGroupBox.Caption:=lisLFMFile;
-  RemoveAllButton.Caption:=lisRemoveAllInvalidProperties;
-  RemoveAllButton.LoadGlyphFromLazarusResource('laz_delete');
   ReplaceAllButton.Caption:=lisReplaceAllProperties;
   ReplaceAllButton.LoadGlyphFromLazarusResource('laz_refresh');
   EditorOpts.GetHighlighterSettings(SynLFMSyn1);

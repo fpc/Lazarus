@@ -636,6 +636,7 @@ begin
   if fLfmCode<>nil then begin
     LfmFixer:=TLfmFixer.Create(fUnitCode,fLfmCode,@IDEMessagesWindow.AddMsg);
     try
+      LfmFixer.Settings:=fSettings;
       LfmFixer.RootMustBeClassInIntf:=true;
       LfmFixer.ObjectsMustExists:=true;
 //      was: if RepairLFMBuffer(...,true,true)<>mrOk

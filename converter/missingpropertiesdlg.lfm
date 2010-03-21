@@ -1,19 +1,19 @@
 object FixLFMDialog: TFixLFMDialog
-  Left = 337
-  Height = 580
-  Top = 150
-  Width = 749
+  Left = 143
+  Height = 536
+  Top = 143
+  Width = 826
   ActiveControl = LFMSynEdit
   Caption = 'Repair LFM file'
-  ClientHeight = 580
-  ClientWidth = 749
+  ClientHeight = 536
+  ClientWidth = 826
   OnCreate = CheckLFMDialogCreate
   LCLVersion = '0.9.29'
   object NoteLabel: TLabel
     Left = 0
     Height = 16
     Top = 0
-    Width = 749
+    Width = 826
     Align = alTop
     Caption = 'NoteLabel'
     ParentColor = False
@@ -21,17 +21,17 @@ object FixLFMDialog: TFixLFMDialog
   end
   object LFMGroupBox: TGroupBox
     Left = 0
-    Height = 412
+    Height = 368
     Top = 16
     Width = 408
     Align = alLeft
     Caption = 'LFM file'
-    ClientHeight = 390
+    ClientHeight = 346
     ClientWidth = 398
     TabOrder = 0
     inline LFMSynEdit: TSynEdit
       Left = 0
-      Height = 390
+      Height = 346
       Top = 0
       Width = 398
       Align = alClient
@@ -514,6 +514,7 @@ object FixLFMDialog: TFixLFMDialog
       Lines.Strings = (
         'LFMSynEdit'
       )
+      ReadOnly = True
       BracketHighlightStyle = sbhsBoth
       OnSpecialLineMarkup = LFMSynEditSpecialLineMarkup
       inline TSynGutterPartList
@@ -628,18 +629,18 @@ object FixLFMDialog: TFixLFMDialog
   object ErrorsGroupBox: TGroupBox
     Left = 0
     Height = 104
-    Top = 428
-    Width = 749
+    Top = 384
+    Width = 826
     Align = alBottom
     Caption = 'Errors'
     ClientHeight = 82
-    ClientWidth = 739
+    ClientWidth = 816
     TabOrder = 1
     object ErrorsListBox: TListBox
       Left = 0
       Height = 82
       Top = 0
-      Width = 739
+      Width = 816
       Align = alClient
       ItemHeight = 0
       OnClick = ErrorsListBoxClick
@@ -649,16 +650,16 @@ object FixLFMDialog: TFixLFMDialog
   object BtnPanel: TPanel
     Left = 0
     Height = 48
-    Top = 532
-    Width = 749
+    Top = 488
+    Width = 826
     Align = alBottom
     AutoSize = True
     BevelOuter = bvNone
     ClientHeight = 48
-    ClientWidth = 749
+    ClientWidth = 826
     TabOrder = 2
     object CancelButton: TBitBtn
-      Left = 662
+      Left = 739
       Height = 36
       Top = 6
       Width = 81
@@ -672,63 +673,59 @@ object FixLFMDialog: TFixLFMDialog
       NumGlyphs = 0
       TabOrder = 0
     end
-    object RemoveAllButton: TBitBtn
+    object ReplaceAllButton: TBitBtn
       Left = 6
       Height = 25
       Top = 6
-      Width = 175
+      Width = 227
       AutoSize = True
       BorderSpacing.Around = 6
-      Caption = 'Remove all invalid properties'
+      Caption = 'Replace and remove invalid properties'
       NumGlyphs = 0
-      OnClick = RemoveAllButtonClick
-      TabOrder = 1
-    end
-    object ReplaceAllButton: TBitBtn
-      AnchorSideLeft.Control = RemoveAllButton
-      AnchorSideLeft.Side = asrBottom
-      Left = 192
-      Height = 25
-      Top = 6
-      Width = 137
-      AutoSize = True
-      BorderSpacing.Left = 11
-      Caption = 'Replace all properties'
       OnClick = ReplaceAllButtonClick
-      TabOrder = 2
-      Visible = False
+      TabOrder = 1
     end
   end
   object PropertyReplaceGroupBox: TGroupBox
     Left = 413
-    Height = 412
+    Height = 368
     Top = 16
-    Width = 336
+    Width = 413
     Align = alClient
     Caption = 'Properties to replace'
-    ClientHeight = 390
-    ClientWidth = 326
+    ClientHeight = 346
+    ClientWidth = 403
     TabOrder = 3
     object PropertyReplaceGrid: TStringGrid
       Left = 0
-      Height = 390
+      Height = 346
       Top = 0
-      Width = 326
+      Width = 403
       Align = alClient
-      ColCount = 3
+      AutoFillColumns = True
+      ColCount = 2
       Columns = <      
         item
           Title.Caption = 'Delphi Property'
+          Width = 198
         end      
         item
-          Title.Caption = 'New Property'
+          Title.Caption = 'New property'
+          Width = 199
         end>
+      FixedCols = 0
+      Options = [goFixedVertLine, goFixedHorzLine, goVertLine, goHorzLine, goRangeSelect, goEditing, goSmoothScroll]
+      RowCount = 2
       TabOrder = 0
+      ColWidths = (
+        198
+        199
+      )
     end
   end
   object Splitter1: TSplitter
     Left = 408
-    Height = 412
+    Height = 368
     Top = 16
     Width = 5
   end
