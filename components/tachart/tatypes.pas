@@ -28,7 +28,7 @@ unit TATypes;
 interface
 
 uses
-  Classes, SysUtils, Graphics, Controls, FPCanvas,
+  Classes, SysUtils, Graphics, Controls, FPCanvas, Types,
   TAChartUtils;
 
 const
@@ -144,8 +144,7 @@ type
     procedure DrawLabel(
       ACanvas: TCanvas; const ALabelRect: TRect; const AText: String);
     function IsMarkLabelsVisible: Boolean;
-    function MeasureLabel(
-      ACanvas: TCanvas; const AText: String; ADown: Boolean): TRect;
+    function MeasureLabel(ACanvas: TCanvas; const AText: String): TSize;
   published
     // If false, labels may overlap axises and legend.
     property Clipped: Boolean read FClipped write SetClipped default true;
@@ -244,9 +243,6 @@ type
   end;
 
 implementation
-
-uses
-  Types;
 
 { TChartPen }
 
@@ -444,20 +440,12 @@ begin
   Result := Visible and (Style <> smsNone) and (Format <> '');
 end;
 
-function TChartMarks.MeasureLabel(
-  ACanvas: TCanvas; const AText: String; ADown: Boolean): TRect;
-var
-  labelSize: TSize;
+function TChartMarks.MeasureLabel(ACanvas: TCanvas; const AText: String): TSize;
 begin
   ACanvas.Font.Assign(LabelFont);
-  labelSize := ACanvas.TextExtent(AText);
-  Result.Left := - labelSize.cx div 2;
-  if ADown then
-    Result.Top := Distance
-  else
-    Result.Top := - Distance - labelSize.cy;
-  Result.BottomRight := Result.TopLeft + labelSize;
-  InflateRect(Result, MARKS_MARGIN_X, MARKS_MARGIN_Y);
+  Result := ACanvas.TextExtent(AText);
+  Result.cx += 2 * MARKS_MARGIN_X;
+  Result.cy += 2 * MARKS_MARGIN_Y;
 end;
 
 procedure TChartMarks.SetClipped(const AValue: Boolean);

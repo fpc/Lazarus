@@ -560,16 +560,22 @@ end;
 
 procedure TBasicPointSeries.DrawLabel(
   ACanvas: TCanvas; AIndex: Integer; const ADataPoint: TPoint; ADown: Boolean);
+const
+  OFFSETS: array [Boolean] of TPoint = ((X: 0; Y: -1), (X: 0; Y: 1));
 var
   labelRect: TRect;
+  center: TPoint;
   dummy: TRect = (Left: 0; Top: 0; Right: 0; Bottom: 0);
   labelText: String;
+  sz: TSize;
 begin
   labelText := FormattedMark(AIndex);
   if labelText = '' then exit;
 
-  labelRect := Marks.MeasureLabel(ACanvas, labelText, ADown);
-  OffsetRect(labelRect, ADataPoint.X, ADataPoint.Y);
+  sz := Marks.MeasureLabel(ACanvas, labelText);
+  center := ADataPoint + OFFSETS[ADown] * (Marks.Distance + sz.cy div 2);
+  labelRect :=
+    Bounds(center.X - sz.cx div 2, center.Y - sz.cy div 2, sz.cx, sz.cy);
   if
     not IsRectEmpty(FPrevLabelRect) and
     IntersectRect(dummy, labelRect, FPrevLabelRect)
@@ -579,11 +585,7 @@ begin
 
   // Link between the label and the bar.
   ACanvas.Pen.Assign(Marks.LinkPen);
-  with ADataPoint do
-    if ADown then
-      ACanvas.Line(X, Y, X, labelRect.Top)
-    else
-      ACanvas.Line(X, Y - 1, X, labelRect.Bottom - 1);
+  ACanvas.Line(ADataPoint, center);
 
   Marks.DrawLabel(ACanvas, labelRect, labelText);
 end;
@@ -638,14 +640,35 @@ begin
 end;
 
 procedure TBasicPointSeries.UpdateMargins(ACanvas: TCanvas; var AMargins: TRect);
-const
-  SOME_DIGIT = '0';
+
+  procedure MeasureLabel(const AText: String; ADir: Boolean);
+  const
+    LABEL_TO_BORDER = 4;
+  var
+    sz: TSize;
+    p: PInteger;
+  begin
+    if AText = '' then exit;
+    sz := Marks.MeasureLabel(ACanvas, AText);
+    if ADir then
+      p := @AMargins.Bottom
+    else
+      p := @AMargins.Top;
+    p^ := Max(p^, sz.cy + Marks.Distance + LABEL_TO_BORDER);
+  end;
+
 var
-  h: Integer;
+  g: TDoublePoint;
+  i: Integer;
 begin
-  h := ACanvas.TextHeight(SOME_DIGIT) + Marks.Distance + 2 * MARKS_MARGIN_Y + 4;
-  AMargins.Top := Max(AMargins.Top, h);
-  AMargins.Bottom := Max(AMargins.Bottom, h);
+  if not Marks.IsMarkLabelsVisible then exit;
+  for i := 0 to Count - 1 do begin
+    g := GetGraphPoint(i);
+    with ParentChart do
+      if IsPointInViewPort(g) then begin
+        MeasureLabel(FormattedMark(i), GetLabelDirection(g));
+      end;
+  end;
   FPrevLabelRect := Rect(0, 0, 0, 0);
 end;
 
