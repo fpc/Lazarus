@@ -74,6 +74,7 @@ type
     procedure Unsubscribe(AListener: TListener);
   public
     function Extent: TDoubleRect; virtual;
+    function FormatItem(const AFormat: String; AIndex: Integer): String;
     function ValuesTotal: Double; virtual;
     function XOfMax: Double;
     function XOfMin: Double;
@@ -287,6 +288,23 @@ begin
   for Result := 0 to High(FListeners) do
     if FListeners[Result] = AListener then exit;
   Result := -1;
+end;
+
+function TCustomChartSource.FormatItem(
+  const AFormat: String; AIndex: Integer): String;
+const
+  TO_PERCENT = 100;
+var
+  total, percent: Double;
+begin
+  total := ValuesTotal;
+  with Item[AIndex]^ do begin
+    if total = 0 then
+      percent := 0
+    else
+      percent := Y / total * TO_PERCENT;
+    Result := Format(AFormat, [y, percent, Text, total, X]);
+  end;
 end;
 
 procedure TCustomChartSource.InvalidateCaches;

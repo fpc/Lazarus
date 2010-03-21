@@ -116,7 +116,6 @@ type
     function AddXY(X, Y: Double): Integer; overload; inline;
     procedure Clear; inline;
     function Count: Integer; inline;
-    function DefaultFormattedMark(AIndex: integer): String;
     procedure Delete(AIndex: Integer); virtual;
     function Extent: TDoubleRect; virtual;
     function FormattedMark(AIndex: integer): String;
@@ -351,22 +350,6 @@ begin
   FMarks := TChartMarks.Create(FChart);
 end;
 
-function TChartSeries.DefaultFormattedMark(AIndex: integer): String;
-const
-  TO_PERCENT = 100;
-var
-  total, percent: Double;
-begin
-  total := Source.ValuesTotal;
-  with Source[AIndex]^ do begin
-    if total = 0 then
-      percent := 0
-    else
-      percent := Y / total * TO_PERCENT;
-    Result := Format(FMarks.Format, [y, percent, Text, total, X]);
-  end;
-end;
-
 procedure TChartSeries.Delete(AIndex: Integer);
 begin
   ListSource.Delete(AIndex);
@@ -393,7 +376,7 @@ begin
   if Assigned(FOnGetMark) then
     FOnGetMark(Result, AIndex)
   else
-    Result := DefaultFormattedMark(AIndex);
+    Result := Source.FormatItem(Marks.Format, AIndex);
 end;
 
 procedure TChartSeries.GetBounds(out ABounds: TDoubleRect);
