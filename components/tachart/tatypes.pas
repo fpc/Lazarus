@@ -127,6 +127,8 @@ type
     procedure SetLabelFont(const AValue: TFont);
     procedure SetLinkPen(const AValue: _TLinkPen);
     procedure SetStyle(const AValue: TSeriesMarksStyle);
+  protected
+    function IsMarginRequired: Boolean;
   public
     constructor Create(AOwner: TCustomChart);
     destructor Destroy; override;
@@ -434,19 +436,30 @@ procedure TGenericChartMarks.DrawLabel(
   ACanvas: TCanvas; const ALabelRect: TRect; const AText: String);
 var
   wasClipping: Boolean = false;
+  pt: TPoint;
 begin
   if not Clipped and ACanvas.Clipping then begin
     ACanvas.Clipping := false;
     wasClipping := true;
   end;
-  ACanvas.Brush.Assign(LabelBrush);
-  ACanvas.Pen.Assign(Frame);
-  ACanvas.Rectangle(ALabelRect);
+  pt := ALabelRect.TopLeft;
   ACanvas.Font.Assign(LabelFont);
-  ACanvas.TextOut(
-    ALabelRect.Left + MARKS_MARGIN_X, ALabelRect.Top + MARKS_MARGIN_Y, AText);
+  ACanvas.Brush.Assign(LabelBrush);
+  if IsMarginRequired then begin
+    ACanvas.Pen.Assign(Frame);
+    ACanvas.Rectangle(ALabelRect);
+    pt += Point(MARKS_MARGIN_X, MARKS_MARGIN_Y);
+  end;
+  ACanvas.TextOut(pt.X, pt.Y, AText);
   if wasClipping then
     ACanvas.Clipping := true;
+end;
+
+function TGenericChartMarks.IsMarginRequired: Boolean;
+begin
+  Result :=
+    (LabelBrush.Style <> bsClear) or
+    (Frame.Style <> psClear) and Frame.Visible;
 end;
 
 function TGenericChartMarks.IsMarkLabelsVisible: Boolean;
@@ -459,8 +472,10 @@ function TGenericChartMarks.MeasureLabel(
 begin
   ACanvas.Font.Assign(LabelFont);
   Result := ACanvas.TextExtent(AText);
-  Result.cx += 2 * MARKS_MARGIN_X;
-  Result.cy += 2 * MARKS_MARGIN_Y;
+  if IsMarginRequired then begin
+    Result.cx += 2 * MARKS_MARGIN_X;
+    Result.cy += 2 * MARKS_MARGIN_Y;
+  end;
 end;
 
 procedure TGenericChartMarks.SetClipped(const AValue: Boolean);
