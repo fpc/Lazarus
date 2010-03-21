@@ -337,7 +337,7 @@ begin
   ParentPanelHandle := GetWin32WindowInfo(ChildHandle)^.ParentPanel;
   if ParentPanelHandle <> 0 then
     ChildHandle := ParentPanelHandle;
-  SetParent(ChildHandle, ParentHandle);
+  Windows.SetParent(ChildHandle, ParentHandle);
 end;
 
 class function  TWin32WSWinControl.GetText(const AWinControl: TWinControl; var AText: String): Boolean;

@@ -1110,11 +1110,16 @@ begin
   Result := 0;
 end;
 
-function TWidgetSet.GetWindowOrgEx(dc : hdc; P : PPoint): Integer;
-Begin
+function TWidgetSet.GetWindowOrgEx(dc: hdc; var P: TPoint): Integer;
+begin
+  Result := GetWindowOrgEx(dc, @P);
+end;
+
+function TWidgetSet.GetWindowOrgEx(dc: hdc; P: PPoint): Integer;
+begin
   Result := 0;
-  if P<>nil then
-    P^:=Point(0,0);
+  if P <> nil then
+    P^ := Point(0, 0);
 end;
 
 function TWidgetSet.GetWindowRect(Handle : hwnd; var Rect : TRect): Integer;

@@ -545,9 +545,14 @@ begin
   Result := WidgetSet.GetWindowSize(Handle, Width, Height);
 end;
 
-function GetWindowOrgEx(dc : hdc; P : PPoint): Integer;
+function GetWindowOrgEx(dc: hdc; var P: TPoint): Integer;
 begin
- Result := WidgetSet.GetWindowOrgEx(dc,P);
+  Result := WidgetSet.GetWindowOrgEx(dc, P);
+end;
+
+function GetWindowOrgEx(dc: hdc; P : PPoint): Integer;
+begin
+ Result := WidgetSet.GetWindowOrgEx(dc, P);
 end;
 
 function GradientFill(DC: HDC; Vertices: PTriVertex; NumVertices : Longint;

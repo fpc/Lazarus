@@ -157,7 +157,8 @@ function GetWindowExtEx(DC: HDC; Size: PSize): Integer; {$IFDEF IF_BASE_MEMBER}v
 function GetWindowLong(Handle : hwnd; int : Integer): PtrInt; {$IFDEF IF_BASE_MEMBER}virtual;{$ENDIF}
 function GetWindowRect(Handle : hwnd; var Rect : TRect): Integer; {$IFDEF IF_BASE_MEMBER}virtual;{$ENDIF}
 function GetWindowSize(Handle : hwnd; var Width, Height: integer): boolean; {$IFDEF IF_BASE_MEMBER}virtual;{$ENDIF}
-function GetWindowOrgEx(dc : hdc; P : PPoint): Integer; {$IFDEF IF_BASE_MEMBER}virtual;{$ENDIF}
+function GetWindowOrgEx(dc : hdc; var P: TPoint): Integer; {$IFDEF IF_BASE_MEMBER}virtual;{$ENDIF} // because of delphi compatibility
+function GetWindowOrgEx(dc : hdc; P : PPoint): Integer; {$IFDEF IF_BASE_MEMBER}virtual;{$ENDIF} // an old declaration
 function GradientFill(DC: HDC; Vertices: PTriVertex; NumVertices : Longint;
   Meshes: Pointer; NumMeshes : Longint; Mode : Longint): Boolean; {$IFDEF IF_BASE_MEMBER}virtual;{$ENDIF}
 
