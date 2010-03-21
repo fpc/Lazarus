@@ -229,12 +229,10 @@ begin
 end;
 
 function TCustomChartSeries.IsRotated: Boolean;
-const
-  VERTICAL = [calLeft, calRight];
 begin
   Result :=
-    (AxisIndexX >= 0) and (FChart.AxisList[AxisIndexX].Alignment in VERTICAL) and
-    (AxisIndexY >= 0) and not (FChart.AxisList[AxisIndexY].Alignment in VERTICAL);
+    (AxisIndexX >= 0) and FChart.AxisList[AxisIndexX].IsVertical and
+    (AxisIndexY >= 0) and not FChart.AxisList[AxisIndexY].IsVertical;
 end;
 
 procedure TCustomChartSeries.SetActive(AValue: Boolean);
