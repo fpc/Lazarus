@@ -123,24 +123,28 @@ type
     specialize TGenericChartMarks<TChartAxisBrush, TChartPen, TChartAxisFramePen>)
   private
     FSource: TCustomChartSource;
+    function IsFormatStored: Boolean;
     procedure SetSource(const AValue: TCustomChartSource);
   public
     constructor Create(AOwner: TCustomChart);
   published
+    property Format stored IsFormatStored;
     property Frame;
     property LabelBrush;
     property LinkPen;
     property Source: TCustomChartSource read FSource write SetSource;
+    property Style default smsValue;
   end;
 
   { TChartAxis }
 
   TChartAxis = class(TCollectionItem)
   private
+    FMarkTexts: TStringDynArray;
+    FMarkValues: TDoubleDynArray;
     FSize: Integer;
     FTitleSize: Integer;
-    FMarkValues: TDoubleDynArray;
-    FMarkTexts: TStringDynArray;
+
     procedure GetMarkValues(AMin, AMax: Double);
   private
     FAlignment: TChartAxisAlignment;
@@ -179,8 +183,6 @@ type
     procedure DrawTitle(
       ACanvas: TCanvas; const ACenter: TPoint; var ARect: TRect);
     function IsVertical: Boolean; inline;
-    function MarkToText(AMark: Double): String;
-    function MarkToTextDefault(AMark: Double): String;
     procedure Measure(
       ACanvas: TCanvas; const AExtent: TDoubleRect;
       var AMargins: TChartAxisMargins);
@@ -296,6 +298,13 @@ begin
   inherited Create(AOwner);
   FFrame.Style := psClear;
   FLabelBrush.Style := bsClear;
+  FStyle := smsValue;
+  FFormat := SERIES_MARK_FORMATS[FStyle];
+end;
+
+function TChartAxisMarks.IsFormatStored: Boolean;
+begin
+  Result := FStyle <> smsValue;
 end;
 
 procedure TChartAxisMarks.SetSource(const AValue: TCustomChartSource);
@@ -487,7 +496,7 @@ begin
     FMarkValues := GetIntervals(AMin, AMax, Inverted);
     SetLength(FMarkTexts, Length(FMarkValues));
     for i := 0 to High(FMarkValues) do
-      FMarkTexts[i] := MarkToText(FMarkValues[i]);
+      FMarkTexts[i] := Format(Marks.Format, [FMarkValues[i]]);
   end
   else begin
     count := 0;
@@ -504,26 +513,15 @@ begin
     SetLength(FMarkValues, count);
     SetLength(FMarkTexts, count);
   end;
+
+  if Assigned(FOnMarkToText) then
+    for i := 0 to High(FMarkTexts) do
+      FOnMarkToText(FMarkTexts[i], FMarkValues[i]);
 end;
 
 function TChartAxis.IsVertical: Boolean; inline;
 begin
   Result := Alignment in [calLeft, calRight];
-end;
-
-function TChartAxis.MarkToText(AMark: Double): String;
-begin
-  Result := MarkToTextDefault(AMark);
-  if Assigned(FOnMarkToText) then
-    FOnMarkToText(Result, AMark);
-end;
-
-function TChartAxis.MarkToTextDefault(AMark: Double): String;
-const
-  EPSILON = 1e-16;
-begin
-  if Abs(AMark) <= EPSILON then AMark := 0;
-  Result := Trim(FloatToStr(AMark));
 end;
 
 procedure TChartAxis.Measure(

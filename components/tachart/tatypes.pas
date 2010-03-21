@@ -152,8 +152,7 @@ type
       read FDistance write SetDistance default DEF_MARKS_DISTANCE;
     property Format: String read FFormat write SetFormat;
     property LabelFont: TFont read FLabelFont write SetLabelFont;
-    property Style: TSeriesMarksStyle
-      read FStyle write SetStyle default smsNone;
+    property Style: TSeriesMarksStyle read FStyle write SetStyle;
     property Visible default true;
   end;
 
@@ -177,6 +176,7 @@ type
     property Frame;
     property LabelBrush;
     property LinkPen;
+    property Style default smsNone;
   end;
 
   { TSeriesPointer }
