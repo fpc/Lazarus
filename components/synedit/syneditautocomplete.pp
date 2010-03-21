@@ -687,6 +687,7 @@ begin
       if fEditor = AEditor then
         fEditor := nil;
       fEditors.Delete(i);
+      AEditor.RemoveFreeNotification(Self);
       if ComponentState * [csDesigning, csLoading] = [] then
         AEditor.UnregisterCommandHandler(
           {$IFDEF FPC}@{$ENDIF}SynEditCommandHandler);

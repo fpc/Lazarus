@@ -527,6 +527,7 @@ end;
 procedure TSynBookMarkOpt.SetBookmarkImages(const Value: TImageList);
 begin
   if fBookmarkImages <> Value then begin
+    if Assigned(fBookmarkImages) then fBookmarkImages.RemoveFreeNotification(fOwner);
     fBookmarkImages := Value;
     if Assigned(fBookmarkImages) then fBookmarkImages.FreeNotification(fOwner);
     if Assigned(fOnChange) then fOnChange(Self);

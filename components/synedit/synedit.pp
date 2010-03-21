@@ -5419,6 +5419,7 @@ begin
     exit;
   fHighlighter.UnhookAttrChangeEvent({$IFDEF FPC}@{$ENDIF}HighlighterAttrChanged);
   fHighlighter.DetachFromLines(FLines);
+  fHighlighter.RemoveFreeNotification(self);
 end;
 
 procedure TCustomSynEdit.SetHighlighter(const Value: TSynCustomHighlighter);
