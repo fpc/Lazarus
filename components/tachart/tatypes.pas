@@ -111,7 +111,7 @@ type
     class(TChartElement)
   protected
     FClipped: Boolean;
-    FDistance: Integer;
+    FDistance: TChartDistance;
     FFormat: String;
     FFrame: _TFramePen;
     FLabelBrush: _TLabelBrush;
@@ -120,7 +120,7 @@ type
     FStyle: TSeriesMarksStyle;
 
     procedure SetClipped(const AValue: Boolean);
-    procedure SetDistance(const AValue: Integer);
+    procedure SetDistance(AValue: TChartDistance);
     procedure SetFormat(const AValue: String);
     procedure SetFrame(const AValue: _TFramePen);
     procedure SetLabelBrush(const AValue: _TLabelBrush);
@@ -148,8 +148,7 @@ type
     // If false, labels may overlap axises and legend.
     property Clipped: Boolean read FClipped write SetClipped default true;
     // Distance between series point and label.
-    property Distance: Integer
-      read FDistance write SetDistance default DEF_MARKS_DISTANCE;
+    property Distance: TChartDistance read FDistance write SetDistance;
     property Format: String read FFormat write SetFormat;
     property LabelFont: TFont read FLabelFont write SetLabelFont;
     property Style: TSeriesMarksStyle read FStyle write SetStyle;
@@ -173,6 +172,7 @@ type
   public
     constructor Create(AOwner: TCustomChart);
   published
+    property Distance default DEF_MARKS_DISTANCE;
     property Frame;
     property LabelBrush;
     property LinkPen;
@@ -414,7 +414,6 @@ constructor TGenericChartMarks.Create(AOwner: TCustomChart);
 begin
   inherited Create(AOwner);
   FClipped := true;
-  FDistance := DEF_MARKS_DISTANCE;
   InitHelper(FFrame, _TFramePen);
   InitHelper(FLabelBrush, _TLabelBrush);
   InitHelper(FLabelFont, TFont);
@@ -485,7 +484,7 @@ begin
   StyleChanged(Self);
 end;
 
-procedure TGenericChartMarks.SetDistance(const AValue: Integer);
+procedure TGenericChartMarks.SetDistance(AValue: TChartDistance);
 begin
   if FDistance = AValue then exit;
   FDistance := AValue;
@@ -544,6 +543,7 @@ end;
 constructor TChartMarks.Create(AOwner: TCustomChart);
 begin
   inherited Create(AOwner);
+  FDistance := DEF_MARKS_DISTANCE;
   FLabelBrush.Color := clYellow;
   FLinkPen.Color := clWhite;
 end;

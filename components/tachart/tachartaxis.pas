@@ -128,6 +128,7 @@ type
   public
     constructor Create(AOwner: TCustomChart);
   published
+    property Distance default 1;
     property Format stored IsFormatStored;
     property Frame;
     property LabelBrush;
@@ -296,6 +297,7 @@ end;
 constructor TChartAxisMarks.Create(AOwner: TCustomChart);
 begin
   inherited Create(AOwner);
+  FDistance := 1;
   FFrame.Style := psClear;
   FLabelBrush.Style := bsClear;
   FStyle := smsValue;
@@ -377,9 +379,9 @@ procedure TChartAxis.Draw(
 
     sz := Marks.MeasureLabel(ACanvas, AText);
     if Alignment = calTop then
-      AY += -TickLength - 1 - sz.cy
+      AY += -TickLength - Marks.Distance - sz.cy
     else
-      AY += TickLength + 1;
+      AY += TickLength + Marks.Distance;
     Marks.DrawLabel(ACanvas, Bounds(x - sz.cx div 2, AY, sz.cx, sz.cy), AText);
   end;
 
@@ -405,9 +407,9 @@ procedure TChartAxis.Draw(
 
     sz := Marks.MeasureLabel(ACanvas, AText);
     if Alignment = calLeft then
-      AX += -TickLength - 1 - sz.cx
+      AX += -TickLength - Marks.Distance - sz.cx
     else
-      AX += TickLength + 1;
+      AX += TickLength + Marks.Distance;
     Marks.DrawLabel(ACanvas, Bounds(AX, y - sz.cy div 2, sz.cx, sz.cy), AText);
   end;
 
@@ -545,14 +547,14 @@ const
     // That will change marks width and reduce view area,
     // requiring another call to CalculateTransformationCoeffs...
     // So punt for now and just reserve space for extra digit unconditionally.
-    FSize := maxWidth + ACanvas.TextWidth(SOME_DIGIT) + TickLength;
+    FSize := maxWidth + ACanvas.TextWidth(SOME_DIGIT);
   end;
 
   procedure CalcHorSize;
   begin
     if AExtent.a.X = AExtent.b.X then exit;
     GetMarkValues(AExtent.a.X, AExtent.b.X);
-    FSize := Marks.MeasureLabel(ACanvas, SOME_DIGIT).cy + TickLength;
+    FSize := Marks.MeasureLabel(ACanvas, SOME_DIGIT).cy;
   end;
 
   procedure CalcTitleSize;
@@ -584,6 +586,8 @@ begin
     CalcVertSize
   else
     CalcHorSize;
+  if FSize > 0 then
+    FSize += TickLength + Marks.Distance;
   CalcTitleSize;
   AMargins[Alignment] += FSize + FTitleSize;
 end;

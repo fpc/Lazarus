@@ -96,6 +96,7 @@ object Form1: TForm1
         AxisList = <        
           item
             Alignment = calLeft
+            Marks.Distance = 0
             Marks.Format = '$%0:.9g'
             Marks.Style = smsCustom
             Marks.Frame.Style = psSolid
