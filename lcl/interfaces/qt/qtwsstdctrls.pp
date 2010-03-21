@@ -48,6 +48,7 @@ type
     class function  CreateHandle(const AWinControl: TWinControl;
       const AParams: TCreateParams): TLCLIntfHandle; override;
     class procedure SetParams(const AScrollBar: TCustomScrollBar); override;
+    class procedure ShowHide(const AWinControl: TWinControl); override;
   end;
 
   { TQtWSCustomGroupBox }
@@ -345,6 +346,23 @@ begin
       QtScrollBar.setInvertedControls(True);
     end;
   end;
+end;
+
+class procedure TQtWSScrollBar.ShowHide(const AWinControl: TWinControl);
+var
+  Widget: TQtWidget;
+begin
+  if not WSCheckHandleAllocated(AWincontrol, 'ShowHide') then
+    Exit;
+
+  Widget := TQtWidget(AWinControl.Handle);
+
+  {reapply params just before visible since slider isn't updated
+   properly sometimes.}
+  if AWinControl.HandleObjectShouldBeVisible then
+    SetParams(TCustomScrollBar(AWinControl));
+
+  Widget.setVisible(AWinControl.HandleObjectShouldBeVisible);
 end;
 
 { TQtWSCustomListBox }
