@@ -118,6 +118,7 @@ type
     FAlignment: TChartAxisAlignment;
     FGrid: TChartAxisPen;
     FInverted: Boolean;
+    FMarks: TChartMarks;
     FOnMarkToText: TChartAxisMarkToTextEvent;
     FTickColor: TColor;
     FTickLength: Integer;
@@ -128,6 +129,7 @@ type
     procedure SetAlignment(AValue: TChartAxisAlignment);
     procedure SetGrid(AValue: TChartAxisPen);
     procedure SetInverted(AValue: Boolean);
+    procedure SetMarks(const AValue: TChartMarks);
     procedure SetOnMarkToText(const AValue: TChartAxisMarkToTextEvent);
     procedure SetTickColor(AValue: TColor);
     procedure SetTickLength(AValue: Integer);
@@ -168,6 +170,7 @@ type
       read FTransformation write SetTransformation;
     property Visible: Boolean read FVisible write SetVisible default true;
   published
+    property Marks: TChartMarks read FMarks write SetMarks;
     property OnMarkToText: TChartAxisMarkToTextEvent
       read FOnMarkToText write SetOnMarkToText;
   end;
@@ -277,6 +280,7 @@ begin
   FGrid := TChartAxisPen.Create;
   FGrid.OnChange := @StyleChanged;
   FGrid.Style := psDot;
+  FMarks := TChartMarks.Create(ACollection.Owner as TCustomChart);
   FTickColor := clBlack;
   FTickLength := DEF_TICK_LENGTH;
   FTitle := TChartAxisTitle.Create(ACollection.Owner as TCustomChart);
@@ -289,6 +293,7 @@ destructor TChartAxis.Destroy;
 begin
   FTransformation.Free;
   FTitle.Free;
+  FMarks.Free;
   FGrid.Free;
   inherited;
 end;
@@ -378,6 +383,7 @@ procedure TChartAxis.Draw(
 
 begin
   if not Visible then exit;
+  ACanvas.Font := Marks.LabelFont;
   if IsVertical then
     DoDraw(AExtent.a.Y, AExtent.b.Y)
   else
@@ -517,6 +523,7 @@ begin
   FSize := 0;
   FTitleSize := 0;
   if not Visible then exit;
+  ACanvas.Font := Marks.LabelFont;
   digitSize := ACanvas.TextExtent(SOME_DIGIT);
   if IsVertical then
     CalcVertSize
@@ -542,6 +549,13 @@ end;
 procedure TChartAxis.SetInverted(AValue: Boolean);
 begin
   FInverted := AValue;
+  StyleChanged(Self);
+end;
+
+procedure TChartAxis.SetMarks(const AValue: TChartMarks);
+begin
+  if FMarks = AValue then exit;
+  FMarks := AValue;
   StyleChanged(Self);
 end;
 
