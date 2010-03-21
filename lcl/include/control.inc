@@ -3618,6 +3618,8 @@ end;
 ------------------------------------------------------------------------------}
 procedure TControl.SetPopupMenu(Value: TPopupMenu);
 begin
+  if FPopupMenu <> nil then
+    FPopupMenu.RemoveFreeNotification(Self);
   FPopupMenu := Value;
   if FPopupMenu <> nil then
     FPopupMenu.FreeNotification(Self);
