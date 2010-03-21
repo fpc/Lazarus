@@ -175,8 +175,7 @@ function Gtk2WSLV_ItemSelected(selection: PGtkTreeSelection; model: PGtkTreeMode
 var
   Widgets: PTVWidgets;
   i: Integer;
-  msg: TLMNotify;
-  NM: TNMListView;
+  Item: integer;
 begin
   //DebugLn('Gtk2_ItemSelected');
   // this function is called *before* the item is selected
@@ -184,32 +183,17 @@ begin
   Result := True;
 
   Widgets := PTVWidgets(WidgetInfo^.UserData);
-  
-  FillChar(NM, SizeOf(NM), 0);
-  NM.hdr.hwndfrom := PtrUInt(WidgetInfo^.CoreWidget);
-  NM.hdr.code := LVN_ITEMCHANGING;
-  NM.iItem := gtk_tree_path_get_indices(path)^;
-  NM.iSubItem := 0;//AColumn;
-  NM.uNewState := LVIS_SELECTED;
-  NM.uChanged := LVIF_STATE;
-  msg.NMHdr := @NM.hdr;
-  {Result := }DeliverMessage(WidgetInfo^.LCLObject, msg){ = 0};
-
-  if not Result then Exit;
-
-  // this stops a loop when you use the shift key to select multiple entries
+  Item := gtk_tree_path_get_indices(path)^;
   if gtk_tree_selection_get_mode(selection) = GTK_SELECTION_MULTIPLE then
   begin
     for i := 0 to Widgets^.ItemCache.Count-1 do
     begin
-      if (Widgets^.ItemCache.Strings[i] = IntToStr(NM.iItem)) and (Widgets^.ItemCache.Objects[i] = TObject(ptrint(Ord(path_is_currently_selected))))
-      then begin
-        Result := False;
+      if (Widgets^.ItemCache.Strings[i] = IntToStr(Item)) and
+        (Widgets^.ItemCache.Objects[i] = TObject(ptrint(Ord(path_is_currently_selected)))) then
         Exit;
-      end;
     end;
   end;
-  Widgets^.ItemCache.AddObject(IntToStr(NM.iItem),TObject(ptrint(Ord(path_is_currently_selected))));
+  Widgets^.ItemCache.AddObject(IntToStr(Item),TObject(ptrint(Ord(path_is_currently_selected))));
 end;
 
 procedure Gtk2WSLV_ListViewGetCheckedDataFunc(tree_column: PGtkTreeViewColumn;
