@@ -158,6 +158,19 @@ resourcestring
   lisReturnsConvertToCarriageReturnLinefeed = 'Convert to Carriage Return + '
     +'Linefeed (DOS/Windows)';
 
+  //Case Blocks tab
+  lisCaseBlocksCaseBlocks = 'Case Blocks';
+  lisCaseBlocksUseANewLineInCaseBlocksAt = 'Use a new line in Case blocks at:';
+  lisCaseBlocksLabelWithBegin = 'Label with begin';
+  lisCaseBlocksLabelWithoutBegin = 'Label without begin';
+  lisCaseBlocksCaseWithBegin = 'Case with begin';
+  lisCaseBlocksCaseWithoutBegin = 'Case without begin';
+  lisCaseBlocksElseCaseWithBegin = 'Else case with begin';
+  lisCaseBlocksElseCaseWithoutBegin = 'Else case without begin';
+  lisCaseBlocksAlways = 'Always';
+  lisCaseBlocksLeaveAsIs = 'Leave as is';
+  lisCaseBlocksNever = 'Never';
+
 implementation
 
 end.
