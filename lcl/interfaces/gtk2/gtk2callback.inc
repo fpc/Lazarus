@@ -53,6 +53,9 @@ begin
         //debugln('GTKWindowStateEventCB ',DbgSName(TObject(Data)),' ',dbgs(state^.new_window_state),' ',WidgetFlagsToString(Widget));
         if ((GDK_WINDOW_STATE_ICONIFIED and state^.new_window_state)>0) then
         begin
+          if (TheForm = Application.MainForm) and
+            (TheForm.WindowState <> wsMinimized) then
+            Application.IntfAppMinimize;
           {$IFDEF HasX}
           NetAtom := gdk_atom_intern('_NET_WM_DESKTOP', True);
           if NetAtom > 0 then begin
@@ -84,6 +87,11 @@ begin
         end
         else
           SizeMsg.SizeType := SIZENORMAL;
+
+        if (TheForm = Application.MainForm) and
+          (SizeMsg.SizeType <> SIZEICONIC) and
+          (TheForm.WindowState = wsMinimized) then
+            Application.IntfAppRestore;
 
         // don't bother the LCL if nothing changed
         case SizeMsg.SizeType of
