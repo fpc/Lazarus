@@ -106,6 +106,11 @@ type
   private
     FIdentCompletionJumpToError: boolean;
     ccSelection: String;
+    // colors for the completion form (popup form, e.g. word completion)
+    FActiveEditDefaultFGColor: TColor;
+    FActiveEditDefaultBGColor: TColor;
+    FActiveEditSelectedFGColor: TColor;
+    FActiveEditSelectedBGColor: TColor;
 
     procedure ccExecute(Sender: TObject);
     procedure ccCancel(Sender: TObject);
@@ -565,13 +570,6 @@ type
     FProcessingCommand: boolean;
     FSourceEditorList: TList; // list of TSourceEditor
   private
-    // colors for the completion form (popup form, e.g. word completion)
-    // Todo: move to completion class
-    FActiveEditDefaultFGColor: TColor;
-    FActiveEditDefaultBGColor: TColor;
-    FActiveEditSelectedFGColor: TColor;
-    FActiveEditSelectedBGColor: TColor;
-
     // PopupMenu
     procedure BuildPopupMenu;
     function GetNotebookPages: TStrings;
@@ -615,10 +613,6 @@ type
     function GetCompletionPlugins(Index: integer): TSourceEditorCompletionPlugin; override;
     function GetCompletionBoxPosition: integer; override;
         deprecated {$IFDEF VER2_5}'use SourceEditorManager'{$ENDIF};       // deprecated in 0.9.29 March 2010
-
-    function StartIdentCompletionBox(SrcEdit: TSourceEditor; JumpToError: boolean;
-                               var s: string; var BoxX, BoxY: integer;
-                               var UseWordCompletion: boolean): boolean;
 
     procedure EditorMouseMove(Sender: TObject; Shift: TShiftstate;
                               X,Y: Integer);
@@ -798,6 +792,9 @@ type
     function  GetActiveCompletionPlugin: TSourceEditorCompletionPlugin; override;
     function  GetCompletionBoxPosition: integer; override;
     function  GetCompletionPlugins(Index: integer): TSourceEditorCompletionPlugin; override;
+    function FindIdentCompletionPlugin(SrcEdit: TSourceEditor; JumpToError: boolean;
+                               var s: string; var BoxX, BoxY: integer;
+                               var UseWordCompletion: boolean): boolean;
     property DefaultCompletionForm: TSourceEditCompletion
       read GetDefaultCompletionForm;
   public
@@ -944,7 +941,6 @@ type
     FOnInsertTodoClicked: TNotifyEvent;
     FOnJumpToHistoryPoint: TOnJumpToHistoryPoint;
     FOnMouseLink: TSynMouseLinkEvent;
-    FOnMovingPage: TOnMovingPage;
     FOnOpenFileAtCursorClicked: TNotifyEvent;
     FOnPopupMenu: TSrcEditPopupMenuEvent;
     FOnProcessUserCommand: TOnProcessUserCommand;
@@ -987,7 +983,6 @@ type
              read FOnShowCodeContext write FOnShowCodeContext;
     property OnJumpToHistoryPoint: TOnJumpToHistoryPoint
              read FOnJumpToHistoryPoint write FOnJumpToHistoryPoint;
-    property OnMovingPage: TOnMovingPage read FOnMovingPage write FOnMovingPage;
     property OnOpenFileAtCursorClicked: TNotifyEvent
              read FOnOpenFileAtCursorClicked write FOnOpenFileAtCursorClicked;
     property OnProcessUserCommand: TOnProcessUserCommand
@@ -1291,15 +1286,33 @@ var
   Prefix: String;
   I: Integer;
   NewStr: String;
-  CurEdit: TSynEdit;
+  fst, fstm : TFontStyles;
 Begin
   {$IFDEF VerboseIDECompletionBox}
   debugln(['TSourceEditCompletion.ccExecute START']);
   {$ENDIF}
+  TheForm.Font := Editor.Font;
+  FActiveEditDefaultFGColor := Editor.Font.Color;
+  FActiveEditDefaultBGColor := Editor.Color;
+  EditorOpts.GetLineColors(Editor.Highlighter, ahaTextBlock, {TODO: MFR use AEditor.SelectedColor which includes styles / or have a copy}
+    FActiveEditSelectedFGColor, FActiveEditSelectedBGColor, fst ,fstm);
+
+  if Editor.Highlighter<>nil
+  then begin
+    with Editor.Highlighter do begin
+      if IdentifierAttribute<>nil
+      then begin
+        if IdentifierAttribute.ForeGround<>clNone then
+          FActiveEditDefaultFGColor:=IdentifierAttribute.ForeGround;
+        if IdentifierAttribute.BackGround<>clNone then
+          FActiveEditDefaultBGColor:=IdentifierAttribute.BackGround;
+      end;
+    end;
+  end;
+
   S := TStringList.Create;
   try
     Prefix := CurrentString;
-    CurEdit := Manager.ActiveEditor.EditorComponent;
     case CurrentCompletionType of
      ctIdentCompletion:
        if not InitIdentCompletionValues(S) then begin
@@ -1334,12 +1347,12 @@ Begin
   end;
   CurrentString:=Prefix;
   // set colors
-  if (CurEdit<>nil) and (TheForm<>nil) then begin
+  if (Editor<>nil) and (TheForm<>nil) then begin
     with TheForm do begin
-      BackgroundColor:=Manager.ActiveSourceWindow.FActiveEditDefaultBGColor;
-      clSelect:=Manager.ActiveSourceWindow.FActiveEditSelectedBGColor;
-      TextColor:=Manager.ActiveSourceWindow.FActiveEditDefaultFGColor;
-      TextSelectedColor:=Manager.ActiveSourceWindow.FActiveEditSelectedFGColor;
+      BackgroundColor   := FActiveEditDefaultBGColor;
+      clSelect          := FActiveEditSelectedBGColor;
+      TextColor         := FActiveEditDefaultFGColor;
+      TextSelectedColor := FActiveEditSelectedFGColor;
       //writeln('TSourceNotebook.ccExecute A Color=',DbgS(Color),
       // ' clSelect=',DbgS(clSelect),
       // ' TextColor=',DbgS(TextColor),
@@ -1399,11 +1412,9 @@ procedure TSourceEditCompletion.ccComplete(var Value: string;
 var
   p1, p2: integer;
   ValueType: TIdentComplValue;
-  SrcEdit: TSourceEditor;
   NewCaretXY: TPoint;
   CursorToLeft: integer;
   NewValue: String;
-  SynEditor: TSynEdit;
   OldCompletionType: TCompletionType;
 Begin
   {$IFDEF VerboseIDECompletionBox}
@@ -1426,15 +1437,13 @@ Begin
         NewValue:=GetIdentCompletionValue(self, KeyChar, ValueType, CursorToLeft);
         if ValueType=icvIdentifier then ;
         // insert value plus special chars like brackets, semicolons, ...
-        SrcEdit := Manager.ActiveEditor;
-        SynEditor:=SrcEdit.EditorComponent;
         if ValueType <> icvNone then
-          SynEditor.TextBetweenPointsEx[SourceStart, SourceEnd, scamEnd] := NewValue;
+          Editor.TextBetweenPointsEx[SourceStart, SourceEnd, scamEnd] := NewValue;
         if CursorToLeft>0 then
         begin
-          NewCaretXY:=SynEditor.CaretXY;
+          NewCaretXY:=Editor.CaretXY;
           dec(NewCaretXY.X,CursorToLeft);
-          SynEditor.CaretXY:=NewCaretXY;
+          Editor.CaretXY:=NewCaretXY;
         end;
         ccSelection := '';
         Value:='';
@@ -1457,8 +1466,7 @@ Begin
         end;
         ccSelection := '';
         if Value<>'' then
-          Manager.CodeTemplateModul.ExecuteCompletion(Value,
-                                               Manager.ActiveEditor.EditorComponent);
+          Manager.CodeTemplateModul.ExecuteCompletion(Value, Editor);
         SourceEnd := SourceStart;
         Value:='';
       end;
@@ -1478,11 +1486,9 @@ Begin
   Manager.DeactivateCompletionForm;
 
   //DebugLn(['TSourceNotebook.ccComplete ',KeyChar,' ',OldCompletionType=ctIdentCompletion]);
-  SrcEdit:= Manager.ActiveEditor;
-  SynEditor:=SrcEdit.EditorComponent;
   if (KeyChar='.') and (OldCompletionType=ctIdentCompletion) then
   begin
-    SourceCompletionCaretXY:=SynEditor.CaretXY;
+    SourceCompletionCaretXY:=Editor.CaretXY;
     SourceCompletionTimer.AutoEnabled:=true;
   end;
 end;
@@ -1503,9 +1509,9 @@ begin
     end;
     Font.Style:=[];
     if not ItemSelected then
-      Font.Color:=Manager.ActiveSourceWindow.FActiveEditDefaultFGColor
+      Font.Color := FActiveEditDefaultFGColor
     else
-      Font.Color:=Manager.ActiveSourceWindow.FActiveEditSelectedFGColor;
+      Font.Color := FActiveEditSelectedFGColor;
   end;
   MaxX:=TheForm.ClientWidth;
   t:=CurrentCompletionType;
@@ -1538,9 +1544,9 @@ begin
     end;
     Font.Style:=[];
     if not ItemSelected then
-      Font.Color:=Manager.ActiveSourceWindow.FActiveEditDefaultFGColor
+      Font.Color := FActiveEditDefaultFGColor
     else
-      Font.Color:=Manager.ActiveSourceWindow.FActiveEditSelectedFGColor;
+      Font.Color := FActiveEditSelectedFGColor;
   end;
   MaxX := Screen.Width-20;
   t:=CurrentCompletionType;
@@ -1681,19 +1687,15 @@ end;
 procedure TSourceEditCompletion.OnSynCompletionNextChar(Sender: TObject);
 var
   NewPrefix: String;
-  SrcEdit: TSourceEditor;
   Line: String;
-  SynEditor: TSynEdit;
   LogCaret: TPoint;
   CharLen: LongInt;
   AddPrefix: String;
 begin
-  SrcEdit := Manager.ActiveEditor;
-  if SrcEdit=nil then exit;
-  SynEditor:=SrcEdit.EditorComponent;
-  LogCaret:=SynEditor.LogicalCaretXY;
-  if LogCaret.Y>=SynEditor.Lines.Count then exit;
-  Line:=SrcEdit.EditorComponent.Lines[LogCaret.Y-1];
+  if Editor=nil then exit;
+  LogCaret:=Editor.LogicalCaretXY;
+  if LogCaret.Y>=Editor.Lines.Count then exit;
+  Line:=Editor.Lines[LogCaret.Y-1];
   if LogCaret.X>length(Line) then exit;
   CharLen:=UTF8CharacterLength(@Line[LogCaret.X]);
   AddPrefix:=copy(Line,LogCaret.X,CharLen);
@@ -1707,16 +1709,12 @@ end;
 procedure TSourceEditCompletion.OnSynCompletionPrevChar(Sender: TObject);
 var
   NewPrefix: String;
-  SrcEdit: TSourceEditor;
-  SynEditor: TSynEdit;
   NewLen: LongInt;
 begin
   NewPrefix:=CurrentString;
   if NewPrefix='' then exit;
-  SrcEdit:= Manager.ActiveEditor;
-  if SrcEdit=nil then exit;
-  SynEditor:=SrcEdit.EditorComponent;
-  SynEditor.CaretX:=SynEditor.CaretX-1;
+  if Editor=nil then exit;
+  Editor.CaretX:=Editor.CaretX-1;
   NewLen:=UTF8FindNearestCharStart(PChar(NewPrefix),length(NewPrefix),
                                    length(NewPrefix))-1;
   NewPrefix:=copy(NewPrefix,1,NewLen);
@@ -3469,7 +3467,6 @@ begin
   TextS := FEditor.LineText;
   LogCaret:=FEditor.LogicalCaretXY;
   Completion.Editor:=FEditor;
-  Completion.TheForm.Font := FEditor.Font;
   i := LogCaret.X - 1;
   if i > length(TextS) then
     TextS2 := ''
@@ -3484,9 +3481,10 @@ begin
     P := ClientToScreen(p);
   end;
   UseWordCompletion:=false;
-  if not SourceNotebook.StartIdentCompletionBox(Self,JumpToError,TextS2,
-    P.X,P.Y,UseWordCompletion)
-  then exit;
+  if not Manager.FindIdentCompletionPlugin
+                 (Self, JumpToError, TextS2, P.X, P.Y, UseWordCompletion)
+  then
+    exit;
   if UseWordCompletion then
     Completion.CurrentCompletionType:=ctWordCompletion;
 
@@ -3512,7 +3510,6 @@ begin
   TextS := FEditor.LineText;
   LogCaret:=FEditor.LogicalCaretXY;
   Completion.Editor:=FEditor;
-  Completion.TheForm.Font := FEditor.Font;
   i := LogCaret.X - 1;
   if i > length(TextS) then
     TextS2 := ''
@@ -4340,35 +4337,6 @@ end;
 procedure TSourceNotebook.DeactivateCompletionForm;
 begin
   Manager.DeactivateCompletionForm;
-end;
-
-function TSourceNotebook.StartIdentCompletionBox(SrcEdit: TSourceEditor;
-  JumpToError: boolean; var s: string; var BoxX, BoxY: integer;
-  var UseWordCompletion: boolean): boolean;
-var
-  i: Integer;
-  Plugin: TSourceEditorCompletionPlugin;
-  Handled: Boolean;
-  Cancel: Boolean;
-begin
-  for i:=0 to Manager.CompletionPluginCount-1 do begin
-    Plugin := Manager.CompletionPlugins[i];
-    Handled:=false;
-    Cancel:=false;
-    Plugin.Init(SrcEdit,JumpToError,Handled,Cancel,s,BoxX,BoxY);
-    if Cancel then begin
-      Manager.DeactivateCompletionForm;
-      exit(false);
-    end;
-    if Handled then begin
-      Manager.FActiveCompletionPlugin:=Plugin;
-      exit(true);
-    end;
-  end;
-
-  if not (SrcEdit.SyntaxHighlighterType in [lshFreePascal, lshDelphi]) then
-    UseWordCompletion:=true;
-  Result:=true;
 end;
 
 Function TSourceNotebook.CreateNotebook: Boolean;
@@ -5338,8 +5306,6 @@ begin
   or (OldPageIndex=NewPageIndex)
   or (OldPageIndex<0) or (OldPageIndex>=PageCount)
   or (NewPageIndex<0) or (NewPageIndex>=PageCount) then exit;
-  if Assigned(Manager.OnMovingPage) then
-    Manager.OnMovingPage(Self,OldPageIndex,NewPageIndex);
   NoteBook.Pages.Move(OldPageIndex,NewPageIndex);
   UpdatePageNames;
   UpdateProjectFiles;
@@ -6586,30 +6552,9 @@ begin
 end;
 
 procedure TSourceNotebook.UpdateActiveEditColors(AEditor: TSynEdit);
-var
-  s, sm : TFontStyles;
 begin
   if AEditor=nil then exit;
-
   EditorOpts.SetMarkupColors(AEditor.Highlighter, AEditor);
-
-  FActiveEditDefaultFGColor:=AEditor.Font.Color;
-  FActiveEditDefaultBGColor:=AEditor.Color;
-  EditorOpts.GetLineColors(AEditor.Highlighter, ahaTextBlock, {TODO: MFR use AEditor.SelectedColor which includes styles / or have a copy}
-    FActiveEditSelectedFGColor, FActiveEditSelectedBGColor, s ,sm);
-
-  if AEditor.Highlighter<>nil
-  then begin
-    with AEditor.Highlighter do begin
-      if IdentifierAttribute<>nil
-      then begin
-        if IdentifierAttribute.ForeGround<>clNone then
-          FActiveEditDefaultFGColor:=IdentifierAttribute.ForeGround;
-        if IdentifierAttribute.BackGround<>clNone then
-          FActiveEditDefaultBGColor:=IdentifierAttribute.BackGround;
-      end;
-    end;
-  end;
   AEditor.UseIncrementalColor:= snIncrementalFind in States;
 end;
 
@@ -6971,6 +6916,35 @@ function TSourceEditorManagerBase.GetCompletionPlugins(Index: integer
   ): TSourceEditorCompletionPlugin;
 begin
   Result:=TSourceEditorCompletionPlugin(fCompletionPlugins[Index]);
+end;
+
+function TSourceEditorManagerBase.FindIdentCompletionPlugin(
+  SrcEdit: TSourceEditor; JumpToError: boolean; var s: string; var BoxX,
+  BoxY: integer; var UseWordCompletion: boolean): boolean;
+var
+  i: Integer;
+  Plugin: TSourceEditorCompletionPlugin;
+  Handled: Boolean;
+  Cancel: Boolean;
+begin
+  for i:=0 to CompletionPluginCount-1 do begin
+    Plugin := CompletionPlugins[i];
+    Handled:=false;
+    Cancel:=false;
+    Plugin.Init(SrcEdit,JumpToError,Handled,Cancel,s,BoxX,BoxY);
+    if Cancel then begin
+      DeactivateCompletionForm;
+      exit(false);
+    end;
+    if Handled then begin
+      FActiveCompletionPlugin:=Plugin;
+      exit(true);
+    end;
+  end;
+
+  if not (SrcEdit.SyntaxHighlighterType in [lshFreePascal, lshDelphi]) then
+    UseWordCompletion:=true;
+  Result:=true;
 end;
 
 function TSourceEditorManagerBase.CompletionPluginCount: integer;
