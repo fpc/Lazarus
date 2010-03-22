@@ -2531,7 +2531,7 @@ type
 
   TLMTimer = record
     Msg: Cardinal;
-    TimerID: LongWord;
+    TimerID: PtrUInt;
     TimerProc: TFarProc;
     Result: LRESULT;
   end;
