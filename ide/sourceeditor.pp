@@ -500,7 +500,7 @@ type
       Shift: TShiftState; X, Y: Integer);
     procedure StatusBarDblClick(Sender: TObject);
   private
-    Notebook: TDragableNotebook;
+    FNotebook: TDragableNotebook;
     SrcPopUpMenu: TPopupMenu;
   protected
     procedure AddBreakpointClicked(Sender: TObject);
@@ -571,10 +571,13 @@ type
   private
     // PopupMenu
     procedure BuildPopupMenu;
+    //forwarders to FNoteBook
+    function GetNoteBookPage(Index: Integer): TPage;
     function GetNotebookPages: TStrings;
     function GetPageCount: Integer;
     function GetPageIndex: Integer;
     procedure SetPageIndex(const AValue: Integer);
+
     procedure UpdateHighlightMenuItems;
     procedure UpdateLineEndingMenuItems;
     procedure UpdateEncodingMenuItems;
@@ -601,7 +604,7 @@ type
     FMouseHintTimer: TIdleTimer;
 
     procedure Activate; override;
-    function CreateNotebook: Boolean;
+    procedure CreateNotebook;
     function NewSE(Pagenum: Integer): TSourceEditor;
     procedure AcceptEditor(AnEditor: TSourceEditor);
     procedure ReleaseEditor(AnEditor: TSourceEditor);
@@ -673,7 +676,6 @@ type
     function EditorCount: integer;
     function IndexOfEditor(aEditor: TSourceEditorInterface): integer;
     function Count: integer; override;
-    function Empty: boolean;
 
     function FindSourceEditorWithPageIndex(APageIndex:integer):TSourceEditor;
     function FindPageWithEditor(ASourceEditor: TSourceEditor):integer;
@@ -739,9 +741,15 @@ type
     function GetCapabilities: TNoteBookCapabilities;
     procedure IncUpdateLock;
     procedure DecUpdateLock;
+
+    // forwarders to the FNotebook
     property PageIndex: Integer read GetPageIndex write SetPageIndex;
     property PageCount: Integer read GetPageCount;
     property NotebookPages: TStrings read GetNotebookPages;
+  private
+    property NoteBookPage[Index: Integer]: TPage read GetNoteBookPage;
+    procedure NoteBookInsertPage(Index: Integer; const S: string);
+    procedure NoteBookDeletePage(Index: Integer);
   end;
 
   { TSourceEditorManagerBase }
@@ -3585,8 +3593,8 @@ begin
   else
     NewPageName:=FPageName;
   if Modified then NewPageName:='*'+NewPageName;
-  if SourceNotebook.NoteBook.Pages[p]<>NewPageName then
-    SourceNotebook.NoteBook.Pages[p]:=NewPageName;
+  if SourceNotebook.NoteBookPages[p] <> NewPageName then
+    SourceNotebook.NoteBookPages[p] := NewPageName;
 end;
 
 Procedure TSourceEditor.SetSource(value: TStrings);
@@ -4304,6 +4312,7 @@ begin
     AutoHide := False;
   end;
 
+  CreateNotebook; {$note  remove all dependencies on late/defered creation}
   Application.AddOnUserInputHandler(@OnApplicationUserInput,true);
 end;
 
@@ -4315,14 +4324,12 @@ begin
   FProcessingCommand:=false;
   for i:=FSourceEditorList.Count-1 downto 0 do
     Editors[i].Free;
-  if Notebook<>nil then begin
-    FreeThenNil(Notebook);
-  end;
   FKeyStrokes.Free;
   FSourceEditorList.Free;
 
   FreeThenNil(FMouseHintTimer);
   FreeThenNil(FHintWindow);
+  FreeAndNil(FNotebook);
 
   inherited Destroy;
 end;
@@ -4332,7 +4339,7 @@ begin
   Manager.DeactivateCompletionForm;
 end;
 
-Function TSourceNotebook.CreateNotebook: Boolean;
+Procedure TSourceNotebook.CreateNotebook;
 Begin
   {$IFDEF IDE_DEBUG}
   writeln('[TSourceNotebook.CreateNotebook] START');
@@ -4340,65 +4347,43 @@ Begin
   {$IFDEF IDE_MEM_CHECK}
   CheckHeapWrtMemCnt('[TSourceNotebook.CreateNotebook] A ');
   {$ENDIF}
+  FNotebook := TDragableNotebook.Create(self);
   {$IFDEF IDE_DEBUG}
-  writeln('[TSourceNotebook.CreateNotebook] A');
+  writeln('[TSourceNotebook.CreateNotebook] B');
   {$ENDIF}
   {$IFDEF IDE_MEM_CHECK}
   CheckHeapWrtMemCnt('[TSourceNotebook.CreateNotebook] B ');
   {$ENDIF}
-  Result := False;
-  if not assigned(Notebook) then
-    Begin
-      Result := True;
-      {$IFDEF IDE_DEBUG}
-      writeln('[TSourceNotebook.CreateNotebook] B');
-      {$ENDIF}
-      Notebook := TDragableNotebook.Create(self);
-      {$IFDEF IDE_DEBUG}
-      writeln('[TSourceNotebook.CreateNotebook] C');
-      {$ENDIF}
-      {$IFDEF IDE_MEM_CHECK}
-      CheckHeapWrtMemCnt('[TSourceNotebook.CreateNotebook] C ');
-      {$ENDIF}
-      with Notebook do
-        Begin
-          Name:='SrcEditNotebook';
-          Parent := Self;
-          {$IFDEF IDE_DEBUG}
-          writeln('[TSourceNotebook.CreateNotebook] D');
-          {$ENDIF}
-          Align := alClient;
-          if PageCount>0 then
-            Pages.Strings[0] := 'unit1'
-          else
-            Pages.Add('unit1');
-          PageIndex := 0;   // Set it to the first page
-          if not (nbcPageListPopup in GetCapabilities) then
-            PopupMenu := SrcPopupMenu;
-          if EditorOpts.ShowTabCloseButtons then
-            Options:=Options+[nboShowCloseButtons]
-          else
-            Options:=Options-[nboShowCloseButtons];
-          TabPosition := EditorOpts.TabPosition;
-          OnPageChanged := @NotebookPageChanged;
-          OnCloseTabClicked:=@CloseTabClicked;
-          OnMouseDown:=@NotebookMouseDown;
-          OnDragMoveTab := @NotebookDragTabMove;
-          ShowHint:=true;
-          OnShowHint:=@NotebookShowTabHint;
-          {$IFDEF IDE_DEBUG}
-          writeln('[TSourceNotebook.CreateNotebook] E');
-          {$ENDIF}
-          Visible := true;
-          {$IFDEF IDE_DEBUG}
-          writeln('[TSourceNotebook.CreateNotebook] F');
-          {$ENDIF}
-          {$IFDEF IDE_MEM_CHECK}
-          CheckHeapWrtMemCnt('[TSourceNotebook.CreateNotebook] F ');
-          {$ENDIF}
-        end; //with
-      Show;  //used to display the code form
-    end;
+  with FNotebook do Begin
+    Name:='SrcEditNotebook';
+    Parent := Self;
+    {$IFDEF IDE_DEBUG}
+    writeln('[TSourceNotebook.CreateNotebook] C');
+    {$ENDIF}
+    Align := alClient;
+    if PageCount>0 then
+      Pages.Strings[0] := 'unit1'
+    else
+      Pages.Add('unit1');
+    PageIndex := 0;   // Set it to the first page
+    if not (nbcPageListPopup in GetCapabilities) then
+      PopupMenu := SrcPopupMenu;
+    if EditorOpts.ShowTabCloseButtons then
+      Options:=Options+[nboShowCloseButtons]
+    else
+      Options:=Options-[nboShowCloseButtons];
+    TabPosition := EditorOpts.TabPosition;
+    OnPageChanged := @NotebookPageChanged;
+    OnCloseTabClicked:=@CloseTabClicked;
+    OnMouseDown:=@NotebookMouseDown;
+    OnDragMoveTab := @NotebookDragTabMove;
+    ShowHint:=true;
+    OnShowHint:=@NotebookShowTabHint;
+    {$IFDEF IDE_DEBUG}
+    writeln('[TSourceNotebook.CreateNotebook] D');
+    {$ENDIF}
+    Visible := False;
+  end; //with
   {$IFDEF IDE_DEBUG}
   writeln('[TSourceNotebook.CreateNotebook] END');
   {$ENDIF}
@@ -4610,7 +4595,7 @@ begin
       and MarkSrcEdit.EditorComponent.GetBookMark(BookMarkID,BookMarkX,BookMarkY)
       then begin
         MarkEditorIndex:=FindPageWithEditor(MarkSrcEdit);
-        MarkDesc:=MarkDesc+': '+Notebook.Pages[MarkEditorIndex]
+        MarkDesc:=MarkDesc+': '+NotebookPages[MarkEditorIndex]
           +' ('+IntToStr(BookMarkY)+','+IntToStr(BookMarkX)+')';
       end;
       // goto book mark item
@@ -4626,16 +4611,10 @@ begin
     end;
 
     // editor layout
-    SrcEditMenuMoveEditorLeft.MenuItem.Enabled:=
-                     (NoteBook<>nil) and (PageCount>1);
-    SrcEditMenuMoveEditorRight.MenuItem.Enabled:=
-                     (NoteBook<>nil) and (PageCount>1);
-    SrcEditMenuMoveEditorFirst.MenuItem.Enabled:=
-                     (NoteBook<>nil) and (PageCount>1)
-                     and (PageIndex>0);
-    SrcEditMenuMoveEditorLast.MenuItem.Enabled:=
-                     (NoteBook<>nil) and (PageCount>1)
-                     and (PageIndex<(PageCount-1));
+    SrcEditMenuMoveEditorLeft.MenuItem.Enabled:= (PageCount>1);
+    SrcEditMenuMoveEditorRight.MenuItem.Enabled:= (PageCount>1);
+    SrcEditMenuMoveEditorFirst.MenuItem.Enabled:= (PageCount>1) and (PageIndex>0);
+    SrcEditMenuMoveEditorLast.MenuItem.Enabled:= (PageCount>1) and (PageIndex<(PageCount-1));
 
     EditorPopupPoint:=EditorComp.ScreenToClient(SrcPopUpMenu.PopupPoint);
     if EditorPopupPoint.X>EditorComp.GutterWidth then begin
@@ -4726,9 +4705,8 @@ var
   Tabindex: integer;
   ASrcEdit: TSourceEditor;
 begin
-  if (NoteBook=nil) or (HintInfo=nil) then exit;
-  TabIndex:=NoteBook.TabIndexAtClientPos(
-                                      Notebook.ScreenToClient(Mouse.CursorPos));
+  if (PageCount=0) or (HintInfo=nil) then exit;
+  TabIndex:=FNoteBook.TabIndexAtClientPos(FNotebook.ScreenToClient(Mouse.CursorPos));
   if TabIndex<0 then exit;
   ASrcEdit:=FindSourceEditorWithPageIndex(TabIndex);
   if ASrcEdit=nil then exit;
@@ -4821,18 +4799,26 @@ begin
   {$ENDIF}
 end;
 
+function TSourceNotebook.GetNoteBookPage(Index: Integer): TPage;
+begin
+  if FNotebook.Visible then
+    Result := FNotebook.Page[Index]
+  else
+    Result := nil;
+end;
+
 function TSourceNotebook.GetNotebookPages: TStrings;
 begin
-  if assigned(Notebook) then
-    Result := Notebook.Pages
+  if FNotebook.Visible then
+    Result := FNotebook.Pages
   else
     Result := nil;
 end;
 
 function TSourceNotebook.GetPageCount: Integer;
 begin
-  If assigned(Notebook) then
-    Result := Notebook.PageCount
+  If FNotebook.Visible then
+    Result := FNotebook.PageCount
   else
     Result := 0;
 end;
@@ -4842,8 +4828,8 @@ begin
   if FUpdateLock > 0 then
     Result := FPageIndex
   else
-  if assigned(Notebook) then
-    Result := Notebook.PageIndex
+  if FNotebook.Visible then
+    Result := FNotebook.PageIndex
   else
     Result := -1
 end;
@@ -4851,9 +4837,9 @@ end;
 procedure TSourceNotebook.SetPageIndex(const AValue: Integer); {$hint set a breakpoint here => this gets called a zillion times // from EditorEnter / Activate}
 begin
   FPageIndex := AValue;
-  if assigned(Notebook) and (FUpdateLock = 0) then begin
-    FPageIndex:=Max(0,Min(FPageIndex,Notebook.PageCount-1));
-    Notebook.PageIndex := FPageIndex;
+  if FUpdateLock = 0 then begin
+    FPageIndex := Max(0, Min(FPageIndex, FNotebook.PageCount-1));
+    FNotebook.PageIndex := FPageIndex;
   end;
 end;
 
@@ -4941,7 +4927,7 @@ procedure TSourceNotebook.UpdatePageNames;
 var
   i: Integer;
 begin
-  for i:=0 to Notebook.PageCount-1 do
+  for i:=0 to PageCount-1 do
     FindSourceEditorWithPageIndex(i).UpdatePageName;
 end;
 
@@ -5087,22 +5073,20 @@ begin
   {$IFDEF IDE_DEBUG}
   writeln('TSourceNotebook.NewSE A ');
   {$ENDIF}
-  if CreateNotebook then Pagenum := 0;
-  {$IFDEF IDE_DEBUG}
-  writeln('TSourceNotebook.NewSE A2 ');
-  {$ENDIF}
   if Pagenum < 0 then begin
     // add a new page right to the current
     Pagenum := PageIndex+1;
-    Pagenum := Max(0,Min(PageNum,Notebook.PageCount));
-    Notebook.Pages.Insert(PageNum, Manager.FindUniquePageName('', nil));
-    Notebook.Page[PageNum].ReAlign;
+    Pagenum := Max(0,Min(PageNum, PageCount));
+    NoteBookInsertPage(PageNum, Manager.FindUniquePageName('', nil));
+    NotebookPage[PageNum].ReAlign;
+    if PageCount = 1 then
+      Show;
   end;
   {$IFDEF IDE_DEBUG}
-  writeln('TSourceNotebook.NewSE B  ', PageIndex,',',NoteBook.Pages.Count);
+  writeln('TSourceNotebook.NewSE B  ', PageIndex,',',PagesCount);
   {$ENDIF}
-  Result := TSourceEditor.Create(Self,Notebook.Page[PageNum]);
-  Result.FPageName := NoteBook.Pages[Pagenum];
+  Result := TSourceEditor.Create(Self, NotebookPage[PageNum]);
+  Result.FPageName := NoteBookPages[Pagenum];
   AcceptEditor(Result);
   PageIndex := Pagenum;
   {$IFDEF IDE_DEBUG}
@@ -5139,7 +5123,7 @@ begin
   if (FSourceEditorList=nil)
     or (APageIndex < 0) or (APageIndex >= PageCount) then exit;
   TempEditor:=nil;
-  with Notebook.Page[APageIndex] do
+  with NotebookPage[APageIndex] do
     for I := 0 to ControlCount-1 do
       if Controls[I] is TSynEdit then
         Begin
@@ -5158,8 +5142,8 @@ end;
 Function TSourceNotebook.GetActiveSE: TSourceEditor;
 Begin
   Result := nil;
-  if (FSourceEditorList=nil) or (FSourceEditorList.Count=0)
-    or (Notebook=nil) or (PageIndex<0) then exit;
+  if (FSourceEditorList=nil) or (FSourceEditorList.Count=0) or (PageIndex<0) then
+    exit;
   Result:=FindSourceEditorWithPageIndex(PageIndex);
 end;
 
@@ -5193,17 +5177,9 @@ begin
     Manager.OnCurrentCodeBufferChanged(Self);
 end;
 
-Function TSourceNotebook.Empty: Boolean;
-Begin
-  Result := (not assigned(Notebook)) or (PageCount = 0);
-end;
-
 function TSourceNotebook.GetCapabilities: TNoteBookCapabilities;
 begin
-  if assigned(Notebook) then
-    Result := Notebook.GetCapabilities
-  else
-    Result := [];
+  Result := FNotebook.GetCapabilities
 end;
 
 procedure TSourceNotebook.IncUpdateLock;
@@ -5216,6 +5192,24 @@ begin
   dec(FUpdateLock);
   if FUpdateLock = 0 then
     PageIndex := FPageIndex;
+end;
+
+procedure TSourceNotebook.NoteBookInsertPage(Index: Integer; const S: string);
+begin
+  if FNotebook.Visible then
+    NotebookPages.Insert(Index, S)
+  else begin
+    FNotebook.Visible := True;
+    NotebookPages[Index] := S;
+  end;
+end;
+
+procedure TSourceNotebook.NoteBookDeletePage(Index: Integer);
+begin
+  if PageCount > 1 then
+    NotebookPages.Delete(Index)
+  else
+    FNotebook.Visible := False;
 end;
 
 procedure TSourceNotebook.BeginIncrementalFind;
@@ -5275,7 +5269,6 @@ end;
 
 Procedure TSourceNotebook.NextEditor;
 Begin
-  if NoteBook=nil then exit;
   if PageIndex < PageCount-1 then
     PageIndex := PageIndex+1
   else
@@ -5285,7 +5278,6 @@ End;
 
 Procedure TSourceNotebook.PrevEditor;
 Begin
-  if NoteBook=nil then exit;
   if PageIndex > 0 then
     PageIndex := PageIndex-1
   else
@@ -5295,11 +5287,13 @@ End;
 
 procedure TSourceNotebook.MoveEditor(OldPageIndex, NewPageIndex: integer);
 begin
-  if (NoteBook=nil) or (PageCount<=1)
+  if (PageCount<=1)
   or (OldPageIndex=NewPageIndex)
   or (OldPageIndex<0) or (OldPageIndex>=PageCount)
-  or (NewPageIndex<0) or (NewPageIndex>=PageCount) then exit;
-  NoteBook.Pages.Move(OldPageIndex,NewPageIndex);
+  or (NewPageIndex<0) or (NewPageIndex>=PageCount)
+  then
+    exit;
+  NoteBookPages.Move(OldPageIndex,NewPageIndex);
   UpdatePageNames;
   UpdateProjectFiles;
 end;
@@ -5336,25 +5330,21 @@ end;
 
 procedure TSourceNotebook.MoveActivePageLeft;
 begin
-  if (NoteBook=nil) then exit;
   MoveEditorLeft(PageIndex);
 end;
 
 procedure TSourceNotebook.MoveActivePageRight;
 begin
-  if (NoteBook=nil) then exit;
   MoveEditorRight(PageIndex);
 end;
 
 procedure TSourceNotebook.MoveActivePageFirst;
 begin
-  if (NoteBook=nil) then exit;
   MoveEditorFirst(PageIndex);
 end;
 
 procedure TSourceNotebook.MoveActivePageLast;
 begin
-  if (NoteBook=nil) then exit;
   MoveEditorLast(PageIndex);
 end;
 
@@ -5789,35 +5779,23 @@ begin
     TempEditor.Close;
     TempEditor.Free;
     TempEditor:=nil;
-    if PageCount>1 then
-    begin
-      //writeln('TSourceNotebook.CloseFile B  APageIndex=',APageIndex,' Notebook.APageIndex=',Notebook.APageIndex);
-      // if this is the current page, switch to right APageIndex (if possible)
-      if (PageIndex = APageIndex) then
-        PageIndex := APageIndex + IfThen(APageIndex + 1 < PageCount, 1, -1);
-      if Notebook.PageIndex=APageIndex then begin
-        // make sure to select another page in the NoteBook, otherwise the
-        // widgetset will choose one and will send a message
-        Notebook.PageIndex:=Notebook.PageIndex
-          +IfThen(Notebook.PageIndex + 1 < Notebook.PageCount, 1, -1);
-      end;
-      // delete the page
-      //writeln('TSourceNotebook.CloseFile C  APageIndex=',APageIndex,' PageCount=',PageCount,' NoteBook.APageIndex=',Notebook.APageIndex);
-      Notebook.Pages.Delete(APageIndex);
-      //writeln('TSourceNotebook.CloseFile D  APageIndex=',APageIndex,' PageCount=',PageCount,' NoteBook.APageIndex=',Notebook.APageIndex);
-      UpdateProjectFiles;
-      UpdateStatusBar;
-      UpdatePageNames;
-      // set focus to new editor
-      TempEditor:=FindSourceEditorWithPageIndex(PageIndex);
-    end else
-    begin
-      //writeln('TSourceNotebook.CloseFile E  APageIndex=',APageIndex);
-      Notebook.Free;
-      //writeln('TSourceNotebook.CloseFile F  APageIndex=',APageIndex);
-      Notebook:=nil;
+    //writeln('TSourceNotebook.CloseFile B  APageIndex=',APageIndex,' Notebook.APageIndex=',APageIndex);
+    // make sure to select another page in the NoteBook, otherwise the
+    // widgetset will choose one and will send a message
+    // if this is the current page, switch to right APageIndex (if possible)
+    if (PageCount > 1) and (PageIndex = APageIndex) then
+        PageIndex := PageIndex + IfThen(PageIndex + 1 < PageCount, 1, -1);
+    // delete the page
+    //writeln('TSourceNotebook.CloseFile C  APageIndex=',APageIndex,' PageCount=',PageCount,' NoteBook.APageIndex=',Notebook.APageIndex);
+    NoteBookDeletePage(APageIndex);
+    //writeln('TSourceNotebook.CloseFile D  APageIndex=',APageIndex,' PageCount=',PageCount,' NoteBook.APageIndex=',Notebook.APageIndex);
+    UpdateProjectFiles;
+    UpdateStatusBar;
+    UpdatePageNames;
+    // set focus to new editor
+    TempEditor:=FindSourceEditorWithPageIndex(PageIndex);
+    if PageCount = 0 then
       Hide;
-    end;
   {$IFNDEF OldAutoSize}
   finally
     EnableAutoSizing{$IFDEF DebugDisableAutoSizing}('TSourceNotebook.CloseFile'){$ENDIF};
@@ -5834,7 +5812,7 @@ procedure TSourceNotebook.FocusEditor;
 var
   SrcEdit: TSourceEditor;
 begin
-  if (NoteBook=nil) or (fAutoFocusLock>0) then exit;
+  if (fAutoFocusLock>0) then exit;
   SrcEdit:=GetActiveSE;
   if SrcEdit=nil then exit;
   Show;
@@ -6020,16 +5998,12 @@ function TSourceNotebook.FindPageWithEditor(
   ASourceEditor: TSourceEditor):integer;
 var i:integer;
 begin
-  if Notebook=nil then begin
-    Result:=-1;
-  end else begin
-    Result:=PageCount-1;
-    while (Result>=0) do begin
-      with Notebook.Page[Result] do
-        for I := 0 to ControlCount-1 do
-          if Controls[I]=ASourceEditor.EditorComponent then exit;
-      dec(Result);
-    end;
+  Result:=PageCount-1;
+  while (Result>=0) do begin
+    with NotebookPage[Result] do
+      for I := 0 to ControlCount-1 do
+        if Controls[I]=ASourceEditor.EditorComponent then exit;
+    dec(Result);
   end;
 end;
 
@@ -6050,9 +6024,9 @@ var
   TabIndex: Integer;
 begin
   if (Button = mbMiddle) then begin
-    TabIndex:=Notebook.TabIndexAtClientPos(Point(X,Y));
+    TabIndex:=FNotebook.TabIndexAtClientPos(Point(X,Y));
     if TabIndex>=0 then
-      CloseClicked(Notebook.Page[TabIndex])
+      CloseClicked(NoteBookPage[TabIndex])
   end;
 end;
 
@@ -6075,13 +6049,13 @@ Begin
       {$IFDEF VerboseFocus}
       writeln('TSourceNotebook.NotebookPageChanged BEFORE SetFocus ',
         TempEditor.EditorComponent.Name,' ',
-        NoteBook.Pages[FindPageWithEditor(TempEditor)]);
+        NoteBookPages[FindPageWithEditor(TempEditor)]);
       {$ENDIF}
       TempEditor.FocusEditor;
       {$IFDEF VerboseFocus}
       writeln('TSourceNotebook.NotebookPageChanged AFTER SetFocus ',
         TempEditor.EditorComponent.Name,' ',
-        NoteBook.Pages[FindPageWithEditor(TempEditor)]);
+        NotebookPages[FindPageWithEditor(TempEditor)]);
       {$ENDIF}
     end;
     UpdateStatusBar;
@@ -6206,13 +6180,11 @@ Begin
     Editors[i].RefreshEditorSettings;
 
   EditorOpts.KeyMap.AssignTo(FKeyStrokes,TSourceEditorWindowInterface);
-  if NoteBook<>nil then begin
-    if EditorOpts.ShowTabCloseButtons then
-      NoteBook.Options:=NoteBook.Options+[nboShowCloseButtons]
-    else
-      NoteBook.Options:=NoteBook.Options-[nboShowCloseButtons];
-    Notebook.TabPosition := EditorOpts.TabPosition;
-  end;
+  if EditorOpts.ShowTabCloseButtons then
+    FNoteBook.Options:=FNoteBook.Options+[nboShowCloseButtons]
+  else
+    FNoteBook.Options:=FNoteBook.Options-[nboShowCloseButtons];
+  FNotebook.TabPosition := EditorOpts.TabPosition;
 
   FMouseHintTimer.Interval:=EditorOpts.AutoDelayInMSec;
 
@@ -6599,7 +6571,7 @@ end;
 
 procedure TSourceNotebook.CloseTabClicked(Sender: TObject);
 begin
-  FPageIndex := Notebook.PageIndex;
+  FPageIndex := PageIndex;
   if Assigned(Manager.OnCloseClicked) then
     Manager.OnCloseClicked(Sender, GetKeyState(VK_CONTROL) < 0);
 end;
