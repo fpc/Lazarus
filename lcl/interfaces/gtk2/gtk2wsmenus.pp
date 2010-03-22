@@ -77,6 +77,28 @@ implementation
 
 {$I gtkdefines.inc}
 
+function Gtk2MenuItemButtonPress(widget: PGtkWidget; event: PGdkEventButton;
+ user_data: gpointer): gboolean; cdecl;
+var
+  Parent: PGtkWidget;
+  WidgetInfo: PWidgetInfo;
+begin
+  Result := False;
+  if (event^._type = GDK_BUTTON_PRESS) then
+  begin
+    Parent := gtk_widget_get_parent(Widget);
+    if (Parent <> nil) and GTK_IS_MENU_BAR(Parent) then
+    begin
+      if (gtk_menu_item_get_submenu(PGtkMenuItem(Widget)) = nil) then
+      begin
+        WidgetInfo := GetWidgetInfo(Widget);
+        if Assigned(TMenuItem(WidgetInfo^.LCLObject).OnClick) then
+          gtk_menu_item_activate(PGtkMenuItem(Widget));
+      end;
+    end;
+  end;
+end;
+
 function Gtk2MenuItemActivate(widget: PGtkWidget; data: gPointer) : GBoolean; cdecl;
 var
   Mess: TLMActivate;
@@ -168,6 +190,10 @@ class procedure TGtk2WSMenuItem.SetCallbacks(const AGtkWidget: PGtkWidget;
   const AWidgetInfo: PWidgetInfo);
 begin
   // connect activate signal (i.e. clicked)
+  {button-press-event is needed by root menu items which have not
+  submenu, but OnClick() is assigned - fix for #15986 }
+  g_signal_connect_after(PGTKObject(AGtkWidget), 'button-press-event',
+    TGTKSignalFunc(@Gtk2MenuItemButtonPress), AWidgetInfo^.LCLObject);
   g_signal_connect(PGTKObject(AGtkWidget), 'activate',
                    TGTKSignalFunc(@Gtk2MenuItemActivate), AWidgetInfo^.LCLObject);
   g_signal_connect(PGTKObject(AGtkWidget), 'select',
