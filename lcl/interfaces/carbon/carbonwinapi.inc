@@ -2443,7 +2443,7 @@ begin
   {$ENDIF}
   
   if not CheckDC(DC, 'MoveWindowOrgEx') then Exit;
-  
+
   CGContextTranslateCTM(TCarbonContext(DC).CGContext, DX, DY);
   Result := True;
 end;
@@ -3358,7 +3358,7 @@ begin
   
   GetWindowOrgEx(DC, @OldP);
   
-  Result := MoveWindowOrgEx(DC, NewX - OldP.X, NewY - OldP.Y);
+  Result := MoveWindowOrgEx(DC, - NewX - OldP.X, - NewY - OldP.Y);
   if OldPoint <> nil then
     OldPoint := @OldP;
 end;
