@@ -1,0 +1,46 @@
+<?xml version="1.0"?>
+<fpdoc-descriptions>
+  <package name="TAChartLazarusPkg">
+    <module name="TAChartAxis">
+      <element name="TChartAxisTitle">
+        <short>The title of an axis</short>
+      </element>
+      <element name="TChartAxisTitle.Caption">
+        <short>Caption texts</short>
+      </element>
+      <element name="TChartAxisTitle.Distance">
+        <short>The distance between the title text and axis marks</short>
+      </element>
+      <element name="TChartAxisTitle.Font">
+        <short>Title font</short>
+        <descr>
+          <var>Font.Orientation</var> is by default set to 900 (90 degrees to the left)
+for vertical axises.</descr>
+      </element>
+      <element name="TChartAxisTitle.Visible">
+        <short>Title is shown if <var>Visible</var> is true and <var>Caption</var> is not empty</short>
+      </element>
+      <element name="TChartAxis.Alignment">
+        <short>Determines the side of the chart whcih the axis is aligned to</short>
+        <descr>Left- and right-aligned axises are vertical, top- and bottom-aligned axises are horizontal.</descr>
+      </element>
+      <element name="TChartAxis.Grid">
+        <short>Pen used for grid drawing</short>
+        <descr>Grid lines are drawn across the chart from each axis mark</descr>
+      </element>
+      <element name="TChartAxis.Inverted"/>
+      <element name="TChartAxis.Visible">
+        <short>If true, the axis is drawn on the chart</short>
+        <descr>Invisible axis might still be used for series transformation</descr>
+      </element>
+      <element name="TChartAxisMarks.Source">
+        <short>Source of mark positions</short>
+        <descr>
+          <p>If the source is set, marks are determined by <var>X</var> or <var>Y</var> coordinates
+of <var>Source</var> items for horizontal and vertical axises correspondingly.
+</p>
+Otherwise, marks are created automatically.</descr>
+      </element>
+    </module>
+  </package>
+</fpdoc-descriptions>

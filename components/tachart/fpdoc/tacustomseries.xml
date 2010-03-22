@@ -84,7 +84,7 @@
       <element name="TChartSeries.Extent">
         <short>Return the bounding rectangle for all points in the serie.</short>
         <seealso>
-          <link id="TChartSource.Extent">TChartSource.Extent</link>
+          <link id="TASources.TCustomChartSource.Extent">TCustomChartSource.Extent</link>
         </seealso>
       </element>
       <element name="TChartSeries.FormattedMark">

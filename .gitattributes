@@ -2116,6 +2116,7 @@ components/tachart/demo/save/main.lfm svneol=native#text/plain
 components/tachart/demo/save/main.pas svneol=native#text/plain
 components/tachart/demo/save/savedemo.lpi svneol=native#text/plain
 components/tachart/demo/save/savedemo.lpr svneol=native#text/plain
+components/tachart/fpdoc/tachartaxis.xml svneol=native#text/plain
 components/tachart/fpdoc/tachartutils.xml svneol=native#text/plain
 components/tachart/fpdoc/tacustomseries.xml svneol=native#text/plain
 components/tachart/fpdoc/tadbsource.xml svneol=native#text/plain
