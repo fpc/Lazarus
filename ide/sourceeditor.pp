@@ -77,6 +77,8 @@ type
   TOnLinesInsertedDeleted = procedure(Sender : TObject;
              FirstLine,Count : Integer) of Object;
 
+  TCharSet = set of Char;
+
   { TSynEditPlugin1 }
 
   TSynEditPlugin1 = class(TSynEditPlugin)
@@ -98,16 +100,44 @@ type
     destructor Destroy; override;
   end;
 
+  { TSourceEditCompletion }
 
-  TCharSet = set of Char;
+  TSourceEditCompletion=class(TSynCompletion)
+  private
+    FIdentCompletionJumpToError: boolean;
+    ccSelection: String;
 
-{---- TSource Editor ---
-  TSourceEditor is the class that controls access for the Editor.
- ---- TSource Editor ---}
+    procedure ccExecute(Sender: TObject);
+    procedure ccCancel(Sender: TObject);
+    procedure ccComplete(var Value: string; SourceValue: string;
+                         var SourceStart, SourceEnd: TPoint;
+                         KeyChar: TUTF8Char; Shift: TShiftState);
+    function OnSynCompletionPaintItem(const AKey: string; ACanvas: TCanvas;
+                 X, Y: integer; ItemSelected: boolean; Index: integer): boolean;
+    function OnSynCompletionMeasureItem(const AKey: string; ACanvas: TCanvas;
+                                 ItemSelected: boolean; Index: integer): TPoint;
+    procedure OnSynCompletionSearchPosition(var APosition: integer);
+    procedure OnSynCompletionCompletePrefix(Sender: TObject);
+    procedure OnSynCompletionNextChar(Sender: TObject);
+    procedure OnSynCompletionPrevChar(Sender: TObject);
+    procedure OnSynCompletionKeyPress(Sender: TObject; var Key: Char);
+    procedure OnSynCompletionUTF8KeyPress(Sender: TObject; var UTF8Key: TUTF8Char);
+    procedure OnSynCompletionPositionChanged(Sender: TObject);
 
-  TSourceEditor = class;
+    function InitIdentCompletionValues(S: TStrings): boolean;
+    procedure StartShowCodeHelp;
+  protected
+    CurrentCompletionType: TCompletionType;
+    function Manager: TSourceEditorManager;
+  public
+    constructor Create(AOwner: TComponent); override;
+    property IdentCompletionJumpToError: Boolean
+      read FIdentCompletionJumpToError write FIdentCompletionJumpToError;
+  end;
 
-  { TSourceEditor }
+
+{ TSourceEditor ---
+  TSourceEditor is the class that controls access for the Editor. }
 
   TSourceEditor = class(TSourceEditorInterface)
   private
@@ -117,7 +147,6 @@ type
     FEditPlugin: TSynEditPlugin1;  // used to get the LinesInserted and
                                    //   LinesDeleted messages
     FSyncroLockCount: Integer;
-    FCodeTemplates: TSynEditAutoComplete;
     FHasExecutionMarks: Boolean;
     FMarksRequested: Boolean;
     FPageName: string;
@@ -179,7 +208,6 @@ type
     function GetCurrentCursorYLine: Integer;
     procedure SetCurrentCursorYLine(num: Integer);
     Function GetInsertMode: Boolean;
-    procedure SetCodeTemplates(NewCodeTemplates: TSynEditAutoComplete);
     procedure SetPopupMenu(NewPopupMenu: TPopupMenu);
 
     function GotoLine(Value: Integer): Integer;
@@ -372,8 +400,6 @@ type
   public
     // properties
     property CodeBuffer: TCodeBuffer read FCodeBuffer write SetCodeBuffer;
-    property CodeTemplates: TSynEditAutoComplete
-       read FCodeTemplates write SetCodeTemplates;
     property CurrentCursorXLine: Integer
        read GetCurrentCursorXLine write SetCurrentCursorXLine;
     property CurrentCursorYLine: Integer
@@ -529,8 +555,6 @@ type
     FUpdateLock, FFocusLock: Integer;
     FPageIndex: Integer;
     fAutoFocusLock: integer;
-    FCodeTemplateModul: TSynEditAutoComplete;
-    fIdentCompletionJumpToError: boolean;
     FIncrementalSearchPos: TPoint; // last set position
     fIncrementalSearchStartPos: TPoint; // position where to start searching
     FIncrementalSearchStr, FIncrementalFoundStr: string;
@@ -542,14 +566,11 @@ type
     FSourceEditorList: TList; // list of TSourceEditor
   private
     // colors for the completion form (popup form, e.g. word completion)
+    // Todo: move to completion class
     FActiveEditDefaultFGColor: TColor;
     FActiveEditDefaultBGColor: TColor;
     FActiveEditSelectedFGColor: TColor;
     FActiveEditSelectedBGColor: TColor;
-    FActiveEditKeyFGColor: TColor;
-    FActiveEditKeyBGColor: TColor;
-    FActiveEditSymbolFGColor: TColor;
-    FActiveEditSymbolBGColor: TColor;
 
     // PopupMenu
     procedure BuildPopupMenu;
@@ -585,35 +606,19 @@ type
     procedure Activate; override;
     function CreateNotebook: Boolean;
     function NewSE(Pagenum: Integer): TSourceEditor;
+    procedure AcceptEditor(AnEditor: TSourceEditor);
+    procedure ReleaseEditor(AnEditor: TSourceEditor);
     procedure EditorChanged(Sender: TObject);
 
   protected
-    FActiveCompletionPlugin: TSourceEditorCompletionPlugin;
-    ccSelection: String;
     function GetActiveCompletionPlugin: TSourceEditorCompletionPlugin; override;
     function GetCompletionPlugins(Index: integer): TSourceEditorCompletionPlugin; override;
     function GetCompletionBoxPosition: integer; override;
+        deprecated {$IFDEF VER2_5}'use SourceEditorManager'{$ENDIF};       // deprecated in 0.9.29 March 2010
 
-    procedure ccExecute(Sender: TObject);
-    procedure ccCancel(Sender: TObject);
-    procedure ccComplete(var Value: string; SourceValue: string;
-                         var SourceStart, SourceEnd: TPoint;
-                         KeyChar: TUTF8Char; Shift: TShiftState);
-    function OnSynCompletionPaintItem(const AKey: string; ACanvas: TCanvas;
-                 X, Y: integer; ItemSelected: boolean; Index: integer): boolean;
-    function OnSynCompletionMeasureItem(const AKey: string; ACanvas: TCanvas;
-                                 ItemSelected: boolean; Index: integer): TPoint;
-    procedure OnSynCompletionSearchPosition(var APosition: integer);
-    procedure OnSynCompletionCompletePrefix(Sender: TObject);
-    procedure OnSynCompletionNextChar(Sender: TObject);
-    procedure OnSynCompletionPrevChar(Sender: TObject);
-    procedure OnSynCompletionKeyPress(Sender: TObject; var Key: Char);
-    procedure OnSynCompletionUTF8KeyPress(Sender: TObject; var UTF8Key: TUTF8Char);
-    procedure OnSynCompletionPositionChanged(Sender: TObject);
     function StartIdentCompletionBox(SrcEdit: TSourceEditor; JumpToError: boolean;
                                var s: string; var BoxX, BoxY: integer;
                                var UseWordCompletion: boolean): boolean;
-    function InitIdentCompletionValues(S: TStrings): boolean;
 
     procedure EditorMouseMove(Sender: TObject; Shift: TShiftstate;
                               X,Y: Integer);
@@ -670,7 +675,6 @@ type
 
     constructor Create(AOwner: TComponent); override;
     destructor Destroy; override;
-    procedure CreateCompletionForm;
 
     property Editors[Index:integer]:TSourceEditor read GetEditors; // !!! not ordered for PageIndex
     function EditorCount: integer;
@@ -708,7 +712,6 @@ type
                            const BaseURL, TheHint: string);
     procedure HideHint;
     procedure StartShowCodeContext(JumpToError: boolean);
-    procedure StartShowCodeHelp;
 
     // new, close, focus
     function NewFile(const NewShortName: String; ASource: TCodeBuffer;
@@ -731,14 +734,8 @@ type
     function GetHighlighterSettings(Highlighter: TObject): boolean; override;
              deprecated {$IFDEF VER2_5}'use SourceEditorManager'{$ENDIF};       // deprecated in 0.9.29 March 2010
 
-    property CodeTemplateModul: TSynEditAutoComplete
-                               read FCodeTemplateModul write FCodeTemplateModul;
-    procedure OnCodeTemplateTokenNotFound(Sender: TObject; AToken: string;
-                                   AnEditor: TCustomSynEdit; var Index:integer);
-    procedure OnCodeTemplateExecuteCompletion(
-                                       ASynAutoComplete: TCustomSynAutoComplete;
-                                       Index: integer);
     procedure DeactivateCompletionForm; override;
+             deprecated {$IFDEF VER2_5}'use SourceEditorManager'{$ENDIF};       // deprecated in 0.9.29 March 2010
     function CompletionPluginCount: integer; override;
               deprecated {$IFDEF VER2_5}'use SourceEditorManager'{$ENDIF};       // deprecated in 0.9.29 March 2010
     procedure RegisterCompletionPlugin(Plugin: TSourceEditorCompletionPlugin); override;
@@ -793,11 +790,16 @@ type
   private
     // Completion Plugins
     FCompletionPlugins: TFPList;
+    FDefaultCompletionForm: TSourceEditCompletion;
+    FActiveCompletionPlugin: TSourceEditorCompletionPlugin;
+    function GetDefaultCompletionForm: TSourceEditCompletion;
     procedure  FreeCompletionPlugins;
   protected
     function  GetActiveCompletionPlugin: TSourceEditorCompletionPlugin; override;
     function  GetCompletionBoxPosition: integer; override;
     function  GetCompletionPlugins(Index: integer): TSourceEditorCompletionPlugin; override;
+    property DefaultCompletionForm: TSourceEditCompletion
+      read GetDefaultCompletionForm;
   public
     // Completion Plugins
     function  CompletionPluginCount: integer; override;
@@ -847,6 +849,9 @@ type
               read GetSourceEditorsByPage;
     function  SourceEditorIntfWithFilename(const Filename: string): TSourceEditor; reintroduce;
     function FindSourceEditorWithEditorComponent(EditorComp: TComponent): TSourceEditor; // With SynEdit
+  protected
+    procedure NewEditorCreated(AEditor: TSourceEditor);
+    procedure EditorRemoved(AEditor: TSourceEditor);
   public
     // Forward to all windows
     procedure ClearErrorLines; override;
@@ -904,6 +909,13 @@ type
     procedure CloseFile(AEditor: TSourceEditorInterface);
     // history jumping
     procedure HistoryJump(Sender: TObject; CloseAction: TJumpHistoryAction);
+  private
+    FCodeTemplateModul: TSynEditAutoComplete;
+    procedure OnCodeTemplateTokenNotFound(Sender: TObject; AToken: string;
+                                   AnEditor: TCustomSynEdit; var Index:integer);
+    procedure OnCodeTemplateExecuteCompletion(
+                                       ASynAutoComplete: TCustomSynAutoComplete;
+                                       Index: integer);
   protected
     procedure OnWordCompletionGetSource(var Source: TStrings; SourceIndex: integer);
     procedure OnSourceCompletionTimer(Sender: TObject);
@@ -911,8 +923,11 @@ type
     function OnSourceMarksGetSourceEditor(ASynEdit: TCustomSynEdit): TObject;
     function OnSourceMarksGetFilename(ASourceEditor: TObject): string;
     procedure OnSourceMarksAction(AMark: TSourceMark; AAction: TListNotification);
+    property CodeTemplateModul: TSynEditAutoComplete
+                               read FCodeTemplateModul write FCodeTemplateModul;
   public
     constructor Create(AOwner: TComponent); override;
+    destructor Destroy; override;
     function CreateNewWindow(Activate: Boolean= False): TSourceNotebook;
   private
     FOnAddJumpPoint: TOnAddJumpPoint;
@@ -1065,14 +1080,6 @@ implementation
 
 var
   Highlighters: array[TLazSyntaxHighlighter] of TSynCustomHighlighter;
-  // aCompletion:
-  //   The component controlling the completion form. It is created on demand
-  //   and killed when the IDE ends.
-  aCompletion: TSynCompletion = nil;
-  // CurCompletionControl contains aCompletion whenever the completion form is
-  // active
-  CurCompletionControl: TSynCompletion = nil;
-  CurrentCompletionType: TCompletionType;
   SourceCompletionTimer: TIdleTimer = nil;
   SourceCompletionCaretXY: TPoint;
   AWordCompletion: TWordCompletion = nil;
@@ -1273,6 +1280,556 @@ begin
   {$ENDIF}
 end;
 
+
+{ TSourceEditCompletion }
+
+procedure TSourceEditCompletion.ccExecute(Sender: TObject);
+// init completion form
+// called by OnExecute just before showing
+var
+  S: TStrings;
+  Prefix: String;
+  I: Integer;
+  NewStr: String;
+  CurEdit: TSynEdit;
+Begin
+  {$IFDEF VerboseIDECompletionBox}
+  debugln(['TSourceEditCompletion.ccExecute START']);
+  {$ENDIF}
+  S := TStringList.Create;
+  try
+    Prefix := CurrentString;
+    CurEdit := Manager.ActiveEditor.EditorComponent;
+    case CurrentCompletionType of
+     ctIdentCompletion:
+       if not InitIdentCompletionValues(S) then begin
+         ItemList.Clear;
+         exit;
+       end;
+
+     ctWordCompletion:
+       begin
+         ccSelection := '';
+       end;
+
+     ctTemplateCompletion:
+       begin
+         ccSelection:='';
+         for I := 0 to Manager.CodeTemplateModul.Completions.Count-1 do begin
+           NewStr := Manager.CodeTemplateModul.Completions[I];
+           if NewStr<>'' then begin
+             NewStr:=#3'B'+NewStr+#3'b';
+             while length(NewStr)<10+4 do NewStr:=NewStr+' ';
+             NewStr:=NewStr+' '+Manager.CodeTemplateModul.CompletionComments[I];
+             S.Add(NewStr);
+           end;
+         end;
+       end;
+
+    end;
+
+    ItemList := S;
+  finally
+    S.Free;
+  end;
+  CurrentString:=Prefix;
+  // set colors
+  if (CurEdit<>nil) and (TheForm<>nil) then begin
+    with TheForm do begin
+      BackgroundColor:=Manager.ActiveSourceWindow.FActiveEditDefaultBGColor;
+      clSelect:=Manager.ActiveSourceWindow.FActiveEditSelectedBGColor;
+      TextColor:=Manager.ActiveSourceWindow.FActiveEditDefaultFGColor;
+      TextSelectedColor:=Manager.ActiveSourceWindow.FActiveEditSelectedFGColor;
+      //writeln('TSourceNotebook.ccExecute A Color=',DbgS(Color),
+      // ' clSelect=',DbgS(clSelect),
+      // ' TextColor=',DbgS(TextColor),
+      // ' TextSelectedColor=',DbgS(TextSelectedColor),
+      // '');
+    end;
+    if (CurrentCompletionType=ctIdentCompletion) and (SourceEditorManager.ActiveCompletionPlugin=nil)
+    then
+      StartShowCodeHelp
+    else if SrcEditHintWindow<>nil then
+      SrcEditHintWindow.HelpEnabled:=false;
+  end;
+end;
+
+procedure TSourceEditCompletion.ccCancel(Sender: TObject);
+// user cancels completion form
+begin
+  {$IFDEF VerboseIDECompletionBox}
+  debugln(['TSourceNotebook.ccCancel START']);
+  //debugln(GetStackTrace(true));
+  {$ENDIF}
+  Manager.DeactivateCompletionForm;
+end;
+
+procedure TSourceEditCompletion.ccComplete(var Value: string;
+  SourceValue: string; var SourceStart, SourceEnd: TPoint; KeyChar: TUTF8Char;
+  Shift: TShiftState);
+// completion selected -> deactivate completion form
+// Called when user has selected a completion item
+
+  function CharBehindIdent(const Line: string; StartPos: integer): char;
+  begin
+    while (StartPos<=length(Line))
+    and (Line[StartPos] in ['_','A'..'Z','a'..'z']) do
+      inc(StartPos);
+    while (StartPos<=length(Line)) and (Line[StartPos] in [' ',#9]) do
+      inc(StartPos);
+    if StartPos<=length(Line) then
+      Result:=Line[StartPos]
+    else
+      Result:=#0;
+  end;
+
+  function CharInFrontOfIdent(const Line: string; StartPos: integer): char;
+  begin
+    while (StartPos>=1)
+    and (Line[StartPos] in ['_','A'..'Z','a'..'z']) do
+      dec(StartPos);
+    while (StartPos>=1) and (Line[StartPos] in [' ',#9]) do
+      dec(StartPos);
+    if StartPos>=1 then
+      Result:=Line[StartPos]
+    else
+      Result:=#0;
+  end;
+
+var
+  p1, p2: integer;
+  ValueType: TIdentComplValue;
+  SrcEdit: TSourceEditor;
+  NewCaretXY: TPoint;
+  CursorToLeft: integer;
+  NewValue: String;
+  SynEditor: TSynEdit;
+  OldCompletionType: TCompletionType;
+Begin
+  {$IFDEF VerboseIDECompletionBox}
+  debugln(['TSourceNotebook.ccComplete START']);
+  {$ENDIF}
+  OldCompletionType:=CurrentCompletionType;
+  case CurrentCompletionType of
+
+    ctIdentCompletion:
+      if Manager.ActiveCompletionPlugin<>nil then
+      begin
+        Manager.ActiveCompletionPlugin.Complete(Value,SourceValue,
+           SourceStart,SourceEnd,KeyChar,Shift);
+        Manager.FActiveCompletionPlugin:=nil;
+      end else begin
+        // add to history
+        CodeToolBoss.IdentifierHistory.Add(
+          CodeToolBoss.IdentifierList.FilteredItems[Position]);
+        // get value
+        NewValue:=GetIdentCompletionValue(self, KeyChar, ValueType, CursorToLeft);
+        if ValueType=icvIdentifier then ;
+        // insert value plus special chars like brackets, semicolons, ...
+        SrcEdit := Manager.ActiveEditor;
+        SynEditor:=SrcEdit.EditorComponent;
+        if ValueType <> icvNone then
+          SynEditor.TextBetweenPointsEx[SourceStart, SourceEnd, scamEnd] := NewValue;
+        if CursorToLeft>0 then
+        begin
+          NewCaretXY:=SynEditor.CaretXY;
+          dec(NewCaretXY.X,CursorToLeft);
+          SynEditor.CaretXY:=NewCaretXY;
+        end;
+        ccSelection := '';
+        Value:='';
+        SourceEnd := SourceStart;
+      end;
+
+    ctTemplateCompletion:
+      begin
+        // the completion is the bold text between #3'B' and #3'b'
+        p1:=Pos(#3,Value);
+        if p1>=0 then begin
+          p2:=p1+2;
+          while (p2<=length(Value)) and (Value[p2]<>#3) do inc(p2);
+          Value:=copy(Value,p1+2,p2-p1-2);
+          // keep parent identifier (in front of '.')
+          p1:=length(ccSelection);
+          while (p1>=1) and (ccSelection[p1]<>'.') do dec(p1);
+          if p1>=1 then
+            Value:=copy(ccSelection,1,p1)+Value;
+        end;
+        ccSelection := '';
+        if Value<>'' then
+          Manager.CodeTemplateModul.ExecuteCompletion(Value,
+                                               Manager.ActiveEditor.EditorComponent);
+        SourceEnd := SourceStart;
+        Value:='';
+      end;
+
+    ctWordCompletion:
+      // the completion is already in Value
+      begin
+        ccSelection := '';
+        if Value<>'' then AWordCompletion.AddWord(Value);
+      end;
+
+    else begin
+      Value:='';
+    end;
+  end;
+
+  Manager.DeactivateCompletionForm;
+
+  //DebugLn(['TSourceNotebook.ccComplete ',KeyChar,' ',OldCompletionType=ctIdentCompletion]);
+  SrcEdit:= Manager.ActiveEditor;
+  SynEditor:=SrcEdit.EditorComponent;
+  if (KeyChar='.') and (OldCompletionType=ctIdentCompletion) then
+  begin
+    SourceCompletionCaretXY:=SynEditor.CaretXY;
+    SourceCompletionTimer.AutoEnabled:=true;
+  end;
+end;
+
+function TSourceEditCompletion.OnSynCompletionPaintItem(const AKey: string;
+  ACanvas: TCanvas; X, Y: integer; ItemSelected: boolean; Index: integer
+  ): boolean;
+var
+  MaxX: Integer;
+  t: TCompletionType;
+begin
+  with ACanvas do begin
+    if (Editor<>nil) then
+      Font := Editor.Font
+    else begin
+      Font.Height:=EditorOpts.EditorFontHeight; // set Height before name for XLFD !
+      Font.Name:=EditorOpts.EditorFont;
+    end;
+    Font.Style:=[];
+    if not ItemSelected then
+      Font.Color:=Manager.ActiveSourceWindow.FActiveEditDefaultFGColor
+    else
+      Font.Color:=Manager.ActiveSourceWindow.FActiveEditSelectedFGColor;
+  end;
+  MaxX:=TheForm.ClientWidth;
+  t:=CurrentCompletionType;
+  if Manager.ActiveCompletionPlugin<>nil then
+  begin
+    if Manager.ActiveCompletionPlugin.HasCustomPaint then
+    begin
+      Manager.ActiveCompletionPlugin.PaintItem(AKey,ACanvas,X,Y,ItemSelected,Index);
+    end else begin
+      t:=ctWordCompletion;
+    end;
+  end;
+  PaintCompletionItem(AKey,ACanvas,X,Y,MaxX,ItemSelected,Index,self,
+                      t,Editor.Highlighter);
+  Result:=true;
+end;
+
+function TSourceEditCompletion.OnSynCompletionMeasureItem(const AKey: string;
+  ACanvas: TCanvas; ItemSelected: boolean; Index: integer): TPoint;
+var
+  MaxX: Integer;
+  t: TCompletionType;
+begin
+  with ACanvas do begin
+    if (Editor<>nil) then
+      Font:=Editor.Font
+    else begin
+      Font.Height:=EditorOpts.EditorFontHeight; // set Height before name of XLFD !
+      Font.Name:=EditorOpts.EditorFont;
+    end;
+    Font.Style:=[];
+    if not ItemSelected then
+      Font.Color:=Manager.ActiveSourceWindow.FActiveEditDefaultFGColor
+    else
+      Font.Color:=Manager.ActiveSourceWindow.FActiveEditSelectedFGColor;
+  end;
+  MaxX := Screen.Width-20;
+  t:=CurrentCompletionType;
+  if Manager.ActiveCompletionPlugin<>nil then
+  begin
+    if Manager.ActiveCompletionPlugin.HasCustomPaint then
+    begin
+      Manager.ActiveCompletionPlugin.MeasureItem(AKey,ACanvas,ItemSelected,Index);
+    end else begin
+      t:=ctWordCompletion;
+    end;
+  end;
+  Result := PaintCompletionItem(AKey,ACanvas,0,0,MaxX,ItemSelected,Index,
+                                self,t,nil,True);
+  Result.Y:=FontHeight;
+end;
+
+procedure TSourceEditCompletion.OnSynCompletionSearchPosition(
+  var APosition: integer);
+// prefix changed -> filter list
+var
+  i,x:integer;
+  CurStr,s:Ansistring;
+  SL: TStrings;
+  ItemCnt: Integer;
+begin
+  case CurrentCompletionType of
+
+    ctIdentCompletion:
+      if Manager.ActiveCompletionPlugin<>nil then
+      begin
+        // let plugin rebuild completion list
+        SL:=TStringList.Create;
+        try
+          Manager.ActiveCompletionPlugin.PrefixChanged(CurrentString,
+            APosition,sl);
+          ItemList:=SL;
+        finally
+          SL.Free;
+        end;
+      end else begin
+        // rebuild completion list
+        APosition:=0;
+        CurStr:=CurrentString;
+        CodeToolBoss.IdentifierList.Prefix:=CurStr;
+        ItemCnt:=CodeToolBoss.IdentifierList.GetFilteredCount;
+        SL:=TStringList.Create;
+        try
+          sl.Capacity:=ItemCnt;
+          for i:=0 to ItemCnt-1 do
+            SL.Add('Dummy'); // these entries are not shown
+          ItemList:=SL;
+        finally
+          SL.Free;
+        end;
+      end;
+
+    ctTemplateCompletion:
+      begin
+        // search CurrentString in bold words (words after #3'B')
+        CurStr:=CurrentString;
+        i:=0;
+        while i<ItemList.Count do begin
+          s:=ItemList[i];
+          x:=1;
+          while (x<=length(s)) and (s[x]<>#3) do inc(x);
+          if x<length(s) then begin
+            inc(x,2);
+            if AnsiCompareText(CurStr,copy(s,x,length(CurStr)))=0 then begin
+              APosition:=i;
+              break;
+            end;
+          end;
+          inc(i);
+        end;
+      end;
+
+    ctWordCompletion:
+      begin
+        // rebuild completion list
+        APosition:=0;
+        CurStr:=CurrentString;
+        SL:=TStringList.Create;
+        try
+          aWordCompletion.GetWordList(SL, CurStr, false, 100);
+          ItemList:=SL;
+        finally
+          SL.Free;
+        end;
+      end;
+
+  end;
+end;
+
+procedure TSourceEditCompletion.OnSynCompletionCompletePrefix(Sender: TObject);
+var
+  OldPrefix: String;
+  NewPrefix: String;
+  SL: TStringList;
+  AddPrefix: String;
+begin
+  OldPrefix:=CurrentString;
+  NewPrefix:=OldPrefix;
+
+  case CurrentCompletionType of
+
+  ctIdentCompletion:
+    if Manager.ActiveCompletionPlugin<>nil then
+    begin
+      Manager.ActiveCompletionPlugin.CompletePrefix(NewPrefix);
+    end else begin
+      NewPrefix:=CodeToolBoss.IdentifierList.CompletePrefix(OldPrefix);
+    end;
+
+  ctWordCompletion:
+    begin
+      aWordCompletion.CompletePrefix(OldPrefix,NewPrefix,false);
+    end;
+
+  end;
+
+  if NewPrefix<>OldPrefix then begin
+    AddPrefix:=copy(NewPrefix,length(OldPrefix)+1,length(NewPrefix));
+    Editor.InsertTextAtCaret(AddPrefix);
+    if CurrentCompletionType=ctWordCompletion then begin
+      SL:=TStringList.Create;
+      try
+        aWordCompletion.GetWordList(SL, NewPrefix, false, 100);
+        ItemList:=SL;
+      finally
+        SL.Free;
+      end;
+    end;
+    CurrentString:=NewPrefix;
+  end;
+end;
+
+procedure TSourceEditCompletion.OnSynCompletionNextChar(Sender: TObject);
+var
+  NewPrefix: String;
+  SrcEdit: TSourceEditor;
+  Line: String;
+  SynEditor: TSynEdit;
+  LogCaret: TPoint;
+  CharLen: LongInt;
+  AddPrefix: String;
+begin
+  SrcEdit := Manager.ActiveEditor;
+  if SrcEdit=nil then exit;
+  SynEditor:=SrcEdit.EditorComponent;
+  LogCaret:=SynEditor.LogicalCaretXY;
+  if LogCaret.Y>=SynEditor.Lines.Count then exit;
+  Line:=SrcEdit.EditorComponent.Lines[LogCaret.Y-1];
+  if LogCaret.X>length(Line) then exit;
+  CharLen:=UTF8CharacterLength(@Line[LogCaret.X]);
+  AddPrefix:=copy(Line,LogCaret.X,CharLen);
+  NewPrefix:=CurrentString+AddPrefix;
+  //debugln('TSourceNotebook.OnSynCompletionNextChar NewPrefix="',NewPrefix,'" LogCaret.X=',dbgs(LogCaret.X));
+  inc(LogCaret.X);
+  Editor.LogicalCaretXY:=LogCaret;
+  CurrentString:=NewPrefix;
+end;
+
+procedure TSourceEditCompletion.OnSynCompletionPrevChar(Sender: TObject);
+var
+  NewPrefix: String;
+  SrcEdit: TSourceEditor;
+  SynEditor: TSynEdit;
+  NewLen: LongInt;
+begin
+  NewPrefix:=CurrentString;
+  if NewPrefix='' then exit;
+  SrcEdit:= Manager.ActiveEditor;
+  if SrcEdit=nil then exit;
+  SynEditor:=SrcEdit.EditorComponent;
+  SynEditor.CaretX:=SynEditor.CaretX-1;
+  NewLen:=UTF8FindNearestCharStart(PChar(NewPrefix),length(NewPrefix),
+                                   length(NewPrefix))-1;
+  NewPrefix:=copy(NewPrefix,1,NewLen);
+  CurrentString:=NewPrefix;
+end;
+
+procedure TSourceEditCompletion.OnSynCompletionKeyPress(Sender: TObject;
+  var Key: Char);
+begin
+  if (System.Pos(Key,EndOfTokenChr)>0) then begin
+    // identifier completed
+    //debugln('TSourceNotebook.OnSynCompletionKeyPress A');
+    TheForm.OnValidate(Sender,Key,[]);
+    //debugln('TSourceNotebook.OnSynCompletionKeyPress B');
+    Key:=#0;
+  end;
+end;
+
+procedure TSourceEditCompletion.OnSynCompletionUTF8KeyPress(Sender: TObject;
+  var UTF8Key: TUTF8Char);
+begin
+  if (length(UTF8Key)=1)
+  and (System.Pos(UTF8Key[1],EndOfTokenChr)>0) then begin
+    // identifier completed
+    //debugln('TSourceNotebook.OnSynCompletionUTF8KeyPress A');
+    TheForm.OnValidate(Sender,UTF8Key,[]);
+    //debugln('TSourceNotebook.OnSynCompletionKeyPress B');
+    UTF8Key:='';
+  end else begin
+    Editor.CommandProcessor(ecChar,UTF8Key,nil);
+    UTF8Key:='';
+  end;
+  //debugln('TSourceNotebook.OnSynCompletionKeyPress B UTF8Key=',dbgstr(UTF8Key));
+end;
+
+procedure TSourceEditCompletion.OnSynCompletionPositionChanged(Sender: TObject
+  );
+begin
+  if Manager.ActiveCompletionPlugin<>nil then
+    Manager.ActiveCompletionPlugin.IndexChanged(Position);
+  if SrcEditHintWindow<>nil then
+    SrcEditHintWindow.UpdateHints;
+end;
+
+function TSourceEditCompletion.InitIdentCompletionValues(S: TStrings): boolean;
+var
+  i: integer;
+  Handled: boolean;
+  Abort: boolean;
+  Prefix: string;
+  ItemCnt: Integer;
+begin
+  Result:=false;
+  Prefix := CurrentString;
+  if Manager.ActiveCompletionPlugin<>nil then
+  begin
+    Result := Manager.ActiveCompletionPlugin.Collect(S);
+  end else if Assigned(Manager.OnInitIdentCompletion) then
+  begin
+    Manager.OnInitIdentCompletion(Self, FIdentCompletionJumpToError, Handled, Abort);
+    if Handled then begin
+      if Abort then exit;
+      // add one entry per item
+      CodeToolBoss.IdentifierList.Prefix:=Prefix;
+      ItemCnt:=CodeToolBoss.IdentifierList.GetFilteredCount;
+      //DebugLn('InitIdentCompletion B Prefix=',Prefix,' ItemCnt=',IntToStr(ItemCnt));
+      Position:=0;
+      for i:=0 to ItemCnt-1 do
+        s.Add('Dummy');
+      Result:=true;
+      exit;
+    end;
+  end;
+end;
+
+procedure TSourceEditCompletion.StartShowCodeHelp;
+begin
+  if SrcEditHintWindow = nil then begin
+    SrcEditHintWindow := TSrcEditHintWindow.Create(Manager);
+    SrcEditHintWindow.Name:='TSourceNotebook_SrcEditHintWindow';
+    SrcEditHintWindow.Provider:=TFPDocHintProvider.Create(SrcEditHintWindow);
+  end;
+  SrcEditHintWindow.AnchorForm := TheForm;
+  {$IFDEF EnableCodeHelp}
+  SrcEditHintWindow.HelpEnabled:=true;
+  {$ENDIF}
+end;
+
+function TSourceEditCompletion.Manager: TSourceEditorManager;
+begin
+  Result := SourceEditorManager;
+end;
+
+constructor TSourceEditCompletion.Create(AOwner: TComponent);
+begin
+  inherited;
+  EndOfTokenChr:='()[].,;:-+=^*<>/';
+  Width:=400;
+  OnExecute := @ccExecute;
+  OnCancel := @ccCancel;
+  OnCodeCompletion := @ccComplete;
+  OnPaintItem:=@OnSynCompletionPaintItem;
+  OnMeasureItem := @OnSynCompletionMeasureItem;
+  OnSearchPosition:=@OnSynCompletionSearchPosition;
+  OnKeyCompletePrefix:=@OnSynCompletionCompletePrefix;
+  OnKeyNextChar:=@OnSynCompletionNextChar;
+  OnKeyPrevChar:=@OnSynCompletionPrevChar;
+  OnKeyPress:=@OnSynCompletionKeyPress;
+  OnUTF8KeyPress:=@OnSynCompletionUTF8KeyPress;
+  OnPositionChanged:=@OnSynCompletionPositionChanged;
+  ShortCut:=Menus.ShortCut(VK_UNKNOWN,[]);
+end;
+
 { TSourceEditor }
 
 { The constructor for @link(TSourceEditor).
@@ -1319,7 +1876,7 @@ begin
     FEditor.Parent:=nil;
     if SourceEditorMarks<>nil then
       SourceEditorMarks.DeleteAllForEditor(FEditor);
-    TSourceNotebook(FAOwner).FSourceEditorList.Remove(Self);
+    TSourceNotebook(FAOwner).ReleaseEditor(self);
     // free the synedit control after processing the events
     Application.ReleaseComponent(FEditor);
   end;
@@ -2671,21 +3228,21 @@ begin
   x2 := Min(x2, p.x);
   WordToken := copy(Line, x1, x2-x1);
   IdChars := FEditor.IdentChars;
-  for i:=0 to FCodeTemplates.Completions.Count-1 do begin
-    AToken:=FCodeTemplates.Completions[i];
+  for i:=0 to Manager.CodeTemplateModul.Completions.Count-1 do begin
+    AToken:=Manager.CodeTemplateModul.Completions[i];
     if AToken='' then continue;
     if AToken[1] in IdChars then
       SrcToken:=WordToken
     else
       SrcToken:=copy(Line,length(Line)-length(AToken)+1,length(AToken));
-    //DebugLn(['TSourceEditor.AutoCompleteChar ',AToken,' SrcToken=',SrcToken,' CatName=',CatName,' Index=',FCodeTemplates.CompletionAttributes[i].IndexOfName(CatName)]);
+    //DebugLn(['TSourceEditor.AutoCompleteChar ',AToken,' SrcToken=',SrcToken,' CatName=',CatName,' Index=',Manager.CodeTemplateModul.CompletionAttributes[i].IndexOfName(CatName)]);
     if (AnsiCompareText(AToken,SrcToken)=0)
-    and (FCodeTemplates.CompletionAttributes[i].IndexOfName(CatName)>=0)
+    and (Manager.CodeTemplateModul.CompletionAttributes[i].IndexOfName(CatName)>=0)
     then begin
       Result:=true;
-      DebugLn(['TSourceEditor.AutoCompleteChar ',AToken,' SrcToken=',SrcToken,' CatName=',CatName,' Index=',FCodeTemplates.CompletionAttributes[i].IndexOfName(CatName)]);
-      FCodeTemplates.ExecuteCompletion(AToken,FEditor);
-      AddChar:=not FCodeTemplates.CompletionAttributes[i].IndexOfName(
+      //DebugLn(['TSourceEditor.AutoCompleteChar ',AToken,' SrcToken=',SrcToken,' CatName=',CatName,' Index=',Manager.CodeTemplateModul.CompletionAttributes[i].IndexOfName(CatName)]);
+      Manager.CodeTemplateModul.ExecuteCompletion(AToken,FEditor);
+      AddChar:=not Manager.CodeTemplateModul.CompletionAttributes[i].IndexOfName(
                                      AutoCompleteOptionNames[acoRemoveChar])>=0;
       exit;
     end;
@@ -2743,6 +3300,8 @@ Begin
       Align := alClient;
       BookMarkOptions.EnableKeys := false;
       BookMarkOptions.LeftMargin:=1;
+      BookMarkOptions.BookmarkImages := SourceEditorMarks.ImgList;
+      Gutter.MarksPart.DebugMarksImageIndex := SourceEditorMarks.SourceLineImg;
       WantTabs := true;
       ScrollBars := ssAutoBoth;
 
@@ -2766,10 +3325,8 @@ Begin
       OnClearBookmark := @EditorClearBookmark;
       // IMPORTANT: when you change above, don't forget updating UnbindEditor
     end;
-    if FCodeTemplates<>nil then
-      FCodeTemplates.AddEditor(FEditor);
-    if aCompletion<>nil then
-      aCompletion.AddEditor(FEditor);
+    Manager.CodeTemplateModul.AddEditor(FEditor);
+    Manager.NewEditorCreated(self);
     TemplateEdit:=TSynPluginTemplateEdit.Create(FEditor);
     TemplateEdit.OnActivate := @EditorActivateSyncro;
     TemplateEdit.OnDeactivate := @EditorDeactivateSyncro;
@@ -2899,18 +3456,20 @@ var
   TextS, TextS2: String;
   LogCaret: TPoint;
   UseWordCompletion: Boolean;
+  Completion: TSourceEditCompletion;
 begin
   {$IFDEF VerboseIDECompletionBox}
   debugln(['TSourceEditor.StartIdentCompletionBox JumpToError: ',JumpToError]);
   {$ENDIF}
-  if (FEditor.ReadOnly) or (CurrentCompletionType<>ctNone) then exit;
-  SourceNotebook.fIdentCompletionJumpToError:=JumpToError;
-  SourceNotebook.CreateCompletionForm;
-  CurrentCompletionType:=ctIdentCompletion;
+  if (FEditor.ReadOnly) then exit;
+  Completion := Manager.DefaultCompletionForm;
+  if (Completion.CurrentCompletionType<>ctNone) then exit;
+  Completion.IdentCompletionJumpToError := JumpToError;
+  Completion.CurrentCompletionType:=ctIdentCompletion;
   TextS := FEditor.LineText;
   LogCaret:=FEditor.LogicalCaretXY;
-  aCompletion.Editor:=FEditor;
-  aCompletion.TheForm.Font := FEditor.Font;
+  Completion.Editor:=FEditor;
+  Completion.TheForm.Font := FEditor.Font;
   i := LogCaret.X - 1;
   if i > length(TextS) then
     TextS2 := ''
@@ -2921,7 +3480,7 @@ begin
   end;
   with FEditor do begin
     P := Point(CaretXPix - length(TextS2)*CharWidth,CaretYPix + LineHeight + 1);
-    P.X:=Max(0,Min(P.X,ClientWidth-aCompletion.Width));
+    P.X:=Max(0,Min(P.X,ClientWidth-Completion.Width));
     P := ClientToScreen(p);
   end;
   UseWordCompletion:=false;
@@ -2929,11 +3488,11 @@ begin
     P.X,P.Y,UseWordCompletion)
   then exit;
   if UseWordCompletion then
-    CurrentCompletionType:=ctWordCompletion;
+    Completion.CurrentCompletionType:=ctWordCompletion;
 
-  aCompletion.Execute(TextS2,P.X,P.Y);
+  Completion.Execute(TextS2,P.X,P.Y);
   {$IFDEF VerboseIDECompletionBox}
-  debugln(['TSourceEditor.StartIdentCompletionBox END aCompletion.TheForm.Visible=',aCompletion.TheForm.Visible]);
+  debugln(['TSourceEditor.StartIdentCompletionBox END Completion.TheForm.Visible=',Completion.TheForm.Visible]);
   {$ENDIF}
 end;
 
@@ -2944,14 +3503,16 @@ var
   i: Integer;
   TextS2: String;
   P: TPoint;
+  Completion: TSourceEditCompletion;
 begin
-  if (FEditor.ReadOnly) or (CurrentCompletionType<>ctNone) then exit;
-  SourceNotebook.CreateCompletionForm;
-  CurrentCompletionType:=ctWordCompletion;
+  if (FEditor.ReadOnly) then exit;
+  Completion := Manager.DefaultCompletionForm;
+  if (Completion.CurrentCompletionType<>ctNone) then exit;
+  Completion.CurrentCompletionType:=ctWordCompletion;
   TextS := FEditor.LineText;
   LogCaret:=FEditor.LogicalCaretXY;
-  aCompletion.Editor:=FEditor;
-  aCompletion.TheForm.Font := FEditor.Font;
+  Completion.Editor:=FEditor;
+  Completion.TheForm.Font := FEditor.Font;
   i := LogCaret.X - 1;
   if i > length(TextS) then
     TextS2 := ''
@@ -2962,10 +3523,10 @@ begin
   end;
   with FEditor do begin
     P := Point(CaretXPix - length(TextS2)*CharWidth,CaretYPix + LineHeight + 1);
-    P.X:=Max(0,Min(P.X,ClientWidth-aCompletion.Width));
+    P.X:=Max(0,Min(P.X,ClientWidth - Completion.Width));
     P := ClientToScreen(p);
   end;
-  aCompletion.Execute(TextS2,P.X,P.Y);
+  Completion.Execute(TextS2,P.X,P.Y);
 end;
 
 procedure TSourceEditor.IncreaseIgnoreCodeBufferLock;
@@ -3132,8 +3693,7 @@ Begin
     FOnBeforeClose(Self);
 
   Visible := False;
-  if aCompletion<>nil then
-    aCompletion.RemoveEditor(FEditor);
+  Manager.EditorRemoved(self);
   SourceEditorMarks.DeleteAllForEditor(FEditor);
   UnbindEditor;
   FEditor.Parent:=nil;
@@ -3162,18 +3722,6 @@ end;
 procedure TSourceEditor.EndUpdate;
 begin
   FEditor.EndUpdate;
-end;
-
-procedure TSourceEditor.SetCodeTemplates(
-  NewCodeTemplates: TSynEditAutoComplete);
-begin
-  if NewCodeTemplates<>FCodeTemplates then begin
-    if FCodeTemplates<>nil then
-      FCodeTemplates.RemoveEditor(FEditor);
-    FCodeTemplates:=NewCodeTemplates;
-    if FCodeTemplates<>nil then
-      FCodeTemplates.AddEditor(FEditor);
-  end;
 end;
 
 procedure TSourceEditor.SetPopupMenu(NewPopupMenu: TPopupMenu);
@@ -3736,20 +4284,6 @@ begin
 
   FSourceEditorList := TList.Create;
 
-  // code templates
-  FCodeTemplateModul:=TSynEditAutoComplete.Create(Self);
-  with FCodeTemplateModul do begin
-    if FileExistsUTF8(EditorOpts.CodeTemplateFilename) then
-      AutoCompleteList.LoadFromFile(UTF8ToSys(EditorOpts.CodeTemplateFilename))
-    else
-      if FileExistsUTF8('lazarus.dci') then
-        AutoCompleteList.LoadFromFile(UTF8ToSys('lazarus.dci'));
-    IndentToTokenStart:=EditorOpts.CodeTemplateIndentToTokenStart;
-    OnTokenNotFound:=@OnCodeTemplateTokenNotFound;
-    OnExecuteCompletion:=@OnCodeTemplateExecuteCompletion;
-    EndOfTokenChr:=' ()[]{},.;:"+-*^@$\<>=''';
-  end;
-
   // key mapping
   FKeyStrokes:=TSynEditKeyStrokes.Create(Self);
   EditorOpts.KeyMap.AssignTo(FKeyStrokes,TSourceEditorWindowInterface);
@@ -3792,398 +4326,20 @@ begin
     FreeThenNil(Notebook);
   end;
   FKeyStrokes.Free;
-  FCodeTemplateModul.Free;
   FSourceEditorList.Free;
   FreeAndNil(Gotodialog);
 
   FreeThenNil(CodeContextFrm);
   FreeThenNil(SrcEditHintWindow);
-  FreeThenNil(aCompletion);
   FreeThenNil(FMouseHintTimer);
   FreeThenNil(FHintWindow);
 
   inherited Destroy;
 end;
 
-procedure TSourceNotebook.CreateCompletionForm;
-var
-  i: Integer;
-begin
-  {$IFDEF VerboseIDECompletionBox}
-  debugln(['TSourceNotebook.CreateCompletionForm START ',dbgsname(aCompletion)]);
-  {$ENDIF}
-  // completion form
-  if aCompletion<>nil then exit;
-  aCompletion := TSynCompletion.Create(Self);
-    with aCompletion do
-      Begin
-        EndOfTokenChr:='()[].,;:-+=^*<>/';
-        Width:=400;
-        OnExecute := @ccExecute;
-        OnCancel := @ccCancel;
-        OnCodeCompletion := @ccComplete;
-        OnPaintItem:=@OnSynCompletionPaintItem;
-        OnMeasureItem := @OnSynCompletionMeasureItem;
-        OnSearchPosition:=@OnSynCompletionSearchPosition;
-        OnKeyCompletePrefix:=@OnSynCompletionCompletePrefix;
-        OnKeyNextChar:=@OnSynCompletionNextChar;
-        OnKeyPrevChar:=@OnSynCompletionPrevChar;
-        OnKeyPress:=@OnSynCompletionKeyPress;
-        OnUTF8KeyPress:=@OnSynCompletionUTF8KeyPress;
-        OnPositionChanged:=@OnSynCompletionPositionChanged;
-        ShortCut:=Menus.ShortCut(VK_UNKNOWN,[]);
-      end;
-
-  for i:=0 to EditorCount-1 do
-    aCompletion.AddEditor(Editors[i].FEditor);
-end;
-
-function TSourceNotebook.OnSynCompletionPaintItem(const AKey: string;
-  ACanvas: TCanvas;  X, Y: integer; ItemSelected: boolean;
-  Index: integer): boolean;
-var
-  MaxX: Integer;
-  t: TCompletionType;
-begin
-  with ACanvas do begin
-    if (aCompletion<>nil) and (aCompletion.Editor<>nil) then
-      Font:=aCompletion.Editor.Font
-    else begin
-      Font.Height:=EditorOpts.EditorFontHeight; // set Height before name for XLFD !
-      Font.Name:=EditorOpts.EditorFont;
-    end;
-    Font.Style:=[];
-    if not ItemSelected then
-      Font.Color:=FActiveEditDefaultFGColor
-    else
-      Font.Color:=FActiveEditSelectedFGColor;
-  end;
-  MaxX:=aCompletion.TheForm.ClientWidth;
-  t:=CurrentCompletionType;
-  if ActiveCompletionPlugin<>nil then
-  begin
-    if ActiveCompletionPlugin.HasCustomPaint then
-    begin
-      ActiveCompletionPlugin.PaintItem(AKey,ACanvas,X,Y,ItemSelected,Index);
-    end else begin
-      t:=ctWordCompletion;
-    end;
-  end;
-  PaintCompletionItem(AKey,ACanvas,X,Y,MaxX,ItemSelected,Index,aCompletion,
-                      t,aCompletion.Editor.Highlighter);
-  Result:=true;
-end;
-
-function TSourceNotebook.OnSynCompletionMeasureItem(const AKey: string;
-  ACanvas: TCanvas; ItemSelected: boolean; Index: integer): TPoint;
-var
-  MaxX: Integer;
-  t: TCompletionType;
-begin
-  with ACanvas do begin
-    if (aCompletion<>nil) and (aCompletion.Editor<>nil) then
-      Font:=aCompletion.Editor.Font
-    else begin
-      Font.Height:=EditorOpts.EditorFontHeight; // set Height before name of XLFD !
-      Font.Name:=EditorOpts.EditorFont;
-    end;
-    Font.Style:=[];
-    if not ItemSelected then
-      Font.Color:=FActiveEditDefaultFGColor
-    else
-      Font.Color:=FActiveEditSelectedFGColor;
-  end;
-  MaxX := Screen.Width-20;
-  t:=CurrentCompletionType;
-  if ActiveCompletionPlugin<>nil then
-  begin
-    if ActiveCompletionPlugin.HasCustomPaint then
-    begin
-      ActiveCompletionPlugin.MeasureItem(AKey,ACanvas,ItemSelected,Index);
-    end else begin
-      t:=ctWordCompletion;
-    end;
-  end;
-  Result := PaintCompletionItem(AKey,ACanvas,0,0,MaxX,ItemSelected,Index,
-                                aCompletion,t,nil,True);
-  if CurCompletionControl<>nil then
-    Result.Y:=CurCompletionControl.FontHeight;
-end;
-
-procedure TSourceNotebook.OnCodeTemplateTokenNotFound(Sender: TObject;
-  AToken: string; AnEditor: TCustomSynEdit; var Index:integer);
-var P:TPoint;
-begin
-  //writeln('TSourceNotebook.OnCodeTemplateTokenNotFound ',AToken,',',AnEditor.ReadOnly,',',CurrentCompletionType=ctNone);
-  if (AnEditor.ReadOnly=false) and (CurrentCompletionType=ctNone) then begin
-    CreateCompletionForm;
-    CurrentCompletionType:=ctTemplateCompletion;
-    with AnEditor do begin
-      P := Point(CaretXPix - length(AToken)*CharWidth,CaretYPix + LineHeight + 1);
-      P.X:=Max(0,Min(P.X,ClientWidth-aCompletion.Width));
-      P := ClientToScreen(p);
-    end;
-    aCompletion.Editor:=AnEditor;
-    aCompletion.Execute(AToken,P.X,P.Y);
-  end;
-end;
-
-procedure TSourceNotebook.OnCodeTemplateExecuteCompletion(
-  ASynAutoComplete: TCustomSynAutoComplete; Index: integer);
-var
-  SrcEdit: TSourceEditorInterface;
-  TemplateName: string;
-  TemplateValue: string;
-  TemplateComment: string;
-  TemplateAttr: TStrings;
-begin
-  SrcEdit:=FindSourceEditorWithEditorComponent(ASynAutoComplete.Editor);
-  if SrcEdit=nil then
-    SrcEdit:=GetActiveEditor;
-  //debugln('TSourceNotebook.OnCodeTemplateExecuteCompletion A ',dbgsName(SrcEdit),' ',dbgsName(ASynAutoComplete.Editor));
-
-  TemplateName:=ASynAutoComplete.Completions[Index];
-  TemplateValue:=ASynAutoComplete.CompletionValues[Index];
-  TemplateComment:=ASynAutoComplete.CompletionComments[Index];
-  TemplateAttr:=ASynAutoComplete.CompletionAttributes[Index];
-  ExecuteCodeTemplate(SrcEdit,TemplateName,TemplateValue,TemplateComment,
-                      ASynAutoComplete.EndOfTokenChr,TemplateAttr,
-                      ASynAutoComplete.IndentToTokenStart);
-end;
-
-procedure TSourceNotebook.OnSynCompletionSearchPosition(var APosition:integer);
-// prefix changed -> filter list
-var
-  i,x:integer;
-  CurStr,s:Ansistring;
-  SL: TStrings;
-  ItemCnt: Integer;
-begin
-  if CurCompletionControl=nil then exit;
-  case CurrentCompletionType of
-
-    ctIdentCompletion:
-      if ActiveCompletionPlugin<>nil then
-      begin
-        // let plugin rebuild completion list
-        SL:=TStringList.Create;
-        try
-          ActiveCompletionPlugin.PrefixChanged(CurCompletionControl.CurrentString,
-            APosition,sl);
-          CurCompletionControl.ItemList:=SL;
-        finally
-          SL.Free;
-        end;
-      end else begin
-        // rebuild completion list
-        APosition:=0;
-        CurStr:=CurCompletionControl.CurrentString;
-        CodeToolBoss.IdentifierList.Prefix:=CurStr;
-        ItemCnt:=CodeToolBoss.IdentifierList.GetFilteredCount;
-        SL:=TStringList.Create;
-        try
-          sl.Capacity:=ItemCnt;
-          for i:=0 to ItemCnt-1 do
-            SL.Add('Dummy'); // these entries are not shown
-          CurCompletionControl.ItemList:=SL;
-        finally
-          SL.Free;
-        end;
-      end;
-
-    ctTemplateCompletion:
-      begin
-        // search CurrentString in bold words (words after #3'B')
-        CurStr:=CurCompletionControl.CurrentString;
-        i:=0;
-        while i<CurCompletionControl.ItemList.Count do begin
-          s:=CurCompletionControl.ItemList[i];
-          x:=1;
-          while (x<=length(s)) and (s[x]<>#3) do inc(x);
-          if x<length(s) then begin
-            inc(x,2);
-            if AnsiCompareText(CurStr,copy(s,x,length(CurStr)))=0 then begin
-              APosition:=i;
-              break;
-            end;
-          end;
-          inc(i);
-        end;
-      end;
-
-    ctWordCompletion:
-      begin
-        // rebuild completion list
-        APosition:=0;
-        CurStr:=CurCompletionControl.CurrentString;
-        SL:=TStringList.Create;
-        try
-          aWordCompletion.GetWordList(SL, CurStr, false, 100);
-          CurCompletionControl.ItemList:=SL;
-        finally
-          SL.Free;
-        end;
-      end;
-
-  end;
-end;
-
-procedure TSourceNotebook.OnSynCompletionCompletePrefix(Sender: TObject);
-var
-  OldPrefix: String;
-  NewPrefix: String;
-  SL: TStringList;
-  AddPrefix: String;
-begin
-  if CurCompletionControl=nil then exit;
-  OldPrefix:=CurCompletionControl.CurrentString;
-  NewPrefix:=OldPrefix;
-
-  case CurrentCompletionType of
-
-  ctIdentCompletion:
-    if ActiveCompletionPlugin<>nil then
-    begin
-      ActiveCompletionPlugin.CompletePrefix(NewPrefix);
-    end else begin
-      NewPrefix:=CodeToolBoss.IdentifierList.CompletePrefix(OldPrefix);
-    end;
-
-  ctWordCompletion:
-    begin
-      aWordCompletion.CompletePrefix(OldPrefix,NewPrefix,false);
-    end;
-
-  end;
-
-  if NewPrefix<>OldPrefix then begin
-    AddPrefix:=copy(NewPrefix,length(OldPrefix)+1,length(NewPrefix));
-    CurCompletionControl.Editor.InsertTextAtCaret(AddPrefix);
-    if CurrentCompletionType=ctWordCompletion then begin
-      SL:=TStringList.Create;
-      try
-        aWordCompletion.GetWordList(SL, NewPrefix, false, 100);
-        CurCompletionControl.ItemList:=SL;
-      finally
-        SL.Free;
-      end;
-    end;
-    CurCompletionControl.CurrentString:=NewPrefix;
-  end;
-end;
-
-procedure TSourceNotebook.OnSynCompletionNextChar(Sender: TObject);
-var
-  NewPrefix: String;
-  SrcEdit: TSourceEditor;
-  Line: String;
-  Editor: TSynEdit;
-  LogCaret: TPoint;
-  CharLen: LongInt;
-  AddPrefix: String;
-begin
-  if CurCompletionControl=nil then exit;
-  SrcEdit:=GetActiveSE;
-  if SrcEdit=nil then exit;
-  Editor:=SrcEdit.EditorComponent;
-  LogCaret:=Editor.LogicalCaretXY;
-  if LogCaret.Y>=Editor.Lines.Count then exit;
-  Line:=SrcEdit.EditorComponent.Lines[LogCaret.Y-1];
-  if LogCaret.X>length(Line) then exit;
-  CharLen:=UTF8CharacterLength(@Line[LogCaret.X]);
-  AddPrefix:=copy(Line,LogCaret.X,CharLen);
-  NewPrefix:=CurCompletionControl.CurrentString+AddPrefix;
-  //debugln('TSourceNotebook.OnSynCompletionNextChar NewPrefix="',NewPrefix,'" LogCaret.X=',dbgs(LogCaret.X));
-  inc(LogCaret.X);
-  CurCompletionControl.Editor.LogicalCaretXY:=LogCaret;
-  CurCompletionControl.CurrentString:=NewPrefix;
-end;
-
-procedure TSourceNotebook.OnSynCompletionPrevChar(Sender: TObject);
-var
-  NewPrefix: String;
-  SrcEdit: TSourceEditor;
-  Editor: TSynEdit;
-  NewLen: LongInt;
-begin
-  if CurCompletionControl=nil then exit;
-  NewPrefix:=CurCompletionControl.CurrentString;
-  if NewPrefix='' then exit;
-  SrcEdit:=GetActiveSE;
-  if SrcEdit=nil then exit;
-  Editor:=SrcEdit.EditorComponent;
-  Editor.CaretX:=Editor.CaretX-1;
-  NewLen:=UTF8FindNearestCharStart(PChar(NewPrefix),length(NewPrefix),
-                                   length(NewPrefix))-1;
-  NewPrefix:=copy(NewPrefix,1,NewLen);
-  CurCompletionControl.CurrentString:=NewPrefix;
-end;
-
-procedure TSourceNotebook.OnSynCompletionKeyPress(Sender: TObject;
-  var Key: Char);
-begin
-  if CurCompletionControl=nil then exit;
-  if (System.Pos(Key,CurCompletionControl.EndOfTokenChr)>0) then begin
-    // identifier completed
-    //debugln('TSourceNotebook.OnSynCompletionKeyPress A');
-    CurCompletionControl.TheForm.OnValidate(Sender,Key,[]);
-    //debugln('TSourceNotebook.OnSynCompletionKeyPress B');
-    Key:=#0;
-  end;
-end;
-
-procedure TSourceNotebook.OnSynCompletionUTF8KeyPress(Sender: TObject;
-  var UTF8Key: TUTF8Char);
-begin
-  if CurCompletionControl=nil then exit;
-  if (length(UTF8Key)=1)
-  and (System.Pos(UTF8Key[1],CurCompletionControl.EndOfTokenChr)>0) then begin
-    // identifier completed
-    //debugln('TSourceNotebook.OnSynCompletionUTF8KeyPress A');
-    CurCompletionControl.TheForm.OnValidate(Sender,UTF8Key,[]);
-    //debugln('TSourceNotebook.OnSynCompletionKeyPress B');
-    UTF8Key:='';
-  end else begin
-    aCompletion.Editor.CommandProcessor(ecChar,UTF8Key,nil);
-    UTF8Key:='';
-  end;
-  //debugln('TSourceNotebook.OnSynCompletionKeyPress B UTF8Key=',dbgstr(UTF8Key));
-end;
-
-procedure TSourceNotebook.OnSynCompletionPositionChanged(Sender: TObject);
-begin
-  if ActiveCompletionPlugin<>nil then
-    ActiveCompletionPlugin.IndexChanged(CurCompletionControl.Position);
-  if SrcEditHintWindow<>nil then
-    SrcEditHintWindow.UpdateHints;
-end;
-
 procedure TSourceNotebook.DeactivateCompletionForm;
-var
-  ActSE: TSourceEditor;
-  OldCompletionControl: TSynCompletion;
 begin
-  if CurCompletionControl=nil then exit;
-
-  if ActiveCompletionPlugin<>nil then begin
-    ActiveCompletionPlugin.Cancel;
-    FActiveCompletionPlugin:=nil;
-  end;
-
-  // clear the IdentifierList (otherwise it would try to update everytime
-  // the codetools are used)
-  CodeToolBoss.IdentifierList.Clear;
-
-  OldCompletionControl:=CurCompletionControl;
-  CurCompletionControl:=nil;
-  OldCompletionControl.Deactivate;
-
-  CurrentCompletionType:=ctNone;
-  ActSE:=GetActiveSE;
-  if ActSE<>nil then begin
-    LCLIntf.ShowCaret(ActSE.EditorComponent.Handle);
-    ActSE.EditorComponent.SetFocus;
-  end;
+  Manager.DeactivateCompletionForm;
 end;
 
 function TSourceNotebook.StartIdentCompletionBox(SrcEdit: TSourceEditor;
@@ -4201,11 +4357,11 @@ begin
     Cancel:=false;
     Plugin.Init(SrcEdit,JumpToError,Handled,Cancel,s,BoxX,BoxY);
     if Cancel then begin
-      DeactivateCompletionForm;
+      Manager.DeactivateCompletionForm;
       exit(false);
     end;
     if Handled then begin
-      FActiveCompletionPlugin:=Plugin;
+      Manager.FActiveCompletionPlugin:=Plugin;
       exit(true);
     end;
   end;
@@ -4214,248 +4370,6 @@ begin
     UseWordCompletion:=true;
   Result:=true;
 end;
-
-function TSourceNotebook.InitIdentCompletionValues(S: TStrings): boolean;
-var
-  i: integer;
-  Handled: boolean;
-  Abort: boolean;
-  Prefix: string;
-  ItemCnt: Integer;
-begin
-  Result:=false;
-  Prefix := CurCompletionControl.CurrentString;
-  if ActiveCompletionPlugin<>nil then
-  begin
-    Result:=ActiveCompletionPlugin.Collect(S);
-  end else if Assigned(Manager.OnInitIdentCompletion) then
-  begin
-    Manager.OnInitIdentCompletion(Self,fIdentCompletionJumpToError,Handled,Abort);
-    if Handled then begin
-      if Abort then exit;
-      // add one entry per item
-      CodeToolBoss.IdentifierList.Prefix:=Prefix;
-      ItemCnt:=CodeToolBoss.IdentifierList.GetFilteredCount;
-      //DebugLn('InitIdentCompletion B Prefix=',Prefix,' ItemCnt=',IntToStr(ItemCnt));
-      CurCompletionControl.Position:=0;
-      for i:=0 to ItemCnt-1 do
-        s.Add('Dummy');
-      Result:=true;
-      exit;
-    end;
-  end;
-end;
-
-procedure TSourceNotebook.ccComplete(var Value: string; SourceValue: string;
-  var SourceStart, SourceEnd: TPoint; KeyChar: TUTF8Char; Shift: TShiftState);
-// completion selected -> deactivate completion form
-// Called when user has selected a completion item
-
-  function CharBehindIdent(const Line: string; StartPos: integer): char;
-  begin
-    while (StartPos<=length(Line))
-    and (Line[StartPos] in ['_','A'..'Z','a'..'z']) do
-      inc(StartPos);
-    while (StartPos<=length(Line)) and (Line[StartPos] in [' ',#9]) do
-      inc(StartPos);
-    if StartPos<=length(Line) then
-      Result:=Line[StartPos]
-    else
-      Result:=#0;
-  end;
-
-  function CharInFrontOfIdent(const Line: string; StartPos: integer): char;
-  begin
-    while (StartPos>=1)
-    and (Line[StartPos] in ['_','A'..'Z','a'..'z']) do
-      dec(StartPos);
-    while (StartPos>=1) and (Line[StartPos] in [' ',#9]) do
-      dec(StartPos);
-    if StartPos>=1 then
-      Result:=Line[StartPos]
-    else
-      Result:=#0;
-  end;
-
-var
-  p1, p2: integer;
-  ValueType: TIdentComplValue;
-  SrcEdit: TSourceEditor;
-  NewCaretXY: TPoint;
-  CursorToLeft: integer;
-  NewValue: String;
-  Editor: TSynEdit;
-  OldCompletionType: TCompletionType;
-Begin
-  {$IFDEF VerboseIDECompletionBox}
-  debugln(['TSourceNotebook.ccComplete START']);
-  {$ENDIF}
-  if CurCompletionControl=nil then
-  begin
-    Value := SourceValue;
-    exit;
-  end;
-  OldCompletionType:=CurrentCompletionType;
-  case CurrentCompletionType of
-
-    ctIdentCompletion:
-      if ActiveCompletionPlugin<>nil then
-      begin
-        ActiveCompletionPlugin.Complete(Value,SourceValue,
-           SourceStart,SourceEnd,KeyChar,Shift);
-        FActiveCompletionPlugin:=nil;
-      end else begin
-        // add to history
-        CodeToolBoss.IdentifierHistory.Add(
-          CodeToolBoss.IdentifierList.FilteredItems[aCompletion.Position]);
-        // get value
-        NewValue:=GetIdentCompletionValue(aCompletion,KeyChar,
-                                          ValueType,CursorToLeft);
-        if ValueType=icvIdentifier then ;
-        // insert value plus special chars like brackets, semicolons, ...
-        SrcEdit:=GetActiveSE;
-        Editor:=SrcEdit.EditorComponent;
-        if ValueType <> icvNone then
-          Editor.TextBetweenPointsEx[SourceStart, SourceEnd, scamEnd] := NewValue;
-        if CursorToLeft>0 then
-        begin
-          NewCaretXY:=Editor.CaretXY;
-          dec(NewCaretXY.X,CursorToLeft);
-          Editor.CaretXY:=NewCaretXY;
-        end;
-        ccSelection := '';
-        Value:='';
-        SourceEnd := SourceStart;
-      end;
-
-    ctTemplateCompletion:
-      begin
-        // the completion is the bold text between #3'B' and #3'b'
-        p1:=Pos(#3,Value);
-        if p1>=0 then begin
-          p2:=p1+2;
-          while (p2<=length(Value)) and (Value[p2]<>#3) do inc(p2);
-          Value:=copy(Value,p1+2,p2-p1-2);
-          // keep parent identifier (in front of '.')
-          p1:=length(ccSelection);
-          while (p1>=1) and (ccSelection[p1]<>'.') do dec(p1);
-          if p1>=1 then
-            Value:=copy(ccSelection,1,p1)+Value;
-        end;
-        ccSelection := '';
-        if Value<>'' then
-          FCodeTemplateModul.ExecuteCompletion(Value,
-                                               GetActiveSE.EditorComponent);
-        SourceEnd := SourceStart;
-        Value:='';
-      end;
-
-    ctWordCompletion:
-      // the completion is already in Value
-      begin
-        ccSelection := '';
-        if Value<>'' then AWordCompletion.AddWord(Value);
-      end;
-
-    else begin
-      Value:='';
-    end;
-  end;
-
-  DeactivateCompletionForm;
-
-  //DebugLn(['TSourceNotebook.ccComplete ',KeyChar,' ',OldCompletionType=ctIdentCompletion]);
-  SrcEdit:=GetActiveSE;
-  Editor:=SrcEdit.EditorComponent;
-  if (KeyChar='.') and (OldCompletionType=ctIdentCompletion) then
-  begin
-    SourceCompletionCaretXY:=Editor.CaretXY;
-    SourceCompletionTimer.AutoEnabled:=true;
-  end;
-End;
-
-Procedure TSourceNotebook.ccCancel(Sender: TObject);
-// user cancels completion form
-begin
-  if CurCompletionControl=nil then exit;
-  {$IFDEF VerboseIDECompletionBox}
-  debugln(['TSourceNotebook.ccCancel START']);
-  //debugln(GetStackTrace(true));
-  {$ENDIF}
-  DeactivateCompletionForm;
-end;
-
-Procedure TSourceNotebook.ccExecute(Sender: TObject);
-// init completion form
-// called by aCompletion.OnExecute just before showing
-var
-  S: TStrings;
-  Prefix: String;
-  I: Integer;
-  NewStr: String;
-  CurEdit: TSynEdit;
-Begin
-  {$IFDEF VerboseIDECompletionBox}
-  debugln(['TSourceNotebook.ccExecute START']);
-  {$ENDIF}
-  CurCompletionControl := Sender as TSynCompletion;
-  S := TStringList.Create;
-  try
-    Prefix := CurCompletionControl.CurrentString;
-    CurEdit:=GetActiveSE.EditorComponent;
-    case CurrentCompletionType of
-     ctIdentCompletion:
-       if not InitIdentCompletionValues(S) then begin
-         CurCompletionControl.ItemList.Clear;
-         exit;
-       end;
-
-     ctWordCompletion:
-       begin
-         ccSelection:='';
-       end;
-
-     ctTemplateCompletion:
-       begin
-         ccSelection:='';
-         for I:=0 to FCodeTemplateModul.Completions.Count-1 do begin
-           NewStr:=FCodeTemplateModul.Completions[I];
-           if NewStr<>'' then begin
-             NewStr:=#3'B'+NewStr+#3'b';
-             while length(NewStr)<10+4 do NewStr:=NewStr+' ';
-             NewStr:=NewStr+' '+FCodeTemplateModul.CompletionComments[I];
-             S.Add(NewStr);
-           end;
-         end;
-       end;
-
-    end;
-
-    CurCompletionControl.ItemList := S;
-  finally
-    S.Free;
-  end;
-  CurCompletionControl.CurrentString:=Prefix;
-  // set colors
-  if (CurEdit<>nil) and (CurCompletionControl.TheForm<>nil) then begin
-    with CurCompletionControl.TheForm do begin
-      BackgroundColor:=FActiveEditDefaultBGColor;
-      clSelect:=FActiveEditSelectedBGColor;
-      TextColor:=FActiveEditDefaultFGColor;
-      TextSelectedColor:=FActiveEditSelectedFGColor;
-      //writeln('TSourceNotebook.ccExecute A Color=',DbgS(Color),
-      // ' clSelect=',DbgS(clSelect),
-      // ' TextColor=',DbgS(TextColor),
-      // ' TextSelectedColor=',DbgS(TextSelectedColor),
-      // '');
-    end;
-    if (CurrentCompletionType=ctIdentCompletion) and (ActiveCompletionPlugin=nil)
-    then
-      StartShowCodeHelp
-    else if SrcEditHintWindow<>nil then
-      SrcEditHintWindow.HelpEnabled:=false;
-  end;
-End;
 
 Function TSourceNotebook.CreateNotebook: Boolean;
 Begin
@@ -4768,12 +4682,12 @@ begin
       // collect some flags
       SelAvail:=ASrcEdit.EditorComponent.SelAvail;
       SelAvailAndWritable:=SelAvail and (not ASrcEdit.ReadOnly);
+      // enable menu items
       SrcEditMenuEncloseSelection.Enabled := SelAvailAndWritable;
       SrcEditMenuExtractProc.Enabled := SelAvailAndWritable;
       SrcEditMenuInvertAssignment.Enabled := SelAvailAndWritable;
       CurWordAtCursor:=ASrcEdit.GetWordAtCurrentCaret;
       AtIdentifier:=IsValidIdent(CurWordAtCursor);
-      // enable menu items
       SrcEditMenuFindIdentifierReferences.Enabled:=AtIdentifier;
       SrcEditMenuRenameIdentifier.Enabled:=AtIdentifier
                                            and (not ASrcEdit.ReadOnly);
@@ -4984,9 +4898,7 @@ end;
 
 function TSourceNotebook.GetCompletionBoxPosition: integer;
 begin
-  Result:=-1;
-  if CurCompletionControl<>nil then
-    Result:=CurCompletionControl.Position;
+  Result := Manager.CompletionBoxPosition;
 end;
 
 procedure TSourceNotebook.UpdateHighlightMenuItems;
@@ -5181,7 +5093,7 @@ End;
 
 function TSourceNotebook.GetActiveCompletionPlugin: TSourceEditorCompletionPlugin;
 begin
-  Result := FActiveCompletionPlugin;
+  Result := Manager.ActiveCompletionPlugin;
 end;
 
 function TSourceNotebook.CompletionPluginCount: integer;
@@ -5229,26 +5141,32 @@ begin
   writeln('TSourceNotebook.NewSE B  ', PageIndex,',',NoteBook.Pages.Count);
   {$ENDIF}
   Result := TSourceEditor.Create(Self,Notebook.Page[PageNum]);
-  Result.EditorComponent.BeginUpdate;
-  FSourceEditorList.Add(Result);
-  Result.CodeTemplates:=CodeTemplateModul;
+  Result.FPageName := NoteBook.Pages[Pagenum];
+  AcceptEditor(Result);
   PageIndex := Pagenum;
-  //debugln(['TSourceNotebook.NewSE C GetActiveSE=Result=',GetActiveSE=Result]);
-  Result.FPageName:=NoteBook.Pages[Pagenum];
-  Result.EditorComponent.BookMarkOptions.BookmarkImages := SourceEditorMarks.ImgList;
-  Result.EditorComponent.Gutter.MarksPart.DebugMarksImageIndex := SourceEditorMarks.SourceLineImg;
-  Result.PopupMenu := SrcPopupMenu;
-  Result.OnEditorChange := @EditorChanged;
-  Result.OnMouseMove := @EditorMouseMove;
-  Result.OnMouseDown := @EditorMouseDown;
-  Result.OnMouseWheel := @EditorMouseWheel;
-  Result.OnKeyDown := @EditorKeyDown;
-  Result.EditorComponent.Beautifier.OnGetDesiredIndent := @EditorGetIndent;
-
-  Result.EditorComponent.EndUpdate;
   {$IFDEF IDE_DEBUG}
   writeln('TSourceNotebook.NewSE end ');
   {$ENDIF}
+end;
+
+procedure TSourceNotebook.AcceptEditor(AnEditor: TSourceEditor);
+begin
+  FSourceEditorList.Add(AnEditor);
+
+  AnEditor.EditorComponent.BeginUpdate;
+  AnEditor.PopupMenu := SrcPopupMenu;
+  AnEditor.OnEditorChange := @EditorChanged;
+  AnEditor.OnMouseMove := @EditorMouseMove;
+  AnEditor.OnMouseDown := @EditorMouseDown;
+  AnEditor.OnMouseWheel := @EditorMouseWheel;
+  AnEditor.OnKeyDown := @EditorKeyDown;
+  AnEditor.EditorComponent.Beautifier.OnGetDesiredIndent := @EditorGetIndent;
+  AnEditor.EditorComponent.EndUpdate;
+end;
+
+procedure TSourceNotebook.ReleaseEditor(AnEditor: TSourceEditor);
+begin
+  FSourceEditorList.Remove(AnEditor);
 end;
 
 function TSourceNotebook.FindSourceEditorWithPageIndex(
@@ -5519,19 +5437,6 @@ begin
     Manager.OnShowCodeContext(JumpToError,Abort);
     if Abort then ;
   end;
-end;
-
-procedure TSourceNotebook.StartShowCodeHelp;
-begin
-  if SrcEditHintWindow=nil then begin
-    SrcEditHintWindow:=TSrcEditHintWindow.Create(Self);
-    SrcEditHintWindow.Name:='TSourceNotebook_SrcEditHintWindow';
-    SrcEditHintWindow.Provider:=TFPDocHintProvider.Create(SrcEditHintWindow);
-  end;
-  SrcEditHintWindow.AnchorForm:=CurCompletionControl.TheForm;
-  {$IFDEF EnableCodeHelp}
-  SrcEditHintWindow.HelpEnabled:=true;
-  {$ENDIF}
 end;
 
 Procedure TSourceNotebook.ReadOnlyClicked(Sender: TObject);
@@ -6341,16 +6246,6 @@ Begin
   for i := 0 to EditorCount-1 do
     Editors[i].RefreshEditorSettings;
 
-  // reload code templates
-  with CodeTemplateModul do begin
-    if FileExistsUTF8(EditorOpts.CodeTemplateFilename) then
-      AutoCompleteList.LoadFromFile(UTF8ToSys(EditorOpts.CodeTemplateFilename))
-    else
-      if FileExistsUTF8('lazarus.dci') then
-        AutoCompleteList.LoadFromFile(UTF8ToSys('lazarus.dci'));
-    IndentToTokenStart:=EditorOpts.CodeTemplateIndentToTokenStart;
-  end;
-
   EditorOpts.KeyMap.AssignTo(FKeyStrokes,TSourceEditorWindowInterface);
   if NoteBook<>nil then begin
     if EditorOpts.ShowTabCloseButtons then
@@ -6703,11 +6598,6 @@ begin
   EditorOpts.GetLineColors(AEditor.Highlighter, ahaTextBlock, {TODO: MFR use AEditor.SelectedColor which includes styles / or have a copy}
     FActiveEditSelectedFGColor, FActiveEditSelectedBGColor, s ,sm);
 
-  FActiveEditKeyFGColor:=FActiveEditDefaultFGColor;
-  FActiveEditKeyBGColor:=FActiveEditDefaultBGColor;
-  FActiveEditSymbolFGColor:=FActiveEditDefaultFGColor;
-  FActiveEditSymbolBGColor:=FActiveEditDefaultBGColor;
-
   if AEditor.Highlighter<>nil
   then begin
     with AEditor.Highlighter do begin
@@ -6717,20 +6607,6 @@ begin
           FActiveEditDefaultFGColor:=IdentifierAttribute.ForeGround;
         if IdentifierAttribute.BackGround<>clNone then
           FActiveEditDefaultBGColor:=IdentifierAttribute.BackGround;
-      end;
-      if KeywordAttribute<>nil
-      then begin
-        if KeywordAttribute.ForeGround<>clNone then
-          FActiveEditKeyFGColor:=KeywordAttribute.ForeGround;
-        if KeywordAttribute.BackGround<>clNone then
-          FActiveEditKeyBGColor:=KeywordAttribute.BackGround;
-      end;
-      if SymbolAttribute<>nil
-      then begin
-        if SymbolAttribute.ForeGround<>clNone then
-          FActiveEditSymbolFGColor:=SymbolAttribute.ForeGround;
-        if SymbolAttribute.BackGround<>clNone then
-          FActiveEditSymbolBGColor:=SymbolAttribute.BackGround;
       end;
     end;
   end;
@@ -7055,6 +6931,18 @@ begin
   end;
 end;
 
+function TSourceEditorManagerBase.GetDefaultCompletionForm: TSourceEditCompletion;
+var
+  i: Integer;
+begin
+  Result := FDefaultCompletionForm;
+  if Result <> nil then exit;
+  FDefaultCompletionForm := TSourceEditCompletion.Create(Self);
+  Result := FDefaultCompletionForm;
+  for i:=0 to SourceEditorCount - 1 do
+    FDefaultCompletionForm.AddEditor(TSourceEditor(SourceEditors[i]).EditorComponent);
+end;
+
 procedure TSourceEditorManagerBase.FreeCompletionPlugins;
 var
   p: TSourceEditorCompletionPlugin;
@@ -7069,18 +6957,14 @@ end;
 
 function TSourceEditorManagerBase.GetActiveCompletionPlugin: TSourceEditorCompletionPlugin;
 begin
-  if FActiveWindow <> nil then
-    Result := FActiveWindow.GetActiveCompletionPlugin
-  else
-    Result := nil;
+  Result := FActiveCompletionPlugin;
 end;
 
 function TSourceEditorManagerBase.GetCompletionBoxPosition: integer;
 begin
-  if FActiveWindow <> nil then
-    Result := FActiveWindow.GetCompletionBoxPosition
-  else
-    Result := -1;
+  Result:=-1;
+  if (FDefaultCompletionForm<>nil) and FDefaultCompletionForm.IsActive then
+    Result := FDefaultCompletionForm.Position;
 end;
 
 function TSourceEditorManagerBase.GetCompletionPlugins(Index: integer
@@ -7095,11 +6979,27 @@ begin
 end;
 
 procedure TSourceEditorManagerBase.DeactivateCompletionForm;
-var
-  i: Integer;
 begin
-  for i := FSourceWindowList.Count - 1 downto 0 do
-    SourceWindows[i].DeactivateCompletionForm;
+  if ActiveCompletionPlugin<>nil then begin
+    ActiveCompletionPlugin.Cancel;
+    FActiveCompletionPlugin:=nil;
+  end;
+
+  if (FDefaultCompletionForm=nil) or
+     (FDefaultCompletionForm.CurrentCompletionType = ctNone)
+  then
+    exit;
+
+  // clear the IdentifierList (otherwise it would try to update everytime
+  // the codetools are used)
+  CodeToolBoss.IdentifierList.Clear;
+  FDefaultCompletionForm.CurrentCompletionType:=ctNone;
+  FDefaultCompletionForm.Deactivate;
+
+  if ActiveEditor<>nil then begin
+    //LCLIntf.ShowCaret(ActSE.EditorComponent.Handle);
+    TSourceEditor(ActiveEditor).EditorComponent.SetFocus;
+  end;
 end;
 
 procedure TSourceEditorManagerBase.RegisterCompletionPlugin(
@@ -7118,8 +7018,6 @@ end;
 
 procedure TSourceEditorManagerBase.Notification(AComponent: TComponent;
   Operation: TOperation);
-var
-  i: Integer;
 begin
   inherited Notification(AComponent, Operation);
   if Operation=opRemove then
@@ -7131,8 +7029,7 @@ begin
       if Assigned(fCompletionPlugins) then
         fCompletionPlugins.Remove(AComponent);
       if ActiveCompletionPlugin = AComponent then
-        for i := 0 To SourceWindowCount - 1 do
-          SourceWindows[i].DeactivateCompletionForm;
+        DeactivateCompletionForm;
     end;
   end;
 end;
@@ -7307,6 +7204,18 @@ begin
   end;
 end;
 
+procedure TSourceEditorManager.NewEditorCreated(AEditor: TSourceEditor);
+begin
+  if FDefaultCompletionForm <> nil then
+    FDefaultCompletionForm.AddEditor(AEditor.EditorComponent);
+end;
+
+procedure TSourceEditorManager.EditorRemoved(AEditor: TSourceEditor);
+begin
+  if FDefaultCompletionForm <> nil then
+    FDefaultCompletionForm.RemoveEditor(AEditor.EditorComponent);
+end;
+
 procedure TSourceEditorManager.ClearErrorLines;
 var
   i: Integer;
@@ -7337,7 +7246,18 @@ var
 begin
   for i := FSourceWindowList.Count - 1 downto 0 do
     SourceWindows[i].ReloadEditorOptions;
+
   SourceCompletionTimer.Interval:=EditorOpts.AutoDelayInMSec;
+  // reload code templates
+  with CodeTemplateModul do begin
+    if FileExistsUTF8(EditorOpts.CodeTemplateFilename) then
+      AutoCompleteList.LoadFromFile(UTF8ToSys(EditorOpts.CodeTemplateFilename))
+    else
+      if FileExistsUTF8('lazarus.dci') then
+        AutoCompleteList.LoadFromFile(UTF8ToSys('lazarus.dci'));
+    IndentToTokenStart:=EditorOpts.CodeTemplateIndentToTokenStart;
+  end;
+
 end;
 
 procedure TSourceEditorManager.ReloadHighlighters;
@@ -7765,6 +7685,49 @@ begin
   end;
 end;
 
+procedure TSourceEditorManager.OnCodeTemplateTokenNotFound(Sender: TObject;
+  AToken: string; AnEditor: TCustomSynEdit; var Index: integer);
+var
+  P:TPoint;
+begin
+  //writeln('TSourceNotebook.OnCodeTemplateTokenNotFound ',AToken,',',AnEditor.ReadOnly,',',DefaultCompletionForm.CurrentCompletionType=ctNone);
+  if (AnEditor.ReadOnly=false) and
+     (DefaultCompletionForm.CurrentCompletionType=ctNone)
+  then begin
+    DefaultCompletionForm.CurrentCompletionType:=ctTemplateCompletion;
+    with AnEditor do begin
+      P := Point(CaretXPix - length(AToken)*CharWidth,CaretYPix + LineHeight + 1);
+      P.X:=Max(0,Min(P.X,ClientWidth-DefaultCompletionForm.Width));
+      P := ClientToScreen(p);
+    end;
+    DefaultCompletionForm.Editor:=AnEditor;
+    DefaultCompletionForm.Execute(AToken,P.X,P.Y);
+  end;
+end;
+
+procedure TSourceEditorManager.OnCodeTemplateExecuteCompletion(
+  ASynAutoComplete: TCustomSynAutoComplete; Index: integer);
+var
+  SrcEdit: TSourceEditorInterface;
+  TemplateName: string;
+  TemplateValue: string;
+  TemplateComment: string;
+  TemplateAttr: TStrings;
+begin
+  SrcEdit:=FindSourceEditorWithEditorComponent(ASynAutoComplete.Editor);
+  if SrcEdit=nil then
+    SrcEdit := ActiveEditor;
+  //debugln('TSourceNotebook.OnCodeTemplateExecuteCompletion A ',dbgsName(SrcEdit),' ',dbgsName(ASynAutoComplete.Editor));
+
+  TemplateName:=ASynAutoComplete.Completions[Index];
+  TemplateValue:=ASynAutoComplete.CompletionValues[Index];
+  TemplateComment:=ASynAutoComplete.CompletionComments[Index];
+  TemplateAttr:=ASynAutoComplete.CompletionAttributes[Index];
+  ExecuteCodeTemplate(SrcEdit,TemplateName,TemplateValue,TemplateComment,
+                      ASynAutoComplete.EndOfTokenChr,TemplateAttr,
+                      ASynAutoComplete.IndentToTokenStart);
+end;
+
 procedure TSourceEditorManager.OnWordCompletionGetSource(var Source: TStrings;
   SourceIndex: integer);
 var TempEditor: TSourceEditor;
@@ -7895,6 +7858,8 @@ constructor TSourceEditorManager.Create(AOwner: TComponent);
 begin
   inherited Create(AOwner);
 
+  FDefaultCompletionForm := nil;
+
   // word completion
   if aWordCompletion=nil then begin
     aWordCompletion:=TWordCompletion.Create;
@@ -7918,6 +7883,26 @@ begin
   SourceEditorMarks.OnGetSourceEditor:=@OnSourceMarksGetSourceEditor;
   SourceEditorMarks.OnGetFilename:=@OnSourceMarksGetFilename;
   SourceEditorMarks.OnAction:=@OnSourceMarksAction;
+
+  // code templates
+  FCodeTemplateModul:=TSynEditAutoComplete.Create(Self);
+  with FCodeTemplateModul do begin
+    if FileExistsUTF8(EditorOpts.CodeTemplateFilename) then
+      AutoCompleteList.LoadFromFile(UTF8ToSys(EditorOpts.CodeTemplateFilename))
+    else
+      if FileExistsUTF8('lazarus.dci') then
+        AutoCompleteList.LoadFromFile(UTF8ToSys('lazarus.dci'));
+    IndentToTokenStart := EditorOpts.CodeTemplateIndentToTokenStart;
+    OnTokenNotFound := @OnCodeTemplateTokenNotFound;
+    OnExecuteCompletion := @OnCodeTemplateExecuteCompletion;
+    EndOfTokenChr:=' ()[]{},.;:"+-*^@$\<>=''';
+  end;
+
+end;
+
+destructor TSourceEditorManager.Destroy;
+begin
+  inherited Destroy;
 end;
 
 function TSourceEditorManager.CreateNewWindow(Activate: Boolean= False): TSourceNotebook;
