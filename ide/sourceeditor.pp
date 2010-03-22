@@ -291,7 +291,6 @@ type
     procedure FindNextUTF8;
     procedure FindPrevious;
     procedure FindNextWordOccurrence(DirectionForward: boolean);
-    procedure InitGotoDialog;
     procedure ShowGotoLineDialog;
 
     // dialogs
@@ -837,6 +836,7 @@ type
     property  ActiveSourceWindow: TSourceNotebook
               read GetActiveSourceNotebook write SetActiveSourceNotebook;       // reintroduce
     function  ActiveOrNewSourceWindow: TSourceNotebook;
+    function  NewSourceWindow: TSourceNotebook;
     // Editors
     function  SourceEditorCount: integer; override;
     function  GetActiveSE: TSourceEditor;                                       { $note deprecate and use ActiveEditor}
@@ -908,6 +908,7 @@ type
     procedure HistoryJump(Sender: TObject; CloseAction: TJumpHistoryAction);
   private
     FCodeTemplateModul: TSynEditAutoComplete;
+    FGotoDialog: TfrmGoto;
     procedure OnCodeTemplateTokenNotFound(Sender: TObject; AToken: string;
                                    AnEditor: TCustomSynEdit; var Index:integer);
     procedure OnCodeTemplateExecuteCompletion(
@@ -922,6 +923,8 @@ type
     procedure OnSourceMarksAction(AMark: TSourceMark; AAction: TListNotification);
     property CodeTemplateModul: TSynEditAutoComplete
                                read FCodeTemplateModul write FCodeTemplateModul;
+    // goto dialog
+    function GotoDialog: TfrmGoto;
   public
     constructor Create(AOwner: TComponent); override;
     destructor Destroy; override;
@@ -1078,8 +1081,6 @@ var
   SourceCompletionTimer: TIdleTimer = nil;
   SourceCompletionCaretXY: TPoint;
   AWordCompletion: TWordCompletion = nil;
-
-  GotoDialog: TfrmGoto = nil;
 
 function SourceNotebook: TSourceNotebook;
 begin
@@ -1911,13 +1912,14 @@ procedure TSourceEditor.ShowGotoLineDialog;
 var
   NewLeft: integer;
   NewTop: integer;
+  dlg: TfrmGoto;
 begin
-  InitGotoDialog;
-  GotoDialog.Edit1.Text:='';
-  GetDialogPosition(GotoDialog.Width,GotoDialog.Height,NewLeft,NewTop);
-  GotoDialog.SetBounds(NewLeft,NewTop,GotoDialog.Width,GotoDialog.Height);
-  if (GotoDialog.ShowModal = mrOK) then
-    GotoLine(StrToIntDef(GotoDialog.Edit1.Text,1));
+  dlg := Manager.GotoDialog;
+  dlg.Edit1.Text:='';
+  GetDialogPosition(dlg.Width, dlg.Height, NewLeft, NewTop);
+  dlg.SetBounds(NewLeft, NewTop, dlg.Width, dlg.Height);
+  if (dlg.ShowModal = mrOK) then
+    GotoLine(StrToIntDef(dlg.Edit1.Text,1));
   Self.FocusEditor;
 end;
 
@@ -2110,12 +2112,6 @@ begin
   EditorComponent.LogicalCaretXY:=LogCaret;
   EditorComponent.SearchReplace(EditorComponent.GetWordAtRowCol(LogCaret),
                                 '',Flags);
-end;
-
-procedure TSourceEditor.InitGotoDialog;
-begin
-  if GotoDialog=nil then
-    GotoDialog := TfrmGoto.Create(SourceNotebook);
 end;
 
 function TSourceEditor.DoFindAndReplace: integer;
@@ -4324,10 +4320,7 @@ begin
   end;
   FKeyStrokes.Free;
   FSourceEditorList.Free;
-  FreeAndNil(Gotodialog);
 
-  FreeThenNil(CodeContextFrm);
-  FreeThenNil(SrcEditHintWindow);
   FreeThenNil(FMouseHintTimer);
   FreeThenNil(FHintWindow);
 
@@ -7140,7 +7133,13 @@ begin
   Result := ActiveSourceWindow;
   if Result <> nil then exit;
     Result := CreateNewWindow(True);
-  ActiveSourceWindow := nil;
+  ActiveSourceWindow := Result;
+end;
+
+function TSourceEditorManager.NewSourceWindow: TSourceNotebook;
+begin
+  Result := CreateNewWindow(True);
+  ActiveSourceWindow := Result;
 end;
 
 function TSourceEditorManager.SourceEditorCount: integer;
@@ -7826,6 +7825,13 @@ begin
   if AMark.IsBreakPoint and (Editor.FExecutionMark <> nil) and
     (AMark.CompareEditorAndLine(Editor.FExecutionMark.SynEdit, Editor.FExecutionMark.Line) = 0) then
     Editor.UpdateExecutionSourceMark;
+end;
+
+function TSourceEditorManager.GotoDialog: TfrmGoto;
+begin
+  if FGotoDialog=nil then
+    FGotoDialog := TfrmGoto.Create(self);
+  Result := FGotoDialog;
 end;
 
 constructor TSourceEditorManager.Create(AOwner: TComponent);

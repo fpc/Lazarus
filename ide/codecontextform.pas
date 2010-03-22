@@ -776,5 +776,8 @@ begin
   inherited Destroy;
 end;
 
+finalization
+  FreeThenNil(CodeContextFrm);
+
 end.
 
