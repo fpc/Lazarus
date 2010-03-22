@@ -323,6 +323,7 @@ type
     function  GetROP2: Integer;
     procedure SetROP2(AROP: Integer);
     procedure SetViewPortExt(const AValue: TPoint);
+    procedure SetViewPortOrg(const AValue: TPoint);
     procedure SetWindowExt(const AValue: TPoint);
   protected
     function CreateGC: PGdkGC; virtual;
@@ -409,7 +410,7 @@ type
     property HasTransf: Boolean read FHasTransf;
     property MapMode: Integer read FMapMode write SetMapMode;
     property ViewPortExt: TPoint read FViewPortExt write SetViewPortExt;
-    property ViewPortOrg: TPoint read FViewPortOrg write FViewPortOrg;
+    property ViewPortOrg: TPoint read FViewPortOrg write SetViewPortOrg;
     property WindowExt: TPoint read FWindowExt write SetWindowExt;
     // control
     property SelectedColors: TDevContextSelectedColorsType read FSelectedColors write SetSelectedColors;

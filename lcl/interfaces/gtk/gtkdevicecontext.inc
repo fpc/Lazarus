@@ -181,7 +181,8 @@ begin
       FViewPortExt := Point(1, 1);
     end;
     FMapMode := AValue;
-    FHasTransf :=  FMapMode <> MM_TEXT; // to do: combine with affine transformations here when they get implemented
+    // to do: combine with affine transformations here when they get implemented
+    FHasTransf :=  (FMapMode <> MM_TEXT) or (FViewPortOrg.x <> 0) or (FViewPortOrg.y <> 0);
     if not (FMapMode in [MM_TEXT, MM_ANISOTROPIC, MM_ISOTROPIC]) then
     begin
       FViewPortExt.X := GtkWidgetSet.GetDeviceCaps(HDC(Self), LOGPIXELSX);
@@ -254,6 +255,16 @@ begin
       FViewPortExt := AValue;
     TransfUpdateFont;
     TransfUpdatePen;
+  end;
+end;
+
+procedure TGtkDeviceContext.SetViewPortOrg(const AValue: TPoint);
+begin
+  if (FViewPortOrg.x <> AValue.x) or
+     (FViewPortOrg.y <> AValue.y) then
+  begin
+    FViewPortOrg := AValue;
+    FHasTransf := True;
   end;
 end;
 
