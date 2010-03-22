@@ -7197,7 +7197,7 @@ var
 begin
   Result := nil;
   i := SourceWindowCount - 1;
-  while i > 0 do begin
+  while i >= 0 do begin
     Result := SourceWindows[i].FindSourceEditorWithEditorComponent(EditorComp);
     if Result <> nil then break;
     dec(i);
