@@ -347,16 +347,13 @@ type
     procedure DoEditorExecuteCommand(EditorCommand: word);
 
     // used to get the word at the mouse cursor
-    function GetWordAtPosition(Position: TPoint): String;
     function GetWordFromCaret(const ACaretPos: TPoint): String;
     function GetWordAtCurrentCaret: String;
     function GetOperandFromCaret(const ACaretPos: TPoint): String;
     function GetOperandAtCurrentCaret: String;
     function CaretInSelection(const ACaretPos: TPoint): Boolean;
-    function PositionInSelection(const APosition: TPoint): Boolean;
 
     // cursor
-    function GetCaretPosFromCursorPos(const CursorPos: TPoint): TPoint;
     procedure CenterCursor;
     function TextToScreenPosition(const Position: TPoint): TPoint; override;
     function ScreenToTextPosition(const Position: TPoint): TPoint; override;
@@ -503,7 +500,6 @@ type
     FNotebook: TDragableNotebook;
     SrcPopUpMenu: TPopupMenu;
   protected
-    procedure AddBreakpointClicked(Sender: TObject);
     procedure CompleteCodeMenuItemClick(Sender: TObject);
     procedure EncloseSelectionMenuItemClick(Sender: TObject);
     procedure ExtractProcMenuItemClick(Sender: TObject);
@@ -516,7 +512,6 @@ type
     procedure FindOverloadsMenuItemClick(Sender: TObject);
     procedure RunToClicked(Sender: TObject);
     procedure ViewCallStackClick(Sender: TObject);
-    procedure AddWatchAtCursor(Sender: TObject);
     procedure EditorPropertiesClicked(Sender: TObject);
     procedure LineEndingClicked(Sender: TObject);
     procedure EncodingClicked(Sender: TObject);
@@ -684,7 +679,6 @@ type
     function GetActiveSE: TSourceEditor;                                        { $note deprecate and use SetActiveEditor}
     procedure CheckCurrentCodeBufferChanged;
 
-    function ActiveFileName: AnsiString;
     procedure UpdateStatusBar;
     procedure ClearErrorLines; override;
     procedure ClearExecutionLines;
@@ -723,7 +717,6 @@ type
     procedure ReloadEditorOptions;
     procedure ReloadHighlighters;
     procedure CheckFont;
-    procedure GetSynEditPreviewSettings(APreviewEditor: TObject);
     function GetEditorControlSettings(EditControl: TControl): boolean; override;
              deprecated {$IFDEF VER2_5}'use SourceEditorManager'{$ENDIF};       // deprecated in 0.9.29 March 2010
     function GetHighlighterSettings(Highlighter: TObject): boolean; override;
@@ -3847,15 +3840,6 @@ begin
     OnMouseWheel(Self, Shift, WheelDelta, MousePos, Handled)
 end;
 
-Function TSourceEditor.GetWordAtPosition(Position: TPoint): String;
-var
-  CaretPos: TPoint;
-begin
-  Result := '';
-  Caretpos := ScreenToTextPosition(GetCaretPosfromCursorPos(Position));
-  Result := GetWordFromCaret(CaretPos);
-end;
-
 Procedure TSourceEditor.EditorMouseDown(Sender: TObject; Button: TMouseButton;
    Shift: TShiftState; X, Y: Integer);
 begin
@@ -3869,28 +3853,6 @@ begin
   //DebugLn('TSourceEditor.EditorKeyDown A ',dbgsName(Sender),' ',IntToStr(Key));
   if Assigned(OnKeyDown) then
     OnKeyDown(Sender, Key, Shift);
-end;
-
-Function TSourceEditor.GetCaretPosFromCursorPos(const CursorPos: TPoint): TPoint;
-var
-  NewTopLine: Integer;
-  LineHeight: Integer;
-  LineNum: Integer;
-  XLine: Integer;
-begin
-  //Figure out the line number
-  NewTopLine := FEditor.TopLine;
-  LineHeight := FEditor.LineHeight;
-  if CursorPos.Y > 1 then
-    LineNum := CursorPos.Y div LineHeight
-  else
-    LineNum := 1;
-  LineNum := LineNum + NewTopLine;
-  XLine := CursorPos.X div FEditor.CharWidth;
-  if XLine = 0 then inc(XLine);
-
-  Result.X := XLine;
-  Result.Y := LineNum;
 end;
 
 {-------------------------------------------------------------------------------
@@ -4103,11 +4065,6 @@ function TSourceEditor.CaretInSelection(const ACaretPos: TPoint): Boolean;
 begin
   Result := (CompareCaret(EditorComponent.BlockBegin, ACaretpos) >= 0)
         and (CompareCaret(ACaretPos, EditorComponent.BlockEnd) >= 0);
-end;
-
-function TSourceEditor.PositionInSelection(const APosition: TPoint): Boolean;
-begin
-  Result := CaretInSelection(GetCaretPosfromCursorPos(APosition));
 end;
 
 function TSourceEditor.IsActiveOnNoteBook: boolean;
@@ -5594,16 +5551,6 @@ begin
   ControlDocker.ShowDockingEditor;
 end;
 
-procedure TSourceNotebook.AddBreakpointClicked(Sender: TObject );
-var
-  ASrcEdit: TSourceEditor;
-begin
-  ASrcEdit:=GetActiveSE;
-  if ASrcEdit=nil then exit;
-  DebugBoss.DoCreateBreakPoint(ASrcEdit.Filename,
-                               ASrcEdit.EditorComponent.CaretY,true);
-end;
-
 procedure TSourceNotebook.StatusBarDblClick(Sender: TObject);
 var
   P: TPoint;
@@ -5823,11 +5770,6 @@ procedure TSourceNotebook.FormMouseUp(Sender: TObject; Button: TMouseButton;
   Shift: TShiftState; X, Y: Integer);
 begin
   Cursor:=crDefault;
-end;
-
-Function TSourceNotebook.ActiveFileName: AnsiString;
-Begin
-  Result := GetActiveSE.FileName;
 end;
 
 function TSourceNotebook.GetEditors(Index:integer):TSourceEditor;
@@ -6443,11 +6385,6 @@ begin
   end;
 end;
 
-procedure TSourceNotebook.AddWatchAtCursor(Sender: TObject);
-begin
-  //
-end;
-
 procedure TSourceNotebook.SetIncrementalSearchStr(const AValue: string);
 begin
   if FIncrementalSearchStr=AValue then exit;
@@ -6521,15 +6458,6 @@ begin
   if AEditor=nil then exit;
   EditorOpts.SetMarkupColors(AEditor.Highlighter, AEditor);
   AEditor.UseIncrementalColor:= snIncrementalFind in States;
-end;
-
-Procedure TSourceNotebook.GetSynEditPreviewSettings(APreviewEditor: TObject);
-var ASynEdit: TSynEdit;
-begin
-  if not (APreviewEditor is TSynEdit) then exit;
-  ASynEdit:=TSynEdit(APreviewEditor);
-  EditorOpts.GetSynEditPreviewSettings(ASynEdit);
-  ASynEdit.Highlighter:=Highlighters[lshFreePascal];
 end;
 
 function TSourceNotebook.GetEditorControlSettings(EditControl: TControl
