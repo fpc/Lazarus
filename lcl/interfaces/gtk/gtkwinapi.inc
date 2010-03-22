@@ -9484,14 +9484,13 @@ function TGtkWidgetSet.SetWindowOrgEx(DC : HDC; NewX, NewY : Integer;
   OldPoint: PPoint) : Boolean;
 var
   DevCtx: TGtkDeviceContext absolute DC;
-
   OldP: TPoint;
 begin
   //DebugLn('[TGtkWidgetSet.SetWindowOrgEx] ',NewX,' ',NewY);
-  GetWindowOrgEx(DC,@OldP);
-  Result := MoveWindowOrgEx(DC,NewX-OldP.X,NewY-OldP.Y);
-  if OldPoint<>nil then
-    OldPoint^:=OldP;
+  GetWindowOrgEx(DC, @OldP);
+  Result := MoveWindowOrgEx(DC, -NewX - OldP.X, -NewY - OldP.Y);
+  if OldPoint <> nil then
+    OldPoint^ := OldP;
 end;
 
 {------------------------------------------------------------------------------
