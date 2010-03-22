@@ -430,14 +430,13 @@ type
     procedure RunDialog; virtual;
   public
     constructor Create(AOwner: TComponent); override;
-    destructor Destroy; override;
   published
     // CalcEdit properties
     property CalculatorLayout : TCalculatorLayout read FLayout write Flayout;
     property AsFloat : Double read GetAsFloat write SetAsFloat;
     property AsInteger : Integer read GetAsInteger write SetAsInteger;
     property OnAcceptValue : TAcceptValueEvent read FOnAcceptValue write FOnAcceptValue;
-    property DialogTitle : String read FDialogTitle write FDialogTitle Stored TitleStored;
+    property DialogTitle : String read FDialogTitle write FDialogTitle stored TitleStored;
     // TEditButton properties.
     property ButtonWidth;
     property DirectInput;
@@ -1192,11 +1191,6 @@ constructor TCalcEdit.Create(AOwner: TComponent);
 begin
   inherited Create(AOwner);
   FdialogTitle:=rsCalculator;
-end;
-
-destructor TCalcEdit.Destroy;
-begin
-  inherited Destroy;
 end;
 
 procedure Register;

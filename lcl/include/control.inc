@@ -1172,7 +1172,7 @@ var
 begin
   Result := 0;
   {$IFDEF VerboseDrag}
-  DebugLn('TControl.DoDragMsg ',Name,':',ClassName,' DragMsg.DragMessage=',IntToStr(ord(ADragMessage)));
+  DebugLn('TControl.DoDragMsg ',Name,':',ClassName,' DragMsg.DragMessage=', GetEnumName(TypeInfo(TDragMessage), Ord(ADragMessage)));
   {$ENDIF}
 
   case ADragMessage of
