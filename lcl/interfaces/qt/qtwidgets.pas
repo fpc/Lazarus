@@ -9085,6 +9085,14 @@ begin
       begin
         Result := (FTrackButton = QtLeftButton) and
           (QMouseEvent_button(QMouseEventH(Event)) <> FTrackButton);
+        if Assigned(FMenuItem) and not (FMenuItem.Menu is TPopupMenu) then
+        begin
+          {trigger LCL if root of menu have OnClick() connected,
+           since qt won't do that for us.}
+          if (QMouseEvent_button(QMouseEventH(Event)) = QtLeftButton)
+          and Assigned(FMenuItem.OnClick) then
+            SlotTriggered();
+        end;
       end;
 
   end;
