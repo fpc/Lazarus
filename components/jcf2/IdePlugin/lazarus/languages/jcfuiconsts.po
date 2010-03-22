@@ -97,6 +97,53 @@ msgstr ""
 msgid "Remove consecutive blank lines"
 msgstr ""
 
+#: jcfuiconsts.liscaseblocksalways
+msgctxt "jcfuiconsts.liscaseblocksalways"
+msgid "Always"
+msgstr ""
+
+#: jcfuiconsts.liscaseblockscaseblocks
+msgid "Case Blocks"
+msgstr ""
+
+#: jcfuiconsts.liscaseblockscasewithbegin
+msgid "Case with begin"
+msgstr ""
+
+#: jcfuiconsts.liscaseblockscasewithoutbegin
+msgid "Case without begin"
+msgstr ""
+
+#: jcfuiconsts.liscaseblockselsecasewithbegin
+msgid "Else case with begin"
+msgstr ""
+
+#: jcfuiconsts.liscaseblockselsecasewithoutbegin
+msgid "Else case without begin"
+msgstr ""
+
+#: jcfuiconsts.liscaseblockslabelwithbegin
+msgid "Label with begin"
+msgstr ""
+
+#: jcfuiconsts.liscaseblockslabelwithoutbegin
+msgid "Label without begin"
+msgstr ""
+
+#: jcfuiconsts.liscaseblocksleaveasis
+msgctxt "jcfuiconsts.liscaseblocksleaveasis"
+msgid "Leave as is"
+msgstr ""
+
+#: jcfuiconsts.liscaseblocksnever
+msgctxt "jcfuiconsts.liscaseblocksnever"
+msgid "Never"
+msgstr ""
+
+#: jcfuiconsts.liscaseblocksuseanewlineincaseblocksat
+msgid "Use a new line in Case blocks at:"
+msgstr ""
+
 #: jcfuiconsts.lisclarifyclarify
 msgid "Clarify"
 msgstr ""
@@ -364,6 +411,7 @@ msgid "After open"
 msgstr ""
 
 #: jcfuiconsts.lisspacesalways
+msgctxt "jcfuiconsts.lisspacesalways"
 msgid "Always"
 msgstr ""
 
@@ -433,6 +481,7 @@ msgid "Move spaces to before colon"
 msgstr ""
 
 #: jcfuiconsts.lisspacesnever
+msgctxt "jcfuiconsts.lisspacesnever"
 msgid "Never"
 msgstr ""
 

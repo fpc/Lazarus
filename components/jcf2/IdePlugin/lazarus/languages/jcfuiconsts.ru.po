@@ -106,6 +106,53 @@ msgstr "Удаление пустых строк"
 msgid "Remove consecutive blank lines"
 msgstr "Удалять последовательные пустые строки"
 
+#: jcfuiconsts.liscaseblocksalways
+msgctxt "jcfuiconsts.liscaseblocksalways"
+msgid "Always"
+msgstr "Всегда"
+
+#: jcfuiconsts.liscaseblockscaseblocks
+msgid "Case Blocks"
+msgstr "Блоки Case"
+
+#: jcfuiconsts.liscaseblockscasewithbegin
+msgid "Case with begin"
+msgstr "Ветвь с begin"
+
+#: jcfuiconsts.liscaseblockscasewithoutbegin
+msgid "Case without begin"
+msgstr "Ветвь без begin"
+
+#: jcfuiconsts.liscaseblockselsecasewithbegin
+msgid "Else case with begin"
+msgstr "Ветвь Else с begin"
+
+#: jcfuiconsts.liscaseblockselsecasewithoutbegin
+msgid "Else case without begin"
+msgstr "Ветвь Else без begin"
+
+#: jcfuiconsts.liscaseblockslabelwithbegin
+msgid "Label with begin"
+msgstr "Метка с begin"
+
+#: jcfuiconsts.liscaseblockslabelwithoutbegin
+msgid "Label without begin"
+msgstr "Метка без begin"
+
+#: jcfuiconsts.liscaseblocksleaveasis
+msgctxt "jcfuiconsts.liscaseblocksleaveasis"
+msgid "Leave as is"
+msgstr "Не менять"
+
+#: jcfuiconsts.liscaseblocksnever
+msgctxt "jcfuiconsts.liscaseblocksnever"
+msgid "Never"
+msgstr "Никогда"
+
+#: jcfuiconsts.liscaseblocksuseanewlineincaseblocksat
+msgid "Use a new line in Case blocks at:"
+msgstr "Переходить на новую строку в блоках Case в следующих случаях:"
+
 #: jcfuiconsts.lisclarifyclarify
 msgid "Clarify"
 msgstr "Улучшение читаемости кода"
@@ -373,6 +420,7 @@ msgid "After open"
 msgstr "После открывающей"
 
 #: jcfuiconsts.lisspacesalways
+msgctxt "jcfuiconsts.lisspacesalways"
 msgid "Always"
 msgstr "Добавлять всегда"
 
@@ -442,6 +490,7 @@ msgid "Move spaces to before colon"
 msgstr "Помещать пробелы перед двоеточием"
 
 #: jcfuiconsts.lisspacesnever
+msgctxt "jcfuiconsts.lisspacesnever"
 msgid "Never"
 msgstr "Не добавлять никогда"
 
