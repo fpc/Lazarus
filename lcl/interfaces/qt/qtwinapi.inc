@@ -4312,6 +4312,7 @@ function TQtWidgetSet.SelectClipRGN(DC: hDC; RGN: HRGN): Longint;
 var
   QtDC: TQtDeviceContext;
   EmptyRegion: QRegionH;
+  P: TPoint;
 begin
   Result := ERROR;
   if IsValidDC(DC) then
@@ -4320,6 +4321,10 @@ begin
     if IsValidGDIObject(RGN) then
     begin
       Result := TQtRegion(Rgn).GetRegionType;
+      // RGN is in Device coordinates. Qt expects logical coordinates
+      // so we need to convert RGN coords
+      GetWindowOrgEx(DC, @P);
+      TQtRegion(Rgn).translate(P.X, P.Y);
       QtDC.setClipRegion(TQtRegion(Rgn).Widget);
     end else
     begin

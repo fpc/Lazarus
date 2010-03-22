@@ -290,6 +290,7 @@ type
     function GetRegionType: integer;
     function getBoundingRect: TRect;
     function numRects: Integer;
+    procedure translate(dx, dy: Integer);
     property IsPolyRegion: Boolean read GetIsPolyRegion;
   end;
 
@@ -1796,6 +1797,11 @@ end;
 function TQtRegion.numRects: Integer;
 begin
   Result := QRegion_numRects(Widget);
+end;
+
+procedure TQtRegion.translate(dx, dy: Integer);
+begin
+  QRegion_translate(Widget, dx, dy);
 end;
 
 { TQtDeviceContext }
