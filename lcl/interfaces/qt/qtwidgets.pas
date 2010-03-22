@@ -9089,8 +9089,11 @@ begin
         begin
           {trigger LCL if root of menu have OnClick() connected,
            since qt won't do that for us.}
-          if (QMouseEvent_button(QMouseEventH(Event)) = QtLeftButton)
-          and Assigned(FMenuItem.OnClick) then
+          if (QMouseEvent_button(QMouseEventH(Event)) = QtLeftButton) and
+            Assigned(FMenuItem.OnClick) and
+          (QMenu_actionAt(QMenuH(Widget),
+            QMouseEvent_pos(QMouseEventH(Event))) = nil)
+          then
             SlotTriggered();
         end;
       end;
