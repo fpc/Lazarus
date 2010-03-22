@@ -194,7 +194,10 @@ begin
               QStyleOptionToolButton_setFeatures(QStyleOptionToolButtonH(opt),
                 Element.Features);
             end;
-
+            QStyleCC_ComboBox:
+            begin
+              opt := QStyleOptionComboBox_create();
+            end;
             QStyleCC_TitleBar, QStyleCC_MdiControls:
             begin
               opt := QStyleOptionTitleBar_create();
@@ -466,6 +469,15 @@ begin
           Result.DrawVariant := qdvComplexControl;
           Result.ComplexControl := QStyleCC_GroupBox;
           Result.SubControls := QStyleSC_GroupBoxFrame;
+        end;
+      end;
+    teComboBox:
+      begin
+        if Details.Part = CP_DROPDOWNBUTTON then
+        begin
+          Result.DrawVariant := qdvComplexControl;
+          Result.ComplexControl := QStyleCC_ComboBox;
+          Result.SubControls := QStyleSC_ComboBoxArrow;
         end;
       end;
     teHeader:
