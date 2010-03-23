@@ -6019,6 +6019,7 @@ begin
   f.show;
   ASrcEdit.OtherViewList.Add(f);
 end;
+{$ENDIF}
 
 procedure TSourceNotebook.SrcEditMenuCopyToNewWindow(Sender: TObject);
 begin
@@ -6035,8 +6036,6 @@ procedure TSourceNotebook.SrcEditMenuCopyToExistingWindow(Sender: TObject);
 begin
   MoveEditor(PageIndex, (Sender as TIDEMenuItem).Tag, -1)
 end;
-
-{$ENDIF}
 
 Procedure TSourceNotebook.UpdateStatusBar;
 var
