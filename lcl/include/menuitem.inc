@@ -274,15 +274,30 @@ begin
 end;
 
 procedure TMenuItem.CheckChildrenHandles;
+
+  function GetMenu(Item: TMenuItem): TMenu;
+  begin
+    repeat
+      Result := Item.Menu;
+      Item := Item.Parent;
+    until (Result <> nil) or (Item = nil);
+  end;
+
 var
   i: Integer;
+  AMenu: TMenu;
 begin
   if FItems <> nil then
   begin
+    AMenu := GetMenu(Self);
     for i := 0 to Count - 1 do
     begin
       if Items[i].Visible then
+      begin
+        if Items[i].HandleAllocated and (GetMenu(Items[i]) <> AMenu) then
+          Items[i].DestroyHandle;
         Items[i].HandleNeeded;
+      end;
     end;
   end;
 end;
