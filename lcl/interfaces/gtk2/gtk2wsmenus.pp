@@ -134,12 +134,45 @@ end;
 
 function Gtk2MenuItemToggled(AMenuItem: PGTKCheckMenuItem;
                              AData: gPointer): GBoolean; cdecl;
-// AData --> LCLMenuItem: TMenuItem
+var
+  LCLMenuItem: TMenuItem;
+  Mess: TLMessage;
+  b: Boolean;
+  w: PGtkWidget;
+  WidgetInfo: PWidgetInfo;
 begin
   Result := CallBackDefaultReturn;
   {$IFDEF EventTrace}
   EventTrace('toggled', AData);
   {$ENDIF}
+  if LockOnChange(PgtkObject(AMenuItem),0) > 0 then Exit;
+
+  LCLMenuItem := TMenuItem(AData);
+  if (csDesigning in LCLMenuItem.ComponentState) or
+    not LCLMenuItem.RadioItem or LCLMenuItem.AutoCheck then
+    exit;
+
+  w := gtk_get_event_widget(gtk_get_current_event);
+  b := gtk_check_menu_item_get_active(AMenuItem);
+
+  if not LCLMenuItem.Checked then
+    g_signal_stop_emission_by_name(AMenuItem, 'toggled')
+  else
+    g_signal_stop_emission_by_name(AMenuItem, 'activate');
+
+  gtk_check_menu_item_set_active(AMenuItem, LCLMenuItem.Checked);
+
+  {we must trigger OnClick() somehow, since we stopped signals}
+  if b and (w <> nil) and (w <> PGtkWidget(AMenuItem))  then
+  begin
+    WidgetInfo := GetWidgetInfo(w);
+    if GTK_IS_RADIO_MENU_ITEM(w) then
+    begin
+      FillChar(Mess,SizeOf(Mess),#0);
+      Mess.Msg := LM_ACTIVATE;
+      WidgetInfo^.LCLObject.Dispatch(Mess);
+    end;
+  end;
 end;
 
 function Gtk2MenuItemSelect(item: Pointer; AMenuItem: TMenuItem): GBoolean; cdecl;
@@ -291,7 +324,7 @@ begin
     gtk_check_menu_item_set_active(PGtkCheckMenuItem(Widget),
       AMenuItem.Checked);
 
-    g_signal_connect_after(PGTKObject(Widget), 'toggled',
+    g_signal_connect(PGTKObject(Widget), 'toggled',
       TGTKSignalFunc(@Gtk2MenuItemToggled), Pointer(AMenuItem));
   end;
 
