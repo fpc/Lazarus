@@ -1979,6 +1979,9 @@ resourcestring
   {$IFDEF SynDualView}
   uemOpenAnotherView = 'Open in another View';
   {$ENDIF}
+  uemMoveToNewWindow = 'Move to new Window';
+  uemMoveToOtherWindow = 'Move to other Window';
+  uemMoveToOtherWindowNew = 'New Window';
   uemCut = 'Cut';
   uemCopy = 'Copy';
   uemPaste = 'Paste';

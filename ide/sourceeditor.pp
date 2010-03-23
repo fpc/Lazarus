@@ -218,6 +218,7 @@ type
     function GotoLine(Value: Integer): Integer;
 
     procedure CreateEditor(AOwner: TComponent; AParent: TWinControl);
+    procedure UpdateNoteBook(const ANewNoteBook: TSourceNotebook; ANewPage: TPage);
     procedure SetVisible(Value: boolean);
     procedure UnbindEditor;
   protected
@@ -546,6 +547,8 @@ type
     procedure OnOtherFormClosed(Sender: TObject; var CloseAction: TCloseAction);
     procedure SrcEditMenuAnotherViewClicked(Sender: TObject);
     {$ENDIF}
+    procedure SrcEditMenuCopyToNewWindow(Sender: TObject);
+    procedure SrcEditMenuCopyToExistingWindow(Sender: TObject);
   public
     procedure DeleteBreakpointClicked(Sender: TObject);
     procedure ToggleBreakpointClicked(Sender: TObject);
@@ -566,6 +569,7 @@ type
   private
     // PopupMenu
     procedure BuildPopupMenu;
+    procedure AssignPopupMenu;
     //forwarders to FNoteBook
     function GetNoteBookPage(Index: Integer): TPage;
     function GetNotebookPages: TStrings;
@@ -604,6 +608,7 @@ type
     procedure AcceptEditor(AnEditor: TSourceEditor);
     procedure ReleaseEditor(AnEditor: TSourceEditor);
     procedure EditorChanged(Sender: TObject);
+    procedure DoClose(var CloseAction: TCloseAction); override;
 
   protected
     function GetActiveCompletionPlugin: TSourceEditorCompletionPlugin; override;
@@ -643,6 +648,7 @@ type
     procedure MoveEditorLast(CurrentPageIndex: integer);
     procedure MoveActivePageFirst;
     procedure MoveActivePageLast;
+    procedure MoveEditor(OldPageIndex, NewWindowIndex, NewPageIndex: integer);
     procedure ProcessParentCommand(Sender: TObject;
        var Command: TSynEditorCommand; var AChar: TUTF8Char; Data: pointer;
        var Handled: boolean);
@@ -743,6 +749,8 @@ type
     property NoteBookPage[Index: Integer]: TPage read GetNoteBookPage;
     procedure NoteBookInsertPage(Index: Integer; const S: string);
     procedure NoteBookDeletePage(Index: Integer);
+  protected
+    function NoteBookIndexOfPage(APage: TPage): Integer;
   end;
 
   { TSourceEditorManagerBase }
@@ -838,6 +846,7 @@ type
               read GetActiveSourceNotebook write SetActiveSourceNotebook;       // reintroduce
     function  ActiveOrNewSourceWindow: TSourceNotebook;
     function  NewSourceWindow: TSourceNotebook;
+    function  SourceWindowWithPage(const APage: TPage): TSourceNotebook;
     // Editors
     function  SourceEditorCount: integer; override;
     function  GetActiveSE: TSourceEditor;                                       { $note deprecate and use ActiveEditor}
@@ -850,6 +859,8 @@ type
   protected
     procedure NewEditorCreated(AEditor: TSourceEditor);
     procedure EditorRemoved(AEditor: TSourceEditor);
+    procedure Notification(AComponent: TComponent; Operation: TOperation); override;
+    procedure RemoveWindow(AWindow: TSourceNotebook);
   public
     // Forward to all windows
     procedure ClearErrorLines; override;
@@ -1068,6 +1079,13 @@ var
   {$IFDEF SynDualView}
   SrcEditMenuAnotherView: TIDEMenuCommand;
   {$ENDIF}
+  {$IFDEF MultiSrcWindow}
+  // Multi Window
+  SrcEditMenuMoveToNewWindow: TIDEMenuCommand;
+  SrcEditMenuMoveToOtherWindow: TIDEMenuSection;
+  SrcEditMenuMoveToOtherWindowNew: TIDEMenuCommand;
+  SrcEditMenuMoveToOtherWindowList: TIDEMenuSection;
+  {$ENDIF}
 
 
 procedure RegisterStandardSourceEditorMenuItems;
@@ -1133,6 +1151,22 @@ begin
     SrcEditMenuCloseOtherPages := RegisterIDEMenuCommand(SrcEditMenuSectionPages,
                         'Close All Other Pages',uemCloseOtherPages, nil, nil, nil);
 
+    {$IFDEF SynDualView}
+    SrcEditMenuAnotherView := RegisterIDEMenuCommand(SrcEditMenuSectionFirstStatic,
+              'Open in another View', uemOpenAnotherView);
+    {$ENDIF}
+
+    {$IFDEF MultiSrcWindow}
+    // Move to other Window
+    SrcEditMenuMoveToNewWindow   := RegisterIDEMenuCommand(SrcEditMenuSectionPages,
+                                    'MoveToNewWindow', uemMoveToNewWindow);
+    SrcEditMenuMoveToOtherWindow := RegisterIDESubMenu(SrcEditMenuSectionPages,
+                                    'MoveToOtherWindow', uemMoveToOtherWindow);
+      SrcEditMenuMoveToOtherWindowNew  := RegisterIDEMenuCommand(SrcEditMenuMoveToOtherWindow,
+                                          'MoveToOtherWindowNew', uemMoveToNewWindow);
+      SrcEditMenuMoveToOtherWindowList := RegisterIDEMenuSection(SrcEditMenuMoveToOtherWindow,
+                                        'MoveToOtherWindowList Section');
+    {$ENDIF}
     // register the Move Page sub menu
     SrcEditSubMenuMovePage:=RegisterIDESubMenu(SrcEditMenuSectionPages,
                                                'Move Page ...', lisMovePage);
@@ -1269,11 +1303,6 @@ begin
            lisMVDocking);
   {$IFNDEF EnableIDEDocking}
   SrcEditMenuDocking.Visible:=false;
-  {$ENDIF}
-
-  {$IFDEF SynDualView}
-  SrcEditMenuAnotherView := RegisterIDEMenuCommand(SrcEditMenuSectionFirstStatic,
-            'Open in another View', uemOpenAnotherView);
   {$ENDIF}
 end;
 
@@ -3269,6 +3298,23 @@ begin
   end;
 end;
 
+procedure TSourceEditor.UpdateNoteBook(const ANewNoteBook: TSourceNotebook; ANewPage: TPage);
+begin
+  if FSourceNoteBook = ANewNoteBook then exit;
+
+  FSourceNoteBook := ANewNoteBook;
+  FAOwner := ANewNoteBook;
+  FPageName := ANewNoteBook.NoteBookPages[ANewNoteBook.NoteBookIndexOfPage(ANewPage)];
+
+  // Change the Owner of the SynEdit
+  EditorComponent.Owner.RemoveComponent(EditorComponent);
+  FSourceNoteBook.InsertComponent(EditorComponent);
+  // And the Parent
+  EditorComponent.Parent := ANewPage;
+end;
+
+{ AOwner is the TSourceNotebook
+  AParent is a page of the TNotebook }
 Procedure TSourceEditor.CreateEditor(AOwner: TComponent; AParent: TWinControl);
 var
   NewName: string;
@@ -3722,7 +3768,11 @@ procedure TSourceEditor.SetPopupMenu(NewPopupMenu: TPopupMenu);
 begin
   if NewPopupMenu<>FPopupMenu then begin
     FPopupMenu:=NewPopupMenu;
-    if FEditor<>nil then FEditor.PopupMenu:=NewPopupMenu;
+    if FEditor<>nil then begin
+      if FEditor.PopupMenu <> nil then // Todo: why?
+        FEditor.PopupMenu.RemoveFreeNotification(FEditor);
+      FEditor.PopupMenu:=NewPopupMenu;
+    end;
   end;
 end;
 
@@ -4222,18 +4272,32 @@ end;
                       { TSourceNotebook }
 
 constructor TSourceNotebook.Create(AOwner: TComponent);
+var
+  i: Integer;
 begin
   inherited Create(AOwner);
   FManager := TSourceEditorManager(AOwner);
   FUpdateLock := 0;
   FFocusLock := 0;
   Visible:=false;
-  Name:=NonModalIDEWindowNames[nmiwSourceNoteBookName];
-  Caption := locWndSrcEditor;
+  i := 2;
+  if SourceEditorManager.SourceWindowCount > 0 then begin
+    while Owner.FindComponent(NonModalIDEWindowNames[nmiwSourceNoteBookName]+IntToStr(i)) <> nil do
+      inc(i);
+    Name := NonModalIDEWindowNames[nmiwSourceNoteBookName] + IntToStr(i);
+  end
+  else
+    Name := NonModalIDEWindowNames[nmiwSourceNoteBookName];
+  if Manager.SourceWindowCount > 0 then
+    Caption := locWndSrcEditor + ' (' + IntToStr(Manager.SourceWindowCount+1) + ')'
+  else
+    Caption := locWndSrcEditor;
   KeyPreview:=true;
   FProcessingCommand := false;
 
-  EnvironmentOptions.IDEWindowLayoutList.Apply(Self,Name);
+  if EnvironmentOptions.IDEWindowLayoutList.ItemByFormID(self.Name) <> nil then {$note create new layouts for extra windows}
+  EnvironmentOptions.IDEWindowLayoutList.Apply(Self, self.Name);
+  //EnvironmentOptions.IDEWindowLayoutList.Apply(Self,Name);
   ControlDocker:=TLazControlDocker.Create(Self);
   ControlDocker.Name:='SourceEditor';
   {$IFDEF EnableIDEDocking}
@@ -4269,7 +4333,7 @@ begin
     AutoHide := False;
   end;
 
-  CreateNotebook; {$note  remove all dependencies on late/defered creation}
+  CreateNotebook;
   Application.AddOnUserInputHandler(@OnApplicationUserInput,true);
 end;
 
@@ -4284,6 +4348,7 @@ begin
   FKeyStrokes.Free;
   FSourceEditorList.Free;
 
+  Application.RemoveOnUserInputHandler(@OnApplicationUserInput);
   FreeThenNil(FMouseHintTimer);
   FreeThenNil(FHintWindow);
   FreeAndNil(FNotebook);
@@ -4496,7 +4561,6 @@ var
   BookMarkID, BookMarkX, BookMarkY: integer;
   MarkSrcEdit: TSourceEditor;
   MarkDesc: String;
-  MarkEditorIndex: Integer;
   MarkMenuItem: TIDEMenuItem;
   EditorComp: TSynEdit;
   Marks: PSourceMark;
@@ -4514,7 +4578,9 @@ begin
   //SourceEditorMenuRoot.WriteDebugReport('TSourceNotebook.SrcPopUpMenuPopup START ',true);
   //SourceEditorMenuRoot.ConsistencyCheck;
 
+  SourceEditorMenuRoot.MenuItem:=SrcPopupMenu.Items;
   SourceEditorMenuRoot.BeginUpdate;
+  AssignPopupMenu; // Point all on click events to this SourceNoteBook
   try
     RemoveUserDefinedMenuItems;
     RemoveContextMenuItems;
@@ -4551,8 +4617,7 @@ begin
       if (MarkSrcEdit<>nil)
       and MarkSrcEdit.EditorComponent.GetBookMark(BookMarkID,BookMarkX,BookMarkY)
       then begin
-        MarkEditorIndex:=FindPageWithEditor(MarkSrcEdit);
-        MarkDesc:=MarkDesc+': '+NotebookPages[MarkEditorIndex]
+        MarkDesc:=MarkDesc+': '+ MarkSrcEdit.PageName
           +' ('+IntToStr(BookMarkY)+','+IntToStr(BookMarkX)+')';
       end;
       // goto book mark item
@@ -4646,6 +4711,24 @@ begin
       end;
     end;
 
+    {$IFDEF MultiSrcWindow}
+    SrcEditMenuMoveToNewWindow.Visible := Manager.SourceWindowCount <= 1;
+    SrcEditMenuMoveToNewWindow.Enabled := PageCount > 1;
+    SrcEditMenuMoveToOtherWindow.Visible := Manager.SourceWindowCount > 1;
+    SrcEditMenuMoveToOtherWindow.Enabled := (PageCount > 1) or (Manager.SourceWindowCount > 1);
+    SrcEditMenuMoveToOtherWindowNew.Enabled := (PageCount > 1);
+    SrcEditMenuMoveToOtherWindowList.Clear;
+    for i := 0 to Manager.SourceWindowCount - 1 do
+      if i <> Manager.IndexOfSourceWindow(self) then begin
+        with RegisterIDEMenuCommand(SrcEditMenuMoveToOtherWindowList,
+                                    'CopyToWindow'+IntToStr(i),
+                                    Manager.SourceWindows[i].Caption,
+                                    @SrcEditMenuCopyToExistingWindow)
+        do
+          Tag := i;
+      end;
+    {$ENDIF}
+
     if Assigned(Manager.OnPopupMenu) then Manager.OnPopupMenu(@AddContextPopupMenuItem);
 
     SourceEditorMenuRoot.NotifySubSectionOnShow(Self);
@@ -4678,8 +4761,6 @@ begin
 end;
 
 Procedure TSourceNotebook.BuildPopupMenu;
-var
-  i: Integer;
 begin
   //debugln('TSourceNotebook.BuildPopupMenu');
 
@@ -4697,8 +4778,12 @@ begin
   SrcPopupMenu.Items.WriteDebugReport('TSourceNotebook.BuildPopupMenu ');
   SourceEditorMenuRoot.ConsistencyCheck;
   {$ENDIF}
-  SourceEditorMenuRoot.MenuItem:=SrcPopupMenu.Items;
+end;
 
+procedure TSourceNotebook.AssignPopupMenu;
+var
+  i: Integer;
+begin
   SrcEditMenuFindDeclaration.OnClick:=@FindDeclarationClicked;
   SrcEditMenuProcedureJump.OnClick:=@ProcedureJumpClicked;
   SrcEditMenuFindNextWordOccurrence.OnClick:=@FindNextWordOccurrenceClicked;
@@ -4753,6 +4838,11 @@ begin
   SrcEditMenuEditorProperties.OnClick:=@EditorPropertiesClicked;
   {$IFDEF SynDualView}
   SrcEditMenuAnotherView.OnClick := @SrcEditMenuAnotherViewClicked;
+  {$ENDIF}
+
+  {$IFDEF MultiSrcWindow}
+  SrcEditMenuMoveToNewWindow.OnClick := @SrcEditMenuCopyToNewWindow;
+  SrcEditMenuMoveToOtherWindowNew.OnClick := @SrcEditMenuCopyToNewWindow;
   {$ENDIF}
 end;
 
@@ -4995,6 +5085,17 @@ Begin
     Manager.OnEditorChanged(Sender);
 End;
 
+procedure TSourceNotebook.DoClose(var CloseAction: TCloseAction);
+begin
+  inherited DoClose(CloseAction);
+  {$IFDEF MultiSrcWindow}
+  if PageCount = 0 then {$NOTE maybe keep the last one}
+    CloseAction := caFree
+  else
+  {$ENDIF}
+    CloseAction := caHide;
+end;
+
 function TSourceNotebook.GetActiveCompletionPlugin: TSourceEditorCompletionPlugin;
 begin
   Result := Manager.ActiveCompletionPlugin;
@@ -5158,6 +5259,7 @@ begin
   else begin
     FNotebook.Visible := True;
     NotebookPages[Index] := S;
+    Show;
   end;
 end;
 
@@ -5167,6 +5269,11 @@ begin
     NotebookPages.Delete(Index)
   else
     FNotebook.Visible := False;
+end;
+
+function TSourceNotebook.NoteBookIndexOfPage(APage: TPage): Integer;
+begin
+  Result := FNoteBook.IndexOf(APage);
 end;
 
 procedure TSourceNotebook.BeginIncrementalFind;
@@ -5303,6 +5410,48 @@ end;
 procedure TSourceNotebook.MoveActivePageLast;
 begin
   MoveEditorLast(PageIndex);
+end;
+
+procedure TSourceNotebook.MoveEditor(OldPageIndex, NewWindowIndex,
+  NewPageIndex: integer);
+var
+  DestWin: TSourceNotebook;
+  Edit: TSourceEditor;
+begin
+  if (NewWindowIndex < 0) or (NewWindowIndex >= Manager.SourceWindowCount) then
+    exit;
+  DestWin := Manager.SourceWindows[NewWindowIndex];
+  if DestWin = self then begin
+    MoveEditor(OldPageIndex, NewPageIndex);
+    exit
+  end;
+
+  if NewPageIndex < 0 then
+    NewPageIndex := DestWin.PageCount;
+  if (OldPageIndex<0) or (OldPageIndex>=PageCount) or
+     (NewPageIndex<0) or (NewPageIndex>DestWin.PageCount)
+  then
+    exit;
+
+  Edit := FindSourceEditorWithPageIndex(OldPageIndex);
+  DestWin.NoteBookInsertPage(NewPageIndex, Edit.PageName);
+  DestWin.PageIndex := NewPageIndex;
+  DestWin.NotebookPage[NewPageIndex].ReAlign;
+
+  ReleaseEditor(Edit);
+  Edit.UpdateNoteBook(DestWin, DestWin.NoteBookPage[NewPageIndex]);
+  DestWin.AcceptEditor(Edit);
+
+  NoteBookDeletePage(OldPageIndex);
+  UpdatePageNames;
+  UpdateProjectFiles;
+  DestWin.UpdatePageNames;
+  DestWin.UpdateProjectFiles;
+  DestWin.UpdateActiveEditColors(Edit.EditorComponent);
+  DestWin.UpdateStatusBar;
+
+  if PageCount = 0 then
+    Close;
 end;
 
 procedure TSourceNotebook.ActivateHint(const ScreenPos: TPoint;
@@ -5741,8 +5890,12 @@ begin
     UpdatePageNames;
     // set focus to new editor
     TempEditor:=FindSourceEditorWithPageIndex(PageIndex);
-    if PageCount = 0 then
-      Hide;
+    if PageCount = 0 then begin
+      {$IFDEF MultiSrcWindow}
+      Manager.RemoveWindow(self);
+      {$ENDIF}
+      Close;
+    end;
   {$IFNDEF OldAutoSize}
   finally
     EnableAutoSizing{$IFDEF DebugDisableAutoSizing}('TSourceNotebook.CloseFile'){$ENDIF};
@@ -5866,6 +6019,23 @@ begin
   f.show;
   ASrcEdit.OtherViewList.Add(f);
 end;
+
+procedure TSourceNotebook.SrcEditMenuCopyToNewWindow(Sender: TObject);
+begin
+  inc(FFocusLock);
+  try
+    MoveEditor(PageIndex, Manager.IndexOfSourceWindow(Manager.CreateNewWindow(True)), -1);
+    Manager.ShowActiveWindowOnTop(True);
+  finally
+    dec(FFocusLock);
+  end;
+end;
+
+procedure TSourceNotebook.SrcEditMenuCopyToExistingWindow(Sender: TObject);
+begin
+  MoveEditor(PageIndex, (Sender as TIDEMenuItem).Tag, -1)
+end;
+
 {$ENDIF}
 
 Procedure TSourceNotebook.UpdateStatusBar;
@@ -7032,7 +7202,7 @@ function TSourceEditorManager.ActiveOrNewSourceWindow: TSourceNotebook;
 begin
   Result := ActiveSourceWindow;
   if Result <> nil then exit;
-    Result := CreateNewWindow(True);
+  Result := CreateNewWindow(True);
   ActiveSourceWindow := Result;
 end;
 
@@ -7040,6 +7210,20 @@ function TSourceEditorManager.NewSourceWindow: TSourceNotebook;
 begin
   Result := CreateNewWindow(True);
   ActiveSourceWindow := Result;
+end;
+
+function TSourceEditorManager.SourceWindowWithPage(const APage: TPage
+  ): TSourceNotebook;
+var
+  i: Integer;
+begin
+  Result := nil;
+  for i := FSourceWindowList.Count-1 downto 0 do begin
+    if TSourceNotebook(SourceWindows[i]).FNoteBook.PageList.IndexOf(APage) >= 0 then begin
+      Result := SourceWindows[i];
+      break;
+    end;
+  end;
 end;
 
 function TSourceEditorManager.SourceEditorCount: integer;
@@ -7087,6 +7271,17 @@ procedure TSourceEditorManager.EditorRemoved(AEditor: TSourceEditor);
 begin
   if FDefaultCompletionForm <> nil then
     FDefaultCompletionForm.RemoveEditor(AEditor.EditorComponent);
+end;
+
+procedure TSourceEditorManager.Notification(AComponent: TComponent;
+  Operation: TOperation);
+begin
+  inherited Notification(AComponent, Operation);
+  if Operation=opRemove then
+  begin
+    if AComponent is TSourceNotebook then
+      RemoveWindow(TSourceNotebook(AComponent));
+  end;
 end;
 
 procedure TSourceEditorManager.ClearErrorLines;
@@ -7800,6 +7995,18 @@ begin
     ActiveSourceWindow := Result;
     ShowActiveWindowOnTop(False);
   end;
+end;
+
+procedure TSourceEditorManager.RemoveWindow(AWindow: TSourceNotebook);
+var
+  i: Integer;
+begin
+  i := FSourceWindowList.IndexOf(AWindow);
+  FSourceWindowList.Remove(AWindow);
+  if SourceWindowCount = 0 then
+    FActiveWindow := nil
+  else if FActiveWindow = AWindow then
+    FActiveWindow := SourceWindows[Max(0, Min(i, SourceWindowCount-1))];
 end;
 
 initialization

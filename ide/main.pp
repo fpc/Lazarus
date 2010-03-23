@@ -2748,20 +2748,20 @@ begin
 end;
 
 procedure TMainIDE.mnuCloseClicked(Sender: TObject);
-var PageIndex: integer;
+var
+  PageIndex: integer;
+  NB: TSourceNotebook;
 begin
-  if (SourceEditorManager.ActiveSourceWindow = nil)
-     or (SourceEditorManager.ActiveSourceWindow.NotebookPages = nil) then exit;
   if Sender is TPage then begin
-    PageIndex := SourceEditorManager.ActiveSourceWindow.NotebookPages.IndexOfObject(Sender);
-    if PageIndex < 0 then
-      PageIndex := SourceEditorManager.ActiveSourceWindow.PageIndex;
+    NB := SourceEditorManager.SourceWindowWithPage(TPage(Sender));
+    if NB = nil then exit;
+    PageIndex := NB.NotebookPages.IndexOfObject(Sender);
   end else begin
+    NB := SourceEditorManager.ActiveSourceWindow;
+    if (NB = nil)  or (NB.NotebookPages = nil) then exit;
     PageIndex := SourceEditorManager.ActiveSourceWindow.PageIndex;
   end;
-  DoCloseEditorFile(
-    SourceEditorManager.ActiveSourceWindow.FindSourceEditorWithPageIndex(PageIndex),
-    [cfSaveFirst]);
+  DoCloseEditorFile(NB.FindSourceEditorWithPageIndex(PageIndex), [cfSaveFirst]);
 end;
 
 procedure TMainIDE.mnuCloseAllClicked(Sender: TObject);
@@ -2792,14 +2792,14 @@ var
 begin
   if InvertedClose then begin
     // close all source editors except the clicked
-    ActiveSrcNoteBook := SourceEditorManager.ActiveSourceWindow;
-    if ActiveSrcNoteBook.NotebookPages=nil then exit;
     if Sender is TPage then begin
-      PageIndex:=ActiveSrcNoteBook.NotebookPages.IndexOfObject(Sender);
-      if PageIndex<0 then
-        PageIndex:=ActiveSrcNoteBook.PageIndex;
+      ActiveSrcNoteBook := SourceEditorManager.SourceWindowWithPage(TPage(Sender));
+      if ActiveSrcNoteBook = nil then exit;
+      PageIndex := ActiveSrcNoteBook.NotebookPages.IndexOfObject(Sender);
     end else begin
-      PageIndex:=ActiveSrcNoteBook.PageIndex;
+      ActiveSrcNoteBook := SourceEditorManager.ActiveSourceWindow;
+      if ActiveSrcNoteBook = nil then exit;
+      PageIndex := ActiveSrcNoteBook.PageIndex;
     end;
     repeat
       i:=ActiveSrcNoteBook.PageCount-1;
@@ -3490,7 +3490,12 @@ begin
 end;
 
 procedure TMainIDE.mnuViewSourceEditorClicked(Sender: TObject);
+var
+  i: Integer;
 begin
+  SourceEditorManager.ActiveOrNewSourceWindow;
+  for i := 0 to SourceEditorManager.SourceWindowCount - 1 do
+    SourceEditorManager.SourceWindows[i].Show;
   SourceEditorManager.ShowActiveWindowOnTop(False);
 end;
 
@@ -7575,9 +7580,12 @@ var NewSrcEdit: TSourceEditor;
   SrcNotebook: TSourceNotebook;
 begin
   AFilename:=AnUnitInfo.Filename;
-  { $note Todo:remap window index in all unit infos}
-  if (WindowIndex < 0) or (WindowIndex >= SourceEditorManager.SourceWindowCount) then
+  {$note Todo:remap window index in all unit infos}
+  {$note Todo:remap layout for each windows }
+  if (WindowIndex < 0) then
     SrcNotebook := SourceEditorManager.ActiveOrNewSourceWindow
+  else if (WindowIndex >= SourceEditorManager.SourceWindowCount) then
+    SrcNotebook := SourceEditorManager.NewSourceWindow
   else
     SrcNotebook := SourceEditorManager.SourceWindows[WindowIndex];
 
