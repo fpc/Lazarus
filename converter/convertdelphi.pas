@@ -41,10 +41,10 @@ uses
   // IDEIntf
   ComponentReg, IDEMsgIntf, MainIntf, LazIDEIntf, PackageIntf, ProjectIntf,
   // IDE
-  IDEProcs, MissingUnits, Project, DialogProcs, //CheckLFMDlg,
+  IDEProcs, Project, DialogProcs,
   EditorOptions, CompilerOptions, PackageDefs, PackageSystem,
   PackageEditor, BasePkgManager, LazarusIDEStrConsts,
-  ConvertSettings, ConvCodeTool, MissingPropertiesDlg;
+  ConvertSettings, ConvCodeTool, MissingUnits, MissingPropertiesDlg;
 
 const
   SettingDelphiModeTemplName = 'Setting Delphi Mode';
@@ -639,7 +639,6 @@ begin
       LfmFixer.Settings:=fSettings;
       LfmFixer.RootMustBeClassInIntf:=true;
       LfmFixer.ObjectsMustExists:=true;
-//      was: if RepairLFMBuffer(...,true,true)<>mrOk
       if LfmFixer.Repair<>mrOk then begin
         LazarusIDE.DoJumpToCompilerMessage(-1,true);
         exit(mrAbort);
@@ -755,7 +754,8 @@ begin
   // ask user what to do
   repeat
     TryAgain:=False;
-    Result:=AskMissingUnits(fMissingUnits, ExtractFileName(fLazUnitFilename));
+    Result:=AskMissingUnits(fMissingUnits, ExtractFileName(fLazUnitFilename),
+                            fSettings.Target=ctLazarusAndDelphi);
     case Result of
       // mrOK means: comment out.
       mrOK: begin

@@ -142,6 +142,8 @@ begin
   fReplaceProps['TCoolBar']:='TPanel';
   fReplaceProps['TRichEdit']:='TMemo';
   fReplaceProps['TDBRichEdit']:='TDBMemo';
+  fReplaceProps['TPNGObject']:='TPortableNetworkGraphic';
+  fReplaceProps['TTntForm']:='TForm';
 end;
 
 destructor TConvertSettings.Destroy;

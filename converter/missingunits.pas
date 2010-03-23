@@ -42,19 +42,6 @@ uses
   CompilerOptions,
   PackageDefs, Project, DialogProcs, IDEProcs, LazarusIDEStrConsts;
 
-const
-  // Copied from LazarusIDEStrConsts, remove later...
-  lisMissingUnitsComment = 'Comment Out';
-  lisMissingUnitsSearch = 'Search Unit Path';
-  lisTheseUnitsWereNotFound = 'These units were not found:';
-  lisMissingUnitsChoices = 'Your choices are:';
-  lisMissingUnitsInfo1 = '1) Comment out the missing units (ignore them).';
-  lisMissingUnitsInfo2 = '2) Select a unit path which will be added to project settings.';
-  lisMissingUnitsInfo3 = '3) Abort now, fix the unit path or install packages and try again.';
-  lisUnitNotFound = 'A unit not found in';
-  lisUnitsNotFound2 = 'Units not found in';
-
-
 type
 
   { TMissingUnitsDialog }
@@ -81,14 +68,16 @@ type
 var
   MissingUnitsDialog: TMissingUnitsDialog;
 
-function AskMissingUnits(AMissingUnits: TStrings; AMainUnitName: string): TModalResult;
+function AskMissingUnits(AMissingUnits: TStrings; AMainUnitName: string;
+                         ATargetDelphi: boolean): TModalResult;
 
 
 implementation
 
 {$R *.lfm}
 
-function AskMissingUnits(AMissingUnits: TStrings; AMainUnitName: string): TModalResult;
+function AskMissingUnits(AMissingUnits: TStrings; AMainUnitName: string;
+                         ATargetDelphi: boolean): TModalResult;
 var
   UNFDialog: TMissingUnitsDialog;
   UnitsTitle, UnitsCommaList: string;
@@ -113,12 +102,18 @@ begin
   UNFDialog:=TMissingUnitsDialog.Create(nil);
   with UNFDialog do begin
     Caption:=UnitsTitle;
-    CommentButton.Caption:=lisMissingUnitsComment;
     SearchButton.Caption:=lisMissingUnitsSearch;
     MissingUnitsInfoLabel.Caption:=lisTheseUnitsWereNotFound;
     UnitNamesLabel.Caption:=UnitsCommaList;
     ChoicesLabel.Caption:=lisMissingUnitsChoices;
-    Info1Label.Caption:=lisMissingUnitsInfo1;
+    if ATargetDelphi then begin
+      CommentButton.Caption:=lisMissingUnitsForDelphi;
+      Info1Label.Caption:=lisMissingUnitsInfo1b;
+    end
+    else begin
+      CommentButton.Caption:=lisMissingUnitsComment;
+      Info1Label.Caption:=lisMissingUnitsInfo1;
+    end;
     Info2Label.Caption:=lisMissingUnitsInfo2;
     Info3Label.Caption:=lisMissingUnitsInfo3;
     Result:=ShowModal;

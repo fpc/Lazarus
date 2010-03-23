@@ -149,8 +149,8 @@ end;
 function TConvDelphiCodeTool.AddDelphiAndLCLSections: boolean;
 // add, remove and rename units for desired target.
 var
-  WinOnlyUnits: TStringList;  // Windows and LCL specific units.
-  LclOnlyUnits: TStringList;
+  DelphiOnlyUnits: TStringList;  // Delphi specific units.
+  LclOnlyUnits: TStringList;     // LCL specific units.
   UsesNode: TCodeTreeNode;
   Junk: TAtomPosition;
   IsWinUnit, IsVariantUnit: Boolean;
@@ -158,7 +158,7 @@ var
   InsPos, i: Integer;
 begin
   Result:=false;
-  WinOnlyUnits:=TStringList.Create;
+  DelphiOnlyUnits:=TStringList.Create;
   LclOnlyUnits:=TStringList.Create;
   try
   fCodeTool.BuildTree(true);
@@ -185,27 +185,39 @@ begin
         // Don't do anything. Delphi units work for Lazarus under Windows.
        end;
       ctLazarusAndDelphi: begin
-        // Make separate sections for LCL and Windows units.
+        // Make separate sections for LCL and Delphi units.
         if IsWinUnit then begin
-          WinOnlyUnits.Append('Windows');
+          DelphiOnlyUnits.Append('Windows');
           LclOnlyUnits.Append('LCLIntf');
           LclOnlyUnits.Append('LCLType');
           LclOnlyUnits.Append('LMessages');
           fCodeTool.RemoveUnitFromUsesSection(UsesNode, 'WINDOWS', fSrcCache);
         end;
         if IsVariantUnit then begin
-          WinOnlyUnits.Append('Variants');
+          DelphiOnlyUnits.Append('Variants');
+          fCodeTool.BuildTree(true);
+          UsesNode:=fCodeTool.FindMainUsesSection;
+          fCodeTool.MoveCursorToUsesStart(UsesNode);
           fCodeTool.RemoveUnitFromUsesSection(UsesNode, 'VARIANTS', fSrcCache);
         end;
-        if (LclOnlyUnits.Count>0) or (WinOnlyUnits.Count>0) then begin
-          // Add Windows and LCL sections for output.
+        // Now the missing units are not commented but used by Delphi instead.
+        for i:=0 to fUnitsToComment.Count-1 do begin
+          s:=UpperCaseStr(fUnitsToComment[i]);
+          fCodeTool.BuildTree(true);
+          UsesNode:=fCodeTool.FindMainUsesSection;
+          fCodeTool.MoveCursorToUsesStart(UsesNode);
+          fCodeTool.RemoveUnitFromUsesSection(UsesNode, s, fSrcCache);
+        end;
+        DelphiOnlyUnits.AddStrings(fUnitsToComment);
+        if (LclOnlyUnits.Count>0) or (DelphiOnlyUnits.Count>0) then begin
+          // Add LCL and Delphi sections for output.
           nl:=fSrcCache.BeautifyCodeOptions.LineEnd;
           s:='{$IFDEF LCL}'+nl+'  ';
           for i:=0 to LclOnlyUnits.Count-1 do
             s:=s+LclOnlyUnits[i]+', ';
           s:=s+nl+'{$ELSE}'+nl+'  ';
-          for i:=0 to WinOnlyUnits.Count-1 do
-            s:=s+WinOnlyUnits[i]+', ';
+          for i:=0 to DelphiOnlyUnits.Count-1 do
+            s:=s+DelphiOnlyUnits[i]+', ';
           s:=s+nl+'{$ENDIF}';
           // Now add the lines using codetools.
           if not fSrcCache.Replace(gtEmptyLine,gtNewLine,InsPos,InsPos,s) then exit;
@@ -216,7 +228,7 @@ begin
   Result:=true;
   finally
     LclOnlyUnits.Free;
-    WinOnlyUnits.Free;
+    DelphiOnlyUnits.Free;
   end;
 end;
 
@@ -303,7 +315,7 @@ var
 begin
   Result:=false;
   if Assigned(fUnitsToRemove) then begin
-    for i := 0 to fUnitsToRemove.Count-1 do
+    for i:=0 to fUnitsToRemove.Count-1 do
       if not fCodeTool.RemoveUnitFromAllUsesSections(fUnitsToRemove[i], fSrcCache) then
         exit;
   end;
@@ -327,7 +339,7 @@ var
 begin
   Result:=false;
   if Assigned(fUnitsToAdd) then
-    for i := 0 to fUnitsToAdd.Count-1 do
+    for i:=0 to fUnitsToAdd.Count-1 do
     if not fCodeTool.AddUnitToMainUsesSection(fUnitsToAdd[i],'',fSrcCache) then
       exit;
   Result:=true;
@@ -336,11 +348,14 @@ end;
 function TConvDelphiCodeTool.CommentOutUnits: boolean;
 // Comment out missing units
 begin
-  Result:=false;
-  if Assigned(fUnitsToComment) and (fUnitsToComment.Count>0) then
-    if not fCodeTool.CommentUnitsInUsesSections(fUnitsToComment, fSrcCache) then
-      exit;
+  // If units are used by Delphi (IFDEF block) -> don't comment.
+  if fTarget<>ctLazarusAndDelphi then begin
+    Result:=false;
+    if Assigned(fUnitsToComment) and (fUnitsToComment.Count>0) then
+      if not fCodeTool.CommentUnitsInUsesSections(fUnitsToComment, fSrcCache) then
+        exit;
 //      IDEMessagesWindow.AddMsg('Error="'+CodeToolBoss.ErrorMessage+'"','',-1);
+  end;
   Result:=true;
 end;
 
