@@ -1130,6 +1130,7 @@ type
     FTriggeredHook: QAction_hookH;
     FHoveredHook: QAction_hookH;
     FAboutToHideHook: QMenu_hookH;
+    FActionEventFilter: QObject_hookH;
     FActionHandle: QActionH;
     FMenuItem: TMenuItem;
     FTrackButton: QtMouseButtons;
@@ -1149,6 +1150,7 @@ type
     procedure SlotAboutToHide; cdecl;
     procedure SlotDestroy; cdecl;
     procedure SlotTriggered(checked: Boolean = False); cdecl;
+    function ActionEventFilter(Sender: QObjectH; Event: QEventH): Boolean; cdecl;
     function EventFilter(Sender: QObjectH; Event: QEventH): Boolean; cdecl; override;
   public
     function actionHandle: QActionH;
@@ -8820,6 +8822,12 @@ end;
 
 procedure TQtMenu.DetachEvents;
 begin
+  if FActionEventFilter <> nil then
+  begin
+    QObject_hook_destroy(FActionEventFilter);
+    FActionEventFilter := nil;
+  end;
+
   if FTriggeredHook <> nil then
   begin
     QAction_hook_destroy(FTriggeredHook);
@@ -8837,7 +8845,6 @@ begin
     QMenu_hook_destroy(FAboutToHideHook);
     FAboutToHideHook := nil;
   end;
-
   inherited DetachEvents;
 end;
 
@@ -8880,7 +8887,16 @@ var
   GotItem: boolean = False;
 begin
   if FActionHandle = nil then
+  begin
+    if FActionEventFilter <> nil then
+    begin
+      QObject_hook_destroy(FActionEventFilter);
+      FActionEventFilter := nil;
+    end;
     FActionHandle := QMenu_menuAction(QMenuH(Widget));
+    FActionEventFilter := QObject_hook_create(FActionHandle);
+    QObject_hook_hook_events(FActionEventFilter, @ActionEventFilter);
+  end;
   Result := FActionHandle;
 end;
 
@@ -9058,9 +9074,37 @@ begin
   QCoreApplication_postEvent(Widget, Event, 1 {high priority});
 end;
 
+function TQtMenu.ActionEventFilter(Sender: QObjectH; Event: QEventH): Boolean;
+  cdecl;
+var
+  TempAction: QActionH;
+begin
+  Result := False;
+  QEvent_accept(Event);
+  if Assigned(FMenuItem) and (QEvent_type(Event) = QEventActionChanged) then
+  begin
+    if FMenuItem.RadioItem and not FMenuItem.AutoCheck and not InUpdate then
+    begin
+      {qt shouldn't change radioitem if our menu autoCheck=False,
+       LCL should do that !}
+      TempAction := QActionEvent_action(QActionEventH(Event));
+      if (TempAction <> nil) and
+        (QAction_isChecked(TempAction) <> FMenuItem.Checked) then
+      begin
+        QObject_blockSignals(TempAction, True);
+        QAction_setChecked(TempAction, FMenuItem.Checked);
+        SlotTriggered();
+        Result := True;
+        QEvent_ignore(Event);
+      end;
+    end;
+  end;
+end;
+
 function TQtMenu.EventFilter(Sender: QObjectH; Event: QEventH): Boolean; cdecl;
 var
   Msg: TLMessage;
+  TempAction: QActionH;
 begin
   Result := False;
   QEvent_accept(Event);
@@ -9087,17 +9131,16 @@ begin
           (QMouseEvent_button(QMouseEventH(Event)) <> FTrackButton);
         if Assigned(FMenuItem) and not (FMenuItem.Menu is TPopupMenu) then
         begin
+          TempAction := QMenu_actionAt(QMenuH(Widget),
+            QMouseEvent_pos(QMouseEventH(Event)));
           {trigger LCL if root of menu have OnClick() connected,
            since qt won't do that for us.}
           if (QMouseEvent_button(QMouseEventH(Event)) = QtLeftButton) and
             Assigned(FMenuItem.OnClick) and
-          (QMenu_actionAt(QMenuH(Widget),
-            QMouseEvent_pos(QMouseEventH(Event))) = nil)
-          then
+            (TempAction = nil) then
             SlotTriggered();
         end;
       end;
-
   end;
 end;
 

@@ -117,7 +117,9 @@ begin
     Result.setText(GetUtf8String(AMenuItem.Caption));
     Result.setEnabled(AMenuItem.Enabled);
     Result.setCheckable(AMenuItem.RadioItem or AMenuItem.ShowAlwaysCheckable);
+    Result.BeginUpdate;
     Result.setChecked(AMenuItem.Checked);
+    Result.EndUpdate;
     Result.setShortcut(AMenuItem.ShortCut);
     if AMenuItem.HasIcon then
       Result.setImage(TQtImage(AMenuItem.Bitmap.Handle));
@@ -278,7 +280,9 @@ begin
   if not WSCheckMenuItem(AMenuItem, 'SetCheck') then
     Exit;
 
+  TQtMenu(AMenuItem.Handle).BeginUpdate;
   TQtMenu(AMenuItem.Handle).setChecked(Checked);
+  TQtMenu(AMenuItem.Handle).EndUpdate;
 
   Result := True;
 end;
