@@ -147,15 +147,9 @@ end;
   Creates the handle ( = object).
  ------------------------------------------------------------------------------}
 procedure TMenu.CreateHandle;
-var
-  i: integer;
 begin
   FItems.Handle := TWSMenuClass(WidgetSetClass).CreateHandle(Self);
-  // initiate creation of subitems
-  // Note: FItems is a TMenuItem. Using HandleNeeded will create all subitems.
-  for i := 0 to Items.Count - 1 do
-    if Items[i].Visible then
-      Items[i].HandleNeeded;
+  FItems.CheckChildrenHandles;
 end;
 
 procedure TMenu.DestroyHandle;

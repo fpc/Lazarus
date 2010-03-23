@@ -50,8 +50,8 @@ uses
 
 type
   TMenu = class;
-  EMenuError = class(Exception);
   TMenuItem = class;
+  EMenuError = class(Exception);
 
   TGlyphShowMode = (
     gsmAlways,       // always show
@@ -228,8 +228,6 @@ type
     function IndexOf(Item: TMenuItem): Integer;
     function IndexOfCaption(const ACaption: string): Integer; virtual;
     function VisibleIndexOf(Item: TMenuItem): Integer;
-    function IsCheckItem: boolean; virtual;
-    function IsLine: Boolean;
     procedure Add(Item: TMenuItem);
     procedure AddSeparator;
     procedure Click; virtual;
@@ -238,6 +236,8 @@ type
     procedure Insert(Index: Integer; Item: TMenuItem);
     procedure RecreateHandle; virtual;
     procedure Remove(Item: TMenuItem);
+    function IsCheckItem: boolean; virtual;
+    function IsLine: Boolean;
     function IsInMenuBar: boolean; virtual;
     procedure Clear;
     function HasBitmap: boolean;
