@@ -211,6 +211,7 @@ function SetScrollInfo(Handle : HWND; SBStyle : Integer; ScrollInfo: TScrollInfo
 function SetSysColors(cElements: Integer; const lpaElements; const lpaRgbValues): Boolean; override;
 {function SetTextCharacterExtra(_hdc : hdc; nCharExtra : Integer):Integer; override;}
 function SetTextColor(DC: HDC; Color: TColorRef): TColorRef; override;
+function SetViewPortOrgEx(DC: HDC; NewX, NewY: Integer; OldPoint: PPoint): Boolean; override;
 function SetWindowLong(Handle: HWND; Idx: Integer; NewLong: PtrInt): PtrInt; override;
 function SetWindowOrgEx(dc : hdc; NewX, NewY : Integer; OldPoint: PPoint) : Boolean; override;
 function SetWindowPos(hWnd: HWND; hWndInsertAfter: HWND;

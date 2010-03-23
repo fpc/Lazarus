@@ -2865,6 +2865,12 @@ begin
   Result := Windows.SetTextColor(DC, Windows.COLORREF(ColorToRGB(Color)));
   Assert(False, Format('Trace:< [TWinCEWidgetSet.SetTextColor] DC: 0x%x Color: %8x --> %8x', [Integer(DC), Color, Result]));
 end;
+
+function TWinCEWidgetSet.SetViewPortOrgEx(DC: HDC; NewX, NewY: Integer; OldPoint: PPoint): Boolean;
+begin
+  Result := Boolean(Windows.SetViewPortOrgEx(DC, NewX, NewY, LPPoint(OldPoint)));
+end;
+
 {------------------------------------------------------------------------------
   Procedure: SetWindowLong
   Params:  Handle  - handle of window
@@ -2896,7 +2902,7 @@ function TWinCEWidgetSet.SetWindowOrgEx(DC: HDC; NewX, NewY: Integer;
   OldPoint: PPoint): Boolean;
 begin
  { roozbeh:does this always work?it is heavily used in labels and some other drawing controls}
-  Result := Boolean(SetViewPortOrgEx(DC, -NewX, -NewY, LPPoint(OldPoint)));
+  Result := Boolean(Windows.SetViewPortOrgEx(DC, -NewX, -NewY, LPPoint(OldPoint)));
 //  Result:=inherited SetWindowOrgEx(dc, NewX, NewY, OldPoint);
 end;
 
