@@ -473,6 +473,7 @@ type
     FTabControlCreating: Boolean;
     FTabPosition: TTabPosition;
     FTabs: TStrings;// this is a TTabControlNoteBookStrings
+    procedure AdjustDisplayRect(var ARect: TRect);
     function GetDisplayRect: TRect;
     function GetHotTrack: Boolean;
     function GetMultiLine: Boolean;
@@ -512,7 +513,7 @@ type
     procedure DoSetBounds(ALeft, ATop, AWidth, AHeight: integer); override;
     class function GetControlClassDefaultSize: TPoint; override;
     procedure Paint; override;
-    function GetDisplayRectWithBorder: TRect; virtual;
+    procedure AdjustDisplayRectWithBorder(var ARect: TRect); virtual;
     procedure AdjustClientRect(var ARect: TRect); override;
   protected
     property DisplayRect: TRect read GetDisplayRect;

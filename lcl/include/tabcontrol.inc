@@ -316,17 +316,23 @@ end;
 
 { TCustomTabControl }
 
+procedure TCustomTabControl.AdjustDisplayRect(var ARect: TRect);
+begin
+  AdjustDisplayRectWithBorder(ARect);
+  if TabPosition<>tpTop then
+    ARect.Top:=Min(Max(ARect.Top,ARect.Top+BorderWidth),ARect.Bottom);
+  if TabPosition<>tpBottom then
+    ARect.Bottom:=Max(Min(ARect.Bottom,ARect.Bottom-BorderWidth),ARect.Top);
+  if TabPosition<>tpLeft then
+    ARect.Left:=Min(Max(ARect.Left,ARect.Left+BorderWidth),ARect.Right);
+  if TabPosition<>tpRight then
+    ARect.Right:=Max(Min(ARect.Right,ARect.Right-BorderWidth),ARect.Left);
+end;
+
 function TCustomTabControl.GetDisplayRect: TRect;
 begin
-  Result:=GetDisplayRectWithBorder;
-  if TabPosition<>tpTop then
-    Result.Top:=Min(Max(Result.Top,Result.Top+BorderWidth),Result.Bottom);
-  if TabPosition<>tpBottom then
-    Result.Bottom:=Max(Min(Result.Bottom,Result.Bottom-BorderWidth),Result.Top);
-  if TabPosition<>tpLeft then
-    Result.Left:=Min(Max(Result.Left,Result.Left+BorderWidth),Result.Right);
-  if TabPosition<>tpRight then
-    Result.Right:=Max(Min(Result.Right,Result.Right-BorderWidth),Result.Left);
+  Result:=ClientRect;
+  AdjustDisplayRect(Result);
 end;
 
 function TCustomTabControl.GetHotTrack: Boolean;
@@ -549,7 +555,8 @@ begin
   //DebugLn(['TCustomTabControl.Paint Bounds=',dbgs(BoundsRect),' ClientRect=',dbgs(ClientRect),' CientOrigin=',dbgs(ClientOrigin)]);
   // clear only display area since button area is painted by another control
   // draw a frame
-  ARect := GetDisplayRectWithBorder;
+  ARect := ClientRect;
+  AdjustDisplayRectWithBorder(ARect);
 
   Details := ThemeServices.GetElementDetails(ttPane);
   ThemeServices.DrawElement(Canvas.Handle, Details, ARect);
@@ -569,17 +576,16 @@ begin
   end;
 end;
 
-function TCustomTabControl.GetDisplayRectWithBorder: TRect;
+procedure TCustomTabControl.AdjustDisplayRectWithBorder(var ARect: TRect);
 var
   TabAreaSize: LongInt;
 begin
-  Result := ClientRect;
   TabAreaSize := TTabControlStrings(FTabs).GetSize;
   case TabPosition of
-    tpTop:    Result.Top:=Min(TabAreaSize,Result.Bottom);
-    tpBottom: Result.Bottom:=Max(Result.Bottom-TabAreaSize,Result.Top);
-    tpLeft:   Result.Left:=Min(TabAreaSize,Result.Right);
-    tpRight:  Result.Right:=Max(Result.Right-TabAreaSize,Result.Left);
+    tpTop:    ARect.Top:=Min(TabAreaSize,ARect.Bottom);
+    tpBottom: ARect.Bottom:=Max(ARect.Bottom-TabAreaSize,ARect.Top);
+    tpLeft:   ARect.Left:=Min(TabAreaSize,ARect.Right);
+    tpRight:  ARect.Right:=Max(ARect.Right-TabAreaSize,ARect.Left);
   end;
 end;
 
@@ -599,7 +605,7 @@ end;
 
 procedure TCustomTabControl.AdjustClientRect(var ARect: TRect);
 begin
-  ARect := GetDisplayRect;
+  AdjustDisplayRect(ARect);
 end;
 
 constructor TCustomTabControl.Create(TheOwner: TComponent);
