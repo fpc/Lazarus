@@ -1492,8 +1492,9 @@ end;
   procedure RaiseGDBException(const Msg: string);
 
   Raises an exception.
-  gdb does normally not catch fpc Exception objects, therefore this procedure
-  raises a standard AV which is catched by gdb.
+  Normally gdb does not catch fpc Exception objects, therefore this procedure
+  raises a standard "division by zero" exception which is catched by gdb.
+  This allows to stop a program, without extra gdb configuration.
  ------------------------------------------------------------------------------}
 procedure RaiseGDBException(const Msg: string);
 begin
