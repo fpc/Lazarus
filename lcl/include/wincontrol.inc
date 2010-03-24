@@ -4541,12 +4541,12 @@ begin
       dec(P.X,ClientBounds.Left);
       dec(P.Y,ClientBounds.Top);
       {$IFDEF VerboseMouseBugfix}
-      DebugLn('TWinControl.IsControlMouseMsg ',Name,' -> ',Control.Name,
+      DebugLn(['TWinControl.IsControlMouseMsg ',Name,' -> ',Control.Name,
       ' MsgPos=',TheMessage.Pos.X,',',TheMessage.Pos.Y,
       ' Control=',Control.Left,',',Control.Top,
       ' ClientBounds=',ClientBounds.Left,',',ClientBounds.Top,
       ' Scrolled=',GetClientScrollOffset.X,',',GetClientScrollOffset.Y,
-      ' P=',P.X,',',P.Y
+      ' P=',P.X,',',P.Y]
       );
       {$ENDIF}
     end;
@@ -4908,7 +4908,7 @@ var
       ' P=',P.X,',',P.Y,
       ' ControlPos=',dbgs(ControlPos),
       ' ClientBounds=',ClientBounds.Left,',',ClientBounds.Top,',',ClientBounds.Right,',',ClientBounds.Bottom,
-      ' OnlyCl=',OnlyClientAreas,
+      // ' OnlyCl=',OnlyClientAreas,
       ' Result=',Result]);
       {$ENDIF}
       if Result then
