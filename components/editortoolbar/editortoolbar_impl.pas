@@ -59,7 +59,6 @@ type
   protected
     procedure   AddButton(AMenuItem: TIDEMenuItem);
     procedure   PositionAtEnd(AToolbar: TToolbar; AButton: TToolButton);
-    procedure   SourceWindowCreated(Sender: TObject);
     procedure   Reload;
   public
     constructor Create(AOwner: TComponent); override;
@@ -242,16 +241,11 @@ begin
   AButton.Parent := AToolbar;
 end;
 
-procedure TEditorToolbar.SourceWindowCreated(Sender: TObject);
+procedure TEditorToolbar.Reload;
 begin
   ClearToolbar;
   AddStaticItems;
   AddCustomItems;
-end;
-
-procedure TEditorToolbar.Reload;
-begin
-
 end;
 
 procedure TEditorToolbar.AddCustomItems;
