@@ -6624,6 +6624,8 @@ end;
 procedure TSourceNotebook.Activate;
 begin
   inherited Activate;
+  if assigned(Manager) then
+    Manager.ActiveSourceWindow := self;
   if assigned(Manager) and assigned(Manager.OnWindowActivate) then
     Manager.OnWindowActivate(self);
 end;
