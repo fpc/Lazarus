@@ -3701,10 +3701,7 @@ begin
     begin
       Adjustment := GetAdjustment(gObject, True);
       if Adjustment <> nil then
-      begin
         ConnectSenderSignal(Adjustment, 'value-changed', @GTKVScrollCB);
-        ConnectSenderSignal(Adjustment, 'value-changed', @GTKVScrollCB);
-      end;
     end;
 
     LM_YEARCHANGED :  //calendar
