@@ -33,6 +33,7 @@ uses
   ,Menus
   ,MenuIntf
   ,IDEImagesIntf
+  ,SrcEditorIntf
   ;
 
 
@@ -45,9 +46,10 @@ type
 
   { TEditorToolbar }
 
-  TEditorToolbar = class(TObject)
+  TEditorToolbar = class(TComponent)
   private
     FJumpHandler: TJumpHandler;
+    FWindow: TSourceEditorWindowInterface;
     TB: TToolbar;
     PM: TPopupMenu;
     CfgButton: TToolButton;
@@ -58,8 +60,9 @@ type
     procedure   AddButton(AMenuItem: TIDEMenuItem);
     procedure   PositionAtEnd(AToolbar: TToolbar; AButton: TToolButton);
     procedure   SourceWindowCreated(Sender: TObject);
+    procedure   Reload;
   public
-    constructor Create;
+    constructor Create(AOwner: TComponent); override;
     destructor  Destroy; override;
     procedure   InitEditorToolBar;
     procedure   AddCustomItems;
@@ -68,15 +71,29 @@ type
     procedure   ClearToolbar;
   end;
   
-  
+
+  { TEditorToolbarList }
+
+  TEditorToolbarList = class
+  private
+    FToolBarList: TFPList;
+  protected
+    procedure SourceWindowCreated(Sender: TObject);
+    procedure AddBar(ABar: TEditorToolbar);
+    procedure DelBar(ABar: TEditorToolbar);
+    procedure ReloadAll;
+  public
+    constructor Create;
+    destructor Destroy; override;
+  end;
+
+
 procedure Register;
-function  gEditorToolbar: TEditorToolbar;
 
 implementation
 
 uses
-  SrcEditorIntf
-  ,LazIDEIntf
+  LazIDEIntf
   ,CustomCodeTool
   ,Dialogs
   ,SysUtils
@@ -88,16 +105,53 @@ uses
 
 
 var
-  uEditorToolbar: TEditorToolbar;
-  
+  uEditorToolbarList: TEditorToolbarList;
 
-// Singleton function
-function gEditorToolbar: TEditorToolbar;
+{ TEditorToolbarList }
+
+procedure TEditorToolbarList.SourceWindowCreated(Sender: TObject);
 begin
-  if not Assigned(uEditorToolbar) then
-    uEditorToolbar := TEditorToolbar.Create;
-  result := uEditorToolbar;
+  TEditorToolbar.Create(Sender as TSourceEditorWindowInterface);
 end;
+
+procedure TEditorToolbarList.AddBar(ABar: TEditorToolbar);
+begin
+  FToolBarList.Add(ABar);
+end;
+
+procedure TEditorToolbarList.DelBar(ABar: TEditorToolbar);
+begin
+  FToolBarList.Remove(ABar);
+end;
+
+procedure TEditorToolbarList.ReloadAll;
+var
+  i: Integer;
+begin
+  for i := 0 to FToolBarList.Count - 1 do
+    TEditorToolbar(FToolBarList[i]).Reload;
+end;
+
+constructor TEditorToolbarList.Create;
+begin
+  inherited;
+  uEditorToolbarList := self;
+  FToolBarList := TFPList.Create;
+
+  if SourceEditorManagerIntf <> nil then
+    SourceEditorManagerIntf.RegisterChangeEvent(semWindowCreate, @SourceWindowCreated);
+
+end;
+
+destructor TEditorToolbarList.Destroy;
+begin
+  while FToolBarList.Count > 0 do
+    TEditorToolbar(FToolBarList[0]).Free;
+  FreeAndNil(FToolBarList);
+  inherited Destroy;
+end;
+
+{ TEditorToolbar }
 
 procedure TEditorToolbar.CreateEditorToolbar(AW: TForm; var ATB: TToolbar);
 begin
@@ -121,44 +175,39 @@ end;
 procedure TEditorToolbar.DoConfigureToolbar(Sender: TObject);
 begin
   if TEdtTbConfigForm.Execute then
-  begin
-    ClearToolbar;
-    AddStaticItems;
-    AddCustomItems;
-  end;
+    uEditorToolbarList.ReloadAll;
 end;
 
-constructor TEditorToolbar.Create;
+constructor TEditorToolbar.Create(AOwner: TComponent);
+var
+  T: TJumpType;
 begin
+  uEditorToolbarList.AddBar(Self);
+  if assigned(TB) then exit;
+
   FJumpHandler := TJumpHandler.Create(nil);
+  FWindow := TSourceEditorWindowInterface(AOwner);
+  CreateEditorToolBar(FWindow, TB);
+
+  PM := TPopupMenu.Create(FWindow);
+  for T := Low(TJumpType) to High(TJumpType) do
+    PM.Items.Add(CreateJumpItem(T, FWindow));
+
+  AddStaticItems;
+  AddCustomItems;
 end;
 
 destructor TEditorToolbar.Destroy;
 begin
+  uEditorToolbarList.DelBar(Self);
   FJumpHandler.Free;
   inherited Destroy;
-end;
-
-procedure TEditorToolbar.SourceWindowCreated(Sender: TObject);
-var
-  T: TJumpType;
-begin
-  if assigned(TB) then exit; // TODO: handle multiply Windows
-  CreateEditorToolBar(TSourceEditorWindowInterface(Sender), TB);
-
-  PM := TPopupMenu.Create(TSourceEditorWindowInterface(Sender));
-  for T := Low(TJumpType) to High(TJumpType) do
-    PM.Items.Add(CreateJumpItem(T, TSourceEditorWindowInterface(Sender)));
-
-  AddStaticItems;
-  AddCustomItems;
 end;
 
 procedure TEditorToolbar.InitEditorToolBar;
 begin
   TB := nil;
   CfgButton := nil;
-  SourceEditorManagerIntf.RegisterChangeEvent(semWindowCreate, @SourceWindowCreated);
 end;
 
 procedure TEditorToolbar.AddButton(AMenuItem: TIDEMenuItem);
@@ -191,6 +240,18 @@ begin
       SiblingButton.Top, AButton.Width, AButton.Height);
   end;
   AButton.Parent := AToolbar;
+end;
+
+procedure TEditorToolbar.SourceWindowCreated(Sender: TObject);
+begin
+  ClearToolbar;
+  AddStaticItems;
+  AddCustomItems;
+end;
+
+procedure TEditorToolbar.Reload;
+begin
+
 end;
 
 procedure TEditorToolbar.AddCustomItems;
@@ -288,17 +349,17 @@ end;
 
 procedure Register;
 begin
-  if (SourceEditorManagerIntf <> nil) then
-    gEditorToolbar.InitEditorToolBar;
+  if uEditorToolbarList = nil then
+    TEditorToolbarList.Create;
 end;
 
 
 initialization
-  uEditorToolbar := nil;
+  uEditorToolbarList := nil;
   {$I toolbar.lrs}    // all required images
 
 finalization
-  uEditorToolbar.Free;
+  uEditorToolbarList.Free;
 
 end.
 
