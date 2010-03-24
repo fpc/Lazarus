@@ -6785,7 +6785,7 @@ begin
      (TSourceDragableNotebook(Source).FMouseDownTabIndex >= 0)
   then begin
     TabIndex := TabIndexAtClientPos(Point(X,Y));
-    Accept := (Source <> self) or ((TabIndex >= 0) and (TabIndex <> FMouseDownTabIndex));
+    Accept := (TabIndex >= 0) and ((Source <> self) or (TabIndex <> FMouseDownTabIndex));
   end;
 end;
 
