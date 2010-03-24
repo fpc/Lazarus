@@ -474,12 +474,9 @@ begin
 
   GetCommonTreeViewWidgets(PGtkWidget(ALV.Handle), Widgets);
 
-  with Widgets^ do
-  begin
-    GtkColumn := gtk_tree_view_get_column(PGtkTreeView(MainView), AIndex);
-    if GtkColumn<>nil then
-      gtk_tree_view_remove_column(PGtkTreeView(MainView), GtkColumn);
-  end;
+  GtkColumn := gtk_tree_view_get_column(PGtkTreeView(Widgets^.MainView), AIndex);
+  if GtkColumn<>nil then
+    gtk_tree_view_remove_column(PGtkTreeView(Widgets^.MainView), GtkColumn);
 end;
 
 class function TGtk2WSCustomListView.ColumnGetWidth(const ALV: TCustomListView;
@@ -495,12 +492,10 @@ begin
   then Exit;
 
   GetCommonTreeViewWidgets(PGtkWidget(ALV.Handle), Widgets);
-  with Widgets^ do
-  begin
-    i := AColumn.Index;
-    GtkColumn := gtk_tree_view_get_column(PGtkTreeView(MainView), i);
+  i := AColumn.Index;
+  GtkColumn := gtk_tree_view_get_column(PGtkTreeView(Widgets^.MainView), i);
+  if GtkColumn <> nil then
     Result := gtk_tree_view_column_get_fixed_width(GtkColumn);
-  end;
 end;
 
 class procedure TGtk2WSCustomListView.ColumnInsert(const ALV: TCustomListView;
@@ -580,11 +575,19 @@ begin
   then Exit;
 
   GetCommonTreeViewWidgets(PGtkWidget(ALV.Handle), Widgets);
-  with Widgets^ do begin
-    Column := gtk_tree_view_get_column(PGtkTreeView(MainView), AOldIndex);
-    if ANewIndex = 0 then  PrevColumn := nil
-    else PrevColumn := gtk_tree_view_get_column(PGtkTreeView(MainView), ANewIndex-1);
-    gtk_tree_view_move_column_after(PGtkTreeView(MainView), Column, PrevColumn);
+
+  Column := gtk_tree_view_get_column(PGtkTreeView(Widgets^.MainView), AOldIndex);
+  if Column <> nil then
+  begin
+
+    if ANewIndex = 0 then
+      PrevColumn := nil
+    else
+      PrevColumn := gtk_tree_view_get_column(PGtkTreeView(Widgets^.MainView),
+        ANewIndex-1);
+
+    gtk_tree_view_move_column_after(PGtkTreeView(Widgets^.MainView),
+      Column, PrevColumn);
   end;
 end;
 
@@ -603,9 +606,10 @@ begin
   then Exit;
 
   GetCommonTreeViewWidgets(PGtkWidget(ALV.Handle), Widgets);
-  with Widgets^ do begin
-    GtkColumn := gtk_tree_view_get_column(PGtkTreeView(MainView), AIndex);
 
+  GtkColumn := gtk_tree_view_get_column(PGtkTreeView(Widgets^.MainView), AIndex);
+  if GtkColumn <> nil then
+  begin
     renderers := gtk_tree_view_column_get_cell_renderers(GtkColumn);
     textrenderer := PGtkCellRenderer(g_list_last(renderers)^.data);
     g_list_free(renderers);
@@ -631,8 +635,10 @@ begin
   then Exit;
 
   GetCommonTreeViewWidgets(PGtkWidget(ALV.Handle), Widgets);
-  with Widgets^ do begin
-    GtkColumn := gtk_tree_view_get_column(PGtkTreeView(MainView), AIndex);
+
+  GtkColumn := gtk_tree_view_get_column(PGtkTreeView(Widgets^.MainView), AIndex);
+  if GtkColumn <> nil then
+  begin
     if AAutoSize then
       ColSizing := GTK_TREE_VIEW_COLUMN_AUTOSIZE
     else
@@ -654,10 +660,9 @@ begin
   then Exit;
 
   GetCommonTreeViewWidgets(PGtkWidget(ALV.Handle), Widgets);
-  with Widgets^ do begin
-    GtkColumn := gtk_tree_view_get_column(PGtkTreeView(MainView), AIndex);
+  GtkColumn := gtk_tree_view_get_column(PGtkTreeView(Widgets^.MainView), AIndex);
+  if GtkColumn <> nil then
     gtk_tree_view_column_set_title(GtkColumn, PChar(ACaption));
-  end;
 end;
 
 class procedure TGtk2WSCustomListView.ColumnSetImage(const ALV: TCustomListView;
@@ -680,10 +685,9 @@ begin
   then Exit;
 
   GetCommonTreeViewWidgets(PGtkWidget(ALV.Handle), Widgets);
-  with Widgets^ do begin
-    GtkColumn := gtk_tree_view_get_column(PGtkTreeView(MainView), AIndex);
+  GtkColumn := gtk_tree_view_get_column(PGtkTreeView(Widgets^.MainView), AIndex);
+  if GtkColumn <> nil then
     gtk_tree_view_column_set_max_width(GtkColumn, AMaxWidth - Ord(AMaxWidth=0));
-  end;
 end;
 
 class procedure TGtk2WSCustomListView.ColumnSetMinWidth(const ALV: TCustomListView;
@@ -696,10 +700,9 @@ begin
   then Exit;
 
   GetCommonTreeViewWidgets(PGtkWidget(ALV.Handle), Widgets);
-  with Widgets^ do begin
-    GtkColumn := gtk_tree_view_get_column(PGtkTreeView(MainView), AIndex);
+  GtkColumn := gtk_tree_view_get_column(PGtkTreeView(Widgets^.MainView), AIndex);
+  if GtkColumn <> nil then
     gtk_tree_view_column_set_min_width(GtkColumn, AMinWidth - Ord(AMinWidth=0));
-  end;
 end;
 
 class procedure TGtk2WSCustomListView.ColumnSetWidth(const ALV: TCustomListView; const AIndex: Integer; const AColumn: TListColumn; const AWidth: Integer);
@@ -711,11 +714,9 @@ begin
   then Exit;
 
   GetCommonTreeViewWidgets(PGtkWidget(ALV.Handle), Widgets);
-  with Widgets^ do
-  begin
-    GtkColumn := gtk_tree_view_get_column(PGtkTreeView(MainView), AIndex);
+  GtkColumn := gtk_tree_view_get_column(PGtkTreeView(Widgets^.MainView), AIndex);
+  if GtkColumn <> nil then
     gtk_tree_view_column_set_fixed_width(GtkColumn, AWidth + Ord(AWidth<1));
-  end;
 end;
 
 class procedure TGtk2WSCustomListView.ColumnSetVisible(const ALV: TCustomListView;
