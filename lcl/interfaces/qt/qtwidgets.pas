@@ -9078,22 +9078,33 @@ function TQtMenu.ActionEventFilter(Sender: QObjectH; Event: QEventH): Boolean;
   cdecl;
 var
   TempAction: QActionH;
+  Group: QActionGroupH;
 begin
   Result := False;
   QEvent_accept(Event);
   if Assigned(FMenuItem) and (QEvent_type(Event) = QEventActionChanged) then
   begin
-    if FMenuItem.RadioItem and not FMenuItem.AutoCheck and not InUpdate then
+    {qt shouldn't change checkables in any case, LCL should do that !}
+    TempAction := QActionEvent_action(QActionEventH(Event));
+    if (TempAction <> nil) and
+      QAction_isCheckable(TempAction) and
+      (QAction_isChecked(TempAction) <> FMenuItem.Checked) then
     begin
-      {qt shouldn't change radioitem if our menu autoCheck=False,
-       LCL should do that !}
-      TempAction := QActionEvent_action(QActionEventH(Event));
-      if (TempAction <> nil) and
-        (QAction_isChecked(TempAction) <> FMenuItem.Checked) then
+      Group := QAction_actionGroup(TempAction);
+      if Group <> nil then
       begin
+        if QActionGroup_isExclusive(Group) then
+          QObject_blockSignals(Group, True)
+        else
+          QObject_blockSignals(TempAction, True);
+      end else
         QObject_blockSignals(TempAction, True);
-        QAction_setChecked(TempAction, FMenuItem.Checked);
-        SlotTriggered();
+
+      QAction_setChecked(TempAction, FMenuItem.Checked);
+
+      if QObject_signalsBlocked(TempAction) then
+      begin
+        QObject_blockSignals(TempAction, False);
         Result := True;
         QEvent_ignore(Event);
       end;
