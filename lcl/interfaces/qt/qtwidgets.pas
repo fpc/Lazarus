@@ -10334,11 +10334,16 @@ end;
 procedure TQtPage.setText(const W: WideString);
 var
   AParent: QTabWidgetH;
+  Index: integer;
 begin
   inherited setText(W);
   AParent := getTabWidget;
-  if (AParent <> nil) and QWidget_isVisible(AParent) then
-    QTabWidget_setTabText(AParent, getIndex, @W);
+  if (AParent <> nil) then
+  begin
+    Index := getIndex;
+    if Index <> -1 then
+      QTabWidget_setTabText(AParent, Index, @W);
+  end;
 end;
 
 { TQtAbstractItemView }
