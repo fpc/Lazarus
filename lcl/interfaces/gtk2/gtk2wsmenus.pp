@@ -148,11 +148,15 @@ begin
   if LockOnChange(PgtkObject(AMenuItem),0) > 0 then Exit;
 
   LCLMenuItem := TMenuItem(AData);
-  if (csDesigning in LCLMenuItem.ComponentState) or
-    not LCLMenuItem.RadioItem or LCLMenuItem.AutoCheck then
+
+  if (csDesigning in LCLMenuItem.ComponentState) then
     exit;
 
   w := gtk_get_event_widget(gtk_get_current_event);
+
+  if not GTK_IS_RADIO_MENU_ITEM(w) then
+    exit;
+
   b := gtk_check_menu_item_get_active(AMenuItem);
 
   if not LCLMenuItem.Checked then
@@ -160,18 +164,16 @@ begin
   else
     g_signal_stop_emission_by_name(AMenuItem, 'activate');
 
-  gtk_check_menu_item_set_active(AMenuItem, LCLMenuItem.Checked);
+  if b <> LCLMenuItem.Checked then
+    gtk_check_menu_item_set_active(AMenuItem, LCLMenuItem.Checked);
 
   {we must trigger OnClick() somehow, since we stopped signals}
-  if b and (w <> nil) and (w <> PGtkWidget(AMenuItem))  then
+  if b and (w <> nil) and (w <> PGtkWidget(AMenuItem)) then
   begin
     WidgetInfo := GetWidgetInfo(w);
-    if GTK_IS_RADIO_MENU_ITEM(w) then
-    begin
-      FillChar(Mess,SizeOf(Mess),#0);
-      Mess.Msg := LM_ACTIVATE;
-      WidgetInfo^.LCLObject.Dispatch(Mess);
-    end;
+    FillChar(Mess,SizeOf(Mess),#0);
+    Mess.Msg := LM_ACTIVATE;
+    WidgetInfo^.LCLObject.Dispatch(Mess);
   end;
 end;
 
