@@ -822,6 +822,12 @@ type
     procedure IncUpdateLock;
     procedure DecUpdateLock;
     procedure ShowActiveWindowOnTop(Focus: Boolean = False);
+    procedure UpdateFPDocEditor;
+  private
+    FOnEditorVisibleChanged: TNotifyEvent;
+  public
+    property OnEditorVisibleChanged: TNotifyEvent
+             read FOnEditorVisibleChanged write FOnEditorVisibleChanged;
   end;
 
   { TSourceEditorManager }
@@ -910,7 +916,6 @@ type
 
     function FindUniquePageName(FileName:string; IgnoreEditor: TSourceEditor):string;
     procedure ShowFPDocEditor;
-    procedure UpdateFPDocEditor;
     function SomethingModified: boolean;
     procedure HideHint;
     procedure LockAllEditorsInSourceChangeCache;
@@ -949,7 +954,6 @@ type
     FOnDeleteLastJumpPoint: TNotifyEvent;
     FOnEditorChanged: TNotifyEvent;
     FOnEditorPropertiesClicked: TNotifyEvent;
-    FOnEditorVisibleChanged: TNotifyEvent;
     FOnFindDeclarationClicked: TNotifyEvent;
     FOnGetIndent: TOnGetIndentEvent;
     FOnInitIdentCompletion: TOnInitIdentCompletion;
@@ -982,8 +986,6 @@ type
              read FOnCurrentCodeBufferChanged write FOnCurrentCodeBufferChanged;
     property OnDeleteLastJumpPoint: TNotifyEvent
              read FOnDeleteLastJumpPoint write FOnDeleteLastJumpPoint;
-    property OnEditorVisibleChanged: TNotifyEvent
-             read FOnEditorVisibleChanged write FOnEditorVisibleChanged;
     property OnEditorChanged: TNotifyEvent
              read FOnEditorChanged write FOnEditorChanged;
     property OnEditorPropertiesClicked: TNotifyEvent
@@ -4343,6 +4345,7 @@ destructor TSourceNotebook.Destroy;
 var
   i: integer;
 begin
+  Manager.RemoveWindow(Self);
   DisableAutoSizing{$IFDEF DebugDisableAutoSizing}('TSourceNotebook.Destroy'){$ENDIF};
   FProcessingCommand:=false;
   for i:=FSourceEditorList.Count-1 downto 0 do
@@ -6823,8 +6826,11 @@ end;
 procedure TSourceEditorManagerBase.SetActiveSourceWindow(
   const AValue: TSourceEditorWindowInterface);
 begin
-  if AValue = nil then exit;
+  if AValue = FActiveWindow then exit;
   FActiveWindow := AValue as TSourceNotebook; // Note: also set by SetActiveEditor
+  if Assigned(OnEditorVisibleChanged) then
+    OnEditorVisibleChanged(nil);
+  UpdateFPDocEditor;
 end;
 
 function TSourceEditorManagerBase.GetSourceWindows(Index: integer
@@ -7154,6 +7160,18 @@ begin
   ActiveSourceWindow.ShowOnTop;
   if Focus then
     TSourceNotebook(ActiveSourceWindow).FocusEditor;
+end;
+
+procedure TSourceEditorManagerBase.UpdateFPDocEditor;
+var
+  SrcEdit: TSourceEditor;
+  CaretPos: TPoint;
+begin
+  if FPDocEditor = nil then exit;
+  SrcEdit:= TSourceEditor(ActiveEditor);
+  if SrcEdit=nil then exit;
+  CaretPos := SrcEdit.EditorComponent.CaretXY;
+  FPDocEditor.UpdateFPDocEditor(SrcEdit.Filename,CaretPos);
 end;
 
 { TSourceEditorManager }
@@ -7662,18 +7680,6 @@ procedure TSourceEditorManager.ShowFPDocEditor;
 begin
   DoShowFPDocEditor;
   UpdateFPDocEditor;
-end;
-
-procedure TSourceEditorManager.UpdateFPDocEditor;
-var
-  SrcEdit: TSourceEditor;
-  CaretPos: TPoint;
-begin
-  if FPDocEditor = nil then exit;
-  SrcEdit:= ActiveEditor;
-  if SrcEdit=nil then exit;
-  CaretPos := SrcEdit.EditorComponent.CaretXY;
-  FPDocEditor.UpdateFPDocEditor(SrcEdit.Filename,CaretPos);
 end;
 
 function TSourceEditorManager.SomethingModified: boolean;
