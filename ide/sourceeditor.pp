@@ -1079,7 +1079,7 @@ var
   {$IFDEF SynDualView}
   SrcEditMenuAnotherView: TIDEMenuCommand;
   {$ENDIF}
-  {$IFDEF MultiSrcWindow}
+  {$IFnDEF SingleSrcWindow}
   // Multi Window
   SrcEditMenuMoveToNewWindow: TIDEMenuCommand;
   SrcEditMenuMoveToOtherWindow: TIDEMenuSection;
@@ -1156,7 +1156,7 @@ begin
               'Open in another View', uemOpenAnotherView);
     {$ENDIF}
 
-    {$IFDEF MultiSrcWindow}
+    {$IFnDEF SingleSrcWindow}
     // Move to other Window
     SrcEditMenuMoveToNewWindow   := RegisterIDEMenuCommand(SrcEditMenuSectionPages,
                                     'MoveToNewWindow', uemMoveToNewWindow);
@@ -4713,7 +4713,7 @@ begin
       end;
     end;
 
-    {$IFDEF MultiSrcWindow}
+    {$IFnDEF SingleSrcWindow}
     SrcEditMenuMoveToNewWindow.Visible := Manager.SourceWindowCount <= 1;
     SrcEditMenuMoveToNewWindow.Enabled := PageCount > 1;
     SrcEditMenuMoveToOtherWindow.Visible := Manager.SourceWindowCount > 1;
@@ -4842,7 +4842,7 @@ begin
   SrcEditMenuAnotherView.OnClick := @SrcEditMenuAnotherViewClicked;
   {$ENDIF}
 
-  {$IFDEF MultiSrcWindow}
+  {$IFnDEF SingleSrcWindow}
   SrcEditMenuMoveToNewWindow.OnClick := @SrcEditMenuCopyToNewWindow;
   SrcEditMenuMoveToOtherWindowNew.OnClick := @SrcEditMenuCopyToNewWindow;
   {$ENDIF}
@@ -5090,7 +5090,7 @@ End;
 procedure TSourceNotebook.DoClose(var CloseAction: TCloseAction);
 begin
   inherited DoClose(CloseAction);
-  {$IFDEF MultiSrcWindow}
+  {$IFnDEF SingleSrcWindow}
   if PageCount = 0 then begin { $NOTE maybe keep the last one}
     if EnvironmentOptions.IDEWindowLayoutList.ItemByFormID(Self.Name) <> nil then
       EnvironmentOptions.IDEWindowLayoutList.ItemByFormID(Self.Name).CloseForm;
@@ -5897,7 +5897,7 @@ begin
     // set focus to new editor
     TempEditor:=FindSourceEditorWithPageIndex(PageIndex);
     if PageCount = 0 then begin
-      {$IFDEF MultiSrcWindow}
+      {$IFnDEF SingleSrcWindow}
       Manager.RemoveWindow(self);
       {$ENDIF}
       Close;
