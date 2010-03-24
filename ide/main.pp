@@ -7580,12 +7580,13 @@ var NewSrcEdit: TSourceEditor;
   SrcNotebook: TSourceNotebook;
 begin
   AFilename:=AnUnitInfo.Filename;
-  {$note Todo:remap window index in all unit infos}
-  {$note Todo:remap layout for each windows }
   if (WindowIndex < 0) then
     SrcNotebook := SourceEditorManager.ActiveOrNewSourceWindow
-  else if (WindowIndex >= SourceEditorManager.SourceWindowCount) then
-    SrcNotebook := SourceEditorManager.NewSourceWindow
+  else
+  if (WindowIndex >= SourceEditorManager.SourceWindowCount) then begin
+    SrcNotebook := SourceEditorManager.NewSourceWindow;
+    Project1.MoveUnitWindowIndex(WindowIndex, SourceEditorManager.ActiveSourceWindowIndex);
+  end
   else
     SrcNotebook := SourceEditorManager.SourceWindows[WindowIndex];
 
@@ -16367,12 +16368,13 @@ end;
 
 procedure TMainIDE.OnApplyWindowLayout(ALayout: TIDEWindowLayout);
 var
-  l: TNonModalIDEWindow;
+  WindowType: TNonModalIDEWindow;
   BarBottom: Integer;
   DockingAllowed: Boolean;
   NewHeight: Integer;
   NewBounds: TRect;
   SrcNoteBook: TSourceNotebook;
+  SubIndex: Integer;
 begin
   if (ALayout=nil) or (ALayout.Form=nil) then exit;
   // debugln('TMainIDE.OnApplyWindowLayout ',ALayout.Form.Name,' ',ALayout.Form.Classname,' ',IDEWindowPlacementNames[ALayout.WindowPlacement],' ',ALayout.CustomCoordinatesAreValid,' ',ALayout.Left,' ',ALayout.Top,' ',ALayout.Width,' ',ALayout.Height);
@@ -16381,9 +16383,13 @@ begin
     ALayout.Form.Constraints.MaxHeight:=0;
   end;
 
-  l:=NonModalIDEFormIDToEnum(ALayout.FormID);
+  WindowType:=NonModalIDEFormIDToEnum(ALayout.FormID);
+  SubIndex := -1;
+  if WindowType = nmiwNone then begin
+    WindowType:=NonModalIDEFormIDToEnum(ALayout.FormBaseID(SubIndex));
+  end;
   if DockingAllowed then begin
-    if l in [nmiwSourceNoteBookName] then
+    if WindowType in [nmiwSourceNoteBookName] then
       ALayout.WindowPlacement:=iwpDocked;
   end;
 
@@ -16432,7 +16438,7 @@ begin
   // no layout found => use default
   BarBottom:=MainIDEBar.Top+MainIDEBar.Height;
   // default window positions
-  case l of
+  case WindowType of
   nmiwMainIDEName:
     begin
       NewHeight:=95;
@@ -16447,8 +16453,10 @@ begin
     end;
   nmiwSourceNoteBookName:
     begin
-      ALayout.Form.SetBounds(250,BarBottom+30,Max(50,Screen.Width-300),
-        Max(50,Screen.Height-200-BarBottom));
+      if SubIndex < 0 then SubIndex := 0;
+      SubIndex := SubIndex * 30;
+      ALayout.Form.SetBounds(250 + SubIndex, BarBottom + 30 + SubIndex,
+        Max(50,Screen.Width-300-SubIndex), Max(50,Screen.Height-200-BarBottom-SubIndex));
       if DockingAllowed then begin
         debugln('TMainIDE.OnApplyWindowLayout ',dbgsName(ALayout.Form));
         ALayout.Form.ManualDock(MainIDEBar,nil,alBottom,false);

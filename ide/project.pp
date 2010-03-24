@@ -740,6 +740,7 @@ type
     procedure RemoveNonExistingFiles(RemoveFromUsesSection: boolean = true);
     function CreateProjectFile(const Filename: string): TLazProjectFile; override;
     procedure UpdateVisibleUnit(AnEditor: TSourceEditorInterface; AWindowIndex: Integer);
+    procedure MoveUnitWindowIndex(OldIndex, NewIndex: Integer);
     // search
     function IndexOf(AUnitInfo: TUnitInfo): integer;
     function IndexOfUnitWithName(const AnUnitName: string;
@@ -2883,6 +2884,36 @@ begin
   for i := 0 to UnitCount - 1 do
     if Units[i].WindowIndex = AWindowIndex then
       Units[i].IsVisibleTab := Units[i].EditorComponent = AnEditor;
+end;
+
+procedure TProject.MoveUnitWindowIndex(OldIndex, NewIndex: Integer);
+var
+  i: Integer;
+  AnUnitInfo: TUnitInfo;
+begin
+  i:=UnitCount-1;
+  while (i>=0) do begin
+    AnUnitInfo:=Units[i];
+
+    if (OldIndex < 0) then begin
+      // index inserted
+      if (AnUnitInfo.WindowIndex >= NewIndex) then
+        AnUnitInfo.WindowIndex := AnUnitInfo.WindowIndex + 1;
+    end
+    else if AnUnitInfo.WindowIndex = OldIndex then begin
+      AnUnitInfo.WindowIndex := NewIndex;
+    end
+    else if (OldIndex > NewIndex) then begin
+      if (AnUnitInfo.WindowIndex >= NewIndex) and (AnUnitInfo.WindowIndex < OldIndex) then
+        AnUnitInfo.WindowIndex := AnUnitInfo.WindowIndex + 1;
+    end
+    else if (OldIndex < NewIndex) then begin
+      if (AnUnitInfo.WindowIndex > OldIndex) and (AnUnitInfo.WindowIndex <= NewIndex) then
+        AnUnitInfo.WindowIndex := AnUnitInfo.WindowIndex - 1;
+    end;
+
+    dec(i);
+  end;
 end;
 
 procedure TProject.RemoveNonExistingFiles(RemoveFromUsesSection: boolean);

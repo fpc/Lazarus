@@ -809,6 +809,8 @@ var XMLConfig: TXMLConfig;
   OldDebuggerType: TDebuggerType;
   Path: String;
   CurPath: String;
+  i: Integer;
+  name: String;
 
   procedure LoadBackupInfo(var BackupInfo: TBackupInfo; const Path:string);
   var i:integer;
@@ -878,6 +880,14 @@ begin
        Path+'ShowCompileDialog/Value',false);
 
     // windows
+    i := XMLConfig.GetValue(Path+'Desktop/FormIdCount', 0);
+    while i > 0 do begin
+      name := XMLConfig.GetValue(Path+'Desktop/FormIdList/a'+IntToStr(i), '');
+      if (name <> '') and (IDEWindowLayoutList.ItemByFormID(name) = nil) then
+        CreateWindowLayout(name);
+      dec(i);
+    end;
+
     FIDEWindowLayoutList.LoadFromXMLConfig(XMLConfig,
       Path+'Desktop/');
     FIDEDialogLayoutList.LoadFromConfig(FConfigStore,

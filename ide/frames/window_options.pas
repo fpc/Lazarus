@@ -91,6 +91,7 @@ end;
 procedure TWindowOptionsFrame.Setup(ADialog: TAbstractOptionsEditorDialog);
 var
   Window: TNonModalIDEWindow;
+  i: Integer;
 begin
   // windows
   MinimizeAllOnMinimizeMainCheckBox.Caption := dlgMinimizeAllOnMinimizeMain;
@@ -108,6 +109,11 @@ begin
     for Window := Succ(Low(TNonModalIDEWindow)) to High(TNonModalIDEWindow) do
       Add(GetCaptionFor(Window));
     Add(dlgObjInsp);
+    for i := 0 to EnvironmentOptions.IDEWindowLayoutList.Count - 1 do
+      if (EnvironmentOptions.IDEWindowLayoutList[i].FormID <> DefaultObjectInspectorName) and
+      (NonModalIDEFormIDToEnum(EnvironmentOptions.IDEWindowLayoutList[i].FormID) = nmiwNone)
+    then
+      Add(EnvironmentOptions.IDEWindowLayoutList[i].FormCaption);
     EndUpdate;
   end;
 
@@ -253,6 +259,8 @@ begin
   begin
     case Index - Ord(High(TNonModalIDEWindow)) of
       0: Layout := FLayouts.ItemByFormID(DefaultObjectInspectorName);
+      else
+         Layout := FLayouts.ItemByFormCaption(WindowPositionsListBox.Items[Index]);
     end;
   end;
 

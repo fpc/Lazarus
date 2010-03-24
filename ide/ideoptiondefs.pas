@@ -172,6 +172,7 @@ type
 
   TIDEWindowLayout = class
   private
+    FFormCaption: string;
     FVisible: boolean;
     fWindowPlacement: TIDEWindowPlacement;
     fWindowPlacementsAllowed: TIDEWindowPlacements;
@@ -222,6 +223,8 @@ type
     procedure CloseForm;
   public
     property FormID: string read GetFormID write SetFormID;
+    function FormBaseID(out SubIndex: Integer): String;
+    property FormCaption: string read FFormCaption;
     property WindowPlacement: TIDEWindowPlacement
       read fWindowPlacement write SetWindowPlacement;
     property WindowPlacementsAllowed: TIDEWindowPlacements
@@ -265,6 +268,7 @@ type
     function IndexOf(const FormID: string): integer;
     function ItemByForm(AForm: TCustomForm): TIDEWindowLayout;
     function ItemByFormID(const FormID: string): TIDEWindowLayout;
+    function ItemByFormCaption(const aFormCaption: string): TIDEWindowLayout;
     function ItemByEnum(ID: TNonModalIDEWindow): TIDEWindowLayout;
     procedure CloseForm(AForm: TCustomForm);
     procedure LoadFromXMLConfig(XMLConfig: TXMLConfig; const Path: string);
@@ -433,6 +437,7 @@ begin
   P:=GetXMLFormID;
   if P='' then exit;
   P:=Path+P+'/';
+  FFormCaption := XMLConfig.GetValue(P+'Caption/Value', fFormID);
   // placement
   fWindowPlacement:=StrToIDEWindowPlacement(XMLConfig.GetValue(
     P+'WindowPlacement/Value',IDEWindowPlacementNames[fWindowPlacement]));
@@ -468,6 +473,7 @@ begin
   P:=GetXMLFormID;
   if P='' then exit;
   P:=Path+P+'/';
+  XMLConfig.SetDeleteValue(P+'Caption/Value',FFormCaption,'');
   // placement
   XMLConfig.SetDeleteValue(P+'WindowPlacement/Value',
     IDEWindowPlacementNames[fWindowPlacement],
@@ -527,14 +533,33 @@ end;
 
 procedure TIDEWindowLayout.CloseForm;
 begin
+  GetCurrentPosition;
   Form:=nil;
+end;
+
+function TIDEWindowLayout.FormBaseID(out SubIndex: Integer): String;
+var
+  i: Integer;
+begin
+  Result := FormID;
+  SubIndex := -1;
+  i := length(Result);
+  while (i > 0) and (Result[i] in ['0'..'9']) do
+    dec(i);
+  if (i < 1) or (i = length(Result)) then
+    exit;
+  SubIndex := StrToInt(copy(Result, i+1, length(Result)));
+  Result := copy(Result, 1, i);
 end;
 
 procedure TIDEWindowLayout.SetForm(const AValue: TCustomForm);
 begin
   if fForm=AValue then exit;
   fForm:=AValue;
-  if (Form<>nil) then fFormID:=FForm.Name;
+  if (Form<>nil) then begin
+    fFormID := FForm.Name;
+    FFormCaption := fForm.Caption;
+  end;
 end;
 
 function TIDEWindowLayout.GetFormID: string;
@@ -551,7 +576,9 @@ var
 begin
   Result:=GetFormID;
   for i:=1 to length(Result) do
-    if not (Result[i] in ['A'..'Z','a'..'z','_']) then
+    if not ( (Result[i] in ['A'..'Z','a'..'z','_'])
+            or ( (i > 1) and (Result[i] in ['0'..'9'])) )
+    then
       Result[i]:='_';
 end;
 
@@ -632,11 +659,6 @@ begin
     Top:=Form.RestoredTop;
     Width:=Form.RestoredWidth;
     Height:=Form.RestoredHeight;
-  end else begin
-    Left:=0;
-    Top:=0;
-    Width:=0;
-    Height:=0;
   end;
 end;
 
@@ -731,8 +753,11 @@ procedure TIDEWindowLayoutList.SaveToXMLConfig(XMLConfig: TXMLConfig;
   const Path: string);
 var i: integer;
 begin
-  for i:=0 to Count-1 do
+  XMLConfig.SetDeleteValue(Path+'FormIdCount',Count,0);
+  for i:=0 to Count-1 do Begin
+    XMLConfig.SetDeleteValue(Path+'FormIdList/a'+IntToStr(i), Items[i].FormID, '');
     Items[i].SaveToXMLConfig(XMLConfig,Path);
+  end
 end;
 
 function TIDEWindowLayoutList.ItemByForm(AForm: TCustomForm): TIDEWindowLayout;
@@ -756,6 +781,20 @@ begin
     Result:=Items[i]
   else
     Result:=nil;
+end;
+
+function TIDEWindowLayoutList.ItemByFormCaption(const aFormCaption: string
+  ): TIDEWindowLayout;
+var i: integer;
+begin
+  i := Count - 1;
+  while i >= 0 do begin
+    Result := Items[i];
+    if Result.FormCaption = aFormCaption then
+      exit;
+    dec(i);
+  end;
+  Result:=nil;
 end;
 
 function TIDEWindowLayoutList.ItemByEnum(ID: TNonModalIDEWindow

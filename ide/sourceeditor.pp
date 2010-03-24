@@ -4274,6 +4274,7 @@ end;
 constructor TSourceNotebook.Create(AOwner: TComponent);
 var
   i: Integer;
+  n: TComponent;
 begin
   inherited Create(AOwner);
   FManager := TSourceEditorManager(AOwner);
@@ -4281,7 +4282,8 @@ begin
   FFocusLock := 0;
   Visible:=false;
   i := 2;
-  if SourceEditorManager.SourceWindowCount > 0 then begin
+  n := Owner.FindComponent(NonModalIDEWindowNames[nmiwSourceNoteBookName]);
+  if (n <> nil) and (n <> self) then begin
     while Owner.FindComponent(NonModalIDEWindowNames[nmiwSourceNoteBookName]+IntToStr(i)) <> nil do
       inc(i);
     Name := NonModalIDEWindowNames[nmiwSourceNoteBookName] + IntToStr(i);
@@ -4295,9 +4297,9 @@ begin
   KeyPreview:=true;
   FProcessingCommand := false;
 
-  if EnvironmentOptions.IDEWindowLayoutList.ItemByFormID(self.Name) <> nil then {$note create new layouts for extra windows}
+  if EnvironmentOptions.IDEWindowLayoutList.ItemByFormID(self.Name) = nil then
+    EnvironmentOptions.CreateWindowLayout(self.name);
   EnvironmentOptions.IDEWindowLayoutList.Apply(Self, self.Name);
-  //EnvironmentOptions.IDEWindowLayoutList.Apply(Self,Name);
   ControlDocker:=TLazControlDocker.Create(Self);
   ControlDocker.Name:='SourceEditor';
   {$IFDEF EnableIDEDocking}
@@ -5089,9 +5091,13 @@ procedure TSourceNotebook.DoClose(var CloseAction: TCloseAction);
 begin
   inherited DoClose(CloseAction);
   {$IFDEF MultiSrcWindow}
-  if PageCount = 0 then {$NOTE maybe keep the last one}
-    CloseAction := caFree
-  else
+  if PageCount = 0 then begin { $NOTE maybe keep the last one}
+    if EnvironmentOptions.IDEWindowLayoutList.ItemByFormID(Self.Name) <> nil then
+      EnvironmentOptions.IDEWindowLayoutList.ItemByFormID(Self.Name).CloseForm;
+    // Make the name unique, because it may not immediately be released
+    Name := Name + '___' + IntToStr(PtrInt(Pointer(Self)));
+    CloseAction := caFree;
+  end else
   {$ENDIF}
     CloseAction := caHide;
 end;

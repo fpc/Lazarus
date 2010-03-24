@@ -209,6 +209,7 @@ begin
   while (i>=0) do begin
     if Screen.CustomForms[i].Caption=(Sender as TIDEMenuCommand).Caption then
     begin
+      Screen.CustomForms[i].Show;
       Screen.CustomForms[i].BringToFront;
       break;
     end;
