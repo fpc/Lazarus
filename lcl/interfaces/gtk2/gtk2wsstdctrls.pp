@@ -74,6 +74,7 @@ type
   published
     class function  CreateHandle(const AWinControl: TWinControl; const AParams: TCreateParams): TLCLIntfHandle; override;
     class procedure SetParams(const AScrollBar: TCustomScrollBar); override;
+    class procedure ShowHide(const AWinControl: TWinControl); override;
   end;
 
   { TGtk2WSCustomGroupBox }
@@ -2112,11 +2113,13 @@ var
 begin
   with TScrollBar(AWinControl) do
   begin
-{    Adjustment := GTK_ADJPgtkAdjustment(
-                   gtk_adjustment_new(1, Min, Max, SmallChange, LargeChange,
-                     Pagesize));
+    {We use Max + PageSize because the GTK scrollbar is meant to scroll from
+     min to max-pagesize which would be different from the behaviour on other
+     widgetsets.}
+    Adjustment := PGtkAdjustment(gtk_adjustment_new(Position, Min,
+      Max + PageSize, SmallChange, LargeChange, PageSize));
 
- }   if (Kind = sbHorizontal) then
+    if (Kind = sbHorizontal) then
       Widget := gtk_hscrollbar_new(Adjustment)
     else
       Widget := gtk_vscrollbar_new(Adjustment);
@@ -2135,12 +2138,31 @@ class procedure TGtk2WSScrollBar.SetParams(const AScrollBar: TCustomScrollBar);
 var
   Range: PGtkRange;
 begin
-  Range := GTK_RANGE(Pointer(AScrollBar.Handle));
-  //set properties for the range
-  // Note: gtk only allows: Min < Max
-  gtk_range_set_range     (Range, AScrollBar.Min, Max(AScrollBar.Min+1,AScrollBar.Max));
-  gtk_range_set_increments(Range, AScrollBar.SmallChange, AScrollBar.LargeChange);
-  gtk_range_set_value     (Range, AScrollBar.Position);
+  with AScrollBar do
+  begin
+    Range := GTK_RANGE(Pointer(Handle));
+    {for gtk >= 2.14 use gtk_adjustment_configure}
+    with Range^.adjustment^ do
+    begin
+      value := Position;
+      lower := Min;
+      upper := Max + PageSize;
+      step_increment := SmallChange;
+      page_increment := LargeChange;
+      page_size := PageSize;
+    end;
+    gtk_adjustment_changed(Range^.adjustment);
+  end;
+end;
+
+class procedure TGtk2WSScrollBar.ShowHide(const AWinControl: TWinControl);
+begin
+  if not AWinControl.HandleAllocated then
+    exit;
+  if AWinControl.HandleObjectShouldBeVisible then
+    SetParams(TCustomScrollBar(AWinControl));
+  Gtk2WidgetSet.SetVisible(AWinControl,
+    AWinControl.HandleObjectShouldBeVisible);
 end;
 
 end.
