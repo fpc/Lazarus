@@ -471,9 +471,9 @@ type
 
   TDragMoveTabEvent = procedure(Sender, Source: TObject; OldIndex, NewIndex: Integer) of object;
 
-  { TDragableNotebook }
+  { TSourceDragableNotebook }
 
-  TDragableNotebook = class(TNoteBook)
+  TSourceDragableNotebook = class(TNoteBook)
   private
     FMouseDownTabIndex: Integer;
     FOnDragMoveTab: TDragMoveTabEvent;
@@ -498,7 +498,7 @@ type
       Shift: TShiftState; X, Y: Integer);
     procedure StatusBarDblClick(Sender: TObject);
   private
-    FNotebook: TDragableNotebook;
+    FNotebook: TSourceDragableNotebook;
     SrcPopUpMenu: TPopupMenu;
   protected
     procedure CompleteCodeMenuItemClick(Sender: TObject);
@@ -4374,7 +4374,7 @@ Begin
   {$IFDEF IDE_MEM_CHECK}
   CheckHeapWrtMemCnt('[TSourceNotebook.CreateNotebook] A ');
   {$ENDIF}
-  FNotebook := TDragableNotebook.Create(self);
+  FNotebook := TSourceDragableNotebook.Create(self);
   {$IFDEF IDE_DEBUG}
   writeln('[TSourceNotebook.CreateNotebook] B');
   {$ENDIF}
@@ -6152,9 +6152,22 @@ end;
 
 procedure TSourceNotebook.NotebookDragTabMove(Sender, Source: TObject; OldIndex,
   NewIndex: Integer);
+var
+  i: Integer;
 begin
-  if (Source = Sender) then
-    MoveEditor(OldIndex, NewIndex);
+  if (Source = FNotebook) then
+    MoveEditor(OldIndex, NewIndex)
+  else begin
+    i := Manager.SourceWindowCount - 1;
+    while i >= 0 do begin
+      if Manager.SourceWindows[i].FNotebook = Source then begin
+        Manager.SourceWindows[i].MoveEditor
+          (OldIndex, Manager.IndexOfSourceWindow(self), NewIndex);
+        break;
+      end;
+      dec(i);
+    end;
+  end;
 end;
 
 Procedure TSourceNotebook.NotebookPageChanged(Sender: TObject);
@@ -6735,9 +6748,9 @@ begin
 end;
 
 
-{ TDragableNotebook }
+{ TSourceDragableNotebook }
 
-procedure TDragableNotebook.MouseDown(Button: TMouseButton; Shift: TShiftState; X,
+procedure TSourceDragableNotebook.MouseDown(Button: TMouseButton; Shift: TShiftState; X,
   Y: Integer);
 begin
   FTabDragged:=false;
@@ -6747,7 +6760,7 @@ begin
     BeginDrag(False);
 end;
 
-procedure TDragableNotebook.MouseUp(Button: TMouseButton; Shift: TShiftState;
+procedure TSourceDragableNotebook.MouseUp(Button: TMouseButton; Shift: TShiftState;
   X, Y: Integer);
 var
   MouseUpTabIndex: LongInt;
@@ -6761,33 +6774,35 @@ begin
   end;
 end;
 
-procedure TDragableNotebook.DragOver(Source: TObject; X, Y: Integer; State: TDragState;
+procedure TSourceDragableNotebook.DragOver(Source: TObject; X, Y: Integer; State: TDragState;
   var Accept: Boolean);
 var
   TabIndex: Integer;
 begin
   inherited DragOver(Source, X, Y, State, Accept);
   // currently limited to source=self => extendable to allow dragging tabs from other notebooks
-  if (Source = self) and (FMouseDownTabIndex >= 0) then begin
+  if (Source is TSourceDragableNotebook) and
+     (TSourceDragableNotebook(Source).FMouseDownTabIndex >= 0)
+  then begin
     TabIndex := TabIndexAtClientPos(Point(X,Y));
-    Accept := (TabIndex >= 0) and (TabIndex <> FMouseDownTabIndex);
+    Accept := (Source <> self) or ((TabIndex >= 0) and (TabIndex <> FMouseDownTabIndex));
   end;
 end;
 
-procedure TDragableNotebook.DragDrop(Source: TObject; X, Y: Integer);
+procedure TSourceDragableNotebook.DragDrop(Source: TObject; X, Y: Integer);
 var
   TabIndex: Integer;
 begin
   inherited DragDrop(Source, X, Y);
 
-  if assigned(FOnDragMoveTab) and (Source is TDragableNotebook) and
-     (TDragableNotebook(Source).MouseDownTabIndex >= 0)
+  if assigned(FOnDragMoveTab) and (Source is TSourceDragableNotebook) and
+     (TSourceDragableNotebook(Source).MouseDownTabIndex >= 0)
   then begin
     TabIndex := TabIndexAtClientPos(Point(X,Y));
     if (TabIndex >= 0) and ( (Source <> self) or (TabIndex <> MouseDownTabIndex) )
     then begin
       FTabDragged:=true;
-      FOnDragMoveTab(Self, Source, TDragableNotebook(Source).MouseDownTabIndex,
+      FOnDragMoveTab(Self, Source, TSourceDragableNotebook(Source).MouseDownTabIndex,
         TabIndex);
     end;
   end;
@@ -8014,6 +8029,7 @@ procedure TSourceEditorManager.RemoveWindow(AWindow: TSourceNotebook);
 var
   i: Integer;
 begin
+  if FSourceWindowList = nil then exit;
   i := FSourceWindowList.IndexOf(AWindow);
   FSourceWindowList.Remove(AWindow);
   if SourceWindowCount = 0 then
