@@ -247,8 +247,37 @@ begin
 end;
 
 class procedure TGtkWSCustomPage.UpdateProperties(const ACustomPage: TCustomPage);
+{$ifdef gtk2}
+var
+  NoteBook: PGtkWidget;
+  PageWidget: PGtkWidget;
+  TabWidget: PGtkWidget;
+  TabImageWidget: PGtkWidget;
+{$endif}
 begin
   UpdateNotebookPageTab(nil, ACustomPage);
+  {$ifdef gtk2}
+  {we must update our icon (if exists) otherwise it will be updated only
+  when our tab reach focus}
+  if not ACustomPage.TabVisible
+    or not ACustomPage.HandleAllocated
+    or not Assigned(ACustomPage.Parent)
+  then
+    exit;
+
+  PageWidget := PGtkWidget(ACustomPage.Handle);
+  NoteBook := PGtkWidget(ACustomPage.Parent.Handle);
+  if (NoteBook = nil) or not GTK_IS_NOTEBOOK(NoteBook) then
+    exit;
+
+  TabWidget := gtk_notebook_get_tab_label(PGtkNoteBook(Notebook), PageWidget);
+  if (TabWidget = nil) or not GTK_WIDGET_VISIBLE(TabWidget) then
+    exit;
+
+  TabImageWidget := gtk_object_get_data(PGtkObject(TabWidget), 'TabImage');
+  if TabImageWidget <> nil then
+    gtk_widget_queue_draw(TabImageWidget);
+  {$endif}
 end;
 
 class procedure TGtkWSCustomPage.SetBounds(const AWinControl: TWinControl;
