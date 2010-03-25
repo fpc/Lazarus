@@ -76,16 +76,16 @@ type
     constructor Create(TheOwner: TComponent); override;
   end;
 
-function ShowViewUnitsDlg(Entries: TStringList; MultiSelect: boolean;
-  const Caption: string): TModalResult;
+function ShowViewUnitsDlg(Entries: TStringList; AllowMultiSelect: boolean;
+  var CheckMultiSelect: Boolean; const Caption: string): TModalResult;
   // Entries is a list of TViewUnitsEntry(s)
 
 implementation
 
 {$R *.lfm}
 
-function ShowViewUnitsDlg(Entries: TStringList; MultiSelect: boolean;
-  const Caption: string): TModalResult;
+function ShowViewUnitsDlg(Entries: TStringList; AllowMultiSelect: boolean;
+  var CheckMultiSelect: Boolean; const Caption: string): TModalResult;
 var
   ViewUnitDialog: TViewUnitDialog;
   i: integer;
@@ -93,9 +93,9 @@ begin
   ViewUnitDialog:=TViewUnitDialog.Create(nil);
   try
     ViewUnitDialog.Caption:=Caption;
-    ViewUnitDialog.MultiselectCheckBox.Enabled:=MultiSelect;
-    ViewUnitDialog.MultiselectCheckBox.Checked:=MultiSelect;
-    ViewUnitDialog.ListBox.Multiselect:=ViewUnitDialog.MultiselectCheckBox.Checked;
+    ViewUnitDialog.MultiselectCheckBox.Enabled := AllowMultiSelect;
+    ViewUnitDialog.MultiselectCheckBox.Checked := CheckMultiSelect;
+    ViewUnitDialog.ListBox.MultiSelect:=ViewUnitDialog.MultiselectCheckBox.Checked;
     with ViewUnitDialog.ListBox.Items do begin
       BeginUpdate;
       Clear;
@@ -110,6 +110,7 @@ begin
       for i:=0 to Entries.Count-1 do begin
         TViewUnitsEntry(Entries.Objects[i]).Selected:=ViewUnitDialog.ListBox.Selected[i];
       end;
+      CheckMultiSelect := ViewUnitDialog.MultiselectCheckBox.Checked;
     end;
   finally
     ViewUnitDialog.Free;

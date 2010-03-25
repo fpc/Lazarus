@@ -960,7 +960,8 @@ type
     procedure SaveIncludeLinks;
     function SelectProjectItems(ItemList: TStringList;
                                 ItemType: TIDEProjectItem;
-                                MultiSelect: boolean): TModalResult;
+                                MultiSelect: boolean;
+                                var MultiSelectCheckedState: Boolean): TModalResult;
 
     // tools
     function DoMakeResourceString: TModalResult;
@@ -8580,7 +8581,8 @@ begin
 end;
 
 function TMainIDE.SelectProjectItems(ItemList: TStringList;
-  ItemType: TIDEProjectItem; MultiSelect: boolean): TModalResult;
+  ItemType: TIDEProjectItem; MultiSelect: boolean;
+  var MultiSelectCheckedState: Boolean): TModalResult;
 var
   i: integer;
   AUnitName, DlgCaption: string;
@@ -8635,7 +8637,7 @@ begin
     piComponent: DlgCaption := dlgMainViewForms;
     piFrame: DlgCaption := dlgMainViewFrames;
   end;
-  Result := ShowViewUnitsDlg(ItemList, MultiSelect, DlgCaption);
+  Result := ShowViewUnitsDlg(ItemList, MultiSelect, MultiSelectCheckedState, DlgCaption);
 end;
 
 function TMainIDE.DoSelectFrame: TComponentClass;
@@ -8646,12 +8648,14 @@ var
   LFMCode: TCodeBuffer;
   LFMFilename: String;
   TheModalResult: TModalResult;
+  dummy: Boolean;
 begin
   Result := nil;
   UnitList := TStringList.Create;
   UnitList.Sorted := True;
   try
-    if SelectProjectItems(UnitList, piFrame, false) = mrOk then
+    dummy := false;
+    if SelectProjectItems(UnitList, piFrame, false, dummy) = mrOk then
     begin
       { This is where we check what the user selected. }
       AnUnitInfo := nil;
@@ -8699,6 +8703,7 @@ end;
 function TMainIDE.DoViewUnitsAndForms(OnlyForms: boolean): TModalResult;
 const
   UseItemType: array[Boolean] of TIDEProjectItem = (piUnit, piComponent);
+  MultiSelectCheckedState: Array [Boolean] of Boolean = (True,True);
 var
   UnitList: TStringList;
   i: integer;
@@ -8708,7 +8713,8 @@ begin
   UnitList := TStringList.Create;
   UnitList.Sorted := True;
   try
-    if SelectProjectItems(UnitList, UseItemType[OnlyForms], true) = mrOk then
+    if SelectProjectItems(UnitList, UseItemType[OnlyForms],
+      true, MultiSelectCheckedState[OnlyForms]) = mrOk then
     begin
       { This is where we check what the user selected. }
       AnUnitInfo := nil;
@@ -9930,6 +9936,8 @@ var
   i:integer;
   AName: string;
   AnUnitInfo: TUnitInfo;
+const
+  MultiSelectCheckedState: Boolean = true;
 Begin
   UnitList := TStringList.Create;
   UnitList.Sorted := True;
@@ -9944,7 +9952,7 @@ Begin
         UnitList.AddObject(AName, TViewUnitsEntry.Create(AName,i,false));
       end;
     end;
-    if ShowViewUnitsDlg(UnitList, true, lisRemoveFromProject) = mrOk then
+    if ShowViewUnitsDlg(UnitList, true, MultiSelectCheckedState, lisRemoveFromProject) = mrOk then
     begin
       { This is where we check what the user selected. }
       for i:=0 to UnitList.Count-1 do
