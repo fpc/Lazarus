@@ -362,7 +362,9 @@ begin
   if AWinControl.HandleObjectShouldBeVisible then
     SetParams(TCustomScrollBar(AWinControl));
 
+  Widget.BeginUpdate;
   Widget.setVisible(AWinControl.HandleObjectShouldBeVisible);
+  Widget.EndUpdate;
 end;
 
 { TQtWSCustomListBox }

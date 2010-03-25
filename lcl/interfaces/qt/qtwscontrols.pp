@@ -216,7 +216,9 @@ begin
       TQtMainWindow(Widget).setWindowState(LCLToQtWindowState[TCustomForm(AWinControl).WindowState]);
   end;
 
+  Widget.BeginUpdate;
   Widget.setVisible(AWinControl.HandleObjectShouldBeVisible);
+  Widget.EndUpdate;
 end;
 
 {------------------------------------------------------------------------------
@@ -530,7 +532,9 @@ begin
 
   Widget := TQtWidget(AWinControl.Handle);
 
+  Widget.BeginUpdate;
   Widget.setVisible(AWinControl.HandleObjectShouldBeVisible);
+  Widget.EndUpdate;
 end;
 
 {------------------------------------------------------------------------------

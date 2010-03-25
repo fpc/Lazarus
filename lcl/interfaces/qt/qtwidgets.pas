@@ -2002,6 +2002,10 @@ begin
     WriteLn('TQtWidget.SlotShow Name', LCLObject.Name, ' vShow: ', dbgs(vShow));
   {$endif}
 
+  {do not pass message to LCL if LCL setted up control visibility}
+  if inUpdate then
+    exit;
+
   FillChar(Msg, SizeOf(Msg), #0);
 
   Msg.Msg := LM_SHOWWINDOW;
