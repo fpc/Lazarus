@@ -3512,6 +3512,7 @@ begin
       AnUnitInfo:=TUnitInfo(List[i]);
       if (AnUnitInfo.WindowIndex <> CurWindow) then
         inc(NewWindow);
+      CurWindow := AnUnitInfo.WindowIndex;
       if (NewWindowEditorIndexAtStart < 0)
          and (ActiveWindowIndexAtStart = AnUnitInfo.WindowIndex)
       then
