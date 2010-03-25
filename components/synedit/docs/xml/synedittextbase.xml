@@ -37,6 +37,13 @@ This is used by SetCapacity and ItemPointer.</p>
       <element name="TSynEditStorageMem.ItemPointer">
         <short>Get a pointer to the Memory for the indexed item </short>
       </element>
+      <element name="TSynEditStrings">
+        <short>Baseclass for Text-Storage and Virtual-Representation of Text (View)</short>
+        <descr>
+          <p>Defines an interface through which SynEdit does (should do) all it's access to the text.</p>
+          <p/>
+        </descr>
+      </element>
     </module>
   </package>
 </fpdoc-descriptions>

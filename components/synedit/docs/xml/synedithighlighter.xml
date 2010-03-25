@@ -134,7 +134,11 @@ As a result of this:
         </descr>
       </element>
       <element name="TSynCustomHighlighter.DefaultFilter">
-        <short>Not used</short>
+        <short>Not used by SynEdit/Highligher / provided for the IDE only</short>
+        <descr>
+          <p>This field has no functionality within the SynEdit package.
+It is used by the IDE to store file extensions for which the highlighter should be applied.</p>
+        </descr>
       </element>
       <element name="TSynCustomHighlighter.CurrentLines">
         <short>Temporary reference to the Lines object of a SynEdit. Set by each SynEdit before calling any methods of the Highlighter</short>
@@ -164,6 +168,7 @@ Before a SynEdit can use a Highlighter (when the Highlighter is set to the SynEd
           <link id="TSynCustomHighlighter.DetachFromLines">DetachFromLines</link>
           <link id="TSynCustomHighlighter.CurrentLines">CurrentLines</link>
           <link id="TSynCustomHighlighter.CurrentRanges">CurrentRanges</link>
+          <link id="synedittextbuffer.TSynEditStringMemory.RangeList">TSynEditStringMemory.RangeList</link>
         </seealso>
       </element>
       <element name="TSynCustomHighlighter.DetachFromLines">
@@ -176,6 +181,7 @@ Before a SynEdit can use a Highlighter (when the Highlighter is set to the SynEd
           <link id="TSynCustomHighlighter.AttachToLines">AttachToLines</link>
           <link id="TSynCustomHighlighter.CurrentLines">CurrentLines</link>
           <link id="TSynCustomHighlighter.CurrentRanges">CurrentRanges</link>
+          <link id="synedittextbuffer.TSynEditStringMemory.RangeList">TSynEditStringMemory.RangeList</link>
         </seealso>
       </element>
       <element name="TSynCustomHighlighter.CurrentRanges">
