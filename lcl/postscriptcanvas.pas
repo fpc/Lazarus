@@ -54,6 +54,9 @@ Type
     fx,fy:single;
   end;
 
+  TPsCanvasState = ( pcsPosValid, pcsClipping, pcsClipSaved );
+  TPsCanvasStatus = set of TPsCanvasState;
+
   TPostScriptPrinterCanvas = Class(TPrinterCanvas)
   private
     fHeader        : TStringList; //Header document
@@ -72,8 +75,7 @@ Type
     FFs            : TFormatSettings;
     fSaveCount     : Integer;
     FClipRect      : TRect;
-    FClipping      : boolean;
-    FClipSaved     : boolean;
+    FStatus        : TPsCanvasStatus;
 
     procedure psDrawRect(ARect:TRect);
     procedure WriteHeader(St : String);
@@ -105,6 +107,7 @@ Type
     function  GetFontSize: Integer;
     procedure RestoreClip;
     procedure SaveClip;
+    procedure CheckLastPos;
   protected
     procedure CreateHandle; override;
     procedure CreateBrush; override;
@@ -893,6 +896,7 @@ var
 begin
   pp:=Self.TranslateCoord(fpenPos.X,fPenPos.Y);
   write(Format('%f %f moveto',[pp.fx,pp.fy],Ffs)+' %last pos');
+  Include(FStatus, pcsPosValid);
 end;
 
 //Add at the PstScript sequence, the Fill Pattern/Color and Broder
@@ -1063,11 +1067,11 @@ end;
 
 procedure TPostScriptPrinterCanvas.RestoreClip;
 begin
-  if FClipSaved then
+  if pcsClipSaved in FStatus then
   begin
     Self.WriteComment('Restoring Old clip rect');
     Self.Write('cliprestore');
-    FClipSaved := false;
+    Exclude(FStatus, pcsClipSaved);
   end;
 end;
 
@@ -1078,7 +1082,13 @@ begin
   psDrawRect(FClipRect);
   Write(FBuffer);
   Self.Write('clip');
-  FClipSaved := true;
+  Include(FStatus, pcsClipSaved);
+end;
+
+procedure TPostScriptPrinterCanvas.CheckLastPos;
+begin
+  if not (pcsPosValid in FStatus) then
+    MoveToLastPos;
 end;
 
 procedure TPostScriptPrinterCanvas.CreateHandle;
@@ -1163,7 +1173,7 @@ begin
 
   Ffs.DecimalSeparator:='.';
   Ffs.ThousandSeparator:=#0;
-  FClipping := true;
+  Include(FStatus, pcsClipping);
 end;
 
 destructor TPostScriptPrinterCanvas.Destroy;
@@ -1507,6 +1517,8 @@ begin
   pp:=TranslateCoord(X1,Y1);
 
   write(Format('%f %f moveto',[pp.fx,pp.fy],FFs));
+
+  Include(FStatus, pcsPosValid);
 end;
 
 //Drawe line
@@ -1514,6 +1526,9 @@ procedure TPostScriptPrinterCanvas.DoLineTo(X1, Y1: Integer);
 var
   pp:TpsPoint;
 begin
+
+  checkLastPos;
+
   Changing;
   RequiredState([csHandleValid, csPenValid]);
   WriteComment(Format('DoLineTo(%d,%d)',[x1,y1]));
@@ -1524,6 +1539,8 @@ begin
   UpdateLineStyle;
   write(Format('%f %f lineto stroke',[pp.fx,pp.fy],FFs));
   changed;
+
+  Exclude(FStatus, pcsPosValid);
 end;
 
 procedure TPostScriptPrinterCanvas.Polyline(Points: PPoint; NumPts: Integer);
@@ -2200,29 +2217,32 @@ end;
 
 procedure TPostScriptPrinterCanvas.SetClipRect(const ARect:TRect);
 begin
-  if FClipping then
+  if pcsClipping in FStatus then
     RestoreClip;
 
   FClipRect := ARect;
 
-  if FClipping then
+  if pcsClipping in FStatus then
     SaveClip;
 end;
 
 function TPostScriptPrinterCanvas.GetClipping: Boolean;
 begin
-  Result:=FClipping;
+  result := (pcsClipping in FStatus);
 end;
 
 procedure TPostScriptPrinterCanvas.SetClipping(const AValue: boolean);
 begin
-  if FClipping<>AValue then
+  if GetClipping<>AValue then
   begin
-    if FClipping then
+    if GetClipping then
       RestoreClip
     else
       SaveClip;
-    FClipping := AValue;
+    if AValue then
+      Include(FStatus, pcsClipping)
+    else
+      Exclude(FStatus, pcsClipping);
   end;
 end;
 
