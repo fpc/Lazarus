@@ -606,11 +606,14 @@ begin
   {$ENDIF}
   // go through all tabs
   Count:=g_list_length(NoteBookWidget^.Children);
-  for i:=0 to Count-1 do begin
+  for i:=0 to Count-1 do
+  begin
     PageWidget:=gtk_notebook_get_nth_page(NoteBookWidget,i);
-    if PageWidget<>nil then begin
+    if PageWidget<>nil then
+    begin
       TabWidget:=gtk_notebook_get_tab_label(NoteBookWidget, PageWidget);
-      if TabWidget<>nil then begin
+      if (TabWidget<>nil) and GTK_WIDGET_MAPPED(TabWidget) then
+      begin
         // test if position is in tabwidget
         if (TabWidget^.Allocation.X<=NoteBookPos.X)
         and (TabWidget^.Allocation.Y<=NoteBookPos.Y)
