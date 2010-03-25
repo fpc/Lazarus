@@ -49,6 +49,8 @@ type
     Label_menus: TLabel;
     MenuScrollBox: TScrollBox;
     Panel: TPanel;
+    Panel_MenuList:TPanel;
+    Splitter_BoxPanel:TSplitter;
     procedure FormClose(Sender: TObject; var CloseAction: TCloseAction);
     procedure FormCreate(Sender: TObject);
     procedure FormDestroy(Sender: TObject);
