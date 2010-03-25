@@ -1,6 +1,10 @@
 <?xml version="1.0"?>
 <fpdoc-descriptions>
   <package name="SynEdit">
+    <descr>
+      <p>Related Topics:</p>
+       <p><link id="SynEditTextBase.TextBuffer and Views">TextBuffer and Views  (Virtual Text Representation)</link></p>
+    </descr>
     <module name="SynEdit">
     </module>
   </package>
