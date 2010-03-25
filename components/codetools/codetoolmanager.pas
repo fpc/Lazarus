@@ -662,6 +662,8 @@ type
     function RenamePublishedVariable(Code: TCodeBuffer;
           const AClassName, OldVariableName, NewVarName,
           VarType: shortstring; ErrorOnClassNotFound: boolean): boolean;
+    function RetypeClassVariables(Code: TCodeBuffer; const AClassName: string;
+          ListOfReTypes: TStrings; ErrorOnClassNotFound: boolean): boolean;
     function FindDanglingComponentEvents(Code: TCodeBuffer;
           const AClassName: string;
           RootComponent: TComponent; ExceptionOnClassNotFound,
@@ -4601,6 +4603,23 @@ begin
     Result:=FCurCodeTool.RenamePublishedVariable(UpperCaseStr(AClassName),
                UpperCaseStr(OldVariableName),NewVarName,VarType,
                ErrorOnClassNotFound,SourceChangeCache);
+  except
+    on e: Exception do Result:=HandleException(e);
+  end;
+end;
+
+function TCodeToolManager.RetypeClassVariables(Code: TCodeBuffer;
+  const AClassName: string; ListOfReTypes: TStrings;
+  ErrorOnClassNotFound: boolean): boolean;
+begin
+  Result:=false;
+  {$IFDEF CTDEBUG}
+  DebugLn('TCodeToolManager.RetypeClassVariables A ',Code.Filename,' ',AClassName);
+  {$ENDIF}
+  if not InitCurCodeTool(Code) then exit;
+  try
+    Result:=FCurCodeTool.RetypeClassVariables(AClassName,ListOfReTypes,
+                                        ErrorOnClassNotFound,SourceChangeCache);
   except
     on e: Exception do Result:=HandleException(e);
   end;
