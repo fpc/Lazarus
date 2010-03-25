@@ -115,6 +115,17 @@ type
 
   TPrinterCanvasRef = Class of TPrinterCanvas;
   
+  { TFilePrinterCanvas }
+
+  TFilePrinterCanvas = class(TPrinterCanvas)
+  protected
+    FOutputFileName: string;
+  public
+    property OutputFileName : string read FOutputFileName write FOutputFileName;
+  end;
+
+  TFilePrinterCanvasClass = class of TFilePrinterCanvas;
+
   TPaperRect = Record
     PhysicalRect : TRect;
     WorkRect     : TRect;

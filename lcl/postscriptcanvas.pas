@@ -57,11 +57,10 @@ Type
   TPsCanvasState = ( pcsPosValid, pcsClipping, pcsClipSaved );
   TPsCanvasStatus = set of TPsCanvasState;
 
-  TPostScriptPrinterCanvas = Class(TPrinterCanvas)
+  TPostScriptPrinterCanvas = Class(TFilePrinterCanvas)
   private
     fHeader        : TStringList; //Header document
     fDocument      : TstringList; //Current document
-    fFileName      : String;      //OutOut fileName
 
     fBuffer        : TStringList; //PostScript temporary buffer
 
@@ -182,7 +181,6 @@ Type
                        const Style: TTextStyle); override;
 
 
-    property OutPutFileName : string read fFileName write fFileName;
   end;
 
   TPostScriptCanvas = Class(TPostScriptPrinterCanvas)
@@ -1478,8 +1476,8 @@ begin
   if I <> -1 then
     FHeader[I] := '%%' + Format('Pages: %d', [PageNumber]);
   
-  if Trim(fFileName)<>'' then
-    SaveToFile(ExpandFileNameUTF8(fFileName));
+  if Trim(OutputFileName)<>'' then
+    SaveToFile(ExpandFileNameUTF8(OutputFileName));
 
   if Assigned(fPsUnicode) then
     FreeAndNil(fPsUnicode);

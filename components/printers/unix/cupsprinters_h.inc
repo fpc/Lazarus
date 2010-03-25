@@ -166,3 +166,6 @@ type
     property CupsPPD:Pppd_file_t read fcupsPPD;
   end;
 
+Var
+  CupsCanvasClass : TFilePrinterCanvasClass = TPostscriptPrinterCanvas;
+

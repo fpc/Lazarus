@@ -699,7 +699,7 @@ end;
 
 function TCUPSPrinter.GetCanvasRef: TPrinterCanvasRef;
 begin
-  Result:=TPostscriptPrinterCanvas;
+  Result:=CupsCanvasClass;
 end;
 
 //Override this methode for assign an
@@ -735,7 +735,7 @@ begin
     FOutputFileName := FOutputFileName + '.raw'
   else begin
     FOutputFileName := FOutputFileName + '.ps';
-    TPostscriptPrinterCanvas(Canvas).OutputFileName := FOutputFileName;
+    TFilePrinterCanvas(Canvas).OutputFileName := FOutputFileName;
   end;
 end;
 
@@ -760,7 +760,7 @@ begin
     end;
     
   end else
-    TPostscriptPrinterCanvas(Canvas).OutPutFileName:='';
+    TFilePrinterCanvas(Canvas).OutPutFileName:='';
   
   if not aAborted and FileExistsUTF8(FOutputFileName) then begin
     {$IFDEF LogPrintoutFile}
