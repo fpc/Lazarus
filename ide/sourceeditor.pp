@@ -5266,9 +5266,9 @@ begin
   if FNotebook.Visible then
     NotebookPages.Insert(Index, S)
   else begin
+    Show;
     FNotebook.Visible := True;
     NotebookPages[Index] := S;
-    Show;
   end;
 end;
 
