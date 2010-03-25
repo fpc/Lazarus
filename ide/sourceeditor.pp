@@ -5098,7 +5098,7 @@ begin
     if EnvironmentOptions.IDEWindowLayoutList.ItemByFormID(Self.Name) <> nil then
       EnvironmentOptions.IDEWindowLayoutList.ItemByFormID(Self.Name).CloseForm;
     // Make the name unique, because it may not immediately be released
-    Name := Name + '___' + IntToStr(PtrInt(Pointer(Self)));
+    Name := Name + '___' + IntToStr(PtrUInt(Pointer(Self)));
     CloseAction := caFree;
   end else
   {$ENDIF}
