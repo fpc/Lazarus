@@ -240,8 +240,9 @@ begin
       TLMessage(Message).Result := CallDefaultWindowProc(Handle, WM_GETDLGCODE, 0, 0);
     end;
   else
-    with TLMessage(Message) do
-      Result := CallDefaultWindowProc(Handle, Msg, WParam, LParam);
+    if TLMessage(Message).Msg >= WM_USER then
+      with TLMessage(Message) do
+        Result := CallDefaultWindowProc(Handle, Msg, WParam, LParam);
   end;
 end;
 
