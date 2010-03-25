@@ -4345,7 +4345,8 @@ destructor TSourceNotebook.Destroy;
 var
   i: integer;
 begin
-  Manager.RemoveWindow(Self);
+  if assigned(Manager) then
+    Manager.RemoveWindow(Self);
   DisableAutoSizing{$IFDEF DebugDisableAutoSizing}('TSourceNotebook.Destroy'){$ENDIF};
   FProcessingCommand:=false;
   for i:=FSourceEditorList.Count-1 downto 0 do
@@ -4421,7 +4422,7 @@ End;
 
 procedure TSourceNotebook.EditorPropertiesClicked(Sender: TObject);
 begin
-  if Assigned(Manager.OnEditorPropertiesClicked) then
+  if assigned(Manager) and Assigned(Manager.OnEditorPropertiesClicked) then
     Manager.OnEditorPropertiesClicked(Sender);
 end;
 
@@ -5086,7 +5087,7 @@ Begin
   SenderDeleted:=(Sender as TControl).Parent=nil;
   if SenderDeleted then exit;
   UpdateStatusBar;
-  if Assigned(Manager.OnEditorChanged) then
+  if assigned(Manager) and Assigned(Manager.OnEditorChanged) then
     Manager.OnEditorChanged(Sender);
 End;
 
@@ -5240,7 +5241,7 @@ begin
   if SrcEdit = nil then Exit;
   if FLastCodeBuffer=SrcEdit.CodeBuffer then exit;
   FLastCodeBuffer:=SrcEdit.CodeBuffer;
-  if Assigned(Manager.OnCurrentCodeBufferChanged) then
+  if assigned(Manager) and Assigned(Manager.OnCurrentCodeBufferChanged) then
     Manager.OnCurrentCodeBufferChanged(Self);
 end;
 
@@ -5497,7 +5498,7 @@ procedure TSourceNotebook.StartShowCodeContext(JumpToError: boolean);
 var
   Abort: boolean;
 begin
-  if Manager.OnShowCodeContext<>nil then begin
+  if assigned(Manager) and (Manager.OnShowCodeContext<>nil) then begin
     Manager.OnShowCodeContext(JumpToError,Abort);
     if Abort then ;
   end;
@@ -5516,7 +5517,7 @@ begin
     exit;
   end;
   ActEdit.EditorComponent.ReadOnly := not(ActEdit.EditorComponent.ReadOnly);
-  if Assigned(Manager.OnReadOnlyChanged) then
+  if assigned(Manager) and Assigned(Manager.OnReadOnlyChanged) then
     Manager.OnReadOnlyChanged(Self);
   UpdateStatusBar;
 end;
@@ -5577,7 +5578,8 @@ end;
 
 Procedure TSourceNotebook.ShowUnitInfo(Sender: TObject);
 begin
-  if Assigned(Manager.OnShowUnitInfo) then Manager.OnShowUnitInfo(Sender);
+  if assigned(Manager) and Assigned(Manager.OnShowUnitInfo) then
+    Manager.OnShowUnitInfo(Sender);
 end;
 
 Procedure TSourceNotebook.ToggleLineNumbersClicked(Sender: TObject);
@@ -5601,13 +5603,13 @@ end;
 
 Procedure TSourceNotebook.OpenAtCursorClicked(Sender: TObject);
 begin
-  if Assigned(Manager.OnOpenFileAtCursorClicked) then
+  if assigned(Manager) and Assigned(Manager.OnOpenFileAtCursorClicked) then
     Manager.OnOpenFileAtCursorClicked(Sender);
 end;
 
 Procedure TSourceNotebook.FindDeclarationClicked(Sender: TObject);
 begin
-  if Assigned(Manager.OnFindDeclarationClicked) then
+  if assigned(Manager) and Assigned(Manager.OnFindDeclarationClicked) then
     Manager.OnFindDeclarationClicked(Sender);
 end;
 
@@ -5648,7 +5650,7 @@ end;
 
 procedure TSourceNotebook.InsertTodoClicked(Sender: TObject);
 begin
-  if Assigned(Manager.OnInsertTodoClicked) then
+  if assigned(Manager) and Assigned(Manager.OnInsertTodoClicked) then
     Manager.OnInsertTodoClicked(Sender);
 end;
 
@@ -5715,7 +5717,7 @@ var
 begin
   P := StatusBar.ScreenToClient(Mouse.CursorPos);
   // if we clicked on first panel which shows position in code
-  if StatusBar.GetPanelIndexAt(P.X, P.Y) = 0 then
+  if assigned(Manager) and (StatusBar.GetPanelIndexAt(P.X, P.Y) = 0) then
   begin
     // then show goto line dialog
     Manager.GotoLineClicked(nil);
@@ -5902,6 +5904,7 @@ begin
     if PageCount = 0 then begin
       {$IFnDEF SingleSrcWindow}
       Manager.RemoveWindow(self);
+      FManager := nil;
       {$ENDIF}
       Close;
     end;
@@ -5957,22 +5960,26 @@ end;
 
 Procedure TSourceNotebook.CloseClicked(Sender: TObject);
 Begin
-  if Assigned(Manager.OnCloseClicked) then Manager.OnCloseClicked(Sender, False);
+  if assigned(Manager) and Assigned(Manager.OnCloseClicked) then
+    Manager.OnCloseClicked(Sender, False);
 end;
 
 procedure TSourceNotebook.CloseOtherPagesClicked(Sender: TObject);
 begin
-  if Assigned(Manager.OnCloseClicked) then Manager.OnCloseClicked(Sender, True);
+  if assigned(Manager) and Assigned(Manager.OnCloseClicked) then
+    Manager.OnCloseClicked(Sender, True);
 end;
 
 procedure TSourceNotebook.ToggleFormUnitClicked(Sender: TObject);
 begin
-  if Assigned(Manager.OnToggleFormUnitClicked) then Manager.OnToggleFormUnitClicked(Sender);
+  if assigned(Manager) and Assigned(Manager.OnToggleFormUnitClicked) then
+    Manager.OnToggleFormUnitClicked(Sender);
 end;
 
 procedure TSourceNotebook.ToggleObjectInspClicked(Sender: TObject);
 begin
-  if Assigned(Manager.OnToggleObjectInspClicked) then Manager.OnToggleObjectInspClicked(Sender);
+  if assigned(Manager) and Assigned(Manager.OnToggleObjectInspClicked) then
+    Manager.OnToggleObjectInspClicked(Sender);
 end;
 
 procedure TSourceNotebook.InsertCharacter(const C: TUTF8Char);
@@ -6111,7 +6118,8 @@ begin
   Statusbar.EndUpdate;
 
   CheckCurrentCodeBufferChanged;
-  Manager.UpdateFPDocEditor;
+  if assigned(Manager) then
+    Manager.UpdateFPDocEditor;
 End;
 
 function TSourceNotebook.FindPageWithEditor(
@@ -6173,6 +6181,7 @@ end;
 Procedure TSourceNotebook.NotebookPageChanged(Sender: TObject);
 var TempEditor:TSourceEditor;
 Begin
+  if not assigned(Manager) Then exit;
   TempEditor:=GetActiveSE;
 
   //writeln('TSourceNotebook.NotebookPageChanged ',Pageindex,' ',TempEditor <> nil,' fAutoFocusLock=',fAutoFocusLock);
@@ -6285,7 +6294,7 @@ Procedure TSourceNotebook.ParentCommandProcessed(Sender: TObject;
   var Command: TSynEditorCommand; var AChar: TUTF8Char; Data: pointer;
   var Handled: boolean);
 begin
-  if Assigned(Manager.OnUserCommandProcessed) then begin
+  if assigned(Manager) and Assigned(Manager.OnUserCommandProcessed) then begin
     Handled:=false;
     Manager.OnUserCommandProcessed(Self,Command,Handled);
     if Handled then exit;
@@ -6377,6 +6386,7 @@ procedure TSourceNotebook.KeyDownBeforeInterface(var Key: Word;
 var i, Command: integer;
 Begin
   inherited KeyDown(Key,Shift);
+  if not assigned(Manager) then exit;
   i := FKeyStrokes.FindKeycode(Key, Shift);
   if i>=0 then begin
     Command:=FKeyStrokes[i].Command;
@@ -6457,7 +6467,7 @@ var
 begin
   Result:=false;
   SrcEdit:=GetActiveSE;
-  if Assigned(Manager.OnGetIndent) then begin
+  if assigned(Manager) and Assigned(Manager.OnGetIndent) then begin
     Result := Manager.OnGetIndent(Sender, SrcEdit, LogCaret, OldLogCaret, FirstLinePos, LastLinePos,
                           Reason, SetIndentProc);
     if Result then exit;
@@ -6571,7 +6581,7 @@ begin
     end;
   end else begin
     // hint for source
-    if Assigned(Manager.OnShowHintForSource) then
+    if assigned(manager) and Assigned(Manager.OnShowHintForSource) then
       Manager.OnShowHintForSource(ASrcEdit,EditPos,EditCaret);
   end;
 end;
@@ -6693,7 +6703,7 @@ end;
 procedure TSourceNotebook.CloseTabClicked(Sender: TObject);
 begin
   FPageIndex := PageIndex;
-  if Assigned(Manager.OnCloseClicked) then
+  if assigned(manager) and Assigned(Manager.OnCloseClicked) then
     Manager.OnCloseClicked(Sender, GetKeyState(VK_CONTROL) < 0);
 end;
 
@@ -6908,7 +6918,10 @@ end;
 
 function TSourceEditorManagerBase.SourceWindowCount: integer;
 begin
-  Result := FSourceWindowList.Count;
+  if assigned(FSourceWindowList) then
+    Result := FSourceWindowList.Count
+  else
+    Result := 0;
 end;
 
 function TSourceEditorManagerBase.IndexOfSourceWindow(
@@ -7119,7 +7132,7 @@ begin
   FActiveWindow := nil;
   FreeCompletionPlugins;
   FreeSourceWindows;
-  SrcEditorIntf.SourceEditorManagerIntf := nil;
+  SrcEditorIntf.SourceEditorManagerIntf := nil; // xx move down
   FreeAndNil(FCompletionPlugins);
   FreeAndNil(FSourceWindowList);
   for i := low(TsemChangeReason) to high(TsemChangeReason) do
