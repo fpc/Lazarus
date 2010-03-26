@@ -10774,13 +10774,8 @@ end;
 
 procedure TQtDesignWidget.DestroyWidget;
 begin
-  if FDesignControl <> nil then
-  begin
-    removeProperty(FDesignControl, 'lclwidget');
-    QObject_deleteLater(FDesignControl);
-    FDesignControl := nil;
-  end;
   inherited DestroyWidget;
+  FDesignControl := nil;
 end;
 
 procedure TQtDesignWidget.SlotDesignControlPaint(Sender: QObjectH; Event: QEventH); cdecl;
@@ -10880,6 +10875,13 @@ begin
   QEvent_Accept(Event);
   if LCLObject = nil then
     exit;
+  if QEvent_type(Event) = QEventDestroy then
+  begin
+    {FDesignControl is always destroyed by it's parent,
+     only thing we need is to remove dynamic property.}
+    RemoveProperty(FDesignControl,'lclwidget');
+    exit;
+  end;
   BeginEventProcessing;
   case QEvent_type(Event) of
     QEventMouseButtonPress,
