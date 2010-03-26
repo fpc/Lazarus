@@ -1738,8 +1738,6 @@ begin
     end else begin
       // current atom does not belong to procedure/method declaration
       UndoReadNextAtom; // unread unknown atom
-      if CurPos.Flag=cafSemicolon then
-        UndoReadNextAtom; // unread semicolon
       break;
     end;
   until false;
