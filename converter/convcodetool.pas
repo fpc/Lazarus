@@ -43,6 +43,8 @@ type
     fUnitsToAdd: TStringList;
     // List of units to be commented.
     fUnitsToComment: TStringList;
+    // Map of class member object types to be renamed in ReplaceMemberTypes.
+    fMemberTypesToRename: TStringList; // TStringToStringTree;
     function AddDelphiAndLCLSections: boolean;
     function AddModeDelphiDirective: boolean;
     function RenameResourceDirectives: boolean;
@@ -55,6 +57,7 @@ type
     constructor Create(Code: TCodeBuffer);
     destructor Destroy; override;
     function Convert: TModalResult;
+    function ReplaceMemberTypes(AClassName: string): boolean;
   public
     property Ask: Boolean read fAsk write fAsk;
     property UseBothDfmAndLfm: boolean read fUseBothDfmAndLfm write fUseBothDfmAndLfm;
@@ -65,6 +68,8 @@ type
     property UnitsToRename: TStringToStringTree read fUnitsToRename write fUnitsToRename;
     property UnitsToAdd: TStringList read fUnitsToAdd write fUnitsToAdd;
     property UnitsToComment: TStringList read fUnitsToComment write fUnitsToComment;
+    property MemberTypesToRename: TStringList read fMemberTypesToRename
+                                             write fMemberTypesToRename;
   end;
 
 implementation
@@ -81,6 +86,7 @@ begin
   fTarget:=ctLazarus;
   fUnitsToComment:=nil;
   fUnitsToRename:=nil;
+  fMemberTypesToRename:=nil;
   // Initialize codetools. (Copied from TCodeToolManager.)
   if not CodeToolBoss.InitCurCodeTool(fCode) then exit;
   try
@@ -134,7 +140,6 @@ begin
     finally
       fSrcCache.EndUpdate;
     end;
-    // This adds units to add, remove and rename if Delphi compat is not required.
     if not AddDelphiAndLCLSections then exit;
     if not RemoveUnits then exit;
     if not RenameUnits then exit;
@@ -388,6 +393,14 @@ begin
 //      IDEMessagesWindow.AddMsg('Error="'+CodeToolBoss.ErrorMessage+'"','',-1);
   end;
   Result:=true;
+end;
+
+function TConvDelphiCodeTool.ReplaceMemberTypes(AClassName: string): boolean;
+// Replace types of class object members.
+begin
+//  CodeToolBoss.RetypeClassVariables();
+  Result:=fCodeTool.RetypeClassVariables(AClassName, fMemberTypesToRename,
+                                         false, fSrcCache);
 end;
 
 

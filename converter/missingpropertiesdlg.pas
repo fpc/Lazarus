@@ -34,7 +34,7 @@ interface
 uses
   // FCL+LCL
   Classes, SysUtils, Math, LCLProc, Forms, Controls,
-  Graphics, Dialogs, Buttons, StdCtrls, contnrs, IniFiles,
+  Graphics, Dialogs, Buttons, StdCtrls, contnrs,
   // components
   SynHighlighterLFM, SynEdit, SynEditMiscClasses, LFMTrees,
   // codetools
@@ -42,7 +42,7 @@ uses
   // IDE
   IDEDialogs, ComponentReg, PackageIntf, IDEWindowIntf,
   CustomFormEditor, LazarusIDEStrConsts, IDEProcs, OutputFilter,
-  EditorOptions, ExtCtrls, Grids, ConvertSettings, CheckLFMDlg;
+  EditorOptions, ExtCtrls, Grids, ConvertSettings, ConvCodeTool, CheckLFMDlg;
 
 type
 
@@ -117,10 +117,13 @@ end;
 
 function TLFMFixer.ReplaceAndRemoveAll: TModalResult;
 var
+  ConvTool: TConvDelphiCodeTool;
   CurError: TLFMError;
   TheNode: TLFMTreeNode;
+  ObjNode: TLFMObjectNode;
   // Property name --> replacement name.
-  PropNameRepl: THashedStringList;
+  PropNameRepl: TStringToStringTree;
+  MemberTypes: TStringList;
   // List of TLFMChangeEntry objects.
   ChgEntryRepl: TObjectList;
   OldIdent, NewIdent: string;
@@ -129,33 +132,40 @@ var
 begin
   Result:=mrNone;
   ChgEntryRepl:=TObjectList.Create;
-  PropNameRepl:=THashedStringList.Create;
+  PropNameRepl:=TStringToStringTree.Create(false);
+  MemberTypes:=TStringList.Create;
   try
     // Collect (maybe edited) properties from StringGrid to PropNameRepl.
     for i:=1 to fPropReplaceGrid.RowCount-1 do begin // Skip the fixed row.
       OldIdent:=fPropReplaceGrid.Cells[0,i];
       NewIdent:=fPropReplaceGrid.Cells[1,i];
-      PropNameRepl.Values[OldIdent]:=NewIdent;
+      if NewIdent<>'' then
+        PropNameRepl[OldIdent]:=NewIdent;
     end;
-    // Replace each missing property or delete it if there is no replacement.
+    // Replace each missing property / type or delete it if no replacement.
     CurError:=fLFMTree.LastError;
     while CurError<>nil do begin
       TheNode:=CurError.FindContextNode;
       if (TheNode<>nil) and (TheNode.Parent<>nil) then begin
         if CurError.IsMissingObjectType then begin
-          OldIdent:=(CurError.Node as TLFMObjectNode).TypeName;
-          StartPos:=(CurError.Node as TLFMObjectNode).TypeNamePosition;
+          // Object type
+          ObjNode:=CurError.Node as TLFMObjectNode;
+          OldIdent:=ObjNode.TypeName;
+          StartPos:=ObjNode.TypeNamePosition;
           EndPos:=StartPos+Length(OldIdent);
-          NewIdent:=PropNameRepl.Values[OldIdent];
+          NewIdent:=PropNameRepl[OldIdent];
           // Keep the old class name if no replacement.
-          if NewIdent<>'' then
+          if NewIdent<>'' then begin
             AddReplacement(ChgEntryRepl,StartPos,EndPos,NewIdent);
+            MemberTypes.Values[OldIdent]:=NewIdent;
+          end;
         end
         else begin
+          // Property
           TheNode.FindIdentifier(StartPos,EndPos);
           if StartPos>0 then begin
             OldIdent:=copy(fLFMBuffer.Source,StartPos,EndPos-StartPos);
-            NewIdent:=PropNameRepl.Values[OldIdent];
+            NewIdent:=PropNameRepl[OldIdent];
             // Delete the whole property line if no replacement.
             if NewIdent='' then
               FindNiceNodeBounds(TheNode,StartPos,EndPos);
@@ -165,9 +175,22 @@ begin
       end;
       CurError:=CurError.PrevError;
     end;
-    if ApplyReplacements(ChgEntryRepl) then
+    // Apply replacements to LFM.
+    if ApplyReplacements(ChgEntryRepl) then begin
+      if MemberTypes.Count>0 then begin
+        // Replace the object member types also to pascal source.
+        ConvTool:=TConvDelphiCodeTool.Create(fPascalBuffer);
+        try
+          ConvTool.MemberTypesToRename:=MemberTypes;
+          ConvTool.ReplaceMemberTypes(TLFMObjectNode(fLFMTree.Root).TypeName);
+        finally
+          ConvTool.Free;
+        end;
+      end;
       Result:=mrOk;
+    end;
   finally
+    MemberTypes.Free;
     PropNameRepl.Free;
     ChgEntryRepl.Free;
   end;
@@ -187,12 +210,10 @@ begin
       i:=1;
       CurError:=fLFMTree.FirstError;
       while CurError<>nil do begin
-        if CurError.IsMissingObjectType then begin
-          OldIdent:=(CurError.Node as TLFMObjectNode).TypeName;
-        end
-        else begin
+        if CurError.IsMissingObjectType then
+          OldIdent:=(CurError.Node as TLFMObjectNode).TypeName
+        else
           OldIdent:=CurError.Node.GetIdentifier;
-        end;
         // Add only one instance of each property name.
         if SeenPropName.IndexOf(OldIdent)<0 then begin
           SeenPropName.Append(OldIdent);
