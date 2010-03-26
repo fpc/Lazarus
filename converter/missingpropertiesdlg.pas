@@ -122,8 +122,7 @@ var
   TheNode: TLFMTreeNode;
   ObjNode: TLFMObjectNode;
   // Property name --> replacement name.
-  PropNameRepl: TStringToStringTree;
-  MemberTypes: TStringList;
+  NameReplacements: TStringToStringTree;
   // List of TLFMChangeEntry objects.
   ChgEntryRepl: TObjectList;
   OldIdent, NewIdent: string;
@@ -132,15 +131,14 @@ var
 begin
   Result:=mrNone;
   ChgEntryRepl:=TObjectList.Create;
-  PropNameRepl:=TStringToStringTree.Create(false);
-  MemberTypes:=TStringList.Create;
+  NameReplacements:=TStringToStringTree.Create(false);
   try
-    // Collect (maybe edited) properties from StringGrid to PropNameRepl.
+    // Collect (maybe edited) properties from StringGrid to NameReplacements.
     for i:=1 to fPropReplaceGrid.RowCount-1 do begin // Skip the fixed row.
       OldIdent:=fPropReplaceGrid.Cells[0,i];
       NewIdent:=fPropReplaceGrid.Cells[1,i];
       if NewIdent<>'' then
-        PropNameRepl[OldIdent]:=NewIdent;
+        NameReplacements[OldIdent]:=NewIdent;
     end;
     // Replace each missing property / type or delete it if no replacement.
     CurError:=fLFMTree.LastError;
@@ -153,19 +151,17 @@ begin
           OldIdent:=ObjNode.TypeName;
           StartPos:=ObjNode.TypeNamePosition;
           EndPos:=StartPos+Length(OldIdent);
-          NewIdent:=PropNameRepl[OldIdent];
+          NewIdent:=NameReplacements[OldIdent];
           // Keep the old class name if no replacement.
-          if NewIdent<>'' then begin
+          if NewIdent<>'' then
             AddReplacement(ChgEntryRepl,StartPos,EndPos,NewIdent);
-            MemberTypes.Values[OldIdent]:=NewIdent;
-          end;
         end
         else begin
           // Property
           TheNode.FindIdentifier(StartPos,EndPos);
           if StartPos>0 then begin
             OldIdent:=copy(fLFMBuffer.Source,StartPos,EndPos-StartPos);
-            NewIdent:=PropNameRepl[OldIdent];
+            NewIdent:=NameReplacements[OldIdent];
             // Delete the whole property line if no replacement.
             if NewIdent='' then
               FindNiceNodeBounds(TheNode,StartPos,EndPos);
@@ -177,21 +173,18 @@ begin
     end;
     // Apply replacements to LFM.
     if ApplyReplacements(ChgEntryRepl) then begin
-      if MemberTypes.Count>0 then begin
-        // Replace the object member types also to pascal source.
-        ConvTool:=TConvDelphiCodeTool.Create(fPascalBuffer);
-        try
-          ConvTool.MemberTypesToRename:=MemberTypes;
-          ConvTool.ReplaceMemberTypes(TLFMObjectNode(fLFMTree.Root).TypeName);
-        finally
-          ConvTool.Free;
-        end;
+      // Replace the object member types also to pascal source.
+      ConvTool:=TConvDelphiCodeTool.Create(fPascalBuffer);
+      try
+        ConvTool.MemberTypesToRename:=NameReplacements;
+        ConvTool.ReplaceMemberTypes(TLFMObjectNode(fLFMTree.Root).TypeName);
+      finally
+        ConvTool.Free;
       end;
       Result:=mrOk;
     end;
   finally
-    MemberTypes.Free;
-    PropNameRepl.Free;
+    NameReplacements.Free;
     ChgEntryRepl.Free;
   end;
 end;

@@ -44,7 +44,7 @@ type
     // List of units to be commented.
     fUnitsToComment: TStringList;
     // Map of class member object types to be renamed in ReplaceMemberTypes.
-    fMemberTypesToRename: TStringList; // TStringToStringTree;
+    fMemberTypesToRename: TStringToStringTree;
     function AddDelphiAndLCLSections: boolean;
     function AddModeDelphiDirective: boolean;
     function RenameResourceDirectives: boolean;
@@ -68,8 +68,8 @@ type
     property UnitsToRename: TStringToStringTree read fUnitsToRename write fUnitsToRename;
     property UnitsToAdd: TStringList read fUnitsToAdd write fUnitsToAdd;
     property UnitsToComment: TStringList read fUnitsToComment write fUnitsToComment;
-    property MemberTypesToRename: TStringList read fMemberTypesToRename
-                                             write fMemberTypesToRename;
+    property MemberTypesToRename: TStringToStringTree read fMemberTypesToRename
+                                                     write fMemberTypesToRename;
   end;
 
 implementation
