@@ -6435,7 +6435,8 @@ var
   CodeBuf: TCodeBuffer;
 begin
   Result:=false;
-  SrcEdit:=GetActiveSE;
+  //SrcEdit:=GetActiveSE;
+  SrcEdit := Manager.ActiveEditor; // Todo: Each SynEdits need thier own Beautifier, otherwise they call the wrong notebook
   if assigned(Manager) and Assigned(Manager.OnGetIndent) then begin
     Result := Manager.OnGetIndent(Sender, SrcEdit, LogCaret, OldLogCaret, FirstLinePos, LastLinePos,
                           Reason, SetIndentProc);
