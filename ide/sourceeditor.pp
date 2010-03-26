@@ -5267,9 +5267,10 @@ end;
 
 procedure TSourceNotebook.NoteBookDeletePage(Index: Integer);
 begin
-  if PageCount > 1 then
-    NotebookPages.Delete(Index)
-  else
+  if PageCount > 1 then begin
+    NotebookPages.Delete(Index);
+    FNoteBook.PageIndex := Min(Index, PageCount);
+  end else
     FNotebook.Visible := False;
 end;
 
