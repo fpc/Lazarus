@@ -567,7 +567,7 @@ begin
       Result:=LazarusIDE.DoCloseEditorFile(DfmFilename,[cfSaveFirst]);
       if Result<>mrOk then exit;
     end;
-    if fSettings.FormFileRename then begin
+//    if fSettings.FormFileRename then begin
       // rename files (.pas,.dfm) lowercase. TODO: rename files in project
       LfmFilename:=fSettings.DelphiToLazFilename(fOrigUnitFilename, '.lfm',
                                                cdtlufRenameLowercase in fFlags);
@@ -577,13 +577,16 @@ begin
             DeleteFileUTF8(LfmFilename); // .lfm is older than .dfm -> remove .lfm
         if not FileExistsUTF8(LfmFilename) then begin
           // TODO: update project
-          Result:=fSettings.RenameFile(DfmFilename,LfmFilename);
+          if fSettings.Target=ctLazarusAndDelphi then
+            Result:=CopyFileWithErrorDialogs(DfmFilename,LfmFilename,[mbAbort])
+          else
+            Result:=fSettings.RenameFile(DfmFilename,LfmFilename);
           if Result<>mrOK then exit;
         end;
       end;
-    end
+{    end
     else
-      LfmFilename:=DfmFilename;
+      LfmFilename:=DfmFilename; }
     // convert .dfm file to .lfm file (without context type checking)
     if FileExistsUTF8(LfmFilename) then begin
       IDEMessagesWindow.AddMsg('Converting DFM to LFM file '+LfmFilename,'',-1);
@@ -612,8 +615,8 @@ begin
     ConvTool.Ask:=Assigned(fOwnerConverter);
     ConvTool.LowerCaseRes:=FileExistsUTF8(ChangeFileExt(fLazUnitFilename, '.res'));
     ConvTool.HasFormFile:=DfmFilename<>'';
-    ConvTool.FormFileRename:=fSettings.FormFileRename and (DfmFilename<>'');
     ConvTool.Target:=fSettings.Target;
+    ConvTool.UseBothDfmAndLfm:=fSettings.Target=ctLazarusAndDelphi; {and (DfmFilename<>'')}
     ConvTool.UnitsToRemove:=fUnitsToRemove;
     ConvTool.UnitsToRename:=fUnitsToRename;
     ConvTool.UnitsToAdd:=fUnitsToAdd;

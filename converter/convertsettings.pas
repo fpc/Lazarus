@@ -48,7 +48,7 @@ type
     // Actual user settings.
     fBackupFiles: boolean;
     fTarget: TConvertTarget;
-    fFormFileRename: boolean;
+//    fFormFileRename: boolean;
     fAutoMissingProperties: boolean;
     fAutoMissingComponents: boolean;
     // Replacement properties for Delphi properties.
@@ -83,7 +83,7 @@ type
 
     property BackupFiles: boolean read fBackupFiles;
     property Target: TConvertTarget read fTarget;
-    property FormFileRename: boolean read fFormFileRename;
+//    property FormFileRename: boolean read fFormFileRename;
     property AutoMissingProperties: boolean read fAutoMissingProperties;
     property AutoMissingComponents: boolean read fAutoMissingComponents;
     property ReplaceProps: TStringToStringTree read fReplaceProps;
@@ -175,7 +175,7 @@ begin
       // UI --> Settings.
       fBackupFiles          :=BackupCheckBox.Checked;
       fTarget               :=TConvertTarget(TargetRadioGroup.ItemIndex);
-      fFormFileRename       :=FormFileRenameCheckBox.Checked;
+//      fFormFileRename       :=FormFileRenameCheckBox.Checked;
       fAutoMissingProperties:=MissingPropertyCheckBox.Checked;
       fAutoMissingComponents:=MissingComponentCheckBox.Checked;
       // ToDo: Save to XML.
@@ -237,8 +237,7 @@ end;
 
 function TConvertSettings.RenameFile(const SrcFilename, DestFilename: string): TModalResult;
 begin
-  Result:=mrOK;
-  // Convert in place.
+//  Result:=mrOK;
   if fBackupFiles then
     BackupFile(SrcFilename); // Save before rename.
   Result:=RenameFileWithErrorDialogs(SrcFilename,DestFilename,[mbAbort]);
@@ -302,9 +301,9 @@ var
   Trg: TConvertTarget;
 begin
   Trg:=TConvertTarget((Sender as TRadioGroup).ItemIndex);
-  if Trg=ctLazarusAndDelphi then
+{  if Trg=ctLazarusAndDelphi then
     FormFileRenameCheckBox.Checked:=false;
-  FormFileRenameCheckBox.Enabled:=Trg<>ctLazarusAndDelphi;
+  FormFileRenameCheckBox.Enabled:=Trg<>ctLazarusAndDelphi; }
 end;
 
 procedure TConvertSettingsForm.ReplacementCompsButtonClick(Sender: TObject);

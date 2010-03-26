@@ -18,6 +18,9 @@ uses
 
 type
 
+  // For future, when .dfm form file can be used for both Delphi and Lazarus.
+{  TFormFileAction = (faUseDfm, faRenameToLfm, faUseBothDfmAndLfm); }
+
   { TConvDelphiCodeTool }
 
   TConvDelphiCodeTool = class // (TStandardCodeTool)
@@ -27,8 +30,10 @@ type
     fSrcCache: TSourceChangeCache;
     fAsk: Boolean;
     fHasFormFile: boolean;
-    fFormFileRename: boolean;
+    fUseBothDfmAndLfm: boolean;
     fLowerCaseRes: boolean;
+    fDfmDirectiveStart: integer;
+    fDfmDirectiveEnd: integer;
     fTarget: TConvertTarget;
     // List of units to remove.
     fUnitsToRemove: TStringList;
@@ -52,7 +57,7 @@ type
     function Convert: TModalResult;
   public
     property Ask: Boolean read fAsk write fAsk;
-    property FormFileRename: boolean read fFormFileRename write fFormFileRename;
+    property UseBothDfmAndLfm: boolean read fUseBothDfmAndLfm write fUseBothDfmAndLfm;
     property HasFormFile: boolean read fHasFormFile write fHasFormFile;
     property LowerCaseRes: boolean read fLowerCaseRes write fLowerCaseRes;
     property Target: TConvertTarget read fTarget write fTarget;
@@ -72,7 +77,7 @@ begin
   // Default values for vars.
   fAsk:=true;
   fLowerCaseRes:=false;
-  fFormFileRename:=false;
+  fUseBothDfmAndLfm:=false;
   fTarget:=ctLazarus;
   fUnitsToComment:=nil;
   fUnitsToRename:=nil;
@@ -236,7 +241,7 @@ function TConvDelphiCodeTool.AddModeDelphiDirective: boolean;
 var
   ModeDirectivePos: integer;
   InsertPos: Integer;
-  nl: String;
+  s, nl: String;
 begin
   Result:=false;
   with fCodeTool do begin
@@ -251,11 +256,10 @@ begin
       InsertPos:=CurPos.EndPos;
       nl:=fSrcCache.BeautifyCodeOptions.LineEnd;
       if fTarget=ctLazarusAndDelphi then
-        fSrcCache.Replace(gtEmptyLine,gtEmptyLine,InsertPos,InsertPos,
-          '{$IFDEF LCL}'+nl+'  {$MODE Delphi}'+nl+'{$ENDIF}')
+        s:='{$IFDEF LCL}'+nl+'  {$MODE Delphi}'+nl+'{$ENDIF}'
       else
-        fSrcCache.Replace(gtEmptyLine,gtEmptyLine,InsertPos,InsertPos,
-          '{$MODE Delphi}');
+        s:='{$MODE Delphi}';
+      fSrcCache.Replace(gtEmptyLine,gtEmptyLine,InsertPos,InsertPos,s);
     end;
     // changing mode requires rescan
     BuildTree(false);
@@ -270,10 +274,15 @@ var
   ParamPos: Integer;
   ACleanPos: Integer;
   Key, LowKey, NewKey: String;
+  s, nl: string;
+  AlreadyIsLfm: Boolean;
 begin
   Result:=false;
-  // find $R directive
+  AlreadyIsLfm:=false;
+  fDfmDirectiveStart:=-1;
+  fDfmDirectiveEnd:=-1;
   ACleanPos:=1;
+  // find $R directive
   with fCodeTool do
     repeat
       ACleanPos:=FindNextCompilerDirectiveWithName(Src,ACleanPos,'R',
@@ -289,10 +298,20 @@ begin
 
         // Form file resource rename or lowercase:
         if (LowKey='dfm') or (LowKey='xfm') then begin
-          if fFormFileRename then
-            NewKey:='lfm'
-          else if Key<>LowKey then
-            NewKey:=LowKey;
+          // Lowercase existing key. (Future, when the same dfm file can be used)
+//          faUseDfm: if Key<>LowKey then NewKey:=LowKey;
+          if fUseBothDfmAndLfm then begin
+            // Later IFDEF will be added so that Delphi can still use .dfm.
+            fDfmDirectiveStart:=ACleanPos;
+            fDfmDirectiveEnd:=ParamPos+6;
+          end
+          else       // Change .dfm to .lfm.
+            NewKey:='lfm';
+        end
+
+        // If there already is .lfm, prevent adding IFDEF for .dfm / .lfm.
+        else if LowKey='lfm' then begin
+          AlreadyIsLfm:=true;
         end
 
         // lowercase {$R *.RES} to {$R *.res}
@@ -305,6 +324,18 @@ begin
       end;
       ACleanPos:=FindCommentEnd(Src,ACleanPos,fCodeTool.Scanner.NestedComments);
     until false;
+  // if there is already .lfm file, don't add IFDEF later for .dfm / .lfm.
+  if fUseBothDfmAndLfm and (fDfmDirectiveStart<>-1) and not AlreadyIsLfm then
+  begin
+    // Add IFDEF for .lfm and .dfm allowing Delphi to use .dfm.
+    nl:=fSrcCache.BeautifyCodeOptions.LineEnd;
+    s:='{$IFDEF LCL}'+nl+
+       '  {$R *.lfm}'+nl+
+       '{$ELSE}'+nl+
+       '  {$R *.dfm}'+nl+
+       '{$ENDIF}';         // gtEmptyLine,gtNewLine,
+    Result:=fSrcCache.Replace(gtNone,gtNone,fDfmDirectiveStart,fDfmDirectiveEnd,s);
+  end;
   Result:=true;
 end;
 

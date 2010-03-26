@@ -91,6 +91,7 @@ object ConvertSettingsForm: TConvertSettingsForm
       Checked = True
       State = cbChecked
       TabOrder = 1
+      Visible = False
     end
     object TargetRadioGroup: TRadioGroup
       Left = 3
