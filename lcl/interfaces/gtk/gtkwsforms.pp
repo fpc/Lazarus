@@ -121,12 +121,22 @@ implementation
 
 class procedure TGtkWSScrollingWinControl.SetCallbacks(
   const AWidget: PGtkWidget; const AWidgetInfo: PWidgetInfo);
+var
+  UseScrollCallback: Boolean;
 begin
   TGtkWSWinControl.SetCallbacks(PGtkObject(AWidget), TComponent(AWidgetInfo^.LCLObject));
   with TGTKWidgetSet(Widgetset) do
   begin
-    SetCallback(LM_HSCROLL, PGtkObject(AWidget), AWidgetInfo^.LCLObject);
-    SetCallback(LM_VSCROLL, PGtkObject(AWidget), AWidgetInfo^.LCLObject);
+    {$ifdef gtk1}
+    UseScrollCallBack := True;
+    {$else}
+    UseScrollCallBack := (gtk_major_version = 2) and (gtk_minor_version <= 8);
+    {$endif}
+    if UseScrollCallBack then
+    begin
+      SetCallback(LM_HSCROLL, PGtkObject(AWidget), AWidgetInfo^.LCLObject);
+      SetCallback(LM_VSCROLL, PGtkObject(AWidget), AWidgetInfo^.LCLObject);
+    end;
   end;
 end;
 

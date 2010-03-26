@@ -398,6 +398,30 @@ begin
   end;
 end;
 
+{$ifdef gtk2}
+function GtkScrollTypeToScrollCode(ScrollType: TGtkScrollType): LongWord;
+begin
+  case ScrollType of
+      GTK_SCROLL_NONE          : Result := SB_ENDSCROLL;
+      GTK_SCROLL_JUMP          : Result := SB_THUMBPOSITION;
+      GTK_SCROLL_STEP_BACKWARD : Result := SB_LINELEFT;
+      GTK_SCROLL_STEP_FORWARD  : Result := SB_LINERIGHT;
+      GTK_SCROLL_PAGE_BACKWARD : Result := SB_PAGELEFT;
+      GTK_SCROLL_PAGE_FORWARD  : Result := SB_PAGERIGHT;
+      GTK_SCROLL_STEP_UP       : Result := SB_LINEUP;
+      GTK_SCROLL_STEP_DOWN     : Result := SB_LINEDOWN;
+      GTK_SCROLL_PAGE_UP       : Result := SB_PAGEUP;
+      GTK_SCROLL_PAGE_DOWN     : Result := SB_PAGEDOWN;
+      GTK_SCROLL_STEP_LEFT     : Result := SB_LINELEFT;
+      GTK_SCROLL_STEP_RIGHT    : Result := SB_LINERIGHT;
+      GTK_SCROLL_PAGE_LEFT     : Result := SB_PAGELEFT;
+      GTK_SCROLL_PAGE_RIGHT    : Result := SB_PAGERIGHT;
+      GTK_SCROLL_START         : Result := SB_TOP;
+      GTK_SCROLL_END           : Result := SB_BOTTOM;
+    end;
+end;
+{$endif}
+
 {------------------------------------------------------------------------------
   function GtkWidgetIsA(Widget: PGtkWidget; AType: TGtkType): boolean;
 
@@ -7661,7 +7685,7 @@ end;
   as main widget.
 -------------------------------------------------------------------------------}
 function CreateFormContents(AForm: TCustomForm;
-  var FormWidget: Pointer): Pointer;
+  var FormWidget: Pointer; AWidgetInfo: PWidgetInfo = nil): Pointer;
 var
   ScrolledWidget, ClientAreaWidget: PGtkWidget;
   WindowStyle: PGtkStyle;
@@ -7710,7 +7734,16 @@ begin
     if Adjustment <> nil then
       gtk_object_set_data(PGTKObject(Adjustment), odnScrollBar,
         PGTKScrolledWindow(ScrolledWidget)^.hscrollbar);
-
+    {$ifdef gtk2}
+    if (AWidgetInfo <> nil) and
+      (gtk_major_version >= 2) and (gtk_minor_version > 8) then
+    begin
+      g_signal_connect(PGTKScrolledWindow(ScrolledWidget)^.hscrollbar, 'change-value',
+        TGCallback(@Gtk2RangeScrollCB), AWidgetInfo);
+      g_signal_connect(PGTKScrolledWindow(ScrolledWidget)^.vscrollbar, 'change-value',
+        TGCallback(@Gtk2RangeScrollCB), AWidgetInfo);
+    end;
+    {$endif}
   end;
 end;
 

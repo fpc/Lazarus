@@ -2572,6 +2572,36 @@ begin
   end;
 end;
 
+{$ifdef gtk2}
+function Gtk2RangeScrollCB(ARange: PGtkRange; AScrollType: TGtkScrollType;
+                  AValue: gdouble; AWidgetInfo: PWidgetInfo): gboolean; cdecl;
+var
+  Msg: TLMVScroll;
+  MaxValue: gdouble;
+begin
+  Result := CallBackDefaultReturn;
+
+  //Assert(False, Format('Trace:[Gtk2RangeScrollCB] Value: %d', [RoundToInt(AValue)]));
+  if G_OBJECT_TYPE(ARange) = gtk_hscrollbar_get_type then
+    Msg.Msg := LM_HSCROLL
+  else
+    Msg.Msg := LM_VSCROLL;
+
+  with Msg do
+  begin
+    Pos := Round(AValue);
+    if Pos < High(SmallPos) then
+      SmallPos := Pos
+    else
+      SmallPos := High(SmallPos);
+
+    ScrollBar := HWND(PtrUInt(ARange));
+    ScrollCode := GtkScrollTypeToScrollCode(AScrollType);
+  end;
+  Result := DeliverMessage(AWidgetInfo^.LCLObject, Msg) <> 0;
+end;
+{$endif}
+
 {------------------------------------------------------------------------------
   Function: GTKKeySnooper
   Params:  Widget: The widget for which this event is fired

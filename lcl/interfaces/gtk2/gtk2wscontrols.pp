@@ -86,64 +86,11 @@ type
   published
   end;
 
-function Gtk2RangeScrollCB(ARange: PGtkRange; AScrollType: TGtkScrollType;
-                  AValue: gdouble; AWidgetInfo: PWidgetInfo): gboolean; cdecl;
-
 implementation
 uses
   Gtk2Int, LMessages, Math;
 
 { TGtk2WSWinControl }
-
-function GtkScrollTypeToScrollCode(ScrollType: TGtkScrollType): LongWord;
-begin
-  case ScrollType of
-      GTK_SCROLL_NONE          : Result := SB_ENDSCROLL;
-      GTK_SCROLL_JUMP          : Result := SB_THUMBPOSITION;
-      GTK_SCROLL_STEP_BACKWARD : Result := SB_LINELEFT;
-      GTK_SCROLL_STEP_FORWARD  : Result := SB_LINERIGHT;
-      GTK_SCROLL_PAGE_BACKWARD : Result := SB_PAGELEFT;
-      GTK_SCROLL_PAGE_FORWARD  : Result := SB_PAGERIGHT;
-      GTK_SCROLL_STEP_UP       : Result := SB_LINEUP;
-      GTK_SCROLL_STEP_DOWN     : Result := SB_LINEDOWN;
-      GTK_SCROLL_PAGE_UP       : Result := SB_PAGEUP;
-      GTK_SCROLL_PAGE_DOWN     : Result := SB_PAGEDOWN;
-      GTK_SCROLL_STEP_LEFT     : Result := SB_LINELEFT;
-      GTK_SCROLL_STEP_RIGHT    : Result := SB_LINERIGHT;
-      GTK_SCROLL_PAGE_LEFT     : Result := SB_PAGELEFT;
-      GTK_SCROLL_PAGE_RIGHT    : Result := SB_PAGERIGHT;
-      GTK_SCROLL_START         : Result := SB_TOP;
-      GTK_SCROLL_END           : Result := SB_BOTTOM;
-    end;
-end;
-
-function Gtk2RangeScrollCB(ARange: PGtkRange; AScrollType: TGtkScrollType;
-                  AValue: gdouble; AWidgetInfo: PWidgetInfo): gboolean; cdecl;
-var
-  Msg: TLMVScroll;
-  MaxValue: gdouble;
-begin
-  Result := CallBackDefaultReturn;
-
-  //Assert(False, Format('Trace:[Gtk2RangeScrollCB] Value: %d', [RoundToInt(AValue)]));
-  if G_OBJECT_TYPE(ARange) = gtk_hscrollbar_get_type then
-    Msg.Msg := LM_HSCROLL
-  else
-    Msg.Msg := LM_VSCROLL;
-
-  with Msg do
-  begin
-    Pos := Round(AValue);
-    if Pos < High(SmallPos) then
-      SmallPos := Pos
-    else
-      SmallPos := High(SmallPos);
-
-    ScrollBar := HWND(PtrUInt(ARange));
-    ScrollCode := GtkScrollTypeToScrollCode(AScrollType);
-  end;
-  Result := DeliverMessage(AWidgetInfo^.LCLObject, Msg) <> 0;
-end;
 
 function Gtk2ScrolledWindowScrollCB(AScrollWindow: PGtkScrolledWindow; AEvent: PGdkEventScroll; AWidgetInfo: PWidgetInfo): gboolean; cdecl;
 var

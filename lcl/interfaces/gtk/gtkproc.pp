@@ -204,9 +204,18 @@ function gtkFocusInNotifyCB (widget: PGtkWidget; event: PGdkEvent;
   data: gpointer): GBoolean; cdecl;
 function gtkFocusOutNotifyCB (widget: PGtkWidget; event: PGdkEvent;
   data: gpointer): GBoolean; cdecl;
+
+// PGtkAdjustment cb
 function GTKHScrollCB(Adjustment: PGTKAdjustment; data: GPointer): GBoolean; cdecl;
 function GTKVScrollCB(Adjustment: PGTKAdjustment;
   data: GPointer): GBoolean; cdecl;
+
+{$ifdef gtk2}
+// PGtkRange cb
+function Gtk2RangeScrollCB(ARange: PGtkRange; AScrollType: TGtkScrollType;
+  AValue: gdouble; AWidgetInfo: PWidgetInfo): gboolean; cdecl;
+{$endif}
+
 function GTKCheckMenuToggeledCB(AMenuItem: PGTKCheckMenuItem;
                                 AData: gPointer): GBoolean; cdecl;
 function GTKKeySnooper(Widget: PGtkWidget; Event: PGdkEventKey;
@@ -278,6 +287,9 @@ var
 function RectFromGdkRect(AGdkRect: TGdkRectangle): TRect;
 function GdkRectFromRect(R: TRect): TGdkRectangle;
 function AlignToGtkAlign(Align: TAlignment): gfloat;
+{$ifdef gtk2}
+function GtkScrollTypeToScrollCode(ScrollType: TGtkScrollType): LongWord;
+{$endif}
 
 // debugging
 function GtkWidgetIsA(Widget: PGtkWidget; AType: TGtkType): boolean;
@@ -697,7 +709,8 @@ procedure FreeClipboardTargetEntries(ClipboardType: TClipboardType);
 function GdkAtomToStr(const Atom: TGdkAtom): string;
 
 // forms
-function CreateFormContents(AForm: TCustomForm; var FormWidget: Pointer): Pointer;
+function CreateFormContents(AForm: TCustomForm;
+  var FormWidget: Pointer; AWidgetInfo: PWidgetInfo = nil): Pointer;
 
 // styles
 type

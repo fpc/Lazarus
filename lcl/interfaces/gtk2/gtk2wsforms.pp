@@ -46,6 +46,7 @@ type
   published
     class function  CreateHandle(const AWinControl: TWinControl; const AParams: TCreateParams): TLCLIntfHandle; override;
     class procedure SetColor(const AWinControl: TWinControl); override;
+    class procedure ScrollBy(const AWinControl: TScrollingWinControl; const DeltaX, DeltaY: integer); override;
   end;
 
   { TGtk2WSScrollBox }
@@ -121,8 +122,11 @@ begin
       SetCallback(LM_CONFIGUREEVENT, PGtkObject(AWidget), AWidgetInfo^.LCLObject);
       SetCallback(LM_CLOSEQUERY, PGtkObject(AWidget), AWidgetInfo^.LCLObject);
       SetCallBack(LM_Activate, PGtkObject(AWidget), AWidgetInfo^.LCLObject);
-      SetCallback(LM_HSCROLL, PGtkObject(AWidget), AWidgetInfo^.LCLObject);
-      SetCallback(LM_VSCROLL, PGtkObject(AWidget), AWidgetInfo^.LCLObject);
+      if (gtk_major_version = 2) and (gtk_minor_version <= 8) then
+      begin
+        SetCallback(LM_HSCROLL, PGtkObject(AWidget), AWidgetInfo^.LCLObject);
+        SetCallback(LM_VSCROLL, PGtkObject(AWidget), AWidgetInfo^.LCLObject);
+      end;
     end;
 
   g_signal_connect(PGtkObject(AWidgetInfo^.CoreWidget), gtkevent_window_state_event,
@@ -198,7 +202,7 @@ begin
 
   WidgetInfo := CreateWidgetInfo(P, AWinControl, AParams);
 
-  Box := CreateFormContents(ACustomForm, P);
+  Box := CreateFormContents(ACustomForm, P, WidgetInfo);
   gtk_container_add(PGtkContainer(P), Box);
 
   //so we can double buffer ourselves, eg, the Form Designer
@@ -320,16 +324,25 @@ begin
 
   // create a gtk_layout for the client area, so childs can be added at
   // free x,y positions and the scrollbars automatically scrolls the childs
+
   Layout := gtk_layout_new(nil, nil);
   gtk_container_add(PGTKContainer(Scrolled), Layout);
   gtk_widget_show(Layout);
   SetFixedWidget(Scrolled, Layout);
   SetMainWidget(Scrolled, Layout);
 
+
   Result := TLCLIntfHandle(PtrUInt(Scrolled));
 
   Set_RC_Name(AWinControl, PGtkWidget(Scrolled));
   SetCallBacks(PGtkWidget(Scrolled), WidgetInfo);
+  if (gtk_major_version >= 2) and (gtk_minor_version > 8) then
+  begin
+    g_signal_connect(Scrolled^.hscrollbar, 'change-value',
+      TGCallback(@Gtk2RangeScrollCB), WidgetInfo);
+    g_signal_connect(Scrolled^.vscrollbar, 'change-value',
+      TGCallback(@Gtk2RangeScrollCB), WidgetInfo);
+  end;
 end;
 
 class procedure TGtk2WSScrollingWinControl.SetColor(
@@ -342,6 +355,25 @@ begin
                                clNone, AWinControl.Color,
                                [GTK_STATE_NORMAL, GTK_STATE_ACTIVE,
                                 GTK_STATE_PRELIGHT, GTK_STATE_SELECTED]);
+end;
+
+class procedure TGtk2WSScrollingWinControl.ScrollBy(
+  const AWinControl: TScrollingWinControl; const DeltaX, DeltaY: integer);
+var
+  GtkWidget: PGtkWidget;
+  WidgetInfo: PWidgetInfo;
+begin
+  if not AWinControl.HandleAllocated then exit;
+  {gtk-2.8 have problem with gtk_window_scroll
+  also for >= gtk2-2.18 GDK_NATIVE_WINDOW env variable must be setted
+  or we get paint glitches.}
+  if (gtk_major_version >= 2) and (gtk_minor_version > 8) then
+  begin
+    GtkWidget := PGtkWidget(AWinControl.Handle);
+    WidgetInfo := GetWidgetInfo(GtkWidget);
+    if WidgetInfo <> nil then
+      gdk_window_scroll(WidgetInfo^.ClientWidget^.window, -DeltaX, -DeltaY);
+  end;
 end;
 
 end.
