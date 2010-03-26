@@ -8093,6 +8093,7 @@ begin
   begin
     FHeader := TQtHeaderView.CreateFrom(LCLObject, QTreeView_header(QTreeViewH(Widget)));
     FHeader.FOwner := Self;
+    FHeader.FChildOfComplexWidget := ccwTreeWidget;
     FSectionClicked := QHeaderView_hook_create(FHeader.Widget);
     QHeaderView_hook_hook_sectionClicked(FSectionClicked,
       @FHeader.SignalSectionClicked);
