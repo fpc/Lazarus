@@ -2587,6 +2587,20 @@ begin
   else
     Msg.Msg := LM_VSCROLL;
 
+  if (AWidgetInfo^.LCLObject is TScrollingWinControl) then
+  begin
+    {$ifdef OldAutoSize}
+    MaxValue := ARange^.adjustment^.upper - ARange^.adjustment^.page_size;
+    {$else}
+    MaxValue := ARange^.adjustment^.upper;
+    {$endif}
+    if (AValue > MaxValue) or (AValue < ARange^.adjustment^.lower) then
+    begin
+      Result := not Result;
+      exit;
+    end;
+  end;
+
   with Msg do
   begin
     Pos := Round(AValue);
