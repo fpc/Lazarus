@@ -162,6 +162,7 @@ type
     fdfFindVariable,        // do not search for the base type of a variable,
                             //   instead return the variable declaration
     fdfFunctionResult,      // if function is found, return result type
+    fdfEnumIdentifier,      // do not resolve enum to its enum type
     fdfFindChilds,          // search the class of a 'class of'
     fdfSkipClassForward,    // when a class forward was found search the class
     
@@ -195,6 +196,7 @@ const
     'fdfIgnoreOverloadedProcs',
     'fdfFindVariable',
     'fdfFunctionResult',
+    'fdfEnumIdentifier',
     'fdfFindChilds',
     'fdfSkipClassForward',
     'fdfCollect',
@@ -2242,7 +2244,7 @@ begin
     Params.Flags:=Params.Flags+[fdfFunctionResult,fdfFindChilds];
     FindContext:=FindBaseTypeOfNode(Params,ANode);
     if (FindContext.Node<>nil)
-    and ((FindContext.Node.Desc in ([ctnRecordType]+AllClasses)))
+    and ((FindContext.Node.Desc in ([ctnRecordType,ctnEnumerationType]+AllClasses)))
     and (FindContext.Node.FirstChild<>nil)
     then
       Result:=true;
@@ -2669,7 +2671,27 @@ var
       Result:=CheckResult(true,false);
     end;
   end;
-  
+
+  function SearchInEnumDefinition: boolean;
+  // returns: true if ok to exit
+  //          false if search should continue
+  begin
+    Result:=false;
+    if (fdfCollect in Params.Flags)
+    or CompareSrcIdentifiers(ContextNode.StartPos,Params.Identifier)
+    then begin
+      {$IFDEF ShowTriedIdentifiers}
+      DebugLn('  Enum Identifier found="',GetIdentifier(Params.Identifier),'"');
+      {$ENDIF}
+      // identifier found
+      Params.SetResult(Self,ContextNode);
+      Result:=CheckResult(true,true);
+      if not (fdfCollect in Params.Flags) then begin
+        exit;
+      end;
+    end;
+  end;
+
   function SearchInOnBlockDefinition: boolean;
   begin
     Result:=false;
@@ -2807,6 +2829,13 @@ var
         end;
       end;
 
+      if (ContextNode=StartContextNode)
+      and (not (fdfSearchInParentNodes in Params.Flags)) then begin
+        // startcontext completed => not searching in parents or ancestors
+        ContextNode:=nil;
+        break;
+      end;
+
       if ((not (fdfSearchForward in Params.Flags))
            and (ContextNode.PriorBrother<>nil))
       or ((fdfSearchForward in Params.Flags)
@@ -2884,7 +2913,8 @@ var
 
         ctnClass, ctnClassInterface, ctnDispinterface, ctnObject,
         ctnObjCClass, ctnObjCCategory, ctnObjCProtocol, ctnCPPClass,
-        ctnRecordType, ctnRecordCase:
+        ctnRecordType, ctnRecordCase,
+        ctnEnumerationType:
           // do not search again in this node, go on ...
           ;
           
@@ -2995,6 +3025,7 @@ begin
         ctnClass, ctnClassInterface, ctnDispinterface, ctnObject,
         ctnObjCClass, ctnObjCCategory, ctnObjCProtocol, ctnCPPClass,
         ctnRecordType, ctnRecordVariant,
+        ctnEnumerationType,
         ctnParameterList:
           // these nodes build a parent-child relationship. But in pascal
           // they just define a range and not a context.
@@ -3004,6 +3035,9 @@ begin
         ctnTypeDefinition, ctnVarDefinition, ctnConstDefinition,
         ctnGlobalProperty, ctnGenericType:
           if SearchInTypeVarConstPropDefinition then exit;
+
+        ctnEnumIdentifier:
+          if SearchInEnumDefinition then exit;
 
         ctnProcedure:
           begin
@@ -3528,6 +3562,9 @@ begin
         Result.Node:=Result.Node.FirstChild;
       end else
       if (Result.Node.Desc=ctnEnumIdentifier) then begin
+        // an enum identifier
+        if fdfEnumIdentifier in Params.Flags then
+          break; // the enum is wanted, not its type
         // an enum identifier, the base type is the enumeration
         Result.Node:=Result.Node.Parent;
       end else
@@ -4988,7 +5025,7 @@ begin
   or (WithVarExpr.Context.Node=nil)
   or (WithVarExpr.Context.Node=OldInput.ContextNode)
   or (not (WithVarExpr.Context.Node.Desc
-           in (AllClasses+[ctnRecordType])))
+           in (AllClasses+[ctnRecordType,ctnEnumerationType])))
   then begin
     MoveCursorToCleanPos(WithVarNode.StartPos);
     RaiseException(ctsExprTypeMustBeClassOrRecord);
@@ -6209,6 +6246,7 @@ var
 
       // find base type
       Exclude(Params.Flags,fdfFunctionResult);
+      Include(Params.Flags,fdfEnumIdentifier);
       {$IFDEF ShowExprEval}
       DebugLn('  ResolveBaseTypeOfIdentifier BEFORE ExprType=',ExprTypeToString(ExprType));
       {$ENDIF}
@@ -6408,6 +6446,13 @@ var
       Params.Flags:=Params.Flags+[fdfFunctionResult,fdfFindChilds];
       ExprType.Context:=ExprType.Context.Tool.FindBaseTypeOfNode(Params,
                                               ExprType.Context.Node.FirstChild);
+    end else if ExprType.Context.Node.Desc in AllPointContexts then begin
+      // ok, allowed
+    end else begin
+      // not allowed
+      MoveCursorToCleanPos(CurAtom.StartPos);
+      ReadNextAtom;
+      RaiseIllegalQualifierFound;
     end;
   end;
 
