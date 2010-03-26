@@ -105,7 +105,7 @@ function FindFirstNonSpaceCharInLine(const Source: string;
     Position: integer): integer;
 function FindLineEndOrCodeInFrontOfPosition(const Source: string;
     Position, MinPosition: integer; NestedComments: boolean;
-    StopAtDirectives: boolean = true): integer;
+    StopAtDirectives: boolean = true; SkipSemicolonComma: boolean = true): integer;
 function FindLineEndOrCodeAfterPosition(const Source: string;
     Position, MaxPosition: integer; NestedComments: boolean;
     StopAtDirectives: boolean = true; SkipEmptyLines: boolean = false): integer;
@@ -2391,7 +2391,7 @@ end;
 
 function FindLineEndOrCodeInFrontOfPosition(const Source: string;
    Position, MinPosition: integer; NestedComments: boolean;
-   StopAtDirectives: boolean): integer;
+   StopAtDirectives: boolean; SkipSemicolonComma: boolean): integer;
 { search backward for a line end or code
   ignore line ends in comments or at the end of comment lines
    (comment lines are lines without code and at least one comment)
@@ -2466,8 +2466,12 @@ var SrcStart: integer;
     if not Result then P:=OldP+1;
   end;
 
-var TestPos: integer;
-  OnlySpace: boolean;
+var
+  TestPos: integer;
+  CommentEndPos: LongInt;
+  CodePos: Integer;
+  LineEndPos: LongInt;
+  LineStartPos: LongInt;
 begin
   SrcStart:=MinPosition;
   if SrcStart<1 then SrcStart:=1;
@@ -2489,37 +2493,92 @@ begin
           and (Source[Result]<>Source[Result-1]) then dec(Result);
           // test if it is a comment line (a line without code and at least one
           // comment)
-          TestPos:=Result-1;
-          OnlySpace:=true;
-          repeat
-            if TestPos<=SrcStart then begin
-              // no comment, the line end is really there :)
-              exit;
+          CodePos:=0;
+          LineEndPos:=Result;
+          // go to line start
+          TestPos:=Result;
+          while (TestPos>SrcStart) and (not (Source[TestPos-1] in [#10,#13])) do
+            dec(TestPos);
+          LineStartPos:=TestPos;
+          // read line from start to end
+          while TestPos<LineEndPos do begin
+            case Source[TestPos] of
+              '{':
+                begin
+                  CommentEndPos:=FindCommentEnd(Source,TestPos,NestedComments);
+                  if CommentEndPos>Result then begin
+                    // startpos was in comment
+                    Result:=LineEndPos;
+                    exit;
+                  end;
+                  if StopAtDirectives and (Source[TestPos+1]='$') then begin
+                    Result:=CommentEndPos;
+                  end;
+                  TestPos:=CommentEndPos;
+                end;
+              '(':
+                if Source[TestPos+1]='*' then begin
+                  CommentEndPos:=FindCommentEnd(Source,TestPos,NestedComments);
+                  if CommentEndPos>Result then begin
+                    // startpos was in comment
+                    Result:=LineEndPos;
+                    exit;
+                  end;
+                  TestPos:=CommentEndPos;
+                end else begin
+                  CodePos:=TestPos;
+                  inc(TestPos);
+                end;
+              '/':
+                if Source[TestPos+1]='/' then begin
+                  // rest of line is comment
+                  break;
+                end else begin
+                  CodePos:=TestPos;
+                  inc(TestPos);
+                end;
+              '''':
+                begin
+                  // string constant
+                  inc(TestPos);
+                  while (TestPos<LineEndPos) and (Source[TestPos]<>'''') do
+                    inc(TestPos);
+                  CodePos:=TestPos;
+                  inc(TestPos);
+                end;
+              ' ',#9:
+                inc(TestPos);
+              ';',',':
+                begin
+                  if not SkipSemicolonComma then
+                    CodePos:=TestPos;
+                  inc(TestPos)
+                end;
+            else
+              CodePos:=TestPos;
+              inc(TestPos);
             end;
-            if (Source[TestPos]='/') and (Source[TestPos-1]='/') then begin
-              // this is a comment line end -> search further
-              while (TestPos>SrcStart) and (Source[TestPos]='/') do
-                dec(TestPos);
-              break;
-            end else if Source[TestPos] in [#10,#13] then begin
-              // no comment, the line end is really there :)
-              exit;
-            end else if OnlySpace
-            and ((Source[TestPos]='}')
-              or ((Source[TestPos]=')') and (Source[TestPos-1]='*'))) then begin
-              // this is a comment line end -> search further
-              break;
-            end else begin
-              if (Source[Result]>' ') then OnlySpace:=false;
-              dec(TestPos);
-            end;
-          until false;
-          Result:=TestPos;
+          end;
+          if CodePos>0 then begin
+            // there is code in the line
+            Result:=CodePos+1;
+            exit;
+          end;
+          // there is no code in the line => check next line
+          Result:=LineStartPos-1;
         end;
 
-      ' ',';',',':
+      ' ',#9:
         dec(Result);
-
+      ';',',':
+        begin
+          if StopAtDirectives then begin
+            // code found
+            inc(Result);
+            exit;
+          end;
+          dec(Result);
+        end;
     else
       // code found
       inc(Result);
