@@ -663,7 +663,8 @@ type
           const AClassName, OldVariableName, NewVarName,
           VarType: shortstring; ErrorOnClassNotFound: boolean): boolean;
     function RetypeClassVariables(Code: TCodeBuffer; const AClassName: string;
-          ListOfReTypes: TStrings; ErrorOnClassNotFound: boolean): boolean;
+          ListOfReTypes: TStringToStringTree;
+          ErrorOnClassNotFound: boolean): boolean;
     function FindDanglingComponentEvents(Code: TCodeBuffer;
           const AClassName: string;
           RootComponent: TComponent; ExceptionOnClassNotFound,
@@ -4609,7 +4610,7 @@ begin
 end;
 
 function TCodeToolManager.RetypeClassVariables(Code: TCodeBuffer;
-  const AClassName: string; ListOfReTypes: TStrings;
+  const AClassName: string; ListOfReTypes: TStringToStringTree;
   ErrorOnClassNotFound: boolean): boolean;
 begin
   Result:=false;

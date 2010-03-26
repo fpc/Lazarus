@@ -36,7 +36,7 @@ const
 var
   Code: TCodeBuffer;
   Filename: String;
-  ListOfTypes: TStringList;
+  ListOfTypes: TStringToStringTree;
 begin
   if (ParamCount>=1) and (Paramcount<>3) then begin
     writeln('Usage:');
@@ -59,9 +59,9 @@ begin
       raise Exception.Create('loading failed '+Filename);
 
     // complete code
-    ListOfTypes:=TStringList.Create;
-    ListOfTypes.Values['TExButton']:='TButton';
-    ListOfTypes.Values['TExEdit']:='TEdit';
+    ListOfTypes:=TStringToStringTree.Create(false);
+    ListOfTypes['TExButton']:='TButton';
+    ListOfTypes['TExEdit']:='TEdit';
     if CodeToolBoss.RetypeClassVariables(Code,'TForm1',ListOfTypes,true)
     then begin
       writeln('Sucess:');

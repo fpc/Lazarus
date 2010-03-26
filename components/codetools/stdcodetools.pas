@@ -188,7 +188,7 @@ type
           WithProperties, WithAncestors: boolean;
           out TreeOfCodeTreeNodeExtension: TAVLTree): boolean;
     function RetypeClassVariables(const AClassName: string;
-          ListOfTypes: TStrings; ExceptionOnClassNotFound: boolean;
+          ListOfTypes: TStringToStringTree; ExceptionOnClassNotFound: boolean;
           SourceChangeCache: TSourceChangeCache): boolean;
     function FindDanglingComponentEvents(const TheClassName: string;
           RootComponent: TComponent; ExceptionOnClassNotFound,
@@ -4905,14 +4905,12 @@ begin
 end;
 
 function TStandardCodeTool.RetypeClassVariables(const AClassName: string;
-  ListOfTypes: TStrings; ExceptionOnClassNotFound: boolean;
+  ListOfTypes: TStringToStringTree; ExceptionOnClassNotFound: boolean;
   SourceChangeCache: TSourceChangeCache): boolean;
 var
   ClassNode: TCodeTreeNode;
   Node: TCodeTreeNode;
   TypeNode: TCodeTreeNode;
-  i: Integer;
-  OldToNew: TStringToStringTree;
   OldType: String;
   NewType: string;
   HasChanged: Boolean;
@@ -4927,53 +4925,47 @@ begin
     else
       exit;
   end;
-  if (ListOfTypes=nil) or (ListOfTypes.Count=0) then exit(true);
+  if (ListOfTypes=nil) or (ListOfTypes.Tree.Count=0) then exit(true);
 
-  OldToNew:=TStringToStringTree.Create(false);
-  try
-    for i:=0 to ListOfTypes.Count-1 do
-      OldToNew.Add(ListOfTypes.Names[i],ListOfTypes.ValueFromIndex[i]);
-
-    HasChanged:=false;
-    BuildSubTreeForClass(ClassNode);
-    Node:=ClassNode.FirstChild;
-    while (Node<>nil) and (Node.HasAsParent(ClassNode)) do begin
-      if (Node.Desc=ctnVarDefinition) and (Node.FirstChild<>nil) then begin
-        TypeNode:=Node.FirstChild;
-        if TypeNode.Desc=ctnIdentifier then begin
-          MoveCursorToNodeStart(TypeNode);
+  HasChanged:=false;
+  BuildSubTreeForClass(ClassNode);
+  Node:=ClassNode.FirstChild;
+  while (Node<>nil) and (Node.HasAsParent(ClassNode)) do begin
+    if (Node.Desc=ctnVarDefinition) and (Node.FirstChild<>nil) then begin
+      TypeNode:=Node.FirstChild;
+      if TypeNode.Desc=ctnIdentifier then begin
+        MoveCursorToNodeStart(TypeNode);
+        ReadNextAtom;
+        ReadNextAtom;
+        if CurPos.Flag=cafPoint then begin
+          // skip unitname
           ReadNextAtom;
-          ReadNextAtom;
-          if CurPos.Flag=cafPoint then begin
-            // skip unitname
-            ReadNextAtom;
-          end else begin
-            UndoReadNextAtom;
-          end;
-          // cursor is now on identifier
-          OldType:=GetAtom;
-          if OldToNew.Contains(OldType) then begin
-            NewType:=OldToNew[OldType];
-            if OldType<>NewType then begin
-              // change type
-              if not HasChanged then begin
-                HasChanged:=true;
-                SourceChangeCache.MainScanner:=Scanner;
-              end;
-              if not SourceChangeCache.Replace(gtNone,gtNone,
-               CurPos.StartPos,CurPos.EndPos,NewType) then exit(false);
+        end else begin
+          UndoReadNextAtom;
+        end;
+        // cursor is now on identifier
+        OldType:=GetAtom;
+        if ListOfTypes.Contains(OldType) then begin
+          NewType:=ListOfTypes[OldType];
+          if OldType<>NewType then begin
+            // change type (or case)
+            if not HasChanged then begin
+              HasChanged:=true;
+              SourceChangeCache.MainScanner:=Scanner;
             end;
+            if not SourceChangeCache.Replace(gtNone,gtNone,
+              CurPos.StartPos,CurPos.EndPos,NewType)
+            then
+              exit(false);
           end;
         end;
-        Node:=Node.NextSkipChilds;
-      end else
-        Node:=Node.Next;
-    end;
-    if HasChanged then begin
-      if not SourceChangeCache.Apply then exit;
-    end;
-  finally
-    OldToNew.Free;
+      end;
+      Node:=Node.NextSkipChilds;
+    end else
+      Node:=Node.Next;
+  end;
+  if HasChanged then begin
+    if not SourceChangeCache.Apply then exit;
   end;
   Result:=true;
 end;
