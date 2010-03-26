@@ -2075,12 +2075,6 @@ begin
       ReadNextAtom;
       if CurPos.Flag<>cafSemicolon then
         RaiseSemicolonAfterPropSpecMissing('nodefault');
-    end else if UpAtomIs('DEPRECATED') then begin
-      ReadNextAtom;
-      if AtomIsStringConstant then
-        ReadConstant(true,false,[]);
-      if CurPos.Flag<>cafSemicolon then
-        RaiseSemicolonAfterPropSpecMissing('deprecated');
     end else if UpAtomIs('ENUMERATOR') then begin
       ReadNextAtom;
       AtomIsIdentifier(true);
@@ -2089,6 +2083,26 @@ begin
         RaiseSemicolonAfterPropSpecMissing('enumerator');
     end else
       UndoReadNextAtom;
+
+    if CurPos.Flag=cafSemicolon then begin
+      // read hint directives
+      ReadNextAtom;
+      if UpAtomIs('DEPRECATED') then begin
+        ReadNextAtom;
+        if AtomIsStringConstant then
+          ReadConstant(true,false,[]);
+        if CurPos.Flag<>cafSemicolon then
+          RaiseSemicolonAfterPropSpecMissing('deprecated');
+      end else if UpAtomIs('PLATFORM') or UpAtomIs('UNIMPLEMENTED')
+        or UpAtomIs('EXPERIMENTAL')
+      then begin
+        ReadNextAtom;
+        if CurPos.Flag<>cafSemicolon then
+          RaiseSemicolonAfterPropSpecMissing('hint directive');
+      end else
+        UndoReadNextAtom;
+    end;
+
   end else
     UndoReadNextAtom;
   // close property
