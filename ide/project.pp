@@ -50,9 +50,7 @@ uses
 {$ENDIF}
   Classes, SysUtils, TypInfo, FPCAdds, LCLProc, LCLIntf, LCLType, Forms,
   Controls, Dialogs, InterfaceBase,
-  Laz_XMLCfg, ExprEval, FileUtil, DefineTemplates, CodeToolManager, CodeCache,
-  // IDEIntf
-  PropEdits, ProjectIntf, MacroIntf, LazIDEIntf,
+  Laz_XMLCfg, ExprEval, FileUtil, DefineTemplates, CodeToolManager, CodeCache, ProjectIntf, MacroIntf, LazIDEIntf,
   // IDE
   CompOptsModes, ProjectResources, LazConf, frmCustomApplicationOptions,
   LazarusIDEStrConsts, CompilerOptions,

@@ -271,6 +271,8 @@ type
     procedure AbortBuild; virtual; abstract;
 
     // designer
+    function GetDesignerForProjectEditor(AEditor: TSourceEditorInterface;
+                              LoadForm: boolean): TIDesigner; virtual; abstract;
     function GetDesignerWithProjectFile(AFile: TLazProjectFile;
                               LoadForm: boolean): TIDesigner; virtual; abstract;
     function GetProjectFileWithRootComponent(AComponent: TComponent): TLazProjectFile; virtual; abstract;

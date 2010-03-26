@@ -50,10 +50,11 @@ uses
   SynEditHighlighter, SynEditAutoComplete, SynEditKeyCmds, SynCompletion,
   SynEditMiscClasses, SynEditMarkupHighAll, SynEditMarks,
   SynBeautifier, SynEditTextBase, SynPluginTemplateEdit, SynPluginSyncroEdit,
-  SynPluginSyncronizedEditBase, ProjectIntf, SrcEditorIntf, MenuIntf, LazIDEIntf, PackageIntf,
-  IDEDialogs, IDEHelpIntf, IDEImagesIntf,
+  SynPluginSyncronizedEditBase,
+  // Intf
+  SrcEditorIntf, MenuIntf, LazIDEIntf, PackageIntf, IDEHelpIntf, IDEImagesIntf,
   // IDE units
-  LazarusIDEStrConsts, IDECommands, EditorOptions, Project,
+  IDEDialogs, LazarusIDEStrConsts, IDECommands, EditorOptions,
   WordCompletion, FindReplaceDialog, IDEProcs, IDEOptionDefs,
   MacroPromptDlg, TransferMacros, CodeContextForm, SrcEditHintFrm,
   EnvironmentOpts, MsgView, InputHistory, CodeMacroPrompt,
@@ -76,6 +77,7 @@ type
 
   TOnLinesInsertedDeleted = procedure(Sender : TObject;
              FirstLine,Count : Integer) of Object;
+  TPlaceBookMarkEvent = procedure(Sender: TObject; var Mark: TSynEditMark) of object;
 
   TCharSet = set of Char;
 
@@ -169,10 +171,8 @@ type
     FLineInfoNotification: TIDELineInfoNotification;
     FModified: boolean;
 
-    FOnAfterClose: TNotifyEvent;
     FOnAfterOpen: TNotifyEvent;
     FOnAfterSave: TNotifyEvent;
-    FOnBeforeClose: TNotifyEvent;
     FOnBeforeOpen: TNotifyEvent;
     FOnBeforeSave: TNotifyEvent;
     FOnEditorChange: TNotifyEvent;
@@ -386,7 +386,6 @@ type
     procedure SetLines(const AValue: TStrings); override;
 
     // context
-    function GetProjectFile: TLazProjectFile; override;
     procedure UpdateProjectFile; override;
     function GetDesigner(LoadForm: boolean): TIDesigner; override;
 
@@ -411,9 +410,6 @@ type
     property ExecutionLine: integer read FExecutionLine write SetExecutionLine;
     property HasExecutionMarks: Boolean read FHasExecutionMarks;
     property InsertMode: Boolean read GetInsertmode;
-    property OnAfterClose: TNotifyEvent read FOnAfterClose write FOnAfterClose;
-    property OnBeforeClose: TNotifyEvent read FOnBeforeClose
-                                          write FOnBeforeClose;
     property OnAfterOpen: TNotifyEvent read FOnAfterOpen write FOnAfterOpen;
     property OnBeforeOpen: TNotifyEvent read FOnBeforeOpen write FOnBeforeOpen;
     property OnAfterSave: TNotifyEvent read FOnAfterSave write FOnAfterSave;
@@ -721,7 +717,6 @@ type
     procedure CopyFilenameClicked(Sender: TObject);
 
     procedure ReloadEditorOptions;
-    procedure ReloadHighlighters;
     procedure CheckFont;
     function GetEditorControlSettings(EditControl: TControl): boolean; override;
              deprecated {$IFDEF VER2_5}'use SourceEditorManager'{$ENDIF};       // deprecated in 0.9.29 March 2010
@@ -835,8 +830,10 @@ type
 
   TSourceEditorManager = class(TSourceEditorManagerBase)
   private
+    FProject1BookMarks: TProjectBookmarkList;
     function GetActiveSourceNotebook: TSourceNotebook;
     function GetActiveSrcEditor: TSourceEditor;
+    function GetProject1BookMarks: TProjectBookmarkList;
     function GetSourceEditorsByPage(WindowIndex, PageIndex: integer
       ): TSourceEditor;
     function GetSrcEditors(Index: integer): TSourceEditor;
@@ -873,7 +870,6 @@ type
     procedure ClearExecutionLines;
     procedure ClearExecutionMarks;
     procedure ReloadEditorOptions;
-    procedure ReloadHighlighters;
     // find / replace text
     procedure FindClicked(Sender: TObject);
     procedure FindNextClicked(Sender: TObject);
@@ -898,6 +894,8 @@ type
     procedure BookMarkGotoNext(GoForward: boolean);
     procedure BookMarkNextClicked(Sender: TObject);
     procedure BookMarkPrevClicked(Sender: TObject);
+    property  Project1BookMarks: TProjectBookmarkList
+      read GetProject1BookMarks write FProject1BookMarks; // get Project1.Bookmarks
   protected
     // macros
     function MacroFuncCol(const s:string; const Data: PtrInt;
@@ -948,11 +946,14 @@ type
     function CreateNewWindow(Activate: Boolean= False): TSourceNotebook;
   private
     FOnAddJumpPoint: TOnAddJumpPoint;
+    FOnClearBookmark: TPlaceBookMarkEvent;
     FOnClickLink: TMouseEvent;
     FOnCloseClicked: TOnCloseSrcEditor;
     FOnCurrentCodeBufferChanged: TNotifyEvent;
     FOnDeleteLastJumpPoint: TNotifyEvent;
     FOnEditorChanged: TNotifyEvent;
+    FOnEditorClosed: TNotifyEvent;
+    FOnEditorMoved: TNotifyEvent;
     FOnEditorPropertiesClicked: TNotifyEvent;
     FOnFindDeclarationClicked: TNotifyEvent;
     FOnGetIndent: TOnGetIndentEvent;
@@ -961,8 +962,10 @@ type
     FOnJumpToHistoryPoint: TOnJumpToHistoryPoint;
     FOnMouseLink: TSynMouseLinkEvent;
     FOnOpenFileAtCursorClicked: TNotifyEvent;
+    FOnPlaceMark: TPlaceBookMarkEvent;
     FOnPopupMenu: TSrcEditPopupMenuEvent;
     FOnProcessUserCommand: TOnProcessUserCommand;
+    FOnProject1BookmarksNeeded: TNotifyEvent;
     fOnReadOnlyChanged: TNotifyEvent;
     FOnShowCodeContext: TOnShowCodeContext;
     FOnShowHintForSource: TOnShowHintForSource;
@@ -988,6 +991,10 @@ type
              read FOnDeleteLastJumpPoint write FOnDeleteLastJumpPoint;
     property OnEditorChanged: TNotifyEvent
              read FOnEditorChanged write FOnEditorChanged;
+    property OnEditorMoved: TNotifyEvent
+             read FOnEditorMoved write FOnEditorMoved;
+    property OnEditorClosed: TNotifyEvent
+             read FOnEditorClosed write FOnEditorClosed;
     property OnEditorPropertiesClicked: TNotifyEvent
              read FOnEditorPropertiesClicked write FOnEditorPropertiesClicked;
     property OnFindDeclarationClicked: TNotifyEvent
@@ -1000,6 +1007,12 @@ type
              read FOnShowCodeContext write FOnShowCodeContext;
     property OnJumpToHistoryPoint: TOnJumpToHistoryPoint
              read FOnJumpToHistoryPoint write FOnJumpToHistoryPoint;
+    property OnPlaceBookmark: TPlaceBookMarkEvent
+             read FOnPlaceMark write FOnPlaceMark;
+    property OnClearBookmark: TPlaceBookMarkEvent
+             read FOnClearBookmark write FOnClearBookmark;
+    property OnProject1BookmarksNeeded: TNotifyEvent
+             read FOnProject1BookmarksNeeded write FOnProject1BookmarksNeeded;
     property OnOpenFileAtCursorClicked: TNotifyEvent
              read FOnOpenFileAtCursorClicked write FOnOpenFileAtCursorClicked;
     property OnProcessUserCommand: TOnProcessUserCommand
@@ -1092,13 +1105,14 @@ var
 
 procedure RegisterStandardSourceEditorMenuItems;
 
+var
+  Highlighters: array[TLazSyntaxHighlighter] of TSynCustomHighlighter;
 
 implementation
 
 {$R *.lfm}
 
 var
-  Highlighters: array[TLazSyntaxHighlighter] of TSynCustomHighlighter;
   SourceCompletionTimer: TIdleTimer = nil;
   SourceCompletionCaretXY: TPoint;
   AWordCompletion: TWordCompletion = nil;
@@ -3727,23 +3741,14 @@ Begin
 end;
 
 Function TSourceEditor.Close: Boolean;
-var
-  p: TUnitInfo;
 Begin
   Result := True;
-  If Assigned(FOnBeforeClose) then
-    FOnBeforeClose(Self);
-
   Visible := False;
-  Manager.EditorRemoved(self);
+  Manager.EditorRemoved(Self);
   SourceEditorMarks.DeleteAllForEditor(FEditor);
   UnbindEditor;
   FEditor.Parent:=nil;
   CodeBuffer := nil;
-  If Assigned(FOnAfterClose) then FOnAfterClose(Self);
-  p :=Project1.UnitWithEditorComponent(Self);
-  if p <> nil then
-    p.EditorComponent := nil; // Set EditorIndex := -1
 end;
 
 procedure TSourceEditor.BeginUndoBlock;
@@ -3844,13 +3849,15 @@ end;
 procedure TSourceEditor.EditorPlaceBookmark(Sender: TObject;
   var Mark: TSynEditMark);
 begin
-  Project1.UnitWithEditorComponent(self).AddBookmark(Mark.Column, Mark.Line, Mark.BookmarkNumber);
+  if Assigned(Manager) and Assigned(Manager.OnPlaceBookmark) then
+    Manager.OnPlaceBookmark(Self, Mark);
 end;
 
 procedure TSourceEditor.EditorClearBookmark(Sender: TObject;
   var Mark: TSynEditMark);
 begin
-  Project1.UnitWithEditorComponent(self).DeleteBookmark(Mark.BookmarkNumber);
+  if Assigned(Manager) and Assigned(Manager.OnClearBookmark) then
+    Manager.OnClearBookmark(Self, Mark);
 end;
 
 procedure TSourceEditor.EditorEnter(Sender: TObject);
@@ -3977,30 +3984,15 @@ begin
   FEditor.Lines:=AValue;
 end;
 
-function TSourceEditor.GetProjectFile: TLazProjectFile;
-begin
-  Result:=Project1.UnitWithEditorComponent(Self);
-end;
-
 procedure TSourceEditor.UpdateProjectFile;
-var
-  p: TUnitInfo;
 begin
-  p :=Project1.UnitWithEditorComponent(Self);
-  if p = nil then exit;
-  p.EditorIndex := PageIndex;
-  p.WindowIndex := Manager.IndexOfSourceWindow(SourceNotebook);
+  if Assigned(Manager) and Assigned(Manager.OnEditorMoved)
+    then Manager.OnEditorMoved(self);
 end;
 
 function TSourceEditor.GetDesigner(LoadForm: boolean): TIDesigner;
-var
-  AProjectFile: TLazProjectFile;
 begin
-  AProjectFile:=GetProjectFile;
-  if AProjectFile<>nil then
-    Result:=LazarusIDE.GetDesignerWithProjectFile(AProjectFile,LoadForm)
-  else
-    Result:=nil;
+  Result:=LazarusIDE.GetDesignerForProjectEditor(Self, LoadForm)
 end;
 
 function TSourceEditor.GetCursorScreenXY: TPoint;
@@ -4619,7 +4611,7 @@ begin
     for BookMarkID:=0 to 9 do begin
       MarkDesc:=' '+IntToStr(BookMarkID);
       MarkSrcEdit := TSourceEditor(
-        Project1.Bookmarks.EditorComponentForBookmarkWithIndex(BookMarkID));
+        Manager.Project1BookMarks.EditorComponentForBookmarkWithIndex(BookMarkID));
       if (MarkSrcEdit<>nil)
       and MarkSrcEdit.EditorComponent.GetBookMark(BookMarkID,BookMarkX,BookMarkY)
       then begin
@@ -6207,10 +6199,9 @@ Begin
        (TempEditor.FileName <> '') then
       TempEditor.FillExecutionMarks;
     if Assigned(Manager.OnEditorVisibleChanged) then
-      Manager.OnEditorVisibleChanged(sender);
+      Manager.OnEditorVisibleChanged(Self);
   end;
 
-  Project1.UpdateVisibleUnit(TempEditor, Manager.IndexOfSourceWindow(self));
   CheckCurrentCodeBufferChanged;
   Manager.UpdateFPDocEditor;
 end;
@@ -6310,14 +6301,6 @@ var
   I: integer;
   h: TLazSyntaxHighlighter;
 Begin
-  // this reloads the colors for the highlighter and other editor settings.
-  for h:=Low(TLazSyntaxHighlighter) to High(TLazSyntaxHighlighter) do
-    if Highlighters[h]<>nil then begin
-      Highlighters[h].BeginUpdate;
-      EditorOpts.GetHighlighterSettings(Highlighters[h]);
-      Highlighters[h].EndUpdate;
-    end;
-  ReloadHighlighters;
   for i := 0 to EditorCount-1 do
     Editors[i].RefreshEditorSettings;
 
@@ -6333,20 +6316,6 @@ Begin
   Exclude(States,snWarnedFont);
   CheckFont;
   UpdatePageNames;
-end;
-
-procedure TSourceNotebook.ReloadHighlighters;
-var
-  i: Integer;
-  ASrcEdit: TSourceEditor;
-  AnUnitInfo: TUnitInfo;
-begin
-  for i := 0 to EditorCount-1 do begin
-    ASrcEdit:=Editors[i];
-    AnUnitInfo:=Project1.UnitWithEditorComponent(ASrcEdit);
-    if AnUnitInfo<>nil then
-      ASrcEdit.SyntaxHighlighterType:=AnUnitInfo.SyntaxHighlighter;
-  end;
 end;
 
 procedure TSourceNotebook.CheckFont;
@@ -7100,15 +7069,10 @@ begin
   inherited Notification(AComponent, Operation);
   if Operation=opRemove then
   begin
-    if AComponent is TSourceNotebook then begin
-      FChangeNotifyLists[semWindowDestroy].CallNotifyEvents(AComponent);
-    end
-    else begin
-      if Assigned(fCompletionPlugins) then
-        fCompletionPlugins.Remove(AComponent);
-      if ActiveCompletionPlugin = AComponent then
-        DeactivateCompletionForm;
-    end;
+    if Assigned(fCompletionPlugins) then
+      fCompletionPlugins.Remove(AComponent);
+    if ActiveCompletionPlugin = AComponent then
+      DeactivateCompletionForm;
   end;
 end;
 
@@ -7212,6 +7176,13 @@ end;
 function TSourceEditorManager.GetActiveSrcEditor: TSourceEditor;
 begin
   Result := TSourceEditor(inherited ActiveEditor);
+end;
+
+function TSourceEditorManager.GetProject1BookMarks: TProjectBookmarkList;
+begin
+  if Assigned(OnProject1BookmarksNeeded) then
+    OnProject1BookmarksNeeded(Self);
+  Result := FProject1BookMarks;
 end;
 
 function TSourceEditorManager.GetSourceEditorsByPage(WindowIndex,
@@ -7324,6 +7295,8 @@ procedure TSourceEditorManager.EditorRemoved(AEditor: TSourceEditor);
 begin
   if FDefaultCompletionForm <> nil then
     FDefaultCompletionForm.RemoveEditor(AEditor.EditorComponent);
+  if Assigned(OnEditorClosed) then
+    OnEditorClosed(AEditor);
 end;
 
 procedure TSourceEditorManager.Notification(AComponent: TComponent;
@@ -7379,14 +7352,6 @@ begin
     IndentToTokenStart:=EditorOpts.CodeTemplateIndentToTokenStart;
   end;
 
-end;
-
-procedure TSourceEditorManager.ReloadHighlighters;
-var
-  i: Integer;
-begin
-  for i := FSourceWindowList.Count - 1 downto 0 do
-    SourceWindows[i].ReloadHighlighters;
 end;
 
 procedure TSourceEditorManager.FindClicked(Sender: TObject);
@@ -7460,7 +7425,7 @@ Begin
   NewXY := ActEdit.EditorComponent.CaretXY;
 
   SetMark:=true;
-  OldEdit := TSourceEditor(Project1.Bookmarks.EditorComponentForBookmarkWithIndex(Value));
+  OldEdit := TSourceEditor(Project1BookMarks.EditorComponentForBookmarkWithIndex(Value));
   if (OldEdit<>nil) and OldEdit.EditorComponent.GetBookMark(Value,OldX,OldY) then
   begin
     if (not Toggle) and (OldX=NewXY.X) and (OldY=NewXY.Y) then
@@ -7480,7 +7445,7 @@ var
   i: Integer;
 begin
   for i:=0 to 9 do
-    if (Project1.Bookmarks.BookmarkWithID(i) = nil) then begin
+    if (Project1BookMarks.BookmarkWithID(i) = nil) then begin
       BookMarkSet(i);
       exit;
     end;
@@ -7500,7 +7465,7 @@ procedure TSourceEditorManager.BookMarkGoTo(Index: Integer);
 var
   AnEditor:TSourceEditor;
 begin
-  AnEditor := TSourceEditor(Project1.Bookmarks.EditorComponentForBookmarkWithIndex(Index));
+  AnEditor := TSourceEditor(Project1BookMarks.EditorComponentForBookmarkWithIndex(Index));
   if AnEditor = nil then exit;
   ActiveEditor := AnEditor;
   ShowActiveWindowOnTop(True);
@@ -7537,7 +7502,7 @@ var
   BestBookmarkID: Integer;
   CurPos: TProjectBookmark;
 begin
-  if Project1.Bookmarks.Count = 0 then exit;
+  if Project1BookMarks.Count = 0 then exit;
   SrcEdit := ActiveEditor;
   if SrcEdit = nil then exit;
 
@@ -7546,8 +7511,8 @@ begin
   List := TFPList.Create;
   CurPos := TProjectBookmark.Create(i, SrcEdit.EditorComponent.CaretY, -1, SrcEdit);
   try
-    for i := 0 to Project1.Bookmarks.Count - 1 do
-      List.Add(Project1.Bookmarks[i]);
+    for i := 0 to Project1BookMarks.Count - 1 do
+      List.Add(Project1BookMarks[i]);
     List.Add(CurPos);
     List.Sort(TListSortCompare(@CompareBookmarkEditorPos));
 
@@ -8049,6 +8014,8 @@ begin
     FActiveWindow := nil
   else if FActiveWindow = AWindow then
     FActiveWindow := SourceWindows[Max(0, Min(i, SourceWindowCount-1))];
+  if i >= 0 then
+    FChangeNotifyLists[semWindowDestroy].CallNotifyEvents(AWindow);
 end;
 
 initialization

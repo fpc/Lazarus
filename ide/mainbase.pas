@@ -1125,11 +1125,27 @@ begin
 end;
 
 procedure TMainIDEBase.UpdateHighlighters(Immediately: boolean = false);
+var
+  ASrcEdit: TSourceEditor;
+  AnUnitInfo: TUnitInfo;
+  h: TLazSyntaxHighlighter;
+  i: Integer;
 begin
   if Immediately then begin
     FNeedUpdateHighlighters:=false;
     Project1.UpdateAllSyntaxHighlighter;
-    SourceEditorManager.ReloadHighlighters;
+    for h := Low(TLazSyntaxHighlighter) to High(TLazSyntaxHighlighter) do
+      if Highlighters[h]<>nil then begin
+        Highlighters[h].BeginUpdate;
+        EditorOpts.GetHighlighterSettings(Highlighters[h]);
+        Highlighters[h].EndUpdate;
+      end;
+    for i := 0 to SourceEditorManager.SourceEditorCount - 1 do begin
+      ASrcEdit := SourceEditorManager.SourceEditors[i];
+      AnUnitInfo:=Project1.UnitWithEditorComponent(ASrcEdit);
+      if AnUnitInfo<>nil then
+        ASrcEdit.SyntaxHighlighterType := AnUnitInfo.SyntaxHighlighter;
+    end;
   end else begin
     FNeedUpdateHighlighters:=true;
   end;

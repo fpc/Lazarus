@@ -68,7 +68,7 @@ uses
   CodeBeautifier, FindDeclarationTool, LinkScanner, BasicCodeTools, AVL_Tree,
   Laz_XMLCfg, CodeToolsStructs, CodeToolManager, CodeCache, DefineTemplates,
   // synedit
-  SynEditKeyCmds, SynBeautifier,
+  SynEditKeyCmds, SynBeautifier, SynEditMarks,
   // IDE interface
   AllIDEIntf, BaseIDEIntf, ObjectInspector, PropEdits, PropEditUtils,
   MacroIntf, IDECommands,
@@ -389,7 +389,12 @@ type
       Reason: TSynEditorCommand; SetIndentProc: TSynBeautifierSetIndentProc): Boolean;
     procedure OnSrcNotebookDeleteLastJumPoint(Sender: TObject);
     procedure OnSrcNotebookEditorVisibleChanged(Sender: TObject);
+    procedure OnSrcNotebookEditorPlaceBookmark(Sender: TObject; var Mark: TSynEditMark);
+    procedure OnSrcNotebookEditorClearBookmark(Sender: TObject; var Mark: TSynEditMark);
+    procedure OnSrcNotebookProject1BookmarkMeeded(Sender: TObject);
     procedure OnSrcNotebookEditorChanged(Sender: TObject);
+    procedure OnSrcNotebookEditorMoved(Sender: TObject);
+    procedure OnSrcNotebookEditorClosed(Sender: TObject);
     procedure OnSrcNotebookCurCodeBufferChanged(Sender: TObject);
     procedure OnSrcNotebookFileNew(Sender: TObject);
     procedure OnSrcNotebookFileOpen(Sender: TObject);
@@ -859,6 +864,8 @@ type
           deprecated; // deprecated in 0.9.29 March 2010
     procedure GetDesignerUnit(ADesigner: TDesigner;
           var ActiveSourceEditor: TSourceEditor; var ActiveUnitInfo: TUnitInfo); override;
+    function GetDesignerForProjectEditor(AEditor: TSourceEditorInterface;
+                              LoadForm: boolean): TIDesigner; override;
     function GetDesignerWithProjectFile(AFile: TLazProjectFile;
                              LoadForm: boolean): TIDesigner; override;
     function GetDesignerFormOfSource(AnUnitInfo: TUnitInfo;
@@ -1935,6 +1942,11 @@ begin
   SourceEditorManager.OnDeleteLastJumpPoint := @OnSrcNotebookDeleteLastJumPoint;
   SourceEditorManager.OnEditorVisibleChanged := @OnSrcNotebookEditorVisibleChanged;
   SourceEditorManager.OnEditorChanged := @OnSrcNotebookEditorChanged;
+  SourceEditorManager.OnEditorMoved := @OnSrcNotebookEditorMoved;
+  SourceEditorManager.OnEditorClosed := @OnSrcNotebookEditorClosed;
+  SourceEditorManager.OnPlaceBookmark := @OnSrcNotebookEditorPlaceBookmark;
+  SourceEditorManager.OnClearBookmark := @OnSrcNotebookEditorClearBookmark;
+  SourceEditorManager.OnProject1BookmarksNeeded := @OnSrcNotebookProject1BookmarkMeeded;
   SourceEditorManager.OnEditorPropertiesClicked := @mnuEnvEditorOptionsClicked;
   SourceEditorManager.OnFindDeclarationClicked := @OnSrcNotebookFindDeclaration;
   SourceEditorManager.OnInitIdentCompletion :=@OnSrcNotebookInitIdentCompletion;
@@ -3968,6 +3980,7 @@ begin
     // save shortcuts to editor options
     EnvironmentOptions.ExternalTools.SaveShortCuts(EditorOpts.KeyMap);
     EditorOpts.Save;
+    UpdateHighlighters(True);
     SourceEditorManager.ReloadEditorOptions;
     UpdateCustomToolsInMenu;
   end;
@@ -4269,6 +4282,7 @@ begin
     end;
     if IDEOptionsDialog.ShowModal = mrOk then begin
       IDEOptionsDialog.WriteAll;
+      UpdateHighlighters(True);
       SourceEditorManager.ReloadEditorOptions;
     end;
   finally
@@ -4385,6 +4399,7 @@ end;
 procedure TMainIDE.DoEditorOptionsAfterWrite(Sender: TObject);
 begin
   Project1.UpdateAllSyntaxHighlighter;
+  UpdateHighlighters(True);
   SourceEditorManager.ReloadEditorOptions;
   ReloadMenuShortCuts;
 end;
@@ -4540,8 +4555,10 @@ end;
 
 procedure TMainIDE.mnuEnvCodeTemplatesClicked(Sender: TObject);
 begin
-  if ShowCodeTemplateDialog=mrOk then
+  if ShowCodeTemplateDialog=mrOk then begin
+    UpdateHighlighters(True);
     SourceEditorManager.ReloadEditorOptions;
+  end;
 end;
 
 procedure TMainIDE.mnuEnvCodeToolsDefinesEditorClicked(Sender: TObject);
@@ -11527,6 +11544,19 @@ begin
   end;
 end;
 
+function TMainIDE.GetDesignerForProjectEditor(AEditor: TSourceEditorInterface;
+  LoadForm: boolean): TIDesigner;
+var
+  AProjectFile: TLazProjectFile;
+begin
+  AProjectFile := Project1.UnitWithEditorComponent(AEditor);
+  if AProjectFile <> nil then
+    Result:=LazarusIDE.GetDesignerWithProjectFile(
+      Project1.UnitWithEditorComponent(AEditor), LoadForm)
+  else
+    Result := nil;
+end;
+
 function TMainIDE.GetDesignerWithProjectFile(AFile: TLazProjectFile;
   LoadForm: boolean): TIDesigner;
 var
@@ -14424,6 +14454,10 @@ var
 begin
   if SourceEditorManager.SourceEditorCount = 0 then Exit;
 
+  if Sender <> nil then
+    Project1.UpdateVisibleUnit(TSourceNotebook(Sender).ActiveEditor,
+      SourceEditorManager.IndexOfSourceWindow(TSourceNotebook(Sender)));
+
   ActiveUnitInfo :=
     Project1.UnitWithEditorComponent(SourceEditorManager.ActiveEditor);
   if ActiveUnitInfo = nil then Exit;
@@ -14435,11 +14469,51 @@ begin
   MainIDEBar.ToggleFormSpeedBtn.Enabled := MainIDEBar.itmViewToggleFormUnit.Enabled;
 end;
 
+procedure TMainIDE.OnSrcNotebookEditorPlaceBookmark(Sender: TObject;
+  var Mark: TSynEditMark);
+begin
+  Project1.UnitWithEditorComponent(TSourceEditor(Sender)).AddBookmark
+    (Mark.Column, Mark.Line, Mark.BookmarkNumber);
+end;
+
+procedure TMainIDE.OnSrcNotebookEditorClearBookmark(Sender: TObject;
+  var Mark: TSynEditMark);
+begin
+  Project1.UnitWithEditorComponent(TSourceEditor(Sender)).DeleteBookmark
+    (Mark.BookmarkNumber);
+end;
+
+procedure TMainIDE.OnSrcNotebookProject1BookmarkMeeded(Sender: TObject);
+begin
+  SourceEditorManager.Project1BookMarks := Project1.Bookmarks;
+end;
+
 //this is fired when the editor is focused, changed, ?.  Anything that causes the status change
 procedure TMainIDE.OnSrcNotebookEditorChanged(Sender: TObject);
 begin
   if SourceEditorManager.SourceEditorCount = 0 then Exit;
   UpdateSaveMenuItemsAndButtons(false);
+end;
+
+procedure TMainIDE.OnSrcNotebookEditorMoved(Sender: TObject);
+var
+  p: TUnitInfo;
+begin
+  p :=Project1.UnitWithEditorComponent(TSourceEditor(Sender));
+  if p = nil then exit;
+  p.EditorIndex := TSourceEditor(Sender).PageIndex;
+  p.WindowIndex := SourceEditorManager.IndexOfSourceWindow(TSourceEditor(Sender).SourceNotebook);
+end;
+
+procedure TMainIDE.OnSrcNotebookEditorClosed(Sender: TObject);
+var
+  p: TUnitInfo;
+  SrcEditor: TSourceEditor;
+begin
+  SrcEditor := TSourceEditor(Sender);
+  p :=Project1.UnitWithEditorComponent(SrcEditor);
+  if (p <> nil) then
+    p.EditorComponent := nil // Set EditorIndex := -1
 end;
 
 procedure TMainIDE.OnSrcNotebookCurCodeBufferChanged(Sender: TObject);
