@@ -4915,9 +4915,12 @@ begin
     QFontMetrics_destroy(FontMetrics);
   end;
 
-  {currently applies only to oxygen theme}
+  {currently applies only to oxygen & nitrogen theme.}
   if (TopMargin - BottomMargin - 2) > FontHeight then
-    TopMargin := FontHeight + 2;
+  begin
+    TopMargin := TopMargin - BottomMargin - 3;
+    BottomMargin := 0;
+  end;
 
   {$ENDIF}
   {$ENDIF}
