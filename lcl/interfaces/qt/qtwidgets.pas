@@ -954,7 +954,7 @@ type
 
     procedure signalCurrentItemChange(current: QListWidgetItemH; previous: QListWidgetItemH); cdecl;
     procedure signalItemTextChanged(ANewText: PWideString); cdecl;
-    procedure signalItemClicked(item: QListWidgetItemH) cdecl;
+    procedure signalItemClicked(item: QListWidgetItemH); cdecl;
     procedure signalSelectionChanged(); cdecl;
     procedure ItemDelegatePaint(painter: QPainterH; option: QStyleOptionViewItemH; index: QModelIndexH); cdecl; override;
   public
@@ -963,10 +963,16 @@ type
     function IndexAt(APoint: PQtPoint): Integer;
     procedure insertItem(AIndex: Integer; AText: String); overload;
     procedure insertItem(AIndex: Integer; AText: PWideString); overload;
+    function getItem(AIndex: Integer): QListWidgetItemH;
+    function getItemSelected(AItem: QListWidgetItemH): Boolean;
+    function getSelCount: Integer;
+    function getVisualItemRect(AItem: QListWidgetItemH): TRect;
     procedure setCurrentRow(row: Integer);
     procedure setItemText(AIndex: Integer; AText: String);
+    procedure setItemSelected(AItem: QListWidgetItemH; const ASelect: Boolean);
     procedure scrollToItem(row: integer; hint: QAbstractItemViewScrollHint);
     procedure removeItem(AIndex: Integer);
+    function rowCount: integer;
     procedure exchangeItems(AIndex1, AIndex2: Integer);
     property Checkable: boolean read FCheckable write FCheckable;
   end;
@@ -6639,10 +6645,10 @@ begin
        (FDropList.getVisible) and
        (FDropList.OwnerDrawn) then
     begin
-      Item := QListWidget_item(QListWidgetH(FDropList.Widget), AIndex);
+      Item := FDropList.getItem(AIndex);
       if Item <> nil then
       begin
-        QListWidget_visualItemRect(QListWidgetH(FDropList.Widget), @R, item);
+        R := FDropList.getVisualItemRect(Item);
         FDropList.Update(@R);
       end;
     end;
@@ -7620,6 +7626,34 @@ begin
   QListWidget_insertItem(QListWidgetH(Widget), AIndex, Item);
 end;
 
+function TQtListWidget.getItem(AIndex: Integer): QListWidgetItemH;
+begin
+  Result := QListWidget_item(QListWidgetH(Widget), AIndex);
+end;
+
+function TQtListWidget.getItemSelected(AItem: QListWidgetItemH): Boolean;
+begin
+  if AItem <> nil then
+    Result := QListWidget_isItemSelected(QListWidgetH(Widget), AItem)
+  else
+    Result := False;
+end;
+
+function TQtListWidget.getSelCount: Integer;
+var
+  SItems: TPtrIntArray;
+begin
+  QListWidget_selectedItems(QListWidgetH(Widget), @SItems);
+  Result := length(SItems);
+end;
+
+function TQtListWidget.getVisualItemRect(AItem: QListWidgetItemH): TRect;
+begin
+  Result := Rect(0, 0, 0, 0);
+  if AItem <> nil then
+    QListWidget_visualItemRect(QListWidgetH(Widget), @Result, AItem);
+end;
+
 {------------------------------------------------------------------------------
   Function: TQtListWidget.setCurrentRow
   Params:  None
@@ -7630,7 +7664,7 @@ begin
   if (getSelectionMode <> QAbstractItemViewSingleSelection) and (row < 0) then
     row := 0;
 
-  if QListWidget_currentRow(QListWidgetH(Widget)) <> row then
+  if currentRow <> row then
   begin
     FDontPassSelChange := True;
     QListWidget_setCurrentRow(QListWidgetH(Widget), row);
@@ -7644,18 +7678,25 @@ var
   R: TRect;
 begin
   Str := GetUTF8String(AText);
-  if (AIndex >= 0) and (AIndex < QListWidget_count(QListWidgetH(Widget))) then
+  if (AIndex >= 0) and (AIndex < rowCount) then
   begin
-    Item := QListWidget_item(QListWidgetH(Widget), AIndex);
+    Item := getItem(AIndex);
     QListWidgetItem_setText(Item, @Str);
     {we must update our custom delegate}
     if OwnerDrawn then
     begin
-      QListWidget_visualItemRect(QListWidgetH(Widget), @R, item);
+      R := getVisualItemRect(Item);
       Update(@R);
     end;
   end else
     insertItem(AIndex, @Str);
+end;
+
+procedure TQtListWidget.setItemSelected(AItem: QListWidgetItemH;
+  const ASelect: Boolean);
+begin
+  if AItem <> nil then
+    QListWidget_setItemSelected(QListWidgetH(Widget), AItem, ASelect);
 end;
 
 procedure TQtListWidget.scrollToItem(row: integer;
@@ -7663,7 +7704,7 @@ procedure TQtListWidget.scrollToItem(row: integer;
 var
   Item: QListWidgetItemH;
 begin
-  Item := QListWidget_item(QListWidgetH(Widget), row);
+  Item := getItem(Row);
   QListWidget_scrollToItem(QListWidgetH(Widget), Item, hint);
 end;
 
@@ -7676,6 +7717,11 @@ begin
       setCurrentRow(-1);
   Item := QListWidget_takeitem(QListWidgetH(Widget), AIndex);
   QListWidgetItem_destroy(Item);
+end;
+
+function TQtListWidget.rowCount: integer;
+begin
+  Result := QListWidget_count(QListWidgetH(Widget));
 end;
 
 procedure TQtListWidget.exchangeItems(AIndex1, AIndex2: Integer);
@@ -7705,9 +7751,9 @@ begin
   end;
   if OwnerDrawn then
   begin
-    QListWidget_visualItemRect(QListWidgetH(Widget), @R, Item1);
+    R := getVisualItemRect(Item1);
     Update(@R);
-    QListWidget_visualItemRect(QListWidgetH(Widget), @R, Item2);
+    R := getVisualItemRect(Item2);
     Update(@R);
   end;
 end;

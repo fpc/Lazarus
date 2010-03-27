@@ -421,8 +421,7 @@ var
   SelectedItems: TPtrIntArray;
 begin
   QtListWidget := TQtListWidget(ACustomListBox.Handle);
-  QListWidget_selectedItems(QListWidgetH(QtListWidget.Widget), @SelectedItems);
-  Result := Length(SelectedItems);
+  Result := QtListWidget.getSelCount;
 end;
 
 {------------------------------------------------------------------------------
@@ -436,11 +435,8 @@ var
   ListItem: QListWidgetItemH;
 begin
   QtListWidget := TQtListWidget(ACustomListBox.Handle);
-  ListItem := QListWidget_item(QListWidgetH(QtListWidget.Widget), AIndex);
-  if ListItem <> nil then
-    Result := QListWidget_isItemSelected(QListWidgetH(QtListWidget.Widget), ListItem)
-  else
-    Result := False;
+  ListItem := QtListWidget.getItem(AIndex);
+  Result := QtListWidget.getItemSelected(ListItem);
 end;
 
 {------------------------------------------------------------------------------
@@ -473,12 +469,14 @@ class function TQtWSCustomListBox.GetItemRect(
   const ACustomListBox: TCustomListBox; Index: integer; var ARect: TRect
   ): boolean;
 var
+  QtListWidget: TQtListWidget;
   Item: QListWidgetItemH;
 begin
-  Item := QListWidget_item(QListWidgetH(TQtListWidget(ACustomListBox.Handle).Widget), Index);
+  QtListWidget := TQtListWidget(ACustomListBox.Handle);
+  Item := QtListWidget.getItem(Index);
   Result := Item <> nil;
   if Result then
-    QListWidget_visualItemRect(QListWidgetH(TQtListWidget(ACustomListBox.Handle).Widget), @ARect, Item)
+    ARect := QtListWidget.getVisualItemRect(Item)
   else
     ARect := Rect(-1,-1,-1,-1);
 end;
@@ -507,7 +505,7 @@ begin
   QtListWidget := TQtListWidget(ACustomListBox.Handle);
   ListItem := QListWidget_item(QListWidgetH(QtListWidget.Widget), AIndex);
   if ListItem <> nil then
-    QListWidget_setItemSelected(QListWidgetH(QtListWidget.Widget), ListItem, ASelected);
+    QtListWidget.setItemSelected(ListItem, ASelected);
 end;
 
 {------------------------------------------------------------------------------
