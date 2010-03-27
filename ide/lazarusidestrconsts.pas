@@ -453,6 +453,14 @@ resourcestring
   lisNotADelphiProject = 'Not a Delphi project';
   lisTheFileIsNotADelphiProjectDpr = 'The file %s%s%s is not a Delphi '
     +'project (.dpr)';
+  lisBackupChangedFiles = 'Make backup of changed files';
+  lisConvertTarget1 = 'Lazarus/LCL';
+  lisConvertTarget2 = 'Lazarus/LCL for Windows only';
+  lisConvertTarget3 = 'Both Lazarus/LCL and Delphi';
+  lisConvReplacements = 'Replacements';
+  lisReplacementPropTypes = 'Replacement Properties and Types';
+  lisReplaceRemoveInvalid = 'Replace and remove invalid properties / types';
+
   lisUnableToLoadOldResourceFileTheResourceFileIs = 'Unable to load old '
     +'resource file.%sThe resource file is the first include file in the%'
     +'sinitialization section.%sFor example {$I %s.lrs}.%sProbably a syntax '

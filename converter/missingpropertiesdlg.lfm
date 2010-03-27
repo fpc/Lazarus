@@ -1,19 +1,19 @@
 object FixLFMDialog: TFixLFMDialog
-  Left = 143
+  Left = 251
   Height = 536
-  Top = 143
-  Width = 826
+  Top = 356
+  Width = 756
   ActiveControl = LFMSynEdit
   Caption = 'Repair LFM file'
   ClientHeight = 536
-  ClientWidth = 826
+  ClientWidth = 756
   OnCreate = CheckLFMDialogCreate
   LCLVersion = '0.9.29'
   object NoteLabel: TLabel
     Left = 0
     Height = 16
     Top = 0
-    Width = 826
+    Width = 756
     Align = alTop
     Caption = 'NoteLabel'
     ParentColor = False
@@ -630,17 +630,17 @@ object FixLFMDialog: TFixLFMDialog
     Left = 0
     Height = 104
     Top = 384
-    Width = 826
+    Width = 756
     Align = alBottom
     Caption = 'Errors'
     ClientHeight = 82
-    ClientWidth = 816
+    ClientWidth = 746
     TabOrder = 1
     object ErrorsListBox: TListBox
       Left = 0
       Height = 82
       Top = 0
-      Width = 816
+      Width = 746
       Align = alClient
       ItemHeight = 0
       OnClick = ErrorsListBoxClick
@@ -651,15 +651,15 @@ object FixLFMDialog: TFixLFMDialog
     Left = 0
     Height = 48
     Top = 488
-    Width = 826
+    Width = 756
     Align = alBottom
     AutoSize = True
     BevelOuter = bvNone
     ClientHeight = 48
-    ClientWidth = 826
+    ClientWidth = 756
     TabOrder = 2
     object CancelButton: TBitBtn
-      Left = 739
+      Left = 669
       Height = 36
       Top = 6
       Width = 81
@@ -690,36 +690,36 @@ object FixLFMDialog: TFixLFMDialog
     Left = 413
     Height = 368
     Top = 16
-    Width = 413
+    Width = 343
     Align = alClient
-    Caption = 'Properties to replace'
+    Caption = 'Properties and Types to replace'
     ClientHeight = 346
-    ClientWidth = 403
+    ClientWidth = 333
     TabOrder = 3
     object PropertyReplaceGrid: TStringGrid
       Left = 0
       Height = 346
       Top = 0
-      Width = 403
+      Width = 333
       Align = alClient
       AutoFillColumns = True
       ColCount = 2
       Columns = <      
         item
-          Title.Caption = 'Delphi Property'
-          Width = 198
+          Title.Caption = 'Delphi name'
+          Width = 163
         end      
         item
-          Title.Caption = 'New property'
-          Width = 199
+          Title.Caption = 'New name'
+          Width = 164
         end>
       FixedCols = 0
       Options = [goFixedVertLine, goFixedHorzLine, goVertLine, goHorzLine, goRangeSelect, goEditing, goSmoothScroll]
       RowCount = 2
       TabOrder = 0
       ColWidths = (
-        198
-        199
+        163
+        164
       )
     end
   end

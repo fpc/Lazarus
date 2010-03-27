@@ -1,11 +1,12 @@
 object ConvertSettingsForm: TConvertSettingsForm
-  Left = 283
+  Left = 286
   Height = 400
-  Top = 111
-  Width = 581
+  Top = 122
+  Width = 607
+  ActiveControl = MainPathEdit
   Caption = 'Convert Delphi unit, project or package '
   ClientHeight = 400
-  ClientWidth = 581
+  ClientWidth = 607
   Constraints.MinHeight = 400
   OnCreate = FormCreate
   OnDestroy = FormDestroy
@@ -14,90 +15,68 @@ object ConvertSettingsForm: TConvertSettingsForm
     AnchorSideTop.Control = SettingsGroupBox
     AnchorSideTop.Side = asrBottom
     Left = 0
-    Height = 165
-    Top = 187
-    Width = 581
+    Height = 133
+    Top = 219
+    Width = 607
     Anchors = [akTop, akLeft, akRight, akBottom]
     BorderSpacing.Top = 3
-    Caption = 'Missing Properties and Components'
-    ClientHeight = 143
-    ClientWidth = 571
+    Caption = 'Missing Properties and Types'
+    ClientHeight = 111
+    ClientWidth = 597
     TabOrder = 0
-    object MissingComponentCheckBox: TCheckBox
+    object MissingTypesCheckBox: TCheckBox
       Left = 11
       Height = 23
-      Top = 28
-      Width = 326
-      Caption = 'Automatic conversion of missing components (ToDo...)'
+      Top = 22
+      Width = 286
+      Caption = 'Automatic conversion of missing types (ToDo...)'
       Enabled = False
       TabOrder = 0
       Visible = False
     end
-    object MissingPropertyCheckBox: TCheckBox
+    object MissingPropertiesCheckBox: TCheckBox
       Left = 11
       Height = 23
-      Top = 10
+      Top = 4
       Width = 297
       Caption = 'Automatic removal of missing properties (ToDo...)'
       Enabled = False
       TabOrder = 1
+      Visible = False
     end
     object MissingStuffLabel: TLabel
       Left = 11
       Height = 16
-      Top = 65
+      Top = 44
       Width = 417
       Caption = 'If unchecked, there will be interactive dialogs for editing / accepting changes.'
       ParentColor = False
+      Visible = False
     end
-    object ReplacementCompsButton: TBitBtn
-      Left = 11
+    object ReplacementsButton: TBitBtn
+      Left = 203
       Height = 30
-      Top = 97
-      Width = 272
-      Caption = 'Replacement components (ToDo...)'
-      Enabled = False
-      OnClick = ReplacementCompsButtonClick
+      Top = 44
+      Width = 160
+      Caption = 'Replacements'
+      OnClick = ReplacementsButtonClick
       TabOrder = 2
     end
   end
   object SettingsGroupBox: TGroupBox
     Left = 0
     Height = 136
-    Top = 48
-    Width = 581
+    Top = 80
+    Width = 607
     Anchors = [akTop, akLeft, akRight]
     ClientHeight = 126
-    ClientWidth = 571
+    ClientWidth = 597
     TabOrder = 1
-    object BackupCheckBox: TCheckBox
-      Left = 291
-      Height = 23
-      Top = 27
-      Width = 189
-      Caption = 'Make backup of changed files'
-      Checked = True
-      State = cbChecked
-      TabOrder = 0
-    end
-    object FormFileRenameCheckBox: TCheckBox
-      AnchorSideTop.Control = BackupCheckBox
-      Left = 291
-      Height = 23
-      Top = 56
-      Width = 185
-      BorderSpacing.Top = 29
-      Caption = 'Rename form file .dfm to .lfm'
-      Checked = True
-      State = cbChecked
-      TabOrder = 1
-      Visible = False
-    end
     object TargetRadioGroup: TRadioGroup
-      Left = 3
+      Left = 11
       Height = 112
       Top = 3
-      Width = 264
+      Width = 272
       AutoFill = True
       Caption = 'Target'
       ChildSizing.LeftRightSpacing = 6
@@ -109,7 +88,7 @@ object ConvertSettingsForm: TConvertSettingsForm
       ChildSizing.Layout = cclLeftToRightThenTopToBottom
       ChildSizing.ControlsPerLine = 1
       ClientHeight = 90
-      ClientWidth = 254
+      ClientWidth = 262
       ItemIndex = 0
       Items.Strings = (
         'Lazarus/LCL'
@@ -117,19 +96,31 @@ object ConvertSettingsForm: TConvertSettingsForm
         'Both Lazarus/LCL and Delphi'
       )
       OnClick = TargetRadioGroupClick
-      TabOrder = 2
+      TabOrder = 0
+    end
+    object SameDFMCheckBox: TCheckBox
+      AnchorSideLeft.Control = TargetRadioGroup
+      AnchorSideLeft.Side = asrBottom
+      Left = 303
+      Height = 23
+      Top = 75
+      Width = 265
+      BorderSpacing.Left = 13
+      BorderSpacing.Around = 7
+      Caption = 'Use the same DFM file for Lazarus (ToDo...)'
+      TabOrder = 1
     end
   end
   object BtnPanel: TPanel
     Left = 0
     Height = 48
     Top = 352
-    Width = 581
+    Width = 607
     Align = alBottom
     AutoSize = True
     BevelOuter = bvNone
     ClientHeight = 48
-    ClientWidth = 581
+    ClientWidth = 607
     TabOrder = 2
     object HelpButton: TBitBtn
       AnchorSideBottom.Side = asrBottom
@@ -148,7 +139,7 @@ object ConvertSettingsForm: TConvertSettingsForm
     end
     object btnOK: TBitBtn
       AnchorSideBottom.Side = asrBottom
-      Left = 413
+      Left = 439
       Height = 36
       Top = 6
       Width = 75
@@ -166,7 +157,7 @@ object ConvertSettingsForm: TConvertSettingsForm
     object btnCancel: TBitBtn
       AnchorSideRight.Side = asrBottom
       AnchorSideBottom.Side = asrBottom
-      Left = 494
+      Left = 520
       Height = 36
       Top = 6
       Width = 81
@@ -187,7 +178,7 @@ object ConvertSettingsForm: TConvertSettingsForm
     Left = 80
     Height = 17
     Top = 15
-    Width = 473
+    Width = 499
     Anchors = [akTop, akLeft, akRight]
     BorderStyle = bsNone
     Color = clBtnFace
@@ -206,5 +197,19 @@ object ConvertSettingsForm: TConvertSettingsForm
     LabelSpacing = 7
     ReadOnly = True
     TabOrder = 3
+  end
+  object BackupCheckBox: TCheckBox
+    AnchorSideTop.Control = MainPathEdit
+    AnchorSideTop.Side = asrBottom
+    Left = 16
+    Height = 23
+    Top = 44
+    Width = 189
+    BorderSpacing.Top = 5
+    BorderSpacing.Around = 7
+    Caption = 'Make backup of changed files'
+    Checked = True
+    State = cbChecked
+    TabOrder = 4
   end
 end

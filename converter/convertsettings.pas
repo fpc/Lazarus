@@ -31,7 +31,8 @@ interface
 
 uses
   Classes, SysUtils, FileUtil, Forms, Controls, Graphics, Dialogs,
-  StdCtrls, EditBtn, Buttons, ExtCtrls, DialogProcs, CodeToolsStructs;
+  StdCtrls, EditBtn, Buttons, ExtCtrls, DialogProcs, CodeToolsStructs,
+  ReplaceNamesUnit, LazarusIDEStrConsts;
 
 type
 
@@ -48,11 +49,11 @@ type
     // Actual user settings.
     fBackupFiles: boolean;
     fTarget: TConvertTarget;
-//    fFormFileRename: boolean;
+    fSameDFMFile: boolean;
     fAutoMissingProperties: boolean;
-    fAutoMissingComponents: boolean;
-    // Replacement properties for Delphi properties.
-    fReplaceProps: TStringToStringTree;
+    fAutoMissingTypes: boolean;
+    // Replacement properties and types for Delphi.
+    fReplacementNames: TStringToStringTree;
     function GetBackupPath: String;
     procedure SetMainFilename(const AValue: String);
   public
@@ -83,10 +84,10 @@ type
 
     property BackupFiles: boolean read fBackupFiles;
     property Target: TConvertTarget read fTarget;
-//    property FormFileRename: boolean read fFormFileRename;
+    property SameDFMFile: boolean read fSameDFMFile;
     property AutoMissingProperties: boolean read fAutoMissingProperties;
-    property AutoMissingComponents: boolean read fAutoMissingComponents;
-    property ReplaceProps: TStringToStringTree read fReplaceProps;
+    property AutoMissingTypes: boolean read fAutoMissingTypes;
+    property ReplacementNames: TStringToStringTree read fReplacementNames;
   end;
 
 
@@ -94,10 +95,10 @@ type
 
   TConvertSettingsForm = class(TForm)
     BackupCheckBox: TCheckBox;
-    FormFileRenameCheckBox: TCheckBox;
+    SameDFMCheckBox: TCheckBox;
     MainPathEdit: TLabeledEdit;
     TargetRadioGroup: TRadioGroup;
-    ReplacementCompsButton: TBitBtn;
+    ReplacementsButton: TBitBtn;
     btnCancel: TBitBtn;
     btnOK: TBitBtn;
     BtnPanel: TPanel;
@@ -105,10 +106,10 @@ type
     SettingsGroupBox: TGroupBox;
     MissingStuffGroupBox: TGroupBox;
     MissingStuffLabel: TLabel;
-    MissingComponentCheckBox: TCheckBox;
-    MissingPropertyCheckBox: TCheckBox;
+    MissingTypesCheckBox: TCheckBox;
+    MissingPropertiesCheckBox: TCheckBox;
     procedure btnOKClick(Sender: TObject);
-    procedure ReplacementCompsButtonClick(Sender: TObject);
+    procedure ReplacementsButtonClick(Sender: TObject);
     procedure FormCreate(Sender: TObject);
     procedure FormDestroy(Sender: TObject);
     procedure TargetRadioGroupClick(Sender: TObject);
@@ -134,21 +135,21 @@ begin
   fTitle:=ATitle;
   fMainFilename:='';
   fMainPath:='';
-  fReplaceProps:=TStringToStringTree.Create(false);
+  fReplacementNames:=TStringToStringTree.Create(false);
   // Now hard-code some values. Later move them to a config file.
-  fReplaceProps['TFlowPanel']:='TPanel';
-  fReplaceProps['TGridPanel']:='TPanel';
-  fReplaceProps['TComboBoxEx']:='TComboBox';
-  fReplaceProps['TCoolBar']:='TPanel';
-  fReplaceProps['TRichEdit']:='TMemo';
-  fReplaceProps['TDBRichEdit']:='TDBMemo';
-  fReplaceProps['TPNGObject']:='TPortableNetworkGraphic';
-  fReplaceProps['TTntForm']:='TForm';
+  fReplacementNames['TFlowPanel']:='TPanel';
+  fReplacementNames['TGridPanel']:='TPanel';
+  fReplacementNames['TComboBoxEx']:='TComboBox';
+  fReplacementNames['TCoolBar']:='TPanel';
+  fReplacementNames['TRichEdit']:='TMemo';
+  fReplacementNames['TDBRichEdit']:='TDBMemo';
+  fReplacementNames['TPNGObject']:='TPortableNetworkGraphic';
+  fReplacementNames['TTntForm']:='TForm';
 end;
 
 destructor TConvertSettings.Destroy;
 begin
-  fReplaceProps.Free;
+  fReplacementNames.Free;
   inherited Destroy;
 end;
 
@@ -166,18 +167,18 @@ begin
     // Settings --> UI.
     BackupCheckBox.Checked          :=fBackupFiles;
     TargetRadioGroup.ItemIndex      :=integer(fTarget);
-    FormFileRenameCheckBox.Checked  :=fFormFileRename;
-    MissingPropertyCheckBox.Checked :=fAutoMissingProperties;
-    MissingComponentCheckBox.Checked:=fAutoMissingComponents;
+    SameDFMCheckBox.Checked         :=fSameDFMFile;
+    MissingPropertiesCheckBox.Checked :=fAutoMissingProperties;
+    MissingTypesCheckBox.Checked:=fAutoMissingTypes;
 }
     Result:=ShowModal;
     if Result=mrOK then begin
       // UI --> Settings.
       fBackupFiles          :=BackupCheckBox.Checked;
       fTarget               :=TConvertTarget(TargetRadioGroup.ItemIndex);
-//      fFormFileRename       :=FormFileRenameCheckBox.Checked;
-      fAutoMissingProperties:=MissingPropertyCheckBox.Checked;
-      fAutoMissingComponents:=MissingComponentCheckBox.Checked;
+      fSameDFMFile          :=SameDFMCheckBox.Checked;
+      fAutoMissingProperties:=MissingPropertiesCheckBox.Checked;
+      fAutoMissingTypes     :=MissingTypesCheckBox.Checked;
       // ToDo: Save to XML.
     end;
   finally
@@ -286,8 +287,18 @@ begin
 end;
 
 procedure TConvertSettingsForm.FormCreate(Sender: TObject);
+const                // Move later to resourcestrings
+  lisUseSameDFMFile = 'Use the same DFM file for Lazarus (ToDo...)';
 begin
   MainPathEdit.Text:='';
+  BackupCheckBox.Caption:=lisBackupChangedFiles;
+  TargetRadioGroup.Items.Clear;
+  TargetRadioGroup.Items.Append(lisConvertTarget1);
+  TargetRadioGroup.Items.Append(lisConvertTarget2);
+  TargetRadioGroup.Items.Append(lisConvertTarget3);
+  SameDFMCheckBox.Caption:=lisUseSameDFMFile;
+  ReplacementsButton.Caption:=lisConvReplacements;
+  TargetRadioGroupClick(TargetRadioGroup);
 end;
 
 procedure TConvertSettingsForm.FormDestroy(Sender: TObject);
@@ -301,14 +312,26 @@ var
   Trg: TConvertTarget;
 begin
   Trg:=TConvertTarget((Sender as TRadioGroup).ItemIndex);
-{  if Trg=ctLazarusAndDelphi then
-    FormFileRenameCheckBox.Checked:=false;
-  FormFileRenameCheckBox.Enabled:=Trg<>ctLazarusAndDelphi; }
+  if Trg<>ctLazarusAndDelphi then
+    SameDFMCheckBox.Checked:=false;
+  SameDFMCheckBox.Enabled:=false; //Trg=ctLazarusAndDelphi;
 end;
 
-procedure TConvertSettingsForm.ReplacementCompsButtonClick(Sender: TObject);
+procedure TConvertSettingsForm.ReplacementsButtonClick(Sender: TObject);
+var
+  ReplaceNamesForm: TReplaceNamesForm;
+  Res: TModalResult;
 begin
-  //ShowMessage('Sorry, not implemented yet!');
+  ReplaceNamesForm:=TReplaceNamesForm.Create(nil);
+  try
+    CopyFromMapToGrid(ReplaceNamesForm.NamePairGrid, fSettings.ReplacementNames);
+    Res:=ReplaceNamesForm.ShowModal;
+    if Res=mrOK then begin
+      CopyFromGridToMap(ReplaceNamesForm.NamePairGrid, fSettings.ReplacementNames);
+    end;
+  finally
+    ReplaceNamesForm.Free;
+  end;
 end;
 
 procedure TConvertSettingsForm.btnOKClick(Sender: TObject);

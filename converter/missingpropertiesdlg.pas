@@ -33,8 +33,8 @@ interface
 
 uses
   // FCL+LCL
-  Classes, SysUtils, Math, LCLProc, Forms, Controls,
-  Graphics, Dialogs, Buttons, StdCtrls, contnrs,
+  Classes, SysUtils, Math, LCLProc, Forms, Controls, Grids,
+  Graphics, Dialogs, Buttons, StdCtrls, ExtCtrls, contnrs,
   // components
   SynHighlighterLFM, SynEdit, SynEditMiscClasses, LFMTrees,
   // codetools
@@ -42,7 +42,7 @@ uses
   // IDE
   IDEDialogs, ComponentReg, PackageIntf, IDEWindowIntf,
   CustomFormEditor, LazarusIDEStrConsts, IDEProcs, OutputFilter,
-  EditorOptions, ExtCtrls, Grids, ConvertSettings, ConvCodeTool, CheckLFMDlg;
+  EditorOptions, ConvertSettings, ConvCodeTool, ReplaceNamesUnit, CheckLFMDlg;
 
 type
 
@@ -127,19 +127,13 @@ var
   ChgEntryRepl: TObjectList;
   OldIdent, NewIdent: string;
   StartPos, EndPos: integer;
-  i: Integer;
 begin
   Result:=mrNone;
   ChgEntryRepl:=TObjectList.Create;
   NameReplacements:=TStringToStringTree.Create(false);
   try
     // Collect (maybe edited) properties from StringGrid to NameReplacements.
-    for i:=1 to fPropReplaceGrid.RowCount-1 do begin // Skip the fixed row.
-      OldIdent:=fPropReplaceGrid.Cells[0,i];
-      NewIdent:=fPropReplaceGrid.Cells[1,i];
-      if NewIdent<>'' then
-        NameReplacements[OldIdent]:=NewIdent;
-    end;
+    CopyFromGridToMap(fPropReplaceGrid, NameReplacements);
     // Replace each missing property / type or delete it if no replacement.
     CurError:=fLFMTree.LastError;
     while CurError<>nil do begin
@@ -192,15 +186,13 @@ end;
 procedure TLFMFixer.FillPropReplaceList;
 var
   CurError: TLFMError;
-  SeenPropName: TStringList;
-  OldIdent, NewIdent: string;
-  i: integer;
+  GridUpdater: TGridUpdater;
+  OldIdent: string;
 begin
-  SeenPropName:=TStringList.Create;
+  GridUpdater:=TGridUpdater.Create(fPropReplaceGrid, fSettings.ReplacementNames);
   try
     fPropReplaceGrid.BeginUpdate;
     if fLFMTree<>nil then begin
-      i:=1;
       CurError:=fLFMTree.FirstError;
       while CurError<>nil do begin
         if CurError.IsMissingObjectType then
@@ -208,21 +200,13 @@ begin
         else
           OldIdent:=CurError.Node.GetIdentifier;
         // Add only one instance of each property name.
-        if SeenPropName.IndexOf(OldIdent)<0 then begin
-          SeenPropName.Append(OldIdent);
-          NewIdent:=fSettings.ReplaceProps[OldIdent];
-          if fPropReplaceGrid.RowCount<i+1 then
-            fPropReplaceGrid.RowCount:=i+1;
-          fPropReplaceGrid.Cells[0,i]:=OldIdent;
-          fPropReplaceGrid.Cells[1,i]:=NewIdent;
-          Inc(i);
-        end;
+        GridUpdater.AddUnique(OldIdent);
         CurError:=CurError.NextError;
       end;
     end;
     fPropReplaceGrid.EndUpdate;
   finally
-    SeenPropName.Free;
+    GridUpdater.Free;
   end;
 end;
 
@@ -272,6 +256,8 @@ end;
 procedure TFixLFMDialog.CheckLFMDialogCREATE(Sender: TObject);
 begin
   Caption:=lisFixLFMFile;
+  PropertyReplaceGroupBox.Caption:=lisReplacementPropTypes;
+  ReplaceAllButton.Caption:=lisReplaceRemoveInvalid;
   Position:=poScreenCenter;
 //  IDEDialogLayoutList.ApplyLayout(Self,600,400);
   SetupComponents;
