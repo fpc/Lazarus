@@ -227,7 +227,7 @@ type
                               ShowDialog: boolean): TModalResult; virtual; abstract;
     function DoBuildProject(const AReason: TCompileReason;
                             Flags: TProjectBuildFlags): TModalResult; virtual; abstract;
-
+    function GetProjectFileForProjectEditor(AEditor: TSourceEditorInterface): TLazProjectFile; virtual; abstract;
     // configs
     class function GetPrimaryConfigPath: String; virtual; abstract;
     class function GetSecondaryConfigPath: String; virtual; abstract;
