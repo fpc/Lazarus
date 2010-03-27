@@ -201,7 +201,21 @@ begin
   {$ifdef VerboseQt}
     WriteLn('[TQtWSMenuItem.DestroyHandle] Caption: ' + AMenuItem.Caption);
   {$endif}
-  
+
+  if Assigned(AMenuItem.Owner) then
+  begin
+    if (AMenuItem.Owner is TMainMenu) and
+      Assigned(TMainMenu(AMenuItem.Owner).Parent) and
+      (TMainMenu(AMenuItem.Owner).Parent is TCustomForm) then
+    begin
+      {do not destroy menuitem handle if parent form handle = 0 - it's
+       already destroyed (TCustomForm.DestroyWnd isn't called when
+       LM_DESTROY is sent from TQtWidget.SlotDestroy() }
+      if not TWinControl(TMainMenu(AMenuItem.Owner).Parent).HandleAllocated then
+        exit;
+    end;
+  end;
+
   Obj := TObject(AMenuItem.Handle);
   if Obj is TQtMenu then
     TQtMenu(Obj).Release;
