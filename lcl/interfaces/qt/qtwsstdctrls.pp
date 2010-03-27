@@ -503,7 +503,7 @@ var
   ListItem: QListWidgetItemH;
 begin
   QtListWidget := TQtListWidget(ACustomListBox.Handle);
-  ListItem := QListWidget_item(QListWidgetH(QtListWidget.Widget), AIndex);
+  ListItem := QtListWidget.getItem(AIndex);
   if ListItem <> nil then
     QtListWidget.setItemSelected(ListItem, ASelected);
 end;
@@ -520,7 +520,8 @@ begin
   TQtWSWinControl.SetBorderStyle(ACustomListBox, ACustomListBox.BorderStyle);
 end;
 
-class procedure TQtWSCustomListBox.SetColumnCount(const ACustomListBox: TCustomListBox; ACount: Integer);
+class procedure TQtWSCustomListBox.SetColumnCount(const ACustomListBox: TCustomListBox;
+  ACount: Integer);
 {var
   QtListWidget: TQtListWidget;
   AModel: QAbstractItemModelH;}
@@ -539,7 +540,8 @@ end;
   Params:  None
   Returns: Nothing
  ------------------------------------------------------------------------------}
-class procedure TQtWSCustomListBox.SetItemIndex(const ACustomListBox: TCustomListBox; const AIndex: integer);
+class procedure TQtWSCustomListBox.SetItemIndex(const ACustomListBox: TCustomListBox;
+  const AIndex: integer);
 begin
   TQtListWidget(ACustomListBox.Handle).setCurrentRow(AIndex);
 end;
@@ -595,7 +597,8 @@ end;
 class procedure TQtWSCustomListBox.SetTopIndex(const ACustomListBox: TCustomListBox;
   const NewTopIndex: integer);
 begin
-  TQtListWidget(ACustomListBox.Handle).scrollToItem(NewTopIndex, QAbstractItemViewPositionAtTop);
+  TQtListWidget(ACustomListBox.Handle).scrollToItem(NewTopIndex,
+    QAbstractItemViewPositionAtTop);
 end;
 
 { TQtWSCustomMemo }
@@ -957,10 +960,11 @@ end;
 class procedure TQtWSButton.SetDefault(const AButton: TCustomButton;
   ADefault: Boolean);
 var
-  APushButton: QPushButtonH;
+  QtPushButton: TQtPushButton;
 begin
-  APushButton := QPushButtonH(TQtAbstractButton(AButton.Handle).Widget);
-  QPushButton_setDefault(APushButton, ADefault);
+  if not WSCheckHandleAllocated(AButton, 'SetDefault') then Exit;
+  QtPushButton := TQtPushButton(AButton.Handle);
+  QtPushButton.SetDefault(ADefault);
 end;
 
 class procedure TQtWSButton.SetShortcut(const AButton: TCustomButton;
@@ -968,7 +972,7 @@ class procedure TQtWSButton.SetShortcut(const AButton: TCustomButton;
 begin
   if not WSCheckHandleAllocated(AButton, 'SetShortcut') then Exit;
   
-  TQtAbstractButton(AButton.Handle).setShortcut(NewShortcut);
+  TQtPushButton(AButton.Handle).setShortcut(NewShortcut);
 end;
 
 { TQtWSCustomCheckBox }
@@ -1160,12 +1164,13 @@ end;
 class function TQtWSCustomComboBox.GetDroppedDown(
   const ACustomComboBox: TCustomComboBox): Boolean;
 var
-  ComboList: QAbstractItemViewH;
-  ComboBox: QComboBoxH;
+  QtComboBox: TQtComboBox;
 begin
-  ComboBox := QComboBoxH(TQtComboBox(ACustomComboBox.Handle).Widget);
-  ComboList := QComboBox_view(ComboBox);
-  Result := QWidget_isVisible(ComboList);
+  Result := False;
+  if not ACustomComboBox.HandleAllocated then
+    exit;
+  QtComboBox := TQtComboBox(ACustomComboBox.Handle);
+  Result := QtComboBox.getDroppedDown;
 end;
 
 {------------------------------------------------------------------------------
@@ -1286,18 +1291,10 @@ end;
 class procedure TQtWSCustomComboBox.SetDroppedDown(
   const ACustomComboBox: TCustomComboBox; ADroppedDown: Boolean);
 var
-  ComboList: QAbstractItemViewH;
-  ComboBox: QComboBoxH;
+  QtComboBox: TQtComboBox;
 begin
-  ComboBox := QComboBoxH(TQtComboBox(ACustomComboBox.Handle).Widget);
-  ComboList := QComboBox_view(ComboBox);
-  if ADroppedDown <> QWidget_isVisible(ComboList) then
-  begin
-    if ADroppedDown then
-      QComboBox_showPopup(ComboBox)
-    else
-      QComboBox_hidePopup(ComboBox);
-  end;
+  QtComboBox := TQtComboBox(ACustomComboBox.Handle);
+  QtComboBox.setDroppedDown(ADroppedDown);
 end;
 
 {------------------------------------------------------------------------------
@@ -1336,7 +1333,9 @@ class procedure TQtWSCustomComboBox.SetStyle(
   const ACustomComboBox: TCustomComboBox; NewStyle: TComboBoxStyle);
 begin
   TQtComboBox(ACustomComboBox.Handle).setEditable(NewStyle = csDropDown);
-  TQtComboBox(ACustomComboBox.Handle).OwnerDrawn := NewStyle in [csOwnerDrawFixed, csOwnerDrawVariable];
+  TQtComboBox(ACustomComboBox.Handle).OwnerDrawn := NewStyle in
+                                                   [csOwnerDrawFixed,
+                                                    csOwnerDrawVariable];
   // TODO: implement styles: csSimple
   inherited SetStyle(ACustomComboBox, NewStyle);
 end;
@@ -1415,8 +1414,7 @@ var
   QtToggleBox: TQtPushButton;
 begin
   QtToggleBox := TQtPushButton.Create(AWinControl, AParams);
-  
-  QAbstractButton_setCheckable(QAbstractButtonH(QtToggleBox.Widget), True);
+  QtToggleBox.setCheckable(True);
   QtToggleBox.AttachEvents;
   
   Result := TLCLIntfHandle(QtToggleBox);

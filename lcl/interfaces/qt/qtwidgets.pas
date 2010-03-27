@@ -429,6 +429,7 @@ type
     procedure Toggle;
     function isChecked: Boolean;
     function isDown: Boolean;
+    procedure setCheckable(p1: Boolean);
     procedure setChecked(p1: Boolean);
     procedure setDefaultColorRoles; override;
     procedure setDown(p1: Boolean);
@@ -449,6 +450,7 @@ type
   public
     procedure preferredSize(var PreferredWidth, PreferredHeight: integer; WithThemeSpace: Boolean); override;
   public
+    procedure SetDefault(const ADefault: Boolean);
     procedure AttachEvents; override;
     procedure DetachEvents; override;
     
@@ -766,6 +768,7 @@ type
     procedure ClearItems;
     procedure setBorder(const ABorder: Boolean);
     function currentIndex: Integer;
+    function getDroppedDown: Boolean;
     function getEditable: Boolean;
     function getMaxVisibleItems: Integer;
     function getText: WideString; override;
@@ -774,6 +777,7 @@ type
     procedure insertItem(AIndex: Integer; AText: PWideString); overload;
     procedure setCurrentIndex(index: Integer);
     procedure setDefaultColorRoles; override;
+    procedure setDroppedDown(const ADroppedDown: Boolean);
     procedure setMaxVisibleItems(ACount: Integer);
     procedure setEditable(const AValue: Boolean);
     procedure setItemText(AIndex: Integer; AText: String);
@@ -4108,6 +4112,11 @@ begin
   Result := QAbstractButton_isDown(QAbstractButtonH(Widget));
 end;
 
+procedure TQtAbstractButton.setCheckable(p1: Boolean);
+begin
+  QAbstractButton_setCheckable(QAbstractButtonH(Widget), p1);
+end;
+
 {------------------------------------------------------------------------------
   Function: TQtAbstractButton.setChecked
   Params:  None
@@ -4259,6 +4268,11 @@ begin
     inc(PreferredWidth, 6);
     inc(PreferredHeight, 6);
   end;
+end;
+
+procedure TQtPushButton.SetDefault(const ADefault: Boolean);
+begin
+  QPushButton_setDefault(QPushButtonH(Widget), ADefault);
 end;
 
 procedure TQtPushButton.AttachEvents;
@@ -6559,6 +6573,11 @@ begin
   Result := QComboBox_currentIndex(QComboBoxH(Widget));
 end;
 
+function TQtComboBox.getDroppedDown: Boolean;
+begin
+  Result := QWidget_isVisible(QComboBox_view(QComboBoxH(Widget)));
+end;
+
 function TQtComboBox.getEditable: Boolean;
 begin
   Result := QComboBox_isEditable(QComboBoxH(Widget));
@@ -6612,6 +6631,17 @@ procedure TQtComboBox.setDefaultColorRoles;
 begin
   WidgetColorRole := QPaletteBase;
   TextColorRole := QPaletteText;
+end;
+
+procedure TQtComboBox.setDroppedDown(const ADroppedDown: Boolean);
+begin
+  if ADroppedDown <> QWidget_isVisible(QComboBox_view(QComboBoxH(Widget))) then
+  begin
+    if ADroppedDown then
+      QComboBox_showPopup(QComboBoxH(Widget))
+    else
+      QComboBox_hidePopup(QComboBoxH(Widget));
+  end;
 end;
 
 procedure TQtComboBox.setMaxVisibleItems(ACount: Integer);
