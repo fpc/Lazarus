@@ -294,8 +294,8 @@ begin
         NewCodePos:=CodePos;
       DestTree.Add(NewCodePos);
     end else if ClearList then begin
-      // position alread exists and items should be deleted
-      Dispose(NewCodePos);
+      // position already exists and items should be deleted
+      Dispose(CodePos);
     end;
   end;
   if ClearList then
