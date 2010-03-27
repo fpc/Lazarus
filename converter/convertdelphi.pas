@@ -74,7 +74,8 @@ type
     // Unit's info. Actually TUnitInfo, for projects only.
     fUnitInfo: TObject;
     // Actual code for unit and form file.
-    fUnitCode, fLfmCode: TCodeBuffer;
+    fPascalBuffer: TCodeBuffer;
+    fLFMBuffer: TCodeBuffer;
     fFlags: TConvertUnitFlags;
     // Units not found in project dir or packages.
     fMissingUnits: TStrings;
@@ -543,8 +544,8 @@ begin
   if Result<>mrOK then exit;
 
   // Read the code in.
-  fUnitCode:=nil;
-  Result:=LoadCodeBuffer(fUnitCode,fLazUnitFilename,
+  fPascalBuffer:=nil;
+  Result:=LoadCodeBuffer(fPascalBuffer,fLazUnitFilename,
                          [lbfCheckIfText,lbfUpdateFromDisk],true);
 end;
 
@@ -558,9 +559,9 @@ begin
   fUnitsToRename:=TStringToStringTree.Create(false);
   fUnitsToAdd:=TStringList.Create;
   fUnitsToComment:=TStringList.Create;
-  ConvTool:=TConvDelphiCodeTool.Create(fUnitCode);
+  ConvTool:=TConvDelphiCodeTool.Create(fPascalBuffer);
   try
-    fLfmCode:=nil;
+    fLFMBuffer:=nil;
     // Get DFM file name and close it in editor.
     DfmFilename:=GetDfmFileName;
     if DfmFilename<>'' then begin
@@ -593,7 +594,7 @@ begin
       Result:=ConvertDfmToLfm(LfmFilename);
       if Result<>mrOk then exit;
       // Read form file code in.
-      Result:=LoadCodeBuffer(fLfmCode,LfmFilename,
+      Result:=LoadCodeBuffer(fLFMBuffer,LfmFilename,
                              [lbfCheckIfText,lbfUpdateFromDisk],true);
       if Result<>mrOk then exit;
     end;
@@ -635,9 +636,9 @@ function TConvertDelphiUnit.ConvertFormFile: TModalResult;
 var
   LfmFixer: TLfmFixer;
 begin
-  // check the LFM file and the pascal unit, updates fUnitCode and fLfmCode.
-  if fLfmCode<>nil then begin
-    LfmFixer:=TLfmFixer.Create(fUnitCode,fLfmCode,@IDEMessagesWindow.AddMsg);
+  // check the LFM file and the pascal unit, updates fPascalBuffer and fLFMBuffer.
+  if fLFMBuffer<>nil then begin
+    LfmFixer:=TLfmFixer.Create(fPascalBuffer,fLFMBuffer,@IDEMessagesWindow.AddMsg);
     try
       LfmFixer.Settings:=fSettings;
       LfmFixer.RootMustBeClassInIntf:=true;
@@ -650,7 +651,7 @@ begin
       LfmFixer.Free;
     end;
     // save LFM file
-    Result:=SaveCodeBufferToFile(fLfmCode,fLfmCode.Filename);
+    Result:=SaveCodeBufferToFile(fLFMBuffer,fLFMBuffer.Filename);
     if Result<>mrOk then exit;
   end;
   Result:=mrOk;
@@ -715,17 +716,17 @@ var
   Line, Col: Integer;
   ShortFilename: string;
 begin
-  ShortFilename:=ExtractFileName(fUnitCode.Filename);
+  ShortFilename:=ExtractFileName(fPascalBuffer.Filename);
   // cut 'in' extension
   p:=System.Pos(' ',MissingUnit);
   if p>0 then
     MissingUnit:=copy(MissingUnit,1,p-1);
   Line:=1;
   Col:=1;
-  if CodeToolBoss.FindUnitInAllUsesSections(fUnitCode,MissingUnit,NamePos,InPos)
+  if CodeToolBoss.FindUnitInAllUsesSections(fPascalBuffer,MissingUnit,NamePos,InPos)
   then begin
     if InPos=0 then ;
-    fUnitCode.AbsoluteToLineCol(NamePos,Line,Col);
+    fPascalBuffer.AbsoluteToLineCol(NamePos,Line,Col);
   end;
   Result:=ShortFilename+'('+IntToStr(Line)+','+IntToStr(Col)+') Error: '
           +'Can''t find unit '+MissingUnit;
@@ -805,7 +806,7 @@ begin
   Result:=mrOk;
   MissingIncludeFilesCodeXYPos:=nil;
   try
-    if not CodeToolBoss.FixIncludeFilenames(fUnitCode,true,MissingIncludeFilesCodeXYPos)
+    if not CodeToolBoss.FixIncludeFilenames(fPascalBuffer,true,MissingIncludeFilesCodeXYPos)
     then begin
       if MissingIncludeFilesCodeXYPos<>nil then begin
         for i:=0 to MissingIncludeFilesCodeXYPos.Count-1 do begin
@@ -833,7 +834,7 @@ begin
   fMissingUnits:=nil; // Will be created in CodeToolBoss.FindMissingUnits.
   try
     // find missing units
-    CTResult:=CodeToolBoss.FindMissingUnits(fUnitCode,fMissingUnits,true);
+    CTResult:=CodeToolBoss.FindMissingUnits(fPascalBuffer,fMissingUnits,true);
     if not CTResult then begin
       IDEMessagesWindow.AddMsg('Error="'+CodeToolBoss.ErrorMessage+'"','',-1);
       exit;
@@ -1326,14 +1327,14 @@ begin
   fMainUnitConverter.CopyAndLoadFile;
   if LazProject.MainUnitInfo=nil then begin
     // add .lpr file to project as main unit
-    MainUnitInfo:=TUnitInfo.Create(fMainUnitConverter.fUnitCode);
+    MainUnitInfo:=TUnitInfo.Create(fMainUnitConverter.fPascalBuffer);
     MainUnitInfo.SyntaxHighlighter:=ExtensionToLazSyntaxHighlighter(LprExt);
     MainUnitInfo.IsPartOfProject:=true;
     LazProject.AddFile(MainUnitInfo,false);
     LazProject.MainFileID:=0;
   end else begin
     // replace main unit in project
-    LazProject.MainUnitInfo.Source:=fMainUnitConverter.fUnitCode;
+    LazProject.MainUnitInfo.Source:=fMainUnitConverter.fPascalBuffer;
   end;
   Result:=mrOk;
 end;
@@ -1361,7 +1362,7 @@ begin
   MissingInUnits:=nil;
   NormalUnits:=nil;
   try
-    if not CodeToolBoss.FindDelphiProjectUnits(fMainUnitConverter.fUnitCode,
+    if not CodeToolBoss.FindDelphiProjectUnits(fMainUnitConverter.fPascalBuffer,
       FoundInUnits, MissingInUnits, NormalUnits) then
     begin
       LazarusIDE.DoJumpToCodeToolBossError;

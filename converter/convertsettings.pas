@@ -296,6 +296,7 @@ begin
   TargetRadioGroup.Items.Append(lisConvertTarget1);
   TargetRadioGroup.Items.Append(lisConvertTarget2);
   TargetRadioGroup.Items.Append(lisConvertTarget3);
+  TargetRadioGroup.ItemIndex:=0;
   SameDFMCheckBox.Caption:=lisUseSameDFMFile;
   ReplacementsButton.Caption:=lisConvReplacements;
   TargetRadioGroupClick(TargetRadioGroup);
