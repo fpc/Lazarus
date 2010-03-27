@@ -2466,7 +2466,7 @@ begin
   LinkIndex:=Scanner.LinkIndexAtCleanPos(StartPos);
   LinkStart:=Scanner.Links[LinkIndex].CleanedPos;
   Result:=BasicCodeTools.FindLineEndOrCodeInFrontOfPosition(Src,
-                    StartPos,LinkStart,Scanner.NestedComments,StopAtDirectives);
+              StartPos,LinkStart,Scanner.NestedComments,StopAtDirectives,false);
 end;
 
 procedure TCustomCodeTool.ClearIgnoreErrorAfter;
