@@ -4715,6 +4715,7 @@ begin
   else
     Parent := nil;
   Result := QLabel_create(Parent);
+  QWidget_setAttribute(Result, QtWA_NoMousePropagation);
 end;
 
 function TQtStaticText.CanPaintBackground: Boolean;
