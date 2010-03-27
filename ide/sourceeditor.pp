@@ -6829,7 +6829,13 @@ procedure TSourceEditorManagerBase.SetActiveSourceWindow(
   const AValue: TSourceEditorWindowInterface);
 begin
   if AValue = FActiveWindow then exit;
-  FActiveWindow := AValue as TSourceNotebook; // Note: also set by SetActiveEditor
+  FActiveWindow := AValue as TSourceNotebook;
+
+  // Todo: Each synEdit needs it's own beautifier
+  if SourceEditorCount > 0 then
+    TSourceEditor(SourceEditors[0]).EditorComponent.Beautifier.OnGetDesiredIndent
+      := @TSourceNotebook(ActiveSourceWindow).EditorGetIndent;
+
   if Assigned(OnEditorVisibleChanged) then
     OnEditorVisibleChanged(nil);
   UpdateFPDocEditor;
@@ -8019,9 +8025,9 @@ begin
   i := FSourceWindowList.IndexOf(AWindow);
   FSourceWindowList.Remove(AWindow);
   if SourceWindowCount = 0 then
-    FActiveWindow := nil
-  else if FActiveWindow = AWindow then
-    FActiveWindow := SourceWindows[Max(0, Min(i, SourceWindowCount-1))];
+    ActiveSourceWindow := nil
+  else if ActiveSourceWindow = AWindow then
+    ActiveSourceWindow := SourceWindows[Max(0, Min(i, SourceWindowCount-1))];
   if i >= 0 then
     FChangeNotifyLists[semWindowDestroy].CallNotifyEvents(AWindow);
 end;
