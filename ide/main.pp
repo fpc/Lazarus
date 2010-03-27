@@ -1768,6 +1768,9 @@ procedure TMainIDE.SetupSpeedButtons;
     Result.Name := AName;
     Result.Parent := MainIDEBar.pnlSpeedButtons;
     Result.Images := IDEImages.Images_16;
+    {$IFNDEF OldAutoSize}
+    Result.AutoSize := true;
+    {$ENDIF}
   end;
 
 begin
@@ -1779,6 +1782,9 @@ begin
     Align := alLeft;
     Caption := '';
     BevelOuter := bvNone;
+    {$IFNDEF OldAutoSize}
+    AutoSize := true;
+    {$ENDIF}
     Visible := EnvironmentOptions.IDESpeedButtonsVisible;
   end;
 
