@@ -460,7 +460,9 @@ begin
   BeginAutoSizing;
   try
   {$ENDIF}
-    WrapButtons(Width, NewWidth, NewHeight, True);
+    NewWidth:=Width;
+    NewHeight:=Height;
+    GetPreferredSize(NewWidth,NewHeight);
     ModifyWidth := [akLeft, akRight] * (Anchors+AnchorAlign[Align]) <> [akLeft, akRight];
     ModifyHeight := [akTop, akBottom] * (Anchors+AnchorAlign[Align]) <> [akTop, akBottom];
 
@@ -480,28 +482,37 @@ end;
 procedure TToolBar.CalculatePreferredSize(var PreferredWidth,
   PreferredHeight: integer; WithThemeSpace: Boolean);
 var
+  {$IFDEF OldAutoSize}
   ARect, Adjusted: TRect;
   ACount: Integer;
+  {$ENDIF}
   NewWidth: Integer;
   NewHeight: Integer;
+  FixedWidth: Boolean;
 begin
+  NewWidth:=0;
+  NewHeight:=0;
+  {$IFDEF OldAutoSize}
   ARect := ClientRect;
   Adjusted := ARect;
   AdjustClientRect(Adjusted);
   ACount := ButtonCount;
 
+
   if IsVertical then
     PreferredWidth := ButtonWidth
   else
     PreferredWidth := ButtonWidth * ACount;
-  inc(PreferredWidth, (Adjusted.Left - ARect.Left) - (Adjusted.Right - ARect.Right));
+  inc(PreferredWidth, (Adjusted.Left - ARect.Left) + (ARect.Right - Adjusted.Right);
 
   if IsVertical then
     PreferredWidth := ButtonHeight * ACount
   else
     PreferredHeight := ButtonHeight;
-  inc(PreferredHeight, (Adjusted.Top - ARect.Top) - (Adjusted.Bottom - ARect.Bottom));
+  inc(PreferredHeight, (Adjusted.Top - ARect.Top) + (ARect.Bottom - Adjusted.Bottom));
+  {$ENDIF}
 
+  FixedWidth:=false;
   if [akLeft,akRight]*Anchors=[akLeft,akRight] then begin
     // the width depends on the parent or siblings
     // use a simpe heuristic to find out if the width is fixed
@@ -510,12 +521,20 @@ begin
     and (Parent.AutoSize=false)
     then begin
       // the width is fixed
+      FixedWidth:=true;
       WrapButtons(Width, NewWidth, NewHeight, True);
       PreferredWidth := NewWidth;
       PreferredHeight := NewHeight;
       //DebugLn(['TToolBar.CalculatePreferredSize fixed width: ',PreferredWidth,'x',PreferredHeight]);
     end;
   end;
+  {$IFNDEF OldAutoSize}
+  if not FixedWidth then begin
+    WrapButtons(Screen.Width,NewWidth,NewHeight,true);
+    PreferredWidth := NewWidth;
+    PreferredHeight := NewHeight;
+  end;
+  {$ENDIF}
 end;
 
 {------------------------------------------------------------------------------
