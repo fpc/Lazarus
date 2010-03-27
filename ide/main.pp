@@ -864,6 +864,7 @@ type
           deprecated; // deprecated in 0.9.29 March 2010
     procedure GetDesignerUnit(ADesigner: TDesigner;
           var ActiveSourceEditor: TSourceEditor; var ActiveUnitInfo: TUnitInfo); override;
+    function GetProjectFileForProjectEditor(AEditor: TSourceEditorInterface): TLazProjectFile; override;
     function GetDesignerForProjectEditor(AEditor: TSourceEditorInterface;
                               LoadForm: boolean): TIDesigner; override;
     function GetDesignerWithProjectFile(AFile: TLazProjectFile;
@@ -11542,6 +11543,12 @@ begin
     ActiveSourceEditor:=nil;
     ActiveUnitInfo:=nil;
   end;
+end;
+
+function TMainIDE.GetProjectFileForProjectEditor(AEditor: TSourceEditorInterface
+  ): TLazProjectFile;
+begin
+  Result := Project1.UnitWithEditorComponent(AEditor);
 end;
 
 function TMainIDE.GetDesignerForProjectEditor(AEditor: TSourceEditorInterface;

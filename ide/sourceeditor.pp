@@ -53,6 +53,7 @@ uses
   SynPluginSyncronizedEditBase,
   // Intf
   SrcEditorIntf, MenuIntf, LazIDEIntf, PackageIntf, IDEHelpIntf, IDEImagesIntf,
+  ProjectIntf,
   // IDE units
   IDEDialogs, LazarusIDEStrConsts, IDECommands, EditorOptions,
   WordCompletion, FindReplaceDialog, IDEProcs, IDEOptionDefs,
@@ -386,6 +387,7 @@ type
     procedure SetLines(const AValue: TStrings); override;
 
     // context
+    function GetProjectFile: TLazProjectFile; override;
     procedure UpdateProjectFile; override;
     function GetDesigner(LoadForm: boolean): TIDesigner; override;
 
@@ -3984,6 +3986,11 @@ begin
   FEditor.Lines:=AValue;
 end;
 
+function TSourceEditor.GetProjectFile: TLazProjectFile;
+begin
+  Result:=LazarusIDE.GetProjectFileForProjectEditor(Self);
+end;
+
 procedure TSourceEditor.UpdateProjectFile;
 begin
   if Assigned(Manager) and Assigned(Manager.OnEditorMoved)
@@ -6300,7 +6307,6 @@ end;
 Procedure TSourceNotebook.ReloadEditorOptions;
 var
   I: integer;
-  h: TLazSyntaxHighlighter;
 Begin
   for i := 0 to EditorCount-1 do
     Editors[i].RefreshEditorSettings;
