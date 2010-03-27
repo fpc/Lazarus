@@ -6844,8 +6844,9 @@ begin
   end
   else
     FDragOverIndex := -1;
-  if not Accept then
+  if (not Accept) or (state = dsDragLeave) then
     FDragOverIndex := -1;
+
 end;
 
 procedure TSourceDragableNotebook.DragCanceled;
