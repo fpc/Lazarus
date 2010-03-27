@@ -5994,7 +5994,10 @@ begin
     UpdateShowing;
     {$ELSE}
     //DebugLn(['TWinControl.UpdateControlState ',DbgSName(Self),' wcfAllAutoSizing=',wcfAllAutoSizing in FWinControlFlags,' AutoSizeDelayed=',AutoSizeDelayed,' HandleObjectShouldBeVisible=',HandleObjectShouldBeVisible]);
-    AdjustSize; // this will trigger DoAllAutoSize, which calls UpdateShowing
+    if HandleObjectShouldBeVisible then
+      AdjustSize // this will trigger DoAllAutoSize, which calls UpdateShowing
+    else
+      UpdateShowing;
     {$ENDIF}
   end;
 end;
