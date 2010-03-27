@@ -5275,8 +5275,11 @@ end;
 procedure TSourceNotebook.NoteBookDeletePage(Index: Integer);
 begin
   if PageCount > 1 then begin
+    if Index < PageCount - 1 then
+      FNoteBook.PageIndex := Index + 1
+    else
+      FNoteBook.PageIndex := Index - 1;
     NotebookPages.Delete(Index);
-    FNoteBook.PageIndex := Min(Index, PageCount-1);
   end else
     FNotebook.Visible := False;
 end;
@@ -6765,6 +6768,7 @@ procedure TSourceDragableNotebook.DragOver(Source: TObject; X, Y: Integer; State
   var Accept: Boolean);
 var
   TabIndex: Integer;
+  TabPos: TRect;
 begin
   inherited DragOver(Source, X, Y, State, Accept);
   // currently limited to source=self => extendable to allow dragging tabs from other notebooks
@@ -6772,6 +6776,16 @@ begin
      (TSourceDragableNotebook(Source).FMouseDownTabIndex >= 0)
   then begin
     TabIndex := TabIndexAtClientPos(Point(X,Y));
+    if TabIndex < 0 then begin
+      TabPos := TabRect(PageCount-1);
+      if (TabPos.Right > 1) and (X > TabPos.Right) then
+        TabIndex := PageCount - 1;
+    end;
+    TabPos := TabRect(TabIndex);
+    if X > (TabPos.Left + TabPos.Right) div 2 then
+      inc(TabIndex);
+    if (Source = self) and (TabIndex > TSourceDragableNotebook(Source).MouseDownTabIndex) then
+      dec(TabIndex);
     Accept := (TabIndex >= 0) and ((Source <> self) or (TabIndex <> FMouseDownTabIndex));
   end;
 end;
@@ -6779,6 +6793,7 @@ end;
 procedure TSourceDragableNotebook.DragDrop(Source: TObject; X, Y: Integer);
 var
   TabIndex: Integer;
+  TabPos: TRect;
 begin
   inherited DragDrop(Source, X, Y);
 
@@ -6786,6 +6801,16 @@ begin
      (TSourceDragableNotebook(Source).MouseDownTabIndex >= 0)
   then begin
     TabIndex := TabIndexAtClientPos(Point(X,Y));
+    if TabIndex < 0 then begin
+      TabPos := TabRect(PageCount-1);
+      if (TabPos.Right > 1) and (X > TabPos.Right) then
+        TabIndex := PageCount - 1;
+    end;
+    TabPos := TabRect(TabIndex);
+    if X > (TabPos.Left + TabPos.Right) div 2 then
+      inc(TabIndex);
+    if (Source = self) and (TabIndex > TSourceDragableNotebook(Source).MouseDownTabIndex) then
+      dec(TabIndex);
     if (TabIndex >= 0) and ( (Source <> self) or (TabIndex <> MouseDownTabIndex) )
     then begin
       FTabDragged:=true;
