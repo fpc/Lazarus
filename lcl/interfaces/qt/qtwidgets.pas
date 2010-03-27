@@ -2856,8 +2856,8 @@ begin
 }
   if not Assigned(LCLObject) then exit;
 
-  // do not loop with LCL
-  if InUpdate then
+  // do not loop with LCL but do not apply it to TQtMainWindow !
+  if not (ClassType = TQtMainWindow) and InUpdate then
     exit;
   
   if (NewSize.cx <> LCLObject.Width) or (NewSize.cy <> LCLObject.Height) or
