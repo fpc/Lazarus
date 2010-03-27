@@ -35,7 +35,7 @@ uses
   // RTL
   math,
   // LCL
-  Classes, Types, StdCtrls, Controls, Graphics, Forms, SysUtils, InterfaceBase, LCLType, LCLIntf, LCLProc,
+  Classes, Types, StdCtrls, Controls, Forms, SysUtils, InterfaceBase, LCLType,
   // Widgetset
   WSProc, WSStdCtrls, WSLCLClasses;
 
@@ -263,9 +263,6 @@ type
 
 implementation
 
-uses
-  LMessages;
-  
 const
   QtMaxEditLength = 32767;
   WordWrapMap: array[Boolean] of QTextEditLineWrapMode =
