@@ -2528,12 +2528,12 @@ end;
 {$ENDIF}
 
 {$IFNDEF OldAutoSize}
-function TControl.AutoSizePhase: TControlAutoSizePhase;
+function TControl.AutoSizePhases: TControlAutoSizePhases;
 begin
   if Parent<>nil then
-    Result:=Parent.AutoSizePhase
+    Result:=Parent.AutoSizePhases
   else
-    Result:=caspNone;
+    Result:=[];
 end;
 {$ENDIF}
 
@@ -3822,9 +3822,14 @@ end;
 ------------------------------------------------------------------------------}
 function TControl.HandleObjectShouldBeVisible: boolean;
 begin
-  Result:=(Visible
-          or ((csDesigning in ComponentState)
-              and not (csNoDesignVisible in ControlStyle)));
+  {$IFDEF OldAutoSize}
+  Result:=IsControlVisible;
+  {$ELSE}
+  Result:=IsControlVisible;
+  if Result and (Parent<>nil) then
+    Result:=Parent.HandleObjectShouldBeVisible;
+  {$ENDIF}
+  //DebugLn(['TControl.HandleObjectShouldBeVisible ',DbgSName(Self),' ',Result]);
 end;
 
 {------------------------------------------------------------------------------

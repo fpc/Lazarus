@@ -498,7 +498,7 @@ begin
     if not HandleShowHideException then
       raise;
   end;
-  inherited;
+  inherited CMShowingChanged(Message);
 end;
 
 procedure TCustomForm.DoShowWindow;

@@ -800,6 +800,7 @@ type
     caspRealizingBounds,
     caspShowing          // make handles visible
     );
+  TControlAutoSizePhases = set of TControlAutoSizePhase;
   {$ENDIF}
 
   TTabOrder = -1..32767;
@@ -1267,7 +1268,7 @@ type
     // size
     procedure AdjustSize; virtual;// smart calling DoAutoSize
     {$IFNDEF OldAutoSize}
-    function AutoSizePhase: TControlAutoSizePhase; virtual;
+    function AutoSizePhases: TControlAutoSizePhases; virtual;
     {$ENDIF}
     function AutoSizeDelayed: boolean; virtual;
     function AutoSizeCheckParent: Boolean; virtual;
@@ -1911,7 +1912,7 @@ type
   public
     // size, position, bounds
     {$IFNDEF OldAutoSize}
-    function AutoSizePhase: TControlAutoSizePhase; override;
+    function AutoSizePhases: TControlAutoSizePhases; override;
     {$ENDIF}
     function AutoSizeDelayed: boolean; override;
     function AutoSizeCheckParent: Boolean; override;

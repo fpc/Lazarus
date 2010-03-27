@@ -2249,25 +2249,24 @@ end;
 
 {$IFNDEF OldAutoSize}
 {------------------------------------------------------------------------------
-  function TWinControl.AutoSizePhase: TControlAutoSizePhase;
+  function TWinControl.AutoSizePhases: TControlAutoSizePhases;
 ------------------------------------------------------------------------------}
-function TWinControl.AutoSizePhase: TControlAutoSizePhase;
+function TWinControl.AutoSizePhases: TControlAutoSizePhases;
 begin
   if Parent<>nil then
-    Result:=Parent.AutoSizePhase
+    Result:=Parent.AutoSizePhases
   else begin
+    Result:=[];
     if ([wcfCreatingHandle,wcfCreatingChildHandles]*FWinControlFlags<>[]) then
-      Result:=caspCreatingHandles
-    else if fAutoSizingAll then
-      Result:=caspComputingBounds
-    else if wcfRealizingBounds in FWinControlFlags then
-      Result:=caspRealizingBounds
-    else if wcfUpdateShowing in FWinControlFlags then
-      Result:=caspShowing
-    else if FAutoSizingLockCount>0 then
-      Result:=caspChangingProperties
-    else
-      Result:=caspNone;
+      Include(Result,caspCreatingHandles);
+    if fAutoSizingAll then
+      Include(Result,caspComputingBounds);
+    if wcfRealizingBounds in FWinControlFlags then
+      Include(Result,caspRealizingBounds);
+    if wcfUpdateShowing in FWinControlFlags then
+      Include(Result,caspShowing);
+    if FAutoSizingLockCount>0 then
+      Include(Result,caspChangingProperties);
   end;
 end;
 {$ENDIF}
@@ -2277,15 +2276,16 @@ end;
 ------------------------------------------------------------------------------}
 function TWinControl.AutoSizeDelayed: boolean;
 begin
-  Result:=// no handle means not visible
+  Result:={$IFDEF OldAutoSize}
+          // no handle means not visible
           (not HandleAllocated)
-          {$IFDEF OldAutoSize}
           // obsolete
             or ((not FShowing) and (not (csDesigning in ComponentState)))
             // during handle creation no autosize
             or (wcfCreatingChildHandles in FWinControlFlags)
+          or
           {$ENDIF}
-          or (inherited AutoSizeDelayed);
+          (inherited AutoSizeDelayed);
   //if Result then debugln('TWinControl.AutoSizeDelayed A ',DbgSName(Self),' wcfCreatingChildHandles=',dbgs(wcfCreatingChildHandles in FWinControlFlags),' csLoading=',dbgs(csLoading in ComponentState));
   {$IFDEF VerboseCanAutoSize}
   if Result {and AutoSize} then begin
@@ -3316,7 +3316,7 @@ begin
   {$IFDEF VerboseAllAutoSize}
   debugln('TWinControl.DoAutoSize ',DbgSName(Self));
   {$ENDIF}
-  if (AutoSizePhase<>caspComputingBounds) then begin
+  if not (caspComputingBounds in AutoSizePhases) then begin
     {$IFDEF VerboseAllAutoSize}
     DebugLn(['TWinControl.DoAutoSize DELAYED AutoSizeCanStart=',AutoSizeCanStart,' AutoSizeDelayed=',AutoSizeDelayed,' AutoSizePhase=',AutoSizePhaseNames[AutoSizePhase]]);
     {$ENDIF}
@@ -3472,8 +3472,7 @@ begin
 
   Include(FWinControlFlags,wcfAllAutoSizing);
   try
-    while (cfAutoSizeNeeded in FControlFlags)
-    and (not AutoSizeDelayed) do begin
+    while (not AutoSizeDelayed) do begin
       // compute all sizes for LCL objects without touching the widgetset
       {$IFDEF VerboseAllAutoSize}
       DebugLn(['TWinControl.DoAllAutoSize COMPUTE BOUNDS ',DbgSName(Self),' old=',dbgs(BoundsRect)]);
@@ -3485,13 +3484,14 @@ begin
       DebugLn(['TWinControl.DoAllAutoSize REALIZE BOUNDS ',DbgSName(Self),' lclbounds=',dbgs(BoundsRect)]);
       {$ENDIF}
       RealizeBoundsRecursive;
+      if (cfAutoSizeNeeded in FControlFlags) then continue; // repeat computing bounds
       // make handles visible
-      if not (cfAutoSizeNeeded in FControlFlags) then begin
-        {$IFDEF VerboseAllAutoSize}
-        DebugLn(['TWinControl.DoAllAutoSize UPDATESHOWING ',DbgSName(Self),' lclbounds=',dbgs(BoundsRect)]);
-        {$ENDIF}
-        UpdateShowingRecursive(Self);
-      end;
+      {$IFDEF VerboseAllAutoSize}
+      DebugLn(['TWinControl.DoAllAutoSize UPDATESHOWING ',DbgSName(Self),' lclbounds=',dbgs(BoundsRect)]);
+      {$ENDIF}
+      UpdateShowingRecursive(Self);
+      // check if another turn is needed
+      if not (cfAutoSizeNeeded in FControlFlags) then break; // complete
     end;
     {$IFDEF VerboseAllAutoSize}
     DebugLn(['TWinControl.DoAllAutoSize END ',DbgSName(Self),' ',dbgs(BoundsRect)]);
@@ -3994,7 +3994,7 @@ begin
       LCLIntf.SetParent(Handle, AValue)
     else
       DestroyHandle;
-  UpdateControlState
+  UpdateControlState;
 end;
 
 {------------------------------------------------------------------------------
@@ -4242,8 +4242,13 @@ begin
   if bShow then
   begin
     // the Handle should become visible
-    // delay this until all autosizing has been processed
-    if AutoSizeDelayed or AutoSizingAll then exit;
+    // delay this until all other autosizing has been processed
+    if AutoSizeDelayed or (not (caspShowing in AutoSizePhases)) then
+    begin
+      //if AutoSizeDelayed then DebugLn(['TWinControl.UpdateShowing SKIPPING because AutoSizeDelayed']);
+      //if (not (caspShowing in AutoSizePhases)) then DebugLn(['TWinControl.UpdateShowing SKIPPING because wrong phase']);
+      exit;
+    end;
   end;
   ChangeShowing(bShow);
   {$ENDIF}
@@ -5984,7 +5989,14 @@ begin
 
   if ((AWinControl is TCustomForm) and (AWinControl.Parent=nil))
   or (AWinControl.FParentWindow <> 0) then
+  begin
+    {$IFDEF OldAutoSize}
     UpdateShowing;
+    {$ELSE}
+    //DebugLn(['TWinControl.UpdateControlState ',DbgSName(Self),' wcfAllAutoSizing=',wcfAllAutoSizing in FWinControlFlags,' AutoSizeDelayed=',AutoSizeDelayed,' HandleObjectShouldBeVisible=',HandleObjectShouldBeVisible]);
+    AdjustSize; // this will trigger DoAllAutoSize, which calls UpdateShowing
+    {$ENDIF}
+  end;
 end;
 
 {------------------------------------------------------------------------------
@@ -7117,18 +7129,18 @@ begin
       Exclude(FWinControlFlags, wcfCreatingChildHandles);
     end;
 
+    {$IFDEF OldAutoSize}
     // size this control
     UpdateShowing;
     AdjustSize;
     if FControls<>nil then
       for i:=0 to FControls.Count-1 do
         TControl(FControls[i]).AdjustSize;
-
-    {$IFDEF OldAutoSize}
-    // obsolete
-
     // realign childs
     ReAlign;
+    {$ELSE}
+    // size this control
+    AdjustSize;
     {$ENDIF}
   finally
     //DebugLn(['TWinControl.CreateWnd ',DbgSName(Self)]);
@@ -7506,7 +7518,7 @@ begin
   dec(FRealizeBoundsLockCount);
   if (FRealizeBoundsLockCount=0)
   {$IFNDEF OldAutoSize}
-  and (not AutoSizingAll) and (not AutoSizeDelayed)
+  and (not AutoSizeDelayed) and (caspRealizingBounds in AutoSizePhases)
   {$ENDIF}
   then
     RealizeBounds;
@@ -8001,6 +8013,7 @@ end;
  ------------------------------------------------------------------------------}
 procedure TWinControl.CMShowingChanged(var Message: TLMessage);
 begin
+  //DebugLn(['TWinControl.CMShowingChanged ',DbgSName(Self)]);
   if HandleAllocated and ([csDestroying,csLoading]*ComponentState=[]) then
     DoSendShowHideToInterface;
 end;

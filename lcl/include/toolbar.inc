@@ -324,7 +324,11 @@ begin
     TControl(FButtons[i]).InvalidatePreferredSize;
     TControl(FButtons[i]).AdjustSize;
   end;
+  {$IFDEF OldAutoSize}
   ReAlign;
+  {$ELSE}
+  AdjustSize;
+  {$ENDIF}
   Invalidate;
   Exclude(FToolBarFlags,tbfUpdateVisibleBarNeeded);
 end;
@@ -451,9 +455,11 @@ var
   NewWidth: Integer;
   NewHeight: Integer;
 begin
+  {$IFDEF OldAutoSize}
   if AutoSizing then Exit;    // we shouldn't come here in the first place
   BeginAutoSizing;
   try
+  {$ENDIF}
     WrapButtons(Width, NewWidth, NewHeight, True);
     ModifyWidth := [akLeft, akRight] * (Anchors+AnchorAlign[Align]) <> [akLeft, akRight];
     ModifyHeight := [akTop, akBottom] * (Anchors+AnchorAlign[Align]) <> [akTop, akBottom];
@@ -461,11 +467,14 @@ begin
     if not ModifyWidth then NewWidth := Width;
     if not ModifyHeight then NewHeight := Height;
 
+    //DebugLn(['TToolBar.DoAutoSize ',DbgSName(Self),' ',Width,',',Height,' ',NewWidth,',',NewHeight]);
     if (NewWidth <> Width) or (NewHeight <> Height) then
       SetBounds(Left, Top, NewWidth, NewHeight);
+  {$IFDEF OldAutoSize}
   finally
     EndAutoSizing;
   end;
+  {$ENDIF}
 end;
 
 procedure TToolBar.CalculatePreferredSize(var PreferredWidth,
