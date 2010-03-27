@@ -476,14 +476,23 @@ type
     FMouseDownTabIndex: Integer;
     FOnDragMoveTab: TDragMoveTabEvent;
     FTabDragged: boolean;
+
+    FDragOverIndex: Integer;
+    FDragToRightSide: Boolean;
+    FDragOverTabRect, FDragNextToTabRect: TRect;
+
   protected
     procedure MouseDown(Button: TMouseButton; Shift: TShiftState; X, Y: Integer); override;
     procedure MouseUp(Button: TMouseButton; Shift: TShiftState; X,
              Y: Integer); override;
     procedure DragOver(Source: TObject; X, Y: Integer; State: TDragState;
       var Accept: Boolean); override;
+    procedure DragCanceled; override;
     property MouseDownTabIndex: Integer read FMouseDownTabIndex;
+    procedure PaintWindow(DC: HDC); override;
+    procedure InitDrag;
   public
+    constructor Create(TheOwner: TComponent); override;
     procedure DragDrop(Source: TObject; X, Y: Integer); override;
     property  OnDragMoveTab: TDragMoveTabEvent read FOnDragMoveTab write FOnDragMoveTab;
   end;
@@ -6743,6 +6752,7 @@ end;
 procedure TSourceDragableNotebook.MouseDown(Button: TMouseButton; Shift: TShiftState; X,
   Y: Integer);
 begin
+  InitDrag;
   FTabDragged:=false;
   inherited MouseDown(Button, Shift, X, Y);
   FMouseDownTabIndex := TabIndexAtClientPos(Point(X,Y));
@@ -6755,6 +6765,7 @@ procedure TSourceDragableNotebook.MouseUp(Button: TMouseButton; Shift: TShiftSta
 var
   MouseUpTabIndex: LongInt;
 begin
+  InitDrag;
   inherited MouseUp(Button, Shift, X, Y);
   if not FTabDragged then begin
     // no drag => check for normal click and activate page
@@ -6768,9 +6779,20 @@ procedure TSourceDragableNotebook.DragOver(Source: TObject; X, Y: Integer; State
   var Accept: Boolean);
 var
   TabIndex: Integer;
-  TabPos: TRect;
+  TabPos, LastRect, LastNRect, tmp: TRect;
+  LastIndex: Integer;
+  LastRight, NeedInvalidate: Boolean;
 begin
   inherited DragOver(Source, X, Y, State, Accept);
+  if (state = dsDragLeave) and (FDragOverIndex >= 0) then begin
+    tmp := FDragOverTabRect;
+    InvalidateRect(Handle, @tmp, false);
+    tmp := FDragNextToTabRect;
+    InvalidateRect(Handle, @tmp, false);
+    FDragOverIndex := -1;
+    Accept := False;
+    exit;
+  end;
   // currently limited to source=self => extendable to allow dragging tabs from other notebooks
   if (Source is TSourceDragableNotebook) and
      (TSourceDragableNotebook(Source).FMouseDownTabIndex >= 0)
@@ -6781,21 +6803,160 @@ begin
       if (TabPos.Right > 1) and (X > TabPos.Right) then
         TabIndex := PageCount - 1;
     end;
-    TabPos := TabRect(TabIndex);
-    if X > (TabPos.Left + TabPos.Right) div 2 then
+
+    LastIndex := FDragOverIndex;
+    LastRight := FDragToRightSide;
+    LastRect := FDragOverTabRect;
+    LastNRect := FDragNextToTabRect;
+    FDragOverIndex := TabIndex;
+    FDragOverTabRect := TabRect(TabIndex);
+    FDragToRightSide := X > (FDragOverTabRect.Left + FDragOverTabRect.Right) div 2;
+    if (Source = Self) and (TabIndex = FMouseDownTabIndex - 1) then
+      FDragToRightSide := False;
+    if (Source = Self) and (TabIndex = FMouseDownTabIndex + 1) then
+      FDragToRightSide := True;
+
+    NeedInvalidate := (FDragOverIndex <> LastIndex) or (FDragToRightSide <> LastRight);
+    if NeedInvalidate then begin
+      InvalidateRect(Handle, @LastRect, false);
+      InvalidateRect(Handle, @LastNRect, false);
+      tmp := FDragOverTabRect;
+      InvalidateRect(Handle, @tmp, false);
+      tmp := FDragNextToTabRect;
+      InvalidateRect(Handle, @tmp, false);
+    end;
+
+    if FDragToRightSide then begin
       inc(TabIndex);
+      if TabIndex < PageCount then
+        FDragNextToTabRect := TabRect(TabIndex);
+    end else begin
+      if TabIndex > 0 then
+        FDragNextToTabRect := TabRect(TabIndex - 1);
+    end;
+    if NeedInvalidate then begin
+      tmp := FDragNextToTabRect;
+      InvalidateRect(Handle, @tmp, false);
+    end;
+
     if (Source = self) and (TabIndex > TSourceDragableNotebook(Source).MouseDownTabIndex) then
       dec(TabIndex);
+
     Accept := (TabIndex >= 0) and ((Source <> self) or (TabIndex <> FMouseDownTabIndex));
+  end
+  else
+    FDragOverIndex := -1;
+  if not Accept then
+    FDragOverIndex := -1;
+end;
+
+procedure TSourceDragableNotebook.DragCanceled;
+var
+  tmp: TRect;
+begin
+  inherited DragCanceled;
+  if (FDragOverIndex >= 0) then begin
+    tmp := FDragOverTabRect;
+    InvalidateRect(Handle, @tmp, false);
+    tmp := FDragNextToTabRect;
+    InvalidateRect(Handle, @tmp, false);
   end;
+  FDragOverIndex := -1;
+end;
+
+procedure TSourceDragableNotebook.PaintWindow(DC: HDC);
+var
+  Points: Array [0..3] of TPoint;
+  h, x: Integer;
+begin
+  inherited PaintWindow(DC);
+  if FDragOverIndex < 0 then exit;
+
+  x := 0;
+  h := (Abs(FDragOverTabRect.Bottom - FDragOverTabRect.Top) - 4) div 2;
+  if FDragToRightSide then begin
+    if (FDragNextToTabRect.Left < FDragOverTabRect.Right) and
+       (FDragOverIndex < PageCount - 1)
+    then
+      x := FDragOverTabRect.Right - FDragNextToTabRect.Left
+    else
+      x := 8;
+    Points[0].X := FDragOverTabRect.Right - 2 - h - x;
+    Points[0].y := FDragOverTabRect.Top + 2;
+    Points[1].X := FDragOverTabRect.Right - 2 - h - x;
+    Points[1].y := FDragOverTabRect.Bottom - 2;
+    Points[2].X := FDragOverTabRect.Right - 2 - x;
+    Points[2].y := FDragOverTabRect.Top + 2 + h;
+    Points[3] := Points[0];
+    Polygon(DC, @Points, 4, False);
+
+    if (FDragOverIndex < PageCount - 1) then begin
+      Points[0].X := FDragNextToTabRect.Left + 2 + h;
+      Points[0].y := FDragNextToTabRect.Top + 2;
+      Points[1].X := FDragNextToTabRect.Left + 2 + h;
+      Points[1].y := FDragNextToTabRect.Bottom - 2;
+      Points[2].X := FDragNextToTabRect.Left + 2;
+      Points[2].y := FDragNextToTabRect.Top + 2 + h;
+      Points[3] := Points[0];
+      Polygon(DC, @Points, 4, False);
+    end;
+  end else begin
+    if (FDragNextToTabRect.Right < FDragOverTabRect.Left) and
+       (FDragOverIndex > 1)
+    then
+      x := FDragOverTabRect.Left - FDragNextToTabRect.Right
+    else
+      x := 8;
+    Points[0].X := FDragOverTabRect.Left + 2 + h;
+    Points[0].y := FDragOverTabRect.Top + 2;
+    Points[1].X := FDragOverTabRect.Left + 2 + h;
+    Points[1].y := FDragOverTabRect.Bottom - 2;
+    Points[2].X := FDragOverTabRect.Left + 2;
+    Points[2].y := FDragOverTabRect.Top + 2 + h;
+    Points[3] := Points[0];
+    Polygon(DC, @Points, 4, True);
+
+    if (FDragOverIndex > 0) then begin
+      Points[0].X := FDragNextToTabRect.Right - 2 - h - x;
+      Points[0].y := FDragNextToTabRect.Top + 2;
+      Points[1].X := FDragNextToTabRect.Right - 2 - h - x;
+      Points[1].y := FDragNextToTabRect.Bottom - 2;
+      Points[2].X := FDragNextToTabRect.Right - 2 - x;
+      Points[2].y := FDragNextToTabRect.Top + 2 + h;
+      Points[3] := Points[0];
+      Polygon(DC, @Points, 4, False);
+    end;
+  end;
+
+end;
+
+procedure TSourceDragableNotebook.InitDrag;
+begin
+  FDragOverIndex := -1;
+  FDragOverTabRect := Rect(0, 0, 0, 0);
+  FDragNextToTabRect := Rect(0, 0, 0, 0);
+end;
+
+constructor TSourceDragableNotebook.Create(TheOwner: TComponent);
+begin
+  inherited Create(TheOwner);
+  InitDrag;
 end;
 
 procedure TSourceDragableNotebook.DragDrop(Source: TObject; X, Y: Integer);
 var
   TabIndex: Integer;
-  TabPos: TRect;
+  TabPos, tmp: TRect;
+  ToRight: Boolean;
 begin
   inherited DragDrop(Source, X, Y);
+  if (FDragOverIndex >= 0) then begin
+    tmp := FDragOverTabRect;
+    InvalidateRect(Handle, @tmp, false);
+    tmp := FDragNextToTabRect;
+    InvalidateRect(Handle, @tmp, false);
+  end;
+  FDragOverIndex := -1;
 
   if assigned(FOnDragMoveTab) and (Source is TSourceDragableNotebook) and
      (TSourceDragableNotebook(Source).MouseDownTabIndex >= 0)
@@ -6807,8 +6968,15 @@ begin
         TabIndex := PageCount - 1;
     end;
     TabPos := TabRect(TabIndex);
-    if X > (TabPos.Left + TabPos.Right) div 2 then
+
+    ToRight := X > (TabPos.Left + TabPos.Right) div 2;
+    if (Source = Self) and (TabIndex = FMouseDownTabIndex - 1) then
+      ToRight := False;
+    if (Source = Self) and (TabIndex = FMouseDownTabIndex + 1) then
+      ToRight := True;
+    if ToRight then
       inc(TabIndex);
+
     if (Source = self) and (TabIndex > TSourceDragableNotebook(Source).MouseDownTabIndex) then
       dec(TabIndex);
     if (TabIndex >= 0) and ( (Source <> self) or (TabIndex <> MouseDownTabIndex) )
