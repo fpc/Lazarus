@@ -1,0 +1,101 @@
+object ReplaceNamesForm: TReplaceNamesForm
+  Left = 314
+  Height = 472
+  Top = 438
+  Width = 343
+  ActiveControl = NamePairGrid
+  Caption = 'Properties and Types to replace'
+  ClientHeight = 472
+  ClientWidth = 343
+  OnCreate = FormCreate
+  LCLVersion = '0.9.29'
+  object NamePairGrid: TStringGrid
+    Left = 0
+    Height = 434
+    Top = 0
+    Width = 343
+    Align = alClient
+    AutoFillColumns = True
+    ColCount = 2
+    Columns = <    
+      item
+        Title.Caption = 'Delphi name'
+        Width = 169
+      end    
+      item
+        Title.Caption = 'New name'
+        Width = 170
+      end>
+    FixedCols = 0
+    Options = [goFixedVertLine, goFixedHorzLine, goVertLine, goHorzLine, goRangeSelect, goEditing, goSmoothScroll]
+    RowCount = 2
+    TabOrder = 0
+    ColWidths = (
+      169
+      170
+    )
+  end
+  object BtnPanel: TPanel
+    Left = 0
+    Height = 38
+    Top = 434
+    Width = 343
+    Align = alBottom
+    AutoSize = True
+    BevelOuter = bvNone
+    ClientHeight = 38
+    ClientWidth = 343
+    TabOrder = 1
+    object HelpButton: TBitBtn
+      AnchorSideBottom.Side = asrBottom
+      Left = 6
+      Height = 26
+      Top = 6
+      Width = 75
+      Align = alLeft
+      AutoSize = True
+      BorderSpacing.Around = 6
+      Constraints.MinHeight = 25
+      Constraints.MinWidth = 75
+      Kind = bkHelp
+      NumGlyphs = 0
+      TabOrder = 0
+    end
+    object btnOK: TBitBtn
+      AnchorSideBottom.Side = asrBottom
+      Left = 179
+      Height = 26
+      Top = 6
+      Width = 75
+      Align = alRight
+      AutoSize = True
+      BorderSpacing.Around = 6
+      Caption = '&OK'
+      Constraints.MinHeight = 25
+      Constraints.MinWidth = 75
+      Kind = bkOK
+      NumGlyphs = 0
+      OnClick = btnOKClick
+      TabOrder = 1
+    end
+    object btnCancel: TBitBtn
+      AnchorSideRight.Side = asrBottom
+      AnchorSideBottom.Side = asrBottom
+      Left = 260
+      Height = 26
+      Top = 6
+      Width = 77
+      Align = alRight
+      AutoSize = True
+      BorderSpacing.Around = 6
+      Cancel = True
+      Caption = 'Cancel'
+      Constraints.MinHeight = 25
+      Constraints.MinWidth = 75
+      Kind = bkCancel
+      ModalResult = 2
+      NumGlyphs = 0
+      TabOrder = 2
+    end
+  end
+end
