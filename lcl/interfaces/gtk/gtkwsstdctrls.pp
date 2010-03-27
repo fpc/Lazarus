@@ -1518,6 +1518,9 @@ begin
   WidgetInfo^.CoreWidget := EventBox;
   gtk_object_set_data(PGtkObject(EventBox), 'widgetinfo', WidgetInfo);
 
+  {$IFNDEF OldAutoSize}
+  gtk_widget_set_usize(PGtkWidget(Result), AParams.Width, AParams.Height);
+  {$ENDIF}
   Allocation.X := AParams.X;
   Allocation.Y := AParams.Y;
   Allocation.Width := AParams.Width;
