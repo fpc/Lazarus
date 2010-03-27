@@ -6790,8 +6790,6 @@ begin
     tmp := FDragNextToTabRect;
     InvalidateRect(Handle, @tmp, false);
     FDragOverIndex := -1;
-    Accept := False;
-    exit;
   end;
   // currently limited to source=self => extendable to allow dragging tabs from other notebooks
   if (Source is TSourceDragableNotebook) and
