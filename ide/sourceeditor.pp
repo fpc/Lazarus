@@ -8010,11 +8010,11 @@ begin
   for i := 1 to FUpdateLock do
     Result.IncUpdateLock;
   FSourceWindowList.Add(Result);
-  FChangeNotifyLists[semWindowCreate].CallNotifyEvents(Result);
   if Activate then begin
     ActiveSourceWindow := Result;
     ShowActiveWindowOnTop(False);
   end;
+  FChangeNotifyLists[semWindowCreate].CallNotifyEvents(Result);
 end;
 
 procedure TSourceEditorManager.RemoveWindow(AWindow: TSourceNotebook);
