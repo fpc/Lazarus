@@ -93,7 +93,6 @@ type
     function CopyAndLoadFile: TModalResult;
     function ConvertUnitFile: TModalResult;
     function ConvertFormFile: TModalResult;
-    function ConvertDfmToLfm(const LfmFilename: string): TModalResult;
     function MissingUnitToMsg(MissingUnit: string): string;
     function CommentAutomatically: integer;
     function AskUnitPathFromUser: TModalResult;
@@ -243,10 +242,6 @@ type
   function CheckDelphiFileExt(const Filename: string): TModalResult;
   function CheckFilenameForLCLPaths(const Filename: string): TModalResult;
 
-  // dfm/lfm (ConvertDFMFileToLFMFile is used in main unit, too)
-  function ConvertDFMToLFMFilename(const DFMFilename: string; KeepCase: boolean): string;
-  function ConvertDFMFileToLFMFile(const DFMFilename: string): TModalResult;
-
   // projects
   function CheckDelphiProjectExt(const Filename: string): TModalResult;
 
@@ -300,68 +295,6 @@ begin
     exit;
   end;
   Result:=mrOk;
-end;
-
-function ConvertDFMToLFMFilename(const DFMFilename: string;
-  KeepCase: boolean): string;
-begin
-  if DFMFilename<>'' then begin
-    // platform and fpc independent unitnames are lowercase, so are the lfm files
-    Result:=lowercase(ExtractFilenameOnly(DFMFilename));
-    if KeepCase then
-      Result:=ExtractFilenameOnly(DFMFilename);
-    Result:=ExtractFilePath(DFMFilename)+Result+'.lfm';
-  end else
-    Result:='';
-end;
-
-function ConvertDFMFileToLFMFile(const DFMFilename: string): TModalResult;
-var
-  DFMStream, LFMStream: TMemoryStream;
-  LFMFilename: string;
-begin
-  Result:=mrOk;
-  DFMStream:=TMemoryStream.Create;
-  LFMStream:=TMemoryStream.Create;
-  try
-    try
-      DFMStream.LoadFromFile(UTF8ToSys(DFMFilename));
-    except
-      on E: Exception do begin
-        Result:=QuestionDlg(lisCodeToolsDefsReadError, Format(
-          lisUnableToReadFileError, ['"', DFMFilename, '"', #13, E.Message]),
-          mtError,[mrIgnore,mrAbort],0);
-        exit;
-      end;
-    end;
-    try
-      FormDataToText(DFMStream,LFMStream);
-    except
-      on E: Exception do begin
-        Result:=QuestionDlg(lisFormatError,
-          Format(lisUnableToConvertFileError, ['"', DFMFilename, '"', #13,
-            E.Message]),
-          mtError,[mrIgnore,mrAbort],0);
-        exit;
-      end;
-    end;
-    // converting dfm file, without renaming unit -> keep case
-    LFMFilename:=ConvertDFMToLFMFilename(DFMFilename,true);
-    try
-      LFMStream.SaveToFile(UTF8ToSys(LFMFilename));
-    except
-      on E: Exception do begin
-        Result:=MessageDlg(lisCodeToolsDefsWriteError,
-          Format(lisUnableToWriteFileError, ['"', LFMFilename, '"', #13,
-            E.Message]),
-          mtError,[mbIgnore,mbAbort],0);
-        exit;
-      end;
-    end;
-  finally
-    LFMSTream.Free;
-    DFMStream.Free;
-  end;
 end;
 
 function CheckDelphiProjectExt(const Filename: string): TModalResult;
@@ -554,6 +487,7 @@ var
   DfmFilename: string;     // Delphi .DFM file name.
   LfmFilename: string;     // Lazarus .LFM file name.
   ConvTool: TConvDelphiCodeTool;
+  DFMConverter: TDFMConverter;
 begin
   fUnitsToRemove:=TStringList.Create;
   fUnitsToRename:=TStringToStringTree.Create(false);
@@ -591,7 +525,13 @@ begin
     // convert .dfm file to .lfm file (without context type checking)
     if FileExistsUTF8(LfmFilename) then begin
       IDEMessagesWindow.AddMsg('Converting DFM to LFM file '+LfmFilename,'',-1);
-      Result:=ConvertDfmToLfm(LfmFilename);
+      DFMConverter:=TDFMConverter.Create;
+      try
+//        Result:=ConvertDfmToLfm(LfmFilename);
+        Result:=DFMConverter.ConvertDfmToLfm(LfmFilename);
+      finally
+        DFMConverter.Free;
+      end;
       if Result<>mrOk then exit;
       // Read form file code in.
       Result:=LoadCodeBuffer(fLFMBuffer,LfmFilename,
@@ -655,58 +595,6 @@ begin
     if Result<>mrOk then exit;
   end;
   Result:=mrOk;
-end;
-
-function TConvertDelphiUnit.ConvertDfmToLfm(const LfmFilename: string): TModalResult;
-var
-  DFMStream, LFMStream: TMemoryStream;
-begin
-  Result:=mrOk;
-  DFMStream:=TMemoryStream.Create;
-  LFMStream:=TMemoryStream.Create;
-  try
-    // Note: LFM file is copied from DFM file earlier.
-    try
-      DFMStream.LoadFromFile(UTF8ToSys(LfmFilename));
-    except
-      on E: Exception do begin
-        Result:=QuestionDlg(lisCodeToolsDefsReadError, Format(
-          lisUnableToReadFileError, ['"', LfmFilename, '"', #13, E.Message]),
-          mtError,[mrIgnore,mrAbort],0);
-        if Result=mrIgnore then // The caller will continue like nothing happened.
-          Result:=mrOk;
-        exit;
-      end;
-    end;
-    try
-      FormDataToText(DFMStream,LFMStream);
-    except
-      on E: Exception do begin
-        Result:=QuestionDlg(lisFormatError,
-          Format(lisUnableToConvertFileError, ['"',LfmFilename,'"',#13,E.Message]),
-          mtError,[mrIgnore,mrAbort],0);
-        if Result=mrIgnore then
-          Result:=mrOk;
-        exit;
-      end;
-    end;
-    // converting dfm file...
-    try
-      LFMStream.SaveToFile(UTF8ToSys(LfmFilename));
-    except
-      on E: Exception do begin
-        Result:=MessageDlg(lisCodeToolsDefsWriteError,
-          Format(lisUnableToWriteFileError, ['"',LfmFilename,'"',#13,E.Message]),
-          mtError,[mbIgnore,mbAbort],0);
-        if Result=mrIgnore then
-          Result:=mrOk;
-        exit;
-      end;
-    end;
-  finally
-    LFMSTream.Free;
-    DFMStream.Free;
-  end;
 end;
 
 function TConvertDelphiUnit.MissingUnitToMsg(MissingUnit: string): string;

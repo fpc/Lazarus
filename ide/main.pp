@@ -101,7 +101,7 @@ uses
   CodeToolsDefines, DiffDialog, DiskDiffsDialog, UnitInfoDlg, EditorOptions,
   SourceEditProcs, MsgQuickFixes, ViewUnit_dlg,
   // converter
-  ChgEncodingDlg, ConvertDelphi, LazXMLForms,
+  ChgEncodingDlg, ConvertDelphi, MissingPropertiesDlg, LazXMLForms,
   // rest of the ide
   Splash, IDEDefs, LazarusIDEStrConsts, LazConf, MsgView, SearchResultView,
   CodeTemplatesDlg, CodeBrowser, FindUnitDlg, IdeOptionsDlg,
@@ -11260,6 +11260,7 @@ end;
 function TMainIDE.DoConvertDFMtoLFM: TModalResult;
 var
   OpenDialog: TOpenDialog;
+  DFMConverter: TDFMConverter;
   i: integer;
   AFilename: string;
 begin
@@ -11269,16 +11270,16 @@ begin
     InputHistories.ApplyFileDialogSettings(OpenDialog);
     OpenDialog.Title:=lisSelectDFMFiles;
     OpenDialog.Options:=OpenDialog.Options+[ofAllowMultiSelect];
-    OpenDialog.Filter := rsFormDataFileDfm
-                         + '|' + dlgAllFiles + '|'+GetAllFilesMask;
+    OpenDialog.Filter:=rsFormDataFileDfm+'|'+dlgAllFiles+'|'+GetAllFilesMask;
     if OpenDialog.Execute and (OpenDialog.Files.Count>0) then begin
       For I := 0 to OpenDialog.Files.Count-1 do begin
         AFilename:=ExpandFileNameUTF8(OpenDialog.Files.Strings[i]);
-        if ConvertDFMFileToLFMFile(AFilename)=mrAbort then begin
-          Result:=mrAbort;
-          break;
-        end else
-          Result:=mrOk;
+        DFMConverter:=TDFMConverter.Create;
+        try
+          Result:=DFMConverter.Convert(AFilename);
+        finally
+          DFMConverter.Free;
+        end;
       end;
       SaveEnvironment;
     end;

@@ -33,8 +33,8 @@ interface
 
 uses
   // FCL+LCL
-  Classes, SysUtils, Math, LCLProc, Forms, Controls, Grids,
-  Graphics, Dialogs, Buttons, StdCtrls, ExtCtrls, contnrs,
+  Classes, SysUtils, Math, LCLProc, Forms, Controls, Grids, LResources,
+  Graphics, Dialogs, Buttons, StdCtrls, ExtCtrls, contnrs, FileUtil,
   // components
   SynHighlighterLFM, SynEdit, SynEditMiscClasses, LFMTrees,
   // codetools
@@ -45,6 +45,21 @@ uses
   EditorOptions, ConvertSettings, ConvCodeTool, ReplaceNamesUnit, CheckLFMDlg;
 
 type
+
+  { TDFMConverter }
+
+  // Encapsulates some basic form file conversions.
+  TDFMConverter = class
+  private
+    fOrigFormat: TLRSStreamOriginalFormat;
+    function GetLFMFilename(const DfmFilename: string; KeepCase: boolean): string;
+
+  public
+    constructor Create;
+    destructor Destroy; override;
+    function ConvertDfmToLfm(const DfmFilename: string): TModalResult;
+    function Convert(const DfmFilename: string): TModalResult;
+  end;
 
   { TLfmFixer }
 
@@ -101,6 +116,97 @@ type
 implementation
 
 {$R *.lfm}
+
+{ TDFMConverter }
+
+constructor TDFMConverter.Create;
+begin
+
+end;
+
+destructor TDFMConverter.Destroy;
+begin
+  inherited Destroy;
+end;
+
+function TDFMConverter.Convert(const DfmFilename: string): TModalResult;
+begin
+  Result:=ConvertDfmToLfm(DfmFilename);
+  if Result=mrOK then begin
+    if fOrigFormat=sofBinary then
+      ShowMessage(Format('File %s is successfully converted to text format.',
+                         [DfmFilename]))
+    else
+      ShowMessage(Format('File %s syntax is correct.', [DfmFilename]));
+  end;
+end;
+
+function TDFMConverter.GetLFMFilename(const DfmFilename: string;
+  KeepCase: boolean): string;
+begin
+  if DfmFilename<>'' then begin
+    // platform and fpc independent unitnames are lowercase, so are the lfm files
+    Result:=lowercase(ExtractFilenameOnly(DfmFilename));
+    if KeepCase then
+      Result:=ExtractFilenameOnly(DfmFilename);
+    Result:=ExtractFilePath(DfmFilename)+Result+'.lfm';
+  end else
+    Result:='';
+end;
+
+function TDFMConverter.ConvertDfmToLfm(const DfmFilename: string): TModalResult;
+var
+  DFMStream, LFMStream: TMemoryStream;
+begin
+  Result:=mrOk;
+  DFMStream:=TMemoryStream.Create;
+  LFMStream:=TMemoryStream.Create;
+  try
+    // Note: The file is copied from DFM file earlier.
+    try
+      DFMStream.LoadFromFile(UTF8ToSys(DfmFilename));
+    except
+      on E: Exception do begin
+        Result:=QuestionDlg(lisCodeToolsDefsReadError, Format(
+          lisUnableToReadFileError, ['"', DfmFilename, '"', #13, E.Message]),
+          mtError,[mrIgnore,mrAbort],0);
+        if Result=mrIgnore then // The caller will continue like nothing happened.
+          Result:=mrOk;
+        exit;
+      end;
+    end;
+    fOrigFormat:=TestFormStreamFormat(DFMStream);
+    try
+      FormDataToText(DFMStream,LFMStream);
+    except
+      on E: Exception do begin
+        Result:=QuestionDlg(lisFormatError,
+          Format(lisUnableToConvertFileError, ['"',DfmFilename,'"',#13,E.Message]),
+          mtError,[mrIgnore,mrAbort],0);
+        if Result=mrIgnore then
+          Result:=mrOk;
+        exit;
+      end;
+    end;
+    // converting dfm file, without renaming unit -> keep case...
+    try
+      LFMStream.SaveToFile(UTF8ToSys(DfmFilename));
+    except
+      on E: Exception do begin
+        Result:=MessageDlg(lisCodeToolsDefsWriteError,
+          Format(lisUnableToWriteFileError, ['"',DfmFilename,'"',#13,E.Message]),
+          mtError,[mbIgnore,mbAbort],0);
+        if Result=mrIgnore then
+          Result:=mrOk;
+        exit;
+      end;
+    end;
+  finally
+    LFMSTream.Free;
+    DFMStream.Free;
+  end;
+end;
+
 
 { TLFMFixer }
 
@@ -191,7 +297,6 @@ var
 begin
   GridUpdater:=TGridUpdater.Create(fPropReplaceGrid, fSettings.ReplacementNames);
   try
-    fPropReplaceGrid.BeginUpdate;
     if fLFMTree<>nil then begin
       CurError:=fLFMTree.FirstError;
       while CurError<>nil do begin
@@ -204,7 +309,6 @@ begin
         CurError:=CurError.NextError;
       end;
     end;
-    fPropReplaceGrid.EndUpdate;
   finally
     GridUpdater.Free;
   end;

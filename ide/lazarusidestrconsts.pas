@@ -386,7 +386,7 @@ resourcestring
   lisMenuGuessMisplacedIFDEF = 'Guess misplaced IFDEF/ENDIF';
   lisMenuMakeResourceString = 'Make Resource String ...';
   lisMenuDiff = 'Diff';
-  lisMenuConvertDFMtoLFM = 'Convert DFM file to LFM ...';
+  lisMenuConvertDFMtoLFM = 'Convert binary DFM file to text LFM and check syntax ...';
   lisMenuCheckLFM = 'Check LFM file in editor';
   lisMenuConvertDelphiUnit = 'Convert Delphi unit to Lazarus unit ...';
   lisMenuConvertDelphiProject = 'Convert Delphi project to Lazarus project ...';

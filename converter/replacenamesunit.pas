@@ -60,6 +60,7 @@ begin
   // Collect (maybe edited) properties from StringGrid to NameReplacements.
   List:=TStringList.Create;
   try
+    AGrid.BeginUpdate;
     AMap.GetNames(List);
     for i:=0 to List.Count-1 do begin
       OldIdent:=List[i];
@@ -69,6 +70,7 @@ begin
       AGrid.Cells[0,i]:=OldIdent;
       AGrid.Cells[1,i]:=NewIdent;
     end;
+    AGrid.EndUpdate;
   finally
     List.Free;
   end;
@@ -96,10 +98,12 @@ begin
   fReplaceMap:=AReplaceMap;
   i:=1;
   fSeenName:=TStringList.Create;
+  fGrid.BeginUpdate;
 end;
 
 destructor TGridUpdater.Destroy;
 begin
+  fGrid.EndUpdate;
   fSeenName.Free;
   inherited Destroy;
 end;
