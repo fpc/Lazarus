@@ -74,7 +74,6 @@ type
     procedure RealSetText(const AValue: TCaption); override;
   public
     constructor Create(TheOwner: TComponent); override;
-    procedure AdjustClientRect(var ARect: TRect); override;
     function CanTab: boolean; override;
     function AutoSizeDelayed: boolean; override;
     function IsControlVisible: Boolean; override;

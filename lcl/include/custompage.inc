@@ -150,15 +150,6 @@ begin
 end;
 
 {------------------------------------------------------------------------------
-  TCustomPage AdjustClientRect
-  Params: Rect
- ------------------------------------------------------------------------------}
-procedure TCustomPage.AdjustClientRect(var ARect: TRect);
-begin
-  ARect:=GetClientRect;
-end;
-
-{------------------------------------------------------------------------------
   function TCustomPage.PageIndex: integer;
 
   Returns the index of the page in the notebook.
