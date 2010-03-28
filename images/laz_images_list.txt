@@ -170,6 +170,7 @@ debugger/callstack_show.png
 debugger/callstack_top.png
 debugger/debugger_current_line.png
 debugger/debugger_current_line_breakpoint.png
+debugger/debugger_current_line_disabled_breakpoint.png
 debugger/debugger.png
 debugger/debugger_breakpoints.png
 debugger/debugger_call_stack.png

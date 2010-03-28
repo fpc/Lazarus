@@ -11,6 +11,8 @@ sourceeditor/bookmark8.png
 sourceeditor/bookmark9.png
 sourceeditor/InactiveBreakPoint.png
 sourceeditor/InvalidBreakPoint.png
+sourceeditor/InvalidDisabledBreakPoint.png
 sourceeditor/MultiBreakPoint.png
 sourceeditor/UnknownBreakPoint.png
+sourceeditor/UnknownDisabledBreakPoint.png
 sourceeditor/tsynsyncroedit.png

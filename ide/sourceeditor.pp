@@ -3193,6 +3193,8 @@ begin
 end;
 
 procedure TSourceEditor.UpdateExecutionSourceMark;
+var
+  BreakPoint: TIDEBreakPoint;
 begin
   if (FExecutionMark = nil) then
   begin
@@ -3208,7 +3210,13 @@ begin
   begin
     FExecutionMark.Line := ExecutionLine;
     if SourceEditorMarks.FindBreakPointMark(EditorComponent, ExecutionLine) <> nil then
-      FExecutionMark.ImageIndex := SourceEditorMarks.CurrentLineBreakPointImg
+    begin
+      BreakPoint := DebugBoss.BreakPoints.Find(Self.FileName, ExecutionLine);
+      if (BreakPoint <> nil) and (not BreakPoint.Enabled) then
+        FExecutionMark.ImageIndex := SourceEditorMarks.CurrentLineDisabledBreakPointImg
+      else
+        FExecutionMark.ImageIndex := SourceEditorMarks.CurrentLineBreakPointImg;
+    end
     else
       FExecutionMark.ImageIndex := SourceEditorMarks.CurrentLineImg;
   end;
@@ -3219,7 +3227,6 @@ begin
   if fExecutionLine=NewLine then exit;
   fExecutionLine:=NewLine;
   UpdateExecutionSourceMark;
-  EditorComponent.Invalidate;
 end;
 
 Function TSourceEditor.RefreshEditorSettings: Boolean;

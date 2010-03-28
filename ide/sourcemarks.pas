@@ -142,10 +142,12 @@ type
     fActiveBreakPointImg: Integer;
     FCurrentLineBreakPointImg: Integer;
     FCurrentLineImg: Integer;
+    FCurrentLineDisabledBreakPointImg: Integer;
     FSourceLineImg: Integer;
     FImgList: TImageList;
     fInactiveBreakPointImg: Integer;
     fInvalidBreakPointImg: Integer;
+    fInvalidDisabledBreakPointImg: Integer;
     fItems: TList;// list of TSourceMark
     fMultiBreakPointImg: Integer;
     FOnGetFilename: TGetFilenameEvent;
@@ -153,6 +155,7 @@ type
     FOnAction: TMarksActionEvent;
     fSortedItems: TAVLTree;// tree of TSourceMark
     fUnknownBreakPointImg: Integer;
+    fUnknownDisabledBreakPointImg: Integer;
     function GetItems(Index: integer): TSourceMark;
     procedure CreateImageList;
   protected
@@ -192,10 +195,13 @@ type
     property ActiveBreakPointImg: Integer read fActiveBreakPointImg;
     property InactiveBreakPointImg: Integer read fInactiveBreakPointImg;
     property InvalidBreakPointImg: Integer read fInvalidBreakPointImg;
+    property InvalidDisabledBreakPointImg: Integer read fInvalidDisabledBreakPointImg;
     property MultiBreakPointImg: Integer read fMultiBreakPointImg;
     property UnknownBreakPointImg: Integer read fUnknownBreakPointImg;
+    property UnknownDisabledBreakPointImg: Integer read fUnknownDisabledBreakPointImg;
     property CurrentLineImg: Integer read FCurrentLineImg;
     property CurrentLineBreakPointImg: Integer read FCurrentLineBreakPointImg;
+    property CurrentLineDisabledBreakPointImg: Integer read FCurrentLineDisabledBreakPointImg;
     property SourceLineImg: Integer read FSourceLineImg;
   end;
   
@@ -347,11 +353,15 @@ procedure TSourceMark.SetImage(const Value: Integer);
 begin
   if ImageIndex=Value then exit;
   inherited SetImage(Value);
+  // Allow SourceEditor to update ExecutionLine image.
+  if IsBreakPoint and Assigned(FSourceMarks) and Assigned(FSourceMarks.OnAction) then
+    FSourceMarks.OnAction(Self, lnAdded);
 end;
 
 procedure TSourceMark.SetLine(const Value: Integer);
 begin
   if Line=Value then exit;
+  if EditorUpdateRequired then DoLineUpdate;
   if FSourceMarks<>nil then FSourceMarks.fSortedItems.Remove(Self);
   inherited SetLine(Value);
   if FSourceMarks<>nil then FSourceMarks.fSortedItems.Add(Self);
@@ -514,18 +524,24 @@ begin
 
   // load active breakpoint image
   fActiveBreakPointImg:=AddImage('ActiveBreakPoint');
-  // load inactive breakpoint image
+  // load disabled breakpoint image
   fInactiveBreakPointImg:=AddImage('InactiveBreakPoint');
   // load invalid breakpoint image
   fInvalidBreakPointImg:=AddImage('InvalidBreakPoint');
+  // load invalid disabled breakpoint image
+  fInvalidDisabledBreakPointImg := AddImage('InvalidDisabledBreakPoint');
   // load unknown breakpoint image
   fUnknownBreakPointImg:=AddImage('UnknownBreakPoint');
+  // load unknown disabled breakpoint image
+  fUnknownDisabledBreakPointImg := AddImage('UnknownDisabledBreakPoint');
   // load multi mixed breakpoint image
   fMultiBreakPointImg:=AddImage('MultiBreakPoint');
   // load current line image
   FCurrentLineImg:=AddImage('debugger_current_line');
   // load current line + breakpoint image
   FCurrentLineBreakPointImg:=AddImage('debugger_current_line_breakpoint');
+  // load current line + disabled breakpoint image
+  FCurrentLineDisabledBreakPointImg := AddImage('debugger_current_line_disabled_breakpoint');
   // load source line
   FSourceLineImg:=AddImage('debugger_source_line');
 end;

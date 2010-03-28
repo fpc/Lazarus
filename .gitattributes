@@ -3856,6 +3856,7 @@ images/debugger/debugger_breakpoints.png -text svneol=unset#image/png
 images/debugger/debugger_call_stack.png -text svneol=unset#image/png
 images/debugger/debugger_current_line.png -text
 images/debugger/debugger_current_line_breakpoint.png -text
+images/debugger/debugger_current_line_disabled_breakpoint.png -text svneol=unset#image/png
 images/debugger/debugger_evaluate.png -text svneol=unset#images/png
 images/debugger/debugger_inspect.png -text svneol=unset#images/png
 images/debugger/debugger_modify.png -text svneol=unset#images/png
@@ -4057,8 +4058,10 @@ images/propertygrid/pg_active_row.png -text svneol=unset#image/png
 images/sourceeditor/ActiveBreakPoint.png -text
 images/sourceeditor/InactiveBreakPoint.png -text
 images/sourceeditor/InvalidBreakPoint.png -text
+images/sourceeditor/InvalidDisabledBreakPoint.png -text svneol=unset#image/png
 images/sourceeditor/MultiBreakPoint.png -text
 images/sourceeditor/UnknownBreakPoint.png -text
+images/sourceeditor/UnknownDisabledBreakPoint.png -text svneol=unset#image/png
 images/sourceeditor/bookmark0.png -text
 images/sourceeditor/bookmark1.png -text
 images/sourceeditor/bookmark2.png -text

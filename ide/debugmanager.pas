@@ -1195,9 +1195,15 @@ begin
       else
         Img := SourceEditorMarks.InactiveBreakPointImg;
     vsInvalid:
-      Img := SourceEditorMarks.InvalidBreakPointImg;
+      if Enabled then
+        Img := SourceEditorMarks.InvalidBreakPointImg
+      else
+        Img := SourceEditorMarks.InvalidDisabledBreakPointImg;
     else
-      Img := SourceEditorMarks.UnknownBreakPointImg;
+      if Enabled then
+        Img := SourceEditorMarks.UnknownBreakPointImg
+      else
+        Img := SourceEditorMarks.UnknownDisabledBreakPointImg;
   end;
   SourceMark.ImageIndex := Img;
 end;
@@ -1215,9 +1221,15 @@ begin
       else
         aha := ahaDisabledBreakpoint;
     vsInvalid:
-      aha := ahaInvalidBreakpoint;
+    if Enabled then
+        aha := ahaInvalidBreakpoint
+      else
+        aha := ahaDisabledBreakpoint;
     else
-      aha := ahaUnknownBreakpoint;
+      if Enabled then
+        aha := ahaUnknownBreakpoint
+      else
+        aha := ahaDisabledBreakpoint;
   end;
   SourceMark.LineColorAttrib := aha;
 end;
