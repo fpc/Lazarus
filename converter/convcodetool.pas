@@ -222,7 +222,7 @@ begin
         if (LclOnlyUnits.Count>0) or (DelphiOnlyUnits.Count>0) then begin
           // Add LCL and Delphi sections for output.
           nl:=fSrcCache.BeautifyCodeOptions.LineEnd;
-          s:='{$IFDEF LCL}'+nl+'  ';
+          s:='{$IFDEF FPC}'+nl+'  ';
           for i:=0 to LclOnlyUnits.Count-1 do
             s:=s+LclOnlyUnits[i]+', ';
           s:=s+nl+'{$ELSE}'+nl+'  ';
@@ -261,7 +261,7 @@ begin
       InsertPos:=CurPos.EndPos;
       nl:=fSrcCache.BeautifyCodeOptions.LineEnd;
       if fTarget=ctLazarusAndDelphi then
-        s:='{$IFDEF LCL}'+nl+'  {$MODE Delphi}'+nl+'{$ENDIF}'
+        s:='{$IFDEF FPC}'+nl+'  {$MODE Delphi}'+nl+'{$ENDIF}'
       else
         s:='{$MODE Delphi}';
       fSrcCache.Replace(gtEmptyLine,gtEmptyLine,InsertPos,InsertPos,s);
@@ -334,7 +334,7 @@ begin
   begin
     // Add IFDEF for .lfm and .dfm allowing Delphi to use .dfm.
     nl:=fSrcCache.BeautifyCodeOptions.LineEnd;
-    s:='{$IFDEF LCL}'+nl+
+    s:='{$IFDEF FPC}'+nl+
        '  {$R *.lfm}'+nl+
        '{$ELSE}'+nl+
        '  {$R *.dfm}'+nl+
