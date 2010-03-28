@@ -3466,6 +3466,10 @@ msgstr ""
 msgid "Available packages"
 msgstr ""
 
+#: lazarusidestrconsts.lisbackupchangedfiles
+msgid "Make backup of changed files"
+msgstr ""
+
 #: lazarusidestrconsts.lisbackupfilefailed
 msgid "Backup file failed"
 msgstr ""
@@ -5098,6 +5102,22 @@ msgstr ""
 
 #: lazarusidestrconsts.lisconvertprojectorpackage
 msgid "Convert project or package"
+msgstr ""
+
+#: lazarusidestrconsts.lisconverttarget1
+msgid "Lazarus/LCL"
+msgstr ""
+
+#: lazarusidestrconsts.lisconverttarget2
+msgid "Lazarus/LCL for Windows only"
+msgstr ""
+
+#: lazarusidestrconsts.lisconverttarget3
+msgid "Both Lazarus/LCL and Delphi"
+msgstr ""
+
+#: lazarusidestrconsts.lisconvreplacements
+msgid "Replacements"
 msgstr ""
 
 #: lazarusidestrconsts.liscopyall
@@ -8349,7 +8369,7 @@ msgid "Convert Delphi unit to Lazarus unit ..."
 msgstr ""
 
 #: lazarusidestrconsts.lismenuconvertdfmtolfm
-msgid "Convert DFM file to LFM ..."
+msgid "Convert binary DFM file to text LFM and check syntax ..."
 msgstr ""
 
 #: lazarusidestrconsts.lismenuconvertencoding
@@ -9195,8 +9215,16 @@ msgstr ""
 msgid "Comment Out"
 msgstr ""
 
+#: lazarusidestrconsts.lismissingunitsfordelphi
+msgid "For Delphi only"
+msgstr ""
+
 #: lazarusidestrconsts.lismissingunitsinfo1
 msgid "1) Comment out the missing units (ignore them)."
+msgstr ""
+
+#: lazarusidestrconsts.lismissingunitsinfo1b
+msgid "1) Use the units only for Delphi."
 msgstr ""
 
 #: lazarusidestrconsts.lismissingunitsinfo2
@@ -11452,6 +11480,14 @@ msgstr ""
 
 #: lazarusidestrconsts.lisrepeatcount
 msgid "Repeat Count:"
+msgstr ""
+
+#: lazarusidestrconsts.lisreplacementproptypes
+msgid "Replacement Properties and Types"
+msgstr ""
+
+#: lazarusidestrconsts.lisreplaceremoveinvalid
+msgid "Replace and remove invalid properties / types"
 msgstr ""
 
 #: lazarusidestrconsts.lisreplacingselectionfailed
@@ -14708,6 +14744,18 @@ msgstr "Skyf bladsy regs"
 #: lazarusidestrconsts.uemmovepagerightmost
 msgid "Move page rightmost"
 msgstr "Skyf bladsy na vêr regs"
+
+#: lazarusidestrconsts.uemmovetonewwindow
+msgid "Move to new Window"
+msgstr ""
+
+#: lazarusidestrconsts.uemmovetootherwindow
+msgid "Move to other Window"
+msgstr ""
+
+#: lazarusidestrconsts.uemmovetootherwindownew
+msgid "New Window"
+msgstr ""
 
 #: lazarusidestrconsts.uemnextbookmark
 msgid "Goto next Bookmark"

@@ -3495,6 +3495,10 @@ msgstr "オブジェクトインスペクタを自動表示"
 msgid "Available packages"
 msgstr "利用可能パッケージ"
 
+#: lazarusidestrconsts.lisbackupchangedfiles
+msgid "Make backup of changed files"
+msgstr ""
+
 #: lazarusidestrconsts.lisbackupfilefailed
 msgid "Backup file failed"
 msgstr "バックアップファイル失敗"
@@ -5130,6 +5134,22 @@ msgstr "プロジェクト/パッケージのエンコーディングを変換"
 #: lazarusidestrconsts.lisconvertprojectorpackage
 msgid "Convert project or package"
 msgstr "プロジェクトもしくはパッケージを変換"
+
+#: lazarusidestrconsts.lisconverttarget1
+msgid "Lazarus/LCL"
+msgstr ""
+
+#: lazarusidestrconsts.lisconverttarget2
+msgid "Lazarus/LCL for Windows only"
+msgstr ""
+
+#: lazarusidestrconsts.lisconverttarget3
+msgid "Both Lazarus/LCL and Delphi"
+msgstr ""
+
+#: lazarusidestrconsts.lisconvreplacements
+msgid "Replacements"
+msgstr ""
 
 #: lazarusidestrconsts.liscopyall
 msgid "Copy All"
@@ -8380,7 +8400,9 @@ msgid "Convert Delphi unit to Lazarus unit ..."
 msgstr "DelphiユニットをLazarusユニットへ変換 ..."
 
 #: lazarusidestrconsts.lismenuconvertdfmtolfm
-msgid "Convert DFM file to LFM ..."
+#, fuzzy
+#| msgid "Convert DFM file to LFM ..."
+msgid "Convert binary DFM file to text LFM and check syntax ..."
 msgstr "DFMファイルをLFMへ変換 ..."
 
 #: lazarusidestrconsts.lismenuconvertencoding
@@ -9245,8 +9267,16 @@ msgstr ""
 msgid "Comment Out"
 msgstr ""
 
+#: lazarusidestrconsts.lismissingunitsfordelphi
+msgid "For Delphi only"
+msgstr ""
+
 #: lazarusidestrconsts.lismissingunitsinfo1
 msgid "1) Comment out the missing units (ignore them)."
+msgstr ""
+
+#: lazarusidestrconsts.lismissingunitsinfo1b
+msgid "1) Use the units only for Delphi."
 msgstr ""
 
 #: lazarusidestrconsts.lismissingunitsinfo2
@@ -11503,6 +11533,14 @@ msgstr "他のエンコーディングで開き直す"
 #: lazarusidestrconsts.lisrepeatcount
 msgid "Repeat Count:"
 msgstr "反復回数："
+
+#: lazarusidestrconsts.lisreplacementproptypes
+msgid "Replacement Properties and Types"
+msgstr ""
+
+#: lazarusidestrconsts.lisreplaceremoveinvalid
+msgid "Replace and remove invalid properties / types"
+msgstr ""
 
 #: lazarusidestrconsts.lisreplacingselectionfailed
 msgid "Replacing selection failed."
@@ -14766,6 +14804,18 @@ msgstr "ページを右に移動"
 #: lazarusidestrconsts.uemmovepagerightmost
 msgid "Move page rightmost"
 msgstr "ページを右端に移動"
+
+#: lazarusidestrconsts.uemmovetonewwindow
+msgid "Move to new Window"
+msgstr ""
+
+#: lazarusidestrconsts.uemmovetootherwindow
+msgid "Move to other Window"
+msgstr ""
+
+#: lazarusidestrconsts.uemmovetootherwindownew
+msgid "New Window"
+msgstr ""
 
 #: lazarusidestrconsts.uemnextbookmark
 msgid "Goto next Bookmark"

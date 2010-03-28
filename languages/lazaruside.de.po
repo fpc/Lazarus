@@ -3505,6 +3505,10 @@ msgstr "Objektinspektor automatisch anzeigen"
 msgid "Available packages"
 msgstr "Verfügbare Packages"
 
+#: lazarusidestrconsts.lisbackupchangedfiles
+msgid "Make backup of changed files"
+msgstr ""
+
 #: lazarusidestrconsts.lisbackupfilefailed
 msgid "Backup file failed"
 msgstr "Dateisicherung fehlgeschlagen"
@@ -5140,6 +5144,22 @@ msgstr "Kodierung von Projekten/Packages umwandeln"
 #: lazarusidestrconsts.lisconvertprojectorpackage
 msgid "Convert project or package"
 msgstr "Projekt oder Package umwandeln"
+
+#: lazarusidestrconsts.lisconverttarget1
+msgid "Lazarus/LCL"
+msgstr ""
+
+#: lazarusidestrconsts.lisconverttarget2
+msgid "Lazarus/LCL for Windows only"
+msgstr ""
+
+#: lazarusidestrconsts.lisconverttarget3
+msgid "Both Lazarus/LCL and Delphi"
+msgstr ""
+
+#: lazarusidestrconsts.lisconvreplacements
+msgid "Replacements"
+msgstr ""
 
 #: lazarusidestrconsts.liscopyall
 msgid "Copy All"
@@ -8390,7 +8410,9 @@ msgid "Convert Delphi unit to Lazarus unit ..."
 msgstr "Delphi- in Lazarus-Unit umwandeln ..."
 
 #: lazarusidestrconsts.lismenuconvertdfmtolfm
-msgid "Convert DFM file to LFM ..."
+#, fuzzy
+#| msgid "Convert DFM file to LFM ..."
+msgid "Convert binary DFM file to text LFM and check syntax ..."
 msgstr "DFM- in LFM-Datei umwandeln ..."
 
 #: lazarusidestrconsts.lismenuconvertencoding
@@ -9244,9 +9266,17 @@ msgstr "Ihre Auswahl ist:"
 msgid "Comment Out"
 msgstr "Auskommentieren"
 
+#: lazarusidestrconsts.lismissingunitsfordelphi
+msgid "For Delphi only"
+msgstr ""
+
 #: lazarusidestrconsts.lismissingunitsinfo1
 msgid "1) Comment out the missing units (ignore them)."
 msgstr "1) Alle fehlenden Units auskommentieren (übergehen)."
+
+#: lazarusidestrconsts.lismissingunitsinfo1b
+msgid "1) Use the units only for Delphi."
+msgstr ""
 
 #: lazarusidestrconsts.lismissingunitsinfo2
 msgid "2) Select a unit path which will be added to project settings."
@@ -11505,6 +11535,14 @@ msgstr "Mit anderer Kodierung erneut lesen"
 #: lazarusidestrconsts.lisrepeatcount
 msgid "Repeat Count:"
 msgstr "Zähler wiederholen:"
+
+#: lazarusidestrconsts.lisreplacementproptypes
+msgid "Replacement Properties and Types"
+msgstr ""
+
+#: lazarusidestrconsts.lisreplaceremoveinvalid
+msgid "Replace and remove invalid properties / types"
+msgstr ""
 
 #: lazarusidestrconsts.lisreplacingselectionfailed
 msgid "Replacing selection failed."
@@ -14777,6 +14815,18 @@ msgstr "nach rechts"
 #: lazarusidestrconsts.uemmovepagerightmost
 msgid "Move page rightmost"
 msgstr "nach ganz rechts"
+
+#: lazarusidestrconsts.uemmovetonewwindow
+msgid "Move to new Window"
+msgstr ""
+
+#: lazarusidestrconsts.uemmovetootherwindow
+msgid "Move to other Window"
+msgstr ""
+
+#: lazarusidestrconsts.uemmovetootherwindownew
+msgid "New Window"
+msgstr ""
 
 #: lazarusidestrconsts.uemnextbookmark
 msgid "Goto next Bookmark"

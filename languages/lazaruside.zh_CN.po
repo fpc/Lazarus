@@ -3499,6 +3499,10 @@ msgstr "自动显示"
 msgid "Available packages"
 msgstr "可用的包"
 
+#: lazarusidestrconsts.lisbackupchangedfiles
+msgid "Make backup of changed files"
+msgstr ""
+
 #: lazarusidestrconsts.lisbackupfilefailed
 msgid "Backup file failed"
 msgstr "备份文件失败"
@@ -5134,6 +5138,22 @@ msgstr "转换工程/包的编码"
 #: lazarusidestrconsts.lisconvertprojectorpackage
 msgid "Convert project or package"
 msgstr "转换工程或包"
+
+#: lazarusidestrconsts.lisconverttarget1
+msgid "Lazarus/LCL"
+msgstr ""
+
+#: lazarusidestrconsts.lisconverttarget2
+msgid "Lazarus/LCL for Windows only"
+msgstr ""
+
+#: lazarusidestrconsts.lisconverttarget3
+msgid "Both Lazarus/LCL and Delphi"
+msgstr ""
+
+#: lazarusidestrconsts.lisconvreplacements
+msgid "Replacements"
+msgstr ""
 
 #: lazarusidestrconsts.liscopyall
 msgid "Copy All"
@@ -8384,7 +8404,9 @@ msgid "Convert Delphi unit to Lazarus unit ..."
 msgstr "转换 Delphi 单元为 Lazarus 单元..."
 
 #: lazarusidestrconsts.lismenuconvertdfmtolfm
-msgid "Convert DFM file to LFM ..."
+#, fuzzy
+#| msgid "Convert DFM file to LFM ..."
+msgid "Convert binary DFM file to text LFM and check syntax ..."
 msgstr "转换 DFM 文件为 LFM 文件..."
 
 #: lazarusidestrconsts.lismenuconvertencoding
@@ -9245,8 +9267,16 @@ msgstr ""
 msgid "Comment Out"
 msgstr ""
 
+#: lazarusidestrconsts.lismissingunitsfordelphi
+msgid "For Delphi only"
+msgstr ""
+
 #: lazarusidestrconsts.lismissingunitsinfo1
 msgid "1) Comment out the missing units (ignore them)."
+msgstr ""
+
+#: lazarusidestrconsts.lismissingunitsinfo1b
+msgid "1) Use the units only for Delphi."
 msgstr ""
 
 #: lazarusidestrconsts.lismissingunitsinfo2
@@ -11505,6 +11535,14 @@ msgstr "用另一种编码打开"
 #: lazarusidestrconsts.lisrepeatcount
 msgid "Repeat Count:"
 msgstr "重复计数:"
+
+#: lazarusidestrconsts.lisreplacementproptypes
+msgid "Replacement Properties and Types"
+msgstr ""
+
+#: lazarusidestrconsts.lisreplaceremoveinvalid
+msgid "Replace and remove invalid properties / types"
+msgstr ""
 
 #: lazarusidestrconsts.lisreplacingselectionfailed
 msgid "Replacing selection failed."
@@ -14769,6 +14807,18 @@ msgstr ""
 
 #: lazarusidestrconsts.uemmovepagerightmost
 msgid "Move page rightmost"
+msgstr ""
+
+#: lazarusidestrconsts.uemmovetonewwindow
+msgid "Move to new Window"
+msgstr ""
+
+#: lazarusidestrconsts.uemmovetootherwindow
+msgid "Move to other Window"
+msgstr ""
+
+#: lazarusidestrconsts.uemmovetootherwindownew
+msgid "New Window"
 msgstr ""
 
 #: lazarusidestrconsts.uemnextbookmark

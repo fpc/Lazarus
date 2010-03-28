@@ -5,7 +5,7 @@ msgstr ""
 "Content-Type: text/plain; charset=utf-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "POT-Creation-Date: \n"
-"PO-Revision-Date: 2010-03-20 19:27+0300\n"
+"PO-Revision-Date: 2010-03-29 02:02+0300\n"
 "Language-Team: \n"
 "MIME-Version: 1.0\n"
 
@@ -3492,6 +3492,10 @@ msgstr "Показывать инспектор объектов автомат�
 msgid "Available packages"
 msgstr "Доступные пакеты"
 
+#: lazarusidestrconsts.lisbackupchangedfiles
+msgid "Make backup of changed files"
+msgstr "Делать резервную копию изменённых файлов"
+
 #: lazarusidestrconsts.lisbackupfilefailed
 msgid "Backup file failed"
 msgstr "Резервирование не удалось"
@@ -5123,6 +5127,22 @@ msgstr "Преобразовать кодировку проектов/паке�
 #: lazarusidestrconsts.lisconvertprojectorpackage
 msgid "Convert project or package"
 msgstr "Преобразование проекта либо пакета"
+
+#: lazarusidestrconsts.lisconverttarget1
+msgid "Lazarus/LCL"
+msgstr "Lazarus/LCL"
+
+#: lazarusidestrconsts.lisconverttarget2
+msgid "Lazarus/LCL for Windows only"
+msgstr "Lazarus/LCL только для Windows"
+
+#: lazarusidestrconsts.lisconverttarget3
+msgid "Both Lazarus/LCL and Delphi"
+msgstr "Lazarus/LCL и Delphi"
+
+#: lazarusidestrconsts.lisconvreplacements
+msgid "Replacements"
+msgstr "Замены"
 
 #: lazarusidestrconsts.liscopyall
 msgid "Copy All"
@@ -8373,8 +8393,9 @@ msgid "Convert Delphi unit to Lazarus unit ..."
 msgstr "Преобразовать модуль Delphi в Lazarus ..."
 
 #: lazarusidestrconsts.lismenuconvertdfmtolfm
-msgid "Convert DFM file to LFM ..."
-msgstr "Преобразовать файл DFM в LFM ..."
+#| msgid "Convert DFM file to LFM ..."
+msgid "Convert binary DFM file to text LFM and check syntax ..."
+msgstr "Преобразовать двоичный файл DFM в текстовый LFM и проверить синтаксис ..."
 
 #: lazarusidestrconsts.lismenuconvertencoding
 msgid "Convert encoding of projects/packages ..."
@@ -9227,9 +9248,17 @@ msgstr "Вы можете:"
 msgid "Comment Out"
 msgstr "Закомментировать"
 
+#: lazarusidestrconsts.lismissingunitsfordelphi
+msgid "For Delphi only"
+msgstr "Только для Delphi"
+
 #: lazarusidestrconsts.lismissingunitsinfo1
 msgid "1) Comment out the missing units (ignore them)."
 msgstr "1) Закомментировать отсутствующие модули (игнорировать их)."
+
+#: lazarusidestrconsts.lismissingunitsinfo1b
+msgid "1) Use the units only for Delphi."
+msgstr "1) Использовать модули только для Delphi."
 
 #: lazarusidestrconsts.lismissingunitsinfo2
 msgid "2) Select a unit path which will be added to project settings."
@@ -11484,6 +11513,14 @@ msgstr "Открыть с другой кодировкой"
 #: lazarusidestrconsts.lisrepeatcount
 msgid "Repeat Count:"
 msgstr "Число повторов:"
+
+#: lazarusidestrconsts.lisreplacementproptypes
+msgid "Replacement Properties and Types"
+msgstr "Замена свойств и типов"
+
+#: lazarusidestrconsts.lisreplaceremoveinvalid
+msgid "Replace and remove invalid properties / types"
+msgstr "Заменять и удалять неверные свойства и типы"
 
 #: lazarusidestrconsts.lisreplacingselectionfailed
 msgid "Replacing selection failed."
@@ -14747,6 +14784,18 @@ msgstr "Переместить страницу вправо"
 #: lazarusidestrconsts.uemmovepagerightmost
 msgid "Move page rightmost"
 msgstr "Поместить страницу справа"
+
+#: lazarusidestrconsts.uemmovetonewwindow
+msgid "Move to new Window"
+msgstr "Переместить в новое окно"
+
+#: lazarusidestrconsts.uemmovetootherwindow
+msgid "Move to other Window"
+msgstr "Переместить в другое окно"
+
+#: lazarusidestrconsts.uemmovetootherwindownew
+msgid "New Window"
+msgstr "Новое окно"
 
 #: lazarusidestrconsts.uemnextbookmark
 msgid "Goto next Bookmark"
