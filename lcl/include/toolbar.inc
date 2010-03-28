@@ -503,7 +503,7 @@ begin
     PreferredWidth := ButtonWidth
   else
     PreferredWidth := ButtonWidth * ACount;
-  inc(PreferredWidth, (Adjusted.Left - ARect.Left) + (ARect.Right - Adjusted.Right);
+  inc(PreferredWidth, (Adjusted.Left - ARect.Left) + (ARect.Right - Adjusted.Right));
 
   if IsVertical then
     PreferredWidth := ButtonHeight * ACount
