@@ -476,10 +476,9 @@ begin
     BoundsOutOfBounds;
   {$IFDEF CHECK_POSITION}
   if CheckPosition(Self) then
-    DebugLn('TControl.DoSetBounds ',Name,':',ClassName,
-      ' Old=',DbgS(Left,Top,Width,Height),
-      ' New=',DbgS(aLeft,aTop,aWidth,aHeight),
-      '');
+    DebugLn(['TControl.DoSetBounds ',DbgSName(Self),
+      ' Old=',Left,',',Top,',',Width,'x',Height,
+      ' New=',aLeft,',',aTop,',',aWidth,'x',aHeight]);
   {$ENDIF}
   FLeft := ALeft;
   FTop := ATop;

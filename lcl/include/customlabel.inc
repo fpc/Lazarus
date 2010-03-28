@@ -80,18 +80,21 @@ begin
 end;
 
 procedure TCustomLabel.DoAutoSize;
+{$IFDEF OldAutoSize}
 var
   NewWidth, NewHeight: integer;
   CurAnchors: TAnchors;
+{$ENDIF}
 begin
   inherited DoAutoSize;
   //debugln('TCustomLabel.DoAutoSize ',DbgSName(Self),' AutoSizing=',dbgs(AutoSizing),' AutoSize=',dbgs(AutoSize),' Parent=',DbgSName(Parent),' csLoading=',dbgs(csLoading in ComponentState),' Parnet.HandleAllocated=',dbgs((Parent<>nil) and (Parent.HandleAllocated)));
+  {$IFDEF OldAutoSize}
   if OptimalFill and (not AutoSize) then
   begin
     AdjustFontForOptimalFill;
     Exit;
   end;
-  
+
   if AutoSizeDelayed then
     Exit;
 
@@ -114,6 +117,7 @@ begin
   finally
     FInternalSetBounds := False;
   end;
+  {$ENDIF}
 end;
 
 procedure TCustomLabel.SetAlignment(Value : TAlignment);

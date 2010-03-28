@@ -33,7 +33,7 @@
 {off $DEFINE CHECK_POSITION}
 {$IFDEF CHECK_POSITION}
 const CheckPostionClassName = 'xxTPage';
-const CheckPostionName = 'LazFindReplaceDialog';
+const CheckPostionName = 'PropertyStoredIdentPostfixLabel';
 const CheckPostionParentName = 'xxxEnvVarsPage';
 
 function CheckPosition(AControl: TControl): boolean;
@@ -2090,8 +2090,8 @@ begin
         case CurControl.BorderSpacing.CellAlignHorizontal of
         ccaFill:        NewWidth:=CellBounds.Right-CellBounds.Left;
         ccaLeftTop,ccaRightBottom:
-                   if (CurControl.BorderSpacing.CellAlignHorizontal=ccaLeftTop)
-                     <>(BidiMode=bdLeftToRight)
+                   if (CurControl.BorderSpacing.CellAlignHorizontal=ccaRightBottom)
+                     =(BidiMode=bdLeftToRight)
                    then
                      NewBounds.Left:=CellBounds.Right-NewWidth;
         ccaCenter:      NewBounds.Left:=NewBounds.Left
@@ -2124,6 +2124,13 @@ begin
       NewBounds.Right:=NewBounds.Left+NewWidth;
       NewBounds.Bottom:=NewBounds.Top+NewHeight;
       ControlBox.NewControlBounds:=NewBounds;
+      {$IFDEF CHECK_POSITION}
+      if CheckPosition(CurControl) then
+        DebugLn(['TAutoSizeBox.ComputeTableControlBounds ',DbgSName(CurControl),
+           ' CellBounds=',dbgs(CellBounds),
+           ' Preferred=',ControlBox.PreferredSize[asboHorizontal],'x',ControlBox.PreferredSize[asboVertical],
+           ' NewBounds=',dbgs(NewBounds)]);
+      {$ENDIF}
     end;
   end;
 end;
@@ -7142,6 +7149,9 @@ begin
     // realign childs
     ReAlign;
     {$ELSE}
+    if FControls<>nil then
+      for i:=0 to FControls.Count-1 do
+        TControl(FControls[i]).InvalidatePreferredSize;
     // size this control
     AdjustSize;
     {$ENDIF}
