@@ -2146,6 +2146,16 @@ begin
 end;
 
 {------------------------------------------------------------------------------
+  Method: IsWindow
+  Params: handle - window handle
+  Returns: true if handle is window , false otherwise
+ ------------------------------------------------------------------------------}
+function TWinCEWidgetSet.IsWindow(handle: HWND): boolean; override;
+begin
+  Result := Boolean(Windows.IsWindow(handle));
+end;
+
+{------------------------------------------------------------------------------
   Method: IsWindowEnabled
   Params: handle - window handle
   Returns: true if window is enabled, false otherwise

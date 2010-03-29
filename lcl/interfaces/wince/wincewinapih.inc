@@ -153,6 +153,7 @@ function HideCaret(hWnd: HWND): Boolean; override;
 procedure InitializeCriticalSection(var CritSection: TCriticalSection); override;
 function IntersectClipRect(dc: hdc; Left, Top, Right, Bottom: Integer): Integer; override;
 function InvalidateRect(aHandle : HWND; Rect : pRect; bErase : Boolean) : Boolean; override;
+function IsWindow(handle: HWND): boolean; override;
 function IsWindowEnabled(handle: HWND): boolean; override;
 function IsWindowVisible(handle: HWND): boolean; override;
 
