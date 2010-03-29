@@ -2504,7 +2504,7 @@ begin
       else
         Screen.FFocusedForm := nil;
       RestoreFocusState(SavedFocusState);
-      if ActiveWindow <> 0 then
+      if LCLIntf.IsWindow(ActiveWindow) then
         SetActiveWindow(ActiveWindow);
       Exclude(FFormState, fsModal);
     end;
