@@ -601,20 +601,40 @@ end;
  ------------------------------------------------------------------------------}
 procedure TCarbonDeviceContext.RestoreDCData(const AData: TCarbonDCData);
 begin
-  if (FCurrentFont <> AData.CurrentFont) and (FCurrentFont <> nil) then
-    FCurrentFont.Unselect;
+  if (FCurrentFont <> AData.CurrentFont) then
+  begin
+    if (FCurrentFont <> nil) then
+      FCurrentFont.Unselect;
+    if (AData.CurrentFont <> nil) then
+      AData.CurrentFont.Select;
+  end;
   FCurrentFont := AData.CurrentFont;
-  
-  if (FCurrentBrush <> AData.CurrentBrush) and (FCurrentBrush <> nil) then
-    FCurrentBrush.Unselect;
+
+  if (FCurrentBrush <> AData.CurrentBrush) then
+  begin
+    if (FCurrentBrush <> nil) then
+      FCurrentBrush.Unselect;
+    if (AData.CurrentBrush <> nil) then
+      AData.CurrentBrush.Select;
+  end;
   FCurrentBrush := AData.CurrentBrush;
   
-  if (FCurrentPen <> AData.CurrentPen) and (FCurrentPen <> nil) then
-    FCurrentPen.Unselect;
+  if (FCurrentPen <> AData.CurrentPen) then
+  begin
+    if (FCurrentPen <> nil) then
+      FCurrentPen.Unselect;
+    if (AData.CurrentPen <> nil) then
+      AData.CurrentPen.Select;
+  end;
   FCurrentPen := AData.CurrentPen;
   
-  if (FCurrentRegion <> AData.CurrentRegion) and (FCurrentRegion <> nil) then
-    FCurrentRegion.Unselect;
+  if (FCurrentRegion <> AData.CurrentRegion) then
+  begin
+    if (FCurrentRegion <> nil) then
+      FCurrentRegion.Unselect;
+    if (AData.CurrentRegion <> nil) then
+      AData.CurrentRegion.Select;
+  end;
   FCurrentRegion := AData.CurrentRegion;
 
   FBkColor := AData.BkColor;
