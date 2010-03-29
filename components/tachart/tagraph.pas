@@ -120,7 +120,7 @@ type
   TChart = class(TCustomChart, ICoordTransformer)
   private // Property fields
     FAllowZoom: Boolean;
-    FAxisColor: TColor;
+    FAxisList: TChartAxisList;
     FAxisVisible: Boolean;
     FBackColor: TColor;
     FDepth: TChartDistance;
@@ -136,7 +136,6 @@ type
     FTitle: TChartTitle;
 
   private
-    FAxisList: TChartAxisList;
     FClipRect: TRect;
     FCurrentExtent: TDoubleRect;
     FIsMouseDown: Boolean;
@@ -158,7 +157,6 @@ type
     procedure PrepareXorPen;
 
     procedure SetAxis(AIndex: Integer; AValue: TChartAxis);
-    procedure SetAxisColor(const AValue: TColor);
     procedure SetAxisList(AValue: TChartAxisList);
     procedure SetAxisVisible(Value: Boolean);
     procedure SetBackColor(const AValue: TColor);
@@ -766,13 +764,6 @@ end;
 procedure TChart.SetAxis(AIndex: Integer; AValue: TChartAxis);
 begin
   FAxisList.SetAxis(AIndex, AValue);
-  Invalidate;
-end;
-
-procedure TChart.SetAxisColor(const AValue: TColor);
-begin
-  if FAxisColor = AValue then exit;
-  FAxisColor := AValue;
   Invalidate;
 end;
 
