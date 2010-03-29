@@ -3205,10 +3205,13 @@ begin
     FExecutionMark.Priority := 1;
   end;
 
+  if FExecutionMark.Visible then
+    FEditor.InvalidateLine(FExecutionMark.Line);
   FExecutionMark.Visible := ExecutionLine <> -1;
   if FExecutionMark.Visible then
   begin
     FExecutionMark.Line := ExecutionLine;
+    FEditor.InvalidateLine(FExecutionMark.Line);
     if SourceEditorMarks.FindBreakPointMark(EditorComponent, ExecutionLine) <> nil then
     begin
       BreakPoint := DebugBoss.BreakPoints.Find(Self.FileName, ExecutionLine);
