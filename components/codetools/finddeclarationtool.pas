@@ -619,7 +619,7 @@ type
     // node caches
     procedure DoDeleteNodes; override;
     function NodeCacheGlobalWriteLockStepDidNotChange: boolean;
-    function CheckDependsOnNodeCaches: boolean;
+    function CheckDependsOnNodeCaches(CheckedTools: TAVLTree = nil): boolean;
     procedure ClearNodeCaches(Force: boolean);
     procedure ClearDependentNodeCaches;
     procedure ClearDependsOnToolRelationships;
@@ -8465,26 +8465,36 @@ begin
   {$ENDIF}
 end;
 
-function TFindDeclarationTool.CheckDependsOnNodeCaches: boolean;
+function TFindDeclarationTool.CheckDependsOnNodeCaches
+  (CheckedTools: TAVLTree = nil): boolean;
 var
   ANode: TAVLTreeNode;
   ATool: TFindDeclarationTool;
+  FreeCheckedTools: Boolean;
 begin
   Result:=false;
   //debugln(['TFindDeclarationTool.CheckDependsOnNodeCaches ',MainFilename,' FDependsOnCodeTools=',FDependsOnCodeTools]);
   if (FDependsOnCodeTools=nil) or FCheckingNodeCacheDependencies
   or NodeCacheGlobalWriteLockStepDidNotChange
   then exit;
+  if (CheckedTools<>nil) and (CheckedTools.Find(Self)<>nil) then exit;
 
-  FCheckingNodeCacheDependencies:=true;
   {$IFDEF ShowCacheDependencies}
   DebugLn(['[TFindDeclarationTool.CheckDependsOnNodeCaches] START ',MainFilename,' ',FDependsOnCodeTools.Count]);
   {$ENDIF}
+  FCheckingNodeCacheDependencies:=true;
+  FreeCheckedTools:=false;
+  if CheckedTools=nil then begin
+    FreeCheckedTools:=true;
+    CheckedTools:=TAVLTree.Create;
+  end;
   try
+    CheckedTools.Add(Self);
     ANode:=FDependsOnCodeTools.FindLowest;
     while ANode<>nil do begin
       ATool:=TFindDeclarationTool(ANode.Data);
-      Result:=ATool.UpdateNeeded(true) or ATool.CheckDependsOnNodeCaches;
+      Result:=ATool.UpdateNeeded(true)
+              or ATool.CheckDependsOnNodeCaches(CheckedTools);
       if Result then exit;
       ANode:=FDependsOnCodeTools.FindSuccessor(ANode);
     end;
@@ -8495,6 +8505,7 @@ begin
             DbgS(Result),' ',MainFilename);
     {$ENDIF}
     FCheckingNodeCacheDependencies:=false;
+    if FreeCheckedTools then FreeAndNil(CheckedTools);
     if Result then ClearNodeCaches(true);
   end;
 end;
