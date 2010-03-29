@@ -896,7 +896,9 @@ end;
 
 procedure TSynAnySyn.SetComments(Value: CommentStyles);
 begin
+  if fComments = Value then exit;
   fComments := Value;
+  MakeMethodTables;
   DefHighLightChange(nil);
 end;
 
