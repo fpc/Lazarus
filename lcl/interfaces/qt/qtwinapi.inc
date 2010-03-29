@@ -3835,7 +3835,7 @@ end;
 
 function TQtWidgetSet.IsWindow(handle: HWND): boolean;
 begin
-  Result := IsValidHandle(Handle) and TQtWidget(Handle).IsWindow;
+  Result := IsValidHandle(Handle);
 end;
 
 function TQtWidgetSet.IsWindowEnabled(Handle: HWND): boolean;
