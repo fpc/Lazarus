@@ -175,6 +175,7 @@ end;
 
 procedure TChartZoomDragTool.MouseDown(APoint: TPoint);
 begin
+  if not FChart.AllowZoom then exit;
   Activate;
   with APoint do
     FSelectionRect := Rect(X, Y, X, Y);
