@@ -124,17 +124,6 @@ type
     property Shift: TShiftState read FShift write FShift;
   end;
 
-  { TChartZoomDragTool }
-
-  TChartZoomDragTool = class(TChartTool)
-  private
-    FSelectionRect: TRect;
-  public
-    procedure MouseDown(APoint: TPoint); override;
-    procedure MouseMove(APoint: TPoint); override;
-    procedure MouseUp(APoint: TPoint); override;
-  end;
-
   TChartToolEventId = (evidMouseDown, evidMouseMove, evidMouseUp);
 
   { TChartToolset }
@@ -351,6 +340,7 @@ procedure RegisterSeriesClass(ASeriesClass: TSeriesClass; const ACaption: string
 
 var
   SeriesClassRegistry: TStringList;
+  OnInitBuiltinTools: procedure (AToolset: TChartToolset);
 
 implementation
 
@@ -435,7 +425,8 @@ begin
   FMargins := TChartMargins.Create(Self);
 
   FBuiltinToolset := TChartToolset.Create(Self);
-  TChartZoomDragTool.Create(FBuiltinToolset.Tools).Shift := [ssLeft];
+  if Assigned(OnInitBuiltinTools) then
+    OnInitBuiltinTools(FBuiltinToolset);
   FActiveToolIndex := -1;
 end;
 
@@ -1355,35 +1346,6 @@ end;
 function TChartToolset.GetItem(AIndex: Integer): TChartTool;
 begin
   Result := Tools.Items[AIndex] as TChartTool;
-end;
-
-{ TChartZoomDragTool }
-
-procedure TChartZoomDragTool.MouseDown(APoint: TPoint);
-begin
-  Activate;
-  with APoint do
-    FSelectionRect := Rect(X, Y, X, Y);
-end;
-
-procedure TChartZoomDragTool.MouseMove(APoint: TPoint);
-begin
-  if not IsActive then exit;
-  PrepareXorPen(Chart.Canvas);
-  Chart.Canvas.Rectangle(FSelectionRect);
-  FSelectionRect.BottomRight := APoint;
-  Chart.Canvas.Rectangle(FSelectionRect);
-end;
-
-procedure TChartZoomDragTool.MouseUp(APoint: TPoint);
-begin
-  Unused(APoint);
-  Deactivate;
-  with Chart do begin
-    PrepareXorPen(Canvas);
-    Canvas.Rectangle(FSelectionRect);
-    ZoomToRect(FSelectionRect);
-  end;
 end;
 
 procedure SkipObsoleteChartProperties;
