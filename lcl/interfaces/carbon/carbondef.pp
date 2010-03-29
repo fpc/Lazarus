@@ -519,7 +519,9 @@ begin
   {$IFDEF VerboseCommonEvent}
     DebugLn('TCarbonWidget.FocusKilled: ', DbgSName(LCLObject));
   {$ENDIF}
-  LCLSendKillFocusMsg(LCLObject);
+  // the TCarbonWidget has already been freed, it cannot send any messages
+  if not FNeedFree then
+    LCLSendKillFocusMsg(LCLObject);
 end;
 
 {------------------------------------------------------------------------------
