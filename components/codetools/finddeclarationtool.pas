@@ -66,6 +66,7 @@ interface
 { $DEFINE ShowCacheDependencies}
 { $DEFINE ShowCollect}
 { $DEFINE ShowProcSearch}
+{$DEFINE DebugAddToolDependency}
 
 {$IFDEF CTDEBUG}{$DEFINE DebugPrefix}{$ENDIF}
 {$IFDEF ShowTriedIdentifiers}{$DEFINE DebugPrefix}{$ENDIF}
@@ -8599,6 +8600,11 @@ end;
 procedure TFindDeclarationTool.AddToolDependency(
   DependOnTool: TFindDeclarationTool);
 // build a relationship: this tool depends on DependOnTool
+{$IFDEF DebugAddToolDependency}
+var
+  AVLNode: TAVLTreeNode;
+  Tool: TFindDeclarationTool;
+{$ENDIF}
 begin
   {$IFDEF ShowCacheDependencies}
   DebugLn('[TFindDeclarationTool.AddToolDependency] "',MainFilename,'" depends on "',DependOnTool.MainFilename,'"');
@@ -8607,10 +8613,24 @@ begin
     DependOnTool.FDependentCodeTools:=TAVLTree.Create;
   if DependOnTool.FDependentCodeTools.Find(Self)=nil then
     DependOnTool.FDependentCodeTools.Add(Self);
+
   if FDependsOnCodeTools=nil then
     FDependsOnCodeTools:=TAVLTree.Create;
-  if FDependsOnCodeTools.Find(DependOnTool)=nil then
+
+  if FDependsOnCodeTools.Find(DependOnTool)=nil then begin
+    {$IFDEF DebugAddToolDependency}
+    AVLNode:=FDependsOnCodeTools.FindLowest;
+    while AVLNode<>nil do begin
+      Tool:=TFindDeclarationTool(AVLNode.Data);
+      if CompareFilenames(ExtractFilename(Tool.MainFilename),ExtractFilename(DependOnTool.MainFilename))=0 then begin
+        DebugLn(['TFindDeclarationTool.AddToolDependency inconsistency: ',Tool.MainFilename,' ',DependOnTool.MainFilename]);
+      end;
+      AVLNode:=FDependsOnCodeTools.FindSuccessor(AVLNode);
+    end;
+    {$ENDIF}
+
     FDependsOnCodeTools.Add(DependOnTool);
+  end;
 end;
 
 procedure TFindDeclarationTool.ConsistencyCheck;
