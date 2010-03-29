@@ -2366,6 +2366,16 @@ end;
 {------------------------------------------------------------------------------
   Method: IsWindowEnabled
   Params: handle - window handle
+  Returns: true if handle is window, false otherwise
+ ------------------------------------------------------------------------------}
+function TWin32WidgetSet.IsWindow(handle: HWND): boolean;
+begin
+  Result := Boolean(Windows.IsWindow(Handle));
+end;
+
+{------------------------------------------------------------------------------
+  Method: IsWindowEnabled
+  Params: handle - window handle
   Returns: true if window is enabled, false otherwise
  ------------------------------------------------------------------------------}
 function TWin32WidgetSet.IsWindowEnabled(handle: HWND): boolean;

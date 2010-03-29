@@ -139,6 +139,7 @@ function IntersectClipRect(dc: hdc; Left, Top, Right, Bottom: Integer): Integer;
 function InvalidateRect(AHandle: HWND; Rect: PRect; BErase: Boolean): Boolean; override;
 function InvalidateRgn(Handle: HWND; Rgn: HRGN; Erase: Boolean): Boolean; override;
 function IsIconic(handle: HWND): boolean; override;
+function IsWindow(handle: HWND): boolean; override;
 function IsWindowEnabled(handle: HWND): boolean; override;
 function IsWindowVisible(handle: HWND): boolean; override;
 function IsZoomed(handle: HWND): boolean; override;
