@@ -58,10 +58,6 @@ type
     procedure GetBounds(out ABounds: TDoubleRect); virtual; abstract;
     procedure GetGraphBounds(out ABounds: TDoubleRect); virtual; abstract;
     procedure GetLegendItems(AItems: TChartLegendItems); virtual; abstract;
-    function GetNearestPoint(
-      ADistFunc: TPointDistFunc; const APoint: TPoint;
-      out AIndex: Integer; out AImg: TPoint; out AValue: TDoublePoint): Boolean;
-      virtual;
     procedure SetActive(AValue: Boolean); virtual; abstract;
     procedure SetDepth(AValue: TChartDistance); virtual; abstract;
     procedure SetShowInLegend(AValue: Boolean); virtual; abstract;
@@ -86,6 +82,10 @@ type
 
   public
     procedure Draw(ACanvas: TCanvas); virtual; abstract;
+    function GetNearestPoint(
+      ADistFunc: TPointDistFunc; const APoint: TPoint;
+      out AIndex: Integer; out AImg: TPoint; out AValue: TDoublePoint): Boolean;
+      virtual;
     function IsEmpty: Boolean; virtual; abstract;
 
     property Active: Boolean read FActive write SetActive default true;
@@ -193,6 +193,7 @@ type
     procedure SetLegend(Value: TChartLegend);
     procedure SetMargins(AValue: TChartMargins);
     procedure SetReticuleMode(const AValue: TReticuleMode);
+    procedure SetReticulePos(const AValue: TPoint);
     procedure SetTitle(Value: TChartTitle);
     procedure SetToolset(const AValue: TBasicChartToolset);
 
@@ -254,7 +255,7 @@ type
     property ChartWidth: Integer read GetChartWidth;
     property ClipRect: TRect read FClipRect;
     property CurrentExtent: TDoubleRect read FCurrentExtent;
-    property ReticulePos: TPoint read FReticulePos;
+    property ReticulePos: TPoint read FReticulePos write SetReticulePos;
     property SeriesCount: Integer read GetSeriesCount;
     property XGraphMax: Double read FCurrentExtent.b.X;
     property XGraphMin: Double read FCurrentExtent.a.X;
@@ -673,6 +674,14 @@ begin
   Invalidate;
 end;
 
+procedure TChart.SetReticulePos(const AValue: TPoint);
+begin
+  if FReticulePos = AValue then exit;
+  DrawReticule(Canvas);
+  FReticulePos := AValue;
+  DrawReticule(Canvas);
+end;
+
 procedure TChart.SetTitle(Value: TChartTitle);
 begin
   FTitle.Assign(Value);
@@ -877,48 +886,9 @@ begin
 end;
 
 procedure TChart.MouseMove(Shift: TShiftState; X, Y: Integer);
-
-  procedure UpdateReticule(const APoint: TPoint);
-  const
-    DIST_FUNCS: array [TReticuleMode] of TPointDistFunc = (
-      nil, @PointDistX, @PointDistY, @PointDist);
-  var
-    i, pointIndex, bestSeries: Integer;
-    value: TDoublePoint;
-    newRetPos, bestRetPos: TPoint;
-    d, minDist: Double;
-  begin
-    minDist := Infinity;
-    for i := 0 to SeriesCount - 1 do
-      if
-        Series[i].GetNearestPoint(
-          DIST_FUNCS[FReticuleMode], APoint, pointIndex, newRetPos, value) and
-          PtInRect(FClipRect, newRetPos)
-      then begin
-         d := DIST_FUNCS[FReticuleMode](APoint, newRetPos);
-         if d < minDist then begin
-           bestRetPos := newRetPos;
-           bestSeries := i;
-           minDist := d;
-         end;
-      end;
-    if (minDist < Infinity) and (bestRetPos <> FReticulePos) then begin
-      DrawReticule(Canvas);
-      FReticulePos := bestRetPos;
-      DrawReticule(Canvas);
-      if Assigned(FOnDrawReticule) then
-        FOnDrawReticule(Self, bestSeries, pointIndex, value);
-    end;
-  end;
-
-var
-  pt: TPoint;
 begin
-  pt := Point(X, Y);
-  if GetToolset.Dispatch(Self, evidMouseMove, Shift, pt) then exit;
+  if GetToolset.Dispatch(Self, evidMouseMove, Shift, Point(X, Y)) then exit;
   inherited;
-  if FReticuleMode <> rmNone then
-    UpdateReticule(pt);
 end;
 
 procedure TChart.MouseUp(Button: TMouseButton; Shift: TShiftState; X, Y: Integer);

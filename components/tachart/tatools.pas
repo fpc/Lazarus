@@ -76,15 +76,27 @@ type
     procedure MouseUp(APoint: TPoint); override;
   end;
 
+  { TChartReticuleTool }
+
+  TChartReticuleTool = class(TChartTool)
+  public
+    procedure MouseMove(APoint: TPoint); override;
+  end;
+
 implementation
 
 uses
-  Math, TAChartUtils;
+  GraphMath, Math, Types,
+  TAChartUtils;
 
 function InitBuitlinTools(AChart: TChart): TBasicChartToolset;
+var
+  ts: TChartToolset;
 begin
-  Result := TChartToolset.Create(AChart);
-  TChartZoomDragTool.Create((Result as TChartToolset).Tools).Shift := [ssLeft];
+  ts := TChartToolset.Create(AChart);
+  Result := ts;
+  TChartZoomDragTool.Create(ts.Tools).Shift := [ssLeft];
+  TChartReticuleTool.Create(ts.Tools);
 end;
 
 { TChartTool }
@@ -198,6 +210,41 @@ begin
     PrepareXorPen(Canvas);
     Canvas.Rectangle(FSelectionRect);
     ZoomToRect(FSelectionRect);
+  end;
+end;
+
+{ TChartReticuleTool }
+
+procedure TChartReticuleTool.MouseMove(APoint: TPoint);
+const
+  DIST_FUNCS: array [TReticuleMode] of TPointDistFunc = (
+    nil, @PointDistX, @PointDistY, @PointDist);
+var
+  i, pointIndex, bestSeries: Integer;
+  value: TDoublePoint;
+  newRetPos, bestRetPos: TPoint;
+  d, minDist: Double;
+  df: TPointDistFunc;
+begin
+  if FChart.ReticuleMode = rmNone then exit;
+  minDist := Infinity;
+  df := DIST_FUNCS[FChart.ReticuleMode];
+  for i := 0 to FChart.SeriesCount - 1 do
+    if
+      FChart.Series[i].GetNearestPoint(df, APoint, pointIndex, newRetPos, value) and
+      PtInRect(FChart.ClipRect, newRetPos)
+    then begin
+       d := df(APoint, newRetPos);
+       if d < minDist then begin
+         bestRetPos := newRetPos;
+         bestSeries := i;
+         minDist := d;
+       end;
+    end;
+  if (minDist < Infinity) and (bestRetPos <> FChart.ReticulePos) then begin
+    FChart.ReticulePos := bestRetPos;
+    if Assigned(FChart.OnDrawReticule) then
+      FChart.OnDrawReticule(FChart, bestSeries, pointIndex, value);
   end;
 end;
 
