@@ -213,6 +213,7 @@ type
     procedure SaveToFile(AClass: TRasterImageClass; const AFileName: String);
     function SaveToImage(AClass: TRasterImageClass): TRasterImage;
     procedure ZoomFull;
+    procedure ZoomToRect(const ARect: TRect);
 
   public // Coordinate conversion
     function GraphToImage(const AGraphPoint: TDoublePoint): TPoint;
@@ -904,8 +905,6 @@ begin
 end;
 
 procedure TChart.MouseUp(Button: TMouseButton; Shift: TShiftState; X, Y: Integer);
-var
-  oldIsZoomed: Boolean;
 begin
   if not FIsMouseDown then begin
     inherited;
@@ -914,27 +913,8 @@ begin
 
   PrepareXorPen;
   Canvas.Rectangle(FSelectionRect);
-
   FIsMouseDown := false;
-
-  oldIsZoomed := FIsZoomed;
-  with FSelectionRect do
-    FIsZoomed := (Left < Right) and (Top < Bottom);
-  if FIsZoomed then
-    with FZoomExtent do begin
-      a := ImageToGraph(FSelectionRect.TopLeft);
-      b := ImageToGraph(FSelectionRect.BottomRight);
-      if a.X > b.X then
-        Exchange(a.X, b.X);
-      if a.Y > b.Y then
-        Exchange(a.Y, b.Y);
-    end;
-
-  if FIsZoomed or oldIsZoomed then begin
-    // Hide reticule -- it will be drawn again in the next MouseMove.
-    FReticulePos := Point(-1, -1);
-    Invalidate;
-  end;
+  ZoomToRect(FSelectionRect);
 end;
 
 procedure TChart.SetLegend(Value: TChartLegend);
@@ -1084,6 +1064,30 @@ procedure TChart.ZoomFull;
 begin
   FIsZoomed := false;
   Invalidate;
+end;
+
+procedure TChart.ZoomToRect(const ARect: TRect);
+var
+  oldIsZoomed: Boolean;
+begin
+  oldIsZoomed := FIsZoomed;
+  with ARect do
+    FIsZoomed := (Left < Right) and (Top < Bottom);
+  if FIsZoomed then
+    with FZoomExtent do begin
+      a := ImageToGraph(ARect.TopLeft);
+      b := ImageToGraph(ARect.BottomRight);
+      if a.X > b.X then
+        Exchange(a.X, b.X);
+      if a.Y > b.Y then
+        Exchange(a.Y, b.Y);
+    end;
+
+  if FIsZoomed or oldIsZoomed then begin
+    // Hide reticule -- it will be drawn again in the next MouseMove.
+    FReticulePos := Point(-1, -1);
+    Invalidate;
+  end;
 end;
 
 { TBasicChartSeries }
