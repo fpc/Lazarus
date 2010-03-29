@@ -2289,6 +2289,25 @@ begin
   Result := (TCarbonWidget(Handle) is TCarbonWindow) and TCarbonWindow(Handle).IsIconic;
 end;
 
+
+{------------------------------------------------------------------------------
+  Method:  IsWindow
+  Params:  Handle - Handle of window
+  Returns: True if handle is carbonwidget, False otherwise
+ ------------------------------------------------------------------------------}
+function TCarbonWidgetSet.IsWindow(handle: HWND): boolean;
+var
+  obj : TObject;
+begin
+  //todo: better code?!
+  obj:=TObject(Handle);
+  try
+    Result:=Assigned(obj) and (obj is TCarbonWidget);
+  except
+    Result:=False;
+  end;
+end;
+
 {------------------------------------------------------------------------------
   Method:  IsWindowEnabled
   Params:  Handle - Handle of window
