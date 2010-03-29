@@ -66,7 +66,7 @@ interface
 { $DEFINE ShowCacheDependencies}
 { $DEFINE ShowCollect}
 { $DEFINE ShowProcSearch}
-{$DEFINE DebugAddToolDependency}
+{ $DEFINE DebugAddToolDependency}
 
 {$IFDEF CTDEBUG}{$DEFINE DebugPrefix}{$ENDIF}
 {$IFDEF ShowTriedIdentifiers}{$DEFINE DebugPrefix}{$ENDIF}
