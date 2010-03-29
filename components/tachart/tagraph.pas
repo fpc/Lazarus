@@ -101,47 +101,25 @@ type
 
   TChartToolEvent = procedure (AChart: TChart; AX, AY: Integer) of object;
 
-  { TChartTool }
+  { TBasicСhartTool }
 
-  TChartTool = class(TCollectionItem)
-  private
-    FChart: TChart;
-    FEnabled: Boolean;
-    FShift: TShiftState;
+  TBasicChartTool = class(TCollectionItem)
   protected
+    FChart: TChart;
+
     procedure Activate;
     procedure Deactivate;
-    function IsActive: Boolean;
-    procedure MouseDown(APoint: TPoint); virtual;
-    procedure MouseMove(APoint: TPoint); virtual;
-    procedure MouseUp(APoint: TPoint); virtual;
-  protected
-    property Chart: TChart read FChart;
-  public
-    constructor Create(ACollection: TCollection); override;
-  published
-    property Enabled: Boolean read FEnabled write FEnabled default true;
-    property Shift: TShiftState read FShift write FShift;
   end;
 
   TChartToolEventId = (evidMouseDown, evidMouseMove, evidMouseUp);
 
-  { TChartToolset }
+  { TBasicChartToolset }
 
-  TChartToolset = class(TComponent)
-  private
-    FTools: TCollection;
-    function GetItem(AIndex: Integer): TChartTool;
-  public
-    constructor Create(AOwner: TComponent); override;
-    destructor Destroy; override;
-
+  TBasicChartToolset = class(TComponent)
+  protected
     function Dispatch(
       AChart: TChart; AEventId: TChartToolEventId;
-      AShift: TShiftState; APoint: TPoint): Boolean;
-    property Item[AIndex: Integer]: TChartTool read GetItem; default;
-  published
-    property Tools: TCollection read FTools;
+      AShift: TShiftState; APoint: TPoint): Boolean; virtual; abstract;
   end;
 
   { TChartSeriesList }
@@ -179,11 +157,11 @@ type
     FOnDrawReticule: TDrawReticuleEvent;
     FSeries: TChartSeriesList;
     FTitle: TChartTitle;
-    FToolset: TChartToolset;
+    FToolset: TBasicChartToolset;
 
   private
     FActiveToolIndex: Integer;
-    FBuiltinToolset: TChartToolset;
+    FBuiltinToolset: TBasicChartToolset;
     FClipRect: TRect;
     FCurrentExtent: TDoubleRect;
     FIsZoomed: Boolean;
@@ -200,7 +178,7 @@ type
     function GetChartWidth: Integer;
     function GetMargins(ACanvas: TCanvas): TRect;
     function GetSeriesCount: Integer;
-    function GetToolset: TChartToolset;
+    function GetToolset: TBasicChartToolset;
 
     procedure SetAxis(AIndex: Integer; AValue: TChartAxis);
     procedure SetAxisList(AValue: TChartAxisList);
@@ -216,7 +194,7 @@ type
     procedure SetMargins(AValue: TChartMargins);
     procedure SetReticuleMode(const AValue: TReticuleMode);
     procedure SetTitle(Value: TChartTitle);
-    procedure SetToolset(const AValue: TChartToolset);
+    procedure SetToolset(const AValue: TBasicChartToolset);
 
   protected
     procedure Clean(ACanvas: TCanvas; ARect: TRect);
@@ -271,6 +249,7 @@ type
     function YImageToGraph(AY: Integer): Double; inline;
 
   public
+    property ActiveToolIndex: Integer read FActiveToolIndex;
     property ChartHeight: Integer read GetChartHeight;
     property ChartWidth: Integer read GetChartWidth;
     property ClipRect: TRect read FClipRect;
@@ -302,7 +281,7 @@ type
       read FReticuleMode write SetReticuleMode default rmNone;
     property Series: TChartSeriesList read FSeries;
     property Title: TChartTitle read FTitle write SetTitle;
-    property Toolset: TChartToolset read FToolset write SetToolset;
+    property Toolset: TBasicChartToolset read FToolset write SetToolset;
 
   published
     property OnDrawReticule: TDrawReticuleEvent
@@ -340,7 +319,7 @@ procedure RegisterSeriesClass(ASeriesClass: TSeriesClass; const ACaption: string
 
 var
   SeriesClassRegistry: TStringList;
-  OnInitBuiltinTools: procedure (AToolset: TChartToolset);
+  OnInitBuiltinTools: function(AChart: TChart): TBasicChartToolset;
 
 implementation
 
@@ -424,9 +403,7 @@ begin
   FExtent := TChartExtent.Create(Self);
   FMargins := TChartMargins.Create(Self);
 
-  FBuiltinToolset := TChartToolset.Create(Self);
-  if Assigned(OnInitBuiltinTools) then
-    OnInitBuiltinTools(FBuiltinToolset);
+  FBuiltinToolset := OnInitBuiltinTools(Self);
   FActiveToolIndex := -1;
 end;
 
@@ -702,7 +679,7 @@ begin
   Invalidate;
 end;
 
-procedure TChart.SetToolset(const AValue: TChartToolset);
+procedure TChart.SetToolset(const AValue: TBasicChartToolset);
 begin
   if FToolset = AValue then exit;
   FToolset := AValue;
@@ -1033,7 +1010,7 @@ begin
   Result := FSeries.FList.Count;
 end;
 
-function TChart.GetToolset: TChartToolset;
+function TChart.GetToolset: TBasicChartToolset;
 begin
   Result := FToolset;
   if Result = nil then
@@ -1252,100 +1229,16 @@ begin
   Result := TBasicChartSeries(FList.Items[AIndex]);
 end;
 
-{ TChartTool }
+{ TBasicChartTool }
 
-procedure TChartTool.Activate;
+procedure TBasicChartTool.Activate;
 begin
-  Chart.FActiveToolIndex := Index;
+  FChart.FActiveToolIndex := Index;
 end;
 
-constructor TChartTool.Create(ACollection: TCollection);
+procedure TBasicChartTool.Deactivate;
 begin
-  inherited Create(ACollection);
-  FEnabled := true;
-end;
-
-procedure TChartTool.Deactivate;
-begin
-  Chart.FActiveToolIndex := -1;
-end;
-
-function TChartTool.IsActive: Boolean;
-begin
-  Result := Chart.FActiveToolIndex = Index;
-end;
-
-procedure TChartTool.MouseDown(APoint: TPoint);
-begin
-  Unused(APoint);
-end;
-
-procedure TChartTool.MouseMove(APoint: TPoint);
-begin
-  Unused(APoint);
-end;
-
-procedure TChartTool.MouseUp(APoint: TPoint);
-begin
-  Unused(APoint);
-end;
-
-{ TChartToolset }
-
-constructor TChartToolset.Create(AOwner: TComponent);
-begin
-  inherited Create(AOwner);
-  FTools := TCollection.Create(TChartTool);
-end;
-
-destructor TChartToolset.Destroy;
-begin
-  FTools.Free;
-  inherited Destroy;
-end;
-
-function TChartToolset.Dispatch(
-  AChart: TChart; AEventId: TChartToolEventId;
-  AShift: TShiftState; APoint: TPoint): Boolean;
-
-  procedure DoDispatch(ATool: TChartTool);
-  begin
-    if (ATool.FChart <> nil) and (ATool.FChart <> AChart) then exit;
-    ATool.FChart := AChart;
-    try
-      case AEventId of
-        evidMouseDown: ATool.MouseDown(APoint);
-        evidMouseMove: ATool.MouseMove(APoint);
-        evidMouseUp  : ATool.MouseUp  (APoint);
-      end;
-    finally
-      if not ATool.IsActive then
-        ATool.FChart := nil;
-    end;
-  end;
-
-var
-  i: Integer;
-  t: TChartTool;
-begin
-  i := AChart.FActiveToolIndex;
-  if InRange(i, 0, Tools.Count - 1) then begin
-    DoDispatch(Item[i]);
-    exit(true);
-  end;
-  for i := 0 to Tools.Count - 1 do begin
-    t := Item[i];
-    if t.Enabled and (t.Shift = AShift) then begin
-      DoDispatch(t);
-      exit(true);
-    end;
-  end;
-  Result := false;
-end;
-
-function TChartToolset.GetItem(AIndex: Integer): TChartTool;
-begin
-  Result := Tools.Items[AIndex] as TChartTool;
+  FChart.FActiveToolIndex := -1;
 end;
 
 procedure SkipObsoleteChartProperties;
