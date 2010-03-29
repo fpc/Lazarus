@@ -260,7 +260,6 @@ type
     procedure DrawLineVert(ACanvas: TCanvas; AX: Integer);
     procedure DrawOnCanvas(Rect: TRect; ACanvas: TCanvas); deprecated;
     function IsPointInViewPort(const AP: TDoublePoint): Boolean;
-    procedure PrepareXorPen;
 
   public
     procedure AddSeries(ASeries: TBasicChartSeries);
@@ -534,15 +533,6 @@ begin
     FreeAndNil(ALegendItems);
     raise;
   end;
-end;
-
-procedure TChart.PrepareXorPen;
-begin
-  Canvas.Brush.Style := bsClear;
-  Canvas.Pen.Style := psSolid;
-  Canvas.Pen.Mode := pmXor;
-  Canvas.Pen.Color := clWhite;
-  Canvas.Pen.Width := 1;
 end;
 
 procedure TChart.CalculateTransformationCoeffs(const AMargin: TRect);
@@ -901,7 +891,7 @@ end;
 
 procedure TChart.DrawReticule(ACanvas: TCanvas);
 begin
-  PrepareXorPen;
+  PrepareXorPen(ACanvas);
   if ReticuleMode in [rmVertical, rmCross] then
     DrawLineVert(ACanvas, FReticulePos.X);
   if ReticuleMode in [rmHorizontal, rmCross] then
@@ -1379,7 +1369,7 @@ end;
 procedure TChartZoomDragTool.MouseMove(APoint: TPoint);
 begin
   if not IsActive then exit;
-  Chart.PrepareXorPen;
+  PrepareXorPen(Chart.Canvas);
   Chart.Canvas.Rectangle(FSelectionRect);
   FSelectionRect.BottomRight := APoint;
   Chart.Canvas.Rectangle(FSelectionRect);
@@ -1390,7 +1380,7 @@ begin
   Unused(APoint);
   Deactivate;
   with Chart do begin
-    PrepareXorPen;
+    PrepareXorPen(Canvas);
     Canvas.Rectangle(FSelectionRect);
     ZoomToRect(FSelectionRect);
   end;
