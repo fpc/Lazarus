@@ -48,7 +48,7 @@ procedure TForm1.Chart1LineSeries1GetMark(
   out AFormattedMark: String; AIndex: Integer);
 begin
   if AIndex = FNearestIndex then
-    AFormattedMark := Chart1LineSeries1.DefaultFormattedMark(AIndex)
+    AFormattedMark := Chart1LineSeries1.FormattedMark(AIndex)
   else
     AFormattedMark := '';
 end;

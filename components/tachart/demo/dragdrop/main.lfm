@@ -42,7 +42,7 @@ object Form1: TForm1
     OnMouseUp = Chart1MouseUp
     object Chart1LineSeries1: TLineSeries
       Marks.Clipped = False
-      Marks.Format = '%0:g'
+      Marks.Format = '%0:.9g'
       Marks.Style = smsValue
       Pointer.Brush.Color = clPurple
       Pointer.HorizSize = 6

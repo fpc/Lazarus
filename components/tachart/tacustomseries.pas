@@ -118,7 +118,7 @@ type
     function Count: Integer; inline;
     procedure Delete(AIndex: Integer); virtual;
     function Extent: TDoubleRect; virtual;
-    function FormattedMark(AIndex: integer): String;
+    function FormattedMark(AIndex: Integer): String;
     function IsEmpty: Boolean; override;
     function ListSource: TListChartSource;
     property Source: TCustomChartSource
