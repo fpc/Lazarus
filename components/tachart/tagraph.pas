@@ -99,6 +99,62 @@ type
 
   TSeriesClass = class of TBasicChartSeries;
 
+  TChartToolEvent = procedure (AChart: TChart; AX, AY: Integer) of object;
+
+  { TChartTool }
+
+  TChartTool = class(TCollectionItem)
+  private
+    FChart: TChart;
+    FEnabled: Boolean;
+    FShift: TShiftState;
+  protected
+    procedure Activate;
+    procedure Deactivate;
+    function IsActive: Boolean;
+    procedure MouseDown(APoint: TPoint); virtual;
+    procedure MouseMove(APoint: TPoint); virtual;
+    procedure MouseUp(APoint: TPoint); virtual;
+  protected
+    property Chart: TChart read FChart;
+  public
+    constructor Create(ACollection: TCollection); override;
+  published
+    property Enabled: Boolean read FEnabled write FEnabled default true;
+    property Shift: TShiftState read FShift write FShift;
+  end;
+
+  { TChartZoomDragTool }
+
+  TChartZoomDragTool = class(TChartTool)
+  private
+    FSelectionRect: TRect;
+  public
+    procedure MouseDown(APoint: TPoint); override;
+    procedure MouseMove(APoint: TPoint); override;
+    procedure MouseUp(APoint: TPoint); override;
+  end;
+
+  TChartToolEventId = (evidMouseDown, evidMouseMove, evidMouseUp);
+
+  { TChartToolset }
+
+  TChartToolset = class(TComponent)
+  private
+    FTools: TCollection;
+    function GetItem(AIndex: Integer): TChartTool;
+  public
+    constructor Create(AOwner: TComponent); override;
+    destructor Destroy; override;
+
+    function Dispatch(
+      AChart: TChart; AEventId: TChartToolEventId;
+      AShift: TShiftState; APoint: TPoint): Boolean;
+    property Item[AIndex: Integer]: TChartTool read GetItem; default;
+  published
+    property Tools: TCollection read FTools;
+  end;
+
   { TChartSeriesList }
 
   TChartSeriesList = class(TPersistent)
@@ -134,17 +190,18 @@ type
     FOnDrawReticule: TDrawReticuleEvent;
     FSeries: TChartSeriesList;
     FTitle: TChartTitle;
+    FToolset: TChartToolset;
 
   private
+    FActiveToolIndex: Integer;
+    FBuiltinToolset: TChartToolset;
     FClipRect: TRect;
     FCurrentExtent: TDoubleRect;
-    FIsMouseDown: Boolean;
     FIsZoomed: Boolean;
     FOffset: TDoublePoint;   // Coordinates transformation
     FReticuleMode: TReticuleMode;
     FReticulePos: TPoint;
     FScale: TDoublePoint;    // Coordinates transformation
-    FSelectionRect: TRect;
     FZoomExtent: TDoubleRect;
 
     procedure CalculateTransformationCoeffs(const AMargin: TRect);
@@ -154,7 +211,7 @@ type
     function GetChartWidth: Integer;
     function GetMargins(ACanvas: TCanvas): TRect;
     function GetSeriesCount: Integer;
-    procedure PrepareXorPen;
+    function GetToolset: TChartToolset;
 
     procedure SetAxis(AIndex: Integer; AValue: TChartAxis);
     procedure SetAxisList(AValue: TChartAxisList);
@@ -170,6 +227,7 @@ type
     procedure SetMargins(AValue: TChartMargins);
     procedure SetReticuleMode(const AValue: TReticuleMode);
     procedure SetTitle(Value: TChartTitle);
+    procedure SetToolset(const AValue: TChartToolset);
 
   protected
     procedure Clean(ACanvas: TCanvas; ARect: TRect);
@@ -202,6 +260,7 @@ type
     procedure DrawLineVert(ACanvas: TCanvas; AX: Integer);
     procedure DrawOnCanvas(Rect: TRect; ACanvas: TCanvas); deprecated;
     function IsPointInViewPort(const AP: TDoublePoint): Boolean;
+    procedure PrepareXorPen;
 
   public
     procedure AddSeries(ASeries: TBasicChartSeries);
@@ -255,6 +314,7 @@ type
       read FReticuleMode write SetReticuleMode default rmNone;
     property Series: TChartSeriesList read FSeries;
     property Title: TChartTitle read FTitle write SetTitle;
+    property Toolset: TChartToolset read FToolset write SetToolset;
 
   published
     property OnDrawReticule: TDrawReticuleEvent
@@ -335,7 +395,7 @@ begin
   inherited Create(AOwner);
 
   FAllowZoom := true;
-  FAxisVisible := true; 
+  FAxisVisible := true;
 
   Width := DEFAULT_CHART_WIDTH;
   Height := DEFAULT_CHART_HEIGHT;
@@ -374,6 +434,10 @@ begin
 
   FExtent := TChartExtent.Create(Self);
   FMargins := TChartMargins.Create(Self);
+
+  FBuiltinToolset := TChartToolset.Create(Self);
+  TChartZoomDragTool.Create(FBuiltinToolset.Tools).Shift := [ssLeft];
+  FActiveToolIndex := -1;
 end;
 
 destructor TChart.Destroy;
@@ -388,6 +452,7 @@ begin
   FFrame.Free;
   FExtent.Free;
   FMargins.Free;
+  FBuiltinToolset.Free;
 
   inherited Destroy;
 end;
@@ -656,6 +721,13 @@ begin
   Invalidate;
 end;
 
+procedure TChart.SetToolset(const AValue: TChartToolset);
+begin
+  if FToolset = AValue then exit;
+  FToolset := AValue;
+  FActiveToolIndex := -1;
+end;
+
 procedure TChart.SetFoot(Value: TChartTitle);
 begin
   FFoot.Assign(Value);
@@ -839,24 +911,14 @@ end;
 procedure TChart.MouseDown(Button: TMouseButton; Shift: TShiftState; X, Y: Integer);
 begin
   if
-    (Shift = [ssLeft]) and FAllowZoom and PtInRect(FClipRect, Point(X, Y))
-  then begin
-    FIsMouseDown := true;
-    FSelectionRect := Rect(X, Y, X, Y);
-  end
-  else
-    inherited;
+    PtInRect(FClipRect, Point(X, Y)) and
+    GetToolset.Dispatch(Self, evidMouseDown, Shift, Point(X, Y))
+  then
+    exit;
+  inherited;
 end;
 
 procedure TChart.MouseMove(Shift: TShiftState; X, Y: Integer);
-
-  procedure UpdateSelectionRect(const APoint: TPoint);
-  begin
-    PrepareXorPen;
-    Canvas.Rectangle(FSelectionRect);
-    FSelectionRect.BottomRight := APoint;
-    Canvas.Rectangle(FSelectionRect);
-  end;
 
   procedure UpdateReticule(const APoint: TPoint);
   const
@@ -895,26 +957,16 @@ var
   pt: TPoint;
 begin
   pt := Point(X, Y);
-  if FIsMouseDown then
-    UpdateSelectionRect(pt)
-  else begin
-    inherited;
-    if FReticuleMode <> rmNone then
-      UpdateReticule(pt);
-  end;
+  if GetToolset.Dispatch(Self, evidMouseMove, Shift, pt) then exit;
+  inherited;
+  if FReticuleMode <> rmNone then
+    UpdateReticule(pt);
 end;
 
 procedure TChart.MouseUp(Button: TMouseButton; Shift: TShiftState; X, Y: Integer);
 begin
-  if not FIsMouseDown then begin
-    inherited;
-    exit;
-  end;
-
-  PrepareXorPen;
-  Canvas.Rectangle(FSelectionRect);
-  FIsMouseDown := false;
-  ZoomToRect(FSelectionRect);
+  if GetToolset.Dispatch(Self, evidMouseUp, Shift, Point(X, Y)) then exit;
+  inherited;
 end;
 
 procedure TChart.SetLegend(Value: TChartLegend);
@@ -998,6 +1050,13 @@ end;
 function TChart.GetSeriesCount: Integer;
 begin
   Result := FSeries.FList.Count;
+end;
+
+function TChart.GetToolset: TChartToolset;
+begin
+  Result := FToolset;
+  if Result = nil then
+    Result := FBuiltinToolset;
 end;
 
 procedure TChart.UpdateExtent;
@@ -1210,6 +1269,131 @@ end;
 function TChartSeriesList.GetItem(AIndex: Integer): TBasicChartSeries;
 begin
   Result := TBasicChartSeries(FList.Items[AIndex]);
+end;
+
+{ TChartTool }
+
+procedure TChartTool.Activate;
+begin
+  Chart.FActiveToolIndex := Index;
+end;
+
+constructor TChartTool.Create(ACollection: TCollection);
+begin
+  inherited Create(ACollection);
+  FEnabled := true;
+end;
+
+procedure TChartTool.Deactivate;
+begin
+  Chart.FActiveToolIndex := -1;
+end;
+
+function TChartTool.IsActive: Boolean;
+begin
+  Result := Chart.FActiveToolIndex = Index;
+end;
+
+procedure TChartTool.MouseDown(APoint: TPoint);
+begin
+  Unused(APoint);
+end;
+
+procedure TChartTool.MouseMove(APoint: TPoint);
+begin
+  Unused(APoint);
+end;
+
+procedure TChartTool.MouseUp(APoint: TPoint);
+begin
+  Unused(APoint);
+end;
+
+{ TChartToolset }
+
+constructor TChartToolset.Create(AOwner: TComponent);
+begin
+  inherited Create(AOwner);
+  FTools := TCollection.Create(TChartTool);
+end;
+
+destructor TChartToolset.Destroy;
+begin
+  FTools.Free;
+  inherited Destroy;
+end;
+
+function TChartToolset.Dispatch(
+  AChart: TChart; AEventId: TChartToolEventId;
+  AShift: TShiftState; APoint: TPoint): Boolean;
+
+  procedure DoDispatch(ATool: TChartTool);
+  begin
+    if (ATool.FChart <> nil) and (ATool.FChart <> AChart) then exit;
+    ATool.FChart := AChart;
+    try
+      case AEventId of
+        evidMouseDown: ATool.MouseDown(APoint);
+        evidMouseMove: ATool.MouseMove(APoint);
+        evidMouseUp  : ATool.MouseUp  (APoint);
+      end;
+    finally
+      if not ATool.IsActive then
+        ATool.FChart := nil;
+    end;
+  end;
+
+var
+  i: Integer;
+  t: TChartTool;
+begin
+  i := AChart.FActiveToolIndex;
+  if InRange(i, 0, Tools.Count - 1) then begin
+    DoDispatch(Item[i]);
+    exit(true);
+  end;
+  for i := 0 to Tools.Count - 1 do begin
+    t := Item[i];
+    if t.Enabled and (t.Shift = AShift) then begin
+      DoDispatch(t);
+      exit(true);
+    end;
+  end;
+  Result := false;
+end;
+
+function TChartToolset.GetItem(AIndex: Integer): TChartTool;
+begin
+  Result := Tools.Items[AIndex] as TChartTool;
+end;
+
+{ TChartZoomDragTool }
+
+procedure TChartZoomDragTool.MouseDown(APoint: TPoint);
+begin
+  Activate;
+  with APoint do
+    FSelectionRect := Rect(X, Y, X, Y);
+end;
+
+procedure TChartZoomDragTool.MouseMove(APoint: TPoint);
+begin
+  if not IsActive then exit;
+  Chart.PrepareXorPen;
+  Chart.Canvas.Rectangle(FSelectionRect);
+  FSelectionRect.BottomRight := APoint;
+  Chart.Canvas.Rectangle(FSelectionRect);
+end;
+
+procedure TChartZoomDragTool.MouseUp(APoint: TPoint);
+begin
+  Unused(APoint);
+  Deactivate;
+  with Chart do begin
+    PrepareXorPen;
+    Canvas.Rectangle(FSelectionRect);
+    ZoomToRect(FSelectionRect);
+  end;
 end;
 
 procedure SkipObsoleteChartProperties;
