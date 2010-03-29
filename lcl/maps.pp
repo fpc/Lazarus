@@ -36,6 +36,16 @@ type
   TMapIdType = (itu1, its1, itu2, its2, itu4, its4, itu8, its8, itu16, its16,
                 itu32, its32);
 
+const
+  {$ifdef CPU64}
+  itsPtrSize = its8;
+  ituPtrSize = itu8;
+  {$else}
+  itsPtrSize = its4;
+  ituPtrSize = itu4;
+  {$endif}
+
+type
   PMapItem = ^TMapItem;
 
   PMapLink = ^TMapLink;
