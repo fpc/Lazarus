@@ -42,7 +42,7 @@ uses
   // Bindings - qt4 must come first to avoid type redefinition problems
   qt4,
   // FPC
-  Classes, SysUtils, Math, Types,
+  Classes, SysUtils, Math, Types, maps,
   // LCL
   InterfaceBase, LCLProc, LCLType, LMessages, LCLMessageGlue, LCLStrConsts,
   Controls, ExtCtrls, Forms,
@@ -59,6 +59,8 @@ type
     App: QApplicationH;
     FOverrideCursor: TObject;
     SavedDCList: TList;
+    CriticalSection: TRTLCriticalSection;
+    SavedHandlesList: TMap;
     // global hooks
     FAppEvenFilterHook: QObject_hookH;
     FAppFocusChangedHook: QApplication_hookH;
@@ -120,6 +122,11 @@ type
     // device contexts
     function IsValidDC(const DC: HDC): Boolean; virtual;
     function IsValidGDIObject(const GDIObject: HGDIOBJ): Boolean; virtual;
+
+    // qt object handles map
+    procedure AddHandle(AHandle: TObject);
+    procedure RemoveHandle(AHandle: TObject);
+    function IsValidHandle(AHandle: HWND): Boolean;
 
     // drag image list
     function DragImageList_BeginDrag(AImage: QImageH; AHotSpot: TPoint): Boolean;

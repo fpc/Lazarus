@@ -607,6 +607,11 @@ begin
   Result := WidgetSet.IsIconic(Handle);
 end;
 
+function IsWindow(handle: HWND): boolean;
+begin
+  Result := WidgetSet.IsWindow(Handle);
+end;
+
 function IsWindowEnabled(handle: HWND): boolean;
 begin
   Result := WidgetSet.IsWindowEnabled(Handle);

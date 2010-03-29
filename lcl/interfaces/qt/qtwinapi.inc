@@ -3833,6 +3833,11 @@ begin
   Result := TQtWidget(Handle).isMinimized;
 end;
 
+function TQtWidgetSet.IsWindow(handle: HWND): boolean;
+begin
+  Result := IsValidHandle(Handle) and TQtWidget(Handle).IsWindow;
+end;
+
 function TQtWidgetSet.IsWindowEnabled(Handle: HWND): boolean;
 begin
   Result := TQtWidget(Handle).getEnabled;

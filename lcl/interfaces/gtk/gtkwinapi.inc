@@ -6917,6 +6917,12 @@ begin
   {$endif}
 end;
 
+function TGTKWidgetSet.IsWindow(handle: HWND): boolean;
+begin
+  if Handle = 0 then
+    Exit(False);
+  Result := GtkWidgetIsA(PGtkWidget(Handle), GTK_TYPE_WINDOW);
+end;
 
 {------------------------------------------------------------------------------
   function TGtkWidgetSet.IsWindowEnabled(handle: HWND): boolean;

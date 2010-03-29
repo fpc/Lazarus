@@ -207,6 +207,7 @@ type
     function hasFocus: Boolean; virtual;
     function isMinimized: Boolean;
     function isMaximized: Boolean;
+    function IsWindow: Boolean;
     procedure lowerWidget; virtual;
     procedure move(ANewLeft, ANewTop: Integer);
     procedure preferredSize(var PreferredWidth, PreferredHeight: integer; WithThemeSpace: Boolean); virtual;
@@ -1477,7 +1478,8 @@ begin
   // set Handle->QWidget map
   setProperty(Widget, 'lclwidget', Int64(PtrUInt(Self)));
   FillChar(FPaintData, sizeOf(FPaintData), 0);
-  
+
+  QtWidgetSet.AddHandle(Self);
   // set focus policy
   if (LCLObject <> nil) and not (Self is TQtMainWindow) then
     setFocusPolicy(QtClickFocus);
@@ -1517,6 +1519,7 @@ begin
 
   // set Handle->QWidget map
   setProperty(Widget, 'lclwidget', Int64(PtrUInt(Self)));
+  QtWidgetSet.AddHandle(Self);
 
   FillChar(FPaintData, sizeOf(FPaintData), 0);
 
@@ -1547,6 +1550,7 @@ end;
 
 procedure TQtWidget.DeInitializeWidget;
 begin
+  QtWidgetSet.RemoveHandle(Self);
   if Widget <> nil then
     DetachEvents;
 
@@ -3253,6 +3257,11 @@ end;
 function TQtWidget.isMaximized: Boolean;
 begin
   Result := QWidget_isMaximized(Widget);
+end;
+
+function TQtWidget.IsWindow: Boolean;
+begin
+  Result := QWidget_isWindow(Widget);
 end;
 
 procedure TQtWidget.lowerWidget;
@@ -8860,6 +8869,7 @@ begin
   TextColorRole := QPaletteText;
   Widget := CreateWidget(FParams);
   setProperty(Widget, 'lclwidget', Int64(PtrUInt(Self)));
+  QtWidgetSet.AddHandle(Self);
 end;
 
 constructor TQtMenu.Create(const AMenuItem: TMenuItem);
@@ -10849,6 +10859,7 @@ begin
   FDesignControl := QWidget_create(Result);
   QWidget_setMouseTracking(FDesignControl, True);
   setProperty(FDesignControl, 'lclwidget', Int64(PtrUInt(Self)));
+  QtWidgetSet.AddHandle(Self);
   BringDesignerToFront;
 end;
 

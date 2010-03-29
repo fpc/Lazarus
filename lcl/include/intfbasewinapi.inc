@@ -1201,6 +1201,11 @@ begin
   Result := False;
 end;
 
+function TWidgetSet.IsWindow(handle: HWND): boolean;
+begin
+  Result := False;
+end;
+
 function TWidgetSet.IsWindowEnabled(handle: HWND): boolean;
 begin
   Result := false;

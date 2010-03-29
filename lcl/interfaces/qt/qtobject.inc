@@ -32,6 +32,8 @@ begin
   ClearCachedColors;
   FDockImage := nil;
   FDragImageLock := False;
+  System.InitCriticalSection(CriticalSection);
+  SavedHandlesList := TMap.Create(TMapIdType(ituPtrSize), SizeOf(TObject));
 end;
 
 {------------------------------------------------------------------------------
@@ -58,6 +60,14 @@ begin
   QtScreenContext.Free;
 
   ClearCachedColors;
+
+  if SavedHandlesList <> nil then
+  begin
+    SavedHandlesList.Free;
+    SavedHandlesList := nil;
+  end;
+
+  System.DoneCriticalsection(CriticalSection);
 
   inherited Destroy;
 end;
@@ -454,6 +464,33 @@ begin
     DebugLn(['Gdi object: ', GDIObject, ' is not an object!']);
     raise;
   end;
+end;
+
+procedure TQtWidgetSet.AddHandle(AHandle: TObject);
+begin
+  System.EnterCriticalsection(CriticalSection);
+  if not SavedHandlesList.HasId(AHandle) then
+    SavedHandlesList.Add(AHandle, AHandle);
+  System.LeaveCriticalsection(CriticalSection);
+end;
+
+procedure TQtWidgetSet.RemoveHandle(AHandle: TObject);
+begin
+  System.EnterCriticalsection(CriticalSection);
+  if SavedHandlesList.HasId(AHandle) then
+    SavedHandlesList.Delete(AHandle);
+  System.LeaveCriticalsection(CriticalSection);
+end;
+
+function TQtWidgetSet.IsValidHandle(AHandle: HWND): Boolean;
+var
+  i: integer;
+begin
+  if (AHandle = 0) then
+    Exit(False);
+  System.EnterCriticalsection(CriticalSection);
+  Result := SavedHandlesList.HasId(TObject(AHandle));
+  System.LeaveCriticalsection(CriticalSection);
 end;
 
 function TQtWidgetSet.DragImageList_BeginDrag(AImage: QImageH;

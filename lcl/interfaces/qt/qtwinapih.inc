@@ -142,6 +142,7 @@ function InvalidateRect(aHandle : HWND; Rect : pRect; bErase : Boolean) : Boolea
 procedure InitializeCriticalSection(var CritSection: TCriticalSection); override;
 function IntersectClipRect(dc: hdc; Left, Top, Right, Bottom: Integer): Integer; override;
 function IsIconic(Handle: HWND): boolean; override;
+function IsWindow(handle: HWND): boolean; override;
 function IsWindowEnabled(Handle: HWND): boolean; override;
 function IsWindowVisible(Handle: HWND): boolean; override;
 function IsZoomed(Handle: HWND): boolean; override;
