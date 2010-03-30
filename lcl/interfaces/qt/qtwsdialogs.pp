@@ -125,7 +125,7 @@ begin
   if ACommonDialog.Owner is TWinControl then
     Result := TQtWidget(TWinControl(ACommonDialog.Owner).Handle).Widget
   else
-  if Assigned(Application.MainForm) then
+  if Assigned(Application.MainForm) and Application.MainForm.Visible then
     Result := TQtWidget(Application.MainForm.Handle).Widget
   else
     Result := nil;
