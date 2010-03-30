@@ -8384,7 +8384,15 @@ end;
 function TGtkWidgetSet.SetActiveWindow(Handle: HWND): HWND;
 begin
   // ToDo
-  Result:=GetActiveWindow;
+  Result := GetActiveWindow;
+  {$ifdef gtk2}
+  if (Handle <> 0) and GtkWidgetIsA(PGtkWidget(Handle),GTK_TYPE_WINDOW) then
+  begin
+    if GTK_WIDGET_VISIBLE(PGtkWidget(Handle)) then
+      gtk_window_present(PGtkWindow(Handle));
+  end else
+    Result := 0; // if not active window return error
+  {$endif}
 end;
 
 {------------------------------------------------------------------------------
