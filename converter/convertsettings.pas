@@ -141,8 +141,11 @@ begin
   fReplacementNames['TGridPanel']:='TPanel';
   fReplacementNames['TComboBoxEx']:='TComboBox';
   fReplacementNames['TCoolBar']:='TPanel';
+  fReplacementNames['TControlBar']:='TPanel';
+  fReplacementNames['TValueListEditor']:='TStringGrid';
   fReplacementNames['TRichEdit']:='TMemo';
   fReplacementNames['TDBRichEdit']:='TDBMemo';
+  fReplacementNames['TApplicationEvents']:='TApplicationProperties';
   fReplacementNames['TPNGObject']:='TPortableNetworkGraphic';
   fReplacementNames['TTntForm']:='TForm';
 end;
