@@ -1980,7 +1980,6 @@ begin
   BtnWidget := gtk_button_new_with_label('button');
   gtk_container_add(PGtkContainer(EventBox), BtnWidget);
   gtk_widget_show_all(EventBox);
-  gtk_event_box_set_visible_window(PGtkEventBox(EventBox), False);
 
   { This commented commands can be used if we have event-related
     problems because of the EventBox }
