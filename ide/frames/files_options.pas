@@ -34,27 +34,27 @@ type
   { TFilesOptionsFrame }
 
   TFilesOptionsFrame = class(TAbstractIDEOptionsEditor)
-    CompilerPathButton: TButton;
-    CompilerPathComboBox: TComboBox;
-    CompilerPathGroupBox: TGroupBox;
-    FPCSourceDirButton: TButton;
-    FPCSourceDirComboBox: TComboBox;
-    FPCSourceDirGroupBox: TGroupBox;
-    LazarusDirButton: TButton;
-    LazarusDirComboBox: TComboBox;
-    LazarusDirGroupBox: TGroupBox;
-    MakePathButton: TButton;
-    MakePathComboBox: TComboBox;
-    MakePathGroupBox: TGroupBox;
+    CompilerPathButton:TButton;
+    CompilerPathComboBox:TComboBox;
+    FPCSourceDirButton:TButton;
+    FPCSourceDirComboBox:TComboBox;
+    CompilerPathLabel:TLabel;
+    FPCSourceDirLabel:TLabel;
+    MakePathButton:TButton;
+    MakePathComboBox:TComboBox;
+    TestBuildDirButton:TButton;
+    TestBuildDirComboBox:TComboBox;
+    TestBuildDirLabel:TLabel;
+    MakePathLabel:TLabel;
+    LazarusDirButton:TButton;
+    LazarusDirComboBox:TComboBox;
+    LazarusDirLabel:TLabel;
     MaxRecentOpenFilesComboBox: TComboBox;
     MaxRecentOpenFilesLabel: TLabel;
     MaxRecentProjectFilesComboBox: TComboBox;
     MaxRecentProjectFilesLabel: TLabel;
     OpenLastProjectAtStartCheckBox: TCheckBox;
     ShowCompileDialogCheckBox: TCheckBox;
-    TestBuildDirButton: TButton;
-    TestBuildDirComboBox: TComboBox;
-    TestBuildDirGroupBox: TGroupBox;
     procedure FilesButtonClick(Sender: TObject);
     procedure DirectoriesButtonClick(Sender: TObject);
   private
@@ -171,7 +171,7 @@ begin
   MaxRecentProjectFilesLabel.Caption:=dlgMaxRecentProjs;
   OpenLastProjectAtStartCheckBox.Caption:=dlgQOpenLastPrj;
   ShowCompileDialogCheckBox.Caption:=dlgQShowCompileDialog;
-  LazarusDirGroupBox.Caption:=dlgLazarusDir;
+  LazarusDirLabel.Caption:=dlgLazarusDir;
 
   with LazarusDirComboBox.Items do
   begin
@@ -180,9 +180,9 @@ begin
     EndUpdate;
   end;
 
-  CompilerPathGroupBox.Caption:=Format(dlgFpcPath,[GetDefaultCompilerFilename]);
-  FPCSourceDirGroupBox.Caption:=dlgFpcSrcPath;
-  MakePathGroupBox.Caption:=dlgMakePath;
+  CompilerPathLabel.Caption:=Format(dlgFpcPath,[GetDefaultCompilerFilename]);
+  FPCSourceDirLabel.Caption:=dlgFpcSrcPath;
+  MakePathLabel.Caption:=dlgMakePath;
 
   with MakePathComboBox.Items do
   begin
@@ -192,7 +192,7 @@ begin
     EndUpdate;
   end;
 
-  TestBuildDirGroupBox.Caption:=dlgTestPrjDir;
+  TestBuildDirLabel.Caption:=dlgTestPrjDir;
 
   with TestBuildDirComboBox.Items do
   begin
