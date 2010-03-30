@@ -957,7 +957,7 @@ type
     function GetAttributes: TPropertyAttributes; override;
     procedure Edit; override;
     class function ShowCollectionEditor(ACollection: TCollection; 
-      OwnerPersistent: TPersistent; const PropName: String): TCustomForm;
+      OwnerPersistent: TPersistent; const PropName: String): TCustomForm; virtual;
   end;
 
 //==============================================================================
