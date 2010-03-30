@@ -1194,6 +1194,7 @@ begin
   if not WSCheckHandleAllocated(ALV, 'BeginUpdate') then
     Exit;
   QtTreeWidget := TQtTreeWidget(ALV.Handle);
+  QtTreeWidget.BeginUpdate;
   QtTreeWidget.setUpdatesEnabled(False);
 end;
 
@@ -1205,6 +1206,9 @@ begin
     Exit;
   QtTreeWidget := TQtTreeWidget(ALV.Handle);
   QtTreeWidget.setUpdatesEnabled(True);
+  QtTreeWidget.EndUpdate;
+  if not QtTreeWidget.InUpdate then
+    QtTreeWidget.Update(nil);
 end;
 
 {------------------------------------------------------------------------------

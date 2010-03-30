@@ -8631,6 +8631,7 @@ procedure TQtTreeWidget.SignalItemChanged(item: QTreeWidgetItemH; column: Intege
 var
   Msg: TLMessage;
 begin
+  if InUpdate then exit;
   FillChar(Msg, SizeOf(Msg), #0);
   Msg.Msg := LM_CHANGED;
   DeliverMessage(Msg);
