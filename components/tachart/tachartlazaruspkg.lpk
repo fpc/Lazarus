@@ -67,6 +67,7 @@
       </Item10>
       <Item11>
         <Filename Value="tatools.pas"/>
+        <HasRegisterProc Value="True"/>
         <UnitName Value="TATools"/>
       </Item11>
     </Files>

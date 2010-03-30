@@ -47,6 +47,8 @@ type
     property Shift: TShiftState read FShift write FShift;
   end;
 
+  TChartToolClass = class of TChartTool;
+
   { TChartToolset }
 
   TChartToolset = class(TBasicChartToolset)
@@ -83,11 +85,37 @@ type
     procedure MouseMove(APoint: TPoint); override;
   end;
 
+  procedure Register;
+  procedure RegisterChartToolClass(
+    AToolClass: TChartToolClass; const ACaption: String);
+
 implementation
 
 uses
-  GraphMath, Math, Types,
+  CollectionPropEditForm, Forms, GraphMath, Math, Menus, PropEdits, Types,
   TAChartUtils;
+
+type
+
+  { TChartToolsEditor }
+
+  TChartToolsEditor = class(TCollectionPropertyEditor)
+  public
+    class function ShowCollectionEditor(
+      ACollection: TCollection; OwnerPersistent: TPersistent;
+      const PropName: String): TCustomForm; override;
+  end;
+
+  { TChartToolsEditorForm }
+
+  TChartToolsEditorForm = class(TCollectionPropertyEditorForm)
+  private
+    procedure OnAddToolClick(ASender: TObject);
+  end;
+
+var
+  ToolsClassRegistry: TStringList;
+  ChartToolsForm: TChartToolsEditorForm;
 
 function InitBuitlinTools(AChart: TChart): TBasicChartToolset;
 var
@@ -98,6 +126,69 @@ begin
   TChartZoomDragTool.Create(ts.Tools).Shift := [ssLeft];
   TChartReticuleTool.Create(ts.Tools);
 end;
+
+procedure InitChartToolsForm;
+var
+  m: TPopupMenu;
+  mi: TMenuItem;
+  i: Integer;
+begin
+  if ChartToolsForm <> nil then exit;
+  ChartToolsForm := TChartToolsEditorForm.Create(Application);
+  m := TPopupMenu.Create(ChartToolsForm);
+  for i := 0 to ToolsClassRegistry.Count - 1 do begin
+    mi := TMenuItem.Create(ChartToolsForm);
+    mi.Caption := ToolsClassRegistry[i];
+    mi.Tag := i;
+    mi.OnClick := @ChartToolsForm.OnAddToolClick;
+    m.Items.Add(mi);
+  end;
+  ChartToolsForm.AddButton.DropdownMenu := m;
+  ChartToolsForm.AddButton.OnClick := nil;
+end;
+
+procedure Register;
+begin
+  RegisterComponents(CHART_COMPONENT_IDE_PAGE, [TChartToolset]);
+  RegisterPropertyEditor(
+    TypeInfo(TCollection), TChartToolset, 'Tools', TChartToolsEditor);
+end;
+
+procedure RegisterChartToolClass(
+  AToolClass: TChartToolClass; const ACaption: String);
+begin
+  ToolsClassRegistry.AddObject(ACaption, TObject(AToolClass));
+end;
+
+{ TChartToolsEditor }
+
+class function TChartToolsEditor.ShowCollectionEditor(
+  ACollection: TCollection; OwnerPersistent: TPersistent;
+  const PropName: String): TCustomForm;
+begin
+  InitChartToolsForm;
+  ChartToolsForm.SetCollection(ACollection, OwnerPersistent, PropName);
+  ChartToolsForm.EnsureVisible;
+  Result := ChartToolsForm;
+end;
+
+{ TChartToolsEditorForm }
+
+procedure TChartToolsEditorForm.OnAddToolClick(ASender: TObject);
+begin
+  if Collection = nil then exit;
+  with ASender as TMenuItem do
+    TChartToolClass(ToolsClassRegistry.Objects[Tag]).Create(Collection);
+
+  FillCollectionListBox;
+  if CollectionListBox.Items.Count > 0 then
+    CollectionListBox.ItemIndex := CollectionListBox.Items.Count - 1;
+  SelectInObjectInspector(True, False);
+  UpdateButtons;
+  UpdateCaption;
+  Modified;
+end;
+
 
 { TChartTool }
 
@@ -250,7 +341,14 @@ end;
 
 initialization
 
+  ToolsClassRegistry := TStringList.Create;
   OnInitBuiltinTools := @InitBuitlinTools;
+  RegisterChartToolClass(TChartZoomDragTool, 'Zoom drag tool');
+  RegisterChartToolClass(TChartReticuleTool, 'Reticule tool');
+
+finalization
+
+  ToolsClassRegistry.Free;
 
 end.
 

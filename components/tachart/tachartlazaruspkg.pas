@@ -19,6 +19,7 @@ begin
   RegisterUnit('TASeriesEditor', @TASeriesEditor.Register); 
   RegisterUnit('TASources', @TASources.Register); 
   RegisterUnit('TADbSource', @TADbSource.Register); 
+  RegisterUnit('TATools', @TATools.Register); 
 end; 
 
 initialization
