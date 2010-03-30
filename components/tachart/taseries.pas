@@ -52,13 +52,14 @@ type
 
     procedure DrawLabels(ACanvas: TCanvas);
     function GetLabelDirection(AIndex: Integer): TLabelDirection; virtual;
+    procedure UpdateMargins(ACanvas: TCanvas; var AMargins: TRect); override;
+    property UseReticule: Boolean
+      read FUseReticule write SetUseReticule default false;
+  public
     function GetNearestPoint(
       ADistFunc: TPointDistFunc; const APoint: TPoint;
       out AIndex: Integer; out AImg: TPoint; out AValue: TDoublePoint): Boolean;
       override;
-    procedure UpdateMargins(ACanvas: TCanvas; var AMargins: TRect); override;
-    property UseReticule: Boolean
-      read FUseReticule write SetUseReticule default false;
   end;
 
   { TBarSeries }
