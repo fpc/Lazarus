@@ -706,6 +706,10 @@ end;
  ------------------------------------------------------------------------------}
 procedure TCarbonDeviceContext.SetAntialiasing(AValue: Boolean);
 begin
+  if not AValue then
+    CGContextSetInterpolationQuality(CGContext, kCGInterpolationNone)
+  else
+    CGContextSetInterpolationQuality(CGContext, kCGInterpolationDefault);
   CGContextSetShouldAntialias(CGContext, CBool(AValue));
 end;
 
