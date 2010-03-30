@@ -685,6 +685,7 @@ type
     property AllowDropFiles;
     property AlphaBlend default False;
     property AlphaBlendValue default 255;
+    property Anchors;
     property AutoScroll;
     property AutoSize;
     property BiDiMode;
