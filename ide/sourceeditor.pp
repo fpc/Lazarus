@@ -2427,6 +2427,11 @@ Begin
   //debugln('TSourceEditor.ProcessUserCommand A ',dbgs(Command));
   Handled:=true;
 
+  if Manager.ActiveSourceWindow <> SourceNotebook then begin
+    debugln('Warning: ActiveSourceWindow is set incorrectly');
+    Manager.ActiveSourceWindow := SourceNotebook;
+  end;
+
   case Command of
 
   ecContextHelp:
