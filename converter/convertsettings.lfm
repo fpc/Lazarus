@@ -1,12 +1,12 @@
 object ConvertSettingsForm: TConvertSettingsForm
-  Left = 286
+  Left = 280
   Height = 400
-  Top = 122
-  Width = 607
+  Top = 292
+  Width = 611
   ActiveControl = MainPathEdit
   Caption = 'Convert Delphi unit, project or package '
   ClientHeight = 400
-  ClientWidth = 607
+  ClientWidth = 611
   Constraints.MinHeight = 400
   OnCreate = FormCreate
   OnDestroy = FormDestroy
@@ -17,12 +17,12 @@ object ConvertSettingsForm: TConvertSettingsForm
     Left = 0
     Height = 133
     Top = 219
-    Width = 607
+    Width = 611
     Anchors = [akTop, akLeft, akRight, akBottom]
     BorderSpacing.Top = 3
     Caption = 'Missing Properties and Types'
-    ClientHeight = 111
-    ClientWidth = 597
+    ClientHeight = 113
+    ClientWidth = 601
     TabOrder = 0
     object MissingTypesCheckBox: TCheckBox
       Left = 11
@@ -67,10 +67,10 @@ object ConvertSettingsForm: TConvertSettingsForm
     Left = 0
     Height = 136
     Top = 80
-    Width = 607
+    Width = 611
     Anchors = [akTop, akLeft, akRight]
     ClientHeight = 126
-    ClientWidth = 597
+    ClientWidth = 601
     TabOrder = 1
     object TargetRadioGroup: TRadioGroup
       Left = 11
@@ -87,7 +87,7 @@ object ConvertSettingsForm: TConvertSettingsForm
       ChildSizing.ShrinkVertical = crsScaleChilds
       ChildSizing.Layout = cclLeftToRightThenTopToBottom
       ChildSizing.ControlsPerLine = 1
-      ClientHeight = 90
+      ClientHeight = 92
       ClientWidth = 262
       ItemIndex = 0
       Items.Strings = (
@@ -115,12 +115,12 @@ object ConvertSettingsForm: TConvertSettingsForm
     Left = 0
     Height = 48
     Top = 352
-    Width = 607
+    Width = 611
     Align = alBottom
     AutoSize = True
     BevelOuter = bvNone
     ClientHeight = 48
-    ClientWidth = 607
+    ClientWidth = 611
     TabOrder = 2
     object HelpButton: TBitBtn
       AnchorSideBottom.Side = asrBottom
@@ -139,7 +139,7 @@ object ConvertSettingsForm: TConvertSettingsForm
     end
     object btnOK: TBitBtn
       AnchorSideBottom.Side = asrBottom
-      Left = 439
+      Left = 443
       Height = 36
       Top = 6
       Width = 75
@@ -157,7 +157,7 @@ object ConvertSettingsForm: TConvertSettingsForm
     object btnCancel: TBitBtn
       AnchorSideRight.Side = asrBottom
       AnchorSideBottom.Side = asrBottom
-      Left = 520
+      Left = 524
       Height = 36
       Top = 6
       Width = 81
@@ -178,7 +178,7 @@ object ConvertSettingsForm: TConvertSettingsForm
     Left = 80
     Height = 17
     Top = 15
-    Width = 499
+    Width = 503
     Anchors = [akTop, akLeft, akRight]
     BorderStyle = bsNone
     Color = clBtnFace

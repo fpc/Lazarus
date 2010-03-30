@@ -776,7 +776,7 @@ end;
 constructor TConvertDelphiPBase.Create(const AFilename, ADescription: string);
 begin
   fOrigPFilename:=AFilename;
-  fCachedUnitNames:=TStringToStringTree.Create(true);
+  fCachedUnitNames:=TStringToStringTree.Create(false);
   fCachedRealUnitNames:=TStringToStringTree.Create(true);
   fSettings:=TConvertSettings.Create('Convert Delphi '+ADescription);
   fSettings.MainFilename:=fOrigPFilename;

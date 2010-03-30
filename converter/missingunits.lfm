@@ -1,27 +1,26 @@
 object MissingUnitsDialog: TMissingUnitsDialog
-  Left = 283
-  Height = 219
-  Top = 127
-  Width = 562
+  Left = 280
+  Height = 323
+  Top = 149
+  Width = 641
   HorzScrollBar.Page = 411
   VertScrollBar.Page = 342
   Caption = 'Units not Found'
-  ClientHeight = 219
-  ClientWidth = 562
+  ClientHeight = 323
+  ClientWidth = 641
   LCLVersion = '0.9.29'
   object MissingUnitsInfoLabel: TLabel
     Left = 16
     Height = 16
     Top = 16
-    Width = 538
-    Anchors = [akTop, akLeft, akRight]
+    Width = 99
     Caption = 'Missing Units Info'
     ParentColor = False
   end
   object CommentButton: TBitBtn
     Left = 16
     Height = 30
-    Top = 170
+    Top = 274
     Width = 152
     Anchors = [akLeft, akBottom]
     Caption = 'Comment'
@@ -31,9 +30,9 @@ object MissingUnitsDialog: TMissingUnitsDialog
     TabOrder = 0
   end
   object SearchButton: TBitBtn
-    Left = 209
+    Left = 249
     Height = 30
-    Top = 170
+    Top = 274
     Width = 152
     Anchors = [akBottom]
     Caption = 'Search'
@@ -42,9 +41,9 @@ object MissingUnitsDialog: TMissingUnitsDialog
     TabOrder = 1
   end
   object AbortButton: TBitBtn
-    Left = 402
+    Left = 481
     Height = 30
-    Top = 170
+    Top = 274
     Width = 152
     Anchors = [akRight, akBottom]
     Caption = 'Abort'
@@ -54,60 +53,51 @@ object MissingUnitsDialog: TMissingUnitsDialog
     TabOrder = 2
   end
   object ChoicesLabel: TLabel
-    AnchorSideTop.Control = UnitNamesLabel
-    Left = 16
+    Left = 224
     Height = 16
-    Top = 62
-    Width = 538
-    Anchors = [akTop, akLeft, akRight]
+    Top = 40
+    Width = 50
     BorderSpacing.Top = 23
     Caption = 'Choices:'
     ParentColor = False
   end
   object Info1Label: TLabel
     AnchorSideTop.Control = ChoicesLabel
-    Left = 16
+    Left = 224
     Height = 16
-    Top = 85
-    Width = 538
-    Anchors = [akTop, akLeft, akRight]
+    Top = 63
+    Width = 28
     BorderSpacing.Top = 23
     Caption = 'Info1'
     ParentColor = False
   end
   object Info2Label: TLabel
     AnchorSideTop.Control = Info1Label
-    Left = 16
+    Left = 224
     Height = 16
-    Top = 108
-    Width = 538
-    Anchors = [akTop, akLeft, akRight]
+    Top = 86
+    Width = 28
     BorderSpacing.Top = 23
     Caption = 'Info2'
     ParentColor = False
   end
   object Info3Label: TLabel
     AnchorSideTop.Control = Info2Label
-    Left = 16
+    Left = 224
     Height = 16
-    Top = 131
-    Width = 538
-    Anchors = [akTop, akLeft, akRight]
+    Top = 109
+    Width = 28
     BorderSpacing.Top = 23
     Caption = 'Info3'
     ParentColor = False
   end
-  object UnitNamesLabel: TLabel
-    AnchorSideTop.Control = MissingUnitsInfoLabel
-    Left = 24
-    Height = 16
-    Top = 39
-    Width = 530
-    Anchors = [akTop, akLeft, akRight]
-    BorderSpacing.Top = 23
-    Caption = 'UnitNames'
-    Font.Style = [fsBold]
-    ParentColor = False
-    ParentFont = False
+  object MissingUnitsCheckListBox: TCheckListBox
+    Left = 16
+    Height = 222
+    Top = 40
+    Width = 192
+    Anchors = [akTop, akLeft, akBottom]
+    ItemHeight = 0
+    TabOrder = 3
   end
 end

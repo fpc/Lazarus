@@ -442,10 +442,10 @@ resourcestring
   lisMissingUnitsSearch = 'Search Unit Path';
   lisTheseUnitsWereNotFound = 'These units were not found:';
   lisMissingUnitsChoices = 'Your choices are:';
-  lisMissingUnitsInfo1 = '1) Comment out the missing units (ignore them).';
+  lisMissingUnitsInfo1 = '1) Comment out the selected units.';
   lisMissingUnitsInfo1b = '1) Use the units only for Delphi.';
-  lisMissingUnitsInfo2 = '2) Select a unit path which will be added to project settings.';
-  lisMissingUnitsInfo3 = '3) Abort now, fix the unit path or install packages and try again.';
+  lisMissingUnitsInfo2 = '2) Search for units. Found paths are added to project settings.';
+  lisMissingUnitsInfo3 = '3) Abort now, install packages or fix paths and try again.';
   lisUnitNotFound = 'A unit not found in';
   lisUnitsNotFound2 = 'Units not found in';
   lisUnableToConvertLfmToLrsAndWriteLrsFile = 'Unable to convert lfm to lrs '

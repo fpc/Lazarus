@@ -1,10 +1,10 @@
 object FixLFMDialog: TFixLFMDialog
-  Left = 251
+  Left = 280
   Height = 536
-  Top = 356
+  Top = 233
   Width = 756
   ActiveControl = LFMSynEdit
-  Caption = 'Repair LFM file'
+  Caption = 'Fix LFM file'
   ClientHeight = 536
   ClientWidth = 756
   OnCreate = CheckLFMDialogCreate
@@ -26,14 +26,14 @@ object FixLFMDialog: TFixLFMDialog
     Width = 408
     Align = alLeft
     Caption = 'LFM file'
-    ClientHeight = 346
-    ClientWidth = 398
+    ClientHeight = 349
+    ClientWidth = 404
     TabOrder = 0
     inline LFMSynEdit: TSynEdit
       Left = 0
-      Height = 346
+      Height = 349
       Top = 0
-      Width = 398
+      Width = 404
       Align = alClient
       Font.Height = -15
       Font.Name = 'courier'
@@ -633,14 +633,14 @@ object FixLFMDialog: TFixLFMDialog
     Width = 756
     Align = alBottom
     Caption = 'Errors'
-    ClientHeight = 82
-    ClientWidth = 746
+    ClientHeight = 85
+    ClientWidth = 752
     TabOrder = 1
     object ErrorsListBox: TListBox
       Left = 0
-      Height = 82
+      Height = 85
       Top = 0
-      Width = 746
+      Width = 752
       Align = alClient
       ItemHeight = 0
       OnClick = ErrorsListBoxClick
@@ -693,33 +693,33 @@ object FixLFMDialog: TFixLFMDialog
     Width = 343
     Align = alClient
     Caption = 'Properties and Types to replace'
-    ClientHeight = 346
-    ClientWidth = 333
+    ClientHeight = 349
+    ClientWidth = 339
     TabOrder = 3
     object PropertyReplaceGrid: TStringGrid
       Left = 0
-      Height = 346
+      Height = 349
       Top = 0
-      Width = 333
+      Width = 339
       Align = alClient
       AutoFillColumns = True
       ColCount = 2
       Columns = <      
         item
           Title.Caption = 'Delphi name'
-          Width = 163
+          Width = 167
         end      
         item
           Title.Caption = 'New name'
-          Width = 164
+          Width = 168
         end>
       FixedCols = 0
       Options = [goFixedVertLine, goFixedHorzLine, goVertLine, goHorzLine, goRangeSelect, goEditing, goSmoothScroll]
       RowCount = 2
       TabOrder = 0
       ColWidths = (
-        163
-        164
+        167
+        168
       )
     end
   end

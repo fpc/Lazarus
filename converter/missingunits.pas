@@ -33,7 +33,7 @@ interface
 uses
   // FCL+LCL
   Classes, SysUtils, LCLProc, LResources, Forms, Controls, Graphics,
-  Dialogs, Buttons, StdCtrls, FileUtil,
+  Dialogs, Buttons, StdCtrls, FileUtil, CheckLst,
   // Components
   SynEdit, CodeAtom, CodeCache, CodeToolManager, DefineTemplates,
   // IDEIntf
@@ -47,9 +47,9 @@ type
   { TMissingUnitsDialog }
 
   TMissingUnitsDialog = class(TForm)
+    MissingUnitsCheckListBox: TCheckListBox;
     CommentButton: TBitBtn;
     ChoicesLabel: TLabel;
-    UnitNamesLabel: TLabel;
     Info1Label: TLabel;
     Info2Label: TLabel;
     Info3Label: TLabel;
@@ -80,7 +80,7 @@ function AskMissingUnits(AMissingUnits: TStrings; AMainUnitName: string;
                          ATargetDelphi: boolean): TModalResult;
 var
   UNFDialog: TMissingUnitsDialog;
-  UnitsTitle, UnitsCommaList: string;
+  UnitsTitle: string;
   i: Integer;
 begin
   Result:=mrCancel;
@@ -91,20 +91,11 @@ begin
   else
     UnitsTitle:=lisUnitsNotFound2+' '+AMainUnitName;
 
-  // A comma separated list of missing units.
-  UnitsCommaList:='';
-  for i:=0 to AMissingUnits.Count-1 do begin
-    if UnitsCommaList<>'' then
-      UnitsCommaList:=UnitsCommaList+', ';
-    UnitsCommaList:=UnitsCommaList+AMissingUnits[i];
-  end;
-
   UNFDialog:=TMissingUnitsDialog.Create(nil);
   with UNFDialog do begin
     Caption:=UnitsTitle;
     SearchButton.Caption:=lisMissingUnitsSearch;
     MissingUnitsInfoLabel.Caption:=lisTheseUnitsWereNotFound;
-    UnitNamesLabel.Caption:=UnitsCommaList;
     ChoicesLabel.Caption:=lisMissingUnitsChoices;
     if ATargetDelphi then begin
       CommentButton.Caption:=lisMissingUnitsForDelphi;
@@ -116,7 +107,21 @@ begin
     end;
     Info2Label.Caption:=lisMissingUnitsInfo2;
     Info3Label.Caption:=lisMissingUnitsInfo3;
+    // Add missing units to CheckListBox.
+    for i:=0 to AMissingUnits.Count-1 do begin
+      MissingUnitsCheckListBox.Items.Append(AMissingUnits[i]);
+      MissingUnitsCheckListBox.Checked[i]:=true;
+    end;
+    // Show dialog and get user action.
     Result:=ShowModal;
+    if Result=mrOK then begin
+      AMissingUnits.Clear;
+      for i := 0 to MissingUnitsCheckListBox.Count-1 do begin
+        if MissingUnitsCheckListBox.Checked[i] then begin
+          AMissingUnits.Append(MissingUnitsCheckListBox.Items[i]);
+        end;
+      end;
+    end;
     Free;
   end;
 end;

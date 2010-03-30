@@ -340,7 +340,17 @@ end;
 
 function TLFMFixer.Repair: TModalResult;
 begin
-  Result:=inherited Repair;
+  Result:=mrCancel;
+  if CodeToolBoss.CheckLFM(fPascalBuffer,fLFMBuffer,fLFMTree,
+                           fRootMustBeClassInIntf,fObjectsMustExists)
+  then begin
+    Result:=mrOk;
+    exit;
+  end;
+  Result:=FixMissingComponentClasses;
+  if Result in [mrAbort,mrOk] then exit;
+  WriteLFMErrors;
+  Result:=ShowRepairLFMWizard;
 end;
 
 
