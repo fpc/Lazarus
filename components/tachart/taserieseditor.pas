@@ -35,7 +35,7 @@ resourcestring
 implementation
 
 uses
-  Classes, ComponentEditors, Forms,Menus, PropEdits, SysUtils,
+  Classes, ComponentEditors, Forms, Menus, PropEdits, SysUtils,
   TAGraph, TASubcomponentsEditor;
 
 type

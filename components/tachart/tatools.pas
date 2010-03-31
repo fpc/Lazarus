@@ -110,11 +110,46 @@ type
   procedure RegisterChartToolClass(
     AToolClass: TChartToolClass; const ACaption: String);
 
+resourcestring
+  tasToolsEditorTitle = 'Edit tools';
+
 implementation
 
 uses
-  GraphMath, Math, Types,
-  TAChartUtils;
+  ComponentEditors, Forms, GraphMath, Math, PropEdits, Types,
+  TAChartUtils, TASubcomponentsEditor;
+
+type
+  { TToolsComponentEditor }
+
+  TToolsComponentEditor = class(TSubComponentListEditor)
+  protected
+    function MakeEditorForm: TForm; override;
+  public
+    function GetVerbCount: Integer; override;
+    function GetVerb(Index: Integer): string; override;
+  end;
+
+  { TToolsPropertyEditor }
+
+  TToolsPropertyEditor = class(TComponentListPropertyEditor)
+  protected
+    function MakeEditorForm: TForm; override;
+    function GetChildrenCount: Integer; override;
+  end;
+
+  { TToolsEditorForm }
+
+  TToolsEditorForm = class(TComponentListEditorForm)
+  protected
+    procedure AddSubcomponent(AParent, AChild: TComponent); override;
+    procedure BuildCaption; override;
+    function ChildClass: TComponentClass; override;
+    procedure EnumerateSubcomponentClasses; override;
+    function MakeSubcomponent(
+      AOwner: TComponent; ATag: Integer): TComponent; override;
+    procedure RefreshList; override;
+  end;
 
 var
   ToolsClassRegistry: TStringList;
@@ -135,13 +170,94 @@ end;
 procedure Register;
 begin
   RegisterComponents(CHART_COMPONENT_IDE_PAGE, [TChartToolset]);
+  RegisterPropertyEditor(
+    TypeInfo(TChartTools), TChartToolset, 'Tools', TToolsPropertyEditor);
+  RegisterComponentEditor(TChartToolset, TToolsComponentEditor);
 end;
 
 procedure RegisterChartToolClass(
   AToolClass: TChartToolClass; const ACaption: String);
 begin
   ToolsClassRegistry.AddObject(ACaption, TObject(AToolClass));
+  RegisterClass(AToolClass);
+  RegisterNoIcon([AToolClass]);
 end;
+
+{ TToolsComponentEditor }
+
+function TToolsComponentEditor.GetVerb(Index: Integer): string;
+begin
+  if Index = 0 then
+    Result := tasToolsEditorTitle
+  else
+    Result := '';
+end;
+
+function TToolsComponentEditor.GetVerbCount: Integer;
+begin
+  Result := 1;
+end;
+
+function TToolsComponentEditor.MakeEditorForm: TForm;
+begin
+  Result := TToolsEditorForm.Create(Application, GetComponent, Self, nil);
+end;
+
+{ TToolsPropertyEditor }
+
+function TToolsPropertyEditor.GetChildrenCount: Integer;
+begin
+  Result := (GetObjectValue as TChartTools).Count;
+end;
+
+function TToolsPropertyEditor.MakeEditorForm: TForm;
+begin
+  with TToolsEditorForm do
+    Result := Create(Application, GetComponent(0) as TComponent, nil, Self);
+end;
+
+{ TToolsEditorForm }
+
+procedure TToolsEditorForm.AddSubcomponent(AParent, AChild: TComponent);
+begin
+  (AChild as TChartTool).Toolset := (AParent as TChartToolset);
+end;
+
+procedure TToolsEditorForm.BuildCaption;
+begin
+  Caption := tasToolsEditorTitle + ' - ' + Parent.Name;
+end;
+
+function TToolsEditorForm.ChildClass: TComponentClass;
+begin
+  Result := TChartTool;
+end;
+
+procedure TToolsEditorForm.EnumerateSubcomponentClasses;
+var
+  i: Integer;
+begin
+  for i := 0 to ToolsClassRegistry.Count - 1 do
+    AddSubcomponentClass(ToolsClassRegistry[i], i);
+end;
+
+function TToolsEditorForm.MakeSubcomponent(
+  AOwner: TComponent; ATag: Integer): TComponent;
+begin
+  Result := TChartToolClass(ToolsClassRegistry.Objects[ATag]).Create(AOwner);
+end;
+
+procedure TToolsEditorForm.RefreshList;
+var
+  i: Integer;
+begin
+  ChildrenListBox.Clear;
+  with Parent as TChartToolset do
+    for i := 0 to Tools.Count - 1 do
+      ChildrenListBox.Items.AddObject(Item[i].Name, Item[i]);
+end;
+
+{ TChartTool }
 
 procedure TChartTool.Assign(Source: TPersistent);
 begin
@@ -153,8 +269,6 @@ begin
   else
     inherited Assign(Source);
 end;
-
-{ TChartTool }
 
 constructor TChartTool.Create(AOwner: TComponent);
 begin

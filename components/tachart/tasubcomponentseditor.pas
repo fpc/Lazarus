@@ -70,17 +70,17 @@ type
     FPropertyEditor: TComponentListPropertyEditor;
     function FindChild(ACandidate: TPersistent; out AIndex: Integer): Boolean;
     procedure OnComponentRenamed(AComponent: TComponent);
-    procedure OnPersistentDeleting(APersistent: TPersistent);
     procedure OnGetSelection(const ASelection: TPersistentSelectionList);
-    procedure OnSetSelection(const ASelection: TPersistentSelectionList);
     procedure OnPersistentAdded(APersistent: TPersistent; ASelect: Boolean);
+    procedure OnPersistentDeleting(APersistent: TPersistent);
+    procedure OnSetSelection(const ASelection: TPersistentSelectionList);
     procedure SelectionChanged;
   protected
-    procedure AddSubcomponentClass(const ACaption: String; ATag: Integer);
     procedure AddSubcomponent(AParent, AChild: TComponent); virtual; abstract;
+    procedure AddSubcomponentClass(const ACaption: String; ATag: Integer);
     procedure BuildCaption; virtual; abstract;
-    procedure EnumerateSubcomponentClasses; virtual; abstract;
     function ChildClass: TComponentClass; virtual; abstract;
+    procedure EnumerateSubcomponentClasses; virtual; abstract;
     function MakeSubcomponent(
       AOwner: TComponent; ATag: Integer): TComponent; virtual; abstract;
     procedure RefreshList; virtual; abstract;
