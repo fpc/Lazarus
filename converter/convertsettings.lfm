@@ -21,14 +21,14 @@ object ConvertSettingsForm: TConvertSettingsForm
     Anchors = [akTop, akLeft, akRight, akBottom]
     BorderSpacing.Top = 3
     Caption = 'Missing Properties and Types'
-    ClientHeight = 113
-    ClientWidth = 601
+    ClientHeight = 114
+    ClientWidth = 607
     TabOrder = 0
     object MissingTypesCheckBox: TCheckBox
       Left = 11
-      Height = 23
+      Height = 21
       Top = 22
-      Width = 286
+      Width = 283
       Caption = 'Automatic conversion of missing types (ToDo...)'
       Enabled = False
       TabOrder = 0
@@ -36,9 +36,9 @@ object ConvertSettingsForm: TConvertSettingsForm
     end
     object MissingPropertiesCheckBox: TCheckBox
       Left = 11
-      Height = 23
+      Height = 21
       Top = 4
-      Width = 297
+      Width = 294
       Caption = 'Automatic removal of missing properties (ToDo...)'
       Enabled = False
       TabOrder = 1
@@ -69,8 +69,8 @@ object ConvertSettingsForm: TConvertSettingsForm
     Top = 80
     Width = 611
     Anchors = [akTop, akLeft, akRight]
-    ClientHeight = 126
-    ClientWidth = 601
+    ClientHeight = 132
+    ClientWidth = 607
     TabOrder = 1
     object TargetRadioGroup: TRadioGroup
       Left = 11
@@ -87,8 +87,8 @@ object ConvertSettingsForm: TConvertSettingsForm
       ChildSizing.ShrinkVertical = crsScaleChilds
       ChildSizing.Layout = cclLeftToRightThenTopToBottom
       ChildSizing.ControlsPerLine = 1
-      ClientHeight = 92
-      ClientWidth = 262
+      ClientHeight = 93
+      ClientWidth = 268
       ItemIndex = 0
       Items.Strings = (
         'Lazarus/LCL'
@@ -102,9 +102,9 @@ object ConvertSettingsForm: TConvertSettingsForm
       AnchorSideLeft.Control = TargetRadioGroup
       AnchorSideLeft.Side = asrBottom
       Left = 303
-      Height = 23
+      Height = 21
       Top = 75
-      Width = 265
+      Width = 262
       BorderSpacing.Left = 13
       BorderSpacing.Around = 7
       Caption = 'Use the same DFM file for Lazarus (ToDo...)'
@@ -139,17 +139,19 @@ object ConvertSettingsForm: TConvertSettingsForm
     end
     object btnOK: TBitBtn
       AnchorSideBottom.Side = asrBottom
-      Left = 443
+      Left = 391
       Height = 36
       Top = 6
-      Width = 75
+      Width = 127
       Align = alRight
       AutoSize = True
       BorderSpacing.Around = 6
-      Caption = '&OK'
+      Caption = 'Start Conversion'
       Constraints.MinHeight = 25
       Constraints.MinWidth = 75
+      Default = True
       Kind = bkOK
+      ModalResult = 1
       NumGlyphs = 0
       OnClick = btnOKClick
       TabOrder = 1
@@ -176,7 +178,7 @@ object ConvertSettingsForm: TConvertSettingsForm
   end
   object MainPathEdit: TLabeledEdit
     Left = 80
-    Height = 17
+    Height = 21
     Top = 15
     Width = 503
     Anchors = [akTop, akLeft, akRight]
@@ -189,7 +191,7 @@ object ConvertSettingsForm: TConvertSettingsForm
     EditLabel.AnchorSideBottom.Control = MainPathEdit
     EditLabel.Left = 15
     EditLabel.Height = 16
-    EditLabel.Top = 15
+    EditLabel.Top = 17
     EditLabel.Width = 58
     EditLabel.Caption = 'Main Path:'
     EditLabel.ParentColor = False
@@ -202,9 +204,9 @@ object ConvertSettingsForm: TConvertSettingsForm
     AnchorSideTop.Control = MainPathEdit
     AnchorSideTop.Side = asrBottom
     Left = 16
-    Height = 23
-    Top = 44
-    Width = 189
+    Height = 21
+    Top = 48
+    Width = 186
     BorderSpacing.Top = 5
     BorderSpacing.Around = 7
     Caption = 'Make backup of changed files'

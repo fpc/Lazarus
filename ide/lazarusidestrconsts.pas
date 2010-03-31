@@ -453,6 +453,7 @@ resourcestring
   lisNotADelphiProject = 'Not a Delphi project';
   lisTheFileIsNotADelphiProjectDpr = 'The file %s%s%s is not a Delphi '
     +'project (.dpr)';
+  lisStartConversion = 'Start Conversion';
   lisBackupChangedFiles = 'Make backup of changed files';
   lisConvertTarget1 = 'Lazarus/LCL';
   lisConvertTarget2 = 'Lazarus/LCL for Windows only';

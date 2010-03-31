@@ -294,6 +294,7 @@ const                // Move later to resourcestrings
   lisUseSameDFMFile = 'Use the same DFM file for Lazarus (ToDo...)';
 begin
   MainPathEdit.Text:='';
+  btnOK.Caption:=lisStartConversion;
   BackupCheckBox.Caption:=lisBackupChangedFiles;
   TargetRadioGroup.Items.Clear;
   TargetRadioGroup.Items.Append(lisConvertTarget1);
