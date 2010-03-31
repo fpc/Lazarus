@@ -1127,9 +1127,9 @@ end;
 procedure TMainIDEBase.UpdateHighlighters(Immediately: boolean = false);
 var
   ASrcEdit: TSourceEditor;
-  AnUnitInfo: TUnitInfo;
   h: TLazSyntaxHighlighter;
   i: Integer;
+  AnEditorInfo: TUnitEditorInfo;
 begin
   if Immediately then begin
     FNeedUpdateHighlighters:=false;
@@ -1142,9 +1142,9 @@ begin
       end;
     for i := 0 to SourceEditorManager.SourceEditorCount - 1 do begin
       ASrcEdit := SourceEditorManager.SourceEditors[i];
-      AnUnitInfo:=Project1.UnitWithEditorComponent(ASrcEdit);
-      if AnUnitInfo<>nil then
-        ASrcEdit.SyntaxHighlighterType := AnUnitInfo.SyntaxHighlighter;
+      AnEditorInfo:=Project1.EditorInfoWithEditorComponent(ASrcEdit);
+      if AnEditorInfo <> nil then
+        ASrcEdit.SyntaxHighlighterType := AnEditorInfo.SyntaxHighlighter;
     end;
   end else begin
     FNeedUpdateHighlighters:=true;

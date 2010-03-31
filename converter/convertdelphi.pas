@@ -1220,7 +1220,7 @@ begin
   if LazProject.MainUnitInfo=nil then begin
     // add .lpr file to project as main unit
     MainUnitInfo:=TUnitInfo.Create(fMainUnitConverter.fPascalBuffer);
-    MainUnitInfo.SyntaxHighlighter:=ExtensionToLazSyntaxHighlighter(LprExt);
+    MainUnitInfo.DefaultSyntaxHighlighter:=ExtensionToLazSyntaxHighlighter(LprExt);
     MainUnitInfo.IsPartOfProject:=true;
     LazProject.AddFile(MainUnitInfo,false);
     LazProject.MainFileID:=0;

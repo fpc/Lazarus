@@ -158,20 +158,90 @@ type
     uifMarked
     );
   TUnitInfoFlags = set of TUnitInfoFlag;
-  
+
+  { TUnitEditorInfo }
+
+  TUnitEditorInfo = class
+  private
+    FEditorComponent: TSourceEditorInterface;
+    FUnitInfo: TUnitInfo;
+    procedure SetEditorComponent(const AValue: TSourceEditorInterface);
+  private
+    FIsVisibleTab: Boolean;
+    FPageIndex: integer;
+    FWindowIndex: integer;
+    FTopLine: integer;
+    FCursorPos: TPoint;  // physical (screen) position
+    FFoldState: String;
+    // Todo: FCustomHighlighter is only ever set to false, and not stored in XML
+    FCustomHighlighter: boolean; // do not change highlighter on file extension change
+    FSyntaxHighlighter: TLazSyntaxHighlighter;
+    procedure SetPageIndex(const AValue: Integer);
+    procedure SetIsVisibleTab(const AValue: Boolean);
+    procedure SetWindowIndex(const AValue: Integer);
+  protected
+    procedure Clear;
+  public
+    constructor Create(aUnitInfo: TUnitInfo);
+    destructor Destroy; override;
+    property UnitInfo: TUnitInfo read FUnitInfo;
+    property EditorComponent: TSourceEditorInterface
+             read FEditorComponent write SetEditorComponent;
+    procedure LoadFromXMLConfig(XMLConfig: TXMLConfig; const Path: string);
+    procedure SaveToXMLConfig(XMLConfig: TXMLConfig; const Path: string);
+  public
+    property IsVisibleTab: Boolean read FIsVisibleTab write SetIsVisibleTab;
+    property PageIndex: Integer read FPageIndex write SetPageIndex;
+    property WindowIndex: Integer read FWindowIndex write SetWindowIndex;
+    property TopLine: Integer read FTopLine write FTopLine;
+    property CursorPos: TPoint read FCursorPos write FCursorPos;
+    property FoldState: String read FFoldState write FFoldState;
+    property CustomHighlighter: Boolean read FCustomHighlighter write FCustomHighlighter; // SetCustomHighlighter
+    property SyntaxHighlighter: TLazSyntaxHighlighter read FSyntaxHighlighter write FSyntaxHighlighter; // SetSyntaxHighlighter
+  end;
+
+  { TUnitEditorInfoList }
+
+  TUnitEditorInfoList = class
+  private
+    FList: TFPList;
+    FUnitInfo: TUnitInfo;
+    function GetClosedEditorInfos(Index: Integer): TUnitEditorInfo;
+    function GetEditorInfos(Index: Integer): TUnitEditorInfo;
+    function GetOpenEditorInfos(Index: Integer): TUnitEditorInfo;
+  protected
+    procedure ClearEachInfo;
+    procedure SortByPageIndex;
+  public
+    constructor Create(aUnitInfo: TUnitInfo);
+    destructor Destroy; override;
+    property EditorInfos[Index: Integer]: TUnitEditorInfo read GetEditorInfos; default;
+    property OpenEditorInfos[Index: Integer]: TUnitEditorInfo read GetOpenEditorInfos;
+    property ClosedEditorInfos[Index: Integer]: TUnitEditorInfo read GetClosedEditorInfos;
+    function Count: Integer;
+    function OpenCount: Integer;
+    function ClosedCount: Integer;
+    function IndexOf(aUnitInfo: TUnitEditorInfo): Integer;
+    function IndexOfEditorComponent(anEditor: TSourceEditorInterface): Integer;
+    function NewEditorInfo: TUnitEditorInfo;
+    procedure Add(aUnitInfo: TUnitEditorInfo);
+    procedure Delete(Index: Integer);
+    procedure Remove(aUnitInfo: TUnitEditorInfo);
+  end;
+
   { TUnitInfo }
 
   TUnitInfo = class(TLazProjectFile)
   private
+    FCustomDefaultHighlighter: boolean;
+    FDefaultSyntaxHighlighter: TLazSyntaxHighlighter;
+    FEditorInfoList: TUnitEditorInfoList;
     FAutoReferenceSourceDir: boolean;
     fAutoRevertLockCount: integer;// =0 means, codetools can auto update from disk
     fBookmarks: TFileBookmarks;
     FBuildFileIfActive: boolean;
     fComponent: TComponent;
     FComponentState: TWindowState; // state of component when we save it
-    FEditorComponent: TSourceEditorInterface;
-    FFoldState: String;
-    FIsVisibleTab: Boolean;
     FResourceBaseClass: TPFComponentBaseClass;
     fComponentName: string; { classname is always T<ComponentName>
          this attribute contains the component name,
@@ -182,10 +252,7 @@ type
     FComponentLastBinStreamSize: TStreamSeekType;
     FComponentLastLFMStreamSize: TStreamSeekType;
     FComponentLastLRSStreamSize: TStreamSeekType;
-    fCursorPos: TPoint;
-    fCustomHighlighter: boolean; // do not change highlighter on file extension change
     FDirectives: TStrings;
-    FEditorIndex: integer;
     fFileName: string;
     fFileReadOnly: Boolean;
     FFirstRequiredComponent: TUnitComponentDependency;
@@ -194,7 +261,7 @@ type
     fHasResources: boolean; // source has resource file
     FIgnoreFileDateOnDiskValid: boolean;
     FIgnoreFileDateOnDisk: longint;
-    fLoaded: Boolean;  // loaded in the source editor
+    fLoaded: Boolean; // loaded in the source editor
     FLoadingComponent: boolean;
     fModified: boolean;
     fNext, fPrev: array[TUnitInfoList] of TUnitInfo;
@@ -206,8 +273,6 @@ type
     FRunFileIfActive: boolean;
     FSessionModified: boolean;
     fSource: TCodeBuffer;
-    fSyntaxHighlighter: TLazSyntaxHighlighter;
-    fTopLine: integer;
     fUnitName: String;
     fUsageCount: extended;
     fUserReadOnly:  Boolean;
@@ -215,8 +280,8 @@ type
     FSourceDirectoryReferenced: boolean;
     FSourceDirNeedReference: boolean;
     fLastDirectoryReferenced: string;
-    FWindowIndex: integer;
 
+    function GetEditorInfo(Index: Integer): TUnitEditorInfo;
     function GetHasResources:boolean;
     function GetModified: boolean;
     function GetNextAutoRevertLockedUnit: TUnitInfo;
@@ -224,6 +289,7 @@ type
     function GetNextPartOfProject: TUnitInfo;
     function GetNextUnitWithComponent: TUnitInfo;
     function GetNextUnitWithEditorIndex: TUnitInfo;
+    function GetOpenEditorInfo(Index: Integer): TUnitEditorInfo;
     function GetPrevAutoRevertLockedUnit: TUnitInfo;
     function GetPrevLoadedUnit: TUnitInfo;
     function GetPrevPartOfProject: TUnitInfo;
@@ -231,12 +297,10 @@ type
     function GetPrevUnitWithEditorIndex: TUnitInfo;
     procedure SetAutoReferenceSourceDir(const AValue: boolean);
     procedure SetBuildFileIfActive(const AValue: boolean);
+    procedure SetDefaultSyntaxHighlighter(const AValue: TLazSyntaxHighlighter);
     procedure SetDirectives(const AValue: TStrings);
-    procedure SetEditorComponent(const AEditor: TSourceEditorInterface);
-    procedure SetEditorIndex(const AValue: integer);
     procedure SetFileReadOnly(const AValue: Boolean);
     procedure SetComponent(const AValue: TComponent);
-    procedure SetIsVisibleTab(const AValue: Boolean);
     procedure SetLoaded(const AValue: Boolean);
     procedure SetModified(const AValue: boolean);
     procedure SetProject(const AValue: TProject);
@@ -245,13 +309,15 @@ type
     procedure SetSource(ABuffer: TCodeBuffer);
     procedure SetUnitName(const NewUnitName:string);
     procedure SetUserReadOnly(const NewValue: boolean);
-    procedure SetWindowIndex(const AValue: integer);
   protected
     function GetFileName: string; override;
     procedure SetFilename(const AValue: string); override;
     procedure SetIsPartOfProject(const AValue: boolean); override;
     procedure UpdateList(ListType: TUnitInfoList; Add: boolean);
     procedure SetInternalFilename(const NewFilename: string);
+
+    procedure UpdateHasCustomHighlighter(aDefaultHighlighter: TLazSyntaxHighlighter);
+    procedure UpdatePageIndex;
   public
     constructor Create(ACodeBuffer: TCodeBuffer);
     destructor Destroy; override;
@@ -311,6 +377,17 @@ type
     // Bookmarks
     function  AddBookmark(X, Y, ID: integer):integer;
     procedure DeleteBookmark(ID: integer);
+    // EditorInfo
+    // At any time, any UnitInfo has at least one EditorInfo
+    function EditorInfoWithEditorComponent(AEditor:TSourceEditorInterface): TUnitEditorInfo;
+    function GetFreeEditorInfo: TUnitEditorInfo;
+    function EditorInfoCount: Integer;
+    property EditorInfo[Index: Integer]: TUnitEditorInfo read GetEditorInfo;
+    function OpenEditorInfoCount: Integer; // with EditorComponent assigned
+    property OpenEditorInfo[Index: Integer]: TUnitEditorInfo read GetOpenEditorInfo;
+    function GetClosedOrNewEditorInfo: TUnitEditorInfo;
+    // Highlighter
+    procedure UpdateDefaultHighlighter(aDefaultHighlighter: TLazSyntaxHighlighter);
   public
     { Properties }
     // Unit lists
@@ -341,15 +418,9 @@ type
              read FComponentLastLRSStreamSize write FComponentLastLRSStreamSize;
     property ComponentLastLFMStreamSize: TStreamSeekType
              read FComponentLastLFMStreamSize write FComponentLastLFMStreamSize;
-    property CursorPos: TPoint read fCursorPos write fCursorPos; // physical (screen) position
-    property CustomHighlighter: boolean
-                               read fCustomHighlighter write fCustomHighlighter;
+    property CustomDefaultHighlighter: boolean
+                               read FCustomDefaultHighlighter write FCustomDefaultHighlighter;
     property Directives: TStrings read FDirectives write SetDirectives;
-    property EditorIndex: integer read FEditorIndex write SetEditorIndex;
-    property WindowIndex: integer read FWindowIndex write SetWindowIndex;
-    property IsVisibleTab: Boolean read FIsVisibleTab write SetIsVisibleTab;
-    property EditorComponent: TSourceEditorInterface
-             read FEditorComponent write SetEditorComponent;
     property FileReadOnly: Boolean read fFileReadOnly write SetFileReadOnly;
     property FirstRequiredComponent: TUnitComponentDependency
                                                    read FFirstRequiredComponent;
@@ -369,10 +440,8 @@ type
     property Project: TProject read FProject write SetProject;
     property RunFileIfActive: boolean read FRunFileIfActive write SetRunFileIfActive;
     property Source: TCodeBuffer read fSource write SetSource;
-    property FoldState: String read FFoldState write FFoldState;
-    property SyntaxHighlighter: TLazSyntaxHighlighter
-                               read fSyntaxHighlighter write fSyntaxHighlighter;
-    property TopLine: integer read fTopLine write fTopLine;
+    property DefaultSyntaxHighlighter: TLazSyntaxHighlighter
+                               read FDefaultSyntaxHighlighter write SetDefaultSyntaxHighlighter;
     property Unit_Name: String read fUnitName write SetUnitName;
     property UserReadOnly: Boolean read fUserReadOnly write SetUserReadOnly;
     property SourceDirectoryReferenced: boolean read FSourceDirectoryReferenced;
@@ -590,6 +659,7 @@ type
   TProject = class(TLazProject)
   private
     FActiveWindowIndexAtStart: integer;
+    FEditorInfoList: TUnitEditorInfoList;
     FAutoCreateForms: boolean;
     FTmpAutoCreatedForms: TStrings; // temporary, used to apply auto create forms changes
     FAutoOpenDesignerFormsDisabled: boolean;
@@ -641,6 +711,7 @@ type
     FUnitList: TFPList;  // list of _all_ units (TUnitInfo)
     FUpdateLock: integer;
     FUseAppBundle: Boolean;
+    function GetEditorInfo(Index: Integer): TUnitEditorInfo;
     function GetFirstAutoRevertLockedUnit: TUnitInfo;
     function GetFirstLoadedUnit: TUnitInfo;
     function GetFirstPartOfProject: TUnitInfo;
@@ -671,7 +742,6 @@ type
     procedure ClearSourceDirectories;
     procedure SourceDirectoriesChanged(Sender: TObject);
     procedure EmbeddedObjectModified(Sender: TObject);
-    procedure FixEditorIndex;
   protected
     function GetMainFile: TLazProjectFile; override;
     function GetMainFileID: Integer; override;
@@ -693,6 +763,8 @@ type
     procedure AddToOrRemoveFromComponentList(AnUnitInfo: TUnitInfo);
     procedure AddToOrRemoveFromLoadedList(AnUnitInfo: TUnitInfo);
     procedure AddToOrRemoveFromPartOfProjectList(AnUnitInfo: TUnitInfo);
+
+    property EditorInfoList: TUnitEditorInfoList read FEditorInfoList;
   public
     constructor Create(ProjectDescription: TProjectDescriptor); override;
     destructor Destroy; override;
@@ -753,7 +825,6 @@ type
     function ProjectUnitWithFilename(const AFilename: string): TUnitInfo;
     function ProjectUnitWithShortFilename(const ShortFilename: string): TUnitInfo;
     function ProjectUnitWithUnitname(const AnUnitName: string): TUnitInfo;
-    function UnitWithEditorIndex(Index:integer): TUnitInfo;
     function UnitWithEditorComponent(AEditor:TSourceEditorInterface): TUnitInfo;
     function UnitWithComponent(AComponent: TComponent): TUnitInfo;
     function UnitWithComponentClass(AClass: TComponentClass): TUnitInfo;
@@ -770,6 +841,9 @@ type
     function UnitInfoWithFilename(const AFilename: string;
                     SearchFlags: TProjectFileSearchFlags): TUnitInfo;
     function UnitWithUnitname(const AnUnitname: string): TUnitInfo;
+    function EditorInfoCount: Integer;
+    property EditorInfo[Index: Integer]: TUnitEditorInfo read GetEditorInfo;
+    function EditorInfoWithEditorComponent(AEditor:TSourceEditorInterface): TUnitEditorInfo;
     function SearchFile(const ShortFilename: string;
                         SearchFlags: TSearchIDEFileFlags): TUnitInfo;
     function FindFile(const AFilename: string;
@@ -796,9 +870,6 @@ type
     procedure ShortenFilename(var AFilename: string); override;
     procedure LongenFilename(var AFilename: string); override;
 
-    // bookmarks
-    procedure MergeBookmarks(AnUnitInfo: TUnitInfo);
-    
     // package dependencies
     function FindDependencyByName(const PackageName: string): TPkgDependency;
     function RequiredDepByIndex(Index: integer): TPkgDependency;
@@ -852,7 +923,7 @@ type
     function GetAutoCreatedFormsList: TStrings;
     property TmpAutoCreatedForms: TStrings read FTmpAutoCreatedForms write FTmpAutoCreatedForms;
     // Bookmarks
-    function  AddBookmark(X, Y, ID: Integer; AEditor:TSourceEditorInterface):integer;
+    function  AddBookmark(X, Y, ID: Integer; AUnitInfo:TUnitInfo):integer;
     procedure DeleteBookmark(ID: Integer);
   public
     property ActiveWindowIndexAtStart: integer read FActiveWindowIndexAtStart
@@ -948,9 +1019,6 @@ function dbgs(Types: TUnitCompDependencyTypes): string; overload;
 function dbgs(Flag: TUnitInfoFlag): string; overload;
 function dbgs(Flags: TUnitInfoFlags): string; overload;
 
-function CompareUnitInfoWithEditorIndex(Unit1, Unit2: TUnitInfo): integer;
-
-
 implementation
 
 const
@@ -1006,11 +1074,240 @@ begin
   Result:='['+Result+']';
 end;
 
-function CompareUnitInfoWithEditorIndex(Unit1, Unit2: TUnitInfo): integer;
+{ TUnitEditorInfo }
+
+procedure TUnitEditorInfo.SetEditorComponent(const AValue: TSourceEditorInterface);
 begin
-  Result := Unit1.WindowIndex - Unit2.WindowIndex;
+  if FEditorComponent = AValue then exit;
+
+  if AValue = nil then begin
+    FEditorComponent := AValue;
+    PageIndex := -1; // calls UnitInfo.UpdatePageIndex
+  end
+  else begin
+    PageIndex := -1;
+    FEditorComponent := AValue;
+    AValue.UpdateProjectFile; // Set EditorIndex / calls UnitInfo.UpdatePageIndex
+  end;
+
+  FUnitInfo.SessionModified:=true;
+end;
+
+procedure TUnitEditorInfo.SetPageIndex(const AValue: Integer);
+begin
+  if FPageIndex = AValue then exit;
+  FPageIndex := AValue;
+  FUnitInfo.UpdatePageIndex;
+  FUnitInfo.SessionModified := True;
+end;
+
+procedure TUnitEditorInfo.SetIsVisibleTab(const AValue: Boolean);
+begin
+  if FIsVisibleTab = AValue then exit;
+  FIsVisibleTab := AValue;
+  FUnitInfo.SessionModified := True;
+end;
+
+procedure TUnitEditorInfo.SetWindowIndex(const AValue: Integer);
+begin
+  if FWindowIndex = AValue then exit;
+  FWindowIndex := AValue;
+  FUnitInfo.SessionModified := True;
+end;
+
+procedure TUnitEditorInfo.Clear;
+begin
+  FIsVisibleTab := False;
+  FPageIndex := -1;
+  FWindowIndex := -1;
+  FTopLine := -1;
+  FCursorPos.X := -1;
+  FCursorPos.Y := -1;
+  FFoldState := '';
+  FCustomHighlighter := false;
+  FSyntaxHighlighter := lshText;
+end;
+
+constructor TUnitEditorInfo.Create(aUnitInfo: TUnitInfo);
+begin
+  Clear;
+  FUnitInfo := aUnitInfo;
+  if FUnitInfo.Project <> nil then
+    FUnitInfo.Project.EditorInfoList.Add(Self);
+end;
+
+destructor TUnitEditorInfo.Destroy;
+begin
+  if FUnitInfo.Project <> nil then
+    FUnitInfo.Project.EditorInfoList.Remove(Self);
+  inherited Destroy;
+end;
+
+procedure TUnitEditorInfo.LoadFromXMLConfig(XMLConfig: TXMLConfig; const Path: string);
+begin
+  IsVisibleTab := XMLConfig.GetValue(Path+'IsVisibleTab/Value', False);
+  PageIndex    := XMLConfig.GetValue(Path+'EditorIndex/Value',-1);
+  WindowIndex  := XMLConfig.GetValue(Path+'WindowIndex/Value',-1);
+  // update old data
+  if (FPageIndex >= 0) and (FWindowIndex < 0) then
+    WindowIndex := 0;
+  FTopLine  := XMLConfig.GetValue(Path+'TopLine/Value',-1);
+  CursorPos := Point(XMLConfig.GetValue(Path+'CursorPos/X',-1),
+                     XMLConfig.GetValue(Path+'CursorPos/Y',-1));
+  FFoldState := XMLConfig.GetValue(Path+'FoldState/Value', '');
+  FSyntaxHighlighter := StrToLazSyntaxHighlighter(XMLConfig.GetValue(
+    Path+'SyntaxHighlighter/Value',''));
+end;
+
+procedure TUnitEditorInfo.SaveToXMLConfig(XMLConfig: TXMLConfig; const Path: string);
+begin
+    XMLConfig.SetDeleteValue(Path+'IsVisibleTab/Value', FIsVisibleTab, False);
+    XMLConfig.SetDeleteValue(Path+'EditorIndex/Value', FPageIndex, -1);
+    XMLConfig.SetDeleteValue(Path+'WindowIndex/Value', FWindowIndex, -1);
+    XMLConfig.SetDeleteValue(Path+'TopLine/Value', FTopLine, -1);
+    XMLConfig.SetDeleteValue(Path+'CursorPos/X', FCursorPos.X, -1);
+    XMLConfig.SetDeleteValue(Path+'CursorPos/Y', FCursorPos.Y, -1);
+    XMLConfig.SetDeleteValue(Path+'FoldState/Value', FoldState, '');
+    XMLConfig.SetDeleteValue(Path+'SyntaxHighlighter/Value',
+                             LazSyntaxHighlighterNames[fSyntaxHighlighter],
+                             LazSyntaxHighlighterNames[lshFreePascal]);
+end;
+
+{ TUnitEditorInfoList }
+
+function TUnitEditorInfoList.GetEditorInfos(Index: Integer): TUnitEditorInfo;
+begin
+  Result := TUnitEditorInfo(FList[Index]);
+end;
+
+function TUnitEditorInfoList.GetClosedEditorInfos(Index: Integer): TUnitEditorInfo;
+var
+  i: Integer;
+begin
+  i := 0;
+  while (i < Count) and (Index >= 0) do begin
+    Result := EditorInfos[i];
+    if Result.EditorComponent = nil then dec(Index);
+    inc(i);
+  end;
+  if Index >= 0 then
+    Result := nil;
+end;
+
+function TUnitEditorInfoList.GetOpenEditorInfos(Index: Integer): TUnitEditorInfo;
+var
+  i: Integer;
+begin
+  i := 0;
+  while (i < Count) and (Index >= 0) do begin
+    Result := EditorInfos[i];
+    if Result.EditorComponent <> nil then dec(Index);
+    inc(i);
+  end;
+  if Index >= 0 then
+    Result := nil;
+end;
+
+procedure TUnitEditorInfoList.ClearEachInfo;
+var
+  i: Integer;
+begin
+  for i := 0 to Count - 1 do
+    EditorInfos[i].Clear;
+end;
+
+function CompareEditorInfoByPageIndex(EditorInfo1, EditorInfo2: TUnitEditorInfo): integer;
+begin
+  Result := EditorInfo1.WindowIndex - EditorInfo2.WindowIndex;
   if Result = 0 then
-    Result := Unit1.EditorIndex - Unit2.EditorIndex;
+    Result := EditorInfo1.PageIndex - EditorInfo2.PageIndex;
+end;
+
+procedure TUnitEditorInfoList.SortByPageIndex;
+begin
+  FList.Sort(TListSortCompare(@CompareEditorInfoByPageIndex));
+end;
+
+constructor TUnitEditorInfoList.Create(aUnitInfo: TUnitInfo);
+begin
+  FUnitInfo := aUnitInfo;
+  FList := TFPList.Create;
+end;
+
+destructor TUnitEditorInfoList.Destroy;
+begin
+  while Count > 0 do begin
+    EditorInfos[0].Free;
+    Delete(0);
+  end;
+  FreeAndNil(FList);
+  inherited Destroy;
+end;
+
+function TUnitEditorInfoList.Count: Integer;
+begin
+  Result := FList.Count;
+end;
+
+function TUnitEditorInfoList.OpenCount: Integer;
+var
+  i: Integer;
+begin
+  i := Count - 1;
+  Result := 0;
+  while i >= 0 do begin
+    if EditorInfos[i].EditorComponent <> nil then inc(Result);
+    dec(i);
+  end;
+end;
+
+function TUnitEditorInfoList.ClosedCount: Integer;
+var
+  i: Integer;
+begin
+  i := Count - 1;
+  Result := 0;
+  while i >= 0 do begin
+    if EditorInfos[i].EditorComponent = nil then inc(Result);
+    dec(i);
+  end;
+end;
+
+function TUnitEditorInfoList.IndexOf(aUnitInfo: TUnitEditorInfo): Integer;
+begin
+  Result := FList.IndexOf(aUnitInfo);
+end;
+
+function TUnitEditorInfoList.IndexOfEditorComponent(anEditor: TSourceEditorInterface): Integer;
+begin
+  Result := Count - 1;
+  while (Result >= 0) and (EditorInfos[Result].EditorComponent <> anEditor) do
+    dec(Result);
+end;
+
+function TUnitEditorInfoList.NewEditorInfo: TUnitEditorInfo;
+begin
+  Result := TUnitEditorInfo.Create(FUnitInfo);
+  FList.Add(Result);
+end;
+
+procedure TUnitEditorInfoList.Add(aUnitInfo: TUnitEditorInfo);
+begin
+  FList.Add(aUnitInfo);
+end;
+
+procedure TUnitEditorInfoList.Delete(Index: Integer);
+begin
+  Flist.Delete(Index);
+end;
+
+procedure TUnitEditorInfoList.Remove(aUnitInfo: TUnitEditorInfo);
+var
+  i: LongInt;
+begin
+  i := IndexOf(aUnitInfo);
+  if i >= 0 then
+    Delete(i);
 end;
 
 {------------------------------------------------------------------------------
@@ -1020,6 +1317,8 @@ constructor TUnitInfo.Create(ACodeBuffer: TCodeBuffer);
 begin
   inherited Create;
   Assert(False, 'Trace:Project Unit Info Class Created');
+  FEditorInfoList := TUnitEditorInfoList.Create(Self);
+  FEditorInfoList.NewEditorInfo;
   FBookmarks:=TFileBookmarks.Create;
   Clear;
   Source := ACodeBuffer;
@@ -1036,6 +1335,7 @@ begin
   Source:=nil;
   FreeAndNil(FBookmarks);
   Project:=nil;
+  FreeAndNil(FEditorInfoList);
   inherited Destroy;
 end;
 
@@ -1162,12 +1462,9 @@ begin
   fComponentName := '';
   fComponentResourceName := '';
   FComponentState := wsNormal;
-  fCursorPos.X := -1;
-  fCursorPos.Y := -1;
-  fCustomHighlighter := false;
-  fEditorIndex := -1;
-  FWindowIndex := -1;
-  FIsVisibleTab := False;
+  FDefaultSyntaxHighlighter := lshText;
+  FCustomDefaultHighlighter := False;
+  FEditorInfoList.ClearEachInfo;
   fFilename := '';
   fFileReadOnly := false;
   fHasResources := false;
@@ -1177,8 +1474,6 @@ begin
   Modified := false;
   SessionModified := false;
   FRunFileIfActive:=false;
-  fSyntaxHighlighter := lshText;
-  fTopLine := -1;
   fUnitName := '';
   fUsageCount:=-1;
   fUserReadOnly := false;
@@ -1230,6 +1525,7 @@ procedure TUnitInfo.SaveToXMLConfig(XMLConfig: TXMLConfig; const Path: string;
   SaveData, SaveSession: boolean; UsePathDelim: TPathDelimSwitch);
 var
   AFilename: String;
+  i: Integer;
 begin
   // global data
   AFilename:=Filename;
@@ -1260,25 +1556,21 @@ begin
   // session data
   if SaveSession then 
   begin
+    FEditorInfoList[0].SaveToXMLConfig(XMLConfig, Path);
     XMLConfig.SetDeleteValue(Path+'ComponentState/Value',Ord(FComponentState),0);
-    XMLConfig.SetDeleteValue(Path+'CursorPos/X',fCursorPos.X,-1);
-    XMLConfig.SetDeleteValue(Path+'CursorPos/Y',fCursorPos.Y,-1);
-    XMLConfig.SetDeleteValue(Path+'TopLine/Value',fTopLine,-1);
-    XMLConfig.SetDeleteValue(Path+'EditorIndex/Value',fEditorIndex,-1);
-    XMLConfig.SetDeleteValue(Path+'WindowIndex/Value',FWindowIndex,-1);
-    XMLConfig.SetDeleteValue(Path+'IsVisibleTab/Value',FIsVisibleTab,False);
+
     XMLConfig.SetDeleteValue(Path+'UsageCount/Value',RoundToInt(fUsageCount),-1);
+    if OpenEditorInfoCount > 0 then
+      for i := Bookmarks.Count - 1 downto 0 do
+        if (Project.Bookmarks.BookmarkWithID(Bookmarks[i].ID).UnitInfo <> self) then
+          Bookmarks.Delete(i);
     FBookmarks.SaveToXMLConfig(XMLConfig,Path+'Bookmarks/');
     XMLConfig.SetDeleteValue(Path+'Loaded/Value',fLoaded,false);
     XMLConfig.SetDeleteValue(Path+'ReadOnly/Value',fUserReadOnly,false);
-    XMLConfig.SetDeleteValue(Path+'SyntaxHighlighter/Value',
-                             LazSyntaxHighlighterNames[fSyntaxHighlighter],
-                             LazSyntaxHighlighterNames[lshFreePascal]);
     XMLConfig.SetDeleteValue(Path+'BuildFileIfActive/Value',
                              FBuildFileIfActive,false);
     XMLConfig.SetDeleteValue(Path+'RunFileIfActive/Value',
                              FRunFileIfActive,false);
-    XMLConfig.SetDeleteValue(Path+'FoldState/Value',FoldState, '');
     // save custom session data
     SaveStringToStringTree(XMLConfig,CustomSessionData,Path+'CustomSessionData/');
   end;
@@ -1319,24 +1611,13 @@ begin
   end;
 
   // session data
-  CursorPos:=Point(XMLConfig.GetValue(Path+'CursorPos/X',-1),
-                   XMLConfig.GetValue(Path+'CursorPos/Y',-1));
-  EditorIndex:=XMLConfig.GetValue(Path+'EditorIndex/Value',-1);
-  WindowIndex:=XMLConfig.GetValue(Path+'WindowIndex/Value',-1);
-  IsVisibleTab:=XMLConfig.GetValue(Path+'IsVisibleTab/Value', False);
-  // update old data
-  if (FEditorIndex >= 0) and (FWindowIndex < 0) then
-    WindowIndex := 0;
+  FEditorInfoList[0].LoadFromXMLConfig(XMLConfig, Path);
 
   Loaded:=XMLConfig.GetValue(Path+'Loaded/Value',false);
   fUserReadOnly:=XMLConfig.GetValue(Path+'ReadOnly/Value',false);
-  fSyntaxHighlighter:=StrToLazSyntaxHighlighter(XMLConfig.GetValue(
-       Path+'SyntaxHighlighter/Value',''));
-  fTopLine:=XMLConfig.GetValue(Path+'TopLine/Value',-1);
   FBuildFileIfActive:=XMLConfig.GetValue(Path+'BuildFileIfActive/Value',
                                          false);
   FRunFileIfActive:=XMLConfig.GetValue(Path+'RunFileIfActive/Value',false);
-  FFoldState := XMLConfig.GetValue(Path+'FoldState/Value', '');
   fUsageCount:=XMLConfig.GetValue(Path+'UsageCount/Value',-1);
   if fUsageCount<1 then begin
     UpdateUsageCount(uuIsLoaded,1);
@@ -1420,6 +1701,58 @@ begin
   
   fFileName:=NewFilename;
   UpdateSourceDirectoryReference;
+end;
+
+procedure TUnitInfo.UpdateHasCustomHighlighter(aDefaultHighlighter: TLazSyntaxHighlighter);
+var
+  i: Integer;
+begin
+  FCustomDefaultHighlighter := FDefaultSyntaxHighlighter <> aDefaultHighlighter;
+  for i := 0 to FEditorInfoList.Count - 1 do
+    FEditorInfoList[i].CustomHighlighter :=
+      FEditorInfoList[i].SyntaxHighlighter <> aDefaultHighlighter;
+end;
+
+procedure TUnitInfo.UpdatePageIndex;
+var
+  HasPageIndex: Boolean;
+  BookmarkID, i, j: integer;
+begin
+  HasPageIndex := False;
+  i := FEditorInfoList.Count - 1;
+  while (i >= 0) and not HasPageIndex do begin
+    if EditorInfo[i].PageIndex >= 0 then
+      HasPageIndex := True;
+    dec(i);
+  end;
+  UpdateList(uilWithEditorIndex, HasPageIndex);
+
+  if assigned(Project1) and assigned(Project1.Bookmarks) then begin
+    if OpenEditorInfoCount > 0 then begin
+      // Adjust bookmarks
+      for i := 0 to Bookmarks.Count - 1 do begin
+        BookmarkID := Bookmarks[i].ID;
+        j := Project1.Bookmarks.IndexOfID(BookmarkID);
+        if (j < 0) then
+          TSynEdit(EditorInfo[0].EditorComponent.EditorControl).SetBookMark(BookmarkID,
+            Bookmarks[i].CursorPos.X, Bookmarks[i].CursorPos.Y);
+      end;
+    end
+    else // OpenEditorInfoCount = 0
+      Project1.Bookmarks.DeleteAllWithUnitInfo(Self);
+  end;
+end;
+
+procedure TUnitInfo.UpdateDefaultHighlighter(aDefaultHighlighter: TLazSyntaxHighlighter);
+var
+  i: Integer;
+begin
+  if not FCustomDefaultHighlighter then
+    DefaultSyntaxHighlighter := aDefaultHighlighter
+  else
+    for i := 0 to FEditorInfoList.Count - 1 do
+      if not FEditorInfoList[i].CustomHighlighter then
+        FEditorInfoList[i].SyntaxHighlighter := aDefaultHighlighter;
 end;
 
 function TUnitInfo.GetFileName: string;
@@ -1692,7 +2025,7 @@ function TUnitInfo.AddBookmark(X, Y, ID: integer): integer;
 begin
   Result := Bookmarks.Add(X, Y, ID);
   SessionModified := True;
-  Project1.AddBookmark(X, Y, ID, EditorComponent);
+  Project1.AddBookmark(X, Y, ID, Self);
 end;
 
 procedure TUnitInfo.DeleteBookmark(ID: integer);
@@ -1705,6 +2038,50 @@ begin
     SessionModified := True;
   end;
   Project1.DeleteBookmark(ID);
+end;
+
+function TUnitInfo.EditorInfoWithEditorComponent(AEditor: TSourceEditorInterface): TUnitEditorInfo;
+var
+  i: Integer;
+begin
+  i:= FEditorInfoList.Count - 1;
+  while (i >= 0) and (FEditorInfoList[i].EditorComponent <> AEditor) do
+    dec(i);
+  if i >= 0 then
+    Result := FEditorInfoList[i]
+  else
+    Result := nil;
+end;
+
+function TUnitInfo.GetFreeEditorInfo: TUnitEditorInfo;
+var
+  i: Integer;
+begin
+  i := 0;
+  while (i < FEditorInfoList.Count) and (FEditorInfoList[i].EditorComponent <> nil)
+    do inc(i);
+  if i < FEditorInfoList.Count then
+    Result := FEditorInfoList[i]
+  else
+    Result := FEditorInfoList.NewEditorInfo;
+end;
+
+function TUnitInfo.EditorInfoCount: Integer;
+begin
+  Result := FEditorInfoList.Count;
+end;
+
+function TUnitInfo.OpenEditorInfoCount: Integer;
+begin
+  Result := FEditorInfoList.OpenCount;
+end;
+
+function TUnitInfo.GetClosedOrNewEditorInfo: TUnitEditorInfo;
+begin
+  if FEditorInfoList.ClosedCount > 0 then
+    Result := FEditorInfoList.ClosedEditorInfos[0]
+  else
+    Result := FEditorInfoList.NewEditorInfo;
 end;
 
 function TUnitInfo.ReadOnly: boolean;
@@ -1764,6 +2141,11 @@ begin
   Result:=fHasResources or (ComponentName<>'');
 end;
 
+function TUnitInfo.GetEditorInfo(Index: Integer): TUnitEditorInfo;
+begin
+  Result := FEditorInfoList[Index];
+end;
+
 function TUnitInfo.GetModified: boolean;
 begin
   if (not fModified) and (Source<>nil) then
@@ -1794,6 +2176,11 @@ end;
 function TUnitInfo.GetNextUnitWithEditorIndex: TUnitInfo;
 begin
   Result:=fNext[uilWithEditorIndex];
+end;
+
+function TUnitInfo.GetOpenEditorInfo(Index: Integer): TUnitEditorInfo;
+begin
+  Result := FEditorInfoList.OpenEditorInfos[Index];
 end;
 
 function TUnitInfo.GetPrevAutoRevertLockedUnit: TUnitInfo;
@@ -1835,58 +2222,21 @@ begin
   SessionModified:=true;
 end;
 
+procedure TUnitInfo.SetDefaultSyntaxHighlighter(const AValue: TLazSyntaxHighlighter);
+var
+  i: Integer;
+begin
+  if FDefaultSyntaxHighlighter = AValue then exit;
+  FDefaultSyntaxHighlighter := AValue;
+  for i := 0 to FEditorInfoList.Count - 1 do
+    if not FEditorInfoList[i].CustomHighlighter then
+      FEditorInfoList[i].SyntaxHighlighter := AValue;
+end;
+
 procedure TUnitInfo.SetDirectives(const AValue: TStrings);
 begin
   if FDirectives=AValue then exit;
   FDirectives:=AValue;
-end;
-
-procedure TUnitInfo.SetEditorComponent(const AEditor: TSourceEditorInterface);
-var
-  BookmarkID, i: integer;
-begin
-  if FEditorComponent = AEditor then exit;
-  Project1.Bookmarks.DeleteAllWithEditorComponent(FEditorComponent);
-  if AEditor = nil then begin
-    EditorIndex := -1;
-    WindowIndex := -1;
-  end;
-  FEditorComponent := AEditor;
-  UpdateList(uilWithEditorIndex, FEditorComponent <> nil);
-  if AEditor <> nil then
-    AEditor.UpdateProjectFile; // Set EditorIndex
-
-  // Adjust bookmarks
-  Project1.MergeBookmarks(self);
-  for BookmarkID := 0 to 9 do begin
-    i := Project1.Bookmarks.IndexOfID(BookmarkID);
-    if (i < 0) or
-       (Project1.Bookmarks[i].EditorComponent <> EditorComponent)
-    then continue;
-    TSynEdit(EditorComponent.EditorControl).SetBookMark(BookmarkID,
-       Project1.Bookmarks[i].CursorPos.X, Project1.Bookmarks[i].CursorPos.Y);
-  end;
-
-  SessionModified:=true;
-end;
-
-procedure TUnitInfo.SetEditorIndex(const AValue: integer);
-begin
-  if FEditorIndex = AValue then exit;
-  FEditorIndex := AValue;
-  UpdateList(uilWithEditorIndex, FEditorIndex >= 0);
-
-  if assigned(Project1) and assigned(Project1.Bookmarks) and (FEditorIndex < 0) then
-    Project1.Bookmarks.DeleteAllWithEditorComponent(EditorComponent);
-
-  SessionModified:=true;
-end;
-
-procedure TUnitInfo.SetWindowIndex(const AValue: integer);
-begin
-  if FWindowIndex = AValue then exit;
-  FWindowIndex := AValue;
-  SessionModified := true;
 end;
 
 procedure TUnitInfo.SetFileReadOnly(const AValue: Boolean);
@@ -1907,13 +2257,6 @@ begin
     ClearComponentDependencies
   else
     FResourceBaseClass:=GetComponentBaseClass(fComponent.ClassType);
-end;
-
-procedure TUnitInfo.SetIsVisibleTab(const AValue: Boolean);
-begin
-  if FIsVisibleTab = AValue then exit;
-  FIsVisibleTab := AValue;
-  SessionModified := True;
 end;
 
 procedure TUnitInfo.SetIsPartOfProject(const AValue: boolean);
@@ -1959,19 +2302,24 @@ end;
 procedure TUnitInfo.SetProject(const AValue: TProject);
 var
   ListType: TUnitInfoList;
+  i: Integer;
 begin
   if FProject=AValue then exit;
   if FProject<>nil then begin
     for ListType:=Low(TUnitInfoList) to High(TUnitInfoList) do
       Project.RemoveFromList(Self,ListType);
+    for i := 0 to FEditorInfoList.Count - 1 do
+      FProject.EditorInfoList.Remove(FEditorInfoList[i]);
   end;
   FProject:=AValue;
   if FProject<>nil then begin
-    if EditorIndex>=0 then Project.AddToList(Self,uilWithEditorIndex);
+    UpdatePageIndex;
     if Component<>nil then Project.AddToList(Self,uilWithComponent);
     if Loaded then Project.AddToList(Self,uilLoaded);
     if IsAutoRevertLocked then Project.AddToList(Self,uilAutoRevertLocked);
     if IsPartOfProject then Project.AddToList(Self,uilPartOfProject);
+    for i := 0 to FEditorInfoList.Count - 1 do
+      FProject.EditorInfoList.Add(FEditorInfoList[i]);
   end;
   UpdateSourceDirectoryReference;
 end;
@@ -2004,6 +2352,7 @@ begin
   FActiveWindowIndexAtStart := 0;
   FSkipCheckLCLInterfaces:=false;
   FAutoCreateForms := true;
+  FEditorInfoList := TUnitEditorInfoList.Create(nil);
   FBookmarks := TProjectBookmarkList.Create;
   CompilerOptions := TProjectCompilerOptions.Create(Self);
   CompilerOptions.ParsedOpts.InvalidateParseOnChange:=true;
@@ -2038,6 +2387,7 @@ begin
   FDefineTemplates.Active := False;
   FDestroying := True;
   Clear;
+  FreeAndNil(FEditorInfoList);
   FreeThenNil(FResources);
   FreeThenNil(FBookmarks);
   FreeThenNil(FUnitList);
@@ -2501,7 +2851,7 @@ var
     Merge: boolean);
   var
     NewUnitInfo: TUnitInfo;
-    NewUnitCount,i: integer;
+    NewUnitCount, i, j: integer;
     SubPath: String;
     NewUnitFilename: String;
     OldUnitInfo: TUnitInfo;
@@ -2541,10 +2891,16 @@ var
     // load editor info
     i := xmlconfig.GetValue(
        Path+'General/ActiveEditorIndexAtStart/Value', -1);
-    if (i >= 0) and (UnitWithEditorIndex(i) <> nil)
-       and (UnitWithEditorIndex(i).EditorIndex >= 0)
-    then
-      UnitWithEditorIndex(i).IsVisibleTab := True;
+    if (i >= 0) then begin
+      // Load old Config => No WindowIndex
+      j := EditorInfoCount - 1;
+      while j >= 0 do begin
+        if (EditorInfo[j].PageIndex = i) then
+          EditorInfo[j].IsVisibleTab := True;
+      end;
+      dec(j);
+    end;
+
     ActiveWindowIndexAtStart := xmlconfig.GetValue(
        Path+'General/ActiveWindowIndexAtStart/Value', 0);
     FSkipCheckLCLInterfaces:=xmlconfig.GetValue(
@@ -2587,9 +2943,9 @@ var
       end;
     end;
     if BestUnitInfo<>nil then begin
-      BestUnitInfo.EditorIndex:=0;
-      BestUnitInfo.WindowIndex:=0;
-      BestUnitInfo.IsVisibleTab := True;
+      BestUnitInfo.EditorInfo[0].PageIndex := 0;
+      BestUnitInfo.EditorInfo[0].WindowIndex := 0;
+      BestUnitInfo.EditorInfo[0].IsVisibleTab := True;
       ActiveWindowIndexAtStart:=0;
       BestUnitInfo.Loaded:=true;
     end;
@@ -2769,8 +3125,8 @@ begin
     end;
 
   finally
-    FixEditorIndex;
     EndUpdate;
+    FEditorInfoList.SortByPageIndex;
   end;
 
   {$IFDEF IDE_MEM_CHECK}CheckHeapWrtMemCnt('TProject.ReadProject END');{$ENDIF}
@@ -2852,8 +3208,7 @@ begin
   end;
 
   // delete bookmarks of this unit
-  if OldUnitInfo.EditorComponent <> nil then
-    Bookmarks.DeleteAllWithEditorComponent(OldUnitInfo.EditorComponent);
+  Bookmarks.DeleteAllWithUnitInfo(OldUnitInfo);
 
   // adjust MainUnit
   if MainUnitID>=Index then dec(fMainUnitID);
@@ -2871,7 +3226,7 @@ var
 begin
   NewBuf:=CodeToolBoss.CreateFile(Filename);
   AnUnitInfo:=TUnitInfo.Create(NewBuf);
-  AnUnitInfo.SyntaxHighlighter:=FilenameToLazSyntaxHighlighter(NewBuf.Filename);
+  AnUnitInfo.DefaultSyntaxHighlighter := FilenameToLazSyntaxHighlighter(NewBuf.Filename);
   Result:=AnUnitInfo;
 end;
 
@@ -2879,35 +3234,35 @@ procedure TProject.UpdateVisibleUnit(AnEditor: TSourceEditorInterface; AWindowIn
 var
   i: Integer;
 begin
-  for i := 0 to UnitCount - 1 do
-    if Units[i].WindowIndex = AWindowIndex then
-      Units[i].IsVisibleTab := Units[i].EditorComponent = AnEditor;
+  for i := 0 to EditorInfoCount - 1 do
+    if EditorInfo[i].WindowIndex = AWindowIndex then
+      EditorInfo[i].IsVisibleTab := EditorInfo[i].EditorComponent = AnEditor;
 end;
 
 procedure TProject.MoveUnitWindowIndex(OldIndex, NewIndex: Integer);
 var
   i: Integer;
-  AnUnitInfo: TUnitInfo;
+  AnEditorInfo: TUnitEditorInfo;
 begin
-  i:=UnitCount-1;
-  while (i>=0) do begin
-    AnUnitInfo:=Units[i];
+  i := EditorInfoCount - 1;
+  while (i >= 0) do begin
+    AnEditorInfo := EditorInfo[i];
 
     if (OldIndex < 0) then begin
       // index inserted
-      if (AnUnitInfo.WindowIndex >= NewIndex) then
-        AnUnitInfo.WindowIndex := AnUnitInfo.WindowIndex + 1;
+      if (AnEditorInfo.WindowIndex >= NewIndex) then
+        AnEditorInfo.WindowIndex := AnEditorInfo.WindowIndex + 1;
     end
-    else if AnUnitInfo.WindowIndex = OldIndex then begin
-      AnUnitInfo.WindowIndex := NewIndex;
+    else if AnEditorInfo.WindowIndex = OldIndex then begin
+      AnEditorInfo.WindowIndex := NewIndex;
     end
     else if (OldIndex > NewIndex) then begin
-      if (AnUnitInfo.WindowIndex >= NewIndex) and (AnUnitInfo.WindowIndex < OldIndex) then
-        AnUnitInfo.WindowIndex := AnUnitInfo.WindowIndex + 1;
+      if (AnEditorInfo.WindowIndex >= NewIndex) and (AnEditorInfo.WindowIndex < OldIndex) then
+        AnEditorInfo.WindowIndex := AnEditorInfo.WindowIndex + 1;
     end
     else if (OldIndex < NewIndex) then begin
-      if (AnUnitInfo.WindowIndex > OldIndex) and (AnUnitInfo.WindowIndex <= NewIndex) then
-        AnUnitInfo.WindowIndex := AnUnitInfo.WindowIndex - 1;
+      if (AnEditorInfo.WindowIndex > OldIndex) and (AnEditorInfo.WindowIndex <= NewIndex) then
+        AnEditorInfo.WindowIndex := AnEditorInfo.WindowIndex - 1;
     end;
 
     dec(i);
@@ -3297,23 +3652,15 @@ begin
   end;
 end;
 
-function TProject.UnitWithEditorIndex(Index:integer):TUnitInfo;
-begin
-  if Index<0 then exit(nil);
-  Result:=fFirst[uilWithEditorIndex];
-  while (Result<>nil) and (Result.EditorIndex<>Index) do begin
-    Result:=Result.fNext[uilWithEditorIndex];
-  end;
-end;
-
 function TProject.UnitWithEditorComponent(AEditor: TSourceEditorInterface
   ): TUnitInfo;
+var
+  AnEditorInfo: TUnitEditorInfo;
 begin
   if AEditor = nil then exit(nil);
-  Result:=fFirst[uilWithEditorIndex];
-  while (Result<>nil) and (Result.EditorComponent<>AEditor) do begin
-    Result:=Result.fNext[uilWithEditorIndex];
-  end;
+  AnEditorInfo := EditorInfoWithEditorComponent(AEditor);
+  if AnEditorInfo = nil then exit(nil);
+  Result := AnEditorInfo.UnitInfo;
 end;
 
 function TProject.UnitIsUsed(const ShortUnitName:string):boolean;
@@ -3482,51 +3829,14 @@ begin
     Modified := True;
 end;
 
-(* Remove any gaps from the list of loaded EditorIndexes.
-   This could be required, if some units were not found. *)
-procedure TProject.FixEditorIndex;
-var
-  List: TFPList;
-  AnUnitInfo: TUnitInfo;
-  i: Integer;
-  NewWindowEditorIndexAtStart: Integer;
-  CurWindow, NewWindow: Integer;
-begin
-  List:=TFPList.Create;
-  try
-    AnUnitInfo:=FirstUnitWithEditorIndex;
-    while AnUnitInfo<>nil do
-    begin
-      List.Add(AnUnitInfo);
-      AnUnitInfo:=AnUnitInfo.NextUnitWithEditorIndex;
-    end;
-    List.Sort(TListSortCompare(@CompareUnitInfoWithEditorIndex));
-    NewWindowEditorIndexAtStart:=-1;
-    if List.Count > 0 then
-      CurWindow := TUnitInfo(List[0]).WindowIndex;
-    NewWindow := 0;
-    for i:=0 to List.Count-1 do
-    begin
-      AnUnitInfo:=TUnitInfo(List[i]);
-      if (AnUnitInfo.WindowIndex <> CurWindow) then
-        inc(NewWindow);
-      CurWindow := AnUnitInfo.WindowIndex;
-      if (NewWindowEditorIndexAtStart < 0)
-         and (ActiveWindowIndexAtStart = AnUnitInfo.WindowIndex)
-      then
-        NewWindowEditorIndexAtStart := NewWindow;
-      AnUnitInfo.EditorIndex := i;
-      AnUnitInfo.WindowIndex := NewWindow;
-    end;
-    ActiveWindowIndexAtStart := NewWindowEditorIndexAtStart;
-  finally
-    List.Free;
-  end;
-end;
-
 function TProject.GetFirstAutoRevertLockedUnit: TUnitInfo;
 begin
   Result:=fFirst[uilAutoRevertLocked];
+end;
+
+function TProject.GetEditorInfo(Index: Integer): TUnitEditorInfo;
+begin
+  Result := FEditorInfoList[Index];
 end;
 
 function TProject.GetFirstUnitWithComponent: TUnitInfo;
@@ -3749,24 +4059,6 @@ end;
 procedure TProject.IgnoreProjectInfoFileOnDisk;
 begin
   fProjectInfoFileDate:=FileAgeUTF8(ProjectInfoFile);
-end;
-
-procedure TProject.MergeBookmarks(AnUnitInfo: TUnitInfo);
-// merge the bookmarks of the unit with the bookmarks in the source editor
-var
-  i: Integer;
-  UnitMark: TFileBookmark;
-  ProjectMark: TProjectBookmark;
-begin
-  if AnUnitInfo.EditorComponent = nil then exit;
-  for i:=0 to AnUnitInfo.Bookmarks.Count-1 do begin
-    UnitMark:=AnUnitInfo.Bookmarks[i];
-    ProjectMark:=Bookmarks.BookmarkWithID(UnitMark.ID);
-    // merge the bookmark into the currently existing bookmarks, if the ID is free
-    //writeln('TProject.MergeBookmarks ',AnUnitInfo.Filename,' Y=',UnitMark.Y);
-    if (ProjectMark = nil) then
-      AddBookmark(UnitMark.X, UnitMark.Y, UnitMark.ID, AnUnitInfo.EditorComponent);
-  end;
 end;
 
 function TProject.FindDependencyByName(const PackageName: string
@@ -4330,26 +4622,17 @@ end;
 procedure TProject.UpdateAllCustomHighlighter;
 var
   i: Integer;
-  AnUnitInfo: TUnitInfo;
 begin
-  for i:=0 to UnitCount-1 do begin
-    AnUnitInfo:=Units[i];
-    AnUnitInfo.CustomHighlighter:=AnUnitInfo.SyntaxHighlighter
-         <>FilenameToLazSyntaxHighlighter(AnUnitInfo.Filename);
-  end;
+  for i:=0 to UnitCount-1 do
+    Units[i].UpdateHasCustomHighlighter(FilenameToLazSyntaxHighlighter(Units[i].Filename));
 end;
 
 procedure TProject.UpdateAllSyntaxHighlighter;
 var
-  AnUnitInfo: TUnitInfo;
   i: Integer;
 begin
-  for i:=0 to UnitCount-1 do begin
-    AnUnitInfo:=Units[i];
-    if not AnUnitInfo.CustomHighlighter then
-      AnUnitInfo.SyntaxHighlighter:=
-        FilenameToLazSyntaxHighlighter(AnUnitInfo.Filename);
-  end;
+  for i:=0 to UnitCount-1 do
+    Units[i].UpdateDefaultHighlighter(FilenameToLazSyntaxHighlighter(Units[i].Filename));
 end;
 
 function TProject.GetPOOutDirectory: string;
@@ -4381,9 +4664,9 @@ begin
     Result := nil;
 end;
 
-function TProject.AddBookmark(X, Y, ID: Integer; AEditor:TSourceEditorInterface): integer;
+function TProject.AddBookmark(X, Y, ID: Integer; AUnitInfo:TUnitInfo): integer;
 begin
-  Result := Bookmarks.Add(X, Y, ID, AEditor);
+  Result := Bookmarks.Add(X, Y, ID, AUnitInfo);
   SessionModified := true;
 end;
 
@@ -4468,7 +4751,7 @@ function TProject.JumpHistoryCheckPosition(
 var i: integer;
 begin
   i:=IndexOfFilename(APosition.Filename);
-  Result:=(i>=0) and (Units[i].EditorComponent <> nil);
+  Result:=(i>=0) and (Units[i].OpenEditorInfoCount > 0);
 end;
 
 function TProject.SomethingModified(CheckData, CheckSession: boolean): boolean;
@@ -4685,6 +4968,24 @@ begin
     Result:=nil;
 end;
 
+function TProject.EditorInfoCount: Integer;
+begin
+  Result := FEditorInfoList.Count;
+end;
+
+function TProject.EditorInfoWithEditorComponent(AEditor: TSourceEditorInterface): TUnitEditorInfo;
+var
+  i: Integer;
+begin
+  i:= FEditorInfoList.Count - 1;
+  while (i >= 0) and (FEditorInfoList[i].EditorComponent <> AEditor) do
+    dec(i);
+  if i >= 0 then
+    Result := FEditorInfoList[i]
+  else
+    Result := nil;
+end;
+
 function TProject.SearchFile(const ShortFilename: string;
   SearchFlags: TSearchIDEFileFlags): TUnitInfo;
 var
@@ -4757,7 +5058,7 @@ begin
   Result:=UnitCount-1;
   while (Result>=0) do begin
     if (pfsfOnlyEditorFiles in SearchFlags)
-    and (Units[Result].EditorComponent = nil) then begin
+    and (Units[Result].OpenEditorInfoCount = 0) then begin
       dec(Result);
       continue;
     end;

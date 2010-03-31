@@ -2078,8 +2078,8 @@ var
   CurBreakPoint: TIDEBreakPoint;
   SrcFilename: String;
 begin
-  if (AnUnitInfo.EditorComponent = nil) or Destroying then exit;
-  ASrcEdit := TSourceEditor(AnUnitInfo.EditorComponent);
+  if (AnUnitInfo.OpenEditorInfoCount = 0) or Destroying then exit;
+  ASrcEdit := TSourceEditor(AnUnitInfo.OpenEditorInfo[0].EditorComponent);
   // set breakpoints for this unit
   SrcFilename:=AnUnitInfo.Filename;
   for i := 0 to FBreakpoints.Count-1 do

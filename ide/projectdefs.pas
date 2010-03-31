@@ -169,14 +169,12 @@ type
   TProjectBookmark = class
   private
     fCursorPos: TPoint;
-    FEditorComponent: TSourceEditorInterface;
+    FUnitInfo: TObject;
     fID: integer;
   public
-    constructor Create;
-    constructor Create(X,Y, AnID: integer; AEditor:TSourceEditorInterface);
+    constructor Create(X,Y, AnID: integer; AUnitInfo:TObject);
     property CursorPos: TPoint read fCursorPos write fCursorPos;
-    property EditorComponent: TSourceEditorInterface
-             read FEditorComponent write FEditorComponent;
+    property UnitInfo: TObject read FUnitInfo write FUnitInfo;
     property ID:integer read fID write fID;
   end;
 
@@ -196,11 +194,11 @@ type
     procedure Delete(Index:integer);
     procedure Clear;
     function Add(ABookmark: TProjectBookmark):integer;
-    function Add(X, Y, ID: integer; AEditor:TSourceEditorInterface):integer;
-    procedure DeleteAllWithEditorComponent(AEditor:TSourceEditorInterface);
+    function Add(X, Y, ID: integer; AUnitInfo: TObject):integer;
+    procedure DeleteAllWithUnitInfo(AUnitInfo:TObject);
     function IndexOfID(ID:integer):integer;
     function BookmarkWithID(ID: integer): TProjectBookmark;
-    function EditorComponentForBookmarkWithIndex(ID: integer): TSourceEditorInterface;
+    function UnitInfoForBookmarkWithIndex(ID: integer): TObject;
   end;
 
 type
@@ -315,19 +313,13 @@ implementation
 
 { TProjectBookmark }
 
-constructor TProjectBookmark.Create;
+constructor TProjectBookmark.Create(X, Y, AnID: integer; AUnitInfo: TObject);
 begin
   inherited Create;
-end;
-
-constructor TProjectBookmark.Create(X, Y, AnID: integer;
-  AEditor:TSourceEditorInterface);
-begin
-  inherited Create;
-  fCursorPos.X:=X;
-  fCursorPos.Y:=Y;
-  FEditorComponent:=AEditor;
-  fID:=AnID;
+  fCursorPos.X := X;
+  fCursorPos.Y := Y;
+  FUnitInfo := AUnitInfo;
+  fID := AnID;
 end;
 
 { TProjectBookmarkList }
@@ -386,14 +378,13 @@ begin
     Result:=nil;
 end;
 
-function TProjectBookmarkList.EditorComponentForBookmarkWithIndex(ID: integer
-  ): TSourceEditorInterface;
+function TProjectBookmarkList.UnitInfoForBookmarkWithIndex(ID: integer): TObject;
 var
   Mark: TProjectBookmark;
 begin
   Mark := BookmarkWithID(ID);
   if Mark <> nil then
-    Result := Mark.EditorComponent
+    Result := Mark.UnitInfo
   else
     Result:=nil;
 end;
@@ -404,13 +395,12 @@ begin
   fBookmarks.Delete(Index);
 end;
 
-procedure TProjectBookmarkList.DeleteAllWithEditorComponent(
-  AEditor: TSourceEditorInterface);
+procedure TProjectBookmarkList.DeleteAllWithUnitInfo(AUnitInfo:TObject);
 var i:integer;
 begin
   i:=Count-1;
   while (i>=0) do begin
-    if Items[i].EditorComponent = AEditor then Delete(i);
+    if Items[i].UnitInfo = AUnitInfo then Delete(i);
     dec(i);
   end;
 end;
@@ -425,9 +415,9 @@ begin
 end;
 
 function TProjectBookmarkList.Add(X, Y, ID: integer;
-  AEditor:TSourceEditorInterface): integer;
+  AUnitInfo: TObject): integer;
 begin
-  Result:=Add(TProjectBookmark.Create(X, Y, ID, AEditor));
+  Result:=Add(TProjectBookmark.Create(X, Y, ID, AUnitInfo));
 end;
 
 { TProjectJumpHistoryPosition }
