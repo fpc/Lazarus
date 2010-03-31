@@ -50,18 +50,16 @@ type
   TLFMChecker = class
   private
     fOnOutput: TOnAddFilteredLine;
-    fRootMustBeClassInIntf: boolean;
-    fObjectsMustExists: boolean;
     procedure WriteUnitError(Code: TCodeBuffer; X, Y: integer;
       const ErrorMessage: string);
     procedure WriteCodeToolsError;
-    procedure WriteLFMErrors;
-    function FixMissingComponentClasses: TModalResult;
     function CheckUnit: boolean;
   protected
     fPascalBuffer: TCodeBuffer;
     fLFMBuffer: TCodeBuffer;
     fLFMTree: TLFMTree;
+    fRootMustBeClassInIntf: boolean;
+    fObjectsMustExists: boolean;
     // References to controls in UI:
     fLFMSynEdit: TSynEdit;
     fErrorsListBox: TListBox;
@@ -71,6 +69,8 @@ type
     procedure FindNiceNodeBounds(LFMNode: TLFMTreeNode;
                                  var StartPos, EndPos: integer);
     function FindListBoxError: TLFMError;
+    procedure WriteLFMErrors;
+    function FixMissingComponentClasses: TModalResult;
     procedure FillErrorsListBox;
     procedure JumpToError(LFMError: TLFMError);
     procedure AddReplacement(LFMChangeList: TList; StartPos, EndPos: integer;
