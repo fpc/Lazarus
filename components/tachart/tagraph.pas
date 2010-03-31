@@ -103,10 +103,11 @@ type
 
   { TBasicСhartTool }
 
-  TBasicChartTool = class(TCollectionItem)
-  protected
+  TBasicChartTool = class(TComponent)
+  strict protected
     FChart: TChart;
 
+    function Index: Integer; virtual; abstract;
     procedure Activate;
     procedure Deactivate;
   end;

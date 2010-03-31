@@ -27,21 +27,36 @@ uses
 
 type
 
+  TChartToolset = class;
+
   { TChartTool }
 
   TChartTool = class(TBasicChartTool)
   private
     FEnabled: Boolean;
     FShift: TShiftState;
+    FToolset: TChartToolset;
+    procedure SetToolset(const AValue: TChartToolset);
+  protected
+    procedure ReadState(Reader: TReader); override;
+    procedure SetParentComponent(AParent: TComponent); override;
   protected
     procedure Dispatch(
       AChart: TChart; AEventId: TChartToolEventId; APoint: TPoint);
+    function Index: Integer; override;
     function IsActive: Boolean;
     procedure MouseDown(APoint: TPoint); virtual;
     procedure MouseMove(APoint: TPoint); virtual;
     procedure MouseUp(APoint: TPoint); virtual;
   public
-    constructor Create(ACollection: TCollection); override;
+    constructor Create(AOwner: TComponent); override;
+    destructor Destroy; override;
+  public
+    procedure Assign(Source: TPersistent); override;
+    function GetParentComponent: TComponent; override;
+    function HasParent: Boolean; override;
+
+    property Toolset: TChartToolset read FToolset write SetToolset;
   published
     property Enabled: Boolean read FEnabled write FEnabled default true;
     property Shift: TShiftState read FShift write FShift;
@@ -49,22 +64,28 @@ type
 
   TChartToolClass = class of TChartTool;
 
+  TChartTools = class(TFPList)
+  end;
+
   { TChartToolset }
 
   TChartToolset = class(TBasicChartToolset)
   private
-    FTools: TCollection;
+    FTools: TChartTools;
     function GetItem(AIndex: Integer): TChartTool;
   public
     constructor Create(AOwner: TComponent); override;
     destructor Destroy; override;
-
+  public
+    procedure GetChildren(Proc: TGetChildProc; Root: TComponent); override;
+    procedure SetChildOrder(Child: TComponent; Order: Integer); override;
+  public
     function Dispatch(
       AChart: TChart; AEventId: TChartToolEventId;
       AShift: TShiftState; APoint: TPoint): Boolean; override;
     property Item[AIndex: Integer]: TChartTool read GetItem; default;
   published
-    property Tools: TCollection read FTools;
+    property Tools: TChartTools read FTools;
   end;
 
   { TChartZoomDragTool }
@@ -92,30 +113,11 @@ type
 implementation
 
 uses
-  CollectionPropEditForm, Forms, GraphMath, Math, Menus, PropEdits, Types,
+  GraphMath, Math, Types,
   TAChartUtils;
-
-type
-
-  { TChartToolsEditor }
-
-  TChartToolsEditor = class(TCollectionPropertyEditor)
-  public
-    class function ShowCollectionEditor(
-      ACollection: TCollection; OwnerPersistent: TPersistent;
-      const PropName: String): TCustomForm; override;
-  end;
-
-  { TChartToolsEditorForm }
-
-  TChartToolsEditorForm = class(TCollectionPropertyEditorForm)
-  private
-    procedure OnAddToolClick(ASender: TObject);
-  end;
 
 var
   ToolsClassRegistry: TStringList;
-  ChartToolsForm: TChartToolsEditorForm;
 
 function InitBuitlinTools(AChart: TChart): TBasicChartToolset;
 var
@@ -123,35 +125,16 @@ var
 begin
   ts := TChartToolset.Create(AChart);
   Result := ts;
-  TChartZoomDragTool.Create(ts.Tools).Shift := [ssLeft];
-  TChartReticuleTool.Create(ts.Tools);
-end;
-
-procedure InitChartToolsForm;
-var
-  m: TPopupMenu;
-  mi: TMenuItem;
-  i: Integer;
-begin
-  if ChartToolsForm <> nil then exit;
-  ChartToolsForm := TChartToolsEditorForm.Create(Application);
-  m := TPopupMenu.Create(ChartToolsForm);
-  for i := 0 to ToolsClassRegistry.Count - 1 do begin
-    mi := TMenuItem.Create(ChartToolsForm);
-    mi.Caption := ToolsClassRegistry[i];
-    mi.Tag := i;
-    mi.OnClick := @ChartToolsForm.OnAddToolClick;
-    m.Items.Add(mi);
+  with TChartZoomDragTool.Create(AChart) do begin
+    Shift := [ssLeft];
+    Toolset := ts;
   end;
-  ChartToolsForm.AddButton.DropdownMenu := m;
-  ChartToolsForm.AddButton.OnClick := nil;
+  TChartReticuleTool.Create(AChart).Toolset := ts;
 end;
 
 procedure Register;
 begin
   RegisterComponents(CHART_COMPONENT_IDE_PAGE, [TChartToolset]);
-  RegisterPropertyEditor(
-    TypeInfo(TCollection), TChartToolset, 'Tools', TChartToolsEditor);
 end;
 
 procedure RegisterChartToolClass(
@@ -160,42 +143,29 @@ begin
   ToolsClassRegistry.AddObject(ACaption, TObject(AToolClass));
 end;
 
-{ TChartToolsEditor }
-
-class function TChartToolsEditor.ShowCollectionEditor(
-  ACollection: TCollection; OwnerPersistent: TPersistent;
-  const PropName: String): TCustomForm;
+procedure TChartTool.Assign(Source: TPersistent);
 begin
-  InitChartToolsForm;
-  ChartToolsForm.SetCollection(ACollection, OwnerPersistent, PropName);
-  ChartToolsForm.EnsureVisible;
-  Result := ChartToolsForm;
+  if Source is TChartTool then
+    with TChartTool(Source) do begin
+      Self.FEnabled := Enabled;
+      Self.FShift := Shift;
+    end
+  else
+    inherited Assign(Source);
 end;
-
-{ TChartToolsEditorForm }
-
-procedure TChartToolsEditorForm.OnAddToolClick(ASender: TObject);
-begin
-  if Collection = nil then exit;
-  with ASender as TMenuItem do
-    TChartToolClass(ToolsClassRegistry.Objects[Tag]).Create(Collection);
-
-  FillCollectionListBox;
-  if CollectionListBox.Items.Count > 0 then
-    CollectionListBox.ItemIndex := CollectionListBox.Items.Count - 1;
-  SelectInObjectInspector(True, False);
-  UpdateButtons;
-  UpdateCaption;
-  Modified;
-end;
-
 
 { TChartTool }
 
-constructor TChartTool.Create(ACollection: TCollection);
+constructor TChartTool.Create(AOwner: TComponent);
 begin
-  inherited Create(ACollection);
+  inherited Create(AOwner);
   FEnabled := true;
+end;
+
+destructor TChartTool.Destroy;
+begin
+  Toolset := nil;
+  inherited;
 end;
 
 procedure TChartTool.Dispatch(
@@ -213,6 +183,24 @@ begin
     if not IsActive then
       FChart := nil;
   end;
+end;
+
+function TChartTool.GetParentComponent: TComponent;
+begin
+  Result := FToolset;
+end;
+
+function TChartTool.HasParent: Boolean;
+begin
+  Result := true;
+end;
+
+function TChartTool.Index: Integer;
+begin
+  if FToolset = nil then
+    Result := -1
+  else
+    Result := FToolset.Tools.IndexOf(Self);
 end;
 
 function TChartTool.IsActive: Boolean;
@@ -235,16 +223,41 @@ begin
   Unused(APoint);
 end;
 
+procedure TChartTool.ReadState(Reader: TReader);
+begin
+  inherited ReadState(Reader);
+  if Reader.Parent is TChartToolset then
+    Toolset := Reader.Parent as TChartToolset;
+end;
+
+procedure TChartTool.SetParentComponent(AParent: TComponent);
+begin
+  if not (csLoading in ComponentState) then
+    Toolset := AParent as TChartToolset;
+end;
+
+procedure TChartTool.SetToolset(const AValue: TChartToolset);
+begin
+  if FToolset = AValue then exit;
+  if FToolset <> nil then
+    FToolset.FTools.Remove(Self);
+  FToolset := AValue;
+  if FToolset <> nil then
+    FToolset.FTools.Add(Self);
+end;
+
 { TChartToolset }
 
 constructor TChartToolset.Create(AOwner: TComponent);
 begin
   inherited Create(AOwner);
-  FTools := TCollection.Create(TChartTool);
+  FTools := TChartTools.Create;
 end;
 
 destructor TChartToolset.Destroy;
 begin
+  while Tools.Count > 0 do
+    Item[Tools.Count - 1].Free;
   FTools.Free;
   inherited Destroy;
 end;
@@ -269,9 +282,30 @@ begin
   Result := false;
 end;
 
+procedure TChartToolset.GetChildren(Proc: TGetChildProc; Root: TComponent);
+var
+  i: Integer;
+  t: TChartTool;
+begin
+  for i := 0 to Tools.Count - 1 do begin
+    t := Item[i];
+    if t.Owner = Root then
+      Proc(t);
+  end;
+end;
+
 function TChartToolset.GetItem(AIndex: Integer): TChartTool;
 begin
-  Result := Tools.Items[AIndex] as TChartTool;
+  Result := TChartTool(Tools.Items[AIndex]);
+end;
+
+procedure TChartToolset.SetChildOrder(Child: TComponent; Order: Integer);
+var
+  i: Integer;
+begin
+  i := Tools.IndexOf(Child);
+  if i >= 0 then
+    Tools.Move(i, Order);
 end;
 
 { TChartZoomDragTool }
