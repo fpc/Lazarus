@@ -987,6 +987,11 @@ var
 begin
   if not WSCheckHandleAllocated(ALV, 'ItemSetImage') then
     Exit;
+
+  if not Assigned(TListView(ALV).LargeImages) and not
+    Assigned(TListView(ALV).SmallImages) then
+      exit;
+
   QtTreeWidget := TQtTreeWidget(ALV.Handle);
   TWI := QtTreeWidget.topLevelItem(AIndex);
   if (TWI <> nil) then
