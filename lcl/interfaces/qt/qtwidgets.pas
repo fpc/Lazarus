@@ -2643,7 +2643,8 @@ begin
   Msg.XPos := SmallInt(MousePos.X);
   Msg.YPos := SmallInt(MousePos.Y);
   
-  Msg.Keys := QtButtonsToLCLButtons(QmouseEvent_Buttons(QMouseEventH(Event)));
+  Msg.Keys := QtButtonsToLCLButtons(QmouseEvent_Buttons(QMouseEventH(Event)))
+    or QtKeyModifiersToKeyState(QKeyEvent_modifiers(QKeyEventH(Event)));
 
   Msg.Msg := LM_MOUSEMOVE;
 
