@@ -232,10 +232,14 @@ end;
 procedure TEvaluateDlg.tbWatchClick(Sender: TObject);
 var
   S: String;
+  Watch: TIDEWatch;
 begin
   S := cmbExpression.Text;
   if DebugBoss.Watches.Find(S) = nil
-  then DebugBoss.Watches.Add(S);
+  then begin
+    Watch := DebugBoss.Watches.Add(S);
+    Watch.Enabled := True;
+  end;
 end;
 
 end.
