@@ -1490,22 +1490,23 @@ begin
       end;
   end;
 
-  QAbstractItemView_setIconSize(TreeWidget, @Size);
-  Item := QTreeWidget_topLevelItem(TreeWidget, 0);
+  QtTreeWidget.IconSize := Size;
+
+  Item := QtTreeWidget.topLevelItem(0);
   if Item <> nil then
   begin
     X := Size.CY;
     QTreeWidgetItem_sizeHint(Item, @Size, 0);
     Size.Cy := X;
     QTreeWidgetItem_setSizeHint(Item, 0, @Size);
-    for j := 0 to QTreeWidget_columnCount(TreeWidget) - 1 do
+
+    for j := 0 to QtTreeWidget.ColCount - 1 do
     begin
-      Item := QTreeWidget_itemAt(TreeWidget, j, 0);
+      Item := QtTreeWidget.itemAt(j, 0);
       QTreeWidgetItem_setSizeHint(Item, j, @Size);
     end;
-    QTreeView_setUniformRowHeights(TreeWidget, True);
   end;
-
+  QtTreeWidget.UniformRowHeights := True;
 end;
 
 end.

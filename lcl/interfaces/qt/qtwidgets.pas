@@ -901,7 +901,9 @@ type
     FSignalPressed: QAbstractItemView_hookH;
     FSignalViewportEntered: QAbstractItemView_hookH;
     FAbstractItemViewportEventHook: QObject_hookH;
+    function getIconSize: TSize;
     function GetOwnerDrawn: Boolean;
+    procedure setIconSize(const AValue: TSize);
     procedure SetOwnerDrawn(const AValue: Boolean);
   public
     constructor Create(const AWinControl: TWinControl; const AParams: TCreateParams); override;
@@ -926,6 +928,7 @@ type
     procedure setEditTriggers(ATriggers: QAbstractItemViewEditTriggers);
     procedure setSelectionMode(AMode: QAbstractItemViewSelectionMode);
     procedure setSelectionBehavior(ABehavior: QAbstractItemViewSelectionBehavior);
+    property IconSize: TSize read getIconSize write setIconSize;
     property OwnerDrawn: Boolean read GetOwnerDrawn write SetOwnerDrawn;
   public
     procedure ItemDelegateSizeHint(option: QStyleOptionViewItemH; index: QModelIndexH; Size: PSize); cdecl; virtual;
@@ -1020,8 +1023,10 @@ type
   private
     function getColVisible(AIndex: Integer): Boolean;
     function getColWidth(AIndex: Integer): Integer;
+    function GetUniformRowHeights: Boolean;
     procedure setColVisible(AIndex: Integer; const AValue: Boolean);
     procedure setColWidth(AIndex: Integer; const AValue: Integer);
+    procedure SetUniformRowHeights(const AValue: Boolean);
   protected
     function CreateWidget(const AParams: TCreateParams):QWidgetH; override;
   public
@@ -1030,6 +1035,7 @@ type
     procedure setRootIsDecorated(AValue: Boolean);
     property ColWidth[AIndex: Integer]: Integer read getColWidth write setColWidth;
     property ColVisible[AIndex: Integer]: Boolean read getColVisible write setColVisible;
+    property UniformRowHeights: Boolean read GetUniformRowHeights write SetUniformRowHeights;
   end;
   
   { TQtTreeWidget }
@@ -7979,6 +7985,11 @@ begin
   Result := QTreeView_columnWidth(QTreeViewH(Widget), AIndex);
 end;
 
+function TQtTreeView.GetUniformRowHeights: Boolean;
+begin
+  Result := QTreeView_uniformRowHeights(QTreeViewH(Widget));
+end;
+
 procedure TQtTreeView.setColVisible(AIndex: Integer; const AValue: Boolean);
 begin
   QTreeView_setColumnHidden(QTreeViewH(Widget), AIndex, not AValue);
@@ -7987,6 +7998,11 @@ end;
 procedure TQtTreeView.setColWidth(AIndex: Integer; const AValue: Integer);
 begin
   QTreeView_setColumnWidth(QTreeViewH(Widget), AIndex, AValue);
+end;
+
+procedure TQtTreeView.SetUniformRowHeights(const AValue: Boolean);
+begin
+  QTreeView_setUniformRowHeights(QTreeViewH(Widget), AValue);
 end;
 
 procedure TQtTreeView.setWordWrap(AValue: Boolean);
@@ -10463,6 +10479,16 @@ end;
 function TQtAbstractItemView.GetOwnerDrawn: Boolean;
 begin
   Result := FNewDelegate <> nil;
+end;
+
+function TQtAbstractItemView.getIconSize: TSize;
+begin
+  QAbstractItemView_iconSize(QAbstractItemViewH(Widget), @Result);
+end;
+
+procedure TQtAbstractItemView.setIconSize(const AValue: TSize);
+begin
+  QAbstractItemView_setIconSize(QAbstractItemViewH(Widget), @AValue);
 end;
 
 procedure TQtAbstractItemView.SetOwnerDrawn(const AValue: Boolean);
