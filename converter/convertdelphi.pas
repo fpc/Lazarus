@@ -131,6 +131,8 @@ type
     fCachedUnitNames: TStringToStringTree;
     // Map of case incorrect unit name -> real unit name.
     fCachedRealUnitNames: TStringToStringTree;
+    // The user selected path when searching missing units.
+    fPrevSelectedPath: string;
     // Missing units that are commented automatically in all units.
     fAllMissingUnits: TStringList;
     fSettings: TConvertSettings;
@@ -641,7 +643,6 @@ function TConvertDelphiUnit.AskUnitPathFromUser: TModalResult;
 var
   TryAgain: Boolean;
   UnitDirDialog: TSelectDirectoryDialog;
-  PrevMiss: LongInt;
 begin
   // ask user what to do
   repeat
@@ -660,10 +661,10 @@ begin
       mrYes: begin
         UnitDirDialog:=TSelectDirectoryDialog.Create(nil);
         try
-          UnitDirDialog.InitialDir:=fSettings.MainPath;
+          UnitDirDialog.InitialDir:=fOwnerConverter.fPrevSelectedPath;
           UnitDirDialog.Title:='All sub-directories will be scanned for unit files';
           if UnitDirDialog.Execute and Assigned(fOwnerConverter) then begin
-            PrevMiss:=fMissingUnits.Count;
+            fOwnerConverter.fPrevSelectedPath:=ExtractFilePath(UnitDirDialog.Filename);
             // Add the new path to project if missing units are found.
             fOwnerConverter.CacheUnitsInPath(UnitDirDialog.Filename);
             TryAgain:=fOwnerConverter.DoMissingUnits(fMissingUnits)>0;
@@ -780,6 +781,7 @@ begin
   fSettings.MainFilename:=fOrigPFilename;
   fAllMissingUnits:=TStringList.Create;
   fAllMissingUnits.Sorted:=true;
+  fPrevSelectedPath:=fSettings.MainPath;
   // Scan unit files a level above project path. Used later for missing units.
   CacheUnitsInPath(TrimFilename(fSettings.MainPath+'../'));
 end;

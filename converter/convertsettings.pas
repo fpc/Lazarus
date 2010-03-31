@@ -96,7 +96,7 @@ type
   TConvertSettingsForm = class(TForm)
     BackupCheckBox: TCheckBox;
     SameDFMCheckBox: TCheckBox;
-    MainPathEdit: TLabeledEdit;
+    ProjectPathEdit: TLabeledEdit;
     TargetRadioGroup: TRadioGroup;
     ReplacementsButton: TBitBtn;
     btnCancel: TBitBtn;
@@ -164,7 +164,7 @@ begin
   with SettingsForm do
   try
     Caption:=fTitle;
-    MainPathEdit.Text:=fMainPath;
+    ProjectPathEdit.Text:=fMainPath;
 {
     // ToDo: Load from XML.
     // Settings --> UI.
@@ -293,9 +293,10 @@ procedure TConvertSettingsForm.FormCreate(Sender: TObject);
 const                // Move later to resourcestrings
   lisUseSameDFMFile = 'Use the same DFM file for Lazarus (ToDo...)';
 begin
-  MainPathEdit.Text:='';
-  btnOK.Caption:=lisStartConversion;
+  ProjectPathEdit.Text:='';
+  ProjectPathEdit.EditLabel.Caption:=lisProjectPath;
   BackupCheckBox.Caption:=lisBackupChangedFiles;
+  btnOK.Caption:=lisStartConversion;
   TargetRadioGroup.Items.Clear;
   TargetRadioGroup.Items.Append(lisConvertTarget1);
   TargetRadioGroup.Items.Append(lisConvertTarget2);

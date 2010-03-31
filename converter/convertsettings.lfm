@@ -3,7 +3,7 @@ object ConvertSettingsForm: TConvertSettingsForm
   Height = 400
   Top = 292
   Width = 611
-  ActiveControl = MainPathEdit
+  ActiveControl = ProjectPathEdit
   Caption = 'Convert Delphi unit, project or package '
   ClientHeight = 400
   ClientWidth = 611
@@ -176,24 +176,24 @@ object ConvertSettingsForm: TConvertSettingsForm
       TabOrder = 2
     end
   end
-  object MainPathEdit: TLabeledEdit
-    Left = 80
+  object ProjectPathEdit: TLabeledEdit
+    Left = 96
     Height = 21
     Top = 15
     Width = 503
     Anchors = [akTop, akLeft, akRight]
     BorderStyle = bsNone
     Color = clBtnFace
-    EditLabel.AnchorSideLeft.Control = MainPathEdit
-    EditLabel.AnchorSideTop.Control = MainPathEdit
+    EditLabel.AnchorSideLeft.Control = ProjectPathEdit
+    EditLabel.AnchorSideTop.Control = ProjectPathEdit
     EditLabel.AnchorSideTop.Side = asrCenter
-    EditLabel.AnchorSideRight.Control = MainPathEdit
-    EditLabel.AnchorSideBottom.Control = MainPathEdit
-    EditLabel.Left = 15
+    EditLabel.AnchorSideRight.Control = ProjectPathEdit
+    EditLabel.AnchorSideBottom.Control = ProjectPathEdit
+    EditLabel.Left = 19
     EditLabel.Height = 16
     EditLabel.Top = 17
-    EditLabel.Width = 58
-    EditLabel.Caption = 'Main Path:'
+    EditLabel.Width = 70
+    EditLabel.Caption = 'Project Path:'
     EditLabel.ParentColor = False
     LabelPosition = lpLeft
     LabelSpacing = 7
@@ -201,7 +201,7 @@ object ConvertSettingsForm: TConvertSettingsForm
     TabOrder = 3
   end
   object BackupCheckBox: TCheckBox
-    AnchorSideTop.Control = MainPathEdit
+    AnchorSideTop.Control = ProjectPathEdit
     AnchorSideTop.Side = asrBottom
     Left = 16
     Height = 21
