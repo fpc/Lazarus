@@ -2506,7 +2506,7 @@ begin
   Msg.XPos := SmallInt(MousePos.X);
   Msg.YPos := SmallInt(MousePos.Y);
   
-  MButton := QmouseEvent_Button(QMouseEventH(Event));
+  MButton := QMouseEvent_Button(QMouseEventH(Event));
 
   case QEvent_type(Event) of
     QEventMouseButtonPress, QEventMouseButtonDblClick:
@@ -2644,7 +2644,7 @@ begin
   Msg.YPos := SmallInt(MousePos.Y);
   
   Msg.Keys := QtButtonsToLCLButtons(QmouseEvent_Buttons(QMouseEventH(Event)))
-    or QtKeyModifiersToKeyState(QKeyEvent_modifiers(QKeyEventH(Event)));
+    or QtKeyModifiersToKeyState(QInputEvent_modifiers(QInputEventH(Event)));
 
   Msg.Msg := LM_MOUSEMOVE;
 
