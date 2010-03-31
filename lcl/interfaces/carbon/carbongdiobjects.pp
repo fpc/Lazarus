@@ -172,6 +172,9 @@ type
     procedure GetRGBA(AROP2: Integer; out AR, AG, AB, AA: Single);
     function CreateCGColor: CGColorRef;
     
+    property Red: Byte read FR write FR;
+    property Green: Byte read FG write FG;
+    property Blue: Byte read FB write FB;
     property Solid: Boolean read FA write FA;
     property ColorRef: TColorRef read GetColorRef;
   end;
@@ -2434,7 +2437,15 @@ begin
   else Result:=PByteArray(@PByteArray(Bitmap.Data)^[ Bitmap.BytesPerRow*Line ]);
 end;
 
-procedure GetRGBA24(Bitmap: TCarbonBitmap; X,Y: Integer; var r,g,b,a: Byte);
+type
+  TColorPos = record
+    ri  : Byte;
+    gi  : Byte;
+    bi  : Byte;
+    ai  : Byte;
+  end;
+
+procedure GetRGBA24(Bitmap: TCarbonBitmap; X,Y: Integer; var r,g,b,a: Byte; const pos: TColorPos);
 var
   line  : PByteArray;
 begin
@@ -2443,24 +2454,24 @@ begin
     r:=0;g:=0;b:=0;a:=$FF;
     Exit;
   end;
-  r:=line^[x*3+0];
-  g:=line^[x*3+1];
-  b:=line^[x*3+2];
+  r:=line^[x*3+pos.ri];
+  g:=line^[x*3+pos.gi];
+  b:=line^[x*3+pos.bi];
   a:=255;
 end;
 
-procedure SetRGBA24(Bitmap: TCarbonBitmap; X,Y: Integer; r,g,b,a: Byte);
+procedure SetRGBA24(Bitmap: TCarbonBitmap; X,Y: Integer; r,g,b,a: Byte; const pos: TColorPos);
 var
   line  : PByteArray;
 begin
   line:=GetScanLine(Bitmap, Y);
   if not Assigned(line) then Exit;
-  line^[x*3+0]:=r;
-  line^[x*3+1]:=g;
-  line^[x*3+2]:=b;
+  line^[x*3+pos.ri]:=r;
+  line^[x*3+pos.gi]:=g;
+  line^[x*3+pos.bi]:=b;
 end;
 
-procedure GetRGBA32(Bitmap: TCarbonBitmap; X,Y: Integer; var r,g,b,a: Byte);
+procedure GetRGBA32(Bitmap: TCarbonBitmap; X,Y: Integer; var r,g,b,a: Byte; const pos: TColorPos);
 var
   line  : PByteArray;
 begin
@@ -2469,26 +2480,27 @@ begin
     r:=0;g:=0;b:=0;a:=$FF;
     Exit;
   end;
-  r:=line^[x*4+0];
-  g:=line^[x*4+1];
-  b:=line^[x*4+2];
-  a:=line^[x*4+3];
+  r:=line^[x*4+pos.ri];
+  g:=line^[x*4+pos.gi];
+  b:=line^[x*4+pos.bi];
+  a:=line^[x*4+pos.ai];
 end;
 
-procedure SetRGBA32(Bitmap: TCarbonBitmap; X,Y: Integer; r,g,b,a: Byte);
+procedure SetRGBA32(Bitmap: TCarbonBitmap; X,Y: Integer; r,g,b,a: Byte; const pos: TColorPos);
 var
   line  : PByteArray;
 begin
   line:=GetScanLine(Bitmap, Y);
   if not Assigned(line) then Exit;
-  line^[x*4+0]:=r;
-  line^[x*4+1]:=g;
-  line^[x*4+2]:=b;
-  line^[x*4+3]:=a;
+  line^[x*4+pos.ri]:=r;
+  line^[x*4+pos.gi]:=g;
+  line^[x*4+pos.bi]:=b;
+  line^[x*4+pos.ai]:=a;
 end;
 
 //todo: add support for non 24-32 bit images
 //todo: faster and better code!
+//todo: support for iBorderColor (currently ignored both ABorderColor and isBorderColor settings)
 function FloodFillBitmap(const Bitmap: TCarbonBitmap; X,Y: Integer; ABorderColor, FillColor: TColor; isBorderColor: Boolean): Boolean;
 var
   sr, sg, sb, sa  : Byte;
@@ -2498,12 +2510,15 @@ var
   cnt   : Integer;
   i,j   : Integer;
   k     : Integer;
+  clpos : TColorPos;
+const
+  LEPos : TColorPos = (ri:1;gi:2;bi:3;ai:0);
 const
   dx : array [0..3] of Integer = (-1,1,0,0);
   dy : array [0..3] of Integer = (0,0,-1,1);
 var
-  GetRGBA: procedure (Bitmap: TCarbonBitmap; X,Y: Integer; var r,g,b,a: Byte);
-  SetRGBA: procedure (Bitmap: TCarbonBitmap; X,Y: Integer; r,g,b,a: Byte);
+  GetRGBA: procedure (Bitmap: TCarbonBitmap; X,Y: Integer; var r,g,b,a: Byte; const pos: TColorPos);
+  SetRGBA: procedure (Bitmap: TCarbonBitmap; X,Y: Integer; r,g,b,a: Byte; const pos: TColorPos);
 begin
   FillColor:=ColorToRGB(FillColor);
   r:=FillColor and $FF;
@@ -2512,12 +2527,15 @@ begin
   a:=$FF;
   GetRGBA:=nil;
   SetRGBA:=nil;
-  if Bitmap.BitsPerComponent=8 then begin
-    //todo: Little endian, big endian
-    if Bitmap.FBitsPerPixel=32 then begin
+  clpos:=LEPos; //todo: Little endian, big endian or bitmap specific
+  if Bitmap.BitsPerComponent=8 then
+  begin
+    if Bitmap.FBitsPerPixel=32 then
+    begin
       GetRGBA:=@GetRGBA32;
       SetRGBA:=@SetRGBA32;
-    end else begin
+    end else
+    begin
       GetRGBA:=@GetRGBA24;
       SetRGBA:=@SetRGBA24;
     end;
@@ -2526,25 +2544,29 @@ begin
   if not Result then Exit;
 
   try
-    GetRGBA(Bitmap, x,y, sr, sg, sb, sa);
+    GetRGBA(Bitmap, x,y, sr, sg, sb, sa, clpos);
     if (sr=r) and (sg=g) and (sb=b) then Exit;
 
     SetLength(data, Bitmap.Width*Bitmap.Height);
     cnt:=1;
     data[0].x:=x;
     data[0].y:=y;
-    SetRGBA(Bitmap, x,y, r, g, b, a);
+    SetRGBA(Bitmap, x,y, r, g, b, a, clPos);
 
-    while cnt>0 do begin
+    while cnt>0 do
+    begin
       x:=data[0].x;
       y:=data[0].y;
-      for k:=0 to 3 do begin
+      for k:=0 to 3 do
+      begin
         i:=x+dx[k];
         j:=y+dy[k];
-        for j:=Max(0, y-1) to Min(Bitmap.Height-1, y+1) do begin
-          GetRGBA(Bitmap, i,j, tr, tg, tb, ta);
-          if (tr=sr) and (tg=sg) and (tb=sb) then begin
-            SetRGBA(Bitmap, i,j, r, g, b, a);
+        for j:=Max(0, y-1) to Min(Bitmap.Height-1, y+1) do
+        begin
+          GetRGBA(Bitmap, i,j, tr, tg, tb, ta, clPos);
+          if (tr=sr) and (tg=sg) and (tb=sb) then
+          begin
+            SetRGBA(Bitmap, i,j, r, g, b, a, clPos);
             data[cnt].X:=i;
             data[cnt].Y:=j;
             inc(cnt);

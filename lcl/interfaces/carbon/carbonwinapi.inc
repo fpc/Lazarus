@@ -1009,9 +1009,11 @@ begin
   try
     Result:=TCarbonDeviceContext(DC) is TCarbonBitmapContext;
     if not Result then Exit;
-    TCarbonBrush(Brush).GetRGBA(R2_COPYPEN,r,g,b,a);
-    Result:=FloodFillBitmap( TCarbonBitmapContext(DC).Bitmap,
-      X, Y, 0, RGBToColor(round(r*255),round(g*255),round(b*255)), True);
+    with TCarbonBrush(Brush) do
+    begin
+      Result:=FloodFillBitmap( TCarbonBitmapContext(DC).Bitmap,
+        X, Y, 0, RGBToColor(Red,Green,Blue), True);
+    end;
   except
     Result:=False;
   end;
