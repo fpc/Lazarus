@@ -1088,7 +1088,10 @@ begin
 
   QtTreeWidget := TQtTreeWidget(ALV.Handle);
   TWI := QTreeWidgetItem_create(QTreeWidgetH(QtTreeWidget.Widget), 0);
-  Str := GetUtf8String(AItem.Caption);
+  if AItem.Caption <> '' then
+    Str := GetUtf8String(AItem.Caption)
+  else
+    Str := '';
 
   if ALV.CheckBoxes then
   begin
@@ -1102,15 +1105,19 @@ begin
   if TListView(ALV).Columns.Count > 0 then
     AAlignment := AlignmentToQtAlignmentMap[ALV.Column[0].Alignment];
 
-  QtTreeWidget.setItemText(TWI, 0, Str, AAlignment);
+  if Str <> '' then
+    QtTreeWidget.setItemText(TWI, 0, Str, AAlignment);
 
   for i := 0 to AItem.SubItems.Count - 1 do
   begin
     AAlignment := QtAlignLeft;
     if (TListView(ALV).Columns.Count > 0) and (i + 1 < TListView(ALV).Columns.Count) then
       AAlignment := AlignmentToQtAlignmentMap[ALV.Column[i + 1].Alignment];
-    Str := GetUtf8String(AItem.Subitems.Strings[i]);
-    QtTreeWidget.setItemText(TWI, i + 1, Str, AAlignment);
+    if AItem.Subitems.Strings[i] <> '' then
+    begin
+      Str := GetUtf8String(AItem.Subitems.Strings[i]);
+      QtTreeWidget.setItemText(TWI, i + 1, Str, AAlignment);
+    end;
   end;
   QtTreeWidget.insertTopLevelItem(AIndex, TWI);
 end;

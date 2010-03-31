@@ -201,6 +201,7 @@ type
     function getText: WideString; virtual;
     function getTextStatic: Boolean; virtual;
     function getHeight: Integer;
+    function getUpdatesEnabled: Boolean;
     function getWidth: Integer;
     function getWindowState: QtWindowStates;
     procedure grabMouse; virtual;
@@ -3204,6 +3205,11 @@ end;
 function TQtWidget.getHeight: Integer;
 begin
   Result := QWidget_height(Widget);
+end;
+
+function TQtWidget.getUpdatesEnabled: Boolean;
+begin
+  Result := QWidget_updatesEnabled(Widget);
 end;
 
 function TQtWidget.getWidth: Integer;
