@@ -1,29 +1,30 @@
-object SeriesEditorForm: TSeriesEditorForm
-  Left = 415
-  Height = 359
-  Top = 241
-  Width = 325
-  Caption = 'SeriesEditorForm'
-  ClientHeight = 340
-  ClientWidth = 325
+object ComponentListEditorForm: TComponentListEditorForm
+  Left = 342
+  Height = 240
+  Top = 239
+  Width = 320
+  Caption = 'ComponentListEditorForm'
+  ClientHeight = 221
+  ClientWidth = 320
   Menu = MainMenu1
   OnClose = FormClose
   OnDestroy = FormDestroy
+  Position = poScreenCenter
   LCLVersion = '0.9.29'
-  object SeriesListBox: TListBox
+  object ChildrenListBox: TListBox
     Left = 0
-    Height = 340
+    Height = 221
     Top = 0
-    Width = 325
+    Width = 320
     Align = alClient
     ItemHeight = 0
     MultiSelect = True
-    OnClick = SeriesListBoxClick
+    OnClick = ChildrenListBoxClick
     TabOrder = 0
   end
   object MainMenu1: TMainMenu
-    left = 60
-    top = 132
+    left = 88
+    top = 160
     object miAdd: TMenuItem
       Caption = 'Add'
     end
