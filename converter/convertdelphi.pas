@@ -669,8 +669,6 @@ begin
             TryAgain:=fOwnerConverter.DoMissingUnits(fMissingUnits)>0;
             if TryAgain then
               TryAgain:=fOwnerConverter.DoCaseErrorUnits(fMissingUnits, fUnitsToRename)>0;
-            if TryAgain and (PrevMiss<>fMissingUnits.Count) then
-              ShowMessage('Some units were found but not all.');
           end;
         finally
           UnitDirDialog.Free;
