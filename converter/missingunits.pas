@@ -33,7 +33,7 @@ interface
 uses
   // FCL+LCL
   Classes, SysUtils, LCLProc, LResources, Forms, Controls, Graphics,
-  Dialogs, Buttons, StdCtrls, FileUtil, CheckLst,
+  Dialogs, Buttons, StdCtrls, FileUtil, CheckLst, Menus,
   // Components
   SynEdit, CodeAtom, CodeCache, CodeToolManager, DefineTemplates,
   // IDEIntf
@@ -47,18 +47,26 @@ type
   { TMissingUnitsDialog }
 
   TMissingUnitsDialog = class(TForm)
+    UnselectMenuItem: TMenuItem;
+    SelectMenuItem: TMenuItem;
+    SaveDialog1: TSaveDialog;
+    SaveMenuItem: TMenuItem;
     MissingUnitsCheckListBox: TCheckListBox;
     CommentButton: TBitBtn;
     ChoicesLabel: TLabel;
     Info1Label: TLabel;
     Info2Label: TLabel;
     Info3Label: TLabel;
+    PopupMenu1: TPopupMenu;
     SearchButton: TBitBtn;
     AbortButton: TBitBtn;
     MissingUnitsInfoLabel: TLabel;
     procedure AbortButtonClick(Sender: TObject);
     procedure CommentButtonClick(Sender: TObject);
+    procedure SaveMenuItemClick(Sender: TObject);
     procedure SearchButtonClick(Sender: TObject);
+    procedure SelectMenuItemClick(Sender: TObject);
+    procedure UnselectMenuItemClick(Sender: TObject);
   private
 
   public
@@ -116,7 +124,7 @@ begin
     Result:=ShowModal;
     if Result=mrOK then begin
       AMissingUnits.Clear;
-      for i := 0 to MissingUnitsCheckListBox.Count-1 do begin
+      for i:=0 to MissingUnitsCheckListBox.Count-1 do begin
         if MissingUnitsCheckListBox.Checked[i] then begin
           AMissingUnits.Append(MissingUnitsCheckListBox.Items[i]);
         end;
@@ -127,6 +135,34 @@ begin
 end;
 
 { TMissingUnitsDialog }
+
+procedure TMissingUnitsDialog.SelectMenuItemClick(Sender: TObject);
+var
+  i: Integer;
+begin
+  for i:=0 to MissingUnitsCheckListBox.Count-1 do
+    MissingUnitsCheckListBox.Checked[i]:=true;
+end;
+
+procedure TMissingUnitsDialog.UnselectMenuItemClick(Sender: TObject);
+var
+  i: Integer;
+begin
+  for i:=0 to MissingUnitsCheckListBox.Count-1 do
+    MissingUnitsCheckListBox.Checked[i]:=false;
+end;
+
+procedure TMissingUnitsDialog.SaveMenuItemClick(Sender: TObject);
+var
+  fn: String;
+begin
+  SaveDialog1.FileName:='MissingUnitsList.txt';
+  if SaveDialog1.Execute then begin
+    fn:=SaveDialog1.FileName;
+    MissingUnitsCheckListBox.Items.SaveToFile(fn);
+    ShowMessage(Format('Unit list is saved to file %s.', [fn]));
+  end;
+end;
 
 procedure TMissingUnitsDialog.CommentButtonClick(Sender: TObject);
 begin

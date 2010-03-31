@@ -98,6 +98,27 @@ object MissingUnitsDialog: TMissingUnitsDialog
     Width = 192
     Anchors = [akTop, akLeft, akBottom]
     ItemHeight = 0
+    PopupMenu = PopupMenu1
     TabOrder = 3
+  end
+  object PopupMenu1: TPopupMenu
+    left = 240
+    top = 200
+    object SelectMenuItem: TMenuItem
+      Caption = '&Select all'
+      OnClick = SelectMenuItemClick
+    end
+    object UnselectMenuItem: TMenuItem
+      Caption = '&Unselect all'
+      OnClick = UnselectMenuItemClick
+    end
+    object SaveMenuItem: TMenuItem
+      Caption = 'Save to &File...'
+      OnClick = SaveMenuItemClick
+    end
+  end
+  object SaveDialog1: TSaveDialog
+    left = 320
+    top = 200
   end
 end
