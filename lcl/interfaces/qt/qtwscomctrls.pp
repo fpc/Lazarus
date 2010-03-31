@@ -893,13 +893,11 @@ class procedure TQtWSCustomListView.ItemDelete(const ALV: TCustomListView;
   const AIndex: Integer);
 var
   QtTreeWidget: TQtTreeWidget;
-  QtItem: QTreeWidgetItemH;
-  Item: TListItem;
 begin
   if not WSCheckHandleAllocated(ALV, 'ItemDelete') then
     Exit;
   QtTreeWidget := TQtTreeWidget(ALV.Handle);
-  QtTreeWidget.takeTopLevelItem(AIndex);
+  QtTreeWidget.DeleteItem(AIndex);
 end;
 
 {------------------------------------------------------------------------------

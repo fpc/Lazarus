@@ -1068,6 +1068,7 @@ type
     procedure DestroyNotify(AWidget: TQtWidget); override;
     function itemViewViewportEventFilter(Sender: QObjectH; Event: QEventH): Boolean; cdecl; override;
     procedure ClearItems;
+    procedure DeleteItem(const AIndex: integer);
     function currentRow: Integer;
     procedure setCurrentRow(row: Integer);
     function currentItem: QTreeWidgetItemH;
@@ -1093,15 +1094,15 @@ type
     procedure AttachEvents; override;
     procedure DetachEvents; override;
 
-    procedure SignalItemClicked(item: QTreeWidgetItemH; column: Integer) cdecl;
-    procedure SignalItemDoubleClicked(item: QTreeWidgetItemH; column: Integer) cdecl;
-    procedure SignalItemActivated(item: QTreeWidgetItemH; column: Integer) cdecl;
-    procedure SignalItemEntered(item: QTreeWidgetItemH; column: Integer) cdecl;
-    procedure SignalItemChanged(item: QTreeWidgetItemH; column: Integer) cdecl;
-    procedure SignalitemExpanded(item: QTreeWidgetItemH) cdecl;
-    procedure SignalItemCollapsed(item: QTreeWidgetItemH) cdecl;
-    procedure SignalCurrentItemChanged(current: QTreeWidgetItemH; previous: QTreeWidgetItemH) cdecl;
-    procedure SignalSortIndicatorChanged(ALogicalIndex: Integer; AOrder: QtSortOrder) cdecl;
+    procedure SignalItemClicked(item: QTreeWidgetItemH; column: Integer); cdecl;
+    procedure SignalItemDoubleClicked(item: QTreeWidgetItemH; column: Integer); cdecl;
+    procedure SignalItemActivated(item: QTreeWidgetItemH; column: Integer); cdecl;
+    procedure SignalItemEntered(item: QTreeWidgetItemH; column: Integer); cdecl;
+    procedure SignalItemChanged(item: QTreeWidgetItemH; column: Integer); cdecl;
+    procedure SignalitemExpanded(item: QTreeWidgetItemH); cdecl;
+    procedure SignalItemCollapsed(item: QTreeWidgetItemH); cdecl;
+    procedure SignalCurrentItemChanged(current: QTreeWidgetItemH; previous: QTreeWidgetItemH); cdecl;
+    procedure SignalSortIndicatorChanged(ALogicalIndex: Integer; AOrder: QtSortOrder); cdecl;
 
     property ColCount: Integer read getColCount write setColCount;
     property Header: TQtHeaderView read getHeader;
@@ -8179,6 +8180,15 @@ end;
 procedure TQtTreeWidget.ClearItems;
 begin
   QTreeWidget_clear(QTreeWidgetH(Widget));
+end;
+
+procedure TQtTreeWidget.DeleteItem(const AIndex: integer);
+var
+  Item: QTreeWidgetItemH;
+begin
+  Item := takeTopLevelItem(AIndex);
+  if Item <> nil then
+    QTreeWidgetItem_destroy(Item);
 end;
 
 function TQtTreeWidget.getHeader: TQtHeaderView;
