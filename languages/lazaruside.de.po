@@ -9271,7 +9271,9 @@ msgid "For Delphi only"
 msgstr ""
 
 #: lazarusidestrconsts.lismissingunitsinfo1
-msgid "1) Comment out the missing units (ignore them)."
+#, fuzzy
+#| msgid "1) Comment out the missing units (ignore them)."
+msgid "1) Comment out the selected units."
 msgstr "1) Alle fehlenden Units auskommentieren (übergehen)."
 
 #: lazarusidestrconsts.lismissingunitsinfo1b
@@ -9279,11 +9281,15 @@ msgid "1) Use the units only for Delphi."
 msgstr ""
 
 #: lazarusidestrconsts.lismissingunitsinfo2
-msgid "2) Select a unit path which will be added to project settings."
+#, fuzzy
+#| msgid "2) Select a unit path which will be added to project settings."
+msgid "2) Search for units. Found paths are added to project settings."
 msgstr "2) Unit-Pfad auswählen, der zu den Projekteinstellungen hunzugefügt wird."
 
 #: lazarusidestrconsts.lismissingunitsinfo3
-msgid "3) Abort now, fix the unit path or install packages and try again."
+#, fuzzy
+#| msgid "3) Abort now, fix the unit path or install packages and try again."
+msgid "3) Abort now, install packages or fix paths and try again."
 msgstr "3) Jetzt abbrechen, die Unit-Pfade korrigieren oder Packages installieren und noch einmal probieren."
 
 #: lazarusidestrconsts.lismissingunitssearch
@@ -11277,6 +11283,10 @@ msgstr "Makro ProjectUnitPath"
 msgid "Project Output directory (e.g. the ppu directory)"
 msgstr "Projekt-Ausgabeverzeichnis (z.B. das ppu Verzeichnis)"
 
+#: lazarusidestrconsts.lisprojectpath
+msgid "Project Path:"
+msgstr ""
+
 #: lazarusidestrconsts.lisprojectsraisedexceptionclasss
 msgid "Project %s raised exception class '%s'."
 msgstr "Projekt %s hat Exception-Klasse '%s' ausgelöst."
@@ -12014,6 +12024,10 @@ msgstr "Suche"
 #: lazarusidestrconsts.lisssearchtext
 msgid "Search text"
 msgstr "Suchtext"
+
+#: lazarusidestrconsts.lisstartconversion
+msgid "Start Conversion"
+msgstr ""
 
 #: lazarusidestrconsts.lisstartwithanewproject
 msgid "Start with a new project"

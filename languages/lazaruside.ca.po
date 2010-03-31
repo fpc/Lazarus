@@ -9263,7 +9263,7 @@ msgid "For Delphi only"
 msgstr ""
 
 #: lazarusidestrconsts.lismissingunitsinfo1
-msgid "1) Comment out the missing units (ignore them)."
+msgid "1) Comment out the selected units."
 msgstr ""
 
 #: lazarusidestrconsts.lismissingunitsinfo1b
@@ -9271,11 +9271,11 @@ msgid "1) Use the units only for Delphi."
 msgstr ""
 
 #: lazarusidestrconsts.lismissingunitsinfo2
-msgid "2) Select a unit path which will be added to project settings."
+msgid "2) Search for units. Found paths are added to project settings."
 msgstr ""
 
 #: lazarusidestrconsts.lismissingunitsinfo3
-msgid "3) Abort now, fix the unit path or install packages and try again."
+msgid "3) Abort now, install packages or fix paths and try again."
 msgstr ""
 
 #: lazarusidestrconsts.lismissingunitssearch
@@ -11269,6 +11269,10 @@ msgstr ""
 msgid "Project Output directory (e.g. the ppu directory)"
 msgstr ""
 
+#: lazarusidestrconsts.lisprojectpath
+msgid "Project Path:"
+msgstr ""
+
 #: lazarusidestrconsts.lisprojectsraisedexceptionclasss
 msgid "Project %s raised exception class '%s'."
 msgstr ""
@@ -12004,6 +12008,10 @@ msgstr "Cercant"
 #: lazarusidestrconsts.lisssearchtext
 msgid "Search text"
 msgstr "Cerca text"
+
+#: lazarusidestrconsts.lisstartconversion
+msgid "Start Conversion"
+msgstr ""
 
 #: lazarusidestrconsts.lisstartwithanewproject
 msgid "Start with a new project"

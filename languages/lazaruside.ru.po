@@ -5,7 +5,7 @@ msgstr ""
 "Content-Type: text/plain; charset=utf-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "POT-Creation-Date: \n"
-"PO-Revision-Date: 2010-03-29 02:02+0300\n"
+"PO-Revision-Date: 2010-04-01 02:53+0300\n"
 "Language-Team: \n"
 "MIME-Version: 1.0\n"
 
@@ -643,7 +643,7 @@ msgstr "Библиотеки (-Fl):"
 
 #: lazarusidestrconsts.dlgcolinking
 msgid "Linking"
-msgstr "Связывание"
+msgstr "Компоновка"
 
 #: lazarusidestrconsts.dlgcoloadsave
 msgid "Load/Save"
@@ -746,7 +746,7 @@ msgstr "Меньший код"
 
 #: lazarusidestrconsts.dlgcosmartlinkable
 msgid "Smart Linkable"
-msgstr "Умное связывание"
+msgstr "Умная компоновка"
 
 #: lazarusidestrconsts.dlgcosources
 msgid "Other Sources (.pp/.pas files, used only by IDE not by compiler)"
@@ -1110,7 +1110,7 @@ msgstr "Переводить фокус в окно сообщений посл�
 
 #: lazarusidestrconsts.dlgextracharspacing
 msgid "Extra char spacing"
-msgstr "Дополнительные символы отступа"
+msgstr "Дополнительный межсимвольный интервал"
 
 #: lazarusidestrconsts.dlgextralinespacing
 msgid "Extra line spacing"
@@ -1555,11 +1555,11 @@ msgstr "Разрыв строк"
 
 #: lazarusidestrconsts.dlglinklibraries
 msgid "Link Style:"
-msgstr "Стиль связывания"
+msgstr "Стиль компоновки"
 
 #: lazarusidestrconsts.dlglinksmart
 msgid "Link Smart"
-msgstr "Умное связывание"
+msgstr "Умная компоновка"
 
 #: lazarusidestrconsts.dlglnumsbct
 msgid "Display Line Numbers in Run-time Error Backtraces"
@@ -4962,7 +4962,7 @@ msgstr "Параметры командной строки программы"
 
 #: lazarusidestrconsts.liscompileidewithoutlinking
 msgid "Compile IDE (without linking)"
-msgstr "Компиляция IDE (без сборки)"
+msgstr "Компиляция IDE (без компоновки)"
 
 #: lazarusidestrconsts.liscompiler
 msgid "Compiler"
@@ -8609,7 +8609,7 @@ msgstr "Найти инкрементно"
 
 #: lazarusidestrconsts.lismenuindentselection
 msgid "Indent selection"
-msgstr "Сдвинуть выделенное вправо"
+msgstr "Увеличить отступ выделенного"
 
 #: lazarusidestrconsts.lismenuinsertchangelogentry
 msgid "ChangeLog entry"
@@ -9089,7 +9089,7 @@ msgstr "Отменить"
 
 #: lazarusidestrconsts.lismenuunindentselection
 msgid "Unindent selection"
-msgstr "Сдвинуть выделенное влево"
+msgstr "Уменьшить отступ выделенного"
 
 #: lazarusidestrconsts.lismenuuppercaseselection
 msgid "Uppercase selection"
@@ -9253,20 +9253,23 @@ msgid "For Delphi only"
 msgstr "Только для Delphi"
 
 #: lazarusidestrconsts.lismissingunitsinfo1
-msgid "1) Comment out the missing units (ignore them)."
-msgstr "1) Закомментировать отсутствующие модули (игнорировать их)."
+#| msgid "1) Comment out the missing units (ignore them)."
+msgid "1) Comment out the selected units."
+msgstr "1) Закомментировать выбранные модули."
 
 #: lazarusidestrconsts.lismissingunitsinfo1b
 msgid "1) Use the units only for Delphi."
 msgstr "1) Использовать модули только для Delphi."
 
 #: lazarusidestrconsts.lismissingunitsinfo2
-msgid "2) Select a unit path which will be added to project settings."
-msgstr "2) Выбрать путь к модулю, чтобы добавить его в проект."
+#| msgid "2) Select a unit path which will be added to project settings."
+msgid "2) Search for units. Found paths are added to project settings."
+msgstr "2) Найти модули. Обнаруженные пути добавить в проект."
 
 #: lazarusidestrconsts.lismissingunitsinfo3
-msgid "3) Abort now, fix the unit path or install packages and try again."
-msgstr "3) Прерваться, исправить путь к модулю либо установить пакеты, и попытаться снова."
+#| msgid "3) Abort now, fix the unit path or install packages and try again."
+msgid "3) Abort now, install packages or fix paths and try again."
+msgstr "3) Прерваться, установить пакеты либо исправить пути, и попытаться снова."
 
 #: lazarusidestrconsts.lismissingunitssearch
 msgid "Search Unit Path"
@@ -10728,11 +10731,11 @@ msgstr "Пакет %s имеет файл%s%s%s%s.%sДолжен ли файл �
 
 #: lazarusidestrconsts.lispkgmangthepackagewasmarkedcurrentlylazarus
 msgid "The package %s%s%s was marked.%sCurrently lazarus only supports static linked packages. The real un-installation needs rebuilding and restarting of lazarus.%s%sDo you want to rebuild Lazarus now?"
-msgstr "Пакет %s%s%s отмечен.%sСейчас lazarus поддерживает только статически связанные пакеты. Действительное удаление требует пересборки и перезапуска lazarus.%s%sВы хотите пересобрать Lazarus сейчас?"
+msgstr " Был отмечен пакет %s%s%s.%sСейчас Lazarus поддерживает только статически скомпонованные пакеты. Действительное удаление требует пересборки и перезапуска Lazarus.%s%sВы хотите пересобрать Lazarus сейчас?"
 
 #: lazarusidestrconsts.lispkgmangthepackagewasmarkedforinstallationcurrentlylazarus
 msgid "The package %s%s%s was marked for installation.%sCurrently lazarus only supports static linked packages. The real installation needs rebuilding and restarting of lazarus.%s%sDo you want to rebuild Lazarus now?"
-msgstr "Пакет %s%s%s помечен на установку.%sСейчас lazarus поддерживает только статически связанные пакеты. Действительная установка требует пересборки и перезапуска lazarus.%s%sВы хотите пересобрать Lazarus сейчас?"
+msgstr "Пакет %s%s%s был помечен для установки.%sСейчас Lazarus поддерживает только статически скомпонованные пакеты. Действительная установка требует пересборки и перезапуска Lazarus.%s%sВы хотите пересобрать Lazarus сейчас?"
 
 #: lazarusidestrconsts.lispkgmangtheprojectrequiresthepackagebutitwasnotfound
 msgid "The project requires the package %s%s%s.%sBut it was not found. See Project -> Project Inspector."
@@ -11257,6 +11260,10 @@ msgstr "макрос ProjectUnitPath"
 #: lazarusidestrconsts.lisprojectoutdir
 msgid "Project Output directory (e.g. the ppu directory)"
 msgstr "Каталог вывода проекта (например, каталог с ppu)"
+
+#: lazarusidestrconsts.lisprojectpath
+msgid "Project Path:"
+msgstr "Каталог проекта:"
 
 #: lazarusidestrconsts.lisprojectsraisedexceptionclasss
 msgid "Project %s raised exception class '%s'."
@@ -11991,6 +11998,10 @@ msgstr "Поиск"
 #: lazarusidestrconsts.lisssearchtext
 msgid "Search text"
 msgstr "Поиск текста"
+
+#: lazarusidestrconsts.lisstartconversion
+msgid "Start Conversion"
+msgstr "Начать преобразование"
 
 #: lazarusidestrconsts.lisstartwithanewproject
 msgid "Start with a new project"
@@ -13746,7 +13757,7 @@ msgstr "Скрыть выделенное"
 
 #: lazarusidestrconsts.srkmecblockindent
 msgid "Indent block"
-msgstr "Сдвинуть выделенное вправо"
+msgstr "Увеличить отступ выделенного"
 
 #: lazarusidestrconsts.srkmecblockmove
 msgid "Move Block"
@@ -13770,7 +13781,7 @@ msgstr "Переключить видимость выделенного"
 
 #: lazarusidestrconsts.srkmecblockunindent
 msgid "Unindent block"
-msgstr "Сдвинуть выделенное влево"
+msgstr "Уменьшить отступ выделенного"
 
 #: lazarusidestrconsts.srkmecbuild
 msgid "build program/project"
@@ -14232,7 +14243,7 @@ msgstr "Список процедур ..."
 
 #: lazarusidestrconsts.srkmecquickcompile
 msgid "quick compile, no linking"
-msgstr "Быстрая компиляция, без связывания"
+msgstr "Быстрая компиляция, без компоновки"
 
 #: lazarusidestrconsts.srkmecremovebreakpoint
 msgid "remove break point"
