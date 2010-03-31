@@ -663,14 +663,18 @@ begin
         try
           UnitDirDialog.InitialDir:=fOwnerConverter.fPrevSelectedPath;
           UnitDirDialog.Title:='All sub-directories will be scanned for unit files';
-          if UnitDirDialog.Execute and Assigned(fOwnerConverter) then begin
-            fOwnerConverter.fPrevSelectedPath:=ExtractFilePath(UnitDirDialog.Filename);
-            // Add the new path to project if missing units are found.
-            fOwnerConverter.CacheUnitsInPath(UnitDirDialog.Filename);
-            TryAgain:=fOwnerConverter.DoMissingUnits(fMissingUnits)>0;
-            if TryAgain then
-              TryAgain:=fOwnerConverter.DoCaseErrorUnits(fMissingUnits, fUnitsToRename)>0;
-          end;
+          if UnitDirDialog.Execute then begin
+            if Assigned(fOwnerConverter) then begin
+              fOwnerConverter.fPrevSelectedPath:=ExtractFilePath(UnitDirDialog.Filename);
+              // Add the new path to project if missing units are found.
+              fOwnerConverter.CacheUnitsInPath(UnitDirDialog.Filename);
+              TryAgain:=fOwnerConverter.DoMissingUnits(fMissingUnits)>0;
+              if TryAgain then
+                TryAgain:=fOwnerConverter.DoCaseErrorUnits(fMissingUnits, fUnitsToRename)>0;
+            end;
+          end
+          else
+            TryAgain:=true;  // User canceled. Stay with the same unit.
         finally
           UnitDirDialog.Free;
         end;
