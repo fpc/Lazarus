@@ -974,6 +974,50 @@ begin
   Result := True;
 end;
 
+
+{------------------------------------------------------------------------------
+  Method:  FloodFill
+  Params:  DC        - Handle to device context
+           X,Y       - Filling start point
+           Color     - A border color or filling color
+           FillStyle - filling style
+           Brush     - a content to fill with
+  Returns: > 0 if the function succeeds
+
+  Fills the aread starting at 0,0 with the specified brush
+ ------------------------------------------------------------------------------}
+function TCarbonWidgetSet.FloodFill(DC: HDC; X, Y: Integer;
+                   Color: TGraphicsColor;
+                   FillStyle: TGraphicsFillStyle;
+                   Brush: HBRUSH): Boolean;
+var
+  r,g,b,a: single;
+begin
+  Result := False;
+
+  {$IFDEF VerboseWinAPI}
+    DebugLn('TCarbonWidgetSet.FloodFill DC: ' + DbgS(DC)  + ' Brush: ' + DbgS(Brush));
+  {$ENDIF}
+
+  if not CheckDC(DC, 'FillRect') then Exit;
+  if not (TObject(Brush) is TCarbonBrush) then
+  begin
+    DebugLn('TCarbonWidgetSet.FloodFill Error - invalid Brush!');
+    Exit;
+  end;
+
+  try
+    Result:=TCarbonDeviceContext(DC) is TCarbonBitmapContext;
+    if not Result then Exit;
+    TCarbonBrush(Brush).GetRGBA(R2_COPYPEN,r,g,b,a);
+    Result:=FloodFillBitmap( TCarbonBitmapContext(DC).Bitmap,
+      X, Y, 0, RGBToColor(round(r*255),round(g*255),round(b*255)), True);
+  except
+    Result:=False;
+  end;
+
+end;
+
 {------------------------------------------------------------------------------
   Method:  Frame
   Params:  DC    - Handle to device context
