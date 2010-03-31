@@ -70,15 +70,8 @@ type
     function GraphToAxisX(AX: Double): Double; virtual;
     function GraphToAxisY(AY: Double): Double; virtual;
 
-  protected
-    procedure ReadState(Reader: TReader); override;
-    procedure SetParentComponent(AParent: TComponent); override;
-
   public
     destructor Destroy; override;
-
-    function GetParentComponent: TComponent; override;
-    function HasParent: Boolean; override;
 
   public
     procedure Draw(ACanvas: TCanvas); virtual; abstract;
@@ -1123,11 +1116,6 @@ begin
   Result := false;
 end;
 
-function TBasicChartSeries.GetParentComponent: TComponent;
-begin
-  Result := FChart;
-end;
-
 function TBasicChartSeries.GraphToAxisX(AX: Double): Double;
 begin
   Result := AX;
@@ -1136,26 +1124,6 @@ end;
 function TBasicChartSeries.GraphToAxisY(AY: Double): Double;
 begin
   Result := AY;
-end;
-
-function TBasicChartSeries.HasParent: Boolean;
-begin
-  Result := true;
-end;
-
-procedure TBasicChartSeries.ReadState(Reader: TReader);
-begin
-  inherited ReadState(Reader);
-  if Reader.Parent is TChart then begin
-    (Reader.Parent as TChart).AddSeries(Self);
-    //DebugLn('TAChart %s: %d series', [Reader.Parent.Name, (Reader.Parent as TChart).SeriesCount]);
-  end;
-end;
-
-procedure TBasicChartSeries.SetParentComponent(AParent: TComponent);
-begin
-  if not (csLoading in ComponentState) then
-    (AParent as TChart).AddSeries(Self);
 end;
 
 procedure TBasicChartSeries.UpdateMargins(

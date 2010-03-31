@@ -49,6 +49,10 @@ type
     procedure UpdateParentChart;
 
   protected
+    procedure ReadState(Reader: TReader); override;
+    procedure SetParentComponent(AParent: TComponent); override;
+
+  protected
     function AxisToGraphX(AX: Double): Double; override;
     function AxisToGraphY(AY: Double): Double; override;
     function GraphToAxisX(AX: Double): Double; override;
@@ -58,6 +62,9 @@ type
 
   public
     constructor Create(AOwner: TComponent); override;
+    function GetParentComponent: TComponent; override;
+    function HasParent: Boolean; override;
+
     property AxisIndexX: Integer read FAxisIndexX write SetAxisIndexX default DEF_AXIS_INDEX;
     property AxisIndexY: Integer read FAxisIndexY write SetAxisIndexY default DEF_AXIS_INDEX;
   end;
@@ -217,6 +224,11 @@ begin
   end;
 end;
 
+function TCustomChartSeries.GetParentComponent: TComponent;
+begin
+  Result := FChart;
+end;
+
 function TCustomChartSeries.GraphToAxisX(AX: Double): Double;
 begin
   Result := TransformationByAxis(FChart, AxisIndexX).GraphToAxis(AX)
@@ -227,11 +239,23 @@ begin
   Result := TransformationByAxis(FChart, AxisIndexY).GraphToAxis(AY)
 end;
 
+function TCustomChartSeries.HasParent: Boolean;
+begin
+  Result := true;
+end;
+
 function TCustomChartSeries.IsRotated: Boolean;
 begin
   Result :=
     (AxisIndexX >= 0) and FChart.AxisList[AxisIndexX].IsVertical and
     (AxisIndexY >= 0) and not FChart.AxisList[AxisIndexY].IsVertical;
+end;
+
+procedure TCustomChartSeries.ReadState(Reader: TReader);
+begin
+  inherited ReadState(Reader);
+  if Reader.Parent is TChart then
+    (Reader.Parent as TChart).AddSeries(Self);
 end;
 
 procedure TCustomChartSeries.SetActive(AValue: Boolean);
@@ -260,6 +284,12 @@ begin
   if FDepth = AValue then exit;
   FDepth := AValue;
   UpdateParentChart;
+end;
+
+procedure TCustomChartSeries.SetParentComponent(AParent: TComponent);
+begin
+  if not (csLoading in ComponentState) then
+    (AParent as TChart).AddSeries(Self);
 end;
 
 procedure TCustomChartSeries.SetShowInLegend(AValue: Boolean);
