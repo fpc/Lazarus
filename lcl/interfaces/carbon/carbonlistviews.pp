@@ -1482,6 +1482,8 @@ begin
     Self, 'DeleteItem', 'RemoveDataBrowserItems');
 
   for i:=AIndex to GetItemsCount - 1 do UpdateItem(i);
+
+  CheckNeedsScrollBars;
 end;
 
 procedure TCarbonDataBrowser.InsertItem(AIndex: Integer);
@@ -1508,6 +1510,8 @@ begin
   NotifySelectionChange:=True;
 
   for i := AIndex to GetItemsCount-1 do UpdateItem(i);
+
+  CheckNeedsScrollBars;
 end;
 
 procedure TCarbonDataBrowser.UpdateItem(AIndex: Integer);
