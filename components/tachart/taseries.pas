@@ -576,7 +576,7 @@ procedure TBasicPointSeries.DrawLabels(ACanvas: TCanvas);
     center.X += OFFSETS[ADir].X * (Marks.Distance + sz.cx div 2);
     center.Y += OFFSETS[ADir].Y * (Marks.Distance + sz.cy div 2);
     with center do
-      labelRect := Bounds(X - sz.cx div 2, Y - sz.cy div 2, sz.cx, sz.cy);
+      labelRect := BoundsSize(X - sz.cx div 2, Y - sz.cy div 2, sz);
     if
       not IsRectEmpty(FPrevLabelRect) and
       IntersectRect(dummy, labelRect, FPrevLabelRect)

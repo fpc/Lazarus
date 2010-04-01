@@ -150,6 +150,8 @@ const
   CASE_OF_TWO: array [Boolean, Boolean] of TCaseOfTwo =
     ((cotNone, cotSecond), (cotFirst, cotBoth));
 
+function BoundsSize(ALeft, ATop: Integer; ASize: TSize): TRect; inline;
+
 function DoubleRect(AX1, AY1, AX2, AY2: Double): TDoubleRect; inline;
 
 procedure DrawLineDepth(ACanvas: TCanvas; AX1, AY1, AX2, AY2, ADepth: Integer);
@@ -195,6 +197,11 @@ implementation
 
 uses
   LCLIntf;
+
+function BoundsSize(ALeft, ATop: Integer; ASize: TSize): TRect; inline;
+begin
+  Result := Bounds(ALeft, ATop, ASize.cx, ASize.cy);
+end;
 
 procedure CalculateIntervals(
   AMin, AMax: Double; AxisScale: TAxisScale; out AStart, AStep: Double);

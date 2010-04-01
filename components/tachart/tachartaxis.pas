@@ -382,7 +382,7 @@ procedure TChartAxis.Draw(
       AY += -TickLength - Marks.Distance - sz.cy
     else
       AY += TickLength + Marks.Distance;
-    Marks.DrawLabel(ACanvas, Bounds(x - sz.cx div 2, AY, sz.cx, sz.cy), AText);
+    Marks.DrawLabel(ACanvas, BoundsSize(x - sz.cx div 2, AY, sz), AText);
   end;
 
   procedure DrawYMark(AX: Integer; AMark: Double; const AText: String);
@@ -410,7 +410,7 @@ procedure TChartAxis.Draw(
       AX += -TickLength - Marks.Distance - sz.cx
     else
       AX += TickLength + Marks.Distance;
-    Marks.DrawLabel(ACanvas, Bounds(AX, y - sz.cy div 2, sz.cx, sz.cy), AText);
+    Marks.DrawLabel(ACanvas, BoundsSize(AX, y - sz.cy div 2, sz), AText);
   end;
 
   procedure DoDraw(AMin, AMax: Double);
