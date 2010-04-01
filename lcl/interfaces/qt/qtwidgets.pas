@@ -2672,6 +2672,10 @@ begin
   if not CanSendLCLMessage then
     exit;
 
+  if (LCLObject <> nil) and
+    (not (csDesigning in LCLObject.ComponentState) and not getEnabled) then
+    exit;
+
   FillChar(Msg, SizeOf(Msg), #0);
 
   MousePos := QWheelEvent_Pos(QWheelEventH(Event))^;
