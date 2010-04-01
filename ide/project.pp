@@ -1562,7 +1562,9 @@ begin
     XMLConfig.SetDeleteValue(Path+'UsageCount/Value',RoundToInt(fUsageCount),-1);
     if OpenEditorInfoCount > 0 then
       for i := Bookmarks.Count - 1 downto 0 do
-        if (Project.Bookmarks.BookmarkWithID(Bookmarks[i].ID).UnitInfo <> self) then
+        if (Project.Bookmarks.BookmarkWithID(Bookmarks[i].ID) = nil) or
+           (Project.Bookmarks.BookmarkWithID(Bookmarks[i].ID).UnitInfo <> self)
+        then
           Bookmarks.Delete(i);
     FBookmarks.SaveToXMLConfig(XMLConfig,Path+'Bookmarks/');
     XMLConfig.SetDeleteValue(Path+'Loaded/Value',fLoaded,false);
