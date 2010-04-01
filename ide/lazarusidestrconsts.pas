@@ -459,7 +459,11 @@ resourcestring
   lisConvertTarget1 = 'Lazarus/LCL';
   lisConvertTarget2 = 'Lazarus/LCL for Windows only';
   lisConvertTarget3 = 'Both Lazarus/LCL and Delphi';
-  lisConvReplacements = 'Replacements';
+  lisConvUnitsTypesProperties = 'Units, Types and Properties';
+  lisConvUnitsToReplace = 'Units to replace';
+  lisConvTypesToReplace = 'Types to replace';
+  lisConvUnitReplacements = 'Unit Replacements';
+  lisConvTypeReplacements = 'Type Replacements';
   lisReplacementPropTypes = 'Replacement Properties and Types';
   lisReplaceRemoveInvalid = 'Replace and remove invalid properties / types';
 

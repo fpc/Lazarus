@@ -295,7 +295,7 @@ var
   GridUpdater: TGridUpdater;
   OldIdent: string;
 begin
-  GridUpdater:=TGridUpdater.Create(fPropReplaceGrid, fSettings.ReplacementNames);
+  GridUpdater:=TGridUpdater.Create(fPropReplaceGrid, fSettings.ReplaceTypes);
   try
     if fLFMTree<>nil then begin
       CurError:=fLFMTree.FirstError;

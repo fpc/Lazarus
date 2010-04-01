@@ -52,8 +52,11 @@ type
     fSameDFMFile: boolean;
     fAutoMissingProperties: boolean;
     fAutoMissingTypes: boolean;
-    // Replacement properties and types for Delphi.
-    fReplacementNames: TStringToStringTree;
+    // Delphi units mapped to Lazarus units, will be replaced or removed.
+    fReplaceUnits: TStringToStringTree;
+    // Delphi types mapped to Lazarus types, will be replaced.
+    fReplaceTypes: TStringToStringTree;
+
     function GetBackupPath: String;
     procedure SetMainFilename(const AValue: String);
   public
@@ -87,7 +90,8 @@ type
     property SameDFMFile: boolean read fSameDFMFile;
     property AutoMissingProperties: boolean read fAutoMissingProperties;
     property AutoMissingTypes: boolean read fAutoMissingTypes;
-    property ReplacementNames: TStringToStringTree read fReplacementNames;
+    property ReplaceUnits: TStringToStringTree read fReplaceUnits;
+    property ReplaceTypes: TStringToStringTree read fReplaceTypes;
   end;
 
 
@@ -95,10 +99,11 @@ type
 
   TConvertSettingsForm = class(TForm)
     BackupCheckBox: TCheckBox;
+    TypeReplacementsButton: TBitBtn;
     SameDFMCheckBox: TCheckBox;
     ProjectPathEdit: TLabeledEdit;
     TargetRadioGroup: TRadioGroup;
-    ReplacementsButton: TBitBtn;
+    UnitReplacementsButton: TBitBtn;
     btnCancel: TBitBtn;
     btnOK: TBitBtn;
     BtnPanel: TPanel;
@@ -109,7 +114,8 @@ type
     MissingTypesCheckBox: TCheckBox;
     MissingPropertiesCheckBox: TCheckBox;
     procedure btnOKClick(Sender: TObject);
-    procedure ReplacementsButtonClick(Sender: TObject);
+    procedure TypeReplacementsButtonClick(Sender: TObject);
+    procedure UnitReplacementsButtonClick(Sender: TObject);
     procedure FormCreate(Sender: TObject);
     procedure FormDestroy(Sender: TObject);
     procedure TargetRadioGroupClick(Sender: TObject);
@@ -135,24 +141,43 @@ begin
   fTitle:=ATitle;
   fMainFilename:='';
   fMainPath:='';
-  fReplacementNames:=TStringToStringTree.Create(false);
   // Now hard-code some values. Later move them to a config file.
-  fReplacementNames['TFlowPanel']:='TPanel';
-  fReplacementNames['TGridPanel']:='TPanel';
-  fReplacementNames['TComboBoxEx']:='TComboBox';
-  fReplacementNames['TCoolBar']:='TPanel';
-  fReplacementNames['TControlBar']:='TPanel';
-  fReplacementNames['TValueListEditor']:='TStringGrid';
-  fReplacementNames['TRichEdit']:='TMemo';
-  fReplacementNames['TDBRichEdit']:='TDBMemo';
-  fReplacementNames['TApplicationEvents']:='TApplicationProperties';
-  fReplacementNames['TPNGObject']:='TPortableNetworkGraphic';
-  fReplacementNames['TTntForm']:='TForm';
+  // Map Delphi units to Lazarus units.
+  fReplaceUnits:=TStringToStringTree.Create(false);
+  fReplaceUnits['Windows']:='LCLIntf, LCLType, LMessages';
+  fReplaceUnits['Variants']:='';
+  fReplaceUnits['TntActnList']:='ActnList';
+  fReplaceUnits['TntMenus']:='Menus';
+  fReplaceUnits['TntClasses']:='Classes';
+  fReplaceUnits['TntForms']:='Form';
+  fReplaceUnits['TntComCtrls']:='ComCtrls';
+  fReplaceUnits['TntStdCtrls']:='StdCtrls';
+  fReplaceUnits['TntExtCtrls']:='ExtCtrls';
+  fReplaceUnits['TntSysUtils']:='SysUtils';
+  fReplaceUnits['pngImage']:='';
+  fReplaceUnits['Jpeg']:='';
+  fReplaceUnits['gifimage']:='';
+
+  // Map Delphi types to LCL types.
+  fReplaceTypes:=TStringToStringTree.Create(false);
+  fReplaceTypes['TFlowPanel']:='TPanel';
+  fReplaceTypes['TGridPanel']:='TPanel';
+  fReplaceTypes['TComboBoxEx']:='TComboBox';
+  fReplaceTypes['TCoolBar']:='TPanel';
+  fReplaceTypes['TControlBar']:='TPanel';
+  fReplaceTypes['TValueListEditor']:='TStringGrid';
+  fReplaceTypes['TRichEdit']:='TMemo';
+  fReplaceTypes['TDBRichEdit']:='TDBMemo';
+  fReplaceTypes['TApplicationEvents']:='TApplicationProperties';
+  fReplaceTypes['TPNGObject']:='TPortableNetworkGraphic';
+  fReplaceTypes['TTntForm']:='TForm';
+
 end;
 
 destructor TConvertSettings.Destroy;
 begin
-  fReplacementNames.Free;
+  fReplaceTypes.Free;
+  fReplaceUnits.Free;
   inherited Destroy;
 end;
 
@@ -303,7 +328,9 @@ begin
   TargetRadioGroup.Items.Append(lisConvertTarget3);
   TargetRadioGroup.ItemIndex:=0;
   SameDFMCheckBox.Caption:=lisUseSameDFMFile;
-  ReplacementsButton.Caption:=lisConvReplacements;
+  MissingStuffGroupBox.Caption:= lisConvUnitsTypesProperties;
+  UnitReplacementsButton.Caption:=lisConvUnitReplacements;
+  TypeReplacementsButton.Caption:=lisConvTypeReplacements;
   TargetRadioGroupClick(TargetRadioGroup);
 end;
 
@@ -323,18 +350,31 @@ begin
   SameDFMCheckBox.Enabled:=false; //Trg=ctLazarusAndDelphi;
 end;
 
-procedure TConvertSettingsForm.ReplacementsButtonClick(Sender: TObject);
+procedure TConvertSettingsForm.UnitReplacementsButtonClick(Sender: TObject);
 var
   ReplaceNamesForm: TReplaceNamesForm;
-  Res: TModalResult;
 begin
   ReplaceNamesForm:=TReplaceNamesForm.Create(nil);
   try
-    CopyFromMapToGrid(ReplaceNamesForm.NamePairGrid, fSettings.ReplacementNames);
-    Res:=ReplaceNamesForm.ShowModal;
-    if Res=mrOK then begin
-      CopyFromGridToMap(ReplaceNamesForm.NamePairGrid, fSettings.ReplacementNames);
-    end;
+    ReplaceNamesForm.Caption:=lisConvUnitsToReplace;
+    CopyFromMapToGrid(ReplaceNamesForm.NamePairGrid, fSettings.ReplaceUnits);
+    if ReplaceNamesForm.ShowModal=mrOK then
+      CopyFromGridToMap(ReplaceNamesForm.NamePairGrid, fSettings.ReplaceUnits);
+  finally
+    ReplaceNamesForm.Free;
+  end;
+end;
+
+procedure TConvertSettingsForm.TypeReplacementsButtonClick(Sender: TObject);
+var
+  ReplaceNamesForm: TReplaceNamesForm;
+begin
+  ReplaceNamesForm:=TReplaceNamesForm.Create(nil);
+  try
+    ReplaceNamesForm.Caption:=lisConvTypesToReplace;
+    CopyFromMapToGrid(ReplaceNamesForm.NamePairGrid, fSettings.ReplaceTypes);
+    if ReplaceNamesForm.ShowModal=mrOK then
+      CopyFromGridToMap(ReplaceNamesForm.NamePairGrid, fSettings.ReplaceTypes);
   finally
     ReplaceNamesForm.Free;
   end;

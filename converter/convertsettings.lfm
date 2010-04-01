@@ -20,14 +20,14 @@ object ConvertSettingsForm: TConvertSettingsForm
     Width = 611
     Anchors = [akTop, akLeft, akRight, akBottom]
     BorderSpacing.Top = 3
-    Caption = 'Missing Properties and Types'
+    Caption = 'Units, Types and Properties'
     ClientHeight = 114
     ClientWidth = 607
     TabOrder = 0
     object MissingTypesCheckBox: TCheckBox
-      Left = 11
+      Left = 382
       Height = 21
-      Top = 22
+      Top = 4
       Width = 283
       Caption = 'Automatic conversion of missing types (ToDo...)'
       Enabled = False
@@ -47,20 +47,29 @@ object ConvertSettingsForm: TConvertSettingsForm
     object MissingStuffLabel: TLabel
       Left = 11
       Height = 16
-      Top = 44
+      Top = 28
       Width = 417
       Caption = 'If unchecked, there will be interactive dialogs for editing / accepting changes.'
       ParentColor = False
       Visible = False
     end
-    object ReplacementsButton: TBitBtn
-      Left = 203
+    object UnitReplacementsButton: TBitBtn
+      Left = 123
       Height = 30
       Top = 44
       Width = 160
-      Caption = 'Replacements'
-      OnClick = ReplacementsButtonClick
+      Caption = 'Unit Replacements'
+      OnClick = UnitReplacementsButtonClick
       TabOrder = 2
+    end
+    object TypeReplacementsButton: TBitBtn
+      Left = 303
+      Height = 30
+      Top = 44
+      Width = 160
+      Caption = 'Type Replacements'
+      OnClick = TypeReplacementsButtonClick
+      TabOrder = 3
     end
   end
   object SettingsGroupBox: TGroupBox

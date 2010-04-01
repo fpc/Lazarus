@@ -79,12 +79,10 @@ type
     fFlags: TConvertUnitFlags;
     // Units not found in project dir or packages.
     fMissingUnits: TStrings;
-    // Units to remove.
+    // List of units to remove (or keep in IFDEF when Delphi is supported).
     fUnitsToRemove: TStringList;
     // Units to rename. Map of unit name -> real unit name.
     fUnitsToRename: TStringToStringTree;
-    // Units to add.
-    fUnitsToAdd: TStringList;
     // Units collected to be commented later.
     fUnitsToComment: TStringList;
 
@@ -493,7 +491,6 @@ var
 begin
   fUnitsToRemove:=TStringList.Create;
   fUnitsToRename:=TStringToStringTree.Create(false);
-  fUnitsToAdd:=TStringList.Create;
   fUnitsToComment:=TStringList.Create;
   ConvTool:=TConvDelphiCodeTool.Create(fPascalBuffer);
   try
@@ -562,13 +559,11 @@ begin
     ConvTool.UseBothDfmAndLfm:=fSettings.Target=ctLazarusAndDelphi; {and (DfmFilename<>'')}
     ConvTool.UnitsToRemove:=fUnitsToRemove;
     ConvTool.UnitsToRename:=fUnitsToRename;
-    ConvTool.UnitsToAdd:=fUnitsToAdd;
     ConvTool.UnitsToComment:=fUnitsToComment;
     Result:=ConvTool.Convert;
   finally
     ConvTool.Free;
     fUnitsToComment.Free;
-    fUnitsToAdd.Free;
     fUnitsToRename.Free;
     fUnitsToRemove.Free;
   end;
@@ -720,6 +715,7 @@ function TConvertDelphiUnit.FixMissingUnits: TModalResult;
 var
   CTResult: Boolean;
   i: Integer;
+  UnitN, s: string;
 begin
   Result:=mrOk;
   fMissingUnits:=nil; // Will be created in CodeToolBoss.FindMissingUnits.
@@ -733,11 +729,16 @@ begin
     // no missing units -> good
     if (fMissingUnits=nil) or (fMissingUnits.Count=0) then exit;
 
-    // Remove Windows unit from missing list. It will be changed later.
+    // Remove or replace units defined in settings.
     for i:=fMissingUnits.Count-1 downto 0 do begin
-      if UpperCase(fMissingUnits[i])='WINDOWS' then begin
+      UnitN:=fMissingUnits[i];
+      if fSettings.ReplaceUnits.Contains(UnitN) then begin
+        s:=fSettings.ReplaceUnits[UnitN];
+        if s<>'' then
+          fUnitsToRename[UnitN]:=s
+        else
+          fUnitsToRemove.Append(UnitN);
         fMissingUnits.Delete(i);
-        break;
       end;
     end;
     if fMissingUnits.Count=0 then exit;

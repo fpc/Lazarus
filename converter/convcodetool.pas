@@ -23,7 +23,7 @@ type
 
   { TConvDelphiCodeTool }
 
-  TConvDelphiCodeTool = class // (TStandardCodeTool)
+  TConvDelphiCodeTool = class
   private
     fCodeTool: TEventsCodeTool;
     fCode: TCodeBuffer;
@@ -39,8 +39,6 @@ type
     fUnitsToRemove: TStringList;
     // Units to rename. Map of unit name -> real unit name.
     fUnitsToRename: TStringToStringTree;
-    // List of units to add.
-    fUnitsToAdd: TStringList;
     // List of units to be commented.
     fUnitsToComment: TStringList;
     // Map of class member object types to be renamed in ReplaceMemberTypes.
@@ -50,7 +48,6 @@ type
     function RenameResourceDirectives: boolean;
     function RemoveUnits: boolean;
     function RenameUnits: boolean;
-    function AddUnits: boolean;
     function CommentOutUnits: boolean;
     function HandleCodetoolError: TModalResult;
   public
@@ -66,7 +63,6 @@ type
     property Target: TConvertTarget read fTarget write fTarget;
     property UnitsToRemove: TStringList read fUnitsToRemove write fUnitsToRemove;
     property UnitsToRename: TStringToStringTree read fUnitsToRename write fUnitsToRename;
-    property UnitsToAdd: TStringList read fUnitsToAdd write fUnitsToAdd;
     property UnitsToComment: TStringList read fUnitsToComment write fUnitsToComment;
     property MemberTypesToRename: TStringToStringTree read fMemberTypesToRename
                                                      write fMemberTypesToRename;
@@ -84,6 +80,7 @@ begin
   fLowerCaseRes:=false;
   fUseBothDfmAndLfm:=false;
   fTarget:=ctLazarus;
+  fUnitsToRemove:=nil;            // These are set from outside.
   fUnitsToComment:=nil;
   fUnitsToRename:=nil;
   fMemberTypesToRename:=nil;
@@ -140,11 +137,17 @@ begin
     finally
       fSrcCache.EndUpdate;
     end;
-    if not AddDelphiAndLCLSections then exit;
-    if not RemoveUnits then exit;
-    if not RenameUnits then exit;
-    if not AddUnits then exit;
-    if not CommentOutUnits then exit;
+    if fTarget=ctLazarus then begin
+      // One way conversion -> remove, rename and comment out units.
+      if not RemoveUnits then exit;
+      if not RenameUnits then exit;
+    end;
+    if fTarget=ctLazarusAndDelphi then begin
+      // Support Delphi. Add IFDEF blocks for units.
+      if not AddDelphiAndLCLSections then exit;
+    end
+    else  // ctLazarus or ctLazarusWin -> comment units if needed.
+      if not CommentOutUnits then exit;
     if not fCodeTool.FixUsedUnitCase(fSrcCache) then exit;
     if not fSrcCache.Apply then exit;
     Result:=mrOK;
@@ -158,12 +161,22 @@ end;
 
 function TConvDelphiCodeTool.AddDelphiAndLCLSections: boolean;
 // add, remove and rename units for desired target.
+
+  procedure RemoveUsesUnit(AUnitName: string);
+  var
+    UsesNode: TCodeTreeNode;
+  begin
+    fCodeTool.BuildTree(true);
+    UsesNode:=fCodeTool.FindMainUsesSection;
+    fCodeTool.MoveCursorToUsesStart(UsesNode);
+    fCodeTool.RemoveUnitFromUsesSection(UsesNode, UpperCaseStr(AUnitName), fSrcCache);
+  end;
+
 var
   DelphiOnlyUnits: TStringList;  // Delphi specific units.
   LclOnlyUnits: TStringList;     // LCL specific units.
+  RenameList: TStringList;
   UsesNode: TCodeTreeNode;
-  Junk: TAtomPosition;
-  IsWinUnit, IsVariantUnit: Boolean;
   s, nl: string;
   InsPos, i: Integer;
 begin
@@ -177,62 +190,42 @@ begin
   if UsesNode<>nil then begin
     fCodeTool.MoveCursorToUsesStart(UsesNode);
     InsPos:=fCodeTool.CurPos.StartPos;
-    IsWinUnit:=fCodeTool.FindUnitInUsesSection(UsesNode,'WINDOWS',Junk,Junk);
-    IsVariantUnit:=fCodeTool.FindUnitInUsesSection(UsesNode,'VARIANTS',Junk,Junk);
-    case fTarget of
-      ctLazarus: begin
-        // One way conversion: just add, replace and remove units.
-        if IsWinUnit then begin
-          fUnitsToAdd.Append('LCLIntf');
-          fUnitsToAdd.Append('LCLType');
-          fUnitsToAdd.Append('LMessages');
-          fUnitsToRemove.Append('WINDOWS');
-        end;
-        if IsVariantUnit then
-          fUnitsToRemove.Append('VARIANTS');
-       end;
-      ctLazarusWin: begin
-        // Don't do anything. Delphi units work for Lazarus under Windows.
-       end;
-      ctLazarusAndDelphi: begin
-        // Make separate sections for LCL and Delphi units.
-        if IsWinUnit then begin
-          DelphiOnlyUnits.Append('Windows');
-          LclOnlyUnits.Append('LCLIntf');
-          LclOnlyUnits.Append('LCLType');
-          LclOnlyUnits.Append('LMessages');
-          fCodeTool.RemoveUnitFromUsesSection(UsesNode, 'WINDOWS', fSrcCache);
-        end;
-        if IsVariantUnit then begin
-          DelphiOnlyUnits.Append('Variants');
-          fCodeTool.BuildTree(true);
-          UsesNode:=fCodeTool.FindMainUsesSection;
-          fCodeTool.MoveCursorToUsesStart(UsesNode);
-          fCodeTool.RemoveUnitFromUsesSection(UsesNode, 'VARIANTS', fSrcCache);
-        end;
-        // Now the missing units are not commented but used by Delphi instead.
-        for i:=0 to fUnitsToComment.Count-1 do begin
-          s:=UpperCaseStr(fUnitsToComment[i]);
-          fCodeTool.BuildTree(true);
-          UsesNode:=fCodeTool.FindMainUsesSection;
-          fCodeTool.MoveCursorToUsesStart(UsesNode);
-          fCodeTool.RemoveUnitFromUsesSection(UsesNode, s, fSrcCache);
-        end;
-        DelphiOnlyUnits.AddStrings(fUnitsToComment);
-        if (LclOnlyUnits.Count>0) or (DelphiOnlyUnits.Count>0) then begin
-          // Add LCL and Delphi sections for output.
-          nl:=fSrcCache.BeautifyCodeOptions.LineEnd;
-          s:='{$IFNDEF FPC}'+nl+'  ';
-          for i:=0 to DelphiOnlyUnits.Count-1 do
-            s:=s+DelphiOnlyUnits[i]+', ';
-          s:=s+nl+'{$ELSE}'+nl+'  ';
-          for i:=0 to LclOnlyUnits.Count-1 do
-            s:=s+LclOnlyUnits[i]+', ';
-          s:=s+nl+'{$ENDIF}';
-          // Now add the lines using codetools.
-          if not fSrcCache.Replace(gtEmptyLine,gtNewLine,InsPos,InsPos,s) then exit;
-        end;
-       end;
+    // Now don't remove or comment but add to Delphi block instead.
+    for i:=0 to fUnitsToRemove.Count-1 do begin
+      s:=fUnitsToRemove[i];
+      RemoveUsesUnit(s);
+      DelphiOnlyUnits.Append(s);
+    end;
+    for i:=0 to fUnitsToComment.Count-1 do begin
+      s:=fUnitsToComment[i];
+      RemoveUsesUnit(s);
+      DelphiOnlyUnits.Append(s);
+    end;
+    RenameList:=TStringList.Create;
+    try
+      // Add replacement units to LCL block.
+      fUnitsToRename.GetNames(RenameList);
+      for i:=0 to RenameList.Count-1 do begin
+        s:=RenameList[i];
+        RemoveUsesUnit(s);
+        DelphiOnlyUnits.Append(s);
+        LclOnlyUnits.Append(fUnitsToRename[s]);
+      end;
+    finally
+      RenameList.Free;
+    end;
+    if (LclOnlyUnits.Count>0) or (DelphiOnlyUnits.Count>0) then begin
+      // Add LCL and Delphi sections for output.
+      nl:=fSrcCache.BeautifyCodeOptions.LineEnd;
+      s:='{$IFNDEF FPC}'+nl+'  ';
+      for i:=0 to DelphiOnlyUnits.Count-1 do
+        s:=s+DelphiOnlyUnits[i]+', ';
+      s:=s+nl+'{$ELSE}'+nl+'  ';
+      for i:=0 to LclOnlyUnits.Count-1 do
+        s:=s+LclOnlyUnits[i]+', ';
+      s:=s+nl+'{$ENDIF}';
+      // Now add the generated lines.
+      if not fSrcCache.Replace(gtEmptyLine,gtNewLine,InsPos,InsPos,s) then exit;
     end;
   end;
   Result:=true;
@@ -329,7 +322,7 @@ begin
       end;
       ACleanPos:=FindCommentEnd(Src,ACleanPos,fCodeTool.Scanner.NestedComments);
     until false;
-  // if there is already .lfm file, don't add IFDEF later for .dfm / .lfm.
+  // if there is already .lfm file, don't add IFDEF for .dfm / .lfm.
   if fUseBothDfmAndLfm and (fDfmDirectiveStart<>-1) and not AlreadyIsLfm then
   begin
     // Add IFDEF for .lfm and .dfm allowing Delphi to use .dfm.
@@ -368,30 +361,13 @@ begin
   Result:=true;
 end;
 
-function TConvDelphiCodeTool.AddUnits: boolean;
-// Add units
-var
-  i: Integer;
-begin
-  Result:=false;
-  if Assigned(fUnitsToAdd) then
-    for i:=0 to fUnitsToAdd.Count-1 do
-    if not fCodeTool.AddUnitToMainUsesSection(fUnitsToAdd[i],'',fSrcCache) then
-      exit;
-  Result:=true;
-end;
-
 function TConvDelphiCodeTool.CommentOutUnits: boolean;
 // Comment out missing units
 begin
-  // If units are used by Delphi (IFDEF block) -> don't comment.
-  if fTarget<>ctLazarusAndDelphi then begin
-    Result:=false;
-    if Assigned(fUnitsToComment) and (fUnitsToComment.Count>0) then
-      if not fCodeTool.CommentUnitsInUsesSections(fUnitsToComment, fSrcCache) then
-        exit;
-//      IDEMessagesWindow.AddMsg('Error="'+CodeToolBoss.ErrorMessage+'"','',-1);
-  end;
+  Result:=false;
+  if Assigned(fUnitsToComment) and (fUnitsToComment.Count>0) then
+    if not fCodeTool.CommentUnitsInUsesSections(fUnitsToComment, fSrcCache) then
+      exit;
   Result:=true;
 end;
 

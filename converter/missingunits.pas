@@ -21,7 +21,7 @@
   Author: Juha Manninen
   
   Abstract:
-    A form asking what the user about what to do with missing units
+    A form asking the user what to do with missing units
     in uses section. Used by ConvertDelphi unit.
 }
 unit MissingUnits;
