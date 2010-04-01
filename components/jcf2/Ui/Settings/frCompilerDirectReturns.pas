@@ -61,7 +61,7 @@ implementation
 {$R *.lfm}
 
 uses
-  JcfSettings, SettingsTypes;
+  JcfSettings, SettingsTypes, jcfuiconsts;
 
 constructor TfCompilerDirectReturns.Create(AOwner: TComponent);
 begin
@@ -71,12 +71,43 @@ end;
 
 function TfCompilerDirectReturns.GetTitle: String;
 begin
-  Result := 'Compiler Directives';
+  Result := lisCDCompilerDirectives;
 end;
 
 procedure TfCompilerDirectReturns.Setup(ADialog: TAbstractOptionsEditorDialog);
 begin
   inherited Setup(ADialog);
+  Label1.Caption := lisCDUseANewLineBeforeCompilerDirectives;
+  rgBeforeUses.Caption := lisCDUsesClause;
+  rgBeforeUses.Items[0] := lisCaseBlocksAlways;
+  rgBeforeUses.Items[1] := lisCaseBlocksLeaveAsIs;
+  rgBeforeUses.Items[2] := lisCaseBlocksNever;
+
+  rgBeforeStatements.Caption := lisCDStatements;
+  rgBeforeStatements.Items[0] := lisCaseBlocksAlways;
+  rgBeforeStatements.Items[1] := lisCaseBlocksLeaveAsIs;
+  rgBeforeStatements.Items[2] := lisCaseBlocksNever;
+
+  rgBeforeGeneral.Caption := lisCDOtherPlaces;
+  rgBeforeGeneral.Items[0] := lisCaseBlocksAlways;
+  rgBeforeGeneral.Items[1] := lisCaseBlocksLeaveAsIs;
+  rgBeforeGeneral.Items[2] := lisCaseBlocksNever;
+
+  Label2.Caption := lisCDUseANewLineAfterCompilerDirectives;
+  rgAfterUses.Caption := lisCDUsesClause;
+  rgAfterUses.Items[0] := lisCaseBlocksAlways;
+  rgAfterUses.Items[1] := lisCaseBlocksLeaveAsIs;
+  rgAfterUses.Items[2] := lisCaseBlocksNever;
+
+  rgAfterStatements.Caption := lisCDStatements;
+  rgAfterStatements.Items[0] := lisCaseBlocksAlways;
+  rgAfterStatements.Items[1] := lisCaseBlocksLeaveAsIs;
+  rgAfterStatements.Items[2] := lisCaseBlocksNever;
+
+  rgAfterGeneral.Caption := lisCDOtherPlaces;
+  rgAfterGeneral.Items[0] := lisCaseBlocksAlways;
+  rgAfterGeneral.Items[1] := lisCaseBlocksLeaveAsIs;
+  rgAfterGeneral.Items[2] := lisCaseBlocksNever;
 end;
 
 procedure TfCompilerDirectReturns.ReadSettings(AOptions: TAbstractIDEOptions);

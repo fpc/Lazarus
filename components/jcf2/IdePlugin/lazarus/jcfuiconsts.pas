@@ -180,6 +180,16 @@ resourcestring
   lisBlocksBetweenEndAndElse = 'Between end and else';
   lisBlocksElseBegin = 'Else begin';
 
+  //Compiler Directives tab
+  lisCDCompilerDirectives = 'Compiler Directives';
+  lisCDUseANewLineBeforeCompilerDirectives = 'Use a new line before compiler '
+    +'directives:';
+  lisCDUsesClause = 'Uses clause';
+  lisCDStatements = 'Statements';
+  lisCDOtherPlaces = 'Other places';
+  lisCDUseANewLineAfterCompilerDirectives = 'Use a new line after compiler '
+    +'directives:';
+
 implementation
 
 end.
