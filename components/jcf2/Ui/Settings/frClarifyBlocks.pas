@@ -60,7 +60,7 @@ implementation
 {$R *.lfm}
 
 uses
-  JcfSettings, SettingsTypes, JcfHelp;
+  JcfSettings, SettingsTypes, JcfHelp, jcfuiconsts;
 
 constructor TfClarifyBlocks.Create(AOwner: TComponent);
 begin
@@ -70,12 +70,37 @@ end;
 
 function TfClarifyBlocks.GetTitle: String;
 begin
-  Result := 'Blocks';
+  Result := lisBlocksBlocks;
 end;
 
 procedure TfClarifyBlocks.Setup(ADialog: TAbstractOptionsEditorDialog);
 begin
   inherited Setup(ADialog);
+  Label1.Caption := lisBlocksUseANewLineInBlocksAt;
+  rgBlockBegin.Caption := lisBlocksBlockWithBegin;
+  rgBlockBegin.Items[0] := lisCaseBlocksAlways;
+  rgBlockBegin.Items[1] := lisCaseBlocksLeaveAsIs;
+  rgBlockBegin.Items[2] := lisCaseBlocksNever;
+
+  rgBlock.Caption := lisBlocksBlockWithoutBegin;
+  rgBlock.Items[0] := lisCaseBlocksAlways;
+  rgBlock.Items[1] := lisCaseBlocksLeaveAsIs;
+  rgBlock.Items[2] := lisCaseBlocksNever;
+
+  rgElseIf.Caption := lisBlocksBetweenElseAndIf;
+  rgElseIf.Items[0] := lisCaseBlocksAlways;
+  rgElseIf.Items[1] := lisCaseBlocksLeaveAsIs;
+  rgElseIf.Items[2] := lisCaseBlocksNever;
+
+  rgEndElse.Caption := lisBlocksBetweenEndAndElse;
+  rgEndElse.Items[0] := lisCaseBlocksAlways;
+  rgEndElse.Items[1] := lisCaseBlocksLeaveAsIs;
+  rgEndElse.Items[2] := lisCaseBlocksNever;
+
+  rgElseBegin.Caption := lisBlocksElseBegin;
+  rgElseBegin.Items[0] := lisCaseBlocksAlways;
+  rgElseBegin.Items[1] := lisCaseBlocksLeaveAsIs;
+  rgElseBegin.Items[2] := lisCaseBlocksNever;
 end;
 
 {-------------------------------------------------------------------------------

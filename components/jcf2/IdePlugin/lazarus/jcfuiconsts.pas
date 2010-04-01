@@ -171,6 +171,15 @@ resourcestring
   lisCaseBlocksLeaveAsIs = 'Leave as is';
   lisCaseBlocksNever = 'Never';
 
+  //Blocks tab
+  lisBlocksBlocks = 'Blocks';
+  lisBlocksUseANewLineInBlocksAt = 'Use a new line in blocks at:';
+  lisBlocksBlockWithBegin = 'Block with begin';
+  lisBlocksBlockWithoutBegin = 'Block without begin';
+  lisBlocksBetweenElseAndIf = 'Between else and if';
+  lisBlocksBetweenEndAndElse = 'Between end and else';
+  lisBlocksElseBegin = 'Else begin';
+
 implementation
 
 end.
