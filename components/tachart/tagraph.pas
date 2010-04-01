@@ -159,6 +159,7 @@ type
     FClipRect: TRect;
     FCurrentExtent: TDoubleRect;
     FIsZoomed: Boolean;
+    FLogicalExtent: TDoubleRect;
     FOffset: TDoublePoint;   // Coordinates transformation
     FReticuleMode: TReticuleMode;
     FReticulePos: TPoint;
@@ -227,6 +228,7 @@ type
     procedure CopyToClipboardBitmap;
     procedure DeleteSeries(ASeries: TBasicChartSeries);
     procedure PaintOnCanvas(ACanvas: TCanvas; ARect: TRect);
+    procedure Pan(const ADelta: TPoint);
     procedure SaveToBitmapFile(const AFileName: String); inline;
     procedure SaveToFile(AClass: TRasterImageClass; const AFileName: String);
     function SaveToImage(AClass: TRasterImageClass): TRasterImage;
@@ -463,6 +465,7 @@ begin
 
   if not FIsZoomed then
     UpdateExtent;
+  FLogicalExtent := FCurrentExtent;
   DrawTitleFoot(ACanvas);
   PrepareLegend(ACanvas, legendItems, legendRect);
   try
@@ -476,6 +479,21 @@ begin
 
   for i := 0 to SeriesCount - 1 do
     Series[i].AfterDraw;
+end;
+
+procedure TChart.Pan(const ADelta: TPoint);
+var
+  d: TDoublePoint;
+begin
+  d.X := ADelta.X / FScale.X;
+  d.Y := ADelta.Y / FScale.Y;
+  with FLogicalExtent do begin
+    a += d;
+    b += d;
+  end;
+  FIsZoomed := true;
+  FCurrentExtent := FLogicalExtent;
+  Invalidate;
 end;
 
 procedure TChart.PrepareLegend(

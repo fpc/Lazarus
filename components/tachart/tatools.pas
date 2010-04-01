@@ -113,6 +113,18 @@ type
       read FZoomFactor write FZoomFactor stored ZoomFactorIsStored;
   end;
 
+  { TPanDragTool }
+
+  TPanDragTool = class(TChartTool)
+  private
+    FOrigin: TPoint;
+  public
+    constructor Create(AOwner: TComponent); override;
+    procedure MouseDown(APoint: TPoint); override;
+    procedure MouseMove(APoint: TPoint); override;
+    procedure MouseUp(APoint: TPoint); override;
+  end;
+
   { TReticuleTool }
 
   TReticuleTool = class(TChartTool)
@@ -528,12 +540,38 @@ begin
   Result := FZoomFactor <> 1.0;
 end;
 
+constructor TPanDragTool.Create(AOwner: TComponent);
+begin
+  inherited Create(AOwner);
+end;
+
+{ TPanDragTool }
+
+procedure TPanDragTool.MouseDown(APoint: TPoint);
+begin
+  Activate;
+  FOrigin := APoint;
+end;
+
+procedure TPanDragTool.MouseMove(APoint: TPoint);
+begin
+  FChart.Pan(APoint - FOrigin);
+  FOrigin := APoint;
+end;
+
+procedure TPanDragTool.MouseUp(APoint: TPoint);
+begin
+  Unused(APoint);
+  Deactivate;
+end;
+
 initialization
 
   ToolsClassRegistry := TStringList.Create;
   OnInitBuiltinTools := @InitBuitlinTools;
   RegisterChartToolClass(TZoomDragTool, 'Zoom drag tool');
   RegisterChartToolClass(TZoomClickTool, 'Zoom click tool');
+  RegisterChartToolClass(TPanDragTool, 'Panning drag tool');
   RegisterChartToolClass(TReticuleTool, 'Reticule tool');
 
 finalization
