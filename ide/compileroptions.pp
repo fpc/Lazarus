@@ -4677,7 +4677,7 @@ begin
     AddHash(msgconf); 
   end; 
   msgconf.MsgType := AMsgType;
-  msgconf.MsgText := AMsgText; //ReplaceParamsArray(ACompilerMsg, ReplaceParams);
+  msgconf.MsgText := AMsgText;
   msgconf.Ignored := AIgnored;
   SetLength(prm, MaxMsgParams); 
   GetParams(AMsgIndex, prm, cnt); 
@@ -4706,6 +4706,10 @@ var
   nm  : Integer; 
   p   : Integer; 
 begin
+  if length(ReplaceParams)=0 then begin
+    Result:=ACompilerMsg;
+    Exit;
+  end;
   i := 1;
   p := 1;
   Result := '';
@@ -4715,8 +4719,11 @@ begin
       nm := 0; 
       if GetNextNumber(ACompilerMsg, j, nm) then begin
         Result := Result + Copy(ACompilerMsg, p, i - p);
-        if nm <= length(ReplaceParams) then Result := Result + ReplaceParams[nm-1]; 
-        p := j; 
+        if nm <= length(ReplaceParams) then
+          Result := Result + ReplaceParams[nm-1]
+        else
+          Result:=Result+'$'+IntToStr(nm);
+        p := j;
         i := p; 
       end else
         inc(i); 
@@ -4929,7 +4936,7 @@ end;
 
 function TCompilerMessageConfig.GetUserText(const ReplaceParams: array of string): string;
 begin
-  Result := Format('%s', [ReplaceParamsArray(MsgText, ReplaceParams) ]);
+  Result := ReplaceParamsArray(MsgText, ReplaceParams);
 end;
 
 function TCompilerMessageConfig.GetUserText: string; 
@@ -4939,7 +4946,8 @@ var
 begin
   if Assigned(fOwner) then begin
     SetLength(prm, MaxMsgParams);
-    fOwner.GetParams(MsgIndex, prm, cnt); 
+    fOwner.GetParams(MsgIndex, prm, cnt);
+    SetLength(prm, cnt);
     Result := GetUserText(prm); 
   end else
     Result := GetUserText([]); 
