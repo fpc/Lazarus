@@ -2871,6 +2871,32 @@ var
   APixmap, ATemp: QPixmapH;
   AMask: QBitmapH;
   ScaledImage: QImageH;
+  TmpRegion: QRegionH;
+  NewRect: TRect;
+
+  function NeedScaling: boolean;
+  var
+    R: TRect;
+    TgtW, TgtH, SrcW,
+    SrcH, ClpW, ClpH: integer;
+  begin
+
+    if not getClipping or EqualRect(LocalRect, sourceRect^) then
+      exit(False);
+
+    R := getClipRegion.getBoundingRect;
+
+    TgtW := LocalRect.Right - LocalRect.Left;
+    TgtH := LocalRect.Right - LocalRect.Left;
+    SrcW := sourceRect^.Right - sourceRect^.Left;
+    SrcH := sourceRect^.Bottom - sourceRect^.Top;
+    ClpW := R.Right - R.Left;
+    ClpH := R.Bottom - R.Top;
+
+    Result := PtInRect(R, Point(R.Left + 1, R.Top + 1)) and
+      (ClpW <= TgtW) and (ClpH <= TgtH);
+  end;
+
 begin
   {$ifdef VerboseQt}
   Write('TQtDeviceContext.drawImage() ');
@@ -2910,15 +2936,48 @@ begin
     if not EqualRect(LocalRect, sourceRect^) and
       (QImage_format(Image) = QImageFormat_RGB32) then
     begin
+
       ScaledImage := QImage_create();
       try
+
         QImage_convertToFormat(Image, ScaledImage, QImageFormat_ARGB32);
-        QPainter_drawImage(Widget, PRect(@LocalRect), ScaledImage, sourceRect, flags);
+
+        if NeedScaling then
+        begin
+          QImage_scaled(ScaledImage, ScaledImage, LocalRect.Right - LocalRect.Left,
+          LocalRect.Bottom - LocalRect.Top);
+
+          NewRect := sourceRect^;
+          NewRect.Right := LocalRect.Right - sourceRect^.Left;
+          NewRect.Bottom := LocalRect.Bottom - sourceRect^.Top;
+
+          QPainter_drawImage(Widget, PRect(@LocalRect), ScaledImage, @NewRect, flags);
+        end else
+          QPainter_drawImage(Widget, PRect(@LocalRect), ScaledImage, sourceRect, flags);
+
       finally
         QImage_destroy(ScaledImage);
       end;
+
     end else
-      QPainter_drawImage(Widget, PRect(@LocalRect), image, sourceRect, flags);
+    begin
+      if NeedScaling then
+      begin
+        ScaledImage := QImage_create();
+        try
+          QImage_copy(Image, ScaledImage, 0, 0, QImage_width(Image), QImage_height(Image));
+          QImage_scaled(ScaledImage, ScaledImage, LocalRect.Right - LocalRect.Left,
+            LocalRect.Bottom - LocalRect.Top);
+          NewRect := sourceRect^;
+          NewRect.Right := LocalRect.Right - sourceRect^.Left;
+          NewRect.Bottom := LocalRect.Bottom - sourceRect^.Top;
+          QPainter_drawImage(Widget, PRect(@LocalRect), ScaledImage, @NewRect, flags);
+        finally
+          QImage_destroy(ScaledImage);
+        end;
+      end else
+        QPainter_drawImage(Widget, PRect(@LocalRect), image, sourceRect, flags);
+    end;
   end;
 end;
 
