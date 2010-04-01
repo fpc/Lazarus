@@ -196,9 +196,9 @@ type
     procedure Lock;
     procedure Unlock;
     function Locked: boolean;
-    procedure IncreaseTimeStamp;
-    function FileExistsCached(const Filename: string): boolean;
-    function DirPathExistsCached(const Filename: string): boolean;
+    procedure IncreaseTimeStamp(const AFilename: string);
+    function FileExistsCached(const AFilename: string): boolean;
+    function DirPathExistsCached(const AFilename: string): boolean;
     function DirectoryIsWritableCached(const DirectoryName: string): boolean;
     function FileIsExecutableCached(const AFilename: string): boolean;
     function FileIsReadableCached(const AFilename: string): boolean;
@@ -229,7 +229,7 @@ function FileIsWritableCached(const AFilename: string): boolean;
 function FileIsTextCached(const AFilename: string): boolean;
 function FileAgeCached(const AFileName: string): Longint;
 
-procedure InvalidateFileStateCache;
+procedure InvalidateFileStateCache(const Filename: string = '');
 function CompareFileStateItems(Data1, Data2: Pointer): integer;
 function CompareFilenameWithFileStateCacheItem(Key, Data: Pointer): integer;
 
@@ -621,7 +621,7 @@ var
 begin
   if FileExistsUTF8(Filename) then begin
     try
-      InvalidateFileStateCache;
+      InvalidateFileStateCache(Filename);
       fs:=TFileStream.Create(UTF8ToSys(Filename),fmOpenWrite);
       fs.Size:=0;
       fs.Free;
@@ -650,7 +650,7 @@ begin
     fs.Write(s[1],length(s));
     fs.Free;
     if not DeleteFileUTF8(TempFilename) then
-      InvalidateFileStateCache;
+      InvalidateFileStateCache(TempFilename);
     Result:=true;
   except
   end;
@@ -2829,9 +2829,9 @@ begin
   Result:=FileStateCache.FileAgeCached(AFilename);
 end;
 
-procedure InvalidateFileStateCache;
+procedure InvalidateFileStateCache(const Filename: string);
 begin
-  FileStateCache.IncreaseTimeStamp;
+  FileStateCache.IncreaseTimeStamp(Filename);
 end;
 
 function CompareFileStateItems(Data1, Data2: Pointer): integer;
@@ -2925,27 +2925,35 @@ begin
   Result:=FLockCount>0;
 end;
 
-procedure TFileStateCache.IncreaseTimeStamp;
+procedure TFileStateCache.IncreaseTimeStamp(const AFilename: string);
 var
   i: Integer;
+  AFile: TFileStateCacheItem;
 begin
-  if Self<>nil then begin
+  if Self=nil then exit;
+  if AFilename='' then begin
+    // invalidate all
     if FTimeStamp<maxLongint then
       inc(FTimeStamp)
     else
       FTimeStamp:=-maxLongint;
     for i:=0 to length(FChangeTimeStampHandler)-1 do
       FChangeTimeStampHandler[i](Self);
+  end else begin
+    // invalidate single file
+    AFile:=FindFile(AFilename,false);
+    if AFile<>nil then
+      AFile.FTestedFlags:=[];
   end;
   //debugln('TFileStateCache.IncreaseTimeStamp FTimeStamp=',dbgs(FTimeStamp));
 end;
 
-function TFileStateCache.FileExistsCached(const Filename: string): boolean;
+function TFileStateCache.FileExistsCached(const AFilename: string): boolean;
 var
   AFile: TFileStateCacheItem;
 begin
   Result := False;
-  if Check(Filename,fsciExists,AFile,Result) then exit;
+  if Check(AFilename,fsciExists,AFile,Result) then exit;
   Result:=FileExistsUTF8(AFile.Filename);
   SetFlag(AFile,fsciExists,Result);
   {if not Check(Filename,fsciExists,AFile,Result) then begin
@@ -2954,12 +2962,12 @@ begin
   end;}
 end;
 
-function TFileStateCache.DirPathExistsCached(const Filename: string): boolean;
+function TFileStateCache.DirPathExistsCached(const AFilename: string): boolean;
 var
   AFile: TFileStateCacheItem;
 begin
   Result := False;
-  if Check(Filename,fsciDirectory,AFile,Result) then exit;
+  if Check(AFilename,fsciDirectory,AFile,Result) then exit;
   Result:=DirPathExists(AFile.Filename);
   SetFlag(AFile,fsciDirectory,Result);
 end;

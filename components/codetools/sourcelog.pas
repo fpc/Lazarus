@@ -824,16 +824,18 @@ begin
   {$ENDIF}
   Result := True;
   try
-    InvalidateFileStateCache;
     // keep filename case on disk
     TheFilename := FindDiskFilename(Filename);
     if FileExistsUTF8(TheFilename) then
     begin
+      InvalidateFileStateCache(TheFilename);
       fs := TFileStream.Create(UTF8ToSys(TheFilename), fmOpenWrite or fmShareDenyNone);
       fs.Size := 0;
     end
-    else
+    else begin
+      InvalidateFileStateCache; // invalidate all (samba shares)
       fs := TFileStream.Create(UTF8ToSys(TheFilename), fmCreate);
+    end;
     try
       s := Source;
       EncodeSaving(Filename, s);

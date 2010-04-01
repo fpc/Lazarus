@@ -108,7 +108,7 @@ function CheckPathDelim(const OldPathDelim: string; out Changed: boolean): TPath
 function ChompEndNumber(const s: string): string;
 
 // file stats
-procedure InvalidateFileStateCache;
+procedure InvalidateFileStateCache(const AFilename: string = '');
 function FileExistsCached(const Filename: string): boolean;
 function DirPathExistsCached(const Filename: string): boolean;
 function DirectoryIsWritableCached(const DirectoryName: string): boolean;
@@ -1035,9 +1035,9 @@ begin
   Result:=FileProcs.FilenameIsMatching(Mask,Filename,MatchExactly);
 end;
 
-procedure InvalidateFileStateCache;
+procedure InvalidateFileStateCache(const AFilename: string);
 begin
-  FileStateCache.IncreaseTimeStamp;
+  FileProcs.InvalidateFileStateCache(AFilename);
 end;
 
 function FileExistsCached(const Filename: string): boolean;
