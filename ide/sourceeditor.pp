@@ -939,7 +939,7 @@ type
     // marks
     function OnSourceMarksGetSourceEditor(ASynEdit: TCustomSynEdit): TObject;
     function OnSourceMarksGetFilename(ASourceEditor: TObject): string;
-    procedure OnSourceMarksAction(AMark: TSourceMark; AAction: TListNotification);
+    procedure OnSourceMarksAction(AMark: TSourceMark; AAction: TMarksAction);
     property CodeTemplateModul: TSynEditAutoComplete
                                read FCodeTemplateModul write FCodeTemplateModul;
     // goto dialog
@@ -8040,7 +8040,7 @@ begin
 end;
 
 procedure TSourceEditorManager.OnSourceMarksAction(AMark: TSourceMark;
-  AAction: TListNotification);
+  AAction: TMarksAction);
 var
   Editor: TSourceEditor;
 begin

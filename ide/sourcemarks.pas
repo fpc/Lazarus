@@ -72,6 +72,7 @@ type
     FSourceMarks: TSourceMarks;
     FSynEdit: TCustomSynEdit;
     procedure SetSourceMarks(const AValue: TSourceMarks);
+    procedure Changed;
   protected
     function GetEdit: TCustomSynEdit; override;
     procedure AddHandler(HandlerType: TSourceMarkHandler;
@@ -135,7 +136,8 @@ type
   
   TGetSourceEditorEvent = function(ASynEdit: TCustomSynEdit): TObject of object;
   TGetFilenameEvent = function(ASourceEditor: TObject): string of object;
-  TMarksActionEvent = procedure(AMark: TSourceMark; Action: TListNotification) of object;
+  TMarksAction = (maAdded, maRemoved, maChanged);
+  TMarksActionEvent = procedure(AMark: TSourceMark; Action: TMarksAction) of object;
   
   TSourceMarks = class(TComponent)
   private
@@ -246,6 +248,12 @@ begin
     AValue.Add(Self);
 end;
 
+procedure TSourceMark.Changed;
+begin
+  if Assigned(FSourceMarks) and Assigned(FSourceMarks.OnAction) then
+    FSourceMarks.OnAction(Self, maChanged);
+end;
+
 procedure TSourceMark.SetLineColorBackGround(const AValue: TColor);
 begin
   if FLineColorBackGround=AValue then exit;
@@ -304,7 +312,8 @@ begin
   if SynEdit = nil then Exit;
   if Line <= 0 then Exit;
   
-  SynEdit.InvalidateLine(Line)
+  SynEdit.InvalidateLine(Line);
+  Changed;
 end;
 
 procedure TSourceMark.SetData(const AValue: TObject);
@@ -353,9 +362,7 @@ procedure TSourceMark.SetImage(const Value: Integer);
 begin
   if ImageIndex=Value then exit;
   inherited SetImage(Value);
-  // Allow SourceEditor to update ExecutionLine image.
-  if IsBreakPoint and Assigned(FSourceMarks) and Assigned(FSourceMarks.OnAction) then
-    FSourceMarks.OnAction(Self, lnAdded);
+  Changed;
 end;
 
 procedure TSourceMark.SetLine(const Value: Integer);
@@ -597,7 +604,7 @@ begin
   fSortedItems.Add(AMark);
   AMark.FSourceMarks:=Self;
   if Assigned(FOnAction) then
-    FOnAction(AMark, lnAdded);
+    FOnAction(AMark, maAdded);
 end;
 
 function TSourceMarks.Add(ASynEdit: TCustomSynEdit; ALine: integer): TSourceMark;
@@ -624,7 +631,7 @@ begin
   fItems.Delete(Index);
   fSortedItems.Remove(AMark);
   if Assigned(FOnAction) then
-    FOnAction(AMark, lnDeleted);
+    FOnAction(AMark, maRemoved);
   AMark.Free;
 end;
 
@@ -639,7 +646,7 @@ begin
   fItems.Delete(i);
   fSortedItems.Remove(AMark);
   if Assigned(FOnAction) then
-    FOnAction(AMark, lnExtracted);
+    FOnAction(AMark, maRemoved);
 end;
 
 procedure TSourceMarks.DeleteAllForEditor(ASynEdit: TCustomSynEdit);
