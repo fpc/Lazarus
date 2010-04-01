@@ -1029,7 +1029,7 @@ function TCodeBuffer.FileOnDiskNeedsUpdate: boolean;
 begin
   if LoadDateValid then
     Result:=Modified or (FFileChangeStep<>ChangeStep)
-            or (not FileExistsUTF8(Filename))
+            or (not FileExistsCached(Filename))
   else
     Result:=false;
 end;
