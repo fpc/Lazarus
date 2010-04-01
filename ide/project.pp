@@ -2897,8 +2897,8 @@ var
       while j >= 0 do begin
         if (EditorInfo[j].PageIndex = i) then
           EditorInfo[j].IsVisibleTab := True;
+        dec(j);
       end;
-      dec(j);
     end;
 
     ActiveWindowIndexAtStart := xmlconfig.GetValue(
