@@ -45,7 +45,6 @@ type
   protected
     function MakeEditorForm: TForm; override;
   public
-    function GetVerbCount: Integer; override;
     function GetVerb(Index: Integer): string; override;
   end;
 
@@ -53,8 +52,8 @@ type
 
   TSeriesPropertyEditor = class(TComponentListPropertyEditor)
   protected
-    function MakeEditorForm: TForm; override;
     function GetChildrenCount: Integer; override;
+    function MakeEditorForm: TForm; override;
   end;
 
   { TSeriesEditorForm }
@@ -85,11 +84,6 @@ begin
     0: Result := sesSeriesEditorTitle;
     else Result := '';
   end;
-end;
-
-function TSeriesComponentEditor.GetVerbCount: Integer;
-begin
-  Result := 1;
 end;
 
 function TSeriesComponentEditor.MakeEditorForm: TForm;

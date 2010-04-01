@@ -34,6 +34,7 @@ type
   public
     destructor Destroy; override;
     procedure ExecuteVerb(Index: Integer); override;
+    function GetVerbCount: Integer; override;
   end;
 
   { TComponentListPropertyEditor }
@@ -147,6 +148,11 @@ begin
   if FEditorForm = nil then
     FEditorForm := MakeEditorForm;
   FEditorForm.ShowOnTop;
+end;
+
+function TSubComponentListEditor.GetVerbCount: Integer;
+begin
+  Result := 1;
 end;
 
 { TComponentListEditorForm }

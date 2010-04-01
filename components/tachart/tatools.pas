@@ -163,7 +163,6 @@ type
   protected
     function MakeEditorForm: TForm; override;
   public
-    function GetVerbCount: Integer; override;
     function GetVerb(Index: Integer): string; override;
   end;
 
@@ -171,8 +170,8 @@ type
 
   TToolsPropertyEditor = class(TComponentListPropertyEditor)
   protected
-    function MakeEditorForm: TForm; override;
     function GetChildrenCount: Integer; override;
+    function MakeEditorForm: TForm; override;
   end;
 
   { TToolsEditorForm }
@@ -231,11 +230,6 @@ begin
     Result := tasToolsEditorTitle
   else
     Result := '';
-end;
-
-function TToolsComponentEditor.GetVerbCount: Integer;
-begin
-  Result := 1;
 end;
 
 function TToolsComponentEditor.MakeEditorForm: TForm;
