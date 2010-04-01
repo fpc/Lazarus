@@ -101,8 +101,8 @@ type
     FChart: TChart;
 
     function Index: Integer; virtual; abstract;
-    procedure Activate;
-    procedure Deactivate;
+    procedure Activate; virtual;
+    procedure Deactivate; virtual;
   end;
 
   TChartToolEventId = (evidMouseDown, evidMouseMove, evidMouseUp);

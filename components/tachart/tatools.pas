@@ -22,7 +22,7 @@ interface
 {$H+}
 
 uses
-  Classes,
+  Classes, Controls,
   TAGraph;
 
 type
@@ -33,14 +33,22 @@ type
 
   TChartTool = class(TBasicChartTool)
   private
+    FActiveCursor: TCursor;
     FEnabled: Boolean;
     FShift: TShiftState;
     FToolset: TChartToolset;
+    procedure SetActiveCursor(const AValue: TCursor);
     procedure SetToolset(const AValue: TChartToolset);
+  private
+    FOldCursor: TCursor;
+    procedure RestoreCursor;
+    procedure SetCursor;
   protected
     procedure ReadState(Reader: TReader); override;
     procedure SetParentComponent(AParent: TComponent); override;
   protected
+    procedure Activate; override;
+    procedure Deactivate; override;
     procedure Dispatch(
       AChart: TChart; AEventId: TChartToolEventId; APoint: TPoint);
     function Index: Integer; override;
@@ -56,6 +64,8 @@ type
     function GetParentComponent: TComponent; override;
     function HasParent: Boolean; override;
 
+    property ActiveCursor: TCursor
+      read FActiveCursor write SetActiveCursor default crDefault;
     property Toolset: TChartToolset read FToolset write SetToolset;
   published
     property Enabled: Boolean read FEnabled write FEnabled default true;
@@ -132,6 +142,7 @@ type
     procedure MouseMove(APoint: TPoint); override;
     procedure MouseUp(APoint: TPoint); override;
   published
+    property ActiveCursor default crSizeAll;
     property Directions: TPanDirectionSet
       read FDirections write FDirections default PAN_DIRECTIONS_ALL;
   end;
@@ -291,6 +302,12 @@ begin
       ChildrenListBox.Items.AddObject(Item[i].Name, Item[i]);
 end;
 
+procedure TChartTool.Activate;
+begin
+  inherited Activate;
+  SetCursor;
+end;
+
 { TChartTool }
 
 procedure TChartTool.Assign(Source: TPersistent);
@@ -308,6 +325,13 @@ constructor TChartTool.Create(AOwner: TComponent);
 begin
   inherited Create(AOwner);
   FEnabled := true;
+  FActiveCursor := crDefault;
+end;
+
+procedure TChartTool.Deactivate;
+begin
+  RestoreCursor;
+  inherited Deactivate;
 end;
 
 destructor TChartTool.Destroy;
@@ -353,7 +377,7 @@ end;
 
 function TChartTool.IsActive: Boolean;
 begin
-  Result := FChart.ActiveToolIndex = Index;
+  Result := (FChart <> nil) and (FChart.ActiveToolIndex = Index);
 end;
 
 procedure TChartTool.MouseDown(APoint: TPoint);
@@ -376,6 +400,29 @@ begin
   inherited ReadState(Reader);
   if Reader.Parent is TChartToolset then
     Toolset := Reader.Parent as TChartToolset;
+end;
+
+procedure TChartTool.RestoreCursor;
+begin
+  if ActiveCursor = crDefault then exit;
+  FChart.Cursor := FOldCursor;
+end;
+
+procedure TChartTool.SetActiveCursor(const AValue: TCursor);
+begin
+  if FActiveCursor = AValue then exit;
+  if IsActive then
+    RestoreCursor;
+  FActiveCursor := AValue;
+  if IsActive then
+    SetCursor;
+end;
+
+procedure TChartTool.SetCursor;
+begin
+  if ActiveCursor = crDefault then exit;
+  FOldCursor := FChart.Cursor;
+  FChart.Cursor := ActiveCursor;
 end;
 
 procedure TChartTool.SetParentComponent(AParent: TComponent);
@@ -548,6 +595,7 @@ end;
 constructor TPanDragTool.Create(AOwner: TComponent);
 begin
   inherited Create(AOwner);
+  FActiveCursor := crSizeAll;
   FDirections := PAN_DIRECTIONS_ALL;
 end;
 
