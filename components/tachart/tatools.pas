@@ -113,16 +113,27 @@ type
       read FZoomFactor write FZoomFactor stored ZoomFactorIsStored;
   end;
 
+  TPanDirection = (pdLeft, pdUp, pdRight, pdDown);
+  TPanDirectionSet = set of TPanDirection;
+
+const
+  PAN_DIRECTIONS_ALL = [Low(TPanDirection) .. High(TPanDirection)];
+
+type
   { TPanDragTool }
 
   TPanDragTool = class(TChartTool)
   private
+    FDirections: TPanDirectionSet;
     FOrigin: TPoint;
   public
     constructor Create(AOwner: TComponent); override;
     procedure MouseDown(APoint: TPoint); override;
     procedure MouseMove(APoint: TPoint); override;
     procedure MouseUp(APoint: TPoint); override;
+  published
+    property Directions: TPanDirectionSet
+      read FDirections write FDirections default PAN_DIRECTIONS_ALL;
   end;
 
   { TReticuleTool }
@@ -543,6 +554,7 @@ end;
 constructor TPanDragTool.Create(AOwner: TComponent);
 begin
   inherited Create(AOwner);
+  FDirections := PAN_DIRECTIONS_ALL;
 end;
 
 { TPanDragTool }
@@ -554,8 +566,15 @@ begin
 end;
 
 procedure TPanDragTool.MouseMove(APoint: TPoint);
+var
+  d: TPoint;
 begin
-  FChart.Pan(APoint - FOrigin);
+  d := APoint - FOrigin;
+  if not (pdLeft in Directions) then d.X := Max(d.X, 0);
+  if not (pdRight in Directions) then d.X := Min(d.X, 0);
+  if not (pdUp in Directions) then d.Y := Max(d.Y, 0);
+  if not (pdDown in Directions) then d.Y := Min(d.Y, 0);
+  FChart.Pan(d);
   FOrigin := APoint;
 end;
 
