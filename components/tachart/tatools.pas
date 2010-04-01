@@ -88,9 +88,9 @@ type
     property Tools: TChartTools read FTools;
   end;
 
-  { TChartZoomDragTool }
+  { TZoomDragTool }
 
-  TChartZoomDragTool = class(TChartTool)
+  TZoomDragTool = class(TChartTool)
   private
     FSelectionRect: TRect;
   public
@@ -99,9 +99,9 @@ type
     procedure MouseUp(APoint: TPoint); override;
   end;
 
-  { TChartReticuleTool }
+  { TReticuleTool }
 
-  TChartReticuleTool = class(TChartTool)
+  TReticuleTool = class(TChartTool)
   public
     procedure MouseMove(APoint: TPoint); override;
   end;
@@ -160,15 +160,19 @@ var
 begin
   ts := TChartToolset.Create(AChart);
   Result := ts;
-  with TChartZoomDragTool.Create(AChart) do begin
+  with TZoomDragTool.Create(AChart) do begin
     Shift := [ssLeft];
     Toolset := ts;
   end;
-  TChartReticuleTool.Create(AChart).Toolset := ts;
+  TReticuleTool.Create(AChart).Toolset := ts;
 end;
 
 procedure Register;
+var
+  i: Integer;
 begin
+  for i := 0 to ToolsClassRegistry.Count - 1 do
+    RegisterNoIcon([TChartToolClass(ToolsClassRegistry.Objects[i])]);
   RegisterComponents(CHART_COMPONENT_IDE_PAGE, [TChartToolset]);
   RegisterPropertyEditor(
     TypeInfo(TChartTools), TChartToolset, 'Tools', TToolsPropertyEditor);
@@ -178,9 +182,8 @@ end;
 procedure RegisterChartToolClass(
   AToolClass: TChartToolClass; const ACaption: String);
 begin
-  ToolsClassRegistry.AddObject(ACaption, TObject(AToolClass));
   RegisterClass(AToolClass);
-  RegisterNoIcon([AToolClass]);
+  ToolsClassRegistry.AddObject(ACaption, TObject(AToolClass));
 end;
 
 { TToolsComponentEditor }
@@ -422,9 +425,9 @@ begin
     Tools.Move(i, Order);
 end;
 
-{ TChartZoomDragTool }
+{ TZoomDragTool }
 
-procedure TChartZoomDragTool.MouseDown(APoint: TPoint);
+procedure TZoomDragTool.MouseDown(APoint: TPoint);
 begin
   if not FChart.AllowZoom then exit;
   Activate;
@@ -432,7 +435,7 @@ begin
     FSelectionRect := Rect(X, Y, X, Y);
 end;
 
-procedure TChartZoomDragTool.MouseMove(APoint: TPoint);
+procedure TZoomDragTool.MouseMove(APoint: TPoint);
 begin
   if not IsActive then exit;
   PrepareXorPen(FChart.Canvas);
@@ -441,7 +444,7 @@ begin
   FChart.Canvas.Rectangle(FSelectionRect);
 end;
 
-procedure TChartZoomDragTool.MouseUp(APoint: TPoint);
+procedure TZoomDragTool.MouseUp(APoint: TPoint);
 begin
   Unused(APoint);
   Deactivate;
@@ -452,9 +455,9 @@ begin
   end;
 end;
 
-{ TChartReticuleTool }
+{ TReticuleTool }
 
-procedure TChartReticuleTool.MouseMove(APoint: TPoint);
+procedure TReticuleTool.MouseMove(APoint: TPoint);
 const
   DIST_FUNCS: array [TReticuleMode] of TPointDistFunc = (
     nil, @PointDistX, @PointDistY, @PointDist);
@@ -491,8 +494,8 @@ initialization
 
   ToolsClassRegistry := TStringList.Create;
   OnInitBuiltinTools := @InitBuitlinTools;
-  RegisterChartToolClass(TChartZoomDragTool, 'Zoom drag tool');
-  RegisterChartToolClass(TChartReticuleTool, 'Reticule tool');
+  RegisterChartToolClass(TZoomDragTool, 'Zoom drag tool');
+  RegisterChartToolClass(TReticuleTool, 'Reticule tool');
 
 finalization
 
