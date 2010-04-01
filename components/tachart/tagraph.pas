@@ -485,8 +485,8 @@ procedure TChart.Pan(const ADelta: TPoint);
 var
   d: TDoublePoint;
 begin
-  d.X := ADelta.X / FScale.X;
-  d.Y := ADelta.Y / FScale.Y;
+  d.X := -ADelta.X / FScale.X;
+  d.Y := -ADelta.Y / FScale.Y;
   with FLogicalExtent do begin
     a += d;
     b += d;
