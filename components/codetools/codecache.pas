@@ -627,7 +627,7 @@ begin
     and (fLastIncludeLinkFileChangeStep=fChangeStep)
     and (fLastIncludeLinkFile=AFilename)
     and FileExistsCached(AFilename)
-    and (FileAgeUTF8(AFilename)=fLastIncludeLinkFileAge)
+    and (FileAgeCached(AFilename)=fLastIncludeLinkFileAge)
     then begin
       exit;
     end;
@@ -635,7 +635,7 @@ begin
     try
       Result:=SaveIncludeLinksToXML(XMLConfig,'');
       fLastIncludeLinkFile:=AFilename;
-      fLastIncludeLinkFileAge:=FileAgeUTF8(AFilename);
+      fLastIncludeLinkFileAge:=FileAgeCached(AFilename);
       fLastIncludeLinkFileChangeStep:=fChangeStep;
       fLastIncludeLinkFileValid:=true;
     finally
@@ -655,7 +655,7 @@ begin
     try
       Result:=LoadIncludeLinksFromXML(XMLConfig,'');
       fLastIncludeLinkFile:=AFilename;
-      fLastIncludeLinkFileAge:=FileAgeUTF8(AFilename);
+      fLastIncludeLinkFileAge:=FileAgeCached(AFilename);
       fLastIncludeLinkFileChangeStep:=fChangeStep;
       fLastIncludeLinkFileValid:=true;
     finally
@@ -992,7 +992,7 @@ procedure TCodeBuffer.MakeFileDateValid;
 begin
   FFileChangeStep:=ChangeStep;
   FLoadDateValid:=true;
-  FLoadDate:=FileAgeUTF8(Filename);
+  FLoadDate:=FileAgeCached(Filename);
 end;
 
 function TCodeBuffer.SourceIsText: boolean;
