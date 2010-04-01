@@ -66,6 +66,8 @@ type
   TLFMFixer = class(TLFMChecker)
   private
     fSettings: TConvertSettings;
+    // There are also unknown object types, not just properties.
+    fHasMissingObjectTypes: Boolean;
     // References to controls in UI:
     fPropReplaceGrid: TStringGrid;
     function ReplaceAndRemoveAll: TModalResult;
@@ -106,7 +108,6 @@ type
     procedure CheckLFMDialogCREATE(Sender: TObject);
   private
     fLfmFixer: TLFMFixer;
-    procedure SetupComponents;
   public
     constructor Create(AOwner: TComponent; ALfmFixer: TLFMFixer); reintroduce;
     destructor Destroy; override;
@@ -214,6 +215,7 @@ constructor TLFMFixer.Create(APascalBuffer, ALFMBuffer: TCodeBuffer;
   const AOnOutput: TOnAddFilteredLine);
 begin
   inherited Create(APascalBuffer, ALFMBuffer, AOnOutput);
+  fHasMissingObjectTypes:=false;
 end;
 
 destructor TLFMFixer.Destroy;
@@ -295,13 +297,16 @@ var
   GridUpdater: TGridUpdater;
   OldIdent: string;
 begin
+  fHasMissingObjectTypes:=false;
   GridUpdater:=TGridUpdater.Create(fPropReplaceGrid, fSettings.ReplaceTypes);
   try
     if fLFMTree<>nil then begin
       CurError:=fLFMTree.FirstError;
       while CurError<>nil do begin
-        if CurError.IsMissingObjectType then
-          OldIdent:=(CurError.Node as TLFMObjectNode).TypeName
+        if CurError.IsMissingObjectType then begin
+          OldIdent:=(CurError.Node as TLFMObjectNode).TypeName;
+          fHasMissingObjectTypes:=true;
+        end
         else
           OldIdent:=CurError.Node.GetIdentifier;
         // Add only one instance of each property name.
@@ -332,7 +337,10 @@ begin
     fErrorsListBox:=FixLFMDialog.ErrorsListBox;
     fPropReplaceGrid:=FixLFMDialog.PropertyReplaceGrid;
     LoadLFM;
-    Result:=FixLFMDialog.ShowModal;
+    if fSettings.AutoRemoveProperties and not fHasMissingObjectTypes then
+      ReplaceAndRemoveAll
+    else
+      Result:=FixLFMDialog.ShowModal;
   finally
     FixLFMDialog.Free;
   end;
@@ -368,13 +376,22 @@ begin
 end;
 
 procedure TFixLFMDialog.CheckLFMDialogCREATE(Sender: TObject);
+const // Will be moved to LazarusIDEStrConsts
+  lisLFMFileContainsInvalidProperties = 'The LFM (Lazarus form) '
+    +'file contains unknown properties/classes which do not exist in LCL. '
+    +'They can be replaced or removed.';
 begin
   Caption:=lisFixLFMFile;
-  PropertyReplaceGroupBox.Caption:=lisReplacementPropTypes;
-  ReplaceAllButton.Caption:=lisReplaceRemoveInvalid;
   Position:=poScreenCenter;
-//  IDEDialogLayoutList.ApplyLayout(Self,600,400);
-  SetupComponents;
+  //  IDEDialogLayoutList.ApplyLayout(Self,600,400);
+  NoteLabel.Caption:=lisLFMFileContainsInvalidProperties;
+  ErrorsGroupBox.Caption:=lisErrors;
+  LFMGroupBox.Caption:=lisLFMFile;
+  PropertyReplaceGroupBox.Caption:=lisReplacementPropTypes;
+  ReplaceAllButton.Caption:=lisReplaceRemoveUnknown;
+  ReplaceAllButton.LoadGlyphFromLazarusResource('laz_refresh');
+  EditorOpts.GetHighlighterSettings(SynLFMSyn1);
+  EditorOpts.GetSynEditSettings(LFMSynEdit);
 end;
 
 procedure TFixLFMDialog.ReplaceAllButtonClick(Sender: TObject);
@@ -396,22 +413,6 @@ begin
   if CurError = nil then Exit;
   Special := True;
   EditorOpts.SetMarkupColor(SynLFMSyn1, ahaErrorLine, AMarkup);
-end;
-
-procedure TFixLFMDialog.SetupComponents;
-const // Will be moved to LazarusIDEStrConsts
-  lisLFMFileContainsInvalidProperties = 'The LFM (Lazarus form) '
-    +'file contains invalid properties/classes which do not exist in LCL. '
-    +'They can be replaced or removed.';
-  lisReplaceAllProperties = 'Replace and remove invalid properties';
-begin
-  NoteLabel.Caption:=lisLFMFileContainsInvalidProperties;
-  ErrorsGroupBox.Caption:=lisErrors;
-  LFMGroupBox.Caption:=lisLFMFile;
-  ReplaceAllButton.Caption:=lisReplaceAllProperties;
-  ReplaceAllButton.LoadGlyphFromLazarusResource('laz_refresh');
-  EditorOpts.GetHighlighterSettings(SynLFMSyn1);
-  EditorOpts.GetSynEditSettings(LFMSynEdit);
 end;
 
 

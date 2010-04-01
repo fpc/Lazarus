@@ -677,10 +677,10 @@ object FixLFMDialog: TFixLFMDialog
       Left = 6
       Height = 25
       Top = 6
-      Width = 227
+      Width = 230
       AutoSize = True
       BorderSpacing.Around = 6
-      Caption = 'Replace and remove invalid properties'
+      Caption = 'Replace unknown types and properties'
       NumGlyphs = 0
       OnClick = ReplaceAllButtonClick
       TabOrder = 1

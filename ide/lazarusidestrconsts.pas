@@ -460,12 +460,13 @@ resourcestring
   lisConvertTarget2 = 'Lazarus/LCL for Windows only';
   lisConvertTarget3 = 'Both Lazarus/LCL and Delphi';
   lisConvUnitsTypesProperties = 'Units, Types and Properties';
+  lisConvAutoRemoveProperties = 'Automatic removal of unknown properties';
   lisConvUnitsToReplace = 'Units to replace';
   lisConvTypesToReplace = 'Types to replace';
   lisConvUnitReplacements = 'Unit Replacements';
   lisConvTypeReplacements = 'Type Replacements';
   lisReplacementPropTypes = 'Replacement Properties and Types';
-  lisReplaceRemoveInvalid = 'Replace and remove invalid properties / types';
+  lisReplaceRemoveUnknown = 'Replace unknown types and properties';
 
   lisUnableToLoadOldResourceFileTheResourceFileIs = 'Unable to load old '
     +'resource file.%sThe resource file is the first include file in the%'

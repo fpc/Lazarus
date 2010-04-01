@@ -50,8 +50,8 @@ type
     fBackupFiles: boolean;
     fTarget: TConvertTarget;
     fSameDFMFile: boolean;
-    fAutoMissingProperties: boolean;
-    fAutoMissingTypes: boolean;
+    fAutoRemoveProperties: boolean;
+    fAutoConvertTypes: boolean;
     // Delphi units mapped to Lazarus units, will be replaced or removed.
     fReplaceUnits: TStringToStringTree;
     // Delphi types mapped to Lazarus types, will be replaced.
@@ -88,8 +88,8 @@ type
     property BackupFiles: boolean read fBackupFiles;
     property Target: TConvertTarget read fTarget;
     property SameDFMFile: boolean read fSameDFMFile;
-    property AutoMissingProperties: boolean read fAutoMissingProperties;
-    property AutoMissingTypes: boolean read fAutoMissingTypes;
+    property AutoRemoveProperties: boolean read fAutoRemoveProperties;
+    property AutoConvertTypes: boolean read fAutoConvertTypes;
     property ReplaceUnits: TStringToStringTree read fReplaceUnits;
     property ReplaceTypes: TStringToStringTree read fReplaceTypes;
   end;
@@ -111,8 +111,8 @@ type
     SettingsGroupBox: TGroupBox;
     MissingStuffGroupBox: TGroupBox;
     MissingStuffLabel: TLabel;
-    MissingTypesCheckBox: TCheckBox;
-    MissingPropertiesCheckBox: TCheckBox;
+    AutoConvertTypesCheckBox: TCheckBox;
+    AutoRemovePropertiesCheckBox: TCheckBox;
     procedure btnOKClick(Sender: TObject);
     procedure TypeReplacementsButtonClick(Sender: TObject);
     procedure UnitReplacementsButtonClick(Sender: TObject);
@@ -196,17 +196,17 @@ begin
     BackupCheckBox.Checked          :=fBackupFiles;
     TargetRadioGroup.ItemIndex      :=integer(fTarget);
     SameDFMCheckBox.Checked         :=fSameDFMFile;
-    MissingPropertiesCheckBox.Checked :=fAutoMissingProperties;
-    MissingTypesCheckBox.Checked:=fAutoMissingTypes;
+    AutoRemovePropertiesCheckBox.Checked :=fAutoRemoveProperties;
+    AutoConvertTypesCheckBox.Checked:=fAutoConvertTypes;
 }
     Result:=ShowModal;
     if Result=mrOK then begin
       // UI --> Settings.
-      fBackupFiles          :=BackupCheckBox.Checked;
-      fTarget               :=TConvertTarget(TargetRadioGroup.ItemIndex);
-      fSameDFMFile          :=SameDFMCheckBox.Checked;
-      fAutoMissingProperties:=MissingPropertiesCheckBox.Checked;
-      fAutoMissingTypes     :=MissingTypesCheckBox.Checked;
+      fBackupFiles         :=BackupCheckBox.Checked;
+      fTarget              :=TConvertTarget(TargetRadioGroup.ItemIndex);
+      fSameDFMFile         :=SameDFMCheckBox.Checked;
+      fAutoRemoveProperties:=AutoRemovePropertiesCheckBox.Checked;
+      fAutoConvertTypes    :=AutoConvertTypesCheckBox.Checked;
       // ToDo: Save to XML.
     end;
   finally
@@ -329,6 +329,7 @@ begin
   TargetRadioGroup.ItemIndex:=0;
   SameDFMCheckBox.Caption:=lisUseSameDFMFile;
   MissingStuffGroupBox.Caption:= lisConvUnitsTypesProperties;
+  AutoRemovePropertiesCheckBox.Caption:=lisConvAutoRemoveProperties;
   UnitReplacementsButton.Caption:=lisConvUnitReplacements;
   TypeReplacementsButton.Caption:=lisConvTypeReplacements;
   TargetRadioGroupClick(TargetRadioGroup);
