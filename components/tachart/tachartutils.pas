@@ -193,6 +193,7 @@ operator +(const A: TPoint; B: TSize): TPoint; overload; inline;
 operator +(const A, B: TPoint): TPoint; overload; inline;
 operator +(const A, B: TDoublePoint): TDoublePoint; overload; inline;
 operator - (const A, B: TPoint): TPoint; overload; inline;
+operator -(const A, B: TDoublePoint): TDoublePoint; overload; inline;
 operator =(const A, B: TMethod): Boolean; overload; inline;
 
 implementation
@@ -523,6 +524,12 @@ begin
 end;
 
 operator - (const A, B: TPoint): TPoint;
+begin
+  Result.X := A.X - B.X;
+  Result.Y := A.Y - B.Y;
+end;
+
+operator - (const A, B: TDoublePoint): TDoublePoint; overload; inline;
 begin
   Result.X := A.X - B.X;
   Result.Y := A.Y - B.Y;
