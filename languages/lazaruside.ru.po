@@ -5,7 +5,7 @@ msgstr ""
 "Content-Type: text/plain; charset=utf-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "POT-Creation-Date: \n"
-"PO-Revision-Date: 2010-04-01 02:53+0300\n"
+"PO-Revision-Date: 2010-04-02 02:08+0300\n"
 "Language-Team: \n"
 "MIME-Version: 1.0\n"
 
@@ -5110,7 +5110,7 @@ msgstr "Элемент управления требует \"родителя\""
 
 #: lazarusidestrconsts.lisconvautoremoveproperties
 msgid "Automatic removal of unknown properties"
-msgstr ""
+msgstr "Автоматически удалять неизвестные свойства"
 
 #: lazarusidestrconsts.lisconversionerror
 msgid "Conversion error"
@@ -5146,23 +5146,23 @@ msgstr "Lazarus/LCL и Delphi"
 
 #: lazarusidestrconsts.lisconvtypereplacements
 msgid "Type Replacements"
-msgstr ""
+msgstr "Замена типов"
 
 #: lazarusidestrconsts.lisconvtypestoreplace
 msgid "Types to replace"
-msgstr ""
+msgstr "Заменяемые типы"
 
 #: lazarusidestrconsts.lisconvunitreplacements
 msgid "Unit Replacements"
-msgstr ""
+msgstr "Замена модулей"
 
 #: lazarusidestrconsts.lisconvunitstoreplace
 msgid "Units to replace"
-msgstr ""
+msgstr "Заменяемые модули"
 
 #: lazarusidestrconsts.lisconvunitstypesproperties
 msgid "Units, Types and Properties"
-msgstr ""
+msgstr "Модули, типы и свойства"
 
 #: lazarusidestrconsts.liscopyall
 msgid "Copy All"
@@ -11547,7 +11547,7 @@ msgstr "Замена свойств и типов"
 
 #: lazarusidestrconsts.lisreplaceremoveunknown
 msgid "Replace unknown types and properties"
-msgstr ""
+msgstr "Заменить неизвестные типы и свойства"
 
 #: lazarusidestrconsts.lisreplacingselectionfailed
 msgid "Replacing selection failed."

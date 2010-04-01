@@ -172,6 +172,30 @@ msgstr ""
 msgid "Use a new line in Case blocks at:"
 msgstr ""
 
+#: jcfuiconsts.liscdcompilerdirectives
+msgid "Compiler Directives"
+msgstr ""
+
+#: jcfuiconsts.liscdotherplaces
+msgid "Other places"
+msgstr ""
+
+#: jcfuiconsts.liscdstatements
+msgid "Statements"
+msgstr ""
+
+#: jcfuiconsts.liscduseanewlineaftercompilerdirectives
+msgid "Use a new line after compiler directives:"
+msgstr ""
+
+#: jcfuiconsts.liscduseanewlinebeforecompilerdirectives
+msgid "Use a new line before compiler directives:"
+msgstr ""
+
+#: jcfuiconsts.liscdusesclause
+msgid "Uses clause"
+msgstr ""
+
 #: jcfuiconsts.lisclarifyclarify
 msgid "Clarify"
 msgstr ""

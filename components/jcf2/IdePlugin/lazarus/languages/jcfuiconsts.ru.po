@@ -181,6 +181,30 @@ msgstr "Никогда"
 msgid "Use a new line in Case blocks at:"
 msgstr "Переходить на новую строку в блоках Case в следующих случаях:"
 
+#: jcfuiconsts.liscdcompilerdirectives
+msgid "Compiler Directives"
+msgstr "Директивы компилятора"
+
+#: jcfuiconsts.liscdotherplaces
+msgid "Other places"
+msgstr "Прочие выражения"
+
+#: jcfuiconsts.liscdstatements
+msgid "Statements"
+msgstr "Операторы"
+
+#: jcfuiconsts.liscduseanewlineaftercompilerdirectives
+msgid "Use a new line after compiler directives:"
+msgstr "Переходить на новую строку после следующих директив компилятора:"
+
+#: jcfuiconsts.liscduseanewlinebeforecompilerdirectives
+msgid "Use a new line before compiler directives:"
+msgstr "Переходить на новую строку перед следующими директивами компилятора:"
+
+#: jcfuiconsts.liscdusesclause
+msgid "Uses clause"
+msgstr "Выражение Uses"
+
 #: jcfuiconsts.lisclarifyclarify
 msgid "Clarify"
 msgstr "Улучшение читаемости кода"
