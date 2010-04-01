@@ -1173,10 +1173,12 @@ end;
 procedure TBasicChartTool.Activate;
 begin
   FChart.FActiveToolIndex := Index;
+  FChart.MouseCapture := true;
 end;
 
 procedure TBasicChartTool.Deactivate;
 begin
+  FChart.MouseCapture := false;
   FChart.FActiveToolIndex := -1;
 end;
 
