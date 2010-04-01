@@ -578,13 +578,18 @@ end;
 
 procedure TZoomClickTool.MouseDown(APoint: TPoint);
 var
-  sz: TSize;
+  sz, center: TDoublePoint;
+  ext: TDoubleRect;
 begin
-  if FZoomFactor <= 0 then exit;
-  sz := Size(FChart.ClipRect);
-  sz.cx := Round(sz.cx / ZoomFactor);
-  sz.cy := Round(sz.cy / ZoomFactor);
-  FChart.ZoomToRect(BoundsSize(APoint.X - sz.cx div 2, APoint.Y - sz.cy div 2, sz));
+  if ZoomFactor <= 0 then exit;
+  ext := FChart.LogicalExtent;
+  sz := ext.b - ext.a;
+  sz.X /= ZoomFactor * 2;
+  sz.Y /= ZoomFactor * 2;
+  center := FChart.ImageToGraph(APoint);
+  ext.a := center - sz;
+  ext.b := center + sz;
+  FChart.LogicalExtent := ext;
 end;
 
 function TZoomClickTool.ZoomFactorIsStored: boolean;
