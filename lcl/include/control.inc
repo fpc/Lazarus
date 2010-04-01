@@ -3473,6 +3473,8 @@ end;
 class procedure TControl.WSRegisterClass;
 begin
   inherited WSRegisterClass;
+  RegisterPropertyToSkip(TControl, 'IsControl', 'VCL compatibility property', '');
+  RegisterPropertyToSkip(TControl, 'DesignSize', 'VCL compatibility property', '');
   RegisterControl;
 end;
 

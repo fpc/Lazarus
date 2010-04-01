@@ -1903,6 +1903,8 @@ end;
 initialization
   {$INCLUDE cursors.lrs}
   RegisterPropertyToSkip(TForm, 'OldCreateOrder', 'VCL compatibility property', '');
+  RegisterPropertyToSkip(TForm, 'TextHeight', 'VCL compatibility property', '');
+  RegisterPropertyToSkip(TForm, 'Scaled', 'VCL compatibility property', '');
   LCLProc.OwnerFormDesignerModifiedProc:=@IfOwnerIsFormThenDesignerModified;
   Screen:=TScreen.Create(nil);
   Application:=TApplication.Create(nil);

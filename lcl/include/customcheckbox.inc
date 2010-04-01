@@ -67,6 +67,7 @@ end;
 class procedure TCustomCheckBox.WSRegisterClass;
 begin
   inherited WSRegisterClass;
+  RegisterPropertyToSkip(TCustomCheckBox, 'Alignment', 'VCL compatibility property', '');
   RegisterCustomCheckBox;
 end;
 

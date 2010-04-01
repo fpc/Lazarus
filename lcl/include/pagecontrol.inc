@@ -74,6 +74,9 @@ end;
 class procedure TPageControl.WSRegisterClass;
 begin
   inherited WSRegisterClass;
+  RegisterPropertyToSkip(TPageControl, 'Style', 'VCL compatibility property', '');
+  RegisterPropertyToSkip(TPageControl, 'HotTrack', 'VCL compatibility property', '');
+  RegisterPropertyToSkip(TPageControl, 'MultiLine', 'VCL compatibility property', '');
   RegisterPageControl;
 end;
 
