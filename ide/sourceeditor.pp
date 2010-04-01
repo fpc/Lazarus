@@ -144,6 +144,31 @@ type
       read FIdentCompletionJumpToError write FIdentCompletionJumpToError;
   end;
 
+  TSourceEditor = class;
+  { TSourceEditorSharedValues }
+
+  TSourceEditorSharedValues = class
+  private
+    FModified: boolean;
+    FSharedEditorList: TFPList; // list of TSourceEditor sharing one TSynEdit
+    function GetOtherSharedEditors(Caller: TSourceEditor; Index: Integer
+      ): TSourceEditor;
+    function GetSharedEditors(Index: Integer): TSourceEditor;
+    procedure SetModified(const AValue: Boolean);
+  protected
+    BookmarkEventLock: Integer;
+    procedure AddSharedEditor(AnEditor: TSourceEditor);
+    procedure RemoveSharedEditor(AnEditor: TSourceEditor);
+    function  SharedEditorCount: Integer;
+    function  OtherSharedEditorCount: Integer;
+    property  SharedEditors[Index: Integer]: TSourceEditor read GetSharedEditors;
+    property  OtherSharedEditors[Caller: TSourceEditor; Index: Integer]: TSourceEditor
+              read GetOtherSharedEditors;
+    property Modified: Boolean read FModified write SetModified;
+  public
+    constructor Create;
+    destructor Destroy; override;
+  end;
 
 { TSourceEditor ---
   TSourceEditor is the class that controls access for the Editor. }
@@ -152,6 +177,8 @@ type
   private
     //FAOwner is normally a TSourceNotebook.  This is set in the Create constructor.
     FAOwner: TComponent;
+    FIsNewSharedEditor: Boolean;
+    FSharedValues: TSourceEditorSharedValues;
     FEditor: TSynEdit;
     FEditPlugin: TSynEditPlugin1;  // used to get the LinesInserted and
                                    //   LinesDeleted messages
@@ -171,7 +198,6 @@ type
     FExecutionLine: integer;
     FExecutionMark: TSourceMark;
     FLineInfoNotification: TIDELineInfoNotification;
-    FModified: boolean;
 
     FOnAfterOpen: TNotifyEvent;
     FOnAfterSave: TNotifyEvent;
@@ -185,9 +211,6 @@ type
     FOnKeyDown: TKeyEvent;
 
     FSourceNoteBook: TSourceNotebook;
-    {$IFDEF SynDualView}
-    FOtherViewList: TList;
-    {$ENDIF}
 
     procedure EditorMouseMoved(Sender: TObject; Shift: TShiftState; X,Y:Integer);
     procedure EditorMouseDown(Sender: TObject; Button: TMouseButton;
@@ -204,6 +227,7 @@ type
     procedure EditorEnter(Sender: TObject);
     procedure EditorActivateSyncro(Sender: TObject);
     procedure EditorDeactivateSyncro(Sender: TObject);
+    function GetSharedEditors(Index: Integer): TSourceEditor;
     procedure SetCodeBuffer(NewCodeBuffer: TCodeBuffer);
     function GetSource: TStrings;
     procedure SetPageName(const AValue: string);
@@ -266,11 +290,9 @@ type
 
     function Manager: TSourceEditorManager;
     property Visible: Boolean read FVisible write SetVisible default False;
-    {$IFDEF SynDualView}
-    property OtherViewList: Tlist read FOtherViewList;
-    {$ENDIF}
+    function IsSharedWith(AnOtherEditor: TSourceEditor): Boolean;
   public
-    constructor Create(AOwner: TComponent; AParent: TWinControl);
+    constructor Create(AOwner: TComponent; AParent: TWinControl; ASharedEditor: TSourceEditor = nil);
     destructor Destroy; override;
     function Close: Boolean;
 
@@ -432,6 +454,9 @@ type
     property SyntaxHighlighterType: TLazSyntaxHighlighter
        read fSyntaxHighlighterType write SetSyntaxHighlighterType;
     property SyncroLockCount: Integer read FSyncroLockCount;
+    function SharedEditorCount: Integer;
+    property SharedEditors[Index: Integer]: TSourceEditor read GetSharedEditors;
+    property IsNewSharedEditor: Boolean read FIsNewSharedEditor write FIsNewSharedEditor;
   end;
 
   //============================================================================
@@ -468,13 +493,15 @@ type
     );
   TSourceNotebookStates = set of TSourceNotebookState;
 
-  TDragMoveTabEvent = procedure(Sender, Source: TObject; OldIndex, NewIndex: Integer) of object;
+  TDragMoveTabEvent = procedure(Sender, Source: TObject; OldIndex, NewIndex: Integer; CopyDrag: Boolean) of object;
+  TDragMoveTabQuery = function(Sender, Source: TObject; OldIndex, NewIndex: Integer; CopyDrag: Boolean): Boolean of object;
 
   { TSourceDragableNotebook }
 
   TSourceDragableNotebook = class(TNoteBook)
   private
     FMouseDownTabIndex: Integer;
+    FOnCanDragMoveTab: TDragMoveTabQuery;
     FOnDragMoveTab: TDragMoveTabEvent;
     FTabDragged: boolean;
 
@@ -496,6 +523,7 @@ type
     constructor Create(TheOwner: TComponent); override;
     procedure DragDrop(Source: TObject; X, Y: Integer); override;
     property  OnDragMoveTab: TDragMoveTabEvent read FOnDragMoveTab write FOnDragMoveTab;
+    property  OnCanDragMoveTab: TDragMoveTabQuery read FOnCanDragMoveTab write FOnCanDragMoveTab;
   end;
 
   { TSourceNotebook }
@@ -552,11 +580,11 @@ type
     procedure ToggleLineNumbersClicked(Sender: TObject);
     procedure InsertCharacter(const C: TUTF8Char);
     {$IFDEF SynDualView}
-    procedure OnOtherFormClosed(Sender: TObject; var CloseAction: TCloseAction);
-    procedure SrcEditMenuAnotherViewClicked(Sender: TObject);
+    procedure SrcEditMenuCopyToNewWindowClicked(Sender: TObject);
+    procedure SrcEditMenuCopyToExistingWindowClicked(Sender: TObject);
     {$ENDIF}
-    procedure SrcEditMenuCopyToNewWindow(Sender: TObject);
-    procedure SrcEditMenuCopyToExistingWindow(Sender: TObject);
+    procedure SrcEditMenuMoveToNewWindowClicked(Sender: TObject);
+    procedure SrcEditMenuMoveToExistingWindowClicked(Sender: TObject);
   public
     procedure DeleteBreakpointClicked(Sender: TObject);
     procedure ToggleBreakpointClicked(Sender: TObject);
@@ -612,12 +640,13 @@ type
 
     procedure Activate; override;
     procedure CreateNotebook;
-    function NewSE(Pagenum: Integer): TSourceEditor;
+    function NewSE(Pagenum: Integer; NewPagenum: Integer = -1; ASharedEditor: TSourceEditor = nil): TSourceEditor;
     procedure AcceptEditor(AnEditor: TSourceEditor);
     procedure ReleaseEditor(AnEditor: TSourceEditor);
     procedure EditorChanged(Sender: TObject);
     procedure DoClose(var CloseAction: TCloseAction); override;
 
+    function IndexOfEditorInShareWith(AnOtherEditor: TSourceEditor): Integer;
   protected
     function GetActiveCompletionPlugin: TSourceEditorCompletionPlugin; override;
     function GetCompletionPlugins(Index: integer): TSourceEditorCompletionPlugin; override;
@@ -638,7 +667,10 @@ type
 
     procedure NotebookMouseDown(Sender: TObject; Button: TMouseButton;
           Shift: TShiftState; X,Y: Integer);
-    procedure NotebookDragTabMove(Sender, Source: TObject; OldIndex, NewIndex: Integer);
+    procedure NotebookDragTabMove(Sender, Source: TObject;
+                                  OldIndex, NewIndex: Integer; CopyDrag: Boolean);
+    function  NotebookCanDragTabMove(Sender, Source: TObject;
+                                  OldIndex, NewIndex: Integer; CopyDrag: Boolean): Boolean;
 
     // hintwindow stuff
     procedure HintTimer(Sender: TObject);
@@ -657,6 +689,7 @@ type
     procedure MoveActivePageFirst;
     procedure MoveActivePageLast;
     procedure MoveEditor(OldPageIndex, NewWindowIndex, NewPageIndex: integer);
+    procedure CopyEditor(OldPageIndex, NewWindowIndex, NewPageIndex: integer);
     procedure ProcessParentCommand(Sender: TObject;
        var Command: TSynEditorCommand; var AChar: TUTF8Char; Data: pointer;
        var Handled: boolean);
@@ -718,7 +751,7 @@ type
 
     // new, close, focus
     function NewFile(const NewShortName: String; ASource: TCodeBuffer;
-                      FocusIt: boolean): TSourceEditor;
+                      FocusIt: boolean; AShareEditor: TSourceEditor = nil): TSourceEditor;
     procedure CloseFile(APageIndex:integer);
     procedure FocusEditor;
 
@@ -1099,7 +1132,10 @@ var
   SrcEditMenuShowUnitInfo: TIDEMenuCommand;
   SrcEditMenuEditorProperties: TIDEMenuCommand;
   {$IFDEF SynDualView}
-  SrcEditMenuAnotherView: TIDEMenuCommand;
+  SrcEditMenuCopyToNewWindow: TIDEMenuCommand;
+  SrcEditMenuCopyToOtherWindow: TIDEMenuSection;
+  SrcEditMenuCopyToOtherWindowNew: TIDEMenuCommand;
+  SrcEditMenuCopyToOtherWindowList: TIDEMenuSection;
   {$ENDIF}
   {$IFnDEF SingleSrcWindow}
   // Multi Window
@@ -1175,8 +1211,14 @@ begin
                         'Close All Other Pages',uemCloseOtherPages, nil, nil, nil);
 
     {$IFDEF SynDualView}
-    SrcEditMenuAnotherView := RegisterIDEMenuCommand(SrcEditMenuSectionFirstStatic,
-              'Open in another View', uemOpenAnotherView);
+    SrcEditMenuCopyToNewWindow   := RegisterIDEMenuCommand(SrcEditMenuSectionPages,
+                                    'CopyToNewWindow', uemCopyToNewWindow);
+    SrcEditMenuCopyToOtherWindow := RegisterIDESubMenu(SrcEditMenuSectionPages,
+                                    'CopyToOtherWindow', uemCopyToOtherWindow);
+      SrcEditMenuCopyToOtherWindowNew  := RegisterIDEMenuCommand(SrcEditMenuCopyToOtherWindow,
+                                          'CopyToOtherWindowNew', uemCopyToOtherWindowNew);
+      SrcEditMenuCopyToOtherWindowList := RegisterIDEMenuSection(SrcEditMenuCopyToOtherWindow,
+                                        'CopyToOtherWindowList Section');
     {$ENDIF}
 
     {$IFnDEF SingleSrcWindow}
@@ -1186,7 +1228,7 @@ begin
     SrcEditMenuMoveToOtherWindow := RegisterIDESubMenu(SrcEditMenuSectionPages,
                                     'MoveToOtherWindow', uemMoveToOtherWindow);
       SrcEditMenuMoveToOtherWindowNew  := RegisterIDEMenuCommand(SrcEditMenuMoveToOtherWindow,
-                                          'MoveToOtherWindowNew', uemMoveToNewWindow);
+                                          'MoveToOtherWindowNew', uemMoveToOtherWindowNew);
       SrcEditMenuMoveToOtherWindowList := RegisterIDEMenuSection(SrcEditMenuMoveToOtherWindow,
                                         'MoveToOtherWindowList Section');
     {$ENDIF}
@@ -1882,13 +1924,94 @@ begin
   ShortCut:=Menus.ShortCut(VK_UNKNOWN,[]);
 end;
 
+function TSourceEditorSharedValues.GetSharedEditors(Index: Integer
+  ): TSourceEditor;
+begin
+  Result := TSourceEditor(FSharedEditorList[Index]);
+end;
+
+procedure TSourceEditorSharedValues.SetModified(const AValue: Boolean);
+var
+  OldModified: Boolean;
+  i: Integer;
+begin
+  OldModified := SharedEditors[0].Modified; // Include SynEdit
+  FModified := AValue;
+  if not FModified then
+    for i := 0 to FSharedEditorList.Count - 1 do begin
+      SharedEditors[i].FEditor.Modified:=false; // needed for the undo stack
+      SharedEditors[i].FEditor.MarkTextAsSaved;
+      SharedEditors[i].FEditorStampCommitedToCodetools :=
+        TSynEditLines(SharedEditors[i].FEditor.Lines).TextChangeStamp;
+    end;
+  if OldModified <> SharedEditors[0].Modified then
+    for i := 0 to FSharedEditorList.Count - 1 do begin
+      SharedEditors[i].UpdatePageName;
+      SharedEditors[i].SourceNotebook.UpdateStatusBar;
+    end;
+end;
+
+function TSourceEditorSharedValues.GetOtherSharedEditors(Caller: TSourceEditor;
+  Index: Integer): TSourceEditor;
+begin
+  if Index >= FSharedEditorList.IndexOf(Caller) then
+    inc(Index);
+  Result := TSourceEditor(FSharedEditorList[Index]);
+end;
+
+{ TSourceEditorSharedValues }
+
+procedure TSourceEditorSharedValues.AddSharedEditor(AnEditor: TSourceEditor);
+begin
+  if FSharedEditorList.IndexOf(AnEditor) < 0 then
+    FSharedEditorList.Add(AnEditor);
+end;
+
+procedure TSourceEditorSharedValues.RemoveSharedEditor(AnEditor: TSourceEditor
+  );
+begin
+  FSharedEditorList.Remove(AnEditor);
+end;
+
+function TSourceEditorSharedValues.SharedEditorCount: Integer;
+begin
+  Result := FSharedEditorList.Count;
+end;
+
+function TSourceEditorSharedValues.OtherSharedEditorCount: Integer;
+begin
+  Result := FSharedEditorList.Count - 1;
+end;
+
+constructor TSourceEditorSharedValues.Create;
+begin
+  FSharedEditorList := TFPList.Create;
+  BookmarkEventLock := 0;
+end;
+
+destructor TSourceEditorSharedValues.Destroy;
+begin
+  FreeAndNil(FSharedEditorList);
+  inherited Destroy;
+end;
+
 { TSourceEditor }
 
 { The constructor for @link(TSourceEditor).
   AOwner is the @link(TSourceNotebook)
   and the AParent is usually a page of a @link(TNotebook) }
-constructor TSourceEditor.Create(AOwner: TComponent; AParent: TWinControl);
+constructor TSourceEditor.Create(AOwner: TComponent; AParent: TWinControl; ASharedEditor: TSourceEditor = nil);
+{$IFDEF SynDualView}
+var
+  i: Integer;
+{$ENDIF}
 Begin
+  if ASharedEditor = nil then
+    FSharedValues := TSourceEditorSharedValues.Create
+  else
+    FSharedValues := ASharedEditor.FSharedValues;
+  FSharedValues.AddSharedEditor(Self);
+
   inherited Create;
   FAOwner := AOwner;
   if (FAOwner<>nil) and (FAOwner is TSourceNotebook) then
@@ -1896,9 +2019,6 @@ Begin
   else
     FSourceNoteBook:=nil;
 
-  {$IFDEF SynDualView}
-  FOtherViewList := TList.Create;
-  {$ENDIF}
   FSyntaxHighlighterType:=lshNone;
   FErrorLine:=-1;
   FErrorColumn:=-1;
@@ -1912,6 +2032,28 @@ Begin
   FLineInfoNotification.OnChange := @LineInfoNotificationChange;
 
   CreateEditor(AOwner,AParent);
+  FIsNewSharedEditor := False;
+  {$IFDEF SynDualView}
+  if ASharedEditor <> nil then begin
+    PageName := ASharedEditor.PageName;
+    CodeBuffer := ASharedEditor.CodeBuffer;
+    FEditor.SharedViewEdit := ASharedEditor.EditorComponent;
+    FEditor.Highlighter := ASharedEditor.EditorComponent.Highlighter;
+
+    // bookmakrs
+    inc(FSharedValues.BookmarkEventLock);
+    try
+      for i := 0 to ASharedEditor.FEditor.Marks.Count - 1 do
+        if ASharedEditor.FEditor.Marks[i].IsBookmark then
+          FEditor.SetBookMark(ASharedEditor.FEditor.Marks[i].BookmarkNumber,
+            ASharedEditor.FEditor.Marks[i].Column,
+            ASharedEditor.FEditor.Marks[i].Line);
+    finally
+      dec(FSharedValues.BookmarkEventLock);
+    end;
+
+  end;
+  {$ENDIF}
 
   FEditPlugin := TSynEditPlugin1.Create(FEditor);
   // IMPORTANT: when you change below, don't forget updating UnbindEditor
@@ -1921,7 +2063,6 @@ end;
 
 destructor TSourceEditor.Destroy;
 begin
-//writeln('TSourceEditor.Destroy A ',FEditor.Name);
   if (FAOwner<>nil) and (FEditor<>nil) then begin
     UnbindEditor;
     FEditor.Visible:=false;
@@ -1932,17 +2073,15 @@ begin
     // free the synedit control after processing the events
     Application.ReleaseComponent(FEditor);
   end;
-  {$IFDEF SynDualView}
-  FreeAndNil(FOtherViewList);
-  {$ENDIF}
   FEditor:=nil;
   CodeBuffer := nil;
   if (DebugBoss <> nil) and (DebugBoss.LineInfo <> nil) then
     DebugBoss.LineInfo.RemoveNotification(FLineInfoNotification);
   FLineInfoNotification.ReleaseReference;
-//writeln('TSourceEditor.Destroy B ');
   inherited Destroy;
-//writeln('TSourceEditor.Destroy END ');
+  FSharedValues.RemoveSharedEditor(Self);
+  if FSharedValues.SharedEditorCount = 0 then
+    FreeAndNil(FSharedValues);
 end;
 
 {------------------------------G O T O   L I N E  -----------------------------}
@@ -2279,6 +2418,12 @@ begin
     Result := FSourceNoteBook.Manager
   else
     Result := nil;
+end;
+
+function TSourceEditor.IsSharedWith(AnOtherEditor: TSourceEditor): Boolean;
+begin
+  Result := (AnOtherEditor <> nil) and
+            (AnOtherEditor.FSharedValues = FSharedValues);
 end;
 
 Procedure TSourceEditor.ProcessCommand(Sender: TObject;
@@ -3241,10 +3386,6 @@ end;
 Function TSourceEditor.RefreshEditorSettings: Boolean;
 var
   SimilarEditor: TSynEdit;
-  {$IFDEF SynDualView}
-  i: Integer;
-  s: TComponent;
-  {$ENDIF}
 Begin
   Result:=true;
   SetSyntaxHighlighterType(fSyntaxHighlighterType);
@@ -3256,15 +3397,6 @@ Begin
   EditorOpts.GetSynEditSettings(FEditor,SimilarEditor);
 
   SourceNotebook.UpdateActiveEditColors(FEditor);
-  {$IFDEF SynDualView}
-  for i := 0 to FOtherViewList.Count - 1 do begin
-    s := TForm(FOtherViewList[i]).FindComponent('s');
-    if s <> nil then begin
-      EditorOpts.GetSynEditSettings(TSynEdit(s),FEditor);
-      TSynEdit(s).Highlighter := Highlighters[fSyntaxHighlighterType]
-    end;
-  end;
-  {$ENDIF}
 end;
 
 Procedure TSourceEditor.ccAddMessage(Texts: String);
@@ -3743,23 +3875,12 @@ end;
 
 Function TSourceEditor.GetModified: Boolean;
 Begin
-  Result := FModified or FEditor.Modified;
+  Result := FSharedValues.Modified or FEditor.Modified;
 end;
 
 procedure TSourceEditor.SetModified(const NewValue: Boolean);
-var
-  OldModified: Boolean;
 begin
-  OldModified := Modified;
-  FModified := NewValue;
-  if not FModified then
-  begin
-    FEditor.Modified:=false; // needed for the undo stack
-    FEditor.MarkTextAsSaved;
-    FEditorStampCommitedToCodetools:=TSynEditLines(FEditor.Lines).TextChangeStamp;
-  end;
-  if OldModified <> Modified then
-    UpdatePageName;
+  FSharedValues.SetModified(NewValue);
 end;
 
 Function TSourceEditor.GetInsertMode: Boolean;
@@ -3875,14 +3996,35 @@ end;
 
 procedure TSourceEditor.EditorPlaceBookmark(Sender: TObject;
   var Mark: TSynEditMark);
+var
+  i: Integer;
 begin
+  if FSharedValues.BookmarkEventLock > 0 then exit;
+  inc(FSharedValues.BookmarkEventLock);
+  try
+    for i := 0 to FSharedValues.OtherSharedEditorCount -1 do
+      FSharedValues.OtherSharedEditors[Self, i].EditorComponent.SetBookMark
+        (Mark.BookmarkNumber, Mark.Column, Mark.Line);
+  finally
+    dec(FSharedValues.BookmarkEventLock);
+  end;
   if Assigned(Manager) and Assigned(Manager.OnPlaceBookmark) then
     Manager.OnPlaceBookmark(Self, Mark);
 end;
 
 procedure TSourceEditor.EditorClearBookmark(Sender: TObject;
   var Mark: TSynEditMark);
+var
+  i: Integer;
 begin
+  if FSharedValues.BookmarkEventLock > 0 then exit;
+  inc(FSharedValues.BookmarkEventLock);
+  try
+    for i := 0 to FSharedValues.OtherSharedEditorCount -1 do
+      FSharedValues.OtherSharedEditors[Self, i].EditorComponent.ClearBookMark(Mark.BookmarkNumber);
+  finally
+    dec(FSharedValues.BookmarkEventLock);
+  end;
   if Assigned(Manager) and Assigned(Manager.OnClearBookmark) then
     Manager.OnClearBookmark(Self, Mark);
 end;
@@ -3908,6 +4050,11 @@ end;
 procedure TSourceEditor.EditorDeactivateSyncro(Sender: TObject);
 begin
   dec(FSyncroLockCount);
+end;
+
+function TSourceEditor.GetSharedEditors(Index: Integer): TSourceEditor;
+begin
+  Result := FSharedValues.SharedEditors[Index];
 end;
 
 Procedure TSourceEditor.EditorMouseMoved(Sender: TObject;
@@ -4196,6 +4343,13 @@ begin
     FillExecutionMarks;
 end;
 
+function TSourceEditor.SharedEditorCount: Integer;
+begin
+  Result := FSharedValues.SharedEditorCount;
+  if Result = 1 then
+    Result := 0; // not a sharing editor
+end;
+
 function TSourceEditor.GetWordAtCurrentCaret: String;
 var
   CaretPos: TPoint;
@@ -4255,11 +4409,6 @@ procedure TSourceEditor.UnbindEditor;
 var
   i: Integer;
 begin
-  {$IFDEF SynDualView}
-  for i := 0 to FOtherViewList.Count - 1 do
-    TForm(FOtherViewList[i]).Free;
-  FOtherViewList.Clear;
-  {$ENDIF}
   with EditorComponent do begin
     OnStatusChange := nil;
     OnProcessCommand := nil;
@@ -4428,6 +4577,7 @@ Begin
     OnPageChanged := @NotebookPageChanged;
     OnCloseTabClicked:=@CloseTabClicked;
     OnMouseDown:=@NotebookMouseDown;
+    OnCanDragMoveTab := @NotebookCanDragTabMove;
     OnDragMoveTab := @NotebookDragTabMove;
     ShowHint:=true;
     OnShowHint:=@NotebookShowTabHint;
@@ -4596,6 +4746,9 @@ var
   Marks: PSourceMark;
   MarkCount: integer;
   i: Integer;
+  {$IFDEF SynDualView}
+  NBAvail: Boolean;
+  {$ENDIF}
   CurMark: TSourceMark;
   EditorPopupPoint, EditorCaret: TPoint;
   SelAvail: Boolean;
@@ -4750,7 +4903,6 @@ begin
     SrcEditMenuMoveToNewWindow.Visible := Manager.SourceWindowCount <= 1;
     SrcEditMenuMoveToNewWindow.Enabled := PageCount > 1;
     SrcEditMenuMoveToOtherWindow.Visible := Manager.SourceWindowCount > 1;
-    SrcEditMenuMoveToOtherWindow.Enabled := (PageCount > 1) or (Manager.SourceWindowCount > 1);
     SrcEditMenuMoveToOtherWindowNew.Enabled := (PageCount > 1);
     SrcEditMenuMoveToOtherWindowList.Clear;
     for i := 0 to Manager.SourceWindowCount - 1 do
@@ -4758,10 +4910,28 @@ begin
         with RegisterIDEMenuCommand(SrcEditMenuMoveToOtherWindowList,
                                     'CopyToWindow'+IntToStr(i),
                                     Manager.SourceWindows[i].Caption,
-                                    @SrcEditMenuCopyToExistingWindow)
+                                    @SrcEditMenuMoveToExistingWindowClicked)
         do
           Tag := i;
       end;
+    {$ENDIF}
+    {$IFDEF SynDualView}
+    NBAvail := False;
+    SrcEditMenuCopyToOtherWindowList.Clear;
+    for i := 0 to Manager.SourceWindowCount - 1 do
+      if (Manager.SourceWindows[i].IndexOfEditorInShareWith(GetActiveSE) < 0) and
+         (i <> Manager.IndexOfSourceWindow(self))
+      then begin
+        NBAvail := True;
+        with RegisterIDEMenuCommand(SrcEditMenuCopyToOtherWindowList,
+                                    'CopyToWindow'+IntToStr(i),
+                                    Manager.SourceWindows[i].Caption,
+                                    @SrcEditMenuCopyToExistingWindowClicked)
+        do
+          Tag := i;
+      end;
+    SrcEditMenuCopyToNewWindow.Visible := not NBAvail;
+    SrcEditMenuCopyToOtherWindow.Visible := NBAvail;
     {$ENDIF}
 
     if Assigned(Manager.OnPopupMenu) then Manager.OnPopupMenu(@AddContextPopupMenuItem);
@@ -4872,12 +5042,13 @@ begin
   SrcEditMenuShowUnitInfo.OnClick:=@ShowUnitInfo;
   SrcEditMenuEditorProperties.OnClick:=@EditorPropertiesClicked;
   {$IFDEF SynDualView}
-  SrcEditMenuAnotherView.OnClick := @SrcEditMenuAnotherViewClicked;
+  SrcEditMenuCopyToNewWindow.OnClick := @SrcEditMenuCopyToNewWindowClicked;
+  SrcEditMenuCopyToOtherWindowNew.OnClick := @SrcEditMenuCopyToNewWindowClicked;
   {$ENDIF}
 
   {$IFnDEF SingleSrcWindow}
-  SrcEditMenuMoveToNewWindow.OnClick := @SrcEditMenuCopyToNewWindow;
-  SrcEditMenuMoveToOtherWindowNew.OnClick := @SrcEditMenuCopyToNewWindow;
+  SrcEditMenuMoveToNewWindow.OnClick := @SrcEditMenuMoveToNewWindowClicked;
+  SrcEditMenuMoveToOtherWindowNew.OnClick := @SrcEditMenuMoveToNewWindowClicked;
   {$ENDIF}
 end;
 
@@ -5135,6 +5306,17 @@ begin
     CloseAction := caHide;
 end;
 
+function TSourceNotebook.IndexOfEditorInShareWith(AnOtherEditor: TSourceEditor
+  ): Integer;
+var
+  i: Integer;
+begin
+  for i := 0 to EditorCount - 1 do
+    if Editors[i].IsSharedWith(AnOtherEditor) then
+      exit(i);
+  Result := -1;
+end;
+
 function TSourceNotebook.GetActiveCompletionPlugin: TSourceEditorCompletionPlugin;
 begin
   Result := Manager.ActiveCompletionPlugin;
@@ -5165,24 +5347,25 @@ begin
   Result := SourceEditorManager.CompletionPlugins[Index];
 end;
 
-function TSourceNotebook.NewSE(PageNum: Integer): TSourceEditor;
+function TSourceNotebook.NewSE(PageNum: Integer; NewPageNum: Integer = -1; ASharedEditor: TSourceEditor = nil): TSourceEditor;
 begin
   {$IFDEF IDE_DEBUG}
   writeln('TSourceNotebook.NewSE A ');
   {$ENDIF}
   if Pagenum < 0 then begin
     // add a new page right to the current
+    if NewPageNum >= 0 then
+      PageNum := NewPageNum
+    else
     Pagenum := PageIndex+1;
     Pagenum := Max(0,Min(PageNum, PageCount));
     NoteBookInsertPage(PageNum, Manager.FindUniquePageName('', nil));
     NotebookPage[PageNum].ReAlign;
-    if PageCount = 1 then
-      Show;
   end;
   {$IFDEF IDE_DEBUG}
   writeln('TSourceNotebook.NewSE B  ', PageIndex,',',PagesCount);
   {$ENDIF}
-  Result := TSourceEditor.Create(Self, NotebookPage[PageNum]);
+  Result := TSourceEditor.Create(Self, NotebookPage[PageNum], ASharedEditor);
   Result.FPageName := NoteBookPages[Pagenum];
   AcceptEditor(Result);
   PageIndex := Pagenum;
@@ -5495,6 +5678,44 @@ begin
 
   if PageCount = 0 then
     Close;
+end;
+
+procedure TSourceNotebook.CopyEditor(OldPageIndex, NewWindowIndex,
+  NewPageIndex: integer);
+{$IFDEF SynDualView}
+var
+  DestWin: TSourceNotebook;
+  SrcEdit, NewEdit: TSourceEditor;
+{$ENDIF}
+begin
+{$IFDEF SynDualView}
+  if (NewWindowIndex < 0) or (NewWindowIndex >= Manager.SourceWindowCount) then
+    exit;
+  DestWin := Manager.SourceWindows[NewWindowIndex];
+  if DestWin = self then exit;
+
+  if (OldPageIndex<0) or (OldPageIndex>=PageCount) or
+     (NewPageIndex>DestWin.PageCount)
+  then
+    exit;
+
+  SrcEdit := FindSourceEditorWithPageIndex(OldPageIndex);
+  NewEdit := DestWin.NewSE(-1, NewPageIndex, SrcEdit);
+  NewEdit.IsNewSharedEditor := True;
+
+  NewEdit.PageName := SrcEdit.PageName;
+  NewEdit.CodeBuffer := SrcEdit.CodeBuffer;
+  NewEdit.SyntaxHighlighterType := SrcEdit.SyntaxHighlighterType;
+  NewEdit.EditorComponent.TopLine := SrcEdit.EditorComponent.TopLine;
+  NewEdit.EditorComponent.CaretXY := SrcEdit.EditorComponent.CaretXY;
+
+  UpdatePageNames;
+  UpdateProjectFiles;
+  DestWin.UpdateProjectFiles;
+  // Update IsVisibleTab; needs UnitEditorInfo created in DestWin.UpdateProjectFiles
+  if Assigned(Manager.OnEditorVisibleChanged) then
+    Manager.OnEditorVisibleChanged(Self);
+{$ENDIF}
 end;
 
 procedure TSourceNotebook.ActivateHint(const ScreenPos: TPoint;
@@ -5866,7 +6087,7 @@ begin
 end;
 
 function TSourceNotebook.NewFile(const NewShortName: String;
-  ASource: TCodeBuffer; FocusIt: boolean): TSourceEditor;
+  ASource: TCodeBuffer; FocusIt: boolean; AShareEditor: TSourceEditor = nil): TSourceEditor;
 Begin
   //create a new page
   {$IFDEF IDE_DEBUG}
@@ -5877,7 +6098,7 @@ Begin
   try
   {$ENDIF}
     Visible:=true;
-    Result := NewSE(-1);
+    Result := NewSE(-1, -1, AShareEditor);
     {$IFDEF IDE_DEBUG}
     writeln('[TSourceNotebook.NewFile] B ');
     {$ENDIF}
@@ -6028,49 +6249,29 @@ begin
 end;
 
 {$IFDEF SynDualView}
-procedure TSourceNotebook.OnOtherFormClosed(Sender: TObject; var CloseAction: TCloseAction);
-var
-  ASrcEdit: TSourceEditor;
-  s: TSynEdit;
+procedure TSourceNotebook.SrcEditMenuCopyToNewWindowClicked(Sender: TObject);
 begin
-  s := TSynEdit(TForm(Sender).FindComponent('s'));
-  ASrcEdit := FindSourceEditorWithEditorComponent(s.SharedViewEdit);
-  ASrcEdit.OtherViewList.Remove(Sender);
-  CloseAction := caFree;
+  inc(FFocusLock);
+  try
+    CopyEditor(PageIndex, Manager.IndexOfSourceWindow(Manager.CreateNewWindow(True)), -1);
+    Manager.ShowActiveWindowOnTop(True);
+  finally
+    dec(FFocusLock);
+  end;
 end;
 
-procedure TSourceNotebook.SrcEditMenuAnotherViewClicked(Sender: TObject);
-var
-  ASrcEdit: TSourceEditor;
-  f: TForm;
-  s: TSynEdit;
-  SyncroEdit: TSynPluginSyncroEdit;
-  bmp: TCustomBitmap;
+procedure TSourceNotebook.SrcEditMenuCopyToExistingWindowClicked(Sender: TObject);
 begin
-  ASrcEdit:=GetActiveSE;
-  if ASrcEdit=nil then exit;
-  f := TForm.Create(Application);
-  f.OnClose := @OnOtherFormClosed;
-  f.Caption := ASrcEdit.FileName;
-
-  s := TSynEdit.Create(f);
-  s.name := 's';
-  s.Parent := f;
-  s.Align := alClient;
-  s.SharedViewEdit := ASrcEdit.EditorComponent;
-  s.Highlighter := ASrcEdit.EditorComponent.Highlighter;
-  SyncroEdit := TSynPluginSyncroEdit.Create(s);
-  bmp := CreateBitmapFromLazarusResource('tsynsyncroedit');
-  SyncroEdit.GutterGlyph.Assign(bmp);
-  bmp.Free;
-  EditorOpts.GetSynEditSettings(s,ASrcEdit.EditorComponent);
-
-  f.show;
-  ASrcEdit.OtherViewList.Add(f);
+  inc(FFocusLock);
+  try
+    CopyEditor(PageIndex, (Sender as TIDEMenuItem).Tag, -1);
+  finally
+    dec(FFocusLock);
+  end;
 end;
 {$ENDIF}
 
-procedure TSourceNotebook.SrcEditMenuCopyToNewWindow(Sender: TObject);
+procedure TSourceNotebook.SrcEditMenuMoveToNewWindowClicked(Sender: TObject);
 begin
   inc(FFocusLock);
   try
@@ -6081,7 +6282,7 @@ begin
   end;
 end;
 
-procedure TSourceNotebook.SrcEditMenuCopyToExistingWindow(Sender: TObject);
+procedure TSourceNotebook.SrcEditMenuMoveToExistingWindowClicked(Sender: TObject);
 begin
   MoveEditor(PageIndex, (Sender as TIDEMenuItem).Tag, -1)
 end;
@@ -6192,23 +6393,53 @@ begin
 end;
 
 procedure TSourceNotebook.NotebookDragTabMove(Sender, Source: TObject; OldIndex,
-  NewIndex: Integer);
-var
-  i: Integer;
+  NewIndex: Integer; CopyDrag: Boolean);
+  function SourceIndex: Integer;
+  begin
+    Result := Manager.SourceWindowCount - 1;
+    while Result >= 0 do begin
+      if Manager.SourceWindows[Result].FNotebook = Source then break;
+      dec(Result);
+    end;
+  end;
 begin
+  If CopyDrag then begin
+    Manager.SourceWindows[SourceIndex].CopyEditor
+      (OldIndex, Manager.IndexOfSourceWindow(self), NewIndex);
+  end
+  else begin
   if (Source = FNotebook) then
     MoveEditor(OldIndex, NewIndex)
   else begin
-    i := Manager.SourceWindowCount - 1;
-    while i >= 0 do begin
-      if Manager.SourceWindows[i].FNotebook = Source then begin
-        Manager.SourceWindows[i].MoveEditor
+      Manager.SourceWindows[SourceIndex].MoveEditor
           (OldIndex, Manager.IndexOfSourceWindow(self), NewIndex);
-        break;
       end;
-      dec(i);
+  end;
+end;
+
+function TSourceNotebook.NotebookCanDragTabMove(Sender, Source: TObject;
+  OldIndex, NewIndex: Integer; CopyDrag: Boolean): Boolean;
+  function SourceIndex: Integer;
+  begin
+    Result := Manager.SourceWindowCount - 1;
+    while Result >= 0 do begin
+      if Manager.SourceWindows[Result].FNotebook = Source then break;
+      dec(Result);
     end;
   end;
+var
+  Src: TSourceNotebook;
+  NBHasSharedEditor: Boolean;
+begin
+  Src := Manager.SourceWindows[SourceIndex];
+  NBHasSharedEditor := IndexOfEditorInShareWith
+    (Src.FindSourceEditorWithPageIndex(OldIndex)) >= 0;
+  if CopyDrag then
+    Result := (NewIndex >= 0) and (Source <> Sender) and (not NBHasSharedEditor)
+  else
+    Result := (NewIndex >= 0) and
+              ((Source <> Sender) or (OldIndex <> NewIndex)) and
+              ((Source = Sender) or (not NBHasSharedEditor));
 end;
 
 Procedure TSourceNotebook.NotebookPageChanged(Sender: TObject);
@@ -6807,6 +7038,8 @@ var
   TabPos, LastRect, LastNRect, tmp: TRect;
   LastIndex: Integer;
   LastRight, NeedInvalidate: Boolean;
+  Ctrl: Boolean;
+  Src: TSourceDragableNotebook;
 begin
   inherited DragOver(Source, X, Y, State, Accept);
   if (state = dsDragLeave) and (FDragOverIndex >= 0) then begin
@@ -6820,6 +7053,17 @@ begin
   if (Source is TSourceDragableNotebook) and
      (TSourceDragableNotebook(Source).FMouseDownTabIndex >= 0)
   then begin
+    {$IFDEF SynDualView}
+    Ctrl := (GetKeyState(VK_CONTROL) and $8000)<>0;
+    {$ELSE}
+    Ctrl := false;
+    {$ENDIF}
+    if Ctrl then
+      DragCursor := crMultiDrag
+    else
+      DragCursor := crDrag;
+
+
     TabIndex := TabIndexAtClientPos(Point(X,Y));
     if TabIndex < 0 then begin
       TabPos := TabRect(PageCount-1);
@@ -6862,10 +7106,11 @@ begin
       InvalidateRect(Handle, @tmp, false);
     end;
 
-    if (Source = self) and (TabIndex > TSourceDragableNotebook(Source).MouseDownTabIndex) then
+    Src := TSourceDragableNotebook(Source);
+    if (Source = self) and (TabIndex > Src.MouseDownTabIndex) then
       dec(TabIndex);
 
-    Accept := (TabIndex >= 0) and ((Source <> self) or (TabIndex <> FMouseDownTabIndex));
+    Accept := OnCanDragMoveTab(Self, Source, Src.MouseDownTabIndex, TabIndex, Ctrl);
   end
   else
     FDragOverIndex := -1;
@@ -6886,6 +7131,7 @@ begin
     InvalidateRect(Handle, @tmp, false);
   end;
   FDragOverIndex := -1;
+  DragCursor := crDrag;
 end;
 
 procedure TSourceDragableNotebook.PaintWindow(DC: HDC);
@@ -6956,6 +7202,7 @@ end;
 
 procedure TSourceDragableNotebook.InitDrag;
 begin
+  DragCursor := crDrag;
   FDragOverIndex := -1;
   FDragOverTabRect := Rect(0, 0, 0, 0);
   FDragNextToTabRect := Rect(0, 0, 0, 0);
@@ -6972,6 +7219,8 @@ var
   TabIndex: Integer;
   TabPos, tmp: TRect;
   ToRight: Boolean;
+  Ctrl: Boolean;
+  Src: TSourceDragableNotebook;
 begin
   inherited DragDrop(Source, X, Y);
   if (FDragOverIndex >= 0) then begin
@@ -6981,10 +7230,17 @@ begin
     InvalidateRect(Handle, @tmp, false);
   end;
   FDragOverIndex := -1;
+  DragCursor := crDrag;
 
   if assigned(FOnDragMoveTab) and (Source is TSourceDragableNotebook) and
      (TSourceDragableNotebook(Source).MouseDownTabIndex >= 0)
   then begin
+    {$IFDEF SynDualView}
+    Ctrl := (GetKeyState(VK_CONTROL) and $8000)<>0;
+    {$ELSE}
+    Ctrl := false;
+    {$ENDIF}
+
     TabIndex := TabIndexAtClientPos(Point(X,Y));
     if TabIndex < 0 then begin
       TabPos := TabRect(PageCount-1);
@@ -7001,13 +7257,14 @@ begin
     if ToRight then
       inc(TabIndex);
 
-    if (Source = self) and (TabIndex > TSourceDragableNotebook(Source).MouseDownTabIndex) then
+    Src := TSourceDragableNotebook(Source);
+    // includes unknown
+    if (Source = self) and (TabIndex > Src.MouseDownTabIndex) then
       dec(TabIndex);
-    if (TabIndex >= 0) and ( (Source <> self) or (TabIndex <> MouseDownTabIndex) )
-    then begin
+    if OnCanDragMoveTab(Self, Source, Src.MouseDownTabIndex, TabIndex, Ctrl) then
+    begin
       FTabDragged:=true;
-      FOnDragMoveTab(Self, Source, TSourceDragableNotebook(Source).MouseDownTabIndex,
-        TabIndex);
+      FOnDragMoveTab(Self, Source, Src.MouseDownTabIndex, TabIndex, Ctrl);
     end;
   end;
 end;
@@ -7763,8 +8020,9 @@ var
   begin
     Result:=false;
     for a := 0 to SourceEditorCount - 1 do begin
-      if (SourceEditors[a] <> IgnoreEditor)
-      and (AnsiCompareText(AName, SourceEditors[a].PageName) = 0)
+      if (SourceEditors[a] <> IgnoreEditor) and
+         (not SourceEditors[a].IsSharedWith(IgnoreEditor)) and
+         (AnsiCompareText(AName, SourceEditors[a].PageName) = 0)
       then begin
         Result:=true;
         exit;

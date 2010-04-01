@@ -762,6 +762,9 @@ type
                               deprecated {$IFDEF VER2_5}'use method with WindowIndex'{$ENDIF};   // deprecated in 0.9.29 March 2010
     function DoOpenEditorFile(AFileName:string; PageIndex, WindowIndex: integer;
                               Flags: TOpenFlags): TModalResult; override;
+    function DoOpenEditorFile(AFileName:string; PageIndex, WindowIndex: integer;
+                              AEditorInfo: TUnitEditorInfo;
+                              Flags: TOpenFlags): TModalResult;
 
     function DoOpenFileAtCursor(Sender: TObject): TModalResult;
     function DoOpenFileAndJumpToIdentifier(const AFilename, AnIdentifier: string;
@@ -920,11 +923,11 @@ type
     procedure UpdateEnglishErrorMsgFilename;
     procedure ActivateCodeToolAbortableMode;
     function BeginCodeTools: boolean; override;
-    function BeginCodeTool(out ActiveSrcEdit: TSourceEditor;
+    function BeginCodeTool(var ActiveSrcEdit: TSourceEditor;
                            out ActiveUnitInfo: TUnitInfo;
                            Flags: TCodeToolsFlags): boolean;
     function BeginCodeTool(ADesigner: TDesigner;
-                           out ActiveSrcEdit: TSourceEditor;
+                           var ActiveSrcEdit: TSourceEditor;
                            out ActiveUnitInfo: TUnitInfo;
                            Flags: TCodeToolsFlags): boolean;
     function DoJumpToSourcePosition(const Filename: string;
@@ -7612,6 +7615,7 @@ var
   FoldState: String;
   SrcNotebook: TSourceNotebook;
   AnUnitInfo: TUnitInfo;
+  AShareEditor: TSourceEditor;
 begin
   AnUnitInfo := AnEditorInfo.UnitInfo;
   AFilename:=AnUnitInfo.Filename;
@@ -7638,8 +7642,11 @@ begin
       // update marks and cursor positions in Project1, so that merging the old
       // settings during restoration will work
       SaveSourceEditorProjectSpecificSettings;
+      AShareEditor := nil;
+      if AnUnitInfo.OpenEditorInfoCount > 0 then
+        AShareEditor := TSourceEditor(AnUnitInfo.OpenEditorInfo[0].EditorComponent);
       NewSrcEdit:=SrcNotebook.NewFile(CreateSrcEditPageName(AnUnitInfo.Unit_Name,
-        AFilename, nil),AnUnitInfo.Source,false);
+        AFilename, AShareEditor),AnUnitInfo.Source, False, AShareEditor);
       NewSrcEdit.EditorComponent.BeginUpdate;
       MainIDEBar.itmFileClose.Enabled:=True;
       MainIDEBar.itmFileCloseAll.Enabled:=True;
@@ -7731,6 +7738,7 @@ var
   LRSFilename: String;
   ResType: TResourceType;
   SrcNoteBook: TSourceNotebook;
+  AShareEditor: TSourceEditor;
 begin
   //debugln('TMainIDE.DoNewEditorFile A NewFilename=',NewFilename);
   // empty NewFilename is ok, it will be auto generated
@@ -7816,14 +7824,16 @@ begin
   if nfOpenInEditor in NewFlags then begin
     // open a new sourceeditor
     SrcNoteBook := SourceEditorManager.ActiveOrNewSourceWindow;
-    SrcNoteBook.NewFile(CreateSrcEditPageName(NewUnitInfo.Unit_Name,
-                                              NewUnitInfo.Filename, nil),
-                           NewUnitInfo.Source,true);
+    AShareEditor := nil;
+    if NewUnitInfo.OpenEditorInfoCount > 0 then
+      AShareEditor := TSourceEditor(NewUnitInfo.OpenEditorInfo[0].EditorComponent);
+    NewSrcEdit := SrcNoteBook.NewFile(CreateSrcEditPageName(NewUnitInfo.Unit_Name,
+                                      NewUnitInfo.Filename, AShareEditor),
+                           NewUnitInfo.Source, True, AShareEditor);
     MainIDEBar.itmFileClose.Enabled:=True;
     MainIDEBar.itmFileCloseAll.Enabled:=True;
-    NewSrcEdit := SrcNoteBook.GetActiveSE;
     NewSrcEdit.SyntaxHighlighterType:=NewUnitInfo.EditorInfo[0].SyntaxHighlighter;
-    NewUnitInfo.EditorInfo[0].EditorComponent := NewSrcEdit;
+    NewUnitInfo.GetClosedOrNewEditorInfo.EditorComponent := NewSrcEdit;
 
     // create component
     AncestorType:=NewFileDescriptor.ResourceClass;
@@ -8298,6 +8308,12 @@ end;
 
 function TMainIDE.DoOpenEditorFile(AFileName: string; PageIndex,
   WindowIndex: integer; Flags: TOpenFlags): TModalResult;
+begin
+  Result := DoOpenEditorFile(AFileName, PageIndex, WindowIndex, nil, Flags);
+end;
+function TMainIDE.DoOpenEditorFile(AFileName: string; PageIndex,
+  WindowIndex: integer; AEditorInfo: TUnitEditorInfo; Flags: TOpenFlags
+  ): TModalResult;
 var
   UnitIndex: integer;
   ReOpen, Handled:boolean;
@@ -8447,8 +8463,12 @@ begin
     ReOpen:=(UnitIndex>=0);
     if ReOpen then begin
       NewUnitInfo:=Project1.Units[UnitIndex];
-      NewEditorInfo := NewUnitInfo.EditorInfo[0];
-      //NewEditorInfo := NewUnitInfo.GetClosedOrNewEditorInfo;
+      if AEditorInfo <> nil then
+        NewEditorInfo := AEditorInfo
+      else if (ofProjectLoading in Flags) then
+        NewEditorInfo := NewUnitInfo.GetClosedOrNewEditorInfo
+      else
+        NewEditorInfo := NewUnitInfo.EditorInfo[0];
       if (ofAddToProject in Flags) and (not NewUnitInfo.IsPartOfProject) then
       begin
         NewUnitInfo.IsPartOfProject:=true;
@@ -8543,7 +8563,10 @@ begin
       Handled:=false;
       Result:=DoOpenUnknownFile(AFilename,Flags,NewUnitInfo,Handled);
       // the file was previously unknown, use the default EditorInfo
-      NewEditorInfo := NewUnitInfo.EditorInfo[0];
+      if AEditorInfo <> nil then
+        NewEditorInfo := AEditorInfo
+      else
+        NewEditorInfo := NewUnitInfo.GetClosedOrNewEditorInfo;
       if Result<>mrOk then exit;
       if Handled then exit;
     end;
@@ -8570,7 +8593,8 @@ begin
     {$ENDIF}
 
     // open resource component (designer, form, datamodule, ...)
-    Result:=OpenResource;
+    if NewUnitInfo.OpenEditorInfoCount = 1 then
+      Result:=OpenResource;
     if Result<>mrOk then begin
       DebugLn(['TMainIDE.DoOpenEditorFile failed OpenResource: ',AFilename]);
       exit;
@@ -9406,13 +9430,10 @@ begin
 
   // save all editor files
   for i:=0 to SourceEditorManager.SourceEditorCount-1 do begin
-    if (Project1.MainUnitID<0) or
-       (Project1.MainUnitInfo <>
-        Project1.EditorInfoWithEditorComponent(SourceEditorManager.SourceEditors[i]).UnitInfo)
-    then begin
+    AnUnitInfo:=Project1.UnitWithEditorComponent(SourceEditorManager.SourceEditors[i]);
+    if (Project1.MainUnitID<0) or (Project1.MainUnitInfo <> AnUnitInfo) then begin
       SaveFileFlags:=[sfProjectSaving]
                      +Flags*[sfCheckAmbiguousFiles];
-      AnUnitInfo:=Project1.UnitWithEditorComponent(SourceEditorManager.SourceEditors[i]);
       if AnUnitInfo = nil
       then begin
         DebugLn('TMainIDE.DoSaveProject - unit not found for page %d', [i]);
@@ -9616,7 +9637,7 @@ begin
       // TProject.ReadProject sorts alle UnitEditorInfos
       AnEditorInfo := Project1.EditorInfo[EditorInfoIndex];
       AnUnitInfo := AnEditorInfo.UnitInfo;
-      if not AnUnitInfo.Loaded then begin
+      if (not AnUnitInfo.Loaded) or (AnEditorInfo.PageIndex < 0) then begin
         inc(EditorInfoIndex);
         Continue;
       end;
@@ -9630,7 +9651,7 @@ begin
         // reopen file
         // This will adjust Page/WindowIndex if they are not continious
         Result:=DoOpenEditorFile(AnUnitInfo.Filename, -1, AnEditorInfo.WindowIndex,
-                                 [ofProjectLoading,ofMultiOpen,ofOnlyIfExists]);
+                      AnEditorInfo, [ofProjectLoading,ofMultiOpen,ofOnlyIfExists]);
         if Result=mrAbort then
           exit;
       end;
@@ -12873,7 +12894,6 @@ begin
       begin
         SrcEdit := TSourceEditor(AnUnitInfo.OpenEditorInfo[0].EditorComponent);
         SrcEdit.Modified := True;
-        SrcEdit.SourceNotebook.UpdateStatusBar;
         {$IFDEF VerboseDesignerModified}
         DumpStack;
         {$ENDIF}
@@ -13513,19 +13533,24 @@ begin
   end;
 end;
 
-function TMainIDE.BeginCodeTool(out ActiveSrcEdit: TSourceEditor;
+function TMainIDE.BeginCodeTool(var ActiveSrcEdit: TSourceEditor;
   out ActiveUnitInfo: TUnitInfo; Flags: TCodeToolsFlags): boolean;
 begin
   Result:=BeginCodeTool(nil,ActiveSrcEdit,ActiveUnitInfo,Flags);
 end;
 
 function TMainIDE.BeginCodeTool(ADesigner: TDesigner;
-  out ActiveSrcEdit: TSourceEditor; out ActiveUnitInfo: TUnitInfo;
+  var ActiveSrcEdit: TSourceEditor; out ActiveUnitInfo: TUnitInfo;
   Flags: TCodeToolsFlags): boolean;
 begin
   Result:=false;
+  if ctfUseGivenSourceEditor in Flags then begin
+    ActiveUnitInfo := Project1.EditorInfoWithEditorComponent(ActiveSrcEdit).UnitInfo;
+  end
+  else begin
   ActiveSrcEdit:=nil;
   ActiveUnitInfo:=nil;
+  end;
 
   // check global stati
   if (ToolStatus in [itCodeTools,itCodeToolAborting]) then begin
@@ -13539,14 +13564,17 @@ begin
   end;
 
   // check source editor
+  if not (ctfUseGivenSourceEditor in Flags) then begin
   if ctfSwitchToFormSource in Flags then
     DoSwitchToFormSrc(ADesigner,ActiveSrcEdit,ActiveUnitInfo)
   else if ADesigner<>nil then
     GetDesignerUnit(ADesigner,ActiveSrcEdit,ActiveUnitInfo)
   else
     GetCurrentUnit(ActiveSrcEdit,ActiveUnitInfo);
-  if (not (ctfSourceEditorNotNeeded in Flags))
-  and ((ActiveSrcEdit=nil) or (ActiveUnitInfo=nil)) then exit;
+  end;
+  if (not (ctfSourceEditorNotNeeded in Flags)) and
+     ((ActiveSrcEdit=nil) or (ActiveUnitInfo=nil))
+  then exit;
 
   // init codetools
   SaveSourceEditorChangesToCodeCache(nil);
@@ -14492,6 +14520,7 @@ begin
   ActiveUnitInfo :=
     Project1.UnitWithEditorComponent(SourceEditorManager.ActiveEditor);
   if ActiveUnitInfo = nil then Exit;
+  ActiveUnitInfo.SetLastUsedEditor(SourceEditorManager.ActiveEditor);
 
   UpdateSaveMenuItemsAndButtons(false);
   MainIDEBar.ToggleFormSpeedBtn.Enabled := Assigned(ActiveUnitInfo.Component);
@@ -14629,11 +14658,25 @@ end;
 procedure TMainIDE.OnSrcNotebookEditorMoved(Sender: TObject);
 var
   p: TUnitEditorInfo;
+  i: Integer;
+  SrcEdit: TSourceEditor;
 begin
-  p :=Project1.EditorInfoWithEditorComponent(TSourceEditor(Sender));
-  if p = nil then exit;
-  p.PageIndex := TSourceEditor(Sender).PageIndex;
-  p.WindowIndex := SourceEditorManager.IndexOfSourceWindow(TSourceEditor(Sender).SourceNotebook);
+  SrcEdit := TSourceEditor(Sender);
+  p :=Project1.EditorInfoWithEditorComponent(SrcEdit);
+  if p <> nil then begin
+    p.PageIndex := SrcEdit.PageIndex;
+    p.WindowIndex := SourceEditorManager.IndexOfSourceWindow(SrcEdit.SourceNotebook);
+  end
+  else if SrcEdit.IsNewSharedEditor then begin
+    // attach to UnitInfo
+    SrcEdit.IsNewSharedEditor := False;
+    i := 0;
+    while (i < SrcEdit.SharedEditorCount) and (SrcEdit.SharedEditors[i] = SrcEdit) do
+      inc(i);
+    p :=Project1.EditorInfoWithEditorComponent(SrcEdit.SharedEditors[i]);
+    p := p.UnitInfo.GetClosedOrNewEditorInfo;
+    p.EditorComponent := SrcEdit;
+  end;
 end;
 
 procedure TMainIDE.OnSrcNotebookEditorClosed(Sender: TObject);
@@ -14656,7 +14699,6 @@ end;
 procedure TMainIDE.OnSrcNotebookShowHintForSource(SrcEdit: TSourceEditor;
   ClientPos: TPoint; CaretPos: TPoint);
 var
-  ActiveSrcEdit: TSourceEditor;
   ActiveUnitInfo: TUnitInfo;
   BaseURL, SmartHintStr, Expression, DebugEval, DebugEvalDerefer: String;
   DBGType,DBGTypeDerefer: TDBGType;
@@ -14664,11 +14706,9 @@ begin
   //DebugLn(['TMainIDE.OnSrcNotebookShowHintForSource START']);
   if (SrcEdit=nil) then exit;
 
-  if SourceEditorManager.ActiveEditor <> SrcEdit then
-    SourceEditorManager.ActiveEditor := SrcEdit;
+  if not BeginCodeTool(SrcEdit, ActiveUnitInfo,
+    [ctfUseGivenSourceEditor {, ctfActivateAbortMode}]) then exit;
 
-  if not BeginCodeTool(ActiveSrcEdit, ActiveUnitInfo,
-    [{ctfActivateAbortMode}]) then exit;
 
   BaseURL:='';
   case ToolStatus of

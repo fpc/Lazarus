@@ -1993,9 +1993,9 @@ resourcestring
   uemProcedureJump = 'Procedure Jump';
   uemClosePage = '&Close Page';
   uemCloseOtherPages = 'Close All &Other Pages';
-  {$IFDEF SynDualView}
-  uemOpenAnotherView = 'Open in another View';
-  {$ENDIF}
+  uemCopyToNewWindow = 'Copy to new Window';
+  uemCopyToOtherWindow = 'Copy to other Window';
+  uemCopyToOtherWindowNew = 'New Window';
   uemMoveToNewWindow = 'Move to new Window';
   uemMoveToOtherWindow = 'Move to other Window';
   uemMoveToOtherWindowNew = 'New Window';

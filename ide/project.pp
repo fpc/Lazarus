@@ -214,6 +214,10 @@ type
   protected
     procedure ClearEachInfo;
     procedure SortByPageIndex;
+    procedure SetLastUsedEditor(AEditor:TSourceEditorInterface);
+    procedure MakeUsedEditorInfo(AEditorInfo: TUnitEditorInfo);
+    procedure MakeUnUsedEditorInfo(AEditorInfo: TUnitEditorInfo);
+    procedure Clear;
   public
     constructor Create(aUnitInfo: TUnitInfo);
     destructor Destroy; override;
@@ -388,6 +392,7 @@ type
     function OpenEditorInfoCount: Integer; // with EditorComponent assigned
     property OpenEditorInfo[Index: Integer]: TUnitEditorInfo read GetOpenEditorInfo;
     function GetClosedOrNewEditorInfo: TUnitEditorInfo;
+    procedure SetLastUsedEditor(AEditor:TSourceEditorInterface);
     // Highlighter
     procedure UpdateDefaultHighlighter(aDefaultHighlighter: TLazSyntaxHighlighter);
   public
@@ -1084,11 +1089,13 @@ begin
 
   if AValue = nil then begin
     FEditorComponent := AValue;
+    UnitInfo.FEditorInfoList.MakeUnUsedEditorInfo(Self);
     PageIndex := -1; // calls UnitInfo.UpdatePageIndex
   end
   else begin
     PageIndex := -1;
     FEditorComponent := AValue;
+    UnitInfo.FEditorInfoList.MakeUsedEditorInfo(Self);
     AValue.UpdateProjectFile; // Set EditorIndex / calls UnitInfo.UpdatePageIndex
   end;
 
@@ -1230,6 +1237,42 @@ begin
   FList.Sort(TListSortCompare(@CompareEditorInfoByPageIndex));
 end;
 
+procedure TUnitEditorInfoList.SetLastUsedEditor(AEditor: TSourceEditorInterface);
+var
+  i: Integer;
+begin
+  i := IndexOfEditorComponent(AEditor);
+  if i <> 0 then
+  FList.Move(IndexOfEditorComponent(AEditor), 0);
+end;
+
+procedure TUnitEditorInfoList.MakeUsedEditorInfo(AEditorInfo: TUnitEditorInfo);
+var
+  i, j: Integer;
+begin
+  i := IndexOf(AEditorInfo);
+  j := OpenCount;
+  if (i > j) and (j < Count) then
+    FList.Move(i, j);
+end;
+
+procedure TUnitEditorInfoList.MakeUnUsedEditorInfo(AEditorInfo: TUnitEditorInfo);
+var
+  i: Integer;
+begin
+  i := IndexOf(AEditorInfo);
+  if i <> FList.Count - 1 then
+    FList.Move(i, FList.Count - 1);
+end;
+
+procedure TUnitEditorInfoList.Clear;
+begin
+  while Count > 0 do begin
+    EditorInfos[0].Free;
+    Delete(0);
+  end;
+end;
+
 constructor TUnitEditorInfoList.Create(aUnitInfo: TUnitInfo);
 begin
   FUnitInfo := aUnitInfo;
@@ -1238,10 +1281,7 @@ end;
 
 destructor TUnitEditorInfoList.Destroy;
 begin
-  while Count > 0 do begin
-    EditorInfos[0].Free;
-    Delete(0);
-  end;
+  Clear;
   FreeAndNil(FList);
   inherited Destroy;
 end;
@@ -1559,6 +1599,10 @@ begin
   if SaveSession then 
   begin
     FEditorInfoList[0].SaveToXMLConfig(XMLConfig, Path);
+    XMLConfig.SetDeleteValue(Path+'ExtraEditorCount/Value', FEditorInfoList.Count-1, 0);
+    for i := 1 to FEditorInfoList.Count - 1 do
+      FEditorInfoList[i].SaveToXMLConfig(XMLConfig, Path + 'ExtraEditor'+IntToStr(i)+'/');
+
     XMLConfig.SetDeleteValue(Path+'ComponentState/Value',Ord(FComponentState),0);
 
     XMLConfig.SetDeleteValue(Path+'UsageCount/Value',RoundToInt(fUsageCount),-1);
@@ -1585,7 +1629,9 @@ end;
  ------------------------------------------------------------------------------}
 procedure TUnitInfo.LoadFromXMLConfig(XMLConfig: TXMLConfig; const Path: string;
   Merge, IgnoreIsPartOfProject: boolean);
-var AFilename: string;
+var
+  AFilename: string;
+  c, i: Integer;
 begin
   // project data
   if not Merge then begin
@@ -1615,7 +1661,12 @@ begin
   end;
 
   // session data
+  FEditorInfoList.Clear;
+  FEditorInfoList.NewEditorInfo;
   FEditorInfoList[0].LoadFromXMLConfig(XMLConfig, Path);
+  c := XMLConfig.GetValue(Path+'ExtraEditorCount/Value', 0);
+  for i := 1 to c do
+    FEditorInfoList.NewEditorInfo.LoadFromXMLConfig(XMLConfig, Path + 'ExtraEditor'+IntToStr(i)+'/');
 
   Loaded:=XMLConfig.GetValue(Path+'Loaded/Value',false);
   fUserReadOnly:=XMLConfig.GetValue(Path+'ReadOnly/Value',false);
@@ -1738,7 +1789,7 @@ begin
         BookmarkID := Bookmarks[i].ID;
         j := Project1.Bookmarks.IndexOfID(BookmarkID);
         if (j < 0) then
-          TSynEdit(EditorInfo[0].EditorComponent.EditorControl).SetBookMark(BookmarkID,
+          TSynEdit(OpenEditorInfo[0].EditorComponent.EditorControl).SetBookMark(BookmarkID,
             Bookmarks[i].CursorPos.X, Bookmarks[i].CursorPos.Y);
       end;
     end
@@ -2086,6 +2137,11 @@ begin
     Result := FEditorInfoList.ClosedEditorInfos[0]
   else
     Result := FEditorInfoList.NewEditorInfo;
+end;
+
+procedure TUnitInfo.SetLastUsedEditor(AEditor: TSourceEditorInterface);
+begin
+  FEditorInfoList.SetLastUsedEditor(AEditor);
 end;
 
 function TUnitInfo.ReadOnly: boolean;
