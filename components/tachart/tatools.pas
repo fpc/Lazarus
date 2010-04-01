@@ -610,14 +610,22 @@ end;
 procedure TPanDragTool.MouseMove(APoint: TPoint);
 var
   d: TPoint;
+  dd: TDoublePoint;
+  ext: TDoubleRect;
 begin
   d := APoint - FOrigin;
+  FOrigin := APoint;
+
   if not (pdLeft in Directions) then d.X := Max(d.X, 0);
   if not (pdRight in Directions) then d.X := Min(d.X, 0);
   if not (pdUp in Directions) then d.Y := Max(d.Y, 0);
   if not (pdDown in Directions) then d.Y := Min(d.Y, 0);
-  FChart.Pan(d);
-  FOrigin := APoint;
+
+  dd := FChart.ImageToGraph(d) -  FChart.ImageToGraph(Point(0, 0));
+  ext := FChart.LogicalExtent;
+  ext.a += dd;
+  ext.b += dd;
+  FChart.LogicalExtent := ext;
 end;
 
 procedure TPanDragTool.MouseUp(APoint: TPoint);

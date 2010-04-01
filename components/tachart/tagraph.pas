@@ -147,6 +147,7 @@ type
     FFrame: TChartPen;
     FGraphBrush: TBrush;
     FLegend: TChartLegend;
+    FLogicalExtent: TDoubleRect;
     FMargins: TChartMargins;
     FOnDrawReticule: TDrawReticuleEvent;
     FSeries: TChartSeriesList;
@@ -159,7 +160,6 @@ type
     FClipRect: TRect;
     FCurrentExtent: TDoubleRect;
     FIsZoomed: Boolean;
-    FLogicalExtent: TDoubleRect;
     FOffset: TDoublePoint;   // Coordinates transformation
     FReticuleMode: TReticuleMode;
     FReticulePos: TPoint;
@@ -185,6 +185,7 @@ type
     procedure SetFrame(Value: TChartPen);
     procedure SetGraphBrush(Value: TBrush);
     procedure SetLegend(Value: TChartLegend);
+    procedure SetLogicalExtent(const AValue: TDoubleRect);
     procedure SetMargins(AValue: TChartMargins);
     procedure SetReticuleMode(const AValue: TReticuleMode);
     procedure SetReticulePos(const AValue: TPoint);
@@ -228,7 +229,6 @@ type
     procedure CopyToClipboardBitmap;
     procedure DeleteSeries(ASeries: TBasicChartSeries);
     procedure PaintOnCanvas(ACanvas: TCanvas; ARect: TRect);
-    procedure Pan(const ADelta: TPoint);
     procedure SaveToBitmapFile(const AFileName: String); inline;
     procedure SaveToFile(AClass: TRasterImageClass; const AFileName: String);
     function SaveToImage(AClass: TRasterImageClass): TRasterImage;
@@ -249,6 +249,7 @@ type
     property ChartWidth: Integer read GetChartWidth;
     property ClipRect: TRect read FClipRect;
     property CurrentExtent: TDoubleRect read FCurrentExtent;
+    property LogicalExtent: TDoubleRect read FLogicalExtent write SetLogicalExtent;
     property ReticulePos: TPoint read FReticulePos write SetReticulePos;
     property SeriesCount: Integer read GetSeriesCount;
     property XGraphMax: Double read FCurrentExtent.b.X;
@@ -479,21 +480,6 @@ begin
 
   for i := 0 to SeriesCount - 1 do
     Series[i].AfterDraw;
-end;
-
-procedure TChart.Pan(const ADelta: TPoint);
-var
-  d: TDoublePoint;
-begin
-  d.X := -ADelta.X / FScale.X;
-  d.Y := -ADelta.Y / FScale.Y;
-  with FLogicalExtent do begin
-    a += d;
-    b += d;
-  end;
-  FIsZoomed := true;
-  FCurrentExtent := FLogicalExtent;
-  Invalidate;
 end;
 
 procedure TChart.PrepareLegend(
@@ -911,6 +897,14 @@ end;
 procedure TChart.SetLegend(Value: TChartLegend);
 begin
   FLegend.Assign(Value);
+  Invalidate;
+end;
+
+procedure TChart.SetLogicalExtent(const AValue: TDoubleRect);
+begin
+  FLogicalExtent := AValue;
+  FIsZoomed := true;
+  FCurrentExtent := FLogicalExtent;
   Invalidate;
 end;
 
