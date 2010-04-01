@@ -155,7 +155,8 @@ type
     fsciDirectoryReadable, // file is directory and can be searched
     fsciDirectoryWritable, // file is directory and new files can be created
     fsciText,      // file is text file (not binary)
-    fsciExecutable // file is executable
+    fsciExecutable,// file is executable
+    fsciAge        // file age is valid
     );
   TFileStateCacheItemFlags = set of TFileStateCacheItemFlag;
 
@@ -163,6 +164,7 @@ type
 
   TFileStateCacheItem = class
   private
+    FAge: longint;
     FFilename: string;
     FFlags: TFileStateCacheItemFlags;
     FTestedFlags: TFileStateCacheItemFlags;
@@ -175,6 +177,7 @@ type
     property Flags: TFileStateCacheItemFlags read FFlags;
     property TestedFlags: TFileStateCacheItemFlags read FTestedFlags;
     property TimeStamp: integer read FTimeStamp;
+    property Age: longint read FAge;
   end;
 
   { TFileStateCache }
@@ -201,6 +204,7 @@ type
     function FileIsReadableCached(const AFilename: string): boolean;
     function FileIsWritableCached(const AFilename: string): boolean;
     function FileIsTextCached(const AFilename: string): boolean;
+    function FileAgeCached(const AFileName: string): Longint;
     function FindFile(const Filename: string;
                       CreateIfNotExists: boolean): TFileStateCacheItem;
     function Check(const Filename: string; AFlag: TFileStateCacheItemFlag;
@@ -223,6 +227,7 @@ function FileIsExecutableCached(const AFilename: string): boolean;
 function FileIsReadableCached(const AFilename: string): boolean;
 function FileIsWritableCached(const AFilename: string): boolean;
 function FileIsTextCached(const AFilename: string): boolean;
+function FileAgeCached(const AFileName: string): Longint;
 
 procedure InvalidateFileStateCache;
 function CompareFileStateItems(Data1, Data2: Pointer): integer;
@@ -237,7 +242,8 @@ const
     'fsciDirectoryReadable',
     'fsciDirectoryWritable',
     'fsciText',
-    'fsciExecutable'
+    'fsciExecutable',
+    'fsciAge'
     );
 
 var
@@ -2818,6 +2824,11 @@ begin
   Result:=FileStateCache.FileIsTextCached(AFilename);
 end;
 
+function FileAgeCached(const AFileName: string): Longint;
+begin
+  Result:=FileStateCache.FileAgeCached(AFilename);
+end;
+
 procedure InvalidateFileStateCache;
 begin
   FileStateCache.IncreaseTimeStamp;
@@ -3003,6 +3014,21 @@ begin
   if Check(AFilename,fsciText,AFile,Result) then exit;
   Result:=FileIsText(AFile.Filename);
   SetFlag(AFile,fsciText,Result);
+end;
+
+function TFileStateCache.FileAgeCached(const AFileName: string): Longint;
+var
+  AFile: TFileStateCacheItem;
+  Dummy: Boolean;
+begin
+  Dummy := False;
+  if Check(AFilename,fsciAge,AFile,Dummy) then begin
+    Result:=AFile.Age;
+    exit;
+  end;
+  Result:=FileAge(AFile.Filename);
+  AFile.FAge:=Result;
+  Include(AFile.FTestedFlags,fsciAge);
 end;
 
 function TFileStateCache.FindFile(const Filename: string;

@@ -1011,7 +1011,7 @@ end;
 
 function TCodeBuffer.FileDateOnDisk: longint;
 begin
-  Result:=FileAgeUTF8(Filename);
+  Result:=FileAgeCached(Filename);
 end;
 
 function TCodeBuffer.FileNeedsUpdate: boolean;
