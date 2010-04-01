@@ -163,7 +163,6 @@ type
     FReticuleMode: TReticuleMode;
     FReticulePos: TPoint;
     FScale: TDoublePoint;    // Coordinates transformation
-    FZoomExtent: TDoubleRect;
 
     procedure CalculateTransformationCoeffs(const AMargin: TRect);
     procedure DrawReticule(ACanvas: TCanvas);
@@ -190,7 +189,7 @@ type
     procedure SetReticulePos(const AValue: TPoint);
     procedure SetTitle(Value: TChartTitle);
     procedure SetToolset(const AValue: TBasicChartToolset);
-
+    procedure UpdateExtent;
   protected
     procedure Clean(ACanvas: TCanvas; ARect: TRect);
     procedure DisplaySeries(ACanvas: TCanvas);
@@ -207,7 +206,6 @@ type
     procedure PrepareLegend(
       ACanvas: TCanvas; out ALegendItems: TChartLegendItems; out ARect: TRect);
     procedure StyleChanged(Sender: TObject);
-    procedure UpdateExtent;
 
   public
     constructor Create(AOwner: TComponent); override;
@@ -463,7 +461,8 @@ begin
   for i := 0 to SeriesCount - 1 do
     Series[i].BeforeDraw;
 
-  UpdateExtent;
+  if not FIsZoomed then
+    UpdateExtent;
   DrawTitleFoot(ACanvas);
   PrepareLegend(ACanvas, legendItems, legendRect);
   try
@@ -1016,10 +1015,6 @@ var
   seriesBounds: TDoubleRect;
   s: TBasicChartSeries;
 begin
-  if FIsZoomed then begin
-    FCurrentExtent := FZoomExtent;
-    exit;
-  end;
   Extent.CheckBoundsOrder;
 
   FCurrentExtent := EmptyExtent;
@@ -1055,7 +1050,7 @@ begin
   with ARect do
     FIsZoomed := (Left < Right) and (Top < Bottom);
   if FIsZoomed then
-    with FZoomExtent do begin
+    with FCurrentExtent do begin
       a := ImageToGraph(ARect.TopLeft);
       b := ImageToGraph(ARect.BottomRight);
       if a.X > b.X then
