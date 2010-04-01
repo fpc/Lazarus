@@ -222,12 +222,12 @@ begin
         if (LclOnlyUnits.Count>0) or (DelphiOnlyUnits.Count>0) then begin
           // Add LCL and Delphi sections for output.
           nl:=fSrcCache.BeautifyCodeOptions.LineEnd;
-          s:='{$IFDEF FPC}'+nl+'  ';
-          for i:=0 to LclOnlyUnits.Count-1 do
-            s:=s+LclOnlyUnits[i]+', ';
-          s:=s+nl+'{$ELSE}'+nl+'  ';
+          s:='{$IFNDEF FPC}'+nl+'  ';
           for i:=0 to DelphiOnlyUnits.Count-1 do
             s:=s+DelphiOnlyUnits[i]+', ';
+          s:=s+nl+'{$ELSE}'+nl+'  ';
+          for i:=0 to LclOnlyUnits.Count-1 do
+            s:=s+LclOnlyUnits[i]+', ';
           s:=s+nl+'{$ENDIF}';
           // Now add the lines using codetools.
           if not fSrcCache.Replace(gtEmptyLine,gtNewLine,InsPos,InsPos,s) then exit;
@@ -334,11 +334,11 @@ begin
   begin
     // Add IFDEF for .lfm and .dfm allowing Delphi to use .dfm.
     nl:=fSrcCache.BeautifyCodeOptions.LineEnd;
-    s:='{$IFDEF FPC}'+nl+
-       '  {$R *.lfm}'+nl+
-       '{$ELSE}'+nl+
+    s:='{$IFNDEF FPC}'+nl+
        '  {$R *.dfm}'+nl+
-       '{$ENDIF}';         // gtEmptyLine,gtNewLine,
+       '{$ELSE}'+nl+
+       '  {$R *.lfm}'+nl+
+       '{$ENDIF}';
     Result:=fSrcCache.Replace(gtNone,gtNone,fDfmDirectiveStart,fDfmDirectiveEnd,s);
   end;
   Result:=true;
