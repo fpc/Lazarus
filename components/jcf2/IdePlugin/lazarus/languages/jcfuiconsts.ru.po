@@ -98,6 +98,34 @@ msgstr "Максимум последовательных пустых стро�
 msgid "Number of returns after the unit's final End."
 msgstr "Число пустых строк после End. модуля"
 
+#: jcfuiconsts.lisblocksbetweenelseandif
+msgid "Between else and if"
+msgstr "Между else и if"
+
+#: jcfuiconsts.lisblocksbetweenendandelse
+msgid "Between end and else"
+msgstr "Между end и else"
+
+#: jcfuiconsts.lisblocksblocks
+msgid "Blocks"
+msgstr "Блоки"
+
+#: jcfuiconsts.lisblocksblockwithbegin
+msgid "Block with begin"
+msgstr "Блок с begin"
+
+#: jcfuiconsts.lisblocksblockwithoutbegin
+msgid "Block without begin"
+msgstr "Блок без begin"
+
+#: jcfuiconsts.lisblockselsebegin
+msgid "Else begin"
+msgstr "Else begin"
+
+#: jcfuiconsts.lisblocksuseanewlineinblocksat
+msgid "Use a new line in blocks at:"
+msgstr "Переходить на новую строку в блоках в следующих случаях:"
+
 #: jcfuiconsts.lisblremoveblanklines
 msgid "Remove blank lines"
 msgstr "Удаление пустых строк"

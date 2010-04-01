@@ -5108,6 +5108,10 @@ msgstr "Участники"
 msgid "Control needs parent"
 msgstr "Элемент управления требует \"родителя\""
 
+#: lazarusidestrconsts.lisconvautoremoveproperties
+msgid "Automatic removal of unknown properties"
+msgstr ""
+
 #: lazarusidestrconsts.lisconversionerror
 msgid "Conversion error"
 msgstr "Ошибка преобразования"
@@ -5140,9 +5144,25 @@ msgstr "Lazarus/LCL только для Windows"
 msgid "Both Lazarus/LCL and Delphi"
 msgstr "Lazarus/LCL и Delphi"
 
-#: lazarusidestrconsts.lisconvreplacements
-msgid "Replacements"
-msgstr "Замены"
+#: lazarusidestrconsts.lisconvtypereplacements
+msgid "Type Replacements"
+msgstr ""
+
+#: lazarusidestrconsts.lisconvtypestoreplace
+msgid "Types to replace"
+msgstr ""
+
+#: lazarusidestrconsts.lisconvunitreplacements
+msgid "Unit Replacements"
+msgstr ""
+
+#: lazarusidestrconsts.lisconvunitstoreplace
+msgid "Units to replace"
+msgstr ""
+
+#: lazarusidestrconsts.lisconvunitstypesproperties
+msgid "Units, Types and Properties"
+msgstr ""
 
 #: lazarusidestrconsts.liscopyall
 msgid "Copy All"
@@ -11525,9 +11545,9 @@ msgstr "Число повторов:"
 msgid "Replacement Properties and Types"
 msgstr "Замена свойств и типов"
 
-#: lazarusidestrconsts.lisreplaceremoveinvalid
-msgid "Replace and remove invalid properties / types"
-msgstr "Заменять и удалять неверные свойства и типы"
+#: lazarusidestrconsts.lisreplaceremoveunknown
+msgid "Replace unknown types and properties"
+msgstr ""
 
 #: lazarusidestrconsts.lisreplacingselectionfailed
 msgid "Replacing selection failed."

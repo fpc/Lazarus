@@ -89,6 +89,34 @@ msgstr ""
 msgid "Number of returns after the unit's final End."
 msgstr ""
 
+#: jcfuiconsts.lisblocksbetweenelseandif
+msgid "Between else and if"
+msgstr ""
+
+#: jcfuiconsts.lisblocksbetweenendandelse
+msgid "Between end and else"
+msgstr ""
+
+#: jcfuiconsts.lisblocksblocks
+msgid "Blocks"
+msgstr ""
+
+#: jcfuiconsts.lisblocksblockwithbegin
+msgid "Block with begin"
+msgstr ""
+
+#: jcfuiconsts.lisblocksblockwithoutbegin
+msgid "Block without begin"
+msgstr ""
+
+#: jcfuiconsts.lisblockselsebegin
+msgid "Else begin"
+msgstr ""
+
+#: jcfuiconsts.lisblocksuseanewlineinblocksat
+msgid "Use a new line in blocks at:"
+msgstr ""
+
 #: jcfuiconsts.lisblremoveblanklines
 msgid "Remove blank lines"
 msgstr ""

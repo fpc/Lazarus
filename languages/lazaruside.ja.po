@@ -5115,6 +5115,10 @@ msgstr "貢献者"
 msgid "Control needs parent"
 msgstr "コントロールには親コントロールが必要です"
 
+#: lazarusidestrconsts.lisconvautoremoveproperties
+msgid "Automatic removal of unknown properties"
+msgstr ""
+
 #: lazarusidestrconsts.lisconversionerror
 msgid "Conversion error"
 msgstr "変換エラー"
@@ -5147,8 +5151,24 @@ msgstr ""
 msgid "Both Lazarus/LCL and Delphi"
 msgstr ""
 
-#: lazarusidestrconsts.lisconvreplacements
-msgid "Replacements"
+#: lazarusidestrconsts.lisconvtypereplacements
+msgid "Type Replacements"
+msgstr ""
+
+#: lazarusidestrconsts.lisconvtypestoreplace
+msgid "Types to replace"
+msgstr ""
+
+#: lazarusidestrconsts.lisconvunitreplacements
+msgid "Unit Replacements"
+msgstr ""
+
+#: lazarusidestrconsts.lisconvunitstoreplace
+msgid "Units to replace"
+msgstr ""
+
+#: lazarusidestrconsts.lisconvunitstypesproperties
+msgid "Units, Types and Properties"
 msgstr ""
 
 #: lazarusidestrconsts.liscopyall
@@ -11542,8 +11562,8 @@ msgstr "反復回数："
 msgid "Replacement Properties and Types"
 msgstr ""
 
-#: lazarusidestrconsts.lisreplaceremoveinvalid
-msgid "Replace and remove invalid properties / types"
+#: lazarusidestrconsts.lisreplaceremoveunknown
+msgid "Replace unknown types and properties"
 msgstr ""
 
 #: lazarusidestrconsts.lisreplacingselectionfailed
