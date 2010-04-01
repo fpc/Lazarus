@@ -700,7 +700,7 @@ var
   var
     CurDate: LongInt;
   begin
-    CurDate:=FileAgeUTF8(aFilename);
+    CurDate:=FileAgeCached(aFilename);
     //DebugLn(['CheckFileAge ',aFilename,' ',CurDate]);
     if (CurDate=-1) then exit;
     if (MinPPUDate=-1) or (MinPPUDate>CurDate) then begin
@@ -731,7 +731,7 @@ begin
 
   Result:=mrCancel;
   
-  CompilerDate:=FileAgeUTF8(CompilerFilename);
+  CompilerDate:=FileAgeCached(CompilerFilename);
   if CompilerDate=-1 then begin
     Result:=MessageDlg(lisCCOErrorCaption,Format(lisCCOUnableToGetFileDate,[CompilerFilename]),
       mtError,[mbIgnore,mbAbort],0);

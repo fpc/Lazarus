@@ -35,7 +35,7 @@ unit InputHistory;
 interface
 
 uses
-  Classes, SysUtils, FileUtil, DiffPatch, IDEProcs, AvgLvlTree,
+  Classes, SysUtils, FileUtil, FileProcs, DiffPatch, IDEProcs, AvgLvlTree,
   SynEditTypes, Laz_XMLCfg, LazConf, Dialogs, LCLProc;
 
 {$ifdef Windows}
@@ -851,8 +851,8 @@ begin
   Clear;
   FCompilerPath:=AValue;
   ResolvedFilename:=ReadAllLinks(FCompilerPath,false);
-  if FileExistsUTF8(ResolvedFilename) then
-    FCompilerAge:=FileAgeUTF8(ResolvedFilename)
+  if FileExistsCached(ResolvedFilename) then
+    FCompilerAge:=FileAgeCached(ResolvedFilename)
   else
     FCompilerAge:=-1;
 end;
@@ -947,7 +947,7 @@ begin
   if Result and CheckCompiler then begin
     ResolvedFilename:=ReadAllLinks(FCompilerPath,false);
     if FileExistsUTF8(ResolvedFilename)
-    and (FileAgeUTF8(ResolvedFilename)=FCompilerAge) then
+    and (FileAgeCached(ResolvedFilename)=FCompilerAge) then
       exit;
     FCompilerAge:=-1;
     Result:=false;

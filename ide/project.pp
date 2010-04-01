@@ -49,8 +49,10 @@ uses
   MemCheck,
 {$ENDIF}
   Classes, SysUtils, TypInfo, FPCAdds, LCLProc, LCLIntf, LCLType, Forms,
-  Controls, Dialogs, InterfaceBase,
-  Laz_XMLCfg, ExprEval, FileUtil, DefineTemplates, CodeToolManager, CodeCache, ProjectIntf, MacroIntf, LazIDEIntf,
+  FileUtil, Controls, Dialogs, InterfaceBase,
+  Laz_XMLCfg, ExprEval, FileProcs, DefineTemplates, CodeToolManager, CodeCache,
+  // IDEIntf
+  ProjectIntf, MacroIntf, LazIDEIntf,
   // IDE
   CompOptsModes, ProjectResources, LazConf, frmCustomApplicationOptions,
   LazarusIDEStrConsts, CompilerOptions,
@@ -2631,7 +2633,7 @@ begin
     if CompareFilenames(ProjectInfoFile,xmlconfig.Filename)=0 then begin
       fProjectInfoFileBuffer:=CodeToolBoss.LoadFile(ProjectInfoFile,true,true);
       try
-        fProjectInfoFileDate:=FileAgeUTF8(ProjectInfoFile);
+        fProjectInfoFileDate:=FileAgeCached(ProjectInfoFile);
       except
       end;
     end;
@@ -2965,7 +2967,7 @@ begin
     ProjectInfoFile:=NewProjectInfoFile;
     fProjectInfoFileBuffer:=CodeToolBoss.LoadFile(ProjectInfoFile,true,true);
     try
-      fProjectInfoFileDate:=FileAgeUTF8(ProjectInfoFile);
+      fProjectInfoFileDate:=FileAgeCached(ProjectInfoFile);
       {$IFDEF IDE_MEM_CHECK}CheckHeapWrtMemCnt('TProject.ReadProject A reading lpi');{$ENDIF}
       if fProjectInfoFileBuffer=nil then
         xmlconfig := TXMLConfig.CreateClean(ProjectInfoFile)
@@ -4052,7 +4054,7 @@ begin
   end;
 
   if not FileExistsCached(ProjectInfoFile) then exit;
-  if fProjectInfoFileDate=FileAgeUTF8(ProjectInfoFile) then exit;
+  if fProjectInfoFileDate=FileAgeCached(ProjectInfoFile) then exit;
 
   //DebugLn(['TProject.HasProjectInfoFileChangedOnDisk ',ProjectInfoFile,' fProjectInfoFileDate=',fProjectInfoFileDate,' ',FileAgeUTF8(ProjectInfoFile)]);
   Result:=true;
@@ -4060,7 +4062,7 @@ end;
 
 procedure TProject.IgnoreProjectInfoFileOnDisk;
 begin
-  fProjectInfoFileDate:=FileAgeUTF8(ProjectInfoFile);
+  fProjectInfoFileDate:=FileAgeCached(ProjectInfoFile);
 end;
 
 function TProject.FindDependencyByName(const PackageName: string
@@ -4550,7 +4552,7 @@ begin
   end;
 
   // read the state file
-  CurStateFileAge:=FileAgeUTF8(StateFile);
+  CurStateFileAge:=FileAgeCached(StateFile);
   if (not (lpsfStateFileLoaded in StateFlags))
   or (StateFileDate<>CurStateFileAge) then
   begin
@@ -4593,7 +4595,7 @@ var
 begin
   StateFile:=GetStateFilename;
   try
-    CompilerFileDate:=FileAgeUTF8(CompilerFilename);
+    CompilerFileDate:=FileAgeCached(CompilerFilename);
     XMLConfig:=TXMLConfig.CreateClean(StateFile);
     try
       XMLConfig.SetValue('Compiler/Value',CompilerFilename);
@@ -4607,7 +4609,7 @@ begin
     LastCompilerFilename:=CompilerFilename;
     LastCompilerFileDate:=CompilerFileDate;
     LastCompilerParams:=CompilerParams;
-    StateFileDate:=FileAgeUTF8(StateFile);
+    StateFileDate:=FileAgeCached(StateFile);
     StateFlags:=StateFlags+[lpsfStateFileLoaded];
   except
     on E: Exception do begin

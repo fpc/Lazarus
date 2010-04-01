@@ -31,7 +31,7 @@ interface
 
 uses
   Classes, SysUtils, GetText, LCLProc, Translations,
-  IDEProcs, FileUtil,
+  IDEProcs, FileProcs,
   avl_tree, LazarusIDEStrConsts;
   { IDE Language (Human, not computer) }
 
@@ -224,7 +224,7 @@ begin
 
       //DebugLn(['ConvertPackageRSTFiles RSTFilename=',RSTFilename,' OutputFilename=',OutputFilename]);
       if (not FileExistsUTF8(OutputFilename))
-      or (FileAgeUTF8(RSTFilename)>FileAgeUTF8(OutputFilename)) then
+      or (FileAgeCached(RSTFilename)>FileAgeCached(OutputFilename)) then
       begin
         FileList.Add(RSTFilename);
         {$ifndef SinglePOFile}

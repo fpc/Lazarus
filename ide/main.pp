@@ -59,13 +59,13 @@ uses
   MemCheck,
 {$ENDIF}
   // fpc packages
-  Math, Classes, SysUtils, Process, AsyncProcess, TypInfo,
+  Math, Classes, SysUtils, Process, AsyncProcess, TypInfo, AVL_Tree,
   // lcl
   LCLProc, LCLMemManager, LCLType, LCLIntf, LConvEncoding, LMessages, ComCtrls,
-  LResources, StdCtrls, Forms, Buttons, Menus, FileUtil, Controls, GraphType,
+  FileUtil, LResources, StdCtrls, Forms, Buttons, Menus, Controls, GraphType,
   HelpIntfs, Graphics, ExtCtrls, Dialogs, InterfaceBase, LDockCtrl, UTF8Process,
   // codetools
-  CodeBeautifier, FindDeclarationTool, LinkScanner, BasicCodeTools, AVL_Tree,
+  FileProcs, CodeBeautifier, FindDeclarationTool, LinkScanner, BasicCodeTools,
   Laz_XMLCfg, CodeToolsStructs, CodeToolManager, CodeCache, DefineTemplates,
   // synedit
   SynEditKeyCmds, SynBeautifier, SynEditMarks,
@@ -3648,7 +3648,7 @@ begin
                           +lisAllFiles+'|'+GetAllFilesMask;
       if OpenDialog.Execute then begin
         AFilename:=ExpandFileNameUTF8(OpenDialog.Filename);
-        if CompareFileExt(AFilename,'.lpi')<>0 then begin
+        if FileUtil.CompareFileExt(AFilename,'.lpi')<>0 then begin
           // not a lpi file
           // check if it is a program source
 
@@ -3828,7 +3828,7 @@ begin
 
   POFileAgeValid:=false;
   if FileExistsCached(POFilename) then begin
-    POFileAge:=FileAgeUTF8(POFilename);
+    POFileAge:=FileAgeCached(POFilename);
     POFileAgeValid:=true;
   end;
 
@@ -3844,7 +3844,7 @@ begin
         // check .lst file
         LRTFilename:=ChangeFileExt(CurFilename,'.lrt');
         if FileExistsCached(LRTFilename)
-        and ((not POFileAgeValid) or (FileAgeUTF8(LRTFilename)>POFileAge)) then
+        and ((not POFileAgeValid) or (FileAgeCached(LRTFilename)>POFileAge)) then
           Files.Add(LRTFilename);
         // check .rst file
         RSTFilename:=ExtractFileName(ChangeFileExt(CurFilename,'.rst'));
@@ -3859,7 +3859,7 @@ begin
         //DebugLn(['TMainIDE.UpdateProjectPOFile Looking for .rst file ="',RSTFilename,'"']);
 
         if FileExistsCached(RSTFilename)
-        and ((not POFileAgeValid) or (FileAgeUTF8(RSTFilename)>POFileAge)) then
+        and ((not POFileAgeValid) or (FileAgeCached(RSTFilename)>POFileAge)) then
           Files.Add(RSTFilename);
       end;
       AnUnitInfo:=AnUnitInfo.NextPartOfProject;
@@ -9548,7 +9548,8 @@ begin
     Ext:='.lpi';
   end;
 
-  if (not FileIsText(AFilename,FileReadable)) and FileReadable then begin
+  if (not FileUtil.FileIsText(AFilename,FileReadable)) and FileReadable then
+  begin
     ACaption:=lisFileNotText;
     AText:=Format(lisFileDoesNotLookLikeATextFileOpenItAnyway, ['"', AFilename,
       '"', #13, #13]);
@@ -10113,7 +10114,7 @@ begin
   or (AProject.LastCompilerParams<>CompilerParams)
   or ((AProject.LastCompilerFileDate>0)
       and FileExistsCached(CompilerFilename)
-      and (FileAgeUTF8(CompilerFilename)<>AProject.LastCompilerFileDate))
+      and (FileAgeCached(CompilerFilename)<>AProject.LastCompilerFileDate))
   then
     NeedBuildAllFlag:=true;
 
@@ -10126,10 +10127,10 @@ begin
     exit(mrYes);
   end;
 
-  StateFileAge:=FileAgeUTF8(StateFilename);
+  StateFileAge:=FileAgeCached(StateFilename);
 
   // check main source file
-  if FileExistsUTF8(SrcFilename) and (StateFileAge<FileAgeUTF8(SrcFilename)) then
+  if FileExistsCached(SrcFilename) and (StateFileAge<FileAgeCached(SrcFilename)) then
   begin
     DebugLn('TMainIDE.CheckIfProjectNeedsCompilation  SrcFile outdated ',AProject.IDAsString);
     exit(mrYes);
@@ -10147,7 +10148,7 @@ begin
     DebugLn('  File="',CompilerFilename,'"');
     exit(mrYes);
   end;
-  if FileAgeUTF8(CompilerFilename)<>AProject.LastCompilerFileDate then begin
+  if FileAgeCached(CompilerFilename)<>AProject.LastCompilerFileDate then begin
     DebugLn('TMainIDE.CheckIfProjectNeedsCompilation  Compiler file changed for ',AProject.IDAsString);
     DebugLn('  File="',CompilerFilename,'"');
     exit(mrYes);
@@ -10171,8 +10172,8 @@ begin
   // check project files
   AnUnitInfo:=AProject.FirstPartOfProject;
   while AnUnitInfo<>nil do begin
-    if FileExistsUTF8(AnUnitInfo.Filename)
-    and (StateFileAge<FileAgeUTF8(AnUnitInfo.Filename)) then begin
+    if FileExistsCached(AnUnitInfo.Filename)
+    and (StateFileAge<FileAgeCached(AnUnitInfo.Filename)) then begin
       DebugLn('TMainIDE.CheckIfProjectNeedsCompilation  Src has changed ',AProject.IDAsString,' ',AnUnitInfo.Filename);
       exit(mrYes);
     end;
@@ -10183,8 +10184,8 @@ begin
   AnUnitInfo:=AProject.FirstUnitWithEditorIndex;
   while AnUnitInfo<>nil do begin
     if (not AnUnitInfo.IsPartOfProject)
-    and FileExistsUTF8(AnUnitInfo.Filename)
-    and (StateFileAge<FileAgeUTF8(AnUnitInfo.Filename)) then begin
+    and FileExistsCached(AnUnitInfo.Filename)
+    and (StateFileAge<FileAgeCached(AnUnitInfo.Filename)) then begin
       DebugLn('TMainIDE.CheckIfProjectNeedsCompilation  Editor Src has changed ',AProject.IDAsString,' ',AnUnitInfo.Filename);
       exit(mrYes);
     end;
@@ -10524,7 +10525,7 @@ begin
           // save state, so that next time the project is not compiled clean
           Project1.LastCompilerFilename:=CompilerFilename;
           Project1.LastCompilerParams:=CompilerParams;
-          Project1.LastCompilerFileDate:=FileAgeUTF8(CompilerFilename);
+          Project1.LastCompilerFileDate:=FileAgeCached(CompilerFilename);
           DoJumpToCompilerMessage(-1,true);
           CompileProgress.Ready(lisInfoBuildError);
           exit;
@@ -12568,7 +12569,7 @@ var
 
     SearchFile:=AFilename;
     SearchPath:=AllIncPaths;
-    Result:=SearchFileInPath(SearchFile,BaseDir,SearchPath,';',[]);
+    Result:=FileUtil.SearchFileInPath(SearchFile,BaseDir,SearchPath,';',[]);
     {$IFDEF VerboseFindSourceFile}
     debugln(['TMainIDE.SearchIndirectIncludeFile Result="',Result,'"']);
     {$ENDIF}
@@ -12583,7 +12584,7 @@ var
     Filename:='';
     SearchPath:=RemoveSearchPaths(TheSearchPath,AlreadySearchedPaths);
     if SearchPath<>'' then begin
-      Filename:=SearchFileInPath(SearchFile,BaseDir,SearchPath,';',[]);
+      Filename:=FileUtil.SearchFileInPath(SearchFile,BaseDir,SearchPath,';',[]);
       {$IFDEF VerboseFindSourceFile}
       debugln(['TMainIDE.FindSourceFile trying "',SearchPath,'" Filename="',Filename,'"']);
       {$ENDIF}

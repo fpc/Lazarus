@@ -34,7 +34,7 @@ uses
 {$IFDEF IDE_MEM_CHECK}
   MemCheck,
 {$ENDIF}
-  Classes, SysUtils, Graphics, Controls, Forms, LCLProc, FileUtil, Dialogs,
+  Classes, SysUtils, Graphics, Controls, Forms, LCLProc, FileProcs, Dialogs,
   Laz_XMLCfg, AvgLvlTree, ProjectIntf,
   IDEProcs, LazarusIDEStrConsts, IDETranslations, LazConf,
   ObjectInspector, IDEOptionDefs, IDEWindowIntf, ExtToolDialog, TransferMacros,
@@ -1488,7 +1488,7 @@ end;
 function TEnvironmentOptions.FileHasChangedOnDisk: boolean;
 begin
   Result:=FFileHasChangedOnDisk
-      or ((FFilename<>'') and (FFileAge<>0) and (FileAgeUTF8(FFilename)<>FFileAge));
+      or ((FFilename<>'') and (FFileAge<>0) and (FileAgeCached(FFilename)<>FFileAge));
   FFileHasChangedOnDisk:=Result;
 end;
 
@@ -1512,7 +1512,7 @@ procedure TEnvironmentOptions.FileUpdated;
 begin
   FFileHasChangedOnDisk:=false;
   if FFilename<>'' then
-    FFileAge:=FileAgeUTF8(FFilename)
+    FFileAge:=FileAgeCached(FFilename)
   else
     FFileAge:=0;
 end;
