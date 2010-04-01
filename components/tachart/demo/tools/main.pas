@@ -20,6 +20,7 @@ type
     ChartToolset1PanAny: TPanDragTool;
     ChartToolset1PanHor: TPanDragTool;
     ChartToolset1PanVert: TPanDragTool;
+    ChartToolset1ReticuleTool1: TReticuleTool;
     ChartToolset1ZoomDragTool1: TZoomDragTool;
     ChartToolset1ZoomOut: TZoomClickTool;
     ChartToolset1ZoomIn: TZoomClickTool;
