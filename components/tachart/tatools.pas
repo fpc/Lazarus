@@ -523,14 +523,29 @@ begin
 end;
 
 procedure TZoomDragTool.MouseUp(APoint: TPoint);
+var
+  ext: TDoubleRect;
 begin
   Unused(APoint);
   Deactivate;
-  with FChart do begin
-    PrepareXorPen(Canvas);
-    Canvas.Rectangle(FSelectionRect);
-    ZoomToRect(FSelectionRect);
+
+  PrepareXorPen(FChart.Canvas);
+  FChart.Canvas.Rectangle(FSelectionRect);
+  with FSelectionRect do begin
+    if (Left >= Right) or (Top >= Bottom) then begin
+      FChart.ZoomFull;
+      exit;
+    end;
+    ext.a := FChart.ImageToGraph(TopLeft);
+    ext.b := FChart.ImageToGraph(BottomRight);
   end;
+  with ext do begin
+    if a.X > b.X then
+      Exchange(a.X, b.X);
+    if a.Y > b.Y then
+      Exchange(a.Y, b.Y);
+  end;
+  FChart.LogicalExtent := ext;
 end;
 
 { TReticuleTool }

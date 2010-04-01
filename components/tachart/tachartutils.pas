@@ -192,7 +192,7 @@ procedure UpdateMinMax(AValue: Double; var AMin, AMax: Double);
 operator +(const A: TPoint; B: TSize): TPoint; overload; inline;
 operator +(const A, B: TPoint): TPoint; overload; inline;
 operator +(const A, B: TDoublePoint): TDoublePoint; overload; inline;
-operator - (const A, B: TPoint): TPoint; overload; inline;
+operator -(const A, B: TPoint): TPoint; overload; inline;
 operator -(const A, B: TDoublePoint): TDoublePoint; overload; inline;
 operator =(const A, B: TMethod): Boolean; overload; inline;
 

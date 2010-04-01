@@ -100,9 +100,9 @@ type
   strict protected
     FChart: TChart;
 
-    function Index: Integer; virtual; abstract;
     procedure Activate; virtual;
     procedure Deactivate; virtual;
+    function Index: Integer; virtual; abstract;
   end;
 
   TChartToolEventId = (evidMouseDown, evidMouseMove, evidMouseUp);
@@ -173,6 +173,7 @@ type
     function GetMargins(ACanvas: TCanvas): TRect;
     function GetSeriesCount: Integer;
     function GetToolset: TBasicChartToolset;
+    procedure HideReticule;
 
     procedure SetAxis(AIndex: Integer; AValue: TChartAxis);
     procedure SetAxisList(AValue: TChartAxisList);
@@ -233,8 +234,6 @@ type
     procedure SaveToFile(AClass: TRasterImageClass; const AFileName: String);
     function SaveToImage(AClass: TRasterImageClass): TRasterImage;
     procedure ZoomFull;
-    procedure ZoomToRect(const ARect: TRect);
-
   public // Coordinate conversion
     function GraphToImage(const AGraphPoint: TDoublePoint): TPoint;
     function ImageToGraph(const APoint: TPoint): TDoublePoint;
@@ -499,6 +498,12 @@ begin
     FreeAndNil(ALegendItems);
     raise;
   end;
+end;
+
+procedure TChart.HideReticule;
+begin
+  // Hide reticule - - it will be drawn again in the next MouseMove.
+  FReticulePos := Point( - 1, - 1);
 end;
 
 procedure TChart.CalculateTransformationCoeffs(const AMargin: TRect);
@@ -902,6 +907,7 @@ end;
 
 procedure TChart.SetLogicalExtent(const AValue: TDoubleRect);
 begin
+  HideReticule;
   FLogicalExtent := AValue;
   FIsZoomed := true;
   FCurrentExtent := FLogicalExtent;
@@ -1050,32 +1056,10 @@ end;
 
 procedure TChart.ZoomFull;
 begin
+  if not FIsZoomed then exit;
+  HideReticule;
   FIsZoomed := false;
   Invalidate;
-end;
-
-procedure TChart.ZoomToRect(const ARect: TRect);
-var
-  oldIsZoomed: Boolean;
-begin
-  oldIsZoomed := FIsZoomed;
-  with ARect do
-    FIsZoomed := (Left < Right) and (Top < Bottom);
-  if FIsZoomed then
-    with FCurrentExtent do begin
-      a := ImageToGraph(ARect.TopLeft);
-      b := ImageToGraph(ARect.BottomRight);
-      if a.X > b.X then
-        Exchange(a.X, b.X);
-      if a.Y > b.Y then
-        Exchange(a.Y, b.Y);
-    end;
-
-  if FIsZoomed or oldIsZoomed then begin
-    // Hide reticule -- it will be drawn again in the next MouseMove.
-    FReticulePos := Point(-1, -1);
-    Invalidate;
-  end;
 end;
 
 { TBasicChartSeries }
