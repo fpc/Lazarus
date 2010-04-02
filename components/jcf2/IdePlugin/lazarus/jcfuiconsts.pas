@@ -190,6 +190,10 @@ resourcestring
   lisCDUseANewLineAfterCompilerDirectives = 'Use a new line after compiler '
     +'directives:';
 
+  //Comments tab
+  lisCommentsRemoveEmptySlashComments = 'Remove empty ''//'' comments';
+  lisCommentsRemoveEmptyCurlyBracesComments = 'Remove empty ''{ }'' comments';
+
 implementation
 
 end.

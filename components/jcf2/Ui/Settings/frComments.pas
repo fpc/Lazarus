@@ -57,7 +57,7 @@ implementation
 {$R *.lfm}
 
 uses
-  JcfHelp, JcfSettings, SetComments;
+  JcfHelp, JcfSettings, SetComments, jcfuiconsts;
 
 constructor TfComments.Create(AOwner: TComponent);
 begin
@@ -67,12 +67,16 @@ end;
 
 function TfComments.GetTitle: String;
 begin
-  Result := 'Comments';
+  Result := lisAlignComments;
 end;
 
 procedure TfComments.Setup(ADialog: TAbstractOptionsEditorDialog);
 begin
   inherited Setup(ADialog);
+  cbRemoveEmptyDoubleSlashComments.Caption :=
+    lisCommentsRemoveEmptySlashComments;
+  cbRemoveEmptyCurlyBraceComments.Caption :=
+    lisCommentsRemoveEmptyCurlyBracesComments;
 end;
 
 procedure TfComments.ReadSettings(AOptions: TAbstractIDEOptions);
