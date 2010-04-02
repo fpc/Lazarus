@@ -597,3 +597,19 @@ msgstr ""
 msgid "The settings file \"%s\" does not exist.%sThe formatter will work better if it is configured to use a valid settings file"
 msgstr ""
 
+#: jcfuiconsts.liswarningsignoreunusedparametersnamed
+msgid "&Ignore unused parameters named:"
+msgstr ""
+
+#: jcfuiconsts.liswarningswarnaboutunusedparameters
+msgid "Warn about &unused parameters"
+msgstr ""
+
+#: jcfuiconsts.liswarningswarnings
+msgid "Warnings"
+msgstr ""
+
+#: jcfuiconsts.liswarningswarningson
+msgid "&Warnings On"
+msgstr ""
+

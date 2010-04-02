@@ -606,3 +606,19 @@ msgstr "Об&ъявлений Var"
 msgid "The settings file \"%s\" does not exist.%sThe formatter will work better if it is configured to use a valid settings file"
 msgstr "Файл параметров \"%s\" не существует.%sФорматирование будет работать лучше, если его настроить для использования корректного файла параметров"
 
+#: jcfuiconsts.liswarningsignoreunusedparametersnamed
+msgid "&Ignore unused parameters named:"
+msgstr "&Игнорировать неиспользуемые параметры с именами:"
+
+#: jcfuiconsts.liswarningswarnaboutunusedparameters
+msgid "Warn about &unused parameters"
+msgstr "Предупреждать о &неиспользуемых параметрах"
+
+#: jcfuiconsts.liswarningswarnings
+msgid "Warnings"
+msgstr "Предупреждения"
+
+#: jcfuiconsts.liswarningswarningson
+msgid "&Warnings On"
+msgstr "Включить &предупреждения"
+
