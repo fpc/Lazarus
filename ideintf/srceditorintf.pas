@@ -220,6 +220,8 @@ type
               virtual; abstract;
     function GetSourceEditors(Index: integer): TSourceEditorInterface;
               virtual; abstract;
+    function GetUniqueSourceEditors(Index: integer): TSourceEditorInterface;
+              virtual; abstract;
   public
     // List of SourceEditorWindows
     function SourceWindowWithEditor(const AEditor: TSourceEditorInterface): TSourceEditorWindowInterface;
@@ -237,6 +239,10 @@ type
              read GetSourceEditors;
     property ActiveEditor: TSourceEditorInterface
              read GetActiveEditor  write SetActiveEditor;
+    // List of unique SourceEditors (excluding DualView)
+    function UniqueSourceEditorCount: integer; virtual; abstract;
+    property UniqueSourceEditors[Index: integer]: TSourceEditorInterface
+             read GetUniqueSourceEditors;
     // Editor Preferences
     function GetEditorControlSettings(EditControl: TControl): boolean; virtual; abstract;
     function GetHighlighterSettings(Highlighter: TObject): boolean; virtual; abstract;
