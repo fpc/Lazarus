@@ -5042,9 +5042,8 @@ begin
 
   // TOdo: highlighter
 
-  for i := 0 to Plugins.Count - 1 do begin
-    FPlugins.Add(Plugins[i]);
-  end;
+  for i := 0 to Plugins.Count - 1 do
+    TSynEditPlugin(Plugins[i]).Editor := Self;
   Plugins.Free;
 
   // Todo: rescan / redraw /re....
