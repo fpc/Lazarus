@@ -286,6 +286,7 @@ type
     FSourceDirectoryReferenced: boolean;
     FSourceDirNeedReference: boolean;
     fLastDirectoryReferenced: string;
+    FSetBookmarLock: Integer;
 
     function GetEditorInfo(Index: Integer): TUnitEditorInfo;
     function GetHasResources:boolean;
@@ -1499,6 +1500,7 @@ end;
 procedure TUnitInfo.Clear;
 begin
   FBookmarks.Clear;
+  FSetBookmarLock := 0;
   FBuildFileIfActive:=false;
   fComponent := nil;
   fComponentName := '';
@@ -1567,7 +1569,7 @@ procedure TUnitInfo.SaveToXMLConfig(XMLConfig: TXMLConfig; const Path: string;
   SaveData, SaveSession: boolean; UsePathDelim: TPathDelimSwitch);
 var
   AFilename: String;
-  i: Integer;
+  i, X, Y: Integer;
 begin
   // global data
   AFilename:=Filename;
@@ -1607,11 +1609,16 @@ begin
 
     XMLConfig.SetDeleteValue(Path+'UsageCount/Value',RoundToInt(fUsageCount),-1);
     if OpenEditorInfoCount > 0 then
-      for i := Bookmarks.Count - 1 downto 0 do
+      for i := Bookmarks.Count - 1 downto 0 do begin
         if (Project.Bookmarks.BookmarkWithID(Bookmarks[i].ID) = nil) or
            (Project.Bookmarks.BookmarkWithID(Bookmarks[i].ID).UnitInfo <> self)
         then
-          Bookmarks.Delete(i);
+          Bookmarks.Delete(i)
+        else
+        if TSynEdit(OpenEditorInfo[0].EditorComponent.EditorControl).GetBookMark(Bookmarks[i].ID, X, Y)
+        then
+          Bookmarks[i].CursorPos := Point(X, Y);
+      end;
     FBookmarks.SaveToXMLConfig(XMLConfig,Path+'Bookmarks/');
     XMLConfig.SetDeleteValue(Path+'Loaded/Value',fLoaded,false);
     XMLConfig.SetDeleteValue(Path+'ReadOnly/Value',fUserReadOnly,false);
@@ -1784,13 +1791,18 @@ begin
 
   if assigned(Project1) and assigned(Project1.Bookmarks) then begin
     if OpenEditorInfoCount > 0 then begin
-      // Adjust bookmarks
-      for i := 0 to Bookmarks.Count - 1 do begin
-        BookmarkID := Bookmarks[i].ID;
-        j := Project1.Bookmarks.IndexOfID(BookmarkID);
-        if (j < 0) then
-          TSynEdit(OpenEditorInfo[0].EditorComponent.EditorControl).SetBookMark(BookmarkID,
-            Bookmarks[i].CursorPos.X, Bookmarks[i].CursorPos.Y);
+      inc(FSetBookmarLock);
+      try
+        // Adjust bookmarks
+        for i := 0 to Bookmarks.Count - 1 do begin
+          BookmarkID := Bookmarks[i].ID;
+          j := Project1.Bookmarks.IndexOfID(BookmarkID);
+          if (j < 0) then
+            TSynEdit(OpenEditorInfo[0].EditorComponent.EditorControl).SetBookMark(BookmarkID,
+              Bookmarks[i].CursorPos.X, Bookmarks[i].CursorPos.Y);
+        end;
+      finally
+        dec(FSetBookmarLock);
       end;
     end
     else // OpenEditorInfoCount = 0
@@ -2078,7 +2090,8 @@ end;
 
 function TUnitInfo.AddBookmark(X, Y, ID: integer): integer;
 begin
-  Result := Bookmarks.Add(X, Y, ID);
+  if FSetBookmarLock = 0 then
+    Result := Bookmarks.Add(X, Y, ID);
   SessionModified := True;
   Project1.AddBookmark(X, Y, ID, Self);
 end;
