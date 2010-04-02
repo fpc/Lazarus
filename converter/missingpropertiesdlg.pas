@@ -229,12 +229,13 @@ var
   CurError: TLFMError;
   TheNode: TLFMTreeNode;
   ObjNode: TLFMObjectNode;
-  // Property name --> replacement name.
+  // Type name --> replacement name.
   NameReplacements: TStringToStringTree;
   // List of TLFMChangeEntry objects.
   ChgEntryRepl: TObjectList;
   OldIdent, NewIdent: string;
   StartPos, EndPos: integer;
+  i: Integer;
 begin
   Result:=mrNone;
   ChgEntryRepl:=TObjectList.Create;
@@ -251,12 +252,13 @@ begin
           // Object type
           ObjNode:=CurError.Node as TLFMObjectNode;
           OldIdent:=ObjNode.TypeName;
-          StartPos:=ObjNode.TypeNamePosition;
-          EndPos:=StartPos+Length(OldIdent);
           NewIdent:=NameReplacements[OldIdent];
           // Keep the old class name if no replacement.
-          if NewIdent<>'' then
+          if NewIdent<>'' then begin
+            StartPos:=ObjNode.TypeNamePosition;
+            EndPos:=StartPos+Length(OldIdent);
             AddReplacement(ChgEntryRepl,StartPos,EndPos,NewIdent);
+          end;
         end
         else begin
           // Property

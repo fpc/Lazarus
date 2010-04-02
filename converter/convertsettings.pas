@@ -149,7 +149,7 @@ begin
   fReplaceUnits['TntActnList']:='ActnList';
   fReplaceUnits['TntMenus']:='Menus';
   fReplaceUnits['TntClasses']:='Classes';
-  fReplaceUnits['TntForms']:='Form';
+  fReplaceUnits['TntForms']:='Forms';
   fReplaceUnits['TntComCtrls']:='ComCtrls';
   fReplaceUnits['TntStdCtrls']:='StdCtrls';
   fReplaceUnits['TntExtCtrls']:='ExtCtrls';
@@ -170,7 +170,7 @@ begin
   fReplaceTypes['TDBRichEdit']:='TDBMemo';
   fReplaceTypes['TApplicationEvents']:='TApplicationProperties';
   fReplaceTypes['TPNGObject']:='TPortableNetworkGraphic';
-  fReplaceTypes['TTntForm']:='TForm';
+  fReplaceTypes['TTnt(.+)']:='T$1';
 
 end;
 

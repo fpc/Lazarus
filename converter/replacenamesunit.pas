@@ -6,7 +6,7 @@ interface
 
 uses
   Classes, SysUtils, FileUtil, LResources, Forms, Controls, Graphics, Dialogs,
-  Grids, Buttons, ExtCtrls, CodeToolsStructs, LazarusIDEStrConsts;
+  Grids, Buttons, ExtCtrls, CodeToolsStructs, SynRegExpr, LazarusIDEStrConsts;
 
 type
 
@@ -16,8 +16,10 @@ type
   private
     fGrid: TStringGrid;
     fReplaceMap: TStringToStringTree;
+    fNameList: TStringList;  // Names (keys) in fReplaceMap.
     fSeenName: TStringList;
-    i: Integer;
+    GridEndInd: Integer;
+    function FindReplacement(AIdent: string): string;
   public
     constructor Create(AGrid: TStringGrid; AReplaceMap: TStringToStringTree);
     destructor Destroy; override;
@@ -96,8 +98,10 @@ constructor TGridUpdater.Create(AGrid: TStringGrid; AReplaceMap: TStringToString
 begin
   fGrid:=AGrid;
   fReplaceMap:=AReplaceMap;
-  i:=1;
+  fNameList:=TStringList.Create;
+  fReplaceMap.GetNames(fNameList);
   fSeenName:=TStringList.Create;
+  GridEndInd:=1;
   fGrid.BeginUpdate;
 end;
 
@@ -105,10 +109,38 @@ destructor TGridUpdater.Destroy;
 begin
   fGrid.EndUpdate;
   fSeenName.Free;
+  fNameList.Free;
   inherited Destroy;
 end;
 
+function TGridUpdater.FindReplacement(AIdent: string): string;
+// Try to find a matching replacement using regular expression.
+var
+  RE: TRegExpr;
+  i: Integer;
+  s: string;
+begin
+  Result:='';
+  RE:=TRegExpr.Create;
+  try
+    for i:=0 to fNameList.Count-1 do begin
+      s:=fNameList[i];           // NameList has extracted keys from fReplaceMap.
+      // If key contains '(' assume it is a regexp.
+      if Pos('(', s)>0 then begin
+        RE.Expression:=s;
+        if RE.Exec(AIdent) then begin  // Match with regexp.
+          Result:=RE.Substitute(fReplaceMap[s]);
+          Break;
+        end;
+      end;
+    end;
+  finally
+    RE.Free;
+  end;
+end;
+
 procedure TGridUpdater.AddUnique(AOldIdent: string);
+// Add a new Delphi -> Lazarus mapping to grid.
 var
   NewIdent: string;
 begin
@@ -116,11 +148,13 @@ begin
   if fSeenName.IndexOf(AOldIdent)<0 then begin
     fSeenName.Append(AOldIdent);
     NewIdent:=fReplaceMap[AOldIdent];
-    if fGrid.RowCount<i+1 then
-      fGrid.RowCount:=i+1;
-    fGrid.Cells[0,i]:=AOldIdent;
-    fGrid.Cells[1,i]:=NewIdent;
-    Inc(i);
+    if NewIdent='' then               // Not found by name, try regexp.
+      NewIdent:=FindReplacement(AOldIdent);
+    if fGrid.RowCount<GridEndInd+1 then
+      fGrid.RowCount:=GridEndInd+1;
+    fGrid.Cells[0,GridEndInd]:=AOldIdent;
+    fGrid.Cells[1,GridEndInd]:=NewIdent;
+    Inc(GridEndInd);
   end;
 end;
 
