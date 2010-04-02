@@ -13611,6 +13611,7 @@ function TMainIDE.DoJumpToCodePos(
   AddJumpPoint: boolean; FocusEditor: boolean; MarkLine: Boolean): TModalResult;
 var
   NewSrcEdit: TSourceEditor;
+  LinesInWin, MinLines, CurTopLine: Integer;
 begin
   Result:=mrCancel;
   if NewSource=nil then begin
@@ -13645,8 +13646,22 @@ begin
   end;
   if NewX<1 then NewX:=1;
   if NewY<1 then NewY:=1;
-  if NewTopLine<1 then
-    NewTopLine:=Max(1,NewY-(NewSrcEdit.EditorComponent.LinesInWindow div 2));
+  if NewTopLine<1 then begin
+    CurTopLine := NewSrcEdit.EditorComponent.TopLine;
+    LinesInWin := NewSrcEdit.EditorComponent.LinesInWindow;
+    MinLines := Min(Max(LinesInWin div 5, 2), LinesInWin div 3);
+    if (NewY <= CurTopLine) or (NewY >= CurTopLine + LinesInWin)
+    then
+      NewTopLine := Max(1, NewY - (LinesInWin div 2))
+    else
+    if NewY < CurTopLine + MinLines then
+      NewTopLine := Max(1, NewY - MinLines)
+    else
+    if NewY > CurTopLine + LinesInWin - MinLines then
+      NewTopLine := Max(1, NewY - LinesInWin + MinLines)
+    else
+      NewTopLine := CurTopLine;
+  end;
   //debugln(['[TMainIDE.DoJumpToCodePos] ',NewX,',',NewY,',',NewTopLine]);
   with NewSrcEdit.EditorComponent do 
   begin
