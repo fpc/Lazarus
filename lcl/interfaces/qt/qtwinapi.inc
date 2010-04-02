@@ -4201,8 +4201,8 @@ begin
     exit;
   end;
 
-  if SavedDC<0 then
-    SavedDC := SavedDC+SavedDCList.Count;
+  if SavedDC < 0 then
+    SavedDC := SavedDC + SavedDCList.Count;
 
   // check index
   Result := (SavedDC > 0) and (SavedDC < SavedDCList.Count);
@@ -4266,7 +4266,7 @@ begin
 
   if SavedDCList=nil then
   begin
-    SavedDCList := TList.Create;
+    SavedDCList := TFPList.Create;
     SavedDCList.Add(nil); // start at index 1, 0 is an invalid saved state
   end;
 

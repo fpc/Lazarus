@@ -58,7 +58,7 @@ type
   private
     App: QApplicationH;
     FOverrideCursor: TObject;
-    SavedDCList: TList;
+    SavedDCList: TFPList;
     CriticalSection: TRTLCriticalSection;
     SavedHandlesList: TMap;
     // global hooks
