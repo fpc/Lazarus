@@ -14728,6 +14728,19 @@ msgstr "Kopioi"
 msgid "Copy Filename"
 msgstr "Kopio tiedoston nimi leikepöydälle"
 
+#: lazarusidestrconsts.uemcopytonewwindow
+msgid "Copy to new Window"
+msgstr ""
+
+#: lazarusidestrconsts.uemcopytootherwindow
+msgid "Copy to other Window"
+msgstr ""
+
+#: lazarusidestrconsts.uemcopytootherwindownew
+msgctxt "lazarusidestrconsts.uemcopytootherwindownew"
+msgid "New Window"
+msgstr ""
+
 #: lazarusidestrconsts.uemcut
 msgctxt "lazarusidestrconsts.uemcut"
 msgid "Cut"
@@ -14816,6 +14829,7 @@ msgid "Move to other Window"
 msgstr ""
 
 #: lazarusidestrconsts.uemmovetootherwindownew
+msgctxt "lazarusidestrconsts.uemmovetootherwindownew"
 msgid "New Window"
 msgstr ""
 

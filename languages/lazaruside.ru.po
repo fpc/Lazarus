@@ -5,7 +5,7 @@ msgstr ""
 "Content-Type: text/plain; charset=utf-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "POT-Creation-Date: \n"
-"PO-Revision-Date: 2010-04-02 02:08+0300\n"
+"PO-Revision-Date: 2010-04-03 02:28+0300\n"
 "Language-Team: \n"
 "MIME-Version: 1.0\n"
 
@@ -14737,6 +14737,19 @@ msgstr "Копировать"
 msgid "Copy Filename"
 msgstr "Копировать имя файла"
 
+#: lazarusidestrconsts.uemcopytonewwindow
+msgid "Copy to new Window"
+msgstr "Копировать в новое окно"
+
+#: lazarusidestrconsts.uemcopytootherwindow
+msgid "Copy to other Window"
+msgstr "Копировать в другое окно"
+
+#: lazarusidestrconsts.uemcopytootherwindownew
+msgctxt "lazarusidestrconsts.uemcopytootherwindownew"
+msgid "New Window"
+msgstr "Новое окно"
+
 #: lazarusidestrconsts.uemcut
 msgctxt "lazarusidestrconsts.uemcut"
 msgid "Cut"
@@ -14825,6 +14838,7 @@ msgid "Move to other Window"
 msgstr "Переместить в другое окно"
 
 #: lazarusidestrconsts.uemmovetootherwindownew
+msgctxt "lazarusidestrconsts.uemmovetootherwindownew"
 msgid "New Window"
 msgstr "Новое окно"
 
