@@ -229,6 +229,14 @@ msgstr "Однократные операции"
 msgid "Run &only these"
 msgstr "Выполнять &только их"
 
+#: jcfuiconsts.liscommentsremoveemptycurlybracescomments
+msgid "Remove empty '{ }' comments"
+msgstr "Удалять пустые комментарии в фигурных скобках '{ }'"
+
+#: jcfuiconsts.liscommentsremoveemptyslashcomments
+msgid "Remove empty '//' comments"
+msgstr "Удалять пустые комментарии, начинающиеся с двух косых черт '//'"
+
 #: jcfuiconsts.liserrorwritingsettingsexception
 msgid "Error writing settings file %s:%s%s"
 msgstr "Ошибка при записи файла параметров %s:%s%s"
