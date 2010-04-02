@@ -919,16 +919,18 @@ procedure TSearchForm.DoSearchOpenFiles;
 var
   i: integer;
   TheFileList: TStringList;
+  SrcEdit: TSourceEditorInterface;
 begin
   try
     TheFileList:= TStringList.Create;
-    for i:= 0 to SourceEditorManagerIntf.SourceEditorCount -1 do
+    for i:= 0 to SourceEditorManagerIntf.UniqueSourceEditorCount -1 do
     begin
       //only if file exists on disk
-      if FilenameIsAbsolute(SourceEditorManagerIntf.SourceEditors[i].FileName) and
-         FileExistsUTF8(SourceEditorManagerIntf.SourceEditors[i].FileName) then
+      SrcEdit := SourceEditorManagerIntf.UniqueSourceEditors[i];
+      if FilenameIsAbsolute(SrcEdit.FileName) and
+         FileExistsUTF8(SrcEdit.FileName) then
       begin
-         TheFileList.Add(SourceEditorManagerIntf.SourceEditors[i].FileName);
+         TheFileList.Add(SrcEdit.FileName);
       end;
     end;
     SearchFileList:= TheFileList;

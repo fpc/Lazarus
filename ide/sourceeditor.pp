@@ -814,6 +814,7 @@ type
     function  GetActiveEditor: TSourceEditorInterface; override;
     procedure SetActiveEditor(const AValue: TSourceEditorInterface); override;
     function  GetSourceEditors(Index: integer): TSourceEditorInterface; override;
+    function  GetUniqueSourceEditors(Index: integer): TSourceEditorInterface; override;
   public
     // Windows
     function SourceWindowWithEditor(const AEditor: TSourceEditorInterface): TSourceEditorWindowInterface;
@@ -826,6 +827,7 @@ type
     function  SourceEditorIntfWithFilename(const Filename: string): TSourceEditorInterface;
               override;
     function  SourceEditorCount: integer; override;
+    function  UniqueSourceEditorCount: integer; override;
     // Settings
     function  GetEditorControlSettings(EditControl: TControl): boolean; override;
     function  GetHighlighterSettings(Highlighter: TObject): boolean; override;
@@ -4800,14 +4802,13 @@ begin
       while i < Manager.SourceEditorCount do begin
         if Manager.SourceEditors[i].EditorComponent.GetBookMark
           (BookMarkID,BookMarkX,BookMarkY)
-        then begin
+      then begin
           MarkDesc := MarkDesc+': ' + Manager.SourceEditors[i].PageName
-            +' ('+IntToStr(BookMarkY)+','+IntToStr(BookMarkX)+')';
+          +' ('+IntToStr(BookMarkY)+','+IntToStr(BookMarkX)+')';
           break;
         end;
         inc(i);
       end;
-
       // goto book mark item
       MarkMenuItem:=SrcEditSubMenuGotoBookmarks[BookMarkID];
       if MarkMenuItem is TIDEMenuCommand then
@@ -5357,7 +5358,7 @@ begin
     if NewPageNum >= 0 then
       PageNum := NewPageNum
     else
-    Pagenum := PageIndex+1;
+      Pagenum := PageIndex+1;
     Pagenum := Max(0,Min(PageNum, PageCount));
     NoteBookInsertPage(PageNum, Manager.FindUniquePageName('', nil));
     NotebookPage[PageNum].ReAlign;
@@ -6408,12 +6409,12 @@ begin
       (OldIndex, Manager.IndexOfSourceWindow(self), NewIndex);
   end
   else begin
-  if (Source = FNotebook) then
-    MoveEditor(OldIndex, NewIndex)
-  else begin
+    if (Source = FNotebook) then
+      MoveEditor(OldIndex, NewIndex)
+    else begin
       Manager.SourceWindows[SourceIndex].MoveEditor
-          (OldIndex, Manager.IndexOfSourceWindow(self), NewIndex);
-      end;
+        (OldIndex, Manager.IndexOfSourceWindow(self), NewIndex);
+    end;
   end;
 end;
 
@@ -7359,6 +7360,22 @@ begin
     Result := nil;
 end;
 
+function TSourceEditorManagerBase.GetUniqueSourceEditors(Index: integer
+  ): TSourceEditorInterface;
+var
+  i: Integer;
+begin
+  for i := 0 to SourceEditorCount - 1 do begin
+    Result := SourceEditors[i];
+    if (TSourceEditor(Result).SharedEditorCount = 0) or
+       (TSourceEditor(Result).SharedEditors[0] = Result)
+    then
+      dec(Index);
+    if Index < 0 then exit;
+  end;
+  Result := nil;
+end;
+
 function TSourceEditorManagerBase.SourceWindowWithEditor(
   const AEditor: TSourceEditorInterface): TSourceEditorWindowInterface;
 var
@@ -7411,6 +7428,19 @@ begin
   Result := 0;
   for i := 0 to SourceWindowCount - 1 do
     Result := Result + SourceWindows[i].Count;
+end;
+
+function TSourceEditorManagerBase.UniqueSourceEditorCount: integer;
+var
+  SrcEdit: TSourceEditor;
+  i: Integer;
+begin
+  Result := 0;
+  for i := 0 to SourceEditorCount - 1 do begin
+    SrcEdit := TSourceEditor(SourceEditors[i]);
+    if (SrcEdit.SharedEditorCount = 0) or (SrcEdit.SharedEditors[0] = SrcEdit) then
+      inc(Result);
+  end;
 end;
 
 function TSourceEditorManagerBase.GetEditorControlSettings(EditControl: TControl
