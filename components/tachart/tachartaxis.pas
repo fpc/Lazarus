@@ -132,7 +132,6 @@ type
     property Format stored IsFormatStored;
     property Frame;
     property LabelBrush;
-    property LinkPen;
     property Source: TCustomChartSource read FSource write SetSource;
     property Style default smsValue;
   end;
