@@ -60,7 +60,7 @@ implementation
 {$R *.lfm}
 
 uses
-  JcfHelp, JcfSettings;
+  JcfHelp, JcfSettings, jcfuiconsts;
 
 constructor TfWarnings.Create(AOwner: TComponent);
 begin
@@ -70,12 +70,15 @@ end;
 
 function TfWarnings.GetTitle: String;
 begin
-  Result := 'Warnings';
+  Result := lisWarningsWarnings;
 end;
 
 procedure TfWarnings.Setup(ADialog: TAbstractOptionsEditorDialog);
 begin
   inherited Setup(ADialog);
+  cbWarningsOn.Caption := lisWarningsWarningsOn;
+  cbWarnUnusedParams.Caption := lisWarningsWarnAboutUnusedParameters;
+  Label1.Caption := lisWarningsIgnoreUnusedParametersNamed;
 end;
 
 procedure TfWarnings.ReadSettings(AOptions: TAbstractIDEOptions);

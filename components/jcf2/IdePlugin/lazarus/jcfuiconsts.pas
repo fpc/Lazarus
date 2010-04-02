@@ -194,6 +194,12 @@ resourcestring
   lisCommentsRemoveEmptySlashComments = 'Remove empty ''//'' comments';
   lisCommentsRemoveEmptyCurlyBracesComments = 'Remove empty ''{ }'' comments';
 
+  //Warnings tab
+  lisWarningsWarnings = 'Warnings';
+  lisWarningsWarningsOn = '&Warnings On';
+  lisWarningsWarnAboutUnusedParameters = 'Warn about &unused parameters';
+  lisWarningsIgnoreUnusedParametersNamed = '&Ignore unused parameters named:';
+
 implementation
 
 end.
