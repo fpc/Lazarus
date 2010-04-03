@@ -2396,10 +2396,26 @@ end;
   That's why you should always call AdjustSize instead of DoAutoSize.
 ------------------------------------------------------------------------------}
 procedure TControl.DoAutoSize;
+{$IFNDEF OldAutoSize}
+var
+  PreferredWidth: integer;
+  PreferredHeight: integer;
+  ResizeWidth: Boolean;
+  ResizeHeight: Boolean;
+{$ENDIF}
 begin
-  //Handled by TWinControl, or other descendants
+  // handled by TWinControl, or other descendants
   {$IFNDEF OldAutoSize}
-  Exclude(FControlFlags,cfAutoSizeNeeded);
+  ResizeWidth:=not WidthIsAnchored;
+  ResizeHeight:=not HeightIsAnchored;
+  if ResizeWidth or ResizeHeight then begin
+    PreferredWidth:=0;
+    PreferredHeight:=0;
+    GetPreferredSize(PreferredWidth,PreferredHeight);
+    if (not ResizeWidth) or (PreferredWidth<=0) then PreferredWidth:=Width;
+    if (not ResizeHeight) or (PreferredHeight<=0) then PreferredHeight:=Height;
+    SetBoundsKeepBase(Left,Top,PreferredWidth,PreferredHeight);
+  end;
   {$ENDIF}
 end;
 
@@ -2419,14 +2435,16 @@ procedure TControl.DoAllAutoSize;
     if AControl.AutoSizeDelayed then exit;
     if not (cfAutoSizeNeeded in AControl.FControlFlags) then exit;
 
-    //DebugLn(['TControl.DoAllAutoSize.AutoSizeControl ',DbgSName(AControl),' AutoSize=',AControl.AutoSize]);
+    //DebugLn(['TControl.DoAllAutoSize.AutoSizeControl ',DbgSName(AControl),' AutoSize=',AControl.AutoSize,' IsControlVisible=',AControl.IsControlVisible]);
     Exclude(AControl.FControlFlags,cfAutoSizeNeeded);
-    if not IsControlVisible then exit;
+    if not AControl.IsControlVisible then exit;
 
     if AControl.AutoSize then
       AControl.DoAutoSize;
     if AControl is TWinControl then begin
+      // recursive
       AWinControl:=TWinControl(AControl);
+      //DebugLn(['AutoSizeControl ',DbgSName(AWinControl)]);
       AWinControl.AlignControl(nil);
       for i:=0 to AWinControl.ControlCount-1 do
         AutoSizeControl(AWinControl.Controls[i]);
@@ -2875,6 +2893,34 @@ function TControl.IsClientWidthStored: Boolean;
 begin
   Result:=false;
 end;
+
+{$IFNDEF OldAutoSize}
+function TControl.WidthIsAnchored: boolean;
+var
+  CurAnchors: TAnchors;
+begin
+  CurAnchors:=Anchors;
+  if Align<>alNone then CurAnchors:=CurAnchors+AnchorAlign[Align];
+  Result:=(CurAnchors*[akLeft,akRight]=[akLeft,akRight]);
+  if not Result then begin
+    if Parent<>nil then
+      Result:=Parent.ChildSizing.Layout<>cclNone;
+  end;
+end;
+
+function TControl.HeightIsAnchored: boolean;
+var
+  CurAnchors: TAnchors;
+begin
+  CurAnchors:=Anchors;
+  if Align<>alNone then CurAnchors:=CurAnchors+AnchorAlign[Align];
+  Result:=(CurAnchors*[akTop,akBottom]=[akTop,akBottom]);
+  if not Result then begin
+    if Parent<>nil then
+      Result:=Parent.ChildSizing.Layout<>cclNone;
+  end;
+end;
+{$ENDIF}
 
 procedure TControl.WMCancelMode(var Message: TLMessage);
 begin

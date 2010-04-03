@@ -1074,6 +1074,10 @@ type
     function GetControlOrigin: TPoint; virtual;
     function IsClientHeightStored: boolean; virtual;
     function IsClientWidthStored: boolean; virtual;
+    {$IFNDEF OldAutoSize}
+    function WidthIsAnchored: boolean;
+    function HeightIsAnchored: boolean;
+    {$ENDIF}
 
     property AutoSizing: Boolean read FAutoSizingSelf;// see Begin/EndAutoSizing
     {$IFNDEF OldAutoSize}

@@ -540,7 +540,7 @@ begin
     PreferredHeight := NewHeight;
   end;
   {$ENDIF}
-  DebugLn(['TToolBar.CalculatePreferredSize ',DbgSName(Self),' ',PreferredWidth,'x',PreferredHeight,' Count=',ControlCount]);
+  //DebugLn(['TToolBar.CalculatePreferredSize ',DbgSName(Self),' ',PreferredWidth,'x',PreferredHeight,' Count=',ControlCount]);
 end;
 
 {------------------------------------------------------------------------------
@@ -575,15 +575,14 @@ var
     PreferredBtnWidth: Integer;
     PreferredBtnHeight: Integer;
   begin
-    if (CurControl is TToolButton) and
-       (TToolButton(CurControl).Style in [tbsButton, tbsDropDown, tbsCheck]) and
-       (not CurControl.AutoSize) then
+    if (CurControl is TToolButton) and (not CurControl.AutoSize) then
     begin
       PreferredBtnWidth := 0;
       PreferredBtnHeight := 0;
       CurControl.GetPreferredSize(PreferredBtnWidth, PreferredBtnHeight);
       NewControlWidth := PreferredBtnWidth;
-      if NewControlWidth < ButtonWidth then
+      if (NewControlWidth < ButtonWidth)
+      and (TToolButton(CurControl).Style in [tbsButton, tbsDropDown, tbsCheck]) then
         NewControlWidth := ButtonWidth;
     end
     else

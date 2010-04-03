@@ -614,6 +614,7 @@ procedure TToolButton.SetStyle(Value: TToolButtonStyle);
 begin
   if FStyle = Value then exit;
   FStyle := Value;
+  InvalidatePreferredSize;
   if Visible then
     UpdateVisibleToolbar;
 end;

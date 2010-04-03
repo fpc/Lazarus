@@ -2476,6 +2476,8 @@ var
     r: TRect;
 
     AlignInfo: TAlignInfo; // alCustom
+    PrefWidth: integer;
+    PrefHeight: integer;
 
     function ConstraintWidth(NewWidth: integer): Integer;
     begin
@@ -2585,6 +2587,11 @@ var
       NewTop:=Top;
       NewWidth:=Width;
       NewHeight:=Height;
+      if AutoSize then begin
+        GetPreferredSize(PrefWidth,PrefHeight);
+        if PrefWidth>0 then NewWidth:=PrefWidth;
+        if PrefHeight>0 then NewHeight:=PrefHeight;
+      end;
       ConstraintWidth(NewLeft,NewWidth);
       ConstraintHeight(NewTop,NewHeight);
     end;
@@ -3039,6 +3046,7 @@ var
   OldRemainingBorderSpace: TRect;
   MaxTries: LongInt;
 begin
+  //DebugLn(['TWinControl.AlignControls ',DbgSName(Self),' ',not (wcfAligningControls in FWinControlFlags)]);
   if wcfAligningControls in FWinControlFlags then exit;
   Include(FWinControlFlags,wcfAligningControls);
   try
@@ -3225,43 +3233,7 @@ end;
 procedure TWinControl.DoAutoSize;
 var
   HasVisibleChilds: boolean;
-  
-  function WidthAnchored(CurAnchors: TAnchors): boolean;
-  begin
-    Result:=(CurAnchors*[akLeft,akRight]=[akLeft,akRight]);
-  end;
-  
-  function WidthDependsOnChilds: boolean;
-  begin
-    Result:=false;
-  end;
-  
-  function WidthDependsOnParent: boolean;
-  begin
-    if Parent=nil then
-      Result:=false
-    else
-      Result:=(Parent.ChildSizing.Layout<>cclNone);
-  end;
 
-  function HeightAnchored(CurAnchors: TAnchors): boolean;
-  begin
-    Result:=(CurAnchors*[akTop,akBottom]=[akTop,akBottom]);
-  end;
-
-  function HeightDependsOnChilds: boolean;
-  begin
-    Result:=false;
-  end;
-
-  function HeightDependsOnParent: boolean;
-  begin
-    if Parent=nil then
-      Result:=false
-    else
-      Result:=Parent.ChildSizing.Layout<>cclNone;
-  end;
-  
   procedure GetMoveDiffForNonAlignedChilds(const CurClientRect: TRect;
     out dx, dy: integer);
   // how much can non-aligned-childs be moved up and left
@@ -3348,12 +3320,8 @@ begin
 
     CurAnchors:=Anchors;
     if Align<>alNone then CurAnchors:=CurAnchors+AnchorAlign[Align];
-    WidthIsFixed:=WidthAnchored(CurAnchors)
-                 or WidthDependsOnChilds
-                 or WidthDependsOnParent;
-    HeightIsFixed:=HeightAnchored(CurAnchors)
-                 or HeightDependsOnChilds
-                 or HeightDependsOnParent;
+    WidthIsFixed:=WidthIsAnchored;
+    HeightIsFixed:=HeightIsAnchored;
 
     // move free childs as much as possible to left and top (all free childs the same)
     if HasVisibleChilds then begin
@@ -6158,12 +6126,8 @@ begin
     end;
   end;
   {$ELSE}
-  if AutoSizeDelayed then begin
-    AdjustSize;
-    exit;
-  end;
+  // only called by DoAllAutoSize, so no check needed
   {$ENDIF}
-
 
   {$IFDEF OldAutoSize}
   DisableAlign;
@@ -6185,13 +6149,18 @@ begin
   end;
 
   {$ELSE}
-  ARect:= GetLogicalClientRect;
-  AlignControls(AControl, ARect);
-  // some widgetsets updates their clientrect when the first child was moved
-  // do a second pass if ClientRect changed
-  NewRect:=GetLogicalClientRect;
-  if not CompareRect(@ARect,@NewRect) then
-    AlignControls(AControl, NewRect);
+  DisableAlign;
+  try
+    ARect:= GetLogicalClientRect;
+    AlignControls(AControl, ARect);
+    // some widgetsets updates their clientrect when the first child was moved
+    // do a second pass if ClientRect changed
+    NewRect:=GetLogicalClientRect;
+    if not CompareRect(@ARect,@NewRect) then
+      AlignControls(AControl, NewRect);
+  finally
+    EnableAlign;
+  end;
   {$ENDIF}
 end;
 
