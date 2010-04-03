@@ -4388,7 +4388,8 @@ procedure TSourceEditor.LinesDeleted(Sender: TObject; FirstLine,
 begin
   // notify the notebook that lines were deleted.
   // marks will use this to update themselves
-  MessagesView.SrcEditLinesInsertedDeleted(Filename,FirstLine,-Count);
+  if (Self = FSharedValues.SharedEditors[0]) then
+    MessagesView.SrcEditLinesInsertedDeleted(Filename,FirstLine,-Count);
 end;
 
 procedure TSourceEditor.LinesInserted(Sender: TObject; FirstLine,
