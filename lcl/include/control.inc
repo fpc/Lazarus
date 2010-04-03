@@ -2421,6 +2421,8 @@ procedure TControl.DoAllAutoSize;
 
     //DebugLn(['TControl.DoAllAutoSize.AutoSizeControl ',DbgSName(AControl),' AutoSize=',AControl.AutoSize]);
     Exclude(AControl.FControlFlags,cfAutoSizeNeeded);
+    if not IsControlVisible then exit;
+
     if AControl.AutoSize then
       AControl.DoAutoSize;
     if AControl is TWinControl then begin

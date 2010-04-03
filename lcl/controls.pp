@@ -1615,6 +1615,7 @@ type
     wcfInitializing,         // Set while initializing during handle creation
     wcfCreatingChildHandles, // Set while constructing the handles of the childs
     wcfRealizingBounds,
+    wcfBoundsRealized,       // bounds were sent to the interface
     wcfUpdateShowing,
     wcfHandleVisible
     );
@@ -2397,6 +2398,8 @@ function DbgS(a: TAnchorKind): string; overload;
 function DbgS(Anchors: TAnchors): string; overload;
 function DbgS(a: TAlign): string; overload;
 function DbgS(a: TAnchorKind; Side: TAnchorSideReference): string; overload;
+function DbgS(p: TControlAutoSizePhase): string; overload;
+function DbgS(Phases: TControlAutoSizePhases): string; overload;
 
 operator := (AVariant: Variant): TCaption;
 
@@ -2567,6 +2570,25 @@ begin
   asrCenter: Result:='asrCenter';
   else Result:='asr???';
   end;
+end;
+
+function DbgS(p: TControlAutoSizePhase): string; overload;
+begin
+  Result:=AutoSizePhaseNames[p];
+end;
+
+function DbgS(Phases: TControlAutoSizePhases): string; overload;
+var
+  p: TControlAutoSizePhase;
+begin
+  Result:='';
+  for p:=Low(TControlAutoSizePhase) to High(TControlAutoSizePhase) do begin
+    if p in Phases then begin
+      if Result<>'' then Result:=Result+',';
+      Result:=Result+AutoSizePhaseNames[p];
+    end;
+  end;
+  Result:='['+Result+']';
 end;
 
 {------------------------------------------------------------------------------

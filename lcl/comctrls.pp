@@ -1706,7 +1706,6 @@ type
                     PreferredHeight: integer; WithThemeSpace: Boolean); override;
     function CheckMenuDropdown(Button: TToolButton): Boolean; virtual;
     procedure ClickButton(Button: TToolButton); virtual;
-    procedure CreateParams(var Params: TCreateParams); override;
     procedure CreateWnd; override;
     procedure ControlsAligned; override;
     function FindButtonFromAccel(Accel: Word): TToolButton;
@@ -1716,7 +1715,7 @@ type
     procedure RepositionButton(Index: Integer);
     procedure RepositionButtons(Index: Integer);
     function WrapButtons(UseWidth: integer;
-                         var NewWidth, NewHeight: Integer;
+                         out NewWidth, NewHeight: Integer;
                          Simulate: boolean): Boolean;
   public
     constructor Create(TheOwner: TComponent); override;

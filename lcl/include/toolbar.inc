@@ -103,17 +103,20 @@ begin
   // no flipping
 end;
 
-procedure TToolBar.CreateParams(var Params: TCreateParams);
-begin
-  inherited CreateParams(Params);
-end;
-
 procedure TToolBar.CreateWnd;
 begin
   BeginUpdate;
-  inherited CreateWnd;
-  UpdateVisibleBar;
-  EndUpdate;
+  try
+    DisableAutoSizing;
+    try
+      inherited CreateWnd;
+      UpdateVisibleBar;
+    finally
+      EnableAutoSizing;
+    end;
+  finally
+    EndUpdate;
+  end;
 end;
 
 procedure TToolBar.ControlsAligned;
@@ -450,16 +453,17 @@ begin
 end;
 
 procedure TToolBar.DoAutoSize;
+{$IFDEF OldAutoSize}
 var
-  ModifyWidth, ModifyHeight : Boolean;
   NewWidth: Integer;
   NewHeight: Integer;
+  ModifyWidth, ModifyHeight : Boolean;
+{$ENDIF}
 begin
   {$IFDEF OldAutoSize}
   if AutoSizing then Exit;    // we shouldn't come here in the first place
   BeginAutoSizing;
   try
-  {$ENDIF}
     NewWidth:=Width;
     NewHeight:=Height;
     GetPreferredSize(NewWidth,NewHeight);
@@ -472,10 +476,11 @@ begin
     //DebugLn(['TToolBar.DoAutoSize ',DbgSName(Self),' ',Width,',',Height,' ',NewWidth,',',NewHeight]);
     if (NewWidth <> Width) or (NewHeight <> Height) then
       SetBounds(Left, Top, NewWidth, NewHeight);
-  {$IFDEF OldAutoSize}
   finally
     EndAutoSizing;
   end;
+  {$ELSE}
+  // childs are moved in ControlsAligned independent of AutoSize=true
   {$ENDIF}
 end;
 
@@ -535,6 +540,7 @@ begin
     PreferredHeight := NewHeight;
   end;
   {$ENDIF}
+  //DebugLn(['TToolBar.CalculatePreferredSize ',DbgSName(Self),' ',PreferredWidth,'x',PreferredHeight,' Count=',ControlCount]);
 end;
 
 {------------------------------------------------------------------------------
@@ -548,7 +554,7 @@ end;
   Wrap=true.
 ------------------------------------------------------------------------------}
 function TToolBar.WrapButtons(UseWidth: integer;
-  var NewWidth, NewHeight: Integer; Simulate: boolean): Boolean;
+  out NewWidth, NewHeight: Integer; Simulate: boolean): Boolean;
 var
   ARect: TRect;
   x: Integer;

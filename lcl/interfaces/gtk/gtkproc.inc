@@ -7100,6 +7100,7 @@ begin
   allocation := PGtkWidget(Window)^.allocation;
   allocation.width := Width;
   allocation.height := Height;
+  //DebugLn(['SetWindowSizeAndPosition ',DbgSName(AWinControl),' ',dbgs(allocation)]);
   gtk_widget_size_allocate(PGtkWidget(Window), @allocation);// Beware: this triggers callbacks
 
   if (PGtkWidget(Window)^.Window <> nil) then
