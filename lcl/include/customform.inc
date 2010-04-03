@@ -1007,10 +1007,19 @@ end;
 procedure TCustomForm.SetParent(NewParent: TWinControl);
 begin
   if Parent=NewParent then exit;
-  if HandleAllocated then DestroyHandle;
-  inherited SetParent(NewParent);
-  if (Parent=nil) and Visible then
-    HandleNeeded;
+  {$IFNDEF OldAutoSize}
+  DisableAutoSizing;
+  {$ENDIF}
+  try
+    if HandleAllocated then DestroyHandle;
+    inherited SetParent(NewParent);
+    if (Parent=nil) and Visible then
+      HandleNeeded;
+  finally
+    {$IFNDEF OldAutoSize}
+    EnableAutoSizing;
+    {$ENDIF}
+  end;
 end;
 
 {------------------------------------------------------------------------------

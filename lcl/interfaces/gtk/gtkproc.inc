@@ -6969,6 +6969,7 @@ begin
     if GtkWidgetIsA(ParentFixed,GTK_FIXED_GET_TYPE) or
        GtkWidgetIsA(ParentFixed,GTK_LAYOUT_GET_TYPE) then
     begin
+      //DebugLn(['SetWidgetSizeAndPosition ',DbgSName(LCLControl),' Widget=[',GetWidgetDebugReport(Widget),'] ParentFixed=[',GetWidgetDebugReport(ParentFixed),']']);
       FixedMoveControl(ParentFixed, Widget, LCLLeft, LCLTop);
     end
     else

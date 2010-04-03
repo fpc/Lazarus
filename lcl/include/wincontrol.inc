@@ -2290,9 +2290,10 @@ begin
             or ((not FShowing) and (not (csDesigning in ComponentState)))
             // during handle creation no autosize
             or (wcfCreatingChildHandles in FWinControlFlags)
-          or
+          {$ELSE}
+          (csDestroyingHandle in ControlState)
           {$ENDIF}
-          (inherited AutoSizeDelayed);
+          or (inherited AutoSizeDelayed);
   //if Result then debugln('TWinControl.AutoSizeDelayed A ',DbgSName(Self),' wcfCreatingChildHandles=',dbgs(wcfCreatingChildHandles in FWinControlFlags),' csLoading=',dbgs(csLoading in ComponentState));
   {$IFDEF VerboseCanAutoSize}
   if Result {and AutoSize} then begin
@@ -5021,17 +5022,20 @@ begin
   // First destroy all children handles
   //DebugLn(['TWinControl.DestroyHandle DESTROY CHILDS ',DbgSName(Self)]);
   Include(FControlState, csDestroyingHandle);
-  if FControls <> nil then begin
-    for i:= 0 to FControls.Count - 1 do begin
-      //DebugLn(['  ',i,' ',DbgSName(TObject(FWinControls[i]))]);
-      AWinControl:=TWinControl(FControls[i]);
-      if (AWinControl is TWinControl) and AWinControl.HandleAllocated then
-        AWinControl.DestroyHandle;
+  try
+    if FControls <> nil then begin
+      for i:= 0 to FControls.Count - 1 do begin
+        //DebugLn(['  ',i,' ',DbgSName(TObject(FWinControls[i]))]);
+        AWinControl:=TWinControl(FControls[i]);
+        if (AWinControl is TWinControl) and AWinControl.HandleAllocated then
+          AWinControl.DestroyHandle;
+      end;
     end;
+    //DebugLn(['TWinControl.DestroyHandle DESTROY SELF ',DbgSName(Self)]);
+    DestroyWnd;
+  finally
+    Exclude(FControlState, csDestroyingHandle);
   end;
-  //DebugLn(['TWinControl.DestroyHandle DESTROY SELF ',DbgSName(Self)]);
-  DestroyWnd;
-  Exclude(FControlState, csDestroyingHandle);
   //DebugLn(['TWinControl.DestroyHandle END ',DbgSName(Self)]);
 end;
 
@@ -6030,12 +6034,14 @@ begin
         AControl.Invalidate;
       //DebugLn('TWinControl.InsertControl ',Name,':',ClassName);
     end;
+    {$IFDEF OldAutoSize}
     if not (csDestroying in ComponentState) then
     begin
       if not (csLoading in ComponentState) then
         AControl.UpdateAnchorRules;
       AControl.RequestAlign;
     end;
+    {$ENDIF}
     Perform(CM_CONTROLCHANGE, WParam(AControl), LParam(True));
   {$IFNDEF OldAutoSize}
   finally
@@ -7053,9 +7059,6 @@ begin
   
   if [csLoading,csDesigning]*ComponentState=[csLoading] then begin
     DebugLn('[HINT] TWinControl.CreateWnd creating Handle during loading ',DbgSName(Self),' csDesigning=',dbgs(csDesigning in ComponentState));
-    {$IFNDEF OldAutoSize}
-    RaiseGDBException('');
-    {$ENDIF}
     //DumpStack;
     //RaiseGDBException('');
   end;
