@@ -540,7 +540,7 @@ begin
     PreferredHeight := NewHeight;
   end;
   {$ENDIF}
-  //DebugLn(['TToolBar.CalculatePreferredSize ',DbgSName(Self),' ',PreferredWidth,'x',PreferredHeight,' Count=',ControlCount]);
+  DebugLn(['TToolBar.CalculatePreferredSize ',DbgSName(Self),' ',PreferredWidth,'x',PreferredHeight,' Count=',ControlCount]);
 end;
 
 {------------------------------------------------------------------------------
@@ -629,7 +629,7 @@ var
   AdjustClientFrame: TRect;
   i: Integer;
 begin
-  //DebugLn('WrapButtons ',DbgSName(Self),' Wrapable=',Wrapable);
+  //DebugLn(['WrapButtons ',DbgSName(Self),' Wrapable=',Wrapable,' ',dbgs(BoundsRect)]);
   Result := True;
   NewWidth := 0;
   NewHeight := 0;
@@ -701,7 +701,7 @@ begin
         if not Simulate then
         begin
           //DebugLn(['TToolBar.WrapButtons moving child: ',DbgSName(CurControl),' Old=',dbgs(CurControl.BoundsRect),' New=',dbgs(Bounds(x,y,w,h))]);
-          CurControl.SetBoundsKeepBase(x,y,w,h);
+          CurControl.SetBounds(x,y,w,h); // Note: do not use SetBoundsKeepBase
           //DebugLn(['TToolBar.WrapButtons moved child: ',DbgSName(CurControl),' ',dbgs(CurControl.BoundsRect)]);
         end;
       end;

@@ -1289,7 +1289,7 @@ type
     procedure SetBounds(aLeft, aTop, aWidth, aHeight: integer); virtual;
     procedure SetInitialBounds(aLeft, aTop, aWidth, aHeight: integer); virtual;
     procedure SetBoundsKeepBase(aLeft, aTop, aWidth, aHeight: integer
-                                {$IFDEF OldAutoSize}; Lock: boolean = true{$ENDIF}); virtual;
+                                {$IFDEF OldAutoSize}; Lock: boolean = true{$ENDIF}); virtual; // if you use this, disable the LCL autosizing for this control
     procedure GetPreferredSize(var PreferredWidth, PreferredHeight: integer;
                                Raw: boolean = false;
                                WithThemeSpace: boolean = true); virtual;

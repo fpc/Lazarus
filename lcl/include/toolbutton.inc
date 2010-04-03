@@ -404,6 +404,7 @@ begin
   else inherited RealSetText(AValue);
 end;
 
+{$IFDEF OldAutoSize}
 procedure TToolButton.DoAutoSize;
 var
   PreferredWidth: integer;
@@ -412,6 +413,7 @@ begin
   GetPreferredSize(PreferredWidth,PreferredHeight);
   SetBounds(Left,Top,PreferredWidth,PreferredHeight);
 end;
+{$ENDIF}
 
 procedure TToolButton.SetToolBar(NewToolBar: TToolBar);
 begin
