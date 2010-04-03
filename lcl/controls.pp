@@ -1074,10 +1074,8 @@ type
     function GetControlOrigin: TPoint; virtual;
     function IsClientHeightStored: boolean; virtual;
     function IsClientWidthStored: boolean; virtual;
-    {$IFNDEF OldAutoSize}
     function WidthIsAnchored: boolean;
     function HeightIsAnchored: boolean;
-    {$ENDIF}
 
     property AutoSizing: Boolean read FAutoSizingSelf;// see Begin/EndAutoSizing
     {$IFNDEF OldAutoSize}
@@ -2402,8 +2400,10 @@ function DbgS(a: TAnchorKind): string; overload;
 function DbgS(Anchors: TAnchors): string; overload;
 function DbgS(a: TAlign): string; overload;
 function DbgS(a: TAnchorKind; Side: TAnchorSideReference): string; overload;
+{$IFNDEF OldAutoSize}
 function DbgS(p: TControlAutoSizePhase): string; overload;
 function DbgS(Phases: TControlAutoSizePhases): string; overload;
+{$ENDIF}
 
 operator := (AVariant: Variant): TCaption;
 
@@ -2576,6 +2576,7 @@ begin
   end;
 end;
 
+{$IFNDEF OldAutoSize}
 function DbgS(p: TControlAutoSizePhase): string; overload;
 begin
   Result:=AutoSizePhaseNames[p];
@@ -2594,6 +2595,7 @@ begin
   end;
   Result:='['+Result+']';
 end;
+{$ENDIF}
 
 {------------------------------------------------------------------------------
  RecreateWnd

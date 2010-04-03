@@ -2894,7 +2894,6 @@ begin
   Result:=false;
 end;
 
-{$IFNDEF OldAutoSize}
 function TControl.WidthIsAnchored: boolean;
 var
   CurAnchors: TAnchors;
@@ -2920,7 +2919,6 @@ begin
       Result:=Parent.ChildSizing.Layout<>cclNone;
   end;
 end;
-{$ENDIF}
 
 procedure TControl.WMCancelMode(var Message: TLMessage);
 begin
