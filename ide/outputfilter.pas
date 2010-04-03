@@ -297,7 +297,7 @@ begin
 
     LastProcessMessages:=Now-1;// force one update at start
     repeat
-      if (Application<>nil) and (abs(LastProcessMessages-Now)>((1/86400)/3))
+      if (Application<>nil) and (abs(LastProcessMessages-Now)>((1/86400)/15))
       then begin
         LastProcessMessages:=Now;
         if EndUpdateNeeded then begin
