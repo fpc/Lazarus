@@ -235,7 +235,6 @@ var
   ChgEntryRepl: TObjectList;
   OldIdent, NewIdent: string;
   StartPos, EndPos: integer;
-  i: Integer;
 begin
   Result:=mrNone;
   ChgEntryRepl:=TObjectList.Create;
