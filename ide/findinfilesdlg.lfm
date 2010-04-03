@@ -1,12 +1,12 @@
 object LazFindInFilesDialog: TLazFindInFilesDialog
   Left = 379
-  Height = 530
+  Height = 521
   Top = 155
-  Width = 420
+  Width = 456
   ActiveControl = TextToFindComboBox
   Caption = 'Find in files'
-  ClientHeight = 530
-  ClientWidth = 420
+  ClientHeight = 521
+  ClientWidth = 456
   Constraints.MinHeight = 400
   Constraints.MinWidth = 260
   OnClose = FormClose
@@ -29,7 +29,7 @@ object LazFindInFilesDialog: TLazFindInFilesDialog
     Left = 88
     Height = 29
     Top = 6
-    Width = 326
+    Width = 362
     Anchors = [akTop, akLeft, akRight]
     AutoComplete = True
     AutoCompleteText = [cbactEnabled, cbactEndOfLineComplete, cbactRetainPrefixCase, cbactSearchAscending]
@@ -46,7 +46,7 @@ object LazFindInFilesDialog: TLazFindInFilesDialog
     Left = 6
     Height = 137
     Top = 72
-    Width = 408
+    Width = 444
     Anchors = [akTop, akLeft, akRight]
     AutoFill = True
     AutoSize = True
@@ -82,7 +82,7 @@ object LazFindInFilesDialog: TLazFindInFilesDialog
     Left = 6
     Height = 109
     Top = 215
-    Width = 408
+    Width = 444
     Anchors = [akTop, akLeft, akRight]
     AutoFill = True
     AutoSize = True
@@ -99,7 +99,7 @@ object LazFindInFilesDialog: TLazFindInFilesDialog
     ChildSizing.Layout = cclLeftToRightThenTopToBottom
     ChildSizing.ControlsPerLine = 1
     ClientHeight = 90
-    ClientWidth = 404
+    ClientWidth = 440
     ItemIndex = 1
     Items.Strings = (
       'search all files in project'
@@ -118,14 +118,14 @@ object LazFindInFilesDialog: TLazFindInFilesDialog
     AnchorSideRight.Side = asrBottom
     AnchorSideBottom.Control = ButtonPanel1
     Left = 6
-    Height = 156
+    Height = 147
     Top = 330
-    Width = 408
+    Width = 444
     Anchors = [akTop, akLeft, akRight, akBottom]
     BorderSpacing.Around = 6
     Caption = 'Directory Options'
-    ClientHeight = 137
-    ClientWidth = 404
+    ClientHeight = 128
+    ClientWidth = 440
     Enabled = False
     TabOrder = 3
     object DirectoryLabel: TLabel
@@ -150,13 +150,13 @@ object LazFindInFilesDialog: TLazFindInFilesDialog
       Left = 68
       Height = 29
       Top = 6
-      Width = 272
+      Width = 308
       Anchors = [akTop, akLeft, akRight]
       ItemHeight = 0
       TabOrder = 0
     end
     object DirectoryBrowse: TBitBtn
-      Left = 346
+      Left = 382
       Height = 25
       Top = 6
       Width = 25
@@ -171,7 +171,7 @@ object LazFindInFilesDialog: TLazFindInFilesDialog
       Left = 6
       Height = 29
       Top = 56
-      Width = 334
+      Width = 370
       Anchors = [akTop, akLeft, akRight]
       ItemHeight = 0
       TabOrder = 2
@@ -194,7 +194,7 @@ object LazFindInFilesDialog: TLazFindInFilesDialog
     Left = 84
     Height = 29
     Top = 37
-    Width = 330
+    Width = 366
     Anchors = [akTop, akLeft, akRight]
     AutoComplete = True
     AutoCompleteText = [cbactEnabled, cbactEndOfLineComplete, cbactRetainPrefixCase, cbactSearchAscending]
@@ -219,8 +219,8 @@ object LazFindInFilesDialog: TLazFindInFilesDialog
   object ButtonPanel1: TButtonPanel
     Left = 6
     Height = 32
-    Top = 492
-    Width = 408
+    Top = 483
+    Width = 444
     TabOrder = 6
     ShowButtons = [pbOK, pbCancel, pbHelp]
     ShowBevel = False

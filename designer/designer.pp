@@ -1183,57 +1183,66 @@ begin
   if PasteParent=nil then PasteParent:=GetPasteParent;
   NewSelection:=TControlSelection.Create;
   try
+    {$IFNDEF OldAutoSize}
+    Form.DisableAutoSizing;
+    {$ENDIF}
+    try
 
-    // read component stream from clipboard
-    if (s.Size<=S.Position) then begin
-      debugln('TDesigner.DoInsertFromStream Stream Empty s.Size=',dbgs(s.Size),' S.Position=',dbgs(S.Position));
-      exit;
-    end;
-    l:=s.Size-s.Position;
-    SetLength(AllComponentText,l);
-    s.Read(AllComponentText[1],length(AllComponentText));
-
-    StartPos:=1;
-    EndPos:=StartPos;
-    // read till 'end'
-    while EndPos<=length(AllComponentText) do begin
-      //debugln('TDesigner.DoInsertFromStream C');
-      if (AllComponentText[EndPos] in ['e','E'])
-      and (EndPos>1)
-      and (AllComponentText[EndPos-1] in [#10,#13])
-      and (CompareText(copy(AllComponentText,EndPos,3),'END')=0)
-      and ((EndPos+3>length(AllComponentText))
-           or (AllComponentText[EndPos+3] in [#10,#13]))
-      then begin
-        inc(EndPos,4);
-        while (EndPos<=length(AllComponentText))
-        and (AllComponentText[EndPos] in [' ',#10,#13])
-        do
-          inc(EndPos);
-        // extract text for the current component
-        {$IFDEF VerboseDesigner}
-        DebugLn('TDesigner.DoInsertFromStream==============================');
-        DebugLn(copy(AllComponentText,StartPos,EndPos-StartPos));
-        DebugLn('TDesigner.DoInsertFromStream==============================');
-        {$ENDIF}
-
-        CurTextCompStream:=TMemoryStream.Create;
-        try
-          CurTextCompStream.Write(AllComponentText[StartPos],EndPos-StartPos);
-          CurTextCompStream.Position:=0;
-          // create component from stream
-          if not PasteComponent(CurTextCompStream) then exit;
-
-        finally
-          CurTextCompStream.Free;
-        end;
-
-        StartPos:=EndPos;
-      end else begin
-        inc(EndPos);
+      // read component stream from clipboard
+      if (s.Size<=S.Position) then begin
+        debugln('TDesigner.DoInsertFromStream Stream Empty s.Size=',dbgs(s.Size),' S.Position=',dbgs(S.Position));
+        exit;
       end;
-    end;
+      l:=s.Size-s.Position;
+      SetLength(AllComponentText,l);
+      s.Read(AllComponentText[1],length(AllComponentText));
 
+      StartPos:=1;
+      EndPos:=StartPos;
+      // read till 'end'
+      while EndPos<=length(AllComponentText) do begin
+        //debugln('TDesigner.DoInsertFromStream C');
+        if (AllComponentText[EndPos] in ['e','E'])
+        and (EndPos>1)
+        and (AllComponentText[EndPos-1] in [#10,#13])
+        and (CompareText(copy(AllComponentText,EndPos,3),'END')=0)
+        and ((EndPos+3>length(AllComponentText))
+             or (AllComponentText[EndPos+3] in [#10,#13]))
+        then begin
+          inc(EndPos,4);
+          while (EndPos<=length(AllComponentText))
+          and (AllComponentText[EndPos] in [' ',#10,#13])
+          do
+            inc(EndPos);
+          // extract text for the current component
+          {$IFDEF VerboseDesigner}
+          DebugLn('TDesigner.DoInsertFromStream==============================');
+          DebugLn(copy(AllComponentText,StartPos,EndPos-StartPos));
+          DebugLn('TDesigner.DoInsertFromStream==============================');
+          {$ENDIF}
+
+          CurTextCompStream:=TMemoryStream.Create;
+          try
+            CurTextCompStream.Write(AllComponentText[StartPos],EndPos-StartPos);
+            CurTextCompStream.Position:=0;
+            // create component from stream
+            if not PasteComponent(CurTextCompStream) then exit;
+
+          finally
+            CurTextCompStream.Free;
+          end;
+
+          StartPos:=EndPos;
+        end else begin
+          inc(EndPos);
+        end;
+      end;
+
+    finally
+      {$IFNDEF OldAutoSize}
+      Form.EnableAutoSizing;
+      {$ENDIF}
+    end;
   finally
     if NewSelection.Count>0 then
       ControlSelection.Assign(NewSelection);
