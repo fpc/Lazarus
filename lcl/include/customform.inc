@@ -292,7 +292,7 @@ var
   OldChange: TNotifyEvent;
   OldCurrent: Integer;
 begin
-  if not FIcon.Empty then
+  if Assigned(FIcon) and not FIcon.Empty then
   begin
     if FBigIconHandle = 0 then
     begin
@@ -319,7 +319,7 @@ var
   OldChange: TNotifyEvent;
   OldCurrent: Integer;
 begin
-  if not FIcon.Empty then
+  if Assigned(FIcon) and not FIcon.Empty then
   begin
     if FSmallIconHandle = 0 then
     begin
