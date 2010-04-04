@@ -162,6 +162,14 @@ msgstr "Директивы"
 msgid "Enable capitalisation fixing"
 msgstr "Исправлять регистр"
 
+#: jcfuiconsts.liscapsidentifiersidentifiers
+msgid "Identifiers"
+msgstr "Идентификаторы"
+
+#: jcfuiconsts.liscapsidentifierssetcapitalisationontheseidentifiers
+msgid "Set capitalisation on these identifiers:"
+msgstr "Устанавливать регистр следующих идентификаторов:"
+
 #: jcfuiconsts.liscapsoperators
 msgid "Operators"
 msgstr "Операторы"

@@ -153,6 +153,14 @@ msgstr ""
 msgid "Enable capitalisation fixing"
 msgstr ""
 
+#: jcfuiconsts.liscapsidentifiersidentifiers
+msgid "Identifiers"
+msgstr ""
+
+#: jcfuiconsts.liscapsidentifierssetcapitalisationontheseidentifiers
+msgid "Set capitalisation on these identifiers:"
+msgstr ""
+
 #: jcfuiconsts.liscapsoperators
 msgid "Operators"
 msgstr ""
