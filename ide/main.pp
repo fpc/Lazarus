@@ -8562,12 +8562,12 @@ begin
       // open unknown file
       Handled:=false;
       Result:=DoOpenUnknownFile(AFilename,Flags,NewUnitInfo,Handled);
+      if Result<>mrOk then exit;
       // the file was previously unknown, use the default EditorInfo
       if AEditorInfo <> nil then
         NewEditorInfo := AEditorInfo
       else
         NewEditorInfo := NewUnitInfo.GetClosedOrNewEditorInfo;
-      if Result<>mrOk then exit;
       if Handled then exit;
     end;
 

@@ -5665,7 +5665,9 @@ begin
   Edit := FindSourceEditorWithPageIndex(OldPageIndex);
   DestWin.NoteBookInsertPage(NewPageIndex, Edit.PageName);
   DestWin.PageIndex := NewPageIndex;
+  {$IFNDEF OldAutoSize}
   DestWin.NotebookPage[NewPageIndex].ReAlign;
+  {$ENDIF}
 
   ReleaseEditor(Edit);
   Edit.UpdateNoteBook(DestWin, DestWin.NoteBookPage[NewPageIndex]);
