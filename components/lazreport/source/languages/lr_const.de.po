@@ -1,7 +1,7 @@
 msgid ""
 msgstr ""
 "Last-Translator: Joerg Braun <jb@toolbox-mag.de>\n"
-"PO-Revision-Date: 2010-03-19 20:09+0100\n"
+"PO-Revision-Date: 2010-03-28 20:36+0100\n"
 "Project-Id-Version: lazreport\n"
 "Language-Team: Deutsch <lazarus@miraclec.com>\n"
 "Content-Type: text/plain; charset=UTF-8\n"
@@ -1404,7 +1404,7 @@ msgstr "mm"
 
 #: lr_const.snewtemplate
 msgid "New template"
-msgstr "Neue Schablone"
+msgstr "Neue Vorlage"
 
 #: lr_const.sno
 msgid "No"
@@ -2269,7 +2269,7 @@ msgstr "Unterreport auf der Seite"
 
 #: lr_const.stemplfile
 msgid "FastReport template"
-msgstr "FastReport-Schablone"
+msgstr "FastReport-Vorlage"
 
 #: lr_const.stemplformdesc
 msgid "Description"

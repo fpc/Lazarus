@@ -2,7 +2,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: \n"
 "POT-Creation-Date: \n"
-"PO-Revision-Date: 2007-01-10 21:26+0100\n"
+"PO-Revision-Date: 2010-03-28 20:39+0100\n"
 "Last-Translator: Joerg Braun <jb@toolbox-mag.de>\n"
 "Language-Team: \n"
 "MIME-Version: 1.0\n"
@@ -11,13 +11,13 @@ msgstr ""
 
 #: projecttemplates.serrcouldnotcreatedir
 msgid "Could not create directory \"%s\""
-msgstr "Konnte Verzeichnis \"%s\" nicht anlegen"
+msgstr "Verzeichnis %s konnte nicht angelegt werden"
 
 #: projecttemplates.serrfailedtocopyfile
 msgid "Failed to copy file \"%s\" to \"%s\""
-msgstr "Konnte Datei \"%s\" nicht nach \"%s\" kopieren"
+msgstr "%s konnte nicht nach %s kopiert werden"
 
 #: projecttemplates.serrnosuchtemplate
 msgid "\"%s\": No such template."
-msgstr "\"%s\": Keine solche Schablone"
+msgstr "Die Vorlage %s fehlt."
 

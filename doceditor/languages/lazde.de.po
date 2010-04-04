@@ -69,7 +69,7 @@ msgstr "Cont&ent-Datei erzeugen "
 
 #: lazdemsg.sdataforelement
 msgid "Documentation for element \"%s\":"
-msgstr "Dokumentation für Element \"%s\":"
+msgstr "Dokumentation für Element »%s«:"
 
 #: lazdemsg.sdelete
 msgid "&Delete"
@@ -77,15 +77,15 @@ msgstr "Löschen"
 
 #: lazdemsg.sdeletemodule
 msgid "Are you sure you want to delete module \"%s\" ?"
-msgstr "Wollen Sie Modul \"%s\" wirklich löschen?"
+msgstr "Wollen Sie Modul »%s« wirklich löschen?"
 
 #: lazdemsg.sdeletepackage
 msgid "Are you sure you want to delete package \"%s\" ?"
-msgstr "Wollen Sie Package \"%s\" wirklich löschen?"
+msgstr "Wollen Sie Package »%s« wirklich löschen?"
 
 #: lazdemsg.sdeletetopic
 msgid "Are you sure you want to delete topic \"%s\" ?"
-msgstr "Wollen Sie den Eintrag \"%s\" wirklich löschen?"
+msgstr "Wollen Sie den Eintrag »%s« wirklich löschen?"
 
 #: lazdemsg.sdescription
 msgid "Description"
@@ -105,23 +105,23 @@ msgstr "Das Anlegen schlug mit dem Code %d fehl. Prüfen Sie das Protokoll."
 
 #: lazdemsg.serrnomoduleforelement
 msgid "No module found to insert element \"%s\""
-msgstr "Kein Modul gefunden um Element \"%s\" einzufügen"
+msgstr "Kein Modul gefunden um Element »%s« einzufügen"
 
 #: lazdemsg.serrnonodeformodule
 msgid "No node found for module \"%s\""
-msgstr "Kein Knoten für das Modul \"%s\" gefunden"
+msgstr "Kein Knoten für das Modul »%s« gefunden"
 
 #: lazdemsg.serrnonodeforpackage
 msgid "No node found for package \"%s\""
-msgstr "Kein Knoten für das Package \"%s\" gefunden"
+msgstr "Kein Knoten für das Package »%s« gefunden"
 
 #: lazdemsg.serrnonodefortopic
 msgid "No parent node found to insert topic \"%s\""
-msgstr "Kein Elternknoten für das Einfügen des Eintrags \"%s\" gefunden"
+msgstr "Kein Elternknoten für das Einfügen des Eintrags »%s« gefunden"
 
 #: lazdemsg.serrnopackageformodule
 msgid "No package found to insert module \"%s\""
-msgstr "Kein Package gefunden um Modul \"%s\" einzufügen"
+msgstr "Kein Package gefunden um Modul »%s« einzufügen"
 
 #: lazdemsg.serrors
 msgid "Errors"
@@ -129,11 +129,11 @@ msgstr "Fehler"
 
 #: lazdemsg.serrunknowndomelement
 msgid "Unknwon DOM element as parent for selected element: \"%s\""
-msgstr "Unbekanntes DOM-Element als Vorgänger des gewählten Elements: \"%s\""
+msgstr "Unbekanntes DOM-Element als Vorgänger des gewählten Elements: »%s«"
 
 #: lazdemsg.sfilemodified
 msgid "Document \"%s\" was modified, would you like to save it?"
-msgstr "Dokument \"%s\" wurde verändert, wollen Sie es speichern?"
+msgstr "Dokument »%s« wurde verändert, wollen Sie es speichern?"
 
 #: lazdemsg.sfilestructure
 msgid "Documentation structure"
@@ -141,7 +141,7 @@ msgstr "Dokumentationsstruktur"
 
 #: lazdemsg.sfiletemplate
 msgid "template.xml"
-msgstr "schablone.xml"
+msgstr "template.xml"
 
 #: lazdemsg.sforfile
 msgid " in file "
@@ -242,7 +242,7 @@ msgstr "Neues Package"
 
 #: lazdemsg.shintinsertprintshortlink
 msgid "Insert a short description link"
-msgstr ""
+msgstr "Link mit Kurzbeschreibung einfügen"
 
 #: lazdemsg.shintinserttable
 msgctxt "lazdemsg.shintinserttable"
@@ -290,7 +290,7 @@ msgstr "Link einfügen"
 
 #: lazdemsg.sinsertprintshortlink
 msgid "Insert short description link"
-msgstr ""
+msgstr "Link mit Kurzbeschreibung einfügen"
 
 #: lazdemsg.sinserttable
 msgctxt "lazdemsg.sinserttable"
@@ -446,7 +446,7 @@ msgstr "&Package"
 
 #: lazdemsg.smenuinsertprintshort
 msgid "Insert short desc link"
-msgstr ""
+msgstr "Link mit Kurzbeschreibung einfügen"
 
 #: lazdemsg.smenuinsertquicklink
 msgid "&Quick Link"
