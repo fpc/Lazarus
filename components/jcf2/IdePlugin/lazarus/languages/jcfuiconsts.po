@@ -161,6 +161,14 @@ msgstr ""
 msgid "Set capitalisation on these identifiers:"
 msgstr ""
 
+#: jcfuiconsts.liscapsnotidentifiersnotidentifiers
+msgid "Non-identifiers"
+msgstr ""
+
+#: jcfuiconsts.liscapsnotidentifierssetcapitalisationonthesenonidentifiers
+msgid "Set capitalisation on these non-identifiers:"
+msgstr ""
+
 #: jcfuiconsts.liscapsoperators
 msgid "Operators"
 msgstr ""

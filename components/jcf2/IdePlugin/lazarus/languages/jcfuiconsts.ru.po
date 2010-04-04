@@ -170,6 +170,14 @@ msgstr "Идентификаторы"
 msgid "Set capitalisation on these identifiers:"
 msgstr "Устанавливать регистр следующих идентификаторов:"
 
+#: jcfuiconsts.liscapsnotidentifiersnotidentifiers
+msgid "Non-identifiers"
+msgstr "Не-идентификаторы"
+
+#: jcfuiconsts.liscapsnotidentifierssetcapitalisationonthesenonidentifiers
+msgid "Set capitalisation on these non-identifiers:"
+msgstr "Устанавливать регистр следующих не-идентификаторов:"
+
 #: jcfuiconsts.liscapsoperators
 msgid "Operators"
 msgstr "Операторы"
