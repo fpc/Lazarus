@@ -570,10 +570,15 @@ var
   var
     AlignedControl: TControl;
     NewBounds: TRect;
-    CurBounds: TRect;
+    SiblingBounds: TRect;
     j: Integer;
     PreferredBtnWidth: Integer;
     PreferredBtnHeight: Integer;
+    Intersects: Boolean;
+    IntersectsWithLimitedHeightControl: Boolean;
+    AnchorControl: TControl;
+    AnchorSide: TAnchorSideReference;
+    p: integer;
   begin
     if (CurControl is TToolButton) and (not CurControl.AutoSize) then
     begin
@@ -588,37 +593,50 @@ var
     else
       NewControlWidth := CurControl.Width;
     NewBounds := Bounds(x, y, NewControlWidth, ButtonHeight);
-    
+
+    //DebugLn(['CalculatePosition ',DbgSName(CurControl)]);
     repeat
       // move control to the right, until it does not overlap
+      IntersectsWithLimitedHeightControl:=false;
       for j := 0 to AlignedControls.Count - 1 do
       begin
         AlignedControl := TControl(AlignedControls[j]);
-        CurBounds := Bounds(AlignedControl.Left, AlignedControl.Top,
+        SiblingBounds := Bounds(AlignedControl.Left, AlignedControl.Top,
                             AlignedControl.Width, AlignedControl.Height);
-        if (CurBounds.Right > NewBounds.Left) and
-           (CurBounds.Left < NewBounds.Right) and
-           (CurBounds.Bottom > NewBounds.Top) and
-           (CurBounds.Top < NewBounds.Bottom) then
-        begin
-          //DebugLn('CalculatePosition Move ',NewBounds.Left,'->',CurBounds.Right);
-          NewBounds.Left := CurBounds.Right;
+        Intersects:=(SiblingBounds.Right > NewBounds.Left) and
+                    (SiblingBounds.Left < NewBounds.Right) and
+                    (SiblingBounds.Bottom > NewBounds.Top) and
+                    (SiblingBounds.Top < NewBounds.Bottom);
+        if Intersects then begin
+          //DebugLn('CalculatePosition Move ',NewBounds.Left,'->',SiblingBounds.Right);
+          NewBounds.Left := SiblingBounds.Right;
           NewBounds.Right := NewBounds.Left + NewControlWidth;
+          AnchorControl:=nil;
+          // check if bottom is anchored tp parent
+          if (akBottom in AlignedControl.Anchors) then
+            AlignedControl.AnchorSideBottom.GetSidePosition(AnchorControl,AnchorSide,P);
+          if AnchorControl=nil then
+            AnchorControl:=AlignedControl;
+          if not (akBottom in AnchorControl.Anchors) then
+            IntersectsWithLimitedHeightControl:=true;
         end;
       end;
-      if (not Wrapable) or (NewBounds.Right <= ARect.Right) or (NewBounds.Left = StartX) then
+      if (not Wrapable)
+      or (NewBounds.Right <= ARect.Right) or (NewBounds.Left = StartX)
+      or (not IntersectsWithLimitedHeightControl) then
       begin
-        // control fits into the row
+        // control fits into the row (or does not fit in the client area)
         x := NewBounds.Left;
         y := NewBounds.Top;
         Exit;
       end;
+
       // try next row
       NewBounds.Left := StartX;
       NewBounds.Right := NewBounds.Left + NewControlWidth;
       inc(NewBounds.Top, ButtonHeight);
       inc(NewBounds.Bottom, ButtonHeight);
-      //DebugLn('CalculatePosition Next Row ',NewBounds.Left,',',NewBounds.Top);
+      //DebugLn('CalculatePosition Next Row ',DbgSName(CurControl),' ',dbgs(NewBounds));
     until False;
   end;
 
