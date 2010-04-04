@@ -200,6 +200,15 @@ resourcestring
   lisWarningsWarnAboutUnusedParameters = 'Warn about &unused parameters';
   lisWarningsIgnoreUnusedParametersNamed = '&Ignore unused parameters named:';
 
+  //Capitalisation tab
+  lisCapsCapitalisation = 'Capitalisation';
+  lisCapsEnableCapitalisationFixing = 'Enable capitalisation fixing';
+  lisCapsReservedWords = 'Reserved words';
+  lisCapsOperators = 'Operators';
+  lisCapsDirectives = 'Directives';
+  lisCapsConstants = 'Constants';
+  lisCapsTypes = 'Types';
+
 implementation
 
 end.

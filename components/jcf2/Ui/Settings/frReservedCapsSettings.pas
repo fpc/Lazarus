@@ -62,7 +62,7 @@ implementation
 {$R *.lfm}
 
 uses 
-  SettingsTypes, JcfHelp, JcfSettings;
+  SettingsTypes, JcfHelp, JcfSettings, jcfuiconsts;
 
 constructor TfrReservedCapsSettings.Create(AOwner: TComponent);
 begin
@@ -72,12 +72,41 @@ end;
 
 function TfrReservedCapsSettings.GetTitle: String;
 begin
-  Result := 'Capitalisation';
+  Result := lisCapsCapitalisation;
 end;
 
 procedure TfrReservedCapsSettings.Setup(ADialog: TAbstractOptionsEditorDialog);
 begin
-  //;
+  cbEnable.Caption := lisCapsEnableCapitalisationFixing;
+  rgReservedWords.Caption := lisCapsReservedWords;
+  rgReservedWords.Items[0] := lisObfsAllCapitals;
+  rgReservedWords.Items[1] := lisObfsAllLowerCase;
+  rgReservedWords.Items[2] := lisObfsMixedCase;
+  rgReservedWords.Items[3] := lisObfsLeaveAlone;
+
+  rgOperators.Caption := lisCapsOperators;
+  rgOperators.Items[0] := lisObfsAllCapitals;
+  rgOperators.Items[1] := lisObfsAllLowerCase;
+  rgOperators.Items[2] := lisObfsMixedCase;
+  rgOperators.Items[3] := lisObfsLeaveAlone;
+
+  rgDirectives.Caption := lisCapsDirectives;
+  rgDirectives.Items[0] := lisObfsAllCapitals;
+  rgDirectives.Items[1] := lisObfsAllLowerCase;
+  rgDirectives.Items[2] := lisObfsMixedCase;
+  rgDirectives.Items[3] := lisObfsLeaveAlone;
+
+  rgConstants.Caption := lisCapsConstants;
+  rgConstants.Items[0] := lisObfsAllCapitals;
+  rgConstants.Items[1] := lisObfsAllLowerCase;
+  rgConstants.Items[2] := lisObfsMixedCase;
+  rgConstants.Items[3] := lisObfsLeaveAlone;
+
+  rgTypes.Caption := lisCapsTypes;
+  rgTypes.Items[0] := lisObfsAllCapitals;
+  rgTypes.Items[1] := lisObfsAllLowerCase;
+  rgTypes.Items[2] := lisObfsMixedCase;
+  rgTypes.Items[3] := lisObfsLeaveAlone;
 end;
 
 procedure TfrReservedCapsSettings.cbEnableClick(Sender: TObject);
