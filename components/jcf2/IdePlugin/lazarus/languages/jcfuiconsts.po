@@ -181,6 +181,14 @@ msgstr ""
 msgid "Types"
 msgstr ""
 
+#: jcfuiconsts.liscapsunitnamessetcapitalisationontheseunitnames
+msgid "Set capitalisation on these unit names:"
+msgstr ""
+
+#: jcfuiconsts.liscapsunitnamesunitnames
+msgid "Unit Names"
+msgstr ""
+
 #: jcfuiconsts.liscaseblocksalways
 msgctxt "jcfuiconsts.liscaseblocksalways"
 msgid "Always"

@@ -190,6 +190,14 @@ msgstr "Зарезервированные слова"
 msgid "Types"
 msgstr "Типы"
 
+#: jcfuiconsts.liscapsunitnamessetcapitalisationontheseunitnames
+msgid "Set capitalisation on these unit names:"
+msgstr "Устанавливать регистр следующих имён модулей:"
+
+#: jcfuiconsts.liscapsunitnamesunitnames
+msgid "Unit Names"
+msgstr "Имена модулей"
+
 #: jcfuiconsts.liscaseblocksalways
 msgctxt "jcfuiconsts.liscaseblocksalways"
 msgid "Always"
