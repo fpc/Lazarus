@@ -146,7 +146,9 @@ end;
 procedure TScreen.MoveFormToFocusFront(ACustomForm: TCustomForm);
 begin
   if (Self = nil) or (ACustomForm = nil) or
-     (csDestroying in ACustomForm.ComponentState) then
+     (csDestroying in ACustomForm.ComponentState) or
+     (FCustomForms.IndexOf(ACustomForm)<0)
+  then
     RaiseGDBException('TScreen.MoveFormToFocusFront');
   if (FCustomForms.Count=0) or (TObject(FCustomForms[0])<>ACustomForm) then
   begin
@@ -166,6 +168,12 @@ end;
 
 procedure TScreen.MoveFormToZFront(ACustomForm: TCustomForm);
 begin
+  if (Self = nil) or (ACustomForm = nil) or
+     (csDestroying in ACustomForm.ComponentState) or
+     (FCustomForms.IndexOf(ACustomForm)<0)
+  then
+    RaiseGDBException('TScreen.MoveFormToZFront');
+
   if (FCustomFormsZOrdered.Count = 0) or
      (TObject(FCustomFormsZOrdered[0]) <> ACustomForm) then
   begin
