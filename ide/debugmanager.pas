@@ -2104,10 +2104,9 @@ begin
   if ASrcEdit=nil then
     GetSourceEditorForBreakPoint(ManagedBreakPoint,ASrcEdit);
   if ASrcEdit=nil then exit;
-  NewSrcMark:=TSourceMark.Create(ASrcEdit.EditorComponent,nil);
+  NewSrcMark:=TSourceMark.Create(ASrcEdit, nil);
   ManagedBreakPoint.SourceMark:=NewSrcMark;
   SourceEditorMarks.Add(NewSrcMark);
-  ASrcEdit.EditorComponent.Marks.Add(NewSrcMark);
 end;
 
 procedure TDebugManager.GetSourceEditorForBreakPoint(

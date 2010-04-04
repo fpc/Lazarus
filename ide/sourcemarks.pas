@@ -39,11 +39,71 @@ interface
 
 uses
   Classes, SysUtils, LCLProc, LResources, Graphics, GraphType, Controls, Menus,
-  AVL_Tree, SynEdit, SynEditMarks, IDEProcs, MenuIntf, EditorOptions;
+  AVL_Tree, SynEdit, SynEditMarks, IDEProcs, MenuIntf, SrcEditorIntf, EditorOptions;
   
 type
   TSourceMarks = class;
   TSourceMark = class;
+
+  { TSourceSynMark }
+
+  TSourceSynMark = class(TSynEditMark)
+  private
+    FSourceEditor: TSourceEditorInterface;
+    FSourceMark: TSourceMark;
+    FSynEdit: TSynEdit;
+    FOnChange: TNotifyEvent;
+    FChangeLock: Integer;
+  protected
+    procedure Changed;
+    property OnChange: TNotifyEvent read FOnChange write FOnChange;
+    procedure Assign(Src: TSourceSynMark);
+  public
+    constructor Create(AOwner: TSourceMark; AEditor: TSourceEditorInterface);
+    destructor Destroy; override;
+    function GetEdit: TSynEdit; override;
+    procedure SetColumn(const Value: Integer); override;
+    procedure SetImage(const Value: Integer); override;
+    procedure SetLine(const Value: Integer); override;
+    procedure SetPriority(const AValue: integer); override;
+    procedure SetVisible(const Value: boolean); override;
+    property SourceMark: TSourceMark read FSourceMark write FSourceMark;
+  end;
+
+  { TSourceSynMarkList }
+
+  TSourceSynMarkList = class(TFPList)
+  private
+    FOnChange: TNotifyEvent;
+    function GetColumn: integer;
+    function GetImageIndex: integer;
+    function GetLine: integer;
+    function GetPriority: integer;
+    function GetSM(Index: Integer): TSourceSynMark;
+    function GetVisible: boolean;
+    procedure PutSM(Index: Integer; const AValue: TSourceSynMark);
+    procedure SetColumn(const AValue: integer);
+    procedure SetImageIndex(const AValue: integer);
+    procedure SetLine(const AValue: integer);
+    procedure SetPriority(const AValue: integer);
+    procedure SetVisible(const AValue: boolean);
+  public
+    function Add(Item: TSourceSynMark): Integer;
+    property Items[Index: Integer]: TSourceSynMark read GetSM write PutSM; default;
+    property OnChange: TNotifyEvent read FOnChange write FOnChange;
+    procedure InvalidateLine(ALine: Integer);
+    procedure DeleteWithSourceEditor(ASrcEditor: TSourceEditorInterface);
+    function IndexOfSourceEditor(AEditor: TSourceEditorInterface): Integer;
+  public
+    property Line: integer read GetLine write SetLine;
+    property Column: integer read GetColumn write SetColumn;
+    property Priority: integer read GetPriority write SetPriority;
+    property ImageIndex: integer read GetImageIndex write SetImageIndex;
+    property Visible: boolean read GetVisible write SetVisible;
+    //property BookmarkNumber: integer read FBookmarkNum write fBookmarkNum;
+    //property InternalImage: boolean read FInternalImage write SetInternalImage;
+    //property IsBookmark: boolean read GetIsBookmark;
+  end;
 
   { TSourceMark }
   
@@ -60,48 +120,53 @@ type
     smhCreatePopupMenu
     );
     
-  TSourceMark = class(TSynEditMark)
+  TSourceMark = class
   private
+    FSourceMarks: TSourceMarks;
+    FSourceEditorID: TObject;
+    FSynMarks: TSourceSynMarkList;
     FData: TObject;
     FHandlers: array[TSourceMarkHandler] of TMethodList;
+    FLine: integer;
+    FColumn: integer;
+    FImage: integer;
+    FVisible: boolean;
+    FPriority: integer;
     FIsBreakPoint: boolean;
     FLineColorAttrib: TAdditionalHilightAttribute;
     FLineColorBackGround: TColor;
     FLineColorForeGround: TColor;
-    FSourceEditor: TObject;
-    FSourceMarks: TSourceMarks;
-    FSynEdit: TCustomSynEdit;
+    function GetSourceEditor: TSourceEditorInterface;
+    function GetSourceEditorID: TObject;
+    procedure SetPriority(const AValue: integer);
     procedure SetSourceMarks(const AValue: TSourceMarks);
     procedure Changed;
+    procedure SynMarkChanged(Sender: TObject);
   protected
-    function GetEdit: TCustomSynEdit; override;
     procedure AddHandler(HandlerType: TSourceMarkHandler;
                          const Handler: TMethod);
     procedure DoPositionChanged; virtual;
     procedure DoLineUpdate; virtual;
-    procedure GetSourceEditor; virtual;
     function  EditorUpdateRequired: Boolean; virtual; // called to check if we need to update the editor if a property is changed
-    procedure SetColumn(const Value: Integer); override;
+    procedure SetColumn(const Value: Integer); //override;
     procedure SetData(const AValue: TObject); virtual;
-    procedure SetImage(const Value: Integer); override;
+    procedure SetImage(const Value: Integer); //override;
     procedure SetIsBreakPoint(const AValue: boolean); virtual;
-    procedure SetLine(const Value: Integer); override;
+    procedure SetLine(const Value: Integer); //override;
     procedure SetLineColorAttrib(const AValue: TAdditionalHilightAttribute); virtual;
     procedure SetLineColorBackGround(const AValue: TColor); virtual;
     procedure SetLineColorForeGround(const AValue: TColor); virtual;
-    procedure SetSourceEditor(const AValue: TObject); virtual;
-    procedure SetVisible(const AValue: boolean); override;
+    procedure SetVisible(const AValue: boolean); //override;
   public
-    constructor Create(TheOwner: TCustomSynEdit; TheData: TObject);
+    constructor Create(TheOwner: TSourceEditorInterface; TheData: TObject);
     destructor Destroy; override;
     function Compare(OtherMark: TSourceMark): integer;
-    function CompareEditorAndLine(ASynEdit: TCustomSynEdit;
+    function CompareEditorAndLine(ASrcEditID: TObject;
                                   ALine: integer): integer;
     function GetFilename: string;
     function GetHint: string; virtual;
     procedure CreatePopupMenuItems(const AddMenuItemProc: TAddMenuItemProc);
-  public
-    // handlers
+  public    // handlers
     procedure RemoveAllHandlersForObject(HandlerObject: TObject);
     procedure AddPositionChangedHandler(OnPositionChanged: TNotifyEvent);
     procedure RemovePositionChangedHandler(OnPositionChanged: TNotifyEvent);
@@ -116,16 +181,28 @@ type
   public
     // properties
     property Data: TObject read FData write SetData;
-    property SourceEditor: TObject read FSourceEditor write SetSourceEditor;
     property SourceMarks: TSourceMarks read FSourceMarks write SetSourceMarks;
-    property SynEdit: TCustomSynEdit read FSynEdit;
-    property IsBreakPoint: boolean read FIsBreakPoint write SetIsBreakPoint;
+    property SourceEditor: TSourceEditorInterface read GetSourceEditor;
+    property SourceEditorID: TObject read GetSourceEditorID;
+    function HasSourceEditor(AEditor: TSourceEditorInterface): Boolean;
+    procedure AddSourceEditor(AEditor: TSourceEditorInterface);
+  public
     property LineColorAttrib: TAdditionalHilightAttribute read FLineColorAttrib
                                                        write SetLineColorAttrib;
     property LineColorForeGround: TColor read FLineColorForeGround
                                          write SetLineColorForeGround;
     property LineColorBackGround: TColor read FLineColorBackGround
                                          write SetLineColorBackGround;
+  public
+    property Line: integer read FLine write SetLine;
+    property Column: integer read FColumn write SetColumn;
+    property Priority: integer read FPriority write SetPriority;
+    property ImageIndex: integer read FImage write SetImage;
+    property Visible: boolean read FVisible write SetVisible;
+    property IsBreakPoint: boolean read FIsBreakPoint write SetIsBreakPoint;
+    //property InternalImage: boolean read FInternalImage write SetInternalImage;
+    //property BookmarkNumber: integer read FBookmarkNum write fBookmarkNum;
+    //property IsBookmark: boolean read GetIsBookmark;
   end;
   
   TSourceMarkClass = class of TSourceMark;
@@ -134,7 +211,8 @@ type
   
   { TSourceMarks }
   
-  TGetSourceEditorEvent = function(ASynEdit: TCustomSynEdit): TObject of object;
+  //TGetSourceEditorEvent = function(ASynEdit: TCustomSynEdit): TSourceEditorInterface of object;
+  TGetSourceEditorIDEvent = function(ASrcEdit: TSourceEditorInterface): TObject of object;
   TGetFilenameEvent = function(ASourceEditor: TObject): string of object;
   TMarksAction = (maAdded, maRemoved, maChanged);
   TMarksActionEvent = procedure(AMark: TSourceMark; Action: TMarksAction) of object;
@@ -145,6 +223,7 @@ type
     FCurrentLineBreakPointImg: Integer;
     FCurrentLineImg: Integer;
     FCurrentLineDisabledBreakPointImg: Integer;
+    FOnGetSourceEditorID: TGetSourceEditorIDEvent;
     FSourceLineImg: Integer;
     FImgList: TImageList;
     fInactiveBreakPointImg: Integer;
@@ -153,7 +232,6 @@ type
     fItems: TList;// list of TSourceMark
     fMultiBreakPointImg: Integer;
     FOnGetFilename: TGetFilenameEvent;
-    FOnGetSourceEditor: TGetSourceEditorEvent;
     FOnAction: TMarksActionEvent;
     fSortedItems: TAVLTree;// tree of TSourceMark
     fUnknownBreakPointImg: Integer;
@@ -161,37 +239,36 @@ type
     function GetItems(Index: integer): TSourceMark;
     procedure CreateImageList;
   protected
-    function FindFirstMarkNode(ASynEdit: TCustomSynEdit;
-                               ALine: integer): TAVLTreeNode;
+    function FindFirstMarkNode(ASrcEditID: TObject; ALine: integer): TAVLTreeNode;
   public
     constructor Create(TheOwner: TComponent); override;
     destructor Destroy; override;
     function Count: integer;
     function Add(AMark: TSourceMark): integer;
-    function Add(ASynEdit: TCustomSynEdit; ALine: integer): TSourceMark;
-    function AddCustomMark(TheOwner: TCustomSynEdit; Data: TObject;
+    function Add(ASrcEdit: TSourceEditorInterface; ALine: integer): TSourceMark;
+    function AddCustomMark(TheOwner: TSourceEditorInterface; Data: TObject;
                            MarkClass: TSourceMarkClass): TSourceMark;
     function AddImage(const ResName: string): integer;
     function GetFilename(AMark: TSourceMark): string;
-    function GetSourceEditor(AMark: TSourceMark): TObject;
     procedure Clear;
     procedure Delete(Index: integer);
     procedure Remove(AMark: TSourceMark);
-    procedure DeleteAllForEditor(ASynEdit: TCustomSynEdit);
-    function FindFirstMark(ASynEdit: TCustomSynEdit;
+    procedure AddSourceEditor(ANewEditor, AExistingEditor: TSourceEditorInterface);
+    procedure DeleteAllForEditor(ASrcEdit: TSourceEditorInterface);
+    function FindFirstMark(ASrcEdit: TSourceEditorInterface;
                            ALine: integer): TSourceMark;
-    function FindBreakPointMark(ASynEdit: TCustomSynEdit;
+    function FindBreakPointMark(ASrcEdit: TSourceEditorInterface;
                                 ALine: integer): TSourceMark;
-    procedure GetMarksForLine(ASynEdit: TCustomSynEdit; ALine: integer;
+    procedure GetMarksForLine(ASrcEdit: TSourceEditorInterface; ALine: integer;
                               var Marks: PSourceMark; var MarkCount: integer);
   public
     property ImgList: TImageList read FImgList write FImgList;
     property Items[Index: integer]: TSourceMark read GetItems; default;
     property OnGetFilename: TGetFilenameEvent read FOnGetFilename
                                               write FOnGetFilename;
-    property OnGetSourceEditor: TGetSourceEditorEvent read FOnGetSourceEditor
-                                                      write FOnGetSourceEditor;
     property OnAction: TMarksActionEvent read FOnAction write FOnAction;
+    property OnGetSourceEditorID: TGetSourceEditorIDEvent
+             read FOnGetSourceEditorID write FOnGetSourceEditorID;
   public
     // icon index
     property ActiveBreakPointImg: Integer read fActiveBreakPointImg;
@@ -215,11 +292,11 @@ function CompareSourceMarks(Data1, Data2: Pointer): integer;
 implementation
 
 type
-  TEditorAndLine = record
-    Editor: TCustomSynEdit;
+  TEditorIDAndLine = record
+    EditorID: TObject;
     Line: integer;
   end;
-  PEditorAndLine = ^TEditorAndLine;
+  PEditorAndLine = ^TEditorIDAndLine;
 
 function CompareSourceMarks(Data1, Data2: Pointer): integer;
 var
@@ -229,12 +306,223 @@ begin
   Result := Mark1.Compare(Mark2);
 end;
 
-function CompareEditorAndLineWithMark(Key, Data: Pointer): integer;
+function CompareEditorIDAndLineWithMark(Key, Data: Pointer): integer;
 var
   EditorAndLine: PEditorAndLine absolute Key;
   AMark: TSourceMark absolute Data;
 begin
-  Result := -AMark.CompareEditorAndLine(EditorAndLine^.Editor, EditorAndLine^.Line);
+  Result := -AMark.CompareEditorAndLine(EditorAndLine^.EditorID, EditorAndLine^.Line);
+end;
+
+procedure TSourceSynMark.Changed;
+begin
+  if FChangeLock > 0 then exit;
+  if assigned(FOnChange) then
+    FOnChange(Self);
+end;
+
+procedure TSourceSynMark.Assign(Src: TSourceSynMark);
+begin
+  inc(FChangeLock);
+  try
+    Line := Src.Line;
+    Column := Src.Column;
+    ImageIndex := Src.ImageIndex;
+    Priority := Src.Priority;
+    Visible := Src.Visible;
+    InternalImage := Src.InternalImage;
+    BookmarkNumber := Src.BookmarkNumber;
+  finally
+    dec(FChangeLock);
+  end;
+  Changed;
+end;
+
+constructor TSourceSynMark.Create(AOwner: TSourceMark; AEditor: TSourceEditorInterface);
+begin
+  FSourceMark := AOwner;
+  FSourceEditor := AEditor;
+  FSynEdit := TSynEdit(FSourceEditor.EditorControl);
+  Inherited Create(FSynEdit);
+  FChangeLock := 0;
+  if FSynEdit <> nil then
+    FSynEdit.Marks.Add(Self);
+end;
+
+destructor TSourceSynMark.Destroy;
+begin
+  if FSynEdit<>nil then
+    FSynEdit.Marks.Remove(Self);
+  inherited Destroy;
+end;
+
+{ TSourceSynMarkList }
+
+function TSourceSynMarkList.GetSM(Index: Integer): TSourceSynMark;
+begin
+  Result := TSourceSynMark(Get(Index));
+end;
+
+function TSourceSynMarkList.GetColumn: integer;
+begin
+  if Count = 0 then
+    Result := -1
+  else
+    Result := Items[0].Column;
+end;
+
+function TSourceSynMarkList.GetImageIndex: integer;
+begin
+  if Count = 0 then
+    Result := -1
+  else
+    Result := Items[0].ImageIndex;
+end;
+
+function TSourceSynMarkList.GetLine: integer;
+begin
+  if Count = 0 then
+    Result := -1
+  else
+    Result := Items[0].Line;
+end;
+
+function TSourceSynMarkList.GetPriority: integer;
+begin
+  if Count = 0 then
+    Result := -1
+  else
+    Result := Items[0].Priority;
+end;
+
+function TSourceSynMarkList.GetVisible: boolean;
+begin
+  if Count = 0 then
+    Result := False
+  else
+    Result := Items[0].Visible;
+end;
+
+procedure TSourceSynMarkList.PutSM(Index: Integer; const AValue: TSourceSynMark
+  );
+begin
+  AValue.OnChange := FOnChange;
+  Put(Index, AValue);
+end;
+
+procedure TSourceSynMarkList.SetColumn(const AValue: integer);
+var
+  i: Integer;
+begin
+  for i := 0 to Count - 1 do
+    Items[i].Column := AValue;
+end;
+
+procedure TSourceSynMarkList.SetImageIndex(const AValue: integer);
+var
+  i: Integer;
+begin
+  for i := 0 to Count - 1 do
+    Items[i].ImageIndex := AValue;
+end;
+
+procedure TSourceSynMarkList.SetLine(const AValue: integer);
+var
+  i: Integer;
+begin
+  for i := 0 to Count - 1 do
+    Items[i].Line := AValue;
+end;
+
+procedure TSourceSynMarkList.SetPriority(const AValue: integer);
+var
+  i: Integer;
+begin
+  for i := 0 to Count - 1 do
+    Items[i].Priority := AValue;
+end;
+
+procedure TSourceSynMarkList.SetVisible(const AValue: boolean);
+var
+  i: Integer;
+begin
+  for i := 0 to Count - 1 do
+    Items[i].Visible := AValue;
+end;
+
+function TSourceSynMarkList.Add(Item: TSourceSynMark): Integer;
+begin
+  Item.OnChange := FOnChange;
+  Result := inherited Add(Item);
+end;
+
+procedure TSourceSynMarkList.InvalidateLine(ALine: Integer);
+var
+  i: Integer;
+begin
+  for i := 0 to Count - 1 do
+    if Visible then
+      Items[i].GetEdit.InvalidateLine(ALine);
+end;
+
+procedure TSourceSynMarkList.DeleteWithSourceEditor(
+  ASrcEditor: TSourceEditorInterface);
+var
+  i: Integer;
+begin
+  i := Count - 1;
+  while i >= 0 do begin
+    if Items[i].FSourceEditor = ASrcEditor then begin
+      Items[i].Free;
+      Delete(i);
+    end;
+    dec(i);
+  end;
+end;
+
+function TSourceSynMarkList.IndexOfSourceEditor(AEditor: TSourceEditorInterface
+  ): Integer;
+begin
+  Result := Count - 1;
+  while (Result >= 0) and (Items[Result].FSourceEditor <> AEditor) do
+    dec(Result);
+end;
+
+{ TSourceSynMark }
+
+function TSourceSynMark.GetEdit: TSynEdit;
+begin
+  Result := FSynEdit;
+end;
+
+procedure TSourceSynMark.SetColumn(const Value: Integer);
+begin
+  inherited SetColumn(Value);
+  Changed;
+end;
+
+procedure TSourceSynMark.SetImage(const Value: Integer);
+begin
+  inherited SetImage(Value);
+  Changed;
+end;
+
+procedure TSourceSynMark.SetLine(const Value: Integer);
+begin
+  inherited SetLine(Value);
+  Changed;
+end;
+
+procedure TSourceSynMark.SetPriority(const AValue: integer);
+begin
+  inherited SetPriority(AValue);
+  Changed;
+end;
+
+procedure TSourceSynMark.SetVisible(const Value: boolean);
+begin
+  inherited SetVisible(Value);
+  Changed;
 end;
 
 { TSourceMark }
@@ -244,14 +532,49 @@ begin
   if FSourceMarks=AValue then exit;
   if FSourceMarks<>nil then
     FSourceMarks.Remove(Self);
+  FSourceEditorID := nil;
+  FSourceMarks := AValue;
   if AValue<>nil then
     AValue.Add(Self);
+end;
+
+procedure TSourceMark.SetPriority(const AValue: integer);
+begin
+  if FPriority = AValue then exit;
+  FPriority := AValue;
+  FSynMarks.Priority := AValue;
+end;
+
+function TSourceMark.GetSourceEditorID: TObject;
+begin
+  if (FSourceEditorID = nil ) and (FSourceMarks <> nil) and
+     (SourceEditor <> nil) and Assigned(FSourceMarks.OnGetSourceEditorID)
+  then
+    FSourceEditorID := FSourceMarks.OnGetSourceEditorID(SourceEditor);
+  Result := FSourceEditorID;
+end;
+
+function TSourceMark.GetSourceEditor: TSourceEditorInterface;
+begin
+  if FSynMarks.Count = 0 then
+    Result := nil
+  else
+    Result := FSynMarks[0].FSourceEditor;
 end;
 
 procedure TSourceMark.Changed;
 begin
   if Assigned(FSourceMarks) and Assigned(FSourceMarks.OnAction) then
     FSourceMarks.OnAction(Self, maChanged);
+end;
+
+procedure TSourceMark.SynMarkChanged(Sender: TObject);
+begin
+  Line := TSourceSynMark(Sender).Line;
+  Column := TSourceSynMark(Sender).Column;
+  Priority := TSourceSynMark(Sender).Priority;
+  ImageIndex := TSourceSynMark(Sender).ImageIndex;
+  Visible := TSourceSynMark(Sender).Visible;
 end;
 
 procedure TSourceMark.SetLineColorBackGround(const AValue: TColor);
@@ -283,17 +606,11 @@ begin
   DoLineUpdate;
 end;
 
-procedure TSourceMark.SetSourceEditor(const AValue: TObject);
-begin
-  if FSourceEditor=AValue then exit;
-  FSourceEditor:=AValue;
-  GetFilename;
-end;
-
 procedure TSourceMark.SetVisible(const AValue: boolean);
 begin
   if Visible = AValue then Exit;
-  inherited SetVisible(AValue);
+  FVisible := AValue;
+  FSynMarks.Visible := AValue;
   if EditorUpdateRequired then DoLineUpdate;
 end;
 
@@ -308,11 +625,8 @@ end;
 
 procedure TSourceMark.DoLineUpdate;
 begin
-  if not Visible then Exit;
-  if SynEdit = nil then Exit;
   if Line <= 0 then Exit;
-  
-  SynEdit.InvalidateLine(Line);
+  FSynMarks.InvalidateLine(Line);
   Changed;
 end;
 
@@ -320,12 +634,6 @@ procedure TSourceMark.SetData(const AValue: TObject);
 begin
   if FData=AValue then exit;
   FData:=AValue;
-end;
-
-procedure TSourceMark.GetSourceEditor;
-begin
-  if FSourceMarks<>nil then
-    FSourceEditor:=FSourceMarks.GetSourceEditor(Self);
 end;
 
 function TSourceMark.EditorUpdateRequired: Boolean;
@@ -344,16 +652,12 @@ begin
   FHandlers[HandlerType].Add(Handler);
 end;
 
-function TSourceMark.GetEdit: TCustomSynEdit;
-begin
-  Result:=FSynEdit;
-end;
-
 procedure TSourceMark.SetColumn(const Value: Integer);
 begin
   if Column=Value then exit;
   if FSourceMarks<>nil then FSourceMarks.fSortedItems.Remove(Self);
-  inherited SetColumn(Value);
+  FColumn := Value;
+  FSynMarks.Column := Value;
   if FSourceMarks<>nil then FSourceMarks.fSortedItems.Add(Self);
   DoPositionChanged;
 end;
@@ -361,7 +665,8 @@ end;
 procedure TSourceMark.SetImage(const Value: Integer);
 begin
   if ImageIndex=Value then exit;
-  inherited SetImage(Value);
+  FImage := Value;
+  FSynMarks.ImageIndex := Value;
   Changed;
 end;
 
@@ -370,16 +675,18 @@ begin
   if Line=Value then exit;
   if EditorUpdateRequired then DoLineUpdate;
   if FSourceMarks<>nil then FSourceMarks.fSortedItems.Remove(Self);
-  inherited SetLine(Value);
+  FLine := Value;
+  FSynMarks.Line := Value;
   if FSourceMarks<>nil then FSourceMarks.fSortedItems.Add(Self);
   DoPositionChanged;
   if EditorUpdateRequired then DoLineUpdate;
 end;
 
-constructor TSourceMark.Create(TheOwner: TCustomSynEdit; TheData: TObject);
+constructor TSourceMark.Create(TheOwner: TSourceEditorInterface; TheData: TObject);
 begin
-  inherited Create(TheOwner);
-  fSynEdit:=TheOwner;
+  FSynMarks := TSourceSynMarkList.Create;
+  FSynMarks.OnChange := @SynMarkChanged;
+  FSynMarks.Add(TSourceSynMark.Create(Self, TheOwner));
   FData:=TheData;
   FLineColorAttrib:=ahaNone;
   FLineColorBackGround:=clNone;
@@ -395,11 +702,13 @@ begin
   i:=FHandlers[smhBeforeFree].Count;
   while FHandlers[smhBeforeFree].NextDownIndex(i) do
     TNotifyEvent(FHandlers[smhBeforeFree][i])(Self);
-  // remove from editor component
-  if fSynEdit<>nil then fSynEdit.Marks.Remove(Self);
   // remove from source marks
   SourceMarks:=nil;
-    
+  // remove from editor component
+  for i := 0 to FSynMarks.Count - 1 do
+    FSynMarks[i].Free;
+  FreeAndNil(FSynMarks);
+
   // free handler lists
   for HandlerType:=Low(TSourceMarkHandler) to high(TSourceMarkHandler) do
     FreeThenNil(FHandlers[HandlerType]);
@@ -409,7 +718,7 @@ end;
 
 function TSourceMark.Compare(OtherMark: TSourceMark): integer;
 begin
-  Result:=PtrInt(fSynEdit)-PtrInt(OtherMark.fSynEdit);
+  Result:=PtrInt(SourceEditorID)-PtrInt(OtherMark.SourceEditorID);
   if Result<>0 then exit;
   Result:=Line-OtherMark.Line;
   if Result<>0 then exit;
@@ -420,10 +729,10 @@ begin
   Result := PtrInt(Self) - PtrInt(OtherMark);
 end;
 
-function TSourceMark.CompareEditorAndLine(ASynEdit: TCustomSynEdit;
+function TSourceMark.CompareEditorAndLine(ASrcEditID: TObject;
   ALine: integer): integer;
 begin
-  Result := PtrInt(fSynEdit) - PtrInt(ASynEdit);
+  Result := PtrInt(SourceEditorID) - PtrInt(ASrcEditID);
   if Result <> 0 then Exit;
   Result := Line - ALine;
 end;
@@ -509,6 +818,21 @@ begin
   FHandlers[smhCreatePopupMenu].Remove(TMethod(OnCreatePopupMenu));
 end;
 
+function TSourceMark.HasSourceEditor(AEditor: TSourceEditorInterface): Boolean;
+begin
+  Result := FSynMarks.IndexOfSourceEditor(AEditor) >= 0;
+end;
+
+procedure TSourceMark.AddSourceEditor(AEditor: TSourceEditorInterface);
+var
+  NewSynMark: TSourceSynMark;
+begin
+  NewSynMark := TSourceSynMark.Create(Self, AEditor);
+  if FSynMarks.Count > 0 then
+    NewSynMark.Assign(FSynMarks[0]);
+  FSynMarks.Add(NewSynMark);
+end;
+
 { TSourceMarks }
 
 function TSourceMarks.GetItems(Index: integer): TSourceMark;
@@ -553,20 +877,20 @@ begin
   FSourceLineImg:=AddImage('debugger_source_line');
 end;
 
-function TSourceMarks.FindFirstMarkNode(ASynEdit: TCustomSynEdit; ALine: integer
+function TSourceMarks.FindFirstMarkNode(ASrcEditID: TObject; ALine: integer
   ): TAVLTreeNode;
 var
   LeftNode: TAVLTreeNode;
-  EditorAndLine: TEditorAndLine;
+  EditorIDAndLine: TEditorIDAndLine;
 begin
-  EditorAndLine.Editor := ASynEdit;
-  EditorAndLine.Line := ALine;
-  Result := fSortedItems.FindKey(@EditorAndLine, @CompareEditorAndLineWithMark);
+  EditorIDAndLine.EditorID := ASrcEditID;
+  EditorIDAndLine.Line := ALine;
+  Result := fSortedItems.FindKey(@EditorIDAndLine, @CompareEditorIDAndLineWithMark);
   while Result <> nil do
   begin
     LeftNode := fSortedItems.FindPrecessor(Result);
     if (LeftNode = nil) or
-       (CompareEditorAndLineWithMark(@EditorAndLine, LeftNode.Data) <> 0) then break;
+       (CompareEditorIDAndLineWithMark(@EditorIDAndLine, LeftNode.Data) <> 0) then break;
     Result := LeftNode;
   end;
 end;
@@ -600,21 +924,21 @@ end;
 function TSourceMarks.Add(AMark: TSourceMark): integer;
 begin
   if AMark=nil then exit(-1);
+  AMark.FSourceMarks:=Self;
   Result:=fItems.Add(AMark);
   fSortedItems.Add(AMark);
-  AMark.FSourceMarks:=Self;
   if Assigned(FOnAction) then
     FOnAction(AMark, maAdded);
 end;
 
-function TSourceMarks.Add(ASynEdit: TCustomSynEdit; ALine: integer): TSourceMark;
+function TSourceMarks.Add(ASrcEdit: TSourceEditorInterface; ALine: integer): TSourceMark;
 begin
-  Result:=TSourceMark.Create(ASynEdit,nil);
+  Result:=TSourceMark.Create(ASrcEdit, nil);
   Result.Line := ALine;
   Add(Result);
 end;
 
-function TSourceMarks.AddCustomMark(TheOwner: TCustomSynEdit; Data: TObject;
+function TSourceMarks.AddCustomMark(TheOwner: TSourceEditorInterface; Data: TObject;
   MarkClass: TSourceMarkClass): TSourceMark;
 begin
   if MarkClass=nil then MarkClass:=TSourceMark;
@@ -642,54 +966,82 @@ begin
   if (AMark=nil) or (AMark.SourceMarks<>Self) then exit;
   i:=fItems.IndexOf(AMark);
   if i<0 then exit;
-  AMark.fSourceMarks:=nil;
   fItems.Delete(i);
   fSortedItems.Remove(AMark);
+  AMark.fSourceMarks:=nil;
   if Assigned(FOnAction) then
     FOnAction(AMark, maRemoved);
 end;
 
-procedure TSourceMarks.DeleteAllForEditor(ASynEdit: TCustomSynEdit);
+procedure TSourceMarks.AddSourceEditor(ANewEditor,
+  AExistingEditor: TSourceEditorInterface);
 var
   i: Integer;
   CurMark: TSourceMark;
+  SrcEditorID: TObject;
 begin
+  if not Assigned(OnGetSourceEditorID) then exit;
+  SrcEditorID := OnGetSourceEditorID(ANewEditor);
   i:=fItems.Count-1;
   while i>=0 do begin
     CurMark:=Items[i];
-    if CurMark.SynEdit=ASynEdit then
-      Delete(i);
+    if (CurMark.SourceEditorID = SrcEditorID) and
+       (not CurMark.HasSourceEditor(ANewEditor))
+    then
+      CurMark.AddSourceEditor(ANewEditor);
     dec(i);
   end;
 end;
 
-function TSourceMarks.FindFirstMark(ASynEdit: TCustomSynEdit; ALine: integer
+procedure TSourceMarks.DeleteAllForEditor(ASrcEdit: TSourceEditorInterface);
+var
+  i: Integer;
+  CurMark: TSourceMark;
+  SrcEditorID: TObject;
+begin
+  if not Assigned(OnGetSourceEditorID) then exit;
+  SrcEditorID := OnGetSourceEditorID(ASrcEdit);
+  i:=fItems.Count-1;
+  while i>=0 do begin
+    CurMark:=Items[i];
+    if CurMark.SourceEditorID = SrcEditorID then begin
+      CurMark.FSynMarks.DeleteWithSourceEditor(ASrcEdit);
+      if CurMark.FSynMarks.Count = 0 then
+        Delete(i);
+    end;
+    dec(i);
+  end;
+end;
+
+function TSourceMarks.FindFirstMark(ASrcEdit: TSourceEditorInterface; ALine: integer
   ): TSourceMark;
 var
   AVLNode: TAVLTreeNode;
 begin
-  AVLNode:=FindFirstMarkNode(ASynEdit,ALine);
+  if not Assigned(OnGetSourceEditorID) then exit(nil);
+  AVLNode:=FindFirstMarkNode(OnGetSourceEditorID(ASrcEdit), ALine);
   if AVLNode<>nil then
     Result:=TSourceMark(AVLNode.Data)
   else
     Result:=nil;
 end;
 
-function TSourceMarks.FindBreakPointMark(ASynEdit: TCustomSynEdit;
+function TSourceMarks.FindBreakPointMark(ASrcEdit: TSourceEditorInterface;
   ALine: integer): TSourceMark;
 var
   AVLNode: TAVLTreeNode;
-  EditorAndLine: TEditorAndLine;
+  EditorIDAndLine: TEditorIDAndLine;
   CurMark: TSourceMark;
 begin
   Result := nil;
-  EditorAndLine.Editor := ASynEdit;
-  EditorAndLine.Line := ALine;
-  AVLNode := FindFirstMarkNode(ASynEdit, ALine);
+  if not Assigned(OnGetSourceEditorID) then exit;
+  EditorIDAndLine.EditorID := OnGetSourceEditorID(ASrcEdit);
+  EditorIDAndLine.Line := ALine;
+  AVLNode := FindFirstMarkNode(EditorIDAndLine.EditorID, ALine);
   while (AVLNode <> nil) do
   begin
     CurMark := TSourceMark(AVLNode.Data);
-    if CompareEditorAndLineWithMark(@EditorAndLine, CurMark) <> 0 then break;
+    if CompareEditorIDAndLineWithMark(@EditorIDAndLine, CurMark) <> 0 then break;
     if CurMark.IsBreakPoint then
     begin
       Result := CurMark;
@@ -699,25 +1051,26 @@ begin
   end;
 end;
 
-procedure TSourceMarks.GetMarksForLine(ASynEdit: TCustomSynEdit;
+procedure TSourceMarks.GetMarksForLine(ASrcEdit: TSourceEditorInterface;
   ALine: integer; var Marks: PSourceMark; var MarkCount: integer);
 var
   i, Capacity: integer;
   AVLNode: TAVLTreeNode;
-  EditorAndLine: TEditorAndLine;
+  EditorIDAndLine: TEditorIDAndLine;
   CurMark: TSourceMark;
   HasChange: Boolean;
 begin
   Capacity := 0;
   MarkCount := 0;
   Marks := nil;
-  EditorAndLine.Editor := ASynEdit;
-  EditorAndLine.Line := ALine;
-  AVLNode := FindFirstMarkNode(ASynEdit, ALine);
+  if not Assigned(OnGetSourceEditorID) then exit;
+  EditorIDAndLine.EditorID := OnGetSourceEditorID(ASrcEdit);
+  EditorIDAndLine.Line := ALine;
+  AVLNode := FindFirstMarkNode(EditorIDAndLine.EditorID, ALine);
   while (AVLNode <> nil) do
   begin
     CurMark := TSourceMark(AVLNode.Data);
-    if CompareEditorAndLineWithMark(@EditorAndLine, CurMark) <> 0 then break;
+    if CompareEditorIDAndLineWithMark(@EditorIDAndLine, CurMark) <> 0 then break;
     if Capacity <= MarkCount then
     begin
       inc(Capacity, Capacity + 4);
@@ -748,23 +1101,12 @@ begin
   Result := ImgList.AddLazarusResource(Resname);
 end;
 
-function TSourceMarks.GetSourceEditor(AMark: TSourceMark): TObject;
-begin
-  Result:=nil;
-  if (AMark=nil) or (AMark.fSynEdit=nil) then exit;
-  if not Assigned(OnGetSourceEditor) then exit;
-  Result:=OnGetSourceEditor(AMark.fSynEdit);
-end;
-
 function TSourceMarks.GetFilename(AMark: TSourceMark): string;
 begin
   Result:='';
   if (AMark=nil) or (not Assigned(OnGetFilename)) then exit;
-  if AMark.FSourceEditor=nil then begin
-    AMark.GetSourceEditor;
-    if AMark.FSourceEditor=nil then exit;
-  end;
-  Result:=OnGetFilename(AMark.FSourceEditor);
+  if AMark.SourceEditor=nil then exit;
+  Result:=OnGetFilename(AMark.SourceEditor);
 end;
 
 initialization

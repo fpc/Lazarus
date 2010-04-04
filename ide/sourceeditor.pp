@@ -972,7 +972,7 @@ type
     procedure OnWordCompletionGetSource(var Source: TStrings; SourceIndex: integer);
     procedure OnSourceCompletionTimer(Sender: TObject);
     // marks
-    function OnSourceMarksGetSourceEditor(ASynEdit: TCustomSynEdit): TObject;
+    function OnSourceMarksGetSourceEditorID(ASrcEdit: TSourceEditorInterface): TObject;
     function OnSourceMarksGetFilename(ASourceEditor: TObject): string;
     procedure OnSourceMarksAction(AMark: TSourceMark; AAction: TMarksAction);
     property CodeTemplateModul: TSynEditAutoComplete
@@ -2054,6 +2054,7 @@ Begin
       dec(FSharedValues.BookmarkEventLock);
     end;
 
+    SourceEditorMarks.AddSourceEditor(Self, ASharedEditor);
   end;
   {$ENDIF}
 
@@ -2070,7 +2071,7 @@ begin
     FEditor.Visible:=false;
     FEditor.Parent:=nil;
     if SourceEditorMarks<>nil then
-      SourceEditorMarks.DeleteAllForEditor(FEditor);
+      SourceEditorMarks.DeleteAllForEditor(Self);
     TSourceNotebook(FAOwner).ReleaseEditor(self);
     // free the synedit control after processing the events
     Application.ReleaseComponent(FEditor);
@@ -3244,7 +3245,7 @@ begin
   // find breakpoint mark at line
   Marks := nil;
   try
-    SourceEditorMarks.GetMarksForLine(FEditor, Line, Marks, MarkCount);
+    SourceEditorMarks.GetMarksForLine(Self, Line, Marks, MarkCount);
     BreakFound := False;
     for i := 0 to MarkCount - 1 do
     begin
@@ -3282,7 +3283,7 @@ begin
     aha := ahaErrorLine
   end
   else begin
-    SourceEditorMarks.GetMarksForLine(FEditor, Line, CurMarks, CurMarkCount);
+    SourceEditorMarks.GetMarksForLine(Self, Line, CurMarks, CurMarkCount);
     if CurMarkCount > 0 then
     begin
       for i := 0 to CurMarkCount - 1 do
@@ -3351,9 +3352,8 @@ var
 begin
   if (FExecutionMark = nil) then
   begin
-    FExecutionMark := TSourceMark.Create(EditorComponent, nil);
+    FExecutionMark := TSourceMark.Create(Self, nil);
     SourceEditorMarks.Add(FExecutionMark);
-    EditorComponent.Marks.Add(FExecutionMark);
     FExecutionMark.LineColorAttrib := ahaExecutionPoint;
     FExecutionMark.Priority := 1;
   end;
@@ -3365,7 +3365,7 @@ begin
   begin
     FExecutionMark.Line := ExecutionLine;
     FEditor.InvalidateLine(FExecutionMark.Line);
-    if SourceEditorMarks.FindBreakPointMark(EditorComponent, ExecutionLine) <> nil then
+    if SourceEditorMarks.FindBreakPointMark(Self, ExecutionLine) <> nil then
     begin
       BreakPoint := DebugBoss.BreakPoints.Find(Self.FileName, ExecutionLine);
       if (BreakPoint <> nil) and (not BreakPoint.Enabled) then
@@ -3895,7 +3895,7 @@ Begin
   Result := True;
   Visible := False;
   Manager.EditorRemoved(Self);
-  SourceEditorMarks.DeleteAllForEditor(FEditor);
+  SourceEditorMarks.DeleteAllForEditor(Self);
   UnbindEditor;
   FEditor.Parent:=nil;
   CodeBuffer := nil;
@@ -4851,7 +4851,7 @@ begin
     begin
       EditorCaret := EditorComp.PhysicalToLogicalPos(EditorComp.PixelsToRowColumn(EditorPopupPoint));
       // user clicked on gutter
-      SourceEditorMarks.GetMarksForLine(EditorComp, EditorCaret.y,
+      SourceEditorMarks.GetMarksForLine(ASrcEdit, EditorCaret.y,
                                         Marks, MarkCount);
       if Marks <> nil then
       begin
@@ -5992,7 +5992,7 @@ begin
   // create or delete breakpoint
   // find breakpoint mark at line
   Line:=ASrcEdit.EditorComponent.CaretY;
-  BreakPtMark := SourceEditorMarks.FindBreakPointMark(ASrcEdit.FEditor,Line);
+  BreakPtMark := SourceEditorMarks.FindBreakPointMark(ASrcEdit, Line);
   if BreakPtMark = nil then
     DebugBoss.DoCreateBreakPoint(ASrcEdit.Filename,Line,true)
   else
@@ -6817,8 +6817,9 @@ begin
       ASynEdit.Marks.GetMarksForLine(EditCaret.Y,LineMarks);
       HintStr:='';
       for i:=Low(TSynEditMarks) to High(TSynEditMarks) do begin
-        AMark:=TSourceMark(LineMarks[i]);
-        if not (AMark is TSourceMark) then continue;
+        if not (LineMarks[i] is TSourceSynMark) then continue;
+        AMark := TSourceSynMark(LineMarks[i]).SourceMark;
+        if AMark = nil then continue;
         CurHint:=AMark.GetHint;
         if CurHint='' then continue;
         if HintStr<>'' then HintStr:=HintStr+LineEnding;
@@ -8315,10 +8316,10 @@ begin
   end;
 end;
 
-function TSourceEditorManager.OnSourceMarksGetSourceEditor(
-  ASynEdit: TCustomSynEdit): TObject;
+function TSourceEditorManager.OnSourceMarksGetSourceEditorID(
+  ASrcEdit: TSourceEditorInterface): TObject;
 begin
-  Result := FindSourceEditorWithEditorComponent(ASynEdit);
+  Result := TSourceEditor(ASrcEdit).FSharedValues;
 end;
 
 function TSourceEditorManager.OnSourceMarksGetFilename(ASourceEditor: TObject
@@ -8333,13 +8334,21 @@ procedure TSourceEditorManager.OnSourceMarksAction(AMark: TSourceMark;
   AAction: TMarksAction);
 var
   Editor: TSourceEditor;
+  i: Integer;
 begin
-  Editor := FindSourceEditorWithEditorComponent(AMark.SynEdit);
+  Editor := TSourceEditor(AMark.SourceEditor);
   if Editor = nil then
     Exit;
 
+  if AAction = maAdded then begin
+    for i := 0 to Editor.FSharedValues.SharedEditorCount - 1 do
+      if not AMark.HasSourceEditor(Editor.FSharedValues.SharedEditors[i]) then
+        AMark.AddSourceEditor(Editor.FSharedValues.SharedEditors[i]);
+  end;;
+
   if AMark.IsBreakPoint and (Editor.FExecutionMark <> nil) and
-    (AMark.CompareEditorAndLine(Editor.FExecutionMark.SynEdit, Editor.FExecutionMark.Line) = 0) then
+     (AMark.Line = Editor.FExecutionLine)
+  then
     Editor.UpdateExecutionSourceMark;
 end;
 
@@ -8376,7 +8385,7 @@ begin
 
   // marks
   SourceEditorMarks:=TSourceMarks.Create(Self);
-  SourceEditorMarks.OnGetSourceEditor:=@OnSourceMarksGetSourceEditor;
+  SourceEditorMarks.OnGetSourceEditorID := @OnSourceMarksGetSourceEditorID;
   SourceEditorMarks.OnGetFilename:=@OnSourceMarksGetFilename;
   SourceEditorMarks.OnAction:=@OnSourceMarksAction;
 
