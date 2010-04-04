@@ -1970,6 +1970,8 @@ var
 begin
   Result := False;
   if (Control <> nil) and (csDestroying in Control.ComponentState) then Exit;
+  if (csDestroying in ComponentState) or (csDestroyingHandle in ControlState) then
+    exit;
 
   if (Parent <> nil) then
   begin
