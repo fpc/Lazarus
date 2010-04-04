@@ -1680,9 +1680,7 @@ constructor TCustomForm.CreateNew(AOwner: TComponent; Num: Integer = 0);
 begin
   Include(FFormState,fsFirstShow);
   //DebugLn('[TCustomForm.CreateNew] Class=',Classname);
-  {$IFDEF OldAutoSize}
   BeginFormUpdate;
-  {$ENDIF}
   FBorderIcons := [biSystemMenu, biMinimize, biMaximize];
   FDefaultMonitor := dmActiveForm;
   FPopupMode := pmNone;
@@ -1714,9 +1712,7 @@ begin
   Color := clBtnFace;
   FloatingDockSiteClass := TWinControlClass(ClassType);
   Screen.AddForm(Self);
-  {$IFDEF OldAutoSize}
   EndFormUpdate;
-  {$ENDIF}
   FAllowDropFiles := False;
 end;
 
