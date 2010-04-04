@@ -125,6 +125,18 @@ msgstr ""
 msgid "Remove consecutive blank lines"
 msgstr ""
 
+#: jcfuiconsts.liscapsanywordanyword
+msgid "Any Word"
+msgstr ""
+
+#: jcfuiconsts.liscapsanywordenable
+msgid "Enable"
+msgstr ""
+
+#: jcfuiconsts.liscapsanywordsetcapitalisationonthesewords
+msgid "Set capitalisation on these words:"
+msgstr ""
+
 #: jcfuiconsts.liscapscapitalisation
 msgid "Capitalisation"
 msgstr ""

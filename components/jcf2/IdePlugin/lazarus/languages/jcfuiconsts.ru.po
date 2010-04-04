@@ -134,6 +134,18 @@ msgstr "Удаление пустых строк"
 msgid "Remove consecutive blank lines"
 msgstr "Удалять последовательные пустые строки"
 
+#: jcfuiconsts.liscapsanywordanyword
+msgid "Any Word"
+msgstr "Разные слова"
+
+#: jcfuiconsts.liscapsanywordenable
+msgid "Enable"
+msgstr "Включить"
+
+#: jcfuiconsts.liscapsanywordsetcapitalisationonthesewords
+msgid "Set capitalisation on these words:"
+msgstr "Устанавливать регистр следующих слов:"
+
 #: jcfuiconsts.liscapscapitalisation
 msgid "Capitalisation"
 msgstr "Регистр"
