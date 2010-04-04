@@ -7978,6 +7978,7 @@ end;
 
 procedure TWinControl.RealizeBounds;
 
+  {$IFNDEF OldAutoSize}
   procedure Check;
   var
     c: TWinControl;
@@ -7993,6 +7994,7 @@ procedure TWinControl.RealizeBounds;
     end;
     RaiseGDBException('');
   end;
+  {$ENDIF}
 
 var
   NewBounds: TRect;
@@ -8032,7 +8034,9 @@ begin
     if (csDestroying in ComponentState) then debugln('csDestroying');
     if (CompareRect(@NewBounds,@FBoundsRealized)) then debugln('bounds not changed');
     {$ENDIF}
+    {$IFNDEF OldAutoSize}
     if not HandleAllocated then Check;
+    {$ENDIF}
   end;
 end;
 
