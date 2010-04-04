@@ -2662,48 +2662,41 @@ begin
   end;
 end;
 
-function TCodeBrowserView.ExportTreeAsText(Filename: string): TModalResult;
+function TCodeBrowserView.ExportTreeAsText(Filename: String): TModalResult;
 
-  procedure WriteNode(List: TStrings; const Prefix: string; Node: TTreeNode);
+  procedure WriteNode(var List: TStrings; Node: TTreeNode; Prefix: String='');
+  const
+    CodeBrowserTypes: array[1..3] of TClass =
+      (TCodeBrowserUnitList, TCodeBrowserUnit, TCodeBrowserNode);
+    NodeIndent = '  ';
   var
     Child: TTreeNode;
-    NewPrefix: String;
-    s: String;
+    i: Integer;
   begin
     if Node=nil then exit;
-    NewPrefix:=Prefix;
-    if Node.Data<>nil then begin
-      s:=Node.Text;
-      if TObject(Node.Data) is TCodeBrowserUnitList then begin
-        List.Add(Prefix+s);
-        NewPrefix:=Prefix+'  ';
-      end else if TObject(Node.Data) is TCodeBrowserUnit then begin
-        List.Add(Prefix+s);
-        NewPrefix:=Prefix+'  ';
-      end else if TObject(Node.Data) is TCodeBrowserNode then begin
-        List.Add(Prefix+s);
-        NewPrefix:=Prefix+'  ';
+    for i:=Low(CodeBrowserTypes) to High(CodeBrowserTypes) do begin
+      if TObject(Node.Data) is CodeBrowserTypes[i] then begin
+        List.Add(prefix+Node.Text);
+        Prefix:=Prefix+NodeIndent;
+        break;
       end;
     end;
     Child:=Node.GetFirstChild;
     while Child<>nil do begin
-      WriteNode(List,NewPrefix,Child);
+      WriteNode(List,Child,Prefix);
       Child:=Child.GetNextSibling;
     end;
   end;
 
 var
-  List: TStringList;
-  Node: TTreeNode;
+  List: TStrings;
 begin
   Filename:=CleanAndExpandFilename(Filename);
   Result:=CheckCreatingFile(Filename,true,true,true);
   if Result<>mrOk then exit;
-  
   List:=TStringList.Create;
   try
-    Node:=BrowseTreeView.Items.GetFirstNode;
-    WriteNode(List,'',Node);
+    WriteNode(List,BrowseTreeView.Items.GetFirstNode);
     Result:=SaveStringToFile(Filename,List.Text,[],
       'exporting identifiers as text');
   finally
