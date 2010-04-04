@@ -129,6 +129,7 @@ type
     procedure Clear;
     function Count: Integer;
   public
+    property List: TFPList read FList;
     property Items[AIndex: Integer]: TBasicChartSeries read GetItem; default;
   end;
 

@@ -75,6 +75,7 @@ type
     procedure OnPersistentAdded(APersistent: TPersistent; ASelect: Boolean);
     procedure OnPersistentDeleting(APersistent: TPersistent);
     procedure OnSetSelection(const ASelection: TPersistentSelectionList);
+    procedure RefreshList;
     procedure SelectionChanged;
   protected
     procedure AddSubcomponent(AParent, AChild: TComponent); virtual; abstract;
@@ -82,9 +83,9 @@ type
     procedure BuildCaption; virtual; abstract;
     function ChildClass: TComponentClass; virtual; abstract;
     procedure EnumerateSubcomponentClasses; virtual; abstract;
+    function GetChildrenList: TFPList; virtual; abstract;
     function MakeSubcomponent(
       AOwner: TComponent; ATag: Integer): TComponent; virtual; abstract;
-    procedure RefreshList; virtual; abstract;
     property Parent: TComponent read FParent;
   public
     constructor Create(
@@ -96,6 +97,9 @@ implementation
 
 uses
   SysUtils;
+
+type
+  TComponentAccess = class(TComponent);
 
 {$R *.lfm}
 
@@ -323,6 +327,23 @@ begin
   for i := 0 to ASelection.Count - 1 do
     if FindChild(ASelection.Items[i], j) then
       ChildrenListBox.Selected[j] := true;
+end;
+
+procedure TComponentListEditorForm.RefreshList;
+var
+  ci: TStrings;
+  i: Integer;
+begin
+  ci := ChildrenListBox.Items;
+  try
+    ci.BeginUpdate;
+    ci.Clear;
+    with GetChildrenList do
+      for i := 0 to Count - 1 do
+        ci.AddObject(TComponent(Items[i]).Name, TObject(Items[i]));
+  finally
+    ci.EndUpdate;
+  end;
 end;
 
 procedure TComponentListEditorForm.SelectionChanged;

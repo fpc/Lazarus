@@ -64,9 +64,9 @@ type
     procedure BuildCaption; override;
     function ChildClass: TComponentClass; override;
     procedure EnumerateSubcomponentClasses; override;
+    function GetChildrenList: TFPList; override;
     function MakeSubcomponent(
       AOwner: TComponent; ATag: Integer): TComponent; override;
-    procedure RefreshList; override;
   end;
 
 procedure Register;
@@ -129,20 +129,15 @@ begin
     AddSubcomponentClass(SeriesClassRegistry[i], i);
 end;
 
+function TSeriesEditorForm.GetChildrenList: TFPList;
+begin
+  Result := (Parent as TChart).Series.List;
+end;
+
 function TSeriesEditorForm.MakeSubcomponent(
   AOwner: TComponent; ATag: Integer): TComponent;
 begin
   Result := TSeriesClass(SeriesClassRegistry.Objects[ATag]).Create(AOwner);
-end;
-
-procedure TSeriesEditorForm.RefreshList;
-var
-  i: Integer;
-begin
-  ChildrenListBox.Clear;
-  with Parent as TChart do
-    for i := 0 to SeriesCount - 1 do
-      ChildrenListBox.Items.AddObject(Series[i].Name, Series[i]);
 end;
 
 end.

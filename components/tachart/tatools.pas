@@ -193,9 +193,9 @@ type
     procedure BuildCaption; override;
     function ChildClass: TComponentClass; override;
     procedure EnumerateSubcomponentClasses; override;
+    function GetChildrenList: TFPList; override;
     function MakeSubcomponent(
       AOwner: TComponent; ATag: Integer): TComponent; override;
-    procedure RefreshList; override;
   end;
 
 var
@@ -286,20 +286,15 @@ begin
     AddSubcomponentClass(ToolsClassRegistry[i], i);
 end;
 
+function TToolsEditorForm.GetChildrenList: TFPList;
+begin
+  Result := (Parent as TChartToolset).Tools;
+end;
+
 function TToolsEditorForm.MakeSubcomponent(
   AOwner: TComponent; ATag: Integer): TComponent;
 begin
   Result := TChartToolClass(ToolsClassRegistry.Objects[ATag]).Create(AOwner);
-end;
-
-procedure TToolsEditorForm.RefreshList;
-var
-  i: Integer;
-begin
-  ChildrenListBox.Clear;
-  with Parent as TChartToolset do
-    for i := 0 to Tools.Count - 1 do
-      ChildrenListBox.Items.AddObject(Item[i].Name, Item[i]);
 end;
 
 procedure TChartTool.Activate;
