@@ -175,9 +175,9 @@ begin
   ClearToolMessages;
   fcEditorConverter.BeforeConvert;
 
-  for liLoop := 0 to SourceEditorManagerIntf.SourceEditorCount - 1 do
+  for liLoop := 0 to SourceEditorManagerIntf.UniqueSourceEditorCount - 1 do
   begin
-    lciEditor := SourceEditorManagerIntf.SourceEditors[liLoop];
+    lciEditor := SourceEditorManagerIntf.UniqueSourceEditors[liLoop];
 
     // check that it's open, and a .pas or .dpr
     if (lciEditor <> nil) and (FileIsAllowedType(lciEditor.FileName)) then
