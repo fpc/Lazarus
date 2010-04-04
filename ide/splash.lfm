@@ -12,12 +12,14 @@ object SplashForm: TSplashForm
   ClientWidth = 429
   FormStyle = fsStayOnTop
   Position = poScreenCenter
+  LCLVersion = '0.9.29'
   object Image: TImage
+    Left = 0
     Height = 341
+    Top = 0
     Width = 429
     Align = alClient
     AutoSize = True
     OnPaint = ImagePaint
-    Transparent = False
   end
 end

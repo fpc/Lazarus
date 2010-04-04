@@ -89,13 +89,12 @@ begin
 
   Image.Picture.LoadFromLazarusResource('splash_logo');
 
-  Application.OnIdle := @ApplicationOnIdle;
+  Application.AddOnIdleHandler(@ApplicationOnIdle);
 end;
 
 destructor TSplashForm.Destroy;
 begin
-  if Application.OnIdle = @ApplicationOnIdle then
-    Application.OnIdle := nil;
+  Application.RemoveOnIdleHandler(@ApplicationOnIdle);
 
   inherited Destroy;
 

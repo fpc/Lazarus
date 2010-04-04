@@ -1867,7 +1867,7 @@ type
     procedure SetChildZPosition(const AChild: TControl; const APosition: Integer);
     procedure ShowControl(AControl: TControl); virtual;
     procedure UpdateControlState;
-    procedure UpdateShowing; virtual; // checks control's handle visibility, called by UpdateControlState and CreateWnd
+    procedure UpdateShowing; virtual; // checks control's handle visibility, called by DoAllAutoSize and UpdateControlState
     procedure WndProc(var Message: TLMessage); override;
     procedure WSSetText(const AText: String); virtual;
   protected

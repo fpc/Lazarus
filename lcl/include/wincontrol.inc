@@ -6000,7 +6000,7 @@ begin
   if HandleObjectShouldBeVisible then
     AdjustSize // this will trigger DoAllAutoSize, which calls UpdateShowing
   else
-    UpdateShowing;
+    UpdateShowing; // hide immediately
   {$ENDIF}
 end;
 
