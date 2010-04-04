@@ -59,7 +59,7 @@ implementation
 {$R *.lfm}
 
 uses 
-  JcfHelp, JcfSettings;
+  JcfHelp, JcfSettings, jcfuiconsts;
 
 constructor TfIdentifierCapsSettings.Create(AOwner: TComponent);
 begin
@@ -69,12 +69,13 @@ end;
 
 function TfIdentifierCapsSettings.GetTitle: String;
 begin
-  Result := 'Identifiers';
+  Result := lisCapsIdentifiersIdentifiers;
 end;
 
 procedure TfIdentifierCapsSettings.Setup(ADialog: TAbstractOptionsEditorDialog);
 begin
-  //
+  cbEnableAnyWords.Caption := lisCapsAnyWordEnable;
+  Label1.Caption := lisCapsIdentifiersSetCapitalisationOnTheseIdentifiers;
 end;
 
 

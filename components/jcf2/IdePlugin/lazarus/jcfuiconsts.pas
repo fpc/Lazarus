@@ -215,6 +215,11 @@ resourcestring
   lisCapsAnyWordSetCapitalisationOnTheseWords = 'Set capitalisation on these '
     +'words:';
 
+  //Identifiers Capitalisation tab
+  lisCapsIdentifiersIdentifiers = 'Identifiers';
+  lisCapsIdentifiersSetCapitalisationOnTheseIdentifiers = 'Set capitalisation '
+    +'on these identifiers:';
+
 implementation
 
 end.
