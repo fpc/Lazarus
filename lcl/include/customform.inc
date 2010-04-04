@@ -1008,7 +1008,7 @@ procedure TCustomForm.SetParent(NewParent: TWinControl);
 begin
   if Parent=NewParent then exit;
   {$IFNDEF OldAutoSize}
-  DisableAutoSizing;
+  DisableAutoSizing{$IFDEF DebugDisableAutoSizing}('TCustomForm.SetParent'){$ENDIF};
   {$ENDIF}
   try
     if HandleAllocated then DestroyHandle;
@@ -1017,7 +1017,7 @@ begin
       HandleNeeded;
   finally
     {$IFNDEF OldAutoSize}
-    EnableAutoSizing;
+    EnableAutoSizing{$IFDEF DebugDisableAutoSizing}('TCustomForm.SetParent'){$ENDIF};
     {$ENDIF}
   end;
 end;

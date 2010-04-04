@@ -3409,6 +3409,30 @@ end;
 {$IFNDEF OldAutoSize}
 procedure TWinControl.DoAllAutoSize;
 
+  function CheckHandleAllocated(AWinControl: TWinControl): boolean;
+  // true if a handle was missing
+  var
+    i: Integer;
+    ChildWinControl: TWinControl;
+  begin
+    if AWinControl.HandleObjectShouldBeVisible
+    and (not AWinControl.HandleAllocated) then
+    begin
+      {$IFDEF VerboseAllAutoSize}
+      DebugLn(['TWinControl.DoAllAutoSize CREATE HANDLE ',DbgSName(AWinControl)]);
+      {$ENDIF}
+      AWinControl.HandleNeeded;
+      exit(true);
+    end;
+    for i:=0 to AWinControl.ControlCount-1 do begin
+      ChildWinControl:=TWinControl(AWinControl.Controls[i]);
+      if (ChildWinControl is TWinControl)
+      and CheckHandleAllocated(ChildWinControl) then
+        exit(true);
+    end;
+    Result:=false;
+  end;
+
   procedure ClearRequests(AControl: TControl);
   var
     i: Integer;
@@ -3442,21 +3466,17 @@ begin
   DebugLn(['TWinControl.DoAllAutoSize START ',DbgSName(Self),' ',dbgs(BoundsRect)]);
   {$ENDIF}
   // create needed handles
-  if not HandleAllocated then begin
-    if HandleObjectShouldBeVisible then begin
-      {$IFDEF VerboseAllAutoSize}
-      DebugLn(['TWinControl.DoAllAutoSize CREATE HANDLE ',DbgSName(Self)]);
-      {$ENDIF}
-      HandleNeeded;
+  if HandleObjectShouldBeVisible then begin
+    if CheckHandleAllocated(Self) then begin
       // creating the handle called DisableAutoSizing/EnableAutoSizing
       // so after handle creation the autosizing was done
       // => exit
       exit;
-    end else begin
-      // no autosize possible => remove needed flags
-      ClearRequests(Self);
-      exit;
     end;
+  end else begin
+    // no autosize possible => remove needed flags
+    ClearRequests(Self);
+    exit;
   end;
 
   Include(FWinControlFlags,wcfAllAutoSizing);
@@ -6041,6 +6061,8 @@ begin
         AControl.UpdateAnchorRules;
       AControl.RequestAlign;
     end;
+    {$ELSE}
+    AdjustSize;
     {$ENDIF}
     Perform(CM_CONTROLCHANGE, WParam(AControl), LParam(True));
   {$IFNDEF OldAutoSize}
