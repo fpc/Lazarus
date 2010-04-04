@@ -209,6 +209,12 @@ resourcestring
   lisCapsConstants = 'Constants';
   lisCapsTypes = 'Types';
 
+  //Any Word Capitalisation tab
+  lisCapsAnyWordAnyWord = 'Any Word';
+  lisCapsAnyWordEnable = 'Enable';
+  lisCapsAnyWordSetCapitalisationOnTheseWords = 'Set capitalisation on these '
+    +'words:';
+
 implementation
 
 end.

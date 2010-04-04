@@ -60,7 +60,7 @@ implementation
 {$R *.lfm}
 
 uses 
-  JcfHelp, JcfSettings;
+  JcfHelp, JcfSettings, jcfuiconsts;
 
 constructor TfrAnyCapsSettings.Create(AOwner: TComponent);
 begin
@@ -70,12 +70,14 @@ end;
 
 function TfrAnyCapsSettings.GetTitle: String;
 begin
-  Result := 'Any Word';
+  Result := lisCapsAnyWordAnyWord;
 end;
 
 procedure TfrAnyCapsSettings.Setup(ADialog: TAbstractOptionsEditorDialog);
 begin
   inherited Setup(ADialog);
+  cbEnableAnyWords.Caption := lisCapsAnyWordEnable;
+  Label1.Caption := lisCapsAnyWordSetCapitalisationOnTheseWords;
 end;
 
 
