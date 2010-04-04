@@ -107,6 +107,9 @@ Type
     procedure RestoreClip;
     procedure SaveClip;
     procedure CheckLastPos;
+    function  GetFontIndex: Integer;
+    function  FontUnitsToPixelsX(const Value:Integer): Integer;
+    function  FontUnitsToPixelsY(const Value:Integer): Integer;
   protected
     procedure CreateHandle; override;
     procedure CreateBrush; override;
@@ -164,6 +167,7 @@ Type
     procedure Draw(X,Y: Integer; SrcGraphic: TGraphic); override;
     procedure StretchDraw(const DestRect: TRect; SrcGraphic: TGraphic); override;
 
+    function  GetTextMetrics(out TM: TLCLTextMetric): boolean; override;
 
     //** Methods not definined on PostScript
     procedure FloodFill(X, Y: Integer; FillColor: TColor; FillStyle: TFillStyle); override;
@@ -197,6 +201,7 @@ Type
   TFontsWidths = Array[32..255] of Integer;
   TFontPSMetrics = Record
     Name   : string;
+    ULPos, ULThickness, Ascender, Descender: Integer;
     Widths : TFontsWidths;
   end;
 
@@ -209,6 +214,7 @@ Const
 
   cFontPSMetrics : Array[0..12] of TFontPSMetrics =(
     (Name  : 'Courier';
+     ULPos : -100; ULThickness : 50; Ascender : 604; Descender : -186;
      Widths:  (600, 600, 600, 600, 600, 600, 600, 600,
                600, 600, 600, 600, 600, 600, 600, 600, 600, 600,
                600, 600, 600, 600, 600, 600, 600, 600, 600, 600,
@@ -234,6 +240,7 @@ Const
                600, 600, 600, 600, 600, 600)
      ),
     (Name  : 'Courier-Bold';
+     ULPos : -100; ULThickness : 50; Ascender : 624; Descender : -205;
      Widths:  (600, 600, 600, 600, 600, 600, 600, 600,
                600, 600, 600, 600, 600, 600, 600, 600, 600, 600,
                600, 600, 600, 600, 600, 600, 600, 600, 600, 600,
@@ -259,6 +266,7 @@ Const
                600, 600, 600, 600, 600, 600)
      ),
     (Name  : 'Courier-Oblique';
+     ULPos : -100; ULThickness : 50; Ascender : 604; Descender : -186;
      Widths:  (600, 600, 600, 600, 600, 600, 600, 600,
                600, 600, 600, 600, 600, 600, 600, 600, 600, 600,
                600, 600, 600, 600, 600, 600, 600, 600, 600, 600,
@@ -284,6 +292,7 @@ Const
                600, 600, 600, 600, 600, 600)
      ),
     (Name  : 'Courier-BoldOblique';
+     ULPos : -100; ULThickness : 50; Ascender : 624; Descender : -205;
      Widths:  (600, 600, 600, 600, 600, 600, 600, 600,
                600, 600, 600, 600, 600, 600, 600, 600, 600, 600,
                600, 600, 600, 600, 600, 600, 600, 600, 600, 600,
@@ -309,6 +318,7 @@ Const
                600, 600, 600, 600, 600, 600)
      ),
     (Name  : 'Helvetica';
+     ULPos : -151; ULThickness : 50; Ascender : 729; Descender : -218;
      Widths:  (278, 278, 355, 556, 556, 889, 667, 191,
                333, 333, 389, 584, 278, 333, 278, 278, 556, 556,
                556, 556, 556, 556, 556, 556, 556, 556, 278, 278,
@@ -334,6 +344,7 @@ Const
                556, 556, 556, 500, 556, 500)
      ),
     (Name  : 'Helvetica-Bold';
+     ULPos : -155; ULThickness : 69; Ascender : 729; Descender : -218;
      Widths: (278, 333, 474, 556, 556, 889, 722, 238,
               333, 333, 389, 584, 278, 333, 278, 278, 556, 556,
               556, 556, 556, 556, 556, 556, 556, 556, 333, 333,
@@ -359,6 +370,7 @@ Const
               611, 611, 611, 556, 611, 556)
     ),
     (Name  : 'Helvetica-Oblique';
+     ULPos : -151; ULThickness : 50; Ascender : 729; Descender : -213;
      Widths: (278, 278, 355, 556, 556, 889, 667, 191,
               333, 333, 389, 584, 278, 333, 278, 278, 556, 556,
               556, 556, 556, 556, 556, 556, 556, 556, 278, 278,
@@ -384,6 +396,7 @@ Const
               556, 556, 556, 500, 556, 500)
     ),
    (Name  : 'Helvetica-BoldOblique';
+    ULPos : -111; ULThickness : 69; Ascender : 729; Descender : -218;
     Widths: (278, 333, 474, 556, 556, 889, 722, 238,
              333, 333, 389, 584, 278, 333, 278, 278, 556, 556,
              556, 556, 556, 556, 556, 556, 556, 556, 333, 333,
@@ -409,6 +422,7 @@ Const
              611, 611, 611, 556, 611, 556)
     ),
    (Name  : 'Times-Roman';
+    ULPos : -100; ULThickness : 50; Ascender : 683; Descender : -217;
     Widths: (250, 333, 408, 500, 500, 833, 778, 180,
              333, 333, 500, 564, 250, 333, 250, 278, 500, 500,
              500, 500, 500, 500, 500, 500, 500, 500, 278, 278,
@@ -434,6 +448,7 @@ Const
              500, 500, 500, 500, 500, 500)
    ),
   (Name  : 'Times-Bold';
+   ULPos : -100; ULThickness : 50; Ascender : 676; Descender : -205;
    Widths: (250, 333, 555, 500, 500, 1000, 833, 278,
             333, 333, 500, 570, 250, 333, 250, 278, 500, 500,
             500, 500, 500, 500, 500, 500, 500, 500, 333, 333,
@@ -459,6 +474,7 @@ Const
             556, 556, 556, 500, 556, 500)
    ),
   (Name  : 'Times-Italic';
+   ULPos : -100; ULThickness : 50; Ascender : 683; Descender : -205;
    Widths: (250, 333, 420, 500, 500, 833, 778, 214,
             333, 333, 500, 675, 250, 333, 250, 278, 500, 500,
             500, 500, 500, 500, 500, 500, 500, 500, 333, 333,
@@ -484,6 +500,7 @@ Const
             500, 500, 500, 444, 500, 444)
    ),
   (Name  : 'Times-BoldItalic';
+   ULPos : -100; ULThickness : 50; Ascender : 699; Descender : -205;
    Widths: (250, 389, 555, 500, 500, 833, 778, 278,
             333, 333, 500, 570, 250, 333, 250, 278, 500, 500,
             500, 500, 500, 500, 500, 500, 500, 500, 333, 333,
@@ -509,6 +526,7 @@ Const
             556, 556, 556, 444, 500, 444)
    ),
   (Name  : 'Symbol';
+   ULPos : -229; ULThickness : 46; Ascender : 673; Descender : -222;
    Widths: (250,333,713,500,549,833,778,439,
             333,333,500,549,250,549,250,278,500,500,
             500,500,500,500,500,500,500,500,278,278,
@@ -860,7 +878,7 @@ function TPostScriptPrinterCanvas.MappedFontName: string;
 Var Atr : string;
 begin
   Atr:='';
-  Result:='Helvetica';
+  Result := '';
   if Copy(LowerCase(Font.Name),1,5)='times' then
     Result:='Times';
   if (LowerCase(Font.Name)='monospaced') or (Copy(LowerCase(Font.Name),1,7)='courier') then
@@ -871,6 +889,9 @@ begin
     Result:='Helvetica';
   if LowerCase(Font.Name)='symbol' then
     Result:='Symbol';
+
+  if Result='' then
+    Result:='Helvetica';
 
   if (fsBold in Font.Style)  and ((Pos('Courier',Result)=1) or (Pos('Helvetica',Result)=1) or (Pos('Times',Result)=1)) then
     Atr:=Atr+'Bold';
@@ -1087,6 +1108,35 @@ procedure TPostScriptPrinterCanvas.CheckLastPos;
 begin
   if not (pcsPosValid in FStatus) then
     MoveToLastPos;
+end;
+
+function TPostScriptPrinterCanvas.GetFontIndex: Integer;
+var
+  FontName: string;
+  i: Integer;
+begin
+  FontName:=MappedFontName;
+  Result:=0; //By default, use Courier metrics
+  for i:=0 to High(cFontPSMetrics) do
+  begin
+    if cFontPSMetrics[i].Name=FontName then
+    begin
+      Result:=i;
+      Break;
+    end;
+  end;
+end;
+
+function TPostScriptPrinterCanvas.FontUnitsToPixelsX(const Value: Integer
+  ): Integer;
+begin
+  result := Round(Value*Abs(GetFontSize/72)*0.001*XDPI);
+end;
+
+function TPostScriptPrinterCanvas.FontUnitsToPixelsY(const Value: Integer
+  ): Integer;
+begin
+  result := Round(Value*Abs(GetFontSize/72)*0.001*YDPI);
 end;
 
 procedure TPostScriptPrinterCanvas.CreateHandle;
@@ -2024,9 +2074,9 @@ begin
 end;
 
 function TPostScriptPrinterCanvas.TextExtent(const Text: string): TSize;
-var IndexFont,i : Integer;
-    FontName    : string;
-    c: Char;
+var
+  IndexFont,i : Integer;
+  c: Char;
 begin
   Result.cX := 0;
   Result.cY := 0;
@@ -2034,24 +2084,14 @@ begin
   RequiredState([csHandleValid, csFontValid]);
   Result.cY:=round((Abs(GetFontSize)/72)*YDPI); // points to inches and then to pixels
   // Abs is not right - should also take internal leading into account
-  FontName:=MappedFontName;
-  IndexFont:=0; //By default, use Courier metrics
-  for i:=0 to High(cFontPSMetrics) do
-  begin
-    if cFontPSMetrics[i].Name=FontName then
-    begin
-      IndexFont:=i;
-      Break;
-    end;
-  end;
-
+  IndexFont := GetFontIndex;
   for i:=1 to Length(Text) do
   begin
     c:=Text[i];
     if (c in [#32..#255]) then
       Inc(Result.cX,cFontPSMetrics[IndexFont].Widths[Ord(c)]);
   end;
-  Result.cX:=Round(Result.cX*Abs(GetFontSize/72)*0.001*XDPI);
+  Result.cX:=FontUnitsToPixelsX(Result.cX);
 end;
 
 //Draw an Picture
@@ -2124,6 +2164,20 @@ begin
   Write(fBuffer);
 
   Changed;
+end;
+
+function TPostScriptPrinterCanvas.GetTextMetrics(out TM: TLCLTextMetric): boolean;
+var
+  FontIndex: Integer;
+begin
+  FontIndex := GetFontIndex;
+  Result := FontIndex>=0;
+  if Result then
+  with CFontPSMetrics[FontIndex] do begin
+    TM.Ascender := FontUnitsToPixelsY( Ascender );
+    TM.Descender := FontUnitsToPixelsY( -Descender );
+    TM.Height := TM.Ascender + TM.Descender;
+  end;
 end;
 
 procedure TPostScriptPrinterCanvas.Arc(x, y, Right, Bottom, SX, SY, EX,

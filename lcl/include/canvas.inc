@@ -1003,6 +1003,20 @@ begin
   FrameRect(Rect(X1, Y1, X2, Y2));
 end;
 
+function TCanvas.GetTextMetrics(out TM: TLCLTextMetric): boolean;
+var
+  TTM: TTextMetric;
+begin
+  RequiredState([csHandleValid]);
+  Fillchar(TM, SizeOf(TM), 0);
+  Result := LCLIntf.GetTextMetrics(FHandle, TTM);
+  if Result then begin
+    TM.Ascender := TTM.tmAscent;
+    TM.Descender := TTM.tmDescent;
+    TM.Height := TTM.tmHeight;
+  end;
+end;
+
 {------------------------------------------------------------------------------
   Method:   TCanvas.Rectangle
   Params:   X1,Y1,X2,Y2

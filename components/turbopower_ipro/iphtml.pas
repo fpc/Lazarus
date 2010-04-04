@@ -3829,8 +3829,13 @@ var
 begin
   ScreenDC := GetDC(0);
   try
-    Aspect := GetDeviceCaps(PrinterDC, LOGPIXELSX)
-                / GetDeviceCaps(ScreenDC, LOGPIXELSX);
+    Aspect :=
+      {$IFDEF IP_LAZARUS}
+      Printer.XDPI
+      {$ELSE}
+      GetDeviceCaps(PrinterDC, LOGPIXELSX)
+      {$ENDIF}
+      / GetDeviceCaps(ScreenDC, LOGPIXELSX);
   finally
     ReleaseDC(0, ScreenDC);
   end;
@@ -10267,7 +10272,11 @@ var
   procedure ApplyProps;
   var
     Changed : Boolean;
+    {$IFDEF IP_LAZARUS}
+    TextMetrics : TLCLTextMetric;
+    {$ELSE}
     TextMetrics : TTextMetric;
+    {$ENDIF}
   begin
     with CurElement.Props do begin
       if (CurProps = nil) or not AIsEqualTo(CurProps) then begin
@@ -10304,10 +10313,17 @@ var
         end;
         if Changed then begin
           if PropA.tmHeight = 0 then begin
+            {$IFDEF IP_LAZARUS}
+            aCanvas.GetTextMetrics(TextMetrics);
+            PropA.tmAscent := TextMetrics.Ascender;
+            PropA.tmDescent := TextMetrics.Descender;
+            PropA.tmHeight := TextMetrics.Height;
+            {$ELSE}
             GetTextMetrics(aCanvas.Handle, TextMetrics);
             PropA.tmAscent := TextMetrics.tmAscent;
             PropA.tmDescent := TextMetrics.tmDescent;
             PropA.tmHeight := TextMetrics.tmHeight;
+            {$ENDIF}
           end;
         end;
       end;
@@ -10836,7 +10852,11 @@ var
 
   procedure ApplyProps;
   var
-    TextMetrics : TTextMetric;
+    {$IFDEF IP_LAZARUS}
+    TextMetrics : TLCLTextMetric;
+    {$ELSE}
+    TExtMetrics : TTextMetric;
+    {$ENDIF}
   begin
     with CurElement.Props do begin
       if (CurProps = nil) or not AIsEqualTo(CurProps) then begin
@@ -10856,10 +10876,17 @@ var
           aCanvas.Font.Name := FontName;
           aCanvas.Font.Size := FontSize;
           aCanvas.Font.Style := FontStyle;
+          {$IFDEF IP_LAZARUS}
+          Owner.Target.GetTextMetrics(TextMetrics);
+          PropA.tmAscent := TextMetrics.Ascender;
+          PropA.tmDescent := TextMetrics.Descender;
+          PropA.tmHeight := TextMetrics.Height;
+          {$ELSE}
           GetTextMetrics(Owner.Target.Handle, TextMetrics);
           PropA.tmAscent := TextMetrics.tmAscent;
           PropA.tmDescent := TextMetrics.tmDescent;
           PropA.tmHeight := TextMetrics.tmHeight;
+          {$ENDIF}
         end;
         tmHeight := PropA.tmHeight;
         tmAscent := PropA.tmAscent;
@@ -10876,6 +10903,16 @@ var
   end;
 
   procedure InitMetrics;
+  {$IFDEF IP_LAZARUS}
+  var
+    TextMetrics : TLCLTextMetric;
+  begin
+    aCanvas.GetTextMetrics(TextMetrics);
+    tmAscent := TextMetrics.Ascender;
+    tmDescent := TextMetrics.Descender;
+    tmHeight := TextMetrics.Height;
+  end;
+  {$ELSE}
   var
     TextMetrics : TTextMetric;
   begin
@@ -10884,6 +10921,7 @@ var
     tmDescent := TextMetrics.tmDescent;
     tmHeight := TextMetrics.tmHeight;
   end;
+  {$ENDIF}
 
   {!!.10 rewritten
   procedure SetWordInfoLength(NewLength : Integer);
@@ -17266,8 +17304,8 @@ begin
   else
     Canvas.FillRect(CR);
   {$IFDEF IP_LAZARUS_DBG}
-  DebugBox(CR, clYellow);
-  Debugbox(Canvas.ClipRect,clLime, true);
+  DebugBox(Canvas, CR, clYellow);
+  Debugbox(Canvas, Canvas.ClipRect, clLime, true);
   {$ENDIF}
 end;
 
@@ -17288,12 +17326,27 @@ begin
     Printed := False;
     ScaleBitmaps := True;
     GetRelativeAspect(Printer.Canvas.Handle);
+    {$IF DEFINED(IP_LAZARUS) AND NOT DEFINED(WINDOWS)}
+    // this test looks weird, according to most references consulted, the number
+    // of colors in a display is NColors = 1 shl (bitsPerPixel * Planes). A mono
+    // printer should have 2 colors, somebody else needs to clarify.
+    BWPrinter := false;
+    {$ELSE}
     BWPrinter := GetDeviceCaps(Printer.Canvas.Handle, PLANES) = 1;
+    {$ENDIF}
+    {$IFDEF IP_LAZARUS}
+    LogPixX := Printer.XDPI;
+    {$ELSE}
     LogPixX := GetDeviceCaps(Printer.Canvas.Handle, LOGPIXELSX);
+    {$ENDIF}
     LMarginPix := round(HtmlPanel.PrintSettings.MarginLeft * LogPixX);
     RMarginPix := round(HtmlPanel.PrintSettings.MarginRight * LogPixX);
     PrintWidth := Printer.PageWidth - LMarginPix - RMarginPix;
+    {$IFDEF IP_LAZARUS}
+    LogPixY := Printer.YDPI;
+    {$ELSE}
     LogPixY := GetDeviceCaps(Printer.Canvas.Handle, LOGPIXELSY);
+    {$ENDIF}
     TMarginPix := round(HtmlPanel.PrintSettings.MarginTop * LogPixY);
     BMarginPix := round(HtmlPanel.PrintSettings.MarginBottom * LogPixY);
     PrintHeight := Printer.PageHeight - TMarginPix - BMarginPix;
