@@ -1867,9 +1867,12 @@ var
     end;
     
     function Shorten(const s: string): string;
+    const
+      MAX_LEN=100;
     begin
       Result:=DbgStr(s);
-      if length(Result)>100 then Result:=copy(Result,1,100)+' ...';
+      if Length(Result)>MAX_LEN then
+        Result:=LeftStr(Result, MAX_LEN)+'...';
     end;
 
     procedure GetNodeDescription(CTNode: TCodeTreeNode;
@@ -2106,8 +2109,7 @@ var
           List.DeleteUnit(NewUnit);
           NewUnit:=nil;
           if OldDestParentList=nil then begin
-            DestParentList.Free;
-            DestParentList:=nil;
+            FreeAndNil(DestParentList);
           end;
         end;
         if (NewUnit<>nil) and (NewUnit.UnitList=nil) and (List<>nil) then
@@ -2169,8 +2171,7 @@ var
         NewList:=nil;
         if (OldDestParentList=nil) and (DestParentList<>nil)
         and DestParentList.IsEmpty then begin
-          DestParentList.Free;
-          DestParentList:=nil;
+          FreeAndNil(DestParentList);
         end;
       end;
       // update DestParentList
@@ -2180,13 +2181,37 @@ var
   end;
 
   procedure AddTreeNodes(CodeNode: TObject; ParentViewNode: TTreeNode);
-  // create visual nodes (TTreeNode)
-  {off $DEFINE DisableTreeViewNodes}
   var
-    List: TCodeBrowserUnitList;
-    ListName: String;
-    Node: TAVLTreeNode;
     TVNode: TTreeNode;
+
+    procedure RecursiveAdd(Tree: TAVLTree);
+    var
+      Node: TAVLTreeNode;
+    begin
+      if Tree<>nil then begin
+        Node:=Tree.FindLowest;
+        while Node<>nil do begin
+          AddTreeNodes(TObject(Node.Data), TVNode);
+          Node:=Tree.FindSuccessor(Node);
+        end;
+      end;
+    end;
+
+    {off $DEFINE DisableTreeViewNodes}
+    procedure AddToTreeView(Name: String);
+    begin
+      {$IFNDEF DisableTreeViewNodes}
+      TVNode:=BrowseTreeView.Items.AddChildObject(
+        ParentViewNode, Name, CodeNode);
+      TVNode.ImageIndex:=GetNodeImage(CodeNode);
+      TVNode.SelectedIndex:=TVNode.ImageIndex;
+      {$ENDIF}
+    end;
+
+  // create visual nodes (TTreeNode)
+  var
+    CurList: TCodeBrowserUnitList;
+    CurListName: String;
     CurUnit: TCodeBrowserUnit;
     CurUnitName: String;
     CurTool: TStandardCodeTool;
@@ -2197,93 +2222,50 @@ var
     ExpandParent:=true;
     //DebugLn(['AddTreeNodes ',DbgSName(CodeNode)]);
     TVNode:=ParentViewNode;
+
     if CodeNode is TCodeBrowserUnitList then begin
-      // unit list
-      List:=TCodeBrowserUnitList(CodeNode);
-      //DebugLn(['AddTreeNodes ',List.Owner]);
-      if List.Owner=CodeBrowserHidden then begin
+      CurList:=TCodeBrowserUnitList(CodeNode);
+      //DebugLn(['AddTreeNodes ',CurList.Owner]);
+      if CurList.Owner=CodeBrowserHidden then begin
         TVNode:=ParentViewNode;
       end else begin
-        ListName:=ListOwnerToText(List.Owner);
+        CurListName:=ListOwnerToText(CurList.Owner);
         inc(NewPackageCount);
-        {$IFNDEF DisableTreeViewNodes}
-        TVNode:=BrowseTreeView.Items.AddChildObject(
-                                              ParentViewNode,ListName,CodeNode);
-        TVNode.ImageIndex:=GetNodeImage(CodeNode);
-        TVNode.SelectedIndex:=TVNode.ImageIndex;
-        {$ENDIF}
+        AddToTreeView(CurListName);
       end;
-      if List.UnitLists<>nil then begin
-        Node:=List.UnitLists.FindLowest;
-        while Node<>nil do begin
-          AddTreeNodes(TObject(Node.Data),TVNode);
-          Node:=List.UnitLists.FindSuccessor(Node);
-        end;
-      end;
-      if List.Units<>nil then begin
-        Node:=List.Units.FindLowest;
-        while Node<>nil do begin
-          AddTreeNodes(TObject(Node.Data),TVNode);
-          Node:=List.Units.FindSuccessor(Node);
-        end;
-      end;
+      RecursiveAdd(CurList.UnitLists);
+      RecursiveAdd(CurList.Units);
     end
     else if CodeNode is TCodeBrowserUnit then begin
-      // unit
       CurUnit:=TCodeBrowserUnit(CodeNode);
       CurTool:=nil;
       if CurUnit.Filename<>'' then
         CurTool:=GetCodeTool(CurUnit);
       if CurTool<>nil then begin
-        // add a treenode for this unit
+        // add a tree node for this unit
         CurUnitName:=TCodeTool(CurTool).GetCachedSourceName;
         if CurUnitName='' then
           CurUnitName:=ExtractFileNameOnly(CurTool.MainFilename);
         inc(NewUnitCount);
-        {$IFNDEF DisableTreeViewNodes}
-        TVNode:=BrowseTreeView.Items.AddChildObject(ParentViewNode,
-                                                    CurUnitName,CodeNode);
-        TVNode.ImageIndex:=GetNodeImage(CodeNode);
-        TVNode.SelectedIndex:=TVNode.ImageIndex;
-        {$ENDIF}
+        AddToTreeView(CurUnitName);
       end else begin
         // do not add a tree node for this unit
         TVNode:=ParentViewNode;
       end;
       // create tree nodes for code nodes
-      if CurUnit.ChildNodes<>nil then begin
-        Node:=CurUnit.ChildNodes.FindLowest;
-        while Node<>nil do begin
-          AddTreeNodes(TObject(Node.Data),TVNode);
-          Node:=CurUnit.ChildNodes.FindSuccessor(Node);
-        end;
-      end;
+      RecursiveAdd(CurUnit.ChildNodes);
     end
     else if CodeNode is TCodeBrowserNode then begin
-      // code node
       CurNode:=TCodeBrowserNode(CodeNode);
       if CurNode.Description<>'' then begin
         inc(NewIdentifierCount);
         //if (NewIdentifierCount mod 100)=0 then
         //  DebugLn(['AddTreeNodes ',NewIdentifierCount,' ',CurNode.Description]);
-        {$IFNDEF DisableTreeViewNodes}
-        TVNode:=BrowseTreeView.Items.AddChildObject(ParentViewNode,
-                                                  CurNode.Description,CodeNode);
-        TVNode.ImageIndex:=GetNodeImage(CodeNode);
-        TVNode.SelectedIndex:=TVNode.ImageIndex;
-        {$ENDIF}
-
+        AddToTreeView(CurNode.Description);
         // create tree nodes for child code nodes
-        if CurNode.ChildNodes<>nil then begin
-          Node:=CurNode.ChildNodes.FindLowest;
-          while Node<>nil do begin
-            AddTreeNodes(TObject(Node.Data),TVNode);
-            Node:=CurNode.ChildNodes.FindSuccessor(Node);
-          end;
-        end;
-
+        RecursiveAdd(CurNode.ChildNodes);
         // do not expand unit nodes
-        if (TObject(ParentViewNode.Data) is TCodeBrowserUnit) then
+        if TObject(ParentViewNode.Data) is TCodeBrowserUnit then
           ExpandParent:=false;
       end;
     end;
