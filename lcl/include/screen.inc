@@ -71,12 +71,12 @@ begin
   FCursorMap := TMap.Create(its4, SizeOf(HCursor));
   FMonitors := TMonitorList.Create;
   TStringlist(FFonts).Sorted := True;
-  FCustomForms := TList.Create;
-  FCustomFormsZOrdered := TList.Create;
-  FFormList := TList.Create;
-  FDataModuleList := TList.Create;
+  FCustomForms := TFPList.Create;
+  FCustomFormsZOrdered := TFPList.Create;
+  FFormList := TFPList.Create;
+  FDataModuleList := TFPList.Create;
   FPixelsPerInch := ScreenInfo.PixelsPerInchX;
-  FSaveFocusedList := TList.Create;
+  FSaveFocusedList := TFPList.Create;
 
   AddDataModule := @DoAddDataModule;
   RemoveDataModule := @DoRemoveDataModule;

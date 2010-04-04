@@ -893,14 +893,14 @@ type
     FActiveForm: TForm;
     FCursor: TCursor;
     FCursorMap: TMap;
-    FCustomForms: TList;
-    FCustomFormsZOrdered: TList;
+    FCustomForms: TFPList;
+    FCustomFormsZOrdered: TFPList;
     FDefaultCursor: HCURSOR;
     FHintFont: TFont;
     FFocusedForm: TCustomForm;
     FFonts : TStrings;
-    FFormList: TList;
-    FDataModuleList: TList;
+    FFormList: TFPList;
+    FDataModuleList: TFPList;
     FIconFont: TFont;
     FMenuFont: TFont;
     FScreenHandlers: array[TScreenNotification] of TMethodList;
@@ -910,7 +910,7 @@ type
     FOnActiveControlChange: TNotifyEvent;
     FOnActiveFormChange: TNotifyEvent;
     FPixelsPerInch : integer;
-    FSaveFocusedList: TList;
+    FSaveFocusedList: TFPList;
     FSystemFont: TFont;
     procedure DeleteCursor(AIndex: Integer);
     procedure DestroyCursors;
