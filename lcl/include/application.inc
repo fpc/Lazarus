@@ -919,7 +919,10 @@ procedure TApplication.UpdateVisible;
     for i := 0 to Screen.FormCount - 1 do
     begin
       AForm := Screen.Forms[i];
-      if AForm.Visible and (AForm.Parent = nil) and UseAppTaskbarItem(AForm) then
+      if (AForm.Parent = nil)
+      and AForm.Showing  // check showing (not Visible)
+      and (not (csDestroyingHandle in AForm.ControlState))
+      and UseAppTaskbarItem(AForm) then
       begin
         Result := True;
         break;
