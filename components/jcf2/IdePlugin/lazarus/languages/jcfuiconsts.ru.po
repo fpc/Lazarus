@@ -134,6 +134,34 @@ msgstr "Удаление пустых строк"
 msgid "Remove consecutive blank lines"
 msgstr "Удалять последовательные пустые строки"
 
+#: jcfuiconsts.liscapscapitalisation
+msgid "Capitalisation"
+msgstr "Регистр"
+
+#: jcfuiconsts.liscapsconstants
+msgid "Constants"
+msgstr "Константы"
+
+#: jcfuiconsts.liscapsdirectives
+msgid "Directives"
+msgstr "Директивы"
+
+#: jcfuiconsts.liscapsenablecapitalisationfixing
+msgid "Enable capitalisation fixing"
+msgstr "Исправлять регистр"
+
+#: jcfuiconsts.liscapsoperators
+msgid "Operators"
+msgstr "Операторы"
+
+#: jcfuiconsts.liscapsreservedwords
+msgid "Reserved words"
+msgstr "Зарезервированные слова"
+
+#: jcfuiconsts.liscapstypes
+msgid "Types"
+msgstr "Типы"
+
 #: jcfuiconsts.liscaseblocksalways
 msgctxt "jcfuiconsts.liscaseblocksalways"
 msgid "Always"

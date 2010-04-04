@@ -125,6 +125,34 @@ msgstr ""
 msgid "Remove consecutive blank lines"
 msgstr ""
 
+#: jcfuiconsts.liscapscapitalisation
+msgid "Capitalisation"
+msgstr ""
+
+#: jcfuiconsts.liscapsconstants
+msgid "Constants"
+msgstr ""
+
+#: jcfuiconsts.liscapsdirectives
+msgid "Directives"
+msgstr ""
+
+#: jcfuiconsts.liscapsenablecapitalisationfixing
+msgid "Enable capitalisation fixing"
+msgstr ""
+
+#: jcfuiconsts.liscapsoperators
+msgid "Operators"
+msgstr ""
+
+#: jcfuiconsts.liscapsreservedwords
+msgid "Reserved words"
+msgstr ""
+
+#: jcfuiconsts.liscapstypes
+msgid "Types"
+msgstr ""
+
 #: jcfuiconsts.liscaseblocksalways
 msgctxt "jcfuiconsts.liscaseblocksalways"
 msgid "Always"
