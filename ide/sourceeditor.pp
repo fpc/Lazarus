@@ -5670,6 +5670,7 @@ begin
   ReleaseEditor(Edit);
   Edit.UpdateNoteBook(DestWin, DestWin.NoteBookPage[NewPageIndex]);
   DestWin.AcceptEditor(Edit);
+  DestWin.NotebookPage[NewPageIndex].ReAlign;
 
   NoteBookDeletePage(OldPageIndex);
   UpdatePageNames;
