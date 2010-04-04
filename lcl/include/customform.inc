@@ -2326,7 +2326,7 @@ begin
   DebugLn('[TCustomForm.UpdateShowing] A  ',DbgSName(Self),' Pos=',DbgS(Left),',',DbgS(Top),' Visible=',DbgS(Visible));
   {$ENDIF}
   { If the the form is about to show, calculate its metrics }
-  if Visible then
+  if Visible and (not (csDestroying in ComponentState)) then
   begin
     if (Parent = nil) and (ParentWindow = 0) then
     begin
@@ -2387,7 +2387,7 @@ begin
   {$ENDIF}
   {$IFNDEF OldAutoSize}
   // activate focus if visible
-  if Visible then begin
+  if Showing and (not (csDestroying in ComponentState)) then begin
     if (ActiveControl = nil) and (not (csDesigning in ComponentState))
     and (Parent=nil) then begin
       // automatically choose a control to focus
