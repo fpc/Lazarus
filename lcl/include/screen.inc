@@ -740,6 +740,10 @@ begin
   FCustomForms.Remove(AForm);
   FCustomFormsZOrdered.Remove(AForm);
   FFormList.Remove(AForm);
+  if FFocusedForm=AForm then FFocusedForm:=nil;
+  if FLastActiveCustomForm=AForm then FLastActiveCustomForm:=nil;
+  if FActiveForm=AForm then FActiveForm:=nil;
+  if FActiveCustomForm=AForm then FActiveCustomForm:=nil;
   Application.UpdateVisible;
 end;
 
