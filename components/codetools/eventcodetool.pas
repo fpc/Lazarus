@@ -119,9 +119,9 @@ type
 const
   MethodKindAsString: array[TMethodKind] of shortstring = (
         'procedure', 'function', 'constructor', 'destructor',
-        'class procedure', 'class function',
+        'class procedure', 'class function'
         {$IFNDEF VER2_4}
-        'class constructor', 'class destructor'
+        ,'class constructor', 'class destructor'
         {$ENDIF}
       );
 
