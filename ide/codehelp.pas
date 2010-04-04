@@ -2199,6 +2199,7 @@ begin
   {$endif}
   BaseURL:='lazdoc://';
   IsHTML:=false;
+  CodeToolBoss.ActivateWriteLock;
   try
     if chhoSmartHint in Options then
       HTMLHint := CodeToolBoss.FindSmartHint(Code,X,Y)
@@ -2281,6 +2282,7 @@ begin
       Chain.Free;
     end;
   finally
+    CodeToolBoss.DeactivateWriteLock;
     if IsHTML then
       HTMLHint:='<HTML><BODY>'+HTMLHint+'</BODY></HTML>';
   end;
