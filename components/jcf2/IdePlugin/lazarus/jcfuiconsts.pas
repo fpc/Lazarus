@@ -225,6 +225,11 @@ resourcestring
   lisCapsNotIdentifiersSetCapitalisationOnTheseNonIdentifiers = 'Set capitalisa'
     +'tion on these non-identifiers:';
 
+  //Unit Names Capitalisation tab
+  lisCapsUnitNamesUnitNames = 'Unit Names';
+  lisCapsUnitNamesSetCapitalisationOnTheseUnitNames = 'Set capitalisation on '
+    +'these unit names:';
+
 implementation
 
 end.

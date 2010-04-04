@@ -56,7 +56,7 @@ implementation
 {$R *.lfm}
 
 uses
-  JcfSettings;
+  JcfSettings, jcfuiconsts;
 
 constructor TfrUnitNameCaps.Create(AOwner: TComponent);
 begin
@@ -66,12 +66,14 @@ end;
 
 function TfrUnitNameCaps.GetTitle: String;
 begin
-  Result := 'Unit Name';
+  Result := lisCapsUnitNamesUnitNames;
 end;
 
 procedure TfrUnitNameCaps.Setup(ADialog: TAbstractOptionsEditorDialog);
 begin
   inherited Setup(ADialog);
+  cbEnableAnyWords.Caption := lisCapsAnyWordEnable;
+  Label1.Caption := lisCapsUnitNamesSetCapitalisationOnTheseUnitNames;
 end;
 
 procedure TfrUnitNameCaps.ReadSettings(AOptions: TAbstractIDEOptions);
