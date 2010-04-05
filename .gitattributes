@@ -2136,9 +2136,9 @@ components/tachart/fpdoc/tasources.xml svneol=native#text/plain
 components/tachart/fpdoc/tatypes.xml svneol=native#text/plain
 components/tachart/icons/makeicons.bat svneol=native#text/plain
 components/tachart/icons/tchart.png -text svneol=unset#images/png
-components/tachart/icons/tchartaxistransformations.png -text
-components/tachart/icons/tcharttoolset.png -text
-components/tachart/icons/tdbchartsource.png -text
+components/tachart/icons/tchartaxistransformations.png -text svneol=unset#images/png
+components/tachart/icons/tcharttoolset.png -text svneol=unset#images/png
+components/tachart/icons/tdbchartsource.png -text svneol=unset#images/png
 components/tachart/icons/tlistchartsource.png -text svneol=unset#images/png
 components/tachart/icons/trandomchartsource.png -text svneol=unset#images/png
 components/tachart/icons/tuserdefinedchartsource.png -text svneol=unset#images/png
