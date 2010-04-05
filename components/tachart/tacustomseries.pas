@@ -53,6 +53,10 @@ type
     procedure SetParentComponent(AParent: TComponent); override;
 
   protected
+    function GetIndex: Integer; override;
+    procedure SetIndex(AValue: Integer); override;
+
+  protected
     function AxisToGraphX(AX: Double): Double; override;
     function AxisToGraphY(AY: Double): Double; override;
     function GraphToAxisX(AX: Double): Double; override;
@@ -224,6 +228,11 @@ begin
   end;
 end;
 
+function TCustomChartSeries.GetIndex: Integer;
+begin
+  Result := FChart.Series.List.IndexOf(Self);
+end;
+
 function TCustomChartSeries.GetParentComponent: TComponent;
 begin
   Result := FChart;
@@ -284,6 +293,12 @@ begin
   if FDepth = AValue then exit;
   FDepth := AValue;
   UpdateParentChart;
+end;
+
+procedure TCustomChartSeries.SetIndex(AValue: Integer);
+begin
+  with FChart.Series.List do
+    Move(Index, EnsureRange(AValue, 0, Count - 1));
 end;
 
 procedure TCustomChartSeries.SetParentComponent(AParent: TComponent);

@@ -129,6 +129,16 @@ type
 
   TCaseOfTwo = (cotNone, cotFirst, cotSecond, cotBoth);
 
+  { TIndexedComponent }
+
+  TIndexedComponent = class (TComponent)
+  protected
+    function GetIndex: Integer; virtual; abstract;
+    procedure SetIndex(AValue: Integer); virtual; abstract;
+  public
+    property Index: Integer read GetIndex write SetIndex;
+  end;
+
 const
   // 0-value, 1-percent, 2-label, 3-total, 4-xvalue
   SERIES_MARK_FORMATS: array [TSeriesMarksStyle] of String = (

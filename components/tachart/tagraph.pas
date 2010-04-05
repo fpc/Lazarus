@@ -43,7 +43,7 @@ type
 
   { TBasicChartSeries }
 
-  TBasicChartSeries = class(TComponent)
+  TBasicChartSeries = class(TIndexedComponent)
   protected
     FActive: Boolean;
     FChart: TChart;
@@ -96,7 +96,7 @@ type
 
   { TBasicСhartTool }
 
-  TBasicChartTool = class(TComponent)
+  TBasicChartTool = class(TIndexedComponent)
   strict protected
     FChart: TChart;
 

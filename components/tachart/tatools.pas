@@ -51,11 +51,13 @@ type
     procedure Deactivate; override;
     procedure Dispatch(
       AChart: TChart; AEventId: TChartToolEventId; APoint: TPoint);
+    function GetIndex: Integer; override;
     function Index: Integer; override;
     function IsActive: Boolean;
     procedure MouseDown(APoint: TPoint); virtual;
     procedure MouseMove(APoint: TPoint); virtual;
     procedure MouseUp(APoint: TPoint); virtual;
+    procedure SetIndex(AValue: Integer); override;
   public
     constructor Create(AOwner: TComponent); override;
     destructor Destroy; override;
@@ -352,6 +354,11 @@ begin
   end;
 end;
 
+function TChartTool.GetIndex: Integer;
+begin
+  Result := Toolset.Tools.IndexOf(Self);
+end;
+
 function TChartTool.GetParentComponent: TComponent;
 begin
   Result := FToolset;
@@ -418,6 +425,11 @@ begin
   if ActiveCursor = crDefault then exit;
   FOldCursor := FChart.Cursor;
   FChart.Cursor := ActiveCursor;
+end;
+
+procedure TChartTool.SetIndex(AValue: Integer);
+begin
+  Toolset.Tools.Move(Index, EnsureRange(AValue, 0, Toolset.Tools.Count - 1));
 end;
 
 procedure TChartTool.SetParentComponent(AParent: TComponent);
