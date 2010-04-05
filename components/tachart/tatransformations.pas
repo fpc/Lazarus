@@ -79,6 +79,9 @@ type
   public
     procedure GetChildren(Proc: TGetChildProc; Root: TComponent); override;
     procedure SetChildOrder(Child: TComponent; Order: Integer); override;
+  public
+    function AxisToGraph(AX: Double): Double;
+    function GraphToAxis(AX: Double): Double;
   published
     property List: TAxisTransformList read FList;
   end;
@@ -351,6 +354,15 @@ end;
 
 { TChartAxisTransformations }
 
+function TChartAxisTransformations.AxisToGraph(AX: Double): Double;
+var
+  i: Integer;
+begin
+  Result := AX;
+  for i := 0 to List.Count - 1 do
+    Result := TAxisTransform(List[i]).AxisToGraph(Result);
+end;
+
 constructor TChartAxisTransformations.Create(AOwner: TComponent);
 begin
   inherited Create(AOwner);
@@ -373,6 +385,15 @@ begin
   for i := 0 to List.Count - 1 do
     if TAxisTransform(List[i]).Owner = Root then
       Proc(TAxisTransform(List[i]));
+end;
+
+function TChartAxisTransformations.GraphToAxis(AX: Double): Double;
+var
+  i: Integer;
+begin
+  Result := AX;
+  for i := 0 to List.Count - 1 do
+    Result := TAxisTransform(List[i]).GraphToAxis(Result);
 end;
 
 procedure TChartAxisTransformations.SetChildOrder(

@@ -147,18 +147,19 @@ type
 implementation
 
 uses
-  Math, TAChartAxis;
+  Math, TAChartAxis, TATransformations;
 
 var
-  VIdentityTransformation: TChartAxisTransformation;
+  VIdentityTransform: TChartAxisTransformations;
 
 function TransformationByAxis(
-  AChart: TChart; AAxisIndex: Integer): TChartAxisTransformation;
+  AChart: TChart; AAxisIndex: Integer): TChartAxisTransformations;
 begin
+  Result := nil;
   if InRange(AAxisIndex, 0, AChart.AxisList.Count - 1) then
-    Result := AChart.AxisList[AAxisIndex].Transformation
-  else
-    Result := VIdentityTransformation;
+    Result := AChart.AxisList[AAxisIndex].Transformations;
+  if Result = nil then
+    Result := VIdentityTransform;
 end;
 
 type
@@ -582,8 +583,8 @@ begin
 end;
 
 initialization
-  VIdentityTransformation := TChartAxisTransformation.Create;
+  VIdentityTransform := TChartAxisTransformations.Create(nil);
 finalization
-  VIdentityTransformation.Free;
+  VIdentityTransform.Free;
 end.
 

@@ -24,7 +24,7 @@ interface
 
 uses
   Classes, Graphics, SysUtils, Types,
-  TAChartUtils, TASources, TATypes;
+  TAChartUtils, TASources, TATransformations, TATypes;
 
 type
 
@@ -69,44 +69,6 @@ type
     property Style default psDot;
   end;
 
-  { TChartAxisTransformation }
-
-  TChartAxisTransformation = class(TPersistent)
-  private
-    FOnChanged: TNotifyEvent;
-    procedure SetOnChanged(const AValue: TNotifyEvent);
-  protected
-    procedure Changed;
-  public
-    function AxisToGraph(AX: Double): Double; virtual;
-    function GraphToAxis(AX: Double): Double; virtual;
-
-    property OnChanged: TNotifyEvent read FOnChanged write SetOnChanged;
-  end;
-
-  { TChartAxisLogLinearTransformation }
-
-  TChartAxisLogLinearTransformation = class(TChartAxisTransformation)
-  private
-    FLogarithmic: Boolean;
-    FOffset: Double;
-    FScale: Double;
-    procedure SetLogarithmic(AValue: Boolean);
-    procedure SetOffset(AValue: Double);
-    procedure SetScale(AValue: Double);
-  public
-    constructor Create;
-  public
-    procedure Assign(Source: TPersistent); override;
-
-    function AxisToGraph(AX: Double): Double; override;
-    function GraphToAxis(AX: Double): Double; override;
-  published
-    property Logarithmic: Boolean read FLogarithmic write SetLogarithmic default false;
-    property Offset: Double read FOffset write SetOffset;
-    property Scale: Double read FScale write SetScale;
-  end;
-
   TChartAxisBrush = class(TBrush)
   published
     property Style default bsClear;
@@ -140,6 +102,7 @@ type
 
   TChartAxis = class(TCollectionItem)
   private
+    FDefaultTransformations: TChartAxisTransformations;
     FMarkTexts: TStringDynArray;
     FMarkValues: TDoubleDynArray;
     FSize: Integer;
@@ -155,9 +118,10 @@ type
     FTickColor: TColor;
     FTickLength: Integer;
     FTitle: TChartAxisTitle;
-    FTransformation: TChartAxisLogLinearTransformation;
+    FTransformations: TChartAxisTransformations;
     FVisible: Boolean;
 
+    function GetTransform: TChartAxisTransformations;
     procedure SetAlignment(AValue: TChartAxisAlignment);
     procedure SetGrid(AValue: TChartAxisPen);
     procedure SetInverted(AValue: Boolean);
@@ -166,7 +130,7 @@ type
     procedure SetTickColor(AValue: TColor);
     procedure SetTickLength(AValue: Integer);
     procedure SetTitle(AValue: TChartAxisTitle);
-    procedure SetTransformation(AValue: TChartAxisLogLinearTransformation);
+    procedure SetTransformations(AValue: TChartAxisTransformations);
     procedure SetVisible(const AValue: Boolean);
 
     procedure StyleChanged(ASender: TObject);
@@ -197,8 +161,8 @@ type
     property TickLength: Integer
       read FTickLength write SetTickLength default DEF_TICK_LENGTH;
     property Title: TChartAxisTitle read FTitle write SetTitle;
-    property Transformation: TChartAxisLogLinearTransformation
-      read FTransformation write SetTransformation;
+    property Transformations: TChartAxisTransformations
+      read FTransformations write SetTransformations;
     property Visible: Boolean read FVisible write SetVisible default true;
   published
     property OnMarkToText: TChartAxisMarkToTextEvent
@@ -331,6 +295,7 @@ end;
 constructor TChartAxis.Create(ACollection: TCollection);
 begin
   inherited Create(ACollection);
+  FDefaultTransformations := TChartAxisTransformations.Create(nil);
   FGrid := TChartAxisPen.Create;
   FGrid.OnChange := @StyleChanged;
   FGrid.Style := psDot;
@@ -338,17 +303,16 @@ begin
   FTickColor := clBlack;
   FTickLength := DEF_TICK_LENGTH;
   FTitle := TChartAxisTitle.Create(ACollection.Owner as TCustomChart);
-  FTransformation := TChartAxisLogLinearTransformation.Create;
-  FTransformation.OnChanged := @StyleChanged;
+  //FTransformation.OnChanged := @StyleChanged;
   FVisible := true;
 end;
 
 destructor TChartAxis.Destroy;
 begin
-  FTransformation.Free;
   FTitle.Free;
   FMarks.Free;
   FGrid.Free;
+  FDefaultTransformations.Free;
   inherited;
 end;
 
@@ -420,7 +384,7 @@ procedure TChartAxis.Draw(
     if AMin = AMax then exit;
     coord := SideByAlignment(ARect, Alignment, FSize);
     for i := 0 to High(FMarkValues) do begin
-      v := Transformation.AxisToGraph(FMarkValues[i]);
+      v := GetTransform.AxisToGraph(FMarkValues[i]);
       if IsVertical then
         DrawYMark(coord, v, FMarkTexts[i])
       else
@@ -489,8 +453,8 @@ var
   i, count: Integer;
   v: Double;
 begin
-  AMin := Transformation.GraphToAxis(AMin);
-  AMax := Transformation.GraphToAxis(AMax);
+  AMin := GetTransform.GraphToAxis(AMin);
+  AMax := GetTransform.GraphToAxis(AMax);
   if AMin > AMax then
     Exchange(AMin, AMax);
   if Marks.Source = nil then begin
@@ -518,6 +482,13 @@ begin
   if Assigned(FOnMarkToText) then
     for i := 0 to High(FMarkTexts) do
       FOnMarkToText(FMarkTexts[i], FMarkValues[i]);
+end;
+
+function TChartAxis.GetTransform: TChartAxisTransformations;
+begin
+  Result := Transformations;
+  if Result = nil then
+    Result := FDefaultTransformations;
 end;
 
 function TChartAxis.IsVertical: Boolean; inline;
@@ -644,11 +615,10 @@ begin
   StyleChanged(Self);
 end;
 
-procedure TChartAxis.SetTransformation(
-  AValue: TChartAxisLogLinearTransformation);
+procedure TChartAxis.SetTransformations(AValue: TChartAxisTransformations);
 begin
-  if FTransformation = AValue then exit;
-  FTransformation.Assign(AValue);
+  if FTransformations = AValue then exit;
+  FTransformations := AValue;
   StyleChanged(Self);
 end;
 
@@ -712,94 +682,13 @@ begin
   a.FAlignment := AXIS_INDEX[AIndex];
 end;
 
-{ TChartAxisTransformation }
-
-function TChartAxisTransformation.AxisToGraph(AX: Double): Double;
-begin
-  Result := AX;
-end;
-
-procedure TChartAxisTransformation.Changed;
-begin
-  if Assigned(FOnChanged) then
-    FOnChanged(Self);
-end;
-
-function TChartAxisTransformation.GraphToAxis(AX: Double): Double;
-begin
-  Result := AX;
-end;
-
-procedure TChartAxisTransformation.SetOnChanged(const AValue: TNotifyEvent);
-begin
-  if TMethod(FOnChanged) = TMethod(AValue) then exit;
-  FOnChanged := AValue;
-end;
-
-{ TChartAxisLogLinearTransformation }
-
-procedure TChartAxisLogLinearTransformation.Assign(Source: TPersistent);
-begin
-  if Source is TChartAxisLogLinearTransformation then
-    with Source as TChartAxisLogLinearTransformation do begin
-      Self.Logarithmic := Logarithmic;
-      Self.Offset := Offset;
-      Self.Scale := Scale;
-    end;
-end;
-
-function TChartAxisLogLinearTransformation.AxisToGraph(AX: Double): Double;
-begin
-  if not Logarithmic then
-    Result := AX
-  else if AX > 0 then
-    Result := Ln(AX)
-  else
-    Result := NegInfinity;
-  Result := Result * Scale + Offset;
-end;
-
-constructor TChartAxisLogLinearTransformation.Create;
-begin
-  inherited Create;
-  FScale := 1.0;
-end;
-
-function TChartAxisLogLinearTransformation.GraphToAxis(AX: Double): Double;
-begin
-  Result := (AX - Offset) / Scale;
-  if Logarithmic then
-    Result := Exp(AX);
-end;
-
-procedure TChartAxisLogLinearTransformation.SetLogarithmic(AValue: Boolean);
-begin
-  if FLogarithmic = AValue then exit;
-  FLogarithmic := AValue;
-  Changed;
-end;
-
-procedure TChartAxisLogLinearTransformation.SetOffset(AValue: Double);
-begin
-  if FOffset = AValue then exit;
-  FOffset := AValue;
-  Changed;
-end;
-
-procedure TChartAxisLogLinearTransformation.SetScale(AValue: Double);
-begin
-  if FScale = AValue then exit;
-  FScale := AValue;
-  if FScale = 0 then FScale := 1.0;
-  Changed;
-end;
-
 procedure SkipObsoleteAxisProperties;
 const
-  TRANSFORM_NOTE = 'Obsolete, use Transformation instead';
+  TRANSFORM_NOTE = 'Obsolete, use Transformations instead';
 begin
   RegisterPropertyToSkip(TChartAxis, 'Offset', TRANSFORM_NOTE, '');
   RegisterPropertyToSkip(TChartAxis, 'Scale', TRANSFORM_NOTE, '');
+  RegisterPropertyToSkip(TChartAxis, 'Transformation', TRANSFORM_NOTE, '');
 end;
 
 initialization
