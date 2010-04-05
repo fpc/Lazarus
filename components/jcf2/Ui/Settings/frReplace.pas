@@ -60,7 +60,7 @@ implementation
 {$R *.lfm}
 
 uses 
-  JcfHelp, JcfSettings;
+  JcfHelp, JcfSettings, jcfuiconsts;
 
 { TfReplace }
 
@@ -72,12 +72,13 @@ end;
 
 function TfReplace.GetTitle: String;
 begin
-  Result := 'Find and Replace';
+  Result := lisFindReplaceFindAndReplace;
 end;
 
 procedure TfReplace.Setup(ADialog: TAbstractOptionsEditorDialog);
 begin
-  //
+  cbEnable.Caption := lisFindReplaceEnableFindAndReplace;
+  lblWordList.Caption := lisFindReplaceWordList;
 end;
 
 procedure TfReplace.ReadSettings(AOptions: TAbstractIDEOptions);

@@ -230,6 +230,11 @@ resourcestring
   lisCapsUnitNamesSetCapitalisationOnTheseUnitNames = 'Set capitalisation on '
     +'these unit names:';
 
+  //Find and Replace tab
+  lisFindReplaceFindAndReplace = 'Find and Replace';
+  lisFindReplaceEnableFindAndReplace = 'Enable find and replace';
+  lisFindReplaceWordList = 'Word list:';
+
 implementation
 
 end.
