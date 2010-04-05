@@ -33,7 +33,7 @@
 {off $DEFINE CHECK_POSITION}
 {$IFDEF CHECK_POSITION}
 const CheckPostionClassName = 'xxTPage';
-const CheckPostionName = 'tbViewDebug';
+const CheckPostionName = 'MainIDE';
 const CheckPostionParentName = 'xxxEnvVarsPage';
 
 function CheckPosition(AControl: TControl): boolean;
@@ -8048,15 +8048,16 @@ begin
     end;
   end else begin
     {$IFDEF CHECK_POSITION}
-    //if CheckPosition(Self) then
-    DbgOut('[TWinControl.RealizeBounds] NOT REALIZING ',DbgSName(Self),
-    ' OldRelBounds=',dbgs(FBoundsRealized),
-    ' -> NewBounds=',dbgs(NewBounds),
-    ', because ');
-    if not HandleAllocated then debugln('not HandleAllocated');
-    if (csLoading in ComponentState) then debugln('csLoading');
-    if (csDestroying in ComponentState) then debugln('csDestroying');
-    if (CompareRect(@NewBounds,@FBoundsRealized)) then debugln('bounds not changed');
+    if CheckPosition(Self) then begin
+      DbgOut('[TWinControl.RealizeBounds] NOT REALIZING ',DbgSName(Self),
+      ' OldRelBounds=',dbgs(FBoundsRealized),
+      ' -> NewBounds=',dbgs(NewBounds),
+      ', because ');
+      if not HandleAllocated then debugln('not HandleAllocated');
+      if (csLoading in ComponentState) then debugln('csLoading');
+      if (csDestroying in ComponentState) then debugln('csDestroying');
+      if (CompareRect(@NewBounds,@FBoundsRealized)) then debugln('bounds not changed');
+    end;
     {$ENDIF}
     {$IFNDEF OldAutoSize}
     if not HandleAllocated then Check;
