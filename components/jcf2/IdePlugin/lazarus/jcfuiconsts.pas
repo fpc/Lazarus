@@ -235,6 +235,13 @@ resourcestring
   lisFindReplaceEnableFindAndReplace = 'Enable find and replace';
   lisFindReplaceWordList = 'Word list:';
 
+  //Uses tab
+  lisUsesUses = 'Uses';
+  lisUsesRemove = 'Remove';
+  lisUsesInsertIntoInterface = 'Insert into Interface';
+  lisUsesInsertIntoImplementation = 'Insert into Implementation';
+  lisUsesReplace = 'Replace';
+
 implementation
 
 end.

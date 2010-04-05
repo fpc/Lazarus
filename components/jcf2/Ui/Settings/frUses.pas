@@ -68,7 +68,7 @@ implementation
 {$R *.lfm}
 
 uses
-  JcfHelp, JcfSettings;
+  JcfHelp, JcfSettings, jcfuiconsts;
 
 constructor TfUses.Create(AOwner: TComponent);
 begin
@@ -78,12 +78,15 @@ end;
 
 function TfUses.GetTitle: String;
 begin
-  Result := 'Uses';
+  Result := lisUsesUses;
 end;
 
 procedure TfUses.Setup(ADialog: TAbstractOptionsEditorDialog);
 begin
-  //
+  cbRemoveEnabled.Caption := lisUsesRemove;
+  cbInsertInterface.Caption := lisUsesInsertIntoInterface;
+  cbInsertImplementation.Caption := lisUsesInsertIntoImplementation;
+  cbFindReplace.Caption := lisUsesReplace;
 end;
 
 
