@@ -14700,9 +14700,11 @@ begin
     i := 0;
     while (i < SrcEdit.SharedEditorCount) and (SrcEdit.SharedEditors[i] = SrcEdit) do
       inc(i);
-    p :=Project1.EditorInfoWithEditorComponent(SrcEdit.SharedEditors[i]);
+    p := Project1.EditorInfoWithEditorComponent(SrcEdit.SharedEditors[i]);
     p := p.UnitInfo.GetClosedOrNewEditorInfo;
     p.EditorComponent := SrcEdit;
+    p.SyntaxHighlighter := SrcEdit.SyntaxHighlighterType;
+    p.CustomHighlighter := p.SyntaxHighlighter <> p.UnitInfo.DefaultSyntaxHighlighter;
   end;
 end;
 

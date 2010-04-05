@@ -387,7 +387,6 @@ type
     // EditorInfo
     // At any time, any UnitInfo has at least one EditorInfo
     function EditorInfoWithEditorComponent(AEditor:TSourceEditorInterface): TUnitEditorInfo;
-    function GetFreeEditorInfo: TUnitEditorInfo;
     function EditorInfoCount: Integer;
     property EditorInfo[Index: Integer]: TUnitEditorInfo read GetEditorInfo;
     function OpenEditorInfoCount: Integer; // with EditorComponent assigned
@@ -1134,14 +1133,14 @@ begin
   FCursorPos.X := -1;
   FCursorPos.Y := -1;
   FFoldState := '';
-  FCustomHighlighter := false;
-  FSyntaxHighlighter := lshText;
+  FSyntaxHighlighter := FUnitInfo.DefaultSyntaxHighlighter;
+  FCustomHighlighter := FUnitInfo.CustomDefaultHighlighter;
 end;
 
 constructor TUnitEditorInfo.Create(aUnitInfo: TUnitInfo);
 begin
-  Clear;
   FUnitInfo := aUnitInfo;
+  Clear;
   if FUnitInfo.Project <> nil then
     FUnitInfo.Project.EditorInfoList.Add(Self);
 end;
@@ -2119,19 +2118,6 @@ begin
     Result := FEditorInfoList[i]
   else
     Result := nil;
-end;
-
-function TUnitInfo.GetFreeEditorInfo: TUnitEditorInfo;
-var
-  i: Integer;
-begin
-  i := 0;
-  while (i < FEditorInfoList.Count) and (FEditorInfoList[i].EditorComponent <> nil)
-    do inc(i);
-  if i < FEditorInfoList.Count then
-    Result := FEditorInfoList[i]
-  else
-    Result := FEditorInfoList.NewEditorInfo;
 end;
 
 function TUnitInfo.EditorInfoCount: Integer;
