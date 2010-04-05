@@ -14757,8 +14757,8 @@ First a window at the given screen position is searched, then a control within i
       </element>
       <!-- property Visibility: published -->
       <element name="TControlBorderSpacing.InnerBorder">
-        <short>The size of the inner border around the control</short>
-        <descr/>
+        <short>Amount of pixel added to the widgetset's preferred size</short>
+        <descr>When calculating the preferred size of control, the LCL asks first the widgetset. For controls like TButton the widgetset can return a preferred size. The InnerBorder is added twice to this size. If the widgetset does not return a preferred size, the InnerBorder is not used.</descr>
         <seealso/>
       </element>
       <!-- property Visibility: published -->
