@@ -7780,10 +7780,11 @@ var
   Layout: TAutoSizeCtrlData;
   NewClientWidth: Integer;
   NewClientHeight: Integer;
-  OldClientRect: TRect;
+  CurClientRect: TRect;
   NewWidth: Integer;
   NewHeight: Integer;
   NewMoveLeft, NewMoveRight: integer;
+  AdjustedClientRect: TRect;
 begin
   inherited CalculatePreferredSize(PreferredWidth,PreferredHeight,WithThemeSpace);
   
@@ -7795,6 +7796,15 @@ begin
     if PreferredHeight>0 then
       inc(PreferredHeight,BorderSpacing.InnerBorder*2);
   end;
+
+  // check AdjustClientRect
+  CurClientRect:=Rect(0,0,1000,1000);
+  AdjustedClientRect:=CurClientRect;
+  AdjustClientRect(AdjustedClientRect);
+  PreferredWidth:=Max(PreferredWidth,
+           AdjustedClientRect.Left+CurClientRect.Right-AdjustedClientRect.Right);
+  PreferredHeight:=Max(PreferredHeight,
+          AdjustedClientRect.Top+CurClientRect.Bottom-AdjustedClientRect.Bottom);
 
   if ControlCount>0 then begin
 
@@ -7810,10 +7820,9 @@ begin
     end;
     
     // add the control border around the client area
-    OldClientRect := GetClientRect;
-    NewWidth:=Width-OldClientRect.Right+NewClientWidth;
-    NewHeight:=Height-OldClientRect.Bottom+NewClientHeight;
-
+    CurClientRect := GetClientRect;
+    NewWidth:=Width-CurClientRect.Right+NewClientWidth;
+    NewHeight:=Height-CurClientRect.Bottom+NewClientHeight;
     {$IF defined(VerboseAutoSize) or defined(VerboseAllAutoSize)}
     debugln(['TWinControl.CalculatePreferredSize ',DbgSName(Self),
       ' HandleAllocated=',HandleAllocated,
