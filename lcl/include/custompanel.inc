@@ -33,7 +33,7 @@ begin
   FCompStyle:= csPanel;
   ControlStyle := ControlStyle + [csAcceptsControls, csCaptureMouse,
     csClickEvents, csSetCaption, csDoubleClicks, csReplicatable,
-    csNoFocus]
+    csNoFocus, csAutoSize0x0]
     - [csOpaque]; // we need the default background
   FBevelOuter := bvRaised;
   FBevelInner := bvNone;

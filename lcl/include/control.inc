@@ -4738,28 +4738,33 @@ begin
 
   if not Raw then begin
     // use defaults for undefined preferred size
-    if AutoSize then begin
-      if PreferredWidth<=0 then PreferredWidth:=GetDefaultWidth;
-      if PreferredHeight<=0 then PreferredHeight:=GetDefaultHeight;
-    end else begin
-      if PreferredWidth<=0 then PreferredWidth:=Width;
-      if PreferredHeight<=0 then PreferredHeight:=Height;
-    end;
-    
-    // if this control is aligned adjust PreferredWidth and/or PreferredHeight
-    if Parent<>nil then begin
-      if AnchorAlign[Align]*[akLeft,akRight]=[akLeft,akRight] then begin
-        // the control will be expanded to maximum width
-        // -> use the current width, which is or will be eventually set by the
-        //    aligning code
+    if (PreferredWidth<0)
+    or ((PreferredWidth=0) and (not (csAutoSize0x0 in ControlStyle))) then begin
+      if AutoSize then
+        PreferredWidth:=GetDefaultWidth
+      else
         PreferredWidth:=Width;
-      end;
-      if AnchorAlign[Align]*[akTop,akBottom]=[akTop,akBottom] then begin
-        // the control will be expanded to maximum height
-        // -> use the current height, which is or will be eventually set by the
-        //    aligning code
+    end;
+    if (PreferredHeight<0)
+    or ((PreferredHeight=0) and (not (csAutoSize0x0 in ControlStyle))) then begin
+      if AutoSize then
+        PreferredHeight:=GetDefaultHeight
+      else
         PreferredHeight:=Height;
-      end;
+    end;
+
+    // if this control is aligned adjust PreferredWidth and/or PreferredHeight
+    if WidthIsAnchored then begin
+      // the control will be expanded to maximum width
+      // -> use the current width, which is or will be eventually set by the
+      //    aligning code
+      PreferredWidth:=Width;
+    end;
+    if HeightIsAnchored then begin
+      // the control will be expanded to maximum height
+      // -> use the current height, which is or will be eventually set by the
+      //    aligning code
+      PreferredHeight:=Height;
     end;
     
     // apply constraints

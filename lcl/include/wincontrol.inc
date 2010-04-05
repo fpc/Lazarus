@@ -3375,9 +3375,11 @@ begin
       PreferredWidth:=0;
       PreferredHeight:=0;
     end;
-    if WidthIsFixed or (PreferredWidth<=0) then
+    if WidthIsFixed or (PreferredWidth<0)
+    or ((PreferredWidth=0) and (not (csAutoSize0x0 in ControlStyle))) then
       PreferredWidth:=Constraints.MinMaxWidth(Width);
-    if HeightIsFixed or (PreferredHeight<=0) then
+    if HeightIsFixed or (PreferredHeight<0)
+    or ((PreferredHeight=0) and (not (csAutoSize0x0 in ControlStyle))) then
       PreferredHeight:=Constraints.MinMaxHeight(Height);
 
     // set new size
