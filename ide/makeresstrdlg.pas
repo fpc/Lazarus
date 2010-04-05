@@ -289,8 +289,10 @@ begin
   SrcPreviewGroupBox.Caption:=lisMakeResStrSourcePreview;
   StringConstGroupBox.Caption:=lisMakeResStrStringConstantInSource;
 
-  // ok+cancel buttons
-  OkButton.Caption:=lisLazBuildOk;
+  // OK, Cancel, Help buttons
+  OkButton.Caption:=lisOk;
+  CancelButton.Caption:=dlgCancel;
+  HelpButton.Caption:=lisMenuHelp;
 end;
 
 constructor TMakeResStrDialog.Create(TheOwner: TComponent);
