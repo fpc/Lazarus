@@ -2134,6 +2134,7 @@ components/tachart/fpdoc/talegend.xml svneol=native#text/plain
 components/tachart/fpdoc/taseries.xml svneol=native#text/plain
 components/tachart/fpdoc/tasources.xml svneol=native#text/plain
 components/tachart/fpdoc/tatypes.xml svneol=native#text/plain
+components/tachart/icons/makeicons.bat svneol=native#text/plain
 components/tachart/icons/tchart.png -text svneol=unset#images/png
 components/tachart/icons/tchartaxistransformations.png -text
 components/tachart/icons/tcharttoolset.png -text
