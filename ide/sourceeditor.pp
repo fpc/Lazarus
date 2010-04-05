@@ -4903,20 +4903,24 @@ begin
     end;
 
     {$IFnDEF SingleSrcWindow}
-    SrcEditMenuMoveToNewWindow.Visible := Manager.SourceWindowCount <= 1;
-    SrcEditMenuMoveToNewWindow.Enabled := PageCount > 1;
-    SrcEditMenuMoveToOtherWindow.Visible := Manager.SourceWindowCount > 1;
-    SrcEditMenuMoveToOtherWindowNew.Enabled := (PageCount > 1);
     SrcEditMenuMoveToOtherWindowList.Clear;
+    NBAvail := False;
     for i := 0 to Manager.SourceWindowCount - 1 do
-      if i <> Manager.IndexOfSourceWindow(self) then begin
+      if (i <> Manager.IndexOfSourceWindow(self)) and
+         (Manager.SourceWindows[i].IndexOfEditorInShareWith(GetActiveSE) < 0)
+      then begin
+        NBAvail := True;
         with RegisterIDEMenuCommand(SrcEditMenuMoveToOtherWindowList,
-                                    'CopyToWindow'+IntToStr(i),
+                                    'MoveToWindow'+IntToStr(i),
                                     Manager.SourceWindows[i].Caption,
                                     @SrcEditMenuMoveToExistingWindowClicked)
         do
           Tag := i;
       end;
+    SrcEditMenuMoveToNewWindow.Visible := not NBAvail;
+    SrcEditMenuMoveToNewWindow.Enabled := PageCount > 1;
+    SrcEditMenuMoveToOtherWindow.Visible := NBAvail;
+    SrcEditMenuMoveToOtherWindowNew.Enabled := (PageCount > 1);
     {$ENDIF}
     {$IFDEF SynDualView}
     NBAvail := False;
