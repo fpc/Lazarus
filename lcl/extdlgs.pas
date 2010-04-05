@@ -1094,15 +1094,19 @@ end;
 constructor TCalculatorForm.Create(AOwner: TComponent);
 
 begin
+  BeginFormUpdate;
   inherited CreateNew(AOwner, 0);
   InitForm(clNormal);
+  EndFormUpdate;
 end;
 
 constructor TCalculatorForm.CreateLayout(AOwner: TComponent;ALayout : TCalculatorLayout);
 
 begin
+  BeginFormUpdate;
   inherited CreateNew(AOwner, 0);
   InitForm(ALayout);
+  EndFormUpdate;
 end;
 
 

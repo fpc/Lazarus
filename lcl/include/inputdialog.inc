@@ -36,7 +36,9 @@ var
   AMonitor: TMonitor;
 begin
   Result := False;
-  Form := TForm.CreateNew(nil, 0);
+  Form := TForm(TForm.NewInstance);
+  Form.DisableAutoSizing;
+  Form.CreateNew(nil, 0);
   with Form do
   begin
     BorderStyle := bsDialog;
@@ -89,6 +91,7 @@ begin
 
     // upon show, the edit control will be focused for editing, because it's
     // the first in the tab order
+    Form.EnableAutoSizing;
     if ShowModal = mrOk then
     begin
       Value := Edit.Text;

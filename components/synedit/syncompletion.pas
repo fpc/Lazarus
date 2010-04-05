@@ -385,6 +385,9 @@ uses
 constructor TSynBaseCompletionForm.Create(AOwner: TComponent);
 begin
   FResizeLock := 1; // prevent DoResize (on Handle Creation) do reset LinesInWindow
+  {$IFNDEF OldAutoSize}
+  BeginFormUpdate;
+  {$ENDIF}
   {$IFDEF SYN_LAZARUS}
   inherited Create(AOwner);
   {$ELSE}
@@ -430,6 +433,9 @@ begin
   ShowHint := True;
   {$ELSE}
   ShowHint := False;
+  {$ENDIF}
+  {$IFNDEF OldAutoSize}
+  EndFormUpdate;
   {$ENDIF}
   FResizeLock := 0;
 end;
