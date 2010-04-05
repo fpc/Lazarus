@@ -52,7 +52,6 @@ type
     procedure Dispatch(
       AChart: TChart; AEventId: TChartToolEventId; APoint: TPoint);
     function GetIndex: Integer; override;
-    function Index: Integer; override;
     function IsActive: Boolean;
     procedure MouseDown(APoint: TPoint); virtual;
     procedure MouseMove(APoint: TPoint); virtual;
@@ -356,7 +355,10 @@ end;
 
 function TChartTool.GetIndex: Integer;
 begin
-  Result := Toolset.Tools.IndexOf(Self);
+  if Toolset = nil then
+    Result := -1
+  else
+    Result := Toolset.Tools.IndexOf(Self);
 end;
 
 function TChartTool.GetParentComponent: TComponent;
@@ -367,14 +369,6 @@ end;
 function TChartTool.HasParent: Boolean;
 begin
   Result := true;
-end;
-
-function TChartTool.Index: Integer;
-begin
-  if FToolset = nil then
-    Result := -1
-  else
-    Result := FToolset.Tools.IndexOf(Self);
 end;
 
 function TChartTool.IsActive: Boolean;

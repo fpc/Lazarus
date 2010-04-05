@@ -102,7 +102,6 @@ type
 
     procedure Activate; virtual;
     procedure Deactivate; virtual;
-    function Index: Integer; virtual; abstract;
   end;
 
   TChartToolEventId = (evidMouseDown, evidMouseMove, evidMouseUp);
