@@ -517,7 +517,9 @@ begin
   inc(PreferredHeight, (Adjusted.Top - ARect.Top) + (ARect.Bottom - Adjusted.Bottom));
   {$ENDIF}
 
+  {$IFNDEF OldAutoSize}
   FixedWidth:=false;
+  {$ENDIF}
   if [akLeft,akRight]*Anchors=[akLeft,akRight] then begin
     // the width depends on the parent or siblings
     // use a simpe heuristic to find out if the width is fixed
@@ -526,7 +528,9 @@ begin
     and (Parent.AutoSize=false)
     then begin
       // the width is fixed
+      {$IFNDEF OldAutoSize}
       FixedWidth:=true;
+      {$ENDIF}
       WrapButtons(Width, NewWidth, NewHeight, True);
       PreferredWidth := NewWidth;
       PreferredHeight := NewHeight;

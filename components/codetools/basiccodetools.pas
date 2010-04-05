@@ -2034,16 +2034,22 @@ end;
 function FindStartOfAtom(const Source: string; Position: integer): integer;
 
   procedure ReadStringConstantBackward(var p: integer);
-  var PrePos: integer;
+  var
+    PrePos: integer;
   begin
     while (p>1) do begin
       case Source[p-1] of
       '''':
         begin
-          dec(p);
+          PrePos:=p;
+          dec(PrePos);
           repeat
-            dec(p);
-          until (p<1) or (Source[p]='''');
+            dec(PrePos);
+            if (PrePos<1) or (Source[PrePos] in [#10,#13]) then begin
+              exit;
+            end;
+          until (Source[PrePos]='''');
+          p:=PrePos;
         end;
       '0'..'9','A'..'Z','a'..'z':
         begin
@@ -2086,6 +2092,7 @@ begin
     Result:=length(Source);
     exit;
   end;
+
   c:=Source[Result];
   case c of
   '_','A'..'Z','a'..'z':
