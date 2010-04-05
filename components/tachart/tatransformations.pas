@@ -89,6 +89,8 @@ type
   private
     FOffset: Double;
     FScale: Double;
+    function OffsetIsStored: Boolean;
+    function ScaleIsStored: Boolean;
     procedure SetOffset(AValue: Double);
     procedure SetScale(AValue: Double);
   public
@@ -99,8 +101,26 @@ type
     function AxisToGraph(AX: Double): Double; override;
     function GraphToAxis(AX: Double): Double; override;
   published
-    property Offset: Double read FOffset write SetOffset;
-    property Scale: Double read FScale write SetScale;
+    property Offset: Double read FOffset write SetOffset stored OffsetIsStored;
+    property Scale: Double read FScale write SetScale stored ScaleIsStored;
+  end;
+
+  { TLogarithmAxisTransform }
+
+  TLogarithmAxisTransform = class(TAxisTransform)
+  private
+    FBase: Double;
+    function BaseIsStored: Boolean;
+    procedure SetBase(AValue: Double);
+  public
+    constructor Create(AOwner: TComponent); override;
+  public
+    procedure Assign(Source: TPersistent); override;
+
+    function AxisToGraph(AX: Double): Double; override;
+    function GraphToAxis(AX: Double): Double; override;
+  published
+    property Base: Double read FBase write SetBase stored BaseIsStored;
   end;
 
   procedure Register;
@@ -394,6 +414,16 @@ begin
   Result := (AX - Offset) / Scale;
 end;
 
+function TLinearAxisTransform. OffsetIsStored: Boolean;
+begin
+  Result := Offset <> 0;
+end;
+
+function TLinearAxisTransform.ScaleIsStored: Boolean;
+begin
+  Result := Scale <> 1.0;
+end;
+
 procedure TLinearAxisTransform.SetOffset(AValue: Double);
 begin
   if FOffset = AValue then exit;
@@ -409,10 +439,53 @@ begin
   Changed;
 end;
 
+{ TLogarithmAxisTransform }
+
+procedure TLogarithmAxisTransform.Assign(Source: TPersistent);
+begin
+  if Source is TLogarithmAxisTransform then
+    with Source as TLogarithmAxisTransform do
+      Self.FBase := Base
+  else
+    inherited Assign(Source);
+end;
+
+function TLogarithmAxisTransform.AxisToGraph(AX: Double): Double;
+begin
+  if AX > 0 then
+    Result := LogN(Base, AX)
+  else
+    Result := NegInfinity;
+end;
+
+function TLogarithmAxisTransform.BaseIsStored: Boolean;
+begin
+  Result := FBase <> Exp(1);
+end;
+
+constructor TLogarithmAxisTransform.Create(AOwner: TComponent);
+begin
+  inherited Create(AOwner);
+  FBase := Exp(1);
+end;
+
+function TLogarithmAxisTransform.GraphToAxis(AX: Double): Double;
+begin
+  Result := Power(Base, AX);
+end;
+
+procedure TLogarithmAxisTransform.SetBase(AValue: Double);
+begin
+  if FBase = AValue then exit;
+  FBase := AValue;
+  Changed;
+end;
+
 initialization
 
   AxisTransformsClassRegistry := TStringList.Create;
   RegisterAxisTransformClass(TLinearAxisTransform, 'Linear');
+  RegisterAxisTransformClass(TLogarithmAxisTransform, 'Logarithmic');
 
 finalization
 
