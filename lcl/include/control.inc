@@ -128,16 +128,24 @@ begin
     DebugLn('TControl.DoDock BEFORE Adjusting ',Name,' ',dbgs(ARect));
     // adjust new bounds, so that they at least fit into the client area of
     // its parent
-    if NewDockSite.AutoSize then
-      ARect:=Rect(0,0,Width,Height)
-    else
+    if NewDockSite.AutoSize then begin
+      case align of
+        alLeft,
+        alRight : ARect:=Rect(0,0,Width,NewDockSite.ClientHeight);
+        alTop,
+        alBottom : ARect:=Rect(0,0,NewDockSite.ClientWidth,Height);
+      else
+        ARect:=Rect(0,0,Width,Height);
+      end;
+    end else begin
       LCLProc.MoveRectToFit(ARect, NewDockSite.GetLogicalClientRect);
-    // consider Align to increase chance the width/height is kept
-    case Align of
-      alLeft: OffsetRect(ARect,-ARect.Left,0);
-      alTop: OffsetRect(ARect,0,-ARect.Top);
-      alRight: OffsetRect(ARect,NewDockSite.ClientWidth-ARect.Right,0);
-      alBottom: OffsetRect(ARect,0,NewDockSite.ClientHeight-ARect.Bottom);
+      // consider Align to increase chance the width/height is kept
+      case Align of
+        alLeft: OffsetRect(ARect,-ARect.Left,0);
+        alTop: OffsetRect(ARect,0,-ARect.Top);
+        alRight: OffsetRect(ARect,NewDockSite.ClientWidth-ARect.Right,0);
+        alBottom: OffsetRect(ARect,0,NewDockSite.ClientHeight-ARect.Bottom);
+      end;
     end;
     DebugLn('TControl.DoDock AFTER Adjusting ',Name,' ',dbgs(ARect),' Align=',AlignNames[Align],' NewDockSite.ClientRect=',dbgs(NewDockSite.ClientRect));
   end;
