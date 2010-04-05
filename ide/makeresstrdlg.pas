@@ -94,7 +94,6 @@ type
     procedure IdentLengthComboBoxChange(Sender: TObject);
     procedure IdentPrefixComboBoxChange(Sender: TObject);
     procedure IdentifierEditChange(Sender: TObject);
-    procedure IdentPrefixLabelResize(Sender: TObject);
     procedure OkButtonClick(Sender: TObject);
     procedure ResStrSectionComboBoxChange(Sender: TObject);
     procedure ResStrWithSameValuesComboboxChange(Sender: TObject);
@@ -230,19 +229,6 @@ procedure TMakeResStrDialog.IdentifierEditChange(Sender: TObject);
 begin
   UpdateIdentifier;
   UpdateSourcePreview;
-end;
-
-procedure TMakeResStrDialog.IdentPrefixLabelResize(Sender: TObject);
-var
-  w: integer;
-begin
-  w := IdentPrefixLabel.Width;
-  w := Max(w, ResStrSectionLabel.Width);
-  w := Max(w, ResStrWithSameValueLabel.Width);
-
-  IdentPrefixLabel.Width := w;
-  ResStrSectionLabel.Width := w;
-  ResStrWithSameValueLabel.Width := w;
 end;
 
 procedure TMakeResStrDialog.OkButtonClick(Sender: TObject);
