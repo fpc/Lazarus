@@ -3302,6 +3302,9 @@ begin
   if AComponent <> DesignerForm then
     SetDesigning(DesignerForm, True);
   SetDesignInstance(AComponent, True);
+  if AComponent is TControl then
+    TControl(AComponent).ControlStyle:=
+      TControl(AComponent).ControlStyle-[csNoDesignVisible];
   // create designer
   DesignerForm.Designer := TDesigner.Create(DesignerForm, TheControlSelection);
   {$IFDEF IDE_DEBUG}
@@ -5940,6 +5943,7 @@ var
   NestedClass: TComponentClass;
   NestedUnitInfo: TUnitInfo;
   DisableAutoSize: Boolean;
+  NewControl: TControl;
 begin
   {$IFDEF IDE_DEBUG}
   debugln('TMainIDE.DoLoadLFM A ',AnUnitInfo.Filename,' IsPartOfProject=',dbgs(AnUnitInfo.IsPartOfProject),' ');
@@ -6089,8 +6093,13 @@ begin
         DisableAutoSize:={$IFDEF OldAutoSize}false{$ELSE}true{$ENDIF};
         NewComponent:=FormEditor1.CreateRawComponentFromStream(BinStream,
                    AncestorType,copy(NewUnitName,1,255),true,true,DisableAutoSize,AnUnitInfo);
-        if DisableAutoSize and (NewComponent is TControl) then
-          TControl(NewComponent).EnableAutoSizing;
+        if (NewComponent is TControl) then begin
+          NewControl:=TControl(NewComponent);
+          if ofLoadHiddenResource in OpenFlags then
+            NewControl.ControlStyle:=NewControl.ControlStyle+[csNoDesignVisible];
+          if DisableAutoSize then
+            NewControl.EnableAutoSizing;
+        end;
         Project1.InvalidateUnitComponentDesignerDependencies;
         AnUnitInfo.Component:=NewComponent;
         if (AncestorUnitInfo<>nil) then
