@@ -9,7 +9,7 @@ interface
 uses
     TASeries, TAGraph, TAChartUtils, TASeriesEditor, TATypes, TASources, 
   TADbSource, TACustomSeries, TALegend, TAChartAxis, TATools, 
-  TASubcomponentsEditor, LazarusPackageIntf;
+  TASubcomponentsEditor, TATransformations, LazarusPackageIntf;
 
 implementation
 
@@ -20,6 +20,7 @@ begin
   RegisterUnit('TASources', @TASources.Register); 
   RegisterUnit('TADbSource', @TADbSource.Register); 
   RegisterUnit('TATools', @TATools.Register); 
+  RegisterUnit('TATransformations', @TATransformations.Register); 
 end; 
 
 initialization
