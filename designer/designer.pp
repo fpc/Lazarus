@@ -1871,6 +1871,7 @@ var
     NewComponent: TComponent;
     NewComponentClass: TComponentClass;
     NewName: String;
+    DisableAutoSize: Boolean;
   begin
     if MouseDownComponent=nil then exit;
 
@@ -1958,11 +1959,14 @@ var
     
     // create component and component interface
     DebugLn(['AddComponent ',DbgSName(NewComponentClass),' Parent=',DbgSName(NewParent),' ',NewLeft,',',NewTop,',',NewWidth,',',NewHeight]);
+    DisableAutoSize:={$IFDEF OldAutoSize}false{$ELSE}true{$ENDIF};
     NewCI := TComponentInterface(TheFormEditor.CreateComponent(
        ParentCI,NewComponentClass,'',
-       NewLeft,NewTop,NewWidth,NewHeight));
+       NewLeft,NewTop,NewWidth,NewHeight,DisableAutoSize));
     if NewCI=nil then exit;
     NewComponent:=NewCI.Component;
+    if DisableAutoSize and (NewComponent is TControl) then
+      TControl(NewComponent).EnableAutoSizing;
     TheFormEditor.FixupReferences(NewComponent); // e.g. frame references a datamodule
 
     // modified

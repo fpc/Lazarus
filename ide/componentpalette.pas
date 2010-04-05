@@ -250,6 +250,7 @@ var
   ParentCI: TIComponentInterface;
   X, Y: integer;
   CompIntf: TIComponentInterface;
+  DisableAutoSize: Boolean;
 begin
   //debugln('TComponentPalette.ComponentBtnDblClick ',TComponent(Sender).Name);
   if SelectButton(TComponent(Sender)) and (FSelected<>nil) then begin
@@ -265,8 +266,12 @@ begin
       if not FormEditingHook.GetDefaultComponentPosition(TypeClass,ParentCI,X,Y)
       then exit;
       //debugln('TComponentPalette.ComponentBtnDblClick ',dbgsName(Sender),' ',dbgs(X),',',dbgs(Y));
-      CompIntf:=FormEditingHook.CreateComponent(ParentCI,TypeClass,'',X,Y,0,0);
+      DisableAutoSize:={$IFDEF OldAutoSize}false{$ELSE}true{$ENDIF};
+      CompIntf:=FormEditingHook.CreateComponent(ParentCI,TypeClass,'',X,Y,0,0,
+        DisableAutoSize);
       if CompIntf<>nil then begin
+        if DisableAutoSize and (CompIntf.Component is TControl) then
+          TControl(CompIntf.Component).EnableAutoSizing;
         GlobalDesignHook.PersistentAdded(CompIntf.Component,true);
       end;
     end;

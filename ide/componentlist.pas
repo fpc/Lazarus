@@ -284,6 +284,7 @@ var
   CompIntf, ParentCI: TIComponentInterface;
   TypeClass: TComponentClass;
   X, Y: integer;
+  DisableAutoSize: Boolean;
 begin
   if not Assigned(AComponent)
   then Exit;
@@ -301,9 +302,14 @@ begin
   if not FormEditingHook.GetDefaultComponentPosition(TypeClass,ParentCI,X,Y)
   then exit;
 
-  CompIntf:=FormEditingHook.CreateComponent(ParentCI,TypeClass,'',X,Y,0,0);
-  if Assigned(CompIntf)
-  then GlobalDesignHook.PersistentAdded(CompIntf.Component,true);
+  DisableAutoSize:={$IFDEF OldAutoSize}false{$ELSE}true{$ENDIF};
+  CompIntf:=FormEditingHook.CreateComponent(ParentCI,TypeClass,'',X,Y,0,0,
+                                            DisableAutoSize);
+  if Assigned(CompIntf) then begin
+    if DisableAutoSize and (CompIntf.Component is TControl) then
+      TControl(CompIntf.Component).EnableAutoSizing;
+    GlobalDesignHook.PersistentAdded(CompIntf.Component,true);
+  end;
 end;
 
 procedure TComponentListForm.ListboxComponentsDblClick(Sender: TObject);

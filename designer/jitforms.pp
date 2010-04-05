@@ -148,7 +148,7 @@ type
                            DestroyDriver: Boolean); virtual;
     function DoCreateJITComponent(const NewComponentName, NewClassName,
                          NewUnitName: shortstring; AncestorClass: TClass;
-                         Visible: boolean):integer;
+                         Visible, DisableAutoSize: boolean):integer;
     procedure ReadInlineComponent(var Component: TComponent;
                          ComponentClass: TComponentClass; NewOwner: TComponent);
     procedure DoFinishReading; virtual;
@@ -160,11 +160,12 @@ type
     property Items[Index: integer]: TComponent read GetItem; default;
     function Count: integer;
     function AddNewJITComponent(const NewUnitName: shortstring;
-                                AncestorClass: TClass): integer;
+                                AncestorClass: TClass;
+                                DisableAutoSize: boolean): integer;
     function AddJITComponentFromStream(BinStream: TStream;
                                 AncestorClass: TClass;
                                 const NewUnitName: ShortString;
-                                Interactive, Visible: Boolean;
+                                Interactive, Visible, DisableAutoSize: Boolean;
                                 ContextObj: TObject): integer;
     procedure DestroyJITComponent(JITComponent: TComponent);
     procedure DestroyJITComponent(Index: integer);
@@ -796,7 +797,7 @@ begin
 end;
 
 function TJITComponentList.AddNewJITComponent(const NewUnitName: shortstring;
-  AncestorClass: TClass): integer;
+  AncestorClass: TClass; DisableAutoSize: boolean): integer;
 var
   NewComponentName, NewClassName: shortstring;
 begin
@@ -810,13 +811,13 @@ begin
     ' NewUnitName=',NewUnitName,' AncestorClass=',AncestorClass.ClassName);
   {$ENDIF}
   Result:=DoCreateJITComponent(NewComponentName,NewClassName,NewUnitName,
-                               AncestorClass,true);
+                               AncestorClass,true,DisableAutoSize);
 end;
 
 function TJITComponentList.AddJITComponentFromStream(BinStream: TStream;
   AncestorClass: TClass;
   const NewUnitName: ShortString;
-  Interactive, Visible: Boolean;
+  Interactive, Visible, DisableAutoSize: Boolean;
   ContextObj: TObject): integer;
 //  returns new index
 // -1 = invalid stream
@@ -904,7 +905,7 @@ begin
   debugln('[TJITComponentList.AddJITComponentFromStream] Create ...');
   {$ENDIF}
   try
-    Result:=DoCreateJITComponent('',NewClassName,NewUnitName,AncestorClass,Visible);
+    Result:=DoCreateJITComponent('',NewClassName,NewUnitName,AncestorClass,Visible,DisableAutoSize);
     if Result<0 then exit;
     ReadAncestorStreams;
     ReadStream(BinStream, FCurReadJITComponent.ClassType);
@@ -994,7 +995,7 @@ end;
 
 function TJITComponentList.DoCreateJITComponent(
   const NewComponentName, NewClassName, NewUnitName: shortstring;
-  AncestorClass: TClass; Visible: boolean):integer;
+  AncestorClass: TClass; Visible, DisableAutoSize: boolean):integer;
 var
   Instance:TComponent;
   ok: boolean;
@@ -1015,6 +1016,8 @@ begin
                                               NewUnitName);
     //debugln('[TJITForms.DoCreateJITComponent] Creating an instance of JIT class "'+NewClassName+'" = class('+AncestorClass.ClassName+') ...');
     Instance:=TComponent(FCurReadClass.NewInstance);
+    if DisableAutoSize and (Instance is TControl) then
+      TControl(Instance).DisableAutoSizing;
     //debugln('[TJITForms.DoCreateJITComponent] Initializing new instance ... ',DbgS(Instance));
     TComponent(FCurReadJITComponent):=Instance;
     try

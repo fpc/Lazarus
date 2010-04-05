@@ -648,7 +648,8 @@ type
         NewOwner: TObject; NewFilename: string; var NewCodeBuffer: TCodeBuffer;
         var NewUnitName: string; AskForFilename: boolean): TModalResult;
     function CreateNewForm(NewUnitInfo: TUnitInfo;
-        AncestorType: TPersistentClass; ResourceCode: TCodeBuffer; UseCreateFormStatements: Boolean): TModalResult;
+        AncestorType: TPersistentClass; ResourceCode: TCodeBuffer;
+        UseCreateFormStatements, DisableAutoSize: Boolean): TModalResult;
 
     // methods for 'save unit'
     function DoShowSaveFileAsDialog(var AFilename: string; AnUnitInfo: TUnitInfo;
@@ -4662,7 +4663,7 @@ end;
 
 function TMainIDE.CreateNewForm(NewUnitInfo: TUnitInfo;
   AncestorType: TPersistentClass; ResourceCode: TCodeBuffer;
-  UseCreateFormStatements: Boolean): TModalResult;
+  UseCreateFormStatements, DisableAutoSize: Boolean): TModalResult;
 var
   CInterface: TComponentInterface;
   NewComponent: TComponent;
@@ -4695,7 +4696,7 @@ begin
   // create jit component
   CInterface := TComponentInterface(
     FormEditor1.CreateComponent(nil,TComponentClass(AncestorType),
-      NewUnitInfo.CreateUnitName, new_x, new_y, 0,0));
+      NewUnitInfo.CreateUnitName, new_x, new_y, 0,0,DisableAutoSize));
   if CInterface=nil then begin
     DebugLn(['TMainIDE.CreateNewForm FormEditor1.CreateComponent failed ',dbgsName(TComponentClass(AncestorType))]);
     exit(mrCancel);
@@ -5938,6 +5939,7 @@ var
   NestedClassName: string;
   NestedClass: TComponentClass;
   NestedUnitInfo: TUnitInfo;
+  DisableAutoSize: Boolean;
 begin
   {$IFDEF IDE_DEBUG}
   debugln('TMainIDE.DoLoadLFM A ',AnUnitInfo.Filename,' IsPartOfProject=',dbgs(AnUnitInfo.IsPartOfProject),' ');
@@ -5945,6 +5947,7 @@ begin
 
   ReferencesLocked:=false;
   MissingClasses:=nil;
+  NewComponent:=nil;
   try
     if (ofRevert in OpenFlags) and (AnUnitInfo.Component<>nil) then begin
       // the component must be destroyed and recreated
@@ -6083,8 +6086,11 @@ begin
         if NewUnitName='' then
           NewUnitName:=ExtractFileNameOnly(AnUnitInfo.Filename);
         // ToDo: create AncestorBinStream(s) via hook, not via parameters
+        DisableAutoSize:={$IFDEF OldAutoSize}false{$ELSE}true{$ENDIF};
         NewComponent:=FormEditor1.CreateRawComponentFromStream(BinStream,
-                   AncestorType,copy(NewUnitName,1,255),true,true,AnUnitInfo);
+                   AncestorType,copy(NewUnitName,1,255),true,true,DisableAutoSize,AnUnitInfo);
+        if DisableAutoSize and (NewComponent is TControl) then
+          TControl(NewComponent).EnableAutoSizing;
         Project1.InvalidateUnitComponentDesignerDependencies;
         AnUnitInfo.Component:=NewComponent;
         if (AncestorUnitInfo<>nil) then
@@ -7739,6 +7745,7 @@ var
   ResType: TResourceType;
   SrcNoteBook: TSourceNotebook;
   AShareEditor: TSourceEditor;
+  DisableAutoSize: Boolean;
 begin
   //debugln('TMainIDE.DoNewEditorFile A NewFilename=',NewFilename);
   // empty NewFilename is ok, it will be auto generated
@@ -7859,8 +7866,13 @@ begin
       end else begin
         // create a designer form for a form/datamodule/frame
         //DebugLn(['TMainIDE.DoNewFile Name=',NewFileDescriptor.Name,' Class=',NewFileDescriptor.ClassName]);
+        DisableAutoSize:={$IFDEF OldAutoSize}false{$ELSE}true{$ENDIF};
         Result := CreateNewForm(NewUnitInfo, AncestorType, nil,
-                                NewFileDescriptor.UseCreateFormStatements);
+                                NewFileDescriptor.UseCreateFormStatements,
+                                DisableAutoSize);
+        if DisableAutoSize and (NewUnitInfo.Component<>nil)
+        and (NewUnitInfo.Component is TControl) then
+          TControl(NewUnitInfo.Component).EnableAutoSizing;
       end;
       if Result<>mrOk then exit;
     end;

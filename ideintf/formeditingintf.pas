@@ -169,12 +169,14 @@ type
     function CreateComponent(ParentCI: TIComponentInterface;
                              TypeClass: TComponentClass;
                              const AUnitName: shortstring;
-                             X,Y,W,H: Integer): TIComponentInterface; virtual; abstract;
+                             X,Y,W,H: Integer;
+                             DisableAutoSize: boolean): TIComponentInterface; virtual; abstract;
     function CreateComponentFromStream(BinStream: TStream;
                       AncestorType: TComponentClass;
                       const NewUnitName: ShortString;
                       Interactive: boolean;
                       Visible: boolean = true;
+                      DisableAutoSize: boolean = false;
                       ContextObj: TObject = nil): TIComponentInterface; virtual; abstract;
     function CreateChildComponentFromStream(BinStream: TStream;
                                      ComponentClass: TComponentClass;

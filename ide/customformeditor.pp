@@ -254,18 +254,21 @@ each control that's dropped onto the form
     function CreateComponent(ParentCI: TIComponentInterface;
                              TypeClass: TComponentClass;
                              const AUnitName: shortstring;
-                             NewLeft,NewTop,NewWidth,NewHeight: Integer): TIComponentInterface; override;
+                             NewLeft,NewTop,NewWidth,NewHeight: Integer;
+                             DisableAutoSize: boolean): TIComponentInterface; override;
     function CreateComponentFromStream(BinStream: TStream;
                       AncestorType: TComponentClass;
                       const NewUnitName: ShortString;
                       Interactive: boolean;
                       Visible: boolean = true;
+                      DisableAutoSize: boolean = false;
                       ContextObj: TObject = nil): TIComponentInterface; override;
     function CreateRawComponentFromStream(BinStream: TStream;
                       AncestorType: TComponentClass;
                       const NewUnitName: ShortString;
                       Interactive: boolean;
                       Visible: boolean = true;
+                      DisableAutoSize: boolean = false;
                       ContextObj: TObject = nil): TComponent;
     function CreateChildComponentFromStream(BinStream: TStream;
                        ComponentClass: TComponentClass; Root: TComponent;
@@ -1578,8 +1581,9 @@ begin
 end;
 
 function TCustomFormEditor.CreateComponent(ParentCI: TIComponentInterface;
-  TypeClass: TComponentClass; const AUnitName: shortstring; NewLeft, NewTop, NewWidth, NewHeight: Integer
-  ): TIComponentInterface;
+  TypeClass: TComponentClass; const AUnitName: shortstring;
+  NewLeft, NewTop, NewWidth, NewHeight: Integer;
+  DisableAutoSize: boolean): TIComponentInterface;
 const
   PreferredDistanceMin = 30;
   PreferredDistanceMax = 250;
@@ -1636,6 +1640,8 @@ begin
         OwnerComponent := OwnerComponent.Owner;
       try
         NewComponent := TComponent(TypeClass.newinstance);
+        if DisableAutoSize and (NewComponent is TControl) then
+          TControl(NewComponent).DisableAutoSizing;
         SetComponentDesignMode(NewComponent,true);
         if DescendFromDesignerBaseClass(TypeClass)>=0 then begin
           // this class can have its own lfm streams (e.g. a TFrame)
@@ -1699,7 +1705,7 @@ begin
       JITList:=GetJITListOfType(TypeClass);
       if JITList=nil then
         RaiseException('TCustomFormEditor.CreateComponent '+TypeClass.ClassName);
-      NewJITIndex := JITList.AddNewJITComponent(NewUnitName,TypeClass);
+      NewJITIndex := JITList.AddNewJITComponent(NewUnitName,TypeClass,DisableAutoSize);
       if NewJITIndex < 0 then
         exit;
       // create component interface
@@ -1881,20 +1887,20 @@ function TCustomFormEditor.CreateComponentFromStream(
   BinStream: TStream;
   AncestorType: TComponentClass;
   const NewUnitName: ShortString;
-  Interactive: boolean; Visible: boolean;
+  Interactive: boolean; Visible: boolean; DisableAutoSize: boolean;
   ContextObj: TObject): TIComponentInterface;
 var
   NewComponent: TComponent;
 begin
   NewComponent:=CreateRawComponentFromStream(BinStream,
-              AncestorType,NewUnitName,Interactive,Visible,ContextObj);
+       AncestorType,NewUnitName,Interactive,Visible,DisableAutoSize,ContextObj);
   Result:=CreateComponentInterface(NewComponent,true);
 end;
 
 function TCustomFormEditor.CreateRawComponentFromStream(BinStream: TStream;
   AncestorType: TComponentClass;
   const NewUnitName: ShortString;
-  Interactive: boolean; Visible: boolean;
+  Interactive: boolean; Visible: boolean; DisableAutoSize: boolean;
   ContextObj: TObject): TComponent;
 var
   NewJITIndex: integer;
@@ -1906,7 +1912,8 @@ begin
     RaiseException('TCustomFormEditor.CreateComponentFromStream ClassName='+
                    AncestorType.ClassName);
   NewJITIndex := JITList.AddJITComponentFromStream(BinStream,
-              AncestorType,NewUnitName,Interactive,Visible,ContextObj);
+              AncestorType,NewUnitName,Interactive,Visible,DisableAutoSize,
+              ContextObj);
   if NewJITIndex < 0 then begin
     Result:=nil;
     exit;
