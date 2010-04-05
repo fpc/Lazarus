@@ -4750,9 +4750,7 @@ var
   Marks: PSourceMark;
   MarkCount: integer;
   i: Integer;
-  {$IFDEF SynDualView}
   NBAvail: Boolean;
-  {$ENDIF}
   CurMark: TSourceMark;
   EditorPopupPoint, EditorCaret: TPoint;
   SelAvail: Boolean;
