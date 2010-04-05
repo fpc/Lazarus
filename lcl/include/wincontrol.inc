@@ -7797,15 +7797,6 @@ begin
       inc(PreferredHeight,BorderSpacing.InnerBorder*2);
   end;
 
-  // check AdjustClientRect
-  CurClientRect:=Rect(0,0,1000,1000);
-  AdjustedClientRect:=CurClientRect;
-  AdjustClientRect(AdjustedClientRect);
-  PreferredWidth:=Max(PreferredWidth,
-           AdjustedClientRect.Left+CurClientRect.Right-AdjustedClientRect.Right);
-  PreferredHeight:=Max(PreferredHeight,
-          AdjustedClientRect.Top+CurClientRect.Bottom-AdjustedClientRect.Bottom);
-
   if ControlCount>0 then begin
 
     // get the size requirements for the child controls
@@ -7833,6 +7824,15 @@ begin
     {$ENDIF}
     PreferredWidth:=Max(PreferredWidth,NewWidth);
     PreferredHeight:=Max(PreferredHeight,NewHeight);
+  end else begin
+    // check AdjustClientRect
+    CurClientRect:=Rect(0,0,1000,1000);
+    AdjustedClientRect:=CurClientRect;
+    AdjustClientRect(AdjustedClientRect);
+    PreferredWidth:=Max(PreferredWidth,
+             AdjustedClientRect.Left+CurClientRect.Right-AdjustedClientRect.Right);
+    PreferredHeight:=Max(PreferredHeight,
+            AdjustedClientRect.Top+CurClientRect.Bottom-AdjustedClientRect.Bottom);
   end;
   {$IFDEF VerboseAutoSize}
   debugln('TWinControl.CalculatePreferredSize ',DbgSName(Self),
