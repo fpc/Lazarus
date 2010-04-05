@@ -57,6 +57,8 @@ type
   TComponentListEditorForm = class(TForm)
     ChildrenListBox: TListBox;
     MainMenu1: TMainMenu;
+    miMoveUp: TMenuItem;
+    miMoveDown: TMenuItem;
     miAdd: TMenuItem;
     miDelete: TMenuItem;
     procedure ChildrenListBoxClick(Sender: TObject);
@@ -64,19 +66,22 @@ type
     procedure FormDestroy(Sender: TObject);
     procedure miAddClick(Sender: TObject);
     procedure miDeleteClick(Sender: TObject);
+    procedure miMoveDownClick(Sender: TObject);
+    procedure miMoveUpClick(Sender: TObject);
   private
     FComponentEditor: TSubComponentListEditor;
     FDesigner: TComponentEditorDesigner;
     FParent: TComponent;
     FPropertyEditor: TComponentListPropertyEditor;
     function FindChild(ACandidate: TPersistent; out AIndex: Integer): Boolean;
+    procedure MoveSelection(AStart, ADir: Integer);
     procedure OnComponentRenamed(AComponent: TComponent);
     procedure OnGetSelection(const ASelection: TPersistentSelectionList);
     procedure OnPersistentAdded(APersistent: TPersistent; ASelect: Boolean);
     procedure OnPersistentDeleting(APersistent: TPersistent);
     procedure OnSetSelection(const ASelection: TPersistentSelectionList);
     procedure RefreshList;
-    procedure SelectionChanged;
+    procedure SelectionChanged(AOrderChanged: Boolean = false);
   protected
     procedure AddSubcomponent(AParent, AChild: TComponent); virtual; abstract;
     procedure AddSubcomponentClass(const ACaption: String; ATag: Integer);
@@ -96,10 +101,7 @@ type
 implementation
 
 uses
-  SysUtils;
-
-type
-  TComponentAccess = class(TComponent);
+  Math, SysUtils, TAChartUtils;
 
 {$R *.lfm}
 
@@ -272,6 +274,37 @@ begin
   SelectionChanged;
 end;
 
+procedure TComponentListEditorForm.miMoveDownClick(Sender: TObject);
+begin
+  MoveSelection(ChildrenListBox.Count - 1, 1);
+end;
+
+procedure TComponentListEditorForm.miMoveUpClick(Sender: TObject);
+begin
+  MoveSelection(0, -1);
+end;
+
+procedure TComponentListEditorForm.MoveSelection(AStart, ADir: Integer);
+var
+  i: Integer;
+begin
+  if not ChildrenListBox.SelCount = 0 then exit;
+  i := AStart - ADir;
+  with ChildrenListBox do
+    while InRange(i + ADir, 0, Count - 1) do begin
+      if Selected[i] and not Selected[i + ADir] then begin
+        with TIndexedComponent(Items.Objects[i]) do
+          Index := Index + ADir;
+        Items.Move(i, i + ADir);
+        Selected[i + ADir] := true;
+        Selected[i] := false;
+      end;
+      i -= ADir;
+    end;
+  FDesigner.Modified;
+  SelectionChanged(true);
+end;
+
 procedure TComponentListEditorForm.OnComponentRenamed(AComponent: TComponent);
 var
   i: Integer;
@@ -346,13 +379,14 @@ begin
   end;
 end;
 
-procedure TComponentListEditorForm.SelectionChanged;
+procedure TComponentListEditorForm.SelectionChanged(AOrderChanged: Boolean);
 var
   sel: TPersistentSelectionList;
 begin
   GlobalDesignHook.RemoveHandlerSetSelection(@OnSetSelection);
   try
     sel := TPersistentSelectionList.Create;
+    sel.ForceUpdate := AOrderChanged;
     try
       OnGetSelection(sel);
       FDesigner.PropertyEditorHook.SetSelection(sel) ;

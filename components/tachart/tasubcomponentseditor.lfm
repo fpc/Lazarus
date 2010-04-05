@@ -1,7 +1,7 @@
 object ComponentListEditorForm: TComponentListEditorForm
-  Left = 342
+  Left = 346
   Height = 240
-  Top = 239
+  Top = 283
   Width = 320
   Caption = 'ComponentListEditorForm'
   ClientHeight = 221
@@ -31,6 +31,14 @@ object ComponentListEditorForm: TComponentListEditorForm
     object miDelete: TMenuItem
       Caption = 'Delete'
       OnClick = miDeleteClick
+    end
+    object miMoveUp: TMenuItem
+      Caption = 'Move up'
+      OnClick = miMoveUpClick
+    end
+    object miMoveDown: TMenuItem
+      Caption = 'Move down'
+      OnClick = miMoveDownClick
     end
   end
 end
