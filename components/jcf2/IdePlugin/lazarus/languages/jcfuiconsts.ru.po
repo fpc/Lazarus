@@ -309,6 +309,18 @@ msgstr "Ошибка при записи файла параметров %s:%s%s
 msgid "Error writing settings file: %s is read only"
 msgstr "Ошибка при записи файла параметров: %s доступен только для чтения"
 
+#: jcfuiconsts.lisfindreplaceenablefindandreplace
+msgid "Enable find and replace"
+msgstr "Включить поиск и замену"
+
+#: jcfuiconsts.lisfindreplacefindandreplace
+msgid "Find and Replace"
+msgstr "Поиск и замена"
+
+#: jcfuiconsts.lisfindreplacewordlist
+msgid "Word list:"
+msgstr "Список слов:"
+
 #: jcfuiconsts.lisfrfilesdatefilewritten
 msgid "Date file written: %s"
 msgstr "Дата записи файла: %s"

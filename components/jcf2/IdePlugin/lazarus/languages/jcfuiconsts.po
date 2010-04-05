@@ -300,6 +300,18 @@ msgstr ""
 msgid "Error writing settings file: %s is read only"
 msgstr ""
 
+#: jcfuiconsts.lisfindreplaceenablefindandreplace
+msgid "Enable find and replace"
+msgstr ""
+
+#: jcfuiconsts.lisfindreplacefindandreplace
+msgid "Find and Replace"
+msgstr ""
+
+#: jcfuiconsts.lisfindreplacewordlist
+msgid "Word list:"
+msgstr ""
+
 #: jcfuiconsts.lisfrfilesdatefilewritten
 msgid "Date file written: %s"
 msgstr ""
