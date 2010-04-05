@@ -410,14 +410,11 @@ procedure TPkgManager.MainIDEitmPkgEditInstallPkgsClick(Sender: TObject);
       s:=CurDependency.AsString;
       OldDependency:=FindDependencyByNameInList(OldDependencyList,pdlRequires,
                                                 CurDependency.PackageName);
-      if OldDependency<>nil then begin
-        // stay installed
-        if CurDependency.AsString<>OldDependency.AsString then
-          s:=s+'|'+lisKeep+'|'+OldDependency.AsString;
-      end else
+      if OldDependency=nil then begin
         // newly installed
         s:=s+'|'+lisNew;
-      Report.Add(s);
+        Report.Add(s);
+      end;
       CurDependency:=CurDependency.NextRequiresDependency;
     end;
 
@@ -429,6 +426,21 @@ procedure TPkgManager.MainIDEitmPkgEditInstallPkgsClick(Sender: TObject);
       if NewDependency=nil then
         // this package will be removed
         Report.Add('|'+lisRemove+'|'+CurDependency.AsString);
+      CurDependency:=CurDependency.NextRequiresDependency;
+    end;
+
+    // list all packages, that are kept
+    CurDependency:=NewDependencyList;
+    while CurDependency<>nil do begin
+      s:=CurDependency.AsString;
+      OldDependency:=FindDependencyByNameInList(OldDependencyList,pdlRequires,
+                                                CurDependency.PackageName);
+      if OldDependency<>nil then begin
+        // stay installed
+        if CurDependency.AsString<>OldDependency.AsString then
+          s:=s+'|'+lisKeep+'|'+OldDependency.AsString;
+        Report.Add(s);
+      end;
       CurDependency:=CurDependency.NextRequiresDependency;
     end;
   end;
