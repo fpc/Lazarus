@@ -2152,6 +2152,7 @@ components/tachart/tatools.pas svneol=native#text/pascal
 components/tachart/tatransformations.pas svneol=native#text/pascal
 components/tachart/tatypes.pas svneol=native#text/plain
 components/tachart/tchart.png -text svneol=unset#images/png
+components/tachart/tchartaxistransformations.png -text
 components/tachart/tcharttoolset.png -text
 components/tachart/tdbchartsource.png -text
 components/tachart/tlistchartsource.png -text svneol=unset#images/png
