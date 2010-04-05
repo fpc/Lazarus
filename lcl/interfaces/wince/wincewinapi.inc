@@ -2150,7 +2150,7 @@ end;
   Params: handle - window handle
   Returns: true if handle is window , false otherwise
  ------------------------------------------------------------------------------}
-function TWinCEWidgetSet.IsWindow(handle: HWND): boolean; override;
+function TWinCEWidgetSet.IsWindow(handle: HWND): boolean; 
 begin
   Result := Boolean(Windows.IsWindow(handle));
 end;
