@@ -673,6 +673,26 @@ msgstr ""
 msgid "The settings file \"%s\" does not exist.%sThe formatter will work better if it is configured to use a valid settings file"
 msgstr ""
 
+#: jcfuiconsts.lisusesinsertintoimplementation
+msgid "Insert into Implementation"
+msgstr ""
+
+#: jcfuiconsts.lisusesinsertintointerface
+msgid "Insert into Interface"
+msgstr ""
+
+#: jcfuiconsts.lisusesremove
+msgid "Remove"
+msgstr ""
+
+#: jcfuiconsts.lisusesreplace
+msgid "Replace"
+msgstr ""
+
+#: jcfuiconsts.lisusesuses
+msgid "Uses"
+msgstr ""
+
 #: jcfuiconsts.liswarningsignoreunusedparametersnamed
 msgid "&Ignore unused parameters named:"
 msgstr ""
