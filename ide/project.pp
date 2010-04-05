@@ -1164,8 +1164,9 @@ begin
   CursorPos := Point(XMLConfig.GetValue(Path+'CursorPos/X',-1),
                      XMLConfig.GetValue(Path+'CursorPos/Y',-1));
   FFoldState := XMLConfig.GetValue(Path+'FoldState/Value', '');
-  FSyntaxHighlighter := StrToLazSyntaxHighlighter(XMLConfig.GetValue(
-    Path+'SyntaxHighlighter/Value',''));
+  FSyntaxHighlighter := StrToLazSyntaxHighlighter(
+  XMLConfig.GetValue(Path+'SyntaxHighlighter/Value',
+                     LazSyntaxHighlighterNames[UnitInfo.DefaultSyntaxHighlighter]));
 end;
 
 procedure TUnitEditorInfo.SaveToXMLConfig(XMLConfig: TXMLConfig; const Path: string);
@@ -1179,7 +1180,7 @@ begin
     XMLConfig.SetDeleteValue(Path+'FoldState/Value', FoldState, '');
     XMLConfig.SetDeleteValue(Path+'SyntaxHighlighter/Value',
                              LazSyntaxHighlighterNames[fSyntaxHighlighter],
-                             LazSyntaxHighlighterNames[lshFreePascal]);
+                             LazSyntaxHighlighterNames[UnitInfo.DefaultSyntaxHighlighter]);
 end;
 
 { TUnitEditorInfoList }
@@ -1627,6 +1628,9 @@ begin
                              FRunFileIfActive,false);
     // save custom session data
     SaveStringToStringTree(XMLConfig,CustomSessionData,Path+'CustomSessionData/');
+    XMLConfig.SetDeleteValue(Path+'DefaultSyntaxHighlighter/Value',
+                             LazSyntaxHighlighterNames[FDefaultSyntaxHighlighter],
+                             LazSyntaxHighlighterNames[lshFreePascal]);
   end;
 end;
 
@@ -1667,6 +1671,8 @@ begin
   end;
 
   // session data
+  XMLConfig.GetValue(Path+'DefaultSyntaxHighlighter/Value',
+                     LazSyntaxHighlighterNames[lshFreePascal]);
   FEditorInfoList.Clear;
   FEditorInfoList.NewEditorInfo;
   FEditorInfoList[0].LoadFromXMLConfig(XMLConfig, Path);
