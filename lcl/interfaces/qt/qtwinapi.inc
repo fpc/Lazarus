@@ -3668,7 +3668,7 @@ function TQtWidgetSet.GradientFill(DC: HDC; Vertices: PTriVertex;
     I, Swap : Longint;
     SwapColors : Boolean;
     UseBrush : hBrush;
-    Steps, MaxSteps : Longint;
+    Steps, MaxSteps: Int64;
   begin
     with Mesh do
     begin
@@ -3691,8 +3691,8 @@ function TQtWidgetSet.GradientFill(DC: HDC; Vertices: PTriVertex;
         BR.Y := TL.Y;
         TL.Y := Swap;
       end;
-      StartColor := RGB(TL.Red, TL.Green, TL.Blue);
-      EndColor := RGB(BR.Red, BR.Green, BR.Blue);
+      StartColor := RGB(TL.Red shr 8, TL.Green  shr 8, TL.Blue shr 8);
+      EndColor := RGB(BR.Red shr 8, BR.Green shr 8, BR.Blue shr 8);
       if SwapColors then
       begin
         Swap := StartColor;
@@ -3701,8 +3701,11 @@ function TQtWidgetSet.GradientFill(DC: HDC; Vertices: PTriVertex;
       end;
       UseBrush := 0;
       MaxSteps := GetDeviceCaps(DC, BITSPIXEL);
+      if MaxSteps >= 32 then
+        MaxSteps := $FFFFFFFF
+      else
       if MaxSteps >= 4 then
-        MaxSteps := Floor(Power(2, MaxSteps))
+        MaxSteps := 1 shl MaxSteps
       else
         MaxSteps := 256;
       if DoFillVRect then

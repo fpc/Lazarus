@@ -6589,8 +6589,7 @@ function TGtkWidgetSet.GradientFill(DC: HDC; Vertices: PTriVertex;
 
 var
   DevCtx: TGtkDeviceContext absolute DC;
-  
-  
+
   function DoFillTriangle : Boolean;
   begin
     Result := (Mode and GRADIENT_FILL_TRIANGLE) = GRADIENT_FILL_TRIANGLE;
@@ -6615,7 +6614,8 @@ var
     G1 := G1 + (Position*(G2 - G1) div TotalSteps);
     B1 := B1 + (Position*(B2 - B1) div TotalSteps);
 
-    With NewBrush do begin
+    with NewBrush do
+    begin
       lbStyle := BS_SOLID;
       lbColor := RGB(R1,G1,B1);
     end;
@@ -6654,47 +6654,56 @@ var
 
   function FillRectMesh(Mesh : tagGradientRect) : Boolean;
   var
-    TL,BR : tagTRIVERTEX;
-    StartColor, EndColor : TColorRef;
-    I, Swap : Longint;
-    SwapColors : Boolean;
-    UseBrush : hBrush;
-    Steps, MaxSteps : Longint;
+    TL, BR: tagTRIVERTEX;
+    StartColor, EndColor: TColorRef;
+    I, Swap: Longint;
+    SwapColors: Boolean;
+    UseBrush: hBrush;
+    Steps, MaxSteps: Int64;
   begin
-    With Mesh do begin
+    with Mesh do
+    begin
       Result := (UpperLeft < NumVertices) and (UpperLeft >= 0) and
         (LowerRight < NumVertices) and (LowerRight >= 0);
-      If (LowerRight = UpperLeft) or not Result then
+      if (LowerRight = UpperLeft) or not Result then
         exit;
       TL := Vertices[UpperLeft];
       BR := Vertices[LowerRight];
       SwapColors := (BR.Y < TL.Y) and (BR.X < TL.X);
-      If BR.X < TL.X then begin
+      if BR.X < TL.X then
+      begin
         Swap := BR.X;
         BR.X := TL.X;
         TL.X := Swap;
       end;
-      If BR.Y < TL.Y then begin
+      if BR.Y < TL.Y then
+      begin
         Swap := BR.Y;
         BR.Y := TL.Y;
         TL.Y := Swap;
       end;
-      StartColor := RGB(TL.Red, TL.Green, TL.Blue);
-      EndColor := RGB(BR.Red, BR.Green, BR.Blue);
-      If SwapColors then begin
+      StartColor := RGB(TL.Red shr 8, TL.Green shr 8, TL.Blue shr 8);
+      EndColor := RGB(BR.Red shr 8, BR.Green shr 8, BR.Blue shr 8);
+      if SwapColors then
+      begin
         Swap := StartColor;
         StartColor := EndColor;
         EndColor := Swap;
       end;
       UseBrush := 0;
       MaxSteps := GetDeviceCaps(DC, BITSPIXEL);
-      If MaxSteps >= 4 then
-        MaxSteps := Floor(Power(2, MaxSteps))
+      if MaxSteps >= 32 then
+        MaxSteps := $FFFFFFFF
+      else
+      if MaxSteps >= 4 then
+        MaxSteps := 1 shl MaxSteps
       else
         MaxSteps := 256;
-      If DoFillVRect then begin
+      if DoFillVRect then
+      begin
         Steps := Min(BR.Y - TL.Y, MaxSteps);
-        for I := 0 to Steps - 1 do begin
+        for I := 0 to Steps - 1 do
+        begin
           GetGradientBrush(StartColor, EndColor, I, Steps, UseBrush);
             LCLIntf.FillRect(DC, Rect(TL.X, TL.Y + I, BR.X, TL.Y + I + 1),
               UseBrush)
@@ -6702,7 +6711,8 @@ var
       end
       else begin
         Steps := Min(BR.X - TL.X, MaxSteps);
-        for I := 0 to  Steps - 1 do begin
+        for I := 0 to  Steps - 1 do
+        begin
           GetGradientBrush(StartColor, EndColor, I, Steps, UseBrush);
           LCLIntf.FillRect(DC, Rect(TL.X + I, TL.Y, TL.X + I + 1, BR.Y),
             UseBrush);
@@ -6722,26 +6732,30 @@ begin
   //Currently Alpha blending is ignored... Ideas anyone?
   Result := (Meshes <> nil) and (NumMeshes >= 1) and (NumVertices >= 2)
             and (Vertices <> nil);
-  If Result and DoFillTriangle then
+  if Result and DoFillTriangle then
     Result := NumVertices >= 3;
-  If Result then begin
+  if Result then
+  begin
     Result := False;
 
     //Sanity Checks For Vertices Size vs. Count
-    If MemSize(Vertices) < PtrInt(SizeOf(tagTRIVERTEX)*NumVertices) then
+    if MemSize(Vertices) < PtrInt(SizeOf(tagTRIVERTEX)*NumVertices) then
       exit;
 
     //Sanity Checks For Meshes Size vs. Count
-    If MemSize(Meshes) < PtrInt(MeshSize[DoFillTriangle]*NumMeshes) then
+    if MemSize(Meshes) < PtrInt(MeshSize[DoFillTriangle]*NumMeshes) then
       exit;
 
-    For I := 0 to NumMeshes - 1 do begin
-      If DoFillTriangle then begin
-        If Not FillTriMesh(PGradientTriangle(Meshes)[I]) then
+    for I := 0 to NumMeshes - 1 do
+    begin
+      if DoFillTriangle then
+      begin
+        If not FillTriMesh(PGradientTriangle(Meshes)[I]) then
           exit;
       end
-      else begin
-        If not FillRectMesh(PGradientRect(Meshes)[I]) then
+      else
+      begin
+        if not FillRectMesh(PGradientRect(Meshes)[I]) then
           exit;
       end;
     end;

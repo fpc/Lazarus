@@ -483,8 +483,6 @@ begin
 end;
 
 function TQtWidgetSet.IsValidHandle(AHandle: HWND): Boolean;
-var
-  i: integer;
 begin
   if (AHandle = 0) then
     Exit(False);

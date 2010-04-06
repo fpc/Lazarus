@@ -1106,12 +1106,13 @@ type
   tagTRIVERTEX = record
     x: Longint;
     y: Longint;
-    Red: Shortint;
-    Green: Shortint;
-    Blue: Shortint;
-    Alpha: Shortint;
+    Red: Word;
+    Green: Word;
+    Blue: Word;
+    Alpha: Word;
   end;
   TRIVERTEX = tagTRIVERTEX;
+  TTriVertex = TRIVERTEX;
 
   PGradientTriangle = ^tagGradientTriangle;
   tagGRADIENTTRIANGLE = record
@@ -1120,6 +1121,7 @@ type
     Vertex3: Longint;
   end;
   GRADIENTTRIANGLE = tagGRADIENTTRIANGLE;
+  TGradientTriangle = GRADIENTTRIANGLE;
 
   PGradientRect = ^tagGradientRect;
   tagGRADIENTRECT = record
@@ -1127,6 +1129,7 @@ type
     LowerRight: Longint;
   end;
   GRADIENTRECT = tagGRADIENTRECT;
+  TGradientRect = GRADIENTRECT;
 
 { ********************************** }
 {        B I T M A P    S T U F F    }
