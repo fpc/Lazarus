@@ -45,7 +45,7 @@ uses
 type
   { THelpOptions }
 
-  THelpOptions = class(TAbstractIDEEnvironmentOptions)
+  THelpOptions = class(TAbstractIDEHelpOptions)
   private
     FFilename: string;
     FFPCDocsHTMLDirectory: string;

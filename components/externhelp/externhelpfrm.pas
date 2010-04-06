@@ -657,24 +657,28 @@ begin
   if (TVNode<>nil) and (TObject(TVNode.Data) is TExternHelpItem) then
     Item:=TExternHelpItem(TVNode.Data);
   DisableAlign;
-  if Item<>nil then begin
-    NameEdit.Enabled:=true;
-    NameEdit.Text:=Item.Name;
-    FilenameEdit.Enabled:=true;
-    FilenameEdit.Text:=Item.Filename;
-    URLEdit.Enabled:=true;
-    URLEdit.Text:=Item.URL;
-    StoreComboBox.Enabled:=Item.Parent=Options.RootItem;
-    StoreComboBox.Text:=Item.StoreIn;
-  end else begin
-    NameEdit.Enabled:=false;
-    NameEdit.Text:='';
-    FilenameEdit.Enabled:=false;
-    FilenameEdit.Text:='';
-    URLEdit.Enabled:=false;
-    URLEdit.Text:='';
-    StoreComboBox.Enabled:=false;
-    StoreComboBox.Text:='';
+  try
+    if Item<>nil then begin
+      NameEdit.Enabled:=true;
+      NameEdit.Text:=Item.Name;
+      FilenameEdit.Enabled:=true;
+      FilenameEdit.Text:=Item.Filename;
+      URLEdit.Enabled:=true;
+      URLEdit.Text:=Item.URL;
+      StoreComboBox.Enabled:=Item.Parent=Options.RootItem;
+      StoreComboBox.Text:=Item.StoreIn;
+    end else begin
+      NameEdit.Enabled:=false;
+      NameEdit.Text:='';
+      FilenameEdit.Enabled:=false;
+      FilenameEdit.Text:='';
+      URLEdit.Enabled:=false;
+      URLEdit.Text:='';
+      StoreComboBox.Enabled:=false;
+      StoreComboBox.Text:='';
+    end;
+  finally
+    EnableAlign;
   end;
 end;
 
@@ -784,7 +788,7 @@ end;
 
 class function TExternHelpGeneralOptsFrame.SupportedOptionsClass: TAbstractIDEOptionsClass;
 begin
-  Result:=TExternHelpOptions;
+  Result:=TAbstractIDEHelpOptions;
 end;
 
 procedure TExternHelpGeneralOptsFrame.WriteSettings(AOptions: TAbstractIDEOptions);
