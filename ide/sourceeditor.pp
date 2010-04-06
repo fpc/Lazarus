@@ -5667,14 +5667,13 @@ begin
   Edit := FindSourceEditorWithPageIndex(OldPageIndex);
   DestWin.NoteBookInsertPage(NewPageIndex, Edit.PageName);
   DestWin.PageIndex := NewPageIndex;
-  {$IFNDEF OldAutoSize}
-  DestWin.NotebookPage[NewPageIndex].ReAlign;
-  {$ENDIF}
 
   ReleaseEditor(Edit);
   Edit.UpdateNoteBook(DestWin, DestWin.NoteBookPage[NewPageIndex]);
   DestWin.AcceptEditor(Edit);
+  {$IfNDef OldAutoSize}
   DestWin.NotebookPage[NewPageIndex].ReAlign;
+  {$EndIf}
 
   NoteBookDeletePage(OldPageIndex);
   UpdatePageNames;
@@ -8349,7 +8348,7 @@ begin
     for i := 0 to Editor.FSharedValues.SharedEditorCount - 1 do
       if not AMark.HasSourceEditor(Editor.FSharedValues.SharedEditors[i]) then
         AMark.AddSourceEditor(Editor.FSharedValues.SharedEditors[i]);
-  end;;
+  end;
 
   if AMark.IsBreakPoint and (Editor.FExecutionMark <> nil) and
      (AMark.Line = Editor.FExecutionLine)
