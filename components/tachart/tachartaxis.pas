@@ -102,7 +102,6 @@ type
 
   TChartAxis = class(TCollectionItem)
   private
-    FDefaultTransformations: TChartAxisTransformations;
     FMarkTexts: TStringDynArray;
     FMarkValues: TDoubleDynArray;
     FSize: Integer;
@@ -191,6 +190,8 @@ type
 
   function SideByAlignment(
     var ARect: TRect; AAlignment: TChartAxisAlignment; ADelta: Integer): Integer;
+  function TransformByAxis(
+    AAxisList: TChartAxisList; AIndex: Integer): TChartAxisTransformations;
 
 implementation
 
@@ -199,6 +200,9 @@ uses
 
 const
   FONT_SLOPE_VERTICAL = 45 * 10;
+
+var
+  VIdentityTransform: TChartAxisTransformations;
 
 function SideByAlignment(
   var ARect: TRect; AAlignment: TChartAxisAlignment; ADelta: Integer): Integer;
@@ -209,6 +213,16 @@ begin
   if AAlignment in [calLeft, calTop] then
     ADelta := -ADelta;
   a[AAlignment] += ADelta;
+end;
+
+function TransformByAxis(
+  AAxisList: TChartAxisList; AIndex: Integer): TChartAxisTransformations;
+begin
+  Result := nil;
+  if InRange(AIndex, 0, AAxisList.Count - 1) then
+    Result := AAxisList[AIndex].Transformations;
+  if Result = nil then
+    Result := VIdentityTransform;
 end;
 
 { TChartAxisTitle }
@@ -295,7 +309,6 @@ end;
 constructor TChartAxis.Create(ACollection: TCollection);
 begin
   inherited Create(ACollection);
-  FDefaultTransformations := TChartAxisTransformations.Create(nil);
   FGrid := TChartAxisPen.Create;
   FGrid.OnChange := @StyleChanged;
   FGrid.Style := psDot;
@@ -312,7 +325,6 @@ begin
   FTitle.Free;
   FMarks.Free;
   FGrid.Free;
-  FDefaultTransformations.Free;
   inherited;
 end;
 
@@ -488,7 +500,7 @@ function TChartAxis.GetTransform: TChartAxisTransformations;
 begin
   Result := Transformations;
   if Result = nil then
-    Result := FDefaultTransformations;
+    Result := VIdentityTransform;
 end;
 
 function TChartAxis.IsVertical: Boolean; inline;
@@ -692,7 +704,11 @@ begin
 end;
 
 initialization
+  VIdentityTransform := TChartAxisTransformations.Create(nil);
   SkipObsoleteAxisProperties;
+
+finalization
+  VIdentityTransform.Free;
 
 end.
 

@@ -147,20 +147,7 @@ type
 implementation
 
 uses
-  Math, TAChartAxis, TATransformations;
-
-var
-  VIdentityTransform: TChartAxisTransformations;
-
-function TransformationByAxis(
-  AChart: TChart; AAxisIndex: Integer): TChartAxisTransformations;
-begin
-  Result := nil;
-  if InRange(AAxisIndex, 0, AChart.AxisList.Count - 1) then
-    Result := AChart.AxisList[AAxisIndex].Transformations;
-  if Result = nil then
-    Result := VIdentityTransform;
-end;
+  Math, TAChartAxis;
 
 type
 
@@ -197,12 +184,12 @@ end;
 
 function TCustomChartSeries.AxisToGraphX(AX: Double): Double;
 begin
-  Result := TransformationByAxis(FChart, AxisIndexX).AxisToGraph(AX)
+  Result := TransformByAxis(FChart.AxisList, AxisIndexX).AxisToGraph(AX)
 end;
 
 function TCustomChartSeries.AxisToGraphY(AY: Double): Double;
 begin
-  Result := TransformationByAxis(FChart, AxisIndexY).AxisToGraph(AY)
+  Result := TransformByAxis(FChart.AxisList, AxisIndexY).AxisToGraph(AY)
 end;
 
 constructor TCustomChartSeries.Create(AOwner: TComponent);
@@ -241,12 +228,12 @@ end;
 
 function TCustomChartSeries.GraphToAxisX(AX: Double): Double;
 begin
-  Result := TransformationByAxis(FChart, AxisIndexX).GraphToAxis(AX)
+  Result := TransformByAxis(FChart.AxisList, AxisIndexX).GraphToAxis(AX)
 end;
 
 function TCustomChartSeries.GraphToAxisY(AY: Double): Double;
 begin
-  Result := TransformationByAxis(FChart, AxisIndexY).GraphToAxis(AY)
+  Result := TransformByAxis(FChart.AxisList, AxisIndexY).GraphToAxis(AY)
 end;
 
 function TCustomChartSeries.HasParent: Boolean;
@@ -582,9 +569,5 @@ begin
   ListSource.SetYValue(AIndex, AValue);
 end;
 
-initialization
-  VIdentityTransform := TChartAxisTransformations.Create(nil);
-finalization
-  VIdentityTransform.Free;
 end.
 
