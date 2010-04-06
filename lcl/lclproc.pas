@@ -2844,22 +2844,19 @@ function StripLN(const ALine: String): String;
 var
   idx: Integer;
 begin
-  idx := Pos(#10, ALine);
+  Result := ALine;
+  idx := Pos(#10, Result);
   if idx = 0
   then begin
-    idx := Pos(#13, ALine);
-    if idx = 0
-    then begin
-      Result := ALine;
-      Exit;
-    end;
+    idx := Pos(#13, Result);
+    if idx = 0 then Exit;
   end
   else begin
     if (idx > 1)
-    and (ALine[idx - 1] = #13)
+    and (Result[idx - 1] = #13)
     then Dec(idx);
   end;
-  Result := Copy(ALine, 1, idx - 1);
+  SetLength(Result, idx - 1);
 end;
 
 function GetPart(const ASkipTo, AnEnd: String; var ASource: String): String;
