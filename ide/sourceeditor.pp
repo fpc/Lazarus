@@ -149,8 +149,9 @@ type
 
   TSourceEditorSharedValues = class
   private
-    FModified: boolean;
     FSharedEditorList: TFPList; // list of TSourceEditor sharing one TSynEdit
+    FExecutionLine: integer;
+    FModified: boolean;
     function GetOtherSharedEditors(Caller: TSourceEditor; Index: Integer
       ): TSourceEditor;
     function GetSharedEditors(Index: Integer): TSourceEditor;
@@ -165,6 +166,7 @@ type
     property  OtherSharedEditors[Caller: TSourceEditor; Index: Integer]: TSourceEditor
               read GetOtherSharedEditors;
     property Modified: Boolean read FModified write SetModified;
+    property ExecutionLine: Integer read FExecutionLine write FExecutionLine;
   public
     constructor Create;
     destructor Destroy; override;
@@ -195,7 +197,6 @@ type
     FSyntaxHighlighterType: TLazSyntaxHighlighter;
     FErrorLine: integer;
     FErrorColumn: integer;
-    FExecutionLine: integer;
     FExecutionMark: TSourceMark;
     FLineInfoNotification: TIDELineInfoNotification;
 
@@ -227,6 +228,7 @@ type
     procedure EditorEnter(Sender: TObject);
     procedure EditorActivateSyncro(Sender: TObject);
     procedure EditorDeactivateSyncro(Sender: TObject);
+    function GetExecutionLine: integer;
     function GetSharedEditors(Index: Integer): TSourceEditor;
     procedure SetCodeBuffer(NewCodeBuffer: TCodeBuffer);
     function GetSource: TStrings;
@@ -432,7 +434,7 @@ type
        read GetCurrentCursorYLine write SetCurrentCursorYLine;
     property EditorComponent: TSynEdit read FEditor;
     property ErrorLine: integer read FErrorLine write SetErrorLine;
-    property ExecutionLine: integer read FExecutionLine write SetExecutionLine;
+    property ExecutionLine: integer read GetExecutionLine write SetExecutionLine;
     property HasExecutionMarks: Boolean read FHasExecutionMarks;
     property InsertMode: Boolean read GetInsertmode;
     property OnAfterOpen: TNotifyEvent read FOnAfterOpen write FOnAfterOpen;
@@ -1989,6 +1991,7 @@ constructor TSourceEditorSharedValues.Create;
 begin
   FSharedEditorList := TFPList.Create;
   BookmarkEventLock := 0;
+  FExecutionLine:=-1;
 end;
 
 destructor TSourceEditorSharedValues.Destroy;
@@ -2024,7 +2027,6 @@ Begin
   FSyntaxHighlighterType:=lshNone;
   FErrorLine:=-1;
   FErrorColumn:=-1;
-  FExecutionLine:=-1;
   FExecutionMark := nil;
   FHasExecutionMarks := False;
   FMarksRequested := False;
@@ -3380,8 +3382,8 @@ end;
 
 procedure TSourceEditor.SetExecutionLine(NewLine: integer);
 begin
-  if fExecutionLine=NewLine then exit;
-  fExecutionLine:=NewLine;
+  if ExecutionLine=NewLine then exit;
+  FSharedValues.ExecutionLine:=NewLine;
   UpdateExecutionSourceMark;
 end;
 
@@ -4052,6 +4054,11 @@ end;
 procedure TSourceEditor.EditorDeactivateSyncro(Sender: TObject);
 begin
   dec(FSyncroLockCount);
+end;
+
+function TSourceEditor.GetExecutionLine: integer;
+begin
+  Result := FSharedValues.ExecutionLine;
 end;
 
 function TSourceEditor.GetSharedEditors(Index: Integer): TSourceEditor;
@@ -8351,7 +8358,7 @@ begin
   end;
 
   if AMark.IsBreakPoint and (Editor.FExecutionMark <> nil) and
-     (AMark.Line = Editor.FExecutionLine)
+     (AMark.Line = Editor.ExecutionLine)
   then
     Editor.UpdateExecutionSourceMark;
 end;
