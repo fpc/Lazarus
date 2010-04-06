@@ -140,15 +140,22 @@ type
     property Index: Integer read GetIndex write SetIndex;
   end;
 
+  TBroadcaster = class;
+
   { TListener }
 
   TListener = class
   private
-    FIsListening: Boolean;
+    FBroadcaster: TBroadcaster;
+    FOnNotify: TNotifyEvent;
+    FRef: PPointer;
+    function GetIsListening: Boolean;
   public
+    constructor Create(ARef: PPointer; AOnNotify: TNotifyEvent);
+    destructor Destroy; override;
     procedure Forget; virtual;
-    procedure Notify; virtual; abstract;
-    property IsListening: Boolean read FIsListening;
+    procedure Notify(ASender: TObject); virtual;
+    property IsListening: Boolean read GetIsListening;
   end;
 
   { TBroadcaster }
@@ -728,9 +735,33 @@ end;
 
 { TListener }
 
+constructor TListener.Create(ARef: PPointer; AOnNotify: TNotifyEvent);
+begin
+  FOnNotify := AOnNotify;
+  FRef := Aref;
+end;
+
+destructor TListener.Destroy;
+begin
+  if IsListening then
+    FBroadcaster.Unsubscribe(Self);
+  inherited;
+end;
+
 procedure TListener.Forget;
 begin
-  FIsListening := false;
+  FBroadcaster := nil;
+  FRef^ := nil;
+end;
+
+function TListener.GetIsListening: Boolean;
+begin
+  Result := FBroadcaster <> nil;
+end;
+
+procedure TListener.Notify(ASender: TObject);
+begin
+  FOnNotify(ASender)
 end;
 
 { TBroadcaster }
@@ -740,7 +771,7 @@ var
   i: Integer;
 begin
   for i := 0 to Count - 1 do
-    TListener(Items[i]).Notify;
+    TListener(Items[i]).Notify(nil);
 end;
 
 destructor TBroadcaster.Destroy;
@@ -758,7 +789,7 @@ begin
     raise EListenerError.Create('Listener subscribed twice');
   if IndexOf(AListener) >= 0 then
     raise EListenerError.Create('Duplicate listener');
-  AListener.FIsListening := true;
+  AListener.FBroadcaster := Self;
   Add(AListener);
 end;
 
@@ -768,7 +799,7 @@ var
 begin
   if not AListener.IsListening then
     raise EListenerError.Create('Listener not subscribed');
-  AListener.FIsListening := false;
+  AListener.Forget;
   i := IndexOf(AListener);
   if i < 0 then
     raise EListenerError.Create('Listener not found');

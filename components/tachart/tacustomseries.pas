@@ -149,37 +149,6 @@ implementation
 uses
   Math, TAChartAxis;
 
-type
-
-  { TChartSeriesListener }
-
-  TChartSeriesListener = class(TListener)
-  private
-    FSeries: TChartSeries;
-  public
-    constructor Create(ASeries: TChartSeries);
-    procedure Forget; override;
-    procedure Notify; override;
-  end;
-
-{ TChartSeriesListener }
-
-constructor TChartSeriesListener.Create(ASeries: TChartSeries);
-begin
-  FSeries := ASeries;
-end;
-
-procedure TChartSeriesListener.Forget;
-begin
-  inherited Forget;
-  FSeries.FSource := nil;
-end;
-
-procedure TChartSeriesListener.Notify;
-begin
-  FSeries.UpdateParentChart;
-end;
-
 { TCustomChartSeries }
 
 function TCustomChartSeries.AxisToGraphX(AX: Double): Double;
@@ -376,7 +345,7 @@ const
 begin
   inherited Create(AOwner);
 
-  FListener := TChartSeriesListener.Create(Self);
+  FListener := TListener.Create(@FSource,  @StyleChanged);
   FBuiltinSource := TListChartSource.Create(Self);
   FBuiltinSource.Name := BUILTIN_SOURCE_NAME;
   FBuiltinSource.Broadcaster.Subscribe(FListener);
@@ -390,11 +359,9 @@ end;
 
 destructor TChartSeries.Destroy;
 begin
-  if FListener.IsListening then
-    Source.Broadcaster.Unsubscribe(FListener);
+  FListener.Free;
   FBuiltinSource.Free;
   FMarks.Free;
-  FListener.Free;
 
   inherited Destroy;
 end;
