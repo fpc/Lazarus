@@ -1671,8 +1671,9 @@ begin
   end;
 
   // session data
-  XMLConfig.GetValue(Path+'DefaultSyntaxHighlighter/Value',
-                     LazSyntaxHighlighterNames[lshFreePascal]);
+  FDefaultSyntaxHighlighter := StrToLazSyntaxHighlighter(
+    XMLConfig.GetValue(Path+'DefaultSyntaxHighlighter/Value',
+                       LazSyntaxHighlighterNames[lshFreePascal]));
   FEditorInfoList.Clear;
   FEditorInfoList.NewEditorInfo;
   FEditorInfoList[0].LoadFromXMLConfig(XMLConfig, Path);
