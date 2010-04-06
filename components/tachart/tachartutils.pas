@@ -42,6 +42,7 @@ const
 type
   EChartError = class(Exception);
   EChartIntervalError = class(EChartError);
+  EListenerError = class(EChartError);
 
   TDoublePoint = record
     X, Y: Double;
@@ -137,6 +138,28 @@ type
     procedure SetIndex(AValue: Integer); virtual; abstract;
   public
     property Index: Integer read GetIndex write SetIndex;
+  end;
+
+  { TListener }
+
+  TListener = class
+  private
+    FIsListening: Boolean;
+  public
+    procedure Forget; virtual;
+    procedure Notify; virtual; abstract;
+    property IsListening: Boolean read FIsListening;
+  end;
+
+  { TBroadcaster }
+
+  TBroadcaster = class(TFPList)
+  public
+    destructor Destroy; override;
+  public
+    procedure Broadcast;
+    procedure Subscribe(AListener: TListener);
+    procedure Unsubscribe(AListener: TListener);
   end;
 
 const
@@ -701,6 +724,55 @@ procedure TIntervalList.SetOnChange(AValue: TNotifyEvent);
 begin
   if TMethod(FOnChange) = TMethod(AValue) then exit;
   FOnChange := AValue;
+end;
+
+{ TListener }
+
+procedure TListener.Forget;
+begin
+  FIsListening := false;
+end;
+
+{ TBroadcaster }
+
+procedure TBroadcaster.Broadcast;
+var
+  i: Integer;
+begin
+  for i := 0 to Count - 1 do
+    TListener(Items[i]).Notify;
+end;
+
+destructor TBroadcaster.Destroy;
+var
+  i: Integer;
+begin
+  for i := 0 to Count - 1 do
+    TListener(Items[i]).Forget;
+  inherited Destroy;
+end;
+
+procedure TBroadcaster.Subscribe(AListener: TListener);
+begin
+  if AListener.IsListening then
+    raise EListenerError.Create('Listener subscribed twice');
+  if IndexOf(AListener) >= 0 then
+    raise EListenerError.Create('Duplicate listener');
+  AListener.FIsListening := true;
+  Add(AListener);
+end;
+
+procedure TBroadcaster.Unsubscribe(AListener: TListener);
+var
+  i: Integer;
+begin
+  if not AListener.IsListening then
+    raise EListenerError.Create('Listener not subscribed');
+  AListener.FIsListening := false;
+  i := IndexOf(AListener);
+  if i < 0 then
+    raise EListenerError.Create('Listener not found');
+  Delete(i);
 end;
 
 end.

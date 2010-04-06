@@ -96,12 +96,12 @@ type
     procedure AfterDraw; override;
     procedure BeforeDraw; override;
     function ColorOrDefault(AColor: TColor; ADefault: TColor = clTAColor): TColor;
+    procedure GetBounds(out ABounds: TDoubleRect); override;
     function GetGraphPoint(AIndex: Integer): TDoublePoint;
     function GetGraphPointX(AIndex: Integer): Double; inline;
     function GetGraphPointY(AIndex: Integer): Double; inline;
     function GetSeriesColor: TColor; virtual;
     function GetXMaxVal: Integer;
-    procedure GetBounds(out ABounds: TDoubleRect); override;
   public
     constructor Create(AOwner: TComponent); override;
     destructor Destroy; override;
@@ -379,7 +379,7 @@ begin
   FListener := TChartSeriesListener.Create(Self);
   FBuiltinSource := TListChartSource.Create(Self);
   FBuiltinSource.Name := BUILTIN_SOURCE_NAME;
-  FBuiltinSource.Subscribe(FListener);
+  FBuiltinSource.Broadcaster.Subscribe(FListener);
   FMarks := TChartMarks.Create(FChart);
 end;
 
@@ -391,7 +391,7 @@ end;
 destructor TChartSeries.Destroy;
 begin
   if FListener.IsListening then
-    Source.Unsubscribe(FListener);
+    Source.Broadcaster.Unsubscribe(FListener);
   FBuiltinSource.Free;
   FMarks.Free;
   FListener.Free;
@@ -553,9 +553,9 @@ procedure TChartSeries.SetSource(AValue: TCustomChartSource);
 begin
   if FSource = AValue then exit;
   if FListener.IsListening then
-    Source.Unsubscribe(FListener);
+    Source.Broadcaster.Unsubscribe(FListener);
   FSource := AValue;
-  Source.Subscribe(FListener);
+  Source.Broadcaster.Subscribe(FListener);
   UpdateParentChart;
 end;
 

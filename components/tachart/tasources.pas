@@ -26,7 +26,6 @@ uses
 
 type
   EEditableSourceRequired = class(EChartError);
-  EListenerError = class(EChartError);
 
   TChartDataItem = record
     X, Y: Double;
@@ -35,24 +34,12 @@ type
   end;
   PChartDataItem = ^TChartDataItem;
 
-  { TListener }
-
-  TListener = class
-  private
-    FIsListening: Boolean;
-  public
-    procedure Forget; virtual;
-    procedure Notify; virtual; abstract;
-    property IsListening: Boolean read FIsListening;
-  end;
-
   { TCustomChartSource }
 
   TCustomChartSource = class(TComponent)
   private
-    FListeners: array of TListener;
+    FBroadcaster: TBroadcaster;
     FUpdateCount: Integer;
-    function FindListener(AListener: TListener): Integer;
   protected
     FExtent: TDoubleRect;
     FExtentIsValid: Boolean;
@@ -63,6 +50,7 @@ type
     procedure InvalidateCaches;
     procedure Notify;
   public
+    constructor Create(AOwner: TComponent); override;
     destructor Destroy; override;
   public
     procedure AfterDraw; virtual;
@@ -70,8 +58,6 @@ type
     procedure BeginUpdate;
     procedure EndUpdate;
     function IsUpdating: Boolean; inline;
-    procedure Subscribe(AListener: TListener);
-    procedure Unsubscribe(AListener: TListener);
   public
     function Extent: TDoubleRect; virtual;
     function FormatItem(const AFormat: String; AIndex: Integer): String;
@@ -79,6 +65,7 @@ type
     function XOfMax: Double;
     function XOfMin: Double;
 
+    property Broadcaster: TBroadcaster read FBroadcaster;
     property Count: Integer read GetCount;
     property Item[AIndex: Integer]: PChartDataItem read GetItem; default;
   end;
@@ -252,14 +239,16 @@ begin
   Inc(FUpdateCount);
 end;
 
-destructor TCustomChartSource.Destroy;
-var
-  i: Integer;
+constructor TCustomChartSource.Create(AOwner: TComponent);
 begin
-  for i := 0 to High(FListeners) do
-    FListeners[i].Forget;
-  FListeners := nil;
-  inherited Destroy;
+  inherited Create(AOwner);
+  FBroadcaster := TBroadcaster.Create;
+end;
+
+destructor TCustomChartSource.Destroy;
+begin
+  FBroadcaster.Free;
+  inherited;
 end;
 
 procedure TCustomChartSource.EndUpdate;
@@ -281,13 +270,6 @@ begin
     end;
   FExtentIsValid := true;
   Result := FExtent;
-end;
-
-function TCustomChartSource.FindListener(AListener: TListener): Integer;
-begin
-  for Result := 0 to High(FListeners) do
-    if FListeners[Result] = AListener then exit;
-  Result := -1;
 end;
 
 function TCustomChartSource.FormatItem(
@@ -319,38 +301,9 @@ begin
 end;
 
 procedure TCustomChartSource.Notify;
-var
-  i: Integer;
 begin
-  if IsUpdating then exit;
-  for i := 0 to High(FListeners) do
-    FListeners[i].Notify;
-end;
-
-procedure TCustomChartSource.Subscribe(AListener: TListener);
-begin
-  if AListener.IsListening then
-    raise EListenerError.Create('Listener subscribed twice');
-  if FindListener(AListener) >= 0 then
-    raise EListenerError.Create('Duplicate listener');
-  AListener.FIsListening := true;
-  SetLength(FListeners, Length(FListeners) + 1);
-  FListeners[High(FListeners)] := AListener;
-end;
-
-procedure TCustomChartSource.Unsubscribe(AListener: TListener);
-var
-  i, j: Integer;
-begin
-  if not AListener.IsListening then
-    raise EListenerError.Create('Listener not subscribed');
-  AListener.FIsListening := false;
-  j := FindListener(AListener);
-  if j < 0 then
-    raise EListenerError.Create('Listener not found');
-  for i := j to High(FListeners) - 1 do
-    FListeners[i] := FListeners[i + 1];
-  SetLength(FListeners, Length(FListeners) - 1);
+  if not IsUpdating then
+    FBroadcaster.Broadcast;
 end;
 
 function TCustomChartSource.ValuesTotal: Double;
@@ -772,13 +725,6 @@ begin
   FYMin := AValue;
   InvalidateCaches;
   Notify;
-end;
-
-{ TListener }
-
-procedure TListener.Forget;
-begin
-  FIsListening := false;
 end;
 
 { TUserDefinedChartSource }
