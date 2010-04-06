@@ -37,7 +37,8 @@ interface
 uses
   Classes, SysUtils, LCLProc, FileUtil, LResources, Forms, Controls, Graphics,
   Dialogs, LazConfigStorage, ComCtrls, Buttons, StdCtrls, ExtCtrls,
-  PackageIntf, MacroIntf, IDEOptionsIntf, LazIDEIntf, BaseIDEIntf, IDEDialogs;
+  PackageIntf, MacroIntf, IDEOptionsIntf, LazIDEIntf, BaseIDEIntf, IDEDialogs,
+  IDEImagesIntf;
 
 const
   ExternHelpConfigVersion = 1;
@@ -220,7 +221,6 @@ begin
   ExternHelpOptionID:=GroupHelp;
   ExternHelpOptionGeneralID:=RegisterIDEOptionsEditor(ExternHelpOptionID,
       TExternHelpGeneralOptsFrame,ExternHelpOptionGeneralID)^.Index;
-  DebugLn(['Register ',ExternHelpOptionGeneralID]);
   try
     ExternHelpOptions.Load;
   except
@@ -740,6 +740,8 @@ constructor TExternHelpGeneralOptsFrame.Create(TheOwner: TComponent);
 begin
   inherited Create(TheOwner);
   FOptions:=TExternHelpOptions.Create;
+  AddSpeedButton.LoadGlyphFromLazarusResource('laz_add');
+  DeleteSpeedButton.LoadGlyphFromLazarusResource('laz_delete');
 end;
 
 destructor TExternHelpGeneralOptsFrame.Destroy;
