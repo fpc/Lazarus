@@ -36,9 +36,9 @@ interface
 
 uses
   Classes, SysUtils, LCLProc, FileUtil, LResources, Forms, Controls, Graphics,
-  Dialogs, LazConfigStorage, ComCtrls, Buttons, StdCtrls, ExtCtrls,
+  Dialogs, LazConfigStorage, ComCtrls, Buttons, StdCtrls, ExtCtrls, LazHelpIntf,
   PackageIntf, MacroIntf, IDEOptionsIntf, LazIDEIntf, BaseIDEIntf, IDEDialogs,
-  IDEImagesIntf;
+  HelpIntfs, IDEImagesIntf;
 
 const
   ExternHelpConfigVersion = 1;
@@ -114,12 +114,24 @@ type
     procedure IncreaseChangeStep; override;
   end;
 
+  { TExternalHelpDatabase }
+
+  TExternalHelpDatabase = class(THelpDatabase)
+  public
+    constructor Create(TheOwner: TComponent); override;
+    destructor Destroy; override;
+    function ShowHelp(Query: THelpQuery; BaseNode, NewNode: THelpNode;
+                      QueryItem: THelpQueryItem;
+                      var ErrMsg: string): TShowHelpResult; override;
+  end;
+
   { TExternHelpOptions }
 
   TExternHelpOptions = class(TAbstractIDEEnvironmentOptions)
   private
     FChangeStep: integer;
     FFilename: string;
+    FHelpDB: TExternalHelpDatabase;
     FLastSavedChangeStep: integer;
     procedure SetFilename(const AValue: string);
   public
@@ -139,9 +151,11 @@ type
     function IsEqual(Src: TExternHelpOptions): boolean;
     procedure Assign(Src: TExternHelpOptions); reintroduce;
     procedure IncreaseChangeStep;
+    procedure UpdateHelpDB;
     property Filename: string read FFilename write SetFilename;
     property ChangeStep: integer read FChangeStep;
     property LastSavedChangeStep: integer read FLastSavedChangeStep;
+    property HelpDB: TExternalHelpDatabase read FHelpDB;
   end;
 
 type
@@ -228,6 +242,7 @@ begin
       DebugLn(['Error reading externhelp options ',ExternHelpOptions.Filename,': ',E.Message]);
     end;
   end;
+  ExternHelpOptions.UpdateHelpDB;
 end;
 
 { TExternHelpOptions }
@@ -243,11 +258,14 @@ begin
   RootItem:=TExternHelpRootItem.Create;
   RootItem.Owner:=Self;
   Filename:='externhelp.xml';
+  FHelpDB:=TExternalHelpDatabase(HelpDatabases.CreateHelpDatabase('External help',
+                                               TExternalHelpDatabase,true));
 end;
 
 destructor TExternHelpOptions.Destroy;
 begin
   FreeAndNil(RootItem);
+  FreeAndNil(FHelpDB);
   inherited Destroy;
 end;
 
@@ -385,6 +403,40 @@ begin
     FChangeStep:=low(FChangeStep)
   else
     inc(FChangeStep);
+end;
+
+procedure TExternHelpOptions.UpdateHelpDB;
+
+  procedure RegisterItem(Item: TExternHelpItem);
+  var
+    i: Integer;
+    HelpNode: THelpNode;
+    ItemFilename: String;
+    IsDirectory: Boolean;
+    SrcFilter: THelpDBISourceFile;
+  begin
+    if Item.Filename<>'' then begin
+      ItemFilename:=SetDirSeparators(Item.Filename);
+      // create a help node for this topic
+      HelpNode:=THelpNode.CreateURL(HelpDB,Item.Name,Item.URL);
+      // create a filter for the source file(s)
+      IsDirectory:=(ItemFilename[length(ItemFilename)]=PathDelim);
+      if IsDirectory then
+        SrcFilter:=THelpDBISourceDirectory.Create(HelpNode,
+                                         ItemFilename,'*.pp;*.pas',false)
+      else
+        SrcFilter:=THelpDBISourceFile.Create(HelpNode,ItemFilename);
+      HelpDB.RegisterItem(SrcFilter);
+      DebugLn(['RegisterItem ',ItemFilename]);
+    end;
+
+    for i:=0 to Item.ChildCount-1 do
+      RegisterItem(Item.Childs[i]);
+  end;
+
+begin
+  HelpDB.UnregisterAllItems;
+  RegisterItem(RootItem);
 end;
 
 { TExternHelpGeneralOptsFrame }
@@ -760,15 +812,10 @@ begin
 end;
 
 procedure TExternHelpGeneralOptsFrame.ReadSettings(AOptions: TAbstractIDEOptions);
-var
-  Opts: TExternHelpOptions;
 begin
-  if AOptions is TExternHelpOptions then begin
-    Opts:=TExternHelpOptions(AOptions);
-    Options.Assign(Opts);
-    FillItemsTreeView;
-    ItemsTreeView.Selected:=ItemsTreeView.Items.GetFirstNode;
-  end;
+  Options.Assign(ExternHelpOptions);
+  FillItemsTreeView;
+  ItemsTreeView.Selected:=ItemsTreeView.Items.GetFirstNode;
   SelectionChanged;
 end;
 
@@ -792,22 +839,17 @@ begin
 end;
 
 procedure TExternHelpGeneralOptsFrame.WriteSettings(AOptions: TAbstractIDEOptions);
-var
-  Opts: TExternHelpOptions;
 begin
-  if AOptions is TExternHelpOptions then begin
-    Opts:=TExternHelpOptions(AOptions);
-    if not Opts.IsEqual(Options) then
-    begin
-      Opts.Assign(Options);
-      try
-        Opts.Save;
-      except
-        on E: Exception do begin
-          DebugLn(['TExternHelpGeneralOptsFrame.WriteSettings unable to write file ',Opts.Filename,': ',E.Message]);
-        end;
+  if not ExternHelpOptions.IsEqual(Options) then begin
+    ExternHelpOptions.Assign(Options);
+    try
+      ExternHelpOptions.Save;
+    except
+      on E: Exception do begin
+        DebugLn(['TExternHelpGeneralOptsFrame.WriteSettings unable to write file ',ExternHelpOptions.Filename,': ',E.Message]);
       end;
     end;
+    ExternHelpOptions.UpdateHelpDB;
   end;
 end;
 
@@ -948,12 +990,16 @@ begin
     if ChildCount<=i then begin
       Item:=TExternHelpItem.Create;
       AddChild(Item);
+      IncreaseChangeStep;
     end else begin
       Item:=Childs[i];
     end;
     Item.Assign(Src.Childs[i],true);
   end;
-  while ChildCount>Src.ChildCount do DeleteChild(ChildCount-1);
+  while ChildCount>Src.ChildCount do begin
+    DeleteChild(ChildCount-1);
+    IncreaseChangeStep;
+  end;
 end;
 
 procedure TExternHelpItem.IncreaseChangeStep;
@@ -971,6 +1017,108 @@ procedure TExternHelpRootItem.IncreaseChangeStep;
 begin
   inherited IncreaseChangeStep;
   Owner.IncreaseChangeStep;
+end;
+
+{ TExternalHelpDatabase }
+
+constructor TExternalHelpDatabase.Create(TheOwner: TComponent);
+begin
+  inherited Create(TheOwner);
+end;
+
+destructor TExternalHelpDatabase.Destroy;
+begin
+  inherited Destroy;
+end;
+
+function TExternalHelpDatabase.ShowHelp(Query: THelpQuery; BaseNode,
+  NewNode: THelpNode; QueryItem: THelpQueryItem; var ErrMsg: string
+  ): TShowHelpResult;
+var
+  ContextList: TPascalHelpContextList;
+  Identifier: String;
+  AUnitName: String;
+  i: Integer;
+  Context: String;
+  p: LongInt;
+  URL: String;
+  ShowNode: THelpNode;
+  Viewer: THelpViewer;
+begin
+  DebugLn(['TExternalHelpDatabase.ShowHelp ',DbgSName(Query)]);
+  if (Query is THelpQueryPascalContexts)
+  and (QueryItem is TPascalHelpContextList) then begin
+    // a pascal context query
+    ContextList:=TPascalHelpContextList(QueryItem);
+    if (ContextList.Count>0) and (ContextList.List[0].Descriptor=pihcFilename)
+    then begin
+      // extract unit filename
+      AUnitName:=lowercase(ExtractFileNameOnly(ContextList.List[0].Context));
+      DebugLn('TExternalHelpDatabase.ShowHelp A Unitname=',AUnitname,' NewNode.HelpType=',dbgs(ord(NewNode.HelpType)),' NewNode.Title=',NewNode.Title,' NewNode.URL=',NewNode.URL);
+      if AUnitName<>'' then begin
+
+        // extract identifier
+        Identifier:='';
+        for i:=0 to ContextList.Count-1 do begin
+          Context:=ContextList.List[i].Context;
+          case ContextList.List[i].Descriptor of
+
+          pihcProperty,pihcVariable,pihcType,pihcConst:
+            begin
+              Identifier:=Context;
+              break;
+            end;
+
+          pihcProcedure:
+            begin
+              // chomp parameters  ToDo: overloaded procs
+              p:=System.Pos('(',Context);
+              if p>0 then
+                Context:=copy(Context,1,p-1);
+              Identifier:=Context;
+              break;
+            end;
+
+          end;
+        end;
+
+        if Identifier<>'' then begin
+          DebugLn(['TExternalHelpDatabase.ShowHelp Identifier=',Identifier]);
+          // replace special macros (Identifier)
+          URL:=NewNode.URL;
+          repeat
+            p:=System.Pos('$(identifier)',lowercase(URL));
+            if p<1 then break;
+            URL:=copy(URL,1,p-1)+Identifier
+                               +copy(URL,p+length('$(identifier)'),length(URL));
+          until false;
+
+          // replace global macros
+          if (IDEMacros<>nil) then
+            IDEMacros.SubstituteMacros(URL);
+
+          DebugLn(['TExternalHelpDatabase.ShowHelp URL=',URL]);
+
+          // find HTML viewer
+          Result:=FindViewer('text/html',ErrMsg,Viewer);
+          if Result<>shrSuccess then exit;
+
+          // call viewer
+          ShowNode:=nil;
+          try
+            ShowNode:=THelpNode.CreateURL(Self,NewNode.Title,URL);
+            Result:=Viewer.ShowNode(ShowNode,ErrMsg);
+          finally
+            ShowNode.Free;
+          end;
+          exit;
+        end;
+      end;
+    end;
+  end;
+
+  // otherwise use default
+  Result:=inherited ShowHelp(Query, BaseNode, NewNode, QueryItem, ErrMsg);
 end;
 
 finalization
