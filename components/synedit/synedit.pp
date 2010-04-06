@@ -4388,6 +4388,7 @@ end;
 
 procedure TCustomSynEdit.WMKillFocus(var Msg: TWMKillFocus);
 begin
+  if fCaret = nil then exit; // This SynEdit is in Destroy
   Exclude(FStateFlags, sfHideCursor);
   inherited;
   {$IFDEF VerboseFocus}
@@ -4413,6 +4414,7 @@ end;
 
 procedure TCustomSynEdit.WMSetFocus(var Msg: TWMSetFocus);
 begin
+  if fCaret = nil then exit; // This SynEdit is in Destroy
   Exclude(FStateFlags, sfHideCursor);
   LastMouseCaret:=Point(-1,-1);
   {$IFDEF VerboseFocus}
