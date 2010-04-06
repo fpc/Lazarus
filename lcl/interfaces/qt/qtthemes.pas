@@ -601,6 +601,21 @@ begin
           Result.SubControls := QStyleSC_None;
         end;
       end;
+    teStatus:
+      begin
+        case Details.Part of
+          SP_PANE:
+            begin
+              Result.DrawVariant := qdvPrimitive;
+              Result.PrimitiveElement := QStylePE_FrameStatusBar;
+            end;
+          SP_GRIPPER:
+            begin
+              Result.DrawVariant := qdvControl;
+              Result.ControlElement := QStyleCE_SizeGrip;
+            end;
+        end;
+      end;
     teTreeView:
       begin
         if Details.Part = TVP_GLYPH then
