@@ -3442,11 +3442,11 @@ begin
 
   // Get initial debugger lines
   S := '';
-  Line := StripLN(ReadLine);
+  Line := ReadLine;
   while DebugProcessRunning and (Line <> '(gdb) ') do
   begin
     S := S + Line + LineEnding;
-    Line := StripLN(ReadLine);
+    Line := ReadLine;
   end;
   if S <> ''
   then MessageDlg('Debugger', 'Initialization output: ' + LineEnding + S,
@@ -3574,7 +3574,7 @@ begin
   AResult.Flags := [];
   AResult.State := dsNone;
   repeat
-    S := StripLN(ReadLine);
+    S := ReadLine;
     if S = '' then Continue;
     if S = '(gdb) ' then Break;
 
@@ -3660,7 +3660,7 @@ begin
   Result := True;
   while DebugProcessRunning do
   begin
-    S := StripLN(ReadLine);
+    S := ReadLine;
     if S = '(gdb) ' then Break;
 
     while S <> '' do

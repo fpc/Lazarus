@@ -319,8 +319,8 @@ begin
     
       if MinIdx < MaxInt 
       then begin
-        n := MinIdx + Length(LineEndMatch) - 1;
-        Result := Copy(FOutputBuf, 1, n);
+        Dec(MinIdx);
+        Result := Copy(FOutputBuf, 1, MinIdx);
         if APeek 
         then begin
           if PeekCount = FPeekOffset
@@ -330,7 +330,7 @@ begin
             Continue;
           end;
         end
-        else Delete(FOutputBuf, 1, n);
+        else Delete(FOutputBuf, 1, MinIdx + Length(LineEndMatch));
       
         DoDbgOutput(Result);
         Break;
