@@ -104,6 +104,7 @@ type
 
   TChartAxis = class(TCollectionItem)
   private
+    FListener: TListener;
     FMarkTexts: TStringDynArray;
     FMarkValues: TDoubleDynArray;
     FSize: Integer;
@@ -323,6 +324,7 @@ end;
 constructor TChartAxis.Create(ACollection: TCollection);
 begin
   inherited Create(ACollection);
+  FListener := TListener.Create(@FTransformations, @StyleChanged);
   FGrid := TChartAxisPen.Create;
   FGrid.OnChange := @StyleChanged;
   FGrid.Style := psDot;
@@ -330,7 +332,6 @@ begin
   FTickColor := clBlack;
   FTickLength := DEF_TICK_LENGTH;
   FTitle := TChartAxisTitle.Create(ACollection.Owner as TCustomChart);
-  //FTransformation.OnChanged := @StyleChanged;
   FVisible := true;
 end;
 
@@ -338,6 +339,7 @@ destructor TChartAxis.Destroy;
 begin
   FTitle.Free;
   FMarks.Free;
+  FListener.Free;
   FGrid.Free;
   inherited;
 end;
@@ -644,7 +646,11 @@ end;
 procedure TChartAxis.SetTransformations(AValue: TChartAxisTransformations);
 begin
   if FTransformations = AValue then exit;
+  if FListener.IsListening then
+    Transformations.Broadcaster.Unsubscribe(FListener);
   FTransformations := AValue;
+  if FTransformations <> nil then
+    Transformations.Broadcaster.Subscribe(FListener);
   StyleChanged(Self);
 end;
 

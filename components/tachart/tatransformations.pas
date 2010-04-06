@@ -35,9 +35,7 @@ type
   TAxisTransform = class(TIndexedComponent)
   private
     FEnabled: Boolean;
-    FOnChanged: TNotifyEvent;
     FTransformations: TChartAxisTransformations;
-    procedure SetOnChanged(const AValue: TNotifyEvent);
     procedure SetTransformations(AValue: TChartAxisTransformations);
   protected
     procedure ReadState(Reader: TReader); override;
@@ -57,8 +55,8 @@ type
     function AxisToGraph(AX: Double): Double; virtual;
     function GraphToAxis(AX: Double): Double; virtual;
 
-    property OnChanged: TNotifyEvent read FOnChanged write SetOnChanged;
-    property Transformations: TChartAxisTransformations read FTransformations write SetTransformations;
+    property Transformations: TChartAxisTransformations
+      read FTransformations write SetTransformations;
   published
     property Enabled: Boolean read FEnabled write FEnabled default true;
   end;
@@ -72,6 +70,7 @@ type
 
   TChartAxisTransformations = class (TComponent)
   private
+    FBroadcaster: TBroadcaster;
     FList: TAxisTransformList;
   public
     constructor Create(AOwner: TComponent); override;
@@ -82,6 +81,8 @@ type
   public
     function AxisToGraph(AX: Double): Double;
     function GraphToAxis(AX: Double): Double;
+
+    property Broadcaster: TBroadcaster read FBroadcaster;
   published
     property List: TAxisTransformList read FList;
   end;
@@ -278,8 +279,8 @@ end;
 
 procedure TAxisTransform.Changed;
 begin
-  if Assigned(FOnChanged) then
-    FOnChanged(Self);
+  if Transformations <> nil then
+    Transformations.Broadcaster.Broadcast;
 end;
 
 constructor TAxisTransform.Create(AOwner: TComponent);
@@ -330,12 +331,6 @@ begin
     Move(Index, EnsureRange(AValue, 0, Count - 1));
 end;
 
-procedure TAxisTransform.SetOnChanged(const AValue: TNotifyEvent);
-begin
-  if TMethod(FOnChanged) = TMethod(AValue) then exit;
-  FOnChanged := AValue;
-end;
-
 procedure TAxisTransform.SetParentComponent(AParent: TComponent);
 begin
   if not (csLoading in ComponentState) then
@@ -366,6 +361,7 @@ end;
 constructor TChartAxisTransformations.Create(AOwner: TComponent);
 begin
   inherited Create(AOwner);
+  FBroadcaster := TBroadcaster.Create;
   FList := TAxisTransformList.Create;
 end;
 
@@ -374,6 +370,7 @@ begin
   while List.Count > 0 do
     TAxisTransform(List[List.Count - 1]).Free;
   FList.Free;
+  FBroadcaster.Free;
   inherited;
 end;
 
