@@ -258,6 +258,7 @@ type
     function GetTextIndex(index : Integer) : Integer;
     function GetFoldType(index : Integer) : TSynEditCodeFoldType;
     function IsFolded(index : integer) : Boolean;  // TextIndex
+    procedure SetHighLighter(const AValue: TSynCustomHighlighter);
     procedure SetTopLine(const ALine : integer);
     function  GetTopTextIndex : integer;
     procedure SetTopTextIndex(const AIndex : integer);
@@ -368,7 +369,7 @@ type
     property OnFoldChanged: TFoldChangedEvent  (* reports 1-based line *) {TODO: synedit expects 0 based }
       read fOnFoldChanged write fOnFoldChanged;
     property HighLighter: TSynCustomHighlighter read GetHighLighter
-                                                write FHighLighter;
+                                                write SetHighLighter;
   end;
   
 implementation
@@ -2884,6 +2885,14 @@ end;
 function TSynEditFoldedView.IsFolded(index : integer) : Boolean;
 begin
   Result := fFoldTree.FindFoldForLine(index+1).IsInFold;
+end;
+
+procedure TSynEditFoldedView.SetHighLighter(const AValue: TSynCustomHighlighter
+  );
+begin
+  if FHighLighter = AValue then exit;
+  FHighLighter := AValue;
+  UnfoldAll;
 end;
 
 (* Folding *)
