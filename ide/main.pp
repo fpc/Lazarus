@@ -8588,7 +8588,10 @@ begin
       if AEditorInfo <> nil then
         NewEditorInfo := AEditorInfo
       else
-        NewEditorInfo := NewUnitInfo.GetClosedOrNewEditorInfo;
+      if NewUnitInfo <> nil then
+        NewEditorInfo := NewUnitInfo.GetClosedOrNewEditorInfo
+      else
+        NewEditorInfo := nil;
       if Handled then exit;
     end;
 
