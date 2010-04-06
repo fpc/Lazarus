@@ -84,11 +84,13 @@ type
   TChartAxisMarks = class(
     specialize TGenericChartMarks<TChartAxisBrush, TChartPen, TChartAxisFramePen>)
   private
+    FListener: TListener;
     FSource: TCustomChartSource;
     function IsFormatStored: Boolean;
-    procedure SetSource(const AValue: TCustomChartSource);
+    procedure SetSource(AValue: TCustomChartSource);
   public
     constructor Create(AOwner: TCustomChart);
+    destructor Destroy; override;
   published
     property Distance default 1;
     property Format stored IsFormatStored;
@@ -277,8 +279,15 @@ begin
   FDistance := 1;
   FFrame.Style := psClear;
   FLabelBrush.Style := bsClear;
+  FListener := TListener.Create(@FSource, @StyleChanged);
   FStyle := smsValue;
   FFormat := SERIES_MARK_FORMATS[FStyle];
+end;
+
+destructor TChartAxisMarks.Destroy;
+begin
+  FListener.Free;
+  inherited;
 end;
 
 function TChartAxisMarks.IsFormatStored: Boolean;
@@ -286,10 +295,14 @@ begin
   Result := FStyle <> smsValue;
 end;
 
-procedure TChartAxisMarks.SetSource(const AValue: TCustomChartSource);
+procedure TChartAxisMarks.SetSource(AValue: TCustomChartSource);
 begin
   if FSource = AValue then exit;
+  if FListener.IsListening then
+    FSource.Broadcaster.Unsubscribe(FListener);
   FSource := AValue;
+  if FSource <> nil then
+    FSource.Broadcaster.Subscribe(FListener);
   StyleChanged(Self);
 end;
 
@@ -302,8 +315,9 @@ begin
       FGrid.Assign(Grid);
       FInverted := Inverted;
       FTitle.Assign(Title);
-    end;
-  //inherited Assign(Source);
+    end
+  else
+    inherited Assign(Source);
 end;
 
 constructor TChartAxis.Create(ACollection: TCollection);
