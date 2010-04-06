@@ -39,7 +39,7 @@ unit CmdLineDebugger;
 interface
 
 uses
-  Classes, Process, FileUtil, Debugger, LCLProc, Forms, LazConf, DebugUtils;
+  Classes, Types, Process, FileUtil, Debugger, LCLProc, Forms, LazConf, DebugUtils;
 
 type
 
@@ -48,7 +48,7 @@ type
   TCmdLineDebugger = class(TDebugger)
   private
     FDbgProcess: TProcess;   // The process used to call the debugger
-    FLineEnds: TStringList;  // List of strings considered as lineends
+    FLineEnds: TStringDynArray;  // List of strings considered as lineends
     FOutputBuf: String;
     FReading: Boolean;       // Set if we are in the ReadLine loop
     FFlushAfterRead: Boolean;// Set if we should flush after finished reading
@@ -62,6 +62,7 @@ type
     function  ReadLine(const APeek: Boolean): String; overload;
     procedure SendCmdLn(const ACommand: String); overload;
     procedure SendCmdLn(const ACommand: String; Values: array of const); overload;
+    procedure SetLineEnds(ALineEnds: TStringDynArray);
   public
     constructor Create(const AExternalDebugger: String); override;
     destructor Destroy; override;
@@ -69,7 +70,6 @@ type
   public
     property DebugProcess: TProcess read FDbgProcess;
     property DebugProcessRunning: Boolean read GetDebugProcessRunning;
-    property LineEnds: TStringList read FLineEnds;
   end;
 
 
@@ -211,8 +211,8 @@ end;
 constructor TCmdLineDebugger.Create(const AExternalDebugger: String);
 begin
   FDbgProcess := nil;
-  FLineEnds := TStringList.Create;
-  FLineEnds.Add(LineEnding);
+  SetLength(FLineEnds, 1);
+  FLineEnds[0] := LineEnding;
   FReading := False;
   FFlushAfterRead := False;
   FPeekOffset := 0;
@@ -251,7 +251,6 @@ begin
   except
     on E: Exception do DebugLn('Exeption while freeing debugger: ', E.Message);
   end;
-  FreeAndNil(FLineEnds);
 end;
 
 procedure TCmdLineDebugger.Flush;
@@ -308,12 +307,14 @@ begin
     if FOutputBuf <> ''
     then begin
       MinIdx := MaxInt;
-      for n := 0 to FLineEnds.Count - 1 do
+      for n := Low(FLineEnds) to High(FLineEnds) do
       begin
-        LineEndMatch := FLineEnds[n];
-        Idx := Pos(LineEndMatch, FOutputBuf);
+        idx := Pos(FLineEnds[n], FOutputBuf);
         if (idx > 0) and (idx < MinIdx) 
-        then MinIdx := idx;
+        then begin
+          MinIdx := idx;
+          LineEndMatch := FLineEnds[n];
+        end;
       end;
     
       if MinIdx < MaxInt 
@@ -396,6 +397,16 @@ end;
 procedure TCmdLineDebugger.SendCmdLn(const ACommand: String; Values: array of const);
 begin
   SendCmdLn(Format(ACommand, Values));
+end;
+
+procedure TCmdLineDebugger.SetLineEnds(ALineEnds: TStringDynArray);
+begin
+  if Length(ALineEnds) = 0
+  then begin
+    SetLength(FLineEnds, 1);
+    FLineEnds[0] := LineEnding;
+  end
+  else FLineEnds := ALineEnds;
 end;
 
 procedure TCmdLineDebugger.TestCmd(const ACommand: String);
