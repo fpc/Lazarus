@@ -346,6 +346,7 @@ type
     procedure RegisterItemWithNode(Node: THelpNode);
     procedure RegisterFileItemWithNode(const Filename: string; Node: THelpNode);
     procedure UnregisterItem(AnItem: THelpDBItem);
+    procedure UnregisterAllItems;
     function RegisteredItemCount: integer;
     function GetRegisteredItem(Index: integer): THelpDBItem;
     procedure Load(Storage: TConfigStorage); virtual;
@@ -1124,6 +1125,16 @@ procedure THelpDatabase.UnregisterItem(AnItem: THelpDBItem);
 begin
   if FSearchItems=nil then exit;
   FSearchItems.Remove(AnItem);
+end;
+
+procedure THelpDatabase.UnregisterAllItems;
+var
+  i: Integer;
+begin
+  if FSearchItems=nil then exit;
+  for i:=0 to FSearchItems.Count-1 do
+    TObject(FSearchItems[i]).Free;
+  FSearchItems.Clear;
 end;
 
 function THelpDatabase.RegisteredItemCount: integer;
