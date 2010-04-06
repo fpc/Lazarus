@@ -275,10 +275,30 @@ begin
         else
           Result.Shadow := GTK_SHADOW_OUT;
 
-        Result.IsHot:= Result.State = GTK_STATE_PRELIGHT;
+        Result.IsHot := Result.State = GTK_STATE_PRELIGHT;
 
         Result.Detail := 'button';
         Result.Painter := gptBox;
+      end;
+    teStatus:
+      begin
+        Result.Widget := GetStyleWidget(lgsStatusBar);
+        if Result.Style = nil then
+          Result.Style := GetStyle(lgsStatusBar);
+        Result.Detail := 'statubar';
+        Result.State := GTK_STATE_NORMAL;
+        case Details.Part of
+          SP_PANE:
+            begin
+              Result.Painter := gptShadow;
+              Result.Shadow := GTK_SHADOW_OUT;
+            end;
+          SP_GRIPPER:
+            begin
+              Result.Painter := gptResizeGrip;
+              Result.Edge := GDK_WINDOW_EDGE_SOUTH_EAST;
+            end;
+        end;
       end;
     teToolBar:
       begin
