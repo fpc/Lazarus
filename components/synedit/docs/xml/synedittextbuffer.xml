@@ -24,6 +24,9 @@
         <short>Access to Objects that can be stored with each line of text, not used by SynEdit</short>
         <descr>This is not used by SynEdit itself. However SynEdit provides a TStrings interface for external access to the text. This does allow others to store Objects with the text.</descr>
       </element>
+      <element name="TSynEditStringList">
+        <short>Textbuffer for SynEdit. Stores and Modifies the Text</short>
+      </element>
     </module>
   </package>
 </fpdoc-descriptions>

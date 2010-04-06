@@ -60,12 +60,6 @@ If the Highlighter uses objects for ranges, it may use an instance of <link id="
           <link id="TSynCustomHighlighter.ResetRange">ResetRange</link>
         </seealso>
       </element>
-      <element name="TSynCustomHighlighter.ScanFrom">
-        <short>Recalculate all changed/unknown <link id="TSynCustomHighlighter.SetRange">Ranges</link> (line states) starting from a given line </short>
-        <descr>
-          <p>Recalculate all changed/unknown <link id="TSynCustomHighlighter.SetRange">Ranges</link> (line states) starting from a given line </p>
-        </descr>
-      </element>
       <element name="TSynHighlighterRangeList">
         <short>List to hold the Highlighter's Ranges (state at the end of each line). </short>
         <seealso>
@@ -197,6 +191,16 @@ Before a SynEdit can use a Highlighter (when the Highlighter is set to the SynEd
           <link id="TSynCustomHighlighter.SetRange">TSynCustomHighlighter.SetRange</link>
           <link id="TSynCustomHighlighter.GetRange">TSynCustomHighlighter.GetRange</link>
         </seealso>
+      </element>
+      <element name="TSynCustomHighlighter.ScanRanges">
+        <short>Recalculate all changed/unknown <link id="TSynCustomHighlighter.SetRange">Ranges</link> (line states)</short>
+        <descr>
+          <p>Recalculate all changed/unknown <link id="TSynCustomHighlighter.SetRange">Ranges</link> (line states).
+
+The start/end range is available through the TSynHighlighterRangeList, which tracks all changes to the TSynEditStringMemory by which it is managed.
+
+</p>
+        </descr>
       </element>
     </module>
   </package>
