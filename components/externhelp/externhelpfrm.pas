@@ -43,7 +43,7 @@ const
   ExternHelpConfigVersion = 1;
 var
   ExternHelpOptionID: integer = 2000;
-  ExternHelpOptionGeneralID: integer = 100;
+  ExternHelpOptionGeneralID: integer = 1000;
 
 resourcestring
   ehrsGroupTitle = 'Extern help';
@@ -60,6 +60,7 @@ resourcestring
   ehrsReplaceCommonDirectoriesWithMacros = 'Replace common directories with '
     +'macros';
   ehrsChooseAPascalUnit = 'Choose a pascal unit';
+  ehrsExternal = 'External';
 
 type
 
@@ -216,9 +217,10 @@ implementation
 procedure Register;
 begin
   ExternHelpOptions:=TExternHelpOptions.Create;
-  ExternHelpOptionID:=RegisterIDEOptionsGroup(ExternHelpOptionID,TExternHelpOptions)^.Index;
+  ExternHelpOptionID:=GroupHelp;
   ExternHelpOptionGeneralID:=RegisterIDEOptionsEditor(ExternHelpOptionID,
       TExternHelpGeneralOptsFrame,ExternHelpOptionGeneralID)^.Index;
+  DebugLn(['Register ',ExternHelpOptionGeneralID]);
   try
     ExternHelpOptions.Load;
   except
@@ -748,7 +750,7 @@ end;
 
 function TExternHelpGeneralOptsFrame.GetTitle: String;
 begin
-  Result:=ehrsGeneral;
+  Result:=ehrsExternal;
 end;
 
 procedure TExternHelpGeneralOptsFrame.ReadSettings(AOptions: TAbstractIDEOptions);
