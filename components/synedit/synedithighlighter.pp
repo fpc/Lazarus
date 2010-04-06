@@ -44,7 +44,7 @@ uses
   {$ENDIF}
   Registry, IniFiles,
 {$ENDIF}
-  SynEditTypes, SynEditMiscClasses, SynEditTextBase;
+  SynEditTypes, SynEditMiscClasses, SynEditTextBase, SynEditTextBuffer;
 
 {$DEFINE _Gp_MustEnhanceRegistry}
 {$IFDEF SYN_COMPILER_4_UP}
@@ -59,19 +59,29 @@ type
 
   { TSynHighlighterRangeList }
 
-  TSynHighlighterRangeList = class(TSynEditStorageMem)
+  TSynHighlighterRangeList = class(TSynManagedStorageMem)
   private
     FRefCount: Integer;
+    FNeedsReScanStartIndex: Integer;
+    FNeedsReScanEndIndex: Integer;
     function GetRange(Index: Integer): Pointer;
     procedure SetRange(Index: Integer; const AValue: Pointer);
   protected
     function ItemSize: Integer; override;
+  protected
+    procedure LineTextChanged(AIndex: Integer); override;
+    procedure InsertedLines(AIndex, ACount: Integer); override;
+    procedure DeletedLines(AIndex, ACount: Integer); override;
   public
     constructor Create;
+    procedure ClearReScanNeeded;
+    procedure InvalidateAll;
     procedure IncRefCount;
     procedure DecRefCount;
     property Range[Index: Integer]: Pointer read GetRange write SetRange; default;
     property RefCount: Integer read FRefCount;
+    property NeedsReScanStartIndex: Integer read FNeedsReScanStartIndex;
+    property NeedsReScanEndIndex: Integer read FNeedsReScanEndIndex;
   end;
 
   { TSynHighlighterAttributes }
@@ -287,7 +297,9 @@ type
     procedure StartAtLineIndex(LineNumber:Integer); virtual; // 0 based
     procedure ContinueNextLine; // To be called at EOL; does not read the range
 
-    function ScanFrom(Index: integer; AtLeastTilIndex: integer = -1): integer;
+    function ScanFrom(Index: integer; AtLeastTilIndex: integer = -1): integer; deprecated;
+    procedure ScanRanges;
+    procedure ScanAllRanges;
     procedure SetRange(Value: Pointer); virtual;
     procedure ResetRange; virtual;
     procedure SetLine({$IFDEF FPC}const {$ENDIF}NewValue: String;
@@ -1248,6 +1260,40 @@ begin
   end;
 end;
 
+procedure TSynCustomHighlighter.ScanRanges;
+var
+  StartIndex, EndIndex, CurrentIndex, c: Integer;
+begin
+  StartIndex := CurrentRanges.NeedsReScanStartIndex;
+  if (StartIndex < 0) or (StartIndex >= CurrentRanges.Count) then exit;
+  EndIndex := CurrentRanges.NeedsReScanEndIndex + 1;
+  CurrentIndex := StartIndex;
+  c := CurrentLines.Count;
+  FIsScanning := True;
+  try
+    StartAtLineIndex(CurrentIndex);
+    NextToEol;
+    while UpdateRangeInfoAtLine(CurrentIndex) or
+          (CurrentIndex <= EndIndex)
+    do begin
+      inc(CurrentIndex);
+      if CurrentIndex = c then
+        break;
+      ContinueNextLine;
+      NextToEol;
+    end;
+  finally
+    FIsScanning := False;
+  end;
+  CurrentLines.SendHighlightChanged(StartIndex, CurrentIndex);
+end;
+
+procedure TSynCustomHighlighter.ScanAllRanges;
+begin
+  CurrentRanges.InvalidateAll;
+  ScanRanges;
+end;
+
 procedure TSynCustomHighlighter.SetEnabled(const Value: boolean);
 begin
   if fEnabled <> Value then
@@ -1275,8 +1321,11 @@ begin
   r := TSynHighlighterRangeList(Lines.Ranges[ClassType]);
   if assigned(r) then
     r.IncRefCount
-  else
-    Lines.Ranges[ClassType] := CreateRangeList;
+  else begin
+    r := CreateRangeList;
+    Lines.Ranges[ClassType] := r;
+    r.InvalidateAll;
+  end;
   FCurrentLines := nil;
 end;
 
@@ -1288,8 +1337,8 @@ begin
   if not assigned(r) then exit;
   r.DecRefCount;
   if r.RefCount = 0 then begin
-    r.Free;
     Lines.Ranges[ClassType] := nil;
+    r.Free;
   end;
 end;
 
@@ -1332,10 +1381,55 @@ begin
   Result := SizeOf(Pointer);
 end;
 
+procedure TSynHighlighterRangeList.LineTextChanged(AIndex: Integer);
+begin
+  if FNeedsReScanStartIndex < 0 then begin
+    FNeedsReScanStartIndex := AIndex;
+    FNeedsReScanEndIndex := AIndex;
+  end
+  else if AIndex < FNeedsReScanStartIndex then
+    FNeedsReScanStartIndex := AIndex
+  else if AIndex > FNeedsReScanEndIndex then
+    FNeedsReScanEndIndex := AIndex;
+end;
+
+procedure TSynHighlighterRangeList.InsertedLines(AIndex, ACount: Integer);
+begin
+  if (FNeedsReScanStartIndex < 0) or (AIndex < FNeedsReScanStartIndex) then
+    FNeedsReScanStartIndex := AIndex;
+
+  if (FNeedsReScanEndIndex < 0) or (FNeedsReScanEndIndex < AIndex) then
+    FNeedsReScanEndIndex := AIndex + ACount
+  else
+    FNeedsReScanEndIndex := FNeedsReScanEndIndex + ACount
+end;
+
+procedure TSynHighlighterRangeList.DeletedLines(AIndex, ACount: Integer);
+begin
+  if AIndex >= Count then exit;
+  if (FNeedsReScanStartIndex < 0) or (AIndex < FNeedsReScanStartIndex) then
+    FNeedsReScanStartIndex := AIndex;
+  if (FNeedsReScanEndIndex < 0) or (FNeedsReScanEndIndex < AIndex) then
+    FNeedsReScanEndIndex := AIndex;
+end;
+
+procedure TSynHighlighterRangeList.ClearReScanNeeded;
+begin
+  FNeedsReScanStartIndex := -1;
+  FNeedsReScanEndIndex := -1;
+end;
+
+procedure TSynHighlighterRangeList.InvalidateAll;
+begin
+  FNeedsReScanStartIndex := 0;
+  FNeedsReScanEndIndex := Count - 1;
+end;
+
 constructor TSynHighlighterRangeList.Create;
 begin
   Inherited;
   FRefCount := 1;
+  ClearReScanNeeded;
 end;
 
 procedure TSynHighlighterRangeList.IncRefCount;

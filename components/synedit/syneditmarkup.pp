@@ -145,7 +145,6 @@ type
     Function GetNextMarkupColAfterRowCol(const aRow, aCol : Integer) : Integer; override;
 
     // Notifications about Changes to the text
-    Procedure TextChangedScreen(aFirstCodeLine, aLastCodeLine: Integer);
     Procedure TextChanged(aFirstCodeLine, aLastCodeLine: Integer); override;
   end;
 
@@ -483,11 +482,6 @@ begin
     j := TSynEditMarkup(fMarkUpList[i]).GetNextMarkupColAfterRowCol(aRow, aCol);
     if ((j>0) and (j < Result)) or (Result<0) then Result := j;
   end;
-end;
-
-procedure TSynEditMarkupManager.TextChangedScreen(aFirstCodeLine, aLastCodeLine: Integer);
-begin
-  TextChanged(ScreenRowToRow(aFirstCodeLine), ScreenRowToRow(aLastCodeLine));
 end;
 
 procedure TSynEditMarkupManager.TextChanged(aFirstCodeLine, aLastCodeLine: Integer);

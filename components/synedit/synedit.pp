@@ -364,8 +364,8 @@ type
     fInserting: Boolean;
     fLastMouseCaret: TPoint;  // Char; physical (screen)
     FLastMousePoint: TPoint;  // Pixel
-    fHighlighterNeedsUpdateStartLine: integer; // 1 based, 0 means invalid
-    fHighlighterNeedsUpdateEndLine: integer; // 1 based, 0 means invalid
+    FChangedLinesStart: integer; // 1 based, 0 means invalid
+    FChangedLinesEnd: integer; // 1 based, 0 means invalid
     FBeautifier: TSynCustomBeautifier;
     FBeautifyStartLineIdx, FBeautifyEndLineIdx: Integer;
 
@@ -524,7 +524,7 @@ type
     procedure MoveCaretVert(DY: integer);
     procedure PrimarySelectionRequest(const RequestedFormatID: TClipboardFormat;
       Data: TStream);
-    function ScanFrom(var Index: integer; AtLeastTilIndex: integer = -1): integer; // Todo: move to line, currently scans twice or more, if SharedView is active
+    procedure ScanRanges;
     procedure DoBlockSelectionChanged(Sender: TObject);
     procedure SetBlockBegin(Value: TPoint);
     procedure SetBlockEnd(Value: TPoint);
@@ -610,7 +610,6 @@ type
     procedure SetLines(Value: TStrings);  override;
     function GetMarkupMgr: TObject; override;
     function GetCaretObj: TSynEditCaret; override;
-    procedure ScanFromAfterLock;
     procedure DecPaintLock;
     procedure DestroyWnd; override;
     procedure DragOver(Source: TObject; X, Y: Integer;
@@ -632,6 +631,7 @@ type
     {$ENDIF}
     Procedure LineCountChanged(Sender: TSynEditStrings; AIndex, ACount : Integer);
     Procedure LineTextChanged(Sender: TSynEditStrings; AIndex, ACount : Integer);
+    procedure DoHighlightChanged(Sender: TSynEditStrings; AIndex, ACount : Integer);
     procedure LinesChanging(Sender: TObject);
     procedure LinesChanged(Sender: TObject);
     procedure ListCleared(Sender: TObject);
@@ -1540,6 +1540,7 @@ begin
   with TSynEditStringList(fLines) do begin
     AddChangeHandler(senrLineCount, {$IFDEF FPC}@{$ENDIF}LineCountChanged);
     AddChangeHandler(senrLineChange, {$IFDEF FPC}@{$ENDIF}LineTextChanged);
+    AddChangeHandler(senrHighlightChanged, {$IFDEF FPC}@{$ENDIF}DoHighlightChanged);
     AddNotifyHandler(senrBeginUpdate, {$IFDEF FPC}@{$ENDIF}LinesChanging);
     AddNotifyHandler(senrEndUpdate, {$IFDEF FPC}@{$ENDIF}LinesChanged);
     AddNotifyHandler(senrCleared, {$IFDEF FPC}@{$ENDIF}ListCleared);
@@ -1709,35 +1710,12 @@ begin
   end;
 end;
 
-procedure TCustomSynEdit.ScanFromAfterLock;
-var
-  LastLineChanged: LongInt;
-begin
-  {$IFDEF SYNFOLDDEBUG}debugln(['FOLD-- ScanFromAfterLock; fPaintLock:=', fPaintLock, '  fHighlighterNeedsUpdateStartLine=', fHighlighterNeedsUpdateStartLine,' fHighlighterNeedsUpdateEndLine=',fHighlighterNeedsUpdateEndLine]);{$ENDIF}
-    if fHighlighterNeedsUpdateStartLine>0 then begin
-      //DebugLn('TCustomSynEdit.DecPaintLock ',dbgs(fHighlighterNeedsUpdateStartLine),'-',dbgs(fHighlighterNeedsUpdateEndLine));
-      if fHighlighterNeedsUpdateStartLine<=FTheLinesView.Count then begin
-        if fHighlighterNeedsUpdateEndLine>FTheLinesView.Count then
-          fHighlighterNeedsUpdateEndLine:=FTheLinesView.Count;
-        // rescan all lines in range
-        // Note: The highlighter range of the line can be invalid as well,
-        //       so start scan one line earlier
-        dec(fHighlighterNeedsUpdateStartLine, 2);
-        LastLineChanged:=ScanFrom(fHighlighterNeedsUpdateStartLine,
-                                  fHighlighterNeedsUpdateEndLine-1);
-        //DebugLn('TCustomSynEdit.DecPaintLock ',dbgs(fHighlighterNeedsUpdateStartLine),'-',dbgs(fHighlighterNeedsUpdateEndLine),' LastLineChanged=',dbgs(LastLineChanged));
-        InvalidateLines(fHighlighterNeedsUpdateStartLine,LastLineChanged+1);
-        InvalidateGutterLines(fHighlighterNeedsUpdateStartLine,LastLineChanged+1);
-      end;
-      fHighlighterNeedsUpdateStartLine:=0;
-      fHighlighterNeedsUpdateEndLine:=0;
-    end;
-end;
-
 procedure TCustomSynEdit.DecPaintLock;
 begin
   if (fPaintLock=1) and HandleAllocated then begin
-    ScanFromAfterLock;
+    ScanRanges;
+    FChangedLinesStart:=0;
+    FChangedLinesEnd:=0;
   end;
   FCaret.Unlock;            // Maybe after FFoldedLinesView
   FTrimmedLinesView.UnLock; // Must be unlocked after caret
@@ -3814,7 +3792,7 @@ begin
     if eoFoldedCopyPaste in fOptions2 then begin
       PTxt := ClipHelper.GetTagPointer(synClipTagFold);
       if PTxt <> nil then begin
-        ScanFromAfterLock;
+        ScanRanges;
         FFoldedLinesView.ApplyFoldDescription(InsStart.Y -1, InsStart.X,
             FInternalBlockSelection.StartLinePos-1, FInternalBlockSelection.StartBytePos,
             PTxt, ClipHelper.GetTagLen(synClipTagFold));
@@ -4541,28 +4519,18 @@ begin
   end;
 end;
 
-function TCustomSynEdit.ScanFrom(var Index: integer; AtLeastTilIndex: integer): integer;
-// Index and AtLeastTilIndex are 0 based
+procedure TCustomSynEdit.ScanRanges;
 begin
-  {$IFDEF SYNFOLDDEBUG}debugln(['FOLD-- ScanFrom Index=', Index, '  AtLeats=', AtLeastTilIndex]);{$ENDIF}
-  if Index < 0 then Index := 0;
-  Result := Max(Index, AtLeastTilIndex);
-  if not assigned(fHighlighter) or (Index > FTheLinesView.Count - 1) then begin
-    FFoldedLinesView.FixFoldingAtTextIndex(Index);
-    fMarkupManager.TextChangedScreen(Max(RowToScreenRow(Index+1), 0), LinesInWindow+1);
+  if not assigned(FHighlighter) then begin
+    fMarkupManager.TextChanged(FChangedLinesStart, FChangedLinesEnd);
     Topline := TopLine;
     exit;
   end;
-  fHighlighter.CurrentLines := FTheLinesView;
-  Result :=  fHighlighter.ScanFrom(Index, AtLeastTilIndex);
+  FHighlighter.CurrentLines := FTheLinesView;
+  FHighlighter.ScanRanges;
 
-  FFoldedLinesView.FixFoldingAtTextIndex(Index, Result);
-  fMarkupManager.TextChangedScreen(Max(RowToScreenRow(Index+1), 0),
-                                       Min(RowToScreenRow(Result), LinesInWindow+1));
+  fMarkupManager.TextChanged(FChangedLinesStart, FChangedLinesEnd);
   Topline := TopLine;
-  if Index > 0 then dec(Index);
-  Dec(Result);
-  {$IFDEF SYNFOLDDEBUG}debugln(['FOLD-- ScanFrom Result=', Result]);{$ENDIF}
 end;
 
 procedure TCustomSynEdit.LineCountChanged(Sender: TSynEditStrings;
@@ -4582,27 +4550,25 @@ begin
     if (FBeautifyEndLineIdx < AIndex) then
       FBeautifyEndLineIdx := AIndex;
   end;
+
   if PaintLock>0 then begin
-    if (fHighlighterNeedsUpdateStartLine<1)
-    or (fHighlighterNeedsUpdateStartLine>AIndex+1) then
-      fHighlighterNeedsUpdateStartLine:=AIndex+1;
-    if (fHighlighterNeedsUpdateEndLine<1)
-    or (fHighlighterNeedsUpdateEndLine<AIndex+1) then
-      fHighlighterNeedsUpdateEndLine:=AIndex + 1 + MaX(ACount, 0)
+    if (FChangedLinesStart<1)
+    or (FChangedLinesStart>AIndex+1) then
+      FChangedLinesStart:=AIndex+1;
+    if (FChangedLinesEnd<1)
+    or (FChangedLinesEnd<AIndex+1) then
+      FChangedLinesEnd:=AIndex + 1 + MaX(ACount, 0)
     else
-      fHighlighterNeedsUpdateEndLine := fHighlighterNeedsUpdateEndLine
-                                        + MaX(ACount, 0)
-  end
-  else
-    ScanFrom(AIndex, Max(AIndex, AIndex + ACount));
-  InvalidateLines(AIndex + 1, -1);
-  InvalidateGutterLines(AIndex + 1, -1);
+      FChangedLinesEnd := FChangedLinesEnd + MaX(ACount, 0);
+  end else begin
+    ScanRanges;
+    InvalidateLines(AIndex + 1, -1);
+    InvalidateGutterLines(AIndex + 1, -1);
+  end;
 end;
 
 procedure TCustomSynEdit.LineTextChanged(Sender: TSynEditStrings;
   AIndex, ACount: Integer);
-var
-  EndIndex: Integer;
 begin
   {$IFDEF SYNFOLDDEBUG}debugln(['FOLD-- LineTextChanged Aindex', AIndex, '  ACount=', ACount]);{$ENDIF}
   IncreaseChangeStamp;
@@ -4610,18 +4576,27 @@ begin
     FBeautifyStartLineIdx := AIndex;
   if (AIndex + ACount - 1 > FBeautifyEndLineIdx) then
     FBeautifyEndLineIdx := AIndex + ACount - 1;
+
   if PaintLock>0 then begin
-    if (fHighlighterNeedsUpdateStartLine<1)
-    or (fHighlighterNeedsUpdateStartLine>AIndex+1) then
-      fHighlighterNeedsUpdateStartLine:=AIndex+1;
-    if (fHighlighterNeedsUpdateEndLine<1)
-    or (fHighlighterNeedsUpdateEndLine<AIndex+1) then
-      fHighlighterNeedsUpdateEndLine:=AIndex + 1 + MaX(ACount, 0);
-    exit;
+    if (FChangedLinesStart<1)
+    or (FChangedLinesStart>AIndex+1) then
+      FChangedLinesStart:=AIndex+1;
+    if (FChangedLinesEnd<1)
+    or (FChangedLinesEnd<AIndex+1) then
+      FChangedLinesEnd:=AIndex + 1 + MaX(ACount, 0);
+  end else begin
+    ScanRanges;
+    InvalidateLines(AIndex + 1, AIndex + ACount);
+    InvalidateGutterLines(AIndex + 1, AIndex + ACount);
   end;
-  EndIndex := ScanFrom(AIndex, Max(AIndex, AIndex + ACount)) + 1;
-  InvalidateLines(AIndex + 1, EndIndex);
-  InvalidateGutterLines(AIndex + 1, EndIndex);
+end;
+
+procedure TCustomSynEdit.DoHighlightChanged(Sender: TSynEditStrings; AIndex,
+  ACount: Integer);
+begin
+  InvalidateLines(AIndex + 1, AIndex + 1 + ACount);
+  InvalidateGutterLines(AIndex + 1, AIndex + 1 + ACount);
+  FFoldedLinesView.FixFoldingAtTextIndex(AIndex, AIndex + ACount);
 end;
 
 procedure TCustomSynEdit.ListCleared(Sender: TObject);
@@ -5007,6 +4982,7 @@ begin
   if FHighlighter <> nil then
     FHighlighter.DetachFromLines(FLines);
 
+  // TextBuffer
   OldLines := TSynEditStringList(FLines);
   if AValue = nil then begin
     FLines := TSynEditStringList.Create;
@@ -5323,7 +5299,7 @@ begin
             BlockBegin := NewCaret;
             SetSelTextPrimitive(smNormal, PChar(DragDropText), true);
             if FoldInfo <> '' then begin
-              ScanFromAfterLock;
+              ScanRanges;
               FFoldedLinesView.ApplyFoldDescription(NewCaret.Y -1, NewCaret.X,
                     FBlockSelection.StartLinePos-1, FBlockSelection.StartBytePos,
                     PChar(FoldInfo), length(FoldInfo));
@@ -5424,8 +5400,6 @@ begin
 end;
 
 procedure TCustomSynEdit.SetHighlighter(const Value: TSynCustomHighlighter);
-var
-  tmp: Integer;
 begin
   if Value <> fHighlighter then begin
     RemoveHooksFromHighlighter;
@@ -5451,8 +5425,7 @@ begin
     RecalcCharExtent;
     FTheLinesView.BeginUpdate;
     try
-      tmp := 0;
-      ScanFrom(tmp,FTheLinesView.Count-1);
+      ScanRanges;
     finally
       FTheLinesView.EndUpdate;
     end;
@@ -6379,7 +6352,7 @@ procedure TCustomSynEdit.AfterLoadFromFile;
 begin
   if assigned(FFoldedLinesView) then begin
     // TODO: Maybe defer until after paintlock?
-    ScanFromAfterLock;
+    ScanRanges;
     FFoldedLinesView.UnfoldAll;
     FFoldedLinesView.CollapseDefaultFolds;
     TopLine := TopLine;
@@ -7207,15 +7180,16 @@ begin
 end;
 
 procedure TCustomSynEdit.HighlighterAttrChanged(Sender: TObject);
-var
-  t: integer;
 begin
   RecalcCharExtent;
   SizeOrFontChanged(TRUE);                                                      //jr 2000-10-01
   Invalidate;
-  t := 0;
-  if fHighlighter.AttributeChangeNeedScan then
-    ScanFrom(t, FLines.Count - 1);
+  if fHighlighter.AttributeChangeNeedScan then begin
+    FHighlighter.CurrentLines := FTheLinesView;
+    FHighlighter.ScanAllRanges;
+    fMarkupManager.TextChanged(0, FTheLinesView.Count - 1);
+    TopLine := TopLine;
+  end;
 end;
 
 procedure TCustomSynEdit.StatusChanged(AChanges: TSynStatusChanges);

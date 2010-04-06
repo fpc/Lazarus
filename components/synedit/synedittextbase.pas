@@ -39,6 +39,7 @@ type
 
   TSynEditNotifyReason = ( // TStringListLineCountEvent
                            senrLineCount, senrLineChange, senrEditAction,
+                           senrHighlightChanged, // used by Highlighter
                            // TStringListLineEditEvent
                            senrTextEdit,
                            // TNotifyEvent
@@ -65,13 +66,15 @@ type
     procedure SetCapacity(const AValue: Integer); virtual;
     procedure SetCount(const AValue: Integer); virtual;
     function ItemSize: Integer; virtual; abstract;
+    procedure Move(AFrom, ATo, ALen: Integer); virtual;
 
     property Mem: PByte read FMem;
     property ItemPointer[Index: Integer]: Pointer read GetItemPointer;
   public
     constructor Create;
     destructor Destroy; override;
-    procedure Move(AFrom, ATo, ALen: Integer); virtual;
+    procedure InsertRows(AIndex, ACount: Integer); virtual;
+    procedure DeleteRows(AIndex, ACount: Integer); virtual;
     property Capacity: Integer read FCapacity write SetCapacity;
     // Count must be maintained by owner
     property Count: Integer read FCount write SetCount;
@@ -159,6 +162,7 @@ type
     property IsUndoing: Boolean read GetIsUndoing write SetIsUndoing;
     property IsRedoing: Boolean read GetIsRedoing write SetIsRedoing;
     procedure IncreaseTextChangeStamp;
+    procedure SendHighlightChanged(aIndex, aCount: Integer);
   public
     property ExpandedStrings[Index: integer]: string read GetExpandedString;
     property LengthOfLongestLine: integer read GetLengthOfLongestLine;
@@ -343,8 +347,25 @@ type
       write SetCurrentReason;
   end;
 
+  ESynEditStorageMem = class(Exception);
+
 implementation
 
+{$IFNDEF FPC}
+  {$IFDEF SYN_COMPILER_3_UP}
+resourcestring
+  {$ELSE}
+const
+  {$ENDIF}
+{$ELSE}
+const
+{$ENDIF}
+  SListIndexOutOfBounds = 'Invalid stringlist index %d';
+
+procedure ListIndexOutOfBounds(Index: integer);
+begin
+  raise ESynEditStorageMem.CreateFmt(SListIndexOutOfBounds, [Index]);
+end;
 
 { TSynEditStrings }
 
@@ -512,6 +533,11 @@ begin
     fTextChangeStamp:=Low(fTextChangeStamp)
   else
     inc(fTextChangeStamp);
+end;
+
+procedure TSynEditStrings.SendHighlightChanged(aIndex, aCount: Integer);
+begin
+  SendNotification(senrHighlightChanged, Self, aIndex, aCount);
 end;
 
 { TSynEditStringsLinked }
@@ -1184,6 +1210,29 @@ begin
   SetCount(0);
   SetCapacity(0);
   inherited Destroy;
+end;
+
+procedure TSynEditStorageMem.InsertRows(AIndex, ACount: Integer);
+begin
+  if (AIndex < 0) or (AIndex > Count) then
+    ListIndexOutOfBounds(AIndex);
+  if Capacity < Count + ACount then
+    SetCapacity(Count + ACount);
+  if AIndex < Count then
+    Move(AIndex, AIndex + ACount, Count - AIndex);
+  Count := Count + ACount;
+end;
+
+procedure TSynEditStorageMem.DeleteRows(AIndex, ACount: Integer);
+var
+  LinesAfter: Integer;
+begin
+  if (AIndex < 0) or (AIndex + ACount > Count) then
+    ListIndexOutOfBounds(AIndex);
+  LinesAfter := Count - (AIndex + ACount);
+  if LinesAfter > 0 then
+    Move(AIndex + ACount, AIndex, LinesAfter);
+  Count := Count - ACount;
 end;
 
 procedure TSynEditStorageMem.Move(AFrom, ATo, ALen: Integer);
