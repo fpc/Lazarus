@@ -14623,9 +14623,16 @@ function CompareBookmarkEditorPos(Mark1, Mark2: TProjectBookmark): integer;
 var
   Ed1, Ed2: TSourceEditor;
 begin
-  // ProjctMarks, only exist for UnitInfo with at least one Editor
-  Ed1 := TSourceEditor(TUnitInfo(Mark1.UnitInfo).OpenEditorInfo[0].EditorComponent);
-  Ed2 := TSourceEditor(TUnitInfo(Mark2.UnitInfo).OpenEditorInfo[0].EditorComponent);
+  // ProjectMarks, only exist for UnitInfo with at least one Editor
+  if Mark1.UnitInfo is TSourceEditor then
+    Ed1 := TSourceEditor(Mark1.UnitInfo)
+  else
+    Ed1 := TSourceEditor(TUnitInfo(Mark1.UnitInfo).OpenEditorInfo[0].EditorComponent);
+  if Mark2.UnitInfo is TSourceEditor then
+    Ed2 := TSourceEditor(Mark2.UnitInfo)
+  else
+    Ed2 := TSourceEditor(TUnitInfo(Mark2.UnitInfo).OpenEditorInfo[0].EditorComponent);
+
   Result := SourceEditorManager.IndexOfSourceWindow(Ed1.SourceNotebook) -
     SourceEditorManager.IndexOfSourceWindow(Ed2.SourceNotebook);
   if Result = 0 then
@@ -14654,7 +14661,7 @@ begin
     i := 0;
     if not Backward then i := MaxInt;
     List := TFPList.Create;
-    CurPos := TProjectBookmark.Create(i, SrcEdit.EditorComponent.CaretY, -1, nil);
+    CurPos := TProjectBookmark.Create(i, SrcEdit.EditorComponent.CaretY, -1, SrcEdit);
     try
       for i := 0 to Project1.BookMarks.Count - 1 do
         List.Add(Project1.BookMarks[i]);
