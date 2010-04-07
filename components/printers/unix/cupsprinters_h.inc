@@ -104,8 +104,6 @@ type
      procedure DebugPPD;
      {$ENDIF}
   protected
-     function GetCanvasRef : TPrinterCanvasRef; override;
-
      procedure DoBeginDoc; override;
      procedure DoEndDoc(aAborted : Boolean); override;
 
@@ -125,6 +123,7 @@ type
      function DoGetPaperRect(aName : string;
                              var aPaperRc: TPaperRect): Integer; override;
      function DoGetPrinterState: TPrinterState; override;
+     function DoGetDefaultCanvasClass: TPrinterCanvasRef; override;
      
      function GetPrinterType : TPrinterType; override;
      function GetCanPrint : Boolean; override;
@@ -165,7 +164,3 @@ type
     procedure MergeOptions(const AOptions:Pcups_option_t; const n:Integer);
     property CupsPPD:Pppd_file_t read fcupsPPD;
   end;
-
-Var
-  CupsCanvasClass : TFilePrinterCanvasClass = TPostscriptPrinterCanvas;
-

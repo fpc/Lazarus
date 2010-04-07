@@ -697,11 +697,6 @@ begin
   end;
 end;
 
-function TCUPSPrinter.GetCanvasRef: TPrinterCanvasRef;
-begin
-  Result:=CupsCanvasClass;
-end;
-
 //Override this methode for assign an
 //file name at Canvas
 procedure TCUPSPrinter.DoBeginDoc;
@@ -1184,6 +1179,11 @@ begin
     IPP_PRINTER_PROCESSING : Result:=psPrinting;
     IPP_PRINTER_STOPPED    : Result:=psStopped;
   end;
+end;
+
+function TCUPSPrinter.DoGetDefaultCanvasClass: TPrinterCanvasRef;
+begin
+  Result := TPostscriptPrinterCanvas;
 end;
 
 function TCUPSPrinter.GetPrinterType: TPrinterType;

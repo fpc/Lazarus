@@ -196,9 +196,11 @@ type
     //fCapabilities: TPrinterCapabilities;
     fPaperSize   : TPaperSize;
     fRawMode     : Boolean;
+    fCanvasClass : TPrinterCanvasRef;
     
     function GetCanvas: TCanvas;
     procedure CheckPrinting(Value: Boolean);
+    function GetCanvasClass: TPrinterCanvasRef;
     function GetCopies: Integer;
     function GetFonts: TStrings;
     function GetOrientation: TPrinterOrientation;
@@ -207,14 +209,13 @@ type
     function GetPaperSize: TPaperSize;
     function GetPrinterIndex: integer;
     function GetPrinters: TStrings;
+    procedure SetCanvasClass(const AValue: TPrinterCanvasRef);
     procedure SetCopies(AValue: Integer);
     procedure SetOrientation(const AValue: TPrinterOrientation);
     procedure SetPrinterIndex(AValue: integer);
     procedure SetRawMode(const AValue: boolean);
   protected
      procedure SelectCurrentPrinterOrDefault;
-     
-     function GetCanvasRef : TPrinterCanvasRef; virtual;
      
      procedure DoBeginDoc; virtual;
      procedure DoNewPage; virtual;
@@ -245,6 +246,7 @@ type
      procedure CheckRawMode(const Value: boolean; Msg:string='');
      procedure RawModeChanging; virtual;
      procedure PrinterSelected; virtual;
+     function  DoGetDefaultCanvasClass: TPrinterCanvasRef; virtual;
   public
      constructor Create; virtual;
      destructor Destroy; override;
@@ -267,6 +269,7 @@ type
      property FileName: string read FFileName write FFileName;
      property Fonts: TStrings read GetFonts;
      property Canvas: TCanvas read GetCanvas;
+     property CanvasClass: TPrinterCanvasRef read GetCanvasClass write SetCanvasClass;
      property PageHeight: Integer read GetPageHeight;
      property PageWidth: Integer read GetPageWidth;
      property PageNumber : Integer read fPageNumber;
@@ -483,10 +486,10 @@ begin
   
   if not Assigned(fCanvas) then
   begin
-    if not Assigned(GetCanvasRef) then
-      raise Exception.Create('TCanvas not defined.');
+    if not Assigned(CanvasClass) then
+      raise Exception.Create('Canvas Class not defined.');
 
-    fCanvas:=GetCanvasRef.Create(Self);
+    fCanvas:=CanvasClass.Create(Self);
   end;
   
   Result:=fCanvas;
@@ -502,6 +505,17 @@ begin
     else
       raise Eprinter.Create('Printer print');
   end;
+end;
+
+function TPrinter.GetCanvasClass: TPrinterCanvasRef;
+begin
+  if FRawMode then
+    result := nil
+  else
+  if FCanvasClass=nil then
+    Result := DoGetDefaultCanvasClass
+  else
+    Result := FCanvasClass;
 end;
 
 procedure TPrinter.CheckRawMode(const Value:boolean; msg:string ='');
@@ -524,6 +538,11 @@ end;
 
 procedure TPrinter.PrinterSelected;
 begin
+end;
+
+function TPrinter.DoGetDefaultCanvasClass: TPrinterCanvasRef;
+begin
+  result := TPrinterCanvas;
 end;
 
 //Get current copies number
@@ -604,6 +623,11 @@ begin
   end;
 end;
 
+procedure TPrinter.SetCanvasClass(const AValue: TPrinterCanvasRef);
+begin
+  FCanvasClass := AValue;
+end;
+
 //Return XDPI
 function TPrinter.GetXDPI: Integer;
 begin
@@ -669,16 +693,6 @@ begin
   if (fPrinterIndex<0) and (Printers.Count>0) then
     PrinterIndex:=0;
 end;
-
-//Specify here the Canvas class used by your TPrinter object
-function TPrinter.GetCanvasRef: TPrinterCanvasRef;
-begin
-  if FRawMode then
-    result := nil
-  else
-    Result:=TPrinterCanvas;
-end;
-
 
 procedure TPrinter.DoBeginDoc;
 begin
