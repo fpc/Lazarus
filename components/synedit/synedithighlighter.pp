@@ -1285,6 +1285,7 @@ begin
   finally
     FIsScanning := False;
   end;
+  CurrentRanges.ClearReScanNeeded;
   CurrentLines.SendHighlightChanged(StartIndex, CurrentIndex);
 end;
 
