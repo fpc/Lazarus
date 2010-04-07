@@ -2948,8 +2948,8 @@ begin
           LocalRect.Bottom - LocalRect.Top);
 
           NewRect := sourceRect^;
-          NewRect.Right := LocalRect.Right - sourceRect^.Left;
-          NewRect.Bottom := LocalRect.Bottom - sourceRect^.Top;
+          NewRect.Right := (LocalRect.Right - LocalRect.Left) + sourceRect^.Left;
+          NewRect.Bottom := (LocalRect.Bottom - LocalRect.Top) + sourceRect^.Top;
 
           QPainter_drawImage(Widget, PRect(@LocalRect), ScaledImage, @NewRect, flags);
         end else
@@ -2969,8 +2969,8 @@ begin
           QImage_scaled(ScaledImage, ScaledImage, LocalRect.Right - LocalRect.Left,
             LocalRect.Bottom - LocalRect.Top);
           NewRect := sourceRect^;
-          NewRect.Right := LocalRect.Right - sourceRect^.Left;
-          NewRect.Bottom := LocalRect.Bottom - sourceRect^.Top;
+          NewRect.Right := (LocalRect.Right - LocalRect.Left) + sourceRect^.Left;
+          NewRect.Bottom := (LocalRect.Bottom - LocalRect.Top) + sourceRect^.Top;
           QPainter_drawImage(Widget, PRect(@LocalRect), ScaledImage, @NewRect, flags);
         finally
           QImage_destroy(ScaledImage);
