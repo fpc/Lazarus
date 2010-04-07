@@ -1212,8 +1212,9 @@ var
   i: Integer;
 begin
   (PString(Mem + Index * FAttributeSize))^ := AValue;
-  for i := 0 to length(FRangeList) - 1 do
-    FRangeList[i].Data.LineTextChanged(Index);
+  if FRangeListLock = 0 then
+    for i := 0 to length(FRangeList) - 1 do
+      FRangeList[i].Data.LineTextChanged(Index);
 end;
 
 function TSynEditStringMemory.ItemSize: Integer;
