@@ -2041,7 +2041,7 @@ Begin
   if ASharedEditor <> nil then begin
     PageName := ASharedEditor.PageName;
     CodeBuffer := ASharedEditor.CodeBuffer;
-    FEditor.SharedViewEdit := ASharedEditor.EditorComponent;
+    FEditor.ShareTextBufferFrom(ASharedEditor.EditorComponent);
     FEditor.Highlighter := ASharedEditor.EditorComponent.Highlighter;
 
     // bookmakrs

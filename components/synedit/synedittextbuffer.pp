@@ -138,11 +138,11 @@ type
     FList: TSynEditStringMemory;
     FAttributeList: Array of TSynEditStringAttribute;
 
+    FAttachedSynEditList: TFPList;
     FLineRangeNotificationList: TLineRangeNotificationList; // LineCount
     FLineChangeNotificationList: TLineRangeNotificationList; // ContentChange (not called on add...)
     FLineInvalidateNotificationList: TLineRangeNotificationList; // senrHighlightChanged
     FLineEditNotificationList: TLineEditNotificationList;
-    FRefCount: integer;
     FUndoRedoAddedNotificationList: TSynMethodList;
     FOnChangeList: TSynMethodList;
     FOnChangingList: TSynMethodList;
@@ -155,6 +155,7 @@ type
     FUndoList: TSynEditUndoList;
     FIsUndoing, FIsRedoing: Boolean;
 
+    function GetAttachedSynEdits(Index: Integer): TSynEditBase;
     function GetFlags(Index: Integer): TSynEditStringFlags;
     procedure Grow;
     procedure InsertItem(Index: integer; const S: string);
@@ -220,10 +221,12 @@ type
     procedure CopyHanlders(OtherLines: TSynEditStringList; AOwner: TObject = nil);
     procedure RemoveHanlders(AOwner: TObject);
     {$ENDIF}
-    procedure IncRefCount;
-    procedure DecRefCount;
-    property  RefCount: integer read FRefCount;
    function GetPhysicalCharWidths(const Line: String; Index: Integer): TPhysicalCharWidths; override;
+    // For Textbuffersharing
+    procedure AttachSynEdit(AEdit: TSynEditBase);
+    procedure DetachSynEdit(AEdit: TSynEditBase);
+    function  AttachedSynEditCount: Integer;
+    property  AttachedSynEdits[Index: Integer]: TSynEditBase read GetAttachedSynEdits;
   public
     property DosFileFormat: boolean read fDosFileFormat write fDosFileFormat;    
     property LengthOfLongestLine: integer read GetLengthOfLongestLine;
@@ -425,8 +428,8 @@ var
   r: TSynEditNotifyReason;
 begin
   fList := TSynEditStringMemory.Create;
-  FRefCount := 1;
 
+  FAttachedSynEditList := TFPList.Create;
   FUndoList := TSynEditUndoList.Create;
   fUndoList.OnAddedUndo := {$IFDEF FPC}@{$ENDIF}UndoRedoAdded;
   FRedoList := TSynEditUndoList.Create;
@@ -470,6 +473,7 @@ begin
   FreeAndNil(FOnClearedList);
   FreeAndNil(FUndoList);
   FreeAndNil(FRedoList);
+  FreeAndNil(FAttachedSynEditList);
 
   FreeAndNil(fList);
 end;
@@ -559,6 +563,11 @@ begin
     Result := TSynEditStringFlags(Integer(PtrUInt(GetAttribute(TSynEditFlagsClass, Index))))
   else
     Result := [];
+end;
+
+function TSynEditStringList.GetAttachedSynEdits(Index: Integer): TSynEditBase;
+begin
+  Result := TSynEditBase(FAttachedSynEditList[Index]);
 end;
 
 function TSynEditStringList.Get(Index: integer): string;
@@ -679,6 +688,22 @@ begin
     end;
     inc(i);
   end;
+end;
+
+procedure TSynEditStringList.AttachSynEdit(AEdit: TSynEditBase);
+begin
+  if FAttachedSynEditList.IndexOf(AEdit) < 0 then
+    FAttachedSynEditList.Add(AEdit);
+end;
+
+procedure TSynEditStringList.DetachSynEdit(AEdit: TSynEditBase);
+begin
+  FAttachedSynEditList.Remove(AEdit);
+end;
+
+function TSynEditStringList.AttachedSynEditCount: Integer;
+begin
+  Result := FAttachedSynEditList.Count;
 end;
 
 function TSynEditStringList.GetObject(Index: integer): TObject;
@@ -959,16 +984,6 @@ begin
   FOnClearedList.RemoveAllMethodsOfObject(AOwner);
 end;
 {$ENDIF}
-
-procedure TSynEditStringList.IncRefCount;
-begin
-  inc(FRefCount);
-end;
-
-procedure TSynEditStringList.DecRefCount;
-begin
-  dec(FRefCount);
-end;
 
 procedure TSynEditStringList.SetCapacity(NewCapacity: integer);
 begin

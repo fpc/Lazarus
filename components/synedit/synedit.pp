@@ -379,7 +379,6 @@ type
     {$IFDEF SynDualView}
     FTopLinesView: TSynEditStrings;   // The linesview that holds the real line-buffer/FLines
 
-    FSharedViewSynEdit: TCustomSynEdit;
     {$ENDIF}
 
     fExtraCharSpacing: integer;
@@ -577,8 +576,7 @@ type
     procedure UpdateCaret(IgnorePaintLock: Boolean = False);
     procedure UpdateScrollBars;
     {$IFDEF SynDualView}
-    function GetSharedViewEdit: TCustomSynEdit;
-    procedure SetSharedViewEdit(const AValue: TCustomSynEdit);
+    procedure ChangeTextBuffer(NewBuffer: TSynEditStringList);
     procedure RemoveHandlers(ALines: TSynEditStrings = nil);
     {$ENDIF}
   protected
@@ -610,7 +608,10 @@ type
     procedure SetLines(Value: TStrings);  override;
     function GetMarkupMgr: TObject; override;
     function GetCaretObj: TSynEditCaret; override;
+    procedure IncPaintLock;
     procedure DecPaintLock;
+    procedure DoIncPaintLock;
+    procedure DoDecPaintLock;
     procedure DestroyWnd; override;
     procedure DragOver(Source: TObject; X, Y: Integer;
       State: TDragState; var Accept: Boolean); override;
@@ -618,7 +619,6 @@ type
     function GetReadOnly: boolean; virtual;
     procedure HideCaret;
     procedure HighlighterAttrChanged(Sender: TObject);
-    procedure IncPaintLock;
     procedure InitializeCaret;
     // note: FirstLine and LastLine don't need to be in correct order
     procedure InvalidateGutterLines(FirstLine, LastLine: integer);
@@ -886,7 +886,8 @@ type
     property ChangeStamp: int64 read fChangeStamp;
     {$ENDIF}
     {$IFDEF SynDualView}
-    property SharedViewEdit: TCustomSynEdit read GetSharedViewEdit write SetSharedViewEdit;
+    procedure ShareTextBufferFrom(AShareEditor: TCustomSynEdit);
+    procedure UnShareTextBuffer;
     {$ENDIF}
   public
     property OnKeyDown;
@@ -1506,6 +1507,7 @@ begin
   FBeautifier := SynDefaultBeautifier;
 
   FLines := TSynEditStringList.Create;
+  TSynEditStringList(FLines).AttachSynEdit(Self);
 
   FCaret := TSynEditCaret.Create;
   FCaret.MaxLeftChar := @FMaxLeftChar;
@@ -1710,7 +1712,35 @@ begin
   end;
 end;
 
+procedure TCustomSynEdit.IncPaintLock;
+var
+  i: Integer;
+begin
+  for i := 0 to TSynEditStringList(FLines).AttachedSynEditCount - 1 do
+    TCustomSynEdit(TSynEditStringList(FLines).AttachedSynEdits[i]).DoIncPaintLock;
+end;
+
 procedure TCustomSynEdit.DecPaintLock;
+var
+  i: Integer;
+begin
+  for i := 0 to TSynEditStringList(FLines).AttachedSynEditCount - 1 do
+    TCustomSynEdit(TSynEditStringList(FLines).AttachedSynEdits[i]).DoDecPaintLock;
+end;
+
+procedure TCustomSynEdit.DoIncPaintLock;
+begin
+  if fPaintLock = 0 then begin
+    FOldTopLine := FTopLine;
+    FOldTopView := TopView;
+  end;
+  inc(fPaintLock);
+  FFoldedLinesView.Lock; //DecPaintLock triggers ScanFrom, and folds must wait
+  FTrimmedLinesView.Lock; // Lock before caret
+  FCaret.Lock;
+end;
+
+procedure TCustomSynEdit.DoDecPaintLock;
 begin
   if (fPaintLock=1) and HandleAllocated then begin
     ScanRanges;
@@ -1796,8 +1826,8 @@ begin
   FreeAndNil(FTabbedLinesView);
   FreeAndNil(FTrimmedLinesView); // has reference to caret
   FreeAndNil(FDoubleWidthChrLinesView);
-  TSynEditStringList(FLines).DecRefCount;
-  if TSynEditStringList(FLines).RefCount = 0 then
+  TSynEditStringList(FLines).DetachSynEdit(Self);
+  if TSynEditStringList(FLines).AttachedSynEditCount = 0 then
     FreeAndNil(fLines);
   FreeAndNil(fCaret);
   FreeAndNil(fInternalCaret);
@@ -2046,18 +2076,6 @@ begin
   inherited;
 end;
 {$ENDIF}
-
-procedure TCustomSynEdit.IncPaintLock;
-begin
-  if fPaintLock = 0 then begin
-    FOldTopLine := FTopLine;
-    FOldTopView := TopView;
-  end;
-  inc(fPaintLock);
-  FFoldedLinesView.Lock; //DecPaintLock triggers ScanFrom, and folds must wait
-  FTrimmedLinesView.Lock; // Lock before caret
-  FCaret.Lock;
-end;
 
 procedure TCustomSynEdit.InvalidateGutter;
 begin
@@ -4957,80 +4975,87 @@ begin
 end;
 
 {$IFDEF SynDualView}
-function TCustomSynEdit.GetSharedViewEdit: TCustomSynEdit;
-begin
-  Result := FSharedViewSynEdit;
-end;
-
-procedure TCustomSynEdit.SetSharedViewEdit(const AValue: TCustomSynEdit);
+procedure TCustomSynEdit.ChangeTextBuffer(NewBuffer: TSynEditStringList);
 var
-  OldLines: TSynEditStringList;
+  OldBuffer: TSynEditStringList;
   LView: TSynEditStrings;
   i: Integer;
-  Plugins: TList;
+  TempPlugins: TList;
 begin
-  if AValue = FSharedViewSynEdit then exit;
-  FSharedViewSynEdit := AValue;
-
-  // TODO: all plugins SetEditor = nil => release all flines
-  Plugins := TList.Create; // remmeber them
+  // Remember all Plugins; Detach from Lines
+  TempPlugins := TList.Create;
   for i := FPlugins.Count - 1 downto 0 do begin
-    Plugins.Add(FPlugins[i]);
+    TempPlugins.Add(FPlugins[i]);
     TSynEditPlugin(FPlugins[i]).Editor := nil;
   end;
-
+  // Detach Highlighter
   if FHighlighter <> nil then
     FHighlighter.DetachFromLines(FLines);
 
-  // TextBuffer
-  OldLines := TSynEditStringList(FLines);
-  if AValue = nil then begin
-    FLines := TSynEditStringList.Create;
-  end else begin
-    FLines := AValue.FLines;
-    TSynEditStringList(FLines).IncRefCount;
-  end;
+  // Set the New Lines
+  OldBuffer := TSynEditStringList(FLines);
+  Flines := NewBuffer;
   TSynEditStringsLinked(FTopLinesView).NextLines := FLines;
 
-  if FHighlighter <> nil then
-    FHighlighter.AttachToLines(FLines);
-
-  // Todo: copy events (have a list of all event owners)
-  TSynEditStringList(FLines).CopyHanlders(OldLines, self);
+  // Todo: Todo Refactor all classes with events, so they an be told to re-attach
+  NewBuffer.CopyHanlders(OldBuffer, self);
   LView := FTheLinesView;
   while (LView is TSynEditStringsLinked) and (LView <> FLines) do begin
-    TSynEditStringList(FLines).CopyHanlders(OldLines, LView);
+    NewBuffer.CopyHanlders(OldBuffer, LView);
     LView := TSynEditStringsLinked(LView).NextLines;
   end;
-  TSynEditStringList(FLines).CopyHanlders(OldLines, FFoldedLinesView);
-  TSynEditStringList(FLines).CopyHanlders(OldLines, FMarkList);
-  TSynEditStringList(FLines).CopyHanlders(OldLines, FCaret);
-  TSynEditStringList(FLines).CopyHanlders(OldLines, FInternalCaret);
-  TSynEditStringList(FLines).CopyHanlders(OldLines, FBlockSelection);
-  TSynEditStringList(FLines).CopyHanlders(OldLines, FInternalBlockSelection);
-  TSynEditStringList(FLines).CopyHanlders(OldLines, fMarkupManager);
+  NewBuffer.CopyHanlders(OldBuffer, FFoldedLinesView);
+  NewBuffer.CopyHanlders(OldBuffer, FMarkList);
+  NewBuffer.CopyHanlders(OldBuffer, FCaret);
+  NewBuffer.CopyHanlders(OldBuffer, FInternalCaret);
+  NewBuffer.CopyHanlders(OldBuffer, FBlockSelection);
+  NewBuffer.CopyHanlders(OldBuffer, FInternalBlockSelection);
+  NewBuffer.CopyHanlders(OldBuffer, fMarkupManager);
   for i := 0 to fMarkupManager.Count - 1 do
-    TSynEditStringList(FLines).CopyHanlders(OldLines, fMarkupManager.Markup[i]);
+    NewBuffer.CopyHanlders(OldBuffer, fMarkupManager.Markup[i]);
 
-  FUndoList := TSynEditStringList(fLines).UndoList;
-  FRedoList := TSynEditStringList(fLines).RedoList;
+  FUndoList := NewBuffer.UndoList;
+  FRedoList := NewBuffer.RedoList;
 
+  // Recreate te public access to FLines
   FreeAndNil(FStrings);
   FStrings := TSynEditLines.Create(FLines, {$IFDEF FPC}@{$ENDIF}MarkTextAsSaved);
 
-  // TOdo: highlighter
+  // Attach Highlighter
+  if FHighlighter <> nil then
+    FHighlighter.AttachToLines(FLines);
 
-  for i := 0 to Plugins.Count - 1 do
-    TSynEditPlugin(Plugins[i]).Editor := Self;
-  Plugins.Free;
+  // Restore Plugins; Attach to Lines
+  for i := 0 to TempPlugins.Count - 1 do
+    TSynEditPlugin(TempPlugins[i]).Editor := Self;
+  TempPlugins.Free;
 
-  // Todo: rescan / redraw /re....
+  RemoveHandlers(OldBuffer);
+end;
 
-  OldLines.DecRefCount;
-  if OldLines.RefCount = 0 then
-    OldLines.Free
-  else
-    RemoveHandlers(OldLines);
+procedure TCustomSynEdit.ShareTextBufferFrom(AShareEditor: TCustomSynEdit);
+var
+  OldBuffer: TSynEditStringList;
+begin
+  if fPaintLock <> 0 then RaiseGDBException('Cannot change TextBuffer while paintlocked');
+  OldBuffer := TSynEditStringList(FLines);
+
+  ChangeTextBuffer(TSynEditStringList(AShareEditor.FLines));
+  TSynEditStringList(FLines).AttachSynEdit(Self);
+
+  OldBuffer.DetachSynEdit(Self);
+  if OldBuffer.AttachedSynEditCount = 0 then
+    OldBuffer.Free;
+end;
+
+procedure TCustomSynEdit.UnShareTextBuffer;
+begin
+  if fPaintLock <> 0 then RaiseGDBException('Cannot change TextBuffer while paintlocked');
+  if TSynEditStringList(FLines).AttachedSynEditCount = 1 then
+    exit;
+
+  TSynEditStringList(FLines).DetachSynEdit(Self);
+  ChangeTextBuffer(TSynEditStringList.Create);
 end;
 
 procedure TCustomSynEdit.RemoveHandlers(ALines: TSynEditStrings = nil);
