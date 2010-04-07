@@ -581,10 +581,8 @@ type
     procedure SrcPopUpMenuPopup(Sender: TObject);
     procedure ToggleLineNumbersClicked(Sender: TObject);
     procedure InsertCharacter(const C: TUTF8Char);
-    {$IFDEF SynDualView}
     procedure SrcEditMenuCopyToNewWindowClicked(Sender: TObject);
     procedure SrcEditMenuCopyToExistingWindowClicked(Sender: TObject);
-    {$ENDIF}
     procedure SrcEditMenuMoveToNewWindowClicked(Sender: TObject);
     procedure SrcEditMenuMoveToExistingWindowClicked(Sender: TObject);
   public
@@ -1135,18 +1133,16 @@ var
   SrcEditMenuShowLineNumbers: TIDEMenuCommand;
   SrcEditMenuShowUnitInfo: TIDEMenuCommand;
   SrcEditMenuEditorProperties: TIDEMenuCommand;
-  {$IFDEF SynDualView}
-  SrcEditMenuCopyToNewWindow: TIDEMenuCommand;
-  SrcEditMenuCopyToOtherWindow: TIDEMenuSection;
-  SrcEditMenuCopyToOtherWindowNew: TIDEMenuCommand;
-  SrcEditMenuCopyToOtherWindowList: TIDEMenuSection;
-  {$ENDIF}
   {$IFnDEF SingleSrcWindow}
   // Multi Window
   SrcEditMenuMoveToNewWindow: TIDEMenuCommand;
   SrcEditMenuMoveToOtherWindow: TIDEMenuSection;
   SrcEditMenuMoveToOtherWindowNew: TIDEMenuCommand;
   SrcEditMenuMoveToOtherWindowList: TIDEMenuSection;
+  SrcEditMenuCopyToNewWindow: TIDEMenuCommand;
+  SrcEditMenuCopyToOtherWindow: TIDEMenuSection;
+  SrcEditMenuCopyToOtherWindowNew: TIDEMenuCommand;
+  SrcEditMenuCopyToOtherWindowList: TIDEMenuSection;
   {$ENDIF}
 
 
@@ -1214,17 +1210,6 @@ begin
     SrcEditMenuCloseOtherPages := RegisterIDEMenuCommand(SrcEditMenuSectionPages,
                         'Close All Other Pages',uemCloseOtherPages, nil, nil, nil);
 
-    {$IFDEF SynDualView}
-    SrcEditMenuCopyToNewWindow   := RegisterIDEMenuCommand(SrcEditMenuSectionPages,
-                                    'CopyToNewWindow', uemCopyToNewWindow);
-    SrcEditMenuCopyToOtherWindow := RegisterIDESubMenu(SrcEditMenuSectionPages,
-                                    'CopyToOtherWindow', uemCopyToOtherWindow);
-      SrcEditMenuCopyToOtherWindowNew  := RegisterIDEMenuCommand(SrcEditMenuCopyToOtherWindow,
-                                          'CopyToOtherWindowNew', uemCopyToOtherWindowNew);
-      SrcEditMenuCopyToOtherWindowList := RegisterIDEMenuSection(SrcEditMenuCopyToOtherWindow,
-                                        'CopyToOtherWindowList Section');
-    {$ENDIF}
-
     {$IFnDEF SingleSrcWindow}
     // Move to other Window
     SrcEditMenuMoveToNewWindow   := RegisterIDEMenuCommand(SrcEditMenuSectionPages,
@@ -1235,6 +1220,15 @@ begin
                                           'MoveToOtherWindowNew', uemMoveToOtherWindowNew);
       SrcEditMenuMoveToOtherWindowList := RegisterIDEMenuSection(SrcEditMenuMoveToOtherWindow,
                                         'MoveToOtherWindowList Section');
+
+    SrcEditMenuCopyToNewWindow   := RegisterIDEMenuCommand(SrcEditMenuSectionPages,
+                                    'CopyToNewWindow', uemCopyToNewWindow);
+    SrcEditMenuCopyToOtherWindow := RegisterIDESubMenu(SrcEditMenuSectionPages,
+                                    'CopyToOtherWindow', uemCopyToOtherWindow);
+      SrcEditMenuCopyToOtherWindowNew  := RegisterIDEMenuCommand(SrcEditMenuCopyToOtherWindow,
+                                          'CopyToOtherWindowNew', uemCopyToOtherWindowNew);
+      SrcEditMenuCopyToOtherWindowList := RegisterIDEMenuSection(SrcEditMenuCopyToOtherWindow,
+                                        'CopyToOtherWindowList Section');
     {$ENDIF}
     // register the Move Page sub menu
     SrcEditSubMenuMovePage:=RegisterIDESubMenu(SrcEditMenuSectionPages,
@@ -2006,10 +2000,8 @@ end;
   AOwner is the @link(TSourceNotebook)
   and the AParent is usually a page of a @link(TNotebook) }
 constructor TSourceEditor.Create(AOwner: TComponent; AParent: TWinControl; ASharedEditor: TSourceEditor = nil);
-{$IFDEF SynDualView}
 var
   i: Integer;
-{$ENDIF}
 Begin
   if ASharedEditor = nil then
     FSharedValues := TSourceEditorSharedValues.Create
@@ -2037,7 +2029,6 @@ Begin
 
   CreateEditor(AOwner,AParent);
   FIsNewSharedEditor := False;
-  {$IFDEF SynDualView}
   if ASharedEditor <> nil then begin
     PageName := ASharedEditor.PageName;
     CodeBuffer := ASharedEditor.CodeBuffer;
@@ -2058,7 +2049,6 @@ Begin
 
     SourceEditorMarks.AddSourceEditor(Self, ASharedEditor);
   end;
-  {$ENDIF}
 
   FEditPlugin := TSynEditPlugin1.Create(FEditor);
   // IMPORTANT: when you change below, don't forget updating UnbindEditor
@@ -4926,8 +4916,7 @@ begin
     SrcEditMenuMoveToNewWindow.Enabled := PageCount > 1;
     SrcEditMenuMoveToOtherWindow.Visible := NBAvail;
     SrcEditMenuMoveToOtherWindowNew.Enabled := (PageCount > 1);
-    {$ENDIF}
-    {$IFDEF SynDualView}
+
     NBAvail := False;
     SrcEditMenuCopyToOtherWindowList.Clear;
     for i := 0 to Manager.SourceWindowCount - 1 do
@@ -5053,14 +5042,13 @@ begin
   SrcEditMenuShowLineNumbers.OnClick:=@ToggleLineNumbersClicked;
   SrcEditMenuShowUnitInfo.OnClick:=@ShowUnitInfo;
   SrcEditMenuEditorProperties.OnClick:=@EditorPropertiesClicked;
-  {$IFDEF SynDualView}
-  SrcEditMenuCopyToNewWindow.OnClick := @SrcEditMenuCopyToNewWindowClicked;
-  SrcEditMenuCopyToOtherWindowNew.OnClick := @SrcEditMenuCopyToNewWindowClicked;
-  {$ENDIF}
 
   {$IFnDEF SingleSrcWindow}
   SrcEditMenuMoveToNewWindow.OnClick := @SrcEditMenuMoveToNewWindowClicked;
   SrcEditMenuMoveToOtherWindowNew.OnClick := @SrcEditMenuMoveToNewWindowClicked;
+
+  SrcEditMenuCopyToNewWindow.OnClick := @SrcEditMenuCopyToNewWindowClicked;
+  SrcEditMenuCopyToOtherWindowNew.OnClick := @SrcEditMenuCopyToNewWindowClicked;
   {$ENDIF}
 end;
 
@@ -5696,13 +5684,10 @@ end;
 
 procedure TSourceNotebook.CopyEditor(OldPageIndex, NewWindowIndex,
   NewPageIndex: integer);
-{$IFDEF SynDualView}
 var
   DestWin: TSourceNotebook;
   SrcEdit, NewEdit: TSourceEditor;
-{$ENDIF}
 begin
-{$IFDEF SynDualView}
   if (NewWindowIndex < 0) or (NewWindowIndex >= Manager.SourceWindowCount) then
     exit;
   DestWin := Manager.SourceWindows[NewWindowIndex];
@@ -5729,7 +5714,6 @@ begin
   // Update IsVisibleTab; needs UnitEditorInfo created in DestWin.UpdateProjectFiles
   if Assigned(Manager.OnEditorVisibleChanged) then
     Manager.OnEditorVisibleChanged(Self);
-{$ENDIF}
 end;
 
 procedure TSourceNotebook.ActivateHint(const ScreenPos: TPoint;
@@ -6262,7 +6246,6 @@ begin
   end;
 end;
 
-{$IFDEF SynDualView}
 procedure TSourceNotebook.SrcEditMenuCopyToNewWindowClicked(Sender: TObject);
 begin
   inc(FFocusLock);
@@ -6283,7 +6266,6 @@ begin
     dec(FFocusLock);
   end;
 end;
-{$ENDIF}
 
 procedure TSourceNotebook.SrcEditMenuMoveToNewWindowClicked(Sender: TObject);
 begin
@@ -7068,7 +7050,7 @@ begin
   if (Source is TSourceDragableNotebook) and
      (TSourceDragableNotebook(Source).FMouseDownTabIndex >= 0)
   then begin
-    {$IFDEF SynDualView}
+    {$IFnDEF SingleSrcWindow}
     Ctrl := (GetKeyState(VK_CONTROL) and $8000)<>0;
     {$ELSE}
     Ctrl := false;
@@ -7250,7 +7232,7 @@ begin
   if assigned(FOnDragMoveTab) and (Source is TSourceDragableNotebook) and
      (TSourceDragableNotebook(Source).MouseDownTabIndex >= 0)
   then begin
-    {$IFDEF SynDualView}
+    {$IFnDEF SingleSrcWindow}
     Ctrl := (GetKeyState(VK_CONTROL) and $8000)<>0;
     {$ELSE}
     Ctrl := false;
