@@ -13,7 +13,7 @@ object Form1: TForm1
     Height = 304
     Top = 0
     Width = 533
-    ActivePage = tsCustomMarks
+    ActivePage = lsLinear
     Align = alClient
     TabIndex = 1
     TabOrder = 0
@@ -33,24 +33,20 @@ object Form1: TForm1
             Title.Caption = 'Left'
             Title.Font.Orientation = 900
             Title.Visible = True
-            Transformation.Offset = 0
-            Transformation.Scale = 1
+            Transformations = ChartAxisTransformations1
           end        
           item
             Alignment = calRight
             Title.Caption = 'Right 1'
             Title.Font.Orientation = 900
             Title.Visible = True
-            Transformation.Offset = 0
-            Transformation.Scale = 1
+            Transformations = catT
           end        
           item
             Alignment = calBottom
             Title.Caption = 'Bottom'
             Title.Distance = 0
             Title.Visible = True
-            Transformation.Offset = 0
-            Transformation.Scale = 1
           end        
           item
             Alignment = calRight
@@ -58,15 +54,11 @@ object Form1: TForm1
             TickColor = clAqua
             Title.Caption = 'Right 2'
             Title.Visible = True
-            Transformation.Offset = 7
-            Transformation.Scale = 2
           end        
           item
             Alignment = calTop
             Inverted = True
             Title.Caption = 'Top'
-            Transformation.Offset = 0
-            Transformation.Scale = -1
           end>
         Foot.Brush.Color = clBtnFace
         Foot.Font.Color = clBlue
@@ -81,6 +73,63 @@ object Form1: TForm1
           AxisIndexY = 0
           SeriesColor = clBlack
           Source = RandomChartSource1
+        end
+      end
+    end
+    object lsLinear: TTabSheet
+      Caption = 'Linear transform'
+      ClientHeight = 278
+      ClientWidth = 525
+      object ChartT: TChart
+        Left = 0
+        Height = 278
+        Top = 0
+        Width = 525
+        AxisList = <        
+          item
+            Alignment = calLeft
+            Grid.Visible = False
+            Marks.LabelFont.Color = clRed
+            Title.Caption = 'Summer temperature, C'
+            Title.Font.Color = clRed
+            Title.Font.Orientation = 900
+            Title.Visible = True
+          end        
+          item
+            Alignment = calBottom
+            Title.Caption = 'Year'
+            Title.Visible = True
+          end        
+          item
+            Alignment = calRight
+            Grid.Visible = False
+            Marks.LabelFont.Color = clBlue
+            Title.Caption = 'Winter temperature, F'
+            Title.Font.Color = clBlue
+            Title.Font.Orientation = 900
+            Title.Visible = True
+            Transformations = catT
+          end>
+        Foot.Brush.Color = clBtnFace
+        Foot.Font.Color = clBlue
+        Title.Brush.Color = clBtnFace
+        Title.Font.Color = clBlue
+        Title.Text.Strings = (
+          'TAChart'
+        )
+        Align = alClient
+        ParentColor = False
+        object ChartTSummer: TLineSeries
+          LinePen.Color = clRed
+          LinePen.Width = 2
+          SeriesColor = clRed
+          Source = rcsTSummer
+        end
+        object ChartTWinter: TLineSeries
+          LinePen.Color = clBlue
+          LinePen.Width = 2
+          SeriesColor = clBlue
+          Source = rcsTWinter
         end
       end
     end
@@ -104,8 +153,6 @@ object Form1: TForm1
             Marks.LabelBrush.Style = bsSolid
             Marks.Source = ListChartSource1
             Title.Font.Orientation = 900
-            Transformation.Offset = 0
-            Transformation.Scale = 1
           end        
           item
             Alignment = calBottom
@@ -116,8 +163,6 @@ object Form1: TForm1
             Marks.Style = smsLabel
             Marks.Source = ListChartSource1
             TickLength = 0
-            Transformation.Offset = 0
-            Transformation.Scale = 1
           end>
         Foot.Brush.Color = clBtnFace
         Foot.Font.Color = clBlue
@@ -152,7 +197,7 @@ object Form1: TForm1
   end
   object ListChartSource1: TListChartSource
     DataPoints.Strings = (
-      '1|19000|?|January'
+      '1|18000|?|January'
       '2|35000|?|February'
       '3|31000|?|March'
       '4|26000|?|April'
@@ -161,5 +206,43 @@ object Form1: TForm1
     )
     left = 216
     top = 164
+  end
+  object ChartAxisTransformations1: TChartAxisTransformations
+    left = 216
+    top = 60
+    object ChartAxisTransformations1LinearAxisTransform2: TLinearAxisTransform
+      Scale = 2
+    end
+    object ChartAxisTransformations1LogarithmAxisTransform1: TLogarithmAxisTransform
+      Base = 1.5
+    end
+  end
+  object catT: TChartAxisTransformations
+    left = 352
+    top = 60
+    object catTCelToFahr: TLinearAxisTransform
+      Offset = -17.777777777
+      Scale = 0.5555555555
+    end
+  end
+  object rcsTSummer: TRandomChartSource
+    PointsNumber = 20
+    RandSeed = 114536250
+    XMax = 2009
+    XMin = 1989
+    YMax = 25
+    YMin = 0
+    left = 87
+    top = 106
+  end
+  object rcsTWinter: TRandomChartSource
+    PointsNumber = 20
+    RandSeed = 23453245
+    XMax = 2009
+    XMin = 1989
+    YMax = 5
+    YMin = -15
+    left = 87
+    top = 156
   end
 end
