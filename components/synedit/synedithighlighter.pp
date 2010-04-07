@@ -297,7 +297,6 @@ type
     procedure StartAtLineIndex(LineNumber:Integer); virtual; // 0 based
     procedure ContinueNextLine; // To be called at EOL; does not read the range
 
-    function ScanFrom(Index: integer; AtLeastTilIndex: integer = -1): integer; deprecated;
     procedure ScanRanges;
     procedure ScanAllRanges;
     procedure SetRange(Value: Pointer); virtual;
@@ -1234,30 +1233,6 @@ begin
   Result := r <> FCurrentRanges[Index];
   if Result then
     FCurrentRanges[Index] := r;
-end;
-
-function TSynCustomHighlighter.ScanFrom(Index: integer; AtLeastTilIndex: integer): integer;
-var
-  c: LongInt;
-begin
-  FIsScanning := True;
-  try
-    Result := Index;
-    c := CurrentLines.Count;
-    StartAtLineIndex(Result);
-    NextToEol;
-    while UpdateRangeInfoAtLine(Result) or
-          (Result <= AtLeastTilIndex+1)
-    do begin
-      inc(Result);
-      if Result = c then
-        break;
-      ContinueNextLine;
-      NextToEol;
-    end;
-  finally
-    FIsScanning := False;
-  end;
 end;
 
 procedure TSynCustomHighlighter.ScanRanges;
