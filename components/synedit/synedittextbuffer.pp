@@ -217,16 +217,14 @@ type
                 AHandler: TMethod); override;
     procedure RemoveGenericHandler(AReason: TSynEditNotifyReason;
                 AHandler: TMethod); override;
-    {$IFDEF SynDualView}
-    procedure CopyHanlders(OtherLines: TSynEditStringList; AOwner: TObject = nil);
-    procedure RemoveHanlders(AOwner: TObject);
-    {$ENDIF}
    function GetPhysicalCharWidths(const Line: String; Index: Integer): TPhysicalCharWidths; override;
     // For Textbuffersharing
     procedure AttachSynEdit(AEdit: TSynEditBase);
     procedure DetachSynEdit(AEdit: TSynEditBase);
     function  AttachedSynEditCount: Integer;
     property  AttachedSynEdits[Index: Integer]: TSynEditBase read GetAttachedSynEdits;
+    procedure CopyHanlders(OtherLines: TSynEditStringList; AOwner: TObject = nil);
+    procedure RemoveHanlders(AOwner: TObject);
   public
     property DosFileFormat: boolean read fDosFileFormat write fDosFileFormat;    
     property LengthOfLongestLine: integer read GetLengthOfLongestLine;
@@ -959,7 +957,6 @@ begin
   end;
 end;
 
-{$IFDEF SynDualView}
 procedure TSynEditStringList.CopyHanlders(OtherLines: TSynEditStringList; AOwner: TObject = nil);
 begin
   FLineRangeNotificationList.AddCopyFrom(OtherLines.FLineRangeNotificationList, AOwner);
@@ -983,7 +980,6 @@ begin
   FOnChangingList.RemoveAllMethodsOfObject(AOwner);
   FOnClearedList.RemoveAllMethodsOfObject(AOwner);
 end;
-{$ENDIF}
 
 procedure TSynEditStringList.SetCapacity(NewCapacity: integer);
 begin

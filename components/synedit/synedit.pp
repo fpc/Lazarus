@@ -376,10 +376,7 @@ type
     FTheLinesView: TSynEditStrings;
     FLines: TSynEditStrings;          // The real (un-mapped) line-buffer
     FStrings: TStrings;               // External TStrings based interface to the Textbuffer
-    {$IFDEF SynDualView}
     FTopLinesView: TSynEditStrings;   // The linesview that holds the real line-buffer/FLines
-
-    {$ENDIF}
 
     fExtraCharSpacing: integer;
     fLinesInWindow: Integer;// MG: fully visible lines in window
@@ -575,10 +572,8 @@ type
     procedure UnlockUndo;
     procedure UpdateCaret(IgnorePaintLock: Boolean = False);
     procedure UpdateScrollBars;
-    {$IFDEF SynDualView}
     procedure ChangeTextBuffer(NewBuffer: TSynEditStringList);
     procedure RemoveHandlers(ALines: TSynEditStrings = nil);
-    {$ENDIF}
   protected
     procedure CreateHandle; override;
     procedure CreateParams(var Params: TCreateParams); override;
@@ -885,10 +880,8 @@ type
     procedure Invalidate; override;
     property ChangeStamp: int64 read fChangeStamp;
     {$ENDIF}
-    {$IFDEF SynDualView}
     procedure ShareTextBufferFrom(AShareEditor: TCustomSynEdit);
     procedure UnShareTextBuffer;
-    {$ENDIF}
   public
     property OnKeyDown;
     property OnKeyPress;
@@ -1529,9 +1522,7 @@ begin
   // Pointer to the First/Lowest View
   // TODO: this should be Folded...
   FTheLinesView := FTabbedLinesView;
-  {$IFDEF SynDualView}
   FTopLinesView := FTrimmedLinesView;
-  {$ENDIF}
   // External Accessor
   FStrings := TSynEditLines.Create(FLines, {$IFDEF FPC}@{$ENDIF}MarkTextAsSaved);
 
@@ -1797,9 +1788,7 @@ begin
         TSynEditPlugin(fPlugins[i]).Editor := nil;
     FreeAndNil(fPlugins);
   end;
-  {$IFDEF SynDualView}
   RemoveHandlers;
-  {$ENDIF}
 
   FreeAndNil(FHookedKeyTranslationList);
   fHookedCommandHandlers:=nil;
@@ -4974,7 +4963,6 @@ begin
     FMouseSelActions.Assign(AValue);
 end;
 
-{$IFDEF SynDualView}
 procedure TCustomSynEdit.ChangeTextBuffer(NewBuffer: TSynEditStringList);
 var
   OldBuffer: TSynEditStringList;
@@ -5083,7 +5071,6 @@ begin
   for i := 0 to fMarkupManager.Count - 1 do
     TSynEditStringList(ALines).RemoveHanlders(fMarkupManager.Markup[i]);
 end;
-{$ENDIF}
 
 procedure TCustomSynEdit.SetTextBetweenPoints(aStartPoint, aEndPoint: TPoint;
   const AValue: String);
