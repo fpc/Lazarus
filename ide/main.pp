@@ -14619,75 +14619,134 @@ Begin
   Cmd.Checked := SetMark;
 end;
 
-function CompareBookmarkEditorPos(Mark1, Mark2: TProjectBookmark): integer;
-var
-  Ed1, Ed2: TSourceEditor;
-begin
-  // ProjectMarks, only exist for UnitInfo with at least one Editor
-  if Mark1.UnitInfo is TSourceEditor then
-    Ed1 := TSourceEditor(Mark1.UnitInfo)
-  else
-    Ed1 := TSourceEditor(TUnitInfo(Mark1.UnitInfo).OpenEditorInfo[0].EditorComponent);
-  if Mark2.UnitInfo is TSourceEditor then
-    Ed2 := TSourceEditor(Mark2.UnitInfo)
-  else
-    Ed2 := TSourceEditor(TUnitInfo(Mark2.UnitInfo).OpenEditorInfo[0].EditorComponent);
-
-  Result := SourceEditorManager.IndexOfSourceWindow(Ed1.SourceNotebook) -
-    SourceEditorManager.IndexOfSourceWindow(Ed2.SourceNotebook);
-  if Result = 0 then
-    Result := Ed1.PageIndex - Ed2.PageIndex;
-  if Result = 0 then
-    Result := Mark1.CursorPos.y - Mark2.CursorPos.y;
-  if Result = 0 then
-    Result := Mark1.CursorPos.x - Mark2.CursorPos.x;
-end;
-
 procedure TMainIDE.OnSrcNotebookEditorDoGotoBookmark(Sender: TObject; ID: Integer; Backward: Boolean);
 var
-  AnEditor:TSourceEditor;
-  SrcEdit: TSourceEditor;
-  List: TFPList;
+  CurWin, CurPage, CurLine: Integer;
+
+  function GetWinForEdit(AEd: TSourceEditor): Integer;
+  begin
+    Result := SourceEditorManager.IndexOfSourceWindow(AEd.SourceNotebook);
+    if (not Backward) and
+       ( (Result < CurWin) or ((Result = CurWin) and (AEd.PageIndex < CurPage)) )
+    then inc(Result, SourceEditorManager.SourceWindowCount);
+    if (Backward) and
+       ( (Result > CurWin) or ((Result = CurWin) and (AEd.PageIndex > CurPage)) )
+    then dec(Result, SourceEditorManager.SourceWindowCount);
+  end;
+
+  function GetSrcEdit(AMark: TProjectBookmark): TSourceEditor;
+  var
+    UInf: TUnitInfo;
+    i: Integer;
+  begin
+    if AMark.UnitInfo is TSourceEditor
+    then Result := TSourceEditor(AMark.UnitInfo)
+    else begin        // find the nearest open View
+      UInf := TUnitInfo(AMark.UnitInfo);
+      Result := TSourceEditor(UInf.OpenEditorInfo[0].EditorComponent);
+      for i := 1 to UInf.OpenEditorInfoCount - 1 do
+      begin
+        if (not Backward) and
+           (GetWinForEdit(Result) > GetWinForEdit(TSourceEditor(UInf.OpenEditorInfo[i].EditorComponent)) )
+        then Result := TSourceEditor(UInf.OpenEditorInfo[i].EditorComponent);
+        if (Backward) and
+           (GetWinForEdit(Result) < GetWinForEdit(TSourceEditor(UInf.OpenEditorInfo[i].EditorComponent)) )
+        then Result := TSourceEditor(UInf.OpenEditorInfo[i].EditorComponent);
+      end;
+    end;
+  end;
+
+  function GetWin(AMark: TProjectBookmark): Integer;
+  var
+    Ed: TSourceEditor;
+  begin
+    Ed := GetSrcEdit(AMark);
+    Result := SourceEditorManager.IndexOfSourceWindow(Ed.SourceNotebook);
+    if (not Backward) and (
+        (Result < CurWin) or
+        ((Result = CurWin) and (Ed.PageIndex < CurPage)) or
+        ((Result = CurWin) and (Ed.PageIndex =  CurPage) and (AMark.CursorPos.y < CurLine))
+       )
+    then
+       inc(Result, SourceEditorManager.SourceWindowCount);
+    if (Backward) and (
+        (Result > CurWin) or
+        ((Result = CurWin) and (Ed.PageIndex > CurPage)) or
+        ((Result = CurWin) and (Ed.PageIndex =  CurPage) and (AMark.CursorPos.y > CurLine))
+       )
+    then
+       dec(Result, SourceEditorManager.SourceWindowCount);
+  end;
+
+  function CompareBookmarkEditorPos(Mark1, Mark2: TProjectBookmark): integer;
+  begin
+    // ProjectMarks, only exist for UnitInfo with at least one Editor
+    Result := GetWin(Mark2) - GetWin(Mark1);
+  if Result = 0 then
+      Result := GetSrcEdit(Mark2).PageIndex - GetSrcEdit(Mark1).PageIndex;
+  if Result = 0 then
+      Result := Mark2.CursorPos.y - Mark1.CursorPos.y;
+  end;
+
+var
+  AnEditor: TSourceEditor;
   i: Integer;
-  CurPos: TProjectBookmark;
+  CurPos, CurFound: TProjectBookmark;
   AnUnitInfo: TUnitInfo;
 begin
   if ID < 0 then begin
     // ID < 0  => next/prev
     if Project1.BookMarks.Count = 0 then exit;
-    SrcEdit := SourceEditorManager.ActiveEditor;
-    if SrcEdit = nil then exit;
+    AnEditor := SourceEditorManager.ActiveEditor;
+    if AnEditor = nil then exit;
 
-    i := 0;
-    if not Backward then i := MaxInt;
-    List := TFPList.Create;
-    CurPos := TProjectBookmark.Create(i, SrcEdit.EditorComponent.CaretY, -1, SrcEdit);
+    CurWin := SourceEditorManager.IndexOfSourceWindow(AnEditor.SourceNotebook);
+    CurPage := AnEditor.PageIndex;
+    CurLine := AnEditor.EditorComponent.CaretY;
+
+    CurPos := TProjectBookmark.Create(1, CurLine, -1, AnEditor);
     try
-      for i := 0 to Project1.BookMarks.Count - 1 do
-        List.Add(Project1.BookMarks[i]);
-      List.Add(CurPos);
-      List.Sort(TListSortCompare(@CompareBookmarkEditorPos));
-
-      i := List.IndexOf(CurPos);
-      if Backward then
-        dec(i)
-      else
+      CurFound := nil;
+    i := 0;
+      while (i < Project1.Bookmarks.Count) and
+            (CompareBookmarkEditorPos(CurPos, Project1.Bookmarks[i]) = 0)
+      do
         inc(i);
-      if i < 0 then i := List.Count - 1;
-      if i >= List.Count then i := 0;
+      if i >= Project1.Bookmarks.Count then
+        exit; // all on the same line
 
-      ID := TProjectBookmark(List[i]).ID;
+      CurFound := Project1.Bookmarks[i];
+      inc(i);
+      while (i < Project1.Bookmarks.Count) do begin
+        if (CompareBookmarkEditorPos(CurPos, Project1.Bookmarks[i]) <> 0) then begin
+          if (not Backward) and
+             (CompareBookmarkEditorPos(Project1.Bookmarks[i], CurFound) > 0)
+          then
+            CurFound := Project1.Bookmarks[i];
+          if (Backward) and
+             (CompareBookmarkEditorPos(Project1.Bookmarks[i], CurFound) < 0)
+          then
+            CurFound := Project1.Bookmarks[i];
+        end;
+        inc(i);
+      end;
+
+      if CurFound = nil then exit;
+      ID := CurFound.ID;
     finally
       CurPos.Free;
-      List.Free;
     end;
-  end;
 
+    AnEditor := GetSrcEdit(CurFound);
+  end
+  else begin
   AnEditor := nil;
   AnUnitInfo := TUnitInfo(Project1.Bookmarks.UnitInfoForBookmarkWithIndex(ID));
   if (AnUnitInfo <> nil) and (AnUnitInfo.OpenEditorInfoCount > 0) then
     AnEditor := TSourceEditor(AnUnitInfo.OpenEditorInfo[0].EditorComponent);
   if AnEditor = nil then exit;
+  end;
+
   SourceEditorManager.ActiveEditor := AnEditor;
   SourceEditorManager.ShowActiveWindowOnTop(True);
   AnEditor.EditorComponent.GotoBookMark(ID);
