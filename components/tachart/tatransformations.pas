@@ -355,7 +355,9 @@ var
 begin
   Result := AX;
   for i := 0 to List.Count - 1 do
-    Result := TAxisTransform(List[i]).AxisToGraph(Result);
+    with TAxisTransform(List[i]) do
+      if Enabled then
+        Result := AxisToGraph(Result);
 end;
 
 constructor TChartAxisTransformations.Create(AOwner: TComponent);
@@ -390,7 +392,9 @@ var
 begin
   Result := AX;
   for i := 0 to List.Count - 1 do
-    Result := TAxisTransform(List[i]).GraphToAxis(Result);
+    with TAxisTransform(List[i]) do
+      if Enabled then
+        Result := GraphToAxis(Result);
 end;
 
 procedure TChartAxisTransformations.SetChildOrder(
