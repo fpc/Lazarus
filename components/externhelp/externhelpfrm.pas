@@ -436,7 +436,7 @@ procedure TExternHelpOptions.UpdateHelpDB;
     IsDirectory: Boolean;
     SrcFilter: THelpDBISourceFile;
   begin
-    if Item.Filename<>'' then begin
+    if (Item.Filename<>'') and (Item.URL<>'') then begin
       ItemFilename:=SetDirSeparators(Item.Filename);
       // create a help node for this topic
       HelpNode:=THelpNode.CreateURL(HelpDB,Item.Name,Item.URL);
@@ -483,18 +483,22 @@ begin
   s:=TrimFilename(s);
   if s<>Item.Filename then begin
     Filename:=s;
-    DoDirSeparators(Filename);
-    IDEMacros.SubstituteMacros(Filename);
-    Msg:='';
-    if (Filename<>'') and (Filename[length(Filename)]=PathDelim) then begin
-      if not DirPathExists(Filename) then
-        Msg:=Format(ehrsDirectoryNotFound, [Filename]);
+    if s='' then begin
+      // ok, allow simple deactivate
     end else begin
-      if not FileExistsUTF8(Filename) then
-        Msg:=Format(ehrsFileNotFound, [Filename]);
-    end;
-    if Msg<>'' then begin
-      MessageDlg(ehrsWarning, Msg, mtWarning, [mbIgnore], 0);
+      DoDirSeparators(Filename);
+      IDEMacros.SubstituteMacros(Filename);
+      Msg:='';
+      if (Filename<>'') and (Filename[length(Filename)]=PathDelim) then begin
+        if not DirPathExists(Filename) then
+          Msg:=Format(ehrsDirectoryNotFound, [Filename]);
+      end else begin
+        if not FileExistsUTF8(Filename) then
+          Msg:=Format(ehrsFileNotFound, [Filename]);
+      end;
+      if Msg<>'' then begin
+        MessageDlg(ehrsWarning, Msg, mtWarning, [mbIgnore], 0);
+      end;
     end;
     Item.Filename:=s;
     if not Item.IsDirectory then

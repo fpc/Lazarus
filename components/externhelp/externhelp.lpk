@@ -19,7 +19,7 @@
     </CompilerOptions>
     <Description Value="Help for pscal bindings"/>
     <License Value="modified LGPL"/>
-    <Version Minor="1"/>
+    <Version Major="1" Minor="1"/>
     <Files Count="2">
       <Item1>
         <Filename Value="externhelpfrm.pas"/>
