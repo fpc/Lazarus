@@ -286,6 +286,7 @@ type
     property DomainExclusions: TIntervalList read FDomainExclusions;
   published
     property Active default true;
+    property AxisIndexY;
     property Extent: TChartExtent read FExtent write SetExtent;
     property OnCalculate: TFuncCalculateEvent read FOnCalculate write SetOnCalculate;
     property Pen: TChartPen read FPen write SetPen;
@@ -1093,7 +1094,7 @@ var
     yg: Double;
   begin
     OnCalculate(AXg, yg);
-    Result := FChart.YGraphToImage(EnsureRange(yg, ygMin, ygMax));
+    Result := FChart.YGraphToImage(EnsureRange(AxisToGraphY(yg), ygMin, ygMax));
   end;
 
 var
