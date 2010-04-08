@@ -71,6 +71,7 @@ type
       ASource: string = '';               // init with this source
       ACache: TCodeCache = nil);
     property CodeCache: TCodeCache read FCodeCache write FCodeCache;
+    property KeepFileAttributes: boolean read fKeepFileAttributes write fKeepFileAttributes;
   end;
 
 var
@@ -400,6 +401,7 @@ begin
         Buf.SaveToStream(ms);
         ms.Position:=0;
         Laz_XMLRead.ReadXMLFile(ADoc, ms);
+        exit; // success
       finally
         ms.Free;
       end;
@@ -430,7 +432,7 @@ begin
         Laz_XMLWrite.WriteXMLFile(ADoc, ms);
         ms.Position:=0;
         Buf.LoadFromStream(ms);
-        if Buf.Save then exit;
+        if Buf.Save then exit; // success
       finally
         ms.Free;
       end;
