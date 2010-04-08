@@ -442,7 +442,8 @@ end;
 procedure ResetDefaultIMContext;
 begin
   {$IFDEF Gtk2}
-  if (im_context<>nil) and (im_context_widget<>nil) then begin
+  if (im_context<>nil) then
+  begin
     gtk_im_context_reset(im_context);
     gtk_im_context_set_client_window(im_context,nil);
   end;
