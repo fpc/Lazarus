@@ -92,7 +92,7 @@ type
     procedure BoundsChanged; virtual;
     procedure ControlAdded; virtual;
     function FilterKeyPress(SysKey: Boolean; const Char: TUTF8Char): Boolean; virtual;
-    procedure ProcessKeyEvent(const msg: TLMKey; var Result: OSStatus); virtual;
+    procedure ProcessKeyEvent(const msg: TLMKey); virtual;
     function NeedDeliverMouseEvent(Msg: Integer; const AMessage): Boolean; virtual;
   public
     constructor Create(const AObject: TWinControl; const AParams: TCreateParams);
@@ -656,7 +656,7 @@ end;
   Widget can perform it's own necessary actions if user has not processed the key.
   It's required to emulate Command driven Carbon controls
  ------------------------------------------------------------------------------}
-procedure TCarbonWidget.ProcessKeyEvent(const msg: TLMKey; var Result: OSStatus);
+procedure TCarbonWidget.ProcessKeyEvent(const msg: TLMKey);
 begin
 end;
 

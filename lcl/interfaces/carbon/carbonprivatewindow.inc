@@ -702,12 +702,8 @@ const
       end;
 
       //Here is where we (interface) can do something with the key
-      //Call the standard handler.
-      if Result = EventNotHandledErr then begin
-        Widget.ProcessKeyEvent(KeyMsg, Result);
-        if Result = EventNotHandledErr then
-          Result := CallNextEventHandler(ANextHandler, AEvent);
-      end;
+      //Call the standard handler. Only Up/Down events are notified.
+      Widget.ProcessKeyEvent(KeyMsg);
 
       //Send a LM_(SYS)KEYDOWN
       if IsSysKey then KeyMsg.Msg := LM_SYSKEYDOWN
@@ -761,12 +757,7 @@ const
         Exit;
       end;
 
-      //Here is where we (interface) can do something with the key
-      //Call the standard handler if not called already
-      if Result = EventNotHandledErr then begin
-        if Result = EventNotHandledErr then
-          Result := CallNextEventHandler(ANextHandler, AEvent);
-      end;
+      Result:=CallNextEventHandler(ANextHandler, AEvent);
 
       //Send a LM_(SYS)CHAR
       if IsSysKey then
@@ -826,9 +817,8 @@ const
       
       //Here is where we (interface) can do something with the key
       //Call the standard handler.
-
-      Widget.ProcessKeyEvent(KeyMsg, Result);
-      Result := CallNextEventHandler(ANextHandler, AEvent);
+      Widget.ProcessKeyEvent(KeyMsg);
+      Result:=CallNextEventHandler(ANextHandler, AEvent);
 
       //Send a LM_(SYS)KEYUP
       if IsSysKey then KeyMsg.Msg := LM_SYSKEYUP
