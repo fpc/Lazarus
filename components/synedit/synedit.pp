@@ -1728,7 +1728,7 @@ begin
   if FPaintLock = 0 then begin
     FOldTopLine := FTopLine;
     FOldTopView := TopView;
-    if FPaintLockOwner > 0 then begin
+    if FPaintLockOwner = 0 then begin
       // Paintlock increased by sharing editor
       FStoredCaredAutoAdjust := FCaret.AutoMoveOnEdit;
       FCaret.AutoMoveOnEdit := True;
@@ -1771,7 +1771,7 @@ begin
   end;
   if (FPaintLock = 0) then begin
     FBlockSelection.AutoExtend := False;
-    if FPaintLockOwner > 0 then begin
+    if FPaintLockOwner = 0 then begin
       // Paintlock increased by sharing editor
       FCaret.AutoMoveOnEdit := FStoredCaredAutoAdjust;
     end;
