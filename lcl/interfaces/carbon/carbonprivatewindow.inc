@@ -372,6 +372,7 @@ var
 const
   SName = 'CarbonWindow_KeyboardProc';
   AGetEvent = 'GetEventParameter';
+  ASetEvent = 'SetEventParameter';
 
   // See what changed in the modifiers flag so that we can emulate a keyup/keydown
   // Note: this function assumes that only a bit of the flag can be modified at
@@ -659,6 +660,20 @@ const
       DbgsVKCode(KeyCode));
   end;
 
+
+  function LCLCharToMacEvent(const AUTF8Char: AnsiString): Boolean;
+  var
+    WideBuf: WideString;
+  begin
+    if AUTF8Char='' then Exit;
+    // only one character should be used
+    WideBuf:=UTF8Encode(UTF8Copy(AUTF8Char, 1,1));
+    Result:=(length(WideBuf)>0) and
+      (not OSError(SetEventParameter(AEvent, kEventParamKeyUnicodes, typeUnicodeText,
+        length(WideBuf)*2, @WideBuf[1]), SName, ASetEvent, 'kEventParamKeyUnicodes'));
+  end;
+
+
   function HandleRawKeyDownEvent: OSStatus;
   var
     KeyMsg: TLMKeyDown;
@@ -735,6 +750,7 @@ const
           Result := noErr;
         Exit;
       end;
+      LCLCharToMacEvent(UTF8Character);
 
       // create the CN_CHAR / CN_SYSCHAR message
       FillChar(CharMsg, SizeOf(CharMsg), 0);
@@ -756,6 +772,9 @@ const
         NotifyApplicationUserInput(CharMsg.Msg);
         Exit;
       end;
+      if CharMsg.CharCode<>ord(KeyChar) then
+        LCLCharToMacEvent(Char(CharMsg.CharCode));
+
 
       Result:=CallNextEventHandler(ANextHandler, AEvent);
 
