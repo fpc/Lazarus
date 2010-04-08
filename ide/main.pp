@@ -14480,8 +14480,9 @@ begin
       NewSource,NewX,NewY,NewTopLine) then
     begin
       ApplyCodeToolChanges;
-      DoJumpToCodePos(ActiveSrcEdit, ActiveUnitInfo,
-        NewSource, NewX, NewY, NewTopLine, true);
+      if NewSource<>nil then
+        DoJumpToCodePos(ActiveSrcEdit, ActiveUnitInfo,
+          NewSource, NewX, NewY, NewTopLine, true);
     end else begin
       // error: probably a syntax error or just not in a procedure head/body
       // or not in a class
