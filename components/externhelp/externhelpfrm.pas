@@ -265,7 +265,7 @@ end;
 destructor TExternHelpOptions.Destroy;
 begin
   FreeAndNil(RootItem);
-  FreeAndNil(FHelpDB);
+  // FHelpDB is freed by the IDE
   inherited Destroy;
 end;
 
