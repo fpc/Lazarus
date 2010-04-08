@@ -115,7 +115,6 @@ type
   TLogarithmAxisTransform = class(TAxisTransform)
   private
     FBase: Double;
-    function BaseIsStored: Boolean;
     procedure SetBase(AValue: Double);
   public
     constructor Create(AOwner: TComponent); override;
@@ -125,7 +124,7 @@ type
     function AxisToGraph(AX: Double): Double; override;
     function GraphToAxis(AX: Double): Double; override;
   published
-    property Base: Double read FBase write SetBase stored BaseIsStored;
+    property Base: Double read FBase write SetBase;
   end;
 
   procedure Register;
@@ -486,11 +485,6 @@ begin
     Result := LogN(Base, AX)
   else
     Result := NegInfinity;
-end;
-
-function TLogarithmAxisTransform.BaseIsStored: Boolean;
-begin
-  Result := FBase <> Exp(1);
 end;
 
 constructor TLogarithmAxisTransform.Create(AOwner: TComponent);
