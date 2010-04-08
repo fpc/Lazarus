@@ -4567,11 +4567,10 @@ begin
       FChangedLinesEnd:=AIndex + 1 + MaX(ACount, 0)
     else
       FChangedLinesEnd := FChangedLinesEnd + MaX(ACount, 0);
-  end else begin
+  end else
     ScanRanges;
-    InvalidateLines(AIndex + 1, -1);
-    InvalidateGutterLines(AIndex + 1, -1);
-  end;
+  InvalidateLines(AIndex + 1, -1);
+  InvalidateGutterLines(AIndex + 1, -1);
 end;
 
 procedure TCustomSynEdit.LineTextChanged(Sender: TSynEditStrings;
