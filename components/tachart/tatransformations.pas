@@ -36,6 +36,7 @@ type
   private
     FEnabled: Boolean;
     FTransformations: TChartAxisTransformations;
+    procedure SetEnabled(AValue: Boolean);
     procedure SetTransformations(AValue: TChartAxisTransformations);
   protected
     procedure ReadState(Reader: TReader); override;
@@ -58,7 +59,7 @@ type
     property Transformations: TChartAxisTransformations
       read FTransformations write SetTransformations;
   published
-    property Enabled: Boolean read FEnabled write FEnabled default true;
+    property Enabled: Boolean read FEnabled write SetEnabled default true;
   end;
 
   TAxisTransformClass = class of TAxisTransform;
@@ -323,6 +324,13 @@ begin
   inherited ReadState(Reader);
   if Reader.Parent is TChartAxisTransformations then
     Transformations := Reader.Parent as TChartAxisTransformations;
+end;
+
+procedure TAxisTransform.SetEnabled(AValue: Boolean);
+begin
+  if FEnabled = AValue then exit;
+  FEnabled := AValue;
+  Changed;
 end;
 
 procedure TAxisTransform.SetIndex(AValue: Integer);
