@@ -40,7 +40,7 @@ type
     procedure SetAxisIndexY(AValue: Integer);
 
   protected
-    procedure GetGraphBounds(out ABounds: TDoubleRect); override;
+    procedure GetGraphBounds(var ABounds: TDoubleRect); override;
     procedure SetActive(AValue: Boolean); override;
     procedure SetDepth(AValue: TChartDistance); override;
     procedure SetShowInLegend(AValue: Boolean); override;
@@ -96,7 +96,7 @@ type
     procedure AfterDraw; override;
     procedure BeforeDraw; override;
     function ColorOrDefault(AColor: TColor; ADefault: TColor = clTAColor): TColor;
-    procedure GetBounds(out ABounds: TDoubleRect); override;
+    procedure GetBounds(var ABounds: TDoubleRect); override;
     function GetGraphPoint(AIndex: Integer): TDoublePoint;
     function GetGraphPointX(AIndex: Integer): Double; inline;
     function GetGraphPointY(AIndex: Integer): Double; inline;
@@ -170,7 +170,7 @@ begin
   FAxisIndexY := DEF_AXIS_INDEX;
 end;
 
-procedure TCustomChartSeries.GetGraphBounds(out ABounds: TDoubleRect);
+procedure TCustomChartSeries.GetGraphBounds(var ABounds: TDoubleRect);
 begin
   GetBounds(ABounds);
   with ABounds do begin
@@ -379,7 +379,7 @@ begin
     Result := Source.FormatItem(Marks.Format, AIndex);
 end;
 
-procedure TChartSeries.GetBounds(out ABounds: TDoubleRect);
+procedure TChartSeries.GetBounds(var ABounds: TDoubleRect);
 begin
   if not Active or (Count = 0) then exit;
   ABounds := Extent;

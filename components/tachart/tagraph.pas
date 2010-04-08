@@ -55,8 +55,10 @@ type
     procedure AfterAdd; virtual;
     procedure AfterDraw; virtual;
     procedure BeforeDraw; virtual;
-    procedure GetBounds(out ABounds: TDoubleRect); virtual; abstract;
-    procedure GetGraphBounds(out ABounds: TDoubleRect); virtual; abstract;
+    // Set series bounds in axis coordinates.
+    // Some or all bounds may be left unset, in which case they will be ignored.
+    procedure GetBounds(var ABounds: TDoubleRect); virtual; abstract;
+    procedure GetGraphBounds(var ABounds: TDoubleRect); virtual; abstract;
     procedure GetLegendItems(AItems: TChartLegendItems); virtual; abstract;
     procedure SetActive(AValue: Boolean); virtual; abstract;
     procedure SetDepth(AValue: TChartDistance); virtual; abstract;

@@ -232,7 +232,7 @@ type
     procedure SetSeriesColor(AValue: TColor);
     procedure SetUseBounds(AValue: Boolean);
   protected
-    procedure GetBounds(out ABounds: TDoubleRect); override;
+    procedure GetBounds(var ABounds: TDoubleRect); override;
     procedure GetLegendItems(AItems: TChartLegendItems); override;
   public
     constructor Create(AOwner: TComponent); override;
@@ -273,7 +273,7 @@ type
     procedure SetPen(const AValue: TChartPen);
     procedure SetStep(AValue: TFuncSeriesStep);
   protected
-    procedure GetBounds(out ABounds: TDoubleRect); override;
+    procedure GetBounds(var ABounds: TDoubleRect); override;
     procedure GetLegendItems(AItems: TChartLegendItems); override;
 
   public
@@ -296,7 +296,7 @@ type
   end;
 
   TSeriesDrawEvent = procedure (ACanvas: TCanvas; const ARect: TRect) of object;
-  TSeriesGetBoundsEvent = procedure (out ABounds: TDoubleRect) of object;
+  TSeriesGetBoundsEvent = procedure (var ABounds: TDoubleRect) of object;
 
   { TUserDrawnSeries }
 
@@ -307,7 +307,7 @@ type
     procedure SetOnDraw(AValue: TSeriesDrawEvent);
     procedure SetOnGetBounds(AValue: TSeriesGetBoundsEvent);
   protected
-    procedure GetBounds(out ABounds: TDoubleRect); override;
+    procedure GetBounds(var ABounds: TDoubleRect); override;
     procedure GetLegendItems(AItems: TChartLegendItems); override;
   public
     procedure Draw(ACanvas: TCanvas); override;
@@ -497,7 +497,7 @@ begin
     end;
 end;
 
-procedure TLine.GetBounds(out ABounds: TDoubleRect);
+procedure TLine.GetBounds(var ABounds: TDoubleRect);
 begin
   if not UseBounds then exit;
   case LineStyle of
@@ -1138,7 +1138,7 @@ begin
   end;
 end;
 
-procedure TFuncSeries.GetBounds(out ABounds: TDoubleRect);
+procedure TFuncSeries.GetBounds(var ABounds: TDoubleRect);
 begin
   with Extent do begin
     if UseXMin then ABounds.a.X := XMin;
@@ -1194,7 +1194,7 @@ begin
      FOnDraw(ACanvas, FChart.ClipRect);
 end;
 
-procedure TUserDrawnSeries.GetBounds(out ABounds: TDoubleRect);
+procedure TUserDrawnSeries.GetBounds(var ABounds: TDoubleRect);
 begin
   if Assigned(FOnGetBounds) then
     FOnGetBounds(ABounds);
