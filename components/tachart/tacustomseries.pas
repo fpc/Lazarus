@@ -409,7 +409,7 @@ end;
 
 function TChartSeries.GetGraphPointY(AIndex: Integer): Double;
 begin
-  Result := AxisToGraphX(Source[AIndex]^.Y);
+  Result := AxisToGraphY(Source[AIndex]^.Y);
 end;
 
 procedure TChartSeries.GetMax(out X, Y: Double);

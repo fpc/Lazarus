@@ -130,8 +130,8 @@ type
     procedure Clear;
     function Count: Integer;
   public
-    property List: TFPList read FList;
     property Items[AIndex: Integer]: TBasicChartSeries read GetItem; default;
+    property List: TFPList read FList;
   end;
 
   { TChart }
