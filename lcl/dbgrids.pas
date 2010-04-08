@@ -382,6 +382,7 @@ type
     procedure DrawCheckboxBitmaps(aCol: Integer; aRect: TRect; F: TField);
     procedure DrawFixedText(aCol, aRow: Integer; aRect: TRect; aState: TGridDrawState);
     procedure DrawColumnText(aCol, aRow: Integer; aRect: TRect; aState: TGridDrawState); override;
+    procedure DrawIndicator(ACanvas: TCanvas; R: TRect; Opt: TDataSetState; MultiSel: boolean); virtual;
     procedure EditingColumn(aCol: Integer; Ok: boolean);
     procedure EditorCancelEditing;
     procedure EditorDoGetValue; override;
@@ -575,64 +576,6 @@ type
 procedure Register;
 begin
   RegisterComponents('Data Controls',[TDBGrid]);
-end;
-
-procedure DrawIndicator(Canvas: TCanvas; R: TRect; Opt: TDataSetState;
-  MultiSel: boolean);
-var
-  dx,dy, x, y: Integer;
-  procedure CenterY;
-  begin
-    y := R.Top + (R.Bottom-R.Top) div 2;
-  end;
-  procedure CenterX;
-  begin
-    X := R.Left + (R.Right-R.Left) div 2;
-  end;
-  procedure DrawEdit(clr: Tcolor);
-  begin
-    Canvas.Pen.Color := clr;
-    CenterY;
-    CenterX;
-    Canvas.MoveTo(X-2, Y-Dy);
-    Canvas.LineTo(X+3, Y-Dy);
-    Canvas.MoveTo(X, Y-Dy);
-    Canvas.LineTo(X, Y+Dy);
-    Canvas.MoveTo(X-2, Y+Dy);
-    Canvas.LineTo(X+3, Y+Dy);
-  end;
-begin
-  dx := 6;
-  dy := 6;
-  case Opt of
-    dsBrowse:
-      begin //
-        Canvas.Brush.Color:=clBlack;
-        Canvas.Pen.Color:=clBlack;
-        CenterY;
-        x:= R.Left+3;
-        if MultiSel then begin
-          Canvas.Polyline([point(x,y-dy),  point(x+dx,y),point(x,y+dy), point(x,y+dy-1)]);
-          Canvas.Polyline([point(x,y-dy+1),point(x+dx-1,y),point(x, y+dy-1), point(x,y+dy-2)]);
-          CenterX;
-          Dec(X,3);
-          Canvas.Ellipse(Rect(X-2,Y-2,X+2,Y+2));
-        end else
-          Canvas.Polygon([point(x,y-dy),point(x+dx,y),point(x, y+dy),point(x,y-dy)]);
-       end;
-    dsEdit:
-      DrawEdit(clBlack);
-    dsInsert:
-      DrawEdit(clGreen);
-    else
-    if MultiSel then begin
-      Canvas.Brush.Color:=clBlack;
-      Canvas.Pen.Color:=clBlack;
-      CenterX;
-      CenterY;
-      Canvas.Ellipse(Rect(X-3,Y-3,X+3,Y+3));
-    end;
-  end;
 end;
 
 function CalcCanvasCharWidth(Canvas:TCanvas): integer;
@@ -2687,6 +2630,64 @@ begin
      end;//End if (gdFixed in aState)
    end;//End if (aRow = 0)
  end;//End if ((gdFixed in aState) and (aCol >= FirstGridColumn))
+end;
+
+procedure TCustomDBGrid.DrawIndicator(ACanvas: TCanvas; R: TRect;
+  Opt: TDataSetState; MultiSel: boolean);
+var
+  dx,dy, x, y: Integer;
+  procedure CenterY;
+  begin
+    y := R.Top + (R.Bottom-R.Top) div 2;
+  end;
+  procedure CenterX;
+  begin
+    X := R.Left + (R.Right-R.Left) div 2;
+  end;
+  procedure DrawEdit(clr: Tcolor);
+  begin
+    ACanvas.Pen.Color := clr;
+    CenterY;
+    CenterX;
+    ACanvas.MoveTo(X-2, Y-Dy);
+    ACanvas.LineTo(X+3, Y-Dy);
+    ACanvas.MoveTo(X, Y-Dy);
+    ACanvas.LineTo(X, Y+Dy);
+    ACanvas.MoveTo(X-2, Y+Dy);
+    ACanvas.LineTo(X+3, Y+Dy);
+  end;
+begin
+  dx := 6;
+  dy := 6;
+  case Opt of
+    dsBrowse:
+      begin //
+        ACanvas.Brush.Color:=clBlack;
+        ACanvas.Pen.Color:=clBlack;
+        CenterY;
+        x:= R.Left+3;
+        if MultiSel then begin
+          ACanvas.Polyline([point(x,y-dy),  point(x+dx,y),point(x,y+dy), point(x,y+dy-1)]);
+          ACanvas.Polyline([point(x,y-dy+1),point(x+dx-1,y),point(x, y+dy-1), point(x,y+dy-2)]);
+          CenterX;
+          Dec(X,3);
+          ACanvas.Ellipse(Rect(X-2,Y-2,X+2,Y+2));
+        end else
+          ACanvas.Polygon([point(x,y-dy),point(x+dx,y),point(x, y+dy),point(x,y-dy)]);
+       end;
+    dsEdit:
+      DrawEdit(clBlack);
+    dsInsert:
+      DrawEdit(clGreen);
+    else
+    if MultiSel then begin
+      ACanvas.Brush.Color:=clBlack;
+      ACanvas.Pen.Color:=clBlack;
+      CenterX;
+      CenterY;
+      ACanvas.Ellipse(Rect(X-3,Y-3,X+3,Y+3));
+    end;
+  end;
 end;
 
 function TCustomDBGrid.EditorCanAcceptKey(const ch: TUTF8Char): boolean;
