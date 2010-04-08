@@ -200,10 +200,6 @@ type
     FExecutionMark: TSourceMark;
     FLineInfoNotification: TIDELineInfoNotification;
 
-    FOnAfterOpen: TNotifyEvent;
-    FOnAfterSave: TNotifyEvent;
-    FOnBeforeOpen: TNotifyEvent;
-    FOnBeforeSave: TNotifyEvent;
     FOnEditorChange: TNotifyEvent;
     FVisible: Boolean;
     FOnMouseMove: TMouseMoveEvent;
@@ -437,10 +433,6 @@ type
     property ExecutionLine: integer read GetExecutionLine write SetExecutionLine;
     property HasExecutionMarks: Boolean read FHasExecutionMarks;
     property InsertMode: Boolean read GetInsertmode;
-    property OnAfterOpen: TNotifyEvent read FOnAfterOpen write FOnAfterOpen;
-    property OnBeforeOpen: TNotifyEvent read FOnBeforeOpen write FOnBeforeOpen;
-    property OnAfterSave: TNotifyEvent read FOnAfterSave write FOnAfterSave;
-    property OnBeforeSave: TNotifyEvent read FOnBeforeSave write FOnBeforeSave;
     property OnEditorChange: TNotifyEvent read FOnEditorChange
                                           write FOnEditorChange;
     property OnMouseMove: TMouseMoveEvent read FOnMouseMove write FOnMouseMove;
