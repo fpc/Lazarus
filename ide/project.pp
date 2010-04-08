@@ -50,7 +50,9 @@ uses
 {$ENDIF}
   Classes, SysUtils, TypInfo, FPCAdds, LCLProc, LCLIntf, LCLType, Forms,
   FileUtil, Controls, Dialogs, InterfaceBase,
-  Laz_XMLCfg, ExprEval, FileProcs, DefineTemplates, CodeToolManager, CodeCache,
+  // codetools
+  Laz_XMLCfg, CodeToolsConfig, ExprEval, FileProcs, DefineTemplates,
+  CodeToolManager, CodeCache,
   // IDEIntf
   ProjectIntf, MacroIntf, LazIDEIntf,
   // IDE
@@ -2599,7 +2601,7 @@ begin
     SaveSessionInfoInLPI:=false;
   repeat
     try
-      xmlconfig := TXMLConfig.CreateClean(CfgFilename);
+      xmlconfig := TCodeBufXMLConfig.CreateWithCache(CfgFilename,false);
     except
       on E: Exception do begin
         DebugLn('Error: ', E.Message);
@@ -2722,7 +2724,7 @@ begin
     SessionSaveResult:=mrCancel;
     repeat
       try
-        xmlconfig := TXMLConfig.CreateClean(CurSessionFilename);
+        xmlconfig := TCodeBufXMLConfig.CreateWithCache(CurSessionFilename,false);
       except
         on E: Exception do begin
           DebugLn('ERROR: ',E.Message);
@@ -3032,9 +3034,9 @@ begin
       fProjectInfoFileDate:=FileAgeCached(ProjectInfoFile);
       {$IFDEF IDE_MEM_CHECK}CheckHeapWrtMemCnt('TProject.ReadProject A reading lpi');{$ENDIF}
       if fProjectInfoFileBuffer=nil then
-        xmlconfig := TXMLConfig.CreateClean(ProjectInfoFile)
+        xmlconfig := TCodeBufXMLConfig.CreateWithCache(ProjectInfoFile,false)
       else
-        xmlconfig := TXMLConfig.CreateWithSource(ProjectInfoFile,
+        xmlconfig := TCodeBufXMLConfig.CreateWithCache(ProjectInfoFile,false,true,
                                                  fProjectInfoFileBuffer.Source);
       {$IFDEF IDE_MEM_CHECK}CheckHeapWrtMemCnt('TProject.ReadProject B done lpi');{$ENDIF}
     except
@@ -3148,7 +3150,7 @@ begin
       if FileExistsUTF8(ProjectSessionFile) then begin
         //DebugLn('TProject.ReadProject loading Session ProjectSessionFile=',ProjectSessionFile);
         try
-          xmlconfig := TXMLConfig.Create(ProjectSessionFile);
+          xmlconfig := TCodeBufXMLConfig.CreateWithCache(ProjectSessionFile);
 
           Path:='ProjectSession/';
           SessionStorePathDelim:=CheckPathDelim(
@@ -4620,7 +4622,7 @@ begin
   begin
     StateFlags:=StateFlags-[lpsfStateFileLoaded];
     try
-      XMLConfig:=TXMLConfig.Create(StateFile);
+      XMLConfig:=TCodeBufXMLConfig.CreateWithCache(StateFile);
       try
         LastCompilerFilename:=XMLConfig.GetValue('Compiler/Value','');
         LastCompilerFileDate:=XMLConfig.GetValue('Compiler/Date',0);
@@ -4658,7 +4660,7 @@ begin
   StateFile:=GetStateFilename;
   try
     CompilerFileDate:=FileAgeCached(CompilerFilename);
-    XMLConfig:=TXMLConfig.CreateClean(StateFile);
+    XMLConfig:=TCodeBufXMLConfig.CreateWithCache(StateFile,false);
     try
       XMLConfig.SetValue('Compiler/Value',CompilerFilename);
       XMLConfig.SetValue('Compiler/Date',CompilerFileDate);
