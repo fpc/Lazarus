@@ -146,6 +146,7 @@ begin
   fReplaceUnits:=TStringToStringTree.Create(false);
   fReplaceUnits['Windows']:='LCLIntf, LCLType, LMessages';
   fReplaceUnits['Variants']:='';
+  fReplaceUnits['ShellApi']:='';
   fReplaceUnits['TntActnList']:='ActnList';
   fReplaceUnits['TntMenus']:='Menus';
   fReplaceUnits['TntClasses']:='Classes';

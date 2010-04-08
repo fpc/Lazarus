@@ -142,9 +142,8 @@ type
     function ReadDelphiConfigFiles: TModalResult;
     function ExtractOptionsFromDOF(const DOFFilename: string): TModalResult;
     function ExtractOptionsFromCFG(const CFGFilename: string): TModalResult;
-    function DoMissingUnits(MissingUnits: TStrings): integer;
-    function DoCaseErrorUnits(MissingUnits: TStrings;
-                              UnitsToRename: TStringToStringTree): integer;
+    function DoMissingUnits(MissingUnits: TStrings;
+                            UnitsToRename: TStringToStringTree): integer;
     procedure CacheUnitsInPath(const APath, ABasePath: string);
     procedure CacheUnitsInPath(const APath: string);
     function GetCachedUnitPath(const AUnitName: string): string;
@@ -663,9 +662,7 @@ begin
               fOwnerConverter.fPrevSelectedPath:=ExtractFilePath(UnitDirDialog.Filename);
               // Add the new path to project if missing units are found.
               fOwnerConverter.CacheUnitsInPath(UnitDirDialog.Filename);
-              TryAgain:=fOwnerConverter.DoMissingUnits(fMissingUnits)>0;
-              if TryAgain then
-                TryAgain:=fOwnerConverter.DoCaseErrorUnits(fMissingUnits, fUnitsToRename)>0;
+              TryAgain:=fOwnerConverter.DoMissingUnits(fMissingUnits, fUnitsToRename)>0;
             end;
           end
           else
@@ -745,7 +742,7 @@ begin
 
     if Assigned(fOwnerConverter) then begin
       // Try to find from subdirectories scanned earlier.
-      if fOwnerConverter.DoMissingUnits(fMissingUnits)=0 then exit;
+      if fOwnerConverter.DoMissingUnits(fMissingUnits, fUnitsToRename)=0 then exit;
       // Comment out automatically units that were commented in other files.
       if CommentAutomatically=0 then exit;
     end;
@@ -1071,41 +1068,25 @@ begin
   Options.SrcPath:=CleanProjectSearchPath(Options.SrcPath);
 end;
 
-function TConvertDelphiPBase.DoMissingUnits(MissingUnits: TStrings): integer;
+function TConvertDelphiPBase.DoMissingUnits(MissingUnits: TStrings;
+                                    UnitsToRename: TStringToStringTree): integer;
 // Locate unit names in earlier cached list and remove them from MissingUnits.
 // Return the number of units still missing.
 var
   i: Integer;
-  sUnitPath: string;
-begin
-  for i:=MissingUnits.Count-1 downto 0 do begin
-    sUnitPath:=GetCachedUnitPath(MissingUnits[i]);
-    if sUnitPath<>'' then begin
-      // Found: add unit path to project's settings.
-      with CompOpts do
-        OtherUnitFiles:=MergeSearchPaths(OtherUnitFiles,sUnitPath);
-      // No more missing, delete from list.
-      MissingUnits.Delete(i);
-    end;
-  end;
-  Result:=MissingUnits.Count;
-end;
-
-function TConvertDelphiPBase.DoCaseErrorUnits(MissingUnits: TStrings;
-                                   UnitsToRename: TStringToStringTree): integer;
-// Locate existing unit names with different case add them to UnitsToRename.
-// Return the number of units still missing.
-var
-  i: Integer;
-  sUnitPath, mUnit, RealUnitName: string;
+  mUnit, sUnitPath, RealUnitName: string;
 begin
   for i:=MissingUnits.Count-1 downto 0 do begin
     mUnit:=MissingUnits[i];
     sUnitPath:=GetCachedUnitPath(mUnit);
-    Assert(sUnitPath='', 'sUnitPath should be empty');
-    if NeedsRenameUnit(mUnit, RealUnitName) then begin
-      // Add to rename unit list, delete from missing unit list.
-      UnitsToRename[mUnit]:=RealUnitName;
+    if sUnitPath<>'' then begin
+      // Found: add unit path to project's settings.
+      with CompOpts do
+        OtherUnitFiles:=MergeSearchPaths(OtherUnitFiles,sUnitPath);
+      // Rename a unit with different casing.
+      if NeedsRenameUnit(mUnit, RealUnitName) then
+        UnitsToRename[mUnit]:=RealUnitName;
+      // No more missing, delete from list.
       MissingUnits.Delete(i);
     end;
   end;
@@ -1319,9 +1300,9 @@ begin
       end;
 
     finally
-      // set unit paths to find all project units
       AllPath:=LazProject.SourceDirectories.CreateSearchPathFromAllFiles;
       UselessPath:='.;'+VirtualDirectory+';'+VirtualTempDir+';'+LazProject.ProjectDirectory;
+      // set unit paths to find all project units
       NewSearchPath:=MergeSearchPaths(LazProject.CompilerOptions.OtherUnitFiles,AllPath);
       NewSearchPath:=RemoveSearchPaths(NewSearchPath,UselessPath);
       LazProject.CompilerOptions.OtherUnitFiles:=MinimizeSearchPath(
@@ -1605,9 +1586,9 @@ begin
       end;
 
     finally
-      // set unit paths to find all project units
       AllPath:=LazPackage.SourceDirectories.CreateSearchPathFromAllFiles;
       UselessPath:='.;'+VirtualDirectory+';'+VirtualTempDir+';'+LazPackage.Directory;
+      // set unit paths to find all project units
       NewSearchPath:=MergeSearchPaths(LazPackage.CompilerOptions.OtherUnitFiles,AllPath);
       NewSearchPath:=RemoveSearchPaths(NewSearchPath,UselessPath);
       LazPackage.CompilerOptions.OtherUnitFiles:=MinimizeSearchPath(
