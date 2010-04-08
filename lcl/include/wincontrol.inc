@@ -7799,10 +7799,6 @@ begin
   if HandleAllocated then begin
     TWSWinControlClass(WidgetSetClass).GetPreferredSize(Self,
                                PreferredWidth, PreferredHeight, WithThemeSpace);
-    if (PreferredWidth>0) then
-      inc(PreferredWidth,BorderSpacing.InnerBorder*2);
-    if PreferredHeight>0 then
-      inc(PreferredHeight,BorderSpacing.InnerBorder*2);
   end;
 
   // check AdjustClientRect
@@ -7843,6 +7839,10 @@ begin
     PreferredWidth:=Max(PreferredWidth,NewWidth);
     PreferredHeight:=Max(PreferredHeight,NewHeight);
   end;
+  if (PreferredWidth>0) then
+    inc(PreferredWidth,BorderSpacing.InnerBorder*2);
+  if PreferredHeight>0 then
+    inc(PreferredHeight,BorderSpacing.InnerBorder*2);
   {$IFDEF VerboseAutoSize}
   debugln('TWinControl.CalculatePreferredSize ',DbgSName(Self),
     ' HandleAllocated=',dbgs(HandleAllocated),
