@@ -174,10 +174,14 @@ procedure TCustomChartSeries.GetGraphBounds(var ABounds: TDoubleRect);
 begin
   GetBounds(ABounds);
   with ABounds do begin
-    a.X := AxisToGraphX(a.X);
-    a.Y := AxisToGraphY(a.Y);
-    b.X := AxisToGraphX(b.X);
-    b.Y := AxisToGraphY(b.Y);
+    if not IsInfinite(a.X) then
+      a.X := AxisToGraphX(a.X);
+    if not IsInfinite(a.Y) then
+      a.Y := AxisToGraphY(a.Y);
+    if not IsInfinite(b.X) then
+      b.X := AxisToGraphX(b.X);
+    if not IsInfinite(b.Y) then
+      b.Y := AxisToGraphY(b.Y);
     if IsRotated then begin
       Exchange(a.X, a.Y);
       Exchange(b.X, b.Y);
