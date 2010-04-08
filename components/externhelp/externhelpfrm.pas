@@ -60,8 +60,14 @@ resourcestring
   ehrsMacrofy = 'Macrofy';
   ehrsReplaceCommonDirectoriesWithMacros = 'Replace common directories with '
     +'macros';
+  ehrsStoreThisURLIn = 'Store this URL in';
+  ehrsIncludeSubDirectories = 'Include sub directories';
   ehrsChooseAPascalUnit = 'Choose a pascal unit';
+  ehrsDirectoryNotFound = 'Directory not found: %s';
+  ehrsFileNotFound = 'File not found: %s';
+  ehrsWarning = 'Warning';
   ehrsExternal = 'External';
+  ehrsMySettings = 'My settings';
 
 type
 
@@ -75,12 +81,14 @@ type
     FName: string;
     FStoreIn: string;
     FURL: string;
+    FWithSubDirectories: boolean;
     function GetChildCount: integer;
     function GetChilds(Index: integer): TExternHelpItem;
     procedure SetFilename(const AValue: string);
     procedure SetName(const AValue: string);
     procedure SetStoreIn(const AValue: string);
     procedure SetURL(const AValue: string);
+    procedure SetWithSubDirectories(const AValue: boolean);
   public
     Parent: TExternHelpItem;
     constructor Create;
@@ -93,10 +101,12 @@ type
     procedure DeleteChild(Child: TExternHelpItem);
     function IndexOf(Child: TExternHelpItem): integer;
     function IsEqual(Item: TExternHelpItem; WithName: boolean): boolean;
+    function IsDirectory: boolean;
     procedure Assign(Src: TExternHelpItem; WithName: boolean);
     procedure IncreaseChangeStep; virtual;
     property Name: string read FName write SetName;
     property Filename: string read FFilename write SetFilename;
+    property WithSubDirectories: boolean read FWithSubDirectories write SetWithSubDirectories;
     property URL: string read FURL write SetURL;
     property StoreIn: string read FStoreIn write SetStoreIn;
     property ChildCount: integer read GetChildCount;
@@ -164,6 +174,7 @@ type
 
   TExternHelpGeneralOptsFrame = class(TAbstractIDEOptionsEditor)
     AddSpeedButton: TSpeedButton;
+    WithSubDirsCheckBox: TCheckBox;
     FileMacrofyButton: TButton;
     DeleteSpeedButton: TSpeedButton;
     FileBrowseButton: TButton;
@@ -176,12 +187,13 @@ type
     Splitter1: TSplitter;
     StoreComboBox: TComboBox;
     StoreLabel: TLabel;
-    URLEdit: TEdit;
     URLLabel: TLabel;
+    URLMemo: TMemo;
     procedure AddSpeedButtonClick(Sender: TObject);
     procedure DeleteSpeedButtonClick(Sender: TObject);
     procedure FileBrowseButtonClick(Sender: TObject);
     procedure FileMacrofyButtonClick(Sender: TObject);
+    procedure FilenameEditChange(Sender: TObject);
     procedure FilenameEditEditingDone(Sender: TObject);
     procedure ItemsTreeViewDragOver(Sender, Source: TObject; X, Y: Integer;
       State: TDragState; var Accept: Boolean);
@@ -197,7 +209,8 @@ type
       var DragObject: TDragObject);
     procedure NameEditChange(Sender: TObject);
     procedure NameEditEditingDone(Sender: TObject);
-    procedure URLEditEditingDone(Sender: TObject);
+    procedure URLMemoEditingDone(Sender: TObject);
+    procedure WithSubDirsCheckBoxEditingDone(Sender: TObject);
   private
     FOptions: TExternHelpOptions;
     FDragNode: TTreeNode;
@@ -254,11 +267,17 @@ begin
 end;
 
 constructor TExternHelpOptions.Create;
+var
+  OldHelpDB: THelpDatabase;
 begin
   RootItem:=TExternHelpRootItem.Create;
   RootItem.Owner:=Self;
   Filename:='externhelp.xml';
-  FHelpDB:=TExternalHelpDatabase(HelpDatabases.CreateHelpDatabase('External help',
+  OldHelpDB:=HelpDatabases.FindDatabase('External help');
+  if OldHelpDB is TExternalHelpDatabase then
+    FHelpDB:=TExternalHelpDatabase(OldHelpDB)
+  else
+    FHelpDB:=TExternalHelpDatabase(HelpDatabases.CreateHelpDatabase('External help',
                                                TExternalHelpDatabase,true));
 end;
 
@@ -293,6 +312,7 @@ function TExternHelpOptions.Load(Config: TConfigStorage): TModalResult;
   begin
     Node.Name:=Config.GetValue(Path+'Name','');
     Node.Filename:=Config.GetValue(Path+'Filename/Value','');
+    Node.WithSubDirectories:=Config.GetValue(Path+'WithSubDirectories/Value',false);
     Node.URL:=Config.GetValue(Path+'URL/Value','');
     Node.StoreIn:=Config.GetValue(Path+'Store/Where','');
     NewCount:=Config.GetValue(Path+'ChildCount',0);
@@ -320,6 +340,7 @@ function TExternHelpOptions.Save(Config: TConfigStorage): TModalResult;
   begin
     Config.SetDeleteValue(Path+'Name',Node.Name,'');
     Config.SetDeleteValue(Path+'Filename/Value',Node.Filename,'');
+    Config.SetDeleteValue(Path+'WithSubDirectories/Value',Node.WithSubDirectories,false);
     Config.SetDeleteValue(Path+'URL/Value',Node.URL,'');
     Config.SetDeleteValue(Path+'Store/Where',Node.StoreIn,'');
     Config.SetDeleteValue(Path+'ChildCount',Node.ChildCount,0);
@@ -421,13 +442,13 @@ procedure TExternHelpOptions.UpdateHelpDB;
       HelpNode:=THelpNode.CreateURL(HelpDB,Item.Name,Item.URL);
       // create a filter for the source file(s)
       IsDirectory:=(ItemFilename[length(ItemFilename)]=PathDelim);
+      DebugLn(['RegisterItem ',IsDirectory,' ',ItemFilename]);
       if IsDirectory then
         SrcFilter:=THelpDBISourceDirectory.Create(HelpNode,
-                                         ItemFilename,'*.pp;*.pas',false)
+                              ItemFilename,'*.pp;*.pas',Item.WithSubDirectories)
       else
         SrcFilter:=THelpDBISourceFile.Create(HelpNode,ItemFilename);
       HelpDB.RegisterItem(SrcFilter);
-      DebugLn(['RegisterItem ',ItemFilename]);
     end;
 
     for i:=0 to Item.ChildCount-1 do
@@ -455,10 +476,10 @@ var
   Msg: String;
   Filename: String;
 begin
-  s:=FilenameEdit.Text;
   TVNode:=ItemsTreeView.Selected;
   if (TVNode=nil) or (not (TObject(TVNode.Data) is TExternHelpItem)) then exit;
   Item:=TExternHelpItem(TVNode.Data);
+  s:=FilenameEdit.Text;
   s:=TrimFilename(s);
   if s<>Item.Filename then begin
     Filename:=s;
@@ -467,15 +488,18 @@ begin
     Msg:='';
     if (Filename<>'') and (Filename[length(Filename)]=PathDelim) then begin
       if not DirPathExists(Filename) then
-        Msg:='Directory not found: '+Filename;
+        Msg:=Format(ehrsDirectoryNotFound, [Filename]);
     end else begin
       if not FileExistsUTF8(Filename) then
-        Msg:='File not found: '+Filename;
+        Msg:=Format(ehrsFileNotFound, [Filename]);
     end;
     if Msg<>'' then begin
-      MessageDlg('Warning',Msg,mtWarning,[mbIgnore],0);
+      MessageDlg(ehrsWarning, Msg, mtWarning, [mbIgnore], 0);
     end;
     Item.Filename:=s;
+    if not Item.IsDirectory then
+      Item.WithSubDirectories:=false;
+    WithSubDirsCheckBox.Enabled:=Item.IsDirectory;
   end;
 end;
 
@@ -574,6 +598,18 @@ begin
   FilenameEdit.Text:=Macrofy(Filename);
 end;
 
+procedure TExternHelpGeneralOptsFrame.FilenameEditChange(Sender: TObject);
+var
+  s: String;
+  TVNode: TTreeNode;
+begin
+  TVNode:=ItemsTreeView.Selected;
+  if (TVNode=nil) or (not (TObject(TVNode.Data) is TExternHelpItem)) then exit;
+  s:=FilenameEdit.Text;
+  s:=TrimFilename(s);
+  WithSubDirsCheckBox.Enabled:=(s<>'') and (s[length(s)] in ['/','\']);
+end;
+
 procedure TExternHelpGeneralOptsFrame.ItemsTreeViewEditing(Sender: TObject;
   Node: TTreeNode; var AllowEdit: Boolean);
 begin
@@ -644,13 +680,14 @@ begin
   NameChanged(ItemsTreeView.Selected,S,true,true);
 end;
 
-procedure TExternHelpGeneralOptsFrame.URLEditEditingDone(Sender: TObject);
+procedure TExternHelpGeneralOptsFrame.URLMemoEditingDone(Sender: TObject);
 var
   s: String;
   TVNode: TTreeNode;
   Item: TExternHelpItem;
 begin
-  s:=URLEdit.Text;
+  URLMemo.Lines.Delimiter:=' ';
+  s:=URLMemo.Lines.DelimitedText;
   TVNode:=ItemsTreeView.Selected;
   if (TVNode=nil) or (not (TObject(TVNode.Data) is TExternHelpItem)) then exit;
   Item:=TExternHelpItem(TVNode.Data);
@@ -658,6 +695,18 @@ begin
   if s<>Item.URL then begin
     Item.URL:=s;
   end;
+end;
+
+procedure TExternHelpGeneralOptsFrame.WithSubDirsCheckBoxEditingDone(
+  Sender: TObject);
+var
+  TVNode: TTreeNode;
+  Item: TExternHelpItem;
+begin
+  TVNode:=ItemsTreeView.Selected;
+  if (TVNode=nil) or (not (TObject(TVNode.Data) is TExternHelpItem)) then exit;
+  Item:=TExternHelpItem(TVNode.Data);
+  Item.WithSubDirectories:=WithSubDirsCheckBox.Checked;
 end;
 
 procedure TExternHelpGeneralOptsFrame.FillItemsTreeView;
@@ -703,6 +752,8 @@ procedure TExternHelpGeneralOptsFrame.SelectionChanged;
 var
   TVNode: TTreeNode;
   Item: TExternHelpItem;
+  s: String;
+  ItemFilename: String;
 begin
   TVNode:=ItemsTreeView.Selected;
   Item:=nil;
@@ -714,18 +765,25 @@ begin
       NameEdit.Enabled:=true;
       NameEdit.Text:=Item.Name;
       FilenameEdit.Enabled:=true;
-      FilenameEdit.Text:=Item.Filename;
-      URLEdit.Enabled:=true;
-      URLEdit.Text:=Item.URL;
+      ItemFilename:=SetDirSeparators(Item.Filename);
+      FilenameEdit.Text:=ItemFilename;
+      WithSubDirsCheckBox.Enabled:=Item.IsDirectory;
+      WithSubDirsCheckBox.Checked:=Item.WithSubDirectories;
+      URLMemo.Enabled:=true;
+      URLMemo.Lines.Text:=Item.URL;
       StoreComboBox.Enabled:=Item.Parent=Options.RootItem;
-      StoreComboBox.Text:=Item.StoreIn;
+      s:=Item.StoreIn;
+      if s='' then s:=ehrsMySettings;
+      StoreComboBox.Text:=s;
     end else begin
       NameEdit.Enabled:=false;
       NameEdit.Text:='';
       FilenameEdit.Enabled:=false;
       FilenameEdit.Text:='';
-      URLEdit.Enabled:=false;
-      URLEdit.Text:='';
+      WithSubDirsCheckBox.Enabled:=false;
+      WithSubDirsCheckBox.Checked:=false;
+      URLMemo.Enabled:=false;
+      URLMemo.Lines.Text:='';
       StoreComboBox.Enabled:=false;
       StoreComboBox.Text:='';
     end;
@@ -759,7 +817,7 @@ begin
   sl:=TStringList.Create;
   try
     sl.Sort;
-    sl.Insert(0,'My settings');
+    sl.Insert(0, ehrsMySettings);
     StoreComboBox.Items.Assign(sl);
   finally
     sl.Free;
@@ -814,6 +872,7 @@ end;
 procedure TExternHelpGeneralOptsFrame.ReadSettings(AOptions: TAbstractIDEOptions);
 begin
   Options.Assign(ExternHelpOptions);
+  FillStoreInCombobox;
   FillItemsTreeView;
   ItemsTreeView.Selected:=ItemsTreeView.Items.GetFirstNode;
   SelectionChanged;
@@ -831,6 +890,8 @@ begin
   FileBrowseButton.Hint:=ehrsBrowseForPath;
   FileMacrofyButton.Caption:=ehrsMacrofy;
   FileMacrofyButton.Hint:=ehrsReplaceCommonDirectoriesWithMacros;
+  WithSubDirsCheckBox.Caption:=ehrsIncludeSubDirectories;
+  StoreLabel.Caption:=ehrsStoreThisURLIn;
 end;
 
 class function TExternHelpGeneralOptsFrame.SupportedOptionsClass: TAbstractIDEOptionsClass;
@@ -893,6 +954,13 @@ begin
   IncreaseChangeStep;
 end;
 
+procedure TExternHelpItem.SetWithSubDirectories(const AValue: boolean);
+begin
+  if FWithSubDirectories=AValue then exit;
+  FWithSubDirectories:=AValue;
+  IncreaseChangeStep;
+end;
+
 constructor TExternHelpItem.Create;
 begin
   fChilds:=TFPList.Create;
@@ -921,6 +989,7 @@ begin
   fChilds.Clear;
   fURL:='';
   FFilename:='';
+  FWithSubDirectories:=false;
   FStoreIn:='';
   IncreaseChangeStep;
 end;
@@ -968,6 +1037,7 @@ var
 begin
   Result:=((not WithName) or (Name=Item.Name))
     and (Filename=Item.Filename)
+    and (WithSubDirectories=Item.WithSubDirectories)
     and (URL=Item.URL)
     and (StoreIn=Item.StoreIn)
     and (ChildCount=Item.ChildCount);
@@ -977,6 +1047,11 @@ begin
   end;
 end;
 
+function TExternHelpItem.IsDirectory: boolean;
+begin
+  Result:=(Filename<>'') and (Filename[length(Filename)] in ['/','\']);
+end;
+
 procedure TExternHelpItem.Assign(Src: TExternHelpItem; WithName: boolean);
 var
   i: Integer;
@@ -984,6 +1059,7 @@ var
 begin
   if WithName then Name:=Src.Name;
   Filename:=Src.Filename;
+  WithSubDirectories:=Src.WithSubDirectories;
   URL:=Src.URL;
   StoreIn:=Src.StoreIn;
   for i:=0 to Src.ChildCount-1 do begin
