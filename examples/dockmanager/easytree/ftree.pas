@@ -25,7 +25,6 @@ implementation
 
 initialization
   {$i fTree.lrs}
-  {$i fTree.lrs}
 
 end.
 

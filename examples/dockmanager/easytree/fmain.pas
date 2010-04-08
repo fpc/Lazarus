@@ -238,7 +238,9 @@ begin
   if Source.DragTarget = nil then
     sb.SimpleText := '<drop nowhere>'
   else begin
-    DropOn := Source.DragTarget;
+    DropOn := Source.DropOnControl;
+    if DropOn = nil then
+      DropOn := Source.DragTarget;
     r := Source.DockRect;
     s := Format('drop onto %s[%d,%d - %d,%d] %s', [
       DropOn.Name, r.Top, r.Left, r.Bottom, r.Right, AlignNames[Source.DropAlign]]);
@@ -269,9 +271,11 @@ procedure TEasyDockMain.buDumpClick(Sender: TObject);
 var
   s: TStringStream;
 begin
+  if not (Docker.DockManager is TEasyTree) then
+    exit;
   s := TStringStream.Create('');
   try
-    Docker.DockManager.SaveToStream(s);
+    TEasyTree(Docker.DockManager).DumpToStream(s);
     DumpBox.Memo1.Text := s.DataString;
   finally
     s.Free;

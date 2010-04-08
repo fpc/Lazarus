@@ -18,8 +18,6 @@ object ViewWindow: TViewWindow
     Width = 142
     AutoSize = False
     Caption = 'Label1'
-    DragKind = dkDock
-    DragMode = dmAutomatic
     ParentColor = False
   end
   object Image1: TImage

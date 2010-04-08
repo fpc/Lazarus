@@ -47,6 +47,7 @@
         <UnitName Value="uMakeSite"/>
       </Item7>
     </Files>
+    <LazDoc Paths="..\docs\"/>
     <Type Value="RunAndDesignTime"/>
     <RequiredPkgs Count="2">
       <Item1>

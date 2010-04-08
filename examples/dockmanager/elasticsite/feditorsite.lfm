@@ -13,32 +13,6 @@ inherited EditorSite: TEditorSite
   OnHide = FormHide
   OnResize = FormResize
   OnWindowStateChange = FormWindowStateChange
-  inherited pnlLeft: TPanel
-    Height = 256
-  end
-  inherited splitLeft: TSplitter
-    Height = 256
-  end
-  inherited pnlRight: TPanel
-    Left = 400
-    Height = 256
-  end
-  inherited pnlBottom: TPanel
-    Top = 260
-    Width = 400
-  end
-  inherited splitRight: TSplitter
-    Left = 396
-    Height = 256
-  end
-  inherited StatusBar1: TStatusBar
-    Top = 261
-    Width = 400
-  end
-  inherited splitBottom: TSplitter
-    Top = 256
-    Width = 400
-  end
   object MainMenu1: TMainMenu[7]
     left = 240
     top = 48

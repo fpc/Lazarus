@@ -41,7 +41,8 @@ uses
   fEditForm;
 
 type
-  TEditorSite = class(TDockingSite)
+  //TEditorSite = class(TDockingSite)
+  TEditorSite = class(TForm)
     MenuItem10: TMenuItem;
     MenuItem11: TMenuItem;
     MenuItem12: TMenuItem;

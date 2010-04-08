@@ -53,6 +53,7 @@ LCL TODO:
 
 {$mode objfpc}{$H+}
 
+{$DEFINE RootDock} //allow docking into the root zone?
 //{$DEFINE newSplitter} //exclude splitter from remaining zone
 {.$DEFINE handle_existing} //dock controls existing in the dock site?
 {.$DEFINE splitter_color} //use colored splitter, for debugging?
@@ -105,14 +106,12 @@ type
 
   TEasyDockHeader = class
   public
-    //HeaderSize: integer;
   //state last drawn
     MouseZone: TEasyZone;
     MouseDown: boolean;
     MousePart: TEasyZonePart;
     PartRect: TRect;
   public
-    //Style: TEasyHeaderStyle;
     constructor Create;
     function  GetRectOfPart(ARect: TRect; AOrientation: TDockOrientation; APart: TEasyZonePart; HasSplitter: boolean; AStyle: TEasyHeaderStyle): TRect; virtual;
     function  FindPart(AZone: TEasyZone; MousePos: TPoint; fButtonDown: boolean): TEasyZonePart;
@@ -186,6 +185,7 @@ type
     constructor Create(ADockSite: TWinControl); override;
     class function  DetectAlign(ZoneRect: TRect; MousePos: TPoint): TAlign;
     function GetDockEdge(ADockObject: TDragDockObject): boolean; override;
+    procedure PositionDockRect(ADockObject: TDragDockObject); override;
     procedure PositionDockRect(Client, DropCtl: TControl; DropAlign: TAlign;
       var DockRect: TRect);  override;
     procedure SetReplacingControl(Control: TControl); override; //unused
@@ -575,10 +575,17 @@ begin
   end;
 end;
 
+const
+  OrthoOrientation: array[TDockOrientation] of TDockOrientation = (
+    //doNoOrient, doHorizontal, doVertical, doPages
+    doNoOrient, doVertical, doHorizontal, doPages
+  );
+
 procedure TEasyTree.InsertControl(Control: TControl; InsertAt: TAlign;
   DropCtl: TControl);
 var
   DropZone, OldZone, NewZone, OldParent, NewParent: TEasyZone;
+  OldOrientation, NewOrientation: TDockOrientation;
   r: TRect;
   NoteBook: TCustomDockSite;
 (* special cases:
@@ -633,16 +640,17 @@ begin
     exit; //nothing changed
   end;
 
-  if Control.Name = '' then //name it - for header caption
-    Control.Name := CreateUniqueComponentName(Control.ClassName, Control.Owner);
-
   if DropCtl = nil then begin
-    DropCtl := FDockSite; //the dock site
-    DropZone := FTopZone.FirstChild;
+  //top level docking!
+    //DropCtl := FDockSite; //the dock site
+    DropZone := FTopZone; // FTopZone.FirstChild;
   end else begin
     DropZone := FindControlZone(FTopZone, DropCtl);
     if DropZone = nil then exit; //not here!?
   end;
+
+  if Control.Name = '' then //name it - for header caption
+    Control.Name := CreateUniqueComponentName(Control.ClassName, Control.Owner);
 
 (* alCustom means: drop into notebook.
   Valid only when dropped onto an existing control, not into empty dock site.
@@ -695,10 +703,13 @@ begin
   NewZone := TEasyZone.Create(self);
   NewZone.ChildControl := Control as TControl;
   Control.Align := alNone;
+  if Control is TCustomForm then
+    TCustomForm(Control).BorderStyle := bsNone;
 
 //special case: in root zone (empty dock site)
 
   if FTopZone.FirstChild = nil then begin
+  //insert first, without orientation
     FTopZone.InsertAfter(nil, NewZone);
     NewZone.SetBounds(FDockSite.ClientRect);
   end else begin
@@ -708,43 +719,78 @@ begin
     r := DropZone.GetBounds; //for later adjustment
   //get requested orientation, adjust align
     case InsertAt of
-    alTop, alBottom: Control.DockOrientation := doVertical;
-    alLeft, alRight: Control.DockOrientation := doHorizontal;
+    alTop, alBottom: NewOrientation := doVertical;
+    alLeft, alRight: NewOrientation := doHorizontal;
     else //unhandled or unspecific
-      if DropCtl.DockOrientation = doNoOrient then
-        DropCtl.DockOrientation := doHorizontal; //assume
-      Control.DockOrientation := DropCtl.DockOrientation;
+    { TODO : DropCtl=nil - if docked into root zone }
+      if (DropCtl = nil) or (DropCtl.DockOrientation = doNoOrient) then begin
+        NewOrientation := DropZone.Orientation;
+      end else
+        NewOrientation := DropCtl.DockOrientation;
+      if NewOrientation = doNoOrient then
+        NewOrientation := doHorizontal; //assume something
     //fix alignment
-      if Control.DockOrientation = doVertical then
+      if NewOrientation = doVertical then
         InsertAt := alBottom
       else
         InsertAt := alRight;
     end;
+    Control.DockOrientation := NewOrientation;
+{
+//check topzone now must have an orientation
+    if FTopZone.Orientation = doNoOrient then begin
+      FTopZone.Orientation := NewOrientation;
+      FTopZone.FirstChild.ChildControl.DockOrientation := NewOrientation;
+    end;
+}
     (* Now Control.DockOrientation is the insert orientation,
       DropCtl.DockOrientation is the zone orientation,
       InsertAt is one of alLeft/Right/Top/Bottom
     *)
 
   //check orientation - control orientation cannot be doNone!
-    OldParent := DropZone.Parent;
-    (* One special case remains: top zone without orientation
-    *)
-    if (OldParent.Orientation = doNoOrient) then begin
-      assert(OldParent = FTopZone, '???');
-      FTopZone.Orientation := Control.DockOrientation; //easy
+    OldParent := DropZone.Parent; //nil if docked into root zone!
+    if OldParent = nil then begin
+    //dock into rootzone - may have no orientation
+      OldOrientation := FTopZone.Orientation; // OrthoOrientation[FTopZone.Orientation];
+    end else
+      OldOrientation := OldParent.Orientation;;
+    if (OldOrientation = doNoOrient) then begin
+    //second insert into root zone - fix zone and control orientation!
+      //assert(OldParent = FTopZone, '???');
+      OldOrientation := NewOrientation; // Control.DockOrientation; //easy
+      FTopZone.Orientation := NewOrientation;
+      FTopZone.FirstChild.ChildControl.DockOrientation := NewOrientation;
     end;
   //iso or orthogonal insert?
-    if (OldParent.Orientation <> Control.DockOrientation) then begin
+    if (OldOrientation <> NewOrientation) then begin
     //need intermediate zone
       NewParent := TEasyZone.Create(self);
-      NewParent.Orientation := Control.DockOrientation;
+      NewParent.Orientation := NewOrientation;
       NewParent.BR := r.BottomRight;
-      OldParent.ReplaceChild(DropZone, NewParent); //unlink DropZone
+      if OldParent <> nil then
+        OldParent.ReplaceChild(DropZone, NewParent) //unlink DropZone
+      else begin
+        //DropZone is FTopZone
+        FTopZone := NewParent;
+        { TODO : what more is required??? }
+      end;
     //orthogonal orientation
       NewParent.InsertAfter(nil, DropZone);
     end;
-  //set control orientation
+  //set control orientation - !rootzone?
+    if DropZone = FTopZone then begin
+    //dropzone must have a parent
+      DropZone := DropZone.FirstChild;
+      case InsertAt of
+      //alLeft, alTop:
+      alBottom, alRight:
+        while DropZone.NextSibling <> nil do
+          DropZone := DropZone.NextSibling;
+      end;
+    end;
     DropZone.AddSibling(NewZone, InsertAt);
+    //if FTopZone.Orientation = doNoOrient then FTopZone.Orientation := Control.DockOrientation;
   //clear eventually moved zone, when redocking within this site
     if OldZone <> nil then begin
       RemoveZone(OldZone); //must NOT modify moved control!
@@ -762,6 +808,9 @@ var
 begin
 (* New DockManager interface, called instead of the old version.
   Determine exact target (zone) and DropAlign.
+
+  For top-level docking: check mouse IN site!
+
 Signal results:
   Prevent docking by setting DropOnControl=Control (prevent changes when dropped).
   DragTarget=nil means: become floating.
@@ -770,6 +819,7 @@ Signal results:
 *)
 { TODO -cdocking : why is this method not called for a docksite with 1 client?
   If exactly the client is moved over it?
+-> by design of GetDockTarget in DockPerformer!
 }
 //debug only
   DockObj := ADockObject;
@@ -777,9 +827,13 @@ Signal results:
 //determine the zone containing the DragTargetPos
   with ADockObject do begin
   //mouse position within dock site
-    DragTargetPos := DragTarget.ScreenToClient(DragPos);
+    //DragTargetPos := DragTarget.ScreenToClient(DragPos);
   //find zone, handle empty site for elastic panels
-    if DockSite.DockClientCount = 0 then
+    if (DockSite.DockClientCount = 0)
+  {$IFDEF RootDock}
+    or (not PtInRect(DockRect, DragPos))
+  {$ENDIF}
+    then
       zone := FTopZone
     else
       zone := ZoneFromPoint(DragTargetPos);
@@ -788,8 +842,12 @@ Signal results:
       DropAlign := alNone; //prevent drop (below)
     end else begin
       ADockRect := zone.GetBounds; //include header
-      DropOnControl := zone.ChildControl;
-      DropAlign := DetectAlign(ADockRect, DragTargetPos);
+      DropOnControl := zone.ChildControl; //correct hit in header, not in control
+      if DockSite.DockClientCount = 0 then
+        DropAlign := alClient //always span empty site
+      else
+       DropAlign := DetectAlign(ADockRect, DragTargetPos);
+    {$IFnDEF RootDock}
       if DropOnControl = nil then begin
       {$IFDEF singleTab}
         if SingleTab and (DropAlign = alCustom) then begin
@@ -798,6 +856,9 @@ Signal results:
       {$ENDIF}
           DropAlign := alClient; //first element in entire site
       end; //else //determine the alignment within the zone.
+    {$ELSE}
+    //allow for top-level docking
+    {$ENDIF}
     //to screen coords
       ADockRect.TopLeft := FDockSite.ClientToScreen(ADockRect.TopLeft);
       ADockRect.BottomRight := FDockSite.ClientToScreen(ADockRect.BottomRight);
@@ -1336,7 +1397,7 @@ begin
     affected := p;
   until zone.FirstChild <> nil;
 (* cases:
-  zone without parent (top) - exit
+  zone without parent (top) - check orientation, exit
   zone with 0 children - excluded before
   zone with 1 child (ch),
     child is leaf -> looses orientation, move up
@@ -1350,7 +1411,7 @@ begin
     //more than 1 child - check next level
     end else if ch.FirstChild = nil then begin
     //contains control, move up
-      ch.ChildControl.DockOrientation := zone.Parent.Orientation;
+      ch.ChildControl.DockOrientation := p.Orientation;
       p.ReplaceChild(zone, ch); //move control up
       zone.Free;
       affected := p;
@@ -1371,7 +1432,37 @@ begin
       zone.PositionControl;
       zone := Zone.NextSibling;
     end;
+{
+//root zone may loose orientation!
+    if affected = FTopZone then begin
+      if affected.FirstChild.NextSibling = nil then begin
+        FTopZone.Orientation := doNoOrient;
+        FTopZone.FirstChild.ChildControl.DockOrientation := doNoOrient; <--- non-leaf!?
+      end;
+    end;
+    }
   end;
+{$IFDEF new}
+  while FTopZone.FirstChild <> nil do begin
+    Zone := FTopZone.FirstChild;
+    if Zone.NextSibling <> nil then
+      break;
+  //move zone up
+    FTopZone.FFirstChild := nil;
+    zone.Parent := nil;
+    FTopZone.Free;
+    FTopZone := zone;
+  end;
+{$ELSE}
+{$ENDIF}
+  if FTopZone.FirstChild = nil then
+    FTopZone.Orientation := doNoOrient
+  else if FTopZone.FirstChild.NextSibling = nil then begin
+    FTopZone.Orientation := doNoOrient;
+    FTopZone.FirstChild.ChildControl.DockOrientation := doNoOrient;
+  //bug: not leaf???
+  end;
+
 //update zone, here simply the whole dock site
   FSplitter.Hide;
   DockSite.Invalidate;
@@ -1557,6 +1648,7 @@ begin
   end;
 //parent orientation? (if in rootzone)
   //if parent.Orientation = doNoOrient then
+  if Parent <> nil then
     Parent.Orientation := NewOrientation;
   if ChildControl <> nil then
     ChildControl.DockOrientation := NewOrientation;
@@ -1761,7 +1853,7 @@ const
     alLeft, alLeft, alTop, alTop, alRight, alBottom, alBottom, alLeft, alLeft
   );
 begin
-(* Determine alignment from the location of the mouse within ZoneRect.
+(* Determine alignment from the position of the mouse within ZoneRect.
   ZoneRect in screen TLBR coordinates, MousePos in screen coordinates.
 *)
 //center and extent of dock zone
@@ -1779,8 +1871,8 @@ begin
       //zone := zInnermost;
       dir := alCustom; //pages
     end else begin
-      phi := arctan2(dy, dx);
-      zphi := trunc(radtodeg(phi)) div 45;
+      phi := arctan2(dy, dx); //zero at East (right), increasing clockwise
+      zphi := trunc(radtodeg(phi)) div 45; //both EN and ES are zero
       dir := cDir[zphi];
     end;
   end else
@@ -1806,7 +1898,11 @@ begin
   Usage: Only to prevent calls to the target control, in case of extended
     InfluenceRect.
 *)
+//test
+  exit(false);
+
   if false then Result:=inherited GetDockEdge(ADockObject);
+{$IFDEF old}
   //ADockObject.DockRect
   Result := DockSite.DockClientCount = 0; //do nothing if docked clients exist!
   if Result then begin
@@ -1826,7 +1922,16 @@ begin
     ADockObject.DockRect := r;
     Result := CanDock;
   end;
-  //Result := True;
+{$ELSE}
+  DebugLn('DropOnControl ', DbgS(ADockObject.DropOnControl));
+  ADockObject.DropAlign := DetectAlign(ADockObject.DockRect, ADockObject.DragPos);
+  Result := True;
+  DebugLn('dockedge x(%d-%d) y(%d-%d) %s', [
+    ADockObject.DockRect.Left, ADockObject.DockRect.Right,
+    ADockObject.DockRect.Top, ADockObject.DockRect.Bottom,
+    AlignNames[ADockObject.DropAlign]
+    ]);
+{$ENDIF}
 end;
 
 procedure TEasyDockManager.PositionDockRect(Client, DropCtl: TControl;
@@ -1836,10 +1941,16 @@ var
 begin
 (* DockRect is initialized to the screen rect of the dock site by TControl,
   or to the zone rect by TEasyTree.
+
+  DropCtl=Nil means: dock into the root zone.
 *)
+  //if False then inherited PositionDockRect(Client, DropCtl, DropAlign, DockRect);
+{$IFDEF old}
   if (DropCtl = nil) {$IFDEF singleTab} and not SingleTab {$ENDIF}  then
   //if (DropCtl = nil) then
     exit; //entire dock site
+{$ELSE}
+{$ENDIF}
 
   case DropAlign of
   //alClient: as is
@@ -1856,6 +1967,33 @@ begin
       inc(DockRect.Top, wh);
       dec(DockRect.Bottom, wh);
     end;
+  end;
+end;
+
+procedure TEasyDockManager.PositionDockRect(ADockObject: TDragDockObject);
+var
+  r: TRect;
+begin
+(* Something is wrong here?
+ADockObject:
+  DockRect is the site rect, to be replaced by the target control/zone rect.
+*)
+
+//test
+  exit;
+
+  if false then inherited PositionDockRect(ADockObject);
+  with ADockObject do begin;
+  //check target
+    if DropOnControl <> nil then begin
+    //init control rect
+      r.TopLeft := DropOnControl.ClientOrigin;
+      r.Bottom := r.Top + DropOnControl.Height;
+      r.Right := r.Left + DropOnControl.Width;
+    end else begin
+      r := DockRect;
+    end;
+    DetectAlign(r, DragPos);
   end;
 end;
 
