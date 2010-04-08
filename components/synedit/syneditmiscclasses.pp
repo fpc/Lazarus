@@ -1030,9 +1030,9 @@ var
   len: Integer;
 begin
   len := Length(aLine);
-  if (aX < 1) or (aX > len + 1) then exit(-1);
   if not aIncludeCurrent then
     inc(aX);
+  if (aX < 1) or (aX > len + 1) then exit(-1);
   if (aX > 1) and (aLine[aX - 1] in FWordChars) then
     while (aX <= len) and (aLine[aX] in FWordChars) do Inc(ax);
   while (aX <= len) and not(aLine[aX] in FWordChars) do Inc(ax);
