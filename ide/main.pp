@@ -419,6 +419,7 @@ type
     procedure OnSrcNotebookToggleObjectInsp(Sender: TObject);
     procedure OnSrcNotebookViewJumpHistory(Sender: TObject);
     procedure OnSrcNoteBookPopupMenu(const AddMenuItemProc: TAddMenuItemProc);
+    procedure OnSrcNoteBookCloseQuery(Sender: TObject; var CloseAction: TCloseAction);
 
     // ObjectInspector + PropertyEditorHook events
     procedure OIOnSelectPersistents(Sender: TObject);
@@ -1975,6 +1976,7 @@ begin
   SourceEditorManager.OnToggleObjectInspClicked:= @OnSrcNotebookToggleObjectInsp;
   SourceEditorManager.OnViewJumpHistory := @OnSrcNotebookViewJumpHistory;
   SourceEditorManager.OnPopupMenu := @OnSrcNoteBookPopupMenu;
+  SourceEditorManager.OnNoteBookCloseQuery := @OnSrcNoteBookCloseQuery;
   DebugBoss.ConnectSourceNotebookEvents;
 
   OnSearchResultsViewSelectionChanged := @SearchResultsViewSelectionChanged;
@@ -15486,6 +15488,37 @@ procedure TMainIDE.OnSrcNoteBookPopupMenu(
   const AddMenuItemProc: TAddMenuItemProc);
 begin
   PkgBoss.OnSourceEditorPopupMenu(AddMenuItemProc);
+end;
+
+procedure TMainIDE.OnSrcNoteBookCloseQuery(Sender: TObject; var CloseAction: TCloseAction);
+var
+  SrcNB: TSourceNotebook;
+begin
+  if SourceEditorManager.SourceWindowCount = 1 then
+    exit;
+
+  SrcNB := TSourceNotebook(Sender);
+  if (SrcNB.EditorCount = 1) and (SrcNB.Editors[0].SharedEditorCount > 1) then begin
+    DoCloseEditorFile(SrcNB.Editors[0], []);
+    CloseAction := caFree;
+    exit;
+  end;
+
+  CloseAction := caHide;
+  case QuestionDlg(lisCloseAllTabsTitle, lisCloseAllTabsQuestion, mtConfirmation,
+                  [mrYes, lisCloseAllTabsClose, mrNo, lisCloseAllTabsHide, mrCancel],
+                  0)
+  of
+    mrYes : begin
+        while (SrcNB.EditorCount > 0) and
+              (DoCloseEditorFile(SrcNB.Editors[0], [cfSaveFirst]) = mrOK)
+        do ;
+        if SrcNB.EditorCount = 0 then
+          CloseAction := caFree;
+      end;
+    mrNo : CloseAction := caHide;
+    mrCancel : CloseAction := caNone;
+  end;
 end;
 
 procedure TMainIDE.OnApplicationUserInput(Sender: TObject; Msg: Cardinal);

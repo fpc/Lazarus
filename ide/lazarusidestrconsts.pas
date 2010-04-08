@@ -828,6 +828,11 @@ resourcestring
     'The name "%s" is not a valid pascal identifier.';
   lisCopyError = 'Copy Error';
 
+  lisCloseAllTabsTitle = 'Close Source Editor Window';
+  lisCloseAllTabsQuestion = 'Closing a Source Editor Window. Do you want close all files or hide the window?';
+  lisCloseAllTabsClose = 'Close files';
+  lisCloseAllTabsHide = 'Hide window';
+
   // hints
   lisHintOpen = 'Open';
   lisHintSave = 'Save';

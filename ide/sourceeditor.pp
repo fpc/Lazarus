@@ -537,6 +537,7 @@ type
     procedure StatusBarDblClick(Sender: TObject);
   private
     FNotebook: TSourceDragableNotebook;
+    FIsClosing: Boolean;
     SrcPopUpMenu: TPopupMenu;
   protected
     procedure CompleteCodeMenuItemClick(Sender: TObject);
@@ -1001,6 +1002,7 @@ type
     FOnInsertTodoClicked: TNotifyEvent;
     FOnJumpToHistoryPoint: TOnJumpToHistoryPoint;
     FOnMouseLink: TSynMouseLinkEvent;
+    FOnNoteBookCloseQuery: TCloseEvent;
     FOnOpenFileAtCursorClicked: TNotifyEvent;
     FOnPlaceMark: TPlaceBookMarkEvent;
     FOnPopupMenu: TSrcEditPopupMenuEvent;
@@ -1074,6 +1076,8 @@ type
     property OnViewJumpHistory: TNotifyEvent
              read FOnViewJumpHistory write FOnViewJumpHistory;
     property OnPopupMenu: TSrcEditPopupMenuEvent read FOnPopupMenu write FOnPopupMenu;
+    property OnNoteBookCloseQuery: TCloseEvent
+             read FOnNoteBookCloseQuery write FOnNoteBookCloseQuery;
   end;
 
 function SourceNotebook: TSourceNotebook;
@@ -4457,6 +4461,7 @@ begin
   FUpdateLock := 0;
   FFocusLock := 0;
   Visible:=false;
+  FIsClosing := False;
   i := 2;
   n := Owner.FindComponent(NonModalIDEWindowNames[nmiwSourceNoteBookName]);
   if (n <> nil) and (n <> self) then begin
@@ -5294,6 +5299,7 @@ End;
 procedure TSourceNotebook.DoClose(var CloseAction: TCloseAction);
 begin
   inherited DoClose(CloseAction);
+  CloseAction := caHide;
   {$IFnDEF SingleSrcWindow}
   if PageCount = 0 then begin { $NOTE maybe keep the last one}
     if EnvironmentOptions.IDEWindowLayoutList.ItemByFormID(Self.Name) <> nil then
@@ -5301,9 +5307,17 @@ begin
     // Make the name unique, because it may not immediately be released
     Name := Name + '___' + IntToStr(PtrUInt(Pointer(Self)));
     CloseAction := caFree;
-  end else
+  end
+  else begin
+    FIsClosing := True;
+    try
+      if Assigned(Manager) and Assigned(Manager.OnNoteBookCloseQuery) then
+        Manager.OnNoteBookCloseQuery(Self, CloseAction);
+    finally
+      FIsClosing := False;
+    end;
+  end;
   {$ENDIF}
-    CloseAction := caHide;
 end;
 
 function TSourceNotebook.IndexOfEditorInShareWith(AnOtherEditor: TSourceEditor
@@ -5678,7 +5692,7 @@ begin
   DestWin.UpdateActiveEditColors(Edit.EditorComponent);
   DestWin.UpdateStatusBar;
 
-  if PageCount = 0 then
+  if (PageCount = 0) and not FIsClosing then
     Close;
 end;
 
@@ -6158,7 +6172,8 @@ begin
       Manager.RemoveWindow(self);
       FManager := nil;
       {$ENDIF}
-      Close;
+      if not FIsClosing then
+        Close;
     end;
   {$IFNDEF OldAutoSize}
   finally
