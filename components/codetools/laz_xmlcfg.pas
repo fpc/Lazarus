@@ -59,10 +59,13 @@ type
     procedure Loaded; override;
     function ExtendedToStr(const e: extended): string;
     function StrToExtended(const s: string; const ADefault: extended): extended;
+    procedure ReadXMLFile(out ADoc: TXMLDocument; const AFilename: String); virtual;
+    procedure WriteXMLFile(ADoc: TXMLDocument; const AFileName: String); virtual;
+    procedure FreeDoc; virtual;
   public
-    constructor Create(const AFilename: String); overload;
-    constructor CreateClean(const AFilename: String);
-    constructor CreateWithSource(const AFilename, Source: String);
+    constructor Create(const AFilename: String); overload; // create and load
+    constructor CreateClean(const AFilename: String); // create new
+    constructor CreateWithSource(const AFilename, Source: String); // create new and load from Source
     destructor Destroy; override;
     procedure Clear;
     procedure Flush;    // Writes the XML file
@@ -131,7 +134,7 @@ begin
   if Assigned(doc) then
   begin
     Flush;
-    doc.Free;
+    FreeDoc;
   end;
   inherited Destroy;
 end;
@@ -141,7 +144,7 @@ var
   cfg: TDOMElement;
 begin
   // free old document
-  doc.Free;
+  FreeDoc;
   // create new document
   doc := TXMLDocument.Create;
   cfg :=TDOMElement(doc.FindNode('CONFIG'));
@@ -163,15 +166,15 @@ end;
 
 procedure TXMLConfig.ReadFromStream(s: TStream);
 begin
-  FreeAndNil(Doc);
-  ReadXMLFile(Doc,s);
+  FreeDoc;
+  Laz_XMLRead.ReadXMLFile(Doc,s);
   if Doc=nil then
     Clear;
 end;
 
 procedure TXMLConfig.WriteToStream(s: TStream);
 begin
-  WriteXMLFile(Doc,s);
+  Laz_XMLWrite.WriteXMLFile(Doc,s);
 end;
 
 function TXMLConfig.GetValue(const APath, ADefault: String): String;
@@ -439,6 +442,22 @@ begin
   ThousandSeparator:=OldThousandSeparator;
 end;
 
+procedure TXMLConfig.ReadXMLFile(out ADoc: TXMLDocument; const AFilename: String
+  );
+begin
+  Laz_XMLRead.ReadXMLFile(ADoc,AFilename);
+end;
+
+procedure TXMLConfig.WriteXMLFile(ADoc: TXMLDocument; const AFileName: String);
+begin
+  Laz_XMLWrite.WriteXMLFile(ADoc,AFileName);
+end;
+
+procedure TXMLConfig.FreeDoc;
+begin
+  FreeAndNil(doc);
+end;
+
 procedure TXMLConfig.SetFilename(const AFilename: String);
 var
   cfg: TDOMElement;
@@ -454,18 +473,18 @@ begin
   if Assigned(doc) then
   begin
     Flush;
-    doc.Free;
+    FreeDoc;
   end;
 
   doc:=nil;
-  if (not fDoNotLoadFromFile) and FileExistsUTF8(AFilename) then
+  if (not fDoNotLoadFromFile) and FileExistsCached(AFilename) then
     ReadXMLFile(doc,AFilename)
   else if fAutoLoadFromSource<>'' then begin
     ms:=TMemoryStream.Create;
     try
       ms.Write(fAutoLoadFromSource[1],length(fAutoLoadFromSource));
       ms.Position:=0;
-      ReadXMLFile(doc,ms);
+      Laz_XMLRead.ReadXMLFile(doc,ms);
     finally
       ms.Free;
     end;

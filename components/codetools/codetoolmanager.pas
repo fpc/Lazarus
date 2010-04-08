@@ -809,6 +809,8 @@ begin
   DefineTree.OnReadValue:=@OnDefineTreeReadValue;
   DefinePool:=TDefinePool.Create;
   SourceCache:=TCodeCache.Create;
+  if DefaultConfigCodeCache=nil then
+    DefaultConfigCodeCache:=SourceCache;
   SourceChangeCache:=TSourceChangeCache.Create;
   SourceChangeCache.OnBeforeApplyChanges:=@BeforeApplyingChanges;
   SourceChangeCache.OnAfterApplyChanges:=@AfterApplyingChanges;
@@ -870,6 +872,8 @@ begin
   {$IFDEF CTDEBUG}
   DebugLn('[TCodeToolManager.Destroy] E');
   {$ENDIF}
+  if DefaultConfigCodeCache=SourceCache then
+    DefaultConfigCodeCache:=nil;
   FreeAndNil(SourceCache);
   FreeAndNil(DirectoryCachePool);
   {$IFDEF CTDEBUG}

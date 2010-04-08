@@ -47,8 +47,35 @@ unit CodeToolsConfig;
 interface
 
 uses
-  Classes, SysUtils, Laz_XMLCfg, FileProcs, DefineTemplates;
+  Classes, SysUtils, Laz_XMLCfg, Laz_XMLRead, Laz_XMLWrite, Laz_DOM, FileProcs,
+  CodeCache, DefineTemplates;
   
+type
+
+  { TCodeBufXMLConfig }
+
+  TCodeBufXMLConfig = class(TXMLConfig)
+  private
+    FCodeCache: TCodeCache;
+  protected
+    fKeepFileAttributes: boolean;
+    procedure ReadXMLFile(out ADoc: TXMLDocument; const AFilename: String
+            ); override;
+    procedure WriteXMLFile(ADoc: TXMLDocument; const AFileName: String);
+           override;
+    function GetCache: TCodeCache;
+  public
+    constructor CreateWithCache(AFilename: string;
+      LoadContent: boolean = true;        // init/load from disk
+      LoadFileAttributes: boolean = true; // load lineending and encoding
+      ASource: string = '';               // init with this source
+      ACache: TCodeCache = nil);
+    property CodeCache: TCodeCache read FCodeCache write FCodeCache;
+  end;
+
+var
+  DefaultConfigCodeCache: TCodeCache = nil; // set by CodeToolBoss
+
 type
 
   { TCodeToolsOptions }
@@ -352,6 +379,86 @@ begin
   finally
     XMLConfig.Free;
   end;
+end;
+
+{ TCodeBufXMLConfig }
+
+procedure TCodeBufXMLConfig.ReadXMLFile(out ADoc: TXMLDocument;
+  const AFilename: String);
+var
+  Buf: TCodeBuffer;
+  ms: TMemoryStream;
+  Cache: TCodeCache;
+begin
+  Cache:=GetCache;
+  if Cache<>nil then begin
+    Buf:=Cache.LoadFile(AFilename);
+    if Buf<>nil then begin
+      fKeepFileAttributes:=true;
+      ms:=TMemoryStream.Create;
+      try
+        Buf.SaveToStream(ms);
+        ms.Position:=0;
+        Laz_XMLRead.ReadXMLFile(ADoc, ms);
+      finally
+        ms.Free;
+      end;
+    end;
+  end;
+  // try default (this will create the normal exceptions)
+  inherited ReadXMLFile(ADoc, AFilename);
+end;
+
+procedure TCodeBufXMLConfig.WriteXMLFile(ADoc: TXMLDocument;
+  const AFileName: String);
+var
+  Buf: TCodeBuffer;
+  ms: TMemoryStream;
+  Cache: TCodeCache;
+begin
+  Cache:=GetCache;
+  if Cache<>nil then begin
+    Buf:=nil;
+    if (not fKeepFileAttributes) or (not FileExistsCached(AFileName)) then
+      Buf:=Cache.CreateFile(AFilename)
+    else
+      Buf:=Cache.LoadFile(AFilename);
+    if Buf<>nil then begin
+      fKeepFileAttributes:=true;
+      ms:=TMemoryStream.Create;
+      try
+        Laz_XMLWrite.WriteXMLFile(ADoc, ms);
+        ms.Position:=0;
+        Buf.LoadFromStream(ms);
+        if Buf.Save then exit;
+      finally
+        ms.Free;
+      end;
+    end;
+  end;
+  // try default (this will create the normal exceptions)
+  inherited WriteXMLFile(ADoc, AFileName);
+end;
+
+function TCodeBufXMLConfig.GetCache: TCodeCache;
+begin
+  Result:=CodeCache;
+  if Result=nil then
+    Result:=DefaultConfigCodeCache;
+end;
+
+constructor TCodeBufXMLConfig.CreateWithCache(AFilename: string;
+  LoadContent: boolean; LoadFileAttributes: boolean; ASource: string;
+  ACache: TCodeCache);
+begin
+  CodeCache:=ACache;
+  fKeepFileAttributes:=LoadFileAttributes;
+  if (ASource<>'') then
+    inherited CreateWithSource(AFilename,ASource)
+  else if LoadContent then
+    inherited Create(AFilename)
+  else
+    inherited CreateClean(AFilename);
 end;
 
 end.

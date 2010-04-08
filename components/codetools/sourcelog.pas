@@ -173,7 +173,7 @@ type
     property WriteLock: integer read FWriteLock;
     procedure IncWriteLock;
     procedure DecWriteLock;
-    procedure Clear;  virtual;
+    procedure Clear; virtual; // clear content, not Encoding, not LineEnding
     function ConsistencyCheck: integer;
     function CalcMemSize: PtrUInt; virtual;
     constructor Create(const ASource: string);
