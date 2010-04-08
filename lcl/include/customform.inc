@@ -388,6 +388,16 @@ begin
   //DebugLn(['[TCustomForm.SetVisible] END ',Name,':',ClassName,' ',Value,' ',(fsCreating in FFormState),' ',Visible]);
 end;
 
+procedure TCustomForm.AllAutoSized;
+begin
+  inherited AllAutoSized;
+  { If the the form is about to show, calculate its metrics }
+  if (not Showing) and Visible and (not (csDestroying in ComponentState)) then
+  begin
+    MoveToDefaultPosition;
+  end;
+end;
+
 {------------------------------------------------------------------------------
   procedure TCustomForm.SetWindowFocus;
  ------------------------------------------------------------------------------}
@@ -1019,6 +1029,108 @@ begin
     {$IFNDEF OldAutoSize}
     EnableAutoSizing{$IFDEF DebugDisableAutoSizing}('TCustomForm.SetParent'){$ENDIF};
     {$ENDIF}
+  end;
+end;
+
+procedure TCustomForm.MoveToDefaultPosition;
+
+  procedure MoveToDefaultMonitor(var X, Y: Integer);
+  var
+    Source, Target: TMonitor;
+    ABounds: TRect;
+  begin
+    // delphi compatibility: if no main form then DefaultMonitor has no effect
+    if Application.MainForm = nil then Exit;
+    Source := Screen.MonitorFromPoint(Point(X, Y));
+    case DefaultMonitor of
+      dmDesktop:
+        Target := Source; // no need to move
+      dmPrimary:
+        Target := Screen.PrimaryMonitor;
+      dmMainForm:
+        Target := Application.MainForm.Monitor;
+      dmActiveForm:
+        if Screen.ActiveCustomForm <> nil then
+          Target := Screen.ActiveCustomForm.Monitor
+        else
+          Target := Source;
+    end;
+    if Source = Target then Exit; // no move
+
+    if Position in [poMainFormCenter, poOwnerFormCenter] then
+    begin
+      ABounds := Target.BoundsRect;
+      // shift X and Y from Source to Target monitor
+      X := (X - Source.Left) + ABounds.Left;
+      Y := (Y - Source.Top) + ABounds.Top;
+
+      // check that we are still in the desired monitor
+      with Target.BoundsRect do
+      begin
+        if X + Width > ABounds.Right then
+          X := ABounds.Right - Width;
+        if X < ABounds.Left then
+          X := ABounds.Left;
+
+        if Y + Height > ABounds.Bottom then
+          Y := ABounds.Bottom - Height;
+        if Y < ABounds.Top then
+          Y := ABounds.Top;
+      end;
+    end
+    else
+    begin
+      ABounds := Target.BoundsRect;
+      X := (ABounds.Left + ABounds.Right - Width) div 2;
+      Y := (ABounds.Top + ABounds.Bottom - Height) div 2;
+    end;
+  end;
+
+var
+  X, Y : integer;
+begin
+  if (Parent = nil) and (ParentWindow = 0) then
+  begin
+    // first make sure X and Y are assigned
+    X := Left;
+    Y := Top;
+
+    if  (Position = poMainFormCenter)
+    and (FormStyle = fsMDIChild)
+    and (Self <> Application.Mainform)
+    then begin
+      X := (Application.Mainform.ClientWidth - Width) div 2;
+      Y := (Application.Mainform.ClientHeight - Height) div 2;
+    end
+    else begin
+      case Position of
+      poDesktopCenter :
+        begin
+          X := (Screen.DesktopWidth - Width) div 2;
+          Y := (Screen.DesktopHeight - Height) div 2;
+        end;
+      poScreenCenter :
+        begin
+          X := (Screen.Width - Width) div 2;
+          Y := (Screen.Height - Height) div 2;
+        end;
+      poMainFormCenter :
+        if (Self <> Application.MainForm) then
+        begin
+          X := ((Application.MainForm.Width - Width) div 2) + Application.MainForm.Left;
+          Y := ((Application.MainForm.Height - Height) div 2) + Application.MainForm.Top;
+        end;
+      poOwnerFormCenter :
+        if (Owner is TCustomForm) then
+        begin
+          X := ((TCustomForm(Owner).Width - Width) div 2) + TCustomForm(Owner).Left;
+          Y := ((TCustomForm(Owner).Height - Height) div 2) + TCustomForm(Owner).Top;
+        end;
+      end;
+    end;
+    if (Position in [poScreenCenter, poMainFormCenter, poOwnerFormCenter]) then
+      MoveToDefaultMonitor(X, Y);
+    SetBounds(X, Y, Width, Height);
   end;
 end;
 
@@ -2263,61 +2375,6 @@ end;
   Here the initial form left and top are determined.
  ------------------------------------------------------------------------------}
 procedure TCustomForm.UpdateShowing;
-
-  procedure MoveToDefaultMonitor(var X, Y: Integer);
-  var
-    Source, Target: TMonitor;
-    ABounds: TRect;
-  begin
-    // delphi compatibility: if no main form then DefaultMonitor has no effect
-    if Application.MainForm = nil then Exit;
-    Source := Screen.MonitorFromPoint(Point(X, Y));
-    case DefaultMonitor of
-      dmDesktop:
-        Target := Source; // no need to move
-      dmPrimary:
-        Target := Screen.PrimaryMonitor;
-      dmMainForm:
-        Target := Application.MainForm.Monitor;
-      dmActiveForm:
-        if Screen.ActiveCustomForm <> nil then
-          Target := Screen.ActiveCustomForm.Monitor
-        else
-          Target := Source;
-    end;
-    if Source = Target then Exit; // no move
-
-    if Position in [poMainFormCenter, poOwnerFormCenter] then
-    begin
-      ABounds := Target.BoundsRect;
-      // shift X and Y from Source to Target monitor
-      X := (X - Source.Left) + ABounds.Left;
-      Y := (Y - Source.Top) + ABounds.Top;
-
-      // check that we are still in the desired monitor
-      with Target.BoundsRect do
-      begin
-        if X + Width > ABounds.Right then
-          X := ABounds.Right - Width;
-        if X < ABounds.Left then
-          X := ABounds.Left;
-
-        if Y + Height > ABounds.Bottom then
-          Y := ABounds.Bottom - Height;
-        if Y < ABounds.Top then
-          Y := ABounds.Top;
-      end;
-    end
-    else
-    begin
-      ABounds := Target.BoundsRect;
-      X := (ABounds.Left + ABounds.Right - Width) div 2;
-      Y := (ABounds.Top + ABounds.Bottom - Height) div 2;
-    end;
-  end;
-
-var
-  X, Y : integer;
 begin
   if csLoading in ComponentState then exit;
   {$IFDEF CHECK_POSITION}
@@ -2326,50 +2383,7 @@ begin
   { If the the form is about to show, calculate its metrics }
   if Visible and (not (csDestroying in ComponentState)) then
   begin
-    if (Parent = nil) and (ParentWindow = 0) then
-    begin
-      // first make sure X and Y are assigned
-      X := Left;
-      Y := Top;
-
-      if  (Position = poMainFormCenter)
-      and (FormStyle = fsMDIChild)
-      and (Self <> Application.Mainform)
-      then begin
-        X := (Application.Mainform.ClientWidth - Width) div 2;
-        Y := (Application.Mainform.ClientHeight - Height) div 2;
-      end
-      else begin
-        case Position of
-        poDesktopCenter :
-          begin
-            X := (Screen.DesktopWidth - Width) div 2;
-            Y := (Screen.DesktopHeight - Height) div 2;
-          end;
-        poScreenCenter :
-          begin
-            X := (Screen.Width - Width) div 2;
-            Y := (Screen.Height - Height) div 2;
-          end;
-        poMainFormCenter :
-          if (Self <> Application.MainForm) then
-          begin
-            X := ((Application.MainForm.Width - Width) div 2) + Application.MainForm.Left;
-            Y := ((Application.MainForm.Height - Height) div 2) + Application.MainForm.Top;
-          end;
-        poOwnerFormCenter :
-          if (Owner is TCustomForm) then
-          begin
-            X := ((TCustomForm(Owner).Width - Width) div 2) + TCustomForm(Owner).Left;
-            Y := ((TCustomForm(Owner).Height - Height) div 2) + TCustomForm(Owner).Top;
-          end;
-        end;
-      end;
-      if (Position in [poScreenCenter, poMainFormCenter, poOwnerFormCenter]) then
-        MoveToDefaultMonitor(X, Y);
-      SetBounds(X, Y, Width, Height);
-    end;
-
+    MoveToDefaultPosition;
     if (fsFirstShow in FFormState) then
     begin
       Exclude(FFormState, fsFirstShow);

@@ -3490,6 +3490,7 @@ begin
       {$ENDIF}
       inherited DoAllAutoSize;
       if cfAutoSizeNeeded in FControlFlags then RaiseGDBException('');
+      AllAutoSized;
       // send all new bounds to widgetset
       {$IFDEF VerboseAllAutoSize}
       DebugLn(['TWinControl.DoAllAutoSize REALIZE BOUNDS ',DbgSName(Self),' lclbounds=',dbgs(BoundsRect)]);
@@ -3515,6 +3516,11 @@ begin
   finally
     Exclude(FWinControlFlags,wcfAllAutoSizing);
   end;
+end;
+
+procedure TWinControl.AllAutoSized;
+begin
+  // see TCustomForm.AllAutoSized
 end;
 {$ENDIF}
 
@@ -8008,6 +8014,7 @@ begin
   {$ENDIF}
   FBoundsRealized:=NewBounds;
   Include(FWinControlFlags,wcfBoundsRealized); // Note: set before calling widgetset, because used in WMSize
+  //if Parent=nil then DebugLn(['TWinControl.DoSendBoundsToInterface ',DbgSName(Self),' ',dbgs(BoundsRect)]);
   // this can trigger WMSize messages
   TWSWinControlClass(WidgetSetClass).SetBounds(Self, Left, Top, Width, Height);
 end;

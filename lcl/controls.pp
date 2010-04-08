@@ -1748,6 +1748,7 @@ type
     procedure DoAutoSize; override;
     {$IFNDEF OldAutoSize}
     procedure DoAllAutoSize; override;
+    procedure AllAutoSized; virtual; // called by DoAllAutoSize after all bounds are computed, see TCustomForm.AllAutoSized
     {$ENDIF}
     procedure CalculatePreferredSize(var PreferredWidth,
                                      PreferredHeight: integer;

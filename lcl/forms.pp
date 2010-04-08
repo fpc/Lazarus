@@ -524,8 +524,10 @@ type
     procedure RequestAlign; override;
     procedure SetZOrder(Topmost: Boolean); override;
     procedure SetParent(NewParent: TWinControl); override;
+    procedure MoveToDefaultPosition; virtual;
     procedure UpdateShowing; override;
     procedure SetVisible(Value: boolean); override;
+    procedure AllAutoSized; override;
     procedure DoFirstShow; virtual;
     procedure UpdateWindowState;
     procedure VisibleChanging; override;
