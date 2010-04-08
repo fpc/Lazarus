@@ -239,7 +239,7 @@ type
     property AllowPastEOL: Boolean read FAllowPastEOL write SetAllowPastEOL;
     property KeepCaretX: Boolean read FKeepCaretX write SetKeepCaretX;
     property MaxLeftChar: PInteger write FMaxLeftChar;
-    property AutoMoveOnEdit: Boolean write FAutoMoveOnEdit;
+    property AutoMoveOnEdit: Boolean read FAutoMoveOnEdit write FAutoMoveOnEdit;
   end;
 
 implementation

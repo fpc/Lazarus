@@ -383,7 +383,9 @@ type
     fLeftChar: Integer;    // first visible screen column
     fMaxLeftChar: Integer; // 1024
 
-    fPaintLock: Integer;
+    FPaintLock: Integer;
+    FPaintLockOwner: Integer;
+    FStoredCaredAutoAdjust: Boolean;
     fReadOnly: Boolean;
     fRightEdge: Integer;
     fRightEdgeColor: TColor;
@@ -1707,6 +1709,7 @@ procedure TCustomSynEdit.IncPaintLock;
 var
   i: Integer;
 begin
+  inc(FPaintLockOwner);
   for i := 0 to TSynEditStringList(FLines).AttachedSynEditCount - 1 do
     TCustomSynEdit(TSynEditStringList(FLines).AttachedSynEdits[i]).DoIncPaintLock;
 end;
@@ -1717,15 +1720,21 @@ var
 begin
   for i := 0 to TSynEditStringList(FLines).AttachedSynEditCount - 1 do
     TCustomSynEdit(TSynEditStringList(FLines).AttachedSynEdits[i]).DoDecPaintLock;
+  dec(FPaintLockOwner);
 end;
 
 procedure TCustomSynEdit.DoIncPaintLock;
 begin
-  if fPaintLock = 0 then begin
+  if FPaintLock = 0 then begin
     FOldTopLine := FTopLine;
     FOldTopView := TopView;
+    if FPaintLockOwner > 0 then begin
+      // Paintlock increased by sharing editor
+      FStoredCaredAutoAdjust := FCaret.AutoMoveOnEdit;
+      FCaret.AutoMoveOnEdit := True;
+    end;
   end;
-  inc(fPaintLock);
+  inc(FPaintLock);
   FFoldedLinesView.Lock; //DecPaintLock triggers ScanFrom, and folds must wait
   FTrimmedLinesView.Lock; // Lock before caret
   FCaret.Lock;
@@ -1733,7 +1742,7 @@ end;
 
 procedure TCustomSynEdit.DoDecPaintLock;
 begin
-  if (fPaintLock=1) and HandleAllocated then begin
+  if (FPaintLock=1) and HandleAllocated then begin
     ScanRanges;
     FChangedLinesStart:=0;
     FChangedLinesEnd:=0;
@@ -1741,8 +1750,8 @@ begin
   FCaret.Unlock;            // Maybe after FFoldedLinesView
   FTrimmedLinesView.UnLock; // Must be unlocked after caret
   FFoldedLinesView.UnLock;  // after ScanFrom, but before UpdateCaret
-  Dec(fPaintLock);
-  if (fPaintLock = 0) and HandleAllocated then begin
+  Dec(FPaintLock);
+  if (FPaintLock = 0) and HandleAllocated then begin
     ScrollAfterTopLineChanged;
     if sfScrollbarChanged in fStateFlags then
       UpdateScrollbars;
@@ -1760,8 +1769,13 @@ begin
     fMarkupHighCaret.CheckState; // Todo: need a global lock, including the markup
                                  // Todo: Markup can do invalidation, should be before ScrollAfterTopLineChanged;
   end;
-  if (fPaintLock = 0) then
+  if (FPaintLock = 0) then begin
     FBlockSelection.AutoExtend := False;
+    if FPaintLockOwner > 0 then begin
+      // Paintlock increased by sharing editor
+      FCaret.AutoMoveOnEdit := FStoredCaredAutoAdjust;
+    end;
+  end;
 end;
 
 destructor TCustomSynEdit.Destroy;
@@ -4571,6 +4585,8 @@ begin
     ScanRanges;
   InvalidateLines(AIndex + 1, -1);
   InvalidateGutterLines(AIndex + 1, -1);
+  if TopLine > AIndex + 1 then
+    TopLine := TopLine + ACount;
 end;
 
 procedure TCustomSynEdit.LineTextChanged(Sender: TSynEditStrings;
