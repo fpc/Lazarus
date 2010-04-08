@@ -1732,6 +1732,7 @@ begin
       // Paintlock increased by sharing editor
       FStoredCaredAutoAdjust := FCaret.AutoMoveOnEdit;
       FCaret.AutoMoveOnEdit := True;
+      FBlockSelection.IncPersistentLock;
     end;
   end;
   inc(FPaintLock);
@@ -1773,6 +1774,7 @@ begin
     FBlockSelection.AutoExtend := False;
     if FPaintLockOwner = 0 then begin
       // Paintlock increased by sharing editor
+      FBlockSelection.DecPersistentLock;
       FCaret.AutoMoveOnEdit := FStoredCaredAutoAdjust;
     end;
   end;

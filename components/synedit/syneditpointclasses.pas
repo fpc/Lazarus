@@ -926,11 +926,14 @@ begin
       AdjustStartLineBytePos(AdjustPoint(StartLineBytePos));
       EndLineBytePos := AdjustPoint(EndLineBytePos);
     end;
+    // Todo: Change Lines in smColumn
   end
-  else // Change the Selection, if change was made by owning SynEdit (Caret.Locked)
-       // (InternalSelection has no Caret)
-  if (FCaret <> nil) and (FCaret.Locked) then
-    StartLineBytePos := FCaret.LineBytePos;
+  else begin
+    // Change the Selection, if change was made by owning SynEdit (Caret.Locked)
+    // (InternalSelection has no Caret)
+    if (FCaret <> nil) and (FCaret.Locked) then
+      StartLineBytePos := FCaret.LineBytePos;
+  end;
 end;
 
 procedure TSynEditSelection.SetSelTextPrimitive(PasteMode : TSynSelectionMode;
