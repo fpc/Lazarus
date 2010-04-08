@@ -558,6 +558,7 @@ type
     constructor Create(AOwner: TComponent); override;
     constructor CreateNew(AOwner: TComponent; Num: Integer = 0); virtual;
     destructor Destroy; override;
+    procedure AfterConstruction; override;
     procedure BeforeDestruction; override;
 
     class function GetControlClassDefaultSize: TPoint; override;

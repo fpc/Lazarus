@@ -67,6 +67,19 @@ begin
 end;
 
 {------------------------------------------------------------------------------
+  Method: TCustomForm.AfterConstruction
+  Params:  None
+  Returns: Nothing
+
+  Gets called after the construction of the object
+ ------------------------------------------------------------------------------}
+procedure TCustomForm.AfterConstruction;
+begin
+  DoCreate;
+  inherited AfterConstruction;
+end;
+
+{------------------------------------------------------------------------------
   Method: TCustomForm.BeforeDestruction
   Params:  None
   Returns: Nothing
@@ -1772,7 +1785,6 @@ begin
             // MG:  Ignoring is best at the moment. (Delphi raises an exception.)
           end;
           //DebugLn('[TCustomForm.Create] D Class=',Classname);
-          DoCreate;
           //DebugLn('[TCustomForm.Create] E Class=',Classname);
         finally
           Exclude(FFormState, fsCreating);
