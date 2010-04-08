@@ -388,6 +388,7 @@ begin
   //DebugLn(['[TCustomForm.SetVisible] END ',Name,':',ClassName,' ',Value,' ',(fsCreating in FFormState),' ',Visible]);
 end;
 
+{$ifndef OldAutoSize}
 procedure TCustomForm.AllAutoSized;
 begin
   inherited AllAutoSized;
@@ -397,6 +398,7 @@ begin
     MoveToDefaultPosition;
   end;
 end;
+{$endif}
 
 {------------------------------------------------------------------------------
   procedure TCustomForm.SetWindowFocus;
