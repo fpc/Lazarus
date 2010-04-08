@@ -678,6 +678,7 @@ const
   var
     KeyMsg: TLMKeyDown;
     CharMsg: TLMChar;
+    OrigChar: AnsiString;
   begin
     Result:=EventNotHandledErr;
     {$IFDEF VerboseKeyboard}
@@ -740,6 +741,7 @@ const
     if SendChar then
     begin
       // send the UTF8 keypress
+      OrigChar:=UTF8Character;
       if TWinControl(Widget.LCLObject).IntfUTF8KeyPress(UTF8Character,1,IsSysKey) then
       begin
         // the LCL has handled the key
@@ -750,7 +752,8 @@ const
           Result := noErr;
         Exit;
       end;
-      LCLCharToMacEvent(UTF8Character);
+      if OrigChar<>UTF8Character then
+        LCLCharToMacEvent(UTF8Character);
 
       // create the CN_CHAR / CN_SYSCHAR message
       FillChar(CharMsg, SizeOf(CharMsg), 0);
