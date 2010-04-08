@@ -47,8 +47,8 @@ uses
   TypInfo, Classes, SysUtils, LCLProc, Forms, Controls, Dialogs, Menus,
   StringHashList, Translations,
   // codetools
-  CodeToolManager, CodeCache, NonPascalCodeTools, BasicCodeTools,
-  DefineTemplates, FileProcs, AVL_Tree, Laz_XMLCfg,
+  CodeToolsConfig, CodeToolManager, CodeCache, NonPascalCodeTools,
+  BasicCodeTools, DefineTemplates, FileProcs, AVL_Tree, Laz_XMLCfg,
   // IDE Interface
   SrcEditorIntf, IDEExternToolIntf, NewItemIntf, ProjectIntf, PackageIntf, MenuIntf,
   PropEdits, IDEMsgIntf, MacroIntf, LazIDEIntf,
@@ -2443,7 +2443,7 @@ begin
 
       // load the package file
       try
-        XMLConfig:=TXMLConfig.Create(nil);
+        XMLConfig:=TCodeBufXMLConfig.Create(nil);
         try
           APackage.Filename:=AFilename;
           Result:=LoadXMLConfigFromCodeBuffer(AFilename,XMLConfig,
@@ -2498,7 +2498,7 @@ end;
 function TPkgManager.DoSavePackage(APackage: TLazPackage;
   Flags: TPkgSaveFlags): TModalResult;
 var
-  XMLConfig: TXMLConfig;
+  XMLConfig: TCodeBufXMLConfig;
   PkgLink: TPackageLink;
   Code: TCodeBuffer;
 begin
@@ -2513,7 +2513,7 @@ begin
   // check if package needs saving
   if (not (psfSaveAs in Flags))
   and (not APackage.ReadOnly) and (not APackage.Modified)
-  and FileExistsUTF8(APackage.Filename) then begin
+  and FileExistsCached(APackage.Filename) then begin
     Result:=mrOk;
     exit;
   end;
@@ -2551,12 +2551,13 @@ begin
 
   // save
   try
-    XMLConfig:=TXMLConfig.Create(nil);
+    XMLConfig:=TCodeBufXMLConfig.Create(nil);
     try
       XMLConfig.Clear;
+      XMLConfig.KeepFileAttributes:=true;
       APackage.SaveToXMLConfig(XMLConfig,'Package/');
       Code:=nil;
-      Result:=SaveXMLConfigToCodeBuffer(APackage.Filename,XMLConfig,Code);
+      Result:=SaveXMLConfigToCodeBuffer(APackage.Filename,XMLConfig,Code,true);
       if Result<>mrOk then exit;
       APackage.LPKSource:=Code;
       PkgLink:=PkgLinks.AddUserLink(APackage);

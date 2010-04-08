@@ -38,8 +38,8 @@ interface
 
 uses
   Classes, SysUtils, LCLProc, LResources, Forms, Controls, Dialogs, FileUtil,
-  Laz_XMLCfg, Laz_XMLWrite, CodeCache, CodeToolManager, AVL_Tree,
-  LazIDEIntf,
+  Laz_XMLCfg, Laz_XMLWrite, CodeToolsConfig, CodeCache, CodeToolManager,
+  AVL_Tree, LazIDEIntf,
   IDEProcs, LazarusIDEStrConsts, IDEDialogs;
 
 type
@@ -78,7 +78,8 @@ function LoadXMLConfigFromCodeBuffer(const Filename: string; Config: TXMLConfig;
                         ShowAbort: boolean
                         ): TModalResult;
 function SaveXMLConfigToCodeBuffer(const Filename: string; Config: TXMLConfig;
-                        var ACodeBuffer: TCodeBuffer): TModalResult;
+                                   var ACodeBuffer: TCodeBuffer;
+                                   KeepFileAttributes: boolean): TModalResult;
 function CreateEmptyFile(const Filename: string;
                          ErrorButtons: TMsgDlgButtons): TModalResult;
 function CheckCreatingFile(const AFilename: string;
@@ -324,6 +325,8 @@ begin
     ACodeBuffer.SaveToStream(ms);
     ms.Position:=0;
     try
+      if Config is TCodeBufXMLConfig then
+        TCodeBufXMLConfig(Config).KeepFileAttributes:=true;
       Config.ReadFromStream(ms);
     except
       on E: Exception do begin
@@ -342,12 +345,16 @@ begin
 end;
 
 function SaveXMLConfigToCodeBuffer(const Filename: string;
-  Config: TXMLConfig; var ACodeBuffer: TCodeBuffer): TModalResult;
+  Config: TXMLConfig; var ACodeBuffer: TCodeBuffer; KeepFileAttributes: boolean
+  ): TModalResult;
 var
   ms: TMemoryStream;
 begin
   if ACodeBuffer=nil then begin
-    ACodeBuffer:=CodeToolBoss.CreateFile(Filename);
+    if KeepFileAttributes and FileExistsCached(Filename) then
+      ACodeBuffer:=CodeToolBoss.LoadFile(Filename,true,false)
+    else
+      ACodeBuffer:=CodeToolBoss.CreateFile(Filename);
     if ACodeBuffer=nil then
       exit(mrCancel);
   end;
