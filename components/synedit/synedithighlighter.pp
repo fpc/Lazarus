@@ -1261,7 +1261,7 @@ begin
     FIsScanning := False;
   end;
   CurrentRanges.ClearReScanNeeded;
-  CurrentLines.SendHighlightChanged(StartIndex, CurrentIndex);
+  CurrentLines.SendHighlightChanged(StartIndex, CurrentIndex - StartIndex + 1);
 end;
 
 procedure TSynCustomHighlighter.ScanAllRanges;

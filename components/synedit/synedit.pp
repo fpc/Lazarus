@@ -1745,6 +1745,10 @@ procedure TCustomSynEdit.DoDecPaintLock;
 begin
   if (FPaintLock=1) and HandleAllocated then begin
     ScanRanges;
+    if FChangedLinesStart > 0 then begin
+      InvalidateLines(FChangedLinesStart, FChangedLinesEnd);
+      InvalidateGutterLines(FChangedLinesStart, FChangedLinesEnd);
+    end;
     FChangedLinesStart:=0;
     FChangedLinesEnd:=0;
   end;
