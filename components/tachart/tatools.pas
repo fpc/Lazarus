@@ -103,11 +103,14 @@ type
 
   TZoomDragTool = class(TChartTool)
   private
+    FProportional: Boolean;
     FSelectionRect: TRect;
   public
     procedure MouseDown(APoint: TPoint); override;
     procedure MouseMove(APoint: TPoint); override;
     procedure MouseUp(APoint: TPoint); override;
+  published
+    property Proportional: Boolean read FProportional write FProportional default false;
   end;
 
   { TZoomClickTool }
@@ -526,6 +529,25 @@ end;
 procedure TZoomDragTool.MouseUp(APoint: TPoint);
 var
   ext: TDoubleRect;
+
+  procedure CheckProportions;
+  var
+    newSize, oldSize: TDoublePoint;
+    coeff: Double;
+  begin
+    if not Proportional then exit;
+    newSize := ext.b - ext.a;
+    oldSize := FChart.LogicalExtent.b - FChart.LogicalExtent.a;
+    coeff := newSize.Y * oldSize.X;
+    if coeff = 0 then exit;
+    coeff := newSize.X * oldSize.Y / coeff;
+    if coeff = 0 then exit;
+    if coeff > 1 then
+      ExpandRange(ext.a.Y, ext.b.Y, (coeff - 1) / 2)
+    else
+      ExpandRange(ext.a.X, ext.b.X, (1 / coeff  - 1) / 2);
+  end;
+
 begin
   Unused(APoint);
   Deactivate;
@@ -546,6 +568,7 @@ begin
     if a.Y > b.Y then
       Exchange(a.Y, b.Y);
   end;
+  CheckProportions;
   FChart.LogicalExtent := ext;
 end;
 
@@ -584,13 +607,13 @@ begin
   end;
 end;
 
+{ TZoomClickTool }
+
 constructor TZoomClickTool.Create(AOwner: TComponent);
 begin
   inherited Create(AOwner);
   FZoomFactor := 1.0;
 end;
-
-{ TZoomClickTool }
 
 procedure TZoomClickTool.MouseDown(APoint: TPoint);
 var
@@ -613,14 +636,14 @@ begin
   Result := FZoomFactor <> 1.0;
 end;
 
+{ TPanDragTool }
+
 constructor TPanDragTool.Create(AOwner: TComponent);
 begin
   inherited Create(AOwner);
   FActiveCursor := crSizeAll;
   FDirections := PAN_DIRECTIONS_ALL;
 end;
-
-{ TPanDragTool }
 
 procedure TPanDragTool.MouseDown(APoint: TPoint);
 begin
