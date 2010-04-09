@@ -384,7 +384,7 @@ type
     fMaxLeftChar: Integer; // 1024
 
     FPaintLock: Integer;
-    FPaintLockOwner: Integer;
+    FPaintLockOwnerCnt: Integer;
     FStoredCaredAutoAdjust: Boolean;
     fReadOnly: Boolean;
     fRightEdge: Integer;
@@ -457,6 +457,7 @@ type
     procedure AquirePrimarySelection;
     function GetDefSelectionMode: TSynSelectionMode;
     function GetFoldState: String;
+    function GetPaintLockOwner: TSynEditBase;
     function GetPlugin(Index: Integer): TSynEditPlugin;
     function GetTextBetweenPoints(aStartPoint, aEndPoint: TPoint): String;
     function GetDividerDrawLevel: Integer; deprecated;
@@ -465,6 +466,7 @@ type
     procedure SetFoldState(const AValue: String);
     procedure SetMouseActions(const AValue: TSynEditMouseActions);
     procedure SetMouseSelActions(const AValue: TSynEditMouseActions);
+    procedure SetPaintLockOwner(const AValue: TSynEditBase);
     procedure SetTextBetweenPoints(aStartPoint, aEndPoint: TPoint; const AValue: String);
     procedure SetTextBetweenPointsEx(aStartPoint, aEndPoint: TPoint;
       aCaretMode: TSynCaretAdjustMode; const AValue: String);
@@ -607,8 +609,10 @@ type
     function GetCaretObj: TSynEditCaret; override;
     procedure IncPaintLock;
     procedure DecPaintLock;
-    procedure DoIncPaintLock(SkipCaretAdjust: Boolean = True);
-    procedure DoDecPaintLock(SkipCaretAdjust: Boolean = True);
+    procedure DoIncPaintLock;
+    procedure DoDecPaintLock;
+    procedure DoIncForeignPaintLock;
+    procedure DoDecForeignPaintLock;
     procedure DestroyWnd; override;
     procedure DragOver(Source: TObject; X, Y: Integer;
       State: TDragState; var Accept: Boolean); override;
@@ -665,6 +669,7 @@ type
     procedure ShowCaret;
     procedure UndoItem(Item: TSynEditUndoItem);
     procedure UpdateCursor;
+    property PaintLockOwner: TSynEditBase read GetPaintLockOwner write SetPaintLockOwner;
   protected
     fGutterWidth: Integer;
     {$IFDEF EnableDoubleBuf}
@@ -1323,6 +1328,11 @@ begin
   Result := FFoldedLinesView.GetFoldDescription(0, 0, -1, -1, True);
 end;
 
+function TCustomSynEdit.GetPaintLockOwner: TSynEditBase;
+begin
+  Result := TSynEditStringList(FLines).PaintLockOwner;
+end;
+
 function TCustomSynEdit.GetPlugin(Index: Integer): TSynEditPlugin;
 begin
   Result := TSynEditPlugin(fPlugins[Index]);
@@ -1709,13 +1719,15 @@ procedure TCustomSynEdit.IncPaintLock;
 var
   i: Integer;
 begin
-  if (TSynEditStringList(FLines).PaintLockOwner = nil) then
-    TSynEditStringList(FLines).PaintLockOwner := Self;
-  if (TSynEditStringList(FLines).PaintLockOwner = Self) then
-    inc(FPaintLockOwner);
+  if (PaintLockOwner = nil) then begin
+    PaintLockOwner := Self;
+    for i := 0 to TSynEditStringList(FLines).AttachedSynEditCount - 1 do
+      if TSynEditStringList(FLines).AttachedSynEdits[i] <> Self then
+        TCustomSynEdit(TSynEditStringList(FLines).AttachedSynEdits[i]).DoIncForeignPaintLock;
+  end;
+  inc(FPaintLockOwnerCnt);
   for i := 0 to TSynEditStringList(FLines).AttachedSynEditCount - 1 do
-    TCustomSynEdit(TSynEditStringList(FLines).AttachedSynEdits[i]).DoIncPaintLock
-      (FPaintLockOwner = 0);
+    TCustomSynEdit(TSynEditStringList(FLines).AttachedSynEdits[i]).DoIncPaintLock;
 end;
 
 procedure TCustomSynEdit.DecPaintLock;
@@ -1723,26 +1735,34 @@ var
   i: Integer;
 begin
   for i := 0 to TSynEditStringList(FLines).AttachedSynEditCount - 1 do
-    TCustomSynEdit(TSynEditStringList(FLines).AttachedSynEdits[i]).DoDecPaintLock
-      (FPaintLockOwner = 0);
-  if (TSynEditStringList(FLines).PaintLockOwner = Self) then begin
-    dec(FPaintLockOwner);
-    if FPaintLockOwner = 0 then
-    TSynEditStringList(FLines).PaintLockOwner := nil;
+    TCustomSynEdit(TSynEditStringList(FLines).AttachedSynEdits[i]).DoDecPaintLock;
+  dec(FPaintLockOwnerCnt);
+  if (PaintLockOwner = Self) and (FPaintLockOwnerCnt = 0) then begin
+    for i := 0 to TSynEditStringList(FLines).AttachedSynEditCount - 1 do
+      if TSynEditStringList(FLines).AttachedSynEdits[i] <> Self then
+        TCustomSynEdit(TSynEditStringList(FLines).AttachedSynEdits[i]).DoDecForeignPaintLock;
+    PaintLockOwner := nil;
   end;
 end;
 
-procedure TCustomSynEdit.DoIncPaintLock(SkipCaretAdjust: Boolean = True);
+procedure TCustomSynEdit.DoIncForeignPaintLock;
+begin
+  FStoredCaredAutoAdjust := FCaret.AutoMoveOnEdit;
+  FCaret.AutoMoveOnEdit := True;
+  FBlockSelection.IncPersistentLock;
+end;
+
+procedure TCustomSynEdit.DoDecForeignPaintLock;
+begin
+  FBlockSelection.DecPersistentLock;
+  FCaret.AutoMoveOnEdit := FStoredCaredAutoAdjust;
+end;
+
+procedure TCustomSynEdit.DoIncPaintLock;
 begin
   if FPaintLock = 0 then begin
     FOldTopLine := FTopLine;
     FOldTopView := TopView;
-    if (FPaintLockOwner = 0) and (not SkipCaretAdjust) then begin
-      // Paintlock increased by sharing editor
-      FStoredCaredAutoAdjust := FCaret.AutoMoveOnEdit;
-      FCaret.AutoMoveOnEdit := True;
-      FBlockSelection.IncPersistentLock;
-    end;
   end;
   inc(FPaintLock);
   FFoldedLinesView.Lock; //DecPaintLock triggers ScanFrom, and folds must wait
@@ -1750,7 +1770,7 @@ begin
   FCaret.Lock;
 end;
 
-procedure TCustomSynEdit.DoDecPaintLock(SkipCaretAdjust: Boolean = True);
+procedure TCustomSynEdit.DoDecPaintLock;
 begin
   if (FPaintLock=1) and HandleAllocated then begin
     ScanRanges;
@@ -1783,14 +1803,8 @@ begin
     fMarkupHighCaret.CheckState; // Todo: need a global lock, including the markup
                                  // Todo: Markup can do invalidation, should be before ScrollAfterTopLineChanged;
   end;
-  if (FPaintLock = 0) then begin
+  if (FPaintLock = 0) then
     FBlockSelection.AutoExtend := False;
-    if (FPaintLockOwner = 0) and (not SkipCaretAdjust) then begin
-      // Paintlock increased by sharing editor
-      FBlockSelection.DecPersistentLock;
-      FCaret.AutoMoveOnEdit := FStoredCaredAutoAdjust;
-    end;
-  end;
 end;
 
 destructor TCustomSynEdit.Destroy;
@@ -4993,6 +5007,11 @@ begin
     FMouseSelActions.Assign(AValue);
 end;
 
+procedure TCustomSynEdit.SetPaintLockOwner(const AValue: TSynEditBase);
+begin
+  TSynEditStringList(FLines).PaintLockOwner := AValue;
+end;
+
 procedure TCustomSynEdit.ChangeTextBuffer(NewBuffer: TSynEditStringList);
 var
   OldBuffer: TSynEditStringList;
@@ -5581,8 +5600,7 @@ var
   PhysBlockBeginXY: TPoint;
   PhysBlockEndXY: TPoint;
 begin
-  if (TSynEditStringList(FLines).PaintLockOwner <> nil) and
-     (TSynEditStringList(FLines).PaintLockOwner <> Self) and
+  if (PaintLockOwner <> nil) and (PaintLockOwner <> Self) and
      (not (eoAlwaysVisibleCaret in fOptions2))
   then
     exit;
