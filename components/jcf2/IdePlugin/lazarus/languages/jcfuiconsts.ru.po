@@ -419,7 +419,7 @@ msgstr "Форматирование кода JEDI"
 
 #: jcfuiconsts.lislbbreaklinesthatarelongerthanmaxlinelength
 msgid "&Break lines that are longer than max line length"
-msgstr "&Разрывать строки длиннее максимума"
+msgstr "&Разрыв строк длиннее максимума"
 
 #: jcfuiconsts.lislblinebreaking
 msgid "Line Breaking"
@@ -682,6 +682,78 @@ msgstr "Об&ъявлений Var"
 msgid "The settings file \"%s\" does not exist.%sThe formatter will work better if it is configured to use a valid settings file"
 msgstr "Файл параметров \"%s\" не существует.%sФорматирование будет работать лучше, если его настроить для использования корректного файла параметров"
 
+#: jcfuiconsts.listransformaddbeginandendtosinglestatements
+msgid "Add begin and end to single statements"
+msgstr "Добавлять begin и end к одиночным операторам"
+
+#: jcfuiconsts.listransformaddorremovebeginandendfromsinglestatements
+msgid "Add or Remove &begin and end from single statements"
+msgstr "Д&обавление и удаление begin и end одиночных операторов"
+
+#: jcfuiconsts.listransformalphabetic
+msgid "Alphabetic"
+msgstr "По алфавиту"
+
+#: jcfuiconsts.listransformbreakoncomment
+msgid "Break on &comment"
+msgstr "Прерывать на &комментарии"
+
+#: jcfuiconsts.listransformbreakonreturn
+msgid "Break on &return"
+msgstr "Прерывать в конце &строки"
+
+#: jcfuiconsts.listransformleavebeginandendasis
+msgid "Leave begin and end as is"
+msgstr "Не менять расположение begin и end"
+
+#: jcfuiconsts.listransformlongesttoshortest
+msgid "Longest to shortest"
+msgstr "Длиннейший к кратчайшему"
+
+#: jcfuiconsts.listransformonlywithnocomments
+msgid "Only with no comments"
+msgstr "Только без комментариев"
+
+#: jcfuiconsts.listransformputsemicolonsafterlaststatementinablock
+msgid "Put &semicolons after last statement in a block"
+msgstr "&Добавлять точку с запятой после последнего оператора в блоке"
+
+#: jcfuiconsts.listransformremovebeginandendfromaroundsinglestatements
+msgid "Remove begin and end from around single statements"
+msgstr "Удалять begin и end одиночных операторов"
+
+#: jcfuiconsts.listransformreversealphabetic
+msgid "Reverse Alphabetic"
+msgstr "По алфавиту обратно"
+
+#: jcfuiconsts.listransformshortesttolongest
+msgid "Shortest to longest"
+msgstr "Кратчайший к длиннейшему"
+
+#: jcfuiconsts.listransformsortimplementationuses
+msgid "Sort i&mplementation uses"
+msgstr "Со&ртировать Uses в секции implementation"
+
+#: jcfuiconsts.listransformsortinterfaceuses
+msgid "Sort i&nterface uses"
+msgstr "Сорт&ировать Uses в секции interface"
+
+#: jcfuiconsts.listransformsortprogramuses
+msgid "Sort &program uses"
+msgstr "Сортиров&ать Uses программы"
+
+#: jcfuiconsts.listransformsortusesclauses
+msgid "Sort &uses clauses"
+msgstr "Сортировать &выражения Uses"
+
+#: jcfuiconsts.listransformtransform
+msgid "Transform"
+msgstr "Преобразование"
+
+#: jcfuiconsts.listransformusessortorder
+msgid "Uses sort &order"
+msgstr "&Порядок сортировки Uses"
+
 #: jcfuiconsts.lisusesinsertintoimplementation
 msgid "Insert into Implementation"
 msgstr "Добавлять в Implementation"
@@ -700,7 +772,7 @@ msgstr "Заменять"
 
 #: jcfuiconsts.lisusesuses
 msgid "Uses"
-msgstr "Секция Uses"
+msgstr "Выражение Uses"
 
 #: jcfuiconsts.liswarningsignoreunusedparametersnamed
 msgid "&Ignore unused parameters named:"

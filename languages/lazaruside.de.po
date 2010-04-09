@@ -4235,6 +4235,22 @@ msgstr "Hier klicken um die Datei zu browsen"
 msgid "&Close"
 msgstr "S&chließen"
 
+#: lazarusidestrconsts.lisclosealltabsclose
+msgid "Close files"
+msgstr ""
+
+#: lazarusidestrconsts.lisclosealltabshide
+msgid "Hide window"
+msgstr ""
+
+#: lazarusidestrconsts.lisclosealltabsquestion
+msgid "Closing a Source Editor Window. Do you want close all files or hide the window?"
+msgstr ""
+
+#: lazarusidestrconsts.lisclosealltabstitle
+msgid "Close Source Editor Window"
+msgstr ""
+
 #: lazarusidestrconsts.liscmdlinelclinterfacespecificoptions
 msgid "LCL Interface specific options:"
 msgstr "Schnittstellenspezische Einstellungen der LCL:"

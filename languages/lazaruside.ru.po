@@ -5,7 +5,7 @@ msgstr ""
 "Content-Type: text/plain; charset=utf-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "POT-Creation-Date: \n"
-"PO-Revision-Date: 2010-04-03 02:28+0300\n"
+"PO-Revision-Date: 2010-04-10 02:20+0300\n"
 "Language-Team: \n"
 "MIME-Version: 1.0\n"
 
@@ -4223,6 +4223,22 @@ msgstr "Щёлкните здесь для выбора файла"
 msgid "&Close"
 msgstr "&Закрыть"
 
+#: lazarusidestrconsts.lisclosealltabsclose
+msgid "Close files"
+msgstr "Закрыть файлы"
+
+#: lazarusidestrconsts.lisclosealltabshide
+msgid "Hide window"
+msgstr "Скрыть окно"
+
+#: lazarusidestrconsts.lisclosealltabsquestion
+msgid "Closing a Source Editor Window. Do you want close all files or hide the window?"
+msgstr "Вы закрываете окно редактора исходного кода. Закрыть все файлы или скрыть окно?"
+
+#: lazarusidestrconsts.lisclosealltabstitle
+msgid "Close Source Editor Window"
+msgstr "Закрытие окна редактора исходного кода"
+
 #: lazarusidestrconsts.liscmdlinelclinterfacespecificoptions
 msgid "LCL Interface specific options:"
 msgstr "Параметры LCL, зависящие от интерфейса:"
@@ -8189,7 +8205,7 @@ msgstr "Главный модуль имеет выражение Application.Ti
 
 #: lazarusidestrconsts.lismainunithasusessectioncontainingallunitsofproject
 msgid "Main Unit has Uses Section containing all Units of project"
-msgstr "Главный модуль имеет секцию uses, включающую все модули проекта"
+msgstr "Главный модуль имеет выражение uses, включающее все модули проекта"
 
 #: lazarusidestrconsts.lismainunitispascalsource
 msgid "Main Unit is Pascal Source"
@@ -9433,7 +9449,7 @@ msgstr "Новый параметр"
 
 #: lazarusidestrconsts.lisnewunitsareaddedtousessections
 msgid "New units are added to uses sections:"
-msgstr "Новые модули добавляются в секцию uses:"
+msgstr "Новые модули добавляются в выражения uses:"
 
 #: lazarusidestrconsts.lisno
 msgid "No"
@@ -10715,7 +10731,7 @@ msgstr "Следующие пакеты не были загружены:"
 
 #: lazarusidestrconsts.lispkgmangthefollowingunitswillbeaddedtotheusessectionof
 msgid "%sThe following units will be added to the uses section of%s%s:%s%s%s"
-msgstr "%sСледующие модули будут добавлены к секции uses %s%s:%s%s%s"
+msgstr "%sСледующие модули будут добавлены в выражение uses %s%s:%s%s%s"
 
 #: lazarusidestrconsts.lispkgmangthepackagefailedtocompileremoveitfromtheinstallati
 msgid "The package %s%s%s failed to compile.%sRemove it from the installation list?"
@@ -13359,7 +13375,7 @@ msgstr "Редактор исходного кода"
 
 #: lazarusidestrconsts.podaddpackageunittousessection
 msgid "Add package unit to uses section"
-msgstr "Добавлять модуль пакета в секцию uses"
+msgstr "Добавлять модуль пакета в выражение uses"
 
 #: lazarusidestrconsts.rsaddinverse
 msgid "Add Inverse"
