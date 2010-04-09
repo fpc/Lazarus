@@ -729,7 +729,7 @@ begin
     then begin
       // these things can be fixed automatically
     end else begin
-      // these not
+      // these not: lfmeParseError, lfmeMissingRoot, lfmeEndNotFound
       Result:=false;
       exit;
     end;

@@ -330,6 +330,7 @@ end;
 function TLFMFixer.ShowRepairLFMWizard: TModalResult;
 var
   FixLFMDialog: TFixLFMDialog;
+  PrevCursor: TCursor;
 begin
   Result:=mrCancel;
   FixLFMDialog:=TFixLFMDialog.Create(nil, self);
@@ -337,11 +338,19 @@ begin
     fLFMSynEdit:=FixLFMDialog.LFMSynEdit;
     fErrorsListBox:=FixLFMDialog.ErrorsListBox;
     fPropReplaceGrid:=FixLFMDialog.PropertyReplaceGrid;
-    LoadLFM;
-    if fSettings.AutoRemoveProperties and not fHasMissingObjectTypes then
-      ReplaceAndRemoveAll
-    else
-      Result:=FixLFMDialog.ShowModal;
+      LoadLFM;
+      if fSettings.AutoRemoveProperties and not fHasMissingObjectTypes then
+        Result:=ReplaceAndRemoveAll
+      else begin
+        // Cursor is earlier set to HourGlass. Show normal cursor while in dialog.
+        PrevCursor:=Screen.Cursor;
+        Screen.Cursor:=crDefault;
+        try
+          Result:=FixLFMDialog.ShowModal;
+        finally
+          Screen.Cursor:=PrevCursor;
+        end;
+      end;
   finally
     FixLFMDialog.Free;
   end;

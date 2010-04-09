@@ -350,8 +350,7 @@ begin
   // check for other macros
   p:=System.Pos('$(',Result);
   if p>0 then begin
-    // path macros are not supported
-    // -> ignore
+    // path macros are not supported -> ignore
     Result:='';
   end;
 
@@ -570,11 +569,13 @@ end;
 
 function TConvertDelphiUnit.ConvertFormFile: TModalResult;
 var
-  LfmFixer: TLfmFixer;
+  LfmFixer: TLFMFixer;
 begin
   // check the LFM file and the pascal unit, updates fPascalBuffer and fLFMBuffer.
   if fLFMBuffer<>nil then begin
-    LfmFixer:=TLfmFixer.Create(fPascalBuffer,fLFMBuffer,@IDEMessagesWindow.AddMsg);
+//!!!    Result:=LoadCodeBuffer(fPascalBuffer,fLazUnitFilename,
+//!!!                           [lbfCheckIfText,lbfUpdateFromDisk],true);
+    LfmFixer:=TLFMFixer.Create(fPascalBuffer,fLFMBuffer,@IDEMessagesWindow.AddMsg);
     try
       LfmFixer.Settings:=fSettings;
       LfmFixer.RootMustBeClassInIntf:=true;
@@ -866,18 +867,24 @@ var
   Converter: TConvertDelphiUnit;
   i: Integer;
 begin
-  for i:=0 to ConverterList.Count-1 do begin
-    Converter:=TConvertDelphiUnit(ConverterList[i]); // Converter created in cycle1.
-    Result:=Converter.ConvertFormFile;
-    Result:=Converter.CheckFailed(Result);
-    if Result<>mrOK then exit;
-    // Loading the form makes it appear in forms list. (Is there a better way?)
-    //  fUnitInfo is set for projects only.
-    if Assigned(Converter.fUnitInfo) then
-      LazarusIDE.GetDesignerWithProjectFile(TUnitInfo(Converter.fUnitInfo), true);
-    // Close file after processing.
-    Result:=LazarusIDE.DoCloseEditorFile(Converter.fLazUnitFilename,[cfSaveFirst,cfQuiet]);
-    if Result<>mrOK then exit;
+  IDEMessagesWindow.AddMsg('Converting form files...','',-1);
+  Screen.Cursor:=crHourGlass;
+  try
+    for i:=0 to ConverterList.Count-1 do begin
+      Converter:=TConvertDelphiUnit(ConverterList[i]); // Converter created in cycle1.
+      Result:=Converter.ConvertFormFile;
+      Result:=Converter.CheckFailed(Result);
+      if Result<>mrOK then exit;
+      // Loading the form makes it appear in forms list. (Is there a better way?)
+      //  fUnitInfo is set for projects only.
+      if Assigned(Converter.fUnitInfo) then
+        LazarusIDE.GetDesignerWithProjectFile(TUnitInfo(Converter.fUnitInfo), true);
+      // Close file after processing.
+      Result:=LazarusIDE.DoCloseEditorFile(Converter.fLazUnitFilename,[cfSaveFirst,cfQuiet]);
+      if Result<>mrOK then exit;
+    end;
+  finally
+    Screen.Cursor:=crDefault;
   end;
   Result:=mrOK;
 end;
@@ -1196,7 +1203,8 @@ var
   MainUnitInfo: TUnitInfo;
 begin
   // Converter for main LPR file.
-  fMainUnitConverter:=TConvertDelphiUnit.Create(Self,fOrigPFilename,[]);
+  fMainUnitConverter:=TConvertDelphiUnit.Create(Self,fOrigPFilename,
+                                                [cdtlufRenameLowercase]);
   fMainUnitConverter.LazFileExt:=LprExt;
   fMainUnitConverter.CopyAndLoadFile;
   if LazProject.MainUnitInfo=nil then begin
@@ -1232,10 +1240,12 @@ var
   p: LongInt;
   OffendingUnit: TUnitInfo;
 begin
+  Screen.Cursor:=crHourGlass;
   FoundInUnits:=nil;
   MissingInUnits:=nil;
   NormalUnits:=nil;
   try
+    IDEMessagesWindow.AddMsg('Find all unit files...','',-1);
     if not CodeToolBoss.FindDelphiProjectUnits(fMainUnitConverter.fPascalBuffer,
       FoundInUnits, MissingInUnits, NormalUnits) then
     begin
@@ -1324,6 +1334,7 @@ begin
     FoundInUnits.Free;
     MissingInUnits.Free;
     NormalUnits.Free;
+    Screen.Cursor:=crDefault;
   end;
 
   Result:=mrOk;
@@ -1340,12 +1351,14 @@ begin
   ConvUnits:=TObjectList.create;
   try
     // convert all units and fix .lfm files
+    IDEMessagesWindow.AddMsg('Converting unit files...','',-1);
     for i:=0 to LazProject.UnitCount-1 do begin
       CurUnitInfo:=LazProject.Units[i];
       // Main LPR file was converted earlier.
       if CurUnitInfo.IsPartOfProject and (CurUnitInfo<>LazProject.MainUnitInfo) then
       begin
-        Converter:=TConvertDelphiUnit.Create(Self, CurUnitInfo.Filename, []);
+        Converter:=TConvertDelphiUnit.Create(Self, CurUnitInfo.Filename,
+                                             [cdtlufRenameLowercase]);
         Converter.fUnitInfo:=CurUnitInfo;
         ConvUnits.Add(Converter);
         Result:=Converter.CopyAndLoadFile;
@@ -1356,6 +1369,7 @@ begin
         if Result<>mrOK then Break;
       end;
     end;
+    Result:=LazarusIDE.DoSaveProject([]);
     if Result=mrOK then
       Result:=ConvertAllFormFiles(ConvUnits);
   finally
@@ -1492,9 +1506,11 @@ begin
   ConvUnits:=TObjectList.create;
   try
     // convert all units and fix .lfm files
+    IDEMessagesWindow.AddMsg('Converting unit files...','',-1);
     for i:=0 to LazPackage.FileCount-1 do begin
       PkgFile:=LazPackage.Files[i];
-      Converter:=TConvertDelphiUnit.Create(Self, PkgFile.Filename, []);
+      Converter:=TConvertDelphiUnit.Create(Self, PkgFile.Filename,
+                                           [cdtlufRenameLowercase]);
       ConvUnits.Add(Converter);
       Result:=Converter.CopyAndLoadFile;
       Result:=Converter.CheckFailed(Result);

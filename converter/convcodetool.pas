@@ -344,9 +344,14 @@ var
 begin
   Result:=false;
   if Assigned(fUnitsToRemove) then begin
-    for i:=0 to fUnitsToRemove.Count-1 do
-      if not fCodeTool.RemoveUnitFromAllUsesSections(fUnitsToRemove[i], fSrcCache) then
+    for i:=0 to fUnitsToRemove.Count-1 do begin
+      fSrcCache:=CodeToolBoss.SourceChangeCache;
+      fSrcCache.MainScanner:=fCodeTool.Scanner;
+      if not fCodeTool.RemoveUnitFromAllUsesSections(UpperCaseStr(fUnitsToRemove[i]),
+                                                     fSrcCache) then
         exit;
+      if not fSrcCache.Apply then exit;
+    end;
   end;
   Result:=true;
 end;
