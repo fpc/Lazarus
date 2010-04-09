@@ -607,8 +607,8 @@ type
     function GetCaretObj: TSynEditCaret; override;
     procedure IncPaintLock;
     procedure DecPaintLock;
-    procedure DoIncPaintLock;
-    procedure DoDecPaintLock;
+    procedure DoIncPaintLock(SkipCaretAdjust: Boolean = True);
+    procedure DoDecPaintLock(SkipCaretAdjust: Boolean = True);
     procedure DestroyWnd; override;
     procedure DragOver(Source: TObject; X, Y: Integer;
       State: TDragState; var Accept: Boolean); override;
@@ -1709,9 +1709,13 @@ procedure TCustomSynEdit.IncPaintLock;
 var
   i: Integer;
 begin
-  inc(FPaintLockOwner);
+  if (TSynEditStringList(FLines).PaintLockOwner = nil) then begin
+    TSynEditStringList(FLines).PaintLockOwner := Self;
+    inc(FPaintLockOwner);
+  end;
   for i := 0 to TSynEditStringList(FLines).AttachedSynEditCount - 1 do
-    TCustomSynEdit(TSynEditStringList(FLines).AttachedSynEdits[i]).DoIncPaintLock;
+    TCustomSynEdit(TSynEditStringList(FLines).AttachedSynEdits[i]).DoIncPaintLock
+      (FPaintLockOwner = 0);
 end;
 
 procedure TCustomSynEdit.DecPaintLock;
@@ -1719,16 +1723,22 @@ var
   i: Integer;
 begin
   for i := 0 to TSynEditStringList(FLines).AttachedSynEditCount - 1 do
-    TCustomSynEdit(TSynEditStringList(FLines).AttachedSynEdits[i]).DoDecPaintLock;
-  dec(FPaintLockOwner);
+    TCustomSynEdit(TSynEditStringList(FLines).AttachedSynEdits[i]).DoDecPaintLock
+      (FPaintLockOwner = 0);
+  if FPaintLockOwner > 0 then begin
+    dec(FPaintLockOwner);
+    if (FPaintLockOwner <> 0) or (TSynEditStringList(FLines).PaintLockOwner <> Self) then
+      RaiseGDBException('TSynEdit.Paintlock error');
+    TSynEditStringList(FLines).PaintLockOwner := nil;
+  end;
 end;
 
-procedure TCustomSynEdit.DoIncPaintLock;
+procedure TCustomSynEdit.DoIncPaintLock(SkipCaretAdjust: Boolean = True);
 begin
   if FPaintLock = 0 then begin
     FOldTopLine := FTopLine;
     FOldTopView := TopView;
-    if FPaintLockOwner = 0 then begin
+    if (FPaintLockOwner = 0) and (not SkipCaretAdjust) then begin
       // Paintlock increased by sharing editor
       FStoredCaredAutoAdjust := FCaret.AutoMoveOnEdit;
       FCaret.AutoMoveOnEdit := True;
@@ -1741,7 +1751,7 @@ begin
   FCaret.Lock;
 end;
 
-procedure TCustomSynEdit.DoDecPaintLock;
+procedure TCustomSynEdit.DoDecPaintLock(SkipCaretAdjust: Boolean = True);
 begin
   if (FPaintLock=1) and HandleAllocated then begin
     ScanRanges;
@@ -1776,7 +1786,7 @@ begin
   end;
   if (FPaintLock = 0) then begin
     FBlockSelection.AutoExtend := False;
-    if FPaintLockOwner = 0 then begin
+    if (FPaintLockOwner = 0) and (not SkipCaretAdjust) then begin
       // Paintlock increased by sharing editor
       FBlockSelection.DecPersistentLock;
       FCaret.AutoMoveOnEdit := FStoredCaredAutoAdjust;

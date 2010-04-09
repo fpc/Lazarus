@@ -241,6 +241,8 @@ type
     procedure EditLinesDelete(LogY, ACount: Integer); override;
     procedure EditUndo(Item: TSynEditUndoItem); override;
     procedure EditRedo(Item: TSynEditUndoItem); override;
+  public
+    PaintLockOwner: TSynEditBase;
   end;
 
   ESynEditStringList = class(Exception);
