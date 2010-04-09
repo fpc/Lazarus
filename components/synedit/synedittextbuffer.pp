@@ -54,8 +54,7 @@ type
 
   TSynEditStringFlag = (
     sfModified,              // a line is modified and not saved after
-    sfSaved,                 // a line is modified and saved after
-    sfDebugMark              // a line where debugger can stop (for lazarus only)
+    sfSaved                  // a line is modified and saved after
   );
   TSynEditStringFlags = set of TSynEditStringFlag;
 
@@ -86,6 +85,7 @@ type
 
   TSynManagedStorageMem = class(TSynEditStorageMem)
   protected
+    // Todo: Add Flags,which updates are required
     procedure LineTextChanged(AIndex: Integer); virtual;
     procedure InsertedLines(AIndex, ACount: Integer); virtual;
     procedure DeletedLines(AIndex, ACount: Integer); virtual;
@@ -211,8 +211,6 @@ type
     procedure InsertStrings(Index: integer; NewStrings: TStrings); override;
     procedure MarkModified(AFirst, ALast: Integer);
     procedure MarkSaved;
-    procedure SetDebugMarks(AFirst, ALast: Integer);
-    procedure ClearDebugMarks;
     procedure AddGenericHandler(AReason: TSynEditNotifyReason;
                 AHandler: TMethod); override;
     procedure RemoveGenericHandler(AReason: TSynEditNotifyReason;
@@ -912,23 +910,6 @@ begin
   for Index := 0 to Count - 1 do
     if sfModified in Flags[Index] then
       Flags[Index] := Flags[Index] + [sfSaved];
-end;
-
-procedure TSynEditStringList.SetDebugMarks(AFirst, ALast: Integer);
-var
-  Index: Integer;
-begin
-  for Index := AFirst to ALast do
-    if (Index >= 0) and (Index < Count) then
-      Flags[Index] := Flags[Index] + [sfDebugMark];
-end;
-
-procedure TSynEditStringList.ClearDebugMarks;
-var
-  Index: Integer;
-begin
-  for Index := 0 to Count - 1 do
-    Flags[Index] := Flags[Index] - [sfDebugMark];
 end;
 
 procedure TSynEditStringList.AddGenericHandler(AReason: TSynEditNotifyReason; AHandler: TMethod);

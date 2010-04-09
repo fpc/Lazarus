@@ -3566,6 +3566,7 @@ ide/sourceeditor.lfm svneol=native#text/plain
 ide/sourceeditor.pp svneol=native#text/pascal
 ide/sourceeditprocs.pas svneol=native#text/pascal
 ide/sourcemarks.pas svneol=native#text/pascal
+ide/sourcesyneditor.pas svneol=native#text/pascal
 ide/splash.lfm svneol=native#text/plain
 ide/splash.pp svneol=native#text/pascal
 ide/srcedithintfrm.pas svneol=native#text/plain

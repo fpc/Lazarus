@@ -50,7 +50,7 @@ uses
   SynEditHighlighter, SynEditAutoComplete, SynEditKeyCmds, SynCompletion,
   SynEditMiscClasses, SynEditMarkupHighAll, SynEditMarks,
   SynBeautifier, SynEditTextBase, SynPluginTemplateEdit, SynPluginSyncroEdit,
-  SynPluginSyncronizedEditBase,
+  SynPluginSyncronizedEditBase, SourceSynEditor,
   // Intf
   SrcEditorIntf, MenuIntf, LazIDEIntf, PackageIntf, IDEHelpIntf, IDEImagesIntf,
   ProjectIntf,
@@ -153,7 +153,8 @@ type
     FSharedEditorList: TFPList; // list of TSourceEditor sharing one TSynEdit
     FExecutionLine: integer;
     FModified: boolean;
-    function GetOtherSharedEditors(Caller: TSourceEditor; Index: Integer
+    FMarksRequested: Boolean;
+  function GetOtherSharedEditors(Caller: TSourceEditor; Index: Integer
       ): TSourceEditor;
     function GetSharedEditors(Index: Integer): TSourceEditor;
     procedure SetModified(const AValue: Boolean);
@@ -170,6 +171,7 @@ type
     procedure CreateExecutionMark;
     property ExecutionLine: Integer read FExecutionLine write FExecutionLine;
     property ExecutionMark: TSourceMark read FExecutionMark write FExecutionMark;
+    property MarksRequested: Boolean read FMarksRequested write FMarksRequested;
   public
     constructor Create;
     destructor Destroy; override;
@@ -184,12 +186,10 @@ type
     FAOwner: TComponent;
     FIsNewSharedEditor: Boolean;
     FSharedValues: TSourceEditorSharedValues;
-    FEditor: TSynEdit;
+    FEditor: TIDESynEditor;
     FEditPlugin: TSynEditPlugin1;  // used to get the LinesInserted and
                                    //   LinesDeleted messages
     FSyncroLockCount: Integer;
-    FHasExecutionMarks: Boolean;
-    FMarksRequested: Boolean;
     FPageName: string;
 
     FCodeBuffer: TCodeBuffer;
@@ -227,6 +227,7 @@ type
     procedure EditorActivateSyncro(Sender: TObject);
     procedure EditorDeactivateSyncro(Sender: TObject);
     function GetExecutionLine: integer;
+    function GetHasExecutionMarks: Boolean;
     function GetSharedEditors(Index: Integer): TSourceEditor;
     procedure SetCodeBuffer(NewCodeBuffer: TCodeBuffer);
     function GetSource: TStrings;
@@ -430,10 +431,10 @@ type
        read GetCurrentCursorXLine write SetCurrentCursorXLine;
     property CurrentCursorYLine: Integer
        read GetCurrentCursorYLine write SetCurrentCursorYLine;
-    property EditorComponent: TSynEdit read FEditor;
+    property EditorComponent: TIDESynEditor read FEditor;
     property ErrorLine: integer read FErrorLine write SetErrorLine;
     property ExecutionLine: integer read GetExecutionLine write SetExecutionLine;
-    property HasExecutionMarks: Boolean read FHasExecutionMarks;
+    property HasExecutionMarks: Boolean read GetHasExecutionMarks;
     property InsertMode: Boolean read GetInsertmode;
     property OnEditorChange: TNotifyEvent read FOnEditorChange
                                           write FOnEditorChange;
@@ -909,6 +910,7 @@ type
     procedure ClearErrorLines; override;
     procedure ClearExecutionLines;
     procedure ClearExecutionMarks;
+    procedure FillExecutionMarks;
     procedure ReloadEditorOptions;
     // find / replace text
     procedure FindClicked(Sender: TObject);
@@ -1993,6 +1995,7 @@ begin
   BookmarkEventLock := 0;
   FExecutionLine:=-1;
   FExecutionMark := nil;
+  FMarksRequested := False;
 end;
 
 destructor TSourceEditorSharedValues.Destroy;
@@ -2028,8 +2031,6 @@ Begin
   FSyntaxHighlighterType:=lshNone;
   FErrorLine:=-1;
   FErrorColumn:=-1;
-  FHasExecutionMarks := False;
-  FMarksRequested := False;
   FSyncroLockCount := 0;
   FLineInfoNotification := TIDELineInfoNotification.Create;
   FLineInfoNotification.AddReference;
@@ -3508,7 +3509,7 @@ Begin
       inc(i);
       NewName:='SynEdit'+IntToStr(i);
     until (AOwner.FindComponent(NewName)=nil);
-    FEditor:=TSynEdit.Create(AOwner);
+    FEditor := TIDESynEditor.Create(AOwner);
     FEditor.BeginUpdate;
     with FEditor do begin
       Name:=NewName;
@@ -4058,6 +4059,11 @@ begin
   Result := FSharedValues.ExecutionLine;
 end;
 
+function TSourceEditor.GetHasExecutionMarks: Boolean;
+begin
+  Result := EditorComponent.IDEGutterMarks.HasDebugMarks;
+end;
+
 function TSourceEditor.GetSharedEditors(Index: Integer): TSourceEditor;
 begin
   Result := FSharedValues.SharedEditors[Index];
@@ -4310,15 +4316,15 @@ var
   i, idx: integer;
   Addr: TDBGPtr;
 begin
-  if HasExecutionMarks then Exit;
+  if EditorComponent.IDEGutterMarks.HasDebugMarks then Exit;
 
   ASource := FileName;
   idx := DebugBoss.LineInfo.IndexOf(ASource);
   if (idx = -1) then
   begin
-    if not FMarksRequested then
+    if not FSharedValues.MarksRequested then
     begin
-      FMarksRequested := True;
+      FSharedValues.MarksRequested := True;
       DebugBoss.LineInfo.AddNotification(FLineInfoNotification);
       DebugBoss.LineInfo.Request(ASource);
     end;
@@ -4329,16 +4335,14 @@ begin
   begin
     Addr := DebugBoss.LineInfo.GetAddress(idx, i);
     if (Addr <> 0) then
-      EditorComponent.SetDebugMarks(i, i);
+      EditorComponent.IDEGutterMarks.SetDebugMarks(i, i);
   end;
-  FHasExecutionMarks := True;
 end;
 
 procedure TSourceEditor.ClearExecutionMarks;
 begin
-  EditorComponent.ClearDebugMarks;
-  FHasExecutionMarks := False;
-  FMarksRequested := False;
+  EditorComponent.IDEGutterMarks.ClearDebugMarks;
+  FSharedValues.MarksRequested := False;
   if (FLineInfoNotification <> nil) and (DebugBoss <> nil) and (DebugBoss.LineInfo <> nil) then
     DebugBoss.LineInfo.RemoveNotification(FLineInfoNotification);
 end;
@@ -7857,6 +7861,14 @@ var
 begin
   for i := FSourceWindowList.Count - 1 downto 0 do
     SourceWindows[i].ClearExecutionMarks;
+end;
+
+procedure TSourceEditorManager.FillExecutionMarks;
+var
+  i: Integer;
+begin
+  for i := FSourceWindowList.Count - 1 downto 0 do
+    SourceWindows[i].GetActiveSE.FillExecutionMarks;
 end;
 
 procedure TSourceEditorManager.ReloadEditorOptions;

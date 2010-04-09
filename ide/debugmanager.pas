@@ -1538,11 +1538,8 @@ begin
   if ((FDebugger.State = dsPause) or
       ((FDebugger.State = dsRun) and (OldState = dsInit))
      ) and (SourceEditorManager <> nil)
-  then begin
-    Editor := SourceEditorManager.GetActiveSE;
-    if (Editor <> nil) and not Editor.HasExecutionMarks
-    then Editor.FillExecutionMarks;
-  end;
+  then
+    SourceEditorManager.FillExecutionMarks;
 
   if not (FDebugger.State in [dsRun, dsPause]) and (SourceEditorManager <> nil) then
     SourceEditorManager.ClearExecutionMarks;

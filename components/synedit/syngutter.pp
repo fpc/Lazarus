@@ -39,6 +39,7 @@ type
     procedure DoChange(Sender: TObject); override;
     procedure DoDefaultGutterClick(Sender: TObject; X, Y, Line: integer;
       mark: TSynEditMark); override;
+    procedure CreateDefaultGutterParts; virtual;
   public
     property SynEdit: TSynEditBase read FEdit;
   public
@@ -120,19 +121,8 @@ begin
   FRightOffset := 0;
   AutoSize := True;
 
-  if not(csLoading in AOwner.ComponentState) then begin
-    // Todo: currently there is only one Gutter so names can be fixed
-    with TSynGutterMarks.Create(Parts) do
-      Name := 'SynGutterMarks1';
-    with TSynGutterLineNumber.Create(Parts) do
-      Name := 'SynGutterLineNumber1';
-    with TSynGutterChanges.Create(Parts) do
-      Name := 'SynGutterChanges1';
-    with TSynGutterSeparator.Create(Parts) do
-      Name := 'SynGutterSeparator1';
-    with TSynGutterCodeFolding.Create(Parts) do
-      Name := 'SynGutterCodeFolding1';
-  end;
+  if not(csLoading in AOwner.ComponentState) then
+    CreateDefaultGutterParts;
 end;
 
 destructor TSynGutter.Destroy;
@@ -140,6 +130,21 @@ begin
   FreeAndNil(FMouseActions);
   FOnChange := nil;
   inherited Destroy;
+end;
+
+procedure TSynGutter.CreateDefaultGutterParts;
+begin
+  // Todo: currently there is only one Gutter so names can be fixed
+  with TSynGutterMarks.Create(Parts) do
+    Name := 'SynGutterMarks1';
+  with TSynGutterLineNumber.Create(Parts) do
+    Name := 'SynGutterLineNumber1';
+  with TSynGutterChanges.Create(Parts) do
+    Name := 'SynGutterChanges1';
+  with TSynGutterSeparator.Create(Parts) do
+    Name := 'SynGutterSeparator1';
+  with TSynGutterCodeFolding.Create(Parts) do
+    Name := 'SynGutterCodeFolding1';
 end;
 
 procedure TSynGutter.Assign(Source: TPersistent);

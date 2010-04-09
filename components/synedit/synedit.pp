@@ -706,6 +706,9 @@ type
     {$ENDIF}
     function PasteFromClipboardEx(ClipHelper: TSynClipboardStream): Boolean;
     function FindNextUnfoldedLine(iLine: integer; Down: boolean): Integer;
+    // Todo: Reduce the argument list of Creategutter
+    function CreateGutter(AOwner : TSynEditBase; AFoldedLinesView: TSynEditFoldedView;
+                          ATextDrawer: TheTextDrawer): TSynGutter; virtual;
   public
     procedure FindMatchingBracket; virtual;
     {$IFDEF SYN_LAZARUS}
@@ -828,9 +831,6 @@ type
     procedure SetOptionFlag(Flag: TSynEditorOption; Value: boolean);
     procedure Undo;
     function GetLineState(ALine: Integer): TSynLineState;
-    function HasDebugMark(ALine: Integer): Boolean;
-    procedure SetDebugMarks(AFirst, ALast: Integer);
-    procedure ClearDebugMarks;
 {$IFDEF SYN_COMPILER_4_UP}
     function UpdateAction(TheAction: TBasicAction): boolean; override;
 {$ENDIF}
@@ -1581,7 +1581,7 @@ begin
   fBookMarkOpt.OnChange := {$IFDEF FPC}@{$ENDIF}BookMarkOptionsChanged;
 // fRightEdge has to be set before FontChanged is called for the first time
   fRightEdge := 80;
-  fGutter := TSynGutter.Create(self, FFoldedLinesView, FTextDrawer);
+  fGutter := CreateGutter(self, FFoldedLinesView, FTextDrawer);
   fGutter.OnChange := {$IFDEF FPC}@{$ENDIF}GutterChanged;
   fGutterWidth := fGutter.Width;
   fTextOffset := fGutterWidth + 2;
@@ -2956,6 +2956,12 @@ begin
   while (Result>0) and (Result<=FTheLinesView.Count)
   and (FFoldedLinesView.FoldedAtTextIndex[Result-1]) do
     if Down then inc(Result) else dec(Result);
+end;
+
+function TCustomSynEdit.CreateGutter(AOwner : TSynEditBase;
+  AFoldedLinesView: TSynEditFoldedView; ATextDrawer: TheTextDrawer): TSynGutter;
+begin
+  Result := TSynGutter.Create(AOwner, AFoldedLinesView, ATextDrawer);
 end;
 
 procedure TCustomSynEdit.UnfoldAll;
@@ -5167,23 +5173,6 @@ begin
       Result := slsSaved
     else
       Result := slsNone;
-end;
-
-function TCustomSynEdit.HasDebugMark(ALine: Integer): Boolean;
-begin
-  Result := sfDebugMark in TSynEditStringList(fLines).Flags[ALine];
-end;
-
-procedure TCustomSynEdit.SetDebugMarks(AFirst, ALast: Integer);
-begin
-  TSynEditStringList(fLines).SetDebugMarks(AFirst, ALast);
-  InvalidateGutterLines(AFirst, ALast);
-end;
-
-procedure TCustomSynEdit.ClearDebugMarks;
-begin
-  TSynEditStringList(fLines).ClearDebugMarks;
-  InvalidateGutter;
 end;
 
 procedure TCustomSynEdit.ClearBookMark(BookMark: Integer);
