@@ -242,6 +242,30 @@ resourcestring
   lisUsesInsertIntoImplementation = 'Insert into Implementation';
   lisUsesReplace = 'Replace';
 
+  //Transform tab
+  lisTransformTransform = 'Transform';
+  lisTransformAddOrRemoveBeginAndEndFromSingleStatements = 'Add or Remove &'
+    +'begin and end from single statements';
+  lisTransformAddBeginAndEndToSingleStatements = 'Add begin and end to single '
+    +'statements';
+  lisTransformLeaveBeginAndEndAsIs = 'Leave begin and end as is';
+  lisTransformRemoveBeginAndEndFromAroundSingleStatements = 'Remove begin and '
+    +'end from around single statements';
+  lisTransformPutSemicolonsAfterLastStatementInABlock = 'Put &semicolons '
+    +'after last statement in a block';
+  lisTransformSortUsesClauses = 'Sort &uses clauses';
+  lisTransformSortINterfaceUses = 'Sort i&nterface uses';
+  lisTransformSortIMplementationUses = 'Sort i&mplementation uses';
+  lisTransformSortProgramUses = 'Sort &program uses';
+  lisTransformBreakOnReturn = 'Break on &return';
+  lisTransformBreakOnComment = 'Break on &comment';
+  lisTransformOnlyWithNoComments = 'Only with no comments';
+  lisTransformUsesSortOrder = 'Uses sort &order';
+  lisTransformAlphabetic = 'Alphabetic';
+  lisTransformReverseAlphabetic = 'Reverse Alphabetic';
+  lisTransformShortestToLongest = 'Shortest to longest';
+  lisTransformLongestToShortest = 'Longest to shortest';
+
 implementation
 
 end.

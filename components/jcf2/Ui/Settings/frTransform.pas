@@ -64,7 +64,7 @@ implementation
 {$R *.lfm}
 
 uses 
-  SettingsTypes, JcfSettings, JcfHelp, SetTransform;
+  SettingsTypes, JcfSettings, JcfHelp, SetTransform,jcfuiconsts;
 
 constructor TfTransform.Create(AOwner: TComponent);
 begin
@@ -74,12 +74,32 @@ end;
 
 function TfTransform.GetTitle: String;
 begin
-  Result := 'Transform';
+  Result := lisTransformTransform;
 end;
 
 procedure TfTransform.Setup(ADialog: TAbstractOptionsEditorDialog);
 begin
-  //
+  rbBeginEnd.Caption := lisTransformAddOrRemoveBeginAndEndFromSingleStatements;
+  rbBeginEnd.Items[0] := lisTransformAddBeginAndEndToSingleStatements;
+  rbBeginEnd.Items[1] := lisTransformLeaveBeginAndEndAsIs;
+  rbBeginEnd.Items[2] := lisTransformRemoveBeginAndEndFromAroundSingleStatements;
+
+  cbBlockEndSemicolons.Caption :=
+    lisTransformPutSemicolonsAfterLastStatementInABlock;
+
+  bgSortUses.Caption := lisTransformSortUsesClauses;
+  cbSortInterfaceUses.Caption := lisTransformSortINterfaceUses;
+  cbSortImplementationUses.Caption := lisTransformSortIMplementationUses;
+  cbSortProgramUses.Caption := lisTransformSortProgramUses;
+  cbBreakUsesSortOnReturn.Caption := lisTransformBreakOnReturn;
+  cbBreakUsesSortOnComment.Caption := lisTransformBreakOnComment;
+  cbNoComments.Caption := lisTransformOnlyWithNoComments;
+
+  rgUsesSortOrder.Caption := lisTransformUsesSortOrder;
+  rgUsesSortOrder.Items[0] := lisTransformAlphabetic;
+  rgUsesSortOrder.Items[1] := lisTransformReverseAlphabetic;
+  rgUsesSortOrder.Items[2] := lisTransformShortestToLongest;
+  rgUsesSortOrder.Items[3] := lisTransformLongestToShortest;
 end;
 
 procedure TfTransform.ReadSettings(AOptions: TAbstractIDEOptions);
