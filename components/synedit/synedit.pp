@@ -2701,7 +2701,7 @@ begin
   // changes to line / column in one go
   if sfIsDragging in fStateFlags then
     FBlockSelection.IncPersistentLock;
-  IncPaintLock;
+  DoIncPaintLock; // No editing is taking place
   try
     GetCursorPos(CurMousePos);
     CurMousePos:=ScreenToClient(CurMousePos);
@@ -2756,7 +2756,7 @@ begin
         SetBlockEnd(PhysicalToLogicalPos(CaretXY));
     end;
   finally
-    DecPaintLock;
+    DoDecPaintLock;
     if sfIsDragging in fStateFlags then
       FBlockSelection.DecPersistentLock;
   end;
@@ -3834,7 +3834,7 @@ procedure TCustomSynEdit.SelectAll;
 var
   LastPt: TPoint;
 begin
-  IncPaintLock;
+  DoIncPaintLock; // No editing is taking place
   LastPt := Point(1, FTheLinesView.Count);
   if LastPt.y > 0 then
     Inc(LastPt.x, Length(FTheLinesView[LastPt.y - 1]))
@@ -3842,7 +3842,7 @@ begin
     LastPt.y  := 1;
   SetCaretAndSelection(LogicalToPhysicalPos(LastPt), Point(1, 1), LastPt);
   FBlockSelection.ActiveSelectionMode := smNormal;
-  DecPaintLock;
+  DoDecPaintLock;
 end;
 
 procedure TCustomSynEdit.SetHighlightSearch(const ASearch : String; AOptions : TSynSearchOptions);
@@ -4692,13 +4692,13 @@ begin
   if Value.X < 0 then
     exit;
 
-  IncPaintLock;
+  DoIncPaintLock; // No editing is taking place
   FBlockSelection.StartLineBytePos := Value;
   Value.X := WordBreaker.NextWordEnd(TempString, Value.X);
   FBlockSelection.EndLineBytePos := Value;
   FBlockSelection.ActiveSelectionMode := smNormal;
   FCaret.LineBytePos := Value;
-  DecPaintLock;
+  DoDecPaintLock;
 end;
 
 procedure TCustomSynEdit.SetLineBlock(Value: TPoint; WithLeadSpaces: Boolean = True);
@@ -4706,7 +4706,7 @@ var
   ALine: string;
   x, x2: Integer;
 begin
-  IncPaintLock;
+  DoIncPaintLock; // No editing is taking place
   FBlockSelection.StartLineBytePos := Point(1,MinMax(Value.y, 1, FTheLinesView.Count));
   FBlockSelection.EndLineBytePos := Point(1,MinMax(Value.y+1, 1, FTheLinesView.Count));
   if (FBlockSelection.StartLinePos >= 1)
@@ -4726,7 +4726,7 @@ begin
   FBlockSelection.ActiveSelectionMode := smNormal;
   CaretXY := FTheLinesView.LogicalToPhysicalPos(FBlockSelection.EndLineBytePos);
   //DebugLn(' FFF2 ',Value.X,',',Value.Y,' BlockBegin=',BlockBegin.X,',',BlockBegin.Y,' BlockEnd=',BlockEnd.X,',',BlockEnd.Y);
-  DecPaintLock;
+  DoDecPaintLock;
 end;
 
 procedure TCustomSynEdit.SetParagraphBlock(Value: TPoint);
@@ -4734,7 +4734,7 @@ var
   ParagraphStartLine, ParagraphEndLine, ParagraphEndX: integer;
 
 begin
-  IncPaintLock;
+  DoIncPaintLock; // No editing is taking place
   ParagraphStartLine := MinMax(Value.y,   1, FTheLinesView.Count);
   ParagraphEndLine   := MinMax(Value.y+1, 1, FTheLinesView.Count);
   ParagraphEndX := 1;
@@ -4755,7 +4755,7 @@ begin
   FBlockSelection.ActiveSelectionMode := smNormal;
   CaretXY := FBlockSelection.EndLineBytePos;
   //DebugLn(' FFF3 ',Value.X,',',Value.Y,' BlockBegin=',BlockBegin.X,',',BlockBegin.Y,' BlockEnd=',BlockEnd.X,',',BlockEnd.Y);
-  DecPaintLock;
+  DoDecPaintLock;
 end;
 
 function TCustomSynEdit.GetCanUndo: Boolean;
@@ -5178,11 +5178,11 @@ begin
   then begin
     NewCaret:=Point(fBookMarks[BookMark].Column, fBookMarks[BookMark].Line);
     LogCaret:=PhysicalToLogicalPos(NewCaret);
-    IncPaintLock;
+    DoIncPaintLock; // No editing is taking place
     FCaret.LineCharPos := NewCaret;
     SetBlockEnd(LogCaret);
     SetBlockBegin(LogCaret);
-    DecPaintLock;
+    DoDecPaintLock;
   end;
 end;
 
@@ -5579,7 +5579,7 @@ begin
     exit;
   end;
   exclude(fStateFlags, sfEnsureCursorPos);
-  IncPaintLock;
+  DoIncPaintLock; // No editing is taking place
   try
     // Make sure X is visible
     //DebugLn('[TCustomSynEdit.EnsureCursorPosVisible] A CaretX=',CaretX,' LeftChar=',LeftChar,' CharsInWindow=',CharsInWindow,' ClientWidth=',ClientWidth);
@@ -5624,7 +5624,7 @@ begin
     else
       TopLine := TopLine;                                                       //mh 2000-10-19
   finally
-    DecPaintLock;
+    DoDecPaintLock;
   end;
 end;
 
@@ -7137,7 +7137,7 @@ begin
       NewCaret.Y := FFoldedLinesView.TextPosAddLines(NewCaret.Y, +1);
     end;
   end;
-  IncPaintLock;
+  DoIncPaintLock;  // No editing is taking place
   FCaret.IncForcePastEOL;
   if DX > 0 then
     FCaret.IncForceAdjustToNextChar;
@@ -7145,7 +7145,7 @@ begin
   FCaret.DecForcePastEOL;
   if DX > 0 then
     FCaret.DecForceAdjustToNextChar;
-  DecPaintLock;
+  DoDecPaintLock;
 end;
 
 procedure TCustomSynEdit.MoveCaretVert(DY: integer);
@@ -7157,9 +7157,9 @@ begin
   OldCaret:=CaretXY;
   NewCaret:=OldCaret;
   NewCaret.Y:=FFoldedLinesView.TextPosAddLines(NewCaret.Y, DY);
-  IncPaintLock;
+  DoIncPaintLock; // No editing is taking place
   FCaret.LinePos := NewCaret.Y;
-  DecPaintLock;
+  DoDecPaintLock;
 end;
 
 procedure TCustomSynEdit.SetCaretAndSelection(const ptCaret, ptBefore,
@@ -7167,14 +7167,14 @@ procedure TCustomSynEdit.SetCaretAndSelection(const ptCaret, ptBefore,
 // caret is physical (screen)
 // Before, After is logical (byte)
 begin
-  IncPaintLock;
+  DoIncPaintLock; // No editing is taking place
   CaretXY := ptCaret;
   SetBlockBegin(ptBefore);
   SetBlockEnd(ptAfter);
   if Mode <> smCurrent then
     FBlockSelection.ActiveSelectionMode := Mode;
   AquirePrimarySelection;
-  DecPaintLock;
+  DoDecPaintLock;
 end;
 
 procedure TCustomSynEdit.RecalcCharExtent;
