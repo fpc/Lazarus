@@ -14,17 +14,17 @@ object Form1: TForm1
     Height = 333
     Top = 0
     Width = 533
-    ActivePage = tsLog
+    ActivePage = lsLinear
     Align = alClient
-    TabIndex = 1
+    TabIndex = 0
     TabOrder = 0
     object lsLinear: TTabSheet
       Caption = 'Linear transform'
-      ClientHeight = 278
+      ClientHeight = 307
       ClientWidth = 525
       object ChartT: TChart
         Left = 0
-        Height = 278
+        Height = 307
         Top = 0
         Width = 525
         AxisList = <        
@@ -34,6 +34,7 @@ object Form1: TForm1
             Marks.LabelFont.Color = clRed
             TickColor = clRed
             Title.Caption = 'Summer temperature, °C'
+            Title.Distance = 0
             Title.Font.Color = clRed
             Title.Font.Orientation = 900
             Title.Visible = True
@@ -46,9 +47,11 @@ object Form1: TForm1
           item
             Alignment = calRight
             Grid.Visible = False
+            Marks.Distance = 4
             Marks.LabelFont.Color = clBlue
             TickColor = clBlue
             Title.Caption = 'Winter temperature, °F'
+            Title.Distance = 0
             Title.Font.Color = clBlue
             Title.Font.Orientation = 900
             Title.Visible = True
@@ -71,6 +74,7 @@ object Form1: TForm1
           Source = rcsTSummer
         end
         object ChartTWinter: TLineSeries
+          AxisIndexY = 2
           LinePen.Color = clBlue
           LinePen.Width = 2
           SeriesColor = clBlue
@@ -257,7 +261,7 @@ object Form1: TForm1
     RandSeed = 23453245
     XMax = 2009
     XMin = 1990
-    YMax = 5
+    YMax = 20
     YMin = -15
     left = 87
     top = 156
