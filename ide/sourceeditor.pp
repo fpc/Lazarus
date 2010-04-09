@@ -6725,7 +6725,7 @@ var
 begin
   Result:=false;
   //SrcEdit:=GetActiveSE;
-  SrcEdit := Manager.ActiveEditor; // Todo: Each SynEdits need thier own Beautifier, otherwise they call the wrong notebook
+  SrcEdit := Manager.ActiveEditor; // Todo: Each SynEdit needs its own Beautifier, otherwise they call the wrong notebook
   if assigned(Manager) and Assigned(Manager.OnGetIndent) then begin
     Result := Manager.OnGetIndent(Sender, SrcEdit, LogCaret, OldLogCaret, FirstLinePos, LastLinePos,
                           Reason, SetIndentProc);
@@ -6742,7 +6742,7 @@ begin
   Result := True;
   SrcEdit.UpdateCodeBuffer;
   CodeBuf:=SrcEdit.CodeBuffer;
-  CodeBuf.LineColToPosition(LogCaret.Y,LogCaret.X,p);
+  CodeBuf.LineColToPosition(LogCaret.Y-1,LogCaret.X,p);
   if p<1 then exit;
   {$IFDEF VerboseIndenter}
   if FirstLinePos>0 then
