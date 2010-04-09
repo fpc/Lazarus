@@ -1,21 +1,23 @@
-{ This file was automatically created by Lazarus. Do not edit!
-This source is only used to compile and install the package.
+{ Этот файл был автоматически создан Lazarus. Н�
+  � редактировать!
+  Исходный код используется только для комп�
+    �ляции и установки пакета.
  }
 
-unit DBFLaz; 
+unit dbflaz;
 
 interface
 
 uses
-  RegisterDBF, Dbf, LazarusPackageIntf; 
+  RegisterDBF, Dbf, LazarusPackageIntf;
 
 implementation
 
-procedure Register; 
+procedure Register;
 begin
-  RegisterUnit('RegisterDBF', @RegisterDBF.Register); 
-end; 
+  RegisterUnit('RegisterDBF',@RegisterDBF.Register);
+end;
 
 initialization
-  RegisterPackage('DBFLaz', @Register); 
+  RegisterPackage('DBFLaz',@Register);
 end.

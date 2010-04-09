@@ -5,7 +5,7 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "POT-Creation-Date: \n"
-"PO-Revision-Date: 2010-03-08 19:19+0300\n"
+"PO-Revision-Date: 2010-04-10 02:50+0300\n"
 "Language-Team: \n"
 "MIME-Version: 1.0\n"
 
@@ -275,7 +275,7 @@ msgstr "ошибка при вставке новых частей класса"
 
 #: codetoolsstrconsts.ctserrorduringinsertingnewusessection
 msgid "error during inserting new units to the main uses section"
-msgstr "ошибка при вставке новых модулей в главную секцию uses"
+msgstr "ошибка при вставке новых модулей в главное выражение uses"
 
 #: codetoolsstrconsts.ctserrorindirectiveexpression
 msgid "error in directive expression"
