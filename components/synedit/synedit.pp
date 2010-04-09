@@ -5581,6 +5581,12 @@ var
   PhysBlockBeginXY: TPoint;
   PhysBlockEndXY: TPoint;
 begin
+  if (TSynEditStringList(FLines).PaintLockOwner <> nil) and
+     (TSynEditStringList(FLines).PaintLockOwner <> Self) and
+     (not (eoAlwaysVisibleCaret in fOptions2))
+  then
+    exit;
+
   if (fPaintLock > 0) or (not HandleAllocated) or
      (FWinControlFlags * [wcfInitializing, wcfCreatingHandle] <> [])
   then begin
