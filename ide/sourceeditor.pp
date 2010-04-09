@@ -149,6 +149,7 @@ type
 
   TSourceEditorSharedValues = class
   private
+    FExecutionMark: TSourceMark;
     FSharedEditorList: TFPList; // list of TSourceEditor sharing one TSynEdit
     FExecutionLine: integer;
     FModified: boolean;
@@ -166,7 +167,9 @@ type
     property  OtherSharedEditors[Caller: TSourceEditor; Index: Integer]: TSourceEditor
               read GetOtherSharedEditors;
     property Modified: Boolean read FModified write SetModified;
+    procedure CreateExecutionMark;
     property ExecutionLine: Integer read FExecutionLine write FExecutionLine;
+    property ExecutionMark: TSourceMark read FExecutionMark write FExecutionMark;
   public
     constructor Create;
     destructor Destroy; override;
@@ -197,7 +200,6 @@ type
     FSyntaxHighlighterType: TLazSyntaxHighlighter;
     FErrorLine: integer;
     FErrorColumn: integer;
-    FExecutionMark: TSourceMark;
     FLineInfoNotification: TIDELineInfoNotification;
 
     FOnEditorChange: TNotifyEvent;
@@ -1977,16 +1979,27 @@ begin
   Result := FSharedEditorList.Count - 1;
 end;
 
+procedure TSourceEditorSharedValues.CreateExecutionMark;
+begin
+  FExecutionMark := TSourceMark.Create(SharedEditors[0], nil);
+  SourceEditorMarks.Add(FExecutionMark);
+  FExecutionMark.LineColorAttrib := ahaExecutionPoint;
+  FExecutionMark.Priority := 1;
+end;
+
 constructor TSourceEditorSharedValues.Create;
 begin
   FSharedEditorList := TFPList.Create;
   BookmarkEventLock := 0;
   FExecutionLine:=-1;
+  FExecutionMark := nil;
 end;
 
 destructor TSourceEditorSharedValues.Destroy;
 begin
   FreeAndNil(FSharedEditorList);
+  // no need to care about ExecutionMark, it was removed in EditorClose
+  // via: SourceEditorMarks.DeleteAllForEditor(Self);
   inherited Destroy;
 end;
 
@@ -2015,7 +2028,6 @@ Begin
   FSyntaxHighlighterType:=lshNone;
   FErrorLine:=-1;
   FErrorColumn:=-1;
-  FExecutionMark := nil;
   FHasExecutionMarks := False;
   FMarksRequested := False;
   FSyncroLockCount := 0;
@@ -3337,39 +3349,38 @@ end;
 procedure TSourceEditor.UpdateExecutionSourceMark;
 var
   BreakPoint: TIDEBreakPoint;
+  ExecutionMark: TSourceMark;
 begin
-  if (FExecutionMark = nil) then
-  begin
-    FExecutionMark := TSourceMark.Create(Self, nil);
-    SourceEditorMarks.Add(FExecutionMark);
-    FExecutionMark.LineColorAttrib := ahaExecutionPoint;
-    FExecutionMark.Priority := 1;
-  end;
+  ExecutionMark := FSharedValues.ExecutionMark;
+  if ExecutionMark = nil then exit;
 
-  if FExecutionMark.Visible then
-    FEditor.InvalidateLine(FExecutionMark.Line);
-  FExecutionMark.Visible := ExecutionLine <> -1;
-  if FExecutionMark.Visible then
+  if ExecutionMark.Visible then
   begin
-    FExecutionMark.Line := ExecutionLine;
-    FEditor.InvalidateLine(FExecutionMark.Line);
     if SourceEditorMarks.FindBreakPointMark(Self, ExecutionLine) <> nil then
     begin
       BreakPoint := DebugBoss.BreakPoints.Find(Self.FileName, ExecutionLine);
       if (BreakPoint <> nil) and (not BreakPoint.Enabled) then
-        FExecutionMark.ImageIndex := SourceEditorMarks.CurrentLineDisabledBreakPointImg
+        ExecutionMark.ImageIndex := SourceEditorMarks.CurrentLineDisabledBreakPointImg
       else
-        FExecutionMark.ImageIndex := SourceEditorMarks.CurrentLineBreakPointImg;
+        ExecutionMark.ImageIndex := SourceEditorMarks.CurrentLineBreakPointImg;
     end
     else
-      FExecutionMark.ImageIndex := SourceEditorMarks.CurrentLineImg;
+      ExecutionMark.ImageIndex := SourceEditorMarks.CurrentLineImg;
   end;
 end;
 
 procedure TSourceEditor.SetExecutionLine(NewLine: integer);
 begin
   if ExecutionLine=NewLine then exit;
-  FSharedValues.ExecutionLine:=NewLine;
+  if (FSharedValues.ExecutionMark = nil) then begin
+    if NewLine = -1 then
+      exit;
+    FSharedValues.CreateExecutionMark;
+  end;
+  FSharedValues.ExecutionLine := NewLine;
+  FSharedValues.ExecutionMark.Visible := NewLine <> -1;
+  if NewLine <> -1 then
+    FSharedValues.ExecutionMark.Line := NewLine;
   UpdateExecutionSourceMark;
 end;
 
@@ -8346,8 +8357,9 @@ begin
         AMark.AddSourceEditor(Editor.FSharedValues.SharedEditors[i]);
   end;
 
-  if AMark.IsBreakPoint and (Editor.FExecutionMark <> nil) and
-     (AMark.Line = Editor.ExecutionLine)
+  if ( AMark.IsBreakPoint and (Editor.FSharedValues.ExecutionMark <> nil) and
+       (AMark.Line = Editor.ExecutionLine)
+     ) or (AMark = Editor.FSharedValues.ExecutionMark)
   then
     Editor.UpdateExecutionSourceMark;
 end;

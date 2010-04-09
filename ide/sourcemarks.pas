@@ -125,6 +125,7 @@ type
     FSourceMarks: TSourceMarks;
     FSourceEditorID: TObject;
     FSynMarks: TSourceSynMarkList;
+    FSynMarkLock: Integer;
     FData: TObject;
     FHandlers: array[TSourceMarkHandler] of TMethodList;
     FLine: integer;
@@ -146,7 +147,7 @@ type
     procedure AddHandler(HandlerType: TSourceMarkHandler;
                          const Handler: TMethod);
     procedure DoPositionChanged; virtual;
-    procedure DoLineUpdate; virtual;
+    procedure DoLineUpdate(Force: Boolean = False); virtual;
     function  EditorUpdateRequired: Boolean; virtual; // called to check if we need to update the editor if a property is changed
     procedure SetColumn(const Value: Integer); //override;
     procedure SetData(const AValue: TObject); virtual;
@@ -461,8 +462,7 @@ var
   i: Integer;
 begin
   for i := 0 to Count - 1 do
-    if Visible then
-      Items[i].GetEdit.InvalidateLine(ALine);
+    Items[i].GetEdit.InvalidateLine(ALine);
 end;
 
 procedure TSourceSynMarkList.DeleteWithSourceEditor(
@@ -542,7 +542,8 @@ procedure TSourceMark.SetPriority(const AValue: integer);
 begin
   if FPriority = AValue then exit;
   FPriority := AValue;
-  FSynMarks.Priority := AValue;
+  if FSynMarkLock = 0 then
+    FSynMarks.Priority := AValue;
 end;
 
 function TSourceMark.GetSourceEditorID: TObject;
@@ -570,11 +571,14 @@ end;
 
 procedure TSourceMark.SynMarkChanged(Sender: TObject);
 begin
+  // Only read Value from Mark => Do not write back to Mark(s)
+  inc(FSynMarkLock);
   Line := TSourceSynMark(Sender).Line;
   Column := TSourceSynMark(Sender).Column;
   Priority := TSourceSynMark(Sender).Priority;
   ImageIndex := TSourceSynMark(Sender).ImageIndex;
   Visible := TSourceSynMark(Sender).Visible;
+  dec(FSynMarkLock);
 end;
 
 procedure TSourceMark.SetLineColorBackGround(const AValue: TColor);
@@ -582,6 +586,7 @@ begin
   if FLineColorBackGround=AValue then exit;
   FLineColorBackGround:=AValue;
   DoLineUpdate;
+  Changed;
 end;
 
 procedure TSourceMark.SetLineColorForeGround(const AValue: TColor);
@@ -589,6 +594,7 @@ begin
   if FLineColorForeGround=AValue then exit;
   FLineColorForeGround:=AValue;
   DoLineUpdate;
+  Changed;
 end;
 
 procedure TSourceMark.SetLineColorAttrib(
@@ -597,6 +603,7 @@ begin
   if FLineColorAttrib=AValue then exit;
   FLineColorAttrib:=AValue;
   DoLineUpdate;
+  Changed;
 end;
 
 procedure TSourceMark.SetIsBreakPoint(const AValue: boolean);
@@ -604,14 +611,17 @@ begin
   if FIsBreakPoint=AValue then exit;
   FIsBreakPoint:=AValue;
   DoLineUpdate;
+  Changed;
 end;
 
 procedure TSourceMark.SetVisible(const AValue: boolean);
 begin
   if Visible = AValue then Exit;
   FVisible := AValue;
-  FSynMarks.Visible := AValue;
-  if EditorUpdateRequired then DoLineUpdate;
+  if FSynMarkLock = 0 then
+    FSynMarks.Visible := AValue;
+  if EditorUpdateRequired then DoLineUpdate(True);
+  Changed;
 end;
 
 procedure TSourceMark.DoPositionChanged;
@@ -623,11 +633,11 @@ begin
     TNotifyEvent(FHandlers[smhPositionChanged][i])(Self);
 end;
 
-procedure TSourceMark.DoLineUpdate;
+procedure TSourceMark.DoLineUpdate(Force: Boolean = False);
 begin
   if Line <= 0 then Exit;
-  FSynMarks.InvalidateLine(Line);
-  Changed;
+  if Visible or Force then
+    FSynMarks.InvalidateLine(Line);
 end;
 
 procedure TSourceMark.SetData(const AValue: TObject);
@@ -657,7 +667,8 @@ begin
   if Column=Value then exit;
   if FSourceMarks<>nil then FSourceMarks.fSortedItems.Remove(Self);
   FColumn := Value;
-  FSynMarks.Column := Value;
+  if FSynMarkLock = 0 then
+    FSynMarks.Column := Value;
   if FSourceMarks<>nil then FSourceMarks.fSortedItems.Add(Self);
   DoPositionChanged;
 end;
@@ -666,7 +677,8 @@ procedure TSourceMark.SetImage(const Value: Integer);
 begin
   if ImageIndex=Value then exit;
   FImage := Value;
-  FSynMarks.ImageIndex := Value;
+  if FSynMarkLock = 0 then
+    FSynMarks.ImageIndex := Value;
   Changed;
 end;
 
@@ -676,14 +688,17 @@ begin
   if EditorUpdateRequired then DoLineUpdate;
   if FSourceMarks<>nil then FSourceMarks.fSortedItems.Remove(Self);
   FLine := Value;
-  FSynMarks.Line := Value;
+  if FSynMarkLock = 0 then
+    FSynMarks.Line := Value;
   if FSourceMarks<>nil then FSourceMarks.fSortedItems.Add(Self);
   DoPositionChanged;
   if EditorUpdateRequired then DoLineUpdate;
+  Changed;
 end;
 
 constructor TSourceMark.Create(TheOwner: TSourceEditorInterface; TheData: TObject);
 begin
+  FSynMarkLock := 0;
   FSynMarks := TSourceSynMarkList.Create;
   FSynMarks.OnChange := @SynMarkChanged;
   FSynMarks.Add(TSourceSynMark.Create(Self, TheOwner));
