@@ -1709,10 +1709,10 @@ procedure TCustomSynEdit.IncPaintLock;
 var
   i: Integer;
 begin
-  if (TSynEditStringList(FLines).PaintLockOwner = nil) then begin
+  if (TSynEditStringList(FLines).PaintLockOwner = nil) then
     TSynEditStringList(FLines).PaintLockOwner := Self;
+  if (TSynEditStringList(FLines).PaintLockOwner = Self) then
     inc(FPaintLockOwner);
-  end;
   for i := 0 to TSynEditStringList(FLines).AttachedSynEditCount - 1 do
     TCustomSynEdit(TSynEditStringList(FLines).AttachedSynEdits[i]).DoIncPaintLock
       (FPaintLockOwner = 0);
@@ -1725,10 +1725,9 @@ begin
   for i := 0 to TSynEditStringList(FLines).AttachedSynEditCount - 1 do
     TCustomSynEdit(TSynEditStringList(FLines).AttachedSynEdits[i]).DoDecPaintLock
       (FPaintLockOwner = 0);
-  if FPaintLockOwner > 0 then begin
+  if (TSynEditStringList(FLines).PaintLockOwner = Self) then begin
     dec(FPaintLockOwner);
-    if (FPaintLockOwner <> 0) or (TSynEditStringList(FLines).PaintLockOwner <> Self) then
-      RaiseGDBException('TSynEdit.Paintlock error');
+    if FPaintLockOwner = 0 then
     TSynEditStringList(FLines).PaintLockOwner := nil;
   end;
 end;
