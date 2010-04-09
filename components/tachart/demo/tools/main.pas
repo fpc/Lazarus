@@ -61,8 +61,9 @@ procedure TForm1.rgZoomClick(Sender: TObject);
 var
   b: Boolean;
 begin
-  b := rgZoom.ItemIndex = 0;
+  b := rgZoom.ItemIndex <= 1;
   ChartToolset1ZoomDragTool1.Enabled := b;
+  ChartToolset1ZoomDragTool1.Proportional := rgZoom.ItemIndex = 1;
   ChartToolset1ZoomIn.Enabled := not b;
   ChartToolset1ZoomOut.Enabled := not b;
 end;

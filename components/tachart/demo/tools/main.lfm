@@ -1,28 +1,24 @@
 object Form1: TForm1
   Left = 292
-  Height = 442
+  Height = 466
   Top = 152
   Width = 554
   Caption = 'Form1'
-  ClientHeight = 442
+  ClientHeight = 466
   ClientWidth = 554
   LCLVersion = '0.9.29'
   object Chart1: TChart
     Left = 0
-    Height = 376
+    Height = 388
     Top = 0
     Width = 554
     AxisList = <    
       item
         Alignment = calLeft
         Title.Font.Orientation = 900
-        Transformation.Offset = 0
-        Transformation.Scale = 1
       end    
       item
         Alignment = calBottom
-        Transformation.Offset = 0
-        Transformation.Scale = 1
       end>
     Extent.XMin = -3
     Extent.YMin = -2
@@ -57,16 +53,16 @@ object Form1: TForm1
   end
   object Panel1: TPanel
     Left = 0
-    Height = 66
-    Top = 376
+    Height = 78
+    Top = 388
     Width = 554
     Align = alBottom
-    ClientHeight = 66
+    ClientHeight = 78
     ClientWidth = 554
     TabOrder = 1
     object rgZoom: TRadioGroup
       Left = 1
-      Height = 64
+      Height = 76
       Top = 1
       Width = 255
       Align = alLeft
@@ -80,11 +76,12 @@ object Form1: TForm1
       ChildSizing.ShrinkVertical = crsScaleChilds
       ChildSizing.Layout = cclLeftToRightThenTopToBottom
       ChildSizing.ControlsPerLine = 1
-      ClientHeight = 46
+      ClientHeight = 58
       ClientWidth = 251
-      ItemIndex = 1
+      ItemIndex = 2
       Items.Strings = (
         'Drag to zoom'
+        'Drag to zoom proportionally'
         'Click to zoom in, Shift+click to zoom out'
       )
       OnClick = rgZoomClick
@@ -92,7 +89,7 @@ object Form1: TForm1
     end
     object rgPan: TRadioGroup
       Left = 256
-      Height = 64
+      Height = 76
       Top = 1
       Width = 292
       Align = alLeft
@@ -106,7 +103,7 @@ object Form1: TForm1
       ChildSizing.ShrinkVertical = crsScaleChilds
       ChildSizing.Layout = cclLeftToRightThenTopToBottom
       ChildSizing.ControlsPerLine = 1
-      ClientHeight = 46
+      ClientHeight = 58
       ClientWidth = 288
       ItemIndex = 0
       Items.Strings = (
