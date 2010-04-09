@@ -3,14 +3,13 @@ object PublishProjectDialog: TPublishProjectDialog
   Height = 531
   Top = 146
   Width = 484
-  ActiveControl = DestDirComboBox
   BorderIcons = [biSystemMenu]
   Caption = 'Publish Project'
   ClientHeight = 531
   ClientWidth = 484
   OnCreate = FormCreate
   Position = poScreenCenter
-  LCLVersion = '0.9.27'
+  LCLVersion = '0.9.29'
   object DestDirGroupBox: TGroupBox
     Left = 6
     Height = 111
@@ -144,10 +143,13 @@ object PublishProjectDialog: TPublishProjectDialog
       TabOrder = 0
     end
     object IncFilterSimpleSyntaxCheckbox: TCheckBox
-      Left = 199
+      AnchorSideLeft.Control = UseIncludeFilterCheckbox
+      AnchorSideLeft.Side = asrBottom
+      Left = 119
       Height = 17
       Top = 1
       Width = 85
+      BorderSpacing.Left = 12
       Caption = 'Simple Syntax'
       ParentShowHint = False
       ShowHint = True
@@ -185,10 +187,13 @@ object PublishProjectDialog: TPublishProjectDialog
       TabOrder = 0
     end
     object ExcFilterSimpleSyntaxCheckbox: TCheckBox
-      Left = 199
+      AnchorSideLeft.Control = UseExcludeFilterCheckbox
+      AnchorSideLeft.Side = asrBottom
+      Left = 121
       Height = 17
       Top = 1
       Width = 85
+      BorderSpacing.Left = 12
       Caption = 'Simple Syntax'
       ParentShowHint = False
       ShowHint = True
