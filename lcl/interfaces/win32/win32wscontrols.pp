@@ -163,7 +163,7 @@ begin
     //Parent := AWinControl.Parent;
     Top := AWinControl.Top;
     Width := AWinControl.Width;
-    if AWinControl.Visible then
+    if (WS_VISIBLE and CreateParams.Style) <> 0 then
       Flags := Flags or WS_VISIBLE;
     if csAcceptsControls in AWinControl.ControlStyle then
       FlagsEx := FlagsEx or WS_EX_CONTROLPARENT;
