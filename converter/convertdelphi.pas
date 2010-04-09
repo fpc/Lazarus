@@ -490,6 +490,8 @@ begin
   fUnitsToRemove:=TStringList.Create;
   fUnitsToRename:=TStringToStringTree.Create(false);
   fUnitsToComment:=TStringList.Create;
+  IDEMessagesWindow.AddMsg('Converting unit file '+fOrigUnitFilename,'',-1);
+  Application.ProcessMessages;
   ConvTool:=TConvDelphiCodeTool.Create(fPascalBuffer);
   try
     fLFMBuffer:=nil;
@@ -521,7 +523,6 @@ begin
       LfmFilename:=DfmFilename; }
     // convert .dfm file to .lfm file (without context type checking)
     if FileExistsUTF8(LfmFilename) then begin
-      IDEMessagesWindow.AddMsg('Converting DFM to LFM file '+LfmFilename,'',-1);
       DFMConverter:=TDFMConverter.Create;
       try
 //        Result:=ConvertDfmToLfm(LfmFilename);
@@ -575,6 +576,8 @@ begin
   if fLFMBuffer<>nil then begin
 //!!!    Result:=LoadCodeBuffer(fPascalBuffer,fLazUnitFilename,
 //!!!                           [lbfCheckIfText,lbfUpdateFromDisk],true);
+    IDEMessagesWindow.AddMsg('Repairing form file '+fLFMBuffer.Filename,'',-1);
+    Application.ProcessMessages;
     LfmFixer:=TLFMFixer.Create(fPascalBuffer,fLFMBuffer,@IDEMessagesWindow.AddMsg);
     try
       LfmFixer.Settings:=fSettings;
@@ -702,6 +705,7 @@ begin
         end;
       end;
       IDEMessagesWindow.AddMsg('Error="'+CodeToolBoss.ErrorMessage+'"', '', -1);
+      Application.ProcessMessages;
       exit;
     end;
   finally
@@ -722,6 +726,7 @@ begin
     CTResult:=CodeToolBoss.FindMissingUnits(fPascalBuffer,fMissingUnits,true);
     if not CTResult then begin
       IDEMessagesWindow.AddMsg('Error="'+CodeToolBoss.ErrorMessage+'"','',-1);
+      Application.ProcessMessages;
       exit;
     end;
     // no missing units -> good
@@ -755,6 +760,7 @@ begin
     // add error messages, so the user can click on them
     for i:=0 to fMissingUnits.Count-1 do
       IDEMessagesWindow.AddMsg(MissingUnitToMsg(fMissingUnits[i]),'',-1);
+    Application.ProcessMessages;
   finally
     fMissingUnits.Free;
   end;
@@ -868,6 +874,7 @@ var
   i: Integer;
 begin
   IDEMessagesWindow.AddMsg('Converting form files...','',-1);
+  Application.ProcessMessages;
   Screen.Cursor:=crHourGlass;
   try
     for i:=0 to ConverterList.Count-1 do begin
@@ -1246,6 +1253,7 @@ begin
   NormalUnits:=nil;
   try
     IDEMessagesWindow.AddMsg('Find all unit files...','',-1);
+    Application.ProcessMessages;
     if not CodeToolBoss.FindDelphiProjectUnits(fMainUnitConverter.fPascalBuffer,
       FoundInUnits, MissingInUnits, NormalUnits) then
     begin
@@ -1352,6 +1360,7 @@ begin
   try
     // convert all units and fix .lfm files
     IDEMessagesWindow.AddMsg('Converting unit files...','',-1);
+    Application.ProcessMessages;
     for i:=0 to LazProject.UnitCount-1 do begin
       CurUnitInfo:=LazProject.Units[i];
       // Main LPR file was converted earlier.
@@ -1507,6 +1516,7 @@ begin
   try
     // convert all units and fix .lfm files
     IDEMessagesWindow.AddMsg('Converting unit files...','',-1);
+    Application.ProcessMessages;
     for i:=0 to LazPackage.FileCount-1 do begin
       PkgFile:=LazPackage.Files[i];
       Converter:=TConvertDelphiUnit.Create(Self, PkgFile.Filename,

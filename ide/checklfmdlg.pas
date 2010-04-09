@@ -440,6 +440,7 @@ begin
        +' Error: '
        +ErrorMessage;
   fOnOutput(Msg,Dir,-1,nil);
+  Application.ProcessMessages;
 end;
 
 procedure TLFMChecker.WriteCodeToolsError;
@@ -467,6 +468,7 @@ begin
     fOnOutput(Msg,Dir,-1,nil);
     CurError:=CurError.NextError;
   end;
+  Application.ProcessMessages;
 end;
 
 function TLFMChecker.FixMissingComponentClasses: TModalResult;
