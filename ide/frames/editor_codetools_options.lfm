@@ -1,7 +1,7 @@
 inherited EditorCodetoolsOptionsFrame: TEditorCodetoolsOptionsFrame
-  Height = 382
+  Height = 389
   Width = 537
-  ClientHeight = 382
+  ClientHeight = 389
   ClientWidth = 537
   TabOrder = 0
   Visible = False
@@ -56,7 +56,7 @@ inherited EditorCodetoolsOptionsFrame: TEditorCodetoolsOptionsFrame
     AnchorSideTop.Side = asrBottom
     Left = 6
     Height = 14
-    Top = 307
+    Top = 328
     Width = 130
     BorderSpacing.Left = 6
     BorderSpacing.Top = 2
@@ -70,7 +70,7 @@ inherited EditorCodetoolsOptionsFrame: TEditorCodetoolsOptionsFrame
     AnchorSideRight.Side = asrBottom
     Left = 397
     Height = 14
-    Top = 307
+    Top = 328
     Width = 134
     Alignment = taRightJustify
     Anchors = [akTop, akRight]
@@ -86,7 +86,7 @@ inherited EditorCodetoolsOptionsFrame: TEditorCodetoolsOptionsFrame
     AnchorSideTop.Side = asrCenter
     Left = 142
     Height = 14
-    Top = 307
+    Top = 328
     Width = 114
     BorderSpacing.Left = 6
     BorderSpacing.Top = 24
@@ -100,7 +100,7 @@ inherited EditorCodetoolsOptionsFrame: TEditorCodetoolsOptionsFrame
     AnchorSideRight.Control = MarkupWordFullLenSpin
     Left = 6
     Height = 14
-    Top = 240
+    Top = 262
     Width = 120
     BorderSpacing.Left = 6
     Caption = 'MarkupWordFullLenLabel'
@@ -173,7 +173,7 @@ inherited EditorCodetoolsOptionsFrame: TEditorCodetoolsOptionsFrame
     AnchorSideRight.Side = asrBottom
     Left = 0
     Height = 4
-    Top = 327
+    Top = 348
     Width = 537
     Anchors = [akTop, akLeft, akRight]
     BorderSpacing.Top = 6
@@ -186,7 +186,7 @@ inherited EditorCodetoolsOptionsFrame: TEditorCodetoolsOptionsFrame
     AnchorSideTop.Side = asrCenter
     Left = 162
     Height = 14
-    Top = 340
+    Top = 361
     Width = 62
     BorderSpacing.Around = 6
     Caption = 'BracketLabel'
@@ -200,7 +200,7 @@ inherited EditorCodetoolsOptionsFrame: TEditorCodetoolsOptionsFrame
     Cursor = crHandPoint
     Left = 230
     Height = 14
-    Top = 340
+    Top = 361
     Width = 55
     BorderSpacing.Around = 6
     Caption = 'BracketLink'
@@ -309,7 +309,7 @@ inherited EditorCodetoolsOptionsFrame: TEditorCodetoolsOptionsFrame
     AnchorSideRight.Side = asrBottom
     Left = 6
     Height = 40
-    Top = 265
+    Top = 286
     Width = 525
     Frequency = 250
     Max = 4000
@@ -337,13 +337,13 @@ inherited EditorCodetoolsOptionsFrame: TEditorCodetoolsOptionsFrame
   object MarkupWordFullLenSpin: TSpinEdit[22]
     AnchorSideLeft.Control = MarkupWordFullLenLabel
     AnchorSideLeft.Side = asrBottom
-    AnchorSideTop.Control = MarkupWordNoKeyword
+    AnchorSideTop.Control = MarkupWordTrim
     AnchorSideTop.Side = asrBottom
     AnchorSideRight.Control = Owner
     AnchorSideRight.Side = asrBottom
     Left = 132
-    Height = 23
-    Top = 236
+    Height = 21
+    Top = 259
     Width = 48
     BorderSpacing.Left = 6
     BorderSpacing.Top = 6
@@ -365,12 +365,12 @@ inherited EditorCodetoolsOptionsFrame: TEditorCodetoolsOptionsFrame
   object MarkupWordTrim: TCheckBox[24]
     AnchorSideLeft.Control = Owner
     AnchorSideTop.Control = MarkupWordNoKeyword
-    AnchorSideTop.Side = asrCenter
-    Left = 230
+    AnchorSideTop.Side = asrBottom
+    Left = 6
     Height = 17
-    Top = 213
+    Top = 236
     Width = 99
-    BorderSpacing.Left = 230
+    BorderSpacing.Left = 6
     BorderSpacing.Top = 6
     Caption = 'MarkupWordTrim'
     TabOrder = 9
@@ -383,7 +383,7 @@ inherited EditorCodetoolsOptionsFrame: TEditorCodetoolsOptionsFrame
     AnchorSideBottom.Side = asrBottom
     Left = 6
     Height = 21
-    Top = 337
+    Top = 358
     Width = 150
     BorderSpacing.Left = 6
     BorderSpacing.Top = 6
