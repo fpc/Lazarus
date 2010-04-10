@@ -1354,7 +1354,7 @@ begin
   if ABreakpoint = nil then Exit;
   if ACanContinue then Exit;
 
-  FCurrentBreakPoint := FBreakPoints.Find(ABreakPoint.Source, ABreakPoint.SourceLine);
+  FCurrentBreakPoint := FBreakPoints.Find(ABreakPoint.Source, ABreakPoint.Line);
 end;
 
 procedure TDebugManager.mnuViewDebugDialogClick(Sender: TObject);

@@ -216,7 +216,6 @@ type
     function GetHitCount: Integer; virtual;
     function GetLine: Integer; virtual;
     function GetSource: String; virtual;
-    function GetSourceLine: Integer; virtual;
     function GetValid: TValidState; virtual;
 
     procedure SetBreakHitCount(const AValue: Integer); virtual;
@@ -233,9 +232,6 @@ type
     property InitialEnabled: Boolean read FInitialEnabled write SetInitialEnabled;
     property Line: Integer read GetLine;
     property Source: String read GetSource;
-    property SourceLine: Integer read GetSourceLine; // the current line of this breakpoint in the source
-                                                     // this may differ from the location set
-                                                     // todo: move to manager ?
     property Valid: TValidState read GetValid;
   end;
   TBaseBreakPointClass = class of TBaseBreakPoint;
@@ -254,6 +250,7 @@ type
     procedure DoActionChange; virtual;
     procedure DoHit(const ACount: Integer; var AContinue: Boolean); override;
     procedure EnableGroups;
+    function GetSourceLine: Integer; virtual;
     procedure RemoveFromGroupList(const AGroup: TIDEBreakPointGroup;
                                   const AGroupList: TList);
     procedure ClearGroupList(const AGroupList: TList);
@@ -283,6 +280,9 @@ type
     property AutoContinueTime: Cardinal read GetAutoContinueTime write SetAutoContinueTime;
     property Group: TIDEBreakPointGroup read GetGroup write SetGroup;
     property Loading: Boolean read FLoading;
+    property SourceLine: Integer read GetSourceLine; // the current line of this breakpoint in the source
+                                                     // this may differ from the location set
+                                                     // todo: move to manager ?
   end;
   TIDEBreakPointClass = class of TIDEBreakPoint;
 
@@ -300,7 +300,6 @@ type
   public
     constructor Create(ACollection: TCollection); override;
     destructor Destroy; override;
-    function GetSourceLine: integer; override;
     procedure Hit(var ACanContinue: Boolean);
     property Slave: TBaseBreakPoint read FSlave write SetSlave;
   end;
@@ -2006,11 +2005,6 @@ begin
   Result := FSource;
 end;
 
-function TBaseBreakPoint.GetSourceLine: Integer;
-begin
-  Result := Line;
-end;
-
 function TBaseBreakPoint.GetValid: TValidState;
 begin
   Result := FValid;
@@ -2187,6 +2181,11 @@ var
 begin
   for n := 0 to FDisableGroupList.Count - 1 do
     TIDEBreakPointGroup(FDisableGroupList[n]).Enabled := True;
+end;
+
+function TIDEBreakPoint.GetSourceLine: Integer;
+begin
+  Result := Line;
 end;
 
 function TIDEBreakPoint.GetActions: TIDEBreakPointActions;
@@ -2398,14 +2397,6 @@ begin
   inherited Destroy;
 end;
 
-function TDBGBreakPoint.GetSourceLine: integer;
-begin
-  if Slave<>nil then
-    Result:=Slave.GetSourceLine
-  else
-    Result:=inherited GetSourceLine;
-end;
-
 procedure TDBGBreakPoint.Hit(var ACanContinue: Boolean);
 var
   cnt: Integer;
@@ -2431,7 +2422,7 @@ begin
 
   BeginUpdate;
   try
-    SetLocation(FSource, SourceLine);
+    SetLocation(FSource, Line);
     Enabled := InitialEnabled;
     SetHitCount(0);
   finally
