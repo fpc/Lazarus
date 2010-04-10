@@ -521,6 +521,22 @@ msgctxt "jcfuiconsts.lisobfsremovewhitespace"
 msgid "Remove &white space"
 msgstr ""
 
+#: jcfuiconsts.lisprpcompileroptionsdefinedforconditionalcompilation
+msgid "Compiler options defined for conditional compilation:"
+msgstr ""
+
+#: jcfuiconsts.lisprpenablepreprocessorparsing
+msgid "Enable preprocessor parsing"
+msgstr ""
+
+#: jcfuiconsts.lisprppreprocessor
+msgid "PreProcessor"
+msgstr ""
+
+#: jcfuiconsts.lisprpsymbolsdefinedforconditionalcompilation
+msgid "Symbols defined for conditional compilation:"
+msgstr ""
+
 #: jcfuiconsts.lisreturnsafteruses
 msgid "After uses"
 msgstr ""

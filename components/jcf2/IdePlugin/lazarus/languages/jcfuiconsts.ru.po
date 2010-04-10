@@ -530,6 +530,22 @@ msgctxt "jcfuiconsts.lisobfsremovewhitespace"
 msgid "Remove &white space"
 msgstr "Удалять &пробелы"
 
+#: jcfuiconsts.lisprpcompileroptionsdefinedforconditionalcompilation
+msgid "Compiler options defined for conditional compilation:"
+msgstr "Параметры компилятора, определённые для условной компиляции:"
+
+#: jcfuiconsts.lisprpenablepreprocessorparsing
+msgid "Enable preprocessor parsing"
+msgstr "Включить разбор выражений препроцессора"
+
+#: jcfuiconsts.lisprppreprocessor
+msgid "PreProcessor"
+msgstr "Препроцессор"
+
+#: jcfuiconsts.lisprpsymbolsdefinedforconditionalcompilation
+msgid "Symbols defined for conditional compilation:"
+msgstr "Символы, определённые для условной компиляции"
+
 #: jcfuiconsts.lisreturnsafteruses
 msgid "After uses"
 msgstr "После выражения Uses"
