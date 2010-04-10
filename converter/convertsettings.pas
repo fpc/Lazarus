@@ -163,9 +163,9 @@ begin
   fReplaceTypes:=TStringToStringTree.Create(false);
   fReplaceTypes['TFlowPanel']:='TPanel';
   fReplaceTypes['TGridPanel']:='TPanel';
+  fReplaceTypes['TControlBar']:='TToolBar';
+  fReplaceTypes['TCoolBar']:='TToolBar';
   fReplaceTypes['TComboBoxEx']:='TComboBox';
-  fReplaceTypes['TCoolBar']:='TPanel';
-  fReplaceTypes['TControlBar']:='TPanel';
   fReplaceTypes['TValueListEditor']:='TStringGrid';
   fReplaceTypes['TRichEdit']:='TMemo';
   fReplaceTypes['TDBRichEdit']:='TDBMemo';

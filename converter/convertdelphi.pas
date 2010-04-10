@@ -879,16 +879,22 @@ begin
   try
     for i:=0 to ConverterList.Count-1 do begin
       Converter:=TConvertDelphiUnit(ConverterList[i]); // Converter created in cycle1.
-      Result:=Converter.ConvertFormFile;
-      Result:=Converter.CheckFailed(Result);
-      if Result<>mrOK then exit;
-      // Loading the form makes it appear in forms list. (Is there a better way?)
-      //  fUnitInfo is set for projects only.
-      if Assigned(Converter.fUnitInfo) then
-        LazarusIDE.GetDesignerWithProjectFile(TUnitInfo(Converter.fUnitInfo), true);
-      // Close file after processing.
-      Result:=LazarusIDE.DoCloseEditorFile(Converter.fLazUnitFilename,[cfSaveFirst,cfQuiet]);
-      if Result<>mrOK then exit;
+      with Converter do begin
+        Result:=ConvertFormFile;
+        Result:=CheckFailed(Result);
+        if Result<>mrOK then exit;
+        // Loading the form makes it appear in forms list. (Is there a better way?)
+        //  fUnitInfo is set for projects only.
+        if Assigned(fUnitInfo) then
+          LazarusIDE.GetDesignerWithProjectFile(TUnitInfo(fUnitInfo), true);
+        // Close unit file and form file after processing.
+        Result:=LazarusIDE.DoCloseEditorFile(fLazUnitFilename,[cfSaveFirst,cfQuiet]);
+        if Result<>mrOK then exit;
+{        if fLFMBuffer<>nil then begin
+          Result:=LazarusIDE.DoCloseEditorFile(fLFMBuffer.Filename,[cfSaveFirst,cfQuiet]);
+          if Result<>mrOk then exit;
+        end; }
+      end;
     end;
   finally
     Screen.Cursor:=crDefault;
