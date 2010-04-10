@@ -65,6 +65,46 @@ msgstr "Объявления переменных"
 msgid "What to Align"
 msgstr "Что выравнивать"
 
+#: jcfuiconsts.lisasmasm
+msgid "Asm"
+msgstr "Ассемблер"
+
+#: jcfuiconsts.lisasmbreaksafterlabel
+msgid "&Breaks after label"
+msgstr "&Разрыв строки после метки"
+
+#: jcfuiconsts.lisasmcapitalization
+msgid "&Capitalization"
+msgstr "Р&егистр"
+
+#: jcfuiconsts.lisasmenabled
+msgid "&Enabled"
+msgstr "&Включить"
+
+#: jcfuiconsts.lisasmenabled2
+msgid "E&nabled"
+msgstr "В&ключить"
+
+#: jcfuiconsts.lisasmenabled3
+msgid "En&abled"
+msgstr "Вк&лючить"
+
+#: jcfuiconsts.lisasmindent
+msgid "Indent"
+msgstr "Отступ"
+
+#: jcfuiconsts.lisasmnumberofbreaks
+msgid "N&umber of breaks"
+msgstr "&Число новых строк"
+
+#: jcfuiconsts.lisasmparamsindents
+msgid "&Params Indents"
+msgstr "&Отступ операндов"
+
+#: jcfuiconsts.lisasmstatementindents
+msgid "&Statement Indents"
+msgstr "О&тступ операторов"
+
 #: jcfuiconsts.lisblafterprocedureheader
 msgid "After procedure header"
 msgstr "После заголовка процедуры"
