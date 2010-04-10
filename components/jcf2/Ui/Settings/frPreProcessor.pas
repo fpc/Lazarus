@@ -60,7 +60,7 @@ implementation
 {$R *.lfm}
 
 uses 
-  JcfHelp, JcfSettings;
+  JcfHelp, JcfSettings, jcfuiconsts;
 
 constructor TfPreProcessor.Create(AOwner: TComponent);
 begin
@@ -70,12 +70,15 @@ end;
 
 function TfPreProcessor.GetTitle: String;
 begin
-  Result := 'PreProcessor';
+  Result := lisPrpPreProcessor;
 end;
 
 procedure TfPreProcessor.Setup(ADialog: TAbstractOptionsEditorDialog);
 begin
-  //
+  cbEnable.Caption := lisPrpEnablePreprocessorParsing;
+  lblSymbols.Caption := lisPrpSymbolsDefinedForConditionalCompilation;
+  lblCompilerOptions.Caption :=
+    lisPrpCompilerOptionsDefinedForConditionalCompilation;
 end;
 
 procedure TfPreProcessor.ReadSettings(AOptions: TAbstractIDEOptions);
@@ -86,7 +89,6 @@ begin
     mSymbols.Lines.Assign(DefinedSymbols);
     mOptions.Lines.Assign(DefinedOptions);
   end;
-
 end;
 
 procedure TfPreProcessor.WriteSettings(AOptions: TAbstractIDEOptions);

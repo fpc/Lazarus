@@ -278,6 +278,14 @@ resourcestring
   lisAsmEnAbled3 = 'En&abled';
   lisAsmNUmberOfBreaks = 'N&umber of breaks';
 
+  //PreProcessor tab
+  lisPrpPreProcessor = 'PreProcessor';
+  lisPrpEnablePreprocessorParsing = 'Enable preprocessor parsing';
+  lisPrpSymbolsDefinedForConditionalCompilation = 'Symbols defined for '
+    +'conditional compilation:';
+  lisPrpCompilerOptionsDefinedForConditionalCompilation = 'Compiler options '
+    +'defined for conditional compilation:';
+
 implementation
 
 end.
