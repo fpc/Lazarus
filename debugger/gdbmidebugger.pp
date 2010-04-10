@@ -2483,6 +2483,30 @@ function TGDBMIDebugger.GDBEvaluate(const AExpression: String; var AResult: Stri
     end;
   end;
 
+  function StripExprNewlines(const ASource: String): String;
+  var
+    len: Integer;
+    srcPtr, dstPtr: PChar;
+  begin
+    len := Length(ASource);
+    SetLength(Result, len);
+    if len = 0 then Exit;
+    srcPtr := @ASource[1];
+    dstPtr := @Result[1];
+    while len > 0 do
+    begin
+      case srcPtr^ of
+        #0:;
+        #10, #13: dstPtr^ := ' ';
+      else
+        dstPtr^ := srcPtr^;
+      end;
+      Dec(len);
+      Inc(srcPtr);
+      Inc(dstPtr);
+    end;
+  end;
+
 var
   R, Rtmp: TGDBMIExecResult;
   S: String;
@@ -2496,7 +2520,8 @@ var
 begin
   AResult:='';
   ATypeInfo:=nil;
-  S := AExpression;
+
+  S := StripExprNewlines(AExpression);
 
   if S = '' then Exit(false);
   if S[1] = '!'
