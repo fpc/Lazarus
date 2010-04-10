@@ -2,12 +2,16 @@ msgid ""
 msgstr ""
 "Project-Id-Version: \n"
 "POT-Creation-Date: \n"
-"PO-Revision-Date: 2008-10-01 02:26+0300\n"
+"PO-Revision-Date: 2010-04-11 02:03+0300\n"
 "Last-Translator: Maxim Ganetsky <maxkill@mail.ru>\n"
 "Language-Team: \n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=utf-8\n"
 "Content-Transfer-Encoding: 8bit\n"
+
+#: ideprinting.sdescrformatting
+msgid "Formatting"
+msgstr "Форматирование"
 
 #: ideprinting.sdescrpfselection
 msgid "Print..."

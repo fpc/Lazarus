@@ -12,6 +12,10 @@ msgstr ""
 "X-Poedit-Country: CHINA\n"
 "X-Poedit-SourceCharset: utf-8\n"
 
+#: ideprinting.sdescrformatting
+msgid "Formatting"
+msgstr ""
+
 #: ideprinting.sdescrpfselection
 msgid "Print..."
 msgstr "打印..."

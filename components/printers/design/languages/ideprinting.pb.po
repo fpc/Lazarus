@@ -9,6 +9,10 @@ msgstr ""
 "Last-Translator: Marcelo Borges de Paula\n"
 "Language-Team: \n"
 
+#: ideprinting.sdescrformatting
+msgid "Formatting"
+msgstr ""
+
 #: ideprinting.sdescrpfselection
 msgid "Print..."
 msgstr "Imprimir..."

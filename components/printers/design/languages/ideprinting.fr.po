@@ -11,6 +11,10 @@ msgstr ""
 "X-Poedit-Language: French\n"
 "X-Poedit-Country: FRANCE\n"
 
+#: ideprinting.sdescrformatting
+msgid "Formatting"
+msgstr ""
+
 #: ideprinting.sdescrpfselection
 msgid "Print..."
 msgstr "Imprimer..."
