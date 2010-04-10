@@ -34,6 +34,7 @@ uses
   MenuIntf, IDECommands, Controls, Forms, Dialogs, SrcEditorIntf, SourcePrinter;
 
 resourcestring
+  SDescrFormatting  = 'Formatting';
   SDescrPFSelection = 'Print...';
   SPrintSources     = 'Print sources';
   SPrintWhat        = 'What would you like to print ?';
@@ -53,7 +54,7 @@ begin
 {$ifndef USECustomCategory}
   Cat:=IDECommandList.CreateCategory(nil,
                                     'PrintFormatting',
-                                    'Formatting',
+                                    SDescrFormatting,
                                     IDECmdScopeSrcEditOnly);
 {$else}
   cat:=nil;
