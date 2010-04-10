@@ -210,6 +210,7 @@ type
   private
     FMaster: TDBGBreakPoint;
     FSourceMark: TSourceMark;
+    FCurrentDebugExeLine: Integer;
     procedure OnSourceMarkBeforeFree(Sender: TObject);
     procedure OnSourceMarkCreatePopupMenu(SenderMark: TSourceMark;
                                           const AddMenuItem: TAddMenuItemProc);
@@ -219,6 +220,7 @@ type
     procedure OnDeleteMenuItemClick(Sender: TObject);
     procedure OnViewPropertiesMenuItemClick(Sender: TObject);
   protected
+    procedure AssignLocationTo(Dest: TPersistent); override;
     procedure AssignTo(Dest: TPersistent); override;
     procedure DoChanged; override;
     function GetHitCount: Integer; override;
@@ -230,6 +232,7 @@ type
     procedure UpdateSourceMark;
     procedure UpdateSourceMarkImage;
     procedure UpdateSourceMarkLineColor;
+    function  DebugExeLine: Integer;  // If known, the line in the compiled exe
   public
     destructor Destroy; override;
     procedure ResetMaster;
@@ -1057,6 +1060,16 @@ begin
   DebugBoss.ShowBreakPointProperties(Self);
 end;
 
+procedure TManagedBreakPoint.AssignLocationTo(Dest: TPersistent);
+var
+  DestBreakPoint: TBaseBreakPoint absolute Dest;
+begin
+  if DestBreakPoint is TDBGBreakPoint then
+    DestBreakPoint.SetLocation(Source, DebugExeLine)
+  else
+    inherited;
+end;
+
 procedure TManagedBreakPoint.OnSourceMarkBeforeFree(Sender: TObject);
 begin
   SourceMark:=nil;
@@ -1166,10 +1179,15 @@ end;
 
 procedure TManagedBreakPoint.SetLocation(const ASource: String;
   const ALine: Integer);
+var
+  NewDebugExeLine: Integer;
 begin
-  if (Source = ASource) and (Line = ALine) then exit;
+  NewDebugExeLine := DebugExeLine;
+  if (Source = ASource) and (Line = ALine) and (FCurrentDebugExeLine = NewDebugExeLine)
+  then exit;
   inherited SetLocation(ASource, ALine);
-  if FMaster<>nil then FMaster.SetLocation(ASource,ALine);
+  FCurrentDebugExeLine := NewDebugExeLine;
+  if FMaster<>nil then FMaster.SetLocation(ASource, DebugExeLine);
   if Project1 <> nil
   then Project1.Modified := True;
 end;
@@ -1223,6 +1241,14 @@ begin
         aha := ahaDisabledBreakpoint;
   end;
   SourceMark.LineColorAttrib := aha;
+end;
+
+function TManagedBreakPoint.DebugExeLine: Integer;
+begin
+  if (FSourceMark <> nil) and (FSourceMark.SourceEditor <> nil) then
+    Result := TSourceEditor(FSourceMark.SourceEditor).SourceToDebugLine(Line)
+  else
+    Result := Line;
 end;
 
 procedure TManagedBreakPoint.UpdateSourceMark;
@@ -1464,6 +1490,7 @@ const
 var
   Editor: TSourceEditor;
   MsgResult: TModalResult;
+  i: Integer;
 begin
   if (ADebugger<>FDebugger) or (ADebugger=nil) then
     RaiseException('TDebugManager.OnDebuggerChangeState');
@@ -1532,8 +1559,13 @@ begin
   then
     SourceEditorManager.FillExecutionMarks;
 
-  if not (FDebugger.State in [dsRun, dsPause]) and (SourceEditorManager <> nil) then
+  if not (FDebugger.State in [dsRun, dsPause]) and (SourceEditorManager <> nil)
+  then begin
     SourceEditorManager.ClearExecutionMarks;
+    // Refresh DebugExeLine
+    for i := 0 to FBreakPoints.Count - 1 do
+      FBreakPoints[i].SetLocation(FBreakPoints[i].Source, FBreakPoints[i].Line);
+  end;
 
   case FDebugger.State of
     dsError: begin
@@ -1633,21 +1665,23 @@ begin
   end;
 
   // clear old error and execution lines
+  Editor := nil;
   if SourceEditorManager <> nil
   then begin
+    Editor := SourceEditorManager.GetActiveSE;
     SourceEditorManager.ClearExecutionLines;
     SourceEditorManager.ClearErrorLines;
   end;
+
   // jump editor to execution line
   FocusEditor := (FCurrentBreakPoint = nil) or (FCurrentBreakPoint.AutoContinueTime = 0);
-  if MainIDE.DoJumpToCodePos(nil,nil,NewSource,1,SrcLine,-1,true, FocusEditor)<>mrOk
+  i := SrcLine;
+  if Editor <> nil then
+    i := Editor.DebugToSourceLine(i);
+  if MainIDE.DoJumpToCodePos(nil,nil,NewSource,1,i,-1,true, FocusEditor)<>mrOk
   then exit;
 
   // mark execution line
-  if SourceEditorManager <> nil
-  then Editor := SourceEditorManager.GetActiveSE
-  else Editor := nil;
-
   if Editor <> nil
   then begin
     if not Editor.HasExecutionMarks then

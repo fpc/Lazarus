@@ -201,6 +201,7 @@ type
     FValid: TValidState;
     FInitialEnabled: Boolean;
   protected
+    procedure AssignLocationTo(Dest: TPersistent); virtual;
     procedure AssignTo(Dest: TPersistent); override;
     procedure DoBreakHitCountChange; virtual;
     procedure DoExpressionChange; virtual;
@@ -1924,6 +1925,13 @@ end;
   TBaseBreakPoint
   =========================================================================== }
 
+procedure TBaseBreakPoint.AssignLocationTo(Dest: TPersistent);
+var
+  DestBreakPoint: TBaseBreakPoint absolute Dest;
+begin
+  DestBreakPoint.SetLocation(FSource, FLine);
+end;
+
 procedure TBaseBreakPoint.AssignTo(Dest: TPersistent);
 var
   DestBreakPoint: TBaseBreakPoint absolute Dest;
@@ -1931,8 +1939,8 @@ begin
   // updatelock is set in source.assignto
   if Dest is TBaseBreakPoint
   then begin
+    AssignLocationTo(DestBreakPoint);
     DestBreakPoint.SetBreakHitCount(FBreakHitCount);
-    DestBreakPoint.SetLocation(FSource, FLine);
     DestBreakPoint.SetExpression(FExpression);
     DestBreakPoint.SetEnabled(FEnabled);
     DestBreakPoint.InitialEnabled := FInitialEnabled;

@@ -424,6 +424,8 @@ type
     procedure FillExecutionMarks;
     procedure ClearExecutionMarks;
     procedure LineInfoNotificationChange(const ASender: TObject; const ASource: String);
+    function  SourceToDebugLine(aLinePos: Integer): Integer;
+    function  DebugToSourceLine(aLinePos: Integer): Integer;
   public
     // properties
     property CodeBuffer: TCodeBuffer read FCodeBuffer write SetCodeBuffer;
@@ -3372,6 +3374,7 @@ end;
 
 procedure TSourceEditor.SetExecutionLine(NewLine: integer);
 begin
+  NewLine := EditorComponent.IDEGutterMarks.DebugLineToSourceLine(NewLine);
   if ExecutionLine=NewLine then exit;
   if (FSharedValues.ExecutionMark = nil) then begin
     if NewLine = -1 then
@@ -4351,6 +4354,16 @@ procedure TSourceEditor.LineInfoNotificationChange(const ASender: TObject; const
 begin
   if ASource = FileName then
     FillExecutionMarks;
+end;
+
+function TSourceEditor.SourceToDebugLine(aLinePos: Integer): Integer;
+begin
+  Result := FEditor.IDEGutterMarks.SourceLineToDebugLine(aLinePos, True);
+end;
+
+function TSourceEditor.DebugToSourceLine(aLinePos: Integer): Integer;
+begin
+  Result := FEditor.IDEGutterMarks.DebugLineToSourceLine(aLinePos);
 end;
 
 function TSourceEditor.SharedEditorCount: Integer;

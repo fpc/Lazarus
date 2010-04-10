@@ -37,7 +37,7 @@ interface
 {$I ide.inc}
 
 uses
-  Classes, SysUtils, Graphics, SynEdit, SynEditMiscClasses, SynGutter,
+  Classes, SysUtils, LCLProc, Graphics, SynEdit, SynEditMiscClasses, SynGutter,
   SynGutterLineNumber, SynGutterCodeFolding, SynGutterMarks, SynGutterChanges,
   SynEditTextBuffer, SynEditFoldedView, SynTextDrawer, SynEditTextBase;
 
@@ -78,8 +78,8 @@ type
     constructor Create;
     procedure IncRefCount;
     procedure DecRefCount;
-    // Index is the Current line in editor (including source modification)
-    // Result is the original Line as known by the debugger
+    // Index is the Current line-index (0 based) in editor (including source modification)
+    // Result is the original Line-pos (1 based) as known by the debugger
     property SrcLineToMarkLine[SrcIndex: Integer]: Integer
              read GetSrcLineToMarkLine write SetSrcLineToMarkLine; default;
     property RefCount: Integer read FRefCount;
@@ -99,6 +99,8 @@ type
     procedure SetDebugMarks(AFirstLinePos, ALastLinePos: Integer);
     procedure ClearDebugMarks;
     function HasDebugMarks: Boolean;
+    function DebugLineToSourceLine(aLinePos: Integer): Integer;
+    function SourceLineToDebugLine(aLinePos: Integer; AdjustOnError: Boolean = False): Integer;
   end;
 
 implementation
@@ -183,7 +185,8 @@ begin
   aGutterOffs := 0;
   HasAnyMark := PaintMarks(aScreenLine, Canvas, AClip, aGutterOffs);
   TxtIdx := FFoldView.TextIndex[aScreenLine];
-  if (not HasAnyMark) and (HasDebugMarks) and (FDebugMarkInfo.SrcLineToMarkLine[TxtIdx] > 0)
+  if (not HasAnyMark) and (HasDebugMarks) and (TxtIdx < FDebugMarkInfo.Count) and
+     (FDebugMarkInfo.SrcLineToMarkLine[TxtIdx] > 0)
   then
     DrawDebugMark(aScreenLine);
 end;
@@ -213,7 +216,7 @@ begin
   end;
 
   for i := AFirstLinePos - 1 to ALastLinePos - 1 do
-    FDebugMarkInfo[i] := i;
+    FDebugMarkInfo[i] := i + 1;
   TSynEdit(SynEdit).InvalidateGutter;
 end;
 
@@ -243,6 +246,55 @@ begin
     end;
   end;
   Result := FDebugMarkInfo <> nil;
+end;
+
+function TIDESynGutterMarks.DebugLineToSourceLine(aLinePos: Integer): Integer;
+var
+  i, c: LongInt;
+begin
+  CheckTextBuffer;
+  if (aLinePos < 1) or (not HasDebugMarks) then exit(aLinePos);
+  Result := aLinePos - 1; // 0 based
+  if (FDebugMarkInfo[Result] = 0) or (FDebugMarkInfo[Result] > aLinePos) then begin
+    i := Result;
+    repeat
+      dec(i);
+      while (i >= 0) and (FDebugMarkInfo[i] = 0) do dec(i);
+      if (i < 0) or (FDebugMarkInfo[i] < aLinePos) then break;
+      Result := i;
+    until FDebugMarkInfo[Result] = aLinePos;
+    if (FDebugMarkInfo[Result] > aLinePos) and // line not found
+       (Result > 0) and (FDebugMarkInfo[Result - 1] = 0)
+    then
+      dec(Result);
+  end;
+  if (FDebugMarkInfo[Result] = 0) or (FDebugMarkInfo[Result] < aLinePos) then begin
+    c := FDebugMarkInfo.Count;
+    i := Result;
+    repeat
+      inc(i);
+      while (i < c) and (FDebugMarkInfo[i] = 0) do inc(i);
+      if (i >= c) or (FDebugMarkInfo[i] > aLinePos) then break;
+      Result := i;
+    until FDebugMarkInfo[Result] = aLinePos;
+    if (FDebugMarkInfo[Result] < aLinePos) and // line not found
+       (Result < c-1) and (FDebugMarkInfo[Result + 1] = 0)
+    then
+      inc(Result);
+  end;
+  inc(Result); // 1 based
+end;
+
+function TIDESynGutterMarks.SourceLineToDebugLine(aLinePos: Integer;
+  AdjustOnError: Boolean): Integer;
+begin
+  CheckTextBuffer;
+  if (aLinePos < 1) or (not HasDebugMarks) then exit(aLinePos);
+  Result := FDebugMarkInfo[aLinePos - 1];
+  while (Result = 0) and AdjustOnError and (aLinePos < FDebugMarkInfo.Count-1) do begin
+    inc(aLinePos);
+    Result := FDebugMarkInfo[aLinePos - 1];
+  end;
 end;
 
 { TIDESynDebugMarkInfo }
