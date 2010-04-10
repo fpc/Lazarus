@@ -266,6 +266,18 @@ resourcestring
   lisTransformShortestToLongest = 'Shortest to longest';
   lisTransformLongestToShortest = 'Longest to shortest';
 
+  //Asm tab
+  lisAsmAsm = 'Asm';
+  lisAsmStatementIndents = '&Statement Indents';
+  lisAsmEnabled = '&Enabled';
+  lisAsmIndent = 'Indent';
+  lisAsmParamsIndents = '&Params Indents';
+  lisAsmENabled2 = 'E&nabled';
+  lisAsmCapitalization = '&Capitalization';
+  lisAsmBreaksAfterLabel = '&Breaks after label';
+  lisAsmEnAbled3 = 'En&abled';
+  lisAsmNUmberOfBreaks = 'N&umber of breaks';
+
 implementation
 
 end.

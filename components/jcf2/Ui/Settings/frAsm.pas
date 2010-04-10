@@ -67,18 +67,34 @@ implementation
 
 uses
   { jcf }
-  JcfHelp, JcfSettings,
+  JcfHelp, JcfSettings, jcfuiconsts,
   { local }
   Capitalisation, SettingsTypes, SetAsm;
 
 function TfAsm.GetTitle: String;
 begin
-  Result := 'Asm';
+  Result := lisAsmAsm;
 end;
 
 procedure TfAsm.Setup(ADialog: TAbstractOptionsEditorDialog);
 begin
-  //
+  gbStatementIndent.Caption := lisAsmStatementIndents;
+  cbStatementIndent.Caption := lisAsmEnabled;
+  Label1.Caption := lisAsmIndent;
+
+  gbParamsIndent.Caption := lisAsmParamsIndents;
+  cbParamsIndent.Caption := lisAsmENabled2;
+  Label2.Caption := lisAsmIndent;
+
+  rgCaps.Caption := lisAsmCapitalization;
+  rgCaps.Items[0] := lisObfsAllCapitals;
+  rgCaps.Items[1] := lisObfsAllLowerCase;
+  rgCaps.Items[2] := lisObfsMixedCase;
+  rgCaps.Items[3] := lisObfsLeaveAlone;
+
+  gbBreaksAfterLabel.Caption := lisAsmBreaksAfterLabel;
+  cbBreaksAfterLabelEnabled.Caption := lisAsmEnAbled3;
+  Label7.Caption := lisAsmNUmberOfBreaks;
 end;
 
 procedure TfAsm.ReadSettings(AOptions: TAbstractIDEOptions);
