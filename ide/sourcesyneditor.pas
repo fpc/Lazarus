@@ -39,7 +39,7 @@ interface
 uses
   Classes, SysUtils, Graphics, SynEdit, SynEditMiscClasses, SynGutter,
   SynGutterLineNumber, SynGutterCodeFolding, SynGutterMarks, SynGutterChanges,
-  SynEditTextBuffer, SynEditFoldedView, SynTextDrawer;
+  SynEditTextBuffer, SynEditFoldedView, SynTextDrawer, SynEditTextBase;
 
 type
 
@@ -90,9 +90,12 @@ type
   TIDESynGutterMarks = class(TSynGutterMarks)
   private
     FDebugMarkInfo: TIDESynDebugMarkInfo;
+    FMarkInfoTextBuffer: TSynEditStrings;
   protected
+    procedure CheckTextBuffer;       // Todo: Add a notification, when TextBuffer Changes
     Procedure PaintLine(aScreenLine: Integer; Canvas : TCanvas; AClip : TRect); override;
   public
+    destructor Destroy; override;
     procedure SetDebugMarks(AFirstLinePos, ALastLinePos: Integer);
     procedure ClearDebugMarks;
     function HasDebugMarks: Boolean;
@@ -129,6 +132,20 @@ begin
     Name := 'SynGutterCodeFolding1';
 end;
 
+{ TIDESynGutterMarks }
+
+procedure TIDESynGutterMarks.CheckTextBuffer;
+begin
+  if (FMarkInfoTextBuffer <> nil) and
+     (FMarkInfoTextBuffer <> TIDESynEditor(SynEdit).TextBuffer)
+  then begin
+    FMarkInfoTextBuffer := nil;
+    if FDebugMarkInfo <> nil then FDebugMarkInfo.DecRefCount;
+    if (FDebugMarkInfo <> nil) and (FDebugMarkInfo.RefCount = 0) then
+      FreeAndNil(FDebugMarkInfo);
+  end;
+end;
+
 procedure TIDESynGutterMarks.PaintLine(aScreenLine: Integer; Canvas: TCanvas; AClip: TRect);
 var
   aGutterOffs, TxtIdx: Integer;
@@ -162,6 +179,7 @@ var
   end;
 
 begin
+  CheckTextBuffer;
   aGutterOffs := 0;
   HasAnyMark := PaintMarks(aScreenLine, Canvas, AClip, aGutterOffs);
   TxtIdx := FFoldView.TextIndex[aScreenLine];
@@ -170,16 +188,24 @@ begin
     DrawDebugMark(aScreenLine);
 end;
 
-{ TIDESynGutterMarks }
+destructor TIDESynGutterMarks.Destroy;
+begin
+  ClearDebugMarks;
+  inherited;
+end;
 
 procedure TIDESynGutterMarks.SetDebugMarks(AFirstLinePos, ALastLinePos: Integer);
 var
   i: LongInt;
 begin
+  CheckTextBuffer;
+
   if FDebugMarkInfo = nil then begin
     FDebugMarkInfo := TIDESynDebugMarkInfo(TIDESynEditor(SynEdit).TextBuffer.Ranges[ClassType]);
     if FDebugMarkInfo = nil then begin
       FDebugMarkInfo := TIDESynDebugMarkInfo.Create;
+      // Todo: Add a notification, when TextBuffer Changes
+      FMarkInfoTextBuffer := TIDESynEditor(SynEdit).TextBuffer;
       TIDESynEditor(SynEdit).TextBuffer.Ranges[ClassType] := FDebugMarkInfo;
     end
     else
@@ -193,6 +219,8 @@ end;
 
 procedure TIDESynGutterMarks.ClearDebugMarks;
 begin
+  CheckTextBuffer;
+
   if FDebugMarkInfo = nil then exit;
   FDebugMarkInfo.DecRefCount;
   if FDebugMarkInfo.RefCount = 0 then begin
@@ -200,14 +228,19 @@ begin
     FreeAndNil(FDebugMarkInfo);
   end;
   FDebugMarkInfo := nil;
+  FMarkInfoTextBuffer := nil;
   TSynEdit(SynEdit).InvalidateGutter;
 end;
 
 function TIDESynGutterMarks.HasDebugMarks: Boolean;
 begin
+  CheckTextBuffer;
   if FDebugMarkInfo = nil then begin
     FDebugMarkInfo := TIDESynDebugMarkInfo(TIDESynEditor(SynEdit).TextBuffer.Ranges[ClassType]);
-    if FDebugMarkInfo <> nil then TSynEdit(SynEdit).InvalidateGutter;
+    if FDebugMarkInfo <> nil then begin
+      FDebugMarkInfo.IncRefCount;
+      TSynEdit(SynEdit).InvalidateGutter;
+    end;
   end;
   Result := FDebugMarkInfo <> nil;
 end;
