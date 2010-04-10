@@ -737,10 +737,16 @@ begin
       UnitN:=fMissingUnits[i];
       if fSettings.ReplaceUnits.Contains(UnitN) then begin
         s:=fSettings.ReplaceUnits[UnitN];
-        if s<>'' then
-          fUnitsToRename[UnitN]:=s
-        else
+        if s<>'' then begin
+          fUnitsToRename[UnitN]:=s;
+          IDEMessagesWindow.AddMsg(Format(
+              'Replaced unit "%s" with "%s" in uses section.',[UnitN, s]),'',-1);
+        end
+        else begin
           fUnitsToRemove.Append(UnitN);
+          IDEMessagesWindow.AddMsg(Format(
+              'Removed used unit "%s" in uses section.',[UnitN]),'',-1);
+        end;
         fMissingUnits.Delete(i);
       end;
     end;
@@ -873,7 +879,7 @@ var
   Converter: TConvertDelphiUnit;
   i: Integer;
 begin
-  IDEMessagesWindow.AddMsg('Converting form files...','',-1);
+  IDEMessagesWindow.AddMsg('*** Repairing form files... ***','',-1);
   Application.ProcessMessages;
   Screen.Cursor:=crHourGlass;
   try
@@ -1258,7 +1264,7 @@ begin
   MissingInUnits:=nil;
   NormalUnits:=nil;
   try
-    IDEMessagesWindow.AddMsg('Find all unit files...','',-1);
+    IDEMessagesWindow.AddMsg('*** Find all unit files... ***','',-1);
     Application.ProcessMessages;
     if not CodeToolBoss.FindDelphiProjectUnits(fMainUnitConverter.fPascalBuffer,
       FoundInUnits, MissingInUnits, NormalUnits) then
@@ -1365,7 +1371,7 @@ begin
   ConvUnits:=TObjectList.create;
   try
     // convert all units and fix .lfm files
-    IDEMessagesWindow.AddMsg('Converting unit files...','',-1);
+    IDEMessagesWindow.AddMsg('*** Converting unit files... ***','',-1);
     Application.ProcessMessages;
     for i:=0 to LazProject.UnitCount-1 do begin
       CurUnitInfo:=LazProject.Units[i];
@@ -1384,7 +1390,7 @@ begin
         if Result<>mrOK then Break;
       end;
     end;
-    Result:=LazarusIDE.DoSaveProject([]);
+//    Result:=LazarusIDE.DoSaveProject([]);  Creates read errors !
     if Result=mrOK then
       Result:=ConvertAllFormFiles(ConvUnits);
   finally
@@ -1521,7 +1527,7 @@ begin
   ConvUnits:=TObjectList.create;
   try
     // convert all units and fix .lfm files
-    IDEMessagesWindow.AddMsg('Converting unit files...','',-1);
+    IDEMessagesWindow.AddMsg('*** Converting unit files... ***','',-1);
     Application.ProcessMessages;
     for i:=0 to LazPackage.FileCount-1 do begin
       PkgFile:=LazPackage.Files[i];
