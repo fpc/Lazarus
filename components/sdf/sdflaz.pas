@@ -1,21 +1,21 @@
 { This file was automatically created by Lazarus. Do not edit!
-This source is only used to compile and install the package.
+  This source is only used to compile and install the package.
  }
 
-unit SDFLaz; 
+unit sdflaz;
 
 interface
 
 uses
-  RegisterSDF, sdfdata, LazarusPackageIntf; 
+  RegisterSDF, sdfdata, LazarusPackageIntf;
 
 implementation
 
-procedure Register; 
+procedure Register;
 begin
-  RegisterUnit('RegisterSDF', @RegisterSDF.Register); 
-end; 
+  RegisterUnit('RegisterSDF',@RegisterSDF.Register);
+end;
 
 initialization
-  RegisterPackage('SDFLaz', @Register); 
+  RegisterPackage('SDFLaz',@Register);
 end.

@@ -1,20 +1,20 @@
 { This file was automatically created by Lazarus. Do not edit!
-This source is only used to compile and install the package.
+  This source is only used to compile and install the package.
  }
 
-unit cgiLaz; 
+unit cgilaz;
 
 interface
 
 uses
-  cgiModules, LazarusPackageIntf; 
+  cgiModules, LazarusPackageIntf;
 
 implementation
 
-procedure Register; 
+procedure Register;
 begin
-end; 
+end;
 
 initialization
-  RegisterPackage('cgiLaz', @Register); 
+  RegisterPackage('cgiLaz',@Register);
 end.

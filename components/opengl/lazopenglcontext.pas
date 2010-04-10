@@ -1,21 +1,21 @@
 { This file was automatically created by Lazarus. Do not edit!
-This source is only used to compile and install the package.
+  This source is only used to compile and install the package.
  }
 
-unit LazOpenGLContext; 
+unit lazopenglcontext;
 
 interface
 
 uses
-  OpenGLContext, LazarusPackageIntf; 
+  OpenGLContext, LazarusPackageIntf;
 
 implementation
 
-procedure Register; 
+procedure Register;
 begin
-  RegisterUnit('OpenGLContext', @OpenGLContext. Register); 
-end; 
+  RegisterUnit('OpenGLContext',@OpenGLContext.Register);
+end;
 
 initialization
-  RegisterPackage('LazOpenGLContext', @Register); 
-end. 
+  RegisterPackage('LazOpenGLContext',@Register);
+end.

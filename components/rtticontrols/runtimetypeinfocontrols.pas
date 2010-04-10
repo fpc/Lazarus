@@ -1,22 +1,22 @@
-{ Diese Datei wurde automatisch von Lazarus erzeugt. Sie darf nicht bearbeitet werden!
-Dieser Quelltext dient nur dem Übersetzen und Installieren des Packages.
+{ This file was automatically created by Lazarus. Do not edit!
+  This source is only used to compile and install the package.
  }
 
-unit RunTimeTypeInfoControls; 
+unit runtimetypeinfocontrols;
 
 interface
 
 uses
-  RTTICtrls, RTTIGrids, LazarusPackageIntf; 
+  RTTICtrls, RTTIGrids, LazarusPackageIntf;
 
 implementation
 
-procedure Register; 
+procedure Register;
 begin
-  RegisterUnit('RTTICtrls', @RTTICtrls.Register); 
-  RegisterUnit('RTTIGrids', @RTTIGrids.Register); 
-end; 
+  RegisterUnit('RTTICtrls',@RTTICtrls.Register);
+  RegisterUnit('RTTIGrids',@RTTIGrids.Register);
+end;
 
 initialization
-  RegisterPackage('RunTimeTypeInfoControls', @Register); 
+  RegisterPackage('RunTimeTypeInfoControls',@Register);
 end.
