@@ -3496,12 +3496,12 @@ begin
            +lisPkgMangThisFileWasAutomaticallyCreatedByLazarusDoNotEdit+e
            +'  '+lisPkgMangThisSourceIsOnlyUsedToCompileAndInstallThePackage+e
            +' }'+e+e;
-  Src:=HeaderSrc
-      +'unit '+ExtractFileNameOnly(SrcFilename)+';'+e
+  Src:='unit '+ExtractFileNameOnly(SrcFilename)+';'+e
       +e
       +'interface'+e
       +e;
   Src:=BeautifyCodeOptions.BeautifyStatement(Src,0);
+  Src:=HeaderSrc+Src;
   if UsedUnits<>'' then
     Src:=Src
       +BreakString('uses'+e+GetIndentStr(BeautifyCodeOptions.Indent)+UsedUnits+';',
