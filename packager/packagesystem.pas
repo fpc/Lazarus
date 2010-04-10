@@ -3492,7 +3492,6 @@ begin
 
   // create source
   BeautifyCodeOptions:=CodeToolBoss.SourceChangeCache.BeautifyCodeOptions;
-  HeaderSrc:=lisPkgMangThisSourceIsOnlyUsedToCompileAndInstallThePackage;
   HeaderSrc:= '{ '
            +lisPkgMangThisFileWasAutomaticallyCreatedByLazarusDoNotEdit+e
            +'  '+lisPkgMangThisSourceIsOnlyUsedToCompileAndInstallThePackage+e
