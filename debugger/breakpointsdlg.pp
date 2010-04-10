@@ -546,7 +546,7 @@ begin
   
   // line
   if ABreakpoint.Line > 0
-  then AnItem.SubItems[1] := IntToStr(ABreakpoint.SourceLine)
+  then AnItem.SubItems[1] := IntToStr(ABreakpoint.Line)
   else AnItem.SubItems[1] := '';
   
   // expression

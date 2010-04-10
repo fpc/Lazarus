@@ -122,7 +122,7 @@ begin
   edtFilename.text := FBreakpoint.Source;
   // line
   if FBreakpoint.Line > 0
-  then edtLine.Text := IntToStr(FBreakpoint.SourceLine)
+  then edtLine.Text := IntToStr(FBreakpoint.Line)
   else edtLine.Text := '';
   // expression
   edtCondition.Text := FBreakpoint.Expression;

@@ -233,7 +233,6 @@ type
   public
     destructor Destroy; override;
     procedure ResetMaster;
-    function GetSourceLine: integer; override;
     procedure CopySourcePositionToBreakPoint;
     procedure SetLocation(const ASource: String; const ALine: Integer); override;
     property SourceMark: TSourceMark read FSourceMark write SetSourceMark;
@@ -1136,14 +1135,6 @@ begin
   if FMaster <> nil then FMaster.Slave := nil;
   FMaster := nil;
   Changed;
-end;
-
-function TManagedBreakPoint.GetSourceLine: integer;
-begin
-  if FSourceMark<>nil then
-    Result:=FSourceMark.Line
-  else
-    Result:=inherited GetSourceLine;
 end;
 
 procedure TManagedBreakPoint.CopySourcePositionToBreakPoint;

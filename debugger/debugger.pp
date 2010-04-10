@@ -230,6 +230,8 @@ type
     property Expression: String read GetExpression write SetExpression;
     property HitCount: Integer read GetHitCount;
     property InitialEnabled: Boolean read FInitialEnabled write SetInitialEnabled;
+    // TDBGBreakPoint: Line is the line-number as stored in the debug info
+    // TIDEBreakPoint: Line is the location in the Source (potentially modified Source)
     property Line: Integer read GetLine;
     property Source: String read GetSource;
     property Valid: TValidState read GetValid;
@@ -250,7 +252,6 @@ type
     procedure DoActionChange; virtual;
     procedure DoHit(const ACount: Integer; var AContinue: Boolean); override;
     procedure EnableGroups;
-    function GetSourceLine: Integer; virtual;
     procedure RemoveFromGroupList(const AGroup: TIDEBreakPointGroup;
                                   const AGroupList: TList);
     procedure ClearGroupList(const AGroupList: TList);
@@ -280,9 +281,6 @@ type
     property AutoContinueTime: Cardinal read GetAutoContinueTime write SetAutoContinueTime;
     property Group: TIDEBreakPointGroup read GetGroup write SetGroup;
     property Loading: Boolean read FLoading;
-    property SourceLine: Integer read GetSourceLine; // the current line of this breakpoint in the source
-                                                     // this may differ from the location set
-                                                     // todo: move to manager ?
   end;
   TIDEBreakPointClass = class of TIDEBreakPoint;
 
@@ -2181,11 +2179,6 @@ var
 begin
   for n := 0 to FDisableGroupList.Count - 1 do
     TIDEBreakPointGroup(FDisableGroupList[n]).Enabled := True;
-end;
-
-function TIDEBreakPoint.GetSourceLine: Integer;
-begin
-  Result := Line;
 end;
 
 function TIDEBreakPoint.GetActions: TIDEBreakPointActions;
