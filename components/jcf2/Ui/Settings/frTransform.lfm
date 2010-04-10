@@ -1,12 +1,10 @@
-object fTransform: TfTransform
-  Left = 0
+inherited fTransform: TfTransform
   Height = 315
-  Top = 0
   Width = 412
   ClientHeight = 315
   ClientWidth = 412
-  LCLVersion = '0.9.29'
-  object cbBlockEndSemicolons: TCheckBox
+  TabOrder = 0
+  object cbBlockEndSemicolons: TCheckBox[0]
     Left = 8
     Height = 17
     Top = 112
@@ -14,7 +12,7 @@ object fTransform: TfTransform
     Caption = 'Put &semicolons after last statement in a block'
     TabOrder = 0
   end
-  object rbBeginEnd: TRadioGroup
+  object rbBeginEnd: TRadioGroup[1]
     Left = 8
     Height = 93
     Top = 4
@@ -38,7 +36,7 @@ object fTransform: TfTransform
     )
     TabOrder = 1
   end
-  object bgSortUses: TGroupBox
+  object bgSortUses: TGroupBox[2]
     Left = 8
     Height = 174
     Top = 139
@@ -104,7 +102,7 @@ object fTransform: TfTransform
       TabOrder = 5
     end
   end
-  object rgUsesSortOrder: TRadioGroup
+  object rgUsesSortOrder: TRadioGroup[3]
     AnchorSideLeft.Control = bgSortUses
     AnchorSideLeft.Side = asrBottom
     AnchorSideTop.Control = bgSortUses
