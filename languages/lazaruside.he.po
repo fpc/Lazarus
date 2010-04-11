@@ -1322,6 +1322,7 @@ msgid "Codetools"
 msgstr ""
 
 #: lazarusidestrconsts.dlggroupdebugger
+msgctxt "lazarusidestrconsts.dlggroupdebugger"
 msgid "Debugger"
 msgstr ""
 
@@ -5427,6 +5428,11 @@ msgstr ""
 msgid "Clear log on run"
 msgstr "נקה את היומן בזמן ריצה"
 
+#: lazarusidestrconsts.lisdebugoptionsfrmdebugger
+msgctxt "lazarusidestrconsts.lisdebugoptionsfrmdebugger"
+msgid "Debugger"
+msgstr ""
+
 #: lazarusidestrconsts.lisdebugoptionsfrmdebuggergeneraloptions
 msgid "Debugger general options"
 msgstr "הגדרות ניפוי שגיאות כלליות"
@@ -5465,10 +5471,6 @@ msgstr ""
 
 #: lazarusidestrconsts.lisdebugoptionsfrmignoretheseexceptions
 msgid "Ignore these exceptions"
-msgstr ""
-
-#: lazarusidestrconsts.lisdebugoptionsfrminterface
-msgid "Interface"
 msgstr ""
 
 #: lazarusidestrconsts.lisdebugoptionsfrmlanguageexceptions
@@ -7719,6 +7721,10 @@ msgstr ""
 msgid "Toggle view component palette"
 msgstr ""
 
+#: lazarusidestrconsts.liskmtoggleviewdebugevents
+msgid "Toggle view Debug Events"
+msgstr ""
+
 #: lazarusidestrconsts.liskmtoggleviewdebuggeroutput
 msgid "Toggle view Debugger Output"
 msgstr ""
@@ -9154,6 +9160,10 @@ msgstr "צפה בפלטת הרכיבים"
 #: lazarusidestrconsts.lismenuviewcomponents
 msgid "&Components"
 msgstr "רכיבים (&C)"
+
+#: lazarusidestrconsts.lismenuviewdebugevents
+msgid "Debug events"
+msgstr ""
 
 #: lazarusidestrconsts.lismenuviewdebugoutput
 msgid "Debug output"

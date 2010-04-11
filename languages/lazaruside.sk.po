@@ -1328,6 +1328,7 @@ msgid "Codetools"
 msgstr "Codetools"
 
 #: lazarusidestrconsts.dlggroupdebugger
+msgctxt "lazarusidestrconsts.dlggroupdebugger"
 msgid "Debugger"
 msgstr ""
 
@@ -5457,6 +5458,11 @@ msgstr "Bod prerušenia"
 msgid "Clear log on run"
 msgstr "Pri spustení zmazať záznam"
 
+#: lazarusidestrconsts.lisdebugoptionsfrmdebugger
+msgctxt "lazarusidestrconsts.lisdebugoptionsfrmdebugger"
+msgid "Debugger"
+msgstr ""
+
 #: lazarusidestrconsts.lisdebugoptionsfrmdebuggergeneraloptions
 msgid "Debugger general options"
 msgstr "Všeobecné voľby debugera"
@@ -5496,10 +5502,6 @@ msgstr "ID"
 #: lazarusidestrconsts.lisdebugoptionsfrmignoretheseexceptions
 msgid "Ignore these exceptions"
 msgstr "Ignorovať tieto výnimky"
-
-#: lazarusidestrconsts.lisdebugoptionsfrminterface
-msgid "Interface"
-msgstr "Rozhranie"
 
 #: lazarusidestrconsts.lisdebugoptionsfrmlanguageexceptions
 msgid "Language Exceptions"
@@ -7749,6 +7751,10 @@ msgstr "Prepnúť zobrazenie Prieskumník kódu"
 msgid "Toggle view component palette"
 msgstr "Prepnúť zobrazenie Palety komponentov"
 
+#: lazarusidestrconsts.liskmtoggleviewdebugevents
+msgid "Toggle view Debug Events"
+msgstr ""
+
 #: lazarusidestrconsts.liskmtoggleviewdebuggeroutput
 msgid "Toggle view Debugger Output"
 msgstr "Prepnúť zobrazenie Výstup debugera"
@@ -9186,6 +9192,10 @@ msgstr "Zobraziť Paletu komponentov"
 #: lazarusidestrconsts.lismenuviewcomponents
 msgid "&Components"
 msgstr "&Komponenty"
+
+#: lazarusidestrconsts.lismenuviewdebugevents
+msgid "Debug events"
+msgstr ""
 
 #: lazarusidestrconsts.lismenuviewdebugoutput
 msgid "Debug output"

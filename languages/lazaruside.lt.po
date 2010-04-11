@@ -1327,6 +1327,7 @@ msgid "Codetools"
 msgstr "Codetools"
 
 #: lazarusidestrconsts.dlggroupdebugger
+msgctxt "lazarusidestrconsts.dlggroupdebugger"
 msgid "Debugger"
 msgstr "Derintuvė"
 
@@ -5454,6 +5455,11 @@ msgstr "Stabdos taškas"
 msgid "Clear log on run"
 msgstr "Išvalyti žurnalą paleidžiant"
 
+#: lazarusidestrconsts.lisdebugoptionsfrmdebugger
+msgctxt "lazarusidestrconsts.lisdebugoptionsfrmdebugger"
+msgid "Debugger"
+msgstr "Derintuvė"
+
 #: lazarusidestrconsts.lisdebugoptionsfrmdebuggergeneraloptions
 msgid "Debugger general options"
 msgstr "Derintuvės pagrindinės parinktys"
@@ -5493,10 +5499,6 @@ msgstr "ID"
 #: lazarusidestrconsts.lisdebugoptionsfrmignoretheseexceptions
 msgid "Ignore these exceptions"
 msgstr "Ignoruoti šias išimtines situacijas"
-
-#: lazarusidestrconsts.lisdebugoptionsfrminterface
-msgid "Interface"
-msgstr "Interfeisas"
 
 #: lazarusidestrconsts.lisdebugoptionsfrmlanguageexceptions
 msgid "Language Exceptions"
@@ -7746,6 +7748,10 @@ msgstr "Keisti „Kodo tyrinėtojas“ matomumą"
 msgid "Toggle view component palette"
 msgstr "Keisti komponenčių paletės matomumą"
 
+#: lazarusidestrconsts.liskmtoggleviewdebugevents
+msgid "Toggle view Debug Events"
+msgstr ""
+
 #: lazarusidestrconsts.liskmtoggleviewdebuggeroutput
 msgid "Toggle view Debugger Output"
 msgstr "Keisti „Derintuvės išvestis“ matomumą"
@@ -9179,6 +9185,10 @@ msgstr "Komponenčių paletė"
 #: lazarusidestrconsts.lismenuviewcomponents
 msgid "&Components"
 msgstr "K&omponentai"
+
+#: lazarusidestrconsts.lismenuviewdebugevents
+msgid "Debug events"
+msgstr ""
 
 #: lazarusidestrconsts.lismenuviewdebugoutput
 msgid "Debug output"

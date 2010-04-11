@@ -1326,6 +1326,7 @@ msgid "Codetools"
 msgstr "代码工具"
 
 #: lazarusidestrconsts.dlggroupdebugger
+msgctxt "lazarusidestrconsts.dlggroupdebugger"
 msgid "Debugger"
 msgstr "调试器"
 
@@ -5459,6 +5460,11 @@ msgstr "断点"
 msgid "Clear log on run"
 msgstr "运行时清除日志"
 
+#: lazarusidestrconsts.lisdebugoptionsfrmdebugger
+msgctxt "lazarusidestrconsts.lisdebugoptionsfrmdebugger"
+msgid "Debugger"
+msgstr "调试器"
+
 #: lazarusidestrconsts.lisdebugoptionsfrmdebuggergeneraloptions
 msgid "Debugger general options"
 msgstr "调试器常规选项"
@@ -5498,10 +5504,6 @@ msgstr "ID"
 #: lazarusidestrconsts.lisdebugoptionsfrmignoretheseexceptions
 msgid "Ignore these exceptions"
 msgstr "忽略这些异常"
-
-#: lazarusidestrconsts.lisdebugoptionsfrminterface
-msgid "Interface"
-msgstr "接口"
 
 #: lazarusidestrconsts.lisdebugoptionsfrmlanguageexceptions
 msgid "Language Exceptions"
@@ -7751,6 +7753,10 @@ msgstr "切换到代码管理器视图"
 msgid "Toggle view component palette"
 msgstr "切换到组件面板视图"
 
+#: lazarusidestrconsts.liskmtoggleviewdebugevents
+msgid "Toggle view Debug Events"
+msgstr ""
+
 #: lazarusidestrconsts.liskmtoggleviewdebuggeroutput
 msgid "Toggle view Debugger Output"
 msgstr "切换到调试器输出视图"
@@ -9188,6 +9194,10 @@ msgstr "组件面板"
 #: lazarusidestrconsts.lismenuviewcomponents
 msgid "&Components"
 msgstr "组件(&C)"
+
+#: lazarusidestrconsts.lismenuviewdebugevents
+msgid "Debug events"
+msgstr ""
 
 #: lazarusidestrconsts.lismenuviewdebugoutput
 msgid "Debug output"

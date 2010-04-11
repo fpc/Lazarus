@@ -1326,6 +1326,7 @@ msgid "Codetools"
 msgstr "コードツール"
 
 #: lazarusidestrconsts.dlggroupdebugger
+msgctxt "lazarusidestrconsts.dlggroupdebugger"
 msgid "Debugger"
 msgstr "デバッガ"
 
@@ -5455,6 +5456,11 @@ msgstr "ブレークポイント"
 msgid "Clear log on run"
 msgstr "実行ログを消去"
 
+#: lazarusidestrconsts.lisdebugoptionsfrmdebugger
+msgctxt "lazarusidestrconsts.lisdebugoptionsfrmdebugger"
+msgid "Debugger"
+msgstr "デバッガ"
+
 #: lazarusidestrconsts.lisdebugoptionsfrmdebuggergeneraloptions
 msgid "Debugger general options"
 msgstr "デバッガ一般オプション"
@@ -5494,10 +5500,6 @@ msgstr ""
 #: lazarusidestrconsts.lisdebugoptionsfrmignoretheseexceptions
 msgid "Ignore these exceptions"
 msgstr "これらの例外を無視"
-
-#: lazarusidestrconsts.lisdebugoptionsfrminterface
-msgid "Interface"
-msgstr "インターフェース"
 
 #: lazarusidestrconsts.lisdebugoptionsfrmlanguageexceptions
 msgid "Language Exceptions"
@@ -7747,6 +7749,10 @@ msgstr "コードエクスプローラの表示の切り替え"
 msgid "Toggle view component palette"
 msgstr "コンポーネントパレットの表示の切り替え"
 
+#: lazarusidestrconsts.liskmtoggleviewdebugevents
+msgid "Toggle view Debug Events"
+msgstr ""
+
 #: lazarusidestrconsts.liskmtoggleviewdebuggeroutput
 msgid "Toggle view Debugger Output"
 msgstr "デバッガ出力表示の切り替え"
@@ -9184,6 +9190,10 @@ msgstr "コンポーネントパレットを表示"
 #: lazarusidestrconsts.lismenuviewcomponents
 msgid "&Components"
 msgstr "コンポーネント(&C)"
+
+#: lazarusidestrconsts.lismenuviewdebugevents
+msgid "Debug events"
+msgstr ""
 
 #: lazarusidestrconsts.lismenuviewdebugoutput
 msgid "Debug output"

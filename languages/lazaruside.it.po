@@ -1325,6 +1325,7 @@ msgid "Codetools"
 msgstr ""
 
 #: lazarusidestrconsts.dlggroupdebugger
+msgctxt "lazarusidestrconsts.dlggroupdebugger"
 msgid "Debugger"
 msgstr ""
 
@@ -5461,6 +5462,11 @@ msgstr "Punto di interruzione"
 msgid "Clear log on run"
 msgstr "Pulisci il log durante l'esecuzione"
 
+#: lazarusidestrconsts.lisdebugoptionsfrmdebugger
+msgctxt "lazarusidestrconsts.lisdebugoptionsfrmdebugger"
+msgid "Debugger"
+msgstr ""
+
 #: lazarusidestrconsts.lisdebugoptionsfrmdebuggergeneraloptions
 msgid "Debugger general options"
 msgstr "Opzioni generali del debugger"
@@ -5500,10 +5506,6 @@ msgstr "ID"
 #: lazarusidestrconsts.lisdebugoptionsfrmignoretheseexceptions
 msgid "Ignore these exceptions"
 msgstr "Ignora questa eccezione"
-
-#: lazarusidestrconsts.lisdebugoptionsfrminterface
-msgid "Interface"
-msgstr "Interfaccia"
 
 #: lazarusidestrconsts.lisdebugoptionsfrmlanguageexceptions
 msgid "Language Exceptions"
@@ -7754,6 +7756,10 @@ msgstr ""
 msgid "Toggle view component palette"
 msgstr ""
 
+#: lazarusidestrconsts.liskmtoggleviewdebugevents
+msgid "Toggle view Debug Events"
+msgstr ""
+
 #: lazarusidestrconsts.liskmtoggleviewdebuggeroutput
 msgid "Toggle view Debugger Output"
 msgstr ""
@@ -9191,6 +9197,10 @@ msgstr "Visualizza la palette dei componenti"
 #: lazarusidestrconsts.lismenuviewcomponents
 msgid "&Components"
 msgstr "&Componenti"
+
+#: lazarusidestrconsts.lismenuviewdebugevents
+msgid "Debug events"
+msgstr ""
 
 #: lazarusidestrconsts.lismenuviewdebugoutput
 msgid "Debug output"

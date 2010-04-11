@@ -1323,6 +1323,7 @@ msgid "Codetools"
 msgstr ""
 
 #: lazarusidestrconsts.dlggroupdebugger
+msgctxt "lazarusidestrconsts.dlggroupdebugger"
 msgid "Debugger"
 msgstr ""
 
@@ -5452,6 +5453,11 @@ msgstr "Titik pisah"
 msgid "Clear log on run"
 msgstr "bersihkan log saat dijalankan"
 
+#: lazarusidestrconsts.lisdebugoptionsfrmdebugger
+msgctxt "lazarusidestrconsts.lisdebugoptionsfrmdebugger"
+msgid "Debugger"
+msgstr ""
+
 #: lazarusidestrconsts.lisdebugoptionsfrmdebuggergeneraloptions
 msgid "Debugger general options"
 msgstr "Opsi umum Debugger"
@@ -5491,10 +5497,6 @@ msgstr "ID"
 #: lazarusidestrconsts.lisdebugoptionsfrmignoretheseexceptions
 msgid "Ignore these exceptions"
 msgstr "Abaikan eksepsi ini"
-
-#: lazarusidestrconsts.lisdebugoptionsfrminterface
-msgid "Interface"
-msgstr "Interface"
 
 #: lazarusidestrconsts.lisdebugoptionsfrmlanguageexceptions
 msgid "Language Exceptions"
@@ -7744,6 +7746,10 @@ msgstr "Toggle lihat Explorer Kode"
 msgid "Toggle view component palette"
 msgstr "Toggle lihat palet komponen"
 
+#: lazarusidestrconsts.liskmtoggleviewdebugevents
+msgid "Toggle view Debug Events"
+msgstr ""
+
 #: lazarusidestrconsts.liskmtoggleviewdebuggeroutput
 msgid "Toggle view Debugger Output"
 msgstr "Toggle lihat Output Debugger"
@@ -9181,6 +9187,10 @@ msgstr "Lihat Palet Komponen"
 #: lazarusidestrconsts.lismenuviewcomponents
 msgid "&Components"
 msgstr "&Komponen"
+
+#: lazarusidestrconsts.lismenuviewdebugevents
+msgid "Debug events"
+msgstr ""
 
 #: lazarusidestrconsts.lismenuviewdebugoutput
 msgid "Debug output"

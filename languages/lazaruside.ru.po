@@ -5,7 +5,7 @@ msgstr ""
 "Content-Type: text/plain; charset=utf-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "POT-Creation-Date: \n"
-"PO-Revision-Date: 2010-04-10 02:20+0300\n"
+"PO-Revision-Date: 2010-04-12 00:16+0300\n"
 "Language-Team: \n"
 "MIME-Version: 1.0\n"
 
@@ -1336,6 +1336,7 @@ msgid "Codetools"
 msgstr "CodeTools"
 
 #: lazarusidestrconsts.dlggroupdebugger
+msgctxt "lazarusidestrconsts.dlggroupdebugger"
 msgid "Debugger"
 msgstr "Отладчик"
 
@@ -5448,6 +5449,11 @@ msgstr "Точка останова"
 msgid "Clear log on run"
 msgstr "Очищать протокол при запуске"
 
+#: lazarusidestrconsts.lisdebugoptionsfrmdebugger
+msgctxt "lazarusidestrconsts.lisdebugoptionsfrmdebugger"
+msgid "Debugger"
+msgstr "Отладчик"
+
 #: lazarusidestrconsts.lisdebugoptionsfrmdebuggergeneraloptions
 msgid "Debugger general options"
 msgstr "Общие параметры отладчика"
@@ -5487,10 +5493,6 @@ msgstr "ID"
 #: lazarusidestrconsts.lisdebugoptionsfrmignoretheseexceptions
 msgid "Ignore these exceptions"
 msgstr "Игнорировать эти исключения"
-
-#: lazarusidestrconsts.lisdebugoptionsfrminterface
-msgid "Interface"
-msgstr "Интерфейс"
 
 #: lazarusidestrconsts.lisdebugoptionsfrmlanguageexceptions
 msgid "Language Exceptions"
@@ -7741,6 +7743,10 @@ msgstr "Показать обозреватель кода"
 msgid "Toggle view component palette"
 msgstr "Показывать палитру компонентов"
 
+#: lazarusidestrconsts.liskmtoggleviewdebugevents
+msgid "Toggle view Debug Events"
+msgstr "Показать окно событий отладки"
+
 #: lazarusidestrconsts.liskmtoggleviewdebuggeroutput
 msgid "Toggle view Debugger Output"
 msgstr "Показать вывод отладчика"
@@ -9169,6 +9175,10 @@ msgstr "Палитра компонентов"
 #: lazarusidestrconsts.lismenuviewcomponents
 msgid "&Components"
 msgstr "&Компоненты"
+
+#: lazarusidestrconsts.lismenuviewdebugevents
+msgid "Debug events"
+msgstr "События отладки"
 
 #: lazarusidestrconsts.lismenuviewdebugoutput
 msgid "Debug output"

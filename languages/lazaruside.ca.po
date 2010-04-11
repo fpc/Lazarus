@@ -1323,6 +1323,7 @@ msgid "Codetools"
 msgstr ""
 
 #: lazarusidestrconsts.dlggroupdebugger
+msgctxt "lazarusidestrconsts.dlggroupdebugger"
 msgid "Debugger"
 msgstr ""
 
@@ -5448,6 +5449,11 @@ msgstr "Punt de parada"
 msgid "Clear log on run"
 msgstr "Neteja la bitacora al ejecutar"
 
+#: lazarusidestrconsts.lisdebugoptionsfrmdebugger
+msgctxt "lazarusidestrconsts.lisdebugoptionsfrmdebugger"
+msgid "Debugger"
+msgstr ""
+
 #: lazarusidestrconsts.lisdebugoptionsfrmdebuggergeneraloptions
 msgid "Debugger general options"
 msgstr "Opcions generals de depuració"
@@ -5487,10 +5493,6 @@ msgstr "ID"
 #: lazarusidestrconsts.lisdebugoptionsfrmignoretheseexceptions
 msgid "Ignore these exceptions"
 msgstr "Ignora aquestes excepcions"
-
-#: lazarusidestrconsts.lisdebugoptionsfrminterface
-msgid "Interface"
-msgstr "Interficie"
 
 #: lazarusidestrconsts.lisdebugoptionsfrmlanguageexceptions
 msgid "Language Exceptions"
@@ -7740,6 +7742,10 @@ msgstr ""
 msgid "Toggle view component palette"
 msgstr ""
 
+#: lazarusidestrconsts.liskmtoggleviewdebugevents
+msgid "Toggle view Debug Events"
+msgstr ""
+
 #: lazarusidestrconsts.liskmtoggleviewdebuggeroutput
 msgid "Toggle view Debugger Output"
 msgstr ""
@@ -9177,6 +9183,10 @@ msgstr "Vore Paleta de Components"
 #: lazarusidestrconsts.lismenuviewcomponents
 msgid "&Components"
 msgstr "C&omponents"
+
+#: lazarusidestrconsts.lismenuviewdebugevents
+msgid "Debug events"
+msgstr ""
 
 #: lazarusidestrconsts.lismenuviewdebugoutput
 msgid "Debug output"
