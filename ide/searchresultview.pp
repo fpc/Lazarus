@@ -149,6 +149,8 @@ type
     procedure mniCopyAllClick(Sender: TObject);
     procedure mniCopyItemClick(Sender: TObject);
     procedure mniCopySelectedClick(Sender: TObject);
+    procedure ResultsNoteBookMouseDown(Sender: TObject; Button: TMouseButton;
+      Shift: TShiftState; X, Y: Integer);
     procedure TreeViewKeyDown(Sender: TObject; var Key: Word; Shift: TShiftState);
     procedure ResultsNoteBookClosetabclicked(Sender: TObject);
     procedure SearchAgainButtonClick(Sender: TObject);
@@ -328,6 +330,18 @@ end;
 procedure TSearchResultsView.mniCopySelectedClick(Sender: TObject);
 begin
   Clipboard.AsText := GetTreeSelectedItemsAsText(popList.PopupComponent as TCustomTreeView);
+end;
+
+procedure TSearchResultsView.ResultsNoteBookMouseDown(Sender: TObject; Button: TMouseButton;
+  Shift: TShiftState; X, Y: Integer);
+var
+  TabIndex: LongInt;
+begin
+  if (Button = mbMiddle) then begin
+    TabIndex := ResultsNoteBook.TabIndexAtClientPos(Point(X,Y));
+    if TabIndex >= 0 then
+      ResultsNoteBookClosetabclicked(ResultsNoteBook.Page[TabIndex]);
+  end;
 end;
 
 procedure TSearchResultsView.ClosePageButtonClick(Sender: TObject);
