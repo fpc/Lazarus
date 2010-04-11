@@ -200,6 +200,7 @@ procedure DrawLineDepth(ACanvas: TCanvas; const AP1, AP2: TPoint; ADepth: Intege
 procedure Exchange(var A, B: Integer); overload;
 procedure Exchange(var A, B: Double); overload;
 procedure Exchange(var A, B: TDoublePoint); overload;
+procedure Exchange(var A, B: String); overload;
 
 procedure ExpandRange(var ALo, AHi: Double; ACoeff: Double); inline;
 
@@ -359,6 +360,15 @@ end;
 procedure Exchange(var A, B: TDoublePoint);
 var
   t: TDoublePoint;
+begin
+  t := A;
+  A := B;
+  B := t;
+end;
+
+procedure Exchange(var A, B: String); overload;
+var
+  t: String;
 begin
   t := A;
   A := B;

@@ -485,7 +485,7 @@ begin
   if AMin > AMax then
     Exchange(AMin, AMax);
   if Marks.Source = nil then begin
-    FMarkValues := GetIntervals(AMin, AMax, Inverted);
+    FMarkValues := GetIntervals(AMin, AMax, false);
     SetLength(FMarkTexts, Length(FMarkValues));
     for i := 0 to High(FMarkValues) do
       FMarkTexts[i] := Format(Marks.Format, [FMarkValues[i]]);
@@ -493,6 +493,11 @@ begin
   else
     Marks.Source.ValuesInInterval(
       AMin, AMax, Marks.Format, IsVertical, FMarkValues, FMarkTexts);
+  if Inverted then
+    for i := 0 to High(FMarkValues) div 2 do begin
+      Exchange(FMarkValues[i], FMarkValues[High(FMarkValues) - i]);
+      Exchange(FMarkTexts[i], FMarkTexts[High(FMarkValues) - i]);
+    end;
 
   if Assigned(FOnMarkToText) then
     for i := 0 to High(FMarkTexts) do
