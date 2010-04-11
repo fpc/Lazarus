@@ -3,7 +3,6 @@ object SearchResultsView: TSearchResultsView
   Height = 273
   Top = 325
   Width = 799
-  ActiveControl = SearchInListEdit
   Caption = 'SearchResultsView'
   ClientHeight = 273
   ClientWidth = 799
@@ -15,18 +14,19 @@ object SearchResultsView: TSearchResultsView
   object ResultsNoteBook: TNotebook
     AnchorSideTop.Side = asrBottom
     Left = 0
-    Height = 244
-    Top = 29
+    Height = 248
+    Top = 25
     Width = 799
     Align = alClient
     OnCloseTabClicked = ResultsNoteBookClosetabclicked
+    OnMouseDown = ResultsNoteBookMouseDown
     OnPageChanged = ResultsNoteBookPageChanged
     Options = [nboShowCloseButtons, nboMultiLine]
     TabOrder = 0
   end
   object ToolBar: TToolBar
     Left = 0
-    Height = 29
+    Height = 25
     Top = 0
     Width = 799
     AutoSize = True
@@ -50,37 +50,38 @@ object SearchResultsView: TSearchResultsView
     object ToolButton3: TToolButton
       Left = 47
       Top = 2
-      Width = 23
+      Width = 8
       Caption = 'ToolButton3'
       Style = tbsSeparator
     end
     object FilterButton: TToolButton
-      Left = 70
+      Left = 55
       Top = 2
       Caption = 'FilterButton'
       ImageIndex = 2
       OnClick = FilterButtonClick
     end
     object ForwardSearchButton: TToolButton
-      Left = 93
+      Left = 78
       Top = 2
       Caption = 'ForwardSearchButton'
       ImageIndex = 3
       OnClick = ForwardSearchButtonClick
     end
     object ResetResultsButton: TToolButton
-      Left = 464
+      Left = 449
       Top = 2
       Caption = 'ResetResultsButton'
       ImageIndex = 4
       OnClick = ResetResultsButtonClick
     end
     object SearchInListEdit: TEdit
-      Left = 116
-      Height = 27
+      Left = 101
+      Height = 23
       Top = 2
       Width = 348
       BorderSpacing.Around = 6
+      OnChange = edSearchInListChange
       OnKeyDown = SearchInListEditKeyDown
       ParentShowHint = False
       ShowHint = True
