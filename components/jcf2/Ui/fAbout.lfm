@@ -15,7 +15,7 @@ object frmAboutBox: TfrmAboutBox
   OnKeyUp = FormKeyUp
   OnResize = FormResize
   Position = poScreenCenter
-  LCLVersion = '0.9.27'
+  LCLVersion = '0.9.29'
   object bbOK: TBitBtn
     Left = 191
     Height = 37
@@ -426,9 +426,9 @@ object frmAboutBox: TfrmAboutBox
     object hlHomePage: TLabel
       Cursor = crHandPoint
       Left = 11
-      Height = 17
+      Height = 18
       Top = 307
-      Width = 84
+      Width = 85
       Caption = 'hlHomePage'
       Font.CharSet = ANSI_CHARSET
       Font.Color = clBlack
@@ -444,11 +444,12 @@ object frmAboutBox: TfrmAboutBox
     object lblMPL: TLabel
       Cursor = crHandPoint
       Left = 11
-      Height = 34
+      Height = 35
       Top = 259
-      Width = 454
+      Width = 455
       Caption = 'This program is open source software. It is released under the Mozilla '#13#10'Public licence (MPL).  http://www.mozilla.org/MPL'
       ParentColor = False
+      WordWrap = True
       OnClick = lblMPLClick
       OnMouseEnter = lblMPLMouseEnter
       OnMouseLeave = lblMPLMouseLeave

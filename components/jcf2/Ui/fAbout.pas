@@ -72,7 +72,7 @@ uses
     LCLIntf,
   {$endif}
   { local }
-  JcfVersionConsts, JcfHelp, JcfFontSetFunctions, JcfStringUtils;
+  JcfVersionConsts, JcfHelp, JcfFontSetFunctions, JcfStringUtils, jcfuiconsts;
 
 {$ifdef fpc}
 procedure ShowURL(const ps: string);
@@ -108,13 +108,20 @@ begin
 
   SetObjectFontToSystemFont(Self);
 
+  Caption := lisAboutAboutJEDICodeFormat;
+  mWhat.Text := Format(lisAboutVersion, [NativeLineBreak, NativeLineBreak,
+    NativeLineBreak, NativeLineBreak, NativeLineBreak]);
+  mWarning.Text := lisAboutThisProgramIsStillUnderDevelopment;
+  lblMPL.Caption := lisAboutThisProgramIsOpenSource;
+
   // show the version from the program constant
   ls := mWhat.Text;
-  StrReplace(ls, '%VERSION%', PROGRAM_VERSION);
-  StrReplace(ls, '%DATE%', PROGRAM_DATE);
+  StrReplace(ls, '$VERSION$', PROGRAM_VERSION);
+  StrReplace(ls, '$DATE$', PROGRAM_DATE);
   mWhat.Text := string(ls);
 
-  hlHomePage.Caption := 'Find more information on the web at : ' + PROGRAM_HOME_PAGE;
+  hlHomePage.Caption := Format(lisAboutFindMoreInformationOnTheWebAt,
+    [PROGRAM_HOME_PAGE]);
 end;
 
 procedure TfrmAboutBox.FormResize(Sender: TObject);

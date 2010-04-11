@@ -286,6 +286,21 @@ resourcestring
   lisPrpCompilerOptionsDefinedForConditionalCompilation = 'Compiler options '
     +'defined for conditional compilation:';
 
+  //About dialog
+  lisAboutAboutJEDICodeFormat = 'About JEDI Code Format';
+  lisAboutVersion = 'Version $VERSION$%s$DATE$%s%sThis program attempts to '
+    +'standardise and make readable the layout of any Delphi Object-Pascal '
+    +'source code.%s%sCopyright Anthony Steele 1999-2008';
+  lisAboutThisProgramIsStillUnderDevelopment = 'This program is still under '
+    +'development. In spite of thorough testing and removal of reported bugs, '
+    +'no guarantees are given. Please make backups, or better yet use a '
+    +'source control system.';
+  lisAboutThisProgramIsOpenSource = 'This program is open source software. It '
+    +'is released under the Mozilla Public Licence (MPL).  http://www.mozilla.'
+    +'org/MPL';
+  lisAboutFindMoreInformationOnTheWebAt = 'Find more information on the web '
+    +'at: %s';
+
 implementation
 
 end.
