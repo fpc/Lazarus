@@ -1,6 +1,6 @@
 inherited BreakPropertyDlg: TBreakPropertyDlg
   Left = 586
-  Height = 447
+  Height = 435
   Top = 151
   Width = 443
   HorzScrollBar.Page = 386
@@ -11,7 +11,7 @@ inherited BreakPropertyDlg: TBreakPropertyDlg
   BorderIcons = [biSystemMenu]
   BorderStyle = bsDialog
   Caption = 'Breakpoint Properties'
-  ClientHeight = 447
+  ClientHeight = 435
   ClientWidth = 443
   Position = poScreenCenter
   object lblFileName: TLabel[0]
@@ -361,18 +361,14 @@ inherited BreakPropertyDlg: TBreakPropertyDlg
     end
   end
   object ButtonPanel: TButtonPanel[14]
-    AnchorSideLeft.Control = Owner
     AnchorSideTop.Control = gbActions
     AnchorSideTop.Side = asrBottom
-    AnchorSideRight.Control = Owner
     AnchorSideRight.Side = asrBottom
     Left = 6
-    Height = 50
+    Height = 32
     Top = 397
     Width = 431
-    Align = alNone
-    Anchors = [akTop, akLeft, akRight]
-    AutoSize = False
+    Anchors = [akTop, akLeft, akRight, akBottom]
     TabOrder = 7
     ShowButtons = [pbOK, pbCancel, pbHelp]
     ShowBevel = False
