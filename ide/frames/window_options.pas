@@ -306,6 +306,7 @@ begin
     nmiwProjectInspector: Result := lisMenuProjectInspector;
     nmiwUnitDependenciesName: Result := dlgUnitDepCaption;
     nmiwDbgOutput: Result := lisMenuViewDebugOutput;
+    nmiwDbgEvents: Result := lisMenuViewDebugEvents;
     nmiwBreakPoints: Result := lisMenuViewBreakPoints;
     nmiwWatches: Result := liswlWatchList;
     nmiwLocals: Result := lisLocals;

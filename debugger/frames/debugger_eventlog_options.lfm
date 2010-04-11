@@ -1,8 +1,8 @@
 inherited DebuggerEventLogOptionsFrame: TDebuggerEventLogOptionsFrame
-  Height = 368
+  Height = 329
   Width = 534
-  ClientHeight = 364
-  ClientWidth = 530
+  ClientHeight = 329
+  ClientWidth = 534
   TabOrder = 0
   Visible = False
   DesignLeft = 536
@@ -13,37 +13,37 @@ inherited DebuggerEventLogOptionsFrame: TDebuggerEventLogOptionsFrame
     AnchorSideRight.Control = Owner
     AnchorSideRight.Side = asrBottom
     Left = 0
-    Height = 132
+    Height = 104
     Top = 0
-    Width = 530
-    Anchors = [akTop, akLeft, akRight]
+    Width = 534
+    Align = alTop
     Caption = 'General'
-    ClientHeight = 113
-    ClientWidth = 526
+    ClientHeight = 89
+    ClientWidth = 530
     TabOrder = 0
     object chkClearLogOnRun: TCheckBox
-      Left = 4
+      Left = 0
       Height = 22
-      Top = 5
-      Width = 127
+      Top = 0
+      Width = 107
       Caption = 'Clear log on run'
+      Checked = True
+      State = cbChecked
       TabOrder = 0
     end
     object chkLimitLinecount: TCheckBox
-      Left = 4
+      Left = 0
       Height = 22
-      Top = 29
-      Width = 138
+      Top = 24
+      Width = 116
       Caption = 'Limit linecount to'
       TabOrder = 1
     end
     object seLimitLinecount: TSpinEdit
-      Left = 46
-      Height = 27
-      Top = 54
+      Left = 42
+      Height = 23
+      Top = 49
       Width = 82
-      AutoSize = True
-      Enabled = False
       TabOrder = 2
     end
   end
@@ -56,22 +56,20 @@ inherited DebuggerEventLogOptionsFrame: TDebuggerEventLogOptionsFrame
     AnchorSideBottom.Control = Owner
     AnchorSideBottom.Side = asrBottom
     Left = 0
-    Height = 226
-    Top = 138
-    Width = 530
-    Anchors = [akTop, akLeft, akRight, akBottom]
+    Height = 219
+    Top = 110
+    Width = 534
+    Align = alClient
     BorderSpacing.Top = 6
     Caption = 'Messages'
-    ClientHeight = 207
-    ClientWidth = 526
-    Enabled = False
+    ClientHeight = 204
+    ClientWidth = 530
     TabOrder = 1
     object chkMessagesBreakpoint: TCheckBox
       Left = 4
       Height = 22
       Top = 5
-      Width = 95
-      AllowGrayed = True
+      Width = 81
       Caption = 'Breakpoint'
       TabOrder = 0
     end
@@ -79,26 +77,27 @@ inherited DebuggerEventLogOptionsFrame: TDebuggerEventLogOptionsFrame
       Left = 4
       Height = 22
       Top = 29
-      Width = 74
-      AllowGrayed = True
+      Width = 65
       Caption = 'Process'
+      Checked = True
+      State = cbChecked
       TabOrder = 1
     end
     object chkMessagesThread: TCheckBox
       Left = 4
       Height = 22
       Top = 53
-      Width = 69
-      AllowGrayed = True
+      Width = 61
       Caption = 'Thread'
+      Checked = True
+      State = cbChecked
       TabOrder = 2
     end
     object chkMessagesModule: TCheckBox
       Left = 4
       Height = 22
       Top = 77
-      Width = 72
-      AllowGrayed = True
+      Width = 63
       Caption = 'Module'
       TabOrder = 3
     end
@@ -106,27 +105,28 @@ inherited DebuggerEventLogOptionsFrame: TDebuggerEventLogOptionsFrame
       Left = 4
       Height = 22
       Top = 101
-      Width = 68
-      AllowGrayed = True
+      Width = 61
       Caption = 'Output'
+      Enabled = False
       TabOrder = 4
+    end
+    object chkMessagesDebugger: TCheckBox
+      Left = 4
+      Height = 22
+      Top = 149
+      Width = 78
+      Caption = 'Debugger'
+      Checked = True
+      State = cbChecked
+      TabOrder = 5
     end
     object chkMessagesWindow: TCheckBox
       Left = 4
       Height = 22
       Top = 125
-      Width = 76
-      AllowGrayed = True
+      Width = 66
       Caption = 'Window'
-      TabOrder = 5
-    end
-    object chkMessagesInterface: TCheckBox
-      Left = 4
-      Height = 22
-      Top = 149
-      Width = 82
-      AllowGrayed = True
-      Caption = 'Interface'
+      Enabled = False
       TabOrder = 6
     end
   end

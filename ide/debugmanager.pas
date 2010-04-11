@@ -54,7 +54,7 @@ uses
   SourceMarks,
   DebuggerDlg, Watchesdlg, BreakPointsdlg, BreakPropertyDlg, LocalsDlg, WatchPropertyDlg,
   CallStackDlg, EvaluateDlg, RegistersDlg, AssemblerDlg, DebugOutputForm, ExceptionDlg,
-  InspectDlg,
+  InspectDlg, DebugEventsForm,
   GDBMIDebugger, SSHGDBMIDebugger, ProcessDebugger,
   BaseDebugManager;
 
@@ -62,6 +62,7 @@ uses
 type
   TDebugDialogType = (
     ddtOutput,
+    ddtEvents,
     ddtBreakpoints,
     ddtWatches,
     ddtLocals,
@@ -75,6 +76,7 @@ type
   { TDebugManager }
 
   TDebugManager = class(TBaseDebugManager)
+  private
     procedure BreakAutoContinueTimer(Sender: TObject);
     procedure OnRunTimer(Sender: TObject);
     // Menu events
@@ -87,6 +89,7 @@ type
     procedure DebuggerChangeState(ADebugger: TDebugger; OldState: TDBGState);
     procedure DebuggerCurrentLine(Sender: TObject; const ALocation: TDBGLocationRec);
     procedure DebuggerOutput(Sender: TObject; const AText: String);
+    procedure DebuggerEvent(Sender: TObject; const ACategory: TDBGEventCategory; const AText: String);
     procedure DebuggerException(Sender: TObject;
       const AExceptionType: TDBGExceptionType;
       const AExceptionClass, AExceptionText: String;
@@ -108,8 +111,12 @@ type
     // here are all choices stored
     FUserSourceFiles: TStringList;
 
+    // Filter events that are show in the event log
+    FEventsFilter: set of TDBGEventCategory;
+
     // when the debug output log is not open, store the debug log internally
     FHiddenDebugOutputLog: TStringList;
+    FHiddenDebugEventsLog: TStringList;
 
     FRunTimer: TTimer;
 
@@ -125,6 +132,7 @@ type
     procedure ViewDebugDialog(const ADialogType: TDebugDialogType);
     procedure DestroyDebugDialog(const ADialogType: TDebugDialogType);
     procedure InitDebugOutputDlg;
+    procedure InitDebugEventsDlg;
     procedure InitBreakPointDlg;
     procedure InitWatchesDlg;
     procedure InitLocalsDlg;
@@ -156,6 +164,7 @@ type
                                       Flags: TProjectWriteFlags); override;
     procedure DoRestoreDebuggerMarks(AnUnitInfo: TUnitInfo); override;
     procedure ClearDebugOutputLog;
+    procedure ClearDebugEventsLog;
 
     function InitDebugger: Boolean; override;
 
@@ -198,8 +207,8 @@ implementation
 
 const
   DebugDlgIDEWindow: array[TDebugDialogType] of TNonModalIDEWindow = (
-    nmiwDbgOutput,  nmiwBreakPoints, nmiwWatches, nmiwLocals, nmiwCallStack,
-    nmiwEvaluate, nmiwRegisters, nmiwAssembler, nmiwInspect
+    nmiwDbgOutput, nmiwDbgEvents,  nmiwBreakPoints, nmiwWatches, nmiwLocals,
+    nmiwCallStack, nmiwEvaluate, nmiwRegisters, nmiwAssembler, nmiwInspect
   );
 
 type
@@ -407,6 +416,8 @@ type
     procedure Reset; override;
     property Master: TDBGExceptions read FMaster write SetMaster;
   end;
+
+  TDBGEventCategories = set of TDBGEventCategory;
 
 { TManagedLineInfo }
 
@@ -1476,6 +1487,22 @@ begin
   end;
 end;
 
+procedure TDebugManager.DebuggerEvent(Sender: TObject; const ACategory: TDBGEventCategory; const AText: String);
+begin
+  if Destroying then exit;
+  if FDialogs[ddtEvents] <> nil then
+    TDbgEventsForm(FDialogs[ddtEvents]).AddEvent(ACategory, AText)
+  else begin
+    // store it internally, and copy it to the dialog, when the user opens it
+    if FHiddenDebugEventsLog=nil then
+      FHiddenDebugEventsLog:=TStringList.Create;
+    if EnvironmentOptions.DebuggerEventLogCheckLineLimit then
+      while FHiddenDebugEventsLog.Count >= EnvironmentOptions.DebuggerEventLogLineLimit do
+        FHiddenDebugEventsLog.Delete(0);
+    FHiddenDebugEventsLog.AddObject(AText, TObject(ACategory));
+  end;
+end;
+
 procedure TDebugManager.DebuggerChangeState(ADebugger: TDebugger;
   OldState: TDBGState);
 const
@@ -1709,6 +1736,12 @@ begin
           fHiddenDebugOutputLog:=TStringList.Create;
         TDbgOutputForm(FDialogs[ddtOutput]).GetLogText(fHiddenDebugOutputLog);
       end;
+    ddtEvents:
+      begin
+        if FHiddenDebugEventsLog=nil then
+          FHiddenDebugEventsLog:=TStringList.Create;
+        TDbgEventsForm(FDialogs[ddtEvents]).GetEvents(FHiddenDebugEventsLog, FEventsFilter);
+      end;
     end;
     FDialogs[DlgType]:=nil;
     exit;
@@ -1719,8 +1752,8 @@ end;
 procedure TDebugManager.ViewDebugDialog(const ADialogType: TDebugDialogType);
 const
   DEBUGDIALOGCLASS: array[TDebugDialogType] of TDebuggerDlgClass = (
-    TDbgOutputForm, TBreakPointsDlg, TWatchesDlg, TLocalsDlg, TCallStackDlg,
-    TEvaluateDlg, TRegistersDlg, TAssemblerDlg, TIDEInspectDlg
+    TDbgOutputForm, TDbgEventsForm, TBreakPointsDlg, TWatchesDlg, TLocalsDlg,
+    TCallStackDlg, TEvaluateDlg, TRegistersDlg, TAssemblerDlg, TIDEInspectDlg
   );
 var
   CurDialog: TDebuggerDlg;
@@ -1736,6 +1769,7 @@ begin
     EnvironmentOptions.IDEWindowLayoutList.Apply(CurDialog,CurDialog.Name);
     case ADialogType of
       ddtOutput:      InitDebugOutputDlg;
+      ddtEvents:      InitDebugEventsDlg;
       ddtBreakpoints: InitBreakPointDlg;
       ddtWatches:     InitWatchesDlg;
       ddtLocals:      InitLocalsDlg;
@@ -1775,6 +1809,16 @@ begin
     TheDialog.SetLogText(FHiddenDebugOutputLog);
     FreeAndNil(FHiddenDebugOutputLog);
   end;
+end;
+
+procedure TDebugManager.InitDebugEventsDlg;
+var
+  TheDialog: TDbgEventsForm;
+begin
+  TheDialog := TDbgEventsForm(FDialogs[ddtEvents]);
+  TheDialog.SetEvents(FHiddenDebugEventsLog, FEventsFilter);
+  if FHiddenDebugEventsLog <> nil then
+    FreeAndNil(FHiddenDebugEventsLog);
 end;
 
 procedure TDebugManager.InitBreakPointDlg;
@@ -1877,6 +1921,22 @@ begin
   FRunTimer.Interval := 1;
   FRunTimer.OnTimer := @OnRunTimer;
 
+  FEventsFilter := [];
+  if EnvironmentOptions.DebuggerEventLogShowBreakpoint then
+    Include(FEventsFilter, ecBreakpoint);
+  if EnvironmentOptions.DebuggerEventLogShowProcess then
+    Include(FEventsFilter, ecProcess);
+  if EnvironmentOptions.DebuggerEventLogShowThread then
+    Include(FEventsFilter, ecThread);
+  if EnvironmentOptions.DebuggerEventLogShowModule then
+    Include(FEventsFilter, ecModule);
+  if EnvironmentOptions.DebuggerEventLogShowOutput then
+    Include(FEventsFilter, ecOutput);
+  if EnvironmentOptions.DebuggerEventLogShowWindow then
+    Include(FEventsFilter, ecWindow);
+  if EnvironmentOptions.DebuggerEventLogShowDebugger then
+    Include(FEventsFilter, ecDebugger);
+
   inherited Create(TheOwner);
 end;
 
@@ -1938,6 +1998,8 @@ begin
     itmViewAssembler.Enabled := False;
     itmViewDebugOutput.OnClick := @mnuViewDebugDialogClick;
     itmViewDebugOutput.Tag := Ord(ddtOutput);
+    itmViewDebugEvents.OnClick := @mnuViewDebugDialogClick;
+    itmViewDebugEvents.Tag := Ord(ddtEvents);
 
     itmRunMenuResetDebugger.OnClick := @mnuResetDebuggerClicked;
 
@@ -1972,6 +2034,7 @@ begin
     itmViewWatches.Command:=GetCommand(ecToggleWatches);
     itmViewBreakpoints.Command:=GetCommand(ecToggleBreakPoints);
     itmViewDebugOutput.Command:=GetCommand(ecToggleDebuggerOut);
+    itmViewDebugEvents.Command:=GetCommand(ecToggleDebuggerEvents);
     itmViewLocals.Command:=GetCommand(ecToggleLocals);
     itmViewRegisters.Command:=GetCommand(ecToggleRegisters);
     itmViewCallStack.Command:=GetCommand(ecToggleCallStack);
@@ -2151,6 +2214,14 @@ begin
     fHiddenDebugOutputLog.Clear;
 end;
 
+procedure TDebugManager.ClearDebugEventsLog;
+begin
+  if FDialogs[ddtEvents] <> nil then
+    TDbgEventsForm(FDialogs[ddtEvents]).Clear
+  else if FHiddenDebugEventsLog<>nil then
+    FHiddenDebugEventsLog.Clear;
+end;
+
 //-----------------------------------------------------------------------------
 // Debugger routines
 //-----------------------------------------------------------------------------
@@ -2270,11 +2341,14 @@ begin
   end;
 
   ClearDebugOutputLog;
+  if EnvironmentOptions.DebuggerEventLogClearOnRun then
+    ClearDebugEventsLog;
 
   FDebugger.OnBreakPointHit := @DebuggerBreakPointHit;
   FDebugger.OnState         := @DebuggerChangeState;
   FDebugger.OnCurrent       := @DebuggerCurrentLine;
   FDebugger.OnDbgOutput     := @DebuggerOutput;
+  FDebugger.OnDbgEvent      := @DebuggerEvent;
   FDebugger.OnException     := @DebuggerException;
 
   if FDebugger.State = dsNone
@@ -2437,6 +2511,7 @@ begin
     ecToggleWatches:     ViewDebugDialog(ddtWatches);
     ecToggleBreakPoints: ViewDebugDialog(ddtBreakpoints);
     ecToggleDebuggerOut: ViewDebugDialog(ddtOutput);
+    ecToggleDebuggerEvents: ViewDebugDialog(ddtEvents);
     ecToggleLocals:      ViewDebugDialog(ddtLocals);
   else
     Handled := False;

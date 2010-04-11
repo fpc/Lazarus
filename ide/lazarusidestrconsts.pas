@@ -301,6 +301,7 @@ resourcestring
   lisMenuViewCallStack = 'Call Stack';
   lisMenuViewAssembler = 'Assembler';
   lisMenuViewDebugOutput = 'Debug output';
+  lisMenuViewDebugEvents = 'Debug events';
   lisMenuIDEInternals = 'IDE internals';
   lisMenuPackageLinks = 'Package links ...';
   
@@ -4141,7 +4142,7 @@ resourcestring
   lisDebugOptionsFrmModule = 'Module';
   lisDebugOptionsFrmOutput = 'Output';
   lisDebugOptionsFrmWindow = 'Window';
-  lisDebugOptionsFrmInterface = 'Interface';
+  lisDebugOptionsFrmDebugger = 'Debugger';
   lisDebugOptionsFrmLanguageExceptions = 'Language Exceptions';
   lisDebugOptionsFrmIgnoreTheseExceptions = 'Ignore these exceptions';
   lisDebugOptionsFrmNotifyOnLazarusExceptions = 'Notify on Lazarus Exceptions';

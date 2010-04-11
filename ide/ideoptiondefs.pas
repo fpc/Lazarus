@@ -83,6 +83,7 @@ type
     nmiwProjectInspector,
     // debugger
     nmiwDbgOutput,
+    nmiwDbgEvents,
     nmiwBreakPoints,
     nmiwWatches,
     nmiwLocals,
@@ -107,6 +108,7 @@ const
     nmiwMainIDEName,
     nmiwSourceNoteBookName,
     nmiwDbgOutput,
+    nmiwDbgEvents,
     nmiwSearchResultsViewName,
     nmiwAnchorEditor
     ];
@@ -125,6 +127,7 @@ const
     'ProjectInspector',
     // debugger
     'DbgOutput',
+    'DbgEvents',
     'BreakPoints',
     'Watches',
     'Locals',

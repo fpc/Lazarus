@@ -1223,6 +1223,18 @@ type
 
   { TDebugger }
 
+  TDBGEventCategory = (
+    ecBreakpoint, // Breakpoint hit
+    ecProcess,
+    ecThread,     // Thread creation, destruction, start, etc.
+    ecModule,     // Library load and unload
+    ecOutput,     // DebugOutput calls
+    ecWindow,
+    ecDebugger);  // debugger errors and warnings
+
+  TDBGEventNotify = procedure(Sender: TObject; const ACategory: TDBGEventCategory;
+                              const AText: String) of object;
+
   TDebuggerStateChangedEvent = procedure(ADebugger: TDebugger;
                                          AOldState: TDBGState) of object;
   TDebuggerBreakPointHitEvent = procedure(ADebugger: TDebugger; ABreakPoint: TBaseBreakPoint;
@@ -1265,6 +1277,7 @@ type
     FOnException: TDBGExceptionEvent;
     FOnOutput: TDBGOutputEvent;
     FOnDbgOutput: TDBGOutputEvent;
+    FOnDbgEvent: TDBGEventNotify;
     FOnState: TDebuggerStateChangedEvent;
     FOnBreakPointHit: TDebuggerBreakPointHitEvent;
     FWorkingDir: String;
@@ -1287,6 +1300,7 @@ type
     function  CreateExceptions: TDBGExceptions; virtual;
     procedure DoCurrent(const ALocation: TDBGLocationRec);
     procedure DoDbgOutput(const AText: String);
+    procedure DoDbgEvent(const ACategory: TDBGEventCategory; const AText: String);
     procedure DoException(const AExceptionType: TDBGExceptionType; const AExceptionClass: String; const AExceptionText: String; out AContinue: Boolean);
     procedure DoOutput(const AText: String);
     procedure DoBreakpointHit(const ABreakPoint: TBaseBreakPoint; var ACanContinue: Boolean);
@@ -1356,6 +1370,7 @@ type
     // Events
     property OnCurrent: TDBGCurrentLineEvent read FOnCurrent write FOnCurrent;   // Passes info about the current line being debugged
     property OnDbgOutput: TDBGOutputEvent read FOnDbgOutput write FOnDbgOutput;  // Passes all debuggeroutput
+    property OnDbgEvent: TDBGEventNotify read FOnDbgEvent write FOnDbgEvent;     // Passes recognized debugger events, like library load or unload
     property OnException: TDBGExceptionEvent read FOnException write FOnException;  // Fires when the debugger received an exeption
     property OnOutput: TDBGOutputEvent read FOnOutput write FOnOutput;           // Passes all output of the debugged target
     property OnState: TDebuggerStateChangedEvent read FOnState write FOnState;   // Fires when the current state of the debugger changes
@@ -1640,6 +1655,11 @@ procedure TDebugger.DoDbgOutput(const AText: String);
 begin
   // WriteLN(' [TDebugger] ', AText);
   if Assigned(FOnDbgOutput) then FOnDbgOutput(Self, AText);
+end;
+
+procedure TDebugger.DoDbgEvent(const ACategory: TDBGEventCategory; const AText: String);
+begin
+  if Assigned(FOnDbgEvent) then FOnDbgEvent(Self, ACategory, AText);
 end;
 
 procedure TDebugger.DoException(const AExceptionType: TDBGExceptionType; const AExceptionClass: String;

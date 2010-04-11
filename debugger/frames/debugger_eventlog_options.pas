@@ -26,22 +26,22 @@ interface
 
 uses
   Classes, SysUtils, FileUtil, Forms, StdCtrls, Spin,
-  LazarusIDEStrConsts, IDEOptionsIntf;
+  LazarusIDEStrConsts, IDEOptionsIntf, EnvironmentOpts;
 
 type
 
   { TDebuggerEventLogOptionsFrame }
 
   TDebuggerEventLogOptionsFrame = class(TAbstractIDEOptionsEditor)
+    chkMessagesWindow: TCheckBox;
     chkClearLogOnRun: TCheckBox;
     chkLimitLinecount: TCheckBox;
     chkMessagesBreakpoint: TCheckBox;
-    chkMessagesInterface: TCheckBox;
     chkMessagesModule: TCheckBox;
     chkMessagesOutput: TCheckBox;
     chkMessagesProcess: TCheckBox;
     chkMessagesThread: TCheckBox;
-    chkMessagesWindow: TCheckBox;
+    chkMessagesDebugger: TCheckBox;
     gbGeneral: TGroupBox;
     gbMessages: TGroupBox;
     seLimitLinecount: TSpinEdit;
@@ -56,7 +56,6 @@ type
   end;
 
 implementation
-
 {$R *.lfm}
 
 { TDebuggerEventLogOptionsFrame }
@@ -78,24 +77,48 @@ begin
   chkMessagesModule.Caption := lisDebugOptionsFrmModule;
   chkMessagesOutput.Caption := lisDebugOptionsFrmOutput;
   chkMessagesWindow.Caption := lisDebugOptionsFrmWindow;
-  chkMessagesInterface.Caption := lisDebugOptionsFrmInterface;
+  chkMessagesDebugger.Caption := lisDebugOptionsFrmDebugger;
 end;
 
 procedure TDebuggerEventLogOptionsFrame.ReadSettings(
   AOptions: TAbstractIDEOptions);
 begin
-  // todo
+  with AOptions as TEnvironmentOptions do
+  begin
+    chkClearLogOnRun.Checked := DebuggerEventLogClearOnRun;
+    chkLimitLinecount.Checked := DebuggerEventLogCheckLineLimit;
+    seLimitLinecount.Value := DebuggerEventLogLineLimit;
+    chkMessagesBreakpoint.Checked := DebuggerEventLogShowBreakpoint;
+    chkMessagesProcess.Checked := DebuggerEventLogShowProcess;
+    chkMessagesThread.Checked := DebuggerEventLogShowThread;
+    chkMessagesModule.Checked := DebuggerEventLogShowModule;
+    chkMessagesOutput.Checked := DebuggerEventLogShowOutput;
+    chkMessagesWindow.Checked := DebuggerEventLogShowWindow;
+    chkMessagesDebugger.Checked := DebuggerEventLogShowDebugger;
+  end;
 end;
 
 procedure TDebuggerEventLogOptionsFrame.WriteSettings(
   AOptions: TAbstractIDEOptions);
 begin
-  // todo
+  with AOptions as TEnvironmentOptions do
+  begin
+    DebuggerEventLogClearOnRun := chkClearLogOnRun.Checked;
+    DebuggerEventLogCheckLineLimit := chkLimitLinecount.Checked;
+    DebuggerEventLogLineLimit := seLimitLinecount.Value;
+    DebuggerEventLogShowBreakpoint := chkMessagesBreakpoint.Checked;
+    DebuggerEventLogShowProcess := chkMessagesProcess.Checked;
+    DebuggerEventLogShowThread := chkMessagesThread.Checked;
+    DebuggerEventLogShowModule := chkMessagesModule.Checked;
+    DebuggerEventLogShowOutput := chkMessagesOutput.Checked;
+    DebuggerEventLogShowWindow := chkMessagesWindow.Checked;
+    DebuggerEventLogShowDebugger := chkMessagesDebugger.Checked;
+  end;
 end;
 
 class function TDebuggerEventLogOptionsFrame.SupportedOptionsClass: TAbstractIDEOptionsClass;
 begin
-  Result := nil; // currently dont know
+  Result := TEnvironmentOptions;
 end;
 
 initialization

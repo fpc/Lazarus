@@ -164,7 +164,6 @@ type
     FHideIDEOnRun: boolean;
     FHideMessagesIcons: boolean;
     FComponentPaletteVisible: boolean;
-    FDebuggerSearchPath: string;
 
     // designer
     FCreateComponentFocusNameProperty: boolean;
@@ -216,6 +215,7 @@ type
     FMakeFileHistory: TStringList;
    // TODO: store per debuggerclass options
     // Maybe these should go to a new TDebuggerOptions class
+    FDebuggerSearchPath: string;
     FDebuggerClass: string;
     FDebuggerFilename: string;         // per debugger class
     FDebuggerFileHistory: TStringList; // per debugger class
@@ -223,6 +223,16 @@ type
     FShowCompileDialog: Boolean;       // show dialog during compile
     FTestBuildDirectory: string;
     FTestBuildDirHistory: TStringList;
+    FDebuggerEventLogClearOnRun: Boolean;
+    FDebuggerEventLogCheckLineLimit: Boolean;
+    FDebuggerEventLogLineLimit: Integer;
+    FDebuggerEventLogShowBreakpoint: Boolean;
+    FDebuggerEventLogShowDebugger: Boolean;
+    FDebuggerEventLogShowModule: Boolean;
+    FDebuggerEventLogShowOutput: Boolean;
+    FDebuggerEventLogShowProcess: Boolean;
+    FDebuggerEventLogShowThread: Boolean;
+    FDebuggerEventLogShowWindow: Boolean;
 
     // recent files and directories
     FRecentOpenFiles: TStringList;
@@ -420,6 +430,16 @@ type
                                         write SetTestBuildDirectory;
     property TestBuildDirHistory: TStringList read FTestBuildDirHistory
                                               write FTestBuildDirHistory;
+    property DebuggerEventLogClearOnRun: Boolean read FDebuggerEventLogClearOnRun write FDebuggerEventLogClearOnRun;
+    property DebuggerEventLogCheckLineLimit: Boolean read FDebuggerEventLogCheckLineLimit write FDebuggerEventLogCheckLineLimit;
+    property DebuggerEventLogLineLimit: Integer read FDebuggerEventLogLineLimit write FDebuggerEventLogLineLimit;
+    property DebuggerEventLogShowBreakpoint: Boolean read FDebuggerEventLogShowBreakpoint write FDebuggerEventLogShowBreakpoint;
+    property DebuggerEventLogShowProcess: Boolean read FDebuggerEventLogShowProcess write FDebuggerEventLogShowProcess;
+    property DebuggerEventLogShowThread: Boolean read FDebuggerEventLogShowThread write FDebuggerEventLogShowThread;
+    property DebuggerEventLogShowModule: Boolean read FDebuggerEventLogShowModule write FDebuggerEventLogShowModule;
+    property DebuggerEventLogShowOutput: Boolean read FDebuggerEventLogShowOutput write FDebuggerEventLogShowOutput;
+    property DebuggerEventLogShowWindow: Boolean read FDebuggerEventLogShowWindow write FDebuggerEventLogShowWindow;
+    property DebuggerEventLogShowDebugger: Boolean read FDebuggerEventLogShowDebugger write FDebuggerEventLogShowDebugger;
 
     // recent files and directories
     property RecentOpenFiles: TStringList read FRecentOpenFiles
@@ -1020,6 +1040,26 @@ begin
       // Debugger General Options
       DebuggerShowStopMessage:=XMLConfig.GetValue(
          Path+'DebuggerOptions/ShowStopMessage/Value', True);
+      FDebuggerEventLogClearOnRun := XMLConfig.GetValue(
+        Path+'Debugger/EventLogClearOnRun', True);
+      FDebuggerEventLogCheckLineLimit := XMLConfig.GetValue(
+        Path+'Debugger/EventLogCheckLineLimit', False);
+      FDebuggerEventLogLineLimit := XMLConfig.GetValue(
+        Path+'Debugger/EventLogLineLimit', 1000);
+      FDebuggerEventLogShowBreakpoint := XMLConfig.GetValue(
+        Path+'Debugger/EventLogShowBreakpoint', False);
+      FDebuggerEventLogShowProcess := XMLConfig.GetValue(
+        Path+'Debugger/EventLogShowProcess', True);
+      FDebuggerEventLogShowThread := XMLConfig.GetValue(
+        Path+'Debugger/EventLogShowThread', True);
+      FDebuggerEventLogShowModule := XMLConfig.GetValue(
+        Path+'Debugger/EventLogShowModule', False);
+      FDebuggerEventLogShowOutput := XMLConfig.GetValue(
+        Path+'Debugger/EventLogShowOutput', True);
+      FDebuggerEventLogShowWindow := XMLConfig.GetValue(
+        Path+'Debugger/EventLogShowWindow', False);
+      FDebuggerEventLogShowDebugger := XMLConfig.GetValue(
+        Path+'Debugger/EventLogShowDebugger', True);
     end;
 
     // hints
@@ -1260,6 +1300,26 @@ begin
          Path+'DebuggerFilename/History/');
       XMLConfig.SetDeleteValue(Path+'DebuggerSearchPath/Value',
           FDebuggerSearchPath,'');
+      XMLConfig.SetDeleteValue(Path+'Debugger/EventLogClearOnRun',
+          FDebuggerEventLogClearOnRun, True);
+      XMLConfig.SetDeleteValue(Path+'Debugger/EventLogCheckLineLimit',
+          FDebuggerEventLogCheckLineLimit, False);
+      XMLConfig.SetDeleteValue(Path+'Debugger/EventLogLineLimit',
+          FDebuggerEventLogLineLimit, 1000);
+      XMLConfig.SetDeleteValue(Path+'Debugger/EventLogShowBreakpoint',
+          FDebuggerEventLogShowBreakpoint, False);
+      XMLConfig.SetDeleteValue(Path+'Debugger/EventLogShowProcess',
+          FDebuggerEventLogShowProcess, True);
+      XMLConfig.SetDeleteValue(Path+'Debugger/EventLogShowThread',
+          FDebuggerEventLogShowThread, True);
+      XMLConfig.SetDeleteValue(Path+'Debugger/EventLogShowModule',
+          FDebuggerEventLogShowModule, False);
+      XMLConfig.SetDeleteValue(Path+'Debugger/EventLogShowOutput',
+          FDebuggerEventLogShowOutput, True);
+      XMLConfig.SetDeleteValue(Path+'Debugger/EventLogShowWindow',
+          FDebuggerEventLogShowWindow, False);
+      XMLConfig.SetDeleteValue(Path+'Debugger/EventLogShowDebugger',
+          FDebuggerEventLogShowDebugger, True);
     end;
 
     // hints

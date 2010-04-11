@@ -184,6 +184,7 @@ const
   ecViewTodoList            = ecFirstLazarus + 323;
   ecToggleRegisters         = ecFirstLazarus + 324;
   ecToggleAssembler         = ecFirstLazarus + 325;
+  ecToggleDebuggerEvents    = ecFirstLazarus + 326;
 
 
   // sourcenotebook commands

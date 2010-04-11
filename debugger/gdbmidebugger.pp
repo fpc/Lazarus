@@ -3554,7 +3554,7 @@ function TGDBMIDebugger.ProcessResult(var AResult: TGDBMIExecResult): Boolean;
     if Pos('no debugging symbols', Line) > 0
     then begin
       Exclude(FTargetFlags, tfHasSymbols);
-      DebugLn('[WARNING] Debugger: File ''%s'' has no debug symbols', [FileName]);
+      DoDbgEvent(ecDebugger, Format('File ''%s'' has no debug symbols', [FileName]));
     end
     else begin
       // Strip surrounding ~" "
@@ -3591,6 +3591,39 @@ function TGDBMIDebugger.ProcessResult(var AResult: TGDBMIExecResult): Boolean;
     then AResult.State := dsError;
   end;
 
+  procedure DoExecAsync(Line: String);
+  var
+    EventText: String;
+  begin
+    EventText := GetPart(['*'], [','], Line, False, False);
+    if EventText = 'running'
+    then
+      DoDbgEvent(ecProcess, Line)
+    else
+      DebugLn('[WARNING] Debugger: Unexpected async-record: ', Line);
+  end;
+
+  procedure DoStatusAsync(const Line: String);
+  begin
+    DebugLn('[WARNING] Debugger: Unexpected async-record: ', Line);
+  end;
+
+  procedure DoNotifyAsync(Line: String);
+  var
+    EventText: String;
+  begin
+    EventText := GetPart(['='], [','], Line, False, False);
+    case StringCase(EventText, ['library-unloaded',
+      'thread-created', 'thread-group-created',
+      'thread-exited', 'thread-group-exited'], False, False)
+    of
+      0: DoDbgEvent(ecModule, Line);
+      1..4: DoDbgEvent(ecThread, Line);
+    else
+      DebugLn('[WARNING] Debugger: Unexpected async-record: ', Line);
+    end;
+  end;
+
 var
   S: String;
 begin
@@ -3608,9 +3641,9 @@ begin
       '~': DoConsoleStream(S);
       '@': DoTargetStream(S);
       '&': DoLogStream(S);
-      '*', '+', '=': begin
-        DebugLn('[WARNING] Debugger: Unexpected async-record: ', S);
-      end;
+      '*': DoExecAsync(S);
+      '+': DoStatusAsync(S);
+      '=': DoNotifyAsync(S);
     else
       DebugLn('[WARNING] Debugger: Unknown record: ', S);
     end;
@@ -3647,12 +3680,11 @@ function TGDBMIDebugger.ProcessRunning(var AStoppedParams: String): Boolean;
   var
     S: String;
   begin
-    S := GetPart('=', ',', Line);
-    case StringCase(S, ['shlibs-added', 'shlibs-updated']) of
-      0: begin
-        //TODO: track libs
-      end;
-      1:; //ignore
+    S := GetPart(['='], [','], Line, False, False);
+    case StringCase(S, ['shlibs-added', 'shlibs-updated',
+      'library-loaded', 'library-unloaded'], False, False)
+    of
+      0..3: DoDbgEvent(ecModule, Line);
     else
       DebugLn('[Debugger] Notify output: ', Line);
     end;
