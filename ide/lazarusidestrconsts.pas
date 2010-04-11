@@ -2488,6 +2488,7 @@ resourcestring
   lisKMToggleViewCallStack = 'Toggle view Call Stack';
   lisKMToggleViewRegisters = 'Toggle view Registers';
   lisKMToggleViewAssembler = 'Toggle view Assembler';
+  lisKMToggleViewDebugEvents = 'Toggle view Debug Events';
   lisKMToggleViewDebuggerOutput = 'Toggle view Debugger Output';
   srkmCatProjectMenu    = 'Project menu commands';
   lisKMNewProject = 'New project';

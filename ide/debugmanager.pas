@@ -2034,7 +2034,7 @@ begin
     itmViewWatches.Command:=GetCommand(ecToggleWatches);
     itmViewBreakpoints.Command:=GetCommand(ecToggleBreakPoints);
     itmViewDebugOutput.Command:=GetCommand(ecToggleDebuggerOut);
-    itmViewDebugEvents.Command:=GetCommand(ecToggleDebuggerEvents);
+    itmViewDebugEvents.Command:=GetCommand(ecToggleDebugEvents);
     itmViewLocals.Command:=GetCommand(ecToggleLocals);
     itmViewRegisters.Command:=GetCommand(ecToggleRegisters);
     itmViewCallStack.Command:=GetCommand(ecToggleCallStack);
@@ -2511,7 +2511,7 @@ begin
     ecToggleWatches:     ViewDebugDialog(ddtWatches);
     ecToggleBreakPoints: ViewDebugDialog(ddtBreakpoints);
     ecToggleDebuggerOut: ViewDebugDialog(ddtOutput);
-    ecToggleDebuggerEvents: ViewDebugDialog(ddtEvents);
+    ecToggleDebugEvents: ViewDebugDialog(ddtEvents);
     ecToggleLocals:      ViewDebugDialog(ddtLocals);
   else
     Handled := False;

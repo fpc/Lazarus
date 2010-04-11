@@ -501,6 +501,7 @@ begin
   ecToggleCallStack: SetResult(VK_S,[ssCtrl,ssAlt],VK_UNKNOWN,[]);
   ecToggleRegisters: SetResult(VK_R,[ssCtrl,ssAlt],VK_UNKNOWN,[]);
   ecToggleAssembler: SetResult(VK_D,[ssCtrl,ssAlt],VK_UNKNOWN,[]);
+  ecToggleDebugEvents: SetResult(VK_V,[ssCtrl,ssAlt],VK_UNKNOWN,[]);
   ecToggleDebuggerOut: SetResult(VK_UNKNOWN,[],VK_UNKNOWN,[]);
   ecViewUnits: SetResult(VK_F12,[ssCtrl],VK_UNKNOWN,[]);
   ecViewForms: SetResult(VK_F12,[ssShift],VK_UNKNOWN,[]);
@@ -923,6 +924,7 @@ begin
   ecToggleCallStack: SetResult(VK_F3,[ssCtrl],VK_UNKNOWN,[],VK_UNKNOWN,[],VK_UNKNOWN,[]);
   ecToggleRegisters: SetResult(VK_UNKNOWN,[],VK_UNKNOWN,[],VK_UNKNOWN,[],VK_UNKNOWN,[]);
   ecToggleAssembler: SetResult(VK_UNKNOWN,[],VK_UNKNOWN,[],VK_UNKNOWN,[],VK_UNKNOWN,[]);
+  ecToggleDebugEvents: SetResult(VK_UNKNOWN,[],VK_UNKNOWN,[],VK_UNKNOWN,[],VK_UNKNOWN,[]);
   ecToggleDebuggerOut: SetResult(VK_UNKNOWN,[],VK_UNKNOWN,[],VK_UNKNOWN,[],VK_UNKNOWN,[]);
   ecViewUnits: SetResult(VK_F12,[ssCtrl],VK_UNKNOWN,[],VK_UNKNOWN,[],VK_UNKNOWN,[]);
   ecViewForms: SetResult(VK_F12,[ssShift],VK_UNKNOWN,[],VK_UNKNOWN,[],VK_UNKNOWN,[]);
@@ -1527,6 +1529,7 @@ begin
   ecToggleCallStack: SetResult(VK_S,[ssCtrl,ssAlt],VK_UNKNOWN,[]);
   ecToggleRegisters: SetResult(VK_R,[ssCtrl,ssAlt],VK_UNKNOWN,[]);
   ecToggleAssembler: SetResult(VK_D,[ssCtrl,ssAlt],VK_UNKNOWN,[]);
+  ecToggleDebugEvents: SetResult(VK_V,[ssCtrl,ssAlt],VK_UNKNOWN,[]);
   ecToggleDebuggerOut: SetResult(VK_UNKNOWN,[],VK_UNKNOWN,[]);
   ecViewUnits: SetResult(VK_U,[ssCtrl,ssAlt],VK_UNKNOWN,[]);
   ecViewForms: SetResult(VK_U,[ssShift,ssCtrl],VK_UNKNOWN,[]);
@@ -2723,6 +2726,7 @@ begin
     ecToggleRegisters);
   AddDefault(C, 'Toggle view Assembler', lisKMToggleViewAssembler,
     ecToggleAssembler);
+  AddDefault(C, 'Toggle view Debug Events', lisKMToggleViewDebugEvents, ecToggleDebugEvents);
   AddDefault(C, 'Toggle view Debugger Output', lisKMToggleViewDebuggerOutput,
     ecToggleDebuggerOut);
   AddDefault(C, 'View Units', lisHintViewUnits, ecViewUnits);
