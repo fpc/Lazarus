@@ -1,6 +1,26 @@
 msgid ""
 msgstr "Content-Type: text/plain; charset=UTF-8"
 
+#: jcfuiconsts.lisaboutaboutjedicodeformat
+msgid "About JEDI Code Format"
+msgstr ""
+
+#: jcfuiconsts.lisaboutfindmoreinformationonthewebat
+msgid "Find more information on the web at: %s"
+msgstr ""
+
+#: jcfuiconsts.lisaboutthisprogramisopensource
+msgid "This program is open source software. It is released under the Mozilla Public Licence (MPL).  http://www.mozilla.org/MPL"
+msgstr ""
+
+#: jcfuiconsts.lisaboutthisprogramisstillunderdevelopment
+msgid "This program is still under development. In spite of thorough testing and removal of reported bugs, no guarantees are given. Please make backups, or better yet use a source control system."
+msgstr ""
+
+#: jcfuiconsts.lisaboutversion
+msgid "Version $VERSION$%s$DATE$%s%sThis program attempts to standardise and make readable the layout of any Delphi Object-Pascal source code.%s%sCopyright Anthony Steele 1999-2008"
+msgstr ""
+
 #: jcfuiconsts.lisalignalign
 msgid "Align"
 msgstr ""
