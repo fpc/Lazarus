@@ -478,8 +478,7 @@ end;
 
 procedure TChartAxis.GetMarkValues(AMin, AMax: Double);
 var
-  i, count: Integer;
-  v: Double;
+  i: Integer;
 begin
   AMin := GetTransform.GraphToAxis(AMin);
   AMax := GetTransform.GraphToAxis(AMax);
@@ -491,21 +490,9 @@ begin
     for i := 0 to High(FMarkValues) do
       FMarkTexts[i] := Format(Marks.Format, [FMarkValues[i]]);
   end
-  else begin
-    count := 0;
-    SetLength(FMarkValues, Marks.Source.Count);
-    SetLength(FMarkTexts, Marks.Source.Count);
-    for i := 0 to Marks.Source.Count - 1 do begin
-      with Marks.Source[i]^ do
-        v := IfThen(IsVertical, Y, X);
-      if not InRange(v, AMin, AMax) then continue;
-      FMarkValues[count] := v;
-      FMarkTexts[count] := Marks.Source.FormatItem(Marks.Format, i);
-      count += 1;
-    end;
-    SetLength(FMarkValues, count);
-    SetLength(FMarkTexts, count);
-  end;
+  else
+    Marks.Source.ValuesInInterval(
+      AMin, AMax, Marks.Format, IsVertical, FMarkValues, FMarkTexts);
 
   if Assigned(FOnMarkToText) then
     for i := 0 to High(FMarkTexts) do

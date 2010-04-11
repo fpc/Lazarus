@@ -22,7 +22,7 @@ unit TASources;
 interface
 
 uses
-  Classes, Graphics, SysUtils, TAChartUtils;
+  Classes, Graphics, SysUtils, Types, TAChartUtils;
 
 type
   EEditableSourceRequired = class(EChartError);
@@ -61,6 +61,9 @@ type
   public
     function Extent: TDoubleRect; virtual;
     function FormatItem(const AFormat: String; AIndex: Integer): String;
+    procedure ValuesInInterval(
+      AMin, AMax: Double; const AFormat: String; AUseY: Boolean;
+      out AValues: TDoubleDynArray; out ATexts: TStringDynArray);
     function ValuesTotal: Double; virtual;
     function XOfMax: Double;
     function XOfMin: Double;
@@ -304,6 +307,27 @@ procedure TCustomChartSource.Notify;
 begin
   if not IsUpdating then
     FBroadcaster.Broadcast;
+end;
+
+procedure TCustomChartSource.ValuesInInterval(
+  AMin, AMax: Double; const AFormat: String; AUseY: Boolean;
+  out AValues: TDoubleDynArray; out ATexts: TStringDynArray);
+var
+  i, cnt: Integer;
+  v: Double;
+begin
+  cnt := 0;
+  SetLength(AValues, Count);
+  SetLength(ATexts, Count);
+  for i := 0 to Count - 1 do begin
+    v := IfThen(AUseY, Item[i]^.Y, Item[i]^.X);
+    if not InRange(v, AMin, AMax) then continue;
+    AValues[cnt] := v;
+    ATexts[cnt] := FormatItem(AFormat, i);
+    cnt += 1;
+  end;
+  SetLength(AValues, cnt);
+  SetLength(ATexts, cnt);
 end;
 
 function TCustomChartSource.ValuesTotal: Double;
