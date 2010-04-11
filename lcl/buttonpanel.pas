@@ -148,9 +148,6 @@ procedure Register;
 
 implementation
 
-type
-  TCustomButtonAccess = class(TCustomButton);
-
 const
   DEFAULT_BUTTONPANEL_BORDERSPACING: TControlBorderSpacingDefault = (
     Left:0; Top:0; Right:0; Bottom:0; Around:6;
@@ -197,7 +194,7 @@ begin
     Exit;
 
   FShowButtons := Value;
-
+  InvalidatePreferredSize;
   DoShowButtons;
 end;
 
@@ -224,6 +221,7 @@ procedure TCustomButtonPanel.SetShowGlyphs(Value: TPanelButtons);
 begin
   if FShowGlyphs = Value then Exit;
   FShowGlyphs := Value;
+  InvalidatePreferredSize;
   DoShowGlyphs;
 end;
 
@@ -231,6 +229,7 @@ procedure TCustomButtonPanel.SetSpacing(AValue: TSpacingSize);
 begin
   if FSpacing = AValue then Exit;
   FSpacing := AValue;
+  InvalidatePreferredSize;
   ReAlign;
 end;
 
@@ -270,7 +269,7 @@ begin
   for i := 0 to ControlCount - 1 do
   begin
     if not (Controls[i] is TCustomButton) then Continue;
-    TCustomButtonAccess(Controls[i]).CalculatePreferredSize(BtnWidth, BtnHeight, True);
+    Controls[i].GetPreferredSize(BtnWidth, BtnHeight, True);
     if Align in [alTop, alBottom] then
       Controls[i].Width := BtnWidth;
     if Align in [alLeft, alRight] then
@@ -285,8 +284,10 @@ end;
 procedure TCustomButtonPanel.CalculatePreferredSize(var PreferredWidth,
   PreferredHeight: integer; WithThemeSpace: Boolean);
 begin
+  {$IFNDEF OldAutoSize}
   if HandleAllocated then
   begin
+  {$ENDIF}
     UpdateSizes;
     if Align in [alTop, alBottom] then
     begin
@@ -301,8 +302,10 @@ begin
       if ShowBevel then
         inc(PreferredWidth, Spacing + FBevel.Width);
     end;
+    {$IFNDEF OldAutoSize}
     ReAlign;
   end;
+  {$ENDIF}
 end;
 
 procedure TCustomButtonPanel.UpdateButtonOrder;
@@ -330,10 +333,21 @@ end;
 
 procedure TCustomButtonPanel.SetAlign(Value: TAlign);
 begin
-  inherited SetAlign(Value);
-  UpdateBevel;
-  UpdateSizes;
-  Realign;
+  {$IFNDEF OldAutoSize}
+  DisableAutoSizing;
+  {$ENDIF}
+  try
+    inherited SetAlign(Value);
+    UpdateBevel;
+    {$IFNDEF OldAutoSize}
+    UpdateSizes;
+    Realign;
+    {$ENDIF}
+  finally
+    {$IFNDEF OldAutoSize}
+    EnableAutoSizing;
+    {$ENDIF}
+  end;
 end;
 
 procedure TCustomButtonPanel.CMAppShowBtnGlyphChanged(var Message: TLMessage);
@@ -380,19 +394,29 @@ begin
     Exit;
   end;
 
-  FBevel := TBevel.Create(Self);
-  FBevel.Parent := Self;
-  FBevel.Name   := 'Bevel';
-  FBevel.Align := alCustom;
+  {$IFNDEF OldAutoSize}
+  DisableAutoSizing;
+  {$ENDIF}
+  try
+    FBevel := TBevel.Create(Self);
+    FBevel.Parent := Self;
+    FBevel.Name   := 'Bevel';
+    FBevel.Align := alCustom;
 
-  UpdateBevel;
+    UpdateBevel;
+  finally
+    {$IFNDEF OldAutoSize}
+    EnableAutoSizing;
+    {$ENDIF}
+  end;
 end;
 
 procedure TCustomButtonPanel.Loaded;
 begin
   inherited Loaded;
-
+  {$IFDEF OldAutoSize}
   Realign;
+  {$ENDIF}
 end;
 
 procedure TCustomButtonPanel.Notification(AComponent: TComponent;

@@ -433,7 +433,6 @@ procedure TExternHelpOptions.UpdateHelpDB;
     i: Integer;
     HelpNode: THelpNode;
     ItemFilename: String;
-    IsDirectory: Boolean;
     SrcFilter: THelpDBISourceFile;
   begin
     if (Item.Filename<>'') and (Item.URL<>'') then begin
@@ -441,9 +440,7 @@ procedure TExternHelpOptions.UpdateHelpDB;
       // create a help node for this topic
       HelpNode:=THelpNode.CreateURL(HelpDB,Item.Name,Item.URL);
       // create a filter for the source file(s)
-      IsDirectory:=(ItemFilename[length(ItemFilename)]=PathDelim);
-      DebugLn(['RegisterItem ',IsDirectory,' ',ItemFilename]);
-      if IsDirectory then
+      if Item.IsDirectory then
         SrcFilter:=THelpDBISourceDirectory.Create(HelpNode,
                               ItemFilename,'*.pp;*.pas',Item.WithSubDirectories)
       else
