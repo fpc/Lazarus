@@ -66,22 +66,17 @@ implementation
 { TDbgEventsForm }
 
 procedure TDbgEventsForm.FormCreate(Sender: TObject);
-var
-  i: TDBGEventCategory;
 begin
   Caption := lisMenuViewDebugEvents;
   FEvents := TStringList.Create;
   ckgFilter.Items.Clear;
-  for i := Low(TDBGEventCategory) to High(TDBGEventCategory) do
-    case i of
-      ecBreakpoint: ckgFilter.Items.Add(lisDebugOptionsFrmBreakpoint);
-      ecProcess: ckgFilter.Items.Add(lisDebugOptionsFrmProcess);
-      ecThread: ckgFilter.Items.Add(lisDebugOptionsFrmThread);
-      ecModule: ckgFilter.Items.Add(lisDebugOptionsFrmModule);
-      ecOutput: ckgFilter.Items.Add(lisDebugOptionsFrmOutput);
-      ecWindow: ckgFilter.Items.Add(lisDebugOptionsFrmWindow);
-      ecDebugger: ckgFilter.Items.Add(lisDebugOptionsFrmDebugger);
-    end;
+  ckgFilter.Items.Add(lisDebugOptionsFrmBreakpoint);
+  ckgFilter.Items.Add(lisDebugOptionsFrmProcess);
+  ckgFilter.Items.Add(lisDebugOptionsFrmThread);
+  ckgFilter.Items.Add(lisDebugOptionsFrmModule);
+  ckgFilter.Items.Add(lisDebugOptionsFrmOutput);
+  ckgFilter.Items.Add(lisDebugOptionsFrmWindow);
+  ckgFilter.Items.Add(lisDebugOptionsFrmDebugger);
 end;
 
 procedure TDbgEventsForm.ckgFilterItemClick(Sender: TObject; Index: integer);
@@ -92,34 +87,42 @@ begin
     Exclude(FFilter, TDBGEventCategory(Index));
   UpdateFilteredList;
 end;
+
 procedure TDbgEventsForm.FormDestroy(Sender: TObject);
 begin
-  FEvents.Free;
+  FreeAndNil(FEvents);
 end;
 
 procedure TDbgEventsForm.UpdateFilteredList;
+const
+  CategoryImages: array [TDBGEventCategory] of Integer = (
+    { ecBreakpoint } 0,
+    { ecProcess    } 1,
+    { ecThread     } 2,
+    { ecModule     } 3,
+    { ecOutput     } 4,
+    { ecWindow     } 5,
+    { ecDebugger   } 6
+  );
+
 var
   i: Integer;
   Item: TListItem;
-  CategoryImages: array [TDBGEventCategory] of Integer;
+  Cat: TDBGEventCategory;
 begin
-  CategoryImages[ecBreakpoint] := 0;
-  CategoryImages[ecProcess] := 1;
-  CategoryImages[ecThread] := 2;
-  CategoryImages[ecModule] := 3;
-  CategoryImages[ecOutput] := 4;
-  CategoryImages[ecWindow] := 5;
-  CategoryImages[ecDebugger] := 6;
-
   lstFilteredEvents.BeginUpdate;
   try
     lstFilteredEvents.Clear;
     for i := 0 to FEvents.Count -1 do
-      if TDBGEventCategory(FEvents.Objects[i]) in FFilter then
     begin
-      Item := lstFilteredEvents.Items.Add;
-      Item.Caption := FEvents[i];
-      Item.ImageIndex := CategoryImages[TDBGEventCategory(FEvents.Objects[i])];
+      Cat := TDBGEventCategory(PtrUInt(FEvents.Objects[i]));
+
+      if Cat in FFilter then
+      begin
+        Item := lstFilteredEvents.Items.Add;
+        Item.Caption := FEvents[i];
+        Item.ImageIndex := CategoryImages[Cat];
+      end;
     end;
   finally
     lstFilteredEvents.EndUpdate;
@@ -132,8 +135,7 @@ begin
     lstFilteredEvents.Items[lstFilteredEvents.Items.Count -1].MakeVisible(False);
 end;
 
-procedure TDbgEventsForm.SetEvents(const AEvents: TStrings;
-  const AFilter: TDBGEventCategories);
+procedure TDbgEventsForm.SetEvents(const AEvents: TStrings; const AFilter: TDBGEventCategories);
 var
   i: TDBGEventCategory;
 begin
@@ -160,8 +162,7 @@ begin
   lstFilteredEvents.Clear;
 end;
 
-procedure TDbgEventsForm.AddEvent(const ACategory: TDBGEventCategory;
-  const AText: String);
+procedure TDbgEventsForm.AddEvent(const ACategory: TDBGEventCategory; const AText: String);
 var
   Item: TListItem;
 begin
@@ -175,7 +176,7 @@ begin
       lstFilteredEvents.EndUpdate;
     end;
   end;
-  FEvents.AddObject(AText, TObject(ACategory));
+  FEvents.AddObject(AText, TObject(PtrUInt(ACategory)));
   if ACategory in FFilter then
   begin
     Item := lstFilteredEvents.Items.Add;

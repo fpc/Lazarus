@@ -1490,16 +1490,20 @@ end;
 procedure TDebugManager.DebuggerEvent(Sender: TObject; const ACategory: TDBGEventCategory; const AText: String);
 begin
   if Destroying then exit;
-  if FDialogs[ddtEvents] <> nil then
+  if FDialogs[ddtEvents] <> nil
+  then begin
     TDbgEventsForm(FDialogs[ddtEvents]).AddEvent(ACategory, AText)
+  end
   else begin
     // store it internally, and copy it to the dialog, when the user opens it
-    if FHiddenDebugEventsLog=nil then
-      FHiddenDebugEventsLog:=TStringList.Create;
-    if EnvironmentOptions.DebuggerEventLogCheckLineLimit then
+    if FHiddenDebugEventsLog=nil
+    then FHiddenDebugEventsLog := TStringList.Create;
+    if EnvironmentOptions.DebuggerEventLogCheckLineLimit
+    then begin
       while FHiddenDebugEventsLog.Count >= EnvironmentOptions.DebuggerEventLogLineLimit do
         FHiddenDebugEventsLog.Delete(0);
-    FHiddenDebugEventsLog.AddObject(AText, TObject(ACategory));
+    end;
+    FHiddenDebugEventsLog.AddObject(AText, TObject(PtrUint(ACategory)));
   end;
 end;
 
