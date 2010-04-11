@@ -10,20 +10,31 @@ uses
 
 type
 
+  { TStringMapUpdater }
+
+  TStringMapUpdater = class
+  private
+    fStringMap: TStringToStringTree;
+    fMapNames: TStringList;  // Names (keys) in fStringMap.
+    fSeenName: TStringList;
+  public
+    constructor Create(AStringMap: TStringToStringTree);
+    destructor Destroy; override;
+    function FindReplacement(AIdent: string; out AReplacement: string): boolean;
+  end;
+
   { TGridUpdater }
 
-  TGridUpdater = class
+  TGridUpdater = class(TStringMapUpdater)
   private
     fGrid: TStringGrid;
-    fReplaceMap: TStringToStringTree;
-    fNameList: TStringList;  // Names (keys) in fReplaceMap.
-    fSeenName: TStringList;
     GridEndInd: Integer;
-    function FindReplacement(AIdent: string): string;
   public
-    constructor Create(AGrid: TStringGrid; AReplaceMap: TStringToStringTree);
+    constructor Create(AStringMap: TStringToStringTree; AGrid: TStringGrid);
     destructor Destroy; override;
     procedure AddUnique(AOldIdent: string);
+    procedure MapToGrid;
+    procedure GridToMap;
   end;
 
   { TReplaceNamesForm }
@@ -45,15 +56,81 @@ type
 var
   ReplaceNamesForm: TReplaceNamesForm;
 
-procedure CopyFromMapToGrid(AGrid: TStringGrid; AMap: TStringToStringTree);
-procedure CopyFromGridToMap(AGrid: TStringGrid; AMap: TStringToStringTree);
-
 
 implementation
 
 {$R *.lfm}
 
-procedure CopyFromMapToGrid(AGrid: TStringGrid; AMap: TStringToStringTree);
+{ TStringMapUpdater }
+
+constructor TStringMapUpdater.Create(AStringMap: TStringToStringTree);
+begin
+  fStringMap:=AStringMap;
+  fMapNames:=TStringList.Create;
+  fStringMap.GetNames(fMapNames);
+  fSeenName:=TStringList.Create;
+end;
+
+destructor TStringMapUpdater.Destroy;
+begin
+  fSeenName.Free;
+  fMapNames.Free;
+  inherited Destroy;
+end;
+
+function TStringMapUpdater.FindReplacement(AIdent: string;
+                                           out AReplacement: string): boolean;
+// Try to find a matching replacement using regular expression.
+var
+  RE: TRegExpr;
+  i: Integer;
+  Key: string;
+begin
+  if fStringMap.Contains(AIdent) then begin
+    AReplacement:=fStringMap[AIdent];
+    Result:=true;
+  end
+  else begin                     // Not found by name, try regexp.
+    Result:=false;
+    AReplacement:='';
+    RE:=TRegExpr.Create;
+    try
+      for i:=0 to fMapNames.Count-1 do begin
+        Key:=fMapNames[i];       // fMapNames has extracted keys from fStringMap.
+        // If key contains '(' assume it is a regexp.
+        if Pos('(', Key)>0 then begin
+          RE.Expression:=Key;
+          if RE.Exec(AIdent) then begin  // Match with regexp.
+            AReplacement:=RE.Substitute(fStringMap[Key]);
+            Result:=true;
+            Break;
+          end;
+        end;
+      end;
+    finally
+      RE.Free;
+    end;
+  end;
+end;
+
+
+{ TGridUpdater }
+
+constructor TGridUpdater.Create(AStringMap: TStringToStringTree; AGrid: TStringGrid);
+begin
+  inherited Create(AStringMap);
+  fGrid:=AGrid;
+  GridEndInd:=1;
+  fGrid.BeginUpdate;
+end;
+
+destructor TGridUpdater.Destroy;
+begin
+  fGrid.EndUpdate;
+  inherited Destroy;
+end;
+
+procedure TGridUpdater.MapToGrid;
 var
   OldIdent, NewIdent: string;
   List: TStringList;
@@ -62,80 +139,33 @@ begin
   // Collect (maybe edited) properties from StringGrid to NameReplacements.
   List:=TStringList.Create;
   try
-    AGrid.BeginUpdate;
-    AMap.GetNames(List);
+    fGrid.BeginUpdate;
+    fStringMap.GetNames(List);
     for i:=0 to List.Count-1 do begin
       OldIdent:=List[i];
-      NewIdent:=AMap[OldIdent];
-      if AGrid.RowCount<i+1 then
-        AGrid.RowCount:=i+1;
-      AGrid.Cells[0,i]:=OldIdent;
-      AGrid.Cells[1,i]:=NewIdent;
+      NewIdent:=fStringMap[OldIdent];
+      if fGrid.RowCount<i+1 then
+        fGrid.RowCount:=i+1;
+      fGrid.Cells[0,i]:=OldIdent;
+      fGrid.Cells[1,i]:=NewIdent;
     end;
-    AGrid.EndUpdate;
+    fGrid.EndUpdate;
   finally
     List.Free;
   end;
 end;
 
-procedure CopyFromGridToMap(AGrid: TStringGrid; AMap: TStringToStringTree);
+procedure TGridUpdater.GridToMap;
 var
   OldIdent, NewIdent: string;
   i: Integer;
 begin
   // Collect (maybe edited) properties from StringGrid to NameReplacements.
-  for i:=1 to AGrid.RowCount-1 do begin // Skip the fixed row.
-    OldIdent:=AGrid.Cells[0,i];
-    NewIdent:=AGrid.Cells[1,i];
+  for i:=1 to fGrid.RowCount-1 do begin // Skip the fixed row.
+    OldIdent:=fGrid.Cells[0,i];
+    NewIdent:=fGrid.Cells[1,i];
     if NewIdent<>'' then
-      AMap[OldIdent]:=NewIdent;
-  end;
-end;
-
-{ TGridUpdater }
-
-constructor TGridUpdater.Create(AGrid: TStringGrid; AReplaceMap: TStringToStringTree);
-begin
-  fGrid:=AGrid;
-  fReplaceMap:=AReplaceMap;
-  fNameList:=TStringList.Create;
-  fReplaceMap.GetNames(fNameList);
-  fSeenName:=TStringList.Create;
-  GridEndInd:=1;
-  fGrid.BeginUpdate;
-end;
-
-destructor TGridUpdater.Destroy;
-begin
-  fGrid.EndUpdate;
-  fSeenName.Free;
-  fNameList.Free;
-  inherited Destroy;
-end;
-
-function TGridUpdater.FindReplacement(AIdent: string): string;
-// Try to find a matching replacement using regular expression.
-var
-  RE: TRegExpr;
-  i: Integer;
-  s: string;
-begin
-  Result:='';
-  RE:=TRegExpr.Create;
-  try
-    for i:=0 to fNameList.Count-1 do begin
-      s:=fNameList[i];           // NameList has extracted keys from fReplaceMap.
-      // If key contains '(' assume it is a regexp.
-      if Pos('(', s)>0 then begin
-        RE.Expression:=s;
-        if RE.Exec(AIdent) then begin  // Match with regexp.
-          Result:=RE.Substitute(fReplaceMap[s]);
-          Break;
-        end;
-      end;
-    end;
-  finally
-    RE.Free;
+      fStringMap[OldIdent]:=NewIdent;
   end;
 end;
 
@@ -147,9 +177,7 @@ begin
   // Add only one instance of each property name.
   if fSeenName.IndexOf(AOldIdent)<0 then begin
     fSeenName.Append(AOldIdent);
-    NewIdent:=fReplaceMap[AOldIdent];
-    if NewIdent='' then               // Not found by name, try regexp.
-      NewIdent:=FindReplacement(AOldIdent);
+    FindReplacement(AOldIdent, NewIdent);
     if fGrid.RowCount<GridEndInd+1 then
       fGrid.RowCount:=GridEndInd+1;
     fGrid.Cells[0,GridEndInd]:=AOldIdent;
@@ -157,6 +185,7 @@ begin
     Inc(GridEndInd);
   end;
 end;
+
 
 { TReplaceNamesForm }
 
@@ -169,6 +198,7 @@ procedure TReplaceNamesForm.btnOKClick(Sender: TObject);
 begin
   ModalResult:=mrOK;
 end;
+
 
 end.
 

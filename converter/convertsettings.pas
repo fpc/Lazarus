@@ -147,17 +147,10 @@ begin
   fReplaceUnits['Windows']:='LCLIntf, LCLType, LMessages';
   fReplaceUnits['Variants']:='';
   fReplaceUnits['ShellApi']:='';
-  fReplaceUnits['TntActnList']:='ActnList';
-  fReplaceUnits['TntMenus']:='Menus';
-  fReplaceUnits['TntClasses']:='Classes';
-  fReplaceUnits['TntForms']:='Forms';
-  fReplaceUnits['TntComCtrls']:='ComCtrls';
-  fReplaceUnits['TntStdCtrls']:='StdCtrls';
-  fReplaceUnits['TntExtCtrls']:='ExtCtrls';
-  fReplaceUnits['TntSysUtils']:='SysUtils';
   fReplaceUnits['pngImage']:='';
   fReplaceUnits['Jpeg']:='';
   fReplaceUnits['gifimage']:='';
+  fReplaceUnits['^Tnt(.+)']:='$1';
 
   // Map Delphi types to LCL types.
   fReplaceTypes:=TStringToStringTree.Create(false);
@@ -171,7 +164,7 @@ begin
   fReplaceTypes['TDBRichEdit']:='TDBMemo';
   fReplaceTypes['TApplicationEvents']:='TApplicationProperties';
   fReplaceTypes['TPNGObject']:='TPortableNetworkGraphic';
-  fReplaceTypes['TTnt(.+)']:='T$1';
+  fReplaceTypes['^TTnt(.+)']:='T$1';
 
 end;
 
@@ -354,31 +347,37 @@ end;
 
 procedure TConvertSettingsForm.UnitReplacementsButtonClick(Sender: TObject);
 var
-  ReplaceNamesForm: TReplaceNamesForm;
+  RNForm: TReplaceNamesForm;
+  GridUpdater: TGridUpdater;
 begin
-  ReplaceNamesForm:=TReplaceNamesForm.Create(nil);
+  RNForm:=TReplaceNamesForm.Create(nil);
+  GridUpdater:=TGridUpdater.Create(fSettings.ReplaceUnits, RNForm.NamePairGrid);
   try
-    ReplaceNamesForm.Caption:=lisConvUnitsToReplace;
-    CopyFromMapToGrid(ReplaceNamesForm.NamePairGrid, fSettings.ReplaceUnits);
-    if ReplaceNamesForm.ShowModal=mrOK then
-      CopyFromGridToMap(ReplaceNamesForm.NamePairGrid, fSettings.ReplaceUnits);
+    RNForm.Caption:=lisConvUnitsToReplace;
+    GridUpdater.MapToGrid;
+    if RNForm.ShowModal=mrOK then
+      GridUpdater.GridToMap;
   finally
-    ReplaceNamesForm.Free;
+    GridUpdater.Free;
+    RNForm.Free;
   end;
 end;
 
 procedure TConvertSettingsForm.TypeReplacementsButtonClick(Sender: TObject);
 var
-  ReplaceNamesForm: TReplaceNamesForm;
+  RNForm: TReplaceNamesForm;
+  GridUpdater: TGridUpdater;
 begin
-  ReplaceNamesForm:=TReplaceNamesForm.Create(nil);
+  RNForm:=TReplaceNamesForm.Create(nil);
+  GridUpdater:=TGridUpdater.Create(fSettings.ReplaceTypes, RNForm.NamePairGrid);
   try
-    ReplaceNamesForm.Caption:=lisConvTypesToReplace;
-    CopyFromMapToGrid(ReplaceNamesForm.NamePairGrid, fSettings.ReplaceTypes);
-    if ReplaceNamesForm.ShowModal=mrOK then
-      CopyFromGridToMap(ReplaceNamesForm.NamePairGrid, fSettings.ReplaceTypes);
+    RNForm.Caption:=lisConvTypesToReplace;
+    GridUpdater.MapToGrid;
+    if RNForm.ShowModal=mrOK then
+      GridUpdater.GridToMap;
   finally
-    ReplaceNamesForm.Free;
+    GridUpdater.Free;
+    RNForm.Free;
   end;
 end;
 

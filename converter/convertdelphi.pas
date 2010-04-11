@@ -43,7 +43,7 @@ uses
   // IDE
   IDEProcs, Project, DialogProcs,
   EditorOptions, CompilerOptions, PackageDefs, PackageSystem,
-  PackageEditor, BasePkgManager, LazarusIDEStrConsts,
+  PackageEditor, BasePkgManager, LazarusIDEStrConsts, ReplaceNamesUnit,
   ConvertSettings, ConvCodeTool, MissingUnits, MissingPropertiesDlg;
 
 const
@@ -590,7 +590,9 @@ begin
     finally
       LfmFixer.Free;
     end;
-    // save LFM file
+    // save source and LFM files
+    Result:=SaveCodeBufferToFile(fPascalBuffer,fPascalBuffer.Filename);
+    if Result<>mrOk then exit;
     Result:=SaveCodeBufferToFile(fLFMBuffer,fLFMBuffer.Filename);
     if Result<>mrOk then exit;
   end;
@@ -715,18 +717,28 @@ end;
 
 function TConvertDelphiUnit.FixMissingUnits: TModalResult;
 var
+  UnitUpdater: TStringMapUpdater;
+  ConvTool: TConvDelphiCodeTool;
+  UnitNames: TStringList;
   CTResult: Boolean;
-  i: Integer;
-  UnitN, s: string;
+  i, d: Integer;
+  UnitN, FN, s: string;
 begin
   Result:=mrOk;
+  UnitUpdater:=TStringMapUpdater.Create(fSettings.ReplaceUnits);
+  ConvTool:=TConvDelphiCodeTool.Create(fPascalBuffer);
+  UnitNames:=nil;     // Will be created in ConvTool.UsesSectionsToUnitnames.
   fMissingUnits:=nil; // Will be created in CodeToolBoss.FindMissingUnits.
   try
+    // Collect all unit names from uses sections.
+    UnitNames:=ConvTool.UsesSectionsToUnitnames;
+    UnitNames.Sorted:=true;
+    s:=UnitNames.Text;
     // find missing units
     CTResult:=CodeToolBoss.FindMissingUnits(fPascalBuffer,fMissingUnits,true);
     if not CTResult then begin
       IDEMessagesWindow.AddMsg('Error="'+CodeToolBoss.ErrorMessage+'"','',-1);
-      Application.ProcessMessages;
+      Result:=mrCancel;
       exit;
     end;
     // no missing units -> good
@@ -735,9 +747,8 @@ begin
     // Remove or replace units defined in settings.
     for i:=fMissingUnits.Count-1 downto 0 do begin
       UnitN:=fMissingUnits[i];
-      if fSettings.ReplaceUnits.Contains(UnitN) then begin
-        s:=fSettings.ReplaceUnits[UnitN];
-        if s<>'' then begin
+      if UnitUpdater.FindReplacement(UnitN, s) then begin
+        if (s<>'') and not UnitNames.Find(s, d) then begin
           fUnitsToRename[UnitN]:=s;
           IDEMessagesWindow.AddMsg(Format(
               'Replaced unit "%s" with "%s" in uses section.',[UnitN, s]),'',-1);
@@ -747,8 +758,22 @@ begin
           IDEMessagesWindow.AddMsg(Format(
               'Removed used unit "%s" in uses section.',[UnitN]),'',-1);
         end;
-        fMissingUnits.Delete(i);
       end;
+    end;
+    // Remove and rename missing units. More of them may be added later.
+    ConvTool.UnitsToRename:=fUnitsToRename;
+    ConvTool.UnitsToRemove:=fUnitsToRemove;
+    ConvTool.RenameUnits;
+    ConvTool.RemoveUnits;
+    fUnitsToRename.Clear;
+    fUnitsToRemove.Clear;
+    // Find missing units again. Some replacements may not be valid.
+    fMissingUnits.Clear;
+    CTResult:=CodeToolBoss.FindMissingUnits(fPascalBuffer,fMissingUnits,true);
+    if not CTResult then begin
+      IDEMessagesWindow.AddMsg('Error="'+CodeToolBoss.ErrorMessage+'"','',-1);
+      Result:=mrCancel;
+      exit;
     end;
     if fMissingUnits.Count=0 then exit;
 
@@ -769,6 +794,9 @@ begin
     Application.ProcessMessages;
   finally
     fMissingUnits.Free;
+    UnitNames.Free;
+    ConvTool.Free;
+    UnitUpdater.Free;
   end;
 end;
 
@@ -854,6 +882,7 @@ begin
 
   // load required packages
   AddPackageDependency('LCL');// Nearly all Delphi projects require it
+  AddPackageDependency('virtualtreeview_package'); //!!!
   if fProjPack is TProject then
     PkgBoss.AddDefaultDependencies(fProjPack as TProject);
   CustomDefinesChanged;

@@ -41,20 +41,18 @@ type
     fUnitsToRename: TStringToStringTree;
     // List of units to be commented.
     fUnitsToComment: TStringList;
-    // Map of class member object types to be renamed in ReplaceMemberTypes.
-    fMemberTypesToRename: TStringToStringTree;
     function AddDelphiAndLCLSections: boolean;
     function AddModeDelphiDirective: boolean;
     function RenameResourceDirectives: boolean;
-    function RemoveUnits: boolean;
-    function RenameUnits: boolean;
     function CommentOutUnits: boolean;
     function HandleCodetoolError: TModalResult;
   public
     constructor Create(Code: TCodeBuffer);
     destructor Destroy; override;
     function Convert: TModalResult;
-    function ReplaceMemberTypes(AClassName: string): boolean;
+    function RemoveUnits: boolean;
+    function RenameUnits: boolean;
+    function UsesSectionsToUnitnames: TStringList;
   public
     property Ask: Boolean read fAsk write fAsk;
     property UseBothDfmAndLfm: boolean read fUseBothDfmAndLfm write fUseBothDfmAndLfm;
@@ -64,8 +62,6 @@ type
     property UnitsToRemove: TStringList read fUnitsToRemove write fUnitsToRemove;
     property UnitsToRename: TStringToStringTree read fUnitsToRename write fUnitsToRename;
     property UnitsToComment: TStringList read fUnitsToComment write fUnitsToComment;
-    property MemberTypesToRename: TStringToStringTree read fMemberTypesToRename
-                                                     write fMemberTypesToRename;
   end;
 
 implementation
@@ -83,7 +79,6 @@ begin
   fUnitsToRemove:=nil;            // These are set from outside.
   fUnitsToComment:=nil;
   fUnitsToRename:=nil;
-  fMemberTypesToRename:=nil;
   // Initialize codetools. (Copied from TCodeToolManager.)
   if not CodeToolBoss.InitCurCodeTool(fCode) then exit;
   try
@@ -376,12 +371,20 @@ begin
   Result:=true;
 end;
 
-function TConvDelphiCodeTool.ReplaceMemberTypes(AClassName: string): boolean;
-// Replace types of class object members.
+function TConvDelphiCodeTool.UsesSectionsToUnitnames: TStringList;
+// Collect all unit names from uses sections to a StringList.
+var
+  UsesNode: TCodeTreeNode;
+  ImplList: TStrings;
 begin
-//  CodeToolBoss.RetypeClassVariables();
-  Result:=fCodeTool.RetypeClassVariables(AClassName, fMemberTypesToRename,
-                                         false, fSrcCache);
+  fCodeTool.BuildTree(true);
+  fSrcCache.MainScanner:=fCodeTool.Scanner;
+  UsesNode:=fCodeTool.FindMainUsesSection;
+  Result:=TStringList(fCodeTool.UsesSectionToUnitnames(UsesNode));
+  UsesNode:=fCodeTool.FindImplementationUsesSection;
+  ImplList:=fCodeTool.UsesSectionToUnitnames(UsesNode);
+  Result.AddStrings(ImplList);
+  ImplList.Free;
 end;
 
 

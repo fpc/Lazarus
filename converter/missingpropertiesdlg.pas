@@ -40,9 +40,9 @@ uses
   // codetools
   BasicCodeTools, CodeCache, CodeToolManager, CodeToolsStructs,
   // IDE
-  IDEDialogs, ComponentReg, PackageIntf, IDEWindowIntf,
+  IDEDialogs, ComponentReg, PackageIntf, IDEWindowIntf, DialogProcs,
   CustomFormEditor, LazarusIDEStrConsts, IDEProcs, OutputFilter,
-  EditorOptions, ConvertSettings, ConvCodeTool, ReplaceNamesUnit, CheckLFMDlg;
+  EditorOptions, ConvertSettings, ReplaceNamesUnit, CheckLFMDlg;
 
 type
 
@@ -225,7 +225,6 @@ end;
 
 function TLFMFixer.ReplaceAndRemoveAll: TModalResult;
 var
-  ConvTool: TConvDelphiCodeTool;
   CurError: TLFMError;
   TheNode: TLFMTreeNode;
   ObjNode: TLFMObjectNode;
@@ -233,15 +232,17 @@ var
   NameReplacements: TStringToStringTree;
   // List of TLFMChangeEntry objects.
   ChgEntryRepl: TObjectList;
+  GridUpdater: TGridUpdater;
   OldIdent, NewIdent: string;
   StartPos, EndPos: integer;
 begin
-  Result:=mrNone;
+  Result:=mrOK;
   ChgEntryRepl:=TObjectList.Create;
   NameReplacements:=TStringToStringTree.Create(false);
+  GridUpdater:=TGridUpdater.Create(NameReplacements, fPropReplaceGrid);
   try
     // Collect (maybe edited) properties from StringGrid to NameReplacements.
-    CopyFromGridToMap(fPropReplaceGrid, NameReplacements);
+    GridUpdater.GridToMap;
     // Replace each missing property / type or delete it if no replacement.
     CurError:=fLFMTree.LastError;
     while CurError<>nil do begin
@@ -274,19 +275,18 @@ begin
       end;
       CurError:=CurError.PrevError;
     end;
-    // Apply replacements to LFM.
-    if ApplyReplacements(ChgEntryRepl) then begin
-      // Replace the object member types also to pascal source.
-      ConvTool:=TConvDelphiCodeTool.Create(fPascalBuffer);
-      try
-        ConvTool.MemberTypesToRename:=NameReplacements;
-        ConvTool.ReplaceMemberTypes(TLFMObjectNode(fLFMTree.Root).TypeName);
-      finally
-        ConvTool.Free;
-      end;
-      Result:=mrOk;
+    // Apply replacement types also to pascal source.
+    if not CodeToolBoss.RetypeClassVariables(fPascalBuffer,
+                TLFMObjectNode(fLFMTree.Root).TypeName, NameReplacements, false)
+    then begin
+      Result:=mrCancel;
+      exit;
     end;
+    // Apply replacements to LFM.
+    if not ApplyReplacements(ChgEntryRepl) then
+      Result:=mrCancel;
   finally
+    GridUpdater.Free;
     NameReplacements.Free;
     ChgEntryRepl.Free;
   end;
@@ -299,7 +299,7 @@ var
   OldIdent: string;
 begin
   fHasMissingObjectTypes:=false;
-  GridUpdater:=TGridUpdater.Create(fPropReplaceGrid, fSettings.ReplaceTypes);
+  GridUpdater:=TGridUpdater.Create(fSettings.ReplaceTypes, fPropReplaceGrid);
   try
     if fLFMTree<>nil then begin
       CurError:=fLFMTree.FirstError;
