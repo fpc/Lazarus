@@ -63,7 +63,7 @@ type
     function FormatItem(const AFormat: String; AIndex: Integer): String;
     procedure ValuesInInterval(
       AMin, AMax: Double; const AFormat: String; AUseY: Boolean;
-      out AValues: TDoubleDynArray; out ATexts: TStringDynArray);
+      out AValues: TDoubleDynArray; out ATexts: TStringDynArray); virtual;
     function ValuesTotal: Double; virtual;
     function XOfMax: Double;
     function XOfMin: Double;
@@ -155,6 +155,18 @@ type
     property XMin: Double read FXMin write SetXMin;
     property YMax: Double read FYMax write SetYMax;
     property YMin: Double read FYMin write SetYMin;
+  end;
+
+  { TIntervalChartSource }
+
+  TIntervalChartSource = class(TCustomChartSource)
+  protected
+    function GetCount: Integer; override;
+    function GetItem(AIndex: Integer): PChartDataItem; override;
+  public
+    procedure ValuesInInterval(
+      AMin, AMax: Double; const AFormat: String; AUseY: Boolean;
+      out AValues: TDoubleDynArray; out ATexts: TStringDynArray); override;
   end;
 
   TUserDefinedChartSource = class;
@@ -749,6 +761,33 @@ begin
   FYMin := AValue;
   InvalidateCaches;
   Notify;
+end;
+
+{ TIntervalChartSource }
+
+function TIntervalChartSource.GetCount: Integer;
+begin
+  Result := 0;
+end;
+
+function TIntervalChartSource.GetItem(AIndex: Integer): PChartDataItem;
+begin
+  Unused(AIndex);
+  Result := nil;
+end;
+
+procedure TIntervalChartSource.ValuesInInterval(
+  AMin, AMax: Double; const AFormat: String; AUseY: Boolean;
+  out AValues: TDoubleDynArray; out ATexts: TStringDynArray);
+var
+  i: Integer;
+begin
+  Unused(AUseY);
+  AValues := GetIntervals(AMin, AMax, false);
+  SetLength(ATexts, Length(AValues));
+  for i := 0 to High(AValues) do
+    // Extra format arguments for compatibility with FormatItem.
+    ATexts[i] := Format(AFormat, [AValues[i], 0.0, '', 0.0, 0.0]);
 end;
 
 { TUserDefinedChartSource }

@@ -84,6 +84,7 @@ type
   TChartAxisMarks = class(
     specialize TGenericChartMarks<TChartAxisBrush, TChartPen, TChartAxisFramePen>)
   private
+    FDefaultSource: TIntervalChartSource;
     FListener: TListener;
     FSource: TCustomChartSource;
     function IsFormatStored: Boolean;
@@ -91,6 +92,8 @@ type
   public
     constructor Create(AOwner: TCustomChart);
     destructor Destroy; override;
+
+    function SourceDef: TCustomChartSource;
   published
     property Distance default 1;
     property Format stored IsFormatStored;
@@ -277,6 +280,7 @@ end;
 constructor TChartAxisMarks.Create(AOwner: TCustomChart);
 begin
   inherited Create(AOwner);
+  FDefaultSource := TIntervalChartSource.Create(AOwner);
   FDistance := 1;
   FFrame.Style := psClear;
   FLabelBrush.Style := bsClear;
@@ -288,6 +292,7 @@ end;
 destructor TChartAxisMarks.Destroy;
 begin
   FListener.Free;
+  FDefaultSource.Free;
   inherited;
 end;
 
@@ -305,6 +310,13 @@ begin
   if FSource <> nil then
     FSource.Broadcaster.Subscribe(FListener);
   StyleChanged(Self);
+end;
+
+function TChartAxisMarks.SourceDef: TCustomChartSource;
+begin
+  Result := FSource;
+  if Result = nil then
+    Result := FDefaultSource;
 end;
 
 { TChartAxis }
@@ -484,15 +496,8 @@ begin
   AMax := GetTransform.GraphToAxis(AMax);
   if AMin > AMax then
     Exchange(AMin, AMax);
-  if Marks.Source = nil then begin
-    FMarkValues := GetIntervals(AMin, AMax, false);
-    SetLength(FMarkTexts, Length(FMarkValues));
-    for i := 0 to High(FMarkValues) do
-      FMarkTexts[i] := Format(Marks.Format, [FMarkValues[i]]);
-  end
-  else
-    Marks.Source.ValuesInInterval(
-      AMin, AMax, Marks.Format, IsVertical, FMarkValues, FMarkTexts);
+  Marks.SourceDef.ValuesInInterval(
+    AMin, AMax, Marks.Format, IsVertical, FMarkValues, FMarkTexts);
   if Inverted then
     for i := 0 to High(FMarkValues) div 2 do begin
       Exchange(FMarkValues[i], FMarkValues[High(FMarkValues) - i]);
