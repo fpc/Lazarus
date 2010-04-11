@@ -262,6 +262,8 @@ begin
   finally
     trvTraceInfo.EndUpdate;
   end;
+  if trvTraceInfo.Items.TopLvlCount = 1 then
+    trvTraceInfo.Items.TopLvlItems[0].Expand(False);
 end;
 
 procedure THeapTrcViewForm.DoJump;

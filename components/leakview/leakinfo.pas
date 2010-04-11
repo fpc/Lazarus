@@ -80,6 +80,7 @@ type
     fParsed   : Boolean;
 
     function PosInTrc(const SubStr: string; CaseSensetive: Boolean = false): Boolean;
+    function IsTraceLine(const SubStr: string): Boolean;
     function TrcNumberAfter(var Num: Int64; const AfterSub: string): Boolean;
     function TrcNumberAfter(var Num: Integer; const AfterSub: string): Boolean;
     function TrcNumFirstAndAfter(var FirstNum, AfterNum: Int64; const AfterSub: string): Boolean;
@@ -113,6 +114,7 @@ end;
 
 const
   CallTracePrefix = 'Call trace for block ';
+  RawTracePrefix = 'Stack trace:';
 
 
 procedure ClearTraceInfo(var TraceInfo: THeapTraceInfo);
@@ -239,6 +241,23 @@ begin
     Result := Pos(UpperCase(SubStr), UpperCase(Trc[TrcIndex]))>0;
 end;
 
+function THeapTrcInfo.IsTraceLine(const SubStr: string): Boolean;
+var
+  i, l: integer;
+begin
+  Result := False;
+  i := 1;
+  l := length(SubStr);
+  while (i <= l) and (SubStr[i] = ' ') do inc(i);
+  if (i > l) or (SubStr[i] <> '$') then exit;
+  inc(i);
+  while (i <= l) and
+        ((SubStr[i] in ['0'..'9']) or ((SubStr[i] in ['A'..'F'])) or ((SubStr[i] in ['a'..'f'])))
+  do inc(i);
+  if (i > l) or (SubStr[i] <> ' ') then exit;
+  Result := Pos('line', SubStr) > 0;
+end;
+
 function THeapTrcInfo.TrcNumberAfter(var Num: Int64; const AfterSub: string): Boolean;
 begin
   Result := TrcIndex<Trc.Count;
@@ -271,13 +290,14 @@ begin
   TraceInfo.ExeName := Trc[TrcIndex];
 
   while (TrcIndex < Trc.Count)
-    and (not (PosInTrc('Heap dump') or  PosInTrc('Stack trace:') or PosInTrc(CallTracePrefix)) )
+    and (not (PosInTrc('Heap dump') or  PosInTrc(RawTracePrefix) or
+              PosInTrc(CallTracePrefix) or IsTraceLine(Trc[TrcIndex]) ))
   do
     inc(TrcIndex);
 
   if TrcIndex >= Trc.Count then Exit;
 
-  if PosInTrc('Stack trace:') then begin
+  if PosInTrc(RawTracePrefix) or IsTraceLine(Trc[TrcIndex]) then begin
     if not Assigned(traces) then Exit;
     st := TStackTrace.Create;
     ParseStackTrace(st); // changes TrcIndex
@@ -332,8 +352,8 @@ var
   err : integer;
   hex : string;
 begin
-  i := Pos('Stack trace:', Trc[TrcIndex]);
-  if i < 0 then begin
+  i := Pos(RawTracePrefix, Trc[TrcIndex]);
+  if (i < 0) and not IsTraceLine(Trc[TrcIndex]) then begin
     i := Pos(CallTracePrefix, Trc[TrcIndex]);
     if i <= 0 then Exit;
 
@@ -351,7 +371,9 @@ begin
   end;
 
   inc(TrcIndex);
-  while (TrcIndex < Trc.Count) and (Pos(CallTracePrefix, Trc[TrcIndex]) = 0) do begin
+  while (TrcIndex < Trc.Count) and (Pos(CallTracePrefix, Trc[TrcIndex]) = 0) and
+        (Pos(RawTracePrefix, Trc[TrcIndex]) = 0)
+  do begin
     if trace.LinesCount = length(trace.Lines) then begin
       if trace.LinesCount = 0 then SetLength(trace.Lines, 4)
       else SetLength(trace.Lines, trace.LinesCount * 2);
