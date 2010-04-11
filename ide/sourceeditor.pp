@@ -3374,7 +3374,6 @@ end;
 
 procedure TSourceEditor.SetExecutionLine(NewLine: integer);
 begin
-  NewLine := EditorComponent.IDEGutterMarks.DebugLineToSourceLine(NewLine);
   if ExecutionLine=NewLine then exit;
   if (FSharedValues.ExecutionMark = nil) then begin
     if NewLine = -1 then

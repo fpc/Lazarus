@@ -1699,7 +1699,7 @@ begin
   Editor := nil;
   if SourceEditorManager <> nil
   then begin
-    Editor := SourceEditorManager.GetActiveSE;
+    Editor := SourceEditorManager.SourceEditorIntfWithFilename(NewSource.Filename);
     SourceEditorManager.ClearExecutionLines;
     SourceEditorManager.ClearErrorLines;
   end;
@@ -1717,7 +1717,7 @@ begin
   then begin
     if not Editor.HasExecutionMarks then
       Editor.FillExecutionMarks;
-    Editor.ExecutionLine := SrcLine;
+    Editor.ExecutionLine := i;
   end;
 end;
 
