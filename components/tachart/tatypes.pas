@@ -262,6 +262,9 @@ type
 
 implementation
 
+uses
+  TASources;
+
 { TChartPen }
 
 procedure TChartPen.Assign(Source: TPersistent);
@@ -494,6 +497,7 @@ end;
 procedure TGenericChartMarks.SetFormat(const AValue: String);
 begin
   if FFormat = AValue then exit;
+  TCustomChartSource.CheckFormat(AValue);
   FFormat := AValue;
   FStyle := High(FStyle);
   while (FStyle > smsCustom) and (SERIES_MARK_FORMATS[FStyle] <> AValue) do

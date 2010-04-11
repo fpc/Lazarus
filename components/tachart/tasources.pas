@@ -59,6 +59,7 @@ type
     procedure EndUpdate;
     function IsUpdating: Boolean; inline;
   public
+    class procedure CheckFormat(const AFormat: String);
     function Extent: TDoubleRect; virtual;
     function FormatItem(const AFormat: String; AIndex: Integer): String;
     procedure ValuesInInterval(
@@ -252,6 +253,11 @@ end;
 procedure TCustomChartSource.BeginUpdate;
 begin
   Inc(FUpdateCount);
+end;
+
+class procedure TCustomChartSource.CheckFormat(const AFormat: String);
+begin
+  Format(AFormat, [0.0, 0.0, '', 0.0, 0.0]);
 end;
 
 constructor TCustomChartSource.Create(AOwner: TComponent);
