@@ -71,7 +71,7 @@ type
     FReplaceText: string;
     fResultsListUpdating: boolean;
     fResultsList: TStrings;
-    fResultsWindow: integer;
+    fResultsWindow: TPage;
     fSearchFileList: TStringList;
     fSearchFiles: boolean;
     fSearchFor: String;
@@ -106,7 +106,7 @@ type
     property ResultsList: TStrings read fResultsList write SetResultsList;
     property SearchMask: string read fMask write fMask;
     property Pad: string read fPad write fPad;
-    property ResultsWindow: integer read fResultsWindow write fResultsWindow;
+    property ResultsWindow: TPage read fResultsWindow write fResultsWindow;
     property PromptOnReplace: boolean read fPromptOnReplace write fPromptOnReplace;// this is asked once and can be changed when prompting
     property Progress: TIDESearchInTextProgress read FProgress;
   end;
@@ -657,7 +657,7 @@ begin
   TrimmedMatch:=StartPos.X;
   TrimmedLines:=TrimLinesAndAdjustPos(Lines,TrimmedMatch);
   //DebugLn(['TSearchForm.OnAddMatch StartPos=',dbgs(StartPos),' EndPos=',dbgs(EndPos),' Lines="',Lines,'"']);
-  SearchResultsView.AddMatch(fResultsWindow,FileName,StartPos,EndPos,
+  SearchResultsView.AddMatch(fResultsWindow.PageIndex,FileName,StartPos,EndPos,
                              TrimmedLines, TrimmedMatch, MatchLen);
   UpdateMatches;
 end;
@@ -885,9 +885,9 @@ end;
 
 procedure TSearchForm.DoSearchAndAddToSearchResults;
 var
-  ListIndex: integer;
+  ListPage: TPage;
 begin
-  ListIndex:=SearchResultsView.AddSearch(SearchText,
+  ListPage:=SearchResultsView.AddSearch(SearchText,
                                          SearchText,
                                          ReplaceText,
                                          SearchDirectory,
@@ -895,10 +895,12 @@ begin
                                          SearchOptions);
 
   try
-    SearchResultsView.BeginUpdate(ListIndex);
-    ResultsList := SearchResultsView.Items[ListIndex];
-    SearchResultsView.Items[ListIndex].Clear;
-    ResultsWindow:= ListIndex;
+    (* BeginUpdate prevents ListPage from being closed,
+      other pages can stil be closed or inserted, so PageIndex can change *)
+    SearchResultsView.BeginUpdate(ListPage.PageIndex);
+    ResultsList := SearchResultsView.Items[ListPage.PageIndex];
+    ResultsList.Clear;
+    ResultsWindow:= ListPage;
     try
       Show;
       // update Window Menu, the OnIdle event does not occur while searching
@@ -910,7 +912,7 @@ begin
                    [mbCancel],0);
     end;
   finally
-    SearchResultsView.EndUpdate(ListIndex);
+    SearchResultsView.EndUpdate(ListPage.PageIndex);
     SearchResultsView.ShowOnTop;
   end;
 end;

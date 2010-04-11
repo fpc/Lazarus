@@ -269,11 +269,11 @@ function ShowIdentifierReferences(
   TreeOfPCodeXYPosition: TAVLTree): TModalResult;
 var
   Identifier: string;
-  OldSearchPageIndex: LongInt;
-  SearchPageIndex: LongInt;
+  OldSearchPageIndex: TPage;
+  SearchPageIndex: TPage;
 begin
   Result:=mrCancel;
-  SearchPageIndex:=-1;
+  SearchPageIndex:=nil;
   try
     // show result
     CodeToolBoss.GetIdentifierAt(DeclarationCode,
@@ -286,19 +286,19 @@ begin
       ExtractFilePath(DeclarationCode.Filename),
       '*.pas;*.pp;*.p;*.inc',
       [fifWholeWord,fifSearchDirectories]);
-    if SearchPageIndex<0 then exit;
+    if SearchPageIndex = nil then exit;
 
     // list results
-    SearchResultsView.BeginUpdate(SearchPageIndex);
+    SearchResultsView.BeginUpdate(SearchPageIndex.PageIndex);
     AddReferencesToResultView(DeclarationCode,DeclarationCaretXY,
-                   DeclarationCode,TreeOfPCodeXYPosition,true,SearchPageIndex);
+                   DeclarationCode,TreeOfPCodeXYPosition,true,SearchPageIndex.PageIndex);
     OldSearchPageIndex:=SearchPageIndex;
-    SearchPageIndex:=-1;
-    SearchResultsView.EndUpdate(OldSearchPageIndex);
+    SearchPageIndex:=nil;
+    SearchResultsView.EndUpdate(OldSearchPageIndex.PageIndex);
     SearchResultsView.ShowOnTop;
   finally
-    if SearchPageIndex>=0 then
-      SearchResultsView.EndUpdate(SearchPageIndex);
+    if SearchPageIndex <> nil then
+      SearchResultsView.EndUpdate(SearchPageIndex.PageIndex);
   end;
 end;
 

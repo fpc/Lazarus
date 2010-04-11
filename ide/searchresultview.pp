@@ -182,13 +182,14 @@ type
     procedure SetItems(Index: Integer; Value: TStrings);
     function GetItems(Index: integer): TStrings;
     procedure SetMaxItems(const AValue: integer);
+    procedure UpdateToolbar;
   public
     function AddSearch(const ResultsName: string;
                        const SearchText: string;
                        const ReplaceText: string;
                        const ADirectory: string;
                        const AMask: string;
-                       const TheOptions: TLazFindInFileSearchOptions): integer;
+                       const TheOptions: TLazFindInFileSearchOptions): TPage;
     function GetSourcePositon: TPoint;
     function GetSourceFileName: string;
     function GetSelectedText: string;
@@ -396,6 +397,7 @@ begin
  CurrentTV := GetTreeView(ResultsNoteBook.PageIndex);
  if Assigned(CurrentTV) then
   SearchInListEdit.Text := CurrentTV.SearchInListPhrases;
+  UpdateToolbar;
 end;
 
 procedure TSearchResultsView.ForwardSearchButtonClick (Sender: TObject );
@@ -633,6 +635,7 @@ begin
   CurrentTV:= GetTreeView(APageIndex);
   if Assigned(CurrentTV) then
     CurrentTV.BeginUpdate;
+  UpdateToolbar;
 end;//BeginUpdate
 
 procedure TSearchResultsView.EndUpdate(APageIndex: integer);
@@ -647,6 +650,7 @@ begin
       CurrentTV.Items[0].Selected:=True;
     end;
   end;
+  UpdateToolbar;
 end;
 
 procedure TSearchResultsView.Parse_Search_Phrases(var slPhrases: TStrings);
@@ -675,8 +679,15 @@ begin
 end;
 
 procedure TSearchResultsView.ClosePage(PageIndex: integer);
+var
+  CurrentTV: TLazSearchResultTV;
 begin
   if (PageIndex<0) or (PageIndex>=ResultsNoteBook.Pages.Count) then exit;
+
+  CurrentTV:= GetTreeView(PageIndex);
+  if Assigned(CurrentTV) and CurrentTV.UpdateState then
+    exit;
+
   ResultsNoteBook.Pages.Delete(PageIndex);
   if ResultsNoteBook.Pages.Count = 0 then
     Hide;
@@ -731,6 +742,21 @@ procedure TSearchResultsView.SetMaxItems(const AValue: integer);
 begin
   if FMaxItems=AValue then exit;
   FMaxItems:=AValue;
+end;
+
+procedure TSearchResultsView.UpdateToolbar;
+var
+  CurrentTV: TLazSearchResultTV;
+  state: Boolean;
+begin
+  CurrentTV:= GetTreeView(ResultsNoteBook.PageIndex);
+  state := Assigned(CurrentTV) and not CurrentTV.UpdateState;
+  SearchAgainButton.Enabled := state;
+  ClosePageButton.Enabled := state;
+  FilterButton.Enabled := state;
+  ForwardSearchButton.Enabled := state;
+  ResetResultsButton.Enabled := state;
+  SearchInListEdit.Enabled := state;
 end;
 
 procedure TSearchResultsView.ResultsNoteBookCloseTabclicked(Sender: TObject);
@@ -796,7 +822,7 @@ function TSearchResultsView.AddSearch(const ResultsName: string;
   const ReplaceText: string;
   const ADirectory: string;
   const AMask: string;
-  const TheOptions: TLazFindInFileSearchOptions): integer;
+  const TheOptions: TLazFindInFileSearchOptions): TPage;
 var
   NewTreeView: TLazSearchResultTV;
   NewPage: LongInt;
@@ -804,7 +830,7 @@ var
   SearchObj: TLazSearch;
   NewPageName: String;
 begin
-  Result:= -1;
+  Result:= nil;
   if Assigned(ResultsNoteBook) then
   begin
     NewPageName:=BeautifyPageName(ResultsName);
@@ -859,7 +885,7 @@ begin
       SearchObj.SearchOptions:= TheOptions;
     end;
     NewTreeView.Skipped:=0;
-    Result:= ResultsNoteBook.PageIndex;
+    Result:= ResultsNoteBook.Page[ResultsNoteBook.PageIndex];
     SearchInListEdit.Clear;
   end;//if
 end;//AddResult
