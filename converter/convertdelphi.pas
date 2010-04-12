@@ -714,7 +714,7 @@ var
   UnitNames: TStringList;
   CTResult: Boolean;
   i, x: Integer;
-  UnitN, FN, s: string;
+  UnitN, s: string;
 begin
   Result:=mrOk;
   UnitUpdater:=TStringMapUpdater.Create(fSettings.ReplaceUnits);
