@@ -40,30 +40,49 @@ interface
 
 uses
   Classes, SysUtils, Process, LCLProc, Forms, Controls, FileUtil, InfoBuild,
-  LazarusIDEStrConsts, CompilerOptions, Project, OutputFilter, UTF8Process;
+  LazarusIDEStrConsts, CompilerOptions, Project, OutputFilter, UTF8Process,
+  LazIDEIntf, ProjectIntf;
 
 type
   TOnCmdLineCreate = procedure(var CmdLine: string; var Abort:boolean)
       of object;
 
+  TBuildProjectData = class
+  public
+    Reason: TCompileReason;
+    Flags: TProjectBuildFlags;
+    CompilerFilename: String;
+    CompilerParams: String;
+  end;
+
   { TCompiler }
 
   TCompiler = class(TObject)
   private
+    FASyncResult: TModalResult;
     FOnCmdLineCreate : TOnCmdLineCreate;
     FOutputFilter: TOutputFilter;
     FTheProcess: TProcessUTF8;
+    FOldCurDir: string;
+    FFinishedCallback: TNotifyEvent;
+    procedure CompilationFinished(Sender: TObject);
+  public
+    // Values stored by caller, to be rtrieved on callback
+    CallerData: TObject;
   public
     constructor Create;
     destructor Destroy; override;
     function Compile(AProject: TProject;
-                   const WorkingDir, CompilerFilename, CompilerParams: string;
-                   BuildAll, SkipLinking, SkipAssembler: boolean): TModalResult;
+                     const WorkingDir, CompilerFilename, CompilerParams: string;
+                     BuildAll, SkipLinking, SkipAssembler: boolean;
+                     aFinishedCallback: TNotifyEvent = nil
+                    ): TModalResult;
     procedure WriteError(const Msg: string);
     property OnCommandLineCreate: TOnCmdLineCreate read FOnCmdLineCreate
                                                    write FOnCmdLineCreate;
     property OutputFilter: TOutputFilter read FOutputFilter write FOutputFilter;
     property TheProcess: TProcessUTF8 read FTheProcess;
+    property ASyncResult: TModalResult read FASyncResult;
   end;
 
 
@@ -75,6 +94,7 @@ implementation
 {------------------------------------------------------------------------------
   TCompiler Constructor
 ------------------------------------------------------------------------------}
+
 constructor TCompiler.Create;
 begin
   inherited Create;
@@ -94,20 +114,22 @@ end;
 ------------------------------------------------------------------------------}
 function TCompiler.Compile(AProject: TProject;
   const WorkingDir, CompilerFilename, CompilerParams: string;
-  BuildAll, SkipLinking, SkipAssembler: boolean): TModalResult;
+  BuildAll, SkipLinking, SkipAssembler: boolean;
+  aFinishedCallback: TNotifyEvent = nil): TModalResult;
 var
   CmdLine : String;
   Abort : Boolean;
-  OldCurDir: string;
 begin
   Result:=mrCancel;
+  FASyncResult:= mrNone;
+  FFinishedCallback := aFinishedCallback;
   DebugLn('TCompiler.Compile WorkingDir="',WorkingDir,'" CompilerFilename="',CompilerFilename,'" CompilerParams="',CompilerParams,'"');
 
   // if we want to show the compile progress, it's now time to show the dialog
   CompileProgress.Show;
 
   // change working directory
-  OldCurDir:=GetCurrentDirUTF8;
+  FOldCurDir:=GetCurrentDirUTF8;
   if not SetCurrentDirUTF8(WorkingDir) then begin
     WriteError('TCompiler.Compile unable to set working directory '+WorkingDir);
     exit;
@@ -166,12 +188,15 @@ begin
         if OutputFilter<>nil then begin
           OutputFilter.Options:=[ofoSearchForFPCMessages,ofoExceptionOnError];
           OutputFilter.CompilerOptions:=AProject.CompilerOptions;
-          OutputFilter.Execute(TheProcess,Self);
+          if aFinishedCallback <> nil then begin
+            OutputFilter.ExecuteAsyncron(TheProcess, @CompilationFinished, Self);
+          end else
+            OutputFilter.Execute(TheProcess,Self);
         end else begin
           TheProcess.Execute;
         end;
       finally
-        if TheProcess.Running then
+        if TheProcess.Running and ((OutputFilter = nil) or (aFinishedCallback = nil)) then
         begin
           TheProcess.WaitOnExit;
           if not (TheProcess.ExitStatus in [0,1]) then  begin
@@ -193,9 +218,25 @@ begin
       end;
     end;
   finally
-    SetCurrentDirUTF8(OldCurDir);
+    SetCurrentDirUTF8(FOldCurDir);
   end;
   DebugLn('[TCompiler.Compile] end');
+end;
+
+procedure TCompiler.CompilationFinished(Sender: TObject);
+begin
+  FASyncResult:= mrOK;
+  if TheProcess.Running then begin
+    TheProcess.WaitOnExit;
+    if not (TheProcess.ExitStatus in [0,1]) then  begin
+      WriteError(Format(listCompilerInternalError,[TheProcess.ExitStatus]));
+      FASyncResult:=mrCancel;
+    end;
+  end;
+  DebugLn('[TCompiler.Compile] Async end');
+
+  if assigned(FFinishedCallback) then
+    FFinishedCallback(Self);
 end;
 
 procedure TCompiler.WriteError(const Msg: string);

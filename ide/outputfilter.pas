@@ -98,13 +98,17 @@ type
     property Filter: TOutputFilter read FFilter;
   end;
 
+  TOutputFilterState = (ofsNone, ofsRunning, ofsSucceded, ofsFailed, ofsAborted);
+
   { TOutputFilter }
 
   TOutputFilter = class
   private
     FAsyncDataAvailable: boolean;
     FAsyncProcessTerminated: boolean;
+    FLastAsyncExecuteTime: TDateTime;
     FCaller: TObject;
+    FFinishedCallback: TNotifyEvent;
     FCompilerOptions: TBaseCompilerOptions;
     FBufferingOutputLock: integer;
     fCurrentDirectory: string;
@@ -122,12 +126,15 @@ type
     fOnAddFilteredLine: TOnAddFilteredLine;
     fOptions: TOuputFilterOptions;
     FScanLine: TOFScanLine;
+    FState: TOutputFilterState;
+    FHasReadErrorLine: Boolean;
     FStopExecute: boolean;
     FLasTOutputLineParts: integer;
     fLastOutputTime: TDateTime;
     fLastSearchedShortIncFilename: string;
     fLastSearchedIncFilename: string;
     fProcess: TProcessUTF8;
+    FAsyncProcess: TAsyncProcess;
     FAsyncOutput: TDynamicDataQueue;
     FScanners: TFPList; // list of TIDEMsgScanner
     FTool: TIDEExternalToolOptions;
@@ -147,7 +154,10 @@ type
     procedure OnAsyncReadData(Sender: TObject);
     function CreateScanners(ScannerOptions: TStrings): boolean;
     procedure ClearScanners;
-  protected    
+    procedure InitExecute;
+    procedure CleanUpExecute;
+    procedure ContinueAsyncExecute(Data: PtrInt);
+  protected
     procedure SetErrorName(errtype: TFPCErrorType; const AValue: String );
     function GetErrorName(errtype: TFPCErrorType): string;
   public
@@ -155,6 +165,10 @@ type
     Aborted: boolean;
     function Execute(TheProcess: TProcessUTF8; aCaller: TObject = nil;
                      aTool: TIDEExternalToolOptions = nil): boolean;
+    function ExecuteAsyncron(TheProcess: TProcessUTF8;
+                             aFinishedCallback: TNotifyEvent;
+                             aCaller: TObject = nil;
+                             aTool: TIDEExternalToolOptions = nil): boolean;
     procedure Clear;
     constructor Create;
     destructor Destroy; override;
@@ -197,7 +211,8 @@ type
     property Tool: TIDEExternalToolOptions read FTool;
     property ScannerCount: integer read GetScannerCount;
     property Scanners[Index: integer]: TIDEMsgScanner read GetScanners;
-    property ErrorTypeName[errType: TFPCErrorType]: string read GetErrorName write SetErrorName; 
+    property ErrorTypeName[errType: TFPCErrorType]: string read GetErrorName write SetErrorName;
+    property State: TOutputFilterState read FState;
   end;
   
   EOutputFilterError = class(Exception)
@@ -219,6 +234,7 @@ implementation
 constructor TOutputFilter.Create;
 begin
   inherited Create;
+  FState := ofsNone;
   fFilteredOutput:=TFilteredOutputLines.Create;
   fOutput:=TIDEMessageLineList.Create;
   fOptions:=[ofoSearchForFPCMessages,ofoSearchForMakeMessages,
@@ -240,6 +256,53 @@ begin
   fLastSearchedIncFilename:='';
 end;
 
+procedure TOutputFilter.InitExecute;
+begin
+  //debugln('TOutputFilter.Execute A CurrentDirectory="',TheProcess.CurrentDirectory,'"');
+  fCurrentDirectory:=TrimFilename(fProcess.CurrentDirectory);
+  if fCurrentDirectory='' then fCurrentDirectory:=GetCurrentDirUTF8;
+  fCurrentDirectory:=AppendPathDelim(fCurrentDirectory);
+
+  ErrorExists:=true;
+  Aborted:=false;
+
+  //Darwin linker features
+  DarwinLinkerMultiline:=false;
+  DarwinLinkerLine:='';
+end;
+
+procedure TOutputFilter.CleanUpExecute;
+begin
+  // workaround for missing TProcess error handling
+  {$IFDEF VerboseOFExecute}
+  WriteLn('TOutputFilter.Execute W2');
+  {$ENDIF}
+  EndBufferingOutput;
+  fProcess:=nil;
+  FAsyncProcess:= nil;
+  {$IFDEF VerboseOFExecute}
+  WriteLn('TOutputFilter.Execute W3');
+  {$ENDIF}
+  FreeAndNil(FAsyncOutput);
+  {$IFDEF VerboseOFExecute}
+  WriteLn('TOutputFilter.Execute W4');
+  {$ENDIF}
+  if Assigned(OnEndReading) then OnEndReading(Self,fOutput);
+  {$IFDEF VerboseOFExecute}
+  WriteLn('TOutputFilter.Execute W5');
+  {$ENDIF}
+  FreeAndNil(FScanLine);
+  {$IFDEF VerboseOFExecute}
+  WriteLn('TOutputFilter.Execute W6');
+  {$ENDIF}
+  FTool:=nil;
+  FCaller:=nil;
+  ClearScanners;
+  {$IFDEF VerboseOFExecute}
+  WriteLn('TOutputFilter.Execute W7');
+  {$ENDIF}
+end;
+
 function TOutputFilter.Execute(TheProcess: TProcessUTF8; aCaller: TObject;
   aTool: TIDEExternalToolOptions): boolean;
 const
@@ -253,28 +316,21 @@ var
   ExceptionMsg: String;
 begin
   Result:=true;
+  if FState = ofsRunning then RaiseGDBException('OutputFilter already running');
+
   Clear;
   fProcess:=TheProcess;
   FCaller:=aCaller;
   FTool:=aTool;
   FScanLine:=TOFScanLine.Create(Self);
-  
-  //debugln('TOutputFilter.Execute A CurrentDirectory="',TheProcess.CurrentDirectory,'"');
-  fCurrentDirectory:=TrimFilename(fProcess.CurrentDirectory);
-  if fCurrentDirectory='' then fCurrentDirectory:=GetCurrentDirUTF8;
-  fCurrentDirectory:=AppendPathDelim(fCurrentDirectory);
-  SetLength(Buf,BufSize);
 
+  InitExecute;
+
+  SetLength(Buf,BufSize);
   OutputLine:='';
-  ErrorExists:=true;
-  Aborted:=false;
   TheAsyncProcess:=nil;
   EndUpdateNeeded:=false;
   ExceptionMsg:='';
-
-  //Darwin linker features
-  DarwinLinkerMultiline:=false;
-  DarwinLinkerLine:='';
 
   try
     BeginBufferingOutput;
@@ -378,41 +434,180 @@ begin
         ExceptionMsg:='the process exited with error code '+dbgs(fProcess.ExitStatus);
     end;
   finally
-    // workaround for missing TProcess error handling
     {$IFDEF VerboseOFExecute}
     WriteLn('TOutputFilter.Execute W1');
     {$ENDIF}
     if EndUpdateNeeded then
       EndUpdate;
-    {$IFDEF VerboseOFExecute}
-    WriteLn('TOutputFilter.Execute W2');
-    {$ENDIF}
-    EndBufferingOutput;
-    fProcess:=nil;
-    {$IFDEF VerboseOFExecute}
-    WriteLn('TOutputFilter.Execute W3');
-    {$ENDIF}
-    FreeAndNil(FAsyncOutput);
-    {$IFDEF VerboseOFExecute}
-    WriteLn('TOutputFilter.Execute W4');
-    {$ENDIF}
-    if Assigned(OnEndReading) then OnEndReading(Self,fOutput);
-    {$IFDEF VerboseOFExecute}
-    WriteLn('TOutputFilter.Execute W5');
-    {$ENDIF}
-    FreeAndNil(FScanLine);
-    {$IFDEF VerboseOFExecute}
-    WriteLn('TOutputFilter.Execute W6');
-    {$ENDIF}
-    FTool:=nil;
-    FCaller:=nil;
-    ClearScanners;
-    {$IFDEF VerboseOFExecute}
-    WriteLn('TOutputFilter.Execute W7');
-    {$ENDIF}
+    CleanUpExecute;
   end;
   if ExceptionMsg<>'' then
     raise EOutputFilterError.Create(ExceptionMsg);
+end;
+
+function TOutputFilter.ExecuteAsyncron(TheProcess: TProcessUTF8;
+  aFinishedCallback: TNotifyEvent; aCaller: TObject; aTool: TIDEExternalToolOptions): boolean;
+begin
+  Result := False;
+  if FState = ofsRunning then RaiseGDBException('OutputFilter already running');
+  FState := ofsRunning;
+  FHasReadErrorLine := False;
+
+  Clear;
+  fProcess:=TheProcess;
+  FCaller:=aCaller;
+  FFinishedCallback := aFinishedCallback;
+  FTool:=aTool;
+  FScanLine:=TOFScanLine.Create(Self);
+
+  InitExecute;
+
+  try
+    BeginBufferingOutput;
+
+    // create custom scanners
+    ClearScanners;
+    if (Tool<>nil) and (Tool.Scanners<>nil)
+    and (not CreateScanners(Tool.Scanners)) then
+      exit;
+
+    //debugln(['TOutputFilter.Execute ',dbgsname(fProcess)]);
+    if fProcess is TAsyncProcess then begin
+      FAsyncProcess:=TAsyncProcess(fProcess);
+      FAsyncProcess.OnReadData:=@OnAsyncReadData;
+      FAsyncProcess.OnTerminate:=@OnAsyncTerminate;
+      FAsyncOutput:=TDynamicDataQueue.Create;
+    end;
+
+    fProcess.Execute;
+    Result := True;
+    FLastAsyncExecuteTime := Now;
+  finally
+    if Result then
+      Application.QueueAsyncCall(@ContinueAsyncExecute, 0)
+    else begin
+      CleanUpExecute;
+      FState := ofsFailed;
+      FFinishedCallback(Self);
+    end;
+  end;
+end;
+
+procedure TOutputFilter.ContinueAsyncExecute(Data: PtrInt);
+  procedure CheckTermintedProcess;
+  begin
+    if fProcess.WaitOnExit then begin
+      //DebugLn('TOutputFilter.Execute fProcess.ExitStatus=',dbgs(fProcess.ExitStatus));
+      if fProcess.ExitStatus=0 then
+        ErrorExists:=false;
+    end;
+  end;
+
+const
+  BufSize = 4096;
+var
+  i, Count, LineStart : longint;
+  OutputLine, Buf : String;
+  AsyncExecuteTime: TDateTime;
+begin
+  try
+    if FState <> ofsRunning then exit;
+
+    if StopExecute then begin
+      try
+        fProcess.Terminate(0);
+        Aborted:=true;
+        ReadConstLine('aborted',true);
+        CheckTermintedProcess;
+      finally
+        FState := ofsAborted;
+        CleanUpExecute;
+        FFinishedCallback(Self);
+      end;
+      exit;
+    end;
+
+    AsyncExecuteTime:=Now;
+    SetLength(Buf,BufSize);
+    OutputLine:='';
+    try
+      BeginUpdate;
+
+      repeat
+        // Read data
+        Count:=0;
+        if (FAsyncProcess<>nil) then begin
+          // using non blocking TAsyncProcess
+          Count:=FAsyncOutput.Size;
+          if Count>0 then
+            Count:=FAsyncOutput.Pop(Buf[1],Min(Count,length(Buf)))
+          else if AsyncProcessTerminated then begin
+            Count:=FAsyncProcess.NumBytesAvailable;
+            if Count>0 then begin
+              Count:=fProcess.Output.Read(Buf[1],Min(Count,length(Buf)));
+            end else begin
+              FState := ofsSucceded;
+              break;
+            end;
+          end else begin
+            // no new input, but process still running
+            Sleep(30);
+          end;
+        end;
+        if (FAsyncProcess=nil) and (fProcess.Output<>nil) then begin
+          // using a blocking TProcess
+          Count:=fProcess.Output.Read(Buf[1],length(Buf));
+          if Count=0 then begin
+            // no output on blocking means, process has ended
+            FState := ofsSucceded;
+            break;
+          end;
+        end;
+        //DebugLn('TOutputFilter.Execute Count=',dbgs(Count));
+
+        LineStart:=1;
+        i:=1;
+        while i<=Count do begin
+          if Buf[i] in [#10,#13] then begin
+            OutputLine:=OutputLine+copy(Buf,LineStart,i-LineStart);
+            ReadLine(OutputLine,false);
+            if fLastErrorType in [etFatal, etPanic, etError] then begin
+              FHasReadErrorLine := True;
+            end;
+            OutputLine:='';
+            if (i<Count) and (Buf[i+1] in [#10,#13]) and (Buf[i]<>Buf[i+1])
+            then
+              inc(i);
+            LineStart:=i+1;
+          end;
+          inc(i);
+        end;
+        OutputLine:=OutputLine+copy(Buf,LineStart,Count-LineStart+1);
+
+      // Repeat, if we did have something to read
+      until (Count = 0) or  (abs(Now - FLastAsyncExecuteTime) > ((1/86400)/15));
+
+      if not(FState = ofsRunning) then
+        CheckTermintedProcess;
+    finally
+      FLastAsyncExecuteTime := AsyncExecuteTime;
+      if (FState = ofsSucceded) and FHasReadErrorLine then
+      FState := ofsFailed;
+      EndUpdate;
+      if FState = ofsRunning then
+        Application.QueueAsyncCall(@ContinueAsyncExecute, 0)
+      else begin
+        CleanUpExecute;
+        FFinishedCallback(Self);
+      end;
+    end;
+
+  except
+    try
+      fProcess.Terminate(0);
+    except end;
+    FFinishedCallback(Self);
+  end;
 end;
 
 procedure TOutputFilter.ReadLine(var s: string; DontFilterLine: boolean);
@@ -1280,7 +1475,7 @@ begin
   end;
 end;
 
-procedure TOutputFilter.SetErrorName(errType: TFPCErrorType; const AValue: String); 
+procedure TOutputFilter.SetErrorName(errType: TFPCErrorType; const AValue: String);
 begin
   FErrorNames[errType]:=AValue;
 end;
