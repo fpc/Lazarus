@@ -2,7 +2,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: \n"
 "POT-Creation-Date: \n"
-"PO-Revision-Date: 2010-04-05 21:26+0100\n"
+"PO-Revision-Date: 2010-04-10 20:57+0100\n"
 "Last-Translator: Joerg Braun <jb@toolbox-mag.de>\n"
 "Language-Team: Deutsch <lazarus@miraclec.com>\n"
 "MIME-Version: 1.0\n"
@@ -1329,7 +1329,6 @@ msgid "Codetools"
 msgstr "Codetools"
 
 #: lazarusidestrconsts.dlggroupdebugger
-msgctxt "lazarusidestrconsts.dlggroupdebugger"
 msgid "Debugger"
 msgstr "Debugger"
 
@@ -4238,19 +4237,19 @@ msgstr "S&chließen"
 
 #: lazarusidestrconsts.lisclosealltabsclose
 msgid "Close files"
-msgstr ""
+msgstr "Dateien schließen"
 
 #: lazarusidestrconsts.lisclosealltabshide
 msgid "Hide window"
-msgstr ""
+msgstr "Verstecke Fenster"
 
 #: lazarusidestrconsts.lisclosealltabsquestion
 msgid "Closing a Source Editor Window. Do you want close all files or hide the window?"
-msgstr ""
+msgstr "Ein Quelltextfenster wird geschlossen. Sollen alle Dateien geschlossen oder das Fenster versteckt werden?"
 
 #: lazarusidestrconsts.lisclosealltabstitle
 msgid "Close Source Editor Window"
-msgstr ""
+msgstr "Schließen des Quelltexteditors"
 
 #: lazarusidestrconsts.liscmdlinelclinterfacespecificoptions
 msgid "LCL Interface specific options:"
@@ -5464,11 +5463,6 @@ msgstr "Haltepunkt"
 msgid "Clear log on run"
 msgstr "Protokoll beim Start löschen"
 
-#: lazarusidestrconsts.lisdebugoptionsfrmdebugger
-msgctxt "lazarusidestrconsts.lisdebugoptionsfrmdebugger"
-msgid "Debugger"
-msgstr "Debugger"
-
 #: lazarusidestrconsts.lisdebugoptionsfrmdebuggergeneraloptions
 msgid "Debugger general options"
 msgstr "Allgemeine Debuggereinstellungen"
@@ -5508,6 +5502,10 @@ msgstr "ID"
 #: lazarusidestrconsts.lisdebugoptionsfrmignoretheseexceptions
 msgid "Ignore these exceptions"
 msgstr "Diese Ausnahmen übergehen"
+
+#: lazarusidestrconsts.lisdebugoptionsfrminterface
+msgid "Interface"
+msgstr "Interface"
 
 #: lazarusidestrconsts.lisdebugoptionsfrmlanguageexceptions
 msgid "Language Exceptions"
@@ -7757,10 +7755,6 @@ msgstr "Ansicht des Code-Explorers umschalten"
 msgid "Toggle view component palette"
 msgstr "Ansicht der Komponentenpalette umschalten"
 
-#: lazarusidestrconsts.liskmtoggleviewdebugevents
-msgid "Toggle view Debug Events"
-msgstr ""
-
 #: lazarusidestrconsts.liskmtoggleviewdebuggeroutput
 msgid "Toggle view Debugger Output"
 msgstr "Ansicht der Debugger-Ausgabe umschalten"
@@ -9191,10 +9185,6 @@ msgstr "Komponentenpalette anzeigen"
 #: lazarusidestrconsts.lismenuviewcomponents
 msgid "&Components"
 msgstr "&Komponenten"
-
-#: lazarusidestrconsts.lismenuviewdebugevents
-msgid "Debug events"
-msgstr ""
 
 #: lazarusidestrconsts.lismenuviewdebugoutput
 msgid "Debug output"

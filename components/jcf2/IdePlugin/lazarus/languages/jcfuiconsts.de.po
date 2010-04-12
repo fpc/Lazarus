@@ -9,26 +9,6 @@ msgstr ""
 "MIME-Version: 1.0\n"
 "Content-Transfer-Encoding: 8bit\n"
 
-#: jcfuiconsts.lisaboutaboutjedicodeformat
-msgid "About JEDI Code Format"
-msgstr ""
-
-#: jcfuiconsts.lisaboutfindmoreinformationonthewebat
-msgid "Find more information on the web at: %s"
-msgstr ""
-
-#: jcfuiconsts.lisaboutthisprogramisopensource
-msgid "This program is open source software. It is released under the Mozilla Public Licence (MPL).  http://www.mozilla.org/MPL"
-msgstr ""
-
-#: jcfuiconsts.lisaboutthisprogramisstillunderdevelopment
-msgid "This program is still under development. In spite of thorough testing and removal of reported bugs, no guarantees are given. Please make backups, or better yet use a source control system."
-msgstr ""
-
-#: jcfuiconsts.lisaboutversion
-msgid "Version $VERSION$%s$DATE$%s%sThis program attempts to standardise and make readable the layout of any Delphi Object-Pascal source code.%s%sCopyright Anthony Steele 1999-2008"
-msgstr ""
-
 #: jcfuiconsts.lisalignalign
 msgid "Align"
 msgstr "Ausrichtung"
@@ -87,43 +67,43 @@ msgstr "Auswahl der Neuausrichtung"
 
 #: jcfuiconsts.lisasmasm
 msgid "Asm"
-msgstr ""
+msgstr "Asm"
 
 #: jcfuiconsts.lisasmbreaksafterlabel
 msgid "&Breaks after label"
-msgstr ""
+msgstr "&Umbüche nach Labels"
 
 #: jcfuiconsts.lisasmcapitalization
 msgid "&Capitalization"
-msgstr ""
+msgstr "&Schreibung"
 
 #: jcfuiconsts.lisasmenabled
 msgid "&Enabled"
-msgstr ""
+msgstr "&Eingeschaltet"
 
 #: jcfuiconsts.lisasmenabled2
 msgid "E&nabled"
-msgstr ""
+msgstr "Ei&ngeschaltet"
 
 #: jcfuiconsts.lisasmenabled3
 msgid "En&abled"
-msgstr ""
+msgstr "Eingesch&altet"
 
 #: jcfuiconsts.lisasmindent
 msgid "Indent"
-msgstr ""
+msgstr "Einrückung"
 
 #: jcfuiconsts.lisasmnumberofbreaks
 msgid "N&umber of breaks"
-msgstr ""
+msgstr "Zahl der Umbrüche"
 
 #: jcfuiconsts.lisasmparamsindents
 msgid "&Params Indents"
-msgstr ""
+msgstr "&Parametereinrückung"
 
 #: jcfuiconsts.lisasmstatementindents
 msgid "&Statement Indents"
-msgstr ""
+msgstr "&Befehlseinrückung"
 
 #: jcfuiconsts.lisblafterprocedureheader
 msgid "After procedure header"
@@ -179,7 +159,7 @@ msgstr "Blöcke ohne Begin"
 
 #: jcfuiconsts.lisblockselsebegin
 msgid "Else begin"
-msgstr ""
+msgstr "Else gein"
 
 #: jcfuiconsts.lisblocksuseanewlineinblocksat
 msgid "Use a new line in blocks at:"
@@ -565,7 +545,7 @@ msgstr ""
 
 #: jcfuiconsts.lisprpsymbolsdefinedforconditionalcompilation
 msgid "Symbols defined for conditional compilation:"
-msgstr ""
+msgstr "Für bedingte Kompilierung definierte Symbole:"
 
 #: jcfuiconsts.lisreturnsafteruses
 msgid "After uses"
@@ -763,75 +743,76 @@ msgstr "Die Konfigurationsdatei »%s« fehlt.%sDer Formatierer arbeitet mit eine
 
 #: jcfuiconsts.listransformaddbeginandendtosinglestatements
 msgid "Add begin and end to single statements"
-msgstr ""
+msgstr "Begin und End zu Einzelanweisungen hinzufügen"
 
 #: jcfuiconsts.listransformaddorremovebeginandendfromsinglestatements
 msgid "Add or Remove &begin and end from single statements"
-msgstr ""
+msgstr "&Begin und End bei Einzelanweisungen hinzufügen/entfernen"
 
 #: jcfuiconsts.listransformalphabetic
 msgid "Alphabetic"
-msgstr ""
+msgstr "Alphabetisch"
 
 #: jcfuiconsts.listransformbreakoncomment
 msgid "Break on &comment"
-msgstr ""
+msgstr "An Kommentar umbrechen"
 
 #: jcfuiconsts.listransformbreakonreturn
+#, fuzzy
 msgid "Break on &return"
-msgstr ""
+msgstr "An Rückkehr umbrechen"
 
 #: jcfuiconsts.listransformleavebeginandendasis
 msgid "Leave begin and end as is"
-msgstr ""
+msgstr "Begin und End beibehalten"
 
 #: jcfuiconsts.listransformlongesttoshortest
 msgid "Longest to shortest"
-msgstr ""
+msgstr "Von lang nach kurz"
 
 #: jcfuiconsts.listransformonlywithnocomments
 msgid "Only with no comments"
-msgstr ""
+msgstr "Nur ohne Kommentare"
 
 #: jcfuiconsts.listransformputsemicolonsafterlaststatementinablock
 msgid "Put &semicolons after last statement in a block"
-msgstr ""
+msgstr "Strichpunkt hinter letzten Befehl in einem Block anfügen"
 
 #: jcfuiconsts.listransformremovebeginandendfromaroundsinglestatements
 msgid "Remove begin and end from around single statements"
-msgstr ""
+msgstr "Begin und End bei Einzelanweisungen entfernen"
 
 #: jcfuiconsts.listransformreversealphabetic
 msgid "Reverse Alphabetic"
-msgstr ""
+msgstr "Umgekehrt alphabetisch"
 
 #: jcfuiconsts.listransformshortesttolongest
 msgid "Shortest to longest"
-msgstr ""
+msgstr "Von kurz nach lang"
 
 #: jcfuiconsts.listransformsortimplementationuses
 msgid "Sort i&mplementation uses"
-msgstr ""
+msgstr "Uses in der I&mplementation sortieren"
 
 #: jcfuiconsts.listransformsortinterfaceuses
 msgid "Sort i&nterface uses"
-msgstr ""
+msgstr "Uses im &Interface sortieren"
 
 #: jcfuiconsts.listransformsortprogramuses
 msgid "Sort &program uses"
-msgstr ""
+msgstr "Uses des &Programms sortieren"
 
 #: jcfuiconsts.listransformsortusesclauses
 msgid "Sort &uses clauses"
-msgstr ""
+msgstr "&Uses-Anweisung sortieren"
 
 #: jcfuiconsts.listransformtransform
 msgid "Transform"
-msgstr ""
+msgstr "Umwandlung"
 
 #: jcfuiconsts.listransformusessortorder
 msgid "Uses sort &order"
-msgstr ""
+msgstr "Uses-S&ortierreihenfolge"
 
 #: jcfuiconsts.lisusesinsertintoimplementation
 msgid "Insert into Implementation"
@@ -851,7 +832,7 @@ msgstr "Ersetzen"
 
 #: jcfuiconsts.lisusesuses
 msgid "Uses"
-msgstr ""
+msgstr "Uses"
 
 #: jcfuiconsts.liswarningsignoreunusedparametersnamed
 msgid "&Ignore unused parameters named:"
