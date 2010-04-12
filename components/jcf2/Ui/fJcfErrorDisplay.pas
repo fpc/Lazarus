@@ -58,7 +58,7 @@ implementation
 
 uses
   { local }
-  ParseError, JcfStringUtils, JcfFontSetFunctions;
+  ParseError, JcfStringUtils, JcfFontSetFunctions, jcfuiconsts;
 
 {$ifndef FPC}
   {$R *.dfm}
@@ -105,28 +105,27 @@ begin
   begin
     lcParseError := TEParseError(pE);
 
-    Caption := 'JCF Parse error';
-    mExceptionMessage.Text := lcParseError.Message + ' near ' +
-      lcParseError.TokenMessage;
+    Caption := lisEDJCFParseError;
+    mExceptionMessage.Text := Format(lisEDNear,[lcParseError.Message,
+      lcParseError.TokenMessage]);
 
     if (lcParseError.XPosition > 0) or (lcParseError.YPosition > 0) then
     begin
-      mExceptionMessage.Text := mExceptionMessage.Text + NativeLineBreak +
-        'At line ' + IntToStr(lcParseError.YPosition) + ' col ' +
-        IntToStr(lcParseError.XPosition);
+      mExceptionMessage.Text := Format(lisEDAtLineCol,[mExceptionMessage.Text +
+        NativeLineBreak,IntToStr(lcParseError.YPosition),IntToStr(lcParseError.
+        XPosition)]);
 
       if lcParseError.FileName <> '' then
         mExceptionMessage.Text :=
-          mExceptionMessage.Text + ' in ' + lcParseError.FileName;
+          Format(lisEDIn,[mExceptionMessage.Text,lcParseError.FileName]);
     end;
   end
   else
   begin
-    Caption := 'Exception ' + pE.ClassName;
-    mExceptionMessage.Text := 'Type: ' + pE.ClassName + NativeLineBreak;
-    mExceptionMessage.Text := mExceptionMessage.Text + pE.Message;
+    Caption := Format(lisEDException,[pE.ClassName]);
+    mExceptionMessage.Text := Format(lisEDType,[pE.ClassName + NativeLineBreak,
+      pE.Message]);
   end;
-
 
   ShowModal;
 end;
@@ -137,13 +136,13 @@ begin
   if psCaption <> '' then
     Caption := psCaption
   else
-    Caption := 'Error';
+    Caption := lisEDError;
 
   mExceptionMessage.Text := sMessage;
   if (piY > 0) or (piX > 0) then
   begin
-    mExceptionMessage.Text := mExceptionMessage.Text + NativeLineBreak +
-      ' at line ' + IntToStr(piY) + ' col ' + IntToStr(piX);
+    mExceptionMessage.Text := Format(lisEDAtLineCol,[mExceptionMessage.Text +
+      NativeLineBreak,IntToStr(piY),IntToStr(piX)]);
   end;
 
   ShowModal;

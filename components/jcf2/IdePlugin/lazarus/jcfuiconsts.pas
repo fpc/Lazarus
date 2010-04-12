@@ -301,6 +301,15 @@ resourcestring
   lisAboutFindMoreInformationOnTheWebAt = 'Find more information on the web '
     +'at: %s';
 
+  //Error Display dialog
+  lisEDJCFParseError = 'JCF Parse error';
+  lisEDNear = '%s near %s';
+  lisEDAtLineCol = '%sAt line %s col %s';
+  lisEDIn = '%s in %s';
+  lisEDException = 'Exception %s';
+  lisEDType = 'Type: %s%s';
+  lisEDError = 'Error';
+
 implementation
 
 end.
