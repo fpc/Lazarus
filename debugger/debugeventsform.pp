@@ -46,13 +46,13 @@ type
     imlMain: TImageList;
     lstFilteredEvents: TListView;
     procedure ckgFilterItemClick(Sender: TObject; Index: integer);
-    procedure FormCreate(Sender: TObject);
-    procedure FormDestroy(Sender: TObject);
   private
     FEvents: TStringList;
     FFilter: TDBGEventCategories;
     procedure UpdateFilteredList;
   public
+    constructor Create(AOwner: TComponent); override;
+    destructor Destroy; override;
     procedure SetEvents(const AEvents: TStrings; const AFilter: TDBGEventCategories);
     procedure GetEvents(const AResultEvents: TStrings; var AResultFilter: TDBGEventCategories);
     procedure Clear;
@@ -65,20 +65,6 @@ implementation
 
 { TDbgEventsForm }
 
-procedure TDbgEventsForm.FormCreate(Sender: TObject);
-begin
-  Caption := lisMenuViewDebugEvents;
-  FEvents := TStringList.Create;
-  ckgFilter.Items.Clear;
-  ckgFilter.Items.Add(lisDebugOptionsFrmBreakpoint);
-  ckgFilter.Items.Add(lisDebugOptionsFrmProcess);
-  ckgFilter.Items.Add(lisDebugOptionsFrmThread);
-  ckgFilter.Items.Add(lisDebugOptionsFrmModule);
-  ckgFilter.Items.Add(lisDebugOptionsFrmOutput);
-  ckgFilter.Items.Add(lisDebugOptionsFrmWindow);
-  ckgFilter.Items.Add(lisDebugOptionsFrmDebugger);
-end;
-
 procedure TDbgEventsForm.ckgFilterItemClick(Sender: TObject; Index: integer);
 begin
   if ckgFilter.Checked[Index] then
@@ -86,11 +72,6 @@ begin
   else
     Exclude(FFilter, TDBGEventCategory(Index));
   UpdateFilteredList;
-end;
-
-procedure TDbgEventsForm.FormDestroy(Sender: TObject);
-begin
-  FreeAndNil(FEvents);
 end;
 
 procedure TDbgEventsForm.UpdateFilteredList;
@@ -160,6 +141,27 @@ procedure TDbgEventsForm.Clear;
 begin
   FEvents.Clear;
   lstFilteredEvents.Clear;
+end;
+
+constructor TDbgEventsForm.Create(AOwner: TComponent);
+begin
+  inherited Create(AOwner);
+  Caption := lisMenuViewDebugEvents;
+  FEvents := TStringList.Create;
+  ckgFilter.Items.Clear;
+  ckgFilter.Items.Add(lisDebugOptionsFrmBreakpoint);
+  ckgFilter.Items.Add(lisDebugOptionsFrmProcess);
+  ckgFilter.Items.Add(lisDebugOptionsFrmThread);
+  ckgFilter.Items.Add(lisDebugOptionsFrmModule);
+  ckgFilter.Items.Add(lisDebugOptionsFrmOutput);
+  ckgFilter.Items.Add(lisDebugOptionsFrmWindow);
+  ckgFilter.Items.Add(lisDebugOptionsFrmDebugger);
+end;
+
+destructor TDbgEventsForm.Destroy;
+begin
+  FreeAndNil(FEvents);
+  inherited Destroy;
 end;
 
 procedure TDbgEventsForm.AddEvent(const ACategory: TDBGEventCategory; const AText: String);

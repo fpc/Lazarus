@@ -1,16 +1,14 @@
 inherited DbgEventsForm: TDbgEventsForm
-  Left = 510
+  Left = 514
   Height = 348
-  Top = 192
+  Top = 228
   Width = 577
   ActiveControl = ckgFilter.CheckBox0
   ClientHeight = 348
   ClientWidth = 577
-  OnCreate = FormCreate
-  OnDestroy = FormDestroy
   object ckgFilter: TCheckGroup[0]
     Left = 0
-    Height = 50
+    Height = 48
     Top = 0
     Width = 577
     Align = alTop
@@ -45,8 +43,8 @@ inherited DbgEventsForm: TDbgEventsForm
   end
   object lstFilteredEvents: TListView[1]
     Left = 0
-    Height = 298
-    Top = 50
+    Height = 300
+    Top = 48
     Width = 577
     Align = alClient
     Columns = <    
