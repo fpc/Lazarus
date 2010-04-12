@@ -2,7 +2,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: \n"
 "POT-Creation-Date: \n"
-"PO-Revision-Date: 2010-04-10 20:57+0100\n"
+"PO-Revision-Date: 2010-04-12 13:40+0100\n"
 "Last-Translator: Joerg Braun <jb@toolbox-mag.de>\n"
 "Language-Team: Deutsch <lazarus@miraclec.com>\n"
 "MIME-Version: 1.0\n"
@@ -178,7 +178,7 @@ msgstr "Randtrenner"
 
 #: lazarusidestrconsts.dlgaddhiattrhighlightall
 msgid "Incremental others"
-msgstr ""
+msgstr "Inkrementell weitersuchen"
 
 #: lazarusidestrconsts.dlgaddhiattrhighlightword
 msgid "Highlight current word"
@@ -1220,7 +1220,7 @@ msgstr "Var/Type (global)"
 
 #: lazarusidestrconsts.dlgfoldxmlcdata
 msgid "CData"
-msgstr ""
+msgstr "CData-Abschnitt"
 
 #: lazarusidestrconsts.dlgfoldxmlcomment
 msgid "Comment"
