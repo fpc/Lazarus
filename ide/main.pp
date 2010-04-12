@@ -10648,7 +10648,6 @@ begin
       CompileProgress.Ready(lisInfoBuildError);
       exit;
     end;
-    CallerData.Free;
 
     // update project .po file
     State:=UpdateProjectPOFile(Project1);
@@ -10678,6 +10677,7 @@ begin
     CompileProgress.Ready(lisInfoBuildSuccess);
   finally
     DoCheckFilesOnDisk;
+    CallerData.Free;
   end;
 
   if EnvironmentOptions.MsgViewFocus then
