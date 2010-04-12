@@ -128,6 +128,7 @@ type
     FScanLine: TOFScanLine;
     FState: TOutputFilterState;
     FHasReadErrorLine: Boolean;
+    FHasRaisedException: boolean;
     FStopExecute: boolean;
     FLasTOutputLineParts: integer;
     fLastOutputTime: TDateTime;
@@ -185,6 +186,7 @@ type
     procedure EndBufferingOutput;
     procedure BeginUpdate;
     procedure EndUpdate;
+    procedure RaiseOutputFilterError(const Msg: string);
   public
     property CurrentDirectory: string read fCurrentDirectory
                                       write fCurrentDirectory;
@@ -442,7 +444,7 @@ begin
     CleanUpExecute;
   end;
   if ExceptionMsg<>'' then
-    raise EOutputFilterError.Create(ExceptionMsg);
+    RaiseOutputFilterError(ExceptionMsg);
 end;
 
 function TOutputFilter.ExecuteAsyncron(TheProcess: TProcessUTF8;
@@ -452,6 +454,7 @@ begin
   if FState = ofsRunning then RaiseGDBException('OutputFilter already running');
   FState := ofsRunning;
   FHasReadErrorLine := False;
+  FHasRaisedException := False;
 
   Clear;
   fProcess:=TheProcess;
@@ -592,7 +595,7 @@ begin
     finally
       FLastAsyncExecuteTime := AsyncExecuteTime;
       if (FState = ofsSucceded) and FHasReadErrorLine then
-      FState := ofsFailed;
+        FState := ofsFailed;
       EndUpdate;
       if FState = ofsRunning then
         Application.QueueAsyncCall(@ContinueAsyncExecute, 0)
@@ -785,7 +788,7 @@ var i, j, FilenameEndPos: integer;
       end;
       DoAddFilteredLine(NewLine);
       if (ofoExceptionOnError in Options) then
-        raise EOutputFilterError.Create(NewLine);
+        RaiseOutputFilterError(NewLine);
       Result:=true;
       exit;
     end;
@@ -1209,8 +1212,7 @@ begin
         
       if (ofoExceptionOnError in Options) and (MsgType in [etPanic, etFatal])
       then
-        raise EOutputFilterError.Create(Msg);
-        
+        RaiseOutputFilterError(Msg);
       Result:=true;
       exit;
     end;
@@ -1565,7 +1567,7 @@ begin
       DoAddFilteredLine(s);
       if CompareText(copy(MakeMsg,1,5),'Error')=0 then
         if (ofoExceptionOnError in Options) then
-          raise EOutputFilterError.Create(s);
+          RaiseOutputFilterError(s);
       exit;
     end;
   end
@@ -1637,6 +1639,13 @@ end;
 procedure TOutputFilter.EndUpdate;
 begin
   if Assigned(OnEndUpdate) then OnEndUpdate(Self);
+end;
+
+procedure TOutputFilter.RaiseOutputFilterError(const Msg: string);
+begin
+  if FHasRaisedException then exit;
+  FHasRaisedException:=true;
+  raise EOutputFilterError.Create(Msg);
 end;
 
 { TFilteredOutputLines }
