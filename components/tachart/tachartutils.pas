@@ -790,7 +790,7 @@ var
 begin
   for i := 0 to Count - 1 do
     TListener(Items[i]).Forget;
-  inherited Destroy;
+  inherited;
 end;
 
 procedure TBroadcaster.Subscribe(AListener: TListener);

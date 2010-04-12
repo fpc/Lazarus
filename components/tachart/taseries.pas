@@ -325,7 +325,7 @@ type
 implementation
 
 uses
-  GraphMath, Math, PropEdits, Types;
+  GraphMath, Math, PropEdits, SysUtils, Types;
 
 { TLineSeries }
 
@@ -353,9 +353,9 @@ end;
 
 destructor TLineSeries.Destroy;
 begin
-  FLinePen.Free;
-  FPointer.Free;
-  inherited Destroy;
+  FreeAndNil(FLinePen);
+  FreeAndNil(FPointer);
+  inherited;
 end;
 
 procedure TLineSeries.Draw(ACanvas: TCanvas);
@@ -480,8 +480,8 @@ end;
 
 destructor TLine.Destroy;
 begin
-  inherited Destroy;
-  FPen.Free;
+  FreeAndNil(FPen);
+  inherited;
 end;
 
 procedure TLine.Draw(ACanvas: TCanvas);
@@ -701,9 +701,9 @@ end;
 
 destructor TBarSeries.Destroy;
 begin
-  FBarPen.Free;
-  FBarBrush.Free;
-  inherited Destroy;
+  FreeAndNil(FBarPen);
+  FreeAndNil(FBarBrush);
+  inherited;
 end;
 
 procedure TBarSeries.Draw(ACanvas: TCanvas);
@@ -951,9 +951,9 @@ end;
 
 destructor TAreaSeries.Destroy;
 begin
-  FAreaLinesPen.Free;
-  FAreaBrush.Free;
-  inherited Destroy;
+  FreeAndNil(FAreaLinesPen);
+  FreeAndNil(FAreaBrush);
+  inherited;
 end;
 
 procedure TAreaSeries.Draw(ACanvas: TCanvas);
@@ -1079,10 +1079,10 @@ end;
 
 destructor TFuncSeries.Destroy;
 begin
-  FExtent.Free;
-  FDomainExclusions.Free;
-  FPen.Free;
-  inherited Destroy;
+  FreeAndNil(FExtent);
+  FreeAndNil(FDomainExclusions);
+  FreeAndNil(FPen);
+  inherited;
 end;
 
 procedure TFuncSeries.Draw(ACanvas: TCanvas);

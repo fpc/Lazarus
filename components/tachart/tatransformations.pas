@@ -378,8 +378,8 @@ destructor TChartAxisTransformations.Destroy;
 begin
   while List.Count > 0 do
     TAxisTransform(List[List.Count - 1]).Free;
-  FList.Free;
-  FBroadcaster.Free;
+  FreeAndNil(FList);
+  FreeAndNil(FBroadcaster);
   inherited;
 end;
 
@@ -513,7 +513,7 @@ initialization
 
 finalization
 
-  AxisTransformsClassRegistry.Free;
+  FreeAndNil(AxisTransformsClassRegistry);
 
 end.
 

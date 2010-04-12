@@ -268,7 +268,7 @@ end;
 
 destructor TCustomChartSource.Destroy;
 begin
-  FBroadcaster.Free;
+  FreeAndNil(FBroadcaster);
   inherited;
 end;
 
@@ -527,9 +527,9 @@ end;
 destructor TListChartSource.Destroy;
 begin
   Clear;
-  FDataPoints.Free;
-  FData.Free;
-  inherited Destroy;
+  FreeAndNil(FDataPoints);
+  FreeAndNil(FData);
+  inherited;
 end;
 
 function TListChartSource.GetCount: Integer;
@@ -677,8 +677,8 @@ end;
 
 destructor TRandomChartSource.Destroy;
 begin
-  FRNG.Free;
-  inherited Destroy;
+  FreeAndNil(FRNG);
+  inherited;
 end;
 
 function TRandomChartSource.GetCount: Integer;

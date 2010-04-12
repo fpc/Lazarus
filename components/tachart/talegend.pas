@@ -207,9 +207,9 @@ end;
 
 destructor TChartLegend.Destroy;
 begin
-  FBackgroundBrush.Free;
-  FFont.Free;
-  FFrame.Free;
+  FreeAndNil(FBackgroundBrush);
+  FreeAndNil(FFont);
+  FreeAndNil(FFrame);
 
   inherited;
 end;

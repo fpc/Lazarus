@@ -406,19 +406,19 @@ end;
 
 destructor TChart.Destroy;
 begin
-  FSeries.Free;
-  FGraphBrush.Free;
+  FreeAndNil(FSeries);
+  FreeAndNil(FGraphBrush);
 
-  FLegend.Free;
-  FTitle.Free;
-  FFoot.Free;
-  FAxisList.Free;
-  FFrame.Free;
-  FExtent.Free;
-  FMargins.Free;
-  FBuiltinToolset.Free;
+  FreeAndNil(FLegend);
+  FreeAndNil(FTitle);
+  FreeAndNil(FFoot);
+  FreeAndNil(FAxisList);
+  FreeAndNil(FFrame);
+  FreeAndNil(FExtent);
+  FreeAndNil(FMargins);
+  FreeAndNil(FBuiltinToolset);
 
-  inherited Destroy;
+  inherited;
 end;
 
 {$IFDEF LCLGtk2}
@@ -1095,7 +1095,7 @@ destructor TBasicChartSeries.Destroy;
 begin
   if FChart <> nil then
     FChart.DeleteSeries(Self);
-  inherited Destroy;
+  inherited;
 end;
 
 function TBasicChartSeries.GetNearestPoint(
@@ -1152,8 +1152,8 @@ end;
 destructor TChartSeriesList.Destroy;
 begin
   Clear;
-  FList.Free;
-  inherited Destroy;
+  FreeAndNil(FList);
+  inherited;
 end;
 
 function TChartSeriesList.GetItem(AIndex: Integer): TBasicChartSeries;
@@ -1201,6 +1201,6 @@ initialization
   SeriesClassRegistry := TStringList.Create;
 
 finalization
-  SeriesClassRegistry.Free;
+  FreeAndNil(SeriesClassRegistry);
 
 end.

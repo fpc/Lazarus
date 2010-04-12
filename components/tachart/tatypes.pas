@@ -357,10 +357,10 @@ end;
 
 destructor TChartTitle.Destroy;
 begin
-  FBrush.Free;
-  FFont.Free;
-  FFrame.Free;
-  FText.Free;
+  FreeAndNil(FBrush);
+  FreeAndNil(FFont);
+  FreeAndNil(FFrame);
+  FreeAndNil(FText);
 
   inherited;
 end;
@@ -427,11 +427,11 @@ end;
 
 destructor TGenericChartMarks.Destroy;
 begin
-  FFrame.Free;
-  FLabelBrush.Free;
-  FLabelFont.Free;
-  FLinkPen.Free;
-  inherited Destroy;
+  FreeAndNil(FFrame);
+  FreeAndNil(FLabelBrush);
+  FreeAndNil(FLabelFont);
+  FreeAndNil(FLinkPen);
+  inherited;
 end;
 
 procedure TGenericChartMarks.DrawLabel(
@@ -580,9 +580,9 @@ end;
 
 destructor TSeriesPointer.Destroy;
 begin
-  FBrush.Free;
-  FPen.Free;
-  inherited Destroy;
+  FreeAndNil(FBrush);
+  FreeAndNil(FPen);
+  inherited;
 end;
 
 procedure TSeriesPointer.Draw(ACanvas: TCanvas; ACenter: TPoint; AColor: TColor);

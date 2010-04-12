@@ -252,7 +252,7 @@ end;
 
 destructor TChartAxisTitle.Destroy;
 begin
-  FFont.Free;
+  FreeAndNil(FFont);
   inherited;
 end;
 
@@ -291,8 +291,8 @@ end;
 
 destructor TChartAxisMarks.Destroy;
 begin
-  FListener.Free;
-  FDefaultSource.Free;
+  FreeAndNil(FListener);
+  FreeAndNil(FDefaultSource);
   inherited;
 end;
 
@@ -349,10 +349,10 @@ end;
 
 destructor TChartAxis.Destroy;
 begin
-  FTitle.Free;
-  FMarks.Free;
-  FListener.Free;
-  FGrid.Free;
+  FreeAndNil(FTitle);
+  FreeAndNil(FMarks);
+  FreeAndNil(FListener);
+  FreeAndNil(FGrid);
   inherited;
 end;
 
@@ -725,7 +725,7 @@ initialization
   SkipObsoleteAxisProperties;
 
 finalization
-  VIdentityTransform.Free;
+  FreeAndNil(VIdentityTransform);
 
 end.
 

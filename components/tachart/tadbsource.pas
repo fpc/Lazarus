@@ -65,6 +65,9 @@ procedure Register;
 
 implementation
 
+uses
+  SysUtils;
+
 type
 
   { TDbChartSourceDataLink }
@@ -140,8 +143,8 @@ end;
 
 destructor TDbChartSource.Destroy;
 begin
-  FDataLink.Free;
-  inherited Destroy;
+  FreeAndNil(FDataLink);
+  inherited;
 end;
 
 function TDbChartSource.GetCount: Integer;

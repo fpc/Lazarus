@@ -168,7 +168,7 @@ resourcestring
 implementation
 
 uses
-  ComponentEditors, Forms, GraphMath, Math, PropEdits, Types,
+  ComponentEditors, Forms, GraphMath, Math, PropEdits, SysUtils, Types,
   TAChartUtils, TASubcomponentsEditor;
 
 type
@@ -457,8 +457,8 @@ destructor TChartToolset.Destroy;
 begin
   while Tools.Count > 0 do
     Item[Tools.Count - 1].Free;
-  FTools.Free;
-  inherited Destroy;
+  FreeAndNil(FTools);
+  inherited;
 end;
 
 function TChartToolset.Dispatch(
@@ -689,7 +689,7 @@ initialization
 
 finalization
 
-  ToolsClassRegistry.Free;
+  FreeAndNil(ToolsClassRegistry);
 
 end.
 

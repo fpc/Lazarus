@@ -363,11 +363,10 @@ end;
 
 destructor TChartSeries.Destroy;
 begin
-  FListener.Free;
-  FBuiltinSource.Free;
-  FMarks.Free;
-
-  inherited Destroy;
+  FreeAndNil(FListener);
+  FreeAndNil(FBuiltinSource);
+  FreeAndNil(FMarks);
+  inherited;
 end;
 
 function TChartSeries.Extent: TDoubleRect;
