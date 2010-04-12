@@ -352,6 +352,34 @@ msgstr ""
 msgid "Remove empty '//' comments"
 msgstr ""
 
+#: jcfuiconsts.lisedatlinecol
+msgid "%sAt line %s col %s"
+msgstr ""
+
+#: jcfuiconsts.lisederror
+msgid "Error"
+msgstr ""
+
+#: jcfuiconsts.lisedexception
+msgid "Exception %s"
+msgstr ""
+
+#: jcfuiconsts.lisedin
+msgid "%s in %s"
+msgstr ""
+
+#: jcfuiconsts.lisedjcfparseerror
+msgid "JCF Parse error"
+msgstr ""
+
+#: jcfuiconsts.lisednear
+msgid "%s near %s"
+msgstr ""
+
+#: jcfuiconsts.lisedtype
+msgid "Type: %s%s"
+msgstr ""
+
 #: jcfuiconsts.liserrorwritingsettingsexception
 msgid "Error writing settings file %s:%s%s"
 msgstr ""

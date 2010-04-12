@@ -9,6 +9,26 @@ msgstr ""
 "MIME-Version: 1.0\n"
 "Content-Transfer-Encoding: 8bit\n"
 
+#: jcfuiconsts.lisaboutaboutjedicodeformat
+msgid "About JEDI Code Format"
+msgstr ""
+
+#: jcfuiconsts.lisaboutfindmoreinformationonthewebat
+msgid "Find more information on the web at: %s"
+msgstr ""
+
+#: jcfuiconsts.lisaboutthisprogramisopensource
+msgid "This program is open source software. It is released under the Mozilla Public Licence (MPL).  http://www.mozilla.org/MPL"
+msgstr ""
+
+#: jcfuiconsts.lisaboutthisprogramisstillunderdevelopment
+msgid "This program is still under development. In spite of thorough testing and removal of reported bugs, no guarantees are given. Please make backups, or better yet use a source control system."
+msgstr ""
+
+#: jcfuiconsts.lisaboutversion
+msgid "Version $VERSION$%s$DATE$%s%sThis program attempts to standardise and make readable the layout of any Delphi Object-Pascal source code.%s%sCopyright Anthony Steele 1999-2008"
+msgstr ""
+
 #: jcfuiconsts.lisalignalign
 msgid "Align"
 msgstr "Ausrichtung"
@@ -340,6 +360,34 @@ msgstr "Leere »{}«-Kommentare löschen"
 #: jcfuiconsts.liscommentsremoveemptyslashcomments
 msgid "Remove empty '//' comments"
 msgstr "Leere »//«-Kommentare löschen"
+
+#: jcfuiconsts.lisedatlinecol
+msgid "%sAt line %s col %s"
+msgstr ""
+
+#: jcfuiconsts.lisederror
+msgid "Error"
+msgstr ""
+
+#: jcfuiconsts.lisedexception
+msgid "Exception %s"
+msgstr ""
+
+#: jcfuiconsts.lisedin
+msgid "%s in %s"
+msgstr ""
+
+#: jcfuiconsts.lisedjcfparseerror
+msgid "JCF Parse error"
+msgstr ""
+
+#: jcfuiconsts.lisednear
+msgid "%s near %s"
+msgstr ""
+
+#: jcfuiconsts.lisedtype
+msgid "Type: %s%s"
+msgstr ""
 
 #: jcfuiconsts.liserrorwritingsettingsexception
 msgid "Error writing settings file %s:%s%s"

@@ -363,6 +363,34 @@ msgstr "Удалять пустые комментарии в фигурных �
 msgid "Remove empty '//' comments"
 msgstr "Удалять пустые комментарии, начинающиеся с двух косых черт '//'"
 
+#: jcfuiconsts.lisedatlinecol
+msgid "%sAt line %s col %s"
+msgstr "%sСтрока %s, столбец %s"
+
+#: jcfuiconsts.lisederror
+msgid "Error"
+msgstr "Ошибка"
+
+#: jcfuiconsts.lisedexception
+msgid "Exception %s"
+msgstr "Исключение %s"
+
+#: jcfuiconsts.lisedin
+msgid "%s in %s"
+msgstr "%s в %s"
+
+#: jcfuiconsts.lisedjcfparseerror
+msgid "JCF Parse error"
+msgstr "Ошибка разбора JCF"
+
+#: jcfuiconsts.lisednear
+msgid "%s near %s"
+msgstr "%s в окрестности %s"
+
+#: jcfuiconsts.lisedtype
+msgid "Type: %s%s"
+msgstr "Тип: %s%s"
+
 #: jcfuiconsts.liserrorwritingsettingsexception
 msgid "Error writing settings file %s:%s%s"
 msgstr "Ошибка при записи файла параметров %s:%s%s"
