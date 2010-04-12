@@ -47,6 +47,7 @@ type
   TOnCmdLineCreate = procedure(var CmdLine: string; var Abort:boolean)
       of object;
 
+  {$IFDEF WithAsyncCompile}
   TBuildProjectData = class
   public
     Reason: TCompileReason;
@@ -54,35 +55,46 @@ type
     CompilerFilename: String;
     CompilerParams: String;
   end;
+  {$ENDIF}
 
   { TCompiler }
 
   TCompiler = class(TObject)
   private
+    {$IFDEF WithAsyncCompile}
     FASyncResult: TModalResult;
+    {$ENDIF}
     FOnCmdLineCreate : TOnCmdLineCreate;
     FOutputFilter: TOutputFilter;
     FTheProcess: TProcessUTF8;
     FOldCurDir: string;
+    {$IFDEF WithAsyncCompile}
     FFinishedCallback: TNotifyEvent;
     procedure CompilationFinished(Sender: TObject);
+    {$ENDIF}
+  {$IFDEF WithAsyncCompile}
   public
     // Values stored by caller, to be rtrieved on callback
     CallerData: TObject;
+  {$ENDIF}
   public
     constructor Create;
     destructor Destroy; override;
     function Compile(AProject: TProject;
                      const WorkingDir, CompilerFilename, CompilerParams: string;
-                     BuildAll, SkipLinking, SkipAssembler: boolean;
-                     aFinishedCallback: TNotifyEvent = nil
+                     BuildAll, SkipLinking, SkipAssembler: boolean
+                     {$IFDEF WithAsyncCompile}
+                     ; aFinishedCallback: TNotifyEvent = nil
+                     {$ENDIF}
                     ): TModalResult;
     procedure WriteError(const Msg: string);
     property OnCommandLineCreate: TOnCmdLineCreate read FOnCmdLineCreate
                                                    write FOnCmdLineCreate;
     property OutputFilter: TOutputFilter read FOutputFilter write FOutputFilter;
     property TheProcess: TProcessUTF8 read FTheProcess;
+    {$IFDEF WithAsyncCompile}
     property ASyncResult: TModalResult read FASyncResult;
+    {$ENDIF}
   end;
 
 
@@ -114,15 +126,18 @@ end;
 ------------------------------------------------------------------------------}
 function TCompiler.Compile(AProject: TProject;
   const WorkingDir, CompilerFilename, CompilerParams: string;
-  BuildAll, SkipLinking, SkipAssembler: boolean;
-  aFinishedCallback: TNotifyEvent = nil): TModalResult;
+  BuildAll, SkipLinking, SkipAssembler: boolean
+  {$IFDEF WithAsyncCompile} ; aFinishedCallback: TNotifyEvent = nil {$ENDIF}
+  ): TModalResult;
 var
   CmdLine : String;
   Abort : Boolean;
 begin
   Result:=mrCancel;
+  {$IFDEF WithAsyncCompile}
   FASyncResult:= mrNone;
   FFinishedCallback := aFinishedCallback;
+  {$ENDIF}
   DebugLn('TCompiler.Compile WorkingDir="',WorkingDir,'" CompilerFilename="',CompilerFilename,'" CompilerParams="',CompilerParams,'"');
 
   // if we want to show the compile progress, it's now time to show the dialog
@@ -188,16 +203,19 @@ begin
         if OutputFilter<>nil then begin
           OutputFilter.Options:=[ofoSearchForFPCMessages,ofoExceptionOnError];
           OutputFilter.CompilerOptions:=AProject.CompilerOptions;
+          {$IFDEF WithAsyncCompile}
           if aFinishedCallback <> nil then begin
             OutputFilter.ExecuteAsyncron(TheProcess, @CompilationFinished, Self);
           end else
+          {$ENDIF}
             OutputFilter.Execute(TheProcess,Self);
         end else begin
           TheProcess.Execute;
         end;
       finally
-        if TheProcess.Running and ((OutputFilter = nil) or (aFinishedCallback = nil)) then
-        begin
+        if TheProcess.Running
+        {$IFDEF WithAsyncCompile} and ((OutputFilter = nil) or (aFinishedCallback = nil)) {$ENDIF}
+        then begin
           TheProcess.WaitOnExit;
           if not (TheProcess.ExitStatus in [0,1]) then  begin
             WriteError(Format(listCompilerInternalError,[TheProcess.ExitStatus]));
@@ -223,6 +241,7 @@ begin
   DebugLn('[TCompiler.Compile] end');
 end;
 
+{$IFDEF WithAsyncCompile}
 procedure TCompiler.CompilationFinished(Sender: TObject);
 begin
   FASyncResult:= mrOK;
@@ -238,6 +257,7 @@ begin
   if assigned(FFinishedCallback) then
     FFinishedCallback(Self);
 end;
+{$ENDIF}
 
 procedure TCompiler.WriteError(const Msg: string);
 begin
