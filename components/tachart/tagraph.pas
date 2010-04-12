@@ -983,9 +983,11 @@ procedure TChart.GetChildren(AProc: TGetChildProc; ARoot: TComponent);
 var
   i: Integer;
 begin
+  // FIXME: This is a workaround for issue #16035
+  if FSeries = nil then exit;
   for i := 0 to SeriesCount - 1 do
-   if Series[i].Owner = ARoot then
-     AProc(Series[i]);
+    if Series[i].Owner = ARoot then
+      AProc(Series[i]);
 end;
 
 function TChart.GetSeriesCount: Integer;
