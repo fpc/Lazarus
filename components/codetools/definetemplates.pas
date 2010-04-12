@@ -3505,6 +3505,8 @@ var
       // set directory priority
       if System.Pos(Dir+'rtl'+PathDelim,ADirPath)>0 then
         inc(Priority);
+      if System.Pos(Dir+'packages'+PathDelim+'fcl',ADirPath)>0 then // packages/fcl*
+        inc(Priority);
       // search sources .pp,.pas
       if FindFirstUTF8(ADirPath+FileMask,faAnyFile,FileInfo)=0 then begin
         repeat
@@ -3642,11 +3644,10 @@ var
                     // <FPCSrcDir>/packages/base/libc/libc.pp
                     inc(Priority,2);
                   end;
-                  if (UsedMacroCount>OldUnitLink.UsedMacroCount)
-                  or ((UsedMacroCount=OldUnitLink.UsedMacroCount)
-                    and ((Priority>OldUnitLink.Priority)
-                      or ((Priority=OldUnitLink.Priority)
-                          and (OldUnitLink.MacroCount<MacroCount))))
+                  //DebugLn(['BrowseDirectory duplicate found: ',AUnitName,' OldUnitLink.Filename=',OldUnitLink.Filename,' MacroFileName=',MacroFileName,' Priority=',Priority,' OldUnitLink.Priority=',OldUnitLink.Priority]);
+                  if (Priority>OldUnitLink.Priority)
+                  or ((Priority=OldUnitLink.Priority)
+                     and (UsedMacroCount>OldUnitLink.UsedMacroCount))
                   then begin
                     // take the new macro filename
                     OldUnitLink.Filename:=MacroFileName;
