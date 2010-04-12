@@ -43,8 +43,9 @@ uses
   // IDE
   IDEProcs, Project, DialogProcs,
   EditorOptions, CompilerOptions, PackageDefs, PackageSystem,
-  PackageEditor, BasePkgManager, LazarusIDEStrConsts, ReplaceNamesUnit,
-  ConvertSettings, ConvCodeTool, MissingUnits, MissingPropertiesDlg;
+  PackageEditor, BasePkgManager, LazarusIDEStrConsts,
+  // Converter
+  ConvertSettings, ConvCodeTool, MissingUnits, MissingPropertiesDlg, ReplaceNamesUnit;
 
 const
   SettingDelphiModeTemplName = 'Setting Delphi Mode';
@@ -501,31 +502,26 @@ begin
       Result:=LazarusIDE.DoCloseEditorFile(DfmFilename,[cfSaveFirst]);
       if Result<>mrOk then exit;
     end;
-//    if fSettings.FormFileRename then begin
-      // rename files (.pas,.dfm) lowercase. TODO: rename files in project
-      LfmFilename:=fSettings.DelphiToLazFilename(fOrigUnitFilename, '.lfm',
-                                               cdtlufRenameLowercase in fFlags);
-      if DfmFilename<>'' then begin
-        if FileExistsUTF8(LfmFilename) then
-          if (FileAgeUTF8(LfmFilename)<FileAgeUTF8(DfmFilename)) then
-            DeleteFileUTF8(LfmFilename); // .lfm is older than .dfm -> remove .lfm
-        if not FileExistsUTF8(LfmFilename) then begin
-          // TODO: update project
-          if fSettings.Target=ctLazarusAndDelphi then
-            Result:=CopyFileWithErrorDialogs(DfmFilename,LfmFilename,[mbAbort])
-          else
-            Result:=fSettings.RenameFile(DfmFilename,LfmFilename);
-          if Result<>mrOK then exit;
-        end;
+    // rename files (.pas,.dfm) lowercase. TODO: rename files in project
+    LfmFilename:=fSettings.DelphiToLazFilename(fOrigUnitFilename, '.lfm',
+                                             cdtlufRenameLowercase in fFlags);
+    if DfmFilename<>'' then begin
+      if FileExistsUTF8(LfmFilename) then
+        if (FileAgeUTF8(LfmFilename)<FileAgeUTF8(DfmFilename)) then
+          DeleteFileUTF8(LfmFilename); // .lfm is older than .dfm -> remove .lfm
+      if not FileExistsUTF8(LfmFilename) then begin
+        // TODO: update project
+        if fSettings.Target=ctLazarusAndDelphi then
+          Result:=CopyFileWithErrorDialogs(DfmFilename,LfmFilename,[mbAbort])
+        else
+          Result:=fSettings.RenameFile(DfmFilename,LfmFilename);
+        if Result<>mrOK then exit;
       end;
-{    end
-    else
-      LfmFilename:=DfmFilename; }
+    end;
     // convert .dfm file to .lfm file (without context type checking)
     if FileExistsUTF8(LfmFilename) then begin
       DFMConverter:=TDFMConverter.Create;
       try
-//        Result:=ConvertDfmToLfm(LfmFilename);
         Result:=DFMConverter.ConvertDfmToLfm(LfmFilename);
       finally
         DFMConverter.Free;
@@ -555,7 +551,7 @@ begin
     ConvTool.LowerCaseRes:=FileExistsUTF8(ChangeFileExt(fLazUnitFilename, '.res'));
     ConvTool.HasFormFile:=DfmFilename<>'';
     ConvTool.Target:=fSettings.Target;
-    ConvTool.UseBothDfmAndLfm:=fSettings.Target=ctLazarusAndDelphi; {and (DfmFilename<>'')}
+    ConvTool.UseBothDfmAndLfm:=fSettings.Target=ctLazarusAndDelphi;
     ConvTool.UnitsToRemove:=fUnitsToRemove;
     ConvTool.UnitsToRename:=fUnitsToRename;
     ConvTool.UnitsToComment:=fUnitsToComment;
@@ -574,8 +570,6 @@ var
 begin
   // check the LFM file and the pascal unit, updates fPascalBuffer and fLFMBuffer.
   if fLFMBuffer<>nil then begin
-//!!!    Result:=LoadCodeBuffer(fPascalBuffer,fLazUnitFilename,
-//!!!                           [lbfCheckIfText,lbfUpdateFromDisk],true);
     IDEMessagesWindow.AddMsg('Repairing form file '+fLFMBuffer.Filename,'',-1);
     Application.ProcessMessages;
     LfmFixer:=TLFMFixer.Create(fPascalBuffer,fLFMBuffer,@IDEMessagesWindow.AddMsg);
@@ -590,9 +584,7 @@ begin
     finally
       LfmFixer.Free;
     end;
-    // save source and LFM files
-    Result:=SaveCodeBufferToFile(fPascalBuffer,fPascalBuffer.Filename);
-    if Result<>mrOk then exit;
+    // save LFM file
     Result:=SaveCodeBufferToFile(fLFMBuffer,fLFMBuffer.Filename);
     if Result<>mrOk then exit;
   end;
@@ -721,7 +713,7 @@ var
   ConvTool: TConvDelphiCodeTool;
   UnitNames: TStringList;
   CTResult: Boolean;
-  i, d: Integer;
+  i, x: Integer;
   UnitN, FN, s: string;
 begin
   Result:=mrOk;
@@ -733,7 +725,6 @@ begin
     // Collect all unit names from uses sections.
     UnitNames:=ConvTool.UsesSectionsToUnitnames;
     UnitNames.Sorted:=true;
-    s:=UnitNames.Text;
     // find missing units
     CTResult:=CodeToolBoss.FindMissingUnits(fPascalBuffer,fMissingUnits,true);
     if not CTResult then begin
@@ -748,7 +739,7 @@ begin
     for i:=fMissingUnits.Count-1 downto 0 do begin
       UnitN:=fMissingUnits[i];
       if UnitUpdater.FindReplacement(UnitN, s) then begin
-        if (s<>'') and not UnitNames.Find(s, d) then begin
+        if (s<>'') and not UnitNames.Find(s, x) then begin
           fUnitsToRename[UnitN]:=s;
           IDEMessagesWindow.AddMsg(Format(
               'Replaced unit "%s" with "%s" in uses section.',[UnitN, s]),'',-1);
@@ -882,7 +873,6 @@ begin
 
   // load required packages
   AddPackageDependency('LCL');// Nearly all Delphi projects require it
-  AddPackageDependency('virtualtreeview_package'); //!!!
   if fProjPack is TProject then
     PkgBoss.AddDefaultDependencies(fProjPack as TProject);
   CustomDefinesChanged;
@@ -922,13 +912,9 @@ begin
         //  fUnitInfo is set for projects only.
         if Assigned(fUnitInfo) then
           LazarusIDE.GetDesignerWithProjectFile(TUnitInfo(fUnitInfo), true);
-        // Close unit file and form file after processing.
+        // Close unit file after processing.
         Result:=LazarusIDE.DoCloseEditorFile(fLazUnitFilename,[cfSaveFirst,cfQuiet]);
         if Result<>mrOK then exit;
-{        if fLFMBuffer<>nil then begin
-          Result:=LazarusIDE.DoCloseEditorFile(fLFMBuffer.Filename,[cfSaveFirst,cfQuiet]);
-          if Result<>mrOk then exit;
-        end; }
       end;
     end;
   finally
@@ -1415,11 +1401,9 @@ begin
         Result:=Converter.CheckFailed(Result);
         if Result<>mrOK then Break;
         Result:=Converter.ConvertUnitFile;
-//        Result:=Converter.CheckFailed(Result);
         if Result<>mrOK then Break;
       end;
     end;
-//    Result:=LazarusIDE.DoSaveProject([]);  Creates read errors !
     if Result=mrOK then
       Result:=ConvertAllFormFiles(ConvUnits);
   finally

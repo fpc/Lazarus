@@ -14,6 +14,7 @@ uses
   FindDeclarationTool, PascalReaderTool, PascalParserTool,
   CodeBeautifier, ExprEval, KeywordFuncLists, BasicCodeTools, LinkScanner,
   CodeCache, SourceChanger, CustomCodeTool, CodeToolsStructs, EventCodeTool,
+  // Converter
   ConvertSettings;
 
 type

@@ -42,7 +42,9 @@ uses
   // IDE
   IDEDialogs, ComponentReg, PackageIntf, IDEWindowIntf, DialogProcs,
   CustomFormEditor, LazarusIDEStrConsts, IDEProcs, OutputFilter,
-  EditorOptions, ConvertSettings, ReplaceNamesUnit, CheckLFMDlg;
+  EditorOptions, CheckLFMDlg,
+  // Converter
+  ConvertSettings, ReplaceNamesUnit;
 
 type
 
