@@ -593,6 +593,7 @@ type
 
     procedure RenameInheritedMethods(AnUnitInfo: TUnitInfo; List: TStrings);
     function OIHelpProvider: TAbstractIDEHTMLProvider;
+    procedure DoBuildProjectFinished(Sender: TObject);
   protected
     procedure SetToolStatus(const AValue: TIDEToolStatus); override;
     procedure Notification(AComponent: TComponent;
@@ -10374,6 +10375,7 @@ var
   err : TFPCErrorType;
   TargetExeDirectory: String;
   FPCVersion, FPCRelease, FPCPatch: integer;
+  CallerData: TBuildProjectData;
 begin
   if Project1.MainUnitInfo=nil then begin
     // this project has not source to compile
@@ -10391,6 +10393,8 @@ begin
     if Result<>mrOk then exit;
   end;
 
+  if not (ToolStatus in [itNone,itDebugger]) then
+    exit;
   // show messages
   if EnvironmentOptions.MsgViewFocus then
     MessagesView.EnsureVisible
@@ -10563,12 +10567,20 @@ begin
             TheOutputFilter.ErrorTypeName[err] := ErrorNames[err];
 
         // compile
+        CallerData := TBuildProjectData.Create;
+        TheCompiler.CallerData := CallerData;
+        CallerData.Flags := Flags;
+        CallerData.Reason := AReason;
+        CallerData.CompilerFilename := CompilerFilename;
+        CallerData.CompilerParams := CompilerParams;
         Result:=TheCompiler.Compile(Project1,
                                 WorkingDir,CompilerFilename,CompilerParams,
                                 (pbfCleanCompile in Flags) or NeedBuildAllFlag,
                                 pbfSkipLinking in Flags,
-                                pbfSkipAssembler in Flags);
+                                pbfSkipAssembler in Flags,
+                                @DoBuildProjectFinished);
         if Result<>mrOk then begin
+          ToolStatus:=itNone;
           // save state, so that next time the project is not compiled clean
           Project1.LastCompilerFilename:=CompilerFilename;
           Project1.LastCompilerParams:=CompilerParams;
@@ -10577,34 +10589,82 @@ begin
           CompileProgress.Ready(lisInfoBuildError);
           exit;
         end;
-        // compilation succeded -> write state file
-        Result:=Project1.SaveStateFile(CompilerFilename,CompilerParams);
-        if Result<>mrOk then begin
-          CompileProgress.Ready(lisInfoBuildError);
-          exit;
-        end;
-
-        // update project .po file
-        Result:=UpdateProjectPOFile(Project1);
-        if Result<>mrOk then begin
-          CompileProgress.Ready(lisInfoBuildError);
-          exit;
-        end;
-
-      finally
+      except
         ToolStatus:=itNone;
       end;
+    end
+    else begin
+      // if TheCompiler.Compile is executed, this is run in DoBuildProjectFinished
+      // execute compilation tool 'After'
+      if not (pbfSkipTools in Flags) then begin
+        ToolAfter:=TProjectCompilationToolOptions(
+                                           Project1.CompilerOptions.ExecuteAfter);
+        // no need to check for mrOk, we are exit if it wasn't
+        if (AReason in ToolAfter.CompileReasons) then begin
+          Result:=Project1.CompilerOptions.ExecuteAfter.Execute(
+                              Project1.ProjectDirectory,lisExecutingCommandAfter);
+          if Result<>mrOk then
+          begin
+            CompileProgress.Ready(lisInfoBuildError);
+            exit;
+          end;
+        end;
+      end;
+
+      // add success message
+      MessagesView.AddMsg(Format(lisProjectSuccessfullyBuilt, ['"',
+                                          Project1.ShortDescription, '"']),'',-1);
+      CompileProgress.Ready(lisInfoBuildSuccess);
+    end;
+
+  finally
+    // check sources
+    if (ToolStatus in [itNone,itDebugger]) then
+      DoCheckFilesOnDisk;
+
+    MessagesView.EndBlock;
+  end;
+  if EnvironmentOptions.MsgViewFocus then
+    MessagesView.EnsureVisible
+  else
+    MessagesView.Visible:=true;
+  Result:=mrOk;
+end;
+
+procedure TMainIDE.DoBuildProjectFinished(Sender: TObject);
+var
+  State: TModalResult;
+  ToolAfter: TProjectCompilationToolOptions;
+  CallerData: TBuildProjectData;
+begin
+  try
+    ToolStatus:=itNone;
+    CallerData := TBuildProjectData(TCompiler(Sender).CallerData);
+
+    // compilation succeded -> write state file
+    State:=Project1.SaveStateFile(CallerData.CompilerFilename,
+                                  CallerData.CompilerParams);
+    if State<>mrOk then begin
+      CompileProgress.Ready(lisInfoBuildError);
+      exit;
+    end;
+    CallerData.Free;
+
+    // update project .po file
+    State:=UpdateProjectPOFile(Project1);
+    if State<>mrOk then begin
+      CompileProgress.Ready(lisInfoBuildError);
+      exit;
     end;
 
     // execute compilation tool 'After'
-    if not (pbfSkipTools in Flags) then begin
-      ToolAfter:=TProjectCompilationToolOptions(
-                                         Project1.CompilerOptions.ExecuteAfter);
+    if not (pbfSkipTools in CallerData.Flags) then begin
+      ToolAfter:=TProjectCompilationToolOptions(Project1.CompilerOptions.ExecuteAfter);
       // no need to check for mrOk, we are exit if it wasn't
-      if (AReason in ToolAfter.CompileReasons) then begin
-        Result:=Project1.CompilerOptions.ExecuteAfter.Execute(
+      if (CallerData.Reason in ToolAfter.CompileReasons) then begin
+        State:=Project1.CompilerOptions.ExecuteAfter.Execute(
                             Project1.ProjectDirectory,lisExecutingCommandAfter);
-        if Result<>mrOk then
+        if State<>mrOk then
         begin
           CompileProgress.Ready(lisInfoBuildError);
           exit;
@@ -10616,18 +10676,14 @@ begin
     MessagesView.AddMsg(Format(lisProjectSuccessfullyBuilt, ['"',
                                         Project1.ShortDescription, '"']),'',-1);
     CompileProgress.Ready(lisInfoBuildSuccess);
-
   finally
-    // check sources
     DoCheckFilesOnDisk;
-
-    MessagesView.EndBlock;
   end;
+
   if EnvironmentOptions.MsgViewFocus then
     MessagesView.EnsureVisible
   else
     MessagesView.Visible:=true;
-  Result:=mrOk;
 end;
 
 function TMainIDE.DoAbortBuild: TModalResult;
