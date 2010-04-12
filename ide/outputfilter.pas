@@ -318,6 +318,7 @@ var
   ExceptionMsg: String;
 begin
   Result:=true;
+  FHasRaisedException := False;
   if FState = ofsRunning then RaiseGDBException('OutputFilter already running');
 
   Clear;
