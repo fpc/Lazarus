@@ -978,10 +978,7 @@ begin
   else
   begin
     Handled := false;
-    case iCurrentOperation of
-      kATSULayoutOperationJustification:
-        Buffer.DoJustify(iLineRef, Handled);
-    end;
+    Buffer.DoJustify(iLineRef, Handled);
     Result := noErr;
   end;
 end;
@@ -990,25 +987,45 @@ procedure TCarbonTextLayoutBuffer.DoJustify(iLineRef: ATSULineRef; var Handled: 
 type
   TFixedArray = array [Word] of Fixed;
   PFixedArray = ^TFixedArray;
+type
+	ATSLayoutRecord1 = packed record
+		glyphID: ATSGlyphRef;
+		flags: ATSGlyphInfoFlags;
+		originalOffset: ByteCount;
+		realPos: Fixed;
+	end;
+
+type
+  TATSLayoutRecordArray = array [Word] of ATSLayoutRecord1;
+  PATSLayoutRecordArray = ^TATSLayoutRecordArray;
 var
   Deltas  : PFixedArray;
   Count   : ItemCount;
-  i       : Integer;
+  i, ofs  : Integer;
+  Layouts   : PATSLayoutRecordArray;
+  LayCount  : ItemCount;
 begin
-  if idx < FDXCount then
+{ if idx < FDXCount then
+  begin}
+  Layouts:=nil;
+  Laycount:=0;
+  ATSUDirectGetLayoutDataArrayPtrFromLineRef( iLineRef,
+    kATSUDirectDataLayoutRecordATSLayoutRecordVersion1, true, @Layouts, Laycount);
+  ATSUDirectGetLayoutDataArrayPtrFromLineRef (iLineRef,
+    kATSUDirectDataAdvanceDeltaFixedArray, true, @Deltas, Count);
+  if Assigned(Layouts) and (Laycount>0) then
   begin
-    ATSUDirectGetLayoutDataArrayPtrFromLineRef (iLineRef,
-      kATSUDirectDataAdvanceDeltaFixedArray, true, @Deltas, Count);
-    if Assigned(Deltas) and (Count > 0) then
+    ofs:=0;
+    for i:=0 to Min(FDXCount, Min(LayCount, Count)) do
     begin
-      for i := 1 to Min(FDXCount - idx, Count) - 1 do
-      begin
-        Deltas^[i] := Long2Fix(FDX[idx]);
-        inc(idx);
-      end;
-      Handled := true;
+      Deltas^[i] := Layouts^[i].realPos-Long2Fix(ofs);
+      Layouts^[i].realPos:=Long2Fix(ofs);
+      inc(ofs, FDX[i]);
     end;
   end;
+  ATSUDirectReleaseLayoutDataArrayPtr(iLineRef, kATSUDirectDataLayoutRecordATSLayoutRecordCurrent, @Layouts );
+  ATSUDirectReleaseLayoutDataArrayPtr(iLineRef, kATSUDirectDataAdvanceDeltaFixedArray, @Deltas);
+//  end;
 end;
 
 function TCarbonTextLayoutBuffer.Draw(X, Y: Integer; Dx: PInteger; DXCount: Integer): Boolean;
@@ -1038,7 +1055,7 @@ begin
     FDX := Dx;
     FDxCount := DXCount;
     idx:=0;
-    OverSpec.operationSelector := kATSULayoutOperationJustification;
+    OverSpec.operationSelector := kATSULayoutOperationPostLayoutAdjustment;
     OverSpec.overrideUPP := NewATSUDirectLayoutOperationOverrideUPP(@ATSUCallback);
     theTag := kATSULayoutOperationOverrideTag;
     theSize := sizeof (ATSULayoutOperationOverrideSpecifier);
