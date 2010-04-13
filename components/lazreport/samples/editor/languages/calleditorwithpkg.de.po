@@ -2,7 +2,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: \n"
 "POT-Creation-Date: \n"
-"PO-Revision-Date: 2010-03-19 20:33+0100\n"
+"PO-Revision-Date: 2010-04-12 22:05+0100\n"
 "Last-Translator: Joerg Braun <jb@toolbox-mag.de>\n"
 "Language-Team: Deutsch <lazarus@miraclec.com>\n"
 "MIME-Version: 1.0\n"
@@ -53,7 +53,7 @@ msgstr "Vorhandenen Report öffnen"
 
 #: maincalleditor.cerhintprevgrid
 msgid "Print preview current DbGrid content"
-msgstr ""
+msgstr "Vorschau des aktuellen DBGrid-Inhalts drucken"
 
 #: maincalleditor.cerhintprevreport
 msgid "Preview active report"

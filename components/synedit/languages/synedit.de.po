@@ -2,7 +2,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: \n"
 "POT-Creation-Date: \n"
-"PO-Revision-Date: 2010-03-19 20:05+0100\n"
+"PO-Revision-Date: 2010-04-12 22:19+0100\n"
 "Last-Translator: Joerg Braun <jb@toolbox-mag.de>\n"
 "Language-Team: \n"
 "MIME-Version: 1.0\n"
@@ -11,7 +11,7 @@ msgstr ""
 
 #: syneditstrconst.syns_attrasp
 msgid "Asp"
-msgstr ""
+msgstr "ASP"
 
 #: syneditstrconst.syns_attrassembler
 msgid "Assembler"
@@ -35,7 +35,7 @@ msgstr "Klammern"
 
 #: syneditstrconst.syns_attrcdatasection
 msgid "CDATA Section"
-msgstr "CDATA Abschnitt"
+msgstr "CDATA-Abschnitt"
 
 #: syneditstrconst.syns_attrcharacter
 msgid "Character"
@@ -71,7 +71,7 @@ msgstr "Direktive"
 
 #: syneditstrconst.syns_attrdoctypesection
 msgid "DOCTYPE Section"
-msgstr "DOCTYPE Abschnitt"
+msgstr "DOCTYPE-Abschnitt"
 
 #: syneditstrconst.syns_attrdocumentation
 msgid "Documentation"
@@ -91,11 +91,11 @@ msgstr "Eingebetteter Text"
 
 #: syneditstrconst.syns_attrentityreference
 msgid "Entity Reference"
-msgstr ""
+msgstr "Objektreferenz"
 
 #: syneditstrconst.syns_attrescapeampersand
 msgid "Escape ampersand"
-msgstr ""
+msgstr "Und-Zeichen maskieren"
 
 #: syneditstrconst.syns_attrevent
 msgid "Event"
@@ -111,7 +111,7 @@ msgstr ""
 
 #: syneditstrconst.syns_attrform
 msgid "Form"
-msgstr ""
+msgstr "Form"
 
 #: syneditstrconst.syns_attrfunction
 msgid "Function"
@@ -179,11 +179,11 @@ msgstr "Verschiedenes"
 
 #: syneditstrconst.syns_attrnamespaceattrname
 msgid "Namespace Attribute Name"
-msgstr ""
+msgstr "Namensraum Attribut Name"
 
 #: syneditstrconst.syns_attrnamespaceattrvalue
 msgid "Namespace Attribute Value"
-msgstr ""
+msgstr "Namensraum Attribut Wert"
 
 #: syneditstrconst.syns_attrnonreservedkeyword
 msgid "Non-reserved keyword"
@@ -219,7 +219,7 @@ msgstr "Präprozessor"
 
 #: syneditstrconst.syns_attrprocessinginstr
 msgid "Processing Instruction"
-msgstr ""
+msgstr "Befehl ausführen"
 
 #: syneditstrconst.syns_attrqualifier
 msgid "Qualifier"
@@ -239,27 +239,27 @@ msgstr "Runde Klammer"
 
 #: syneditstrconst.syns_attrrpl
 msgid "Rpl"
-msgstr ""
+msgstr "RPL"
 
 #: syneditstrconst.syns_attrrplcomment
 msgid "Rpl comment"
-msgstr ""
+msgstr "RPL-Kommentar"
 
 #: syneditstrconst.syns_attrrplkey
 msgid "Rpl key"
-msgstr ""
+msgstr "RPL-Schlüssel"
 
 #: syneditstrconst.syns_attrsasm
 msgid "SASM"
-msgstr ""
+msgstr "SASM"
 
 #: syneditstrconst.syns_attrsasmcomment
 msgid "SASM Comment"
-msgstr ""
+msgstr "SASM-Kommentar"
 
 #: syneditstrconst.syns_attrsasmkey
 msgid "SASM Key"
-msgstr ""
+msgstr "SASM-Schlüssel"
 
 #: syneditstrconst.syns_attrsecondreservedword
 msgid "Second reserved word"
@@ -279,11 +279,11 @@ msgstr "Spezialvariable"
 
 #: syneditstrconst.syns_attrsqlkey
 msgid "SQL keyword"
-msgstr "SQL Schlüsselwort"
+msgstr "SQL-Schlüsselwort"
 
 #: syneditstrconst.syns_attrsqlplus
 msgid "SQL*Plus command"
-msgstr "SQL *Plus Kommando"
+msgstr "SQL*Plus-Kommando"
 
 #: syneditstrconst.syns_attrsquarebracket
 msgid "Square Bracket"
@@ -315,7 +315,7 @@ msgstr "Tabellenname"
 
 #: syneditstrconst.syns_attrterminator
 msgid "Terminator"
-msgstr ""
+msgstr "Abschluß"
 
 #: syneditstrconst.syns_attrtexcommand
 msgid "TeX Command"
@@ -354,10 +354,9 @@ msgid "Whitespace"
 msgstr "Trenn-/Leerzeichen"
 
 #: syneditstrconst.syns_duplicateshortcutmsg
-#, fuzzy
 #| msgid "Shortcut already exists"
 msgid "The keystroke \"%s\" is already assigned to another editor command. (%s)"
-msgstr "Der Tastendruck \"%s\" ist bereits einer anderen Editorfunktion zugewiesen. (%s)"
+msgstr "Der Tastendruck »%s« ist bereits einer anderen Editorfunktion zugewiesen. (%s)"
 
 #: syneditstrconst.syns_eduplicateshortcut
 msgid "Mouse-Shortcut already exists"
@@ -365,7 +364,7 @@ msgstr "Kürzel ist bereits definiert"
 
 #: syneditstrconst.syns_emcbreakpointtoggle
 msgid "Toggle Breakpoint"
-msgstr ""
+msgstr "Haltepunkt umschalten"
 
 #: syneditstrconst.syns_emccodefoldcollaps
 msgid "Fold Code"
@@ -373,11 +372,11 @@ msgstr "Code falten"
 
 #: syneditstrconst.syns_emccodefoldcollaps_opt
 msgid "Nodes,One,All,\"At Caret\",\"Current Node\""
-msgstr ""
+msgstr "Knoten,Einer,Alle,»Beim Cursor«,»Akt. Knoten«"
 
 #: syneditstrconst.syns_emccodefoldcontextmenu
 msgid "Fold Menu"
-msgstr ""
+msgstr "Menü falten"
 
 #: syneditstrconst.syns_emccodefoldexpand
 msgid "Unfold Code"
@@ -409,7 +408,7 @@ msgstr "Ausgewählten Text einfügen"
 
 #: syneditstrconst.syns_emcselection_opt
 msgid "Mode,Begin,Continue"
-msgstr ""
+msgstr "Modus,Beginn,Weiter"
 
 #: syneditstrconst.syns_emcselectline
 msgid "Select Line"
@@ -417,7 +416,7 @@ msgstr "Zeile markieren"
 
 #: syneditstrconst.syns_emcselectline_opt
 msgid "\"Include spaces\",no,yes"
-msgstr ""
+msgstr "\"Leerzeichen einfügen\",nein,ja"
 
 #: syneditstrconst.syns_emcselectpara
 msgid "Select Paragraph"

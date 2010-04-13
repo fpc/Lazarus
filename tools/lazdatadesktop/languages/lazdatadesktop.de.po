@@ -11,7 +11,7 @@ msgstr ""
 
 #: lazdatadeskstr.eoaddterminator
 msgid "Add terminator"
-msgstr ""
+msgstr "Abschluß hinzufügen"
 
 #: lazdatadeskstr.eoandtermsinbrackets
 msgid "Put brackets around AND Terms"
@@ -77,7 +77,7 @@ msgid ""
 "There is already a connection named \"%s\"\n"
 "Would you like to override the connection data ?\n"
 msgstr ""
-"Es gibt bereits eine Verbindung namens \"%s\"\n"
+"Es gibt bereits eine Verbindung namens »%s«\n"
 "Wollen Sie die Verbindungsdaten außer Kraft setzen?\n"
 
 #: lazdatadeskstr.screatecode
@@ -93,12 +93,12 @@ msgid ""
 "Data dictionary \"%s\" has changed.\n"
 "What do you want to do with the changes?\n"
 msgstr ""
-"Data dictionary \"%s\" wurde geändert.\n"
+"Data dictionary »%s« wurde geändert.\n"
 "Was wollen Sie mit den Änderungen machen?\n"
 
 #: lazdatadeskstr.sdeleteobject
 msgid "Delete this %s"
-msgstr ""
+msgstr "Dieses %s löschen"
 
 #: lazdatadeskstr.sdescription
 msgctxt "lazdatadeskstr.sdescription"
@@ -155,7 +155,7 @@ msgstr "Fremdschlüssel"
 
 #: lazdatadeskstr.shintclose
 msgid "Close query result data panel"
-msgstr ""
+msgstr "Ergebnisdatenbereich schließen"
 
 #: lazdatadeskstr.shintcreatecode
 msgid "Create pascal code for this data"
@@ -187,7 +187,7 @@ msgstr "SQL Anweisung in Datei speichern"
 
 #: lazdatadeskstr.simportdictinto
 msgid "Import datadictionary"
-msgstr ""
+msgstr "Datadictionary importieren"
 
 #: lazdatadeskstr.sindex
 msgid "Index"
@@ -199,7 +199,7 @@ msgstr "Neue Domain"
 
 #: lazdatadeskstr.sld_actionadddomainh
 msgid "Add a domain to the data dictionary"
-msgstr ""
+msgstr "Domain zum Datadictionary hinzufügen"
 
 #: lazdatadeskstr.sld_actionaddforeignkey
 msgid "New Foreign Key"
@@ -207,7 +207,7 @@ msgstr "Neuer Fremdschlüssel"
 
 #: lazdatadeskstr.sld_actionaddforeignkeyh
 msgid "Add a foreign key to the table"
-msgstr ""
+msgstr "Fremdschlüssel zur Tabelle hinzufügen"
 
 #: lazdatadeskstr.sld_actionaddsequence
 msgid "New sequence"
@@ -227,11 +227,11 @@ msgstr "&Alle schließen"
 
 #: lazdatadeskstr.sld_actioncloseallh
 msgid "Close all Data Dictionaries"
-msgstr ""
+msgstr "Alles Datadictionaries schließen"
 
 #: lazdatadeskstr.sld_actioncloseh
 msgid "Close current Data Dictionary"
-msgstr ""
+msgstr "Aktuelles Datadictionary schließen"
 
 #: lazdatadeskstr.sld_actioncopy
 msgid "&Copy"
@@ -251,7 +251,7 @@ msgstr "Quelltext generieren"
 
 #: lazdatadeskstr.sld_actioncreatecodeh
 msgid "Create code from definition or data"
-msgstr ""
+msgstr "Quelltext aus Definition oder Daten erzeugen"
 
 #: lazdatadeskstr.sld_actioncut
 msgid "Cu&t"
@@ -312,7 +312,7 @@ msgstr "Erstelle ein neues Feld in der aktuellen Tabelle"
 
 #: lazdatadeskstr.sld_actionnewh
 msgid "Create a new Data Dictionary"
-msgstr ""
+msgstr "Neues Datadictionary anlegen"
 
 #: lazdatadeskstr.sld_actionnewindex
 msgid "New index"
@@ -340,11 +340,11 @@ msgstr "Verbindung öffnen"
 
 #: lazdatadeskstr.sld_actionopenconnectionh
 msgid "Open selected recent connection"
-msgstr ""
+msgstr "Zuletzt ausgewählte Verbindung öffnen"
 
 #: lazdatadeskstr.sld_actionopenh
 msgid "Open a new Data Dictionary"
-msgstr ""
+msgstr "Neues Datadictionary öffnen"
 
 #: lazdatadeskstr.sld_actionopenrecentdatadict
 msgid "Open"
@@ -352,7 +352,7 @@ msgstr "Öffnen"
 
 #: lazdatadeskstr.sld_actionopenrecentdatadicth
 msgid "Open selected recent datadictionary"
-msgstr ""
+msgstr "Zuletzt ausgewähltes Datadictionary öffnen"
 
 #: lazdatadeskstr.sld_actionpaste
 msgid "&Paste"
@@ -372,11 +372,11 @@ msgstr "Speichern unter"
 
 #: lazdatadeskstr.sld_actionsaveash
 msgid "Save datadictionary as"
-msgstr ""
+msgstr "Datadictionary sichern unter"
 
 #: lazdatadeskstr.sld_actionsaveh
 msgid "Save Data Dictionary"
-msgstr ""
+msgstr "Datadictionary sichern"
 
 #: lazdatadeskstr.sld_cancel
 msgid "&Cancel"
@@ -433,7 +433,7 @@ msgstr "Löschen"
 
 #: lazdatadeskstr.sld_dictionaries
 msgid "Dictionaries"
-msgstr ""
+msgstr "Datadictionaries"
 
 #: lazdatadeskstr.sld_fromconnection
 msgid "From connection"
@@ -453,7 +453,7 @@ msgstr "Host"
 
 #: lazdatadeskstr.sld_importupdatedatadictionary
 msgid "Import/Update datadictionary"
-msgstr ""
+msgstr "Importiere/Aktualisiere Datadictionary"
 
 #: lazdatadeskstr.sld_indent
 msgid "I&ndent"
@@ -482,7 +482,7 @@ msgstr "Verbindungen"
 
 #: lazdatadeskstr.sld_menudictionary
 msgid "&Dictionary"
-msgstr ""
+msgstr "&Dictionary"
 
 #: lazdatadeskstr.sld_menudictionaryimport
 msgid "&Import"
@@ -503,11 +503,11 @@ msgstr "&OK"
 #: lazdatadeskstr.sld_opendatadictionaryfilter
 msgctxt "lazdatadeskstr.sld_opendatadictionaryfilter"
 msgid "Data dictionary files|*.fpd|Ini files|*.ini|All files|*.*"
-msgstr ""
+msgstr "Datadictionary-Dateien|*.fpd|Ini files|*.ini|Alle Dateien|*.*"
 
 #: lazdatadeskstr.sld_opendatadictionarytitle
 msgid "Open data dictionary"
-msgstr ""
+msgstr "Datadictionary öffnen"
 
 #: lazdatadeskstr.sld_options
 msgctxt "lazdatadeskstr.sld_options"
@@ -534,7 +534,7 @@ msgstr "zuletzt verwendet am"
 #: lazdatadeskstr.sld_savefileasfilter
 msgctxt "lazdatadeskstr.sld_savefileasfilter"
 msgid "Data dictionary files|*.fpd|Ini files|*.ini|All files|*.*"
-msgstr ""
+msgstr "Datadictionary-Dateien|*.fpd|Ini files|*.ini|Alle Dateien|*.*"
 
 #: lazdatadeskstr.sld_savefileastitle
 msgid "Save file as"
@@ -590,11 +590,11 @@ msgstr "SQL laden"
 
 #: lazdatadeskstr.snamefor
 msgid "Enter a name for the new %s"
-msgstr ""
+msgstr "Geben Sie einen Namen für das neue %s"
 
 #: lazdatadeskstr.snew
 msgid "New %s"
-msgstr ""
+msgstr "Neues %s"
 
 #: lazdatadeskstr.snewconnection
 msgid "New connection"
@@ -667,7 +667,7 @@ msgstr "Datenbank"
 
 #: lazdatadeskstr.snodedatadictionary
 msgid "Datadictionary"
-msgstr ""
+msgstr "Datadictionary"
 
 #: lazdatadeskstr.snodedomains
 msgid "Domains"
@@ -724,7 +724,7 @@ msgstr "Abfrage starten"
 
 #: lazdatadeskstr.srowsaffected
 msgid "Query executed succesfully: %d rows affected."
-msgstr ""
+msgstr "Abfrage erfolgreich ausgeführt: %d Zeilen betroffen."
 
 #: lazdatadeskstr.ssave
 msgid "Save SQL"
@@ -760,7 +760,7 @@ msgstr "Unbekannte Verbindung: %s"
 
 #: lazdatadeskstr.sunknowndictionary
 msgid "Unknown data dictionary: %s"
-msgstr ""
+msgstr "Unbekanntes Datadictionary: %s"
 
 #: lazdatadeskstr.susecurrentdict
 msgid "Yes, use the active dictionary"
@@ -776,5 +776,5 @@ msgstr "Wert"
 
 #: lazdatadeskstr.swhichcurrentdicttouse
 msgid "A data dictionary is active.Would you like to import into this data dictionary ?"
-msgstr ""
+msgstr "Es ist ein Datadictionary aktiv. Soll in dieses Datadictionary importiert werden?"
 

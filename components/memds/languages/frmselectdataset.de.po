@@ -2,7 +2,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: \n"
 "POT-Creation-Date: \n"
-"PO-Revision-Date: 2007-01-27 22:49+0100\n"
+"PO-Revision-Date: 2010-04-12 22:05+0100\n"
 "Last-Translator: Joerg Braun <jb@toolbox-mag.de>\n"
 "Language-Team: Deutsch <lazarus@miraclec.com>\n"
 "MIME-Version: 1.0\n"
@@ -14,7 +14,7 @@ msgstr ""
 
 #: frmselectdataset.serrcomponentnotfound
 msgid "Error: Component \"%s\" not found"
-msgstr "Fehler: Komponente \"%s\" nicht gefunden"
+msgstr "Fehler: Komponente »%s« nicht gefunden"
 
 #: frmselectdataset.serrselectdataset
 msgid "Please select a dataset first"

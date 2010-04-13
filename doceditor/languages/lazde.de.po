@@ -28,11 +28,11 @@ msgstr "Neue Beschreibungsdatei wählen"
 #: lazdemsg.sbuild
 msgctxt "lazdemsg.sbuild"
 msgid "&Build"
-msgstr "Erstellen"
+msgstr "Neu generieren"
 
 #: lazdemsg.sbuilddocumentation
 msgid "Build documentation"
-msgstr "Dokumentation erstellen"
+msgstr "Dokumentation generieren"
 
 #: lazdemsg.sbuildok
 msgid "Documentation successfully built."
@@ -49,11 +49,11 @@ msgstr "Beenden"
 
 #: lazdemsg.scodeexample
 msgid "Example code File"
-msgstr "Beispielcode-Datei"
+msgstr "Beispieldatei"
 
 #: lazdemsg.scopyright1
 msgid "This application is (c) by  Michael Van Canneyt and the Lazarus team"
-msgstr "Copyright: Michael van Cannëyt und das Lazarus-Team"
+msgstr "Copyright: Michaël van Canneyt und das Lazarus-Team"
 
 #: lazdemsg.scopyright2
 msgid "It is released under the terms of the  GENERAL PUBLIC LICENSE:"
@@ -77,11 +77,11 @@ msgstr "Löschen"
 
 #: lazdemsg.sdeletemodule
 msgid "Are you sure you want to delete module \"%s\" ?"
-msgstr "Wollen Sie Modul »%s« wirklich löschen?"
+msgstr "Wollen Sie das Modul »%s« wirklich löschen?"
 
 #: lazdemsg.sdeletepackage
 msgid "Are you sure you want to delete package \"%s\" ?"
-msgstr "Wollen Sie Package »%s« wirklich löschen?"
+msgstr "Wollen Sie das sPackage »%s« wirklich löschen?"
 
 #: lazdemsg.sdeletetopic
 msgid "Are you sure you want to delete topic \"%s\" ?"
@@ -165,7 +165,7 @@ msgstr " im Eintrag"
 
 #: lazdemsg.shideprotectedmethods
 msgid "&Hide protected methods"
-msgstr "protected Met&hoden verbergen"
+msgstr "Protected-Met&hoden verbergen"
 
 #: lazdemsg.shintfileclose
 msgid "Close current file"
@@ -256,7 +256,7 @@ msgstr "Neuer Eintrag"
 
 #: lazdemsg.shintmenunewfromfile
 msgid "New from file..."
-msgstr "Neu aus Datei..."
+msgstr "Neu aus Datei ..."
 
 #: lazdemsg.shinttoolbaradd
 msgid "Add"
@@ -324,7 +324,7 @@ msgstr "Löschen"
 
 #: lazdemsg.smenuexpandall
 msgid "Expand All"
-msgstr "Alles auseinander falten"
+msgstr "Alles auseinanderfalten"
 
 #: lazdemsg.smenuextra
 msgid "&Extra"
@@ -539,7 +539,7 @@ msgstr "Allgemein"
 
 #: lazdemsg.soptdlgmakeskelprogram
 msgid "makeskel program"
-msgstr "makeskel Programm"
+msgstr "makeskel-Programm"
 
 #: lazdemsg.soptdlgmaxrecentused
 msgid "Max. recent used"
@@ -559,7 +559,7 @@ msgstr "Zeige Hinweise"
 
 #: lazdemsg.soptdlgskipemptynodes
 msgid "&Skip empty nodes when saving"
-msgstr "Leere Knoten beim &speichern übergehen"
+msgstr "Leere Knoten beim &Speichern übergehen"
 
 #: lazdemsg.soptdlgstartmaximized
 msgid "Start maximized"
