@@ -1969,6 +1969,7 @@ begin
 
   FreeAndNil(FUserSourceFiles);
   FreeAndNil(FHiddenDebugOutputLog);
+  FreeAndNil(FHiddenDebugEventsLog);
 
   inherited Destroy;
 end;
