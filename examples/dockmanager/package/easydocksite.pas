@@ -1442,11 +1442,17 @@ begin
     end;
     }
   end;
-{$IFDEF new}
+{$IFDEF RootDock}
   while FTopZone.FirstChild <> nil do begin
     Zone := FTopZone.FirstChild;
     if Zone.NextSibling <> nil then
-      break;
+      break; //has multiple kids - done
+    if Zone.ChildControl <> nil then begin
+    //single child, loose orientation
+      FTopZone.Orientation := doNoOrient;
+      Zone.ChildControl.DockOrientation := doNoOrient;
+      break; //done
+    end;
   //move zone up
     FTopZone.FFirstChild := nil;
     zone.Parent := nil;
@@ -1455,13 +1461,9 @@ begin
   end;
 {$ELSE}
 {$ENDIF}
+//check root empty
   if FTopZone.FirstChild = nil then
-    FTopZone.Orientation := doNoOrient
-  else if FTopZone.FirstChild.NextSibling = nil then begin
     FTopZone.Orientation := doNoOrient;
-    FTopZone.FirstChild.ChildControl.DockOrientation := doNoOrient;
-  //bug: not leaf???
-  end;
 
 //update zone, here simply the whole dock site
   FSplitter.Hide;
