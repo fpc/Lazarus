@@ -154,9 +154,7 @@ type
   public
     constructor Create(AOwner: Tcomponent); override;
     destructor Destroy; override;
-    {$IFDEF SYN_LAZARUS}
     procedure ShowItemHint(AIndex: Integer);
-    {$ENDIF}
   published
     property CurrentString: string read FCurrentString write SetCurrentString;
     property OnKeyPress: TKeyPressEvent read FOnKeyPress write FOnKeyPress;
@@ -465,34 +463,36 @@ begin
   inherited destroy;
 end;
 
-{$IFDEF SYN_LAZARUS}
 procedure TSynBaseCompletionForm.ShowItemHint(AIndex: Integer);
 var
   P: TPoint;
   R: TRect;
+  M: TMonitor;
 begin
   if Visible and (AIndex >= 0) and (AIndex < ItemList.Count) then
   begin
+    // calculate the size
+    R := FHint.CalcHintRect(Monitor.Width, ItemList[AIndex], nil);
+
     FHint.Index := AIndex;
-    if FHint.CalcHintRect(Screen.Width, ItemList[AIndex], nil).Right <=
-      ClientWidth then
-    begin
+    if R.Right <= ClientWidth then begin
       FHint.Hide;
       Exit;
     end;
-    
+
     // calculate the position
+    M := Monitor;
     P := ClientToScreen(Point(0, (AIndex - Scroll.Position) * FFontHeight));
-    // calculate the size
-    R := FHint.CalcHintRect(Screen.Width-10-P.X, ItemList[AIndex], nil);
-    R.Right:=Min(R.Right,Screen.Width-20-P.X);
-    
+    P.X := Max(M.Left, Min(P.X, M.Left + M.Width - R.Right - 1));
+    P.Y := Max(M.Top, Min(P.Y, M.Top + M.Height - R.Bottom - 1));
+    R.Right := Min(r.Right, M.Left + M.Width - 1);
+    R.Bottom := Min(r.Bottom, M.Top + M.Height - 1);
+
     FHint.ActivateHint(Bounds(P.X, P.Y, R.Right, R.Bottom), ItemList[AIndex]);
     FHint.Invalidate;
   end
   else FHint.Hide;
 end;
-{$ENDIF}
 
 procedure TSynBaseCompletionForm.KeyDown(var Key: Word;
   Shift: TShiftState);
