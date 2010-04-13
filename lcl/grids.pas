@@ -4542,6 +4542,8 @@ begin
       CancelSelection
     else begin
       fRange:=NormalizarRect(aValue);
+      if fRange.Right>=ColCount then fRange.Right:=ColCount-1;
+      if fRange.Bottom>=RowCount then fRange.Bottom:=RowCount-1;
       Invalidate;
     end;
   end;
