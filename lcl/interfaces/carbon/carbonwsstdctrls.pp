@@ -961,7 +961,13 @@ class procedure TCarbonWSCustomMemo.SetAlignment(const ACustomEdit: TCustomEdit;
 begin
   if not CheckHandle(ACustomEdit, Self, 'SetAlignment') then Exit;
 
+  { changing the justification (alignment) using TXNSetTXNObjectControls() is
+    not possible if the object has been marked as read-only }
+  if ACustomEdit.ReadOnly then
+    TCarbonMemo(ACustomEdit.Handle).SetReadOnly(False);
   TCarbonMemo(ACustomEdit.Handle).SetAlignment(AAlignment);
+  if ACustomEdit.ReadOnly then
+    TCarbonMemo(ACustomEdit.Handle).SetReadOnly(True);
 end;
 
 {------------------------------------------------------------------------------
