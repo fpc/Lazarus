@@ -1017,6 +1017,7 @@ type
     property ParentFont;
     property ParentColor;
     property ShowAccelChar;
+    property ShowHint;
     property TabOrder;
     property TabStop;
     property Visible;
