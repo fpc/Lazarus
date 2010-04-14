@@ -565,7 +565,8 @@ var
   y: Integer;
   NewControlWidth: Integer;
   CurControl: TControl;
-  AlignedControls: TFPList;
+  ObstacleControls: TFPList;
+  FullSizeObstacleControls: TFPList;
   StartX: Integer;
   w: LongInt;
   h: LongInt;
@@ -580,59 +581,59 @@ var
     PreferredBtnHeight: Integer;
     Intersects: Boolean;
     IntersectsWithLimitedHeightControl: Boolean;
-    AnchorControl: TControl;
-    AnchorSide: TAnchorSideReference;
-    p: integer;
+    StartedAtRowStart: Boolean;
   begin
+    // compute the size
     if (CurControl is TToolButton) and (not CurControl.AutoSize) then
     begin
       PreferredBtnWidth := 0;
       PreferredBtnHeight := 0;
       CurControl.GetPreferredSize(PreferredBtnWidth, PreferredBtnHeight);
       NewControlWidth := PreferredBtnWidth;
-      if (NewControlWidth < ButtonWidth)
-      and (TToolButton(CurControl).Style in [tbsButton, tbsDropDown, tbsCheck]) then
-        NewControlWidth := ButtonWidth;
+      if (TToolButton(CurControl).Style in [tbsButton, tbsDropDown, tbsCheck]) then
+      begin
+        if (NewControlWidth < ButtonWidth) then
+          NewControlWidth := ButtonWidth;
+      end;
     end
     else
       NewControlWidth := CurControl.Width;
     NewBounds := Bounds(x, y, NewControlWidth, ButtonHeight);
 
     //DebugLn(['CalculatePosition ',DbgSName(CurControl)]);
+    StartedAtRowStart:=x=StartX;
     repeat
       // move control to the right, until it does not overlap
       IntersectsWithLimitedHeightControl:=false;
-      for j := 0 to AlignedControls.Count - 1 do
+      j:=0;
+      while j<ObstacleControls.Count do
       begin
-        AlignedControl := TControl(AlignedControls[j]);
-        SiblingBounds := Bounds(AlignedControl.Left, AlignedControl.Top,
-                            AlignedControl.Width, AlignedControl.Height);
+        AlignedControl := TControl(ObstacleControls[j]);
+        SiblingBounds := AlignedControl.BoundsRect;
         Intersects:=(SiblingBounds.Right > NewBounds.Left) and
                     (SiblingBounds.Left < NewBounds.Right) and
                     (SiblingBounds.Bottom > NewBounds.Top) and
                     (SiblingBounds.Top < NewBounds.Bottom);
         if Intersects then begin
-          //DebugLn('CalculatePosition Move ',NewBounds.Left,'->',SiblingBounds.Right);
+          //DebugLn(['CalculatePosition Move ',NewBounds.Left,'->',SiblingBounds.Right]);
           NewBounds.Left := SiblingBounds.Right;
           NewBounds.Right := NewBounds.Left + NewControlWidth;
-          AnchorControl:=nil;
-          // check if bottom is anchored tp parent
-          if (akBottom in AlignedControl.Anchors) then
-            AlignedControl.AnchorSideBottom.GetSidePosition(AnchorControl,AnchorSide,P);
-          if AnchorControl=nil then
-            AnchorControl:=AlignedControl;
-          if not (akBottom in AnchorControl.Anchors) then
+          j:=0; // check again, needed, because ObstacleControls are not sorted
+                // (and can not be sorted, because they can overlap)
+          if FullSizeObstacleControls.IndexOf(AlignedControl)<0 then
             IntersectsWithLimitedHeightControl:=true;
-        end;
+        end else
+          inc(j);
       end;
       if (not Wrapable)
       or (NewBounds.Right <= ARect.Right) or (NewBounds.Left = StartX)
-      or (not IntersectsWithLimitedHeightControl) then
+      or (StartedAtRowStart and not IntersectsWithLimitedHeightControl) then
       begin
-        // control fits into the row (or does not fit in the client area)
+        // control fits into the row
+        //DebugLn(['CalculatePosition fits: ',DbgSName(CurControl),' ',dbgs(NewBounds)]);
         x := NewBounds.Left;
         y := NewBounds.Top;
-        Exit;
+        break;
       end;
 
       // try next row
@@ -640,8 +641,23 @@ var
       NewBounds.Right := NewBounds.Left + NewControlWidth;
       inc(NewBounds.Top, ButtonHeight);
       inc(NewBounds.Bottom, ButtonHeight);
+      StartedAtRowStart:=true;
       //DebugLn('CalculatePosition Next Row ',DbgSName(CurControl),' ',dbgs(NewBounds));
-    until False;
+    until false;
+  end;
+
+  function AnchoredToParent(AControl: TControl; Side: TAnchorKind): boolean;
+  var
+    AnchorControl: TControl;
+    AnchorSide: TAnchorSideReference;
+    p: integer;
+  begin
+    if not (Side in CurControl.Anchors) then exit(false);
+    AnchorControl:=nil;
+    CurControl.AnchorSide[Side].GetSidePosition(AnchorControl,AnchorSide,P);
+    if AnchorControl=nil then
+      AnchorControl:=CurControl;
+    Result:=(Side in AnchorControl.Anchors);
   end;
 
 var
@@ -649,29 +665,42 @@ var
   CurClientRect: TRect;
   AdjustClientFrame: TRect;
   i: Integer;
+  GrowSide: TAnchorKind;
 begin
   //DebugLn(['WrapButtons ',DbgSName(Self),' Wrapable=',Wrapable,' ',dbgs(BoundsRect)]);
   Result := True;
   NewWidth := 0;
   NewHeight := 0;
-  AlignedControls := TFPList.Create;
+  ObstacleControls := TFPList.Create;
+  FullSizeObstacleControls := TFPList.Create;
   OrderedControls := TFPList.Create;
   if not Simulate then
     FRowCount := 0;
   DisableAlign;
   BeginUpdate;
   try
+    GrowSide:=akBottom;
     for i:=0 to ControlCount-1 do
     begin
       CurControl := Controls[i];
       if CurControl.Align = alNone then begin
-        // set to Left,Top anchoring
+        // this control will be auto positioned and auto sized by this function
+        // => set to Left,Top anchoring
         CurControl.Anchors:=[akLeft,akTop];
         CurControl.AnchorSide[akLeft].Control:=nil;
         CurControl.AnchorSide[akTop].Control:=nil;
         OrderedControls.Add(CurControl);
-      end else
-        AlignedControls.Add(CurControl)
+      end else begin
+        // this control will be positioned/sized by the default LCL functions
+        // the OrderedControls will be positioned around them (without overlapping)
+        ObstacleControls.Add(CurControl);
+        // check if this obstacle auto grows, for example if this toolbar is
+        // aligned to the top, check if the obstacle grows downwards (Align=alLeft)
+        if AnchoredToParent(CurControl,GrowSide) then begin
+          // this obstacle auto grows (important for the wrap algorithm)
+          FullSizeObstacleControls.Add(CurControl);
+        end;
+      end;
     end;
     // sort OrderedControls
     if FRealizedButtonHeight = 0 then
@@ -699,14 +728,13 @@ begin
       if not CurControl.Visible then
         Continue;
       CalculatePosition;
-      //DebugLn(['WrapButtons ',CurControl.Name,':',CurControl.ClassName,' ',x,',',y,',',CurControl.Width,',',CurControl.Height]);
+      //DebugLn(['WrapButtons ',CurControl.Name,':',CurControl.ClassName,' ',x,',',y,',',CurControl.Width,'x',CurControl.Height]);
       if ButtonHeight <= 0 then
         h := CurControl.Height
       else
         h := ButtonHeight;
       if CurControl.AutoSize then
       begin
-        // TODO: center vertically
         w := CurControl.Width;
         h := CurControl.Height;
       end
@@ -745,8 +773,9 @@ begin
     end;
     FRealizedButtonHeight := FButtonHeight;
   finally
-    AlignedControls.Free;
+    ObstacleControls.Free;
     OrderedControls.Free;
+    FullSizeObstacleControls.Free;
     EndUpdate;
     EnableAlign;
   end;
