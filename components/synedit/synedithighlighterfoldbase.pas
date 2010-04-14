@@ -32,13 +32,7 @@ unit SynEditHighlighterFoldBase;
 interface
 
 uses
-  SysUtils, Classes,
-{$IFDEF SYN_CLX}
-  kTextDrawer, Types, QGraphics,
-{$ELSE}
-  FileUtil, LCLProc, LCLIntf, LCLType,
-{$ENDIF}
-  SynEditHighlighter, SynEditTextBuffer,
+  SysUtils, Classes, math, LCLProc, SynEditHighlighter, SynEditTextBuffer,
   AvgLvlTree;
 
 type
@@ -364,8 +358,23 @@ begin
 end;
 
 function TSynCustomFoldHighlighter.FoldLineLength(ALineIndex, FoldIndex: Integer): integer;
+var
+  i, lvl, cnt: Integer;
+  e, m: Integer;
 begin
-  result := 0;
+  //atype := FoldTypeAtNodeIndex(ALineIndex, FoldIndex);
+  cnt := CurrentLines.Count;
+  e := EndFoldLevel(ALineIndex);
+  m := MinimumFoldLevel(ALineIndex);
+  lvl := Min(m+1+FoldIndex, e);
+  i := ALineIndex + 1;
+  while (i < cnt) and (MinimumFoldLevel(i) >= lvl) do inc(i);
+  // check if fold last line of block (not mixed "end begin")
+  // and not lastlinefix
+  if (i = cnt) or (EndFoldLevel(i) > MinimumFoldLevel(i)) then
+    dec(i);
+  // Amount of lines, that will become invisible (excludes the cfCollapsed line)
+  Result := i - ALineIndex;
 end;
 
 function TSynCustomFoldHighlighter.GetFoldNodeInfoCount(Line: Integer;

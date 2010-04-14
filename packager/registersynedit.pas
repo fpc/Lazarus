@@ -45,8 +45,8 @@ uses
   SynMemo, SynHighlighterPas, SynHighlighterCPP, SynHighlighterJava,
   SynHighlighterPerl, SynHighlighterHTML, SynHighlighterXML,
   SynHighlighterLFM, SynHighlighterMulti, SynHighlighterUNIXShellScript,
-  SynHighlighterCss, SynHighlighterPHP, SynHighlighterTeX,
-  SynHighlighterSQL, SynHighlighterPython, SynHighlighterVB, SynHighlighterAny,
+  SynHighlighterCss, SynHighlighterPHP, SynHighlighterTeX, SynHighlighterSQL,
+  SynHighlighterPython, SynHighlighterVB, SynHighlighterAny, SynHighlighterDiff,
   SynPropertyEditObjectList, SynDesignStringConstants,
   LazarusPackageIntf, LResources, PropEdits;
 
@@ -112,6 +112,11 @@ end;
 procedure RegisterSynHighlighterLFM;
 begin
   RegisterComponents('SynEdit',[TSynLFMSyn]);
+end;
+
+procedure RegisterSynHighlighterDiff;
+begin
+  RegisterComponents('SynEdit',[TSynDiffSyn]);
 end;
 
 procedure RegisterSynHighlighterUNIXShellScript;
@@ -198,6 +203,7 @@ begin
   RegisterUnit('SynHighlighterHTML',@RegisterSynHighlighterHTML);
   RegisterUnit('SynHighlighterXML',@RegisterSynHighlighterXML);
   RegisterUnit('SynHighlighterLFM',@RegisterSynHighlighterLFM);
+  RegisterUnit('SynHighlighterDiff',@RegisterSynHighlighterDiff);
   RegisterUnit('SynHighlighterUNIXShellScript',
                                         @RegisterSynHighlighterUNIXShellScript);
   RegisterUnit('SynHighlighterCss',@RegisterSynHighlighterCSS);

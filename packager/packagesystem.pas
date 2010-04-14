@@ -1461,6 +1461,7 @@ begin
 
     AddFile('synedithighlighter.pp','SynEditHighlighter',pftUnit,[],cpBase);
     AddFile('synedithighlighterfoldbase.pp','SynEditHighlighterFoldBase',pftUnit,[],cpBase);
+    AddFile('synedithighlighterxmlbase.pas','SynEditHighlighterXMLBase',pftUnit,[],cpBase);
     AddFile('synhighlighterpas.pp','SynHighlighterPas',pftUnit,[],cpBase);
     AddFile('synhighlightercpp.pp','SynHighlighterCPP',pftUnit,[],cpBase);
     AddFile('synhighlighterjava.pas','SynHighlighterJava',pftUnit,[],cpBase);
@@ -1468,6 +1469,7 @@ begin
     AddFile('synhighlighterhtml.pp','SynHighlighterHTML',pftUnit,[],cpBase);
     AddFile('synhighlighterxml.pas','SynHighlighterXML',pftUnit,[],cpBase);
     AddFile('synhighlighterlfm.pas','SynHighlighterLFM',pftUnit,[],cpBase);
+    AddFile('synhighlighterdiff.pas','SynHighlighterDiff',pftUnit,[],cpBase);
     AddFile('synhighlighterunixshellscript.pas','SynHighlighterUNIXShellScript',
                                                              pftUnit,[],cpBase);
     AddFile('synhighlightermulti.pas','SynHighlighterMulti',pftUnit,[],cpBase);

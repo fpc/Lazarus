@@ -150,6 +150,16 @@ resourcestring
   SYNS_AttrSquareBracket        =  'Square Bracket';
   SYNS_AttrRoundBracket         =  'Round Bracket';
   SYNS_AttrTeXCommand           =  'TeX Command';
+  SYNS_AttrOrigFile             =  'Diff Original File';
+  SYNS_AttrNewFile              =  'Diff New File';
+  SYNS_AttrChunkMarker          =  'Diff Chunk Marker';
+  SYNS_AttrChunkOrig            =  'Diff Chunk Original Line Count';
+  SYNS_AttrChunkNew             =  'Diff Chunk New Line Count';
+  SYNS_AttrChunkMixed           =  'Diff Chunk Line Counts';
+  SYNS_AttrLineAdded            =  'Diff Added line';
+  SYNS_AttrLineRemoved          =  'Diff Removed Line';
+  SYNS_AttrLineChanged          =  'Diff Changed Line';
+  SYNS_AttrLineContext          =  'Diff Context Line';
   (* End of Attribute Names *)
 
 const
@@ -247,6 +257,16 @@ const
   SYNS_XML_AttrSquareBracket        :String = SYNS_AttrSquareBracket;        // 'Square Bracket';
   SYNS_XML_AttrRoundBracket         :String = SYNS_AttrRoundBracket;         // 'Round Bracket';
   SYNS_XML_AttrTeXCommand           :String = SYNS_AttrTeXCommand;           // 'TeX Command';
+  SYNS_XML_AttrOrigFile             :String = SYNS_AttrOrigFile;
+  SYNS_XML_AttrNewFile              :String = SYNS_AttrNewFile;
+  SYNS_XML_AttrChunkMarker          :String = SYNS_AttrChunkMarker;
+  SYNS_XML_AttrChunkOrig            :String = SYNS_AttrChunkOrig;
+  SYNS_XML_AttrChunkNew             :String = SYNS_AttrChunkNew;
+  SYNS_XML_AttrChunkMixed           :String = SYNS_AttrChunkMixed;
+  SYNS_XML_AttrLineAdded            :String = SYNS_AttrLineAdded;
+  SYNS_XML_AttrLineRemoved          :String = SYNS_AttrLineRemoved;
+  SYNS_XML_AttrLineChanged          :String = SYNS_AttrLineChanged;
+  SYNS_XML_AttrLineContext          :String = SYNS_AttrLineContext;
   (* End of Stored Attribute Names *)
 
 resourcestring
@@ -328,9 +348,8 @@ const
   SYNS_LangPerl                 =  'Perl';
   SYNS_LangBatch                =  'MS-DOS batch language';
   SYNS_LangDfm                  =  'Borland Form definition';
-  {$IFDEF SYN_LAZARUS}
   SYNS_LangLfm                  =  'Lazarus Form definition';
-  {$ENDIF}
+  SYNS_LangDiff                 =  'Diff File';
   SYNS_LangAWK                  =  'AWK Script';
   SYNS_LangCORBAIDL             =  'CORBA IDL';
   SYNS_LangHTML                 =  'HTML document';

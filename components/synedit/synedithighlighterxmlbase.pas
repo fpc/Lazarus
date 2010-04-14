@@ -8,13 +8,6 @@ Software distributed under the License is distributed on an "AS IS" basis,
 WITHOUT WARRANTY OF ANY KIND, either express or implied. See the License for
 the specific language governing rights and limitations under the License.
 
-The Original Code is: SynHighlighterXML.pas, released 2000-11-20.
-The Initial Author of this file is Jeff Rafter.
-All Rights Reserved.
-
-Contributors to the SynEdit and mwEdit projects are listed in the
-Contributors.txt file.
-
 Alternatively, the contents of this file may be used under the terms of the
 GNU General Public License Version 2 or later (the "GPL"), in which case
 the provisions of the GPL are applicable instead of those above.
@@ -24,6 +17,9 @@ under the MPL, indicate your decision by deleting the provisions above and
 replace them with the notice and other provisions required by the GPL.
 If you do not delete the provisions above, a recipient may use your version
 of this file under either the MPL or the GPL.
+
+This file was added to the Lazarus branch of SynEdit.
+The original Author is M Friebe
 }
 
 (* Provides folding for Xml and Html *)
@@ -81,7 +77,6 @@ type
     function FoldOpenCount(ALineIndex: Integer; AType: Integer = 0): integer; override;
     function FoldCloseCount(ALineIndex: Integer; AType: Integer = 0): integer; override;
     function FoldNestCount(ALineIndex: Integer; AType: Integer = 0): integer; override;
-    function FoldLineLength(ALineIndex, FoldIndex: Integer): integer; override;
     // TODO: make private
     function MinimumFoldLevel(ALineIndex: Integer): integer; override;
     function EndFoldLevel(ALineIndex: Integer): integer; override;
@@ -141,26 +136,6 @@ function TSynCustomXmlHighlighter.FoldNestCount(ALineIndex: Integer; AType: Inte
 begin
   If AType <> 0 then exit(0);
   Result := EndFoldLevel(ALineIndex);
-end;
-
-function TSynCustomXmlHighlighter.FoldLineLength(ALineIndex, FoldIndex: Integer): integer;
-var
-  i, lvl, cnt: Integer;
-  e, m: Integer;
-begin
-  //atype := FoldTypeAtNodeIndex(ALineIndex, FoldIndex);
-  cnt := CurrentLines.Count;
-  e := EndFoldLevel(ALineIndex);
-  m := MinimumFoldLevel(ALineIndex);
-  lvl := Min(m+1+FoldIndex, e);
-  i := ALineIndex + 1;
-  while (i < cnt) and (MinimumFoldLevel(i) >= lvl) do inc(i);
-  // check if fold last line of block (not mixed "end begin")
-  // and not lastlinefix
-  if (i = cnt) or (EndFoldLevel(i) > MinimumFoldLevel(i)) then
-    dec(i);
-  // Amount of lines, that will become invisible (excludes the cfCollapsed line)
-  Result := i - ALineIndex;
 end;
 
 function TSynCustomXmlHighlighter.MinimumFoldLevel(ALineIndex: Integer): integer;

@@ -50,7 +50,7 @@ uses
   SynHighlighterCPP, SynHighlighterHTML, SynHighlighterJava, SynHighlighterLFM,
   SynHighlighterPas, SynHighlighterPerl, SynHighlighterPHP, SynHighlighterSQL,
   SynHighlighterPython, SynHighlighterUNIXShellScript, SynHighlighterXML,
-  SynHighlighterJScript,
+  SynHighlighterJScript, SynHighlighterDiff,
   // codetools
   LinkScanner, CodeToolManager, Laz_XMLCfg,
   // IDEIntf
@@ -66,7 +66,8 @@ type
 
   TLazSyntaxHighlighter =
     (lshNone, lshText, lshFreePascal, lshDelphi, lshLFM, lshXML, lshHTML,
-    lshCPP, lshPerl, lshJava, lshBash, lshPython, lshPHP, lshSQL, lshJScript);
+    lshCPP, lshPerl, lshJava, lshBash, lshPython, lshPHP, lshSQL, lshJScript,
+    lshDiff);
 
   // TODO: add defaults for other highlighters too (like html, xml...)
   TPascalHilightAttribute = (
@@ -539,7 +540,8 @@ const
       (Count: 0; Info: nil), // python
       (Count: 0; Info: nil), // php
       (Count: 0; Info: nil), // sql
-      (Count: 0; Info: nil)  // jscript
+      (Count: 0; Info: nil), // jscript
+      (Count: 0; Info: nil)  // Diff
     );
 
 type
@@ -704,7 +706,8 @@ const
       (Count:  0; Info: nil), // python
       (Count:  0; Info: nil), // php
       (Count:  0; Info: nil), // sql
-      (Count:  0; Info: nil)  // jscript
+      (Count:  0; Info: nil), // jscript
+      (Count:  0; Info: nil)  // Diff
     );
 
 const
@@ -714,7 +717,7 @@ const
     TCustomSynClass =
     (nil, nil, TSynFreePascalSyn, TSynPasSyn, TSynLFMSyn, TSynXMLSyn,
     TSynHTMLSyn, TSynCPPSyn, TSynPerlSyn, TSynJavaSyn, TSynUNIXShellScriptSyn,
-    TSynPythonSyn, TSynPHPSyn, TSynSQLSyn, TSynJScriptSyn);
+    TSynPythonSyn, TSynPHPSyn, TSynSQLSyn, TSynJScriptSyn, TSynDiffSyn);
 
 
 { Comments }
@@ -734,7 +737,8 @@ const
     comtPerl,  // lshPython
     comtHTML,  // lshPHP
     comtCPP,   // lshSQL
-    comtCPP    // lshJScript
+    comtCPP,   // lshJScript
+    comtNone   // Diff
     );
 
 const
@@ -1127,7 +1131,8 @@ const
     'Python',
     'PHP',
     'SQL',
-    'JScript'
+    'JScript',
+    'Diff'
     );
 
 var
@@ -1168,7 +1173,8 @@ const
     lshPython,
     lshPHP,
     lshSQL,
-    lshJScript
+    lshJScript,
+    lshDiff
     );
 
 { TSynEditMouseActionKeyCmdHelper }
@@ -2076,6 +2082,34 @@ begin
       Add('Symbol=Symbol');
     end;
     CaretXY := Point(1,1);
+  end;
+  Add(NewInfo);
+
+  // create info for Diff
+  NewInfo := TEditOptLanguageInfo.Create;
+  with NewInfo do
+  begin
+    TheType := lshDiff;
+    DefaultCommentType := DefaultCommentTypes[TheType];
+    SynClass := LazSyntaxHighlighterClasses[TheType];
+    SetBothFilextensions('diff');
+    SampleSource :=
+      '*** /a/file'#13#10 +
+      '--- /b/file'#13#10 +
+      '***************'#13#10 +
+      '*** 2,5 ****'#13#10 +
+      '--- 2,5 ----'#13#10 +
+      '  context'#13#10 +
+      '- removed'#13#10 +
+      '! Changed'#13#10 +
+      '+ added'#13#10 +
+      '  context'#13#10;
+    MappedAttributes := TStringList.Create;
+    //with MappedAttributes do
+    //begin
+    //  Add('Unknown_word=Comment');
+    //end;
+    CaretXY := Point(1,6);
   end;
   Add(NewInfo);
 end;

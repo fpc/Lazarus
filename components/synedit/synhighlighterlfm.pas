@@ -49,17 +49,7 @@ unit SynHighlighterLFM;
 interface
 
 uses
-  SysUtils, Classes, math,
-  {$IFDEF SYN_CLX}
-  Qt, QControls, QGraphics,
-  {$ELSE}
-  {$IFDEF SYN_LAZARUS}
-  FileUtil, LCLIntf, LCLType,
-  {$ELSE}
-  Windows, Messages, Registry,
-  {$ENDIF}
-  Controls, Graphics,
-  {$ENDIF}
+  SysUtils, Classes, FileUtil, Graphics,
   SynEditTextBuffer, SynEditTypes, SynEditHighlighter, SynEditHighlighterFoldBase;
 
 type
@@ -164,7 +154,6 @@ type
     function FoldOpenCount(ALineIndex: Integer; AType: Integer = 0): integer; override;
     function FoldCloseCount(ALineIndex: Integer; AType: Integer = 0): integer; override;
     function FoldNestCount(ALineIndex: Integer; AType: Integer = 0): integer; override;
-    function FoldLineLength(ALineIndex, FoldIndex: Integer): integer; override;
     // TODO: make private
     function MinimumFoldLevel(ALineIndex: Integer): integer; override;
     function EndFoldLevel(ALineIndex: Integer): integer; override;
@@ -640,26 +629,6 @@ function TSynLFMSyn.FoldNestCount(ALineIndex: Integer; AType: Integer): integer;
 begin
   If AType <> 0 then exit(0);
   Result := EndFoldLevel(ALineIndex);
-end;
-
-function TSynLFMSyn.FoldLineLength(ALineIndex, FoldIndex: Integer): integer;
-var
-  i, lvl, cnt: Integer;
-  e, m: Integer;
-begin
-  //atype := FoldTypeAtNodeIndex(ALineIndex, FoldIndex);
-  cnt := CurrentLines.Count;
-  e := EndFoldLevel(ALineIndex);
-  m := MinimumFoldLevel(ALineIndex);
-  lvl := Min(m+1+FoldIndex, e);
-  i := ALineIndex + 1;
-  while (i < cnt) and (MinimumFoldLevel(i) >= lvl) do inc(i);
-  // check if fold last line of block (not mixed "end begin")
-  // and not lastlinefix
-  if (i = cnt) or (EndFoldLevel(i) > MinimumFoldLevel(i)) then
-    dec(i);
-  // Amount of lines, that will become invisible (excludes the cfCollapsed line)
-  Result := i - ALineIndex;
 end;
 
 function TSynLFMSyn.MinimumFoldLevel(ALineIndex: Integer): integer;

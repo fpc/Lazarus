@@ -48,15 +48,8 @@ unit SynHighlighterHTML;
 interface
 
 uses
-  SysUtils,
-  {$IFDEF SYN_LAZARUS}
-  LCLIntf, LCLType,
-  {$ELSE}
-  Windows, Messages, Registry,
-  {$ENDIF}
-  Classes, Controls, Graphics,
-  SynEditTypes, SynEditHighlighter, SynEditHighlighterXMLBase,
-  SynEditHighlighterFoldBase;
+  SysUtils, Classes, Graphics, SynEditTypes, SynEditHighlighter,
+  SynEditHighlighterXMLBase, SynEditHighlighterFoldBase;
 
 const
   MAX_ESCAPEAMPS = 151;

@@ -16,10 +16,11 @@ interface
 uses
   SynTextDrawer, SynEditKeyCmds, SynEditTypes, SynEditStrConst,
   SynEditSearch, SynEditMiscProcs, SynEditmiscClasses, SynEditTextbuffer,
-  SynEdit, SynEditHighlighter, SynCompletion, SynEditAutoComplete, 
+  SynEdit, SynCompletion, SynEditAutoComplete,
   SynEditLazDsgn, SynRegExpr, SynEditRegexSearch, SynEditExport, 
   SynExportHTML, SynMemo, SynMacroRecorder, SynEditPlugins,
   SynPluginSyncronizedEditBase, SynPluginTemplateEdit, SynPluginSyncroEdit,
+  SynEditHighlighter, SynEditHighlighterFoldBase, SynEditHighlighterXMLBase,
   SynHighlighterAny,
   SynhighlighterCPP, 
   SynHighlighterCss, 
@@ -39,6 +40,7 @@ uses
   SynHighlighterUNIXShellScript, 
   SynHighlighterVB, 
   SynHighlighterXML,
+  SynHighlighterDiff,
   SynGutter, SynGutterChanges, SynGutterCodeFolding, SynGutterLineNumber, SynGutterMarks,
   SynPropertyEditObjectList, SynDesignStringConstants;
 

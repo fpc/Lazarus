@@ -56,13 +56,7 @@ interface
 {$I SynEdit.inc}
 
 uses
-  SysUtils, Classes, math, LCLProc,
-  {$IFDEF SYN_CLX}
-  Qt, QControls, QGraphics,
-  {$ELSE}
-  Graphics,
-  {$ENDIF}
-  SynEditTypes, SynEditTextBuffer, SynEditHighlighter,
+  Classes, math, Graphics, SynEditTypes, SynEditHighlighter,
   SynEditHighlighterFoldBase, SynEditHighlighterXMLBase;
 
 type
