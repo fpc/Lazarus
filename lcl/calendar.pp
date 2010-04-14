@@ -30,9 +30,12 @@ unit Calendar;
 
 {$mode objfpc}{$H+}
 
+{off $Define VerboseCalenderSetDate}
+
 interface
 
 uses
+  {$IFDEF VerboseCalenderSetDate}LCLProc,{$ENDIF}
   SysUtils, Classes, LCLType, LCLStrConsts, lMessages, Controls, LResources;
 
 type
@@ -88,10 +91,11 @@ type
     procedure LMDayChanged(var Message: TLMessage); message LM_DAYCHANGED;
     class function GetControlClassDefaultSize: TPoint; override;
     procedure Loaded; override;
+    procedure InitializeWnd; override;
+    procedure DestroyWnd; override;
   public
     constructor Create(AOwner: TComponent); override;
     function HitTest(APoint: TPoint): TCalendarPart;
-    procedure InitializeWnd; override;
     property Date: String read GetDate write SetDate stored False;
     property DateTime: TDateTime read GetDateTime write SetDateTime;
     property DisplaySettings: TDisplaySettings read GetDisplaySettings
@@ -185,6 +189,13 @@ begin
   if FPropsChanged then SetProps;
 end;
 
+procedure TCustomCalendar.DestroyWnd;
+begin
+  // fetch widgetset values in local variables
+  GetProps;
+  inherited DestroyWnd;
+end;
+
 function TCustomCalendar.GetDate: String;
 begin
   Result := '';
@@ -246,7 +257,7 @@ begin
   FDate:=AValue;
   FDateAsString:=FormatDateTime(ShortDateFormat,FDate);
   {$IFDEF VerboseCalenderSetDate}
-  DebugLn('TCustomCalendar.SetDateTime FDate=',FDate,' FDateAsString=',FDateAsString,' ShortDateFormat=',ShortDateFormat);
+  DebugLn('TCustomCalendar.SetDateTime FDate=',DateToStr(FDate),' FDateAsString=',FDateAsString,' ShortDateFormat=',ShortDateFormat);
   {$ENDIF}
   SetProps;
 end;
@@ -258,7 +269,7 @@ begin
     FDate := TWSCustomCalendarClass(WidgetSetClass).GetDateTime(Self);
     FDateAsString := FormatDateTime(ShortDateFormat,FDate);
     {$IFDEF VerboseCalenderSetDate}
-    DebugLn('TCustomCalendar.GetProps A ',FDate,' ',FDateAsString);
+    DebugLn('TCustomCalendar.GetProps A ',DateToStr(FDate),' ',FDateAsString);
     {$ENDIF}
   end;
 end;
@@ -269,7 +280,7 @@ begin
   begin
     FPropsChanged := False;
     {$IFDEF VerboseCalenderSetDate}
-    DebugLn('TCustomCalendar.SetProps A ',FDate,' ',FDateAsString);
+    DebugLn('TCustomCalendar.SetProps A ',DateToStr(FDate),' ',FDateAsString);
     {$ENDIF}
     TWSCustomCalendarClass(WidgetSetClass).SetDateTime(Self, FDate);
     TWSCustomCalendarClass(WidgetSetClass).SetDisplaySettings(Self, FDisplaySettings);
