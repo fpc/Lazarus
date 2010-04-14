@@ -1919,6 +1919,9 @@ procedure TCarbonMemo.InsertLine(AIndex: Integer; const S: String);
 var
   AStart, AEnd: TXNOffset;
   W: WideString;
+const
+  // Carbon Line ending should be MacOS classic rather than Unix compatible, see #16267
+  CarbonEoln = #13;
 begin
   if AIndex < 0 then AIndex := 0;
   W := UTF8ToUTF16(S);
@@ -1929,12 +1932,12 @@ begin
   if AIndex < GetLineCount then
   begin
     GetLineOffset(AIndex, AStart, AEnd);
-    W := W + #10;
+    W := W + CarbonEoln;
   end
   else
   begin
     GetLineOffset(GetLineCount - 1, AStart, AEnd);
-    W := #10 + W;
+    W := CarbonEoln + W;
     AStart := AEnd;
   end;
 
