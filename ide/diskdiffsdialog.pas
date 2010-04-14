@@ -34,7 +34,7 @@ interface
 
 uses
   Classes, SysUtils, LCLProc, Forms, Controls, Buttons, StdCtrls,
-  SynEdit, LCLType, ComCtrls, ExtCtrls,
+  SynEdit, SynHighlighterDiff, LCLType, ComCtrls, ExtCtrls,
   FileProcs, CodeToolManager, CodeCache, Laz_XMLCfg, Laz_XMLWrite,
   Project, DiffPatch, LazarusIDEStrConsts, EnvironmentOpts, EditorOptions,
   PackageDefs;
@@ -59,6 +59,7 @@ type
     RevertAllButton: TButton;
     IgnoreDiskChangesButton: TButton;
     Splitter: TSplitter;
+    SynDiffSyn1: TSynDiffSyn;
     procedure DiskDiffsDlgKeyDown(Sender: TObject; var Key: Word;
           Shift: TShiftState);
     procedure FilesListBoxMouseUp(Sender: TOBject; Button: TMouseButton;

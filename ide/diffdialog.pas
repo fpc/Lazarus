@@ -42,7 +42,7 @@ interface
 uses
   Classes, SysUtils, Math, Forms, Controls, Buttons, StdCtrls, FileUtil,
   LazarusIDEStrConsts, EditorOptions, IDEWindowIntf, LCLType,
-  InputHistory, DiffPatch, ExtCtrls, Dialogs, SynEdit, IDEContextHelpEdit,
+  InputHistory, DiffPatch, ExtCtrls, Dialogs, SynEdit, SynHighlighterDiff, IDEContextHelpEdit,
   SourceEditor;
 
 type
@@ -82,6 +82,7 @@ type
     DiffSynEdit: TSynEdit;
     OpenInEditorButton: TBitBtn;
     SaveDiffButton: TBitBtn;
+    SynDiffSyn1: TSynDiffSyn;
     Text1FileOpenButton: TButton;
     dlgSave: TSaveDialog;
     dlgOpen: TOpenDialog;
