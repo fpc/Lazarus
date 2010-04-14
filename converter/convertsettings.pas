@@ -150,7 +150,8 @@ begin
   fReplaceUnits['pngImage']:='';
   fReplaceUnits['Jpeg']:='';
   fReplaceUnits['gifimage']:='';
-  fReplaceUnits['^Tnt(.+)']:='$1';
+  fReplaceUnits['^Q(.+)']:='$1';      // Kylix unit names.
+  fReplaceUnits['^Tnt(.+)']:='$1';    // Tnt* third party components.
 
   // Map Delphi types to LCL types.
   fReplaceTypes:=TStringToStringTree.Create(false);
