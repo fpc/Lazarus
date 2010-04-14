@@ -2020,6 +2020,7 @@ components/synedit/synguttermarks.pp svneol=native#text/plain
 components/synedit/synhighlighterany.pas svneol=native#text/plain
 components/synedit/synhighlightercpp.pp svneol=native#text/pascal
 components/synedit/synhighlightercss.pas svneol=native#text/pascal
+components/synedit/synhighlighterdiff.pas svneol=native#text/pascal
 components/synedit/synhighlighterhashentries.pas svneol=native#text/pascal
 components/synedit/synhighlighterhtml.pp svneol=native#text/pascal
 components/synedit/synhighlighterjava.pas svneol=native#text/pascal
