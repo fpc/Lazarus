@@ -147,10 +147,9 @@ end;
 
 procedure TSynGutterMarks.Paint(Canvas : TCanvas; AClip : TRect; FirstLine, LastLine : integer);
 var
-  i, LineHeight: integer;
+  i: integer;
 begin
   if not Visible then exit;
-  LineHeight := TSynEdit(SynEdit).LineHeight;
   if MarkupInfo.Background <> clNone then
     Canvas.Brush.Color := MarkupInfo.Background
   else
