@@ -1460,6 +1460,10 @@ resourcestring
   dlgFoldXmlDocType     = 'DocType';
   dlgFoldXmlProcess     = 'Processing Instruction';
 
+  dlgFoldHtmlNode        = 'Node';
+  dlgFoldHtmlComment     = 'Comment';
+  dlgFoldHtmlAsp         = 'ASP';
+
   dlgMouseFoldExpFoldOne    = 'Fold One (All Expanded)';
   dlgMouseFoldExpFoldAll    = 'Fold All (All Expanded)';
   dlgMouseFoldColFoldOne    = 'Fold One (Some Colapsed)';

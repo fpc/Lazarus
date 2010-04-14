@@ -38,15 +38,19 @@ uses
   Classes, SysUtils,
   // LCL
   Controls, ExtCtrls, Graphics, LCLProc, FileUtil, LResources, Forms,
-  // synedit
-  SynEdit, SynEditAutoComplete, SynEditHighlighter, SynEditHighlighterFoldBase, SynEditKeyCmds,
-  SynEditStrConst, SynEditMarkupBracket, SynEditMarkupHighAll, SynEditMarkupWordGroup,
-  SynGutter, SynGutterBase, SynGutterCodeFolding, SynGutterLineNumber, SynGutterChanges,
+  // Synedit
+  SynEdit, SynEditAutoComplete, SynEditKeyCmds, SynEditStrConst,
+  SynEditMiscClasses, SynBeautifier, SynEditTextTrimmer, SynEditMouseCmds,
+  SynPluginTemplateEdit, SynPluginSyncroEdit,
+  SynGutter, SynGutterBase, SynGutterCodeFolding, SynGutterLineNumber,
+  SynGutterChanges,
+  SynEditMarkupBracket, SynEditMarkupHighAll, SynEditMarkupWordGroup,
+  // SynEdit Highlighters
+  SynEditHighlighter, SynEditHighlighterFoldBase,
   SynHighlighterCPP, SynHighlighterHTML, SynHighlighterJava, SynHighlighterLFM,
   SynHighlighterPas, SynHighlighterPerl, SynHighlighterPHP, SynHighlighterSQL,
   SynHighlighterPython, SynHighlighterUNIXShellScript, SynHighlighterXML,
-  SynHighlighterJScript, SynEditMiscClasses, SynBeautifier, SynEditTextTrimmer,
-  SynEditMouseCmds, SynPluginTemplateEdit, SynPluginSyncroEdit,
+  SynHighlighterJScript,
   // codetools
   LinkScanner, CodeToolManager, Laz_XMLCfg,
   // IDEIntf
@@ -572,66 +576,66 @@ const
   EditorOptionsFoldInfoPas: Array [0..19] of TEditorOptionsFoldInfo
   = (
       (Name:  dlgFoldPasProcedure;     Xml:     'Procedure';
-       Index: ord(cfbtProcedure)-1;    Enabled: True),
+       Index: ord(cfbtProcedure);    Enabled: True),
       (Name:  dlgFoldLocalPasVarType;  Xml:     'LocalVarType';
-       Index: ord(cfbtLocalVarType)-1; Enabled: True),
+       Index: ord(cfbtLocalVarType); Enabled: True),
       (Name:  dlgFoldPasProcBeginEnd;  Xml:     'ProcBeginEnd';
-       Index: ord(cfbtTopBeginEnd)-1;  Enabled: True),
+       Index: ord(cfbtTopBeginEnd);  Enabled: True),
       (Name:  dlgFoldPasBeginEnd;      Xml:     'BeginEnd';
-       Index: ord(cfbtBeginEnd)-1;     Enabled: True),
+       Index: ord(cfbtBeginEnd);     Enabled: True),
       (Name:  dlgFoldPasRepeat;        Xml:     'Repeat';
-       Index: ord(cfbtRepeat)-1;       Enabled: False),
+       Index: ord(cfbtRepeat);       Enabled: False),
       (Name:  dlgFoldPasCase;          Xml:     'Case';
-       Index: ord(cfbtCase)-1;         Enabled: False),
+       Index: ord(cfbtCase);         Enabled: False),
       (Name:  dlgFoldPasTry;           Xml:     'Try';
-       Index: ord(cfbtTry)-1;          Enabled: False),
+       Index: ord(cfbtTry);          Enabled: False),
       (Name:  dlgFoldPasExcept;        Xml:     'Except';
-       Index: ord(cfbtExcept)-1;       Enabled: False),
+       Index: ord(cfbtExcept);       Enabled: False),
       (Name:  dlgFoldPasAsm;           Xml:     'Asm';
-       Index: ord(cfbtAsm)-1;          Enabled: True),
+       Index: ord(cfbtAsm);          Enabled: True),
 
       (Name:  dlgFoldPasProgram;       Xml:     'Program';
-       Index: ord(cfbtProgram)-1;      Enabled: False),
+       Index: ord(cfbtProgram);      Enabled: False),
       (Name:  dlgFoldPasUnit;          Xml:     'Unit';
-       Index: ord(cfbtUnit)-1;         Enabled: False),
+       Index: ord(cfbtUnit);         Enabled: False),
       (Name:  dlgFoldPasUnitSection;   Xml:     'UnitSection';
-       Index: ord(cfbtUnitSection)-1;  Enabled: False),
+       Index: ord(cfbtUnitSection);  Enabled: False),
       (Name:  dlgFoldPasUses;          Xml:     'Uses';
-       Index: ord(cfbtUses)-1;         Enabled: True),
+       Index: ord(cfbtUses);         Enabled: True),
 
       (Name:  dlgFoldPasVarType;       Xml:     'VarType';
-       Index: ord(cfbtVarType)-1;      Enabled: False),
+       Index: ord(cfbtVarType);      Enabled: False),
       (Name:  dlgFoldPasClass;         Xml:     'Class';
-       Index: ord(cfbtClass)-1;        Enabled: True),
+       Index: ord(cfbtClass);        Enabled: True),
       (Name:  dlgFoldPasClassSection;  Xml:     'ClassSection';
-       Index: ord(cfbtClassSection)-1; Enabled: True),
+       Index: ord(cfbtClassSection); Enabled: True),
       (Name:  dlgFoldPasRecord;        Xml:     'Record';
-       Index: ord(cfbtRecord)-1;       Enabled: True),
+       Index: ord(cfbtRecord);       Enabled: True),
 
       (Name:  dlgFoldPasNestedComment; Xml:     'NestedComment';
-       Index: ord(cfbtNestedComment)-1;Enabled: True),
+       Index: ord(cfbtNestedComment);Enabled: True),
 
       (Name:  dlgFoldPasIfDef;         Xml:     'IfDef';
-       Index: ord(cfbtIfDef)-1;        Enabled: False),
+       Index: ord(cfbtIfDef);        Enabled: False),
       (Name:  dlgFoldPasUserRegion;    Xml:     'UserRegion';
-       Index: ord(cfbtRegion)-1;       Enabled: True)
+       Index: ord(cfbtRegion);       Enabled: True)
     );
 
   EditorOptionsFoldInfoLFM: Array [0..2] of TEditorOptionsFoldInfo
   = (
       ( Name:    dlgFoldLfmObject;
         Xml:    'Object';
-        Index:   ord(cfbtLfmObject)-1;
+        Index:   ord(cfbtLfmObject);
         Enabled: True
       ),
       ( Name:    dlgFoldLfmList;
         Xml:     'List';
-        Index:   ord(cfbtLfmList)-1;
+        Index:   ord(cfbtLfmList);
         Enabled: True
       ),
       ( Name:    dlgFoldLfmItem;
         Xml:     'Item';
-        Index:   ord(cfbtLfmItem)-1;
+        Index:   ord(cfbtLfmItem);
         Enabled: True
       )
     );
@@ -640,27 +644,46 @@ const
   = (
       ( Name:    dlgFoldXmlNode;
         Xml:    'Node';
-        Index:   ord(cfbtXmlNode)-1;
+        Index:   ord(cfbtXmlNode);
         Enabled: True
       ),
       ( Name:    dlgFoldXmlComment;
         Xml:    'Comment';
-        Index:   ord(cfbtXmlComment)-1;
+        Index:   ord(cfbtXmlComment);
         Enabled: True
       ),
       ( Name:    dlgFoldXmlCData;
         Xml:    'CData';
-        Index:   ord(cfbtXmlCData)-1;
+        Index:   ord(cfbtXmlCData);
         Enabled: True
       ),
       ( Name:    dlgFoldXmlDocType;
         Xml:    'DocType';
-        Index:   ord(cfbtXmlDocType)-1;
+        Index:   ord(cfbtXmlDocType);
         Enabled: True
       ),
       ( Name:    dlgFoldXmlProcess;
         Xml:    'ProcessInstr';
-        Index:   ord(cfbtXmlProcess)-1;
+        Index:   ord(cfbtXmlProcess);
+        Enabled: True
+      )
+    );
+
+  EditorOptionsFoldInfoHTML: Array [0..2] of TEditorOptionsFoldInfo
+  = (
+      ( Name:    dlgFoldHtmlNode;
+        Xml:    'Node';
+        Index:   ord(cfbtHtmlNode);
+        Enabled: True
+      ),
+      ( Name:    dlgFoldHtmlComment;
+        Xml:    'Comment';
+        Index:   ord(cfbtXmlComment);
+        Enabled: True
+      ),
+      ( Name:    dlgFoldHtmlAsp;
+        Xml:    'ASP';
+        Index:   ord(cfbtHtmlAsp);
         Enabled: True
       )
     );
@@ -673,7 +696,7 @@ const
       (Count: 20; Info: {$IFDEF FPC}@{$ENDIF}EditorOptionsFoldInfoPas[0]), // pas
       (Count:  3; Info: {$IFDEF FPC}@{$ENDIF}EditorOptionsFoldInfoLFM[0]), // lfm
       (Count:  5; Info: {$IFDEF FPC}@{$ENDIF}EditorOptionsFoldInfoXML[0]), // xml
-      (Count:  0; Info: nil), // html
+      (Count:  3; Info: {$IFDEF FPC}@{$ENDIF}EditorOptionsFoldInfoHTML[0]), // html
       (Count:  0; Info: nil), // cpp
       (Count:  0; Info: nil), // perl
       (Count:  0; Info: nil), // java
