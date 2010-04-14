@@ -162,7 +162,7 @@ begin
   VersionLabel.Caption := lisVersion+' #: '+ GetLazarusVersionString;
   RevisionLabel.Caption := lisSVNRevision+LazarusRevisionStr;
   BuildDateLabel.Caption := lisDate+': '+GetLocalizedBuildDate;
-  FPCVersionLabel.Caption:= lisFPCVersion+' '+{$I %FPCVERSION%};
+  FPCVersionLabel.Caption:= lisFPCVersion+{$I %FPCVERSION%};
   PlatformLabel.Caption:=GetDefaultTargetCPU+'-'+GetDefaultTargetOS
                          +'-'+LCLPlatformDisplayNames[GetDefaultLCLWidgetType];
 
