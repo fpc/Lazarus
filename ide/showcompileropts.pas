@@ -43,7 +43,7 @@ type
   { TShowCompilerOptionsDlg }
 
   TShowCompilerOptionsDlg = class(TForm)
-    OkButton: TBitBtn;
+    CloseButton: TBitBtn;
     RelativePathsCheckBox: TCheckBox;
     CmdLineGroupbox: TGROUPBOX;
     CmdLineMemo: TMEMO;
@@ -88,6 +88,7 @@ begin
   CmdLineGroupBox.Caption:=dlgCommandLineParameters;
   Self.Caption:=dlgCompilerOptions;
   RelativePathsCheckBox.Caption:=lisRelativePaths;
+  CloseButton.Caption:=lisClose;
 end;
 
 procedure TShowCompilerOptionsDlg.SetCompilerOpts(

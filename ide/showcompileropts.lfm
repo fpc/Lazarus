@@ -11,24 +11,32 @@ object ShowCompilerOptionsDlg: TShowCompilerOptionsDlg
   Constraints.MinWidth = 390
   OnCreate = FormCreate
   Position = poOwnerFormCenter
-  LCLVersion = '0.9.27'
+  LCLVersion = '0.9.29'
   object CmdLineGroupbox: TGroupBox
+    AnchorSideLeft.Control = Owner
+    AnchorSideTop.Control = Owner
+    AnchorSideRight.Control = Owner
+    AnchorSideBottom.Control = CloseButton
     Left = 6
-    Height = 148
+    Height = 150
     Top = 6
     Width = 378
     Align = alTop
     Anchors = [akTop, akLeft, akRight, akBottom]
     BorderSpacing.Around = 6
     Caption = 'Command line parameters'
-    ClientHeight = 130
+    ClientHeight = 132
     ClientWidth = 374
     TabOrder = 0
     object CmdLineMemo: TMemo
+      AnchorSideLeft.Control = CmdLineGroupbox
+      AnchorSideTop.Control = CmdLineGroupbox
+      AnchorSideRight.Control = CmdLineGroupbox
       AnchorSideRight.Side = asrBottom
+      AnchorSideBottom.Control = CmdLineGroupbox
       AnchorSideBottom.Side = asrBottom
       Left = 6
-      Height = 118
+      Height = 120
       Top = 6
       Width = 362
       Align = alClient
@@ -36,26 +44,25 @@ object ShowCompilerOptionsDlg: TShowCompilerOptionsDlg
       Lines.Strings = (
         'CmdLineMemo'
       )
+      ScrollBars = ssAutoVertical
       TabOrder = 0
     end
   end
   object RelativePathsCheckBox: TCheckBox
     AnchorSideLeft.Control = CmdLineGroupbox
-    AnchorSideTop.Control = CmdLineGroupbox
+    AnchorSideTop.Control = CloseButton
     AnchorSideTop.Side = asrCenter
     Left = 6
     Height = 17
-    Top = 161
+    Top = 167
     Width = 131
-    Anchors = [akLeft, akBottom]
-    BorderSpacing.Top = 6
     Caption = 'RelativePathsCheckBox'
     Checked = True
     OnChange = RelativePathsCheckBoxChange
     State = cbChecked
     TabOrder = 1
   end
-  object OkButton: TBitBtn
+  object CloseButton: TBitBtn
     AnchorSideTop.Control = CmdLineGroupbox
     AnchorSideTop.Side = asrBottom
     AnchorSideRight.Control = Owner
