@@ -41,6 +41,22 @@ msgstr "CDATA-Abschnitt"
 msgid "Character"
 msgstr "Zeichen"
 
+#: syneditstrconst.syns_attrchunkmarker
+msgid "Diff Chunk Marker"
+msgstr ""
+
+#: syneditstrconst.syns_attrchunkmixed
+msgid "Diff Chunk Line Counts"
+msgstr ""
+
+#: syneditstrconst.syns_attrchunknew
+msgid "Diff Chunk New Line Count"
+msgstr ""
+
+#: syneditstrconst.syns_attrchunkorig
+msgid "Diff Chunk Original Line Count"
+msgstr ""
+
 #: syneditstrconst.syns_attrclass
 msgid "Class"
 msgstr "Klasse"
@@ -157,6 +173,22 @@ msgstr "Schlüssel"
 msgid "Label"
 msgstr "Marke"
 
+#: syneditstrconst.syns_attrlineadded
+msgid "Diff Added line"
+msgstr ""
+
+#: syneditstrconst.syns_attrlinechanged
+msgid "Diff Changed Line"
+msgstr ""
+
+#: syneditstrconst.syns_attrlinecontext
+msgid "Diff Context Line"
+msgstr ""
+
+#: syneditstrconst.syns_attrlineremoved
+msgid "Diff Removed Line"
+msgstr ""
+
 #: syneditstrconst.syns_attrmacro
 msgid "Macro"
 msgstr "Makro"
@@ -185,6 +217,10 @@ msgstr "Namensraum Attribut Name"
 msgid "Namespace Attribute Value"
 msgstr "Namensraum Attribut Wert"
 
+#: syneditstrconst.syns_attrnewfile
+msgid "Diff New File"
+msgstr ""
+
 #: syneditstrconst.syns_attrnonreservedkeyword
 msgid "Non-reserved keyword"
 msgstr "Nichtreserviertes Schlüsselwort"
@@ -204,6 +240,10 @@ msgstr "Oktal"
 #: syneditstrconst.syns_attroperator
 msgid "Operator"
 msgstr "Operator"
+
+#: syneditstrconst.syns_attrorigfile
+msgid "Diff Original File"
+msgstr ""
 
 #: syneditstrconst.syns_attrplsql
 msgid "Reserved word (PL/SQL)"

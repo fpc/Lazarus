@@ -1116,6 +1116,20 @@ msgstr "Extensiones de archivo"
 msgid "Find text at cursor"
 msgstr "Buscar texto desde cursor"
 
+#: lazarusidestrconsts.dlgfoldhtmlasp
+msgid "ASP"
+msgstr ""
+
+#: lazarusidestrconsts.dlgfoldhtmlcomment
+msgctxt "lazarusidestrconsts.dlgfoldhtmlcomment"
+msgid "Comment"
+msgstr "Comentario"
+
+#: lazarusidestrconsts.dlgfoldhtmlnode
+msgctxt "lazarusidestrconsts.dlgfoldhtmlnode"
+msgid "Node"
+msgstr "Nodo"
+
 #: lazarusidestrconsts.dlgfoldlfmitem
 msgid "Item"
 msgstr "Elemento"
@@ -1218,6 +1232,7 @@ msgid "CData"
 msgstr ""
 
 #: lazarusidestrconsts.dlgfoldxmlcomment
+msgctxt "lazarusidestrconsts.dlgfoldxmlcomment"
 msgid "Comment"
 msgstr "Comentario"
 
@@ -1226,6 +1241,7 @@ msgid "DocType"
 msgstr ""
 
 #: lazarusidestrconsts.dlgfoldxmlnode
+msgctxt "lazarusidestrconsts.dlgfoldxmlnode"
 msgid "Node"
 msgstr "Nodo"
 

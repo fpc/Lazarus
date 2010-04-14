@@ -41,6 +41,22 @@ msgstr ""
 msgid "Character"
 msgstr ""
 
+#: syneditstrconst.syns_attrchunkmarker
+msgid "Diff Chunk Marker"
+msgstr ""
+
+#: syneditstrconst.syns_attrchunkmixed
+msgid "Diff Chunk Line Counts"
+msgstr ""
+
+#: syneditstrconst.syns_attrchunknew
+msgid "Diff Chunk New Line Count"
+msgstr ""
+
+#: syneditstrconst.syns_attrchunkorig
+msgid "Diff Chunk Original Line Count"
+msgstr ""
+
 #: syneditstrconst.syns_attrclass
 msgid "Class"
 msgstr ""
@@ -157,6 +173,22 @@ msgstr ""
 msgid "Label"
 msgstr ""
 
+#: syneditstrconst.syns_attrlineadded
+msgid "Diff Added line"
+msgstr ""
+
+#: syneditstrconst.syns_attrlinechanged
+msgid "Diff Changed Line"
+msgstr ""
+
+#: syneditstrconst.syns_attrlinecontext
+msgid "Diff Context Line"
+msgstr ""
+
+#: syneditstrconst.syns_attrlineremoved
+msgid "Diff Removed Line"
+msgstr ""
+
 #: syneditstrconst.syns_attrmacro
 msgid "Macro"
 msgstr ""
@@ -185,6 +217,10 @@ msgstr ""
 msgid "Namespace Attribute Value"
 msgstr ""
 
+#: syneditstrconst.syns_attrnewfile
+msgid "Diff New File"
+msgstr ""
+
 #: syneditstrconst.syns_attrnonreservedkeyword
 msgid "Non-reserved keyword"
 msgstr ""
@@ -203,6 +239,10 @@ msgstr ""
 
 #: syneditstrconst.syns_attroperator
 msgid "Operator"
+msgstr ""
+
+#: syneditstrconst.syns_attrorigfile
+msgid "Diff Original File"
 msgstr ""
 
 #: syneditstrconst.syns_attrplsql

@@ -5,7 +5,7 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "POT-Creation-Date: \n"
-"PO-Revision-Date: 2009-08-13 00:58+0300\n"
+"PO-Revision-Date: 2010-04-15 02:11+0300\n"
 "Language-Team: \n"
 "MIME-Version: 1.0\n"
 
@@ -40,6 +40,22 @@ msgstr "Секция CDATA"
 #: syneditstrconst.syns_attrcharacter
 msgid "Character"
 msgstr "Символ"
+
+#: syneditstrconst.syns_attrchunkmarker
+msgid "Diff Chunk Marker"
+msgstr "Маркер последовательности Diff"
+
+#: syneditstrconst.syns_attrchunkmixed
+msgid "Diff Chunk Line Counts"
+msgstr "Счётчики строк Diff"
+
+#: syneditstrconst.syns_attrchunknew
+msgid "Diff Chunk New Line Count"
+msgstr "Число новых строк последовательности Diff"
+
+#: syneditstrconst.syns_attrchunkorig
+msgid "Diff Chunk Original Line Count"
+msgstr "Число исходных строк последовательности Diff"
 
 #: syneditstrconst.syns_attrclass
 msgid "Class"
@@ -157,6 +173,22 @@ msgstr "Ключевое слово"
 msgid "Label"
 msgstr "Метка"
 
+#: syneditstrconst.syns_attrlineadded
+msgid "Diff Added line"
+msgstr "Добавленная строка Diff"
+
+#: syneditstrconst.syns_attrlinechanged
+msgid "Diff Changed Line"
+msgstr "Изменённая строка Diff"
+
+#: syneditstrconst.syns_attrlinecontext
+msgid "Diff Context Line"
+msgstr "Строка контекста Diff"
+
+#: syneditstrconst.syns_attrlineremoved
+msgid "Diff Removed Line"
+msgstr "Удалённая строка Diff"
+
 #: syneditstrconst.syns_attrmacro
 msgid "Macro"
 msgstr "Макрос"
@@ -185,6 +217,10 @@ msgstr "Имя атрибута пространства имён"
 msgid "Namespace Attribute Value"
 msgstr "Значение атрибута пространства имён"
 
+#: syneditstrconst.syns_attrnewfile
+msgid "Diff New File"
+msgstr "Новый файл Diff"
+
 #: syneditstrconst.syns_attrnonreservedkeyword
 msgid "Non-reserved keyword"
 msgstr "Незарезервированное ключевое слово"
@@ -204,6 +240,10 @@ msgstr "Восьмеричное число"
 #: syneditstrconst.syns_attroperator
 msgid "Operator"
 msgstr "Оператор"
+
+#: syneditstrconst.syns_attrorigfile
+msgid "Diff Original File"
+msgstr "Исходный файл Diff"
 
 #: syneditstrconst.syns_attrplsql
 msgid "Reserved word (PL/SQL)"

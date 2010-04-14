@@ -1111,6 +1111,20 @@ msgstr ""
 msgid "Find text at cursor"
 msgstr ""
 
+#: lazarusidestrconsts.dlgfoldhtmlasp
+msgid "ASP"
+msgstr ""
+
+#: lazarusidestrconsts.dlgfoldhtmlcomment
+msgctxt "lazarusidestrconsts.dlgfoldhtmlcomment"
+msgid "Comment"
+msgstr ""
+
+#: lazarusidestrconsts.dlgfoldhtmlnode
+msgctxt "lazarusidestrconsts.dlgfoldhtmlnode"
+msgid "Node"
+msgstr ""
+
 #: lazarusidestrconsts.dlgfoldlfmitem
 msgid "Item"
 msgstr ""
@@ -1213,6 +1227,7 @@ msgid "CData"
 msgstr ""
 
 #: lazarusidestrconsts.dlgfoldxmlcomment
+msgctxt "lazarusidestrconsts.dlgfoldxmlcomment"
 msgid "Comment"
 msgstr ""
 
@@ -1221,6 +1236,7 @@ msgid "DocType"
 msgstr ""
 
 #: lazarusidestrconsts.dlgfoldxmlnode
+msgctxt "lazarusidestrconsts.dlgfoldxmlnode"
 msgid "Node"
 msgstr ""
 

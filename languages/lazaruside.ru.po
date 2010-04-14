@@ -5,7 +5,7 @@ msgstr ""
 "Content-Type: text/plain; charset=utf-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "POT-Creation-Date: \n"
-"PO-Revision-Date: 2010-04-12 00:16+0300\n"
+"PO-Revision-Date: 2010-04-15 01:31+0300\n"
 "Language-Team: \n"
 "MIME-Version: 1.0\n"
 
@@ -1128,6 +1128,20 @@ msgstr "Расширения файлов"
 msgid "Find text at cursor"
 msgstr "Поиск текста под курсором"
 
+#: lazarusidestrconsts.dlgfoldhtmlasp
+msgid "ASP"
+msgstr "ASP"
+
+#: lazarusidestrconsts.dlgfoldhtmlcomment
+msgctxt "lazarusidestrconsts.dlgfoldhtmlcomment"
+msgid "Comment"
+msgstr "Комментарий"
+
+#: lazarusidestrconsts.dlgfoldhtmlnode
+msgctxt "lazarusidestrconsts.dlgfoldhtmlnode"
+msgid "Node"
+msgstr "Элемент"
+
 #: lazarusidestrconsts.dlgfoldlfmitem
 msgid "Item"
 msgstr "Элемент"
@@ -1230,6 +1244,7 @@ msgid "CData"
 msgstr "Секция CDATA"
 
 #: lazarusidestrconsts.dlgfoldxmlcomment
+msgctxt "lazarusidestrconsts.dlgfoldxmlcomment"
 msgid "Comment"
 msgstr "Комментарий"
 
@@ -1238,6 +1253,7 @@ msgid "DocType"
 msgstr "Секция DOCTYPE"
 
 #: lazarusidestrconsts.dlgfoldxmlnode
+msgctxt "lazarusidestrconsts.dlgfoldxmlnode"
 msgid "Node"
 msgstr "Элемент"
 

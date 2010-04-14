@@ -5,7 +5,7 @@ msgstr ""
 "Content-Transfer-Encoding: 8bit\n"
 "Project-Id-Version: \n"
 "POT-Creation-Date: \n"
-"PO-Revision-Date: 2009-11-15 20:43+0300\n"
+"PO-Revision-Date: 2010-04-15 02:19+0300\n"
 "Last-Translator: Maxim Ganetsky <maxkill@mail.ru>\n"
 "Language-Team: \n"
 
@@ -1248,7 +1248,7 @@ msgstr "Неподдерживаемая битовая глубина %d"
 
 #: ipconst.spngbadchunktype
 msgid "Unrecognized Chunk Type: %s"
-msgstr "Неопознанный тип области: %s"
+msgstr "Неопознанный тип последовательности: %s"
 
 #: ipconst.spngbadcolortype
 msgid "Unrecognized color type of %d"
@@ -1288,7 +1288,7 @@ msgstr "Сохранение PNG не поддерживается"
 
 #: ipconst.spngchunkidandlength
 msgid "PNG Chunk: %s  Length: %d"
-msgstr "Область PNG: %s Длина: %d"
+msgstr "Последовательность PNG: %s Длина: %d"
 
 #: ipconst.spngcolortype
 msgid "Color Type: %d"
@@ -1352,7 +1352,7 @@ msgstr "Требуемая память для изображения: %d  ба�
 
 #: ipconst.spngmissingiend
 msgid "End of PNG found with no IEND chunk"
-msgstr "Обнаружен конец файла PNG без области IEND"
+msgstr "Обнаружен конец файла PNG без последовательности IEND"
 
 #: ipconst.spngmissingihdr
 msgid "IHDR Chunk is missing"
@@ -1400,7 +1400,7 @@ msgstr "Данные последовательности обрезаны"
 
 #: ipconst.spngunsupportedfeature
 msgid "A %s chunk was found in the PNG File. This feature is not supported in this version of the PNG decoder"
-msgstr "В файле PNG была найдена область %s. Эта возможность не поддерживается данной версией декодера PNG"
+msgstr "В файле PNG была найдена последовательность %s. Эта возможность не поддерживается данной версией декодера PNG"
 
 #: ipconst.spngwarningconstant
 msgid "**** WARNING ****"
