@@ -90,7 +90,6 @@ type
 type
   {$IFDEF SYN_LAZARUS}
   TPascalCodeFoldBlockType = (
-    cfbtNone,
     cfbtBeginEnd,      // Nested
     cfbtTopBeginEnd,   // Begin of Procedure
     cfbtNestedComment,
@@ -110,7 +109,9 @@ type
     cfbtAsm,
     cfbtCase,
     cfbtIfDef,        // {$IfDef} directive, ths is not counted in the Range-Node
-    cfbtRegion        // {%Region} user folds, not counted in the Range-Node
+    cfbtRegion,       // {%Region} user folds, not counted in the Range-Node
+    // Internal type / not configurable
+    cfbtNone
     );
   TPascalCodeFoldBlockTypes = set of TPascalCodeFoldBlockType;
 
@@ -271,7 +272,6 @@ type
     FNodeInfoLine, FNodeInfoCount: Integer;
     FNodeInfoList: Array of TSynFoldNodeInfo;
     FDividerDrawConfig: Array [TSynPasDividerDrawLocation] of TSynDividerDrawConfig;
-    FFoldConfig: Array [TPascalCodeFoldBlockType] of TSynCustomFoldConfig;
     procedure GrowNodeInfoList;
     function GetPasCodeFoldRange: TSynPasSynRange;
     procedure SetCompilerMode(const AValue: TPascalCompilerMode);
@@ -408,8 +408,6 @@ type
                        ABlockType: TPascalCodeFoldBlockType; aActions: TSynFoldActions);
     procedure CreateDividerDrawConfig;
     procedure DestroyDividerDrawConfig;
-    procedure InitFoldConfig;
-    procedure DestroyFoldConfig;
   protected
     function GetIdentChars: TSynIdentChars; override;
     function IsFilterStored: boolean; override;                                 //mh 2000-10-08
@@ -444,9 +442,9 @@ type
     function GetDividerDrawConfig(Index: Integer): TSynDividerDrawConfig; override;
     function GetDividerDrawConfigCount: Integer; override;
 
-    function GetFoldConfig(Index: Integer): TSynCustomFoldConfig; override;
+    function GetFoldConfigInstance(Index: Integer): TSynCustomFoldConfig; override;
     function GetFoldConfigCount: Integer; override;
-    procedure SetFoldConfig(Index: Integer; const AValue: TSynCustomFoldConfig); override;
+    function GetFoldConfigInternalCount: Integer; override;
   public
     {$IFNDEF SYN_CPPB_1} class {$ENDIF}
     function GetCapabilities: TSynHighlighterCapabilities; override;
@@ -2020,7 +2018,6 @@ constructor TSynPasSyn.Create(AOwner: TComponent);
 begin
   inherited Create(AOwner);
   CreateDividerDrawConfig;
-  InitFoldConfig;
   fD4syntax := true;
   fAsmAttri := TSynHighlighterAttributes.Create(SYNS_AttrAssembler, SYNS_XML_AttrAssembler);
   AddAttribute(fAsmAttri);
@@ -2059,7 +2056,6 @@ end; { Create }
 destructor TSynPasSyn.Destroy;
 begin
   DestroyDividerDrawConfig;
-  DestroyFoldConfig;
   inherited Destroy;
 end;
 
@@ -3060,7 +3056,7 @@ end;
 
 procedure TSynPasSyn.StartCustomCodeFoldBlock(ABlockType: TPascalCodeFoldBlockType);
 begin
-  if not FFoldConfig[ABlockType].Enabled then exit;
+  if not FFoldConfig[ord(ABlockType)].Enabled then exit;
   if FCatchNodeInfo then begin // exclude subblocks, because they do not increase the foldlevel yet
     GrowNodeInfoList;
     InitNode(FNodeInfoList[FNodeInfoCount], +1, ABlockType, [sfaOpen, sfaFold]);
@@ -3076,7 +3072,7 @@ end;
 
 procedure TSynPasSyn.EndCustomCodeFoldBlock(ABlockType: TPascalCodeFoldBlockType);
 begin
-  if not FFoldConfig[ABlockType].Enabled then exit;
+  if not FFoldConfig[ord(ABlockType)].Enabled then exit;
   if FCatchNodeInfo then begin // exclude subblocks, because they do not increase the foldlevel yet
     GrowNodeInfoList;
     InitNode(FNodeInfoList[FNodeInfoCount], -1, ABlockType, [sfaClose, sfaFold]);
@@ -3108,7 +3104,7 @@ var
   FoldBlock: Boolean;
   act: TSynFoldActions;
 begin
-  FoldBlock := FFoldConfig[ABlockType].Enabled;
+  FoldBlock := FFoldConfig[ord(ABlockType)].Enabled;
   p := 0;
   if FCatchNodeInfo then begin // exclude subblocks, because they do not increase the foldlevel yet
     GrowNodeInfoList;
@@ -3360,26 +3356,14 @@ begin
     FreeAndNil(FDividerDrawConfig[i]);
 end;
 
-procedure TSynPasSyn.InitFoldConfig;
-var
-  i: TPascalCodeFoldBlockType;
+function TSynPasSyn.GetFoldConfigInstance(Index: Integer): TSynCustomFoldConfig;
 begin
-  for i := low(TPascalCodeFoldBlockType) to high(TPascalCodeFoldBlockType) do begin
-    FFoldConfig[i] := TSynCustomFoldConfig.Create;
-    FFoldConfig[i].OnChange := @DoFoldConfigChanged;
-    FFoldConfig[i].Enabled := i in [cfbtBeginEnd, cfbtTopBeginEnd, cfbtNestedComment,
-                            cfbtProcedure, cfbtUses, cfbtLocalVarType, cfbtClass,
-                            cfbtClassSection, cfbtRecord, cfbtRepeat, cfbtCase,
-                            cfbtAsm, cfbtRegion];
-  end;
-end;
-
-procedure TSynPasSyn.DestroyFoldConfig;
-var
-  i: TPascalCodeFoldBlockType;
-begin
-  for i := low(TPascalCodeFoldBlockType) to high(TPascalCodeFoldBlockType) do
-    FFoldConfig[i].Free;
+  Result := inherited GetFoldConfigInstance(Index);
+  Result.Enabled := TPascalCodeFoldBlockType(Index) in
+    [cfbtBeginEnd, cfbtTopBeginEnd, cfbtNestedComment,
+     cfbtProcedure, cfbtUses, cfbtLocalVarType, cfbtClass,
+     cfbtClassSection, cfbtRecord, cfbtRepeat, cfbtCase,
+     cfbtAsm, cfbtRegion];
 end;
 
 function TSynPasSyn.CreateRangeList: TSynHighlighterRangeList;
@@ -3401,12 +3385,6 @@ begin
   TSynHighlighterPasRangeList(CurrentRanges).PasRangeInfo[Index] := FSynPasRangeInfo;
 end;
 
-function TSynPasSyn.GetFoldConfig(Index: Integer): TSynCustomFoldConfig;
-begin
-  // + 1 as we skip cfbtNone;
-  Result := FFoldConfig[TPascalCodeFoldBlockType(Index + 1)];
-end;
-
 function TSynPasSyn.GetFoldConfigCount: Integer;
 begin
   // excluded cfbtNone;
@@ -3414,12 +3392,12 @@ begin
             ord(low(TPascalCodeFoldBlockType));
 end;
 
-procedure TSynPasSyn.SetFoldConfig(Index: Integer; const AValue: TSynCustomFoldConfig);
+function TSynPasSyn.GetFoldConfigInternalCount: Integer;
 begin
-  BeginUpdate;
-  FFoldConfig[TPascalCodeFoldBlockType(Index + 1)].Assign(AValue);
-  EndUpdate;
-  // Todo: Since all synedits will rescan => delete all foldranges
+  // include cfbtNone;
+  Result := ord(high(TPascalCodeFoldBlockType)) -
+            ord(low(TPascalCodeFoldBlockType))
+            + 1;
 end;
 
 function TSynPasSyn.GetDividerDrawConfig(Index: Integer): TSynDividerDrawConfig;

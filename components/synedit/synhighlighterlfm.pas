@@ -69,10 +69,11 @@ type
   TRangeState = (rsANil, rsComment, rsUnKnown);
 
   TLfmCodeFoldBlockType = (
-    cfbtLfmNone,
     cfbtLfmObject,      // object, inherited, inline
     cfbtLfmList,        // <>
-    cfbtLfmItem         // Item
+    cfbtLfmItem,         // Item
+    // internal type / no config
+    cfbtLfmNone
     );
 
   TProcTableProc = procedure of object;
@@ -101,7 +102,6 @@ type
     fSpaceAttri: TSynHighlighterAttributes;
     fStringAttri: TSynHighlighterAttributes;
     fSymbolAttri: TSynHighlighterAttributes;
-    FFoldConfig: Array [TLfmCodeFoldBlockType] of TSynCustomFoldConfig;
     procedure AltProc;
     procedure AsciiCharProc;
     procedure BraceCloseProc;
@@ -120,8 +120,6 @@ type
     procedure SymbolProc;
     procedure UnknownProc;
     procedure MakeMethodTables;
-    procedure InitFoldConfig;
-    procedure DestroyFoldConfig;
   protected
     function GetIdentChars: TSynIdentChars; override;
     function GetSampleSource: string; override;
@@ -134,9 +132,9 @@ type
     procedure EndLfmCodeFoldBlock;
     function TopLfmCodeFoldBlockType(DownIndex: Integer = 0): TLfmCodeFoldBlockType;
   protected
-    function GetFoldConfig(Index: Integer): TSynCustomFoldConfig; override;
+    function GetFoldConfigInstance(Index: Integer): TSynCustomFoldConfig; override;
     function GetFoldConfigCount: Integer; override;
-    procedure SetFoldConfig(Index: Integer; const AValue: TSynCustomFoldConfig); override;
+    function GetFoldConfigInternalCount: Integer; override;
   public
     {$IFNDEF SYN_CPPB_1} class {$ENDIF}                                         //mh 2000-07-14
     function GetLanguageName: string; override;
@@ -290,29 +288,15 @@ begin
     end;
 end;
 
-procedure TSynLFMSyn.InitFoldConfig;
-var
-  i: TLfmCodeFoldBlockType;
+function TSynLFMSyn.GetFoldConfigInstance(Index: Integer): TSynCustomFoldConfig;
 begin
-  for i := low(TLfmCodeFoldBlockType) to high(TLfmCodeFoldBlockType) do begin
-    FFoldConfig[i] := TSynCustomFoldConfig.Create;
-    FFoldConfig[i].OnChange := @DoFoldConfigChanged;
-    FFoldConfig[i].Enabled := True;
-  end;
-end;
-
-procedure TSynLFMSyn.DestroyFoldConfig;
-var
-  i: TLfmCodeFoldBlockType;
-begin
-  for i := low(TLfmCodeFoldBlockType) to high(TLfmCodeFoldBlockType) do
-    FFoldConfig[i].Free;
+  Result := inherited GetFoldConfigInstance(Index);
+  Result.Enabled := True;
 end;
 
 constructor TSynLFMSyn.Create(AOwner: TComponent);
 begin
   inherited Create(AOwner);
-  InitFoldConfig;
   fCommentAttri := TSynHighlighterAttributes.Create(SYNS_AttrComment, SYNS_XML_AttrComment);
   fCommentAttri.Style := [fsItalic];
   AddAttribute(fCommentAttri);
@@ -337,7 +321,6 @@ end;
 
 destructor TSynLFMSyn.Destroy;
 begin
-  DestroyFoldConfig;
   inherited Destroy;
 end;
 
@@ -643,16 +626,19 @@ end;
 
 function TSynLFMSyn.FoldOpenCount(ALineIndex: Integer; AType: Integer): integer;
 begin
+  If AType <> 0 then exit(0);
   Result := EndFoldLevel(ALineIndex) - MinimumFoldLevel(ALineIndex);
 end;
 
 function TSynLFMSyn.FoldCloseCount(ALineIndex: Integer; AType: Integer): integer;
 begin
+  If AType <> 0 then exit(0);
   Result := EndFoldLevel(ALineIndex - 1) - MinimumFoldLevel(ALineIndex);
 end;
 
 function TSynLFMSyn.FoldNestCount(ALineIndex: Integer; AType: Integer): integer;
 begin
+  If AType <> 0 then exit(0);
   Result := EndFoldLevel(ALineIndex);
 end;
 
@@ -740,7 +726,7 @@ var
   FoldBlock: Boolean;
   p: PtrInt;
 begin
-  FoldBlock :=  FFoldConfig[ABlockType].Enabled;
+  FoldBlock :=  FFoldConfig[ord(ABlockType)].Enabled;
   p := 0;
   if not FoldBlock then
     p := PtrInt(CountLfmCodeFoldBlockOffset);
@@ -760,24 +746,16 @@ begin
   Result := TLfmCodeFoldBlockType(PtrUInt(TopCodeFoldBlockType(DownIndex)));
 end;
 
-function TSynLFMSyn.GetFoldConfig(Index: Integer): TSynCustomFoldConfig;
-begin
-  // + 1 as we skip cfbtNone;
-  Result := FFoldConfig[TLfmCodeFoldBlockType(Index + 1)];
-end;
-
 function TSynLFMSyn.GetFoldConfigCount: Integer;
 begin
-  // excluded cfbtNone;
+  // excluded cfbtLfmNone
   Result := ord(high(TLfmCodeFoldBlockType)) - ord(low(TLfmCodeFoldBlockType));
 end;
 
-procedure TSynLFMSyn.SetFoldConfig(Index: Integer; const AValue: TSynCustomFoldConfig);
+function TSynLFMSyn.GetFoldConfigInternalCount: Integer;
 begin
-  BeginUpdate;
-  FFoldConfig[TLfmCodeFoldBlockType(Index + 1)].Assign(AValue);
-  EndUpdate;
-  // Todo: Since all synedits will rescan => delete all foldranges
+  // include cfbtLfmNone
+  Result := ord(high(TLfmCodeFoldBlockType)) - ord(low(TLfmCodeFoldBlockType)) + 1;
 end;
 
 {$IFNDEF SYN_CPPB_1}                                                            //mh 2000-07-14

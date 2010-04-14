@@ -60,14 +60,10 @@ uses
   {$IFDEF SYN_CLX}
   Qt, QControls, QGraphics,
   {$ELSE}
-  {$IFDEF SYN_LAZARUS}
-  LCLIntf, LCLType,
-  {$ELSE}
-  Windows, Messages, Registry,
+  Graphics,
   {$ENDIF}
-  Controls, Graphics,
-  {$ENDIF}
-  SynEditTypes, SynEditTextBuffer, SynEditHighlighter, SynEditHighlighterFoldBase;
+  SynEditTypes, SynEditTextBuffer, SynEditHighlighter,
+  SynEditHighlighterFoldBase, SynEditHighlighterXMLBase;
 
 type
   TtkTokenKind = (tkAposAttrValue, tkAposEntityRef, tkAttribute, tkCDATA,
@@ -97,24 +93,16 @@ type
   );
 
  TXmlCodeFoldBlockType = (
-    cfbtXmlNone,
     cfbtXmlNode,     // <foo>...</node>
     cfbtXmlComment,  // <!-- -->
     cfbtXmlCData,    // <![CDATA[ ]]>
     cfbtXmlDocType,  // <!DOCTYPE
-    cfbtXmlProcess   // <?
+    cfbtXmlProcess,   // <?
+    // internal types / not configurable
+    cfbtXmlNone
   );
 
-const
-  CountXmlCodeFoldBlockOffset: Pointer =
-    Pointer(PtrInt(Integer(high(TXmlCodeFoldBlockType))+1));
-
 type
-
-  TSynXmlRangeInfo = record
-    ElementOpenList: Array of String; // List of words opened in this line (and still open at the end of line)
-    ElementCloseList: Array of Smallint; // include close, for open on same line
-  end;
 
   { TSynHighlighterXmlRangeList }
 
@@ -135,13 +123,9 @@ type
 
   { TSynXMLSyn }
 
-  TSynXMLSyn = class(TSynCustomFoldHighlighter)
+  TSynXMLSyn = class(TSynCustomXmlHighlighter)
   private
     fRange: TRangeState;
-    FXmlRangeInfo: TSynXmlRangeInfo;
-    FXmlRangeInfoChanged: Boolean;
-    FXmlRangeInfoOpenPos: integer;
-    FXmlRangeInfoClosePos: integer;
     fLine: PChar;
     Run: Longint;
     fTokenPos: Integer;
@@ -162,7 +146,6 @@ type
     fSymbolAttri: TSynHighlighterAttributes;
     fProcTable: array[#0..#255] of TProcTableProc;
     FWantBracesParsed: Boolean;
-    FFoldConfig: Array [TXmlCodeFoldBlockType] of TSynCustomFoldConfig;
     procedure NullProc;
     procedure CarriageReturnProc;
     procedure LineFeedProc;
@@ -185,33 +168,27 @@ type
     procedure EntityRefProc;
     procedure QEntityRefProc;
     procedure AEntityRefProc;
-    procedure InitFoldConfig;
-    procedure DestroyFoldConfig;
   protected
-    function UpdateRangeInfoAtLine(Index: Integer): Boolean; override; // Returns true if range changed
     function GetIdentChars: TSynIdentChars; override;
     function GetSampleSource : String; override;
   protected
     // folding
     procedure CreateRootCodeFoldBlock; override;
-    function CreateRangeList: TSynHighlighterRangeList; override;
 
     function StartXmlCodeFoldBlock(ABlockType: TXmlCodeFoldBlockType): TSynCustomCodeFoldBlock;
     function StartXmlNodeCodeFoldBlock(ABlockType: TXmlCodeFoldBlockType;
                                    OpenPos: Integer; AName: String): TSynCustomCodeFoldBlock;
-    procedure EndXmlCodeFoldBlock;
     procedure EndXmlNodeCodeFoldBlock(ClosePos: Integer = -1; AName: String = '');
     function TopXmlCodeFoldBlockType(DownIndex: Integer = 0): TXmlCodeFoldBlockType;
-  protected
-    function GetFoldConfig(Index: Integer): TSynCustomFoldConfig; override;
+
+    function GetFoldConfigInstance(Index: Integer): TSynCustomFoldConfig; override;
     function GetFoldConfigCount: Integer; override;
-    procedure SetFoldConfig(Index: Integer; const AValue: TSynCustomFoldConfig); override;
+    function GetFoldConfigInternalCount: Integer; override;
   public
     {$IFNDEF SYN_CPPB_1} class {$ENDIF}
     function GetLanguageName: string; override;
   public
     constructor Create(AOwner: TComponent); override;
-    destructor Destroy; override;
     function GetDefaultAttribute(Index: integer): TSynHighlighterAttributes;
       override;
     function GetEol: Boolean; override;
@@ -229,15 +206,6 @@ type
     procedure SetRange(Value: Pointer); override;
     procedure ReSetRange; override;
     property IdentChars;
-  public
-    // folding
-    function FoldOpenCount(ALineIndex: Integer; AType: Integer = 0): integer; override;
-    function FoldCloseCount(ALineIndex: Integer; AType: Integer = 0): integer; override;
-    function FoldNestCount(ALineIndex: Integer; AType: Integer = 0): integer; override;
-    function FoldLineLength(ALineIndex, FoldIndex: Integer): integer; override;
-    // TODO: make private
-    function MinimumFoldLevel(ALineIndex: Integer): integer; override;
-    function EndFoldLevel(ALineIndex: Integer): integer; override;
   published
     property ElementAttri: TSynHighlighterAttributes read fElementAttri
       write fElementAttri;
@@ -281,7 +249,6 @@ const
 constructor TSynXMLSyn.Create(AOwner: TComponent);
 begin
   inherited Create(AOwner);
-  InitFoldConfig;
 
   fElementAttri:= TSynHighlighterAttributes.Create(SYNS_AttrElementName, SYNS_XML_AttrElementName);
   fTextAttri:= TSynHighlighterAttributes.Create(SYNS_AttrText, SYNS_XML_AttrText);
@@ -355,12 +322,6 @@ begin
   fDefaultFilter := SYNS_FilterXML;
 end;
 
-destructor TSynXMLSyn.Destroy;
-begin
-  DestroyFoldConfig;
-  inherited Destroy;
-end;
-
 procedure TSynXMLSyn.MakeMethodTables;
 var
   i: Char;
@@ -401,11 +362,6 @@ procedure TSynXMLSyn.SetLine({$IFDEF FPC}const {$ENDIF}NewValue: string;
   LineNumber:Integer);
 begin
   inherited;
-  FXmlRangeInfo := TSynHighlighterXmlRangeList(CurrentRanges).XmlRangeInfo[LineIndex]; // From this line, not from the previous line
-  FXmlRangeInfoChanged := False;
-  FXmlRangeInfoOpenPos := 0;
-  FXmlRangeInfoClosePos := 0;
-
   fLine := PChar(NewValue);
   Run := 0;
   fLineNumber := LineNumber;
@@ -812,41 +768,10 @@ begin
     fRange := rsAPosAttrValue;
 end;
 
-procedure TSynXMLSyn.InitFoldConfig;
-var
-  i: TXmlCodeFoldBlockType;
+function TSynXMLSyn.GetFoldConfigInstance(Index: Integer): TSynCustomFoldConfig;
 begin
-  for i := low(TXmlCodeFoldBlockType) to high(TXmlCodeFoldBlockType) do begin
-    FFoldConfig[i] := TSynCustomFoldConfig.Create;
-    FFoldConfig[i].OnChange := @DoFoldConfigChanged;
-    FFoldConfig[i].Enabled := True;
-  end;
-end;
-
-procedure TSynXMLSyn.DestroyFoldConfig;
-var
-  i: TXmlCodeFoldBlockType;
-begin
-  for i := low(TXmlCodeFoldBlockType) to high(TXmlCodeFoldBlockType) do
-    FFoldConfig[i].Free;
-end;
-
-function TSynXMLSyn.UpdateRangeInfoAtLine(Index: Integer): Boolean;
-var
-  InfoOpenLenChanged, InfoCloseLenChanged: Boolean;
-begin
-  Result := inherited UpdateRangeInfoAtLine(Index);
-  InfoOpenLenChanged := Length(FXmlRangeInfo.ElementOpenList) <> FXmlRangeInfoOpenPos;
-  InfoCloseLenChanged := Length(FXmlRangeInfo.ElementCloseList) <> FXmlRangeInfoClosePos;
-  if FXmlRangeInfoChanged or InfoOpenLenChanged or InfoCloseLenChanged then begin
-    Result := True;
-    if InfoOpenLenChanged then
-      SetLength(FXmlRangeInfo.ElementOpenList, FXmlRangeInfoOpenPos);
-    if InfoCloseLenChanged then
-      SetLength(FXmlRangeInfo.ElementCloseList, FXmlRangeInfoClosePos);
-    TSynHighlighterXmlRangeList(CurrentRanges).XmlRangeInfo[LineIndex] := FXmlRangeInfo; // Store on this line
-    FXmlRangeInfoChanged := False;
-  end;
+  Result := inherited GetFoldConfigInstance(Index);
+  Result.Enabled := True;
 end;
 
 procedure TSynXMLSyn.IdentProc;
@@ -1029,67 +954,6 @@ begin
   fRange:= rsText;
 end;
 
-function TSynXMLSyn.FoldOpenCount(ALineIndex: Integer; AType: Integer): integer;
-begin
-  Result := EndFoldLevel(ALineIndex) - MinimumFoldLevel(ALineIndex);
-end;
-
-function TSynXMLSyn.FoldCloseCount(ALineIndex: Integer; AType: Integer): integer;
-begin
-  Result := EndFoldLevel(ALineIndex - 1) - MinimumFoldLevel(ALineIndex);
-end;
-
-function TSynXMLSyn.FoldNestCount(ALineIndex: Integer; AType: Integer): integer;
-begin
-  Result := EndFoldLevel(ALineIndex);
-end;
-
-function TSynXMLSyn.FoldLineLength(ALineIndex, FoldIndex: Integer): integer;
-var
-  i, lvl, cnt: Integer;
-  e, m: Integer;
-begin
-  //atype := FoldTypeAtNodeIndex(ALineIndex, FoldIndex);
-  cnt := CurrentLines.Count;
-  e := EndFoldLevel(ALineIndex);
-  m := MinimumFoldLevel(ALineIndex);
-  lvl := Min(m+1+FoldIndex, e);
-  i := ALineIndex + 1;
-  while (i < cnt) and (MinimumFoldLevel(i) >= lvl) do inc(i);
-  // check if fold last line of block (not mixed "end begin")
-  // and not lastlinefix
-  if (i = cnt) or (EndFoldLevel(i) > MinimumFoldLevel(i)) then
-    dec(i);
-  // Amount of lines, that will become invisible (excludes the cfCollapsed line)
-  Result := i - ALineIndex;
-end;
-
-function TSynXMLSyn.MinimumFoldLevel(ALineIndex: Integer): integer;
-var
-  r: TSynCustomHighlighterRange;
-begin
-  if (ALineIndex < 0) or (ALineIndex >= CurrentLines.Count) then
-    exit(0);
-  r := TSynCustomHighlighterRange(CurrentRanges[ALineIndex]);
-  if (r <> nil) and (Pointer(r) <> NullRange) then
-    Result := r.MinimumCodeFoldBlockLevel
-  else
-    Result := 0;
-end;
-
-function TSynXMLSyn.EndFoldLevel(ALineIndex: Integer): integer;
-var
-  r: TSynCustomHighlighterRange;
-begin
-  if (ALineIndex < 0) or (ALineIndex >= CurrentLines.Count) then
-    exit(0);
-  r := TSynCustomHighlighterRange(CurrentRanges[ALineIndex]);
-  if (r <> nil) and (Pointer(r) <> NullRange) then
-    Result := r.CodeFoldStackSize
-  else
-    Result := 0;
-end;
-
 function TSynXMLSyn.GetIdentChars: TSynIdentChars;
 begin
   Result := ['0'..'9', 'a'..'z', 'A'..'Z', '_', '.', '-'] + TSynSpecialChars;
@@ -1118,124 +982,22 @@ begin
   RootCodeFoldBlock.InitRootBlockType(Pointer(PtrInt(cfbtXmlNone)));
 end;
 
-function TSynXMLSyn.CreateRangeList: TSynHighlighterRangeList;
-begin
-  Result := TSynHighlighterXmlRangeList.Create;
-end;
-
 function TSynXMLSyn.StartXmlCodeFoldBlock(ABlockType: TXmlCodeFoldBlockType): TSynCustomCodeFoldBlock;
-var
-  FoldBlock: Boolean;
-  p: PtrInt;
 begin
-  FoldBlock :=  FFoldConfig[ABlockType].Enabled;
-  p := 0;
-  if not FoldBlock then
-    p := PtrInt(CountXmlCodeFoldBlockOffset);
-  Result := StartCodeFoldBlock(p + Pointer(PtrInt(ABlockType)), FoldBlock);
+  Result := inherited StartXmlCodeFoldBlock(ord(ABlockType));
 end;
 
 function TSynXMLSyn.StartXmlNodeCodeFoldBlock(ABlockType: TXmlCodeFoldBlockType;
   OpenPos: Integer; AName: String): TSynCustomCodeFoldBlock;
-var
-  i: Integer;
 begin
-  if not FFoldConfig[cfbtXmlNode].Enabled then exit;
-  If IsScanning then begin
-    AName := LowerCase(AName);
-    i := Length(FXmlRangeInfo.ElementOpenList);
-    if (FXmlRangeInfoOpenPos < i) then begin
-      if (FXmlRangeInfo.ElementOpenList[FXmlRangeInfoOpenPos] <> AName) then begin
-        FXmlRangeInfo.ElementOpenList[FXmlRangeInfoOpenPos] := AName;
-        FXmlRangeInfoChanged := true; // TODO:if this node closes on the same line, it may not be amodified ....
-      end;
-    end else begin     // append - modified will be deteced by the new length
-      SetLength(FXmlRangeInfo.ElementOpenList, FXmlRangeInfoOpenPos + 10);
-      FXmlRangeInfo.ElementOpenList[FXmlRangeInfoOpenPos] := AName;
-    end;
-  end;
-  inc(FXmlRangeInfoOpenPos);
-  result := StartXmlCodeFoldBlock(ABlockType);
+  if not FFoldConfig[ord(cfbtXmlNode)].Enabled then exit;
+  Result := inherited StartXmlNodeCodeFoldBlock(ord(ABlockType), OpenPos, AName);
 end;
 
-procedure TSynXMLSyn.EndXmlCodeFoldBlock;
-var
-  DecreaseLevel: Boolean;
+procedure TSynXMLSyn.EndXmlNodeCodeFoldBlock(ClosePos: Integer; AName: String);
 begin
-  DecreaseLevel := TopCodeFoldBlockType < CountXmlCodeFoldBlockOffset;
-  EndCodeFoldBlock(DecreaseLevel);
-end;
-
-procedure TSynXMLSyn.EndXmlNodeCodeFoldBlock(ClosePos: Integer = -1; AName: String = '');
-var
-  cnt, i, k, lvl: Integer;
-  LInfo: Array of String;
-begin
-  if not FFoldConfig[cfbtXmlNode].Enabled then exit;
-  AName := LowerCase(AName);
-
-  cnt := 0;
-  If IsScanning then begin
-    if (AName = '') and (CodeFoldRange.CodeFoldStackSize > 0) then begin
-      cnt := 1;
-    end
-    else begin
-      cnt := 1;
-      i := FXmlRangeInfoOpenPos;
-      while i > 0 do begin
-        if (FXmlRangeInfo.ElementOpenList[i-1] = AName) then
-          break;
-        dec(i);
-        inc(cnt);
-      end;
-
-      if i = 0 then begin
-        i := LineIndex - 1;
-        lvl := EndFoldLevel(i);
-        while i >= 0 do begin
-          if MinimumFoldLevel(i) < lvl then begin
-            LInfo := TSynHighlighterXmlRangeList(CurrentRanges).XmlRangeInfo[i].ElementOpenList;
-            k := length(LInfo) - Max(EndFoldLevel(i) - lvl, 0) - 1;
-            while (k >= 0) do begin
-              if (LInfo[k] = AName) then
-                break;
-              inc(cnt);
-              dec(k);
-              dec(lvl);
-            end;
-            if k >= 0 then break;
-          end;
-          dec(i);
-        end;
-
-        if (i < 0) or (cnt > CodeFoldRange.CodeFoldStackSize ) then cnt := 0; // never opened, do not close
-      end;
-    end;
-
-    i := Length(FXmlRangeInfo.ElementCloseList);
-    if (FXmlRangeInfoClosePos < i) then begin
-      if (FXmlRangeInfo.ElementCloseList[FXmlRangeInfoClosePos] <> cnt) then begin
-        FXmlRangeInfo.ElementCloseList[FXmlRangeInfoClosePos] := cnt;
-        FXmlRangeInfoChanged := true;
-      end;
-    end else begin  // append - modified will be deteced by the new length
-      SetLength(FXmlRangeInfo.ElementCloseList, FXmlRangeInfoClosePos + 10);
-      FXmlRangeInfo.ElementCloseList[FXmlRangeInfoClosePos] := cnt;
-    end;
-  end
-  else begin
-    if FXmlRangeInfoClosePos < length(FXmlRangeInfo.ElementCloseList) then
-      cnt := FXmlRangeInfo.ElementCloseList[FXmlRangeInfoClosePos]
-    else
-      cnt := 0;
-  end;
-  inc(FXmlRangeInfoClosePos);
-
-  for i := 1 to cnt do begin
-    if FXmlRangeInfoOpenPos > 0 then
-      dec(FXmlRangeInfoOpenPos);
-    EndXmlCodeFoldBlock;
-  end;
+  if not FFoldConfig[ord(cfbtXmlNode)].Enabled then exit;
+  inherited EndXmlNodeCodeFoldBlock(ClosePos, AName);
 end;
 
 function TSynXMLSyn.TopXmlCodeFoldBlockType(DownIndex: Integer): TXmlCodeFoldBlockType;
@@ -1243,24 +1005,16 @@ begin
   Result := TXmlCodeFoldBlockType(PtrUInt(TopCodeFoldBlockType(DownIndex)));
 end;
 
-function TSynXMLSyn.GetFoldConfig(Index: Integer): TSynCustomFoldConfig;
-begin
-  // + 1 as we skip cfbtNone;
-  Result := FFoldConfig[TXmlCodeFoldBlockType(Index + 1)];
-end;
-
 function TSynXMLSyn.GetFoldConfigCount: Integer;
 begin
-  // excluded cfbtNone;
+  // excluded cfbtXmlNone
   Result := ord(high(TXmlCodeFoldBlockType)) - ord(low(TXmlCodeFoldBlockType));
 end;
 
-procedure TSynXMLSyn.SetFoldConfig(Index: Integer; const AValue: TSynCustomFoldConfig);
+function TSynXMLSyn.GetFoldConfigInternalCount: Integer;
 begin
-  BeginUpdate;
-  FFoldConfig[TXmlCodeFoldBlockType(Index + 1)].Assign(AValue);
-  EndUpdate;
-  // Todo: Since all synedits will rescan => delete all foldranges
+  // excluded cfbtXmlNone;
+  Result := ord(high(TXmlCodeFoldBlockType)) - ord(low(TXmlCodeFoldBlockType)) + 1;
 end;
 
 { TSynHighlighterXmlRangeList }

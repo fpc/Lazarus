@@ -55,7 +55,8 @@ uses
   Windows, Messages, Registry,
   {$ENDIF}
   Classes, Controls, Graphics,
-  SynEditTypes, SynEditHighlighter;
+  SynEditTypes, SynEditHighlighter, SynEditHighlighterXMLBase,
+  SynEditHighlighterFoldBase;
 
 const
   MAX_ESCAPEAMPS = 151;
@@ -223,10 +224,20 @@ type
   TRangeState = (rsAmpersand, rsASP, rsComment, rsKey, rsParam, rsText,
     rsUnKnown, rsValue);
 
+ THtmlCodeFoldBlockType = (
+    cfbtHtmlNode,     // <foo>...</node>
+    cfbtHtmlComment,  // <!-- -->
+    cfbtHtmlAsp,  // <% asp  %>
+    // internal types / not configurable
+    cfbtHtmlNone
+  );
+
   TProcTableProc = procedure of object;
   TIdentFuncTableFunc = function: TtkTokenKind of object;
 
-  TSynHTMLSyn = class(TSynCustomHighlighter)
+  { TSynHTMLSyn }
+
+  TSynHTMLSyn = class(TSynCustomXmlHighlighter)
   private
     fAndCode: Integer;
     fRange: TRangeState;
@@ -407,6 +418,19 @@ type
     procedure AmpersandProc;
   protected
     function GetIdentChars: TSynIdentChars; override;
+  protected
+    // folding
+    procedure CreateRootCodeFoldBlock; override;
+    function GetFoldConfigInstance(Index: Integer): TSynCustomFoldConfig; override;
+
+    function StartHtmlCodeFoldBlock(ABlockType: THtmlCodeFoldBlockType): TSynCustomCodeFoldBlock;
+    function StartHtmlNodeCodeFoldBlock(ABlockType: THtmlCodeFoldBlockType;
+                                   OpenPos: Integer; AName: String): TSynCustomCodeFoldBlock;
+    procedure EndHtmlNodeCodeFoldBlock(ClosePos: Integer = -1; AName: String = '');
+    function TopHtmlCodeFoldBlockType(DownIndex: Integer = 0): THtmlCodeFoldBlockType;
+
+    function GetFoldConfigCount: Integer; override;
+    function GetFoldConfigInternalCount: Integer; override;
   public
     {$IFNDEF SYN_CPPB_1} class {$ENDIF}                                         //mh 2000-07-14
     function GetLanguageName: string; override;
@@ -1974,6 +1998,7 @@ end;
 
 procedure TSynHTMLSyn.SetLine(const NewValue: string; LineNumber:Integer);
 begin
+  inherited;
   fLine := PChar(NewValue);
   Run := 0;
   fLineNumber := LineNumber;
@@ -1993,6 +2018,8 @@ begin
     then begin
       fRange := rsText;
       Inc(Run);
+      if TopHtmlCodeFoldBlockType = cfbtHtmlAsp then
+        EndHtmlNodeCodeFoldBlock;
       break;
     end;
     Inc(Run);
@@ -2020,6 +2047,8 @@ begin
     then begin
       fRange := rsText;
       Inc(Run);
+      if TopHtmlCodeFoldBlockType = cfbtHtmlComment then
+        EndHtmlNodeCodeFoldBlock;
       break;
     end;
     Inc(Run);
@@ -2029,20 +2058,22 @@ end;
 procedure TSynHTMLSyn.BraceOpenProc;
 begin
   Inc(Run);
-  if (fLine[Run] = '!') and (fLine[Run + 1] = '-') and (fLine[Run + 2] = '-')
+  if (Run <= length(fLine)-2) and (fLine[Run] = '!') and (fLine[Run + 1] = '-') and (fLine[Run + 2] = '-')
   then begin
     fRange := rsComment;
     fTokenID := tkComment;
+    StartHtmlCodeFoldBlock(cfbtHtmlComment);
     Inc(Run, 3);
-  end else begin
-    if fLine[Run]= '%' then begin
-      fRange := rsASP;
-      fTokenID := tkASP;
-      Inc(Run);
-    end else begin
-      fRange := rsKey;
-      fTokenID := tkSymbol;
-    end;
+  end
+  else if fLine[Run]= '%' then begin
+    fRange := rsASP;
+    fTokenID := tkASP;
+    StartHtmlCodeFoldBlock(cfbtHtmlAsp);
+    Inc(Run);
+  end
+  else begin
+    fRange := rsKey;
+    fTokenID := tkSymbol;
   end;
 end;
 
@@ -2080,6 +2111,10 @@ begin
     begin
       fRange := rsParam;
       fTokenID := IdentKind((fLine + Run));
+      if fLine[Run] = '/' then
+        EndHtmlNodeCodeFoldBlock(Run+1, copy(fline, Run+2, fStringLen-1))
+      else if fLine[Run] <> '!' then
+        StartHtmlNodeCodeFoldBlock(cfbtHtmlNode, Run, copy(fline, Run+1, fStringLen));
       Inc(Run, fStringLen);
     end;
   rsValue:
@@ -2266,22 +2301,72 @@ end;
 
 function TSynHTMLSyn.GetRange: Pointer;
 begin
-  Result := Pointer(PtrInt(fRange));
+  CodeFoldRange.RangeType:=Pointer(PtrUInt(Integer(fRange)));
+  Result := inherited;
 end;
 
 procedure TSynHTMLSyn.SetRange(Value: Pointer);
 begin
-  fRange := TRangeState(PtrUInt(Value));
+  inherited;
+  fRange := TRangeState(Integer(PtrUInt(CodeFoldRange.RangeType)));
 end;
 
 procedure TSynHTMLSyn.ReSetRange;
 begin
+  inherited;
   fRange:= rsText;
 end;
 
 function TSynHTMLSyn.GetIdentChars: TSynIdentChars;
 begin
   Result := ['0'..'9', 'a'..'z', 'A'..'Z'];
+end;
+
+procedure TSynHTMLSyn.CreateRootCodeFoldBlock;
+begin
+  inherited CreateRootCodeFoldBlock;
+  RootCodeFoldBlock.InitRootBlockType(Pointer(PtrInt(cfbtHtmlNone)));
+end;
+
+function TSynHTMLSyn.GetFoldConfigInstance(Index: Integer): TSynCustomFoldConfig;
+begin
+  Result := inherited GetFoldConfigInstance(Index);
+  Result.Enabled := True;
+end;
+
+function TSynHTMLSyn.StartHtmlCodeFoldBlock(ABlockType: THtmlCodeFoldBlockType): TSynCustomCodeFoldBlock;
+begin
+  Result := inherited StartXmlCodeFoldBlock(ord(ABlockType));
+end;
+
+function TSynHTMLSyn.StartHtmlNodeCodeFoldBlock(ABlockType: THtmlCodeFoldBlockType;
+  OpenPos: Integer; AName: String): TSynCustomCodeFoldBlock;
+begin
+  if not FFoldConfig[ord(cfbtHtmlNode)].Enabled then exit;
+  Result := inherited StartXmlNodeCodeFoldBlock(ord(ABlockType), OpenPos, AName);
+end;
+
+procedure TSynHTMLSyn.EndHtmlNodeCodeFoldBlock(ClosePos: Integer; AName: String);
+begin
+  if not FFoldConfig[ord(cfbtHtmlNode)].Enabled then exit;
+  inherited EndXmlNodeCodeFoldBlock(ClosePos, AName);
+end;
+
+function TSynHTMLSyn.TopHtmlCodeFoldBlockType(DownIndex: Integer): THtmlCodeFoldBlockType;
+begin
+  Result := THtmlCodeFoldBlockType(PtrUInt(TopCodeFoldBlockType(DownIndex)));
+end;
+
+function TSynHTMLSyn.GetFoldConfigCount: Integer;
+begin
+  // excluded cfbtHtmlNone;
+  Result := ord(high(THtmlCodeFoldBlockType)) - ord(low(THtmlCodeFoldBlockType));
+end;
+
+function TSynHTMLSyn.GetFoldConfigInternalCount: Integer;
+begin
+  // include cfbtHtmlNone;
+  Result := ord(high(THtmlCodeFoldBlockType)) - ord(low(THtmlCodeFoldBlockType)) + 1;
 end;
 
 {$IFNDEF SYN_CPPB_1} class {$ENDIF}                                             //mh 2000-07-14

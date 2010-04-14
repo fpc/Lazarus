@@ -138,16 +138,22 @@ type
   { TSynCustomFoldHighlighter }
 
   TSynCustomFoldHighlighter = class(TSynCustomHighlighter)
+  protected
+    // Config
+    FFoldConfig: Array of TSynCustomFoldConfig;
+    function GetFoldConfig(Index: Integer): TSynCustomFoldConfig; virtual;
+    procedure SetFoldConfig(Index: Integer; const AValue: TSynCustomFoldConfig); virtual;
+    function GetFoldConfigCount: Integer; virtual;
+    function GetFoldConfigInternalCount: Integer; virtual;
+    function GetFoldConfigInstance(Index: Integer): TSynCustomFoldConfig; virtual;
+    procedure InitFoldConfig;
+    procedure DestroyFoldConfig;
+    procedure DoFoldConfigChanged(Sender: TObject); virtual;
   private
     FCodeFoldRange: TSynCustomHighlighterRange;
     fRanges: TSynCustomHighlighterRanges;
     FRootCodeFoldBlock: TSynCustomCodeFoldBlock;
   protected
-    function GetFoldConfig(Index: Integer): TSynCustomFoldConfig; virtual;
-    function GetFoldConfigCount: Integer; virtual;
-    procedure SetFoldConfig(Index: Integer; const AValue: TSynCustomFoldConfig); virtual;
-    procedure DoFoldConfigChanged(Sender: TObject); virtual;
-
     function GetFoldNodeInfo(Line, Index: Integer; Filter: TSynFoldActions): TSynFoldNodeInfo; virtual;
     function GetFoldNodeInfoCount(Line: Integer; Filter: TSynFoldActions): Integer; virtual;
     property CodeFoldRange: TSynCustomHighlighterRange read FCodeFoldRange;
@@ -270,6 +276,8 @@ end;
 
 constructor TSynCustomFoldHighlighter.Create(AOwner: TComponent);
 begin
+  SetLength(FFoldConfig, GetFoldConfigInternalCount);
+  InitFoldConfig;
   fRanges:=AllocateHighlighterRanges(TSynCustomHighlighterClass(ClassType));
   CreateRootCodeFoldBlock;
   inherited Create(AOwner);
@@ -280,9 +288,11 @@ end;
 destructor TSynCustomFoldHighlighter.Destroy;
 begin
   inherited Destroy;
+  DestroyFoldConfig;
   FreeAndNil(FCodeFoldRange);
   FreeAndNil(FRootCodeFoldBlock);
   fRanges.Release;
+  FFoldConfig := nil;
 end;
 
 function TSynCustomFoldHighlighter.GetRange: pointer;
@@ -366,7 +376,14 @@ end;
 
 function TSynCustomFoldHighlighter.GetFoldConfig(Index: Integer): TSynCustomFoldConfig;
 begin
-  Result := nil;
+  Result := FFoldConfig[Index];
+end;
+
+procedure TSynCustomFoldHighlighter.SetFoldConfig(Index: Integer; const AValue: TSynCustomFoldConfig);
+begin
+  BeginUpdate;
+  FFoldConfig[Index].Assign(AValue);
+  EndUpdate;
 end;
 
 function TSynCustomFoldHighlighter.GetFoldConfigCount: Integer;
@@ -374,8 +391,32 @@ begin
   Result := 0;
 end;
 
-procedure TSynCustomFoldHighlighter.SetFoldConfig(Index: Integer; const AValue: TSynCustomFoldConfig);
+function TSynCustomFoldHighlighter.GetFoldConfigInternalCount: Integer;
 begin
+  Result := 0;
+end;
+
+function TSynCustomFoldHighlighter.GetFoldConfigInstance(Index: Integer): TSynCustomFoldConfig;
+begin
+  Result := TSynCustomFoldConfig.Create;
+  Result.OnChange := @DoFoldConfigChanged;
+  Result.Enabled := False;
+end;
+
+procedure TSynCustomFoldHighlighter.InitFoldConfig;
+var
+  i: Integer;
+begin
+  for i := 0 to high(FFoldConfig) do
+    FFoldConfig[i] := GetFoldConfigInstance(i);
+end;
+
+procedure TSynCustomFoldHighlighter.DestroyFoldConfig;
+var
+  i: Integer;
+begin
+  for i := 0 to high(FFoldConfig) do
+    FFoldConfig[i].Free;
 end;
 
 procedure TSynCustomFoldHighlighter.DoFoldConfigChanged(Sender: TObject);
