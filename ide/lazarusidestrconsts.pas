@@ -2951,7 +2951,8 @@ resourcestring
     +'with %s%s%s?';
   lisUESearching = 'Searching: %s';
   lisUEReadOnly = '%s/ReadOnly';
-  lisUEGotoLine = 'Goto line :';
+  lisUEGotoLine = 'Goto line:';
+  lisGotoLine = 'Goto line';
   
   // Transfer Macros
   lisTMFunctionExtractFileExtension = 'Function: extract file extension';

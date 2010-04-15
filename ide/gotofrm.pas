@@ -31,7 +31,7 @@ constructor TfrmGoto.Create(AOwner: TComponent);
 begin
   inherited Create(AOwner);
 
-  Caption := lisMenuGotoLine;
+  Caption := lisGotoLine;
   Label1.Caption := lisUEGotoLine;
   Edit1.Caption := '';
 end;
