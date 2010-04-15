@@ -78,7 +78,7 @@ ResourceString
   ctsEndForRecordNotFound = 'end for record not found';
   ctsMissingEnumList = 'missing enum list';
   ctsMissingTypeIdentifier = 'missing type identifier';
-  ctsProcedureOrFunction = 'procedure or function';
+  ctsProcedureOrFunctionOrConstructorOrDestructor = 'procedure or function or constructor or destructor';
   ctsMethodName = 'method name';
   ctsIdentifier = 'identifier';
   ctsSemicolonNotFound = 'semicolon not found';

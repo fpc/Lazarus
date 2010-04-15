@@ -1128,12 +1128,14 @@ function TPascalParserTool.KeyWordFuncClassClass: boolean;
 { parse
     class procedure
     class property
+    class constructor
+    class destructor
     class var
     class type
 }
 begin
   ReadNextAtom;
-  if UpAtomIs('PROCEDURE') or UpAtomIs('FUNCTION') then begin
+  if UpAtomIs('PROCEDURE') or UpAtomIs('FUNCTION') or UpAtomIs('CONSTRUCTOR') or UpAtomIs('DESTRUCTOR') then begin
     UndoReadNextAtom;
     Result:=KeyWordFuncClassMethod;
   end else if UpAtomIs('PROPERTY') then begin
@@ -1180,8 +1182,8 @@ begin
   // read method keyword
   if UpAtomIs('CLASS') or (UpAtomIs('STATIC')) then begin
     ReadNextAtom;
-    if (not UpAtomIs('PROCEDURE')) and (not UpAtomIs('FUNCTION')) then begin
-      RaiseStringExpectedButAtomFound(ctsProcedureOrFunction);
+    if (not UpAtomIs('PROCEDURE')) and (not UpAtomIs('FUNCTION')) and (not UpAtomIs('CONSTRUCTOR')) and (not UpAtomIs('DESTRUCTOR')) then begin
+      RaiseStringExpectedButAtomFound(ctsProcedureOrFunctionOrConstructorOrDestructor);
     end;
   end;
   IsFunction:=UpAtomIs('FUNCTION');
@@ -2253,10 +2255,10 @@ begin
     if not (CurSection in [ctnImplementation]+AllSourceTypes) then
       RaiseStringExpectedButAtomFound(ctsIdentifier);
     ReadNextAtom;
-    if UpAtomIs('PROCEDURE') or UpAtomIs('FUNCTION') then
+    if UpAtomIs('PROCEDURE') or UpAtomIs('FUNCTION') or UpAtomIs('CONSTRUCTOR') or UpAtomIs('DESTRUCTOR') then
       IsClassProc:=true
     else
-      RaiseStringExpectedButAtomFound('"procedure"');
+      RaiseStringExpectedButAtomFound(ctsProcedureOrFunctionOrConstructorOrDestructor);
   end else
     IsClassProc:=false;
   ChildCreated:=true;
