@@ -42,9 +42,8 @@ unit SynEditTextBuffer;
 interface
 
 uses
-  Classes, SysUtils, SynEditTextBase,
-  FileUtil, LCLProc, LCLIntf, LCLType,
-  SynEditTypes, SynEditMiscProcs, SynEditMiscClasses;
+  Classes, SysUtils, LCLProc, LCLIntf, LCLType,
+  SynEditTextBase, SynEditTypes, SynEditMiscProcs, SynEditMiscClasses;
 
 const
   NullRange = TSynEditRange(nil);
@@ -139,14 +138,7 @@ type
     FAttributeList: Array of TSynEditStringAttribute;
 
     FAttachedSynEditList: TFPList;
-    FLineRangeNotificationList: TLineRangeNotificationList; // LineCount
-    FLineChangeNotificationList: TLineRangeNotificationList; // ContentChange (not called on add...)
-    FLineInvalidateNotificationList: TLineRangeNotificationList; // senrHighlightChanged
-    FLineEditNotificationList: TLineEditNotificationList;
-    FUndoRedoAddedNotificationList: TSynMethodList;
-    FOnChangeList: TSynMethodList;
-    FOnChangingList: TSynMethodList;
-    FOnClearedList: TSynMethodList;
+    FNotifyLists: Array [TSynEditNotifyReason] of TSynMethodList;
 
     FIgnoreSendNotification: array [TSynEditNotifyReason] of Integer;
     fDosFileFormat: boolean;
@@ -155,6 +147,9 @@ type
     FUndoList: TSynEditUndoList;
     FIsUndoing, FIsRedoing: Boolean;
 
+    FModified: Boolean;
+    FTextChangeStamp: int64;
+
     function GetAttachedSynEdits(Index: Integer): TSynEditBase;
     function GetFlags(Index: Integer): TSynEditStringFlags;
     procedure Grow;
@@ -162,6 +157,7 @@ type
     function ClassIndexForAttribute(AttrIndex: TClass): Integer;
     Procedure SetAttributeSize(NewSize: Integer);
     procedure SetFlags(Index: Integer; const AValue: TSynEditStringFlags);
+    procedure SetModified(const AValue: Boolean);
   protected
     function GetExpandedString(Index: integer): string; override;
     function GetLengthOfLongestLine: integer; override;
@@ -197,6 +193,7 @@ type
     procedure SetUpdateState(Updating: Boolean); override;
 
     procedure UndoEditLinesDelete(LogY, ACount: Integer);
+    procedure IncreaseTextChangeStamp;
   public
     constructor Create;
     destructor Destroy; override;
@@ -228,6 +225,8 @@ type
     property LengthOfLongestLine: integer read GetLengthOfLongestLine;
     property Flags[Index: Integer]: TSynEditStringFlags read GetFlags
       write SetFlags;
+    property Modified: Boolean read FModified write SetModified;
+    property TextChangeStamp: int64 read FTextChangeStamp;
   public
     property UndoList: TSynEditUndoList read GetUndoList write fUndoList;
     property RedoList: TSynEditUndoList read GetRedoList write fRedoList;
@@ -434,15 +433,17 @@ begin
   fRedoList.OnAddedUndo := {$IFDEF FPC}@{$ENDIF}UndoRedoAdded;
   FIsUndoing := False;
   FIsRedoing := False;
+  FModified := False;
 
-  FLineRangeNotificationList := TLineRangeNotificationList.Create;
-  FLineChangeNotificationList := TLineRangeNotificationList.Create;
-  FLineInvalidateNotificationList := TLineRangeNotificationList.Create;
-  FLineEditNotificationList := TLineEditNotificationList.Create;
-  FUndoRedoAddedNotificationList := TLineEditNotificationList.Create;
-  FOnChangeList := TSynMethodList.Create;
-  FOnChangingList := TSynMethodList.Create;
-  FOnClearedList := TSynMethodList.Create;
+  FNotifyLists[senrLineCount]        := TLineRangeNotificationList.Create;
+  FNotifyLists[senrLineChange]       := TLineRangeNotificationList.Create;
+  FNotifyLists[senrHighlightChanged] := TLineRangeNotificationList.Create;
+  FNotifyLists[senrEditAction]       := TLineEditNotificationList.Create;
+  FNotifyLists[senrBeginUpdate]      := TSynMethodList.Create;
+  FNotifyLists[senrEndUpdate]        := TSynMethodList.Create;
+  FNotifyLists[senrCleared]          := TSynMethodList.Create;
+  FNotifyLists[senrUndoRedoAdded]    := TSynMethodList.Create;
+  FNotifyLists[senrModifiedChanged]  := TSynMethodList.Create;
 
   for r := low(TSynEditNotifyReason) to high(TSynEditNotifyReason) do
     FIgnoreSendNotification[r] := 0;
@@ -456,19 +457,15 @@ begin
 end;
 
 destructor TSynEditStringList.Destroy;
+var
+  i: TSynEditNotifyReason;
 begin
   fAttributeList := nil;
   inherited Destroy;
   SetCount(0);
   SetCapacity(0);
-  FreeAndNil(FLineRangeNotificationList);
-  FreeAndNil(FLineChangeNotificationList);
-  FreeAndNil(FLineInvalidateNotificationList);
-  FreeAndNil(FLineEditNotificationList);
-  FreeAndNil(FUndoRedoAddedNotificationList);
-  FreeAndNil(FOnChangeList);
-  FreeAndNil(FOnChangingList);
-  FreeAndNil(FOnClearedList);
+  for i := low(TSynEditNotifyReason) to high(TSynEditNotifyReason) do
+    FreeAndNil(FNotifyLists[i]);
   FreeAndNil(FUndoList);
   FreeAndNil(FRedoList);
   FreeAndNil(FAttachedSynEditList);
@@ -481,7 +478,7 @@ begin
   BeginUpdate;
   Result := Count;
   InsertItem(Result, S);
-  FLineRangeNotificationList.CallRangeNotifyEvents(self, Result, Count - Result);
+  SendNotification(senrLineCount, self, Result, Count - Result);
   EndUpdate;
 end;
 
@@ -506,7 +503,7 @@ begin
         end;
         Flags[Count-1] := [];
       end;
-      FLineRangeNotificationList.CallRangeNotifyEvents(self, FirstAdded, Count - FirstAdded);
+      SendNotification(senrLineCount, self, FirstAdded, Count - FirstAdded);
     finally
       EndUpdate;
     end;
@@ -523,8 +520,8 @@ begin
     BeginUpdate;
     SetCount(0);
     SetCapacity(0);
-    FOnClearedList.CallNotifyEvents(Self);
-    FLineRangeNotificationList.CallRangeNotifyEvents(self, 0, -c);
+    FNotifyLists[senrCleared].CallNotifyEvents(Self);
+    SendNotification(senrLineCount, self, 0, -c);
     EndUpdate;
   end;
   fIndexOfLongestLine := -1;
@@ -538,7 +535,7 @@ begin
   BeginUpdate;
   FList.DeleteRows(Index, 1);
   fIndexOfLongestLine := -1;
-  FLineRangeNotificationList.CallRangeNotifyEvents(self, Index, -1);
+  SendNotification(senrLineCount, self, Index, -1);
   EndUpdate;
 end;
 
@@ -550,7 +547,7 @@ begin
       ListIndexOutOfBounds(Index);
     BeginUpdate;
     FList.DeleteRows(Index, NumLines);
-    FLineRangeNotificationList.CallRangeNotifyEvents(self, Index, -NumLines);
+    SendNotification(senrLineCount, self, Index, -NumLines);
     EndUpdate;
   end;
 end;
@@ -663,7 +660,18 @@ end;
 
 procedure TSynEditStringList.UndoRedoAdded(Sender: TObject);
 begin
-  FUndoRedoAddedNotificationList.CallNotifyEvents(Sender);
+  // we have to clear the redo information, since adding undo info removes
+  // the necessary context to undo earlier edit actions
+  if (Sender = fUndoList) and not (fUndoList.IsInsideRedo) then
+    fRedoList.Clear;
+  if fUndoList.UnModifiedMarkerExists then
+    Modified := not fUndoList.IsTopMarkedAsUnmodified
+  else if fRedoList.UnModifiedMarkerExists then
+    Modified := not fRedoList.IsTopMarkedAsUnmodified
+  else
+    Modified := fUndoList.CanUndo or fUndoList.FullUndoImpossible;
+
+  FNotifyLists[senrUndoRedoAdded].CallNotifyEvents(Sender);
 end;
 
 // Maps the Physical Width (ScreenCells) to each character
@@ -737,7 +745,7 @@ begin
   BeginUpdate;
   OldCnt:=Count;
   InsertItem(Index, S);
-  FLineRangeNotificationList.CallRangeNotifyEvents(self, Index, Count - OldCnt);
+  SendNotification(senrLineCount, self, Index, Count - OldCnt);
   EndUpdate;
 end;
 
@@ -769,7 +777,7 @@ begin
       if Capacity<Count + NumLines then
         SetCapacity(Count + NumLines);
       FList.InsertRows(Index, NumLines);
-      FLineRangeNotificationList.CallRangeNotifyEvents(self, Index, NumLines);
+      SendNotification(senrLineCount, self, Index, NumLines);
     finally
       EndUpdate;
     end;
@@ -894,6 +902,21 @@ begin
   SetAttribute(TSynEditFlagsClass, Index, Pointer(PtrUInt(Integer(AValue))));
 end;
 
+procedure TSynEditStringList.SetModified(const AValue: Boolean);
+begin
+  if AValue then
+    IncreaseTextChangeStamp;
+  if FModified = AValue then exit;
+  FModified := AValue;
+  if not FModified then
+  begin
+    // the current state should be the unmodified state.
+    FUndoList.MarkTopAsUnmodified;
+    FRedoList.MarkTopAsUnmodified;
+  end;
+  FNotifyLists[senrModifiedChanged].CallNotifyEvents(Self);
+end;
+
 procedure TSynEditStringList.MarkModified(AFirst, ALast: Integer);
 var
   Index: Integer;
@@ -914,54 +937,28 @@ end;
 
 procedure TSynEditStringList.AddGenericHandler(AReason: TSynEditNotifyReason; AHandler: TMethod);
 begin
-  case AReason of
-    senrLineChange : FLineChangeNotificationList.Add(AHandler);
-    senrLineCount : FLineRangeNotificationList.Add(AHandler);
-    senrTextEdit: FLineEditNotificationList.Add(TMethod(AHandler));
-    senrHighlightChanged: FLineInvalidateNotificationList.Add(TMethod(AHandler));
-    senrBeginUpdate : FOnChangingList.Add(AHandler);
-    senrEndUpdate : FOnChangeList.Add(AHandler);
-    senrCleared : FOnClearedList.Add(AHandler);
-    senrUndoRedoAdded : FUndoRedoAddedNotificationList.Add(AHandler);
-  end;
+  FNotifyLists[AReason].Add(AHandler);
 end;
 
 procedure TSynEditStringList.RemoveGenericHandler(AReason: TSynEditNotifyReason; AHandler: TMethod);
 begin
-  case AReason of
-    senrLineChange : FLineChangeNotificationList.Remove(AHandler);
-    senrLineCount : FLineRangeNotificationList.Remove(AHandler);
-    senrTextEdit: FLineEditNotificationList.Remove(TMethod(AHandler));
-    senrHighlightChanged: FLineInvalidateNotificationList.Remove(TMethod(AHandler));
-    senrBeginUpdate : FOnChangingList.Remove(AHandler);
-    senrEndUpdate : FOnChangeList.Remove(AHandler);
-    senrCleared : FOnClearedList.Remove(AHandler);
-    senrUndoRedoAdded : FUndoRedoAddedNotificationList.Remove(AHandler);
-  end;
+  FNotifyLists[AReason].Remove(AHandler);
 end;
 
 procedure TSynEditStringList.CopyHanlders(OtherLines: TSynEditStringList; AOwner: TObject = nil);
+var
+  i: TSynEditNotifyReason;
 begin
-  FLineRangeNotificationList.AddCopyFrom(OtherLines.FLineRangeNotificationList, AOwner);
-  FLineChangeNotificationList.AddCopyFrom(OtherLines.FLineChangeNotificationList, AOwner);
-  FLineEditNotificationList.AddCopyFrom(OtherLines.FLineEditNotificationList, AOwner);
-  FLineInvalidateNotificationList.AddCopyFrom(OtherLines.FLineInvalidateNotificationList, AOwner);
-  FUndoRedoAddedNotificationList.AddCopyFrom(OtherLines.FUndoRedoAddedNotificationList, AOwner);
-  FOnChangeList.AddCopyFrom(OtherLines.FOnChangeList, AOwner);
-  FOnChangingList.AddCopyFrom(OtherLines.FOnChangingList, AOwner);
-  FOnClearedList.AddCopyFrom(OtherLines.FOnClearedList, AOwner);
+  for i := low(TSynEditNotifyReason) to high(TSynEditNotifyReason) do
+    FNotifyLists[i].AddCopyFrom(OtherLines.FNotifyLists[i], AOwner);
 end;
 
 procedure TSynEditStringList.RemoveHanlders(AOwner: TObject);
+var
+  i: TSynEditNotifyReason;
 begin
-  FLineRangeNotificationList.RemoveAllMethodsOfObject(AOwner);
-  FLineChangeNotificationList.RemoveAllMethodsOfObject(AOwner);
-  FLineEditNotificationList.RemoveAllMethodsOfObject(AOwner);
-  FLineInvalidateNotificationList.RemoveAllMethodsOfObject(AOwner);
-  FUndoRedoAddedNotificationList.RemoveAllMethodsOfObject(AOwner);
-  FOnChangeList.RemoveAllMethodsOfObject(AOwner);
-  FOnChangingList.RemoveAllMethodsOfObject(AOwner);
-  FOnClearedList.RemoveAllMethodsOfObject(AOwner);
+  for i := low(TSynEditNotifyReason) to high(TSynEditNotifyReason) do
+    FNotifyLists[i].RemoveAllMethodsOfObject(AOwner);
 end;
 
 procedure TSynEditStringList.SetCapacity(NewCapacity: integer);
@@ -972,9 +969,9 @@ end;
 procedure TSynEditStringList.SetUpdateState(Updating: Boolean);
 begin
   if Updating then begin
-    FOnChangingList.CallNotifyEvents(Self);
+    FNotifyLists[senrBeginUpdate].CallNotifyEvents(Self);
   end else begin
-    FOnChangeList.CallNotifyEvents(Self);
+    FNotifyLists[senrEndUpdate].CallNotifyEvents(Self);
   end;
 end;
 
@@ -1070,6 +1067,14 @@ begin
   SendNotification(senrEditAction, self, LogY, -ACount, 1, 0, '');
 end;
 
+procedure TSynEditStringList.IncreaseTextChangeStamp;
+begin
+  if FTextChangeStamp=High(FTextChangeStamp) then
+    FTextChangeStamp:=Low(FTextChangeStamp)
+  else
+    inc(FTextChangeStamp);
+end;
+
 procedure TSynEditStringList.EditRedo(Item: TSynEditUndoItem);
 begin
   Item.PerformUndo(self);
@@ -1081,15 +1086,13 @@ procedure TSynEditStringList.SendNotification(AReason: TSynEditNotifyReason;
 begin
   if FIgnoreSendNotification[AReason] > 0 then exit;
   case AReason of
-    senrLineChange:
-      FLineChangeNotificationList.CallRangeNotifyEvents(ASender, aIndex, aCount);
-    senrLineCount:
-      FLineRangeNotificationList.CallRangeNotifyEvents(ASender, aIndex, aCount);
+    senrLineChange, senrLineCount, senrHighlightChanged:
+      TLineRangeNotificationList(FNotifyLists[AReason])
+        .CallRangeNotifyEvents(ASender, aIndex, aCount);
     senrEditAction:
-        FLineEditNotificationList.CallRangeNotifyEvents(ASender, aIndex, // aindex is mis-named (linepos) for edit action
-                                                  aBytePos, aLen, aCount, aTxt);
-    senrHighlightChanged:
-        FLineInvalidateNotificationList.CallRangeNotifyEvents(ASender, aIndex, aCount);
+        // aindex is mis-named (linepos) for edit action
+        TLineEditNotificationList(FNotifyLists[senrEditAction])
+          .CallRangeNotifyEvents(ASender, aIndex, aBytePos, aLen, aCount, aTxt);
   end;
 end;
 

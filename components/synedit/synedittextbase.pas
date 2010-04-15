@@ -38,13 +38,16 @@ type
                                        Text: String) of object;
 
   TSynEditNotifyReason = ( // TStringListLineCountEvent
-                           senrLineCount, senrLineChange, senrEditAction,
-                           senrHighlightChanged, // used by Highlighter
+                           senrLineCount,        // Lines Inserted or Deleted (if not empty, they will trigger senrLineChange too)
+                           senrLineChange,       // Lines modified (also triggered by senrEditAction)
+                           senrHighlightChanged, // used by Highlighter (invalidate and fold checks needed)
                            // TStringListLineEditEvent
-                           senrTextEdit,
+                           senrEditAction,       // EditInsert, EditDelete, EditLineBreak, ...
                            // TNotifyEvent
-                           senrBeginUpdate, senrEndUpdate, senrCleared,
-                           senrUndoRedoAdded
+                           senrBeginUpdate, senrEndUpdate,
+                           senrCleared,
+                           senrUndoRedoAdded,
+                           senrModifiedChanged   // The modified flag was changed
                           );
 
   TPhysicalCharWidths = Array of Shortint;
@@ -84,7 +87,6 @@ type
 
   TSynEditStrings = class(TStrings)
   protected
-    FTextChangeStamp: int64;
     FIsUtf8: Boolean;
     function  GetIsUtf8 : Boolean; virtual;
     procedure SetIsUtf8(const AValue : Boolean); virtual;
@@ -161,14 +163,12 @@ type
     property CurUndoList: TSynEditUndoList read GetCurUndoList; // Re or Undo (Redo while undoing)
     property IsUndoing: Boolean read GetIsUndoing write SetIsUndoing;
     property IsRedoing: Boolean read GetIsRedoing write SetIsRedoing;
-    procedure IncreaseTextChangeStamp;
     procedure SendHighlightChanged(aIndex, aCount: Integer);
   public
     property ExpandedStrings[Index: integer]: string read GetExpandedString;
     property LengthOfLongestLine: integer read GetLengthOfLongestLine;
     property IsUtf8: Boolean read GetIsUtf8 write SetIsUtf8;
     property Ranges[Index: TClass]: TSynEditStorageMem read GetRange write PutRange;
-    property TextChangeStamp: int64 read FTextChangeStamp;
   end;
 
   { TSynEditStringsLinked }
@@ -401,12 +401,12 @@ end;
 
 procedure TSynEditStrings.AddEditHandler(AHandler: TStringListLineEditEvent);
 begin
-  AddGenericHandler(senrTextEdit, TMethod(AHandler));
+  AddGenericHandler(senrEditAction, TMethod(AHandler));
 end;
 
 procedure TSynEditStrings.RemoveEditHandler(AHandler: TStringListLineEditEvent);
 begin
-  RemoveGenericHandler(senrTextEdit, TMethod(AHandler));
+  RemoveGenericHandler(senrEditAction, TMethod(AHandler));
 end;
 
 function TSynEditStrings.GetPhysicalCharWidths(Index: Integer): TPhysicalCharWidths;
@@ -525,14 +525,6 @@ begin
   end;
 
   Result := BytePos + 1 + PhysicalPos - ScreenPos;
-end;
-
-procedure TSynEditStrings.IncreaseTextChangeStamp;
-begin
-  if fTextChangeStamp=High(fTextChangeStamp) then
-    fTextChangeStamp:=Low(fTextChangeStamp)
-  else
-    inc(fTextChangeStamp);
 end;
 
 procedure TSynEditStrings.SendHighlightChanged(aIndex, aCount: Integer);

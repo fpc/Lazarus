@@ -34,7 +34,7 @@ unit SynEditLines;
 interface
 
 uses
-  Classes, SysUtils, FileUtil, FPCAdds, SynEditTextBase;
+  Classes, SysUtils, FileUtil, FPCAdds, SynEditTextBuffer;
 
 type
 
@@ -45,7 +45,7 @@ type
   TSynEditLines = class(TStrings)
   private
     fDosFileFormat: boolean;
-    FTextBuffer: TSynEditStrings;
+    FTextBuffer: TSynEditStringList;
     FOnSaved: TSavedNotification;
     function GetTextChangeStamp: int64;
   protected
@@ -60,7 +60,7 @@ type
                                    {$IFDEF SYN_COMPILER_3_UP} override; {$ENDIF}
     procedure SetUpdateState(Updating: Boolean); override;
   public
-    constructor Create(ATextBuffer: TSynEditStrings; OnSaved: TSavedNotification);
+    constructor Create(ATextBuffer: TSynEditStringList; OnSaved: TSavedNotification);
     function Add(const S: string): integer; override;
     procedure AddStrings(AStrings: TStrings); override;
     procedure Clear; override;
@@ -70,7 +70,7 @@ type
     procedure LoadFromFile(const FileName: string); override;
     procedure SaveToFile(const FileName: string); override;
     property DosFileFormat: boolean read fDosFileFormat write fDosFileFormat;
-    property TextChangeStamp: int64 read GetTextChangeStamp;
+    property TextChangeStamp: int64 read GetTextChangeStamp; deprecated '#############';
   end;
 
 implementation
@@ -273,7 +273,7 @@ end;
 
 { TSynEditLines }
 
-constructor TSynEditLines.Create(ATextBuffer: TSynEditStrings; OnSaved: TSavedNotification);
+constructor TSynEditLines.Create(ATextBuffer: TSynEditStringList; OnSaved: TSavedNotification);
 begin
   inherited Create;
   FTextBuffer := ATextBuffer;

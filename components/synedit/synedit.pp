@@ -413,7 +413,6 @@ type
     FMouseActions, FMouseSelActions: TSynEditMouseActions;
     FMouseActionSearchHandlerList: TSynEditMouseActionSearchList;
     FMouseActionExecHandlerList: TSynEditMouseActionExecList;
-    fModified: Boolean;
     fMarkList: TSynEditMarkList;
     fExtraLineSpacing: integer;
     FUseUTF8: boolean;
@@ -447,16 +446,15 @@ type
     fOnReplaceText: TReplaceTextEvent;
     fOnSpecialLineColors: TSpecialLineColorsEvent;// needed, because bug fpc 11926
     fOnStatusChange: TStatusChangeEvent;
-    {$IFDEF SYN_LAZARUS}
     FOnSpecialLineMarkup: TSpecialLineMarkupEvent;// needed, because bug fpc 11926
     FOnClickLink: TMouseEvent;
     FOnMouseLink: TSynMouseLinkEvent;
-    fChangeStamp: int64;
-    {$ENDIF}
 
     procedure AquirePrimarySelection;
+    function GetChangeStamp: int64;
     function GetDefSelectionMode: TSynSelectionMode;
     function GetFoldState: String;
+    function GetModified: Boolean;
     function GetPaintLockOwner: TSynEditBase;
     function GetPlugin(Index: Integer): TSynEditPlugin;
     function GetTextBetweenPoints(aStartPoint, aEndPoint: TPoint): String;
@@ -571,8 +569,8 @@ type
     procedure SetParagraphBlock(Value: TPoint);
     procedure SizeOrFontChanged(bFont: boolean);
     procedure StatusChanged(AChanges: TSynStatusChanges);
-    procedure UpdateModified;
     procedure UndoRedoAdded(Sender: TObject);
+    procedure ModifiedChanged(Sender: TObject);
     procedure UnlockUndo;
     procedure UpdateCaret(IgnorePaintLock: Boolean = False);
     procedure UpdateScrollBars;
@@ -600,7 +598,6 @@ type
     procedure Resize; override;
     function  RealGetText: TCaption; override;
     procedure RealSetText(const Value: TCaption); override;
-    procedure IncreaseChangeStamp;
     function GetLines: TStrings; override;
     function GetViewedTextBuffer: TSynEditStrings; override;
     function GetTextBuffer: TSynEditStrings; override;
@@ -870,7 +867,7 @@ type
     property Marks: TSynEditMarkList read fMarkList;
     property MaxLeftChar: integer read fMaxLeftChar write SetMaxLeftChar
       default 1024;
-    property Modified: Boolean read fModified write SetModified;
+    property Modified: Boolean read GetModified write SetModified;
     property PaintLock: Integer read fPaintLock;
     property ReadOnly: Boolean read GetReadOnly write SetReadOnly default FALSE;
     property SelAvail: Boolean read GetSelAvail;
@@ -885,7 +882,7 @@ type
     property UseUTF8: boolean read FUseUTF8;
     procedure Update; override;
     procedure Invalidate; override;
-    property ChangeStamp: int64 read fChangeStamp;
+    property ChangeStamp: int64 read GetChangeStamp;
     {$ENDIF}
     procedure ShareTextBufferFrom(AShareEditor: TCustomSynEdit);
     procedure UnShareTextBuffer;
@@ -1318,6 +1315,11 @@ begin
   end;
 end;
 
+function TCustomSynEdit.GetChangeStamp: int64;
+begin
+  Result := TSynEditStringList(FLines).TextChangeStamp;
+end;
+
 function TCustomSynEdit.GetDefSelectionMode: TSynSelectionMode;
 begin
   Result := FBlockSelection.SelectionMode;
@@ -1326,6 +1328,11 @@ end;
 function TCustomSynEdit.GetFoldState: String;
 begin
   Result := FFoldedLinesView.GetFoldDescription(0, 0, -1, -1, True);
+end;
+
+function TCustomSynEdit.GetModified: Boolean;
+begin
+  Result := TSynEditStringList(FLines).Modified;
 end;
 
 function TCustomSynEdit.GetPaintLockOwner: TSynEditBase;
@@ -1536,7 +1543,7 @@ begin
   FTheLinesView := FTabbedLinesView;
   FTopLinesView := FTrimmedLinesView;
   // External Accessor
-  FStrings := TSynEditLines.Create(FLines, {$IFDEF FPC}@{$ENDIF}MarkTextAsSaved);
+  FStrings := TSynEditLines.Create(TSynEditStringList(FLines), {$IFDEF FPC}@{$ENDIF}MarkTextAsSaved);
 
   FCaret.Lines := FTheLinesView;
   FInternalCaret.Lines := FTheLinesView;
@@ -1549,7 +1556,8 @@ begin
     AddNotifyHandler(senrBeginUpdate, {$IFDEF FPC}@{$ENDIF}LinesChanging);
     AddNotifyHandler(senrEndUpdate, {$IFDEF FPC}@{$ENDIF}LinesChanged);
     AddNotifyHandler(senrCleared, {$IFDEF FPC}@{$ENDIF}ListCleared);
-    AddNotifyHandler(senrUndoRedoAdded, {$IFDEF FPC}@{$ENDIF}UndoRedoAdded);
+    AddNotifyHandler(senrUndoRedoAdded, {$IFDEF FPC}@{$ENDIF}Self.UndoRedoAdded);
+    AddNotifyHandler(senrModifiedChanged, {$IFDEF FPC}@{$ENDIF}ModifiedChanged);
   end;
 
   FUndoList := TSynEditStringList(fLines).UndoList;
@@ -4108,14 +4116,6 @@ begin
   FLines.Text := Value; // Do not trim
 end;
 
-procedure TCustomSynEdit.IncreaseChangeStamp;
-begin
-  if fChangeStamp=High(fChangeStamp) then
-    fChangeStamp:=Low(fChangeStamp)
-  else
-    inc(fChangeStamp);
-end;
-
 function TCustomSynEdit.CurrentMaxTopLine: Integer;
 begin
   if (eoScrollPastEof in Options) then
@@ -4593,7 +4593,6 @@ procedure TCustomSynEdit.LineCountChanged(Sender: TSynEditStrings;
   AIndex, ACount: Integer);
 begin
   {$IFDEF SYNFOLDDEBUG}debugln(['FOLD-- LineCountChanged Aindex', AIndex, '  ACount=', ACount]);{$ENDIF}
-  IncreaseChangeStamp;
   if (AIndex < FBeautifyStartLineIdx) or (FBeautifyStartLineIdx < 0) then
     FBeautifyStartLineIdx := AIndex;
   if ACount > 0 then begin
@@ -4628,7 +4627,6 @@ procedure TCustomSynEdit.LineTextChanged(Sender: TSynEditStrings;
   AIndex, ACount: Integer);
 begin
   {$IFDEF SYNFOLDDEBUG}debugln(['FOLD-- LineTextChanged Aindex', AIndex, '  ACount=', ACount]);{$ENDIF}
-  IncreaseChangeStamp;
   if (AIndex < FBeautifyStartLineIdx) or (FBeautifyStartLineIdx < 0) then
     FBeautifyStartLineIdx := AIndex;
   if (AIndex + ACount - 1 > FBeautifyEndLineIdx) then
@@ -5062,7 +5060,7 @@ begin
 
   // Recreate te public access to FLines
   FreeAndNil(FStrings);
-  FStrings := TSynEditLines.Create(FLines, {$IFDEF FPC}@{$ENDIF}MarkTextAsSaved);
+  FStrings := TSynEditLines.Create(TSynEditStringList(FLines), {$IFDEF FPC}@{$ENDIF}MarkTextAsSaved);
 
   // Attach Highlighter
   if FHighlighter <> nil then
@@ -7630,21 +7628,7 @@ end;
 
 procedure TCustomSynEdit.SetModified(Value: boolean);
 begin
-  if Value then
-    IncreaseChangeStamp;
-  if Value <> fModified then
-  begin
-    fModified := Value;
-    {$IFDEF SYN_LAZARUS}
-    if not fModified then
-    begin
-      // the current state should be the unmodified state.
-      fUndoList.MarkTopAsUnmodified;
-      fRedoList.MarkTopAsUnmodified;
-    end;
-    {$ENDIF}
-    StatusChanged([scModified]);
-  end;
+  TSynEditStringList(FLines).Modified := Value;
 end;
 
 {$IFNDEF SYN_LAZARUS}
@@ -8398,26 +8382,16 @@ begin
   end;
 end;
 
-procedure TCustomSynEdit.UpdateModified;
-begin
-  if fUndoList.UnModifiedMarkerExists then
-    Modified:=not fUndoList.IsTopMarkedAsUnmodified
-  else if fRedoList.UnModifiedMarkerExists then
-    Modified:=not fRedoList.IsTopMarkedAsUnmodified
-  else
-    Modified := fUndoList.CanUndo or fUndoList.FullUndoImpossible;              //mh 2000-10-03
-end;
-
 procedure TCustomSynEdit.UndoRedoAdded(Sender: TObject);
 begin
-  IncreaseChangeStamp;
-  UpdateModified;
-  // we have to clear the redo information, since adding undo info removes
-  // the necessary context to undo earlier edit actions
-  if (Sender = fUndoList) and not (fUndoList.IsInsideRedo) then            //mh 2000-10-30
-    fRedoList.Clear;
+  // Todo: Check Paintlock, otherwise move to LinesChanged, LineCountChanged
   if Assigned(fOnChange) then
     fOnChange(Self);
+end;
+
+procedure TCustomSynEdit.ModifiedChanged(Sender: TObject); 
+begin
+  StatusChanged([scModified]);
 end;
 
 function TCustomSynEdit.LogicalToPhysicalPos(const p: TPoint): TPoint;
