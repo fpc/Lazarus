@@ -448,6 +448,18 @@ begin
   ecMoveEditorRight: SetResult(VK_UNKNOWN, [], VK_UNKNOWN, []);
   ecMoveEditorLeftmost: SetResult(VK_UNKNOWN, [], VK_UNKNOWN, []);
   ecMoveEditorRightmost: SetResult(VK_UNKNOWN, [], VK_UNKNOWN, []);
+
+  ecNextSharedEditor:        SetResult(VK_UNKNOWN,[],VK_UNKNOWN,[]);
+  ecPrevSharedEditor:        SetResult(VK_UNKNOWN,[],VK_UNKNOWN,[]);
+  ecNextWindow:              SetResult(VK_UNKNOWN,[],VK_UNKNOWN,[]);
+  ecPrevWindow:              SetResult(VK_UNKNOWN,[],VK_UNKNOWN,[]);
+  ecMoveEditorNextWindow:    SetResult(VK_UNKNOWN,[],VK_UNKNOWN,[]);
+  ecMoveEditorPrevWindow:    SetResult(VK_UNKNOWN,[],VK_UNKNOWN,[]);
+  ecMoveEditorNewWindow:     SetResult(VK_UNKNOWN,[],VK_UNKNOWN,[]);
+  ecCopyEditorNextWindow:    SetResult(VK_UNKNOWN,[],VK_UNKNOWN,[]);
+  ecCopyEditorPrevWindow:    SetResult(VK_UNKNOWN,[],VK_UNKNOWN,[]);
+  ecCopyEditorNewWindow:     SetResult(VK_UNKNOWN,[],VK_UNKNOWN,[]);
+
   ecGotoEditor1: SetResult(VK_1,[ssAlt],VK_UNKNOWN,[]);
   ecGotoEditor2: SetResult(VK_2,[ssAlt],VK_UNKNOWN,[]);
   ecGotoEditor3: SetResult(VK_3,[ssAlt],VK_UNKNOWN,[]);
@@ -871,6 +883,18 @@ begin
   ecMoveEditorRight: SetResult(VK_UNKNOWN, [], VK_UNKNOWN, [],VK_UNKNOWN,[],VK_UNKNOWN,[]);
   ecMoveEditorLeftmost: SetResult(VK_UNKNOWN, [], VK_UNKNOWN, [],VK_UNKNOWN,[],VK_UNKNOWN,[]);
   ecMoveEditorRightmost: SetResult(VK_UNKNOWN, [], VK_UNKNOWN, [],VK_UNKNOWN,[],VK_UNKNOWN,[]);
+
+  ecNextSharedEditor:        SetResult(VK_UNKNOWN,[],VK_UNKNOWN,[]);
+  ecPrevSharedEditor:        SetResult(VK_UNKNOWN,[],VK_UNKNOWN,[]);
+  ecNextWindow:              SetResult(VK_UNKNOWN,[],VK_UNKNOWN,[]);
+  ecPrevWindow:              SetResult(VK_UNKNOWN,[],VK_UNKNOWN,[]);
+  ecMoveEditorNextWindow:    SetResult(VK_UNKNOWN,[],VK_UNKNOWN,[]);
+  ecMoveEditorPrevWindow:    SetResult(VK_UNKNOWN,[],VK_UNKNOWN,[]);
+  ecMoveEditorNewWindow:     SetResult(VK_UNKNOWN,[],VK_UNKNOWN,[]);
+  ecCopyEditorNextWindow:    SetResult(VK_UNKNOWN,[],VK_UNKNOWN,[]);
+  ecCopyEditorPrevWindow:    SetResult(VK_UNKNOWN,[],VK_UNKNOWN,[]);
+  ecCopyEditorNewWindow:     SetResult(VK_UNKNOWN,[],VK_UNKNOWN,[]);
+
   ecGotoEditor1: SetResult(VK_1,[ssAlt],VK_UNKNOWN,[],VK_UNKNOWN,[],VK_UNKNOWN,[]);
   ecGotoEditor2: SetResult(VK_2,[ssAlt],VK_UNKNOWN,[],VK_UNKNOWN,[],VK_UNKNOWN,[]);
   ecGotoEditor3: SetResult(VK_3,[ssAlt],VK_UNKNOWN,[],VK_UNKNOWN,[],VK_UNKNOWN,[]);
@@ -1474,6 +1498,18 @@ begin
   ecMoveEditorRight: SetResult(VK_UNKNOWN, [], VK_UNKNOWN, []);
   ecMoveEditorLeftmost: SetResult(VK_UNKNOWN, [], VK_UNKNOWN, []);
   ecMoveEditorRightmost: SetResult(VK_UNKNOWN, [], VK_UNKNOWN, []);
+
+  ecNextSharedEditor:        SetResult(VK_UNKNOWN,[],VK_UNKNOWN,[]);
+  ecPrevSharedEditor:        SetResult(VK_UNKNOWN,[],VK_UNKNOWN,[]);
+  ecNextWindow:              SetResult(VK_UNKNOWN,[],VK_UNKNOWN,[]);
+  ecPrevWindow:              SetResult(VK_UNKNOWN,[],VK_UNKNOWN,[]);
+  ecMoveEditorNextWindow:    SetResult(VK_UNKNOWN,[],VK_UNKNOWN,[]);
+  ecMoveEditorPrevWindow:    SetResult(VK_UNKNOWN,[],VK_UNKNOWN,[]);
+  ecMoveEditorNewWindow:     SetResult(VK_UNKNOWN,[],VK_UNKNOWN,[]);
+  ecCopyEditorNextWindow:    SetResult(VK_UNKNOWN,[],VK_UNKNOWN,[]);
+  ecCopyEditorPrevWindow:    SetResult(VK_UNKNOWN,[],VK_UNKNOWN,[]);
+  ecCopyEditorNewWindow:     SetResult(VK_UNKNOWN,[],VK_UNKNOWN,[]);
+
   ecGotoEditor1: SetResult(VK_UNKNOWN,[],VK_UNKNOWN,[]);
   ecGotoEditor2: SetResult(VK_UNKNOWN,[],VK_UNKNOWN,[]);
   ecGotoEditor3: SetResult(VK_UNKNOWN,[],VK_UNKNOWN,[]);
@@ -1928,6 +1964,18 @@ begin
     ecMoveEditorRightmost     : Result:= srkmecMoveEditorRightmost;
     ecToggleBreakPoint        : Result:= srkmecToggleBreakPoint;
     ecRemoveBreakPoint        : Result:= srkmecRemoveBreakPoint;
+
+    ecNextSharedEditor:        Result := srkmecNextSharedEditor;
+    ecPrevSharedEditor:        Result := srkmecPrevSharedEditor;
+    ecNextWindow:              Result := srkmecNextWindow;
+    ecPrevWindow:              Result := srkmecPrevWindow;
+    ecMoveEditorNextWindow:    Result := srkmecMoveEditorNextWindow;
+    ecMoveEditorPrevWindow:    Result := srkmecMoveEditorPrevWindow;
+    ecMoveEditorNewWindow:     Result := srkmecMoveEditorNewWindow;
+    ecCopyEditorNextWindow:    Result := srkmecCopyEditorNextWindow;
+    ecCopyEditorPrevWindow:    Result := srkmecCopyEditorPrevWindow;
+    ecCopyEditorNewWindow:     Result := srkmecCopyEditorNewWindow;
+
     ecGotoEditor1..
     ecGotoEditor0             : Result:= Format(srkmecGotoEditor,[cmd-ecGotoEditor1]);
     EcFoldLevel1..
@@ -2684,6 +2732,17 @@ begin
   AddDefault(C, 'Go to source editor 8', lisKMGoToSourceEditor8, ecGotoEditor8);
   AddDefault(C, 'Go to source editor 9', lisKMGoToSourceEditor9, ecGotoEditor9);
   AddDefault(C, 'Go to source editor 10', lisKMGoToSourceEditor10, ecGotoEditor0);
+
+  AddDefault(C, 'Go to next shared editor', srkmecNextSharedEditor, ecNextSharedEditor);
+  AddDefault(C, 'Go to prior shared editor', srkmecPrevSharedEditor, ecPrevSharedEditor);
+  AddDefault(C, 'Go to next window', srkmecNextWindow, ecNextWindow);
+  AddDefault(C, 'Go to prior window', srkmecPrevWindow, ecPrevWindow);
+  AddDefault(C, 'Move to next window', srkmecMoveEditorNextWindow, ecMoveEditorNextWindow);
+  AddDefault(C, 'Move to prior window', srkmecMoveEditorPrevWindow, ecMoveEditorPrevWindow);
+  AddDefault(C, 'Move to new window', srkmecMoveEditorNewWindow, ecMoveEditorNewWindow);
+  AddDefault(C, 'Copy to next window', srkmecCopyEditorNextWindow, ecCopyEditorNextWindow);
+  AddDefault(C, 'Copy to prior window', srkmecCopyEditorPrevWindow, ecCopyEditorPrevWindow);
+  AddDefault(C, 'Copy to new window', srkmecCopyEditorNewWindow, ecCopyEditorNewWindow);
 
   // file menu
   C:=Categories[AddCategory('FileMenu',srkmCatFileMenu,nil)];

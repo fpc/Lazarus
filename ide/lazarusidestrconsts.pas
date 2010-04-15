@@ -2286,6 +2286,18 @@ resourcestring
   srkmecMoveEditorRight       = 'Move editor right';
   srkmecMoveEditorLeftmost    = 'Move editor leftmost';
   srkmecMoveEditorRightmost   = 'Move editor rightmost';
+
+  srkmecNextSharedEditor         = 'Go to next editor with same Source';
+  srkmecPrevSharedEditor         = 'Go to prior editor with same Source';
+  srkmecNextWindow               = 'Go to next window';
+  srkmecPrevWindow               = 'Go to prior window';
+  srkmecMoveEditorNextWindow     = 'Move editor to next free window';
+  srkmecMoveEditorPrevWindow     = 'Move editor to prior free window';
+  srkmecMoveEditorNewWindow      = 'Move editor to new window';
+  srkmecCopyEditorNextWindow     = 'Copy editor to next free window';
+  srkmecCopyEditorPrevWindow     = 'Copy editor to prior free window';
+  srkmecCopyEditorNewWindow      = 'Copy editor to new window';
+
   lisKMGoToSourceEditor1 = 'Go to source editor 1';
   lisKMGoToSourceEditor2 = 'Go to source editor 2';
   lisKMGoToSourceEditor3 = 'Go to source editor 3';

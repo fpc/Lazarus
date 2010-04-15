@@ -197,6 +197,18 @@ const
   ecMoveEditorLeftmost      = ecFirstLazarus + 336;
   ecMoveEditorRightmost     = ecFirstLazarus + 337;
 
+  ecNextSharedEditor        = ecFirstLazarus + 338;
+  ecPrevSharedEditor        = ecFirstLazarus + 339;
+
+  ecNextWindow              = ecFirstLazarus + 340;
+  ecPrevWindow              = ecFirstLazarus + 341;
+  ecMoveEditorNextWindow    = ecFirstLazarus + 342;
+  ecMoveEditorPrevWindow    = ecFirstLazarus + 343;
+  ecMoveEditorNewWindow     = ecFirstLazarus + 344;
+  ecCopyEditorNextWindow    = ecFirstLazarus + 345;
+  ecCopyEditorPrevWindow    = ecFirstLazarus + 346;
+  ecCopyEditorNewWindow     = ecFirstLazarus + 347;
+
   ecGotoEditor1             = ecFirstLazarus + 350;
   ecGotoEditor2             = ecGotoEditor1 + 1;
   ecGotoEditor3             = ecGotoEditor2 + 1;

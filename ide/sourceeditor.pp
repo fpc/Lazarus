@@ -686,6 +686,9 @@ type
     procedure MoveEditorLast(CurrentPageIndex: integer);
     procedure MoveActivePageFirst;
     procedure MoveActivePageLast;
+    procedure GotoNextWindow(Backward: Boolean = False);
+    procedure GotoNextSharedEditor(Backward: Boolean = False);
+    procedure MoveEditorNextWindow(Backward: Boolean = False; Copy: Boolean = False);
     procedure MoveEditor(OldPageIndex, NewWindowIndex, NewPageIndex: integer);
     procedure CopyEditor(OldPageIndex, NewWindowIndex, NewPageIndex: integer);
     procedure ProcessParentCommand(Sender: TObject;
@@ -5671,6 +5674,73 @@ begin
   MoveEditorLast(PageIndex);
 end;
 
+procedure TSourceNotebook.GotoNextWindow(Backward: Boolean);
+begin
+  if Backward then begin
+    if Manager.IndexOfSourceWindow(Self) > 0 then
+      Manager.ActiveSourceWindow := Manager.SourceWindows[Manager.IndexOfSourceWindow(Self)-1]
+    else
+      Manager.ActiveSourceWindow := Manager.SourceWindows[Manager.SourceWindowCount-1];
+  end else begin
+    if Manager.IndexOfSourceWindow(Self) < Manager.SourceWindowCount - 1 then
+      Manager.ActiveSourceWindow := Manager.SourceWindows[Manager.IndexOfSourceWindow(Self)+1]
+    else
+      Manager.ActiveSourceWindow := Manager.SourceWindows[0];
+  end;
+  Manager.ShowActiveWindowOnTop(True);
+end;
+
+procedure TSourceNotebook.GotoNextSharedEditor(Backward: Boolean = False);
+var
+  SrcEd: TSourceEditor;
+  i, j: Integer;
+begin
+  i := Manager.IndexOfSourceWindow(Self);
+  SrcEd := GetActiveSE;
+  repeat
+    if Backward then dec(i)
+    else inc(i);
+    if i < 0 then
+      i := Manager.SourceWindowCount - 1;
+    if i = Manager.SourceWindowCount then
+      i := 0;
+    j := Manager.SourceWindows[i].IndexOfEditorInShareWith(SrcEd);
+    if j >= 0 then begin
+      Manager.ActiveEditor := Manager.SourceWindows[i].Editors[j];
+      Manager.ShowActiveWindowOnTop(True);
+      exit;
+    end;
+  until Manager.SourceWindows[i] = Self;
+end;
+
+procedure TSourceNotebook.MoveEditorNextWindow(Backward: Boolean; Copy: Boolean);
+var
+  SrcEd: TSourceEditor;
+  i: Integer;
+begin
+  i := Manager.IndexOfSourceWindow(Self);
+  SrcEd := GetActiveSE;
+  repeat
+    if Backward then dec(i)
+    else inc(i);
+    if i < 0 then
+      i := Manager.SourceWindowCount - 1;
+    if i = Manager.SourceWindowCount then
+      i := 0;
+    if Manager.SourceWindows[i].IndexOfEditorInShareWith(SrcEd) < 0 then
+      break;
+  until Manager.SourceWindows[i] = Self;
+  if Manager.SourceWindows[i] = Self then exit;
+
+  if Copy then
+    CopyEditor(FindPageWithEditor(GetActiveSE), i, -1)
+  else
+    MoveEditor(FindPageWithEditor(GetActiveSE), i, -1);
+
+  Manager.ActiveSourceWindowIndex := i;
+  Manager.ShowActiveWindowOnTop(True);
+end;
+
 procedure TSourceNotebook.MoveEditor(OldPageIndex, NewWindowIndex,
   NewPageIndex: integer);
 var
@@ -6547,6 +6617,29 @@ begin
   ecMoveEditorRightmost:
     MoveActivePageLast;
 
+  ecNextSharedEditor:
+    GotoNextSharedEditor(False);
+  ecPrevSharedEditor:
+    GotoNextSharedEditor(True);
+  ecNextWindow:
+    GotoNextWindow(False);
+  ecPrevWindow:
+    GotoNextWindow(True);
+  ecMoveEditorNextWindow:
+    MoveEditorNextWindow(False, False);
+  ecMoveEditorPrevWindow:
+    MoveEditorNextWindow(True, False);
+  ecMoveEditorNewWindow:
+    if EditorCount > 1 then
+      MoveEditor(FindPageWithEditor(GetActiveSE), Manager.IndexOfSourceWindow(Manager.CreateNewWindow(True)), -1);
+  ecCopyEditorNextWindow:
+    MoveEditorNextWindow(False, True);
+  ecCopyEditorPrevWindow:
+    MoveEditorNextWindow(True, True);
+  ecCopyEditorNewWindow:
+    CopyEditor(FindPageWithEditor(GetActiveSE), Manager.IndexOfSourceWindow(Manager.CreateNewWindow(True)), -1);
+
+
   ecOpenFileAtCursor:
     OpenAtCursorClicked(self);
 
@@ -7334,6 +7427,9 @@ procedure TSourceEditorManagerBase.SetActiveSourceWindow(
   const AValue: TSourceEditorWindowInterface);
 begin
   if AValue = FActiveWindow then exit;
+  if (FActiveWindow <> nil) and (AValue <> nil) and (FActiveWindow.Focused) then
+    AValue.SetFocus;
+
   FActiveWindow := AValue as TSourceNotebook;
 
   // Todo: Each synEdit needs it's own beautifier
@@ -8446,6 +8542,11 @@ begin
   inherited Destroy;
 end;
 
+function SortSourceWindows(SrcWin1, SrcWin2: TSourceNotebook): Integer;
+begin
+  Result := AnsiStrComp(PChar(SrcWin1.Caption), PChar(SrcWin2.Caption));
+end;
+
 function TSourceEditorManager.CreateNewWindow(Activate: Boolean= False): TSourceNotebook;
 var
   i: Integer;
@@ -8456,6 +8557,7 @@ begin
   for i := 1 to FUpdateLock do
     Result.IncUpdateLock;
   FSourceWindowList.Add(Result);
+  FSourceWindowList.Sort(TListSortCompare(@SortSourceWindows));
   if Activate then begin
     ActiveSourceWindow := Result;
     ShowActiveWindowOnTop(False);
