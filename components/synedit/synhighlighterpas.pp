@@ -484,6 +484,7 @@ type
     function FoldTypeCount: integer; override;
     function FoldTypeAtNodeIndex(ALineIndex, FoldIndex: Integer;
              UseCloseNodes: boolean = false): integer; override;
+    function FoldLineLength(ALineIndex, FoldIndex: Integer): integer; override;
 
     // Pascal coe only // TODO: make private
     function MinimumFoldLevel(Index: Integer): integer; override;
@@ -2869,6 +2870,26 @@ begin
     else
       Result := 1;
   end;
+end;
+
+function TSynPasSyn.FoldLineLength(ALineIndex, FoldIndex: Integer): integer;
+var
+  i, lvl, cnt, atype : Integer;
+  e, m: Integer;
+begin
+  atype := FoldTypeAtNodeIndex(ALineIndex, FoldIndex);
+  cnt := CurrentLines.Count;
+  e := EndPasFoldLevel(ALineIndex, atype);
+  m := MinimumPasFoldLevel(ALineIndex, atype);
+  lvl := Min(m+1+FoldIndex, e);
+  i := ALineIndex + 1;
+  while (i < cnt) and (MinimumPasFoldLevel(i, atype) >= lvl) do inc(i);
+  // check if fold last line of block (not mixed "end begin")
+  // and not lastlinefix
+  if (i = cnt) or (EndPasFoldLevel(i, atype) > MinimumPasFoldLevel(i, atype)) then
+    dec(i);
+  // Amount of lines, that will become invisible (excludes the cfCollapsed line)
+  Result := i - ALineIndex;
 end;
 
 function TSynPasSyn.MinimumPasFoldLevel(Index: Integer; AType: Integer = 1): integer;
