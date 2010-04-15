@@ -184,7 +184,6 @@ type
     property  IgnoreCodeBufferLock: Integer read FIgnoreCodeBufferLock;
     procedure IncreaseIgnoreCodeBufferLock;
     procedure DecreaseIgnoreCodeBufferLock;
-//    property  EditorStampCommitedToCodetools read
     function NeedsUpdateCodeBuffer: boolean;
     procedure UpdateCodeBuffer;
     property CodeBuffer: TCodeBuffer read FCodeBuffer write SetCodeBuffer;
@@ -643,6 +642,11 @@ type
     procedure UpdatePageNames;
     procedure UpdateProjectFiles;
 
+    property NoteBookPage[Index: Integer]: TPage read GetNoteBookPage;
+    procedure NoteBookInsertPage(Index: Integer; const S: string);
+    procedure NoteBookDeletePage(APageIndex: Integer);
+  protected
+    function NoteBookIndexOfPage(APage: TPage): Integer;
   protected
     States: TSourceNotebookStates;
     // hintwindow stuff
@@ -722,6 +726,35 @@ type
 
     procedure BeginAutoFocusLock;
     procedure EndAutoFocusLock;
+
+  protected
+    procedure CloseTabClicked(Sender: TObject);
+    procedure CloseClicked(Sender: TObject);
+    procedure CloseOtherPagesClicked(Sender: TObject);
+    procedure ToggleFormUnitClicked(Sender: TObject);
+    procedure ToggleObjectInspClicked(Sender: TObject);
+
+    // incremental find
+    procedure BeginIncrementalFind;
+    procedure EndIncrementalFind;
+    property IncrementalSearchStr: string
+      read FIncrementalSearchStr write SetIncrementalSearchStr;
+
+    // hints
+    procedure ActivateHint(const ScreenPos: TPoint;
+                           const BaseURL, TheHint: string);
+    procedure HideHint;
+    procedure StartShowCodeContext(JumpToError: boolean);
+
+    // paste and copy
+    procedure CutClicked(Sender: TObject);
+    procedure CopyClicked(Sender: TObject);
+    procedure PasteClicked(Sender: TObject);
+    procedure CopyFilenameClicked(Sender: TObject);
+
+    procedure ReloadEditorOptions;
+    procedure CheckFont;
+
   public
     ControlDocker: TLazControlDocker;
 
@@ -745,38 +778,13 @@ type
     procedure ClearExecutionLines;
     procedure ClearExecutionMarks;
 
-    procedure CloseTabClicked(Sender: TObject);
-    procedure CloseClicked(Sender: TObject);
-    procedure CloseOtherPagesClicked(Sender: TObject);
-    procedure ToggleFormUnitClicked(Sender: TObject);
-    procedure ToggleObjectInspClicked(Sender: TObject);
-
-    // incremental find
-    procedure BeginIncrementalFind;
-    procedure EndIncrementalFind;
-    property IncrementalSearchStr: string
-      read FIncrementalSearchStr write SetIncrementalSearchStr;
-
-    // hints
-    procedure ActivateHint(const ScreenPos: TPoint;
-                           const BaseURL, TheHint: string);
-    procedure HideHint;
-    procedure StartShowCodeContext(JumpToError: boolean);
-
     // new, close, focus
     function NewFile(const NewShortName: String; ASource: TCodeBuffer;
                       FocusIt: boolean; AShareEditor: TSourceEditor = nil): TSourceEditor;
     procedure CloseFile(APageIndex:integer);
     procedure FocusEditor;
 
-    // paste and copy
-    procedure CutClicked(Sender: TObject);
-    procedure CopyClicked(Sender: TObject);
-    procedure PasteClicked(Sender: TObject);
-    procedure CopyFilenameClicked(Sender: TObject);
-
-    procedure ReloadEditorOptions;
-    procedure CheckFont;
+  public
     function GetEditorControlSettings(EditControl: TControl): boolean; override;
              deprecated {$IFDEF VER2_5}'use SourceEditorManager'{$ENDIF};       // deprecated in 0.9.29 March 2010
     function GetHighlighterSettings(Highlighter: TObject): boolean; override;
@@ -791,6 +799,7 @@ type
     procedure UnregisterCompletionPlugin(Plugin: TSourceEditorCompletionPlugin); override;
               deprecated {$IFDEF VER2_5}'use SourceEditorManager'{$ENDIF};       // deprecated in 0.9.29 March 2010
 
+  public
     function GetCapabilities: TNoteBookCapabilities;
     procedure IncUpdateLock;
     procedure DecUpdateLock;
@@ -799,12 +808,6 @@ type
     property PageIndex: Integer read GetPageIndex write SetPageIndex;
     property PageCount: Integer read GetPageCount;
     property NotebookPages: TStrings read GetNotebookPages;
-  private
-    property NoteBookPage[Index: Integer]: TPage read GetNoteBookPage;
-    procedure NoteBookInsertPage(Index: Integer; const S: string);
-    procedure NoteBookDeletePage(Index: Integer);
-  protected
-    function NoteBookIndexOfPage(APage: TPage): Integer;
   end;
 
   { TSourceEditorManagerBase }
@@ -5577,14 +5580,21 @@ begin
   end;
 end;
 
-procedure TSourceNotebook.NoteBookDeletePage(Index: Integer);
+procedure TSourceNotebook.NoteBookDeletePage(APageIndex: Integer);
 begin
   if PageCount > 1 then begin
-    if Index < PageCount - 1 then
-      FNoteBook.PageIndex := Index + 1
-    else
-      FNoteBook.PageIndex := Index - 1;
-    NotebookPages.Delete(Index);
+    // make sure to select another page in the NoteBook, otherwise the
+    // widgetset will choose one and will send a message
+    // if this is the current page, switch to right APageIndex (if possible)
+    //todo: determine whether we can use SetPageIndex instead
+    if PageIndex = APageIndex then begin
+      if APageIndex < PageCount - 1 then
+        FPageIndex := APageIndex + 1
+      else
+        FPageIndex := APageIndex - 1;
+      FNoteBook.PageIndex := FPageIndex;
+    end;
+    NotebookPages.Delete(APageIndex);
   end else
     FNotebook.Visible := False;
 end;
@@ -5655,7 +5665,6 @@ Begin
     PageIndex := PageIndex+1
   else
     PageIndex := 0;
-  NotebookPageChanged(Self);
 End;
 
 Procedure TSourceNotebook.PrevEditor;
@@ -5664,7 +5673,6 @@ Begin
     PageIndex := PageIndex-1
   else
     PageIndex := PageCount-1;
-  NotebookPageChanged(Self);
 End;
 
 procedure TSourceNotebook.MoveEditor(OldPageIndex, NewPageIndex: integer);
@@ -6296,16 +6304,10 @@ begin
     TempEditor.Close;
     TempEditor.Free;
     TempEditor:=nil;
-    //writeln('TSourceNotebook.CloseFile B  APageIndex=',APageIndex,' Notebook.APageIndex=',APageIndex);
-    // make sure to select another page in the NoteBook, otherwise the
-    // widgetset will choose one and will send a message
-    // if this is the current page, switch to right APageIndex (if possible)
-    if (PageCount > 1) and (PageIndex = APageIndex) then
-        PageIndex := PageIndex + IfThen(PageIndex + 1 < PageCount, 1, -1);
     // delete the page
-    //writeln('TSourceNotebook.CloseFile C  APageIndex=',APageIndex,' PageCount=',PageCount,' NoteBook.APageIndex=',Notebook.APageIndex);
+    //writeln('TSourceNotebook.CloseFile B  APageIndex=',APageIndex,' PageCount=',PageCount,' NoteBook.APageIndex=',Notebook.APageIndex);
     NoteBookDeletePage(APageIndex);
-    //writeln('TSourceNotebook.CloseFile D  APageIndex=',APageIndex,' PageCount=',PageCount,' NoteBook.APageIndex=',Notebook.APageIndex);
+    //writeln('TSourceNotebook.CloseFile C  APageIndex=',APageIndex,' PageCount=',PageCount,' NoteBook.APageIndex=',Notebook.APageIndex);
     UpdateProjectFiles;
     UpdateStatusBar;
     UpdatePageNames;
