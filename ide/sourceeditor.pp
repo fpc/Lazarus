@@ -149,17 +149,11 @@ type
 
   TSourceEditorSharedValues = class
   private
-    FExecutionMark: TSourceMark;
     FSharedEditorList: TFPList; // list of TSourceEditor sharing one TSynEdit
-    FExecutionLine: integer;
-    FModified: boolean;
-    FMarksRequested: Boolean;
-  function GetOtherSharedEditors(Caller: TSourceEditor; Index: Integer
-      ): TSourceEditor;
+    function GetOtherSharedEditors(Caller: TSourceEditor; Index: Integer): TSourceEditor;
     function GetSharedEditors(Index: Integer): TSourceEditor;
-    procedure SetModified(const AValue: Boolean);
-  protected
-    BookmarkEventLock: Integer;
+    function SynEditor: TIDESynEditor;
+  public
     procedure AddSharedEditor(AnEditor: TSourceEditor);
     procedure RemoveSharedEditor(AnEditor: TSourceEditor);
     function  SharedEditorCount: Integer;
@@ -167,11 +161,35 @@ type
     property  SharedEditors[Index: Integer]: TSourceEditor read GetSharedEditors;
     property  OtherSharedEditors[Caller: TSourceEditor; Index: Integer]: TSourceEditor
               read GetOtherSharedEditors;
-    property Modified: Boolean read FModified write SetModified;
+  private
+    FExecutionMark: TSourceMark;
+    FExecutionLine: integer;
+    FMarksRequested: Boolean;
+  public
     procedure CreateExecutionMark;
     property ExecutionLine: Integer read FExecutionLine write FExecutionLine;
     property ExecutionMark: TSourceMark read FExecutionMark write FExecutionMark;
     property MarksRequested: Boolean read FMarksRequested write FMarksRequested;
+  private
+    FModified: boolean;
+    FIgnoreCodeBufferLock: integer;
+    FEditorStampCommitedToCodetools: int64;
+    FCodeBuffer: TCodeBuffer;
+    function GetModified: Boolean;
+    procedure SetCodeBuffer(const AValue: TCodeBuffer);
+    procedure SetModified(const AValue: Boolean);
+    procedure OnCodeBufferChanged(Sender: TSourceLog; SrcLogEntry: TSourceLogEntry);
+  public
+    property Modified: Boolean read GetModified write SetModified;
+    property  IgnoreCodeBufferLock: Integer read FIgnoreCodeBufferLock;
+    procedure IncreaseIgnoreCodeBufferLock;
+    procedure DecreaseIgnoreCodeBufferLock;
+//    property  EditorStampCommitedToCodetools read
+    function NeedsUpdateCodeBuffer: boolean;
+    procedure UpdateCodeBuffer;
+    property CodeBuffer: TCodeBuffer read FCodeBuffer write SetCodeBuffer;
+  protected
+    BookmarkEventLock: Integer;
   public
     constructor Create;
     destructor Destroy; override;
@@ -191,10 +209,6 @@ type
                                    //   LinesDeleted messages
     FSyncroLockCount: Integer;
     FPageName: string;
-
-    FCodeBuffer: TCodeBuffer;
-    FIgnoreCodeBufferLock: integer;
-    FEditorStampCommitedToCodetools: int64;
 
     FPopUpMenu: TPopupMenu;
     FSyntaxHighlighterType: TLazSyntaxHighlighter;
@@ -226,6 +240,7 @@ type
     procedure EditorEnter(Sender: TObject);
     procedure EditorActivateSyncro(Sender: TObject);
     procedure EditorDeactivateSyncro(Sender: TObject);
+    function GetCodeBuffer: TCodeBuffer;
     function GetExecutionLine: integer;
     function GetHasExecutionMarks: Boolean;
     function GetSharedEditors(Index: Integer): TSourceEditor;
@@ -275,8 +290,6 @@ type
                                  ASyntaxHighlighterType: TLazSyntaxHighlighter);
     procedure SetErrorLine(NewLine: integer);
     procedure SetExecutionLine(NewLine: integer);
-    procedure OnCodeBufferChanged(Sender: TSourceLog;
-      SrcLogEntry: TSourceLogEntry);
     procedure StartIdentCompletionBox(JumpToError: boolean);
     procedure StartWordCompletionBox(JumpToError: boolean);
 
@@ -428,7 +441,7 @@ type
     function  DebugToSourceLine(aLinePos: Integer): Integer;
   public
     // properties
-    property CodeBuffer: TCodeBuffer read FCodeBuffer write SetCodeBuffer;
+    property CodeBuffer: TCodeBuffer read GetCodeBuffer write SetCodeBuffer;
     property CurrentCursorXLine: Integer
        read GetCurrentCursorXLine write SetCurrentCursorXLine;
     property CurrentCursorYLine: Integer
@@ -868,9 +881,12 @@ type
     procedure UpdateFPDocEditor;
   private
     FOnEditorVisibleChanged: TNotifyEvent;
+    FOnCurrentCodeBufferChanged: TNotifyEvent;
   public
     property OnEditorVisibleChanged: TNotifyEvent
              read FOnEditorVisibleChanged write FOnEditorVisibleChanged;
+    property OnCurrentCodeBufferChanged: TNotifyEvent
+             read FOnCurrentCodeBufferChanged write FOnCurrentCodeBufferChanged;
   end;
 
   { TSourceEditorManager }
@@ -990,7 +1006,6 @@ type
     FOnClearBookmark: TPlaceBookMarkEvent;
     FOnClickLink: TMouseEvent;
     FOnCloseClicked: TOnCloseSrcEditor;
-    FOnCurrentCodeBufferChanged: TNotifyEvent;
     FOnDeleteLastJumpPoint: TNotifyEvent;
     FOnEditorChanged: TNotifyEvent;
     FOnEditorClosed: TNotifyEvent;
@@ -1028,8 +1043,6 @@ type
     property OnMouseLink: TSynMouseLinkEvent read FOnMouseLink write FOnMouseLink;
     property OnGetIndent: TOnGetIndentEvent
              read FOnGetIndent write FOnGetIndent;
-    property OnCurrentCodeBufferChanged: TNotifyEvent
-             read FOnCurrentCodeBufferChanged write FOnCurrentCodeBufferChanged;
     property OnDeleteLastJumpPoint: TNotifyEvent
              read FOnDeleteLastJumpPoint write FOnDeleteLastJumpPoint;
     property OnEditorChanged: TNotifyEvent
@@ -1927,31 +1940,12 @@ begin
   ShortCut:=Menus.ShortCut(VK_UNKNOWN,[]);
 end;
 
+{ TSourceEditorSharedValues }
+
 function TSourceEditorSharedValues.GetSharedEditors(Index: Integer
   ): TSourceEditor;
 begin
   Result := TSourceEditor(FSharedEditorList[Index]);
-end;
-
-procedure TSourceEditorSharedValues.SetModified(const AValue: Boolean);
-var
-  OldModified: Boolean;
-  i: Integer;
-begin
-  OldModified := SharedEditors[0].Modified; // Include SynEdit
-  FModified := AValue;
-  if not FModified then
-    for i := 0 to FSharedEditorList.Count - 1 do begin
-      SharedEditors[i].FEditor.Modified:=false; // needed for the undo stack
-      SharedEditors[i].FEditor.MarkTextAsSaved;
-      SharedEditors[i].FEditorStampCommitedToCodetools :=
-        TSynEditLines(SharedEditors[i].FEditor.Lines).TextChangeStamp;
-    end;
-  if OldModified <> SharedEditors[0].Modified then
-    for i := 0 to FSharedEditorList.Count - 1 do begin
-      SharedEditors[i].UpdatePageName;
-      SharedEditors[i].SourceNotebook.UpdateStatusBar;
-    end;
 end;
 
 function TSourceEditorSharedValues.GetOtherSharedEditors(Caller: TSourceEditor;
@@ -1962,7 +1956,146 @@ begin
   Result := TSourceEditor(FSharedEditorList[Index]);
 end;
 
-{ TSourceEditorSharedValues }
+function TSourceEditorSharedValues.SynEditor: TIDESynEditor;
+begin
+  Result := SharedEditors[0].FEditor;
+end;
+
+procedure TSourceEditorSharedValues.SetCodeBuffer(const AValue: TCodeBuffer);
+var
+  i: Integer;
+begin
+  if FCodeBuffer = AValue then exit;
+  if FCodeBuffer<>nil then
+    FCodeBuffer.RemoveChangeHook(@OnCodeBufferChanged);
+  FCodeBuffer := AValue;
+  if FCodeBuffer <> nil then
+  begin
+    FCodeBuffer.AddChangeHook(@OnCodeBufferChanged);
+    if (FIgnoreCodeBufferLock <= 0) and (not FCodeBuffer.IsEqual(SynEditor.Lines))
+    then begin
+      {$IFDEF IDE_DEBUG}
+      debugln(' *** WARNING *** : TSourceEditor.SetCodeBuffer - loosing marks: ',Filename);
+      {$ENDIF}
+      for i := 0 to FSharedEditorList.Count - 1 do
+        if assigned(SharedEditors[i].FEditPlugin) then
+          SharedEditors[i].FEditPlugin.Enabled := False;
+      SynEditor.BeginUpdate;
+      FCodeBuffer.AssignTo(SynEditor.Lines,true);
+      FEditorStampCommitedToCodetools:=(SynEditor.Lines as TSynEditLines).TextChangeStamp;
+      SynEditor.EndUpdate;
+      for i := 0 to FSharedEditorList.Count - 1 do
+        if assigned(SharedEditors[i].FEditPlugin) then
+          SharedEditors[i].FEditPlugin.Enabled := True;
+    end;
+    for i := 0 to FSharedEditorList.Count - 1 do begin
+      if SharedEditors[i].IsActiveOnNoteBook then SharedEditors[i].SourceNotebook.UpdateStatusBar;
+      // HasExecutionMarks is shared through synedit => this is only needed once
+      // but HasExecutionMarks must be called on each synedit, so each synedit is notified
+      if (DebugBoss.State in [dsPause, dsRun]) and
+         not SharedEditors[i].HasExecutionMarks and (FCodeBuffer.FileName <> '')
+      then
+        SharedEditors[i].FillExecutionMarks;
+    end;
+  end;
+end;
+
+function TSourceEditorSharedValues.GetModified: Boolean;
+begin
+  Result := FModified or SynEditor.Modified;
+end;
+
+procedure TSourceEditorSharedValues.SetModified(const AValue: Boolean);
+var
+  OldModified: Boolean;
+  i: Integer;
+begin
+  OldModified := Modified; // Include SynEdit
+  FModified := AValue;
+  if not FModified then
+    SynEditor.Modified := False; // All shared SynEdits share this value
+    FEditorStampCommitedToCodetools := TSynEditLines(SynEditor.Lines).TextChangeStamp;
+    for i := 0 to FSharedEditorList.Count - 1 do
+      SharedEditors[i].FEditor.MarkTextAsSaved; // Todo: centralize in SynEdit
+  if OldModified <> Modified then
+    for i := 0 to FSharedEditorList.Count - 1 do begin
+      SharedEditors[i].UpdatePageName;
+      SharedEditors[i].SourceNotebook.UpdateStatusBar;
+    end;
+end;
+
+procedure TSourceEditorSharedValues.OnCodeBufferChanged(Sender: TSourceLog;
+  SrcLogEntry: TSourceLogEntry);
+
+  procedure MoveTxt(const StartPos, EndPos, MoveToPos: TPoint;
+    DirectionForward: boolean);
+  var Txt: string;
+  begin
+    if DirectionForward then begin
+      SynEditor.TextBetweenPointsEx[MoveToPos, MoveToPos, scamAdjust] :=
+        SynEditor.TextBetweenPoints[StartPos, EndPos];
+      SynEditor.TextBetweenPointsEx[StartPos, EndPos, scamAdjust] := '';
+    end else begin
+      Txt := SynEditor.TextBetweenPoints[StartPos, EndPos];
+      SynEditor.TextBetweenPointsEx[StartPos, EndPos, scamAdjust] := '';
+      SynEditor.TextBetweenPointsEx[MoveToPos, MoveToPos, scamAdjust] := Txt;;
+    end;
+  end;
+
+var
+  StartPos, EndPos, MoveToPos: TPoint;
+  CodeToolsInSync: Boolean;
+begin
+  {$IFDEF IDE_DEBUG}
+  writeln('[TSourceEditor.OnCodeBufferChanged] A ',FIgnoreCodeBufferLock,' ',SrcLogEntry<>nil);
+  {$ENDIF}
+  if FIgnoreCodeBufferLock>0 then exit;
+  CodeToolsInSync:=not NeedsUpdateCodeBuffer;
+  if SrcLogEntry<>nil then begin
+    SynEditor.BeginUpdate;
+    SynEditor.BeginUndoBlock;
+    case SrcLogEntry.Operation of
+      sleoInsert:
+        begin
+          Sender.AbsoluteToLineCol(SrcLogEntry.Position,StartPos.Y,StartPos.X);
+          if StartPos.Y>=1 then
+            SynEditor.TextBetweenPointsEx[StartPos, StartPos, scamAdjust] := SrcLogEntry.Txt;
+        end;
+      sleoDelete:
+        begin
+          Sender.AbsoluteToLineCol(SrcLogEntry.Position,StartPos.Y,StartPos.X);
+          Sender.AbsoluteToLineCol(SrcLogEntry.Position+SrcLogEntry.Len,
+            EndPos.Y,EndPos.X);
+          if (StartPos.Y>=1) and (EndPos.Y>=1) then
+            SynEditor.TextBetweenPointsEx[StartPos, EndPos, scamAdjust] := '';
+        end;
+      sleoMove:
+        begin
+          Sender.AbsoluteToLineCol(SrcLogEntry.Position,StartPos.Y,StartPos.X);
+          Sender.AbsoluteToLineCol(SrcLogEntry.Position+SrcLogEntry.Len,
+            EndPos.Y,EndPos.X);
+          Sender.AbsoluteToLineCol(SrcLogEntry.MoveTo,MoveToPos.Y,MoveToPos.X);
+          if (StartPos.Y>=1) and (EndPos.Y>=1) and (MoveToPos.Y>=1) then
+            MoveTxt(StartPos, EndPos, MoveToPos,
+              SrcLogEntry.Position<SrcLogEntry.MoveTo);
+        end;
+    end;
+    SynEditor.EndUndoBlock;
+    SynEditor.EndUpdate;
+  end else begin
+    {$IFDEF VerboseSrcEditBufClean}
+    debugln(['TSourceEditor.OnCodeBufferChanged clean up ',TCodeBuffer(Sender).FileName,' ',Sender=CodeBuffer,' ',Filename]);
+    DumpStack;
+    {$ENDIF}
+    SynEditor.BeginUpdate;
+    Sender.AssignTo(SynEditor.Lines,false);
+    SynEditor.EndUpdate;
+  end;
+  if CodeToolsInSync then begin
+    // synedit and codetools were in sync -> mark as still in sync
+    FEditorStampCommitedToCodetools:=TSynEditLines(SynEditor.Lines).TextChangeStamp;
+  end;
+end;
 
 procedure TSourceEditorSharedValues.AddSharedEditor(AnEditor: TSourceEditor);
 begin
@@ -1994,6 +2127,41 @@ begin
   FExecutionMark.Priority := 1;
 end;
 
+procedure TSourceEditorSharedValues.IncreaseIgnoreCodeBufferLock;
+begin
+  inc(FIgnoreCodeBufferLock);
+end;
+
+procedure TSourceEditorSharedValues.DecreaseIgnoreCodeBufferLock;
+begin
+  if FIgnoreCodeBufferLock<=0 then raise Exception.Create('unbalanced calls');
+  dec(FIgnoreCodeBufferLock);
+end;
+
+function TSourceEditorSharedValues.NeedsUpdateCodeBuffer: boolean;
+begin
+  Result := TSynEditLines(SharedEditors[0].FEditor.Lines).TextChangeStamp
+            <> FEditorStampCommitedToCodetools;
+end;
+
+procedure TSourceEditorSharedValues.UpdateCodeBuffer;
+begin
+  if not NeedsUpdateCodeBuffer then exit;
+  {$IFDEF IDE_DEBUG}
+  if FCodeBuffer=nil then begin
+    debugln('*********** Oh, no: UpdateCodeBuffer ************ ');
+  end;
+  {$ENDIF}
+  if FCodeBuffer=nil then exit;
+  //DebugLn(['TSourceEditor.UpdateCodeBuffer ',FileName]);
+  IncreaseIgnoreCodeBufferLock;
+  SynEditor.BeginUpdate;
+  FCodeBuffer.Assign(SynEditor.Lines);
+  FEditorStampCommitedToCodetools:=(SynEditor.Lines as TSynEditLines).TextChangeStamp;
+  SynEditor.EndUpdate;
+  DecreaseIgnoreCodeBufferLock;
+end;
+
 constructor TSourceEditorSharedValues.Create;
 begin
   FSharedEditorList := TFPList.Create;
@@ -2005,6 +2173,7 @@ end;
 
 destructor TSourceEditorSharedValues.Destroy;
 begin
+  CodeBuffer := nil;
   FreeAndNil(FSharedEditorList);
   // no need to care about ExecutionMark, it was removed in EditorClose
   // via: SourceEditorMarks.DeleteAllForEditor(Self);
@@ -2045,7 +2214,6 @@ Begin
   FIsNewSharedEditor := False;
   if ASharedEditor <> nil then begin
     PageName := ASharedEditor.PageName;
-    CodeBuffer := ASharedEditor.CodeBuffer;
     FEditor.ShareTextBufferFrom(ASharedEditor.EditorComponent);
     FEditor.Highlighter := ASharedEditor.EditorComponent.Highlighter;
 
@@ -2083,7 +2251,6 @@ begin
     Application.ReleaseComponent(FEditor);
   end;
   FEditor:=nil;
-  CodeBuffer := nil;
   if (DebugBoss <> nil) and (DebugBoss.LineInfo <> nil) then
     DebugBoss.LineInfo.RemoveNotification(FLineInfoNotification);
   FLineInfoNotification.ReleaseReference;
@@ -3568,108 +3735,7 @@ end;
 
 procedure TSourceEditor.SetCodeBuffer(NewCodeBuffer: TCodeBuffer);
 begin
-  if NewCodeBuffer=FCodeBuffer then exit;
-  if FCodeBuffer<>nil then
-    FCodeBuffer.RemoveChangeHook(@OnCodeBufferChanged);
-  FCodeBuffer:=NewCodeBuffer;
-  if FCodeBuffer <> nil then
-  begin
-    FCodeBuffer.AddChangeHook(@OnCodeBufferChanged);
-    if (FIgnoreCodeBufferLock<=0) and (not FCodeBuffer.IsEqual(FEditor.Lines))
-    then begin
-      {$IFDEF IDE_DEBUG}
-      debugln('');
-      debugln('WARNING: TSourceEditor.SetCodeBuffer - loosing marks: ',Filename);
-      debugln('');
-      {$ENDIF}
-      if assigned(FEditPlugin) then
-        FEditPlugin.Enabled := False;
-      FEditor.BeginUpdate;
-      FCodeBuffer.AssignTo(FEditor.Lines,true);
-      FEditorStampCommitedToCodetools:=(FEditor.Lines as TSynEditLines).TextChangeStamp;
-      FEditor.EndUpdate;
-      if assigned(FEditPlugin) then
-        FEditPlugin.Enabled := True;
-    end;
-    if IsActiveOnNoteBook then SourceNotebook.UpdateStatusBar;
-    if (DebugBoss.State in [dsPause, dsRun]) and
-       not HasExecutionMarks and
-       (FileName <> '') then
-      FillExecutionMarks;
-  end;
-end;
-
-procedure TSourceEditor.OnCodeBufferChanged(Sender: TSourceLog;
-  SrcLogEntry: TSourceLogEntry);
-
-  procedure MoveTxt(const StartPos, EndPos, MoveToPos: TPoint;
-    DirectionForward: boolean);
-  var Txt: string;
-  begin
-    if DirectionForward then begin
-      FEditor.TextBetweenPointsEx[MoveToPos, MoveToPos, scamAdjust] :=
-        FEditor.TextBetweenPoints[StartPos, EndPos];
-      FEditor.TextBetweenPointsEx[StartPos, EndPos, scamAdjust] := '';
-    end else begin
-      Txt := FEditor.TextBetweenPoints[StartPos, EndPos];
-      FEditor.TextBetweenPointsEx[StartPos, EndPos, scamAdjust] := '';
-      FEditor.TextBetweenPointsEx[MoveToPos, MoveToPos, scamAdjust] := Txt;;
-    end;
-  end;
-
-var
-  StartPos, EndPos, MoveToPos: TPoint;
-  CodeToolsInSync: Boolean;
-begin
-  {$IFDEF IDE_DEBUG}
-  writeln('[TSourceEditor.OnCodeBufferChanged] A ',FIgnoreCodeBufferLock,' ',SrcLogEntry<>nil);
-  {$ENDIF}
-  if FIgnoreCodeBufferLock>0 then exit;
-  CodeToolsInSync:=not NeedsUpdateCodeBuffer;
-  if SrcLogEntry<>nil then begin
-    FEditor.BeginUpdate;
-    FEditor.BeginUndoBlock;
-    case SrcLogEntry.Operation of
-      sleoInsert:
-        begin
-          Sender.AbsoluteToLineCol(SrcLogEntry.Position,StartPos.Y,StartPos.X);
-          if StartPos.Y>=1 then
-            FEditor.TextBetweenPointsEx[StartPos, StartPos, scamAdjust] := SrcLogEntry.Txt;
-        end;
-      sleoDelete:
-        begin
-          Sender.AbsoluteToLineCol(SrcLogEntry.Position,StartPos.Y,StartPos.X);
-          Sender.AbsoluteToLineCol(SrcLogEntry.Position+SrcLogEntry.Len,
-            EndPos.Y,EndPos.X);
-          if (StartPos.Y>=1) and (EndPos.Y>=1) then
-            FEditor.TextBetweenPointsEx[StartPos, EndPos, scamAdjust] := '';
-        end;
-      sleoMove:
-        begin
-          Sender.AbsoluteToLineCol(SrcLogEntry.Position,StartPos.Y,StartPos.X);
-          Sender.AbsoluteToLineCol(SrcLogEntry.Position+SrcLogEntry.Len,
-            EndPos.Y,EndPos.X);
-          Sender.AbsoluteToLineCol(SrcLogEntry.MoveTo,MoveToPos.Y,MoveToPos.X);
-          if (StartPos.Y>=1) and (EndPos.Y>=1) and (MoveToPos.Y>=1) then
-            MoveTxt(StartPos, EndPos, MoveToPos,
-              SrcLogEntry.Position<SrcLogEntry.MoveTo);
-        end;
-    end;
-    FEditor.EndUndoBlock;
-    FEditor.EndUpdate;
-  end else begin
-    {$IFDEF VerboseSrcEditBufClean}
-    debugln(['TSourceEditor.OnCodeBufferChanged clean up ',TCodeBuffer(Sender).FileName,' ',Sender=CodeBuffer,' ',Filename]);
-    DumpStack;
-    {$ENDIF}
-    FEditor.BeginUpdate;
-    Sender.AssignTo(FEditor.Lines,false);
-    FEditor.EndUpdate;
-  end;
-  if CodeToolsInSync then begin
-    // synedit and codetools were in sync -> mark as still in sync
-    FEditorStampCommitedToCodetools:=TSynEditLines(FEditor.Lines).TextChangeStamp;
-  end;
+  FSharedValues.CodeBuffer := NewCodeBuffer;
 end;
 
 procedure TSourceEditor.StartIdentCompletionBox(JumpToError: boolean);
@@ -3753,40 +3819,23 @@ end;
 
 procedure TSourceEditor.IncreaseIgnoreCodeBufferLock;
 begin
-  inc(FIgnoreCodeBufferLock);
+  FSharedValues.IncreaseIgnoreCodeBufferLock;
 end;
 
 procedure TSourceEditor.DecreaseIgnoreCodeBufferLock;
 begin
-  if FIgnoreCodeBufferLock<=0 then raise Exception.Create('unbalanced calls');
-  dec(FIgnoreCodeBufferLock);
+  FSharedValues.DecreaseIgnoreCodeBufferLock;
 end;
 
 procedure TSourceEditor.UpdateCodeBuffer;
 // copy the source from EditorComponent to codetools
 begin
-  if TSynEditLines(FEditor.Lines).TextChangeStamp=FEditorStampCommitedToCodetools
-  then exit;
-  {$IFDEF IDE_DEBUG}
-  if FCodeBuffer=nil then begin
-    debugln('');
-    debugln('*********** Oh, no: UpdateCodeBuffer ************ ');
-    debugln('');
-  end;
-  {$ENDIF}
-  if FCodeBuffer=nil then exit;
-  //DebugLn(['TSourceEditor.UpdateCodeBuffer ',FileName]);
-  IncreaseIgnoreCodeBufferLock;
-  FEditor.BeginUpdate;
-  FCodeBuffer.Assign(FEditor.Lines);
-  FEditorStampCommitedToCodetools:=(FEditor.Lines as TSynEditLines).TextChangeStamp;
-  FEditor.EndUpdate;
-  DecreaseIgnoreCodeBufferLock;
+  FSharedValues.UpdateCodeBuffer;
 end;
 
 function TSourceEditor.NeedsUpdateCodeBuffer: boolean;
 begin
-  Result:=TSynEditLines(FEditor.Lines).TextChangeStamp<>FEditorStampCommitedToCodetools;
+  Result := FSharedValues.NeedsUpdateCodeBuffer;
 end;
 
 Function TSourceEditor.GetSource: TStrings;
@@ -3882,7 +3931,7 @@ end;
 
 Function TSourceEditor.GetModified: Boolean;
 Begin
-  Result := FSharedValues.Modified or FEditor.Modified;
+  Result := FSharedValues.Modified;
 end;
 
 procedure TSourceEditor.SetModified(const NewValue: Boolean);
@@ -3903,7 +3952,8 @@ Begin
   SourceEditorMarks.DeleteAllForEditor(Self);
   UnbindEditor;
   FEditor.Parent:=nil;
-  CodeBuffer := nil;
+  if FSharedValues.SharedEditorCount = 1 then
+    CodeBuffer := nil;
 end;
 
 procedure TSourceEditor.BeginUndoBlock;
@@ -3940,10 +3990,10 @@ end;
 
 function TSourceEditor.GetFilename: string;
 begin
-  if FCodeBuffer<>nil then
-    Result:=FCodeBuffer.Filename
+  if CodeBuffer <> nil then
+    Result := CodeBuffer.Filename
   else
-    Result:='';
+    Result := '';
 end;
 
 function TSourceEditor.GetEditorControl: TWinControl;
@@ -4057,6 +4107,11 @@ end;
 procedure TSourceEditor.EditorDeactivateSyncro(Sender: TObject);
 begin
   dec(FSyncroLockCount);
+end;
+
+function TSourceEditor.GetCodeBuffer: TCodeBuffer;
+begin
+  Result := FSharedValues.CodeBuffer;
 end;
 
 function TSourceEditor.GetExecutionLine: integer;
@@ -5485,6 +5540,7 @@ procedure TSourceNotebook.CheckCurrentCodeBufferChanged;
 var
   SrcEdit: TSourceEditor;
 begin
+  // Todo: Move to manager, include window changes
   SrcEdit:=GetActiveSE;
   if SrcEdit = nil then Exit;
   if FLastCodeBuffer=SrcEdit.CodeBuffer then exit;
@@ -5806,7 +5862,6 @@ begin
   NewEdit.IsNewSharedEditor := True;
 
   NewEdit.PageName := SrcEdit.PageName;
-  NewEdit.CodeBuffer := SrcEdit.CodeBuffer;
   NewEdit.SyntaxHighlighterType := SrcEdit.SyntaxHighlighterType;
   NewEdit.EditorComponent.TopLine := SrcEdit.EditorComponent.TopLine;
   NewEdit.EditorComponent.CaretXY := SrcEdit.EditorComponent.CaretXY;
@@ -7439,6 +7494,8 @@ begin
 
   if Assigned(OnEditorVisibleChanged) then
     OnEditorVisibleChanged(nil);
+  if Assigned(OnCurrentCodeBufferChanged) then
+    OnCurrentCodeBufferChanged(nil);
   UpdateFPDocEditor;
 end;
 
