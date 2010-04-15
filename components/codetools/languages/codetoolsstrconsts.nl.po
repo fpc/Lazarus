@@ -635,9 +635,9 @@ msgstr ""
 msgid "Position not in source"
 msgstr "Positie niet in broncode"
 
-#: codetoolsstrconsts.ctsprocedureorfunction
-msgid "procedure or function"
-msgstr "procedure of functie"
+#: codetoolsstrconsts.ctsprocedureorfunctionorconstructorordestructor
+msgid "procedure or function or constructor or destructor"
+msgstr ""
 
 #: codetoolsstrconsts.ctsprocessorspecific
 msgid "processor specific"

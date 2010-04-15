@@ -636,9 +636,9 @@ msgstr ". mulai di"
 msgid "Position not in source"
 msgstr "Posisi tidak dalam sumber"
 
-#: codetoolsstrconsts.ctsprocedureorfunction
-msgid "procedure or function"
-msgstr "function atau procedure"
+#: codetoolsstrconsts.ctsprocedureorfunctionorconstructorordestructor
+msgid "procedure or function or constructor or destructor"
+msgstr ""
 
 #: codetoolsstrconsts.ctsprocessorspecific
 msgid "processor specific"

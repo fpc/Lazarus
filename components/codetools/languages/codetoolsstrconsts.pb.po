@@ -635,9 +635,9 @@ msgstr ". inicia em "
 msgid "Position not in source"
 msgstr "Não situado no fonte"
 
-#: codetoolsstrconsts.ctsprocedureorfunction
-msgid "procedure or function"
-msgstr "procedimento ou função"
+#: codetoolsstrconsts.ctsprocedureorfunctionorconstructorordestructor
+msgid "procedure or function or constructor or destructor"
+msgstr ""
 
 #: codetoolsstrconsts.ctsprocessorspecific
 msgid "processor specific"

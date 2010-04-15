@@ -635,9 +635,9 @@ msgstr ". Начало в "
 msgid "Position not in source"
 msgstr "Позиция отсутствует в исходном коде"
 
-#: codetoolsstrconsts.ctsprocedureorfunction
-msgid "procedure or function"
-msgstr "процедура или функция"
+#: codetoolsstrconsts.ctsprocedureorfunctionorconstructorordestructor
+msgid "procedure or function or constructor or destructor"
+msgstr ""
 
 #: codetoolsstrconsts.ctsprocessorspecific
 msgid "processor specific"
