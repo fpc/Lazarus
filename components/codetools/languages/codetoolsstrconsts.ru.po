@@ -5,7 +5,7 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "POT-Creation-Date: \n"
-"PO-Revision-Date: 2010-04-10 02:50+0300\n"
+"PO-Revision-Date: 2010-04-16 03:29+0300\n"
 "Language-Team: \n"
 "MIME-Version: 1.0\n"
 
@@ -637,7 +637,7 @@ msgstr "Позиция отсутствует в исходном коде"
 
 #: codetoolsstrconsts.ctsprocedureorfunctionorconstructorordestructor
 msgid "procedure or function or constructor or destructor"
-msgstr ""
+msgstr "процедура, либо функция, либо конструктор, либо деструктор"
 
 #: codetoolsstrconsts.ctsprocessorspecific
 msgid "processor specific"
