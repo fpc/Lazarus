@@ -44,6 +44,13 @@ function gdk_x11_image_get_ximage(image:PGdkImage):PXImage;cdecl;external gdklib
 procedure laz_gdk_gc_set_dashes(gc:PGdkGC; dash_offset:gint;
   dashlist:Pgint8; n:gint); cdecl; external gdkdll name 'gdk_gc_set_dashes';
 // - - - - - - - - - pango extras - - - - - - - - -
+
+
+function pango_unichar_direction(ch : gunichar) : TPangoDirection; cdecl; external pangolib;
+
+// pango 1.4
+function pango_find_base_dir(text : Pgchar; aLength : gint) : TPangoDirection; cdecl; external pangolib;
+
 type
   PPPangoAttrList = ^PPangoAttrList;
 // pango 1.16

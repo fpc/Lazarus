@@ -72,6 +72,7 @@ begin
     SetColors(FGColor, BGColor);
 
     WidgetCont := pango_layout_get_context(AFont^.GDIFontObject);
+
     OldMatrix := pango_context_get_matrix(WidgetCont);
     NewMatrix.xx := 1.0;
     NewMatrix.xy := 0.0;

@@ -765,10 +765,12 @@ var
   DevCtx: TGtk2DeviceContext absolute DC;
   DCOrigin: TPoint;
   yOffset: integer;
+  Direction : TPangoDirection;
 begin
   Result := IsValidDC(DC);
   if not Result then Exit;
   if Count <= 0 then Exit;
+
 
   if DevCtx.HasTransf then
     DevCtx.TransfPoint(X, Y);
@@ -783,6 +785,9 @@ begin
     
   DevCtx.SelectedColors := dcscCustom;
   EnsureGCColor(DC, dccCurrentTextColor, True, False);
+
+  Direction := pango_find_base_dir(Str, Count);
+  pango_context_set_base_dir(@DevCtx, Direction);
 
   DevCtx.DrawTextWithColors(Str, Count,
     X + DCOrigin.X, Y + DCOrigin.Y + yOffset,
