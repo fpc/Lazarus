@@ -1713,6 +1713,8 @@ begin
   then exit;
 
   // mark execution line
+  if (Editor = nil) and (SourceEditorManager <> nil) then
+    Editor := SourceEditorManager.ActiveEditor;
   if Editor <> nil
   then begin
     if not Editor.HasExecutionMarks then
