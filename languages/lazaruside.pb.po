@@ -6757,6 +6757,10 @@ msgstr "Função"
 msgid "get word at current cursor position"
 msgstr "obter palavra na posição atual do cursor"
 
+#: lazarusidestrconsts.lisgotoline
+msgid "Goto line"
+msgstr ""
+
 #: lazarusidestrconsts.lisgplnotice
 msgid "<description>%sCopyright (C) <year> <name of author> <contact>%sThis source is free software; you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation; either version 2 of the License, or (at your option) any later version. %sThis code is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU General Public License for more details. %sA copy of the GNU General Public License is available on the World Wide Web at <http://www.gnu.org/copyleft/gpl.html>. You can also obtain it by writing to the Free Software Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA."
 msgstr "<description>%sCopyright (C) <year> <name of author> <contact>%sEstes fontes são software livre; você pode redistribuir e/ou modificá-los sob os termos da GNU Library General Public License como publicada pela Free Software Foundation; ou a versão 2 da Licença, ou (a sua escolha) qualquer versão posterior. %sEste código é distribuído na esperança de que seja útil, mas SEM QUALQUER GARANTIA; nem mesmo a garantia implícita de COMERCIABILIDADE ou ADEQUAÇÃO A UMA FINALIDADE PARTICULAR. Veja a licença GNU General Public License para maiores detalhes.%sVocê deve ter recebido uma cópia da licença GNU Library General Public License juntamente com esta biblioteca; senão, escreva a Free Software Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA."
@@ -12727,7 +12731,9 @@ msgid "Font without UTF-8"
 msgstr "Fonte sem UTF-8"
 
 #: lazarusidestrconsts.lisuegotoline
-msgid "Goto line :"
+#, fuzzy
+#| msgid "Goto line :"
+msgid "Goto line:"
 msgstr "Ir para Linha :"
 
 #: lazarusidestrconsts.lisuenotfound
@@ -13964,6 +13970,18 @@ msgstr "configurar arquivo de construção"
 msgid "Copy selection to clipboard"
 msgstr "Copiar seleção para Área de Transferência"
 
+#: lazarusidestrconsts.srkmeccopyeditornewwindow
+msgid "Copy editor to new window"
+msgstr ""
+
+#: lazarusidestrconsts.srkmeccopyeditornextwindow
+msgid "Copy editor to next free window"
+msgstr ""
+
+#: lazarusidestrconsts.srkmeccopyeditorprevwindow
+msgid "Copy editor to prior free window"
+msgstr ""
+
 #: lazarusidestrconsts.srkmeccustomtool
 msgid "Custom tool %d"
 msgstr "Ferramenta personalizada %d"
@@ -14237,6 +14255,18 @@ msgstr "Mover editor a esquerda"
 msgid "Move editor leftmost"
 msgstr "Mover editor extremo esquerdo"
 
+#: lazarusidestrconsts.srkmecmoveeditornewwindow
+msgid "Move editor to new window"
+msgstr ""
+
+#: lazarusidestrconsts.srkmecmoveeditornextwindow
+msgid "Move editor to next free window"
+msgstr ""
+
+#: lazarusidestrconsts.srkmecmoveeditorprevwindow
+msgid "Move editor to prior free window"
+msgstr ""
+
 #: lazarusidestrconsts.srkmecmoveeditorright
 msgid "Move editor right"
 msgstr "Mover editor a direita"
@@ -14252,6 +14282,14 @@ msgstr "Próximo Marcador"
 #: lazarusidestrconsts.srkmecnexteditor
 msgid "Go to next editor"
 msgstr "Ir para o próximo editor"
+
+#: lazarusidestrconsts.srkmecnextsharededitor
+msgid "Go to next editor with same Source"
+msgstr ""
+
+#: lazarusidestrconsts.srkmecnextwindow
+msgid "Go to next window"
+msgstr ""
 
 #: lazarusidestrconsts.srkmecnormalselect
 msgid "Normal selection mode"
@@ -14304,6 +14342,14 @@ msgstr "Marcador Anterior"
 #: lazarusidestrconsts.srkmecpreveditor
 msgid "Go to prior editor"
 msgstr "Ir para o editor anterior"
+
+#: lazarusidestrconsts.srkmecprevsharededitor
+msgid "Go to prior editor with same Source"
+msgstr ""
+
+#: lazarusidestrconsts.srkmecprevwindow
+msgid "Go to prior window"
+msgstr ""
 
 #: lazarusidestrconsts.srkmecprocedurelist
 msgid "Procedure List ..."

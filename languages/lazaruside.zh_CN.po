@@ -6765,6 +6765,10 @@ msgstr "函数"
 msgid "get word at current cursor position"
 msgstr ""
 
+#: lazarusidestrconsts.lisgotoline
+msgid "Goto line"
+msgstr ""
+
 #: lazarusidestrconsts.lisgplnotice
 msgid "<description>%sCopyright (C) <year> <name of author> <contact>%sThis source is free software; you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation; either version 2 of the License, or (at your option) any later version. %sThis code is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU General Public License for more details. %sA copy of the GNU General Public License is available on the World Wide Web at <http://www.gnu.org/copyleft/gpl.html>. You can also obtain it by writing to the Free Software Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA."
 msgstr ""
@@ -12738,7 +12742,9 @@ msgid "Font without UTF-8"
 msgstr "字体不使用 UTF-8 编码"
 
 #: lazarusidestrconsts.lisuegotoline
-msgid "Goto line :"
+#, fuzzy
+#| msgid "Goto line :"
+msgid "Goto line:"
 msgstr "转到行 :"
 
 #: lazarusidestrconsts.lisuenotfound
@@ -13976,6 +13982,18 @@ msgstr "配置 构建配置 文件"
 msgid "Copy selection to clipboard"
 msgstr "复制选区到剪切板"
 
+#: lazarusidestrconsts.srkmeccopyeditornewwindow
+msgid "Copy editor to new window"
+msgstr ""
+
+#: lazarusidestrconsts.srkmeccopyeditornextwindow
+msgid "Copy editor to next free window"
+msgstr ""
+
+#: lazarusidestrconsts.srkmeccopyeditorprevwindow
+msgid "Copy editor to prior free window"
+msgstr ""
+
 #: lazarusidestrconsts.srkmeccustomtool
 msgid "Custom tool %d"
 msgstr "自定义工具 %d"
@@ -14251,6 +14269,18 @@ msgstr "左移编辑器"
 msgid "Move editor leftmost"
 msgstr "移动编辑器最左边的"
 
+#: lazarusidestrconsts.srkmecmoveeditornewwindow
+msgid "Move editor to new window"
+msgstr ""
+
+#: lazarusidestrconsts.srkmecmoveeditornextwindow
+msgid "Move editor to next free window"
+msgstr ""
+
+#: lazarusidestrconsts.srkmecmoveeditorprevwindow
+msgid "Move editor to prior free window"
+msgstr ""
+
 #: lazarusidestrconsts.srkmecmoveeditorright
 msgid "Move editor right"
 msgstr "右移编辑器"
@@ -14266,6 +14296,14 @@ msgstr "下一个书签"
 #: lazarusidestrconsts.srkmecnexteditor
 msgid "Go to next editor"
 msgstr "下一个编辑窗口"
+
+#: lazarusidestrconsts.srkmecnextsharededitor
+msgid "Go to next editor with same Source"
+msgstr ""
+
+#: lazarusidestrconsts.srkmecnextwindow
+msgid "Go to next window"
+msgstr ""
 
 #: lazarusidestrconsts.srkmecnormalselect
 msgid "Normal selection mode"
@@ -14318,6 +14356,14 @@ msgstr "前一个书签"
 #: lazarusidestrconsts.srkmecpreveditor
 msgid "Go to prior editor"
 msgstr "上一个编辑窗口"
+
+#: lazarusidestrconsts.srkmecprevsharededitor
+msgid "Go to prior editor with same Source"
+msgstr ""
+
+#: lazarusidestrconsts.srkmecprevwindow
+msgid "Go to prior window"
+msgstr ""
 
 #: lazarusidestrconsts.srkmecprocedurelist
 msgid "Procedure List ..."

@@ -6761,6 +6761,10 @@ msgstr "関数"
 msgid "get word at current cursor position"
 msgstr "現在のカーソル位置の単語を取得"
 
+#: lazarusidestrconsts.lisgotoline
+msgid "Goto line"
+msgstr ""
+
 #: lazarusidestrconsts.lisgplnotice
 msgid "<description>%sCopyright (C) <year> <name of author> <contact>%sThis source is free software; you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation; either version 2 of the License, or (at your option) any later version. %sThis code is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU General Public License for more details. %sA copy of the GNU General Public License is available on the World Wide Web at <http://www.gnu.org/copyleft/gpl.html>. You can also obtain it by writing to the Free Software Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA."
 msgstr "著作権(C)<年><作者名>%sこのソースはフリーソフトです。あなたは、Free Software Foundation  が公表したGNU一般公有使用許諾の「バージョン2」或いはそれ以降の各バージョンの中からいずれかを選択し、そのバージョンが定める条項に従って本プログラムを再頒布または変更することができます。%s本プログラムは有用とは思いますが、頒布にあたっては、市場性及び特定目的適合性についての暗黙の保証を含めて、いかなる保証も行ないません。詳細についてはGNU一般公衆使用許諾書をお読みください。%sGNU一般公衆使用許諾書のコピーはインターネット上の<http://www.gnu.org/copyleft/gpl.html>.。次の住所に手紙でリクエストすることによっても入手できます：Free Software Foundation Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA"
@@ -12736,7 +12740,9 @@ msgid "Font without UTF-8"
 msgstr "UTF-8でないフォント"
 
 #: lazarusidestrconsts.lisuegotoline
-msgid "Goto line :"
+#, fuzzy
+#| msgid "Goto line :"
+msgid "Goto line:"
 msgstr "移動先の行:"
 
 #: lazarusidestrconsts.lisuenotfound
@@ -13974,6 +13980,18 @@ msgstr "構築ファイルの設定"
 msgid "Copy selection to clipboard"
 msgstr "選択対象をクリップボードにコピー"
 
+#: lazarusidestrconsts.srkmeccopyeditornewwindow
+msgid "Copy editor to new window"
+msgstr ""
+
+#: lazarusidestrconsts.srkmeccopyeditornextwindow
+msgid "Copy editor to next free window"
+msgstr ""
+
+#: lazarusidestrconsts.srkmeccopyeditorprevwindow
+msgid "Copy editor to prior free window"
+msgstr ""
+
 #: lazarusidestrconsts.srkmeccustomtool
 msgid "Custom tool %d"
 msgstr "カスタムツール %d"
@@ -14247,6 +14265,18 @@ msgstr "エディタを左に移動"
 msgid "Move editor leftmost"
 msgstr "エディタを左端に移動"
 
+#: lazarusidestrconsts.srkmecmoveeditornewwindow
+msgid "Move editor to new window"
+msgstr ""
+
+#: lazarusidestrconsts.srkmecmoveeditornextwindow
+msgid "Move editor to next free window"
+msgstr ""
+
+#: lazarusidestrconsts.srkmecmoveeditorprevwindow
+msgid "Move editor to prior free window"
+msgstr ""
+
 #: lazarusidestrconsts.srkmecmoveeditorright
 msgid "Move editor right"
 msgstr "エディタを右に移動"
@@ -14262,6 +14292,14 @@ msgstr "次のブックマーク"
 #: lazarusidestrconsts.srkmecnexteditor
 msgid "Go to next editor"
 msgstr "次のエディタに移動"
+
+#: lazarusidestrconsts.srkmecnextsharededitor
+msgid "Go to next editor with same Source"
+msgstr ""
+
+#: lazarusidestrconsts.srkmecnextwindow
+msgid "Go to next window"
+msgstr ""
 
 #: lazarusidestrconsts.srkmecnormalselect
 msgid "Normal selection mode"
@@ -14314,6 +14352,14 @@ msgstr "前のブックマーク"
 #: lazarusidestrconsts.srkmecpreveditor
 msgid "Go to prior editor"
 msgstr "前のエディタに移動"
+
+#: lazarusidestrconsts.srkmecprevsharededitor
+msgid "Go to prior editor with same Source"
+msgstr ""
+
+#: lazarusidestrconsts.srkmecprevwindow
+msgid "Go to prior window"
+msgstr ""
 
 #: lazarusidestrconsts.srkmecprocedurelist
 msgid "Procedure List ..."

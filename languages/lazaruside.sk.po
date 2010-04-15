@@ -6763,6 +6763,10 @@ msgstr "Funkcia"
 msgid "get word at current cursor position"
 msgstr ""
 
+#: lazarusidestrconsts.lisgotoline
+msgid "Goto line"
+msgstr ""
+
 #: lazarusidestrconsts.lisgplnotice
 msgid "<description>%sCopyright (C) <year> <name of author> <contact>%sThis source is free software; you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation; either version 2 of the License, or (at your option) any later version. %sThis code is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU General Public License for more details. %sA copy of the GNU General Public License is available on the World Wide Web at <http://www.gnu.org/copyleft/gpl.html>. You can also obtain it by writing to the Free Software Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA."
 msgstr "<description>%sCopyright (C) <rok> <meno autora> <kontakt>%sTento zdrojový kód je slobodný softvér; môžete ho rozširovať a/alebo upravovať podľa podmienok GNU Všeobecnej verejnej licencie, tak ako je zverejnené Nadáciou Free Software; verzie 2 licencie alebo (podľa svojho rozhodnutia) akejkoľvek neskoršej verzie. %sTento zdrojový kód je šírený v nádeji, že bude užitočný, ale BEZ AKEJKO2VEK ZÁRUKY; dokonca aj bez zahrnutej záruky PREDAJNOSTI alebo VHDODNOSTI NA PRÍSLUŠNÝ ÚČEL.  Ďalšie detaily si pozrite v GNU Všeobecnej verejnej licencii. %sKópia GNU Všeobecnej verejnej licencie je dostupná cez World Wide Web na <http://www.gnu.org/copyleft/gpl.html>. Môžete ju získaj aj napísaním do Nadácie Free Software, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA."
@@ -12740,7 +12744,9 @@ msgid "Font without UTF-8"
 msgstr "Font bez UTF-8"
 
 #: lazarusidestrconsts.lisuegotoline
-msgid "Goto line :"
+#, fuzzy
+#| msgid "Goto line :"
+msgid "Goto line:"
 msgstr "Choď na riadok:"
 
 #: lazarusidestrconsts.lisuenotfound
@@ -13980,6 +13986,18 @@ msgstr "konfiguračný súbor budovania"
 msgid "Copy selection to clipboard"
 msgstr "Kopírovať výber do schránky"
 
+#: lazarusidestrconsts.srkmeccopyeditornewwindow
+msgid "Copy editor to new window"
+msgstr ""
+
+#: lazarusidestrconsts.srkmeccopyeditornextwindow
+msgid "Copy editor to next free window"
+msgstr ""
+
+#: lazarusidestrconsts.srkmeccopyeditorprevwindow
+msgid "Copy editor to prior free window"
+msgstr ""
+
 #: lazarusidestrconsts.srkmeccustomtool
 msgid "Custom tool %d"
 msgstr "Vlastný nástroj %d"
@@ -14253,6 +14271,18 @@ msgstr "Okno editora vľavo"
 msgid "Move editor leftmost"
 msgstr "Posunúť editor úplne vľavo"
 
+#: lazarusidestrconsts.srkmecmoveeditornewwindow
+msgid "Move editor to new window"
+msgstr ""
+
+#: lazarusidestrconsts.srkmecmoveeditornextwindow
+msgid "Move editor to next free window"
+msgstr ""
+
+#: lazarusidestrconsts.srkmecmoveeditorprevwindow
+msgid "Move editor to prior free window"
+msgstr ""
+
 #: lazarusidestrconsts.srkmecmoveeditorright
 msgid "Move editor right"
 msgstr "Okno editora vpravo"
@@ -14268,6 +14298,14 @@ msgstr "Nasledujúca záložka"
 #: lazarusidestrconsts.srkmecnexteditor
 msgid "Go to next editor"
 msgstr "Choď na nasledujúci editor"
+
+#: lazarusidestrconsts.srkmecnextsharededitor
+msgid "Go to next editor with same Source"
+msgstr ""
+
+#: lazarusidestrconsts.srkmecnextwindow
+msgid "Go to next window"
+msgstr ""
 
 #: lazarusidestrconsts.srkmecnormalselect
 msgid "Normal selection mode"
@@ -14320,6 +14358,14 @@ msgstr "Predchádzajúca záložka"
 #: lazarusidestrconsts.srkmecpreveditor
 msgid "Go to prior editor"
 msgstr "Choď na predchádzajúci editor"
+
+#: lazarusidestrconsts.srkmecprevsharededitor
+msgid "Go to prior editor with same Source"
+msgstr ""
+
+#: lazarusidestrconsts.srkmecprevwindow
+msgid "Go to prior window"
+msgstr ""
 
 #: lazarusidestrconsts.srkmecprocedurelist
 msgid "Procedure List ..."

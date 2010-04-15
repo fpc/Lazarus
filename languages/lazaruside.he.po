@@ -6733,6 +6733,10 @@ msgstr ""
 msgid "get word at current cursor position"
 msgstr ""
 
+#: lazarusidestrconsts.lisgotoline
+msgid "Goto line"
+msgstr ""
+
 #: lazarusidestrconsts.lisgplnotice
 msgid "<description>%sCopyright (C) <year> <name of author> <contact>%sThis source is free software; you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation; either version 2 of the License, or (at your option) any later version. %sThis code is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU General Public License for more details. %sA copy of the GNU General Public License is available on the World Wide Web at <http://www.gnu.org/copyleft/gpl.html>. You can also obtain it by writing to the Free Software Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA."
 msgstr ""
@@ -12708,7 +12712,7 @@ msgid "Font without UTF-8"
 msgstr "גופן ללא UTF-8"
 
 #: lazarusidestrconsts.lisuegotoline
-msgid "Goto line :"
+msgid "Goto line:"
 msgstr ""
 
 #: lazarusidestrconsts.lisuenotfound
@@ -13940,6 +13944,18 @@ msgstr ""
 msgid "Copy selection to clipboard"
 msgstr "העתק את הבחירה ללוח הגזירים"
 
+#: lazarusidestrconsts.srkmeccopyeditornewwindow
+msgid "Copy editor to new window"
+msgstr ""
+
+#: lazarusidestrconsts.srkmeccopyeditornextwindow
+msgid "Copy editor to next free window"
+msgstr ""
+
+#: lazarusidestrconsts.srkmeccopyeditorprevwindow
+msgid "Copy editor to prior free window"
+msgstr ""
+
 #: lazarusidestrconsts.srkmeccustomtool
 msgid "Custom tool %d"
 msgstr ""
@@ -14213,6 +14229,18 @@ msgstr ""
 msgid "Move editor leftmost"
 msgstr ""
 
+#: lazarusidestrconsts.srkmecmoveeditornewwindow
+msgid "Move editor to new window"
+msgstr ""
+
+#: lazarusidestrconsts.srkmecmoveeditornextwindow
+msgid "Move editor to next free window"
+msgstr ""
+
+#: lazarusidestrconsts.srkmecmoveeditorprevwindow
+msgid "Move editor to prior free window"
+msgstr ""
+
 #: lazarusidestrconsts.srkmecmoveeditorright
 msgid "Move editor right"
 msgstr ""
@@ -14227,6 +14255,14 @@ msgstr "הסמנייה הבאה"
 
 #: lazarusidestrconsts.srkmecnexteditor
 msgid "Go to next editor"
+msgstr ""
+
+#: lazarusidestrconsts.srkmecnextsharededitor
+msgid "Go to next editor with same Source"
+msgstr ""
+
+#: lazarusidestrconsts.srkmecnextwindow
+msgid "Go to next window"
 msgstr ""
 
 #: lazarusidestrconsts.srkmecnormalselect
@@ -14279,6 +14315,14 @@ msgstr "סמנייה קודמת"
 
 #: lazarusidestrconsts.srkmecpreveditor
 msgid "Go to prior editor"
+msgstr ""
+
+#: lazarusidestrconsts.srkmecprevsharededitor
+msgid "Go to prior editor with same Source"
+msgstr ""
+
+#: lazarusidestrconsts.srkmecprevwindow
+msgid "Go to prior window"
 msgstr ""
 
 #: lazarusidestrconsts.srkmecprocedurelist

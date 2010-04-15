@@ -5,7 +5,7 @@ msgstr ""
 "Content-Type: text/plain; charset=utf-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "POT-Creation-Date: \n"
-"PO-Revision-Date: 2010-04-15 01:31+0300\n"
+"PO-Revision-Date: 2010-04-16 03:53+0300\n"
 "Language-Team: \n"
 "MIME-Version: 1.0\n"
 
@@ -6754,6 +6754,10 @@ msgstr "Функция"
 msgid "get word at current cursor position"
 msgstr "Возвратить слово в текущей позиции курсора."
 
+#: lazarusidestrconsts.lisgotoline
+msgid "Goto line"
+msgstr "Переход к строке"
+
 #: lazarusidestrconsts.lisgplnotice
 msgid "<description>%sCopyright (C) <year> <name of author> <contact>%sThis source is free software; you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation; either version 2 of the License, or (at your option) any later version. %sThis code is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU General Public License for more details. %sA copy of the GNU General Public License is available on the World Wide Web at <http://www.gnu.org/copyleft/gpl.html>. You can also obtain it by writing to the Free Software Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA."
 msgstr "<description>%sCopyright (C) <year> <name of author> <contact>%sThis source is free software; you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation; either version 2 of the License, or (at your option) any later version. %sThis code is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU General Public License for more details. %sA copy of the GNU General Public License is available on the World Wide Web at <http://www.gnu.org/copyleft/gpl.html>. You can also obtain it by writing to the Free Software Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA."
@@ -12722,8 +12726,9 @@ msgid "Font without UTF-8"
 msgstr "Шрифт без UTF-8"
 
 #: lazarusidestrconsts.lisuegotoline
-msgid "Goto line :"
-msgstr "Строка :"
+#| msgid "Goto line :"
+msgid "Goto line:"
+msgstr "Перейти к строке:"
 
 #: lazarusidestrconsts.lisuenotfound
 msgid "Not found"
@@ -13957,6 +13962,18 @@ msgstr "файл настроек сборки"
 msgid "Copy selection to clipboard"
 msgstr "Копировать выделенное в буфер"
 
+#: lazarusidestrconsts.srkmeccopyeditornewwindow
+msgid "Copy editor to new window"
+msgstr "Копировать редактор в новое окно"
+
+#: lazarusidestrconsts.srkmeccopyeditornextwindow
+msgid "Copy editor to next free window"
+msgstr "Копировать редактор в следующее свободное окно"
+
+#: lazarusidestrconsts.srkmeccopyeditorprevwindow
+msgid "Copy editor to prior free window"
+msgstr "Копировать редактор в предыдущее свободное окно"
+
 #: lazarusidestrconsts.srkmeccustomtool
 msgid "Custom tool %d"
 msgstr "Средство пользователя %d"
@@ -14231,6 +14248,18 @@ msgstr "Сместить редактор влево"
 msgid "Move editor leftmost"
 msgstr "Поместить редактор слева"
 
+#: lazarusidestrconsts.srkmecmoveeditornewwindow
+msgid "Move editor to new window"
+msgstr "Переместить редактор в новое окно"
+
+#: lazarusidestrconsts.srkmecmoveeditornextwindow
+msgid "Move editor to next free window"
+msgstr "Переместить редактор в следующее свободное окно"
+
+#: lazarusidestrconsts.srkmecmoveeditorprevwindow
+msgid "Move editor to prior free window"
+msgstr "Переместить редактор в предыдущее свободное окно"
+
 #: lazarusidestrconsts.srkmecmoveeditorright
 msgid "Move editor right"
 msgstr "Сместить редактор вправо"
@@ -14246,6 +14275,14 @@ msgstr "Следующая закладка"
 #: lazarusidestrconsts.srkmecnexteditor
 msgid "Go to next editor"
 msgstr "Перейти к следующему редактору"
+
+#: lazarusidestrconsts.srkmecnextsharededitor
+msgid "Go to next editor with same Source"
+msgstr "Перейти к следующему редактору с тем же файлом исходного кода"
+
+#: lazarusidestrconsts.srkmecnextwindow
+msgid "Go to next window"
+msgstr "Перейти к следующему окну"
 
 #: lazarusidestrconsts.srkmecnormalselect
 msgid "Normal selection mode"
@@ -14298,6 +14335,14 @@ msgstr "Предыдущая закладка"
 #: lazarusidestrconsts.srkmecpreveditor
 msgid "Go to prior editor"
 msgstr "Перейти к предыдущему редактору"
+
+#: lazarusidestrconsts.srkmecprevsharededitor
+msgid "Go to prior editor with same Source"
+msgstr "Перейти к предыдущему редактору с тем же файлом исходного кода"
+
+#: lazarusidestrconsts.srkmecprevwindow
+msgid "Go to prior window"
+msgstr "Перейти к предыдущему окну"
 
 #: lazarusidestrconsts.srkmecprocedurelist
 msgid "Procedure List ..."
