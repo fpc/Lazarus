@@ -574,6 +574,7 @@ type
       GridHeight: Integer;    // Sum( RowHeights[i] )
       ClientWidth: Integer;   // Width-VertScrollbar.Size
       ClientHeight: Integer;  // Height-HorzScrollbar.Size
+      ClientRect: TRect;      // Cache for ClientRect - GetBorderWidth need for Bidi
       ScrollWidth: Integer;   // ClientWidth-FixedWidth
       ScrollHeight: Integer;  // ClientHeight-FixedHeight
       VisibleGrid: TRect;     // Visible non fixed rectangle of cellcoordinates
@@ -837,6 +838,7 @@ type
     function  DoUTF8KeyPress(var UTF8Key: TUTF8Char): boolean; override;
     procedure DrawBorder;
     procedure DrawAllRows; virtual;
+    procedure DrawFillRect(aCanvas:TCanvas; R:TRect);// Use FillRect after calc the new rect depened on Right To Left
     procedure DrawCell(aCol,aRow:Integer; aRect:TRect; aState:TGridDrawState); virtual;
     procedure DrawCellGrid(aCol,aRow: Integer; aRect: TRect; aState: TGridDrawState); virtual;
     procedure DrawCellText(aCol,aRow: Integer; aRect: TRect; aState: TGridDrawState; aText: String); virtual;
@@ -1040,6 +1042,10 @@ type
     property OnTopLeftChanged: TNotifyEvent read FOnTopLeftChanged write FOnTopLeftChanged;
     property OnUserCheckboxBitmap: TUserCheckboxBitmapEvent read FOnUserCheckboxBitmap write FOnUserCheckboxBitmap;
     property OnValidateEntry: TValidateEntryEvent read FOnValidateEntry write FOnValidateEntry;
+    //Bidi functions
+    function FlipRect(ARect: TRect): TRect;
+    function FlipPoint(P: TPoint): TPoint;
+    function FlipX(X: Integer): Integer;
 
   public
     constructor Create(AOwner: TComponent); override;
@@ -1473,7 +1479,7 @@ type
     property AutoAdvance;
     property AutoEdit;
     property AutoFillColumns;
-    //property BiDiMode;
+    property BiDiMode;
     property BorderSpacing;
     property BorderStyle;
     property Color;
@@ -1498,7 +1504,7 @@ type
     property HeaderPushZones;
     property MouseWheelOption;
     property Options;
-    //property ParentBiDiMode;
+    property ParentBiDiMode;
     property ParentColor default false;
     property ParentFont;
     property ParentShowHint;
@@ -1577,6 +1583,26 @@ implementation
 uses
   WSGrids;
 
+function BidiFlipX(X: Integer; const Width: Integer; const Flip: Boolean): Integer;
+begin
+  if Flip then
+    //-1 because it zero based
+    Result := Width - X - 1
+  else
+    Result := X;
+end;
+
+function BidiFlipX(X: Integer; const ParentRect: TRect; const Flip: Boolean): Integer;
+begin
+  Result := BidiFlipX(X, ParentRect.Right, Flip);
+end;
+
+function BidiFlipPoint(P: TPoint; const ParentRect: TRect; const Flip: Boolean): TPoint;
+begin
+  Result := P;
+  Result.Y := BidiFlipX(Result.Y, ParentRect, Flip);
+end;
+  
 function PointIgual(const P1,P2: TPoint): Boolean;
 begin
   result:=(P1.X=P2.X)and(P1.Y=P2.Y);
@@ -1989,13 +2015,20 @@ begin
 
         R := CellRect(aCol, 0);
         R.Bottom := FGCache.MaxClientXY.Y+GetBorderWidth+1;
-        if bigger then
-          R.Right := FGCache.MaxClientXY.X+GetBorderWidth+1
-        else
-          R.Right := FGCache.ClientWidth;
-        if aCol=FTopLeft.x then
-          R.Left := FGCache.FixedWidth;
-
+        if UseRightToLeftAlignment then begin
+          //Bigger or not bigger i will refresh
+          R.Left := FGCache.ClientRect.Left;
+          if aCol=FTopLeft.x then
+            R.Right := FGCache.ClientRect.Right - FGCache.FixedWidth;
+        end
+        else begin
+          if Bigger then
+            R.Right := FGCache.MaxClientXY.X+GetBorderWidth+1
+          else
+            R.Right := FGCache.ClientWidth;
+          if aCol=FTopLeft.x then
+            R.Left := FGCache.FixedWidth;
+        end;
         InvalidateRect(handle, @R, False);
       end;
 
@@ -2318,7 +2351,13 @@ begin
         UpdateSizes;
 
         R := CellRect(0, aRow);
-        R.Right := FGCache.MaxClientXY.X+GetBorderWidth+1;
+        if UseRightToLeftAlignment then
+        begin
+          R.Left := FlipX(FGCache.MaxClientXY.X+GetBorderWidth);
+          R.Right := R.Right + 1;
+        end
+        else
+          R.Right := FGCache.MaxClientXY.X+GetBorderWidth+1;
         if bigger then
           R.Bottom := FGCache.MaxClientXY.Y+GetBorderWidth+1
         else
@@ -2589,8 +2628,14 @@ begin
   OldPenColor := Canvas.Pen.Color;
   Canvas.Pen.Color := clWhite;
   Canvas.Pen.Mode := pmXOR;
-  Canvas.MoveTo(0,Y);
-  Canvas.LineTo(FGCache.MaxClientXY.X,Y);
+  if UseRightToLeftAlignment then begin
+    Canvas.MoveTo(FlipX(FGCache.MaxClientXY.X)+1,Y);
+    Canvas.LineTo(FGCache.ClientRect.Right,Y);
+  end
+  else begin
+    Canvas.MoveTo(0,Y);
+    Canvas.LineTo(FGCache.MaxClientXY.X,Y);
+  end;
   Canvas.Pen.Mode := OldPenMode;
   Canvas.Pen.Color := OldPenColor;
 end;
@@ -2873,12 +2918,12 @@ begin
     RNew:=CellRect(aCol,aRow);
 
     Xinc:=0;
-    if RNew.Left + FGCache.TLColOff < FGCache.FixedWidth then Xinc:=-1
-    else if (RNew.Right+FGCache.TLColOff > (FGCache.ClientWidth+GetBorderWidth))
-            and (RNew.Left+FGCache.TLColOff-GetColWidths(aCol) >= FGCache.FixedWidth)
-            then XInc:=1;
-            // Only scroll left if the left edge of the cell does not become
-            // invisible as a result
+    if FlipX(RNew.Left) + FGCache.TLColOff < FGCache.FixedWidth then Xinc:=-1
+    else if (FlipX(RNew.Right)+FGCache.TLColOff > (FGCache.ClientWidth+GetBorderWidth))
+            and (FlipX(RNew.Left+FGCache.TLColOff-GetColWidths(aCol)) >= FGCache.FixedWidth)
+              then XInc:=1;
+              // Only scroll left if the left edge of the cell does not become
+              // invisible as a result
     Yinc:=0;
     if RNew.Top  + FGCache.TLRowOff < FGCache.FixedHeight then Yinc:=-1
     else if (RNew.Bottom+FGCache.TLRowOff > (FGCache.ClientHeight+GetBorderWidth))
@@ -2946,30 +2991,38 @@ end;
 procedure TCustomGrid.HeaderClick(IsColumn: Boolean; index: Integer);
 begin
 end;
+
 procedure TCustomGrid.HeaderSized(IsColumn: Boolean; index: Integer);
 begin
 end;
+
 procedure TCustomGrid.ColRowMoved(IsColumn: Boolean; FromIndex,ToIndex: Integer);
 begin
   if IsColumn and Columns.Enabled then
     Columns.MoveColumn(ColumnIndexFromGridColumn(FromIndex),
       ColumnIndexFromGridColumn(ToIndex));
 end;
+
 procedure TCustomGrid.ColRowExchanged(isColumn: Boolean; index, WithIndex: Integer);
 begin
 end;
+
 procedure TCustomGrid.ColRowInserted(IsColumn: boolean; index: integer);
 begin
 end;
+
 procedure TCustomGrid.DrawFocusRect(aCol, aRow: Integer; ARect: TRect);
 begin
 end;
+
 procedure TCustomGrid.AutoAdjustColumn(aCol: Integer);
 begin
 end;
+
 procedure TCustomGrid.SizeChanged(OldColCount, OldRowCount: Integer);
 begin
 end;
+
 procedure TCustomGrid.ColRowDeleted(IsColumn: Boolean; index: Integer);
 begin
 end;
@@ -3042,8 +3095,9 @@ begin
       SetCanvasFont(GetColumnFont(aCol, ((gdFixed in aState) and (aRow < FFixedRows))));
     end;
     CurrentTextStyle := DefaultTextStyle;
-    CurrentTextStyle.Alignment := GetColumnAlignment(aCol, gdFixed in AState);
+    CurrentTextStyle.Alignment := BidiFlipAlignment(GetColumnAlignment(aCol, gdFixed in AState), UseRightToLeftAlignment);
     CurrentTextStyle.Layout := GetColumnLayout(aCol, gdFixed in AState);
+    CurrentTextStyle.RightToLeft := UseRightToLeftReading;
     Canvas.TextStyle := CurrentTextStyle;
   end else begin
     Canvas.TextStyle := DefaultTextStyle;
@@ -3184,6 +3238,7 @@ begin
     R := CellRect(FMoveLast.X, 0);
     X := R.Left;
     Y := R.Bottom - dy;
+    //TODO need Bidi
     Canvas.Polygon([Point(x-dx,y),point(x+dx,y),point(x,y+dy), point(x-dx,y)]);
     Y := R.Top + dy;
     Canvas.Polygon([Point(x-dx,y),point(x+dx,y),point(x,y-dy), point(x-dx,y)]);
@@ -3211,8 +3266,14 @@ begin
     {$else}
     Canvas.Pen.Width:=3;
     Canvas.Pen.Color:=clRed;
-    Canvas.MoveTo(0, FMoveLast.X);
-    Canvas.LineTo(FGCache.MaxClientXY.X, FMoveLast.X);
+    if UseRightToLeftAlignment then begin
+      Canvas.MoveTo(FGCache.ClientRect.Right, FMoveLast.X);
+      Canvas.LineTo(FlipX(FGCache.MaxClientXY.X), FMoveLast.X);
+    end
+    else begin
+      Canvas.MoveTo(0, FMoveLast.X);
+      Canvas.LineTo(FGCache.MaxClientXY.X, FMoveLast.X);
+    end;
     Canvas.Pen.Width:=1;
     {$endif}
   end;
@@ -3293,7 +3354,7 @@ procedure TCustomGrid.DrawCell(aCol, aRow: Integer; aRect: TRect;
   aState: TGridDrawState);
 begin
   PrepareCanvas(aCol, aRow, aState);
-  Canvas.FillRect(aRect);
+  DrawFillRect(Canvas, aRect);
   DrawCellGrid(aCol,aRow,aRect,aState);
 end;
 
@@ -3308,6 +3369,13 @@ begin
   // Draw Fixed Rows
   for i:=0 to FFixedRows-1 do
     DrawRow(i);
+end;
+
+procedure TCustomGrid.DrawFillRect(aCanvas: TCanvas; R: TRect);
+begin
+  if UseRightToLeftAlignment then
+    OffsetRect(R, 1, 0);
+  aCanvas.FillRect(R);
 end;
 
 function VerticalIntersect(const aRect,bRect: TRect): boolean;
@@ -3352,15 +3420,13 @@ var
       Canvas.RestoreHandleState;
     end;
   end;
-
 begin
 
   // Upper and Lower bounds for this row
   ColRowToOffSet(False, True, aRow, R.Top, R.Bottom);
-
   // is this row within the ClipRect?
   ClipArea := Canvas.ClipRect;
-  if not VerticalIntersect( R, ClipArea) then begin
+  if not VerticalIntersect(R, ClipArea) then begin
     {$IFDEF DbgVisualChange}
     DebugLn('Drawrow: Skipped row: ', IntToStr(aRow));
     {$ENDIF}
@@ -3398,7 +3464,7 @@ begin
       end else begin
         ColRowToOffset(True, True, FCol, R.Left, R.Right);
         // is this column within the ClipRect?
-        if HorizontalIntersect( R, ClipArea) then
+        if HorizontalIntersect(R, ClipArea) then
           DrawFocusRect(FCol,FRow, R);
       end;
     end;
@@ -3411,7 +3477,7 @@ begin
     gds:=[gdFixed];
     ColRowToOffset(True, True, aCol, R.Left, R.Right);
     // is this column within the ClipRect?
-    if HorizontalIntersect( R, ClipArea) then
+    if HorizontalIntersect(R, ClipArea) then
       DoDrawCell;
   end;
 end;
@@ -3449,11 +3515,20 @@ begin
   P:=FGCache.MaxClientXY;
   Cr:=Bounds(0,0, FGCache.ClientWidth, FGCache.ClientHeight);
   if P.x<Cr.Right then begin
-    Cr.Left:=P.x;
+    if UseRightToLeftAlignment then
+      Cr.Right:=Cr.Right - P.x
+    else
+      Cr.Left:=P.x;
     Canvas.Brush.Color:= Color;
     Canvas.FillRect(cr);
-    Cr.Left:=0;
-    Cr.Right:=p.x;
+    if UseRightToLeftAlignment then begin
+      Cr.Left := Cr.Right;
+      Cr.Right:=FGCache.ClientWidth;
+    end
+    else begin
+      Cr.Right:=Cr.Left;
+      Cr.Left:=0;
+    end;
   end;
   if P.y<Cr.Bottom then begin
     Cr.Top:=p.y;
@@ -3500,9 +3575,19 @@ begin
               Pen.Color := cl3DShadow
             else
               Pen.Color := cl3DHilight;
-            MoveTo(Right - 1, Top);
-            LineTo(Left, Top);
-            LineTo(Left, Bottom);
+            if UseRightToLeftAlignment then
+            begin
+              //the light still on the left but need to new x
+              MoveTo(Right, Top);
+              LineTo(Left + 1, Top);
+              LineTo(Left + 1, Bottom);
+            end
+            else
+            begin
+              MoveTo(Right - 1, Top);
+              LineTo(Left, Top);
+              LineTo(Left, Bottom);
+            end;
             if FTitleStyle=tsStandard then
             begin
               // more contrast
@@ -3510,9 +3595,18 @@ begin
                 Pen.Color := cl3DHilight
               else
                 Pen.Color := cl3DShadow;
-              MoveTo(Left+1, Bottom-2);
-              LineTo(Right-2, Bottom-2);
-              LineTo(Right-2, Top);
+              if UseRightToLeftAlignment then
+              begin
+                MoveTo(Left+2, Bottom-2);
+                LineTo(Right, Bottom-2);
+                LineTo(Right, Top);
+              end
+              else
+              begin
+                MoveTo(Left+1, Bottom-2);
+                LineTo(Right-2, Bottom-2);
+                LineTo(Right-2, Top);
+              end;
             end;
           end;
         end;
@@ -3531,12 +3625,28 @@ begin
     if fGridLineWidth > 0 then
     begin
       if Dh then begin
-        MoveTo(Left, Bottom - 1);
-        LineTo(Right, Bottom - 1);
+        if UseRightToLeftAlignment then
+        begin
+          MoveTo(Right, Bottom - 1);
+          LineTo(Left, Bottom - 1);
+        end
+        else
+        begin
+          MoveTo(Left, Bottom - 1);
+          LineTo(Right, Bottom - 1);
+        end;
       end;
       if Dv then begin
-         MoveTo(Right - 1, Top);
-         LineTo(Right - 1, Bottom);
+        if UseRightToLeftAlignment then
+        begin
+          MoveTo(Left, Top);
+          LineTo(Left, Bottom);
+        end
+        else
+        begin
+          MoveTo(Right - 1, Top);
+          LineTo(Right - 1, Bottom);
+        end;
       end;
     end;
   end;
@@ -3545,7 +3655,6 @@ end;
 procedure TCustomGrid.DrawCellText(aCol, aRow: Integer; aRect: TRect;
   aState: TGridDrawState; aText: String);
 begin
-
   with ARect do begin
 
     dec(Right, constCellPadding);
@@ -4024,6 +4133,7 @@ begin
       FGCache.FixedHeight:=FGCache.GridHeight;
   end;
 
+  FGCache.ClientRect := ClientRect;
   FGCache.ClientWidth := ClientWidth;
   FGCache.ClientHeight:= ClientHeight;
   {$ifdef dbgVisualChange}
@@ -4556,7 +4666,11 @@ begin
   Result:=False;
   if gsColSizing = fGridState then begin
     if FUseXORFeatures then begin
-      if (x-FSplitter.Y)<=0 then
+      if UseRightToLeftAlignment then begin
+        if (FSplitter.Y - x) <=0 then
+          x:= FSplitter.Y;
+      end
+      else if (x-FSplitter.Y)<=0 then
         x:= FSplitter.Y;
       if x<>FPrevValue then begin
         if FPrevLine then
@@ -4566,30 +4680,40 @@ begin
         FPrevValue:=X;
       end;
     end else
-      ResizeColumn(FSplitter.x, x-FSplitter.y);
+      if UseRightToLeftAlignment then
+        ResizeColumn(FSplitter.x, FSplitter.y - x)
+      else
+        ResizeColumn(FSplitter.x, x - FSplitter.y);
     HeaderSizing(true, FSplitter.x, x-FSplitter.y);
     exit(true);
   end else
   if (fGridState=gsNormal) and (ColCount>FixedCols) and
      ((Y<FGCache.FixedHeight) or (FExtendedColSizing and (Y<FGCache.MaxClientXY.Y))) and
-     (X>FGCache.FixedWidth)
+     (FlipX(X)>FGCache.FixedWidth)
   then begin
 
     // find closest cell and cell boundaries
-    if X>FGCache.GridWidth-1 then
+    if (UseRightToLeftAlignment and (X < 1)) or
+        (X>FGCache.GridWidth-1) then
       FSplitter.x := ColCount-1
     else
       OffsetToColRow(True, True, X, FSplitter.X, Loc);
     ColRowToOffset(True, true, FSplitter.X, OffIni, OffEnd);
 
     // find out what cell boundary is closer to X
-    if OffEnd>FGCache.ClientWidth then
+    if UseRightToLeftAlignment and (OffIni < 0) then
+      Loc := 0
+    else if OffEnd>FGCache.ClientWidth then
       Loc := FGCache.ClientWidth
-    else
-    if (OffEnd-X)<(X-OffIni) then
+    else if UseRightToLeftAlignment and ((X-OffIni)<(OffEnd-X)) then
+      Loc := OffIni
+    else if not UseRightToLeftAlignment and ((OffEnd-X)<(X-OffIni)) then
       Loc := OffEnd
     else begin
-      Loc := OffIni;
+      if UseRightToLeftAlignment then
+        Loc := OffEnd
+      else
+        Loc := OffIni;
       Dec(FSplitter.X);
     end;
 
@@ -4632,7 +4756,7 @@ begin
     Result:=True;
   end else
   if (fGridState=gsNormal) and (RowCount>FixedRows) and
-     ((X<FGCache.FixedWidth) or (FExtendedRowSizing and (X<FGCache.MaxClientXY.X))) and
+     ((FlipX(X)<FGCache.FixedWidth) or (FExtendedRowSizing and (FlipX(X)<FGCache.MaxClientXY.X))) and
      (Y>FGCache.FixedHeight) then
   begin
 
@@ -4747,6 +4871,8 @@ begin
   Index:=0;
   Rest:=0;
   Result := False;
+  if IsCol and UseRightToLeftAlignment then
+    Offset := FlipX(Offset);
   Offset := Offset - GetBorderWidth;
   if Offset<0 then Exit; // Out of Range;
 
@@ -4830,7 +4956,13 @@ begin
       if index>=FFixedRows then
         StartPos:=StartPos-integer(PtrUInt(AccumHeight[FTopLeft.Y])) + FixedHeight - TLRowOff;
     end;
-    EndPos:=StartPos + Dim;
+    if IsCol and UseRightToLeftAlignment then
+    begin
+      EndPos := FlipX(StartPos);
+      StartPos := EndPos - Dim + 1;
+    end
+    else
+      EndPos:=StartPos + Dim;
   end;
   Result:=true;
 end;
@@ -4890,7 +5022,7 @@ var
   aBorderWidth: Integer;
 begin
   aBorderWidth := GetBorderWidth;
-  if X<FGCache.FixedWidth+aBorderWidth then begin
+  if FlipX(X)<FGCache.FixedWidth+aBorderWidth then begin
     // in fixedwidth zone
     if Y<FGcache.FixedHeight+aBorderWidth then
       Result:= gzFixedCells
@@ -4902,7 +5034,7 @@ begin
   end
   else if Y<FGCache.FixedHeight+aBorderWidth then begin
     // if fixedheight zone
-    if X<FGCache.FixedWidth+aBorderWidth then
+    if FlipX(X)<FGCache.FixedWidth+aBorderWidth then
       Result:=gzFixedCells
     else
     if ColCount>FixedCols then
@@ -4913,7 +5045,7 @@ begin
   else if not FixedGrid then begin
     // in normal cell zone (though, might be outbounds)
     if AllowOutboundEvents or
-      ((X<=FGCache.GridWidth) and (Y<=FGCache.GridHeight)) then
+      ((FlipX(X)<=FGCache.GridWidth) and (Y<=FGCache.GridHeight)) then
       result := gzNormal
     else
       result := gzInvalid
@@ -5187,9 +5319,12 @@ begin
 
     gzFixedCols:
       begin
-        if (goColSizing in Options)and(Cursor=crHSplit) then begin
+        if (goColSizing in Options) and (Cursor=crHSplit) then begin
           R:=CellRect(FSplitter.x, 0{FTopLeft.y});
-          FSplitter.y:=R.Left;
+          if UseRightToLeftAlignment then
+            FSplitter.y:=R.Right
+          else
+            FSplitter.y:=R.Left;
           fGridState:= gsColSizing;
         end else begin
           // ColMoving or Clicking
@@ -5380,8 +5515,11 @@ begin
           FPrevLine := False;
           FPrevValue := -1;
         end;
-        ResizeColumn(FSplitter.x, x-FSplitter.y);
-        HeaderSized( True, FSplitter.X);
+        if UseRightToLeftAlignment then
+          ResizeColumn(FSplitter.x, FSplitter.y - x)
+        else
+          ResizeColumn(FSplitter.x, x - FSplitter.y);
+        HeaderSized(True, FSplitter.X);
       end;
 
     gsRowSizing:
@@ -5617,6 +5755,21 @@ begin
   end;
 end;
 
+function TCustomGrid.FlipRect(ARect: TRect): TRect;
+begin
+  Result := BidiFlipRect(ARect, GCache.ClientRect, UseRightToLeftAlignment);
+end;
+
+function TCustomGrid.FlipPoint(P: TPoint): TPoint;
+begin
+  Result := BidiFlipPoint(P, GCache.ClientRect, UseRightToLeftAlignment);
+end;
+
+function TCustomGrid.FlipX(X: Integer): Integer;
+begin
+  Result := BidiFlipX(X, GCache.ClientRect, UseRightToLeftAlignment);
+end;
+
 procedure TCustomGrid.doExit;
 begin
   {$IfDef dbgGrid}DebugLn('DoExit - INIT');{$Endif}
@@ -5701,6 +5854,8 @@ var
       Click;
     Key := 0; { Flag key as handled, even if selected cell did not move }
   end;
+const
+  cBidiMove:array[Boolean] of Integer = (1, -1);
 begin
   {$ifdef dbgGrid}DebugLn('Grid.KeyDown INIT Key=',IntToStr(Key));{$endif}
   inherited KeyDown(Key, Shift);
@@ -5708,7 +5863,7 @@ begin
   if not CanGridAcceptKey(Key, Shift) then
     Key:=0;  // Allow CanGridAcceptKey to override Key behaviour
   Sh:=(ssShift in Shift);
-  Relaxed:=not (goRowSelect in Options) or (goRelaxedRowSelect in Options);
+  Relaxed := not (goRowSelect in Options) or (goRelaxedRowSelect in Options);
 
   case Key of
     VK_TAB:
@@ -5732,13 +5887,17 @@ begin
       end;
     VK_LEFT:
       begin
-        if Relaxed then MoveSel(True,-1, 0)
-        else            MoveSel(true, 0,-1);
+        if Relaxed then
+          MoveSel(True, -cBidiMove[UseRightToLeftAlignment], 0)
+        else
+          MoveSel(True, 0,-1);
       end;
     VK_RIGHT:
       begin
-        if Relaxed then MoveSel(True, 1, 0)
-        else            MoveSel(True, 0, 1);
+        if Relaxed then
+          MoveSel(True, cBidiMove[UseRightToLeftAlignment], 0)
+        else
+          MoveSel(True, 0, 1);
       end;
     VK_UP:
       begin
@@ -5910,8 +6069,14 @@ begin
   if not HandleAllocated then
     exit;
   R:=CellRect(fTopLeft.x, aRow);
-  R.Left:=0; // Full row
-  R.Right:=FGCache.MaxClientXY.X;
+  if UseRightToLeftAlignment then begin
+    R.Left:=FlipX(FGCache.MaxClientXY.X);
+    R.Right:=FGCache.ClientRect.Right;
+  end
+  else begin
+    R.Left:=0; // Full row
+    R.Right:=FGCache.MaxClientXY.X;
+  end;
   InvalidateRect(Handle, @R, True);
 end;
 
@@ -6049,7 +6214,7 @@ begin
   dCol:=FCol*(1-Byte(not Relative))+DCol;
   dRow:=FRow*(1-Byte(not Relative))+DRow;
 
-  CheckLimits( dCol, dRow );
+  CheckLimits(DCol, DRow);
 
   // Change on Focused cell?
   if (Dcol=FCol) and (DRow=FRow) then begin
@@ -6144,9 +6309,14 @@ begin
   if goRowSelect in Options then begin
     aRect.Left := FGCache.FixedWidth + 1;
     aRect.Right := FGCache.MaxClientXY.x;
+    FlipRect(aRect);
   end;
   if goHorzLine in Options then dec(aRect.Bottom, 1);
-  if goVertLine in Options then dec(aRect.Right, 1);
+  if goVertLine in Options then
+    if UseRightToLeftAlignment then
+      inc(aRect.Left, 1)
+    else
+      dec(aRect.Right, 1);
   {
   if not (goHorzLine in Options) then begin
     aRect.Bottom := aRect.Bottom + 1;
@@ -7502,6 +7672,7 @@ begin
   FStringEditor.Visible:=False;
   FStringEditor.AutoSize:=False;
   FStringEditor.Align:=alNone;
+  FStringEditor.BorderStyle := bsNone;
 
   FPicklistEditor := TPickListCellEditor.Create(nil);
   FPickListEditor.Name := 'PickListEditor';
@@ -8251,7 +8422,7 @@ begin
   if Assigned(OnDrawCell) and not(CsDesigning in ComponentState) then begin
     PrepareCanvas(aCol, aRow, aState);
     if DefaultDrawing then
-      Canvas.FillRect(aRect);
+      DrawFillRect(Canvas, aRect);
     OnDrawCell(Self,aCol,aRow,aRect,aState)
   end else begin
     OldDefaultDrawing:=FDefaultDrawing;
@@ -8270,7 +8441,7 @@ end;
 
 procedure TCustomDrawGrid.DrawFocusRect(aCol, aRow: Integer; ARect: TRect);
 var
-  FOldFocusColor: TColor;
+  OldFocusColor: TColor;
   OldPenMode: TFPPenMode;
 begin
   // Draw focused cell if we have the focus
@@ -8280,8 +8451,8 @@ begin
     CalcFocusRect(aRect);
     if FUseXORFeatures then begin
       Canvas.SaveHandleState;
-      FOldFocusColor := FFocusColor;
-      FFocusColor:= clWhite;
+      OldFocusColor := FFocusColor;
+      FFocusColor:= clBlack;//White not visible on White background
       OldPenMode:=Canvas.Pen.Mode;
       Canvas.Pen.Mode := pmXOR;
     end;
@@ -8289,7 +8460,7 @@ begin
     if FUseXORFeatures then begin
       Canvas.Pen.Mode := OldPenMode;
       Canvas.RestoreHandleState;
-      FFocusColor := FOldFocusColor;
+      FFocusColor := OldFocusColor;
     end;
   end;
 end;
@@ -8570,7 +8741,7 @@ procedure TCustomDrawGrid.DefaultDrawCell(aCol, aRow: Integer; var aRect: TRect;
 begin
   if goColSpanning in Options then CalcCellExtent(acol, arow, aRect);
 
-  Canvas.FillRect(aRect);
+  DrawFillRect(Canvas, aRect);
 
   if CellNeedsCheckboxBitmaps(aCol,aRow) then
     DrawCellCheckboxBitmaps(aCol,aRow,aRect);
