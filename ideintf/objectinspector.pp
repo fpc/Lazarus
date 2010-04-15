@@ -1468,7 +1468,7 @@ procedure TOICustomPropertyGrid.ValueComboBoxMeasureItem(Control: TWinControl;
 var
   CurRow: TOIPropertyGridRow;
 begin
-  if (FItemIndex >= 0) and (FItemIndex < FRows.Count) then
+  if (FItemIndex >= 0) and (FItemIndex < FRows.Count) and (ValueComboBox.HandleAllocated) then
   begin
     CurRow := Rows[FItemIndex];
     CurRow.Editor.ListMeasureHeight('Fj', Index, ValueComboBox.Canvas, AHeight);
