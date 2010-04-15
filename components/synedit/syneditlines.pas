@@ -70,7 +70,7 @@ type
     procedure LoadFromFile(const FileName: string); override;
     procedure SaveToFile(const FileName: string); override;
     property DosFileFormat: boolean read fDosFileFormat write fDosFileFormat;
-    property TextChangeStamp: int64 read GetTextChangeStamp; deprecated '#############';
+    property TextChangeStamp: int64 read GetTextChangeStamp;
   end;
 
 implementation
