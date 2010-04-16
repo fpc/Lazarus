@@ -147,6 +147,7 @@ type
     procedure FilePropsGroupBoxResize(Sender: TObject);
     procedure FilesPopupMenuPopup(Sender: TObject);
     procedure FilesTreeViewDblClick(Sender: TObject);
+    procedure FilesTreeViewKeyPress(Sender: TObject; var Key: Char);
     procedure FilesTreeViewSelectionChanged(Sender: TObject);
     procedure FixFilesCaseMenuItemClick(Sender: TObject);
     procedure HelpBitBtnClick(Sender: TObject);
@@ -568,6 +569,12 @@ end;
 procedure TPackageEditorForm.FilesTreeViewDblClick(Sender: TObject);
 begin
   OpenFileMenuItemClick(Self);
+end;
+
+procedure TPackageEditorForm.FilesTreeViewKeyPress(Sender: TObject; var Key: Char);
+begin
+  if Key = #13 then
+    OpenFileMenuItemClick(Self);
 end;
 
 procedure TPackageEditorForm.FilesTreeViewSelectionChanged(Sender: TObject);
@@ -1343,6 +1350,7 @@ begin
     Options:=Options+[tvoRightClickSelect];
     ReadOnly := True;
     OnDblClick:=@FilesTreeViewDblClick;
+    OnKeyPress:=@FilesTreeViewKeyPress;
     Anchors:=[akLeft,akRight,akTop,akBottom];
   end;
 
