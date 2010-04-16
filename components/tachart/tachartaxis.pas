@@ -496,7 +496,7 @@ begin
   AMax := GetTransform.GraphToAxis(AMax);
   if AMin > AMax then
     Exchange(AMin, AMax);
-  Marks.SourceDef.ValuesInInterval(
+  Marks.SourceDef.ValuesInRange(
     AMin, AMax, Marks.Format, IsVertical, FMarkValues, FMarkTexts);
   if Inverted then
     for i := 0 to High(FMarkValues) div 2 do begin

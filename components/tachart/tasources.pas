@@ -62,7 +62,7 @@ type
     class procedure CheckFormat(const AFormat: String);
     function Extent: TDoubleRect; virtual;
     function FormatItem(const AFormat: String; AIndex: Integer): String;
-    procedure ValuesInInterval(
+    procedure ValuesInRange(
       AMin, AMax: Double; const AFormat: String; AUseY: Boolean;
       out AValues: TDoubleDynArray; out ATexts: TStringDynArray); virtual;
     function ValuesTotal: Double; virtual;
@@ -165,7 +165,7 @@ type
     function GetCount: Integer; override;
     function GetItem(AIndex: Integer): PChartDataItem; override;
   public
-    procedure ValuesInInterval(
+    procedure ValuesInRange(
       AMin, AMax: Double; const AFormat: String; AUseY: Boolean;
       out AValues: TDoubleDynArray; out ATexts: TStringDynArray); override;
   end;
@@ -327,7 +327,7 @@ begin
     FBroadcaster.Broadcast;
 end;
 
-procedure TCustomChartSource.ValuesInInterval(
+procedure TCustomChartSource.ValuesInRange(
   AMin, AMax: Double; const AFormat: String; AUseY: Boolean;
   out AValues: TDoubleDynArray; out ATexts: TStringDynArray);
 var
@@ -782,7 +782,7 @@ begin
   Result := nil;
 end;
 
-procedure TIntervalChartSource.ValuesInInterval(
+procedure TIntervalChartSource.ValuesInRange(
   AMin, AMax: Double; const AFormat: String; AUseY: Boolean;
   out AValues: TDoubleDynArray; out ATexts: TStringDynArray);
 var
