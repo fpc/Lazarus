@@ -984,6 +984,7 @@ type
   private
     FCodeTemplateModul: TSynEditAutoComplete;
     FGotoDialog: TfrmGoto;
+    procedure OnFilesDroping(Sender: TObject; const FileNames: Array of String);
     procedure OnCodeTemplateTokenNotFound(Sender: TObject; AToken: string;
                                    AnEditor: TCustomSynEdit; var Index:integer);
     procedure OnCodeTemplateExecuteCompletion(
@@ -8365,6 +8366,12 @@ begin
   end;
 end;
 
+procedure TSourceEditorManager.OnFilesDroping(Sender: TObject; const FileNames: Array of String);
+begin
+  if Sender is TSourceNotebook then
+    ActiveSourceWindow := TSourceNotebook(Sender);
+end;
+
 procedure TSourceEditorManager.OnCodeTemplateTokenNotFound(Sender: TObject;
   AToken: string; AnEditor: TCustomSynEdit; var Index: integer);
 var
@@ -8613,6 +8620,8 @@ begin
   Result := TSourceNotebook.Create(Self);
   Result.FreeNotification(self);
   Result.OnActivate := OnWindowActivate;
+  Result.OnDropFiles := @OnFilesDroping;
+
   for i := 1 to FUpdateLock do
     Result.IncUpdateLock;
   FSourceWindowList.Add(Result);
