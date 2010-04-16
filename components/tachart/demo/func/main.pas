@@ -16,8 +16,8 @@ type
     Chart1BarSeries1: TBarSeries;
     Chart1FuncSeries1: TFuncSeries;
     Chart1UserDrawnSeries1: TUserDrawnSeries;
-    Chart1YAxis: TLine;
-    Chart1XAxis: TLine;
+    Chart1YAxis: TConstantLine;
+    Chart1XAxis: TConstantLine;
     cbDomain: TCheckBox;
     UserDefinedChartSource1: TUserDefinedChartSource;
     procedure cbDomainChange(Sender: TObject);

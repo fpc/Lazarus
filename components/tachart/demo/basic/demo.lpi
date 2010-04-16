@@ -14,9 +14,9 @@
       <ResourceType Value="res"/>
     </General>
     <VersionInfo>
-      <ProjectVersion Value=""/>
       <Language Value="0403"/>
       <CharSet Value="04E2"/>
+      <StringTable Comments="" CompanyName="" FileDescription="" FileVersion="0.0.0.0" InternalName="" LegalCopyright="" LegalTrademarks="" OriginalFilename="" ProductName="" ProductVersion=""/>
     </VersionInfo>
     <PublishOptions>
       <Version Value="2"/>

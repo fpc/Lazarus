@@ -31,8 +31,8 @@ type
     cbInverted: TCheckBox;
     cbLegend: TCheckBox;
     cbShowGridCheckBox: TCheckBox;
-    Chart1LineHor: TLine;
-    Chart1LineVert: TLine;
+    Chart1LineHor: TConstantLine;
+    Chart1LineVert: TConstantLine;
     cbMarkStyle: TComboBox;
     lblAddCount: TLabel;
     lblAdd: TLabel;

@@ -51,12 +51,12 @@ object Form1: TForm1
       Step = 4
       Title = '1 / Sin(x)'
     end
-    object Chart1XAxis: TLine
+    object Chart1XAxis: TConstantLine
       Position = 0
       SeriesColor = clBlack
       ShowInLegend = False
     end
-    object Chart1YAxis: TLine
+    object Chart1YAxis: TConstantLine
       LineStyle = lsVertical
       Position = 0
       SeriesColor = clBlack

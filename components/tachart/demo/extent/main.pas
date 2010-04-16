@@ -14,10 +14,10 @@ type
   TForm1 = class(TForm)
     cgUseBounds: TCheckGroup;
     Chart1: TChart;
-    clRight: TLine;
-    clLeft: TLine;
-    clTop: TLine;
-    clBottom: TLine;
+    clRight: TConstantLine;
+    clLeft: TConstantLine;
+    clTop: TConstantLine;
+    clBottom: TConstantLine;
     Chart1LineSeries: TLineSeries;
     fseBounds: TFloatSpinEdit;
     lblBoundValue: TLabel;

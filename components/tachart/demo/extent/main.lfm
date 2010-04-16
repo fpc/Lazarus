@@ -18,14 +18,10 @@ object Form1: TForm1
         Alignment = calLeft
         Grid.Visible = False
         Title.Font.Orientation = 900
-        Transformation.Offset = 0
-        Transformation.Scale = 1
       end    
       item
         Alignment = calBottom
         Grid.Visible = False
-        Transformation.Offset = 0
-        Transformation.Scale = 1
       end>
     Extent.XMin = -1.7
     Extent.YMin = -1.7
@@ -48,7 +44,7 @@ object Form1: TForm1
       ShowPoints = True
       Source = RandomChartSource1
     end
-    object clRight: TLine
+    object clRight: TConstantLine
       LineStyle = lsVertical
       Pen.Color = clGreen
       Pen.Style = psDot
@@ -56,7 +52,7 @@ object Form1: TForm1
       SeriesColor = clGreen
       UseBounds = False
     end
-    object clLeft: TLine
+    object clLeft: TConstantLine
       LineStyle = lsVertical
       Pen.Color = clGreen
       Pen.Style = psDot
@@ -64,14 +60,14 @@ object Form1: TForm1
       SeriesColor = clGreen
       UseBounds = False
     end
-    object clTop: TLine
+    object clTop: TConstantLine
       Pen.Color = clGreen
       Pen.Style = psDot
       Position = 1.7
       SeriesColor = clGreen
       UseBounds = False
     end
-    object clBottom: TLine
+    object clBottom: TConstantLine
       Pen.Color = clGreen
       Pen.Style = psDot
       Position = -1.7
