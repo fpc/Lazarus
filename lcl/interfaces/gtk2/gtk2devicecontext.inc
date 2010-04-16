@@ -47,6 +47,7 @@ var
   NewMatrix: TPangoMatrix;
   OldMatrix: PPangoMatrix;
   renderer: PGdkPangoRenderer;
+  Direction : TPangoDirection;
   AFont: PGdiObject;
   
   procedure SetColors(AFGColor, ABGColor: PGdkColor); inline;
@@ -61,6 +62,10 @@ begin
   AFont := GetFont;
   SetLayoutText(AFont^.GDIFontObject, AText, ALength);
 
+  WidgetCont := pango_layout_get_context(AFont^.GDIFontObject);
+  Direction := pango_find_base_dir(AText, ALength);
+  pango_context_set_base_dir(WidgetCont, Direction);
+
   if AFont^.LogFont.lfEscapement <> 0 then
   begin
     if Widget <> nil then
@@ -70,8 +75,6 @@ begin
     gdk_pango_renderer_set_drawable(renderer, drawable);
     gdk_pango_renderer_set_gc(renderer, GC);
     SetColors(FGColor, BGColor);
-
-    WidgetCont := pango_layout_get_context(AFont^.GDIFontObject);
 
     OldMatrix := pango_context_get_matrix(WidgetCont);
     NewMatrix.xx := 1.0;
