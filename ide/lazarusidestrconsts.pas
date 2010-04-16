@@ -1464,6 +1464,10 @@ resourcestring
   dlgFoldHtmlComment     = 'Comment';
   dlgFoldHtmlAsp         = 'ASP';
 
+  dlgFoldDiffFile      = 'File';
+  dlgFoldDiffChunk     = 'Chunk';
+  dlgFoldDiffChunkSect = 'Chunk section';
+
   dlgMouseFoldExpFoldOne    = 'Fold One (All Expanded)';
   dlgMouseFoldExpFoldAll    = 'Fold All (All Expanded)';
   dlgMouseFoldColFoldOne    = 'Fold One (Some Colapsed)';

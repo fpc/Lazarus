@@ -690,6 +690,25 @@ const
       )
     );
 
+  EditorOptionsFoldInfoDiff: Array [0..2] of TEditorOptionsFoldInfo
+  = (
+      ( Name:    dlgFoldDiffFile;
+        Xml:    'File';
+        Index:   ord(cfbtDiffFile);
+        Enabled: True
+      ),
+      ( Name:    dlgFoldDiffChunk;
+        Xml:    'Chunk';
+        Index:   ord(cfbtDiffChunk);
+        Enabled: True
+      ),
+      ( Name:    dlgFoldDiffChunkSect;
+        Xml:    'ChunkSect';
+        Index:   ord(cfbtDiffChunkSect);
+        Enabled: True
+      )
+    );
+
   EditorOptionsFoldDefaults: array[TLazSyntaxHighlighter] of
     TEditorOptionsFoldRecord =
     ( (Count:  0; Info: nil), // none
@@ -707,7 +726,7 @@ const
       (Count:  0; Info: nil), // php
       (Count:  0; Info: nil), // sql
       (Count:  0; Info: nil), // jscript
-      (Count:  0; Info: nil)  // Diff
+      (Count:  3; Info: {$IFDEF FPC}@{$ENDIF}EditorOptionsFoldInfoDiff[0]) // Diff
     );
 
 const
