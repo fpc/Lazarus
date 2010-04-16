@@ -97,6 +97,8 @@ type
     property ExpandSignType;
     property Font;
     property FileSortType;
+    property HideSelection;
+    property Indent;
     //property ParentBiDiMode;
     property ParentColor default False;
     property ParentFont;
