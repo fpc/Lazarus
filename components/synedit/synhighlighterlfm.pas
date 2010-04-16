@@ -711,8 +711,13 @@ begin
 end;
 
 function TSynLFMSyn.TopLfmCodeFoldBlockType(DownIndex: Integer): TLfmCodeFoldBlockType;
+var
+  p: Pointer;
 begin
-  Result := TLfmCodeFoldBlockType(PtrUInt(TopCodeFoldBlockType(DownIndex)));
+  p := TopCodeFoldBlockType(DownIndex);
+  if p >= CountLfmCodeFoldBlockOffset then
+    p := p - PtrUInt(CountLfmCodeFoldBlockOffset);
+  Result := TLfmCodeFoldBlockType(p);
 end;
 
 function TSynLFMSyn.GetFoldConfigCount: Integer;

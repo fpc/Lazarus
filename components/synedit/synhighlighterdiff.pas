@@ -73,6 +73,7 @@ type
   TDiffCodeFoldBlockType = (
     cfbtDiffFile,
     cfbtDiffChunk,
+    cfbtDiffChunkSect,
     cfbtDiffNone
     );
 
@@ -626,22 +627,32 @@ begin
 
     if ((fRange in [rsCtxFileOrig, rsCtxFileNew, rsUniFileOrig..rsUniFileNew]) and
         not (OldRange in [rsCtxFileOrig, rsCtxFileNew, rsUniFileOrig..rsUniFileNew]))
-    or ((fRange in [rsCtxChunkHeader]) and not (OldRange in [rsCtxChunkHeader]))
+//    or ((fRange in [rsCtxChunkHeader]) and not (OldRange in [rsCtxChunkHeader]))
     then begin
-      if (TopDiffCodeFoldBlockType = cfbtDiffChunk) then
-        EndDiffCodeFoldBlock;
-      if (TopDiffCodeFoldBlockType = cfbtDiffFile) then
+      while (TopDiffCodeFoldBlockType in [cfbtDiffChunkSect, cfbtDiffChunk, cfbtDiffFile]) do
         EndDiffCodeFoldBlock;
       StartDiffCodeFoldBlock(cfbtDiffFile);
     end;
 
-    if (fRange in [rsCtxChunkHeader..rsCtxChunkNew, rsUniChunkHeader]) and
-       not (OldRange in [rsCtxChunkHeader..rsCtxChunkNew, rsUniChunkHeader])
+    if (fRange in [rsCtxChunkHeader, rsUniChunkHeader])
+//    and
+//       not (OldRange in [rsCtxChunkHeader, rsUniChunkHeader])
     then begin
-      if (TopDiffCodeFoldBlockType = cfbtDiffChunk) then
+      while (TopDiffCodeFoldBlockType in [cfbtDiffChunkSect, cfbtDiffChunk]) do
         EndDiffCodeFoldBlock;
       StartDiffCodeFoldBlock(cfbtDiffChunk);
     end;
+
+    if (fRange in [rsCtxChunkOrig, rsCtxChunkNew])
+//     and
+//       not (OldRange in [rsCtxChunkOrig..rsCtxChunkNew])
+    then begin
+      if (TopDiffCodeFoldBlockType = cfbtDiffChunkSect) then
+        EndDiffCodeFoldBlock;
+      StartDiffCodeFoldBlock(cfbtDiffChunkSect);
+    end;
+
+
   end;
 end;
 
@@ -716,8 +727,13 @@ begin
 end;
 
 function TSynDiffSyn.TopDiffCodeFoldBlockType(DownIndex: Integer): TDiffCodeFoldBlockType;
+var
+  p: Pointer;
 begin
-  Result := TDiffCodeFoldBlockType(PtrUInt(TopCodeFoldBlockType(DownIndex)));
+  p := TopCodeFoldBlockType(DownIndex);
+  if p >= CountDiffCodeFoldBlockOffset then
+    p := p - PtrUInt(CountDiffCodeFoldBlockOffset);
+  Result := TDiffCodeFoldBlockType(p);
 end;
 
 function TSynDiffSyn.GetFoldConfigInstance(Index: Integer): TSynCustomFoldConfig;
@@ -738,22 +754,30 @@ begin
   Result := ord(high(TDiffCodeFoldBlockType)) - ord(low(TDiffCodeFoldBlockType)) + 1;
 end;
 
+// EndLvl = MinLvl(+1)
+// MinLvl = Min(Min, Min(+1))
+
 function TSynDiffSyn.FoldOpenCount(ALineIndex: Integer; AType: Integer): integer;
 begin
   If AType <> 0 then exit(0);
-  Result := EndFoldLevel(ALineIndex) - MinimumFoldLevel(ALineIndex);
+  Result := Max(0, MinimumFoldLevel(ALineIndex+1) - MinimumFoldLevel(ALineIndex));
+  //Result := EndFoldLevel(ALineIndex) - MinimumFoldLevel(ALineIndex);
 end;
 
 function TSynDiffSyn.FoldCloseCount(ALineIndex: Integer; AType: Integer): integer;
 begin
   If AType <> 0 then exit(0);
-  Result := EndFoldLevel(ALineIndex - 1) - MinimumFoldLevel(ALineIndex+1); //+1 because all folds are closed one line late
+  //Result := EndFoldLevel(ALineIndex - 1) - MinimumFoldLevel(ALineIndex+1); //+1 because all folds are closed one line late
+  Result := Max(0, MinimumFoldLevel(ALineIndex) - MinimumFoldLevel(ALineIndex+1));
+  //Result := EndFoldLevel(ALineIndex - 1) - MinimumFoldLevel(ALineIndex);
 end;
 
 function TSynDiffSyn.FoldNestCount(ALineIndex: Integer; AType: Integer): integer;
 begin
   If AType <> 0 then exit(0);
-  Result := EndFoldLevel(ALineIndex+1); //+1 because all folds are closed one line late
+  //Result := EndFoldLevel(ALineIndex+1); //+1 because all folds are closed one line late
+  Result := MinimumFoldLevel(ALineIndex+1);
+  //Result := EndFoldLevel(ALineIndex);
 end;
 
 function TSynDiffSyn.MinimumFoldLevel(ALineIndex: Integer): integer;
