@@ -2543,15 +2543,23 @@ begin
   EditorOptionsFoldInfoPas[18].Name := dlgFoldPasIfDef;
   EditorOptionsFoldInfoPas[19].Name := dlgFoldPasUserRegion;
 
-  EditorOptionsFoldInfoLFM[ 0].Name := dlgFoldLfmObject;
-  EditorOptionsFoldInfoLFM[ 1].Name := dlgFoldLfmList;
-  EditorOptionsFoldInfoLFM[ 2].Name := dlgFoldLfmItem;
+  EditorOptionsFoldInfoHTML[0].Name := dlgFoldHtmlNode;
+  EditorOptionsFoldInfoHTML[1].Name := dlgFoldHtmlComment;
+  EditorOptionsFoldInfoHTML[2].Name := dlgFoldHtmlAsp;
 
-  EditorOptionsFoldInfoXML[ 0].Name := dlgFoldXmlNode;
-  EditorOptionsFoldInfoXML[ 1].Name := dlgFoldXmlComment;
-  EditorOptionsFoldInfoXML[ 2].Name := dlgFoldXmlCData;
-  EditorOptionsFoldInfoXML[ 3].Name := dlgFoldXmlDocType;
-  EditorOptionsFoldInfoXML[ 4].Name := dlgFoldXmlProcess;
+  EditorOptionsFoldInfoLFM[0].Name := dlgFoldLfmObject;
+  EditorOptionsFoldInfoLFM[1].Name := dlgFoldLfmList;
+  EditorOptionsFoldInfoLFM[2].Name := dlgFoldLfmItem;
+
+  EditorOptionsFoldInfoXML[0].Name := dlgFoldXmlNode;
+  EditorOptionsFoldInfoXML[1].Name := dlgFoldXmlComment;
+  EditorOptionsFoldInfoXML[2].Name := dlgFoldXmlCData;
+  EditorOptionsFoldInfoXML[3].Name := dlgFoldXmlDocType;
+  EditorOptionsFoldInfoXML[4].Name := dlgFoldXmlProcess;
+
+  EditorOptionsFoldInfoDiff[0].Name := dlgFoldDiffFile;
+  EditorOptionsFoldInfoDiff[1].Name := dlgFoldDiffChunk;
+  EditorOptionsFoldInfoDiff[2].Name := dlgFoldDiffChunkSect;
 
   EditorOptionsDividerInfoPas[0].Name:=dlgDivPasUnitSectionName;
   EditorOptionsDividerInfoPas[1].Name:=dlgDivPasUsesName;
