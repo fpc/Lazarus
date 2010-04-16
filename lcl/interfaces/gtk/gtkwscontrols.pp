@@ -37,7 +37,7 @@ uses
   SysUtils, Classes, Controls, LMessages, InterfaceBase,
   WSControls, WSLCLClasses, WSProc,
   Graphics, ComCtrls, Forms, LCLType,
-  GtkDef, GTKExtra;
+  GtkDef, GTKExtra, GtkDebug;
 
 type
 
@@ -653,13 +653,14 @@ end;
 class procedure TGtkWSWinControl.SetShape(const AWinControl: TWinControl;
   const AShape: HBITMAP);
 var
-  GtkWidget: PGtkWidget;
+  GtkWidget, FixedWidget: PGtkWidget;
   GdkBitmap: PGDKBitmap;
 begin
   if not WSCheckHandleAllocated(AWinControl, 'SetShape') then
     Exit;
 
   GtkWidget := PGtkWidget(AWinControl.Handle);
+  FixedWidget := GetFixedWidget(GtkWidget);
 
   if AShape <> 0 then
   begin
@@ -672,6 +673,8 @@ begin
     GdkBitmap := nil;
     
   gtk_widget_shape_combine_mask(GtkWidget, GdkBitmap, 0, 0);
+  if FixedWidget <> GtkWidget then
+    gtk_widget_shape_combine_mask(FixedWidget, GdkBitmap, 0, 0);
 end;
 
 {
