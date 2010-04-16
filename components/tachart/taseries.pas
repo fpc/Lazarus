@@ -211,14 +211,14 @@ type
   end;
 
   // 'TSerie' alias is for compatibility with older versions of TAChart.
-  // Do not use it.
-  TSerie = TLineSeries;
+  // Use TLineSeries instead.
+  TSerie = TLineSeries deprecated;
 
   TLineStyle = (lsVertical, lsHorizontal);
 
-  { TLine }
+  { TConstantLine }
 
-  TLine = class(TCustomChartSeries)
+  TConstantLine = class(TCustomChartSeries)
   private
     FLineStyle: TLineStyle;
     FPen: TPen;
@@ -253,6 +253,10 @@ type
     property UseBounds: Boolean read FUseBounds write SetUseBounds default true;
     property ZPosition;
   end;
+
+  // 'TLine' alias is for compatibility with older versions of TAChart.
+  // Use TConstantLine instead.
+  TLine = class(TConstantLine) end deprecated;
 
   TFuncCalculateEvent = procedure (const AX: Double; out AY: Double) of object;
 
@@ -466,9 +470,9 @@ begin
   UpdateParentChart;
 end;
 
-{ TLine }
+{ TConstantLine }
 
-constructor TLine.Create(AOwner: TComponent);
+constructor TConstantLine.Create(AOwner: TComponent);
 begin
   inherited Create(AOwner);
 
@@ -478,13 +482,13 @@ begin
   FUseBounds := true;
 end;
 
-destructor TLine.Destroy;
+destructor TConstantLine.Destroy;
 begin
   FreeAndNil(FPen);
   inherited;
 end;
 
-procedure TLine.Draw(ACanvas: TCanvas);
+procedure TConstantLine.Draw(ACanvas: TCanvas);
 begin
   ACanvas.Brush.Style := bsClear;
   ACanvas.Pen.Assign(FPen);
@@ -498,7 +502,7 @@ begin
     end;
 end;
 
-procedure TLine.GetBounds(var ABounds: TDoubleRect);
+procedure TConstantLine.GetBounds(var ABounds: TDoubleRect);
 begin
   if not UseBounds then exit;
   case LineStyle of
@@ -513,42 +517,42 @@ begin
   end;
 end;
 
-procedure TLine.GetLegendItems(AItems: TChartLegendItems);
+procedure TConstantLine.GetLegendItems(AItems: TChartLegendItems);
 begin
   AItems.Add(TLegendItemLine.Create(Pen, Title));
 end;
 
-function TLine.GetSeriesColor: TColor;
+function TConstantLine.GetSeriesColor: TColor;
 begin
   Result := FPen.Color;
 end;
 
-procedure TLine.SetLineStyle(AValue: TLineStyle);
+procedure TConstantLine.SetLineStyle(AValue: TLineStyle);
 begin
   if FLineStyle = AValue then exit;
   FLineStyle := AValue;
   UpdateParentChart;
 end;
 
-procedure TLine.SetPen(AValue: TPen);
+procedure TConstantLine.SetPen(AValue: TPen);
 begin
   FPen.Assign(AValue);
 end;
 
-procedure TLine.SetPos(AValue: Double);
+procedure TConstantLine.SetPos(AValue: Double);
 begin
   if FPosGraph = AValue then exit;
   FPosGraph := AValue;
   UpdateParentChart;
 end;
 
-procedure TLine.SetSeriesColor(AValue: TColor);
+procedure TConstantLine.SetSeriesColor(AValue: TColor);
 begin
   if FPen.Color = AValue then exit;
   FPen.Color := AValue;
 end;
 
-procedure TLine.SetUseBounds(AValue: Boolean);
+procedure TConstantLine.SetUseBounds(AValue: Boolean);
 begin
   if FUseBounds = AValue then exit;
   FUseBounds := AValue;
@@ -1232,7 +1236,8 @@ initialization
   RegisterSeriesClass(TPieSeries, 'Pie series');
   RegisterSeriesClass(TFuncSeries, 'Function series');
   RegisterSeriesClass(TUserDrawnSeries, 'User-drawn series');
-  RegisterSeriesClass(TLine, 'Line');
+  RegisterSeriesClass(TConstantLine, 'Constant line');
+  {$WARNINGS OFF}RegisterSeriesClass(TLine, '');{$WARNINGS ON}
   RegisterPropertyEditor(
     TypeInfo(Boolean), TLineSeries, 'ShowLines', THiddenPropertyEditor);
 

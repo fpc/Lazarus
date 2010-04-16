@@ -168,6 +168,7 @@ procedure TComponentListEditorForm.AddSubcomponentClass(
 var
   mi: TMenuItem;
 begin
+  if ACaption = '' then exit; // Empty names denote deprecated components.
   mi := TMenuItem.Create(Self);
   mi.OnClick := @miAddClick;
   mi.Caption := ACaption;
