@@ -1005,6 +1005,7 @@ var
   Layouts   : PATSLayoutRecordArray;
   LayCount  : ItemCount;
 begin
+  if not Assigned(FDX) or (FDXCount=0) then Exit;
 { if idx < FDXCount then
   begin}
   Layouts:=nil;
@@ -1016,7 +1017,7 @@ begin
   if Assigned(Layouts) and (Laycount>0) then
   begin
     ofs:=0;
-    for i:=0 to Min(FDXCount, Min(LayCount, Count)) do
+    for i:=0 to Min(FDXCount, Min(LayCount, Count))-1 do
     begin
       Deltas^[i] := Layouts^[i].realPos-Long2Fix(ofs);
       Layouts^[i].realPos:=Long2Fix(ofs);
@@ -1062,6 +1063,9 @@ begin
     theValue := @OverSpec;
     ATSUSetTextLayoutRefCon(FLayout, UInt32(Self));
     ATSUSetLayoutControls (FLayout, 1, @theTag, @theSize, @theValue);
+  end else begin
+    FDX:=nil;
+    FDXCount:=0;
   end;
 
   if OSError(ATSUDrawText(FLayout, kATSUFromTextBeginning, kATSUToTextEnd,
