@@ -7194,7 +7194,13 @@ begin
     {$ENDIF}
   finally
     //DebugLn(['TWinControl.CreateWnd created ',DbgSName(Self),' enable autosizing ...']);
-    EnableAutoSizing{$IFDEF DebugDisableAutoSizing}('TWinControl.CreateWnd'){$ENDIF};
+    (* If an error occured and FHandle was not created,
+       then EnableAutoSizing must not be called.
+       EnableAutoSizing will need the Handle, and trigger another attempt to create it.
+       This leads to an endless loop/recursion.
+       As a side effect the current control will be left in autosize-disabled *)
+    if FHandle <> 0 then
+      EnableAutoSizing{$IFDEF DebugDisableAutoSizing}('TWinControl.CreateWnd'){$ENDIF};
     {$IFDEF OldAutoSize}
     // obsolete
     EnableAlign;
