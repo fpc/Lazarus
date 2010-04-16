@@ -627,7 +627,6 @@ begin
 
     if ((fRange in [rsCtxFileOrig, rsCtxFileNew, rsUniFileOrig..rsUniFileNew]) and
         not (OldRange in [rsCtxFileOrig, rsCtxFileNew, rsUniFileOrig..rsUniFileNew]))
-//    or ((fRange in [rsCtxChunkHeader]) and not (OldRange in [rsCtxChunkHeader]))
     then begin
       while (TopDiffCodeFoldBlockType in [cfbtDiffChunkSect, cfbtDiffChunk, cfbtDiffFile]) do
         EndDiffCodeFoldBlock;
@@ -635,8 +634,6 @@ begin
     end;
 
     if (fRange in [rsCtxChunkHeader, rsUniChunkHeader])
-//    and
-//       not (OldRange in [rsCtxChunkHeader, rsUniChunkHeader])
     then begin
       while (TopDiffCodeFoldBlockType in [cfbtDiffChunkSect, cfbtDiffChunk]) do
         EndDiffCodeFoldBlock;
@@ -644,8 +641,6 @@ begin
     end;
 
     if (fRange in [rsCtxChunkOrig, rsCtxChunkNew])
-//     and
-//       not (OldRange in [rsCtxChunkOrig..rsCtxChunkNew])
     then begin
       if (TopDiffCodeFoldBlockType = cfbtDiffChunkSect) then
         EndDiffCodeFoldBlock;
@@ -767,7 +762,6 @@ end;
 function TSynDiffSyn.FoldCloseCount(ALineIndex: Integer; AType: Integer): integer;
 begin
   If AType <> 0 then exit(0);
-  //Result := EndFoldLevel(ALineIndex - 1) - MinimumFoldLevel(ALineIndex+1); //+1 because all folds are closed one line late
   Result := Max(0, MinimumFoldLevel(ALineIndex) - MinimumFoldLevel(ALineIndex+1));
   //Result := EndFoldLevel(ALineIndex - 1) - MinimumFoldLevel(ALineIndex);
 end;
@@ -775,7 +769,6 @@ end;
 function TSynDiffSyn.FoldNestCount(ALineIndex: Integer; AType: Integer): integer;
 begin
   If AType <> 0 then exit(0);
-  //Result := EndFoldLevel(ALineIndex+1); //+1 because all folds are closed one line late
   Result := MinimumFoldLevel(ALineIndex+1);
   //Result := EndFoldLevel(ALineIndex);
 end;
