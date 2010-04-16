@@ -1118,6 +1118,19 @@ msgstr "文件后缀:"
 msgid "Find text at cursor"
 msgstr "在光标处查找文本"
 
+#: lazarusidestrconsts.dlgfolddiffchunk
+msgid "Chunk"
+msgstr ""
+
+#: lazarusidestrconsts.dlgfolddiffchunksect
+msgid "Chunk section"
+msgstr ""
+
+#: lazarusidestrconsts.dlgfolddifffile
+msgctxt "lazarusidestrconsts.dlgfolddifffile"
+msgid "File"
+msgstr "文件"
+
 #: lazarusidestrconsts.dlgfoldhtmlasp
 msgid "ASP"
 msgstr ""
@@ -9090,6 +9103,7 @@ msgid "Exit"
 msgstr "退出"
 
 #: lazarusidestrconsts.lismenutemplatefile
+msgctxt "lazarusidestrconsts.lismenutemplatefile"
 msgid "File"
 msgstr "文件"
 

@@ -1115,6 +1115,19 @@ msgstr ""
 msgid "Find text at cursor"
 msgstr ""
 
+#: lazarusidestrconsts.dlgfolddiffchunk
+msgid "Chunk"
+msgstr ""
+
+#: lazarusidestrconsts.dlgfolddiffchunksect
+msgid "Chunk section"
+msgstr ""
+
+#: lazarusidestrconsts.dlgfolddifffile
+msgctxt "lazarusidestrconsts.dlgfolddifffile"
+msgid "File"
+msgstr "Lêer"
+
 #: lazarusidestrconsts.dlgfoldhtmlasp
 msgid "ASP"
 msgstr ""
@@ -9046,6 +9059,7 @@ msgid "Exit"
 msgstr "Verlaat"
 
 #: lazarusidestrconsts.lismenutemplatefile
+msgctxt "lazarusidestrconsts.lismenutemplatefile"
 msgid "File"
 msgstr "Lêer"
 

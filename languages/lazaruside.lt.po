@@ -1119,6 +1119,19 @@ msgstr "Failų plėtiniai"
 msgid "Find text at cursor"
 msgstr "Ieškoti ties žymekliu esančio teksto"
 
+#: lazarusidestrconsts.dlgfolddiffchunk
+msgid "Chunk"
+msgstr ""
+
+#: lazarusidestrconsts.dlgfolddiffchunksect
+msgid "Chunk section"
+msgstr ""
+
+#: lazarusidestrconsts.dlgfolddifffile
+msgctxt "lazarusidestrconsts.dlgfolddifffile"
+msgid "File"
+msgstr "Failas"
+
 #: lazarusidestrconsts.dlgfoldhtmlasp
 msgid "ASP"
 msgstr ""
@@ -9083,6 +9096,7 @@ msgid "Exit"
 msgstr "Išeiti"
 
 #: lazarusidestrconsts.lismenutemplatefile
+msgctxt "lazarusidestrconsts.lismenutemplatefile"
 msgid "File"
 msgstr "Failas"
 

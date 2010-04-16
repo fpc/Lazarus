@@ -1130,6 +1130,19 @@ msgstr "Rozszerzenia plików"
 msgid "Find text at cursor"
 msgstr "Wyszukaj tekst przy kursorze"
 
+#: lazarusidestrconsts.dlgfolddiffchunk
+msgid "Chunk"
+msgstr ""
+
+#: lazarusidestrconsts.dlgfolddiffchunksect
+msgid "Chunk section"
+msgstr ""
+
+#: lazarusidestrconsts.dlgfolddifffile
+msgctxt "lazarusidestrconsts.dlgfolddifffile"
+msgid "File"
+msgstr "Plik"
+
 #: lazarusidestrconsts.dlgfoldhtmlasp
 msgid "ASP"
 msgstr ""
@@ -9091,6 +9104,7 @@ msgid "Exit"
 msgstr "Wyjdź"
 
 #: lazarusidestrconsts.lismenutemplatefile
+msgctxt "lazarusidestrconsts.lismenutemplatefile"
 msgid "File"
 msgstr "Plik"
 
