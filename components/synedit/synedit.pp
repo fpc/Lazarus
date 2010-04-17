@@ -568,6 +568,7 @@ type
     procedure SetLineBlock(Value: TPoint; WithLeadSpaces: Boolean = True);
     procedure SetParagraphBlock(Value: TPoint);
     procedure SizeOrFontChanged(bFont: boolean);
+    procedure RecalcCharsAndLinesInWin(CheckCaret: Boolean);
     procedure StatusChanged(AChanges: TSynStatusChanges);
     procedure UndoRedoAdded(Sender: TObject);
     procedure ModifiedChanged(Sender: TObject);
@@ -4312,6 +4313,7 @@ begin
       if fStateFlags * [sfEnsureCursorPos, sfEnsureCursorPosAtResize] <> [] then
         include(fStateFlags, sfEnsureCursorPosAtResize);
       ShowScrollBar(Handle, SB_Horz, sfHorizScrollbarVisible in fStateFlags);
+      RecalcCharsAndLinesInWin(True);
     end;
     if sfHorizScrollbarVisible in fStateFlags then begin
       ScrollInfo.nPage := CharsInWindow;
@@ -4335,6 +4337,7 @@ begin
       if fStateFlags * [sfEnsureCursorPos, sfEnsureCursorPosAtResize] <> [] then
         include(fStateFlags, sfEnsureCursorPosAtResize);
       ShowScrollBar(Handle, SB_Vert, sfVertScrollbarVisible in fStateFlags);
+      RecalcCharsAndLinesInWin(True);
     end;
     if sfVertScrollbarVisible in fStateFlags then begin
       ScrollInfo.nPage := LinesInWindow;
@@ -7097,21 +7100,11 @@ end;
 procedure TCustomSynEdit.SizeOrFontChanged(bFont: boolean);
 begin
   if HandleAllocated then begin
-    {$IFDEF SYN_LAZARUS}
     LastMouseCaret:=Point(-1,-1);
-    fCharsInWindow := Max(1,(ClientWidth - fGutterWidth - 2 - ScrollBarWidth)
-                            div fCharWidth);
-    fLinesInWindow := Max(0,ClientHeight - ScrollBarWidth) div Max(1,fTextHeight);
-    FFoldedLinesView.LinesInWindow := fLinesInWindow;
+    RecalcCharsAndLinesInWin(False);
 
-    fMarkupManager.LinesInWindow:= fLinesInWindow;
     //DebugLn('TCustomSynEdit.SizeOrFontChanged fLinesInWindow=',dbgs(fLinesInWindow),' ClientHeight=',dbgs(ClientHeight),' ',dbgs(fTextHeight));
     //debugln('TCustomSynEdit.SizeOrFontChanged A ClientWidth=',dbgs(ClientWidth),' fGutterWidth=',dbgs(fGutterWidth),' ScrollBarWidth=',dbgs(ScrollBarWidth),' fCharWidth=',dbgs(fCharWidth),' fCharsInWindow=',dbgs(fCharsInWindow),' Width=',dbgs(Width));
-    {$ELSE}
-    fCharsInWindow := Max(1,Max(0,(ClientWidth - fGutterWidth - 2
-                                   - ScrollBarWidth) div Max(1,fCharWidth)));
-    fLinesInWindow := ClientHeight div fTextHeight;
-    {$ENDIF}
     if bFont then begin
       GutterChanged(self); // Todo: Make the LineNumberGutterPart (and others) an observer
       UpdateScrollbars;
@@ -7121,12 +7114,25 @@ begin
     end else
       UpdateScrollbars;
     Exclude(fStateFlags, sfScrollbarChanged);
-{begin}                                                                         //mh 2000-10-19
     if not (eoScrollPastEol in Options) then
       LeftChar := LeftChar;
     if not (eoScrollPastEof in Options) then
       TopLine := TopLine;
-{end}                                                                           //mh 2000-10-19
+  end;
+end;
+
+procedure TCustomSynEdit.RecalcCharsAndLinesInWin(CheckCaret: Boolean);
+begin
+  FCharsInWindow := Max(1,(ClientWidth - fGutterWidth - 2 - ScrollBarWidth)
+                          div fCharWidth);
+  FLinesInWindow := Max(0,ClientHeight - ScrollBarWidth) div Max(1,fTextHeight);
+  FFoldedLinesView.LinesInWindow := fLinesInWindow;
+  FMarkupManager.LinesInWindow:= fLinesInWindow;
+  if CheckCaret then begin
+    if not (eoScrollPastEol in Options) then
+      LeftChar := LeftChar;
+    if not (eoScrollPastEof in Options) then
+      TopLine := TopLine;
   end;
 end;
 
