@@ -2,7 +2,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: \n"
 "POT-Creation-Date: \n"
-"PO-Revision-Date: 2010-04-12 13:40+0100\n"
+"PO-Revision-Date: 2010-04-16 19:19+0100\n"
 "Last-Translator: Joerg Braun <jb@toolbox-mag.de>\n"
 "Language-Team: Deutsch <lazarus@miraclec.com>\n"
 "MIME-Version: 1.0\n"
@@ -1120,19 +1120,6 @@ msgstr "Dateiendungen"
 #: lazarusidestrconsts.dlgfindtextatcursor
 msgid "Find text at cursor"
 msgstr "Text am Cursor suchen"
-
-#: lazarusidestrconsts.dlgfolddiffchunk
-msgid "Chunk"
-msgstr ""
-
-#: lazarusidestrconsts.dlgfolddiffchunksect
-msgid "Chunk section"
-msgstr ""
-
-#: lazarusidestrconsts.dlgfolddifffile
-msgctxt "lazarusidestrconsts.dlgfolddifffile"
-msgid "File"
-msgstr "Datei"
 
 #: lazarusidestrconsts.dlgfoldhtmlasp
 msgid "ASP"
@@ -6784,7 +6771,7 @@ msgstr "Wort an der aktuellen Cursorposition lesen"
 
 #: lazarusidestrconsts.lisgotoline
 msgid "Goto line"
-msgstr ""
+msgstr "Zu Zeile springen"
 
 #: lazarusidestrconsts.lisgplnotice
 msgid "<description>%sCopyright (C) <year> <name of author> <contact>%sThis source is free software; you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation; either version 2 of the License, or (at your option) any later version. %sThis code is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU General Public License for more details. %sA copy of the GNU General Public License is available on the World Wide Web at <http://www.gnu.org/copyleft/gpl.html>. You can also obtain it by writing to the Free Software Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA."
@@ -7792,7 +7779,7 @@ msgstr "Ansicht der Komponentenpalette umschalten"
 
 #: lazarusidestrconsts.liskmtoggleviewdebugevents
 msgid "Toggle view Debug Events"
-msgstr ""
+msgstr "Ansicht der Debug-Ereignisse umschalten"
 
 #: lazarusidestrconsts.liskmtoggleviewdebuggeroutput
 msgid "Toggle view Debugger Output"
@@ -9102,7 +9089,6 @@ msgid "Exit"
 msgstr "Beenden"
 
 #: lazarusidestrconsts.lismenutemplatefile
-msgctxt "lazarusidestrconsts.lismenutemplatefile"
 msgid "File"
 msgstr "Datei"
 
@@ -9228,7 +9214,7 @@ msgstr "&Komponenten"
 
 #: lazarusidestrconsts.lismenuviewdebugevents
 msgid "Debug events"
-msgstr ""
+msgstr "Debug-Ereignisse"
 
 #: lazarusidestrconsts.lismenuviewdebugoutput
 msgid "Debug output"
@@ -14005,15 +13991,15 @@ msgstr "Auswahl in die Zwischenablage kopieren"
 
 #: lazarusidestrconsts.srkmeccopyeditornewwindow
 msgid "Copy editor to new window"
-msgstr ""
+msgstr "Editor in neues Fenster kopieren"
 
 #: lazarusidestrconsts.srkmeccopyeditornextwindow
 msgid "Copy editor to next free window"
-msgstr ""
+msgstr "Editor in nächstes freies Fenster kopieren"
 
 #: lazarusidestrconsts.srkmeccopyeditorprevwindow
 msgid "Copy editor to prior free window"
-msgstr ""
+msgstr "Editor in vorheriges freies Fenster kopieren"
 
 #: lazarusidestrconsts.srkmeccustomtool
 msgid "Custom tool %d"
@@ -14292,15 +14278,15 @@ msgstr "Editor ganz nach links verschieben"
 
 #: lazarusidestrconsts.srkmecmoveeditornewwindow
 msgid "Move editor to new window"
-msgstr ""
+msgstr "Editor in neues Fenster kopieren"
 
 #: lazarusidestrconsts.srkmecmoveeditornextwindow
 msgid "Move editor to next free window"
-msgstr ""
+msgstr "Editor in nächstes freies Fenster kopieren"
 
 #: lazarusidestrconsts.srkmecmoveeditorprevwindow
 msgid "Move editor to prior free window"
-msgstr ""
+msgstr "Editor in vorheriges freies Fenster kopieren"
 
 #: lazarusidestrconsts.srkmecmoveeditorright
 msgid "Move editor right"
@@ -14320,11 +14306,11 @@ msgstr "Zu nächstem Editorfenster wechseln"
 
 #: lazarusidestrconsts.srkmecnextsharededitor
 msgid "Go to next editor with same Source"
-msgstr ""
+msgstr "Zum nächsten Editor mit dem selben Quelltext"
 
 #: lazarusidestrconsts.srkmecnextwindow
 msgid "Go to next window"
-msgstr ""
+msgstr "Zum nächsten Fenster"
 
 #: lazarusidestrconsts.srkmecnormalselect
 msgid "Normal selection mode"
@@ -14380,11 +14366,11 @@ msgstr "Zu vorigem Editorfenster wechseln"
 
 #: lazarusidestrconsts.srkmecprevsharededitor
 msgid "Go to prior editor with same Source"
-msgstr ""
+msgstr "Zum vorherigen Editor mit dem selben Quelltext"
 
 #: lazarusidestrconsts.srkmecprevwindow
 msgid "Go to prior window"
-msgstr ""
+msgstr "Zum vorherigen Fenster"
 
 #: lazarusidestrconsts.srkmecprocedurelist
 msgid "Procedure List ..."

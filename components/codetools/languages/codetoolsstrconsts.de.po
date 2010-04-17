@@ -2,7 +2,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: \n"
 "POT-Creation-Date: \n"
-"PO-Revision-Date: 2010-03-19 20:15+0100\n"
+"PO-Revision-Date: 2010-04-16 19:20+0100\n"
 "Last-Translator: Joerg Braun <jb@toolbox-mag.de>\n"
 "Language-Team: \n"
 "MIME-Version: 1.0\n"
@@ -640,7 +640,7 @@ msgstr "Stelle nicht im Quelltext"
 
 #: codetoolsstrconsts.ctsprocedureorfunctionorconstructorordestructor
 msgid "procedure or function or constructor or destructor"
-msgstr ""
+msgstr "Prozedur, Funktion, Konstruktor oder Destruktor"
 
 #: codetoolsstrconsts.ctsprocessorspecific
 msgid "processor specific"
