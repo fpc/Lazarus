@@ -350,21 +350,38 @@ function ComboBoxWindowProc(Window: HWnd; Msg: UInt; WParam: Windows.WParam;
     LParam: Windows.LParam): LResult; stdcall;
 var
   Info: TComboboxInfo;
+  WindowInfo: PWin32WindowInfo;
+  NCCreateParams: PNCCreateParams;
 begin
   // darn MS: if combobox has edit control, and combobox receives focus, it
   // passes it on to the edit, so it will send a WM_KILLFOCUS; inhibit
   // also don't pass WM_SETFOCUS to the lcl,
   // it will get one from the edit control
-  if ((Msg = WM_KILLFOCUS) or (Msg = WM_SETFOCUS)) then
-  begin
-    Info.cbSize := SizeOf(Info);
-    Win32Extra.GetComboBoxInfo(Window, @Info);
-    if (HWND(WParam) = Info.hwndItem) or (HWND(WParam) = Info.hwndList) then
-    begin
-      // continue normal processing, don't send to lcl
-      Result := CallDefaultWindowProc(Window, Msg, WParam, LParam);
-      Exit;
-    end;
+  case Msg of
+    WM_NCCREATE:
+      begin
+        NCCreateParams := PCREATESTRUCT(lParam)^.lpCreateParams;
+        if Assigned(NCCreateParams) then
+        begin
+          WindowInfo := AllocWindowInfo(Window);
+          WindowInfo^.WinControl := NCCreateParams^.WinControl;
+          WindowInfo^.WinControl.Handle := Window;
+          WindowInfo^.DefWndProc := NCCreateParams^.DefWndProc;
+          WindowInfo^.needParentPaint := False;
+          NCCreateParams^.Handled := True;
+        end;
+      end;
+    WM_KILLFOCUS, WM_SETFOCUS:
+      begin
+        Info.cbSize := SizeOf(Info);
+        Win32Extra.GetComboBoxInfo(Window, @Info);
+        if (HWND(WParam) = Info.hwndItem) or (HWND(WParam) = Info.hwndList) then
+        begin
+          // continue normal processing, don't send to lcl
+          Result := CallDefaultWindowProc(Window, Msg, WParam, LParam);
+          Exit;
+        end;
+      end;
   end;
   // normal processing
   Result := WindowProc(Window, Msg, WParam, LParam);
@@ -799,13 +816,12 @@ begin
     if TComboBox(AWinControl).Sorted Then
       Flags:= Flags or CBS_SORT;
     pClassName := ComboboxClsName;
+    pSubClassName := LCLComboboxClsName;
     Flags := Flags or (WS_VSCROLL or CBS_AUTOHSCROLL or CBS_HASSTRINGS);
     SubClassWndProc := @ComboBoxWindowProc;
   end;
   // create window
-  FinishCreateWindow(AWinControl, Params, false);
-  // combobox is not a transparent control -> no need for parentpainting
-  Params.WindowInfo^.needParentPaint := false;
+  FinishCreateWindow(AWinControl, Params, False, True);
 
   Info.cbSize:= SizeOf(Info);
   Win32Extra.GetComboBoxInfo(Params.Window, @Info);

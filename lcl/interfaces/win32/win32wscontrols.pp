@@ -117,7 +117,15 @@ type
     SubClassWndProc: pointer;
     StrCaption, WindowTitle: String;
     pClassName: PChar;
+    pSubClassName: PChar;
   end;
+
+  TNCCreateParams = record
+    WinControl: TWinControl;
+    DefWndProc: WNDPROC;
+    Handled: Boolean;
+  end;
+  PNCCreateParams = ^TNCCreateParams;
 
 
 // TODO: better names?
@@ -125,7 +133,7 @@ type
 procedure PrepareCreateWindow(const AWinControl: TWinControl;
   const CreateParams: TCreateParams; var Params: TCreateWindowExParams);
 procedure FinishCreateWindow(const AWinControl: TWinControl; var Params: TCreateWindowExParams;
-  const AlternateCreateWindow: boolean);
+  const AlternateCreateWindow: boolean; SubClass: Boolean = False);
 procedure WindowCreateInitBuddy(const AWinControl: TWinControl;
   var Params: TCreateWindowExParams);
   
@@ -186,36 +194,84 @@ begin
 end;
 
 procedure FinishCreateWindow(const AWinControl: TWinControl; var Params: TCreateWindowExParams;
-  const AlternateCreateWindow: boolean);
+  const AlternateCreateWindow: boolean; SubClass: Boolean = False);
 var
   lhFont: HFONT;
   AErrorCode: Cardinal;
+  NCCreateParams: TNCCreateParams;
+  WindowClass, DummyClass: WndClass;
+{$ifdef WindowsUnicodeSupport}
+  WindowClassW, DummyClassW: WndClassW;
+{$endif}
 begin
+  NCCreateParams.DefWndProc := nil;
+  NCCreateParams.WinControl := AWinControl;
+  NCCreateParams.Handled := False;
+
   if not AlternateCreateWindow then
   begin
     with Params do
     begin
-      if (Flags and WS_CHILD) <> 0 then
+      if SubClass then
       begin
-        // menu handle is also for specifying a control id if this is a child
-        MenuHandle := HMENU(AWinControl);
-      end else begin
-        MenuHandle := HMENU(nil);
+      {$ifdef WindowsUnicodeSupport}
+        if UnicodeEnabledOS then
+        begin
+          if GetClassInfoW(System.HInstance, PWideChar(WideString(pClassName)), @WindowClassW) then
+          begin
+            NCCreateParams.DefWndProc := WndProc(WindowClassW.lpfnWndProc);
+            if not GetClassInfoW(System.HInstance, PWideChar(WideString(pSubClassName)), @DummyClassW) then
+            begin
+              with WindowClassW do
+              begin
+                LPFnWndProc := SubClassWndProc;
+                hInstance := System.HInstance;
+                lpszClassName := PWideChar(WideString(pSubClassName));
+              end;
+              Windows.RegisterClassW(@WindowClassW);
+            end;
+            pClassName := pSubClassName;
+          end;
+        end
+        else
+      {$endif}
+        begin
+          if GetClassInfo(System.HInstance, pClassName, @WindowClass) then
+          begin
+            NCCreateParams.DefWndProc := WndProc(WindowClass.lpfnWndProc);
+            if not GetClassInfo(System.HInstance, pSubClassName, @DummyClass) then
+            begin
+              with WindowClass do
+              begin
+                LPFnWndProc := SubClassWndProc;
+                hInstance := System.HInstance;
+                lpszClassName := pSubClassName;
+              end;
+              Windows.RegisterClass(@WindowClass);
+            end;
+            pClassName := pSubClassName;
+          end;
+        end;
       end;
+      if (Flags and WS_CHILD) <> 0 then
+        // menu handle is also for specifying a control id if this is a child
+        MenuHandle := HMENU(AWinControl)
+      else
+        MenuHandle := HMENU(nil);
 
       {$ifdef WindowsUnicodeSupport}
       if UnicodeEnabledOS then
         Window := CreateWindowExW(FlagsEx, PWideChar(WideString(pClassName)),
           PWideChar(UTF8ToUTF16(WindowTitle)), Flags,
-          Left, Top, Width, Height, Parent, MenuHandle, HInstance, nil)
+          Left, Top, Width, Height, Parent, MenuHandle, HInstance, @NCCreateParams)
       else
         Window := CreateWindowEx(FlagsEx, pClassName,
           PChar(Utf8ToAnsi(WindowTitle)), Flags,
-          Left, Top, Width, Height, Parent, MenuHandle, HInstance, nil);
+          Left, Top, Width, Height, Parent, MenuHandle, HInstance, @NCCreateParams);
       {$else}
         Window := CreateWindowEx(FlagsEx, pClassName,
           PChar(WindowTitle), Flags,
-          Left, Top, Width, Height, Parent, MenuHandle, HInstance, nil);
+          Left, Top, Width, Height, Parent, MenuHandle, HInstance, @NCCreateParams);
       {$endif}
 
       if Window = 0 then
@@ -240,14 +296,18 @@ begin
     if Window <> HWND(Nil) then
     begin
       // some controls (combobox) immediately send a message upon setting font
-      WindowInfo := AllocWindowInfo(Window);
-      if GetWin32WindowInfo(Parent)^.needParentPaint then
-        WindowInfo^.needParentPaint := true;
-      WindowInfo^.WinControl := AWinControl;
-      AWinControl.Handle := Window;
-      if SubClassWndProc <> nil then
-        WindowInfo^.DefWndProc := Windows.WNDPROC(SetWindowLong(
-          Window, GWL_WNDPROC, PtrInt(SubClassWndProc)));
+      if not NCCreateParams.Handled then
+      begin
+        WindowInfo := AllocWindowInfo(Window);
+        if GetWin32WindowInfo(Parent)^.needParentPaint then
+          WindowInfo^.needParentPaint := true;
+        WindowInfo^.WinControl := AWinControl;
+        AWinControl.Handle := Window;
+        if Assigned(SubClassWndProc) then
+          WindowInfo^.DefWndProc := Windows.WNDPROC(SetWindowLong(
+            Window, GWL_WNDPROC, PtrInt(SubClassWndProc)));
+      end;
+
       if AWinControl.Font.IsDefault then
         lhFont := Win32WidgetSet.DefaultFont
       else

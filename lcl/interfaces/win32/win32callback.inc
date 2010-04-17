@@ -85,7 +85,7 @@ function CallDefaultWindowProc(Window: HWnd; Msg: UInt; WParam: Windows.WParam;
   var
     Info: TComboboxInfo;
   begin
-    Result := WndClassName(Window) = ComboboxClsName;
+    Result := WndClassName(Window) = LCLComboboxClsName;
     if not Result then
       Exit;
     Info.cbSize := SizeOf(Info);
