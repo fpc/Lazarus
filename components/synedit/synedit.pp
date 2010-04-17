@@ -4216,8 +4216,8 @@ begin
   NewCaretXY:=CaretXY;
   if NewCaretXY.X < fLeftChar then
     NewCaretXY.X := fLeftChar
-  else if NewCaretXY.X >= fLeftChar + fCharsInWindow then
-    NewCaretXY.X := fLeftChar + fCharsInWindow - 1;
+  else if NewCaretXY.X > fLeftChar + fCharsInWindow - FCaretWidth then
+    NewCaretXY.X := fLeftChar + fCharsInWindow - FCaretWidth;
   if NewCaretXY.Y < fTopLine then
     NewCaretXY.Y := fTopLine
   else begin
