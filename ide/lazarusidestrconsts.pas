@@ -252,7 +252,7 @@ resourcestring
   lisMenuJumpBack = 'Jump back';
   lisMenuJumpForward = 'Jump forward';
   lisMenuAddJumpPointToHistory = 'Add jump point to history';
-  lisMenuViewJumpHistory = 'Jump-History ...';
+  lisMenuViewJumpHistory = 'Jump History ...';
   lisMenuFindBlockOtherEndOfCodeBlock = 'Find other end of code block';
   lisMenuFindCodeBlockStart = 'Find code block start';
   lisMenuFindDeclarationAtCursor = 'Find Declaration at cursor';
@@ -4674,6 +4674,9 @@ resourcestring
   lisNewGroupASetOfModes = 'New group - a set of modes';
   lisSelectTheActiveBuildMode = 'Select the active build mode';
   lisSearchUnit = 'Search unit';
+
+  //Jump History dialog
+  lisJHJumpHistory = 'Jump History';
 
 implementation
 

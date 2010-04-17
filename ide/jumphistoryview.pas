@@ -37,7 +37,6 @@ type
   TJumpHistoryViewWin = class(TForm)
     listHistory : TListBox;
     procedure FormCreate(Sender : TObject);
-    procedure FormDestroy(Sender : TObject);
     procedure listHistoryClick(Sender : TObject);
     procedure listHistoryDblClick(Sender : TObject);
     procedure OnIdle(Sender : TObject; var Done: Boolean);
@@ -75,7 +74,7 @@ procedure TJumpHistoryViewWin.FormCreate(Sender : TObject);
 var
   ALayout: TIDEWindowLayout;
 begin
-  Caption := lisMenuViewJumpHistory;
+  Caption := lisJHJumpHistory;
   Name := NonModalIDEWindowNames[nmiwJumpHistory];
   ALayout:=EnvironmentOptions.IDEWindowLayoutList.
                                           ItemByEnum(nmiwJumpHistory);
@@ -86,12 +85,6 @@ begin
 
   InitDisplay;
 end;
-
-procedure TJumpHistoryViewWin.FormDestroy(Sender : TObject);
-begin
-
-end;
-
 procedure TJumpHistoryViewWin.listHistoryClick(Sender : TObject);
 begin
   if EnvironmentOptions.MsgViewDblClickJumps then exit;
