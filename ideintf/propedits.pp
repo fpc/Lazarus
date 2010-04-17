@@ -3962,7 +3962,7 @@ begin
   if (not IsNil) and (not IsValidIdent(NewValue))
   then begin
     MessageDlg(oisIncompatibleIdentifier,
-      '"'+NewValue+'" is not a valid method name.', mtError,
+      Format(oisIsNotAValidMethodName,['"',NewValue,'"']), mtError,
       [mbCancel, mbIgnore], 0);
     exit;
   end;

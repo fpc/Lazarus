@@ -382,6 +382,7 @@ resourcestring
   fesFlTitle = 'FieldDefs';
   fesNoFieldsNote = 'Field''s list is not available, can''t check for duplicates';
   oisIncompatibleIdentifier = 'Incompatible Identifier';
+  oisIsNotAValidMethodName = '%s%s%s is not a valid method name.';
   oisTheIdentifierIsNotAMethodPressCancelToUndoPressIgn = 'The identifier %s%'
     +'s%s is not a method.%sPress Cancel to undo,%spress Ignore to force it.';
   oisIncompatibleMethod = 'Incompatible Method';
