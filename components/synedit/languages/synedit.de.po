@@ -2,7 +2,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: \n"
 "POT-Creation-Date: \n"
-"PO-Revision-Date: 2010-04-12 22:19+0100\n"
+"PO-Revision-Date: 2010-04-17 18:24+0100\n"
 "Last-Translator: Joerg Braun <jb@toolbox-mag.de>\n"
 "Language-Team: \n"
 "MIME-Version: 1.0\n"
@@ -42,20 +42,24 @@ msgid "Character"
 msgstr "Zeichen"
 
 #: syneditstrconst.syns_attrchunkmarker
+#, fuzzy
 msgid "Diff Chunk Marker"
-msgstr ""
+msgstr "Chunk-Markierung des Diff"
 
 #: syneditstrconst.syns_attrchunkmixed
+#, fuzzy
 msgid "Diff Chunk Line Counts"
-msgstr ""
+msgstr "Chunk-Zeilenzahl des Diff"
 
 #: syneditstrconst.syns_attrchunknew
+#, fuzzy
 msgid "Diff Chunk New Line Count"
-msgstr ""
+msgstr "Neue Chunk-Zeilenzahl des Diff"
 
 #: syneditstrconst.syns_attrchunkorig
+#, fuzzy
 msgid "Diff Chunk Original Line Count"
-msgstr ""
+msgstr "Unsprüngliche Chunk-Zeilenzahl des Diff"
 
 #: syneditstrconst.syns_attrclass
 msgid "Class"
@@ -123,7 +127,7 @@ msgstr "Ausnahme"
 
 #: syneditstrconst.syns_attrfloat
 msgid "Float"
-msgstr ""
+msgstr "Gleitkomma-Zahl"
 
 #: syneditstrconst.syns_attrform
 msgid "Form"
@@ -151,7 +155,7 @@ msgstr "Ungültiges Zeichen"
 
 #: syneditstrconst.syns_attrinclude
 msgid "Include"
-msgstr ""
+msgstr "Einfügen"
 
 #: syneditstrconst.syns_attrindirect
 msgid "Indirect"
@@ -174,20 +178,23 @@ msgid "Label"
 msgstr "Marke"
 
 #: syneditstrconst.syns_attrlineadded
+#, fuzzy
 msgid "Diff Added line"
-msgstr ""
+msgstr "Von Diff eingefügte Zeile"
 
 #: syneditstrconst.syns_attrlinechanged
+#, fuzzy
 msgid "Diff Changed Line"
-msgstr ""
+msgstr "Geänderte Diff-Zeile"
 
 #: syneditstrconst.syns_attrlinecontext
+#, fuzzy
 msgid "Diff Context Line"
-msgstr ""
+msgstr "Diff-Kontextzeile"
 
 #: syneditstrconst.syns_attrlineremoved
 msgid "Diff Removed Line"
-msgstr ""
+msgstr "Von Diff entfernte Zeile"
 
 #: syneditstrconst.syns_attrmacro
 msgid "Macro"
@@ -219,7 +226,7 @@ msgstr "Namensraum Attribut Wert"
 
 #: syneditstrconst.syns_attrnewfile
 msgid "Diff New File"
-msgstr ""
+msgstr "Neue Diff-Datei"
 
 #: syneditstrconst.syns_attrnonreservedkeyword
 msgid "Non-reserved keyword"
@@ -243,7 +250,7 @@ msgstr "Operator"
 
 #: syneditstrconst.syns_attrorigfile
 msgid "Diff Original File"
-msgstr ""
+msgstr "Ursprüngliches Diff-Datei"
 
 #: syneditstrconst.syns_attrplsql
 msgid "Reserved word (PL/SQL)"
