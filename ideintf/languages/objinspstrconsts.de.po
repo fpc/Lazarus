@@ -2,7 +2,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: \n"
 "POT-Creation-Date: \n"
-"PO-Revision-Date: 2010-03-28 20:35+0100\n"
+"PO-Revision-Date: 2010-04-17 21:17+0100\n"
 "Last-Translator: Joerg Braun <jb@toolbox-mag.de>\n"
 "Language-Team: Deutsch <lazarus@miraclec.com>\n"
 "MIME-Version: 1.0\n"
@@ -517,7 +517,7 @@ msgstr "Ungültiger Eigenschaftswert"
 
 #: objinspstrconsts.oisisnotavalidmethodname
 msgid "%s%s%s is not a valid method name."
-msgstr ""
+msgstr "%s%s%s ist kein gültiger Methodenname."
 
 #: objinspstrconsts.oisitemsselected
 msgid "%u items selected"
