@@ -5084,7 +5084,12 @@ begin
   if FBiDiMode=AValue then exit;
   FBiDiMode:=AValue;
   FParentBiDiMode := False;
-  Perform(CM_BIDIMODECHANGED, 0, 0);
+  DisableAutoSizing;
+  try
+    Perform(CM_BIDIMODECHANGED, 0, 0); // see TWinControl.CMBiDiModeChanged
+  finally
+    EnableAutoSizing;
+  end;
 end;
 
 {------------------------------------------------------------------------------

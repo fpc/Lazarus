@@ -6478,11 +6478,12 @@ end;
 
 procedure TWinControl.CMBiDiModeChanged(var Message: TLMessage);
 begin
-  inherited;
+  inherited CMBiDiModeChanged(Message);
   NotifyControls(CM_PARENTBIDIMODECHANGED);
   if HandleAllocated and (Message.wParam = 0) then
     TWSWinControlClass(WidgetSetClass).SetBiDiMode(Self,
        UseRightToLeftAlignment, UseRightToLeftReading, UseRightToLeftScrollBar);
+  AdjustSize;
 end;
 
 procedure TWinControl.CMBorderChanged(var Message: TLMessage);
