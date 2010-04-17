@@ -526,6 +526,21 @@ begin
   NotifyCustomForms(CM_APPSHOWMENUGLYPHCHANGED);
 end;
 
+procedure TApplication.SetTaskBarBehavior(const AValue: TTaskBarBehavior);
+var
+  i: Integer;
+  FormToUpdate: TCustomForm;
+begin
+  if FTaskBarBehavior=AValue then exit;
+  FTaskBarBehavior:=AValue;
+  for i := 0 to Screen.CustomFormCount-1 do
+  begin
+    FormToUpdate := Screen.CustomForms[i];
+    if FormToUpdate.ShowInTaskBar = stDefault then
+      FormToUpdate.UpdateShowInTaskBar;
+  end;
+end;
+
 {------------------------------------------------------------------------------
   procedure TApplication.UpdateMouseControl(NewMouseControl: TControl);
 
@@ -903,9 +918,17 @@ end;
  ------------------------------------------------------------------------------}
 procedure TApplication.UpdateVisible;
 
+  function AppUseSingleButton: Boolean;
+  begin
+    Result := (TaskBarBehavior = tbSingleButton)
+      or ((TaskBarBehavior = tbDefault)
+      and (WidgetSet.GetLCLCapability(lcNeedMininimizeAppWithMainForm) = LCL_CAPABILITY_YES));
+  end;
+
   function UseAppTaskbarItem(AForm: TCustomForm): Boolean; inline;
   begin
-    Result := (AForm = MainForm) or (AForm.ShowInTaskBar in [stNever, stDefault]);
+    Result := (AForm = MainForm) or (AForm.ShowInTaskBar = stNever)
+      or ((AForm.ShowInTaskBar = stDefault) and AppUseSingleButton);
   end;
 
   function HasVisibleForms: Boolean;

@@ -490,6 +490,15 @@ begin
 
   Activate;
   if Application <> nil then Application.Activate;
+  // The button reappears in some situations (e.g. when the window gets the
+  //"urgency" flag) so we hide it again here.
+  // This is the most important place to invoke UpdateShowInTaskBar, since
+  //invoking it anywhere else seeems basically useless/frequently reversed.
+  if (ShowInTaskBar = stNever) or ((ShowInTaskBar = stDefault)
+    and (Application.TaskBarBehavior = tbSingleButton)) then
+  begin
+    UpdateShowInTaskBar;
+  end;
 end;
 
 {------------------------------------------------------------------------------
@@ -754,6 +763,21 @@ begin
       FMenu.DestroyHandle;
     FMenu.WindowHandle := Handle;
   end;
+end;
+
+procedure TCustomForm.UpdateShowInTaskBar;
+var
+  Value: TShowInTaskBar;
+begin
+  if (Application.MainForm = Self) or (not HandleAllocated) then Exit;
+  Value := ShowInTaskBar;
+  if (Value = stDefault) or (csDesigning in ComponentState) then
+    case Application.TaskBarBehavior of
+      tbSingleButton: Value := stNever;
+      tbMultiButton: Value := stAlways;
+      else // nothing
+    end;
+  TWSCustomFormClass(WidgetSetClass).SetShowInTaskbar(Self, Value);
 end;
 
 class procedure TCustomForm.WSRegisterClass;
@@ -1758,8 +1782,7 @@ procedure TCustomForm.SetShowInTaskbar(Value: TShowInTaskbar);
 begin
   if Value = FShowInTaskbar then exit;
   FShowInTaskbar := Value;
-  if not (csDesigning in ComponentState) and HandleAllocated then
-    TWSCustomFormClass(WidgetSetClass).SetShowInTaskbar(Self, Value);
+  UpdateShowInTaskBar;
 end;
 
 {------------------------------------------------------------------------------
@@ -2295,6 +2318,7 @@ begin
 
   Assert(False, 'Trace:[TCustomForm.CreateWnd] FMenu.HandleNeeded');
   UpdateMenu;
+  UpdateShowInTaskBar;
 
   {$IFDEF OldAutoSize}
   // activate focus if visible

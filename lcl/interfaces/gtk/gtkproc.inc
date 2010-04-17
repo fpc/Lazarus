@@ -773,6 +773,13 @@ begin
     Enable := false;}
 
   //debugln('SetGtkWindowShowInTaskbar ',DbgSName(AForm),' ',dbgs(Enable));
+  // The button reappears in some (still unknown) situations, but has the
+  //'skip-taskbar-hint' property still set to True, so invoking the function
+  //doesn't have an effect. Resetting the property makes it work.
+  {$IFNDEF GTK1}
+  if (not Enable) and gtk_window_get_skip_taskbar_hint(PGtkWindow(Widget)) then
+    gtk_window_set_skip_taskbar_hint(PGtkWindow(Widget), False);
+  {$ENDIF}
   SetGtkWindowShowInTaskbar(PGtkWindow(Widget), Enable);
 end;
 

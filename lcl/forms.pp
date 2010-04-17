@@ -491,6 +491,7 @@ type
                             const Handler: TMethod);
     function FindDefaultForActiveControl: TWinControl;
     procedure UpdateMenu;
+    procedure UpdateShowInTaskBar;
   protected
     FActionLists: TList; // keep this TList for Delphi compatibility
     FFormBorderStyle: TFormBorderStyle;
@@ -1140,6 +1141,12 @@ type
     sbgSystem   // show them depending on OS
   );
 
+  TTaskBarBehavior = (
+    tbDefault,      // widgetset dependent
+    tbMultiButton,  // show buttons for Forms with ShowTaskBar = stDefault
+    tbSingleButton  // hide buttons for Forms with ShowTaskBar = stDefault
+  );
+
   { TApplication }
 
   TApplication = class(TCustomApplication)
@@ -1207,6 +1214,7 @@ type
     FLastMouseControlValid: Boolean;
     FBidiMode: TBiDiMode;
     FRestoreStayOnTop: TList;
+    FTaskBarBehavior: TTaskBarBehavior;
     procedure DoOnIdleEnd;
     function GetActive: boolean;
     function GetCurrentHelpFile: string;
@@ -1220,6 +1228,7 @@ type
     procedure SetNavigation(const AValue: TApplicationNavigationOptions);
     procedure SetShowButtonGlyphs(const AValue: TApplicationShowGlyphs);
     procedure SetShowMenuGlyphs(const AValue: TApplicationShowGlyphs);
+    procedure SetTaskBarBehavior(const AValue: TTaskBarBehavior);
     procedure UpdateMouseControl(NewMouseControl: TControl);
     procedure UpdateMouseHint(CurrentControl: TControl);
     procedure SetCaptureExceptions(const AValue: boolean);
@@ -1390,6 +1399,7 @@ type
     property MainForm: TForm read FMainForm;
     property ModalLevel: Integer read FModalLevel;
     property MouseControl: TControl read FMouseControl;
+    property TaskBarBehavior: TTaskBarBehavior read FTaskBarBehavior write SetTaskBarBehavior;
     property OnActionExecute: TActionEvent read FOnActionExecute write FOnActionExecute;
     property OnActionUpdate: TActionEvent read FOnActionUpdate write FOnActionUpdate;
     property OnActivate: TNotifyEvent read FOnActivate write FOnActivate;

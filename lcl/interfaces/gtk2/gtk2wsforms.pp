@@ -168,6 +168,10 @@ begin
     // create a floating form
     P := gtk_window_new(WindowType);
 
+    // This is done with the expectation to avoid the button blinking for forms
+    //that hide it, but currently it doesn't seem to make a difference.
+    gtk_window_set_skip_taskbar_hint(P, True);
+
     if (ABorderStyle = bsNone) and (ACustomForm.FormStyle in fsAllStayOnTop) then
       gtk_window_set_decorated(PGtkWindow(P), False);
 
