@@ -6918,6 +6918,7 @@ begin
   if FirstLinePos<SrcEdit.LineCount then
     DebugLn(['TSourceNotebook.EditorGetIndent Firstline+1=',SrcEdit.Lines[FirstLinePos+0]]);
   DebugLn(['TSourceNotebook.EditorGetIndent CodeBuffer: ',dbgstr(copy(CodeBuf.Source,p-10,10)),'|',dbgstr(copy(CodeBuf.Source,p,10))]);
+  DebugLn(['TSourceNotebook.EditorGetIndent CodeBuffer: "',copy(CodeBuf.Source,p-10,10),'|',copy(CodeBuf.Source,p,10)]);
   {$ENDIF}
   NestedComments:=CodeToolBoss.GetNestedCommentsFlagForFile(CodeBuf.Filename);
   if not CodeToolBoss.Indenter.GetIndent(CodeBuf.Source,p,NestedComments,
