@@ -717,7 +717,7 @@ begin
   p := TopCodeFoldBlockType(DownIndex);
   if p >= CountLfmCodeFoldBlockOffset then
     p := p - PtrUInt(CountLfmCodeFoldBlockOffset);
-  Result := TLfmCodeFoldBlockType(p);
+  Result := TLfmCodeFoldBlockType(PtrUInt(p));
 end;
 
 function TSynLFMSyn.GetFoldConfigCount: Integer;

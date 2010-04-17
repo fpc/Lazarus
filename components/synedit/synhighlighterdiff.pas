@@ -728,7 +728,7 @@ begin
   p := TopCodeFoldBlockType(DownIndex);
   if p >= CountDiffCodeFoldBlockOffset then
     p := p - PtrUInt(CountDiffCodeFoldBlockOffset);
-  Result := TDiffCodeFoldBlockType(p);
+  Result := TDiffCodeFoldBlockType(PtrUInt(p));
 end;
 
 function TSynDiffSyn.GetFoldConfigInstance(Index: Integer): TSynCustomFoldConfig;
