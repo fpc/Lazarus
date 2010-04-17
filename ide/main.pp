@@ -10574,7 +10574,7 @@ begin
           Project1.LastCompilerFilename:=CompilerFilename;
           Project1.LastCompilerParams:=CompilerParams;
           Project1.LastCompilerFileDate:=FileAgeCached(CompilerFilename);
-          DoJumpToCompilerMessage(-1,true);
+          DoJumpToCompilerMessage(-1,not EnvironmentOptions.ShowCompileDialog);
           CompileProgress.Ready(lisInfoBuildError);
           exit;
         end;
@@ -10617,7 +10617,6 @@ begin
     MessagesView.AddMsg(Format(lisProjectSuccessfullyBuilt, ['"',
                                         Project1.ShortDescription, '"']),'',-1);
     CompileProgress.Ready(lisInfoBuildSuccess);
-
   finally
     // check sources
     DoCheckFilesOnDisk;
@@ -10700,7 +10699,8 @@ begin
   Result := mrCancel;
 
   Result := DebugBoss.StartDebugging;
-//  if Result<>mrOk then exit;
+  if Result = mrOk then
+    CompileProgress.Hide();
 
   DebugLn('[TMainIDE.DoRunProject] END');
 end;
