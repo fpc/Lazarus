@@ -2157,7 +2157,7 @@ begin
   end;
   {$ENDIF}
   if FCodeBuffer=nil then exit;
-  //DebugLn(['TSourceEditor.UpdateCodeBuffer ',FileName]);
+  //DebugLn(['TSourceEditor.UpdateCodeBuffer ',FCodeBuffer.FileName]);
   IncreaseIgnoreCodeBufferLock;
   SynEditor.BeginUpdate;
   FCodeBuffer.Assign(SynEditor.Lines);
