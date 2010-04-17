@@ -114,7 +114,7 @@ end;
 
 procedure TLCLComponent.BeforeDestruction;
 begin
-  inherited;
+  inherited BeforeDestruction;
   Destroying;
 end;
 

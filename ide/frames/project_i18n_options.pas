@@ -79,7 +79,8 @@ begin
   with FProject do
   begin
     AFilename := POOutputDirectory;
-    ShortenFilename(AFilename);
+    if not IsVirtual then
+      AFilename:=CreateRelativePath(AFilename,FProject.ProjectDirectory);
     POOutDirEdit.Text := AFilename;
     EnableI18NCheckBox.Checked := Enablei18n;
     Enablei18nInfo(Enablei18n);
@@ -93,7 +94,8 @@ begin
   with AOptions as TProject do
   begin
     AFilename := TrimFilename(POOutDirEdit.Text);
-    LongenFilename(AFilename);
+    if (not FilenameIsAbsolute(AFilename)) and (not IsVirtual) then
+      AFilename:=AppendPathDelim(ProjectDirectory)+AFilename;
     POOutputDirectory := AFilename;
     EnableI18N := EnableI18NCheckBox.Checked;
   end;
