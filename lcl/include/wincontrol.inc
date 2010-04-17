@@ -6668,6 +6668,13 @@ begin
     ',',FBoundsRealized.Right-FBoundsRealized.Left,
     'x',FBoundsRealized.Bottom-FBoundsRealized.Top]);
   {$ENDIF}
+  {$IFDEF VerboseBug16184}
+  DebugLn(['TWinControl.WMMove A ',DbgSName(Self),' Message=',Message.XPos,',',Message.YPos,
+    ' BoundsRealized=',FBoundsRealized.Left,',',FBoundsRealized.Top,
+    ' FromIntf=',Message.MoveType=Move_SourceIsInterface,
+    ',',FBoundsRealized.Right-FBoundsRealized.Left,
+    'x',FBoundsRealized.Bottom-FBoundsRealized.Top]);
+  {$ENDIF}
   NewWidth := Width;
   NewHeight := Height;
   if Message.MoveType = Move_SourceIsInterface then
@@ -6723,6 +6730,10 @@ begin
   {$IFDEF CHECK_POSITION}
   if CheckPosition(Self) then
   {$ENDIF}
+  DebugLn(['TWinControl.WMSize A ',Name,':',ClassName,' Message=',Message.Width,',',Message.Height,
+    ' BoundsRealized=',dbgs(FBoundsRealized),' FromIntf=',(Message.SizeType and Size_SourceIsInterface)>0]);
+  {$ENDIF}
+  {$IFDEF VerboseBug16184}
   DebugLn(['TWinControl.WMSize A ',Name,':',ClassName,' Message=',Message.Width,',',Message.Height,
     ' BoundsRealized=',dbgs(FBoundsRealized),' FromIntf=',(Message.SizeType and Size_SourceIsInterface)>0]);
   {$ENDIF}
@@ -7990,6 +8001,9 @@ begin
     {$IFDEF VerboseNewAutoSize}
     DebugLn(['TWinControl.DoSendShowHideToInterface ',DbgSName(Self),' FBoundsRealized=',dbgs(FBoundsRealized),' New=',HandleObjectShouldBeVisible]);
     {$ENDIF}
+    {$IFDEF VerboseBug16184}
+    DebugLn(['TWinControl.DoSendShowHideToInterface ',DbgSName(Self),' FBoundsRealized=',dbgs(FBoundsRealized),' New=',HandleObjectShouldBeVisible]);
+    {$ENDIF}
     TWSWinControlClass(WidgetSetClass).ShowHide(Self);
   end;
 end;
@@ -8026,6 +8040,11 @@ begin
   {$ENDIF}
   {$IFDEF CHECK_POSITION}
   if CheckPosition(Self) then
+    DebugLn('[TWinControl.DoSendBoundsToInterface] A ',DbgSName(Self),
+    ' OldRelBounds=',dbgs(FBoundsRealized),
+    ' -> NewBounds=',dbgs(NewBounds));
+  {$ENDIF}
+  {$IFDEF VerboseBug16184}
     DebugLn('[TWinControl.DoSendBoundsToInterface] A ',DbgSName(Self),
     ' OldRelBounds=',dbgs(FBoundsRealized),
     ' -> NewBounds=',dbgs(NewBounds));
