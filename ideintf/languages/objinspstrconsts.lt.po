@@ -515,6 +515,10 @@ msgstr "Interfeisas"
 msgid "Invalid property value"
 msgstr "Klaidinga savybės reikšmė"
 
+#: objinspstrconsts.oisisnotavalidmethodname
+msgid "%s%s%s is not a valid method name."
+msgstr ""
+
 #: objinspstrconsts.oisitemsselected
 msgid "%u items selected"
 msgstr "pažymėta %u elementų"

@@ -7297,6 +7297,10 @@ msgstr "%s%s%s no és un nom de projecte vàlid. %s Si us plau, escolliu-ne un a
 msgid "%s is a %s.%sThis circle dependency is not allowed."
 msgstr ""
 
+#: lazarusidestrconsts.lisjhjumphistory
+msgid "Jump History"
+msgstr ""
+
 #: lazarusidestrconsts.lisjitform
 msgid "JIT Form"
 msgstr ""
@@ -9237,8 +9241,8 @@ msgstr ""
 
 #: lazarusidestrconsts.lismenuviewjumphistory
 #, fuzzy
-#| msgid "View Jump-History ..."
-msgid "Jump-History ..."
+#| msgid "Jump-History ..."
+msgid "Jump History ..."
 msgstr "Mostra la història dels salts ..."
 
 #: lazarusidestrconsts.lismenuviewlocalvariables

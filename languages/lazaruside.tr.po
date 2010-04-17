@@ -7265,6 +7265,10 @@ msgstr "%s%s%s geçersiz bir proje adı.%sLütfen başka bir ad seçin (ör. pro
 msgid "%s is a %s.%sThis circle dependency is not allowed."
 msgstr ""
 
+#: lazarusidestrconsts.lisjhjumphistory
+msgid "Jump History"
+msgstr ""
+
 #: lazarusidestrconsts.lisjitform
 msgid "JIT Form"
 msgstr ""
@@ -9207,8 +9211,8 @@ msgstr "IDE hız düğmelerini görüntüle"
 
 #: lazarusidestrconsts.lismenuviewjumphistory
 #, fuzzy
-#| msgid "View Jump-History ..."
-msgid "Jump-History ..."
+#| msgid "Jump-History ..."
+msgid "Jump History ..."
 msgstr "Atlama-Geçmişini Gör ..."
 
 #: lazarusidestrconsts.lismenuviewlocalvariables

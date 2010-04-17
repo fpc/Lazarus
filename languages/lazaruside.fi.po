@@ -7286,6 +7286,10 @@ msgstr "%s%s%s on vääränlainen projektin tiedostonimi.%sOle hyvä ja valitse 
 msgid "%s is a %s.%sThis circle dependency is not allowed."
 msgstr ""
 
+#: lazarusidestrconsts.lisjhjumphistory
+msgid "Jump History"
+msgstr ""
+
 #: lazarusidestrconsts.lisjitform
 msgid "JIT Form"
 msgstr ""
@@ -9224,8 +9228,8 @@ msgstr ""
 
 #: lazarusidestrconsts.lismenuviewjumphistory
 #, fuzzy
-#| msgid "View Jump-History ..."
-msgid "Jump-History ..."
+#| msgid "Jump-History ..."
+msgid "Jump History ..."
 msgstr "Näytä hyppy historia ..."
 
 #: lazarusidestrconsts.lismenuviewlocalvariables

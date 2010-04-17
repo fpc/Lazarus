@@ -1121,6 +1121,19 @@ msgstr "Dateiendungen"
 msgid "Find text at cursor"
 msgstr "Text am Cursor suchen"
 
+#: lazarusidestrconsts.dlgfolddiffchunk
+msgid "Chunk"
+msgstr ""
+
+#: lazarusidestrconsts.dlgfolddiffchunksect
+msgid "Chunk section"
+msgstr ""
+
+#: lazarusidestrconsts.dlgfolddifffile
+msgctxt "lazarusidestrconsts.dlgfolddifffile"
+msgid "File"
+msgstr "Datei"
+
 #: lazarusidestrconsts.dlgfoldhtmlasp
 msgid "ASP"
 msgstr ""
@@ -7299,6 +7312,10 @@ msgstr "%s%s%s ist als Projektname ungültig.%sBitte wählen Sie einen anderen (
 msgid "%s is a %s.%sThis circle dependency is not allowed."
 msgstr "%s ist ein %s.%sDiese zirkuläre Abhängigkeit ist nicht erlaubt"
 
+#: lazarusidestrconsts.lisjhjumphistory
+msgid "Jump History"
+msgstr ""
+
 #: lazarusidestrconsts.lisjitform
 msgid "JIT Form"
 msgstr "JIT-Form"
@@ -9089,6 +9106,7 @@ msgid "Exit"
 msgstr "Beenden"
 
 #: lazarusidestrconsts.lismenutemplatefile
+msgctxt "lazarusidestrconsts.lismenutemplatefile"
 msgid "File"
 msgstr "Datei"
 
@@ -9231,8 +9249,9 @@ msgid "IDE speed buttons"
 msgstr "Speedbuttons der IDE anzeigen"
 
 #: lazarusidestrconsts.lismenuviewjumphistory
-#| msgid "View Jump-History ..."
-msgid "Jump-History ..."
+#, fuzzy
+#| msgid "Jump-History ..."
+msgid "Jump History ..."
 msgstr "Sprungliste anzeigen ..."
 
 #: lazarusidestrconsts.lismenuviewlocalvariables

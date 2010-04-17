@@ -7311,6 +7311,10 @@ msgstr "%s%s%s non è un nome progetto valido.%sScegliere un altro nome (per es.
 msgid "%s is a %s.%sThis circle dependency is not allowed."
 msgstr ""
 
+#: lazarusidestrconsts.lisjhjumphistory
+msgid "Jump History"
+msgstr ""
+
 #: lazarusidestrconsts.lisjitform
 msgid "JIT Form"
 msgstr "Form JIT"
@@ -9253,8 +9257,8 @@ msgstr "Visualizza gli speed buttons dell'IDE"
 
 #: lazarusidestrconsts.lismenuviewjumphistory
 #, fuzzy
-#| msgid "View Jump-History ..."
-msgid "Jump-History ..."
+#| msgid "Jump-History ..."
+msgid "Jump History ..."
 msgstr "Visualizza storico salti ..."
 
 #: lazarusidestrconsts.lismenuviewlocalvariables

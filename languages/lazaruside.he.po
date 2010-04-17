@@ -7276,6 +7276,10 @@ msgstr ""
 msgid "%s is a %s.%sThis circle dependency is not allowed."
 msgstr ""
 
+#: lazarusidestrconsts.lisjhjumphistory
+msgid "Jump History"
+msgstr ""
+
 #: lazarusidestrconsts.lisjitform
 msgid "JIT Form"
 msgstr ""
@@ -9216,8 +9220,8 @@ msgstr "צפה בכפתורי ה Speed ב IDE"
 
 #: lazarusidestrconsts.lismenuviewjumphistory
 #, fuzzy
-#| msgid "View Jump-History ..."
-msgid "Jump-History ..."
+#| msgid "Jump-History ..."
+msgid "Jump History ..."
 msgstr "צפה בהיסטורית הקפיצה ..."
 
 #: lazarusidestrconsts.lismenuviewlocalvariables

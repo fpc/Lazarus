@@ -7304,6 +7304,10 @@ msgstr "%s%s%s は無効なプロジェクト名です. 別の(例 project1.lpi)
 msgid "%s is a %s.%sThis circle dependency is not allowed."
 msgstr "%sは%sです、%s循環参照は許されません。"
 
+#: lazarusidestrconsts.lisjhjumphistory
+msgid "Jump History"
+msgstr ""
+
 #: lazarusidestrconsts.lisjitform
 msgid "JIT Form"
 msgstr "JITフォーム"
@@ -9246,8 +9250,8 @@ msgstr "IDEスピードボタンを表示"
 
 #: lazarusidestrconsts.lismenuviewjumphistory
 #, fuzzy
-#| msgid "View Jump-History ..."
-msgid "Jump-History ..."
+#| msgid "Jump-History ..."
+msgid "Jump History ..."
 msgstr "移動先履歴を表示 ..."
 
 #: lazarusidestrconsts.lismenuviewlocalvariables

@@ -7303,6 +7303,10 @@ msgstr "Projekto pavadinimas %s%s%s yra klaidingas.%sNurodykite kitokį pavadini
 msgid "%s is a %s.%sThis circle dependency is not allowed."
 msgstr "%s yra %s.%sŠis priklausomybių ratas nėra leidžiamas."
 
+#: lazarusidestrconsts.lisjhjumphistory
+msgid "Jump History"
+msgstr ""
+
 #: lazarusidestrconsts.lisjitform
 msgid "JIT Form"
 msgstr "JITForm"
@@ -9239,8 +9243,9 @@ msgid "IDE speed buttons"
 msgstr "IKA spartieji mygtukai"
 
 #: lazarusidestrconsts.lismenuviewjumphistory
-#| msgid "View Jump-History ..."
-msgid "Jump-History ..."
+#, fuzzy
+#| msgid "Jump-History ..."
+msgid "Jump History ..."
 msgstr "Peršokimų istorija…"
 
 #: lazarusidestrconsts.lismenuviewlocalvariables

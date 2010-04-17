@@ -7297,6 +7297,10 @@ msgstr "%s%s%s n'est pas un nom de projet valide.%sVeuillez en choisir un autre 
 msgid "%s is a %s.%sThis circle dependency is not allowed."
 msgstr "%s est %s.%s Ce cercle de dépendance n'est pas autorisé."
 
+#: lazarusidestrconsts.lisjhjumphistory
+msgid "Jump History"
+msgstr ""
+
 #: lazarusidestrconsts.lisjitform
 msgid "JIT Form"
 msgstr "Fiche JIT"
@@ -9230,7 +9234,7 @@ msgstr ""
 
 #: lazarusidestrconsts.lismenuviewjumphistory
 #| msgid "View Jump-History ..."
-msgid "Jump-History ..."
+msgid "Jump History ..."
 msgstr ""
 
 #: lazarusidestrconsts.lismenuviewlocalvariables
