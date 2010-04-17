@@ -509,6 +509,7 @@ type
 
 var
 
+  (* When adding new entries, ensure that resourcestrings are re-assigned in the constructor *)
   EditorOptionsDividerInfoPas: Array [0..8] of TEditorOptionsDividerInfo
   = (
       (Name: dlgDivPasUnitSectionName;  Xml: 'Sect';    BoolOpt: True;  MaxLevel: 1),
@@ -524,6 +525,7 @@ var
 
 const
 
+  (* When adding new entries, ensure that resourcestrings are re-assigned in the constructor *)
   EditorOptionsDividerDefaults: array[TLazSyntaxHighlighter] of
     TEditorOptionsDividerRecord =
     ( (Count: 0; Info: nil), // none
@@ -575,6 +577,7 @@ type
 
 const
 
+  (* When adding new entries, ensure that resourcestrings are re-assigned in the constructor *)
   EditorOptionsFoldInfoPas: Array [0..19] of TEditorOptionsFoldInfo
   = (
       (Name:  dlgFoldPasProcedure;     Xml:     'Procedure';
@@ -709,6 +712,7 @@ const
       )
     );
 
+  (* When adding new entries, ensure that resourcestrings are re-assigned in the constructor *)
   EditorOptionsFoldDefaults: array[TLazSyntaxHighlighter] of
     TEditorOptionsFoldRecord =
     ( (Count:  0; Info: nil), // none
