@@ -534,6 +534,7 @@ begin
     ListIndexOutOfBounds(Index);
   BeginUpdate;
   FList.DeleteRows(Index, 1);
+  IncreaseTextChangeStamp;
   fIndexOfLongestLine := -1;
   SendNotification(senrLineCount, self, Index, -1);
   EndUpdate;
@@ -547,6 +548,7 @@ begin
       ListIndexOutOfBounds(Index);
     BeginUpdate;
     FList.DeleteRows(Index, NumLines);
+    IncreaseTextChangeStamp;
     SendNotification(senrLineCount, self, Index, -NumLines);
     EndUpdate;
   end;
@@ -758,6 +760,7 @@ begin
   if Count = Capacity then
     Grow;
   FList.InsertRows(Index, 1);
+  IncreaseTextChangeStamp;
   fIndexOfLongestLine := -1;                                                    //mh 2000-10-19
   fList[Index] := S;
   FList.Objects[Index] := nil;
@@ -777,6 +780,7 @@ begin
       if Capacity<Count + NumLines then
         SetCapacity(Count + NumLines);
       FList.InsertRows(Index, NumLines);
+      IncreaseTextChangeStamp;
       SendNotification(senrLineCount, self, Index, NumLines);
     finally
       EndUpdate;
