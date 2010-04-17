@@ -2839,7 +2839,7 @@ begin
       and AtomIsKeyWord
       then
         RaiseCharExpectedButAtomFound(';');
-    until (CurPos.Flag in [cafSemicolon,cafNone]);
+    until (CurPos.Flag=cafSemicolon) or (CurPos.StartPos>SrcLen);
   end;
   // read ;
   if CurPos.Flag<>cafSemicolon then
