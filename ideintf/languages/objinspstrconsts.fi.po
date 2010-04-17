@@ -476,7 +476,7 @@ msgstr ""
 
 #: objinspstrconsts.oisincompatibleidentifier
 msgid "Incompatible Identifier"
-msgstr ""
+msgstr "Sopimaton tunnus"
 
 #: objinspstrconsts.oisincompatiblemethod
 msgid "Incompatible Method"

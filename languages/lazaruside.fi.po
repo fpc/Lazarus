@@ -3240,7 +3240,7 @@ msgstr ""
 
 #: lazarusidestrconsts.lisaddparameterbrackets
 msgid "Add parameter brackets"
-msgstr ""
+msgstr "Lisää parametrin sulkeet"
 
 #: lazarusidestrconsts.lisaddtoproject
 msgid "Add %s to project?"
@@ -3393,7 +3393,7 @@ msgstr ""
 
 #: lazarusidestrconsts.lisanchorsofselectedcontrols
 msgid "Anchors of selected controls"
-msgstr ""
+msgstr "Valittujen komponenttien kiinnitys"
 
 #: lazarusidestrconsts.lisanchortobottomsidekeepborderspace
 msgid "Anchor to bottom side of sibling, keep border space"
@@ -3509,7 +3509,7 @@ msgstr "Näytetään automaattisesti komponenttimuokkain"
 
 #: lazarusidestrconsts.lisavailablepackages
 msgid "Available packages"
-msgstr ""
+msgstr "Käytettävissä olevat komponenttipaketit"
 
 #: lazarusidestrconsts.lisbackupchangedfiles
 msgid "Make backup of changed files"
@@ -4460,7 +4460,7 @@ msgstr "Näytä tyhjät metodit"
 
 #: lazarusidestrconsts.liscodehelpshowunusedunits
 msgid "Show unused units"
-msgstr ""
+msgstr "Näytä käyttämättömät käännösyksiköt (unit)"
 
 #: lazarusidestrconsts.liscodeobignoreconstinfuncs
 msgctxt "lazarusidestrconsts.liscodeobignoreconstinfuncs"
@@ -5104,11 +5104,11 @@ msgstr ""
 
 #: lazarusidestrconsts.lisconfirmpackagenewpackageset
 msgid "New package set"
-msgstr ""
+msgstr "Uusi komponenttipakettien joukko"
 
 #: lazarusidestrconsts.lisconfirmpackageoldpackageset
 msgid "Old package set"
-msgstr ""
+msgstr "Vanha komponenttipakettien joukko"
 
 #: lazarusidestrconsts.lisconsoleapplication
 msgid "Console application"
@@ -5161,7 +5161,7 @@ msgstr "Muunna merkistö"
 
 #: lazarusidestrconsts.lisconvertencodingofprojectspackages
 msgid "Convert encoding of projects/packages"
-msgstr ""
+msgstr "Muunna projektin tai komponettipaketin merkistön koodaus"
 
 #: lazarusidestrconsts.lisconvertprojectorpackage
 msgid "Convert project or package"
@@ -6919,7 +6919,7 @@ msgstr ""
 
 #: lazarusidestrconsts.lisidetitlestartswithprojectname
 msgid "IDE title starts with project name"
-msgstr ""
+msgstr "Kehitysympäristön otsikkoteksti alkaa projektin nimellä"
 
 #: lazarusidestrconsts.lisiecoerroraccessingxml
 msgid "Error accessing xml"
@@ -7188,7 +7188,7 @@ msgstr "Asennus epäonnistui"
 
 #: lazarusidestrconsts.lisinstalledpackages
 msgid "Installed Packages"
-msgstr ""
+msgstr "Asennetut komponenttipaketit"
 
 #: lazarusidestrconsts.lisinstallselection
 msgid "Install selection"
@@ -7292,7 +7292,7 @@ msgstr ""
 
 #: lazarusidestrconsts.liskeep
 msgid "keep"
-msgstr ""
+msgstr "Pidä"
 
 #: lazarusidestrconsts.liskeepname
 msgid "Keep name"
@@ -7380,7 +7380,7 @@ msgstr ""
 
 #: lazarusidestrconsts.liskmconfigureinstalledpackages
 msgid "Configure installed packages"
-msgstr ""
+msgstr "Muokkaa asennettuja komponenttipaketteja"
 
 #: lazarusidestrconsts.liskmcontextsensitivehelp
 msgid "Context sensitive help"
@@ -9871,7 +9871,7 @@ msgstr ""
 
 #: lazarusidestrconsts.lispackagestoinstallintheide
 msgid "Packages to install in the IDE"
-msgstr ""
+msgstr "Komponenttipaketit jotka asennetaan kehitysympäristöön"
 
 #: lazarusidestrconsts.lispackageunit
 msgid "package unit"
@@ -11544,7 +11544,7 @@ msgstr "Suhteelliset hakupolut"
 
 #: lazarusidestrconsts.lisremove
 msgid "remove"
-msgstr ""
+msgstr "Poista"
 
 #: lazarusidestrconsts.lisremoveallinvalidproperties
 msgid "Remove all invalid properties"
@@ -11552,7 +11552,7 @@ msgstr "Poista kaikki vikaantuneet tai toimimattomat ominaisuudet"
 
 #: lazarusidestrconsts.lisremoveallunits
 msgid "Remove all units"
-msgstr ""
+msgstr "Poista kaikki käännösyksiköt"
 
 #: lazarusidestrconsts.lisremovefromproject
 msgid "Remove from project"
@@ -11564,7 +11564,7 @@ msgstr ""
 
 #: lazarusidestrconsts.lisremoveselectedunits
 msgid "Remove selected units"
-msgstr ""
+msgstr "Poista valitut käännösyksiköt"
 
 #: lazarusidestrconsts.lisremovethem
 msgid "Remove them"
@@ -11753,11 +11753,11 @@ msgstr ""
 
 #: lazarusidestrconsts.lissaveandexitdialog
 msgid "Save and exit dialog"
-msgstr ""
+msgstr "Tallenna ja poistu dialogista"
 
 #: lazarusidestrconsts.lissaveandrebuildide
 msgid "Save and rebuild IDE"
-msgstr ""
+msgstr "Tallenna ja käännä kehitysympäristö uudelleen"
 
 #: lazarusidestrconsts.lissavechanges
 msgid "Save changes?"
@@ -13141,7 +13141,7 @@ msgstr ""
 
 #: lazarusidestrconsts.lisuninstallselection
 msgid "Uninstall selection"
-msgstr ""
+msgstr "Poista asennuksesta"
 
 #: lazarusidestrconsts.lisunithaschangedsave
 msgid "Unit %s%s%s has changed. Save?"
@@ -13193,7 +13193,7 @@ msgstr "Käännösyksikköjä (unit) ei löydetty"
 
 #: lazarusidestrconsts.lisunusedunits
 msgid "Unused units"
-msgstr ""
+msgstr "Käyttämättömät käännösyksiköt (unit)"
 
 #: lazarusidestrconsts.lisupdatepreview
 msgid "Update preview"
@@ -14832,7 +14832,7 @@ msgstr "Kopio tiedoston nimi leikepöydälle"
 
 #: lazarusidestrconsts.uemcopytonewwindow
 msgid "Copy to new Window"
-msgstr ""
+msgstr "Kopioi uuteen ikkunaan"
 
 #: lazarusidestrconsts.uemcopytootherwindow
 msgid "Copy to other Window"
@@ -14904,7 +14904,7 @@ msgstr "Käännä sijoitus päinvastaiseksi"
 
 #: lazarusidestrconsts.uemlineending
 msgid "Line ending"
-msgstr ""
+msgstr "Rivinloppu"
 
 #: lazarusidestrconsts.uemmovepageleft
 msgid "Move page left"
@@ -14924,7 +14924,7 @@ msgstr "Siirrä välilehti oikeanpuolimmaiseksi"
 
 #: lazarusidestrconsts.uemmovetonewwindow
 msgid "Move to new Window"
-msgstr ""
+msgstr "Siirrä uuteen ikkunaan"
 
 #: lazarusidestrconsts.uemmovetootherwindow
 msgid "Move to other Window"
