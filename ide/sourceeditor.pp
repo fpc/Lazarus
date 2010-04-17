@@ -4031,7 +4031,7 @@ begin
   CodeBuffer.LineColToPosition(ALogStartPos.Y,ALogStartPos.X,p);
   if p<1 then exit;
   {$IFDEF VerboseIndenter}
-  if ALogStartPos.Y>0 then
+  if ALogStartPos.Y>1 then
     DebugLn(['TSourceEditor.EditorPaste Y-1=',Lines[ALogStartPos.Y-2]]);
   DebugLn(['TSourceEditor.EditorPaste Y+0=',Lines[ALogStartPos.Y-1]]);
   if ALogStartPos.Y<LineCount then
@@ -6909,14 +6909,15 @@ begin
   Result := True;
   SrcEdit.UpdateCodeBuffer;
   CodeBuf:=SrcEdit.CodeBuffer;
-  CodeBuf.LineColToPosition(LogCaret.Y-1,LogCaret.X,p);
+  CodeBuf.LineColToPosition(LogCaret.Y,LogCaret.X,p);
   if p<1 then exit;
   {$IFDEF VerboseIndenter}
   if FirstLinePos>0 then
-    DebugLn(['TSourceNotebook.EditorGetIndent Firstline-1=',SrcEdit.Lines[FirstLinePos-1]]);
-  DebugLn(['TSourceNotebook.EditorGetIndent Firstline+0=',SrcEdit.Lines[FirstLinePos]]);
+    DebugLn(['TSourceNotebook.EditorGetIndent Firstline-1=',SrcEdit.Lines[FirstLinePos-2]]);
+  DebugLn(['TSourceNotebook.EditorGetIndent Firstline+0=',SrcEdit.Lines[FirstLinePos-1]]);
   if FirstLinePos<SrcEdit.LineCount then
-    DebugLn(['TSourceNotebook.EditorGetIndent Firstline+1=',SrcEdit.Lines[FirstLinePos+1]]);
+    DebugLn(['TSourceNotebook.EditorGetIndent Firstline+1=',SrcEdit.Lines[FirstLinePos+0]]);
+  DebugLn(['TSourceEditor.EditorPaste CodeBuffer: ',dbgstr(copy(CodeBuf.Source,p-10,10)),'|',dbgstr(copy(CodeBuf.Source,p,10))]);
   {$ENDIF}
   NestedComments:=CodeToolBoss.GetNestedCommentsFlagForFile(CodeBuf.Filename);
   if not CodeToolBoss.Indenter.GetIndent(CodeBuf.Source,p,NestedComments,
