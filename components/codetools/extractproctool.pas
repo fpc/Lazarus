@@ -298,6 +298,7 @@ var
   ProcNode: TCodeTreeNode;
 begin
   Result:=false;
+  MissingIdentifiers:=nil;
   if not InitExtractProc(StartPos,EndPos,MethodPossible,SubProcSameLvlPossible)
   then exit;
   MissingIdentifiers:=CreateTreeOfPCodeXYPosition;
