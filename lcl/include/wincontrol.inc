@@ -3445,7 +3445,8 @@ procedure TWinControl.DoAllAutoSize;
         ClearRequests(TWinControl(AControl).Controls[i]);
   end;
 
-  procedure UpdateShowingRecursive(AWinControl: TWinControl);
+  procedure UpdateShowingRecursive(AWinControl: TWinControl;
+    OnlyChilds: boolean);
   var
     i: Integer;
   begin
@@ -3453,9 +3454,9 @@ procedure TWinControl.DoAllAutoSize;
     if AWinControl.FControls<>nil then
       for i:=0 to AWinControl.FControls.Count-1 do
         if TObject(AWinControl.FControls[i]) is TWinControl then
-          UpdateShowingRecursive(TWinControl(AWinControl.FControls[i]));
+          UpdateShowingRecursive(TWinControl(AWinControl.FControls[i]),false);
     // then make the control visible
-    if AWinControl.HandleObjectShouldBeVisible
+    if (not OnlyChilds) and AWinControl.HandleObjectShouldBeVisible
     and (not AWinControl.Showing) then
       AWinControl.UpdateShowing;
   end;
@@ -3497,13 +3498,13 @@ begin
       {$ENDIF}
       RealizeBoundsRecursive;
       if (cfAutoSizeNeeded in FControlFlags) then continue; // repeat computing bounds
-      // make handles visible
+      // make child handles visible
       {$IFDEF VerboseAllAutoSize}
       DebugLn(['TWinControl.DoAllAutoSize UPDATESHOWING ',DbgSName(Self),' lclbounds=',dbgs(BoundsRect)]);
       {$ENDIF}
       Include(FWinControlFlags,wcfUpdateShowing);
       try
-        UpdateShowingRecursive(Self);
+        UpdateShowingRecursive(Self,true);
       finally
         Exclude(FWinControlFlags,wcfUpdateShowing);
       end;
@@ -3515,6 +3516,17 @@ begin
     {$ENDIF}
   finally
     Exclude(FWinControlFlags,wcfAllAutoSizing);
+  end;
+  // make handle visible => this can trigger events like Form.OnShow where
+  // application do arbitrary stuff
+  {$IFDEF VerboseAllAutoSize}
+  DebugLn(['TWinControl.DoAllAutoSize UPDATESHOWING ',DbgSName(Self),' lclbounds=',dbgs(BoundsRect)]);
+  {$ENDIF}
+  Include(FWinControlFlags,wcfUpdateShowing);
+  try
+    UpdateShowingRecursive(Self,false);
+  finally
+    Exclude(FWinControlFlags,wcfUpdateShowing);
   end;
 end;
 
