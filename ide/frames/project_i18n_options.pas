@@ -6,7 +6,7 @@ interface
 
 uses
   Classes, SysUtils, FileUtil, Forms, Controls, Graphics, Dialogs,
-  StdCtrls, Project, IDEOptionsIntf, LazarusIDEStrConsts, IDEDialogs;
+  StdCtrls, Project, IDEProcs, IDEOptionsIntf, LazarusIDEStrConsts, IDEDialogs;
 
 type
 
@@ -49,7 +49,8 @@ begin
   NewDirectory := LazSelectDirectory(lisPOChoosePoFileDirectory,
                                      FProject.ProjectDirectory);
   if NewDirectory = '' then Exit;
-  FProject.ShortenFilename(NewDirectory);
+  if not FProject.IsVirtual then
+    NewDirectory:=CreateRelativePath(NewDirectory,FProject.ProjectDirectory);
   POOutDirEdit.Text := NewDirectory;
 end;
 

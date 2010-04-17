@@ -876,8 +876,8 @@ type
     function FileIsInProjectDir(const AFilename: string): boolean;
     procedure GetVirtualDefines(DefTree: TDefineTree; DirDef: TDirectoryDefines);
     function SearchFile(const Filename,SearchPaths,InitialDir:string):string;
-    procedure ShortenFilename(var AFilename: string); override;
-    procedure LongenFilename(var AFilename: string); override;
+    procedure ShortenFilename(var AFilename: string); override; // for lpi file
+    procedure LongenFilename(var AFilename: string); override; // for lpi file
 
     // package dependencies
     function FindDependencyByName(const PackageName: string): TPkgDependency;
