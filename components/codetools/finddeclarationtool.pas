@@ -6027,6 +6027,7 @@ begin
     ReadPriorAtom;
     CurAtom:=CurPos;
     CurAtomType:=GetCurrentAtomType;
+    //DebugLn(['TFindDeclarationTool.FindStartOfTerm ',GetAtom,' Cur=',VariableAtomTypeNames[CurAtomType],' Next=',VariableAtomTypeNames[NextAtomType]]);
     if CurAtomType in [vatRoundBracketClose,vatEdgedBracketClose] then begin
       if NextAtomType in [vatRoundBracketOpen,vatRoundBracketClose,
                      vatEdgedBracketOpen,vatEdgedBracketClose,vatPoint,vatUp,
@@ -6060,15 +6061,20 @@ begin
         and (NextAtomType in [vatIdentifier,vatPreDefIdentifier,
                               vatRoundBracketClose]))
     then begin
-      // the next atom is the start of the variable
-      if (not (NextAtomType in [vatSpace,vatIdentifier,vatPreDefIdentifier,
-        vatRoundBracketClose,vatEdgedBracketClose,vatAddrOp])) then
-      begin
-        MoveCursorToCleanPos(NextAtom.StartPos);
-        ReadNextAtom;
-        RaiseIdentNotFound;
+      if NextAtom.StartPos>=EndPos then begin
+        // no token belongs to a variable (e.g. ; ;)
+        Result:=EndPos;
+      end else begin
+        // the next atom is the start of the variable
+        if (not (NextAtomType in [vatSpace,vatIdentifier,vatPreDefIdentifier,
+          vatRoundBracketClose,vatEdgedBracketClose,vatAddrOp])) then
+        begin
+          MoveCursorToCleanPos(NextAtom.StartPos);
+          ReadNextAtom;
+          RaiseIdentNotFound;
+        end;
+        Result:=NextAtom.StartPos;
       end;
-      Result:=NextAtom.StartPos;
       exit;
     end;
     NextAtom:=CurAtom;
