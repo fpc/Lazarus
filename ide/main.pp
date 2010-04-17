@@ -5542,20 +5542,21 @@ begin
         then
           DebugLn(['TMainIDE.DoRenameUnit CodeToolBoss.SaveBufferAs failed: NewResFilename="',NewResFilename,'"']);
       end;
-      if (AnUnitInfo.Component<>nil) then
-        FormEditor1.RenameJITComponentUnitname(AnUnitInfo.Component,NewUnitName);
 
       {$IFDEF IDE_DEBUG}
       debugln(['TMainIDE.DoRenameUnit C ',ResourceCode<>nil]);
       debugln(['   NewResFilePath="',NewResFilePath,'" NewResFilename="',NewResFilename,'"']);
       if ResourceCode<>nil then debugln('*** ResourceFileName ',ResourceCode.Filename);
-      if AnUnitInfo.Component<>nil then debugln('*** AnUnitInfo.Component ',dbgsName(AnUnitInfo.Component),' ClassUnitname=',GetClassUnitName(AnUnitInfo.Component.ClassType));
       {$ENDIF}
     end else begin
       NewResFilename:='';
     end;
+    // rename unit name of jit class
+    if (AnUnitInfo.Component<>nil) then
+      FormEditor1.RenameJITComponentUnitname(AnUnitInfo.Component,NewUnitName);
     {$IFDEF IDE_DEBUG}
-    writeln('TMainIDE.DoRenameUnit D ',ResourceCode<>nil);
+    if AnUnitInfo.Component<>nil then debugln('*** AnUnitInfo.Component ',dbgsName(AnUnitInfo.Component),' ClassUnitname=',GetClassUnitName(AnUnitInfo.Component.ClassType));
+    debugln(['TMainIDE.DoRenameUnit D ',ResourceCode<>nil]);
     {$ENDIF}
 
     // save new lfm
