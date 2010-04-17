@@ -1062,7 +1062,8 @@ begin
   //DebugLn('[TBeautifyCodeOptions.AddAtom]  NewAtom=',NewAtom,' s="',s,'"');
 
   // beautify identifier
-  if IsIdentStartChar[NewAtom[1]] then begin
+  if IsIdentStartChar[NewAtom[1]]
+  and (CommentLvl = 0) then begin
     if AllKeyWords.DoItCaseInsensitive(NewAtom) then
       NewAtom:=BeautifyWord(NewAtom,KeyWordPolicy)
     else
