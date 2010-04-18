@@ -46,7 +46,7 @@ interface
 
 uses
   Classes, SysUtils, LCLProc, LResources, Graphics, Forms, FileUtil,
-  AVL_Tree,
+  AvgLvlTree, AVL_Tree,
   DefineTemplates, CodeToolManager, Laz_XMLWrite, Laz_XMLCfg, CodeCache,
   PropEdits, LazIDEIntf, MacroIntf, PackageIntf,
   EditDefineTree, CompilerOptions, CompOptsModes,
@@ -528,7 +528,7 @@ type
 
   { TLazPackage }
 
-  TLazPackage = class(TLazPackageID)
+  TLazPackage = class(TIDEPackage)
   private
     FAddToProjectUsesSection: boolean;
     FAuthor: string;
@@ -543,7 +543,6 @@ type
     FDirectoryExpanded: string;
     FDirectoryExpandedChangeStamp: integer;
     FEnableI18N: boolean;
-    FFilename: string;
     FFileReadOnly: boolean;
     FFiles: TFPList; // TFPList of TPkgFile
     FFirstRemovedDependency: TPkgDependency;
@@ -586,12 +585,10 @@ type
     function GetAutoIncrementVersionOnBuild: boolean;
     function GetComponentCount: integer;
     function GetComponents(Index: integer): TPkgComponent;
-    function GetDirectoryExpanded: string;
     function GetRemovedCount: integer;
     function GetRemovedFiles(Index: integer): TPkgFile;
     function GetFileCount: integer;
     function GetFiles(Index: integer): TPkgFile;
-    function GetModified: boolean;
     procedure SetAddToProjectUsesSection(const AValue: boolean);
     procedure SetAuthor(const AValue: string);
     procedure SetAutoCreated(const AValue: boolean);
@@ -600,7 +597,6 @@ type
     procedure SetAutoUpdate(const AValue: TPackageUpdatePolicy);
     procedure SetDescription(const AValue: string);
     procedure SetFileReadOnly(const AValue: boolean);
-    procedure SetFilename(const AValue: string);
     procedure SetFlags(const AValue: TLazPackageFlags);
     procedure SetIconFile(const AValue: string);
     procedure SetInstalled(const AValue: TPackageInstallType);
@@ -613,7 +609,6 @@ type
     procedure SetPOOutputDirectory(const AValue: string);
     procedure SetEnableI18N(const AValue: boolean);
     procedure SetRegistered(const AValue: boolean);
-    procedure SetModified(const AValue: boolean);
     procedure SetPackageEditor(const AValue: TBasePackageEditor);
     procedure SetPackageType(const AValue: TLazPackageType);
     procedure SetStorePathDelim(const AValue: TPathDelimSwitch);
@@ -625,6 +620,10 @@ type
     procedure UpdateSourceDirectories;
     procedure SourceDirectoriesChanged(Sender: TObject);
   protected
+    function GetDirectoryExpanded: string; override;
+    function GetModified: boolean; override;
+    procedure SetFilename(const AValue: string); override;
+    procedure SetModified(const AValue: boolean); override;
     procedure SetName(const AValue: string); override;
     procedure VersionChanged(Sender: TObject); override;
   public
@@ -635,7 +634,7 @@ type
     procedure EndUpdate;
     procedure LockModified;
     procedure UnlockModified;
-    function ReadOnly: boolean;
+    function ReadOnly: boolean; override;
     // streaming
     procedure LoadFromXMLConfig(XMLConfig: TXMLConfig; const Path: string);
     procedure SaveToXMLConfig(XMLConfig: TXMLConfig; const Path: string);
@@ -645,7 +644,7 @@ type
     function MakeSense: boolean;
     procedure ConsistencyCheck;
     // paths, define templates
-    function IsVirtual: boolean;
+    function IsVirtual: boolean; override;
     function HasDirectory: boolean;
     function HasStaticDirectory: boolean;
     function GetResolvedFilename(ResolveMacros: boolean): string;
@@ -741,12 +740,10 @@ type
                                                          write FDefineTemplates;
     property Description: string read FDescription write SetDescription;
     property Directory: string read FDirectory; // the directory of the .lpk file with macros
-    property DirectoryExpanded: string read GetDirectoryExpanded;
     property Editor: TBasePackageEditor read FPackageEditor
                                         write SetPackageEditor;
     property EnableI18N: Boolean read FEnableI18N write SetEnableI18N;
     property FileCount: integer read GetFileCount;
-    property Filename: string read FFilename write SetFilename;//the .lpk filename
     property FileReadOnly: boolean read FFileReadOnly write SetFileReadOnly;
     property Files[Index: integer]: TPkgFile read GetFiles;
     property FirstRemovedDependency: TPkgDependency
@@ -771,7 +768,6 @@ type
     property Macros: TTransferMacroList read FMacros;
     property MainUnit: TPkgFile read FMainUnit;
     property Missing: boolean read FMissing write FMissing;
-    property Modified: boolean read GetModified write SetModified;
     property OutputStateFile: string read FOutputStateFile write SetOutputStateFile;
     property PackageType: TLazPackageType read FPackageType
                                           write SetPackageType;
@@ -2328,6 +2324,7 @@ begin
   FDefineTemplates:=TLazPackageDefineTemplates.Create(Self);
   fPublishOptions:=TPublishPackageOptions.Create(Self);
   FProvides:=TStringList.Create;
+  FCustomOptions:=TStringToStringTree.Create(false);
   Clear;
   FUsageOptions.ParsedOpts.InvalidateParseOnChange:=true;
 end;
@@ -2336,6 +2333,7 @@ destructor TLazPackage.Destroy;
 begin
   Include(FFlags,lpfDestroying);
   Clear;
+  FreeAndNil(FCustomOptions);
   FreeAndNil(fPublishOptions);
   FreeAndNil(FProvides);
   FreeAndNil(FDefineTemplates);
@@ -2554,6 +2552,7 @@ begin
   fPublishOptions.LoadFromXMLConfig(XMLConfig,Path+'PublishOptions/',
                                     PathDelimChanged);
   LoadStringList(XMLConfig,FProvides,Path+'Provides/');
+  LoadStringToStringTree(XMLConfig,FCustomOptions,Path+'CustomOptions');
   EndUpdate;
   Modified:=false;
   UnlockModified;
@@ -2619,6 +2618,7 @@ begin
   FUsageOptions.SaveToXMLConfig(XMLConfig,Path+'UsageOptions/',UsePathDelim);
   fPublishOptions.SaveToXMLConfig(XMLConfig,Path+'PublishOptions/',UsePathDelim);
   SaveStringList(XMLConfig,FProvides,Path+'Provides/');
+  SaveStringToStringTree(XMLConfig,FCustomOptions,Path+'CustomOptions');
   Modified:=false;
 end;
 

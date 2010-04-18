@@ -23,7 +23,7 @@ unit PackageIntf;
 interface
 
 uses
-  Classes, SysUtils, Forms, NewItemIntf;
+  Classes, SysUtils, Forms, NewItemIntf, AvgLvlTree;
   
 const
   PkgDescGroupName = 'Package';
@@ -85,6 +85,26 @@ type
     property Version: TPkgVersion read FVersion;
     property IDAsString: string read FIDAsString;
     property IDAsWord: string read FIDAsWord;
+  end;
+
+  { TIDEPackage }
+
+  TIDEPackage = class(TLazPackageID)
+  protected
+    FCustomOptions: TStringToStringTree;
+    FFilename: string;
+    function GetDirectoryExpanded: string; virtual; abstract;
+    function GetModified: boolean; virtual; abstract;
+    procedure SetFilename(const AValue: string); virtual; abstract;
+    procedure SetModified(const AValue: boolean); virtual; abstract;
+  public
+    function IsVirtual: boolean; virtual; abstract;
+    function ReadOnly: boolean; virtual; abstract;
+  public
+    property Filename: string read FFilename write SetFilename;//the .lpk filename
+    property Modified: boolean read GetModified write SetModified;
+    property DirectoryExpanded: string read GetDirectoryExpanded;
+    property CustomOptions: TStringToStringTree read FCustomOptions;
   end;
 
 type
@@ -520,7 +540,6 @@ begin
   Name:=Source.Name;
   Version.Assign(Source.Version);
 end;
-
 
 initialization
   PackageEditingInterface:=nil;
