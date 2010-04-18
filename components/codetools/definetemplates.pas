@@ -4670,7 +4670,7 @@ begin
     ExternalMacroStart+'SrcPath',
     d(LazarusSrcDir+'/ideintf')
     +';'+SrcPath
-    ,da_Define));
+    ,da_DefineRecurse));
   // <LazarusSrcDir>/components/synedit/units
   SynEditUnitsDirTempl:=TDefineTemplate.Create('synedit output directory',
     'units','','units',da_Directory);
