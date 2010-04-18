@@ -518,38 +518,6 @@ begin
     Result := nil;
 end;
 
-class procedure TGtk2WSCustomListView.RecreateMainView(ALV: TCustomListView);
-var
-  ScrollWidget: PGtkWidget;
-  Widgets: PTVWidgets;
-  Info: PWidgetInfo;
-begin
-  GetCommonTreeViewWidgets(PGtkWidget(ALV.Handle), Widgets);
-  Info := GetWidgetInfo(Widgets^.MainView);
-  ScrollWidget := gtk_widget_get_parent(Widgets^.MainView);
-
-  g_object_ref(Widgets^.TreeModel);
-  gtk_widget_destroy(Widgets^.MainView);
-
-  if TLVHack(ALV).ViewStyle in [vsIcon,vsSmallIcon] then
-  begin
-    Widgets^.MainView := gtk_icon_view_new_with_model(Widgets^.TreeModel);
-    Widgets^.TreeSelection := nil;
-  end
-  else
-  begin
-    Widgets^.MainView := gtk_tree_view_new_with_model(Widgets^.TreeModel);
-    Widgets^.TreeSelection := PGtkTreeSelection(gtk_tree_view_get_selection(PGtkTreeView(Widgets^.MainView)));
-  end;
-  g_object_unref(Widgets^.TreeModel);
-
-  gtk_container_add(GTK_CONTAINER(ScrollWidget), Widgets^.MainView);
-  Info^.CoreWidget := Widgets^.MainView;
-  gtk_object_set_data(Pointer(Widgets^.MainView), 'widgetinfo', Info);
-  gtk_widget_show_all(Widgets^.MainView);
-  SetCallbacks(ScrollWidget, Widgets, Info);
-end;
-
 class procedure TGtk2WSCustomListView.SetCallbacks(const AScrollWidget: PGtkWidget;
   const Widgets: PTVWidgets; const AWidgetInfo: PWidgetInfo);
 begin

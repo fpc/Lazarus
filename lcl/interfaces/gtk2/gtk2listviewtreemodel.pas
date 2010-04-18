@@ -68,11 +68,11 @@ type
     ListView: TCustomListView;
   end;
 
-PMyTreeModelObjectClass = ^TLCLTreeModelClass;
+  PMyTreeModelObjectClass = ^TLCLTreeModelClass;
   TLCLTreeModelClass = record
     parent_class: TGObjectClass;
   end;
-TLVItemHack = class(TListItem)
+  TLVItemHack = class(TListItem)
   end;
 
 
@@ -95,8 +95,6 @@ begin
   Result := g_object_new(LCLLISTVIEW_MODEL_TYPE, nil);
   Result^.ListView := AListView;
 end;
-
-
 
 function LCLLISTVIEW_MODEL_TYPE: GType;
 var
@@ -126,8 +124,6 @@ begin
     end;
     _LCLLISTVIEW_MODEL_TYPE := g_type_register_static(G_TYPE_OBJECT, 'LCLListViewModel', @TypeInfo, 0);
     g_type_add_interface_static(_LCLLISTVIEW_MODEL_TYPE, GTK_TYPE_TREE_MODEL, @InterfaceInfo);
-
-
   end;
   Result := _LCLLISTVIEW_MODEL_TYPE;
 end;
@@ -172,8 +168,7 @@ end;
 { TLCLListViewModel }
 
 
-procedure TLCLListViewModel.row_changed(path: PGtkTreePath; iter: PGtkTreeIter
-  ); cdecl;
+procedure TLCLListViewModel.row_changed(path: PGtkTreePath; iter: PGtkTreeIter); cdecl;
 begin
 end;
 
@@ -218,7 +213,7 @@ begin
   Index := gtk_tree_path_get_indices(path)[0];
   if Index < ListView.Items.Count then
   begin
-    ITer^.user_data:= Pointer(Index);
+    iter^.user_data:= Pointer(Index);
     Exit(True);
   end;
 end;
@@ -298,18 +293,17 @@ begin
   Result := False;
   if ListView = nil then
     Exit;
+  WriteLn(PtrUInt(Iter^.user_data));
   Inc(PtrUInt(Iter^.user_data));
   Result := PtrUint(Iter^.user_data) < ListView.items.Count;
 end;
 
-function TLCLListViewModel.iter_children(iter: PGtkTreeIter;
-  parent: PGtkTreeIter): gboolean; cdecl;
+function TLCLListViewModel.iter_children(iter: PGtkTreeIter; parent: PGtkTreeIter): gboolean; cdecl;
 begin
   Result := False;
 end;
 
-function TLCLListViewModel.iter_has_child(iter: PGtkTreeIter): gboolean;
-  cdecl;
+function TLCLListViewModel.iter_has_child(iter: PGtkTreeIter): gboolean; cdecl;
 begin
   Result := false;
 end;
@@ -319,7 +313,6 @@ begin
   Result := 0;
   if (Iter = nil) and (ListView <> nil) then
     Result := ListView.Items.Count;
-
 end;
 
 function TLCLListViewModel.iter_nth_child(iter: PGtkTreeIter;
@@ -328,14 +321,14 @@ begin
   Result := False;
   if (ListView = nil) or (parent <> nil) then
     Exit;
-  if (Iter = nil) and (n < ListView.Items.Count) then begin
-    PtrUint(Iter^.user_data):=n;
+  if (Iter = nil) and (n < ListView.Items.Count) then
+  begin
+    PtrUint(Iter^.user_data) := n;
     Result := True;
   end;
 end;
 
-function TLCLListViewModel.iter_parent(iter: PGtkTreeIter; child: PGtkTreeIter
-  ): gboolean; cdecl;
+function TLCLListViewModel.iter_parent(iter: PGtkTreeIter; child: PGtkTreeIter): gboolean; cdecl;
 begin
   Result := False;
 end;
@@ -353,8 +346,8 @@ var
   Path: PGtkTreePath;
   Iter: TGtkTreeIter;
 begin
-  Iter.user_data:= Pointer(AIndex);
-  path :=gtk_tree_path_new_from_indices(AIndex, -1);
+  Iter.user_data := Pointer(AIndex);
+  path := gtk_tree_path_new_from_indices(AIndex, -1);
   //emits a signal
   gtk_tree_model_row_inserted(TreeModel, path, @iter);
   gtk_tree_path_free(path);
@@ -364,11 +357,10 @@ procedure TLCLListViewModel.NotifyRowDeleted(AIndex: PtrUInt);
 var
   Path: PGtkTreePath;
 begin
-  path :=gtk_tree_path_new_from_indices(AIndex, -1);
+  path := gtk_tree_path_new_from_indices(AIndex, -1);
   //emits a signal
   gtk_tree_model_row_deleted(TreeModel, path);
   gtk_tree_path_free(path);
-
 end;
 
 function TLCLListViewModel.TreeModel: PGtkTreeModel; inline;

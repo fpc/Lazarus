@@ -95,7 +95,6 @@ type
     class procedure SetNeedDefaultColumn(const ALV: TCustomListView; const AValue: Boolean);
     class procedure AddRemoveCheckboxRenderer(const ALV: TCustomListView; const WidgetInfo: PWidgetInfo; const Add: Boolean);
     class function GetViewModel(const AView: PGtkWidget): PGtkTreeModel;
-    class procedure RecreateMainView(ALV: TCustomListView);
   protected
     class procedure SetCallbacks(const AScrollWidget: PGtkWidget; const Widgets: PTVWidgets; const AWidgetInfo: PWidgetInfo); virtual;
   published
