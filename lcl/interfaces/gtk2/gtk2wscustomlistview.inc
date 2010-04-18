@@ -927,6 +927,8 @@ class function TGtk2WSCustomListView.ItemGetState(const ALV: TCustomListView;
 var
   Widgets: PTVWidgets;
   Path: PGtkTreePath;
+  Column: PGtkTreeColumn;
+  Cell: PGtkCellRendere;
 begin
   Result := False;
 
@@ -950,14 +952,16 @@ begin
 
       lisFocused:
       begin
-        Path := gtk_tree_path_new_from_string(PChar(IntToStr(AIndex)));
         if GTK_IS_TREE_VIEW(MainView) then
-          AIsSet := gtk_tree_selection_path_is_selected(TreeSelection, Path)
+          gtk_tree_view_get_cursor(PGtkTreeView(MainView), Path, Column)
+       {$IFDEF GTK_2_8}
         else
         if GTK_IS_ICON_VIEW(MainView) then
-          AIsSet := gtk_icon_view_path_is_selected(PGtkIconView(MainView), Path)
+          gtk_icon_view_get_cursor(PGtkIconView(MainView), Path, Cell)
+       {$ENDIF}
         else
-          AIsSet := False;
+          Path := nil;
+        AIsSet := (Path <> nil) and (StrToInt(gtk_tree_path_to_string(path)) = AIndex);
         gtk_tree_path_free(Path);
         Result := True;
       end;
@@ -1083,6 +1087,7 @@ begin
           else
             gtk_tree_view_set_cursor(PGtkTreeView(MainView), nil, nil, False);
         end
+      {$IFDEF GTK_2_8}
         else
         if GTK_IS_ICON_VIEW(MainView) then
         begin
@@ -1090,7 +1095,8 @@ begin
             gtk_icon_view_set_cursor(PGtkIconView(MainView), Path, nil, False)
           else
             gtk_icon_view_set_cursor(PGtkIconView(MainView), nil, nil, False);
-        end;
+        end
+      {$ENDIF};
         gtk_tree_path_free(Path);
       end;
 
