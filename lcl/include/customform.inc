@@ -75,7 +75,9 @@ end;
  ------------------------------------------------------------------------------}
 procedure TCustomForm.AfterConstruction;
 begin
+  //DebugLn(['TCustomForm.AfterConstruction ']);
   DoCreate;
+  EndFormUpdate; // the BeginFormUpdate is in CreateNew
   inherited AfterConstruction;
 end;
 
@@ -1794,28 +1796,23 @@ begin
   //DebugLn('[TCustomForm.Create] A Class=',Classname);
   GlobalNameSpace.BeginWrite;
   try
-    BeginFormUpdate;
-    try
-      CreateNew(AOwner, 1);
-      //DebugLn('[TCustomForm.Create] B Class=',Classname);
-      if (ClassType <> TForm) and not (csDesigning in ComponentState) then
-      begin
-        Include(FFormState, fsCreating);
-        try
-          //DebugLn('[TCustomForm.Create] C Class=',Classname);
-          if not InitResourceComponent(Self, TForm) then begin
-            //DebugLn('[TCustomForm.Create] Resource '''+ClassName+''' not found');
-            //DebugLn('This is for information purposes only.   This is not critical at this time.');
-            // MG:  Ignoring is best at the moment. (Delphi raises an exception.)
-          end;
-          //DebugLn('[TCustomForm.Create] D Class=',Classname);
-          //DebugLn('[TCustomForm.Create] E Class=',Classname);
-        finally
-          Exclude(FFormState, fsCreating);
+    CreateNew(AOwner, 1); // this calls BeginFormUpdate, which is ended in AfterConstruction
+    //DebugLn('[TCustomForm.Create] B Class=',Classname);
+    if (ClassType <> TForm) and not (csDesigning in ComponentState) then
+    begin
+      Include(FFormState, fsCreating);
+      try
+        //DebugLn('[TCustomForm.Create] C Class=',Classname);
+        if not InitResourceComponent(Self, TForm) then begin
+          //DebugLn('[TCustomForm.Create] Resource '''+ClassName+''' not found');
+          //DebugLn('This is for information purposes only.   This is not critical at this time.');
+          // MG:  Ignoring is best at the moment. (Delphi raises an exception.)
         end;
+        //DebugLn('[TCustomForm.Create] D Class=',Classname);
+        //DebugLn('[TCustomForm.Create] E Class=',Classname);
+      finally
+        Exclude(FFormState, fsCreating);
       end;
-    finally
-      EndFormUpdate;
     end;
   finally
     GlobalNameSpace.EndWrite;
@@ -1862,8 +1859,8 @@ begin
   Color := clBtnFace;
   FloatingDockSiteClass := TWinControlClass(ClassType);
   Screen.AddForm(Self);
-  EndFormUpdate;
   FAllowDropFiles := False;
+  // the EndFormUpdate is done in AfterConstruction
 end;
 
 {------------------------------------------------------------------------------
