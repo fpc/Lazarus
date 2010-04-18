@@ -7509,26 +7509,7 @@ is done automatically by the streaming system.
         <seealso/>
       </element>
       <!-- object Visibility: default -->
-      <element name="TButton">
-        <short>
-          <var>TButton:</var>
-
-
-
- Base type for all Buttons. A push button control</short>
-        <descr>
-          <p>
-            <var>TButton:</var>
-
-
-
- Base type for all Buttons. A push button control.</p>
-          <p>The user pushes a button (eg selects it with the mouse cursor and clicks the mouse) to start an action.</p>
-        </descr>
-        <seealso>
-          <link id="HowToUseStdCtrls"/>
-        </seealso>
-      </element>
+      <element name="TButton"/>
       <!-- procedure Visibility: public -->
       <element name="TButton.Click" link="#LCL.Controls.TControl.Click">
         <descr>If you want to programmatically Click on a button you can call its Click method. This will have the same effect as a user clicking on the button.

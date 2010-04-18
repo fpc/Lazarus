@@ -689,12 +689,6 @@
       </element>
       <!-- procedure Visibility: default -->
       <element name="DebugLn">
-        <short>Writes a line to the debug output.</short>
-        <descr>Various overloaded versions of this procedure allow for formatted output etc.
-
-The default debug output is the console.
-
-This can be overriden by passing the --debug-log=&lt;myfile.txt&gt; parameter on the command line of the application. Then the output is written to &lt;myfile.txt&gt;</descr>
         <errors/>
         <seealso/>
       </element>

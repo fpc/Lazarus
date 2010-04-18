@@ -296,7 +296,31 @@
       </element>
       <!-- enumeration type Visibility: default -->
       <element name="TAlign">
-        <short>TAlign - enumerated type listing the available options for aligning a Control</short>
+        <short>Alignment options for a control, within its parent control.</short>
+        <descr>
+          <p>
+            <dl>
+              <dt>alNone</dt>
+              <dd>fixed position and extent</dd>
+              <dt>alTop</dt>
+              <dd>stacked at top, full width</dd>
+              <dt>alBottom</dt>
+              <dd>stacked at bottom, full width</dd>
+              <dt>alLeft</dt>
+              <dd>stacked at left, full height</dd>
+              <dt>alRight</dt>
+              <dd>stacked at right, full height</dd>
+              <dt>alClient</dt>
+              <dd>filling entire remaining client area</dd>
+              <dt>alCustom</dt>
+              <dd>other alignment, in drag-dock: notebook</dd>
+            </dl>
+          </p>
+          <p>At most one control can have alClient alignment.</p>
+          <p>The order of multiple controls of the same (stackable) alignment is determined by their Left or Top coordinate.</p>
+          <p>The precedence of conflicting alignment requests (e.g. one at top, one at right) is resolved [how???]</p>
+          <p>[which provisions exist for alCustom implementation?]</p>
+        </descr>
       </element>
       <!-- enumeration value Visibility: default -->
       <element name="TAlign.alNone">
@@ -1445,7 +1469,7 @@ dmFindTarget: find child control under the mouse
       </element>
       <!-- object Visibility: default -->
       <element name="TDragObject">
-        <short>Base class for managing drag operations and feedback</short>
+        <short>Base class for managing drag operations and feedback.</short>
         <descr>
           <p>Every dragging operation has an associated DragObject, holding references to the source and target controls, and other parameters for the customization of the visual user feedback.</p>
           <p>A default DragObject is created automatically when a dragging operation starts, and is destroyed when the operation has ended, so that you must not take special care on it. But an application can provide a customized DragObject in the <link id="TControl.OnStartDrag"/> or <link id="TControl.OnStartDock"/> handlers of the source control (being dragged).</p>
@@ -2252,6 +2276,7 @@ dmFindTarget: find child control under the mouse
         </descr>
         <seealso>
           <link id="TDockTree"/>
+          <link id="TDockManager"/>
         </seealso>
       </element>
       <!-- procedure Visibility: default -->
@@ -2345,6 +2370,7 @@ dmFindTarget: find child control under the mouse
           <p>This method updates DockRect for the visual feedback, when a control is dragged over the docksite.</p>
           <p>The Delphi compatible version only can use the parameters determined by the default processing in the docksite.</p>
           <p>The Lazarus specific version can update the DockObject with better suited parameters. A DockManager here can implement any algorithm for the placement of a dropped control. The default implementation calls the Delphi compatible version.</p>
+          <p>The DragDockObject.DockRect spans the entire DockSite.</p>
         </descr>
         <errors/>
         <seealso>
@@ -5205,9 +5231,8 @@ dmFindTarget: find child control under the mouse
       </element>
       <!-- function Visibility: protected -->
       <element name="TControl.GetClientOrigin">
-        <short>Returns the screen coordinates of the control's client origin</short>
+        <short>Returns the screen coordinates of the control's origin.</short>
         <descr>
-          <p>Returns the screen coordinates of the client area origin.</p>
           <p>Note that this value is the position as stored in the interface and is not always in sync with the LCL.
 When a control is moved, the LCL sets the bounds to the wanted position and sends a move message to the interface.
 It is up to the interface to handle moves instantly or queued.</p>
@@ -7854,7 +7879,7 @@ Does nothing but call ChangeBounds.</descr>
       </element>
       <!-- property Visibility: public -->
       <element name="TControl.BoundsRect">
-        <short>Determines the rectangle bounding this control (read/write)</short>
+        <short>The TopLeft and BottomRight of the control in client coordinates.</short>
         <descr>
           <p>The BoundsRect rectangle describes the TopLeft and BottomRight coordinates of the control, relative to its parent. The values are based on the Top, Left, Width and Height of the control.</p>
           <p>Set BoundsRect to move the control.</p>
@@ -17005,9 +17030,9 @@ bounds to the wanted position and sends a move message to the interface. It is u
       <element name="TDockManager.GetDockEdge">
         <short>Determine the DropAlign.</short>
         <descr>
-          <p>ADockObject contains valid DragTarget, DragPos and DragTargetPos relative dock site.</p>
+          <p>ADockObject contains valid DragTarget, DragPos and DragTargetPos relative dock site. DockRect is undetermined.</p>
           <p>DropOnControl may be Nil if nothing has been docked yet, or no target control exists at the mouse coordinates.
-DockRect may be unusable in this case (not yet determined).</p>
+</p>
           <p>Returns True if ADockObject.DropAlign has been determined. If False, the DropAlign has to be determined by default procedures.</p>
         </descr>
       </element>

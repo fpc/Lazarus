@@ -4260,7 +4260,7 @@ biHelp - When you click this button a Question Cursor appears and the help routi
         <seealso/>
       </element>
       <!-- property Visibility: published -->
-      <element name="TForm.Position" link="#LCL.Forms.TCustomForm.Position">
+      <element name="TForm.Position">
         <short/>
         <descr/>
         <seealso/>
