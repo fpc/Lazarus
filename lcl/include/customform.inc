@@ -769,7 +769,8 @@ procedure TCustomForm.UpdateShowInTaskBar;
 var
   Value: TShowInTaskBar;
 begin
-  if (Application.MainForm = Self) or (not HandleAllocated) then Exit;
+  if (Application.MainForm = Self) or (not HandleAllocated)
+    or (FormStyle = fsMDIChild) then Exit;
   Value := ShowInTaskBar;
   if (Value = stDefault) or (csDesigning in ComponentState) then
     case Application.TaskBarBehavior of
