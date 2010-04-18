@@ -6548,8 +6548,7 @@ var
         Indent:=GetLineIndent(Src,InsertPos);
         ProcCode:=ExtractProcHead(DefNodeExt.Node,[phpWithStart,
              phpAddClassname,phpWithVarModifiers,
-             phpWithParameterNames,phpWithResultType,phpWithCallingSpecs,
-             phpWithoutSemicolon]);
+             phpWithParameterNames,phpWithResultType,phpWithCallingSpecs]);
         ProcCode:=ASourceChangeCache.BeautifyCodeOptions.BeautifyProc(
                      ProcCode,Indent,false);
         {$IFDEF CTDEBUG}
