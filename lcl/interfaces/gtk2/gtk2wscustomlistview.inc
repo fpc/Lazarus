@@ -927,8 +927,8 @@ class function TGtk2WSCustomListView.ItemGetState(const ALV: TCustomListView;
 var
   Widgets: PTVWidgets;
   Path: PGtkTreePath;
-  Column: PGtkTreeColumn;
-  Cell: PGtkCellRendere;
+  Column: PGtkTreeViewColumn;
+  Cell: PGtkCellRenderer;
 begin
   Result := False;
 
