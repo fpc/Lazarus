@@ -695,6 +695,8 @@ procedure TCustomListView.FinalizeWnd;
 begin
   // store origin
   FViewOriginCache := TWSCustomListViewClass(WidgetSetClass).GetViewOrigin(Self);
+  if not OwnerData then
+    FListItems.DoFinalizeWnd;
   inherited FinalizeWnd;
 end;
 

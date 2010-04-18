@@ -208,6 +208,11 @@ begin
   Include(FFlags, lisfWSItemsCreated);
 end;
 
+procedure TListItems.DoFinalizeWnd;
+begin
+  Exclude(FFlags, lisfWSItemsCreated);
+end;
+
 {------------------------------------------------------------------------------}
 {   TListItems IntfUpdateAllowed                                               }
 {------------------------------------------------------------------------------}

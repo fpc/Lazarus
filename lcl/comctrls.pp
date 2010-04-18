@@ -833,6 +833,7 @@ type
     function GetItem(const AIndex: Integer): TListItem;
     function GetOwner: TPersistent; override;
     procedure WSCreateItems;
+    procedure DoFinalizeWnd;
     procedure SetCount(const ACount: Integer);
     procedure SetItem(const AIndex: Integer; const AValue: TListItem);
   public
