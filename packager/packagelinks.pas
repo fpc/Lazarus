@@ -38,7 +38,9 @@ interface
 
 uses
   Classes, SysUtils, AVL_Tree, Laz_XMLCfg, FileProcs,
-  LCLProc, FileUtil, IDEProcs, MacroIntf, EnvironmentOpts, PackageDefs, LazConf;
+  LCLProc, FileUtil,
+  MacroIntf, PackageIntf,
+  IDEProcs, EnvironmentOpts, PackageDefs, LazConf;
   
 const
   PkgLinksFileVersion = 2;
@@ -501,7 +503,7 @@ begin
       NewPkgLink:=TPackageLink.Create;
       NewPkgLink.Origin:=ploUser;
       NewPkgLink.Name:=XMLConfig.GetValue(ItemPath+'Name/Value','');
-      NewPkgLink.Version.LoadFromXMLConfig(XMLConfig,ItemPath+'Version/',
+      PkgVersionLoadFromXMLConfig(NewPkgLink.Version,XMLConfig,ItemPath+'Version/',
                                                           LazPkgXMLFileVersion);
       NewPkgLink.Filename:=XMLConfig.GetValue(ItemPath+'Filename/Value','');
       NewPkgLink.AutoCheckExists:=
@@ -628,7 +630,7 @@ begin
       ItemPath:=Path+'Item'+IntToStr(i)+'/';
       CurPkgLink:=TPackageLink(ANode.Data);
       XMLConfig.SetDeleteValue(ItemPath+'Name/Value',CurPkgLink.Name,'');
-      CurPkgLink.Version.SaveToXMLConfig(XMLConfig,ItemPath+'Version/');
+      PkgVersionSaveToXMLConfig(CurPkgLink.Version,XMLConfig,ItemPath+'Version/');
 
       // save package files in lazarus directory relative
       AFilename:=CurPkgLink.Filename;

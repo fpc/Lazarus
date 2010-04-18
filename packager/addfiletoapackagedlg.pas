@@ -40,8 +40,10 @@ interface
 
 uses
   Classes, SysUtils, Forms, Controls, Buttons, ExtCtrls, StdCtrls,
-  LazarusIDEStrConsts, Dialogs, AVL_Tree, FileUtil, IDEProcs, IDEWindowIntf,
-  ComponentReg, PackageDefs, PackageSystem, IDEContextHelpEdit, ButtonPanel;
+  Dialogs, AVL_Tree, FileUtil, ButtonPanel,
+  IDEWindowIntf, PackageIntf,
+  LazarusIDEStrConsts, IDEProcs,
+  ComponentReg, PackageDefs, PackageSystem, IDEContextHelpEdit;
 
 type
 

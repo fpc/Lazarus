@@ -28,7 +28,65 @@ uses
 const
   PkgDescGroupName = 'Package';
   PkgDescNameStandard = 'Standard Package';
-  
+
+type
+  { TPkgVersion }
+
+  TPkgVersionValid = (
+    pvtNone,
+    pvtMajor,
+    pvtMinor,
+    pvtRelease,
+    pvtBuild
+    );
+
+  TPkgVersion = class
+  public
+    Major: integer;
+    Minor: integer;
+    Release: integer;
+    Build: integer;
+    Valid: TPkgVersionValid;
+    OnChange: TNotifyEvent;
+    procedure Clear;
+    function Compare(Version2: TPkgVersion): integer;
+    function CompareMask(ExactVersion: TPkgVersion): integer;
+    procedure Assign(Source: TPkgVersion);
+    function AsString: string;
+    function AsWord: string;
+    function ReadString(const s: string): boolean;
+    procedure SetValues(NewMajor, NewMinor, NewRelease, NewBuild: integer;
+                        NewValid: TPkgVersionValid = pvtBuild);
+    function VersionBound(v: integer): integer;
+  end;
+
+
+  { TLazPackageID }
+
+  TLazPackageID = class
+  private
+    FIDAsWord: string;
+  protected
+    FName: string;
+    FVersion: TPkgVersion;
+    FIDAsString: string;
+    procedure SetName(const AValue: string); virtual;
+    procedure UpdateIDAsString;
+    procedure VersionChanged(Sender: TObject); virtual;
+  public
+    constructor Create;
+    destructor Destroy; override;
+    function StringToID(const s: string): boolean;
+    function Compare(PackageID2: TLazPackageID): integer;
+    function CompareMask(ExactPackageID: TLazPackageID): integer;
+    procedure AssignID(Source: TLazPackageID); virtual;
+  public
+    property Name: string read FName write SetName;
+    property Version: TPkgVersion read FVersion;
+    property IDAsString: string read FIDAsString;
+    property IDAsWord: string read FIDAsWord;
+  end;
+
 type
   TPkgSaveFlag = (
     psfSaveAs,
@@ -254,6 +312,215 @@ begin
   if Source is TNewItemPackage then
     FDescriptor:=TNewItemPackage(Source).Descriptor;
 end;
+
+{ TPkgVersion }
+
+procedure TPkgVersion.Clear;
+begin
+  SetValues(0,0,0,0,pvtBuild);
+end;
+
+function TPkgVersion.Compare(Version2: TPkgVersion): integer;
+begin
+  Result:=Major-Version2.Major;
+  if Result<>0 then exit;
+  Result:=Minor-Version2.Minor;
+  if Result<>0 then exit;
+  Result:=Release-Version2.Release;
+  if Result<>0 then exit;
+  Result:=Build-Version2.Build;
+end;
+
+function TPkgVersion.CompareMask(ExactVersion: TPkgVersion): integer;
+begin
+  if Valid=pvtNone then exit(0);
+  Result:=Major-ExactVersion.Major;
+  if Result<>0 then exit;
+  if Valid=pvtMajor then exit;
+  Result:=Minor-ExactVersion.Minor;
+  if Result<>0 then exit;
+  if Valid=pvtMinor then exit;
+  Result:=Release-ExactVersion.Release;
+  if Result<>0 then exit;
+  if Valid=pvtRelease then exit;
+  Result:=Build-ExactVersion.Build;
+end;
+
+procedure TPkgVersion.Assign(Source: TPkgVersion);
+begin
+  SetValues(Source.Major,Source.Minor,Source.Release,Source.Build,Source.Valid);
+end;
+
+function TPkgVersion.AsString: string;
+begin
+  Result:=IntToStr(Major)+'.'+IntToStr(Minor);
+  if (Build<>0) then
+    Result:=Result+'.'+IntToStr(Release)+'.'+IntToStr(Build)
+  else if (Release<>0) then
+    Result:=Result+'.'+IntToStr(Release)
+end;
+
+function TPkgVersion.AsWord: string;
+begin
+  Result:=IntToStr(Major)+'_'+IntToStr(Minor);
+  if (Build<>0) then
+    Result:=Result+'_'+IntToStr(Release)+'_'+IntToStr(Build)
+  else if (Release<>0) then
+    Result:=Result+'_'+IntToStr(Release)
+end;
+
+function TPkgVersion.ReadString(const s: string): boolean;
+var
+  ints: array[1..4] of integer;
+  i: integer;
+  CurPos: Integer;
+  StartPos: Integer;
+  NewValid: TPkgVersionValid;
+begin
+  Result:=false;
+  CurPos:=1;
+  NewValid:=pvtNone;
+  for i:=1 to 4 do begin
+    ints[i]:=0;
+    if CurPos<length(s) then begin
+      if i>Low(ints) then begin
+        // read point
+        if s[CurPos]<>'.' then exit;
+        inc(CurPos);
+      end;
+      // read int
+      StartPos:=CurPos;
+      while (CurPos<=length(s)) and (i<=9999)
+      and (s[CurPos] in ['0'..'9']) do begin
+        ints[i]:=ints[i]*10+ord(s[CurPos])-ord('0');
+        inc(CurPos);
+      end;
+      if (StartPos=CurPos) then exit;
+      NewValid:=succ(NewValid);
+    end;
+  end;
+  if CurPos<=length(s) then exit;
+  SetValues(ints[1],ints[2],ints[3],ints[4],NewValid);
+
+  Result:=true;
+end;
+
+procedure TPkgVersion.SetValues(NewMajor, NewMinor, NewRelease,
+  NewBuild: integer; NewValid: TPkgVersionValid);
+begin
+  NewMajor:=VersionBound(NewMajor);
+  NewMinor:=VersionBound(NewMinor);
+  NewRelease:=VersionBound(NewRelease);
+  NewBuild:=VersionBound(NewBuild);
+  if (NewMajor=Major) and (NewMinor=Minor) and (NewRelease=Release)
+  and (NewBuild=Build) and (NewValid=Valid) then exit;
+  Major:=NewMajor;
+  Minor:=NewMinor;
+  Release:=NewRelease;
+  Build:=NewBuild;
+  Valid:=NewValid;
+  if Assigned(OnChange) then OnChange(Self);
+end;
+
+function TPkgVersion.VersionBound(v: integer): integer;
+begin
+  if v>9999 then
+    Result:=9999
+  else if v<0 then
+    Result:=0
+  else
+    Result:=v;
+end;
+
+{ TLazPackageID }
+
+procedure TLazPackageID.SetName(const AValue: string);
+begin
+  if FName=AValue then exit;
+  FName:=AValue;
+  UpdateIDAsString;
+end;
+
+constructor TLazPackageID.Create;
+begin
+  FVersion:=TPkgVersion.Create;
+  FVersion.OnChange:=@VersionChanged;
+end;
+
+destructor TLazPackageID.Destroy;
+begin
+  FreeAndNil(FVersion);
+  inherited Destroy;
+end;
+
+procedure TLazPackageID.UpdateIDAsString;
+begin
+  FIDAsString:=Version.AsString;
+  if FIDAsString<>'' then
+    FIDAsString:=Name+' '+FIDAsString
+  else
+    FIDAsString:=FIDAsString;
+  FIDAsWord:=Version.AsWord;
+  if FIDAsWord<>'' then
+    FIDAsWord:=Name+FIDAsWord
+  else
+    FIDAsWord:=FIDAsWord;
+end;
+
+procedure TLazPackageID.VersionChanged(Sender: TObject);
+begin
+  UpdateIDAsString;
+end;
+
+function TLazPackageID.StringToID(const s: string): boolean;
+var
+  IdentEndPos: Integer;
+  StartPos: Integer;
+begin
+  Result:=false;
+  IdentEndPos:=1;
+  while (IdentEndPos<=length(s))
+  and (s[IdentEndPos] in ['a'..'z','A'..'Z','0'..'9','_'])
+  do
+    inc(IdentEndPos);
+  if IdentEndPos=1 then exit;
+  Name:=copy(s,1,IdentEndPos-1);
+  StartPos:=IdentEndPos;
+  while (StartPos<=length(s)) and (s[StartPos]=' ') do inc(StartPos);
+  if StartPos=IdentEndPos then begin
+    Version.Clear;
+    Version.Valid:=pvtNone;
+  end else begin
+    if not Version.ReadString(copy(s,StartPos,length(s))) then exit;
+  end;
+  Result:=true;
+end;
+
+function TLazPackageID.Compare(PackageID2: TLazPackageID): integer;
+begin
+  if PackageID2 <> nil then
+  begin
+    Result:=CompareText(Name,PackageID2.Name);
+    if Result<>0 then exit;
+    Result:=Version.Compare(PackageID2.Version);
+  end
+  else
+    Result := -1;
+end;
+
+function TLazPackageID.CompareMask(ExactPackageID: TLazPackageID): integer;
+begin
+  Result:=CompareText(Name,ExactPackageID.Name);
+  if Result<>0 then exit;
+  Result:=Version.CompareMask(ExactPackageID.Version);
+end;
+
+procedure TLazPackageID.AssignID(Source: TLazPackageID);
+begin
+  Name:=Source.Name;
+  Version.Assign(Source.Version);
+end;
+
 
 initialization
   PackageEditingInterface:=nil;

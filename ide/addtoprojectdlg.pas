@@ -36,7 +36,9 @@ interface
 uses
   Classes, SysUtils, Math, LCLProc, Forms, Controls, Buttons,
   ComCtrls, StdCtrls, ExtCtrls, Menus, Dialogs, Graphics, FileUtil, ButtonPanel,
-  AVL_Tree, IDEWindowIntf, LazarusIDEStrConsts, IDEProcs, IDEOptionDefs,
+  AVL_Tree,
+  IDEWindowIntf, PackageIntf,
+  LazarusIDEStrConsts, IDEProcs, IDEOptionDefs,
   EnvironmentOpts, Project, PackageDefs, PackageSystem, InputHistory;
   
 type

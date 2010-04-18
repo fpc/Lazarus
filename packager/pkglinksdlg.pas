@@ -39,7 +39,7 @@ interface
 uses
   Classes, SysUtils, Forms, Controls, Graphics, Dialogs, StdCtrls,
   Buttons, Grids, AVL_Tree,
-  FileProcs,
+  FileProcs, PackageIntf,
   LazarusIDEStrConsts, PackageDefs, PackageLinks;
 
 type

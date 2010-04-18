@@ -40,7 +40,7 @@ interface
 uses
   Classes, SysUtils, FileUtil, LCLProc, Forms, Controls, Buttons, 
   ExtCtrls, StdCtrls, Spin, Dialogs, PathEditorDlg, IDEProcs, IDEWindowIntf,
-  IDEDialogs, MacroIntf,
+  IDEDialogs, MacroIntf, PackageIntf,
   LazarusIDEStrConsts,
   BrokenDependenciesDlg, PackageDefs, PackageSystem, CompilerOptions,
   ButtonPanel;

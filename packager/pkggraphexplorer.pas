@@ -41,7 +41,7 @@ uses
   Classes, SysUtils, LCLProc, Forms, Controls, Buttons, ComCtrls,
   StdCtrls, Menus, Dialogs, Graphics, FileCtrl,
   AVL_Tree,
-  IDECommands,
+  IDECommands, PackageIntf,
   LazConf, LazarusIDEStrConsts, IDEProcs, IDEOptionDefs, EnvironmentOpts,
   Project, PackageDefs, PackageSystem, PackageEditor, ExtCtrls;
   

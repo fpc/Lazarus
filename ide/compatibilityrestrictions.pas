@@ -34,8 +34,10 @@ unit CompatibilityRestrictions;
 interface
 
 uses
-  Classes, Forms, SysUtils, InterfaceBase, ObjectInspector, OIFavouriteProperties, PackageSystem, 
-  PackageDefs, ComponentReg, Laz_XMLRead, Laz_XMLWrite, Laz_DOM, LazConf, LCLProc, StringHashList;
+  Classes, SysUtils, Forms, LCLProc, InterfaceBase, StringHashList,
+  ObjectInspector, OIFavouriteProperties,
+  Laz_XMLRead, Laz_XMLWrite, Laz_DOM, PackageIntf,
+  PackageSystem, PackageDefs, ComponentReg, LazConf;
 
 type
   TReadRestrictedEvent = procedure (const RestrictedName, WidgetSetName: String) of object;

@@ -40,7 +40,7 @@ interface
 uses
   Classes, SysUtils, LCLProc, Forms, Controls, Graphics, Dialogs,
   KeywordFuncLists, StdCtrls, Buttons, FileUtil, ExtCtrls,
-  AVL_Tree, Laz_XMLCfg,
+  AVL_Tree, Laz_XMLCfg, PackageIntf,
   LazarusIDEStrConsts, EnvironmentOpts, InputHistory, LazConf, IDEProcs,
   PackageDefs, PackageSystem, PackageLinks, IDEContextHelpEdit;
 

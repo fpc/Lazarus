@@ -40,7 +40,7 @@ interface
 uses
   Math, Classes, SysUtils, LCLType, Forms, Controls, Buttons,
   StdCtrls, ExtCtrls, Dialogs, FileUtil, ComCtrls, AVL_Tree, LCLProc,
-  NewItemIntf, ProjectIntf,
+  NewItemIntf, ProjectIntf, PackageIntf,
   LazarusIDEStrConsts, IDEWindowIntf, InputHistory, CodeToolManager, IDEDefs,
   IDEProcs, EnvironmentOpts, PackageSystem, PackageDefs, ComponentReg,
   AddDirToPkgDlg;

@@ -48,14 +48,13 @@ uses
   Classes, SysUtils, LCLProc, LResources, Graphics, Forms, FileUtil,
   AVL_Tree,
   DefineTemplates, CodeToolManager, Laz_XMLWrite, Laz_XMLCfg, CodeCache,
+  PropEdits, LazIDEIntf, MacroIntf, PackageIntf,
   EditDefineTree, CompilerOptions, CompOptsModes,
-  PropEdits, LazIDEIntf, MacroIntf,
   LazarusIDEStrConsts, IDEProcs, ComponentReg,
   TransferMacros, FileReferenceList, PublishModule;
 
 type
   TLazPackage = class;
-  TLazPackageID = class;
   TPkgFile = class;
   TBasePackageEditor = class;
   TPkgDependency = class;
@@ -95,41 +94,6 @@ type
     property PkgFile: TPkgFile read FPkgFile write SetPkgFile;
   end;
 
-
-  { TPkgVersion }
-  
-  TPkgVersionValid = (
-    pvtNone,
-    pvtMajor,
-    pvtMinor,
-    pvtRelease,
-    pvtBuild
-    );
-
-  TPkgVersion = class
-  public
-    Major: integer;
-    Minor: integer;
-    Release: integer;
-    Build: integer;
-    Valid: TPkgVersionValid;
-    OnChange: TNotifyEvent;
-    procedure Clear;
-    procedure LoadFromXMLConfig(XMLConfig: TXMLConfig; const Path: string;
-      FileVersion: integer);
-    procedure SaveToXMLConfig(XMLConfig: TXMLConfig; const Path: string);
-    function Compare(Version2: TPkgVersion): integer;
-    function CompareMask(ExactVersion: TPkgVersion): integer;
-    procedure Assign(Source: TPkgVersion);
-    function AsString: string;
-    function AsWord: string;
-    function ReadString(const s: string): boolean;
-    procedure SetValues(NewMajor, NewMinor, NewRelease, NewBuild: integer;
-                        NewValid: TPkgVersionValid = pvtBuild);
-    function VersionBound(v: integer): integer;
-  end;
-  
-  
   { TPkgFile }
 
   TPkgFileType = (
@@ -445,34 +409,6 @@ type
   public
     property LazPackage: TLazPackage read FLazPackage write SetLazPackage;
   end;
-  
-  
-  { TLazPackageID }
-  
-  TLazPackageID = class
-  private
-    FIDAsWord: string;
-  protected
-    FName: string;
-    FVersion: TPkgVersion;
-    FIDAsString: string;
-    procedure SetName(const AValue: string); virtual;
-    procedure UpdateIDAsString;
-    procedure VersionChanged(Sender: TObject); virtual;
-  public
-    constructor Create;
-    destructor Destroy; override;
-    function StringToID(const s: string): boolean;
-    function Compare(PackageID2: TLazPackageID): integer;
-    function CompareMask(ExactPackageID: TLazPackageID): integer;
-    procedure AssignID(Source: TLazPackageID); virtual;
-  public
-    property Name: string read FName write SetName;
-    property Version: TPkgVersion read FVersion;
-    property IDAsString: string read FIDAsString;
-    property IDAsWord: string read FIDAsWord;
-  end;
-  
   
   { TPublishPackageOptions }
 
@@ -962,6 +898,10 @@ function GetDependencyOwnerDirectory(Dependency: TPkgDependency): string;
 
 function PackageFileNameIsValid(const AFilename: string): boolean;
 
+procedure PkgVersionLoadFromXMLConfig(Version: TPkgVersion;
+  XMLConfig: TXMLConfig; const Path: string; FileVersion: integer);
+procedure PkgVersionSaveToXMLConfig(Version: TPkgVersion; XMLConfig: TXMLConfig;
+  const Path: string);
 
 implementation
 
@@ -1377,6 +1317,31 @@ begin
   PkgName:=ExtractFileNameOnly(AFilename);
   if (PkgName='') or (not IsValidIdent(PkgName)) then exit;
   Result:=true;
+end;
+
+procedure PkgVersionLoadFromXMLConfig(Version: TPkgVersion;
+  XMLConfig: TXMLConfig; const Path: string; FileVersion: integer);
+var
+  NewMajor: Integer;
+  NewMinor: Integer;
+  NewRelease: Integer;
+  NewBuild: Integer;
+begin
+  if FileVersion=1 then ;
+  NewMajor:=Version.VersionBound(XMLConfig.GetValue(Path+'Major',0));
+  NewMinor:=Version.VersionBound(XMLConfig.GetValue(Path+'Minor',0));
+  NewRelease:=Version.VersionBound(XMLConfig.GetValue(Path+'Release',0));
+  NewBuild:=Version.VersionBound(XMLConfig.GetValue(Path+'Build',0));
+  Version.SetValues(NewMajor,NewMinor,NewRelease,NewBuild,pvtBuild);
+end;
+
+procedure PkgVersionSaveToXMLConfig(Version: TPkgVersion; XMLConfig: TXMLConfig;
+  const Path: string);
+begin
+  XMLConfig.SetDeleteValue(Path+'Major',Version.Major,0);
+  XMLConfig.SetDeleteValue(Path+'Minor',Version.Minor,0);
+  XMLConfig.SetDeleteValue(Path+'Release',Version.Release,0);
+  XMLConfig.SetDeleteValue(Path+'Build',Version.Build,0);
 end;
 
 function IndexOfDependencyInList(First: TPkgDependency;
@@ -1802,8 +1767,8 @@ begin
   if FileVersion=1 then ;
   Clear;
   PackageName:=XMLConfig.GetValue(Path+'PackageName/Value','');
-  MaxVersion.LoadFromXMLConfig(XMLConfig,Path+'MaxVersion/',FileVersion);
-  MinVersion.LoadFromXMLConfig(XMLConfig,Path+'MinVersion/',FileVersion);
+  PkgVersionLoadFromXMLConfig(MaxVersion,XMLConfig,Path+'MaxVersion/',FileVersion);
+  PkgVersionLoadFromXMLConfig(MinVersion,XMLConfig,Path+'MinVersion/',FileVersion);
   if XMLConfig.GetValue(Path+'MaxVersion/Valid',false) then
     Include(FFlags,pdfMaxVersion);
   if XMLConfig.GetValue(Path+'MinVersion/Valid',false) then
@@ -1829,8 +1794,8 @@ procedure TPkgDependency.SaveToXMLConfig(XMLConfig: TXMLConfig;
   
 begin
   XMLConfig.SetDeleteValue(Path+'PackageName/Value',PackageName,'');
-  MaxVersion.SaveToXMLConfig(XMLConfig,Path+'MaxVersion/');
-  MinVersion.SaveToXMLConfig(XMLConfig,Path+'MinVersion/');
+  PkgVersionSaveToXMLConfig(MaxVersion,XMLConfig,Path+'MaxVersion/');
+  PkgVersionSaveToXMLConfig(MinVersion,XMLConfig,Path+'MinVersion/');
   XMLConfig.SetDeleteValue(Path+'MaxVersion/Valid',pdfMaxVersion in FFlags,false);
   XMLConfig.SetDeleteValue(Path+'MinVersion/Valid',pdfMinVersion in FFlags,false);
   SaveFilename('DefaultFilename/Value',FDefaultFilename);
@@ -2017,150 +1982,6 @@ begin
     if BaseDir<>'' then
       Result:=CreateRelativePath(Result,BaseDir);
   end;
-end;
-
-{ TPkgVersion }
-
-procedure TPkgVersion.Clear;
-begin
-  SetValues(0,0,0,0,pvtBuild);
-end;
-
-procedure TPkgVersion.LoadFromXMLConfig(XMLConfig: TXMLConfig;
-  const Path: string; FileVersion: integer);
-var
-  NewMajor: Integer;
-  NewMinor: Integer;
-  NewRelease: Integer;
-  NewBuild: Integer;
-begin
-  if FileVersion=1 then ;
-  NewMajor:=VersionBound(XMLConfig.GetValue(Path+'Major',0));
-  NewMinor:=VersionBound(XMLConfig.GetValue(Path+'Minor',0));
-  NewRelease:=VersionBound(XMLConfig.GetValue(Path+'Release',0));
-  NewBuild:=VersionBound(XMLConfig.GetValue(Path+'Build',0));
-  SetValues(NewMajor,NewMinor,NewRelease,NewBuild,pvtBuild);
-end;
-
-procedure TPkgVersion.SaveToXMLConfig(XMLConfig: TXMLConfig; const Path: string
-  );
-begin
-  XMLConfig.SetDeleteValue(Path+'Major',Major,0);
-  XMLConfig.SetDeleteValue(Path+'Minor',Minor,0);
-  XMLConfig.SetDeleteValue(Path+'Release',Release,0);
-  XMLConfig.SetDeleteValue(Path+'Build',Build,0);
-end;
-
-function TPkgVersion.Compare(Version2: TPkgVersion): integer;
-begin
-  Result:=Major-Version2.Major;
-  if Result<>0 then exit;
-  Result:=Minor-Version2.Minor;
-  if Result<>0 then exit;
-  Result:=Release-Version2.Release;
-  if Result<>0 then exit;
-  Result:=Build-Version2.Build;
-end;
-
-function TPkgVersion.CompareMask(ExactVersion: TPkgVersion): integer;
-begin
-  if Valid=pvtNone then exit(0);
-  Result:=Major-ExactVersion.Major;
-  if Result<>0 then exit;
-  if Valid=pvtMajor then exit;
-  Result:=Minor-ExactVersion.Minor;
-  if Result<>0 then exit;
-  if Valid=pvtMinor then exit;
-  Result:=Release-ExactVersion.Release;
-  if Result<>0 then exit;
-  if Valid=pvtRelease then exit;
-  Result:=Build-ExactVersion.Build;
-end;
-
-procedure TPkgVersion.Assign(Source: TPkgVersion);
-begin
-  SetValues(Source.Major,Source.Minor,Source.Release,Source.Build,Source.Valid);
-end;
-
-function TPkgVersion.AsString: string;
-begin
-  Result:=IntToStr(Major)+'.'+IntToStr(Minor);
-  if (Build<>0) then
-    Result:=Result+'.'+IntToStr(Release)+'.'+IntToStr(Build)
-  else if (Release<>0) then
-    Result:=Result+'.'+IntToStr(Release)
-end;
-
-function TPkgVersion.AsWord: string;
-begin
-  Result:=IntToStr(Major)+'_'+IntToStr(Minor);
-  if (Build<>0) then
-    Result:=Result+'_'+IntToStr(Release)+'_'+IntToStr(Build)
-  else if (Release<>0) then
-    Result:=Result+'_'+IntToStr(Release)
-end;
-
-function TPkgVersion.ReadString(const s: string): boolean;
-var
-  ints: array[1..4] of integer;
-  i: integer;
-  CurPos: Integer;
-  StartPos: Integer;
-  NewValid: TPkgVersionValid;
-begin
-  Result:=false;
-  CurPos:=1;
-  NewValid:=pvtNone;
-  for i:=1 to 4 do begin
-    ints[i]:=0;
-    if CurPos<length(s) then begin
-      if i>Low(ints) then begin
-        // read point
-        if s[CurPos]<>'.' then exit;
-        inc(CurPos);
-      end;
-      // read int
-      StartPos:=CurPos;
-      while (CurPos<=length(s)) and (i<=9999)
-      and (s[CurPos] in ['0'..'9']) do begin
-        ints[i]:=ints[i]*10+ord(s[CurPos])-ord('0');
-        inc(CurPos);
-      end;
-      if (StartPos=CurPos) then exit;
-      NewValid:=succ(NewValid);
-    end;
-  end;
-  if CurPos<=length(s) then exit;
-  SetValues(ints[1],ints[2],ints[3],ints[4],NewValid);
-
-  Result:=true;
-end;
-
-procedure TPkgVersion.SetValues(NewMajor, NewMinor, NewRelease,
-  NewBuild: integer; NewValid: TPkgVersionValid);
-begin
-  NewMajor:=VersionBound(NewMajor);
-  NewMinor:=VersionBound(NewMinor);
-  NewRelease:=VersionBound(NewRelease);
-  NewBuild:=VersionBound(NewBuild);
-  if (NewMajor=Major) and (NewMinor=Minor) and (NewRelease=Release)
-  and (NewBuild=Build) and (NewValid=Valid) then exit;
-  Major:=NewMajor;
-  Minor:=NewMinor;
-  Release:=NewRelease;
-  Build:=NewBuild;
-  Valid:=NewValid;
-  if Assigned(OnChange) then OnChange(Self);
-end;
-
-function TPkgVersion.VersionBound(v: integer): integer;
-begin
-  if v>9999 then
-    Result:=9999
-  else if v<0 then
-    Result:=0
-  else
-    Result:=v;
 end;
 
 { TLazPackage }
@@ -2700,7 +2521,7 @@ begin
                                 XMLConfig.GetValue(Path+'AutoUpdate/Value',''));
   FDescription:=XMLConfig.GetValue(Path+'Description/Value','');
   FLicense:=XMLConfig.GetValue(Path+'License/Value','');
-  FVersion.LoadFromXMLConfig(XMLConfig,Path+'Version/',FileVersion);
+  PkgVersionLoadFromXMLConfig(FVersion,XMLConfig,Path+'Version/',FileVersion);
   FIconFile:=SwitchPathDelims(XMLConfig.GetValue(Path+'IconFile/Value',''),
                               PathDelimChanged);
   OutputStateFile:=SwitchPathDelims(
@@ -2780,7 +2601,7 @@ begin
   FCompilerOptions.SaveToXMLConfig(XMLConfig,Path+'CompilerOptions/');
   XMLConfig.SetDeleteValue(Path+'Description/Value',FDescription,'');
   XMLConfig.SetDeleteValue(Path+'License/Value',FLicense,'');
-  FVersion.SaveToXMLConfig(XMLConfig,Path+'Version/');
+  PkgVersionSaveToXMLConfig(FVersion,XMLConfig,Path+'Version/');
   SaveFiles(Path+'Files/',FFiles);
   SaveFlags(Path);
   XMLConfig.SetDeleteValue(Path+'IconFile/Value',f(FIconFile),'');
@@ -3633,95 +3454,6 @@ end;
 function TPkgComponent.CanBeCreatedInDesigner: boolean;
 begin
   Result:=(not PkgFile.Removed);
-end;
-
-{ TLazPackageID }
-
-procedure TLazPackageID.SetName(const AValue: string);
-begin
-  if FName=AValue then exit;
-  FName:=AValue;
-  UpdateIDAsString;
-end;
-
-constructor TLazPackageID.Create;
-begin
-  FVersion:=TPkgVersion.Create;
-  FVersion.OnChange:=@VersionChanged;
-end;
-
-destructor TLazPackageID.Destroy;
-begin
-  FreeThenNil(FVersion);
-  inherited Destroy;
-end;
-
-procedure TLazPackageID.UpdateIDAsString;
-begin
-  FIDAsString:=Version.AsString;
-  if FIDAsString<>'' then
-    FIDAsString:=Name+' '+FIDAsString
-  else
-    FIDAsString:=FIDAsString;
-  FIDAsWord:=Version.AsWord;
-  if FIDAsWord<>'' then
-    FIDAsWord:=Name+FIDAsWord
-  else
-    FIDAsWord:=FIDAsWord;
-end;
-
-procedure TLazPackageID.VersionChanged(Sender: TObject);
-begin
-  UpdateIDAsString;
-end;
-
-function TLazPackageID.StringToID(const s: string): boolean;
-var
-  IdentEndPos: Integer;
-  StartPos: Integer;
-begin
-  Result:=false;
-  IdentEndPos:=1;
-  while (IdentEndPos<=length(s))
-  and (s[IdentEndPos] in ['a'..'z','A'..'Z','0'..'9','_'])
-  do
-    inc(IdentEndPos);
-  if IdentEndPos=1 then exit;
-  Name:=copy(s,1,IdentEndPos-1);
-  StartPos:=IdentEndPos;
-  while (StartPos<=length(s)) and (s[StartPos]=' ') do inc(StartPos);
-  if StartPos=IdentEndPos then begin
-    Version.Clear;
-    Version.Valid:=pvtNone;
-  end else begin
-    if not Version.ReadString(copy(s,StartPos,length(s))) then exit;
-  end;
-  Result:=true;
-end;
-
-function TLazPackageID.Compare(PackageID2: TLazPackageID): integer;
-begin
-  if PackageID2 <> nil then
-  begin
-    Result:=CompareText(Name,PackageID2.Name);
-    if Result<>0 then exit;
-    Result:=Version.Compare(PackageID2.Version);
-  end
-  else
-    Result := -1;
-end;
-
-function TLazPackageID.CompareMask(ExactPackageID: TLazPackageID): integer;
-begin
-  Result:=CompareText(Name,ExactPackageID.Name);
-  if Result<>0 then exit;
-  Result:=Version.CompareMask(ExactPackageID.Version);
-end;
-
-procedure TLazPackageID.AssignID(Source: TLazPackageID);
-begin
-  Name:=Source.Name;
-  Version.Assign(Source.Version);
 end;
 
 { TPkgCompilerOptions }

@@ -41,7 +41,7 @@ uses
   Classes, SysUtils, Forms, Controls, StdCtrls, ComCtrls, Buttons, LResources,
   Graphics, LCLType, LCLProc, Menus, Dialogs, FileUtil, AVL_Tree,
   // IDEIntf CodeTools
-  HelpIntfs, LazIDEIntf, ProjectIntf, FormEditingIntf, Laz_XMLCfg,
+  HelpIntfs, LazIDEIntf, ProjectIntf, FormEditingIntf, Laz_XMLCfg, PackageIntf,
   // IDE
   MainIntf, IDEProcs, LazConf, LazarusIDEStrConsts, IDEOptionDefs, IDEDefs,
   IDEContextHelpEdit, CompilerOptions, CompilerOptionsDlg, ComponentReg,
