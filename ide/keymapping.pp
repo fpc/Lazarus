@@ -594,9 +594,6 @@ begin
   ecReportingBug: SetResult(VK_UNKNOWN,[],VK_UNKNOWN,[]);
 
   // designer
-  ecDesignerCopy        : SetResult(VK_C,[ssCtrl],VK_Insert,[ssCtrl]);
-  ecDesignerCut         : SetResult(VK_X,[ssCtrl],VK_Delete,[ssShift]);
-  ecDesignerPaste       : SetResult(VK_V,[ssCtrl],VK_Insert,[ssShift]);
   ecDesignerSelectParent: SetResult(VK_ESCAPE,[],VK_UNKNOWN,[]);
   ecDesignerMoveToFront : SetResult(VK_PRIOR,[ssShift],VK_UNKNOWN,[]);
   ecDesignerMoveToBack  : SetResult(VK_NEXT,[ssShift],VK_UNKNOWN,[]);
@@ -694,7 +691,7 @@ begin
 
   case Command of
   // moving
-  ecWordLeft:SetResult(VK_A, [ssCtrl], VK_UNKNOWN, [], VK_LEFT, [ssCtrl], VK_UNKNOWN,[]);
+  ecWordLeft: SetResult(VK_A, [ssCtrl], VK_UNKNOWN, [], VK_LEFT, [ssCtrl], VK_UNKNOWN,[]);
   ecWordRight: SetResult(VK_D, [ssCtrl], VK_UNKNOWN, [], VK_RIGHT, [ssCtrl],VK_UNKNOWN,[]);
   ecLineStart: SetResult(VK_Q, [ssCtrl], VK_S, [], VK_HOME, [],VK_UNKNOWN,[]);
   ecLineEnd: SetResult(VK_Q, [ssCtrl], VK_D, [], VK_END, [],VK_UNKNOWN,[]);
@@ -1029,9 +1026,6 @@ begin
   ecReportingBug: SetResult(VK_UNKNOWN,[],VK_UNKNOWN,[],VK_UNKNOWN,[],VK_UNKNOWN,[]);
 
   // designer
-  ecDesignerCopy        : SetResult(VK_C,[ssCtrl],VK_UNKNOWN,[],VK_Insert,[ssCtrl],VK_UNKNOWN,[]);
-  ecDesignerCut         : SetResult(VK_X,[ssCtrl],VK_UNKNOWN,[],VK_Delete,[ssShift],VK_UNKNOWN,[]);
-  ecDesignerPaste       : SetResult(VK_V,[ssCtrl],VK_UNKNOWN,[],VK_Insert,[ssShift],VK_UNKNOWN,[]);
   ecDesignerSelectParent: SetResult(VK_ESCAPE,[],VK_UNKNOWN,[],VK_UNKNOWN,[],VK_UNKNOWN,[]);
   ecDesignerMoveToFront : SetResult(VK_PRIOR,[ssShift],VK_UNKNOWN,[],VK_UNKNOWN,[],VK_UNKNOWN,[]);
   ecDesignerMoveToBack  : SetResult(VK_NEXT,[ssShift],VK_UNKNOWN,[],VK_UNKNOWN,[],VK_UNKNOWN,[]);
@@ -1646,9 +1640,6 @@ begin
   ecReportingBug: SetResult(VK_UNKNOWN,[],VK_UNKNOWN,[]);
 
   // designer
-  ecDesignerCopy        : SetResult(VK_C,[ssMeta],VK_UNKNOWN,[]);
-  ecDesignerCut         : SetResult(VK_X,[ssMeta],VK_UNKNOWN,[]);
-  ecDesignerPaste       : SetResult(VK_V,[ssMeta],VK_UNKNOWN,[]);
   ecDesignerSelectParent: SetResult(VK_ESCAPE,[],VK_UNKNOWN,[]);
   ecDesignerMoveToFront : SetResult(VK_PRIOR,[ssShift],VK_UNKNOWN,[]);
   ecDesignerMoveToBack  : SetResult(VK_NEXT,[ssShift],VK_UNKNOWN,[]);
@@ -2178,9 +2169,6 @@ begin
     ecReportingBug            : Result:= lisMenuReportingBug;
 
     // desginer
-    ecDesignerCopy            : Result:= lisDsgCopyComponents;
-    ecDesignerCut             : Result:= lisDsgCutComponents;
-    ecDesignerPaste           : Result:= lisDsgPasteComponents;
     ecDesignerSelectParent    : Result:= lisDsgSelectParentComponent;
     ecDesignerMoveToFront     : Result:= lisDsgOrderMoveToFront;
     ecDesignerMoveToBack      : Result:= lisDsgOrderMoveToBack;
@@ -2398,8 +2386,7 @@ begin
   AddDefault(C, 'Move cursor left one page', srkmecPageLeft, ecPageLeft);
   AddDefault(C, 'Move cursor right one page', srkmecPageRight, ecPageRight);
   AddDefault(C, 'Move cursor to top of page', srkmecPageTop, ecPageTop);
-  AddDefault(C, 'Move cursor to bottom of page', srkmecPageBottom, ecPageBottom
-    );
+  AddDefault(C, 'Move cursor to bottom of page', srkmecPageBottom, ecPageBottom);
   AddDefault(C, 'Move cursor to absolute beginning', srkmecEditorTop,
     ecEditorTop);
   AddDefault(C, 'Move cursor to absolute end', srkmecEditorBottom,
@@ -2412,9 +2399,6 @@ begin
   // selection
   C:=Categories[AddCategory('Selection',srkmCatSelection,
                 IDECmdScopeSrcEditOnly)];
-  AddDefault(C, 'Copy selection to clipboard', srkmecCopy, ecCopy);
-  AddDefault(C, 'Cut selection to clipboard', srkmecCut, ecCut);
-  AddDefault(C, 'Paste clipboard to current position', srkmecPaste, ecPaste);
   AddDefault(C, 'Normal selection mode', srkmecNormalSelect, ecNormalSelect);
   AddDefault(C, 'Column selection mode', srkmecColumnSelect, ecColumnSelect);
   AddDefault(C, 'Line selection mode', srkmecLineSelect, ecLineSelect);
@@ -2427,12 +2411,10 @@ begin
   AddDefault(C, 'Convert tabs to spaces in selection',
     srkmecSelectionTabs2Spaces, ecSelectionTabs2Spaces);
   AddDefault(C, 'Enclose selection', lisKMEncloseSelection, ecSelectionEnclose);
-  AddDefault(C, 'Comment selection', lisMenuCommentSelection, ecSelectionComment
-    );
+  AddDefault(C, 'Comment selection', lisMenuCommentSelection, ecSelectionComment);
   AddDefault(C, 'Uncomment selection', lisMenuUncommentSelection,
     ecSelectionUncomment);
-  AddDefault(C, 'Toggle comment', lisMenuToggleComment, ecToggleComment
-    );
+  AddDefault(C, 'Toggle comment', lisMenuToggleComment, ecToggleComment);
   AddDefault(C, 'Sort selection', lisSortSelSortSelection, ecSelectionSort);
   AddDefault(C, 'Break Lines in selection', lisMenuBeakLinesInSelection,
     ecSelectionBreakLines);
@@ -2503,25 +2485,21 @@ begin
   AddDefault(C, 'Insert from Character Map', lisMenuInsertCharacter,
     ecInsertCharacter);
   AddDefault(C, 'Insert GPL notice', srkmecInsertGPLNotice, ecInsertGPLNotice);
-  AddDefault(C, 'Insert LGPL notice', srkmecInsertLGPLNotice, ecInsertLGPLNotice
-    );
+  AddDefault(C, 'Insert LGPL notice', srkmecInsertLGPLNotice, ecInsertLGPLNotice);
   AddDefault(C, 'Insert modified LGPL notice', srkmecInsertModifiedLGPLNotice,
     ecInsertModifiedLGPLNotice);
   AddDefault(C, 'Insert username', lisKMInsertUsername, ecInsertUserName);
-  AddDefault(C, 'Insert date and time', lisKMInsertDateAndTime, ecInsertDateTime
-    );
+  AddDefault(C, 'Insert date and time', lisKMInsertDateAndTime, ecInsertDateTime);
   AddDefault(C, 'Insert ChangeLog entry', srkmecInsertChangeLogEntry,
     ecInsertChangeLogEntry);
   AddDefault(C, 'Insert CVS keyword Author', srkmecInsertCVSAuthor,
     ecInsertCVSAuthor);
-  AddDefault(C, 'Insert CVS keyword Date', srkmecInsertCVSDate, ecInsertCVSDate
-    );
+  AddDefault(C, 'Insert CVS keyword Date', srkmecInsertCVSDate, ecInsertCVSDate);
   AddDefault(C, 'Insert CVS keyword Header', srkmecInsertCVSHeader,
     ecInsertCVSHeader);
   AddDefault(C, 'Insert CVS keyword ID', srkmecInsertCVSID, ecInsertCVSID);
   AddDefault(C, 'Insert CVS keyword Log', srkmecInsertCVSLog, ecInsertCVSLog);
-  AddDefault(C, 'Insert CVS keyword Name', srkmecInsertCVSName, ecInsertCVSName
-    );
+  AddDefault(C, 'Insert CVS keyword Name', srkmecInsertCVSName, ecInsertCVSName);
   AddDefault(C, 'Insert CVS keyword Revision', srkmecInsertCVSRevision,
     ecInsertCVSRevision); ;
   AddDefault(C, 'Insert CVS keyword Source', srkmecInsertCVSSource,
@@ -2533,6 +2511,9 @@ begin
   C:=Categories[AddCategory('CommandCommands',srkmCatCmdCmd,nil)];
   AddDefault(C, 'Undo', lisMenuUndo, ecUndo);
   AddDefault(C, 'Redo', lisMenuRedo, ecRedo);
+  AddDefault(C, 'Copy selection to clipboard', srkmecCopy, ecCopy);
+  AddDefault(C, 'Cut selection to clipboard', srkmecCut, ecCut);
+  AddDefault(C, 'Paste clipboard to current position', srkmecPaste, ecPaste);
 
   // search & replace
   C:=Categories[AddCategory('SearchReplace',srkmCatSearchReplace,
@@ -2553,8 +2534,7 @@ begin
   AddDefault(C, 'Jump forward', lisMenuJumpForward, ecJumpForward);
   AddDefault(C, 'Add jump point', srkmecAddJumpPoint, ecAddJumpPoint);
   AddDefault(C, 'View jump history', lisKMViewJumpHistory, ecViewJumpHistory);
-  AddDefault(C, 'Jump to next error', lisMenuJumpToNextError, ecJumpToNextError
-    );
+  AddDefault(C, 'Jump to next error', lisMenuJumpToNextError, ecJumpToNextError);
   AddDefault(C, 'Jump to previous error', lisMenuJumpToPrevError,
     ecJumpToPrevError);
   AddDefault(C, 'Open file at cursor', srkmecOpenFileAtCursor,
@@ -2647,8 +2627,7 @@ begin
     ecRemoveEmptyMethods);
   AddDefault(C, 'Remove unused units', srkmecRemoveUnusedUnits,
     ecRemoveUnusedUnits);
-  AddDefault(C, 'Find overloads', srkmecFindOverloads,
-    ecFindOverloads);
+  AddDefault(C, 'Find overloads', srkmecFindOverloads, ecFindOverloads);
 
   // Template editing
   C:=Categories[AddCategory('Edit Template', srkmCatTemplateEdit, IDECmdScopeSrcEditOnlyTmplEdit)];
@@ -2716,8 +2695,7 @@ begin
   AddDefault(C, 'Go to next editor', srkmecNextEditor, ecNextEditor);
   AddDefault(C, 'Go to prior editor', srkmecPrevEditor, ecPrevEditor);
   AddDefault(C, 'Add break point', srkmecToggleBreakPoint, ecToggleBreakPoint);
-  AddDefault(C, 'Remove break point', srkmecRemoveBreakPoint, ecRemoveBreakPoint
-    );
+  AddDefault(C, 'Remove break point', srkmecRemoveBreakPoint, ecRemoveBreakPoint);
   AddDefault(C, 'Move editor left', srkmecMoveEditorLeft, ecMoveEditorLeft);
   AddDefault(C, 'Move editor right', srkmecMoveEditorRight, ecMoveEditorRight);
   AddDefault(C, 'Move editor leftmost', srkmecMoveEditorLeftmost, ecMoveEditorLeftmost);
@@ -2813,8 +2791,7 @@ begin
   AddDefault(C, 'Save project', lisKMSaveProject, ecSaveProject);
   AddDefault(C, 'Save project as', lisKMSaveProjectAs, ecSaveProjectAs);
   AddDefault(C, 'Publish project', lisKMPublishProject, ecPublishProject);
-  AddDefault(C, 'Project Inspector', lisMenuProjectInspector, ecProjectInspector
-    );
+  AddDefault(C, 'Project Inspector', lisMenuProjectInspector, ecProjectInspector);
   AddDefault(C, 'Add active unit to project', lisKMAddActiveUnitToProject,
     ecAddCurUnitToProj);
   AddDefault(C, 'Remove active unit from project',
@@ -2909,12 +2886,6 @@ begin
 
   // designer  - without menu items in the IDE bar (at least not directly)
   C:=Categories[AddCategory('Designer',lisKeyCatDesigner,IDECmdScopeDesignerOnly)];
-  AddDefault(C, 'Copy selected Components to clipboard',
-    lisKMCopySelectedComponentsToClipboard, ecDesignerCopy);
-  AddDefault(C, 'Cut selected Components to clipboard',
-    lisKMCutSelectedComponentsToClipboard, ecDesignerCut);
-  AddDefault(C, 'Paste Components from clipboard',
-    lisKMPasteComponentsFromClipboard, ecDesignerPaste);
   AddDefault(C, 'Select parent component', lisDsgSelectParentComponent,
     ecDesignerSelectParent);
   AddDefault(C, 'Move component to front', lisDsgOrderMoveToFront,
@@ -2923,8 +2894,8 @@ begin
     ecDesignerMoveToBack);
   AddDefault(C, 'Move component one forward', lisDsgOrderForwardOne,
     ecDesignerForwardOne);
-  AddDefault(C, 'Move component one back', lisDsgOrderBackOne, ecDesignerBackOne
-    );
+  AddDefault(C, 'Move component one back', lisDsgOrderBackOne,
+    ecDesignerBackOne);
 
   // object inspector - without menu items in the IDE bar (at least no direct)
   C:=Categories[AddCategory('Object Inspector',lisKeyCatObjInspector,

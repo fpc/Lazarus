@@ -296,9 +296,6 @@ const
   ecReportingBug            = ecFirstLazarus + 905;
 
   // designer
-  ecDesignerCopy            = ecFirstLazarus + 1000;
-  ecDesignerCut             = ecFirstLazarus + 1001;
-  ecDesignerPaste           = ecFirstLazarus + 1002;
   ecDesignerSelectParent    = ecFirstLazarus + 1003;
   ecDesignerMoveToFront     = ecFirstLazarus + 1004;
   ecDesignerMoveToBack      = ecFirstLazarus + 1005;

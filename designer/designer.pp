@@ -48,7 +48,7 @@ uses
   LazarusIDEStrConsts, EnvironmentOpts, IDECommands, ComponentReg,
   NonControlDesigner, FrameDesigner, AlignCompsDlg, SizeCompsDlg, ScaleCompsDlg,
   TabOrderDlg, DesignerProcs, CustomFormEditor,  AskCompNameDlg,
-  ControlSelection, ChangeClassDialog, EditorOptions;
+  ControlSelection, ChangeClassDialog, EditorOptions, SynEditKeyCmds;
 
 type
   TDesigner = class;
@@ -197,6 +197,8 @@ type
     procedure DoOrderMoveSelectionToBack;
     procedure DoOrderForwardSelectionOne;
     procedure DoOrderBackSelectionOne;
+    procedure DoUndo;
+    procedure DoRedo;
 
     procedure GiveComponentsNames;
     procedure NotifyPersistentAdded(APersistent: TPersistent);
@@ -260,6 +262,7 @@ type
                                    MenuIndex: integer): boolean; override;
     procedure DoProcessCommand(Sender: TObject; var Command: word;
                                var Handled: boolean);
+    function DoCommand(Command: word): boolean;
 
     function NonVisualComponentLeftTop(AComponent: TComponent): TPoint;
     function NonVisualComponentAtPos(X, Y: integer): TComponent;
@@ -507,8 +510,7 @@ begin
                                                       'Custom dynamic section');
 
   // register align section
-  DesignerMenuSectionAlign:=RegisterIDEMenuSection(DesignerMenuRoot,
-                                                               'Align section');
+  DesignerMenuSectionAlign:=RegisterIDEMenuSection(DesignerMenuRoot, 'Align section');
     DesignerMenuAlign:=RegisterIDEMenuCommand(DesignerMenuSectionAlign,
                                          'Align',fdmAlignWord, nil, nil, nil, 'align');
     DesignerMenuMirrorHorizontal:=RegisterIDEMenuCommand(DesignerMenuSectionAlign,
@@ -521,8 +523,7 @@ begin
                                        'Size',fdmSizeWord, nil, nil, nil, 'size');
 
   // register tab and z-order section
-  DesignerMenuSectionOrder:=RegisterIDEMenuSection(DesignerMenuRoot,
-                                                               'Order section');
+  DesignerMenuSectionOrder:=RegisterIDEMenuSection(DesignerMenuRoot, 'Order section');
     DesignerMenuTabOrder:=RegisterIDEMenuCommand(DesignerMenuSectionOrder,
                                        'Tab order',fdmTabOrder);
     DesignerMenuSectionZOrder:=RegisterIDESubMenu(DesignerMenuSectionOrder,
@@ -537,8 +538,7 @@ begin
                                   'Move z order backwards one',fdmOrderBackOne, nil, nil, nil, 'Order_back_one');
 
   // register clipboard section
-  DesignerMenuSectionClipboard:=RegisterIDEMenuSection(DesignerMenuRoot,
-                                                           'Clipboard section');
+  DesignerMenuSectionClipboard:=RegisterIDEMenuSection(DesignerMenuRoot, 'Clipboard section');
     DesignerMenuCut:=RegisterIDEMenuCommand(DesignerMenuSectionClipboard,
                                             'Cut',lisMenuCut, nil, nil, nil, 'laz_cut');
     DesignerMenuCopy:=RegisterIDEMenuCommand(DesignerMenuSectionClipboard,
@@ -551,8 +551,7 @@ begin
                                          'Select All',fdmSelectAll, nil, nil, nil, 'menu_select_all');
 
   // register miscellaneous section
-  DesignerMenuSectionMisc:=RegisterIDEMenuSection(DesignerMenuRoot,
-                                                       'Miscellaneous section');
+  DesignerMenuSectionMisc:=RegisterIDEMenuSection(DesignerMenuRoot, 'Miscellaneous section');
     DesignerMenuChangeClass:=RegisterIDEMenuCommand(DesignerMenuSectionMisc,
                                                  'Change class',lisChangeClass);
     DesignerMenuChangeParent:=RegisterIDEMenuSection(DesignerMenuSectionMisc,
@@ -567,8 +566,7 @@ begin
                                                 'Center form', lisCenterForm);
 
   // register options section
-  DesignerMenuSectionOptions:=RegisterIDEMenuSection(DesignerMenuRoot,
-                                                             'Options section');
+  DesignerMenuSectionOptions:=RegisterIDEMenuSection(DesignerMenuRoot, 'Options section');
     DesignerMenuSnapToGridOption:=RegisterIDEMenuCommand(DesignerMenuSectionOptions,
                                             'Snap to grid',fdmSnapToGridOption);
     DesignerMenuSnapToGuideLinesOption:=RegisterIDEMenuCommand(DesignerMenuSectionOptions,
@@ -1322,6 +1320,16 @@ begin
   Modified;
 end;
 
+procedure TDesigner.DoUndo;
+begin
+  ; // ToDo: Implement Undo
+end;
+
+procedure TDesigner.DoRedo;
+begin
+  ; // ToDo: Implement Redo
+end;
+
 procedure TDesigner.GiveComponentsNames;
 var
   i: Integer;
@@ -1411,28 +1419,32 @@ end;
 procedure TDesigner.DoProcessCommand(Sender: TObject; var Command: word;
   var Handled: boolean);
 begin
-  if Assigned(OnProcessCommand) and (Command <> ecNone)
-  then begin
+  if Assigned(OnProcessCommand) and (Command <> ecNone) then
+  begin
     OnProcessCommand(Self,Command,Handled);
     Handled := Handled or (Command = ecNone);
   end;
+  if not Handled then
+    Handled := DoCommand(Command);
+end;
 
-  if Handled then Exit;
-
+function TDesigner.DoCommand(Command: word): boolean;
+begin
   case Command of
     ecDesignerSelectParent : SelectParentOfSelection;
-    ecDesignerCopy         : CopySelection;
-    ecDesignerCut          : CutSelection;
-    ecDesignerPaste        : PasteSelection([cpsfFindUniquePositions]);
+    ecUndo         : DoUndo;
+    ecRedo         : DoRedo;
+    ecCopy         : CopySelection;
+    ecCut          : CutSelection;
+    ecPaste        : PasteSelection([cpsfFindUniquePositions]);
     ecDesignerMoveToFront  : DoOrderMoveSelectionToFront;
     ecDesignerMoveToBack   : DoOrderMoveSelectionToBack;
     ecDesignerForwardOne   : DoOrderForwardSelectionOne;
     ecDesignerBackOne      : DoOrderBackSelectionOne;
   else
-    Exit;
+    Exit(False);
   end;
-  
-  Handled := True;
+  Result := True;
 end;
 
 function TDesigner.NonVisualComponentLeftTop(AComponent: TComponent): TPoint;
@@ -1677,9 +1689,7 @@ begin
   Result := True;
   Sender.Dispatch(TheMessage);
   if ControlSelection.SelectionForm = Form then
-  begin
     ControlSelection.CheckForLCLChanges(True);
-  end;
 end;
 
 function TDesigner.MoveControl(Sender: TControl; TheMessage: TLMMove): Boolean;
@@ -1971,7 +1981,6 @@ var
 
     // modified
     Modified;
-
 
     // set initial properties
     if NewComponent is TControl then begin
@@ -2359,8 +2368,7 @@ begin
   if Mediator<>nil then
     Mediator.KeyDown(Sender,TheMessage.CharCode,Shift);
 
-  Command := FTheFormEditor.TranslateKeyToDesignerCommand(
-                                                    TheMessage.CharCode, Shift);
+  Command := FTheFormEditor.TranslateKeyToDesignerCommand(TheMessage.CharCode, Shift);
   //DebugLn(['TDesigner.KEYDOWN Command=',dbgs(Command),' ',TheMessage.CharCode,' ',dbgs(Shift)]);
   DoProcessCommand(Self, Command, Handled);
   //DebugLn(['TDesigner.KeyDown Command=',Command,' Handled=',Handled,' TheMessage.CharCode=',TheMessage.CharCode]);
@@ -2444,8 +2452,7 @@ begin
   if (ControlSelection.LookupRootSelected) then begin
     if ControlSelection.Count>1 then
       MessageDlg(lisInvalidDelete,
-       lisTheRootComponentCanNotBeDeleted, mtInformation,
-       [mbOk],0);
+                 lisTheRootComponentCanNotBeDeleted, mtInformation, [mbOk],0);
     exit;
   end;
   // check if a selected component is inherited (can not be deleted)
@@ -2506,8 +2513,7 @@ begin
   Form.Invalidate;
 end;
 
-procedure TDesigner.DoDeletePersistent(APersistent: TPersistent;
-  FreeIt: boolean);
+procedure TDesigner.DoDeletePersistent(APersistent: TPersistent; FreeIt: boolean);
 var
   Hook: TPropertyEditorHook;
 begin
@@ -2537,8 +2543,7 @@ begin
   // delete component
   if APersistent is TComponent then
     TheFormEditor.DeleteComponent(TComponent(APersistent),FreeIt)
-  else
-  if FreeIt then
+  else if FreeIt then
     APersistent.Free;
   // unmark component
   DeletingPersistent.Remove(APersistent);

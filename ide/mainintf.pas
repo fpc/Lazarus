@@ -149,7 +149,7 @@ type
                               out ActiveSourceEditor: TSourceEditorInterface;
                               out ActiveUnitInfo: TUnitInfo); virtual; abstract;
 
-    procedure DoCommand(EditorCommand: integer); virtual; abstract;
+    procedure DoCommand(ACommand: integer); virtual; abstract;
 
     procedure GetIDEFileState(Sender: TObject; const AFilename: string;
                         NeededFlags: TIDEFileStateFlags;

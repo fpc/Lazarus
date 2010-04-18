@@ -846,7 +846,7 @@ type
     function QuitIDE: boolean;
 
     // edit menu
-    procedure DoCommand(EditorCommand: integer); override;
+    procedure DoCommand(ACommand: integer); override;
     procedure DoSourceEditorCommand(EditorCommand: integer);
     procedure UpdateCustomToolsInMenu;
 
@@ -16381,27 +16381,27 @@ end;
 
 procedure TMainIDE.mnuEditCopyClicked(Sender: TObject);
 begin
-  DoSourceEditorCommand(ecCopy);
+  DoCommand(ecCopy);
 end;
 
 procedure TMainIDE.mnuEditCutClicked(Sender: TObject);
 begin
-  DoSourceEditorCommand(ecCut);
+  DoCommand(ecCut);
 end;
 
 procedure TMainIDE.mnuEditPasteClicked(Sender: TObject);
 begin
-  DoSourceEditorCommand(ecPaste);
+  DoCommand(ecPaste);
 end;
 
 procedure TMainIDE.mnuEditRedoClicked(Sender: TObject);
 begin
-  DoSourceEditorCommand(ecRedo);
+  DoCommand(ecRedo);
 end;
 
 procedure TMainIDE.mnuEditUndoClicked(Sender: TObject);
 begin
-  DoSourceEditorCommand(ecUndo);
+  DoCommand(ecUndo);
 end;
 
 procedure TMainIDE.mnuEditIndentBlockClicked(Sender: TObject);
@@ -16599,22 +16599,19 @@ begin
   DoSourceEditorCommand(ecInsertCVSSource);
 end;
 
-procedure TMainIDE.DoCommand(EditorCommand: integer);
+procedure TMainIDE.DoCommand(ACommand: integer);
 var
   ActiveSourceEditor: TSourceEditor;
   ActiveUnitInfo: TUnitInfo;
 begin
   GetCurrentUnit(ActiveSourceEditor,ActiveUnitInfo);
-  if FDisplayState = dsSource then begin
-    // send command to source editor
-    if (ActiveSourceEditor=nil) then exit;
-    ActiveSourceEditor.DoEditorExecuteCommand(EditorCommand);
-  end else begin
-    // send command to form editor
-    if ActiveUnitInfo=nil then exit;
-
-    // ToDo: send command to form editor/designer
-
+  case FDisplayState of
+    dsSource:                // send command to source editor
+      if Assigned(ActiveSourceEditor) then
+        ActiveSourceEditor.DoEditorExecuteCommand(ACommand);
+    dsForm:                  // send command to form editor
+      if Assigned(ActiveUnitInfo) then
+        TDesigner(GetDesignerFormOfSource(ActiveUnitInfo,False).Designer).DoCommand(ACommand);
   end;
 end;
 
@@ -16628,8 +16625,7 @@ begin
     CurFocusControl:=GetParentForm(CurFocusControl);
     if (CurFocusControl<>MainIDEBar) and not(CurFocusControl is TSourceNotebook) then
     begin
-      // continue processing shortcut, not handled yet
-      MainIDEBar.mnuMainMenu.ShortcutHandled := false;
+//    MainIDEBar.mnuMainMenu.ShortcutHandled := false; // Shortcut not handled yet
       exit;
     end;
   end;
