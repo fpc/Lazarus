@@ -88,6 +88,7 @@ begin
         SetBounds(CurX, CurY, XStep - 10, Height);
         Caption := GetTranslatedAtomTypes(a);
         OnClick := AOnClick;
+        Tag := ord(a);
         Visible := true;
       end;
       if yi >= MaxYCount then
@@ -116,7 +117,7 @@ begin
     if ParentGroupBox.Components[i] is TCheckBox then
     begin
       ACheckBox := TCheckBox(ParentGroupBox.Components[i]);
-      a := TranslatedAtomToType(ACheckBox.Caption);
+      a := TAtomType(ACheckBox.Tag);
       if (a <> atNone) and ACheckBox.Checked then
         Include(Result, a);
     end;
@@ -135,7 +136,7 @@ begin
     if ParentGroupBox.Components[i] is TCheckBox then
     begin
       ACheckBox:=TCheckBox(ParentGroupBox.Components[i]);
-      a := TranslatedAtomToType(ACheckBox.Caption);
+      a := TAtomType(ACheckBox.Tag);
       ACheckBox.Checked := (a <> atNone) and (a in AtomTypes);
     end;
   end;
