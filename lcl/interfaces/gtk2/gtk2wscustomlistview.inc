@@ -38,17 +38,30 @@ begin
     ListItem.Checked := not ListItem.GetCheckedInternal;
 end;
 
-procedure Gtk2_ItemFocusChanged(treeview: PGtkTreeView; WidgetInfo: PWidgetInfo);cdecl;
+procedure Gtk2_ItemFocusChanged(Widget: PGtkWidget; WidgetInfo: PWidgetInfo);cdecl;
 var
   msg: TLMNotify;
   NM: TNMListView;
   path: PGtkTreePath;
   column: PGtkTreeViewColumn;
+{$IFDEF GTK_2_8}
+  cell: PGtkCellRenderer;
+{$ENDIF}
 begin
   //DebugLn('Gtk2_ItemFocusChanged');
   // the defocus of the oldrow isn't send
-  gtk_tree_view_get_cursor(treeview, path, column);
-  if path = nil then exit;
+  if GTK_IS_TREE_VIEW(Widget) then
+    gtk_tree_view_get_cursor(PGtkTreeView(Widget), path, column)
+ {$IFDEF GTK_2_8}
+  else
+  if GTK_IS_ICON_VIEW(Widget) then
+    gtk_icon_view_get_cursor(PGtkIconView(Widget), path, cell)
+  {$ENDIF}
+  else
+    path := nil;
+
+  if path = nil then
+    Exit;
 
   gtk_tree_path_free(path);
 
@@ -217,7 +230,7 @@ begin
 end;
 
 
-procedure Gtk2WSLV_ListViewGetPixbufDataFunc(tree_column: PGtkTreeViewColumn;
+procedure Gtk2WSLV_ListViewGetPixbufDataFuncForColumn(tree_column: PGtkTreeViewColumn;
   cell: PGtkCellRenderer; tree_model: PGtkTreeModel; iter: PGtkTreeIter; WidgetInfo: PWidgetInfo); cdecl;
 var
   ListItem: TListItem;
@@ -263,19 +276,52 @@ begin
     PGtkCellRendererPixbuf(cell)^.pixbuf := nil;
 end;
 
-
-{ TGtk2WSCustomListView }
-
-class function TGtk2WSCustomListView.IsIconView(const ALV: TCustomListView): Boolean;
+procedure Gtk2WSLV_ListViewGetPixbufDataFuncForIconView(cell_layout:PGtkCellLayout;
+  cell: PGtkCellRenderer; tree_model: PGtkTreeModel; iter: PGtkTreeIter; WidgetInfo: PWidgetInfo); cdecl;
+var
+  ListItem: TListItem;
+  Images: TList;
+  Widgets: PTVWidgets;
+  ImageIndex: Integer;
+  APath: PGtkTreePath;
 begin
-  Result := False;
-  if TLVHack(ALV).ViewStyle in [vsIcon{, vsTile?}] then Result := True;
+  PGtkCellRendererPixbuf(cell)^.pixbuf := nil;
+  Widgets := PTVWidgets(WidgetInfo^.UserData);
+  gtk_tree_model_get(tree_model, iter, [0, @ListItem, -1]);
+
+  Images := Widgets^.Images;
+  if Images = nil then
+    Exit;
+  ImageIndex := -1;
+
+  if (ListItem = nil) and TCustomListView(WidgetInfo^.LCLObject).OwnerData then
+  begin
+    APath := gtk_tree_model_get_path(tree_model,iter);
+    ListItem := TCustomListView(WidgetInfo^.LCLObject).Items[gtk_tree_path_get_indices(APath)^];
+    gtk_tree_path_free(APath);
+  end;
+
+  if ListItem = nil then
+    Exit;
+
+  ImageIndex := ListItem.ImageIndex;
+
+  if (ImageIndex > -1) and (ImageIndex <= Images.Count-1) then
+    PGtkCellRendererPixbuf(cell)^.pixbuf := PGdkPixbuf(Images.Items[ImageIndex])
+  else
+    PGtkCellRendererPixbuf(cell)^.pixbuf := nil;
 end;
 
+{ TGtk2WSCustomListView }
 
 class procedure TGtk2WSCustomListView.SetPropertyInternal(const ALV: TCustomListView;
   const Widgets: PTVWidgets; const AProp: TListViewProperty;
   const AIsSet: Boolean);
+const
+  BoolToSelectionMode: array[Boolean] of TGtkSelectionMode = (
+    GTK_SELECTION_SINGLE,
+    GTK_SELECTION_MULTIPLE
+  );
 begin
   with Widgets^ do begin
     case AProp of
@@ -284,7 +330,8 @@ begin
       end;
       lvpCheckboxes:
         begin
-          AddRemoveCheckboxRenderer(ALV, GetWidgetInfo(Widgets^.MainView), AIsSet);
+          if TLVHack(ALV).ViewStyle in [vsReport,vsList] then
+            AddRemoveCheckboxRenderer(ALV, GetWidgetInfo(Widgets^.MainView), AIsSet);
         end;
       lvpColumnClick: begin
         // allow only column modifications when in report mode
@@ -301,7 +348,8 @@ begin
         // TODO: better implementation
         // maybe possible with some cellwidget hacking
         // this create rows with alternating colors
-        gtk_tree_view_set_rules_hint(PGtkTreeView(MainView), AIsSet);
+        if GTK_IS_TREE_VIEW(MainView) then
+          gtk_tree_view_set_rules_hint(PGtkTreeView(MainView), AIsSet);
       end;
       lvpHideSelection: begin
         // TODO: implement
@@ -312,9 +360,11 @@ begin
         // should be possible with some mouse tracking
       end;
       lvpMultiSelect: begin
-        if AIsSet
-        then gtk_tree_selection_set_mode(TreeSelection, GTK_SELECTION_MULTIPLE)
-        else gtk_tree_selection_set_mode(TreeSelection, GTK_SELECTION_SINGLE);
+        if GTK_IS_TREE_VIEW(MainView) then
+          gtk_tree_selection_set_mode(TreeSelection, BoolToSelectionMode[AIsSet])
+        else
+        if GTK_IS_ICON_VIEW(MainView) then
+          gtk_icon_view_set_selection_mode(PGtkIconView(MainView), BoolToSelectionMode[AIsSet]);
       end;
       lvpOwnerDraw: begin
         // TODO: implement
@@ -342,8 +392,7 @@ begin
   end;
 end;
 
-class procedure TGtk2WSCustomListView.SetNeedDefaultColumn(
-  const ALV: TCustomListView; const AValue: Boolean);
+class procedure TGtk2WSCustomListView.SetNeedDefaultColumn(const ALV: TCustomListView; const AValue: Boolean);
 var
   Widgets: PTVWidgets;
   WidgetInfo: PWidgetInfo;
@@ -358,7 +407,7 @@ begin
   WidgetInfo := GetWidgetInfo(PGtkWidget(ALV.Handle));
   
   GtkColumn := g_object_get_data(G_OBJECT(Widgets^.MainView), 'LCL_DEFAULT_COLUMN');
-  if AValue = True then
+  if AValue then
   begin
     if GtkColumn = nil then
     begin
@@ -370,25 +419,37 @@ begin
       pixrenderer := gtk_cell_renderer_pixbuf_new();
       textrenderer := LCLIntfCellRenderer_New;
 
-      gtk_tree_view_column_pack_start(GtkColumn, pixrenderer, FALSE);
-      //gtk_tree_view_column_set_attributes(GtkColumn, pixrenderer,['pixbuf', 0, nil]);
-      gtk_tree_view_column_pack_start(GtkColumn, textrenderer, True);
-      //gtk_tree_view_column_set_attributes(GtkColumn, textrenderer, ['text',0, nil]);
+      if GTK_IS_TREE_VIEW(Widgets^.MainView) then
+      begin
+        gtk_tree_view_column_pack_start(GtkColumn, pixrenderer, FALSE);
+        //gtk_tree_view_column_set_attributes(GtkColumn, pixrenderer,['pixbuf', 0, nil]);
+        gtk_tree_view_column_pack_start(GtkColumn, textrenderer, True);
+        //gtk_tree_view_column_set_attributes(GtkColumn, textrenderer, ['text',0, nil]);
 
-      gtk_tree_view_column_set_cell_data_func(GtkColumn, pixrenderer,  TGtkTreeCellDataFunc(@Gtk2WSLV_ListViewGetPixbufDataFunc), WidgetInfo, nil);
-      gtk_tree_view_column_set_cell_data_func(GtkColumn, textrenderer, TGtkTreeCellDataFunc(@LCLIntfCellRenderer_CellDataFunc), WidgetInfo, nil);
+        gtk_tree_view_column_set_cell_data_func(GtkColumn, pixrenderer,  TGtkTreeCellDataFunc(@Gtk2WSLV_ListViewGetPixbufDataFuncForColumn), WidgetInfo, nil);
+        gtk_tree_view_column_set_cell_data_func(GtkColumn, textrenderer, TGtkTreeCellDataFunc(@LCLIntfCellRenderer_CellDataFunc), WidgetInfo, nil);
 
-      // insert column
-      gtk_tree_view_insert_column(GTK_TREE_VIEW(Widgets^.MainView), GtkColumn, 0);
-      
+        // insert column
+        gtk_tree_view_insert_column(GTK_TREE_VIEW(Widgets^.MainView), GtkColumn, 0);
+      end
+      else
+      if GTK_IS_ICON_VIEW(Widgets^.MainView) then
+      begin
+        gtk_cell_layout_pack_start(GTK_CELL_LAYOUT(Widgets^.MainView), pixrenderer, False);
+        gtk_cell_layout_pack_start(GTK_CELL_LAYOUT(Widgets^.MainView), textrenderer, True);
+        gtk_cell_layout_set_cell_data_func(GTK_CELL_LAYOUT(Widgets^.MainView), pixrenderer, TGtkCellLayoutDataFunc(@Gtk2WSLV_ListViewGetPixbufDataFuncForIconView), WidgetInfo, nil);
+        gtk_cell_layout_set_cell_data_func(GTK_CELL_LAYOUT(Widgets^.MainView), textrenderer, TGtkCellLayoutDataFunc(@LCLIntfCellRenderer_CellDataFunc), WidgetInfo, nil);
+      end;
       g_object_set_data(G_OBJECT(Widgets^.MainView), 'LCL_DEFAULT_COLUMN', GtkColumn);
-
     end;
   end
   else begin // No Column Needed
     if GtkColumn <> nil then
     begin
-      gtk_tree_view_remove_column(PGtkTreeView(Widgets^.MainView), GtkColumn);
+      if GTK_IS_TREE_VIEW(Widgets^.MainView) then
+        gtk_tree_view_remove_column(PGtkTreeView(Widgets^.MainView), GtkColumn)
+      else
+        g_object_unref(GtkColumn);
       g_object_set_data(G_OBJECT(Widgets^.MainView), 'LCL_DEFAULT_COLUMN', nil);
     end;
   end;
@@ -424,7 +485,7 @@ begin
     gtk_tree_view_column_pack_start(column, pixrenderer, FALSE);
     gtk_tree_view_column_pack_start(column, textrenderer, True);
     gtk_tree_view_column_set_cell_data_func(column, togglerenderer, TGtkTreeCellDataFunc(@Gtk2WSLV_ListViewGetCheckedDataFunc), WidgetInfo, nil);
-    gtk_tree_view_column_set_cell_data_func(column, pixrenderer,  TGtkTreeCellDataFunc(@Gtk2WSLV_ListViewGetPixbufDataFunc), WidgetInfo, nil);
+    gtk_tree_view_column_set_cell_data_func(column, pixrenderer,  TGtkTreeCellDataFunc(@Gtk2WSLV_ListViewGetPixbufDataFuncForColumn), WidgetInfo, nil);
     gtk_tree_view_column_set_cell_data_func(column, textrenderer, TGtkTreeCellDataFunc(@LCLIntfCellRenderer_CellDataFunc), WidgetInfo, nil);
     // connect toggled signal
     g_signal_connect(togglerenderer, 'toggled', TGTKSignalFunc(@Gtk2_ItemCheckedChanged), GetWidgetInfo(PGtkWidget(ALV.Handle)));
@@ -436,7 +497,7 @@ begin
 
     gtk_tree_view_column_pack_start(column, pixrenderer, FALSE);
     gtk_tree_view_column_pack_start(column, textrenderer, True);
-    gtk_tree_view_column_set_cell_data_func(column, pixrenderer,  TGtkTreeCellDataFunc(@Gtk2WSLV_ListViewGetPixbufDataFunc), WidgetInfo, nil);
+    gtk_tree_view_column_set_cell_data_func(column, pixrenderer,  TGtkTreeCellDataFunc(@Gtk2WSLV_ListViewGetPixbufDataFuncForColumn), WidgetInfo, nil);
     gtk_tree_view_column_set_cell_data_func(column, textrenderer, TGtkTreeCellDataFunc(@LCLIntfCellRenderer_CellDataFunc), WidgetInfo, nil);
 
   end;
@@ -446,6 +507,49 @@ begin
     g_object_unref(G_OBJECT(textrenderer));
 end;
 
+class function TGtk2WSCustomListView.GetViewModel(const AView: PGtkWidget): PGtkTreeModel;
+begin
+  if GTK_IS_TREE_VIEW(AView) then
+    Result := gtk_tree_view_get_model(PGtkTreeView(AView))
+  else
+  if GTK_IS_ICON_VIEW(AView) then
+    Result := gtk_icon_view_get_model(PGtkIconView(AView))
+  else
+    Result := nil;
+end;
+
+class procedure TGtk2WSCustomListView.RecreateMainView(ALV: TCustomListView);
+var
+  ScrollWidget: PGtkWidget;
+  Widgets: PTVWidgets;
+  Info: PWidgetInfo;
+begin
+  GetCommonTreeViewWidgets(PGtkWidget(ALV.Handle), Widgets);
+  Info := GetWidgetInfo(Widgets^.MainView);
+  ScrollWidget := gtk_widget_get_parent(Widgets^.MainView);
+
+  g_object_ref(Widgets^.TreeModel);
+  gtk_widget_destroy(Widgets^.MainView);
+
+  if TLVHack(ALV).ViewStyle in [vsIcon,vsSmallIcon] then
+  begin
+    Widgets^.MainView := gtk_icon_view_new_with_model(Widgets^.TreeModel);
+    Widgets^.TreeSelection := nil;
+  end
+  else
+  begin
+    Widgets^.MainView := gtk_tree_view_new_with_model(Widgets^.TreeModel);
+    Widgets^.TreeSelection := PGtkTreeSelection(gtk_tree_view_get_selection(PGtkTreeView(Widgets^.MainView)));
+  end;
+  g_object_unref(Widgets^.TreeModel);
+
+  gtk_container_add(GTK_CONTAINER(ScrollWidget), Widgets^.MainView);
+  Info^.CoreWidget := Widgets^.MainView;
+  gtk_object_set_data(Pointer(Widgets^.MainView), 'widgetinfo', Info);
+  gtk_widget_show_all(Widgets^.MainView);
+  SetCallbacks(ScrollWidget, Widgets, Info);
+end;
+
 class procedure TGtk2WSCustomListView.SetCallbacks(const AScrollWidget: PGtkWidget;
   const Widgets: PTVWidgets; const AWidgetInfo: PWidgetInfo);
 begin
@@ -453,14 +557,22 @@ begin
   TGtkWSWinControl.SetCallbacks(PGtkObject(Widgets^.MainView), TComponent(AWidgetInfo^.LCLObject));
   
   // the callbacks for OnColumnClick are set when the column is created in ColumnInsert
-  
-  gtk_tree_selection_set_select_function(Widgets^.TreeSelection,TGtkTreeSelectionFunc(@Gtk2WSLV_ItemSelected), gpointer(AWidgetInfo),nil);
 
-  SignalConnect(PGtkWidget(Widgets^.TreeSelection), 'changed',           @Gtk2_ItemSelectionChanged,    AWidgetInfo);
-  SignalConnect(PGtkWidget(Widgets^.TreeModel),     'row-changed',       @Gtk2_ItemChanged,             AWidgetInfo);
-  SignalConnect(PGtkWidget(Widgets^.TreeModel),     'row-inserted',      @Gtk2_ItemInserted,            AWidgetInfo);
-  SignalConnect(PGtkWidget(Widgets^.TreeModel),     'row-deleted',       @Gtk2_ItemDeleted,             AWidgetInfo);
-  SignalConnect(PGtkWidget(Widgets^.MainView),      'toggle-cursor-row', @Gtk2_ItemFocusChanged,        AWidgetInfo);
+  if GTK_IS_TREE_VIEW(Widgets^.MainView) then
+  begin
+    gtk_tree_selection_set_select_function(Widgets^.TreeSelection,TGtkTreeSelectionFunc(@Gtk2WSLV_ItemSelected), gpointer(AWidgetInfo),nil);
+    SignalConnect(PGtkWidget(Widgets^.TreeSelection), 'changed',           @Gtk2_ItemSelectionChanged,    AWidgetInfo);
+    SignalConnect(PGtkWidget(Widgets^.MainView),      'toggle-cursor-row', @Gtk2_ItemFocusChanged,        AWidgetInfo);
+  end
+  else
+  if GTK_IS_ICON_VIEW(Widgets^.MainView) then
+  begin
+    SignalConnect(Widgets^.MainView, 'selection-changed',  @Gtk2_ItemSelectionChanged,    AWidgetInfo);
+    SignalConnect(Widgets^.MainView, 'toggle-cursor-item', @Gtk2_ItemFocusChanged,        AWidgetInfo);
+  end;
+  SignalConnect(PGtkWidget(Widgets^.TreeModel), 'row-changed',  @Gtk2_ItemChanged,  AWidgetInfo);
+  SignalConnect(PGtkWidget(Widgets^.TreeModel), 'row-inserted', @Gtk2_ItemInserted, AWidgetInfo);
+  SignalConnect(PGtkWidget(Widgets^.TreeModel), 'row-deleted',  @Gtk2_ItemDeleted,  AWidgetInfo);
 end;
 
 class procedure TGtk2WSCustomListView.ColumnDelete(const ALV: TCustomListView;
@@ -473,6 +585,9 @@ begin
   then Exit;
 
   GetCommonTreeViewWidgets(PGtkWidget(ALV.Handle), Widgets);
+
+  if not GTK_IS_TREE_VIEW(Widgets^.MainView) then
+    Exit;
 
   GtkColumn := gtk_tree_view_get_column(PGtkTreeView(Widgets^.MainView), AIndex);
   if GtkColumn<>nil then
@@ -492,6 +607,8 @@ begin
   then Exit;
 
   GetCommonTreeViewWidgets(PGtkWidget(ALV.Handle), Widgets);
+  if not GTK_IS_TREE_VIEW(Widgets^.MainView) then
+    Exit;
   i := AColumn.Index;
   GtkColumn := gtk_tree_view_get_column(PGtkTreeView(Widgets^.MainView), i);
   if GtkColumn <> nil then
@@ -511,8 +628,10 @@ begin
   then Exit;
 
   WidgetInfo := GetWidgetInfo(PGtkWidget(ALV.Handle));
-
   GetCommonTreeViewWidgets(PGtkWidget(ALV.Handle), Widgets);
+
+  if not GTK_IS_TREE_VIEW(Widgets^.MainView) then
+    Exit;
 
   column := gtk_tree_view_column_new();
 
@@ -527,7 +646,7 @@ begin
   gtk_tree_view_column_pack_start(column, textrenderer, True);
   //gtk_tree_view_column_set_attributes(column, textrenderer, ['text', 0, nil]);
 
-  gtk_tree_view_column_set_cell_data_func(column, pixrenderer,  TGtkTreeCellDataFunc(@Gtk2WSLV_ListViewGetPixbufDataFunc), WidgetInfo, nil);
+  gtk_tree_view_column_set_cell_data_func(column, pixrenderer,  TGtkTreeCellDataFunc(@Gtk2WSLV_ListViewGetPixbufDataFuncForColumn), WidgetInfo, nil);
   gtk_tree_view_column_set_cell_data_func(column, textrenderer, TGtkTreeCellDataFunc(@LCLIntfCellRenderer_CellDataFunc), WidgetInfo, nil);
   //gtk_tree_view_column_set_cell_data_func(column, textrenderer, TGtkTreeCellDataFunc(@Gtk2WSLV_ListViewGetTextDataFunc), WidgetInfo, nil);
 
@@ -576,6 +695,9 @@ begin
 
   GetCommonTreeViewWidgets(PGtkWidget(ALV.Handle), Widgets);
 
+  if not GTK_IS_TREE_VIEW(Widgets^.MainView) then
+    Exit;
+
   Column := gtk_tree_view_get_column(PGtkTreeView(Widgets^.MainView), AOldIndex);
   if Column <> nil then
   begin
@@ -607,6 +729,9 @@ begin
 
   GetCommonTreeViewWidgets(PGtkWidget(ALV.Handle), Widgets);
 
+  if not GTK_IS_TREE_VIEW(Widgets^.MainView) then
+    Exit;
+
   GtkColumn := gtk_tree_view_get_column(PGtkTreeView(Widgets^.MainView), AIndex);
   if GtkColumn <> nil then
   begin
@@ -636,6 +761,9 @@ begin
 
   GetCommonTreeViewWidgets(PGtkWidget(ALV.Handle), Widgets);
 
+  if not GTK_IS_TREE_VIEW(Widgets^.MainView) then
+    Exit;
+
   GtkColumn := gtk_tree_view_get_column(PGtkTreeView(Widgets^.MainView), AIndex);
   if GtkColumn <> nil then
   begin
@@ -660,6 +788,10 @@ begin
   then Exit;
 
   GetCommonTreeViewWidgets(PGtkWidget(ALV.Handle), Widgets);
+
+  if not GTK_IS_TREE_VIEW(Widgets^.MainView) then
+    Exit;
+
   GtkColumn := gtk_tree_view_get_column(PGtkTreeView(Widgets^.MainView), AIndex);
   if GtkColumn <> nil then
     gtk_tree_view_column_set_title(GtkColumn, PChar(ACaption));
@@ -685,6 +817,8 @@ begin
   then Exit;
 
   GetCommonTreeViewWidgets(PGtkWidget(ALV.Handle), Widgets);
+  if not GTK_IS_TREE_VIEW(Widgets^.MainView) then
+    Exit;
   GtkColumn := gtk_tree_view_get_column(PGtkTreeView(Widgets^.MainView), AIndex);
   if GtkColumn <> nil then
     gtk_tree_view_column_set_max_width(GtkColumn, AMaxWidth - Ord(AMaxWidth=0));
@@ -700,6 +834,8 @@ begin
   then Exit;
 
   GetCommonTreeViewWidgets(PGtkWidget(ALV.Handle), Widgets);
+  if not GTK_IS_TREE_VIEW(Widgets^.MainView) then
+    Exit;
   GtkColumn := gtk_tree_view_get_column(PGtkTreeView(Widgets^.MainView), AIndex);
   if GtkColumn <> nil then
     gtk_tree_view_column_set_min_width(GtkColumn, AMinWidth - Ord(AMinWidth=0));
@@ -714,6 +850,8 @@ begin
   then Exit;
 
   GetCommonTreeViewWidgets(PGtkWidget(ALV.Handle), Widgets);
+  if not GTK_IS_TREE_VIEW(Widgets^.MainView) then
+    Exit;
   GtkColumn := gtk_tree_view_get_column(PGtkTreeView(Widgets^.MainView), AIndex);
   if GtkColumn <> nil then
     gtk_tree_view_column_set_fixed_width(GtkColumn, AWidth + Ord(AWidth<1));
@@ -729,7 +867,10 @@ begin
   then Exit;
 
   GetCommonTreeViewWidgets(PGtkWidget(ALV.Handle), Widgets);
-  with Widgets^ do begin
+  if not GTK_IS_TREE_VIEW(Widgets^.MainView) then
+    Exit;
+  with Widgets^ do
+  begin
     GtkColumn := gtk_tree_view_get_column(PGtkTreeView(MainView), AIndex);
     if AVisible then
       g_object_set_data(G_OBJECT(GtkColumn), PChar('Visible'), gpointer(ptrint(1)))
@@ -766,8 +907,7 @@ begin
   end;
 end;
 
-class function TGtk2WSCustomListView.ItemDisplayRect(
-  const ALV: TCustomListView; const AIndex, ASubItem: Integer;
+class function TGtk2WSCustomListView.ItemDisplayRect(const ALV: TCustomListView; const AIndex, ASubItem: Integer;
   ACode: TDisplayCode): TRect;
 var
   Widgets: PTVWidgets;
@@ -786,9 +926,20 @@ begin
       exit;
     Path := gtk_tree_path_new_from_indices(AIndex, -1);
     try
-      Column := gtk_tree_view_get_column(PGtkTreeView(MainView), ASubItem);
-      gtk_tree_view_get_cell_area(PGtkTreeView(MainView), Path, Column,
-        @ItemRect);
+      if GTK_IS_TREE_VIEW(MainView) then
+      begin
+       Column := gtk_tree_view_get_column(PGtkTreeView(MainView), ASubItem);
+        gtk_tree_view_get_cell_area(PGtkTreeView(MainView), Path, Column, @ItemRect);
+      end
+      else
+      if GTK_IS_ICON_VIEW(MainView) then
+      begin
+        // TODO: iconview
+        ItemRect.x := 0;
+        ItemRect.y := 0;
+        ItemRect.width := gtk_icon_view_get_item_width(PGtkIconView(MainView));
+        ItemRect.height := 0;
+      end;
     finally
       gtk_tree_path_free(Path);
     end;
@@ -807,7 +958,7 @@ class function TGtk2WSCustomListView.ItemGetState(const ALV: TCustomListView;
   out AIsSet: Boolean): Boolean;
 var
   Widgets: PTVWidgets;
-  Iter: TGtkTreeIter;
+  Path: PGtkTreePath;
 begin
   Result := False;
 
@@ -818,29 +969,43 @@ begin
 
   GetCommonTreeViewWidgets(PGtkWidget(ALV.Handle), Widgets);
 
-  with Widgets^ do begin
-    if gtk_tree_view_get_model(PGtkTreeView(MainView)) = nil then
+  with Widgets^ do
+  begin
+    if GetViewModel(MainView) = nil then
       Exit; // we are in the midst of a begin update end update pair and the following will fail and cause gtk debug messages
-    if gtk_tree_model_iter_nth_child(TreeModel, @Iter, nil, AIndex) then
-    begin
-      case AState of
-        lisCut,
-        lisDropTarget:
-        begin
-          //TODO: do something with the rowcolor ?
-        end;
+    case AState of
+      lisCut,
+      lisDropTarget:
+      begin
+        //TODO: do something with the rowcolor ?
+      end;
 
-        lisFocused:
-        begin
-          AIsSet := gtk_tree_selection_iter_is_selected(TreeSelection, @Iter);//gtk2 iter has no focus??
-          Result := True;
-        end;
+      lisFocused:
+      begin
+        Path := gtk_tree_path_new_from_string(PChar(IntToStr(AIndex)));
+        if GTK_IS_TREE_VIEW(MainView) then
+          AIsSet := gtk_tree_selection_path_is_selected(TreeSelection, Path)
+        else
+        if GTK_IS_ICON_VIEW(MainView) then
+          AIsSet := gtk_icon_view_path_is_selected(PGtkIconView(MainView), Path)
+        else
+          AIsSet := False;
+        gtk_tree_path_free(Path);
+        Result := True;
+      end;
 
-        lisSelected:
-        begin
-          AIsSet := gtk_tree_selection_iter_is_selected(TreeSelection, @Iter);
-          Result := True;
-        end;
+      lisSelected:
+      begin
+        Path := gtk_tree_path_new_from_string(PChar(IntToStr(AIndex)));
+        if GTK_IS_TREE_VIEW(MainView) then
+          AIsSet := gtk_tree_selection_path_is_selected(TreeSelection, Path)
+        else
+        if GTK_IS_ICON_VIEW(MainView) then
+          AIsSet := gtk_icon_view_path_is_selected(PGtkIconView(MainView), Path)
+        else
+          AIsSet := False;
+        gtk_tree_path_free(Path);
+        Result := True;
       end;
     end;
   end;
@@ -901,15 +1066,17 @@ begin
   GetCommonTreeViewWidgets(PGtkWidget(ALV.Handle), Widgets);
   with Widgets^ do
   begin
-    if gtk_widget_realized(MainView) = False then
-      exit;
+    if not gtk_widget_realized(MainView) then
+      Exit;
     Path := gtk_tree_path_new_from_indices(AIndex, -1);
-    gtk_tree_view_get_cell_area(PGtkTreeView(MainView), Path, nil, @ItemRect);
+    if GTK_IS_TREE_VIEW(MainView) then
+      gtk_tree_view_get_cell_area(PGtkTreeView(MainView), Path, nil, @ItemRect)
+    else
+      ItemRect.height := 1; // force redraw
     gtk_tree_path_free(Path);
 
     if ItemRect.height <> 0 then // item is visible
       gtk_widget_queue_draw(MainView);
-
   end;
 end;
 
@@ -918,7 +1085,6 @@ class procedure TGtk2WSCustomListView.ItemSetState(const ALV: TCustomListView;
   const AIsSet: Boolean);
 var
   Widgets: PTVWidgets;
-  Iter: TGtkTreeIter;
   Path: PGtkTreePath;
 begin
   if not WSCheckHandleAllocated(ALV, 'ItemSetState')
@@ -926,43 +1092,61 @@ begin
 
   GetCommonTreeViewWidgets(PGtkWidget(ALV.Handle), Widgets);
 
-  with Widgets^ do begin
-    if gtk_tree_view_get_model(PGtkTreeView(MainView)) = nil then
+  with Widgets^ do
+  begin
+    if GetViewModel(MainView) = nil then
       Exit; // we are in the midst of a begin update end update pair and the following will fail and cause gtk debug messages
-    if gtk_tree_model_iter_nth_child(TreeModel, @Iter, nil, AIndex) then
-    begin
-      case AState of
-        lisCut,
-        lisDropTarget:
-        begin
-          //TODO: do something with the rowcolor ?
-        end;
+    case AState of
+      lisCut,
+      lisDropTarget:
+      begin
+        //TODO: do something with the rowcolor ?
+      end;
 
-        lisFocused:
-        begin
-          //gtk2 iter has no focus??
-          Path := gtk_tree_path_new_from_string(PChar(IntToStr(AIndex)));
+      lisFocused:
+      begin
+        //gtk2 iter has no focus??
+        Path := gtk_tree_path_new_from_string(PChar(IntToStr(AIndex)));
 
-          if AIsSet then begin
-            gtk_tree_view_set_cursor(PGtkTreeView(MainView), Path, nil, False);
-          end
-          else begin
+        if GTK_IS_TREE_VIEW(MainView) then
+        begin
+          if AIsSet then
+            gtk_tree_view_set_cursor(PGtkTreeView(MainView), Path, nil, False)
+          else
             gtk_tree_view_set_cursor(PGtkTreeView(MainView), nil, nil, False);
-          end;
-          gtk_tree_path_free(Path);
-        end;
-
-        lisSelected:
+        end
+        else
+        if GTK_IS_ICON_VIEW(MainView) then
         begin
-          if AIsSet then begin
-            if not gtk_tree_selection_iter_is_selected(TreeSelection, @Iter) then
-              gtk_tree_selection_select_iter(TreeSelection, @Iter);
-          end
-          else begin
-            if gtk_tree_selection_iter_is_selected(TreeSelection, @Iter) then
-              gtk_tree_selection_unselect_iter(TreeSelection, @Iter);
-          end;
+          if AIsSet then
+            gtk_icon_view_set_cursor(PGtkIconView(MainView), Path, nil, False)
+          else
+            gtk_icon_view_set_cursor(PGtkIconView(MainView), nil, nil, False);
         end;
+        gtk_tree_path_free(Path);
+      end;
+
+      lisSelected:
+      begin
+        Path := gtk_tree_path_new_from_string(PChar(IntToStr(AIndex)));
+        if GTK_IS_TREE_VIEW(MainView) then
+        begin
+          if AIsSet and not gtk_tree_selection_path_is_selected(TreeSelection, Path) then
+            gtk_tree_selection_select_path(TreeSelection, Path)
+          else
+          if not AIsSet and gtk_tree_selection_path_is_selected(TreeSelection, Path) then
+            gtk_tree_selection_unselect_path(TreeSelection, Path);
+        end
+        else
+        if GTK_IS_ICON_VIEW(MainView) then
+        begin
+          if AIsSet and not gtk_icon_view_path_is_selected(PGtkIconView(MainView), Path) then
+            gtk_icon_view_select_path(PGtkIconView(MainView), Path)
+          else
+          if not AIsSet and gtk_icon_view_path_is_selected(PGtkIconView(MainView), Path) then
+            gtk_icon_view_unselect_path(PGtkIconView(MainView), Path);
+        end;
+        gtk_tree_path_free(Path);
       end;
     end;
   end;
@@ -982,15 +1166,20 @@ begin
   GetCommonTreeViewWidgets(PGtkWidget(ALV.Handle), Widgets);
   with Widgets^ do
   begin
-    if gtk_widget_realized(MainView) = False then
-      exit;
-    Path := gtk_tree_path_new_from_indices(AIndex, -1);
-    gtk_tree_view_get_cell_area(PGtkTreeView(MainView), Path, nil, @ItemRect);
-    gtk_tree_path_free(Path);
+    if not gtk_widget_realized(MainView) then
+      Exit;
+
+    if GTK_IS_TREE_VIEW(MainView) then
+    begin
+      Path := gtk_tree_path_new_from_indices(AIndex, -1);
+      gtk_tree_view_get_cell_area(PGtkTreeView(MainView), Path, nil, @ItemRect);
+      gtk_tree_path_free(Path);
+    end
+    else
+      ItemRect.height := 1; // force redraw
 
     if ItemRect.height <> 0 then // item is visible
       gtk_widget_queue_draw(MainView);
-
   end;
 end;
 
@@ -1009,16 +1198,21 @@ begin
 
   GetCommonTreeViewWidgets(PGtkWidget(ALV.Handle), Widgets);
 
-  with Widgets^ do begin
+  with Widgets^ do
+  begin
     Path := gtk_tree_path_new_from_string(PChar(StrIndex));
-    gtk_tree_view_scroll_to_cell(PGtkTreeView(MainView),Path,nil,false,0,0);
+    if GTK_IS_TREE_VIEW(MainView) then
+      gtk_tree_view_scroll_to_cell(PGtkTreeView(MainView), Path, nil, False, 0, 0)
+{$IFDEF GTK_2_8}
+    else
+    if GTK_IS_ICON_VIEW(MainView) then
+      gtk_icon_view_scroll_to_path(PGtkIconView(MainView), Path, False, 0, 0)
+{$ENDIF};
     gtk_tree_path_free(Path);
   end;
-
 end;
 
-class function TGtk2WSCustomListView.ItemGetPosition (
-  const ALV: TCustomListView; const AIndex: Integer ) : TPoint;
+class function TGtk2WSCustomListView.ItemGetPosition(const ALV: TCustomListView; const AIndex: Integer): TPoint;
 var
   Widgets: PTVWidgets;
   Path: PGtkTreePath;
@@ -1030,12 +1224,23 @@ begin
 
   GetCommonTreeViewWidgets(PGtkWidget(ALV.Handle), Widgets);
 
-  Path := gtk_tree_path_new_from_indices(AIndex,-1);
-  with Widgets^ do begin
-    Column := gtk_tree_view_get_column(PGtkTreeView(MainView), 0);
-    gtk_tree_view_get_cell_area(PGtkTreeView(MainView), Path, Column, @ARect);
-    Result.X := ARect.x;
-    Result.Y := Arect.y;
+  Path := gtk_tree_path_new_from_indices(AIndex, -1);
+  with Widgets^ do
+  begin
+    if GTK_IS_TREE_VIEW(MainView) then
+    begin
+      Column := gtk_tree_view_get_column(PGtkTreeView(MainView), 0);
+      gtk_tree_view_get_cell_area(PGtkTreeView(MainView), Path, Column, @ARect);
+      Result.X := ARect.x;
+      Result.Y := Arect.y;
+    end
+    else
+    if GTK_IS_ICON_VIEW(MainView) then
+    begin
+      // todo: gtk gives no way to get item rectangle, while internally it uses it
+      Result.X := 0;
+      Result.Y := 0;
+    end;
   end;
   gtk_tree_path_free(Path);
 end;
@@ -1099,13 +1304,18 @@ begin
     TreeModel:= LCLListViewModelNew(TCustomListView(AWinControl));
     {$ENDIF}
 
-
-    MainView:=gtk_tree_view_new_with_model(TreeModel);
-    //MainView:=gtk_tree_view_new;
-    g_object_unref (G_OBJECT (TreeModel));
+    if TLVHack(AWinControl).ViewStyle in [vsIcon,vsSmallIcon] then
+    begin
+      MainView := gtk_icon_view_new_with_model(TreeModel);
+      TreeSelection := nil;
+    end
+    else
+    begin
+      MainView := gtk_tree_view_new_with_model(TreeModel);
+      TreeSelection := PGtkTreeSelection(gtk_tree_view_get_selection(PGtkTreeView(MainView)));
+    end;
+    g_object_unref(G_OBJECT(TreeModel));
     //gtk_tree_view_set_fixed_height_mode(PGtkTreeView(MainView), True);
-
-    TreeSelection := PGtkTreeSelection(gtk_tree_view_get_selection(PGtkTreeView(MainView)));
 
     gtk_container_add(GTK_CONTAINER(ScrollWidget),PGtkWidget(MainView));
   
@@ -1136,8 +1346,7 @@ begin
   *)
 end;
 
-class procedure TGtk2WSCustomListView.DestroyHandle(
-  const AWinControl: TWinControl);
+class procedure TGtk2WSCustomListView.DestroyHandle(const AWinControl: TWinControl);
 var
   Widgets: PTVWidgets;
   i: Integer;
@@ -1168,7 +1377,11 @@ begin
   GetCommonTreeViewWidgets(PGtkWidget(ALV.Handle), Widgets);
   g_object_ref(Widgets^.TreeModel);
 
-  gtk_tree_view_set_model(PGtkTreeView(Widgets^.MainView), nil);
+  if GTK_IS_TREE_VIEW(Widgets^.MainView) then
+    gtk_tree_view_set_model(PGtkTreeView(Widgets^.MainView), nil)
+  else
+  if GTK_IS_ICON_VIEW(Widgets^.MainView) then
+    gtk_icon_view_set_model(PGtkIconView(Widgets^.MainView), nil);
 end;
 
 class procedure TGtk2WSCustomListView.EndUpdate(const ALV: TCustomListView);
@@ -1180,12 +1393,15 @@ begin
 
   GetCommonTreeViewWidgets(PGtkWidget(ALV.Handle), Widgets);
 
-  gtk_tree_view_set_model(PGtkTreeView(Widgets^.MainView), Widgets^.TreeModel);
+  if GTK_IS_TREE_VIEW(Widgets^.MainView) then
+    gtk_tree_view_set_model(PGtkTreeView(Widgets^.MainView), Widgets^.TreeModel)
+  else
+  if GTK_IS_ICON_VIEW(Widgets^.MainView) then
+    gtk_icon_view_set_model(PGtkIconView(Widgets^.MainView), Widgets^.TreeModel);
   g_object_unref(Widgets^.TreeModel);
 end;
 
-class function TGtk2WSCustomListView.GetBoundingRect(const ALV: TCustomListView
-  ): TRect;
+class function TGtk2WSCustomListView.GetBoundingRect(const ALV: TCustomListView): TRect;
 begin
   Result:=Rect(0,0,0,0);
 
@@ -1195,8 +1411,7 @@ begin
   //DebugLn('TODO: TGtk2WSCustomListView.GetBoundingRect');
 end;
 
-class function TGtk2WSCustomListView.GetDropTarget(const ALV: TCustomListView
-  ): Integer;
+class function TGtk2WSCustomListView.GetDropTarget(const ALV: TCustomListView): Integer;
 var
   Widgets: PTVWidgets;
 begin
@@ -1207,7 +1422,6 @@ begin
   then Exit;
 
   GetCommonTreeViewWidgets(PGtkWidget(ALV.Handle), Widgets);
-
 end;
 
 class function TGtk2WSCustomListView.GetFocused(const ALV: TCustomListView): Integer;
@@ -1215,6 +1429,9 @@ var
   Widgets: PTVWidgets;
   Path: PGtkTreePath;
   Column: PGtkTreeViewColumn;
+{$IFDEF GTK_2_8}
+  Cell: PGtkCellRenderer;
+{$ENDIF}
 begin
   Result := -1;
   
@@ -1223,8 +1440,17 @@ begin
 
   GetCommonTreeViewWidgets(PGtkWidget(ALV.Handle), Widgets);
 
-  with Widgets^ do begin
-    gtk_tree_view_get_cursor(PGtkTreeView(MainView), Path, Column);
+  with Widgets^ do
+  begin
+    if GTK_IS_TREE_VIEW(MainView) then
+      gtk_tree_view_get_cursor(PGtkTreeView(MainView), Path, Column)
+{$IFDEF GTK_2_8}
+    else
+    if GTK_IS_ICON_VIEW(MainView) then
+      gtk_icon_view_get_cursor(PGtkIconView(MainView), Path, Cell)
+{$ENDIF}
+    else
+      Path := nil;
     if Path <> nil then
     begin
       Result := StrToInt(PChar(Path));
@@ -1233,8 +1459,7 @@ begin
   end;
 end;
 
-class function TGtk2WSCustomListView.GetHoverTime(const ALV: TCustomListView
-  ): Integer;
+class function TGtk2WSCustomListView.GetHoverTime(const ALV: TCustomListView): Integer;
 var
   Widgets: PTVWidgets;
 begin
@@ -1244,17 +1469,14 @@ begin
   if not WSCheckHandleAllocated(ALV, 'GetHoverTime')
   then Exit;
 
-  //DebugLn('TODO: TGtk2WSCustomListView.GetHoverTime');
-
   GetCommonTreeViewWidgets(PGtkWidget(ALV.Handle), Widgets);
-  with Widgets^ do begin
+  with Widgets^ do
+  begin
 
   end;
-
 end;
 
-class function TGtk2WSCustomListView.GetItemAt(const ALV: TCustomListView; x,
-  y: integer): Integer;
+class function TGtk2WSCustomListView.GetItemAt(const ALV: TCustomListView; x, y: integer): Integer;
 var
   Widgets: PTVWidgets;
   ItemPath: PGtkTreePath;
@@ -1267,16 +1489,28 @@ begin
   
   GetCommonTreeViewWidgets(PGtkWidget(ALV.Handle), Widgets);
 
-  // convert X, Y to bin window coords
-  x := x + Round(PGtkTreeView(Widgets^.MainView)^.priv^.hadjustment^.value);
-  if GTK_TREE_VIEW_FLAG_SET(PGtkTreeView(Widgets^.MainView), GTK_TREE_VIEW_HEADERS_VISIBLE) then
+  if GTK_IS_TREE_VIEW(Widgets^.MainView) then
   begin
-    gdk_window_get_size(PGtkTreeView(Widgets^.MainView)^.priv^.header_window, @cx, @cy);
-    y := y - cy;
-  end;
-
-  if gtk_tree_view_get_path_at_pos(PGtkTreeView(Widgets^.MainView), x, y, ItemPath, Column, nil, nil) then
+    // convert X, Y to bin window coords
+    x := x + Round(PGtkTreeView(Widgets^.MainView)^.priv^.hadjustment^.value);
+    if GTK_TREE_VIEW_FLAG_SET(PGtkTreeView(Widgets^.MainView), GTK_TREE_VIEW_HEADERS_VISIBLE) then
+    begin
+      gdk_window_get_size(PGtkTreeView(Widgets^.MainView)^.priv^.header_window, @cx, @cy);
+      y := y - cy;
+    end;
+    if gtk_tree_view_get_path_at_pos(PGtkTreeView(Widgets^.MainView), x, y, ItemPath, Column, nil, nil) then
+    begin
+      if ItemPath <> nil then
+      begin
+        Result := gtk_tree_path_get_indices(ItemPath)^;
+        gtk_tree_path_free(ItemPath);
+      end;
+    end;
+  end
+  else
+  if GTK_IS_ICON_VIEW(Widgets^.MainView) then
   begin
+    ItemPath := gtk_icon_view_get_path_at_pos(PGtkIconView(Widgets^.MainView), x, y);
     if ItemPath <> nil then
     begin
       Result := gtk_tree_path_get_indices(ItemPath)^;
@@ -1285,8 +1519,7 @@ begin
   end;
 end;
 
-class function TGtk2WSCustomListView.GetSelCount(const ALV: TCustomListView
-  ): Integer;
+class function TGtk2WSCustomListView.GetSelCount(const ALV: TCustomListView): Integer;
 var
   Widgets: PTVWidgets;
   AList: PGList;
@@ -1297,19 +1530,26 @@ begin
   then Exit;
 
   GetCommonTreeViewWidgets(PGtkWidget(ALV.Handle), Widgets);
-  with Widgets^ do begin
-    AList := gtk_tree_selection_get_selected_rows(TreeSelection, nil);
+  with Widgets^ do
+  begin
+    if GTK_IS_TREE_VIEW(MainView) then
+      AList := gtk_tree_selection_get_selected_rows(TreeSelection, nil)
+    else
+    if GTK_IS_ICON_VIEW(MainView) then
+      AList := gtk_icon_view_get_selected_items(PGtkIconView(MainView))
+    else
+      Exit;
     Result := g_list_length(AList);
     g_list_free(AList);
   end;
 end;
 
-class function TGtk2WSCustomListView.GetSelection(const ALV: TCustomListView
-  ): Integer;
+class function TGtk2WSCustomListView.GetSelection(const ALV: TCustomListView): Integer;
 var
   Widgets: PTVWidgets;
   Iter: TGtkTreeIter;
   Path: PGtkTreePath;
+  AList: PGList;
 begin
   Result := -1;
   
@@ -1318,8 +1558,19 @@ begin
 
   GetCommonTreeViewWidgets(PGtkWidget(ALV.Handle), Widgets);
 
-  with Widgets^ do begin
-    gtk_tree_selection_get_selected(TreeSelection, nil, @Iter);
+  with Widgets^ do
+  begin
+    if GTK_IS_TREE_VIEW(MainView) then
+      gtk_tree_selection_get_selected(TreeSelection, nil, @Iter)
+    else
+    if GTK_IS_ICON_VIEW(MainView) then
+    begin
+      AList := gtk_icon_view_get_selected_items(PGtkIconView(MainView));
+      if AList <> nil then
+        Path := g_list_first(AList)^.data
+      else
+        Path := nil;
+    end;
     Path := gtk_tree_model_get_path(TreeModel, @Iter);
     Result := StrToInt(PChar(Path));
     gtk_tree_path_free(Path);
@@ -1350,8 +1601,7 @@ begin
   Result := Point(Widgets^.ScrollingData.HValue, Widgets^.ScrollingData.VValue);
 end;
 
-class function TGtk2WSCustomListView.GetVisibleRowCount(const ALV: TCustomListView
-  ): Integer;
+class function TGtk2WSCustomListView.GetVisibleRowCount(const ALV: TCustomListView): Integer;
 begin
   Result := -1;
 
@@ -1418,7 +1668,8 @@ begin
 
   GetCommonTreeViewWidgets(PGtkWidget(ALV.Handle), Widgets);
   gtk_widget_queue_draw(Widgets^.MainView);
-  if AList = lvilSmall then
+  if ((AList = lvilLarge) and (TLVHack(ALV).ViewStyle = vsIcon)) or
+     ((AList = lvilSmall) and (TLVHack(ALV).ViewStyle <> vsIcon)) then
   begin
     if Widgets^.Images <> nil then
     begin
@@ -1572,11 +1823,17 @@ begin
   GetCommonTreeViewWidgets(PGtkWidget(ALV.Handle), Widgets);
   //DebugLn(['TGtk2WSCustomListView.SetViewOrigin ',GetWidgetDebugReport(Widgets^.MainView)]);
   if not GTK_WIDGET_REALIZED(Widgets^.MainView) then exit;
-  gtk_tree_view_scroll_to_point(PGtkTreeView(Widgets^.MainView), AValue.X, AValue.Y);
+  if GTK_IS_TREE_VIEW(Widgets^.MainView) then
+    gtk_tree_view_scroll_to_point(PGtkTreeView(Widgets^.MainView), AValue.X, AValue.Y)
+  else
+  if GTK_IS_ICON_VIEW(Widgets^.MainView) then
+  begin
+    // TODO: iconview
+  end;
 end;
 
 class procedure TGtk2WSCustomListView.SetViewStyle(const ALV: TCustomListView;
-  const Avalue: TViewStyle);
+  const AValue: TViewStyle);
   
   procedure ShowColumns(const Widgets: PTVWidgets; const Show: Boolean);
   var
@@ -1584,6 +1841,8 @@ class procedure TGtk2WSCustomListView.SetViewStyle(const ALV: TCustomListView;
     GtkColumn: PGtkTreeViewColumn;
     i: Integer;
   begin
+    if not GTK_IS_TREE_VIEW(Widgets^.MainView) then
+      Exit;
     List := gtk_tree_view_get_columns(PGtkTreeView(Widgets^.MainView));
     for i := 0 to g_list_length(List) - 1 do
     begin
@@ -1606,12 +1865,26 @@ begin
   then Exit;
 
   GetCommonTreeViewWidgets(PGtkWidget(ALV.Handle), Widgets);
-  ShowColumns(Widgets, AValue = vsReport);
-  with Widgets^ do begin
 
+  if (GTK_IS_TREE_VIEW(Widgets^.MainView) and (AValue in [vsIcon, vsSmallIcon])) or
+     (GTK_IS_ICON_VIEW(Widgets^.MainView) and (AValue in [vsReport, vsList])) then
+  begin
+    // we have to free the GtkTreeView and Create GtkIconView etc depending on the new style
+    //RecreateMainView(ALV);
+    // we actually need to recreate our ListView since not only the widget changes but also columns
+    RecreateWnd(ALV);
+    Exit;
+  end;
+
+  ShowColumns(Widgets, AValue = vsReport);
+  with Widgets^ do
+  begin
     case AValue of
-      vsIcon, // TODO this can be a GtkIconView if someone implements it
-      vsSmallIcon,
+      vsIcon,
+      vsSmallIcon:
+        begin
+          SetNeedDefaultColumn(ALV, True);
+        end;
       vsList:
         begin
           SetNeedDefaultColumn(ALV, True);
@@ -1626,5 +1899,4 @@ begin
     end;
   end;
 //  inherited SetViewStyle(ALV, Avalue);
-// this one is going to be fun because you have to free the GtkTreeView and Create GtkIconView etc depending on the new style
 end;

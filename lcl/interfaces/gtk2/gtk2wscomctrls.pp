@@ -23,6 +23,7 @@
 unit Gtk2WSComCtrls;
 
 {$mode objfpc}{$H+}
+{$I gtkdefines.inc}
 
 interface
 
@@ -90,10 +91,11 @@ type
 
   TGtk2WSCustomListView = class(TWSCustomListView)
   private
-    class function IsIconView(const ALV: TCustomListView): Boolean; virtual;
     class procedure SetPropertyInternal(const ALV: TCustomListView; const Widgets: PTVWidgets; const AProp: TListViewProperty; const AIsSet: Boolean);
     class procedure SetNeedDefaultColumn(const ALV: TCustomListView; const AValue: Boolean);
     class procedure AddRemoveCheckboxRenderer(const ALV: TCustomListView; const WidgetInfo: PWidgetInfo; const Add: Boolean);
+    class function GetViewModel(const AView: PGtkWidget): PGtkTreeModel;
+    class procedure RecreateMainView(ALV: TCustomListView);
   protected
     class procedure SetCallbacks(const AScrollWidget: PGtkWidget; const Widgets: PTVWidgets; const AWidgetInfo: PWidgetInfo); virtual;
   published
@@ -156,7 +158,7 @@ type
     class procedure SetScrollBars(const ALV: TCustomListView; const AValue: TScrollStyle); override;
     class procedure SetSort(const ALV: TCustomListView; const AType: TSortType; const AColumn: Integer); override;
     class procedure SetViewOrigin(const ALV: TCustomListView; const AValue: TPoint); override;
-    class procedure SetViewStyle(const ALV: TCustomListView; const Avalue: TViewStyle); override;
+    class procedure SetViewStyle(const ALV: TCustomListView; const AValue: TViewStyle); override;
   end;
 
   { TGtk2WSListView }
