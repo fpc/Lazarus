@@ -293,7 +293,6 @@ begin
   Result := False;
   if ListView = nil then
     Exit;
-  WriteLn(PtrUInt(Iter^.user_data));
   Inc(PtrUInt(Iter^.user_data));
   Result := PtrUint(Iter^.user_data) < ListView.items.Count;
 end;
@@ -321,7 +320,7 @@ begin
   Result := False;
   if (ListView = nil) or (parent <> nil) then
     Exit;
-  if (Iter = nil) and (n < ListView.Items.Count) then
+  if (Iter <> nil) and (n < ListView.Items.Count) then
   begin
     PtrUint(Iter^.user_data) := n;
     Result := True;
