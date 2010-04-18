@@ -779,7 +779,8 @@ const
         LCLCharToMacEvent(Char(CharMsg.CharCode));
 
 
-      Result:=CallNextEventHandler(ANextHandler, AEvent);
+      if Result<>noErr then
+        Result:=CallNextEventHandler(ANextHandler, AEvent);
 
       //Send a LM_(SYS)CHAR
       if IsSysKey then
