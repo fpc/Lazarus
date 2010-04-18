@@ -6332,7 +6332,7 @@ end;
 constructor TWinControl.CreateParented(AParentWindow: hwnd);
 begin
   FParentWindow := AParentWindow;
-  inherited Create(nil);
+  Create(nil);
 end;
 
 {------------------------------------------------------------------------------
