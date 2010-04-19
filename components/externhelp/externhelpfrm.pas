@@ -209,13 +209,17 @@ type
       var DragObject: TDragObject);
     procedure NameEditChange(Sender: TObject);
     procedure NameEditEditingDone(Sender: TObject);
+    procedure StoreComboBoxEditingDone(Sender: TObject);
     procedure URLMemoEditingDone(Sender: TObject);
     procedure WithSubDirsCheckBoxEditingDone(Sender: TObject);
   private
     FOptions: TExternHelpOptions;
     FDragNode: TTreeNode;
+    FMySettingsCaption: string;
     procedure FillItemsTreeView;
     procedure NameChanged(TVNode: TTreeNode; var NewName: string;
+      UpdateTree, UpdateEdit: boolean);
+    procedure StoreInChanged(TVNode: TTreeNode; var NewStoreIn: string;
       UpdateTree, UpdateEdit: boolean);
     procedure SelectionChanged;
     function FindTVNode(NodeText: string): TTreeNode;
@@ -681,6 +685,14 @@ begin
   NameChanged(ItemsTreeView.Selected,S,true,true);
 end;
 
+procedure TExternHelpGeneralOptsFrame.StoreComboBoxEditingDone(Sender: TObject);
+var
+  S: String;
+begin
+  S:=StoreComboBox.Text;
+  StoreInChanged(ItemsTreeView.Selected,S,true,true);
+end;
+
 procedure TExternHelpGeneralOptsFrame.URLMemoEditingDone(Sender: TObject);
 var
   s: String;
@@ -749,6 +761,24 @@ begin
   end;
 end;
 
+procedure TExternHelpGeneralOptsFrame.StoreInChanged(TVNode: TTreeNode; var
+  NewStoreIn: string; UpdateTree, UpdateEdit: boolean);
+var
+  Item: TExternHelpItem;
+begin
+  NewStoreIn:=Trim(NewStoreIn);
+  if NewStoreIn=FMySettingsCaption then
+    NewStoreIn:='';
+  if (TVNode<>nil) and (TObject(TVNode.Data) is TExternHelpItem) then begin
+    Item:=TExternHelpItem(TVNode.Data);
+    Item.StoreIn:=NewStoreIn;
+    if UpdateTree then
+      ;
+    if UpdateEdit then
+      StoreComboBox.Text:=NewStoreIn;
+  end;
+end;
+
 procedure TExternHelpGeneralOptsFrame.SelectionChanged;
 var
   TVNode: TTreeNode;
@@ -774,7 +804,7 @@ begin
       URLMemo.Lines.Text:=Item.URL;
       StoreComboBox.Enabled:=Item.Parent=Options.RootItem;
       s:=Item.StoreIn;
-      if s='' then s:=ehrsMySettings;
+      if s='' then s:=FMySettingsCaption;
       StoreComboBox.Text:=s;
     end else begin
       NameEdit.Enabled:=false;
@@ -814,11 +844,14 @@ end;
 procedure TExternHelpGeneralOptsFrame.FillStoreInCombobox;
 var
   sl: TStringList;
+  i: Integer;
 begin
   sl:=TStringList.Create;
   try
+    for i:=0 to PackageEditingInterface.GetPackageCount-1 do
+      sl.Add(PackageEditingInterface.GetPackages(i).Name);
     sl.Sort;
-    sl.Insert(0, ehrsMySettings);
+    sl.Insert(0, Trim(FMySettingsCaption));
     StoreComboBox.Items.Assign(sl);
   finally
     sl.Free;
@@ -893,6 +926,7 @@ begin
   FileMacrofyButton.Hint:=ehrsReplaceCommonDirectoriesWithMacros;
   WithSubDirsCheckBox.Caption:=ehrsIncludeSubDirectories;
   StoreLabel.Caption:=ehrsStoreThisURLIn;
+  FMySettingsCaption:=ehrsMySettings;
 end;
 
 class function TExternHelpGeneralOptsFrame.SupportedOptionsClass: TAbstractIDEOptionsClass;

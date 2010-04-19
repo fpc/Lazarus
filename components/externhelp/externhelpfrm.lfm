@@ -178,6 +178,7 @@ inherited ExternHelpGeneralOptsFrame: TExternHelpGeneralOptsFrame
     Top = 305
     Width = 157
     ItemHeight = 0
+    OnEditingDone = StoreComboBoxEditingDone
     TabOrder = 5
     Text = 'StoreComboBox'
   end
