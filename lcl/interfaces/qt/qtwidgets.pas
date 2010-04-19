@@ -4645,7 +4645,8 @@ end;
 procedure TQtMainWindow.setShowInTaskBar(AValue: Boolean);
 begin
   FShowOnTaskBar := AValue;
-  UpdateParent;
+  if not QWidget_isModal(Widget) then
+    UpdateParent;
 end;
 
 procedure TQtMainWindow.setPopupParent(APopupMode: TPopupMode; NewParent: QWidgetH);
