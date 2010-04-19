@@ -76,7 +76,6 @@ begin
   begin
     pClassName := 'SysMonthCal32';
     WindowTitle := StrCaption;
-    Flags := WS_CHILD or WS_VISIBLE;
     if dsShowWeekNumbers in TCustomCalendar(AWinControl).DisplaySettings then
       Flags := Flags or MCS_WEEKNUMBERS;
     SubClassWndProc := @WindowProc;
