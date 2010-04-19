@@ -161,10 +161,17 @@ end;
 procedure TListColumn.SetWidth(const AValue: TWidth);
 var
   LV: TCustomListView;
+  W: TWidth;
 begin
-  if FWidth = AValue then Exit;
-  FWidth := AValue;
-  Changed(False);  
+  W := AValue;
+  if (MinWidth > 0) and (W < MinWidth) then
+    W := MinWidth
+  else
+  if (MaxWidth > 0) and (W > MaxWidth) then
+    W := MaxWidth;
+  if FWidth = W then Exit;
+  FWidth := W;
+  Changed(False);
   if not WSUpdateAllowed then Exit;
   
   LV := TListColumns(Collection).FOwner;
