@@ -990,9 +990,9 @@ type
     function GetHandle: HDC;
     procedure SetAntialiasingMode(const AValue: TAntialiasingMode);
     procedure SetAutoRedraw(Value: Boolean); virtual;
-    procedure SetLazFont(value: TFont);
-    procedure SetLazPen(value: TPen);
-    procedure SetLazBrush(value: TBrush);
+    procedure SetLazFont(Value: TFont);
+    procedure SetLazPen(Value: TPen);
+    procedure SetLazBrush(Value: TBrush);
     procedure SetRegion(Value: TRegion);
   protected
     function DoCreateDefaultFont: TFPCustomFont; override;
@@ -1042,9 +1042,9 @@ type
     procedure CreateRegion; virtual;
     procedure DeselectHandles; virtual;
     procedure PenChanging(APen: TObject); virtual;
-    procedure FontChanging(APen: TObject); virtual;
-    procedure BrushChanging(APen: TObject); virtual;
-    procedure RegionChanging(APen: TObject); virtual;
+    procedure FontChanging(AFont: TObject); virtual;
+    procedure BrushChanging(ABrush: TObject); virtual;
+    procedure RegionChanging(ARegion: TObject); virtual;
     procedure RealizeAutoRedraw; virtual;
     procedure RealizeAntialiasing; virtual;
     procedure RequiredState(ReqState: TCanvasState); virtual;

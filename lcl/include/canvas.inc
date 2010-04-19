@@ -1252,9 +1252,8 @@ end;
  ------------------------------------------------------------------------------}
 procedure TCanvas.BrushChanged(ABrush: TObject);
 begin
-  if csBrushValid in FState then begin
+  if csBrushValid in FState then
     Exclude(FState, csBrushValid);
-  end;
 end;
 
 {------------------------------------------------------------------------------
@@ -1266,9 +1265,8 @@ end;
  ------------------------------------------------------------------------------}
 procedure TCanvas.FontChanged(AFont: TObject);
 begin
-  if csFontValid in FState then begin
+  if csFontValid in FState then
     Exclude(FState, csFontValid);
-  end;
 end;
 
 {------------------------------------------------------------------------------
@@ -1288,7 +1286,7 @@ begin
   end;
 end;
 
-procedure TCanvas.FontChanging(APen: TObject);
+procedure TCanvas.FontChanging(AFont: TObject);
 begin
   if [csFontValid, csHandleValid] * FState = [csFontValid, csHandleValid] then
   begin
@@ -1298,7 +1296,7 @@ begin
   end;
 end;
 
-procedure TCanvas.BrushChanging(APen: TObject);
+procedure TCanvas.BrushChanging(ABrush: TObject);
 begin
   if [csBrushValid, csHandleValid] * FState = [csBrushValid, csHandleValid] then
   begin
@@ -1308,7 +1306,7 @@ begin
   end;
 end;
 
-procedure TCanvas.RegionChanging(APen: TObject);
+procedure TCanvas.RegionChanging(ARegion: TObject);
 begin
   if [csRegionValid, csHandleValid] * FState = [csRegionValid, csHandleValid] then
   begin
@@ -1327,10 +1325,8 @@ end;
  ------------------------------------------------------------------------------}
 procedure TCanvas.PenChanged(APen: TObject);
 begin
-  if csPenValid in FState
-  then begin
+  if csPenValid in FState then
     Exclude(FState, csPenValid);
-  end;
 end;
 
 {------------------------------------------------------------------------------
@@ -1342,10 +1338,8 @@ end;
  ------------------------------------------------------------------------------}
 procedure TCanvas.RegionChanged(ARegion: TObject);
 begin
-  if csRegionValid in FState
-  then begin
+  if csRegionValid in FState then
     Exclude(FState, csRegionValid);
-  end;
 end;
 
 {------------------------------------------------------------------------------
@@ -1511,14 +1505,15 @@ end;
 procedure TCanvas.DeselectHandles;
 begin
   //debugln('TCanvas.DeselectHandles ',ClassName,' Self=',DbgS(Self),' Handle=',DbgS(FHandle),' FSavedBrushHandle=',DbgS(Cardinal(FSavedBrushHandle)));
-  if (FHandle<>0) then begin
+  if (FHandle <> 0) then
+  begin
     // select default sub handles in the device context without deleting owns
-    if FSavedBrushHandle<>0 then
-      SelectObject(FHandle,FSavedBrushHandle);
-    if FSavedPenHandle<>0 then
-      SelectObject(FHandle,FSavedPenHandle);
-    if FSavedFontHandle<>0 then
-      SelectObject(FHandle,FSavedFontHandle);
+    if FSavedBrushHandle <> 0 then
+      SelectObject(FHandle, FSavedBrushHandle);
+    if FSavedPenHandle <> 0 then
+      SelectObject(FHandle, FSavedPenHandle);
+    if FSavedFontHandle <> 0 then
+      SelectObject(FHandle, FSavedFontHandle);
     FState := FState - [csPenValid, csBrushValid, csFontValid];
   end;
   FSavedBrushHandle:=0;
@@ -1587,10 +1582,11 @@ procedure TCanvas.SaveHandleState;
 var
   DCIndex: LongInt;
 begin
-  if FSavedHandleStates=nil then FSavedHandleStates:=TFPList.Create;
+  if FSavedHandleStates = nil then
+    FSavedHandleStates := TFPList.Create;
   DeselectHandles;
   RequiredState([csHandleValid]);
-  DCIndex:=SaveDC(Handle);
+  DCIndex := SaveDC(Handle);
   FSavedHandleStates.Add(Pointer(PtrInt(DCIndex)));
 end;
 
@@ -1598,10 +1594,10 @@ procedure TCanvas.RestoreHandleState;
 var
   DCIndex: LongInt;
 begin
-  DCIndex:=integer(PtrUInt(FSavedHandleStates[FSavedHandleStates.Count-1]));
+  DCIndex := LongInt(PtrUInt(FSavedHandleStates[FSavedHandleStates.Count-1]));
   FSavedHandleStates.Delete(FSavedHandleStates.Count-1);
   DeselectHandles;
-  RestoreDC(Handle,DCIndex);
+  RestoreDC(Handle, DCIndex);
 end;
 
 procedure TCanvas.Changing;
