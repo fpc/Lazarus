@@ -673,7 +673,7 @@ end;
 
 function TControl.FormIsUpdating: boolean;
 begin
-  Result:=(Parent<>nil) and Parent.FormIsUpdating;
+  Result := Assigned(Parent) and Parent.FormIsUpdating;
 end;
 
 {------------------------------------------------------------------------------
@@ -3883,9 +3883,9 @@ begin
   {$IFDEF OldAutoSize}
   Result:=IsControlVisible;
   {$ELSE}
-  Result:=IsControlVisible;
-  if Result and (Parent<>nil) then
-    Result:=Parent.HandleObjectShouldBeVisible;
+  Result := IsControlVisible;
+  if Result and Assigned(Parent) then
+    Result := Parent.HandleObjectShouldBeVisible;
   {$ENDIF}
   //DebugLn(['TControl.HandleObjectShouldBeVisible ',DbgSName(Self),' ',Result]);
 end;

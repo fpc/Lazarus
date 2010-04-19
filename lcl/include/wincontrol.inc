@@ -5389,7 +5389,8 @@ begin
   Form := GetParentForm(Self);
   if Form <> nil then
     Form.FocusControl(Self)
-  else if IsVisible and HandleAllocated then
+  else
+  if IsVisible and HandleAllocated then
     LCLIntf.SetFocus(Handle);
 end;
 
@@ -5404,8 +5405,7 @@ end;
 {------------------------------------------------------------------------------
   TWinControl KeyDownBeforeInterface
 ------------------------------------------------------------------------------}
-procedure TWinControl.KeyDownBeforeInterface(var Key: Word; Shift: TShiftState
-  );
+procedure TWinControl.KeyDownBeforeInterface(var Key: Word; Shift: TShiftState);
 begin
   KeyDown(Key,Shift);
 end;
