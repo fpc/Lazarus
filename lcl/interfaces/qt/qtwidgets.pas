@@ -946,7 +946,6 @@ type
   TQtListWidget = class(TQtListView)
   private
     FCheckable: boolean;
-    FCurrentItemChangeHook: QListWidget_hookH;
     FSelectionChangeHook: QListWidget_hookH;
     FItemClickedHook: QListWidget_hookH;
     FItemTextChangedHook: QListWidget_hookH;
@@ -961,7 +960,6 @@ type
     function EventFilter(Sender: QObjectH; Event: QEventH): Boolean; cdecl; override;
     function itemViewViewportEventFilter(Sender: QObjectH; Event: QEventH): Boolean; cdecl; override;
 
-    procedure signalCurrentItemChange(current: QListWidgetItemH; previous: QListWidgetItemH); cdecl;
     procedure signalItemTextChanged(ANewText: PWideString); cdecl;
     procedure signalItemClicked(item: QListWidgetItemH); cdecl;
     procedure signalSelectionChanged(); cdecl;
@@ -7420,13 +7418,11 @@ begin
   inherited AttachEvents;
   
   FSelectionChangeHook := QListWidget_hook_create(Widget);
-  FCurrentItemChangeHook := QListWidget_hook_create(Widget);
   FItemClickedHook := QListWidget_hook_create(Widget);
   FItemTextChangedHook := QListWidget_hook_create(Widget);
 
   // OnSelectionChange event
   QListWidget_hook_hook_itemSelectionChanged(FSelectionChangeHook, @signalSelectionChanged);
-  QListWidget_hook_hook_currentItemChanged(FCurrentItemChangeHook, @signalCurrentItemChange);
   QListWidget_hook_hook_itemClicked(FSelectionChangeHook, @signalItemClicked);
   QListWidget_hook_hook_currentTextChanged(FItemTextChangedHook, @signalItemTextChanged);
 end;
@@ -7434,7 +7430,6 @@ end;
 procedure TQtListWidget.DetachEvents;
 begin
   QListWidget_hook_destroy(FSelectionChangeHook);
-  QListWidget_hook_destroy(FCurrentItemChangeHook);
   QListWidget_hook_destroy(FItemClickedHook);
   QListWidget_hook_destroy(FItemTextChangedHook);
 
@@ -7534,16 +7529,6 @@ begin
   end;
 end;
 
-procedure TQtListWidget.signalCurrentItemChange(current: QListWidgetItemH;
-  previous: QListWidgetItemH); cdecl;
-begin
-  {$ifdef VerboseQt}
-    WriteLn('TQtListWidget.signalCurrentItemChange ');
-  {$endif}
-  if (previous = nil) and (current <> nil) and not QListWidgetItem_isSelected(current) then
-    QListWidgetItem_setSelected(current, True);
-end;
-
 {------------------------------------------------------------------------------
   Function: TQtListWidget.SlotSelectionChange
   Params:  None
@@ -7566,7 +7551,7 @@ begin
 
   FillChar(Msg, SizeOf(Msg), #0);
   Msg.Msg := LM_SELCHANGE;
-  if QListWidget_currentItem(QListWidgetH(Widget)) <> nil then
+  if getSelCount > 0 then
     DeliverMessage(Msg);
 end;
 
