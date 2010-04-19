@@ -546,6 +546,7 @@ type
     procedure StatusBarDblClick(Sender: TObject);
   private
     FNotebook: TSourceDragableNotebook;
+    FBaseCaption: String;
     FIsClosing: Boolean;
     SrcPopUpMenu: TPopupMenu;
   protected
@@ -613,6 +614,7 @@ type
     FProcessingCommand: boolean;
     FSourceEditorList: TList; // list of TSourceEditor
   private
+    FUpdateTabAndPageTimer: TTimer;
     // PopupMenu
     procedure BuildPopupMenu;
     procedure AssignPopupMenu;
@@ -645,8 +647,13 @@ type
     property NoteBookPage[Index: Integer]: TPage read GetNoteBookPage;
     procedure NoteBookInsertPage(Index: Integer; const S: string);
     procedure NoteBookDeletePage(APageIndex: Integer);
+    procedure UpdateTabsAndPageTitle;
+    procedure UpdateTabsAndPageTimeReached(Sender: TObject);
   protected
     function NoteBookIndexOfPage(APage: TPage): Integer;
+    procedure DragOver(Source: TObject; X, Y: Integer; State: TDragState;
+      var Accept: Boolean); override;
+    procedure DragCanceled; override;
   protected
     States: TSourceNotebookStates;
     // hintwindow stuff
@@ -686,7 +693,9 @@ type
                                   OldIndex, NewIndex: Integer; CopyDrag: Boolean);
     function  NotebookCanDragTabMove(Sender, Source: TObject;
                                   OldIndex, NewIndex: Integer; CopyDrag: Boolean): Boolean;
-
+    procedure NotebookDragOver(Sender, Source: TObject;
+                               X,Y: Integer; State: TDragState; var Accept: Boolean);
+    procedure NotebookEndDrag(Sender, Target: TObject; X,Y: Integer);
     // hintwindow stuff
     procedure HintTimer(Sender: TObject);
     procedure OnApplicationUserInput(Sender: TObject; Msg: Cardinal);
@@ -3867,8 +3876,10 @@ begin
   else
     NewPageName:=FPageName;
   if Modified then NewPageName:='*'+NewPageName;
-  if SourceNotebook.NoteBookPages[p] <> NewPageName then
+  if SourceNotebook.NoteBookPages[p] <> NewPageName then begin
     SourceNotebook.NoteBookPages[p] := NewPageName;
+    SourceNotebook.UpdateTabsAndPageTitle;
+  end;
 end;
 
 Procedure TSourceEditor.SetSource(value: TStrings);
@@ -4553,9 +4564,10 @@ begin
   else
     Name := NonModalIDEWindowNames[nmiwSourceNoteBookName];
   if Manager.SourceWindowCount > 0 then
-    Caption := locWndSrcEditor + ' (' + IntToStr(Manager.SourceWindowCount+1) + ')'
+    FBaseCaption := locWndSrcEditor + ' (' + IntToStr(Manager.SourceWindowCount+1) + ')'
   else
-    Caption := locWndSrcEditor;
+    FBaseCaption := locWndSrcEditor;
+  Caption := FBaseCaption;
   KeyPreview:=true;
   FProcessingCommand := false;
 
@@ -4596,6 +4608,10 @@ begin
     HideInterval := 4000;
     AutoHide := False;
   end;
+
+  FUpdateTabAndPageTimer := TTimer.Create(Self);
+  FUpdateTabAndPageTimer.Interval := 500;
+  FUpdateTabAndPageTimer.OnTimer := @UpdateTabsAndPageTimeReached;
 
   CreateNotebook;
   Application.AddOnUserInputHandler(@OnApplicationUserInput,true);
@@ -4665,6 +4681,8 @@ Begin
     OnCloseTabClicked:=@CloseTabClicked;
     OnMouseDown:=@NotebookMouseDown;
     OnCanDragMoveTab := @NotebookCanDragTabMove;
+    OnDragOver := @NotebookDragOver;
+    OnEndDrag := @NotebookEndDrag;
     OnDragMoveTab := @NotebookDragTabMove;
     ShowHint:=true;
     OnShowHint:=@NotebookShowTabHint;
@@ -5268,6 +5286,7 @@ var
 begin
   for i:=0 to PageCount-1 do
     FindSourceEditorWithPageIndex(i).UpdatePageName;
+  UpdateTabsAndPageTitle;
 end;
 
 procedure TSourceNotebook.UpdateProjectFiles;
@@ -5579,6 +5598,7 @@ begin
     FNotebook.Visible := True;
     NotebookPages[Index] := S;
   end;
+  UpdateTabsAndPageTitle;
 end;
 
 procedure TSourceNotebook.NoteBookDeletePage(APageIndex: Integer);
@@ -5598,11 +5618,46 @@ begin
     NotebookPages.Delete(APageIndex);
   end else
     FNotebook.Visible := False;
+  UpdateTabsAndPageTitle;
+end;
+
+procedure TSourceNotebook.UpdateTabsAndPageTitle;
+begin
+  if (PageCount = 1) and (EditorOpts.HideSingleTabInWindow) then begin
+    Caption := FBaseCaption + ': ' + NotebookPages[0];
+    FNotebook.ShowTabs := False;
+  end else begin
+    Caption := FBaseCaption;
+    FNotebook.ShowTabs := True;
+  end;
+end;
+
+procedure TSourceNotebook.UpdateTabsAndPageTimeReached(Sender: TObject);
+begin
+  FUpdateTabAndPageTimer.Enabled := False;
+  UpdateTabsAndPageTitle;
 end;
 
 function TSourceNotebook.NoteBookIndexOfPage(APage: TPage): Integer;
 begin
   Result := FNoteBook.IndexOf(APage);
+end;
+
+procedure TSourceNotebook.DragOver(Source: TObject; X, Y: Integer; State: TDragState;
+  var Accept: Boolean);
+begin
+  FUpdateTabAndPageTimer.Enabled := False;
+  inherited DragOver(Source, X, Y, State, Accept);
+  if State = dsDragLeave then
+    FUpdateTabAndPageTimer.Enabled := True
+  else if Source is TSourceDragableNotebook then
+    FNotebook.ShowTabs := True;
+end;
+
+procedure TSourceNotebook.DragCanceled;
+begin
+  inherited DragCanceled;
+  FUpdateTabAndPageTimer.Enabled := True;
 end;
 
 procedure TSourceNotebook.BeginIncrementalFind;
@@ -6598,6 +6653,21 @@ begin
     Result := (NewIndex >= 0) and
               ((Source <> Sender) or (OldIndex <> NewIndex)) and
               ((Source = Sender) or (not NBHasSharedEditor));
+end;
+
+procedure TSourceNotebook.NotebookDragOver(Sender, Source: TObject; X, Y: Integer;
+  State: TDragState; var Accept: Boolean);
+begin
+  FUpdateTabAndPageTimer.Enabled := False;
+  if State = dsDragLeave then
+    FUpdateTabAndPageTimer.Enabled := True
+  else if Source is TSourceDragableNotebook then
+    FNotebook.ShowTabs := True;
+end;
+
+procedure TSourceNotebook.NotebookEndDrag(Sender, Target: TObject; X, Y: Integer);
+begin
+  FUpdateTabAndPageTimer.Enabled := True;
 end;
 
 Procedure TSourceNotebook.NotebookPageChanged(Sender: TObject);

@@ -82,6 +82,7 @@ begin
     Items.Add(dlgCopyWordAtCursorOnCopyNone);
     Items.Add(dlgCopyPasteKeepFolds);
     Items.Add(dlgTabNumbersNotebook);
+    Items.Add(dlgHideSingleTabInNotebook);
   end;
   EditorTrimSpaceTypeCheckBox.Items.Add(dlgTrimSpaceTypeLeaveLine);
   EditorTrimSpaceTypeCheckBox.Items.Add(dlgTrimSpaceTypeEditLine);
@@ -111,6 +112,7 @@ begin
       Checked[4] := CopyWordAtCursorOnCopyNone;
       Checked[5] := eoFoldedCopyPaste in SynEditOptions2;
       Checked[6] := ShowTabNumbers;
+      Checked[7] := HideSingleTabInWindow; // dlgHideSingleTabInNotebook
     end;
     EditorTrimSpaceTypeCheckBox.ItemIndex := ord(TrimSpaceType);
     EditorTabPositionCheckBox.ItemIndex := TabPosToIndex[TabPosition];
@@ -145,6 +147,7 @@ begin
     ShowTabNumbers := EditorOptionsGroupBox.Checked[6];
     TrimSpaceType := TSynEditStringTrimmingType(EditorTrimSpaceTypeCheckBox.ItemIndex);
     TabPosition := TabIndexToPos[EditorTabPositionCheckBox.ItemIndex];
+    HideSingleTabInWindow := EditorOptionsGroupBox.Checked[7]; // dlgHideSingleTabInNotebook
   end;
 end;
 

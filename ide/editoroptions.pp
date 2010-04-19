@@ -896,6 +896,7 @@ type
 
   TEditorOptions = class(TAbstractIDEEnvironmentOptions)
   private
+    FHideSingleTabInWindow: Boolean;
     xmlconfig: TRttiXMLConfig;
 
     // general options
@@ -1033,6 +1034,8 @@ type
       read fSynEditOptions2 write fSynEditOptions2 default SynEditDefaultOptions2;
     property ShowTabCloseButtons: Boolean
       read fShowTabCloseButtons write fShowTabCloseButtons;
+    property HideSingleTabInWindow: Boolean
+      read FHideSingleTabInWindow write FHideSingleTabInWindow;
     property ShowTabNumbers: Boolean read fShowTabNumbers write fShowTabNumbers;
     property TabPosition: TTabPosition
       read fTabPosition write fTabPosition default tpTop;
@@ -2457,6 +2460,7 @@ begin
 
   // General options
   fShowTabCloseButtons := True;
+  FHideSingleTabInWindow := False;
   fTabPosition := tpTop;
   FCopyWordAtCursorOnCopyNone := True;
   FShowGutterHints := True;
@@ -2721,7 +2725,10 @@ begin
 
     fShowTabCloseButtons :=
       XMLConfig.GetValue(
-      'EditorOptions/General/Editor/ShowTabCloseButtons', True);
+      'EditorOptions/General/Editor/ShowTabCloseButtons', False);
+    FHideSingleTabInWindow :=
+      XMLConfig.GetValue(
+      'EditorOptions/General/Editor/HideSingleTabInWindow', True);
     fShowTabNumbers :=
       XMLConfig.GetValue('EditorOptions/General/Editor/ShowTabNumbers', False);
     fTabPosition := tpTop;
@@ -2966,6 +2973,8 @@ begin
 
     XMLConfig.SetDeleteValue('EditorOptions/General/Editor/ShowTabCloseButtons'
       , fShowTabCloseButtons, True);
+    XMLConfig.SetDeleteValue('EditorOptions/General/Editor/HideSingleTabInWindow'
+      , FHideSingleTabInWindow, True);
     XMLConfig.SetDeleteValue('EditorOptions/General/Editor/ShowTabNumbers'
       , fShowTabNumbers, False);
     XMLConfig.WriteObject('EditorOptions/General/Editor/', self, nil, 'TabPosition');

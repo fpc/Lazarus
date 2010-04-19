@@ -1225,6 +1225,7 @@ resourcestring
   dlgScrollPastEndLine = 'Caret past end of line';
   lisShowSpecialCharacters = 'Show special characters';
   dlgCloseButtonsNotebook = 'Show close buttons in notebook';
+  dlgHideSingleTabInNotebook = 'Hide tab in single page windows';
   dlgTabNumbersNotebook = 'Show tab numbers in notebook';
   dlgNotebookTabPos = 'Source notebook tabs position';
   dlgNotebookTabPosTop = 'Top';
