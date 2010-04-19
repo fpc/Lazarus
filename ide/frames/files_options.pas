@@ -34,6 +34,7 @@ type
   { TFilesOptionsFrame }
 
   TFilesOptionsFrame = class(TAbstractIDEOptionsEditor)
+    AutoCloseCompileDialogCheckBox: TCheckBox;
     CompilerPathButton:TButton;
     CompilerPathComboBox:TComboBox;
     FPCSourceDirButton:TButton;
@@ -57,6 +58,7 @@ type
     ShowCompileDialogCheckBox: TCheckBox;
     procedure FilesButtonClick(Sender: TObject);
     procedure DirectoriesButtonClick(Sender: TObject);
+    procedure ShowCompileDialogCheckBoxChange(Sender: TObject);
   private
     FOldLazarusDir: string;
     FOldCompilerFilename: string;
@@ -165,12 +167,18 @@ begin
   end;
 end;
 
+procedure TFilesOptionsFrame.ShowCompileDialogCheckBoxChange(Sender: TObject);
+begin
+  AutoCloseCompileDialogCheckBox.Enabled := ShowCompileDialogCheckBox.Checked;
+end;
+
 procedure TFilesOptionsFrame.Setup(ADialog: TAbstractOptionsEditorDialog);
 begin
   MaxRecentOpenFilesLabel.Caption:=dlgMaxRecentFiles;
   MaxRecentProjectFilesLabel.Caption:=dlgMaxRecentProjs;
   OpenLastProjectAtStartCheckBox.Caption:=dlgQOpenLastPrj;
   ShowCompileDialogCheckBox.Caption:=dlgQShowCompileDialog;
+  AutoCloseCompileDialogCheckBox.Caption:=dlgQAutoCloseCompileDialog;
   LazarusDirLabel.Caption:=dlgLazarusDir;
 
   with LazarusDirComboBox.Items do
@@ -267,6 +275,8 @@ begin
     SetComboBoxText(MaxRecentProjectFilesComboBox,IntToStr(MaxRecentProjectFiles));
     OpenLastProjectAtStartCheckBox.Checked:=OpenLastProjectAtStart;
     ShowCompileDialogCheckBox.Checked:=ShowCompileDialog;
+    AutoCloseCompileDialogCheckBox.Checked:=AutoCloseCompileDialog;
+    AutoCloseCompileDialogCheckBox.Enabled:=ShowCompileDialogCheckBox.Checked;
   end;
 end;
 
@@ -292,6 +302,7 @@ begin
         MaxRecentProjectFilesComboBox.Text,MaxRecentProjectFiles);
     OpenLastProjectAtStart:=OpenLastProjectAtStartCheckBox.Checked;
     ShowCompileDialog := ShowCompileDialogCheckBox.Checked;
+    AutoCloseCompileDialog := AutoCloseCompileDialogCheckBox.Checked;
   end;
 end;
 

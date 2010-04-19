@@ -221,6 +221,7 @@ type
     FDebuggerFileHistory: TStringList; // per debugger class
     FDebuggerShowStopMessage: Boolean;
     FShowCompileDialog: Boolean;       // show dialog during compile
+    FAutoCloseCompileDialog: Boolean;  // auto close dialog after succesed compile
     FTestBuildDirectory: string;
     FTestBuildDirHistory: TStringList;
     FDebuggerEventLogClearOnRun: Boolean;
@@ -426,6 +427,8 @@ type
                                               write FDebuggerShowStopMessage;
     property ShowCompileDialog: boolean read  FShowCompileDialog
                                         write FShowCompileDialog;
+    property AutoCloseCompileDialog: boolean read  FAutoCloseCompileDialog
+                                             write FAutoCloseCompileDialog;
     property TestBuildDirectory: string read FTestBuildDirectory
                                         write SetTestBuildDirectory;
     property TestBuildDirHistory: TStringList read FTestBuildDirHistory
@@ -898,6 +901,8 @@ begin
        Path+'AutoSave/OpenLastProjectAtStart',true);
     FShowCompileDialog:=XMLConfig.GetValue(
        Path+'ShowCompileDialog/Value',false);
+    FAutoCloseCompileDialog:=XMLConfig.GetValue(
+       Path+'AutoCloseCompileDialog/Value',false);
 
     // windows
     i := XMLConfig.GetValue(Path+'Desktop/FormIdCount', 0);
@@ -1259,7 +1264,9 @@ begin
 
     XMLConfig.SetDeleteValue(
        Path+'ShowCompileDialog/Value',FShowCompileDialog,False);
-       
+    XMLConfig.SetDeleteValue(
+       Path+'AutoCloseCompileDialog/Value',FAutoCloseCompileDialog,False);
+
     if not OnlyDesktop then begin
       // files
       XMLConfig.SetDeleteValue(

@@ -62,9 +62,11 @@ type
     PCurrentStatus : TLabel;
     Panel1 : TPanel;
     PnlTitle : TPanel;
+    tmrCloseForm: TTimer;
     procedure BCloseClick(Sender: TObject);
     procedure FormCreate(Sender: TObject);
     procedure FormKeyDown(Sender: TObject; var Key: Word; Shift: TShiftState);
+    procedure tmrCloseFormTimer(Sender: TObject);
   private
     NHints    : Integer;
     NWarnings : Integer;
@@ -101,6 +103,9 @@ var
 implementation
 
 {$R *.lfm}
+
+uses
+  EnvironmentOpts;
 
 var
   MCompileInfoDlg: TCompileInfoDlg;
@@ -150,6 +155,11 @@ procedure TCompileInfoDlg.FormKeyDown(Sender: TObject; var Key: Word;
 begin
   if Key = VK_ESCAPE then
     BCloseClick(Sender);
+end;
+
+procedure TCompileInfoDlg.tmrCloseFormTimer(Sender: TObject);
+begin
+  Close;
 end;
 
 procedure TCompileInfoDlg.SetProjectName(const Sname : String);
@@ -220,6 +230,8 @@ begin
   ToAbort        := False;
   BClose.Kind    := bkOk;
   BClose.Caption := lisMenuClose;
+  if EnvironmentOptions.AutoCloseCompileDialog and (NErrors = 0) then
+    tmrCloseForm.Enabled := True;
 end;
 
 procedure TCompileInfoDlg.MakeBold;

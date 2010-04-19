@@ -96,15 +96,16 @@ inherited FilesOptionsFrame: TFilesOptionsFrame
     Top = 109
     Width = 180
     Caption = 'ShowCompileDialogCheckBox'
+    OnChange = ShowCompileDialogCheckBoxChange
     TabOrder = 3
   end
   object LazarusDirLabel: TLabel[6]
     AnchorSideLeft.Control = Owner
-    AnchorSideTop.Control = ShowCompileDialogCheckBox
+    AnchorSideTop.Control = AutoCloseCompileDialogCheckBox
     AnchorSideTop.Side = asrBottom
     Left = 0
     Height = 16
-    Top = 138
+    Top = 157
     Width = 83
     BorderSpacing.Top = 10
     Caption = 'LazarusDirLabel'
@@ -119,7 +120,7 @@ inherited FilesOptionsFrame: TFilesOptionsFrame
     AnchorSideBottom.Side = asrBottom
     Left = 544
     Height = 23
-    Top = 154
+    Top = 173
     Width = 25
     Anchors = [akTop, akRight, akBottom]
     Caption = '...'
@@ -133,7 +134,7 @@ inherited FilesOptionsFrame: TFilesOptionsFrame
     AnchorSideRight.Control = LazarusDirButton
     Left = 0
     Height = 23
-    Top = 154
+    Top = 173
     Width = 544
     Anchors = [akTop, akLeft, akRight]
     ItemHeight = 15
@@ -147,7 +148,7 @@ inherited FilesOptionsFrame: TFilesOptionsFrame
     AnchorSideRight.Control = CompilerPathButton
     Left = 0
     Height = 23
-    Top = 199
+    Top = 218
     Width = 544
     Anchors = [akTop, akLeft, akRight]
     ItemHeight = 15
@@ -162,7 +163,7 @@ inherited FilesOptionsFrame: TFilesOptionsFrame
     AnchorSideBottom.Side = asrBottom
     Left = 544
     Height = 23
-    Top = 199
+    Top = 218
     Width = 25
     Anchors = [akTop, akRight, akBottom]
     Caption = '...'
@@ -175,7 +176,7 @@ inherited FilesOptionsFrame: TFilesOptionsFrame
     AnchorSideTop.Side = asrBottom
     Left = 0
     Height = 16
-    Top = 183
+    Top = 202
     Width = 102
     BorderSpacing.Top = 6
     Caption = 'CompilerPathLabel'
@@ -188,7 +189,7 @@ inherited FilesOptionsFrame: TFilesOptionsFrame
     AnchorSideRight.Control = FPCSourceDirButton
     Left = 0
     Height = 23
-    Top = 244
+    Top = 263
     Width = 544
     Anchors = [akTop, akLeft, akRight]
     ItemHeight = 15
@@ -203,7 +204,7 @@ inherited FilesOptionsFrame: TFilesOptionsFrame
     AnchorSideBottom.Side = asrBottom
     Left = 544
     Height = 23
-    Top = 244
+    Top = 263
     Width = 25
     Anchors = [akTop, akRight, akBottom]
     Caption = '...'
@@ -216,7 +217,7 @@ inherited FilesOptionsFrame: TFilesOptionsFrame
     AnchorSideTop.Side = asrBottom
     Left = 0
     Height = 16
-    Top = 228
+    Top = 247
     Width = 101
     BorderSpacing.Top = 6
     Caption = 'FPCSourceDirLabel'
@@ -228,7 +229,7 @@ inherited FilesOptionsFrame: TFilesOptionsFrame
     AnchorSideTop.Side = asrBottom
     Left = 0
     Height = 16
-    Top = 273
+    Top = 292
     Width = 82
     BorderSpacing.Top = 6
     Caption = 'MakePathLabel'
@@ -240,7 +241,7 @@ inherited FilesOptionsFrame: TFilesOptionsFrame
     AnchorSideTop.Side = asrBottom
     Left = 0
     Height = 16
-    Top = 318
+    Top = 337
     Width = 93
     BorderSpacing.Top = 6
     Caption = 'TestBuildDirLabel'
@@ -253,7 +254,7 @@ inherited FilesOptionsFrame: TFilesOptionsFrame
     AnchorSideRight.Control = MakePathButton
     Left = 0
     Height = 23
-    Top = 289
+    Top = 308
     Width = 544
     Anchors = [akTop, akLeft, akRight]
     ItemHeight = 15
@@ -268,7 +269,7 @@ inherited FilesOptionsFrame: TFilesOptionsFrame
     AnchorSideBottom.Side = asrBottom
     Left = 544
     Height = 23
-    Top = 289
+    Top = 308
     Width = 25
     Anchors = [akTop, akRight, akBottom]
     Caption = '...'
@@ -282,7 +283,7 @@ inherited FilesOptionsFrame: TFilesOptionsFrame
     AnchorSideRight.Control = TestBuildDirButton
     Left = 0
     Height = 23
-    Top = 334
+    Top = 353
     Width = 544
     Anchors = [akTop, akLeft, akRight]
     ItemHeight = 15
@@ -297,11 +298,24 @@ inherited FilesOptionsFrame: TFilesOptionsFrame
     AnchorSideBottom.Side = asrBottom
     Left = 544
     Height = 23
-    Top = 334
+    Top = 353
     Width = 25
     Anchors = [akTop, akRight, akBottom]
     Caption = '...'
     OnClick = DirectoriesButtonClick
     TabOrder = 13
+  end
+  object AutoCloseCompileDialogCheckBox: TCheckBox[21]
+    AnchorSideLeft.Control = ShowCompileDialogCheckBox
+    AnchorSideTop.Control = ShowCompileDialogCheckBox
+    AnchorSideTop.Side = asrBottom
+    AnchorSideRight.Side = asrBottom
+    Left = 6
+    Height = 19
+    Top = 128
+    Width = 206
+    BorderSpacing.Left = 6
+    Caption = 'AutoCloseCompileDialogCheckBox'
+    TabOrder = 14
   end
 end

@@ -1057,6 +1057,7 @@ resourcestring
   dlgMaxRecentProjs = 'Max recent project files';
   dlgQOpenLastPrj = 'Open last project at start';
   dlgQShowCompileDialog = 'Show compile dialog';
+  dlgQAutoCloseCompileDialog = 'Auto close compile dialog';
   dlgLazarusDir = 'Lazarus directory (default for all projects)';
   dlgFpcPath = 'Compiler path (e.g. %s)';
   dlgFpcSrcPath = 'FPC source directory';
