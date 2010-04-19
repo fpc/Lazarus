@@ -910,8 +910,12 @@ end;
  ------------------------------------------------------------------------------}
 class function TCarbonWSCustomMemo.CreateHandle(const AWinControl: TWinControl;
   const AParams: TCreateParams): TLCLIntfHandle;
+var
+  Memo  : TCarbonMemo;
 begin
-  Result := TLCLIntfHandle(TCarbonMemo.Create(AWinControl, AParams));
+  Memo:=TCarbonMemo.Create(AWinControl, AParams);
+  Memo.SetWordWrap(TCustomMemo(AWinControl).WordWrap);
+  Result := TLCLIntfHandle(Memo);
 end;
 
 {------------------------------------------------------------------------------
