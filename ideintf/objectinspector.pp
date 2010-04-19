@@ -1155,6 +1155,7 @@ begin
   CurRow:=GetRowByPath(OldSelectedRowPath);
   if CurRow<>nil then
     ItemIndex:=CurRow.Index;
+  Column := oipgcValue;
 end;
 
 procedure TOICustomPropertyGrid.SetPropertyEditorHook(
@@ -1989,6 +1990,7 @@ begin
 
         SetItemIndexAndFocus(Index);
         SetCaptureControl(Self);
+        Column := oipgcValue;
       end;
     end;
   end;
@@ -2828,8 +2830,11 @@ end;
 procedure TOICustomPropertyGrid.SetColumn(
   const AValue: TOICustomPropertyGridColumn);
 begin
-  if FColumn=AValue then exit;
-  FColumn:=AValue;
+  if FColumn <> AValue then
+  begin
+    FColumn := AValue;
+    // TODO: indication
+  end;
 end;
 
 procedure TOICustomPropertyGrid.SetCurrentEditValue(const NewValue: string);
