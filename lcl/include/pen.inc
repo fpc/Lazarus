@@ -388,47 +388,52 @@ begin
     elpColor := FColor;
   end;
 
-  if Style = psPattern then
-    CachedPen := PenResourceCache.FindPenDesc(AExtPen, FPattern)
-  else
-    CachedPen := PenResourceCache.FindPenDesc(AExtPen, nil);
-
-  if CachedPen <> nil then
-  begin
-    CachedPen.Item.IncreaseRefCount;
-    FReference._lclHandle := CachedPen.Item.Handle;
-  end else
-  begin
-    // choose which function to use: CreatePenIndirect or ExtCreatePen
-    if ((AExtPen.elpPenStyle and PS_STYLE_MASK) = AExtPen.elpPenStyle) and
-        (AExtPen.elpPenStyle <> PS_USERSTYLE) then
-    begin
-      // simple pen
-      ALogPen.lopnStyle := AExtPen.elpPenStyle;
-      ALogPen.lopnWidth := Point(AExtPen.elpWidth, 0);
-      ALogPen.lopnColor := AExtPen.elpColor;
-      FReference._lclHandle := TLCLHandle(CreatePenIndirect(ALogPen));
-    end
-    else
-    begin
-      // extended pen
-      ALogBrush.lbStyle := AExtPen.elpBrushStyle;
-      ALogBrush.lbColor := AExtPen.elpColor;
-      ALogBrush.lbHatch := AExtPen.elpHatch;
-      if (Style = psPattern) and (Length(FPattern) > 0) then
-        FReference._lclHandle := TLCLHandle(ExtCreatePen(AExtPen.elpPenStyle,
-          AExtPen.elpWidth, ALogBrush, Length(FPattern), @FPattern[0]))
-      else
-        FReference._lclHandle := TLCLHandle(ExtCreatePen(AExtPen.elpPenStyle,
-          AExtPen.elpWidth, ALogBrush, 0, nil));
-    end;
-
+  PenResourceCache.Lock;
+  try
     if Style = psPattern then
-      PenResourceCache.Add(FReference.Handle, AExtPen, FPattern)
+      CachedPen := PenResourceCache.FindPenDesc(AExtPen, FPattern)
     else
-      PenResourceCache.Add(FReference.Handle, AExtPen, nil);
+      CachedPen := PenResourceCache.FindPenDesc(AExtPen, nil);
+
+    if CachedPen <> nil then
+    begin
+      CachedPen.Item.IncreaseRefCount;
+      FReference._lclHandle := CachedPen.Item.Handle;
+    end else
+    begin
+      // choose which function to use: CreatePenIndirect or ExtCreatePen
+      if ((AExtPen.elpPenStyle and PS_STYLE_MASK) = AExtPen.elpPenStyle) and
+          (AExtPen.elpPenStyle <> PS_USERSTYLE) then
+      begin
+        // simple pen
+        ALogPen.lopnStyle := AExtPen.elpPenStyle;
+        ALogPen.lopnWidth := Point(AExtPen.elpWidth, 0);
+        ALogPen.lopnColor := AExtPen.elpColor;
+        FReference._lclHandle := TLCLHandle(CreatePenIndirect(ALogPen));
+      end
+      else
+      begin
+        // extended pen
+        ALogBrush.lbStyle := AExtPen.elpBrushStyle;
+        ALogBrush.lbColor := AExtPen.elpColor;
+        ALogBrush.lbHatch := AExtPen.elpHatch;
+        if (Style = psPattern) and (Length(FPattern) > 0) then
+          FReference._lclHandle := TLCLHandle(ExtCreatePen(AExtPen.elpPenStyle,
+            AExtPen.elpWidth, ALogBrush, Length(FPattern), @FPattern[0]))
+        else
+          FReference._lclHandle := TLCLHandle(ExtCreatePen(AExtPen.elpPenStyle,
+            AExtPen.elpWidth, ALogBrush, 0, nil));
+      end;
+
+      if Style = psPattern then
+        PenResourceCache.Add(FReference.Handle, AExtPen, FPattern)
+      else
+        PenResourceCache.Add(FReference.Handle, AExtPen, nil);
+    end;
+    FPenHandleCached := True;
+  finally
+    PenResourceCache.Unlock;
   end;
-  FPenHandleCached := True;
 end;
 
 procedure TPen.SetCosmetic(const AValue: Boolean);
@@ -466,8 +471,13 @@ begin
   Changing;
   if FPenHandleCached then
   begin
-    PenResourceCache.FindPen(FReference.Handle).DecreaseRefCount;
-    FPenHandleCached := False;
+    PenResourceCache.Lock;
+    try
+      PenResourceCache.FindPen(FReference.Handle).DecreaseRefCount;
+      FPenHandleCached := False;
+    finally
+      PenResourceCache.Unlock;
+    end;
   end else
     DeleteObject(HGDIOBJ(FReference.Handle));
   FReference._lclHandle := 0;

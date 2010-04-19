@@ -174,10 +174,15 @@ begin
   Changing;
   if FBrushHandleCached then
   begin
-    CacheItem := BrushResourceCache.FindItem(FReference.Handle);
-    if CacheItem <> nil then
-      CacheItem.DecreaseRefCount;
-    FBrushHandleCached := False;
+    BrushResourceCache.Lock;
+    try
+      CacheItem := BrushResourceCache.FindItem(FReference.Handle);
+      if CacheItem <> nil then
+        CacheItem.DecreaseRefCount;
+      FBrushHandleCached := False;
+    finally
+      BrushResourceCache.Unlock;
+    end;
   end else
     DeleteObject(HGDIOBJ(FReference.Handle));
   FReference._lclHandle := 0;
@@ -219,20 +224,25 @@ begin
     lbColor := ColorRef(FColor);
   end;
 
-  CachedBrush := BrushResourceCache.FindDescriptor(@LogBrush);
-  if CachedBrush <> nil then
-  begin
-    CachedBrush.Item.IncreaseRefCount;
-    FReference._lclHandle := CachedBrush.Item.Handle;
-  end else
-  begin
-    if LogBrush.lbStyle <> BS_PATTERN then
-      FReference._lclHandle := TLCLHandle(CreateBrushIndirect(LogBrush))
-    else
-      FReference._lclHandle := TLCLHandle(CreatePatternBrush(LogBrush.lbHatch));
-    BrushResourceCache.AddResource(FReference.Handle, @LogBrush);
+  BrushResourceCache.Lock;
+  try
+    CachedBrush := BrushResourceCache.FindDescriptor(@LogBrush);
+    if CachedBrush <> nil then
+    begin
+      CachedBrush.Item.IncreaseRefCount;
+      FReference._lclHandle := CachedBrush.Item.Handle;
+    end else
+    begin
+      if LogBrush.lbStyle <> BS_PATTERN then
+        FReference._lclHandle := TLCLHandle(CreateBrushIndirect(LogBrush))
+      else
+        FReference._lclHandle := TLCLHandle(CreatePatternBrush(LogBrush.lbHatch));
+      BrushResourceCache.AddResource(FReference.Handle, @LogBrush);
+    end;
+    FBrushHandleCached := True;
+  finally
+    BrushResourceCache.Unlock;
   end;
-  FBrushHandleCached := True;
   FInternalUpdateIndex := GraphicsUpdateCount;
 end;
 

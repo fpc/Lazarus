@@ -1110,20 +1110,25 @@ begin
       lfPitchAndFamily := DEFAULT_PITCH;
     end;
   end;
-  // ask the font cache for the nearest font
-  CachedFont := FontResourceCache.FindFontDesc(ALogFont, Name);
-  //DebugLn(['TFont.GetHandle in cache: ',CachedFont<>nil]);
-  if CachedFont <> nil then
-  begin
-    CachedFont.Item.IncreaseRefCount;
-    FReference._lclHandle := CachedFont.Item.Handle;
-  end else
-  begin
-    // ask the interface for the nearest font
-    FReference._lclHandle := TLCLHandle(CreateFontIndirectEx(ALogFont, Name));
-    FontResourceCache.Add(FReference.Handle, ALogFont, Name);
+  FontResourceCache.Lock;
+  try
+    // ask the font cache for the nearest font
+    CachedFont := FontResourceCache.FindFontDesc(ALogFont, Name);
+    //DebugLn(['TFont.GetHandle in cache: ',CachedFont<>nil]);
+    if CachedFont <> nil then
+    begin
+      CachedFont.Item.IncreaseRefCount;
+      FReference._lclHandle := CachedFont.Item.Handle;
+    end else
+    begin
+      // ask the interface for the nearest font
+      FReference._lclHandle := TLCLHandle(CreateFontIndirectEx(ALogFont, Name));
+      FontResourceCache.Add(FReference.Handle, ALogFont, Name);
+    end;
+    FFontHandleCached := True;
+  finally
+    FontResourceCache.Unlock;
   end;
-  FFontHandleCached := True;
   FCanUTF8Valid := False;
   FIsMonoSpaceValid := False;
 end;
@@ -1170,9 +1175,16 @@ begin
   Changing;
   if FFontHandleCached then
   begin
-    if FontResourceCache <> nil then
-      FontResourceCache.FindFont(FReference.Handle).DecreaseRefCount;
-    FFontHandleCached := False;
+    if Assigned(FontResourceCache) then
+    begin
+      FontResourceCache.Lock;
+      try
+        FontResourceCache.FindFont(FReference.Handle).DecreaseRefCount;
+        FFontHandleCached := False;
+      finally
+        FontResourceCache.Unlock;
+      end;
+    end;
   end else
     DeleteObject(HGDIOBJ(FReference.Handle));
   FReference._lclHandle := 0;

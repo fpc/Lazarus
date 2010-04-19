@@ -25,7 +25,8 @@ unit LCLResCache;
 interface
 
 uses
-  Classes, SysUtils, FPCAdds, Types, LCLType, LCLProc, AvgLvlTree, WSReferences;
+  Classes, SysUtils, FPCAdds, Types, LCLType, LCLProc, AvgLvlTree, WSReferences,
+  syncobjs;
   
 {off $DEFINE CheckResCacheConsistency}
 
@@ -86,6 +87,7 @@ type
     FMaxUnusedItem: integer; // how many freed resources to keep
     FFirstUnusedItem, FLastUnusedItem: TResourceCacheItem;
     FUnUsedItemCount: integer;
+    FLock: TCriticalSection;
     procedure RemoveItem(Item: TResourceCacheItem); virtual;
     procedure RemoveDescriptor(Desc: TResourceCacheDescriptor); virtual;
     procedure ItemUsed(Item: TResourceCacheItem);
@@ -98,6 +100,8 @@ type
     function CompareItems(Tree: TAvgLvlTree; Item1, Item2: Pointer): integer; virtual;
     function CompareDescriptors(Tree: TAvgLvlTree; Desc1, Desc2: Pointer): integer; virtual; abstract;
     procedure ConsistencyCheck;
+    procedure Lock;
+    procedure Unlock;
   public
     property MaxUnusedItem: integer read FMaxUnusedItem
                                            write FMaxUnusedItem;
@@ -358,6 +362,7 @@ begin
   FDescriptors := TAvgLvlTree.CreateObjectCompare(@CompareDescriptors);
   FResourceCacheItemClass := TResourceCacheItem;
   FResourceCacheDescriptorClass := TResourceCacheDescriptor;
+  FLock := TCriticalSection.Create;
 end;
 
 procedure TResourceCache.Clear;
@@ -376,6 +381,7 @@ begin
   FItems := nil;
   FDescriptors.Free;
   FDescriptors := nil;
+  FLock.Free;
   inherited Destroy;
 end;
 
@@ -443,6 +449,16 @@ begin
       RaiseGDBException('');
     ANode := FItems.FindSuccessor(ANode);
   end;
+end;
+
+procedure TResourceCache.Lock;
+begin
+  FLock.Enter;
+end;
+
+procedure TResourceCache.Unlock;
+begin
+  FLock.Leave;
 end;
 
 { THandleResourceCache }
