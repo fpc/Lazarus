@@ -684,16 +684,14 @@ type
   { TBevel }
 
   TBevelStyle = (bsLowered, bsRaised);
-  TBevelShape=(bsBox, bsFrame, bsTopLine, bsBottomLine, bsLeftLine, bsRightLine);
+  TBevelShape=(bsBox, bsFrame, bsTopLine, bsBottomLine, bsLeftLine, bsRightLine, bsSpacer);
 
-  TBevel = Class(TGraphicControl)
+  TBevel = class(TGraphicControl)
   private
     FStyle:TBevelStyle;
     FShape:TBevelShape;
-    function GetStyle:TBevelStyle;
-    procedure SetStyle(aStyle:TBevelStyle);
-    function GetShape:TBevelShape;
-    procedure SetShape(aShape:TBevelShape);
+    procedure SetStyle(AStyle: TBevelStyle);
+    procedure SetShape(AShape: TBevelShape);
   protected
     class procedure WSRegisterClass; override;
     procedure Paint; override;
@@ -706,14 +704,11 @@ type
     property Anchors;
     property BorderSpacing;
     property Constraints;
-    property Height;
-    property Left;
-    property Name;
-    property Shape:TBevelShape Read GetShape Write SetShape Default bsBox;
-    property Top;
-    property Style:TBevelStyle Read GetStyle Write SetStyle Default bsLowered;
+    property ParentShowHint;
+    property Shape: TBevelShape read FShape write SetShape default bsBox;
+    property ShowHint;
+    property Style: TBevelStyle read FStyle write SetStyle default bsLowered;
     property Visible;
-    property Width;
     property OnChangeBounds;
     property OnResize;
     property OnMouseDown;
