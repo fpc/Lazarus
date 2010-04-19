@@ -135,8 +135,7 @@ type
   public
     constructor Create(TheDataSize: integer);
     function FindDescriptor(DescPtr: Pointer): TBlockResourceCacheDescriptor;
-    function AddResource(Handle: TLCLHandle; DescPtr: Pointer
-                         ): TBlockResourceCacheDescriptor;
+    function AddResource(Handle: TLCLHandle; DescPtr: Pointer): TBlockResourceCacheDescriptor;
     function CompareDescriptors(Tree: TAvgLvlTree;
                                 Desc1, Desc2: Pointer): integer; override;
   public
@@ -169,21 +168,20 @@ end;
 
 { TResourceCacheItem }
 
-constructor TResourceCacheItem.Create(TheCache: TResourceCache;
-  TheHandle: TLCLHandle);
+constructor TResourceCacheItem.Create(TheCache: TResourceCache; TheHandle: TLCLHandle);
 begin
-  Cache:=TheCache;
-  Handle:=TheHandle;
+  Cache := TheCache;
+  Handle := TheHandle;
 end;
 
 destructor TResourceCacheItem.Destroy;
 begin
   if FDestroying then
     RaiseGDBException('');
-  FDestroying:=true;
+  FDestroying := True;
   Cache.RemoveItem(Self);
   //debugln('TResourceCacheItem.Destroy B ',dbgs(Self));
-  Handle:=0;
+  Handle := 0;
   inherited Destroy;
   //debugln('TResourceCacheItem.Destroy END ',dbgs(Self));
 end;
@@ -191,9 +189,9 @@ end;
 procedure TResourceCacheItem.IncreaseRefCount;
 begin
   inc(FReferenceCount);
-  if FReferenceCount=1 then
+  if FReferenceCount = 1 then
     Cache.ItemUsed(Self);
-  if (FReferenceCount=1000) or (FReferenceCount=10000) then
+  if (FReferenceCount = 1000) or (FReferenceCount = 10000) then
     WarnReferenceHigh;
 end;
 
@@ -206,33 +204,32 @@ procedure TResourceCacheItem.DecreaseRefCount;
 
 begin
   //debugln('TResourceCacheItem.DecreaseRefCount ',ClassName,' ',dbgs(Self),' ',dbgs(FReferenceCount));
-  if FReferenceCount=0 then
+  if FReferenceCount = 0 then
     RaiseRefCountZero;
   dec(FReferenceCount);
-  if FReferenceCount=0 then
+  if FReferenceCount =0  then
     Cache.ItemUnused(Self);
   //debugln('TResourceCacheItem.DecreaseRefCount END ');
 end;
 
-procedure TResourceCacheItem.AddToList(var First, Last: TResourceCacheItem
-  );
+procedure TResourceCacheItem.AddToList(var First, Last: TResourceCacheItem);
 // add as last
 begin
-  Next:=nil;
-  Prev:=Last;
-  Last:=Self;
-  if First=nil then First:=Self;
-  if Prev<>nil then Prev.Next:=Self;
+  Next := nil;
+  Prev := Last;
+  Last := Self;
+  if First = nil then First := Self;
+  if Prev <> nil then Prev.Next := Self;
 end;
 
 procedure TResourceCacheItem.RemoveFromList(var First,Last: TResourceCacheItem);
 begin
-  if First=Self then First:=Next;
-  if Last=Self then Last:=Prev;
-  if Next<>nil then Next.Prev:=Prev;
-  if Prev<>nil then Prev.Next:=Next;
-  Next:=nil;
-  Prev:=nil;
+  if First = Self then First := Next;
+  if Last = Self then Last := Prev;
+  if Next <> nil then Next.Prev := Prev;
+  if Prev <> nil then Prev.Next := Next;
+  Next := nil;
+  Prev := nil;
 end;
 
 procedure TResourceCacheItem.WarnReferenceHigh;
@@ -247,49 +244,49 @@ end;
 constructor TResourceCacheDescriptor.Create(TheCache: TResourceCache;
   TheItem: TResourceCacheItem);
 begin
-  Cache:=TheCache;
-  Item:=TheItem;
+  Cache := TheCache;
+  Item := TheItem;
   Item.IncreaseRefCount;
-  AddToList(Item.FirstDescriptor,Item.LastDescriptor);
+  AddToList(Item.FirstDescriptor, Item.LastDescriptor);
 end;
 
 destructor TResourceCacheDescriptor.Destroy;
 begin
   if FDestroying then
     RaiseGDBException('');
-  FDestroying:=true;
+  FDestroying := True;
   Cache.RemoveDescriptor(Self);
   inherited Destroy;
 end;
 
-procedure TResourceCacheDescriptor.AddToList(
-  var First, Last: TResourceCacheDescriptor);
+procedure TResourceCacheDescriptor.AddToList(var First, Last: TResourceCacheDescriptor);
 // add as last
 begin
-  Next:=nil;
-  Prev:=Last;
-  Last:=Self;
-  if First=nil then First:=Self;
-  if Prev<>nil then Prev.Next:=Self;
+  Next := nil;
+  Prev := Last;
+  Last := Self;
+  if First = nil then First := Self;
+  if Prev <> nil then Prev.Next := Self;
 end;
 
-procedure TResourceCacheDescriptor.RemoveFromList(
-  var First, Last: TResourceCacheDescriptor);
+procedure TResourceCacheDescriptor.RemoveFromList(var First, Last: TResourceCacheDescriptor);
 begin
-  if First=Self then First:=Next;
-  if Last=Self then Last:=Prev;
-  if Next<>nil then Next.Prev:=Prev;
-  if Prev<>nil then Prev.Next:=Next;
-  Next:=nil;
-  Prev:=nil;
+  if First = Self then First := Next;
+  if Last = Self then Last := Prev;
+  if Next <> nil then Next.Prev := Prev;
+  if Prev <> nil then Prev.Next := Next;
+  Next := nil;
+  Prev := nil;
 end;
 
 { TResourceCache }
 
 procedure TResourceCache.RemoveItem(Item: TResourceCacheItem);
 begin
-  if not FDestroying then begin
-    while Item.FirstDescriptor<>nil do begin
+  if not FDestroying then
+  begin
+    while Item.FirstDescriptor <> nil do
+    begin
       if Item.FirstDescriptor.FDestroying then
         RaiseGDBException('TResourceCache.RemoveItem');
       Item.FirstDescriptor.Free;
@@ -302,13 +299,13 @@ procedure TResourceCache.RemoveDescriptor(Desc: TResourceCacheDescriptor);
 var
   Item: TResourceCacheItem;
 begin
-  if not FDestroying then begin
-    Item:=Desc.Item;
-    if Item<>nil then
-      Desc.RemoveFromList(Item.FirstDescriptor,Item.LastDescriptor);
+  if not FDestroying then
+  begin
+    Item := Desc.Item;
+    if Item <> nil then
+      Desc.RemoveFromList(Item.FirstDescriptor, Item.LastDescriptor);
     FDescriptors.Remove(Desc);
-    if (Item<>nil) and (Item.FirstDescriptor=nil) and (not Item.FDestroying)
-    then
+    if (Item <> nil) and (Item.FirstDescriptor = nil) and (not Item.FDestroying) then
       Item.Free;
   end;
 end;
@@ -316,9 +313,10 @@ end;
 procedure TResourceCache.ItemUsed(Item: TResourceCacheItem);
 // called after creation or when Item is used again
 begin
-  if not ItemIsUsed(Item) then begin
+  if not ItemIsUsed(Item) then
+  begin
     // remove from unused list
-    Item.RemoveFromList(FFirstUnusedItem,FLastUnusedItem);
+    Item.RemoveFromList(FFirstUnusedItem, FLastUnusedItem);
     dec(FUnUsedItemCount);
   end;
 end;
@@ -335,13 +333,14 @@ begin
   if not ItemIsUsed(Item) then
     raise Exception.Create('TResourceCache.ItemUnused');
   //debugln('TResourceCache.ItemUnused B ',ClassName,' ',dbgs(Self));
-  Item.AddToList(FFirstUnusedItem,FLastUnusedItem);
+  Item.AddToList(FFirstUnusedItem, FLastUnusedItem);
   inc(FUnUsedItemCount);
   //debugln('TResourceCache.ItemUnused C ',ClassName,' ',dbgs(Self));
-  if FUnUsedItemCount>FMaxUnusedItem then begin
+  if FUnUsedItemCount > FMaxUnusedItem then
+  begin
     // maximum unused resources reached -> free the oldest
-    DeleteItem:=FFirstUnusedItem;
-    DeleteItem.RemoveFromList(FFirstUnusedItem,FLastUnusedItem);
+    DeleteItem := FFirstUnusedItem;
+    DeleteItem.RemoveFromList(FFirstUnusedItem, FLastUnusedItem);
     DeleteItem.Free;
   end;
   //debugln('TResourceCache.ItemUnused END ',ClassName,' ',dbgs(Self));
@@ -349,23 +348,22 @@ end;
 
 function TResourceCache.ItemIsUsed(Item: TResourceCacheItem): boolean;
 begin
-  Result:=(FFirstUnusedItem<>Item) and (Item.Next=nil)
-          and (Item.Prev=nil)
+  Result := (FFirstUnusedItem <> Item) and (Item.Next = nil) and (Item.Prev = nil)
 end;
 
 constructor TResourceCache.Create;
 begin
-  FMaxUnusedItem:=100;
-  FItems:=TAvgLvlTree.CreateObjectCompare(@CompareItems);
-  FDescriptors:=TAvgLvlTree.CreateObjectCompare(@CompareDescriptors);
-  FResourceCacheItemClass:=TResourceCacheItem;
-  FResourceCacheDescriptorClass:=TResourceCacheDescriptor;
+  FMaxUnusedItem := 100;
+  FItems := TAvgLvlTree.CreateObjectCompare(@CompareItems);
+  FDescriptors := TAvgLvlTree.CreateObjectCompare(@CompareDescriptors);
+  FResourceCacheItemClass := TResourceCacheItem;
+  FResourceCacheDescriptorClass := TResourceCacheDescriptor;
 end;
 
 procedure TResourceCache.Clear;
 begin
-  while FFirstUnusedItem<>nil do
-    FFirstUnusedItem.RemoveFromList(FFirstUnusedItem,FLastUnusedItem);
+  while FFirstUnusedItem <> nil do
+    FFirstUnusedItem.RemoveFromList(FFirstUnusedItem, FLastUnusedItem);
   FItems.FreeAndClear;
   FDescriptors.FreeAndClear;
 end;
@@ -381,11 +379,10 @@ begin
   inherited Destroy;
 end;
 
-function TResourceCache.CompareItems(Tree: TAvgLvlTree; Item1, Item2: Pointer
-  ): integer;
+function TResourceCache.CompareItems(Tree: TAvgLvlTree; Item1, Item2: Pointer): integer;
 begin
-  Result:=CompareLCLHandles(TResourceCacheItem(Item1).Handle,
-                            TResourceCacheItem(Item2).Handle);
+  Result := CompareLCLHandles(TResourceCacheItem(Item1).Handle,
+                              TResourceCacheItem(Item2).Handle);
 end;
 
 procedure TResourceCache.ConsistencyCheck;
@@ -399,49 +396,52 @@ begin
     RaiseGDBException('');
 
   // check items
-  if FItems.ConsistencyCheck<>0 then
+  if FItems.ConsistencyCheck <> 0 then
     RaiseGDBException('');
-  ANode:=FItems.FindLowest;
-  while ANode<>nil do begin
-    Item:=TResourceCacheItem(ANode.Data);
-    if Item.FirstDescriptor=nil then
+  ANode := FItems.FindLowest;
+  while ANode <> nil do
+  begin
+    Item := TResourceCacheItem(ANode.Data);
+    if Item.FirstDescriptor = nil then
       RaiseGDBException('');
-    if Item.LastDescriptor=nil then
+    if Item.LastDescriptor = nil then
       RaiseGDBException('');
-    if Item.FirstDescriptor.Prev<>nil then
+    if Item.FirstDescriptor.Prev <> nil then
       RaiseGDBException('');
-    if Item.LastDescriptor.Next<>nil then
+    if Item.LastDescriptor.Next <> nil then
       RaiseGDBException('');
-    Desc:=Item.FirstDescriptor;
-    while Desc<>nil do begin
-      if Desc.Item<>Item then
+    Desc := Item.FirstDescriptor;
+    while Desc <> nil do
+    begin
+      if Desc.Item <> Item then
         RaiseGDBException('');
-      if (Desc.Next<>nil) and (Desc.Next.Prev<>Desc) then
+      if (Desc.Next <> nil) and (Desc.Next.Prev <> Desc) then
         RaiseGDBException('');
-      if (Desc.Prev<>nil) and (Desc.Prev.Next<>Desc) then
+      if (Desc.Prev <> nil) and (Desc.Prev.Next <> Desc) then
         RaiseGDBException('');
-      if (Desc.Next=nil) and (Item.LastDescriptor<>Desc) then
+      if (Desc.Next = nil) and (Item.LastDescriptor <> Desc) then
         RaiseGDBException('');
-      Desc:=Desc.Next;
+      Desc := Desc.Next;
     end;
-    ANode:=FItems.FindSuccessor(ANode);
+    ANode := FItems.FindSuccessor(ANode);
   end;
   
   // check Descriptors
-  if FDescriptors.ConsistencyCheck<>0 then
+  if FDescriptors.ConsistencyCheck <> 0 then
     RaiseGDBException('');
-  ANode:=FDescriptors.FindLowest;
-  while ANode<>nil do begin
-    Desc:=TResourceCacheDescriptor(ANode.Data);
-    Item:=Desc.Item;
-    if Item=nil then
+  ANode := FDescriptors.FindLowest;
+  while ANode <> nil do
+  begin
+    Desc := TResourceCacheDescriptor(ANode.Data);
+    Item := Desc.Item;
+    if Item = nil then
       RaiseGDBException('');
-    Desc2:=Item.FirstDescriptor;
-    while (Desc2<>nil) and (Desc2<>Desc) do
-      Desc2:=Desc2.Next;
-    if Desc<>Desc2 then
+    Desc2 := Item.FirstDescriptor;
+    while (Desc2 <> nil) and (Desc2 <> Desc) do
+      Desc2 := Desc2.Next;
+    if Desc <> Desc2 then
       RaiseGDBException('');
-    ANode:=FItems.FindSuccessor(ANode);
+    ANode := FItems.FindSuccessor(ANode);
   end;
 end;
 
@@ -451,12 +451,12 @@ function THandleResourceCache.FindItem(Handle: TLCLHandle): TResourceCacheItem;
 var
   ANode: TAvgLvlTreeNode;
 begin
-  ANode:=FItems.FindKey(@Handle,
-                        TListSortCompare(@ComparePHandleWithResourceCacheItem));
-  if ANode<>nil then
-    Result:=TResourceCacheItem(ANode.Data)
+  ANode := FItems.FindKey(@Handle,
+                          TListSortCompare(@ComparePHandleWithResourceCacheItem));
+  if ANode <> nil then
+    Result := TResourceCacheItem(ANode.Data)
   else
-    Result:=nil;
+    Result := nil;
 end;
 
 { TBlockResourceCache }
@@ -464,26 +464,23 @@ end;
 constructor TBlockResourceCache.Create(TheDataSize: integer);
 begin
   inherited Create;
-  FDataSize:=TheDataSize;
-  FResourceCacheDescriptorClass:=TBlockResourceCacheDescriptor;
-  FOnCompareDescPtrWithDescriptor:=
-                              TListSortCompare(@CompareDescPtrWithBlockResDesc);
+  FDataSize := TheDataSize;
+  FResourceCacheDescriptorClass := TBlockResourceCacheDescriptor;
+  FOnCompareDescPtrWithDescriptor := TListSortCompare(@CompareDescPtrWithBlockResDesc);
 end;
 
-function TBlockResourceCache.FindDescriptor(DescPtr: Pointer
-  ): TBlockResourceCacheDescriptor;
+function TBlockResourceCache.FindDescriptor(DescPtr: Pointer): TBlockResourceCacheDescriptor;
 var
   ANode: TAvgLvlTreeNode;
 begin
-  ANode:=FDescriptors.FindKey(DescPtr,FOnCompareDescPtrWithDescriptor);
-  if ANode<>nil then
-    Result:=TBlockResourceCacheDescriptor(ANode.Data)
+  ANode := FDescriptors.FindKey(DescPtr,FOnCompareDescPtrWithDescriptor);
+  if ANode <> nil then
+    Result := TBlockResourceCacheDescriptor(ANode.Data)
   else
-    Result:=nil;
+    Result := nil;
 end;
 
-function TBlockResourceCache.AddResource(Handle: TLCLHandle; DescPtr: Pointer
-  ): TBlockResourceCacheDescriptor;
+function TBlockResourceCache.AddResource(Handle: TLCLHandle; DescPtr: Pointer): TBlockResourceCacheDescriptor;
 var
   Item: TResourceCacheItem;
 
@@ -502,28 +499,28 @@ begin
   {$IFDEF CheckResCacheConsistency}
   ConsistencyCheck;
   {$ENDIF}
-  Result:=FindDescriptor(DescPtr);
-  if Result<>nil then
+  Result := FindDescriptor(DescPtr);
+  if Result <> nil then
     RaiseDescriptorAlreadyAdded;
 
-  Item:=FindItem(Handle);
-  if Item=nil then begin
-    Item:=FResourceCacheItemClass.Create(Self,Handle);
+  Item := FindItem(Handle);
+  if Item = nil then
+  begin
+    Item := FResourceCacheItemClass.Create(Self, Handle);
     FItems.Add(Item);
   end;
-  Result:=TBlockResourceCacheDescriptor(
-                               FResourceCacheDescriptorClass.Create(Self,Item));
-  ReAllocMem(Result.Data,DataSize);
-  System.Move(DescPtr^,Result.Data^,DataSize);
+  Result := TBlockResourceCacheDescriptor(FResourceCacheDescriptorClass.Create(Self, Item));
+  ReAllocMem(Result.Data, DataSize);
+  System.Move(DescPtr^, Result.Data^, DataSize);
   FDescriptors.Add(Result);
 end;
 
 function TBlockResourceCache.CompareDescriptors(Tree: TAvgLvlTree; Desc1,
   Desc2: Pointer): integer;
 begin
-  Result:=CompareMemRange(TBlockResourceCacheDescriptor(Desc1).Data,
-                          TBlockResourceCacheDescriptor(Desc2).Data,
-                          DataSize);
+  Result := CompareMemRange(TBlockResourceCacheDescriptor(Desc1).Data,
+                            TBlockResourceCacheDescriptor(Desc2).Data,
+                            DataSize);
 end;
 
 { TBlockResourceCacheDescriptor }
@@ -531,7 +528,7 @@ end;
 destructor TBlockResourceCacheDescriptor.Destroy;
 begin
   inherited Destroy;
-  ReAllocMem(Data,0);
+  ReAllocMem(Data, 0);
 end;
 
 end.
