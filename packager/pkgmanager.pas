@@ -232,6 +232,8 @@ type
     function ShowBrokenDependenciesReport(Dependencies: TFPList): TModalResult;
     procedure RebuildDefineTemplates; override;
     procedure LazarusSrcDirChanged; override;
+    function GetPackageCount: integer; override;
+    function GetPackages(Index: integer): TIDEPackage; override;
 
     // project
     function OpenProjectDependencies(AProject: TProject;
@@ -2703,6 +2705,16 @@ begin
     end;
     inc(i);
   end;
+end;
+
+function TPkgManager.GetPackageCount: integer;
+begin
+  Result:=PackageGraph.Count;
+end;
+
+function TPkgManager.GetPackages(Index: integer): TIDEPackage;
+begin
+  Result:=PackageGraph.Packages[Index];
 end;
 
 function TPkgManager.DoCompileProjectDependencies(AProject: TProject;

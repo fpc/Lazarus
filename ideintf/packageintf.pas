@@ -172,6 +172,9 @@ type
     function GetSourceFilesOfOwners(OwnerList: TFPList): TStrings; virtual; abstract;
     function GetPossibleOwnersOfUnit(const UnitFilename: string;
                                      Flags: TPkgIntfOwnerSearchFlags): TFPList; virtual; abstract;
+
+    function GetPackageCount: integer; virtual; abstract;
+    function GetPackages(Index: integer): TIDEPackage; virtual; abstract;
   end;
   
 var
