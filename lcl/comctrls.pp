@@ -1805,6 +1805,9 @@ type
   TCustomTrackBar = class(TWinControl)
   private
     FOrientation: TTrackBarOrientation;
+    FSelEnd: Integer;
+    FSelStart: Integer;
+    FShowSelRange: Boolean;
     FTickMarks: TTickMark;
     FTickStyle: TTickStyle;
     FLineSize: Integer;
@@ -1813,8 +1816,8 @@ type
     FMax: Integer;
     FFrequency: Integer;
     FPosition: Integer;
-    FScalePos : TTrackBarScalePos;
-    FScaleDigits : integer;
+    FScalePos: TTrackBarScalePos;
+    FScaleDigits: integer;
     FOnChange: TNotifyEvent;
     procedure SetFrequency(Value: Integer);
     procedure SetLineSize(Value: Integer);
@@ -1825,6 +1828,9 @@ type
     procedure SetParams(APosition, AMin, AMax: Integer);
     procedure SetPosition(Value: Integer);
     procedure SetScalePos(Value: TTrackBarScalePos);
+    procedure SetSelEnd(const AValue: Integer);
+    procedure SetSelStart(const AValue: Integer);
+    procedure SetShowSelRange(const AValue: Boolean);
     procedure SetTickMarks(Value: TTickMark);
     procedure SetTickStyle(Value: TTickStyle);
     procedure UpdateSelection;
@@ -1849,6 +1855,9 @@ type
     property PageSize: Integer read FPageSize write SetPageSize default 2;
     property Position: Integer read FPosition write SetPosition;
     property ScalePos: TTrackBarScalePos read FScalePos write SetScalePos default trTop;
+    property SelEnd: Integer read FSelEnd write SetSelEnd default 0;
+    property SelStart: Integer read FSelStart write SetSelStart default 0;
+    property ShowSelRange: Boolean read FShowSelRange write SetShowSelRange default True;
     property TabStop default True;
     property TickMarks: TTickMark read FTickMarks write SetTickMarks default tmBottomRight;
     property TickStyle: TTickStyle read FTickStyle write SetTickStyle default tsAuto;
@@ -1900,7 +1909,10 @@ type
     property PopupMenu;
     property Position;
     property ScalePos;
+    property SelEnd;
+    property SelStart;
     property ShowHint;
+    property ShowSelRange;
     property TabOrder;
     property TabStop;
     property TickMarks;

@@ -207,8 +207,9 @@ type
     class procedure DefaultWndHandler(const AWinControl: TWinControl;
        var AMessage); override;
     class procedure ApplyChanges(const ATrackBar: TCustomTrackBar); override;
-    class function  GetPosition(const ATrackBar: TCustomTrackBar): integer; override;
+    class function GetPosition(const ATrackBar: TCustomTrackBar): integer; override;
     class procedure SetPosition(const ATrackBar: TCustomTrackBar; const NewPosition: integer); override;
+    class procedure SetTick(const ATrackBar: TCustomTrackBar; const ATick: integer); override;
   end;
 
   { TWin32WSCustomTreeView }
@@ -872,27 +873,33 @@ var
   wHandle: HWND;
   NewStyle: integer;
 const
-  StyleMask = TBS_AUTOTICKS or TBS_NOTICKS or TBS_VERT or TBS_TOP or TBS_BOTH;
-  TickStyleStyle : array[TTickStyle] of integer =
-    (TBS_NOTICKS, TBS_AUTOTICKS, 0);
-  OrientationStyle : array[TTrackBarOrientation] of integer =
-    (TBS_HORZ, TBS_VERT);
-  TickMarksStyle : array[TTickMark] of integer =
-    (TBS_BOTTOM, TBS_TOP, TBS_BOTH);
+  StyleMask = TBS_AUTOTICKS or TBS_NOTICKS or TBS_VERT or TBS_TOP or TBS_BOTH or
+    TBS_ENABLESELRANGE;
+  TickStyleStyle: array[TTickStyle] of DWORD = (TBS_NOTICKS, TBS_AUTOTICKS, 0);
+  OrientationStyle: array[TTrackBarOrientation] of DWORD = (TBS_HORZ, TBS_VERT);
+  TickMarksStyle: array[TTickMark] of DWORD = (TBS_BOTTOM, TBS_TOP, TBS_BOTH);
+  SelRangeStyle: array[Boolean] of DWORD = (0, TBS_ENABLESELRANGE);
 begin
   with ATrackBar do
   begin
     { cache handle }
     wHandle := Handle;
     NewStyle := TickStyleStyle[TickStyle] or OrientationStyle[Orientation] or
-                TickMarksStyle[TickMarks];
+                TickMarksStyle[TickMarks] or SelRangeStyle[ShowSelRange];
     UpdateWindowStyle(wHandle, NewStyle, StyleMask);
-    Windows.SendMessage(wHandle, TBM_SETRANGEMAX, Windows.WPARAM(true), Max);
-    Windows.SendMessage(wHandle, TBM_SETRANGEMIN, Windows.WPARAM(true), Min);
-    Windows.SendMessage(wHandle, TBM_SETPOS, Windows.WPARAM(true), Position);
+    Windows.SendMessage(wHandle, TBM_SETRANGEMAX, Windows.WPARAM(True), Max);
+    Windows.SendMessage(wHandle, TBM_SETRANGEMIN, Windows.WPARAM(True), Min);
+    Windows.SendMessage(wHandle, TBM_SETPOS, Windows.WPARAM(True), Position);
     Windows.SendMessage(wHandle, TBM_SETLINESIZE, 0, LineSize);
     Windows.SendMessage(wHandle, TBM_SETPAGESIZE, 0, PageSize);
     Windows.SendMessage(wHandle, TBM_SETTICFREQ, Frequency, 0);
+    if ((SelStart = 0) and (SelEnd = 0)) or not ShowSelRange then
+      Windows.SendMessage(wHandle, TBM_CLEARSEL, Windows.WPARAM(True), 0)
+    else
+    begin
+      Windows.SendMessage(wHandle, TBM_SETSELSTART, Windows.WParam(False), SelStart);
+      Windows.SendMessage(wHandle, TBM_SETSELEND, Windows.WParam(True), SelEnd)
+    end;
   end;
 end;
 
@@ -904,6 +911,12 @@ end;
 class procedure TWin32WSTrackBar.SetPosition(const ATrackBar: TCustomTrackBar; const NewPosition: integer);
 begin
   Windows.SendMessage(ATrackBar.Handle, TBM_SETPOS, Windows.WPARAM(true), Windows.LPARAM(NewPosition));
+end;
+
+class procedure TWin32WSTrackBar.SetTick(const ATrackBar: TCustomTrackBar;
+  const ATick: integer);
+begin
+  Windows.SendMessage(ATrackBar.Handle, TBM_SETTIC, 0, Windows.LPARAM(ATick));
 end;
 
 end.

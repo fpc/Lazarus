@@ -194,8 +194,9 @@ type
   TWSTrackBar = class(TWSWinControl)
   published
     class procedure ApplyChanges(const ATrackBar: TCustomTrackBar); virtual;
-    class function  GetPosition(const ATrackBar: TCustomTrackBar): integer; virtual;
+    class function GetPosition(const ATrackBar: TCustomTrackBar): integer; virtual;
     class procedure SetPosition(const ATrackBar: TCustomTrackBar; const NewPosition: integer); virtual;
+    class procedure SetTick(const ATrackBar: TCustomTrackBar; const ATick: integer); virtual;
   end;
 
   { TWSCustomTreeView }
@@ -555,6 +556,10 @@ begin
 end;
 
 class procedure TWSTrackBar.SetPosition(const ATrackBar: TCustomTrackBar; const NewPosition: integer);
+begin
+end;
+
+class procedure TWSTrackBar.SetTick(const ATrackBar: TCustomTrackBar; const ATick: integer);
 begin
 end;
 

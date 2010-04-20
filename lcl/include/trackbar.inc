@@ -58,19 +58,22 @@ begin
   inherited Create (aOwner);
   fCompStyle := csTrackbar;
   ControlStyle := ControlStyle - [csCaptureMouse];
-  FLineSize  := 1;
-  FMax       := 10;
-  FMin       := 0;
-  FPosition  := 0;
-  FPageSize  := 2;
+  FLineSize := 1;
+  FMax := 10;
+  FMin := 0;
+  FPosition := 0;
+  FPageSize := 2;
   FFrequency := 1;
   FOrientation := trHorizontal;
-  FScalePos  := trTop;
+  FScalePos := trTop;
   FScaleDigits := 0;
   FTickMarks := tmBottomRight;
   FTickStyle := tsAuto;
+  FSelStart := 0;
+  FSelEnd := 0;
+  FShowSelRange := True;
   TabStop := True;
-  SetInitialBounds(0,0,GetControlClassDefaultSize.X,GetControlClassDefaultSize.Y);
+  SetInitialBounds(0, 0, GetControlClassDefaultSize.X, GetControlClassDefaultSize.Y);
 end;
 
 {------------------------------------------------------------------------------
@@ -101,7 +104,8 @@ end;
  ------------------------------------------------------------------------------}
 procedure TCustomTrackBar.SetTick(Value: Integer);
 begin
-{   := Value; }
+  if HandleAllocated then
+    TWSTrackBarClass(WidgetSetClass).SetTick(Self, Value);
 end;
 
 {------------------------------------------------------------------------------
@@ -290,8 +294,6 @@ end;
 class procedure TCustomTrackBar.WSRegisterClass;
 begin
   inherited WSRegisterClass;
-  RegisterPropertyToSkip(TCustomTrackBar, 'SelStart', 'VCL compatibility property', '');
-  RegisterPropertyToSkip(TCustomTrackBar, 'SelEnd', 'VCL compatibility property', '');
   RegisterPropertyToSkip(TCustomTrackBar, 'ThumbLength', 'VCL compatibility property', '');
   RegisterCustomTrackBar;
 end;
@@ -354,3 +356,31 @@ begin
     ApplyChanges;
   end;
 end;
+
+procedure TCustomTrackBar.SetSelEnd(const AValue: Integer);
+begin
+  if FSelEnd <> AValue then
+  begin
+    FSelEnd := AValue;
+    ApplyChanges;
+  end;
+end;
+
+procedure TCustomTrackBar.SetSelStart(const AValue: Integer);
+begin
+  if FSelStart <> AValue then
+  begin
+    FSelStart := AValue;
+    ApplyChanges;
+  end;
+end;
+
+procedure TCustomTrackBar.SetShowSelRange(const AValue: Boolean);
+begin
+  if FShowSelRange <> AValue then
+  begin
+    FShowSelRange := AValue;
+    ApplyChanges;
+  end;
+end;
+
