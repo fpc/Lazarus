@@ -16906,8 +16906,8 @@ begin
           OffsetRect(NewBounds,NewBounds.Left-(Screen.DesktopWidth-20),0);
         if NewBounds.Top>Screen.DesktopHeight-20 then
           OffsetRect(NewBounds,NewBounds.Top-(Screen.DesktopHeight-20),0);
-        // set (restored) bounds
-        ALayout.Form.SetRestoredBounds(
+        // set bounds (do not use SetRestoredBounds - that flickers with the current LCL implementation)
+        ALayout.Form.SetBounds(
           NewBounds.Left,NewBounds.Top,
           NewBounds.Right-NewBounds.Left,NewBounds.Bottom-NewBounds.Top);
         exit;
