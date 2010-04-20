@@ -240,9 +240,9 @@ begin
 
   s := GetValue(APath, s);
 
-  if AnsiCompareText(s,'TRUE')=0 then
+  if CompareText(s,'TRUE')=0 then
     Result := True
-  else if AnsiCompareText(s,'FALSE')=0 then
+  else if CompareText(s,'FALSE')=0 then
     Result := False
   else
     Result := ADefault;
